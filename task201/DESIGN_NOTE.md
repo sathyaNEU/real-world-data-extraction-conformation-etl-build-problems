@@ -27,10 +27,11 @@ Lalak. Geography unspent on the corpus (United States 50, United Kingdom 15, Can
 Netherlands 4, Poland absent); task197, the lane's last energy build, used a Dutch world and is not
 touched here.
 
-**Reserved axes taken, and the two I could not take.** `shape` 12, `stump_strategy`
-`maturity_censoring`, `role_family` `operations_director`, `gate_g` `method_or_model_selection`, `gap`
-`time`, `forum` `operations_desk`, `forcing_event` `season_or_peak` and `org_family`
-`utility_or_infrastructure` are as reserved, and `guard.py check` passes all of them. `forum`
+**Reserved axes taken, and the three I could not take.** `shape` 12, `stump_strategy`
+`maturity_censoring`, `gate_g` `method_or_model_selection`, `gap` `time`, `forum` `operations_desk`,
+`forcing_event` `season_or_peak` and `org_family` `utility_or_infrastructure` are as reserved, and
+`guard.py check` passes all of them. The reserved `role_family` `operations_director` was taken at the
+draw and lost to a later registration; see the redraw paragraph below. `forum`
 BLOCKed against task246 at the first probe and came free when the axis bans were narrowed to live
 cards, so the reserved value is restored and re-probed clear. Two departures:
 
@@ -48,7 +49,19 @@ cards, so the reserved value is restored and re-probed clear. Two departures:
   reads that absence as the absence of an interruption. `test.same_driver_older` then fires against
   task192 v2 and task445 v1, both differentiated on the card.
 
-**WARN answered.** `repeat.gate_g`: `method_or_model_selection` repeats task172, one of the last two
+**Two axes redrawn at the end of stage 3.** `guard.py check` was clear at the draw and BLOCKed later,
+because task190 (6) and task202 registered in between. `role_family` moves from `operations_director`
+to `field_unit_lead`: the honester label, since one crew-week is settled at the branch's own operations
+review and not by a company operations director. `context_artifact` moves from `filed_standard` to
+`published_series`, which corrects a mislabel as well as clearing the ban, since PR-07 is the pack's
+governing document (`dataset-generation` 8) and the context artifact is the concession's filed
+reliability returns (`dataset-generation` 5), which answer another question correctly and rank nobody.
+Neither change touches a shipped byte.
+
+**WARNs answered.** `overuse.objective` and `overuse.gate_g`: this is an Anomaly Detection lane and
+`method_or_model_selection` is the honest Gate G here, so both are the shape of the batch rather than of
+this build. `repeat.question_form`: "which" is forced, because the call picks one section class of
+twelve and a count, a gate or an amount would misdescribe it. `repeat.gate_g`: `method_or_model_selection` repeats task172, one of the last two
 builds. Kept because it is the honest label (two defensible ways to time an interruption stand, and
 the estimand pins which) and because the alternatives are untrue here:
 `decomposition_attribution` would claim the movement is correctly reported, which is exactly what it
@@ -619,3 +632,23 @@ A1 first asked for the overrunning jobs per branch. Measured on the cut pack, th
 job-grain counts coincided on the two small branches (Zanowiec 7 against 7, Grabownik 1 against 1), so
 the cracker kept 2 of 27 ask figures and the A1 row was not an honest miss. Folded into one total, which
 the row grain gets wrong globally, and the measured cracker keep went to 0 of 27.
+
+## Surface screen, answered
+
+`guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus
+top-one-per-cent proximity on a single shared axis (task81 and task234 on the calibration form and the
+artifact, task130 on the gap and the pattern together, task236 on the gap alone) and carry no finding: the
+nearest driver to this build anywhere on file is 0.07 and none of those four appears in its driver
+neighbourhood at all.
+
+The fifth is the one worth answering. **task199 against task201, surface 0.100, two builds apart, sharing
+the decisive pattern G12, the decision type and a published-series context artifact.** `guard.py check`
+raises no ban on it, because the pattern ban reaches the last three live cards and task199 sits outside
+them, but the screen is right that the draw should have seen it. The differentiation, also written onto the
+card: task199's deciding quantity is an event count read against the observation effort that produced it,
+so its correction is to the denominator of a rate and the records carrying it are a monitor's filing
+volumes; this build's deciding quantity is a duration, and its correction is to when an interruption began,
+recovered from the feeders whose line telemetry timestamps the device operation and conditioned on the
+section class. One corrects for how much was watched, the other for when the clock started. Neither pack
+can produce the other's correction, and the shared G12 label covers both because each turns on an absence
+of record rather than on a record of absence.

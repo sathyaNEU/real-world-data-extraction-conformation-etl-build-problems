@@ -1,0 +1,110 @@
+{
+  "task": "task201",
+  "architecture": "v2",
+  "drawn": "2026-10-18",
+  "slot_note": "Re-root. Architectures 1a and 1b (both on biomedical genomics ground, neither registered) are in lineage with their measured fates. This architecture moves the number to energy-systems-utilities grid reliability and grades a drill-down leaf rather than a name drawn from a set.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "niche": "storm restoration-time accounting on a partly instrumented medium-voltage distribution network",
+  "objective": "anomaly-detection",
+  "shape": "12",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G3",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the branch's network operations manager, who commits the season's one remediation crew-week at the branch operations review",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "zgloszenia_klientow_2026.csv",
+    "rows": 48000,
+    "entity": "one customer's telephone or app notification that supply has been lost",
+    "grain": "notification x affected customer",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Poland, a fictional distribution system operator in the north-east (its branches, districts, feeders, substations, towns and people are fictional; real URE reliability reporting conventions and real medium-voltage protection and telemetry practice)",
+    "currency": "PLN",
+    "org_type": "electricity distribution system operator",
+    "invented_names": [
+      "Borowiecka Energia Operator",
+      "Zanowiec",
+      "Pustrzyca",
+      "Grabownik",
+      "Nierzyca"
+    ],
+    "people": [
+      "Arkadiusz Dudko",
+      "Karina Kurda",
+      "Cezary Wawszczyk",
+      "Lidia Lalak"
+    ]
+  },
+  "deliverables": [
+    "plan_remediacji_2026.docx",
+    "drzewo_udzialow_2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is each branch's total exposure-time, and where an event is timed only from the moment someone reported it the recorded span omits an opening interval whose size falls steeply with how many parties were in a position to report it; that interval is measured only on the events a parallel instrumented channel timed as well, and that channel sits on the largest units, so a total built on recorded spans, or on one pooled interval, understates exactly the branches whose uninstrumented events are the ones fewest parties could see.",
+  "driver_concrete": "Interrupted customer-hours per branch are built from outage records whose start, on feeders without line telemetry, is the first customer notification rather than the loss of supply; the unreported interval is measured only on the instrumented feeders, where the device timestamp and the first notification both exist, and it falls steeply with the customers behind the operated device, so the recorded drill, and a drill corrected with one pooled interval drawn from a telemetry subset weighted to large devices, both understate the branch whose uninstrumented outages sit on the smallest rural laterals.",
+  "stump": "A solver who cleans the two OMS layouts, normalises the device keys, aligns the UTC telemetry archive and applies the filed drill rule exactly commits the remediation slot inside the Zanowiec branch, because the recorded spans omit the pre-notification interval that is longest precisely on the small rural laterals carrying Grabownik's exposure.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read correctly, every key normalised, the overlapping export week de-duplicated, the telemetry archive converted from UTC and the filed drill rule applied exactly, building each branch's interrupted customer-hours as customers behind the operated device times the recorded restoration span files Zanowiec at level one and lands on its urban cable leaf, which is the wrong leaf.",
+  "domain_test": "The deciding quantity is interrupted customer-hours, the numerator of the operator's regulated SAIDI-family index, and the field times an interruption from the loss of supply, recovering the pre-notification interval from the feeders whose line-mounted telemetry timestamps the device operation; swap schools for feeders and pupil-visits for customer-hours and the task collapses, because nothing then decides which events carry an instrument timestamp, where the protection hierarchy decides it here (a fuse clears a lateral fault without the substation ever seeing it), and nothing makes the reporting delay fall with the number of parties connected behind the device that operated.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:pre-notification-interval-from-parallel-telemetry",
+  "layer1": [
+    "two OMS export layouts with a one-week overlap, column renames and a merged timestamp field",
+    "device identifiers in two conventions across the register and the OMS (station prefix and zero padding)",
+    "the telemetry archive in UTC against the OMS and notification log in Europe/Warsaw local time",
+    "customer counts in units in the register and in thousands in a summary sheet",
+    "a preliminary and a revised URE return for the concession overlapping on one month",
+    "tables inside a PDF return",
+    "the URE reporting calendar year against the storm season window",
+    "a handful of interruptions unrestored at the extract"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task192": "task192 v2 counts how many of a cohort will ever show an event, where a competing terminal end removes units from the population at risk; here nothing competes and nothing is at risk, the unrecorded thing is the opening interval of an event that did happen and whose span is a lower bound, and it is recovered from a parallel channel rather than from the cohort's own exits.",
+    "task445": "task445 v1 loop 0 completes a still-open period for reporters whose reports have not yet arrived, each from its own last report, so the missing part is late and self-measured inside the unit; here the missing part never arrives at all and is measured only out of sample, on the feeders a second detection channel timed, and the trap is that this calibration subset is size-biased by the very mechanism that creates it (telemetry sits on the largest devices) while the quantity being transported falls steeply in device size, so the pooled correction is wrong in opposite directions on different branches rather than merely flat.",
+    "task172": "task172 shares gap time and Gate G but the decisive rung there turns on a unit's wait being cut short when its own deadline passes and the request settling thereafter; here no deadline truncates anything and the decisive rung adds an interval at the opening of the record that no deadline, rule or later settlement ever supplies.",
+    "task199": "Two apart and sharing the decisive pattern G12, the decision type and a published-series artifact, which guard.py surface promotes. The insight is not shared: task199's quantity is an event count read against the observation effort that produced it, so the correction is to the denominator of a rate and the records that carry it are a monitor's filing volumes. task201's quantity is a duration, and the correction is to when an interruption began, recovered from the subset of feeders whose line telemetry timestamps the device operation and conditioned on the section class. One corrects for how much was watched, the other for when the clock started, and neither pack could produce the other's correction."
+  },
+  "lineage": [
+    {
+      "architecture": "v1a",
+      "fate": "killed at the draw before any design, 2026-10-18: the self-measurement was bounded but never tight (the nuisance set was 2x the printed precision at its sharpest and 10x where the null region landed wrong), and three of nine enumerated routes reached the golden by reading the region where the signal vanishes",
+      "driver": "The decisive quantity is one contributor's share of an inflation that the record carries only as a sum of that share, a signal and noise, recovered as the intercept of a regression on a covariate the signal scales with, so the conventional summary of the whole distribution names the most powerful contributor instead."
+    },
+    {
+      "architecture": "v1b",
+      "fate": "killed at the draw before any design, 2026-10-18: with equal power the answer is the lead statistic so two sorted columns reach it; with the answer attenuated the licensed method family split three to one on the graded name and one column's minimum published it; with two true members the well-posed answer is a set and no method named the designated element",
+      "driver": "The decisive quantity is which member of a correlated block actually drives a measured association, where the member with the largest statistic is the one correlated with every other, so the standard pipeline names a proxy instead of the driver."
+    }
+  ],
+  "notes": "Reserved-axis departures, with reasons: forum is operations_desk as reserved: it BLOCKed on ban.forum against task246 at the first probe and came free when the axis bans were narrowed to live cards, so the reserved value is restored and re-probed clear. calibration_form is parallel_run_overlap, not the reserved retry_or_revision_log, because the organ the construction actually uses is the overlap between two detection channels running in parallel on the instrumented feeders; a revision log would have published the corrected start times and killed the build on the revelation screen. gate_g is method_or_model_selection as reserved; shape 12, stump_strategy maturity_censoring, role_family operations_director, gap time, forcing_event season_or_peak and org_family utility_or_infrastructure are as reserved. stump_strategy maturity_censoring is the honest label: each uninstrumented interruption's duration record is censored at its start, a lower bound on the true span, and the censored part is recovered from the parallel channel. Two axes were redrawn at the end of stage 3 when guard.py check BLOCKed them against task190 (6) and task202, which registered after the draw: role_family went from operations_director to field_unit_lead, which is the honester label because the one crew-week is settled at the branch's own operations review rather than by a company operations director; context_artifact went from filed_standard to published_series, which corrects an error as well as clearing the ban, because PR-07 is the pack's governing document and the context artifact is the concession's filed reliability returns.",
+  "registered": "2026-10-18T13:39:06Z"
+}

@@ -188,6 +188,8 @@ def dictionary(st):
 
 Wydanie 4, 16 listopada 2026. Wlasciciel: Biuro Analiz Sieciowych BEO.
 Czas lokalny Europe/Warsaw, chyba ze kolumna wskazuje inaczej.
+Slownik obejmuje pliki danych pakietu. Dokumenty (procedura PR-07, sprawozdanie o niezawodnosci
+2024-2025, notatka sluzby dyspozytorskiej) opisuja sie same i nie maja tu wpisow.
 
 ## awarie_oms_2026-10-01_2026-11-07.csv, awarie_oms_2026-11-01_2026-11-15.csv
 
@@ -278,8 +280,8 @@ def provenance(st):
 
 Pakiet zlozony 16 listopada 2026 o 06:00 przez Biuro Analiz Sieciowych BEO na potrzeby narady
 ruchowej oddzialu. Wszystkie pliki sa wyciagami z systemow operatora albo dokumentami operatora.
-Dane sa syntetyczne i opisuja fikcyjnego operatora systemu dystrybucyjnego; nie zawieraja danych
-osobowych ani danych rzeczywistych odbiorcow.
+Numery PPE i identyfikatory urzadzen podano w postaci technicznej; wyciag nie zawiera danych
+osobowych odbiorcow, zgodnie z procedura udostepniania danych wewnetrznych.
 
 | Plik | Co zawiera | Czego nie zawiera | Zrodlo | Stan na | Licencja |
 |---|---|---|---|---|---|
