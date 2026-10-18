@@ -295,16 +295,36 @@ OLDEST_PULL = 1.35          # how strongly the oldest band's share pulls the mix
 # surgical site infection or a venous thromboembolism is frequently identified after the patient has gone
 # home and reaches the record through the readmission. The share is of the complications that quarter will
 # ultimately carry, at the quarter's own close and at the two closes after it.
-GROUP_COMPLETENESS = {
-    "G1": (0.620, 0.800, 0.915, 0.975), "G2": (0.430, 0.640, 0.810, 0.930),
-    "G3": (0.995, 1.000, 1.000, 1.000), "G4": (0.970, 0.992, 1.000, 1.000),
-    "G5": (0.610, 0.800, 0.920, 0.980), "G6": (0.930, 0.975, 0.995, 1.000),
-    "G7": (0.640, 0.825, 0.930, 0.980), "G8": (0.995, 1.000, 1.000, 1.000),
+# How complete a quarter's complications are when it is first published and at each restatement after it,
+# by how the complication was recorded. A ward on the clinical information system records a complication at
+# the point of care and it reaches the warehouse with the episode; a ward still on paper records it in the
+# notes, and it is coded from them whenever the coder reaches that chart, which is often after the quarter
+# has already been published. The share is of the complications the quarter will ultimately carry, at the
+# quarter's own close and at the three closes after it.
+MODE_COMPLETENESS = {
+    "electronic": (0.966, 0.991, 0.998, 1.000),
+    "paper": (0.558, 0.762, 0.888, 0.962),
 }
 LAG_COMPLETE = 4            # a quarter stops moving four closes after its own
-# Coding for a quarter closes eight weeks after the quarter ends (specification 3.7), and the quarter is
-# restated at each later close. At the pull date the newest closed quarter has been published once and the
-# one before it twice, so those two are the only quarters still short of what their patients had.
+
+# When each unit's wards came onto the clinical information system. The rollout order was the vendor's and
+# the network's own technical readiness, cabling and device procurement ward by ward, so it runs across
+# sites and across specialties rather than with either: the four cost centres still recording on paper at
+# the export date sit at four different hospitals and in four different specialties. None is stated
+# anywhere to report late; the register carries the date its wards were registered on the system and
+# nothing else.
+CIS_MIGRATION = {
+    "41220": dt.date(2024, 4, 1), "41230": dt.date(2024, 10, 1), "41240": dt.date(2025, 1, 1),
+    "41310": dt.date(2025, 4, 1), "41320": dt.date(2025, 7, 1), "41420": dt.date(2025, 10, 1),
+    "41430": dt.date(2026, 1, 1), "41510": dt.date(2026, 4, 1),
+    "41250": dt.date(2024, 7, 1), "41260": dt.date(2025, 1, 1), "41270": dt.date(2024, 4, 1),
+    "41340": dt.date(2025, 4, 1), "41350": dt.date(2025, 7, 1), "41360": dt.date(2024, 10, 1),
+    "41440": dt.date(2025, 10, 1), "41450": dt.date(2026, 1, 1), "41460": dt.date(2026, 4, 1),
+    "41610": dt.date(2025, 7, 1), "41620": dt.date(2026, 1, 1), "41630": dt.date(2026, 7, 1),
+    "41511": dt.date(2026, 4, 1), "41512": dt.date(2026, 4, 1),
+    # still on paper at the export date, one at each hospital and one in each of four specialties
+    "41210": None, "41330": None, "41410": None, "41520": None,
+}
 IMMATURE = {9: 0, 8: 1, 7: 2, 6: 3}   # quarter index -> how many closes have passed since its own
 # where each unit type's other quarterly indicators sit: deaths in hospital per 1,000 separations and
 # unplanned readmissions within 28 days per 100, on the dashboard beside the complication indicator

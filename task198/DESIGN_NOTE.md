@@ -329,13 +329,24 @@ measured against; one row per move it makes, and the verdict is whether that mov
 | executes every filed rule the pack points at | the register's note states the column is active members as returned by the sponsor; nothing in the pack says a sponsor return may cover more than one of its schemes | miss |
 | matches every control and published figure | the pack ships no membership total, in the register or the trustee statement, so there is no control for the register to fail against | miss |
 
-**What the cracker keeps, stated plainly.** Ask 1's one figure, which is free by design: it is the call's
-own construction at the operation level and sits in the call's population, where the separation line
-forbids any device. Ask 2's four figures, because the schedule's per-case fee is a filed rule and the
-consolidated line charges are exact multiples of it, so a response that executes the schedule recovers the
-count: Ask 2 is a mirror device, legitimate and the thing that buys the leakage bar, and it is not the
-primary. Of Ask 3's twenty figures it keeps the two the master trust carries, whose register figure is a
-single-scheme return and therefore correct, and misses the other eighteen. Solved keep: 7 of 25.
+**What the landing response banks, named figure by figure.** The table above is the cracker sheet proper,
+its moves against Ask 3,
+the primary; it is not the whole measurement. `asks_measure.py` has the cracker keeping **7 of the 25
+graded ask figures**, and these are the seven, with the reason beside each.
+
+| Figure banked by the response that lands the call | Golden | Why it is not a device's to take |
+|---|---|---|
+| the FY2026 breach share for the operation as a whole | 7.7 per cent | Ask 1 is the construction layer. It is computed over exactly the rows the call's own comparison is computed over, where the separation line forbids any device row, so it is free by design (`supplemental-stumping` 2.2: the cracker has it, so it never stands alone). |
+| FY2026 Q1 chargeable cases covered | 1,869 | Ask 2 is a mirror device. The schedule's per-case fee is a filed rule and every consolidated line's charge is an exact multiple of it, so a response that executes the schedule recovers the count. Making the count unrecoverable instead would break law 6 (one handling reproduces truth exactly). |
+| FY2026 Q2 chargeable cases covered | 1,982 | as above |
+| FY2026 Q3 chargeable cases covered | 1,923 | as above |
+| FY2026 Q4 chargeable cases covered | 1,808 | as above |
+| RMT-000 active members | 41,800 | the master trust is the one participating scheme in the graded ten whose register figure is a single-scheme return, so the grouped-return device does not touch it |
+| RMT-000 cases per 1,000 active members | 122.7 | as above |
+
+The mirror keeps three of those seven: Ask 1's figure and the master trust's two. It loses Ask 2's four
+because it counts charge lines as cases, and the other eighteen Ask 3 figures because it takes the
+register's membership. Nothing else in the 25 is kept by either response.
 
 **Pair ceiling:** 39.5, solved on Part 0's weights (38 recommendation and critical components, 7
 instruction-following, 55 asks) with both responses rescored from their own readings and both columns

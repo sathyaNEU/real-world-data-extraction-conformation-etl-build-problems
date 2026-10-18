@@ -1,12 +1,18 @@
 {
   "task": "task196",
   "owner": "oviya13ya",
-  "status": "DRAWING",
-  "stage": 1,
+  "status": "DESIGN",
+  "stage": 2,
   "architecture": 2,
   "objective": "anomaly-detection",
   "wave": 4,
   "card": "banking-credit-financial-risk/fraud-aml-detection, shape 03, gap population, decisive generator G12, gate_g method_or_model_selection, decision quantity_figure, strategy other (capture interference), layer2 estimand_identification / own:contaminated-second-capture",
-  "resume_step": "stage 1 complete: card v2 registered 2026-10-17 at WARN (two older structural matches differentiated, driver similarity 0.07 max). Next: stage 2, DESIGN_NOTE.md plus prompt.txt, gated by precut.py. Held for the coordinator's approval of the redrawn draw.",
-  "notes": "Architecture v1 (insurance experience rating: frequency repeats, severity does not) was redrawn at stage 1 on the coordinator's 10/10 rule 1 finding before any file was cut; v1 sits in the card's lineage with its fate. v2 re-points the decisive quantity onto fraud detection coverage: the scam cases a member firm's own controls never saw, estimated by capture-recapture against the scheme's mule-account register, where most of the overlap exists because the member itself asked the receiving firm to recall the funds. causal_design was the honest strategy label and task197 took it five minutes before this card filed, so the label is other with the mechanism named in the card's notes."
+  "call": "Kelverstone Mutual puts 30 scam cases per million payments on Castlegate Payments for the indemnity year from 1 October 2027, against the 17 its own case register holds and the 22 a two-source estimate on every mule-register match gives.",
+  "resume_step": "stage 2 complete: precut.py exits 0 (50 checks, 0 FAIL, 0 WARN), voice-check.py exits 0 on a 994-character prompt, ceiling.py PASS at 37.4. Next: stage 3 build, starting with the generator (dataset-generation), the pack, the goldens and submission.md.",
+  "gates": {
+    "precut": "PASS 50 checks 0 FAIL 0 WARN",
+    "voice_check": "PASS 994 characters",
+    "pair_ceiling": "37.4 (cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68), mirror leakage 13.2 per cent, measured by generator/ceiling.py"
+  },
+  "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding before any file was cut; v1 sits in the card's lineage. The index is printed to the nearest whole case per million payments because the plain and Chapman two-source forms print 29.8 and 29.7 at one decimal and converge on 30 at the whole case (SF12)."
 }

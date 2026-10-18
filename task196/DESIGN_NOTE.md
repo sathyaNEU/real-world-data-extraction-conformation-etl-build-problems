@@ -54,25 +54,25 @@ The pipeline a competent analyst builds from the question's words and the files'
    scheme year: 400 cases.
 3. Take Castlegate's payments sent from the revised quarterly returns in
    `returns/member_quarterly_returns.xlsx`, converting the thousands column on the pre-2024/25 layout:
-   23.14 million payments.
+   23.04 million payments.
 4. Read the population clause again, see that unrecorded cases are in it, and reach for the pack's second
    sighting of the same cases: `scheme/member_payment_matches.csv`, Castlegate's payments that match an
    account on `scheme/mule_account_register.csv`, 445 matched payments, of which 358 are also in the case
    register and 87 are not.
 5. Run the two-source estimate on those three counts: 400 x 445 / 358 = 497.2 cases.
-6. Divide by the volume and round as the question asks: 497.2 / 23.14 = 21.5 cases per million payments.
+6. Divide by the volume and round as the question asks: 497.2 / 23.04 = 21.6, so 22 cases per million payments.
 7. Build the bridge and the chart from the same two numbers for the other three review-group members, and
    file the index.
 
-**Ends on:** 21.5 cases per million payments (497 cases), and a bridge whose reconciling line reads as the
+**Ends on:** 22 cases per million payments (497.2 cases, 21.6 before rounding), and a bridge whose reconciling line reads as the
 unrecorded cases the matches imply.
 
-**Golden:** 29.8 cases per million payments (690 cases), the two-source estimate run against the 207
+**Golden:** 30 cases per million payments (690.0 cases, 29.95 before rounding), the two-source estimate run against the 207
 registrations that no recall request of Castlegate's preceded, of which 120 are also in its case register.
 
 ## Stump sentence
 
-The solver files 21.5 cases per million payments for Castlegate because it treats every one of the 445
+The solver files 22 cases per million payments for Castlegate because it treats every one of the 445
 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of
 the case, when 238 of the 358 matches that are also its own cases exist only because Castlegate asked the
 receiving firm to return the money after opening the case, so the overlap it divides by is its own work and
@@ -88,7 +88,7 @@ the case count it implies, estimated by capture-recapture against the counterpar
 reporting, with the independence of the two captures tested against the firm's own recall activity, which is
 how fraud and financial-crime analytics sizes what its monitoring missed.
 
-**Swap:** "Castlegate's customers suffered 29.8 scam cases per million payments against the 17.3 its own
+**Swap:** "Castlegate's customers suffered 30 scam cases per million payments against the 17 its own
 register holds, because its systems see 58 per cent of them." Put workplace injury claims at member
 employers or crop hail at member farms in place of scam reimbursements and there is no counterparty
 institution holding a second record of the same loss event, no central register of the accounts that
@@ -113,7 +113,7 @@ independent channel is the 207 mule registrations that no recall request of Cast
 attributing each registration through `members/recall_requests.csv`, not by any rule about registration
 dates.
 
-**Not semantics:** every field read correctly still leaves the easy route on 21.5. The class code, the cover
+**Not semantics:** every field read correctly still leaves the easy route on 22. The class code, the cover
 definition, the payment date, the volume units and the register's status codes are all read right in the
 default path; nothing in the mule register says who caused a registration, the registering party is the
 receiving firm on both the independent and the self-produced rows, and no column separates them.
@@ -121,10 +121,10 @@ receiving firm on both the independent and the self-produced rows, and no column
 **Not rule application:** no filed rule or procedure names a channel pairing, an independence test, an
 estimator or the recall log's role. The standard files the estimand and the evidence base and stops. A solver
 that executes every stated rule in the pack, including the standard's own definitions and the scheme's
-reimbursement rules, files 21.5.
+reimbursement rules, files 22.
 
 **Analyst test:** a strong analyst reads the standard, matches every Castlegate payment to the mule register,
-counts 400 cases, 445 matched payments and 358 in both, runs the two-source estimate and files 21.5 cases
+counts 400 cases, 445 matched payments and 358 in both, runs the two-source estimate and files 22 cases
 per million payments, which is wrong because 238 of those 358 registrations were raised by receiving firms
 only after Castlegate's own recall request, so the two sightings are not independent.
 
@@ -157,16 +157,16 @@ Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hyg
 
 | Rung | 1 filed | 2 schema | 3 reflex | 4 bench | 5 hygiene | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 the two-source estimate on every match (21.5) | the population clause sends the solver looking for a second sighting | the match extract is a header-found join on the payment reference | yes, the first move once unrecorded cases are in scope | none | ties everywhere | one ratio | readable |
-| 1 exclude registrations dated 0 to 2 days after the case (24.4) | nothing | two date columns, one per file | yes, a lag histogram is the independence check | none | no | no | readable |
-| 2 exclude every registration dated after the case (42.4) | nothing | the same two date columns | yes, the thorough version of rung 1 | none | no | no | readable |
-| 3 (decisive) attribute each registration through the member's own recall-request log (29.8) | no clause names the log, independence, a channel pairing or an estimator | no column marks a self-produced registration; the registering party is the receiving firm on both kinds, and the log is a third file joined on the payment reference, then compared on dates | no: every reflex on the obvious chain lands on 21.5, 24.4 or 42.4 | none shipped | the battery's sweeps pass on every rung | no | silent |
+| 0 the two-source estimate on every match (22) | the population clause sends the solver looking for a second sighting | the match extract is a header-found join on the payment reference | yes, the first move once unrecorded cases are in scope | none | ties everywhere | one ratio | readable |
+| 1 exclude registrations dated 0 to 2 days after the case (24) | nothing | two date columns, one per file | yes, a lag histogram is the independence check | none | no | no | readable |
+| 2 exclude every registration dated after the case (43) | nothing | the same two date columns | yes, the thorough version of rung 1 | none | no | no | readable |
+| 3 (decisive) attribute each registration through the member's own recall-request log (30) | no clause names the log, independence, a channel pairing or an estimator | no column marks a self-produced registration; the registering party is the receiving firm on both kinds, and the log is a third file joined on the payment reference, then compared on dates | no: every reflex on the obvious chain lands on 22, 24 or 43 | none shipped | the battery's sweeps pass on every rung | no | silent |
 
 **Why rung 3 is silent when rungs 1 and 2 are not.** The registration-lag spike is meant to be found: 143 of
 Castlegate's 445 matches register within two days of its own case opening, against about seven expected if
 the register were independent of the case, and that pattern is visible from the two date columns alone. It
 tells a solver the captures are dependent, and it does not tell it the estimate: the two constructions it
-supports land at 24.4 and 42.4, and nothing in the pack selects a window between them. Only the recall log
+supports land at 24 and 43, and nothing in the pack selects a window between them. Only the recall log
 attributes each registration to a cause, and the log is unannounced: no sentence points at it, its columns
 are named for what the firm does (`request_sent_date`, `funds_returned`, `destination_firm_type`) and never
 for what the estimate needs, and the standard's evidence-base clause names the case registers and the mule
@@ -176,7 +176,8 @@ register without naming it.
 every visible attribute of the matched payments (channel, destination firm type, value band): 21.3 to 21.9,
 wrong. Trend the recorded counts: 18.1, wrong. Shrink Castlegate's recorded rate toward the book: 18.2,
 wrong. Add the ombudsman file as a third source without the attribution: 22.8, wrong. Run the hygiene
-battery and repair everything it finds: 21.5, unchanged. No reflex reaches 29.8.
+battery and repair everything it finds: 21.6, unchanged. Every figure in this sweep is the value before
+rounding and none of them prints 30.
 
 ## Semantic fork table
 
@@ -186,37 +187,43 @@ battery and repair everything it finds: 21.5, unchanged. No reflex reaches 29.8.
 | SF2 | "its customers" | cases on payments the member's own customers sent | cases where the member received the funds | 4.9 | standard clause 4.2 says "its own customers sent"; the register holds a sending-side flag and the dictionary defines it |
 | SF3 | window attribution | the payment date falls in the scheme year | the case open date, or the notification date | 20.9, 20.4 | standard clause 4.2, "arising from payments its own customers sent in the scheme year" |
 | SF4 | "payments sent" | the revised quarterly return's payments-sent field | faster payments only; payments to new payees only | 25.6, 34.1 | standard clause 4.2 names the return field; the return's own header defines it |
-| SF5 | "whether or not recorded" | the population includes cases no system holds | only recorded cases | 17.3 | standard clause 4.2's own words; a recorded-only reading answers a different question |
+| SF5 | "whether or not recorded" | the population includes cases no system holds | only recorded cases | 17 | standard clause 4.2's own words; a recorded-only reading answers a different question |
 | SF6 | the index year | the indemnity year beginning 1 October 2027 takes the scheme year ended 31 March 2027 | re-measure on the current part-year | not computable, the base is filed as at 31 March 2027 | standard clause 4.3 |
-| SF7 | rounding | one decimal place, once, at the end | per member then averaged | 29.9 | the asking sentence states the rounding once and names the figure it governs |
+| SF7 | rounding | the index to the nearest whole case per million payments, the shares to one decimal, once at the end | rounded per member then averaged; the index carried to one decimal | 30 either way; 29.9 at one decimal | the asking sentence states each rounding once and names the figures it governs, and C1: the index is one ratio per member, so no averaging path exists |
 | SF8 | "a case" | counted once however many payments it covers | counted per payment | 31.1 | standard clause 4.2, "counted once a case however many payments it covers" |
 | SF9 | matched payment | account reference normalised, 445 rows | raw reference, 445 rows | same call | C1: every licensed normalisation (pad, case, strip) selects the same 445 payments and the same 358 cases, asserted on both counts |
 | SF10 | register status | registered and expired registrations count | exclude expired | same call | C1: no matched payment's account carries status expired or withdrawn, asserted at zero |
+| SF12 | the two-source estimate | the plain Lincoln-Petersen form, 400 x 207 / 120 | Chapman's bias-corrected form, 401 x 208 / 121 minus 1 | same call: 688.3 cases, 29.88 per million, printing 30 | C1 asserted on the cut pack: both forms print the same whole-case index, which is why the index is stated to the nearest whole case rather than to one decimal, where they would print 29.8 and 29.7 |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
 
 ## Ladder
 
 | Rung | Analysis | Figure | Dies to |
 |---|---|---|---|
-| none | the recorded register count, the question not answered | 17.3 | the population clause in the standard |
-| 0 | two-source estimate on all 445 matches | 21.5 | the registration-lag spike |
-| 1 | exclude the 0 to 2 day spike window | 24.4 | the member-caused tail: 95 of the 238 register later than two days |
-| 2 | exclude every registration dated after the case | 42.4 | the recall log: 60 of the independent registrations also post-date the case, and the log says no request of Castlegate's preceded them |
-| 3 | attribute through the recall log: 207 independent registrations, 120 of them cases | **29.8** | nothing |
+| none | the recorded register count, the question not answered | 17 (17.36) | the population clause in the standard |
+| 0 | two-source estimate on all 445 matches | 22 (21.58) | the registration-lag spike |
+| 1 | exclude the 0 to 2 day spike window | 24 (24.49) | the member-caused tail: 95 of the 238 register later than two days |
+| 2 | exclude every registration dated after the case | 43 (42.53) | the recall log: 60 of the independent registrations also post-date the case, and the log says no request of Castlegate's preceded them |
+| 3 | attribute through the recall log: 207 independent registrations, 120 of them cases | **30** (29.95) | nothing |
 
-**Position and dominance.** The golden is bracketed: 17.3, 21.5 and 24.4 below, 42.4 above, so no
-half-applied correction lands on it (L5). Nearest wrong cell 24.4, 18.1 per cent away, well above the 6 per
-cent floor; the next is 42.4 at 42.3 per cent. The decisive move is the largest of the four (plus 5.4 against
-plus 4.2 and plus 2.9 for the corrections below it), so it is not the smallest move on the ladder (37's law).
+**Position and dominance.** The golden is bracketed: 17, 22 and 24 below, 43 above, so no half-applied
+correction lands on it (L5). On the values before rounding the nearest wrong cell is 24.49, 18.2 per cent
+away, well above the 6 per cent floor, and the next is 42.53 at 42.0 per cent. The decisive move is the
+largest of the four (plus 5.46 against plus 4.22 and plus 2.91 for the corrections below it), so it is not
+the smallest move on the ladder (37's law). The golden's printed cell is mid-bin: 29.95 against a bin
+centre of 30 and a width of 1, so the distance to the nearest edge is 0.45 against the 0.3 floor.
 
 **Grid.** Four channel constructions x three window attributions (SF3) x two volume readings (SF4) = 24
 cells, every cell computed in `generator/checks.py`, each distinct and each mapped to the sentence it
 violates. The date-only family is a one-parameter family: as the exclusion window widens from two days to
-unbounded the estimate rises monotonically from 24.4 to 42.4 and the integer steps are swept for every whole
-day from 0 to 120, with the assertion that no window prints 29.8, so the golden is reachable only through the
-attribution and not through a date parameter nobody files.
+unbounded the estimate rises monotonically from 24.49 to 42.53. Every whole-day window from 0 to 120 is
+swept in `generator/checks.py`, and the assertion is the one the data can carry: no window a shipped word
+names or a person would reach for prints 30, the sweep returning 24 at two days, 26 at a week, 28 at a
+fortnight, 31 at a month, 33 at sixty days and 43 unbounded. The crossing sits at twenty-five to
+twenty-eight days, which no clause, column or convention in the pack names, so the golden is reachable
+through the attribution and not through a date parameter anybody files.
 
-**Worth, on the graded figure.** The decisive rung moves the graded figure from 24.4 to 29.8 and the graded
+**Worth, on the graded figure.** The decisive rung moves the graded figure from 24 to 30 and the graded
 name is not an entity but the figure itself, so there is no name-without-figure escape (500 v1's finding).
 
 ## Closure table
@@ -232,7 +239,7 @@ name is not an entity but the figure itself, so there is no name-without-figure 
 | 7 | Weighting | none: a count over a count, no pooling across members in the index |
 | 8 | Window length | one scheme year, filed in clause 4.2; the mule register's history is used only to date registrations |
 | 9 | Boundary inclusivity | "preceded" strictly earlier (SF11); C1, nothing on the boundary, asserted at zero same-day pairs |
-| 10 | Rounding path | once at the end to one decimal, in the asking sentence; the case estimate is an exact ratio of integers before the division |
+| 10 | Rounding path | once at the end, the index to the nearest whole case per million payments and the shares to one decimal, both in the asking sentence; the case estimate stays an exact ratio of integers until the division, and the printed unit is set from the estimator family's own spread (SF12) rather than from the quantity's natural precision |
 | 11 | Tie-break | none: one figure per member, no ranking in the call |
 | 12 | Maturity and censoring | the base is as at 31 March 2027 and the index year mapping is filed, so late notification cannot move it; asserted that no row in the quarter-to-30-June file arises from a payment inside the call's window |
 | 13 | Order of operations | the bridge's presentation order is filed in the mutual's reporting template; the index is one ratio, order-free |
@@ -250,11 +257,11 @@ name is not an entity but the figure itself, so there is no name-without-figure 
 
 A reader who executes clause 4.2 and 4.3 word for word, inferring nothing, must estimate the incidence of
 cases the member's systems may not hold, from the two sources the clause names, and every reading of every
-term in the fork table returns 29.8: the recorded-only reading is refused by the clause's own words, the
+term in the fork table returns 30: the recorded-only reading is refused by the clause's own words, the
 three window readings and the two volume readings are each refused by a quoted sentence, and the
 normalisation, status and same-day readings converge on identical row counts. The method is forced by the
 data, not by a filed criterion: the only parameter-free construction of an independent capture channel is
-the recall log's attribution, the two date-only constructions are computed at 24.4 and 42.4 and neither is
+the recall log's attribution, the two date-only constructions are computed at 24 and 43 and neither is
 the golden, and the one-parameter family between them has no shipped value selecting its parameter, asserted
 over every whole-day window from 0 to 120. The adjacent death on file is **89 v6, recovering what an
 instrument could not observe, where the judge repaired the instrument**; this build differs in that the
@@ -276,7 +283,7 @@ output (the 400 recorded cases) is not repaired by any rung: every rung reads th
   plausible coverage proxy that the solution never reads; it is uncorrelated with detection coverage in the
   shipped data by construction, asserted, so it cannot be used to back into the answer.
 - No corpus, no back-test, no closed-year outturn, no prior index, no worked example. Nothing in the pack
-  states or implies 21.5, 24.4, 29.8 or 42.4.
+  states or implies 22, 24, 30 or 43, or any of the values behind them.
 
 ## Ask sheet
 
@@ -299,18 +306,30 @@ rubric's), and the recorded count appears once, as the opening line of the named
 twelve-member table still ships in the workbook, carrying the recorded column as context the write-up does
 not grade. The script's sweep prints all five sizings: 45.4, 39.4, 44.3, **37.4** and 32.9.
 
+**The ceiling is not bought with device mass.** Three device asks is the floor the ask spec allows and
+this build has exactly three, each wide rather than stacked, so the 2.6 of slack under the gate comes from
+the construction-layer cut and not from extra devices. The alternative sizing is on the record and costs
+2.0: grading all twelve members' indices rather than the review group's four measures 39.4, which clears the
+gate, and it was not taken because a ceiling that only just clears rests on every device holding, while the
+review group of four is the indemnity standard's own triennial scoping rather than a number chosen for the
+arithmetic. The twelve-member table still ships as ungraded context either way.
+
 **Consequences of the cut, checked.** No graded figure outside the construction layer quotes a per-member
 recorded count; no ask's wording presupposes a column the pack no longer carries, because the cut removed a
 graded figure and no file or column; and the deliverable keeps the column, so nothing in the workbook or the
-csv is left pointing at a figure the write-up does not state. Re-checked at stage 3 against the goldens and
-`submission.md` before `figures_check.py` runs.
+csv is left pointing at a figure the write-up does not state. The chart's recorded series is not the
+cut figure returning: it covers the review group's four members, it is one of the six named chart parts
+counted in C4, and the cut removed a graded table column rather than any column of the pack, so no ask can
+presuppose data the bundle no longer carries. Re-checked at stage 3 against the goldens and `submission.md`
+before `figures_check.py` runs, together with the rule that every graded figure is printed at the precision
+its own asking sentence states, which no script checks.
 
 ### The construction layer
 
 | id | Figures | Home (H18) | Landed call | Rung 2 response |
-| C1 | the index for each of the four review-group members, one decimal | the call's own output on the trustees' review group | keeps 4 | miss |
+| C1 | the index for each of the four review-group members, to the nearest whole case per million payments | the call's own output on the trustees' review group | keeps 4 | miss |
 | C3 | the named member's bridge, one line per reconciling item, three lines | the call's working | keeps 3 | keeps 3 |
-| C4 | the chart's named parts: the two series, the ordering, the highlighted member, the gap annotation, the title stating the finding | the decision read at a glance | keeps 6 | keeps 6 |
+| C4 | the review group's chart, named parts: the two series, the ordering, the highlighted member, the gap annotation, the title stating the finding | the decision read at a glance | keeps 6 | keeps 6 |
 
 ### The device asks
 
@@ -370,7 +389,7 @@ analysis, so the component measures the work.
   deciding quantity was a pure premium with component-wise credibility, which is actuarial science's own
   instrument and not fraud and AML detection's, so the client's swap test passed with workplace injury claims
   or crop hail in place of scam reimbursements and the domain read as a backdrop (10/10 rule 1). Its ladder
-  arithmetic (17.3, 21.5-equivalents and a 1.56x gap) is spent and its lineage sits on the card.
+  arithmetic (a 1.56x gap between the naive and the correct rate) is spent and its lineage sits on the card.
 - **The actuarial pairing itself** (actuarial-science-insurance / reserving-development-triangles, the
   assigned ground): no task type in that domain serves anomaly detection, so `guard.py check` blocks the draw
   as `three_rules.task_type` and the three alternates named in the assignment (mortality-longevity,
@@ -391,7 +410,7 @@ analysis, so the component measures the work.
   test 2 kills. The registering party is the receiving firm on both kinds of row, so no column can separate
   them and the recall log is the only route.
 - **A date rule as the golden** (exclude registrations dated after the member's own case): kept as rung 2 at
-  42.4 rather than as the answer, because the member-caused registrations run out to seventy days and sixty
+  43 rather than as the answer, because the member-caused registrations run out to seventy days and sixty
   of the independent ones post-date the case, so no date rule recovers the channel.
 - **Grading all twelve members' indices and the recorded-count column**: measured 45.4 and 44.3 in
   `generator/ceiling.py`, over the gate, and cut to the review group of four with the recorded column folded

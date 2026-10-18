@@ -74,7 +74,73 @@ answered in `## Draw`. One axis and one persona were redrawn at the guard before
 three structural neighbours are differentiated on the card.
 
 
-## ARCHITECTURE 3 RE-ROOT (stage 1, the draw)
+## Draw
+
+**Pairing.** Domain general statistics and data science, task type exploratory data analysis and
+distribution assessment, objective anomaly detection and diagnostics. The decision-maker is the publisher's
+head of editorial operations; the forum is the executive team; the forcing event is the quarter's close, at
+which the process review slate is set. Prompt shape 01, a ranked list under a cap: which three of the twelve
+subject desks the quarter's editorial process review covers.
+
+**Shape arithmetic.** Provisional and counted properly at stage 2, once the ladder is measured: the
+recommendation side is each desk's share of manuscripts past the standard, the three as a set and the
+fourth with how far short it falls. The ask layer is drawn at stage 2 against the new decisive step; none
+of architecture 2's 84 criteria carry over, because its devices lived in files this world does not have.
+
+**Data-native sentence.** The submissions platform's reporting view holds only manuscripts that are still
+live, so the only record of how long review takes is a run of Monday extracts of everything under review
+that day, and a manuscript appears in it once for every week it was under review, which means the record
+holds each desk's duration distribution weighted by duration rather than the distribution itself.
+
+**Sources read, one line each.** `fingerprint`: the re-root procedure, `mechanisms --objective
+anomaly-detection` read in full over 31 builds before the direction was chosen, the card's lineage and the
+guard runs. `stumping` 1.2 and 1.4: the WHAT screen below and the gap. `guide-to-prompt`: the pairing and
+the shape. The client's 10/10 rules: the three-rules block, written out at stage 2. Architecture 3's own
+feasibility numbers, which are why this draw has no fitted quantity in it.
+
+**The WHAT screen (`stumping` 1.2), answered before the default path.** Decisive step: estimate each desk's
+own distribution of first-decision times from a record that contains an item in proportion to that item's
+own duration. The five parts of the estimand, each to be filed by the editorial standard and the prompt:
+**population**, the manuscripts each desk received inside the stated window; **outcome**, the working days
+from submission to first decision; **window**, the stated quarter; **unit**, one subject desk;
+**comparison**, the house standard the share is taken against, and the ranking across desks. The decisive
+step settles none of them. It is not a choice of population for the estimand, which is filed: it is the
+estimator of a filed share, where the only record of the quantity is a length-biased sample of it.
+
+**Why the easy route is not a reading and the right one is not a withheld rule.** No shipped sentence says
+how to estimate the share, says the snapshots are unrepresentative, or names a weight. A solver who reads
+every column correctly, reconciles the platform's identifiers, dedupes the snapshot rows to distinct
+manuscripts and executes every clause of the standard still computes the share on the set of manuscripts
+the snapshots contain, and that set is sampled in proportion to review time. The work is seeing the
+mechanism, which `CLAUDE.md` counts as the data's real structure and the field counts as length-biased
+sampling.
+
+**Why this draw answers architecture 3's death, which stage 2 must prove rather than assume.** The
+correction is exact arithmetic on fully observed durations, a reciprocal-duration weight, so there is no
+fitted parameter and no fit space to choose. The first thing stage 2 does, before a row is cut, is
+enumerate every route the data does not close and check each graded figure's determinacy against the
+printed unit, which is the rule this slot earned from architecture 3.
+
+**Guard WARNs answered.** `repeat.gate_g` and `overuse.gate_g`, method_or_model_selection against task190
+and in seven of the last twelve: the key is the honest one, two defensible estimators of one filed share
+with the record's own observation mechanism pinning which, and the mechanism is unlike task190's, where a
+detector setting is worth what each episode still has ahead of it when that setting's alert fires.
+`repeat.question_form`, which against task190 and task194: the decision is a pick of three desks from
+twelve, so the form comes from the decision. `overuse.objective`, anomaly detection in five of the last
+twelve: the objective is the slot's own and is not redrawn at a re-root, and the diagnostics content here,
+whether a desk's distribution is genuinely out of line or an artefact of how the record was produced, is
+not the content of the others. The NOTE is differentiated on the card against task139, task265's
+architecture 1 and task452's architecture 2, the nearest of which, task265, is answered at length because
+it is the closest build on file.
+
+**Redrawn at the guard before registration.** The geography, United Kingdom to the Netherlands, on
+`repeat.geography` against task196: scholarly publishing is at least as plausible there and the axis was
+spent. One persona, on `people.first` twice over, Victor against task459 and Justin against task105, until
+the drawn list gave a clean set. And `scoring_unit`, which the card had as free text the vocabulary does
+not hold.
+
+
+## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
 pack offered exactly one place to get one, labelled in the equipment log's own words as the weekly MCC
@@ -698,12 +764,13 @@ under the near threshold.
 the document the engineer works from is the site noise management plan that files the estimand, and the
 complaints register is a declared distractor the call reads for nothing.
 
-## ARCHITECTURE 2 (archived, replaced at stage 2)
+## ARCHITECTURE 2 (archived: spent at stage 4, pack removed at architecture 4's draw)
 
-Everything from here to `## Pre-ship check` is architecture 2's design and build record, kept so the
-re-root can be read against what it replaces. It is not architecture 3's design and `precut.py` is not run
-against it. Architecture 2's pack no longer exists; its evidence is in `determinism_check_report.md` and in
-`leak_check_report.md` under `## Solver's-eye read`.
+Everything from here on is architecture 2's design and build record, kept so the two re-roots can be read
+against what they replaced. Every heading in it is an `### Archived` heading that no gate reads.
+Architecture 2's pack, generator, goldens, prompt and submission were removed when architecture 4's draw
+registered; its evidence is in `determinism_check_report.md` and in `leak_check_report.md` under
+`## Solver's-eye read`.
 
 ### Archived, architecture 2: Default path
 

@@ -4,7 +4,7 @@ Everything here is deterministic given SEED. The shipped pack is cut from these 
 graded figures are computed from the same arrays, so target/, golden/ and figures.json agree by
 construction.
 """
-import numpy as np, datetime as dt
+import numpy as np, datetime as dt, hashlib
 
 SEED = 1970417
 WINDOW_START = dt.date(2026, 9, 21)
@@ -24,47 +24,47 @@ DAY = 86400
 # site's own intraday position adds through that span, held until h_reset. ramp_s: the realised ramp
 # duration of the site's controller; no shipped document states it.
 SITES = [
-    dict(id="VKF-OOS", name="Oosterhout", kind="battery", pmax=12.0, cap=6.0, gain=0.993,
+    dict(id="VKF-OOS", name="Oosterhout", kind="battery", pmax=12.0, cap=6.0, gain=1.005699, gain_dn=0.995487,
          tau=4.0, ramp_s=85, blocks=[1, 3],
          pts=[(0, 0), (5.0, 0), (5.5, 4.8), (9.5, 4.8), (9.75, 0), (10.5, -6.4), (14.5, -6.4),
               (15.5, 0), (17.0, 8.4), (19.5, 8.4), (20.5, 0), (24, 0)],
          stair=[(5.5, 7.75, -0.46, 9.75)]),
-    dict(id="VKF-ZWT", name="Zwartewater", kind="battery", pmax=20.0, cap=8.0, gain=0.979,
+    dict(id="VKF-ZWT", name="Zwartewater", kind="battery", pmax=20.0, cap=8.0, gain=0.984600, gain_dn=0.979666,
          tau=3.0, ramp_s=80, blocks=[2],
          pts=[(0, 0), (5.25, 0), (5.75, 13.2), (11.25, 13.2), (11.5, -9.6), (15.0, -9.6),
               (16.0, 0), (17.5, 14.0), (20.0, 14.0), (21.0, 0), (24, 0)],
          stair=[(8.0, 11.25, -1.52, 11.5)]),
-    dict(id="VKF-HGZ", name="Hoogezand", kind="gas_engine", pmax=9.0, cap=3.0, gain=0.952,
+    dict(id="VKF-HGZ", name="Hoogezand", kind="gas_engine", pmax=9.0, cap=3.0, gain=0.949044, gain_dn=0.953950,
          tau=6.0, ramp_s=185, blocks=[4, 5],
          pts=[(0, 1.2), (6.0, 1.2), (6.75, 6.4), (9.5, 6.4), (10.25, 1.2), (16.25, 1.2),
               (17.0, 3.6), (21.75, 3.6), (22.0, 1.2), (24, 1.2)],
          stair=[(17.0, 19.75, 0.20, 22.0)]),
-    dict(id="VKF-KPV", name="Kampvliet", kind="battery", pmax=10.0, cap=5.0, gain=0.762,
+    dict(id="VKF-KPV", name="Kampvliet", kind="battery", pmax=10.0, cap=5.0, gain=0.759776, gain_dn=0.766838,
          tau=4.0, ramp_s=90, blocks=[4],
          pts=[(0, 0), (6.75, 0), (7.25, 4.4), (9.25, 4.4), (10.0, 0), (11.0, -5.2), (14.0, -5.2),
               (15.0, 0), (16.0, 0.6), (20.0, 0.6), (20.75, 0), (24, 0)],
          stair=[(16.0, 18.75, 0.76, 20.75)]),
-    dict(id="VKF-MPD", name="Meppelerdiep", kind="gas_engine", pmax=6.0, cap=2.0, gain=1.028,
+    dict(id="VKF-MPD", name="Meppelerdiep", kind="gas_engine", pmax=6.0, cap=2.0, gain=1.044489, gain_dn=1.001239,
          tau=7.0, ramp_s=200, blocks=[1],
          pts=[(0, 0.8), (5.5, 0.8), (6.25, 3.2), (10.0, 3.2), (10.75, 0.8), (17.0, 0.8),
               (17.75, 5.1), (21.5, 5.1), (22.25, 0.8), (24, 0.8)],
          stair=[(6.25, 7.75, 0.34, 10.75)]),
-    dict(id="VKF-NWV", name="Nieuwveen", kind="battery", pmax=15.0, cap=6.0, gain=0.944,
+    dict(id="VKF-NWV", name="Nieuwveen", kind="battery", pmax=15.0, cap=6.0, gain=0.941029, gain_dn=0.945317,
          tau=3.5, ramp_s=95, blocks=[1, 2],
          pts=[(0, 0), (1.0, -4.8), (4.0, -4.8), (5.0, 0), (6.0, 5.4), (9.5, 5.4), (10.0, 0),
               (11.5, -7.2), (14.5, -7.2), (15.5, 0), (17.5, 9.6), (20.0, 9.6), (21.0, 0), (24, 0)],
          stair=[(6.0, 9.25, -0.11, 10.0)]),
-    dict(id="VKF-TRB", name="Terborgh", kind="industrial_load", pmax=8.0, cap=3.0, gain=1.011,
+    dict(id="VKF-TRB", name="Terborgh", kind="industrial_load", pmax=8.0, cap=3.0, gain=1.014436, gain_dn=1.029916,
          tau=5.0, ramp_s=300, blocks=[2],
          pts=[(0, -2.1), (5.75, -2.1), (6.0, -7.4), (13.75, -7.4), (14.0, -4.6), (21.75, -4.6),
               (22.0, -2.1), (24, -2.1)],
          stair=[(8.0, 10.0, 0.63, 13.75)]),
-    dict(id="VKF-DLK", name="Dollardkust", kind="battery", pmax=25.0, cap=10.0, gain=0.966,
+    dict(id="VKF-DLK", name="Dollardkust", kind="battery", pmax=25.0, cap=10.0, gain=0.965506, gain_dn=0.958673,
          tau=3.0, ramp_s=100, blocks=[4, 0],
          pts=[(0, 0), (0.5, -12.0), (4.5, -12.0), (5.5, 0), (7.0, 9.0), (9.0, 9.0), (10.0, 0),
               (11.0, -14.0), (15.0, -14.0), (16.0, 2.5), (20.0, 2.5), (21.0, 0), (24, 0)],
          stair=[(16.0, 19.75, 0.34, 21.0)]),
-    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.906,
+    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.901159, gain_dn=0.904686,
          tau=6.5, ramp_s=190, blocks=[4],
          pts=[(0, 1.0), (6.25, 1.0), (7.0, 5.1), (9.75, 5.1), (10.5, 1.0), (16.0, 0.8),
               (21.25, 0.8), (22.25, 0.8), (24, 1.0)],
@@ -120,11 +120,14 @@ DFD_K = 0.086        # Hz per unit of normalised ramp
 DFD_PEAK_S = 80      # seconds after the boundary at which the deviation peaks
 DFD_LEN_S = 160
 
+def _stable(*key):
+    """A hash that does not move between processes, so the pack rebuilds byte for byte."""
+    raw = "|".join(str(k) for k in key).encode("utf-8")
+    return int.from_bytes(hashlib.blake2b(raw, digest_size=8).digest(), "big")
+
+
 def _rng(*key):
-    h = 0
-    for k in key:
-        h = (h * 1000003 + hash(k)) % (2**31 - 1)
-    return np.random.RandomState((SEED + h) % (2**32 - 1))
+    return np.random.RandomState((SEED + _stable(*key)) % (2**32 - 1))
 
 def dates():
     d, out = WINDOW_START, []
@@ -224,27 +227,32 @@ def contracted(site, t_local_s, d=None):
         out |= (h >= lo) & (h < hi)
     return out
 
+_fcr_gate = None            # build.py installs the reserve-availability gate here
+
+
 def site_power(site, d, f, prog, lo, hi):
     """Net active power in MW for local seconds [lo, hi), from the trajectory, the lagged FCR
     response and telemetry noise."""
     t = np.arange(lo, hi)
     base = traj(site, prog, t)
-    req = required(site, f[lo:hi]) * contracted(site, t, d)
-    g = site["gain"]
+    gate = _fcr_gate(site, d, t) if _fcr_gate else contracted(site, t, d)
+    req = required(site, f[lo:hi]) * gate
+    gu, gd = site["gain"], site.get("gain_dn", site["gain"])
     a = np.exp(-1.0 / site["tau"])
     resp = np.zeros(len(t))
     # warm start: run the lag from 400 s before the window so the state is right
     pre_lo = max(0, lo - 400)
     tp = np.arange(pre_lo, lo)
-    req_pre = required(site, f[pre_lo:lo]) * contracted(site, tp, d)
+    gate_pre = _fcr_gate(site, d, tp) if _fcr_gate else contracted(site, tp, d)
+    req_pre = required(site, f[pre_lo:lo]) * gate_pre
     v = 0.0
     for x in req_pre:
-        v = a * v + (1 - a) * g * x
+        v = a * v + (1 - a) * (gu if x >= 0 else gd) * x
     for i, x in enumerate(req):
-        v = a * v + (1 - a) * g * x
+        v = a * v + (1 - a) * (gu if x >= 0 else gd) * x
         resp[i] = v
     r = _rng("tel", site["id"], d.isoformat(), int(lo))
-    noise = r.normal(0, 0.013, len(t)) + 0.004 * np.sin(t / 17.0 + hash(site["id"]) % 7)
+    noise = r.normal(0, 0.013, len(t)) + 0.004 * np.sin(t / 17.0 + _stable(site["id"]) % 7)
     return base + resp + noise
 
 # --- episodes ----------------------------------------------------------------------------------
