@@ -9,7 +9,7 @@
 
 ## 2. Critical Components
 
-1. Funds whose first year called less than 8 per cent of commitment: **36** of the 172 earlier funds and **12** of the 14 programme funds.
+1. Funds that called less than 8 per cent of commitment in their first year: **36 of the 172** earlier funds and **12 of the 14** programme funds.
 2. Capital calls expected in 2027: **$425 million** (to the nearest $25 million).
 3. By strategy: buyout **$175 million**, growth equity **$100 million**, venture capital **$75 million**, private credit **$75 million**.
 

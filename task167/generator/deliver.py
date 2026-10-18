@@ -428,9 +428,9 @@ def submission(fig):
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. Funds whose first year called less than %d per cent of commitment: **%d** of the %d earlier funds and "
-             "**%d** of the %d programme funds." % (fig["first_year_gap_pct"][0], fig["history_line_funds"],
-                                                   fig["history_funds"], fig["programme_line_funds"], fig["programme_funds"]))
+    L.append("1. Funds that called less than %d per cent of commitment in their first year: **%d of the %d** earlier funds "
+             "and **%d of the %d** programme funds." % (fig["first_year_gap_pct"][0], fig["history_line_funds"],
+                                                       fig["history_funds"], fig["programme_line_funds"], fig["programme_funds"]))
     L.append("2. Capital calls expected in 2027: **$%d million** (to the nearest $25 million)." % fig["expected_calls_total_musd"])
     L.append("3. By strategy: buyout **$%d million**, growth equity **$%d million**, venture capital **$%d million**, private "
              "credit **$%d million**." % (e["Buyout"], e["Growth equity"], e["Venture capital"], e["Private credit"]))

@@ -50,8 +50,8 @@
   {
    "path": "data_dictionary.xlsx",
    "format": "xlsx",
-   "bytes": 8036,
-   "rows": 33,
+   "bytes": 8153,
+   "rows": 34,
    "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation investment office, data dictionary",
    "date": "2027-01-14",
    "license": "CC0-1.0 (original work, constructed for this task)"
