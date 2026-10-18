@@ -1,0 +1,90 @@
+{
+  "task": "task244",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 4, seed DQ17 (which coding categories trip the reinterview quality alert); the seed's world (a statistics office's reinterview quality check on coded categories), decision (which published categories go back for review) and quantity (net against gross classification error) kept; its net-against-gross pitfall is a definition reading (data semantics) and the coding world's analytical steps are spent in this lane (coder variance by task228's clustered variance, reference error by task246, composition by task230 and task242), so the pitfall is re-found in the labour force survey's panel: misclassification at both ends of a matched quarter-to-quarter move",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a state bureau of statistics' quality check on the labour market flows its quarterly labour force survey publishes for each survey district: which district job-finding and job-loss rates carry the classification-error warning in the 2027 annual flows release, judged from the supervisors' reconciled reinterview",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "other",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the bureau's Director of Labour and Social Statistics, who signs the quality notes on each release for its release clearance committee",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "the quarterly labour force survey's person file for the five quarters Q4 2026 to Q4 2027",
+    "rows": 0,
+    "entity": "one person aged 15 and over interviewed in one quarter (district, household, line, rotation group, sex, age, weight, the job, search and availability items, derived status)",
+    "grain": "person x quarter",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "period_close",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Nigeria, a fictional state in the south-west (its bureau of statistics, survey districts, towns and people are fictional; real ILO labour force definitions and real labour-flow methods)",
+    "currency": "NGN",
+    "org_type": "state bureau of statistics running a quarterly rotating-panel labour force survey",
+    "invented_names": [
+      "Esinmi State",
+      "Esinmi State Bureau of Statistics",
+      "Esinmi Labour Force Survey"
+    ],
+    "people": [
+      "Atinuke Adebisi",
+      "Babasola Oginni",
+      "Comfort Olawale",
+      "Ronke Shekoni"
+    ]
+  },
+  "deliverables": [
+    "elfs_2027_flows_quality.xlsx",
+    "elfs_2027_flows_note.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the share of the moves a two-period record counts from one state to another that are not real moves, when each period's state is read with an error measured against reconciled re-readings; because most units stay in a large state, its members misread in either period supply counted moves into and out of the small states, so multiplying the two ends' predictive values leaves most of those moves in, and only inverting the misreading at both ends against the full table of stocks gives the real moves.",
+  "driver_concrete": "Each survey district's 2027 job-finding and job-loss rates are read through the supervisors' reconciled reinterview, whose misclassification matrix is inverted at both quarters of every matched pair to give the true flows, so the share of a published flow's counted moves that are not real moves is one less the true flow times the two statuses' correct-reading rates over the published flow; employed persons misrecorded as unemployed in one of the two quarters put a third or more of the counted job losses, and of the job findings where unemployment is low, outside any real move.",
+  "stump": "A competent solver takes each status's predictive value from the reinterview (the share of persons recorded in it whom reconciliation keeps there), multiplies the origin's and the destination's values and finds about a sixth of every flow's counted moves unreal, so it puts no published rate under the warning; the step that lands it there is treating the two ends of a counted move as independent draws from the recorded stocks, when a counted move is far likelier than a random record to be a misreading of a person who stayed put.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read and every rule applied, the natural route multiplies the reinterview's predictive values of the origin and destination statuses (or takes one less the product of their correct-reading rates) and puts every flow near 15 to 20 per cent unreal, so no rate carries the warning; inverting the reinterview's misclassification matrix at both quarters gives the true flows and puts about half of the 24 published rates at a third or more.",
+  "domain_test": "Survey research, labour force survey measurement error: the call turns on the true quarter-to-quarter flows between employment, unemployment and inactivity, which labour statisticians recover by inverting the reconciled reinterview's misclassification matrix at both ends of each matched transition; with another field's nouns (hospital transfers, account upgrades) there is no rotating panel reading a persistent status twice and no reconciled reinterview, so the spurious moves out of the large employed stock that decide the call do not exist.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:true-flows-by-inverting-misclassification-at-both-ends",
+  "layer1": [
+    "the quarterly person file's rotation groups, the outgoing group not due to be matched in the next quarter",
+    "person lines re-enumerated when a household splits between quarters, so matching runs on the roster's own keys",
+    "labour force status derived from the job, search and availability items under the ILO rules, with future job starters",
+    "the reinterview's unreconciled and reconciled statuses, with reinterviews completed outside the window",
+    "published flows tables in thousands of persons on the rotation-group weights",
+    "a survey district boundary change part-way through the year"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-18 against task168, task167 and task246 (shape other and 14, strategy decomposition_attribution, population_selection and forecast_method_backtest, artifacts filed_standard, close_out_summary and monitoring_export, roles capacity_planner, compliance_or_audit and programme_officer, forums executive_team, board_of_directors and operations_desk, forcing events season_or_peak, vote_or_meeting and other, org families other, foundation_or_funder and local_government all banned). stump_strategy other: the decisive move is a misclassification inversion at both ends of a transition (regression to the mean from classification error), which no strategy key names. gold_standard_subsample: the reconciled reinterview is the gold standard; task470's ban has lapsed.",
+  "registered": "2026-10-18T10:12:14Z"
+}

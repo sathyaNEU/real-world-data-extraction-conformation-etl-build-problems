@@ -1,13 +1,13 @@
 {
   "task": "task244",
   "owner": "perssathya",
-  "status": "PAUSED",
-  "domain": "",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
   "objective": "data-quality-monitoring",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-18",
-  "stump": "",
+  "stump": "Multiplying the reinterview's predictive values of a flow's origin and destination statuses puts about a sixth of every published flow's counted moves outside a real move and files no warning; inverting the reconciled reinterview's misclassification matrix at both quarters of each matched pair gives the true flows and puts about half of the 24 district job-finding and job-loss rates at a third or more.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 1 draw, seed DQ17 (which coding categories trip the reinterview quality alert): every honest framing of the seed's world measures coding quality on a reinterview or recoding subsample, calibration form gold_standard_subsample, which task470 (another lane, registered 2026-10-18T00:06) bans until it leaves the last three draws; the seed's survey and census-register pairing is also banned against task243. Resume the draw once task470 is out of the window (after task245 and task246, or any two later draws elsewhere), in a DQ-serving task type outside survey research; task245 is drawn meanwhile.",
+  "resume": "stage 2 design: the simulator (rotating-panel labour force survey, 12 districts, reconciled reinterview) tuned so the inverted-matrix warning set clears the threshold with margin under every reading and the predictive-value routes file none; then the asks, the fork table, the closure, the prompt and precut.",
   "approved": null,
   "delivered": null,
   "portal": null,
