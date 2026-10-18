@@ -835,6 +835,141 @@ correction is common to every candidate and answers whether, while each of the t
 above needed a correction that differs by candidate, and all three ways of making it differ are
 collinear with a column the pack ships.
 
+### Candidate 9, a rank verified, killed on the determinacy criterion (2026-10-18)
+
+(Architecture 9, screen 4, `wave6/w6_201b/screen4.py`, run twice byte-identical on a designed clean
+truth before any file was cut. The object is the last one `stumping` Part 3 names for selected-unit
+ground that task191 does not already hold: a simultaneous statement about which units' ranks the
+evidence determines.) The determinacy geometry was priced in parallel on other ground and does **not**
+close the object (120 adjacent pairs over 20 redraws: 73 more than ten family-spreads apart, 1 under
+one spread, and 46 in the live middle, median normalised gap 12.30), so this screen was spent on the
+one question left open: can a rank call be shaped so that no certainty bar is needed at all? **No,
+and the answer is an enumeration rather than one instance's measurement.** A rank statement has
+content only through a determinacy criterion, and a criterion is one of exactly four things, because
+"verified" means "determined under a stated admissible set" and an admissible set is either filed,
+recorded, or the estimator family itself. Each was built and measured on 14 units ranked into a
+worst-three set, over 20 redraws:
+
+- **A probability bar** is a filed level and therefore a filed method (`stumping` 2.1, test 1), and it
+  is degenerate here besides: the Bonferroni pairwise certified set is **empty at all four of 0.80,
+  0.90, 0.95 and 0.99** on the measured cut, and the set moves with the filed level in only 3 of 20
+  seeds. So the graded object is the empty set most of the time and a filed number the rest.
+- **Records-fixed bounds** (disclosure banding) make it exact interval arithmetic on shipped bounds:
+  one comparison of a lower bound against the fourth largest upper bound, **0 estimates**, which is
+  rule application.
+- **A filed materiality tolerance** is that same arithmetic plus a shipped number, and it agreed with
+  the plain sort of the point estimates in 8 of 20 seeds besides.
+- **Unanimity across the licensed estimator family** is the only criterion whose content is
+  analytical, and it dies twice. The certified set **is the plain sort in 18 of 20 seeds**, so nine
+  times in ten it adds nothing a sorted column has not already added; and where it does have content
+  it has it exactly where the call is not determinate, with
+  **corr(distinct certified sets across the family, positions left undetermined) = +1.0000** and a
+  mean of **1.10 distinct sets of 5** against the 1.00 `stumping` 1.2 permits.
+
+**Rule earned:** removing the bar from a rank statement does not remove its determinacy criterion, it
+relocates the criterion into the records, where it becomes arithmetic; and the one relocation that
+keeps analytical content puts the criterion's content and the designation screen's refusal on the
+same number, at a correlation of exactly one. So **neither of the two non-level objects `stumping`
+Part 3 names for selected-unit ground is drawable beyond task191's**, and that list is exhausted
+rather than half spent.
+
+### Candidate 10, an authority's refusal propensity under selection into a voluntary register, killed on measurement (2026-10-18)
+
+(Architecture 9, screen 5, first half, `wave6/w6_201b/screen5.py`, run twice byte-identical. Cell
+re-rooted for this candidate to `political-science-public-policy` /
+`conflict-protest-event-data-analysis`, objective anomaly-detection, drawn by the inverted procedure
+`stumping` Part 3 prescribes where three screens close a cell: the file first, then the quantity that
+file forces, and only then the field's method for it. Labelled candidate 9 inside the script.)
+**Forcing file: the interior ministry's assembly notification register.** What it pins that no other
+file in this world pins: which assemblies were *put to* the authority, so it is the only record of
+the authority's own decisions, as against the observatory's log, which records what happened.
+**Quantity it forces:** the authority's latent refusal propensity per district, unobserved because
+the observed refusal rate is conditioned on a notification decision that responds to the propensity
+itself. Organisers who expect refusal do not notify, so the notified pool is skimmed toward
+permittable assemblies and the observed rate understates the propensity most exactly where it is
+highest, which means the harshest district posts the mildest rate. It avoids this cell's two spent
+drivers by construction, because the selection is organisers' behaviour and not whether an event
+entered a record.
+
+The easy route files a wrong answer in **14 of 20 seeds**, which is the half that works. It dies on
+the other half, three times over. **The decisive route reaches the truth in only 6 of 20 seeds**,
+worse than two plain routes, because the selection correction has to be solved per district off two
+counts and injects more noise than the bias it removes (`stumping` Part 3, price the estimator's own
+standard error). **The selection's own magnitude is a shipped column:**
+**corr(notification rate, latent propensity) = -0.9915** on the measured cut and **-0.9681** over 20
+seeds, range -0.9898 to -0.8942, so ranking districts by the lowest take-up against the published
+roster of registered organisers reaches the truth **13 of 20**, more than twice the decisive route,
+and the deterred share does the same at 13 of 20. **And the unexposed subset publishes it too:** the
+first-time notifiers' refusal rate, one filter and one divide, reaches it 7 of 20 against the easy
+route's 6, which is `stumping` 1.2's common-exposure subset screen fired in its own words. **Rule
+earned:** a decisive step that corrects for selection into a voluntary register cannot hold where the
+register's take-up rate is computable, because the take-up rate **is** the selection's magnitude and
+is one divide against a published roster; withholding the roster removes the denominator the
+correction itself needs, so it is the same single dial from both ends. This is `stumping` 1.2b's "the
+region where the signal vanishes publishes the nuisance" with the region replaced by the mechanism's
+own intensity.
+
+### Candidate 11, a district's count against its own opportunity structure, killed on measurement (2026-10-18)
+
+(Architecture 9, screen 5, second half, same cell and same inverted procedure. Labelled candidate 10
+inside the script.) **Forcing file: the occasion calendar**, the dated verdict days, anniversaries
+and council votes, with a second file pinning which districts each occasion reaches. What it pins
+that nothing else pins: when and where assembly was scheduled to be possible. **Quantity it forces:**
+a district's expected assembly count under its own opportunity structure, as an exact weighted sum
+over the occasions that reach it, forced by arithmetic and not by a fit, which is the shape
+`stumping` 1.6a records as the one that has passed a judge at Gate F strong. The anomaly is the
+propensity and not the count, and the naive route compares districts whose occasion exposure inside
+the window differed.
+
+Dead on four measurements. **The plain route beats the designed one:** count per occasion touched,
+one join and one divide with the weights thrown away, reaches the truth **13 of 20** against the
+decisive weighted-exposure route's **12 of 20**. **The weights are decoration:**
+**corr(weighted exposure, occasions touched) = +0.9305** on the cut and **+0.9407** over 20 seeds,
+range +0.8218 to +0.9894. **There is no ladder:** the easy route, the raw count, reaches the truth
+**11 of 20**, so rung 0 lands over half the time. **And the decisive route is not determinate
+either**, at 12 of 20. **Rule earned:** an exposure built as a weighted sum over a shipped occasion
+set is collinear with the unweighted count of that set at about +0.94, so the construction's weights
+never reach the decision, and where the occasion set is a shipped calendar the exposure is one join.
+That is candidate 8's breadth collinearity (+0.9986) reached from a different file in a different
+domain, which makes it a property of weighted-sum exposures rather than of either cell.
+
+### The rank-certainty direction, and the inverted draw on a second cell, screened out (2026-10-18)
+
+Three candidates, three measured deaths, no card registered, no file cut, no git write. Two findings
+carry forward and they are separate.
+
+**On the object.** `stumping` Part 3 named two non-level objects for selected-unit ground, an extremum
+judged against a null extremum and a rank verified. The first is task191's. The second is now
+measured dead across an enumeration of all four determinacy criteria it can have, so that list is
+exhausted and the ground-level rule it qualified ("a graded object which is a level at a selected
+unit cannot hold") no longer has a drawable exception. A draw needing selected-unit ground changes
+the ground, not the object.
+
+**On the procedure.** The inverted draw was run exactly as `stumping` Part 3 prescribes, file first on
+a fresh cell, and it still died twice, which is information about the inversion rather than about the
+cell. Both candidates were unobserved quantities forced by arithmetic from a file at another grain,
+both clearing `stumping` 1.6a's three clauses, and both died for one reason: **the forcing file
+publishes a one-column proxy for the construction it forces.** A voluntary register publishes its own
+take-up; a shipped occasion set publishes its own cardinality. So the inverted procedure needs a
+fourth clause beyond 1.6a's three, and it is one computation: the forcing file must pin the
+construction **without** shipping a scalar summary of it, tested as one correlation between the
+construction's output and the plainest column of its own forcing file, run before any separation is
+measured. Both deaths here would have been caught by that correlation at -0.97 and +0.94, and
+candidate 8's at +0.9986, so the clause is three for three against measurements already on file.
+
+**The axes, settled for whatever follows.** Two probe cards on the new cell, both `PASS` at exit 0
+with no BLOCK and no WARN and a nearest driver of 0.07: `gap objective` with generator `G15` and
+`gate_g binding_constraint`, and `gap population` with generator `G11` and `gate_g etl_conformance`.
+The allocation's axis correction is therefore confirmed from the other side, and the window on
+`political-science-public-policy` / `conflict-protest-event-data-analysis` is wide open; what this
+objective is short of is a mechanism, not an axis. Personas for the cell drawn and never typed, with
+`guard.py names --geo Spain --seed 201`: Bonifacio Morell, Sosimo Acevedo, Nacho Soriano, Estela
+Lillo, Virgilio Toledo, Rosaura Sánchez. One tool finding alongside them: `--geo` on its own does
+nothing, the locale does the work, and `business.LOCALE_FOR_GEO` recognises 27 patterns only, so
+Chile, Kenya, Georgia and South Africa all fall back to `en_US` and return the identical six names at
+a given seed. A draw wanting a non-European geography on this cell passes `--locale` or accepts
+`en_US`.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

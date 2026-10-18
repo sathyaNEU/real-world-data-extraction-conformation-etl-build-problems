@@ -2062,3 +2062,100 @@ construction estimates), the silent-row readability screen and the full enumerat
   observation of the same events is task196, a verified subsample is task192 and task244, and a filed
   external rate is rule application. So the cell is not drawable on a rate, and the next pass on it should
   start from a non-rate quantity or the number should move to a fourth ground.
+
+- **Cell 4 opened and closed in one pass: banking-credit-financial-risk / `fraud-aml-detection`
+  (architecture 13), three candidates screened to death with measurements, nothing drawn, no card
+  registered, no file in `target/` or `golden/` touched.** The cell was chosen because the client taxonomy
+  gives `fraud-aml-detection` anomaly-detection as its only objective, and `org_family` was moved from
+  `financial_institution` to `software_or_platform` so the world is a payments platform rather than a bank.
+  The one spent anomaly-detection driver on the cell is task196's, which shipped on this subdomain the same
+  day and is pending review, so the driver search was held clear of capture, undercount, two-channel
+  estimation and completing a partial record throughout. **The axis window is not what closed this pass,
+  and this is now the fifth cell to report that:** `guard.py check` on the probe card returns PASS with no
+  axis ban, no overuse WARN, no `three_rules.strategy_risk` WARN, no persona WARN and nearest driver 0.06,
+  under both the honest strategy label and the one free label. Two mechanical corrections to the brief fell
+  out of it: `other` does **not** trip `ban.strategy` against task248, and with `pattern: none` the guard
+  prints `generators[0]` as the decisive pattern (here `pattern G3`), so varying off `D` cleared task229
+  v1's triple without a differentiation line being needed.
+- **Candidate 1, the first-party share of a control's credited coverage, the strongest of the three and
+  dead on its own sampling noise in one horn and on the estimator family in the other.** The decision renews,
+  replaces or lapses a card-not-present control at the annual return, on the share of the fraud-coded
+  dispute set the control could actually have prevented: a dispute raised under a scheme fraud reason code
+  is either a third party's fraud or the cardholder's own purchase disputed as fraud, the second type is
+  unreachable by any control because the party the control screens for is the party that authorised the
+  payment, and the reason code does not separate them. The forcing file was the authentication message log,
+  which pins the liability shift, because the scheme rule forbids an issuer to charge back a liability-shifted
+  transaction as third-party fraud, so that population carries first-party disputes alone. Measured on
+  120,000 transactions with 509 third-party and 1,702 first-party disputes, first-party being 76.98 per cent
+  of the dispute set: the easy route credits the incumbent with 51.274 per cent of fraud-coded dispute value
+  against the challenger's 6.630 and files **renew**, while on third-party value the incumbent covers 1.464
+  against the challenger's 11.672 and the answer is **replace**, a clean flip with 1 of 7 reflexes reaching
+  the golden verdict. It still dies three ways. **(a) The call only flips where the two dispute types are
+  anti-correlated across the visible attributes**, and in the correlated configuration first measured there
+  is no flip at all (naive renew by 35.966, golden renew by 9.055) with 6 of 7 reflexes landing the golden;
+  but anti-correlation is exactly what puts the discriminator in a shipped column, and the liability-shifted
+  dispute rate per merchant category prints 4.224, 3.882 and 2.955 for the intangible categories against
+  0.148 to 0.447 for the rest, a tenfold separation visible in one two-column group-by, which is readability
+  test 2. **(b) The graded figure is seed-hostage.** Over 20 redraws the truth itself ranges 0.000 to 10.457
+  points against a golden margin of 10.209 on the single seed above, and the filter-and-divide recovery off
+  the liability-shifted population carries a mean absolute error of 9.1152 points and a maximum of 26.1502
+  against a printed precision of 0.01, so the correction injects more noise than the bias it removes and the
+  ladder's roles would be hostage to the seed (task198 architecture 2's death, in new nouns). **(c) Remove
+  the revealing subset and the family opens**: with no authentication state in the pack the first-party share
+  is a two-component mixture, seven defensible routes put the graded figure between 0.000 and 51.274, a
+  spread of 51.274 points or about 5,127 times the printed precision, and the verdict itself forks between
+  renew and replace. The quantity is a share of a share of a rare event inside a 7 per cent control slice,
+  and that is the general form: **on this ground a decisive quantity built on the confirmed-fraud events
+  cannot rank, because third-party fraud is 0.42 per cent of traffic and the lever and the noise are the
+  same scarce events.** Draw on the abundant side instead.
+- **Candidate 2, the control's forward cost in genuine sales, drawn deliberately on the abundant
+  false-positive side after candidate 1's lesson, and dead on identification.** The decision is the same
+  three-way renewal; the quantity is the value of genuine business the control turns away, which is tens of
+  thousands of rows rather than hundreds, and the unobserved part is whether a declined genuine customer
+  recovered or was lost. The forcing attempt was the card-on-file population, where the merchant passes a
+  customer account identifier so a later successful purchase is linkable, against guest checkout where it is
+  not. Measured: the naive transport of the card-on-file recovery rate onto the whole decline set is fixed at
+  45.098 per cent lost while the truth moves from 45.192 to 70.285 as the guest-to-card-on-file recovery
+  ratio moves over its plausible range, an error running 0.094 to 25.187 points, with a family spread of
+  35.255 points across four transports. **Nothing in any file a payments platform keeps pins that ratio**, so
+  the figure is not determinate; pinning it in a shipped sentence makes the step rule application, and
+  recovering it from the card-on-file subset is transport off a selected subpopulation, which is
+  `population_selection` and reserved to task182 this wave.
+- **Candidate 3, the adversary's response to the control, dead before any ladder on 1.2b case three.** The
+  quantity is net forward fraud prevented, where a blocked attempt is deterred, relocated to another merchant
+  on the platform, or relocated to a processor the platform cannot see. This was the one direction with no
+  slot-note hit at all (`guard.py slots displacement deterrence blocked attempts re-routed` returns nothing).
+  Measured: the graded figure moves from 69.905 to 20.121 per cent of gross blocked value as the
+  out-of-platform relocation share moves from 0.00 to 0.50, a range of 49.784 points or 4,978 times the
+  printed precision, **while the one observable the platform does hold, inside-platform relocation, stays at
+  29.6 to 30.1 per cent throughout and so carries no information about the parameter at all.** That is 1.2b's
+  profile test failed by construction rather than by width: a platform sees only its own traffic, so
+  out-of-platform relocation has no observable that moves with it.
+- **Killed free, with no screen spent, on the brief's own clause:** the control's standalone contribution net
+  of the rest of the control portfolio, unobserved because the engine short-circuits on the first terminal
+  rule and the case manager suppresses duplicate alerts. Estimating the overlap between two detection
+  channels is two-channel estimation whatever the quantity on top of it, which is task196's ground and
+  pending review on this very subdomain.
+- **What the three measurements leave for a later pass on this cell, stated so it is not paid for twice.**
+  The pharmacology law restates itself here in a fourth set of nouns, with the horn relabelled: a fraud or
+  AML quantity's latent split is either **exact or near-exact on a revealing subpopulation some rule makes
+  immune** (liability shift, authentication state, a scheme exemption), which puts the discriminator in a
+  shipped column and makes the step a filter and a divide, or it is **a mixture with no revealing subset**,
+  which reopens the family by thousands of times the printed precision. Candidate 1 adds a horn the
+  pharmacology pass did not have and it is the more general one: **the confirmed-fraud events are too few to
+  rank on**, so the quantity must be drawn on the abundant population (alerts, dispositions, declines, the
+  queue) and not on the outcomes. Candidate 2 shows that moving to the abundant side is necessary and not
+  sufficient, because the abundant side's latent part is pinned only by a linkable subpopulation, which is
+  selection again. **The one direction this pass did not spend a screen on, and the one a later pass should
+  start from, is the task202-shaped escape in this cell:** an estimand filed at a grain the fraud and AML
+  decision file does not carry, with a second abundant file supplying the structure, the candidate forcing
+  files being the alert and disposition log and the queue's own worked-and-unworked record, which pins the
+  capacity actually applied and which no other file holds. A candidate there must name which file does the
+  forcing before anything else, and why no group-by on the decision file reaches it.
+- **Drawn and clean, for whoever takes the cell next:** personas `Sander Denissov`, `Tatjana Liivak`,
+  `Jaanus Niit`, from `guard.py names --locale et_EE --seed 194`, all three clear of `people.first`,
+  `people.last` and `people.full` on `guard.py check`. The locale is Estonian rather than Irish because
+  `en_IE --seed 194` returns `Lauren Connachton` and `Paul Murnane` first, which are the two names the
+  previous pass had to drop, and because Estonian surnames are not gender-inflected, so a drawn pair cannot
+  produce the mismatch a Lithuanian draw does. Probe card at
+  `<scratch>/w6_194b/task194_card.json`, marked PROBE ONLY and not registered.
