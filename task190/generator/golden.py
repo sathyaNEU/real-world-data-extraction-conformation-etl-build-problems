@@ -104,9 +104,9 @@ def workbook(path, att, chain, a1, a2, a3, prior):
     ws = wb.create_sheet("Collection effort")
     ws["A1"] = "Collection round 2026: contacts by region of the enterprise contacted"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("A case sits in the region of the enterprise it was opened for, which is the holder "
-                "of its permit number over the round and not always the holder of record now. "
-                "Contacts and usable returns are counted once.")
+    ws["A2"] = ("A case sits in the region of the enterprise it was opened for. For 150 permit "
+                "numbers that is not the holder on the crosswalk's current row, the number having "
+                "been reissued in January 2027. Contacts and usable returns are counted once.")
     _head(ws, 4, ["Region", "Contacts made", "Usable returns", "Contacts per usable return"],
           [18, 16, 14, 26])
     row = 5

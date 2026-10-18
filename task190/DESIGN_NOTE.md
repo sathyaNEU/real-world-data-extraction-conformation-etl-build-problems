@@ -2,13 +2,18 @@
 
 Architecture 6, drawn 2026-10-18 on new ground after architecture 5 died at stage 1 on measurement,
 built to stage 3, judged NOT_DETERMINISTIC with a FIX_NOW on the ask side, repaired in one pass, judged
-DETERMINISTIC on the second pass with a FIX_NOW of three note-level pins, and pinned in a third pass on
-2026-10-18 (both passes are at the end of `## Tried and rejected`). The main call, its eight streams'
+DETERMINISTIC on the second pass with a FIX_NOW of three note-level pins, pinned in a third pass on
+2026-10-18, and re-sited on the ask side in a fourth pass the same day after `precut.py` failed on
+`cracker misses every ask` (every pass is at the end of `## Tried and rejected`). Asks A1 and A3 now
+carry silent primaries and the three pins stand untouched. The main call, its eight streams'
 rates, targets, intervals and standard errors, all 32 stage-chain cells, the five field-day rows, the eight
 2025 tonnages, the five municipal rows and the ladder are byte-identical to the judged pack, key by key in
-`generator/figures.json`; what moved is the 2025 release's recovered column and the register's own clock
+`generator/figures.json`; what moved in the pins pass is the 2025 release's recovered column and the register's own clock
 behind it, the visit grain the design documentation now states, the four chain stages the prompt now names,
-and the weighbridge residues that stop a stream total being a whole number.
+and the weighbridge residues that stop a stream total being a whole number; what moved in the re-siting
+pass is three ask files (`bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv`,
+`municipal_waste_returns_2026.csv`), the two ask sentences of the prompt and ask A1's figures, with the
+digest of every file the call reads asserted against the shipped pack in `checks.py` A10.
 Architectures 1, 2 and 3 died on determinism verdicts; 4 on a model constraint plus a measured null; 5 on
 a measured reflex. The live design is this block; everything from `## Architecture 3, spent` down is kept
 as record.
@@ -136,8 +141,11 @@ metal-bearing, on a smaller shortfall, at 4.60.
   its despatch and what an extract leaves unconfirmed rises towards its own cut date; one legacy municipal
   extract
   reports in hundreds of kilograms because that was the old return's unit; agency permit numbers against
-  business register enterprise numbers, with supersessions and one duplicate, because the two registers are
-  maintained by different bodies; the 2025 release exists in a preliminary and a revised version; the
+  business register enterprise numbers, with supersessions, one duplicate and the numbers the agency's
+  January 2027 licensing batch reissued after their holder's permit lapsed, which is why a permit register
+  is kept effective dated, because the two registers are
+  maintained by different bodies; municipal returns on a monthly form whose December slot some
+  municipalities use for the annual confirmation; the 2025 release exists in a preliminary and a revised version; the
   release's reference tables sit inside a PDF. Nothing is placed to be caught.
 - **Layer 2:** `estimation_fit`. The recovery rate is a ratio of a complete administrative total to a
   design-based estimate of a population total, so its sampling variance is the linearised variance of the
@@ -227,9 +235,13 @@ metal-bearing, on a smaller shortfall, at 4.60.
 | SF9 | multiplicity across the eight streams | no correction needed; the bar is filed per stream | Bonferroni at 0.05/8, or Benjamini-Hochberg at 5 per cent: `same call`, asserted | convergence asserted; the golden's p is 0.0000041 |
 | SF10 | rounding of the rate | per cent to one decimal, once, at the end | rounding each term first: `same call`, asserted | the prompt's rounding sentence; convergence asserted |
 | SF11 | an enterprise whose permit number was superseded | no reading reaches the call: the released micro-data carries a survey record number only | the agency permit number or the enterprise number: neither exists on the micro-data, so no join from the register to the survey exists at all | asserted on the shipped schema: no file carries both a stratum and a producer key |
-| SF12 | "field days" in ask A1 | days, at the division's booked field day of eight hours | seven or seven and a half hours to the day: moves ask A1's two Alentejo figures only (10.11 against 11.55 and 10.78 field days), asserted clear of the call | the survey's own collection documentation, section 5 on collection operations: the division books field work in field days of eight hours, and the log's time_unit column states the unit each row is in |
-| SF13 | "municipalities' reported collections" in ask A3 | the 27 municipalities' own returns, each municipality's collected tonnage counted once | all 32 reporting entities, adding the five inter-municipal associations' returns for their member municipalities: inflates every region's gap by 12.5 to 20.0 times | the memo's compilation convention, "each municipality's collected tonnage counted once", and the receipts file's 27 origin entities, which are exactly those 27 municipalities |
+| SF12 | "field days" in the response log | days, at the division's booked field day of eight hours, which is what the collection documentation states | seven or seven and a half hours to the day: `same call`, and since the re-siting of ask A1 no graded figure reads the field_days column at all, so the reading moves nothing (0 of the 28 graded figures, asserted) | the survey's own collection documentation, section 5 on collection operations, and the assertion that no graded figure reads the column |
+| SF13 | "municipalities' reported collections" in ask A3 | the 27 municipalities' own returns, each municipality's collected tonnage counted once | all 32 reporting entities, adding the five inter-municipal associations' returns for their member municipalities: inflates every region's gap by 12.5 to 20.0 times. This is now hazard H5 and not the ask's primary: the convention resolves it, so the cracker resolves it, and the ask's primary sits under it | the memo's compilation convention, "each municipality's collected tonnage counted once", and the receipts file's 27 origin entities, which are exactly those 27 municipalities |
 | SF14 | "by origin region" in ask A3 | the region the waste arose in, the receipts file's own origin_region column | the receiving facility's own region: moves every region's gap by 1.4 to 15.4 times the gap itself | the prompt's own word, and the receipts file carries the origin region on every row |
+| SF15 | "by the enterprise's region" in ask A1 | the region of the enterprise the collection case was opened for, read from the crosswalk row valid at the contact date | the region of the team that worked the case: moves every region by 50 to 175 contacts, and is not the enterprise's region; the region on the crosswalk row marked current: moves every region by 23 to 84 contacts and is the January 2027 holder, who the round never contacted | the asking sentence's own words, plus the assertion that no case's region changes across its own contact dates and that every current-only row for a reissued number begins after the last contact in the log |
+| SF16 | "the contacts our 2026 round made" in ask A1 | one row per contact, exact duplicates counted once, over every case the round issued | contacts made in calendar 2026: `same call`, asserted, every one of the 6,094 contacts being dated inside 2026; the rows as loaded: 15 of them are a re-sent operations batch, which the battery removes | convergence asserted on the window; the duplicate batch is a hazard and not a reading |
+| SF18 | "that number per usable return" in ask A1 | the contacts the asking sentence has just asked for, all of them, over the region's usable returns | the contacts made on the cases that returned only: 3.29, 3.29, 3.36, 3.43 and 3.38 against the committed 3.65, 3.64, 3.84, 3.86 and 3.77, so it is a live reading and not a convergent one | the asking sentence names the figure it divides, "that number", which is the whole-number figure beside it; asserted in `checks.py` SF18 |
+| SF17 | "collected tonnage" for a municipality in ask A3 | the tonnage the municipality collected in 2026, taken once from its own return | the sum of its twelve return rows: on five municipalities the December row is the year's confirmation and already contains the eleven, so the sum counts those eleven twice and the gap reads 3.4 to 10.3 times the answer. Not a reading the records support: the December row stands at 11.8 times the mean of its own eleven months where no other month exceeds 0.86, and the sum puts those municipalities' facility receipts at 50 per cent of their collections against 94 to 99 elsewhere | the arithmetic of the returns themselves, asserted in `checks.py` A9, and the receipts file as the second witness |
 
 ## Ladder
 
@@ -284,7 +296,7 @@ forces is forward, the division's single 2027 supplementary collection module.
 | 13 Order of operations | rate then compare then test | each step commutes with the others here; asserted |
 | 14 Row order | file order cannot move a weighted total or a stratum variance | C1 by construction, asserted over three permutations |
 | 15 Duplicate resolution | one row per leg; a child consignment is a distinct consignment, its tonnage counted at the parent's despatch leg | SF5, filed by "counted once at the producer's despatch leg" |
-| 16 Identity normalisation | the business register enterprise number is the identity | the crosswalk's supersession rows; SF11 asserted to move no main figure |
+| 16 Identity normalisation | the business register enterprise number is the identity | the crosswalk's supersession rows and its reissued permit numbers, both asserted to move no main figure: no file carries both a stratum and a producer key, so the micro-data cannot be joined to a permit at all (SF11, D1, D5) |
 | 17 Netting against gross | no netting: rejected loads returned to the producer are a separate leg and are not recovery | the operation code list has no code for a return; asserted |
 | 18 Dimensional units | tonnes throughout the register and the microdata; one municipal extract in hundreds of kilograms | the unit is in each file's own column; the municipal files are outside the call's population, asserted |
 | 19 Code and status semantics | R codes are recovery, D codes disposal, on the list in force at confirmation | the operation code workbook states the revision and the mapping; never the stump |
@@ -306,7 +318,10 @@ all eight streams, so the literal reading lands on Metal and metal-bearing waste
 ## Oracles
 
 None now, and one was cut in the repair pass of 2026-10-18. There is no corpus, no control bench, no
-certified record and no reconciliation column that ties only under the golden.
+certified record and no reconciliation column that ties only under the golden. The ask layer's
+re-siting added none: the crosswalk publishes no count, the response log no total and the municipal
+pair no reconciled gap, so nothing in the pack ties only under a device's right handling, and the one
+referee (the licensed-facility register) ties under every handling of every device.
 
 **What was cut.** The judged pack's 2025 release published the coefficient of variation of the estimated
 national total of business waste arising "for the 2026 round". That figure is the design CV of the 2026
@@ -345,138 +360,169 @@ decision question.
 ## Ask sheet
 
 Three asks, 28 separately gradable figures, all three sited on populations the main call never reads.
+A1 and A3 were re-sited on 2026-10-18, after the pins pass left A1's primary a filed rule and A3's a
+fork closed by a sentence; the quantities A1 asks for changed with it, A3's did not, and every
+measurement below is on the cut pack. The lesson that drove the re-siting is in `## Tried and
+rejected`: a fork is not a device, so a primary that a filed sentence can resolve has to be replaced
+rather than hardened.
 
-**A1, the collection round's effort by region** (audit trail of an input the call consumes). Figures: for
-each of the five regions, the field days consumed and the usable 2026 returns per field day, both to two
-decimals: 10 figures. H18 home: the trail from the survey the call consumes, through rows the call never
-reads, to the round's own field effort. Use: the division's 2027 capacity note needs the 2026 cost per
-usable return by region. Primary device (D6 grain, **filed, not silent**, since the determinism
-judge's second pass pinned it, touching all 10 figures): the response log is one row per contact, and a
-field visit covers several enterprises in one region on one trip, so the trip's own `field_days` value sits
-on every row it covers; summing rows multiplies the region's field effort by the average trip size and
-depresses every region's returns per field day. The internal inconsistency behind it is that for the visit
-dates a team's row-level field days sum to between 2.0 and 7.0 on a single calendar date, which is
-impossible, while at visit grain no team-day exceeds 1.0. Until the pin nothing in the pack invited that
-reconciliation and no battery sweep performed it; section 5 of `bws_2026_design_and_weighting.pdf` now
-states the grain outright ("a visit covers several enterprises in one region on one trip, and the visit's
-field days are recorded on each case the visit covered, under the visit reference the log carries"),
-because it was the only literal reading in the pack that pointed at a wrong number and Gate C's closure on
-ask A was thin without it. The price is measured and paid in the open: a response that reads section 5
-resolves all ten figures, so the cracker does, the pair ceiling moves from 28.5 to 38.3 against a gate of
-40, and `precut.py`'s "cracker misses every ask" fails on this row.
-Hazards: H1 (one regional team logs its effort in hours, the unit stated in its own column and the length
-of a field day stated in the survey's own collection documentation), H3 (a re-sent operations batch of
-fifteen exact duplicate rows), H4. The usable-return count is a per-case outcome, so it is counted once per
-collection case: the re-sent batch puts the row count at 1,634 against the 1,630 records of the micro-data
-and the 155 plus 195 plus 520 plus 760 of the design table, and `checks.py` A7 asserts the tie at case
-grain. The field-days denominator is duplicate-immune already, being counted once per visit reference.
-Files on the path: `bws_2026_response_log.csv`,
-`enterprise_permit_crosswalk.csv`, `bws_2026_design_and_weighting.pdf`,
-`collection_capacity_note_2027.pdf`; 12 columns. Stops: sum every row (lazy, every region's field days
-high by a factor of 4.3 to 4.9 and every returns-per-day figure low by the same), sum every row after
-converting the hours team (over-corrected in one region only), count visits but miss the hours column (one
-region wrong), the answer. Realism: a field trip covers several enterprises in a day and the operations
-log attributes the trip's days to each contact it made. Forcing figure: 137 visit references carry an
-identical `field_days` value on 2 to 7 rows each, and at row grain 137 team-days exceed one day while at
-visit grain none does.
+**A1, the chasing behind the round's returns** (audit trail of an input the call consumes). Figures:
+for each of the five regions, the contacts the 2026 round made as a whole number and that number
+per usable return to two decimals: 10 figures. H18 home: the trail from the survey the call
+consumes, through rows the call never reads, to the round's own collection effort. Use: the
+division's 2027 capacity note needs what a usable return cost to chase, region by region, and the
+2027 module is costed against it. Primary device (D7 keys, silent): the agency's January 2027
+licensing batch took the permit numbers freed when their holder's permit lapsed at the end of 2026,
+so 150 of the numbers the round's cases were opened under carry a second crosswalk row marked
+current whose validity starts in one of the agency's four weekly licensing runs of January 2027, and
+on 126 of them that holder sits in another region; the reattribution moves every region's contacts
+by 31 to 77 and every ratio by 0.02 to 0.09. The batch is not one kind of row: 12 of its 162
+rows are ordinary re-registrations under a new number for the same holder, so no value in the
+valid_from column isolates the device rows. The
+join the battery's own repair leaves, take the row marked current or the latest, puts those cases in
+the wrong region; the row that holds is the one valid at the contact date. The internal
+inconsistency is temporal and arithmetic: the holder of record now did not hold the number when the
+contact was made, the last contact in the log being 2026-12-30, so the case cannot be its case.
+Every reissued number belonged to a holder with no 2026 despatch leg in the register, so no reading
+of the permit register, however strict, can take a tonne out of the call's own population (asserted:
+0 of the 150 is a 2026 despatcher, and restricting the register to producers whose 2026 row is
+current leaves the designated set and every graded figure where the shipped pack had them). The
+enterprises that gave a permit up are the ones the round found hardest to collect from, so the
+reattribution is not proportionate and the ratio moves with the count. Nothing in the pack invites
+the comparison: what the battery sees is a join that fans out, and both of its habitual repairs are
+wrong.
+Hazards: H3 (a re-sent operations batch of fifteen exact duplicate rows, all Norte), H4 (34 permit
+supersessions, where a current-only filter drops a case's row and the join fails loudly), H6 (field
+cases are allocated by workload, so 722 contacts were made by a team other than the one based in the
+enterprise's region, and the team identifier is not this ask's basis). The usable-return count is a
+per-case outcome counted once per case: the re-sent batch puts the row count at 1,634 against the
+1,630 records of the micro-data and the 155 plus 195 plus 520 plus 760 of the design table, and
+`checks.py` A7 asserts the tie at case grain.
+Files on the path: `bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv`,
+`bws_2026_design_and_weighting.pdf`, `collection_capacity_note_2027.pdf`; 11 columns. Stops: the
+log's rows as contacts with the region off the row marked current (lazy, 1,916 / 1,420 / 1,575 / 684
+/ 499 contacts against 1,965 / 1,387 / 1,652 / 641 / 434, every region wrong by 31 to 77 and every
+ratio by 0.02 to 0.09), the same with the exact duplicates taken out (1,903 / 1,418, the batch
+sitting in Norte on the ask's own basis), the team identifier read as the region (every region wrong
+by 50 to 175 contacts), the answer.
+Realism: a waste permit lapses when its holder stops the permitted activity and the agency's next
+licensing batch draws on the numbers freed, which is why a permit register is kept effective dated.
+Forcing figure: 150 of the round's permit numbers carry a current row whose validity starts after
+the last contact in the log (2026-12-30), 126 of them in another region, and no case's region
+changes across its own contact dates (0 exceptions), so the basis is one number and not a
+date-by-date choice.
 
-**A2, the 2025 reference year's confirmed recovery tonnage by stream** (the decisive construction on a
-window the call never reads). Figures: 8. H18 home: the same chain construction on the prior reference
-year, which the attainment table's own trend column needs. Use: the plan's mid-term review quotes the prior
-year. Primary device (D1 duplication, silent): a set of 2025 consignments rejected at the receiving
-facility's gate was re-notified under a fresh consignment number carrying the original's reference and the
-same tonnage, so summing confirmed recovery over consignments exceeds the producers' despatched tonnage for
-three streams; found only by reconciling each child consignment against its parent's rejection leg.
-Hazards: H2 (the code revision), H4 (facility permit supersessions). Files on the path:
-`waste_movement_legs_2025.csv`, `facility_register.csv`, `waste_code_crosswalk.csv`,
-`treatment_operation_codes.xlsx`, `enterprise_permit_crosswalk.csv`; 12 columns. Stops: sum every confirmed
-R leg (lazy, three streams high), drop every re-notified consignment including the genuine ones
-(over-corrected, two streams low), the pre-revision code list applied to the whole year (two streams
-wrong), the answer. Realism: a rejected load is re-notified rather than amended, and the register keeps
-both notifications. Forcing figure: 43 child consignments carry a parent reference whose leg sequence ends
-in a gate rejection, and for those 43 the child's tonnage equals the parent's to the tonne.
+**A2, the 2025 reference year's confirmed recovery tonnage by stream** (the decisive construction on
+a window the call never reads). Figures: 8. H18 home: the same chain construction on the prior
+reference year, which the attainment table's own trend column needs. Use: the plan's mid-term review
+quotes the prior year. Primary device (D1 duplication, silent): a set of 2025 consignments rejected
+at the receiving facility's gate was re-notified under a fresh consignment number carrying the
+original's reference and the same tonnage, so summing confirmed recovery over consignments exceeds
+the producers' despatched tonnage for three streams; found only by reconciling each child
+consignment against its parent's rejection leg. Hazards: H2 (the code revision), H4 (facility permit
+supersessions). Files on the path: `waste_movement_legs_2025.csv`, `facility_register.csv`,
+`waste_code_crosswalk.csv`, `treatment_operation_codes.xlsx`, `enterprise_permit_crosswalk.csv`; 12
+columns. Stops: sum every confirmed R leg (lazy, every stream high by 78 to 160 t), the crosswalk's
+currently valid codes only (metal 51,297, mixed commercial and industrial 67,519, wood 12,561 and
+plastic 4,843 against 67,709, 89,749, 19,243 and 7,368), drop every re-notified consignment
+including the genuine ones (over-corrected, two streams low), the answer. Realism: a rejected load is
+re-notified rather than amended, and the register keeps both notifications. Forcing figure: 43 child
+consignments carry a parent reference whose leg sequence ends in a gate rejection, and for those 43
+the child's tonnage equals the parent's to the tonne.
 
-**A3, the municipal waste reconciliation by region** (an input reconciled to another system's total).
-Figures: for each of the five regions, the gap in tonnes between the municipalities' reported collected
-tonnage and the licensed facilities' reported receipts of municipal waste on a receipt-date basis, and the
-share of that gap carried by the named items, to one decimal: 10 figures. H18 home: a reconciliation of a
-second collection system to the facility returns, at the region grain the attainment table already uses.
-Use: the institute publishes the municipal series beside the business series and the gap has to be
-explained before the release. Primary device (D6 grain, silent): one inter-municipal waste authority files
-a single return covering its three member municipalities, which also file their own returns, so the
-authority's tonnage is the sum of the three and a return-level sum double counts one region; found only by
-reconciling the authority's reported tonnage against its members'. Hazards: H1 (two municipalities
-reporting in hundreds of kilograms), H4. Files on the path: `municipal_waste_returns_2026.csv`,
-`municipal_facility_receipts_2026.csv`, `facility_register.csv`, `enterprise_permit_crosswalk.csv`; 11
-columns. Stops: sum every return (lazy, one region high), drop the authority's return entirely
-(over-corrected, one region low), the hundreds-of-kilograms rows read as tonnes (two municipalities
-wrong), the answer. Realism: inter-municipal authorities file on behalf of members in several EU states and
-the member municipalities still file. Forcing figure: in all five regions the authority's monthly reported tonnage equals the sum of its three
-member municipalities' returns to within 0.05 of a tonne in every one of the twelve months, which the
-verifier rediscovers from the data alone; counting every return inflates each region's gap by a factor of
-9.0 to 23.3. Basis and grain are in the asking sentence (receipt date, region).
+**A3, the municipal waste reconciliation by region** (an input reconciled to another system's
+total). Figures: for each of the five regions, the gap in tonnes between the municipalities'
+reported collected tonnage and the licensed facilities' reported receipts of municipal waste on a
+receipt-date basis, and that gap as a share of collections to one decimal: 10 figures. H18 home: a
+reconciliation of a second collection system to the facility returns, at the region grain the
+attainment table already uses. Use: the institute publishes the municipal series beside the business
+series and the gap has to be explained before the release. Primary device (D9 self-validation,
+silent): on five municipalities' returns software the December slot carries the year's own
+confirmation rather than the month, so that row does not sum with its own eleven; a municipality's
+collections are its December row where that row is the year, and the eleven months it already
+contains are not added to it. The internal inconsistency is two arithmetic patterns pointing the
+same way: those five December rows stand at 11.8 times the mean of their own eleven months while no
+other return month exceeds 0.86 times its own, and summing twelve months puts those five
+municipalities' facility receipts at 50 to 51 per cent of their collections while every other
+municipality's sit at 94 to 99 per cent. The recovery is exact and self-validating, because the
+December row less the eleven lands inside that municipality's own monthly range. No sweep compares a
+return month with its siblings or a municipality's receipts with its own return, and the ask is
+asked at region grain, which is one grain above the cut that shows it.
+Hazards: H1 (two municipalities reporting in hundreds of kilograms, the unit in the file's own
+column), H5 (five inter-municipal associations file a return covering their three member
+municipalities, which file their own, and the memo files the counting convention). Files on the
+path: `municipal_waste_returns_2026.csv`, `municipal_facility_receipts_2026.csv`,
+`facility_register.csv`, `collection_capacity_note_2027.pdf`; 11 columns. Stops: every return,
+twelve months each, the hundreds-of-kilograms rows read as tonnes (lazy, the gap reads 24.7, 110.2,
+20.2, 29.3 and 25.2 times the answer), the same with the units converted (24.7, 14.9, 20.2, 29.3,
+25.2 times), the 27 municipalities' own returns summed over twelve months (8.1, 3.4, 4.6, 10.3 and
+8.0 times, a 12.5 to 27.0 per cent gap share against the answer's 2.6 to 4.1), the answer. Realism:
+a monthly return form whose December slot is used for the annual confirmation is an ordinary returns
+defect, and these five municipalities file through the same returns software. Forcing figure: five
+December rows at 11.8 times the mean of their own eleven months against a highest 0.86 elsewhere,
+and a receipts coverage of 50 to 51 per cent against 94 to 99 for the other 22. Basis and grain are
+in the asking sentence (receipt date, origin region).
 
-**Main population zero-counts.** Asserted in `checks.py`: zero device rows and zero hazard rows inside the
-main call's declared population, which is the 2026 movement legs and the 2026 survey microdata. The five
-superseded permits of A1 belong to enterprises outside the 2026 sample (asserted); the 43 re-notified
-consignments of A2 are all 2025-despatched (asserted); A3's populations are municipal and never read.
-Deleting every device leaves the call byte-identical, asserted.
+**Main population zero-counts.** Asserted in `checks.py`: zero device rows and zero hazard rows
+inside the main call's declared population, which is the 2026 movement legs and the 2026 survey
+micro-data. A1's device rows are crosswalk rows valid from January 2027 and response-log rows,
+neither of which the call reads; no file carries both a stratum and a producer key, so no join
+from the call's population to a permit exists at all (`checks.py` D1, D5, SF11); and no reissued
+number is a 2026 despatcher, so the strictest reading of the permit register drops not one leg on
+the device's account and designates the same stream (`checks.py` D7); the 43 re-notified
+consignments of A2 are all 2025-despatched (asserted); A3's populations are municipal and never
+read. Deleting every device leaves the call byte-identical, asserted. The repair's own scope is
+asserted the same way: `checks.py` A10 holds the digest of every file the call reads against the
+shipped pack, and only `bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv` and
+`municipal_waste_returns_2026.csv` moved.
 
-**Hazard table.** H1 units (asks A1, A3; A1 -0.11 days in one region, A3 two municipalities low by a factor
-of ten). H2 code revision (A2, A3; A2 two streams wrong). H3 re-sent batch (A1; +3 rows). H4 facility and
-permit supersessions (A2, A3; A2 one stream, A3 one region).
+**Hazard table.** H1 units (A3; the two hundreds-of-kilograms municipalities read as tonnes put
+Centro's gap at 110.2 times the answer instead of 14.9). H2 code revision (A2; the currently valid
+codes alone move metal, mixed commercial and industrial, wood and plastic by 2,525 to 22,230 t). H3
+re-sent batch (A1; 15 rows, 1,916 contacts against 1,903 deduplicated where they fall). H4 permit
+supersessions (A1, A2; 34 of them, where a current-only filter fails the join loudly). H5 the
+inter-municipal associations' returns (A3; every region, the gap 3.4 to 10.3 times the answer). H6
+cross-region teams (A1; 722 contacts, every region 50 to 175 contacts out on the team basis).
 
-**Referee.** One byte-clean referee, the licensed-facility register, arbitrates which facility is interim
-and which final without carrying any level; it ties under every handling of every device.
+**Referee.** One byte-clean referee, the licensed-facility register, arbitrates which facility is
+interim and which final without carrying any level; it ties under every handling of every device. No
+shipped figure ties only under a device's right handling: the crosswalk publishes no count, the
+response log no total, and the municipal pair no reconciled gap.
 
-**Cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact duplicates,
-unmatched joins, fan-out, count ties) and executed every filed rule the pack points at.
+**Cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact
+duplicates, unmatched joins, fan-out, count ties) and executed every filed rule the pack points at,
+including the collection documentation's visit grain and the memo's municipal counting convention.
 
 | Ask | Figures | What the cracker computes | Verdict |
 |---|---|---|---|
-| A1 usable returns and days per return by region | 10 | counts by visit reference, which section 5 of the design documentation now tells it to do, after the battery's duplicate and join sweeps | hit, 10 of 10 |
+| A1 contacts and contacts per usable return by region | 10 | the deduplicated contacts with the region off the crosswalk row marked current, which is what the battery's fan-out repair leaves | miss |
 | A2 2025 confirmed recovery tonnage by stream | 8 | the sum over confirmed R legs after the battery, which finds no duplicate because each re-notification is a distinct consignment number | miss |
-| A3 municipal gap by region and the named items' share | 10 | the return-level sum, which the battery accepts because the authority's return is a valid distinct return | miss |
+| A3 municipal gap by region and its share of collections | 10 | the 27 municipalities' returns summed over twelve months, the convention applied and the units converted, which the battery accepts because every return month is a valid row | miss |
 
-**Measured by:** `generator/ceiling.py`, run on the designed stops and re-run on the cut pack.
-**Pair ceiling:** 38.3
+**Measured by:** `generator/ceiling.py`, run on the cut pack through `generator/ceiling_deltas.json`.
+**Pair ceiling:** 28.5
 **Mirror leakage:** 0.0 per cent of ask weight
 
-**A3's sensitivity to the convention filed in the repair pass, measured both ways.** The memo now files the
-municipal series' counting convention, which closes SF13. Under the cracker row as this note defines it
-(the battery's five sweeps plus every filed rule, and no primary) the convention does not reach the figures,
-because applying it still needs the across-grain reconciliation that tells a response which returns repeat
-which: the authority's return is a valid distinct return with its own key, no count in the pack exceeds a
-published total, and no sweep performs the comparison. Pair ceiling 28.5, unchanged. If both of the top two
-responses do find it and resolve A3 in full, the measured pair ceiling is 46.2 (cracker 64.64, mirror 27.71,
-the mirror still missing Centro's two figures on the hundreds-of-kilograms rows), which is inside the house
-bar of 50 and above the 40 this build was built to. That is the price of closing the fork and it is paid
-knowingly: a Gate E finding on an ask's population costs a determinism verdict, while the ceiling cost is
-bounded and sits under the bar either way.
+**The two premises, measured.** The gated figure takes one of the top two responses onto the call:
+the cracker banks 38 for the recommendation, 7 for instruction following and 0 of 28 ask figures, so
+45.00, the mirror misses the call and every ask at 12.00, and the pair is 28.5 against the gate of
+40. Both responses on the call, each keeping its measured asks, is 45.0, which is the structural
+floor a landed call carries and is not recoverable by ask work. Both on the call with one of them
+resolving a whole ask of ten figures is 54.8, and that premise now costs a found inconsistency
+rather than a section read, which is the whole of what this repair bought: at the pins pass the same
+premise cost nothing, because A1's primary was a filed rule, and the measured figures were 38.3,
+48.1 and 67.8. The premise itself is not something this script can check; the stage-4 cold reader
+and the judge's Gate F check it.
 
-**What the A1 pin costs, measured.** The cracker lands the call (38 of the 38 recommendation weight), keeps
-7 for instruction following and now keeps 10 of 28 ask figures, so 64.64; the mirror misses the call and
-every ask, so 12.00; the pair is 38.3 against the gate of 40 and the mirror leakage stays 0.0 per cent
-(`generator/ceiling.json`, cut from `ceiling_deltas.json` on the shipped pack). The mirror takes each ask's
-lazy stop, which on A1 is the row sum whatever the documentation says, which is why the leakage does not
-move. If a second response also reads section 5 and resolves A1 in full, the measured pair is 48.1, inside
-the house bar of 50 and above the 40 this build was built to; with A3 found as well it is 67.8, and that is
-the exposure the pin buys. The alternative was to leave a sentence in the pack whose literal execution files
-55.57 field days for Alentejo against 13 dated visits, which costs a determinism verdict.
-
-The two rows agree on the asks by construction, which is what `supplemental-stumping` Part 7 asks to be
-stated rather than printed as a duplicate measurement: the three asks consume nothing the call's
-construction produces, so a response's ask score does not depend on whether it landed the call, and the
-`## Ask sheet` separation assertions are what prove it. The cracker row is 10 of 28, all of them ask A1's,
-because A1's primary is now a filed rule, while the other two primaries are each an inconsistency across
-grains that no column description asks for and no battery sweep performs, and the
-hazards the cracker does resolve (the documented unit column, the dated code revision, the re-sent batch,
-the permit supersessions a failing join exposes) touch no figure that a primary does not also touch. The
-premise this arithmetic rests on, that only one of the top two responses lands the call, is not something
-this script can check: the stage-4 cold reader and the judge's Gate F check it, and until they do the
-number is not evidence about the ladder. Re-run on the cut pack through `generator/ceiling_deltas.json`.
-
-
+**Why the two rows are two measurements.** The readings differ on every ask: the cracker
+deduplicates the re-sent batch, the mirror counts rows; the cracker maps the retired waste codes
+through the crosswalk's revision, the mirror takes the currently valid codes; the cracker applies
+the memo's counting convention and the files' unit columns, the mirror neither. Neither reaches a
+primary, because each primary is an inconsistency across grains or dates that no column description
+asks for and no sweep performs. The three asks consume nothing the call's construction produces (A1
+the response log and the permit crosswalk, A2 the 2025 legs, A3 the municipal files), so a
+response's ask score does not depend on whether it landed the call, and the zero-count assertions
+above are what prove it rather than a duplicated row in the script.
 
 ### Architecture 4's header block, archived
 
@@ -1937,6 +1983,105 @@ findings. Every graded figure is frozen through this pass and the freeze is prov
   lost its verb and "confirmed recovered" became "recovered", the png clause lost "showing its", the field
   day clause lost one "field" and the municipal clause lost "reported". The stages cost 89 characters and the
   prompt stands at 995; no requirement, unit or rounding was dropped.
+
+### The ask re-siting of 2026-10-18, one line per thing abandoned
+
+`precut.py` came back exit 1 on `cracker misses every ask`, because the pin the determinism judge
+required made ask A1's primary a filed rule. The gate's own number still passed (38.3 against 40) and
+the thing the gate protects did not: with both top responses reading the pinned clause the pair
+measured 48.1, and with A3's convention found as well 67.8, against a house bar of 50. The main
+recommendation side is frozen through this pass and `freeze.py check --mode rubric` proves it; what
+moved is `bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv`,
+`municipal_waste_returns_2026.csv`, the two ask sentences of the prompt and the ask goldens, and
+`checks.py` A10 holds the digest of every file the call reads against the shipped pack.
+
+- Hardening ask A1 in place, keeping the field days as its quantity: dead on arithmetic. The pin
+  states that a visit's field days are recorded on each case the visit covered, so the quantity's
+  only difficulty was the grain the pin states, and no device can be put under a quantity whose
+  whole construction a shipped sentence gives. The field days stay in the log as texture, the pin
+  stays exactly as the judge wrote it, and `checks.py` SF12 and H2 assert that 0 of the 28 graded
+  figures now read the field_days column.
+- Keeping A1's quantity and adding rows to the log that the extract had dropped (a silently partial
+  extract, the tell being interior gaps in each case's own contact sequence): dead on a frozen
+  sentence. Section 5 of the design documentation, which the call reads and which cannot move, says
+  the log records the division's contacts with each issued enterprise, so a judge reading it
+  literally gets the row count as the contacts and the device becomes a fork against a shipped
+  sentence. Rejected before any row was cut.
+- A1 re-sited onto the region of the enterprise contacted, with the permit reissue as its primary:
+  measured and kept. 150 of the round's permit numbers carry a crosswalk row marked current whose
+  validity starts in the agency's January 2027 licensing runs, after the last contact in the log
+  (2026-12-30), and the holder differs
+  in region on 126 of them; the current-row reading moves every region's contacts by 31 to 77 and
+  every ratio by 0.02 to 0.09, and the team-identifier reading by 50 to 175 contacts. The
+  reattribution is not proportionate because the enterprises that gave a permit up are the ones the
+  round found hardest to collect from, which is what keeps the ratio moving with the count: with the
+  reissues drawn proportionately the ratio moved by 0.00 to 0.01 in three regions and the figure
+  would have been free.
+- Siting the reissue on any permit number the 2026 register uses: dead on measurement, and it is the
+  gravest class of finding. With the pool drawn from the issued sample at large, 124 of the 150
+  numbers were 2026 despatchers, and a solver who restricted the register to producers whose 2026
+  permit row was current dropped 2,086 t of metal and established a second stream (metal at 7.43
+  standard errors and mixed commercial and industrial at 2.13 against the shipped 4.57 and 1.45),
+  which is a path from an ask device into the call. The reissue pool is now drawn from the 341
+  issued holders with no 2026 despatch leg, so that same filter returns the shipped pack's own
+  figures (metal only, 4.65 standard errors, 70,327 t), and `checks.py` D7 asserts it.
+- The reissued rows all carrying one valid_from, which would have let a single column value isolate
+  them: closed against ban 2 by licensing weekly and putting 12 ordinary re-registrations in the same
+  four runs, so the January 2027 batch holds 162 rows of two kinds and the column classifies nothing.
+- Three handholds that would have made the as-of join unnecessary, all removed before measuring:
+  case references numbered region by region (a solver could read the region off the number), visit
+  references prefixed with the region, and a team identifier that matched the enterprise's region on
+  every case. Cases and visits now carry the operational system's own shuffled counters and 722
+  contacts were worked by a neighbouring region's team, so the ask's basis has to be joined and
+  cannot be read off a label.
+- A1's figures as a count and a ratio of two quantities that move together: measured and changed.
+  Contacts per usable return is immune to a proportionate reattribution, so the pair of figures was
+  checked against the device before the wording was written rather than after.
+- A3's authority rollup kept as the primary: dead on the same lesson as A1. The memo files the
+  counting convention, the memo is a file the call reads and cannot move, so the cracker resolves the
+  rollup by executing a filed sentence. It is demoted to hazard H5, where it still costs the mirror
+  every figure, and the ask's primary now sits under it.
+- A3 re-sited onto the December row that is the year's confirmation: measured and kept. The five
+  December rows stand at 11.8 times the mean of their own eleven months against a highest 0.86
+  elsewhere, and summing twelve months puts those municipalities' facility receipts at 50 to 51 per
+  cent of their collections against 94 to 99 for the other 22. The golden figures do not move,
+  because the truth of the reconciliation is unchanged and only the route to it is now silent.
+- The same device sized as a fourth-quarter total rather than the year, to make the lazy figure less
+  conspicuous: dead on determinism. A December row at three times its own monthly mean says the row
+  covers about three months and does not say which three, so the year is recoverable only up to the
+  boundary and two defensible figures exist. The year version is an identity: the row less its own
+  eleven months lands inside that municipality's monthly range, which fixes the span exactly. The
+  price is paid in the open, and it is that the cracker's gap share reads 12.5 to 27.0 per cent
+  against the answer's 2.6 to 4.1.
+- A3 re-sited onto the receipts' origin region instead (a defaulted region column on cross-boundary
+  deliveries): held, not built, because A1's primary is already the region a row belongs to and two
+  asks whose device is a wrong grouping key is one device twice. Kept here as the fallback if the
+  reissue is ever spent.
+- Keeping `enterprise_permit_crosswalk.csv` in `metadata.json` as a declared distractor: it is not
+  one and never was, since every ask joins through it; the two declared distractors are the carrier
+  log and the export notifications, which is what the file already says.
+
+
+**Architecture 6, spent on Gate F, measured 2026-10-18.** The round-3 leak reader, a medium-effort thread
+holding only a fresh unzip of the pack and `prompt.txt`, reported the call and every graded figure: 43 of
+43 against `generator/figures.json`, with the stream, the 56.6 per cent rate, the 55.4 to 57.8 interval,
+the 59.5 target and the 2.9 point shortfall all exact, and all 38 supplementary ask figures exact. It also
+stated the easy-route error unprompted, that counting R13 as a recovery lifts mixed commercial and
+industrial wastes above its target. Three causes, each quoted in `leak_check_report.md`: the memo files the
+test ("established below target where its 2026 recovery rate is below its target at the 95 per cent
+level"), so the decisive step is executing a filed rule and picking a textbook variance formula, which the
+client's rule 3 bans as the decisive step; the 2025 release announces A2's device in a sentence telling the
+reader a later extract stands above the published column; and A3's two devices are arithmetically exact
+enough to be found by inspection, five December values at about fourteen times a month and five
+association rows each summing to exactly three members. No ask rewording repairs this, because the devices
+were not weak, they were absent from the reader's path. The ask layer had been re-sited once already, from
+a measured 65.5 to a paper 28.5, and the `## Ask sheet` cracker table claimed every ask row missed: that
+table was a model of the opponent and it was wrong on all three asks, where the reader is the measurement.
+Also unresolved on this world: `guard.py heart` BLOCKs on `ban.org_family`, because
+`research_or_statistics_office` repeats task244 two builds earlier and `government_agency` repeats task170
+three builds earlier, so both honest keys for a statutory statistics institute are banned and only the
+author's `--force` or a different deciding organisation clears it. Paused rather than retired, per the
+author file's standing no-retirement rule.
 
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 

@@ -1,10 +1,10 @@
 # leak check, task190
 
-**Verdict: REVIEW.** 17 files read, 135 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 134 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: design, variance, stratum, sample, decisive, register, asserted, published, correction, national, release, sampled, estimand, method, estimate, denominator, estimator, population, finite-population, consignment, enterprise, reference, sentence, strata, survey
+Stump terms swept: design, variance, stratum, sample, register, decisive, asserted, published, correction, national, release, sampled, estimand, method, estimate, denominator, estimator, population, finite-population, consignment, reference, sentence, strata, survey, permit
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `collection_capacity_note_2027.pdf`: carries 11 of 15 distinctive words of the committed call: 'The 2027 supplementary collection module goes to Metal and metal-bearing wastes, the only stream whose 2026 recovery rat'
@@ -197,3 +197,64 @@ stale on those points and a fresh reader round is owed**:
 **If `leak.py` is run again it overwrites this file.** The two reader rounds and these rulings are kept at
 `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task190p/leak_reader_rounds.md`
 and are appended back after each sweep.
+
+## Solver's-eye read, round 3 (the re-sited ask layer, target.zip ee222a17)
+
+The reader saw a fresh unzip of the pack and `prompt.txt`, nothing else. Its answers, and then the
+scoring of every figure it reported against `generator/figures.json`.
+
+**Question 1, the decisive step.** No sentence names it. The nearest is in
+collection_capacity_note_2027.pdf: "A stream is established below target where its 2026 recovery rate is
+below its National Waste Management Plan 2024-2030 target at the 95 per cent level." It names the test and
+gives no interval method.
+
+**Question 2, a file ranking the candidates on the 2026 question.** None.
+waste_statistics_2025_release.pdf ranks the 2025 rates only.
+
+**Question 3, files that exist only to help.** waste_code_crosswalk.csv,
+treatment_operation_codes.xlsx, the memo's definition paragraph, and bws_2026_design_and_weighting.pdf,
+which supplies the strata.
+
+**Question 4, a figure reading as the answer.** No figure. The memo's "committed to the one stream where
+the 2026 attainment figures establish a shortfall" states that exactly one stream qualifies.
+
+**Question 5, the sentence fixing the computation.** The memo's definition sentence. Its literal result for
+metal is 70,384 t / 124,354 t = 56.6 per cent, which is the golden. It leaves the interval method open.
+
+**Question 6, what decides the main answer.** "An analytical choice, the 95 per cent interval from the
+stratified survey."
+
+### The measurement: 43 of 43
+
+The reader reported the call, every call figure and every figure of all three supplementary asks. Scored
+against `generator/figures.json` by `scratchpad/score190.py`:
+
+| Block | Figures | Hit | Miss |
+|---|---|---|---|
+| Main call (stream, rate, interval, target, shortfall) | 5 | 5 | 0 |
+| A1 contacts by region (3 figures x 5 regions) | 15 | 15 | 0 |
+| A2 2025 tonnage confirmed at recovery (8 streams) | 8 | 8 | 0 |
+| A3 municipal gap by origin region (3 figures x 5 regions) | 15 | 15 | 0 |
+| **Total** | **43** | **43** | **0** |
+
+It named the call, "metal and metal-bearing wastes", at 56.6 per cent with a 95 per cent interval of 55.4
+to 57.8 against a 59.5 target, and it named the easy-route error itself: "Counting R13 as a recovery would
+give metal 58.1 per cent and mixed C&I 68.2 per cent. That is the easy-route error."
+
+### Why it got in, in its own words
+
+1. **The test is filed.** The memo fixes the 95 per cent level, so the decisive step reduces to executing
+   a filed rule and choosing a textbook variance formula. The reader took stratified simple random
+   sampling with a finite population correction, the register tonnage fixed, the delta method and 1.96
+   standard errors, and landed.
+2. **A2's device is announced.** waste_statistics_2025_release.pdf says "so a later extract of the same
+   reference year stands above this column", which the reader read as telling it outright to re-extract.
+3. **A3's devices are too exact to miss.** "The five cumulative December values are each about 14 times a
+   monthly figure, and the five association rows each sum exactly to three members."
+4. **A1's reissued-permit device ties.** The reader used the row valid in 2026 and noted the alternative,
+   so the device was visible and the right handling obvious.
+
+Realism tells it volunteered, all of which stand as findings against the pack: the memo restating the
+definition ("So that we are all measuring the same thing, the quantity is this"); the response log's
+outcomes totalling exactly the design table's 1,630 usable returns and 42 out of scope; recovery
+pass-through ratios landing on round percentages; the two unreferenced distractors reading as distractors.

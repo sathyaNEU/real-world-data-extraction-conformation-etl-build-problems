@@ -27,7 +27,7 @@
     },
     {
       "file": "bws_2026_response_log.csv",
-      "role": "collection operations log, one row per contact, used by the field effort ask",
+      "role": "collection operations log, one row per contact, used by the collection contacts ask",
       "licence": "synthetic, CC0-1.0",
       "source": "generator/build.py",
       "date": "2026-10-18"
@@ -48,7 +48,7 @@
     },
     {
       "file": "enterprise_permit_crosswalk.csv",
-      "role": "agency permit number against business register enterprise number, with region",
+      "role": "agency permit number against business register enterprise number, with region and the\n              date each number became that holder's",
       "licence": "synthetic, CC0-1.0",
       "source": "generator/build.py",
       "date": "2026-10-18"

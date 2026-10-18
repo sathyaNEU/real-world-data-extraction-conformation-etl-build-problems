@@ -342,10 +342,16 @@ def main():
 
     ents, per = pack.build_entities(rng)
     n_md = pack.build_microdata(samp, idx, ents, per, P["md"])
-    permit_of, sup_pairs, n_cw, reissued = pack.build_crosswalk(ents, per, rng, P["cw"])
+    cw_rows, permit_of, sup_pairs = pack.crosswalk_rows(ents, per, rng)
     fac = pack.build_facilities(rng, P["fac"])
     n_h1, n_h2, n_25, att2, renot = pack.build_register(
         samp, ents, permit_of, fac, rng, {"h1": P["h1"], "h2": P["h2"], "y25": P["y25"]}, pop=pop)
+    # the numbers the January 2027 licensing runs reissued are held clear of the call's own
+    # population: every one of them belonged to a holder with no 2026 despatch leg in the register
+    despatchers = {r[4] for p in (P["h1"], P["h2"]) for r in rows(p)
+                   if r[2] == "PRODUCER_DESPATCH" and r[3].startswith("2026")}
+    no_legs = {permit_of[e["ent"]] for e in ents if permit_of[e["ent"]] not in despatchers}
+    n_cw, reissued = pack.write_crosswalk(cw_rows, permit_of, per, no_legs, P["cw"])
     n_log, visits, n_dup = pack.build_response_log(ents, per, permit_of, rng, P["log"])
     n_mret, n_mrec, muni_base = pack.build_municipal(rng, fac, P["mret"], P["mrec"])
     n_codes = pack.build_code_crosswalk(P["codes"])

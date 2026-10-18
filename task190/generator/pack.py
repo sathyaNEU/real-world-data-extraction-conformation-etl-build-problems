@@ -291,12 +291,11 @@ def issued_cases(per_stratum):
     return out
 
 
-def build_crosswalk(ents, per_stratum, rng, path):
+def crosswalk_rows(ents, per_stratum, rng, path=None):
     """agency permit number against business register enterprise number. A handful of permits were
-    superseded when an enterprise re-registered; one duplicate row survives from a 2019 migration;
-    and the agency's January 2027 licensing batch took numbers freed when their holder's permit
-    lapsed at the end of 2026, so a number can be held by one enterprise over the 2026 round and by
-    another from January 2027."""
+    superseded when an enterprise re-registered, and one duplicate row survives from a 2019
+    migration. The rows the January 2027 licensing runs added are appended by write_crosswalk,
+    which runs once the register is cut, so a reissued number can be held clear of it."""
     rows, permit_of, super_pairs = [], {}, []
     dr = np.random.default_rng(W.SEED + 43)      # permit valid-from dates
     pid = 310000
@@ -317,24 +316,39 @@ def build_crosswalk(ents, per_stratum, rng, path):
         for r in rows:
             if r[0] == old:
                 r[4], r[5] = "superseded", newp
-        rows.append([newp, e["ent"], e["region"], e["nace"], "current", "",
-                     (dt.date(2024, 1, 8) + dt.timedelta(days=int(dr.integers(0, 330)))).isoformat()])
+        # a third of the re-registrations came through the same January 2027 licensing runs as the
+        # reissued numbers, so the batch is not one kind of row and its dates isolate nothing
+        vf = (W.LICENSING_RUNS[len(super_pairs) % len(W.LICENSING_RUNS)]
+              if len(super_pairs) % 3 == 0 else
+              (dt.date(2024, 1, 8) + dt.timedelta(days=int(dr.integers(0, 330)))).isoformat())
+        rows.append([newp, e["ent"], e["region"], e["nace"], "current", "", vf])
         super_pairs.append((old, newp, e["ent"], e["region"]))
-    # The numbers freed at the end of 2026 and reissued in January 2027. A permit lapses when its
-    # holder stops the permitted activity, so the enterprises that gave one up are the ones the
-    # round found hardest to collect from: most of them never returned the questionnaire or turned
-    # out to be out of the survey's activity scope. Nothing about the reissue is drawn from the
-    # shared stream: the register and the response log are cut from that and do not move.
+    return rows, permit_of, super_pairs
+
+
+def write_crosswalk(rows, permit_of, per_stratum, no_legs, path):
+    """Append the January 2027 licensing runs and write the file.
+
+    A waste permit lapses when its holder stops the permitted activity, so the enterprises that gave
+    one up are the ones the round found hardest to collect from: most of them never returned the
+    questionnaire or turned out to be out of the survey's activity scope. Every one of them is drawn
+    from the holders with no 2026 despatch leg in the register, so no reading of the permit register,
+    however strict, can take a tonne out of the call's own population.
+    """
     rr = np.random.default_rng(W.SEED + 47)
     issued = issued_cases(per_stratum)
-    superseded = {o for o, _n, _e, _r in super_pairs}
-    nonresp = [e for e in issued if e["sample_idx"] is None and permit_of[e["ent"]] not in superseded]
-    resp = [e for e in issued if e["sample_idx"] is not None and permit_of[e["ent"]] not in superseded]
+    superseded = {r[0] for r in rows if r[4] == "superseded"}
+    free = [e for e in issued
+            if permit_of[e["ent"]] in no_legs and permit_of[e["ent"]] not in superseded]
+    nonresp = [e for e in free if e["sample_idx"] is None]
+    resp = [e for e in free if e["sample_idx"] is not None]
     n_non = min(len(nonresp), int(round(W.PERMIT_REISSUE_N * 0.62)))
+    n_res = min(len(resp), W.PERMIT_REISSUE_N - n_non)
     take = [nonresp[int(i)] for i in rr.choice(len(nonresp), size=n_non, replace=False)]
-    take += [resp[int(i)] for i in rr.choice(len(resp), size=W.PERMIT_REISSUE_N - n_non, replace=False)]
+    take += [resp[int(i)] for i in rr.choice(len(resp), size=n_res, replace=False)]
     eid, reissued = 520000, []
-    same = set(rr.choice(len(take), size=W.PERMIT_REISSUE_SAME_REGION, replace=False).tolist())
+    same = set(rr.choice(len(take), size=min(W.PERMIT_REISSUE_SAME_REGION, len(take)),
+                         replace=False).tolist())
     for i, e in enumerate(take):
         p = permit_of[e["ent"]]
         for r in rows:
@@ -347,14 +361,14 @@ def build_crosswalk(ents, per_stratum, rng, path):
             reg = other[int(rr.integers(0, len(other)))]
         eid += 1
         rows.append([p, "PT%07d" % eid, reg, NACE[int(rr.integers(0, len(NACE)))], "current", "",
-                     W.PERMIT_REISSUE_FROM])
+                     W.LICENSING_RUNS[int(rr.integers(0, len(W.LICENSING_RUNS)))]])
         reissued.append((p, e["ent"], e["region"], reg))
     # one duplicated crosswalk row from the 2019 migration, same permit and enterprise
     rows.append(list(rows[411]))
     rows.sort(key=lambda r: r[0])
     _writecsv(path, ["agency_permit_no", "enterprise_number", "region", "nace_division",
                      "permit_status", "superseded_by", "valid_from"], rows)
-    return permit_of, super_pairs, len(rows), reissued
+    return len(rows), reissued
 
 
 def build_microdata(samp, idx, ents, per_stratum, path):

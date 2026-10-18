@@ -100,11 +100,12 @@ def main():
           "%.1f per cent"
           % (NAME[k], t(c["arisings_t"]), t(c["despatched_t"]), t(c["confirmed_t"]),
              t(c["recovered_t"]), c["pass_1_2_pct"], c["pass_2_3_pct"], c["pass_3_4_pct"]))
-    w("3. Collection effort, a row per region with the field days consumed and the usable returns "
-      "per field day:")
+    w("3. Collection effort, a row per region of the enterprise contacted with the contacts the "
+      "2026 round made and those contacts per usable return:")
     for r in W.REGIONS:
         a = f["a1_%s" % r]
-        w("   - %s: %.2f field days, %.2f usable returns per field day" % (r, a["field_days"], a["returns_per_day"]))
+        w("   - %s: %s contacts, %.2f contacts per usable return"
+          % (r, t(a["contacts"]), a["contacts_per_return"]))
     w("4. Tonnage confirmed received at a recovery operation in the prior reference year, per stream:")
     for k in ORDER:
         w("   - %s: %s t" % (NAME[k], t(f["a2_%s" % k])))

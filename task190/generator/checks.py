@@ -43,7 +43,12 @@ def main():
     kind_of = {c: k for c, k, _d in pack.OPS}
     code2stream = {r[0]: r[1] for r in B.rows(P["codes"])}
     facility_permits = {r[0] for r in B.rows(P["fac"])}
-    region_of = {r[0]: r[2] for r in B.rows(P["cw"])}
+    cw = B.rows(P["cw"])
+    region_at = B.region_asof(cw)                 # the holder of record on a given date
+    current_region = {}                           # the row marked current, which is the holder now
+    for r in cw:
+        if r[4] == "current" or r[0] not in current_region:
+            current_region[r[0]] = r[2]
     ch26 = B.chains([P["h1"], P["h2"]])
     ch25 = B.chains([P["y25"]])
     md = B.rows(P["md"])
@@ -87,10 +92,10 @@ def main():
     ok("A4 decisive step alone files the golden", n3 == gold and cl3 == [gold],
        "establishes %s; %s z %.2f (p %.8f)" % (cl3, gold, z3[gold], _p2(z3[gold])))
     ok("A5 the golden is the only established stream", len(cl3) == 1, "cleared: %s" % cl3)
-    a1 = B.ask_a1(log, region_of)
+    a1 = B.ask_a1(log, region_at)
     a3 = B.ask_a3(B.rows(P["mret"]), B.rows(P["mrec"]), set(pack.AUTHORITY.values()))
     raw = sum(1 for r in log if r[9] == "usable return")
-    dup = len(log) - len({(r[0], r[2], r[3], r[9]) for r in log})
+    dup = len(log) - len({tuple(r) for r in log})
     ok("A7 a usable return is a collection case, not a log row, and the five regions tie to the "
        "micro-data", sum(a1[r]["returns"] for r in W.REGIONS) == len(md) and raw > len(md),
        "%d cases over five regions against %d micro-data records and %d+%d+%d+%d design-table "
@@ -98,6 +103,13 @@ def main():
        "duplicate rows was re-sent"
        % (sum(a1[r]["returns"] for r in W.REGIONS), len(md), *[r for _c, _l, _N, r in W.STRATA],
           raw, dup))
+    ok("A8 ask A1's primary is an inconsistency of dates and not a filed rule: a number the round "
+       "worked a case under is held now by an enterprise that did not hold it then",
+       *_a1_forcing(log, cw, current_region, region_at, a1))
+    ok("A9 ask A3's primary is a return month that does not sum with its own eleven",
+       *_a3_forcing(P, a3))
+    ok("A10 the repair's scope: every file the call reads is byte-identical to the shipped pack, "
+       "and only the three ask files moved", *_scope())
     ok("A6 clean-data test: the easy route is wrong on repaired data too",
        max(sh, key=lambda k: sh[k]) == loud and n3 == gold,
        "no device or hazard sits in the call's population, so the clean pack is the shipped pack")
@@ -138,10 +150,19 @@ def main():
        bonf == [gold] and bh == [gold], "Bonferroni %s, BH %s" % (bonf, bh))
     ok("SF10 rounding each term first gives the same call", *_sf10(att, gold))
     ok("SF11 the permit supersessions move no main figure", *_sf11(P, md))
-    ok("SF12 the field-days unit column moves ask A1 only", *_sf12(log, region_of))
+    ok("SF12 the field-day convention stands and now reaches no graded figure",
+       *_sf12(log, region_at, figs))
+    ok("SF15 \"by the enterprise's region\": the region of the enterprise the case was opened "
+       "for, not the region of the team that worked it", *_sf15(log, region_at, a1))
+    ok("SF16 \"the contacts our 2026 round made\": every contact in the log is dated inside 2026, "
+       "so the round and the calendar year select the same rows", *_sf16(log))
     ok("SF13 the municipalities' reported collections are the municipalities' own returns",
        *_sf13(P, a3))
     ok("SF14 a municipal receipt's region is the region the waste arose in", *_sf14(P))
+    ok("SF18 \"that number per usable return\": the contacts the sentence has just asked for, all "
+       "of them, and not the contacts on the cases that returned", *_sf18(log, region_at, a1))
+    ok("SF17 a municipality's collected tonnage is its own return taken once: the December row that "
+       "is the year is not added to the eleven months it already contains", *_a3_forcing(P, a3))
 
     print("\nC. The ladder, measured on the shipped cut")
     rungs = [
@@ -207,6 +228,9 @@ def main():
        True, "the call's population is the 2026 legs and the 2026 micro-data, asserted by construction")
     ok("D4 deleting every device leaves the call unchanged",
        *_d4(ch26, kind_of, code2stream, facility_permits, att, samp, gold))
+    ok("D7 ask A1's device opens no path into the call: no reissued permit number is a 2026 "
+       "despatcher, so no reading of the permit register can take a leg out of the call's population",
+       *_d7(P, cw, ch26, kind_of, code2stream, facility_permits, att, samp, gold))
 
     cols = {}
     for f in sorted(os.listdir(os.path.join(TASK, "target"))):
@@ -267,17 +291,15 @@ def main():
        iv[0] > 0.004, "tightest edge distance %.4f pp on %s (cell 0.1 pp)" % iv)
     aw = (1e9, "")
     for reg in W.REGIONS:
-        for lab, val, unit in (("field days", figs["a1_%s" % reg]["field_days"], 0.01),
-                               ("returns per day", figs["a1_%s" % reg]["returns_per_day"], 0.01),
-                               ("gap t", figs["a3_%s" % reg]["gap_t"], 1.0),
-                               ("gap share", figs["a3_%s" % reg]["gap_share_pct"], 0.1)):
-            raw = {"field days": a1[reg]["days"], "returns per day": a1[reg]["per_day"],
-                   "gap t": a3[reg]["gap"], "gap share": a3[reg]["share"]}[lab]
+        for lab, unit, raw in (("contacts per usable return", 0.01, a1[reg]["per_return"]),
+                               ("gap t", 1.0, a3[reg]["gap"]),
+                               ("gap share", 0.1, a3[reg]["share"])):
             d = unit / 2 - abs(raw - round(raw / unit) * unit)
             if d < aw[0]:
                 aw = (d, "%s %s" % (reg, lab))
-    ok("F3 every ask figure sits inside its printed cell", aw[0] > 0.0004,
-       "tightest edge distance %.5f on %s" % aw)
+    exact = all(float(a1[reg]["contacts"]).is_integer() for reg in W.REGIONS)
+    ok("F3 every ask figure sits inside its printed cell", aw[0] > 0.0004 and exact,
+       "tightest edge distance %.5f on %s; the five contact counts are whole by construction" % aw)
     ok("F4 the standard error column is context the prompt does not ask for",
        "call_se_pp" in json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8")),
        "carried in figures.json and the workbook, not graded in the write-up's answer blocks")
@@ -291,9 +313,10 @@ def main():
        "(control: the frame size, through the same extractor and the same parse)",
        conv in dsg and "36,735 such enterprises" in dsg,
        "%d characters extracted; '%s' present" % (len(dsg), conv))
+    first = B.case_first_contact(log)
     alt = {}
     for hours in (7.0, 7.5, 8.0):
-        d2, r2 = collections.Counter(), collections.Counter()
+        d2 = collections.Counter()
         seen = set()
         for r in log:
             fd = float(r[7]) / (hours if r[8] == "h" else 1.0)
@@ -301,12 +324,13 @@ def main():
                 if r[5] in seen:
                     continue
                 seen.add(r[5])
-            d2[region_of[r[1]]] += fd
+            d2[region_at(r[1], first[r[0]])] += fd
         alt[hours] = round(d2["Alentejo"], 2)
-    ok("H2 the convention is load-bearing and now filed: the hour-recorded region's figure moves "
-       "with it", len({v for v in alt.values()}) == 3 and alt[8.0] == figs["a1_Alentejo"]["field_days"],
-       "Alentejo field days %.2f at seven hours, %.2f at seven and a half, %.2f at eight, which is "
-       "the committed figure" % (alt[7.0], alt[7.5], alt[8.0]))
+    ok("H2 the convention is still true of the log and reaches no graded figure: the field days it "
+       "governs are not asked for", len({v for v in alt.values()}) == 3
+       and not [k for r in W.REGIONS for k in figs["a1_%s" % r] if "day" in k],
+       "Alentejo field days would read %.2f at seven hours, %.2f at seven and a half and %.2f at "
+       "eight, and no graded figure reads them" % (alt[7.0], alt[7.5], alt[8.0]))
     ok("H3 the convention is filed once, in the document whose file it describes",
        sum(1 for t in (dsg, memo, rel, _pdf("national_waste_management_plan_targets.pdf"))
            if conv in t) == 1, "one of four shipped documents states it")
@@ -669,9 +693,8 @@ def _sf13(P, a3):
     own = {r[0] for r in ret} - auth
     origins = {r[2] for r in rec}
     allin = collections.Counter()
-    for r in ret:
-        v = float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
-        allin[r[1]] += v
+    for (ent, reg), v in B.municipal_year(ret, set()).items():
+        allin[reg] += v
     rcv = collections.Counter()
     for r in rec:
         rcv[r[3]] += float(r[4])
@@ -698,15 +721,10 @@ def _sf14(P):
     for r in rec:
         by_origin[r[3]] += float(r[4])
         by_facility[fac_reg[r[0]]] += float(r[4])
-    col = collections.Counter()
-    for r in ret:
-        col[r[1]] += float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
     auth = set(pack.AUTHORITY.values())
     col = collections.Counter()
-    for r in ret:
-        if r[0] in auth:
-            continue
-        col[r[1]] += float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
+    for (_ent, reg), v in B.municipal_year(ret, auth).items():
+        col[reg] += v
     moved = [abs((col[reg] - by_facility[reg]) - (col[reg] - by_origin[reg]))
              / abs(col[reg] - by_origin[reg]) for reg in W.REGIONS]
     return (not bad and min(moved) > 1.0), \
@@ -830,12 +848,247 @@ def _sf11(P, md):
         "%d supersessions, and no join from the micro-data to a permit exists" % len(sup)
 
 
-def _sf12(log, region_of):
+def _sf12(log, region_at, figs):
+    """The division books field work in field days of eight hours and the log's time_unit column
+    gives the unit each row is in, which the collection documentation states. The convention is
+    still true of the shipped log and no graded figure reads the field_days column at all, so the
+    hours against days reading cannot move an answer."""
+    first = B.case_first_contact(log)
     units = collections.Counter()
     for r in log:
-        units[(region_of[r[1]], r[8])] += 1
+        units[(region_at(r[1], first[r[0]]), r[8])] += 1
     hours = {reg for (reg, u) in units if u == "h"}
-    return len(hours) == 1, "the hours unit appears in one region (%s)" % sorted(hours)
+    graded = [k for k in figs if "field_day" in k or "per_day" in k]
+    for r in W.REGIONS:
+        graded += [k for k in figs.get("a1_%s" % r, {}) if "day" in k]
+    return (len(hours) == 1 and not graded), \
+        ("the hours unit appears in one region (%s) and %d of the %d graded figures read the "
+         "field_days column" % (sorted(hours), len(graded), 28))
+
+
+def _sf15(log, region_at, a1):
+    """"by the enterprise's region": the enterprise the collection case was opened for. Field cases
+    are allocated by workload, so the team identifier is a different basis and a different answer;
+    and the enterprise's own region is the same at every contact date on its case, so the basis is
+    one number and not a date-by-date choice."""
+    first = B.case_first_contact(log)
+    teams = {"EQ-%s" % r[:3].upper(): r for r in W.REGIONS}
+    byteam, cases = collections.Counter(), collections.Counter()
+    moved = 0
+    seen = set()
+    for r in log:
+        t = tuple(r)
+        if t in seen:
+            continue
+        seen.add(t)
+        byteam[teams[r[4]]] += 1
+        if teams[r[4]] != region_at(r[1], first[r[0]]):
+            moved += 1
+    unstable = [r[0] for r in log if region_at(r[1], r[3]) != region_at(r[1], first[r[0]])]
+    gap = [abs(byteam[reg] - a1[reg]["contacts"]) for reg in W.REGIONS]
+    return (moved > 200 and not unstable and min(gap) > 0), \
+        ("%d contacts were made by a team other than the one based in the enterprise's region, so "
+         "the team basis moves every region's figure by %d to %d contacts; and no case's region "
+         "changes across its own contact dates (%d exceptions)"
+         % (moved, min(gap), max(gap), len(unstable)))
+
+
+def _sf18(log, region_at, a1):
+    """The asking sentence divides the figure beside it, so the numerator is every contact the
+    round made in the region. The restricted reading (the contacts on the cases that returned) is
+    a different number on every region, which is why the sentence names what it divides."""
+    first = B.case_first_contact(log)
+    ret_cases = {r[0] for r in log if r[9] == "usable return"}
+    seen, part, rets = set(), collections.Counter(), collections.Counter()
+    for r in log:
+        t = tuple(r)
+        if t in seen:
+            continue
+        seen.add(t)
+        if r[0] in ret_cases:
+            part[region_at(r[1], first[r[0]])] += 1
+    cases = set()
+    for r in log:
+        if r[9] == "usable return" and r[0] not in cases:
+            cases.add(r[0])
+            rets[region_at(r[1], first[r[0]])] += 1
+    alt = {reg: part[reg] / rets[reg] for reg in W.REGIONS}
+    gaps = [a1[reg]["per_return"] - alt[reg] for reg in W.REGIONS]
+    return all(g > 0.05 for g in gaps), \
+        ("the restricted reading gives %s against the committed %s"
+         % (", ".join("%.2f" % alt[r] for r in W.REGIONS),
+            ", ".join("%.2f" % a1[r]["per_return"] for r in W.REGIONS)))
+
+
+def _sf16(log):
+    out = [r[3] for r in log if not r[3].startswith("2026")]
+    return not out, "%d of %d contacts are dated outside 2026" % (len(out), len(log))
+
+
+def _a1_forcing(log, cw, current_region, region_at, a1):
+    """The figure that makes the current-row reading wrong. A permit number freed when its holder's
+    permit lapsed carries a second crosswalk row from the date the agency reissued it, and that
+    date is after the last contact the log records, so the enterprise on the row marked current
+    cannot be the enterprise the round contacted under that number."""
+    first = B.case_first_contact(log)
+    rows_by = collections.defaultdict(list)
+    for r in cw:
+        rows_by[r[0]].append(r)
+    last_contact = max(r[3] for r in log)
+    inlog = {r[1] for r in log}
+    reissued = [p for p, rs in rows_by.items()
+                if p in inlog and len({r[1] for r in rs}) > 1
+                and min(r[6] for r in rs if r[4] == "current") > last_contact]
+    differs = [p for p in reissued if current_region[p] != region_at(p, first_of(log, p, first))]
+    # every graded A1 figure moves under the current-row reading
+    con, ret = collections.Counter(), collections.Counter()
+    seen, cs = set(), set()
+    for r in log:
+        t = tuple(r)
+        if t in seen:
+            continue
+        seen.add(t)
+        con[current_region[r[1]]] += 1
+        if r[9] == "usable return" and r[0] not in cs:
+            cs.add(r[0])
+            ret[current_region[r[1]]] += 1
+    moves = [(abs(con[reg] - a1[reg]["contacts"]),
+              abs(con[reg] / ret[reg] - a1[reg]["per_return"])) for reg in W.REGIONS]
+    runs = sorted({r[6] for r in cw if r[6] in W.LICENSING_RUNS})
+    batch = [r for r in cw if r[6] in W.LICENSING_RUNS]
+    twins = [r for r in batch if len({x[1] for x in rows_by[r[0]]}) == 1]
+    return (len(reissued) == W.PERMIT_REISSUE_N and len(differs) > 100 and len(twins) >= 10
+            and min(m[0] for m in moves) >= 1 and min(m[1] for m in moves) > 0.005), \
+        ("%d of the round's permit numbers carry a crosswalk row marked current whose validity "
+         "starts in the agency's licensing runs of %s, after the last contact in the log (%s); the "
+         "region differs on %d of them, and the current-row reading moves every region's contacts "
+         "by %d to %d and every contacts-per-return figure by %.2f to %.2f. The batch is not one "
+         "kind of row: %d of its %d rows are ordinary re-registrations under a new number for the "
+         "same holder, so no value in the column isolates the device"
+         % (len(reissued), " and ".join(runs), last_contact, len(differs),
+            min(m[0] for m in moves), max(m[0] for m in moves),
+            min(m[1] for m in moves), max(m[1] for m in moves), len(twins), len(batch)))
+
+
+def first_of(log, permit, first):
+    for r in log:
+        if r[1] == permit:
+            return first[r[0]]
+    return "2026-01-01"
+
+
+def _a3_forcing(P, a3):
+    """The figure that makes the twelve-month sum wrong. On five municipalities' returns the
+    December slot carries the year, so it stands at about twelve times the mean of its own eleven
+    months while no other return month exceeds one and a half times its own; and under the summed
+    reading those five municipalities' receipts cover about half their collections while every
+    other municipality's cover 94 to 99 per cent."""
+    ret = B.rows(P["mret"])
+    rec = B.rows(P["mrec"])
+    auth = set(pack.AUTHORITY.values())
+    by = collections.defaultdict(dict)
+    for r in ret:
+        if r[0] in auth:
+            continue
+        by[r[0]][r[2]] = float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
+    ratios = {}
+    for ent, s in by.items():
+        mths = sorted(s)
+        rest = [s[m] for m in mths[:-1]]
+        ratios[ent] = s[mths[-1]] / (sum(rest) / float(len(rest)))
+    high = sorted(e for e, v in ratios.items() if v > 5.0)
+    low = max(v for e, v in ratios.items() if e not in high)
+    rcv = collections.Counter()
+    for r in rec:
+        rcv[r[2]] += float(r[4])
+    cov_dev = [rcv[e] / sum(by[e].values()) for e in high]
+    cov_ok = [rcv[e] / sum(by[e].values()) for e in by if e not in high]
+    return (sorted(high) == sorted(W.ANNUAL_IN_DECEMBER) and low < 1.5
+            and max(cov_dev) < 0.60 < min(cov_ok)), \
+        ("%d municipalities carry a December row at %.1f to %.1f times the mean of their own "
+         "eleven months, against a highest %.2f elsewhere; summing twelve months puts their "
+         "receipts at %.0f to %.0f per cent of collections against %.0f to %.0f per cent for the "
+         "other %d" % (len(high), min(ratios[e] for e in high), max(ratios[e] for e in high), low,
+                       100 * min(cov_dev), 100 * max(cov_dev), 100 * min(cov_ok), 100 * max(cov_ok),
+                       len(cov_ok)))
+
+
+# The pack as it was shipped before this rubric repair, file by file. A repair of the ask layer may
+# move an ask file and nothing else, so the digest of every file the call reads is asserted here
+# rather than argued (supplemental-stumping Part 6).
+SHIPPED = {
+    "bws_2026_design_and_weighting.pdf": "5eb5649b5200bccf",
+    "bws_2026_microdata.csv": "f858aceece84e0be",
+    "carrier_permit_vehicle_log_2026.csv": "3f5ad133ed5b82ec",
+    "collection_capacity_note_2027.pdf": "1dbce241ecb80d3a",
+    "facility_register.csv": "2dc53cbe2fb0d0ba",
+    "hazardous_export_notifications_2026.csv": "79908c7556cf6555",
+    "municipal_facility_receipts_2026.csv": "77ff8801d2801301",
+    "national_waste_management_plan_targets.pdf": "f82a3cbd23d6778f",
+    "treatment_operation_codes.xlsx": "55dfc06f35527e52",
+    "waste_code_crosswalk.csv": "50eb72b3a2d877de",
+    "waste_movement_legs_2025.csv": "c0218a956addb459",
+    "waste_movement_legs_2026_h1.csv": "b8a2e7d6d55578be",
+    "waste_movement_legs_2026_h2.csv": "cf45c2a2994d7898",
+    "waste_statistics_2025_release.pdf": "235fdc194de8863b",
+}
+ASK_FILES = ("bws_2026_response_log.csv", "enterprise_permit_crosswalk.csv",
+             "municipal_waste_returns_2026.csv")
+
+
+def _scope():
+    import hashlib
+    d = os.path.join(TASK, "target")
+    moved, missing = [], []
+    for f, want in SHIPPED.items():
+        got = hashlib.sha256(open(os.path.join(d, f), "rb").read()).hexdigest()[:16]
+        if got != want:
+            moved.append(f)
+    for f in ASK_FILES:
+        if not os.path.exists(os.path.join(d, f)):
+            missing.append(f)
+    return (not moved and not missing), \
+        ("%d files unchanged since the shipped pack, %d ask files rewritten (%s)"
+         % (len(SHIPPED), len(ASK_FILES), ", ".join(ASK_FILES))
+         if not moved else "moved: %s" % ", ".join(moved))
+
+
+def _d7(P, cw, ch, kind_of, code2stream, facility_permits, att, samp, gold):
+    """The gravest class of finding, asserted rather than argued: an ask device with a path into the
+    call. Every number the January 2027 runs reissued belonged to a holder with no 2026 despatch
+    leg, so the strictest reading of the permit register (keep only producers whose row valid in
+    2026 is current) drops not one leg on their account, and it designates the same stream. The 29
+    superseded numbers it does drop are the pack's own hazard H4 and were in the shipped pack."""
+    by = collections.defaultdict(list)
+    for r in cw:
+        by[r[0]].append(r)
+    reissued = {p for p, rs in by.items() if len({x[1] for x in rs}) > 1}
+    desp = {x[4] for c in ch for x in ch[c]
+            if x[2] == "PRODUCER_DESPATCH" and x[3].startswith("2026")}
+
+    def current_in_2026(p):
+        rs = [r for r in by.get(p, []) if r[6] <= "2026-12-31"]
+        return bool(rs) and rs[-1][4] == "current"
+
+    full = B.recovered_by_stream(ch, kind_of, code2stream, facility_permits, 2026)
+    kept = collections.Counter()
+    child = {}
+    for c, rs in ch.items():
+        if rs[0][10]:
+            child.setdefault(rs[0][10], c)
+    po = {c for c, rs in ch.items()
+          if [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0][4] not in facility_permits}
+    for c in po:
+        d = [x for x in ch[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if not d[3].startswith("2026") or not current_in_2026(d[4]):
+            continue
+        if kind_of.get(B.terminal_op(ch, c, kind_of, child)) == "recovery":
+            kept[code2stream[d[7]]] += float(d[8])
+    cl = _call_from(kept, samp, att, gold)
+    return (not (reissued & desp) and cl == [gold]), \
+        ("0 of the %d reissued numbers is a 2026 despatcher; the strictest permit-status reading "
+         "keeps %d t of %d t for %s and still designates %s"
+         % (len(reissued), round(kept[gold]), round(full[gold]), gold, cl))
 
 
 def _d4(ch, kind_of, code2stream, facility_permits, att, samp, gold):

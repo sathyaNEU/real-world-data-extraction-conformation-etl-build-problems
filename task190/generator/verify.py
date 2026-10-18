@@ -219,34 +219,58 @@ def main():
 
     # ---- the asks
     _h, cwe = read("enterprise_permit_crosswalk.csv")
-    region_of = {r[0]: r[2] for r in cwe}
     _h, lg = read("bws_2026_response_log.csv")
-    days, ret, seenv = collections.Counter(), collections.Counter(), set()
+    # The crosswalk is effective dated and a permit number can carry more than one holder, so the
+    # verifier works out for itself which rows can be the enterprise a 2026 case was opened for:
+    # a row whose validity starts after the last contact the log records cannot be.
+    hold = collections.defaultdict(list)
+    for r in cwe:
+        hold[r[0]].append((r[6], r[2], r[1]))
+    for k in hold:
+        hold[k].sort()
+    last_contact = max(r[3] for r in lg)
+    reissued = [p for p, rs in hold.items() if len({x[2] for x in rs}) > 1
+                and any(x[0] > last_contact for x in rs)]
+    ok("the verifier finds the reissued permit numbers from the data alone",
+       len(reissued) >= 100 and all(any(x[0] <= last_contact for x in hold[p]) for p in reissued),
+       "%d numbers carry a holder whose validity starts after the last contact (%s), and every one "
+       "of them also carries a holder of record over the round" % (len(reissued), last_contact))
+    first = {}
     for r in lg:
-        reg = region_of[r[1]]
-        fd = float(r[7]) / (8.0 if r[8] == "h" else 1.0)
-        if r[5]:
-            if r[5] in seenv:
-                continue
-            seenv.add(r[5])
-        days[reg] += fd
+        if r[0] not in first or r[3] < first[r[0]]:
+            first[r[0]] = r[3]
+
+    def region_at(permit, on):
+        rs = [x for x in hold[permit] if x[0] <= on]
+        return (rs[-1] if rs else hold[permit][0])[1]
+
+    con, ret, seen = collections.Counter(), collections.Counter(), set()
+    for r in lg:
+        t = tuple(r)
+        if t in seen:
+            continue
+        seen.add(t)
+        con[region_at(r[1], first[r[0]])] += 1
     done = set()
     for r in lg:
         if r[9] == "usable return" and r[0] not in done:
             done.add(r[0])
-            ret[region_of[r[1]]] += 1
+            ret[region_at(r[1], first[r[0]])] += 1
     ok("the usable returns counted by case tie to the micro-data's records",
        sum(ret.values()) == len(md), "%d usable returns over five regions, %d micro-data records"
        % (sum(ret.values()), len(md)))
+    ok("every case sits in one region across its own contact dates",
+       not [r[0] for r in lg if region_at(r[1], r[3]) != region_at(r[1], first[r[0]])],
+       "no case changes region between its first contact and any later one")
     ws = wb["Collection effort"]
     for row in ws.iter_rows(min_row=5, max_row=9, values_only=True):
         if not row[0]:
             continue
         reg = row[0]
         bad = []
-        for label, got, want in (("days", row[1], round(days[reg], 2)),
+        for label, got, want in (("contacts", row[1], con[reg]),
                                  ("returns", row[2], ret[reg]),
-                                 ("per day", row[3], round(ret[reg] / days[reg], 2))):
+                                 ("per return", row[3], round(con[reg] / ret[reg], 2))):
             if got != want:
                 bad.append("%s %r != %r" % (label, got, want))
         ok("Collection effort row recomputes: %s" % reg, not bad, "; ".join(bad))
@@ -328,10 +352,23 @@ def main():
                         auth.add(ent)
     ok("the verifier finds the reporting-on-behalf entities from the data alone", len(auth) == 5,
        "%d found: %s" % (len(auth), sorted(auth)[:2]))
+    # A return month standing beside its own eleven as a year rather than a month is the year, so
+    # it is taken once at that row; the verifier finds those entities from the arithmetic.
+    annual = set()
     for (ent, reg), series in bym.items():
         if ent in auth:
             continue
-        col[reg] += sum(series.values())
+        mths = sorted(series)
+        rest = [series[m] for m in mths[:-1]]
+        if series[mths[-1]] > 5.0 * (sum(rest) / float(len(rest))):
+            annual.add(ent)
+    ok("the verifier finds the returns whose December row is the year from the data alone",
+       len(annual) == 5, "%d found: %s" % (len(annual), sorted(annual)))
+    for (ent, reg), series in bym.items():
+        if ent in auth:
+            continue
+        mths = sorted(series)
+        col[reg] += series[mths[-1]] if ent in annual else sum(series.values())
     for r in mrec:
         rcv[r[3]] += float(r[4])
     ws = wb["Municipal reconciliation"]
@@ -356,8 +393,10 @@ def main():
         return " ".join(pdf_text(name).split())
 
     dsg = flat("bws_2026_design_and_weighting.pdf")
-    ok("the design document states the field-day convention (control: the frame size)",
-       "field days of eight hours" in dsg and "36,735 such enterprises" in dsg,
+    ok("the design document states the field-day convention and the visit grain (control: the "
+       "frame size)",
+       "field days of eight hours" in dsg and "36,735 such enterprises" in dsg
+       and "recorded on each case the visit covered" in dsg,
        "%d characters of text, convention present: %s"
        % (len(dsg), "field days of eight hours" in dsg))
     memo = flat("collection_capacity_note_2027.pdf")

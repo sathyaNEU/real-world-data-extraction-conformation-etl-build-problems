@@ -138,7 +138,11 @@ LOUD_STREAM = "mixed_ci"
 # usually in another region. Every contact in the log predates the reissue, so the holder at the
 # contact date is the enterprise the case was opened for; the crosswalk's current row is not.
 PERMIT_REISSUE_N = 150            # cases of the round whose permit number has since been reissued
-PERMIT_REISSUE_FROM = "2027-01-05"
+PERMIT_REISSUE_FROM = "2027-01-05"   # the first of the agency's January 2027 licensing runs
+# The agency licenses weekly. A run issues permits of both kinds, new ones on numbers freed at the
+# end of the year and replacement numbers for holders that re-registered, so no date in the column
+# belongs to one kind of row.
+LICENSING_RUNS = ("2027-01-05", "2027-01-12", "2027-01-19", "2027-01-26")
 PERMIT_REISSUE_SAME_REGION = 24   # of those, reissued inside the same region: the benign twin
 
 # Field cases are allocated by workload, so a team near a boundary works some of the neighbouring

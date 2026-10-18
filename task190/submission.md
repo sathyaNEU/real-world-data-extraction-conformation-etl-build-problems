@@ -50,12 +50,12 @@ Its rate is 56.6 per cent against a 59.5 per cent target, a 2.9 point shortfall 
    - Glass wastes: 24,908 t arising, 14,305 t despatched, 13,933 t confirmed at a final treatment operation, 13,376 t confirmed at a recovery operation, pass through 57.4 per cent, 97.4 per cent, 96.0 per cent
    - Plastic wastes: 22,659 t arising, 11,001 t despatched, 10,638 t confirmed at a final treatment operation, 7,659 t confirmed at a recovery operation, pass through 48.6 per cent, 96.7 per cent, 72.0 per cent
    - Textile and leather wastes: 6,429 t arising, 3,438 t despatched, 3,307 t confirmed at a final treatment operation, 1,819 t confirmed at a recovery operation, pass through 53.5 per cent, 96.2 per cent, 55.0 per cent
-3. Collection effort, a row per region with the field days consumed and the usable returns per field day:
-   - Norte: 32.54 field days, 16.53 usable returns per field day
-   - Centro: 25.69 field days, 14.83 usable returns per field day
-   - Lisboa: 29.80 field days, 14.43 usable returns per field day
-   - Alentejo: 10.11 field days, 16.42 usable returns per field day
-   - Algarve: 7.66 field days, 15.01 usable returns per field day
+3. Collection effort, a row per region of the enterprise contacted with the contacts the 2026 round made and those contacts per usable return:
+   - Norte: 1,965 contacts, 3.65 contacts per usable return
+   - Centro: 1,387 contacts, 3.64 contacts per usable return
+   - Lisboa: 1,652 contacts, 3.84 contacts per usable return
+   - Alentejo: 641 contacts, 3.86 contacts per usable return
+   - Algarve: 434 contacts, 3.77 contacts per usable return
 4. Tonnage confirmed received at a recovery operation in the prior reference year, per stream:
    - Metal and metal-bearing wastes: 67,709 t
    - Mixed commercial and industrial wastes: 89,749 t
