@@ -1,35 +1,35 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science",
+  "status": "DESIGN",
+  "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-18",
-  "stump": "The default path closes Brettach Bank, its catch rate down about 47 per cent, because it reads each ground's stock from the members' catch per hour towed, which on Halmorie Deep held up while its stock fell furthest; only the organisation's autumn survey, its fixed stations in every depth band weighted by each band's share of the stock area, shows Halmorie Deep's fall of 63 per cent.",
-  "architecture": 2,
+  "stump": "The default path names Fennick General Hospital, about 63 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are mostly in NYHA class III or IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, about 60 per cent, as the lowest.",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-18"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (2026-10-18, as of 2026-11-06): sweeps 3, 4 and 6, every line harmless",
-    "reader": "architecture 2, 2026-10-18: Q1 to Q4 none, Q6 analytical; landed the call, the gap and all six falls, missed all thirteen ask figures; score_reader exit 1, Gate F failed"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, overuse.gate_g, answered in ## Draw)",
-    "nearest": "task268 v1 0.09 (this slot's own lineage)",
-    "surface": "eight promotions, all card keys, answered by the card's differentiation lines (task267, task266, task470 added at stage 3); personas in the pack: none"
+    "heart": "",
+    "nearest": "task134 v1 lineage 0.17, task265 0.15 (draw check)",
+    "surface": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (two optional ask-side pins)",
-    "report": "task268/determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "Architecture 2 spent at stage 4 (the reader landed the call by weighting the survey's depth bands by area). Next: re-root to architecture 3, the slot's last before retirement: stage 1 draw with guard.py recent, coverage, mechanisms and slots, a decisive step no documented design or filed estimand hands over (run the reflex sweep as code before the ladder), the card with this architecture moved into lineage, committed DRAWN.",
+  "resume": "Architecture 3 drawn 2026-10-18 (the slot's last): Heronmere Health's 2027 heart failure early-diagnosis programme, each hospital's two-year survival from diagnosis with the patients lost to a move beyond the death linkage carried from their NYHA class at the move. Next: stage 2 (readability screen, semantic fork table, ladder from the draw's prototype (the per-hospital age multipliers, the north and exchange move rates by class, the group departure share), ported into the generator, closure table, literal reader, oracles, ask sheet, prompt.txt) to precut exit 0, then the stage-3 generator.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,5 +37,5 @@
   "portal_status": "",
   "portal_status_date": "",
   "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
-  "seed_world": 69
+  "seed_world": null
 }

@@ -1,98 +1,89 @@
 {
   "task": "task268",
-  "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
+  "architecture": "v3 (a Florida nonprofit health system's 2027 heart failure early-diagnosis programme among five hospitals, by each hospital's two-year survival from diagnosis for its 2022 and 2023 newly diagnosed patients, the patients the registry lost when they moved beyond its death linkage counted at the survival their heart failure class at the move implies)",
   "drawn": "2026-10-18",
   "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a fishing producer organisation choosing the one ground its members close for the 2027 season by how far each ground's haddock stock has fallen since its 2019 to 2021 base, readable from the members' tow logbooks or from the organisation's fixed-station autumn survey",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "survival-time-to-event-analysis",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a hospital system's heart failure registry whose death linkage reaches Florida certificates and a neighbouring-state records exchange only, in a retirement coast whose patients move back north to their families once their heart failure worsens, so their deaths never reach the registry",
   "objective": "descriptive-distribution",
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Close Halmorie Deep to members' towed gear for 2027: its haddock stock fell 63% from its 2019 to 2021 average, 11 points more than Brettach Bank's 52%.",
-  "answer_source": "submission.md, Final Recommendation",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G3",
-    "G16"
+    "G6",
+    "G14",
+    "G12"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
+  "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every logbook field and the plan correctly standardises the members' catch per hour towed by year, cell, vessel and month, the field's own commercial index, and closes the ground whose catch rate fell furthest, while on the ground whose stock fell furthest the rate holds because the boats followed the shrinking stock into the deep cells it still fills; the fixed-station survey, each depth stratum weighted by its share of the ground's stock area, closes that ground instead.",
-  "domain_test": "The deciding quantity is a population mean over a whole area estimated from a sample whose locations the collectors choose by what they find there (preferential sampling) set against a probability sample of the same area; replacing the probability-sample estimator with the generic summary of the records (catch per unit of effort, raw or standardised) changes the call, and in another field's nouns there is no collector that follows the quantity it measures, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every field and the committee's criterion correctly runs a Kaplan-Meier estimate for each hospital, ending each patient's follow-up at the move out of the death linkage's reach that the registry records, and names the urban hospital lowest; Kaplan-Meier credits the patients who moved north with the survival of those who stayed, but at the retirement-coast hospital they were mostly in NYHA class III or IV at their last visit, and carried at the survival their class implies its two-year survival is the lowest of the five.",
+  "domain_test": "The deciding quantity is each hospital's two-year survival from heart failure diagnosis, a time-to-event estimate whose loss to follow-up is driven by the patient's recorded NYHA class (frail retirees moving back to family beyond the registry's death linkage), the field's informative censoring, handled by carrying each lost patient's survival from the clinical state recorded at the loss; with another field's nouns the class progression, the class-specific death rates and the migration of the frail elderly do not exist and the task stops reading the same.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:whole-area-probability-sample-against-a-preferential-record",
+  "layer2_pattern": "own:informative-censoring-by-clinical-state",
   "layer1": [
-    "the members' logbooks change from paper tow sheets (2019 to 2022, one line per trip and cell, round weight, hours fished) to e-logbook hauls (2023 on, gutted weight, haul start and end in UTC)",
-    "grid cells written as rectangle plus sub-square on the tow sheets and as one cell code on the e-logbook",
-    "a member vessel re-registered in March 2024 under new port letters, its tow sheets under the old letters, the e-logbook under its RSS number",
-    "two survey stations on Vallaskie Hole replaced from 2023 after the net was torn on them, one Cullardy Patch station not fished in 2020 for weather",
-    "survey tows placed in grid cells by shot position, the ground code on the tow and the depth band only in Annex A"
+    "a registry export at visit grain whose NYHA class is written four ways across two EHR eras, with a medical record number crosswalk at the 2024 migration",
+    "Florida death certificates matched to the registry by the state's linkage file, and a quarterly neighbouring-state exchange file in its own layout",
+    "follow-up end reasons as coded text with a destination state, and a cardiology group's 2023 departure that ended follow-up for its patients",
+    "diagnosis dates against first clinic visit dates, and hospital codes that two campuses share before a 2024 split"
   ],
-  "stakeholder_role": "the producer organisation's science and sustainability officer, who puts the 2027 closure to the management committee",
+  "stakeholder_role": "the heart and vascular service line's outcomes epidemiologist, who proposes the 2027 programme hospital to the service line committee",
   "role_family": "research_desk",
-  "scoring_unit": "other",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "elogbook_hauls_2023_2026.csv",
-    "rows": 32246,
-    "entity": "one haul by a member trawler, its times, cell and catch",
-    "grain": "vessel x haul",
+    "file": "hf_registry_visits_2022_2025.csv",
+    "rows": 0,
+    "entity": "one heart failure clinic visit with the patient's NYHA class",
+    "grain": "visit",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United Kingdom, Scottish waters (the producer organisation, its grounds and its people are fictional; personas on the en_GB index)",
-    "currency": "GBP",
-    "org_type": "fishing producer organisation",
+    "geography": "United States, Florida (the health system, its hospitals, registry, exchange and people are fictional; counties and states are real geography used descriptively)",
+    "currency": "USD",
+    "org_type": "nonprofit health system",
     "invented_names": [
-      "Dunvarra Fish Producers' Organisation",
-      "Skiravie Bank",
-      "Halmorie Deep",
-      "Moraskie Ground",
-      "Brettach Bank",
-      "Vallaskie Hole",
-      "Cullardy Patch"
+      "Kestrel Coast Health"
     ],
     "people": [
-      "Carol Thorpe",
-      "Iain Ali"
+      "Louis Harrington",
+      "Megan Swanson"
     ]
   },
+  "people": [
+    "Louis Harrington",
+    "Megan Swanson"
+  ],
   "deliverables": [
-    "ground_closure_2027.xlsx",
-    "closure_committee_2027.pptx"
+    "hf_programme_site_2027.xlsx",
+    "service_line_committee_hf_2027.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is how far each area's stock has fallen, observable either through the records of collectors who choose where to sample by how much they find there or through a fixed probability sample of the whole area; as a stock shrinks it retreats into the best part of its area and the collectors follow it, so their catch per unit of effort holds up while the stock falls and the parts they abandon drop out of their record, and only the fixed sample, weighted over the whole area, shows the fall.",
-  "driver_concrete": "Each ground's haddock stock in 2026 against its 2019 to 2021 average, read from the organisation's autumn survey (fixed stations in depth strata, each stratum weighted by its share of the ground's stock area), not from the members' catch per hour towed, which holds up on the ground whose stock retreated into its deep core because the boats followed it there and stopped working the shallow cells.",
-  "stump": "A competent solver standardises the members' catch per hour towed by year, cell, vessel and month and closes the ground whose catch rate fell furthest; the step that lands it there is reading each stock from where the fleet chose to fish, which on the ground whose stock fell furthest stayed in the deep cells the shrinking stock still fills, while the survey's stations in the abandoned shallows show the stock gone.",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
+  "driver_concrete": "Each hospital's two-year survival from heart failure diagnosis for its 2022 and 2023 patients, the patients who moved beyond the registry's death linkage carried from their NYHA class at their last visit through the class changes and class-specific death rates of the patients still followed (equivalently, the followed patients weighted by the inverse of their chance of staying in reach given their class), not Kaplan-Meier with each move as ordinary censoring, which credits the retirement coast's frail movers with the survival of those who stayed.",
+  "stump": "A competent solver runs Kaplan-Meier for each hospital with follow-up ending at each recorded move beyond the death linkage and names the urban hospital lowest; the step that lands it there is treating those moves as uninformative, when at the retirement-coast hospital they are concentrated among patients whose class had worsened to III or IV, while the movers whose deaths the exchange does report are the healthier ones.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task199": "task199 reads a rise in event frequency against the volume of accounts its watchers filed, effort measures the events themselves produce; task268 v2 reads a stock's fall from a fixed probability sample of the whole stock area because the commercial effort moved into the cells the shrinking stock still fills, a spatial selection with no event-produced effort measure",
-    "task196": "task196 recovers an uncounted total from two capture channels whose second is produced by follow-up on the first; task268 v2 has one preferentially located record and one probability sample of the same area, no capture overlap and no total to recover, only a change read where the record stopped covering the stock",
-    "task255": "task255 fits a size distribution's upper tail through item floors as truncation and a moving ceiling as censoring; task268 v2 has no size distribution, no truncation and no censoring, only an area mean whose record covers the cells the collectors chose",
-    "task456": "task456 counts a latent state from three error-prone records with a latent class model; task268 v2 has no misclassification and no latent class, a probability sample against a record located by what the collectors find",
-    "task462": "task462 corrects intermittent sources' detections by a size-dependent detection probability measured on blind trials; task268 v2 has no detection model, the survey's tows catch what is there and the record's bias is where the boats chose to tow",
-    "task267": "task267 weights each verified member by the inverse of its older-rule group's checking rate, one population read through a two-phase check; task268 v2 chooses between two records of one area, the catch rates of boats that follow the stock and a fixed survey of the whole area, and that choice is its decisive step, the survey's area weights under equal allocation only its second move",
-    "task266": "task266 builds a cumulative incidence from competing endings with open spells censored; task268 v2 has no spells, endings or censoring, only an area mean read from where the fleet chose to tow against a probability sample of the whole stock area",
-    "task470": "task470 rebuilds activity a sensor never records from the fully counted sites' rate per unrecorded unit; task268 v2 rebuilds nothing unrecorded, it replaces the fleet's record, which over-represents the cells the stock still fills, with fixed stations covering every depth band of every ground"
+    "task453": "task453 v2 reads a measurement change's effect in a rotating panel occasion by occasion against the same occasion before the change; task268 v3 measures nothing that changes: the patients still followed thin out by clinical state as the frail move beyond the death linkage, and each lost patient's survival is carried from the class recorded at the loss"
   },
   "lineage": [
     {
@@ -123,13 +114,38 @@
       "architecture": "v1 (a quick-commerce grocer's 2027 weekday dark-store pilot among six metros, by each core's delivery-weighted density of people present, the commuting table's flows carried at a national survey's days on the premises)",
       "drawn": "2026-10-18",
       "fate": "spent 2026-10-18 at stage 4: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call, Tessavon at 28,805 against Corrisford's 21,709 (score_reader.py exit 1); the stratum was a classifier both sources share, so the careful analyst's first group-by; the judge found the call forced, Gate H passing, and two ask forks"
+    },
+    {
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G3",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "role_family": "research_desk",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "driver": "The decisive quantity is how far each area's stock has fallen, observable either through the records of collectors who choose where to sample by how much they find there or through a fixed probability sample of the whole area; as a stock shrinks it retreats into the best part of its area and the collectors follow it, so their catch per unit of effort holds up while the stock falls and the parts they abandon drop out of their record, and only the fixed sample, weighted over the whole area, shows the fall.",
+      "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
+      "drawn": "2026-10-18",
+      "fate": "spent 2026-10-18 at stage 4: the isolated reader went to the autumn survey first and weighted each depth band by its share of the stock area from plan 4.2's estimand and the manual's equal stations per band, committing Halmorie Deep at 63 per cent against Brettach Bank's 52 with every fall (score_reader.py exit 1); a survey whose own manual describes its strata under an estimand filed as a total over an area makes the design-based estimate the careful analyst's default; the judge found the call forced, DETERMINISTIC and APPROVE"
     }
   ],
-  "notes": "Re-rooted 2026-10-18: the seed DA18's world (siting by weekday presence) offers no lever beyond carrying a survey rate within strata both sources share, which the stage-4 reader took by reflex; architecture 2 is a new world drawn from the escape the record names, a forcing input in a different file at a different grain (the fixed-station survey over the whole stock area) whose variety no stratification of the decision file (the logbooks) reproduces. stump_strategy population_selection: the record's population of cells is selected on the outcome (the boats go where the fish are). Personas drawn with guard.py names --geo 'United Kingdom' --seed 268. WARNs answered: repeat.gate_g and overuse.gate_g (method_or_model_selection): the decisive step chooses the estimator of each stock (the probability sample over the whole area against the record the fleet's choices located), a method choice no other mechanism describes; the batch varies elsewhere (general statistics in a fisheries setting, a member body, a committee, shape 01, a where question, a pptx deck). architecture 2 spent at stage 4 on 2026-10-18: the isolated reader went straight to the survey, weighted the depth bands by area from plan 4.2's estimand and the manual's equal stations per band, and committed Halmorie Deep, the gap and every fall (score_reader exit 1); the judge thread found the call forced (DETERMINISTIC, APPROVE).",
-  "people": [
-    "Carol Thorpe",
-    "Iain Ali"
-  ],
-  "registered": "2026-10-18T20:48:59Z",
-  "architecture_spent": true
+  "architecture_spent": false,
+  "notes": "architecture 3 drawn 2026-10-18 after architecture 2 was spent at stage 4 (the reader weighted the survey's depth bands by area by reflex); the slot's last architecture before retirement. A first architecture-3 draft (claims completed by notification channel) was dropped before registration: it repeats task181 v2's per-route completion, which a solver landed once the estimand was filed.",
+  "registered": "2026-10-18T23:10:24Z"
 }
