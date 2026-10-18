@@ -1,0 +1,52 @@
+{
+ "task": "task177",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "card_registered": false,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "wave": "wave 8 (new), seed FC48: the world, the decision and the quantity kept (thirty unstaffed drop-off points opened in December and January with 15 bins of 1,100 litres, ten on the coast and twenty in town, five at the Larchmere lake enclave; forecast July average weekly fill at most 80 per cent of a point's bins; weekly emptying logs with side waste; the bin order by 15 March); the seed's filed 'of like demand', district-index decoy and holiday-home flag set aside",
+ "screen": {
+  "assigned": "the decisive step a forecasting judgment a waste-services or demand analyst would recognise, inferred from the data, the rival rejected out of sample; idea named: the right comparison group for the summer curve, peers inferred from behaviour or composition across the haulage districts; graded figures whole bins to add per point and the total, every standard variant agreeing on every point's whole bins with the golden a quarter-bin from an edge with one sigma",
+  "candidate_1": "three kinds (residents, coastal villages with some lets, holiday cottages; Larchmere cottages inside the Town district): 140 mature and 30 new points, weekly noise 8 per cent, seeds 1 to 3; golden (8 nearest peers on the Christmas and half-term responses) 153, 146, 156 bins to add; family -12 to +3, -15 to +1, -8 to +3 per cent (silhouette k-means and quadratic fit low); one sigma 2.8 to 3.3 per cent; per point a median spread of 3.1 bins needed, up to 6.3; reflexes: district -56 to -62, dashboard -56 to -62, all points -67 to -71, nearest points -55 to -69, coast distance -58 to -65, the Coast index for the holiday-looking -36 to -44, flat 1.25 -31 to -37, flat 1.5 +33 to +34, size peers -24, -30, -4; behavioural readings inside the family (holiday points pooled -12, -8, -3; top-ratio peers -1, +3, +9; half-term alone -5, -10, -3); flat crossing at 1.37 to 1.38 (1.35 and 1.40 within 7 to 14 bins); back-test RMS log 0.056 to 0.066 against the district's 0.21 to 0.23 (off-district kinds 0.047 to 0.071 against 0.43 to 0.46); no rounding of 10, 20 or 25 holds the family with one sigma, 50 holds it in two seeds with flat 1.35 and 1.40 and the behavioural readings inside the bin",
+  "candidate_2": "lets told from second homes (Larchmere lets; owner-used second-home villages the lure; the coast's new points lets and estates): 148 mature and the same 30 new points, seeds 1 to 3; golden 236, 233, 238; family -5 to +2, -6 to +2, -2 to +2 per cent; one sigma 2.7 to 3.9 per cent; per point a median spread of 2.4 to 3.2 bins, up to 7.9; the bracket held (holiday points pooled +28 to +39, top-ratio peers +32 to +42, district -44, the Coast index for the lake -31 to -33) but flat 1.5 sits +4 to +8 (crossing at 1.46 to 1.47), the half-term alone -1 to +1 on these new points despite a back-test RMS of 0.24 to 0.28, the size peers +3 in seed 1 and the nearest point -1 in seed 3; back-test 0.057 to 0.065 against 0.35 to 0.36 (off-district 0.060 to 0.068 against 0.62 to 0.64); no rounding of 10, 20, 25 or 50 holds the family with one sigma inside a quarter-bin margin in any seed",
+  "per_point": "infeasible on both: every defensible variant within a quarter-bin at 20 to 30 bins needed is about 1 per cent of the July forecast, needing a within-kind ratio spread near 1 per cent and weekly noise near 3 per cent (lockstep); measured spreads 2.4 to 3.2 bins",
+  "eda6c8c_screens": "run as code on the clean truth for both: dispersion does not apply (a level; within-kind ratio CV 0.022 to 0.063); variance-only passes (golden 1.77 to 2.61 times the district route); the common-exposure subset (filters on district, all points, nearest points, coast distance, size, the Coast district for the holiday-looking) misses by 15 to 71 per cent except the size peers (candidate 1 seed 3, candidate 2 seed 1) and the nearest point (candidate 2 seed 3); truncation direction does not apply (overflow logged as side waste)",
+  "registration": "the comparison-group step is honestly composition_mix (F5; task124's label for a kind read from records), which task165 registered at 14:10 and task173 carries in the queue; forecast_method_backtest would have passed and was not used; the window after task165 (task201, task247, task165) banned season_or_peak and purchase_order_or_contract, utility_or_infrastructure and local_government, field_unit_lead and operations_director",
+  "taxonomy": "the seasonal-population quantity sits in sociology-demography population-estimation-demographic-projection (F); the literal home urban-regional-science municipal-service-demand-resource-allocation (F) is task165's pairing in the window",
+  "repeat_screen": "guard.py recent, mechanisms --objective forecasting and slots before any card; slots on both driver sentences and on peers, analogs, summer, holiday, half-term, seasonality, second homes, lets, owners, occupancy, cold start, like demand, comparable sites, seasonal index district, summer uplift, drop-off bins: no slot spent the mechanism; closest card by mechanism task124",
+  "paper_only": "new points' ramp (FC04, task133's seed); peers' July completed past capacity (task168's driver); the two Julys weather-normalised (8 to 12 per cent, inside the bin); the summer holiday's start (the same late-July days in 2025 to 2027, no lever); deposits diverted from nearby points (no lever); dwellings times a kind's yield (determinate only under lockstep capture); the total July weekly fill (a flat uplift lands)",
+  "prototypes": "scratchpad b177/proto: world1.py, world3.py, world4.py, p1.py to p11.py, typestats.py, sig6.py, screen177.py (output screen177.out, byte-identical with screen177_run2.out over two runs)"
+ },
+ "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Both forms of the brief's comparison-group idea failed on measurement: peers read from the winter response to Christmas and the half-term (three kinds; the family will not hold whole bins at any point, median spread 3.1 bins, and at the width the total needs a flat 1.35 to 1.40 and the behavioural shortcuts land) and the same reading with lets told from second homes (the bracket holds in shape, but flat 1.5 sits 4 to 8 per cent over the golden and no rounding holds the family with one sigma). The step is also honestly composition_mix, which task165 registered and task173 carries. Read the design note's structural paragraph and ## Tried and rejected first. The brief allowed no third design; the coordinator or the author decides whether the number is redrawn in another world, moved or retired.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
