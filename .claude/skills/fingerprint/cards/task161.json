@@ -1,0 +1,97 @@
+{
+  "task": "task161",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6, new; seed FC32 (world, decision and quantity only)",
+  "domain": "supply-chain-logistics",
+  "subdomain": "fulfillment-warehousing",
+  "client_domain": "urban-regional-science",
+  "niche": "a port-adjacent import 3PL deciding how many of a neighbouring park's six 4,000-position overflow blocks to take for the January to June half-year after its customers front-loaded ahead of a duty step",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G13",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the 3PL's capacity planner for its four port-area buildings",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "WMS daily on-hand extract by account and location class (old WMS layout to September 2022, new WMS layout from October 2022)",
+    "rows": 0,
+    "entity": "one customer account's pallets on hand at the close of one business day in one location class (rack, floor and staging, yard trailer, sublease)",
+    "grain": "account x business day x location class",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "United States, California (Carson, Rancho Dominguez and Wilmington, beside the San Pedro Bay ports)",
+    "currency": "USD",
+    "org_type": "third-party logistics operator (import warehousing and transload)",
+    "invented_names": [
+      "Pellerin Distribution Services",
+      "Tamarind Avenue Logistics Park"
+    ],
+    "people": [
+      "Jerome Lam",
+      "Nicole Freeman",
+      "Brandon Page",
+      "Mariah Norman"
+    ]
+  },
+  "deliverables": [
+    "overflow_blocks_h1_2027.xlsx",
+    "h1_2027_space_outlook.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "Stock built up ahead of a cost step leaves only as each holder uses its own, at the steady share of its use that every earlier build was drawn down at, so a build several times the earlier ones, drawn down through the lowest-use months, outlasts every earlier build's half-life, time back to normal and per-period fall, while carrying the level or the season through the build keeps all of it.",
+  "driver_concrete": "The pallets each customer brought in ahead of the 1 January duty step leave the buildings only as that customer ships, at the steady share of its own shipments that every earlier rush in the book was burned at (its receipts ran that share short of its shipments until its own excess was gone), so this rush's excess, several times any earlier one and burning through the January and February trough, keeps two blocks full through June, while the earlier rushes' half-life or time back to normal clears it by March (no block), a book-wide burn or the earlier rushes' monthly fall in positions leaves one, and no payback or a seasonal carry of the rush takes three to five.",
+  "stump": "A strong solver who reads the rush as temporary measures how fast the 2019 and 2025 rushes' excess positions faded (about a month's half-life) and fades this one the same way, clearing it by March and taking no block (zero); the step that lands it there is treating the excess as a proportional decay when it is stock each customer burns at a steady share of its own shipments, so a rush several times larger, burning through the low season, keeps two blocks full.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the WMS history, converts every booking notice and reads the block test correctly, then fades the rush's excess positions at the half-life the 2019 and 2025 rushes showed, files no block (zero), where burning each customer's excess at the share of its own shipments those rushes show files two.",
+  "domain_test": "The deciding quantity is the burn-down of bought-ahead stock, the warehouse planner's projected on-hand netted against each owner's own shipments (weeks of supply burned at sales pace, as DRP nets receipts against stock on hand); swap in hospital beds after an admissions surge and the task stops reading, because patients are not stock their owners bought ahead of a price step and draw down by selling, and no later intake is netted against the stock already held.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:bought-ahead-stock-burned-per-owner-at-a-share-of-its-own-shipments",
+  "layer1": [
+    "WMS migration in October 2022 changed the on-hand export layout, the location codes and the account keys",
+    "the new WMS stamps snapshots in UTC while the old one wrote Pacific business dates",
+    "overflow held in floor, staging, yard-trailer and sublease locations carried as virtual location classes",
+    "accounts renamed or split at the migration and one merger of two accounts in 2024",
+    "December booking notices in containers by size from some customers and in pallets or TEU from others, in PDF, xlsx and email text",
+    "port TEU statistics in the ports' monthly release layout, the latest months preliminary and revised later",
+    "the capacity report on the 3PL's 4-4-5 fiscal calendar against calendar months in the WMS"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task259": "task259 carries reported levels to a reference date by the movement at a fixed grade inside reporting units; task161 nets a bought-ahead stock per owner against that owner's own shipments and burns it at a share of them, a stock balance with no carried report.",
+    "task87": "task87 caps a delivered count by an exclusivity a schedule encodes; task161 has no cap or exclusivity rule, the projected stock drains at each owner's sales pace.",
+    "task135": "task135 estimates a long-horizon variance from short-interval changes struck at different times; task161 projects the level path of a stock, with no variance or striking-time alignment in the call.",
+    "task451": "task451 completes immature period totals from changing arrival delays; task161 has nothing still to arrive, it projects how a stock already held burns down through its owners' shipments.",
+    "task460": "task460 weights the marginal responders by a new source's operating profile; task161 has no marginal unit, each owner's stock is netted only against its own shipments."
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive move is a stock balance, the bought-ahead pallets netted per customer against that customer's own shipments and burned at the share the book's earlier rushes show, which no listed family names; the rivals are fitted descriptions of the positions series (a half-life, a time back to normal, a seasonal carry, a trend), but the method is a construction of the balance, not a choice among back-tested fits, and nothing in the pack files a back-test (task138 and task148 keyed their balance and queue constructions the same way). forcing_event season_or_peak: the call is forced by the half-year that follows the rush; the park's six blocks are let for the January to June term to whoever commits before it starts, with no option or exercise date in the world. context_artifact filed_standard: the 3PL's space policy, which files the block test, and the park's block terms. Personas from guard.py names --geo 'United States' --seed 161.",
+  "registered": "2026-10-18T01:20:40Z"
+}
