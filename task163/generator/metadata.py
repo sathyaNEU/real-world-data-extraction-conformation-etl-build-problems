@@ -102,7 +102,7 @@ def write(task_dir, n=None):
                                "follow the layouts of the Census Bureau's Business Formation Statistics API and "
                                "monthly download and the Census Nonemployer Statistics API, but every value in them "
                                "is simulated for the scenario and none is Census data; the integrated EIN filings in "
-                               "Ohio, Pennsylvania and Michigan, and the autumn 2025 rise in applications, are "
+                               "Ohio, Pennsylvania and Michigan, and the early 2026 rise in applications, are "
                                "fictional. The company files follow the layouts of a payroll platform's onboarding "
                                "export, quarterly wage files, state registrations and migration crosswalk, a legacy "
                                "client system's quarterly wage report and a payroll tax team's successor transfer "

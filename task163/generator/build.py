@@ -8,7 +8,7 @@ compared byte for byte and deleted.
 
 The company's size is calibrated by a fixed rule: the share multiplier starts at 1 and is rescaled, at most eight
 times, by the ratio of 2,500.5 to the plan line, stopping at the first value within 2 of 2,500.5 (else the closest).
-The target is the centre of the bin the line falls in once the autumn 2025 rise is in the world (2,450 to 2,550), where
+The target is the centre of the bin the line falls in once the early 2026 rise is in the world (2,450 to 2,550), where
 the line's bootstrap interval sits centred. Every business keeps its own random streams whatever the size, so a rescale
 adds or drops businesses at the margin and moves nothing else. The rule never searches seeds."""
 from __future__ import annotations

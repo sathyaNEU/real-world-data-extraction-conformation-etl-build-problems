@@ -1,18 +1,18 @@
 {
  "call": 2500,
- "call_exact": 2499.0,
+ "call_exact": 2499.6,
  "channels": {
-  "accountant referral": 540,
-  "bank partner": 254,
-  "outbound": 259,
-  "partner marketplace": 248,
-  "web sign-up": 758
+  "accountant referral": 582,
+  "bank partner": 271,
+  "outbound": 274,
+  "partner marketplace": 262,
+  "web sign-up": 801
  },
  "components": {
-  "added_ttm_about": 500000,
+  "added_ttm_about": 300000,
   "formations_ttm_about": 105000,
-  "reform_share_of_line": 0.787,
-  "rel_yield": 0.16
+  "reform_share_of_line": 0.789,
+  "rel_yield": 0.26
  },
  "dates": [
   "2023-07-10",
@@ -25,52 +25,52 @@
   100000
  ],
  "step_figures": {
-  "added_ttm": 522013,
-  "apps_ttm_reform": 1124150,
-  "unrounded_line": 2499.0
+  "added_ttm": 312103,
+  "apps_ttm_reform": 919455,
+  "unrounded_line": 2499.6
  },
  "steps": {
-  "golden_exact": 2499.0,
-  "yield_MI_pct": 7.01,
-  "yield_OH_pct": 7.2,
-  "yield_PA_pct": 7.37
+  "golden_exact": 2499.6,
+  "yield_MI_pct": 7.02,
+  "yield_OH_pct": 7.21,
+  "yield_PA_pct": 7.41
  },
  "territories": {
   "Indiana-Kentucky": {
-   "first_quarter_wages": "1854341.29",
-   "signed": 197,
-   "still": 149,
-   "wages_2024": "7455324.07"
+   "first_quarter_wages": "1977871.23",
+   "signed": 207,
+   "still": 158,
+   "wages_2024": "7786220.16"
   },
   "Michigan": {
-   "first_quarter_wages": "3802091.13",
-   "signed": 417,
-   "still": 324,
-   "wages_2024": "14131598.43"
+   "first_quarter_wages": "4061127.70",
+   "signed": 447,
+   "still": 351,
+   "wages_2024": "15033987.82"
   },
   "Ohio": {
-   "first_quarter_wages": "6357886.53",
-   "signed": 764,
-   "still": 611,
-   "wages_2024": "25954526.39"
+   "first_quarter_wages": "6772408.40",
+   "signed": 803,
+   "still": 659,
+   "wages_2024": "27328523.89"
   },
   "Pennsylvania": {
-   "first_quarter_wages": "3772242.98",
-   "signed": 441,
-   "still": 352,
-   "wages_2024": "15326004.26"
+   "first_quarter_wages": "4247739.25",
+   "signed": 478,
+   "still": 391,
+   "wages_2024": "16840397.09"
   },
   "South and Plains": {
-   "first_quarter_wages": "988990.00",
-   "signed": 121,
-   "still": 93,
-   "wages_2024": "3940345.92"
+   "first_quarter_wages": "1039154.06",
+   "signed": 126,
+   "still": 98,
+   "wages_2024": "4135224.30"
   },
   "Upper Midwest": {
-   "first_quarter_wages": "1054456.40",
-   "signed": 119,
-   "still": 93,
-   "wages_2024": "4018636.32"
+   "first_quarter_wages": "1183846.12",
+   "signed": 129,
+   "still": 104,
+   "wages_2024": "4529319.79"
   }
  }
 }

@@ -163,9 +163,28 @@ def _years(b, d):
     return max(0.0, (d - b.first_pay).days / 365.25)
 
 
+def _legacy_local(t_utc):
+    return t_utc - dt.timedelta(hours=CO._et_offset(t_utc - dt.timedelta(hours=5)))
+
+
 def _legacy_text(t_utc):
-    local = t_utc - dt.timedelta(hours=CO._et_offset(t_utc - dt.timedelta(hours=5)))
-    return local.strftime("%m/%d/%Y %H:%M")
+    return _legacy_local(t_utc).strftime("%m/%d/%Y %H:%M")
+
+
+EXTRACT_FROM = dt.date(2022, 1, 1)
+
+
+def shown_first_pay(sp):
+    """The first pay date the current system holds for an account. The current system's own accounts carry the date of
+    their first payroll; the June 2024 migration load filled the field for every legacy client from the legacy client
+    record's client-since date (the legacy system kept no first pay date of its own)."""
+    return _legacy_local(sp.opened).date() if sp.legacy else sp.start
+
+
+def in_extract(sp):
+    """The year-end planning extract takes every account whose first pay date, as the current system holds it, falls
+    from January 2022; the legacy wage report and the crosswalk copy in the pack cover the same clients."""
+    return shown_first_pay(sp) >= EXTRACT_FROM
 
 
 ACCOUNT_COLS = ["account_id", "ein", "legal_name", "dba_name", "entity_type", "naics", "address_state", "opened_at",
@@ -178,6 +197,8 @@ def account_rows(C):
     extract = CO.EXTRACT_PULLED.date()
     for b in C.business.values():
         for sp in b.spells:
+            if not in_extract(sp):
+                continue
             stop = sp.stop
             emp = max(1, int(round(b.employees0 * (1 + b.growth) ** _years(b, sp.start))))
             name = b.name.upper() if sp.legacy else b.name
@@ -187,7 +208,8 @@ def account_rows(C):
                 "entity_type": ENTITY_LABEL[b.entity], "naics": b.naics,
                 "address_state": b.state_on(stop if stop else extract),
                 "opened_at": _legacy_text(sp.opened) if sp.legacy else sp.opened.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "first_pay_date": sp.start.isoformat(), "first_time_employer": "Y" if sp.flag_first else "N",
+                "first_pay_date": shown_first_pay(sp).isoformat(),
+                "first_time_employer": "Y" if sp.flag_first else "N",
                 "previous_provider": sp.prev_provider, "signup_channel": sp.channel_shown,
                 "pay_frequency": FREQ_LABEL[CO.NM.frequency(b)], "employees_at_signup": emp,
                 "product": sp.product, "product_since": sp.product_since.isoformat() if sp.product_since else "",
@@ -201,8 +223,8 @@ XWALK_COLS = ["legacy_client_no", "account_id", "legacy_source_code", "status_at
 
 
 def crosswalk_rows(C):
-    legacy = sorted(((sp.legacy, sp, b) for b in C.business.values() for sp in b.spells if sp.legacy),
-                    key=lambda x: int(x[0]))
+    legacy = sorted(((sp.legacy, sp, b) for b in C.business.values() for sp in b.spells
+                     if sp.legacy and in_extract(sp)), key=lambda x: int(x[0]))
     t0 = dt.datetime(2024, 6, 15, 11, 40, 2)
     out = []
     for i, (no, sp, b) in enumerate(legacy):
@@ -223,6 +245,8 @@ def wage_rows(C):
     leg, cur = [], []
     for b in C.business.values():
         for sp in b.spells:
+            if not in_extract(sp):
+                continue
             for system, y, q, pays, emp, wages in CO.segments(b, sp):
                 if system == "legacy":
                     cents = int(round(wages * 100))
@@ -248,8 +272,8 @@ REG_COLS = ["account_id", "state", "withholding_account", "ui_account", "liabili
             "filing_end"]
 
 
-def _regnos(b, state):
-    r = K.rng("regno", b.key, state)
+def _regnos(b, state, rekeyed=False):
+    r = K.rng("regno", b.key + ("/rekey" if rekeyed else ""), state)
     wh = "%08d" % int(r.integers(10 ** 7, 10 ** 8))
     ui = "%07d" % int(r.integers(10 ** 6, 10 ** 7))
     if state == "PA":
@@ -279,15 +303,22 @@ def registration_rows(C):
         for st, entered, _ in res:
             liable.setdefault(st, b.liable0 if st == b.state0 else entered)
         for sp in b.spells:
+            if not in_extract(sp):
+                continue
             stop = sp.stop
+            after = b.rekey is not None and sp.start >= b.rekey
+            rk = next((x for x in b.spells if x.rekey), None)
             for st, entered, left in res:
                 a = max(entered, sp.start)
                 z = min(x for x in (left, stop) if x is not None) if (left or stop) else None
                 if z is not None and z < a:
                     continue
-                wh, ui = _regnos(b, st)
+                wh, ui = _regnos(b, st, after)
+                # a corrected EIN the state registered afresh is liable from its own first payroll; one the state
+                # already held keeps the date the business first paid wages in the state
+                lia = max(entered, rk.start) if (after and rk is not None and rk.rekey == "new") else liable[st]
                 out.append({"account_id": sp.acct, "state": st, "withholding_account": wh, "ui_account": ui,
-                            "liability_date": liable[st].isoformat(), "filing_start": a.isoformat(),
+                            "liability_date": lia.isoformat(), "filing_start": a.isoformat(),
                             "filing_end": z.isoformat() if z else ""})
     out.sort(key=lambda r: (r["account_id"], r["filing_start"], r["state"]))
     return out

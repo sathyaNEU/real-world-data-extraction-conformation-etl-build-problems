@@ -4,15 +4,15 @@ cent). Prints the cracker sheet, the pair ceiling under each path and the mirror
 
     python3 task163/generator/cracker.py [target]
 
-The cracker lands the call, reads the dictionary and the counting notes and executes every rule they point at: it
-normalises EINs and takes a business's accounts as one (a returning client under its old EIN, a successor through
-the payroll tax team's register, as the counting notes' re-formed entity rule asks), counts each business in the
-state of its earliest registration, maps states to territories, converts the legacy cents and joins the legacy client
-numbers through the crosswalk, and sums the rows of a quarter across files. It trusts what no rule tells it to doubt:
-the onboarding answer, every wage row of the quarter, every row of a legacy client quarter, and the signup channel on
-the account. A single-device crack repairs one of those four. The mirror stops at the default path on the call and
-reads the asks the plain way: flagged accounts by their own first pay date, the address state, the account's own
-fourth-quarter row."""
+The cracker lands the call, reads the field guide and the counting notes and executes every rule they point at: it
+normalises EINs and takes a business's accounts as one (a returning client under its old EIN, a successor or a new
+owner through the payroll tax team's register), reads first-time status from the state's liability record, leaves out
+the quarters an account spent on tax filing only, reads a migrated account's channel from its legacy source code,
+counts each business in the state of its earliest registration, maps states to territories, converts the legacy cents
+and joins the legacy client numbers through the crosswalk. It trusts what no rule tells it to doubt: the account's first
+pay date, an EIN as the mark of a separate business, and every row of a legacy client quarter. A single-device crack
+repairs one of those three. The mirror stops at the default path on the call and reads the asks the plain way: flagged
+accounts by their own first pay date, the address state, the account's own fourth-quarter row, the export's channel."""
 from __future__ import annotations
 
 import json
@@ -46,9 +46,13 @@ def wq_variant(B, rollup_right=True):
     return wq
 
 
-def path(B, inhouse=False, taxonly=False, rollup=False, channel=False, successors=True, mirror=False,
-         taxonly_any=False):
-    """One solver's ask tables. Each flag set True repairs that device."""
+def path(B, wages_first=False, rekey=False, rollup=False, mirror=False):
+    """One solver's ask tables. The cracker executes every filed rule: an EIN's accounts and its successors through the
+    register as one business, first-time status from the state's liability record, a quarter on tax filing only not
+    paid by us, a migrated account's channel from its legacy source code, the state first employed in, cents and the
+    crosswalk. Each flag set True repairs one silent device: the first payroll read from the wage files rather than
+    the account's first pay date, a client re-opened under a corrected EIN joined to its first account, the legacy
+    company-level group 00 taken as the client's total."""
     wq = B.wq if rollup else wq_variant(B, rollup_right=False)
     T = {t: {"signed": 0, "still": 0, "wages_cents": 0, "wages_2024_cents": 0} for t in sorted(set(B.terr.values()))}
     ch = {}
@@ -67,28 +71,36 @@ def path(B, inhouse=False, taxonly=False, rollup=False, channel=False, successor
             T[t]["wages_2024_cents"] += sum(wq.get((a["account_id"], 2024, qq), 0) for qq in (1, 2, 3, 4))
             ch[a["signup_channel"]] = ch.get(a["signup_channel"], 0) + 1
         return T, ch
-    for e, accts in sorted(B.by_ein.items()):
-        first = min(accts, key=lambda r: (r["first_pay_date"], r["account_id"]))
-        if not first["first_pay_date"].startswith("2024") or first["first_time_employer"] != "Y":
+    groups = B.group if rekey else {e: [e] for e in B.by_ein}
+    for root, eins in sorted(groups.items()):
+        accts = [a for e in eins for a in B.by_ein[e]]
+        if wages_first:
+            qs = [B.first_q[a["account_id"]] for a in accts if a["account_id"] in B.first_q]
+            if not qs:
+                continue
+            fq = min(qs)
+            first = min(accts, key=lambda r: (B.first_q.get(r["account_id"], (9999, 9)), r["first_pay_date"],
+                                              r["account_id"]))
+            since = "%d-%02d-01" % (fq[0], 3 * fq[1] - 2)
+        else:
+            first = min(accts, key=lambda r: (r["first_pay_date"], r["account_id"]))
+            since = first["first_pay_date"]
+            fq = CA.quarter_of(since)
+        if fq[0] != 2024 or any(e in B.successor_eins for e in eins):
             continue
-        if successors and e in B.successor_eins:
+        if B.liable_before(accts, since):
             continue
-        if inhouse and B.liable_before(accts, first["first_pay_date"]):
-            continue
-        allacc = B.business_accounts(first) if successors else accts
-        st = B.first_state(accts)
-        t = B.terr.get(st)
+        allacc = B.business_accounts(eins, rekey=rekey)
+        t = B.terr.get(B.first_state(accts))
         if t is None:
             continue
         T[t]["signed"] += 1
-        if any(wq.get((a["account_id"], 2025, 4), 0) > 0 and (not taxonly or CA.paid_by_us(a, 2025, 4)) and
-               not (taxonly_any and a["product"] == "Tax filing only") for a in allacc):
+        if any(wq.get((a["account_id"], 2025, 4), 0) > 0 and CA.paid_by_us(a, 2025, 4) for a in allacc):
             T[t]["still"] += 1
-        y, q = CA.quarter_of(first["first_pay_date"])
-        T[t]["wages_cents"] += sum(wq.get((a["account_id"], y, q), 0) for a in allacc)
+        T[t]["wages_cents"] += sum(wq.get((a["account_id"], fq[0], fq[1]), 0) for a in allacc)
         T[t]["wages_2024_cents"] += sum(wq.get((a["account_id"], 2024, qq), 0) for a in allacc for qq in (1, 2, 3, 4)
-                                        if (not taxonly or CA.paid_by_us(a, 2024, qq)))
-        code = B.code_of.get(first["account_id"]) if channel else None
+                                        if CA.paid_by_us(a, 2024, qq))
+        code = B.code_of.get(first["account_id"])
         c = CA.CODE_CHANNEL[code] if code else first["signup_channel"]
         ch[c] = ch.get(c, 0) + 1
     return T, ch
@@ -127,13 +139,13 @@ def measure(target):
     gold = (GT, GC)
     paths = {
         "cracker": dict(),
-        "cracker + prior liability": dict(inhouse=True),
-        "cracker + tax filing only": dict(taxonly=True),
-        "cracker + every tax filing only account dropped": dict(taxonly_any=True),
-        "cracker + prior liability + tax filing only": dict(inhouse=True, taxonly=True),
+        "cracker + first payroll from the wage files": dict(wages_first=True),
+        "cracker + re-keyed EINs joined": dict(rekey=True),
         "cracker + group 00": dict(rollup=True),
-        "cracker + legacy source code": dict(channel=True),
-        "every device": dict(inhouse=True, taxonly=True, rollup=True, channel=True),
+        "cracker + first payroll from the wage files + re-keyed EINs joined": dict(wages_first=True, rekey=True),
+        "cracker + first payroll from the wage files + group 00": dict(wages_first=True, rollup=True),
+        "cracker + re-keyed EINs joined + group 00": dict(rekey=True, rollup=True),
+        "every device": dict(wages_first=True, rekey=True, rollup=True),
     }
     out = {}
     for name, kw in paths.items():
@@ -163,7 +175,9 @@ def main():
     for name, p in res["paths"].items():
         print("  %-30s ask share %.3f  score %.1f  pair %.1f  hits %d" % (name, p["ask_share"], p["score"], p["pair"],
                                                                        len(p["hits"])))
-    worst_single = max(v["pair"] for k, v in res["paths"].items() if k.count("+") <= 1 and k != "every device")
+    worst_single = max(v["pair"] for k, v in res["paths"].items() if k.count("+") == 1)
+    worst_double = max(v["pair"] for k, v in res["paths"].items() if k.count("+") == 2)
+    print("two at once: strongest %.1f" % worst_double)
     print("pair ceiling: cracker %.1f, strongest single crack %.1f" % (res["paths"]["cracker"]["pair"], worst_single))
     with open(os.path.join(HERE, "cracker.json"), "w") as fh:
         json.dump({k: v for k, v in res.items() if k != "mirror_rows"}, fh, indent=1, default=str)

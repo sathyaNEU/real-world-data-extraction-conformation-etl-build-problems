@@ -254,6 +254,10 @@ def family(P, wide=False):
                     if cn == "six" and not (ny == "all" and vol == "no"):
                         continue
                     out[(cf, y, a, ny, vol, cn)] = plan(P, cf, y, a, ny, vol, ctl)["total"]
+    # the comparison read as a regression: formations on applications across the twelve states with state and month
+    # effects, and each reform state's formations on its applications from go-live with month terms
+    for name, fn in REGRESSION_FORMS.items():
+        out[("regression", name, "", "", "", "")] = fn(P)
     return out
 
 
@@ -349,11 +353,89 @@ def rung_volume_regression(P, dummies=False):
     return tot
 
 
+def rung_volume_regression_post(P):
+    """Each reform state's monthly formations regressed on its applications with calendar-month terms over the closed
+    cohorts from its go-live month, the fit carried onto the twelve months; the nine at their rate."""
+    tot = 0.0
+    for s in STATES:
+        BA, F4 = series(P, s, "BA_BA"), series(P, s, "BF_BF4Q")
+        if s in P.changes:
+            L = launch_index(P.changes[s][0])
+            t = np.arange(L, LAST_CLOSED + 1)
+            X, Xf = [np.ones(len(t)), BA[t]], [np.ones(len(TTM)), BA[TTM]]
+            for m in range(1, 12):
+                X.append((t % 12 == m).astype(float))
+                Xf.append((np.array(TTM) % 12 == m).astype(float))
+            b = np.linalg.lstsq(np.vstack(X).T, F4[t], rcond=None)[0]
+            f = float(np.vstack(Xf).T.dot(b).sum())
+        else:
+            f = rate(P, s, 0, LAST_CLOSED) * BA[TTM].sum()
+        tot += P.share[s]["share"] * f
+    return tot
+
+
+def rung_panel_fe(P, time_effects=False, logs=False):
+    """Formations on applications across all twelve states and every closed cohort, with state effects and month
+    effects (calendar-month terms, or a term for each month with the twelve months carried at the same calendar
+    month's term from the latest closed year), the fit carried onto the twelve months."""
+    rows, ys, keys = [], [], []
+    t_all = list(range(0, LAST_CLOSED + 1))
+    nT = len(t_all)
+    for j, s in enumerate(STATES):
+        BA, F4 = series(P, s, "BA_BA"), series(P, s, "BF_BF4Q")
+        for t in t_all:
+            x = np.zeros(len(STATES) + (nT if time_effects else 12) + 1)
+            x[j] = 1.0
+            if time_effects:
+                x[len(STATES) + t] = 1.0
+            else:
+                x[len(STATES) + (t % 12)] = 1.0
+            x[-1] = np.log(BA[t]) if logs else BA[t]
+            rows.append(x)
+            ys.append(np.log(F4[t]) if logs else F4[t])
+    X = np.array(rows)
+    # one effect is dropped for identification: the last state's
+    X = np.delete(X, len(STATES) - 1, axis=1)
+    b = np.linalg.lstsq(X, np.array(ys), rcond=None)[0]
+    st = np.append(b[:len(STATES) - 1], 0.0)
+    me = b[len(STATES) - 1:-1]
+    slope = b[-1]
+    tot = 0.0
+    for j, s in enumerate(STATES):
+        BA = series(P, s, "BA_BA")
+        f = 0.0
+        for u in TTM:
+            if time_effects:
+                same = [t for t in range(LAST_CLOSED - 11, LAST_CLOSED + 1) if t % 12 == u % 12][0]
+                m_eff = me[same]
+            else:
+                m_eff = me[u % 12]
+            v = st[j] + m_eff + slope * (np.log(BA[u]) if logs else BA[u])
+            f += float(np.exp(v)) if logs else float(v)
+        tot += P.share[s]["share"] * f
+    return tot
+
+
+REGRESSION_FORMS = {
+    "two-way panel, state and month effects": lambda P: rung_panel_fe(P, time_effects=True),
+    "panel, state and calendar-month effects": lambda P: rung_panel_fe(P),
+    "panel, state and calendar-month effects, logs": lambda P: rung_panel_fe(P, logs=True),
+    "each reform state after go-live, month terms": lambda P: rung_volume_regression_post(P),
+}
+
+
 def rung_flags(P, flag):
     """Formations per flagged application (high-propensity or planned wages) over the latest four closed quarters,
     carried onto the twelve months' flagged applications."""
     return sum(P.share[s]["share"] * rate(P, s, LAST_CLOSED - 11, LAST_CLOSED, den=flag) *
                series(P, s, flag)[TTM].sum() for s in STATES)
+
+
+def rung_flags_all(P, flag):
+    """Formations per flagged application over every closed cohort, carried onto the twelve months' flagged
+    applications."""
+    return sum(P.share[s]["share"] * rate(P, s, 0, LAST_CLOSED, den=flag) * series(P, s, flag)[TTM].sum()
+               for s in STATES)
 
 
 def carry_2025(P):
@@ -392,6 +474,7 @@ def rungs(P):
            "zero_added": rung_zero_added(P), "before_after": rung_before_after(P),
            "effect_level": rung_effect_level(P), "volume_regression": rung_volume_regression(P),
            "volume_regression_months": rung_volume_regression(P, True),
+           "wba_all_closed": rung_flags_all(P, "BA_WBA"), "hba_all_closed": rung_flags_all(P, "BA_HBA"),
            "hba": rung_flags(P, "BA_HBA"), "wba": rung_flags(P, "BA_WBA"), "carry_2025": carry_2025(P),
            "trend": rung_trend(P)}
     out.update({"growth_" + k: v for k, v in growth_routes(P).items()})
@@ -496,6 +579,21 @@ def ein_key(e):
     return d.zfill(9)
 
 
+def transposed(a, b):
+    """True when two nine-digit numbers differ only by one pair of adjacent digits swapped."""
+    if len(a) != 9 or len(b) != 9 or a == b:
+        return False
+    d = [i for i in range(9) if a[i] != b[i]]
+    return len(d) == 2 and d[1] == d[0] + 1 and a[d[0]] == b[d[1]] and a[d[1]] == b[d[0]]
+
+
+def opened_date(r):
+    v = r["opened_at"]
+    if "/" in v:
+        return dt.datetime.strptime(v, "%m/%d/%Y %H:%M").date()
+    return dt.datetime.strptime(v, "%Y-%m-%dT%H:%M:%SZ").date()
+
+
 class Book:
     """The January 2026 extract, read and joined."""
 
@@ -520,7 +618,6 @@ class Book:
             self.by_ein.setdefault(ein_key(r["ein"]), []).append(r)
         # wages by account and quarter: legacy (company-level group 00, cents) and current (dollars)
         self.wq = {}
-        self.wq_paid = {}
         for r in self.leg:
             if r["pay_group"] != "00":
                 continue
@@ -531,10 +628,48 @@ class Book:
             y, q = r["quarter"].split("-Q")
             k = (r["account_id"], int(y), int(q))
             self.wq[k] = self.wq.get(k, 0) + int(round(float(r["gross_wages"]) * 100))
+        # the first quarter we paid each account wages in
+        self.first_q = {}
+        for (a, y, q), c in self.wq.items():
+            if c > 0 and (a not in self.first_q or (y, q) < self.first_q[a]):
+                self.first_q[a] = (y, q)
         self.succ_of = {}
         for r in self.suta:
             self.succ_of.setdefault(ein_key(r["predecessor_ein"]), []).append(ein_key(r["successor_ein"]))
         self.successor_eins = {ein_key(r["successor_ein"]) for r in self.suta}
+        # a client re-opened under its corrected EIN: the same legal name, trade name, industry and entity type, the
+        # first account cancelled the day before the second opened, the two EINs one swap of adjacent digits apart
+        named = {}
+        for r in self.acc:
+            named.setdefault((r["legal_name"].upper(), r["dba_name"].upper(), r["naics"], r["entity_type"]),
+                             []).append(r)
+        self.rekeyed = []
+        for rs in named.values():
+            if len(rs) < 2:
+                continue
+            for x in rs:
+                if x["status"] != "Cancelled" or not x["cancelled_on"]:
+                    continue
+                for y in rs:
+                    if y is not x and (opened_date(y) - dt.date.fromisoformat(x["cancelled_on"])).days == 1 and \
+                            transposed(ein_key(x["ein"]), ein_key(y["ein"])):
+                        self.rekeyed.append((ein_key(x["ein"]), ein_key(y["ein"])))
+        parent = {e: e for e in self.by_ein}
+
+        def find(e):
+            while parent[e] != e:
+                parent[e] = parent[parent[e]]
+                e = parent[e]
+            return e
+
+        for a, b in self.rekeyed:
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[max(ra, rb)] = min(ra, rb)
+        self.group = {}
+        for e in self.by_ein:
+            self.group.setdefault(find(e), []).append(e)
+        self.root = {e: find(e) for e in self.by_ein}
 
     def first_state(self, accts):
         """The state the business first employed in: its registration with the earliest liability date."""
@@ -545,9 +680,10 @@ class Book:
         """True when a state registration of any of the accounts shows the business liable for wages before date d."""
         return any(r["liability_date"] < d for a in accts for r in self.regs.get(a["account_id"], []))
 
-    def business_accounts(self, a):
-        """Every account of the business: the EIN's accounts and each successor EIN's, followed through the register."""
-        seen, todo, out = set(), [ein_key(a["ein"])], []
+    def business_accounts(self, eins, rekey=True):
+        """Every account of the business: its EINs' accounts and each successor EIN's, followed through the register
+        (and across a re-keyed EIN)."""
+        seen, todo, out = set(), list(eins), []
         while todo:
             e = todo.pop()
             if e in seen:
@@ -555,6 +691,8 @@ class Book:
             seen.add(e)
             out.extend(self.by_ein.get(e, []))
             todo.extend(self.succ_of.get(e, []))
+            if rekey and e in self.root:
+                todo.extend(self.group[self.root[e]])
         return out
 
 
@@ -571,17 +709,23 @@ def paid_by_us(acct, y, q):
 
 
 def cohort_2024(B):
-    """The businesses whose first payroll ever ran with Kilbourne in 2024: an EIN's earliest account has its first pay
-    date in 2024, the EIN is not a successor carrying on an existing business, and no state registration shows it
-    liable for wages before that first pay date."""
+    """The businesses whose first payroll ever ran with Kilbourne in 2024: a business's accounts (an EIN's, joined
+    across a re-keyed EIN) were first paid wages in 2024, it is not a successor carrying on an existing business, and no
+    state registration shows it liable for wages before the quarter of that first payroll."""
     out = []
-    for e, accts in sorted(B.by_ein.items()):
-        first = min(accts, key=lambda r: (r["first_pay_date"], r["account_id"]))
-        if not first["first_pay_date"].startswith("2024"):
+    for root, eins in sorted(B.group.items()):
+        accts = [a for e in eins for a in B.by_ein[e]]
+        qs = [B.first_q[a["account_id"]] for a in accts if a["account_id"] in B.first_q]
+        if not qs:
             continue
-        if e in B.successor_eins or B.liable_before(accts, first["first_pay_date"]):
+        fq = min(qs)
+        if fq[0] != 2024 or any(e in B.successor_eins for e in eins):
             continue
-        out.append((e, first))
+        if B.liable_before(accts, dt.date(fq[0], 3 * fq[1] - 2, 1).isoformat()):
+            continue
+        first = min(accts, key=lambda r: (B.first_q.get(r["account_id"], (9999, 9)), r["first_pay_date"],
+                                          r["account_id"]))
+        out.append((root, eins, first, fq))
     return out
 
 
@@ -596,15 +740,14 @@ def asks(B):
     T = {t: {"signed": 0, "still": 0, "wages_cents": 0, "wages_2024_cents": 0} for t in sorted(set(B.terr.values()))}
     ch = {}
     cohort = cohort_2024(B)
-    for e, first in cohort:
-        allacc = B.business_accounts(first)
-        st = B.first_state([a for a in allacc if ein_key(a["ein"]) == e])
-        t = B.terr[st]
+    for root, eins, first, fq in cohort:
+        own = [a for e in eins for a in B.by_ein[e]]
+        allacc = B.business_accounts(eins)
+        t = B.terr[B.first_state(own)]
         T[t]["signed"] += 1
         if any(B.wq.get((a["account_id"], 2025, 4), 0) > 0 and paid_by_us(a, 2025, 4) for a in allacc):
             T[t]["still"] += 1
-        y, q = quarter_of(first["first_pay_date"])
-        T[t]["wages_cents"] += sum(B.wq.get((a["account_id"], y, q), 0) for a in allacc)
+        T[t]["wages_cents"] += sum(B.wq.get((a["account_id"], fq[0], fq[1]), 0) for a in allacc)
         T[t]["wages_2024_cents"] += sum(B.wq.get((a["account_id"], 2024, qq), 0) for a in allacc for qq in (1, 2, 3, 4)
                                         if paid_by_us(a, 2024, qq))
         code = B.code_of.get(first["account_id"])
