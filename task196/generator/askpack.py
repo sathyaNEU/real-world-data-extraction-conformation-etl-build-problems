@@ -137,6 +137,7 @@ def q1_notifications(target, w):
     main, supp = [], []
     for m in w["members"]:
         r = W.rng("q1", m["code"])
+        used = set()
         n = max(8, int(round(m["volume"] / 1e6 * 4.4 * r.uniform(0.78, 1.26))))
         days = [r.randrange(91) for _ in range(n)]
         # every member notifies something in the last ten days of the quarter: with eight cases or
@@ -150,7 +151,16 @@ def q1_notifications(target, w):
             # a case notified late in the quarter can still be closed inside it: the simple purchase
             # scams close in days, the investment cases take months
             closed = nd + dt.timedelta(days=r.randint(12, 60) if r.random() < 0.62 else r.randint(1, 6))
-            ref = "%s-Q1%s-%04d" % (m["code"].split("-")[1], "2728", r.randrange(1000, 9999))
+            # A reference identifies one case, so the member's own Q1 block is drawn without
+            # replacement: two notifications sharing a reference would be one case carrying two
+            # notified dates and two payment legs, which no notification run produces, and the count
+            # of cases would then differ from the count of rows. The draw stays in the same stream
+            # position, so no date, amount or count moves when a collision is walked on.
+            k = r.randrange(1000, 9999)
+            while k in used:
+                k = k + 1 if k < 9999 else 1000
+            used.add(k)
+            ref = "%s-Q1%s-%04d" % (m["code"].split("-")[1], "2728", k)
             row = [ref, m["code"], m["name"], _d(pay), _d(nd), "%.2f" % amt,
                    _d(closed) if closed <= dt.date(2027, 6, 30) else "",
                    "closed" if closed <= dt.date(2027, 6, 30) else "open"]

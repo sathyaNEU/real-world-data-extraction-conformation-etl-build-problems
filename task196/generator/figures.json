@@ -82,6 +82,28 @@
   "recorded_cases": 400,
   "sentence": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent"
  },
+ "count_band": {
+  "KM-101": {
+   "high": 517,
+   "low": 516
+  },
+  "KM-104": {
+   "high": 689,
+   "low": 686
+  },
+  "KM-104 not held": {
+   "high": 289,
+   "low": 286
+  },
+  "KM-108": {
+   "high": 302,
+   "low": 300
+  },
+  "KM-112": {
+   "high": 139,
+   "low": 138
+  }
+ },
  "critical_components": {
   "cases_its_record_did_not_hold": 288,
   "independent_sightings": 270,

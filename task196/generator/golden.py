@@ -23,6 +23,22 @@ import world as W
 Q1_END = dt.date(2027, 6, 30)
 TIERS = ["A", "B", "C"]
 
+# The index is one figure under every licensed form of the two-source estimate; the whole-case counts
+# behind it are not, because the forms differ by a case or two on the same three counts. The bands here
+# are the ones the determinism judge measured over the forms it ran (its pass-3 report, item 2),
+# widened by one case either side where every form it ran prints one value and that value sits within a
+# tenth of a case of its printing edge, which is Trentmoor at 0.063. They are a reading band for the
+# counts and not a claim about the family: checks.py and verify.py assert that each band holds the
+# golden count and every closed-form estimator's count for that member, and that the index itself does
+# not move across the whole family.
+COUNT_BAND = {
+    "KM-104": (686, 689),
+    "KM-104 not held": (286, 289),
+    "KM-112": (138, 139),
+    "KM-108": (300, 302),
+    "KM-101": (516, 517),
+}
+
 
 # ---------------------------------------------------------------------------
 # the call
@@ -279,7 +295,19 @@ def workbook(task, review, bridge, chart, a, b, c):
             cell.number_format = "#,##0"
     ws.append([])
     ws.append(["Index set for the indemnity year beginning 1 October 2027, on the scheme year ended "
-               "31 March 2027, to the nearest whole case per million payments sent."])
+               "31 March 2027, to the nearest case per million payments sent."])
+    cgx = [x for x in review if x["code"] == "KM-104"][0]
+    ws.append(["Cases indexed are the two-source estimate of the cases the member recorded against the "
+               "register sightings no fund-return request of its own preceded, %d x %d / %d = %d for "
+               "Castlegate. The count moves with the form of the estimate while the index does not, so "
+               "a count is read inside %d to %d (Castlegate, %d to %d for the cases its record did not "
+               "hold), %d to %d (Saltmarch), %d to %d (Trentmoor) and %d to %d (Brindlemere)."
+               % (cgx["recorded"], cgx["independent"], cgx["both"], round(cgx["estimate"]),
+                  COUNT_BAND["KM-104"][0], COUNT_BAND["KM-104"][1],
+                  COUNT_BAND["KM-104 not held"][0], COUNT_BAND["KM-104 not held"][1],
+                  COUNT_BAND["KM-112"][0], COUNT_BAND["KM-112"][1],
+                  COUNT_BAND["KM-108"][0], COUNT_BAND["KM-108"][1],
+                  COUNT_BAND["KM-101"][0], COUNT_BAND["KM-101"][1])])
 
     ws2 = wb.create_sheet("castlegate bridge")
     ws2.append(["line", "cases_per_million_payments", "note"])
@@ -318,6 +346,10 @@ def workbook(task, review, bridge, chart, a, b, c):
     for row in ws5.iter_rows(min_row=2, min_col=3):
         for cell in row:
             cell.number_format = "#,##0"
+    ws5.append([])
+    ws5.append(["Distinct cases notified in the 2027/28 first quarter, 1 April to 30 June 2027, counted "
+                "once each from the notification feed's main extract and its quarter-end supplement "
+                "together, with the value the member reported on them."])
 
     ws6 = wb.create_sheet("recovery share")
     ws6.append(["quarter"] + W.ROUTES)
@@ -328,6 +360,12 @@ def workbook(task, review, bridge, chart, a, b, c):
     for row in ws6.iter_rows(min_row=2, min_col=2):
         for cell in row:
             cell.number_format = '0.0"%"'
+    ws6.append([])
+    ws6.append(["Scam reimbursement cases from 2025/26 payments, by the quarter of that year each case "
+                "closed in. The recovery is every case-level credit on those cases by route and the "
+                "reimbursement is what the register holds for them, so the year line covers the same "
+                "four quarters as the rows. Not the recovery statement, which counts a recovery in the "
+                "quarter the money arrived and states repatriation net of the agent's charge."])
 
     ws7 = wb.create_sheet("notes")
     for line in (
@@ -340,8 +378,8 @@ def workbook(task, review, bridge, chart, a, b, c):
              "sent on the revised quarterly returns."],
             ["Index year", "Clause 4.3: the index applies to the indemnity year beginning 1 October 2027."],
             ["Rounding", "Clause 4.4: the index is stated to the nearest whole case per million payments "
-             "sent. Indemnity and reported value are stated to the nearest pound and recovery shares to "
-             "one decimal place."],
+             "sent, and the walk lines with it. Indemnity and reported value are stated to the pound and "
+             "recovery shares to one decimal place."],
             ["Evidence base", "Members' case registers and the scheme's beneficiary account register as "
              "they stand at the preparation of this review."],
             ["Review group", "The four members the register shows as coming to triennial review this "
@@ -446,6 +484,7 @@ def build(task, target, w):
             "golden": round(cg["rate"], 3),
         },
         "estimator_family": fam,
+        "count_band": {k: {"low": lo, "high": hi} for k, (lo, hi) in sorted(COUNT_BAND.items())},
         "ask_a_indemnity_unauthorised": a,
         "ask_b_q1_notifications": b,
         "ask_c_recovery_share": c,

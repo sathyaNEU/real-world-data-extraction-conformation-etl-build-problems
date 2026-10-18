@@ -256,6 +256,35 @@ def main():
     spread = (max(v["rate"] for v in fam.values()) - min(v["rate"] for v in fam.values())) / gold_rate
     ok("the estimator family's spread is inside the printed bin", spread < 0.5 / gold_rate,
        "%.2f per cent against a half bin of %.2f per cent" % (100 * spread, 100 * 0.5 / gold_rate))
+    # The index is one figure under every form; the whole-case counts are not, so each count the
+    # deliverables state is read inside a band (golden.COUNT_BAND). The band is asserted to hold the
+    # golden count and every closed-form estimator's count for that member, and the index is asserted
+    # not to move anywhere in the family, which is what makes the index the figure the walk states.
+    for _m in w["members"]:
+        if not _m["review"]:
+            continue
+        _ixm = G.member_index(w, _m["code"])
+        _forms = G.estimator_family(_ixm)
+        _lo, _hi = G.COUNT_BAND[_m["code"]]
+        _counts = sorted(round(v["cases"]) for v in _forms.values())
+        ok("the count band holds every closed form: %s" % _m["name"],
+           _lo <= round(_ixm["estimate"]) <= _hi and _counts[0] >= _lo and _counts[-1] <= _hi,
+           "band %d to %d, golden %d, closed forms %d to %d"
+           % (_lo, _hi, round(_ixm["estimate"]), _counts[0], _counts[-1]))
+        ok("the index does not move across the closed forms: %s" % _m["name"],
+           {v["index"] for v in _forms.values()} == {_ixm["index"]},
+           "%d under %d forms" % (_ixm["index"], len(_forms)))
+    _lo, _hi = G.COUNT_BAND["KM-104 not held"]
+    _nh = sorted(round(v["cases"]) - ix["recorded"] for v in G.estimator_family(ix).values())
+    ok("the not-held band holds every closed form",
+       _lo <= round(ix["estimate"]) - ix["recorded"] <= _hi and _nh[0] >= _lo and _nh[-1] <= _hi,
+       "band %d to %d, golden %d, closed forms %d to %d"
+       % (_lo, _hi, round(ix["estimate"]) - ix["recorded"], _nh[0], _nh[-1]))
+    _ixt = G.member_index(w, "KM-108")
+    _edge = 0.5 - abs(_ixt["estimate"] - round(_ixt["estimate"]))
+    ok("the widened band is the count sitting on a printing edge", _edge < 0.1,
+       "Trentmoor %.3f cases, %.3f of a case from the %.1f edge"
+       % (_ixt["estimate"], _edge, round(_ixt["estimate"]) + 0.5))
     union = ix["recorded"] + ix["independent"] - ix["both"]
     ok("the observed union is not the golden and is ruled out by clause 4.2",
        round(union / ix["volume"] * 1e6) != gold_index
@@ -628,6 +657,32 @@ def main():
     ok("ask A's device sits on the unauthorised class only",
        resid and all(d["cover_class"] == "unauthorised fraud" for d in resid),
        "%d detail lines sit on an advice raised in a later quarter than their case closed" % len(resid))
+    # The prior-period lines stay, and the advices' own arithmetic is why. Dropping them leaves 35
+    # advices whose stated total no longer equals the sum of their own lines and whose case_lines no
+    # longer equals their row count, and the total it leaves is the register's reimbursement column to
+    # the penny, which is the other, named quantity the asking sentence excludes (SF17).
+    _kept_t = round(sum(float(d["indemnity_paid_gbp"]) for d in _U), 2)
+    _drop_t = round(sum(float(d["indemnity_paid_gbp"]) for d in _U
+                        if d["settlement_month"] == adv_month.get(d["advice_no"])), 2)
+    _brk_total, _brk_lines = 0, 0
+    for _a in _adv:
+        _lines = [d for d in _det if d["advice_no"] == _a["advice_no"]]
+        _keptl = [d for d in _lines if d["settlement_month"] == adv_month.get(_a["advice_no"])]
+        if len(_keptl) == len(_lines):
+            continue
+        if abs(round(sum(float(d["indemnity_paid_gbp"]) for d in _keptl), 2)
+               - float(_a["advice_total_gbp"])) > 0.011:
+            _brk_total += 1
+        if int(_a["case_lines"]) != len(_keptl):
+            _brk_lines += 1
+    ok("dropping the prior-period lines breaks the advices' own arithmetic",
+       _brk_total == len(resid) and _brk_lines == len(resid),
+       "%d advices stop tying to their own total and %d case_lines counts stop matching, on %.2f "
+       "dropped from %.2f" % (_brk_total, _brk_lines, _kept_t - _drop_t, _kept_t))
+    ok("the drop reading is the register's reimbursement column the sentence excludes",
+       abs(_drop_t - sum(_reimb[r] for r in _percase)) < 0.011,
+       "%.2f against the register's %.2f on the same cases"
+       % (_drop_t, round(sum(_reimb[r] for r in _percase), 2)))
     q1 = read_csv("notifications_2027_28_q1.csv")
     supp = read_csv("notifications_2027_28_q1_supplementary.csv")
     ok("ask B's device sits after the evidence base closes",
@@ -641,6 +696,134 @@ def main():
     ok("ask C's device sits on the 2025/26 recovery statement",
        {r["statement_basis"] for r in rs} == {"as credited", "net of recovery agent charges"},
        "one route stated on another basis")
+
+    # -- SF19: ask 5's count basis, pinned in the asking sentence and converged in the feed --------
+    # "the distinct cases each member notified in 2027/28 Q1". A reference is one case and no
+    # reference repeats, so counting rows and counting cases select the same rows (C1) and the pin
+    # agrees with the dictionary's "a case is one case however many legs it covers".
+    _feed = q1 + supp
+    _refs = [r["case_reference"] for r in _feed]
+    _bfig = G.ask_b(TARGET, w)
+    ok("SF19 no notification reference repeats, so a row is one case",
+       len(set(_refs)) == len(_refs),
+       "%d rows, %d distinct references" % (len(_refs), len(set(_refs))))
+    _rows_by, _cases_by = {}, {}
+    for _m in w["members"]:
+        _mine = [r for r in _feed if r["member_code"] == _m["code"]]
+        _rows_by[_m["code"]] = len(_mine)
+        _cases_by[_m["code"]] = len({r["case_reference"] for r in _mine})
+    ok("SF19 the pinned reading returns the committed count for every member",
+       all(_cases_by[c] == _bfig["%s notified" % c] for c in _cases_by),
+       "12 members, every distinct-case count equal to the figure the ask states")
+    ok("SF19 counting rows returns the same twelve counts", _rows_by == _cases_by,
+       "both readings select the same cases")
+    # The other extract a literal reader could take for the quarter's notifications is the case
+    # register, which carries a notified date too. Two shipped facts separate them: the register
+    # extract's own stated scope (scheme years 2024/25 to 2026/27) cannot hold a case from a 2027/28
+    # payment, which is most of the quarter's notifications, and every member's own Q1 return states
+    # the feed's count and no member's register count.
+    _A, _B = dt.date(2027, 4, 1), dt.date(2027, 6, 30)
+    _regq1 = [r for r in reg if r["notified_date"]
+              and _A <= dt.date.fromisoformat(r["notified_date"]) <= _B]
+    _regscam = {}
+    for r in _regq1:
+        if r["cover_class"] == "scam reimbursement":
+            _regscam[r["member_code"]] = _regscam.get(r["member_code"], 0) + 1
+    _ret = xlsx_rows("member_quarterly_returns.xlsx", "return 2027-28 Q1")
+    _late = [r for r in _feed if dt.date.fromisoformat(r["payment_date"]) >= _A]
+    ok("the register cannot be the quarter's notification extract",
+       len(_late) > len(_feed) * 0.5
+       and all(r["scheme_year"] in ("2024/25", "2025/26", "2026/27") for r in _regq1),
+       "%d of %d notified cases sit on a 2027/28 payment, outside the register's stated scope"
+       % (len(_late), len(_feed)))
+    ok("every member's own return states the feed's count and never the register's",
+       all(int(r["scam_cases_notified"]) == _cases_by[r["member_code"]] for r in _ret)
+       and not [r for r in _ret
+                if int(r["scam_cases_notified"]) == _regscam.get(r["member_code"], 0)],
+       "12 of 12 returns equal the feed, 0 of 12 the register's %d rows notified in the quarter"
+       % len(_regq1))
+
+    # -- SF18: ask 6's population, pinned in the asking sentence -----------------------------------
+    # "the share of scam reimbursement recovered by route on cases from 2025/26 payments closed in
+    # each 2025/26 quarter, from every case-level credit". Every reading the pack makes plausible is
+    # computed on the shipped rows: the pinned one returns the committed fifteen figures and each
+    # rival returns another grid.
+    _gold_c = G.ask_c(w)
+    _credit = {}
+    for _l in legs:
+        if _l["entry_type"] == "recovery credit":
+            _credit.setdefault(_l["case_reference"], []).append(_l)
+    _CALQ = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
+
+    def _sy(iso):
+        d0 = dt.date.fromisoformat(iso)
+        y0 = d0.year if d0 >= dt.date(d0.year, 4, 1) else d0.year - 1
+        return "%d/%s" % (y0, str(y0 + 1)[2:])
+
+    def _cgrid(cover="scam reimbursement", year="2025/26", cal=False,
+               denom="reimbursed_amount_gbp", credits_in_year=False):
+        src = [r for r in reg if r["closed_date"]]
+        if cover:
+            src = [r for r in src if r["cover_class"] == cover]
+        if year:
+            src = [r for r in src if r["scheme_year"] == year]
+
+        def _num(keys, route):
+            tot = 0.0
+            for k in keys:
+                for l2 in _credit.get(k, []):
+                    if l2["recovery_route"] != route:
+                        continue
+                    if credits_in_year and not (dt.date(2025, 4, 1)
+                                                <= dt.date.fromisoformat(l2["value_date"])
+                                                <= dt.date(2026, 3, 31)):
+                        continue
+                    tot += float(l2["credit_amount_gbp"])
+            return tot
+
+        out, every = {}, []
+        for q2 in (1, 2, 3, 4):
+            if cal:
+                sel = [r for r in src if dt.date.fromisoformat(r["closed_date"]).year == 2025
+                       and _CALQ[int(r["closed_date"][5:7])] == q2]
+            else:
+                sel = [r for r in src
+                       if W.quarter_of(dt.date.fromisoformat(r["closed_date"]), "2025/26") == q2]
+            every += sel
+            den = sum(float(r[denom]) for r in sel)
+            keys = {r["case_reference"] for r in sel}
+            for route in W.ROUTES:
+                out["Q%d %s" % (q2, route)] = round(_num(keys, route) / den * 100.0, 1) if den else 0.0
+        den = sum(float(r[denom]) for r in every)
+        keys = {r["case_reference"] for r in every}
+        for route in W.ROUTES:
+            out["year %s" % route] = round(_num(keys, route) / den * 100.0, 1) if den else 0.0
+        return out
+
+    ok("SF18 the pinned population returns the committed fifteen figures", _cgrid() == _gold_c,
+       "15 figures, 0 off the golden")
+    for _label, _alt in (
+            ("both covers", _cgrid(cover=None)),
+            ("any scheme year", _cgrid(year=None)),
+            ("both covers and any scheme year", _cgrid(cover=None, year=None)),
+            ("the unauthorised cover", _cgrid(cover="unauthorised fraud")),
+            ("calendar quarters", _cgrid(cal=True)),
+            ("the payment amount as the denominator", _cgrid(denom="payment_amount_gbp")),
+            ("credits dated inside 2025/26 only", _cgrid(credits_in_year=True))):
+        _offc = [k for k in _gold_c if abs(_alt[k] - _gold_c[k]) > 0.051]
+        _wk = max(_gold_c, key=lambda k: abs(_alt[k] - _gold_c[k]))
+        ok("SF18 a population the wording excludes gives another grid: %s" % _label, len(_offc) >= 9,
+           "%d of 15 off, worst %.1f points on %s" % (len(_offc), abs(_alt[_wk] - _gold_c[_wk]), _wk))
+    ok("SF18 the register's scheme year is the scheme year of the payment it holds",
+       not [r for r in reg if _sy(r["payment_date"]) != r["scheme_year"]],
+       "%d rows, 0 where the pinned payment year and the register's own column part" % len(reg))
+    _old23 = read_csv("case_register_2023_24.csv")
+    ok("SF18 the 2023/24 extract holds no case closing inside 2025/26",
+       not [r for r in _old23 if r["closed_dt"]
+            and dt.date(2025, 4, 1)
+            <= dt.datetime.strptime(r["closed_dt"], "%d/%m/%Y").date() <= dt.date(2026, 3, 31)],
+       "%d rows in the legacy layout, none inside the four quarters" % len(_old23))
+
     ok("no ask device touches a row the call reads",
        all(r["cover_class"] != "scam reimbursement" for r in resid)
        and all(dt.date.fromisoformat(r["notified_date"]) > W.AS_OF for r in q1 + supp),
