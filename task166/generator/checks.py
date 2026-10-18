@@ -52,7 +52,11 @@ LANDING_RULES = ["a cover test at 1.10 on 30-year amortization", "a cover test a
                  "a cover test at 1.20 on 30-year amortization", "a cover test at 1.25 on 30-year amortization",
                  "a cover test at 1.10 on 25-year amortization", "a cover test at 1.15 on 25-year amortization",
                  "a cover test at 1.20 on 25-year amortization", "a debt yield hurdle of 9.0 per cent",
-                 "a debt yield hurdle of 9.5 per cent", "a debt yield hurdle of 10.0 per cent"]
+                 "a debt yield hurdle of 9.5 per cent", "a debt yield hurdle of 10.0 per cent",
+                 "a cover test at 1.15 on the extension's payment", "a cover test at 1.20 on the extension's payment",
+                 "a cover test at 1.25 on the extension's payment", "a cover test at 1.30 on the extension's payment",
+                 "a cover test at 1.35 on the extension's payment", "the share of November 2026's maturities",
+                 "the share of October and November 2026's maturities"]
 
 
 # ------------------------------------------------------------------------------------------------- the golden
@@ -668,9 +672,10 @@ check("SF22 the sale-pending six months", "EXT-S, extended six months on the not
           RT["family"]["sale-pending outcomes dropped from the fit"],
           RT["family"]["sale-pending six months carried forward"], misread))
 
-check("SF23 the extension's payments are made", "guarantor's support agreement" in NOTES and
-      "the payments are made as scheduled" in NOTES, "filed: below a cover of 1.0 on the extension's terms the "
-      "payments are made from the interest reserve")
+check("SF23 the extension's payments are made", "Every extension is granted on the guarantor's reaffirmed support "
+      "agreement, with an interest reserve funded at the extension; the extended loan's payments are made as scheduled."
+      in NOTES and "falls short" not in NOTES and "income falls" not in NOTES,
+      "filed as a blanket practice, no income condition: every extension's payments are made as scheduled")
 
 # ------------------------------------------------------------------------------------------------- the ask
 gold_fig = {k: [round(v / 1e6, 1) for v in prog[k]] for k in prog}

@@ -932,6 +932,15 @@ def routes(G):
     for h_ in (0.08, 0.085, 0.09, 0.095, 0.10, 0.105, 0.11):
         RU["a debt yield hurdle of %.1f per cent" % (100 * h_)] = cre_total(G, (dy_now < h_).astype(float))
     RU["grade 5 or worse"] = cre_total(G, np.array([1.0 if L["grade"] >= 5 else 0.0 for L in fut]))
+    # the cover test on the extension's own payment: a tenth paid down, the rest at the plan's rate on 25 years
+    cov_x = noi / ((1 - EXT_PAYDOWN) * bal * dconst(P.cre, EXT_AMORT))
+    for c in (1.00, 1.10, 1.15, 1.20, 1.25, 1.30, 1.35, 1.40):
+        RU["a cover test at %.2f on the extension's payment" % c] = cre_total(G, (cov_x < c).astype(float))
+    # the latest months' extension share carried to every balloon not yet extended
+    for nm, a in (("November 2026's", dt.date(2026, 11, 1)), ("October and November 2026's", dt.date(2026, 10, 1)),
+                  ("September to November 2026's", dt.date(2026, 9, 1))):
+        s_ = np.array([h["date"] >= a for h in H])
+        RU["the share of %s maturities" % nm] = cre_total(G, np.full(len(fut), float(y[s_].mean())))
     M0 = cre_total(G, np.zeros(len(fut)))
     S_all = cre_total(G, np.ones(len(fut))) - M0
     S_wall = cre_total(G, wall.astype(float)) - M0

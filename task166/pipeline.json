@@ -1,38 +1,55 @@
 {
  "task": "task166",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at the extension share the maturity log shows lately files Agency MBS, $110 million; the step that lands it there is carrying the recent share of due balloons that extended as a constant, when each balloon extends according to whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and the $2.6 billion due from December 2026 through 2027, nearly all written in the early-2022 push on pro forma rents, mostly cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the 2025-26 maturities held out, puts over nine-tenths of that principal on the bank's 36-month extension and the pool's averaged loss at $150 million.",
  "architecture": 1,
- "loops": 1,
+ "loops": 5,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-18",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-  "reader": "rounds 1 (030758c7), 2 (110523a5) and 3 (leak-task166c): no leak; the round 3 reader read the extension terms as an ordinary servicing note; no document says how extension depends on income, cover, debt yield or the rate"
+  "leak_py": "REVIEW 2026-10-18 --asof 2026-12-03, no LEAK (the Treasury ladder's name in the policy; the call's words in the policy, notes and ALM report; design-note vocabulary as the files' own subjects; dates past the pull only in records that carry future dates; answered in the note's Leak sweep)",
+  "reader": "rounds 1 to 3 no leak; round 4 (leak-task166d) clean on Q1 to Q4, Q6 analytical, the support-agreement sentence's income condition read as a mild hint and reworded as a blanket practice; the targeted re-read of 7117491f (leak-task166e) clean, Q1 to Q4 none, Q6 analytical, its mild tells (the SF20 and SF23 pins reading as modelling rules, the extension terms in a file description, the notes' header naming the memo, the CRE entries richer than the others) recorded under Residual"
  },
  "duplicate_check": {
-  "heart": "WARN: repeat.question_form, answered at the draw; the stage 3 BLOCK (ban.forum against task198 v2) no longer fires: task198 was redrawn as v4 (forum trustees_or_governors, registered after this card); nothing on this card moved",
-  "nearest": "surface exit 0, eight card-level pairs promoted for the author's clone-check, task167 back to back among them (decisive pattern E and the close_out_summary artifact; its v2 card registered at 06:59:01Z, after this card)"
+  "heart": "WARN 2026-10-18, no BLOCK (repeat.question_form, answered at the draw)",
+  "nearest": "surface exit 0: task167 back to back (decisive pattern E and the close_out_summary artifact on both cards; task167's v2 card registered after this card) and seven card-level pairs (task155, task37, task117, task137, task44, task97, task197), each with a differentiation line on the card, left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "round 1 (030758c7) and round 2 (110523a5): DETERMINISTIC, APPROVE; round 3 (judge-task166c): DETERMINISTIC, APPROVE, reproducing 149.9 against MBS 110.5, wall share 0.908 and all 12 notionals, Gates G and H pass; rule 3 recheck (rule3/task166c) PASS, P(one) about 0.15, P(both) 0.02 to 0.05, bootstrap sigma 0.84; realism AT_RISK",
-  "disposition": "round 1: the family made to agree in the bin's middle half at $10 million, the overlay's start filed; round 2: the one extension and its terms filed, sale extensions and special assets, the ramp, total assets, half the push interest only; round 4 (the round 3 realism pass, findings reproduced on aa42d3e6 first): keyed per-loan streams, hotels and the pandemic in 2020 statements, anchor closings 2016 to 2019, the push's leverage ramped in from July 2021 and out through July 2022, sale extensions only with equity, the statements file closed at payoff, the break at 1.10, the officer's grade floor within a year of maturity, the support agreement and interest reserve filed (SF23), the register's Terminated on and the policy's in-effect test (SF16), the memo's mortgages line corrected; high-cover extensions and a softened shoulder dropped for determinism; golden 149.99, 19 constructions 148.16 to 151.02, sigma 0.48; P(one) about 0.2, P(both) about 0.04 to 0.07",
-  "report": ""
+  "verdict": "DETERMINISTIC, APPROVE, no fix (round 4, judge-task166d, on 1297e652: CRE 149.6 probability-weighted and 150.1 thresholded against MBS 112); rounds 1 (030758c7), 2 (110523a5) and 3 (judge-task166c) DETERMINISTIC, APPROVE",
+  "disposition": "round 1's rule 3 audit (PASS, tighter) reworked in one rebuild (the family in the bin's middle half at $10 million, the overlay's start filed); round 2's realism AT_RISK and unfiled fork repaired (the one extension and its terms filed, sale extensions and special assets, the origination ramp, half the push interest only); round 3's realism AT_RISK repaired in one pass, its findings reproduced on aa42d3e6 first (keyed per-loan streams, hotels and the pandemic, anchor closings, the push's leverage ramped in and out, sale extensions only with equity, the statements file closed at payoff, the officer's grade floor, the termination date pinned, the memo's mortgages line), high-cover extensions and a softened shoulder dropped for determinism; round 4 clean, its low items left as filed; the reader's one hint reworded (only extract_notes.txt changed, figures.json, block 4 and the goldens byte-identical); rule 3 recheck round 4 PASS, P(one) about 0.22, P(both) about 0.05 independent and 0.09 at a correlation of 0.2, this pack chosen over round 3's",
+  "report": "judge-task166d/verdict.md, rule3/task166d.md, leak-task166d/reader_answers.md and leak-task166e/reader_answers.md, relayed by the coordinator"
  },
  "returned": [],
- "resume": "stage 4 round 4 realism rework built and green (checks 117/0, verify 14/0, byte-identical rebuild, figures_check 51/0, precut, voice-check, leak.py REVIEW no LEAK, H1 clean, guard validate clean, surface exit 0, heart WARN, cracker pair 38.8): next the main session's call, a fresh reader, judge and recheck on this commit or ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "wave": "wave 7 (new), seed FC37 (world, decision and quantity kept; the seed's certified-control-set method clause and the ALM report's trailing-year ranking not shipped)",
+ "guard": "WARN, no BLOCK, against the registered card (2026-10-18T05:26:01Z): repeat.question_form (which, against task245 and task471), the same-puzzle and same-driver NOTEs against older builds differentiated on the card",
+ "stage3": {
+  "generator_checks": "117 assertions, 0 failed",
+  "verify": "14 checks, 0 failed",
+  "rebuild": "byte-identical",
+  "figures_check": "exit 0 (51 figures)",
+  "voice_check": "exit 0",
+  "ceiling": "pair 38.8, mirror leakage 18.8 per cent (generator/cracker.py on a fresh unzip of target.zip); the cracker 0 of 12 Ask A figures",
+  "call": "fixed-rate commercial real estate, $150 million averaged +200 bp loss (nearest $10 million; 149.99)",
+  "default_path": "Agency MBS, $110 million (110.52; the CRE pool at the recent share 86.4)",
+  "precut": "exit 0 (51 checks)",
+  "h1_audit": "target/ and golden/ clean",
+  "target_zip_sha256": "7117491fa9f297a7e3556fdeaaf9bffbe1a39dea0088ff03f4fae1bcff06c683",
+  "ask": "Ask A, the programme's notional in effect at each 2027 quarter-end by part (12 figures); the backload device (A1) and the label device (A2); cracker 0 of 12, over-cleaner 4 of 12"
+ }
 }

@@ -1,36 +1,37 @@
 {
   "task": "task168",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-18",
   "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats and files 500,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of the departures of its own month that never sold out.",
   "architecture": 1,
   "loops": 2,
   "precut": {
     "exit": 0,
-    "date": "2026-10-18"
+    "date": "2026-10-18",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (232 seats and the estimand's wording in the planning basis; field definitions in the dictionary; planned dates in the fleet register, on the H16 allow-list)",
-    "reader": "round 1: no leak; no document names unconstraining or any matching; round 3 reader pending"
+    "leak_py": "REVIEW 2026-10-18 --asof 2025-12-12, no LEAK (232 seats and the estimand's wording in the planning basis; field definitions in the dictionary; planned dates in the fleet register, on the H16 allow-list; answered in the note's Leak sweep)",
+    "reader": "rounds 1 to 3: no leak; round 3 on 02b3b6bb Q1 none, Q6 analytical, the unit read as essentially unambiguous, missed both ask devices (LIN-CTA 5,353); its one residual, a lap infant in a request's pax, forced and recorded under Residual"
   },
   "duplicate_check": {
-    "heart": "WARN, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated)",
-    "nearest": "task254 driver 0.07; guard.py surface promotes task70 on card axes (surface 0.079, pct 46), differentiation on the card, and task167 back to back (surface 0.087, pct 83: the same decisive gap and decision type on the cards, different pattern, domain, Layer 2 family and strategy; task167 registered after task168), reported to the main session"
+    "heart": "WARN 2026-10-18, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated on the card)",
+    "nearest": "surface: task70 (0.079) and task167 back to back (0.087, the same decisive gap and decision type on the cards; different pattern, domain, Layer 2 family and strategy; task167 registered after this card), both left to the author's optional clone-check, each with a differentiation line on the card"
   },
   "judge": {
-    "verdict": "round 2 re-judge NOT_DETERMINISTIC, SEND_BACK on supplementary answer 2 only (the 18 turn-away counts, the unit unfiled); round 1 DETERMINISTIC, APPROVE",
-    "disposition": "round 2 repaired in one generator pass: the unit filed in the ask's sentence (each website or app session, call or booking reference once per departure), the golden its literal execution, the 18 counts unchanged (50,632; LIN-CTA 4,760), devices P1 (sell-out clock) and P4 (connecting journeys' airports on agency records); rule 3 recheck PASS, its three optional fixes folded in (EM by direction, the fixed-effects Tobit and the lognormal fits on two depth-matched holdouts, asserted month by month; the structural rejection stated; lognormal EM by direction recorded as a wrong method that lands, P(one) about 0.14)",
-    "report": ""
+    "verdict": "DETERMINISTIC, APPROVE, no fix (round 3 on 02b3b6bb); round 2 NOT_DETERMINISTIC, SEND_BACK on the 18 turn-away counts; round 1 DETERMINISTIC, APPROVE",
+    "disposition": "round 1's rule 3 audit AT_RISK repaired in one rebuild, recheck PASS; round 2's SEND_BACK repaired by filing the turn-away unit in the ask's sentence with the golden its literal execution and every main-side figure frozen, the recheck's optional fixes folded in; round 3 clean, its optional note taken (block 1 states the 0.80 on its basis, golden only, target.zip byte-identical); rule 3 recheck round 2 PASS, P(one) about 0.14, P(both) about 0.02 independent and 0.04 to 0.06 correlated",
+    "report": "judge-task168c/verdict.md and leak-task168c/reader_answers.md, relayed by the coordinator"
   },
   "returned": [],
-  "resume": "stage 4: fresh reader and judge (round 3)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-18",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -38,7 +39,7 @@
   "wave": "wave 7 (new), seed FC39 (world, decision and quantity kept; the seed's planning standard of carried plus denied bookings not shipped)",
   "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window",
   "stage3": {
-    "generator_checks": "106 assertions, 0 failed",
+    "generator_checks": "107 assertions, 0 failed",
     "verify": "32 checks, 0 failed",
     "rebuild": "byte-identical",
     "figures_check": "exit 0 (47 figures)",
