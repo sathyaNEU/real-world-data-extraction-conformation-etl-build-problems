@@ -381,7 +381,30 @@ The weighting freedom that killed three earlier candidates on that number (16.9 
 ground offers only quantities whose estimator carries a weighting choice, do not conclude the ground is
 closed: ask whether the decision can be discretised against a filed tolerance, which fixes the denominator
 without filing a method. The check is one computation, the set under every variant against the figure under
-every variant, and it is the same table either way. **Both failed generalisations
+every variant, and it is the same table either way.
+
+**The rescue needs a threshold, so it does not reach `allocation_to_total`.** An allocation grades a share
+per bucket, a share is a level per bucket, and there is no boundary for a family's spread to stay inside,
+so every weighting or shrinkage freedom lands on a graded figure undefended. Measured on a seven-bucket
+split of a fixed capacity: five defensible corrections spread the graded split **565 slots** while the
+decisive step moved it only **101**, and over 20 redraws the spread averaged 472 (263 to 1,590) against a
+separation averaging 79 (28 to 135). Sweeping the dial sevenfold never lifted lever over spread above
+**0.192**, and it was largest where the lever was smallest. The designation half fails from both sides at
+once: the estimator family named one largest-share bucket in 20 of 20 redraws, and so did the crude and
+naive routes, so discretising removes the indeterminacy and the lever together. **So on any ground whose
+only inferential quantities carry a free shrinkage or weighting choice, `allocation_to_total` is strictly
+harder than a designated set or a banded verdict, and choosing it spends the rescue before the draw
+begins.** Check the decision type against this before the cell, not after.
+
+**One prediction this screen corrected, which is why the pincer is checked and not assumed.** The rank
+object (a simultaneous statement about which units' ranks the evidence determines) was expected to fail on
+both horns, determinacy and the bar. Priced on 120 adjacent pairs over 20 redraws, each pair's gap in the
+graded figure against the spread the estimator family puts on that gap: **73 pairs sat more than ten
+family-spreads apart, 1 under one, and 46 in the live middle**, median normalised gap 12.30 over a range of
+-0.10 to 225.01. So the determinacy half does **not** close, and about two pairs in five are both uncertain
+enough for an analysis to decide and determinate enough to grade. What still blocks the object is the bar
+alone: saying a rank is verified needs a certainty level, and a filed level is a filed method. The open
+question is one computation, not a design: whether a rank call can be shaped so no bar is needed. **Both failed generalisations
 failed the same way: a pattern across the five pauses read as a law without checking it against the fifteen
 ships.** Before filing any claim of the form "this ground or shape cannot hold", count it on both sides.
 
@@ -699,7 +722,7 @@ Nothing is cut until `DESIGN_NOTE.md` carries these H2 headings, spelt exactly, 
 | `## Draw` | card, pairing, shape, strategy, data-native sentence, a line per source; the card is filed |
 | `## Default path` | numbered steps, `Ends on:`, `Golden:`; both present and different |
 | `## Stump sentence` | the default answer and the step; names `Ends on:` |
-| `## Three rules` | the eleven labelled lines of 1.1; `Analyst test:` names `Ends on:`; `Task type:` names a task type serving the objective |
+| `## Three rules` | the thirteen labelled lines of 1.1, which is what `precut.py` counts; `Analyst test:` names `Ends on:`; `Task type:` names a task type serving the objective |
 | `## Readability screen` | a row per rung, the six tests, `(decisive)`, verdict last; decisive `silent` |
 | `## Semantic fork table` | `SF1`, `SF2`...; `Ruled out by` filled, ids in `generator/checks.py` |
 | `## Ladder` | rungs, winners, margins, position, dominance, grid, worth |

@@ -224,6 +224,10 @@ back; the better outcome is never to face it.
   search on that cell is spent, never that the ground is. Moving the number to another cell is one way to
   find a fresh driver and the slowest: the drivers a cell leaves open are listed by
   `guard.py mechanisms --objective <o>`, which is one screen.
+- **`pattern: none` moves the structural test.** With `pattern` set to `none`, `guard.py check` reads
+  `generators[0]` as the decisive pattern in `test.same_driver` and `test.same_driver_older`, so which
+  triple the test fires on depends on the generator list rather than on the pattern field. Read the verdict
+  rather than predicting it: a draw this corpus expected to raise a WARN returned a BLOCK on that path.
 - **Not registering.** An unfiled card protects nobody.
 
 ## Part 5. Maintenance
