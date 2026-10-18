@@ -1,0 +1,507 @@
+{
+ "call": [
+  "NP",
+  "NL",
+  "CP",
+  "LT",
+  "EP",
+  "WP",
+  "WR"
+ ],
+ "constants": {
+  "adult_years": 15,
+  "ages_months": [
+   6,
+   59
+  ],
+  "cm_to_mm": 10,
+  "cut_mm": 125.0,
+  "muac_valid_mm": [
+   75,
+   220
+  ],
+  "note_points": 2.0,
+  "protocol_sections": [
+   2,
+   5,
+   6,
+   7,
+   9,
+   10
+  ],
+  "rate_per": 10000,
+  "refresher_june": 28,
+  "resent_june": 22,
+  "switch_june": 21
+ },
+ "evidence": {
+  "before_outcome3": [
+   55,
+   55
+  ],
+  "before_outcome4": [
+   32,
+   0
+  ],
+  "before_reason3": [
+   10,
+   7,
+   3
+  ],
+  "before_reason4": [
+   48,
+   0,
+   35
+  ],
+  "from_outcome3": [
+   118,
+   0
+  ],
+  "from_outcome4": [
+   168,
+   168
+  ],
+  "from_reason3": [
+   125,
+   0,
+   85
+  ],
+  "from_reason4": [
+   42,
+   19,
+   19
+  ],
+  "switch_day": "2027-06-21"
+ },
+ "note_points": 2.0,
+ "reference": "R3",
+ "rungs": {
+  "R0_repeat": [],
+  "R1_field": [
+   "NL",
+   "WP",
+   "WR"
+  ],
+  "R1_mse": [
+   "NL",
+   "WP",
+   "WR"
+  ],
+  "R2_offset_repeat": [
+   "NP",
+   "CP",
+   "LT",
+   "EP"
+  ],
+  "R5_offset_mse": [
+   "NP",
+   "NL",
+   "CP",
+   "LT",
+   "EP",
+   "ER",
+   "WP",
+   "WR"
+  ]
+ },
+ "test": [
+  {
+   "departure_sd": 2.7,
+   "name": "Titus Ouma",
+   "offset": -2.1,
+   "readings": 40,
+   "tem": 0.7
+  },
+  {
+   "departure_sd": 2.1,
+   "name": "Centrine Kinya",
+   "offset": 0.4,
+   "readings": 40,
+   "tem": 0.9
+  },
+  {
+   "departure_sd": 5.8,
+   "name": "Steve Abdikadir",
+   "offset": -0.4,
+   "readings": 40,
+   "tem": 1.7
+  },
+  {
+   "departure_sd": 2.6,
+   "name": "Halima Mohamud",
+   "offset": -0.5,
+   "readings": 40,
+   "tem": 1.0
+  },
+  {
+   "departure_sd": 2.4,
+   "name": "Pius Kiplangat",
+   "offset": 2.9,
+   "readings": 40,
+   "tem": 1.2
+  },
+  {
+   "departure_sd": 2.8,
+   "name": "Diana Kilonzo",
+   "offset": 0.2,
+   "readings": 40,
+   "tem": 0.9
+  },
+  {
+   "departure_sd": 2.0,
+   "name": "Edwin Njoroge",
+   "offset": -0.3,
+   "readings": 40,
+   "tem": 0.7
+  },
+  {
+   "departure_sd": 2.9,
+   "name": "Betty Jepchumba",
+   "offset": -2.9,
+   "readings": 40,
+   "tem": 1.2
+  },
+  {
+   "departure_sd": 2.4,
+   "name": "Emmanuel Mutemi",
+   "offset": -2.5,
+   "readings": 40,
+   "tem": 1.1
+  },
+  {
+   "departure_sd": 1.9,
+   "name": "Albert Bosire",
+   "offset": 3.7,
+   "readings": 20,
+   "tem": 0.6
+  },
+  {
+   "departure_sd": 2.3,
+   "name": "Sharon Kinuthia",
+   "offset": -4.0,
+   "readings": 20,
+   "tem": 0.9
+  },
+  {
+   "departure_sd": 6.3,
+   "name": "Cosmas Kibet",
+   "offset": -0.5,
+   "readings": 40,
+   "tem": 1.0
+  },
+  {
+   "departure_sd": 5.1,
+   "name": "Joan Bashir",
+   "offset": -0.1,
+   "readings": 40,
+   "tem": 1.2
+  }
+ ],
+ "variants": 7,
+ "zones": [
+  {
+   "anthropometrists": [
+    "Titus Ouma"
+   ],
+   "band": "Alert",
+   "cdr": 0.83,
+   "children": 312,
+   "code": "NP",
+   "name": "North Pastoral",
+   "note": true,
+   "oedema": 1,
+   "own": 6.7,
+   "own_range": [
+    6.5,
+    6.8
+   ],
+   "points": 4.0,
+   "points_size": 4.0,
+   "published": 6.7,
+   "readings": 10.7,
+   "readings_band": "Alarm",
+   "response": 96.4,
+   "sub_county": "Laga North",
+   "u5dr": 1.26
+  },
+  {
+   "anthropometrists": [
+    "Centrine Kinya"
+   ],
+   "band": "Alert",
+   "cdr": 0.84,
+   "children": 374,
+   "code": "NA",
+   "name": "North Agro-pastoral",
+   "note": false,
+   "oedema": 1,
+   "own": 6.0,
+   "own_range": [
+    5.5,
+    6.0
+   ],
+   "points": -0.1,
+   "points_size": 0.1,
+   "published": 5.9,
+   "readings": 5.9,
+   "readings_band": "Alert",
+   "response": 96.6,
+   "sub_county": "Laga North",
+   "u5dr": 2.11
+  },
+  {
+   "anthropometrists": [
+    "Steve Abdikadir"
+   ],
+   "band": "Alarm",
+   "cdr": 0.48,
+   "children": 305,
+   "code": "NL",
+   "name": "North Lakeshore",
+   "note": true,
+   "oedema": 0,
+   "own": 13.7,
+   "own_range": [
+    13.6,
+    14.6
+   ],
+   "points": 4.1,
+   "points_size": 4.1,
+   "published": 13.7,
+   "readings": 17.8,
+   "readings_band": "Emergency",
+   "response": 94.8,
+   "sub_county": "Laga North",
+   "u5dr": 0.96
+  },
+  {
+   "anthropometrists": [
+    "Pius Kiplangat"
+   ],
+   "band": "Alarm",
+   "cdr": 0.8,
+   "children": 319,
+   "code": "CP",
+   "name": "Central Pastoral",
+   "note": true,
+   "oedema": 1,
+   "own": 10.8,
+   "own_range": [
+    10.8,
+    10.8
+   ],
+   "points": -3.8,
+   "points_size": 3.8,
+   "published": 10.8,
+   "readings": 7.0,
+   "readings_band": "Alert",
+   "response": 97.9,
+   "sub_county": "Laga Central",
+   "u5dr": 1.85
+  },
+  {
+   "anthropometrists": [
+    "Diana Kilonzo",
+    "Halima Mohamud"
+   ],
+   "band": "Alert",
+   "cdr": 0.42,
+   "children": 353,
+   "code": "CA",
+   "name": "Central Agro-pastoral",
+   "note": false,
+   "oedema": 2,
+   "own": 4.5,
+   "own_range": [
+    4.5,
+    4.6
+   ],
+   "points": 0.7,
+   "points_size": 0.7,
+   "published": 5.2,
+   "readings": 5.2,
+   "readings_band": "Alert",
+   "response": 95.5,
+   "sub_county": "Laga Central",
+   "u5dr": 0.84
+  },
+  {
+   "anthropometrists": [
+    "Betty Jepchumba"
+   ],
+   "band": "Alert",
+   "cdr": 0.44,
+   "children": 361,
+   "code": "LT",
+   "name": "Laga Town",
+   "note": true,
+   "oedema": 0,
+   "own": 6.9,
+   "own_range": [
+    6.9,
+    6.9
+   ],
+   "points": 5.2,
+   "points_size": 5.2,
+   "published": 6.9,
+   "readings": 12.1,
+   "readings_band": "Alarm",
+   "response": 95.3,
+   "sub_county": "Laga Central",
+   "u5dr": 1.11
+  },
+  {
+   "anthropometrists": [
+    "Emmanuel Mutemi"
+   ],
+   "band": "Alert",
+   "cdr": 0.51,
+   "children": 324,
+   "code": "EP",
+   "name": "East Pastoral",
+   "note": true,
+   "oedema": 0,
+   "own": 9.4,
+   "own_range": [
+    9.3,
+    9.4
+   ],
+   "points": 5.1,
+   "points_size": 5.1,
+   "published": 9.4,
+   "readings": 14.5,
+   "readings_band": "Alarm",
+   "response": 97.1,
+   "sub_county": "Laga East",
+   "u5dr": 0.5
+  },
+  {
+   "anthropometrists": [
+    "Albert Bosire",
+    "Sharon Kinuthia"
+   ],
+   "band": "Alert",
+   "cdr": 0.56,
+   "children": 364,
+   "code": "ER",
+   "name": "East Riverine",
+   "note": false,
+   "oedema": 0,
+   "own": 4.8,
+   "own_range": [
+    4.8,
+    4.8
+   ],
+   "points": 1.5,
+   "points_size": 1.5,
+   "published": 6.3,
+   "readings": 6.3,
+   "readings_band": "Alert",
+   "response": 96.9,
+   "sub_county": "Laga East",
+   "u5dr": 1.12
+  },
+  {
+   "anthropometrists": [
+    "Edwin Njoroge",
+    "Halima Mohamud"
+   ],
+   "band": "Alert",
+   "cdr": 0.7,
+   "children": 358,
+   "code": "EA",
+   "name": "East Agro-pastoral",
+   "note": false,
+   "oedema": 0,
+   "own": 6.5,
+   "own_range": [
+    6.5,
+    7.0
+   ],
+   "points": 0.9,
+   "points_size": 0.9,
+   "published": 7.4,
+   "readings": 7.4,
+   "readings_band": "Alert",
+   "response": 95.5,
+   "sub_county": "Laga East",
+   "u5dr": 1.9
+  },
+  {
+   "anthropometrists": [
+    "Joan Bashir"
+   ],
+   "band": "Alarm",
+   "cdr": 0.4,
+   "children": 387,
+   "code": "WP",
+   "name": "West Pastoral",
+   "note": true,
+   "oedema": 1,
+   "own": 14.5,
+   "own_range": [
+    14.4,
+    14.8
+   ],
+   "points": 2.9,
+   "points_size": 2.9,
+   "published": 14.5,
+   "readings": 17.4,
+   "readings_band": "Emergency",
+   "response": 96.0,
+   "sub_county": "Laga West",
+   "u5dr": 0.64
+  },
+  {
+   "anthropometrists": [
+    "Diana Kilonzo",
+    "Edwin Njoroge"
+   ],
+   "band": "Alert",
+   "cdr": 0.63,
+   "children": 364,
+   "code": "WA",
+   "name": "West Agro-pastoral",
+   "note": false,
+   "oedema": 2,
+   "own": 7.4,
+   "own_range": [
+    7.4,
+    7.4
+   ],
+   "points": 0.5,
+   "points_size": 0.5,
+   "published": 7.9,
+   "readings": 7.9,
+   "readings_band": "Alert",
+   "response": 95.9,
+   "sub_county": "Laga West",
+   "u5dr": 0.68
+  },
+  {
+   "anthropometrists": [
+    "Cosmas Kibet"
+   ],
+   "band": "Alarm",
+   "cdr": 0.48,
+   "children": 348,
+   "code": "WR",
+   "name": "West Riverine",
+   "note": true,
+   "oedema": 1,
+   "own": 13.7,
+   "own_range": [
+    13.6,
+    14.7
+   ],
+   "points": 4.5,
+   "points_size": 4.5,
+   "published": 13.7,
+   "readings": 18.2,
+   "readings_band": "Emergency",
+   "response": 94.9,
+   "sub_county": "Laga West",
+   "u5dr": 1.7
+  }
+ ]
+}
