@@ -156,12 +156,21 @@ exist, and acting on it would have repaired data that was correct. The check cos
 before reporting that two files cannot both be true, aggregate both to the coarsest grain the claim
 still has meaning at, usually the entity over the whole window, and see whether the contradiction
 survives. A reader's or a judge's structural finding is a hypothesis with a join or a base rate inside it, and the
-assumption is the part most likely to be wrong. Four fell this way in one night, and the fourth came from
-a judge rather than a reader, so seniority is no exemption: a withdrawal-window placement claim rested on
-a quarter of periods carrying an episode when the episodes cover 1.22 per cent of the span by duration, 20
-times out, and a count-basis claim gave two series for rows against distinct references when the pack has
-no duplicate reference at all and the two coincide exactly. Reproduce the finding before repairing
-anything, and when it does not reproduce, record that it did not rather than building for it.
+assumption is the part most likely to be wrong. Two fell this way in one night: a cited-against-retained
+impossibility that matched a publication date to a delivery date, and a withdrawal-window placement claim
+resting on a quarter of periods carrying an episode when the episodes cover 1.22 per cent of the span by
+duration, 20 times out. Reproduce the finding before repairing anything, and when it does not reproduce,
+record that it did not rather than building for it.
+
+**Measure the version the finder saw, not the version in front of you.** A third claim in that same night
+was dismissed as unreproducible and was correct: a judge reported that a notification feed's row count and
+its distinct-reference count forked, the orchestrator measured the pack on disk and found them identical,
+and told the builder to leave the figures alone. The builder had already repaired the defect, a
+four-digit reference suffix drawn with replacement, so the pack on disk no longer had it. Checked out at
+the judged bundle's own commit, the feed held 956 rows over 951 references with five repeats, exactly the
+series the judge gave. A finding is about a state, so the check is against that state: unzip the bundle
+the finder's own md5 names, or check it out at the commit that shipped it. Dismissing a true finding
+costs more than chasing a false one, because the dismissal is filed as settled.
 
 **Two files that observe the same events need two detection logics, and matching bounds are a
 causal impossibility rather than a realism nit.** Where a pack carries the same real-world events as
