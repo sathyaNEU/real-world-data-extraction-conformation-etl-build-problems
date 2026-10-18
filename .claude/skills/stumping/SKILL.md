@@ -286,6 +286,17 @@ the design, which is the case `determinism-check` section 1 ranks first. **So th
 "is a construction available" but "do the standard variants of it agree on the graded figure", and that is
 one computation on the clean truth.**
 
+**Run that test on the variants that are methods, not on conventions the closure table already
+requires closed, or it rejects every construction involving an interval.** The separating question: if
+pinning the varying choice is something the closure table demands anyway, it is a convention and the fork is
+closed legitimately by one sentence at authority; if pinning it would make the decisive step executable, it
+is a method and the fork is fatal. A boundary convention is the clear case, since axis 9 is inclusivity and
+the WHAT names inclusion and exclusion outright, so filing it is mandatory and costs no stump. task194's
+architecture 5 nearly died on this: its candidate's name held across all four variants while the figure
+printed 10.5, 10.2, 10.5 and 10.1, and every one of those forks was which unit a transfer-day onset is
+charged to. Contrast architecture 3's chain-ladder variants, which estimate an unobserved quantity and
+cannot be pinned without turning the step into rule application. Same symptom, opposite verdicts.
+
 **And that clause is about the construction, not about the data type: measured against this corpus, the
 tempting generalisation is false.** It is natural to conclude that a forced construction needs dense
 observations of one unit and so is unavailable on sparse counts across many, which would rule out provider,

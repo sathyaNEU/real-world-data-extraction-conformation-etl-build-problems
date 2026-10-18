@@ -1407,3 +1407,54 @@ units, which is exactly the setting where weighting and shrinkage are both defen
 clause is a constraint on the data type as much as on the mechanism: a uniquely determined construction
 needs dense observations of one unit, not sparse counts across many.** That is the question to put to the
 author rather than spend a ninth number on it.
+
+### Architecture 5 candidate A, measured twice, and a refinement the test needs (2026-10-18)
+
+**Candidate A, the unit that held the patient when the complication began.** The record charges a
+complication to the separation that reported it, which is the discharging unit, while the only record of
+which unit held the patient at onset sits in a movement file at a finer grain. The construction is interval
+containment: records-fixed, an integer, no weighting and no shrinkage in it. Driver similarity **0.06**,
+with task48, task103 and task184 not in the top five, so the driver is distinct from the three grain
+builds on this objective even though the shape is shared.
+
+**First parameterisation (short segments, an extreme golden unit).** The figure printed 24.0, 28.2 and
+30.0 across the boundary conventions, with 8.5 per cent of onsets on a transition day, and **all four
+rival routes named the golden**, because a unit with a propensity of 0.072 against a pack at 0.027 tops
+every attribution rule. That second failure was mine, not the shape's.
+
+**Corrected parameterisation: the golden unit sits mid-spell, so no positional rule charges it, with
+longer segments cutting boundary onsets to 3.16 per cent.**
+
+| Variant of the construction | Names | Count | Rate per 100 segments | Prints |
+|---|---|---|---|---|
+| containment, transfer day to the arriving unit | unit 3 | 532 | 10.545 | 10.5 |
+| containment, transfer day to the departing unit | unit 3 | 517 | 10.248 | 10.2 |
+| containment at midday | unit 3 | 532 | 10.545 | 10.5 |
+| boundary onsets dropped | unit 3 | 510 | 10.109 | 10.1 |
+
+| Rival route | Names | Verdict |
+|---|---|---|
+| the discharging unit (the easy route) | unit 7 | lands wrong |
+| the admitting unit | unit 0 | lands wrong |
+| the longest-stay unit | **unit 3** | **reaches the golden** |
+| pro-rata by custody days | **unit 3** | **reaches the golden** |
+
+**The real kill is the sixth screen, not the uniqueness clause.** Longest-stay and pro-rata reach the
+golden because **a unit with a high propensity makes the spells it touches eventful**, so its signal is
+published at the spell level and no onset containment is needed to find it. Breaking that means making the
+golden's presence uninformative about a spell's event count, which is the quantity that makes it the
+answer. Seventh instance of one number on both sides.
+
+**The refinement the uniqueness test needs, and it matters beyond this build.** The figure forked at
+10.1, 10.2 and 10.5 on the **boundary convention**, and a boundary convention is not a method family. It is
+closure axis 9, inclusivity, which `precut.py` requires filed and which every shipped build files. So that
+fork is legitimately closed by a sentence at authority, unlike architecture 3's chain-ladder variants,
+which are a method family and may not be pinned without turning the step into rule application. **Run the
+uniqueness test on the variants that are methods, not on the conventions the closure table already
+requires closed, or it rejects every construction involving an interval, which is most of them.** Stated
+as a test: if pinning the varying choice is something the closure table demands anyway, it is a convention;
+if pinning it would make the decisive step executable, it is a method and the fork is fatal.
+
+**So the objective question is premature on this evidence.** Candidate A died on the sixth screen with its
+conventions legitimately closeable, not on 1.6a. Candidate C, a construction over orderings, scored the
+cleanest driver of the three at **0.05** and has not been tested.
