@@ -9,7 +9,7 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "stage 4: the coordinator spawns the re-judge and one more reader. The re-judge's two narrative figures are fixed, the frequency record has the spread the reader asked for, and the qualifying episode set is identical by count on every one of the 21 dates.",
+  "resume": "Stage 4, last judge pass and a third reader running. The FIX_NOW closed with NO graded figure moved: the rejected-route pair was right all along and the sentence was short, so the basis is now pinned (the last second before the episode at which the published frequency was still inside the dead band, defined for all 935 obliged pairs, giving 76.82 and 93.55 which print 77 and 94) and both checkers assert it. The reader's uniformity finding was answered without scattering the episodes: published deviation windows 607 to 666, those opening away from a period boundary 7 to 62, and the qualifying set identical at 515 on every one of the 21 dates, asserted both ways, with the placement self-verifying so an added excursion whose span could carry a qualifying run is never added. All nine gains match to six decimal places and the tightest bin clearance is unchanged at 0.0303 MWh. Gates re-verified by the orchestrating session: checks 76 of 76, verify 134 of 134 on the bundle alone, precut 50 with no FAIL or WARN, figures_check 96 with none absent, the prompt gate PASS, ceiling 34.5 with mirror leakage 6.0, and two byte-identical rebuilds. Two things its builder caught by measuring rather than reasoning: the first excursion shapes created 25 new qualifying episodes because a raised cosine peaking at 0.090 spends 20 to 28 seconds above the threshold, and the second placement cost one site a fitting boundary, the fragility it had just removed. Also found: freeze.py hard-freezes the design note ladder section and --allow does not reach it, which is the second scoping limit that tool has shown today.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "76 checks, 0 failed (floor 40)",
@@ -44,7 +44,8 @@
     "report": "task197/determinism_check_report.md",
     "fixes": "rung 0's basis pinned in the Final Recommendation, step 6 and the determination memo, and the figures recomputed on it (Zwartewater 77, Kampvliet 94, unchanged); the portfolio exposure total's round-once convention noted in the workbook, its notes sheet and the write-up",
     "bin_edges": "nothing within 0.3 of an edge; minimum 0.303 on Reiderland above",
-    "loss_fork": "closed structurally: on the current pack per interval against once on the sum differ by at most 7.1e-15 MWh across all eighteen site figures, and clause 5 excludes the operator's adjustment by name"
+    "loss_fork": "closed structurally: on the current pack per interval against once on the sum differ by at most 7.1e-15 MWh across all eighteen site figures, and clause 5 excludes the operator's adjustment by name",
+    "pass3": "spawned 2026-10-19 against target.zip md5 f4d866c3acbb366436bd7155d1332deb; the last pass, anything but APPROVE spends the architecture"
   },
   "archive_spread": {
     "recordings": 2718,
