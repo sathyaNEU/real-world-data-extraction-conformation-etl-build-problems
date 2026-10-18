@@ -32,6 +32,16 @@ redesigned decisive step, not a fourth device.
 
 ## Part 1. Design against the careful solver's path
 
+**The cracker is a model and the reader is the measurement.** Its stops are the author's guesses at the
+opponent's routes, so a reader that beats them has proved them too shallow, not proved itself unusual. One
+build's cracker priced three asks at nought of six each and a single reader at medium effort kept twelve of
+eighteen: ask A's grain device held, while the register's year-to-date convention fell to a tie check
+(passed plus held against the cumulative total) and a two-meaning blank fell to a cross-tab of increments
+against reasons. Both were "seen, reflex repair wrong" devices sold as silent ones. **So when the reader
+keeps an ask, re-device it from the silent list (Part 3) rather than re-pricing the cracker**, and read the
+measured pair off the reader's score: twelve of eighteen with a landed call is a pair near 65, whatever the
+sheet said.
+
 **1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 35 per cent of ask weight** (target a fifth), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
 
 **1.1b The blind-response test, run at the draw.** For the widest graded component, ask what a response
