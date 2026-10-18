@@ -319,7 +319,7 @@ def episodes(units):
     return rows, expected, expected_net, inscope
 
 
-EDGE_BAR = 0.15          # a graded figure sits at least this fraction of its rounding unit from the edge
+EDGE_BAR = 0.30          # a graded figure sits at least this fraction of its rounding unit from the edge
 
 
 def bin_edge(value, unit=0.1):
@@ -334,13 +334,13 @@ def bin_edge(value, unit=0.1):
 
 
 def centre_plans(plans, per_separation, graded, pick, expected_per_sep,
-                 count_unit=1.0, rate_unit=0.1):
+                 count_unit=0.1, rate_unit=0.1):
     """The planned separations of the eligible units, nudged by a few per cent.
 
     Every eligible unit's planned volume is moved to the nearest value inside a few per cent that leaves
-    the avoidable complications its planned activity carries, stated to the nearest whole complication,
-    and the complications its patients would be expected to have, stated to one decimal, at least
-    EDGE_BAR of their own rounding unit from the edge of their printed cells. Nothing here is fitted:
+    the avoidable complications its planned activity carries and the complications its patients would be
+    expected to have, both stated to one decimal because that is the precision the asking sentences state,
+    at least EDGE_BAR of that rounding unit from the edge of their printed cells. Nothing here is fitted:
     each figure is a sum over the record times a volume.
     """
     for code in graded:
