@@ -335,6 +335,32 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
   rubric at ship.
 - Measured by: generator/ceiling.py on the cut pack.
 
+## Pre-ship check
+
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each field's 2026 lead from piston
+  aircraft, built the way airport lead inventories build it (piston operations by engine class and kind times lead per
+  operation), the operations at a field without a count completed for the aircraft the receiver network never hears;
+  the capture rate qualifies eight, the rate per never-recorded based airplane seven, on the clean truth and on the pack
+  (checks.py R3a, R3b). Two layers: the Layer 1 inventory in `## Three rules`, each item asserted neutral on the call
+  and on every non-towered lead (L1, SF2, SF9, SF10, SF12); the ask's device confined to the towered fields (separation
+  rows: every operation the register's own dates price differently is at a tower); Layer 2 the choice of auxiliary.
+  The decisive step is none of the three banned kinds, each executed in checks.py: not a plant (R3c: no document names
+  the never-recorded airplanes, a capture or correction factor, an estimator per airplane or a verdict; no memo, draft
+  or briefing ships); not data semantics (the fork table: every term read right still leaves the capture rate on eight
+  fields); not rule application (R3a: every filed rule executed with one capture rate files the default path's eight;
+  R3b: the per-airplane rate alone files the golden seven).
+- **Gates.** 18 files in 4 formats (csv, pdf, txt, xlsx); the export at 187,609 rows; two distractors (the 5010 records,
+  the declared wrong-basis distractor, and the lead monitoring samples), each deletion asserted; checks.py green (103
+  rows); verify.py from the bundle alone (its own readers, time zone rule, tower-hours parser and flight-ID reading of
+  the register) matches the golden; two builds byte-identical (target.zip e7020bf9dcfe1912); figures_check.py (52
+  figures), precut.py (50) and voice-check.py exit 0; leak.py REVIEW (no LEAK) and three isolated readers (the last two
+  landing the call, the last missing all twelve towered figures on the rebuilt device); guard heart PASS; the surface
+  screen promotes task468 (two builds apart, the same calibration form and context artifact) and task36 (differentiated
+  on the card) for the author; the containers normalised (PDF stamps, OOXML properties) in build.py.
+- **Pair ceiling.** 39.1 measured by generator/ceiling.py with the cracker reading the register by its own dates (0 of
+  12) and the best mirror on R4 (33.2), mirror leakage 0; a response that reads the flight IDs against the register
+  lands the asks.
+
 ## Leak check
 
 `leak.py --asof 2027-02-12`: REVIEW, no LEAK. Each REVIEW line answered: the guidelines carry 12.5 kg, the round's
@@ -388,6 +414,17 @@ separates); the L08 tow-plane reading (69.75 against 69.16, no graded figure mov
 events, no rounded figure moves). The ask's device was rebuilt after this pass with every main figure byte-identical;
 its golden is the aircraft that flew each operation, asserted in checks.py and recomputed by verify.py's own reading of
 the flight ID.
+
+Reader, round 3 (answers appended to `leak_check_report.md`; a first attempt stopped before writing and was rerun on a
+fresh copy of the same pack): no leak; question 1 nothing names the decisive step; question 5 method 4.2's literal
+reading gives the golden's unrecorded tower operations; question 6 an analytical choice. It landed the call (the rate
+per silent based airplane at the four count fields, 69.76) and read the moved addresses by the register's own dates,
+missing all twelve towered figures on the cracker's stop: the rebuilt device held. Fixed (data only, no graded figure
+moved): validation dates now run to the month's end and the 5010 managers round small fields to the hundred, so no two
+fields' rows coincide. Harmless: the near-constant rate per silent airplane (what forces the estimator), the
+commissioning counts, a number's move recorded on one date and mostly to turbines, the towers counting every operation
+the network records in their hours, the counties' N-number formats, the September to December validation campaign,
+two lapsed registrations still on the list, the lead monitoring file.
 
 ## Tried and rejected
 

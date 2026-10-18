@@ -36,7 +36,7 @@
  "scoring_unit": "per active unit per period",
  "spine": {
   "file": "field receiver network detections export, 2026",
-  "rows": 187413,
+  "rows": 187609,
   "entity": "one piston or turbine aircraft operation (takeoff, landing or touch-and-go) the district's receiver at a field recorded",
   "grain": "aircraft operation",
   "source": "synthetic (constructed in the layout of an ADS-B receiver network's airport operations export)"

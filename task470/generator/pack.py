@@ -316,7 +316,8 @@ def based_rows(x):
         rng.random()
         if caps[a["home"]]:
             mm = mm.upper()
-        val = dt.date(2026, int(rng.integers(9, 13)), int(rng.integers(1, 29)))
+        mo = int(rng.integers(9, 13))
+        val = dt.date(2026, mo, int(rng.integers(1, (31 if mo in (10, 12) else 30) + 1)))
         if a.get("cancelled_on") and val >= a["cancelled_on"]:   # validated while the registration stood
             val = a["cancelled_on"] - dt.timedelta(days=9 + int(rn.integers(0, 40)))
         sheets[county].append([a["home"], nm, _nfmt(a["n"], county, rng), mm, based_type(a), val])
@@ -342,7 +343,8 @@ def m5010_rows(x):
         sgl = int(round(bt.get("Single Engine", 0) * drift))
         mlt = int(round(bt.get("Multi Engine", 0) * rng.uniform(0.7, 1.3)))
         base = (f["B"] * rng.uniform(55, 160) + 1500) * (1.5 if f["school"] else 1.0)
-        gen = int(round(base / (1000 if base > 20000 else 500))) * (1000 if base > 20000 else 500)
+        unit = 1000 if base > 20000 else (500 if base > 10000 else 100)       # managers estimate to a round figure
+        gen = int(round(base / unit)) * unit
         loc = int(round(gen * rng.uniform(0.35, 0.6) / 100)) * 100
         year = int(rng.integers(2018, 2026))
         out.append([lid, f["name"], sgl, mlt, bt.get("Jet", 0), bt.get("Helicopter", 0), bt.get("Glider", 0),
