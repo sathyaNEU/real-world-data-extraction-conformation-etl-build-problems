@@ -1863,3 +1863,122 @@ construction estimates), the silent-row readability screen and the full enumerat
   never-registered draft hold the path-attribution insight; and a square incidence structure has to be
   argued realistic against an operation that would produce an over-determined one. Not screened in this
   pass and not claimed to survive.
+
+- **Architecture 9 pass, 2026-10-18: the number stayed on `business-operations-analytics` x
+  anomaly-detection, the route architecture 8 left unscreened was screened to death on all three of its
+  predicted deaths, two further structurally distinct mechanisms were screened to death beside it, nothing
+  was drawn and no card was registered.** Scripts in the builder's scratch directory
+  `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194c/`:
+  `screen_a.py`, `screen_a2.py`, `screen_a3.py`, `screen_b.py`, `screen_c.py`, and the probe card
+  `task194_card_probe.json`.
+- **The window is confirmed open and now tested on a second subdomain and a second client domain, so no
+  later pass pays for this read again.** `guard.py check` on the probe card returns **PASS, exit 0, with no
+  WARN**, nearest driver 0.06, on `business-operations-analytics` / `workforce-labour-planning` x
+  anomaly-detection with `client_domain` `general-statistics-data-science`, shape 09, gap `rule`, pattern
+  `A`, `signal_vs_noise_or_hold`, `structural_verdict`, `binding_constraint`, `physical_verification`,
+  `operations_log`, `operations_director`, `line_manager_or_team`, `incident_or_complaint`,
+  `professional_services`, question form `whether`, Portugal. This holds after task172 registered and
+  pushed task246 out of the ban window, so the live three are task172, task244 and task170. **Three facts
+  the same probe bought, each of which would otherwise cost a redraw at stage 2.** A house-domain draw here
+  must carry `client_domain` or `domain.house` WARNs. Decision `designation_set` with gap `population` and
+  decisive pattern `G2` is a `test.same_puzzle` **BLOCK** against task239 inside the live batch, and
+  `test.same_puzzle_older` against task264 and task48 v2 and `test.same_driver_older` against task228 v5
+  besides, so the verdict shape is the cheap one here and the slate shape is not. Question form `which`
+  WARNs on `repeat.question_form` against task190; `whether` is clean.
+- **Rejected, measured, and this closes the one route architecture 8 left open: the exactly-determined
+  attribution system** (per-unit rates as the unique solution of a square full-rank system over observed
+  aggregates, so ordinary least squares, weighted least squares and Poisson maximum likelihood coincide by
+  construction). World: 12 crews, jobs touched by 3 crews each with Dirichlet shares, callbacks Poisson on
+  the crew-share mixture, true rates 3.0 to 16.0 per 100 touches. **Death one, the forcing device is the
+  kill, and it fires before the WHAT screen is even reached.** A realistic touch matrix aggregated to
+  exactly 12 buckets has condition number **median 437, max 3,256**, so the solve multiplies the
+  aggregates' Poisson noise by that factor: mean absolute error on the graded figure **546.56 per 100
+  touches against the job-grain regression's 1.16 on the same records at 25,000 jobs, 471 times worse**,
+  and the exact solution returned a **negative rate in 25 of 25 redraws at every size tested (worst
+  -3002.1 against a true range of 3.0 to 16.0)**. The non-negativity the rate actually carries then binds,
+  the constrained Poisson maximum likelihood cannot return the unconstrained solve, and **the family
+  reopens at exactly the point exact identification was supposed to close it: 2.00 distinct designated
+  sets of 4 inside the golden's own family**, against the determinacy screen's bar of one. The solve named
+  the true designated set **0 of 25 at 900, 6,000 and 25,000 jobs**. **Death two, the dichotomy, confirms
+  it from the other end** (`stumping` 1.2a): if the per-unit quantities are the unique solution of a square
+  system over observed aggregates then they are an exact function of the records, so the filed quantity is
+  observed, nothing is left to estimate, and the route that apportions computes a different quantity, which
+  makes filing it rule application and leaving it unfiled a fork. The route cannot be exactly determined
+  and estimating something at the same time, which is the pincer in one line. **Death three, realism, is
+  the same dial from the third side:** the system is square only because the job rows were discarded, and
+  any field-service system holds them because an incident is logged against a job, so the real system is
+  over-determined and the family spreads **8.209 per 100 touches on average, 27.702 at worst, with mean
+  1.80 distinct designated sets and a maximum of 3**. That is architecture 4 candidate 1's weighting fork
+  returned in the new nouns. **Death four, the abstraction test, is independent of all three and is the
+  fifth measured instance of the lexical blind spot.** At 0.05 to 0.06 nearest the driver is lexically
+  clean, and `guard.py slots` returns **task244, live in the last three**, carrying
+  `own:true-flows-by-inverting-misclassification-at-both-ends`: "only inverting the misreading at both ends
+  against the full table of stocks gives the real moves." Stripped of nouns that is this candidate exactly,
+  the per-unit truths recovered by inverting a known matrix against observed aggregates while the route
+  that works on the marginals leaves the error in. task246, also live, deconvolves a measurer's offset and
+  error out of a spread. The attribution half is held three times over: task48's two-sided pair grain,
+  task103's handed-over quantity decomposing into per-unit standard amounts, task119's whole paths credited
+  to the unit where the path began.
+- **Rejected, measured: the binding constraint on a coupled operation** (every station's throughput equals
+  the line's, so the unobserved quantity is each station's standalone capability, and the constraint starves
+  and blocks its neighbours so every idle-time route names the neighbour). Serial line, 6 stations, finite
+  buffers of 1 to 3, blocking after service, lognormal service at a coefficient of variation of 0.35, true
+  cycle times 0.80 to 1.00 with one constraint at 1.25, 6,000 parts, 20 redraws. The nameable wrong answer
+  is real and it is not enough: **the most-idle route lands on a station adjacent to the constraint in 13 of
+  20**. The candidate dies on one number in the other column. **Utilisation, the single most standard output
+  this field produces, names the true constraint 20 of 20, and "filter to busy time and divide by parts"
+  names it 20 of 20.** That is the common-exposure subset screen firing in its own words, a filter and a
+  divide estimating the same quantity with no model, and it is the opponent's first group-by rather than a
+  reflex it has to think of. The field's published refinement is worse than useless here besides: the
+  average uninterrupted active period named the constraint **0 of 20**, so the ladder inverts as well.
+- **Rejected, measured: the block-maximum inversion**, drawn on
+  `general-statistics-data-science/exploratory-data-analysis-distribution-assessment`, **the one task type
+  this house domain inherits that no pass had screened** (the other four all serve anomaly-detection and
+  are each closed: `provider-quality-risk-adjustment` by architectures 1 to 7,
+  `payment-claims-health-plan-analytics` by task198's four mechanisms, `safety-incident-error-analysis` by
+  architecture 8 and task181, `multiple-testing-selective-inference` by task195). The quantity is the 95th
+  percentile of interval-level concurrent demand, which no record holds because a workforce system stores
+  only each day's peak, and because units trade different hours a stored peak is a maximum over a different
+  number of draws, so the parent percentile is the daily-max distribution's own `0.95 ** n` quantile:
+  records-exact, no parametric fit, and not reachable by any group-by. 12 units, 500 days, 18 to 44
+  intervals a day, lognormal interval demand, 20 redraws. **At zero serial dependence it is everything the
+  designation determinacy screen asks for: 1.00 distinct designated sets of 4 inside the golden's own
+  family, and all five reflexes (the peaks' 95th percentile, their mean, their maximum, peak per interval,
+  a log-corrected peak) reach the true set 0 of 20.** It dies on the single dial, and the dial is serial
+  dependence, which no staffing world can set to zero because demand carries a within-day profile by
+  construction. At **rho 0.45** the effective block size becomes a fitted quantity and the golden's own
+  four-member family (nominal count, integral timescale, extremal index, matched) returns **2.85 distinct
+  designated sets of 4, maximum 4**, the nominal inversion reaches the truth **0 of 20**, and the worst
+  absolute error on the graded percentile across the family is **5.77 demand units against a printed unit of
+  0.1, about 58 times it**; at **rho 0.75** it is **3.00 sets and 11.71 units**. Pinning the effective block
+  size is pinning a method, not a convention the closure table demands, so it files the decisive step. **It
+  dies a second time, independently, on the abstraction test against task191, live in the last twelve**,
+  whose insight is "the largest a quiet set of the same size and length produces": stripped of nouns both
+  are "a maximum over more draws is larger at the same parent distribution, so maxima across units of
+  different draw counts are not comparable", with the same default path of comparing the raw maxima and
+  differing only in the direction of the correction. `guard.py check` also puts task461 at 0.05 nearest, "a
+  low quantile of a distribution seen directly only over one short and unrepresentative" window.
+- **The structural law the three passes together now carry for this ground, stated so a fourth pass does not
+  rediscover it, and it is exhaustive rather than a list of incidents.** For a quantity estimated per unit
+  from that unit's own records, a construction is forced in exactly three ways and all three are dead. It is
+  **exact arithmetic on the records**, which makes the quantity observed and the step rule application
+  (screen A here, architecture 4's escape total, task198's B4 split lines). It is **non-parametric**, which
+  makes it a stratification and therefore the opponent's own first group-by (screen B here at 20 of 20, and
+  the crew-size version of the work-content candidate, which is a group-by on job type and crew size). Or it
+  is **parametric**, which reopens the estimator family (screen C here at 2.85 sets, architecture 1's two
+  functional forms, architecture 3's chain-ladder variants). There is no fourth case, which is why the dial
+  that closes the family has been the dial that makes the quantity observed or the naive route right in
+  every one of the eleven mechanisms the last three passes have measured. **The escape is the one all three
+  of this sitting's ships took and it is not a cleverer statistic: the construction's forcing input comes
+  from a different file at a different grain whose variety no stratification of the decision file
+  reproduces** (task197's high-resolution archive against a programme schedule, task196's second capture
+  channel, task199's record of observation effort). So a fourth pass here does not look for a better
+  quantity on the unit's own records; it looks for the second file, and the question to ask of a candidate
+  before anything else is which file does the forcing and why no group-by on the decision file reaches it.
+- **Named and not screened, so it is not claimed either way: the verdict direction the window itself points
+  at.** The axis set that passes clean is `structural_verdict` with question form `whether`, and
+  `stumping` Part 3 holds that a judge-against-noise mechanism survives on a verdict about one named unit
+  (one boundary, placeable far from it) where it cannot decide which of N is largest. No quantity was found
+  for it in this pass, so there is no candidate yet by the skill's own test: the file that does the forcing
+  cannot be named. The two shapes of the fresh task type left unmeasured are a mixture's component share and
+  a tail index, and both are expected to die parametric by the law above unless a second file pins them.

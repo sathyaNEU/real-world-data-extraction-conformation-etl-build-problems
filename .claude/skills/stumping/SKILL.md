@@ -662,6 +662,19 @@ decision grain (57 died, +0.98); `guard.py check`, BLOCKs cleared and WARNs answ
 the ladder.
 
 **Where a fresh stump comes from.**
+- **Ask which file does the forcing before asking which statistic is smarter.** For a quantity estimated
+  per unit from that unit's own records, a construction is forced in exactly three ways, and each is dead
+  for its own reason: **exact arithmetic** makes the quantity observed, so the step is rule application; a
+  **non-parametric** construction is a stratification, which is the opponent's first group-by and reached
+  the truth 20 of 20 where it was measured; a **parametric** one reopens the estimator family, 2.85
+  distinct designated sets of 4 at a serial dependence of 0.45. There is no fourth case, which is why
+  across eleven measured mechanisms the dial that closed the estimator family was always the dial that
+  made the quantity observed or the naive route right. **The escape every ship took is not a cleverer
+  statistic: the forcing input comes from a different file at a different grain, whose variety no
+  stratification of the decision file reproduces.** An archive giving a scheduled trajectory only as its
+  endpoints, a second capture channel largely produced by the unit's own follow-up, a record of the
+  observation effort behind the counts. So the draw starts from the file that forces the construction, and
+  a candidate whose forcing file cannot be named is not a candidate.
 - **The field's estimator meets the data's process.** List the field's methods for the deciding quantity
   and the generic move a generalist makes instead; then write how each file's rows come to exist (who
   records them, when, by which route, what they cannot see). Pitfalls live where recording differs from

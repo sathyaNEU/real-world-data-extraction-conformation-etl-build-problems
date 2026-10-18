@@ -1,226 +1,227 @@
 {
-  "task": "task194",
-  "owner": "oviya13ya",
-  "status": "PAUSED",
-  "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
-  "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-10-18",
-  "stump": "A competent solver ranks the twelve eligible units on the complications each records above the expectation the published stratum table gives its own patients over the ten closed quarters specification 3.3 names, and places the improvement team with Alderbrook General Surgery (41220) at 26.1 avoidable complications. The record's four most recent closed quarters are still filling: a complication is coded from what the clinician wrote, and the cost centres whose wards still write in the notes settle up to four closes late. Developed on each cost centre's own vintages in the coding close-out register, 41210 carries 44.6 and 41220 carries 27.8. 41210 sits 5th on the record and 12th on the most recent year, because its rate rose through exactly the quarters the pull date cuts short.",
-  "architecture": 7,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18",
-    "checks": "50 checks, 0 FAIL, 0 WARN"
+ "task": "task194",
+ "owner": "oviya13ya",
+ "status": "PAUSED",
+ "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "A competent solver ranks the twelve eligible units on the complications each records above the expectation the published stratum table gives its own patients over the ten closed quarters specification 3.3 names, and places the improvement team with Alderbrook General Surgery (41220) at 26.1 avoidable complications. The record's four most recent closed quarters are still filling: a complication is coded from what the clinician wrote, and the cost centres whose wards still write in the notes settle up to four closes late. Developed on each cost centre's own vintages in the coding close-out register, 41210 carries 44.6 and 41220 carries 27.8. 41210 sits 5th on the record and 12th on the most recent year, because its rate rose through exactly the quarters the pull date cuts short.",
+ "architecture": 7,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": "50 checks, 0 FAIL, 0 WARN"
+ },
+ "leak": {
+  "leak_py": "REVIEW (not LEAK): 24 cost-centre and clause-number coincidences, 2 generic-vocabulary hits, the dashboard's known sort, one allow-listed forward date. No finding.",
+  "reader": "Landed the call at about 45.1 against 44.6 at about 50 per cent confidence, route stated correctly including per-unit chain-ladder development. Question 1 clean; question 6 read the decisive step as an analytical choice and said it is not a stated rule, which is Gate H from outside the design. One finding, question 3: the close-out register's presence was the hint, its only apparent use being to show the recent counts are incomplete. Repaired as an announcement rather than a decisive step: the register now carries the queue, batch, coder establishment and open-code reason a real close-out register carries, and no cut on any of the four reaches F1 0.75 against the four shortest records (best 0.60). The reader's other two calls, dashboard cell A2 and the three distractors, were left alone on the judge's reading and the author's ruling.",
+  "reader_pass2": "LANDED AGAIN at 41210 and about 45.1, medium-high on the unit and medium on the figure, so the second landing is at higher confidence than the first. The single-use finding is genuinely weaker: it now reads coding_close_out_register.csv as plausibly operational (\"the organisation would use it to manage coder allocation and backlog\"), which is the realism fix working. But the route survived the fix, and the remaining signpost it quotes is placement_cycle_notes.txt, \"the rate drops away in January and over winter, which is when the coding queue is longest\", which points at the coding queue in prose. It also found the uniformity rule firing on the columns I ordered added: principal_reason_open is a single value for every unit at the latest close and otherwise cycles mechanically, and coder_fte_allocated scales with unit size; improvement_placements.csv has every decision on the 23rd or 24th, every close-out on the 21st and every placement at 2.4 FTE. cis_registered_date still reads as unused to a reader, which is expected since the fix made it load-bearing in the write-up, which a reader cannot see. HOLD THE FIX PASS: the judge is still running and Gate F is the judge's gate, the reader being evidence for it. Two readers landing is a serious signal and the honest question on the next report is whether this is announcement-shaving with diminishing returns or a step that is simply reachable on this pack, in which case it is Gate F and a redesign rather than a third round of trimming."
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.question_form only), cleared from BLOCK by ordering the generators decisive first, G13 ahead of G12, plus differentiation against task122 v2 and task501 v4",
+  "nearest": "0.07"
+ },
+ "judge": {
+  "verdict": "NOT_DETERMINISTIC (pass 2)",
+  "disposition": "SEND_BACK",
+  "taxonomy": "underspecified_objective, with margin_or_boundary_fragility and a separate solution_incorrect",
+  "gates": "A FAIL narrow, B PASS, C FAIL on the figures and PASS on the decision, D PASS, E FAIL minor, F STRONG, G PASS, H PASS",
+  "report": "task194/determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "PAUSED at stage 1 after nine architectures. The provider-quality cell is closed structurally (architecture 7) and the business-operations-analytics cell is closed too (architectures 8 and 9), the second one including the exactly-determined attribution route architecture 8 had left open: it died on a condition number with median 437, a negative rate in 25 of 25 redraws, 2.00 distinct designated sets of 4 once non-negativity binds, and an abstraction hit on task244. Read the architecture 9 block first: it closes the general law that a per-unit quantity estimated from that unit's own records can be forced in exactly three ways and all three are dead, so the next draw must name the file at another grain that does the forcing before it names a statistic. The axis window on business-operations-analytics is PASS exit 0 with no WARN, so what is missing is a mechanism. task194/prompt.txt, submission.md, golden/ and target/ are architecture 3's and are stale.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "call": "Alderbrook General Medicine (cost centre 41210), 44.6 avoidable complications on 4,261 planned separations, against 27.8 at Alderbrook General Surgery (41220), which the record as it stands puts first",
+ "build": {
+  "generator_assertions": 784,
+  "independent_checks": 522,
+  "figures_check": "PASS, 139 figures in blocks 1 to 4, 0 absent",
+  "byte_identical_rebuilds": true,
+  "target_sha256": "58cf48f9c5858a0c887f316e2b939166062c701b47f4ad140fadf59dd2dc9b50",
+  "target_zip_md5": "c5dc84d4c8be6e8b3f5bb024447ff680",
+  "target_zip_bytes": 6398282,
+  "zip_entries": 21,
+  "golden_md5": {
+   "embed_placement_2027q4.xlsx": "6a2a9e888747608687d391d976d0f90a",
+   "embed_placement_brief.pdf": "9e9aae9a332bb40e94f494b0de1c7831"
   },
-  "leak": {
-    "leak_py": "REVIEW (not LEAK): 24 cost-centre and clause-number coincidences, 2 generic-vocabulary hits, the dashboard's known sort, one allow-listed forward date. No finding.",
-    "reader": "Landed the call at about 45.1 against 44.6 at about 50 per cent confidence, route stated correctly including per-unit chain-ladder development. Question 1 clean; question 6 read the decisive step as an analytical choice and said it is not a stated rule, which is Gate H from outside the design. One finding, question 3: the close-out register's presence was the hint, its only apparent use being to show the recent counts are incomplete. Repaired as an announcement rather than a decisive step: the register now carries the queue, batch, coder establishment and open-code reason a real close-out register carries, and no cut on any of the four reaches F1 0.75 against the four shortest records (best 0.60). The reader's other two calls, dashboard cell A2 and the three distractors, were left alone on the judge's reading and the author's ruling.",
-    "reader_pass2": "LANDED AGAIN at 41210 and about 45.1, medium-high on the unit and medium on the figure, so the second landing is at higher confidence than the first. The single-use finding is genuinely weaker: it now reads coding_close_out_register.csv as plausibly operational (\"the organisation would use it to manage coder allocation and backlog\"), which is the realism fix working. But the route survived the fix, and the remaining signpost it quotes is placement_cycle_notes.txt, \"the rate drops away in January and over winter, which is when the coding queue is longest\", which points at the coding queue in prose. It also found the uniformity rule firing on the columns I ordered added: principal_reason_open is a single value for every unit at the latest close and otherwise cycles mechanically, and coder_fte_allocated scales with unit size; improvement_placements.csv has every decision on the 23rd or 24th, every close-out on the 21st and every placement at 2.4 FTE. cis_registered_date still reads as unused to a reader, which is expected since the fix made it load-bearing in the write-up, which a reader cannot see. HOLD THE FIX PASS: the judge is still running and Gate F is the judge's gate, the reader being evidence for it. Two readers landing is a serious signal and the honest question on the next report is whether this is announcement-shaving with diminishing returns or a step that is simply reachable on this pack, in which case it is Gate F and a redesign rather than a third round of trimming."
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.question_form only), cleared from BLOCK by ordering the generators decisive first, G13 ahead of G12, plus differentiation against task122 v2 and task501 v4",
-    "nearest": "0.07"
-  },
-  "judge": {
-    "verdict": "NOT_DETERMINISTIC (pass 2)",
-    "disposition": "SEND_BACK",
-    "taxonomy": "underspecified_objective, with margin_or_boundary_fragility and a separate solution_incorrect",
-    "gates": "A FAIL narrow, B PASS, C FAIL on the figures and PASS on the decision, D PASS, E FAIL minor, F STRONG, G PASS, H PASS",
-    "report": "task194/determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "PAUSED after the architecture 8 pass. The cell changed and the number still has no mechanism: provider-quality-risk-adjustment is closed by architecture 7's structural rule, and this pass closed the three Layer 2 mechanisms a unit-comparison anomaly call affords on human-error ground with measurements. The axis window on business-operations-analytics / service-operations-sla is PASS with no WARN, so the ground is worth returning to, but only with a decisive step whose graded figure is records-exact while the construction producing it is reachable by no group-by; the design note's architecture 8 block names the one such route left unscreened and its three predicted deaths. Read that block before drawing.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "call": "Alderbrook General Medicine (cost centre 41210), 44.6 avoidable complications on 4,261 planned separations, against 27.8 at Alderbrook General Surgery (41220), which the record as it stands puts first",
-  "build": {
-    "generator_assertions": 784,
-    "independent_checks": 522,
-    "figures_check": "PASS, 139 figures in blocks 1 to 4, 0 absent",
-    "byte_identical_rebuilds": true,
-    "target_sha256": "58cf48f9c5858a0c887f316e2b939166062c701b47f4ad140fadf59dd2dc9b50",
-    "target_zip_md5": "c5dc84d4c8be6e8b3f5bb024447ff680",
-    "target_zip_bytes": 6398282,
-    "zip_entries": 21,
-    "golden_md5": {
-      "embed_placement_2027q4.xlsx": "6a2a9e888747608687d391d976d0f90a",
-      "embed_placement_brief.pdf": "9e9aae9a332bb40e94f494b0de1c7831"
-    },
-    "guard_surface": "clean on personas (Joseph Hunter, Maureen Watts match the card); the task194/task196 pair is promoted corpus-wide on the G12 label, answered in the card's differentiation and the note's ## Draw",
-    "guard_heart": "BLOCK ban.pattern only, the pre-existing G12 label against task196, ruled on by the author; nearest driver 0.07",
-    "containers": "target/ and golden/ both clean of producer signatures and out-of-band timestamps",
-    "design_gate_red": "none: the cracker keeps 0 of 44 ask figures",
-    "ask_layer": "A2 re-sited over every unit at the site, which gave Carrowdean a device for the first time: its sub-acute rehabilitation unit is outside the indicator and the call reads no row of it. Cracker 0 of 44, mirror 0 of 44, construction 12 of 12 and 0 of 12. Pair ceiling 34.4, mirror leakage 0.0, both computed in generator/cracker.py with both responses rescored under the rubric's own 38/55/7 weights.",
-    "house_fixes_found": [
-      "H9: coding_close_out_register.csv, the decisive input, was missing from the export manifest whose own row claims to cover every file. Registered, and manifest-equals-folder now asserted both ways.",
-      "H16: one date past the pull date, the in-progress placement's scheduled end, answered by a two-file allow-list that checks.py asserts.",
-      "Charter 4.3 still carried architecture 2's open comparison phrase; rewritten to route to specification 3.1's defined term so the comparison is filed in a shipped sentence."
-    ],
-    "no_graded_figure_moved": "asserted by diffing generator/figures.json before and after the pass: the twelve avoidable counts, the recorded figures, the expected-on-plan figures, the plans, the margin, the gap, the rung winners and values and all 44 ask figures are identical"
-  },
-  "notes": "Every file in this folder is architecture 3's. prompt.txt, submission.md, metadata.json, target/, target.zip, golden/ and generator/ were all rebuilt in this pass; figures.json is emitted by generator/figures.py and carries the avoidable counts at the one decimal the asking sentence states. The only stale file is determinism_check_report.md, architecture 1's.",
-  "held_for_next_pass": [
-    "Length of stay should follow the episode's risk band, not only the unit's mix. It would put the theatre closure in bed-days and stop a joint replacement and an appendicectomy averaging the same stay. It also moves the complication selection, so the realised stratum frequencies, the design point and the hospital-rate centring all need re-measuring. Does not gate stage 4.",
-    "sim.EDGE_BAR is the filed 0.30 and the tightest graded figure clears it by 0.0002 (41420's avoidable at 0.0309 against 0.0300). 0.35 was tried and is infeasible inside a few per cent of the smallest candidate's planned volume, so any later change to the plans or the complication selection must re-run the mid-bin measurement rather than assume it.",
-    "The pair ceiling of 34.4 still rests on the ladder keeping the second-best response off the call, which nothing independent has yet tested. If the cold reader lands the call the finding is in the ladder and the ceiling does not matter."
+  "guard_surface": "clean on personas (Joseph Hunter, Maureen Watts match the card); the task194/task196 pair is promoted corpus-wide on the G12 label, answered in the card's differentiation and the note's ## Draw",
+  "guard_heart": "BLOCK ban.pattern only, the pre-existing G12 label against task196, ruled on by the author; nearest driver 0.07",
+  "containers": "target/ and golden/ both clean of producer signatures and out-of-band timestamps",
+  "design_gate_red": "none: the cracker keeps 0 of 44 ask figures",
+  "ask_layer": "A2 re-sited over every unit at the site, which gave Carrowdean a device for the first time: its sub-acute rehabilitation unit is outside the indicator and the call reads no row of it. Cracker 0 of 44, mirror 0 of 44, construction 12 of 12 and 0 of 12. Pair ceiling 34.4, mirror leakage 0.0, both computed in generator/cracker.py with both responses rescored under the rubric's own 38/55/7 weights.",
+  "house_fixes_found": [
+   "H9: coding_close_out_register.csv, the decisive input, was missing from the export manifest whose own row claims to cover every file. Registered, and manifest-equals-folder now asserted both ways.",
+   "H16: one date past the pull date, the in-progress placement's scheduled end, answered by a two-file allow-list that checks.py asserts.",
+   "Charter 4.3 still carried architecture 2's open comparison phrase; rewritten to route to specification 3.1's defined term so the comparison is filed in a shipped sentence."
   ],
-  "draw_blocked": {
-    "as_at": "2026-10-18",
-    "verdict": "BLOCK ban.pattern: the decisive pattern G12 repeats a recent build, against task196 (v2). Plus WARN overuse.objective (4 of the last 12) and WARN repeat.question_form against task190, both answered in the design note.",
-    "order": "task194's card was registered 2026-10-17T22:50:54Z and task196's 2026-10-17T23:00:35Z, so task194 drew G12 first and task196 drew into a card already registered. guard.py measures the ban window without regard to order, so it reports against the live build rather than the later draw.",
-    "not_acted_on": "No redraw and no card edit. The pattern label does not touch the mechanism work: the driver, the three conditions and the ladder are measured and stand whatever the label resolves to. The author takes this decision, as they did on the earlier ban.strategy hold against task469.",
-    "earlier_hold": "ban.strategy maturity_censoring against task469, lapsed when task196 and task198 registered; the author ruled 'No override. Hold the slot.'"
+  "no_graded_figure_moved": "asserted by diffing generator/figures.json before and after the pass: the twelve avoidable counts, the recorded figures, the expected-on-plan figures, the plans, the margin, the gap, the rung winners and values and all 44 ask figures are identical"
+ },
+ "notes": "Every file in this folder is architecture 3's. prompt.txt, submission.md, metadata.json, target/, target.zip, golden/ and generator/ were all rebuilt in this pass; figures.json is emitted by generator/figures.py and carries the avoidable counts at the one decimal the asking sentence states. The only stale file is determinism_check_report.md, architecture 1's.",
+ "held_for_next_pass": [
+  "Length of stay should follow the episode's risk band, not only the unit's mix. It would put the theatre closure in bed-days and stop a joint replacement and an appendicectomy averaging the same stay. It also moves the complication selection, so the realised stratum frequencies, the design point and the hospital-rate centring all need re-measuring. Does not gate stage 4.",
+  "sim.EDGE_BAR is the filed 0.30 and the tightest graded figure clears it by 0.0002 (41420's avoidable at 0.0309 against 0.0300). 0.35 was tried and is infeasible inside a few per cent of the smallest candidate's planned volume, so any later change to the plans or the complication selection must re-run the mid-bin measurement rather than assume it.",
+  "The pair ceiling of 34.4 still rests on the ladder keeping the second-best response off the call, which nothing independent has yet tested. If the cold reader lands the call the finding is in the ladder and the ceiling does not matter."
+ ],
+ "draw_blocked": {
+  "as_at": "2026-10-18",
+  "verdict": "BLOCK ban.pattern: the decisive pattern G12 repeats a recent build, against task196 (v2). Plus WARN overuse.objective (4 of the last 12) and WARN repeat.question_form against task190, both answered in the design note.",
+  "order": "task194's card was registered 2026-10-17T22:50:54Z and task196's 2026-10-17T23:00:35Z, so task194 drew G12 first and task196 drew into a card already registered. guard.py measures the ban window without regard to order, so it reports against the live build rather than the later draw.",
+  "not_acted_on": "No redraw and no card edit. The pattern label does not touch the mechanism work: the driver, the three conditions and the ladder are measured and stand whatever the label resolves to. The author takes this decision, as they did on the earlier ban.strategy hold against task469.",
+  "earlier_hold": "ban.strategy maturity_censoring against task469, lapsed when task196 and task198 registered; the author ruled 'No override. Hold the slot.'"
+ },
+ "paused": {
+  "at": "stage 1, the draw, with no card registered and no architecture adopted",
+  "resume_condition": "a decisive step that is records-exact in its graded figure and not reachable by any group-by, on this ground or another; the estimator-output half of the pincer is now measured shut here",
+  "resume_step": "read the design note's architecture 8 block in `## Tried and rejected` first, then architecture 7's; between them they name eight dead mechanisms on two cells with the number that killed each"
+ },
+ "lessons": [
+  "Before a decisive step is accepted, name which of the five parts of the estimand it could be mistaken for, and if the answer is any of them it is a WHAT and must be filed. The five are population, outcome, window, unit and comparison, and the comparison includes both whose rates and which pool. This is what spent architecture 2.",
+  "Look a strategy label's ban window up before spending design time on a direction, in the same breath as guard.py mechanisms and coverage. The ban is deliberately not escapable by argument, so a direction's availability is a fact to look up, not a judgement to argue.",
+  "Forecasting is not a legal objective for provider-quality-risk-adjustment: guard.py blocks it on the task type, because under forecasting the domain would be a backdrop.",
+  "Never relabel a mechanism to pass a ban. The card guards every other build and the clone screen reads it, so a false label is worse than a blocked draw.",
+  "A reflex that reaches the golden is closed at the root, not argued. Both survivors of the first cut of the documentation-path driver were properties of the golden's own size and peer group, not of the driver, and both closed with one generator constant each.",
+  "A fine internal standardisation is a peer comparison. Leave one unit out of the internal rates and recompute: if the gap widens, the unit is not deflating its own cells and the fix is to crowd its peer group rather than to shrink the unit.",
+  "A property that must be discoverable but not markable goes on an invisible ward attribute with the visible date spread across it, not on the visible date itself. Depth tied to the date made the register's year column isolate the affected rows exactly; depth tied to ward adoption left the best grouping at F1 0.67."
+ ],
+ "architecture_3_bound": {
+  "what_works": "the close-out register ships; the development factors are read back from its own shipped bytes; the immature quarters are identified from the register alone; all five readings of the development name the same unit; the estimand is filed in all five parts with the published table as the comparison and the WHAT screen passes",
+  "what_fails": "the ladder arithmetic, on a bound rather than on tuning",
+  "the_bound": "a development-flip ladder pays for two separations out of one budget, the uplift the immature quarters carry. Separation 1 is the flip, the golden sitting below rung 0's leader on the record as it stands. Separation 2 is the margin, the golden leading once developed. Nothing but the uplift can pay for either.",
+  "measured": {
+   "uplift_budget_in_figure_units": 27.25,
+   "flip": "2.35 complications, 1.50x, 0.32 standard errors",
+   "margin": "16.03 complications, 2.008x, 1.75 standard errors",
+   "spent": 18.38,
+   "needed_for_two_standard_errors_each": 33.14,
+   "golden": "41210 General Medicine, developed avoidable 31.92 on 4,258 planned separations",
+   "rung_0_leader": "41410 Orthopaedics at 7.02 as recorded, 12.68 developed",
+   "developed_runner_up": "41220 General Surgery at 15.89"
   },
-  "paused": {
-    "at": "stage 1, the draw, with no card registered and no architecture adopted",
-    "resume_condition": "a decisive step that is records-exact in its graded figure and not reachable by any group-by, on this ground or another; the estimator-output half of the pincer is now measured shut here",
-    "resume_step": "read the design note's architecture 8 block in `## Tried and rejected` first, then architecture 7's; between them they name eight dead mechanisms on two cells with the number that killed each"
-  },
-  "lessons": [
-    "Before a decisive step is accepted, name which of the five parts of the estimand it could be mistaken for, and if the answer is any of them it is a WHAT and must be filed. The five are population, outcome, window, unit and comparison, and the comparison includes both whose rates and which pool. This is what spent architecture 2.",
-    "Look a strategy label's ban window up before spending design time on a direction, in the same breath as guard.py mechanisms and coverage. The ban is deliberately not escapable by argument, so a direction's availability is a fact to look up, not a judgement to argue.",
-    "Forecasting is not a legal objective for provider-quality-risk-adjustment: guard.py blocks it on the task type, because under forecasting the domain would be a backdrop.",
-    "Never relabel a mechanism to pass a ban. The card guards every other build and the clone screen reads it, so a false label is worse than a blocked draw.",
-    "A reflex that reaches the golden is closed at the root, not argued. Both survivors of the first cut of the documentation-path driver were properties of the golden's own size and peer group, not of the driver, and both closed with one generator constant each.",
-    "A fine internal standardisation is a peer comparison. Leave one unit out of the internal rates and recompute: if the gap widens, the unit is not deflating its own cells and the fix is to crowd its peer group rather than to shrink the unit.",
-    "A property that must be discoverable but not markable goes on an invisible ward attribute with the visible date spread across it, not on the visible date itself. Depth tied to the date made the register's year column isolate the affected rows exactly; depth tied to ward adoption left the best grouping at F1 0.67."
+  "why_tuning_cannot_fix_it": "the two separations trade off directly: pushing the golden further below the leader on the record means a smaller recorded ratio, which cuts the developed excess the margin is measured on, and both are measured in the same Poisson error of the same counts",
+  "why_scale_cannot_fix_it_at_unit_scale": "the budget grows with the count and the error with its square root, so it closes at about twice the top units' volume for a bare two-and-two and four times for room, which is 30,000 to 60,000 separations a year in one cost centre, a whole hospital rather than a unit",
+  "which_floor_fails": "not the relative-distance floor: the flip clears a nearest-wrong-cell test at 1.50x and fails the sampling-noise test at 0.32 standard errors",
+  "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here.",
+  "bar_correction": "The two-standard-error bar is not filed anywhere in the skills. The filed floors are a 1.15x rung margin and a 1.2x final margin with a 1.5 to 2x target (dataset-generation 6.2) and C4's 6 per cent. Against those the measured point clears with room: rung 0 at 1.50x, the intermediate rung at 1.23x, the decisive rung at 2.008x. Architecture 1's lesson was about a fitted counterfactual with collinear forms, not about sampling noise; nothing is fitted here and the golden is determinate from the shipped bytes. One real 6.2 deviation stands: the golden sits 2nd of 12 on rung 0 where 4th or 5th is asked for, which is the bound's doing."
+ },
+ "architecture_3_reflex_test": {
+  "rule": "stumping: every reflex an opponent reaches for must file the default or another named wrong answer; a reflex reaching the golden spends the stump",
+  "run_on": "the record as it stands, 409,336 in-scope acute episodes",
+  "reflexes": 22,
+  "reach_the_golden": 6,
+  "worst": [
+   "standardised on risk band, age band and length of stay band: 41210 at 3.47x",
+   "standardised on length of stay band alone",
+   "standardised on risk band, age band and comorbidity band: 1.30x",
+   "standardised on risk band, age band and site",
+   "the excess net of its own site's mean excess",
+   "credibility weighting once the prior is strong"
   ],
-  "architecture_3_bound": {
-    "what_works": "the close-out register ships; the development factors are read back from its own shipped bytes; the immature quarters are identified from the register alone; all five readings of the development name the same unit; the estimand is filed in all five parts with the published table as the comparison and the WHAT screen passes",
-    "what_fails": "the ladder arithmetic, on a bound rather than on tuning",
-    "the_bound": "a development-flip ladder pays for two separations out of one budget, the uplift the immature quarters carry. Separation 1 is the flip, the golden sitting below rung 0's leader on the record as it stands. Separation 2 is the margin, the golden leading once developed. Nothing but the uplift can pay for either.",
-    "measured": {
-      "uplift_budget_in_figure_units": 27.25,
-      "flip": "2.35 complications, 1.50x, 0.32 standard errors",
-      "margin": "16.03 complications, 2.008x, 1.75 standard errors",
-      "spent": 18.38,
-      "needed_for_two_standard_errors_each": 33.14,
-      "golden": "41210 General Medicine, developed avoidable 31.92 on 4,258 planned separations",
-      "rung_0_leader": "41410 Orthopaedics at 7.02 as recorded, 12.68 developed",
-      "developed_runner_up": "41220 General Surgery at 15.89"
-    },
-    "why_tuning_cannot_fix_it": "the two separations trade off directly: pushing the golden further below the leader on the record means a smaller recorded ratio, which cuts the developed excess the margin is measured on, and both are measured in the same Poisson error of the same counts",
-    "why_scale_cannot_fix_it_at_unit_scale": "the budget grows with the count and the error with its square root, so it closes at about twice the top units' volume for a bare two-and-two and four times for room, which is 30,000 to 60,000 separations a year in one cost centre, a whole hospital rather than a unit",
-    "which_floor_fails": "not the relative-distance floor: the flip clears a nearest-wrong-cell test at 1.50x and fails the sampling-noise test at 0.32 standard errors",
-    "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here.",
-    "bar_correction": "The two-standard-error bar is not filed anywhere in the skills. The filed floors are a 1.15x rung margin and a 1.2x final margin with a 1.5 to 2x target (dataset-generation 6.2) and C4's 6 per cent. Against those the measured point clears with room: rung 0 at 1.50x, the intermediate rung at 1.23x, the decisive rung at 2.008x. Architecture 1's lesson was about a fitted counterfactual with collinear forms, not about sampling noise; nothing is fitted here and the golden is determinate from the shipped bytes. One real 6.2 deviation stands: the golden sits 2nd of 12 on rung 0 where 4th or 5th is asked for, which is the bound's doing."
+  "cause": "a real confound, not a tuning failure. The lag's depth follows the complication groups a unit's patients produce, and pressure injuries and delirium come from old, comorbid, long-staying patients, who are exactly the patients the published table under-adjusts for because it standardises on a risk band and an age band and nothing else. The attribute that makes a unit's record late is the attribute that makes its excess rise under finer standardisation.",
+  "why_nothing_rescues_it": "within this mechanism every deep-lag unit is medical or aged and every shallow-lag one surgical, so no other golden escapes it; more volume and a deeper lag both strengthen the confounded reflex rather than weakening it",
+  "verdict": "architecture 3 is spent on the reflex rule, with its separations clearing every filed floor"
+ },
+ "architecture_3_lag_pricing": {
+  "separable": "the uplift budget is set by the completeness profile's depth and reach, the noise by the counts, so deepening the profile grows the budget with the standard errors unchanged",
+  "measured": "from the golden's d of 0.079 to about 0.16 doubles the budget from 27.25 to about 55",
+  "plausibility_as_built": "defensible: pressure injuries 43 per cent complete at a quarter's own close and 93 per cent four closes later is a retrospective staging and audit programme running three quarters behind, which is ordinary",
+  "plausibility_if_doubled": "at the outer edge: 25 per cent complete at the close is a claim the realism sweep would be right to query",
+  "moot": "the bar the lever buys is not the bar that failed"
+ },
+ "proposed_next_mechanism": "Approved and built. See architecture_3_mechanism below and the design note's `## Architecture 3 mechanism, built and measured`.",
+ "architecture_3_mechanism": {
+  "driver": "The coding lag runs on the documentation path, not the patients. CIS_MIGRATION is when each cost centre's wards were registered on the clinical information system (a rollout from July 2022 still running at the export date); CIS_ADOPTION is how much of a ward's recording actually moved once registered, a ward property and not a date property. An episode's electronic share is the unit's adoption reached over the three quarters after registration and nothing before it; the coding lag is drawn from the electronic or the paper completeness curve accordingly. The register ships the dates; adoption is not shipped and no document states it.",
+  "condition_1_orthogonality": "Measured on the clean truth over the 7,763 affected in-scope episodes of the twelve candidates in the four short quarters, share coded after the pull date 0.0656. Within unit-quarter the shortfall is independent of every visible attribute the pack ships: chi2/df 0.21 risk band, 0.54 age band, 0.47 length of stay, 0.69 comorbidity, 0.00 care type and site and specialty (constant within a unit), 0.42 diagnosis related group, 0.62 month; mean absolute deviation never above 1.4 points on a 6.6 per cent base. Pooled across the twelve the residue is the units' own case mixes and is not zero; condition 3 settles whether an opponent can ride it.",
+  "condition_2_isolation": "Best F1 of any shipped grouping against the four shortest records is 0.67 (registration year, 2 of the 4), then hospital_code 0.57, division 0.60, detail extract coverage 0.43, specialty 0.40. The four sit at three hospitals and in four specialties and their registration dates are 2022-10, 2024-01, 2027-01 and 2027-03. Depth is a continuum, 0.42 to 9.14 per cent. Readability test 1 swept every document carrying the migration fact: four hits, all flat column definitions, none saying a cost centre reports late or that anything needs developing; the explanatory clause on published_date was cut.",
+  "condition_3_reflexes": "0 of 23 reach the golden. It is first on none and in the top three of four. Reflexes land on 41220 eleven times, 41410 six, 41240 twice, once each on 41320, 41230, 41330 and 41510; 41310, 41420, 41430, 41520 and the golden are named by none. Two reached it on the first cut and both were closed at the root: the fine internal standardisation on risk band, age band and length of stay band (a leave-one-out recomputation put the gap at 162 against 127, so it was a peer comparison and not self-deflation, closed by raising the already-embedded medical and aged care units from 1.00-1.04 to 1.06-1.11) and the unweighted empirical Bayes estimator (tau2 collapses, full shrinkage ranks by expected volume where the two largest units sat 1.002x apart, closed by taking 41220's plan to 4,760; dispersion is healthy at Pearson 4.55 per df and the expected-weighted estimator names 41220 at 1.46x).",
+  "ladder": "R0 the record over the ten closed quarters names 41220 26.17 at 1.51x, golden 5th of 12. R1 the record over the four most recent quarters names 41320 27.59 at 1.68x, golden 12th. R2 only the quarters whose coding has stopped moving names 41220 50.68 at 1.84x, golden 3rd. R3 one network factor at each lag names 41220 38.43 at 1.44x, golden 4th. R4 the short quarters filled at the unit's own finished-quarter ratio names 41220 50.66 at 1.85x, golden 3rd. R5 developed on each cost centre's own record names 41210 44.66 at 1.604x.",
+  "floors": "Rung 0 position 5 of 12 (floor: 4th or 5th). First on no intermediate rung and second on none. Lowest rung margin 1.44x (floor 1.15x). Final margin 1.604x (floor 1.2x, target 1.5 to 2x). Dominance 34.47 against 17.65, ratio 1.95 (floor 1.20x). C4 nearest wrong cell 60.4 per cent away. Convergence holds on all five readings of the development, 1.53x to 1.61x.",
+  "bound_loosened": "Yes. The patient-driven lag paid the flip and the margin out of one uplift budget and could only reach 2nd on rung 0. The documentation-driven lag pays them separately: the golden's uplift is 311.5 complications because its wards are the ones still on paper, while the shape of its record inside the window is carried by RATIO_PATH, a level for the first six closed quarters and another for the last four. Its rate rose through 2026, which is the part of its record the pull date cuts short, so the record shows it improving while it was deteriorating.",
+  "open": "The graded figure 44.6597 sits 0.0097 from a bin edge at one decimal and 0.1597 at whole complications against a bar of 0.3 of the rounding unit, so centre_plans has to re-centre it once the asking sentence fixes the unit. That is the one arithmetic item left before precut.py."
+ },
+ "architecture_spent": true,
+ "architecture_4": {
+  "status": "two candidates screened to death before any design; nothing cut, no card re-rooted",
+  "candidate_1": "each unit own complication propensity from multi-unit patients: the name agrees (unit 3 under all five variants) but the graded figure prints 16.9, 18.0 or 18.3 at one decimal, which is architecture 3 death repeated; and the filed-strata excess route, the published method the pack must ship, already names unit 3, so the standard route is the golden",
+  "candidate_2": "the true complication count behind incomplete coding via a coding audit: the NAME forks too, four variants naming unit 7 and one naming unit 3, with four printed figures 8.7, 8.8, 10.3, 13.6",
+  "finding": "on this ground the dichotomy and 1.6a close against each other, and it is a property of the data type: anything recovered by arithmetic on these records is observed, so filing it is rule application, while anything genuinely unobserved here is a rate, and every rate estimator on sparse counts across heterogeneous units carries a weighting and a shrinkage choice that both move the graded figure. task197 escapes because it fits a dense physical trace where nobody would weight or shrink, so 1.6a hard clause is a constraint on the data type as much as on the mechanism."
+ },
+ "architecture_5": {
+  "candidate_A": "the unit that held the patient at onset. Driver 0.06, distinct from task48, task103 and task184. Name robust across all four boundary conventions; figure prints 10.1, 10.2, 10.5. Discharging and admitting routes land wrong, but longest-stay and pro-rata reach the golden, because a high-propensity unit makes the spells it touches eventful and so publishes its signal at spell level.",
+  "diagnosis": "killed by the sixth screen, not by 1.6a. The figure fork is on a boundary convention, which is closure axis 9 and must be filed anyway, unlike architecture 3 chain-ladder method family.",
+  "refinement": "run the uniqueness test on variants that are METHODS, not on conventions the closure table already requires closed, or it rejects every construction involving an interval. Test: if pinning the varying choice is something the closure table demands anyway it is a convention; if pinning it would make the decisive step executable it is a method and the fork is fatal.",
+  "untested": "candidate C, a construction over orderings, driver 0.05, the cleanest of the three",
+  "candidate_C": "the count of complications whose onset precedes arrival at the charged unit, built with equal propensities so the signal lives only in the ordering. Killed by the sixth screen under both hazard shapes: four routes reach the golden without building the ordering (pre-arrival patient-days from the movement file alone, spells discharged, mean segment length, and the reported charged count itself), and discharging, longest-stay and pro-rata reach it too. A count across units of different size ranks on volume, so every volume proxy publishes it.",
+  "decision_type_finding": "none of the coarse ships on this objective answers a per-unit league table: task48 designation_set/set_of_items, task103 go_hold_or_stop/currency, task184 ranked_slate_under_cap/set_of_items, task192 quantity_figure/count. task188 is the one pick_one_of_n and escapes the other way, through a pooling the group sizes fix. pick_one_of_n is 13 of 32 on this objective, which is why it keeps meeting the wall: a pick over units of different size forces a per-unit quantity, which is either a count that volume publishes or a rate whose denominator is a weighting choice. Architecture 6 should change the DECISION TYPE, not the quantity."
+ },
+ "architecture_6": {
+  "shape": "a designation set against the charter filed tolerance of avoidable complications per 1,000 separations, with the exposure the complications scale with (care handovers, not separations or bed-days) not filed, following task181 escape; references task180, task181, task193",
+  "sixth_screen": "PASSES. Golden set [1,3] of 14. All four rival designation routes designate NOBODY, which is task180 own shape. Eight of nine single sorted columns differ; the one that reproduces the set is the construction itself.",
+  "uniqueness_on_methods": "PASSES. Five genuine estimator variants (own ratio of totals, shrunk halfway, James-Stein by counts, Poisson MLE with continuity, prior two quarters pooled) all designate [1,3]: one distinct set. The same five variants give unit 1 rate as 28.4, 28.6, 28.7, three distinct printed figures, so the weighting freedom is present and does not cross the tolerance.",
+  "finding": "a designation set against a filed tolerance discretises away the weighting freedom that killed candidate 1, architecture 3 and candidate A. The tolerance fixes the denominator and membership is per candidate, so no volume proxy and no weighting choice reaches the answer.",
+  "outstanding": "four of the six screens, the reflex sweep filed-strata route and the readability screen. Two named risks: the easy route designates nobody, so the prompt must not make an empty answer implausible; and Gate B needs the handover data shipped while nothing may name handovers as the exposure.",
+  "my_test_errors": "three in one pass, caught and corrected: a uniform per-handover rate made one column reproduce the set; the uniqueness table first row was the oracle not a variant, so a reported disagreement did not exist; and a top-k test at 10 of 14 could not discriminate.",
+  "gate_b": {
+   "test_1_leak_grep": "PASSES. No shipped document connects complications to handovers, transfers, moves or pathway steps. Two innocent hits (a surgery list transferred in from Marrowfield; a cost centre whose activity transferred on closure); both PDFs clean. episode_outcomes_extract unit_code is documented as the unit the episode separated from, which is the easy route, with nothing pointing past it.",
+   "test_2_sixth_screen_on_the_file": "PASSES. Nine columns the handover file affords plus the two rate columns the pack already publishes; none reproduces the golden set [1,3]. The published adjusted_rate_per_1000 against the tolerance designates {0}, a named wrong unit rather than an empty set, which is a stronger rung and lowers the empty-answer prompt risk.",
+   "test_3_single_use": "PASSES with evidence. episode_outcomes_extract has 465,882 episodes against activity_summary_monthly 463,691 separations, a 2,191 gap the movement log explains, and the existing architecture already asks about that reconciliation. Five further pack files it serves. BINDING: at least one ask must consume the log, and the episode-versus-separation reconciliation is the one.",
+   "empty_answer_device": "read from task180 prompt: a whether-first question with a conditional which, Will X put ANY of our five over the amber, AND IF SO which, so none is an ordinary outcome of the question own form.",
+   "file_rule": "the movement log column descriptions say what a row IS, never what it explains",
+   "outstanding": "four of the six screens, the readability screen, and the filed-strata excess reflex which episode_outcomes_extract supports through comorbidity_score and drg_code and which reached the golden in candidate 1"
   },
-  "architecture_3_reflex_test": {
-    "rule": "stumping: every reflex an opponent reaches for must file the default or another named wrong answer; a reflex reaching the golden spends the stump",
-    "run_on": "the record as it stands, 409,336 in-scope acute episodes",
-    "reflexes": 22,
-    "reach_the_golden": 6,
-    "worst": [
-      "standardised on risk band, age band and length of stay band: 41210 at 3.47x",
-      "standardised on length of stay band alone",
-      "standardised on risk band, age band and comorbidity band: 1.30x",
-      "standardised on risk band, age band and site",
-      "the excess net of its own site's mean excess",
-      "credibility weighting once the prior is strong"
-    ],
-    "cause": "a real confound, not a tuning failure. The lag's depth follows the complication groups a unit's patients produce, and pressure injuries and delirium come from old, comorbid, long-staying patients, who are exactly the patients the published table under-adjusts for because it standardises on a risk band and an age band and nothing else. The attribute that makes a unit's record late is the attribute that makes its excess rise under finer standardisation.",
-    "why_nothing_rescues_it": "within this mechanism every deep-lag unit is medical or aged and every shallow-lag one surgical, so no other golden escapes it; more volume and a deeper lag both strengthen the confounded reflex rather than weakening it",
-    "verdict": "architecture 3 is spent on the reflex rule, with its separations clearing every filed floor"
+  "filed_strata_reflex": "FAILS, and the architecture is dead. Route: stratum mix per unit from episode_outcomes_extract comorbidity_score and drg_code, filed stratum rate, designate on the excess. Golden set [1,3] at tolerance 22.0 per 1,000. At the realistic confound strength (sicker patients move between units more, so comorbidity correlates with handover exposure) the pack's own published standardised_ratio read against the tolerance returns [1,3] exactly, with no construction. The solver-built excess projected on separations returns [] at all three strengths; it is the published column that reaches the golden.",
+  "fate": "DEAD at the reflex, before design. Clear at rho=0 ([1,3,9], both true members plus one false positive) and at rho=0.9 ([3]), fires only at rho=0.6, so it is a confound-strength-dependent kill rather than a structural one. That is why it cannot be repaired: passing would require asserting that case mix and patient movement are uncorrelated in a hospital, or correlated strongly enough that standardisation overshoots, and a designation set cannot rest on a confound strength chosen to miss.",
+  "rule": "where a design withholds the exposure a quantity scales with, check every adjustment the pack already publishes for another reason: a standardisation performed on an observable that correlates with the withheld exposure is a free partial recovery of it and costs the solver no construction. The reflex sweep must include published derived columns at every confound strength the world makes plausible, not only the generator's own.",
+  "not_run": "per the stop rule: the dichotomy, the unit's own history, move available against move needed in the tolerance's units, the standard error of what the construction estimates, the silent-row readability screen and the full enumerated sweep."
+ },
+ "architecture_7": {
+  "status": "five structurally distinct Layer 2 mechanisms screened to death before any data was cut; nothing built, no card registered, no file in target/ or golden/ touched",
+  "date": "2026-10-18",
+  "brief": "opened on the premise that an overdispersion-adjusted funnel was unspent on the anomaly-detection corpus",
+  "premise_false": "this note's own `## Tried and rejected` already carries it: 'Rejected at the draw: judging each unit's excess against its own sampling error', which names the over-dispersion-adjusted funnel outright. The corpus screen missed it because the rejection sits in task194's slot notes rather than on a registered card.",
+  "screen_1_funnel": "DEAD, measured on 14 units (410 to 11,200 episodes, one real 1.62x outlier at 4,800): phi raw 1.373, phi winsorised 0.484, Q 15.66 on 13 df, tau2 (DL) 0.00271; five standard estimator variants return THREE distinct flagged sets, the real outlier flagged by 4 of 5, empirical Bayes flagging nobody",
+  "screen_2_leave_one_out": "DEAD, move available against move needed: 0.0391 on the largest unit, 0.0028 average, 0.0021 smallest, against 0.1219 needed to cross the tolerance, ratio 0.320; and it settles the comparison, so the WHAT screen kills it independently",
+  "screen_3_exposure_competing_risk": "DEAD: per-episode 21.042 against per-bed-day 4.931 on the short-stay unit and 27.297 against 3.195 on the long-stay unit, so the bases reverse the ordering; three filed units of analysis, pinned by closure axis 9 anyway, and task192 v2 already holds the competing-exit driver",
+  "screen_4_uncertainty_direction": "DEAD both ways, and this is the finding: a hold golden is reached with no analysis by shrinkage and by overdispersion-inflated limits, which are the client library's own rigor patterns 3 and 4 for this subdomain; an act golden is reached by every under-adjustment (measured 2.273 against a golden 1.661 at a 1.20 tolerance). No third direction exists, so no uncertainty object on this ground can be silent.",
+  "screen_5_over_adjustment": "DEAD on the WHAT screen, and it was the strongest candidate: built and measured at 1.248 on the index-coded band against 1.661 on the pre-existing band with a 1.20 tolerance, separations financed by different quantities so they do not trade off, crude rate passing at 16.1 per 1,000 against 32, every conservative reflex landing wrong. The decisive step settles which reference rate each episode is compared to, which is the comparison, and architecture 2 died on exactly that part of the estimand.",
+  "the_pincer": "three devices could close the band's-source fork and each fails a different screen: filing it in the framework names the decisive quantity (readability test 1), closing it with the reference table's provenance note makes the stump a reading (rule 3, data semantics), closing it with the published band distribution that only the right construction reproduces refutes the naive read (readability test 4). There is no fourth device.",
+  "guard_verdict_on_the_candidate": "BLOCK, exit 1, on five rules: ban.pattern (E, against task197), ban.strategy (causal_design, against task197), ban.forum (regulator_or_inspector, against task190), test.same_puzzle_older (task69) and test.same_driver_older (gap population + pattern E + method_or_model_selection, spent in 9 builds). The driver itself was NOVEL at 0.09 nearest, under the 0.12 WARN floor, so what closed the pass was the WHAT screen and the axis bans, not a repeated insight.",
+  "axes_not_free": "three axes the wave brief reserved for this build are not in fact free as at 2026-10-18: forum regulator_or_inspector BLOCKs against task190, and both pattern E and strategy causal_design BLOCK against task197. stump_strategy uncertainty_hold was still free, and is the axis the mechanism could not honestly carry.",
+  "card_path": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194/task194_card.json (scratch only, deliberately unregistered)",
+  "scripts": "screen.py and screen2.py in the same scratch directory; both run with python3 -I and print every number quoted here",
+  "screen_1_funnel_REDONE_60_seeds": {
+   "why_redone": "the first run built phi raw 1.373, too little dispersion for rigor pattern 4's trap to exist, so it measured determinism and not stump power; the coordinator's test required computing what a hierarchical or EB response files on the truth before committing",
+   "world": "16 providers, 300 to 15,000 episodes, between-provider sigma 0.18, one real 1.65x outlier at 4,300 episodes; phi raw mean 5.726 (2.662 to 10.444), tau2 mean 0.04601, 60 seeds",
+   "horn_1_no_stump_on_a_name": "plain exact Poisson limits (the pattern's own named shortcut) flag the real outlier in 60 of 60 seeds; worst decile in 40 of 60. A 1.65x effect at 4,300 episodes is outside plain limits whatever the dispersion, so the correction changes which OTHER units are flagged, never whether the real one is.",
+   "horn_2_set_not_determinate": "the four defensible golden-family variants return a mean of 1.83 distinct sets and disagree in 40 of 60 seeds; and pinning the dispersion treatment anywhere in the pack files the decisive step, which the coordinator's own constraint concedes",
+   "horn_3_reflex_reaches_it": "empirical Bayes posterior flags the outlier 60 of 60 and reproduces the golden set exactly 33 of 60; hierarchical predicted-over-expected 60 of 60 and 33 of 60; James-Stein 48 of 60. Shrinkage is rigor pattern 3 of the same block, the opponent's first reflex here.",
+   "estimand_test": "PASSES, and this is conceded: the between-provider dispersion is estimated rather than defined and is none of the five parts. Passing is necessary, not sufficient. The general form: a dispersion can pass the estimand test and still fail, because its estimator family is open and shrinkage reaches the same ranking without estimating it.",
+   "layer2_pattern": "healthcare-delivery-health-economics/provider-quality-risk-adjustment/4 (the client's own pattern, not an own-named one)",
+   "script": "screen3.py in the builder's scratch directory"
   },
-  "architecture_3_lag_pricing": {
-    "separable": "the uplift budget is set by the completeness profile's depth and reach, the noise by the counts, so deepening the profile grows the budget with the standard errors unchanged",
-    "measured": "from the golden's d of 0.079 to about 0.16 doubles the budget from 27.25 to about 55",
-    "plausibility_as_built": "defensible: pressure injuries 43 per cent complete at a quarter's own close and 93 per cent four closes later is a retrospective staging and audit programme running three quarters behind, which is ordinary",
-    "plausibility_if_doubled": "at the outer edge: 25 per cent complete at the close is a claim the realism sweep would be right to query",
-    "moot": "the bar the lever buys is not the bar that failed"
-  },
-  "proposed_next_mechanism": "Approved and built. See architecture_3_mechanism below and the design note's `## Architecture 3 mechanism, built and measured`.",
-  "architecture_3_mechanism": {
-    "driver": "The coding lag runs on the documentation path, not the patients. CIS_MIGRATION is when each cost centre's wards were registered on the clinical information system (a rollout from July 2022 still running at the export date); CIS_ADOPTION is how much of a ward's recording actually moved once registered, a ward property and not a date property. An episode's electronic share is the unit's adoption reached over the three quarters after registration and nothing before it; the coding lag is drawn from the electronic or the paper completeness curve accordingly. The register ships the dates; adoption is not shipped and no document states it.",
-    "condition_1_orthogonality": "Measured on the clean truth over the 7,763 affected in-scope episodes of the twelve candidates in the four short quarters, share coded after the pull date 0.0656. Within unit-quarter the shortfall is independent of every visible attribute the pack ships: chi2/df 0.21 risk band, 0.54 age band, 0.47 length of stay, 0.69 comorbidity, 0.00 care type and site and specialty (constant within a unit), 0.42 diagnosis related group, 0.62 month; mean absolute deviation never above 1.4 points on a 6.6 per cent base. Pooled across the twelve the residue is the units' own case mixes and is not zero; condition 3 settles whether an opponent can ride it.",
-    "condition_2_isolation": "Best F1 of any shipped grouping against the four shortest records is 0.67 (registration year, 2 of the 4), then hospital_code 0.57, division 0.60, detail extract coverage 0.43, specialty 0.40. The four sit at three hospitals and in four specialties and their registration dates are 2022-10, 2024-01, 2027-01 and 2027-03. Depth is a continuum, 0.42 to 9.14 per cent. Readability test 1 swept every document carrying the migration fact: four hits, all flat column definitions, none saying a cost centre reports late or that anything needs developing; the explanatory clause on published_date was cut.",
-    "condition_3_reflexes": "0 of 23 reach the golden. It is first on none and in the top three of four. Reflexes land on 41220 eleven times, 41410 six, 41240 twice, once each on 41320, 41230, 41330 and 41510; 41310, 41420, 41430, 41520 and the golden are named by none. Two reached it on the first cut and both were closed at the root: the fine internal standardisation on risk band, age band and length of stay band (a leave-one-out recomputation put the gap at 162 against 127, so it was a peer comparison and not self-deflation, closed by raising the already-embedded medical and aged care units from 1.00-1.04 to 1.06-1.11) and the unweighted empirical Bayes estimator (tau2 collapses, full shrinkage ranks by expected volume where the two largest units sat 1.002x apart, closed by taking 41220's plan to 4,760; dispersion is healthy at Pearson 4.55 per df and the expected-weighted estimator names 41220 at 1.46x).",
-    "ladder": "R0 the record over the ten closed quarters names 41220 26.17 at 1.51x, golden 5th of 12. R1 the record over the four most recent quarters names 41320 27.59 at 1.68x, golden 12th. R2 only the quarters whose coding has stopped moving names 41220 50.68 at 1.84x, golden 3rd. R3 one network factor at each lag names 41220 38.43 at 1.44x, golden 4th. R4 the short quarters filled at the unit's own finished-quarter ratio names 41220 50.66 at 1.85x, golden 3rd. R5 developed on each cost centre's own record names 41210 44.66 at 1.604x.",
-    "floors": "Rung 0 position 5 of 12 (floor: 4th or 5th). First on no intermediate rung and second on none. Lowest rung margin 1.44x (floor 1.15x). Final margin 1.604x (floor 1.2x, target 1.5 to 2x). Dominance 34.47 against 17.65, ratio 1.95 (floor 1.20x). C4 nearest wrong cell 60.4 per cent away. Convergence holds on all five readings of the development, 1.53x to 1.61x.",
-    "bound_loosened": "Yes. The patient-driven lag paid the flip and the margin out of one uplift budget and could only reach 2nd on rung 0. The documentation-driven lag pays them separately: the golden's uplift is 311.5 complications because its wards are the ones still on paper, while the shape of its record inside the window is carried by RATIO_PATH, a level for the first six closed quarters and another for the last four. Its rate rose through 2026, which is the part of its record the pull date cuts short, so the record shows it improving while it was deteriorating.",
-    "open": "The graded figure 44.6597 sits 0.0097 from a bin edge at one decimal and 0.1597 at whole complications against a bar of 0.3 of the rounding unit, so centre_plans has to re-centre it once the asking sentence fixes the unit. That is the one arithmetic item left before precut.py."
-  },
-  "architecture_spent": true,
-  "architecture_4": {
-    "status": "two candidates screened to death before any design; nothing cut, no card re-rooted",
-    "candidate_1": "each unit own complication propensity from multi-unit patients: the name agrees (unit 3 under all five variants) but the graded figure prints 16.9, 18.0 or 18.3 at one decimal, which is architecture 3 death repeated; and the filed-strata excess route, the published method the pack must ship, already names unit 3, so the standard route is the golden",
-    "candidate_2": "the true complication count behind incomplete coding via a coding audit: the NAME forks too, four variants naming unit 7 and one naming unit 3, with four printed figures 8.7, 8.8, 10.3, 13.6",
-    "finding": "on this ground the dichotomy and 1.6a close against each other, and it is a property of the data type: anything recovered by arithmetic on these records is observed, so filing it is rule application, while anything genuinely unobserved here is a rate, and every rate estimator on sparse counts across heterogeneous units carries a weighting and a shrinkage choice that both move the graded figure. task197 escapes because it fits a dense physical trace where nobody would weight or shrink, so 1.6a hard clause is a constraint on the data type as much as on the mechanism."
-  },
-  "architecture_5": {
-    "candidate_A": "the unit that held the patient at onset. Driver 0.06, distinct from task48, task103 and task184. Name robust across all four boundary conventions; figure prints 10.1, 10.2, 10.5. Discharging and admitting routes land wrong, but longest-stay and pro-rata reach the golden, because a high-propensity unit makes the spells it touches eventful and so publishes its signal at spell level.",
-    "diagnosis": "killed by the sixth screen, not by 1.6a. The figure fork is on a boundary convention, which is closure axis 9 and must be filed anyway, unlike architecture 3 chain-ladder method family.",
-    "refinement": "run the uniqueness test on variants that are METHODS, not on conventions the closure table already requires closed, or it rejects every construction involving an interval. Test: if pinning the varying choice is something the closure table demands anyway it is a convention; if pinning it would make the decisive step executable it is a method and the fork is fatal.",
-    "untested": "candidate C, a construction over orderings, driver 0.05, the cleanest of the three",
-    "candidate_C": "the count of complications whose onset precedes arrival at the charged unit, built with equal propensities so the signal lives only in the ordering. Killed by the sixth screen under both hazard shapes: four routes reach the golden without building the ordering (pre-arrival patient-days from the movement file alone, spells discharged, mean segment length, and the reported charged count itself), and discharging, longest-stay and pro-rata reach it too. A count across units of different size ranks on volume, so every volume proxy publishes it.",
-    "decision_type_finding": "none of the coarse ships on this objective answers a per-unit league table: task48 designation_set/set_of_items, task103 go_hold_or_stop/currency, task184 ranked_slate_under_cap/set_of_items, task192 quantity_figure/count. task188 is the one pick_one_of_n and escapes the other way, through a pooling the group sizes fix. pick_one_of_n is 13 of 32 on this objective, which is why it keeps meeting the wall: a pick over units of different size forces a per-unit quantity, which is either a count that volume publishes or a rate whose denominator is a weighting choice. Architecture 6 should change the DECISION TYPE, not the quantity."
-  },
-  "architecture_6": {
-    "shape": "a designation set against the charter filed tolerance of avoidable complications per 1,000 separations, with the exposure the complications scale with (care handovers, not separations or bed-days) not filed, following task181 escape; references task180, task181, task193",
-    "sixth_screen": "PASSES. Golden set [1,3] of 14. All four rival designation routes designate NOBODY, which is task180 own shape. Eight of nine single sorted columns differ; the one that reproduces the set is the construction itself.",
-    "uniqueness_on_methods": "PASSES. Five genuine estimator variants (own ratio of totals, shrunk halfway, James-Stein by counts, Poisson MLE with continuity, prior two quarters pooled) all designate [1,3]: one distinct set. The same five variants give unit 1 rate as 28.4, 28.6, 28.7, three distinct printed figures, so the weighting freedom is present and does not cross the tolerance.",
-    "finding": "a designation set against a filed tolerance discretises away the weighting freedom that killed candidate 1, architecture 3 and candidate A. The tolerance fixes the denominator and membership is per candidate, so no volume proxy and no weighting choice reaches the answer.",
-    "outstanding": "four of the six screens, the reflex sweep filed-strata route and the readability screen. Two named risks: the easy route designates nobody, so the prompt must not make an empty answer implausible; and Gate B needs the handover data shipped while nothing may name handovers as the exposure.",
-    "my_test_errors": "three in one pass, caught and corrected: a uniform per-handover rate made one column reproduce the set; the uniqueness table first row was the oracle not a variant, so a reported disagreement did not exist; and a top-k test at 10 of 14 could not discriminate.",
-    "gate_b": {
-      "test_1_leak_grep": "PASSES. No shipped document connects complications to handovers, transfers, moves or pathway steps. Two innocent hits (a surgery list transferred in from Marrowfield; a cost centre whose activity transferred on closure); both PDFs clean. episode_outcomes_extract unit_code is documented as the unit the episode separated from, which is the easy route, with nothing pointing past it.",
-      "test_2_sixth_screen_on_the_file": "PASSES. Nine columns the handover file affords plus the two rate columns the pack already publishes; none reproduces the golden set [1,3]. The published adjusted_rate_per_1000 against the tolerance designates {0}, a named wrong unit rather than an empty set, which is a stronger rung and lowers the empty-answer prompt risk.",
-      "test_3_single_use": "PASSES with evidence. episode_outcomes_extract has 465,882 episodes against activity_summary_monthly 463,691 separations, a 2,191 gap the movement log explains, and the existing architecture already asks about that reconciliation. Five further pack files it serves. BINDING: at least one ask must consume the log, and the episode-versus-separation reconciliation is the one.",
-      "empty_answer_device": "read from task180 prompt: a whether-first question with a conditional which, Will X put ANY of our five over the amber, AND IF SO which, so none is an ordinary outcome of the question own form.",
-      "file_rule": "the movement log column descriptions say what a row IS, never what it explains",
-      "outstanding": "four of the six screens, the readability screen, and the filed-strata excess reflex which episode_outcomes_extract supports through comorbidity_score and drg_code and which reached the golden in candidate 1"
-    },
-    "filed_strata_reflex": "FAILS, and the architecture is dead. Route: stratum mix per unit from episode_outcomes_extract comorbidity_score and drg_code, filed stratum rate, designate on the excess. Golden set [1,3] at tolerance 22.0 per 1,000. At the realistic confound strength (sicker patients move between units more, so comorbidity correlates with handover exposure) the pack's own published standardised_ratio read against the tolerance returns [1,3] exactly, with no construction. The solver-built excess projected on separations returns [] at all three strengths; it is the published column that reaches the golden.",
-    "fate": "DEAD at the reflex, before design. Clear at rho=0 ([1,3,9], both true members plus one false positive) and at rho=0.9 ([3]), fires only at rho=0.6, so it is a confound-strength-dependent kill rather than a structural one. That is why it cannot be repaired: passing would require asserting that case mix and patient movement are uncorrelated in a hospital, or correlated strongly enough that standardisation overshoots, and a designation set cannot rest on a confound strength chosen to miss.",
-    "rule": "where a design withholds the exposure a quantity scales with, check every adjustment the pack already publishes for another reason: a standardisation performed on an observable that correlates with the withheld exposure is a free partial recovery of it and costs the solver no construction. The reflex sweep must include published derived columns at every confound strength the world makes plausible, not only the generator's own.",
-    "not_run": "per the stop rule: the dichotomy, the unit's own history, move available against move needed in the tolerance's units, the standard error of what the construction estimates, the silent-row readability screen and the full enumerated sweep."
-  },
-  "architecture_7": {
-    "status": "five structurally distinct Layer 2 mechanisms screened to death before any data was cut; nothing built, no card registered, no file in target/ or golden/ touched",
-    "date": "2026-10-18",
-    "brief": "opened on the premise that an overdispersion-adjusted funnel was unspent on the anomaly-detection corpus",
-    "premise_false": "this note's own `## Tried and rejected` already carries it: 'Rejected at the draw: judging each unit's excess against its own sampling error', which names the over-dispersion-adjusted funnel outright. The corpus screen missed it because the rejection sits in task194's slot notes rather than on a registered card.",
-    "screen_1_funnel": "DEAD, measured on 14 units (410 to 11,200 episodes, one real 1.62x outlier at 4,800): phi raw 1.373, phi winsorised 0.484, Q 15.66 on 13 df, tau2 (DL) 0.00271; five standard estimator variants return THREE distinct flagged sets, the real outlier flagged by 4 of 5, empirical Bayes flagging nobody",
-    "screen_2_leave_one_out": "DEAD, move available against move needed: 0.0391 on the largest unit, 0.0028 average, 0.0021 smallest, against 0.1219 needed to cross the tolerance, ratio 0.320; and it settles the comparison, so the WHAT screen kills it independently",
-    "screen_3_exposure_competing_risk": "DEAD: per-episode 21.042 against per-bed-day 4.931 on the short-stay unit and 27.297 against 3.195 on the long-stay unit, so the bases reverse the ordering; three filed units of analysis, pinned by closure axis 9 anyway, and task192 v2 already holds the competing-exit driver",
-    "screen_4_uncertainty_direction": "DEAD both ways, and this is the finding: a hold golden is reached with no analysis by shrinkage and by overdispersion-inflated limits, which are the client library's own rigor patterns 3 and 4 for this subdomain; an act golden is reached by every under-adjustment (measured 2.273 against a golden 1.661 at a 1.20 tolerance). No third direction exists, so no uncertainty object on this ground can be silent.",
-    "screen_5_over_adjustment": "DEAD on the WHAT screen, and it was the strongest candidate: built and measured at 1.248 on the index-coded band against 1.661 on the pre-existing band with a 1.20 tolerance, separations financed by different quantities so they do not trade off, crude rate passing at 16.1 per 1,000 against 32, every conservative reflex landing wrong. The decisive step settles which reference rate each episode is compared to, which is the comparison, and architecture 2 died on exactly that part of the estimand.",
-    "the_pincer": "three devices could close the band's-source fork and each fails a different screen: filing it in the framework names the decisive quantity (readability test 1), closing it with the reference table's provenance note makes the stump a reading (rule 3, data semantics), closing it with the published band distribution that only the right construction reproduces refutes the naive read (readability test 4). There is no fourth device.",
-    "guard_verdict_on_the_candidate": "BLOCK, exit 1, on five rules: ban.pattern (E, against task197), ban.strategy (causal_design, against task197), ban.forum (regulator_or_inspector, against task190), test.same_puzzle_older (task69) and test.same_driver_older (gap population + pattern E + method_or_model_selection, spent in 9 builds). The driver itself was NOVEL at 0.09 nearest, under the 0.12 WARN floor, so what closed the pass was the WHAT screen and the axis bans, not a repeated insight.",
-    "axes_not_free": "three axes the wave brief reserved for this build are not in fact free as at 2026-10-18: forum regulator_or_inspector BLOCKs against task190, and both pattern E and strategy causal_design BLOCK against task197. stump_strategy uncertainty_hold was still free, and is the axis the mechanism could not honestly carry.",
-    "card_path": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194/task194_card.json (scratch only, deliberately unregistered)",
-    "scripts": "screen.py and screen2.py in the same scratch directory; both run with python3 -I and print every number quoted here",
-    "screen_1_funnel_REDONE_60_seeds": {
-      "why_redone": "the first run built phi raw 1.373, too little dispersion for rigor pattern 4's trap to exist, so it measured determinism and not stump power; the coordinator's test required computing what a hierarchical or EB response files on the truth before committing",
-      "world": "16 providers, 300 to 15,000 episodes, between-provider sigma 0.18, one real 1.65x outlier at 4,300 episodes; phi raw mean 5.726 (2.662 to 10.444), tau2 mean 0.04601, 60 seeds",
-      "horn_1_no_stump_on_a_name": "plain exact Poisson limits (the pattern's own named shortcut) flag the real outlier in 60 of 60 seeds; worst decile in 40 of 60. A 1.65x effect at 4,300 episodes is outside plain limits whatever the dispersion, so the correction changes which OTHER units are flagged, never whether the real one is.",
-      "horn_2_set_not_determinate": "the four defensible golden-family variants return a mean of 1.83 distinct sets and disagree in 40 of 60 seeds; and pinning the dispersion treatment anywhere in the pack files the decisive step, which the coordinator's own constraint concedes",
-      "horn_3_reflex_reaches_it": "empirical Bayes posterior flags the outlier 60 of 60 and reproduces the golden set exactly 33 of 60; hierarchical predicted-over-expected 60 of 60 and 33 of 60; James-Stein 48 of 60. Shrinkage is rigor pattern 3 of the same block, the opponent's first reflex here.",
-      "estimand_test": "PASSES, and this is conceded: the between-provider dispersion is estimated rather than defined and is none of the five parts. Passing is necessary, not sufficient. The general form: a dispersion can pass the estimand test and still fail, because its estimator family is open and shrinkage reaches the same ranking without estimating it.",
-      "layer2_pattern": "healthcare-delivery-health-economics/provider-quality-risk-adjustment/4 (the client's own pattern, not an own-named one)",
-      "script": "screen3.py in the builder's scratch directory"
-    },
-    "alternates_already_dead": "the coordinator's two named alternates were screened in the same pass: the leave-one-out expectation at move available over move needed 0.0391 against 0.1219, ratio 0.320, and the rate per patient-day against per admission, which reverses the ordering of two units (21.042 against 4.931 per 1,000 on the short-stay unit, 27.297 against 3.195 on the long-stay unit) and is a filed unit of analysis besides."
-  },
-  "architecture_8": {
-    "status": "three structurally distinct Layer 2 mechanisms screened to death with measurements on a NEW ground; nothing drawn, no card registered, no file in target/ or golden/ touched",
-    "date": "2026-10-18",
-    "ground": "business-operations-analytics / service-operations-sla x anomaly-detection, client task type human-factors-ergonomics/safety-incident-error-analysis (a never-built pairing with three never-drawn subdomains)",
-    "axis_window": "WIDE OPEN, and this is the pass's one positive finding: guard.py check on the probe card returns PASS, exit 0, with NO WARN at all, on shape 09, gap rule, pattern A, gate_g signal_vs_noise_or_hold, decision structural_verdict, strategy binding_constraint, calibration physical_verification, artifact operations_log, role operations_director, forum line_manager_or_team, forcing_event incident_or_complaint, org_family professional_services, question_form whether, geography Portugal, personas drawn at names --geo Portugal --seed 194. Nearest driver 0.05. What shut the pass was the mechanism, not the window.",
-    "screen_1_latent_concentration": "DEAD on determinacy: the accident-proneness deconvolution, designated against a filed tolerance of 0.40 to discretise the weighting freedom. Over 20 redraws of 12 depots, the golden's own estimator family (latent truth, empirical Bayes, negative-binomial MLE, moment-matched mixture) returns a mean of 3.0 distinct designated sets out of 4, max 4. Stump power was present and irrelevant: empirical Bayes 1 of 20, naive observed share 0 of 20.",
-    "screen_2_discriminability_vs_criterion": "DEAD twice, and it was the strongest candidate: signal detection theory separating a verifier's power from its acceptance line, with a filed common line replacing each team's own. Over 25 redraws of 12 teams the naive carry-forward of the historical miss rate reproduces the true designation in 2 of 25, so the stump is real; but the four standard family members (equal-variance d-prime, unequal-variance d_a, logit ROC, A') return a mean of 1.64 distinct designated sets, max 3, hitting the truth in 24, 14, 20 and 14 of 25, with a worst family figure error averaging 9.67 escapes per 1,000 against a 6.0 tolerance. The ROC form is a method and not a closure-table convention, so pinning it files the step; and the dial fails at both ends, a smaller move of the line shrinking the family's spread and making the carry-forward right. Independently DEAD on the abstraction test against three incumbents holding the same insight in other nouns (task192 live in the last twelve, task446 v2, task229 v2) at a lexically clean 0.05.",
-    "screen_3_shared_gate_thinning": "DEAD three ways: a unit's own defect rate where the record holds only what got past a shared check whose catch probability moves with its own load. Over 25 redraws of 12 depots across 52 weeks, the escape-weighted route reproduces the true designation in 1 of 25 (thinning leaves the counts too small to rank); caught-plus-escaped over jobs, which is exact arithmetic on shipped records, is the best non-truth route at 7 of 25, so the quantity is observed and filing it is rule application, architecture 4's finding on new ground; and the correction's own family (weekly, pooled, monthly catch probability) returns a mean of 2.32 distinct sets out of 3. Naive escapes-per-job 0 of 25, weekly-standardised reflex 0 of 25.",
-    "not_re_screened": "Over-adjustment and its collider-bias form probe lexically clean at 0.10 nearest and are this number's own architecture 7 screen 5, dead on the WHAT screen. Recorded so the next pass does not pay for it twice.",
-    "the_pincer_measured_both_ways": "For a unit-comparison anomaly call on human-error ground the two halves are now measured on the same client task type. Records-fixed graded figures are determinate and not stumping: task182's architecture 5 had the slate identical under all six licensed bandings 20/20 and all eight licensed forms of the conditioning naming one slate 20/20, and the crude route reached the golden slate 20 of 20 in two of three models. Estimator-output graded figures are stumping and not determinate: naive routes at 0 of 20, 2 of 25 and 0 of 25 against 1.64 to 3.0 distinct designated sets inside the golden's own family. The dial that closes the family is the dial that makes the quantity observed or the naive route right, measured three times here. A draw on this ground needs a graded figure that is records-exact while the construction producing it is reachable by no group-by.",
-    "one_route_left_unscreened": "An exactly-determined attribution system: per-unit quantities as the unique solution of a square full-rank system over observed aggregates, so ordinary least squares, weighted least squares and Poisson maximum likelihood return identical numbers and the family freedom that killed architecture 4 candidate 1 and screen 2 above is absent by construction, with records-exact graded figures. Predicted deaths to test first: the WHAT screen on attribution (does the solve settle the unit), the path-attribution insight held by task48, task103 and task119's never-registered draft, and whether a square incidence structure is realistic against an operation that would produce an over-determined one. NOT screened and NOT claimed to survive.",
-    "scripts": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194b/: screen_c1.py, screen_c2.py, screen_c3.py, probe.py, with .out files beside them",
-    "probe_card": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194b/task194_axis_probe.json (scratch only, deliberately unregistered, no mechanism adopted)"
-  }
+  "alternates_already_dead": "the coordinator's two named alternates were screened in the same pass: the leave-one-out expectation at move available over move needed 0.0391 against 0.1219, ratio 0.320, and the rate per patient-day against per admission, which reverses the ordering of two units (21.042 against 4.931 per 1,000 on the short-stay unit, 27.297 against 3.195 on the long-stay unit) and is a filed unit of analysis besides."
+ },
+ "architecture_8": {
+  "status": "three structurally distinct Layer 2 mechanisms screened to death with measurements on a NEW ground; nothing drawn, no card registered, no file in target/ or golden/ touched",
+  "date": "2026-10-18",
+  "ground": "business-operations-analytics / service-operations-sla x anomaly-detection, client task type human-factors-ergonomics/safety-incident-error-analysis (a never-built pairing with three never-drawn subdomains)",
+  "axis_window": "WIDE OPEN, and this is the pass's one positive finding: guard.py check on the probe card returns PASS, exit 0, with NO WARN at all, on shape 09, gap rule, pattern A, gate_g signal_vs_noise_or_hold, decision structural_verdict, strategy binding_constraint, calibration physical_verification, artifact operations_log, role operations_director, forum line_manager_or_team, forcing_event incident_or_complaint, org_family professional_services, question_form whether, geography Portugal, personas drawn at names --geo Portugal --seed 194. Nearest driver 0.05. What shut the pass was the mechanism, not the window.",
+  "screen_1_latent_concentration": "DEAD on determinacy: the accident-proneness deconvolution, designated against a filed tolerance of 0.40 to discretise the weighting freedom. Over 20 redraws of 12 depots, the golden's own estimator family (latent truth, empirical Bayes, negative-binomial MLE, moment-matched mixture) returns a mean of 3.0 distinct designated sets out of 4, max 4. Stump power was present and irrelevant: empirical Bayes 1 of 20, naive observed share 0 of 20.",
+  "screen_2_discriminability_vs_criterion": "DEAD twice, and it was the strongest candidate: signal detection theory separating a verifier's power from its acceptance line, with a filed common line replacing each team's own. Over 25 redraws of 12 teams the naive carry-forward of the historical miss rate reproduces the true designation in 2 of 25, so the stump is real; but the four standard family members (equal-variance d-prime, unequal-variance d_a, logit ROC, A') return a mean of 1.64 distinct designated sets, max 3, hitting the truth in 24, 14, 20 and 14 of 25, with a worst family figure error averaging 9.67 escapes per 1,000 against a 6.0 tolerance. The ROC form is a method and not a closure-table convention, so pinning it files the step; and the dial fails at both ends, a smaller move of the line shrinking the family's spread and making the carry-forward right. Independently DEAD on the abstraction test against three incumbents holding the same insight in other nouns (task192 live in the last twelve, task446 v2, task229 v2) at a lexically clean 0.05.",
+  "screen_3_shared_gate_thinning": "DEAD three ways: a unit's own defect rate where the record holds only what got past a shared check whose catch probability moves with its own load. Over 25 redraws of 12 depots across 52 weeks, the escape-weighted route reproduces the true designation in 1 of 25 (thinning leaves the counts too small to rank); caught-plus-escaped over jobs, which is exact arithmetic on shipped records, is the best non-truth route at 7 of 25, so the quantity is observed and filing it is rule application, architecture 4's finding on new ground; and the correction's own family (weekly, pooled, monthly catch probability) returns a mean of 2.32 distinct sets out of 3. Naive escapes-per-job 0 of 25, weekly-standardised reflex 0 of 25.",
+  "not_re_screened": "Over-adjustment and its collider-bias form probe lexically clean at 0.10 nearest and are this number's own architecture 7 screen 5, dead on the WHAT screen. Recorded so the next pass does not pay for it twice.",
+  "the_pincer_measured_both_ways": "For a unit-comparison anomaly call on human-error ground the two halves are now measured on the same client task type. Records-fixed graded figures are determinate and not stumping: task182's architecture 5 had the slate identical under all six licensed bandings 20/20 and all eight licensed forms of the conditioning naming one slate 20/20, and the crude route reached the golden slate 20 of 20 in two of three models. Estimator-output graded figures are stumping and not determinate: naive routes at 0 of 20, 2 of 25 and 0 of 25 against 1.64 to 3.0 distinct designated sets inside the golden's own family. The dial that closes the family is the dial that makes the quantity observed or the naive route right, measured three times here. A draw on this ground needs a graded figure that is records-exact while the construction producing it is reachable by no group-by.",
+  "one_route_left_unscreened": "An exactly-determined attribution system: per-unit quantities as the unique solution of a square full-rank system over observed aggregates, so ordinary least squares, weighted least squares and Poisson maximum likelihood return identical numbers and the family freedom that killed architecture 4 candidate 1 and screen 2 above is absent by construction, with records-exact graded figures. Predicted deaths to test first: the WHAT screen on attribution (does the solve settle the unit), the path-attribution insight held by task48, task103 and task119's never-registered draft, and whether a square incidence structure is realistic against an operation that would produce an over-determined one. NOT screened and NOT claimed to survive.",
+  "scripts": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194b/: screen_c1.py, screen_c2.py, screen_c3.py, probe.py, with .out files beside them",
+  "probe_card": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task194b/task194_axis_probe.json (scratch only, deliberately unregistered, no mechanism adopted)"
+ },
+ "architecture_8_9_note": "Architectures 8 and 9 each drew nothing and registered no card, so the architecture counter stays at 7, the last number that reached a registered draw. Both passes' screens are in the design note's Tried and rejected. Stage set back to 1 from 4, because stage 4 belonged to architecture 3 and that pack is stale."
 }
