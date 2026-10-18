@@ -1,0 +1,95 @@
+{
+  "task": "task172",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 7, sathya8571 forecasting lane, seed FC43 (world, decision and quantity only)",
+  "domain": "general-statistics-data-science",
+  "subdomain": "regression-classification-model-diagnostics",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Bellevue software company's global mobility team quoting, in its benefits portal, the wait within which four in five of the work-permit renewals it files from January to March 2027 will have USCIS's decision, now that a pending renewal no longer extends the card and USCIS is setting fingerprint appointments about sixteen weeks after receipt",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "date_or_period",
+  "answer": "",
+  "answer_source": "generator/figures.json",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G16",
+    "G13",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "the global mobility team's analytics lead, who sets the wait quotes the benefits portal shows each quarter",
+  "role_family": "research_desk",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "renewal_case_notices_2024-01_2026-12.csv",
+    "rows": 0,
+    "entity": "one notice or case event logged on a work-permit renewal case: USCIS receipt, fingerprint appointment or its rescheduling, reuse of earlier fingerprints, request for evidence and its response, decision, card production and mailing, transfer",
+    "grain": "case x notice",
+    "source": "synthetic"
+  },
+  "forum": "other",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United States (Bellevue, Washington)",
+    "currency": "USD",
+    "org_type": "a software company's global mobility team, which files work-permit renewals for employees whose green-card applications are pending and for the spouses of sponsored employees",
+    "invented_names": [
+      "Quillwater Software"
+    ],
+    "people": [
+      "Melinda Yang",
+      "Brandon Zamora",
+      "Jasmin Sims"
+    ]
+  },
+  "deliverables": [
+    "q1_2027_renewal_quote.xlsx",
+    "q1_2027_expiring_permits.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "A unit's wait runs through a scheduled step and then a review, and is cut short only when the unit's own deadline passes, after which a request settles it within weeks; while the step came early the deadline cut only the record's slowest tail, but the step is now scheduled so late that most units will reach their deadline first, so the forward percentile is set by each unit's deadline plus the request's few weeks, not by the step's added delay laid on the record's waits or on its stage times, and not by the record's waits as they stand.",
+  "driver_concrete": "Since renewals filed after 30 October 2025 stopped extending the card, a renewal still pending on the day the filer's card expires gets an expedite request from the team that day and has been decided about three weeks later, which in the record cut only the slowest tail; USCIS now sets fingerprint appointments about sixteen weeks after receipt, so more than half of next quarter's renewals will reach the card's expiry, about twenty weeks after receipt, before the review that follows the appointment ends, and the quarter's 80th percentile is set by those expiry dates plus the three weeks: about 5.5 months, against about 4 from the record and 6.5 or more from adding the new appointment delay to the record's appointment-route waits.",
+  "stump": "A competent solver who sees the fingerprint appointments now being set about sixteen weeks out adds the twelve extra weeks to the record's appointment-route waits and quotes 6.5 months or more (the record's own waits, open cases censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the automatic extension ended every renewal pending at expiry has been decided about three weeks after the expedite request the team files that day, so the quarter's 80th percentile is 5.5 months.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the notices to the cases, keeps each case's latest appointment notice, treats open cases as censored, reads the quote policy correctly and sees the appointment delay now being set adds that delay to the record's appointment-route waits and quotes 6.5 months, where the card expiries those renewals will reach first, each followed about three weeks later by a decision on the team's expedite request, put the quarter at 5.5.",
+  "domain_test": "The quote turns on a duration model's out-of-sample diagnostic: whether the stage model fitted on the record, with the new appointment delay added, still describes renewals that reach the card's expiry undecided, which the renewals whose appointments were rescheduled late since the rule change show it does not, because each was decided within weeks of its expiry; the forward 80th percentile is the one under the model the record supports, replacing it with the record's pooled percentile or the uncapped stage model moves the quote by a bin or more, and with another field's nouns no expiring card, expedite request or fingerprint appointment exists to decide it.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:stage-model-cut-at-each-filers-card-expiry-plus-the-expedite-response",
+  "layer1": [
+    "the outside counsel's case-management export of USCIS notices keyed by its matter number, and the company's own case register keyed by case ID, with a crosswalk between them and receipt numbers carrying the service-center prefix",
+    "rescheduled fingerprint appointments: several appointment notices on one case, the latest standing",
+    "notices logged in the case system days or weeks after their notice date, by the mailroom's scan batches",
+    "the team's own case actions (expedite requests, address changes, withdrawals) in a separate log keyed by employee or dependant ID",
+    "dates in two formats across the register's 2025 system change",
+    "spouses keyed by benefits-enrollment ID in the dependants table and linked to the sponsoring employee through it",
+    "open cases at the extract, cases the company stopped tracking when an employee left, and transfers between service centers",
+    "requests for evidence with their response notices, card production and mailing notices with carrier re-scans",
+    "the team's monthly log of the government's posted processing time, whose layout changed when the posted figure moved from a range to a single month figure"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task127": "task127's recorded delay fuses two waits that ran at once, so removing one saves only its excess over the other (the later of two dates); here the stages run one after the other and the wait is cut short at the filer's own card expiry by the team's expedite request, a cut only the record's slowest tail met and the forward appointment delay makes binding for most renewals (the earlier of two clocks)",
+    "task501": "task501 v3's units hurry to place what remains before a hard deadline, a catch-up in pace; here nothing speeds up before the deadline, the deadline itself (each filer's card expiry) triggers a request that ends the wait",
+    "task148": "task148's queue is drained by units abandoning it; here no unit leaves, the wait is ended early by a request filed at each unit's own card expiry"
+  },
+  "lineage": [],
+  "notes": "stump_strategy forecast_method_backtest: the natural fit, a stage model fitted on the record with the new appointment delay added (or the record's pooled waits), is wrong out of sample once the appointments now set push most renewals past the card's expiry; the model is chosen on honest history, the renewals rescheduled late since the October 2025 rule change. Not composition (the share needing new fingerprints is stable) and not concurrency (the review follows the appointment; task127's concurrent waits are not this build's move). G3 first: for most of next quarter's renewals the decision is ended by the team's expedite at the card's expiry, not by the review the record's waits measure; G16 the model choice; G13 the forward window's appointment delay that no decided renewal met; G17 censoring. forum other: the analytics lead publishes the quote under the mobility policy; role research_desk: the policy gives the quote to the analytics lead.",
+  "registered": "2026-10-18T11:34:04Z"
+}

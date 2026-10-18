@@ -1,0 +1,38 @@
+{
+ "task": "task172",
+ "owner": "sathya8571",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science/regression-classification-model-diagnostics",
+ "objective": "forecasting",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-18",
+ "stump": "A competent solver who sees the fingerprint appointments now being set about sixteen weeks out adds the twelve extra weeks to the record's appointment-route waits and quotes 6.5 months or more (the record's own waits, open cases censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the automatic extension ended every renewal pending at expiry has been decided about three weeks after the expedite request the team files that day, so the quarter's 80th percentile is 5.5 months.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task127 v2 0.13 (driver, differentiated)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: default path figures from the generator prototype, ladder, fork table, closure table, asks, prompt.txt, precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
