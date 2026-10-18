@@ -111,6 +111,11 @@ visit, and a child moves onto TLD at the first weighing that reads the band (35 
 weighings scatter about 1.3 kg around each child's own straight growth line while the line rises about a fifth of a
 kilogram a month, so most moves come at a single reading over the band months before the child's line reaches it, and
 in August 2026 7,151 children under 15 sit below the band, more and more of them seen every two or three months.
+The same structure is why architecture 1 is spent on strength: the first-passage lead is a fixed multiple of the
+scatter over the growth rate, and so are the spreads of the estimator family (prediction variance, shrinkage,
+windows, scatter estimates), so the lever runs about 2.5 times the family's spread whatever the rounding; any
+honest bin wide enough to hold the family (about 7,600 bottles here, against a lever of 7,859) leaves the default
+one bin out at most and lets every knob set near the right value land.
 
 **Guard and similarity.** `guard.py check` WARN at registration, re-pulled before the check and before register (the
 ban window held task168, task167 and task246). WARNs answered: `overuse.org_family` (government_agency): a ministry's
@@ -530,3 +535,5 @@ of the organisation family and the objective, the how-many form against task246,
 - The campaign's size changed by redrawing the world: every child's draws moved with the size and the family's centre jumped; every child of the campaign's largest size is drawn and the first 7,040 kept, the size set so the family's centre sits at the pallet's.
 - The scatter of a 10 to 15 kg child's weighing shrunk like an infant's: the pooled scatter fell below the near-band children's by 0.07 kg and the MAD member drifted; infant scales stop at 10 kg.
 - A crossing-age rule left out of the asserted misses: 11 of its 24 binnings, those that move every child already past the crossing age at the next visit, land in the pallet; they are reported, and the binnings that wait for each child's age are asserted to miss.
+- The whole C7 TLD order as the call: the children's switch timing moved it by under 1 per cent (the default 25,000 bottles short on 2.69 million), so the 5,000-bottle step was finer than the estimator family could hold and the lever was immaterial to the order.
+- Line 2 in whole pallets (8,064 bottles) as the call: the lever between the default and the golden is 1.03 pallets, so the default misses by one pallet and P(both) is about 0.2, twice the bar; routes that land the pallet without the decisive step include a chosen lead of 3 to 6 months, a margin of 0.75 to 1.25 kg, the last weight at 28 kg, age 12 with the backlog and a weighing every month; architecture 1 is spent on strength and the number needs a re-root.

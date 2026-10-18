@@ -29,7 +29,7 @@
   "report": "scratchpad judge-task170/verdict.md (round 1)"
  },
  "returned": [],
- "resume": "stage 4 round 2: the main session's isolated reader (its figures scored with score_reader.py, the call keyed `call`) and the determinism judge on the repaired pack; target.zip sha256 8f1b11decf64edb8ca1898758204d26e0409b7c500212bc9a06f4b4f22a63e09",
+ "resume": "architecture 1 is spent on strength: the first-passage lead is a fixed multiple of the scatter over the growth rate, so at every honest rounding the default misses by one bin at most and knobs land (line 2 in pallets: lever 1.03 pallets, P(both) about 0.2); the number needs a re-root from stage 1",
  "approved": null,
  "delivered": null,
  "portal": null,
