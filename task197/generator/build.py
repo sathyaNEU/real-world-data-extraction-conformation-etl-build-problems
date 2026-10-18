@@ -51,12 +51,22 @@ UNAVAIL = [
     ("VKF-DLK", dt.date(2026, 9, 30), 1, "00:01", 45, "inverter bank 1 isolated", "INV-IS1", "utc", False, True),
     ("VKF-RDL", dt.date(2026, 9, 23), 5, "16:00", 36, "engine 2 knock sensor fault", "ENG-KNK", "utc", False, True),
     ("VKF-DLK", dt.date(2026, 9, 22), 5, "16:05", 45, "inverter bank 3 isolated", "INV-IS3", "utc", False, True),
+    # --- further alarm-handler rows: the operator interface wrote nine of the file's withdrawal
+    # --- rows and the alarm handler the rest, so the mis-stamped clock is a minority of them -----
+    ("VKF-NWV", dt.date(2026, 9, 27), 3, "10:40", 37, "inverter string 4 isolated", "INV-IS4", "local", False, False),
+    ("VKF-TRB", dt.date(2026, 10, 6), 3, "10:10", 34, "process load recalled from reserve", "LOA-RCL", "local", False, False),
+    ("VKF-ZWT", dt.date(2026, 9, 26), 3, "09:50", 30, "state of charge outside reserve band", "SOC-OUT", "local", False, False),
+    ("VKF-KPV", dt.date(2026, 9, 30), 5, "17:10", 42, "cell string temperature derate", "CEL-DER", "local", False, False),
+    ("VKF-DLK", dt.date(2026, 10, 4), 5, "17:40", 39, "inverter bank 4 isolated", "INV-IS4", "local", False, False),
+    ("VKF-MPD", dt.date(2026, 10, 2), 2, "05:40", 51, "engine 2 coolant alarm", "ENG-COL", "local", False, False),
+    ("VKF-OOS", dt.date(2026, 9, 25), 2, "06:10", 43, "droop controller restart", "ALM-DRP", "local", False, False),
+    ("VKF-HGZ", dt.date(2026, 10, 8), 6, "21:40", 56, "engine 1 exhaust alarm", "ENG-EXH", "local", False, False),
     # --- three windows a later correction row cancels: the reserve was not withdrawn ----------
     ("VKF-OOS", dt.date(2026, 9, 28), 4, "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP", "local", False, False),
     ("VKF-HGZ", dt.date(2026, 10, 2), 6, "21:10", 68, "reserve withdrawn, pending investigation", "ENG-TRP", "local", False, False),
     ("VKF-NWV", dt.date(2026, 10, 10), 3, "09:05", 33, "reserve withdrawn, pending investigation", "COM-LOS", "local", False, False),
 ]
-SUPERSEDED = {19, 20, 21}       # indexes into UNAVAIL whose event a correction row cancels
+SUPERSEDED = {27, 28, 29}       # indexes into UNAVAIL whose event a correction row cancels
 STAMP_SHIFT = 7200              # seconds the operator-interface handler's rows read early
 
 # The operator's minute summary ran on the SCADA chain's own one-minute average for a few short
@@ -273,6 +283,28 @@ def stamp_scope_gate(site, d, tstar):
     return True
 
 
+def capture_events():
+    """(site, local date, local second, trigger) for every logged event the platform took a high
+    resolution capture around: the alarms and reserve withdrawals, and the mode changes and manual
+    overrides. Read from the same event list the control platform's log is written from, so the two
+    files agree on when each event happened. Events before the archive's window are dropped."""
+    import pack2
+    kind = {"alarm": "ALARM", "mode": "MODE", "setpoint": "MODE"}
+    out = []
+    for (logged, site, typ, code, detail) in pack2.BENCH:
+        if typ not in kind:
+            continue
+        t = dt.datetime.strptime(logged, "%Y-%m-%dT%H:%M:%SZ") + dt.timedelta(hours=2)
+        d = t.date()
+        if not (sim.WINDOW_START <= d <= sim.WINDOW_END):
+            continue
+        out.append((site, d, (t - dt.datetime(d.year, d.month, d.day)).seconds, kind[typ]))
+    for r in unavail_rows():
+        out.append((r["site"], r["date"], r["start"], "ALARM"))
+    out.sort(key=lambda x: (x[1], x[0], x[2]))
+    return out
+
+
 def held_minutes():
     """Every (local date, local minute) the operator's minute summary carries the SCADA chain's
     one-minute average in all three columns. A span opens two minutes before the first qualifying
@@ -318,7 +350,7 @@ def main():
     print("[stage] window", flush=True)
     W = core.window()
     print("[stage] recordings", flush=True)
-    recs = core.recordings(W)
+    recs = core.recordings(W, capture_events())
     print("[stage] power cache", flush=True)
     cache = core.power_cache(W, recs)
 
@@ -352,7 +384,7 @@ def main():
         # the replayed recording: one over-frequency extract restored twice under a fresh id
         # the storage-fault restore of 2026-10-04 put one over-frequency recording back under a
         # fresh id; it holds no qualifying under-frequency episode, so the main call cannot see it
-        if dup_src is None and trig == "frequency_excursion" and sid == "VKF-HGZ" \
+        if dup_src is None and trig == "FREQ-DEV" and sid == "VKF-HGZ" \
                 and d == dt.date(2026, 10, 4) \
                 and any(lo <= x < hi for (_, _, x, _) in W[d]["over"]) \
                 and not any(lo <= x < hi for (_, _, x, _) in W[d]["under"]):

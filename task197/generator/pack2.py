@@ -24,15 +24,9 @@ PLACE = {"VKF-OOS": "Oosterhout, Noord-Brabant", "VKF-ZWT": "Zwartewater, Overij
          "VKF-RDL": "Reiderland, Groningen"}
 
 
-def event_log(path, placed):
-    rows, eid = [], 4100
-    def add(logged, site, typ, code, detail, start=None, mins=None, sup=""):
-        nonlocal eid
-        eid += 1
-        rows.append((eid, logged, site, typ, code, detail, start or "", mins if mins is not None else "", sup))
-        return eid
-    ids = {}
-    bench = [
+# Every event the control platform logged that is not a reserve withdrawal. The archive's capture
+# placement reads the same list, so the two files agree on when each event happened.
+BENCH = [
         ("2026-09-15T07:42:11Z", "VKF-KPV", "firmware", "FW-APPLY", "inverter droop module firmware 4.18.2 applied"),
         ("2026-09-15T09:05:44Z", "VKF-ZWT", "firmware", "FW-APPLY", "inverter droop module firmware 4.18.2 applied"),
         ("2026-09-17T13:21:08Z", "VKF-TRB", "firmware", "FW-APPLY", "load controller firmware 2.6.0 applied"),
@@ -52,8 +46,18 @@ def event_log(path, placed):
         ("2026-10-08T12:29:58Z", "VKF-ZWT", "setpoint", "SET-OVR", "manual programme override, 1 period"),
         ("2026-10-09T17:02:44Z", "VKF-TRB", "alarm", "ALM-COM", "communications warning, cleared without withdrawal"),
         ("2026-10-11T19:47:36Z", "VKF-KPV", "alarm", "ALM-TEMP", "cell string temperature alarm, cleared without withdrawal"),
-    ]
-    for (logged, site, typ, code, detail) in bench:
+]
+
+
+def event_log(path, placed):
+    rows, eid = [], 4100
+    def add(logged, site, typ, code, detail, start=None, mins=None, sup=""):
+        nonlocal eid
+        eid += 1
+        rows.append((eid, logged, site, typ, code, detail, start or "", mins if mins is not None else "", sup))
+        return eid
+    ids = {}
+    for (logged, site, typ, code, detail) in BENCH:
         add(logged, site, typ, code, detail)
     for r in placed:
         d, t0 = r["date"], r["start"]

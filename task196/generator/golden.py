@@ -130,8 +130,10 @@ def estimator_family(ix):
 # the asks
 # ---------------------------------------------------------------------------
 def ask_a(w):
-    """Indemnity paid on unauthorised fraud, by quarter of settlement and member tier, from the case
-    detail the advices cover. The advice totals carry a prior-period adjustment on three advices."""
+    """Indemnity paid on unauthorised fraud, by the quarter each line settles in and member tier, from
+    the case detail the advices cover. Every advice total ties to the sum of its own detail lines; the
+    prior-period adjustments among those lines settle in an earlier quarter than the advice that pays
+    them, which is the grain the asking sentence pins."""
     tier = {m["code"]: m["tier"] for m in w["members"]}
     out = {}
     for u in w["unauth"]:
@@ -140,6 +142,12 @@ def ask_a(w):
         if q is None:
             continue
         out[(q, tier[u["member"]])] = round(out.get((q, tier[u["member"]]), 0.0) + u["reimbursed"], 2)
+    for a in w["adjustments"]:
+        q = _settlement_quarter(a["own_date"])
+        if q is None:
+            continue
+        key = (q, tier[a["member"]])
+        out[key] = round(out.get(key, 0.0) + a["amount"], 2)
     figs = {}
     for q in (1, 2, 3, 4):
         for t in TIERS:
@@ -273,7 +281,7 @@ def workbook(task, review, bridge, chart, a, b, c):
                "31 March 2027, to the nearest whole case per million payments sent."])
 
     ws2 = wb.create_sheet("castlegate bridge")
-    ws2.append(["line", "cases", "note"])
+    ws2.append(["line", "cases_per_million_payments", "note"])
     for line, cases, note in bridge:
         ws2.append([line, cases, note])
     style(ws2, [44, 12, 58])
@@ -377,13 +385,17 @@ def build(task, target, w):
         review.append(ix)
     review.sort(key=lambda x: -x["rate"])
     cg = [x for x in review if x["code"] == "KM-104"][0]
+    # the walk is stated in index units, not in whole cases: the index is the same under every licensed
+    # estimator form and so is each line of the walk read this way, while the whole-case counts move by
+    # a case or two across the family
+    per_m = lambda n: round(n / cg["volume"] * 1e6)
     bridge = [
-        ("Cases Castlegate's own register holds", cg["recorded"],
-         "scam cases notified in the scheme year to 31 March 2027"),
-        ("Cases its own record did not hold", round(cg["estimate"]) - cg["recorded"],
+        ("Incidence its own register holds", per_m(cg["recorded"]),
+         "scam cases notified in the scheme year to 31 March 2027, per million payments sent"),
+        ("Incidence its own record did not hold", per_m(cg["estimate"] - cg["recorded"]),
          "estimated from the scheme register sightings its own fund-return requests cannot have produced"),
-        ("Indexed cases", round(cg["estimate"]),
-         "cases its customers suffered in the year, recorded or not"),
+        ("Indexed incidence", per_m(cg["estimate"]),
+         "cases its customers suffered in the year, recorded or not, per million payments sent"),
     ]
     chart = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_chart.png")
     chart_png(chart, review)
@@ -421,7 +433,7 @@ def build(task, target, w):
         "review_group_detail": {x["code"]: {"recorded": x["recorded"], "indexed": round(x["estimate"]),
                                             "index": x["index"], "payments_sent": x["volume"]}
                                 for x in review},
-        "bridge": [{"line": line, "cases": cases} for line, cases, _ in bridge],
+        "bridge": [{"line": line, "per_million": cases} for line, cases, _ in bridge],
         "ladder": {
             "recorded_register_rate": round(cg["recorded"] / cg["volume"] * 1e6, 3),
             "rung0_all_matches": round(naive_rate, 3),

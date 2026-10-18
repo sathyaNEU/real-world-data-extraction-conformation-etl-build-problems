@@ -581,16 +581,28 @@ def run(target, figures_path):
            "the brief states the call and its figure")
         ok("%.1f" % fig["gap_complications"] in txt, "the brief states the gap it claims")
         ok("%.1f" % fig["avoidable_at_runner"] in txt, "the brief states the closest unit's figure")
-        ok("%.3f" % fig["pick_factor_at_lag_0"] in txt
-           and "%.3f" % fig["runner_factor_at_lag_0"] in txt,
-           "the brief states both development factors it compares")
-        ok("%.0f" % fig["pick_uplift_complications"] in txt,
+        ok("%.4f" % fig["pick_factor_at_lag_0"] in txt
+           and "%.4f" % fig["runner_factor_at_lag_0"] in txt,
+           "the brief states both development factors it compares, at the register's own precision")
+        ok("multiplied by" in txt,
+           "the brief states the factor as a multiplier from the close to the ultimate, not as a share")
+        ok("%.2f" % fig["pick_uplift_complications"] in txt,
            "the brief states the uplift the development adds to the call's record")
-        # the brief claims a range over the readings of the development; it is checked at both ends
-        lo = min(fig["reading_margins"].values())
-        hi = max(fig["reading_margins"].values())
-        ok("%.2f" % lo in txt and "%.2f" % hi in txt,
-           "the brief's robustness range is the measured range (%.2f to %.2f)" % (lo, hi))
+        # the brief no longer claims a numeric range over the readings: the lower bound sat 0.0023 from
+        # a two-decimal edge and two honest variant sets printed different digits for it. It claims the
+        # count of readings instead, which is exact.
+        ok("%d" % fig["readings_of_the_development"] in txt,
+           "the brief states how many readings of the development it checked (%d)"
+           % fig["readings_of_the_development"])
+        ok(fig["readings_naming_the_call"] == fig["readings_of_the_development"],
+           "every reading of the development names the call")
+        ok("%s" % fig["pick_shortest_quarter"] in txt and "%s" % fig["pick_settled_quarter"] in txt,
+           "the brief names the shortest quarter and the one nearest settled")
+        ok("%.2f" % fig["pick_shortest_quarter_uplift"] in txt,
+           "the brief states what the shortest quarter carries (%.2f)"
+           % fig["pick_shortest_quarter_uplift"])
+        ok(str(fig["quarters_still_filling_count"]) in txt,
+           "the brief states how many quarters are still filling")
         ok("standard error" not in txt.lower(),
            "the brief claims no figure the prompt did not ask for")
         ok(fig["rung0_unit_code"] in txt and fig["route_winners"]["R1"] in txt,

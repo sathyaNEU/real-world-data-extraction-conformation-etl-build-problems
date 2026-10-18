@@ -173,6 +173,7 @@ def main():
     ok("R3c positive control: the pack reads back",
        docs.CONTROL["trustee_pack_2027_07.pdf"] in pack_txt, "%d characters" % len(pack_txt))
     notes = open(os.path.join(TARGET, "register_feed_notes.txt"), encoding="utf-8").read()
+    manifest_text = open(os.path.join(TARGET, "export_manifest.csv"), encoding="utf-8").read()
     # the words that would name the decisive step. "estimated" is the standard's own word for the
     # index and is not one of them; everything here would hand over the move.
     leaky = re.compile(r"independen|capture|recapture|two.source|Petersen|Chapman|Bailey"
@@ -312,9 +313,14 @@ def main():
     drop_rate = G.petersen(ix["recorded"], len(keep), len(kr)) / ix["volume"] * 1e6
     ok("SF13 dropping every registration that predates its payment is the same call",
        round(drop_rate) == gold_index, "%.3f prints %d" % (drop_rate, round(drop_rate)))
-    ok("SF13 the standing-list fact is filed in the feed note",
-       "An account stays on the register once it is reported" in notes,
-       "the register's own note")
+    ok("SF13 is closed by convergence and no sentence, deletion test",
+       "An account stays on the register" not in notes
+       and "already on the register" not in notes
+       and round(drop_rate) == gold_index,
+       "the clause is gone and dropping the rows still prints %d" % round(drop_rate))
+    ok("no shipped file comments on what the register or the case extract omits",
+       "never recorded" not in manifest_text and "nobody has reported" not in manifest_text,
+       "the manifest states coverage and not absence")
     # 3. the evidence date: the register feed runs to the pull, which the standard and the pack say,
     #    and cutting it at the scheme year end is a different figure rather than a reading
     cut = [c for c in cs_all if c.matched and not G._self_produced(c)
@@ -333,6 +339,65 @@ def main():
        "the field is blank" not in notes
        and "Pad the account number back to eight digits" in notes,
        "the padding convention kept, the mechanics gone")
+
+    print("\n-- the settlement advices tie, and the walk holds in index units")
+    import openpyxl
+    _wb = openpyxl.load_workbook(os.path.join(TARGET, "settlement_advices_2026_27.xlsx"),
+                                 data_only=True)
+
+    def _tab(name):
+        vals = list(_wb[name].values)
+        head = [str(h) for h in vals[0]]
+        return [dict(zip(head, r)) for r in vals[1:] if any(v is not None for v in r)]
+
+    _adv, _det = _tab("advices"), _tab("advice detail")
+    _sum, _n = {}, {}
+    for r in _det:
+        _sum[r["advice_no"]] = round(_sum.get(r["advice_no"], 0.0) + float(r["indemnity_paid_gbp"]), 2)
+        _n[r["advice_no"]] = _n.get(r["advice_no"], 0) + 1
+    untied = [a["advice_no"] for a in _adv
+              if abs(_sum.get(a["advice_no"], 0.0) - float(a["advice_total_gbp"])) > 0.011]
+    ok("every settlement advice total ties to the sum of its own detail lines", not untied,
+       "%d advices, %d untied" % (len(_adv), len(untied)))
+    badn = [a["advice_no"] for a in _adv if _n.get(a["advice_no"], 0) != int(a["case_lines"])]
+    ok("every advice's case_lines equals its own detail row count", not badn,
+       "%d mismatched" % len(badn))
+    ok("the prior-period adjustments settle in a different quarter from the advice that pays them",
+       all(G._settlement_quarter(a["own_date"])
+           != G._settlement_quarter(dt.date(a["advice_month"][0], a["advice_month"][1], 15))
+           for a in w["adjustments"]) and len(w["adjustments"]) >= 30,
+       "%d adjustments, every one in an earlier quarter than its advice" % len(w["adjustments"]))
+    # the walk in index units is one answer under every licensed form, which the whole-case walk was not
+    walks = set()
+    for v in fam.values():
+        walks.add((round(ix["recorded"] / ix["volume"] * 1e6),
+                   round((v["cases"] - ix["recorded"]) / ix["volume"] * 1e6),
+                   round(v["cases"] / ix["volume"] * 1e6)))
+    ok("the walk in index units is the same under every licensed estimator form", len(walks) == 1,
+       "%s across %d forms" % (sorted(walks), len(fam)))
+    cases_walks = {(ix["recorded"], round(v["cases"]) - ix["recorded"], round(v["cases"]))
+                   for v in fam.values()}
+    ok("the whole-case walk is the reading that moves, which is why the walk is stated per million",
+       len(cases_walks) > 1, "%d distinct whole-case walks" % len(cases_walks))
+    bridge_sum = round(ix["recorded"] / ix["volume"] * 1e6) + \
+        round((ix["estimate"] - ix["recorded"]) / ix["volume"] * 1e6)
+    ok("the walk's two lines add to the index", bridge_sum == gold_index,
+       "%d + %d = %d" % (round(ix["recorded"] / ix["volume"] * 1e6),
+                         round((ix["estimate"] - ix["recorded"]) / ix["volume"] * 1e6), bridge_sum))
+    for m2 in w["members"]:
+        if not m2["review"]:
+            continue
+        i2 = G.member_index(w, m2["code"])
+        vals = [("index", i2["rate"])]
+        if m2["code"] == code:
+            # the walk is graded for the named member only, so its two lines carry the floor too
+            vals += [("walk, recorded incidence", i2["recorded"] / i2["volume"] * 1e6),
+                     ("walk, incidence not held",
+                      (i2["estimate"] - i2["recorded"]) / i2["volume"] * 1e6)]
+        for label, val in vals:
+            e = 0.5 - abs(val - round(val))
+            ok("%s mid-bin: %s" % (label, m2["name"]), e >= 0.3,
+               "%.3f prints %d, edge %.3f against the 0.30 floor" % (val, round(val), e))
 
     # the attribution is exact on the shipped bytes
     print("\n-- the attribution, recomputed from the shipped bytes")
@@ -455,12 +520,11 @@ def main():
     # the separation line: the ask devices sit outside the call's own rows
     adv = xlsx_rows("settlement_advices_2026_27.xlsx", "advices")
     det = xlsx_rows("settlement_advices_2026_27.xlsx", "advice detail")
-    resid = [a for a in adv if abs(float(a["advice_total_gbp"])
-                                   - round(sum(float(d["indemnity_paid_gbp"]) for d in det
-                                               if d["advice_no"] == a["advice_no"]), 2)) > 0.005]
+    adv_month = {a["advice_no"]: a["settlement_month"] for a in adv}
+    resid = [d for d in det if d["settlement_month"] != adv_month.get(d["advice_no"])]
     ok("ask A's device sits on the unauthorised class only",
-       resid and all(a["cover_class"] == "unauthorised fraud" for a in resid),
-       "%d advices carry a prior-period line" % len(resid))
+       resid and all(d["cover_class"] == "unauthorised fraud" for d in resid),
+       "%d detail lines settle in a month other than their advice's" % len(resid))
     q1 = read_csv("notifications_2027_28_q1.csv")
     supp = read_csv("notifications_2027_28_q1_supplementary.csv")
     ok("ask B's device sits after the evidence base closes",

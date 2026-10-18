@@ -207,9 +207,14 @@ if __name__ == "__main__":
           % (g["recorded_rank"], len(g["eligible"]),
              ", ".join("%s %.3fx" % (lab, R[lab]["margin"]) for lab in sorted(R))))
     short = sorted((100.0 * (1.0 - d["completeness"]), d["unit"]) for d in g["units"])
+    # every quarter in `lags` is still filling; lag 0 is the one held at its own close alone, which is
+    # the shortest of them, so a filter on a positive lag would drop exactly the quarter that matters
     print("lag     : %d of 10 closed quarters still filling (%s); shortfall %.2f to %.2f per cent"
-          % (sum(1 for v in g["lags"].values() if v > 0),
-             ", ".join(sorted(q for q, v in g["lags"].items() if v > 0)), short[0][0], short[-1][0]))
+          % (len(g["lags"]), ", ".join("%s at publication %d" % (q, g["lags"][q])
+                                       for q in sorted(g["lags"])), short[0][0], short[-1][0]))
+    up = g["pick_uplift_by_quarter"]
+    print("uplift  : " + ", ".join("%s %+.2f" % (q, v["uplift"]) for q, v in up.items())
+          + " (total %+.2f)" % sum(v["uplift"] for v in up.values()))
     print("factors : lag 0 %.4f at %s against %.4f at %s; uplift %.1f complications at the answer"
           % (g["factors"][(g["answer"]["unit"], 0)], g["answer"]["unit"],
              g["factors"][(g["rung0"]["unit"], 0)], g["rung0"]["unit"], g["answer"]["uplift"]))

@@ -15,19 +15,12 @@ from openpyxl.utils import get_column_letter
 import pack
 import world as W
 
-def residual(member, yy, mm, cover):
-    """A settlement advice carries the month's case lines and, where the recoveries team has closed off
-    an earlier quarter, a prior-period adjustment that belongs to cases settled before the month. The
-    adjustment is inside the advice total and is not one of the advice's own case lines.
-
-    It falls on roughly a third of the unauthorised-fraud advices, spread across every month and every
-    tier, because that is how often the team closes an earlier quarter off."""
-    if cover != "unauthorised fraud":
-        return 0.0
-    r = W.rng("resid", member, yy, mm)
-    if r.random() >= 0.34:
-        return 0.0
-    return round(r.uniform(2400.0, 31000.0), 2)
+def _adjustments_by_advice(w):
+    """The prior-period adjustments keyed by the advice that carries them (world.build_adjustments)."""
+    out = {}
+    for a in w["adjustments"]:
+        out.setdefault((a["member"], a["advice_month"], a["cover"]), []).append(a)
+    return out
 
 
 def _w(path, header, rows):
@@ -71,6 +64,7 @@ def settlement_advices(target, w):
         ws.freeze_panes = "A2"
 
     detail, advice = [], []
+    adj = _adjustments_by_advice(w)
     for m in w["members"]:
         for (yy, mm) in _months(W.MEASURED):
             for cover, items in (("unauthorised fraud", w["unauth"]), ("scam reimbursement", None)):
@@ -84,16 +78,19 @@ def settlement_advices(target, w):
                     lines = [(c.case_ref, c.reimbursed) for c in sel]
                 if not lines:
                     continue
-                tot = round(sum(a for _, a in lines), 2)
-                extra = residual(m["code"], yy, mm, cover)
                 advice_no = "ADV-%d%02d-%s-%s" % (yy, mm, m["code"].split("-")[1],
                                                   "U" if cover == "unauthorised fraud" else "S")
+                rows_out = [("%d-%02d" % (yy, mm), ref, amt) for ref, amt in lines]
+                # the recoveries team's prior-period adjustment is one of the advice's own lines and
+                # carries the month it settles in, which is not the month of the advice that pays it
+                for a in adj.get((m["code"], (yy, mm), cover), []):
+                    rows_out.append(("%d-%02d" % a["own_month"], a["ref"], a["amount"]))
+                tot = round(sum(amt for _, _, amt in rows_out), 2)
                 advice.append([advice_no, m["code"], m["tier"], "%d-%02d" % (yy, mm), cover,
-                               len(lines), "%.2f" % round(tot + extra, 2),
-                               _d(dt.date(yy, mm, 25) if mm != 2 else dt.date(yy, mm, 25))])
-                for ref, amt in lines:
-                    detail.append([advice_no, m["code"], "%d-%02d" % (yy, mm), cover, ref,
-                                   "%.2f" % amt])
+                               len(rows_out), "%.2f" % tot,
+                               _d(dt.date(yy, mm, 25))])
+                for mth, ref, amt in rows_out:
+                    detail.append([advice_no, m["code"], mth, cover, ref, "%.2f" % amt])
     advice.sort(key=lambda r: (r[3], r[1], r[4]))
     detail.sort(key=lambda r: (r[2], r[1], r[3], r[4]))
     sheet("advices", ["advice_no", "member_code", "contribution_tier", "settlement_month", "cover_class",
@@ -279,8 +276,6 @@ def reference_files(target, w):
             "matching run writes the sort code hyphenated and drops leading zeros from the account\n"
             "number. Pad the account number back to eight digits before matching anything against the\n"
             "register, or the match loses every account whose number starts with a zero.\n\n"
-            "An account stays on the register once it is reported, so a member payment can match an\n"
-            "account that was already on the register before that payment was sent.\n\n"
             "The weekly run writes one row per member payment that matched a registered account, with\n"
             "the register's date for that account.\n"
             % W.PULL.strftime("%d %B %Y"))
@@ -290,13 +285,13 @@ def manifest(target, w, counts):
     rows = [
         ["case_register_2023_24.csv", "Claims register extract, scheme year 2023/24, pre-2024/25 layout",
          "scam reimbursement and unauthorised fraud cases recorded by members",
-         "cases the member never recorded; later scheme years", "claims system extract"],
+         "later scheme years", "claims system extract"],
         ["case_register_2024_27.csv", "Claims register extract, scheme years 2024/25 to 2026/27",
-         "cases recorded by members, both covers", "cases the member never recorded", "claims system"],
+         "cases recorded by members, both covers", "", "claims system"],
         ["case_payments.csv", "Money movements on recorded cases",
          "payment legs and recovery credits", "cases with no movement posted", "claims ledger"],
         ["mule_account_register.csv", "Scheme beneficiary account register, whole industry",
-         "accounts reported by the firms that hold them", "accounts nobody has reported",
+         "accounts reported by the firms that hold them", "",
          "scheme weekly feed"],
         ["member_payment_matches.csv", "Weekly matching run output",
          "member payments whose beneficiary account is on the register",

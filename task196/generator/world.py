@@ -328,6 +328,58 @@ def build_cases(members):
     return cases
 
 
+def months_of(y):
+    """The twelve calendar months of a scheme year, April first."""
+    a = int(y.split("/")[0])
+    return [(a + (4 + i - 1) // 12, (4 + i - 1) % 12 + 1) for i in range(12)]
+
+
+def self_produced(c):
+    """A registration the member's own fund-return request produced: the request went first."""
+    return (c.registration_date is not None and c.request_date is not None
+            and c.request_date <= c.registration_date and c.self_reg_date is not None)
+
+
+def realised_estimate(cases, code):
+    """The two-source estimate on the cases as built, which is what the index is read off. The member's
+    payment volume is set from this rather than from the design's own counts, so the printed index lands
+    where the design put it instead of drifting by the rounding of the counts."""
+    cs = [c for c in cases if c.member == code and c.year == MEASURED]
+    rec = [c for c in cs if c.recorded]
+    ind = [c for c in cs if c.matched and not self_produced(c)]
+    both = [c for c in ind if c.recorded]
+    return len(rec) * len(ind) / len(both)
+
+
+def build_adjustments(members, unauth):
+    """Where the recoveries team closes an earlier quarter off, a month's settlement advice carries a
+    further payment on an unauthorised-fraud case that settled in an earlier quarter. It is one of the
+    advice's own detail lines, so the advice total ties to the sum of its lines; what the two readings of
+    the ask differ on is the quarter the line belongs to, which is its own settlement month rather than
+    the advice's. It falls on roughly a third of the unauthorised-fraud advices, across every month and
+    every tier, because that is how often the team closes an earlier quarter off."""
+    out = []
+    for m in members:
+        for (yy, mm) in months_of(MEASURED):
+            r = rng("resid", m["code"], yy, mm)
+            if r.random() >= 0.34:
+                continue
+            q_here = quarter_of(dt.date(yy, mm, 15), MEASURED)
+            earlier = [u for u in unauth
+                       if u["member"] == m["code"]
+                       and (u["closed_date"].year, u["closed_date"].month) < (yy, mm)
+                       and quarter_of(u["closed_date"], MEASURED) is not None
+                       and quarter_of(u["closed_date"], MEASURED) != q_here]
+            if not earlier:
+                continue
+            src = earlier[r.randrange(len(earlier))]
+            out.append(dict(member=m["code"], advice_month=(yy, mm), cover="unauthorised fraud",
+                            own_month=(src["closed_date"].year, src["closed_date"].month),
+                            own_date=src["closed_date"], ref=src["ref"],
+                            amount=round(r.uniform(2400.0, 31000.0), 2)))
+    return out
+
+
 def volumes(members):
     """Payments sent per member per scheme year, in whole payments."""
     out = {}
@@ -386,10 +438,16 @@ def world():
             r = rng("ref", m["code"], y)
             for c, n in zip(mine, r.sample(range(10000, 99999), len(mine))):
                 c.case_ref = "%s-%s-%05d" % (m["code"].split("-")[1], y.replace("/", ""), n)
+    for m in members:
+        if m["target"] is not None:
+            est = realised_estimate(cases, m["code"])
+            m["volume"] = round(est / m["target"] * 1e6 / 100.0) * 100
     vols = volumes(members)
     qvols = quarter_volumes(members, vols)
     unauth = pack.unauthorised_cases(members)
+    adjustments = build_adjustments(members, unauth)
     return dict(members=members, cases=cases, volumes=vols, quarter_volumes=qvols, unauth=unauth,
+                adjustments=adjustments,
                 by_code={m["code"]: m for m in members})
 
 

@@ -171,8 +171,10 @@ def workbook(path, g):
                  ["Developing the record", "A complication is coded from the clinical documentation, so a "
                   "quarter's count keeps growing after its own coding close. The coding close-out register "
                   "publishes each quarter at its close and restates it at every close after that; a "
-                  "quarter whose last two publications agree has settled. Four of the ten closed quarters "
-                  "have not, and each cost centre's own finished quarters give the growth still to come."],
+                  "quarter whose last two publications agree has settled. Five of the ten closed quarters "
+                  "have not, and the register holds each of the five at a different close: the most "
+                  "recent at its first publication alone. Each cost centre's own finished quarters give "
+                  "the growth still to come."],
                  ["Cost centre 41510", "Reported under its own code since the Carrowdean medical wards were "
                   "amalgamated on 1 October 2025: five closed quarters."],
                  ["Data", "Episode extract and complication detail to 31 December 2026, exported "
@@ -226,7 +228,12 @@ def brief(path, g, chart_path):
     by = {d["unit"]: d for d in g["units"]}
     gap = round(round(a["avoidable"], 1) - round(r["avoidable"], 1), 1)
     uq = len(g["bundle"]["panel"])
-    moving = sorted(q for q, v in g["lags"].items() if v > 0)
+    # every quarter the register still shows moving is still filling, and the one it holds at its own
+    # close alone is the shortest of them, so no filter on the publication index belongs here
+    moving = sorted(g["lags"])
+    up = g["pick_uplift_by_quarter"]
+    shortest = max(up, key=lambda q: up[q]["uplift"])
+    settled = min(up, key=lambda q: up[q]["uplift"])
     f_pick = g["factors"][(a["unit"], 0)]
     f_run = g["factors"][(r["unit"], 0)]
     margins = sorted(v["margin"] for v in g["convergence"].values())
@@ -261,17 +268,23 @@ def brief(path, g, chart_path):
                   "and sits %d of 12. The record is not finished. A hospital-acquired complication is "
                   "coded from what the clinician wrote, so a quarter keeps being added to after its own "
                   "coding close, and the coding close-out register shows it: it publishes each quarter "
-                  "when its coding closes and restates it at every close after that, and %d of the ten "
-                  "closed quarters (%s) have not yet stopped moving."
+                  "when its coding closes and restates it at every close after that, and <b>%d</b> of "
+                  "the ten closed quarters (%s) have not yet stopped moving."
                   % (short(rung0["hospital"]), rung0["name"], rung0["unit"], rung0["as_recorded"],
                      a["as_recorded"], g["recorded_rank"], len(moving), ", ".join(moving)), BODY),
         Paragraph("How much is still to come is not the same for every unit, because it depends on how "
                   "the ward records. Measured on its own finished quarters, a quarter of this unit's "
-                  "coding carries %.3f of its eventual count at its own close; at %s the same figure is "
-                  "%.3f. Developing each cost centre's short quarters on its own record adds %.0f "
-                  "complications to this unit's ten quarters and %.0f to %s's. That is the whole of the "
-                  "difference between the two rankings."
+                  "coding still has to be multiplied by <b>%.4f</b> at its own close to reach what it "
+                  "settles at; at %s the same multiplier is %.4f. Developing each cost centre's short "
+                  "quarters on its own record adds %.2f complications to this unit's ten quarters and "
+                  "%.2f to %s's. That is the whole of the difference between the two rankings."
                   % (f_pick, rung0["unit"], f_run, a["uplift"], rung0["uplift"], rung0["unit"]), BODY),
+        Paragraph("The five are not interchangeable, because the record holds each of them at a different "
+                  "close. %s has been through every close the register runs to and adds nothing; %s has "
+                  "been through one and adds <b>%.2f</b> of the %.2f, more than half. A reading that "
+                  "develops only the quarters with several publications behind them leaves most of the "
+                  "answer on the table."
+                  % (settled, shortest, up[shortest]["uplift"], a["uplift"]), BODY),
         Paragraph("The most recent year on its own is the worst reading of the three, not the best. Taking "
                   "only the four most recent closed quarters as the record carries them puts <b>%s %s "
                   "(%s)</b> first at %.1f and this unit last of twelve, because this unit's rate rose "
@@ -292,12 +305,13 @@ def brief(path, g, chart_path):
                    "patients' complications less the expectation, taken patient by patient and summed, "
                    "then carried onto the separations the activity plan plans for the quarter at the "
                    "unit's own rate per separation, which is clause 3.4's basis.") % uq, BODY),
-        Paragraph(("The ranking does not depend on how the growth is read. Pooling each cost centre's "
-                   "finished quarters over their counts, averaging the ratios across those quarters, and "
-                   "taking only the finished quarters from 2025-26 on under either weighting all put this "
-                   "unit first, by between %.2f and %.2f times. Carrying the excess on in-scope episodes "
-                   "rather than on all separations, and not carrying it at all, also put it first."
-                   % (margins[0], margins[-1])), BODY),
+        Paragraph(("The ranking does not depend on how the growth is read. All <b>%d</b> readings the "
+                   "register leaves open put this unit first: the finished quarters' ratios pooled over "
+                   "their counts or averaged across the quarters, the growth read through each "
+                   "intervening publication rather than in one step, and either weighting taken over "
+                   "only the later finished quarters. Carrying the excess on in-scope episodes rather "
+                   "than on all separations, and not carrying it at all, also put it first."
+                   % len(g["convergence"])), BODY),
         Table([[Paragraph(c, CELLB if i == 0 else CELL) for c in row] for i, row in enumerate(tbl)],
               colWidths=[52 * mm, 18 * mm, 28 * mm, 30 * mm, 28 * mm], style=TBL),
         Spacer(1, 6),

@@ -9,7 +9,7 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "Stage 4: the reader landed the call on a uniform organ and the determinism judge is still running. The builder is doing the archive realism work and the two document edits now and holding the rebuild so both sets of findings land in one generator pass. Then every stage-3 gate re-run with counts, the reader re-read because documents changed, and the judge re-run once only on FIX_NOW.",
+  "resume": "Judge APPROVE. One measurement is owed before ship, set by the orchestrator rather than the judge: Terborgh's below-programme energy sits 0.0040 MWh from the 22.15 edge, which both the builder and the judge flagged and cleared on the ground that the quantity is exact arithmetic with no estimation freedom. That is only safe if no competent recomputation moves it further, so three variants are to be measured and reported as figures: the grid-loss factor 1.00420 applied per interval against once to the sum, rounding each interval then summing against summing then rounding once, and the restored duplicate recording de-duplicated against not. If any moves Terborgh beyond 0.004 the quantity changes rather than the argument. Also in the same pass: the judge's two fixes, and from the reader the archive realism (the 695 transition recordings are identical in length and offset and are the whole file) and cutting the characterisation from the standard's \"Replaces version 3, which assessed response on block averages\". Clause 5 of the technical conditions stays, ruled. Then every stage-3 gate with counts, a re-cut target.zip, the reader re-run because documents changed, and no second judge pass.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "61 checks, 0 failed (floor 40)",
@@ -36,5 +36,12 @@
   },
   "leak": {
     "reader": "LANDED THE CALL 2026-10-18: VKF-KPV at 72, RDL at 83, gap 11, which is the golden exactly, at about 80 per cent confidence. Question 3 names why: the 695 programme_transition recordings in the archive, \"exactly 241 s each\", every one starting 30 seconds before a quarter-hour boundary and carrying nothing but the ramp, which it calls built for the analyst. Diagnosis is uniformity rather than single use and is now a rule in dataset-generation section 7: an organ's realism is measured by its variance, not by its genre. Fix is to give the archive its genre's spread (varied lengths, offsets, reasons, some truncated or missing) and make the transition recordings a minority of the file, moving no graded figure. Two sentences ruled on: clause 5 of the technical conditions stays, because it states an obligation rather than a method and would exist without the trap; the standard's \"Replaces version 3, which assessed response on block averages\" loses its characterisation of the old method, because naming the easy route and marking it superseded is a signpost at rung 0. Open judgement passed to the builder: the nine mislabelled start_local rows are half of an eighteen-row file, which reads as designed whatever the mechanism."
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task197/determinism_check_report.md, 2026-10-18",
+    "gates": "A PASS every figure reproduced, B PASS, C PASS every fork closed by a shipped arbiter, D PASS, E PASS with one wording nit, F STRONG, G PASS, H PASS",
+    "fixes": "optional: reword \"under the standard's tolerance\" to \"falls below the standard's 90 per cent tolerance\" so a nine-cell boolean cannot read inverted; give the three PDFs plausible creation dates in place of the zeroed 2000-01-01"
   }
 }

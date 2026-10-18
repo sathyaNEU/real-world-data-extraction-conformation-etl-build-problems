@@ -284,7 +284,7 @@ def main():
               "rounded once at the end", "grid loss adjustment"]:
         ck("standard states %r" % m, m in std, "not found in the shipped pdf")
     for m in ["correction", "two hours", "settlement_period", "interval it closes",
-              "period ending", "utc clock"]:
+              "period ending", "utc clock", "block average", "block averages"]:
         ck("standard silent on %r" % m, m not in std.lower(), "the pdf states it")
 
     # ---- the shipped register, read back through the verifier's own reader -------------------

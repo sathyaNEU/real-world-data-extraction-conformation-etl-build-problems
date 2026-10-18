@@ -137,7 +137,7 @@ def performance_standard(path, org, tol, window_from, window_to, as_of):
     pdf(path, "%s reserve performance standard v4" % org, [
         ("h1", "%s: reserve performance standard" % org),
         ("small", "Version 4, effective 2026-07-01. Owner: reserve portfolio desk. Replaces version 3 "
-                  "(2025-09-01), which assessed response on block averages."),
+                  "(2025-09-01)."),
         ("h2", "1. Purpose"),
         ("p", "This standard sets out how the desk measures what each contracted site delivers against the "
               "response its FCR contract requires, and how the desk decides which site to withdraw when the "

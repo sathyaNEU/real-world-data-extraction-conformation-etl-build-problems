@@ -6,27 +6,28 @@
 **Place the cycle IP-11 improvement team with Alderbrook General Medicine, cost centre 41210.**
 It carries 44.6 avoidable complications on the 4,261 separations planned for the quarter from 1 April
 2027, against 27.8 at the closest unit, a margin of 1.604x. Not Alderbrook General Surgery (41220), which
-leads on the complications the extract records today at 26.1 and falls to 27.8 once every cost centre's
-quarters are carried to what they will reach. Not Stonecreek General Surgery (41320), which leads on the
-four most recent closed quarters at 27.59 because those are the quarters the pull date cuts shortest.
+leads on the complications the extract records today at 26.1 and rises only to 27.8 once every cost
+centre's quarters are carried to what they will reach, so it loses the lead on rank and not on value. Not
+Stonecreek General Surgery (41320), which leads on the four most recent closed quarters at 27.59 because
+those are the quarters the pull date cuts shortest.
 
 ## 2. Critical Components
 
-1. Four of the ten closed quarters are still being added to, and the coding close-out register names them: **2025-26 Q2, 2025-26 Q3, 2025-26 Q4 and 2026-27 Q1**
-2. A quarter of cost centre 41210's coding carries **1.763** of its eventual count at its own close, against **1.0368** at cost centre 41220
-3. Developing 41210's short quarters on its own record takes its ten quarters from 3097 to **3408.5** complications, an uplift of **311.5**
-4. Against the published stratum table's **3023.6** expected complications, that is **44.6** avoidable complications on the quarter's planned separations
-5. On the complications the extract records today 41210 reads **5** of 12, which is why the record as it stands does not point at it
+1. **5** of the ten closed quarters are still being added to, and the coding close-out register names them and says which close it holds each at: 2025-26 Q2 at its 4th publication, 2025-26 Q3 at its 3rd, 2025-26 Q4 at its 2nd, 2026-27 Q1 at its 1st and 2026-27 Q2 at its own close alone
+2. The five are not interchangeable: of cost centre 41210's uplift, 2026-27 Q2 carries **166.33** and 2025-26 Q2 carries **0.0**, the rest being 2025-26 Q3 **11.65**, 2025-26 Q4 **43.23** and 2026-27 Q1 **90.34**
+3. At its own close a quarter of cost centre 41210's coding has still to be multiplied by **1.763** to reach what it settles at, against **1.0368** at cost centre 41220
+4. Developing 41210's short quarters on its own record takes its ten quarters from 3097 to **3408.55** complications, an uplift of **311.55**
+5. Against the published stratum table's **3023.6** expected complications, that is **44.6** avoidable complications on the quarter's planned separations, where the record as it stands reads 41210 **5** of 12
 
 ## 3. Step-by-Step Solution
 
 1. Applied specification 4.0 clauses 2.1 to 2.4 to `episode_outcomes_extract.csv`, joined `drg_risk_bands.csv` and `hac_stratum_rates.csv`, and reconciled every unit-quarter to `unit_indicator_series.csv`.
 2. Applied charter clause 4.2 through `unit_register.csv` and `improvement_placements.csv`: 12 eligible units.
-3. Read `coding_close_out_register.csv`, which publishes each quarter at its coding close and restates it at every close after: a quarter whose last two publications agree has settled, and 4 of the 10 have not.
-4. Measured each cost centre's growth from its own finished quarters, the count at each publication against the count it settled at: 1.763 at cost centre 41210 against 1.0368 at cost centre 41220.
-5. Carried each unit's short quarters by its own factor: 41210's ten quarters reach 3408.5 complications, an uplift of 311.5.
+3. Read `coding_close_out_register.csv`, which publishes each quarter at its coding close and restates it at every close after: a quarter whose last two publications agree has settled, and 5 of the 10 have not, the most recent sitting at its own close alone.
+4. Measured each cost centre's growth from its own finished quarters, the count at each publication against the count it settled at: at its own close a quarter has still to be multiplied by 1.763 at cost centre 41210 against 1.0368 at cost centre 41220, a spread that runs with `cis_registered_date` in `unit_register.csv` and is why one factor per cost centre is not interchangeable with one factor for the network.
+5. Carried each unit's short quarters by its own factor: 41210's ten quarters reach 3408.55 complications, an uplift of 311.55, of which 2026-27 Q2 alone contributes 166.33.
 6. Took the expected complications of specification 3.1 and Appendix A over the same episodes, 3023.6 for 41210, and carried the difference onto the planned separations of `activity_plan_2027q4.csv` under specification 3.4.
-7. Ranked the 12: 44.6 at cost centre 41210 against 27.8 at cost centre 41220, and confirmed all 5 readings of the growth name the same unit, by between 1.528 and 1.608 times.
+7. Ranked the 12: 44.6 at cost centre 41210 against 27.8 at cost centre 41220, and confirmed that all 8 readings of the growth the register leaves open name the same unit.
 8. Place the team with Alderbrook General Medicine, cost centre 41210.
 
 ## 4. Deliverable Answers

@@ -13,7 +13,7 @@ EXC_PAD = 15                  # the extract runs from the last second inside the
                               # first second back inside it, padded by this many seconds
 TRANS_STEP = 1.1              # MW: the platform keeps 1 Hz evidence for programme steps this large
 TRANS_PRE, TRANS_POST = 30, 210
-TRANS_RETENTION_DAYS = 6      # 1 Hz transition evidence is kept for six days
+TRANS_RETENTION_DAYS = 14     # rate-of-change captures are kept for a fortnight
 
 def local_to_utc(d, sec):
     return dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(sec) - sim.LOCAL_OFFSET_H * 3600)
@@ -90,33 +90,165 @@ def over_episodes(f):
         i = j
     return out
 
-def recordings(W):
-    """Every 1 Hz recording the platform archive holds: (date, site_id, trigger, lo, hi)."""
+# The platform's high-resolution captures. The archive is not a single-purpose file: it holds the
+# operator's deviation windows, the platform's own rate-of-change captures at setpoint steps, the
+# captures taken around logged alarms and reserve withdrawals, the captures around mode changes and
+# manual overrides, and the ad hoc captures a desk engineer took. Every capture's length and start
+# offset vary, and the length distribution is the same for every site, so no recording's length
+# carries anything about that site's traverse span.
+RING = [8, 12, 15, 18, 22, 25, 30, 35, 40, 45]   # the pre-roll each site's ring buffer holds
+POST_MIN, POST_JIT = 206, 84                     # the settle window a capture runs on afterwards
+TRUNC_RATE = 0.08                                # captures the platform's buffer wrapped on
+MISS_RATE = 0.38                                 # steps the capture queue was too busy to take
+MANUAL_PER_SITE = 2                              # ad hoc captures a desk engineer took
+
+
+def ring(sid):
+    """The pre-roll a site's ring buffer holds, a platform configuration and nothing else."""
+    return RING[sim._stable("ring", sid) % len(RING)]
+
+
+def fit_boundaries(W, sid):
+    """The settlement period boundaries a solver can fit a site's traverse over: the setpoint steps
+    by more than a megawatt, the period before it was already settled, no qualifying episode of
+    either sign runs through the window, and the frequency sits inside the dead band across it. The
+    generator computes the same set the solver does, so the organ's exactness is asserted rather
+    than hoped for: the first two of these per site are always captured and never truncated, and
+    the capture queue is free to miss or wrap on any of the rest."""
     out = []
-    first = sim.dates()[0]
-    retention_from = sim.dates()[-1] - dt.timedelta(days=TRANS_RETENTION_DAYS - 1)
+    marked = {}
     for d in sim.dates():
-        occupied = {s["id"]: [] for s in sim.SITES}
+        if d < sim.dates()[-1] - dt.timedelta(days=TRANS_RETENTION_DAYS - 1):
+            continue
+        if d not in marked:
+            m = np.zeros(sim.DAY + 400, dtype=bool)
+            for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]:
+                m[max(0, t0 - 120):min(sim.DAY, t1 + 121)] = True
+            marked[d] = m
+        prog = W[d]["prog"][sid]
+        f = W[d]["f"]
+        for p in range(2, 96):
+            t = p * 900
+            if abs(prog[p] - prog[p - 1]) < 1.0:
+                continue
+            if abs(prog[p - 1] - prog[p - 2]) > 0.35:
+                continue
+            if marked[d][max(0, t - 30):t + 215].any():
+                continue
+            quiet = True
+            for mk in range(0, 5):
+                m0 = (t // 60) + mk
+                if m0 * 60 >= sim.DAY:
+                    quiet = False
+                    break
+                seg = f[m0 * 60:(m0 + 1) * 60]
+                if seg.min() < 50.0 - sim.DEADBAND or seg.max() > 50.0 + sim.DEADBAND:
+                    quiet = False
+                    break
+            if quiet:
+                out.append((d, p))
+    return out
+
+
+FIT_FLOOR = 3            # usable boundaries per site the capture queue never misses or wraps on
+
+
+def _extreme_seconds(W):
+    """Every (local date, site, extreme second) a qualifying episode of either sign puts in the
+    measured population. No capture added after the operator's deviation windows may cover one of
+    these, or it would change which recording the response is read from."""
+    out = {}
+    for d in sim.dates():
+        for kind in ("under", "over"):
+            for (t0, t1, tstar, fx) in W[d][kind]:
+                for s in sim.SITES:
+                    if sim.contracted(s, np.array([float(tstar)]), d)[0]:
+                        out.setdefault((d, s["id"]), set()).add(tstar)
+    return out
+
+
+def recordings(W, events=()):
+    """Every 1 Hz capture the platform archive holds: (date, site_id, trigger, lo, hi).
+
+    `events` is (site, local date, local second, trigger) for each logged event the platform took a
+    capture around, read from the control platform's own event log so the two files agree.
+    """
+    out = []
+    retention_from = sim.dates()[-1] - dt.timedelta(days=TRANS_RETENTION_DAYS - 1)
+    extremes = _extreme_seconds(W)
+    occupied = {(d, s["id"]): [] for d in sim.dates() for s in sim.SITES}
+
+    def take(d, sid, trig, lo, hi, guard_extremes):
+        """Add a capture unless it would overlap one already taken, in which case the platform's
+        buffer was busy, or unless it would cover a second the response is read at."""
+        lo, hi = max(0, int(lo)), min(sim.DAY, int(hi))
+        if hi - lo < 20:
+            return False
+        if any(not (hi <= a or lo >= b) for (a, b) in occupied[(d, sid)]):
+            return False
+        if guard_extremes and any(lo <= x < hi for x in extremes.get((d, sid), ())):
+            return False
+        out.append((d, sid, trig, lo, hi))
+        occupied[(d, sid)].append((lo, hi))
+        return True
+
+    # 1. the operator's deviation windows, which are where every graded response is read
+    for d in sim.dates():
         for (a, b) in W[d]["exc"]:
             lo, hi = a, min(sim.DAY, b + 1)
             for s in sim.SITES:
                 if sim.contracted(s, np.arange(lo, hi), d).any():
-                    out.append((d, s["id"], "frequency_excursion", lo, hi))
-                    occupied[s["id"]].append((lo, hi))
+                    take(d, s["id"], "FREQ-DEV", lo, hi, False)
+
+    # 2. the platform's rate-of-change captures at a setpoint step, kept for a fortnight
+    floor = {s["id"]: set(fit_boundaries(W, s["id"])[:FIT_FLOOR]) for s in sim.SITES}
+    for d in sim.dates():
         if d < retention_from:
             continue
         for s in sim.SITES:
-            prog = W[d]["prog"][s["id"]]
+            sid = s["id"]
+            prog = W[d]["prog"][sid]
+            pre = ring(sid)
             for p in range(1, 96):
                 if abs(prog[p] - prog[p - 1]) < TRANS_STEP:
                     continue
-                lo, hi = max(0, p * 900 - TRANS_PRE), min(sim.DAY, p * 900 + TRANS_POST + 1)
-                if any(not (hi <= a or lo >= b) for (a, b) in occupied[s["id"]]):
+                r = sim._rng("cap", sid, d.isoformat(), p)
+                kept = (d, p) in floor.get(sid, ())
+                if not kept and r.random_sample() < MISS_RATE:
                     continue
-                out.append((d, s["id"], "programme_transition", lo, hi))
-                occupied[s["id"]].append((lo, hi))
+                post = POST_MIN + int(r.randint(0, POST_JIT + 1))
+                if not kept and r.random_sample() < TRUNC_RATE:
+                    post = int(r.randint(40, 191))
+                # the capture fires when the rate of change crosses the platform's threshold, a
+                # second or two after the setpoint it is following steps
+                delay = int(r.randint(0, 7))
+                if take(d, sid, "DPDT", p * 900 - pre + delay, p * 900 + post + 1, True):
+                    continue
+                # the buffer was busy or the window ran into a capture already held; on one of the
+                # boundaries the traverse is fitted over the platform keeps the short window instead
+                if kept:
+                    take(d, sid, "DPDT", p * 900 - pre + delay, p * 900 + POST_MIN + 1, True)
+
+    # 3. the captures taken around a logged event, over the whole window
+    for (sid, d, sec, trig) in events:
+        r = sim._rng("evcap", sid, d.isoformat(), sec)
+        pre = ring(sid) + int(r.randint(0, 25))
+        length = int(r.randint(55, 241))
+        take(d, sid, trig, sec - pre, sec - pre + length, True)
+
+    # 4. the ad hoc captures a desk engineer took
+    for s in sim.SITES:
+        sid = s["id"]
+        for k in range(MANUAL_PER_SITE):
+            r = sim._rng("manual", sid, k)
+            d = sim.dates()[int(r.randint(0, len(sim.dates())))]
+            sec = int(r.randint(600, sim.DAY - 900))
+            length = int(r.randint(45, 601))
+            take(d, sid, "MANUAL", sec, sec + length, True)
+
     out.sort(key=lambda r: (r[0], r[1], r[3]))
     return out
+
 
 def power_cache(W, recs):
     """1 Hz net active power for every recording, keyed (date, site_id, lo)."""

@@ -64,6 +64,14 @@ def scrub(path):
         while i != -1:
             data[i:i + len(comment)] = _pad(comment)
             i = data.find(comment)
+    stamp = b"D:%s090000+00'00'" % W.PULL.strftime("%Y%m%d").encode()
+    for field in (b"/CreationDate (", b"/ModDate ("):
+        i = data.find(field)
+        while i != -1:
+            j = data.find(b")", i + len(field))
+            if j != -1 and j - (i + len(field)) == len(stamp):
+                data[i + len(field):j] = stamp
+            i = data.find(field, j if j != -1 else i + len(field))
     key = b"/Producer ("
     i = data.find(key)
     while i != -1:
