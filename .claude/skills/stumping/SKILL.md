@@ -354,11 +354,29 @@ every other way the pack measures that same thing: there the correct spread of a
 twin sitting in the unit's own series, and nothing in a sweep of corrections, poolings, stratifications
 and shrinkages reaches it.
 
+**When the decisive quantity is recovered exactly from a subset of the records, ask what else that subset
+hands over, because a mechanic that distorts some rows usually publishes the truth on the others.**
+Censoring, capping, flooring, truncation and suppression all split a file into rows the mechanic bent and
+rows where it bound exactly, and on the second set the hidden quantity is printed rather than estimated.
+task198's architecture 4 priced a lesser-of payment rule: on an uncensored line the payment understates
+the contracted rate, which is the bias the decisive step corrects, but on a censored line the payment
+**equals** the rate exactly, by the same mechanic. So the group whose contract bound on 38 per cent of its
+lines published its own rate in full, and a filter-and-divide over censored lines returned 433.283 against
+the decisive route's 433.283, the answer rather than an approximation. Sparseness is no defence when the
+recovered quantity is constant: one revealing row is enough. And the exactness cuts both ways, which is
+the trade to price: what made that step's estimator standard error 0.0000 per cent is what made the easy
+recovery exact, so the two cannot be separated by tuning, and driving the revelation to zero hides the
+quantity from the decisive route as well. Here censoring is revelation. Beware also the complement: the
+share of rows the mechanic bound is itself a ranking signal, and there six groups sat at 99.6 to 99.8 per
+cent censored while only the two dearest contracts sat near 38, so sorting on "whose rule binds least
+often" flagged the answer set outright.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
 standard error of whatever the step must estimate; check whether the lever and the ranked quantity's noise
-are the same variance; and, where the step corrects a variance on a call about a change, check whether the
-unit's own history already estimates what the step computes. Each is one computation on the clean truth and
+are the same variance; where the step corrects a variance on a call about a change, check whether the
+unit's own history already estimates what the step computes; and where the quantity is recoverable exactly
+from a subset of rows, check what that subset hands over. Each is one computation on the clean truth and
 each has killed a family that paragraphs of argument had left open.
 
 **Price the move against the ceiling before screening a candidate at all.** Compute two numbers: the points

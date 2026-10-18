@@ -1437,3 +1437,47 @@ of a thing rather than the behaviour of it. The `Measured by:` check located a s
 it; the fork check counts assertions only once there is a file to count them in; and the reflex sweep is
 only as good as the enumeration behind it. The common repair is to make each gate fail loudly when the
 thing it depends on is absent, rather than pass quietly.
+
+### Architecture 4 rung 2, killed by the completed enumeration (2026-10-18)
+
+The first sweep scored eight measures and every one landed wrong, but all eight measured the **observed
+price level**. None attempted the **contract rate itself**, which is the question the lesser-of clause
+provokes. Completing the enumeration on the author's five:
+
+| Measure of the contract rate | Names | Margin | Verdict |
+|---|---|---|---|
+| 1 maximum observed allowed per code, standardised | PG-BRYMER | 1.073x | **reaches the golden** |
+| 2 modal allowed per code, standardised | PG-ELLIOR | 1.049x | lands wrong |
+| 3a censored-line allowed, standardised over that group's censored codes | PG-BRYMER | 1.049x | **reaches the golden** |
+| 3b hybrid: censored-line rate where available, observed mean elsewhere | PG-ELLIOR | 1.049x | lands wrong |
+| 4 allowed over schedule on censored lines only, one ratio by the standard mix | PG-BRYMER | 1.206x | **reaches the golden, exactly** |
+| 5 share of lines censored, highest first | PG-HOLLOWS | 1.000x | lands wrong |
+| 5 share of lines censored, lowest first | PG-BRYMER | 0.998x | **reaches the golden** |
+
+**Measure 4 is the kill and there is no defence of the clause that survives it.** It returns 433.283
+against the decisive route's 433.283: not an approximation of the answer, the answer, from a two-step
+filter and divide that is the most natural thing to compute after reading that allowed is a minimum.
+
+**Why it is structural and not a tuning fault, and it is the same number on both sides for the fourth
+time.** On a censored line `allowed == rate` exactly, by the very mechanic that creates the bias. Every
+line does exactly one of two things: it is censored, and then it publishes the rate; or it is uncensored,
+and then it creates the bias. So any group with any censored line publishes its own rate in full, and the
+golden group publishes it on 38 per cent of its lines. There is no setting where the minimum censors the
+observed price and does not simultaneously reveal the rate, **because here censoring is revelation.**
+Driving the golden's censoring to zero would hide the rate from every route including the golden one.
+
+The author's hint, that the golden's exposure might sit where the censoring is sparsest, does not save it:
+measure 4 recovers the multiple from **any** censored line, because the contract is one multiple, and
+sparseness does not matter when the quantity is constant. The thing that made screen 3 exact at 0.0000 per
+cent is the thing that makes measure 4 exact.
+
+**The structural change that would close it, named for the author's ruling and not implemented.** Make the
+contracted rate a percentage of schedule that differs **by procedure family** rather than one multiple for
+the whole contract, which is how these contracts are in fact written. Then a censored line reveals only
+that family's multiple, and measure 4, a single pooled ratio over censored lines, returns a
+censored-mix-weighted average of the family multiples instead of the standard-mix price level, wrong by
+exactly the gap between a group's censoring mix and the filed standard mix. Measures 1 and 3a fail the
+same way. The decisive step becomes recovering each family's multiple from its own censored lines and
+reweighting to the filed mix, which is a construction rather than a filter, and screen 3 stays exact
+because each family's multiple is still a plateau. This changes what the decisive construction is rather
+than a parameter of it, so it is not a retune; whether it is worth taking is the author's call.

@@ -13,7 +13,7 @@
  "stump": "",
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "returned": [],
- "resume": "Stage 1 complete for architecture 4 and the card is registered and re-checked. Next is stage 2: the default path, stump sentence and three rules, then the readability screen (the main risk is that the lesser-of pricing rule must ship for Gate B and a careful reader could infer the bias from it, so rung 2 has to be shown silent), the fork table, the ladder with the easy-route margin widened past 1.15 and the two thin reflex margins widened, the 22-axis closure table, the literal reader line, the oracles and the ask sheet with a solved ceiling, then prompt.txt. Nothing is cut until precut.py exits 0. The clean truth for the five screens is in the scratch directory and moves into generator/core.py at stage 2.",
+ "resume": "Stage 1, architecture 4 rung 2 killed by the completed enumeration before any design was written and before anything was cut. The five screens all passed and are recorded in the note Draw section; the kill is in Tried and rejected. The card is registered at v4 and re-checked WARN no BLOCK. Awaiting the author ruling: take the named structural change (a contracted percentage per procedure family, so a pooled censored-line ratio returns the wrong mix) or move the ground.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -89,6 +89,7 @@
   "guard": "WARN, no BLOCK, re-run against the REGISTERED card as the last act of stage 1; org_family redrawn to cooperative_or_member_body after the re-check fired ban.org_family against task199",
   "five_screens": "1 residue is a method and the pooling knob closed structurally (one contract multiple, every plateau code agrees exactly); 2 move available 134.09 against 43.21 needed, ratio 3.10; 3 standard error of the recovered contract multiple 0.0000 per cent for all eight groups; 4 lever 134.15 against ranked-quantity noise 0.642, ratio 209, different quantities; 5 bias 134.15 against the unit own history change SD 0.903, ratio 149 against a threshold of two",
   "enumerated_sweep": "eight measures of a contract price level, every one naming a wrong group; nearest misses the 99th percentile at 1.007x and the allowed-to-charge ratio at 1.002x, both to be widened in the data at stage 2",
-  "screened_out": "completion and development (task194 live) and two capture channels with dependence (task196 live) both screened at the draw and absent from the design"
+  "screened_out": "completion and development (task194 live) and two capture channels with dependence (task196 live) both screened at the draw and absent from the design",
+  "rung2_finding": "killed by the completed enumeration on 2026-10-18. The first eight measures all measured the observed price level and all landed wrong; four of the author five measures of the contract rate itself reach the golden. Measure 4, allowed over schedule on censored lines only, returns 433.283 against the decisive route 433.283: the answer exactly, from a two-step filter and divide. Structural: on a censored line allowed equals the rate by the mechanic that creates the bias, so every line either publishes the rate or creates the bias and the golden publishes it on 38 per cent of its lines. Censoring is revelation. Candidate structural change named in the note (a rate per procedure family rather than one multiple) but not implemented, awaiting the ruling."
  }
 }
