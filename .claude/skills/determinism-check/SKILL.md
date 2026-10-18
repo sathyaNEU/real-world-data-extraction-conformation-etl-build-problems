@@ -241,6 +241,15 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
   orchestrator that has read beyond the bundle never judges in its own thread.
 - **The thread reads literally first** (§2), then the gates, and counts a fork closed only by inference or
   by the write-up as open. Our judge is the floor: a fork it settles "by the plain reading" is a FIX_NOW.
+- **An APPROVE is scoped to the pack the judge saw.** It ships that pack, not the folder's future. Any
+  later change that moves a graded figure, or that alters a clause a gate turned on, voids it and the judge
+  re-runs, because Gate A's verdict is that those figures recompute and they are different figures now.
+  task197 was approved on every gate with Gate F strong, and a margin measurement ordered afterwards found a
+  4.3488 MWh fork in how a loss factor is applied that the judge had never tested, whose closure moved all
+  twenty exposure figures (the tightest bin distance going from 0.0040 to 0.0303 MWh). Work that moves
+  nothing graded, such as realism in a file the call does not read or a wording fix the judge itself asked
+  for, does not void it. So state the condition when ruling out a re-judge, because "APPROVE is not a
+  FIX_NOW" holds only while nothing graded moves.
 - **After:** relay the verdict, disposition, Gate G and Gate H lines. **APPROVE** ships. **FIX_NOW** is fixed
   in the generator and re-judged once. **SEND_BACK** re-roots or retires (`build-pipeline`).
 

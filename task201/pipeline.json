@@ -1,0 +1,29 @@
+{
+ "task": "task201",
+ "owner": "oviya13ya",
+ "status": "DRAWING",
+ "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "architecture": 1,
+ "loops": 0,
+ "call": "",
+ "stump": "",
+ "card_registered": false,
+ "draw": {
+  "candidate_1": "separating confounding inflation from polygenic signal by LD score regression, killed at the draw before any design",
+  "dichotomy": "branch A: the filed quantity (a cohort's confounding inflation, dimensionless, two decimals) is unobserved, the record carrying only the sum of confounding, signal and noise",
+  "non_invariance_profile": "bounded rather than flat, so the self-measurement is genuinely non-invariant, but never tight: the intercept set within two log-likelihood units is 0.0204 wide at best (2x the printed 0.01) and 0.0962 at the only range where the null region lands wrong (10x)",
+  "sixth_screen": "three of nine enumerated routes reach the golden besides the decisive one, all of them reading the region where the signal is absent: the bottom 5 per cent of LD score, the bottom quintile, and the inflation factor on the lowest decile",
+  "rule_earned": "an identification of the form 'estimate the nuisance where the signal vanishes' fails the sixth screen by construction, because the region where the signal vanishes publishes the nuisance and the leverage that sharpens the identification is what purifies that region"
+ },
+ "resume": "Stage 1, no architecture drawn and no card registered. Candidate 1 screened to death with numbers; the measurement script is in the session scratch directory. Awaiting the author ruling on which of the ground's remaining affordances to screen next: winner's curse at discovered loci (the correction's escape is a replication estimate, which 1.2b lists as spent or banned, and it is task195-adjacent), polygenic score portability (a transport or forecast quantity), heritability from a mixed model (an estimator output with an open family, the shape four architectures died on), or fine-mapping which variant is causal (a records-fixed answer, but the prior is a knob).",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

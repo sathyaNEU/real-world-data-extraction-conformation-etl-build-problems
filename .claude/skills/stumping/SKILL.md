@@ -386,7 +386,20 @@ the decisive route's 433.283, the answer rather than an approximation. Sparsenes
 recovered quantity is constant: one revealing row is enough. And the exactness cuts both ways, which is
 the trade to price: what made that step's estimator standard error 0.0000 per cent is what made the easy
 recovery exact, so the two cannot be separated by tuning, and driving the revelation to zero hides the
-quantity from the decisive route as well. Here censoring is revelation. Beware also the complement: the
+quantity from the decisive route as well. Here censoring is revelation. **The same screen closes a whole identification family: "estimate the nuisance where the signal
+vanishes" fails it by construction.** The region where the signal vanishes is a subset that publishes the
+nuisance, and the leverage that makes the identification sharp is exactly what makes that subset pure, so
+one dial controls both failures and there is no setting between them. task201 measured four settings of a
+regression-on-a-covariate identification: widened, the regression pinned the nuisance to twice the printed
+precision and the low-covariate bin alone named the answer; narrowed, the low bin was contaminated enough
+to name the wrong candidate and the profile ballooned to ten times the printed precision. Three of the nine
+enumerated routes reached the golden and all three were the same move, reading the region where the signal
+is absent. This closes every identification whose nuisance is an intercept recovered from a null region:
+a regression on a covariate that vanishes, negative-control regions, calibration nulls, blank-sample
+baselines. One computation prices it before drawing: compute the nuisance from the lowest bin of the
+covariate alone and see which candidate it names.
+
+Beware also the complement: the
 share of rows the mechanic bound is itself a ranking signal, and there six groups sat at 99.6 to 99.8 per
 cent censored while only the two dearest contracts sat near 38, so sorting on "whose rule binds least
 often" flagged the answer set outright.
