@@ -226,7 +226,7 @@ lgc["date"] = pd.to_datetime(lgc["date"])
 lgc["out"] = lgc["out"].replace({"PO": "PAID", "Paid at maturity": "PAID", "EXT": "EXT", "Extended": "EXT",
                                   "PO-EXT": "PX", "Paid at extended maturity": "PX"})
 lgc = lgc[lgc.out != "PX"]
-ok("XLSX maturity log", len(lgc) >= 600 and set(lgc.out) == {"PAID", "EXT"}, "%d maturities, %d extended" % (
+ok("XLSX maturity log", len(lgc) >= 550 and set(lgc.out) == {"PAID", "EXT"}, "%d maturities, %d extended" % (
     len(lgc), (lgc.out == "EXT").sum()))
 
 
@@ -329,15 +329,15 @@ L_CRE = cre_loss(lambda r: float(pred(beta, cover_now(r))))
 L_CRE0 = cre_loss(lambda r: 0.0)
 recent_share = lgc[lgc.date > "2025-11-30"].y.mean()
 L_CREr = cre_loss(lambda r: recent_share)
-ok("CRE recomputed", abs(L_CRE - 150.9) < 1.5, "%.2f" % L_CRE)
+ok("CRE recomputed", abs(L_CRE - 150.05) < 1.0, "%.2f" % L_CRE)
 gold = {"Treasury ladder": L_T, "Agency MBS": L_MBS, "2023-24 residential mortgages": L_M, "Indirect auto loans": L_A,
         "Fixed-rate commercial real estate": L_CRE}
 top = max(gold, key=gold.get)
-ok("CALL designation", top == "Fixed-rate commercial real estate" and 25 * round(L_CRE / 25) == 150,
-   "%s $%d million (%s)" % (top, 25 * round(L_CRE / 25), ", ".join("%s %.1f" % (k.split()[0], v) for k, v in gold.items())))
+ok("CALL designation", top == "Fixed-rate commercial real estate" and 10 * round(L_CRE / 10) == 150,
+   "%s $%d million (%s)" % (top, 10 * round(L_CRE / 10), ", ".join("%s %.1f" % (k.split()[0], v) for k, v in gold.items())))
 dflt = dict(gold, **{"Fixed-rate commercial real estate": L_CREr})
 d_top = max(dflt, key=dflt.get)
-ok("DEFAULT path files Agency MBS", d_top == "Agency MBS" and 25 * round(L_MBS / 25) == 100,
+ok("DEFAULT path files Agency MBS", d_top == "Agency MBS" and 10 * round(L_MBS / 10) == 110,
    "Agency MBS %.1f, CRE at the recent share %.1f" % (L_MBS, L_CREr))
 r0 = dict(gold, **{"Fixed-rate commercial real estate": L_CRE0, "2023-24 residential mortgages": L_M12})
 ok("R0 last year's speeds file the mortgages", max(r0, key=r0.get) == "2023-24 residential mortgages",

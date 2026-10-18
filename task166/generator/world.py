@@ -173,12 +173,24 @@ def m_smm(incent, month_of_year, age):
     return turn + refi
 
 
-CRE_C0, CRE_S = 1.15, 0.05  # extension: logistic in refinance cover
-# the push loans' size: a design parameter (the push's properties were larger than the book's), set by one rule written
-# before it was tuned: it places the golden averaged loss mid-way in its $25 million reporting bin
-PUSH_SCALE = 1.03
+CRE_C0, CRE_S = 1.10, 0.012  # extension: logistic in refinance cover
+# the push loans' income scale: the one design parameter set against the golden, by a rule written before any route
+# was measured: solved so the file-built cover-logit figure sits within $0.5 million of $150 million, the centre of
+# its $10 million reporting bin
+PUSH_SCALE = 1.011
 CRE_EXT_MONTHS = 36
 CRE_EARLY = 0.0006          # monthly hazard of an early sale payoff (with the prepayment premium)
+# the fixed-rate book's origination intensity (loans a month): before 2013, 2013-18, 2019-20, 2021 to November
+CRE_LAM = (3.4, 4.8, 6.2, 7.5)
+# the push: five-year fixed loans from December 2021 to April 2022, underwritten on pro forma rents; the cash-out
+# deals took the credit box's full proceeds, the rate-and-term refinances (half the push) far less. After the push the
+# bank wrote floating-rate CRE only (build_cre_floating).
+PUSH_FROM, PUSH_TO, PUSH_LAM = mo(2021, 12), mo(2022, 4), 120.0
+PUSH_PROFORMA = 1.18
+PUSH_FIT, PUSH_LOWLEV_P, PUSH_LOWLEV = (0.97, 1.0), 0.50, (0.55, 0.70)
+# term mix (five, seven, ten years); borrowers locked longer terms at the 2020-21 lows
+TERMS, LATE_TERMS = [0.64, 0.23, 0.13], [0.35, 0.45, 0.20]
+NOI_SD, NOI_SHOCK_P, NOI_SHOCK = 0.03, 0.02, (0.66, 0.86)
 
 
 def cre_p_ext(cover):
@@ -293,17 +305,18 @@ def build_cre(W):
     lid = 0
     for o in range(mo(2007, 1), mo(2024, 12) + 1):
         y, m = ym(o)
-        lam = 3.4 if y < 2013 else 4.8 if y < 2019 else 6.2
+        lam = CRE_LAM[0] if y < 2013 else CRE_LAM[1] if y < 2019 else CRE_LAM[2]
         if mo(2021, 1) <= o <= mo(2021, 11):
-            lam = 7.5
-        push = mo(2021, 12) <= o <= mo(2022, 4)
+            lam = CRE_LAM[3]
+        push = PUSH_FROM <= o <= PUSH_TO
         if push:
-            lam = 70.0           # the bank's fixed-rate CRE push, before the programme moved to floating
-        if o >= mo(2022, 5):
-            lam = 0.7
+            lam = PUSH_LAM       # the bank's fixed-rate CRE push, before the programme moved to floating
+        if o > PUSH_TO:
+            lam = 0.0            # floating only from May 2022
         for _ in range(g.poisson(lam)):
             lid += 1
-            term = int(g.choice([60, 84, 120], p=[0.95, 0.04, 0.01] if push else [0.64, 0.23, 0.13]))
+            late = mo(2020, 1) <= o <= mo(2021, 11)
+            term = int(g.choice([60, 84, 120], p=[1.0, 0.0, 0.0] if push else LATE_TERMS if late else TERMS))
             amort = int(g.choice([300, 240, 360], p=[0.78, 0.12, 0.10]))
             r0 = round((W.CRE5[o] + g.normal(0.05, 0.12)) * 100) / 100
             noi0 = float(np.exp(g.normal(math.log(560000), 0.62))) * (PUSH_SCALE if push else 1.0)
@@ -316,23 +329,27 @@ def build_cre(W):
                 ltv_max, dscr_min = 0.75, 1.20      # the 2017-19 credit box
             else:
                 ltv_max, dscr_min = 0.70, 1.25
-            uw_noi = noi0 * (1.08 if push else 1.0)   # the push was sized on pro forma rents
+            uw_noi = noi0 * (PUSH_PROFORMA if push else 1.0)   # the push was sized on pro forma rents
             b_ltv = ltv_max * uw_noi / (CAP[o] / 100.0 * math.exp(g.normal(0, 0.05)))
             b_dscr = uw_noi / (dscr_min * float(dc(r0, amort)))
-            b0 = min(b_ltv, b_dscr) * (g.uniform(0.97, 1.0) if push else g.uniform(0.86, 1.0))
+            if push:      # cash-out deals took the box's full proceeds; rate-and-term refinances took far less
+                fit = g.uniform(*PUSH_LOWLEV) if g.random() < PUSH_LOWLEV_P else g.uniform(*PUSH_FIT)
+            else:
+                fit = g.uniform(0.86, 1.0)
+            b0 = min(b_ltv, b_dscr) * fit
             b0 = round(b0 / 1000) * 1000
             ptype = str(g.choice(PTYPES, p=[0.34, 0.18, 0.20, 0.18, 0.10]))
             rows.append(dict(lid=lid, orig=o, term=term, amort=amort, r0=r0, noi0=noi0, b0=b0, value0=value,
-                             ptype=ptype, push=push))
+                             ptype=ptype, push=push, fit=fit))
     # property income by the borrower's fiscal year (annual reviews), a random walk on the market index
     for L in rows:
         fy_start = ym(L["orig"])[0]
         walk = 1.0
         L["noi"] = {}
         for fy in range(fy_start, 2027):
-            walk *= math.exp(g.normal(0, 0.045))
-            if g.random() < 0.035:
-                walk *= g.uniform(0.66, 0.86)     # a tenant lost, a cost shock the rents never caught
+            walk *= math.exp(g.normal(0, NOI_SD))
+            if g.random() < NOI_SHOCK_P:
+                walk *= g.uniform(*NOI_SHOCK)     # a tenant lost, a cost shock the rents never caught
             L["noi"][fy] = walk                   # the walk only; the level comes with the fiscal year's midpoint
     # life: early sale payoff, maturity outcome (extension once, 36 months at the note rate), repayment
     for L in rows:

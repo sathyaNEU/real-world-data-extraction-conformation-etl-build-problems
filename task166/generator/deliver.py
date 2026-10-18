@@ -30,27 +30,32 @@ PARTS = [("overlay", "Overlays, the new overlay included"), ("funding", "Funding
 QLAB = ["31 Mar 2027", "30 Jun 2027", "30 Sep 2027", "31 Dec 2027"]
 
 
-def r25(x):
-    return int(25 * round(x / 25.0))
+def r10(x):
+    return int(10 * round(x / 10.0))
 
 
-def r5(x):
-    return int(5 * round(x / 5.0))
+SHARE_WORDS = [(0.5, "half"), (0.6, "three-fifths"), (2 / 3, "two-thirds"), (0.75, "three-quarters"),
+               (0.8, "four-fifths"), (0.9, "nine-tenths")]
+
+
+def share_words(x):
+    return min(SHARE_WORDS, key=lambda t: abs(t[0] - x))[1]
 
 
 def figures(G, prog):
     f = {}
     f["call_pool"] = G.call
-    f["call_loss_musd_nearest25"] = r25(G.CRE / 1e6)
+    f["call_loss_musd_nearest10"] = r10(G.CRE / 1e6)
     f["call_loss_musd_unrounded"] = round(G.CRE / 1e6, 2)
     f["runner_up"] = "Agency MBS"
     f["runner_up_loss_musd_nearest10"] = int(10 * round(G.MBS / 1e7))
-    f["pools"] = {k: dict(principal_musd=round(G.principal[k] / 1e6, 1), loss_musd_nearest5=r5(G.pools[k] / 1e6),
+    f["pools"] = {k: dict(principal_musd=round(G.principal[k] / 1e6, 1), loss_musd_nearest10=r10(G.pools[k] / 1e6),
                           loss_musd=round(G.pools[k] / 1e6, 2)) for k in ORDER}
     f["wall_balloon_busd"] = round(G.wall_balloon / 1e9, 1)
     f["wall_extended_busd"] = round(G.wall_extended / 1e9, 1)
     f["wall_share"] = round(G.wall_share, 3)
     f["wall_loans"] = len(G.wall)
+    f["wall_share_words"] = share_words(G.wall_share)
     f["m_cpr_2027_pct"] = int(round(100 * G.m_cpr_2027))
     f["m_cpr_trailing_pct"] = int(round(100 * (1 - (1 - G.m_smm_trailing) ** 12)))
     f["planning_cre_rate_pct"] = G.plan.cre
@@ -63,9 +68,9 @@ def figures(G, prog):
     f["shock_bp"] = 200
     f["extension_months"] = 36
     f["amortization_years"] = 25
-    f["treasury_loss_musd_about"] = int(round(G.T / 1e6))
-    f["mortgage_loss_musd_about"] = r5(G.M / 1e6)
-    f["auto_loss_musd_about"] = int(round(G.AUTO / 1e6))
+    f["treasury_loss_musd_about"] = r10(G.T / 1e6)
+    f["mortgage_loss_musd_about"] = r10(G.M / 1e6)
+    f["auto_loss_musd_about"] = r10(G.AUTO / 1e6)
     f["programme_total_musd"] = [round(sum(prog[k][j] for k, _ in PARTS) / 1e6, 1) for j in range(4)]
     f["programme_total_busd"] = [round(sum(prog[k][j] for k, _ in PARTS) / 1e9, 1) for j in range(4)]
     return f
@@ -80,13 +85,13 @@ def write_book(path, G, prog, f):
     pick = PatternFill("solid", fgColor="F3E7D3")
     ws["A1"] = "Designate the overlay against fixed-rate commercial real estate"
     ws["A1"].font = Font(name="Calibri", size=14, bold=True, color="1F4E5F")
-    ws["A2"] = ("$1.2 billion four-year pay-fixed overlay: trade Tuesday 15 December 2026, effective Monday 4 January "
+    ws["A2"] = ("$1.2 billion four-year pay-fixed overlay: trades Tuesday 15 December 2026, starts Monday 4 January "
                 "2027. Positions at the close on Monday 30 November 2026.")
     ws["A4"] = "Designated pool"
     ws["B4"] = f["call_pool"]
     ws["A5"] = "Averaged +200 bp loss in economic value, $ millions"
-    ws["B5"] = f["call_loss_musd_nearest25"]
-    ws["C5"] = "to the nearest 25 (policy measure, section 3)"
+    ws["B5"] = f["call_loss_musd_nearest10"]
+    ws["C5"] = "to the nearest 10 (policy measure, section 3)"
     ws["C5"].font = Font(name="Calibri", size=10, italic=True, color="5A626B")
     for c in ("A4", "A5", "B4", "B5"):
         ws[c].font = bold
@@ -102,20 +107,21 @@ def write_book(path, G, prog, f):
         r = 8 + i
         ws.cell(row=r, column=1, value=k)
         ws.cell(row=r, column=2, value=p["principal_musd"]).number_format = "#,##0.0"
-        ws.cell(row=r, column=3, value=p["loss_musd_nearest5"]).number_format = "#,##0"
+        ws.cell(row=r, column=3, value=p["loss_musd_nearest10"]).number_format = "#,##0"
         ws.cell(row=r, column=4, value=i + 1)
         if i == 0:
             for j in range(4):
                 ws.cell(row=r, column=j + 1).fill = pick
-    ws.cell(row=13, column=1, value="Losses in the table are rounded to the nearest $5 million.").font = \
+    ws.cell(row=13, column=1, value="Losses in the table are rounded to the nearest $10 million.").font = \
         Font(name="Calibri", size=10, italic=True, color="5A626B")
     lines = [
         ("Fixed-rate commercial real estate",
          "%s of balloons fall due from December 2026 to December 2027 (%d loans, mostly the push of December 2021 to "
-         "April 2022). At the planning cycle's %.2f per cent five-year rate about four-fifths of that principal is "
-         "expected to extend 36 months at its note rate: the extension share each loan's refinance cover carries in "
-         "the maturity log since 2015. Loans already extended repay at their extended maturity."
-         % ("$%.1f billion" % f["wall_balloon_busd"], f["wall_loans"], f["planning_cre_rate_pct"])),
+         "April 2022). At the planning cycle's %.2f per cent five-year rate about %s of that principal is expected to "
+         "extend 36 months at its note rate: the extension share each loan's refinance cover carries in the maturity "
+         "log since 2015. Loans already extended repay at their extended maturity."
+         % ("$%.1f billion" % f["wall_balloon_busd"], f["wall_loans"], f["planning_cre_rate_pct"],
+            f["wall_share_words"])),
         ("2023-24 residential mortgages",
          "Expected to prepay about %d per cent a year in 2027 at the planning cycle's %.2f per cent, against about %d "
          "per cent over the last twelve months." % (f["m_cpr_2027_pct"], f["planning_mortgage_rate_pct"],
@@ -144,7 +150,7 @@ def write_book(path, G, prog, f):
     p2 = wb.create_sheet("Programme")
     p2["A1"] = "Hedge programme: notional in effect at each quarter-end of 2027"
     p2["A1"].font = Font(name="Calibri", size=14, bold=True, color="1F4E5F")
-    p2["A2"] = "$ millions; the treasury system's ALM book with the new overlay from 4 January 2027"
+    p2["A2"] = "$ millions; the treasury system's ALM book, with the new overlay at $1.2 billion from 4 January 2027"
     p2["A2"].font = Font(name="Calibri", size=10, italic=True, color="5A626B")
     for j, h in enumerate(["Part"] + QLAB):
         c = p2.cell(row=4, column=j + 1, value=h)
@@ -244,13 +250,14 @@ def write_deck(path, G, f):
     text(s1, 0.6, 0.4, 12.1, 1.0, ["Designate the $1.2 billion overlay against fixed-rate commercial real estate"],
          size=30, bold_first=True, color=accent)
     text(s1, 0.6, 1.35, 12.1, 0.6, ["Averaged +200 bp loss in economic value over the month-ends of 2027: $%d million "
-                                    "(to the nearest $25 million)" % f["call_loss_musd_nearest25"]],
+                                    "(to the nearest $10 million)" % f["call_loss_musd_nearest10"]],
          size=22, bold_first=True)
     text(s1, 0.6, 2.25, 6.6, 4.4, [
         "About $%.1f billion of the pool's balloons fall due from December 2026 to December 2027, most of them "
-        "written in the early-2022 push at full leverage. At the planning cycle's %.2f per cent few can carry a new "
-        "loan of their balance; about four-fifths of that principal is expected to extend for 36 months at its note "
-        "rate." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"]),
+        "written in the early-2022 push. At the planning cycle's %.2f per cent the push's cash-out loans, sized at full "
+        "leverage on pro forma rents, cannot carry a new loan of their balance; about %s of that principal is "
+        "expected to extend for 36 months at its note rate." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"],
+                                                                 f["wall_share_words"]),
         "Agency MBS is next, at about $%d million." % f["runner_up_loss_musd_nearest10"],
         "The 2023-24 mortgages lose most at last year's prepayment speed, but at %.2f per cent they are expected to "
         "prepay about %d per cent a year in 2027." % (f["planning_mortgage_rate_pct"], f["m_cpr_2027_pct"]),
@@ -268,16 +275,16 @@ def write_deck(path, G, f):
         cell.text_frame.paragraphs[0].font.bold = True
     for i, k in enumerate(ORDER):
         p = f["pools"][k]
-        vals = [k, "%.2f" % (p["principal_musd"] / 1000.0), "%d" % p["loss_musd_nearest5"]]
+        vals = [k, "%.2f" % (p["principal_musd"] / 1000.0), "%d" % p["loss_musd_nearest10"]]
         for j, v in enumerate(vals):
             cell = tbl.cell(i + 1, j)
             cell.text = v
             cell.text_frame.paragraphs[0].font.size = Pt(13)
             cell.text_frame.paragraphs[0].font.bold = i == 0
-    text(s1, 7.6, 5.05, 5.1, 0.5, ["Losses to the nearest $5 million; principal at 30 November 2026."], size=11,
+    text(s1, 7.6, 5.05, 5.1, 0.5, ["Losses to the nearest $10 million; principal at 30 November 2026."], size=11,
          color=grey)
-    text(s1, 0.6, 6.45, 12.1, 0.4, ["Trade Tuesday 15 December 2026, effective Monday 4 January 2027, maturity Monday "
-                                    "6 January 2031."], size=14, color=grey)
+    text(s1, 0.6, 6.45, 12.1, 0.4, ["$1.2 billion pay-fixed for four years: trades Tuesday 15 December 2026, starts "
+                                    "Monday 4 January 2027."], size=14, color=grey)
     strip(s1, 1, "Source: ALM analysis of positions at 30 November 2026; hedging policy section 3; 2027 planning "
                  "cycle, base case.")
     s2 = prs.slides.add_slide(blank)

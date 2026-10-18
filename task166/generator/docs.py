@@ -302,7 +302,7 @@ ALM_EVE = [("-100", 1.9), ("+100", -5.4), ("+200", -11.6), ("+300", -17.9)]
 ALM_LIMIT = {"+100": -8.0, "+200": -15.0, "+300": -22.0, "-100": -8.0}
 ALM_NII = [("-100 ramp", -1.8), ("+100 ramp", 1.1), ("+200 ramp", 1.9)]
 ALM_BALANCE = [("Cash and due from banks", 1.48), ("Securities available for sale", 4.31), ("Loans held for sale", 0.06),
-               ("Commercial and industrial loans", 6.12), ("Commercial real estate loans", 5.43),
+               ("Commercial and industrial loans", 4.62), ("Commercial real estate loans", 6.93),
                ("Residential mortgages", 7.38), ("Home equity and consumer loans", 1.36), ("Indirect auto loans", 1.33),
                ("Other assets", 3.68)]
 
@@ -418,15 +418,16 @@ def notes_text(n):
     w("swap_register_20261130.xlsx (%s rows)" % format(n[F_REGISTER], ","))
     w("  The treasury system's register of the bank's interest-rate swaps at the close on 30 November 2026, both")
     w("  books, one row per trade. Notional is the trade's notional on 30 November (an amortizing swap's current")
-    w("  period). Clearing ref is the clearing house's trade id.")
+    w("  period). Hedged item is what the swap is designated against. Clearing ref is the clearing house's trade id.")
     w("")
     w("swap_amortisation_schedules.csv (%s rows)" % format(n[R.F_SCHED], ","))
     w("  Notional by calculation period of the amortizing swaps.")
     w("")
     w("clearing_statement_20261130.csv (%s rows)" % format(n[R.F_CLEAR], ","))
     w("  The clearing broker's statement of the bank's cleared swaps at the close on 30 November 2026.")
-    w("  client_trade_ref is the bank's reference the broker holds for the trade; cleared_on is the date the clearing")
-    w("  house accepted it; client_pays is the bank's side.")
+    w("  client_trade_ref is the bank's reference the broker holds for the trade: the treasury system trade number the")
+    w("  bank gave the broker when it submitted the trade for clearing. cleared_on is the date the clearing house")
+    w("  accepted it; client_pays is the bank's side.")
     w("")
     w("mortgage_lock_pipeline_20261130.csv (%s rows)" % format(n[R.F_LOCKS], ","))
     w("  Rate locks outstanding at the close on 30 November 2026.")

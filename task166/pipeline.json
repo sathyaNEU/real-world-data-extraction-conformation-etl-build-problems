@@ -4,31 +4,31 @@
  "status": "PAUSED",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at the extension share the maturity log shows lately files Agency MBS, $100 million; the step that lands it there is carrying the recent share of due balloons that extended as a constant, when each balloon extends according to whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and the $3.0 billion due from December 2026 through 2027, written in the early-2022 push at peak values and full leverage, mostly cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the 2025-26 maturities held out, puts about four-fifths of that principal on 36-month extensions and the pool's averaged loss at $150 million.",
+ "stump": "Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at the extension share the maturity log shows lately files Agency MBS, $110 million; the step that lands it there is carrying the recent share of due balloons that extended as a constant, when each balloon extends according to whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and of the $4.7 billion due from December 2026 through 2027 the push's cash-out loans, written at full leverage on pro forma rents, cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the 2025-26 maturities held out, puts about three-fifths of that principal on 36-month extensions and the pool's averaged loss at $150 million.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-  "reader": ""
+  "reader": "round 1 (030758c7): no leak; no document says how extension depends on income, cover, debt yield or the rate"
  },
  "duplicate_check": {
-  "heart": "BLOCK: ban.forum (committee_or_panel) against task198 (v2), registered 05:25:01Z, one minute before this card, pushed after this build's DRAWN commit; card not relabelled, stamps untouched",
-  "nearest": "surface exit 0, six card-level pairs promoted for the author's clone-check"
+  "heart": "WARN: repeat.question_form, answered at the draw; the stage 3 BLOCK (ban.forum against task198 v2) no longer fires: task198 was redrawn as v4 (forum trustees_or_governors, registered after this card); nothing on this card moved",
+  "nearest": "surface exit 0, seven card-level pairs promoted for the author's clone-check"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "round 1 (030758c7): DETERMINISTIC, APPROVE; rule 3 audit PASS, tighter than the note said",
+  "disposition": "rebuilt once for the audit: the family made to agree in the bin's middle half at $10 million, the constant-share bypass narrowed, the overlay's start filed in the prompt, the write-up's dates and claims tied to shipped text, the two ask devices' settling facts filed",
   "report": ""
  },
  "returned": [],
- "resume": "stage 3 built and green except guard.py heart (BLOCK on the forum against task198 v2): the main session decides whether the draw holds as registered or the forum is redrawn (a designation under delegated authority reported to ALCO moves policy sections 3 and 4, the deck's audience and the card's forum key, no figure); then stage 4: reader and judge",
+ "resume": "stage 4 round 1 rework built and green (checks 103/0, verify 14/0, byte-identical rebuild, figures_check, precut, voice-check, leak.py REVIEW no LEAK, H1 clean, guard validate clean, surface exit 0, heart WARN, cracker pair 38.8): next a fresh reader and judge on this commit, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

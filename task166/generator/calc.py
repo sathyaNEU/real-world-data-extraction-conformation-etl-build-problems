@@ -599,24 +599,6 @@ def golden(pack, verbose=False):
     return G
 
 
-def cre_routes(G):
-    """the extension rivals: each fitted on the same closed maturities and applied to every future maturity"""
-    C, loans, P, H = G.cre, G.cre_loans, G.plan, G.cre_hist
-    yy = np.array([h["y"] for h in H])
-    pos = {L["prop"]: L for L in loans}
-    out = {}
-    # constant shares
-    rec = np.array([h["date"] > dt.date(2025, 11, 30) for h in H])
-    since23 = np.array([h["date"] >= dt.date(2023, 1, 1) for h in H])
-    for nm, share in (("recent", yy[rec].mean()), ("since2023", yy[since23].mean()), ("pooled", yy.mean()),
-                      ("all", 1.0)):
-        out[nm] = (share, measure(cre_cf(loans, lambda L, s=share: s if ordinal(L["omat"]) <= mo(2027, 12) or True
-                                         else 0.0), G.W)[0])
-    # the rate gap: the refinance rate less the note rate (the history's note rates come from the positions only
-    # for loans still held; the log carries none, so the gap route reads the rate sheet at origination)
-    return out
-
-
 # ------------------------------------------------------------------------------------------------- the hedge programme (Ask A)
 QUARTER_ENDS = [dt.date(2027, 3, 31), dt.date(2027, 6, 30), dt.date(2027, 9, 30), dt.date(2027, 12, 31)]
 OVERLAY = dict(notional=1_200_000_000.0, eff=dt.date(2027, 1, 4), mat=dt.date(2031, 1, 6))
@@ -748,83 +730,166 @@ def _fit_route(H, feat_h, sel=None):
     return logit_fit(x, y)
 
 
+GUESSES = [("one half", 0.5), ("three-fifths", 0.6), ("two-thirds", 2 / 3), ("0.7", 0.7), ("three-quarters", 0.75),
+           ("four-fifths", 0.8), ("0.85", 0.85), ("nine-tenths", 0.9), ("all", 1.0)]
+CUTS = [round(0.90 + 0.01 * i, 2) for i in range(46)]
+
+
+def cre_linear(G):
+    """the pool's averaged loss is linear in each future balloon's extension probability: the extended loans' part,
+    and for every loan not yet extended its loss repaid when due (m0) and the change if it extends (d), in dollars"""
+    if getattr(G, "_lin", None) is None:
+        loans = G.cre_loans
+        fut = [L for L in loans if not L["extended"]]
+        base = measure(cre_cf([L for L in loans if L["extended"]], lambda L: 0.0), G.W)[0]
+        m0 = np.array([measure(cre_cf([L], lambda L: 0.0), G.W)[0] for L in fut])
+        m1 = np.array([measure(cre_cf([L], lambda L: 1.0), G.W)[0] for L in fut])
+        G._lin = (fut, base, m0, m1 - m0)
+    return G._lin
+
+
+def cre_total(G, p):
+    fut, base, m0, d = cre_linear(G)
+    return float(base + (m0 + np.asarray(p, float) * d).sum()) / 1e6
+
+
 def routes(G):
-    """every rung of the ladder, the extension rivals and the golden family, in $ millions"""
+    """every extension construction: the probability rule it fits on the closed maturities, the pool's averaged loss
+    it files ($ millions) and its hold-out Brier score (refitted on the maturities to December 2024 and scored on the
+    2025 and 2026 maturities); the golden family, the routes kept outside the bin, the ladder's rivals and the
+    constant-share guesses"""
     P, W, loans, H, C_ = G.plan, G.W, G.cre_loans, G.cre_hist, G.cre
-    fut = [L for L in loans if not L["extended"]]
-    cov = {id(L): G.cre_cover[id(L)] for L in fut}
-    asof_noi = {id(L): stmt_before(C_, L["prop"], dt.date(2026, 12, 3), strict=False) for L in fut}
+    fut = cre_linear(G)[0]
+    cov = np.array([G.cre_cover[id(L)] for L in fut])
+    noi = np.array([stmt_before(C_, L["prop"], dt.date(2026, 12, 3), strict=False) for L in fut])
+    bal = np.array([balloon(L) for L in fut])
+    dy_now = noi / bal
+    cur_now = noi / np.array([L["pay"] * 12 for L in fut])
+    gap_now = np.array([P.cre - L["rate"] for L in fut])
+    wall = np.array([ordinal(L["omat"]) <= mo(2027, 12) for L in fut])
+    yrs = np.array([max(0.0, (ordinal(L["omat"]) - ASOF) / 12.0) for L in fut])
     y = np.array([h["y"] for h in H])
     since23 = np.array([h["date"] >= dt.date(2023, 1, 1) for h in H])
     rec = np.array([h["date"] > dt.date(2025, 11, 30) for h in H])
-
-    def cre(pf):
-        return measure(cre_cf(loans, pf), W)[0] / 1e6
-
-    def logit_p(b, f):
-        return lambda L: float(logit_pred(b, np.array([f(L)]))[0])
-    R = {}
-    # constant shares and the bypasses
-    R["cre_contractual"] = cre(lambda L: 0.0)
-    R["cre_recent_share"] = float(y[rec].mean())
-    R["cre_recent"] = cre(lambda L: R["cre_recent_share"])
-    R["cre_since2023_share"] = float(y[since23].mean())
-    R["cre_since2023"] = cre(lambda L: R["cre_since2023_share"])
-    R["cre_pooled_share"] = float(y.mean())
-    R["cre_pooled"] = cre(lambda L: R["cre_pooled_share"])
-    R["cre_all_extend"] = cre(lambda L: 1.0)
-    # conditioned rivals
-    gap_now = lambda L: P.cre - L["rate"]
-    cur_now = lambda L: asof_noi[id(L)] / (L["pay"] * 12)
-    dy_now = lambda L: asof_noi[id(L)] / balloon(L)
-    R["cre_gap"] = cre(logit_p(_fit_route(H, lambda h: h["gap"]), gap_now))
-    R["cre_gap_2023"] = cre(logit_p(_fit_route(H, lambda h: h["gap"], since23), gap_now))
-    R["cre_cur"] = cre(logit_p(_fit_route(H, lambda h: h["cur"]), cur_now))
-    R["cre_cur_2023"] = cre(logit_p(_fit_route(H, lambda h: h["cur"], since23), cur_now))
-    R["cre_dy"] = cre(logit_p(_fit_route(H, lambda h: h["dy"]), dy_now))
-    R["cre_dy_2023"] = cre(logit_p(_fit_route(H, lambda h: h["dy"], since23), dy_now))
-    pt = {}
-    for t in set(h["ptype"] for h in H):
-        s = np.array([h["ptype"] == t for h in H]) & since23
-        pt[t] = float(y[s].mean()) if s.sum() else 0.0
-    R["cre_ptype"] = cre(lambda L: pt.get(L["ptype"], 0.0))
-    # the golden family
-    b = G.cover_beta
-    F = {}
-    F["cover, all maturities since 2015"] = G.CRE / 1e6
-    F["cover, maturities since 2023"] = cre(logit_p(_fit_route(H, lambda h: h["cover"], since23), lambda L: cov[id(L)]))
-    F["log cover"] = cre(logit_p(_fit_route(H, lambda h: math.log(h["cover"])), lambda L: math.log(cov[id(L)])))
+    tr = np.array([h["date"] <= dt.date(2024, 12, 31) for h in H])
+    te = ~tr
     xs = np.array([h["cover"] for h in H])
-    edges = np.concatenate([[-np.inf], np.arange(0.8, 1.61, 0.05), [np.inf]])
-    sh = []
-    for lo, hi in zip(edges[:-1], edges[1:]):
-        s = (xs >= lo) & (xs < hi)
-        sh.append(float(y[s].mean()) if s.sum() else float("nan"))
-    for i in range(len(sh)):
-        if sh[i] != sh[i]:
-            sh[i] = sh[i - 1] if i else 1.0
-    F["cover bands of 0.05"] = cre(lambda L: sh[min(int(np.searchsorted(edges, cov[id(L)], side="right")) - 1,
-                                                    len(sh) - 1)])
+    feats = {k: np.array([h[k] for h in H]) for k in ("cover", "dy", "cur", "gap")}
+
+    def brier(p):
+        return float(np.mean((np.asarray(p, float) - y[te]) ** 2))
+
+    def logit_route(xh, xf, sel=None):
+        s_ = np.ones(len(H), bool) if sel is None else sel
+        b = logit_fit(xh[s_], y[s_])
+        bt = logit_fit(xh[s_ & tr], y[s_ & tr])
+        return logit_pred(b, xf), brier(logit_pred(bt, xh[te]))
+
+    def bands(width, first):
+        e = np.concatenate([[-np.inf], np.round(np.arange(first, 1.80, width), 3), [np.inf]])
+
+        def shares(sel):
+            sh = []
+            for lo, hi in zip(e[:-1], e[1:]):
+                s_ = sel & (xs >= lo) & (xs < hi)
+                sh.append(float(y[s_].mean()) if s_.sum() else float("nan"))
+            for i in range(len(sh)):
+                if sh[i] != sh[i]:
+                    sh[i] = sh[i - 1] if i else 1.0
+            return np.array(sh)
+        idx = lambda v: np.minimum(np.searchsorted(e, v, side="right") - 1, len(e) - 2)
+        return shares(np.ones(len(H), bool))[idx(cov)], brier(shares(tr)[idx(xs[te])])
+    F, O, S = {}, {}, {}
+    pg = logit_pred(G.cover_beta, cov)
+    F["cover, every maturity since 2015"] = pg
+    S["cover, every maturity since 2015"] = logit_route(xs, cov)[1]
+    F["cover, maturities since 2023"], S["cover, maturities since 2023"] = logit_route(xs, cov, since23)
+    F["log cover"], S["log cover"] = logit_route(np.log(xs), np.log(cov))
+    for w_, first, nm in ((0.05, 0.70, "cover bands of 0.05"), (0.05, 0.725, "cover bands of 0.05, offset"),
+                          (0.10, 0.70, "cover bands of 0.10"), (0.10, 0.75, "cover bands of 0.10, offset")):
+        F[nm], S[nm] = bands(w_, first)
+    cut_te = {c: brier((xs[te] < c).astype(float)) for c in CUTS}
+    cut_in = {c: float(np.mean(((xs < c).astype(float) - y) ** 2)) for c in CUTS}
+    bt_, bi_ = min(cut_te.values()), min(cut_in.values())
+    chosen = sorted(set(c for c in CUTS if cut_te[c] <= 1.1 * bt_ + 1e-12) | set(c for c in CUTS if cut_in[c] <= 1.1 * bi_ + 1e-12))
+    for c in chosen:
+        F["hard cut at %.2f" % c] = (cov < c).astype(float)
+        S["hard cut at %.2f" % c] = cut_te[c]
+    F["debt yield, maturities since 2023"], S["debt yield, maturities since 2023"] = logit_route(feats["dy"], dy_now, since23)
+    X2 = np.column_stack([feats["dy"], [h["refi"] for h in H]])
+    b2, b2t = logit_fit(X2, y), logit_fit(X2[tr], y[tr])
+    F["debt yield and the refinance rate"] = logit_pred(b2, np.column_stack([dy_now, np.full(len(fut), P.cre)]))
+    S["debt yield and the refinance rate"] = brier(logit_pred(b2t, X2[te]))
+    F["cover, the 2027 balloons only"] = np.where(wall, pg, 0.0)
+    S["cover, the 2027 balloons only"] = S["cover, every maturity since 2015"]
     Hf = cre_history(C_, G.rates, refi_lag=1)
-    F["refinance rate a month before maturity"] = cre(logit_p(_fit_route(Hf, lambda h: h["cover"]),
-                                                              lambda L: cov[id(L)]))
+    xl = np.array([h["cover"] for h in Hf])
+    F["refinance rate a month before maturity"], S["refinance rate a month before maturity"] = logit_route(xl, cov)
 
     def stmt_fy(prop, when):
-        s = [x for x in C_.stmts.get(prop, []) if x[0] < when]
-        s.sort(key=lambda x: x[0])
-        return s[-1][1] if s else None
+        s_ = [x for x in C_.stmts.get(prop, []) if x[0] < when]
+        s_.sort(key=lambda x: x[0])
+        return s_[-1][1] if s_ else None
     xfy = np.array([stmt_fy(h["prop"], h["date"]) / (h["bal"] * dconst(h["refi"])) for h in H])
-    bfy = logit_fit(xfy, y)
-    F["statement by fiscal year end"] = cre(logit_p(bfy, lambda L: cov[id(L)]))
-    X2 = np.column_stack([xs, [h["gap"] for h in H]])
-    b2 = logit_fit(X2, y)
-    F["cover and rate gap"] = cre(lambda L: float(logit_pred(b2, np.array([[cov[id(L)], gap_now(L)]]))[0]))
-    F["income trended at -2 per cent a year"] = cre(
-        lambda L: float(logit_pred(b, np.array([cov[id(L)] * 0.98 ** max(0.0, (ordinal(L["omat"]) - ASOF) / 12.0)]))[0]))
+    F["statement by fiscal year end"], S["statement by fiscal year end"] = logit_route(xfy, cov)
+    X3 = np.column_stack([xs, feats["gap"]])
+    b3, b3t = logit_fit(X3, y), logit_fit(X3[tr], y[tr])
+    F["cover and rate gap"] = logit_pred(b3, np.column_stack([cov, gap_now]))
+    S["cover and rate gap"] = brier(logit_pred(b3t, X3[te]))
+    F["income trended at -2 per cent a year"] = logit_pred(G.cover_beta, cov * 0.98 ** yrs)
+    S["income trended at -2 per cent a year"] = S["cover, every maturity since 2015"]
+    fam = {k: cre_total(G, v) for k, v in F.items()}
     loans360 = [dict(L, basis="30/360") for L in loans]
-    F["interest on 30/360"] = measure(cre_cf(loans360, lambda L: float(logit_pred(b, np.array(
+    fam["interest on 30/360"] = measure(cre_cf(loans360, lambda L: float(logit_pred(G.cover_beta, np.array(
         [cre_cover_now(C_, L, P.cre)]))[0])), W)[0] / 1e6
-    R["family"] = F
-    R["cre_wall_only"] = cre(lambda L: float(logit_pred(b, np.array([cov[id(L)]]))[0]) if ordinal(L["omat"]) <=
-                             mo(2027, 12) else 0.0)
+    S["interest on 30/360"] = S["cover, every maturity since 2015"]
+    # the routes the bin must not hold
+    O["the 1.25 cover convention"] = (cov < 1.25).astype(float)
+    S["the 1.25 cover convention"] = cut_te[1.25]
+    O["the 1.00 cover rule"] = (cov < 1.00).astype(float)
+    S["the 1.00 cover rule"] = cut_te[1.0]
+    O["note-rate DSCR, every maturity"], S["note-rate DSCR, every maturity"] = logit_route(feats["cur"], cur_now)
+    O["note-rate DSCR, maturities since 2023"], S["note-rate DSCR, maturities since 2023"] = logit_route(feats["cur"], cur_now, since23)
+    O["debt yield, every maturity"], S["debt yield, every maturity"] = logit_route(feats["dy"], dy_now)
+    O["rate gap, every maturity"], S["rate gap, every maturity"] = logit_route(feats["gap"], gap_now)
+    O["rate gap, maturities since 2023"], S["rate gap, maturities since 2023"] = logit_route(feats["gap"], gap_now, since23)
+    wb = bal * wall
+    ws = float((wb * pg).sum() / wb.sum())
+    O["the 2027 model share carried to every balloon"] = np.full(len(fut), ws)
+    O["every balloon extended"] = np.ones(len(fut))
+    S["every balloon extended"] = brier(np.ones(te.sum()))
+    O["every 2027 balloon extended"] = wall.astype(float)
+    O["the last twelve months' share"] = np.full(len(fut), float(y[rec].mean()))
+    S["the last twelve months' share"] = brier(np.full(te.sum(), y[tr & np.array([h["date"] > dt.date(2023, 12, 31) for h in H])].mean()))
+    O["the share since 2023"] = np.full(len(fut), float(y[since23].mean()))
+    S["the share since 2023"] = brier(np.full(te.sum(), y[since23 & tr].mean()))
+    O["the pooled share"] = np.full(len(fut), float(y.mean()))
+    S["the pooled share"] = brier(np.full(te.sum(), y[tr].mean()))
+    pt = {}
+    for t in set(h["ptype"] for h in H):
+        s_ = np.array([h["ptype"] == t for h in H]) & since23
+        pt[t] = float(y[s_].mean()) if s_.sum() else 0.0
+    O["property type shares since 2023"] = np.array([pt.get(L["ptype"], 0.0) for L in fut])
+    O["repaid when due"] = np.zeros(len(fut))
+    out = {k: cre_total(G, v) for k, v in O.items()}
+    M0 = cre_total(G, np.zeros(len(fut)))
+    S_all = cre_total(G, np.ones(len(fut))) - M0
+    S_wall = cre_total(G, wall.astype(float)) - M0
+    guesses = {nm: (M0 + g * S_all, M0 + g * S_wall) for nm, g in GUESSES}
+    R = dict(family=fam, outside=out, score=S, chosen_cuts=chosen, cut_holdout=cut_te, cut_insample=cut_in,
+             cut_figure={c: cre_total(G, (cov < c).astype(float)) for c in CUTS}, guesses=guesses, M0=M0,
+             S_all=S_all, S_wall=S_wall, wall_model_share=ws, recent_share=float(y[rec].mean()))
+    # the ladder's names for the rivals
+    R["cre_contractual"] = out["repaid when due"]
+    R["cre_recent"] = out["the last twelve months' share"]
+    R["cre_since2023"] = out["the share since 2023"]
+    R["cre_pooled"] = out["the pooled share"]
+    R["cre_all_extend"] = out["every balloon extended"]
+    R["cre_gap"] = out["rate gap, every maturity"]
+    R["cre_gap_2023"] = out["rate gap, maturities since 2023"]
+    R["cre_cur"] = out["note-rate DSCR, every maturity"]
+    R["cre_cur_2023"] = out["note-rate DSCR, maturities since 2023"]
+    R["cre_dy"] = out["debt yield, every maturity"]
+    R["cre_ptype"] = out["property type shares since 2023"]
+    R["cre_wall_only"] = fam["cover, the 2027 balloons only"]
     return R

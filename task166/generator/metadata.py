@@ -72,7 +72,7 @@ def write(task_dir, n=None):
                      "pool's behaviour forecast: mortgage prepayment at the planning rate, commercial real estate "
                      "balloons extended by their refinance cover)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $25 "
+        "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $10 "
                         "million, a table of the hedge programme's notional in effect at each 2027 quarter-end for its "
                         "overlays, funding hedges and loan hedges, and a two-slide ALCO deck charting it",
         "as_of": "2026-12-03",
