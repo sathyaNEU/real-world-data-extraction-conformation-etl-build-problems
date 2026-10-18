@@ -1,0 +1,208 @@
+{
+  "task": "task170",
+  "title": "How many 30-tablet bottles of TLD a national Central Medical Stores should order for January to June 2027, when a late-diagnosed cohort of children born in 2015-16 is being weighed into the 30 kg dosing band",
+  "domain": "Healthcare Delivery & Health Economics",
+  "client_domain": "Healthcare Delivery & Health Economics",
+  "house_domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization, access and demand forecasting (a national ARV quantification: the C7 order of the adult TLD pack, the paediatric regimen transitions forecast child by child from the register's scheduled weighings)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed order of TLD bottles for one cycle with the projection's consumption and maximum stock and the stock and shipments it nets, each region's CMS deliveries and reported dispensing over the last two closed cycles, and a chart of those deliveries and that dispensing by region for each cycle, every bar labelled",
+  "as_of": "2026-09-02",
+  "deliverables": [
+    "c7_tld_order.xlsx",
+    "c4_c5_tld_flows.png"
+  ],
+  "distractor_files": [
+    "paed_viral_load_2025-07_2026-08.csv",
+    "hiv_estimates_2026_round_summary.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [
+    1376018
+  ],
+  "input_gates": {
+    "files": 18,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "paed_register_visits_epr_2024-06_2026-08.csv",
+    "largest_file_rows": 451353
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional southern African ministry of health, its Central Medical Stores and national ART programme, in the layouts of a legacy paediatric register and a national EPR, a warehouse system's delivery and customer exports, a proof-of-delivery app, an eLMIS requisition export, a facility registry and the programme's own guideline annex, SOP, projection and estimates; no real organisation's records or person is depicted.",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task170/generator/build.py",
+  "files": [
+    {
+      "path": "art_number_crosswalk_2024-06.csv",
+      "format": "csv",
+      "bytes": 700227,
+      "rows": 23340,
+      "source": "Constructed for this task (seeded, deterministic): national EPR migration tables, legacy ART numbers to national patient identifiers",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "art_patient_projection_2026-09_2027-06.xlsx",
+      "format": "xlsx",
+      "bytes": 8054,
+      "rows": 15,
+      "source": "Constructed for this task (seeded, deterministic): National ART Programme patient projection, September 2026 round",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_customer_accounts_2026-09-02.csv",
+      "format": "csv",
+      "bytes": 23997,
+      "rows": 411,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores customer master at 2 September 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_deliveries_tld_2025-07_2026-08.csv",
+      "format": "csv",
+      "bytes": 715684,
+      "rows": 5582,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores warehouse system, outbound deliveries of TLD 30s, July 2025 to August 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_pod_2025-07_2026-08.csv",
+      "format": "csv",
+      "bytes": 273435,
+      "rows": 4895,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores proof-of-delivery app, July 2025 to August 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_sop_qp04_v3_cycle_quantification.pdf",
+      "format": "pdf",
+      "bytes": 42702,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores, SOP QP-04 version 3, cycle quantification (effective 1 March 2026)",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_stock_status_2026-08-31.xlsx",
+      "format": "xlsx",
+      "bytes": 10161,
+      "rows": 32,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores stock status report, count of 31 August 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 9652,
+      "rows": 71,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores quantification unit, data dictionary",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_manifest_2026-09-02.csv",
+      "format": "csv",
+      "bytes": 2632,
+      "rows": 18,
+      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores quantification unit, extract manifest for the 2 September 2026 pull",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facility_registry_extract_2026-09-01.csv",
+      "format": "csv",
+      "bytes": 34156,
+      "rows": 410,
+      "source": "Constructed for this task (seeded, deterministic): Ministry of Health facility registry extract, ART sites, 1 September 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hiv_estimates_2026_round_summary.pdf",
+      "format": "pdf",
+      "bytes": 42431,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): National ART Programme, HIV estimates 2026 round, summary tables",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lmis_monthly_reports_2025-07_2026-08.json",
+      "format": "json",
+      "bytes": 8624141,
+      "rows": 27408,
+      "source": "Constructed for this task (seeded, deterministic): eLMIS ART programme requisitions, periods July 2025 to August 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "national_regimen_codes_2025.csv",
+      "format": "csv",
+      "bytes": 549,
+      "rows": 5,
+      "source": "Constructed for this task (seeded, deterministic): national regimen code list, 2025",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "paed_register_patients_2026-09-02.csv",
+      "format": "csv",
+      "bytes": 1288517,
+      "rows": 23601,
+      "source": "Constructed for this task (seeded, deterministic): national EPR paediatric and adolescent ART module, patient master at 2 September 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "paed_register_visits_epr_2024-06_2026-08.csv",
+      "format": "csv",
+      "bytes": 46155364,
+      "rows": 451353,
+      "source": "Constructed for this task (seeded, deterministic): national EPR paediatric and adolescent ART module, encounters 1 June 2024 to 31 August 2026",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "paed_register_visits_legacy_2023-01_2024-06.csv",
+      "format": "csv",
+      "bytes": 30243492,
+      "rows": 338680,
+      "source": "Constructed for this task (seeded, deterministic): legacy paediatric ART register, visits 1 January 2023 to 30 June 2024",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "paed_viral_load_2025-07_2026-08.csv",
+      "format": "csv",
+      "bytes": 549161,
+      "rows": 10288,
+      "source": "Constructed for this task (seeded, deterministic): national laboratory information system, paediatric viral load results from July 2025",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "paediatric_art_dosing_annex7_2025.pdf",
+      "format": "pdf",
+      "bytes": 42393,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Ministry of Health, national HIV guidelines 2025, Annex 7 paediatric dosing",
+      "date": "2026-09-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

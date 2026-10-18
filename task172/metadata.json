@@ -1,0 +1,191 @@
+{
+ "task": "task172",
+ "title": "The wait a software company's benefits portal should quote for the work-permit renewals its global mobility team files from January to March 2027",
+ "domain": "General Statistics & Data Science",
+ "client_domain": "General Statistics & Data Science",
+ "subdomain": "regression, classification and model diagnostics (employer immigration operations: a forward 80th percentile of a censored wait under the stage model the record supports, each renewal cut at its own card's expiry by the team's expedite request)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "one quoted wait to the nearest half month with its components; permits expiring in each of three months by category; lockbox rejections and refilings within 30 days in each of four quarters; a labelled bar chart of the permits expiring",
+ "as_of": "2026-12-04",
+ "deliverables": [
+  "q1_2027_renewal_quote.xlsx",
+  "q1_2027_expiring_permits.svg"
+ ],
+ "distractor_files": [
+  "posted_processing_times_2024-2026.csv",
+  "h1b_extension_calendar_2027.xlsx"
+ ],
+ "distractors": [
+  {
+   "file": "posted_processing_times_2024-2026.csv",
+   "wrong_basis": true,
+   "why_relevant": "the team's record of the processing time USCIS posts for Form I-765, which people quote back",
+   "why_unused": "USCIS's figure covers every filer nationally and the cases it completed in past months, not the renewals Global Mobility files in the coming quarter (standard GM-07, 4.1); no figure reads it",
+   "ruled_out_by": "the file's own form lines and offices, and standard GM-07 4.1 to 4.2"
+  },
+  {
+   "file": "h1b_extension_calendar_2027.xlsx",
+   "wrong_basis": false,
+   "why_relevant": "H-4 spouses' work permits run to the H-4 end date the principal's H-1B sets",
+   "why_unused": "it lists H-1B extensions to file in 2027, not work permits; no figure reads it",
+   "ruled_out_by": "its own header"
+  }
+ ],
+ "stated_inputs": [
+  "180",
+  "30.4",
+  "30 October 2025",
+  "5 December 2025",
+  "18-month"
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 14,
+  "formats": [
+   "csv",
+   "eml",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "renewal_case_notices_2024-01_2026-12.csv",
+  "largest_file_rows": 73101
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task172/generator/build.py (seeded, deterministic) around a fictional software company in Bellevue, Washington (Sallowmere Software), its fictional outside counsel (Marrowby Teale LLP) and its employees, identified by number only. No real organisation's records or person is depicted. USCIS notices, receipt numbers, card numbers and processing times are constructed in their real formats and are not USCIS data.",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-18",
+ "generator": "task172/generator/build.py",
+ "files": [
+  {
+   "path": "case_actions_2024-2026.csv",
+   "format": "csv",
+   "bytes": 233502,
+   "rows": 2381,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, case-action log",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 12382,
+   "rows": 130,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, data dictionary and codes",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dependants_2026-12.csv",
+   "format": "csv",
+   "bytes": 992696,
+   "rows": 22325,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Benefits, covered dependants (no names)",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "employees_2026-12.csv",
+   "format": "csv",
+   "bytes": 1369056,
+   "rows": 19251,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software HR Systems, Global Mobility program roster (no names)",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "export_manifest.csv",
+   "format": "csv",
+   "bytes": 1804,
+   "rows": 14,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, export manifest",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "green_card_tracker_2026-12.xlsx",
+   "format": "xlsx",
+   "bytes": 295328,
+   "rows": 5810,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, green-card tracker",
+   "date": "2026-12-03",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "h1b_extension_calendar_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 129164,
+   "rows": 4079,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software immigration team, 2027 H-1B extension calendar",
+   "date": "2026-11-20",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "mobility_renewal_standard.pdf",
+   "format": "pdf",
+   "bytes": 54638,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, Work Permit Renewal Standard GM-07 revision 4. It cites two real USCIS changes as the company states them: the end of automatic extension for renewals filed on or after 30 October 2025 (DHS interim final rule) and the 18-month validity of (c)(9) cards approved from 5 December 2025",
+   "date": "2025-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "packet_dispatch_log_2025-2026.csv",
+   "format": "csv",
+   "bytes": 892146,
+   "rows": 8338,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software mailroom, dispatch log from its two dispatch systems",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "posted_processing_times_2024-2026.csv",
+   "format": "csv",
+   "bytes": 8000,
+   "rows": 104,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, monthly capture of the processing time USCIS posts for Form I-765. The figures are constructed and are not USCIS's published processing times",
+   "date": "2026-12-01",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "q1_quote_thread.eml",
+   "format": "eml",
+   "bytes": 1368,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility mailbox, the December 2026 thread on the portal release",
+   "date": "2026-12-03",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "renewal_case_notices_2024-01_2026-12.csv",
+   "format": "csv",
+   "bytes": 11277410,
+   "rows": 73101,
+   "source": "Constructed for this task (seeded, deterministic): Marrowby Teale LLP (fictional outside counsel), case-management export of the USCIS notices and case-status events logged on Sallowmere Software's work-permit renewal matters, in the layout of a law firm's export; not USCIS records",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "renewal_case_register.xlsx",
+   "format": "xlsx",
+   "bytes": 1605926,
+   "rows": 19021,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility (fictional), case register, two layouts across its April 2025 system change",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "work_permits_2026-12.xlsx",
+   "format": "xlsx",
+   "bytes": 1915010,
+   "rows": 37884,
+   "source": "Constructed for this task (seeded, deterministic): Sallowmere Software HR Systems, work permit roster",
+   "date": "2026-12-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

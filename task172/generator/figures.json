@@ -1,0 +1,46 @@
+{
+ "ask_a": {
+  "2027-07 (c)(26)": 186,
+  "2027-07 (c)(9)": 279,
+  "2027-08 (c)(26)": 206,
+  "2027-08 (c)(9)": 140,
+  "2027-09 (c)(26)": 825,
+  "2027-09 (c)(9)": 63
+ },
+ "ask_b": {
+  "2025 Q4": {
+   "refiled_30": 21,
+   "rejected": 26
+  },
+  "2026 Q1": {
+   "refiled_30": 15,
+   "rejected": 17
+  },
+  "2026 Q2": {
+   "refiled_30": 35,
+   "rejected": 45
+  },
+  "2026 Q3": {
+   "refiled_30": 11,
+   "rejected": 16
+  }
+ },
+ "expedite_response": "about a week",
+ "expedite_response_weeks": 1,
+ "lead_weeks_before": 4,
+ "lead_weeks_now": 17,
+ "month_days": 30.4,
+ "quote_months": 5.5,
+ "quote_unrounded": 5.526,
+ "reach_expiry": "more than half",
+ "reach_share": 0.625,
+ "refile_days": 30,
+ "rival_default_months": 7.0,
+ "rival_record_months": 4.0,
+ "standard_sections": [
+  "2.3",
+  "3.1",
+  "4.2",
+  "4.3"
+ ]
+}

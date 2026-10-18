@@ -1,0 +1,87 @@
+{
+  "task": "task247",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "DQ20 re-found: the seed's world (alerts raised on provisional monitoring data, scored once the record is reprocessed) kept, moved from an air quality network to a reef thermal-stress watch, because a rule replayed on its own archive is direct and the network's remaining lane seeds sit in air quality",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "niche": "a university reef station's coral bleaching watch in the Mexican Caribbean: which reefs' 2027 alert levels, declared weekly on near-real-time satellite sea surface temperature, stand on the reprocessed record the station's November post-bleaching survey is sent on",
+  "objective": "data-quality-monitoring",
+  "shape": "01",
+  "decision_type": "renew_replace_lapse",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G12",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the coordinator of the station's post-bleaching reef survey",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "the near-real-time daily sea surface temperature extract for the station's 16 reef sites, June 2018 to October 2027",
+    "rows": 55040,
+    "entity": "one reef site on one day (the analysed sea surface temperature, whether a satellite saw the pixel that day, the issue)",
+    "grain": "reef site x day",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "Mexico, the Caribbean coast of Quintana Roo (the university, its reef station, the reef site names and the people are fictional; the satellite products are modelled on real near-real-time and reprocessed sea surface temperature analyses and the real coral bleaching heat stress method)",
+    "currency": "MXN",
+    "org_type": "public university marine station",
+    "invented_names": [],
+    "people": [
+      "Fabiola Mireles",
+      "Alfredo Montero",
+      "Rocío Muñiz",
+      "Hernán Pichardo"
+    ]
+  },
+  "deliverables": [
+    "reef_heat_stress_2027.xlsx",
+    "survey_list_note_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a running sum of daily exceedances built from a record whose missing days were filled as they happened by letting the last observed departure decay toward the long-run normal; during a sustained warm spell under cover the filled days understate the departure exactly while it accumulates, so correcting the record by its average past error leaves those units low, and only refilling each gap from the observations on both sides, once the period has closed, gives what the final record will show.",
+  "driver_concrete": "Each reef's 2027 maximum degree heating weeks on the reprocessed sea surface temperature record has to be estimated before that record is released; the near-real-time analysis fills a cloudy day by relaxing the last clear-sky anomaly toward climatology, so during the August heat under a stalled trough the filled days ran far below the sea, and only refilling each cloud gap by interpolating the anomaly between the clear days either side, as the reprocessed analysis does with the observations that arrive later, puts the southern reefs at Alert Level 2.",
+  "stump": "A competent solver corrects the 2027 near-real-time record by the past seasons' mean difference from the reprocessed record, clear and filled days apart, recomputes the heating weeks and sends the survey to the reefs the bulletins declared, missing the reefs whose heat came under cloud, where the filled days understate the anomaly by far more than their average.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the product guide and the observation flags correctly takes the past seasons' mean near-real-time minus reprocessed difference on clear days and on filled days, subtracts it from the 2027 record, recomputes each reef's heating weeks and files the bulletins' Alert Level 2 list, because over seasons whose cloud gaps mostly fell outside the heat the filled days' average error is close to zero.",
+  "domain_test": "The quantity that decides is each reef's season maximum degree heating weeks on the reprocessed record, which reef thermal-stress monitoring accumulates from daily HotSpots above the maximum monthly mean and which the near-real-time analysis understates where cloud hid the sea during the heat; with another field's nouns there is no satellite analysis relaxing to climatology under cloud, no HotSpot accumulation over twelve weeks and no reprocessed record, so the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-18 for perssathya's lane (wave 4). The seed DQ20's air quality network re-found as a reef heat-stress watch (design note, The seed, re-found). repeat.gate_g against task172 answered in the design note's Draw.",
+  "client_domain": "physical-environmental-sciences",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:hindsight-refill-of-gaps-a-real-time-analysis-relaxed-to-climatology",
+  "layer1": [
+    "near-real-time daily files re-issued with a later version of the same day, kept by issue time",
+    "the product's observation flag recoded at the version change of the season",
+    "the reprocessed record delivered in kelvin, the near-real-time in degrees Celsius",
+    "satellite pixel identifiers against the station's reef site names through a site register",
+    "a day missing from the near-real-time archive (no file issued)",
+    "UTC days against the station's local dates in the alert bulletins"
+  ],
+  "registered": "2026-10-18T13:56:17Z"
+}
