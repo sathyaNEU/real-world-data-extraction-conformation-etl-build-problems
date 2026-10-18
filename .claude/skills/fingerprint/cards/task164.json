@@ -1,0 +1,100 @@
+{
+  "task": "task164",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6, new; seed FC35 (world, decision and quantity only; the pilot-reproduction mechanism is not used)",
+  "domain": "energy-systems-utilities",
+  "subdomain": "load-forecasting",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a California investor-owned electric utility's compliance filing that splits the 400 proactive service-transformer replacements the Commission approved for 2027 across its twelve districts in proportion to each district's forecast count of transformers whose summer 2027 4 to 9 pm peak, built from the 2026 recorded peak and the plug-in vehicles registered at the record date, exceeds 1.2 times nameplate, when a vehicle at a default-rate premise adds to a small pole-top transformer's peak most of its charger's draw although its average evening demand is a fraction of a kilowatt, and EV-rate premises charge after midnight",
+  "objective": "forecasting",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "D"
+  ],
+  "generators": [
+    "G2",
+    "G14",
+    "G7"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "stump_class": "analytical",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:coincident-peak-increment-by-transformer-size-and-rate",
+  "layer1": [
+    "interval reads with estimates and gaps (load research AMI and EVSE submeter channels)",
+    "interval labels and the clock change (the AMI export's timestamps)",
+    "tariffs with effective dates (premise rate schedule history)",
+    "competing ratings (nameplate kVA against metered kW at the planning power factor)",
+    "registrations against service points (DMV address strings against the premise register)",
+    "asset identity across unit replacement (the GIS feature keeps its id, the unit and kVA change)",
+    "preliminary and amended records (DMV quarterly extracts with transfers and corrections)"
+  ],
+  "context_artifact": "register",
+  "stakeholder_role": "the manager of the utility's proactive transformer replacement program, who files the district allocation in the compliance filing",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "tlm_summer_peaks_2024_2026.csv",
+    "rows": 150000,
+    "entity": "one service transformer location's recorded 4 to 9 pm peak for one summer, summed from its premises' AMI interval reads",
+    "grain": "transformer location x summer",
+    "source": "synthetic (constructed in the layout of a utility transformer load management extract)"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, California (a fictional investor-owned electric utility in the Central Valley and Sierra foothills; the utility, districts, systems, programs and people are fictional)",
+    "currency": "USD",
+    "org_type": "investor-owned electric distribution utility",
+    "invented_names": [
+      "Calloway Valley Power Company",
+      "Foothill",
+      "Railyard",
+      "West Bluff",
+      "Crestview",
+      "Lakeside",
+      "Sunrise",
+      "Sandhill",
+      "Kingsley",
+      "Highland",
+      "Brookside"
+    ],
+    "people": [
+      "Megan Stewart",
+      "Christopher Richardson",
+      "Katelyn Duarte",
+      "Antonio Morgan"
+    ]
+  },
+  "deliverables": [
+    "ptr_2027_district_allocation.xlsx",
+    "summer_2026_transformer_failures.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The rise in a shared asset's seasonal peak from one more intermittent load is that load's draw at the moments the peak is set, and because a peak sits where the asset's load is highest, a load joining an asset few others share adds most of its full draw, less on a large asset and less for each further load, while its average draw over the peak window is a small fraction of that; a forecast that adds each new load's average draw, its full rating or one pooled increment misclassifies the assets near the limit.",
+  "driver_concrete": "Each plug-in vehicle registered since a transformer's 2026 recorded peak raises its 2027 4 to 9 pm peak by what the recorded peaks show a vehicle at a premise on its rate adds to a transformer of that size already serving that many default-rate vehicles, about five kVA for the first default-rate vehicle on a 10 to 25 kVA pole-top and well under one for a vehicle at an EV-rate premise, not by the 0.7 kVA the load research vehicles draw on average between 4 and 9 pm nor by the charger's rating.",
+  "stump": "A competent solver adds to each transformer's 2026 recorded peak the average 4 to 9 pm charging demand of the load research sample's vehicles for every vehicle registered since that peak, finds the at-risk count barely above the 2026 overloads and gives Foothill about half the replacements the golden gives it; the step that lands it there is pricing a vehicle at its average evening draw when a small transformer's summer peak is set on an evening its vehicle charges.",
+  "analyst_test": "A strong analyst who matches every registration to its premise and transformer, reads the decision, the tariffs and the load management extract correctly and adds each newly registered vehicle's average 4 to 9 pm charging demand from the load research sample to its transformer's 2026 recorded peak files an allocation that follows the 2026 overloads and gives Foothill about half its golden figure; pricing every vehicle at its charger's rating, or at one increment pooled across rates and sizes from the recorded peaks, files other wrong splits, and only the increment the recorded peaks show for a vehicle of its premise's rate on a transformer of its size files the golden.",
+  "domain_test": "The quantity that decides the call is each service transformer's forecast summer 4 to 9 pm peak, built the way distribution planning builds diversified demand on a transformer: an added vehicle contributes its coincident draw at the moments the transformer's peak is set, which on a small transformer serving few vehicles is most of its charger's draw and shrinks on larger transformers and with each further vehicle, measured from the transformers' own recorded peaks; swap the transformer for a clinic and the vehicle for a patient and the task no longer reads the same, because nothing makes one added patient raise a small clinic's busiest hour by nearly a full appointment slot while a large clinic's barely moves.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Seed FC35's decisive mechanism (pilot determinations reproducing only under one charging-start method) is not used: there is no pilot reproduction requirement and no certified record to fit. The 2024 to 2026 recorded peaks are the transformers' own history, which a forecaster tests the increment on out of sample.",
+  "registered": "2026-10-18T01:34:28Z"
+}
