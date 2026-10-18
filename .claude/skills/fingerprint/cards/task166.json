@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "designate the overlay against fixed-rate commercial real estate: its +200 bp loss averaged over the month-ends of 2027 is $150 million to the nearest $25 million (150.9), against agency MBS at about $110 million",
+  "answer_source": "task166/generator/calc.py golden(), recomputed by verify.py, asserted in checks.py",
   "gap": [
     "time",
     "population"
@@ -36,8 +36,8 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "residential_loan_month_extract (the servicing system's monthly loan-level performance extract for the 2023-24 portfolio mortgages, January 2023 to November 2026)",
-    "rows": 160000,
+    "file": "servicing_monthly_2024-09_2026-11.csv with servicing_monthly_legacy_2023-01_2024-08.csv (the servicing platforms' monthly loan-level extracts of the 2023-24 originations, January 2023 to November 2026, joined through the conversion xref)",
+    "rows": 157800,
     "entity": "one portfolio mortgage loan in one calendar month (balance, payment, note rate, status, payoff)",
     "grain": "loan x month",
     "source": "synthetic (constructed in the layout of a mortgage servicing system's monthly loan-level extract, two layouts across a 2024 servicing platform conversion)"
@@ -62,13 +62,13 @@
     ]
   },
   "layer1": [
-    "the residential servicing platform conversion of 2024: loan-month records in the legacy layout to the conversion month and in the new layout after, loan numbers through the conversion crosswalk, the conversion month in both extracts",
-    "status transitions under the servicing codebook (payoffs, servicing transfers out, charge-off and REO codes) in the monthly loan tape",
-    "the CRE maturity log and the property operating statement extract keyed on different loan numbers (the credit system's note numbers against the core system's account numbers)",
-    "rates on different bases and day counts: Treasuries semi-annual, agency MBS monthly with a payment delay, CRE notes on actual/360, auto loans simple interest",
-    "the custodian's securities holdings in thousands of face with MBS on original face and a factor, the loan tapes in dollars",
-    "the pricing desk's rate sheet archive (posted rates by product and lock period) against the planning cycle's monthly paths",
-    "operating statements reviewed on each borrower's own fiscal year, some reviews stale or pending"
+    "the residential servicing platform conversion after the August 2024 cycle: the legacy extract (uppercase codes, MMDDYYYY dates, rates in per cent, curtailments and payoffs apart, a trailer row) and the new platform's (decimal rates, combined unscheduled principal, zero-balance codes), loan numbers through the conversion xref",
+    "loans held for sale in both servicing extracts beside the portfolio loans, delivered to the agencies within one to three months",
+    "the CRE maturity log in credit administration's formats (obligation as obligor and note number, property number without its prefix) against the loan file's loan and property numbers, its sheet layout changed in 2020",
+    "rates on different bases and day counts: Treasuries semi-annual, agency pools monthly with a payment delay, CRE notes on actual/360, auto loans monthly",
+    "the custodian's holdings in thousands with pool factors, the rest of the available-for-sale account (2023-24 agency pools, municipal bonds, agency multifamily) beside the two pools",
+    "the pricing desk's rate sheet archive (weekly sheets, mid-week re-prices, product codes renamed on 1 January 2024) against the planning cycle's monthly paths",
+    "operating statements on each borrower's own fiscal year with their review dates; the CRE loan file holds floating-rate loans and extended loans' current and original maturities"
   ],
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:balloon-maturities-extended-by-refinance-cover",
@@ -79,7 +79,7 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Two parts of a stock answer the same forward terms in opposite directions: one, whose units hold rates the terms now beat, leaves faster than its own past, while the other, whose units fall due inside the window, keeps every due unit whose own earnings no longer cover the terms it would have to roll onto, at a share read from past due dates by that cover; the part with the most exposure over the window is found only when both answers are projected, because the schedule, a recent share or a price gap leaves the second part running off and names a third part that is neither.",
-  "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $2.2 billion of five-year loans written at peak values in the first half of 2022 that fall due inside 2027, and most of them will be extended for 36 months at their note rates because their properties' latest income no longer covers a new 25-year loan of the balloon balance at the planning cycle's CRE rate, the cover at which the bank's own record of maturities since 2015 shows loans extend; with the 2023-24 mortgages prepaying on the bank's incentive curve at the planning rate of 6.25 per cent, the CRE pool's +200 bp loss averaged over the swap's first year is the largest of the five, while every route that pays the balloons off on schedule, at the recent extension share, by rate gap or by property type designates the agency MBS.",
+  "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $3.0 billion of balloons falling due from December 2026 through 2027, mostly written in the push of December 2021 to April 2022 at peak values and sized on pro forma rents, and about four-fifths of that principal is expected to extend for 36 months at its note rate because the properties' latest reviewed income no longer covers a new 25-year loan of the balloon at the planning cycle's 6.95 per cent, the cover at which every loan in the bank's record of maturities since 2015 extended; the CRE pool's +200 bp loss averaged over the swap's first year is then $150 million, the largest of the five, while every route that repays the balloons when due, at the recent extension share, by rate gap, by property type or by the note-rate DSCR designates the agency MBS.",
   "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate are extended for 36 months, and the 2027 wall is mostly such loans.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads the hedge policy, the planning cycle and every file correctly, prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the 6.25 per cent planning rate and runs the CRE loans to their contractual maturities designates the agency MBS; only extending each 2027 CRE balloon at the share the bank's maturity record shows for its property's income cover at the planning CRE rate designates the CRE pool.",

@@ -1,0 +1,226 @@
+{
+  "task": "task166",
+  "title": "Which fixed-rate pool a Pittsburgh regional bank's one $1.2 billion four-year pay-fixed swap overlay is designated against, ranked on the +200 basis point loss in economic value averaged over the swap's first year, when the 2023-24 mortgages lose most on last year's speed and most of the commercial real estate balloons due in 2027 cannot be refinanced at the planning cycle's rate",
+  "domain": "Banking, Credit & Financial Risk",
+  "client_domain": "Banking, Credit & Financial Risk",
+  "house_domain": "banking-credit-financial-risk",
+  "subdomain": "stress-testing-capital (interest-rate risk in the banking book: each fixed-rate pool's +200 bp loss in economic value through the swap's first year, on base-case cash flows that need each pool's behaviour forecast: mortgage prepayment at the planning rate, commercial real estate balloons extended by their refinance cover)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $25 million, a table of the hedge programme's notional in effect at each 2027 quarter-end for its overlays, funding hedges and loan hedges, and a two-slide ALCO deck charting it",
+  "as_of": "2026-12-03",
+  "deliverables": [
+    "overlay_designation_2027.xlsx",
+    "overlay_designation_alco.pptx"
+  ],
+  "distractor_files": [
+    "deposit_decay_study_2026.xlsx",
+    "mortgage_lock_pipeline_20261130.csv"
+  ],
+  "field_terms": [
+    "ladder"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 20,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "servicing_monthly_2024-09_2026-11.csv",
+    "largest_file_rows": 116277
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional Pittsburgh bank holding company, in the layouts of a mortgage servicing platform's monthly loan extract before and after a conversion, a commercial loan system, a credit administration log and review file, a custodian's holdings statement, an agency pool factor history, a consumer loan tape and roll, a treasury system's swap register and a clearing broker's statement, office workbooks and PDF documents; the securities, pools and identifiers are constructed and are not an agency's or a custodian's release, and no real organisation's records or person is depicted.",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task166/generator/build.py",
+  "files": [
+    {
+      "path": "agency_pool_factors.csv",
+      "format": "csv",
+      "bytes": 90869,
+      "rows": 2333,
+      "source": "Constructed: Carrick Valley Bank investment accounting, monthly factors of the agency pools held (constructed pools; not an agency release)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "alm_report_2026_q3.pdf",
+      "format": "pdf",
+      "bytes": 42099,
+      "rows": null,
+      "source": "Constructed: Carrick Valley Bank ALM, report for the third quarter of 2026 (14 October 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "balance_sheet_hedging_policy.pdf",
+      "format": "pdf",
+      "bytes": 42580,
+      "rows": null,
+      "source": "Constructed: Carrick Valley Bancorp treasury, balance sheet hedging policy version 1.0 (24 March 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "clearing_statement_20261130.csv",
+      "format": "csv",
+      "bytes": 3445,
+      "rows": 31,
+      "source": "Constructed: Carrick Valley Bank clearing broker statement of cleared swaps, 30 November 2026 (constructed)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cre_maturity_log.xlsx",
+      "format": "xlsx",
+      "bytes": 55046,
+      "rows": 651,
+      "source": "Constructed: Carrick Valley Bank credit administration, commercial real estate maturity log, 2015 to 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cre_operating_statements.csv",
+      "format": "csv",
+      "bytes": 329330,
+      "rows": 4990,
+      "source": "Constructed: Carrick Valley Bank credit administration, borrowers' annual operating statements as reviewed, from 2013",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cre_term_loans_20261130.csv",
+      "format": "csv",
+      "bytes": 131100,
+      "rows": 821,
+      "source": "Constructed: Carrick Valley Bank commercial loan system, commercial real estate term loans at 30 November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "custody_holdings_20261130.csv",
+      "format": "csv",
+      "bytes": 10281,
+      "rows": 71,
+      "source": "Constructed: Carrick Valley Bank custodian statement of the available-for-sale account, 30 November 2026 (constructed holdings and identifiers)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "deposit_decay_study_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8068,
+      "rows": 55,
+      "source": "Constructed: Carrick Valley Bank ALM, non-maturity deposit study 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes.txt",
+      "format": "txt",
+      "bytes": 5464,
+      "rows": null,
+      "source": "Constructed: Carrick Valley Bank ALM, notes on the files pulled for the overlay designation memo (3 December 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "indirect_auto_monthly_roll.csv",
+      "format": "csv",
+      "bytes": 4113,
+      "rows": 47,
+      "source": "Constructed: Carrick Valley Bank consumer finance, indirect auto portfolio roll by month from January 2023",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "indirect_auto_tape_20261130.csv",
+      "format": "csv",
+      "bytes": 4054138,
+      "rows": 51846,
+      "source": "Constructed: Carrick Valley Bank consumer loan system, indirect auto loans at 30 November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mortgage_lock_pipeline_20261130.csv",
+      "format": "csv",
+      "bytes": 31463,
+      "rows": 398,
+      "source": "Constructed: Carrick Valley Bank mortgage pipeline, rate locks outstanding at 30 November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "planning_cycle_2027_base_case.xlsx",
+      "format": "xlsx",
+      "bytes": 8508,
+      "rows": 29,
+      "source": "Constructed: Carrick Valley Bank ALCO planning cycle, 2027 plan, base case (21 September 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rate_sheet_archive.csv",
+      "format": "csv",
+      "bytes": 140227,
+      "rows": 2089,
+      "source": "Constructed: Carrick Valley Bank pricing desk, posted rate sheet archive, 2015 to November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "servicing_conversion_xref.csv",
+      "format": "csv",
+      "bytes": 180814,
+      "rows": 4516,
+      "source": "Constructed: Carrick Valley Bank servicing conversion, legacy loan numbers to loan ids (August 2024)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "servicing_monthly_2024-09_2026-11.csv",
+      "format": "csv",
+      "bytes": 16993403,
+      "rows": 116277,
+      "source": "Constructed: Carrick Valley Bank mortgage servicing platform, monthly loan extract of the 2023 and 2024 originations, September 2024 to November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "servicing_monthly_legacy_2023-01_2024-08.csv",
+      "format": "csv",
+      "bytes": 4493226,
+      "rows": 41524,
+      "source": "Constructed: Carrick Valley Bank legacy mortgage servicing platform, monthly loan extract of the 2023 and 2024 originations, cycles January 2023 to August 2024",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "swap_amortisation_schedules.csv",
+      "format": "csv",
+      "bytes": 1336,
+      "rows": 30,
+      "source": "Constructed: Carrick Valley Bank treasury system, notional schedules of the amortizing swaps",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "swap_register_20261130.xlsx",
+      "format": "xlsx",
+      "bytes": 17959,
+      "rows": 161,
+      "source": "Constructed: Carrick Valley Bank treasury system, register of interest-rate swaps at 30 November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

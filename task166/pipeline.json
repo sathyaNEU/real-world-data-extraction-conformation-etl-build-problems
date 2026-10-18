@@ -1,13 +1,38 @@
-{"task": "task166", "owner": "sathya8571", "status": "DESIGN",
- "domain": "banking-credit-financial-risk", "objective": "forecasting",
- "stage": 2, "stage_name": "design", "updated": "2026-10-18",
- "stump": "Prepaying the 2023-24 mortgages on the bank's own incentive curve at the planning rate and running the CRE loans to their contractual maturities designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule, when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate are extended for 36 months, and the 2027 wall is mostly such loans.",
- "architecture": 1, "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+{
+ "task": "task166",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "banking-credit-financial-risk",
+ "objective": "forecasting",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-10-18",
+ "stump": "Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at the extension share the maturity log shows lately files Agency MBS, $100 million; the step that lands it there is carrying the recent share of due balloons that extended as a constant, when each balloon extends according to whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and the $3.0 billion due from December 2026 through 2027, written in the early-2022 push at peak values and full leverage, mostly cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the 2025-26 maturities held out, puts about four-fifths of that principal on 36-month extensions and the pool's averaged loss at $150 million.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "BLOCK: ban.forum (committee_or_panel) against task198 (v2), registered 05:25:01Z, one minute before this card, pushed after this build's DRAWN commit; card not relabelled, stamps untouched",
+  "nearest": "surface exit 0, six card-level pairs promoted for the author's clone-check"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: ladder, fork table, closure, asks, prompt; precut.py",
- "approved": null, "delivered": null, "portal": null,
- "portal_id": "", "portal_status": "", "portal_status_date": ""}
+ "resume": "stage 3 built and green except guard.py heart (BLOCK on the forum against task198 v2): the main session decides whether the draw holds as registered or the forum is redrawn (a designation under delegated authority reported to ALCO moves policy sections 3 and 4, the deck's audience and the card's forum key, no figure); then stage 4: reader and judge",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
