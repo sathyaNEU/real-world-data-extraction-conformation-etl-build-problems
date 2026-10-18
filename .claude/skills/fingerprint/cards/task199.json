@@ -1,0 +1,99 @@
+{
+  "task": "task199",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "new build, oviya13ya's anomaly-detection lane, wave 4; ground assigned by the coordinator after a guard probe",
+  "domain": "political-science-public-policy",
+  "subdomain": "conflict-protest-event-data-analysis",
+  "client_domain": "political-science-public-policy",
+  "niche": "which city of a conflict corridor a collective-action register sends its one half-yearly field verification to, when the press monitor receives very different volumes of material from each city",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G14",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the register's field verification coordinator",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "envios_resena_andina.csv",
+    "rows": 31000,
+    "entity": "one day on which one monitored outlet filed material datelined to one city, with the items the clipping service delivered and the items the register retained",
+    "grain": "outlet x city x day",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "Colombia, Catatumbo and middle Magdalena corridor (Norte de Santander, Cesar, Santander)",
+    "currency": "COP",
+    "org_type": "university research centre keeping a press-based collective-action register",
+    "invented_names": [
+      "Observatorio Territorial del Nororiente",
+      "Resena Andina",
+      "Registro de Acciones Colectivas"
+    ],
+    "people": [
+      "Yaneth Amaya",
+      "Fabian Benavides"
+    ]
+  },
+  "deliverables": [
+    "nota_vigilancia_2026S2.xlsx",
+    "grafico_vigilancia_2026S2.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is a unit's rise in how often events happen, taken from a record that holds an event only where a watcher filed an account of it, so the rise has to be read against how much the watchers filed from that unit; of the filing volumes the record measures about itself the two readier ones are produced by the events themselves, so dividing by either cancels the rise being tested for and leaves the unit whose watchers multiplied on top of every ranking.",
+  "driver_concrete": "Tibu's recorded collective actions rose 86 per cent while the material the press monitor received from it stayed flat, and Sardinata's rose 126 per cent with no change in its actions at all because two outlets began filing from it, so a solver who divides each city's actions by the items the register retained or by the citations it holds cancels Tibu's rise exactly and ranks the cities by whose press material thinned instead.",
+  "stump": "A competent solver cleans the register, counts each city's actions for the half-year against its own twenty-four-month baseline, puts them over residents, and files Sardinata at 74.0 actions per 100,000, because nothing in the pack says the register's completeness differs by city and the only denominator the question names is population.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read, every date and code resolved and the protocol's window and unit applied, the easy route compares each city's half-year actions with its own baseline and files Sardinata, whose entire rise is the two new outlets filing from it; the obvious correction, dividing actions by the register's own protest material (retained items, citations or citing outlets), files Teorama, whose citations halved when one outlet stopped republishing.",
+  "domain_test": "The deciding quantity is protest incidence recovered from a media-sourced event record, which conflict-event analysis estimates by conditioning counts on reporting intensity (the client's own pattern for this task type: reported events track media reach); swap cities for hospitals and actions for falls and the task dies, because an internal incident system has no outside reporters whose filing volume the record separately measures and no distinction between an event happening and an account of it reaching the coder.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "political-science-public-policy/conflict-protest-event-data-analysis/1",
+  "layer1": [
+    "the register ships as yearly exports whose columns were renamed in 2025 and whose dates change format",
+    "a preliminary and a definitive monthly extract overlap for three months",
+    "city keys arrive both as names and as divipola codes, with one code reassigned",
+    "population projections ship in thousands on one sheet and in units on another, in two vintages",
+    "the quarterly bulletin's figures are inside PDF tables",
+    "outlet codes carry a service prefix in the 2026 delivery file and not before",
+    "an ingest timestamp is in UTC while the action date is local"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task192": "same subdomain and the only other build on it: 192 turns on whether a classifier's hand-coded error rates transport past the window they were measured in, with the audit batch as the organ and the count of a labelled property as the answer; 199 ships no classifier, no audit batch and no label correction, and turns on which of the record's own filing volumes may stand in the denominator of a rise. Different spine (a press service's delivery log at outlet x city x day, not a matched press-item register), geography, org family, forum, forcing event, role, shape, calibration form and answer.",
+    "task448": "448 completes a register that misses whole producers from a second incomplete list, with capture measured on the producers both lists hold; 199 has no second list and no capture estimate: the lever is a measured filing volume standing in a denominator, and the trap is that the readier volumes are downstream of the count.",
+    "task470": "470 rebuilds the activity a sensor never records for whole unit classes, uneven across sites; 199 never estimates what is missing, it chooses which self-measurement of what reached the record may normalise a rise, and its wrong candidates come from that choice.",
+    "task196": "no capture-recapture: nothing in 199 estimates how many events happened from the overlap of two channels, and the pack carries no second channel.",
+    "task180": "180 understates small events by the share of the day an instrument's noise floor hides them, a known external cycle; 199's capture varies across units and periods and is measured only by the record's own filing volumes.",
+    "task31": "same gap, pattern and Gate G triple on older cards: 31 is a censored per-counterparty lag recovered through a join; 199 shares no quantity, world or correction.",
+    "task182": "182's items enter a record with probability proportional to their own duration, from snapshots; 199's enter with probability set by how much press material the city produced, and the decisive step is which measured volume may stand for that.",
+    "task243": "243 and 245 share the gap and Gate G mechanism: both split a reported movement across components the record names (a decomposition over strata and over audit causes). 199's two drivers are not components of anything the record lists: one is the city's own activity and the other is how much press material reached the monitor, and the split is identified only by a volume the register measures about its own intake.",
+    "task198": "198 assigns a between-place difference to the people who measured it, and cannot identify it because measurer and place are collinear; 199's driver is measured for every city in every month, so identification is never the issue: the issue is that two of the three available measurements contain the count being tested."
+  },
+  "lineage": [],
+  "notes": "scoring_unit other: one field verification mission per half-year. calibration_form none by design: no audit or gold-standard subsample ships, because a bench that measured the register's own completeness would refute the naive read and make the decisive rung readable; the method is forced by the data's structure instead (the retained-item and citation volumes contain the action count by construction, the redundancy family needs a free parameter the pack does not fix, and every parameter-free presence form agrees). Pricing on the clean truth, before any file: move needed 0.400 ranking units against 1.260 available (3.15x); decisive margin 1.59x over the runner-up at 5.2 standard errors of the golden's own rise; golden 4th of 11 on the default path at 1.22x behind the leader; lever is a level moving the denominator 126 per cent while contributing 16 per cent of the ranked quantity's spread, so the lever and the noise are two variances (stumping Part 3's new screen does not fire); decisive route names the golden in 60 of 60 seeds, the default path misses it in 56 of 60. Labels: gap population because a row is a reported action rather than an action; decisive generator G12 (an absence of records is not a record of absence) with G14 for the conditioned yield that repairs it and G16 for the choice among conditioners; Gate G decomposition_attribution because every city's recorded rise is correctly reported and the call turns on assigning it to press presence or to activity, and the right assignment is pinned by the data's structure rather than by a validation bench or a standard. Shape 01 answered against overuse.shape: the criteria come from the eleven candidate cities, and of the eighteen shapes only 01 takes its criteria from candidates (17 and 08, native to the objective, take theirs from the periods of one series and would leave the eleven-city structure ungraded).",
+  "registered": "2026-10-18T06:09:32Z"
+}

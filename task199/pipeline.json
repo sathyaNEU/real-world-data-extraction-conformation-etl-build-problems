@@ -1,0 +1,32 @@
+{
+  "task": "task199",
+  "owner": "oviya13ya",
+  "status": "DRAWING",
+  "stage": 1,
+  "stage_name": "draw",
+  "architecture": "v1",
+  "objective": "anomaly-detection",
+  "domain": "political-science-public-policy",
+  "subdomain": "conflict-protest-event-data-analysis",
+  "wave": 4,
+  "drawn": "2026-10-18",
+  "updated": "2026-10-18",
+  "card": ".claude/skills/fingerprint/cards/task199.json",
+  "card_verdict": "WARN, exit 0, 0 BLOCK (overuse.shape only, answered in the card notes and the draw table); nearest driver on file 0.06",
+  "call": "Provisional: Tibu, at the window's recorded actions per 100,000 residents (the pricing prototype gives 63.6; the figure is fixed and tuned mid-bin when the generator cuts the pack).",
+  "stump": "A competent solver cleans the register, ranks the eleven cities on their own recorded rise over the protocol's window with residents as the only denominator, and files Sardinata, whose whole rise is the two outlets that began filing from it.",
+  "resume_step": "Stage 2 design, held at the coordinator's instruction until the draw summary is acknowledged. Pricing is complete on the clean truth (scratchpad price4.py): all four Part 3 screens pass, the seed sweep is 60/60 on the decisive route and 56/60 on the default path. Next: the ladder's rungs 1 and 2 as measured answers, the readability screen, the semantic fork table, the closure table, prompt.txt, then the ask layer with supplemental-stumping, then precut.py.",
+  "returned": [],
+  "judge": null,
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "gates": {
+    "guard check": "WARN, exit 0, 0 BLOCK",
+    "guard register": "filed 2026-10-18"
+  },
+  "notes": "Ground assigned by the coordinator (political-science-public-policy / conflict-protest-event-data-analysis), probed clear of pairing and subdomain bans; this lane last drew it at task192, outside the three-build window. Pattern E and the (population, G14) signature were BLOCKed at the draw and the pattern axis was redrawn to G12 with Gate G decomposition_attribution rather than argued. No git run by this session."
+}

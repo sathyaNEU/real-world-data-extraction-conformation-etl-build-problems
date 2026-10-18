@@ -279,6 +279,23 @@ is largest.** Reaching the verdict shape is also the repair: task198's architect
 pack and variance component and moves the decision from a pick of one region to a characterisation of one
 named region's move, which puts the whole lever on a threshold the pack is cut against.
 
+**What actually decides it is the distance to the decision boundary in units of the lever's own noise, so
+measure that number rather than preferring a shape.** A ranking of N has N minus 1 boundaries and the
+nearest is usually close, which is why rankings nearly always fail; a verdict has one boundary and can be
+placed far from it, which is why verdicts usually survive. Usually is not a licence. task198's
+architecture 3 put the flip 61 per cent of the variance component away, about fifteen relative standard
+errors and four hundred times the estimator family's own spread, and holds. task200's first direction was
+a banded verdict on one named facility and died anyway: the lever was a measurement variance removed from
+an observed variance, the graded figure's noise was the sampling error of those same two variances, and
+over 40 seeds the golden ran 1.108 to 2.161 mg/L against a truth of 1.471 and a band edge at 2.000, so the
+golden's own tier took both values. Under one standard error to the boundary is seed-hostage whatever the
+decision's shape. Two further numbers from that screen are worth carrying: eleven estimator forms a
+competent analyst would use spread 0.52 mg/L on average against 0.04 permitted at the printed precision,
+over by about thirteen times, and the forms all agreed on the tier within any one seed, so only the
+across-seed run exposed it. And where a variance lever is taken at all, take it on a percentile rather
+than on a tail share: the percentile's lever is linear in sigma while a tail probability's noise blows up,
+which on that ground was 7 standard errors against under 1 for the same idea.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
 standard error of whatever the step must estimate; and check whether the lever and the ranked quantity's

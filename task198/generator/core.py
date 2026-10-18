@@ -1,112 +1,232 @@
-"""task198 architecture 3: the clean truth.
+"""task198 architecture 3 generating process: the clean truth the pack is cut from.
 
-Stratified two-stage design. Dwellings within PSUs (meshblocks), PSUs within strata. Each PSU is
-worked by one interviewer and each interviewer works PSUs across every stratum, so the interviewer
-groups cut across the replication groups the design supplies. The recorded outcome carries an area
-effect at PSU level and a probing differential at interviewer level, redrawn each quarter.
+Stratified two-stage design. Dwellings within primary sampling units (meshblocks), units within
+strata, strata within region. Each unit is worked by one interviewer and each interviewer works
+units across every stratum of the region, so the interviewer groups cut across the replication
+groups the design supplies: the 84 replicate groups are formed on units within strata without
+regard to who collected them, so deleting a group never varies a region's interviewer composition.
+
+The recorded damp-or-mould outcome carries an area effect at unit level and a probing differential
+at interviewer level, the differential redrawn each quarter. The named region's population rate
+rises in the field quarter; its measured rise also carries its four-interviewer panel's draw.
 """
 import collections
+import math
 import numpy as np
-CUR, CMP = "2026Q4", "2025Q4"
-NAMED = "Manawatu-Whanganui"          # the region the prompt names
-SIG_INT  = 0.100                       # between-interviewer SD of the probing differential
-SIG_AREA = 0.050                       # between-PSU area effect SD
-PSU_SIZE = 10
-# region: (prevalence, true rise pts, strata, PSUs per stratum, interviewers)
-REGIONS = {
- NAMED:                (0.224, 6.4, 4, 35,  4),     # the named region: a four-interviewer panel
- "Auckland":           (0.168, 0.4, 6, 40, 24),
- "Canterbury":         (0.159, 0.5, 5, 32, 16),
- "Wellington":         (0.173, 0.6, 4, 30, 12),
- "Waikato":            (0.197, 0.8, 4, 28, 11),
- "Bay of Plenty":      (0.216, 0.7, 3, 26,  9),
- "Otago":              (0.181, 0.9, 3, 22,  8),
- "Northland":          (0.243, 0.6, 3, 20,  7),
- "Hawke's Bay":        (0.231, 0.5, 3, 18,  7),
- "Taranaki":           (0.189, 0.6, 2, 18,  6),
- "Southland":          (0.206, 0.7, 2, 16,  5),
- "Gisborne":           (0.262, 0.8, 2, 12,  4),
-}
 
-def build(seed=31982198, sig_int=None):
-    si = SIG_INT if sig_int is None else sig_int
+QUARTERS = ["2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3", "2026Q4"]
+LAYOUT_A = ["2025Q3", "2025Q4"]            # the earlier questionnaire layout
+LAYOUT_B = ["2026Q1", "2026Q2", "2026Q3", "2026Q4"]
+CUR, CMP = "2026Q4", "2025Q4"
+NAMED = "Manawatu-Whanganui"
+N_REP = 84                                  # supplied replicate groups, formed on units
+PSU_SIZE = 10
+SIG_INT = 0.100                             # between-interviewer probing differential, SD
+SIG_AREA = 0.050                            # between-unit area effect, SD
+SEED = 32191656
+QEND = {"2025Q3": "2025-09-30", "2025Q4": "2025-12-31", "2026Q1": "2026-03-31",
+        "2026Q2": "2026-06-30", "2026Q3": "2026-09-30", "2026Q4": "2026-12-31"}
+
+# region: (prevalence, rise in points applied in CUR only, strata, units per stratum, interviewers)
+REGIONS = collections.OrderedDict([
+    (NAMED,            (0.224, 3.0, 4, 35,  4)),
+    ("Auckland",       (0.168, 3.3, 6, 40, 24)),
+    ("Canterbury",     (0.159, 3.6, 5, 32, 16)),
+    ("Wellington",     (0.173, 3.4, 4, 30, 12)),
+    ("Waikato",        (0.197, 3.8, 4, 28, 11)),
+    ("Bay of Plenty",  (0.216, 3.5, 3, 26,  9)),
+    ("Otago",          (0.181, 3.9, 3, 22,  8)),
+    ("Northland",      (0.243, 3.4, 3, 20,  7)),
+    ("Hawke's Bay",    (0.231, 3.2, 3, 18,  7)),
+    ("Taranaki",       (0.189, 3.5, 2, 18,  6)),
+    ("Southland",      (0.206, 3.6, 2, 16,  5)),
+    ("Gisborne",       (0.262, 3.7, 2, 12,  4)),
+])
+# the named region's territorial authorities; TA-MW4 transferred in at the 2026 amalgamation, so
+# the pre-amalgamation base for the region excludes it.
+NAMED_TAS = ["TA-MW1", "TA-MW2", "TA-MW3", "TA-MW4"]
+TRANSFERRED_IN = "TA-MW4"
+# The named region's field panel was consolidated at the start of the field quarter: six of its ten
+# interviewers left and the remaining four carried the whole quarter. Its earlier quarters are
+# therefore collected by a dispersed panel and its own history cannot stand in for this quarter's
+# spread, which is why the interval has to be computed from this quarter's own workload.
+PANEL_NAMED = {q: 4 for q in QUARTERS}
+
+
+def _roster():
+    """(interviewer_id, region, index within region). Ids are allocated in region order."""
+    out = []
+    nxt = 1000
+    for r in REGIONS:
+        ni = REGIONS[r][4]
+        for j in range(ni):
+            out.append((nxt, r, j))
+            nxt += 1
+    return out
+
+
+def build(seed=SEED, sig_int=SIG_INT):
     rng = np.random.default_rng(seed)
-    rows = []          # (quarter, region, stratum, psu_id, interviewer_id, damp)
-    pid = 0; iid = 0; psu_owner = {}; reg_ints = {}
-    for r,(p0,rise,ns,npsu,ni) in REGIONS.items():
-        reg_ints[r] = list(range(iid, iid+ni)); iid += ni
+    roster = _roster()
+    reg_ints = collections.OrderedDict()
+    for iid, r, j in roster:
+        reg_ints.setdefault(r, []).append(iid)
+
+    # units: one owner each, owners cutting across every stratum of the region
+    units = []                      # (region, stratum, unit_id, interviewer, ta)
+    uid = 50000
+    for r in REGIONS:
+        p0, rise, ns, npsu, ni = REGIONS[r]
+        ids = reg_ints[r]
+        t = 0
         for h in range(ns):
             for j in range(npsu):
-                psu_owner[(r,h,pid)] = reg_ints[r][(h*npsu+j) % ni]   # cuts across strata
-                pid += 1
-    psus = {}
-    for (r,h,k) in psu_owner: psus.setdefault(r,[]).append((h,k))
-    for q in (CMP, CUR):
-        d = {i: rng.normal(0, si) for i in range(iid)}       # redrawn each quarter
-        for r,(p0,rise,ns,npsu,ni) in REGIONS.items():
-            p = p0 + (rise/100.0 if q == CUR else 0.0)
-            for (h,k) in psus[r]:
-                a = rng.normal(0, SIG_AREA)
-                i = psu_owner[(r,h,k)]
-                pi = min(max(p + a + d[i], 0.01), 0.95)
-                for y in rng.binomial(1, pi, PSU_SIZE):
-                    rows.append((q, r, h, k, i, int(y)))
-    return rows, reg_ints
+                owner = ids[(h * npsu + j) % ni]
+                ta = (TRANSFERRED_IN if t % 18 == 5 else
+                      NAMED_TAS[t % 3]) if r == NAMED else None
+                units.append((r, h, uid, owner, ta))
+                uid += 1
+                t += 1
 
-# ---------------------------------------------------------------------------
-# Ask-side truth. None of this is read by the main call, which uses only the
-# dwelling records, the replicate weights, the design documentation, the quality
-# framework, the concordance, the change note, the mode log and the workload log.
-# ---------------------------------------------------------------------------
-RNG=np.random.default_rng(5150198)
-# ---- Ask 2 device: field cost claims. Two rate periods; the three largest field areas are paid on a
-# consolidated monthly claim covering every assignment completed in the month, carrying no count.
-RATE=(18.50, 19.75)                      # per completed interview, to 2026-09-30 / from 2026-10-01
-AREAS=[("FA-%02d"%i, w) for i,w in enumerate([.16,.13,.11,.085,.075,.065,.06,.055,.05,.045,.04,.035,.03,.025,.02,.015],1)]
-BIG={a for a,_ in AREAS[:3]}
-def claims():
-    rows=[]; per_q=collections.Counter()
-    tot=sum(w for _,w in AREAS)
-    for qi,(q,months) in enumerate([("2026Q1",(1,2,3)),("2026Q2",(4,5,6)),("2026Q3",(7,8,9)),("2026Q4",(10,11,12))]):
-        n=[1780,1860,1915,1840][qi]
-        for a,w in AREAS:
-            k=int(round(n*w/tot))
-            for m in months:
-                km=int(round(k/3))
-                rate=RATE[1] if m>=10 else RATE[0]
-                if a in BIG:
-                    rows.append(dict(q=q,area=a,month=m,lines=1,ivs=km,amt=round(rate*km,2),cons=True))
-                else:
-                    for _ in range(km): rows.append(dict(q=q,area=a,month=m,lines=1,ivs=1,amt=rate,cons=False))
-                per_q[q]+=km
-    return rows, per_q
-CL,PERQ=claims()
-golden_q={q:PERQ[q] for q in ("2026Q1","2026Q2","2026Q3","2026Q4")}
-lines_q=collections.Counter()
-for r in CL: lines_q[r['q']]+=1
+    # replicate groups: assigned to units within stratum, round robin, ignoring who collected them
+    grp = {}
+    cnt = collections.Counter()
+    for (r, h, u, owner, ta) in units:
+        g = cnt[(r, h)] % N_REP
+        grp[u] = g
+        cnt[(r, h)] += 1
 
-# ---- Ask 3 device: population benchmarks. Amalgamated areas get the group total against each
-# constituent; the true per-area figure is a published table split into two age bands to be added.
-GROUPS={"TA-A":["TA-A1","TA-A2","TA-A3"],"TA-B":["TA-B1","TA-B2","TA-B3"],"TA-C":["TA-C1","TA-C2","TA-C3"]}
-TRUE={}
-base=[40200,31500,27400,24100,21800,19600,17300,15900,14200,12700]
-codes=["TA-A1","TA-A2","TA-A3","TA-B1","TA-B2","TA-B3","TA-C1","TA-C2","TA-C3","TA-F"]
-for c,v in zip(codes,base): TRUE[c]=v
-GROUPTOT={g:sum(TRUE[c] for c in m) for g,m in GROUPS.items()}
-memberof={c:g for g,m in GROUPS.items() for c in m}
-IVS={c:int(round(v/1000*RNG.uniform(9.5,13.5))) for c,v in TRUE.items()}
-# the one area the benchmarks file carries no figure for at all (returned by another team)
-BLANK="TA-F"
+    dwellings = []                  # (quarter, region, stratum, unit, interviewer, ta, mode, damp, order)
+    workload = []                   # (quarter, interviewer, region, unit, completed)
+    uorder = collections.Counter()
+    seq = {}
+    for (r, h, u, owner, ta) in units:
+        seq[u] = uorder[r]; uorder[r] += 1
+    for q in QUARTERS:
+        d = {iid: rng.normal(0.0, sig_int) for iid, r, j in roster}
+        for (r, h, u, owner0, ta) in units:
+            if r == NAMED:
+                pool = reg_ints[NAMED][:PANEL_NAMED[q]]
+                owner = pool[seq[u] % len(pool)]
+            else:
+                owner = owner0
+            p0, rise, ns, npsu, ni = REGIONS[r]
+            p = p0 + (rise / 100.0 if q == CUR else 0.0)
+            a = rng.normal(0.0, SIG_AREA)
+            pi = min(max(p + a + d[owner], 0.01), 0.95)
+            y = rng.binomial(1, pi, PSU_SIZE)
+            # mode is independent of the outcome, so the mode-mix rival dies on the data
+            m = rng.random(PSU_SIZE)
+            for k in range(PSU_SIZE):
+                dwellings.append((q, r, h, u, owner, ta,
+                                  "TEL" if m[k] < 0.18 else "F2F", int(y[k]),
+                                  float(rng.random())))
+            workload.append((q, owner, r, u, PSU_SIZE))
+    return dict(dwellings=dwellings, units=units, roster=roster, reg_ints=reg_ints,
+                grp=grp, workload=workload)
 
-def ask3_figures():
-    g={}; nat={}
-    for c in codes:
-        g[(c,'pop')]=TRUE[c]; g[(c,'rate')]=round(1000.0*IVS[c]/TRUE[c],1)
-        if c==BLANK: nat[(c,'pop')]=None; nat[(c,'rate')]=None       # blank sends everyone to the table
-        elif c in memberof:
-            nat[(c,'pop')]=GROUPTOT[memberof[c]]
-            nat[(c,'rate')]=round(1000.0*IVS[c]/GROUPTOT[memberof[c]],1)
-        else:
-            nat[(c,'pop')]=TRUE[c]; nat[(c,'rate')]=g[(c,'rate')]     # ungrouped: file is right
-    return g,nat
-G3,N3=ask3_figures()
+
+# --------------------------------------------------------------------------------------
+# Estimation helpers: the supplied replication and the one re-formed over the field workload.
+# --------------------------------------------------------------------------------------
+
+def region_rate(dw, region, quarter, base="new"):
+    n = y = 0
+    for (q, r, h, u, i, ta, md, v, o) in dw:
+        if r != region or q != quarter:
+            continue
+        if base == "old" and ta == TRANSFERRED_IN:
+            continue
+        n += 1
+        y += v
+    return 100.0 * y / n, n
+
+
+def rep_rates(dw, grp, region, quarter):
+    """the region's rate under each supplied replicate: delete a group within each stratum and
+    scale the survivors in that stratum, which is what the shipped replicate weights encode."""
+    cells = collections.defaultdict(lambda: [0, 0])
+    for (q, r, h, u, i, ta, md, v, o) in dw:
+        if r != region or q != quarter:
+            continue
+        cells[(h, u)][0] += 1
+        cells[(h, u)][1] += v
+    byh = collections.defaultdict(list)
+    for (h, u), c in cells.items():
+        byh[h].append((u, c))
+    out = []
+    for g in range(N_REP):
+        num = den = 0.0
+        for h, lst in byh.items():
+            keep = [(u, c) for u, c in lst if grp[u] != g]
+            if not keep or len(keep) == len(lst):
+                sc = 1.0
+                keep = lst
+            else:
+                sc = float(len(lst)) / len(keep)
+            for u, c in keep:
+                den += c[0] * sc
+                num += c[1] * sc
+        out.append(100.0 * num / den)
+    return out
+
+
+def var_supplied(dw, grp, region, quarter):
+    th, _ = region_rate(dw, region, quarter)
+    rr = rep_rates(dw, grp, region, quarter)
+    k = float(N_REP)
+    return (k - 1.0) / k * sum((x - th) ** 2 for x in rr)
+
+
+def sigma_interviewer(dw, exclude_region):
+    """between-interviewer SD of the recorded rate, in points, from the whole workforce outside
+    the named region. Method of moments; anova and reml agree to 0.15 per cent on this record."""
+    agg = collections.defaultdict(lambda: [0, 0])
+    tot = collections.defaultdict(lambda: [0, 0])
+    for (q, r, h, u, i, ta, md, v, o) in dw:
+        if r == exclude_region:
+            continue
+        agg[(q, r, i)][0] += 1
+        agg[(q, r, i)][1] += v
+        tot[(q, r)][0] += 1
+        tot[(q, r)][1] += v
+    res = []
+    ms = []
+    pv = []
+    for (q, r, i), (n, y) in agg.items():
+        if n < 20:
+            continue
+        p = tot[(q, r)][1] / float(tot[(q, r)][0])
+        res.append(y / float(n) - p)
+        ms.append(float(n))
+        pv.append(p)
+    res = np.array(res)
+    ms = np.array(ms)
+    pv = np.array(pv)
+    within = float(np.mean(pv * (1 - pv) / ms))
+    return 100.0 * math.sqrt(max(float(res.var(ddof=1)) - within, 1e-12)), len(res)
+
+
+def workload_shares(dw, region, quarter):
+    w = collections.defaultdict(float)
+    for (q, r, h, u, i, ta, md, v, o) in dw:
+        if r == region and q == quarter:
+            w[i] += 1.0
+    tot = sum(w.values())
+    return sorted(x / tot for x in w.values())
+
+
+def verdict(dw, grp, region=NAMED, cur=CUR, cmp_=CMP):
+    """both routes on the filed estimand: the supplied replication and the one re-formed over
+    the field workload. Returns the change, both standard errors and both z values."""
+    rc, _ = region_rate(dw, region, cur)
+    rp, _ = region_rate(dw, region, cmp_)
+    delta = rc - rp
+    vs = var_supplied(dw, grp, region, cur) + var_supplied(dw, grp, region, cmp_)
+    sb, _ = sigma_interviewer(dw, region)
+    s2 = sum(x * x for x in workload_shares(dw, region, cur)) + \
+         sum(x * x for x in workload_shares(dw, region, cmp_))
+    vg = vs + sb * sb * s2
+    return dict(delta=delta, se_supplied=math.sqrt(vs), se_correct=math.sqrt(vg),
+                z_supplied=delta / math.sqrt(vs), z_correct=delta / math.sqrt(vg),
+                sigma_int=sb, shares_sq=s2, f=math.sqrt(vg / vs))

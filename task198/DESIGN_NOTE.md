@@ -67,6 +67,15 @@ to be recovered as a rule.
    third; the generator fixes the seed and no role is hostage to it, because there is one region and one
    verdict rather than a loud and a quiet candidate to be kept apart.
 
+**The general lesson, worth more than this build.** A verdict is a coin with two faces, so a screen that
+only reads which side of the bar each route lands on is worthless: the abandoned first tuning had the right
+faces, every reflex filing the supplied verdict and the golden filing not established, and no margin at
+all, with the golden at z 1.83 against a 1.96 bar and the flip 8 per cent of the variance component away.
+It would have shipped. What makes a verdict architecture sound is the distance to the flip, measured, and
+the only honest defence of an interval-based call is that nothing in the estimator's own family can move
+it: 61 per cent, fifteen relative standard errors, four hundred times the family's own spread. Measure the
+margin, never the face.
+
 **Measured margin, which is the number that matters and not the face.** The verdict is a coin with two
 faces, so the sweep measures the distance to the threshold rather than which side of it a route lands on.
 `sigma_int` would have to fall from 10.08 points to **3.94**, a fall of **61 per cent** and about **15
