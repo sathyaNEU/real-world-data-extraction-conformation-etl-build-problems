@@ -530,6 +530,94 @@ of Ask A's devices cracked 42.8, with both of Ask B's 48.8.
 | each winter's swing in salt per point | the weather the index does not score (event mix, pavement temperatures, freezing rain), common to every road | every salt record | one winter either side of a move read as typical | same call, netted against the never-moved collectors or not (SF14, asserted) |
 | a pull of the salted network only | the register export's filter (Priority 1 and 2, and the Priority 3 hills) | the register, the manifest says so | the register read as every street | none |
 
+## Residual
+
+What stage 4 round 3 leaves standing, as measured (each figure from `generator/checks.py`, `calc.py` or the judge's
+report):
+- The round 3 judge's first advisory, on the dome asks: the scale-house log ends on 24 September and the supplier's
+  October schedule starts on 1 October, so a movement on 25 to 30 September is in no shipped file; the golden, and the
+  only literal answer the files support, counts none, and no competing answer can be derived from the pack. The judge's
+  optional pin (one clause, movements to 24 September) was not taken: the prompt does not change.
+- Its second advisory, on the arterial asks: the older controllers' fault (a run's total written on every segment row,
+  gross of the spinner brine) is documented nowhere. It is recoverable from the data (one repeated total per run
+  reference on the M410 and pre-retrofit units, 38.2 litres a tonne against 40, the loader-scale reconciliation), and the
+  data pick the corrected series over halving (five figures a cell off) or de-duplication without the brine step: Layer
+  1 plus semantics inside the asks, which the rules allow, on rows the call never reads.
+- The main call's margin. The golden files 2,213.7 t, 36.3 t inside its bin. The judge's own construction (the new
+  streets' own Priority 2 salt as the mean of the five winters, 665 t) files 2,203.7 t, 54 t over 2,150 and 46 t under
+  2,250, and its estimators land from 2,158 to 2,221 t; the one exception it found, a fit on the 2025 cohort alone (53
+  moves, one winter after the move), files 2,300 t.
+- The constructions outside the bin (Ladder, CRUDE): two and three equal-count bands (2,105.2 and 2,147.8 t), a 1.23 t
+  kernel (2,120.7 t), the range trim's plain average (2,136.4 t), the 10 and 20 earlier moves nearest the pool's mean
+  (2,294.9 and 2,280.3 t) and a 0.1 t window over 24 streets (2,255.5 t); each closes on the golden as it is refined or
+  thickened. Inside the bin but near an edge: a 0.9 t kernel (2,158.6 t) and the un-netted first winter after each move
+  (2,162.5 t).
+- The arterial cells sit 17.2 t or more from a 50 t edge under the records' route and under the loading-log calibration
+  (4.5 t apart at most); the brine left in lands a full cell high in every cell, and the UTC season dates move none.
+- The round 3 reader's mild tells, left as they are: the survey's stocks sit a little off its printed volumes times
+  1.20 t a cubic metre (4,980.4 t against 4,980.0), because the report converts the measured volume and prints volumes
+  to the nearest cubic metre, as it says; one density serves all four domes (the bulk density agreed with the City); the
+  two dispatch issues differ by a handful of reshuffled rows. The readings it noted on the asks (which dispatch issue, deliveries after 1 November,
+  the realignment) are closed by the prompt's "October deliveries booked with the supplier", the later issue and "under
+  the yard it belonged to that winter".
+- The recheck's realism items not changed: the gain line reads r = -0.95 (it judged real records nearer -0.8), and
+  1,338 km of collectors is on the large side for a city of 410,000.
+- Duplicates: guard heart PASS (nearest driver 0.11, task118, differentiated at the draw); guard surface promotes nine
+  pairs (task164 back to back and task453 and task159 on surface similarity; task163 and task167 two apart on the
+  decisive gap and decision type; task465, task134, task146 and task54 on gap, pattern and decision family), each with
+  a differentiation line on the card, left to the author's optional clone-check.
+
+## Pre-ship check
+
+The 10/10 rules read again against the shipped pack (target.zip d87ff77a):
+- Rule 1, the domain: the deciding quantity is the extra rock salt per lane-km a collector needs when it moves from
+  Priority 2 (salted at intersections, hills and curves) to Priority 1 (bare pavement), per point of storm severity at
+  the plan's 61.7, which a roads division sizes from its own spreader records of the collectors it moved before,
+  carried across by how much of each street Priority 2 already salted; the swap test holds (the judge's Gate H: pass,
+  every round).
+- Rule 2, two layers: Layer 1 is the AVL replacement (kilograms, local time and segment-by-shift summaries against
+  tonnes, UTC and one row per pass), the 2023 crosswalk, the storm log's two layouts, the route audit's free-text
+  reasons and sittings, trucks rotating, the register pull, each winter's own swing, and on the asks' rows only the
+  dispatch re-issue, the survey's UTC capture, weighings at another yard's scale, transfers, the wet load, the older
+  controllers' run totals and combined mass, the contractor's circuits and the realignment, each asserted neutral on
+  the call (R2, SF4, SF14, SEPARATION). Layer 2 decides: the earlier moves' gain read at the new streets' own Priority
+  2 salt, chosen over the pooled gain and the netted level out of sample (each move year held out, ten folds, the new
+  streets' band).
+- Rule 3: nothing planted, no filed method, no field marks coverage: the procedure files the WHAT (population, window,
+  comparison, severity, unit), the plan files the severity and that salt is planned per WSI point (read by the round 3
+  reader as its ordinary severity convention), and no column holds a coverage, a hazard length or a gain. The easy
+  route on the clean truth files 2,600 t (R3a); the decisive step alone files 2,200 t (R3b). The rule 3 audit read PASS
+  twice: round 1 (rule3/task165, on 24bfc51e) with two strength defects (the default at last winter's severity landing
+  by coincidence, the common-exposure screen) and data too smooth, P(both) about 0.07, repaired (the 2025-26 winter
+  redrawn to 58.4 points, each street's own variation, coverage by block length, the earlier moves widened, trucks
+  rotating); round 2 (rule3/task165b, on 62835bde) at P(one) about 0.15 and P(both) about 0.06, its forks (the gain
+  component's rounding, the own-salt basis, the one-sigma wording, the pooled rung's label, the length statement) and
+  realism items (no common winter swing, the audit keyed row by row, steady yearly counts) repaired on d87ff77a. The
+  note's own count at ship: P(one) about 0.13, P(both) about 0.05.
+- Determinism: judge round 1 (judge-task165, on the stage 3 cut) NOT_DETERMINISTIC on supplementary answer 3 only (the
+  arterial yard basis unfiled, no exact route for the older controllers), the main call DETERMINISTIC with Gates F, G
+  and H passing, FIX_NOW: the yard basis filed in the ask's sentence, the pre-wet rate and the brine's weight in the
+  plan; round 2 (judge-task165b, on 62835bde) DETERMINISTIC, FIX_NOW on the arterial precision (the loading-log
+  calibration within 0.2 to 6.6 t of the exact route, unpinned at the tonne): the arterial figures asked to the nearest
+  50 t, both routes 17.2 t or more from every edge; round 3 (judge-task165c, on d87ff77a) DETERMINISTIC, APPROVE, no
+  fix: 2,203.7 t by its own construction, estimators from 2,158 to 2,221 t, the easy routes rejected on a hold-out (the
+  mean gain 12 per cent off, the benchmark 7, the fit 3), all 8 dome and 12 arterial figures exact, Gates G and H and
+  hygiene passing, its two advisories under Residual.
+- Readers: round 1 (leak-task165) clean, Q6 an analytical choice; round 2 (leak-task165b) clean, with mild realism
+  tells only; round 3 (leak-task165c) clean, the plan's per-point sentence read as its ordinary severity convention,
+  its mild tells under Residual.
+- Duplicates: guard heart PASS; guard surface's nine promoted pairs (Residual), each differentiated on the card and left
+  to the author.
+- Forum: the draw's `line_manager_or_team` was banned against task247, so the forum was redrawn in the build itself to
+  `council_or_assembly` (procedure RO-PR-07 5 sends spending above the contract quantity to council under the
+  procurement by-law; the deliverable is a one-page report to council and the prompt names council), every figure
+  unchanged, the card's dates and stamps untouched.
+- Gates at ship: checks 162, verify 29 on its own path, two byte-identical builds (target, golden, figures, write-up),
+  figures_check 39, precut 51 checks with no FAIL or WARN, voice-check PASS, leak.py REVIEW answered (no LEAK),
+  container audit clean on target/ and golden/, guard validate clean, heart PASS, surface exit 0, cracker pair ceiling
+  33.3 and mirror leakage 8.7 per cent; the archive's 21 members equal the tree and metadata.json by content; target.zip
+  d87ff77a from the final rebuild.
+
 ## Tried and rejected
 
 - Pattern E on the card: E's discriminator is an absolute split, which this build does not have (the gain falls

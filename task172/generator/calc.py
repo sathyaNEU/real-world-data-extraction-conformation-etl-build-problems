@@ -100,7 +100,7 @@ def renewals(T, cases=None, ref=None):
     for a in T["actions"]:
         k = ref.get(a["case_id"])
         if a["action"] == "Expedite request":
-            exped[k].append((_d(a["action_date"]), a["outcome"]))
+            exped[k].append((_d(a["action_date"]), a["outcome"], _d(a["outcome_date"])))
         elif a["action"] == "Stop work":
             stops[k] = _d(a["action_date"])
     out = []
@@ -128,6 +128,7 @@ def renewals(T, cases=None, ref=None):
                         decided=None if withdrawn else decided, withdrawn=withdrawn, stop=stop,
                         card_exp=reg["card_exp"] if reg else None,
                         exp_req=ex[-1][0] if ex else None, exp_out=ex[-1][1] if ex else None,
+                        exp_reply=ex[-1][2] if ex else None,
                         approved=any(n["notice_type"] == "Approval notice" for n in dec)))
     out.sort(key=lambda r: (r["received"], r["receipt"]))
     return out
@@ -345,7 +346,7 @@ def ask_a(T, cases, ref, **kw):
     return out
 
 
-def forward_mix(T, cases, ref, d_median):
+def forward_mix(T, cases, ref, d_median, keep_approved=False):
     """the quarter's renewals by category: the current work permits whose renewal reaches USCIS in the quarter (the
     card's last day less the record's median card gap falls from 1 January to 31 March 2027), leaving out the (c)(9)
     cards of applicants whose adjustment the tracker shows approved"""
@@ -355,7 +356,7 @@ def forward_mix(T, cases, ref, d_median):
             lpr.add(t["applicant_id"] if t["relationship"] == "Principal" else ("spouse of", t["principal_employee_id"]))
     n = {cat: 0 for cat in C.CATS}
     for person, c in latest_cards(T, cases, ref).items():
-        if c["cat"] == "(c)(9)" and person in lpr:
+        if c["cat"] == "(c)(9)" and person in lpr and not keep_approved:
             continue
         if C.Q_START <= c["vt"] - D_(days=int(round(d_median))) <= C.Q_END:
             n[c["cat"]] += 1

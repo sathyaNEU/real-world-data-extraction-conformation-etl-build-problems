@@ -408,8 +408,8 @@ def write_all(W):
                 ret = s["returned"] if s["outcome"] != "Receipted" else None
                 if ret and ret > exp:
                     ret, status = None, "Sent"
-                if status == "Receipted" and s["arrive"] + D_(days=12) > exp:
-                    status = "Sent"
+                if status == "Receipted" and (s["arrive"] + D_(days=12) > exp or cs.received is None):
+                    status = "Sent"           # no receipt notice reached the team (the matter closed on a departure)
                 disp.append(dict(pid=pid, sent=s["sent"], case=cs.new_id if (cs.new_id and s["sent"] >= C.REGISTER_SWITCH)
                                  else cs.case_ref, person=cs.holder.id, contents=contents, to=LOCKBOX[st],
                                  courier="FedEx", tracking="%012d" % int(rng.integers(10 ** 11, 10 ** 12)), status=status,
@@ -425,7 +425,8 @@ def write_all(W):
                                                                           int(rng.integers(0, 10 ** 10))),
                                send=s)
                 if s["outcome"] == "Receipted":
-                    new_row.update(status="Receipted" if s["arrive"] + D_(days=12) <= exp else "Sent", returned=None)
+                    new_row.update(status="Receipted" if (s["arrive"] + D_(days=12) <= exp and cs.received is not None)
+                                   else "Sent", returned=None)
                 else:
                     ret = s["returned"]
                     new_row.update(status="Returned" if ret <= exp else "Sent", returned=ret if ret <= exp else None)
@@ -592,6 +593,8 @@ def people(W, R):
             deps.append(dict(id=s.id, enroll=e.enroll, rel="Spouse" if rng.random() < 0.97 else "Domestic partner",
                              start=start, birth=s.dob_year, sp=s))
     r_k = C.stream("children")
+    r_kid = C.stream("children ids")
+    spouse_ids = {x.id for x in W.spouses} | {x.dep_id for x in W.spouses if x.dep_id}
     for e in W.emps:
         if e.spouse is None or not (e.term is None or e.term > exp) or e.hire > exp:
             continue
@@ -599,7 +602,10 @@ def people(W, R):
             birth = int(r_k.integers(2008, 2026))
             first = max(e.hire, dt.date(2019, 1, 1), dt.date(birth, 1, 1) + D_(days=int(r_k.integers(0, 330))))
             start = min(first + D_(days=int(r_k.integers(0, 45))), exp - D_(days=int(r_k.integers(1, 30))))
-            deps.append(dict(id="D%07d" % int(r_k.integers(10 ** 6, 10 ** 7)), enroll=e.enroll, rel="Child",
+            cid = "D%07d" % int(r_k.integers(10 ** 6, 10 ** 7))
+            while cid in spouse_ids:                  # Benefits never reuses a dependant ID
+                cid = "D%07d" % int(r_kid.integers(10 ** 6, 10 ** 7))
+            deps.append(dict(id=cid, enroll=e.enroll, rel="Child",
                              start=start, birth=birth, sp=None))
     seen = set()
     deps2 = []

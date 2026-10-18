@@ -138,6 +138,9 @@ def main(target):
     dflt = routes["default: post-rule record, appointment waits plus the new delay"]
     check("R3a analyst test: the default path, every filed rule applied, files 7.0", C.half_month(dflt) == 7.0,
           "%.3f months" % dflt)
+    check("R3a the default path reweighted to the quarter's categories files 6.5 (the write-up's 6.5 to 7.0)",
+          C.half_month(routes["default path reweighted to the quarter's categories"]) == 6.5,
+          "%.3f" % routes["default path reweighted to the quarter's categories"])
     check("R3a the record's own waits, open cases censored, file 4.0",
           C.half_month(routes["record KM, all receipts"]) == 4.0, "%.3f" % routes["record KM, all receipts"])
     unc = routes["stage model, uncapped"]
@@ -226,6 +229,35 @@ def main(target):
           "no later than the 30th day after the date on the rejection notice" in pol)
     check("SF21 GM-07 2.3 and 2.4 file ask B's filed again as USCIS's receipt", "filed on the date USCIS receives it" in pol
           and "when USCIS receives it" in pol)
+    ratio = {}
+    emp_state = {e["employee_id"]: e["work_state"] for e in T["employees"]}
+    for st in sorted(set(emp_state.values())):
+        def lead_in(a, b):
+            v = []
+            for r in rens:
+                c = cases.get(r["case"])
+                if not (c and r["route"] == "appointment" and r["appt"] and a <= r["received"] <= b):
+                    continue
+                e = c["person"] if c["ptype"] == "employee" else c["sponsor"]
+                if emp_state.get(e) == st:
+                    v.append((r["appt"] - r["received"]).days)
+            return v
+        now = lead_in(dt.date(2026, 10, 1), dt.date(2026, 11, 30))
+        then = lead_in(dt.date(2025, 1, 1), dt.date(2025, 12, 31))
+        if len(now) >= 5 and len(then) >= 20:
+            ratio[st] = float(np.median(now) / np.median(then))
+    check("SF22 the appointment queue is the support centre's, not a category's: the October and November lead stands "
+          "at about four times the 2025 lead in every state the receipts reached", len(ratio) >= 5 and
+          max(ratio.values()) / min(ratio.values()) < 1.35, ", ".join("%s %.2f" % kv for kv in ratio.items()))
+    check("SF23 GM-07 1.3 files a domestic partner Benefits covers as the household's spouse, and Global Mobility's "
+          "records as the household that governs", "whether Benefits covers her as a spouse or as a" in pol and
+          "took into its care with the employee's household" in pol)
+    gm_spouse = {p_["holder_id"] for p_ in T["permits"] if p_["holder_type"] == "Spouse"}
+    gm_spouse |= {c["person"] for c in cases.values() if c["ptype"] == "spouse"}
+    gm_spouse |= {t["applicant_id"] for t in T["tracker"] if t["relationship"] == "Spouse"}
+    kid_clash = [d["dependant_id"] for d in T["dependants"] if d["relationship"] == "Child" and d["dependant_id"] in gm_spouse]
+    check("SF24 one dependant ID, one person: no child in Benefits carries a spouse's ID from Global Mobility's records",
+          not kid_clash, ", ".join(kid_clash) or "none")
 
     # ------------------------------------------------------------------ constructions, one sigma, rivals
     var, sig = mg["var"], mg["sig"]
@@ -243,9 +275,19 @@ def main(target):
               if C.half_month(routes[k]) == gold),
           "; ".join("%s %.3f (n %d)" % (k.replace("decided renewals with an appointment ", ""), routes[k],
                                        routes["_n_lead_%s_post" % k.split(" days")[0].split()[-1]]) for k in thin))
+    coincid = ("record since the rule plus the new delay times the quarter's appointment share",
+               "record, all receipts, plus the new delay times the quarter's appointment share")
+    check("flagged coincidental routes: a percentile moved by the new delay times the quarter's appointment share lands "
+          "(a mean added to a percentile; the record's own share gives 6.0)",
+          all(C.half_month(routes[k]) == gold for k in coincid) and
+          C.half_month(routes["record since the rule plus the new delay times the appointment share"]) == 6.0,
+          "%.3f and %.3f at the quarter's share %.3f; %.3f at the record's" % (
+              routes[coincid[0]], routes[coincid[1]], routes["_pA_quarter"],
+              routes["record since the rule plus the new delay times the appointment share"]))
     natural = [k for k in routes if not k.startswith("_") and not k.startswith("cut at the card") and
                not k.startswith("every renewal cut") and not k.startswith("renewals decided after an expedite") and
-               k not in ("record plus 1.5 months", "post-rule record, 97.5th percentile") and k not in thin]
+               k not in ("record plus 1.5 months", "post-rule record, 97.5th percentile") and k not in thin and
+               k not in coincid]
     misses = {k: routes[k] for k in natural if not np.isnan(routes[k])}
     bad = [k for k, x in misses.items() if abs(C.half_month(x) - gold) < 0.5]
     check("every natural route misses the golden by a bin or more", not bad,
@@ -266,7 +308,7 @@ def main(target):
         else:
             whole.append(((end - r["received"]).days + add, 0))
     v = K.km_quantile(whole) / M
-    check("the write-up's 7.0 rival holds on the whole record too", C.half_month(v) == 7.0, "%.3f" % v)
+    check("the write-up's 6.5 to 7.0 rival holds on the whole record too", C.half_month(v) in (6.5, 7.0), "%.3f" % v)
     p10 = float(np.percentile(comp["L"], 10))
     dec_a = [r for r in rens if r["decided"] and not r["withdrawn"] and r["route"] == "appointment" and r["appt"]]
     at_post = [r for r in dec_a if r["received"] >= C.IFR and (r["appt"] - r["received"]).days >= p10]
@@ -428,10 +470,12 @@ def main(target):
         held[c["holder"]].add((c["vf"], c["vt"]))
     shared = sum(1 for eid, ids in pairs.items() if len(set.intersection(*[held[i] for i in ids])) > 0)
     one_each = all(sum(1 for x in W.spouses if x.principal is e) <= 1 for e in W.emps if e.spouse is not None)
-    check("ask A: silent device A6 (one spouse under two IDs) moves five or more cells, and every household the pack "
-          "shows with two spouse IDs is one spouse's two IDs (an employee has one spouse; the pairs share a card)",
-          len(moved6) >= 5 and one_each and all(world_pair.get(eid) == ids for eid, ids in pairs.items()) and
-          shared >= 0.5 * len(pairs), "%d cells moved %s; %d households with two IDs, %d sharing a card" % (
+    check("ask A: silent device A6 (one spouse under two IDs) moves every (c)(26) cell and a (c)(9) one, and every "
+          "household the pack shows with two spouse IDs is one spouse's two IDs (an employee has one spouse; most "
+          "pairs share a card to the day)",
+          all((y, m, "(c)(26)") in moved6 for (y, m) in C.ASK_A_MONTHS) and len(moved6) >= 4 and one_each and
+          all(world_pair.get(eid) == ids for eid, ids in pairs.items()) and shared >= 0.5 * len(pairs),
+          "%d cells moved %s; %d households with two IDs, %d sharing a card" % (
               len(moved6), {k: by_id[k] - A[k] for k in moved6}, len(pairs), shared))
     # the call through ask A's devices un-cracked: roster cards and labels only, spouses linked through Benefits only
     enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
@@ -477,6 +521,30 @@ def main(target):
         tb[lab] = (nr, nf)
     B = K.ask_b(T, cases, ref)
     check("ask B: the pack's answer equals the clean truth, quarter by quarter", B == tb, str(B))
+    stops = {}
+    for a in T["actions"]:
+        if a["action"] == "Stop work":
+            stops[ref.get(a["case_id"])] = K._d(a["action_date"])
+    rec_on = set()
+    for n in T["notices"]:
+        if n["notice_type"] == "Receipt notice":
+            rec_on.add(ref.get(n["client_ref"]))
+    for c in cases.values():
+        if c["received"]:
+            rec_on.add(c["id"])
+    first_sent = {}
+    for r in sorted(T["dispatch"], key=lambda r: r["sent_on"]):
+        if "renewal" in r["contents"]:
+            first_sent.setdefault(ref.get(r["case_id"]), K._d(r["sent_on"]))
+    late_refile = [r["packet_id"] for r in T["dispatch"] if "renewal" in r["contents"] and ref.get(r["case_id"]) in stops
+                   and K._d(r["sent_on"]) > stops[ref.get(r["case_id"])] and
+                   K._d(r["sent_on"]) > first_sent[ref.get(r["case_id"])]]
+    no_rcpt = [r["packet_id"] for r in T["dispatch"] if "renewal" in r["contents"] and r["status"] == "Receipted" and
+               ref.get(r["case_id"]) not in rec_on]
+    check("ask B: no renewal packet is sent again after the team stopped work on its case, and every packet the mailroom "
+          "marks Receipted has USCIS's receipt on record (so the mailroom log adds no refiling)",
+          not late_refile and not no_rcpt, "%d late refiles, %d receipted without a receipt" % (len(late_refile),
+                                                                                           len(no_rcpt)))
     check("ask B: applicant-only rejection notices fall in every quarter", all(appl[k] >= 1 for k in tb), str(dict(appl)))
     check("ask B: every quarter's refiled count turns on a filing counsel never logged", all(selfref[k] >= 1 for k in tb),
           str(dict(selfref)))

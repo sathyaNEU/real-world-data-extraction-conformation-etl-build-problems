@@ -27,7 +27,7 @@
    "rejected": 18
   }
  },
- "expedite_accepted": 0.87,
+ "expedite_accepted": 0.862,
  "expedite_response": "about a week",
  "expedite_response_weeks": 1,
  "lead_weeks_before": 4,
@@ -41,6 +41,7 @@
  "reach_share": 0.444,
  "refile_days": 30,
  "rival_default_months": 7.0,
+ "rival_default_months_mix": 6.5,
  "rival_record_months": 4.0,
  "standard_sections": [
   "2.3",
