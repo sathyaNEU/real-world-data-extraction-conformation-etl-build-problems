@@ -120,6 +120,17 @@ def main():
     wbk = sheet("settlement_advices_2026_27.xlsx", "advices")
     ok("xlsx reads back (settlement advices)", len(wbk) > 100 and "advice_total_gbp" in wbk[0],
        "%d advices" % len(wbk))
+    dic = rows("data_dictionary.csv")
+    dic_txt = " | ".join("%s %s %s" % (r["extract"], r["column"], r["definition"]) for r in dic)
+    ok("the dictionary reads back and files the conventions the call leans on, positive control",
+       len(dic_txt) > 0 and len({r["extract"] for r in dic}) >= 10
+       and "The cover the case falls under: scam reimbursement or unauthorised fraud." in dic_txt
+       and "A case is one case however many legs it covers." in dic_txt
+       and "in thousands, on the sheet covering scheme years to 2023/24" in dic_txt,
+       "%d rows over %d extracts, %d characters"
+       % (len(dic), len({r["extract"] for r in dic}), len(dic_txt)))
+    ok("the dictionary does not name the decisive step, on the same reader",
+       not leaky_dic().search(dic_txt), "clean")
 
     print("\n-- the call")
     volumes = {}
@@ -386,6 +397,11 @@ def main():
 
     print("\n%d checks, %d PASS, %d FAIL" % (len(PASS) + len(FAIL), len(PASS), len(FAIL)))
     return 1 if FAIL else 0
+
+
+def leaky_dic():
+    return re.compile(r"independen|capture|recapture|two.source|Petersen|Chapman|Bailey|self.produced"
+                      r"|cannot have|attribut|detection coverage|sighting|overlap", re.I)
 
 
 def _q(day, year):

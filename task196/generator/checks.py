@@ -423,8 +423,8 @@ def main():
        max(dt.date.fromisoformat(r["registered_date"]) for r in matches) <= W.PULL,
        "latest registration %s" % max(r["registered_date"] for r in matches))
     ok("the dictionary covers every shipped file that needs it",
-       len({r["file"] for r in read_csv("data_dictionary.csv")}) >= 10,
-       "%d files described" % len({r["file"] for r in read_csv("data_dictionary.csv")}))
+       len({r["extract"] for r in read_csv("data_dictionary.csv")}) >= 10,
+       "%d files described" % len({r["extract"] for r in read_csv("data_dictionary.csv")}))
     ok("the manifest covers every shipped file",
        {r["file"] for r in read_csv("export_manifest.csv")} >= set(files) - {"export_manifest.csv"},
        "%d rows" % len(read_csv("export_manifest.csv")))

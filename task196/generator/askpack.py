@@ -264,7 +264,7 @@ def reference_files(target, w):
         ("member_register.csv", "triennial_review_this_cycle", "yes where the member's triennial "
          "experience review falls at this meeting of the trustees."),
     ]
-    _w(os.path.join(target, "data_dictionary.csv"), ["file", "field", "definition"],
+    _w(os.path.join(target, "data_dictionary.csv"), ["extract", "column", "definition"],
        [[a, b, c] for a, b, c in dic])
 
     with open(os.path.join(target, "register_feed_notes.txt"), "w", encoding="utf-8") as f:

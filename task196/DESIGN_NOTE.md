@@ -80,7 +80,7 @@ The solver files 23 cases per million payments for Castlegate because it treats 
 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of
 the case, when 205 of the 325 matches that are also its own cases exist only because Castlegate asked the
 receiving firm to return the money after opening the case, so the overlap it divides by is mostly its own
-work and what neither channel saw comes out at less than a third of its true size.
+work and what neither channel saw comes out at about a tenth of its true size, 20.1 cases against 203 on the same observed union of 487.
 
 ## Three rules
 
@@ -437,13 +437,25 @@ credit that would value after the extract is not posted). The three remaining RE
 promoted pair task194 against task196 is answered by the card's differentiation and by the driver score:
 task194's G12 is a count that crystallises after the period it belongs to, read through two vintages of the
 same series; this build's G12 is a count of events that never entered the record at all, recovered from the
-overlap of two channels, and the two drivers score 0.06. The other promoted pairs carry no shared string,
+overlap of two channels, and the two drivers score 0.06. Re-run on the final pack, `surface` also promoted three pairs on one table
+with an identical column set, which was `data_dictionary.csv` carrying the generic header
+`file,field,definition` shared with task198. The dictionary is furniture the input gates require rather than
+anything that drives the stump, but a shared header is a shared string, so the header now reads
+`extract,column,definition` in the mutual's own idiom and the finding is gone: promoted pairs fall from 14
+to 11 and the identical-column-set count to zero. The remaining promoted pairs carry no shared string,
 no shared persona and no shared mechanism; they are the corpus's ordinary top-percentile surface noise.
 
 **`guard.py heart`: WARN, no BLOCK.** The two WARNs are the Gate G mechanism's overuse across the batch and
 the objective's, both answered in `## Draw`. The one BLOCK the batch produced, `ban.artifact` against
 task197's `register`, was a wrong key rather than a repeated organ and is re-keyed `planning_thread` in
 `## Tried and rejected`; `guard.py check` and `heart` both return WARN at exit 0 on the re-keyed card.
+
+**The dictionary is read back by the verifier.** `data_dictionary.csv` carries the conventions the call
+leans on (SF1's cover class, SF8's one case however many legs, SF4's thousands against units) and no
+assertion had ever opened it from the shipped bytes, so `verify.py` now reads it through its own csv reader
+and asserts those three sentences as its positive control on that same reader, with a non-zero extraction
+length and the decisive-step sweep run on the same extracted text. An empty extraction fails the assertion
+rather than satisfying it.
 
 **`target.zip` is cut by the house cutter**, `generator/archive.py` copied from task192, so every entry
 carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
@@ -532,6 +544,11 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   shortening five phrases ("one decimal place" to "one decimal", "a title stating the finding" to "titled on
   the finding", two redundant articles, and a semicolon for "and" in the second sentence). The prompt gate
   passes on all twelve checks.
+- **The dictionary's generic header** (`file,field,definition`): `guard.py surface` on the final pack
+  promoted three pairs on it as a table with an identical column set, shared with task198. It is required
+  furniture rather than a driver of the stump, but a shared header is still a shared string, so it was
+  re-cut as `extract,column,definition` in the mutual's own idiom. The writer, the one check that reads it
+  and the new verifier read-back moved with it; the identical-column-set finding is now zero.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.
