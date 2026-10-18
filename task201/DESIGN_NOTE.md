@@ -1,110 +1,486 @@
 # task201 design note
 
-Biomedical & clinical research, `genomics-gwas-high-dimensional-association`, Anomaly Detection &
-Diagnostics (task180 to task227, oviya13ya). Seed AD24 supplies the decision shape only, one scarce
-investigation to one of N candidates.
+Energy Systems & Utilities, `grid-reliability-outage-analysis`, Anomaly Detection & Diagnostics
+(task180 to task227, oviya13ya). Architecture v2, drawn 2026-10-18 after both genomics candidates were
+screened to death at the draw (the append-only section at the foot of this note).
 
-**No architecture is drawn and no card is registered.** The first candidate was screened to death before
-any design, which is the intended use of the four checks. The measurements are below.
+## Draw
 
-## Tried and rejected
+**Card:** `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task201/task201_card.json`
+(this session does not register; the orchestrator files it). `guard.py check` verdict: WARN, one WARN,
+answered below. Maximum driver similarity on file 0.07 (task37, task452).
 
-### Candidate 1, separating confounding inflation from polygenic signal, killed at the draw (2026-10-18)
+**Pairing.** Energy Systems & Utilities / `grid-reliability-outage-analysis`, which serves Root-Cause
+and Anomaly Detection in the client taxonomy. Objective Anomaly Detection & Diagnostics: the object is
+a flagged exposure figure and the call separates a real concentration of exposure from an artefact of
+how the records were timed. Shape **12**, drill-down to one leaf: the criteria come from each box's
+piece at each of three levels. Decision type `pick_one_of_n` (the leaf), answer unit `named_option`.
+Gate G `method_or_model_selection`. Strategy `maturity_censoring`: each interruption on a feeder
+without line telemetry has a duration record that is a lower bound, censored at the moment somebody
+reported it, and the censored opening is recovered from the parallel channel.
 
-**The dichotomy, run first.** The filed quantity is each contributing cohort's **confounding inflation**,
-the expected chi-square where polygenic signal is absent, in dimensionless inflation units to two
-decimals. It is **unobserved**: the record carries test statistics that are the sum of confounding,
-polygenic signal and sampling noise, and the decomposition is printed nowhere. So this is branch A, where
-two estimators of one quantity can stand, and the rest of the screen applies.
+**World.** Poland, a fictional distribution system operator in the north-east, four branches
+(Zanowiec, Pustrzyca, Grabownik, Nierzyca), PLN, `utility_or_infrastructure`, forced by
+`season_or_peak` (the storm season's one remediation slot). Personas drawn with
+`guard.py names --geo Poland --seed 201`: Arkadiusz Dudko, Karina Kurda, Cezary Wawszczyk, Lidia
+Lalak. Geography unspent on the corpus (United States 50, United Kingdom 15, Canada 12, Australia 10,
+Netherlands 4, Poland absent); task197, the lane's last energy build, used a Dutch world and is not
+touched here.
 
-**The world and the two routes.** A consortium meta-analysis with seven contributing cohorts; which cohort
-gets the one re-genotyping and QC pass before the meta-analysis freezes. The easy route is the genomic
-inflation factor, which the field has used as a convention for thirty years and which equals
-`intercept + slope x median(LD score)`, so the cohort with the most power looks the most confounded. The
-decisive route is the regression of chi-square on LD score, whose intercept is the confounding and whose
-slope is the polygenic signal, which the field has an actual estimator for rather than a convention.
+**Reserved axes taken, and the two I could not take.** `shape` 12, `stump_strategy`
+`maturity_censoring`, `role_family` `operations_director`, `gate_g` `method_or_model_selection`, `gap`
+`time`, `forum` `operations_desk`, `forcing_event` `season_or_peak` and `org_family`
+`utility_or_infrastructure` are as reserved, and `guard.py check` passes all of them. `forum`
+BLOCKed against task246 at the first probe and came free when the axis bans were narrowed to live
+cards, so the reserved value is restored and re-probed clear. Two departures:
 
-**The non-invariance profile (1.2b), profiled over the intercept with the slope free, against a printed
-precision of 0.01.**
+- `calibration_form` is `parallel_run_overlap`, not the reserved `retry_or_revision_log`. The organ
+  the construction reads is the overlap between two detection channels running side by side on the
+  instrumented feeders. A revision log was drafted and killed on the revelation screen: an operator
+  who back-dates an interruption's start after the crew reports publishes the quantity the decisive
+  step estimates, so a filter on the revised rows would return the answer rather than an
+  approximation.
+- The decisive generator is `G12`, absence of record against record of absence, not `G3`, record
+  against operation. `G3` is the sharper label and it BLOCKed twice, before and after the gate change:
+  task172 is live and carries gap `time`, `G3` and `method_or_model_selection`. `G12` is honest rather
+  than merely passing: what is missing is not a record of a different thing, it is the absence of any
+  record over the interval between the loss of supply and the first notification, and the naive route
+  reads that absence as the absence of an interruption. `test.same_driver_older` then fires against
+  task192 v2 and task445 v1, both differentiated on the card.
 
-| LD score range | bottom-LD bin names | intercept set within 2 log-lik units | width against printed 0.01 |
+**WARN answered.** `repeat.gate_g`: `method_or_model_selection` repeats task172, one of the last two
+builds. Kept because it is the honest label (two defensible ways to time an interruption stand, and
+the estimand pins which) and because the alternatives are untrue here:
+`decomposition_attribution` would claim the movement is correctly reported, which is exactly what it
+is not, and `confirm_surface_read` would claim the reported figure is right.
+
+**Data-native sentence.** A fused rural spur serves two to nineteen scattered holdings and carries no
+telemetry, so nothing in this operator's records marks the moment its supply failed; the dispatch
+system's start time for it is the moment one of those few customers rang in, and the only measurement
+of how long that takes is the feeders where the telemetry programme happened to land, whose sections
+are 57 per cent town trunks and village stations that somebody notices in eight to seventeen minutes.
+
+**Sources read, one line each.**
+
+- `guard.py mechanisms --objective anomaly-detection` (32 builds). Nearest neighbours and the insight
+  each spends: **task184** spends the event-hour as the unit of analysis where events are recorded with
+  a window instead of a time, so its decisive move is the denominator rather than any estimate of the
+  window's contents; **task190 arch v1** spends the stock of undetected cases a scarce reviewer meets,
+  arrival rate times time unseen, a level at a selected unit; **task194** spends counts that crystallise
+  after the period they belong to, with the lag measured by two vintages of one series; **task196**
+  spends how many events of a partly captured kind happened, from the overlap of two capture channels;
+  **task199** spends a rise in event frequency read against how much the watchers filed; **task182 v4**
+  spends a length-bias correction on durations entering a record through snapshots; **task180 v1**
+  spends events entering the record only above an instrument's noise floor. What they leave: nothing on
+  the corpus estimates **the unrecorded opening of a duration**, and nothing measures a nuisance on a
+  parallel channel whose own coverage is the reason the pooled value of that nuisance is wrong.
+  task196's device (two channels seeing one event stream) is reused here re-skinned, which `stumping`
+  Part 6 licenses; its driver (a capture rate for a count) is not.
+- `guard.py slots --driver "<the card's driver>"`: the five slots it returns (task198, task182,
+  task229, task194 and this one) match on ordinary vocabulary only (branch, event, interval, channel),
+  and none of their notes carries an unrecorded opening of a duration. Checked by reading task182's
+  architecture 4 line (an unobserved component of an observed total, source apportionment) and
+  task198's (a lesser-of payment rule) rather than by the keyword count.
+- `stumping` 1.2a, the dichotomy: the filed quantity is **unobserved**, so two estimators of one
+  quantity can stand. Run below under `Estimand:`.
+- `stumping` 1.2, the estimand pincer and the variance screen: the decisive step settles none of the
+  five parts, and it moves the point estimate rather than an interval. Both run below under
+  `## Ladder`.
+- `stumping` 1.2, the designation determinacy screen: the golden's own estimator family returns one
+  path over six forms, measured, and the crude route is measured against the leaf rather than against
+  the branch. Both numbers are in `## Ladder`.
+- `stumping` 1.6a, what survived: an unobserved quantity identified by a construction combining two
+  files at different grains, whose inputs are varied enough that no sorted column reproduces it. This
+  build's construction reads the device register (one grain) against the telemetry archive and the
+  notification log (two others).
+- `dataset-generation` 7, the revelation screen: the subset the mechanic bound exactly is the
+  telemetered set, and that subset is the **default path** rather than the answer, which is the safe
+  configuration.
+- `determinism-check` 1, the five parts: filed to the letter in procedure PR-07, with the estimator of
+  the censored opening left open and forced by the data.
+- `guide-to-prompt/references/shapes/12-drill-down-to-one-leaf.md`: the shape's own hard seam is mix
+  against rate, which is `composition_mix` and spent; this build takes the shape's criteria structure
+  and its greedy level-ordered drill, and puts its own difficulty under it.
+
+## Default path
+
+The pipeline a competent analyst builds from the prompt's words and the files' grain, with every field
+read correctly, every filed rule applied and every key normalised.
+
+1. Read both dispatch exports, `awarie_oms_2026-10-01_2026-11-07.csv` (legacy layout) and
+   `awarie_oms_2026-11-01_2026-11-15.csv` (current layout); rename the renamed columns and notice the
+   seven-day overlap, de-duplicating on the interruption id: 7,423 export rows reduce to 6,448
+   interruptions.
+2. Apply procedure PR-07 section 3's population: unplanned only (planned switching out), restoration
+   recorded on or before the extract, the window 1 October to 15 November 2026, the operator's own
+   network: 6,005 interruptions.
+3. Normalise the device identifier to the padded form and join `rejestr_urzadzen_sn_nn.xlsx` for the
+   customers behind the device that operated and for its branch, rejon and section class; the raw
+   string join drops 2,823 export rows.
+4. Compute each interruption's interrupted customer-hours as the customers behind the device times the
+   hours from the recorded start to restoration.
+5. Sum to branch, take the largest share; inside it sum to rejon, take the largest share; inside that
+   take the section class with the largest share, as PR-07 section 4 directs.
+
+**Ends on:** the remediation slot filed against the `SN-magistrala` trunk sections of rejon Zanowiec
+Miasto in the Zanowiec branch, Zanowiec carrying 206.9 thousand interrupted customer-hours against
+Grabownik's 114.1.
+
+**Golden:** the remediation slot filed against the `SN-odgalezienie` fused spurs of rejon Borowa
+Puszcza in the Grabownik branch, which carry 7,152 customer-interruptions in that rejon, Grabownik
+carrying 270.8 thousand interrupted customer-hours.
+
+## Stump sentence
+
+A solver who cleans both exports, normalises the device keys, applies PR-07's population exactly and
+drills the recorded customer-hours level by level commits the slot to the Zanowiec trunk sections in
+rejon Zanowiec Miasto, because the dispatch record times every interruption on a feeder without line
+telemetry from the first customer notification rather than from the loss of supply, and that unrecorded
+opening runs 242.5 minutes on the fused rural spurs that carry Grabownik's exposure against 8.6 on the
+trunks that carry Zanowiec's.
+
+## Three rules
+
+- **Task type:** `grid-reliability-outage-analysis`, which serves Root-Cause and Anomaly Detection in
+  the client taxonomy, worked the way reliability engineering works it, as interrupted customer-hours
+  per network section over a storm window.
+- **Domain test:** the deciding quantity is interrupted customer-hours, the numerator of the operator's
+  regulated SAIDI-family index, and the field's own analysis times an interruption from the loss of
+  supply, recovering the interval before notification from the feeders whose line-mounted telemetry
+  timestamps the device operation, then conditioning it on the class of section because that is what
+  governs how quickly anybody is in a position to report.
+- **Swap:** rewritten with another field's nouns the call reads "which school district's share of total
+  pupil-absence hours is largest, with the hours before the absence was reported added back", and it
+  stops making sense at two points: nothing then decides which absences carry an instrument timestamp,
+  where here the protection hierarchy decides it (a fuse clears a spur fault without the substation
+  breaker ever operating, so the substation never sees it), and nothing makes the reporting interval
+  fall by a factor of 28 from a trunk to a spur, where here it falls because a trunk de-energises a town
+  centre and a spur serves a handful of scattered holdings.
+- **Layer 1:** two dispatch export layouts with a seven-day overlap and renamed columns (the October
+  upgrade of the dispatch reporting module); device identifiers unpadded on records whose device was
+  commissioned before the 2024 upgrade (the identifier convention changed with it); the telemetry
+  archive in UTC against the dispatch system and notification log in Europe/Warsaw (the SCADA historian
+  stores UTC); customers in units in the device register and in thousands on the register's summary
+  sheet (the summary is built for the annual report); a preliminary and a revised concession return
+  overlapping on October (the regulator's own correction cycle); tables inside the prior-year return PDF
+  (it is the filed document); the regulator's reporting calendar year against the storm season window
+  (two different clocks the operator lives with); five interruptions unrestored at the extract (a
+  destroyed line awaiting rebuild). None of them is placed to be caught and none carries the stump; the
+  R2 block asserts each is neutral on the call.
+- **Layer 2:** `field_method`, pattern `own:pre-notification-interval-from-parallel-telemetry`. The
+  methodological choice that flips the call is whether the duration of an interruption is taken as the
+  record states it or estimated from the loss of supply, with the unrecorded opening recovered on the
+  parallel channel and conditioned on the section class the overlap shows it depends on.
+- **Decisive step:** recover the pre-notification interval from the interruptions the line telemetry
+  also timed, and apply it by section class rather than as one pooled interval, because 57 per cent of
+  the telemetered interruptions sit on trunks and village stations where the interval is 8.6 and 17.0
+  minutes while the spurs that need it stand at 242.5.
+- **Not semantics:** the data dictionary states in plain words that the recorded start is taken from the
+  line device's operation signal where the feeder reports one and otherwise from the first customer
+  notification, so a solver can read every field correctly and still have no number for the loss of
+  supply on 4,940 of the 6,005 interruptions. Reading the field correctly is necessary and not
+  sufficient: what remains is to notice that the interval is measurable only where both channels saw
+  the same event, and that the pooled value of that measurement is wrong for the sections that need it.
+  The easy route after a perfect read is step 4 of the default path, which files Zanowiec.
+- **Not rule application:** no shipped sentence, procedure, column or dictionary entry says to add the
+  pre-notification interval back, names the interval, names the telemetered subset as a measurement of
+  it, or says that it depends on the section class. PR-07 files the population, the window, the unit and
+  the drill rule and stops; executing every one of its clauses exactly produces the default path's
+  answer, which the R3a assertion executes on the clean truth.
+- **Analyst test:** with both exports de-duplicated, the keys padded, the UTC archive converted, PR-07's
+  population applied exactly and the drill rule executed to the letter, computing interrupted
+  customer-hours from the recorded start to restoration files the Zanowiec branch at level one, rejon
+  Zanowiec Miasto at level two and its `SN-magistrala` trunk sections as the leaf, which is the wrong
+  leaf.
+- **Estimand:** PR-07 section 3 files it to the letter: the population (every unplanned interruption of
+  supply on the operator's own network whose restoration is recorded on or before the extract, with its
+  start in the window 1 October to 15 November 2026, both dates inclusive), the outcome (the customers a
+  section left without supply multiplied by the hours they were without it), the window, the unit
+  (interrupted customer-hours) and the comparison (the share of the parent level's own total, drilled
+  branch then rejon then section class). The quantity so filed is **unobserved**, because the hours
+  without supply are not recorded for any interruption the telemetry did not time, so two estimators of
+  one filed quantity stand and the decisive step settles none of the five parts.
+- **No decoy:** nothing is planted. No block is copied or backfilled, no memo argues for a branch, no
+  stakeholder quotes a figure, no document ranks the branches on the decision question, and no filed
+  rule or basis gives the wrong answer. The dispatch record is what the dispatch system writes; the
+  telemetry programme is a capital programme with its own schedule; the planned-work rows are the autumn
+  maintenance programme. The difficulty survives deleting every wrong number in the pack.
+- **No certified replay:** no method is hidden and recovered by reproducing certified or published
+  figures. The prior-year returns are at concession level by voltage class and carry no branch
+  breakdown, so nothing in them can be fitted back to a branch ranking; the construction is forced by
+  the data's own structure, not by matching a published figure.
+- **Lesson:** that a duration is only as long as the record's clock, and that where the clock starts at
+  notification the missing opening has to be estimated on the subset that saw both clocks and
+  transported by what governs it, not by its pooled average over a subset selected for being easy to
+  notice. No build on file teaches it: the corpus has the unrecorded opening of a duration nowhere, and
+  its censoring builds are all about counts still arriving or about which rows enter a record at all.
+
+## Readability screen
+
+Six tests a rung (`stumping` 2.1). 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene,
+6 linear.
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 bench | 5 hygiene | 6 linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 the pack as it stands, planned work in, overlap week doubled, unpadded keys dropped | PR-07 s.3 files the population | the kind-of-outage column; the exports state their own spans | the battery's duplicate and unmatched-join checks find it | none | yes, this is what the battery is for | yes | readable |
+| 1 cleaned recorded customer-hours, the default path | PR-07 files the unit and the drill | the register join gives customers per device | the first group-by | none | no | one product per row | readable |
+| 2 one pooled pre-notification interval added to every untimed interruption | nothing files it | nothing marks it; the subset comes from a join of three files | no | none | no | one mean over one subset | silent |
+| 3 the interval by section class, the telemetered subset's own composition read against the untimed one **(decisive)** | nothing files it, names it or says it varies | no column holds it; the section class is the register's ordinary type and is benign everywhere else | no reflex reaches the leaf: the sweep below lands eleven of twelve wrong on the leaf | no control, corpus or published figure ties on it | no sweep touches it | no, it is a conditional mean over a subset defined by a three-file join | silent |
+
+**The reflex sweep, run as code on the clean truth before any separation was measured.** Twelve routes
+a strong analyst applies, each named with the branch it files at level one and the leaf it reaches,
+which is what the call grades. The golden leaf is Grabownik / Borowa Puszcza / SN-odgalezienie.
+
+| Route | Branch | Leaf | Reaches the golden leaf |
 |---|---|---|---|
-| 1 to 300 | **the golden cohort** | [1.1167, 1.1371] | 0.0204, **2x** |
-| 8 to 120 | **the golden cohort** | [1.1110, 1.1431] | 0.0321, **3x** |
-| 25 to 80 | **the golden cohort** | [1.1011, 1.1594] | 0.0583, **6x** |
-| 35 to 70 | the loud cohort (lands wrong) | [1.0831, 1.1794] | 0.0962, **10x** |
+| recorded customer-hours, pooled over all rows (the default path) | Zanowiec | ZAN / Zanowiec Miasto / SN-magistrala | no |
+| customers interrupted, not customer-hours | Zanowiec | no | no |
+| recorded hours on the device-timed subset only | Zanowiec | no | no |
+| recorded hours with the untimed rows dropped | Zanowiec | no | no |
+| median span times customers, by branch | Zanowiec | no | no |
+| stratify by section class and recombine on recorded spans | Zanowiec | no | no |
+| the interval by customers-behind decile | Zanowiec | no | no |
+| one pooled pre-notification interval (rung 2) | Pustrzyca | no | no |
+| interruption count per branch, no duration at all | Grabownik | GRB / **Mokrzyce** / SN-odgalezienie | **no**, it lands the wrong rejon |
+| recorded customer-hours per customer served | Grabownik | GRB / Borowa Puszcza / SN-odgalezienie | **yes, on a basis PR-07 excludes** |
+| the interval conditioned on the branch rather than the class | Grabownik | the golden leaf | yes, a form of the decisive step |
+| the interval by section class (decisive) | Grabownik | the golden leaf | the golden route |
 
-The self-measurement **is** non-invariant, which is why the profile is bounded at all rather than flat like
-task200's dark figure. But it is nowhere tight enough: even at its sharpest the set is twice the printed
-precision, so the intercept cannot be graded to two decimals at any setting.
+Two rows need their numbers rather than a verdict. **The count drill** is the crude route the
+designation screen warns about, and it was reaching the golden leaf exactly until the collinearity was
+broken: with Grabownik's restoration times uniform across its rejony the count and the hours agreed at
+every level, so a response running `size()` three times landed the call and all 25 graded counts. The
+pack now gives Borowa Puszcza a restoration multiplier of 2.10 against Mokrzyce's 0.25, which the
+dispatch note's own account of impassable forest roads supports, so Mokrzyce carries 1,846
+interruptions against Borowa Puszcza's 1,136 while Borowa Puszcza carries 107.5 thousand customer-hours
+against Mokrzyce's 70.2. The count drill therefore files Mokrzyce and loses the leaf, the three graded
+level-three boxes and the eight graded level-two boxes. **The per-served drill** divides recorded hours
+by the customers the register puts behind each level's trunks, 5.117 against Mokrzyce's 0.720 inside
+Grabownik, and reaches the golden leaf. It is not executing PR-07: section 4 files the comparison as the
+share of the parent level's own interrupted customer-hours, and a share of a parent total admits no
+per-customer denominator, so the route answers a different question. It is recorded here with its
+number rather than hidden, and it is the one route on the sweep that reaches the golden leaf without the
+decisive step.
 
-**The sixth screen, and the enumerated sweep in full.** Nine ways the pack measures a cohort's confounding
-inflation, at the realistic LD range where identification is sharpest. **Three reach the golden besides the
-decisive route**, and all three are the same move: read the region where the signal is absent.
+## Semantic fork table
 
-| Route | Names | Verdict |
+| id | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "interrupted customer-hours" | customers behind the operated device times hours without supply | customer-minutes; customers alone; hours alone | same leaf on the first, different on the others | PR-07 s.3 names the unit as customer-hours; the other two are not that unit; every row's customer count is positive, asserted |
+| SF2 | population: "unplanned" | unplanned only | all interruptions including planned switching | same leaf and same default path, measured | PR-07 s.3 excludes planned work by name; asserted both ways |
+| SF3 | population: restoration recorded | restoration on or before the extract 2026-11-16 06:00 | the five unrestored rows carried at the extract time | same leaf, measured; no graded count moves | PR-07 s.3 requires a recorded restoration; asserted |
+| SF4 | window "1 October to 15 November 2026" | the interruption's recorded start inside the window | restoration inside the window; any overlap with the window | same leaf and same figures | C1: every interruption starts and is restored inside the window, asserted on counts |
+| SF5 | the overlapping export week | one row per interruption id | both copies counted | both copies file Nierzyca | the two exports state their own spans in their header rows and in `provenance.md`; the id is unique inside each export, asserted |
+| SF6 | the device identifier join | normalised to the zero-padded form | raw string join, dropping unpadded rows | the raw join loses 2,823 rows and files a different branch | the dictionary states the padded convention and the 2024 change; C4, asserted |
+| SF7 | telemetry: which interruptions a device timed | the register's telemetry flag, plus every trunk section | the programme workbook's commissioning dates | same leaf and same figures | C1: the programme's commissioned feeders are exactly the register's flagged ones, asserted set against set |
+| SF8 | the telemetry archive's clock | the UTC column converted to Europe/Warsaw | read as local | read as local inflates every class interval by 60 minutes | the column is named for UTC, the dictionary states it and the header row states it; 1,065 of 1,065 timed starts reproduce at +01:00, asserted |
+| SF9 | "share of its level" | the box's customer-hours over its own parent's total | over the network total at every level | same leaf | PR-07 s.4 names the parent level; each level's shares sum to 100, asserted |
+| SF10 | rounding path on the drill | the shares computed from unrounded hours | hours rounded first | the same printed shares and the same leaf | C1 asserted both ways |
+| SF11 | the leaf's name | the section class as the register spells it | the Polish long form in the dictionary | same leaf | both strings ship and name one class; the mapping is one to one, asserted |
+| SF12 | tie-break at a level | the largest share | a tie needing a second rule | no tie arises | C1: the narrowest top-two gap at any level is 6.74 pp, asserted |
+
+## Ladder
+
+Three separating rungs, three different branches, every rung a defensible analysis that reproduces from
+the raw files and dies to exactly one shipped fact. Figures in thousands of interrupted customer-hours,
+from `generator/figures.json`.
+
+| Rung | What it does | Branch | Margin | Golden's rank | Dies to |
+|---|---|---|---|---|---|
+| 0 | the pack as it stands: planned switching in, the overlap week counted twice, unpadded keys dropped | Nierzyca | 1.24x | 4th of four | PR-07 s.3's population, the exports' stated spans, the dictionary's padding note |
+| 1 | cleaned recorded customer-hours, the default path | Zanowiec | 1.33x | 4th of four | nothing in the pack: it is the easy route and it is wrong |
+| 2 | one pooled pre-notification interval on every untimed interruption | Pustrzyca | 1.42x | 3rd of four | the telemetered subset's own composition: 57 per cent of it is trunk and station sections |
+| 3 | the interval by section class **(decisive)** | Grabownik | 1.31x | 1st | it is the answer |
+
+**Position and dominance.** The golden is 4th of four on the pack as it stands and 4th of four on the
+cleaned default path, 3rd on the pooled rung, and never 1st or 2nd on an intermediate rung. Dominance:
+the golden's edge on the decisive axis (its correction, 156.7 thousand customer-hours) against the
+decoy's carried advantage on the recorded axis (Zanowiec's lead over Grabownik on the default path,
+92.8 thousand) is 1.69x, over the 1.2x floor. Both are asserted.
+
+**The estimator family, measured on the cut pack.** Every form of the class-conditional interval a
+competent analyst would use, and the pooled and branch-conditioned forms beside them.
+
+| Form | Leaf | Distinct designations |
 |---|---|---|
-| 1 genomic inflation factor, median chi-square (easy route) | loud | lands wrong |
-| 2 mean chi-square over all variants | loud | lands wrong |
-| 3 LD score regression intercept (decisive) | golden | the golden route |
-| 4 mean chi-square in the bottom 5 per cent of LD score | **golden** | **reaches it** |
-| 5 mean chi-square in the bottom quintile of LD score | **golden** | **reaches it** |
-| 6 inflation factor on the lowest-LD decile only | **golden** | **reaches it** |
-| 7 inflation factor after dropping the top 5 per cent of statistics | loud | lands wrong |
-| 8 lambda rescaled | loud | lands wrong |
-| 9 twice the mean of the lower half of the statistics | loud | lands wrong |
+| class mean (golden) | GRB / Borowa Puszcza / SN-odgalezienie | |
+| class median | the same | |
+| class mean weighted by customers | the same | |
+| class trimmed mean, 5 per cent each tail | the same | |
+| branch by class mean | the same | |
+| branch-pooled interval | the same | |
 
-**Why there is no window, and the rule it earns.** One dial controls both failures. The LD score range is
-simultaneously the leverage that identifies the intercept and the distance between the low-LD region and
-the bulk. Widen it and the regression pins the intercept while the low end becomes a clean null that
-publishes it; narrow it and the low end is contaminated enough to land wrong while the regression loses
-the leverage and the profile balloons to ten times the printed precision. Measured at four ranges, there is
-no setting where the profile is usable and the null region is not readable.
+**Six forms, one distinct designation.** That is the designation determinacy number: the golden's own
+estimator family returns one path, not 1.64 or 2.32 or 3.0 of them, and `checks.py` asserts the path
+under each of the first five by name. The forms do move the drill's **shares**, by up to 0.3176
+percentage points on a single box, which is why **no share is graded**: every figure the prompt asks for
+on the call side is a whole count the records fix (25 of them, asserted integral), and the shares appear
+in the deliverables as the drill's working, which the write-up does not state. That is the
+discretisation `stumping` 1.2a prescribes, reached after measuring that no seed in 500 places a share
+figure far enough from its bin edge to survive the family's own spread.
 
-**The rule, which closes a family rather than a build.** An identification of the form *estimate the
-nuisance where the signal vanishes* fails the sixth screen by construction: the region where the signal
-vanishes is a subset that publishes the nuisance, and the leverage that makes the identification sharp is
-exactly what makes that subset pure. This is task198 architecture 4's "censoring is revelation" with a null
-region in place of a censored one, and it closes every regression-on-a-covariate identification whose
-nuisance is the intercept: LD score regression, negative-control regions, calibration nulls, blank-sample
-baselines. Price it with one computation before drawing: compute the nuisance from the lowest bin of the
-covariate alone and see which candidate it names.
+**Why a variance lever is not what is happening here.** The decisive step moves the point estimate: it
+adds 156.7 thousand interrupted customer-hours to Grabownik and 2.3 thousand to Zanowiec, and reverses
+the level-one ranking. No interval is widened, no hold becomes available, and no conservative reflex
+reaches the call. The one free parameter a censored-duration estimator usually carries, an interval
+midpoint rule or a grouping, is absent: the conditioner is the register's own four-valued section class
+and the estimator is the mean of directly observed intervals inside it, so there is no band, bandwidth,
+tolerance or cut-off to choose.
 
-### Candidate 2, fine-mapping which variant in a locus is causal, killed at the draw (2026-10-18)
+**The estimand pincer, run in writing.** The decisive step settles none of the five parts. Population:
+PR-07 s.3 files it, including that interruptions without a recorded restoration are out. Outcome: s.3
+files the customers times the hours without supply. Window: s.3 files both bounds inclusive. Unit: s.3
+files customer-hours. Comparison: s.4 files the share of the parent level and the drill's order. What is
+left open is how the hours without supply are obtained for the 4,940 interruptions no device timed,
+which is a method, and the data forces it: the interval is observable only on the overlap, the overlap's
+own composition rules out its pooled value, and the register's four-valued section class is the only
+conditioner the records offer with no parameter to choose.
 
-**The data-native sentence, written first as instructed, and writing it is what exposed the problem.** The
-decisive step cannot be "do fine-mapping", because a lead variant not being the causal one is the first
-thing any geneticist knows. So the sentence has to name what the standard pipeline gets wrong here, and
-attempting it raises a structural question: **under the standard single-causal-variant model the causal
-variant has the largest expected z, because its LD with itself is 1.** So the lead can differ from the
-causal variant in only three ways, and each was measured.
+**Grid.** Four rungs by four branches; every cell is a named wrong answer the pack can produce. The
+saturated case does not arise: rung 2's pooled interval and rung 3's class interval come from the same
+subset and differ only in conditioning, which no partial application of rung 1 reproduces.
 
-| Branch | Premise holds? | Condition 2, sixth screen | Condition 1, family on the name |
+## Closure table
+
+| # | Axis | Reading | Closure |
 |---|---|---|---|
-| A equal power, one causal variant | **no**: lead by z is the causal variant | **lead by p-value and largest absolute effect both reach it** | closed: all 4 methods x 4 priors name it |
-| B the causal variant poorly imputed | yes, lead 5 against causal 7 | **worst imputation quality reaches it**, one column sorted | **open: 2 names.** ABF, sum-of-single-effects and stepwise name 5; stochastic search names 7 |
-| C two causal variants in the locus | yes, lead 9 against causal 7 | none reaches it | **open: 2 names.** Three methods name 9, stochastic search names 23, none names 7 |
+| 1 | Population | unplanned interruptions, own network, restoration recorded on or before the extract, start inside the window | PR-07 s.3 files it literally, including that the five unrestored interruptions are out; SF2, SF3 |
+| 2 | Unit of account | the interruption, with customers taken from the device that operated | PR-07 s.3 names customer-hours per section; the register is the only customer count in the pack; SF1 |
+| 3 | Attribution window | the interruption's recorded start | C1: the generator drops anything whose recorded start falls outside the window, asserted on counts; SF4 |
+| 4 | As-of dating | the extract, 2026-11-16 06:00, stated in `provenance.md` and every export header | filed as-of; the register and the programme are static across the window |
+| 5 | Version basis | the current dispatch record; the revised concession return supersedes the preliminary one | the returns carry an issue sheet with dates; the main call reads neither |
+| 6 | Denominator | the parent level's own total customer-hours | PR-07 s.4's words; SF9 |
+| 7 | Weighting | customers behind the operated device, unweighted across interruptions | PR-07 s.3; the register holds one count per device |
+| 8 | Window length | the interval is measured over the whole window's telemetered interruptions | the interval is drawn independently of date; the class is the only conditioner the records offer |
+| 9 | Boundary inclusivity | both window bounds inclusive | C1: nothing is left on either edge, since the generator filters the recorded start into the window; SF4 |
+| 10 | Rounding path | shares from unrounded hours, each figure rounded once | PR-07 s.4; SF10, asserted both ways |
+| 11 | Tie-break | the largest share at each level | C1: narrowest top-two gap 6.74 pp, asserted; SF12 |
+| 12 | Maturity and censoring | the duration record is censored at notification on untimed interruptions; the population excludes interruptions not yet restored | PR-07 s.3 for the population; the opening interval is the decisive step and is left to the analyst, forced by the data |
+| 13 | Order of operations | de-duplicate, apply the population, join customers, compute hours | C1: every order gives one row set, since de-duplication is on a unique id and the population is a row predicate |
+| 14 | Row order | file order | C1: every graded figure is a sum or a count |
+| 15 | Duplicate resolution | one row per interruption id | the exports state their spans; the id is unique inside each export, asserted; SF5 |
+| 16 | Identity normalisation | the device identifier padded to the register's convention | the dictionary states the convention and the 2024 change; C4, the raw join drops 2,823 rows; SF6 |
+| 17 | Netting against gross | no netting; every interruption adds | nothing in the pack nets and the procedure does not mention it |
+| 18 | Dimensional units | customers in units in the register, thousands on its summary sheet; hours in the deliverable, minutes in the archive | each column's unit is in its header and the dictionary; the summary sheet is not on the call's path, and its thousands equal the register's units, asserted |
+| 19 | Code and status semantics | the kind of outage, the section class, the telemetry flag, the signal quality | flat definitions in the dictionary; never the stump; SF7, SF11 |
+| 20 | Integerisation | every graded figure on the call side is a whole count | stated in the asking sentence; asserted integral, so no bin can be straddled |
+| 21 | Clause scope | PR-07 s.3 and s.4 govern the window's drill, not the regulator's reporting year | PR-07 s.1 states its scope; the returns are the reporting year and carry no branch split |
+| 22 | Forward window contents | none: the slot is committed for the rest of the season and the drill reads the window to date | the committed call needs no forward driver file; the forward-facing line below |
 
-**Each branch dies, and on a different one of the three tests.**
+**Forward facing.** The committed call is forward facing: the one remediation crew-week is committed for
+the remainder of the 2026/27 storm season, which PR-07 s.1 runs to 31 March and which had six weeks
+behind it at the extract. The diagnostic quantity is the season to date, which is the only evidence the
+operator has, and the window it informs is not closed. This is recorded because the quantity itself
+looks backward.
 
-- **A dies on the reflex sweep.** The family is closed exactly where there is no stump: the answer is the
-  lead variant, so one column sorted gives it and the standard pipeline applied competently reaches the
-  golden. The coordinator's rule applies in full, the stump is spent whatever the screens say.
-- **B dies twice.** The family is open on the graded name, three of four licensed methods naming the wrong
-  variant, which is the one-computation death condition 1 was set to catch. And `argmin(INFO)` publishes
-  the answer, which is architecture 4's shape with an imputation column in place of a censored set.
-- **C dies on condition 1, and more deeply on the graded object.** With several causal variants the records
-  fix a **set**, not a name, so which element is called "the" answer is arbitrary; no method named the one
-  designated and the three that agreed agreed on a tagger.
+## Literal reader
 
-**The rule it earns, and it is the sixth time one number has sat on both sides today.** The perturbation
-that separates the lead variant from the causal one is the perturbation the licensed methods disagree
-about, because that is what the methods differ in handling: attenuation in branch B, multiplicity in
-branch C. With equal power and one causal variant every method agrees and the answer is the lead. **So the
-method family closes only when the answer is trivial, and any departure that moves the answer off the lead
-is a departure that opens the family.** There is no fourth way for the lead to differ from the causal
-variant, so fine-mapping cannot carry a records-fixed named answer with a closed family on this ground.
+Executing the prompt, PR-07 and the dictionary word for word, with every silence enumerated: the
+population, window, unit, comparison and rounding are each fixed by one filed sentence, and the only
+thing the shipped text does not fix is how the hours without supply are obtained for the 4,940
+interruptions no device timed. Every reading of every term returns the same row set (SF1 to SF12, each
+asserted in `generator/checks.py`), so the single remaining freedom is the method, and the data forces
+it: the interval is observable only on the overlap, the overlap's own composition rules out its pooled
+value, and the section class is the only conditioner the records offer with no parameter to choose. The
+easy answer is reached by an easy method on the same literal estimand, never by another reading. The one
+route that reaches the golden leaf without the decisive step divides by customers served, which PR-07
+s.4 excludes by filing the comparison as a share of the parent level's own total.
 
-**Branch C's second finding is worth keeping separately**, because it is about the graded object rather
-than the method: where the well-posed answer to "which one" is a set, a build that grades a name is
-grading an arbitrary element of it, and no amount of margin fixes that.
+## Oracles
+
+Every control, published figure and reconciliation column in the pack, with what it confirms on the
+wrong path.
+
+- `sprawozdanie_niezawodnosc_2024_2025.pdf`: the concession's own reported SAIDI and SAIFI for 2024 and
+  2025 by voltage class and by planned against unplanned. It carries **no branch, rejon or section
+  breakdown at all**, asserted by searching the extracted text for every branch code, so it cannot rank
+  the candidates on any basis, and it ties under every handling of the window because it covers neither
+  2026 nor the storm.
+- `sprawozdanie_URE_2026_wstepne_i_korekta.xlsx`: concession-level monthly figures, preliminary and
+  revised. Same: no branch column, asserted. It reconciles to the dispatch record only at concession
+  level and only on planned interruption minutes, which the main call excludes, so it ties on every
+  basis of the main call and is an ask organ.
+- The device register's summary sheet: customers served per branch in thousands. It confirms the branch
+  customer counts on every path and nominates nobody; its thousands are the register's own units,
+  asserted.
+- The telemetry programme workbook: feeders and commissioning dates. Its commissioned set is exactly the
+  register's flagged set (SF7, asserted), so it confirms the same split on every path.
+- No calibration corpus of settled decisions ships, and no document reproduces a graded figure.
+
+## Ask sheet
+
+Three asks, each a component of the call's case, each computed over rows the main call's declared
+population does not contain, each with its own silent primary device.
+
+**A1, the planned side of the season.** Whether any planned job in the window overran its published
+window and if so how many and the hours over in total, with the customer-hours those jobs account for
+per branch. Population: planned switching, which PR-07 s.3 excludes from the call, so zero device rows
+sit in the call's population. H18 home: the remediation crew-week competes directly with the planned
+programme, so the slot cannot be committed without it. Figures: 1 count, 1 total of hours, 4
+customer-hours = 6.
+Primary device: **D6 an event's quantity on every line it covers, grain unstated.** The grafik holds one
+row per scheduled job and the dispatch export one row per interruption, so a visit that switched out two
+or three sections of one feeder is one job and several rows. Forcing figure: 260 scheduled jobs carry
+440 dispatch rows, and a job is never scheduled twice on one feeder on one day, so the published window
+identifies its job; counting rows counts sections.
+File path: `harmonogram_wylaczen_planowanych.xlsx` and the dispatch exports' planned rows; 11 columns.
+Stops: rows counted against the issued November sheet (wrong), rows against the revision (wrong), jobs
+against the issued sheet (wrong), jobs against the revision (golden).
+
+**A2, the notifications nothing matches.** How many notifications match no interruption record, by
+branch and channel, with the customers behind the devices they name. Population: notification rows with
+no interruption id, which are outside the call's population by construction. H18 home: the call leans on
+the notification channel, so the operations desk needs to know how much of it is noise before accepting
+a figure built on it. Figures: 12 branch by channel, 1 total, 4 customers-behind = 17.
+Primary device: **D1 a replay under fresh ids, key kept.** The contact centre wrote a second row under a
+fresh notification id when an agent re-saved a ticket, same customer, same minute, same wording, so the
+notification id stays unique and the exact-duplicate sweep sees nothing. Forcing figure: 2,166 rows
+repeat a row on the same customer, the same minute and the same wording, and one customer cannot report
+a loss of supply twice inside one minute.
+Secondary, documented, so it moves the mirror and not the cracker: the IVR left the device and the
+branch unwritten between 9 October and 2 November, and those rows resolve through `odbiorcy_ppe.csv`;
+559 unmatched rows carry no device at all and resolve only that way.
+File path: `zgloszenia_klientow_2026.csv`, `odbiorcy_ppe.csv`, `rejestr_urzadzen_sn_nn.xlsx`; 12 columns.
+Stops: raw rows counted (wrong), re-saves removed but the blank-device rows dropped (wrong), blanks
+resolved but the re-saves left in (wrong), both handled (golden).
+
+**A3, the correction the concession filed.** October 2026's correction to reported unplanned
+interruption minutes for each voltage level, in minutes and as a percentage. Population: the
+concession-level return, outside the call's population and outside its grain. H18 home: the slot has to
+be defended against what the operator has already reported to the regulator. Figures: 2 minutes, 2
+percentages = 4.
+Primary device: **D9 a control true only in its own scope.** The preliminary submission divided by the
+customer count at 30 September and the revised one by the count at 31 October, which the concession grew
+between, so the two sheets are not comparable row for row. Forcing figure: every one of the untouched
+months differs between the sheets by one constant ratio, 1.04516, which a correction to October's events
+cannot produce; re-basing on that ratio before reading October's difference gives +0.6 and +0.3 minutes
+against the raw difference's +0.4 and +0.1.
+File path: `sprawozdanie_URE_2026_wstepne_i_korekta.xlsx`; 5 columns.
+Stops: raw sheet difference (wrong), the preliminary sheet taken as final (wrong), re-based and read on
+planned minutes (wrong), re-based and read on unplanned minutes (golden).
+
+**Main population zero-counts.** A1's rows: 0 in the call's population, asserted on the id sets. A2's
+rows: every row it counts carries no interruption id, and the call reads the notification log only for
+the earliest time per interruption id, which the IVR gap leaves intact; asserted. A3's rows: no branch
+row exists in either sheet, asserted on the column names.
+
+**Hazards, shared across asks.** H1, the two export layouts' renamed columns and the overlap week. H2,
+the unpadded device identifier. Both are battery-visible and both are worked by the cracker; they buy
+mirror leakage, not cracker misses.
+
+**Referee.** One byte-clean referee: the revised return's October planned-minutes figure, which ties to
+the dispatch record's planned rows at concession level under every handling of A1's device, so it
+arbitrates nothing about the device and hands over no level.
+
+**Measured by:** `generator/ceiling.py` (run on the cut pack; one row per response, the cracker's ask
+row and the mirror's scored from different device readings).
+
+| Ask | Cracker's path | Figures it keeps | Verdict |
+|---|---|---|---|
+| A1 planned switching overruns | reads the dictionary, runs the battery, executes PR-07 and the schedule's own issue note, counts dispatch rows | 0 of 6 | miss |
+| A2 notifications nothing matches | same, plus the unmatched-join sweep and the dictionary's IVR note, no composite-key dedup | 0 of 17 | miss |
+| A3 the October correction | same, plus every published-figure reconciliation, diffs the sheets row for row | 0 of 4 | miss |
+
+**Pair ceiling:** 28.5
+**Mirror leakage:** 0.0
+

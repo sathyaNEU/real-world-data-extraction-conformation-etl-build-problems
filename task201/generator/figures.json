@@ -1,0 +1,279 @@
+{
+ "a1": {
+  "godziny": {
+   "GRB|2026-10": 3884.6,
+   "GRB|2026-11": 574.8,
+   "NIE|2026-10": 44606.9,
+   "NIE|2026-11": 14346.4,
+   "PUS|2026-10": 16167.3,
+   "PUS|2026-11": 6954.2,
+   "ZAN|2026-10": 15245.0,
+   "ZAN|2026-11": 2890.0
+  },
+  "godziny_prac_przekroczonych": {
+   "GRB": 2251.1,
+   "NIE": 15275.2,
+   "PUS": 11465.3,
+   "ZAN": 6669.0
+  },
+  "naive_godziny_wierszy": {
+   "GRB": 1472.9,
+   "NIE": 8898.0,
+   "PUS": 6475.8,
+   "ZAN": 4311.1
+  },
+  "naive_rows_over": {
+   "GRB": 14,
+   "NIE": 47,
+   "PUS": 16,
+   "ZAN": 11
+  },
+  "naive_rows_over_godz": 58.7,
+  "prac_planowanych": 260,
+  "prac_przekroczonych_total": 85,
+  "prace_przekroczone": {
+   "GRB": 14,
+   "NIE": 46,
+   "PUS": 15,
+   "ZAN": 10
+  },
+  "przekroczenie_godz_total": 58.0,
+  "wierszy_planowanych": 440
+ },
+ "a2": {
+  "bez_zdarzenia": {
+   "GRB|IVR": 212,
+   "GRB|aplikacja": 294,
+   "GRB|telefon": 261,
+   "NIE|IVR": 180,
+   "NIE|aplikacja": 231,
+   "NIE|telefon": 249,
+   "PUS|IVR": 222,
+   "PUS|aplikacja": 261,
+   "PUS|telefon": 268,
+   "ZAN|IVR": 381,
+   "ZAN|aplikacja": 409,
+   "ZAN|telefon": 432
+  },
+  "bez_zdarzenia_total": 3400,
+  "naive_total": 3542,
+  "nierozwiazane_bez_rejestru": 559,
+  "odbiorcy_za_urzadzeniami": {
+   "GRB": 30657,
+   "NIE": 53061,
+   "PUS": 99527,
+   "ZAN": 216840
+  },
+  "powtorzenia_crm": 2166
+ },
+ "a3": {
+  "korekta_pazdziernik": {
+   "SN|min": 0.6,
+   "SN|min_naive": 0.4,
+   "SN|pct": 15.7,
+   "SN|pct_naive": 10.7,
+   "denominator_ratio": 1.04516,
+   "nN|min": 0.3,
+   "nN|min_naive": 0.1,
+   "nN|pct": 11.0,
+   "nN|pct_naive": 6.2
+  }
+ },
+ "call": {
+  "branch": "GRB",
+  "delay_by_class": {
+   "SN-magistrala": 8.635983263598327,
+   "SN-odgalezienie": 242.50320512820514,
+   "SN/nN-stacja": 16.991780821917807,
+   "nN-obwod": 164.64429530201343
+  },
+  "district": "Borowa Puszcza",
+  "klass": "SN-odgalezienie",
+  "leaf_odbiorcoprzerwy": 7152,
+  "leaf_share_exact": 70.62900572030706,
+  "leaf_share_pct": 71,
+  "levels": [
+   {
+    "boxes": [
+     {
+      "godziny": 270787.48269116046,
+      "name": "GRB",
+      "odbiorcoprzerwy": 53268,
+      "przerwy": 4694,
+      "udzial_exact": 33.475503591054384,
+      "udzial_pct": 33
+     },
+     {
+      "godziny": 206888.79642333978,
+      "name": "ZAN",
+      "odbiorcoprzerwy": 224017,
+      "przerwy": 301,
+      "udzial_exact": 25.576169839125697,
+      "udzial_pct": 26
+     },
+     {
+      "godziny": 182492.084793776,
+      "name": "PUS",
+      "odbiorcoprzerwy": 139433,
+      "przerwy": 560,
+      "udzial_exact": 22.560180327170166,
+      "udzial_pct": 23
+     },
+     {
+      "godziny": 148743.9858480472,
+      "name": "NIE",
+      "odbiorcoprzerwy": 125948,
+      "przerwy": 450,
+      "udzial_exact": 18.388146242649746,
+      "udzial_pct": 18
+     }
+    ],
+    "level": "oddzial"
+   },
+   {
+    "boxes": [
+     {
+      "godziny": 107453.93899284069,
+      "name": "Borowa Puszcza",
+      "odbiorcoprzerwy": 11148,
+      "przerwy": 1136,
+      "udzial_exact": 39.68201850577948,
+      "udzial_pct": 40
+     },
+     {
+      "godziny": 70170.7051447548,
+      "name": "Mokrzyce",
+      "odbiorcoprzerwy": 18690,
+      "przerwy": 1846,
+      "udzial_exact": 25.913570467651997,
+      "udzial_pct": 26
+     },
+     {
+      "godziny": 54761.89278871004,
+      "name": "Zalesie Stare",
+      "odbiorcoprzerwy": 11435,
+      "przerwy": 1066,
+      "udzial_exact": 20.223199478968272,
+      "udzial_pct": 20
+     },
+     {
+      "godziny": 38400.945764854914,
+      "name": "Grabownik",
+      "odbiorcoprzerwy": 11995,
+      "przerwy": 646,
+      "udzial_exact": 14.181211547600267,
+      "udzial_pct": 14
+     }
+    ],
+    "level": "rejon"
+   },
+   {
+    "boxes": [
+     {
+      "godziny": 75893.64871794872,
+      "name": "SN-odgalezienie",
+      "odbiorcoprzerwy": 7152,
+      "przerwy": 926,
+      "udzial_exact": 70.62900572030706,
+      "udzial_pct": 71
+     },
+     {
+      "godziny": 21807.30995525727,
+      "name": "nN-obwod",
+      "odbiorcoprzerwy": 2551,
+      "przerwy": 201,
+      "udzial_exact": 20.29456542929545,
+      "udzial_pct": 20
+     },
+     {
+      "godziny": 5691.2136529680365,
+      "name": "SN/nN-stacja",
+      "odbiorcoprzerwy": 387,
+      "przerwy": 7,
+      "udzial_exact": 5.296421616844798,
+      "udzial_pct": 5
+     },
+     {
+      "godziny": 4061.7666666666664,
+      "name": "SN-magistrala",
+      "odbiorcoprzerwy": 1058,
+      "przerwy": 2,
+      "udzial_exact": 3.7800072335526838,
+      "udzial_pct": 4
+     }
+    ],
+    "level": "klasa_odcinka"
+   }
+  ],
+  "n_events": 6005,
+  "n_telemetered": 1065,
+  "naive_path": [
+   "ZAN",
+   "Zanowiec Miasto",
+   "SN-magistrala"
+  ],
+  "path": [
+   "GRB",
+   "Borowa Puszcza",
+   "SN-odgalezienie"
+  ],
+  "pooled_delay": 101.83943661971831,
+  "rungs": {
+   "ch_r1": {
+    "GRB": 140455.68333333332,
+    "NIE": 143363.38333333333,
+    "PUS": 155045.08333333334,
+    "ZAN": 205993.75
+   },
+   "ch_r2": {
+    "GRB": 206009.728685446,
+    "NIE": 164617.27375586855,
+    "PUS": 297586.3481220657,
+    "ZAN": 209101.55014084507
+   },
+   "ch_r3": {
+    "GRB": 270787.48269116046,
+    "NIE": 148743.9858480472,
+    "PUS": 182492.084793776,
+    "ZAN": 206888.79642333978
+   }
+  },
+  "runner_branch": "ZAN",
+  "runner_klass": "nN-obwod"
+ },
+ "counts": {
+  "current": 5449,
+  "devices": 13860,
+  "feeders": 660,
+  "legacy": 1974,
+  "notifications": 55270,
+  "planned": 440,
+  "ppe": 9910,
+  "programme": 338,
+  "quality": 2600,
+  "scada": 1505,
+  "vegetation": 2640
+ },
+ "narrative": {
+  "export_rows": 7423,
+  "hours_thousand": {
+   "GRB": 270.8,
+   "NIE": 148.7,
+   "PUS": 182.5,
+   "ZAN": 206.9
+  },
+  "interruptions_all": 6448,
+  "lead": 1.31,
+  "overlap_trunk_station_pct": 57,
+  "population": 6005,
+  "raw_join_lost": 2823,
+  "telemetered_share_pct": {
+   "GRB": 9,
+   "NIE": 68,
+   "PUS": 11,
+   "ZAN": 95
+  },
+  "timed": 1065,
+  "untimed": 4940
+ }
+}
