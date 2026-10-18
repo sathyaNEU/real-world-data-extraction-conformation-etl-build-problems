@@ -93,9 +93,9 @@ def ask_b(d):
 
 
 def ask_c(d):
-    """Participants per action and the largest single action by actor sector, 2025, the municipalities
-    outside the panel. A reported range is read at its midpoint, as the manual's central estimate; an
-    unreported figure is excluded."""
+    """Participants per action and in total by actor sector, 2025, the municipalities outside the
+    panel. A reported range is read at its midpoint, as the manual's central estimate; an unreported
+    figure is excluded. Both figures move under the numeric column's own lower bounds, measured."""
     tot, n, mx = {}, {}, {}
     for x in d["actions"]:
         if x["city"] in PANEL or x["date"].year != 2025:
@@ -107,7 +107,7 @@ def ask_c(d):
         tot[s] = tot.get(s, 0) + v
         n[s] = n.get(s, 0) + 1
         mx[s] = max(mx.get(s, 0), v)
-    return [dict(sector=s, per_action=round(tot[s] / n[s], 1), largest=mx[s], actions=n[s])
+    return [dict(sector=s, per_action=round(tot[s] / n[s], 1), total=tot[s], actions=n[s])
             for s in sorted(tot)]
 
 
@@ -251,14 +251,14 @@ def main():
         ws3.cell(row=i, column=2).number_format = "#,##0"
 
     ws4 = wb.create_sheet("Participantes por sector")
-    ws4["A1"] = "Participantes por accion, 2025, municipios fuera del panel"
+    ws4["A1"] = "Participantes por accion y en total, 2025, municipios fuera del panel"
     ws4["A1"].font = bold
     ws4.append([])
-    ws4.append(["Sector del actor", "Participantes por accion", "Accion mas grande"])
+    ws4.append(["Sector del actor", "Participantes por accion", "Participantes en total"])
     for j in (1, 2, 3):
         ws4.cell(row=3, column=j).font = bold
     for x in cee:
-        ws4.append([x["sector"], x["per_action"], x["largest"]])
+        ws4.append([x["sector"], x["per_action"], x["total"]])
     ws4.freeze_panes = "A4"
     ws4.column_dimensions["A"].width = 22
     ws4.column_dimensions["B"].width = 22
@@ -329,7 +329,7 @@ def main():
         "ask_a_amounts": {"T%d" % q: amounts.get(q, 0.0) for q in (1, 2, 3, 4)},
         "ask_a_differences": diffs,
         "ask_b": [{"city": x["city"], "held": x["held"], "empty_months": x["empty"]} for x in bee],
-        "ask_c": [{"sector": x["sector"], "per_action": x["per_action"], "largest": x["largest"]}
+        "ask_c": [{"sector": x["sector"], "per_action": x["per_action"], "total": x["total"]}
                   for x in cee],
         # the units and clause references the write-up names, emitted rather than typed
         "units": {"rate_per_residents": 100000, "items_per": 1000, "population_vintage": 2026,

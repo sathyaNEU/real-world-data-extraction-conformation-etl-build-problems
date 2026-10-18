@@ -67,7 +67,7 @@ add("B", "corridor total", 3, True, False)
 # The per-sector action counts are not asked for and so are not graded (a figure the prompt never
 # asks for is an open fork by construction, determinism-check section 5).
 add("C", "mean participants per action, sector", 6, True, False)
-add("C", "largest single action, sector", 6, True, False)
+add("C", "participants in total, sector", 6, True, False)
 add("C", "corridor total", 2, True, False)
 
 
@@ -225,9 +225,9 @@ def forcing():
         nat = round(tot.get(x["sector"], 0) / max(n.get(x["sector"], 1), 1), 1)
         moved.append(("C per action %s" % x["sector"], nat, x["per_action"],
                       abs(nat - x["per_action"]) > 0.05))
-        natm = mx.get(x["sector"], 0)
-        moved.append(("C largest %s" % x["sector"], natm, x["largest"],
-                      abs(natm - x["largest"]) >= 1))
+        natt = tot.get(x["sector"], 0)
+        moved.append(("C total %s" % x["sector"], natt, x["total"],
+                      abs(natt - x["total"]) >= 1))
 
     print("=" * 96)
     print("ASK FORCING, measured on the cut pack: the natural read against the golden")

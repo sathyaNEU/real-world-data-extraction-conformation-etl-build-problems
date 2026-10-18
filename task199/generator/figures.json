@@ -248,42 +248,42 @@
   {
    "sector": "Campesinado",
    "per_action": 264.9,
-   "largest": 851
+   "total": 30195
   },
   {
    "sector": "Comerciantes",
    "per_action": 340.4,
-   "largest": 699
+   "total": 5787
   },
   {
    "sector": "Docentes",
    "per_action": 295.4,
-   "largest": 793
+   "total": 25107
   },
   {
    "sector": "Juntas comunales",
    "per_action": 282.3,
-   "largest": 783
+   "total": 13267
   },
   {
    "sector": "Juventudes",
    "per_action": 183.9,
-   "largest": 466
+   "total": 3310
   },
   {
    "sector": "Mineria artesanal",
    "per_action": 329.2,
-   "largest": 818
+   "total": 52674
   },
   {
    "sector": "Mujeres organizadas",
    "per_action": 370.4,
-   "largest": 806
+   "total": 4445
   },
   {
    "sector": "Transportadores",
    "per_action": 276.6,
-   "largest": 807
+   "total": 50623
   }
  ],
  "units": {
