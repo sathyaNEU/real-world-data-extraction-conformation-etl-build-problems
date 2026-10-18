@@ -1,34 +1,34 @@
 {
-  "architecture": 1,
-  "grounds_closed": [
-    "physical-environmental-sciences/environmental-monitoring-exceedance",
-    "criminology-justice/crime-incidence-hotspot-analysis",
-    "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference",
-    "biomedical-clinical-research/genomics-gwas-high-dimensional-association"
-  ],
-  "loops": 0,
-  "objective": "anomaly-detection",
-  "owner": "oviya13ya",
-  "precut": {
-    "exit": 1,
-    "date": "2026-10-18"
-  },
-  "resume": "PAUSED at stage 1 after a third screening pass. No card has ever been written or registered, which is deliberate: a card written to pass protects nobody and a half-drawn card binds every live build's guard. Not retired. Read DESIGN_NOTE.md first and re-screen nothing in it: twenty-six mechanisms across four grounds are measured or structurally dead. Grounds closed: environmental monitoring exceedance; crime incidence hotspot analysis (closed structurally); supply-chain-logistics x multiple-testing-selective-inference (closed structurally, six mechanisms over seven screens); and, new on 2026-10-18, biomedical-clinical-research x genomics-gwas-high-dimensional-association, where one architecture was measured dead and eleven directions closed, four of them by guard.py slots on evidence this repo already held. The structural finding: a high-dimensional association scan offers four kinds of per-bucket aggregate a split can follow and all four are closed (a count past a line is a filed test; a level at a selected unit is a shrinkage target, measured here at lever over family spread 0.007 to 0.192 across the dial and never above 1; a variance-explained or signal-mass aggregate is task246's and task237's driver in other nouns and was measured inseparable from the selection correction at 115 slots of 36,000; a frequency, call rate or effective sample size is exact arithmetic and so rule application). Two further measured facts: the decisive step reordered none of the seven buckets over 20 redraws, and corr(decisive measure, programme discovery size) was +0.962 against the +0.98 that killed task57. The reserved decision_type is itself part of the problem: allocation_to_total grades a share per bucket, which is a level per bucket, so stumping 1.6a's discretising rescue has no threshold to work with; measured from both sides, the correction family names one largest-share programme in 20 of 20 redraws while spreading the split by 472 slots, and the crude route names that same programme in 20 of 20. Biomedical & Clinical Research serves anomaly-detection with this one subdomain only, so the number cannot be redrawn inside the client domain on this objective except back into the same cell. Axis facts measured from outside the design: shape 05 draws no ban; the triple gap objective plus decisive generator G17 plus Gate G decomposition_attribution BLOCKs on test.same_driver_older against task237; Gate G decomposition_attribution and question form how-many each WARN against task248; pattern A was reserved and is not honest here, filed as none. architecture stays 0 because no architecture landed and nothing was cut. The card at scratchpad/w6_200/task200_card.json records the screened and dead architecture with architecture_spent true, carries no world or personas, returns BLOCK on guard.py check, and must not be registered.",
-  "screens": {
-    "harness": "scratchpad/w6_200/screen1.py, screen1b.py, screen1c.py, screen2_rank_pricing.py",
-    "command": "python3 -I screen1.py",
-    "screens": 4,
-    "mechanisms_dead_this_pass": 11,
-    "mechanisms_dead_total": 26,
-    "reproducible": "two consecutive runs of screen1.py byte-identical, 1763 bytes, stderr included",
-    "door_left_open": "the determinacy half of the rank-verified pincer does not close on this ground: 46 of 120 adjacent pairs sit between one and ten family-spreads (median 12.30), so what blocks a rank verified is the certainty bar, not determinacy"
-  },
-  "stage": 1,
-  "stage_name": "draw",
-  "status": "PAUSED",
-  "task": "task200",
-  "updated": "2026-10-18",
-  "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
-  "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
-  "architecture_note": "architecture 1 was drawn far enough to be screened as code and is dead; nothing was cut, no card was registered, and the card recording it carries architecture_spent true at scratchpad/w6_200/task200_card.json. The next pass starts architecture 2."
+ "architecture": 1,
+ "architecture_note": "architecture 1 was drawn far enough to be screened as code and is dead; nothing was cut, no card was registered, and the card recording it carries architecture_spent true at scratchpad/w6_200/task200_card.json. The next pass starts architecture 2.",
+ "grounds_closed": [
+  "physical-environmental-sciences/environmental-monitoring-exceedance",
+  "criminology-justice/crime-incidence-hotspot-analysis",
+  "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference",
+  "biomedical-clinical-research/genomics-gwas-high-dimensional-association"
+ ],
+ "loops": 0,
+ "objective": "anomaly-detection",
+ "owner": "oviya13ya",
+ "precut": {
+  "date": "2026-10-18",
+  "exit": 1
+ },
+ "resume": "Four grounds closed, still no card ever registered on this number, which is deliberate. The genomics ground was screened as code: one architecture measured dead on four independent kills and eleven further directions closed on house evidence before costing a screen. The kills: five defensible selection corrections spread the graded split 565 slots while the decisive step moved it 101 (over 20 redraws, spread 472 against separation 79); sweeping the dial sevenfold never lifted lever over spread above 0.192; the step reordered nothing, the decisive and naive routes giving one identical ordering in 20 of 20 redraws; and corr(decisive measure, unit size) was +0.962. Two structural findings came out of it. First, the discretising rescue does not reach allocation_to_total, because an allocation grades a share per bucket, a share is a level per bucket, and there is no threshold for a family's spread to stay inside, so that decision type is strictly harder than a designated set or a banded verdict on any ground whose inferential quantities carry a free weighting choice. Second, the reserved shape 05 brings a banned seam: its native objective is descriptive-distribution rather than anomaly-detection, and it turns hard on a floor and cap making the spread non-linear so the residual is redistributed, which is rule application. Both of those were my allocation's errors, not the draw's. The one door left open, priced and reported: the rank-verified object's determinacy half does not close (73 of 120 adjacent pairs more than ten family-spreads apart, 1 under one, 46 in the live middle), so only the certainty bar blocks it, and whether a rank call can be shaped to need no bar is one computation. Taxonomy constraint on this number: Biomedical and Clinical Research serves anomaly-detection with this one subdomain only, so it cannot move inside that client domain on this objective. A later draw takes a discretised decision type on this cell or another domain's cell, carrying the task237 triple warning (gap objective plus generator G17 plus Gate G decomposition_attribution is already held and needs a differentiation line wherever it is drawn next).",
+ "screens": {
+  "command": "python3 -I screen1.py",
+  "door_left_open": "the determinacy half of the rank-verified pincer does not close on this ground: 46 of 120 adjacent pairs sit between one and ten family-spreads (median 12.30), so what blocks a rank verified is the certainty bar, not determinacy",
+  "harness": "scratchpad/w6_200/screen1.py, screen1b.py, screen1c.py, screen2_rank_pricing.py",
+  "mechanisms_dead_this_pass": 11,
+  "mechanisms_dead_total": 26,
+  "reproducible": "two consecutive runs of screen1.py byte-identical, 1763 bytes, stderr included",
+  "screens": 4
+ },
+ "stage": 1,
+ "stage_name": "draw",
+ "status": "PAUSED",
+ "task": "task200",
+ "updated": "2026-10-18",
+ "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association (fourth ground, closed on measurement)",
+ "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race."
 }
