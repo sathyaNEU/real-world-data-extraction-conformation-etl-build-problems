@@ -1657,3 +1657,92 @@ shut four ways. Both terms of a claims rate have now been searched, which is the
 claim. **The cell is shut for this objective on the mechanism**, independently of the `ban.pairing` BLOCK that
 shuts it on the axis, and a further pass here should be spent only if the author reassigns the task type or
 the objective.
+
+### Architecture 7: the ground reassigned to accounting-audit-forensic, three mechanisms measured (2026-10-18)
+
+The author reassigned the domain and the task type, which is the one condition architecture 6 named for
+spending another pass here: card `domain` `accounting-audit-forensic` (a house domain, `client_domain`
+`banking-credit-financial-risk`), task type `banking-credit-financial-risk/fraud-aml-detection`, objective
+unchanged. The pairing has never been built, the domain has six never-drawn subdomains, and the task type
+carries no client rigor pattern block, so `layer2_pattern` would take `own:<name>` and nothing in the
+client library either constrains or helps. Two ground-specific bans were honoured and neither was
+re-screened: monetary unit sampling (task190 architecture 3, probability proportional to size, dead at
+stage 4 after two judge passes) and the two-channel capture overlap (task196, shipped on this very task
+type the day before). Screens: `screen.py` in the builder's scratch directory, 12 units, clean truth, no
+file cut.
+
+- **M1, endogenous sample size under a sequential stop-or-go attribute plan.** Each unit's control test
+  stops at its own filed count of deviations, so the examined count is a random variable set by what the
+  examination found, and deviations over items tested is biased upward by a factor set by the unit's own
+  stop number (measured 1.179x to 1.789x across the twelve, and the factor is monotone in the filed stop
+  number). The design-unbiased estimate is `(k-1)/(n-1)`. **Dead on the reflex sweep, run as code before
+  any separation was measured: the naive route already names the golden**, at a margin of **1.301x against
+  the designed route's own 1.083x**, and **five of eight reflexes reach it**, the crudest of them ("rank on
+  how few items it took to reach the stop") at **1.344x**, again wider than the designed route. Spearman
+  against the truth is **+0.9371 for the naive route** and +1.0000 for the designed one, so the correction
+  improves the ordering below the leader and never moves the leader. Dead a second way where it does move
+  anything: the correction is `naive x (k-1)/k`, one multiplication by a filed column of the audit plan,
+  which matches the designed route at Spearman **+0.9860**, so the decisive rung is readable on tests 1 and
+  6 of the readability screen. **The structural reason, and it generalises: the stopping rule is
+  informative about the quantity being estimated**, because a unit with a high deviation rate reaches its
+  stop in fewer items, so the statistic the bias acts on (the examined count) is the statistic that carries
+  the signal. Bias and signal are one number, which is architecture 2's "lever and noise are one variance"
+  in the first moment rather than the second.
+- **M2, the expected-by-chance coincidence baseline.** Vendor-master against employee-master shared
+  attribute links (address, bank account) across twelve business units, where the attribute's own frequency
+  distribution produces chance matches at a rate set by each unit's attribute concentration, so the genuine
+  conflict count is latent and the field's object is observed minus expected under a configuration null.
+  **Dead on magnitude, and the designed route itself cannot rank: it names a unit with 2 genuine links
+  against the golden's 9.** At the golden unit the observed count is **42,595 against 9 genuine links**, so
+  the signal is 2.1e-4 of the observable and the chance count's own sampling standard deviation is about
+  **206 against a signal of 9, a ratio of 0.044**; the designed route's error at that unit (**-31.10
+  against a truth of +9**) is 4.4x the entire quantity it is trying to recover. **No reflex reaches the
+  golden either**, which is the diagnosis rather than a reprieve: the mechanism cannot rank at all. Single
+  dial, both ends: the only way to lift the signal above the nuisance's noise is to make the attributes
+  nearly unique, which removes the chance matches and with them everything the step corrects.
+- **M3, right-censoring at the TOP.** The one shape the truncation-direction screen leaves open, taken
+  deliberately: per-item losses recorded only up to a per-item cap, so each unit's total is latent above
+  the cap and a tail functional is needed rather than a mean. **Dead on the forced-construction test**
+  (`stumping` 1.6a, task194 architecture 3's death): the graded figure for the golden unit is
+  **40,253,070 / 30,708,434 / 55,420,236 / 120,560,108** under lognormal, gamma, Weibull and Pareto-tail
+  maximum likelihood on the same censored records, a spread of **3.926x** where a forced construction needs
+  about 1.00x, and the **ranking forks too** (Weibull names a different unit from the other three). Pinning
+  the family files the method and spends the stump; leaving it open forks the figure. Same dial, both ends.
+  task130 reached the same place from the other side and closed it by eliminating distribution fitting
+  outright.
+- **A fourth family retired on lineage at no cost**, found in the probe's `driver.near` read rather than by
+  screening: lead-driven (adaptive) examination, where the examined set is enriched by following leads from
+  successful finds so the found rate over the examined count overstates the population total. **task124
+  architecture 2 holds it** in both its loop-0 and harden-loop-1 forms ("a rate measured on units that were
+  examined because they showed signs of the outcome is carried to a population"), at driver similarity 0.09
+  and 0.13. It would also have died on the common-exposure subset screen, since the initial random sample
+  alone is a filter and a divide.
+
+**What the three kills leave, stated as the condition a fourth candidate has to meet.** Each died on a
+different clause, and together they are a filter: the latent quantity must be **not collinear** with the
+easy statistic (M1), **large** relative to the nuisance's own sampling noise (M2), and recoverable by a
+construction **forced without a distributional family choice** (M3). The shapes that satisfy the third
+clause are linear algebra, a design weight or an exact identity, not a fitted tail; design weights are
+spent on this ground twice (task190's probability proportional to size, stratified projection), an exact
+identity is revelation, and "an unobserved component of an observed total recovered by a fit" is task182's
+spent family, which `slots` surfaced on the first probe. The task type's own estimated quantities were then
+enumerated rather than brainstormed, and every one is spent, open-family or pincer-dead: the counterfactual
+loss without the control (comparison, or a fitted family), the undetected loss (task196 capture, task194
+completion), the recovery (censoring, task201 and task189), the model's performance on the rejected
+population (reject inference, an openly contested estimator family), the reachable exposure (task28), the
+number of distinct networks (task192 architecture 1), and the time to detection (task190 architecture 4).
+
+**Where this pass stopped, and unlike architecture 6 it is the mechanism and not the axis.** `guard.py
+check` on a probe card carrying this ground's axes returns **BLOCK, exit 1**, on `test.same_puzzle_older`,
+`test.same_driver_older` and `ban.forcing_event` (`audit_or_inspection` against task194 v3) in the first
+configuration, and a second probe clears both the forcing event (`period_close`) and the two-layer fields,
+leaving **only the two structural signature tests, which are functions of whatever mechanism survives**.
+**No `ban.pairing`, `ban.subdomain`, `ban.shape`, `ban.strategy`, `ban.calibration`, `ban.role`,
+`ban.artifact`, `ban.spine`, `ban.org_family` or `ban.forum` fired on either probe**, so
+`accounting-audit-forensic` x `anomaly-detection` at shape 01 is **open on every axis ban**, with
+`uncertainty_hold`, `closed_decision_corpus`, `compliance_or_audit`, `filed_standard`,
+`professional_services`, `auditor`, `period_close` and a Portugal / EUR world all clear. The honest
+reading is therefore the opposite of architecture 6's: **the cell is available and the mechanism is what is
+missing**, so a further pass here is worth spending, and it should start from the three-clause filter above
+rather than from a candidate. The probes are `task198_probe_card.json` and `task198_probe2.json` in the
+builder's scratch directory; neither was registered.
