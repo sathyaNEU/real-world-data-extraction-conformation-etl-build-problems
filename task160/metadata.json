@@ -1,0 +1,188 @@
+{
+  "task": "task160",
+  "title": "How many agency RN shifts a hospital association's winter surge pool should block-book for the four weeks from 4 January 2027, when this winter's respiratory wave peaked in the south in December and the North's hospitals, new to the pool, have always met it five to six weeks after the Southeast",
+  "domain": "Healthcare Delivery & Health Economics",
+  "client_domain": "Healthcare Delivery & Health Economics",
+  "house_domain": "healthcare-delivery-health-economics",
+  "subdomain": "patient flow, beds and workforce optimization (a hospital association's winter agency nurse pool: the January block forecast region by region, each region's respiratory surge timed by its lag behind the region it spreads from, read off the closed winters' capacity census)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed block of agency RN shifts for four weeks, each of last winter's 16 pool hospitals' funded shifts and shifts billed to the pool that it did not fund, and a weekly chart of the funded shifts by agency",
+  "as_of": "2026-12-21",
+  "deliverables": [
+    "winter_pool_block_jan2027.xlsx",
+    "pool_shifts_winter_2025-26.png"
+  ],
+  "distractor_files": [
+    "rn_workforce_survey_2025q1_2026q3.xlsx",
+    "agency_rate_schedule_2026-27.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "capacity_reports_legacy_2021-07-02_2024-07-01.csv",
+    "largest_file_rows": 26406
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task160/generator/build.py (seeded, deterministic) around a fictional Michigan hospital association, its 24 member hospitals and two nurse staffing agencies, in the layouts of a hospital association's daily capacity reporting system before and after a system change, a surge declaration log, agency billing and payroll exports, a wastewater surveillance export and the pool's own agreement, register and order book; no real organisation's records or person is depicted.",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task160/generator/build.py",
+  "files": [
+    {
+      "path": "agency_rate_schedule_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 34681,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association finance, agency rate schedule 2026-27 (1 October 2026)",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_daily_2024-07-01_2026-12-20.csv",
+      "format": "csv",
+      "bytes": 817488,
+      "rows": 21672,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association capacity system, daily member capacity census, 1 July 2024 to 20 December 2026",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_reports_legacy_2021-07-02_2024-07-01.csv",
+      "format": "csv",
+      "bytes": 1263299,
+      "rows": 26406,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association capacity system (legacy), daily member capacity reports, census nights 1 July 2021 to 30 June 2024",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "crestfield_member_shifts_2025-11-01_2026-12-20.csv",
+      "format": "csv",
+      "bytes": 1641610,
+      "rows": 12950,
+      "source": "Constructed for this task (seeded, deterministic): Crestfield Medical Staffing, member shift report for the association's members, 1 November 2025 to 20 December 2026",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 8551,
+      "rows": 52,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association pool office, data dictionary",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_manifest_2026-12-21.csv",
+      "format": "csv",
+      "bytes": 1975,
+      "rows": 15,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association pool office, extract manifest for the 21 December 2026 pull",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "inland_seas_member_shifts_2025-26.xlsx",
+      "format": "xlsx",
+      "bytes": 201974,
+      "rows": 4998,
+      "source": "Constructed for this task (seeded, deterministic): Inland Seas Nursing, weekly member shift sheets, winter 2025-26",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "inland_seas_member_shifts_2026-27.xlsx",
+      "format": "xlsx",
+      "bytes": 114331,
+      "rows": 2875,
+      "source": "Constructed for this task (seeded, deterministic): Inland Seas Nursing, weekly member shift sheets, winter 2026-27 to the week of 14 December",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "january_block_orders_2022-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 6690,
+      "rows": 6,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association pool office, January block orders filed 2021 to 2025",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "resp_admissions_outlook_2026-12-18.xlsx",
+      "format": "xlsx",
+      "bytes": 8484,
+      "rows": 45,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association surveillance unit, respiratory admissions outlook issued 18 December 2026",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rn_workforce_survey_2025q1_2026q3.xlsx",
+      "format": "xlsx",
+      "bytes": 12353,
+      "rows": 168,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association workforce survey, members' quarterly RN returns, 2025 Q1 to 2026 Q3",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "surge_declarations_2021-07-01_2026-12-20.csv",
+      "format": "csv",
+      "bytes": 25820,
+      "rows": 525,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association capacity system, surge plan declarations, 1 July 2021 to 20 December 2026",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "surge_plan_register_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 35865,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association pool office, surge plan register 2026-27 (2 November 2026)",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tpha_members_2026-27.xlsx",
+      "format": "xlsx",
+      "bytes": 8801,
+      "rows": 24,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association pool office, members and keys for the 2026-27 season",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wastewater_results_2021-09-06_2026-12-17.json",
+      "format": "json",
+      "bytes": 5243098,
+      "rows": 19606,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association surveillance unit, wastewater results, 6 September 2021 to 17 December 2026",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "winter_pool_agreement_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 37999,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Two Peninsulas Hospital Association, winter surge staffing pool agreement 2026-27 (24 September 2026)",
+      "date": "2026-12-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
