@@ -188,6 +188,24 @@ def run(target, T):
         ok(abs(A.aj(sp2) - gold[p]) < 1e-9, "R2/SF6 %s: any split of the endings between TO and WD gives the same share"
            % p)
     ok(codes(A.review(R, "redate")) == GOLD, "R2/SF7 withdrawal dating: one term earlier gives the same call")
+    # a transfer out or withdrawal leaves the risk set before its exit term's awards, or at the term before: the
+    # estimate is the same to the last digit, so neither timing of the endings within a term is a reading of 3.1
+    for p in progs:
+        sp = A.spells(pk, [e for e in ent if e["prog"] == p])
+        surv, cif = 1.0, 0.0
+        for t in range(1, K.WINDOW + 1):
+            n = A.at_risk(sp, t)
+            gone = sum(1 for e, k, o in sp if e == t and k in ("XTO", "XWD"))
+            got = sum(1 for e, k, o in sp if e == t and k == "GR")
+            if n:
+                surv *= 1 - gone / n
+                if n - gone:
+                    cif += surv * got / (n - gone)
+                    surv *= 1 - got / (n - gone)
+        back = [((e - 1) if e is not None and k in ("XTO", "XWD") else e, k, o) for e, k, o in sp]
+        ok(abs(100 * cif - gold[p]) < 1e-9 and abs(A.aj(back) - gold[p]) < 1e-9,
+           "R2/SF7 %s: the endings out of the risk set before their term's awards, or a term earlier, give the same "
+           "share" % p)
     ok(codes(A.review(R, "person")) == GOLD, "R2/SF8 readmissions: followed across a readmission, the same call")
     ok(codes(A.review(R, "dc_compete")) == GOLD and codes(A.review(R, "dc_censor")) == GOLD,
        "R2/SF13 deaths: censored or an ending, the same call")
