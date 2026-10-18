@@ -19,59 +19,82 @@ QUALIFY_SECS = 15                           # for at least this many consecutive
 DAY = 86400
 
 # --- sites -------------------------------------------------------------------------------------
-# pts: coarse daily anchors (local hour, MW) of the programme shape, net export at the grid
-# connection (negative = import). stair: (h_from, h_to, MW per quarter hour) cumulative trims the
-# site's own intraday position adds inside that span. ramp_s: the realised ramp duration of the
-# site's controller, which the register never states (it states a contractual maximum ramp rate).
+# pts: coarse daily anchors (local hour, MW) of the programme, net export at the grid connection
+# (negative = import). stair: (h_from, h_to, MW per quarter hour, h_reset) the cumulative trim the
+# site's own intraday position adds through that span, held until h_reset. ramp_s: the realised ramp
+# duration of the site's controller; no shipped document states it.
 SITES = [
     dict(id="VKF-OOS", name="Oosterhout", kind="battery", pmax=12.0, cap=6.0, gain=0.993,
-         tau=4.0, ramp_s=85, decl_max_mw_min=7.2, blocks=[1, 3],
-         pts=[(0, 0), (5.0, 0), (5.5, 4.8), (9.0, 4.8), (9.75, 0), (10.5, -6.4), (14.5, -6.4),
+         tau=4.0, ramp_s=85, blocks=[1, 3],
+         pts=[(0, 0), (5.0, 0), (5.5, 4.8), (9.5, 4.8), (9.75, 0), (10.5, -6.4), (14.5, -6.4),
               (15.5, 0), (17.0, 8.4), (19.5, 8.4), (20.5, 0), (24, 0)],
-         stair=[(5.5, 7.75, -0.28)]),
+         stair=[(5.5, 7.75, -0.46, 9.75)]),
     dict(id="VKF-ZWT", name="Zwartewater", kind="battery", pmax=20.0, cap=8.0, gain=0.979,
-         tau=3.0, ramp_s=80, decl_max_mw_min=14.0, blocks=[2],
-         pts=[(0, 0), (5.25, 0), (5.75, 13.2), (8.0, 13.2), (11.5, -9.6), (15.0, -9.6),
+         tau=3.0, ramp_s=80, blocks=[2],
+         pts=[(0, 0), (5.25, 0), (5.75, 13.2), (11.25, 13.2), (11.5, -9.6), (15.0, -9.6),
               (16.0, 0), (17.5, 14.0), (20.0, 14.0), (21.0, 0), (24, 0)],
-         stair=[(8.0, 11.25, -1.52)]),
+         stair=[(8.0, 11.25, -1.52, 11.5)]),
     dict(id="VKF-HGZ", name="Hoogezand", kind="gas_engine", pmax=9.0, cap=3.0, gain=0.952,
-         tau=6.0, ramp_s=185, decl_max_mw_min=2.4, blocks=[4, 5],
+         tau=6.0, ramp_s=185, blocks=[4, 5],
          pts=[(0, 1.2), (6.0, 1.2), (6.75, 6.4), (9.5, 6.4), (10.25, 1.2), (16.25, 1.2),
-              (17.0, 3.6), (21.0, 3.6), (22.0, 1.2), (24, 1.2)],
-         stair=[(17.0, 19.75, 0.22)]),
+              (17.0, 3.6), (21.75, 3.6), (22.0, 1.2), (24, 1.2)],
+         stair=[(17.0, 19.75, 0.20, 22.0)]),
     dict(id="VKF-KPV", name="Kampvliet", kind="battery", pmax=10.0, cap=5.0, gain=0.762,
-         tau=4.0, ramp_s=90, decl_max_mw_min=6.0, blocks=[4],
+         tau=4.0, ramp_s=90, blocks=[4],
          pts=[(0, 0), (6.75, 0), (7.25, 4.4), (9.25, 4.4), (10.0, 0), (11.0, -5.2), (14.0, -5.2),
-              (15.0, 0), (16.0, 1.8), (20.0, 7.6), (20.75, 0), (24, 0)],
-         stair=[(16.0, 19.75, 0.47)]),
+              (15.0, 0), (16.0, 0.6), (20.0, 0.6), (20.75, 0), (24, 0)],
+         stair=[(16.0, 18.75, 0.76, 20.75)]),
     dict(id="VKF-MPD", name="Meppelerdiep", kind="gas_engine", pmax=6.0, cap=2.0, gain=1.028,
-         tau=7.0, ramp_s=200, decl_max_mw_min=1.8, blocks=[1],
+         tau=7.0, ramp_s=200, blocks=[1],
          pts=[(0, 0.8), (5.5, 0.8), (6.25, 3.2), (10.0, 3.2), (10.75, 0.8), (17.0, 0.8),
               (17.75, 5.1), (21.5, 5.1), (22.25, 0.8), (24, 0.8)],
-         stair=[(6.25, 7.75, 0.34)]),
+         stair=[(6.25, 7.75, 0.34, 10.75)]),
     dict(id="VKF-NWV", name="Nieuwveen", kind="battery", pmax=15.0, cap=6.0, gain=0.944,
-         tau=3.5, ramp_s=95, decl_max_mw_min=10.5, blocks=[1, 2],
+         tau=3.5, ramp_s=95, blocks=[1, 2],
          pts=[(0, 0), (1.0, -4.8), (4.0, -4.8), (5.0, 0), (6.0, 5.4), (9.5, 5.4), (10.0, 0),
               (11.5, -7.2), (14.5, -7.2), (15.5, 0), (17.5, 9.6), (20.0, 9.6), (21.0, 0), (24, 0)],
-         stair=[(6.0, 9.25, 0.12)]),
+         stair=[(6.0, 9.25, -0.11, 10.0)]),
     dict(id="VKF-TRB", name="Terborgh", kind="industrial_load", pmax=8.0, cap=3.0, gain=1.011,
-         tau=5.0, ramp_s=300, decl_max_mw_min=1.2, blocks=[2],
+         tau=5.0, ramp_s=300, blocks=[2],
          pts=[(0, -2.1), (5.75, -2.1), (6.0, -7.4), (13.75, -7.4), (14.0, -4.6), (21.75, -4.6),
               (22.0, -2.1), (24, -2.1)],
-         stair=[(8.0, 11.25, 0.63)]),
+         stair=[(8.0, 10.0, 0.63, 13.75)]),
     dict(id="VKF-DLK", name="Dollardkust", kind="battery", pmax=25.0, cap=10.0, gain=0.966,
-         tau=3.0, ramp_s=100, decl_max_mw_min=17.5, blocks=[4, 0],
+         tau=3.0, ramp_s=100, blocks=[4, 0],
          pts=[(0, 0), (0.5, -12.0), (4.5, -12.0), (5.5, 0), (7.0, 9.0), (9.0, 9.0), (10.0, 0),
-              (11.0, -14.0), (15.0, -14.0), (16.0, 2.5), (20.0, 16.0), (21.0, 0), (24, 0)],
-         stair=[(16.0, 19.75, 0.34)]),
-    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.884,
-         tau=6.5, ramp_s=190, decl_max_mw_min=2.1, blocks=[4],
-         pts=[(0, 1.0), (6.25, 1.0), (7.0, 5.1), (9.75, 5.1), (10.5, 1.0), (16.0, 1.0),
-              (17.0, 3.2), (21.25, 3.2), (22.25, 1.0), (24, 1.0)],
-         stair=[(17.0, 19.0, 0.16)]),
+              (11.0, -14.0), (15.0, -14.0), (16.0, 2.5), (20.0, 2.5), (21.0, 0), (24, 0)],
+         stair=[(16.0, 19.75, 0.34, 21.0)]),
+    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.906,
+         tau=6.5, ramp_s=190, blocks=[4],
+         pts=[(0, 1.0), (6.25, 1.0), (7.0, 5.1), (9.75, 5.1), (10.5, 1.0), (16.0, 0.8),
+              (21.25, 0.8), (22.25, 0.8), (24, 1.0)],
+         stair=[(16.5, 19.0, 0.70, 22.25)]),
 ]
 SITE_BY_ID = {s["id"]: s for s in SITES}
 BLOCK_HOURS = [(0, 4), (4, 8), (8, 12), (12, 16), (16, 20), (20, 24)]   # local, FCR blocks 1..6
+
+# Days a site is out of the reserve market, with the reason the platform event log carries.
+OUT_OF_MARKET = {
+    "VKF-KPV": [dt.date(2026, 9, 24), dt.date(2026, 9, 25)],
+    "VKF-MPD": [dt.date(2026, 10, 6)],
+    "VKF-DLK": [dt.date(2026, 9, 29)],
+}
+# Cover taken by another site while one is out, and the weekend reshuffle.
+COVER = {(dt.date(2026, 9, 24), 4): "VKF-DLK", (dt.date(2026, 9, 25), 4): "VKF-DLK",
+         (dt.date(2026, 10, 6), 1): "VKF-NWV", (dt.date(2026, 9, 29), 4): "VKF-HGZ"}
+
+
+def commitments(site, d):
+    """The FCR blocks the site is contracted for on local date d."""
+    blocks = list(site["blocks"])
+    if d in OUT_OF_MARKET.get(site["id"], []):
+        return []
+    if d.weekday() >= 5:                      # the weekend portfolio runs two blocks fewer
+        blocks = [b for b in blocks if b not in (0, 3)]
+    for (cd, cb), sid in COVER.items():
+        if cd == d and sid == site["id"] and cb not in blocks:
+            blocks.append(cb)
+    return sorted(blocks)
 
 # --- system net-load ramp by local quarter hour -------------------------------------------------
 def netload_ramp_profile():
@@ -81,12 +104,14 @@ def netload_ramp_profile():
     for p in range(96):
         h = p / 4.0
         v = 0.0
-        if 5.0 <= h < 7.0:      v = 0.45 + 0.25 * (h - 5.0) / 2.0
+        if h < 4.5:             v = -0.52 - 0.18 * np.sin(np.pi * h / 4.5)
+        elif 4.5 <= h < 5.0:    v = 0.0
+        elif 5.0 <= h < 7.0:    v = 0.45 + 0.25 * (h - 5.0) / 2.0
         elif 7.0 <= h < 9.25:   v = 0.80 + 0.45 * np.sin(np.pi * (h - 7.0) / 2.25)
-        elif 9.25 <= h < 13.0:  v = -0.55 - 0.20 * np.sin(np.pi * (h - 9.25) / 3.75)
+        elif 9.25 <= h < 13.0:  v = -0.72 - 0.26 * np.sin(np.pi * (h - 9.25) / 3.75)
         elif 13.0 <= h < 15.5:  v = -0.10
         elif 15.5 <= h < 19.0:  v = 0.70 + 0.55 * np.sin(np.pi * (h - 15.5) / 3.5)
-        elif 19.0 <= h < 23.0:  v = -0.60 - 0.25 * np.sin(np.pi * (h - 19.0) / 4.0)
+        elif 19.0 <= h < 23.0:  v = -0.78 - 0.30 * np.sin(np.pi * (h - 19.0) / 4.0)
         prof[p] = v
     return prof
 
@@ -158,18 +183,20 @@ def programme(site, d):
                 lvl = v0 + (v1 - v0) * ((h - h0) / (h1 - h0)) if (h1 - h0) <= 1.01 else v0
                 break
         out[p] = lvl
-    for (h0, h1, stp) in site.get("stair", []):
-        k = 0
+    for st in site.get("stair", []):
+        h0, h1, stp, hr = st
+        k, kmax = 0, 0
         for p in range(96):
             h = p / 4.0
             if h0 <= h <= h1:
                 out[p] += stp * k
                 k += 1
-            elif h > h1:
-                out[p] += stp * max(k - 1, 0)
+                kmax = k - 1
+            elif h1 < h < hr:
+                out[p] += stp * kmax
     wk = 0.9 if d.weekday() >= 5 else 1.0
     out = out * wk + r.normal(0, 0.035, 96) * np.maximum(0.3, np.abs(out))
-    return np.round(out, 3)
+    return np.round(np.clip(out, -site["pmax"], site["pmax"]), 3)
 
 def traj(site, prog, t):
     """The programme trajectory in MW at local second t: linear ramp of length ramp_s from the
@@ -187,11 +214,12 @@ def required(site, f):
     mag = np.clip((np.abs(dev) - DEADBAND) / SPAN, 0.0, 1.0) * site["cap"]
     return np.sign(dev) * mag
 
-def contracted(site, t_local_s):
-    """True where the site is inside one of its contracted FCR blocks at local second t."""
+def contracted(site, t_local_s, d=None):
+    """True where the site is inside one of its contracted FCR blocks at local second t. With no
+    date the site's standing pattern is used; with a date, that day's commitments."""
     h = (np.asarray(t_local_s, dtype=float) / 3600.0) % 24.0
     out = np.zeros(np.shape(h), dtype=bool)
-    for b in site["blocks"]:
+    for b in (site["blocks"] if d is None else commitments(site, d)):
         lo, hi = BLOCK_HOURS[b]
         out |= (h >= lo) & (h < hi)
     return out
@@ -201,14 +229,14 @@ def site_power(site, d, f, prog, lo, hi):
     response and telemetry noise."""
     t = np.arange(lo, hi)
     base = traj(site, prog, t)
-    req = required(site, f[lo:hi]) * contracted(site, t)
+    req = required(site, f[lo:hi]) * contracted(site, t, d)
     g = site["gain"]
     a = np.exp(-1.0 / site["tau"])
     resp = np.zeros(len(t))
     # warm start: run the lag from 400 s before the window so the state is right
     pre_lo = max(0, lo - 400)
     tp = np.arange(pre_lo, lo)
-    req_pre = required(site, f[pre_lo:lo]) * contracted(site, tp)
+    req_pre = required(site, f[pre_lo:lo]) * contracted(site, tp, d)
     v = 0.0
     for x in req_pre:
         v = a * v + (1 - a) * g * x

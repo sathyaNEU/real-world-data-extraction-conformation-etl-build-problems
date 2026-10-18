@@ -846,3 +846,51 @@ script says that in its output instead of printing the row twice and calling it 
   **What is not wrong with it.** The estimand stays filed in all five parts with the published table as the
   comparison, the open step stays the observation process, and the WHAT screen passes. The design is sound
   and the ladder it can carry is not.
+- **Correction to the line above, and it matters: the bound was measured against a bar this repo does not
+  set.** There is no two-standard-error rule in the skills. What is filed is a rung margin of 1.15x, a final
+  margin of 1.2x with a 1.5 to 2x target (`dataset-generation` 6.2) and a nearest-wrong-cell floor of 6 per
+  cent (`determinism-check` C4), and architecture 1's lesson was not about sampling noise at all: there the
+  graded counts were a fitted counterfactual and two functional forms the record admits were collinear, so
+  the answer turned on a choice the data could not settle. Nothing is fitted here. The development factors
+  are ratios read back from the register's own shipped bytes and all five readings of the development name
+  the same unit, so the golden is determinate from the shipped files. **Against the floors that are filed,
+  the measured point clears with room:** rung 0 separates at 1.50x, the intermediate rung at 1.23x, the
+  decisive rung at 2.008x. One real deviation stands, that the golden sits 2nd of 12 on rung 0 where 6.2
+  asks for 4th or 5th, and that is the bound's doing: the flip is paid for out of the uplift, so the
+  further down the record the golden sits, the less of the uplift is left for the margin.
+- **Architecture 3 is spent, and on the reflex rule rather than on any separation.** `stumping` is explicit
+  that every reflex an opponent reaches for must file the default or another named wrong answer, and that a
+  reflex reaching the golden spends the stump. Twenty-two reflexes were run on the record as it stands, on
+  409,336 in-scope acute episodes: pool and aggregate scale, credibility weighting at four strengths and by
+  empirical Bayes, stratification on each visible attribute, a site control, a volume control, trend and
+  recency, ratio against difference and rate against count. **Six of the twenty-two reach the golden**, and
+  the worst are not close: standardising on risk band, age band and length of stay band names it at
+  **3.47x**, on length of stay alone, on risk band, age band and comorbidity band at 1.30x, on risk band,
+  age band and site, the excess net of its own site's mean excess, and credibility weighting once the prior
+  is strong enough. **The cause is a confound, not a tuning failure, and it is real rather than an
+  artefact.** The lag's depth was made to follow the complication groups a unit's patients produce, and
+  pressure injuries and delirium are produced by old, comorbid, long-staying patients. Those are exactly
+  the patients the published table under-adjusts for, because it standardises on a risk band and an age
+  band and nothing else. So the attribute that makes a unit's record late is the same attribute that makes
+  its excess rise under any finer standardisation, and an opponent holding the pool to every visible
+  attribute arrives at the golden without doing the maturity analysis at all. Within this mechanism the
+  deep-lag units are all medical and aged and the shallow-lag ones all surgical, so no other choice of
+  golden escapes it. More volume cannot help, and nor can a deeper lag: both make the confounded reflex
+  stronger, not weaker.
+- **Priced anyway, because it was asked for: the lag lever works arithmetically and is not needed.** The
+  uplift budget is set by the completeness profile's depth and reach and the noise by the counts, so they
+  are separable: deepening the profile over the four lags already modelled, from the golden's d of 0.079 to
+  about 0.16, doubles the budget from 27.25 to about 55 while the counts and the standard errors stay
+  exactly where they are. At the depth actually built, pressure injuries 43 per cent complete at a
+  quarter's own close and 93 per cent four closes later, the backlog is one a network could document: a
+  retrospective staging and audit programme running three quarters behind is ordinary. At the depth the
+  doubling would need, 25 per cent complete at the close, it is at the outer edge and the realism sweep
+  would be right to query it. Either way the lever is moot, because the bar it buys is not the bar that
+  failed.
+- **The mechanism that survives the reflex test, for the next pass.** Keep the strategy, the estimand and
+  the open step exactly as they are, and move the lag's driver off the patients and onto the documentation
+  path: a site or a ward whose complications reach the warehouse late because of where they are recorded,
+  not because of who the patients are. That breaks the confound in both directions, since finer
+  standardisation on patient attributes no longer touches the signal, and the site control, which an
+  opponent reaches for, nulls it and lands elsewhere. The pack already carries the organ, one hospital's
+  wards being off the clinical information system.

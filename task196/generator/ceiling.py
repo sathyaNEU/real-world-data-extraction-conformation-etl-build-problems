@@ -37,12 +37,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # ---------------------------------------------------------------------------
 ASKS = [
     # id, ask, figures, owner, cracker hit, mirror hit
-    ("C1", "construction", "each member's estimated true case count for 2026/27", 12, "construction", True, False),
+    ("C1", "construction", "the index for each of the four review-group members", 4, "construction", True, False),
     ("C3", "construction", "the named member's bridge, one line per reconciling item", 3, "construction", True, True),
+    ("C4", "construction", "the chart's named parts", 6, "construction", True, True),
     ("A",  "ask A", "indemnity paid on the unauthorised-fraud class, 4 quarters x 3 member tiers plus quarter totals", 16, "device", False, False),
     ("B",  "ask B", "cases notified in the quarter to 30 June 2027 and those closed by it, per member", 24, "device", False, False),
     ("C",  "ask C", "recovery share by route and quarter on cases closed in 2025/26, plus route totals", 15, "device", False, False),
 ]
+# The mirror is credited with every construction figure it could plausibly keep, which flatters the
+# pair's second column rather than the first: C3's opening line is the recorded case count, and three of
+# the chart's six parts (the recorded series, its ordering and the highlighted member) survive a wrong
+# estimate. C3 and C4 are therefore marked kept for the mirror in full.
 # CUT, and the cut is recorded because it is a ceiling lever and a correctness check at once
 # (supplemental-stumping Part 6): a per-member recorded case count for 2026/27, twelve figures, was
 # graded in the first sizing. It is a group-by on one file that every strong response banks, it was the
@@ -100,22 +105,38 @@ def main():
                                                   "keeps" if c_hit else "miss", "keeps" if m_hit else "miss"))
     print()
     print("ask criteria N                 %d" % n)
-    print("cracker keeps                  %d of %d  (%.3f of ask weight)   device figures kept: %d of %d"
-          % (hc, n, lc, 0, sum(r[3] for r in rows if r[4] == "device")))
-    print("mirror keeps                   %d of %d  (%.3f of ask weight)" % (hm, n, ls))
+    dev_total = sum(r[3] for r in rows if r[4] == "device")
+    dev_c = sum(r[3] for r in rows if r[4] == "device" and r[5])
+    dev_m = sum(r[3] for r in rows if r[4] == "device" and r[6])
+    con_total = sum(r[3] for r in rows if r[4] == "construction")
+    print("ask criteria behind each row   %d construction + %d device" % (con_total, dev_total))
+    print("cracker keeps                  %d of %d  (%.3f of ask weight)   device figures kept %d of %d"
+          % (hc, n, lc, dev_c, dev_total))
+    print("mirror keeps                   %d of %d  (%.3f of ask weight)   device figures kept %d of %d"
+          % (hm, n, ls, dev_m, dev_total))
     print("cracker score                  %.1f" % c)
     print("mirror score                   %.1f" % s)
     print("PAIR CEILING                   %.1f   (gate: 40.0 or under)" % avg)
     print("mirror leakage                 %.1f per cent of ask weight   (gate: under 35)" % (100.0 * ls))
     print()
-    print("sweep: construction layer graded figures against the pair")
-    print("%-28s %5s %8s %8s %8s" % ("construction figures graded", "N", "Lc", "cracker", "pair"))
-    for k in (27, 24, 20, 15, 12, 9, 6):
-        over = {"C1": min(12, k // 2), "C2": min(12, k - k // 2 - 3 if k > 3 else 0), "C3": 3 if k >= 3 else 0}
-        tot = sum(over.values())
-        lc2, ls2, n2, _, _ = score(rows, keep_construction=over)
+    print("sweep: the two sizing decisions, against the pair")
+    print("%-46s %5s %7s %7s %8s %7s" % ("construction layer", "N", "Lc", "Ls", "cracker", "pair"))
+    for label, n_index, recorded_col in (
+            ("all twelve members indexed, recorded column graded", 12, True),
+            ("all twelve members indexed", 12, False),
+            ("review group of four indexed, recorded column graded", 4, True),
+            ("review group of four indexed (shipped)", 4, False),
+            ("review group of four, no chart criteria", 4, None)):
+        trial = [r for r in rows if r[4] == "device"]
+        trial.append(("C1", "construction", "index per indexed member", n_index, "construction", True, False))
+        trial.append(("C3", "construction", "the named member's bridge items", 3, "construction", True, True))
+        if recorded_col is not None:
+            trial.append(("C4", "construction", "the chart's named parts", 6, "construction", True, True))
+        if recorded_col:
+            trial.append(("C2", "construction", "recorded case count per member (cut)", 12, "construction", True, True))
+        lc2, ls2, n2, _, _ = score(trial)
         c2, s2, avg2 = pair(lc2, ls2)
-        print("%-28d %5d %8.3f %8.1f %8.1f" % (tot, n2, lc2, c2, avg2))
+        print("%-46s %5d %7.3f %7.3f %8.1f %7.1f" % (label[:46], n2, lc2, ls2, c2, avg2))
     print()
     bad = [r[0] for r in rows if r[4] == "device" and r[5]]
     if bad:

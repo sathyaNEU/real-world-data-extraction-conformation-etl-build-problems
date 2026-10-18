@@ -276,41 +276,76 @@ is determinate under all of them.
 
 ## Ask sheet
 
-Three asks, 22 graded figures. Ask 1 is the free construction figure both responses bank; Asks 2 and 3
-carry the device mass.
+Three asks, 25 graded ask figures, solved rather than asserted by
+`generator/asks_measure.py`. Ask 1 is the one free construction figure both responses bank; Ask 2 is a
+mirror device the cracker recovers; Ask 3 carries the cracker's misses.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | File and columns | Stops and lazy delta |
 |---|---|---|---|---|---|---|---|
-| 1 | 4: each FY2026 quarter's cases answered later than target | the call's own working, stated per quarter | the Authority response quotes the year's quarterly profile | none by design (the call's population carries no device) | the migration de-duplication, the UTC conversion, the holiday calendar | both case files, 11 columns | export basis 1,186; elapsed clock 1,902; golden 1,418 |
-| 2 | 10: each FY2026 quarter's chargeable cases the billing extract covers and the fee per chargeable case, plus the two FY2026 totals | an input reconciled to another system's total, the gap made of devices | member operations bills schemes per case and owes the Authority a charge reconciliation | D6 grain, a count that does not sum: a billing line may cover several cases of one type for one scheme in a week, and the line does not say how many; the count is recovered as the line's fee over the schedule's per-case fee | the fee schedule's two rate periods; two schemes billed in arrears | `scheme_billing_extract_fy2026.csv`, 9 columns; `fee_schedule_2025.pdf` | rows counted as cases 5,912; cases recovered from the fee 7,043; the quarterly figures move with it |
-| 3 | 8: the eight largest participating schemes by FY2026 cases received, each with cases per 1,000 active members | a measure every candidate carries that the call does not turn on | the trustee reporting pack reports case load per 1,000 members by scheme | D9 self-validation, a rollup beside its own parts: the register lists the master trust and its four sections, and the sections' membership is stated at their own 30 September year end, so the four sections plus the central section sum above the trust's own total in the trustee report | the section codes needing roll-up to the participating scheme; one scheme renamed mid-history | `schemes_register_2026.csv`, 7 columns; `trustee_report_membership_2026.pdf` | sections read at their own year end; sections read as separate schemes; golden on the roll-up |
+| 1 | 1: the FY2026 breach share for the member-service operation as a whole | the call's own working at the operation level | the Authority response opens on the operation's own year | none by design: the call's population carries no device row | the migration de-duplication, the UTC conversion, the holiday calendar, the clock exclusions | both case files, 11 columns | elapsed-clock read 13.9; export basis 11.6; golden 7.7 |
+| 2 | 4: the chargeable cases the scheme charging covers in each FY2026 quarter | an input reconciled to another system's total, the gap made of devices | member operations bills schemes per chargeable case and owes the Authority a charge reconciliation | D6 grain, a paper row covering several ledger lines: the three largest participating schemes are billed on a consolidated monthly statement, so one charge line covers every chargeable case of one type completed for that scheme in the month, and the line does not say how many; the count is recovered as the line's charge over the schedule's per-case fee | the schedule's two rate periods, 1 April to 30 September 2025 and from 1 October 2025; cases answered in late March charged in April | `scheme_charges_fy2026.csv`, 8 columns; `fee_schedule_2025.pdf` | lines counted as cases 4,584; cases the charges cover 7,582; per quarter 1,139 against 1,869, 1,176 against 1,982, 1,181 against 1,923, 1,088 against 1,808 |
+| 3 | 20: the ten largest participating schemes by FY2026 cases received, each with its active members at 31 March 2026 and its FY2026 cases received per 1,000 active members | a measure every candidate carries that the call does not turn on | the trustee reporting pack reports case load per 1,000 members by scheme | D9 self-validation, a rollup above its own parts: where one sponsoring employer returns for more than one of its schemes, the members register carries the group's total against each of that sponsor's schemes, and nine of the ten largest participating schemes sit in such a group; the per-scheme figure at 31 March 2026 is in the trustee membership statement, which the register's own rows contradict without any total in the pack to reconcile them against | the master trust's five administrative sub-codes rolling up to one participating scheme; one scheme renamed mid-history | `schemes_register_2026.csv`, 4 columns; `trustee_report_membership_2026.pdf` | register rates 113.4, 126.2, 108.6, 131.4, 143.2, 151.0, 41.9, 139.3, 46.9 against golden 182.1, 179.6, 178.1, 174.4, 176.1, 178.0, 171.1, 161.5, 158.0 |
 
-**Separation line.** Zero device rows and zero hazard rows sit in the main call's declared population:
-the call reads the two case files, the roster workbook, the work-measurement study, the standard, the
-framework, the queue reference and the holiday calendar, and no device touches any of them. Ask 2's
-devices are in the billing extract and the fee schedule; Ask 3's are in the schemes register and the
-trustee report. Neither file is read by the call, and deleting every device leaves the call unchanged,
-asserted by count in `generator/checks.py`.
+**Separation line.** Zero device rows and zero hazard rows sit in the main call's declared population.
+The call reads the two case files, the roster workbook, the work-measurement study, the service standard,
+the assurance framework, the queue reference and the holiday calendar; Ask 2's devices are in
+`scheme_charges_fy2026.csv` and `fee_schedule_2025.pdf`, Ask 3's in `schemes_register_2026.csv` and
+`trustee_report_membership_2026.pdf`, and the call reads none of those four. The scheme code the case
+record carries is read by no ask device and by the call not at all. Deleting every device leaves the call
+byte-identical, asserted by count in `generator/checks.py`.
 
-**Referee.** `fee_schedule_2025.pdf` arbitrates Ask 2's designed disagreement and states no case count;
-`trustee_report_membership_2026.pdf` arbitrates Ask 3's and states no scheme-level rate.
+**Measured forcing, per device.** Ask 2: the natural read returns 4,584 against the golden's 7,582 cases
+covered, and the smallest quarterly gap is 720 cases on a figure stated in whole cases. Ask 3: the
+smallest gap between the register rate and the golden rate on a grouped scheme is 22.0 per 1,000 against
+a 0.05 bin half-width, and the largest is 129.2. Graded-set boundary: the tenth largest participating
+scheme has 514 FY2026 cases against the eleventh's 397, a gap of 117 cases, so the membership of the
+graded set holds under every licensed reading.
 
-| Cracker sheet (the response that landed the call, ran the hygiene battery and executed every filed rule) | Ask 1 | Ask 2 | Ask 3 | Verdict |
-|---|---|---|---|---|
-| key uniqueness, exact duplicates, unmatched joins, fan-out, count ties | banked | the battery passes: every billing line is unique, joins match, nothing fans out | the battery passes: every register row is unique and every scheme code matches | miss |
-| executed every filed rule it points at | banked | the fee schedule states a per-case fee; the row count still ties to no stated total | the register's header note states active members at the year end | miss |
-| matched every control and published figure | banked | the extract's own fee total ties under both readings | the register's own total ties to itself | miss |
+**Referee.** `fee_schedule_2025.pdf` arbitrates Ask 2's disagreement and states no case count;
+`trustee_report_membership_2026.pdf` arbitrates Ask 3's and states no scheme-level rate and no total.
 
-**Pair ceiling:** 37.7 on Part 0's weights (38 recommendation and components, 7 instruction-following,
-55 asks), with both columns printed by the script: the cracker lands the call and keeps 4 of 22 ask
-figures, scoring 38 + 7 + 55 x 0.182 = 55.0; the mirror stops at rung 2, keeps 4 of 22, and scores
-5 + 7 + 55 x 0.182 = 22.0. The asks consume nothing the call's construction produces, so the two ask
-rows agree by construction and the separation assertions rather than a second reading are the evidence.
+The cracker is the response that landed the call, ran the hygiene battery, executed every filed rule the
+pack points at and matched every control and published figure it carries. Ask 3 is the primary it is
+measured against; one row per move it makes, and the verdict is whether that move reaches the device.
 
-**Mirror leakage:** 18.2 per cent of ask weight.
+| Cracker move | What it does on Ask 3's register | Verdict |
+|---|---|---|
+| key uniqueness | every participating-scheme code is unique in the register | miss |
+| exact duplicates | no two register rows are equal; the repeated membership figures sit on rows that differ in code, name and sponsor | miss |
+| unmatched joins | every participating-scheme code in the case record matches a register row once the master trust's five sub-codes are rolled up, which the register's own note states | miss |
+| fan-out and count ties | the register is one row per participating scheme, so nothing fans out and no count ties | miss |
+| executes every filed rule the pack points at | the register's note states the column is active members as returned by the sponsor; nothing in the pack says a sponsor return may cover more than one of its schemes | miss |
+| matches every control and published figure | the pack ships no membership total, in the register or the trustee statement, so there is no control for the register to fail against | miss |
 
-**Measured by:** `generator/asks_measure.py`, run on the generator's clean truth before the pack is cut
-and again on the cut pack.
+**What the cracker keeps, stated plainly.** Ask 1's one figure, which is free by design: it is the call's
+own construction at the operation level and sits in the call's population, where the separation line
+forbids any device. Ask 2's four figures, because the schedule's per-case fee is a filed rule and the
+consolidated line charges are exact multiples of it, so a response that executes the schedule recovers the
+count: Ask 2 is a mirror device, legitimate and the thing that buys the leakage bar, and it is not the
+primary. Of Ask 3's twenty figures it keeps the two the master trust carries, whose register figure is a
+single-scheme return and therefore correct, and misses the other eighteen. Solved keep: 7 of 25.
+
+**Pair ceiling:** 39.5, solved on Part 0's weights (38 recommendation and critical components, 7
+instruction-following, 55 asks) with both responses rescored from their own readings and both columns
+printed: the cracker lands the call and keeps 7 of 25 ask figures, scoring 38 + 7 + 55 x 0.2800 = 60.4;
+the mirror stops at rung 2, counts charge lines as cases and takes the register's membership, keeps 3 of
+25 and scores 5 + 7 + 55 x 0.1200 = 18.6. The two ask columns differ because the mirror does not run the
+battery and does not execute the schedule, not because any ask consumes the call's construction; the
+separation assertions above are the evidence that it does not.
+
+**Mirror leakage:** 12.0 per cent of ask weight.
+
+**Measured by:** `generator/asks_measure.py`, solved on the generator's clean truth before the pack was
+cut and to be re-run on the cut pack after every change. It exits 1 unless the pair is at or under 40 and
+the leakage under 35, and it also prints the graded-set boundary and the precision each graded figure is
+printed at.
+
+**Rounding sentence, and the figures it governs.** The prompt's last sentence governs the breach shares
+and the rates per 1,000, both to one decimal place: the committed call's 9.2 per cent, Ask 1's 7.7 per
+cent and Ask 3's ten rates. Ask 2's four quarterly case counts and Ask 3's ten membership figures are
+whole counts that no rounding sentence governs. `verify.py` checks each of those figures' printed
+precision against this list from the shipped write-up, because `figures_check.py` compares values and
+cannot see precision.
 
 ## Tried and rejected
 
@@ -342,3 +377,12 @@ and again on the cut pack.
 - The telephony export as a fourth ask. Dropped for span rather than legality: it shares no primary family
   with Asks 2 and 3 but adds a third file set to build for eight more figures, and the pair arithmetic is
   already met. It stays in the pack as a distractor.
+- A 22-figure ask layer with a four-quarter free construction ask and a sixteen-figure scheme ask. Died on
+  the solved ceiling: the construction figures sit in the call's own population, so both responses bank
+  them, and at four free figures of 22 the pair came out at 41.6. Folded to one operation-level figure and
+  the scheme ask widened to the ten largest, which solved to 39.5.
+- The scheme weights as first drawn. Died on the measurement rather than on paper: the graded set's tenth
+  and eleventh members sat 3 cases apart, so the membership of Ask 3's graded set would have flipped under
+  any licensed reading. The tail weights were widened to a 117-case gap and the ceiling re-solved.
+- A telephony export as a fourth ask. Dropped for span rather than legality: it adds a third file set for
+  eight more figures and the pair arithmetic is already met. It stays in the pack as a distractor.

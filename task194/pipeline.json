@@ -29,7 +29,7 @@
     "report": "NOT_DETERMINISTIC, underspecified_objective on Gates C and E, plus Gate G surface_read_rejection. Charter 4.3's comparison was treated as HOW when it is one of the five parts of the WHAT. See the card's lineage."
   },
   "returned": [],
-  "resume": "Stage 2 stopped on a measured bound, reported rather than worked around. Architecture 3's generator pass is in place and rebuildable: world.py carries GROUP_COMPLETENESS over four lags, LAG_COMPLETE, IMMATURE, GROUP_MIX_OLDEST and OLDEST_PULL; sim.py carries group_mix_for and apply_coding_lag; pack.py writes coding_close_out_register.csv; golden.py carries development_factors, immature_lags, blended_factor, unit_groups, developed, avoidable, standings, routes and convergence, all measured from the shipped bundle. If the author sanctions divisional volume for the top two candidates, the design point is a psi and plan retune in world.py and nothing else. If the number retires, the bound is the finding and it is recorded in the note's ## Tried and rejected.",
+  "resume": "Stage 2 stopped. Architecture 3's separations clear every filed floor (rung 0 1.50x, intermediate 1.23x, decisive 2.008x) and it is spent on stumping's reflex rule instead: 6 of 22 opponent reflexes reach the golden, worst at 3.47x, because the lag's driver and the published table's under-adjustment share the same patient attributes. The fix named under proposed_next_mechanism keeps the strategy and the estimand and moves the lag onto the documentation path. No retirement in this lane: the number re-roots until it ships. The generator pass is in place and rebuildable, and the reflex harness is at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t194/reflex.py so the next mechanism can be screened against all 22 reflexes before any ladder number is written.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -100,6 +100,32 @@
     "why_tuning_cannot_fix_it": "the two separations trade off directly: pushing the golden further below the leader on the record means a smaller recorded ratio, which cuts the developed excess the margin is measured on, and both are measured in the same Poisson error of the same counts",
     "why_scale_cannot_fix_it_at_unit_scale": "the budget grows with the count and the error with its square root, so it closes at about twice the top units' volume for a bare two-and-two and four times for room, which is 30,000 to 60,000 separations a year in one cost centre, a whole hospital rather than a unit",
     "which_floor_fails": "not the relative-distance floor: the flip clears a nearest-wrong-cell test at 1.50x and fails the sampling-noise test at 0.32 standard errors",
-    "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here."
-  }
+    "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here.",
+    "bar_correction": "The two-standard-error bar is not filed anywhere in the skills. The filed floors are a 1.15x rung margin and a 1.2x final margin with a 1.5 to 2x target (dataset-generation 6.2) and C4's 6 per cent. Against those the measured point clears with room: rung 0 at 1.50x, the intermediate rung at 1.23x, the decisive rung at 2.008x. Architecture 1's lesson was about a fitted counterfactual with collinear forms, not about sampling noise; nothing is fitted here and the golden is determinate from the shipped bytes. One real 6.2 deviation stands: the golden sits 2nd of 12 on rung 0 where 4th or 5th is asked for, which is the bound's doing."
+  },
+  "architecture_3_reflex_test": {
+    "rule": "stumping: every reflex an opponent reaches for must file the default or another named wrong answer; a reflex reaching the golden spends the stump",
+    "run_on": "the record as it stands, 409,336 in-scope acute episodes",
+    "reflexes": 22,
+    "reach_the_golden": 6,
+    "worst": [
+      "standardised on risk band, age band and length of stay band: 41210 at 3.47x",
+      "standardised on length of stay band alone",
+      "standardised on risk band, age band and comorbidity band: 1.30x",
+      "standardised on risk band, age band and site",
+      "the excess net of its own site's mean excess",
+      "credibility weighting once the prior is strong"
+    ],
+    "cause": "a real confound, not a tuning failure. The lag's depth follows the complication groups a unit's patients produce, and pressure injuries and delirium come from old, comorbid, long-staying patients, who are exactly the patients the published table under-adjusts for because it standardises on a risk band and an age band and nothing else. The attribute that makes a unit's record late is the attribute that makes its excess rise under finer standardisation.",
+    "why_nothing_rescues_it": "within this mechanism every deep-lag unit is medical or aged and every shallow-lag one surgical, so no other golden escapes it; more volume and a deeper lag both strengthen the confounded reflex rather than weakening it",
+    "verdict": "architecture 3 is spent on the reflex rule, with its separations clearing every filed floor"
+  },
+  "architecture_3_lag_pricing": {
+    "separable": "the uplift budget is set by the completeness profile's depth and reach, the noise by the counts, so deepening the profile grows the budget with the standard errors unchanged",
+    "measured": "from the golden's d of 0.079 to about 0.16 doubles the budget from 27.25 to about 55",
+    "plausibility_as_built": "defensible: pressure injuries 43 per cent complete at a quarter's own close and 93 per cent four closes later is a retrospective staging and audit programme running three quarters behind, which is ordinary",
+    "plausibility_if_doubled": "at the outer edge: 25 per cent complete at the close is a claim the realism sweep would be right to query",
+    "moot": "the bar the lever buys is not the bar that failed"
+  },
+  "proposed_next_mechanism": "Keep the strategy, the estimand and the open step, and move the lag's driver off the patients and onto the documentation path: a site or ward whose complications reach the warehouse late because of where they are recorded rather than who the patients are. That breaks the confound both ways, since finer standardisation on patient attributes no longer touches the signal and the site control an opponent reaches for nulls it and lands elsewhere. The pack already carries the organ, one hospital's wards being off the clinical information system. Not built; the author's call."
 }
