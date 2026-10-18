@@ -81,6 +81,20 @@ is `analytical`.
 
 ### 1.2a Prefer a decisive step that picks among records-fixed answers
 
+**Two checks on the graded object, before any method is run.** First, is the well-posed answer to "which
+one" a name or a set? Where the records fix a set, a build that grades a name grades an arbitrary element
+of it and no margin repairs that: task201's two-causal-variant branch had three of four licensed methods
+agree on a tagger and none name the variant the design had designated. Second, an estimator's output may
+be graded with its family closed to one form, and a name survives an open family only when the name and
+the family are independent. **They are often coupled, and then the family closes only where the answer is
+trivial.** task201 measured the coupling exactly: under a single-causal-variant model the causal variant
+has the largest expected statistic because its correlation with itself is one, so the lead is the answer
+and every method agrees; the only departures that move the answer off the lead, attenuation at the causal
+variant and a second causal variant, are precisely what the licensed methods differ in handling, and each
+split the family three to one on the graded name. So test the name across the family and across the
+knob's range, and if the only settings where they agree are the settings where one sorted column gives the
+answer, the ground cannot carry a records-fixed name.
+
 **First, one line that decides whether the rest of this section is even the right question: is the filed
 quantity observed in the records?** A decisive step that corrects a naive figure is one of exactly two
 things. Either it estimates the same filed quantity better, and for two estimators of one quantity to
@@ -250,6 +264,20 @@ on:` figure. `precut.py` refuses a default path ending on the golden or a senten
 
 One line: what in this dataset (its generating process, grain, calendar, censoring, selection, identity or
 capacity) makes this the stump an analyst trips on here. A move that reads the same anywhere is not built.
+
+### 1.6a What survived, stated positively
+
+Most of this skill records what kills a decisive step. One shape has passed a judge at Gate F strong, and
+it is worth drawing from rather than rediscovering: **an unobserved quantity, identified by a construction
+that combines two files at different grains, where the construction's own inputs are varied enough that no
+sorted column and no clean subset reproduces it.** task197 files the output a unit would have produced had
+the driving signal stayed inside its dead band, which nothing records; recovering it needs the programme
+schedule (one grain) read against the high-resolution archive (another), and the ramp between setpoints has
+to be fitted rather than looked up, from recordings that are a minority of an archive carrying five capture
+kinds, 222 lengths and 97 offsets. Each clause of that sentence answers a screen: unobserved satisfies the
+dichotomy; two grains means no one file publishes it; fitted means no subset reveals it; and varied inputs
+mean the organ does not announce itself. Where a candidate is missing one of those clauses, that is the
+screen it will die on.
 
 ## Part 2. Make it survive the opponent
 

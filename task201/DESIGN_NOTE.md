@@ -69,3 +69,42 @@ region in place of a censored one, and it closes every regression-on-a-covariate
 nuisance is the intercept: LD score regression, negative-control regions, calibration nulls, blank-sample
 baselines. Price it with one computation before drawing: compute the nuisance from the lowest bin of the
 covariate alone and see which candidate it names.
+
+### Candidate 2, fine-mapping which variant in a locus is causal, killed at the draw (2026-10-18)
+
+**The data-native sentence, written first as instructed, and writing it is what exposed the problem.** The
+decisive step cannot be "do fine-mapping", because a lead variant not being the causal one is the first
+thing any geneticist knows. So the sentence has to name what the standard pipeline gets wrong here, and
+attempting it raises a structural question: **under the standard single-causal-variant model the causal
+variant has the largest expected z, because its LD with itself is 1.** So the lead can differ from the
+causal variant in only three ways, and each was measured.
+
+| Branch | Premise holds? | Condition 2, sixth screen | Condition 1, family on the name |
+|---|---|---|---|
+| A equal power, one causal variant | **no**: lead by z is the causal variant | **lead by p-value and largest absolute effect both reach it** | closed: all 4 methods x 4 priors name it |
+| B the causal variant poorly imputed | yes, lead 5 against causal 7 | **worst imputation quality reaches it**, one column sorted | **open: 2 names.** ABF, sum-of-single-effects and stepwise name 5; stochastic search names 7 |
+| C two causal variants in the locus | yes, lead 9 against causal 7 | none reaches it | **open: 2 names.** Three methods name 9, stochastic search names 23, none names 7 |
+
+**Each branch dies, and on a different one of the three tests.**
+
+- **A dies on the reflex sweep.** The family is closed exactly where there is no stump: the answer is the
+  lead variant, so one column sorted gives it and the standard pipeline applied competently reaches the
+  golden. The coordinator's rule applies in full, the stump is spent whatever the screens say.
+- **B dies twice.** The family is open on the graded name, three of four licensed methods naming the wrong
+  variant, which is the one-computation death condition 1 was set to catch. And `argmin(INFO)` publishes
+  the answer, which is architecture 4's shape with an imputation column in place of a censored set.
+- **C dies on condition 1, and more deeply on the graded object.** With several causal variants the records
+  fix a **set**, not a name, so which element is called "the" answer is arbitrary; no method named the one
+  designated and the three that agreed agreed on a tagger.
+
+**The rule it earns, and it is the sixth time one number has sat on both sides today.** The perturbation
+that separates the lead variant from the causal one is the perturbation the licensed methods disagree
+about, because that is what the methods differ in handling: attenuation in branch B, multiplicity in
+branch C. With equal power and one causal variant every method agrees and the answer is the lead. **So the
+method family closes only when the answer is trivial, and any departure that moves the answer off the lead
+is a departure that opens the family.** There is no fourth way for the lead to differ from the causal
+variant, so fine-mapping cannot carry a records-fixed named answer with a closed family on this ground.
+
+**Branch C's second finding is worth keeping separately**, because it is about the graded object rather
+than the method: where the well-posed answer to "which one" is a set, a build that grades a name is
+grading an arbitrary element of it, and no amount of margin fixes that.
