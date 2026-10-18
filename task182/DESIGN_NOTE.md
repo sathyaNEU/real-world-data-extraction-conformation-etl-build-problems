@@ -1548,6 +1548,14 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- **Option (a) from the screen's section 8 is explored, not open, and the slot is paused on that reading.**
+  The screen offered a sixth draw a correction whose driver is invisible by its position in time rather
+  than merely orthogonal in the cross-section. Model A already was one: a duty's position in its
+  operative's run of consecutive duties is reconstructed from the roster history and no single group-by
+  reaches it, and model A died on the credibility of a 9-to-16-fold rate curve rather than on invisibility.
+  So the time-positional family on this ground is explored and its one fitting member is the one the
+  literature refuses. With the other twelve affordances screened on paper in section 7, the author paused
+  the slot on 2026-10-18 and moved the effort to a fresh number, as on task190. A pause, not a retirement.
 - **The guard agrees with the screen, mechanically and independently.** `guard.py check` on the
   architecture 5 card (never registered) returns BLOCK: `test.same_driver_older` on the signature gap
   `population` + pattern `E` + Gate G `method_or_model_selection`, spent in eight earlier builds (task30,
