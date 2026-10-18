@@ -154,35 +154,38 @@ def read_refusals(target):
 
 
 def turnaways(target, rows=None, mode="golden", refusals=None):
-    """Passengers turned away from summer 2025 departures of the nine routes because the flight was full, by
-    route direction (orig, dest).
+    """Passengers turned away from summer 2025 departures of the nine routes because the flight was full, by the
+    departure's route direction (orig, dest), counting each website or app session, call or booking reference once
+    per departure at the passengers in its request.
 
-    golden    request logged at or after the departure sold out; a website or app session asking again for the
-              same departure is one party; every agency-feed record is one passenger name; every contact-centre
-              record is one call
-    cracker   the same sell-out test, every repeated (session_ref, flight, date) dropped whatever the channel
-    nodedup   the same sell-out test, every record's pax summed
-    departure every request for a departure that sold out at some point, repeated keys dropped
-    nolight   requests for a higher fare family only (LIGHT read as a fare closure), repeated keys dropped
-    naive     every record's pax summed
+    golden    request logged at or after the departure sold out; each reference once per departure; the route
+              direction of the departure (flight number and date in the RM build)
+    cracker   the same, with the route direction read from the record's own airport fields
+    departure every request for a departure that sold out at some point; each reference once; the departure's route
+    nolight   requests for a higher fare family only (LIGHT read as a fare closure); each reference once
+    nodedup   the sell-out test, every record's pax; the departure's route
+    naive     every record's pax, the record's own airport fields
     """
     if rows is None:
         _, rows = read_rm(target)
     so = {(r["flt"], r["dep"].isoformat()): r["so"] for r in rows}
+    route = {(r["flt"], r["dep"].isoformat()): (r["orig"], r["dest"]) for r in rows}
     out = defaultdict(int)
     seen = set()
     for e in (refusals if refusals is not None else read_refusals(target)):
-        o, d = e["orig"], e["dest"]
+        dkey = (int(e["flight_no"]), e["dep_date"])
+        if mode in ("cracker", "naive"):
+            o, d = e["orig"], e["dest"]
+        else:
+            o, d = route[dkey]
         if not is_nine(o, d):
             continue
         dep = dt.date.fromisoformat(e["dep_date"])
         if not (S25[0] <= dep <= S25[1]):
             continue
-        s = so[(int(e["flight_no"]), e["dep_date"])]
+        s = so[dkey]
         after = s != "" and e["logged_utc"] >= s
-        key = (e["session_ref"], e["flight_no"], e["dep_date"])
         pax = int(e["pax"])
-        ch = e["channel"]
         if mode == "naive":
             out[(o, d)] += pax
             continue
@@ -198,9 +201,7 @@ def turnaways(target, rows=None, mode="golden", refusals=None):
             keep = after
         if not keep:
             continue
-        if mode == "golden" and ch in ("GDS", "CC"):
-            out[(o, d)] += pax
-            continue
+        key = (e["session_ref"], e["flight_no"], e["dep_date"])
         if key in seen:
             continue
         seen.add(key)

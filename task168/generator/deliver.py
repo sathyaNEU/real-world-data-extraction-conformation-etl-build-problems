@@ -209,10 +209,10 @@ def workbook(c, f, path):
             cell.number_format = "#,##0"
             cell.font = BODY
             k += 1
-    ws.cell(row=k + 1, column=1, value="Summer 2025 departures. A passenger is turned away because the flight was full when "
-            "the request was logged at or after the departure sold out. A website or app session asking again for "
-            "the same departure is one party; the agency feed writes one record per passenger name; the contact "
-            "centre one record per call.").alignment = Alignment(wrap_text=True)
+    ws.cell(row=k + 1, column=1, value="Summer 2025 departures. A request was turned away because the flight was full when "
+            "it was logged at or after the departure sold out (RM sell-out time). Each website or app session, call or "
+            "booking reference counts once per departure, at the passengers in its request; route and direction are "
+            "the departure's.").alignment = Alignment(wrap_text=True)
     ws.merge_cells(start_row=k + 1, start_column=1, end_row=k + 3, end_column=3)
     ws.freeze_panes = "A2"
 
@@ -301,7 +301,8 @@ def deck(f, path):
     src.text_frame.word_wrap = True
     q = src.text_frame.paragraphs[0]
     q.text = ("Source: booking engines' refusals log (website, app, contact centre, agency feed), requests logged at or "
-              "after the departure sold out (RM sell-out time). Network Planning, 12/12/2025.")
+              "after the departure sold out (RM sell-out time), each session, call or booking reference once per "
+              "departure. Network Planning, 12/12/2025.")
     q.font.size = Pt(10)
     q.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
     num = s.shapes.add_textbox(Inches(12.4), Inches(6.85), Inches(0.5), Inches(0.4))
@@ -384,8 +385,8 @@ def submission(f, path):
         "Against summer 2025's %s passengers carried, the nine routes carry about %s more, to the nearest %s." % (
             fmt(f["s25_passengers_carried"]), fmt(f["call_additional_passengers"]), fmt(f["call_rounding"])),
         "Counted the turned-away passengers in booking_engine_refusals_s25.csv from requests logged at or after the "
-        "departure's sold_out_utc, each website or app session once per departure at its pax, and every agency-feed "
-        "and contact-centre record at its pax.",
+        "departure's sold_out_utc, each website or app session, call or booking reference once per departure at its "
+        "pax, each request's route and direction taken from its flight_no and dep_date in rm_booking_build_s25.csv.",
     ]
     for k, s in enumerate(steps, start=1):
         L.append("%d. %s" % (k, s))

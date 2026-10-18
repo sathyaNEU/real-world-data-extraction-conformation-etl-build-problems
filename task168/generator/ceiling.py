@@ -24,32 +24,40 @@ NINE = {"CTA", "PMO", "NAP", "BRI", "BDS", "SUF", "REG", "CAG", "TPS"}
 
 
 def load(pack):
-    rm = pd.read_csv(os.path.join(pack, "rm_booking_build_s25.csv"), usecols=["flight_no", "dep_date", "sold_out_utc"],
-                     dtype={"sold_out_utc": str})
+    rm = pd.read_csv(os.path.join(pack, "rm_booking_build_s25.csv"),
+                     usecols=["flight_no", "dep_date", "orig", "dest", "sold_out_utc"], dtype={"sold_out_utc": str})
     ref = pd.read_csv(os.path.join(pack, "booking_engine_refusals_s25.csv"), dtype={"session_ref": str})
-    ref = ref[((ref["orig"] == "LIN") & ref["dest"].isin(NINE)) | ((ref["dest"] == "LIN") & ref["orig"].isin(NINE))]
-    j = ref.merge(rm, on=["flight_no", "dep_date"], how="left", validate="many_to_one")
-    assert j["sold_out_utc"].notna().sum() + j["sold_out_utc"].isna().sum() == len(ref)
+    j = ref.merge(rm, on=["flight_no", "dep_date"], how="left", suffixes=("", "_dep"), validate="many_to_one")
     j["after"] = j["sold_out_utc"].notna() & (pd.to_datetime(j["logged_utc"], utc=True) >=
                                               pd.to_datetime(j["sold_out_utc"], utc=True))
     return j
 
 
-def counts(df):
-    return {"%s-%s" % k: int(v) for k, v in df.groupby(["orig", "dest"])["pax"].sum().items()}
+def nine(df, o, d):
+    return ((df[o] == "LIN") & df[d].isin(NINE)) | ((df[d] == "LIN") & df[o].isin(NINE))
+
+
+def counts(df, o="orig", d="dest"):
+    return {"%s-%s" % k: int(v) for k, v in df.groupby([o, d])["pax"].sum().items()}
+
+
+KEY = ["session_ref", "flight_no", "dep_date"]
 
 
 def paths(j):
     out = {}
-    # the cracker: the full-flight condition executed, repeated keys collapsed (battery: key uniqueness)
-    out["cracker"] = counts(j[j["after"]].drop_duplicates(["session_ref", "flight_no", "dep_date"]))
-    # the cracker who also drops exact duplicates only (no key collapse): every record of a full flight
-    out["cracker_exact_dups_only"] = counts(j[j["after"]].drop_duplicates(
-        [c for c in j.columns if c not in ("event_id",)]))
-    # the mirror: every refusal record is a turned-away request
-    out["mirror_every_record"] = counts(j)
-    out["mirror_sold_out_departures"] = counts(j[j["sold_out_utc"].notna()].drop_duplicates(
-        ["session_ref", "flight_no", "dep_date"]))
+    # the cracker: the filed unit executed, the full-flight condition executed against the RM sell-out time, the
+    # nine routes read off the records' own airport fields (the first filter a reader applies to a log)
+    rec9 = j[nine(j, "orig", "dest")]
+    out["cracker (filed unit, sell-out test, record airports)"] = counts(rec9[rec9["after"]].drop_duplicates(KEY))
+    # single crack the other way: the departure's route from the RM build, every request for a sold-out departure
+    dep9 = j[nine(j, "orig_dep", "dest_dep")]
+    out["cracker (filed unit, departure route, departure-level filter)"] = counts(
+        dep9[dep9["sold_out_utc"].notna()].drop_duplicates(KEY), "orig_dep", "dest_dep")
+    # the mirror: every refusal record of the nine routes is a turned-away request
+    out["mirror (every record)"] = counts(rec9)
+    out["mirror (sold-out departures, once per reference)"] = counts(
+        rec9[rec9["sold_out_utc"].notna()].drop_duplicates(KEY))
     return out
 
 
@@ -72,9 +80,17 @@ def main(arg):
         chart = 2 if hits == len(gold) else 0
         rows[name] = (hits, (hits + chart) / n)
     for name, (h, share) in rows.items():
-        print("%-28s %2d of %d figures hit, %.1f per cent of ask weight" % (name, h, len(gold), 100 * share))
-    lc = rows["cracker"][1]
-    ls = max(rows["mirror_every_record"][1], rows["mirror_sold_out_departures"][1])
+        print("%-66s %2d of %d figures hit, %.1f per cent of ask weight" % (name, h, len(gold), 100 * share))
+    names = list(res)
+    print("%-8s %7s %s" % ("figure", "golden", " ".join("%7s" % ("p%d" % (k + 1)) for k in range(len(names)))))
+    for k in gold:
+        print("%-8s %7d %s" % (k, gold[k], " ".join("%7d" % res[n].get(k, 0) for n in names)))
+    print("%-8s %7d %s" % ("total", sum(gold.values()), " ".join("%7d" % sum(res[n].values()) for n in names)))
+    for k, n in enumerate(names):
+        print("p%d %s" % (k + 1, n))
+    lc = max(rows["cracker (filed unit, sell-out test, record airports)"][1],
+             rows["cracker (filed unit, departure route, departure-level filter)"][1])
+    ls = max(rows["mirror (every record)"][1], rows["mirror (sold-out departures, once per reference)"][1])
     C = 38 + 7 + 55 * lc
     S = 5 + 7 + 55 * ls
     print("cracker on the call %.1f, mirror off the call %.1f: pair ceiling %.1f" % (C, S, (C + S) / 2))

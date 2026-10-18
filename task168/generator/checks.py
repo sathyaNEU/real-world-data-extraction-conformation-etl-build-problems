@@ -272,11 +272,73 @@ def main(target):
     check("E3 EM falls short by about half in August", -0.65 < eh[8]["em"] < -0.45, "%.1f" % (100 * eh[8]["em"]))
     check("E4 the censoring the holdout copies is the nine routes' own: 98 per cent of August departures",
           round(100 * eh[8]["censored_share"]) == 98, "%.3f" % eh[8]["censored_share"])
+    # EM and Tobit: the peak cells the fits would rest on, the call under each, and their month profile on both
+    # depth-matched holdouts (per cell, and one cap per route direction), against the month build's
+    pk = R.peak_cells(rows)
+    op7 = sorted(a for a, b in pk[7].values())
+    op8 = sorted(a for a, b in pk[8].values())
+    n8 = sum(b for a, b in pk[8].values())
+    check("E5 the nine routes' August route-direction months hold 0 to 4 departures that never sold out (none in six), "
+          "July's 0 to 8: there a censored-distribution fit rests on its assumed shape",
+          op8[0] == 0 and op8[-1] == 4 and op8.count(0) == 6 and op7[0] == 0 and op7[-1] == 8,
+          "August %s (%d of %d open); July %s" % (op8, sum(op8), n8, op7))
+    cfit = R.censored_fits(target, g)
+    want = {"normal EM, route direction and month": 125000, "normal EM, route direction": 150000,
+            "normal Tobit, route direction and month effects": 150000,
+            "lognormal EM, route direction and month": 150000, "lognormal EM, route direction": call,
+            "lognormal Tobit, route direction and month effects": 200000}
+    check("E6 EM and Tobit on the nine routes' final bookings: each files its own figure; lognormal EM by route "
+          "direction lands in the bin by accident", all(rnd(cfit[k]) == v for k, v in want.items()),
+          "; ".join("%s %.0f (%d)" % (k, v, rnd(v)) for k, v in cfit.items()))
+    fh = R.fit_holdouts(target, g)
+    pcell = fh["per cell"]
+    check("E7 the per-cell holdout of the fits reproduces em_holdout's EM and month build month by month",
+          all(abs(pcell["normal EM, route direction and month"]["months"][m] - eh[m]["em"]) < 1e-6
+              and abs(pcell["month build"]["months"][m] - eh[m]["month"]) < 1e-9 for m in range(3, 11)), "")
+    for lab in ("per cell", "constant cap"):
+        h = fh[lab]
+        mb = h["month build"]
+        fits = {k: v for k, v in h.items() if not k.startswith("_") and k != "month build"}
+        check("E8 %s holdout: every EM and Tobit fit misses the nine routes' months by more than the month build "
+              "(weighted RMS 1.3 times, worst month 1.5 times)" % lab,
+              all(v["rms_w"] >= 1.3 * mb["rms_w"] and v["worst"] >= 1.5 * mb["worst"] for v in fits.values()),
+              "month build summer %+.1f, worst %.1f, RMS %.1f; " % (100 * mb["summer"], 100 * mb["worst"], 100 * mb["rms_w"])
+              + "; ".join("%s summer %+.1f, worst %.1f, RMS %.1f" % (k, 100 * v["summer"], 100 * v["worst"],
+                                                                     100 * v["rms_w"]) for k, v in fits.items()))
+    lk = fh["constant cap"]["_EM, route direction and month, empty cells at the truth"]
+    hon = fh["constant cap"]["normal EM, route direction and month"]
+    check("E11 at one cap per direction, EM by route direction and month reads near the month build only if its cells "
+          "with none below the cap are handed their true final bookings, and its months still miss",
+          fh["per cell"]["_empty_cell_departures"] == 0 and abs(lk["summer"]) < abs(hon["summer"])
+          and lk["rms_w"] >= 1.3 * fh["constant cap"]["month build"]["rms_w"],
+          "%+.1f (RMS %.1f) against %+.1f at the cap; %d departures in cells with none below the cap (none per cell)"
+          % (100 * lk["summer"], 100 * lk["rms_w"], 100 * hon["summer"], fh["constant cap"]["_empty_cell_departures"]))
+    tob = [fh[lab]["normal Tobit, route direction and month effects"]["rms_w"] / fh[lab]["month build"]["rms_w"]
+           for lab in ("per cell", "constant cap")]
+    check("E9 the fixed-effects Tobit's margin is the thinnest, 1.4 to 1.5 times the month build's RMS on both "
+          "holdouts: its rejection is structural (the sell-out timing it discards)", all(1.3 <= t <= 1.6 for t in tob),
+          "per cell %.2f, constant cap %.2f; constant cap summer %+.1f against %+.1f"
+          % (tob[0], tob[1], 100 * fh["constant cap"]["normal Tobit, route direction and month effects"]["summer"],
+             100 * fh["constant cap"]["month build"]["summer"]))
+    lg = [fh[lab]["lognormal EM, route direction"] for lab in ("per cell", "constant cap")]
+    check("E10 lognormal EM by route direction, the wrong method that lands, fails both holdouts month by month",
+          all(v["rms_w"] >= 3 * fh[lab]["month build"]["rms_w"] for v, lab in zip(lg, ("per cell", "constant cap"))),
+          "summer %+.1f and %+.1f; RMS %.1f and %.1f" % (100 * lg[0]["summer"], 100 * lg[1]["summer"],
+                                                         100 * lg[0]["rms_w"], 100 * lg[1]["rms_w"]))
     sh = R.selection_holdout(target, g)
     ws = [sh["same flight within %d days" % d] for d in (7, 14, 21, 28, 35)]
     check("W1 the same-flight reference drifts up with its window in the holdout",
           all(b >= a - 0.005 for a, b in zip(ws, ws[1:])) and ws[-1] > 3 * sh["month"],
           "month %.1f; windows %s" % (100 * sh["month"], ", ".join("%.1f" % (100 * x) for x in ws)))
+    su = R.selection_holdout_uniform(target, g)
+    wu = [su["same flight within %d days" % d] for d in (7, 14, 21, 28, 35)]
+    check("W3 the uniform 85 per cent holdout does not separate the same-flight windows (each within 1.5 points of "
+          "the month build); only the depth holdout does", max(abs(x - su["month"]) for x in wu) < 0.015,
+          "uniform: month %.1f; windows %s" % (100 * su["month"], ", ".join("%.1f" % (100 * x) for x in wu)))
+    check("W4 the 21-day window lands while missing the depth holdout at nearly twice the month build's error",
+          rnd(loc["same flight within 21 days"]) == call and sh["same flight within 21 days"] >= 1.8 * sh["month"],
+          "%.0f; holdout %.1f against %.1f" % (loc["same flight within 21 days"], 100 * sh["same flight within 21 days"],
+                                               100 * sh["month"]))
     for d in (28, 35):
         v = loc["same flight within %d days" % d]
         if not (call - UNIT / 2 <= v < call + UNIT / 2):
@@ -299,61 +361,100 @@ def main(target):
           abs(th["multiplicative"]) < 0.01, str({k: round(v, 4) for k, v in th.items()}))
 
     # ============================================================ the ask: passengers turned away because full
+    # the unit is filed in the prompt: each website or app session, call or booking reference once per departure
+    prompt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    check("SF10 A0 the prompt files the ask's unit: each website or app session, call or booking reference once per "
+          "departure", "counting each website or app session, call or booking reference once per departure" in prompt, "")
     tr = defaultdict(int)
     parties = {}
-    for (eid, after, pid, size_), e in zip(truth, ev):
-        parties[pid] = (e[5], e[6], size_, after)
-    for pid, (o, d, k, after) in parties.items():
+    for (eid, after, pid, size_, lo, ld), e in zip(truth, ev):
+        parties[pid] = (lo, ld, size_, after)
+    for pid, (o, d, kk, after) in parties.items():
         if after and C.is_nine(o, d):
-            tr[(o, d)] += k
-    check("A1 the ask's golden reproduces the generator's truth exactly", dict(tr) == ta,
-          "total %d" % sum(ta.values()))
-    for mode in ("cracker", "nodedup", "departure", "nolight", "naive"):
+            tr[(o, d)] += kk
+    check("A1 the filed unit's literal execution reproduces the generator's truth exactly", dict(tr) == ta,
+          "total %d, LIN-CTA %d" % (sum(ta.values()), ta[("LIN", "CTA")]))
+    for mode in ("cracker", "departure", "nolight", "nodedup", "naive"):
         alt = C.turnaways(target, rows, mode)
-        miss = sum(1 for k in ta if alt.get(k, 0) != ta[k])
+        miss = sum(1 for kk in ta if alt.get(kk, 0) != ta[kk])
         check("A2 ladder stop %-9s misses every route direction" % mode, miss == 18,
               "%d of 18 differ; total %d against %d" % (miss, sum(alt.values()), sum(ta.values())))
     ref = C.read_refusals(target)
     so = {(r["flt"], r["dep"].isoformat()): r["so"] for r in rows}
     pre = Counter()
-    retry = Counter()
-    gds_multi = Counter()
-    seen = Counter()
+    journey = Counter()
+    keys = defaultdict(list)
     for e in ref:
-        od = (e["orig"], e["dest"])
+        od = route_of_flight(rows, e["flight_no"], e["dep_date"])
         if not C.is_nine(*od):
             continue
         s = so[(int(e["flight_no"]), e["dep_date"])]
         if s and e["logged_utc"] < s:
             pre[od] += 1
-        seen[(e["channel"], e["session_ref"], e["flight_no"], e["dep_date"])] += 1
-    for (ch, sess, f_, d_), n in seen.items():
-        if n > 1:
-            od = next(((e5, e6) for e5, e6 in [route_of_flight(rows, f_, d_)]), None)
-            if ch in ("WEB", "APP"):
-                retry[od] += 1
-            elif ch == "GDS":
-                gds_multi[od] += 1
-    check("A3 device P1 (fare-family refusals before the sell-out) on every route direction", len(pre) == 18 and min(pre.values()) > 20,
-          "min %d" % min(pre.values()))
-    check("A4 device P2 (website and app sessions asking again) on every route direction", len(retry) == 18,
-          "min %d" % min(retry.values()))
-    check("A5 device P3 (agency feed name records under one reference) on every route direction", len(gds_multi) == 18,
-          "min %d" % min(gds_multi.values()))
+        if (e["orig"], e["dest"]) != od and s and e["logged_utc"] >= s:
+            journey[od] += 1
+        keys[(e["session_ref"], e["flight_no"], e["dep_date"])].append(e)
+    names = defaultdict(int)
+    seen_n = set()
+    for e in ref:
+        od = route_of_flight(rows, e["flight_no"], e["dep_date"])
+        s = so[(int(e["flight_no"]), e["dep_date"])]
+        if not (C.is_nine(*od) and s and e["logged_utc"] >= s):
+            continue
+        if e["channel"] == "GDS":
+            names[od] += 1
+            continue
+        kk = (e["session_ref"], e["flight_no"], e["dep_date"])
+        if kk not in seen_n:
+            seen_n.add(kk)
+            names[od] += int(e["pax"])
+    gpax = defaultdict(list)
+    for e in ref:
+        if e["channel"] == "GDS":
+            gpax[(e["session_ref"], e["flight_no"], e["dep_date"])].append(int(e["pax"]))
+    check("SF10' reading each agency name record as one passenger gives the filed unit's counts (a booking writes one "
+          "record per name, each at its party's pax)", dict(names) == ta and all(len(v) == v[0] for v in gpax.values()),
+          "total %d against %d; %d agency bookings" % (sum(names.values()), sum(ta.values()), len(gpax)))
+    check("A3 device P1 (fare-family refusals logged before the sell-out) on every route direction",
+          len(pre) == 18 and min(pre.values()) > 20, "min %d" % min(pre.values()))
+    check("A4 device P4 (agency records naming a connecting journey's airports) on every route direction",
+          len(journey) == 18 and min(journey.values()) > 20, "min %d" % min(journey.values()))
+    same_pax = all(len({x["pax"] for x in v}) == 1 for v in keys.values())
+    check("A5 every record of one reference and departure carries the same pax (the unit has one weight)", same_pax,
+          "%d references" % len(keys))
+    straddle = sum(1 for (sref, f_, d_), v in keys.items() if so[(int(f_), d_)] and
+                   min(x["logged_utc"] for x in v) < so[(int(f_), d_)] <= max(x["logged_utc"] for x in v))
+    check("A6 no reference straddles its departure's sell-out", straddle == 0, str(straddle))
     gap = min(abs(dt.datetime.strptime(e["logged_utc"], "%Y-%m-%dT%H:%M:%SZ") -
                   dt.datetime.strptime(so[(int(e["flight_no"]), e["dep_date"])], "%Y-%m-%dT%H:%M:%SZ")).total_seconds()
               for e in ref if so[(int(e["flight_no"]), e["dep_date"])])
-    check("A6 no request within 30 seconds of its departure's sell-out (the boundary converges)", gap >= 30, "%.0f s" % gap)
-    sess_gap = gds_line_gaps(ref)
-    check("A7 agency-feed records under one reference are seconds apart; website/app repeats 40 s or more",
-          sess_gap["gds_max"] <= 6 and sess_gap["web_min"] >= 40, str(sess_gap))
+    check("A7 no request within 30 seconds of its departure's sell-out (the boundary converges)", gap >= 30, "%.0f s" % gap)
     cc = Counter(e["session_ref"] for e in ref if e["channel"] == "CC")
     check("A8 contact-centre call references are unique per record", max(cc.values()) == 1, "%d calls" % len(cc))
+    gref = defaultdict(set)
+    for e in ref:
+        if e["channel"] == "GDS":
+            gref[e["session_ref"]].add((e["flight_no"], e["dep_date"]))
+    check("A8' every booking reference is one departure's", max(len(v) for v in gref.values()) == 1, "%d bookings" % len(gref))
     check("A9 no device row in the main call's population (the call reads no refusal record)", True,
           "R2d: the golden recomputes from the RM build and the DCS close-out alone")
-    fams = Counter(e["fare_family"] for e in ref if C.is_nine(e["orig"], e["dest"]))
+    fams = Counter(e["fare_family"] for e in ref if C.is_nine(*route_of_flight(rows, e["flight_no"], e["dep_date"])))
     check("A10 fare family is no marker: LIGHT on both sides of the sell-out", fams["LIGHT"] > sum(pre.values()),
           str(dict(fams)))
+    ch_j = Counter(e["channel"] for e in ref if (e["orig"], e["dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"]))
+    gds_n = sum(1 for e in ref if e["channel"] == "GDS")
+    check("A10' the journey airports are no marker: most agency records name the departure's own airports",
+          set(ch_j) == {"GDS"} and ch_j["GDS"] < 0.3 * gds_n, "%s of %d agency records" % (dict(ch_j), gds_n))
+    jr = [(e, route_of_flight(rows, e["flight_no"], e["dep_date"])) for e in ref
+          if (e["orig"], e["dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"])]
+    jr9 = [(e, od) for e, od in jr if C.is_nine(*od)]
+    ok_j = all(e["channel"] == "GDS" and ((e["dest"] == od[1] and e["orig"] not in C.NINE + ["LIN"])
+                                          or (e["orig"] == od[0] and e["dest"] not in C.NINE + ["LIN"]))
+               for e, od in jr9)
+    check("A12 the departure attributes the request: a record naming other airports is an agency booking's connecting "
+          "journey, the departure's southern end and a hub abroad, never another route direction of the nine",
+          ok_j and not any(C.is_nine(e["orig"], e["dest"]) for e, od in jr),
+          "%d such records on the nine routes' departures" % len(jr9))
     check("A11 ask figures are distinct across route directions", len(set(ta.values())) == 18,
           "%d distinct" % len(set(ta.values())))
 
@@ -471,7 +572,7 @@ def route_of_flight(rows, f_, d_, _cache={}):
     if not _cache:
         for r in rows:
             _cache[(str(r["flt"]), r["dep"].isoformat())] = (r["orig"], r["dest"])
-    return _cache[(f_, d_)]
+    return _cache[(str(f_), d_)]
 
 
 def gds_line_gaps(ref):

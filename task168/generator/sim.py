@@ -233,6 +233,12 @@ PARTY = ([1, 2, 3, 4, 5, 6], [0.55, 0.27, 0.09, 0.06, 0.02, 0.01])
 LIGHT_CLOSE = 0.70        # load at which the lowest fare family closes
 LIGHT_ASK = 0.12          # share of parties arriving after that which ask for it first
 RETRY = {"WEB": 0.30, "APP": 0.15, "CC": 0.0, "GDS": 0.0}
+# Agency bookings that are one leg of a longer journey (an interline connection at the base) carry the journey's
+# origin and destination in the feed's airport fields.
+CONNECT_SHARE = 0.15
+CONNECT = {"LIN": ["LHR", "LCY", "AMS", "CDG", "ORY", "FRA", "BRU", "DUS", "MAD"],
+           "TRN": ["FRA", "MUC", "CDG", "AMS"], "VRN": ["FRA", "MUC", "AMS"],
+           "VCE": ["FRA", "MUC", "CDG", "AMS", "LHR"], "BLQ": ["FRA", "MUC", "CDG", "AMS"]}
 
 
 def _parties(rng, pax):
@@ -249,12 +255,14 @@ def turnaway_events(leg, flight_numbers):
     """Rows for every request the engines refused on this leg's departures.
 
     Each event: (logged_at_utc, channel, session_ref, flight, dep_date, orig, dest, fare_family, pax, after_so,
-    party, party_size) where the last three are the generator's own truth (the departure had sold out before the
-    request; which refused party wrote the record and how many passengers it was) and never ship.
+    party, party_size, leg_orig, leg_dest) where the last five are the generator's own truth (the departure had
+    sold out before the request; which refused party wrote the record and how many passengers it was; the leg the
+    departure flies) and never ship.
     Requests before the sell-out are refused only for the lowest fare family, which closes at LIGHT_CLOSE of the
     seats; those parties then book a higher family (they are among the day's bookings).
     """
     rng = stream(leg.season, leg.orig, leg.dest, "turnaway")
+    rng_j = stream(leg.season, leg.orig, leg.dest, "journey")
     mix = CHANNEL_MIX[leg.season]
     ev = []
     for i in range(leg.n):
@@ -290,7 +298,7 @@ def turnaway_events(leg, flight_numbers):
                                 continue
                             secs = draw_secs(rng, REQ_HOURS[ch], lo, hi)
                             ev.extend(_rows(rng, ch, day, secs, flt, dep, leg, "LIGHT", k, False, cap or hi_d,
-                                            (leg.orig, leg.dest, i, j, len(ev))))
+                                            (leg.orig, leg.dest, i, j, len(ev)), rng_j))
             if spilled_today > 0:
                 for k in _parties(rng, int(spilled_today)):
                     ch = CHANNELS[int(rng.choice(4, p=mix))]
@@ -304,7 +312,7 @@ def turnaway_events(leg, flight_numbers):
                         secs = draw_secs(rng, REQ_HOURS[ch], lo, hi)
                         fam = ["LIGHT", "CLASSIC", "FLEX"][int(rng.choice(3, p=[0.55, 0.35, 0.10]))]
                         ev.extend(_rows(rng, ch, day, secs, flt, dep, leg, fam, k, True, hi_d,
-                                        (leg.orig, leg.dest, i, j, len(ev))))
+                                        (leg.orig, leg.dest, i, j, len(ev)), rng_j))
     return ev
 
 
@@ -319,27 +327,33 @@ def _session(rng, ch):
     return "".join("0123456789abcdef"[int(x)] for x in rng.integers(0, 16, 16))
 
 
-def _rows(rng, ch, day, secs, flt, dep, leg, fam, pax, after, last_secs, pid):
+def _rows(rng, ch, day, secs, flt, dep, leg, fam, pax, after, last_secs, pid, rng_j):
     """The records one refused party leaves. The agency feed writes one record per passenger name under the
-    booking reference, a second apart, each for one passenger; the website and the app write one record per
-    request, and a visitor who asks again in the same session writes another; the contact centre writes one
-    record per call."""
+    booking reference, a second apart, each carrying the passengers in the booking, and writes the journey's origin
+    and destination when the booking is one leg of a connection; the website and the app write one record per
+    request, and a visitor who asks again in the same session writes another; the contact centre writes one record
+    per call."""
     base = dt.datetime(day.year, day.month, day.day, tzinfo=ROME)
     t_loc = base + dt.timedelta(seconds=int(secs))
     sess = _session(rng, ch)
     rows = []
+    o, d = leg.orig, leg.dest
     if ch == "GDS":
+        if rng_j.random() < CONNECT_SHARE:
+            hub = leg.orig if leg.outbound else leg.dest
+            far = CONNECT[hub][int(rng_j.integers(0, len(CONNECT[hub])))]
+            o, d = (far, leg.dest) if leg.outbound else (leg.orig, far)
         for p in range(pax):
-            rows.append(((t_loc + dt.timedelta(seconds=p)).astimezone(UTC), ch, sess, flt, dep, leg.orig, leg.dest,
-                         fam, 1, after, pid, pax))
+            rows.append(((t_loc + dt.timedelta(seconds=p)).astimezone(UTC), ch, sess, flt, dep, o, d,
+                         fam, pax, after, pid, pax, leg.orig, leg.dest))
         return rows
-    rows.append((t_loc.astimezone(UTC), ch, sess, flt, dep, leg.orig, leg.dest, fam, pax, after, pid, pax))
+    rows.append((t_loc.astimezone(UTC), ch, sess, flt, dep, o, d, fam, pax, after, pid, pax, leg.orig, leg.dest))
     if rng.random() < RETRY[ch]:
         t = secs
         for r in range(int(rng.integers(1, 3))):
             t = t + int(rng.integers(40, 400))
             if t >= last_secs:
                 break
-            rows.append(((base + dt.timedelta(seconds=t)).astimezone(UTC), ch, sess, flt, dep, leg.orig, leg.dest,
-                         fam, pax, after, pid, pax))
+            rows.append(((base + dt.timedelta(seconds=t)).astimezone(UTC), ch, sess, flt, dep, o, d,
+                         fam, pax, after, pid, pax, leg.orig, leg.dest))
     return rows

@@ -78,9 +78,9 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:sold-out-departures-completed-from-their-own-month-booking-build",
   "layer1": [
-    "the revenue management system replaced between seasons: summer 2024 builds in the old system's long layout (one row per departure and snapshot, 19 snapshots, local dates, text leg ids), summer 2025 in the new system's wide layout (34 snapshots, sell-out stamped in UTC)",
+    "the revenue management system replaced between seasons: summer 2024 builds in the old system's long layout (one row per departure and snapshot, 19 snapshots, local dates, text leg ids), summer 2025 in the new system's wide layout (58 snapshots, sell-out stamped in UTC)",
     "flown passengers from the departure control close-out, keyed on the operated flight, with lap infants in their own column and a different flight numbering in summer 2024",
-    "the turned-away request log from the booking engines, one row per request on the web and app and one per passenger on the travel-agency feed, UTC stamps, retries within a session",
+    "the turned-away request log from the booking engines, one row per request on the website and app, one per call at the contact centre and one per passenger name on the travel-agency feed at the party's size, the agency feed writing a connecting journey's airports, UTC stamps, retries within a session",
     "summer close-out summaries as PDF tables (load factor on seats sold)",
     "the capacity plan workbook with the summer 2026 aircraft by route and the two routes switching on 1 June",
     "fleet register with tail configurations, retirements and deliveries"

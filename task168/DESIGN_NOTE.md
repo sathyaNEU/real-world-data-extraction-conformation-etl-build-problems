@@ -36,7 +36,7 @@ Domain test: the quantity that decides the call is each sold-out departure's unc
 
 Swap: "how many more patients will our nine wards admit next winter now that they gain 600 beds" keeps the sentence and loses the analysis, since no ward fills from bookings made months ahead, so there is no build of uncensored units to complete a full one from and nothing seasonal about how early its demand arrives.
 
-Layer 1: the revenue management system replaced between summers (summer 2024 in the YM3 archive's long layout, 19 snapshots, DD/MM/YYYY dates, three-digit flight numbers, text leg ids; summer 2025 in the new wide extract, 58 snapshots, sell-out stamped in UTC), the DCS close-out with lap infants in their own column, the close-out PDF whose summer 2024 figures include lap infants, the capacity plan's 1 June switch for Brindisi and Lamezia Terme, the booking engines' refusal log (UTC stamps, website and app sessions asking again, the agency feed's name-level records); each written by the system named, none placed to be caught, none moving the call (checks R2a to R2e).
+Layer 1: the revenue management system replaced between summers (summer 2024 in the YM3 archive's long layout, 19 snapshots, DD/MM/YYYY dates, three-digit flight numbers, text leg ids; summer 2025 in the new wide extract, 58 snapshots, sell-out stamped in UTC), the DCS close-out with lap infants in their own column, the close-out PDF whose summer 2024 figures include lap infants, the capacity plan's 1 June switch for Brindisi and Lamezia Terme, the booking engines' refusal log (UTC stamps, website and app sessions asking again, the agency feed's name-level records at the party's pax and its connecting journeys' airports); each written by the system named, none placed to be caught, none moving the call (checks R2a to R2e).
 
 Layer 2: estimation_fit, censoring and truncation: the completion of censored departures depends on which uncensored departures supply the booking build and on the completion's form, and the population that never sells out is selected on the outcome, so the choice that flips the call is matching the reference build on the departure's month rather than pooling it, taking the routes' own open departures, or replacing the build with a distribution fitted to final bookings.
 
@@ -46,7 +46,7 @@ Not semantics: every field reads plainly (sold_out_utc, bkd_dNNN, pax_flown, cap
 
 Not rule application: no filed rule says how demand is estimated; the planning basis files the estimand (the routes, the seasons, passengers carried, capacity plan v3, no overbooking, no growth) and executing every one of its sentences still leaves the completion's reference and form open, while the default path that executes them files 500,000.
 
-Analyst test: a strong analyst who reads every file and rule correctly and carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats files 500,000; one who completes the sold-out departures from a build pooled over the summer files 225,000, or 275,000 from the nine routes' own open departures, and one who fits a normal EM to final bookings files 100,000 to 150,000; only completing each departure from the build of the departures of its own month that never sold out files 175,000 (checks R3a, R3b, L10).
+Analyst test: a strong analyst who reads every file and rule correctly and carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats files 500,000; one who completes the sold-out departures from a build pooled over the summer files 225,000, or 275,000 from the nine routes' own open departures, and one who fits a normal EM or a censored regression to final bookings files 100,000 to 150,000; only completing each departure from the build of the departures of its own month that never sold out files 175,000 (checks R3a, R3b, L10).
 
 Estimand: planning_basis_NP-PB-26S_issue2.pdf files it, the nine Linate routes both ways (section 2), summer 2025 as flown against summer 2026 as scheduled with the same departures (section 3), passengers carried as flown at DCS close-out without lap infants or no-shows (section 4), capacity plan version 3 with no overbooking (section 5), no market growth with the same passengers wanting the same departures (section 6), and the figure as the additional passengers carried in summer 2026 over summer 2025 (section 7).
 
@@ -78,16 +78,17 @@ Lesson: a censored unit's demand is completed from units that were not censored,
 | SF7 | summer 2026 capacity | capacity plan version 3 | version 2 (A321neo from the season start) | same call (182,038) | section 5 names version 3; same call |
 | SF8 | rounding | once on the network total to the nearest 25,000 | per route then summed | same call | the prompt's last sentence; same call |
 | SF9 | the comparison | summer 2025 as flown | summer 2025 as booked | 225,000 | section 3 "as flown" with section 4 |
+| SF10 | a passenger turned away (the ask's unit, not the call) | each website or app session, call or booking reference once per departure, at its pax | every record's pax; or each agency name record as one passenger | the ask only: every record of a full flight 72,993; one passenger per name record, the golden's counts | the prompt's ask sentence, "counting each website or app session, call or booking reference once per departure", with the dictionary's session_ref (session reference on the website and app, call reference at the contact centre, booking reference on the agency feed); the name-record reading gives the same counts (SF10') |
 
 ## Ladder
 
 | Rung | Construction | Figure | Rounded | Dies to |
 |---|---|---|---|---|
 | 0 | the 2025 gauge changes' 0.80 extra passengers per extra seat x 620,224 | 495,838 | 500,000 | the per-seat response runs 0.48 to 0.95 by route with how far demand exceeded the new seats (leave-one-route-out error 27 per cent), and completed demand exceeds 232 on 118 of 7,560 departures |
-| 1 | each sold-out departure's bookings plus its logged refusals, capped at the new seats | 50,204 | 50,000 | the engines log only some refused parties; at the moments the nine routes' July and August departures sold out (a median 23 days out), departures of those months that never sold out still had about a fifth of their final bookings to come |
+| 1 | each sold-out departure's bookings plus its logged refusals, capped at the new seats | 56,061 | 50,000 | the engines log only some refused parties; at the moments the nine routes' July and August departures sold out (a median 23 days out), departures of those months that never sold out still had about a fifth of their final bookings to come |
 | 2 | completion from the open departures' build pooled over the summer | 229,128 | 225,000 | the open departures' builds differ by month; censored at 85 per cent, the pooled build puts July and August 12.4 and 13.5 per cent high, the month build within 0.9 per cent |
 | 2b | completion from the nine routes' own open departures, pooled | 269,619 | 275,000 | the same: those are April, May and October departures; nearer windows of them drift up with their width in the selection holdout |
-| 2c | normal EM on final bookings, by route direction and month | 135,645 | 125,000 | censored to the nine routes' monthly depth, EM falls 22 per cent short of the demand above the cap over the summer and 56 per cent in August, the month build 3 to 8 per cent over |
+| 2c | normal EM on final bookings, by route direction and month | 135,645 | 125,000 | the fit has nothing to rest on where the call's demand sits: the nine routes' August route-direction months hold 0 to 4 departures that never sold out (none in six of the eighteen), July's 0 to 8, so the demand above the seats is the assumed shape's tail, and the fit discards the sell-out stamps that say how early each departure filled; on the other routes censored as deeply it misses the months by a weighted RMS of 24 to 27 per cent against the month build's 6 |
 | 3 (decisive) | completion from the open departures of the departure's own month | 174,865 | 175,000 | |
 
 Side errors on the golden construction: no-shows left in 213,311 (225,000); added seats at the summer 2025 load factor 594,876 (600,000).
@@ -96,27 +97,33 @@ Side errors on the golden construction: no-shows left in 213,311 (225,000); adde
 
 | Method | Figure | Rounded | Holdout result |
 |---|---|---|---|
-| projection, month build of the other routes' open departures (golden) | 174,865 | 175,000 | censored at 85 per cent, every month within 0.9; at the nine routes' depth, 2.7 to 8.2 per cent over on the demand above the cap |
+| projection, month build of the other routes' open departures (golden) | 174,865 | 175,000 | censored at 85 per cent, every month within 0.9; at the nine routes' depth, per cell 2.7 to 8.2 per cent over on the demand above the cap (weighted RMS 6.0), at one cap per route direction 3.0 to 7.8 (5.7) |
 | projection, pooled over the summer | 229,128 | 225,000 | July +12.4, August +13.5 per cent |
 | projection, nine routes' own open departures pooled | 269,619 | 275,000 | rejected: the same-flight windows drift from +5.1 (7 days) to +20.9 per cent (35 days) against the month build's +5.4 |
 | projection, peak against shoulder or three or four periods | 182,096 to 197,540 | 175,000 or 200,000 | worst month 3.7 to 12.8 per cent against 0.9 |
 | additive pickup, month build | 113,366 | 125,000 | size holdout: +4.6 per cent on small departures, -2.8 on large (multiplicative within 0.8) |
 | additive pickup, pooled (other routes, every open departure, last open snapshot) | 138,114 to 143,558 | 150,000 | the same size holdout |
 | additive pickup, nine routes' own pooled | 189,389 to 191,779 | 200,000 | the size holdout and the selection holdout |
-| normal EM, route direction | 147,586 | 150,000 | the depth holdout below |
-| normal EM, route direction and month | 135,645 | 125,000 | at the nine routes' depth: June -11.5, July -23.2, August -55.6, September -14.1, summer -21.9 per cent on the demand above the cap |
-| normal EM, flight and month | 101,264 | 100,000 | the same |
+| normal EM, route direction | 147,586 | 150,000 | per cell, summer +3.6 but the months run -28.2 (August) to +59.0 (March), weighted RMS 26.1; at one cap per route direction, summer -10.7, August -37.7 (RMS 22.2) |
+| normal EM, route direction and month | 135,645 | 125,000 | per cell, June -11.5, July -23.2, August -55.6, September -14.1 (RMS 26.6); at one cap per route direction, summer -18.9, August -51.9 (RMS 24.4) |
+| normal EM, flight and month | 101,264 | 100,000 | the same cells split by flight, thinner still |
+| normal Tobit, route direction and month effects, common sigma | 154,761 | 150,000 | per cell, summer +8.2, March +33.3 (RMS 8.9); at one cap per route direction, summer -7.4, April -12.3 (RMS 8.0): 1.4 to 1.5 times the month build's error, so it is rejected on structure (below), not on the margin |
+| lognormal EM, route direction and month | 162,369 | 150,000, 131 under the edge | per cell, the months run -46.9 to +18.6 (RMS 21.8); at one cap per route direction -65.1 to +35.6 (RMS 24.4) |
+| lognormal EM, route direction | 182,755 | 175,000, a wrong method that lands | per cell, summer +28.0 (RMS 44.2); at one cap per route direction, summer +10.8 (RMS 28.5): pooling the months widens the spread and the lognormal tail overshoots, and the bin's width absorbs it |
+| lognormal Tobit, route direction and month effects | 193,031 | 200,000 | per cell, summer +30.1 (RMS 30.2); at one cap per route direction, summer +18.2 (RMS 18.5) |
 | Kaplan-Meier on final bookings | undefined above 144 | | every peak observation at the cap is censored |
 
-The nearest wrong method to the bin is the nine routes' own pooled additive pickup at 189,389, 1,889 above the edge, rejected twice by the data.
+Outside the bin, the nearest wrong methods are the lognormal EM by route direction and month at 162,369, 131 under the edge (a different convergence could tip it to 175,000; it is a wrong method either way, and its months miss by -46.9 to +18.6), and the nine routes' own pooled additive pickup at 189,389, 1,889 above the edge, rejected twice by the data. Inside it, the lognormal EM by route direction lands by accident at 182,755 (check E6), counted in P(one) below.
 
-Construction family, every member 175,000 (checks L6, L7): month build at the sell-out stamp 174,865, at the last open snapshot 172,395, at the first closed snapshot 167,917, at the sell-out date 171,522; other routes only 174,660; the 2025 gauge changes only 176,218; every open departure including the nine's 174,989; Linate routes only 175,856; half months 172,696 (170,096 last open); ISO weeks 172,270 (169,658); by direction 174,867; by weekday 174,954; plus or minus 7 days 172,516 (169,922); plus or minus 15 days 174,024 (171,503); every open departure within 30 days 179,707; ratio of totals 174,781; median share 173,120; the nine routes' own open departures by month, the nearest month where none 179,480; route direction and month, own open, the network month where none 178,014; the same flight within 7, 14 and 21 days, falling back to the direction and the network month 175,653, 179,037 and 184,813; no-shows before the cap 176,880; each departure's own no-show share 174,920. The in-bin spread is 167,917 to 184,813; bootstrap sigma 1,732; the golden sits 12,365 from the nearest edge, the nearest member 2,687. The same-flight window drifts out of the bin at 28 days (192,447) and 35 days (200,644), where the selection holdout misses by 15.0 and 20.9 per cent against the month build's 5.4.
+**Why EM and Tobit fall (the structural argument):** both fit a distribution to the final bookings and complete a sold-out departure at the fitted demand above its seats, so where the call's demand sits they rest on the shape they assume. The nine routes' August route-direction months hold 0 to 4 departures that never sold out, 22 of 1,116 (98 per cent sold out) and none in six of the eighteen, and July's 0 to 8 (check E5): per-cell EM keeps an empty cell at the seats and reads the rest off a tail fitted to one or two points, EM by route direction borrows the spring's spread for August, and the Tobit borrows a common sigma and additive month effects. Both also discard what the record holds for exactly these departures: sold_out_utc says how early each one filled, which the projection reads against its month's build. The holdouts agree month by month and are asserted that way (checks E7 to E10): on the other routes' open departures censored to the nine routes' depth, per cell (each route direction and month at the nine routes' sold-out share of the month) or at one cap per route direction (the nine routes' summer sold-out share, giving 70 to 98 per cent censored by month), every EM and Tobit fit misses the nine routes' months by more than the month build, weighted RMS 8.0 to 44.2 against 5.7 to 6.0 and the worst month at least one and a half times the month build's. The per-cell summer aggregate is not the separator: EM by route direction beats the month build there (+3.6 against +5.4), EM by route direction and month reads -21.9 per cell and -18.9 at one cap per direction (-6.2 if its 1,682 departures in cells with none below the cap are handed their true final bookings, which no solver holds), and the fixed-effects Tobit's margin is 1.4 to 1.5 times the month build's on both, which is why its rejection rests on the structure, not on a holdout margin.
+
+Construction family, every member 175,000 (checks L6, L7): month build at the sell-out stamp 174,865, at the last open snapshot 172,395, at the first closed snapshot 167,917, at the sell-out date 171,522; other routes only 174,660; the 2025 gauge changes only 176,218; every open departure including the nine's 174,989; Linate routes only 175,856; half months 172,696 (170,096 last open); ISO weeks 172,270 (169,658); by direction 174,867; by weekday 174,954; plus or minus 7 days 172,516 (169,922); plus or minus 15 days 174,024 (171,503); every open departure within 30 days 179,707; ratio of totals 174,781; median share 173,120; the nine routes' own open departures by month, the nearest month where none 179,480; route direction and month, own open, the network month where none 178,014; the same flight within 7, 14 and 21 days, falling back to the direction and the network month 175,653, 179,037 and 184,813; no-shows before the cap 176,880; each departure's own no-show share 174,920. The in-bin spread is 167,917 to 184,813; bootstrap sigma 1,732; the golden sits 12,365 from the nearest edge, the nearest member 2,687. The same-flight window drifts out of the bin at 28 days (192,447) and 35 days (200,644), where the selection holdout misses by 15.0 and 20.9 per cent against the month build's 5.4. Only that depth-matched holdout separates the windows: the uniform 85 per cent holdout a solver builds first puts the month build at +4.7 and the 7 to 35-day windows at +3.8, +4.2, +4.7, +5.4 and +6.1 (check W3), so a solver who validates the easy way cannot reject a four or five-week window, and the 21-day window lands (184,813) while missing the depth holdout at +10.1, nearly twice the month build's error (W4): there the bin's edge, not the holdout, separates landing from not landing.
 
 Coarser groupings of months: June to September against the rest 182,784 (worst month 3.7 per cent), July and August against the rest 197,540 (10.7), March to May, June to August, September and October 186,330 (6.2), March to June, July and August, September and October 195,088 (12.8), March to May, June to September, October 182,253 (4.4), four periods 182,096 (4.4); every one is rejected by the 85 per cent holdout against the month build's 0.9, and the two outside the bin miss by over a tenth.
 
 Rounding: the in-bin family spans 167,917 to 184,813, about two-thirds of a 25,000 bin, so the figure is stated to the nearest 25,000, the precision every defensible construction shares; at the nearest 10,000 it would straddle three cells.
 
-**Strength:** a top solver unconstrains at all about 0.7; given that, projection 0.6, additive 0.25, EM 0.15; a projection user lands with a month-or-finer network build (about 0.25), a same-flight window of three weeks or less (0.05) or an in-bin coarse grouping (0.05), about 0.35; additive and EM no longer land anywhere; the no-show and 1 June steps hold about 0.85. P(one) is about 0.7 x 0.6 x 0.35 x 0.85 = 0.125; P(both) about 0.016 independent and 0.03 to 0.05 with same-model correlation.
+**Strength:** a top solver unconstrains at all about 0.7; given that, projection 0.6, additive 0.25, EM or Tobit 0.15. A projection user lands with a month-or-finer network build (about 0.27), a same-flight window of three weeks or less (0.05, the 21-day window included though the depth holdout fails it) or an in-bin coarse grouping (0.05), about 0.37, and loses about 0.05 to windows of four weeks or more, which the uniform holdout cannot reject; additive pickup lands nowhere; an EM or Tobit user lands about 0.1 of the time, through the lognormal EM by route direction (182,755); the no-show and 1 June steps hold about 0.85. P(one) is about 0.7 x (0.6 x 0.37 + 0.15 x 0.1) x 0.85 = 0.14; P(both) about 0.02 independent and 0.04 to 0.06 with same-model correlation.
 
 ## Closure table
 
@@ -147,7 +154,7 @@ Rounding: the in-bin family spans 167,917 to 184,813, about two-thirds of a 25,0
 
 ## Literal reader
 
-Executed word for word, section 6 makes summer 2026's demand summer 2025's demand departure by departure, sections 3 and 5 replay it at capacity plan v3's seats without overbooking, and section 4 counts flown passengers. The literal reader still has to estimate summer 2025's demand for the 6,418 departures that sold out, which no sentence does for it; every month-matched construction files 175,000 (C3 over the family above), and the alternatives a literal reader could still defend, additive pickup, coarser groupings of months, own-route windows of four weeks or more and a normal EM on final bookings, fall to holdouts on the shipped rows, not to a reading. No reading difference moves the call.
+Executed word for word, section 6 makes summer 2026's demand summer 2025's demand departure by departure, sections 3 and 5 replay it at capacity plan v3's seats without overbooking, and section 4 counts flown passengers. The literal reader still has to estimate summer 2025's demand for the 6,418 departures that sold out, which no sentence does for it; every month-matched construction files 175,000 (C3 over the family above), and the alternatives a literal reader could still defend, additive pickup, coarser groupings of months, own-route windows of four weeks or more and a normal EM or Tobit on final bookings, fall to the shipped rows (the holdouts, and for the fits the empty peak cells and the sell-out stamps they discard), not to a reading. No reading difference moves the call.
 
 ## Oracles
 
@@ -156,54 +163,78 @@ Executed word for word, section 6 makes summer 2026's demand summer 2025's deman
 - dcs_flight_close_s25.csv, summer 2025 carried 1,044,148: ties on every path.
 - the 2025 gauge-change back-test (YM3 summer 2024 to DCS summer 2025): month build -0.4, pooled -1.5, own open +0.2 per cent; it ties under every completion, so it confirms none.
 - booking_engine_refusals_s25.csv: no total in the pack ties to it; no control arbitrates the ask.
-- the holdouts on open departures (85 per cent, and censored to the nine routes' monthly depth) are the solver's own analysis, not shipped figures.
+- the holdouts on open departures (85 per cent, and censored to the nine routes' depth per cell or at one cap per route direction) are the solver's own analysis, not shipped figures.
 
 ## Ask sheet
 
-The ask: passengers the booking engines turned away from summer 2025 departures because the flight was full, for each of the 18 route directions, whole passengers, in the workbook and charted with labels on one slide. The call reads no refusal record (R2d), so no device row sits in the main call's population (A9). Use: the commercial pack beside the figure (how many passengers the full flights sent away last summer). Golden total 50,632.
+The ask: passengers the booking engines turned away from summer 2025 departures because the flight was full, for each of the 18 route directions, whole passengers, in the workbook and charted with labels on one slide. The unit is filed in the ask's own sentence, each website or app session, call or booking reference once per departure (SF10), and the golden is its literal execution: each request logged at or after its departure's sold_out_utc, counted once per reference and departure at its pax, its route direction that of the departure it was for (flight_no and dep_date in the RM build). The call reads no refusal record (R2d), so no device row sits in the main call's population (A9). Use: the commercial pack beside the figure (how many passengers the full flights sent away last summer). Golden total 50,632; LIN-CTA 4,760.
 
-Devices, each on every route direction (checks A3 to A5) and each landing every figure outside its cell (A2):
+Bases, each closed by a cited sentence and an asserted data fact: what is counted, the filed unit with the dictionary's session_ref (SF10, SF10', A5, A8, A8'); which field attributes, the departure requested (the dictionary's "flight_no, dep_date: the departure requested"), and a record naming other airports never names another route direction of the nine (A12); what nets out, a request logged before the last seat was sold (the dictionary's sold_out_utc) was not refused because the flight was full (A6, A7). The sell-out test is not written into the dictionary: that sentence would hand over P1.
 
-- P1, a clock against a cutoff in another file (D8): fare-family refusals logged before the departure sold out (the lowest family closes at 70 per cent of the seats; those parties then bought a higher one), at least 255 records per direction; found only by setting logged_utc against the RM build's sold_out_utc. The departure-level read keeps them (54,053); dropping the lowest family altogether over-corrects (20,472).
-- P2, battery-visible hazard (D1): website and app sessions asking again for the same departure, 40 to 400 seconds later at the same pax, at least 176 sessions per direction; counting every record gives 59,985.
-- P3, silent with its over-cleaning half (D6, D1): the agency feed writes one record per passenger name under the booking reference, each at pax 1, a second apart; the key collapse that repairs P2 turns each agency booking into one passenger (45,371); found only by reading the feed's pax against its repeats.
+Devices, two, independent and silent, each on every route direction (checks A3, A4) and each moving every figure out of its cell on its own (A2 and the cracker table):
 
-Ladder stops over the 18 (totals): every record 73,201; refusals for departures that sold out at all 54,053; every record of a full flight 59,985; the cracker's key collapse 45,371; higher fare families only 20,472; golden 50,632.
+- P1, a clock against a cutoff in another file (D8): fare-family refusals logged before the departure sold out (the lowest family closes at 70 per cent of the seats; those parties then bought a higher one), at least 255 records per direction; found only by setting logged_utc against the RM build's sold_out_utc. The departure-level read keeps them (60,404); dropping the lowest family altogether over-corrects (22,860).
+- P4, the true key in another field (D7): agency bookings on connecting journeys write the journey's airports, a hub abroad and the departure's southern end (FRA-CTA for a Frankfurt passenger on a Linate to Catania departure), at least 84 records per direction; the first filter a reader puts on the log, the record's own orig and dest against the nine routes, drops them (47,484 with every filed rule executed); found only by taking each request's route from its flight_no and dep_date.
 
-Fairness: one handling reproduces the generator's party-level truth exactly (A1); no request sits within 35 seconds of a sell-out and the agency feed's name records are at most a second apart while website and app repeats are 40 seconds or more (A6, A7), so the handling has no knob.
+Executed by the filed unit, so no longer devices: website and app sessions asking again for the same departure (40 to 400 seconds later at the same pax) and the agency feed's one record per passenger name, each at the party's pax; counting every record of a full flight gives 72,993.
 
-Pair ceiling: 28.5 (cracker on the call 45.0 with no ask figure kept, mirror off the call 12.0; both on the call 45.0)
+Ladder stops over the 18 (totals): every record on its own airports 83,122; every record of a full flight 72,993; every request for a departure that sold out at all 60,404; the filed unit and the sell-out test on the records' own airports 47,484; higher fare families only 22,860; golden 50,632.
+
+Fairness: one handling reproduces the generator's party-level truth exactly (A1); no request sits within 30 seconds of a sell-out (35 seconds the nearest) and no reference straddles one (A6, A7); every record of one reference and departure carries the same pax (A5), so the handling has no knob.
+
+Pair ceiling: 28.5 (the strongest response cracks one device and keeps no ask figure: cracker on the call 45.0, mirror off the call 12.0; both on the call 45.0)
 
 Mirror leakage: 0.0 per cent of ask weight
 
-Measured by: generator/ceiling.py on the cut pack (target.zip)
+Measured by: generator/ceiling.py on a fresh unzip of the cut pack (target.zip)
 
-| Ask figure | Golden | Cracker (sell-out test, key collapse) | Cracker verdict |
-|---|---|---|---|
-| LIN-CTA | 4,760 | 4,294 | miss |
-| CTA-LIN | 4,374 | 3,917 | miss |
-| LIN-PMO | 4,173 | 3,766 | miss |
-| PMO-LIN | 4,063 | 3,653 | miss |
-| LIN-NAP | 2,349 | 2,106 | miss |
-| NAP-LIN | 2,264 | 2,026 | miss |
-| LIN-BRI | 2,731 | 2,479 | miss |
-| BRI-LIN | 2,676 | 2,417 | miss |
-| LIN-BDS | 2,959 | 2,639 | miss |
-| BDS-LIN | 2,749 | 2,478 | miss |
-| LIN-SUF | 2,644 | 2,351 | miss |
-| SUF-LIN | 2,554 | 2,285 | miss |
-| LIN-REG | 1,609 | 1,423 | miss |
-| REG-LIN | 1,711 | 1,517 | miss |
-| LIN-CAG | 2,902 | 2,588 | miss |
-| CAG-LIN | 2,737 | 2,436 | miss |
-| LIN-TPS | 1,661 | 1,469 | miss |
-| TPS-LIN | 1,716 | 1,527 | miss |
-| slide bars and labels | the 18 counts | the cracker's 18 | miss |
+| Ask figure | Golden | Cracker (filed unit, sell-out test, records' own airports) | Cracker (filed unit, departure's route, every request of a sold-out departure) | Cracker verdict |
+|---|---|---|---|---|
+| LIN-CTA | 4,760 | 4,491 | 5,578 | miss |
+| CTA-LIN | 4,374 | 4,094 | 5,209 | miss |
+| LIN-PMO | 4,173 | 3,912 | 5,018 | miss |
+| PMO-LIN | 4,063 | 3,805 | 4,854 | miss |
+| LIN-NAP | 2,349 | 2,214 | 2,825 | miss |
+| NAP-LIN | 2,264 | 2,106 | 2,793 | miss |
+| LIN-BRI | 2,731 | 2,564 | 3,284 | miss |
+| BRI-LIN | 2,676 | 2,513 | 3,196 | miss |
+| LIN-BDS | 2,959 | 2,762 | 3,547 | miss |
+| BDS-LIN | 2,749 | 2,558 | 3,328 | miss |
+| LIN-SUF | 2,644 | 2,482 | 3,182 | miss |
+| SUF-LIN | 2,554 | 2,406 | 3,095 | miss |
+| LIN-REG | 1,609 | 1,503 | 1,885 | miss |
+| REG-LIN | 1,711 | 1,627 | 1,976 | miss |
+| LIN-CAG | 2,902 | 2,723 | 3,455 | miss |
+| CAG-LIN | 2,737 | 2,561 | 3,280 | miss |
+| LIN-TPS | 1,661 | 1,539 | 1,929 | miss |
+| TPS-LIN | 1,716 | 1,624 | 1,970 | miss |
+| slide bars and labels | the 18 counts | the cracker's 18 | the cracker's 18 | miss |
+
+## Residual
+
+What stays open after the repairs, and why each is accepted:
+
+- The call's separation from the fixed-effects Tobit (154,761, filing 150,000) is structural, not a holdout margin: on both depth-matched holdouts the Tobit misses the months by 1.4 to 1.5 times the month build's error (E9). A judge who runs it meets the reasons the method does not fit these departures, the empty peak cells (E5) and the sell-out stamps it discards.
+- The lognormal EM by route direction and month sits 131 under the 162,500 edge (150,000); another stopping rule could put it in 175,000. It is a wrong method either way (its months miss by -46.9 to +18.6 per cent) and moves P(one) by under 0.01.
+- The lognormal EM by route direction lands 175,000 by accident (182,755, E6, E10); counted in P(one).
+- The same-flight window is a bandwidth knob closed only by the depth-matched holdout or by choosing the narrowest window in advance: 7 to 21 days land, 28 days and over file 200,000, and the uniform holdout cannot tell them apart (W3, W4); about 0.05 of projection users take it.
+- The ask: nothing left in the unit. It is filed in the ask's sentence and the golden is its literal execution (SF10, A1); the name-record reading of the agency feed converges on the same counts (SF10'); the website and app against agency and contact-centre asymmetry is written into the sentence. What the ask still asks is the two devices, and neither is a reading: the sell-out time and the departure requested are both defined in the dictionary.
+
+## Leak sweep
+
+leak.py --asof 2025-12-12 on the rebuilt pack: REVIEW, no LEAK (14 files, 27 golden figures, 25 stump terms swept). Each REVIEW line read:
+
+- planning_basis_NP-PB-26S_issue2.pdf carries 232: the A321neo's seats, part of the estimand the basis files (section 5), the same on every path.
+- planning_basis_NP-PB-26S_issue2.pdf carries 7 of the call sentence's 8 distinctive words: the estimand's own wording (the nine Linate routes, passengers carried, summer 2026 over summer 2025, section 7); no figure, no build, no month and no form of completion.
+- data_dictionary_rev5.pdf (bookings, agency, family, record, archive) and the planning basis (changes, network, section, season, record): field definitions and the estimand; neither names a completion, a reference, a holdout or the sell-out test, and the dictionary defines sold_out_utc and the departure requested without saying a request logged before the sell-out was not refused for a full flight.
+- fleet_register.csv dates after 12 December 2025: planned deliveries and retirements, on the H16 allow-list (S4).
+
+Sweeps 1, 2 and 5 to 8 (file names, author vocabulary, announcements, ranking artifacts, hidden content, column names) and the prompt gate are clean; the container audit finds no writer signature, and scrub_producer_metadata.py finds target/ and golden/ clean inside 2024-01-01 to 2025-12-12. The unit filed in the prompt names the ask's counting rule (each website or app session, call or booking reference once per departure), which is the WHAT the judge asked for; it names neither device.
 
 ## House-fix register
 
 - H1: scrubbed in the generator, not retrofitted: workbook application and modified stamp, PDF dates and library comment lines at equal byte length, the chart's embedded workbook; `scrub_producer_metadata.py` audits target/ and golden/ clean inside 2024-01-01 to 2025-12-12.
-- H2: the design note's figures are printed by the build (checks L6, L7, L12, L13, H1 to H5); none comes from a scratch search.
+- H2: the design note's figures are printed by the build (checks L6, L7, L10, L12, L13, H1 to H5, E5 to E11, W1 to W4, SF10', A1 to A12; the cracker table by ceiling.py); none comes from a scratch search.
 - H7: two consecutive builds byte-identical; target.zip cut from the final rebuild; the goldens regenerate byte-identically.
 - Registers: every registration once in the fleet register and every DCS tail in it with its type's seats (G8, G9); the summer 2024 flight-number blocks no longer overlap between bases.
 - H9: the export manifest lists every other shipped file and not itself (G7); the dictionary covers the four extracts it names and gives the refusal log's own first and last logged dates (G10).
@@ -230,3 +261,5 @@ Measured by: generator/ceiling.py on the cut pack (target.zip)
 - The same-flight window as a family member at any width: it drifts from 175.7k (7 days) to 200.6k (35 days); widths of four weeks or more leave the bin and fail the selection holdout.
 - Summer 2024 flight-number blocks of 100 per base from 400: Linate's fourteen routes ran into Turin's block in the archive; Linate now starts at 200.
 - Integer leg ids in the YM3 archive: the file's bytes spelled a token the document sweep reads as author vocabulary at every id stride tried; the archive is keyed by YM3's text leg id (date and flight).
+- An unfiled turn-away unit with the agency feed's name records at pax 1: the re-judge read the ask two ways (a website or app session against an agency booking) and the 18 counts forked; the unit is filed in the ask's sentence, each website or app session, call or booking reference once per departure, every agency name record carries its party's pax so the name-record reading converges, and P3 is retired, its place taken by the connecting journeys' airports on agency records (P4).
+- The per-cell depth holdout's summer aggregate as EM's separator: EM by route direction beats the month build on it (+3.6 against +5.4), and at one cap per route direction EM by route direction and month reads -18.9 (-6.2 with its empty cells handed the truth); the rejection of EM and Tobit rests on the empty peak cells and the discarded sell-out stamps, with both holdouts asserted month by month.

@@ -255,14 +255,20 @@ def main(target):
        and -0.62 < sp[8] < -0.45, "summer %.1f, August %.1f" % (100 * summer, 100 * sp[8]))
 
     # the ask: passengers turned away because the flight was full
-    r9 = ref[((ref["orig"] == "LIN") & ref["dest"].isin(NINE)) | ((ref["dest"] == "LIN") & ref["orig"].isin(NINE))]
-    r9 = r9.merge(rm[["flight_no", "dep_date", "sold_out_utc"]], on=["flight_no", "dep_date"], how="left")
+    # the filed unit: each session, call or booking reference once per departure, at its pax; the departure's
+    # route direction from the RM build (the agency feed names a connecting journey's airports)
+    r9 = ref.merge(rm[["flight_no", "dep_date", "orig", "dest", "sold_out_utc", "nine"]], on=["flight_no", "dep_date"],
+                   how="left", suffixes=("_rec", ""), validate="many_to_one")
+    r9 = r9[r9["nine"] == True]
     full = r9[r9["sold_out_utc"].notna() & (pd.to_datetime(r9["logged_utc"], utc=True) >= pd.to_datetime(r9["sold_out_utc"], utc=True))]
-    web = full[full["channel"].isin(["WEB", "APP"])].drop_duplicates(["session_ref", "flight_no", "dep_date"])
-    rest = full[full["channel"].isin(["CC", "GDS"])]
-    cnt = pd.concat([web, rest]).groupby(["orig", "dest"])["pax"].sum()
+    once = full.drop_duplicates(["session_ref", "flight_no", "dep_date"])
+    cnt = once.groupby(["orig", "dest"])["pax"].sum()
     got = {"%s-%s" % k: int(v) for k, v in cnt.items()}
-    ok("ask: 18 route directions match the figures", got == figs["turned_away"], "total %d" % sum(got.values()))
+    ok("ask: 18 route directions match the figures under the filed unit", got == figs["turned_away"],
+       "total %d, LIN-CTA %d" % (sum(got.values()), got.get("LIN-CTA", 0)))
+    ok("ask: one pax per reference and departure", full.groupby(["session_ref", "flight_no", "dep_date"])["pax"].nunique().max() == 1, "")
+    unit = "counting each website or app session, call or booking reference once per departure"
+    ok("prompt: the unit is filed in the ask's sentence", unit in open(os.path.join(TASK, "prompt.txt")).read(), "")
     ok("format csv: refusals log reads back", len(ref) > 25000, "%d rows" % len(ref))
 
     # the documents carrying the filed sentences, through pdfminer, with positive controls on the same path

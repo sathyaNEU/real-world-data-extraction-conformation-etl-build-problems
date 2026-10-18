@@ -21,7 +21,7 @@
 5. Completed each sold-out departure on the nine routes as its seats over its month's share on hand at its sold_out_utc.
 6. Re-flew every summer 2025 departure 364 days later at its seats in summer2026_capacity_plan_v3.xlsx (232 on the A321neo, 144 on the A319 that Brindisi and Lamezia Terme keep to 31 May 2026), its bookings capped at the seats (section 5), less its route direction's summer 2025 no-show share from dcs_flight_close_s25.csv.
 7. Against summer 2025's 1,044,148 passengers carried, the nine routes carry about 175,000 more, to the nearest 25,000.
-8. Counted the turned-away passengers in booking_engine_refusals_s25.csv from requests logged at or after the departure's sold_out_utc, each website or app session once per departure at its pax, and every agency-feed and contact-centre record at its pax.
+8. Counted the turned-away passengers in booking_engine_refusals_s25.csv from requests logged at or after the departure's sold_out_utc, each website or app session, call or booking reference once per departure at its pax, each request's route and direction taken from its flight_no and dep_date in rm_booking_build_s25.csv.
 
 ## 4. Deliverable Answers
 

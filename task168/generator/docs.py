@@ -434,6 +434,7 @@ def dictionary(path, refusal_span):
            ("session_ref", "the engine's session reference (website and app), call reference (contact centre) or "
                            "booking reference (agency feed)"),
            ("flight_no, dep_date", "the departure requested (four-digit number, local date)"),
+           ("orig, dest", "IATA airport codes"),
            ("fare_family", "fare family requested: LIGHT, CLASSIC or FLEX"),
            ("pax", "passengers in the request"),
            ("result", "NO_AVAIL")])

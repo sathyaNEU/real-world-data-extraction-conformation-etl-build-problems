@@ -219,8 +219,9 @@ def rungs(target, g=None):
     ta = defaultdict(int)
     so = {(r["flt"], r["dep"].isoformat()): r["so"] for r in rows}
     seen = set()
+    nine_dep = {(r["flt"], r["dep"].isoformat()) for r in rows if C.is_nine(r["orig"], r["dest"])}
     for e in C.read_refusals(target):
-        if not C.is_nine(e["orig"], e["dest"]):
+        if (int(e["flight_no"]), e["dep_date"]) not in nine_dep:
             continue
         key = (e["session_ref"], e["flight_no"], e["dep_date"])
         if key in seen:
@@ -778,6 +779,342 @@ def selection_holdout(target, g=None, windows=(7, 14, 21, 28, 35)):
             c = near(by_flt[r["flt"]], r["dep"], k)
             if c is None:
                 c = near(by_dir[(r["orig"], r["dest"])], r["dep"], k)
+            if c is None:
+                c = mb
+            est["same flight within %d days" % k] = cap / C.interp(c, dcps, xx)
+        for name, v in est.items():
+            acc[name]["est"] += v
+            acc[name]["actual"] += r["bkd"][-1]
+            acc[name]["cap"] += cap
+    return {name: (a["est"] - a["cap"]) / (a["actual"] - a["cap"]) - 1 for name, a in acc.items()}
+
+
+# ------------------------------------------------------------------ censored-distribution fits: EM and Tobit
+def em_grouped(x, c, gid, log=False, iters=5000, tol=1e-8):
+    """EM for normal (or lognormal) demand with right-censored observations (c True where x is the cap), fitted
+    separately in every group of gid at once; a censored unit is completed at its expected demand given that the
+    demand exceeds its cap. A group with no uncensored unit keeps its units at the cap."""
+    from scipy.special import log_ndtr, ndtr
+    y = np.log(np.maximum(x, 0.5)) if log else np.asarray(x, float)
+    levels, g = np.unique(gid, return_inverse=True)
+    G = len(levels)
+    n = np.bincount(g, minlength=G).astype(float)
+    fit = np.bincount(g, ~c, G) > 0
+    mu = np.bincount(g, y, G) / n
+    sd = np.sqrt(np.maximum(np.bincount(g, y ** 2, G) / n - mu ** 2, 0.0))
+    sd = np.maximum(sd, 0.05 if log else 5.0)
+    floor = 1e-4 if log else 1.0
+
+    def lam_of(z):
+        if log:
+            return np.exp(-0.5 * z * z - LOG_SQRT_2PI - log_ndtr(-z))
+        return np.exp(-0.5 * z * z) / SQRT_2PI / np.maximum(ndtr(-z), 1e-12)
+
+    active = fit.copy()
+    for _ in range(iters):
+        m, s = mu[g], sd[g]
+        z = (y - m) / s
+        lam = lam_of(z)
+        e1 = np.where(c, m + s * lam, y)
+        e2 = np.where(c, m ** 2 + s ** 2 + s * (y + m) * lam, y ** 2)
+        mu2 = np.bincount(g, e1, G) / n
+        sd2 = np.sqrt(np.maximum(np.bincount(g, e2, G) / n - mu2 ** 2, floor))
+        done = (np.abs(mu2 - mu) < tol) & (np.abs(sd2 - sd) < tol)
+        mu = np.where(active, mu2, mu)
+        sd = np.where(active, sd2, sd)
+        active &= ~done
+        if not active.any():
+            break
+    m, s = mu[g], sd[g]
+    z = (y - m) / s
+    if log:
+        ev = np.exp(m + s ** 2 / 2 + log_ndtr(-(z - s)) - log_ndtr(-z))
+    else:
+        ev = m + s * lam_of(z)
+    return np.where(c & fit[g], ev, x)
+
+
+SQRT_2PI = float(np.sqrt(2 * np.pi))
+LOG_SQRT_2PI = float(np.log(SQRT_2PI))
+
+
+def tobit(x, c, effects, log=False):
+    """Censored normal (or lognormal) regression by maximum likelihood with a common sigma, the mean an intercept
+    plus one fixed effect for every level of each key in effects but its first; a censored unit is completed at
+    its expected demand given that the demand exceeds its cap."""
+    from scipy.optimize import minimize
+    from scipy.special import log_ndtr
+    y = np.log(np.maximum(x, 0.5)) if log else np.asarray(x, float)
+    idx, sizes = [], []
+    for key in effects:
+        levels, inv = np.unique(np.asarray(key), return_inverse=True)
+        idx.append(inv)
+        sizes.append(len(levels))
+    k = 1 + sum(n - 1 for n in sizes)
+    u = ~c
+
+    def mean(p):
+        mu = np.full(len(y), p[0])
+        o = 1
+        for inv, n in zip(idx, sizes):
+            mu += np.r_[0.0, p[o:o + n - 1]][inv]
+            o += n - 1
+        return mu
+
+    def nll(p):
+        s = np.exp(p[k])
+        z = (y - mean(p)) / s
+        lc = log_ndtr(-z[c])
+        lam = np.exp(-0.5 * z[c] ** 2 - LOG_SQRT_2PI - lc)
+        g_mu = np.zeros(len(y))
+        g_mu[u] = z[u] / s
+        g_mu[c] = lam / s
+        g_ls = np.where(u, z ** 2 - 1, 0.0)
+        g_ls[c] = lam * z[c]
+        f = -((-0.5 * z[u] ** 2 - p[k]).sum() - LOG_SQRT_2PI * u.sum() + lc.sum())
+        grad = [g_mu.sum()]
+        for inv, n in zip(idx, sizes):
+            grad.extend(np.bincount(inv, g_mu, n)[1:])
+        grad.append(g_ls.sum())
+        return f, -np.array(grad)
+
+    p0 = np.zeros(k + 1)
+    p0[0] = float(y.mean())
+    p0[k] = np.log(max(float(y.std()), 1e-3))
+    res = minimize(nll, p0, jac=True, method="L-BFGS-B", options={"maxiter": 20000, "maxfun": 40000,
+                                                                     "ftol": 1e-14, "gtol": 1e-9})
+    mu = mean(res.x)
+    s = float(np.exp(res.x[k]))
+    z = (y - mu) / s
+    if log:
+        ev = np.exp(mu + s ** 2 / 2 + log_ndtr(-(z - s)) - log_ndtr(-z))
+    else:
+        ev = mu + s * np.exp(-0.5 * z * z - LOG_SQRT_2PI - log_ndtr(-z))
+    return np.where(c, ev, x)
+
+
+FITS = ("EM, route direction and month", "EM, route direction", "Tobit, route direction and month effects")
+
+
+def _fit(name, x, c, dirs, months, log):
+    """One censored-distribution fit over a set of departures: x the final bookings (the cap where censored)."""
+    x = np.array(x, float)
+    if name.startswith("EM"):
+        key = ["%s|%02d" % (a, b) for a, b in zip(dirs, months)] if name.endswith("and month") else list(dirs)
+        return em_grouped(x, c, np.array(key), log)
+    return tobit(x, c, (dirs, months), log)
+
+
+def censored_fits(target, g=None):
+    """The call's figure under EM by route direction and month, EM by route direction and a Tobit with route
+    direction and month fixed effects, each normal and lognormal, fitted to the nine routes' final bookings (a
+    sold-out departure censored at its seats)."""
+    g = g or C.golden(target)
+    rows, dcs = g["rows"], g["dcs"]
+    ns = C.noshow_by_leg(rows, dcs)
+    nine = [r for r in rows if C.is_nine(r["orig"], r["dest"])]
+    x = np.array([r["bkd"][-1] for r in nine], float)
+    c = np.array([r["so"] != "" for r in nine])
+    dirs = ["%s-%s" % (r["orig"], r["dest"]) for r in nine]
+    months = [r["dep"].month for r in nine]
+    base = sum(int(dcs[(r["flt"], r["dep"].isoformat())]["pax_flown"]) for r in nine)
+    out = {}
+    for log in (False, True):
+        for name in FITS:
+            e = _fit(name, x, c, dirs, months, log)
+            tot = sum(min(v, C.seats_s26(r)) * (1 - ns[(r["orig"], r["dest"])]) for r, v in zip(nine, e))
+            out[("lognormal " if log else "normal ") + name] = tot - base
+    return out
+
+
+def peak_cells(rows):
+    """The nine routes' departures that never sold out, per route direction, in each month."""
+    out = defaultdict(lambda: defaultdict(int))
+    tot = defaultdict(lambda: defaultdict(int))
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]):
+            od = "%s-%s" % (r["orig"], r["dest"])
+            tot[r["dep"].month][od] += 1
+            out[r["dep"].month][od] += r["so"] == ""
+    return {m: {od: (out[m][od], tot[m][od]) for od in tot[m]} for m in tot}
+
+
+def nine_weights(rows):
+    """The nine routes' sold-out departures by month: the weight each month's error carries in the call."""
+    w = defaultdict(int)
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]) and r["so"]:
+            w[r["dep"].month] += 1
+    return dict(w)
+
+
+def profile(err, w):
+    """A method's holdout error by month summarised: the worst month, and the mean and root mean square weighted
+    by the nine routes' sold-out departures of each month."""
+    ms = [m for m in err if m in w]
+    tw = sum(w[m] for m in ms)
+    return {"worst": max(abs(err[m]) for m in ms),
+            "mean_w": sum(w[m] * err[m] for m in ms) / tw,
+            "rms_w": float(np.sqrt(sum(w[m] * err[m] ** 2 for m in ms) / tw))}
+
+
+def fit_holdouts(target, g=None):
+    """The other routes' open departures censored two ways, and the demand above the cap completed by the month
+    build (projection from the moment the bookings reached the cap, each departure left out of its month's build)
+    and by every censored-distribution fit; error on the demand above the cap by departure month, and over the
+    summer.
+
+    per cell      each route direction and month censored so that the share held at the cap equals the nine
+                  routes' sold-out share in that month (em_holdout's censoring)
+    constant cap  one cap per route direction, at the quantile of its final bookings that holds the nine routes'
+                  summer sold-out share above it, so the censored share rises with the month's demand as the nine
+                  routes' does
+    """
+    g = g or C.golden(target)
+    rows, dcps = g["rows"], g["dcps"]
+    arr = np.array(dcps, float)
+    sold = defaultdict(lambda: [0, 0])
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]):
+            sold[r["dep"].month][0] += r["so"] != ""
+            sold[r["dep"].month][1] += 1
+    f = {m: v[0] / v[1] for m, v in sold.items()}
+    share = sum(v[0] for v in sold.values()) / sum(v[1] for v in sold.values())
+    refs = [r for r in rows if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] > 0]
+    sums, cnt = defaultdict(lambda: 0), defaultdict(int)
+    for r in refs:
+        sums[r["dep"].month] = sums[r["dep"].month] + r["bkd"] / r["bkd"][-1]
+        cnt[r["dep"].month] += 1
+    w = nine_weights(rows)
+
+    def per_cell():
+        cells = defaultdict(list)
+        for r in refs:
+            cells[((r["orig"], r["dest"]), r["dep"].month)].append(r)
+        sel, cap, held = [], [], []
+        for (od, m), rs in sorted(cells.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+            rs = sorted(rs, key=lambda r: (r["bkd"][-1], r["dep"], r["flt"]))
+            n = len(rs)
+            u = max(1, int(round((1 - f[m]) * n)))
+            if u >= n:
+                continue
+            x = np.array([r["bkd"][-1] for r in rs], float)
+            cp = (x[u - 1] + x[u]) / 2.0
+            for k, r in enumerate(rs):
+                sel.append(r)
+                cap.append(cp)
+                held.append(k >= u)
+        return sel, np.array(cap), np.array(held)
+
+    def constant():
+        by = defaultdict(list)
+        for r in refs:
+            by[(r["orig"], r["dest"])].append(r)
+        sel, cap, held = [], [], []
+        for od, rs in sorted(by.items()):
+            rs = sorted(rs, key=lambda r: (r["dep"], r["flt"]))
+            x = np.array([r["bkd"][-1] for r in rs], float)
+            cp = float(np.floor(np.quantile(x, 1 - share))) + 0.5
+            for r, v in zip(rs, x):
+                sel.append(r)
+                cap.append(cp)
+                held.append(v > cp)
+        return sel, np.array(cap), np.array(held)
+
+    res = {"_share": share, "_weights": w}
+    for label, build in (("per cell", per_cell), ("constant cap", constant)):
+        sel, cap, held = build()
+        x = np.array([r["bkd"][-1] for r in sel], float)
+        xc = np.where(held, cap, x)
+        dirs = ["%s-%s" % (r["orig"], r["dest"]) for r in sel]
+        months = [r["dep"].month for r in sel]
+        est = {}
+        proj = x.copy()
+        ok = held.copy()
+        for i, r in enumerate(sel):
+            if not held[i]:
+                continue
+            j = int(np.nonzero(r["bkd"] >= cap[i])[0][0])
+            if j == 0:
+                ok[i] = False
+                continue
+            b0, b1 = r["bkd"][j - 1], r["bkd"][j]
+            xx = arr[j - 1] - (arr[j - 1] - arr[j]) * ((cap[i] - b0) / (b1 - b0) if b1 > b0 else 1.0)
+            m = r["dep"].month
+            cur = (sums[m] - r["bkd"] / r["bkd"][-1]) / (cnt[m] - 1)
+            proj[i] = cap[i] / C.interp(cur, dcps, xx)
+        est["month build"] = proj
+        for log in (False, True):
+            for name in FITS:
+                est[("lognormal " if log else "normal ") + name] = _fit(name, xc, held, dirs, months, log)
+        # not a fit a solver can run: the cells with every departure at the cap handed their true final bookings
+        key = np.array(["%s|%02d" % (a, b) for a, b in zip(dirs, months)])
+        lv, inv = np.unique(key, return_inverse=True)
+        empty = (np.bincount(inv, ~held, len(lv)) == 0)[inv]
+        est["_EM, route direction and month, empty cells at the truth"] = np.where(
+            empty, x, est["normal EM, route direction and month"])
+        mo = np.array(months)
+        out = {}
+        for name, e in est.items():
+            err = {}
+            for m in sorted(set(months)):
+                mm = ok & (mo == m)
+                if mm.sum():
+                    err[m] = float((e[mm] - cap[mm]).sum() / (x[mm] - cap[mm]).sum() - 1)
+            summer = float((e[ok] - cap[ok]).sum() / (x[ok] - cap[ok]).sum() - 1)
+            out[name] = {"months": err, "summer": summer, **profile(err, w)}
+        cs = {m: float(held[mo == m].mean()) for m in sorted(set(months))}
+        out["_empty_cell_departures"] = int((empty & held).sum())
+        out["_censored_share"] = cs
+        out["_departures"] = int(len(sel))
+        out["_held"] = int(held.sum())
+        out["_projected"] = int(ok.sum())
+        res[label] = out
+    return res
+
+
+def selection_holdout_uniform(target, g=None, share=0.85, windows=(7, 14, 21, 28, 35)):
+    """The holdout a solver builds first: every open departure off the nine routes with 40 or more final bookings
+    censored at share of them, completed from the same flight's other open departures within k days (the same
+    route direction's, then the month build, where none) and from the month build (each departure left out); error
+    in the demand above the cap."""
+    g = g or C.golden(target)
+    rows, dcps = g["rows"], g["dcps"]
+    arr = np.array(dcps, float)
+    refs = [r for r in rows if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] > 0]
+    sh = np.array([r["bkd"] / r["bkd"][-1] for r in refs])
+    day = np.array([r["dep"].toordinal() for r in refs])
+    mon = np.array([r["dep"].month for r in refs])
+    sums = {m: sh[mon == m].sum(axis=0) for m in set(mon)}
+    cnt = {m: int((mon == m).sum()) for m in set(mon)}
+    by_flt, by_dir = defaultdict(list), defaultdict(list)
+    for i, r in enumerate(refs):
+        by_flt[r["flt"]].append(i)
+        by_dir[(r["orig"], r["dest"])].append(i)
+    by_flt = {k: np.array(v) for k, v in by_flt.items()}
+    by_dir = {k: np.array(v) for k, v in by_dir.items()}
+
+    def near(ix, i, k):
+        m = (np.abs(day[ix] - day[i]) <= k) & (ix != i)
+        return sh[ix[m]].mean(axis=0) if m.any() else None
+
+    acc = defaultdict(lambda: defaultdict(float))
+    for i, r in enumerate(refs):
+        if r["bkd"][-1] < 40:
+            continue
+        cap = share * r["bkd"][-1]
+        j = int(np.nonzero(r["bkd"] >= cap)[0][0])
+        if j == 0:
+            continue
+        b0, b1 = r["bkd"][j - 1], r["bkd"][j]
+        xx = arr[j - 1] - (arr[j - 1] - arr[j]) * ((cap - b0) / (b1 - b0) if b1 > b0 else 1.0)
+        m = mon[i]
+        mb = (sums[m] - sh[i]) / (cnt[m] - 1)
+        est = {"month": cap / C.interp(mb, dcps, xx)}
+        for k in windows:
+            c = near(by_flt[r["flt"]], i, k)
+            if c is None:
+                c = near(by_dir[(r["orig"], r["dest"])], i, k)
             if c is None:
                 c = mb
             est["same flight within %d days" % k] = cap / C.interp(c, dcps, xx)
