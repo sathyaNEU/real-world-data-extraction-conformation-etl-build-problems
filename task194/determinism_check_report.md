@@ -1,193 +1,195 @@
-# Determinism verdict, task194: SUPERSEDED, DO NOT READ AS CURRENT
+# task194 determinism review (isolated judge)
 
-The verdict below judged **architecture 1**, whose decisive step was a choice between two functional
-forms for the counterfactual. That architecture is spent and the design it describes does not exist
-in this folder any more: the judge measured its two forms at a likelihood ratio of 1.02 to 1 on data
-under-dispersed about three and a half times, which is a collinear pair no register could separate.
+File universe: fresh unzip at `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge_pack/`
+(21 members). Nothing under the repo task folder was opened except this report, which is overwritten here.
+Every figure below was recomputed from the shipped files with pandas; no arithmetic was taken on trust.
 
-Architecture 2 rests on internal against external standardisation, with every graded figure a sum
-over the record and no functional form anywhere. It has not been judged yet. Nothing below applies
-to it, and a reader taking the verdict below for current would be badly misled about what this build
-is.
+## Part 0: the answer the prompt and the bundle lead to, before the graded blocks were opened
 
-The superseded text follows unchanged, as the evidence for why architecture 1 was re-rooted.
+Enumeration written first, from the prompt, the two PDFs and the data only.
 
----
+1. **Eligible set.** Charter 4.2 (`improvement_partnership_charter_v3.pdf`): acute inpatient units still reporting
+   under their own cost centre at the decision date, 4+ closed quarters under spec 4.0, minus any unit placed with
+   in the previous twelve closed quarters, minus the unit the team is with when the decision is made. Decision date
+   is the March committee, 24 March 2027 (charter 4.1 + `placement_cycle_notes.txt`, 24 Feb note). Last closed quarter
+   is 2026-27 Q2, so the twelve-quarter window is 2023-24 Q3 to 2026-27 Q2, which covers IP-01 to IP-09; IP-10 (41460)
+   is the current placement. Service type from `unit_register.csv` drops 41610/41620/41630; closure drops 41511/41512.
+   **Result: 12 units** - 41210, 41220, 41230, 41240, 41310, 41320, 41330, 41410, 41420, 41430, 41510, 41520.
+2. **Avoidable complications.** Charter 4.3: observed complications of the unit's own patients less the expected
+   complications of its episodes, under spec 4.0. Spec 2.2/2.3 fix the denominator (care type Acute, LOS >= 1,
+   acute-inpatient unit, DRG mapped to a band); spec 3.1 and Appendix A fix expected.
+   I rebuilt all 215 unit-quarters of `unit_indicator_series.csv` from `episode_outcomes_extract.csv` +
+   `drg_risk_bands.csv` + `hac_stratum_rates.csv` after de-duplicating on the dictionary's own separation key
+   (unit, patient, admission date, DRG; 1,546 duplicate rows in the extract). **Every in-scope episode count,
+   observed count and expected value reproduced exactly** (0 mismatches on 215 rows).
+3. **The structure that decides it.** `coding_close_out_register.csv` is a development triangle: each quarter is
+   published at its coding close and restated at every close after. For 41210, 2024-25 Q1 runs 185, 243, 287, 322,
+   334 and then holds; for 41220 the same quarter runs 335 to 346. Charter 4.3 asks for "the complications its own
+   patients had", not the complications coded so far, so the open quarters must be carried to ultimate. Five of the
+   ten closed quarters for 41210 have not settled (2025-26 Q2, Q3, Q4; 2026-27 Q1, Q2).
+4. **Development basis.** Age-to-ultimate factors from each unit's own settled quarters. The register itself forbids
+   pooling: age-1 ultimate/first ratios are 1.719-1.805 for 41210 and 1.018-1.054 for 41220, i.e. the between-unit
+   spread dwarfs the within-unit spread. `unit_register.cis_registered_date` supplies the mechanism and is almost
+   monotone in the factor (41310 2022-07-01 -> 1.047 ... 41450 2025-10-01 -> 1.858, 41520 2027-01-04 -> 1.716,
+   41210 2027-03-01 -> 1.763). The denominators are not censored: the in-scope/separations ratio for 41210 is
+   0.900-0.917 in every quarter including the most recent, so only the numerator develops.
+5. **Forward basis.** Charter 4.4 and spec 3.4: planned separations for the assessment quarter from
+   `activity_plan_2027q4.csv` times the unit's rate per separation over the specification period to date, with
+   "separations" the all-care-type count the dictionary defines and `activity_summary_monthly.csv` publishes.
+6. **My answer, reached before reading the blocks: Alderbrook General Medicine, cost centre 41210, 44.6 avoidable
+   complications on 4,261 planned separations, next unit 41220 at 27.8.** The easy route (rank on the series as
+   reported) gives 41220 at 26.1; the dashboard route makes 41210 look like the best unit in the network (SR 0.738).
 
-# task194 determinism verdict
+## Verdict
 
-**Verdict:** NOT_DETERMINISTIC (competing_defensible_answer, with margin_or_boundary_fragility on the graded integers)
-**Disposition:** SEND_BACK. The effect-pricing evidence (the seven closed placement quarters and the quarter before each) has to be re-cut with real sampling noise and a gap the candidate pricings can be separated on, and one sentence must fix the counterfactual. This changes what solvers see, so a rerun is required.
-**Fix location:** input_files (series / placement-quarter rows), plus one charter or prompt sentence.
+- **Verdict: DETERMINISTIC + SOLUTION_WRONG**
+- **Disposition: FIX_NOW.** Regenerate Critical Component 1 / Solution Step 3 (the "4 of the 10" count is wrong),
+  drop or correct the ungrounded cycle label "IP-11", and fix two inverted sentences. No input file changes, no
+  graded figure moves, **no model rerun required**.
+- **Taxonomy: solution_incorrect** (block-level only; the decision is forced). **Fix location: solution.**
 
-## Reproduction table
-All recomputed from target/ with my own code (deduped, in-scope per spec 2.2/2.3, strata from hac_stratum_rates.csv).
+**Why.** The call is forced. Every load-bearing figure reproduced to the stated rounding, all 12 unit values and the
+gap included, and the one method fork that flips the winner (pooled rather than own-unit development factors) is
+refuted twice by the shipped data, so no competing answer survives. What fails is the write-up: Critical Component 1
+names four unsettled quarters when its own stated test ("a quarter whose last two publications agree has settled")
+makes five of the ten unsettled, and the omitted quarter carries most of the uplift the recommendation rests on.
 
-| Item | Submission | Mine | Note |
-|---|---|---|---|
-| Unit-quarter series | ties row for row | 215/215 rows tie on observed; 214 tie on episodes; expected within 0.0006 | one row, 41310 2026-27 Q1, is 1 episode short (1,235 vs 1,236) if the data dictionary's dedupe key (patient, admission, DRG, no unit) is applied literally. The cross-unit pair 41350/41310 is the only acute pair. The shipped series and activity_summary_monthly keep both. |
-| Eligible units | 12 | 12 (9 excluded: IP-01..IP-09 units) | row-set fork, see C3 |
-| Orth ratio / planned expected / excess | 1.23 / 204 / 46.4 | 1.2277 / 203.86 / 46.41 | divisor is all-care-type separations (activity_summary_monthly). On in-scope episodes it is 218.9 / 49.8. Planned_separations says "all care types", so forced. |
-| Alderbrook GM Dec-quarter excess | 36 | 36.35 | highest of all units |
-| Stonecreek Vascular | worst ratio, 508 planned, 14.8 excess, avoids 6 | 1.292, 14.82, 5.64 | ok |
-| Avoided, 12 units (share 0.3809 pooled) | 18,12,8,6,6,4,3,2,2,1,1,1 | 17.68, 11.66, 8.09, 6.08, 5.65, 3.64, 2.64, 2.13, 2.08, 1.32, 1.32, 0.63 | reproduces |
-| Share that reproduces all 12 | | 0.3775 to 0.3985 | pooled 0.3809 sits 0.0034 above the floor |
-| Hospital 2026 (episodes / compl. / rate) | A 38,249/4,017/109.0; S 23,179/2,525/112.2; M 19,733/2,016/110.3; C 2,340/234/111.6 | 38,249/4,017/109.006; 23,179 (23,178 if the cross-unit pair is collapsed)/2,525/112.224; 19,733/2,016/110.323; 2,340/234/111.640 | facility taken per unit-month from activity_summary_monthly |
-| Sub-acute / MH by quarter (10 rows) | 901/50 ... 809/47 | identical | monthly summary equals the extract deduped on (patient, admission, DRG) exactly; raw rows are 10 to 12 percent higher |
-| Complication groups (16 values) | G1 2,070/997 ... G8 1,058/478 | identical | any complication in the group, CIS units from hac_detail, non-CIS units from the first category, 2026 revision from 1 July 2026 (manifest) |
+## Gate table
 
-## The four questions
-
-### 1. Method forced, or forced only by data that cannot separate the candidates?
-Both failure sides appear, on different parts of the record.
-
-**Pricing candidates the bundle leaves standing.** Let b be the unit's pre-arrival ratio, E the assessment-quarter expected and O the observed. For the seven closed placements (IP-01 has no data under 4.0), avoided = bE − O. Applied to the 12 units:
-
-| Pricing | Orth | Gen Surg | Mar GM | top |
-|---|---|---|---|---|
-| A. share of own excess, pooled 0.381 (submission) | 17.7 | 11.7 | 8.1 | Orth |
-| A, share mean / median / LS | 17.7 / 17.9 / 17.7 | 11.7 / 11.8 / 11.7 | 8.1 / 8.2 / 8.1 | Orth |
-| A, baseline = previous quarter | 18.0 | 11.9 | 8.2 | Orth |
-| A, baseline = closed at decision date (8-week rule) | 17.6 | 11.6 | 8.0 | Orth |
-| A, baseline = all other quarters (share 0.320) | 14.8 | 9.8 | 6.8 | Orth |
-| A, baseline = last 4 pre quarters (0.339) | 15.7 | 10.4 | 7.2 | Orth |
-| B. constant ratio-point drop (0.081 per expected) | 16.6 | 22.7 | 7.5 | **Gen Surg** |
-| C. constant percent of counterfactual (7.0 percent) | 17.6 | 21.8 | 8.0 | **Gen Surg** |
-| D. constant complications (8.5 per quarter) | 8.5 | 8.5 | 8.5 | no ranking |
-
-**Fork.** Pricing B or C moves the recommendation to Alderbrook General Surgery. Their gap over Orth is 6.2 and 4.2 complications.
-
-**What separates A from B and C.** On the printed numbers the register is not ambiguous. The avoided/excess share has CV 5 percent (0.34 to 0.40). Avoided per unit of expected has CV 53 percent. corr(avoided, excess) = 0.992, corr(avoided, E) = −0.28. Read as exact, A wins by a wide margin.
-
-**Does the record's noise match the process it claims?**
-- Ordinary unit-quarters (placement quarters removed): pooled chi-square 198.5 on 185 df, 1.07 per df, p = 0.24. These are plausibly Poisson.
-- Placement quarters: the seven shares around the pooled share have Poisson-scaled chi-square **0.006 on 6 df** (cdf about 5e-9). The Poisson sd of one share is 0.35 to 1.0, but the observed spread is 0.02. Each assessment-quarter O equals E·(b − 0.381·(b − 1)) to within 0.1 to 0.8 of a complication.
-- The quarter before each placement also sits on the earlier-quarters mean: ratios of 1.277 vs 1.273, 1.373 vs 1.370, 1.286 vs 1.276, 1.083 vs 1.085, 1.192 vs 1.185, 1.512 vs 1.508, 1.166 vs 1.162. Chi-square is 0.014 on 7 df against an expected sd of about 0.08. Those quarters are not sampled either.
-
-**Which side?** The design sits on the first side for the evidence that carries the pricing (candidates agree, or are cleanly separated, only because the placement quarters have no sampling noise). On honest Poisson error it falls on the second side:
-
-| Model | chi-square on 6 df |
+| Gate | Line |
 |---|---|
-| A | 0.007 |
-| B | 1.19 |
-| C | 0.80 |
-| D | 0.38 |
+| A - solution correct | **PASS with SOLUTION_WRONG.** All 215 unit-quarters of the indicator series rebuilt exactly from the extract; 3097, 3023.6, 3408.5, 311.5, 1.763, 1.0368, 44.6, 27.8, 16.8, 1.604, 26.1, 27.59, "5 of 12" and all three supplementary tables reproduced. Defects: Critical Component 1 / Step 3 miscount the unsettled quarters; three inverted or ungrounded sentences (below). |
+| B - decisive facts shipped | **PASS.** Eligibility charter 4.2; avoidable charter 4.3; forward basis charter 4.4 + spec 3.4 + `activity_plan_2027q4.csv`; denominator spec 2.2/2.3 + `drg_risk_bands.csv` + `unit_register.service_type`; rates spec App. A + `hac_stratum_rates.csv`; censoring `coding_close_out_register.csv` + spec 3.7 + `placement_cycle_notes.txt` (19 Feb note on the coding queue); unit-specific lag `unit_register.cis_registered_date`; site-by-month `activity_summary_monthly.facility`; revision map `hac_category_list.csv` + spec App. B; the detail extract's campus omission `export_manifest.csv`. One vocabulary miss: "cycle IP-11" is in no shipped file (grep returns zero hits). |
+| C - uniquely forced | **PASS.** Eight development variants tested; all name 41210 (ratio 1.530 to 1.628). The only flip is pooled factors, refuted by the register's own between-unit spread and the CIS-rollout gradient. The per-separation denominator fork moves the printed values but not the ranking. 41210 also wins with the eligibility filter removed entirely (44.61 against 36.24 for the next unit), so no eligibility misreading can flip it. |
+| D - hardness not semantics | **PASS.** The split is analytical: whether the register's open quarters are carried to ultimate, and on whose pattern. Neither turns on a word's meaning. |
+| E - prompt unambiguous on the decision | **PASS.** One committed unit, one gap, three supplementary tables each with period, grain, attribution ("counted to the site each unit reported under that month") and rounding pinned in the asking sentence. |
+| F - stump power | **STRONG.** See below. |
+| G - stumping type | **PASS** (forecasting). See the Gate G line. |
+| H - the three rules | **PASS.** See the Gate H line. |
 
-The likelihood ratio of A over B is exp(1.18/2) = 1.8 to 1. The pooled share's Poisson SE is ±0.20 (95 percent interval −0.01 to 0.77).
+## Evidence: load-bearing values recomputed
 
-**Rounding claims more precision than the data carries.** The Orth − General Surgery gap of 6 has an honest SE of about 4.5. That comes from ±0.20 on the share times 15.8 for the excess difference, plus Poisson error on the two units' 10-quarter ratios (excess 46.4 ± 5.6 and 30.6 ± 6.5). Under A the ranking does not depend on the share. It rests only on the excess difference of 15.8 ± 8.6, about 1.8 sigma. The graded whole numbers (18, 12, 8, ...) are exact only on the noise-free register.
+| Claim | Recomputed | Status |
+|---|---|---|
+| 12 eligible units, the named 12 | 12, identical list | reproduced |
+| 41210 observed 3097, expected 3023.6 | 3097, 3023.647 | reproduced |
+| 41210 developed 3408.5, uplift 311.5 | 3408.55, +311.55 | reproduced |
+| age-1 factor 1.763 (41210) / 1.0368 (41220) | 1.7630 / 1.0368 (volume-weighted over settled quarters) | reproduced |
+| 44.6 / 27.8 / 18.5 / 14.9 / 12.9 / 11.6 / 6.9 / 6.4 / 4.9 / 4.3 / 3.2 / 1.9 | 44.61, 27.81, 18.51, 14.79, 12.91, 11.54, 6.90, 6.39, 4.87, 4.32, 3.19, 1.89 | all 12 reproduced, same order |
+| gap 16.8, margin 1.604x | 16.80, 1.604 | reproduced |
+| 41220 leads the record as it stands at 26.1 | 26.14 | reproduced |
+| 41320 leads the last four closed quarters at 27.59 | 27.59 | reproduced |
+| 41210 reads 5 of 12 on the record as it stands | 5th of 12 | reproduced |
+| Supp. 1 (not measured / with complication) H1 7198/383, H2 6108/369, H3 6715/421, H4 1914/145 | identical, from published monthly separations less in-scope episodes, attributed by `facility` of the month | reproduced |
+| Supp. 2 (sub-acute and mental health, 10 quarters) 1443/107 ... 1295/116 | all 20 figures identical | reproduced |
+| Supp. 3 (8 groups x 2 years) G1 3563/1618 ... G8 1661/757 | all 16 figures identical, revision-aware map plus first-category fallback for the 1,026 in-scope complication episodes absent from the detail extract (41520, 41510, 41511, 41512) | reproduced |
+| "4 of the ten closed quarters are still being added to" | **5 of 10** under the block's own settled test | **not reproduced** |
+| "between 1.528 and 1.608 times" | 1.530 to 1.608 over eight variants; no variant yields 1.528 | **not reproduced (1.530)** |
 
-**Window (P1).**
-- Spec 3.3/3.4 fix "specification period to date" for the ratio and the per-separation expected. So the window is closed.
-- If the last 4, 6 or 8 quarters were used (not licensed), Orth stays first (17.3, 16.6, 16.9). The 12 figures move: General Surgery 6.9, 8.8 or 11.8, and the gap 10.4, 7.8 or 5.1. The 4-quarter window also moves Orth to 17.
-- Recommendation: does not move.
+### Forks examined and how each closes
 
-### 2. Graded figures off the rounding edge?
-No. Several are within 0.2 of an edge.
+| Fork | Answers it produces | Closure |
+|---|---|---|
+| Own-unit vs pooled age-to-ultimate factors | 41210 at 44.61 / **41220 at 34.41** (41210 drops to 4th at 15.95) | Closed by the data, not by inference: 41210's five own age-1 ratios are 1.719-1.805 against a pooled 1.149, and `cis_registered_date` is near-monotone in the factor across all 23 units. Pooling is a demonstrable error here, not a licensed alternative. |
+| Volume-weighted vs simple average; all settled quarters vs last 4 / 3 / 2; cumulated link ratios | 44.61, 44.73, 43.46, 43.60, 43.42, 43.58, 41.88, 44.61 | All name 41210; margin 1.530 to 1.608. |
+| "Per separation" = all-care-type separations (36,767) vs in-scope episodes (33,494) | 44.6 vs 49.0 (41220 27.8 vs 30.1) | Closed by text: spec 3.4 says "per separation", the spec calls the indicator denominator "episodes", and the dictionary defines `separations` as all care types, matching `planned_separations`. Ranking identical either way. Flagged as the one residual grading risk on the 12 printed values. |
+| Develop the ratio rather than the count | same | The denominator is not censored (in-scope/separations 0.900-0.917 in every quarter), so there is nothing to develop. |
+| Supp. 1 source: published separations less in-scope vs extract row counts less in-scope | 7198/6108/6715/1914 vs 7101/6161/6813/2014 | Closed by `export_manifest.csv`: the episode extract "omits uncoded episodes", the activity summary "omits nothing". |
+| Supp. 2 source: "reported" vs recomputed from the extract | 1443 vs 1526 (de-duplicated) in 2024-25 Q1 | Closed by the word "reported" plus the dictionary's "separations the unit reported in the month" and the manifest's "as published". |
+| Eligibility window readings (twelve closed quarters vs charter 4.2's three years) | same 12 | IP-01 to IP-09 fall inside every reading; 41210 wins even unfiltered. |
 
-**Avoided counts, at the pooled share 0.3809.** Distance is to the nearest .5.
-- Orth 17.68, 0.18 from 17.5.
-- General Surgery 11.66, 0.16.
-- Stonecreek Vascular 5.65, 0.15.
-- Alderbrook Respiratory 3.64, 0.14.
-- Marrowfield Surgical 2.64, 0.14.
-- Stonecreek Renal 0.63, 0.13.
-- Share-of-excess window 0.3775 to 0.3985 for all 12; the pooled share is 0.0034 above the floor.
+## Defects to repair (all in the solution blocks)
 
-**Effect of one more episode.**
-- One additional complication in any one of the seven placement quarters lowers the pooled share by 0.0065. That puts it below 0.3775. Orth becomes 17.4, Vascular 5.5 or below, Respiratory 3.5 or below, Surgical Services 2.5 or below, Renal 0.5 or below.
-- Taking the baseline "closed at decision date" gives share 0.3790 and Orth 17.59. Taking "all other quarters" gives 14.8 and breaks eight of twelve figures.
+1. **Critical Component 1 and Solution Step 3 are wrong.** "Four of the ten closed quarters are still being added to
+   ... 2025-26 Q2, Q3, Q4 and 2026-27 Q1" / "4 of the 10 have not". Under the block's own test, **five** of the ten
+   have not settled: 2026-27 Q2 has a single publication (218) and is the quarter the pull date cuts shortest. The
+   computation that produces the committed figures does develop it, and it carries **166.3 of the 311.5** uplift,
+   while 2025-26 Q2, which the block does name, carries **0.0** (its age-5 factor is 1.000). As written the block
+   names the one developed quarter that moves nothing and omits the one that moves most of the answer.
+   Per-quarter uplift: 2025-26 Q2 +0.0, Q3 +11.7, Q4 +43.2, 2026-27 Q1 +90.3, 2026-27 Q2 +166.3.
+2. **"Cycle IP-11" is ungrounded.** No shipped file contains "IP-11". `improvement_placements.csv` ends at IP-10
+   (2026-27 Q3, unit 41460, in progress) and `placement_cycle_notes.txt` heads itself "Notes on the IP-10 placement
+   cycle (quarter from 1 April 2027)" while its own body says the team "finishes at Rehabilitation and Aged Care on
+   31 March and starts wherever we land on 1 April". The input file is internally loose; since nothing graded turns
+   on the label, repair the write-up (drop the cycle identifier) rather than the file, which would void prior runs.
+3. **Inverted sentence, Final Recommendation.** 41220 "falls to 27.8" - developing raises it from 26.1 to 27.8;
+   it falls in rank, not in value. Restate.
+4. **Inverted sentence, Critical Component 2.** "A quarter of cost centre 41210's coding carries 1.763 of its
+   eventual count at its own close" - at its close a quarter carries 1/1.763, i.e. about 57 percent, of its eventual
+   count; 1.763 is the multiplier from close to ultimate. Restate.
+5. **Step 7's lower bound does not reproduce.** "between 1.528 and 1.608 times": across eight development variants
+   I measured 1.530 to 1.608. Substance holds (all variants name 41210); the stated bound should read 1.530.
 
-**Hospital-year adjusted rates** (edge distance, then one-complication sensitivity):
+## Files / Hygiene: PASS
 
-| Hospital | Rate | Distance to edge | One complication |
-|---|---|---|---|
-| Alderbrook | 109.006 | 0.044 (1.6 complications) | ±0.027 |
-| Stonecreek | 112.227 (112.224 if the pair is not collapsed) | 0.023 to 0.026 (0.5 complication, to 112.25) | one more gives 112.27, which rounds to 112.3 |
-| Marrowfield | 110.323 | 0.027 (0.49 complication, to 110.35) | one more gives 110.378, which rounds to 110.4 |
-| **Carrowdean** | 111.640 | **0.0099** (to 111.65) | ±0.477 |
+21 files; 4 formats (15 csv, 2 pdf, 1 xlsx, 1 txt). `episode_outcomes_extract.csv` is 465,881 data rows / 34 MB.
+No README, no synthetic or benchmark disclosure, no tool banner, no solver-facing language; `quality_dashboard_2026q2.xlsx`
+carries in-fiction metadata only (creator Joseph Hunter, created 2027-03-05) and has no hidden third sheet. Dates
+cohere: export 2027-03-05, coding close 28 February, committee 24 March 2027, assessment quarter from 1 April 2027.
+Realistic mess is genuine and unplanted: 1,546 duplicate episode rows against the dictionary's own separation key;
+blank `comorbidity_score` on about one episode in seven, worse in January and winter; 960Z/961Z error DRGs;
+two revisions of the national list with HAC03-HAC06 renumbered and HAC13 folded in at 2026-07-01; 41520 reporting
+under Carrowdean to June 2026 then Marrowfield, so the site a unit reports under changes mid-series; 41511/41512
+amalgamated into 41510 on 2025-09-30; the detail extract missing the Carrowdean campus; fiscal against calendar
+years in the asks; the activity summary and the extract disagreeing for 41250 (April-May 2026) and 41350
+(July-August 2026) exactly where uncoded episodes sit. No file reads as machine-authored. No public-data
+contamination (invented network, no canonical published finding). Nothing exclusion-level.
+One low-severity coherence note: `placement_cycle_notes.txt`'s header labels the April-2027 cycle IP-10, which the
+placement register assigns to 2026-27 Q3. Non-decisional.
 
-For Carrowdean, an expected total lower by 0.017 flips it to 111.7. That is the removal of one low-stratum episode (rate 0.027), or of any episode with rate above 0.017 in the H4 set. One more complication gives 112.1.
+House Gate G (no shipped artifact ranks the candidates and gets it wrong): satisfied. `quality_dashboard_2026q2.xlsx`
+is sorted alphabetically, ranks nothing, covers one closed quarter, is stamped "Quarter-end position; not a
+projection of any later quarter", and is arithmetically correct for what it is (41210 Q2 218 complications matches
+the register's first publication of that quarter exactly). It is nonetheless the sharpest honest trap in the pack,
+because at SR 0.738 it makes the recommended unit look like the best in the network.
 
-**Hospital rate definition.** Spec 3.2 defines the adjusted rate for a unit only. Pooled O/E × 96.5 follows 3.1 ("group of episodes"). The episode-weighted mean of unit rates gives 108.6, 111.8, 109.7 and 111.7 instead, and the unweighted mean gives 110.2, 112.8, 113.2 and 111.6. Pooled is the licensed reading but is inferred.
+## Stump power (Gate F)
 
-### 3. Does any shipped file rank or score the candidates on the question?
-No. Nothing prices the avoided complications and nothing ranks the units on that question.
-- quality_dashboard_2026q2.xlsx is a one-quarter position table in hospital order, with a note saying it is not a projection. It shows Marrowfield Orthopaedics at 138.0, the highest among the 12, but ranks nothing.
-- unit_indicator_series.csv carries ratios and rates by unit-quarter, with no ordering.
-- The hygiene, nursing and experience files are unit-level colour.
+Strong. Both easy routes are available and both are wrong: ranking on `unit_indicator_series.csv` as reported gives
+Alderbrook General Surgery 41220 at 26.1, and reading the dashboard's latest quarter makes 41210 (SR 0.738) look
+like the strongest unit in the network. Reaching 44.6 needs four correct moves - seeing that the close-out register
+is a development triangle rather than a restatement log, reading charter 4.3's "the complications its own patients
+had" as ultimate rather than coded-to-date, estimating age-to-ultimate factors per unit instead of pooled (the
+pooled factor gives 41220), and applying spec 3.4's per-separation basis to the planned quarter. No too-easy signal
+is present: no file documents the lag as a defect to correct, the word "develop" appears nowhere in the pack, and
+the deciding quantity is a computation, not a rule to find.
 
-Gate G (file) is clear. No quote.
+## Stumping type (Gate G)
 
-### 4. Is the counterfactual branch recoverable without unlicensed inference?
-Not by a literal reader.
+`mechanism: forecasting`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`,
+`sole_data_defect: no`.
+Every reported number is fine and stays fine: the close-out register publishes each quarter honestly as at its
+publication date, the indicator series equals the register's latest publication for every unit, the dashboard is
+correct for the one quarter it covers, and the denominators are not censored at all. The decision turns on a forward
+quantity - avoidable complications on a quarter of planned separations that has not begun - which the correctly-read
+past does not pin because the complication counts are right-censored by coding lag, exactly the "lead-time or
+censoring effect the history shows" shape. The history supplies the development pattern, and `cis_registered_date`
+supplies its mechanism. Nothing has to be caught as wrong, so this is not surface-read-rejection at any depth;
+`banned_stumping_type` does not apply. Clean-data test: on fully coded data the triangle would still be the object
+and the forward projection would still have to be made, so the task does not collapse.
 
-**Shipped text for each branch.**
-- Charter 4.3: avoided = "the complications the unit would have recorded over the assessment quarter without the embedded team, less the complications it records over that quarter with the team there".
-- 4.4: assessed on planned separations.
-- Spec 3.4: planned separations × expected-per-separation over the specification period gives the expected complications.
-- Spec 3.3: the specification-period ratio is the unit's standing.
-- 4.1: the placement is decided "on the indicator data closed at the time".
+## Three rules (Gate H)
 
-**"Without" branch.** No sentence equates it with standing × expected. That identity, with standing taken from the pre-arrival record, appears only in the write-up (step 6: "against what its unit stood at over its own closed quarters before the team arrived"). Competing counterfactuals are all compatible with 4.3:
-- expected alone (ratio 1);
-- the whole-period ratio;
-- the previous quarter;
-- the closed-at-decision record.
-The first two give different shares (above).
-
-**"With" branch.** For the future quarter it is not observable. Nothing says a placement removes a fixed share of the excess. That follows only from the pattern in the register.
-
-**Net.** A literal reader can execute the filed expected (3.4) and the filed standing (3.3). The effect model, and so the "with" branch, has to be inferred from seven quarters whose only support is the noise-free fit above. By the standing rule this is an open fork.
-
-## Other probes
-
-**P2.** The files leave several readings standing: A (mean, median, pooled, LS), B, C, D, and four baselines. Under A the ranking never moves (Orth 1st, General Surgery 2nd). Under B or C the call flips to General Surgery. The graded integers move under every baseline other than "before arrival": All other quarters moves eight of twelve; the last-4 baseline moves Orth to 16, General Surgery to 10, and so on. The files do not force one reading by text. The numbers force it only by the zero-noise fit.
-
-**P3.**
-- Hospital figures: forced by facility per unit-month (activity_summary_monthly) and spec 2.2/2.3. Two soft spots:
-  - Stonecreek episodes are 23,179 if the cross-unit pair 41350/41310 is two separations (as monthly summary reports), or 23,178 if the data dictionary's dedupe key (no unit) is applied literally. The rate is 112.2 either way.
-  - Pooled versus mean-of-unit-rates is the definitional choice noted above.
-- Sub-acute / MH by quarter: forced. activity_summary_monthly (separations, episodes_with_complication) equals the extract deduped on patient, admission, DRG exactly. Raw rows would give 1,005 / 56 and so on.
-- Group counts: forced given three things.
-  - Revision date. The manifest says the 2026 list is in force from 1 July 2026, and HAC13 ends 30 Jun 2026.
-  - Detail from hac_detail_extract for CIS units, first category from the episode table otherwise (manifest "omits" column and the register flag).
-  - Any-complication-in-group. A first-category-only count would give G1 1,618 / 814 and similar.
-  Alternatives not licensed: a 1 Jan 2026 switch gives G1 1,895 / 814, and no switch gives 2,156 / 814.
-
-**Row set (C3).** The prompt asks for "a row for each eligible unit". Charter 4.2 as written includes 41511 and 41512 (acute inpatient, 5 closed quarters, not placed). They are excluded only by inference (closed 30 Sep 2025, no planned separations). Without that inference the file has 14 rows. IP-01's unit 41360 is excluded by a boundary reading of "previous twelve closed quarters" (assessment quarter 2023-24 Q4 is the 12th back). Under a start-date reading of "three years" it would be eligible: 13 rows, avoided 7.0. Neither changes the recommendation.
-
-**Other.** Planned separations are "all care types" and the all-care-type divisor is licensed. The 5-quarter history of 41510 under clause 3.6 is fine.
-
-## Gate lines
-
-**Gate G line.**
-- mechanism: method_or_model_selection (effect pricing for a forward quarter), with a forecasting element.
-- stumping_family: analytical_non_defect; surface_read_dependency: no; sole_data_defect: no.
-- No shipped number is wrong, and deleting the dashboard and the series' wrong-looking readings leaves the pricing step standing.
-- It is not a lens swap in the banned sense. But under A the winner is decided by planned excess (standing × planned activity), and the share only scales it, so the difficulty reduces to a one-parameter calibration. The register's role is to separate A from B and C, and it does so only through zero-noise data.
-
-**Gate H line.**
-- domain: pass. Indirect standardisation against published stratum rates, and pricing an intervention from closed placements, are what a hospital quality unit estimates. Swapping in "school" and "visits" does not make the call sentence read the same.
-- layers: pass. Layer 1 is the 2022/2026 list revision, the 41511/41512 amalgamation, site realignments, sub-acute duplicates and uncoded comorbidity. Layer 2 is pricing avoidable excess on planned activity rather than total or current excess.
-- decisive_step: analytical. A strong analyst who read everything would file Alderbrook General Medicine (36 above expectation), Stonecreek Vascular (worst ratio), Alderbrook General Surgery (largest forecast complications) or pricing B or C (General Surgery).
-- Caveat: the intended regression-to-the-mean contrast ("not the quarter the placement was decided on") does not discriminate in this data. The decision quarter equals the earlier mean to ±0.01, so that route gives identical graded integers (shares 0.388 vs 0.381).
-
-## Gates in order
-- **H:** passes (domain used, two layers, analytical step) but see the caveat above.
-- **G:** passes.
-- **A:** passes. All 12 + 16 + 10 + 4 graded groups reproduce, as does the main list. Step 1 "ties row for row" holds only if the dedupe key includes unit.
-- **B:** passes. All decisive facts are shipped (manifest gives the revision date). The counterfactual identity and the effect model are not stated.
-- **C:** **FAILS.** Competing defensible pricing (B, C) flips the call, separated from A by a noise-free fit (chi-square 0.006 on 6 df) that real sampling would not produce. Several graded integers sit 0.13 to 0.18 from the edge, and the hospital rate for Carrowdean 0.01. The row set can be 12, 13 or 14.
-- **D:** the difficulty is analytical, but it depends on the A-vs-B fork.
-- **E:** the prompt does not pin the counterfactual or the eligible-row set; both rest on inference.
-- **F:** the trap that would catch strong models is "rank by Dec-quarter excess or by worst ratio". That works. The pricing step (A vs B/C) catches models for a reason the files do not settle by text.
-
-## Stump power
-The Dec-quarter position and the worst-ratio unit are plausible lures and a strong model would likely avoid them by applying 3.3/3.4. Pricing B or C is the realistic wrong turn and is statistically as good as A on the stated noise. The failure there is a semantic lottery on the counterfactual, not a clean analytical miss.
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+H1: the deciding quantity is a risk-adjusted excess-complication count - observed against expected from published
+risk-band-by-age strata, carried to ultimate for coding lag and projected onto planned activity - which is the core
+work of a health-service clinical indicator analyst, not a setting. Swap test run: substituting energy or education
+nouns breaks the task, because the risk-adjustment strata, the acute-multi-day denominator, the national
+complication list revisions and the coding close-out cycle are health-data constructs with no analogue.
+H2: Layer 1 is the network's own mess (duplicate episode rows against the stated separation key, two list revisions
+renumbering HAC03-HAC06, a unit that changes reporting site mid-series, amalgamated cost centres, a campus missing
+from the detail extract, fiscal against calendar years, uncoded episodes making the summary and the extract
+disagree). Layer 2 is the rigour that decides it: recognising right-censored quarterly counts and developing them
+to ultimate on a unit-specific pattern the data itself justifies.
+H3: analytical. The easy route a strong analyst who cleaned every file and read every rule correctly still takes is
+to rank the 12 eligible units on observed minus expected as the series reports it, which files **Alderbrook General
+Surgery, cost centre 41220, at 26.1** - or, worse, to read the quarter dashboard and conclude 41210 is the network's
+best unit. Neither is a defect to catch, a decoy, a field to read or a rule to execute; both are the analysis done
+the easy way.
 
 ## Fix
-1. Re-cut the seven placement quarters and the quarters before them with Poisson sampling noise, and size the effect and the spread of pre-ratios so that A is separated from B and C by well more than their sampling error (at least 4 or 5 degrees of discrimination at chi-square 1 per df), or file the effect model in the charter (e.g. "the team is assessed against the unit's ratio over its closed quarters before arrival; the effect scales with the unit's excess").
-2. File one sentence for the counterfactual: "without the team" = planned expected × the unit's ratio over the specification period to date, and the "with" branch's baseline window.
-3. Pin the eligible set (closed units, the twelve-quarter anchor) and the dedupe key (include or exclude unit).
-4. Move the share or the hospital denominators off their rounding edges. Carrowdean is within 0.01 of 111.65.
+
+**solution.** Regenerate Critical Component 1 and Solution Step 3 to say five of the ten closed quarters have not
+settled, naming 2026-27 Q2 and its 166.3 of the 311.5 uplift; drop "cycle IP-11" from the Final Recommendation;
+restate 41220 as rising to 27.8 rather than falling; restate Critical Component 2's factor the right way round; and
+correct Step 7's lower bound to 1.530. No input file is touched, no graded figure moves, no rerun is required.
