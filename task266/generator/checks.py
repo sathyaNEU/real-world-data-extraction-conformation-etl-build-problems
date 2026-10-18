@@ -302,6 +302,11 @@ def run(target, T):
        all(abs(a_stops["row credits once per course"][p] - a_gold[p]) >= .05 for p in progs),
        "cracker misses every Ask A figure, the linked rows found by the load check or not")
     ok(all(b_stops["meeting key"][p] != b_gold[p] for p in progs), "cracker misses every Ask B figure")
+    import cracker as CR
+    cr_rows, mi_rows = CR.score(target, CR.cracker(target)), CR.score(target, CR.mirror(target))
+    _, lc, ls, pair = CR.ceiling(cr_rows, mi_rows)
+    ok(lc == 0 and ls == 0 and pair <= 40, "cracker.py on the cut pack: cracker and mirror keep no ask figure, pair "
+       "ceiling %.1f" % pair)
     secs = A.rows_xlsx(P("schedule"), "Fall 2026 sections")
     regs = A.rows_csv(P("registrations"))
     owner = pk.owner

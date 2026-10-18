@@ -175,6 +175,7 @@ Referee: the schedule's section credit hours for both Ask A primaries, the progr
 
 Mirror leakage: 0 per cent of ask weight (the mirror stops at R1 on the call and takes the natural reads on the asks; `checks.py` asserts that the cracker's paths, with the linked rows found by the load check or not, hit no ask figure).
 Pair ceiling: 31.5 (cracker 45 on the call and instruction-following plus 3 for the chart, 0 of the asks; mirror 5 plus 7 plus 3 for the chart's form; to be rerun on the generated rubric).
+Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the cracker keeps 0 of 18 ask figures (A 0 of 9, B 0 of 9), the mirror 0 of 18.
 
 ## Build record
 
