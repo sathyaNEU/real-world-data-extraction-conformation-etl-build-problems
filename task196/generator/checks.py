@@ -865,14 +865,36 @@ def main():
        == {"KM-104": 31, "KM-112": 22, "KM-108": 15, "KM-101": 12},
        ", ".join("%s %d" % (c, G.member_index(w, c)["index"])
                  for c in ("KM-104", "KM-112", "KM-108", "KM-101")))
-    _round = [k for k, v in _ann.items() if k[1] != "2023/24" and int(v) % 10000 == 0]
-    ok("no member's annual payments sent is a round total", not _round,
-       "%d of %d member-years land on a multiple of ten thousand"
-       % (len(_round), len([k for k in _ann if k[1] != "2023/24"])))
+    # the year a return implies is the sum of the four quarters the member filed, so it carries no
+    # rounding of its own: a year lands on a hundred only where the review reads an index off it, or
+    # once in a hundred by chance, and never because the generator rounded a year and divided it
+    _rev_years = [k for k in _ann if k[1] != "2023/24"]
+    _round = sorted(k for k in _rev_years if int(_ann[k]) % 100 == 0)
+    _unpinned = [k for k in _round if k not in W.PINNED_YEARS]
+    ok("an annual payments-sent total is round only where the review reads it",
+       len(_round) <= 8 and len(_unpinned) <= 2 and set(W.PINNED_YEARS) <= set(_round),
+       "%d of %d member-years land on a multiple of a hundred, %d of them the years the review reads, "
+       "%d by chance" % (len(_round), len(_rev_years), len(_round) - len(_unpinned), len(_unpinned)))
+    _q100 = [r for r in qr_new if int(r["payments_sent"]) % 100 == 0]
     _q10 = [r for r in qr_new if int(r["payments_sent"]) % 10 == 0]
     ok("the quarterly payments-sent figures are whole payments, not a rounded multiple",
-       len(_q10) < len(qr_new) * 0.25,
-       "%d of %d quarters land on a multiple of ten" % (len(_q10), len(qr_new)))
+       len(_q10) < len(qr_new) * 0.25 and len(_q100) < len(qr_new) * 0.05,
+       "%d of %d quarters land on a multiple of a hundred, %d on a multiple of ten"
+       % (len(_q100), len(qr_new), len(_q10)))
+    ok("the review group's payments sent are the figures the deliverables print",
+       {c: _ann[(c, W.MEASURED)] for c in ("KM-104", "KM-112", "KM-108", "KM-101")}
+       == {"KM-104": 22233300, "KM-112": 6365500, "KM-108": 20002400, "KM-101": 42722700},
+       ", ".join("%s %d" % (c, _ann[(c, W.MEASURED)])
+                 for c in ("KM-104", "KM-112", "KM-108", "KM-101")))
+    _qsum = {}
+    for _r in qr_new:
+        if _r["vintage"] == "revised":
+            _qsum[(_r["member_code"], _r["scheme_year"])] = _qsum.get(
+                (_r["member_code"], _r["scheme_year"]), 0) + int(_r["payments_sent"])
+    ok("every annual total is the sum of the four quarters the member filed",
+       all(_qsum[k] == int(_ann[k]) for k in _qsum)
+       and _qsum[(code, W.MEASURED)] == G.member_index(w, code)["volume"],
+       "%d member-years tie, the call's denominator among them" % len(_qsum))
 
     print("\n-- the working calendar")
     _wk = lambda ds: 100.0 * sum(1 for x in ds if x.weekday() >= 5) / max(1, len(ds))
@@ -907,12 +929,69 @@ def main():
        % (len([r for r in q1 if r["closed_date"]]), len(q1),
           max((r["closed_date"] for r in q1 if r["closed_date"]), default=""),
           max(r["notified_date"] for r in q1)))
-    _early = [r for r in reg if r["closed_date"]
-              and dt.date.fromisoformat(r["closed_date"])
-              <= dt.date.fromisoformat(r["notified_date"])]
+    _gaps = [(dt.date.fromisoformat(r["closed_date"]) - dt.date.fromisoformat(r["notified_date"])).days
+             for r in reg if r["closed_date"]]
+    _early = [g for g in _gaps if g <= 0]
     ok("no case closes on or before the day it was notified", not _early,
-       "%d of %d closed register rows close on or before notification, gap 3 to 153 days"
-       % (len(_early), len([r for r in reg if r["closed_date"]])))
+       "%d of %d closed register rows close on or before notification, gap %d to %d days"
+       % (len(_early), len(_gaps), min(_gaps), max(_gaps)))
+
+    # the register's notified date is the day the member recorded the case, which is desk work: it
+    # carries the working week the closures and the notification feed carry, nudged inside the case's
+    # own calendar month so no month or quarter any ask or any return attributes by can move
+    _rnot = [dt.date.fromisoformat(r["notified_date"]) for r in reg]
+    _onot = [dt.datetime.strptime(r["notified_dt"], "%d/%m/%Y").date() for r in _old23]
+    ok("the register's recorded dates fall on working days",
+       _wk(_rnot) < 6.0 and _wk(_onot) < 6.0,
+       "%.2f per cent of %d in the current layout and %.2f per cent of %d in the legacy one at a "
+       "weekend" % (_wk(_rnot), len(_rnot), _wk(_onot), len(_onot)))
+    _held = [c for c in w["cases"] if c.recorded and c.member == W.LADDER_SUBJECT
+             and c.year == W.MEASURED and c.registration_date is not None
+             and c.registration_date >= c.open_date]
+    _subject = [c for c in w["cases"] if c.recorded and c.member == W.LADDER_SUBJECT
+                and c.year == W.MEASURED]
+    ok("only the rows the date-only rungs measure keep the date they were drawn on",
+       len(_held) == 167 and all(c.registration_date >= c.open_date for c in _held)
+       and _wk([c.open_date for c in _subject if c not in _held]) < 6.0,
+       "%d of %d rows held, the ladder's own member-year, %.2f per cent of the rest at a weekend"
+       % (len(_held), len(_subject), _wk([c.open_date for c in _subject if c not in _held])))
+    # the nudge moved no case out of the quarter it was recorded in, so the returns' notified counts
+    # are the counts the pre-nudge dates gave, member-year by member-year and cover by cover
+    _moved = []
+    for _c in w["cases"]:
+        if not _c.recorded or _c.open_date is None:
+            continue
+        _raw = _c.payment_date + dt.timedelta(days=_c.report_lag)
+        if W.quarter_of(_raw, _c.year) != W.quarter_of(_c.open_date, _c.year):
+            _moved.append(_c.case_ref)
+    _umoved = [u["ref"] for u in w["unauth"]
+               if W.quarter_of(u["open_raw"], u["year"]) != W.quarter_of(u["open_date"], u["year"])]
+    ok("the recorded-date nudge moves no case out of its own quarter",
+       not _moved and not _umoved,
+       "%d scam and %d unauthorised cases over %d member-years change quarter"
+       % (len(_moved), len(_umoved), len({(m["code"], y) for m in w["members"]
+                                          for y in W.SCHEME_YEARS})))
+    _tie = []
+    for _m in w["members"]:
+        for _y in ["2024/25", "2025/26", "2026/27"]:
+            for _q in (1, 2, 3, 4):
+                _said = [r for r in qr_new if r["vintage"] == "revised"
+                         and r["member_code"] == _m["code"] and r["scheme_year"] == _y
+                         and r["quarter"] == "Q%d" % _q][0]
+                _rows = [r for r in reg if r["member_code"] == _m["code"]
+                         and r["scheme_year"] == _y
+                         and W.quarter_of(dt.date.fromisoformat(r["notified_date"]), _y) == _q]
+                for _cover, _col in (("scam reimbursement", "scam_cases_notified"),
+                                     ("unauthorised fraud", "unauthorised_cases_notified")):
+                    if int(_said[_col]) != len([r for r in _rows if r["cover_class"] == _cover]):
+                        _tie.append((_m["code"], _y, _q, _cover))
+    ok("every return's notified counts tie to the register's own recorded dates", not _tie,
+       "%d cells over 36 member-years and both covers, %d untied" % (36 * 4 * 2, len(_tie)))
+    _reqs = {r["case_reference"]: r["request_sent_date"] for r in read_csv("fund_return_requests.csv")}
+    _before = [k for k, v in _reqs.items()
+               if k in _notdate and v <= _notdate[k]]
+    ok("no fund-return request is dated on or before the case was recorded", not _before,
+       "%d requests, %d dated on or before their case's recorded date" % (len(_reqs), len(_before)))
     _cl = {r["case_reference"]: r["closed_date"] for r in reg}
     _cr = [r for r in read_csv("case_payments.csv")
            if r["credit_amount_gbp"] and float(r["credit_amount_gbp"]) > 0]

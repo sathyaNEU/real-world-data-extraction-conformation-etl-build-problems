@@ -114,6 +114,21 @@ VOLUME_PATH = {
 # one and holds across the four years, so no two members report the same quarterly pattern.
 INDUSTRY_SHAPE = (0.238, 0.244, 0.263, 0.255)
 
+# A member files a quarter at a time and the year is whatever its four quarters add up to, so the
+# generator draws the quarters and sums them rather than fixing a year and dividing it. These are the
+# member-years the review reads an index off and which therefore cannot move: each review-group
+# member's measured year, which its index is a rate on, and the two earlier revised years of the
+# member whose walk the trustees read. There and only there the shape's own rounding is carried by
+# the member's largest quarter, so the four sum to the total the review quotes.
+PINNED_YEARS = {("KM-104", "2024/25"), ("KM-104", "2025/26"),
+                ("KM-104", "2026/27"), ("KM-101", "2026/27"),
+                ("KM-108", "2026/27"), ("KM-112", "2026/27")}
+
+# The member whose ladder is measured: the date-only rungs and the whole window sweep read the days
+# between a case's own recorded date and the registration of the account it paid, for this member and
+# the measured year alone (golden.window_index, golden.post_case_index).
+LADDER_SUBJECT = "KM-104"
+
 TIER_NAMES = {"A": "Tier A, over 25 million payments a year",
               "B": "Tier B, 10 to 25 million payments a year",
               "C": "Tier C, under 10 million payments a year"}
@@ -468,9 +483,51 @@ def settle_closures(cases, unauth):
         u["closed_date"] = d
 
 
-def volumes(members):
-    """Payments sent per member per scheme year, in whole payments, each member on its own growth
-    path (VOLUME_PATH)."""
+def settle_notifications(cases, unauth):
+    """Put the date the member recorded the case on the working day a handler recorded it. The register's
+    notified date is a desk action, so it carries the working week the way the closures and the
+    notification feed do. The nudge is held inside the case's own calendar month, so every month and
+    quarter the returns and the ask layer attribute by is untouched, and it is clamped to sit on or
+    after the payment, strictly before the case's own closure, and strictly before the fund-return
+    request the fraud team raised off it.
+
+    One set of rows keeps the date it was drawn on: a case of the ladder's own member and measured year
+    whose beneficiary account was registered on or after the day the case was recorded. The date-only
+    rungs and the whole window sweep read which side of a day count that difference falls on, so moving
+    those rows would move rung 1, rung 2 and the sweep, and a realism pass may not buy its realism with
+    the ladder. Every other row is free: a registration dated before the case is on the far side of the
+    rung's test however the recorded date moves inside the month, because the nudge never takes it back
+    past the payment, and no other member or year is measured.
+
+    Each nudge runs on its own RNG stream, so no amount, lag, reference or count in the build shifts."""
+    for c in cases:
+        if not c.recorded or c.open_date is None:
+            continue
+        if (c.member == LADDER_SUBJECT and c.year == MEASURED
+                and c.registration_date is not None and c.registration_date >= c.open_date):
+            continue
+        hi = PULL - dt.timedelta(days=1)
+        if c.closed_date is not None:
+            hi = min(hi, c.closed_date - dt.timedelta(days=1))
+        if c.request_date is not None:
+            hi = min(hi, c.request_date - dt.timedelta(days=1))
+        c.open_date = on_a_working_day(c.open_date, rng("notified", c.member, c.year, c.idx),
+                                       lo=c.payment_date, hi=hi)
+    for u in unauth:
+        u["open_raw"] = u["open_date"]
+        hi = min(PULL - dt.timedelta(days=1), u["closed_date"] - dt.timedelta(days=1))
+        u["open_date"] = on_a_working_day(u["open_date"],
+                                          rng("unotified", u["member"], u["year"], u["idx"]),
+                                          lo=u["payment_date"], hi=hi)
+
+
+def volume_targets(members):
+    """The level a member's book sits at in each scheme year, on its own growth path (VOLUME_PATH).
+    This is where the book is, not what the return says: the return's figure is the sum of the four
+    quarters the member filed (quarter_volumes), so nothing here is rounded to anything. A book's
+    level is not a round number of payments either, so each year sits a little either side of the
+    path, which is the measurement noise in a growth rate rather than a designed step; the six years
+    the review reads an index off sit on the path itself."""
     out = {}
     for m in members:
         path = VOLUME_PATH[m["code"]]
@@ -479,7 +536,9 @@ def volumes(members):
             if m["joined"] > year_bounds(y)[0]:
                 lo, hi = year_bounds(y)
                 v *= (hi - m["joined"]).days / (hi - lo).days
-            out[(m["code"], y)] = int(round(v / 100.0) * 100)
+            if (m["code"], y) not in PINNED_YEARS:
+                v *= 1.0 + (rng("level", m["code"], y).random() - 0.5) * 0.0004
+            out[(m["code"], y)] = v
     return out
 
 
@@ -491,24 +550,29 @@ def member_shape(code):
     return [s / tot for s in raw]
 
 
-def quarter_volumes(members, vols):
-    """The quarterly split the member returns report, on the member's own seasonal shape. The parts are
-    whole payments, not a rounded-off multiple, and the fourth quarter carries the residual so the four
-    always sum to the year the return states."""
-    out = {}
+def quarter_volumes(members, targets):
+    """The quarters the member returns report and the year they add up to. Each quarter is drawn in
+    whole payments on the member's own seasonal shape, and the annual figure is the sum of the four:
+    no year is rounded and divided, so a year carries no rounding of its own and the roundness of a
+    quarter is the roundness of a drawn whole number. The six PINNED_YEARS are the exception, because
+    the review reads an index off them: there the member's largest quarter carries the difference, at
+    most a few tens of payments, so the four still sum to the total the review quotes."""
+    qout, annual = {}, {}
     for m in members:
         shape = member_shape(m["code"])
         for y in SCHEME_YEARS:
-            tot = vols[(m["code"], y)]
+            target = targets[(m["code"], y)]
             r = rng("qv", m["code"], y)
-            parts = []
-            for i, s in enumerate(shape):
-                jitter = 1.0 + (r.random() - 0.5) * 0.04
-                parts.append(int(round(tot * s * jitter)))
-            parts[-1] = tot - sum(parts[:-1])
+            weights = [s * (1.0 + (r.random() - 0.5) * 0.04) for s in shape]
+            scale = target / sum(weights)
+            parts = [int(round(x * scale)) for x in weights]
+            if (m["code"], y) in PINNED_YEARS:
+                pin = int(round(target / 100.0) * 100)
+                parts[parts.index(max(parts))] += pin - sum(parts)
             for i, (a, b) in enumerate(_quarters(y)):
-                out[(m["code"], y, i + 1)] = parts[i]
-    return out
+                qout[(m["code"], y, i + 1)] = parts[i]
+            annual[(m["code"], y)] = sum(parts)
+    return qout, annual
 
 
 def _quarters(y):
@@ -541,12 +605,14 @@ def world():
         if m["target"] is not None:
             est = realised_estimate(cases, m["code"])
             m["volume"] = round(est / m["target"] * 1e6 / 100.0) * 100
-    vols = volumes(members)
-    qvols = quarter_volumes(members, vols)
+    targets = volume_targets(members)
+    qvols, vols = quarter_volumes(members, targets)
     unauth = pack.unauthorised_cases(members)
     # closures land on the working day the handler closed them, inside their own month, before the
-    # prior-period adjustments are keyed off the closure months
+    # prior-period adjustments are keyed off the closure months; the recorded dates follow, clamped
+    # against the closures the step above has just set
     settle_closures(cases, unauth)
+    settle_notifications(cases, unauth)
     adjustments = build_adjustments(members, unauth)
     return dict(members=members, cases=cases, volumes=vols, quarter_volumes=qvols, unauth=unauth,
                 adjustments=adjustments,

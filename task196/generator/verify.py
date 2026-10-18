@@ -740,11 +740,65 @@ def main():
     ok("Castlegate's three annual payments-sent totals are the ones the call rests on",
        [ann[(SUBJECT, y)] for y in YEARS[1:]] == [19120600, 20677000, 22233300],
        ", ".join("%d" % ann[(SUBJECT, y)] for y in YEARS[1:]))
-    ok("no member's annual payments sent is a round total",
-       not [k for k, v in ann.items() if k[1] != "2023/24" and int(v) % 10000 == 0],
-       "%d member-years, none a multiple of ten thousand"
-       % len([k for k in ann if k[1] != "2023/24"]))
+    rev_years = [k for k in ann if k[1] != "2023/24"]
+    round100 = sorted(k for k in rev_years if int(ann[k]) % 100 == 0)
+    pinned = [("KM-104", "2024/25"), ("KM-104", "2025/26"), ("KM-104", "2026/27"),
+              ("KM-101", "2026/27"), ("KM-108", "2026/27"), ("KM-112", "2026/27")]
+    ok("an annual payments-sent total is round only where the review reads it",
+       len(round100) <= 8 and len([k for k in round100 if k not in pinned]) <= 2
+       and set(pinned) <= set(round100),
+       "%d of %d member-years land on a multiple of a hundred, %d of them the six the review reads"
+       % (len(round100), len(rev_years), len([k for k in round100 if k in pinned])))
+    ok("the review group's payments sent are the figures the deliverables print",
+       all(ann[(c, "2026/27")] == v for c, v in
+           (("KM-104", 22233300), ("KM-112", 6365500), ("KM-108", 20002400), ("KM-101", 42722700))),
+       ", ".join("%s %d" % (c, ann[(c, "2026/27")])
+                 for c in ("KM-104", "KM-112", "KM-108", "KM-101")))
+    qh = [int(r["payments_sent"]) for r in qr if r["vintage"] == "revised"]
+    ok("the quarterly payments-sent figures carry no rounding of their own",
+       len([v for v in qh if v % 100 == 0]) < len(qh) * 0.05,
+       "%d of %d quarters land on a multiple of a hundred, %d on a multiple of ten"
+       % (len([v for v in qh if v % 100 == 0]), len(qh), len([v for v in qh if v % 10 == 0])))
     wk = lambda ds: 100.0 * sum(1 for x in ds if x.weekday() >= 5) / max(1, len(ds))
+    old23 = rows("case_register_2023_24.csv")
+    ok("the register's recorded dates fall on working days",
+       wk([d(r["notified_date"]) for r in reg]) < 6.0
+       and wk([dt.datetime.strptime(r["notified_dt"], "%d/%m/%Y").date() for r in old23]) < 6.0,
+       "%.2f per cent of %d in the current layout and %.2f per cent of %d in the legacy one at a "
+       "weekend" % (wk([d(r["notified_date"]) for r in reg]), len(reg),
+                    wk([dt.datetime.strptime(r["notified_dt"], "%d/%m/%Y").date() for r in old23]),
+                    len(old23)))
+    # the recorded date the register prints is the date the return counted, so the two tie cell by
+    # cell: a nudge that moved a case into another quarter would show up here as an untied cell
+    QM = {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}
+
+    def scheme_quarter(day, y):
+        a = int(y.split("/")[0])
+        if not (dt.date(a, 4, 1) <= day <= dt.date(a + 1, 3, 31)):
+            return None
+        return QM[day.month]
+
+    untied = []
+    for mc in mcodes:
+        for y in YEARS[1:]:
+            for q in (1, 2, 3, 4):
+                said = [r for r in qr if r["vintage"] == "revised" and r["member_code"] == mc
+                        and r["scheme_year"] == y and r["quarter"] == "Q%d" % q][0]
+                here = [r for r in reg if r["member_code"] == mc and r["scheme_year"] == y
+                        and scheme_quarter(d(r["notified_date"]), y) == q]
+                for cover, col in (("scam reimbursement", "scam_cases_notified"),
+                                   ("unauthorised fraud", "unauthorised_cases_notified")):
+                    if int(said[col]) != len([r for r in here if r["cover_class"] == cover]):
+                        untied.append((mc, y, q, cover))
+    ok("every return's notified counts tie to the register's own recorded dates", not untied,
+       "%d cells over 36 member-years and both covers, %d untied" % (len(mcodes) * 3 * 4 * 2,
+                                                                     len(untied)))
+    reqd = {r["case_reference"]: r["request_sent_date"]
+            for r in rows("fund_return_requests.csv")}
+    notd = {r["case_reference"]: r["notified_date"] for r in reg}
+    ok("no fund-return request is dated on or before the case was recorded",
+       not [k for k, v in reqd.items() if k in notd and v <= notd[k]],
+       "%d requests, every one after its case's recorded date" % len(reqd))
     ok("the notification feed is taken on working days and its closures fall on them",
        wk([d(r["notified_date"]) for r in q1 + supp]) < 6.0
        and wk([d(r["closed_date"]) for r in q1 + supp if r["closed_date"]]) < 6.0,

@@ -299,8 +299,9 @@ detail lines, 0 disagreeing, so the field corroborates the pinned basis instead 
 the pattern is the Layer 1 mess a monthly settlement run produces when the recoveries team closes an earlier
 quarter off. Changing them would have moved sixteen graded figures to repair a sentence. What changed instead
 is one clause of the prompt, one line of the write-up's block 4, the basis line on the golden's indemnity
-sheet, and the assertions. `target.zip` is byte-identical to the pack the judge read, md5
-58fea759d25de0f25cd583ff70449695 over 19 members, which is the scope proof.
+sheet, and the assertions. `target.zip` came out of that repair byte-identical to the pack the judge read,
+md5 58fea759d25de0f25cd583ff70449695 over 19 members, which was the scope proof at the time; the two realism
+passes that followed re-cut the data, and the current digest is in `pipeline.json`'s rebuild gate.
 
 ## Asks 5 and 6's population and count basis, enumerated
 
@@ -770,31 +771,47 @@ year-on-year steps:
 | Member | 2023/24 | 2024/25 | 2025/26 | 2026/27 | g1 | g2 | g3 |
 |---|---|---|---|---|---|---|---|
 | all twelve, before | member's own level | | | | 10.256 (10.253 to 10.258) | 8.140 (one at 8.139) | 7.527 |
-| KM-101 Brindlemere | 36,100,700 | 38,365,000 | 40,629,300 | 42,722,700 | 6.272 | 5.902 | 5.152 |
-| KM-102 Oakhanger | 27,362,800 | 26,639,200 | 26,210,400 | 27,148,400 | -2.644 | -1.610 | 3.579 |
-| KM-103 Wrenhall | 15,303,400 | 13,970,600 | 12,637,800 | 11,578,700 | -8.709 | -9.540 | -8.380 |
-| KM-104 Castlegate | 17,342,000 | 19,120,600 | 20,677,000 | 22,233,300 | 10.256 | 8.140 | 7.527 |
-| KM-106 Quayfield | 10,277,800 | 10,808,800 | 11,304,400 | 11,870,800 | 5.166 | 4.585 | 5.010 |
-| KM-108 Trentmoor | 18,102,200 | 19,242,300 | 18,682,200 | 20,002,400 | 6.298 | -2.911 | 7.067 |
-| KM-110 Vellowe | 14,723,100 | 17,312,600 | 19,174,400 | 21,806,600 | 17.588 | 10.754 | 13.728 |
-| KM-112 Saltmarch | 4,086,700 | 4,780,500 | 5,627,100 | 6,365,500 | 16.977 | 17.709 | 13.122 |
-| KM-115 Pelbury | 3,082,700 | 3,998,400 | 3,826,200 | 4,342,800 | 29.704 | -4.307 | 13.502 |
-| KM-118 Netherby | 7,736,600 | 8,504,200 | 9,403,100 | 10,039,400 | 9.922 | 10.570 | 6.767 |
-| KM-121 Thrimby | 3,003,700 | 3,846,500 | 4,743,200 | 4,855,900 | 28.059 | 23.312 | 2.376 |
-| KM-124 Garnock | 8,661,200 | 23,984,400 | 25,999,200 | 27,903,600 | 176.918 | 8.400 | 7.325 |
+| KM-101 Brindlemere | 36,099,400 | 38,361,331 | 40,636,371 | 42,722,700 | 6.266 | 5.931 | 5.134 |
+| KM-102 Oakhanger | 27,368,200 | 26,637,234 | 26,206,288 | 27,151,738 | -2.671 | -1.618 | 3.608 |
+| KM-103 Wrenhall | 15,301,900 | 13,971,675 | 12,640,246 | 11,576,951 | -8.693 | -9.529 | -8.412 |
+| KM-104 Castlegate | 17,344,600 | 19,120,600 | 20,677,000 | 22,233,300 | 10.239 | 8.140 | 7.527 |
+| KM-106 Quayfield | 10,278,400 | 10,807,955 | 11,304,309 | 11,869,451 | 5.152 | 4.592 | 4.999 |
+| KM-108 Trentmoor | 18,105,100 | 19,240,532 | 18,684,767 | 20,002,400 | 6.271 | -2.889 | 7.052 |
+| KM-110 Vellowe | 14,725,200 | 17,312,093 | 19,170,632 | 21,810,400 | 17.568 | 10.735 | 13.770 |
+| KM-112 Saltmarch | 4,086,900 | 4,780,729 | 5,626,128 | 6,365,500 | 16.977 | 17.683 | 13.142 |
+| KM-115 Pelbury | 3,082,700 | 3,999,063 | 3,826,457 | 4,342,142 | 29.726 | -4.316 | 13.477 |
+| KM-118 Netherby | 7,736,100 | 8,503,399 | 9,402,416 | 10,040,877 | 9.918 | 10.572 | 6.790 |
+| KM-121 Thrimby | 3,003,400 | 3,846,631 | 4,743,149 | 4,855,388 | 28.076 | 23.307 | 2.366 |
+| KM-124 Garnock | 8,660,400 | 23,985,159 | 25,997,697 | 27,904,042 | 176.952 | 8.391 | 7.333 |
 
 Thirty-six distinct rates over thirty-six member-years, twelve distinct at every step, twelve distinct path
-shapes, and four members giving a year back. The assertion that no annual total is a multiple of ten
-thousand runs on the three years the units sheet carries, and the 2023/24 column reconstructed from the
-thousands sheet is not round either; the table's 2023/24 figures are that reconstruction, so they can sit up
-to 100 payments off the generator's own number, which is the thousands column rounding and is the Layer 1
-item the design already names. Garnock's first step is its part-year as a joiner (17 October 2023)
-annualising. The quarterly split is now
-the member's own seasonal shape around the industry one rather than one shape for everybody, and the parts
-are whole payments rather than multiples of ten, with the fourth quarter carrying the residual so the four
-still sum to the year the return states (18 of 144 quarters land on a multiple of ten, which is what chance
-gives). The 2027/28 Q1 sheet takes the member's own first-quarter share rather than a flat 0.262 rounded to
-the ten.
+shapes, and four members giving a year back. The table's 2023/24 figures are the reconstruction from the
+thousands sheet, so they can sit up to 100 payments off the generator's own number, which is the thousands
+column rounding and is the Layer 1 item the design already names. Garnock's first step is its part-year as a
+joiner (17 October 2023) annualising.
+
+**The construction is the other way round now, and the first repair left a tell in its place.** The volumes
+repair took the round annual magnitudes out but kept the old order of work: it rounded a year to the hundred
+and split it, which moved the roundness from the magnitude into the residue, and all 36 annual totals on the
+revised sheets stayed exact multiples of a hundred while only 1 of 144 quarterly figures was. Four whole-number
+quarters summing to a hundred in all 36 cases is not something a return does. So the order is inverted:
+`world.quarter_volumes` draws the four quarters in whole payments on the member's own seasonal shape and the
+year is their sum, and `world.volume_targets` puts the member's level a few hundred payments either side of
+its growth path, because a book's level is not a round number either. Nothing rounds a year, so nothing has
+to hide the rounding in a quarter.
+
+Six member-years are the exception and they are the six the review reads an index off: each review-group
+member's 2026/27, which its index is a rate on and which the golden csv prints, and Castlegate's 2024/25 and
+2025/26, which sit beside the call's own 22,233,300 on the revised sheet. There the member's largest quarter
+carries the difference, at most a few tens of payments, so the four still sum to the total the review quotes.
+Measured on the cut pack: **7 of 36 annual totals land on a multiple of a hundred, those six and one by
+chance** (KM-110's 21,810,400), against 36 of 36 before; 1 of 144 quarters lands on a hundred and 14 on a ten,
+which is what chance gives; and 1 of the 12 rows on the 2027/28 Q1 sheet. The eleven other members' annual
+totals moved by a few hundred payments at most and no review-group index moved at all, so the room measured
+below is untouched. Asserted both ways, in `checks.py` on the clean truth and in `verify.py` on the shipped
+bytes: the round years are the pinned ones, every annual total is the sum of the four quarters the member
+filed, the call's own denominator among them, and the review group's four printed volumes are the
+deliverables' own figures.
 
 **The edge distances, verified rather than taken on trust.** The index must print the same under every own
 member form of the estimator, not only under Petersen, so the room a review-group volume has is set by the
@@ -830,11 +847,13 @@ bare date draw gives, and an out-of-hours rota keeps a thin weekend tail instead
 | the feed's closures (612) | 31.43 | 2.45 | Friday 21.6 |
 | the register's closures (18,246) | 28.66 | 2.38 | Friday 21.0 |
 | the legacy 2023/24 extract's closures (5,068) | 26.87 | 2.57 | Friday |
+| the register's recorded dates, current layout (18,280) | 28.54 | 2.87 | Friday 21.5 |
+| the register's recorded dates, legacy layout (5,068) | 28.06 | 2.86 | Friday 22.4 |
 | settlement advice dates (288) | 25.00 (the 25th, 12 dates, 72 of them at a weekend) | 0.00, 42 dates on 8 days of the month | Friday 95 of 288 |
 
 The register's closure is a leaf: the nudge is held inside the case's own calendar month, so the month and
 the quarter every ask attributes by are untouched, and it is clamped so the closure stays after the
-notification (gap 3 to 153 days, 0 rows closing on or before notification), before the pull, before the
+notification (gap 1 to 155 days, 0 rows closing on or before notification), before the pull, before the
 recovery credit it belongs to (0 of 8,654 credits valued on or before their case's closure) and on the same
 side of the pull as the unauthorised credit's own value date, so no credit row appears or disappears. Every
 nudge runs on its own RNG stream, so no amount, lag, reference or count in the build shifts: ask 4's sixteen
@@ -844,6 +863,31 @@ the 35 prior-period lines are the same 35 on the same 486,513.00, and the two gr
 2,984,362.84. The settlement run is the 25th moved back to the preceding working day when the 25th falls at a
 weekend, with a late-reconciling member settled a working day or two behind it, every advice still inside its
 own settlement month.
+
+**The register's own recorded dates, repaired on the second pass.** They were held the first time round,
+on the ground that `report_lag` dates the notification and the request date, the never-asked registrations
+and the closure are all computed from it. That reasoning covers the lag and not the printed column: the date
+the register prints is a leaf, like the closure, so `world.settle_notifications` nudges it after everything
+downstream has been derived from the raw lag, on its own RNG stream, inside the case's own calendar month and
+clamped to sit on or after the payment, strictly before the case's own closure and strictly before the
+fund-return request the fraud team raised off it. The field is the date the member recorded the case, a staff
+action, and it sat at 28.54 per cent weekend in the current layout and 28.06 in the legacy one against 1.57
+for the same field in the notification feed, which is a one-query find across two files describing one event.
+It is now 2.87 and 2.86.
+
+Three things are asserted rather than argued. The month and the quarter never move, so the returns'
+`scam_cases_notified` and `unauthorised_cases_notified` tie to the register's own recorded dates in all 288
+cells over the 36 member-years and both covers, 0 untied, and 0 cases change quarter over the 48 member-years
+the clean truth holds; ask 4's rival notified-date basis still reads 842,965.43 and SF3's open-date window
+still selects 397 cases. No request is dated on or before the case it belongs to, over all 5,852. And one set
+of rows keeps the date it was drawn on: the 167 of Castlegate's 400 measured-year cases whose own registration
+is dated on or after the recording. The date-only rungs and the whole window sweep read which side of a day
+count that difference falls on, for this member and this year alone, so holding exactly those rows leaves
+rung 1 at 26.642, rung 2 at 35.669, every one of the 121 whole-day windows and the single hitting window 42
+literally unchanged, which is the measured proof that the pass did not buy its realism with the ladder. The
+residual is recorded rather than smoothed: that cell reads 12.50 per cent at a weekend against 2.78 across
+the other 35 member-year cells, with the next-highest at 7.0, and shrinking it further would mean moving a
+registration date.
 
 **Payment dates and registration dates, looked at and held.** The same sweep was run on every other date
 column and the finding is recorded rather than repaired. Payment dates are near-flat across the week by
@@ -855,8 +899,7 @@ carry it agree. Registration dates in `mule_account_register.csv` (28.69 per cen
 match extract (28.82), and the fund-return request dates (29.84), are desk work and would be weekday-skewed
 in life; they are held, and the reason is in `## Tried and rejected`: they carry rung 1 and rung 2 and the
 whole-day window sweep, so moving them moves the ladder, which is the one thing a realism pass must not buy
-its realism with. The register's own notified dates (28.54) are held for the same reason: `report_lag`
-drives the request date, the registration dates and the closure, so a nudge there reaches the request gap.
+its realism with.
 
 **Netherby's tier, fixed.** `member_register.csv` carried Netherby at Tier C, under 10 million payments a
 year, against a 2026/27 return of 10,100,000 and a next-year notified volume of 10,504,000, with no
@@ -1079,8 +1122,8 @@ review, and that each of them sits outside this cycle.
   line's own month is the month its case closed in the register on 6,416 of 6,416 detail lines, 0 disagreeing,
   so the rows support a single forced reading and the field corroborates the pinned basis instead of
   competing with it. Changing them would have moved sixteen graded figures to repair one sentence;
-  `target.zip` is byte-identical to the pack the judge read, md5 58fea759d25de0f25cd583ff70449695 over 19
-  members.
+  `target.zip` came out of that repair byte-identical to the pack the judge read, md5
+  58fea759d25de0f25cd583ff70449695 over 19 members.
 - **A silent primary rebuilt inside the advices workbook, to replace the one the pin was feared to spend**:
   drafted and held, not built. A partial detail sheet completed from the register repeats ask B's primary
   (a silently partial extract found against a control); a withdrawn-and-reissued advice breaks clause 5.1's
@@ -1190,3 +1233,83 @@ review, and that each of them sits outside this cycle.
   June 2027" is the sentence the repair makes true rather than the sentence it rewrites. A quarterly feed cut
   on a stated day of the month rather than a working day is what an automated feed does, and the main
   extract's own content now stops where that date stops.
+- **Keeping the first volumes repair's order of work, a year rounded to the hundred and split four ways**:
+  rejected, because it is the regression this pass removes. Taking the round magnitudes out left the roundness
+  in the residue, all 36 annual totals on the revised sheets exact multiples of a hundred against 1 of 144
+  quarters, which is not something four whole-number quarters do. The quarters are drawn and the year is their
+  sum instead, and the member's level sits a few hundred payments either side of its path.
+- **Drawing the four quarters free of any level, so a year is purely their sum**: rejected on the measurement.
+  The per-quarter jitter is independent, so the imbalance moves a year by up to 2 per cent, which rewrites the
+  growth paths the first repair designed and can turn a member's year back into a year forward. Normalising the
+  shape and leaving the whole-payment rounding where it falls gives the same irregular year to the payment and
+  moves the eleven other members by a few hundred payments at most.
+- **Taking the roundness out of the eight non-review members' base volume instead**: rejected. The base volume
+  drives the unauthorised case counts behind ask 4 and the Q1 notification counts behind ask 5, and both are
+  graded, so a nudge of a tenth of a per cent there can tip a rounding and move a committed figure. The level
+  jitter sits on the year, which nothing graded reads outside the six pinned member-years.
+- **Letting the other three review-group members' annual totals move, as their index room allows**: rejected,
+  so the roundness lands at 6 of 36 and not at 3. `golden/incidence_index_2027_28.csv` prints
+  `payments_sent_2026_27` for all four review-group members, so Saltmarch's 6,365,500, Trentmoor's 20,002,400
+  and Brindlemere's 42,722,700 are deliverable figures and not just denominators; the room measured on the
+  estimator family is real but unspendable while the golden csv is frozen.
+- **Nudging the register's recorded dates with no hold at all, which is the repair as asked for**: rejected on
+  the measurement, and the hold is what the measurement bought. Applied to every row it holds rung 1 at 26.642,
+  rung 2 at 35.669 and the golden at 30.939990 exactly, but it widens the date-only family's hit set from the
+  single window 42 to 41, 42 and 43 and moves two named windows' printed integers (7 from 27 to 26, 21 from 30
+  to 29), which fails "at most one unnamed window reaches the golden integer" in both `checks.py` and
+  `verify.py` and hands a six-week date parameter a three-day target. A smaller span does not buy it either:
+  at plus or minus two days the weekend share lands at 2.86 per cent and the hit set is still 41 and 42.
+- **Holding the whole at-risk class rather than one member-year, to keep the weekday profile uniform**:
+  rejected on the arithmetic. Every recorded case whose registration follows it is 3,061 of the register's
+  21,293 rows and holding them leaves the file at 5.8 per cent weekend against the feed's 1.57, with the two
+  covers split (scam 12.3, unauthorised 2.0) because an unauthorised case has no registration to hold it. That
+  is a one-query find on a column the file carries, which is a worse trade than one member-year cell at 12.50
+  against 2.78 that needs a two-way cut to see.
+- **Nudging the registration date by the same number of days as the recorded date, to free the 167 held rows**:
+  rejected because it moves the call. A clearing-bank registration sits one or two days behind the request that
+  produced it, so a two-day nudge puts it in front of the request, `self_produced` stops recognising it and the
+  row becomes an independent sighting: the overlap the estimate divides by changes and the index moves.
+- **Drawing `report_lag` onto a working day and letting the request, the registrations and the closure
+  re-derive from it**: rejected, and it is the one construction that would have freed every row. It preserves
+  every lag and the 22-day request gap by construction, because the offsets are drawn after the nudge, but it
+  moves `request_sent_date` and `registered_date` and so rewrites `fund_return_requests.csv`,
+  `mule_account_register.csv` and `member_payment_matches.csv`, the three files the ladder reads and the judge's
+  approve was given on. A cosmetic pass does not spend those.
+
+## Pre-ship check
+
+Run by the orchestrator on the shipped bytes, not taken from a builder's report.
+
+| Gate | Command | Result |
+|---|---|---|
+| rebuild determinism | `python3 generator/build.py` then `diff -rq` against a pre-build snapshot | target/, golden/, figures.json and metadata.json all identical |
+| generator checks | `python3 generator/checks.py` | exit 0, 176 checks, 176 PASS |
+| independent verify | `python3 generator/verify.py` | exit 0, 148 checks, 148 PASS |
+| ask ceiling | `python3 generator/ceiling.py --forcing` | exit 0, 55 of 55 graded ask figures print differently under the natural read |
+| typed figures | `figures_check.py task196` | exit 0, 102 figures in blocks 1 to 4, 0 absent |
+| design gate | `precut.py task196` | exit 0, 51 checks, 0 FAIL, 0 WARN |
+| prompt gate | `voice-check.py task196` | exit 0 |
+| leak sweep | `leak.py task196 --asof 2027-07-02` | REVIEW, 0 LEAK, sweep 11 clean |
+| surface screen | `guard.py surface task196` | exit 0 |
+| duplicate screen | `guard.py heart task196` | WARN, 0 BLOCK, nearest 0.06 (task182 v3, lineage) |
+| card | `guard.py validate` | 248 cards, 0 invalid; spine rows corrected to the shipped 18,280 |
+| input gates | counted on `target/` | 19 files, 4 formats (csv, xlsx, pdf, txt), largest file 33,852 rows, 3 distractors named in `metadata.json`, sources recorded |
+| bundle | `unzip` and `diff -rq` against `target/` | `target.zip` matches the final rebuild, md5 9c54b4408d232a27106c089a92967098 |
+
+**The 10/10 rules re-read against the built pack.** The decisive step is still analytical: the two-source
+estimate's second channel is largely produced by the member's own fund-return requests, so the channels are
+not independent, and no field, code, unit or definition is misread on the easy route. The mess is still
+Layer 1 only (two register layouts, a preliminary and a revised return, calendar against scheme years,
+weekday recording patterns), and none of it carries the call.
+
+**The judge's APPROVE carries across both realism passes.** It was given on the pack at target.zip
+b857fbef; two realism passes have since moved five of nineteen data files. `generator/figures.json`,
+both goldens, `metadata.json`, `submission.md` and `prompt.txt` are byte-identical to the judged state,
+no document and no prompt sentence changed, and the ladder recomputes from the shipped bytes at the same
+three rungs (25.200, 26.642, 35.669) with the same golden (30.939990), so nothing a gate turned on moved.
+
+**One accepted deviation, recorded rather than suppressed.** `freeze.py check` exits 1 in both modes on a
+pre-existing item: the snapshot predates the authorised asks 5 and 6 repair, so the Final Recommendation's
+number set has since gained 157, 270 and a second 400 from the estimator form that repair put beside the
+count, and ten `count_band` keys moved with the band widening. Neither realism pass added anything to that
+output. The snapshot was deliberately not retaken, so the next repair measures against the judged state.

@@ -1,132 +1,132 @@
 {
- "task": "task196",
- "architecture": "v2",
- "drawn": "2026-10-17",
- "slot_note": "wave 4, first number. Assigned ground actuarial-science-insurance carries no task type serving anomaly-detection (its six serve forecasting, opportunity-sizing and descriptive work), so guard.py blocks it as three_rules.task_type on a new draw; the nearest serving task type is banking-credit-financial-risk/fraud-aml-detection, never drawn, pairing never built. Architecture v1 was redrawn at stage 1 on a rule 1 finding before any file was cut.",
- "domain": "banking-credit-financial-risk",
- "subdomain": "fraud-aml-detection",
- "client_domain": "banking-credit-financial-risk",
- "niche": "sizing the scam cases a payment firm's own detection never sees, from its payments' matches against the scheme's reported mule accounts",
- "objective": "anomaly-detection",
- "shape": "03",
- "decision_type": "quantity_figure",
- "answer_unit": "rate_or_share",
- "answer": "31 scam cases per million payments sent (688 indexed cases on 22,233,300 payments, against the 400 Castlegate's own register holds)",
- "answer_source": "generator/figures.json, call.index_per_million; recomputed from the bundle alone in generator/verify.py",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G3",
-  "G17"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "planning_thread",
- "stakeholder_role": "the mutual's underwriting and pricing lead",
- "role_family": "portfolio_manager",
- "scoring_unit": "per settled transaction",
- "spine": {
-  "file": "case_register_2024_27.csv",
-  "rows": 18283,
-  "entity": "one row is one case a member firm recorded, scam reimbursement or unauthorised fraud",
-  "grain": "member x scheme year x case",
-  "source": "synthetic"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "vote_or_meeting",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United Kingdom",
-  "currency": "GBP",
-  "org_type": "mutual indemnity association owned by its member payment firms",
-  "invented_names": [
-   "Kelverstone Mutual",
-   "Castlegate Payments",
-   "Brindlemere Remit",
-   "Saltmarch Pay",
-   "Trentmoor Money",
-   "Pelbury Exchange",
-   "Oakhanger Transfer",
-   "Netherby Pay",
-   "Quayfield Remit",
-   "Thrimby Money",
-   "Vellowe Pay",
-   "Garnock Exchange"
+  "task": "task196",
+  "architecture": "v2",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 4, first number. Assigned ground actuarial-science-insurance carries no task type serving anomaly-detection (its six serve forecasting, opportunity-sizing and descriptive work), so guard.py blocks it as three_rules.task_type on a new draw; the nearest serving task type is banking-credit-financial-risk/fraud-aml-detection, never drawn, pairing never built. Architecture v1 was redrawn at stage 1 on a rule 1 finding before any file was cut.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "sizing the scam cases a payment firm's own detection never sees, from its payments' matches against the scheme's reported mule accounts",
+  "objective": "anomaly-detection",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "rate_or_share",
+  "answer": "31 scam cases per million payments sent (688 indexed cases on 22,233,300 payments, against the 400 Castlegate's own register holds)",
+  "answer_source": "generator/figures.json, call.index_per_million; recomputed from the bundle alone in generator/verify.py",
+  "gap": [
+    "population",
+    "time"
   ],
-  "people": [
-   "Lydia Page",
-   "Caleb Ramsey",
-   "Debra Dawson"
-  ]
- },
- "deliverables": [
-  "member_incidence_review.xlsx",
-  "incidence_index_2027_28.csv"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive quantity is how many events of a kind the record only partly captures actually happened, recovered from the overlap of two capture channels, and the second channel is largely produced by the unit's own follow-up on what the first channel already caught, so the natural two-source estimate inflates the overlap and understates what neither channel saw; only the part of the second channel the unit's own action cannot have caused, identified through the unit's own request log, recovers the total.",
- "driver_concrete": "Castlegate's true scam case count is recovered by matching its payments against the scheme's register of reported mule accounts, but most of those registrations exist because Castlegate itself asked the receiving firm to recall the funds after it had already opened the case, so the overlap between its case register and the mule register is self-produced, and only registrations that no recall request of its own preceded are an independent capture of the scams its systems missed.",
- "stump": "The solver files 25 cases per million payments for Castlegate because it treats every one of the 395 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of the case, when 125 of the 282 matches that are also its own cases exist only because Castlegate asked the receiving firm to return the money after opening the case, so the overlap it divides by is partly its own work and what neither channel saw comes out at about a quarter of its true size, 47.3 cases against 174.9 on the same observed union of 513.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst reads the standard, matches every Castlegate payment to the mule register, counts 400 cases in the register, 395 matched payments and 282 of them in both, runs the two-source estimate and files 25 cases per million payments, which is wrong because 125 of those 282 registrations were raised by receiving firms only after Castlegate's own fund-return request, so the two sightings are not independent.",
- "domain_test": "The deciding quantity is the detection coverage of a payment firm's own fraud controls and the case count it implies, estimated the way fraud analytics sizes undetected loss, by capture-recapture against the counterparty side's own mule-account reporting with the independence of the two captures tested against the firm's own recall activity; swap scam reimbursements for workplace injury claims or crop hail and there is no counterparty institution holding a second record of the same loss event, no central register of the accounts that received it and no recall request of the firm's own to contaminate that register, so the quantity that decides the call cannot be formed at all.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:contaminated-second-capture",
- "layer1": [
-  "the case register changes layout at the 2024/25 scheme year and holds its old amounts in pence",
-  "payment volumes filed in thousands on the pre-2024/25 return sheet and in units after it",
-  "the scheme year to 31 March against the indemnity year to 30 September and a calendar-year national series",
-  "mule account references zero padded in the scheme register and unpadded in the mutual's match extract",
-  "Garnock Exchange joins part way through the 2023/24 scheme year",
-  "a preliminary and a revised vintage of the 2026/27 quarterly return",
-  "the trustees' membership table inside a PDF",
-  "recoveries posted as later credit rows against the original case, at the date the money arrived"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task194": "Both cards carry G12, which is why the surface screen promotes the pair, but the two insights are opposite kinds of gap: task194's is a coding lag, where the events have happened and the record will code them later, so the shortfall is measured by developing the series' own two vintages and every event eventually appears in the record; task196's events never enter any record at all, are recovered from the overlap of two capture channels, and the decisive step is that most of that overlap exists only because the firm's own recall request produced the second channel's rows, so no later vintage or further coding would ever reveal them.",
-  "task126": "task126 splits one entity's chained work records, where a succession link records a work file being carried rather than a unit continuing; task196's record-versus-operation sits between two institutions' detection channels and the graded quantity is the count of events neither channel recorded, not the identity of the records held.",
-  "task138": "task138 rebuilds each unit's opening store for a forward replay and identifies a design share off monitored readings; task196 estimates how many events went unrecorded from two capture channels whose overlap one channel's own recall action produced.",
-  "task82": "task82 re-attributes records a second ledger already holds to the right holder across a transaction reference; task196 adds and re-attributes no record, it sizes events no file holds from the part of a second channel the unit's own action cannot have caused.",
-  "task450": "task450's v1 turns on a visit schedule sampling event durations differently by whether the event self-terminates; task196's two channels record the same event at a point in time and the decisive step is that one channel's sightings are produced by the other channel's follow-up.",
-  "task469": "task469 reads a share off the subset whose own shorter allowance already exposed it, a censoring-by-allowance structure; task196 censors nothing, both channels cover the whole window, and the error is a self-produced overlap between them.",
-  "task133": "task133 counts the months a taken-over record never watched and nets a competing exit out of an age curve; task196 watches the whole window in both channels and turns on one channel's rows being produced by the other channel's recall request.",
-  "task255": "task255 fits the tail of a size distribution under per-item truncation and a moving ceiling; task196 fits nothing and estimates a count of events no file holds from two channels' overlap.",
-  "task456": "task456 combines three records that are independent by construction and err in both directions, with the decisive step in their sensitivity and specificity; task196's two channels only ever miss, and the decisive step is that they are not independent because the first channel's follow-up creates the second channel's rows.",
-  "task462": "task462 scales each detection up by a detection probability that rises with the source's size and is identified off the survey design; task196 estimates coverage from the overlap of two channels and the decisive step is that most of that overlap is self-produced."
- },
- "lineage": [
-  {
-   "architecture": "v1 (experience rating: frequency repeats, severity does not)",
-   "fate": "redrawn at stage 1 on 2026-10-17 before any file was cut: the deciding quantity was an insurance pure premium with component-wise credibility, which is actuarial science's own instrument and not fraud and AML detection's, so the client's swap test passed with workplace injury claims or crop hail in place of scam reimbursements and the domain read as a backdrop (10/10 rule 1).",
-   "gap": [
-    "time",
-    "rule"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G17",
-    "G13",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "quantity_figure",
-   "driver": "The decisive quantity is a per-exposure rate that is the product of two factors measured on the same records, and the book's own panel shows only one of the two repeats for a unit from one period to the next, so carrying the latest period's rate forward, averaging it over the unit's history or shrinking it toward the book all miss a unit whose repeating factor stepped up in the very period its non-repeating factor drew low."
-  }
- ],
- "notes": "Strategy other, named here because no vocab key is honest and causal_design was taken by task197 five minutes before this card filed: capture interference. Two detection channels sight the same scam case, and the second channel's records are largely produced by the first channel's own follow-up action, so the overlap between them is self-produced and the two-source estimate of what neither saw is biased down. The governing standard files the estimand (cases suffered by a member's customers whether or not its systems recorded them, per million payments, scheme year) and the evidence base; it names no estimator, no channel pairing and no independence test. Generators: G12 first, absence of record versus record of absence, because the decisive move turns on what the presence of a row in the second channel means, an independent sighting of the case or the member's own recall request coming back, and the graded quantity is the count of cases no file holds; G3, record versus operation, is why the second channel's rows exist, and G17 is the estimator assumption that fails. G3 first would have repeated task469's (population, G3, method_or_model_selection) inside the batch and G17 is banned against task191, neither of which differentiation clears. Context artifact is the trustees' meeting pack (agenda, minutes reference and the membership position at 31 March 2027, issued by the secretariat on 2 July 2027, proposing no index): keyed planning_thread, which is what the artifact is, rather than register, which described only the membership table printed inside it. The pack's registers (mule_account_register.csv is the second capture channel the call reads, member_register.csv is a lookup) are not context artifacts. Determinism judge returned NOT_DETERMINISTIC on eight findings; the author held the architecture because every finding closed in the data rather than by filing the estimator or the attribution. The repair widened the overlap 120 to 157, assigned the independent capture at the same rate inside every subset of the member's own cases (so all eight licensed forms print 31), imposed a 22-day gap between an independent registration and any request that follows it, made the pre-payment share equal on both sides of the overlap so dropping those rows is the same call, and aligned the prompt, the standard and the trustees' pack on the evidence date. Re-judge returned NOT_DETERMINISTIC on a narrow verdict (Gates F, G and H all passing, F strong, the 31 forced across all 24 estimator and independence-rule combinations); the author set the stop rule aside once because he accepted every finding rather than overruling the judge. The repair made every settlement advice tie to the sum of its own detail lines, restated the walk in index units where all eight licensed forms give 18, 13 and 31, took the review group's volumes from the realised estimate so every index is mid-bin, and deleted the feed-note sentence the second leak read quoted as a hint. The next judge pass is the last.",
- "registered": "2026-10-17T23:00:35Z"
+  ],
+  "generators": [
+    "G12",
+    "G3",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "the mutual's underwriting and pricing lead",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "case_register_2024_27.csv",
+    "rows": 18280,
+    "entity": "one row is one case a member firm recorded, scam reimbursement or unauthorised fraud",
+    "grain": "member x scheme year x case",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "mutual indemnity association owned by its member payment firms",
+    "invented_names": [
+      "Kelverstone Mutual",
+      "Castlegate Payments",
+      "Brindlemere Remit",
+      "Saltmarch Pay",
+      "Trentmoor Money",
+      "Pelbury Exchange",
+      "Oakhanger Transfer",
+      "Netherby Pay",
+      "Quayfield Remit",
+      "Thrimby Money",
+      "Vellowe Pay",
+      "Garnock Exchange"
+    ],
+    "people": [
+      "Lydia Page",
+      "Caleb Ramsey",
+      "Debra Dawson"
+    ]
+  },
+  "deliverables": [
+    "member_incidence_review.xlsx",
+    "incidence_index_2027_28.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how many events of a kind the record only partly captures actually happened, recovered from the overlap of two capture channels, and the second channel is largely produced by the unit's own follow-up on what the first channel already caught, so the natural two-source estimate inflates the overlap and understates what neither channel saw; only the part of the second channel the unit's own action cannot have caused, identified through the unit's own request log, recovers the total.",
+  "driver_concrete": "Castlegate's true scam case count is recovered by matching its payments against the scheme's register of reported mule accounts, but most of those registrations exist because Castlegate itself asked the receiving firm to recall the funds after it had already opened the case, so the overlap between its case register and the mule register is self-produced, and only registrations that no recall request of its own preceded are an independent capture of the scams its systems missed.",
+  "stump": "The solver files 25 cases per million payments for Castlegate because it treats every one of the 395 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of the case, when 125 of the 282 matches that are also its own cases exist only because Castlegate asked the receiving firm to return the money after opening the case, so the overlap it divides by is partly its own work and what neither channel saw comes out at about a quarter of its true size, 47.3 cases against 174.9 on the same observed union of 513.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst reads the standard, matches every Castlegate payment to the mule register, counts 400 cases in the register, 395 matched payments and 282 of them in both, runs the two-source estimate and files 25 cases per million payments, which is wrong because 125 of those 282 registrations were raised by receiving firms only after Castlegate's own fund-return request, so the two sightings are not independent.",
+  "domain_test": "The deciding quantity is the detection coverage of a payment firm's own fraud controls and the case count it implies, estimated the way fraud analytics sizes undetected loss, by capture-recapture against the counterparty side's own mule-account reporting with the independence of the two captures tested against the firm's own recall activity; swap scam reimbursements for workplace injury claims or crop hail and there is no counterparty institution holding a second record of the same loss event, no central register of the accounts that received it and no recall request of the firm's own to contaminate that register, so the quantity that decides the call cannot be formed at all.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:contaminated-second-capture",
+  "layer1": [
+    "the case register changes layout at the 2024/25 scheme year and holds its old amounts in pence",
+    "payment volumes filed in thousands on the pre-2024/25 return sheet and in units after it",
+    "the scheme year to 31 March against the indemnity year to 30 September and a calendar-year national series",
+    "mule account references zero padded in the scheme register and unpadded in the mutual's match extract",
+    "Garnock Exchange joins part way through the 2023/24 scheme year",
+    "a preliminary and a revised vintage of the 2026/27 quarterly return",
+    "the trustees' membership table inside a PDF",
+    "recoveries posted as later credit rows against the original case, at the date the money arrived"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task194": "Both cards carry G12, which is why the surface screen promotes the pair, but the two insights are opposite kinds of gap: task194's is a coding lag, where the events have happened and the record will code them later, so the shortfall is measured by developing the series' own two vintages and every event eventually appears in the record; task196's events never enter any record at all, are recovered from the overlap of two capture channels, and the decisive step is that most of that overlap exists only because the firm's own recall request produced the second channel's rows, so no later vintage or further coding would ever reveal them.",
+    "task126": "task126 splits one entity's chained work records, where a succession link records a work file being carried rather than a unit continuing; task196's record-versus-operation sits between two institutions' detection channels and the graded quantity is the count of events neither channel recorded, not the identity of the records held.",
+    "task138": "task138 rebuilds each unit's opening store for a forward replay and identifies a design share off monitored readings; task196 estimates how many events went unrecorded from two capture channels whose overlap one channel's own recall action produced.",
+    "task82": "task82 re-attributes records a second ledger already holds to the right holder across a transaction reference; task196 adds and re-attributes no record, it sizes events no file holds from the part of a second channel the unit's own action cannot have caused.",
+    "task450": "task450's v1 turns on a visit schedule sampling event durations differently by whether the event self-terminates; task196's two channels record the same event at a point in time and the decisive step is that one channel's sightings are produced by the other channel's follow-up.",
+    "task469": "task469 reads a share off the subset whose own shorter allowance already exposed it, a censoring-by-allowance structure; task196 censors nothing, both channels cover the whole window, and the error is a self-produced overlap between them.",
+    "task133": "task133 counts the months a taken-over record never watched and nets a competing exit out of an age curve; task196 watches the whole window in both channels and turns on one channel's rows being produced by the other channel's recall request.",
+    "task255": "task255 fits the tail of a size distribution under per-item truncation and a moving ceiling; task196 fits nothing and estimates a count of events no file holds from two channels' overlap.",
+    "task456": "task456 combines three records that are independent by construction and err in both directions, with the decisive step in their sensitivity and specificity; task196's two channels only ever miss, and the decisive step is that they are not independent because the first channel's follow-up creates the second channel's rows.",
+    "task462": "task462 scales each detection up by a detection probability that rises with the source's size and is identified off the survey design; task196 estimates coverage from the overlap of two channels and the decisive step is that most of that overlap is self-produced."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (experience rating: frequency repeats, severity does not)",
+      "fate": "redrawn at stage 1 on 2026-10-17 before any file was cut: the deciding quantity was an insurance pure premium with component-wise credibility, which is actuarial science's own instrument and not fraud and AML detection's, so the client's swap test passed with workplace injury claims or crop hail in place of scam reimbursements and the domain read as a backdrop (10/10 rule 1).",
+      "gap": [
+        "time",
+        "rule"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is a per-exposure rate that is the product of two factors measured on the same records, and the book's own panel shows only one of the two repeats for a unit from one period to the next, so carrying the latest period's rate forward, averaging it over the unit's history or shrinking it toward the book all miss a unit whose repeating factor stepped up in the very period its non-repeating factor drew low."
+    }
+  ],
+  "notes": "Strategy other, named here because no vocab key is honest and causal_design was taken by task197 five minutes before this card filed: capture interference. Two detection channels sight the same scam case, and the second channel's records are largely produced by the first channel's own follow-up action, so the overlap between them is self-produced and the two-source estimate of what neither saw is biased down. The governing standard files the estimand (cases suffered by a member's customers whether or not its systems recorded them, per million payments, scheme year) and the evidence base; it names no estimator, no channel pairing and no independence test. Generators: G12 first, absence of record versus record of absence, because the decisive move turns on what the presence of a row in the second channel means, an independent sighting of the case or the member's own recall request coming back, and the graded quantity is the count of cases no file holds; G3, record versus operation, is why the second channel's rows exist, and G17 is the estimator assumption that fails. G3 first would have repeated task469's (population, G3, method_or_model_selection) inside the batch and G17 is banned against task191, neither of which differentiation clears. Context artifact is the trustees' meeting pack (agenda, minutes reference and the membership position at 31 March 2027, issued by the secretariat on 2 July 2027, proposing no index): keyed planning_thread, which is what the artifact is, rather than register, which described only the membership table printed inside it. The pack's registers (mule_account_register.csv is the second capture channel the call reads, member_register.csv is a lookup) are not context artifacts. Determinism judge returned NOT_DETERMINISTIC on eight findings; the author held the architecture because every finding closed in the data rather than by filing the estimator or the attribution. The repair widened the overlap 120 to 157, assigned the independent capture at the same rate inside every subset of the member's own cases (so all eight licensed forms print 31), imposed a 22-day gap between an independent registration and any request that follows it, made the pre-payment share equal on both sides of the overlap so dropping those rows is the same call, and aligned the prompt, the standard and the trustees' pack on the evidence date. Re-judge returned NOT_DETERMINISTIC on a narrow verdict (Gates F, G and H all passing, F strong, the 31 forced across all 24 estimator and independence-rule combinations); the author set the stop rule aside once because he accepted every finding rather than overruling the judge. The repair made every settlement advice tie to the sum of its own detail lines, restated the walk in index units where all eight licensed forms give 18, 13 and 31, took the review group's volumes from the realised estimate so every index is mid-bin, and deleted the feed-note sentence the second leak read quoted as a hint. The next judge pass is the last.",
+  "registered": "2026-10-17T23:00:35Z"
 }
