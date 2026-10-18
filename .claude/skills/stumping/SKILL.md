@@ -260,6 +260,31 @@ persistent differential made the additive control a solver reaches for the right
 tell reached the golden, while a non-persistent one left the within-period estimator too noisy to rank, and
 no setting satisfied both.
 
+**A decisive step that moves a variance cannot carry a ranking**, because the variance that reorders the
+candidates is the variance that randomises the quantity they are ranked on: the lever and the noise are one
+number, so the dial fails at both ends and the two ends are the same end. Compute the lever's size in the
+ranked quantity's denominator and that same quantity's contribution to the numerator's spread, and if they
+are one variance the step cannot rank. task198's architecture 2 ranked units on a change over its spread,
+where the spread is `sigma_b sqrt(HHI_cur + HHI_cmp)`: the two-interviewer unit at a workload concentration
+of 0.642 carries 1.13 `sigma_b` against the fourteen-interviewer unit's 0.38, a ratio of three whatever
+`sigma_b` is, which is exactly what flips the ranking, and that same spread is the random swing in the
+measured change (intended rises of 0.4 to 5.5 points against realised changes of +17.1 to -17.2, the golden
+named in 2 of 14 seeds). Large enough to flip is large enough to randomise, and shrinking `sigma_b`
+stabilises the numerator and removes the lever in one stroke, so no feasible pack closes it. This is not a
+Gate C finding: on any one cut pack the analysis gives one answer and the estimator family is closed. It is
+a failure to be buildable to specification, because the rungs, the margins and the loud and golden roles
+would all be hostage to the seed. **Judge-against-noise mechanisms stay sound where the answer is a verdict
+on one named candidate, or a flag against a stated threshold on a given pack; they cannot decide which of N
+is largest.** Reaching the verdict shape is also the repair: task198's architecture 3 keeps the same world,
+pack and variance component and moves the decision from a pick of one region to a characterisation of one
+named region's move, which puts the whole lever on a threshold the pack is cut against.
+
+**The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
+(a knob fails at once, only a method survives); price the move available against the move needed; price the
+standard error of whatever the step must estimate; and check whether the lever and the ranked quantity's
+noise are the same variance. Each is one computation on the clean truth and each has killed a family that
+paragraphs of argument had left open.
+
 **Price the move against the ceiling before screening a candidate at all.** Compute two numbers: the points
 the call has to move for the candidate to decide anything, and the largest move the affected population
 could produce if every one of its records flipped. task198's cutover family needed 8.79 points and could
