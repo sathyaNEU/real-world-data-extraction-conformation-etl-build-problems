@@ -25,8 +25,8 @@
   "realism": "golden-realism pass run on both goldens after the figures froze; container audit clean on target/ and golden/"
  },
  "leak": {
-  "leak_py": "REVIEW (exit 1), sweep 11 clean, sweeps 1, 2, 5, 6, 7, 8, 9 clean; 4 REVIEW lines each answered in the design note",
-  "reader": "stage 4, the orchestrator's"
+  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
+  "reader": "LANDED THE CALL at about 75 per cent confidence on 2026-10-18"
  },
  "duplicate_check": {
   "heart": "WARN against the architecture-6 card (BLOCK against the stale registered card is that card matching its own architecture-4 driver at 1.00)",
@@ -42,7 +42,7 @@
   "architecture_6": "built to stage 3 complete; stage 4 not run (the orchestrator's)"
  },
  "returned": [],
- "resume": "Stage 3 is complete and every free gate is green. The orchestrator owns stage 4 and 5. TWO THINGS THIS BUILDER COULD NOT DO, both barred by the wave contract. (1) The card is not registered: the architecture-6 card sits at scratchpad/wave5/task190/task190_card.json and the card in the repo is still architecture 4's epidemiological draw. That stale card is the only reason precut.py exits 1 (its task-type check reads the card's domain) and the only reason guard.py heart returns BLOCK (it compares architecture 4's driver against itself at 1.00); both are green against the architecture-6 card, shown by running precut with CARDS pointed at the scratch copy and guard with FINGERPRINT_CARDS set. Register the card, then re-run precut.py, guard.py heart and guard.py surface, and re-probe ban.role before relying on any axis: capacity_planner blocked, appeared to lapse, and blocked again the moment this card went live in the window. (2) No git. Nothing is committed. ALSO NOT RUN: target.zip is not cut, because the contract puts shipping at stage 5.",
+ "resume": "Stage 4, and the reader is the finding. It answered question 1 with the capacity note's bar and said it fixes the test but not how the interval is built (no method leak), question 2 none, question 5 with a sentence whose literal execution is the golden 56.6 per cent. Then it worked the prompt and named metal and metal-bearing wastes at about 75 per cent confidence, reaching rung 4 directly: stratified weighted totals, variance with (1-f) and the within-stratum s, the register numerator held fixed. So rungs 1 to 3 were all skipped and Gate F does not hold: computing a design-based variance is the opponent's reflex for a survey quantity, and the pack must carry the frame and the strata because the estimand needs them. The reader named its own residual as the E2 stratum's nonresponse (206 eligible, 195 usable), which is the hardening route: if the correct nonresponse reweighting inside the stratum moves the estimate and its variance enough to change which stream is established, the decisive step sits one level below the reader's route. Realism findings to fix in the same pass: receipt is always exactly one day after despatch and confirmation two to three days after, every tonnage is an integer, facility and carrier names run sequentially (Unidade 1 de Norte, Transportes 1), and the capacity note reads as a spec rather than a memo. Also open: guard.py heart BLOCKs ban.org_family (research_or_statistics_office) against task244, which is the honest key for a statutory statistics institute, so it is an author decision rather than a repair.",
  "approved": null,
  "delivered": null,
  "portal": null,
