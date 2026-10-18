@@ -1860,3 +1860,136 @@ class; both were named and neither was screened, and the second carries a tolera
   (architecture 8, M3, measured 2026-10-18, nothing cut). The reflex adjustment on recorded durations lands
   the truth inside 4 per cent (0.740 against 0.773) and the identifying instrument's standard error is 1.3
   times its own point estimate with a 90 per cent interval covering zero.
+
+### Architecture 9: the draw inverted, file first, three constructions measured (2026-10-18)
+
+Run under the rule filed at `stumping` Part 3, "where three screens close a cell, invert the draw": start from
+the file that does the forcing, not from the field's estimator. The cell is unchanged
+(`human-factors-ergonomics` / `safety-incident-error-analysis`, anomaly-detection) and the axis read from
+architecture 8 held, so no time was spent on the guard. Screens are `screen_M1.py`, `screen_M1b.py`,
+`screen_M2.py`, `screen_M2b.py`, `screen_proxy.py` and `screen_M3_family.py` in the builder's scratch
+directory, all on a clean truth, each rerun to byte-identical output, no file cut.
+
+**The file, and what it pins that nothing else pins.** The investigation record at barrier grain: one row per
+(occurrence, barrier), carrying each credited barrier's state at the moment of the occurrence. It is the only
+file on this ground that observes several barriers **jointly on one occasion**. The barrier register declares
+design intent at hazard x layer grain, the assurance record tests each barrier alone on its own schedule, the
+override register logs each inhibit separately, and the demand archive carries challenges with no barrier
+detail. The joint cross-section exists nowhere else, and that is what the three constructions below were built
+on. The telemetry-as-census candidate was not screened: its time tolerance is this number's architecture 1
+death and the brief ruled it second.
+
+**M1, the coincident-unavailability alignment count.** Graded object: the number of challenges in the window
+that arrived while a hazard's credited protection was reduced to at most one available layer, built by
+intersecting the layers' out-of-service intervals (override register, interval grain) against the demand
+archive (event grain) under the register's credited set. Maintenance scheduled into each unit's quiet season,
+one unit's layers taken out together on shared campaign permits while it was running. **Dead twice over.**
+Graded as a count, the golden was the only two-layer hazard on all five seeds and `credited layer count`, one
+sorted column, named it every seed, alongside the LOPA product and the proper independence expectation; with
+the layer count held fixed at three the golden became the hazard with the **most challenges** on all five
+seeds and **10 to 13 of 18 reflexes** reached it, the plain challenge count among them. Graded as a share to
+divide the first-order driver out, the golden moved across seeds (H08, then H03 four times) at margins of
+**1.080x to 1.436x**, mostly under the 1.15x floor, while `share of challenges with two or more layers down`
+named it 5 of 5. **The law, and it generalises: a count of events falling inside a constructed condition is
+first order in the event count and only second order in the condition, so the crude event count ranks it;
+divide the event count out and the quantity becomes a time share that one group-by on the interval register
+reproduces; what is left after both is the arrival noise, which is the same quantity that creates the
+alignment.** Single dial, both ends.
+
+**M2, the effective depth of a protection stack.** Graded object: the number of connected components of a
+hazard's credited layers under "shares at least one plant element", against the credited count. Two grains,
+the barrier register (hazard x layer) and the instrument register (layer x element); neither states effective
+depth, and components are not edge counts, since sharing is transitive (A to B, B to C collapses three layers
+to one group though A and C share nothing) and multiple (one pair sharing three elements is three shared
+elements but one merge). **The reflex screen was the strongest measured on this ground, 0 to 1 of 12 routes
+reaching the golden**, and it died anyway, three ways. As an integer the graded object tied **four hazards at
+overstatement 2 on every seed**, an exact tie, because a quantity ranging over 0 to 2 carries one live degree
+of freedom. Regraded as the field's continuous object, the risk reduction actually delivered (one credit per
+independent group, best member of each), the golden moved across **three hazards over eight seeds** and the
+set failing the filed target was **empty on three of the eight**. The sweep settled it: redrawing the
+per-layer figures alone with the element topology held **completely fixed**, 40 redraws per setting, returned
+**3 distinct golden hazards at every realistic range and 6 at the widest**, with the two ranges that held a
+stable fail-set sitting at median margins of 1.066x and 1.528x. The topology cannot carry the verdict; the
+assured-availability column decides it.
+
+**The one-column proxy screen, filed mid-pass, run on everything.** A forcing file usually publishes a scalar
+summary of the construction it forces. Measured here, 144 to 240 unit-draws per case:
+
+| construction | plainest column of its own forcing file | corr | one-line route |
+|---|---|---|---|
+| M1 alignment count | the demand archive's own challenge count | **+0.6582** | **16/20** |
+| M1 alignment count | challenges falling in any outage | +0.6930 | 14/20 |
+| M2 depth overstatement | the register's sharing edge count | **+0.9631** | n/a |
+| M2 depth overstatement | max element multiplicity | +0.8575 | n/a |
+| C1 occurrences with a barrier verifiably available | the record's own "barriers in place" tally | **+0.9960** | **18/20** |
+| C2 failed-on-demand split by breach order | the record's own degraded-barrier count | **+0.9817** | **17/20** |
+| C6 hazards simultaneously at reduced depth | degraded count x the register's fan-out column | **+0.9905** | **19/20** |
+| C4 potential-consequence 95th percentile | the actual-consequence 95th percentile | +0.7146 | 9/20 |
+| C3 latent degradation among undetermined rows | the determined-degraded count | +0.6584 | 8/20 |
+| C3 same, against the prompt-subset filter and divide | degraded found inside two days of the occurrence | +0.4580 | 5/20 |
+
+**C1 is the brief's own named direction and it is the worst of the set.** "How many of a class of occurrences
+had a given barrier actually available" correlates **+0.9960** with the tally the investigation record already
+publishes, and the one-line route reaches the truth **18 of 20** draws. So the inversion was run correctly,
+file first, and the file turned out to publish a scalar summary of the very quantity it forces. C4 is dead
+besides on a law already on file: recovering a top-censored tail functional forks 3.926x across distribution
+families (architecture 7, M3).
+
+**What survived, and it is handed back rather than drawn.** C3 alone passes the proxy screen in both forms:
+the degradation hidden in the barrier rows whose state the investigation could not determine, because making
+the plant safe after an occurrence **removes the evidence of a degraded barrier and leaves the evidence of an
+intact one**, so the undetermined rows are enriched in failures and the share computed over the determined
+rows understates it most for the sites whose investigations open slowest. The prompt-subset filter and divide
+does **not** reach it (+0.4580, 5/20), so the common-exposure subset screen does not close it. It is not
+drawn here, for two reasons a tenth pass must settle first: the graded object as defined is still a count over
+each unit's occurrences, so M1's tally law has to be answered before anything else, and `guard.py check`
+surfaced **task31 R8 at 0.05** ("a milestone duration is estimated from a log whose slow cases are still open,
+so dropping the censored rows understates") and **task199 at 0.06**, which are the same insight in other
+nouns at a lexical score far under the WARN floor. The abstraction test, not a screen, is what that direction
+needs first.
+
+**The axes, probed twice and clear both times, neither card registered.** Probe A carries the reserved set
+exactly as allocated (shape 11, gap `rule`, pattern `none`, `confirm_surface_read`, `structural_verdict`,
+`causal_design`, `retry_or_revision_log`, `planning_thread`, `executive_team`, `incident_or_complaint`,
+`programme_officer`) with `org_family` redrawn to `manufacturer` and a Netherlands specialty chemicals world:
+**WARN, no BLOCK, nearest driver 0.05**, one `repeat.question_form` WARN against task248 and no persona WARN
+at all. Probe B carries the honest labels for C3 (`generators` G12 first, absence of record against record of
+absence, `method_or_model_selection`, `population_selection`, question form `whether`): **WARN, no BLOCK**,
+the question-form WARN cleared, `repeat.gate_g` and `overuse.gate_g` raised and answerable in one line, and
+`ban.strategy` silent on `population_selection`. With `pattern` `none` the guard reads `generators[0]` as the
+decisive pattern, confirmed in both verdicts, and `test.same_driver` fired on neither triple. The cards are
+`task198_card.json` and `task198_card_probeB.json` in the builder's scratch directory.
+
+**Three axis corrections this pass earned.** `pattern` `C` was dropped for `none` plus a named G-code, since a
+structural verdict has no candidate list for a serviceable share to sit behind. `org_family`
+`utility_or_infrastructure` was dropped for `manufacturer`, which no longer repeats the cell incumbent's air
+navigation service provider (task181) and is the native home of layer-of-protection analysis;
+`manufacturer` is free because task194 moved to `software_or_platform`. And `causal_design` is **not honest**
+for anything screened in architecture 9: none of M1, M2 or C1 to C6 is a comparison design, so the allocated
+strategy value has no carrier on this ground and probe B records the honest substitute.
+
+**Where the pass stopped: the axis is open for the third consecutive pass and the mechanism is missing again.**
+Architecture 7 said it, architecture 8 said it, and this pass says it with the inversion run properly and the
+forcing file named in advance. Taken with the pharmacology closure and architecture 6's claims closure, the
+dichotomy is now measured on four separate grounds: **an administrative safety record supports only exact
+arithmetic on a shipped structure, which is rule application, or a fit, which opens the estimator family, and
+the barrier-grain investigation record does not escape it, because the construction it forces is published as
+one of its own columns.** The cell is spent on the mechanism for this objective, and a tenth pass here should
+be spent only on C3 with the abstraction test answered first, or the number should move.
+
+- The coincident-unavailability alignment count, challenges arriving while a credited stack was reduced to one
+  layer (architecture 9, M1, measured 2026-10-18, nothing cut). Graded as a count the credited layer count and
+  then the plain challenge count name it on every seed with 10 to 13 of 18 reflexes reaching it; graded as a
+  share the golden moves across seeds at 1.080x to 1.436x and one group-by names it 5 of 5. The demand
+  archive publishes the challenge count at corr +0.6582 and the one-line route lands the truth 16 of 20.
+- The effective depth of a protection stack by shared-element connected components (architecture 9, M2,
+  measured 2026-10-18, nothing cut). Best reflex screen on this ground at 0 to 1 of 12, dead anyway: as an
+  integer four hazards tie at overstatement 2 on every seed, as a continuous risk reduction the golden moves
+  across three hazards over eight seeds with the fail-set empty on three, and redrawing the availability
+  column alone with the topology fixed gives 3 distinct goldens at every realistic range. The register
+  publishes the sharing edge count at corr +0.9631.
+- The occurrence count at which a barrier was verifiably available, the direction the brief named
+  (architecture 9, C1, measured 2026-10-18, nothing cut). The investigation record's own "barriers in place"
+  tally is a proxy for it at corr +0.9960 and the one-line route reaches the truth 18 of 20 draws. With it,
+  on the same screen: failed-on-demand split by breach order (C2, +0.9817, 17 of 20) and hazards
+  simultaneously at reduced depth per barrier (C6, +0.9905, 19 of 20).
