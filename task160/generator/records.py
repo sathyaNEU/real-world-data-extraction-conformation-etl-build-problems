@@ -13,32 +13,32 @@ import world as W
 D = dt.date
 
 OLD_NAMES = {
-    "MI-0412": "ROUGE PARK HOSP", "MI-0418": "ZIELINSKI MEM HOSP", "MI-0425": "TALCOTT HOSP",
-    "MI-0431": "OAKLAND PINES MED CTR", "MI-0437": "GILMARTIN MED CTR", "MI-0442": "RAISIN VALLEY HOSP",
-    "MI-0446": "HALDANE COMM HOSP", "MI-0451": "TOLLIVER GEN HOSP", "MI-0455": "KASTNER HOSP",
-    "MI-0503": "HAVERKAMP MED CTR", "MI-0508": "KALAMAZOO LUTHERAN", "MI-0514": "ELLERY MED CTR",
-    "MI-0519": "BRENNAN MEM HOSP", "MI-0523": "RUDDOCK HOSP", "MI-0528": "MUSKEGON HARBOR HOSP",
-    "MI-0532": "BRINKERHOFF MEM HOSP", "MI-0604": "OSTRANDER MED CTR", "MI-0609": "LINDELL HOSP",
+    "GA-0412": "TALCOTT HOSP", "GA-0418": "TOLLIVER GEN HOSP", "GA-0425": "GILMARTIN MED CTR",
+    "GA-0431": "SATTERFIELD MED CTR", "GA-0437": "HALDANE COMM HOSP", "GA-0442": "LATTIMORE MEM HOSP",
+    "SC-0446": "BRENNAN MEM HOSP", "SC-0451": "KINARD HOSP", "SC-0455": "RUDDOCK HOSP",
+    "TN-0503": "HAVERKAMP MED CTR", "TN-0508": "KASTNER HOSP", "KY-0514": "ELLERY MED CTR",
+    "KY-0519": "BRINKERHOFF MEM HOSP", "WV-0523": "ZIELINSKI MEM HOSP", "WV-0528": "SPURLOCK MEM HOSP",
+    "TN-0532": "CRUMLEY MEM HOSP", "MI-0604": "OSTRANDER MED CTR", "MI-0609": "LINDELL HOSP",
     "MI-0613": "ALPENA LAKESIDE HOSP", "MI-0617": "CALLISTER MEM HOSP", "MI-0622": "CLAM LAKE COMM HOSP",
     "MI-0626": "SUPERIOR SHORES MED CTR", "MI-0631": "LITTLE BAY DE NOC HOSP", "MI-0635": "ASHMUN BAY HOSP",
 }
 # Crestfield's client site codes and Inland Seas' facility short names
 CRS_SITE = {
-    "MI-0412": "CRS-DET-0117", "MI-0418": "CRS-DET-0122", "MI-0425": "CRS-MAC-0203", "MI-0431": "CRS-OAK-0310",
-    "MI-0437": "CRS-WAS-0405", "MI-0442": "CRS-MON-0412", "MI-0446": "CRS-DET-0131", "MI-0451": "CRS-OAK-0318",
-    "MI-0455": "CRS-MAC-0209", "MI-0503": "CRS-KNT-0502", "MI-0508": "CRS-KZO-0516", "MI-0514": "CRS-ING-0521",
-    "MI-0519": "CRS-GEN-0533", "MI-0523": "CRS-SAG-0540", "MI-0528": "CRS-MUS-0548", "MI-0532": "CRS-CAL-0555",
+    "GA-0412": "CRS-ATL-0117", "GA-0418": "CRS-ATL-0122", "GA-0425": "CRS-MAR-0203", "GA-0431": "CRS-GWN-0310",
+    "GA-0437": "CRS-MAC-0405", "GA-0442": "CRS-ROM-0412", "SC-0446": "CRS-COL-0131", "SC-0451": "CRS-GVL-0318",
+    "SC-0455": "CRS-SPA-0209", "TN-0503": "CRS-KNX-0502", "TN-0508": "CRS-CHA-0516", "KY-0514": "CRS-LEX-0521",
+    "KY-0519": "CRS-LOU-0533", "WV-0523": "CRS-CHS-0540", "WV-0528": "CRS-HTN-0548", "TN-0532": "CRS-JCY-0555",
     "MI-0604": "CRS-GTR-0711", "MI-0609": "CRS-EMM-0716", "MI-0613": "CRS-ALP-0720", "MI-0617": "CRS-OTS-0724",
     "MI-0622": "CRS-WEX-0729", "MI-0626": "CRS-MQT-0802", "MI-0631": "CRS-DEL-0807", "MI-0635": "CRS-CHP-0811",
 }
 ISN_NAME = {
-    "MI-0412": "Rouge Park", "MI-0418": "Zielinski Memorial", "MI-0425": "Talcott", "MI-0431": "Oakland Pines",
-    "MI-0437": "Gilmartin MC", "MI-0442": "Raisin Valley", "MI-0446": "Haldane Community", "MI-0451": "Tolliver General",
-    "MI-0455": "Kastner", "MI-0503": "Haverkamp MC", "MI-0508": "Kalamazoo Lutheran", "MI-0514": "Ellery MC",
-    "MI-0519": "Brennan Memorial", "MI-0523": "Ruddock", "MI-0528": "Muskegon Harbor", "MI-0532": "Brinkerhoff Memorial",
-    "MI-0604": "Ostrander MC", "MI-0609": "Lindell", "MI-0613": "Alpena Lakeside", "MI-0617": "Callister Memorial",
-    "MI-0622": "Clam Lake Community", "MI-0626": "Superior Shores MC", "MI-0631": "Little Bay de Noc",
-    "MI-0635": "Ashmun Bay",
+    "GA-0412": "Talcott", "GA-0418": "Tolliver General", "GA-0425": "Gilmartin MC", "GA-0431": "Satterfield MC",
+    "GA-0437": "Haldane Community", "GA-0442": "Lattimore Memorial", "SC-0446": "Brennan Memorial", "SC-0451": "Kinard",
+    "SC-0455": "Ruddock", "TN-0503": "Haverkamp MC", "TN-0508": "Kastner", "KY-0514": "Ellery MC",
+    "KY-0519": "Brinkerhoff Memorial", "WV-0523": "Zielinski Memorial", "WV-0528": "Spurlock Memorial",
+    "TN-0532": "Crumley Memorial", "MI-0604": "Ostrander MC", "MI-0609": "Lindell", "MI-0613": "Alpena Lakeside",
+    "MI-0617": "Callister Memorial", "MI-0622": "Clam Lake Community", "MI-0626": "Superior Shores MC",
+    "MI-0631": "Little Bay de Noc", "MI-0635": "Ashmun Bay",
 }
 
 
@@ -105,8 +105,9 @@ def _utc(t):
 
 
 def crestfield_lines(hs, shifts):
-    """Crestfield's member shift report. Day shifts are one line; a night shift is billed on two lines, one for each
-    calendar day it covers, under the night's timesheet number. Times are UTC."""
+    """Crestfield's member shift report, its billing lines. Day shifts are one line; a night shift is billed on two lines,
+    one for each calendar day it covers, under the night's timesheet number; a booking cancelled after the cut-off is
+    one line of four hours against the booked shift. Times are UTC."""
     r = W.rng(90)
     lines = []
     ts = 4471003
@@ -118,9 +119,15 @@ def crestfield_lines(hs, shifts):
             continue                                   # the night of 20 December was still being worked at the pull
         fid = s["facility_id"]
         ts += int(r.integers(1, 4))
-        bill = "TPHA POOL" if s["bill"] == "POOL" else "FACILITY"
+        bill = "TRHC POOL" if s["bill"] == "POOL" else "FACILITY"
         book = "SURGE" if s["code"] == "SURGE" else "STAFF"
         a = s["start"]
+        if s.get("cancelled"):
+            # a booking cancelled after the cut-off: four hours billed against the booked shift, on one line
+            ln += int(r.integers(1, 3))
+            lines.append(["CL%08d" % ln, "T%07d" % ts, CRS_SITE[fid], s["unit"], s["nurse"], _utc(a),
+                          _utc(a + dt.timedelta(hours=12)), "4.00", book, bill, s["request_no"]])
+            continue
         if s["shift"] == "D":
             segs = [(a, a + dt.timedelta(hours=12))]
         else:
@@ -128,8 +135,9 @@ def crestfield_lines(hs, shifts):
             segs = [(a, mid), (mid, a + dt.timedelta(hours=12))]
         for b0, b1 in segs:
             ln += int(r.integers(1, 3))
+            worked = (W.to_utc(b1) - W.to_utc(b0)).total_seconds() / 3600.0     # 13 or 11 across a clock change
             lines.append(["CL%08d" % ln, "T%07d" % ts, CRS_SITE[fid], s["unit"], s["nurse"], _utc(b0), _utc(b1),
-                          "%.2f" % ((b1 - b0).seconds / 3600.0), book, bill, s["request_no"]])
+                          "%.2f" % worked, book, bill, s["request_no"]])
     return ["line_id", "timesheet_no", "client_site", "unit", "worker_id", "shift_start_utc", "shift_end_utc",
             "hours", "booking_type", "bill_to", "request_ref"], lines
 
@@ -143,14 +151,14 @@ def inland_seas_weeks(hs, shifts, s0, s1):
     """Inland Seas' weekly member shift sheets (Monday to Sunday by payroll date) for one winter."""
     weeks = {}
     for s in shifts:
-        if s["agency"] != "I":
-            continue
+        if s["agency"] != "I" or s.get("cancelled"):
+            continue                                   # Inland Seas invoices late cancellations on its monthly statement
         pd = payroll_date(s)
         if not (s0 <= pd <= s1):
             continue
         wk = pd - dt.timedelta(days=pd.weekday())
         book = "Surge" if s["code"] == "SURGE" else "Staffing"
-        bill = "TPHA Pool" if s["bill"] == "POOL" else "Facility"
+        bill = "TRHC Pool" if s["bill"] == "POOL" else "Facility"
         weeks.setdefault(wk, []).append([ISN_NAME[s["facility_id"]], s["unit"], s["nurse"], pd, s["shift"], 12.0, book,
                                          bill, s["request_no"]])
     for wk in weeks:
@@ -159,10 +167,11 @@ def inland_seas_weeks(hs, shifts, s0, s1):
 
 
 def inland_seas_queries(hs, shifts, decl, s0, s1, n=14):
-    """The shifts the association queried with Inland Seas in the winter, with their clock times from the agency's
+    """The shifts the cooperative queried with Inland Seas in the winter, with their clock times from the agency's
     timekeeping: shifts on a surge unit at the edges of an activation, picked by the settlement review."""
     r = W.rng(91)
-    cand = [s for s in shifts if s["agency"] == "I" and s["surge_unit"] and s0 <= s["start"].date() <= s1]
+    cand = [s for s in shifts if s["agency"] == "I" and s["surge_unit"] and not s.get("cancelled")
+            and s0 <= s["start"].date() <= s1]
     edges = [s for s in cand if s["kind"] in ("after", "skeleton")]
     nights = [s for s in cand if s["shift"] == "N" and s["kind"] == "active"]
     pick = []

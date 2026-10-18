@@ -7,28 +7,28 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 1,850 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by four weeks, puts its wave past the block; the North follows West and Central by a steady month, and West and Central's spells began 3 to 9 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
+ "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, every line answered in the design note (2026-10-18, reworked cut)",
-  "reader": "no leak on the f7d03fbf cut; its two realism tells and two fork items folded into the rework; a fresh read is due on the reworked cut"
+  "leak_py": "REVIEW, no LEAK, every line answered in the design note (2026-10-18, the multi-state cut)",
+  "reader": "no leak on the f7d03fbf cut; a fresh read is due on the multi-state cut"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.question_form against task470, answered at the draw); surface exit 0, three card-level pairs differentiated",
+  "heart": "WARN (repeat.question_form against task470, answered at the draw); surface exit 0, five card-level pairs answered in the design note",
   "nearest": "task157 0.10 (driver)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC on the f7d03fbf cut",
-  "disposition": "APPROVE with five items (write-up precision, the Southeast bypass, Inland Seas' payroll convention filed, the timesheet detail's labels, the block 1 rival clause), all folded into the rework; a fresh judge is due on the reworked cut",
+  "verdict": "DETERMINISTIC on the f7d03fbf cut; the rule-3 recheck on fcb08fab a PASS",
+  "disposition": "the recheck's realism items and its routes, and the second Ask A device, folded into the multi-state rework; a fresh judge is due on the reworked cut",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: a fresh leak reader and determinism judge on the reworked cut",
+ "resume": "stage 4: a fresh leak reader and determinism judge on the multi-state cut (target.zip 5d7a4619)",
  "approved": null,
  "delivered": null,
  "portal": null,

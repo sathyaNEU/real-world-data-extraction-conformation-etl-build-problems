@@ -2,13 +2,12 @@
 and declared surge level from 1 July 2021, run on to 31 March 2027 so the forward window's realised draw exists in
 the generator (it never ships). Nothing here carries mess; records.py writes the exports from it.
 
-Each winter one respiratory wave crosses the state: it peaks in the Southeast first, in West and Central Michigan
-anywhere from a few days to a month later, and in the North about a month after West and Central. The wave's
-calendar timing and West and Central's gap behind the Southeast move from winter to winter; the North's lag behind
-West and Central holds. A member declares Level 1 when its midnight census
-has been at or above 95 per cent of staffed beds on two consecutive nights, Level 2 at or above 101 per cent, steps
-down below 98 per cent and stands down below 93 per cent (the association's model surge plan). Surges come only
-with the wave."""
+Each winter one respiratory wave moves north through the cooperative's three regions: it peaks in the Southeast first,
+in Central anywhere from a few days to two and a half weeks later, and in the North about four weeks after Central.
+The wave's calendar timing and Central's gap behind the Southeast move from winter to winter; the North's lag behind
+Central varies by a few days. A member declares Level 1 when its midnight census has been at or above 95 per cent of
+staffed beds on two consecutive nights, Level 2 at or above 101 per cent, steps down below 98 per cent and stands down
+below 93 per cent (the cooperative's model surge plan). Surges come only with the wave."""
 from __future__ import annotations
 
 import datetime as dt
@@ -59,31 +58,36 @@ def holiday_effect(d):
     return 0.0
 
 
-# this winter's southern wave is an ordinary one: its amplitude puts its surge draw at the closed winters' mean
-THIS_WINTER_AMP = {"SE": 1.008, "WC": 1.004, "NO": 1.0}
+# this winter's waves are ordinary ones: each region's amplitude is the closed winters' mean, the south's set so its
+# surge draw sits at the closed winters' mean
+THIS_WINTER_AMP = {"SE": 1.07, "CE": 1.07, "NO": 1.0}
 
 
 def wave_params(hs):
-    """Each hospital's wave peak date and amplitude in each winter. The regional lag of a winter is drawn once per
-    region; a hospital adds its own stable offset and a little noise."""
+    """Each hospital's wave in each winter: (peak date, peak in days after the Southeast's, amplitude, rise width, fall
+    width). A winter's Central gap and North lag are the winter's own; each hospital adds its own stable offset and the
+    winter's jitter, and draws its own size and its own rise and fall (a wave rises faster than it falls)."""
     r = rng(1)
-    off = {h["facility_id"]: r.normal(0, 0.7) for h in hs}
+    off = {h["facility_id"]: r.normal(0, C.MEMBER_OFF[h["region"]]) for h in hs}
     out = {}
     past = {k: [] for k in C.AMP}
     for w in C.WINTERS:
-        lag_wc = C.WC_GAP[w] + r.normal(0, 1.0)
-        lag = {"SE": 0.0, "WC": lag_wc, "NO": lag_wc + C.NO_LAG + r.normal(0, 1.0)}
-        amp_w = {k: C.AMP[k] * (1 + r.normal(0, 0.022)) for k in C.AMP}
-        if w == 2027:                                     # this winter's wave is an ordinary-sized one
+        gap = C.CE_GAP[w] + r.normal(0, 0.8)
+        lag = {"SE": 0.0, "CE": gap, "NO": gap + C.NO_LAG[w] + r.normal(0, 0.8)}
+        if w == 2027:
             amp_w = {k: sum(v) / len(v) * THIS_WINTER_AMP[k] for k, v in past.items()}
         else:
+            amp_w = {k: C.AMP[k] * C.AMP_W[k][w] for k in C.AMP}
             for k in C.AMP:
                 past[k].append(amp_w[k])
         for h in hs:
             reg = h["region"]
-            pk = lag[reg] + off[h["facility_id"]] + r.normal(0, 0.5)
-            a = amp_w[reg] * (1 + r.normal(0, 0.015))
-            out[(w, h["facility_id"])] = (C.SE_PEAK[w] + dt.timedelta(days=float(pk)), pk, a)
+            pk = lag[reg] + off[h["facility_id"]] + r.normal(0, C.MEMBER_JIT[reg])
+            a = amp_w[reg] * math.exp(r.normal(0, C.MEMBER_AMP_SD[reg]))
+            sig = C.SIG[reg] * C.SIG_W[reg][w]
+            su = sig * math.exp(r.normal(-C.SKEW[reg], C.MEMBER_SIG_SD))
+            sd = sig * math.exp(r.normal(C.SKEW[reg], C.MEMBER_SIG_SD))
+            out[(w, h["facility_id"])] = (C.SE_PEAK[w] + dt.timedelta(days=float(pk)), pk, a, su, sd)
     return out
 
 
@@ -100,9 +104,9 @@ def summer_bumps():
 def staffed_beds(h, d):
     b = h["beds"]
     # two members re-opened or closed units on file; staffing rounds
-    if h["facility_id"] == "MI-0503" and d < D(2023, 3, 6):
+    if h["facility_id"] == "TN-0503" and d < D(2023, 3, 6):
         return b - 18
-    if h["facility_id"] == "MI-0437" and d >= D(2025, 9, 15):
+    if h["facility_id"] == "GA-0437" and d >= D(2025, 9, 15):
         return b + 12
     return b
 
@@ -121,19 +125,15 @@ def simulate():
         hist = []
         rows = []
         for d in days:
-            ar = 0.7 * ar + r.normal(0, 0.0055)
+            ar = 0.7 * ar + r.normal(0, 0.0055 * math.sqrt(250.0 / h["beds"]))
             base = month_base(d) + hoff + WEEKDAY[d.weekday()] + holiday_effect(d) + ar
             resp = 0.0
             for w in C.WINTERS:
-                pkd, _, a = wp[(w, h["facility_id"])]
-                t = (dt.datetime.combine(d, dt.time(12)) - dt.datetime.combine(pkd, dt.time(12)) if isinstance(pkd, D)
-                     else None)
-                # pkd may carry a fractional day: rebuild from the float offset
-            for w in C.WINTERS:
-                _, pk, a = wp[(w, h["facility_id"])]
+                _, pk, a, su, sd = wp[(w, h["facility_id"])]
                 t = (d - C.SE_PEAK[w]).days - pk
-                if abs(t) < 45:
-                    resp += a * math.exp(-t * t / (2 * C.SIG[h["region"]] ** 2))
+                if abs(t) < 50:
+                    sg = su if t < 0 else sd
+                    resp += a * math.exp(-t * t / (2 * sg * sg))
             for c, a, s in bumps:
                 t = (d - c).days
                 if abs(t) < 40:
@@ -205,8 +205,9 @@ TZ_OFFSET = {"EST": -5, "EDT": -4}
 
 
 def us_eastern_offset(t):
-    """UTC offset of Michigan's Eastern time for a naive local datetime (second Sunday of March to first Sunday of
-    November is daylight time). The Upper Peninsula's four western counties keep Central time; no member sits there."""
+    """UTC offset of Eastern time for a naive local datetime (second Sunday of March to first Sunday of November is
+    daylight time). Every member sits in Eastern time, Michigan's Upper Peninsula members east of its four western
+    counties and the Tennessee and Kentucky members east of the time zone line."""
     y = t.year
     m = dt.datetime(y, 3, 8)
     while m.weekday() != 6:
@@ -281,13 +282,13 @@ def level_at(intervals, t):
 AGENCY_SEASONS = [(D(2025, 11, 1), D(2026, 3, 31)), (D(2026, 11, 1), C.CENSUS_END)]
 REG_UNITS = {
     "SE": ["Med-Surg 3 West", "Med-Surg 4 East", "Telemetry 5", "Ortho/Neuro 6", "ICU", "Step-Down 2"],
-    "WC": ["Med-Surg 2 North", "Med-Surg 3 South", "Telemetry", "Surgical 4", "ICU", "Oncology 5"],
+    "CE": ["Med-Surg 2 North", "Med-Surg 3 South", "Telemetry", "Surgical 4", "ICU", "Oncology 5"],
     "NO": ["Med-Surg 2", "Med-Surg 3", "ICU/CCU", "Surgical"],
 }
 # per active surge shift, the expected nurses booked on the surge request for another unit, at Level 1 and Level 2;
 # three in four go to the emergency department
-XTRA = (0.16, 0.30)
-XTRA_UNITS = {"SE": ["Emergency Dept", "Med-Surg 4 East"], "WC": ["Emergency", "Med-Surg 3 South"],
+XTRA = (0.22, 0.40)
+XTRA_UNITS = {"SE": ["Emergency Dept", "Med-Surg 4 East"], "CE": ["Emergency", "Med-Surg 3 South"],
               "NO": ["Emergency", "Med-Surg 3"]}
 
 
@@ -308,17 +309,28 @@ def agency_rosters():
     return ros
 
 
+# per active surge shift, the expected bookings a member cancels after the agencies' six-hour cut-off, each billed four
+# hours with no nurse on the unit: an extra nurse booked on the surge unit against sick calls, and a booking on the
+# request for another unit whose held patients had moved by the shift (at Level 1 and Level 2)
+CXL_OVER = 0.05
+CXL_OTHER = (0.07, 0.11)
+
+
 def agency_shifts(hs, truth, decl):
     """Every agency RN shift at the pool's members in the agency seasons: surge-unit shifts (with each slot's agency,
     booking code and bill-to), the skeleton openings before a morning declaration, the teams that report after a
     stand-down, the nurses booked on an open surge request for other units, and regular agency shifts on the members'
-    other units. Times are local."""
+    other units; and the bookings a member cancelled after the agencies' cut-off, marked 'cancelled' (no nurse works
+    them): the team booked for the shift after a stand-down when it was stood down, the Level 2 nurses booked for the
+    shift after a step-down, an extra nurse booked on the surge unit against sick calls, and a booking on the request
+    for another unit whose patients had moved. Times are local."""
     ros = agency_rosters()
     out = []
     for i, h in enumerate(hs):
         fid = h["facility_id"]
         r = rng(50, i)
         rx = rng(52, i)
+        rc = rng(53, i)
         iv = active_intervals(decl, fid)
         hdecl = [x for x in decl if x["facility_id"] == fid]
         prim = h["agency"]
@@ -328,44 +340,53 @@ def agency_shifts(hs, truth, decl):
         base_i = (i * 11) % 300
         pool_c = ros["C"][base_c:base_c + 60]
         pool_i = ros["I"][base_i:base_i + 60]
+        busy = set()
+        cxl = []
+
+        def request_at(t):
+            act = [x for x in hdecl if x["level_from"] == 0 and x["level_to"] > 0 and x["declared_at"] <= t
+                   + dt.timedelta(hours=12)]
+            return (act[-1]["request_no"], act[-1]["declared_at"]) if act else ("", None)
+
         for s0, s1 in AGENCY_SEASONS:
             if h["region"] == "NO" and s0 < C.NORTH_JOIN:
                 continue
-            req_of = {}
-            for x in hdecl:
-                if x["request_no"]:
-                    req_of[x["declared_at"]] = x["request_no"]
             for d in C.daterange(s0, s1):
                 for shift, hh in (("D", 7), ("N", 19)):
                     t = dt.datetime.combine(d, dt.time(hh))
+                    meet = dt.datetime.combine(d, dt.time(6, 45) if shift == "D" else dt.time(14, 45))
                     lv = level_at(iv, t)
                     kind = None
                     n = 0
                     if lv > 0:
                         n = h["grid"][lv - 1] // 2
                         kind = "active"
+                        # a step-down at the meeting before the shift cancels the Level 2 nurses booked for it
+                        if any(x["level_from"] == 2 and x["level_to"] == 1 and x["declared_at"] == meet for x in hdecl):
+                            cxl.append((t, shift, range(h["grid"][0] // 2, h["grid"][1] // 2), lv))
                     else:
                         # skeleton opening the night before a morning declaration
                         nxt = [x for x in hdecl if x["level_from"] == 0 and x["level_to"] > 0
                                and x["declared_at"] == dt.datetime.combine(d + dt.timedelta(days=1), dt.time(6, 45))]
                         if shift == "N" and nxt:
                             n, kind = 1, "skeleton"
-                        # the team booked for the shift after a stand-down
+                        # the team booked for the shift after a stand-down reports, or is stood down too late
                         sd = [x for x in hdecl if x["level_to"] == 0 and x["level_from"] > 0]
                         for x in sd:
                             if shift == "D" and x["declared_at"] == dt.datetime.combine(d, dt.time(6, 45)):
                                 if r.random() < 0.6:
                                     n, kind = h["grid"][x["level_from"] - 1] // 2, "after"
+                                else:
+                                    cxl.append((t, shift, range(h["grid"][x["level_from"] - 1] // 2), 0))
                             if shift == "N" and x["declared_at"] == dt.datetime.combine(d, dt.time(14, 45)):
                                 if r.random() < 0.5:
                                     n, kind = h["grid"][x["level_from"] - 1] // 2, "after"
+                                else:
+                                    cxl.append((t, shift, range(h["grid"][x["level_from"] - 1] // 2), 0))
                     if not n:
                         continue
                     # the request this run of surge shifts was booked against
-                    act = [x for x in hdecl if x["level_from"] == 0 and x["level_to"] > 0 and x["declared_at"] <= t
-                           + dt.timedelta(hours=12)]
-                    req = act[-1]["request_no"] if act else ""
-                    first_act = act[-1]["declared_at"] if act else None
+                    req, first_act = request_at(t)
                     for k in range(n):
                         if r.random() < 0.006:
                             continue                                      # a slot the agencies could not fill
@@ -380,22 +401,44 @@ def agency_shifts(hs, truth, decl):
                             code, bill = "STAFF", "FACILITY"
                         pool = pool_c if ag == "C" else pool_i
                         nurse = pool[(k * 7 + d.toordinal()) % len(pool)]
+                        busy.add((t, nurse))
                         out.append({"facility_id": fid, "agency": ag, "start": t, "shift": shift,
                                     "unit": h["surge_unit"], "surge_unit": True, "kind": kind, "level": lv,
                                     "code": code, "bill": bill, "request_no": req if code == "SURGE" else "",
                                     "nurse": nurse})
+                    morning_open = (first_act is not None and first_act.date() == d and shift == "D"
+                                    and first_act.time() == dt.time(6, 45))
                     # nurses the staffing office books on the open surge request for its other units (the emergency
                     # department's holds, mostly); the agencies bill them to the pool like the surge unit's own
-                    if kind == "active" and not (first_act is not None and first_act.date() == d and shift == "D"
-                                                 and first_act.time() == dt.time(6, 45)):
+                    if kind == "active" and not morning_open:
                         for _ in range(int(rx.poisson(XTRA[lv - 1]))):
-                            ag = prim if rx.random() < 0.65 else other
+                            ag = prim if rx.random() < 0.5 else other
                             pool = pool_c if ag == "C" else pool_i
+                            nurse = pool[int(rx.integers(0, len(pool)))]
+                            busy.add((t, nurse))
                             out.append({"facility_id": fid, "agency": ag, "start": t, "shift": shift,
                                         "unit": XTRA_UNITS[h["region"]][int(rx.integers(0, 4)) // 3],
                                         "surge_unit": False, "kind": "extra", "level": lv, "code": "SURGE",
-                                        "bill": "POOL", "request_no": req, "nurse": pool[int(rx.integers(0, len(pool)))]})
-                    # regular agency shifts on the member's other units
+                                        "bill": "POOL", "request_no": req, "nurse": nurse})
+                    # single bookings cancelled after the cut-off: an extra nurse on the surge unit, a booking for
+                    # another unit
+                    if kind == "active":
+                        units = [h["surge_unit"]] * int(rc.poisson(CXL_OVER))
+                        if not morning_open:
+                            units += [XTRA_UNITS[h["region"]][int(rc.integers(0, 4)) // 3]
+                                      for _ in range(int(rc.poisson(CXL_OTHER[lv - 1])))]
+                        for u in units:
+                            ag = prim if rc.random() < 0.5 else other
+                            pool = pool_c if ag == "C" else pool_i
+                            j = int(rc.integers(0, len(pool)))
+                            while (t, pool[j]) in busy:
+                                j = (j + 1) % len(pool)
+                            busy.add((t, pool[j]))
+                            out.append({"facility_id": fid, "agency": ag, "start": t, "shift": shift, "unit": u,
+                                        "surge_unit": u == h["surge_unit"], "kind": "cancelled", "level": lv,
+                                        "code": "SURGE", "bill": "POOL", "request_no": req, "nurse": pool[j],
+                                        "cancelled": True})
+                # regular agency shifts on the member's other units
                 lam = 0.0045 * h["beds"]
                 for shift, hh in (("D", 7), ("N", 19)):
                     t = dt.datetime.combine(d, dt.time(hh))
@@ -403,36 +446,54 @@ def agency_shifts(hs, truth, decl):
                     for k in range(m):
                         ag = prim if r.random() < 0.7 else other
                         pool = pool_c if ag == "C" else pool_i
+                        nurse = pool[int(r.integers(0, len(pool)))]
+                        busy.add((t, nurse))
                         out.append({"facility_id": fid, "agency": ag, "start": t, "shift": shift,
                                     "unit": REG_UNITS[h["region"]][int(r.integers(0, len(REG_UNITS[h["region"]])))],
                                     "surge_unit": False, "kind": "regular", "level": level_at(iv, t),
-                                    "code": "STAFF", "bill": "FACILITY", "request_no": "",
-                                    "nurse": pool[int(r.integers(0, len(pool)))]})
+                                    "code": "STAFF", "bill": "FACILITY", "request_no": "", "nurse": nurse})
+        # the teams cancelled after the cut-off at a step-down or a stand-down
+        for t, shift, slots, lv in cxl:
+            req, _ = request_at(t)
+            for k in slots:
+                ag = prim if k % 2 == 0 else other
+                pool = pool_c if ag == "C" else pool_i
+                j = (k * 7 + t.date().toordinal()) % len(pool)
+                while (t, pool[j]) in busy:
+                    j = (j + 1) % len(pool)
+                busy.add((t, pool[j]))
+                out.append({"facility_id": fid, "agency": ag, "start": t, "shift": shift, "unit": h["surge_unit"],
+                            "surge_unit": True, "kind": "cancelled", "level": lv, "code": "SURGE", "bill": "POOL",
+                            "request_no": req, "nurse": pool[j], "cancelled": True})
     out.sort(key=lambda x: (x["start"], x["facility_id"], x["agency"], x["unit"], x["nurse"]))
     return out
 
 
 def funded(s, iv_of):
-    """The pool funds an agency RN shift that staffs a member's surge unit and starts while its plan is active."""
-    return s["surge_unit"] and level_at(iv_of[s["facility_id"]], s["start"]) > 0
+    """The pool funds an agency RN shift that staffs a member's surge unit and starts while its plan is active; a
+    booking cancelled after the cut-off staffs nothing."""
+    return s["surge_unit"] and not s.get("cancelled") and level_at(iv_of[s["facility_id"]], s["start"]) > 0
 
 
 # ------------------------------------------------------------------------------------------------- wastewater
-# sewersheds sampled by the association's surveillance programme: the members' cities, grouped where one plant
+# sewersheds sampled by the cooperative's surveillance programme: the members' cities, grouped where one plant
 # serves several members
 SEWERSHEDS = [
-    ("WW-SE-01", "Detroit", "SE", ["MI-0412", "MI-0418", "MI-0446"], 1.00),
-    ("WW-SE-02", "Pontiac", "SE", ["MI-0431", "MI-0451"], 0.62),
-    ("WW-SE-03", "Mount Clemens", "SE", ["MI-0425", "MI-0455"], 0.55),
-    ("WW-SE-04", "Ypsilanti", "SE", ["MI-0437"], 0.31),
-    ("WW-SE-05", "Monroe", "SE", ["MI-0442"], 0.18),
-    ("WW-WC-01", "Grand Rapids", "WC", ["MI-0503"], 0.66),
-    ("WW-WC-02", "Kalamazoo", "WC", ["MI-0508"], 0.34),
-    ("WW-WC-03", "Lansing", "WC", ["MI-0514"], 0.41),
-    ("WW-WC-04", "Flint", "WC", ["MI-0519"], 0.36),
-    ("WW-WC-05", "Saginaw", "WC", ["MI-0523"], 0.27),
-    ("WW-WC-06", "Muskegon", "WC", ["MI-0528"], 0.19),
-    ("WW-WC-07", "Battle Creek", "WC", ["MI-0532"], 0.15),
+    ("WW-SE-01", "Atlanta", "SE", ["GA-0412", "GA-0418"], 1.00),
+    ("WW-SE-02", "Marietta", "SE", ["GA-0425"], 0.48),
+    ("WW-SE-03", "Lawrenceville", "SE", ["GA-0431"], 0.52),
+    ("WW-SE-04", "Macon", "SE", ["GA-0437"], 0.30),
+    ("WW-SE-05", "Rome", "SE", ["GA-0442"], 0.18),
+    ("WW-SE-06", "Columbia", "SE", ["SC-0446"], 0.42),
+    ("WW-SE-07", "Greenville", "SE", ["SC-0451"], 0.36),
+    ("WW-SE-08", "Spartanburg", "SE", ["SC-0455"], 0.25),
+    ("WW-CE-01", "Knoxville", "CE", ["TN-0503"], 0.62),
+    ("WW-CE-02", "Chattanooga", "CE", ["TN-0508"], 0.40),
+    ("WW-CE-03", "Lexington", "CE", ["KY-0514"], 0.45),
+    ("WW-CE-04", "Louisville", "CE", ["KY-0519"], 0.80),
+    ("WW-CE-05", "Charleston", "CE", ["WV-0523"], 0.22),
+    ("WW-CE-06", "Huntington", "CE", ["WV-0528"], 0.17),
+    ("WW-CE-07", "Johnson City", "CE", ["TN-0532"], 0.15),
     ("WW-NO-01", "Traverse City", "NO", ["MI-0604"], 0.16),
     ("WW-NO-02", "Petoskey", "NO", ["MI-0609"], 0.07),
     ("WW-NO-03", "Alpena", "NO", ["MI-0613"], 0.07),
@@ -462,7 +523,7 @@ def wastewater(hs, wp):
                     pks = [wp[(w, f)][1] for f in fids]
                     pk = sum(pks) / len(pks) - 9.0
                     t = (d - C.SE_PEAK[w]).days - pk
-                    s = C.SIG[reg] + 1.0
+                    s = C.SIG[reg] * C.SIG_W[reg][w] + 1.0
                     if abs(t) < 50:
                         inf += math.exp(-t * t / (2 * s * s))
                 flu = 220000.0 * (0.012 + inf) * (1 + 0.08 * r.normal()) * math.exp(r.normal(0, 0.33))
@@ -485,7 +546,7 @@ def outlook(hs, wp, truth, issued=D(2026, 12, 18), horizon=14):
     from the regions' own recent admissions and wastewater and is close to the truth over its horizon."""
     r = rng(70)
     out = []
-    for reg in ("SE", "WC", "NO"):
+    for reg in ("SE", "CE", "NO"):
         hreg = [h for h in hs if h["region"] == reg]
         for k in range(1, horizon + 1):
             d = issued + dt.timedelta(days=k)
@@ -494,10 +555,11 @@ def outlook(hs, wp, truth, issued=D(2026, 12, 18), horizon=14):
                 fid = h["facility_id"]
                 resp = 0.0
                 for w in C.WINTERS:
-                    _, pk, a = wp[(w, fid)]
+                    _, pk, a, su, sd = wp[(w, fid)]
                     t = (d + dt.timedelta(days=3) - C.SE_PEAK[w]).days - pk
-                    if abs(t) < 45:
-                        resp += a * math.exp(-t * t / (2 * C.SIG[h["region"]] ** 2))
+                    if abs(t) < 50:
+                        sg = su if t < 0 else sd
+                        resp += a * math.exp(-t * t / (2 * sg * sg))
                 mu += resp * h["beds"] / 6.0 + 0.015 * h["beds"]
             mu *= 1 + r.normal(0, 0.04) * (k / horizon)
             lo, hi = mu * (1 - 0.06 - 0.012 * k), mu * (1 + 0.06 + 0.012 * k)

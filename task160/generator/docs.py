@@ -94,16 +94,16 @@ AGREEMENT = [
     ("1. Definitions", [
         "1.1 The Pool season runs from 1 November 2026 to 31 March 2027.",
         "1.2 A Member is a hospital listed in Schedule A, from its Pool start date.",
-        "1.3 A Member's surge unit is the unit its surge plan opens, as listed in the Association's surge plan register.",
+        "1.3 A Member's surge unit is the unit its surge plan opens, as listed in the Cooperative's surge plan register.",
         "1.4 A shift is one nurse for one scheduled shift, 07:00 to 19:00 or 19:00 to 07:00. Times in this agreement "
         "are Eastern Time.",
         "1.5 A Member's surge plan is active from the declaration of its activation to the declaration of its "
-        "stand-down, as entered in the Association's capacity system at the 06:45 bed huddle or the 14:45 bed meeting.",
+        "stand-down, as entered in the Cooperative's capacity system at the 06:45 bed huddle or the 14:45 bed meeting.",
     ]),
     ("2. Supply and reporting", [
         "2.1 On a surge request from a Member the Agencies supply registered nurses for the Member's surge unit at the "
         "staffing in the surge plan register. Each Agency fills the slots Schedule A assigns it on each shift.",
-        "2.2 Each Agency reports to the Association, each week, every shift its nurses work at a Member, whoever it "
+        "2.2 Each Agency reports to the Cooperative, each week, every shift its nurses work at a Member, whoever it "
         "bills for the shift.",
     ]),
     ("3. What the Pool funds", [
@@ -115,11 +115,13 @@ AGREEMENT = [
     ("4. Rates", [
         "4.1 The Agencies bill at the rates in their rate schedule for the season. Spot shifts are those outside the "
         "Block and those beyond an Agency's share of it.",
+        "4.2 A booked shift that the Member cancels less than six hours before it starts is billed at four hours of "
+        "the Agency's rate.",
     ]),
     ("5. The January Block", [
         "5.1 The January Block covers every Member's surge unit for the four weeks from the first Monday in January: "
         "Monday 4 January to Sunday 31 January 2027.",
-        "5.2 The Association files the Block with the Agencies by Tuesday 22 December 2026. The Block is set at the "
+        "5.2 The Cooperative files the Block with the Agencies by Tuesday 22 December 2026. The Block is set at the "
         "Pool's expected draw over the Block weeks, rounded to the nearest 50 shifts. The Pool's draw is the shifts the "
         "Pool funds under clause 3.1 that start in the Block weeks.",
         "5.3 The Block is divided between the Agencies in proportion to the surge unit slots Schedule A assigns each. "
@@ -129,7 +131,7 @@ AGREEMENT = [
     ("6. Billing and settlement", [
         "6.1 The Agencies bill the Pool for shifts booked against a Member's surge request and bill the Member for "
         "other shifts.",
-        "6.2 The Association settles each Agency's billing monthly against the declarations in the capacity system. An "
+        "6.2 The Cooperative settles each Agency's billing monthly against the declarations in the capacity system. An "
         "agency shift billed to the Pool that the Pool does not fund is returned to the Member's account, and a shift "
         "the Pool funds that was billed to a Member is charged to the Pool.",
     ]),
@@ -145,7 +147,7 @@ def schedule_a(hs):
     for h in hs:
         start = "1 Nov 2026" if h["region"] == "NO" else "1 Nov 2021"
         prim = C.AG_C if h["agency"] == "C" else C.AG_I
-        rows.append((h["name"], C.REGIONS[h["region"]], h["city"], start, prim))
+        rows.append((h["name"], C.REGIONS[h["region"]], "%s, %s" % (h["city"], h["state"]), start, prim))
     return rows
 
 
@@ -165,15 +167,15 @@ def write_agreement(out, hs):
     flow.append(Paragraph(esc("Each surge unit slot on a shift is filled alternately by the Member's primary agency and "
                               "the other Agency, the primary agency taking the first."), st["small"]))
     flow.append(_table(st, ["Member", "Region", "City", "Pool start", "Primary agency"], schedule_a(hs),
-                       [52, 30, 30, 22, 38]))
-    foot = "TPHA Winter Surge Staffing Pool Agreement 2026-27"
+                       [52, 22, 38, 22, 38]))
+    foot = "TRHC Winter Surge Staffing Pool Agreement 2026-27"
     doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     PP.normalize_pdf(path, pdf_stamp(AGREEMENT_DATE, 16, 10), pdf_stamp(AGREEMENT_DATE, 16, 10))
 
 
 # ---------------------------------------------------------------------------------------------------- the register
 REGISTER_INTRO = [
-    "Every Member works to the Association's model surge plan (revision 3, March 2021). A Member declares Level 1 "
+    "Every Member works to the Cooperative's model surge plan (revision 3, March 2021). A Member declares Level 1 "
     "when its midnight census has been at or above 95 per cent of its staffed beds on two consecutive census nights, "
     "and Level 2 at or above 101 per cent; it steps down from Level 2 when the census falls below 98 per cent and "
     "stands down when it falls below 93 per cent. Declarations are made at the 06:45 bed huddle or the 14:45 bed "
@@ -189,7 +191,7 @@ HOLIDAYS = {dt.date(2021, 9, 6), dt.date(2021, 11, 25), dt.date(2021, 12, 24), d
 
 
 def _workday(r, a, b):
-    """A working day drawn between a and b (Monday to Friday, the association's holidays out)."""
+    """A working day drawn between a and b (Monday to Friday, the cooperative's holidays out)."""
     while True:
         d = a + dt.timedelta(days=int(r.integers(0, (b - a).days + 1)))
         if d.weekday() < 5 and d not in HOLIDAYS:
@@ -232,7 +234,7 @@ def write_register(out, hs):
         flow.append(Paragraph(esc(p), st["body"]))
     flow.append(_table(st, ["Member", "Surge unit", "Agency RN shifts a day, Level 1", "Agency RN shifts a day, Level 2",
                             "Plan rev.", "Revised"], register_rows(hs), [50, 33, 25, 25, 13, 22], right=(2, 3, 4)))
-    foot = "TPHA surge plan register 2026-27"
+    foot = "TRHC surge plan register 2026-27"
     doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     PP.normalize_pdf(path, pdf_stamp(REGISTER_DATE, 11, 30), pdf_stamp(REGISTER_DATE, 11, 30))
 
@@ -257,9 +259,9 @@ def write_rates(out):
             _table(st, ["Agency", "Block rate, per hour ($)", "Spot rate, per hour ($)", "Unused Block shift, per hour ($)"],
                    RATES, [50, 36, 36, 42], right=(1, 2, 3)),
             Spacer(1, 6),
-            Paragraph(esc("A shift a Member cancels less than two hours before it starts is billed at four hours of the "
+            Paragraph(esc("A shift a Member cancels less than six hours before it starts is billed at four hours of the "
                           "applicable rate. Holiday premiums (Thanksgiving, Christmas Day, New Year's Day) add 50 per "
                           "cent."), st["body"])]
-    foot = "TPHA Finance: agency rate schedule 2026-27"
+    foot = "TRHC Finance: agency rate schedule 2026-27"
     doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     PP.normalize_pdf(path, pdf_stamp(RATES_DATE, 10, 40), pdf_stamp(RATES_DATE, 10, 40))

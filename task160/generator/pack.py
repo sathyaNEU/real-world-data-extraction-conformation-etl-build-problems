@@ -22,7 +22,7 @@ D = dt.date
 F_LEGACY = "capacity_reports_legacy_2021-07-02_2024-07-01.csv"
 F_DAILY = "capacity_daily_2024-07-01_2026-12-20.csv"
 F_DECL = "surge_declarations_2021-07-01_2026-12-20.csv"
-F_MEMBERS = "tpha_members_2026-27.xlsx"
+F_MEMBERS = "trhc_members_2026-27.xlsx"
 F_BLOCKS = "january_block_orders_2022-2026.xlsx"
 F_CRS = "crestfield_member_shifts_2025-11-01_2026-12-20.csv"
 F_ISN25 = "inland_seas_member_shifts_2025-26.xlsx"
@@ -76,15 +76,15 @@ def write_members(out, hs):
     wb = Workbook()
     ws = wb.active
     ws.title = "Members"
-    head = ["member_no", "facility_id", "hospital", "city", "county", "region", "staffed_med_surg_beds",
+    head = ["member_no", "facility_id", "hospital", "city", "state", "county", "region", "staffed_med_surg_beds",
             "surge_unit", "pool_member_from", "crestfield_site_code", "inland_seas_facility"]
     rows = []
     for h in hs:
-        rows.append([h["member_no"], h["facility_id"], h["name"], h["city"], h["county"], C.REGIONS[h["region"]],
-                     W.staffed_beds(h, C.CENSUS_END), h["surge_unit"],
+        rows.append([h["member_no"], h["facility_id"], h["name"], h["city"], h["state"], h["county"],
+                     C.REGIONS[h["region"]], W.staffed_beds(h, C.CENSUS_END), h["surge_unit"],
                      C.NORTH_JOIN if h["region"] == "NO" else C.POOL_START, R.CRS_SITE[h["facility_id"]],
                      R.ISN_NAME[h["facility_id"]]])
-    _sheet(ws, head, rows, [11, 11, 30, 16, 15, 17, 12, 18, 14, 14, 20])
+    _sheet(ws, head, rows, [11, 11, 30, 16, 7, 15, 12, 12, 18, 14, 14, 20])
     ws.freeze_panes = "A2"
     _save(wb, os.path.join(out, F_MEMBERS), C.PEOPLE["pool_manager"], C.PEOPLE["pool_manager"],
           "2021-10-04T14:20:00Z", "2026-11-02T16:05:00Z")
@@ -137,6 +137,7 @@ def block_split(hs, block, members, w):
             second = "I" if first == "C" else "C"
             slots[first] += (n + 1) // 2
             slots[second] += n // 2
+    slots["C"] += sum(1 for h in hs if h["facility_id"] in members)   # Crestfield's rapid-open skeleton slot
     c = int(round(block * slots["C"] / float(slots["C"] + slots["I"])))
     i = block - c
     r = W.rng(61, w)
@@ -268,7 +269,7 @@ def write_survey(out, hs):
 
 # ---------------------------------------------------------------------------------------------------- dictionary
 DICTIONARY = [
-    (F_LEGACY, "member_no", "The association's member number."),
+    (F_LEGACY, "member_no", "The cooperative's member number."),
     (F_LEGACY, "report_date", "The date of the morning capacity report that carried the row."),
     (F_LEGACY, "census_midnight", "Inpatients in the member's staffed medical and surgical beds at the midnight census."),
     (F_LEGACY, "staffed_beds", "Medical and surgical beds the member could staff that night."),
@@ -289,25 +290,25 @@ DICTIONARY = [
     (F_CRS, "timesheet_no", "Crestfield timesheet the line is billed from."),
     (F_CRS, "client_site", "Crestfield's code for the member (see the members workbook)."),
     (F_CRS, "unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_CRS, "shift_start_utc", "Start of the line's hours, UTC."),
-    (F_CRS, "shift_end_utc", "End of the line's hours, UTC."),
+    (F_CRS, "shift_start_utc", "The line's start time, UTC."),
+    (F_CRS, "shift_end_utc", "The line's end time, UTC."),
     (F_CRS, "hours", "Hours billed on the line."),
     (F_CRS, "booking_type", "SURGE for a shift booked against a surge request, STAFF otherwise."),
-    (F_CRS, "bill_to", "TPHA POOL or FACILITY."),
+    (F_CRS, "bill_to", "TRHC POOL or FACILITY."),
     (F_CRS, "request_ref", "The surge request the shift was booked against."),
     (F_ISN25, "Facility", "Inland Seas' name for the member (see the members workbook)."),
     (F_ISN25, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
     (F_ISN25, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
     (F_ISN25, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
     (F_ISN25, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
-    (F_ISN25, "Bill to", "TPHA Pool or Facility."),
+    (F_ISN25, "Bill to", "TRHC Pool or Facility."),
     (F_ISN26, "Facility", "Inland Seas' name for the member (see the members workbook)."),
     (F_ISN26, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
     (F_ISN26, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
     (F_ISN26, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
     (F_ISN26, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
-    (F_ISN26, "Bill to", "TPHA Pool or Facility."),
-    (F_MEMBERS, "member_no", "The association's member number (the legacy capacity system's key)."),
+    (F_ISN26, "Bill to", "TRHC Pool or Facility."),
+    (F_MEMBERS, "member_no", "The cooperative's member number (the legacy capacity system's key)."),
     (F_MEMBERS, "facility_id", "The member's facility id in the capacity system from 1 July 2024."),
     (F_MEMBERS, "staffed_med_surg_beds", "Medical and surgical beds the member can staff, as at 2 November 2026."),
     (F_MEMBERS, "surge_unit", "The unit the member's surge plan opens."),
@@ -342,7 +343,7 @@ def write_dictionary(out):
     wb = Workbook()
     ws = wb.active
     ws.title = "Field definitions"
-    ws.cell(row=1, column=1, value="TPHA pool office: fields in the files pulled for the 2026-27 January block").font = BOLD
+    ws.cell(row=1, column=1, value="TRHC pool office: fields in the files pulled for the 2026-27 January block").font = BOLD
     _sheet(ws, ["file", "field", "format", "definition"], [[f, fl, field_format(fl), d] for f, fl, d in DICTIONARY],
            [44, 22, 16, 100], start_row=3)
     ws.freeze_panes = "A4"
@@ -353,21 +354,21 @@ def write_dictionary(out):
 
 # ---------------------------------------------------------------------------------------------------- manifest
 MANIFEST = [
-    (F_LEGACY, "TPHA capacity system (legacy, retired 30 June 2024)", "census nights 1 July 2021 to 30 June 2024, each row dated by the next morning's report", "archive export"),
-    (F_DAILY, "TPHA capacity system", "census nights 1 July 2024 to 20 December 2026", "pulled 21 Dec 2026 06:40 ET"),
-    (F_DECL, "TPHA capacity system, surge declarations", "1 July 2021 to 20 December 2026", "pulled 21 Dec 2026 06:41 ET; legacy declarations migrated with the system"),
-    (F_MEMBERS, "TPHA pool office", "members and keys for the 2026-27 season", "as at 2 Nov 2026"),
-    (DOC.F_AGREEMENT, "TPHA pool office", "2026-27 season", "approved 24 Sep 2026"),
-    (DOC.F_REGISTER, "TPHA pool office", "2026-27 season", "issued 2 Nov 2026"),
-    (F_BLOCKS, "TPHA pool office", "January blocks filed 2021 to 2025", "the 2026-27 row is filed on 22 Dec 2026"),
+    (F_LEGACY, "TRHC capacity system (legacy, retired 30 June 2024)", "census nights 1 July 2021 to 30 June 2024, each row dated by the next morning's report", "archive export"),
+    (F_DAILY, "TRHC capacity system", "census nights 1 July 2024 to 20 December 2026", "pulled 21 Dec 2026 06:40 ET"),
+    (F_DECL, "TRHC capacity system, surge declarations", "1 July 2021 to 20 December 2026", "pulled 21 Dec 2026 06:41 ET; legacy declarations migrated with the system"),
+    (F_MEMBERS, "TRHC pool office", "members and keys for the 2026-27 season", "as at 2 Nov 2026"),
+    (DOC.F_AGREEMENT, "TRHC pool office", "2026-27 season", "approved 24 Sep 2026"),
+    (DOC.F_REGISTER, "TRHC pool office", "2026-27 season", "issued 2 Nov 2026"),
+    (F_BLOCKS, "TRHC pool office", "January blocks filed 2021 to 2025", "the 2026-27 row is filed on 22 Dec 2026"),
     (F_CRS, "Crestfield Medical Staffing member shift report", "shifts starting 1 Nov 2025 to 31 Mar 2026 and 1 Nov 2026 to the day shift of 20 Dec 2026", "received 21 Dec 2026"),
     (F_ISN25, "Inland Seas Nursing member shift report", "payroll weeks 27 Oct 2025 to 5 Apr 2026", "received weekly"),
     (F_ISN26, "Inland Seas Nursing member shift report", "payroll weeks 26 Oct to 20 Dec 2026", "received weekly; week of 14 Dec received 21 Dec"),
-    (F_WW, "TPHA surveillance unit", "samples 6 Sep 2021 to 17 Dec 2026", "exported 21 Dec 2026"),
-    (F_OUTLOOK, "TPHA surveillance unit", "19 Dec 2026 to 1 Jan 2027", "issued 18 Dec 2026"),
-    (F_SURVEY, "TPHA workforce survey", "2025 Q1 to 2026 Q3", "members' quarterly returns"),
-    (DOC.F_RATES, "TPHA finance", "2026-27 season", "issued 1 Oct 2026"),
-    (F_DICT, "TPHA pool office", "field definitions", "updated 21 Dec 2026"),
+    (F_WW, "TRHC surveillance unit", "samples 6 Sep 2021 to 17 Dec 2026", "exported 21 Dec 2026"),
+    (F_OUTLOOK, "TRHC surveillance unit", "19 Dec 2026 to 1 Jan 2027", "issued 18 Dec 2026"),
+    (F_SURVEY, "TRHC workforce survey", "2025 Q1 to 2026 Q3", "members' quarterly returns"),
+    (DOC.F_RATES, "TRHC finance", "2026-27 season", "issued 1 Oct 2026"),
+    (F_DICT, "TRHC pool office", "field definitions", "updated 21 Dec 2026"),
 ]
 
 
