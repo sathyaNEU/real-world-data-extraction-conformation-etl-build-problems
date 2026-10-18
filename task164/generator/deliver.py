@@ -42,8 +42,8 @@ def figures(G, R):
         "at_risk": {d: int(counts[d]) for d in C.NAMES},
         "at_risk_total": int(counts.sum()),
         "share": {d: round(float(q[d]), 3) for d in C.NAMES},
-        "increment_default_pooled_kva": round(R["pooled"]["tou"], 1),
-        "increment_ev_kva": round(R["pooled"]["ev"], 1),
+        "increment_default_kva": round(G["tab"]["tou"][("S", 1)], 1),
+        "increment_ev_kva": round(G["tab"]["ev"], 1),
         "load_study_avg_default_kva": round(R["ls"]["avg_tou"], 2),
         "load_study_avg_ev_kva": round(R["ls"]["avg_ev"], 2),
         "default_path_foothill": int(R["R0"][1]["Foothill"]),
@@ -66,8 +66,7 @@ def rungs(G):
     f0 = C.constant_forecast(pn, ls["avg_tou"], ls["avg_ev"])
     c0 = C.at_risk(pn, f0)
     a0, _ = C.allocate(c0)
-    pooled = C.increments(Pt, by_size=False, by_pos=False)
-    return {"ls": ls, "R0": (c0, a0), "pooled": {"tou": pooled["tou"][("S", 1)], "ev": pooled["ev"]}}
+    return {"ls": ls, "R0": (c0, a0)}
 
 
 def write_xlsx(path, G, F):
@@ -120,22 +119,20 @@ def write_xlsx(path, G, F):
     for j, v, nf in ((2, F["at_risk_total"], "#,##0"), (3, 400.0, "0.000"), (4, sum(F["call"].values()), "#,##0")):
         c = ws.cell(row=end, column=j, value=v)
         c.font, c.number_format = bold, nf
-    note(ws, end + 2, ("Forecast 2027 summer peak (OP 4): each transformer's recorded 2026 TLM peak, plus the rise in "
-                       "recorded peak of each vehicle registered at its service points on 31 March 2027, less that of "
-                       "each vehicle registered there on the day of its 2026 peak, each vehicle at its premise's schedule on "
-                       "that date. Rises from the 2024 to 2026 TLM runs: transformers that gained one vehicle between "
-                       "summers, weather-adjusted by the district's median ratio on transformers with no change."), 4, 64)
+    note(ws, end + 2, ("Forecast 2027 summer peak (OP 4): each transformer's recorded 2026 TLM peak, plus the effect of "
+                       "each vehicle registered at its service points on 31 March 2027, less that of each vehicle "
+                       "registered there on the day of its 2026 peak, each at its premise's schedule on that date. One "
+                       "effect per schedule: the mean rise in recorded peak of the transformers that gained one vehicle on "
+                       "that schedule and nothing else between the 2024, 2025 and 2026 summers, weather-adjusted by the "
+                       "district's median ratio on transformers with no change."), 4, 76)
     note(ws, end + 3, ("At risk: forecast above 1.2 times the GIS kVA rating of the unit installed on the record date. "
                        "Shares to 400 by largest remainder (OP 2). Registrations dated 1 to 4 April 2027 in the 5 April "
                        "DMV feed are after the record date and not counted."), 4, 40)
     r0 = end + 5
-    ws.cell(row=r0, column=1, value="Rise in recorded summer peak per vehicle added, kVA").font = bold
-    rows = []
-    for sg, lab in (("S", "10 and 15 kVA"), ("M", "25 and 37.5 kVA"), ("L", "50 kVA and over")):
-        rows.append((lab, inc["tou"][(sg, 1)], inc["tou"][(sg, 2)], inc["tou"][(sg, 3)], inc["ev"]))
-    table(ws, r0 + 1, ["Nameplate", "1st default-rate vehicle", "2nd default-rate vehicle", "3rd and later", "Each R-EV2 vehicle"],
-          rows, [17, 13, 13, 13, 13], [None, "0.00", "0.00", "0.00", "0.00"])
-    ws.column_dimensions["E"].width = 13
+    ws.cell(row=r0, column=1, value="Effect of one vehicle on a transformer's recorded summer peak, kVA").font = bold
+    rows = [("Schedule R-EV2", inc["ev"]), ("Other residential schedules", inc["tou"][("S", 1)])]
+    table(ws, r0 + 1, ["Vehicle at a service point on", "kVA per vehicle"], rows, [26, 13], [None, "0.00"])
+    ws.column_dimensions["A"].width = 26
     ws.freeze_panes = "A5"
     ws.print_title_rows = "4:4"
 
@@ -235,32 +232,36 @@ def submission(F):
              "Lakeside %d, Sunrise %d, Sandhill %d, Kingsley %d, Highland %d and Brookside %d.**" % tuple(call[d] for d in C.NAMES),
              "",
              "Foothill's %d of the %s transformers forecast above 120 percent of nameplate carry its %d replacements, each "
-             "default-rate vehicle taken at the %.1f kVA it adds to a transformer's recorded summer peak. Not the load "
+             "default-rate vehicle taken at the %.1f kVA one such vehicle adds to a transformer's recorded summer peak. Not the load "
              "study's 4 to 9 pm average of %.2f kVA a default-rate vehicle, which gives Foothill %d: it is the vehicle's mean "
              "draw over the window, not its effect on the transformer's highest quarter hour." % (
                  F["at_risk"]["Foothill"], fmt_int(F["at_risk_total"]), F["foothill_replacements"],
-                 F["increment_default_pooled_kva"], F["load_study_avg_default_kva"], F["default_path_foothill"]),
+                 F["increment_default_kva"], F["load_study_avg_default_kva"], F["default_path_foothill"]),
              "", "## 2. Critical Components", "",
              "1. Transformers forecast at risk across the twelve districts: **%s**" % fmt_int(F["at_risk_total"]),
              "2. Foothill's transformers forecast at risk: **%d**" % F["at_risk"]["Foothill"],
-             "3. Weather-adjusted rise in a transformer's recorded summer peak when it gained one vehicle between the 2024, "
-             "2025 and 2026 summers, pooled over sizes: **%.1f kVA** a default-rate vehicle, **%.1f kVA** an R-EV2 vehicle"
-             % (F["increment_default_pooled_kva"], F["increment_ev_kva"]),
+             "3. Expected effect of one vehicle on a transformer's recorded summer peak, the mean weather-adjusted rise of "
+             "the transformers that gained one vehicle on the schedule and nothing else between the 2024, 2025 and 2026 "
+             "summers: **%.1f kVA** a default-rate vehicle, **%.1f kVA** an R-EV2 vehicle"
+             % (F["increment_default_kva"], F["increment_ev_kva"]),
              "", "## 3. Step-by-Step Solution", "",
              "1. Placed each DMV notification at its matched_sp_id and that service point's transformer, a vehicle present on "
              "a date from reg_start_date up to its status_date, its premise on R-EV2 from the rate change effective_date.",
              "2. Counted each transformer's default-rate and R-EV2 vehicles on the dates of its 2024, 2025 and 2026 TLM "
              "peaks and on the record date of Ordering Paragraph 5.",
-             "3. Took the rise in recorded peak of the transformers that gained one vehicle between summers, less the "
-             "district's median ratio on transformers with no change, by size group and position: %.1f kVA pooled for a "
-             "default-rate vehicle, %.1f kVA for an R-EV2 one." % (F["increment_default_pooled_kva"], F["increment_ev_kva"]),
-             "4. Forecast each transformer per Ordering Paragraph 4 as its 2026 TLM peak plus the rises of its record-date "
-             "vehicles less those of its peak-day vehicles, and counted those exceeding 1.2 times the register's kva_rating: "
+             "3. Took, per Ordering Paragraph 4, one effect per schedule: the mean rise in TLM peak of the transformers "
+             "that gained one vehicle on that schedule and nothing else between summers, less the district's median ratio "
+             "on transformers with no change: %.1f kVA a default-rate vehicle, %.1f kVA an R-EV2 one."
+             % (F["increment_default_kva"], F["increment_ev_kva"]),
+             "4. Forecast each transformer as its 2026 TLM peak plus those effects for its record-date vehicles less "
+             "those for its peak-day vehicles, and counted those exceeding 1.2 times the register's kva_rating: "
              "%s, Foothill %d." % (fmt_int(F["at_risk_total"]), F["at_risk"]["Foothill"]),
              "5. Pilot: counted the PTR changes from 6 October 2025 to 24 April 2026 whose installed_serial differs from the "
-             "removed_serial, their kVA change, and every cost line on the district's pilot work orders over those units.",
+             "removed_serial, their kVA change, and the cost lines on the district's pilot work orders, net of reversals, "
+             "over those units.",
              "6. Failures: took the EQ-XFMR lines starting 1 June to 30 September local time (UTC less seven hours), each "
-             "line's customers from its transformer's service points and its hours to restored_utc.",
+             "line in its transformer's register district with that transformer's service points as its customers and its "
+             "hours to restored_utc.",
              "7. Split the 400 by largest remainder per Ordering Paragraph 2: Foothill %d." % F["foothill_replacements"],
              "", "## 4. Deliverable Answers", "", "### ptr_2027_district_allocation.xlsx", "",
              "1. Transformers forecast at risk and replacements by district:"]

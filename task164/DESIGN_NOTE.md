@@ -20,11 +20,11 @@ to the peak while its average evening demand is a fraction of a kilowatt.
 | Objective | Forecasting & Predictive Modeling: the forecast summer is June to September 2027; the record date is Wednesday 31 March 2027, the extracts are pulled Monday 5 April 2027 and the compliance filing is due Friday 30 April 2027 |
 | Shape | `05` allocation to a fixed total: each district's replacements (12) and its forecast at-risk count (12), Foothill's figure on its own (1), then two decoupled asks (the 2025-26 pilot close-out in its three districts: transformers replaced, kVA added, cost per replacement; and each district's summer 2026 transformer-failure customer-hours and customers out more than eight hours) and a chart of the customer-hours. Criteria on paper: 12 + 12 + 1 + 9 + 24 + 3 (chart) + 2 (files) = 63 |
 | Decision | `allocation_to_total`, answer unit `count` (replacements per district, summing to 400 by the Commission's largest-remainder rule) |
-| Mechanism | gap time (decisive: the evidence a solver reaches first is a vehicle's average draw over the 4 to 9 pm window, the decision bets on the transformer's highest quarter hour of the coming summer) with population (the increment is a property of the transformer the vehicle joins, its size and the default-rate vehicles it already serves, not of the vehicle); pattern D (two flawless grains: the per-vehicle window average is right at the system's grain, the coincident increment at the transformer's; the decision funds transformers); generators G2 (what one unit of the decided thing is), G14 (the increment conditioned on the premise's rate and the transformer's size), G7 (the 4 to 9 pm window against the hours EV-rate premises charge in); Gate G `method_or_model_selection`; strategy `grain_or_unit` |
-| Layer 2 family / pattern | `field_method` (diversified demand on a service transformer, the field's own construction); `own:coincident-peak-increment-by-transformer-size-and-rate` |
+| Mechanism | gap time (decisive: the evidence a solver reaches first is a vehicle's average draw over the 4 to 9 pm window, the decision bets on the transformer's highest quarter hour of the coming summer) with population (the effect belongs to the transformer's recorded maximum, which a vehicle on its schedule moves by most of its draw, not to the vehicle's own average draw); pattern D (two flawless grains: the per-vehicle window average is right at the system's grain, the coincident increment at the transformer's; the decision funds transformers); generators G2 (what one unit of the decided thing is), G14 (the increment conditioned on the premise's rate and the transformer's size), G7 (the 4 to 9 pm window against the hours EV-rate premises charge in); Gate G `method_or_model_selection`; strategy `grain_or_unit` |
+| Layer 2 family / pattern | `field_method` (diversified demand on a service transformer, the field's own construction); `own:coincident-peak-increment-by-rate-schedule` |
 | Calibration | `none`: the 2024 to 2026 recorded peaks are the transformers' own history, the series a forecaster fits and holds out, never a certified record |
 | Furniture | forum `regulator_or_inspector` (the Commission receives the compliance filing), forcing event `statutory_or_regulatory_filing` (the filing is due 30 April 2027), organisation family `utility_or_infrastructure`, role family `programme_officer` (the manager of the proactive replacement program files the allocation), context artifact `register` (the GIS service-transformer register the call reads for nameplate), opening `question-first`, question form `how-many` |
-| Spine | the transformer load management extract, one row per transformer location and summer (2024, 2025, 2026: recorded 4 to 9 pm peak in kVA, its date and quarter hour, premises summed and AMI completeness), about 150,000 rows; constructed in the layout of a utility TLM extract |
+| Spine | the transformer load management extract, one row per transformer location and summer (2024, 2025, 2026: recorded 4 to 9 pm peak in kVA, its date and quarter hour, premises summed and AMI completeness), three season runs of 51,815 rows (155,445); constructed in the layout of a utility TLM extract |
 | Deliverables | `ptr_2027_district_allocation.xlsx` (the allocation table, the at-risk counts and the ask tables) and `summer_2026_transformer_failures.png` (the failures ask charted, never the decision quantity) |
 | People | drawn with `guard.py names --geo "United States" --seed 164`: Megan Stewart (distribution planning, owner of the TLM extract), Christopher Richardson (load research), Katelyn Duarte (regulatory compliance), Antonio Morgan (the pilot's construction lead); the requester is in no file and not in the prompt |
 | World | Calloway Valley Power Company (searched: no utility or company of the name), a fictional investor-owned electric utility in California's Central Valley and Sierra foothills, twelve operating districts (Foothill, Railyard, Canal, Mission, West Bluff, Crestview, Lakeside, Sunrise, Sandhill, Kingsley, Highland, Brookside; each screened against every card's invented names, Old Town, Orchard, Delta and Northgate dropped for colliding); towns Calloway, Cedar Gap, Pine Hollow, Loma Pardo, Tule Bend, Cottrell, Lake Vardon, Juniper Springs, Garnet Wells, Copper Flat and Kingsley, screened against every card (Dunmore, Ostrander, Hartwell and Marlow dropped as other builds' nouns; Ridgeport, Elkhorn Springs and Gold Run Heights dropped as a letter or a word from real California places) |
@@ -98,20 +98,22 @@ The pipeline a competent analyst builds from the prompt's words and the files' g
 
 1. Read the decision excerpt: a transformer is at risk if its forecast 2027 summer peak exceeds 120 percent of its
    nameplate; the forecast is its recorded 2026 summer peak adjusted for the vehicles at its service addresses on the
-   record date against those on its 2026 peak day, each at the schedule then in effect; 400 split by largest remainder.
+   record date against those on its 2026 peak day, each at the schedule then in effect and each taken at the expected
+   effect of one vehicle on a recorded peak, one figure for R-EV2 and one for every other schedule; 400 split by
+   largest remainder.
 2. Join the three TLM runs to the GIS register (the T prefix and the 2024 run's zeros), the service points to their
    transformers, and the DMV notifications to their service points through `matched_sp_id`.
 3. Count each transformer's vehicles on its 2026 peak day and on 31 March 2027, each on its premise's schedule from the
    R-EV2 effective dates.
-4. From the EV charging load study take each schedule's average EVSE demand over the quarter hours ending 16:15 to
-   21:00 (kWh times four, over 0.95): 0.61 kVA a default-rate vehicle, 0.008 kVA an R-EV2 one.
+4. Take each schedule's figure from the EV charging load study, the average EVSE demand over the quarter hours
+   ending 16:15 to 21:00 (kWh times four, over 0.95): 0.61 kVA a default-rate vehicle, 0.008 kVA an R-EV2 one.
 5. Forecast each transformer as its 2026 TLM peak plus that figure for every vehicle added since its peak day, less it
    for every vehicle gone, with the difference for every premise moved to R-EV2.
-6. Count the transformers above 1.2 times the register's kVA by district (1,596) and split the 400 by largest
+6. Count the transformers above 1.2 times the register's kVA by district (1,591) and split the 400 by largest
    remainder.
 
-Ends on: Foothill 59 replacements (1,596 transformers at risk; eleven of the twelve districts off the golden)
-Golden: Foothill 77 replacements (1,830 transformers at risk)
+Ends on: Foothill 59 replacements (1,591 transformers at risk; all twelve districts off the golden)
+Golden: Foothill 79 replacements (1,824 transformers at risk)
 
 ## Stump sentence
 
@@ -119,16 +121,16 @@ Adding each vehicle's average 4 to 9 pm charging demand from the load study (0.6
 transformer's recorded 2026 peak files Foothill 59 of the 400, because a service transformer's recorded peak is its single
 highest quarter hour of the summer, set on an evening its own load is highest, and on a pole-top serving two or three
 homes that is an evening a default-rate vehicle is charging: the transformers that gained one such vehicle between the
-2024, 2025 and 2026 summers show their recorded peak rising by about 4.9 kVA, which files Foothill 77.
+2024, 2025 and 2026 summers show their recorded peak rising by about 4.9 kVA, which files Foothill 79.
 
 ## Three rules
 
 - Task type: `load-forecasting` in Energy Systems & Utilities, serving Forecasting & Predictive Modeling: each
   transformer's summer 2027 4 to 9 pm peak, a window not yet open, forecast from its own recorded summer peaks.
 - Domain test: the deciding quantity is the expected rise in a service transformer's recorded summer peak when a plug-in
-  vehicle joins it, estimated the distribution planner's way from the transformers' own recorded peaks before and after
-  they gained a vehicle (coincident demand at the transformer, by rate schedule and transformer size), not from the
-  vehicle's average demand.
+  vehicle joins it, one figure per rate schedule, estimated the distribution planner's way from the transformers' own
+  recorded peaks before and after they gained a vehicle (coincident demand at the transformer), not from the vehicle's
+  average demand.
 - Swap: "each school district's share of 400 new classrooms in proportion to its schools whose 2027 peak-day enrolment
   exceeds 120 percent of capacity, from each new pupil's average attendance" reads the same and loses the stump: a
   pupil's attendance adds steadily, while here the quantity is the maximum quarter hour of a few homes' summed load on a
@@ -147,24 +149,26 @@ homes that is an evening a default-rate vehicle is charging: the transformers th
   the load study's per-vehicle window average, and the data separates them out of sample.
 - Decisive step: estimating a vehicle's contribution to a service transformer's summer peak as the coincident increment
   the recorded peaks show (the weather-adjusted rise in recorded peak of transformers that gained one vehicle between
-  summers, by the premise's schedule), and rejecting the load study's window average because it leaves 4.4 kVA of each
-  such transformer's 2026 peak unforecast when 2026 is forecast from 2025.
+  summers, by the premise's schedule), and rejecting the load study's window average because it leaves 4.2 kVA of each
+  such transformer's 2026 peak unforecast when 2026 is forecast from 2025 (a 4.83 kVA mean rise against 0.61).
 - Not semantics: every field read correctly (the TLM peak is kVA of the summed service points, the load study is kWh a
   quarter hour at the EVSE, the schedules' periods, the record date, the matched service points) still leaves the easy
   route adding 0.61 kVA a default-rate vehicle, a correct reading of the load study and a wrong estimate of the effect
   on a maximum.
-- Not rule application: OP 4 files the outcome (the recorded 2026 peak adjusted by the expected effect of the change in
-  vehicles) and no rule, document or column says how much a vehicle moves a peak; executing every filed rule (the record
-  date, the peak day, the schedules in effect, 120 percent, the largest remainder) on the load study's figure files
-  Foothill 59.
+- Not rule application: OP 4 files the quantity (the expected effect of one vehicle on a service transformer's recorded
+  summer peak, one figure per schedule) and no rule, document or column says how it is measured; executing every filed
+  rule (the record date, the peak day, the schedules in effect, one figure per schedule, 120 percent, the largest
+  remainder) with the load study's figures files Foothill 59.
 - Analyst test: a strong analyst who matched every registration, read every rate change and applied OP 2 to OP 5 to the
-  letter but added the load study's average 4 to 9 pm demand per vehicle files Foothill 59 (1,596 at risk), asserted on
-  the clean truth and on the pack (checks R3a, R3a-pack).
+  letter but took each schedule's figure as the load study's average 4 to 9 pm demand files Foothill 59 (1,591 at risk),
+  asserted on the clean truth and on the pack (checks R3a, R3a-pack).
 - Estimand: OP 3 to OP 5 of decision_26-11-019_excerpt.pdf with Finding 5: every single-phase residential service
-  transformer in service on 31 March 2027, its recorded 2026 summer peak adjusted by the expected effect of the
-  difference between the vehicles registered at its service addresses on its 2026 peak day and on the record date, each
-  at the schedule in effect on the date concerned, at risk when that exceeds 120 percent of the nameplate of the unit
-  installed on the record date, counted in its district; 400 split by largest remainder (OP 2).
+  transformer in service on 31 March 2027, its recorded 2026 summer peak adjusted for the difference between the
+  vehicles registered at its service addresses on its 2026 peak day and on the record date, each at the schedule in
+  effect on the date concerned and each taken at the expected effect of one vehicle on a service transformer's recorded
+  summer peak, one figure for every vehicle on R-EV2 and one for every vehicle on any other schedule; at risk when that
+  exceeds 120 percent of the nameplate of the unit installed on the record date, counted in its district; 400 split by
+  largest remainder (OP 2).
 - No decoy: the load study measures what it measures and draws no conclusion; no memo, draft, briefing, staff figure or
   stakeholder argues a per-vehicle figure or a ranking of districts; the IEPR forecast and the feeder peaks are declared
   distractors that rank nothing on the decision; no block is copied and no rule withheld.
@@ -179,32 +183,34 @@ homes that is an evening a default-rate vehicle is charging: the transformers th
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 the load study's 4 to 9 pm average per vehicle, by schedule (Foothill 59) | OP 4 asks for an effect and the study answers in the window's terms | the participants file names the schedule | yes, the reflex | none | none | one mean a schedule | readable |
-| 1 the window's busiest quarter hour (Foothill 60), or the charging rate on the default schedule and nil on R-EV2 (Foothill 80) | none | charging_kw is a column | a coincident-demand reflex | none | none | one max or one mean | readable |
-| 2 one recorded-peak rise for any vehicle (Foothill 64), or the default-rate rise with R-EV2 nil (Foothill 78) | none | the schedule split sits in the rate log | pooling is the reflex once the panel is built | none | none | one mean | readable |
-| 3 the recorded-peak rise by schedule from the 2024 to 2026 panel (decisive) | none: OP 4 files the outcome, no clause says how a vehicle moves a peak | no column carries a rise or an effect; the panel needs DMV states at three peak days joined through service points | no: the reflex for a vehicle's load at peak is the load study | none: nothing published or certified ties under any basis | none | a panel of transitions, weather-adjusted by district, by schedule | silent |
-| filed changes: new vehicles only (Foothill 70), schedules frozen at the peak (70), departures ignored (77) | OP 4: the difference between the two days, each at its schedule | DMV status, rate log | no | none | none | rule | readable |
+| 0 the load study's 4 to 9 pm average per vehicle, by schedule (Foothill 59) | OP 4 asks for each schedule's expected effect on a recorded peak and the study answers in the window's terms | the participants file names the schedule | yes, the reflex | none | none | one mean a schedule | readable |
+| 1 the window's busiest quarter hour (Foothill 60), or the charging rate on the default schedule and nil on R-EV2 (Foothill 82) | none | charging_kw is a column | a coincident-demand reflex | none | none | one max or one mean | readable |
+| 2 one recorded-peak rise for every vehicle whatever its schedule (Foothill 66), or the default-rate rise with R-EV2 nil (Foothill 80) | OP 4 asks for one figure per schedule | the schedule split sits in the rate log | pooling is the reflex once the panel is built | none | none | one mean | readable |
+| 3 each schedule's expected effect measured on the 2024 to 2026 recorded-peak panel (decisive) | none: OP 4 files the quantity, one figure per schedule, and never how it is measured | no column carries a rise or an effect; the panel needs DMV states at three peak days joined through service points | no: the reflex for a vehicle's load at peak is the load study | none: nothing published or certified ties under any basis | none | a panel of transitions, weather-adjusted by district, one mean a schedule | silent |
+| filed changes: new vehicles only (Foothill 71), schedules frozen at the peak (70), departures ignored (80) | OP 4: the difference between the two days, each at its schedule | DMV status, rate log | no | none | none | rule | readable |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | at risk | forecast exceeds 1.2 times nameplate | reaches it | same call | OP 3 "exceeds"; no changed transformer within 0.2 kVA of the line (HOLES) |
-| SF2 | the base | recorded 2026 summer peak | a three-summer average of projected peaks | Foothill 83, eleven districts off | OP 4 "its recorded 2026 summer peak" |
+| SF2 | the base | recorded 2026 summer peak | a three-summer average of projected peaks | Foothill 84, eleven districts off | OP 4 "its recorded 2026 summer peak" |
 | SF3 | nameplate | unit installed on the record date (register) | the 2026 TLM run's kVA | same call | OP 5; the two agree at every location |
 | SF4 | vehicles registered at its service addresses | matched notifications | matched plus the matcher's misses placed by address | same call | records converge (R2-unmatched) |
-| SF5 | when the 2026 state is taken | the day of the recorded 2026 peak | 30 September or 1 June 2026 | four districts off either way | OP 4 "on the day of its recorded 2026 peak" |
+| SF5 | when the 2026 state is taken | the day of the recorded 2026 peak | 30 September or 1 June 2026 | two and four districts off | OP 4 "on the day of its recorded 2026 peak" |
 | SF6 | schedule in effect | effective_date | request_date | allocation unchanged, one at-risk count | OP 4 "in effect"; tariff special condition; dictionary effective_date |
 | SF7 | no vehicle after the record date | registrations to 31 March 2027 | the 5 April feed | same call | OP 4; records converge (R2-april) |
 | SF8 | district | the register's district on the record date | the TLM district code | same call | OP 3; the two agree everywhere |
-| SF9 | expected effect | mean rise | median rise | Foothill 79, ten districts off | OP 4 "expected" |
-| SF10 | the split | largest remainder | plain rounding | same call | OP 2; every share 0.30 or more from a half |
+| SF9 | expected effect | mean rise | median rise | Foothill 82, eight districts off | OP 4 "expected effect" |
+| SF10 | the split | largest remainder | plain rounding | same call | OP 2; every share 0.29 or more from a half |
 | SF11 | summer | 1 June to 30 September | calendar year | same call | Finding 5; every peak dated inside |
 | SF12 | 4 to 9 pm | quarter hours ending 16:15 to 21:00 | the 2024 run's beginnings 16:00 to 20:45 | same call | dictionary; the same intervals labelled by their start |
 | SF13 | units | kVA (TLM at 0.95) | kW | same call | dictionary; the golden adds kVA to kVA |
 | SF14 | in service on the record date | the register at the pull | locations changed after it | same call | no location added or removed between the record date and the pull |
 | SF15 | registered on the record date | present on 31 March 2027 | a status ending that day | same call | no registration ends on 31 March 2027 |
 | SF16 | forecast 2027 summer peak | OP 4's definition | a weather-normalised or trended peak | not the decision's quantity | OP 4 defines it; OP 4 "no other change in load" |
+| SF17 | the granularity of the effect | one figure for R-EV2, one for every other schedule | by fuel type (BEV 5.64, PHEV 1.94), by district, by transformer size, by size and position | Foothill 78 six off, 80 seven off, 79 none off (three counts), 80 two off | OP 4 "one figure applying to every vehicle on Schedule R-EV2 and one to every vehicle on any other residential schedule" |
+| SF18 | the R-EV2 figure | the expected effect measured like the other schedule's (0.88) | nil or 0.2 because R-EV2 charges after midnight | Foothill 80 with eight and with four districts off | OP 4 asks for an expected effect for R-EV2; the panel's R-EV2 transitions average 0.88 kVA (REV2) |
 
 ## Ladder
 
@@ -212,32 +218,38 @@ Rungs from the pack (`calc.ladder`), each a complete pipeline, the allocation's 
 
 | Rung | Construction | At risk | Foothill | Districts off | Dies to |
 |---|---|---|---|---|---|
-| 0 (default) | load study window average by schedule, every change | 1,596 | 59 | 11 | the 2025 to 2026 back-test (4.4 kVA unforecast per added default-rate vehicle; BACKTEST) |
-| 1a | the window's busiest quarter hour by schedule | 1,578 | 60 | 11 | the same back-test |
-| 1b | charging rate (6.3 kVA) on the default schedule, nil on R-EV2 | 1,962 | 80 | 9 | the panel: an R-EV2 vehicle raises a recorded peak 0.9 kVA, a default-rate one 4.9, never the full rate on average |
-| 2a | one recorded-peak rise for any vehicle (3.1 kVA) | 2,022 | 64 | 9 | the rate log: the panel's R-EV2 transitions rise 0.9, the default-rate ones 4.9 |
-| 2b | default-rate rise, R-EV2 nil | 1,806 | 78 | 7 | the panel's R-EV2 transitions |
-| 3 (decisive) | recorded-peak rise by schedule, size and position | 1,830 | 77 | 0 | (golden) |
+| 0 (default) | load study window average by schedule, every change | 1,591 | 59 | 12 | the 2025 to 2026 back-test (4.23 kVA unforecast per added default-rate vehicle; BACKTEST) |
+| 1a | the window's busiest quarter hour by schedule | 1,570 | 60 | 12 | the same back-test |
+| 1b | charging rate (6.3 kVA) on the default schedule, nil on R-EV2 | 2,006 | 82 | 7 | the panel: a default-rate vehicle raises a recorded peak 4.9 kVA on average, an R-EV2 one 0.9 |
+| 2a | one recorded-peak rise for any vehicle, whatever its schedule | 2,022 | 66 | 9 | OP 4's one figure per schedule; the panel's R-EV2 transitions rise 0.9, the default-rate ones 4.9 |
+| 2b | default-rate rise, R-EV2 nil | 1,794 | 80 | 8 | the panel's R-EV2 transitions (0.88) |
+| 3 (decisive) | each schedule's expected effect from the recorded-peak panel | 1,824 | 79 | 0 | (golden) |
 
-Filed-rule rungs (OP 4): new vehicles only 2,162 at risk, Foothill 70; schedules frozen at the peak 2,071, 70;
-departures ignored 1,915, 77 with six districts off. Under the golden every one of the eight estimators the pack
-supports (size by position, size only, position only, pooled by schedule, additive or no weather adjustment, either
-transition year alone) gives the same twelve counts; the build's family adds a least-squares fit and the 2026
-cross-section and agrees (FAMILY). Worth: the decisive move takes Foothill from 59 to 77 and the at-risk total from
-1,596 to 1,830; every correction below it moves one way and leaves at least seven districts off.
+Filed-rule rungs (OP 4): new vehicles only 2,174 at risk, Foothill 71; schedules frozen at the peak 2,080, 70;
+departures ignored 1,912, 80 with four districts off. Every one of the eleven per-schedule estimators the pack supports
+gives the same twelve counts (FAMILY-pack; FAMILY-spread lists them): the one-vehicle means on both transition years,
+on 2024 to 2025 alone (5.01 and 0.79 kVA) or 2025 to 2026 alone (4.83 and 0.98), with the district's median ratio,
+its mean difference or no weather adjustment; the per-vehicle mean over one or two vehicles added; least squares of
+the change on the vehicles added, weather-adjusted, with district-and-year or year effects, or over every change
+(4.69 to 4.71 and 0.64 to 0.73); and the 2026 cross-section within district, rating and service points (4.46 and
+0.83). The 2027 additions' fuel mix (79.2 percent battery electric) matches the history's one-vehicle transitions
+(80.5 percent), and the default-rate figure reweighted to it files the same allocation (FUELMIX). Worth: the decisive
+move takes Foothill from 59 to 79 and the at-risk total from 1,591 to 1,824; every correction below it moves one way and
+leaves at least seven districts off.
 
-**Natural routes, measured on the cut pack** (`checks.py` CORRIDOR and the route sweep). Constant per-vehicle figures land
-the golden allocation for a default-rate figure of 4.2 to 5.4 kVA with an R-EV2 figure of 0 to 1.2 kVA: a coincidence
-factor of 0.67 to 0.86 on the load study's mean charging rate of 6.29 kVA (0.66 to 0.72 with R-EV2 nil; ROUTES-cf), which
-is the planner's own knowledge that a lone vehicle on a small transformer is mostly coincident with its peak; taken with
-R-EV2 nil it lands the allocation and misses five or six districts' at-risk counts. Every load-study figure (0.61 average, 0.96 busiest quarter hour) and the
-charging rate itself lie outside it. The rest miss the allocation in ten to twelve districts (ROUTES): the IEPR 2027 vehicle
-forecast (Foothill 17), the vehicles registered on the record date (25), the default-rate vehicles alone (51), the
-vehicles added since the peak (32), the 2026 overloads alone (58), the 2026 peaks over 1.15 (46), each transformer's
-2025 to 2026 rise repeated (53) or 2024 to 2026 trend (57), the summer 2026 failures (43), the transformer counts (40);
-each participant's mean 4 to 9 pm maximum (5.71 and 3.02 kVA) gives Foothill 77 with eight districts off. Paper
-estimate: a top response lands the call through the panel or a coincidence factor in that band with a sensible R-EV2
-figure about one time in seven, both top responses about one time in twenty-five.
+**Natural routes, measured on the cut pack** (`checks.py` CORRIDOR, ROUTES, ROUTES-cf). Constant per-vehicle figures
+land the golden allocation for a default-rate figure of 4.2 to 5.2 kVA with an R-EV2 figure of 0.1 to 1.5 kVA: a
+coincidence factor of 0.66 to 0.82 on the load study's mean charging rate of 6.34 kVA with a small R-EV2 factor, the
+planner's own knowledge that a lone vehicle on a small transformer is mostly coincident with its peak; with R-EV2 nil
+no factor from 0.50 to 1.00 lands. Every load-study figure (0.61 average, 0.94 busiest quarter hour) and the charging
+rate itself lie outside the corridor. The rest miss the allocation in eleven or twelve districts (ROUTES): the IEPR
+2027 vehicle forecast (Foothill 17), the vehicles registered on the record date (25), the default-rate vehicles alone
+(51), the vehicles added since the peak (32), the 2026 overloads alone (58), the 2026 peaks over 1.15 (46), each
+transformer's 2025 to 2026 rise repeated (53) or 2024 to 2026 trend (57), the summer 2026 failures (43), the
+transformer counts (40); each participant's mean 4 to 9 pm maximum (5.88 and 3.02 kVA) gives Foothill 78 with ten
+districts off. Paper estimate, with the stage 4 audit: a top response lands the call through the panel, or a
+coincidence factor in that band with a small R-EV2 factor, about one time in eight; both top responses about one time
+in thirty.
 
 ## Closure table
 
@@ -249,7 +261,7 @@ figure about one time in seven, both top responses about one time in twenty-five
 | 4 | As-of dating | the record date, 31 March 2027 | OP 5; no registration ends on it, April registrations converge (SF7, SF15) |
 | 5 | Version basis | the 2026 TLM run against the pull's register | identical kVA at every location (SF3) |
 | 6 | Denominator | the system's at-risk total | OP 2 |
-| 7 | Weighting | none, counts | OP 2 |
+| 7 | Weighting | each one-vehicle transition once in the per-schedule mean | OP 4 "expected effect"; least squares and the cross-section weight otherwise and agree (FAMILY-pack) |
 | 8 | Window length | the panel's summers | either transition year alone gives the same counts (FAMILY) |
 | 9 | Boundary inclusivity | exceeds | OP 3; holes of 0.2 kVA around the line for every changed transformer (HOLES) |
 | 10 | Rounding path | whole replacements | OP 2; plain rounding agrees (SF10) |
@@ -263,17 +275,18 @@ figure about one time in seven, both top responses about one time in twenty-five
 | 18 | Dimensional units | kVA | dictionary; load study kWh to kVA at 0.95 only on the default path (SF13) |
 | 19 | Code and status semantics | R-EV2 against R-TOU4 and R-1; CARE is a flag | tariff excerpt; dictionary |
 | 20 | Integerisation | largest remainder | OP 2, C1 with plain rounding |
-| 21 | Clause scope | each vehicle's schedule on each of the two dates | OP 4 "on the date concerned" |
+| 21 | Clause scope | each vehicle's schedule on each of the two dates; one figure per schedule for every vehicle | OP 4 "on the date concerned", "one figure applying to every vehicle" |
 | 22 | Forward window contents | the vehicles registered on the record date | OP 4; no other change in load |
 
 ## Literal reader
 
 Executed word for word, Finding 5 and OP 2 to OP 5 fix the population (the register on the record date), the outcome
-(the recorded 2026 peak adjusted by the expected effect of the difference between the vehicles on the peak day and on
-the record date, each at its schedule then), the threshold (exceeds 120 percent of the record-date nameplate), the unit
-(district counts) and the split (largest remainder); the one open element, how much a vehicle moves a recorded peak, is
-settled by the TLM history: every estimator of it on the 2024 to 2026 panel gives the same twelve counts, and the load
-study's window average fails the 2025 to 2026 back-test by 4.4 kVA a vehicle.
+(the recorded 2026 peak adjusted for the difference between the vehicles on the peak day and on the record date, each at
+its schedule then), the granularity and the functional (each vehicle at the expected effect of one vehicle on a recorded
+peak, one figure for R-EV2 and one for every other schedule), the threshold (exceeds 120 percent of the record-date
+nameplate), the unit (district counts) and the split (largest remainder); the one open element, how each schedule's
+effect is measured, is settled by the TLM history: all eleven per-schedule estimators on the 2024 to 2026 panel give the
+same twelve counts, and the load study's window average fails the 2025 to 2026 back-test by 4.23 kVA a vehicle.
 
 ## Oracles
 
@@ -300,9 +313,12 @@ Brookside 88, 1,615.0 kVA, $7,008.
   larger on the pole, left in place and their record corrected under the pilot's own orders: the change log shows a
   PTR change with the serial unchanged (4, 8 and 4). The GIS PTR rows count them as replacements and add their kVA;
   only the unchanged serial, and the orders' labor-only charges, show it.
+- Pin (stage 4): the asking sentence files the cost basis as "the lines on its work orders in that district, net of
+  reversals, over the transformers it replaced", so cancelled and no-work orders' lines count and the -R and -C pairs
+  net; the judge read the earlier "everything charged" as supporting the golden and asked for one reading.
 - Hazards: second units taken under one order carry a PTR change with no work order (an unmatched join that the reason
-  code resolves); substitutions (planned 50, set 37.5); cancelled orders' survey charges (the asking sentence includes
-  them); lines posted to the wrong order and moved (-R, -C); contract accruals reversed the next day.
+  code resolves); substitutions (planned 50, set 37.5); cancelled orders' survey charges; lines posted to the wrong
+  order and moved (-R, -C); contract accruals reversed the next day.
 
 **Ask B. Summer 2026 transformer failures by district** (24 figures: customer-hours and customers out more than eight
 hours). H18 home: the reliability case for the program, in the reliability report's words. Golden (customer-hours,
@@ -313,8 +329,11 @@ West Bluff 810 and 42, Crestview 717 and 39, Lakeside 540 and 21, Sunrise 1,181 
   transformer lines; on a failure that took a tap or loop fuse every line carries the whole event's customers, so the
   per-line product counts them once a line. Only the line's own service points (another file) show it; every district
   has such events.
+- Pin (stage 4): the dictionary's dispatch_district definition files that outage reporting counts each line in the
+  operating district of the transformer it de-energised; on dispatch_district ten districts' customer-hours move
+  (Canal 734 against 1,185; ASK-district).
 - Hazards: the OMS clock in UTC (documented; failures on the evenings of 31 May and 30 September cross the window),
-  the dispatch district (documented), the overload operations OL-XFMR beside the failures EQ-XFMR (the cause list), the
+  the dispatch district (filed), the overload operations OL-XFMR beside the failures EQ-XFMR (the cause list), the
   staged restoration (each line its own restoration).
 
 Pair ceiling: 31.6 (cracker 48.1, mirror 15.1)
@@ -337,11 +356,11 @@ Measured by: generator/cracker.py
 - Sweep 3, the decision carries 120: the filed threshold of OP 3, stated by the Commission and asked of nobody.
 - Sweep 3, the decision carries the call's words: Finding 4 names the twelve districts and OP 1 the 400, the decision's
   own furniture; no district figure appears in any document.
-- Sweep 4, the decision's stump terms (vehicle, schedule, recorded, effect, record): OP 4 files the outcome and the
-  comparison (the recorded peak, the vehicles on two dates, each at its schedule); it names no per-vehicle figure, no
-  estimator and no window average, which is the decisive step.
-- Sweep 4, the tariff's terms (vehicle, schedule, effect, registered): R-EV2's applicability and the change-of-schedule
-  rule in a utility's own tariff words.
+- Sweep 4, the decision's stump terms (schedule, vehicle, recorded, effect, record): OP 4 files the outcome, the
+  comparison and the granularity (the recorded peak, the vehicles on two dates at their schedules, one expected effect
+  per schedule); it names no per-vehicle figure, no estimator and no window average, which is the decisive step.
+- Sweep 4, the tariff's terms (schedule, vehicle, effect, quantity, percent, registered): R-EV2's applicability, the
+  tiers and the change-of-schedule rule in a utility's own tariff words.
 - Sweep 8, `qc_flag`, `device_id`, `internal_order`: a weather network's quality flag, an OMS device field and the
   ledger's internal order, each the system's own column name.
 
@@ -380,3 +399,11 @@ Measured by: generator/cracker.py
 - Rate requests drawn freely before their effective dates: dated at the request, three districts' at-risk counts moved;
   a request for a change taking effect after the transformer's 2026 peak now comes after that peak where the calendar
   allows, leaving one count and no allocation on the reading the tariff rules out.
+- OP 4 as first filed ("adjusted by the expected effect on that peak of the difference between the plug-in electric
+  vehicles"), with a size-by-position table as the golden: the stage 4 judge found the effect's granularity unfiled
+  (NOT_DETERMINISTIC, SEND_BACK, Gates C and E), estimators by fuel type, district, size, a pooled median and an R-EV2
+  nil filing Foothill 74 to 79; filing the panel method was refused as rule application. OP 4 now files the WHAT only:
+  each vehicle at the expected effect of one vehicle on a recorded peak, one figure for R-EV2 and one for every other
+  schedule. The hole family was rebuilt on the eleven per-schedule estimators (one-vehicle means by transition year and
+  weather adjustment, least squares with district and year effects, the cross-section), and the golden moved from the
+  size-by-position table (Foothill 77) to the per-schedule means (Foothill 79).

@@ -77,6 +77,13 @@ def write(task_dir):
         "as_of": "2027-04-05",
         "deliverables": ["ptr_2027_district_allocation.xlsx", "summer_2026_transformer_failures.png"],
         "distractor_files": DISTRACTORS,
+        "context_files": {
+            PK.F_LSI: ("context, not a distractor and not a planted route: the 2026 EV charging load study's EVSE intervals, an "
+                       "honest measurement of what a vehicle draws, which the analysis tests against the transformers' recorded "
+                       "peaks and rejects as the basis for a vehicle's effect on a recorded peak (it under-forecasts the 2025 to "
+                       "2026 rises out of sample)"),
+            PK.F_LSP: "context: the load study's participants (schedule, fuel type, charging rate), read with the intervals",
+        },
         "field_terms": [],
         "stated_inputs": [],
         "input_gates": {"files": len(out), "formats": sorted({x["format"] for x in out}),

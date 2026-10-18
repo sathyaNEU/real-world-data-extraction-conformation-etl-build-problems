@@ -83,11 +83,35 @@ def table(P, col="adj", by_size=True, by_pos=True, ev_by_k=False):
     return {"tou": out, "ev": ev}
 
 
-def ols_table(P):
-    sel = P[(P.dk >= 0) & (P.de >= 0) & ((P.dk + P.de) > 0) | ((P.dk == 0) & (P.de == 0))]
+def const_table(t, e):
+    """One figure for every default-rate vehicle and one for every R-EV2 vehicle (OP 4's granularity)."""
+    return {"tou": {(sg, p): float(t) for sg in "SML" for p in (1, 2, 3)}, "ev": {0: float(e), 1: float(e)}}
+
+
+def pooled(P, col="adj"):
+    """The mean rise over the transitions that added exactly one vehicle on the schedule and nothing else."""
+    return const_table(P[(P.dk == 1) & (P.de == 0)][col].mean(), P[(P.de == 1) & (P.dk == 0)][col].mean())
+
+
+def one_or_two(P, col="adj"):
+    """The rise per vehicle over the transitions that added one or two vehicles on the schedule and nothing else."""
+    t = pd.concat([P[(P.dk == 1) & (P.de == 0)][col], P[(P.dk == 2) & (P.de == 0)][col] / 2])
+    e = pd.concat([P[(P.de == 1) & (P.dk == 0)][col], P[(P.de == 2) & (P.dk == 0)][col] / 2])
+    return const_table(t.mean(), e.mean())
+
+
+def ols(P, col="adj", fe=None, added_only=True):
+    """Least squares of the change in recorded peak on the vehicles added on each schedule, with group effects swept
+    out where given."""
+    sel = P[(P.dk >= 0) & (P.de >= 0)] if added_only else P
+    y = sel[col].values.astype(float)
     X = np.c_[sel.dk.values, sel.de.values].astype(float)
-    b = np.linalg.lstsq(X, sel["adj"].values, rcond=None)[0]
-    return {"tou": {(sg, p): float(b[0]) for sg in "SML" for p in (1, 2, 3)}, "ev": {0: float(b[1]), 1: float(b[1])}}
+    if fe is not None:
+        g = np.asarray(fe(sel))
+        y = y - pd.Series(y).groupby(g).transform("mean").values
+        X = X - pd.DataFrame(X).groupby(g).transform("mean").values
+    b = np.linalg.lstsq(X, y, rcond=None)[0]
+    return const_table(b[0], b[1])
 
 
 def cross_section_table(tx):
@@ -99,28 +123,29 @@ def cross_section_table(tx):
     d["ec"] = d["e2026"] - d.groupby(cell)["e2026"].transform("mean")
     X = np.c_[d.kc.values, d.ec.values]
     b = np.linalg.lstsq(X, d.res.values, rcond=None)[0]
-    return {"tou": {(sg, p): float(b[0]) for sg in "SML" for p in (1, 2, 3)}, "ev": {0: float(b[1]), 1: float(b[1])}}
+    return const_table(b[0], b[1])
 
 
 def family(tx, rate_code=None):
+    """Every defensible estimate of OP 4's per-schedule expected effect from the recorded peaks."""
     P = transitions(tx)
-    P26 = P[P.y == 2026]
     fam = {
-        "size x position": table(P),
-        "size only": table(P, by_pos=False),
-        "position only": table(P, by_size=False),
-        "pooled by rate": table(P, by_size=False, by_pos=False),
-        "additive weather": table(P, "add"),
-        "no weather adjustment": table(P, "raw"),
-        "2025 to 2026 only": table(P26),
-        "EV increment by TOU present": table(P, ev_by_k=True),
-        "least squares on vehicles added": ols_table(P),
+        "pooled by schedule": pooled(P),
+        "pooled, 2024 to 2025": pooled(P[P.y == 2025]),
+        "pooled, 2025 to 2026": pooled(P[P.y == 2026]),
+        "pooled, additive weather": pooled(P, "add"),
+        "pooled, no weather adjustment": pooled(P, "raw"),
+        "one or two added, per vehicle": one_or_two(P),
+        "least squares, weather-adjusted": ols(P, "adj"),
+        "least squares, district and year effects": ols(P, "raw", fe=lambda s: s.district + "/" + s.y.astype(str)),
+        "least squares, year effects": ols(P, "raw", fe=lambda s: s.y),
+        "least squares, every change": ols(P, "adj", added_only=False),
         "2026 cross-section": cross_section_table(tx),
     }
     return fam, P
 
 
-GOLD = "size x position"
+GOLD = "pooled by schedule"
 
 
 def F(tab, sg, k, e):

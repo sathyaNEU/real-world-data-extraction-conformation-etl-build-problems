@@ -15,6 +15,10 @@
     "iepr_2026_pev_forecast_by_district.xlsx",
     "feeder_peak_summary_2026.csv"
   ],
+  "context_files": {
+    "ev_load_study_2026_intervals.parquet": "context, not a distractor and not a planted route: the 2026 EV charging load study's EVSE intervals, an honest measurement of what a vehicle draws, which the analysis tests against the transformers' recorded peaks and rejects as the basis for a vehicle's effect on a recorded peak (it under-forecasts the 2025 to 2026 rises out of sample)",
+    "ev_load_study_2026_participants.csv": "context: the load study's participants (schedule, fuel type, charging rate), read with the intervals"
+  },
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
@@ -42,7 +46,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 12420,
+      "bytes": 12457,
       "rows": 138,
       "source": "Constructed: Calloway Valley Power Regulatory Compliance, data dictionary for the 5 April 2027 pull",
       "date": "2027-04-05",
@@ -51,7 +55,7 @@
     {
       "path": "decision_26-11-019_excerpt.pdf",
       "format": "pdf",
-      "bytes": 46345,
+      "bytes": 46486,
       "rows": null,
       "source": "Constructed: Decision 26-11-019 on Application 26-03-008, excerpt (fictional proceeding)",
       "date": "2026-11-12",
@@ -78,7 +82,7 @@
     {
       "path": "dmv_pev_notifications.csv",
       "format": "csv",
-      "bytes": 5081866,
+      "bytes": 5081285,
       "rows": 39423,
       "source": "Constructed: Calloway Valley Power Customer Systems, DMV plug-in vehicle notification feed with the address match",
       "date": "2027-04-05",
@@ -87,7 +91,7 @@
     {
       "path": "ev_load_study_2026_intervals.parquet",
       "format": "parquet",
-      "bytes": 6300715,
+      "bytes": 6299073,
       "rows": 3671683,
       "source": "Constructed: Calloway Valley Power Load Research, 2026 EV charging load study, EVSE submeter intervals",
       "date": "2026-11-16",
@@ -96,7 +100,7 @@
     {
       "path": "ev_load_study_2026_participants.csv",
       "format": "csv",
-      "bytes": 19354,
+      "bytes": 19351,
       "rows": 322,
       "source": "Constructed: Calloway Valley Power Load Research, 2026 EV charging load study participants",
       "date": "2026-11-16",
@@ -177,8 +181,8 @@
     {
       "path": "rate_schedule_changes.csv",
       "format": "csv",
-      "bytes": 1354027,
-      "rows": 21393,
+      "bytes": 1354260,
+      "rows": 21398,
       "source": "Constructed: Calloway Valley Power Customer Systems, rate schedule changes to R-EV2",
       "date": "2027-04-05",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -195,7 +199,7 @@
     {
       "path": "service_points.csv",
       "format": "csv",
-      "bytes": 24419729,
+      "bytes": 24419724,
       "rows": 297919,
       "source": "Constructed: Calloway Valley Power Customer Systems, residential service points and their transformers at the pull",
       "date": "2027-04-05",

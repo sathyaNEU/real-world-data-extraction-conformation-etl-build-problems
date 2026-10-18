@@ -105,11 +105,13 @@ DEC_ORDERS = [
     "3. A transformer is at risk if its forecast 2027 summer peak exceeds 120 percent of its nameplate rating. Every "
     "single-phase residential service transformer in service on the record date shall be forecast, and each shall be "
     "counted in the operating district it belongs to on that date.",
-    "4. A transformer's forecast 2027 summer peak is its recorded 2026 summer peak adjusted by the expected effect on "
-    "that peak of the difference between the plug-in electric vehicles registered at its service addresses on the day "
-    "of its recorded 2026 peak and those registered there on the record date, each at the rate schedule in effect for "
-    "its service address on the date concerned. No other change in load shall be assumed, and no vehicle registered after "
-    "the record date shall be counted.",
+    "4. A transformer's forecast 2027 summer peak is its recorded 2026 summer peak adjusted for the difference between "
+    "the plug-in electric vehicles registered at its service addresses on the day of its recorded 2026 peak and those "
+    "registered there on the record date, each at the rate schedule in effect for its service address on the date "
+    "concerned. Each such vehicle shall be taken at the expected effect of one plug-in electric vehicle on a service "
+    "transformer's recorded summer peak, one figure applying to every vehicle on Schedule R-EV2 and one to every vehicle "
+    "on any other residential schedule. No other change in load shall be assumed, and no vehicle registered after the "
+    "record date shall be counted.",
     "5. The record date is March 31, 2027. A transformer's nameplate rating is that of the unit installed at its "
     "location on the record date.",
     "6. Calloway Valley Power shall file a Tier 2 advice letter by April 30, 2027, setting out each district's forecast "
@@ -311,7 +313,8 @@ DICT = {
                        "cutout or fuse hardware; EQ-CONN connector or secondary; TREE; ANML animal; VEH vehicle; PLND "
                        "planned; UNK unknown."),
         ("customers_out", "Customers out of service."),
-        ("dispatch_district", "District whose crew was dispatched."),
+        ("dispatch_district", "District whose crew was dispatched. Outage reporting counts each line in the operating "
+                              "district of the transformer it de-energised (gis_service_transformers)."),
     ],
     "ptr_pilot_work_orders": [
         ("Work Order", "Work order."), ("District", "Operating district."), ("Location", "Transformer location."),

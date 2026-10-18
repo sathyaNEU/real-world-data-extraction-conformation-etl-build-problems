@@ -83,18 +83,10 @@ def main(target):
         evr.append(adj[(de == 1) & (dk == 0)])
     tou = pd.concat(tou)
     e_inc = float(np.concatenate(evr).mean())
-    cell = tou.groupby(["g", "pos"])["adj"].agg(["mean", "size"])
-    by_pos = tou.groupby("pos")["adj"].mean()
-    inc = {(g, p): (cell.loc[(g, p), "mean"] if (g, p) in cell.index and cell.loc[(g, p), "size"] >= 40 else by_pos[p])
-           for g in "SML" for p in (1, 2, 3)}
-
-    def total(k, e):
-        s = np.zeros(len(k))
-        for i in range(1, int(k.max()) + 1):
-            s += np.where(k >= i, np.array([inc[(g, min(i, 3))] for g in grp]), 0.0)
-        return s + e * e_inc
-
-    fc = pk[2026] + total(*st["rec"]) - total(*st[2026])
+    t_inc = float(tou["adj"].mean())          # OP 4: one figure for every default-rate vehicle, one for every R-EV2 one
+    fc = pk[2026] + t_inc * (st["rec"][0] - st[2026][0]) + e_inc * (st["rec"][1] - st[2026][1])
+    say("V-effects", round(t_inc, 1) == F["increment_default_kva"] and round(e_inc, 1) == F["increment_ev_kva"],
+        "per-schedule effects %.3f and %.3f kVA" % (t_inc, e_inc))
     risk = pd.Series(fc > 1.2 * kva).groupby(dist).sum()
     names = list(F["at_risk"])
     risk = risk.reindex(names).astype(int)

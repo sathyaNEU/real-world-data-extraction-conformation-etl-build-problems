@@ -11,7 +11,7 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "Allocate the 400 replacements as Foothill 77, Railyard 68, Canal 50, Mission 23, West Bluff 16, Crestview 5, Lakeside 4, Sunrise 5, Sandhill 71, Kingsley 27, Highland 8 and Brookside 46.",
+  "answer": "Allocate the 400 replacements as Foothill 79, Railyard 68, Canal 49, Mission 23, West Bluff 16, Crestview 4, Lakeside 4, Sunrise 3, Sandhill 72, Kingsley 26, Highland 8 and Brookside 48.",
   "answer_source": "submission.md, ## 1. Final Recommendation (generator/figures.json call)",
   "gap": [
     "time",
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "stump_class": "analytical",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:coincident-peak-increment-by-transformer-size-and-rate",
+  "layer2_pattern": "own:coincident-peak-increment-by-rate-schedule",
   "layer1": [
     "season runs in two layouts (TLM 4.2 to TLM 5: interval beginnings, zero-padded location numbers, district names)",
     "identifiers across systems (GIS T-prefixed locations against TLM integers)",
@@ -100,16 +100,16 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The rise in a shared asset's seasonal peak from one more intermittent load is that load's draw at the moments the peak is set, and because a peak sits where the asset's load is highest, a load joining an asset few others share adds most of its full draw, less on a large asset and less for each further load, while its average draw over the peak window is a small fraction of that; a forecast that adds each new load's average draw, its full rating or one pooled increment misclassifies the assets near the limit.",
-  "driver_concrete": "Each plug-in vehicle registered since a transformer's 2026 recorded peak raises its 2027 4 to 9 pm peak by what the recorded peaks show a vehicle at a premise on its rate adds to a transformer of that size already serving that many default-rate vehicles, about five kVA for the first default-rate vehicle on a 10 to 25 kVA pole-top and well under one for a vehicle at an EV-rate premise, not by the 0.6 kVA the load study's vehicles draw on average between 4 and 9 pm nor by the charger's rating.",
-  "stump": "A competent solver adds to each transformer's recorded 2026 peak the load study's average 4 to 9 pm EVSE demand (0.61 kVA a default-rate vehicle, 0.008 kVA an R-EV2 one) for every change in vehicles since that peak, finds 1,596 transformers at risk and gives Foothill 59 of the 400 against the golden 77; the step that lands it there is pricing a vehicle at its average evening draw when a small transformer's recorded peak is set on an evening its vehicle charges, which the 2024 to 2026 panel shows as a 4.9 kVA rise for a default-rate vehicle and 0.9 kVA for an R-EV2 one.",
-  "analyst_test": "A strong analyst who matches every registration to its premise and transformer, reads the decision, the tariffs and the load management runs correctly and adds the load study's average 4 to 9 pm demand per vehicle by rate to each transformer's recorded 2026 peak for every change since it files Foothill 59 of the 400 (1,596 at risk) against 77; pricing a default-rate vehicle at its charging rate with R-EV2 nil, or at one recorded-peak rise pooled across rates, files other wrong splits (Foothill 80 and 64), and only the recorded-peak rise by the premise's rate files the golden.",
+  "driver": "The rise in a shared asset's seasonal peak from one more intermittent load is that load's draw at the moments the peak is set, and because a peak sits where the asset's load is highest, a load joining an asset few others share adds most of its full draw while its average draw over the peak window is a small fraction of that; a forecast that adds each new load's window average, its full rating, or one figure for loads on every tariff misclassifies the assets near the limit, and the assets' own recorded peaks before and after a load joins give the effect by tariff.",
+  "driver_concrete": "Each plug-in vehicle registered since a transformer's 2026 recorded peak moves its 2027 4 to 9 pm peak by the expected effect of one vehicle on its premise's schedule, one figure per schedule as the Commission files it, which the transformers' own recorded peaks put at about 4.9 kVA a default-rate vehicle and 0.9 kVA an R-EV2 one, not the 0.6 kVA the load study's vehicles draw on average between 4 and 9 pm nor the charger's rating.",
+  "stump": "A competent solver takes each schedule's per-vehicle figure from the load study's average 4 to 9 pm EVSE demand (0.61 kVA a default-rate vehicle, 0.008 kVA an R-EV2 one), adds it to each transformer's recorded 2026 peak for every change in vehicles since that peak, finds 1,591 transformers at risk and gives Foothill 59 of the 400 against the golden 79; the step that lands it there is pricing a vehicle at its average evening draw when a small transformer's recorded peak is set on an evening its vehicle charges, which the 2024 to 2026 panel shows as a 4.9 kVA expected effect for a default-rate vehicle and 0.9 kVA for an R-EV2 one.",
+  "analyst_test": "A strong analyst who matches every registration to its premise and transformer, reads the decision, the tariffs and the load management runs correctly, applies OP 4's one figure per schedule and takes each figure from the load study's average 4 to 9 pm demand files Foothill 59 of the 400 (1,591 at risk) against 79; pricing a default-rate vehicle at its charging rate with R-EV2 nil, or one recorded-peak rise for every vehicle whatever its schedule, files other wrong splits (Foothill 82 and 66), and only each schedule's expected effect measured on the recorded peaks files the golden.",
   "domain_test": "The quantity that decides the call is each service transformer's forecast summer 4 to 9 pm peak, built the way distribution planning builds diversified demand on a transformer: an added vehicle contributes its coincident draw at the moments the transformer's peak is set, which on a small transformer serving few vehicles is most of its charger's draw and shrinks on larger transformers and with each further vehicle, measured from the transformers' own recorded peaks; swap the transformer for a clinic and the vehicle for a patient and the task no longer reads the same, because nothing makes one added patient raise a small clinic's busiest hour by nearly a full appointment slot while a large clinic's barely moves.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task453": "surface proximity only: a labour force survey's questionnaire-redesign effect read from the incoming rotation groups of a panel; here a plug-in vehicle's effect on a service transformer's recorded summer maximum, read from the transformers' own peaks, with no panel rotation, no redesign and another domain and decision"
   },
   "lineage": [],
-  "notes": "Seed FC35's decisive mechanism (pilot determinations reproducing only under one charging-start method) is not used: there is no pilot reproduction requirement and no certified record to fit. The 2024 to 2026 recorded peaks are the transformers' own history, which a forecaster tests the increment on out of sample.",
+  "notes": "Seed FC35's decisive mechanism (pilot determinations reproducing only under one charging-start method) is not used: there is no pilot reproduction requirement and no certified record to fit. The 2024 to 2026 recorded peaks are the transformers' own history, which a forecaster tests the increment on out of sample. Stage 4 repair: OP 4 now files the effect's granularity (one expected effect per schedule), never its measurement; the size-by-position golden (Foothill 77) gave way to the per-schedule means (Foothill 79).",
   "registered": "2026-10-18T01:34:28Z"
 }
