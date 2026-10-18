@@ -2,17 +2,17 @@
   "task": "task471",
   "architecture": "v1",
   "drawn": "2026-10-18",
-  "slot_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips); the world (an air service development team pitching three routes a year to airlines), the decision (which three city pairs) and the quantity (how many local travellers fly each market, and what they pay) kept; the pitfall re-found in how the hub's parking card survey gets its replies back",
+  "slot_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips); the world (an air service development team pitching three routes a year to airlines), the decision (which three city-pair markets) and the quantity (how many of the region's travellers fly each market) kept; fares dropped; the pitfall re-found in how the hub's parking card survey gets its replies back",
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
   "client_domain": "survey-research-official-statistics",
-  "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 passengers from the regional service area who drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
+  "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
   "objective": "etl",
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Phoenix, Tampa and Washington",
+  "answer_source": "submission.md block 1; golden/kvr_2027_pitch_markets.csv (in_2027_pitch Y)",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "units served",
   "spine": {
-    "file": "Ardmoor parking card survey returns, 2026 waves",
-    "rows": 0,
+    "file": "Brennick parking card survey returns, 2026 waves",
+    "rows": 74019,
     "entity": "one returned survey card: one car's parked trip at the hub, with the travel party's home ZIP, final destination, nights away and party size",
     "grain": "returned card (parked trip)",
     "source": "synthetic (constructed in the layout of an airport parking customer card survey keyed from paper)"
@@ -50,7 +50,7 @@
     "currency": "USD",
     "org_type": "state aviation bureau that owns and operates a hub airport and a regional airport",
     "invented_names": [
-      "Ardmoor International",
+      "Brennick International",
       "Kessick Valley Regional"
     ],
     "people": [
@@ -66,21 +66,20 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
-  "driver_concrete": "Each candidate market's 2026 service-area passengers parked at Ardmoor are each wave's quarter of parking entries times the market's share of the wave's returned cards, each card weighted by the inverse of the share of the wave's handed cards whose handout day left room for a stay of its nights to end by the last box collection, not raw card shares, nor each handout day's return rate, nor one over nights.",
-  "stump": "The default path expands each wave's returned cards to its quarter's parking entries and pitches Orlando, New York and Washington, because the cards handed out in each wave's last weeks came back only from short trips, so the two- to four-week stays that make up much of Fort Myers and Tampa are missing from the replies; weighted for when each stay could have come back, Fort Myers and Tampa rank second and third.",
+  "driver_concrete": "Each candidate market's 2026 service-area trips parked at Brennick are each wave's quarter of transient entries times the market's share of the wave's returned cards, each card weighted by the inverse of the share of the wave's handed cards whose handout day left room for a stay of its nights to end by the last box collection, not raw card shares, nor each handout day's return rate, nor one over nights.",
+  "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keys every destination to its city market, keeps the service-area ZIPs, counts each party's passengers and expands each wave's returned cards to its quarter's parking entries, or reweights them by each handout day's return rate, pitches Orlando, New York and Washington; only weighting each card by the inverse of the share of handout days from which a stay of its length could have been collected pitches Orlando, Fort Myers and Tampa.",
+  "analyst_test": "A strong analyst who keys every destination to its city market, keeps the service-area ZIPs, drops the served market and expands each wave's returned cards to its quarter's entries pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips); reweighting the cards to each handout day's cards handed, by one over the nights, pooling the waves or post-stratifying to each lot's entries lands the same three; only weighting each card by the inverse of the share of handout days from which a stay of its length could have been collected pitches Phoenix, Tampa and Washington.",
   "domain_test": "The deciding quantity is a register-based total completed by a supplement survey: the hub's parking entry register counts each quarter's parked trips and the card survey supplies destination, home and party, and survey research's design-based estimator weights each returned card by the inverse of its chance of having been collected, which the fieldwork design sets from the card's handout day and the stay's length; swapped for a share of the replies, the generic estimator of another field, the long stays drop out and the call changes, and without a register, a card that exists only once the stay ends and a collection close the task has nothing to estimate.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:replies-censored-by-collection-close",
   "layer1": [
-    "card survey keyed from paper: destinations as written (city names, airport codes, resort and region names), ZIPs with and without leading zeros or a plus-four, nights written as words",
-    "handout log by wave and day giving the card serial ranges handed, apart from the cards themselves",
-    "parking revenue system daily entry counts by lot in quarterly extracts whose lot names and layout change mid-year",
+    "paper cards keyed and coded by the contractor: destinations coded to an airport or a metro code, the answers as written in a separate verbatims file, a few home ZIPs keyed with a plus-four or a space, one keying batch carried twice by the export",
+    "handout log by wave, day and plaza giving the card number ranges and counts handed, apart from the cards, in a PDF",
+    "parking revenue system daily entry counts by lot in quarterly extracts whose lot codes, date format and columns change at a mid-year upgrade, the garage in every file",
     "service-area ZIP list built from county lists, one ZIP straddling two counties",
-    "airport codes rolled up to city markets (Washington, New York, Chicago and others spanning several airports)",
-    "the regional airport's 2027 schedule naming the markets already served nonstop",
-    "the 10% airline ticket sample's quarterly market and ticket files, round-trip itinerary fares beside prorated market fares"
+    "airport and metro codes rolled up to city markets (Washington, New York, Chicago and others spanning several airports)",
+    "the regional airport's 2027 schedule naming the markets already served nonstop, one by a seasonal flight"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
