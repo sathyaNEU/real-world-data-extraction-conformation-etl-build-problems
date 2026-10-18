@@ -1331,6 +1331,74 @@ def cmd_names(args):
     return 0
 
 
+SLOT_STOP = set("""about above after against along among around because before behind below beside
+between beyond cannot could during each either every first from have having inside into itself
+least less like made makes many more most much must never next none only other over same
+several since some such than that their them then there these they this those through under
+until upon very what when where which while whose will with within without would
+after already always another anything being below cannot carry carries decide decided decides
+decisive design different enough every everything filed files following gives given goes holds
+instead itself least leave leaves little means moved moves nothing number numbers once order
+other others part parts rather read reads really record records right rules same says screen
+screens second sense sets shows side something sort still take taken takes thing things think""".split())
+
+
+def slot_terms(text):
+    """Content words of a driver sentence, for searching slot notes."""
+    words = re.findall(r"[a-z][a-z-]{3,}", text.lower())
+    return sorted(set(w for w in words if w not in SLOT_STOP))
+
+
+def cmd_slots(a):
+    """Search every slot's design note and pipeline.json for a mechanism's own words.
+
+    The card corpus holds only mechanisms that were registered. A mechanism screened dead before a card
+    was written lives in that number's design note and pipeline.json alone, so `recent`, `mechanisms`,
+    `nearest` and `heart` cannot see it. This searches that text."""
+    terms = [t.lower() for t in (a.terms or [])]
+    if a.driver:
+        terms += slot_terms(a.driver)
+    terms = sorted(set(t for t in terms if len(t) >= 4))
+    if not terms:
+        print("give one or more terms, or --driver '<the driver sentence>'")
+        return 1
+    need = a.min_terms
+    hits = {}
+    paths = sorted(list(REPO.glob("task*/DESIGN_NOTE.md")) + list(REPO.glob("task*/pipeline.json")))
+    for path in paths:
+        task = path.parent.name
+        if a.skip and task == a.skip:
+            continue
+        try:
+            lines = path.read_text(errors="replace").split("\n")
+        except Exception:
+            continue
+        head = ""
+        for i, line in enumerate(lines, 1):
+            if line.startswith("## "):
+                head = re.sub(r"[`*]", "", line[3:]).strip()
+            low = line.lower()
+            got = [t for t in terms if t in low]
+            if len(got) >= need:
+                d = hits.setdefault(task, {"terms": set(), "lines": []})
+                d["terms"].update(got)
+                if len(d["lines"]) < a.lines:
+                    d["lines"].append((path.name, i, head, line.strip()[:a.width], got))
+    if not hits:
+        print("no slot note mentions %d or more of: %s" % (need, ", ".join(terms[:14])))
+        return 0
+    order = sorted(hits.items(), key=lambda kv: (-len(kv[1]["terms"]), kv[0]))
+    print("slot notes mentioning %d or more of: %s\n" % (need, ", ".join(terms[:14])))
+    for task, d in order[:a.n]:
+        print("%s  %d terms: %s" % (task, len(d["terms"]), ", ".join(sorted(d["terms"])[:10])))
+        for fname, i, head, line, got in d["lines"]:
+            print("   %s:%d  %s" % (fname, i, ("[%s] " % head if head else "") + line))
+        print()
+    print("A hit is not a repeat. Read the line, and if it is the same insight, that mechanism is spent:")
+    print("a screen recorded in a slot note is as dead as one recorded on a card.")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -1354,6 +1422,10 @@ def main():
     s.set_defaults(fn=cmd_heart)
     s = sub.add_parser("people"); s.add_argument("task", nargs="?"); s.add_argument("--refresh", action="store_true")
     s.set_defaults(fn=cmd_people)
+    s = sub.add_parser("slots"); s.add_argument("terms", nargs="*"); s.add_argument("--driver", default="")
+    s.add_argument("--min-terms", dest="min_terms", type=int, default=2); s.add_argument("--n", type=int, default=12)
+    s.add_argument("--lines", type=int, default=3); s.add_argument("--width", type=int, default=170)
+    s.add_argument("--skip", default=""); s.set_defaults(fn=cmd_slots)
     s = sub.add_parser("names"); s.add_argument("--geo", default=""); s.add_argument("--locale", default="")
     s.add_argument("--n", type=int, default=10); s.add_argument("--seed", type=int, required=True)
     s.set_defaults(fn=cmd_names)

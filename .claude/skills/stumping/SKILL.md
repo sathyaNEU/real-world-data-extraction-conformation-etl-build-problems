@@ -226,6 +226,31 @@ values, or wards and bed-days, so the generating process has dropped out and the
 screen's answer into the note, naming the estimand's five parts and the sentence that files each, before
 the default path is written.
 
+**Surviving this screen is necessary and not sufficient**, and three further screens kill what it passes.
+Each is cheap, each is run as code before any separation is measured, and each closed a cell in one sitting.
+
+- **The dispersion screen.** A decisive quantity that is a spread rather than a level passes the estimand
+  screen, because a dispersion is estimated and is none of the five parts, and it still fails twice: the
+  estimator family for a dispersion is open (four defensible overdispersion forms disagreed on the flagged
+  set in 40 of 60 seeds), and shrinkage reaches the same ranking without estimating it at all (empirical
+  Bayes flagged the real outlier in 60 of 60, better than the golden method's 58). A pack sentence closing
+  the family files the method and spends the stump, so there is no exit.
+- **The variance-only screen.** Ask whether the decisive step moves the point estimate or only its
+  uncertainty. A correction that only widens moves the call one way, so the golden is always the hold and
+  every conservative reflex lands it with no analysis: measured at 0.32 of compliant series called against
+  0.14. A point-estimate correction financed by the same quantity that randomises the graded figure fails
+  the other way, its lever over its noise never reaching 1 across the whole plausible range.
+- **The common-exposure subset screen.** A decisive step of the form "put the units on a common exposure
+  before comparing" cannot carry a stump, because the subset already at that exposure is a filter and a
+  divide estimating the same quantity with no model, and it reached the golden at a wider margin than the
+  designed route (1.147x against 1.075x). The only escapes are that no unit attains the exposure, which is
+  completion and is spent, that too few do, which is the variance screen above, or that the attaining
+  subset is unrepresentative, which is a plant.
+- **The truncation-direction screen.** Ask which end a suppressing threshold hides. One that hides the
+  bottom leaves every tail functional exactly observable and only the mean latent, and the mean is a basis
+  question, so the step is a semantic fork; only a threshold that hides the top leaves a latent quantity a
+  tail functional needs.
+
 ### 1.3 Couple the pitfall to the domain
 
 The decisive step is the field's own method for the deciding quantity, which an expert applies and a

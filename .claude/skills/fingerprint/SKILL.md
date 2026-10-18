@@ -69,7 +69,19 @@ python3 .claude/skills/fingerprint/guard.py mechanisms --objective <o>   # every
 
 `mechanisms` is the one read of the corpus a draw needs: one block per build on the objective (narrow it with
 `--gate-g` or `--strategy`), so no card is opened by hand. Write one line on the insight each spends before
-drawing. Everything here is mechanical and free; the people index and the clone screen keep working caches
+drawing. **Then run the candidate through `slots`**, because the card corpus holds only the mechanisms that
+were registered:
+
+```
+python3 .claude/skills/fingerprint/guard.py slots --driver "<the candidate driver sentence>"
+python3 .claude/skills/fingerprint/guard.py slots funnel overdispersion --min-terms 2
+```
+
+It searches every number's design note and `pipeline.json` for the candidate's own words and prints the
+matching lines with the heading they sit under. A screen recorded in a slot note is as dead as one recorded
+on a card, and `recent`, `mechanisms`, `nearest` and `heart` cannot see it: an overdispersion-adjusted funnel
+was rejected with measurements in two slots (task183's note and task194's, which names it outright) while
+every card screen passed it, and a pass was spent on it anyway. A hit is not a repeat; read the line. Everything here is mechanical and free; the people index and the clone screen keep working caches
 under `.cache/` (never committed), seeded from the tracked baselines in `corpus/` and
 `../clone-check/corpus/`.
 
@@ -179,6 +191,16 @@ back; the better outcome is never to face it.
   against 45 for forecasting. A house domain inherits the task types of the client domains it maps to, so
   its cells are drawable wherever theirs are; `coverage` separates the never-built pairings a task type
   serves from the ones nothing serves.
+- **A mechanism that died before registration.** The card corpus is a record of draws, not of screens, so
+  every mechanism killed at stage 1 or 2 is invisible to `recent`, `mechanisms`, `nearest` and `heart`. Those
+  kills live in each number's `## Tried and rejected` and in `pipeline.json`, and they are the cheapest
+  screen on file because they come with measurements. `guard.py slots` searches them; a draw that skips it
+  re-screens ground this repo has already paid for.
+- **A driver repeat the text screen cannot see.** `driver.text` works on the sentence, so one insight told in
+  another field's nouns scores low: a load carried by a fitted transfer scored 0.07 against the architecture
+  that is the same insight in the same domain, under the 0.12 WARN floor, and two task500 re-roots passed
+  `check` at 0.05 and 0.08 while repeating their neighbours' drivers. The abstraction test and `slots` are
+  the complements; the number is never the answer on its own.
 - **A spent cell read as a spent objective.** `ban.subdomain` reaches the last three builds, so a cell
   whose mechanism search came up empty is drawable again next sitting: what binds a redraw there is
   `driver.text`, `test.same_puzzle` and `test.same_driver`, all of which are about the mechanism. A lane
