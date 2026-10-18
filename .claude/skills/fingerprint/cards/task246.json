@@ -11,8 +11,8 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Seven of the twelve zones carry the measurement note: North Pastoral, North Lakeshore, Central Pastoral, Laga Town, East Pastoral, West Pastoral and West Riverine (the readings' figure and the children's own differ by 4.0, 4.1, 3.8, 5.2, 5.1, 2.9 and 4.5 points); the other five do not",
+  "answer_source": "submission.md block 1; golden lr2027_gam_measurement_note.pdf and lr2027_muac_measurement_review.xlsx",
   "gap": [
     "population"
   ],
@@ -29,19 +29,19 @@
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "monitoring_export",
   "stakeholder_role": "the county's nutrition information officer, who signs off each survey zone's figures for the county's early warning bulletin",
-  "role_family": "field_unit_lead",
+  "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "child anthropometry export of the county's long-rains nutrition surveillance rounds",
-    "rows": 0,
+    "file": "the two partners' child anthropometry exports of the county's 2027 long-rains surveillance round (ncha_lr2027_anthropometry.csv, prk_lr2027_anthropometry.xlsx)",
+    "rows": 4214,
     "entity": "one child aged 6 to 59 months measured in one round (sex, age, weight, height, MUAC, oedema, cluster, team)",
     "grain": "child x round",
     "source": "synthetic"
   },
   "forum": "operations_desk",
-  "forcing_event": "season_or_peak",
+  "forcing_event": "other",
   "org_family": "local_government",
   "world": {
     "geography": "Kenya, a fictional arid county in the north (its health department, survey zones, partner organisations and people are fictional; real national survey methods and MUAC cut-offs)",
@@ -64,10 +64,10 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is the share of a population below a fixed cut-off, read from single readings taken by several measurers whose repeat readings and readings against a reference reader are on file; each measurer adds a fixed offset and a random error larger than their repeat agreement shows, so the population's own distribution needs each measurer's offset taken out of the readings and the full random error, read against the reference, taken out of the spread, while a correction by the repeat agreement alone, with or without the offsets, leaves the share wrong group by group.",
   "driver_concrete": "Each survey zone's wasting prevalence by MUAC is read from the normal distribution of its children's own arm circumference, which takes each team's tape offset against the supervisor out of that team's readings and each team's field error, read from its deviations from the supervisor across the standardisation children rather than from the technical error of its repeat readings, out of the zone's spread; the repeat-reading correction alone and the offset-plus-repeat correction each note a different set of zones.",
-  "stump": "A competent solver removes only the technical error of each team's repeat readings in the standardisation test from each zone's MUAC spread and reads the zone's error-free wasting prevalence at the readings' own mean, which leaves the teams' tape offsets against the supervisor in the readings, and so notes the wrong set of zones: zones read with a tight tape go un-noted and a zone read with a loose tape is noted or left alone on the wrong side of the two-point line.",
+  "stump": "A competent solver builds each zone's error-free figure from the standardisation test's two headline statistics, each anthropometrist's offset against the supervisor out of its readings and the technical error of its repeat readings out of the zone's spread, and notes four zones (North Pastoral, Central Pastoral, Laga Town, East Pastoral); the repeat error misses the scattered anthropometrists' child-to-child departures from the supervisor, so North Lakeshore, West Pastoral and West Riverine fall out of the seven.",
   "stump_class": "analytical",
-  "analyst_test": "With every field read and every rule applied, the natural route takes each team's measurement error as the technical error of its repeat readings in the standardisation test, removes it from each zone's MUAC spread and reads the zone's error-free prevalence at the readings' own mean, which leaves the teams' tape offsets in the readings and notes too few zones; the golden also takes the offsets out and uses the error against the supervisor.",
-  "domain_test": "General statistics, measurement error: the call turns on each zone's error-free MUAC distribution, recovered by splitting the readings' mean and spread into the children's own and each team's offset and field error from replicate and reference readings; the setting's nouns can change without changing the task, which is the swap for this domain, but replacing the decomposition with the readings' own spread, the repeat-reading error or a reference spread changes which zones are noted.",
+  "analyst_test": "With every field read and every rule applied, the natural route takes each anthropometrist's offset against the supervisor out of its readings and the TEM squared of its repeat readings out of the zone's spread, and notes four zones; the golden takes the variance of the single readings' departures from the supervisor about the offset out of the spread and notes seven.",
+  "domain_test": "General Statistics, measurement error: the call turns on each zone's prevalence below 125 mm in the children's own arm circumference, the readings' distribution deconvolved under the classical additive error model with the offset and the error variance estimated from a validation sample read against a reference; in this domain the swap is of the method, and replacing the decomposition with the readings' own spread or the repeat-reading error changes which zones are noted.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:measurer-offset-and-field-error-out-of-the-spread",
   "layer1": [
@@ -83,6 +83,6 @@
     "task198": "task198's spent v2 inferred interviewer effects from the survey data through the few measurers whose workload crossed regions, and died on that inference's noise; here each measurer's offset and field error are measured directly on the same children as a supervisor before the round, and the decision is a tail share read net of them, not a ranking of changes."
   },
   "lineage": [],
-  "notes": "Drawn 2026-10-18 against task471, task166, task198 (government_agency, committee_or_panel and research_desk banned, so the county government's nutrition unit asks and its early warning bulletin desk decides; parallel_run_overlap banned, so the error organ is the measurers' standardisation test against the supervisor, not a collocation). Calibration organ other: the pre-survey standardisation test (each measurer and the supervisor read the same children twice).",
+  "notes": "Drawn 2026-10-18 against task471, task166, task198 (government_agency, committee_or_panel and research_desk banned, so the county government's nutrition unit asks and its early warning bulletin desk decides; parallel_run_overlap banned, so the error organ is the measurers' standardisation test against the supervisor, not a collocation). Calibration organ other: the pre-survey standardisation test (each measurer and the supervisor read the same children twice). Redrawn at stage 3 (2026-10-18): task199, task168 and task167 were filed before this card but reached this checkout after it, so role family field_unit_lead (task199), context artifact filed_standard and forcing event season_or_peak (task168) were redrawn: the nutrition information officer is the county nutrition programme's officer (programme_officer), the stakeholder's file is the round's survey exports (monitoring_export), and the call is forced by the July bulletin's issue to the County Steering Group (other: a monthly public release, no vocabulary key fits).",
   "registered": "2026-10-18T07:06:31Z"
 }
