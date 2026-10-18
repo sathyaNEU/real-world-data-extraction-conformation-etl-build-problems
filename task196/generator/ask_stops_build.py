@@ -21,11 +21,13 @@ def main():
     tier = {m["member_code"]: m["contribution_tier"] for m in members}
     QM = {4:1,5:1,6:1,7:2,8:2,9:2,10:3,11:3,12:3,1:4,2:4,3:4}
 
-    # ask A: the detail is the golden, the advice total is the natural read
+    # ask A: the pinned basis is the quarter the case closed in, read off the register's closed_date;
+    # the natural read is the advice grain, where the advice's own month stands in for its cases'
+    closed = {r["case_reference"]: r["closed_date"] for r in reg}
     gold, nat = {}, {}
     for r in det:
         if r["cover_class"] != "unauthorised fraud": continue
-        q = QM[int(str(r["settlement_month"]).split("-")[1])]
+        q = QM[int(closed[r["case_reference"]][5:7])]
         k = "Q%d %s" % (q, tier[r["member_code"]])
         gold[k] = round(gold.get(k, 0.0) + float(r["indemnity_paid_gbp"]), 2)
     for r in adv:
@@ -92,7 +94,7 @@ def main():
         "C4": {"cracker_hits": True, "mirror_hits": True,
                "note": "the chart's six named parts; three survive a wrong estimate"},
         "A": {"cracker_hits": False, "mirror_hits": False,
-              "figures": 16, "rounding": 1.0, "device": "a prior-period line inside a third of the advice totals",
+              "figures": 16, "rounding": 1.0, "device": "the advice is a rollup above its own parts: a third of them pay a case that closed in an earlier quarter",
               "natural_read": nat[a_worst[0]], "golden": gold[a_worst[0]],
               "gap": abs(a_worst[1]), "worst_figure": a_worst[0],
               "figures_moved": len(a_moved)},

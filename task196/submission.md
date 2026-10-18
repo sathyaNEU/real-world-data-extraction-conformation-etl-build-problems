@@ -58,8 +58,8 @@ request produced.
 3. Bar chart of recorded against indexed incidence for the four review-group members on the incidence
    chart sheet, ordered by the indexed figure, Castlegate marked and annotated, titled on the finding
    that its own record holds under three in five of the cases its customers suffered.
-4. Indemnity paid on unauthorised fraud by member tier for each 2026/27 quarter, each advice line in
-   the quarter it settles in, GBP to the nearest pound, each quarter total taken from the unrounded tier
+4. Indemnity the advices settled on unauthorised fraud, by member tier and the 2026/27 quarter each
+   case closed in, GBP to the nearest pound, each quarter total taken from the unrounded tier
    amounts:
    - Q1 tier A: 389,667; tier B: 390,380; tier C: 204,473; quarter total: 984,521
    - Q2 tier A: 349,939; tier B: 277,918; tier C: 101,820; quarter total: 729,677

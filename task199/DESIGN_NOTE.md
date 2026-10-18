@@ -10,7 +10,7 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | Card | `.claude/skills/fingerprint/cards/task199.json`, registered 2026-10-18, `guard.py check` WARN, 0 BLOCK |
 | Domain / subdomain | political-science-public-policy / conflict-protest-event-data-analysis (client domain, task type serves anomaly-detection in the taxonomy) |
 | Objective | anomaly-detection: a real event separated from an artifact |
-| Shape | 10, scorecard against thresholds. 11 cities x (window actions, baseline actions, rate per 100,000, eligible, designated) = 55, plus call, runner-up, gap, flip = 4, plus a chart's 5 named parts, plus 2 deliverables, plus 64 ask figures |
+| Shape | 10, scorecard against thresholds. 11 cities x (window actions, baseline actions, rate per 100,000, eligible, designated) = 55, plus call, runner-up, gap, flip = 4, plus a chart's 5 named parts, plus 2 deliverables, plus 66 ask figures |
 | Decision | pick_one_of_n: the one city the next verification mission goes to, named in the watch note with its recorded rate |
 | Gap / pattern / generators | population (a row is a reported action, not an action) / none / G12 decisive, G14, G16 |
 | Gate G | decomposition_attribution: every city's recorded rise is correctly reported, and the call turns on assigning it to press presence or to activity |
@@ -179,7 +179,7 @@ It supplies the scorecard's threshold column and is asserted inert against every
 | SF10 | participants per action | the total participants over the actions holding a participant figure | counting unreported participants as zero; the numeric column's lower bound | the manual's sentence that the column carries a central estimate, and the note field holding the range |
 | SF11 | rate | actions over residents, rounded once at the end | rounded per month then summed | the prompt's closing rounding sentence governs the printed figures only |
 | SF12 | the material reaching the monitor | the delivered-item count for the city and month | the retained-item count; the citation count | not closed by any sentence: this is the open HOW, forced by the data's structure (see `## Literal reader`) |
-| SF14 | a line per item group closing each quarter's gap (ask 4) | the five groups that close the four quarterly gaps between delivered and billed: 82, 138, 70, 126 and 7 | the annual gap, which two groups close (82 and 7); the publication basis against the billing, which two others close (125 and 7) | the asking sentence names each quarter's gap, and only the five-group set closes all four quarters: the two-line annual set closes none of them, and the 125 items published in 2025 and delivered in 2026 sit on neither side of 2025. Asserted as SF14 in `checks.py` and again in `verify.py` from the shipped bytes |
+| SF14 | a line per item group closing each quarter's gap (ask 4) | the five groups that close the four quarterly gaps between delivered and billed: 82, 138, 70, 126 and 7 | the annual gap, which two groups close (82 and 7); the publication basis against the billing, which two others close (125 and 7) | the asking sentence names each quarter's gap, and only the five-group set closes all four quarters: the two-line annual set closes none of them, and the 125 items published in 2025 and delivered in 2026 sit on neither side of 2025. Asserted as SF14 in `checks.py` and again in `verify.py` from the shipped bytes. The grain of the lines is forced the same way: the invoice bills by desk and month and carries no outlet-type dimension, so a gap between delivered and billed exists only per quarter, and what closes it is the four timing groups and the credited lote |
 
 ## Ladder
 
@@ -270,18 +270,19 @@ lands on the golden and every differing reading either violates a quoted sentenc
 | the delivery log's own monthly totals | tie to the sum of their rows under every handling | not an oracle |
 | a completeness audit, gold standard or certified rate | none ships | by design |
 
-**The leak sweeps' REVIEW lines, answered** (`leak.py --asof 2026-11-05`: REVIEW, 0 LEAK, 7 REVIEW lines,
-three in sweep 4 and four in sweep 6). Sweep 4 reads three design-note terms in the protocol: two are the
-words protocol and extract, and the third is Sardinata, which appears there only in clause 2.1's list of the
-eleven panel cities. It reads three in the data dictionary, which are the column name `action_id`, the word
+**The leak sweeps' REVIEW lines, answered** (`leak.py --asof 2026-11-05`: REVIEW, 0 LEAK, six REVIEW lines
+on the final rebuild, two in sweep 4 and four in sweep 6). Sweep 4 draws its vocabulary from this note, so
+which documents it names shifts whenever the note is edited; all three it has named are answered here. In the
+protocol it reads the words protocol and extract, and the city name that appears there only in clause 2.1's
+list of the eleven panel cities. In the data dictionary it reads the column name `action_id`, the word
 extracto in the edition line and the word material in the delivery log's own row description: all three are
 the vocabulary a dictionary of these files has to use, and none of them names a denominator, an exposure or a
-city. It reads two in the prompt's own question sentence, which are the words action and record inside
-"recorded collective actions": the quantity the question asks for cannot be named without them. Sweep 6 reads
-the three register exports, the delivery log, the city table, the road incidents and the published summary as
-naming every candidate beside numbers, which is what a register and a delivery log are: none of them ranks
-the cities on whether activity rose, the only aggregate among them covers 2025 at desk grain, and the one
-published artifact that does aggregate by city, the bulletin, stops at 2026 Q1 and designates nobody.
+city. In the prompt it reads the words action and record inside "recorded collective actions", which is the
+quantity the question asks for and cannot be named without them. Sweep 6 reads the three register exports,
+the delivery log, the city table, the road incidents and the published summary as naming every candidate
+beside numbers, which is what a register and a delivery log are: none of them ranks the cities on whether
+activity rose, the only aggregate among them covers 2025 at desk grain, and the one published artifact that
+does aggregate by city, the bulletin, stops at 2026 Q1 and designates nobody.
 
 ## Ask sheet
 
@@ -434,17 +435,17 @@ the same round.
 | The leak reader's single-use finding: the panel workbook's Notas sheet warned that the declared scope "no describe el volumen que remite", which is work no ficha sheet does and which points at the decisive denominator | Cut, with the deletion test run first and recorded in `## Single-use test`: the sentence is read by no computation, so with it gone every call figure, every rung and all eleven rates are identical, which is what makes it an announcement rather than a closure. The sheet keeps its own column descriptions and gains the one it was missing, that the delivery channel distinguishes the primary mesas from the ones the team consults. The dictionary's `items_entregados` line also loses "sea cual sea el tema", which the rest of the line already says: the two column descriptions still separate what the service delivered from what the register's filter kept, which is what closes SF8 |
 | Three dictionary statements were not true of the shipped data: a citation table where 13 `id_item` values cite two entries each was described as one entry per item; a header claiming to describe the definitive extract while the 2026 export ships 320 preliminary rows; and three re-coded municipalities described as a merger of two entities that nothing in the data shows | All three were fixed in the sentence rather than the data, because each piece of data is load-bearing Layer 1 mess: the citation line now reads "un item puede citar mas de una entrada", the header describes "los archivos del extracto de esa fecha" and leaves the `extracto` column to say which rows are preliminary, and the city table's line now says the national list reassigned three codes. The register's rows, the citation table and the city table are byte-identical |
 | Two realism tells: all eleven city rates sat within 0.00004 of an exact tenth, and the Mujeres organizadas per-entry mean was exactly 356.500 | `tune_population` now runs two deterministic passes: the first fixes the printed rate exactly as before, the second keeps that printed rate and moves the projection off the bin's centre to a per-city offset, so the ten tunable rates sit 0.007 to 0.017 from the tenth they print and 0.30 to 0.43 of the printed unit inside their bins. Every printed rate is unchanged. The designated city is the exception by scope: its projection of 148,590 is a Critical Components figure and its printed 92.2 is the call, so the denominator is pinned in `PINNED_POP` and its rate still sits on the printed value, which `checks.py` asserts as the pinned case. The sector-mean pass gained the same off-centre condition and now adjusts a one-day entry, because a prolonged entry carries its figure on every day it ran and the mean then steps in multiples that skip the band: Mujeres organizadas is 356.2 on a total of 5,699 and Transportadores 61,922, and no other sector figure moved |
-| The reader's two smaller observations, judged | Neither is fixed in the records. Protocol 4.3's panel-membership half and the 4.4 tie rule cannot be executed because no file gives a panel entry date, and both are measurably inert: the count floor alone removes Hacari and nobody else, no city sits within 5 actions of it, and the tie rule never fires at a decisive margin of 1.815x. The protocol is a main-call document and the judge certified its clauses, so the shipped fact that would make 4.3 executable, an "Alta en el panel" column in the panel workbook with every panel city seated before the baseline, is left for the author to take or leave; it would move no figure. The manual's misplaced layout table was cheap and is fixed: the field-by-year table now sits under section 2 as clause 2.4, where the template fields are described, and section 3 keeps its own sentence about the monthly sample review |
+| The reader's two smaller observations, judged | Neither is fixed in the records. Protocol 4.3's panel-membership half and the 4.4 tie rule cannot be executed because no file gives a panel entry date, and both are measurably inert: the count floor alone removes Hacari at 56 actions, the nearest other city sits 10 actions clear of it, the tie rule never fires at a decisive margin of 1.8150x, and every one of the eleven panel cities holds at least one action in every one of the 24 baseline months, so nothing in the records contradicts membership through the comparison period either. The protocol is a main-call document and the judge certified its clauses, so the shipped fact that would make 4.3 executable, an "Alta en el panel" column in the panel workbook with every panel city seated before the baseline, is left for the author to take or leave; it would move no figure. The manual's misplaced layout table was cheap and is fixed: the field-by-year table now sits under section 2 as clause 2.4, where the template fields are described, and section 3 keeps its own sentence about the monthly sample review |
 
 **Pass 2's gates, measured on the final rebuild.** `checks.py` exit 0, 121 checks, 121 PASS, 0 FAIL (100
 before, the 21 new ones the SF14 closure, the two off-centre bands and the pinned projection). `verify.py`
 exit 0, 87 checks, 87 PASS, 0 FAIL (76 before), reading only the shipped bundle and deriving the credited
 mesa's pair from the published summary. `figures_check.py` exit 0, 124 figures in blocks 1 to 4, 0 absent
-from `figures.json`. `precut.py` exit 0, 50 checks, 0 FAIL, 0 WARN. `voice-check.py` exit 0, 13 checks PASS,
+from `figures.json`. `precut.py` exit 0, 51 checks, 0 FAIL, 0 WARN, the new no-repeated-H2 check among them: this note carried a second copy of two sections inside the Draw table's last row, which left the earlier copy unread, and the duplicates are removed and the row restored. `voice-check.py` exit 0, 13 checks PASS,
 `prompt.txt` 995 characters, unchanged in length, with the call sentence byte-identical. `ceiling.py` pair
 ceiling 28.5 on 66 graded ask figures (bar 40), mirror leakage 0.0 per cent, the cracker keeping 0 of 66 and
 able to keep 27 before the pair breaches 40; `--forcing` 37 of 37 sampled figures move beyond their stated
-rounding. `leak.py --asof 2026-11-05` REVIEW, 0 LEAK, 7 REVIEW lines answered in `## Oracles`. `guard.py
+rounding. `leak.py --asof 2026-11-05` REVIEW, 0 LEAK, six REVIEW lines answered in `## Oracles`. `guard.py
 surface` clean, 0 pairs promoted, the personas found are the two on the card; `guard.py heart` WARN, 0 BLOCK,
 nearest driver 0.06. Two consecutive full rebuilds byte identical: target tree
 `cbb36f20c8baff69042eb85e72810d25`, golden `e93d935ac77539eee0cf0ac608a63a50`, `target.zip`

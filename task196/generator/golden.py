@@ -130,10 +130,11 @@ def estimator_family(ix):
 # the asks
 # ---------------------------------------------------------------------------
 def ask_a(w):
-    """Indemnity paid on unauthorised fraud, by the quarter each line settles in and member tier, from
-    the case detail the advices cover. Every advice total ties to the sum of its own detail lines; the
-    prior-period adjustments among those lines settle in an earlier quarter than the advice that pays
-    them, which is the grain the asking sentence pins."""
+    """The indemnity the advices settled on unauthorised fraud, by member tier and the quarter each case
+    closed in, which is the basis and the grain the asking sentence pins. Every advice total ties to the
+    sum of its own detail lines, and a line carries the month its own case closed, so the case grain and
+    the line grain give one table while the advice grain, which pays a third of its cases a prior-period
+    top-up raised in a later quarter, gives another."""
     tier = {m["code"]: m["tier"] for m in w["members"]}
     out = {}
     for u in w["unauth"]:
@@ -305,6 +306,9 @@ def workbook(task, review, bridge, chart, a, b, c):
     for row in ws4.iter_rows(min_row=2, min_col=2):
         for cell in row:
             cell.number_format = "#,##0"
+    ws4.append([])
+    ws4.append(["Unauthorised fraud, settled by advice, each case in the quarter it closed. Quarter "
+                "totals are taken from the tier amounts before rounding."])
 
     ws5 = wb.create_sheet("q1 notifications")
     ws5.append(["member_code", "cases_notified", "value_reported_gbp"])

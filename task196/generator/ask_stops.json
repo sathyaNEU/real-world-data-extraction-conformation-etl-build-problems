@@ -1,13 +1,13 @@
 {
  "A": {
   "cracker_hits": false,
-  "device": "a prior-period line inside a third of the advice totals",
+  "device": "the advice is a rollup above its own parts: a third of them pay a case that closed in an earlier quarter",
   "figures": 16,
   "figures_moved": 16,
-  "gap": 256440.34,
-  "golden": 665483.62,
+  "gap": 320142.56,
+  "golden": 984521.08,
   "mirror_hits": false,
-  "natural_read": 921923.96,
+  "natural_read": 664378.52,
   "rounding": 1.0,
   "worst_figure": "Q1 total"
  },
@@ -28,10 +28,10 @@
   "device": "one route stated net of its own agent charge",
   "figures": 15,
   "figures_moved": 15,
-  "gap": 7.8,
-  "golden": 12.9,
+  "gap": 12.8,
+  "golden": 15.1,
   "mirror_hits": false,
-  "natural_read": 5.1,
+  "natural_read": 2.3,
   "rounding": 0.1,
   "worst_figure": "Q2 beneficiary recall"
  },

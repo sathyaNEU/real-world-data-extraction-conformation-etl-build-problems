@@ -2,23 +2,29 @@
 """task196 pair ceiling, on supplemental-stumping Part 0's weights (38 / 7 / 55).
 
     python3 task196/generator/ceiling.py [--pack]
+    python3 task196/generator/ceiling.py --forcing
 
 Two responses are scored from DIFFERENT readings, never one reading counted twice:
 
-  cracker  lands the main call (Castlegate at 30.0 cases per million payments), so it banks the
+  cracker  lands the main call (Castlegate at 31 cases per million payments, 30.940), so it banks the
            recommendation band and the whole construction layer, which is the twelve-member bridge
            from each member's recorded case count to its estimated true count. It ran the hygiene
            battery, executed every filed rule the pack points at and reconciled every control, so
            every ask figure a column description or an unmatched join resolves is free to it. Its ask
            row must read 0 of N on the device figures.
   mirror   stops at rung 2: it finds the registration-lag spike from the two date columns, excludes
-           mule registrations dated after its own case opened, and files 37.3. It misses the call and
+           mule registrations dated after its own case opened, and files 36 (35.669). It misses the call and
            the construction layer's estimated-incidence column, keeps the recorded-count column, and
            is held off the device figures by the same devices plus the documented mess it does not
            chase.
 
 Stage 2 runs on the designed stops (paper). Stage 3 re-runs with --pack, which reads the ask ladder
 values recomputed from the cut bundle (generator/ask_stops.json) and fails if any cracker row hits.
+
+--forcing measures the other half on the cut bundle: per graded ask figure, the natural read's value
+against the golden's, and whether the two print differently at the rounding that figure's own asking
+sentence states. It fails if any figure does not move, because a figure the natural read already gets
+right is a figure the device does not defend.
 """
 import json
 import os
@@ -33,7 +39,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # The ask layer. owner "construction" is the decisive construction's output on a segment the trustees
 # want anyway (supplemental 2.2): the cracker has it by design, so it is sized, not defended.
 # owner "device" figures each sit on rows outside the main call's declared population and carry the
-# primary device named in the design note's ask sheet.
+# primary device named in the design note's ask sheet. Ask A's row stays a miss after its basis and
+# grain were pinned because the pin names the case and its closure, which the advices sheet cannot
+# answer: the advice is a rollup above its own parts and the natural read is the rollup, measured at
+# 16 of 16 figures and 320,142.56 on the Q1 total by --forcing and by ask_stops_build.py.
 # ---------------------------------------------------------------------------
 ASKS = [
     # id, ask, figures, owner, cracker hit, mirror hit
@@ -152,5 +161,80 @@ def main():
     return 0
 
 
+def _prints_apart(nat, gold, unit):
+    """True when the two values print differently at the unit the asking sentence states. The test is
+    the printed figure and not a tolerance: a count one whole case apart is a different graded answer,
+    which a 'gap greater than the rounding' test scores as unmoved (ask B's narrowest cell, 14 against
+    15, was the one row that failed it)."""
+    return round(nat / unit) != round(gold / unit)
+
+
+def forcing():
+    """Per graded ask figure, the natural read against the golden, recomputed from the shipped bundle.
+
+        python3 task196/generator/ceiling.py --forcing
+
+    Ask A's natural read is the advice grain: the advices sheet's own totals, grouped by the advice's
+    settlement month, which stands in for the quarter its cases closed in. Ask B's is the main Q1
+    extract alone. Ask C's is the recovery statement's own stated route and quarter columns.
+    """
+    import csv as _csv
+    import json as _json
+    sys.path.insert(0, HERE)
+    import verify as V
+
+    fig = _json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    QM = {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}
+    members = V.rows("member_register.csv")
+    tier = {m["member_code"]: m["contribution_tier"] for m in members}
+    adv = V.sheet("settlement_advices_2026_27.xlsx", "advices")
+    q1 = V.rows("notifications_2027_28_q1.csv")
+    stmt = V.rows("recovery_statement_2025_26.csv")
+    moved = []
+
+    nat = {}
+    for r in adv:
+        if r["cover_class"] != "unauthorised fraud":
+            continue
+        k = "Q%d %s" % (QM[int(str(r["settlement_month"])[5:7])], tier[r["member_code"]])
+        nat[k] = round(nat.get(k, 0.0) + float(r["advice_total_gbp"]), 2)
+    for q in (1, 2, 3, 4):
+        nat["Q%d total" % q] = round(sum(nat.get("Q%d %s" % (q, t), 0.0) for t in "ABC"), 2)
+    for k, v in sorted(fig["ask_a_indemnity_unauthorised"].items()):
+        moved.append(("A %s" % k, "%.2f" % nat[k], "%.2f" % v, _prints_apart(nat[k], v, 1.0)))
+
+    for m in members:
+        mine = [r for r in q1 if r["member_code"] == m["member_code"]]
+        for label, natv, gold in (
+                ("notified", len(mine), fig["ask_b_q1_notifications"]["%s notified" % m["member_code"]]),
+                ("value", round(sum(float(r["payment_amount_gbp"]) for r in mine)),
+                 fig["ask_b_q1_notifications"]["%s value" % m["member_code"]])):
+            moved.append(("B %s %s" % (m["member_code"], label), natv, gold,
+                          _prints_apart(natv, gold, 1.0)))
+
+    for r in stmt:
+        k = "Q%s %s" % (r["quarter_closed"][1], r["recovery_route"])
+        natv = round(float(r["recovered_stated_gbp"]) / float(r["reimbursed_in_quarter_gbp"]) * 100.0, 1)
+        gold = fig["ask_c_recovery_share"][k]
+        moved.append(("C %s" % k, natv, gold, _prints_apart(natv, gold, 0.1)))
+    for route in V.ROUTES:
+        natv = round(sum(float(r["recovered_stated_gbp"]) for r in stmt if r["recovery_route"] == route)
+                     / sum(float(r["reimbursed_in_quarter_gbp"]) for r in stmt
+                           if r["recovery_route"] == route) * 100.0, 1)
+        gold = fig["ask_c_recovery_share"]["year %s" % route]
+        moved.append(("C year %s" % route, natv, gold, _prints_apart(natv, gold, 0.1)))
+
+    print("task196 ask forcing, measured on the cut bundle")
+    print("=" * 78)
+    print("  %-22s %14s %14s %8s" % ("figure", "natural", "golden", "moved"))
+    for label, natv, gold, ok_ in moved:
+        print("  %-22s %14s %14s %8s" % (label, natv, gold, "yes" if ok_ else "NO"))
+    hit = sum(1 for _, _, _, o in moved if o)
+    print("\n  %d of %d graded ask figures print differently under the natural read" % (hit, len(moved)))
+    return 0 if hit == len(moved) else 1
+
+
 if __name__ == "__main__":
+    if "--forcing" in sys.argv:
+        sys.exit(forcing())
     sys.exit(main())

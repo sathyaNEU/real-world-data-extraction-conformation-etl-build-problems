@@ -385,18 +385,61 @@ def main():
        "%d figures, worst gap %.2f" % (len(a_fig),
                                        max(abs(a_fig.get(k, 0.0) - v) for k, v in
                                            figures["ask_a_indemnity_unauthorised"].items())))
-    adv_total = {}
-    for r in wbk:
-        if r["cover_class"] != "unauthorised fraud":
-            continue
-        mo = int(str(r["settlement_month"]).split("-")[1])
-        q = {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}[mo]
-        k = "Q%d %s" % (q, tier[r["member_code"]])
-        adv_total[k] = round(adv_total.get(k, 0.0) + float(r["advice_total_gbp"]), 2)
-    moved = [k for k in a_fig if k in adv_total and abs(adv_total[k] - a_fig[k]) > 0.011]
+    # the asking sentence pins the basis (the quarter the case closed in) and the grain (the case), so
+    # both routes to that basis and both grains under it are computed from the shipped bytes and have
+    # to give one table: the register's closed_date, the line's own month, the case, the line
+    QS = {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}
+    closed = {r["case_reference"]: r["closed_date"] for r in reg}
+    reimb = {r["case_reference"]: float(r["reimbursed_amount_gbp"]) for r in reg}
+    stale_reg = [r for r in det if closed.get(r["case_reference"], "")[:7] != str(r["settlement_month"])]
+    ok("every advice line's own month is the month its case closed in the register", not stale_reg,
+       "%d detail lines, %d disagreeing" % (len(det), len(stale_reg)))
+
+    def a_table(triples):
+        acc = {}
+        for q, t, amt in triples:
+            acc[(q, t)] = round(acc.get((q, t), 0.0) + amt, 2)
+        f = {}
+        for q in (1, 2, 3, 4):
+            for t in "ABC":
+                f["Q%d %s" % (q, t)] = round(acc.get((q, t), 0.0), 2)
+            f["Q%d total" % q] = round(sum(acc.get((q, t), 0.0) for t in "ABC"), 2)
+        return f
+
+    unauth_lines = [r for r in det if r["cover_class"] == "unauthorised fraud"]
+    by_closure = a_table([(QS[int(closed[r["case_reference"]][5:7])], tier[r["member_code"]],
+                           float(r["indemnity_paid_gbp"])) for r in unauth_lines])
+    eq("ask A reproduces from the register's closure dates", by_closure,
+       figures["ask_a_indemnity_unauthorised"], "16 figures on the pinned basis")
+    percase, casekey = {}, {}
+    for r in unauth_lines:
+        percase[r["case_reference"]] = round(percase.get(r["case_reference"], 0.0)
+                                             + float(r["indemnity_paid_gbp"]), 2)
+        casekey[r["case_reference"]] = (QS[int(closed[r["case_reference"]][5:7])],
+                                        tier[r["member_code"]])
+    by_case = a_table([(casekey[k][0], casekey[k][1], v) for k, v in percase.items()])
+    eq("ask A reproduces at the case grain", by_case, figures["ask_a_indemnity_unauthorised"],
+       "%d lines over %d cases" % (len(unauth_lines), len(percase)))
+    adv_tier = {a["advice_no"]: a["contribution_tier"] for a in wbk}
+    ok("the tier the advice carries is the tier the member register carries",
+       not [a for a in wbk if adv_tier[a["advice_no"]] != tier[a["member_code"]]],
+       "%d advices, 0 disagreeing" % len(wbk))
+    by_reimb = a_table([(casekey[k][0], casekey[k][1], reimb[k]) for k in percase])
+    off = [k for k, v in figures["ask_a_indemnity_unauthorised"].items()
+           if abs(by_reimb[k] - v) > 0.011]
+    ok("the register's reimbursement column is a different quantity from the indemnity settled",
+       len(off) >= 12, "%d of 16 differ, %.2f of top-up the register does not carry"
+       % (len(off), round(sum(percase.values()) - sum(reimb[k] for k in percase), 2)))
+    adv_basis = a_table([(QS[int(str(r["settlement_month"])[5:7])], tier[r["member_code"]],
+                          float(r["advice_total_gbp"])) for r in wbk
+                         if r["cover_class"] == "unauthorised fraud"])
+    moved = [k for k, v in figures["ask_a_indemnity_unauthorised"].items()
+             if abs(adv_basis[k] - v) > 0.011]
+    worst = max(figures["ask_a_indemnity_unauthorised"],
+                key=lambda k: abs(adv_basis[k] - figures["ask_a_indemnity_unauthorised"][k]))
     ok("ask A's device moves the natural read outside the asking sentence's rounding",
-       moved, "the advice totals differ from their own detail on %d figures, worst %.2f"
-       % (len(moved), max([abs(adv_total[k] - a_fig[k]) for k in moved] or [0])))
+       len(moved) == 16, "the advice grain differs on %d of 16 figures, worst %.2f on %s"
+       % (len(moved), abs(adv_basis[worst] - figures["ask_a_indemnity_unauthorised"][worst]), worst))
     q1 = rows("notifications_2027_28_q1.csv")
     supp = rows("notifications_2027_28_q1_supplementary.csv")
     b_fig = {}

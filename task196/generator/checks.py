@@ -341,8 +341,9 @@ def main():
        "the padding convention kept, the mechanics gone")
 
     print("\n-- the settlement advices tie, and the walk holds in index units")
-    # SF14: the quarter an indemnity line belongs to. Both readings are computable and they differ, so
-    # the asking sentence pins the grain; what is gone is any unexplained amount between them.
+    # SF14 and SF15: the asking sentence pins the basis (the quarter the case closed in) and the grain
+    # (the case), so what is asserted here is that the pinned basis has one value on every line and the
+    # advice grain is the rollup the device rides on, never that two readings of a field both stand.
 
     import openpyxl
     _wb = openpyxl.load_workbook(os.path.join(TARGET, "settlement_advices_2026_27.xlsx"),
@@ -525,30 +526,88 @@ def main():
     det = xlsx_rows("settlement_advices_2026_27.xlsx", "advice detail")
     adv_month = {a["advice_no"]: a["settlement_month"] for a in adv}
     resid = [d for d in det if d["settlement_month"] != adv_month.get(d["advice_no"])]
-    # SF14: the quarter an indemnity line belongs to. Both readings compute from the shipped sheets and
-    # they differ, so the asking sentence pins the grain; what is gone is any unexplained amount between
-    # them, because every advice ties to the sum of its own lines.
+    # ask 4's basis and grain, pinned in the asking sentence: "the indemnity the advices settled, by
+    # member tier and the 2026/27 quarter each case closed in". Every licensed route to that basis and
+    # that grain is computed here and has to give one table (SF14, SF15, SF16); the advice grain is the
+    # rollup the device rides on and has to differ on every figure.
     _tierof = {m["code"]: m["tier"] for m in w["members"]}
     _qof = lambda ms: G._settlement_quarter(dt.date(int(ms.split("-")[0]), int(ms.split("-")[1]), 15))
-    _own, _adv_basis = {}, {}
-    for r in _det:
-        if r["cover_class"] != "unauthorised fraud":
-            continue
-        k = (_qof(r["settlement_month"]), _tierof[r["member_code"]])
-        _own[k] = round(_own.get(k, 0.0) + float(r["indemnity_paid_gbp"]), 2)
-    for a in _adv:
-        if a["cover_class"] != "unauthorised fraud":
-            continue
-        k = (_qof(a["settlement_month"]), _tierof[a["member_code"]])
-        _adv_basis[k] = round(_adv_basis.get(k, 0.0) + float(a["advice_total_gbp"]), 2)
-    gap = sum(abs(_adv_basis.get(k, 0.0) - v) for k, v in _own.items())
-    ok("SF14 the own-month reading is the golden and the advice-month reading differs",
-       all(abs(_own[(q, t)] - G.ask_a(w)["Q%d %s" % (q, t)]) < 0.011
-           for q in (1, 2, 3, 4) for t in "ABC") and gap > 1000.0,
-       "the two readings differ by %.2f across the year, every pound of it a quarter attribution" % gap)
+    _closed = {r["case_reference"]: r["closed_date"] for r in reg}
+    _reimb = {r["case_reference"]: float(r["reimbursed_amount_gbp"]) for r in reg}
+    _atier = {a["advice_no"]: a["contribution_tier"] for a in _adv}
+    _gold_a = G.ask_a(w)
+    _U = [r for r in _det if r["cover_class"] == "unauthorised fraud"]
+
+    def _table(triples):
+        """A quarter x tier table of the sixteen graded figures, from (quarter, tier, amount) rows."""
+        acc = {}
+        for q, t, amt in triples:
+            acc[(q, t)] = round(acc.get((q, t), 0.0) + amt, 2)
+        f = {}
+        for q in (1, 2, 3, 4):
+            for t in G.TIERS:
+                f["Q%d %s" % (q, t)] = round(acc.get((q, t), 0.0), 2)
+            f["Q%d total" % q] = round(sum(acc.get((q, t), 0.0) for t in G.TIERS), 2)
+        return f
+
+    def _against_golden(f):
+        return [k for k, v in _gold_a.items() if abs(f.get(k, 0.0) - v) > 0.011]
+
+    # the basis: every line's case has one closure date, in the register, and the line's own month is
+    # the same month on every line, so the pinned basis has one value however it is reached (C1)
+    _stale = [d for d in _det if _closed.get(d["case_reference"], "")[:7] != str(d["settlement_month"])]
+    ok("every advice line's own month is the month its case closed in the register", not _stale,
+       "%d detail lines, %d disagreeing with the register's closed_date" % (len(_det), len(_stale)))
+    ok("every advice line's case closed inside the 2026/27 scheme year",
+       all(_qof(_closed[d["case_reference"]][:7]) is not None for d in _det),
+       "%d lines, none closing outside the four quarters" % len(_det))
+    _by_closure = _table([(_qof(_closed[d["case_reference"]][:7]), _tierof[d["member_code"]],
+                           float(d["indemnity_paid_gbp"])) for d in _U])
+    _by_line_month = _table([(_qof(d["settlement_month"]), _tierof[d["member_code"]],
+                              float(d["indemnity_paid_gbp"])) for d in _U])
+    ok("SF14 the pinned basis reproduces the golden from the register's closed_date",
+       not _against_golden(_by_closure), "16 figures, 0 off the golden")
+    ok("SF14 the line's own settlement month gives the same table",
+       _by_line_month == _by_closure, "both routes to the closure quarter agree on all 16 figures")
+    # the grain: the case, and the detail line rolls up to it without changing a figure
+    _percase, _casekey = {}, {}
+    for d in _U:
+        _percase[d["case_reference"]] = round(_percase.get(d["case_reference"], 0.0)
+                                              + float(d["indemnity_paid_gbp"]), 2)
+        _casekey[d["case_reference"]] = (_qof(_closed[d["case_reference"]][:7]),
+                                         _tierof[d["member_code"]])
+    _by_case = _table([(_casekey[r][0], _casekey[r][1], v) for r, v in _percase.items()])
+    ok("SF15 the case grain and the line grain give the same table", _by_case == _by_closure,
+       "%d lines over %d cases, %d of them paid by more than one advice"
+       % (len(_U), len(_percase), sum(1 for r in _percase
+                                      if sum(1 for d in _U if d["case_reference"] == r) > 1)))
+    ok("SF16 the tier is the same from the member register and from the advice",
+       not [a for a in _adv if _atier[a["advice_no"]] != _tierof[a["member_code"]]],
+       "%d advices, 0 carrying a tier the register does not" % len(_adv))
+    # the closure the reconciliation sits on: each advice's lines sum to its total, so the case grain
+    # accounts for every pound the advice grain holds and the difference is attribution alone
+    _adv_basis = _table([(_qof(a["settlement_month"]), _tierof[a["member_code"]],
+                          float(a["advice_total_gbp"])) for a in _adv
+                         if a["cover_class"] == "unauthorised fraud"])
+    _moved = _against_golden(_adv_basis)
+    _worst = max(_gold_a, key=lambda k: abs(_adv_basis[k] - _gold_a[k]))
+    ok("the case grain and the advice grain hold the same money over the year",
+       abs(sum(_percase.values()) - sum(float(a["advice_total_gbp"]) for a in _adv
+                                        if a["cover_class"] == "unauthorised fraud")) < 0.011,
+       "%.2f on both grains" % sum(_percase.values()))
+    ok("ask A's device: the advice grain differs on every graded figure", len(_moved) == 16,
+       "%d of 16 moved, worst %.2f on %s" % (len(_moved), abs(_adv_basis[_worst] - _gold_a[_worst]),
+                                             _worst))
+    # the amount side: the register's own reimbursement column is a different quantity, which is why the
+    # asking sentence names what the advices settled
+    _by_reimb = _table([(_casekey[r][0], _casekey[r][1], _reimb[r]) for r in _percase])
+    ok("the register's reimbursement column is not the indemnity the advices settled",
+       len(_against_golden(_by_reimb)) >= 12,
+       "%d of 16 differ, %.2f of top-up the register does not carry"
+       % (len(_against_golden(_by_reimb)), round(sum(_percase.values()) - sum(_reimb[r] for r in _percase), 2)))
     ok("ask A's device sits on the unauthorised class only",
        resid and all(d["cover_class"] == "unauthorised fraud" for d in resid),
-       "%d detail lines settle in a month other than their advice's" % len(resid))
+       "%d detail lines sit on an advice raised in a later quarter than their case closed" % len(resid))
     q1 = read_csv("notifications_2027_28_q1.csv")
     supp = read_csv("notifications_2027_28_q1_supplementary.csv")
     ok("ask B's device sits after the evidence base closes",
