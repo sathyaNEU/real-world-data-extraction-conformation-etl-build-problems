@@ -633,6 +633,113 @@ job-grain counts coincided on the two small branches (Zanowiec 7 against 7, Grab
 the cracker kept 2 of 27 ask figures and the A1 row was not an honest miss. Folded into one total, which
 the row grain gets wrong globally, and the measured cracker keep went to 0 of 27.
 
+### Architecture 6 abandoned at the re-root to architecture 7 (2026-10-18)
+
+Built end to end with every free gate green and spent at stage 4. The determinism judge returned
+NOT_DETERMINISTIC and SEND_BACK with **Gate G FAIL, `banned_stumping_type`**: `mechanism:
+planted_defect_flip (mixed measurement clock)`, `stumping_family: surface_read_rejection`,
+`surface_read_dependency: yes`, `sole_data_defect: yes`. What is left behind is the decisive rung:
+the pre-notification interval recovered from the telemetered subset and transported by section
+class, whose whole difficulty was catching that SD-OMS's own `poczatek_lokalny` and
+`czas_trwania_min` understate 4,940 of the 6,005 interruptions. A surface-read rejection is banned
+at any depth and on one uniform clock the task collapsed into executing PR-07 section 4's drill, so
+the architecture is spent rather than repairable. What is kept: the world, the pack's file set, the
+personas and every Layer 1 device. The clock correction stays in the pack as input hygiene and may
+no longer decide the call, so any architecture 7 owes `checks.py` an assertion that the committed
+answer is identical under the recorded clock, the pooled-mean, the pooled-median and the
+class-stratified corrections.
+
+**The determinacy lesson carried forward, because this build's own screen missed it.** The
+designation determinacy screen above reports one distinct path across six members of the golden's
+estimator family; the judge, counting the forms that skip the conditioning the decisive step adds,
+found three leaves (pooled mean names Pustrzyca, pooled median names Zanowiec, class-stratified
+names Grabownik). All six screened forms were class-conditioned, so the screen measured the family
+on the assumption it was testing. A family is counted wide enough to include the forms that skip
+the conditioning, or the count is worthless.
+
+### Candidate 3, coincident-peak headroom on the transfer feeder, killed on measurement (2026-10-18)
+
+(Architecture 7, screen 1, `wave5/task201b/screen1.py`, run on a designed clean truth before any
+file was cut.) The crew-week's clearance needs the line dead, so in the storm season the load
+transfers through the normally-open tie, and the receiving feeder's firm winter rating is the joint
+limit several candidates draw on. Decisive step: whether a transfer fits is decided by the
+**coincident** load of the two feeders at a common half hour of the clearance window, not by the sum
+of their own maximum demands, which is the field's own diversity question. Killed by one
+computation: across the twelve candidates the window diversity factor spans only **0.8996 to
+1.0000, a range of 0.1004**, and the clearance window (07:00 to 16:00) already excludes the domestic
+evening peak, so **11 of 12 candidates are admitted at a flat factor of 1.00** and the constraint
+removes nobody. The golden ranked **1 of 12 on rung 1**: the exposure ranking alone reaches it. Every
+flat coincidence factor from 0.80 to 0.97 named the same candidate, so the textbook diversity factor
+reproduces the decisive step. **Structural reason, not a tuning failure:** an MV feeder's load is
+dominated by domestic customers on every candidate, so no two feeders in this world carry profiles
+different enough to open a diversity spread a flat factor cannot absorb.
+
+### Candidate 4, the clearance outage's own planned interruption netted, killed on measurement (2026-10-18)
+
+(Architecture 7, screen 2, `wave5/task201b/screen2.py`.) PR-07 would file the basis as the net
+change in interrupted customer-hours, planned and unplanned alike, so the work's own planned
+interruption sits on the other side of the ledger; the customers stranded while a stretch is worked
+are those behind the nearest switching device upstream of it, so the honest cost is the line's own
+isolating structure and the easy cost is its whole load for the whole job. The strand share was
+genuinely wide, **0.2526 to 1.0000, a factor of 3.96**, and the mechanism still died twice:
+**14 of 25 enumerated reflexes reached the decisive answer** and the decisive margin was **1.1165x**,
+under the 1.15 floor. **Structural reason:** a forty-hour whole-line clearance outage on the leading
+candidate costs 3,180 customers times 40 hours, **193.5 thousand customer-hours against 61.4
+thousand of avoided unplanned exposure**, so the two sides of the ledger are not commensurate,
+`E - C` is driven almost entirely by `-C`, and every cheapest-to-work reflex (exposure per km,
+exposure per crew-hour, exposure per customer, benefit-cost on the whole-line cost, and every flat
+fraction of it at 0.40 and above) lands the answer. Scaling the exposure to the remainder of the
+season opens a window at a projection factor near 2.9, but the factor is then the single dial that
+buys the separation and spends it.
+
+### Candidate 5, concurrent upstream unavailability netted, killed on the reflex sweep (2026-10-18)
+
+(Architecture 7, screens 3 to 6, `wave5/task201b/screen3.py` to `screen6.py`.) The joint limit is
+the customer's own supply time: a customer loses supply whenever any device on its supply path is
+open, while the dispatch record holds one row per device that operated, so a spur outage running
+inside an outage of the trunk or station above it kept nobody on supply, and ranking the corridor
+packages on the recorded interrupted customer-hours sizes each against the whole of the customer's
+lost time. Generator G10, cross-dimensional duplication. Measured in two forms.
+
+With the trunk packages in the shortlist the netting **only ever shrinks downstream candidates**,
+and the upstream candidate's customer count is the sum of the downstream ones, so it cannot reorder
+the top: the golden ranked **1 of 8** on the recorded ladder and **7 of 10 reflexes** reached it.
+Restricted to the SN-odgalezienie corridor packages it does flip, and the flat-correction reflex is
+broken by construction because a flat keep share cannot reorder: at the tuned cut the default path
+files **GRB / Borowa Puszcza** on 16.291 thousand recorded customer-hours, the decisive route files
+**ZAN / Zanowiec Miasto** on 13.173 thousand restorable against Borowa Puszcza's 10.978, a margin of
+**1.2000x**, with the keep share spanning **0.633 to 1.000**.
+
+It dies on the reflex sweep. Material concurrent unavailability needs a common cause, the only
+common cause this world offers is the storm episode, and the measured collinearity is
+**corr(netted share, storm share) = +0.8292** and **corr(netted share, storm customer-hours) =
++0.8554**, with the storm carrying **72.6 per cent** of the recorded total. So **excluding the storm
+episodes reaches the golden as its top pick with no coincidence analysis at all**, and that is not
+merely an opponent reflex: excluding major event days is the reliability standards' own convention
+and the basis the concession's filed returns are reported on, so it fires the readability screen's
+reflex test and its control-bench test at once. There is no setting that decouples them, because
+decoupling needs long upstream outages in calm weather and independent failures do not overlap at
+any material rate. **Rule earned:** a decisive step that nets concurrent unavailability cannot hold
+where the concurrency is produced by a named episode the pack records, because the episode flag is a
+one-line filter that reproduces the netting.
+
+### The binding-constraint direction on this cell, screened out (2026-10-18)
+
+Three structurally distinct instantiations of `binding_constraint` under gap `objective` (the only
+gap `stumping` 1.4 licenses for it) were screened on measured truth and each died for its own
+reason: the constraint did not bind differentially (candidate 3, spread 0.1004), the two sides of the
+ledger were not commensurate (candidate 4, 193.5 against 61.4 thousand customer-hours), and the
+decisive quantity was collinear with a recorded episode (candidate 5, +0.8292). A fourth, the
+crew-week's clearance capacity in route-km against each candidate's corridor length, was rejected
+without measurement on two grounds already measured elsewhere: the benefit of clearing part of a
+corridor is proportional to the kilometres cleared, because a feeder's vegetation fault rate is set
+by its whole corridor, so there is no physical warrant for the binary completion that
+`strategies.md` F3 requires ("reachability binary, never graded"), and the graded form is the
+exposure-per-kilometre density, which is the opponent's first normalisation. What F3's one portal
+success rests on, a shared pool whose candidates' claims overlap so that sizing each against the
+whole pool double-books it, is task106's spent driver, and the only instance of it this world offers
+is candidate 5.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

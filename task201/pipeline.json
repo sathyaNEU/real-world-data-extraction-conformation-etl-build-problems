@@ -9,8 +9,8 @@
  "updated": "2026-10-18",
  "architecture": 7,
  "loops": 0,
- "call": "The remediation slot goes to the SN-odgalezienie fused spurs in rejon Borowa Puszcza of the Grabownik branch, carrying 7,152 customer-interruptions in that rejon",
- "stump": "The dispatch record times every interruption on a feeder without line telemetry from the first customer notification rather than from the loss of supply, and that unrecorded opening runs 242.5 minutes on the fused rural spurs that carry Grabownik's exposure against 8.6 on the trunks that carry Zanowiec's, so the recorded drill commits the slot inside Zanowiec",
+ "call": "",
+ "stump": "",
  "card_registered": false,
  "draw": {
   "candidate_1": "separating confounding inflation from polygenic signal by LD score regression, killed at the draw before any design",
@@ -20,16 +20,17 @@
   "rule_earned": "an identification of the form 'estimate the nuisance where the signal vanishes' fails the sixth screen by construction, because the region where the signal vanishes publishes the nuisance and the leverage that sharpens the identification is what purifies that region",
   "candidate_2": "fine-mapping which variant in a locus is causal, killed at the draw. Under the standard single-causal model the causal variant has the largest expected z, so the lead can differ from it in only three ways and each was measured: equal power and one causal variant means the answer IS the lead, so lead-by-p-value and largest-absolute-effect both reach it and the standard pipeline is the golden; a poorly imputed causal variant splits the family (ABF, sum-of-single-effects and stepwise name variant 5, stochastic search names 7) and argmin(INFO) publishes the answer; two causal variants split the family again and make the well-posed answer a set rather than a name.",
   "rule_earned_2": "the perturbation that separates the lead variant from the causal one is the perturbation the licensed methods disagree about, so the method family closes only when the answer is trivial; and where the well-posed answer to which-one is a set, grading a name grades an arbitrary element of it.",
-  "architecture_2": "energy-systems-utilities/grid-reliability-outage-analysis, shape 12 drill-down to one leaf; the pre-notification interval recovered from the parallel telemetry channel and conditioned on the section class"
+  "architecture_2": "energy-systems-utilities/grid-reliability-outage-analysis, shape 12 drill-down to one leaf; the pre-notification interval recovered from the parallel telemetry channel and conditioned on the section class",
+  "architecture_7_screens": "Three structurally distinct binding_constraint instantiations under gap objective screened on measured truth, all dead, each recorded in the design note's Tried and rejected with its number: (3) coincident-peak headroom on the transfer feeder, window diversity spread 0.8996 to 1.0000 so 11 of 12 candidates admitted at a flat factor of 1.00 and the golden 1 of 12 on rung 1; (4) the clearance outage's own planned interruption netted on the isolating structure, strand share spread 3.96x but 14 of 25 reflexes reached it and the margin was 1.1165x, because the planned cost is 193.5 against 61.4 thousand customer-hours and the net collapses to minus the cost; (5) concurrent upstream unavailability netted (G10), which does flip at 1.2000x with the flat-correction reflex broken, and dies because corr(netted share, storm share) is +0.8292 and the reliability standards' own major-event-day exclusion names the golden as its top pick. A fourth, crew-week clearance capacity in route-km against corridor length, was rejected without measurement: the benefit of partial clearance is proportional to the kilometres cleared, so strategies.md F3's binary reachability has no physical warrant here, and the graded form is the exposure-per-kilometre density, the opponent's first normalisation."
  },
- "resume": "Architecture 6 is spent on the judge's SEND_BACK and architecture 7 is being drawn on the same world. Gate G failed as a surface-read rejection: the difficulty was catching that the record's own duration column is misleading on the 4,940 notification-timed interruptions, and sole_data_defect was the judge's distinction from the two shipped builds in this lane that rest on a separate record of a different thing. The re-root keeps the world and most of the pack and moves the decisive step to a binding constraint, one crew-week of remediation capacity against honest customer-hours, with the clock correction demoted to Layer 1 mess and checks.py asserting the call is invariant across the recorded clock and all three corrections. Verified here before the re-root was commissioned: answer 9's 3,400 is the count of distinct nr_ppe while the notifications with an empty id_zdarzenia number 3,542. Also in scope: answers 10 and 11 (the shipped correction is +0.42 and +10.687 per cent, and +0.15 and exactly 6.2500 per cent, which is a rounding fork on a graded figure), the flat UTC plus one hour against Poland's 25 October transition, two documentation counts that disagree with the data, and five realism tells.",
+ "resume": "PAUSED at stage 1 with architectures 6 and 7 both spent and no direction chosen. Architecture 6 was sent back on Gate G. Architecture 7, the binding-constraint direction the orchestrator prescribed from the judge's own list, screened out on three measured kills: coincident-peak headroom has a diversity factor spanning only 0.1004 so eleven of twelve candidates are admitted at a flat 1.00 and exposure alone reaches the golden; the netted clearance outage reaches 14 of 25 reflexes at a margin of 1.1165x under the 1.15 floor, because a forty-hour whole-line outage costs 193.5 thousand customer-hours against 61.4 thousand of avoided exposure so the two sides are not commensurate; and concurrent upstream unavailability correlates with the storm at +0.83, so excluding major event days, which is the standards' own convention and the basis the filed returns use, names the golden as its top pick with no analysis. The crew-week route-km shape the brief named was rejected without a cut, because a corridor's benefit is proportional to the kilometres cleared so there is no warrant for the binary completion the pattern demands. The wall across all three: the constraint must bind differentially at a spread of about 2x or more, the two sides must be commensurate, and the decisive quantity must not be collinear with a recorded episode or attribute. Of the judge's other two prescriptions, the storm decomposition is measured against (the storm carries 72.6 per cent of the recorded total and the episode is a shipped column, so the split is a one-line filter) and the forward projection would move the objective to forecasting, which is the author's call. A world-level defect pass is running on the four defects that survive any direction. The design note's stage 2 sections still describe architecture 6, so precut's exit 0 is stale evidence and must not be read as a gate. The axes probed clear for whatever comes next are in the architecture 7 block.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "card_draft": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task201/task201_card.json",
+ "card_draft": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task201b/task201_card.json",
  "leak": {
   "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
   "reader": "landed the leaf at about 60 per cent, runner-up wrong and the reader says so; found a real clock defect"
@@ -37,9 +38,20 @@
  "judge": {
   "verdict": "NOT_DETERMINISTIC",
   "disposition": "SEND_BACK",
-  "report": "task201/determinism_check_report.md",
-  "gate_g": "FAIL banned_stumping_type: planted_defect_flip (mixed measurement clock), surface_read_rejection, surface_read_dependency yes, sole_data_defect yes",
-  "gates": "H pass, G FAIL, A FAIL (answers 9, 10, 11), B FAIL, C FAIL, D FAIL, E FAIL, F high but invalid",
-  "order": "derivation written before the graded blocks; the judge independently filed the default path answer"
- }
+  "report": "determinism_check_report.md",
+  "gate_g": "FAIL, banned_stumping_type: mechanism planted_defect_flip (mixed measurement clock), stumping_family surface_read_rejection, surface_read_dependency yes, sole_data_defect yes",
+  "other_gates": "A to E FAIL: answers 9, 10 and 11 do not reproduce; the timed set is unpinned at 961 / 1,065 / 1,150; three loose ask readings",
+  "accepted": "yes, architecture 6 is spent and re-rooted rather than repaired"
+ },
+ "owed": [
+  "checks.py must assert the committed answer is identical under the recorded clock, the pooled-mean, the pooled-median and the class-stratified corrections, so the measurement clock is Layer 1 mess and decides nothing (the judge's own invariance requirement)",
+  "the UTC telemetry archive is converted at a flat plus one hour, asserted by checks.py R2.utc_offset, while Poland leaves summer time on 25 October 2026 and 366 of the 1,505 stamps fall before it: make it the real transition, two hours before and one after",
+  "provenance.md says the schedule holds 440 planned works while the sheets hold 260 jobs covering 440 section outages",
+  "slownik_danych.md dates the IVR blank-field gap 9 to 19 October while the blanks run to 2 November, and 348 of the 569 rows one ask repairs fall outside the stated window",
+  "answer 9 commits 3,400, the count of distinct nr_ppe; the notification count with an empty id_zdarzenia is 3,542 and all twelve branch-by-channel cells move with it",
+  "answer 10's customer figures are a per-notification sum over a premises-deduplicated set: decide which unit the ask names and make the golden compute that unit",
+  "answer 11 reproduces from nothing: the shipped correction is 3.93 to 4.35 (+0.42 min, +10.687 per cent) and 2.40 to 2.55 (+0.15 min, exactly 6.2500 per cent), and exactly 6.2500 is a rounding fork on a graded figure that must be moved off the edge",
+  "realism: PR-07 spells out the share-of-parent tree and asks for the runner-up, which restates the prompt, and pre-defines every exclusion; the URE figures are too small for monthly minutes per customer against a 171-minute annual SAIDI; every first planned event starts at exactly window start plus twenty minutes; every planned row carries one identical cause; the provenance counts equal every file's row count exactly",
+  "the designation determinacy screen must count the estimator forms that skip the conditioning the decisive step adds, not only the conditioned ones"
+ ]
 }
