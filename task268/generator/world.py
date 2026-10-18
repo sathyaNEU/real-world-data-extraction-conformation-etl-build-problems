@@ -1,355 +1,374 @@
-"""The clean truth for task268: the six metros' tracts, their residents and jobs, the 2022 commuting flows into and out
-of every core tract, and the national survey's respondents. No mess here; records.py writes the exports.
+"""The world under task268: six haddock grounds on the organisation's grid, each ground's stock by cell and year, the
+members' fleet and where it tows, and the autumn survey's fixed stations. Everything downstream (the records, the
+documents, the analysis, the checks) reads from build().
 
-Commuting: inside each central county a doubly constrained gravity model per industry group carries every tract's
-resident workers to every tract's jobs held by central-county residents; jobs held by people from outlying counties
-and from outside the metro are drawn from those counties by destination; core residents also work in the outlying
-counties and outside the metro. The flows touching a core tract are kept (the analytics team's extract)."""
+A ground's stock follows its own path from 2019 to 2026. As it shrinks it keeps its density longest in its best
+cells (the deep band), to a degree set by alpha: alpha 1 is an even decline, alpha near 0 holds the best cells while
+the rest empty. The boats work a ground's cells in proportion to the square of their density and leave a cell once
+its density is under three-tenths of the ground's best. The survey tows the same stations every October, twelve in
+each depth band of every ground, wherever the fish are."""
+import datetime as dt
 import math
 
 import numpy as np
 
 import common as K
 
-SEED = 268
-G3 = K.GROUPS
-# the survey's truth: share of the five weekdays on the employer's premises, by group and where the worker lives
-ATT = {"SI01": {"C": .94, "O": .92, "X": .82}, "SI02": {"C": .90, "O": .80, "X": .36},
-       "SI03": {"C": .74, "O": .44, "X": .12}}
-# the survey's national residence mix by group (workers whose workplace is in a metropolitan area)
-SMIX = {"SI01": {"C": .55, "O": .35, "X": .10}, "SI02": {"C": .60, "O": .30, "X": .10},
-        "SI03": {"C": .48, "O": .30, "X": .22}}
-OFF = 0.055      # share of weekdays not worked (leave, holidays, part-time days), every cell
-EMP = 0.48       # resident workers per resident
-REF = {"Halberdine": (40.212, -82.861), "Quillmere": (40.583, -86.297), "Corrisford": (34.682, -77.421),
-       "Tessavon": (39.441, -104.583), "Ashcombe": (38.336, -92.617), "Dunnaway": (35.613, -86.874)}
+SEED = 69
 
-
-def rm(c, o, x):
-    return {"C": c, "O": o, "X": x}
-
-
-def same(r):
-    return {g: dict(r) for g in G3}
-
-
-# Each core: its business district tracts and its other tracts (count, km2 each, residents per km2, jobs per km2 by
-# group, where the workers live by group), the industry mix of its residents' jobs, and the share of the metro's
-# out-of-metro workers who live in another state (the auxiliary part).
-CORES = {
-    "Halberdine": dict(
-        cbd=(6, 0.50, 2700, {"SI03": 77790, "SI02": 2910, "SI01": 190},
-             {"SI03": rm(0.249, 0.259, 0.492), "SI02": rm(0.269, 0.239, 0.492), "SI01": rm(0.5, 0.4, 0.1)}),
-        rest=(30, .60, 7000, {"SI03": 2500, "SI02": 2000, "SI01": 300}, same(rm(.6, .3, .1))),
-        mix={"SI01": .10, "SI02": .30, "SI03": .60}, aux=.45, pop=760000),
-    "Quillmere": dict(
-        cbd=(5, 0.60, 3000, {"SI03": 60120, "SI02": 3510, "SI01": 260},
-             {"SI03": rm(0.37, 0.38, 0.25), "SI02": rm(0.417, 0.333, 0.25), "SI01": rm(0.5, 0.4, 0.1)}),
-        rest=(33, .60, 6500, {"SI03": 2000, "SI02": 1500, "SI01": 300}, same(rm(.7, .25, .05))),
-        mix={"SI01": .05, "SI02": .25, "SI03": .70}, aux=.20, pop=640000),
-    "Corrisford": dict(
-        cbd=(7, 0.60, 7700, {"SI03": 13760, "SI02": 34840, "SI01": 7800},
-             {"SI03": rm(0.091, 0.272, 0.638), "SI02": rm(0.167, 0.196, 0.638), "SI01": rm(0.15, 0.35, 0.5)}),
-        rest=(30, .60, 7500, {"SI03": 2000, "SI02": 3000, "SI01": 500}, same(rm(.6, .3, .1))),
-        mix={"SI01": .15, "SI02": .45, "SI03": .40}, aux=.0, pop=600000),
-    "Tessavon": dict(
-        cbd=(6, 0.60, 7100, {"SI03": 49850, "SI02": 9220, "SI01": 400},
-             {"SI03": rm(0.902, 0.08, 0.018), "SI02": rm(0.902, 0.08, 0.018), "SI01": rm(0.9, 0.08, 0.02)}),
-        rest=(35, .50, 10300, {"SI03": 3500, "SI02": 2500, "SI01": 300}, same(rm(.88, .10, .02))),
-        mix={"SI01": .05, "SI02": .25, "SI03": .70}, aux=.15, pop=980000),
-    "Ashcombe": dict(
-        cbd=(4, 0.70, 9000, {"SI03": 9740, "SI02": 6520, "SI01": 400},
-             {"SI03": rm(0.604, 0.302, 0.094), "SI02": rm(0.604, 0.302, 0.094), "SI01": rm(0.6, 0.3, 0.1)}),
-        rest=(60, .36, 19000, {"SI03": 1500, "SI02": 2000, "SI01": 300}, same(rm(.7, .25, .05))),
-        mix={"SI01": .25, "SI02": .45, "SI03": .30}, aux=.15, pop=820000),
-    "Dunnaway": dict(
-        cbd=(5, 0.90, 3000, {"SI03": 12910, "SI02": 12430, "SI01": 7990},
-             {"SI03": rm(0.453, 0.352, 0.195), "SI02": rm(0.453, 0.352, 0.195), "SI01": rm(0.45, 0.35, 0.2)}),
-        rest=(48, .50, 10000, {"SI03": 1500, "SI02": 2000, "SI01": 800}, same(rm(.6, .3, .1))),
-        mix={"SI01": .35, "SI02": .40, "SI03": .25}, aux=.15, pop=700000),
+# relative stock by year 2019..2026, alpha, cells, band shares (A, B, C), base mean density (kg per km2), fleet hours
+SPEC = {
+    "Skiravie Bank":   dict(trend=[1.00, 0.98, 1.02, 0.95, 0.88, 0.81, 0.75, 0.70], alpha=0.5, cells=46,
+                            shares=(0.45, 0.35, 0.20), d0=1250, hours=4800),
+    "Halmorie Deep":   dict(trend=[1.00, 1.03, 0.97, 0.89, 0.77, 0.62, 0.50, 0.41], alpha=0.12, mid=2.0, cells=80,
+                            shares=(0.68, 0.24, 0.08), d0=1150, hours=6800),
+    "Moraskie Ground": dict(trend=[1.00, 1.02, 0.99, 0.95, 0.90, 0.85, 0.80, 0.76], alpha=0.7, cells=44,
+                            shares=(0.40, 0.40, 0.20), d0=1150, hours=4400),
+    "Brettach Bank":   dict(trend=[1.00, 0.99, 1.01, 0.91, 0.81, 0.71, 0.62, 0.53], alpha=1.0, cells=58,
+                            shares=(0.40, 0.35, 0.25), d0=1300, hours=6400),
+    "Vallaskie Hole":  dict(trend=[1.00, 1.01, 1.00, 0.97, 0.93, 0.89, 0.85, 0.82], alpha=0.8, cells=40,
+                            shares=(0.35, 0.40, 0.25), d0=1050, hours=4000),
+    "Cullardy Patch":  dict(trend=[1.00, 0.97, 1.03, 1.00, 0.97, 0.94, 0.91, 0.88], alpha=0.9, cells=48,
+                            shares=(0.45, 0.35, 0.20), d0=1100, hours=4600),
 }
-COUNTY_MIX = {"SI01": .16, "SI02": .24, "SI03": .60}   # resident workers' groups outside the cores
+CENTRES = {"Skiravie Bank": (6, 5), "Halmorie Deep": (6, 17), "Moraskie Ground": (17, 6),
+           "Brettach Bank": (18, 18), "Vallaskie Hole": (29, 5), "Cullardy Patch": (29, 17)}
+QUAL = {"A": 0.10, "B": 0.35, "C": 1.0}     # habitat quality by depth band
+BETA, FLOOR = 2.0, 0.30                      # the fleet's preference for density and the density it leaves a cell at
+SIGMA_COMM = 0.45                            # haul-to-haul noise in the members' catches
+QC = 0.08                                    # km2 a member trawler fishes in an hour, at full efficiency
+QS = 0.039                                   # km2 the survey trawl fishes in a standard 30-minute tow
+NB_K = 8.0                                   # overdispersion of the survey's haddock counts
+STATION_SD = 0.35                            # a station's lasting patchiness
+MONTH_W = [0.70, 0.75, 0.90, 1.00, 1.05, 1.10, 1.05, 1.00, 0.95, 0.90, 0.80, 0.60]
+LAT_N, LON_W = 61.5, -2.0                    # the grid's north-west corner; rows of 5', columns of 10'
+ELOG_END = dt.date(2026, 10, 31)             # the e-logbook export runs to the end of October 2026
 
 
-def ll(ref, x, y):
-    """Planar km from the core's centre to latitude and longitude."""
-    lat = ref[0] + y / 110.95
-    lon = ref[1] + x / (111.32 * math.cos(math.radians(ref[0])))
-    return round(lat, 7), round(lon, 7)
+# ---------------------------------------------------------------------------------------------- the grid
+def cell_geometry(row, col):
+    """A sub-square's code, rectangle, number, bounds, centre and area (km2)."""
+    lat_n = LAT_N - row * 5 / 60
+    lat_s = lat_n - 5 / 60
+    lon_w = LON_W + col * 10 / 60
+    lon_e = lon_w + 10 / 60
+    latc, lonc = (lat_n + lat_s) / 2, (lon_w + lon_e) / 2
+    ices_row = int(math.floor((latc - 36.0) / 0.5)) + 1
+    lon_deg = int(math.floor(lonc))
+    colcode = ("E%d" % (lon_deg + 10)) if lon_deg < 0 else ("F%d" % lon_deg)
+    rect = "%02d%s" % (ices_row, colcode)
+    rect_lat_n = 36.0 + ices_row * 0.5
+    sub_r = int(round((rect_lat_n - lat_n) * 12))
+    sub_c = int(round((lon_w - lon_deg) * 6))
+    sub = sub_r * 6 + sub_c + 1
+    area = 9.26 * 18.52 * math.cos(math.radians(latc))
+    return dict(row=row, col=col, rect=rect, sub=sub, code="%s/%02d" % (rect, sub), lat_n=lat_n, lat_s=lat_s,
+                lon_w=lon_w, lon_e=lon_e, lat=latc, lon=lonc, area=round(area, 2))
 
 
-def tract_codes(r, n, start, step=100):
-    """Tract codes in the county's numbering: whole hundreds, a few split tracts carrying .01 and .02."""
-    out, code = [], start
-    while len(out) < n:
-        if r.random() < .12 and len(out) < n - 1:
-            out += ["%06d" % (code + 1), "%06d" % (code + 2)]
-        else:
-            out.append("%06d" % code)
-        code += step
-    return out[:n]
+def smooth_field(rng, n=3, scale=4.0):
+    fr = rng.uniform(0.15, 0.45, (n, 2)) / scale * 4
+    ph = rng.uniform(0, 2 * np.pi, n)
+    amp = rng.uniform(0.5, 1.0, n)
+    return lambda r, c: float(sum(a * math.cos(f[0] * r + f[1] * c + p) for a, f, p in zip(amp, fr, ph)))
 
 
-def build_metro(m, r):
-    st, stname = K.STATES[m["st"]]
-    spec = CORES[m["name"]]
-    ref = REF[m["name"]]
-    cc = st + m["central"][1]
-    tracts = []   # dicts: geoid, county, kind, x, y, area, R, jobs{g}, ring{g}, core
-
-    # the core: business district tracts at the centre (their spread fixed, so the district's shape is designed),
-    # then the rest of the core
-    n_cbd, a_cbd, r_cbd, j_cbd, ring_cbd = spec["cbd"]
-    n_rest, a_rest, r_rest, j_rest, ring_rest = spec["rest"]
-    codes = tract_codes(r, n_cbd + n_rest, 100)
-    jmul = np.linspace(1.32, .70, n_cbd)
-    amul = np.array([.86, 1.12, .94, 1.20, 1.0, .90, 1.08, .97][:n_cbd])
-    for k in range(n_cbd + n_rest):
-        cbd = k < n_cbd
-        area, rd, jd, ring = (a_cbd, r_cbd, j_cbd, ring_cbd) if cbd else (a_rest, r_rest, j_rest, ring_rest)
-        ang = r.uniform(0, 2 * math.pi)
-        rad = r.uniform(0, 1.3) if cbd else r.uniform(1.4, 4.2)
-        if cbd:
-            ar = area * float(amul[k]) * float(r.lognormal(0, .04))
-            f, fj = float(r.lognormal(0, .2)), float(jmul[k]) * float(r.lognormal(0, .04))
-        else:
-            ar = area * float(r.lognormal(0, .22))
-            f, fj = float(r.lognormal(0, .25)), float(r.lognormal(0, .33))
-        tracts.append(dict(geoid=cc + codes[k], county=cc, kind="cbd" if cbd else "core", core=True,
-                           x=rad * math.cos(ang), y=rad * math.sin(ang), area=ar, R=rd * ar * f,
-                           jobs={g: jd.get(g, 0) * ar * fj for g in G3}, ring=ring))
-    # one water-only tract inside two of the cores (a river channel), listed by the planning map
-    if m["name"] in ("Corrisford", "Tessavon"):
-        tracts.append(dict(geoid=cc + "980100", county=cc, kind="water", core=True, x=0.9, y=-0.4, area=0.0, water=0.31,
-                           R=0.0, jobs={g: 0.0 for g in G3}, ring=same(rm(1, 0, 0))))
-    core_R = sum(t["R"] for t in tracts)
-    # the rest of the central county: suburbs from 4 to 22 km, enough of them that the county's own resident
-    # workers in each group can fill the core's jobs held by central-county residents with room to spare
-    pop_sub = spec["pop"] - core_R
-    for g in G3:
-        d = sum(t["jobs"][g] * t["ring"][g]["C"] for t in tracts)
-        o = sum(EMP * t["R"] * spec["mix"][g] * .91 for t in tracts)
-        pop_sub = max(pop_sub, 1.45 * max(0.0, d - o) / (EMP * .91 * COUNTY_MIX[g]))
-    n_out = int(round(pop_sub / 4300))
-    codes = tract_codes(r, n_out, 8000)
-    for k in range(n_out):
-        ang, rad = r.uniform(0, 2 * math.pi), 4.4 + 17.6 * math.sqrt(r.random())
-        pop = float(r.lognormal(math.log(4300), .28))
-        dens = 6500 * math.exp(-rad / 7.5) * float(r.lognormal(0, .3))
-        tracts.append(dict(geoid=cc + codes[k], county=cc, kind="county", core=False, x=rad * math.cos(ang),
-                           y=rad * math.sin(ang), area=pop / dens, R=pop, jobs={g: 0.0 for g in G3}, ring=same(rm(1, 0, 0))))
-    # outlying counties, each a sector from 22 to 60 km; outside counties from 60 to 110 km
-    for i, (nm, code) in enumerate(m["outlying"]):
-        base = 2 * math.pi * i / len(m["outlying"]) + r.uniform(-.3, .3)
-        n = int(r.integers(26, 64))
-        codes = tract_codes(r, n, 9500 if r.random() < .5 else 200)
-        for k in range(n):
-            ang, rad = base + r.uniform(-.9, .9), 22 + 38 * math.sqrt(r.random())
-            pop = float(r.lognormal(math.log(4100), .3))
-            dens = 900 * math.exp(-(rad - 22) / 18) * float(r.lognormal(0, .4))
-            tracts.append(dict(geoid=st + code + codes[k], county=st + code, kind="outlying", core=False,
-                               x=rad * math.cos(ang), y=rad * math.sin(ang), area=pop / dens, R=pop,
-                               jobs={g: 0.0 for g in G3}, ring=same(rm(1, 0, 0))))
-    for i, (nm, code, other) in enumerate(m["outside"]):
-        base = r.uniform(0, 2 * math.pi)
-        n = int(r.integers(14, 34))
-        codes = tract_codes(r, n, 9600 if r.random() < .5 else 100)
-        for k in range(n):
-            ang, rad = base + r.uniform(-.5, .5), 60 + 50 * r.random()
-            pop = float(r.lognormal(math.log(3900), .3))
-            dens = 250 * float(r.lognormal(0, .5))
-            tracts.append(dict(geoid=st + code + codes[k], county=st + code, kind="outside", core=False,
-                               x=rad * math.cos(ang), y=rad * math.sin(ang), area=pop / dens, R=pop,
-                               jobs={g: 0.0 for g in G3}, ring=same(rm(1, 0, 0))))
-    for t in tracts:
-        t["lat"], t["lon"] = ll(ref, t["x"], t["y"])
-        t["metro"] = m["name"]
-        t["st"] = m["st"]
-    return dict(metro=m, tracts=tracts, spec=spec, central=cc,
-                outlying={st + c for _, c in m["outlying"]}, outside={st + c for _, c, _ in m["outside"]})
+def grid(rng):
+    cells = []
+    taken = set()
+    for gname, gcode, kind in K.GROUNDS:
+        s = SPEC[gname]
+        r0, c0 = CENTRES[gname]
+        ar, ac = rng.uniform(0.85, 1.25), rng.uniform(0.85, 1.25)
+        noise = smooth_field(rng)
+        cand = []
+        for r in range(max(0, r0 - 9), min(36, r0 + 10)):
+            for c in range(max(0, c0 - 9), min(24, c0 + 10)):
+                if any((r + dr, c + dc) in taken for dr in (-1, 0, 1) for dc in (-1, 0, 1)):
+                    continue
+                d = math.hypot((r - r0) / ar, (c - c0) / ac) + 0.9 * noise(r, c)
+                cand.append((d, r, c))
+        cand.sort()
+        chosen = cand[:s["cells"]]
+        taken |= {(r, c) for _, r, c in chosen}
+        theta = rng.uniform(0, 2 * np.pi)
+        noise2 = smooth_field(rng)
+        pots = []
+        for d, r, c in chosen:
+            if kind == "deep":
+                pot = -d
+            elif kind == "bank":
+                pot = d
+            else:
+                pot = (r - r0) * math.cos(theta) + (c - c0) * math.sin(theta)
+            pots.append(pot + 0.6 * noise2(r, c) + rng.normal(0, 0.25))
+        order = np.argsort(pots)            # shallowest first
+        n = s["cells"]
+        nA = int(round(n * s["shares"][0]))
+        nB = int(round(n * s["shares"][1]))
+        band = {}
+        for k, i in enumerate(order):
+            band[i] = "A" if k < nA else ("B" if k < nA + nB else "C")
+        deep_max = 212 if kind == "deep" else 178
+        for k, i in enumerate(order):
+            b = band[i]
+            lo, hi = {"A": (68, 99), "B": (100, 139), "C": (140, deep_max)}[b]
+            ranks = [j for j in order if band[j] == b]
+            pos = ranks.index(i) / max(1, len(ranks) - 1)
+            depth = int(round(lo + 1 + pos * (hi - lo - 2) + rng.normal(0, 1.5)))
+            depth = min(hi, max(lo + 1, depth)) if b != "A" else min(99, max(lo, depth))
+            if b == "B":
+                depth = min(139, max(100, depth))
+            if b == "C":
+                depth = max(140, depth)
+            _, r, c = chosen[i]
+            g = cell_geometry(r, c)
+            g.update(ground=gname, band=b, depth=depth)
+            cells.append(g)
+    codes = [c["code"] for c in cells]
+    assert len(set(codes)) == len(codes), "grounds overlap"
+    return cells
 
 
-def dist(a, b):
-    return math.hypot(a["x"] - b["x"], a["y"] - b["y"]) + 0.6
+# ---------------------------------------------------------------------------------------------- the stock
+def stock(rng, cells):
+    """Density (kg per km2) by cell and year. A ground's deep band keeps a share B ** alpha of its base density, the
+    middle band B ** mid (by default 1 + (1 - alpha) / 2), and the shallow band holds the rest of the stock, so the
+    ground's total is B times its base total: the basin a shrinking stock retreats into."""
+    dens = {}
+    qual = {}
+    for gname in K.GROUND_NAMES:
+        s = SPEC[gname]
+        idx = [i for i, c in enumerate(cells) if c["ground"] == gname]
+        a = np.array([cells[i]["area"] for i in idx])
+        band = np.array([cells[i]["band"] for i in idx])
+        q = np.array([QUAL[b] for b in band]) * np.exp(rng.normal(0, 0.12, len(idx)))
+        for i, v in zip(idx, q):
+            qual[i] = float(v)
+        tot = {b: float(np.sum((q * a)[band == b])) for b in K.BANDS}
+        scale = s["d0"] * a.sum() / sum(tot.values())
+        for yi, y in enumerate(K.YEARS):
+            B = s["trend"][yi]
+            m = {"C": B ** s["alpha"], "B": B ** s.get("mid", 1 + (1 - s["alpha"]) / 2)}
+            m["A"] = (B * sum(tot.values()) - m["C"] * tot["C"] - m["B"] * tot["B"]) / tot["A"]
+            assert m["A"] > 0, (gname, y, m)
+            for i, qi, b in zip(idx, q, band):
+                dens[(i, y)] = float(scale * qi * m[b])
+    return dens, qual
 
 
-def flows_metro(M, r):
-    """Expected flows (home tract, work tract, group) -> count, then integer draws. Returns rows and the
-    out-of-state origins."""
-    T = M["tracts"]
-    spec = M["spec"]
-    central = [t for t in T if t["county"] == M["central"] and t["kind"] != "water"]
-    core = [t for t in T if t["core"] and t["kind"] != "water"]
-    outl = [t for t in T if t["kind"] == "outlying"]
-    outs = [t for t in T if t["kind"] == "outside"]
-    for t in T:
-        mix = spec["mix"] if t["core"] else COUNTY_MIX
-        t["E"] = {g: EMP * t["R"] * mix[g] for g in G3}
-    exp = {}   # (h, w, g) -> expected count
-
-    def add(h, w, g, v):
-        if v > 0:
-            exp[(h, w, g)] = exp.get((h, w, g), 0.0) + v
-
-    # where central-county resident workers work: 91 per cent in the county, 6 in an outlying county, 3 outside
-    in_cty, to_o, to_x = .91, .06, .03
-    for g in G3:
-        O = np.array([t["E"][g] * in_cty for t in central])
-        Dcore = {t["geoid"]: t["jobs"][g] * t["ring"][g]["C"] for t in core}
-        need = O.sum() - sum(Dcore.values())
-        assert need > 0, (M["metro"]["name"], g, need)
-        # the county's other jobs, where its own residents work, spread with the suburbs' size and nearness
-        wts = np.array([0.0 if t["core"] else t["R"] * math.exp(-math.hypot(t["x"], t["y"]) / 9) * float(r.lognormal(0, .5))
-                        for t in central])
-        D = np.array([Dcore.get(t["geoid"], 0.0) for t in central]) + need * wts / wts.sum()
-        for t, d in zip(central, D):
-            if not t["core"]:
-                t["jobs"][g] = d       # suburban jobs held by the county's residents
-        cost = np.array([[math.exp(-dist(a, b) / 6.0) for b in central] for a in central])
-        A, B = np.ones(len(central)), np.ones(len(central))
-        for _ in range(60):
-            A = 1.0 / (cost @ (B * D))
-            B = 1.0 / ((A * O) @ cost)
-        flow = (A * O)[:, None] * cost * (B * D)[None, :]
-        idx = {t["geoid"]: i for i, t in enumerate(central)}
-        for t in core:
-            j = idx[t["geoid"]]
-            for i, h in enumerate(central):
-                add(h["geoid"], t["geoid"], g, flow[i, j])             # into the core from the county
-            for jj, w in enumerate(central):
-                if not w["core"]:
-                    add(t["geoid"], w["geoid"], g, flow[j, jj])        # core residents to the rest of the county
-        # core residents' jobs in the outlying counties and outside the metro
-        for t in core:
-            e = t["E"][g]
-            wo = np.array([w["R"] * math.exp(-dist(t, w) / 15) for w in outl])
-            for w, v in zip(outl, e * to_o * wo / wo.sum()):
-                add(t["geoid"], w["geoid"], g, v)
-            wx = np.array([w["R"] * math.exp(-dist(t, w) / 40) for w in outs])
-            for w, v in zip(outs, e * to_x * wx / wx.sum()):
-                add(t["geoid"], w["geoid"], g, v)
-        # jobs in the core held by people from the outlying counties and from outside the metro
-        for t in core:
-            jo, jx = t["jobs"][g] * t["ring"][g]["O"], t["jobs"][g] * t["ring"][g]["X"]
-            wo = np.array([h["E"][g] * math.exp(-dist(t, h) / 25) for h in outl])
-            for h, v in zip(outl, jo * wo / wo.sum()):
-                add(h["geoid"], t["geoid"], g, v)
-            aux = spec["aux"] * (1.0 if g == "SI03" else .4)
-            wx = np.array([h["E"][g] * math.exp(-dist(t, h) / 60) for h in outs])
-            for h, v in zip(outs, jx * (1 - aux) * wx / wx.sum()):
-                add(h["geoid"], t["geoid"], g, v)
-            if aux > 0:
-                for h, v in zip(M["far"], jx * aux * M["far_w"]):
-                    add(h, t["geoid"], g, v)
-    rows = {}
-    for (h, w, g), v in sorted(exp.items()):
-        n = int(r.poisson(v))
-        if n:
-            rows.setdefault((h, w), {gg: 0 for gg in G3})[g] += n
-    return rows
+# ---------------------------------------------------------------------------------------------- the fleet
+VESSEL_NAMES = ["Arcturus", "Starlight", "Catriona Rose", "Dawn Harvester", "Emulator", "Fairwind", "Gleaming Star",
+                "Heather Bell", "Islander", "Jasper", "Kestrel", "Harvest Moon", "Ocean Dawn", "Northern Lass",
+                "Ocean Reaper", "Provider", "Quiet Waters", "Rosebud", "Sea Harvester", "Tranquility", "Unity",
+                "Valhalla", "Golden Venture", "Brighter Morn", "Zephyr", "Brighter Dawn", "Celtic Mist", "Endurance",
+                "Good Hope", "Silver Spray"]
 
 
-def far_origins(M, r, n=420):
-    """Tracts in other states where the metro's out-of-state workers live (homes of staff the establishments carry,
-    many working remotely): real state codes, county and tract codes as the agency writes them."""
-    others = ["01", "04", "05", "06", "09", "12", "13", "17", "19", "20", "21", "22", "24", "25", "26", "27", "28",
-              "31", "34", "36", "40", "41", "42", "45", "48", "49", "51", "53", "55"]
-    st = K.STATES[M["metro"]["st"]][0]
-    near = {"39": ["18", "21", "26", "42", "54"], "18": ["17", "21", "26", "39"], "37": ["13", "45", "47", "51"],
-            "08": ["04", "20", "31", "35", "49", "56"], "29": ["05", "17", "19", "20", "31", "40"],
-            "47": ["01", "05", "13", "21", "28", "37", "51"]}[st]
-    out = set()
-    while len(out) < n:
-        s = near[int(r.integers(len(near)))] if r.random() < .55 else others[int(r.integers(len(others)))]
-        if s == st:
-            continue
-        c = "%03d" % (2 * int(r.integers(0, 90)) + 1)
-        tr = "%06d" % (int(r.integers(1, 400)) * 100 + (0 if r.random() < .85 else int(r.integers(1, 3))))
-        out.add(s + c + tr)
-    far = sorted(out)
-    w = r.lognormal(0, 1.0, len(far))
-    return far, w / w.sum()
+def fleet(rng):
+    vessels = []
+    used = set()
+    for i, name in enumerate(VESSEL_NAMES):
+        port = K.PORT_NAMES[i % 4] if i < 28 else K.PORT_NAMES[(i + 1) % 4]
+        while True:
+            num = int(rng.integers(12, 480))
+            pln = "%s %d" % (K.PORT_LETTERS[port], num)
+            if pln not in used:
+                used.add(pln)
+                break
+        while True:
+            rss = "C%05d" % int(rng.integers(15000, 22999))
+            if rss not in used:
+                used.add(rss)
+                break
+        pool = K.POOL_CODES[[0, 1, 2, 3, 0, 1, 2, 4, 1, 0, 3, 2, 0, 1, 2, 3, 4, 0, 1, 2, 0, 1, 3, 2, 0, 1, 4, 2, 1, 0][i]]
+        g = list(rng.choice(K.GROUND_NAMES, size=int(rng.integers(2, 4)), replace=False))
+        length = round(float(rng.uniform(14.5, 27.9)), 2) if pool != "I" else round(float(rng.uniform(11.2, 14.9)), 2)
+        registered = dt.date(int(rng.integers(1996, 2018)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
+        since = max(registered, dt.date(int(rng.integers(2004, 2019)), int(rng.integers(1, 13)), 1))
+        vessels.append(dict(name=name, pln=pln, port=port, rss=rss, pool=pool, grounds=g, length=length,
+                            q=float(np.exp(rng.normal(0, 0.18))), registered=registered, since=since,
+                            history=[(pln, registered, None, port)]))
+    # every ground worked by at least four boats
+    for gname in K.GROUND_NAMES:
+        have = [v for v in vessels if gname in v["grounds"]]
+        k = 0
+        while len(have) < 4:
+            v = vessels[(K.GROUND_NAMES.index(gname) * 5 + k) % len(vessels)]
+            if gname not in v["grounds"]:
+                v["grounds"].append(gname)
+                have.append(v)
+            k += 1
+    # two re-registrations at a new home port: one in March 2024, one on 1 June 2026
+    a, b = vessels[2], vessels[5]
+    for v, when, newport in ((a, dt.date(2024, 3, 11), "Haldness"), (b, dt.date(2026, 6, 1), "Eastquay")):
+        old = v["pln"]
+        while True:
+            num = int(rng.integers(12, 480))
+            new = "%s %d" % (K.PORT_LETTERS[newport], num)
+            if new not in used:
+                used.add(new)
+                break
+        v["history"] = [(old, v["registered"], when - dt.timedelta(days=1), v["port"]), (new, when, None, newport)]
+        v["pln"], v["port"] = new, newport
+    return vessels
 
 
-# each metro's own stream, chosen so every graded figure sits away from its rounding edge and no core tract sits
-# within 2 per cent of the dense-tract cut (generator/tune.py)
-METRO_SEED = {"Halberdine": 0, "Quillmere": 3, "Corrisford": 40, "Tessavon": 9, "Ashcombe": 80, "Dunnaway": 4}
+def pln_on(v, day):
+    for pln, start, end, _ in v["history"]:
+        if day >= start and (end is None or day <= end):
+            return pln
+    return v["history"][0][0]
 
 
-def build_one(m, seed=SEED, sub=None):
-    i = K.METROS.index(m)
-    s = METRO_SEED[m["name"]] if sub is None else sub
-    M = build_metro(m, np.random.default_rng([seed, i, 1, s]))
-    M["far"], M["far_w"] = far_origins(M, np.random.default_rng([seed, i, 2, s]))
-    M["flows"] = flows_metro(M, np.random.default_rng([seed, i, 3, s]))
-    return M
+def port_on(v, day):
+    for _, start, end, port in v["history"]:
+        if day >= start and (end is None or day <= end):
+            return port
+    return v["history"][0][3]
+
+
+# ---------------------------------------------------------------------------------------------- the fishing
+def fishing(rng, cells, dens, vessels):
+    """Trips and hauls 2019 to October 2026: each trip works one ground, hauls rotating round a few cells chosen by
+    the density the skipper expects there."""
+    trips, hauls = [], []
+    by_ground = {g: [i for i, c in enumerate(cells) if c["ground"] == g] for g in K.GROUND_NAMES}
+    mw = np.array(MONTH_W) / sum(MONTH_W)
+    tno = 0
+    for y in K.YEARS:
+        for gname in K.GROUND_NAMES:
+            idx = by_ground[gname]
+            d = np.array([dens[(i, y)] for i in idx])
+            att = d ** BETA
+            att[d < FLOOR * d.max()] = 0.0
+            p = att / att.sum()
+            target = SPEC[gname]["hours"] * float(np.exp(rng.normal(0, 0.05)))
+            boats = [v for v in vessels if gname in v["grounds"]]
+            bw = np.array([1.0 + 0.5 * (v["pool"] != "I") for v in boats])
+            bw /= bw.sum()
+            done = 0.0
+            while done < target:
+                v = boats[int(rng.choice(len(boats), p=bw))]
+                m = int(rng.choice(12, p=mw)) + 1
+                start = dt.date(y, m, 1) + dt.timedelta(days=int(rng.integers(0, 28)))
+                ndays = int(rng.integers(4, 8))
+                end = start + dt.timedelta(days=ndays)
+                focus = [idx[int(j)] for j in rng.choice(len(idx), size=3, p=p)]
+                t0 = dt.datetime(start.year, start.month, start.day, 4, 0) + dt.timedelta(hours=float(rng.uniform(8, 20)))
+                stop = dt.datetime(end.year, end.month, end.day, 0, 0) - dt.timedelta(hours=float(rng.uniform(10, 18)))
+                tno += 1
+                trip = dict(id=tno, vessel=v["rss"], ground=gname, start=start, end=end, year=y, hauls=[])
+                t = t0
+                while True:
+                    hrs = float(np.exp(rng.normal(math.log(3.8), 0.14)))
+                    if t + dt.timedelta(hours=hrs) > stop:
+                        break
+                    c = focus[int(rng.integers(3))] if rng.random() < 0.8 else idx[int(rng.choice(len(idx), p=p))]
+                    mon = t.month
+                    mq = 1.0 + 0.15 * math.cos(2 * math.pi * (mon - 3) / 12)
+                    live = v["q"] * mq * dens[(c, y)] * hrs * QC * float(np.exp(rng.normal(-SIGMA_COMM ** 2 / 2, SIGMA_COMM)))
+                    h = dict(trip=tno, vessel=v["rss"], cell=c, start=t, hours=hrs, had=live,
+                             cod=live * float(np.exp(rng.normal(math.log(0.16), 0.6))),
+                             whg=live * float(np.exp(rng.normal(math.log(0.28), 0.5))),
+                             pok=live * float(np.exp(rng.normal(math.log(0.12), 0.8))))
+                    trip["hauls"].append(len(hauls))
+                    hauls.append(h)
+                    done += hrs
+                    t = t + dt.timedelta(hours=hrs + float(rng.uniform(0.35, 1.1)))
+                if trip["hauls"]:
+                    trips.append(trip)
+    # the e-logbook export ends with October 2026
+    keep = [t for t in trips if not (t["year"] == 2026 and t["end"] > ELOG_END)]
+    return keep, hauls
+
+
+# ---------------------------------------------------------------------------------------------- the survey
+def survey(rng, cells, dens):
+    """Stations drawn in 2019, twelve in each depth band of every ground and fixed since; two replaced in 2023 after
+    the net was torn on them in 2022; one not fished in 2020 for weather. One tow a station each October."""
+    stations = []
+    for gname in K.GROUND_NAMES:
+        for b in K.BANDS:
+            idx = [i for i, c in enumerate(cells) if c["ground"] == gname and c["band"] == b]
+            n = K.STATIONS_PER_BAND
+            pick = list(rng.choice(idx, size=min(n, len(idx)), replace=False))
+            while len(pick) < n:
+                pick.append(int(rng.choice(idx)))
+            for i in pick:
+                stations.append(dict(cell=int(i), ground=gname, band=b, eff=float(np.exp(rng.normal(-STATION_SD ** 2 / 2, STATION_SD)))))
+    for s in stations:
+        c = cells[s["cell"]]
+        s["lat"] = c["lat_s"] + (c["lat_n"] - c["lat_s"]) * float(rng.uniform(0.12, 0.88))
+        s["lon"] = c["lon_w"] + (c["lon_e"] - c["lon_w"]) * float(rng.uniform(0.12, 0.88))
+        lo, hi = K.BAND_LIMITS[s["band"]]
+        s["depth"] = int(min(hi - 1, max(lo, round(c["depth"] + rng.normal(0, 3)))))
+    order = sorted(range(len(stations)), key=lambda k: (-round(stations[k]["lat"], 2), stations[k]["lon"]))
+    for no, k in enumerate(order, 1):
+        stations[k]["id"] = "S%03d" % no
+        stations[k]["from"], stations[k]["to"] = 2019, 2026
+    # replacements from 2023: drawn at random within the same ground and depth band
+    torn = [k for k in rng.permutation(len(stations)) if stations[k]["band"] != "C"
+            and stations[k]["ground"] == "Vallaskie Hole"][:2]
+    nxt = len(stations)
+    for k in sorted(torn, key=lambda k: stations[k]["id"]):
+        s = stations[k]
+        s["to"] = 2022
+        idx = [i for i, c in enumerate(cells) if c["ground"] == s["ground"] and c["band"] == s["band"]]
+        i = int(rng.choice(idx))
+        c = cells[i]
+        nxt += 1
+        r = dict(cell=i, ground=s["ground"], band=s["band"], eff=float(np.exp(rng.normal(-STATION_SD ** 2 / 2, STATION_SD))),
+                 id="S%03d" % nxt, lat=c["lat_s"] + (c["lat_n"] - c["lat_s"]) * float(rng.uniform(0.12, 0.88)),
+                 lon=c["lon_w"] + (c["lon_e"] - c["lon_w"]) * float(rng.uniform(0.12, 0.88)), replaces=s["id"])
+        lo, hi = K.BAND_LIMITS[s["band"]]
+        r["depth"] = int(min(hi - 1, max(lo, round(c["depth"] + rng.normal(0, 3)))))
+        r["from"], r["to"] = 2023, 2026
+        stations.append(r)
+    weather = [k for k in rng.permutation(len(stations)) if stations[k]["from"] == 2019 and stations[k]["to"] == 2026
+               and stations[k]["ground"] == "Cullardy Patch"][0]
+    missed = {(stations[weather]["id"], 2020)}
+    tows = []
+    mean_w = {(g, y): 0.45 * float(np.exp(rng.normal(0, 0.08))) for g in K.GROUND_NAMES for y in K.YEARS}
+    juv = {y: float(rng.uniform(0.12, 0.34)) for y in K.YEARS}
+    for y in K.YEARS:
+        day0 = dt.date(y, 10, 1) + dt.timedelta(days=int(rng.integers(2, 7)))
+        live = [s for s in stations if s["from"] <= y <= s["to"] and (s["id"], y) not in missed]
+        route = sorted(live, key=lambda s: (s["ground"] != K.GROUND_NAMES[0], K.GROUND_NAMES.index(s["ground"]), -s["lat"], s["lon"]))
+        per_day = int(rng.integers(17, 20))
+        for k, s in enumerate(route):
+            day = day0 + dt.timedelta(days=k // per_day + (1 if (k // per_day) >= 6 else 0))
+            hh = 6 + (k % per_day) * 0.72 + float(rng.uniform(0, 0.3))
+            mu_kg = dens[(s["cell"], y)] * s["eff"] * QS
+            wbar = mean_w[(s["ground"], y)]
+            mu_n = mu_kg / wbar
+            n = int(rng.negative_binomial(NB_K, NB_K / (NB_K + mu_n))) if mu_n > 0 else 0
+            kg = round(n * wbar * float(np.exp(rng.normal(0, 0.06))), 1) if n else 0.0
+            if n and kg == 0.0:
+                kg = 0.1
+            c = cells[s["cell"]]
+            lat = min(c["lat_n"] - 0.002, max(c["lat_s"] + 0.002, s["lat"] + float(rng.normal(0, 0.004))))
+            lon = min(c["lon_e"] - 0.003, max(c["lon_w"] + 0.003, s["lon"] + float(rng.normal(0, 0.006))))
+            tows.append(dict(year=y, station=s["id"], ground=s["ground"], band=s["band"], cell=s["cell"], date=day,
+                             time="%02d:%02d" % (int(hh), int((hh % 1) * 60)), lat=round(lat, 4),
+                             lon=round(lon, 4), depth=s["depth"] + int(rng.integers(-1, 2)),
+                             had_kg=kg, had_n=n, had_juv=int(rng.binomial(n, juv[y])) if n else 0,
+                             cod_kg=round(float(rng.gamma(1.2, 9.0)), 1), whg_kg=round(float(rng.gamma(1.5, 14.0)), 1),
+                             pok_kg=round(float(rng.gamma(0.6, 12.0)), 1), spurdog_n=int(rng.poisson(1.4)),
+                             skate_kg=round(float(rng.gamma(0.5, 6.0)), 1), porpoise_n=int(rng.random() < 0.006),
+                             seabird_n=int(rng.random() < 0.004)))
+    for t in tows:
+        lo, hi = K.BAND_LIMITS[t["band"]]
+        t["depth"] = int(min(hi - 1, max(lo, t["depth"])))
+    return stations, tows, missed
 
 
 def build(seed=SEED):
-    W = {"metros": [], "survey": None}
-    for m in K.METROS:
-        W["metros"].append(build_one(m, seed))
-    W["survey"] = survey(np.random.default_rng([seed, 99]))
-    return W
-
-
-# ------------------------------------------------------------------------------------------------- the survey
-AGE_BANDS = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
-AGE_W = [.11, .23, .22, .20, .18, .06]
-EDUC = ["High school or less", "Some college", "Bachelor's degree", "Graduate degree"]
-SECTOR_W = {"11": .012, "21": .004, "22": .008, "23": .062, "31-33": .088, "42": .038, "44-45": .098, "48-49": .052,
-            "51": .021, "52": .045, "53": .016, "54": .074, "55": .015, "56": .061, "61": .088, "62": .139,
-            "71": .016, "72": .082, "81": .038, "92": .044}
-WAVES = ["2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07",
-         "2026-08", "2026-09"]
-EMPLOYED = [161.42, 161.18, 160.71, 159.96, 160.33, 160.88, 161.35, 161.92, 162.40, 162.77, 162.55, 162.19]  # millions
-
-
-def survey(r, n_per=5000):
-    rows = []
-    rid = 1500000
-    secs = list(SECTOR_W)
-    sw = np.array([SECTOR_W[s] for s in secs]); sw = sw / sw.sum()
-    for wi, wave in enumerate(WAVES):
-        n = n_per + int(r.integers(-260, 260))
-        for _ in range(n):
-            rid += int(r.integers(1, 9))
-            sec = secs[int(r.choice(len(secs), p=sw))]
-            g = K.SECTOR_GROUP[sec]
-            u = r.random()
-            if u < .072:
-                rel = "4"              # no usual workplace, or a workplace outside any metropolitan area
-            elif u < .081:
-                rel = "9"              # not reported
-            else:
-                mix = SMIX[g]
-                v = r.random()
-                rel = "1" if v < mix["C"] else ("2" if v < mix["C"] + mix["O"] else "3")
-            ring = {"1": "C", "2": "O", "3": "X"}.get(rel)
-            a = ATT[g][ring] if ring else .55
-            off = int(r.binomial(5, OFF))
-            work = 5 - off
-            if work == 0:
-                prem = home = 0
-            else:
-                # each worked day on the premises with the cell's probability, given a worker-level propensity
-                q = min(1.0, a / (1 - OFF))
-                lam = float(np.clip(r.beta(max(.05, q * 1.3), max(.05, (1 - q) * 1.3)), 0, 1))
-                prem = int(r.binomial(work, lam))
-                home = work - prem
-            age = AGE_BANDS[int(r.choice(6, p=AGE_W))]
-            edu = EDUC[int(r.choice(4, p=[.30, .27, .27, .16]))]
-            sex = "1" if r.random() < .53 else "2"
-            rows.append(dict(wave=wave, rid=rid, sector=sec, group=g, rel=rel, ring=ring, prem=prem, home=home,
-                             off=off, age=age, edu=edu, sex=sex))
-    # weights: the panel under-represents the young and those without a degree; each wave's weights total that
-    # month's employed adults
-    adj = {"18-24": 1.55, "25-34": 1.12, "35-44": .96, "45-54": .93, "55-64": .97, "65+": 1.20}
-    eadj = {"High school or less": 1.38, "Some college": 1.05, "Bachelor's degree": .82, "Graduate degree": .74}
-    for wi, wave in enumerate(WAVES):
-        sub = [x for x in rows if x["wave"] == wave]
-        raw = np.array([adj[x["age"]] * eadj[x["edu"]] * float(r.lognormal(0, .18)) for x in sub])
-        raw = raw / raw.sum() * EMPLOYED[wi] * 1e6
-        for x, wgt in zip(sub, raw):
-            x["weight"] = float(wgt)
-    return rows
+    rng = np.random.default_rng(seed)
+    cells = grid(rng)
+    dens, qual = stock(rng, cells)
+    vessels = fleet(rng)
+    trips, hauls = fishing(rng, cells, dens, vessels)
+    stations, tows, missed = survey(rng, cells, dens)
+    return dict(seed=seed, cells=cells, dens=dens, qual=qual, vessels=vessels, trips=trips, hauls=hauls,
+                stations=stations, tows=tows, missed=missed)

@@ -1,14 +1,14 @@
-"""The cracker's and the mirror's paths on the two asks, measured on the cut pack.
+"""The cracker's, the mirror's and the over-cleaner's paths on the two asks, run on the cut pack.
 
-The cracker lands the call, runs the battery (exact duplicate rows, key uniqueness on listing_id, on city, address and suite
-and on scrape date, brand and store code, every tract joined to the planning map) and executes the prompt's filters:
-on the market on 30 September 2026 by date listed, status and status date, ground floor, retail or flex, 150 to
-450 m2, every rent basis put on a yearly rate per m2; delivering on 30 September by that day's scrape and services.
-The mirror stops at the share by industry group and takes the asks the same way. The over-cleaner keeps one unit per
-address and drops every street both finders list.
+The cracker lands the call, runs the battery (exact duplicate rows, key uniqueness on note number and line and on the
+ledger's entry number, every vessel and licence joined to the members' list) and executes the prompt's filters:
+haddock landed by members from January to September 2026 by landing date, every presentation put on live weight; the
+quota ledger summed by effective date to 30 September under the quota rules. The battery finds nothing to remove:
+note numbers and lines are unique, no row repeats, every member's current letters join. The mirror stops at a wrong
+rung on the call and takes the asks the same way. The over-cleaner keeps one note per buyer and landing (or collapses
+identical lots) and drops every ledger entry with no licence.
 
-    python3 task268/generator/cracker.py task268/target      exit 0 when the cracker keeps no ask figure"""
-import collections
+    python3 task268/generator/cracker.py [pack]     exit 0 when the cracker keeps no ask figure"""
 import os
 import sys
 
@@ -18,50 +18,39 @@ import analysis as A   # noqa: E402
 import common as K     # noqa: E402
 
 
+def keeps(a, b, ga, gb):
+    ka = sum(round(a[p][0]) == round(ga[p][0]) for p in K.PORT_NAMES) + \
+        sum(round(a[p][1]) == round(ga[p][1]) for p in K.PORT_NAMES)
+    kb = sum(round(b[p]) == round(gb[p]) for p in K.POOL_CODES)
+    return ka, kb
+
+
 def battery(D):
-    """What the hygiene sweeps find on the ask files: nothing."""
-    L, S = D["listings"], D["locators"]
-    found = []
-    if len({x["listing_id"] for x in L}) != len(L):
-        found.append("listing_id repeats")
-    if len({tuple(sorted(x.items())) for x in L}) != len(L):
-        found.append("exact duplicate listings")
-    on = [x for x in L if A.on_market(x)]
-    if len({(x["city"], x["address"], x["suite"]) for x in on}) != len(on):
-        found.append("city, address and suite repeat among units on the market")
-    if len({(x["scrape_date"], x["brand"], x["store_code"]) for x in S}) != len(S):
-        found.append("store code repeats in a scrape")
-    if len({tuple(sorted(x.items())) for x in S}) != len(S):
-        found.append("exact duplicate scrape rows")
-    return found
-
-
-def score(D, a, b):
-    ga, gb = A.ask_a(D), A.ask_b(D)
-    keep_a = sum(a[m][0] == ga[m][0] for m in K.METRO_NAMES) + sum(
-        a[m][1] is not None and int(a[m][1] + .5) == int(ga[m][1] + .5) for m in K.METRO_NAMES)
-    keep_b = sum(b[k] == gb[k] for k in gb)
-    return keep_a, keep_b
+    notes = [(r["note_no"], r["line"]) for r in D["notes"]]
+    rows = [tuple(r.values()) for r in D["notes"]]
+    entries = [r["entry_no"] for r in D["ledger"]]
+    return dict(note_keys_unique=len(set(notes)) == len(notes), no_repeated_rows=len(set(rows)) == len(rows),
+                entries_unique=len(set(entries)) == len(entries))
 
 
 def main(pack):
     D = A.load(pack)
-    found = battery(D)
-    print("battery finds:", found or "nothing")
-    crack = score(D, A.ask_a(D, "plain"), A.ask_b(D, "plain"))
-    mirror = crack                     # the mirror takes the asks the same way: the asks read nothing the call reads
-    over = score(D, A.ask_a(D, "per_address"), A.ask_b(D, "per_street"))
-    status = score(D, A.ask_a(D, "status_as_exported"), A.ask_b(D, "plain"))
-    n = 24
-    print("cracker keeps A %d of 12, B %d of 12" % crack)
-    print("mirror  keeps A %d of 12, B %d of 12 (the same reads)" % mirror)
-    print("over-cleaner keeps A %d of 12, B %d of 12" % over)
-    print("status read as exported keeps A %d of 12" % status[0])
-    # Part 0's weights: a landed call banks 38 + 7; the best miss keeps about 5 of the recommendation side and the 7
+    b = battery(D)
+    assert all(b.values()), b
+    ga, gb = A.ask_a(D), A.ask_b(D)
+    crack = keeps(A.ask_a(D, "plain"), A.ask_b(D, "plain"), ga, gb)
+    mirror = crack
+    over = [keeps(A.ask_a(D, h), A.ask_b(D, "blank"), ga, gb) for h in ("session", "lots")]
+    n = 2 * len(K.PORT_NAMES) + len(K.POOL_CODES)
+    print("battery: %s" % ", ".join(k for k, v in b.items() if v))
+    print("cracker keeps A %d of 8, B %d of 5" % crack)
+    print("mirror  keeps A %d of 8, B %d of 5 (the same reads)" % mirror)
+    print("over-cleaner keeps A %d of 8 (one note a buyer a landing), %d of 8 (lots collapsed); B %d of 5"
+          % (over[0][0], over[1][0], over[0][1]))
     kc, km = sum(crack) / n, sum(mirror) / n
     pair = ((38 + 7 + 55 * kc) + (5 + 7 + 55 * km)) / 2
     print("pair ceiling %.1f, mirror leakage %.1f per cent of the ask weight" % (pair, 100 * km))
-    return 0 if sum(crack) == 0 and not found else 1
+    return 0 if sum(crack) == 0 else 1
 
 
 if __name__ == "__main__":

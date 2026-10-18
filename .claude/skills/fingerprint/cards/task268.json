@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Close Halmorie Deep to members' towed gear for 2027: its haddock stock fell 63% from its 2019 to 2021 average, 11 points more than Brettach Bank's 52%.",
+  "answer_source": "submission.md, Final Recommendation",
   "gap": [
     "population"
   ],
@@ -37,21 +37,20 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:whole-area-probability-sample-against-a-preferential-record",
   "layer1": [
-    "the members' logbooks change from paper trip forms (2019 to 2022, one line per trip and rectangle) to electronic tow records (2023 on, one line per tow)",
-    "catch on the paper forms in round weight, on the e-logbook in gutted weight with the conversion factor printed on the form",
-    "effort on paper as hours fished, on the e-logbook as haul start and end times in UTC",
-    "grid cells written as ICES-style rectangle plus sub-square on paper and as a single cell code on the e-logbook",
-    "survey stations moved within their stratum after net damage, a missed station in 2020 for weather",
-    "a vessel's registration changed in 2024 (new port letters, same hull) across the logbooks and the vessel list"
+    "the members' logbooks change from paper tow sheets (2019 to 2022, one line per trip and cell, round weight, hours fished) to e-logbook hauls (2023 on, gutted weight, haul start and end in UTC)",
+    "grid cells written as rectangle plus sub-square on the tow sheets and as one cell code on the e-logbook",
+    "a member vessel re-registered in March 2024 under new port letters, its tow sheets under the old letters, the e-logbook under its RSS number",
+    "two survey stations on Vallaskie Hole replaced from 2023 after the net was torn on them, one Cullardy Patch station not fished in 2020 for weather",
+    "survey tows placed in grid cells by shot position, the ground code on the tow and the depth band only in Annex A"
   ],
   "stakeholder_role": "the producer organisation's science and sustainability officer, who puts the 2027 closure to the management committee",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "member_logbook_2019_2026.csv",
-    "rows": 0,
-    "entity": "one tow (one paper trip's fishing in one cell before 2023) with its effort and haddock catch",
-    "grain": "vessel x tow (vessel x trip x cell before 2023)",
+    "file": "elogbook_hauls_2023_2026.csv",
+    "rows": 32246,
+    "entity": "one haul by a member trawler, its times, cell and catch",
+    "grain": "vessel x haul",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
@@ -90,7 +89,10 @@
     "task196": "task196 recovers an uncounted total from two capture channels whose second is produced by follow-up on the first; task268 v2 has one preferentially located record and one probability sample of the same area, no capture overlap and no total to recover, only a change read where the record stopped covering the stock",
     "task255": "task255 fits a size distribution's upper tail through item floors as truncation and a moving ceiling as censoring; task268 v2 has no size distribution, no truncation and no censoring, only an area mean whose record covers the cells the collectors chose",
     "task456": "task456 counts a latent state from three error-prone records with a latent class model; task268 v2 has no misclassification and no latent class, a probability sample against a record located by what the collectors find",
-    "task462": "task462 corrects intermittent sources' detections by a size-dependent detection probability measured on blind trials; task268 v2 has no detection model, the survey's tows catch what is there and the record's bias is where the boats chose to tow"
+    "task462": "task462 corrects intermittent sources' detections by a size-dependent detection probability measured on blind trials; task268 v2 has no detection model, the survey's tows catch what is there and the record's bias is where the boats chose to tow",
+    "task267": "task267 weights each verified member by the inverse of its older-rule group's checking rate, one population read through a two-phase check; task268 v2 chooses between two records of one area, the catch rates of boats that follow the stock and a fixed survey of the whole area, and that choice is its decisive step, the survey's area weights under equal allocation only its second move",
+    "task266": "task266 builds a cumulative incidence from competing endings with open spells censored; task268 v2 has no spells, endings or censoring, only an area mean read from where the fleet chose to tow against a probability sample of the whole stock area",
+    "task470": "task470 rebuilds activity a sensor never records from the fully counted sites' rate per unrecorded unit; task268 v2 rebuilds nothing unrecorded, it replaces the fleet's record, which over-represents the cells the stock still fills, with fixed stations covering every depth band of every ground"
   },
   "lineage": [
     {
@@ -123,10 +125,11 @@
       "fate": "spent 2026-10-18 at stage 4: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call, Tessavon at 28,805 against Corrisford's 21,709 (score_reader.py exit 1); the stratum was a classifier both sources share, so the careful analyst's first group-by; the judge found the call forced, Gate H passing, and two ask forks"
     }
   ],
-  "notes": "Re-rooted 2026-10-18: the seed DA18's world (siting by weekday presence) offers no lever beyond carrying a survey rate within strata both sources share, which the stage-4 reader took by reflex; architecture 2 is a new world drawn from the escape the record names, a forcing input in a different file at a different grain (the fixed-station survey over the whole stock area) whose variety no stratification of the decision file (the logbooks) reproduces. stump_strategy population_selection: the record's population of cells is selected on the outcome (the boats go where the fish are). Personas drawn with guard.py names --geo 'United Kingdom' --seed 268. WARNs answered: repeat.gate_g and overuse.gate_g (method_or_model_selection): the decisive step chooses the estimator of each stock (the probability sample over the whole area against the record the fleet's choices located), a method choice no other mechanism describes; the batch varies elsewhere (general statistics in a fisheries setting, a member body, a committee, shape 01, a where question, a pptx deck).",
+  "notes": "Re-rooted 2026-10-18: the seed DA18's world (siting by weekday presence) offers no lever beyond carrying a survey rate within strata both sources share, which the stage-4 reader took by reflex; architecture 2 is a new world drawn from the escape the record names, a forcing input in a different file at a different grain (the fixed-station survey over the whole stock area) whose variety no stratification of the decision file (the logbooks) reproduces. stump_strategy population_selection: the record's population of cells is selected on the outcome (the boats go where the fish are). Personas drawn with guard.py names --geo 'United Kingdom' --seed 268. WARNs answered: repeat.gate_g and overuse.gate_g (method_or_model_selection): the decisive step chooses the estimator of each stock (the probability sample over the whole area against the record the fleet's choices located), a method choice no other mechanism describes; the batch varies elsewhere (general statistics in a fisheries setting, a member body, a committee, shape 01, a where question, a pptx deck). architecture 2 spent at stage 4 on 2026-10-18: the isolated reader went straight to the survey, weighted the depth bands by area from plan 4.2's estimand and the manual's equal stations per band, and committed Halmorie Deep, the gap and every fall (score_reader exit 1); the judge thread found the call forced (DETERMINISTIC, APPROVE).",
   "people": [
     "Carol Thorpe",
     "Iain Ali"
   ],
-  "registered": "2026-10-18T20:48:59Z"
+  "registered": "2026-10-18T20:48:59Z",
+  "architecture_spent": true
 }

@@ -1,39 +1,41 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-18",
-  "stump": "The default path closes Brettach Bank because it reads each ground's stock from the members' catch per hour towed, which on Halmorie Deep held up while its stock fell furthest; only the organisation's autumn survey over each ground's whole stock area shows Halmorie Deep's fall.",
+  "stump": "The default path closes Brettach Bank, its catch rate down about 47 per cent, because it reads each ground's stock from the members' catch per hour towed, which on Halmorie Deep held up while its stock fell furthest; only the organisation's autumn survey, its fixed stations in every depth band weighted by each band's share of the stock area, shows Halmorie Deep's fall of 63 per cent.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (2026-10-18, as of 2026-11-06): sweeps 3, 4 and 6, every line harmless",
+    "reader": "architecture 2, 2026-10-18: Q1 to Q4 none, Q6 analytical; landed the call, the gap and all six falls, missed all thirteen ask figures; score_reader exit 1, Gate F failed"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task268 v1 0.09 (this slot's own lineage)"
+    "heart": "WARN (repeat.gate_g, overuse.gate_g, answered in ## Draw)",
+    "nearest": "task268 v1 0.09 (this slot's own lineage)",
+    "surface": "eight promotions, all card keys, answered by the card's differentiation lines (task267, task266, task470 added at stage 3); personas in the pack: none"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (two optional ask-side pins)",
+    "report": "task268/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Architecture 2 drawn and registered 2026-10-18T20:48:59Z (a producer organisation's 2027 ground closure: the survey's stratified mean over each stock area against the fleet's catch per hour). Next: stage 2, the readability screen, semantic fork table, ladder (prototype in the scratchpad: nominal and standardised catch rates close Brettach Bank, the survey closes Halmorie Deep), closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; architecture 1's generator and reports are replaced at stage 3.",
+  "resume": "Architecture 2 spent at stage 4 (the reader landed the call by weighting the survey's depth bands by area). Next: re-root to architecture 3, the slot's last before retirement: stage 1 draw with guard.py recent, coverage, mechanisms and slots, a decisive step no documented design or filed estimand hands over (run the reflex sweep as code before the ladder), the card with this architecture moved into lineage, committed DRAWN.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)"
+  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
+  "seed_world": 69
 }

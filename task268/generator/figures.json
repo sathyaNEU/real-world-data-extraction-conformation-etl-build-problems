@@ -1,124 +1,116 @@
 {
  "ask_a": {
-  "Ashcombe": {
-   "median_rent": 361,
-   "units": 7
+  "Eastquay": {
+   "tonnes": 1257,
+   "value": 2512050
   },
-  "Corrisford": {
-   "median_rent": 312,
-   "units": 5
+  "Haldness": {
+   "tonnes": 1550,
+   "value": 3059583
   },
-  "Dunnaway": {
-   "median_rent": 236,
-   "units": 5
+  "Kelmoor": {
+   "tonnes": 1833,
+   "value": 3582185
   },
-  "Halberdine": {
-   "median_rent": 334,
-   "units": 7
-  },
-  "Quillmere": {
-   "median_rent": 296,
-   "units": 9
-  },
-  "Tessavon": {
-   "median_rent": 409,
-   "units": 11
+  "Tolsetter": {
+   "tonnes": 1213,
+   "value": 2387574
   }
  },
  "ask_b": {
-  "Ashcombe": {
-   "Hopcrate": 2,
-   "Tilldash": 2
-  },
-  "Corrisford": {
-   "Hopcrate": 1,
-   "Tilldash": 5
-  },
-  "Dunnaway": {
-   "Hopcrate": 0,
-   "Tilldash": 2
-  },
-  "Halberdine": {
-   "Hopcrate": 2,
-   "Tilldash": 4
-  },
-  "Quillmere": {
-   "Hopcrate": 4,
-   "Tilldash": 5
-  },
-  "Tessavon": {
-   "Hopcrate": 3,
-   "Tilldash": 4
-  }
+  "E": 1079,
+  "I": 250,
+  "N": 1503,
+  "S": 713,
+  "T": 670
  },
  "call": {
-  "density": 28800,
-  "gap": 7100,
-  "metro": "Tessavon",
-  "runner_density": 21700,
-  "runner_up": "Corrisford"
+  "fall": 63,
+  "gap": 11,
+  "ground": "Halmorie Deep",
+  "runner_fall": 52,
+  "runner_up": "Brettach Bank"
  },
- "cores": {
-  "Ashcombe": {
-   "dense_share": 2,
-   "density": 15100,
-   "present": 371000
-  },
-  "Corrisford": {
-   "dense_share": 47,
-   "density": 21700,
-   "present": 313000
-  },
-  "Dunnaway": {
-   "dense_share": 31,
-   "density": 15500,
-   "present": 330000
-  },
-  "Halberdine": {
-   "dense_share": 37,
-   "density": 18400,
-   "present": 265000
-  },
-  "Quillmere": {
-   "dense_share": 42,
-   "density": 18800,
-   "present": 251000
-  },
-  "Tessavon": {
-   "dense_share": 43,
-   "density": 28800,
-   "present": 417000
-  }
- },
- "paper": {
-  "pilot_year": 2027,
-  "sections": [
-   "4.1",
-   "4.2",
-   "4.3"
-  ]
+ "falls": {
+  "Brettach Bank": 52,
+  "Cullardy Patch": 5,
+  "Halmorie Deep": 63,
+  "Moraskie Ground": 32,
+  "Skiravie Bank": 34,
+  "Vallaskie Hole": 23
  },
  "params": {
-  "dense_cut": "20,000",
-  "unit_max_m2": 450,
-  "unit_min_m2": 150
+  "as_of": "2026-09-30",
+  "base_years": [
+   2019,
+   2020,
+   2021
+  ],
+  "chart_base": 100,
+  "deep_share": 9,
+  "gutted_factor": 1.17,
+  "latest": 2026,
+  "plan_clauses": [
+   4.1,
+   4.2
+  ],
+  "stations_per_band": 12
  },
  "rungs": {
-  "acs": "Halberdine",
-  "cadp": "Halberdine",
-  "one": "Halberdine",
-  "pool": "Corrisford",
-  "ring": "Tessavon"
- },
- "shares": {
-  "SI01 C": 91.1,
-  "SI01 O": 90.8,
-  "SI01 X": 81.4,
-  "SI02 C": 90.2,
-  "SI02 O": 80.3,
-  "SI02 X": 34.9,
-  "SI03 C": 74.2,
-  "SI03 O": 44.1,
-  "SI03 X": 11.7
+  "R0": {
+   "falls": {
+    "Brettach Bank": 46.6,
+    "Cullardy Patch": 7.0,
+    "Halmorie Deep": -10.2,
+    "Moraskie Ground": 10.6,
+    "Skiravie Bank": 16.0,
+    "Vallaskie Hole": 19.4
+   },
+   "pick": "Brettach Bank"
+  },
+  "R1": {
+   "falls": {
+    "Brettach Bank": 47.8,
+    "Cullardy Patch": 13.2,
+    "Halmorie Deep": 14.4,
+    "Moraskie Ground": 22.6,
+    "Skiravie Bank": 18.3,
+    "Vallaskie Hole": 22.6
+   },
+   "pick": "Brettach Bank"
+  },
+  "R1v": {
+   "falls": {
+    "Brettach Bank": 45.6,
+    "Cullardy Patch": 3.0,
+    "Halmorie Deep": -56.4,
+    "Moraskie Ground": 3.1,
+    "Skiravie Bank": 3.9,
+    "Vallaskie Hole": 18.8
+   },
+   "pick": "Brettach Bank"
+  },
+  "R2": {
+   "falls": {
+    "Brettach Bank": 51.6,
+    "Cullardy Patch": 2.6,
+    "Halmorie Deep": 43.6,
+    "Moraskie Ground": 29.6,
+    "Skiravie Bank": 31.4,
+    "Vallaskie Hole": 21.7
+   },
+   "pick": "Brettach Bank"
+  },
+  "R3": {
+   "falls": {
+    "Brettach Bank": 52.0,
+    "Cullardy Patch": 5.0,
+    "Halmorie Deep": 62.8,
+    "Moraskie Ground": 32.0,
+    "Skiravie Bank": 34.0,
+    "Vallaskie Hole": 22.8
+   },
+   "pick": "Halmorie Deep"
+  }
  }
 }

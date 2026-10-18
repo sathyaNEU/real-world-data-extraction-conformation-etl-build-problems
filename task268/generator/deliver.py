@@ -1,43 +1,55 @@
-"""The goldens: pilot_metro_2027.xlsx (each core's people present, delivery-weighted density and dense-tract share,
-the tracts behind them, the premises and the competitors) and pilot_metro_board_2027.pptx (the deck to the board),
-plus generator/figures.json and metadata.json. Every figure comes from analysis.py run on the shipped pack."""
+"""The goldens: ground_closure_2027.xlsx (each ground's stock by year and its fall, the survey by depth band, the
+landings by port, the quota left by pool) and closure_committee_2027.pptx (the recommendation to the management
+committee, with the chart of each ground's stock against its base), plus generator/figures.json and metadata.json.
+Every figure comes from analysis.py run on the shipped pack."""
 import json
 import os
 import shutil
+from collections import defaultdict
 
 import analysis as A
 import common as K
 import postprocess as PP
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX, PPTX = "pilot_metro_2027.xlsx", "pilot_metro_board_2027.pptx"
+XLSX, PPTX = "ground_closure_2027.xlsx", "closure_committee_2027.pptx"
 
 
-def rnd(x, u):
-    """Round half up to the unit u (people to the thousand, densities to the hundred)."""
-    return int(x / u + 0.5) * u
-
-
-def pct(x):
-    return int(100 * x + 0.5)
+def whole(x):
+    """Round half up to the whole unit (percent, point, tonne, pound)."""
+    return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
 
 
 def results(target):
     D = A.load(target)
-    G = A.run(D, "golden")
-    F = G["F"]
-    order = G["order"]
-    win, run = order[0], order[1]
-    sh = A.shares(D, cells="gr")
-    out = dict(D=D, G=G, order=order, win=win, runner=run,
-               cores={m: dict(present=rnd(F[m]["present"], 1000), pwd=rnd(F[m]["pwd"], 100), dense=pct(F[m]["dense"]),
-                              tracts=len(F[m]["tracts"]), land=sum(a for _, _, a, _ in F[m]["tracts"]))
-                      for m in K.METRO_NAMES},
-               gap=rnd(F[win]["pwd"] - F[run]["pwd"], 100),
-               shares={"%s %s" % k: round(100 * v, 1) for k, v in sorted(sh.items())},
-               rungs={r: A.run(D, r)["pick"] for r in ("cadp", "acs", "one", "pool", "ring")},
-               ask_a=A.ask_a(D), ask_b=A.ask_b(D))
-    return out
+    ix = A.survey_index(D)
+    f = A.falls(ix)
+    c = A.call(f)
+    base = {g: sum(ix[g][y] for y in K.BASE) / 3 for g in K.GROUND_NAMES}
+    T = A.tows(D)
+    bands = {}
+    area = A.band_areas(D)
+    ncell = defaultdict(int)
+    for r in D["grid"]:
+        ncell[(r["ground"], r["depth_band"])] += 1
+    for g in K.GROUND_NAMES:
+        tot = sum(area[(g, b)] for b in K.BANDS)
+        for b in K.BANDS:
+            means = {}
+            tows = {}
+            for y in K.YEARS:
+                xs = [t["kg"] for t in T if t["ground"] == g and t["band"] == b and t["year"] == y]
+                means[y], tows[y] = sum(xs) / len(xs), len(xs)
+            bands[(g, b)] = dict(area=area[(g, b)], share=area[(g, b)] / tot, cells=ncell[(g, b)], means=means, tows=tows)
+    rec = A.records(D)
+    worked = {g: {y: len({r[2] for r in rec if r[1] == g and r[0] == y}) for y in K.YEARS} for g in K.GROUND_NAMES}
+    rungs = A.ladder(D)
+    return dict(D=D, ix=ix, f=f, call=c, base=base, bands=bands, worked=worked, rungs=rungs,
+                falls={g: whole(100 * f[g]) for g in K.GROUND_NAMES}, gap=whole(100 * c["gap"]),
+                pct={g: {y: 100 * ix[g][y] / base[g] for y in K.YEARS} for g in K.GROUND_NAMES},
+                ask_a=A.ask_a(D), ask_b=A.ask_b(D),
+                area={g: sum(area[(g, b)] for b in K.BANDS) for g in K.GROUND_NAMES},
+                cpue=A.falls(A.cpue_index(D, "nominal")))
 
 
 # ---------------------------------------------------------------------------------------------- the workbook
@@ -45,128 +57,149 @@ def workbook(path, o):
     import openpyxl
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     wb = openpyxl.Workbook()
-    ink, accent = "1D2326", "8A4B12"
-    thin = Side(style="thin", color="B7BEC4")
-    head_fill = PatternFill("solid", fgColor="EFE7DD")
-    pick_fill = PatternFill("solid", fgColor="FBEBD6")
+    ink, accent = "1C2428", "8E3B13"
+    thin = Side(style="thin", color="B4BDC3")
+    head_fill = PatternFill("solid", fgColor="E6EDF0")
+    pick_fill = PatternFill("solid", fgColor="F8E5D8")
+    c = o["call"]
 
-    def header(ws, row, cols):
-        ws.append(cols)
-        for c in ws[row]:
-            c.font = Font(bold=True, color=ink)
-            c.fill = head_fill
-            c.alignment = Alignment(wrap_text=True, vertical="top")
-            c.border = Border(bottom=thin)
+    def header(ws, row, cols, height=30):
+        for j, v in enumerate(cols, 1):
+            cell = ws.cell(row=row, column=j, value=v)
+            cell.font = Font(bold=True, color=ink)
+            cell.fill = head_fill
+            cell.alignment = Alignment(wrap_text=True, vertical="top", horizontal="left" if j == 1 else "right")
+            cell.border = Border(bottom=thin)
+        ws.row_dimensions[row].height = height
 
+    def landscape(ws):
+        ws.page_setup.orientation = "landscape"
+        ws.page_setup.paperSize = ws.PAPERSIZE_A4
+        ws.page_setup.fitToWidth, ws.page_setup.fitToHeight = 1, 0
+        ws.sheet_properties.pageSetUpPr.fitToPage = True
+        ws.print_title_rows = "4:4"
+
+    def title(ws, text, sub):
+        ws["A1"] = text
+        ws["A1"].font = Font(bold=True, size=13, color=accent)
+        ws["A2"] = sub
+        ws["A2"].font = Font(italic=True, size=9, color="5A646B")
+
+    # Grounds
     ws = wb.active
-    ws.title = "Pilot metro"
-    win, run = o["win"], o["runner"]
-    ws["A1"] = "2027 weekday dark-store pilot: %s's core is the densest on an average weekday" % win
-    ws["A1"].font = Font(bold=True, size=13, color=accent)
-    ws["A2"] = ("Delivery-weighted density under section 4 of board paper BD-2026-41, the six candidate cores as the "
-                "planning map lists them. Prepared for the meeting of 9 December 2026.")
-    ws["A2"].font = Font(italic=True, size=9, color="5B646B")
-    ws.append([])
-    header(ws, 4, ["Metro", "Core tracts", "Land (km²)", "People present on an average weekday",
-                   "Delivery-weighted density (people per km²)", "Share of people present in tracts of 20,000 or "
-                   "more per km²", "Rank"])
-    for i, m in enumerate(o["order"]):
-        c = o["cores"][m]
-        ws.append([m, c["tracts"], round(c["land"], 1), c["present"], c["pwd"], c["dense"] / 100.0, i + 1])
-        r = ws.max_row
-        ws.cell(r, 3).number_format = "0.0"
-        ws.cell(r, 4).number_format = "#,##0"
-        ws.cell(r, 5).number_format = "#,##0"
-        ws.cell(r, 6).number_format = "0%"
-        if m == win:
-            for c2 in ws[r]:
-                c2.fill = pick_fill
-                c2.font = Font(bold=True, color=ink)
-    ws.append([])
-    ws.append(["%s leads %s by %s people per km²." % (win, run, format(o["gap"], ","))])
-    ws.cell(ws.max_row, 1).font = Font(bold=True, color=ink)
-    ws.append(["People present are rounded to the thousand, densities to the hundred per km² and shares to the whole "
-               "per cent, each from unrounded figures; the tract sheet carries the detail."])
-    ws.cell(ws.max_row, 1).font = Font(size=9, color="5B646B")
-    for col, wdt in zip("ABCDEFG", [13, 8, 10, 16, 17, 20, 6]):
-        ws.column_dimensions[col].width = wdt
-    ws.freeze_panes = "A5"
+    ws.title = "Grounds"
+    title(ws, "Close %s in 2027: its haddock stock has fallen furthest below its base" % c["pick"],
+          "Autumn gear and bycatch survey, October 2019 to 2026. Stock: mean haddock catch per standard tow in each depth "
+          "band, weighted by the band's share of the ground's stock area (Annex A). Base: average of 2019, 2020 and 2021.")
+    cols = ["Ground", "Code", "Stock area (km²)"] + [str(y) for y in K.YEARS] + ["Base 2019-21", "2026 as % of base",
+                                                                              "Fall from base (%)"]
+    header(ws, 4, cols)
+    r = 5
+    for g in c["order"]:
+        vals = [g, K.GROUND_CODE[g], round(o["area"][g])] + [round(o["ix"][g][y], 1) for y in K.YEARS] + \
+               [round(o["base"][g], 1), round(o["pct"][g][2026]), o["falls"][g]]
+        for j, v in enumerate(vals, 1):
+            cell = ws.cell(row=r, column=j, value=v)
+            if j >= 3:
+                cell.alignment = Alignment(horizontal="right")
+                cell.number_format = "#,##0" if j in (3, 14, 15) else "0.0"
+            if g == c["pick"]:
+                cell.fill = pick_fill
+                cell.font = Font(bold=True, color=ink)
+        r += 1
+    r += 1
+    ws.cell(row=r, column=1, value="Recommendation: close %s to members' towed gear from 1 January to 31 December 2027. "
+            "Its fall is %d points more than %s's, the next largest." % (c["pick"], o["gap"], c["runner"])).font = Font(bold=True)
+    ws.cell(row=r + 1, column=1, value="Stock figures are kg of haddock per standard 30-minute tow. In 2020 one station "
+            "was not fished for weather and its band's mean is over the stations towed; two stations replaced in 2023 "
+            "stand for their bands (field manual, revision 3).").font = Font(size=9, color="5A646B")
+    widths = [17, 7, 10] + [8] * 8 + [10, 10, 10]
+    for j, w in enumerate(widths, 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+    ws.freeze_panes = "B5"
+    landscape(ws)
 
-    ws = wb.create_sheet("Core tracts")
-    header(ws, 1, ["Metro", "Tract", "Land (km²)", "Residents (ACS 2018-2022)", "People present on an average weekday",
-                   "People present per km²"])
-    D = o["D"]
-    for m in K.METRO_NAMES:
-        for g, p, a, d in sorted(o["G"]["F"][m]["tracts"], key=lambda x: x[0]):
-            ws.append([m, g, round(a, 3), D["pop"].get(g, 0), int(p + 0.5), int(d + 0.5)])
-            r = ws.max_row
-            ws.cell(r, 2).number_format = "@"
-            ws.cell(r, 3).number_format = "0.000"
-            ws.cell(r, 4).number_format = "#,##0"
-            ws.cell(r, 5).number_format = "#,##0"
-            ws.cell(r, 6).number_format = "#,##0"
-    for col, wdt in zip("ABCDEF", [13, 14, 10, 14, 16, 14]):
-        ws.column_dimensions[col].width = wdt
-    ws.freeze_panes = "A2"
-    ws.auto_filter.ref = "A1:F%d" % ws.max_row
+    # Survey by band
+    ws = wb.create_sheet("Survey by band")
+    title(ws, "Mean haddock catch per standard tow by depth band (kg)",
+          "Depth bands from Annex A: A under 100 m, B 100 m to under 140 m, C 140 m and deeper. Twelve stations a band.")
+    header(ws, 4, ["Ground", "Band", "Cells", "Area (km²)", "Share of stock area"] + [str(y) for y in K.YEARS])
+    r = 5
+    for g in K.GROUND_NAMES:
+        for b in K.BANDS:
+            x = o["bands"][(g, b)]
+            vals = [g, b, x["cells"], round(x["area"]), round(x["share"], 3)] + [round(x["means"][y], 1) for y in K.YEARS]
+            for j, v in enumerate(vals, 1):
+                cell = ws.cell(row=r, column=j, value=v)
+                if j >= 3:
+                    cell.alignment = Alignment(horizontal="right")
+                    cell.number_format = {3: "0", 4: "#,##0", 5: "0.0%"}.get(j, "0.0")
+            r += 1
+    for j, w in enumerate([17, 6, 7, 10, 10] + [8] * 8, 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+    ws.freeze_panes = "C5"
+    landscape(ws)
 
-    ws = wb.create_sheet("Premises")
-    header(ws, 1, ["Metro", "Ground-floor retail or flex units of 150 to 450 m² available to lease on 30 September 2026",
-                   "Median asking rent ($ per m² a year)"])
-    for m in K.METRO_NAMES:
-        n, med = o["ask_a"][m]
-        ws.append([m, n, int(med + 0.5) if med is not None else None])
-        ws.cell(ws.max_row, 3).number_format = "#,##0"
-    ws.append([])
-    ws.append(["From the listing service's export of 1 October 2026. A floor listed whole beside its own suites is "
-               "counted once, as its suites; rents quoted per square foot a month or as a monthly total are put on a "
-               "yearly basis per m²."])
-    ws.cell(ws.max_row, 1).font = Font(size=9, color="5B646B")
-    for col, wdt in zip("ABC", [13, 34, 18]):
-        ws.column_dimensions[col].width = wdt
+    # Ports
+    ws = wb.create_sheet("Ports")
+    title(ws, "Haddock landed by members, 1 January to 30 September 2026",
+          "Sales notes by landing date; live weight (gutted x 1.17); each landing's notes counted once, a corrected note "
+          "in place of the note it corrects.")
+    header(ws, 4, ["Port", "Landed (t, live weight)", "Value at first sale (£)"])
+    r = 5
+    for p in K.PORT_NAMES:
+        t, v = o["ask_a"][p]
+        for j, val in enumerate([p, whole(t), whole(v)], 1):
+            cell = ws.cell(row=r, column=j, value=val)
+            if j > 1:
+                cell.alignment = Alignment(horizontal="right")
+                cell.number_format = "#,##0" if j == 2 else "£#,##0"
+        r += 1
+    tt = sum(o["ask_a"][p][0] for p in K.PORT_NAMES)
+    tv = sum(o["ask_a"][p][1] for p in K.PORT_NAMES)
+    for j, val in enumerate(["All four ports", whole(tt), whole(tv)], 1):
+        cell = ws.cell(row=r, column=j, value=val)
+        cell.font = Font(bold=True)
+        cell.border = Border(top=thin)
+        if j > 1:
+            cell.alignment = Alignment(horizontal="right")
+            cell.number_format = "#,##0" if j == 2 else "£#,##0"
+    for j, w in enumerate([16, 14, 16], 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
 
-    ws = wb.create_sheet("Competitors")
-    header(ws, 1, ["Metro", "Tilldash dark stores delivering on 30 September 2026",
-                   "Hopcrate dark stores delivering on 30 September 2026"])
-    for m in K.METRO_NAMES:
-        ws.append([m, o["ask_b"][(m, "Tilldash")], o["ask_b"][(m, "Hopcrate")]])
-    ws.append([])
-    ws.append(["From the market team's scrape of both store finders on 30 September 2026. Shops that appear in both "
-               "finders at the same address and unit are independent partner stores, not either brand's dark stores."])
-    ws.cell(ws.max_row, 1).font = Font(size=9, color="5B646B")
-    for col, wdt in zip("ABC", [13, 22, 22]):
-        ws.column_dimensions[col].width = wdt
+    # Pools
+    ws = wb.create_sheet("Pools")
+    title(ws, "Haddock quota left by pool, 30 September 2026",
+          "Quota ledger 2026, entries with effect on or before 30 September (quota rules, section 3); each pool's 1 "
+          "January allocation counted once.")
+    header(ws, 4, ["Pool", "Name", "Quota left (t)"])
+    r = 5
+    for code, name in K.POOLS:
+        for j, val in enumerate([code, name, whole(o["ask_b"][code])], 1):
+            cell = ws.cell(row=r, column=j, value=val)
+            if j == 3:
+                cell.alignment = Alignment(horizontal="right")
+                cell.number_format = "#,##0"
+        r += 1
+    for j, w in enumerate([6, 14, 12], 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
 
+    # Notes
     ws = wb.create_sheet("Notes")
-    sh = o["shares"]
-    lines = [
-        "How people present were counted",
-        "Residents: ACS 2018-2022 five-year total population of each core tract.",
-        "Workers: primary jobs in the 2022 commuting extract (both parts), by home tract, work tract and industry group.",
-        "A tract's people present: its residents, less its residents at a workplace in another tract, plus people from "
-        "other tracts at a workplace in it. Each flow is carried at the share of weekdays its workers spend on the "
-        "employer's premises, from the Work Location Survey (October 2025 to September 2026, weighted), for the "
-        "flow's industry group and where its workers live relative to the workplace's metropolitan area (its central "
-        "county, an outlying county, or outside it, by the July 2023 delineation).",
-        "Shares of weekdays on the premises used (per cent): goods producing %s, %s, %s; trade, transportation and "
-        "utilities %s, %s, %s; all other services %s, %s, %s (central county, outlying county, outside the area)."
-        % tuple(sh["%s %s" % (g, r)] for g in K.GROUPS for r in ("C", "O", "X")),
-        "Land: the 2022 gazetteer's land area; the two water-only tracts the planning map lists have no land and count "
-        "for nothing.",
-        "Delivery-weighted density: each tract's people present per km² of land, averaged over the core with each "
-        "tract weighted by its people present.",
-        "Prepared by Location Analytics for Network Expansion, October 2026."]
-    for i, line in enumerate(lines):
-        ws.append([line])
-        ws.cell(ws.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
-        if i == 0:
-            ws.cell(ws.max_row, 1).font = Font(bold=True)
+    notes = [
+        "Prepared by the science and sustainability office for the management committee meeting of 9 December 2026.",
+        "Closure rule: Haddock Stock Recovery Plan, section 4.1 and 4.2 (adopted 24 March 2026).",
+        "Grounds and stock areas: Annex A, ground_grid_annex_a.csv. Survey: survey_tows_2019_2026.csv, each tow placed "
+        "in its grid cell by its shot position.",
+        "Falls are rounded to the whole percent; the gap between the two largest falls is worked from the unrounded falls.",
+        "Landings: sales_notes_2026.csv with member_vessels.xlsx (registration history) and conversion_factors.csv.",
+        "Quota: quota_ledger_2026.csv under the quota management rules 2026.",
+    ]
+    ws["A1"] = "Notes"
+    ws["A1"].font = Font(bold=True, size=13, color=accent)
+    for k, t in enumerate(notes, 3):
+        ws.cell(row=k, column=1, value=t)
     ws.column_dimensions["A"].width = 120
-    for s in wb.worksheets:
-        s.page_setup.orientation = "landscape"
-        s.page_setup.fitToWidth = 1
-        s.page_setup.fitToHeight = 0
-        s.sheet_properties.pageSetUpPr.fitToPage = True
     wb.save(path)
 
 
@@ -175,14 +208,16 @@ def deck(path, o):
     from pptx import Presentation
     from pptx.chart.data import CategoryChartData
     from pptx.dml.color import RGBColor
-    from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
+    from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
+    from pptx.enum.dml import MSO_LINE_DASH_STYLE
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Emu, Pt
     prs = Presentation()
     prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
     blank = prs.slide_layouts[6]
-    INK, GREY, ACC, MUTE = RGBColor(0x1D, 0x23, 0x26), RGBColor(0x5B, 0x64, 0x6B), RGBColor(0xB3, 0x5C, 0x12), RGBColor(0xA9, 0xB1, 0xB8)
-    win, run = o["win"], o["runner"]
+    INK, GREY, ACC = RGBColor(0x1C, 0x24, 0x28), RGBColor(0x5A, 0x64, 0x6B), RGBColor(0x8E, 0x3B, 0x13)
+    c = o["call"]
+    win, run = c["pick"], c["runner"]
 
     def text(slide, x, y, w, h, s, size=14, bold=False, color=INK, align=None):
         tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
@@ -196,130 +231,168 @@ def deck(path, o):
             p.alignment = align
         return tf
 
-    def footer(slide, n):
-        text(slide, 457200, 6400800, 9000000, 300000, "Network Expansion | Board of Directors, 9 December 2026 | Source: "
-             "Location Analytics data pack, 6 October 2026", 9, color=GREY)
+    def footer(slide, n, source):
+        text(slide, 457200, 6400800, 10300000, 300000, "Science and sustainability office | Management committee, "
+             "9 December 2026 | Source: " + source, 9, color=GREY)
         text(slide, 11000000, 6400800, 800000, 300000, str(n), 9, color=GREY, align=PP_ALIGN.RIGHT)
 
-    F = o["cores"]
+    HEAD, BAND, PICK = RGBColor(0x24, 0x3B, 0x46), RGBColor(0xF2, 0xF4, 0xF5), RGBColor(0xF8, 0xE5, 0xD8)
+
+    def table(slide, rows, x, y, w, h, bold_row=None, size=13, widths=None):
+        shape = slide.shapes.add_table(len(rows), len(rows[0]), Emu(x), Emu(y), Emu(w), Emu(h))
+        tb = shape.table
+        tb.first_row = True
+        tb.horz_banding = False
+        if widths:
+            for j, f in enumerate(widths):
+                tb.columns[j].width = Emu(int(w * f))
+        for i, r in enumerate(rows):
+            for j, v in enumerate(r):
+                cell = tb.cell(i, j)
+                cell.text = v
+                cell.fill.solid()
+                cell.fill.fore_color.rgb = HEAD if i == 0 else (PICK if bold_row is not None and r[0] == bold_row
+                                                                 else (BAND if i % 2 == 0 else RGBColor(0xFF, 0xFF, 0xFF)))
+                para = cell.text_frame.paragraphs[0]
+                para.font.size = Pt(size if i else size - 1)
+                para.font.name = "Calibri"
+                para.font.bold = i == 0 or (bold_row is not None and r[0] == bold_row)
+                para.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else INK
+                if j:
+                    para.alignment = PP_ALIGN.RIGHT
+        return tb
+
+    F = o["falls"]
     # 1. the call
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 1500000, 11200000, 900000, "Pilot the weekday dark store in %s" % win, 36, True, ACC)
-    tf = text(s, 457200, 2600000, 11000000, 1800000,
-              "%s's core has the highest delivery-weighted density of the six candidates: %s people per km² on an "
-              "average weekday, %s ahead of %s's %s." % (win, format(F[win]["pwd"], ","), format(o["gap"], ","), run,
-                                                         format(F[run]["pwd"], ",")), 20)
+    text(s, 457200, 1300000, 11200000, 900000, "Close %s to towed gear in 2027" % win, 36, True, ACC)
+    tf = text(s, 457200, 2450000, 11000000, 1500000,
+              "%s's haddock stock in 2026 was %d%% below its 2019 to 2021 average, the largest fall of the six grounds "
+              "and %d points more than %s's %d%%." % (win, F[win], o["gap"], run, F[run]), 20)
     p = tf.add_paragraph()
-    p.text = ("The measure is section 4 of paper BD-2026-41. People present count residents at home and the people "
-              "at their workplace on an average weekday, from the 2022 commuting table and the Work Location Survey's "
-              "days on the premises.")
+    p.text = ("Stock recovery plan, section 4: the ground whose haddock stock has fallen furthest below its base closes "
+              "for the following year. Each ground's stock is read from the autumn survey's fixed stations across its "
+              "whole stock area.")
     p.font.size, p.font.color.rgb = Pt(14), GREY
-    footer(s, 1)
+    rows = [["Ground"] + [g for g in c["order"]],
+            ["Fall in haddock stock, 2026 against 2019 to 2021"] + ["%d%%" % F[g] for g in c["order"]]]
+    table(s, rows, 457200, 4300000, 11200000, 900000, size=13, widths=[0.28] + [0.12] * 6)
+    footer(s, 1, "autumn gear and bycatch survey 2019 to 2026")
     # 2. the chart
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "%s's core is the densest on an average weekday" % win, 26, True, INK)
-    text(s, 457200, 950000, 11200000, 400000, "Delivery-weighted density, people present per km² of land", 13, color=GREY)
+    text(s, 457200, 300000, 11200000, 700000, "%s has fallen furthest below its 2019 to 2021 base" % win, 26, True, INK)
+    text(s, 457200, 900000, 11200000, 400000, "Haddock stock on each ground, autumn survey, as a percentage of the ground's "
+         "2019 to 2021 average (base = 100)", 13, color=GREY)
     cd = CategoryChartData()
-    cd.categories = o["order"]
-    cd.add_series("Delivery-weighted density", [F[m]["pwd"] for m in o["order"]])
-    gf = s.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, Emu(457200), Emu(1400000), Emu(11000000), Emu(4800000), cd)
+    cd.categories = [str(y) for y in K.YEARS]
+    order = [win, run] + [g for g in c["order"] if g not in (win, run)]
+    for g in order:
+        cd.add_series(g, [round(o["pct"][g][y], 1) for y in K.YEARS])
+    cd.add_series("Base (2019 to 2021 average)", [100.0] * len(K.YEARS))
+    gf = s.shapes.add_chart(XL_CHART_TYPE.LINE_MARKERS, Emu(457200), Emu(1350000), Emu(11200000), Emu(4900000), cd)
     ch = gf.chart
     ch.has_title = False
-    ch.has_legend = False
-    plot = ch.plots[0]
-    plot.gap_width = 60
-    plot.has_data_labels = True
-    dl = plot.data_labels
-    dl.number_format, dl.number_format_is_linked = "#,##0", False
-    dl.position = XL_LABEL_POSITION.OUTSIDE_END
-    dl.font.size, dl.font.color.rgb = Pt(12), INK
-    ser = plot.series[0]
-    for i, m in enumerate(o["order"]):
-        pt = ser.points[i]
-        pt.format.fill.solid()
-        pt.format.fill.fore_color.rgb = ACC if m == win else MUTE
-    ca = ch.category_axis
-    ca.reverse_order = True
-    ca.tick_labels.font.size = Pt(13)
-    ca.format.line.color.rgb = MUTE
+    ch.has_legend = True
+    ch.legend.position = XL_LEGEND_POSITION.RIGHT
+    ch.legend.include_in_layout = False
+    ch.legend.font.size = Pt(12)
+    palette = [RGBColor(0xB5, 0x48, 0x1C), RGBColor(0x2F, 0x6B, 0x8F), RGBColor(0x8A, 0x9A, 0x5B),
+               RGBColor(0xB8, 0x9B, 0x5E), RGBColor(0x8C, 0x72, 0x98), RGBColor(0x6E, 0x86, 0x8F)]
+    for k, ser in enumerate(ch.plots[0].series):
+        ser.smooth = False
+        line = ser.format.line
+        if k < len(order):
+            line.color.rgb = palette[k]
+            line.width = Pt(3.25 if k == 0 else 2.0)
+            ser.marker.format.fill.solid()
+            ser.marker.format.fill.fore_color.rgb = palette[k]
+            ser.marker.format.line.color.rgb = palette[k]
+            ser.marker.size = 7 if k == 0 else 5
+        else:
+            line.color.rgb = GREY
+            line.width = Pt(1.5)
+            line.dash_style = MSO_LINE_DASH_STYLE.DASH
+            from pptx.enum.chart import XL_MARKER_STYLE
+            ser.marker.style = XL_MARKER_STYLE.NONE
     va = ch.value_axis
-    va.has_major_gridlines = False
-    va.visible = False
-    footer(s, 2)
-    # 3. the figures
+    va.minimum_scale, va.maximum_scale, va.major_unit = 20, 120, 20
+    va.has_major_gridlines = True
+    va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xE2, 0xE5)
+    va.tick_labels.font.size = Pt(12)
+    va.tick_labels.number_format, va.tick_labels.number_format_is_linked = "0", False
+    ch.category_axis.tick_labels.font.size = Pt(12)
+    footer(s, 2, "autumn gear and bycatch survey 2019 to 2026; ground_grid_annex_a.csv")
+    # 3. every ground's fall
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Every core's weekday figures", 26, True, INK)
-    rows = [["Metro", "People present on an average weekday", "Delivery-weighted density (per km²)",
-             "Share in tracts of 20,000+ per km²"]]
-    for m in o["order"]:
-        rows.append([m, format(F[m]["present"], ","), format(F[m]["pwd"], ","), "%d%%" % F[m]["dense"]])
-    tb = s.shapes.add_table(len(rows), 4, Emu(457200), Emu(1300000), Emu(11200000), Emu(3600000)).table
-    for i, r in enumerate(rows):
-        for j, v in enumerate(r):
-            c = tb.cell(i, j)
-            c.text = v
-            para = c.text_frame.paragraphs[0]
-            para.font.size = Pt(14 if i else 13)
-            para.font.bold = i == 0 or r[0] == win
-            if j:
-                para.alignment = PP_ALIGN.RIGHT
-    footer(s, 3)
-    # 4. sites and competition
+    text(s, 457200, 300000, 11200000, 700000, "Every ground's fall, 2026 against its 2019 to 2021 average", 26, True, INK)
+    rows = [["Ground", "Base 2019-21 (kg a tow)", "2026 (kg a tow)", "Fall"]]
+    for g in c["order"]:
+        rows.append([g, "%.1f" % o["base"][g], "%.1f" % o["ix"][g][2026], "%d%%" % F[g]])
+    table(s, rows, 457200, 1300000, 11200000, 3300000, bold_row=win, size=15)
+    text(s, 457200, 4900000, 11200000, 900000, "Stock is the mean haddock catch per standard tow in each depth band, "
+         "weighted by the band's share of the ground's stock area. The gap between %s and %s is worked from the "
+         "unrounded falls." % (win, run), 13, color=GREY)
+    footer(s, 3, "autumn gear and bycatch survey 2019 to 2026; ground_grid_annex_a.csv")
+    # 4. why not the catch rates
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Every core has ground-floor space on the market", 26, True, INK)
-    rows = [["Metro", "Units of 150-450 m² on the market, 30 Sep", "Median asking rent ($/m² a year)",
-             "Tilldash dark stores", "Hopcrate dark stores"]]
-    for m in o["order"]:
-        n, med = o["ask_a"][m]
-        rows.append([m, str(n), format(int(med + .5), ","), str(o["ask_b"][(m, "Tilldash")]), str(o["ask_b"][(m, "Hopcrate")])])
-    tb = s.shapes.add_table(len(rows), 5, Emu(457200), Emu(1300000), Emu(11200000), Emu(3600000)).table
-    for i, r in enumerate(rows):
-        for j, v in enumerate(r):
-            c = tb.cell(i, j)
-            c.text = v
-            para = c.text_frame.paragraphs[0]
-            para.font.size = Pt(14 if i else 12)
-            para.font.bold = i == 0
-            if j:
-                para.alignment = PP_ALIGN.RIGHT
-    text(s, 457200, 5100000, 11200000, 700000, "Premises and competition are reported for every core and do not decide "
-         "the pilot (paper BD-2026-41, section 5).", 12, color=GREY)
-    footer(s, 4)
-    # 5. method
-    s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "How people present were counted", 26, True, INK)
-    sh = o["shares"]
-    tf = text(s, 457200, 1300000, 11200000, 4500000,
-              "Residents: ACS 2018-2022 population of each core tract; workers: 2022 primary jobs by home and work tract.", 15)
-    for line in ["A tract's people present: its residents, less those at a workplace in another tract, plus people from "
-                 "other tracts at a workplace in it.",
-                 "Each commuting flow is carried at the Work Location Survey's share of weekdays on the employer's premises "
-                 "for its industry group and where its workers live relative to the workplace's metropolitan area.",
-                 "Office and other services workers come in %s%% of weekdays from the central county, %s%% from an outlying "
-                 "county and %s%% from outside the metro; trade and transport workers %s%%, %s%% and %s%%."
-                 % (sh["SI03 C"], sh["SI03 O"], sh["SI03 X"], sh["SI02 C"], sh["SI02 O"], sh["SI02 X"]),
-                 "Counting every job as present every weekday would put %s first; one survey share per industry group, "
-                 "%s." % (o["rungs"]["cadp"], o["rungs"]["pool"])]:
+    hb = o["bands"]
+    text(s, 457200, 300000, 11200000, 700000, "On %s the boats followed the fish into the deep band" % win, 26, True, INK)
+    deep = hb[(win, "C")]
+    cp = whole(100 * o["cpue"][win])
+    moved = ("rose %d%%" % -cp) if cp < 0 else ("fell only %d%%" % cp)
+    lines = [
+        "Members towed %d of %s's %d cells in 2019 and %d in 2026. The cells they left are the ones the stock emptied "
+        "first, so their catch per hour towed there %s while the stock fell %d%%." % (
+            o["worked"][win][2019], win, sum(hb[(win, b)]["cells"] for b in K.BANDS), o["worked"][win][2026],
+            moved, F[win]),
+        "The survey tows the same twelve stations in each depth band every October, whatever they hold. Weighting each "
+        "band by its share of the ground's area counts the deep band, %d%% of the area, for what it holds and no more."
+        % whole(100 * deep["share"]),
+    ]
+    tf = text(s, 457200, 1250000, 11200000, 1900000, lines[0], 16)
+    for line in lines[1:]:
         p = tf.add_paragraph()
         p.text = line
-        p.font.size = Pt(15)
-        p.space_before = Pt(8)
-    footer(s, 5)
+        p.font.size = Pt(16)
+        p.space_before = Pt(10)
+    rows = [["%s, depth band" % win, "Share of stock area", "2019 to 2021 (kg a tow)", "2026 (kg a tow)"]]
+    for b in K.BANDS:
+        x = hb[(win, b)]
+        rows.append(["%s (%s)" % (b, K.BAND_TEXT[b]), "%d%%" % whole(100 * x["share"]),
+                     "%.1f" % (sum(x["means"][y] for y in K.BASE) / 3), "%.1f" % x["means"][2026]])
+    table(s, rows, 457200, 3500000, 11200000, 1700000, size=14, widths=[0.34, 0.2, 0.24, 0.22])
+    footer(s, 4, "e-logbook and tow sheets 2019 to 2026; autumn survey 2019 to 2026")
+    # 5. landings and quota
+    s = prs.slides.add_slide(blank)
+    text(s, 457200, 300000, 11200000, 700000, "Landings by port and quota left by pool", 26, True, INK)
+    rows = [["Port", "Haddock landed Jan to Sep 2026 (t live)", "Value at first sale"]]
+    for p in K.PORT_NAMES:
+        t, v = o["ask_a"][p]
+        rows.append([p, "{:,}".format(whole(t)), "£{:,}".format(whole(v))])
+    table(s, rows, 457200, 1300000, 6300000, 2400000, size=13)
+    rows = [["Pool", "Quota left 30 Sep 2026 (t)"]]
+    for code, name in K.POOLS:
+        rows.append(["%s (%s)" % (name, code), "{:,}".format(whole(o["ask_b"][code]))])
+    table(s, rows, 7100000, 1300000, 4600000, 2800000, size=13)
+    text(s, 457200, 4500000, 11200000, 1200000, "A closed ground's boats fish their remaining quota on the other five "
+         "grounds; pools with quota left can lease to them under the quota rules.", 14, color=GREY)
+    footer(s, 5, "sales notes 2026; quota ledger 2026")
     prs.save(path)
 
 
 def figures(o):
-    F = o["cores"]
+    c = o["call"]
     return {
-        "call": dict(metro=o["win"], runner_up=o["runner"], gap=o["gap"], density=F[o["win"]]["pwd"],
-                     runner_density=F[o["runner"]]["pwd"]),
-        "cores": {m: dict(present=F[m]["present"], density=F[m]["pwd"], dense_share=F[m]["dense"]) for m in K.METRO_NAMES},
-        "shares": o["shares"],
-        "rungs": o["rungs"],
-        "ask_a": {m: dict(units=o["ask_a"][m][0], median_rent=int(o["ask_a"][m][1] + 0.5)) for m in K.METRO_NAMES},
-        "ask_b": {m: {b: o["ask_b"][(m, b)] for b in K.BRANDS} for m in K.METRO_NAMES},
-        "params": dict(dense_cut="20,000", unit_min_m2=150, unit_max_m2=450),
-        "paper": dict(sections=[K.CLAUSE[k] for k in ("pick", "density", "present")], pilot_year=K.PILOT_YEAR),
+        "call": dict(ground=c["pick"], runner_up=c["runner"], gap=o["gap"], fall=o["falls"][c["pick"]],
+                     runner_fall=o["falls"][c["runner"]]),
+        "falls": o["falls"],
+        "rungs": {r: dict(pick=A.call(f)["pick"], falls={g: round(100 * v, 1) for g, v in f.items()})
+                  for r, f in o["rungs"].items()},
+        "ask_a": {p: dict(tonnes=whole(o["ask_a"][p][0]), value=whole(o["ask_a"][p][1])) for p in K.PORT_NAMES},
+        "ask_b": {p: whole(o["ask_b"][p]) for p in K.POOL_CODES},
+        "params": dict(base_years=K.BASE, latest=K.LATEST, stations_per_band=K.STATIONS_PER_BAND, as_of="2026-09-30",
+                       gutted_factor=1.17, deep_share=whole(100 * o["bands"][(c["pick"], "C")]["share"]),
+                       plan_clauses=[float(K.PLAN_CLAUSES["closure"]), float(K.PLAN_CLAUSES["stock"])], chart_base=100),
     }
 
 
@@ -330,11 +403,11 @@ def write(target, golden, T=None):
     os.makedirs(golden)
     workbook(os.path.join(golden, XLSX), o)
     deck(os.path.join(golden, PPTX), o)
-    PP.COMPANY = K.ORG + " Inc."
-    PP.normalize_ooxml(os.path.join(golden, XLSX), K.PEOPLE["analytics"], K.PEOPLE["analytics"], "2026-10-12T13:20:41Z",
-                       "2026-10-14T18:05:16Z", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, PPTX), K.PEOPLE["vp"], K.PEOPLE["vp"], "2026-10-14T19:44:02Z",
-                       "2026-10-15T12:31:57Z", title="2027 weekday pilot metro")
+    PP.COMPANY = K.ORG_LTD
+    PP.normalize_ooxml(os.path.join(golden, XLSX), K.PEOPLE["science"], K.PEOPLE["science"], "2026-11-09T10:14:22Z",
+                       "2026-11-20T16:41:05Z", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, PPTX), K.PEOPLE["science"], K.PEOPLE["ceo"], "2026-11-23T09:02:47Z",
+                       "2026-12-01T17:26:31Z", title="Ground closure 2027")
     json.dump(figures(o), open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS], "deliverables": [XLSX, PPTX],
             "stated_inputs": []}

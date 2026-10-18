@@ -1,254 +1,332 @@
-"""Every figure from the shipped pack alone: each core tract's people present on an average weekday, each core's
-delivery-weighted density and the share of its people present in tracts of 20,000 or more per km2, the pick, and
-both asks. Routes other than the golden are here too, so checks.py can assert every rung and fork."""
+"""Every figure, read from the shipped pack alone: each ground's haddock stock by year from the autumn survey (the
+golden, its variants and the lower rungs), the members' catch rates (the default path), and the two asks with each
+handling a response might take."""
 import csv
+import datetime as dt
 import os
-import statistics
+from collections import defaultdict
 
 import numpy as np
-import openpyxl
 
 import common as K
 
-RINGS = ("C", "O", "X")
+YEARS = K.YEARS
 
 
 def read_csv(path):
-    with open(path, newline="") as f:
+    with open(path, newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
 def load(pack):
+    import openpyxl
     p = lambda k: os.path.join(pack, K.FILES[k])
-    D = {}
-    D["od"] = read_csv(p("od_main")) + [dict(x, part="aux") for x in read_csv(p("od_aux"))]
-    D["survey"] = read_csv(p("survey"))
-    with open(p("population"), newline="") as f:
-        rows = list(csv.reader(f))
-    D["pop"] = {r[0].replace("1400000US", ""): int(r[2]) for r in rows[2:]}
-    with open(p("gazetteer")) as f:
-        lines = [l.rstrip("\n").split("\t") for l in f]
-    head = [h.strip() for h in lines[0]]
-    D["gaz"] = {r[head.index("GEOID")]: dict(zip(head, r)) for r in lines[1:]}
-    wb = openpyxl.load_workbook(p("delineation"), read_only=True)
-    ws = wb["List 1"]
-    rows = list(ws.iter_rows(values_only=True))
-    hi = [i for i, r in enumerate(rows) if r and r[0] == "CBSA Code"][0]
-    head = rows[hi]
-    D["delin"] = []
-    for r in rows[hi + 1:]:
-        if not r or not r[0] or not str(r[0]).strip().isdigit():
-            continue
-        d = dict(zip(head, r))
-        D["delin"].append(d)
-    wb = openpyxl.load_workbook(p("cores"), read_only=True)
-    rows = list(wb["Core tracts"].iter_rows(values_only=True))
-    D["cores"] = {}
-    for r in rows[1:]:
-        if r and r[0]:
-            D["cores"].setdefault(r[0], []).append(str(r[3]))
-    D["listings"] = read_csv(p("listings"))
-    D["locators"] = read_csv(p("locators"))
-    D["acs_commute"] = read_csv(p("acs_commute"))
+    D = {k: read_csv(p(k)) for k in ("grid", "paper", "elog", "survey", "factors", "notes", "ledger")}
+    wb = openpyxl.load_workbook(p("members"), read_only=True)
+    sheet = lambda n: [r for r in wb[n].iter_rows(values_only=True)]
+    rows = sheet("Vessels")
+    D["vessels"] = [dict(zip(rows[0], r)) for r in rows[1:]]
+    rows = sheet("Registration history")
+    D["history"] = [dict(zip(rows[0], r)) for r in rows[1:]]
+    rows = sheet("Licences")
+    D["licences"] = [dict(zip(rows[0], r)) for r in rows[1:]]
+    wb.close()
+    D["cells"] = {r["cell"]: r for r in D["grid"]}
+    D["cell_rs"] = {(r["rectangle"], r["sub_square"]): r["cell"] for r in D["grid"]}
     return D
 
 
-# ------------------------------------------------------------------------------------------------- the survey
-def shares(D, cells="gr", weighted=True, per="weekday", waves=None, months_equal=False):
-    """Share of weekdays on the employer's premises, by industry group (g) and residence relation (r)."""
-    num, den = {}, {}
-    wave_tot = {}
-    if months_equal:
-        for x in D["survey"]:
-            wave_tot[x["WAVE"]] = wave_tot.get(x["WAVE"], 0.0) + float(x["FINALWT"])
-    for x in D["survey"]:
-        if x["HOMEREL"] not in ("1", "2", "3"):
-            continue
-        if waves and x["WAVE"] not in waves:
-            continue
-        g = K.SECTOR_GROUP[x["NAICS_SECTOR"]]
-        rr = {"1": "C", "2": "O", "3": "X"}[x["HOMEREL"]]
-        key = (g if "g" in cells else "*", rr if "r" in cells else "*")
-        w = float(x["FINALWT"]) if weighted else 1.0
-        if months_equal:
-            w = w / wave_tot[x["WAVE"]]
-        d = 5 if per == "weekday" else 5 - int(x["DAYS_NOTWORK"])
-        if d == 0:
-            continue
-        num[key] = num.get(key, 0.0) + w * int(x["DAYS_PREM"])
-        den[key] = den.get(key, 0.0) + w * d
-    return {k: num[k] / den[k] for k in num}
-
-
-def route_rate(route, D):
-    """The share each route carries onto a flow, as a function (group, ring) -> share."""
-    if route == "cadp":
-        return lambda g, r: 1.0
-    if route == "acs":
-        return None
-    spec = {"one": dict(cells=""), "pool": dict(cells="g"), "ring": dict(cells="r"), "golden": dict(cells="gr"),
-            "unweighted": dict(cells="gr", weighted=False), "per_workday": dict(cells="gr", per="workday"),
-            "sep_wave": dict(cells="gr", waves=("202609",)), "months_equal": dict(cells="gr", months_equal=True),
-            "pool_unweighted": dict(cells="g", weighted=False)}[route]
-    tab = shares(D, **spec)
-    c = spec["cells"]
-    return lambda g, r: tab[(g if "g" in c else "*", r if "r" in c else "*")]
-
-
-# ------------------------------------------------------------------------------------------------- the geography
-def geography(D):
-    """For each metro: its CBSA's counties by type, from the delineation file, keyed by the central county."""
-    by_cbsa = {}
-    for d in D["delin"]:
-        fips = str(d["FIPS State Code"]).zfill(2) + str(d["FIPS County Code"]).zfill(3)
-        by_cbsa.setdefault(str(d["CBSA Code"]), {})[fips] = d["Central/Outlying County"]
-    county_cbsa = {}
-    for cb, cs in by_cbsa.items():
-        for c in cs:
-            county_cbsa[c] = cb
-    return by_cbsa, county_cbsa
-
-
-def ring_of(home, work, by_cbsa, county_cbsa):
-    """Where the worker lives relative to the metropolitan area of the workplace: its central county (C), an outlying
-    county of it (O) or outside it (X)."""
-    cb = county_cbsa.get(work[:5])
-    if cb is None:
-        return "X"
-    t = by_cbsa[cb].get(home[:5])
-    if t is None:
-        return "X"
-    return "C" if t == "Central" else "O"
-
-
-def land_km2(D, g, sqmi=False):
-    z = D["gaz"][g]
-    return float(z["ALAND_SQMI"]) * 2.589988110336 if sqmi else int(z["ALAND"]) / 1e6
-
-
-def presence(D, rate, drop_aux=False, acs_wfh=None, sqmi=False):
-    """People present on an average weekday in every core tract: residents, less residents at a workplace in
-    another tract, plus people from other tracts at a workplace in it."""
-    by_cbsa, county_cbsa = geography(D)
-    core_set = {g for gs in D["cores"].values() for g in gs}
-    P = {g: float(D["pop"].get(g, 0)) for g in core_set}
-    for x in D["od"]:
-        if drop_aux and x.get("part") == "aux":
-            continue
-        w, h = x["w_tract"], x["h_tract"]
-        if w == h:
-            continue
-        gs = {g: int(x[g]) for g in K.GROUPS}
-        if h in core_set:
-            rr = ring_of(h, w, by_cbsa, county_cbsa)
-            P[h] -= sum(n * (acs_wfh(h) if acs_wfh else rate(g, rr)) for g, n in gs.items())
-        if w in core_set:
-            rr = ring_of(h, w, by_cbsa, county_cbsa)
-            P[w] += sum(n * (acs_wfh(h) if acs_wfh else rate(g, rr)) for g, n in gs.items())
-    return P
-
-
-def core_figures(D, P, sqmi=False):
-    out = {}
-    for m, gs in D["cores"].items():
-        rows = []
-        for g in gs:
-            a = land_km2(D, g, sqmi)
-            if a <= 0:
-                continue
-            rows.append((g, P[g], a, P[g] / a))
-        tot = sum(p for _, p, _, _ in rows)
-        pwd = sum(p * d for _, p, _, d in rows) / tot
-        dense = sum(p for _, p, _, d in rows if d >= K.DENSE) / tot
-        out[m] = dict(present=tot, pwd=pwd, dense=dense, tracts=rows)
+# ---------------------------------------------------------------------------------------------- the survey
+def locate(D):
+    """Each survey tow's cell, found from its shot position and the grid's bounds."""
+    g = D["grid"]
+    lat_n = np.array([float(r["lat_north"]) for r in g])
+    lat_s = np.array([float(r["lat_south"]) for r in g])
+    lon_w = np.array([float(r["lon_west"]) for r in g])
+    lon_e = np.array([float(r["lon_east"]) for r in g])
+    out = []
+    for t in D["survey"]:
+        la, lo = float(t["shot_lat"]), float(t["shot_lon"])
+        k = np.nonzero((la < lat_n) & (la >= lat_s) & (lo >= lon_w) & (lo < lon_e))[0]
+        assert len(k) == 1, t
+        out.append(g[int(k[0])]["cell"])
     return out
 
 
-def acs_route(D):
-    """The working-from-home share of each home county from the ACS table, taken off every worker living there
-    (out-of-state homes keep every worker)."""
-    wfh = {}
-    for x in D["acs_commute"][1:]:
-        c = x["GEO_ID"].replace("0500000US", "")
-        wfh[c] = int(x["B08301_021E"]) / int(x["B08301_001E"])
-    return lambda h: 1 - wfh.get(h[:5], 0.0)
+def tows(D):
+    if "_tows" not in D:
+        cells = locate(D)
+        T = []
+        for t, c in zip(D["survey"], cells):
+            cell = D["cells"][c]
+            T.append(dict(year=int(t["survey_year"]), station=t["station"], ground=cell["ground"], band=cell["depth_band"],
+                          code=t["ground_code"], depth=int(t["depth_m"]), kg=float(t["haddock_kg"]), n=int(t["haddock_n"]),
+                          cell=c))
+        D["_tows"] = T
+    return D["_tows"]
 
 
-def run(D, route="golden", **kw):
-    if route == "acs":
-        P = presence(D, None, acs_wfh=acs_route(D), **{k: v for k, v in kw.items() if k == "drop_aux"})
+def band_areas(D, weights="area"):
+    A = defaultdict(float)
+    for r in D["grid"]:
+        A[(r["ground"], r["depth_band"])] += float(r["area_km2"]) if weights == "area" else 1.0
+    return A
+
+
+def survey_index(D, weights="area", missed="drop", moved="keep", measure="kg", stat="mean", band_by="cell"):
+    """Each ground's stock by year: the mean haddock catch per tow in each depth band, weighted by the band's share
+    of the ground's stock area (weights='area'); 'cells' weights bands by their count of cells; 'tows' is the plain
+    mean of the ground's tows."""
+    T = tows(D)
+    if band_by == "depth":
+        T = [dict(t, band="A" if t["depth"] < 100 else ("B" if t["depth"] < 140 else "C")) for t in T]
+    if moved == "drop":
+        years = defaultdict(set)
+        for t in T:
+            years[t["station"]].add(t["year"])
+        full = {s for s, ys in years.items() if len(ys) >= len(YEARS) - 1}
+        T = [t for t in T if t["station"] in full]
+    val = (lambda t: t["kg"]) if measure == "kg" else (lambda t: t["n"])
+    if stat == "geo":
+        f = lambda xs: float(np.exp(np.mean(np.log(np.array(xs) + 1.0))) - 1.0)
     else:
-        P = presence(D, route_rate(route, D), **{k: v for k, v in kw.items() if k == "drop_aux"})
-    F = core_figures(D, P, sqmi=kw.get("sqmi", False))
-    order = sorted(F, key=lambda m: -F[m]["pwd"])
-    return dict(P=P, F=F, order=order, pick=order[0], margin=F[order[0]]["pwd"] / F[order[1]]["pwd"])
+        f = lambda xs: float(np.mean(xs))
+    by = defaultdict(list)
+    for t in T:
+        by[(t["ground"], t["year"], t["band"])].append(val(t))
+    if missed == "impute":
+        # the station missed in 2020 carried at its own other years scaled by its band's 2020 level
+        st = defaultdict(dict)
+        for t in T:
+            st[t["station"]][t["year"]] = (t["ground"], t["band"], val(t))
+        for s, ys in st.items():
+            if 2020 not in ys and min(ys) == 2019 and max(ys) == 2026:
+                g, b, _ = ys[2019]
+                others = [s2 for s2, y2 in st.items() if y2.get(2019, (None, None))[0:2] == (g, b) and 2020 in y2 and s2 != s]
+                lvl20 = np.mean([st[s2][2020][2] for s2 in others])
+                lvl = np.mean([np.mean([st[s2][y][2] for y in ys if y != 2020 and y in st[s2]]) for s2 in others])
+                own = np.mean([v[2] for y, v in ys.items()])
+                by[(g, 2020, b)].append(own * lvl20 / lvl if lvl > 0 else 0.0)
+    A = band_areas(D, weights if weights != "tows" else "area")
+    out = {}
+    for g in K.GROUND_NAMES:
+        out[g] = {}
+        for y in YEARS:
+            if weights == "tows":
+                xs = [x for b in K.BANDS for x in by[(g, y, b)]]
+                out[g][y] = f(xs)
+            else:
+                tot = sum(A[(g, b)] for b in K.BANDS)
+                out[g][y] = sum(A[(g, b)] * f(by[(g, y, b)]) for b in K.BANDS) / tot
+    return out
 
 
-# ------------------------------------------------------------------------------------------------- the asks
-def rate_m2(x):
-    rent, sf = float(x["asking_rent"]), int(x["space_sf"])
-    if x["rent_basis"] == "/SF/YR":
-        return rent * K.SQFT_PER_M2
-    if x["rent_basis"] == "/SF/MO":
-        return rent * 12 * K.SQFT_PER_M2
-    return rent * 12 / (sf / K.SQFT_PER_M2)
+def falls(index, latest=K.LATEST, base="avg", pooled=None):
+    out = {}
+    for g, ix in index.items():
+        b = np.mean([ix[y] for y in K.BASE]) if base == "avg" else pooled[g]
+        out[g] = 1.0 - ix[latest] / b
+    return out
 
 
-def on_market(x, day="2026-09-30"):
-    if x["date_listed"] > day or x["floor"] != "1" or x["property_type"] not in ("Retail", "Flex"):
-        return False
-    m2 = int(x["space_sf"]) / K.SQFT_PER_M2
-    if not 150 <= m2 <= 450:
-        return False
-    return x["status"] == "Available" or (x["status_date"] > day)
+def pooled_base(D, weights="area"):
+    """The base as one stratified mean over the three base years' tows pooled."""
+    T = tows(D)
+    A = band_areas(D, weights)
+    out = {}
+    for g in K.GROUND_NAMES:
+        tot = sum(A[(g, b)] for b in K.BANDS)
+        out[g] = sum(A[(g, b)] * np.mean([t["kg"] for t in T if t["ground"] == g and t["band"] == b and t["year"] in K.BASE])
+                     for b in K.BANDS) / tot
+    return out
+
+
+def call(f):
+    order = sorted(f, key=lambda g: -f[g])
+    return dict(order=order, pick=order[0], runner=order[1], gap=f[order[0]] - f[order[1]],
+                margin=f[order[0]] / f[order[1]] if f[order[1]] > 0 else float("inf"))
+
+
+# ---------------------------------------------------------------------------------------------- the logbooks
+def pln_to_rss(D):
+    hist = defaultdict(list)
+    for h in D["history"]:
+        hist[h["PLN"]].append((h["RSS no"], h["Registered from"], h["Registered to"]))
+    return hist
+
+
+def _as_date(x):
+    if x is None or isinstance(x, dt.date) and not isinstance(x, dt.datetime):
+        return x
+    return x.date()
+
+
+def records(D):
+    """Every logbook record on the live-weight and hours basis: (year, ground, cell, vessel, month, hours, live kg)."""
+    if "_rec" in D:
+        return D["_rec"]
+    hist = pln_to_rss(D)
+    out = []
+    for r in D["paper"]:
+        cell = D["cells"][D["cell_rs"][(r["rectangle"], r["sub_square"])]]
+        day = dt.date.fromisoformat(r["landed"])
+        v = r["vessel_pln"]
+        for rss, a, b in hist.get(v, []):
+            if _as_date(a) <= day and (b is None or day <= _as_date(b)):
+                v = rss
+        out.append((day.year if day.year in YEARS else int(r["departed"][:4]), cell["ground"], cell["cell"], v,
+                    int(r["departed"][5:7]), float(r["hours_fished"]), float(r["haddock_kg"])))
+    for r in D["elog"]:
+        cell = D["cells"][r["cell"]]
+        s = dt.datetime.strptime(r["haul_start_utc"], "%Y-%m-%dT%H:%MZ")
+        e = dt.datetime.strptime(r["haul_end_utc"], "%Y-%m-%dT%H:%MZ")
+        out.append((s.year, cell["ground"], cell["cell"], r["vessel_rss"], s.month, (e - s).total_seconds() / 3600,
+                    float(r["had_gutted_kg"]) * 1.17))
+    D["_rec"] = out
+    return out
+
+
+def cpue_index(D, how="nominal"):
+    R = records(D)
+    out = {}
+    for g in K.GROUND_NAMES:
+        rs = [r for r in R if r[1] == g and r[0] in YEARS and r[5] > 0]
+        out[g] = {}
+        if how == "nominal":
+            for y in YEARS:
+                sel = [r for r in rs if r[0] == y]
+                out[g][y] = sum(r[6] for r in sel) / sum(r[5] for r in sel)
+        elif how == "cells":
+            area = {r["cell"]: float(r["area_km2"]) for r in D["grid"]}
+            for y in YEARS:
+                agg = defaultdict(lambda: [0.0, 0.0])
+                for r in rs:
+                    if r[0] == y:
+                        agg[r[2]][0] += r[6]
+                        agg[r[2]][1] += r[5]
+                out[g][y] = sum(area[c] * a[0] / a[1] for c, a in agg.items()) / sum(area[c] for c in agg)
+        elif how == "glm":
+            rs = [r for r in rs if r[6] > 0]
+            Y = np.log(np.array([r[6] / r[5] for r in rs]))
+            cols, X = [], []
+            for key, idx in (("y", 0), ("c", 2), ("v", 3), ("m", 4)):
+                lv = sorted({r[idx] for r in rs})
+                for j, l in enumerate(lv):
+                    if key != "y" and j == 0:
+                        continue
+                    cols.append((key, idx, l))
+            M = np.zeros((len(rs), len(cols)))
+            pos = {(k, l): j for j, (k, i, l) in enumerate(cols)}
+            for i, r in enumerate(rs):
+                for key, idx in (("y", 0), ("c", 2), ("v", 3), ("m", 4)):
+                    j = pos.get((key, r[idx]))
+                    if j is not None:
+                        M[i, j] = 1.0
+            beta = np.linalg.lstsq(M, Y, rcond=None)[0]
+            for y in YEARS:
+                out[g][y] = float(np.exp(beta[pos[("y", y)]]))
+    return out
+
+
+def ladder(D):
+    f = {}
+    f["R0"] = falls(cpue_index(D, "nominal"))
+    f["R1"] = falls(cpue_index(D, "glm"))
+    f["R1v"] = falls(cpue_index(D, "cells"))
+    f["R2"] = falls(survey_index(D, weights="tows"))
+    f["R3"] = falls(survey_index(D))
+    return f
+
+
+# ---------------------------------------------------------------------------------------------- Ask A
+def member_plns(D, current_only=False):
+    if current_only:
+        return {v["PLN"]: (dt.date(1900, 1, 1), None) for v in D["vessels"]}
+    out = {}
+    for h in D["history"]:
+        out.setdefault(h["PLN"], []).append((_as_date(h["Registered from"]), _as_date(h["Registered to"])))
+    return out
 
 
 def ask_a(D, handling="golden"):
-    """Each core's ground-floor retail or flex units of 150 to 450 m2 on the market on 30 September 2026 and their
-    median asking rent per m2 a year. A listing with no suite at an address whose suites are all listed, its size
-    their sum, is that floor listed whole: the same units again."""
-    out = {}
-    for m, gs in D["cores"].items():
-        tracts = set(gs)
-        rows = [x for x in D["listings"] if x["census_tract"] in tracts and on_market(x)]
-        if handling == "golden":
-            keep = []
-            for x in rows:
-                parts = [y for y in rows if y is not x and y["address"] == x["address"] and y["suite"]]
-                whole = (not x["suite"] and len(parts) >= 2 and abs(sum(int(y["space_sf"]) for y in parts) - int(x["space_sf"])) <= 5)
-                if not whole:
-                    keep.append(x)
-            rows = keep
-        elif handling == "per_address":
-            seen, keep = set(), []
-            for x in rows:
-                if x["address"] not in seen:
-                    seen.add(x["address"])
-                    keep.append(x)
-            rows = keep
-        elif handling == "status_as_exported":
-            rows = [x for x in rows if x["status"] == "Available"]
-        rents = [rate_m2(x) for x in rows]
-        out[m] = (len(rows), statistics.median(rents) if rents else None)
-    return out
+    """Each port's haddock landed by members from 1 January to 30 September 2026 (by landing date), tonnes live
+    weight and value at first sale. Handlings: golden, plain (the export as it stands, members by current letters),
+    session (one note a buyer a landing), lots (identical lots on a note collapsed), current (golden, current letters
+    only), issued (golden, by the note's issue date)."""
+    fac = {(r["species_code"], r["presentation_code"]): float(r["factor_to_live"]) for r in D["factors"]}
+    if handling in ("plain", "current"):
+        cur = {v["PLN"] for v in D["vessels"]}
+        is_member = lambda pln, day: pln in cur
+    else:
+        valid = member_plns(D)
+        is_member = lambda pln, day: any(a <= day and (b is None or day <= b) for a, b in valid.get(pln, []))
+    notes = defaultdict(list)
+    for r in D["notes"]:
+        notes[r["note_no"]].append(r)
+    keep = set(notes)
+    if handling not in ("plain",):
+        groups = defaultdict(list)
+        for no, ls in notes.items():
+            h = ls[0]
+            groups[(h["buyer_reg"], h["vessel_pln"], h["landing_date"], h["port"])].append(no)
+        for key, nos in groups.items():
+            if len(nos) < 2:
+                continue
+            if handling == "session":
+                last = max(nos, key=lambda n: (notes[n][0]["issued"], n))
+                keep -= set(nos) - {last}
+                continue
+            sig = lambda n: tuple(sorted((l["species"], l["presentation"], l["grade"], l["boxes"], l["weight_kg"]) for l in notes[n]))
+            bysig = defaultdict(list)
+            for n in nos:
+                bysig[sig(n)].append(n)
+            for s, ns in bysig.items():
+                if len(ns) > 1:
+                    last = max(ns, key=lambda n: (notes[n][0]["issued"], n))
+                    keep -= set(ns) - {last}
+    out = {p: [0.0, 0.0] for p in K.PORT_NAMES}
+    lo, hi = "2026-01-01", "2026-09-30"
+    for no in keep:
+        ls = notes[no]
+        if handling == "lots":
+            seen, kept = set(), []
+            for l in ls:
+                k = (l["species"], l["presentation"], l["grade"], l["boxes"], l["weight_kg"])
+                if k not in seen:
+                    seen.add(k)
+                    kept.append(l)
+            ls = kept
+        for l in ls:
+            if l["species"] != "HAD":
+                continue
+            day = l["issued"] if handling == "issued" else l["landing_date"]
+            if not (lo <= day <= hi):
+                continue
+            if not is_member(l["vessel_pln"], dt.date.fromisoformat(l["landing_date"])):
+                continue
+            out[l["port"]][0] += float(l["weight_kg"]) * fac[(l["species"], l["presentation"])] / 1000
+            out[l["port"]][1] += float(l["value_gbp"])
+    return {p: (v[0], v[1]) for p, v in out.items()}
 
 
+# ---------------------------------------------------------------------------------------------- Ask B
 def ask_b(D, handling="golden", day="2026-09-30"):
-    """How many dark stores each competitor was delivering from in each core on 30 September 2026: the stores in that
-    day's scrape with Delivery among their services, less any shop both competitors list at the same address and unit
-    (a shop neither runs)."""
-    rows = [x for x in D["locators"] if x["scrape_date"] == day and "Delivery" in x["services"]]
-    key = lambda x: (x["address"], x["unit"])
-    both = {key(x) for x in rows if x["brand"] == K.BRANDS[0]} & {key(x) for x in rows if x["brand"] == K.BRANDS[1]}
-    streets = {x["address"] for x in rows if x["brand"] == K.BRANDS[0]} & {x["address"] for x in rows if x["brand"] == K.BRANDS[1]}
-    out = {}
-    for m, gs in D["cores"].items():
-        tracts = set(gs)
-        for b in K.BRANDS:
-            sel = [x for x in rows if x["brand"] == b and x["census_tract"] in tracts]
-            if handling == "golden":
-                sel = [x for x in sel if key(x) not in both]
-            elif handling == "per_street":
-                sel = [x for x in sel if x["address"] not in streets]
-            out[(m, b)] = len(sel)
+    """Each pool's haddock quota left on 30 September 2026: every ledger entry effective that day or before, the
+    pool-level copy of the 1 January allocation taken once. Handlings: golden, plain (every entry), blank (every entry
+    without a licence dropped), posted (by posting date), cancel (a lease cancelled later taken out from the start)."""
+    rows = D["ledger"]
+    cancelled = {r["reference"].replace(" cancelled", "") for r in rows if r["reference"].endswith(" cancelled")}
+    out = {p: 0.0 for p in K.POOL_CODES}
+    for r in rows:
+        when = r["posted"] if handling == "posted" else r["effective"]
+        if when > day:
+            continue
+        blank = r["licence"] == ""
+        if handling != "plain" and blank and r["type"] == "allocation":
+            continue
+        if handling == "blank" and blank:
+            continue
+        if handling == "cancel" and r["reference"] in cancelled:
+            continue
+        out[r["pool"]] += float(r["tonnes"])
     return out

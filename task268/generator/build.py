@@ -25,14 +25,17 @@ import records as R        # noqa: E402
 import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
-EXPORT = dt.datetime(2026, 10, 6, 16, 42)               # Location Analytics' data pack, Eastern time
-MTIME = calendar.timegm((EXPORT + dt.timedelta(hours=4)).timetuple())
+EXPORT = dt.datetime(2026, 11, 6, 15, 12)               # the science office's pack, UK time (GMT)
+MTIME = calendar.timegm(EXPORT.timetuple())
+GEAR_TRIAL = [["Haddock 30 cm and over", "1,846.2", "1,712.9", "-7%"], ["Haddock under 30 cm", "212.4", "113.8", "-46%"],
+              ["Whiting", "934.7", "618.0", "-34%"], ["Cod", "288.3", "276.5", "-4%"], ["Saithe", "141.0", "139.2", "-1%"]]
 
 
 def world(seed=W.SEED):
     T = W.build(seed)
-    T["listings"] = AW.listings(T, seed)
-    T["locators"], T["stores"] = AW.locators(T, seed)
+    T["licences"] = AW.licences(T)
+    T["notes"] = AW.sales_notes(T)
+    T["ledger"], T["ledger_info"] = AW.ledger(T, T["notes"], T["licences"])
     return T
 
 
@@ -43,75 +46,77 @@ def build(out, seed=W.SEED):
     p = lambda k: os.path.join(out, K.FILES[k])
     T = world(seed)
     n = {}
-    n["od_main"], n["od_aux"] = R.write_od(p("od_main"), p("od_aux"), T)
+    n["grid"] = R.write_grid(p("grid"), T)
+    n["paper"] = R.write_paper(p("paper"), T)
+    n["elog"] = R.write_elog(p("elog"), T)
     n["survey"] = R.write_survey(p("survey"), T)
-    n["population"] = R.write_population(p("population"), T)
-    n["gazetteer"] = R.write_gazetteer(p("gazetteer"), T)
-    n["delineation"] = R.write_delineation(p("delineation"), T)
-    n["cores"] = R.write_cores(p("cores"), T)
-    n["acs_commute"] = R.write_acs_commute(p("acs_commute"), T)
-    n["cbp"] = R.write_cbp(p("cbp"), T)
-    n["expansion"] = R.write_expansion(p("expansion"))
-    n["listings"] = R.write_listings(p("listings"), T["listings"])
-    n["locators"] = R.write_locators(p("locators"), T["locators"])
-    D.write_board(p("board"))
-    D.write_codebook(p("codebook"))
-    D.write_od_notes(p("od_notes"), n["od_main"], n["od_aux"])
+    n["factors"] = R.write_factors(p("factors"))
+    n["members"] = R.write_members(p("members"), T, T["licences"])
+    n["notes"] = R._csv(p("notes"), ["note_no", "buyer_reg", "buyer", "issued", "port", "landing_date", "vessel_pln", "line",
+                                     "species", "presentation", "grade", "boxes", "weight_kg", "price_per_kg", "value_gbp"],
+                        AW.note_rows(T["notes"]))
+    n["ledger"] = R._csv(p("ledger"), ["entry_no", "effective", "posted", "pool", "licence", "type", "tonnes", "reference"],
+                         T["ledger"])
+    n["temperature"] = R.write_temperature(p("temperature"), T)
+    grounds = []
+    for g in K.GROUND_NAMES:
+        cs = [c for c in T["cells"] if c["ground"] == g]
+        grounds.append((g, K.GROUND_CODE[g], len(cs), sum(c["area"] for c in cs)))
+    D.write_plan(p("plan"), grounds)
+    st = {s["id"]: s for s in T["stations"]}
+    replaced = sorted((s["replaces"], s["id"]) for s in T["stations"] if s.get("replaces"))
+    missed = sorted(T["missed"])[0][0]
+    charter = sorted(T["vessels"], key=lambda v: v["name"])[3]["name"]
+    D.MANUAL_HISTORY[:] = []
+    for y in (2019, 2020, 2021, 2022):
+        ds = sorted(t["date"] for t in T["tows"] if t["year"] == y)
+        note = {2019: "first survey", 2020: "station %s not fished (weather)" % missed, 2021: "",
+                2022: "net torn at %s" % " and ".join(r[0] for r in replaced)}[y]
+        D.MANUAL_HISTORY.append((str(y), ds[0].strftime("%d %b"), ds[-1].strftime("%d %b"), len(ds), note))
+    D.write_manual(p("manual"), replaced, missed, charter)
+    D.write_rules(p("rules"))
+    D.write_gear_trial(p("gear_trial"), GEAR_TRIAL)
     from pypdf import PdfReader
-    for k in ("board", "codebook", "od_notes"):
+    for k in ("plan", "manual", "rules", "gear_trial"):
         n[k + "_pages"] = len(PdfReader(p(k)).pages)
-    D.write_manifest(p("manifest"), manifest(n))
-    PP.COMPANY = K.ORG + " Inc."
-    PP.normalize_ooxml(p("delineation"), "Carolyn Cook", "Carolyn Cook", "2026-09-08T14:12:40Z", "2026-09-08T14:31:02Z",
-                       excel=True)
-    PP.normalize_ooxml(p("cores"), "Network Expansion", "Carolyn Cook", "2026-08-21T19:02:11Z", "2026-09-15T13:47:55Z",
-                       excel=True)
-    PP.normalize_ooxml(p("expansion"), "Network Expansion", "Network Expansion", "2023-02-14T15:20:07Z",
-                       "2026-08-28T20:11:43Z", excel=True)
-    PP.normalize_pdf(p("board"), b"D:20260917084512-04'00'", b"D:20260917091930-04'00'")
-    PP.normalize_pdf(p("codebook"), b"D:20261002103108-04'00'", b"D:20261002103108-04'00'")
-    PP.normalize_pdf(p("od_notes"), b"D:20261002152647-04'00'", b"D:20261002155211-04'00'")
+    D.write_contents(p("contents"), contents(n))
+    PP.COMPANY = K.ORG_LTD
+    PP.normalize_ooxml(p("members"), "Membership office", K.PEOPLE["science"], "2019-02-04T09:12:40Z",
+                       "2026-10-29T14:31:02Z", excel=True)
+    PP.normalize_pdf(p("plan"), b"D:20260325101208+00'00'", b"D:20260325101208+00'00'")
+    PP.normalize_pdf(p("manual"), b"D:20230904142231+01'00'", b"D:20230904153716+01'00'")
+    PP.normalize_pdf(p("rules"), b"D:20260112091544+00'00'", b"D:20260112093310+00'00'")
+    PP.normalize_pdf(p("gear_trial"), b"D:20251218113005+00'00'", b"D:20251218114420+00'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     T["n"] = n
     return T
 
 
-def manifest(n):
+def contents(n):
     F = K.FILES
-    pg = lambda k: "%d page%s" % (n[k + "_pages"], "" if n[k + "_pages"] == 1 else "s")
-    LA = "Location Analytics"
+    pg = lambda k: "%d pages" % n[k + "_pages"] if n[k + "_pages"] != 1 else "1 page"
+    rw = lambda k: "{:,} rows".format(n[k])
     return [
-        (F["board"], "Board paper BD-2026-41: how the 2027 weekday pilot metro is chosen", "Network Expansion", "2026-09-17",
-         pg("board"), "internal"),
-        (F["cores"], "Planning map: the six candidate cores' census tracts", "Network Expansion", "2026-09-15",
-         "%d tracts" % n["cores"], "internal"),
-        (F["od_main"], "Regional commuting extract, LODES 8 JT01 2022, tract pairs touching a core, main part", LA,
-         "2026-10-02", "%d rows" % n["od_main"], "public domain (U.S. Census Bureau)"),
-        (F["od_aux"], "Regional commuting extract, auxiliary part (workers living in another state)", LA, "2026-10-02",
-         "%d rows" % n["od_aux"], "public domain (U.S. Census Bureau)"),
-        (F["od_notes"], "Notes on the commuting extract", LA, "2026-10-02", pg("od_notes"), "internal"),
-        (F["survey"], "Work Location Survey public-use file, waves October 2025 to September 2026", "WLS Consortium",
-         "2026-10-02", "%d rows" % n["survey"], "public-use file licence (attribution)"),
-        (F["codebook"], "Work Location Survey public-use file codebook, release 2026-2", "WLS Consortium", "2026-10-02",
-         pg("codebook"), "public-use file licence (attribution)"),
-        (F["population"], "ACS 2018-2022 five-year, B01003 total population, tracts of the six metropolitan areas",
-         "U.S. Census Bureau", "2023-12-07", "%d tracts" % n["population"], "public domain"),
-        (F["gazetteer"], "2022 census tract gazetteer, tracts of the six metropolitan areas", "U.S. Census Bureau",
-         "2022-10-31", "%d tracts" % n["gazetteer"], "public domain"),
-        (F["delineation"], "CBSA delineation list, July 2023, the candidate areas and their neighbours",
-         "U.S. Census Bureau / OMB", "2023-07-21", "%d counties" % n["delineation"], "public domain"),
-        (F["acs_commute"], "ACS 2018-2022 five-year, B08301 means of transportation to work, by county of residence",
-         "U.S. Census Bureau", "2023-12-07", "%d counties" % n["acs_commute"], "public domain"),
-        (F["cbp"], "County Business Patterns 2022, establishments and employment by sector", "U.S. Census Bureau",
-         "2024-06-27", "%d rows" % n["cbp"], "public domain"),
-        (F["expansion"], "%s launch log" % K.HOME_METRO, "Network Expansion", "2026-08-28", "%d stores" % n["expansion"],
-         "internal"),
-        (F["listings"], "Retail and flex space listings in the six central counties, export of 1 October 2026",
-         "Commercial listing service (Real Estate team's subscription)", "2026-10-01", "%d rows" % n["listings"],
-         "subscriber licence, internal use"),
-        (F["locators"], "Competitors' store locators, weekly scrapes 7 January to 30 September 2026", "Market Intelligence",
-         "2026-09-30", "%d rows" % n["locators"], "internal"),
+        ["File", "What it holds", "Kept by", "As at", "Size"],
+        [F["plan"], "Haddock stock recovery plan, adopted 24 March 2026", "Management committee", "2026-03-24", pg("plan")],
+        [F["grid"], "Annex A to the plan: the grid cells of the six grounds", "Science office", "2026-03-24", rw("grid")],
+        [F["paper"], "Members' paper tow sheets 2019 to 2022, keyed in", "Science office", "2023-02-17", rw("paper")],
+        [F["elog"], "Members' e-logbook hauls, January 2023 to October 2026", "E-logbook app export", "2026-11-02", rw("elog")],
+        [F["survey"], "Autumn gear and bycatch survey tows, 2019 to 2026", "Science office", "2026-10-30", rw("survey")],
+        [F["manual"], "Autumn survey field manual, revision 3", "Science office", "2023-09-04", pg("manual")],
+        [F["members"], "Member vessels, their registrations and licences", "Membership office", "2026-10-29",
+         "%d vessels" % n["members"]],
+        [F["factors"], "Live-weight conversion factors used by the landings system", "Landings system", "2026-11-02",
+         rw("factors")],
+        [F["notes"], "Buyers' sales notes issued 1 January to 2 November 2026", "Landings system export", "2026-11-02",
+         rw("notes")],
+        [F["ledger"], "Haddock quota ledger 2026", "Quota office", "2026-11-03", rw("ledger")],
+        [F["rules"], "Quota management rules 2026: haddock", "Management committee", "2026-01-12", pg("rules")],
+        [F["temperature"], "Sea temperatures from members' net sensors, by rectangle and month", "Science office",
+         "2026-11-02", rw("temperature")],
+        [F["gear_trial"], "Square-mesh panel trial, autumn 2025: note to members", "Science office", "2025-12-18",
+         pg("gear_trial")],
     ]
 
 
