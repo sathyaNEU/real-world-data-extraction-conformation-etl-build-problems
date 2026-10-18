@@ -366,7 +366,8 @@ def load_cre(pack):
     wb = load_workbook(os.path.join(pack, "cre_maturity_log.xlsx"), data_only=True)
     log = []
     code = {"PO": "PAID", "Paid at maturity": "PAID", "EXT": "EXTENDED", "Extended": "EXTENDED",
-            "PO-EXT": "PAID_EXT", "Paid at extended maturity": "PAID_EXT"}
+            "EXT-S": "SALE", "Extended, sale pending": "SALE", "PO-EXT": "PAID_EXT",
+            "Paid at extended maturity": "PAID_EXT", "SA": "SPECIAL", "Transferred to special assets": "SPECIAL"}
     ptype = {"MF": "Multifamily", "OFF": "Office", "RTL": "Retail", "IND": "Industrial", "MXD": "Mixed use"}
     for ws in wb.worksheets:
         for r in ws.iter_rows(min_row=2, values_only=True):
@@ -393,18 +394,19 @@ def dconst(rate, n=300):
     return 12 * r / (1 - (1 + r) ** (-n))
 
 
-def cre_history(C, rates, refi_lag=0, amort=300):
-    """every original maturity since 2015 with its outcome and the covariates the routes use"""
-    pos = {}
-    for r in C.pos:
-        pos[r["obligor_number"] + "-" + r["loan_number"][-2:]] = r
+def cre_history(C, rates, refi_lag=0, amort=300, sale="repaid"):
+    """every original maturity since 2015 with its outcome and the covariates the routes use; the 36-month extension
+    is the outcome (a sale-pending six months is read as the repayment it precedes, or dropped, or as an extension)"""
     H = []
     for e in C.log:
-        if e["out"] == "PAID_EXT":
+        if e["out"] in ("PAID_EXT", "SPECIAL"):
+            continue
+        if e["out"] == "SALE" and sale == "dropped":
             continue
         noi = stmt_before(C, e["prop"], e["date"])
         refi = rates.get(("CRE5F", ordinal(e["date"]) - refi_lag), rates[("CRE5F", ordinal(e["date"]))])
-        H.append(dict(ob=e["ob"], prop=e["prop"], date=e["date"], bal=e["bal"], y=1.0 if e["out"] == "EXTENDED" else 0.0,
+        ext = e["out"] == "EXTENDED" or (e["out"] == "SALE" and sale == "extended")
+        H.append(dict(ob=e["ob"], prop=e["prop"], date=e["date"], bal=e["bal"], y=1.0 if ext else 0.0, out=e["out"],
                       noi=noi, refi=refi, cover=noi / (e["bal"] * dconst(refi, amort)), dy=noi / e["bal"],
                       gap=refi - e["rate"], cur=noi / (e["b0"] * dconst(e["rate"], 300)), ptype=e["ptype"],
                       rate=e["rate"]))
@@ -437,7 +439,8 @@ def cre_loans(C):
         L = dict(prop=r["property_number"], rate=float(r["note_rate"]), basis=r["interest_basis"],
                  bal=float(r["principal_balance"]), pay=float(r["monthly_payment"]),
                  omat=pdate(r["original_maturity_date"]), mat=pdate(r["maturity_date"]), orig=pdate(r["origination_date"]),
-                 amort=int(r["amortization_months"]), b0=float(r["original_principal"]), ptype=r["property_type"])
+                 amort=int(r["amortization_months"]), b0=float(r["original_principal"]), ptype=r["property_type"],
+                 io=int(r["interest_only_months"]), grade=int(r["risk_grade"]))
         L["extended"] = L["mat"] != L["omat"]
         out.append(L)
     return out
@@ -451,36 +454,57 @@ def run_sched(L, months):
         o = START + k
         days = month_days(o - 1) if L["basis"] == "ACT/360" else 30
         it = B * L["rate"] / 100.0 * days / 360.0
-        pr = min(L["pay"] - it, B)
+        pr = 0.0 if L.get("io") else min(L["pay"] - it, B)      # interest-only loans pay interest to maturity
         B -= pr
         bals.append(B)
         ints.append(it)
     return bals, ints
 
 
-def cre_cf(loans, pfun, ext_months=36):
-    """expected cash flows: payments to maturity; at the original maturity the balloon repays with probability 1-p
-    and with p the loan runs ext_months more on its payment and repays then; extended loans repay at their date"""
+EXT_PAYDOWN, EXT_AMORT, SALE_MONTHS = 0.10, 300, 6
+
+
+def cre_cf(loans, pfun, ext_months=36, ext_rate=6.95, psale=None):
+    """expected cash flows: payments to maturity; at the original maturity the balloon repays, or with probability p
+    the loan takes the bank's one extension (a tenth of the principal due paid down, the rest at ext_rate, the posted
+    rate, amortizing over 25 years, repaid after ext_months), or with probability q it runs six months more on its
+    note's terms for a sale; an extended loan repays at its extended date"""
     Cf = np.zeros(HORIZON)
     for L in loans:
         mat_o = ordinal(L["mat"])
-        p = 0.0 if L["extended"] else float(pfun(L))
-        last = mat_o + (ext_months if (p > 0) else 0)
-        n = last - ASOF
-        bals, ints = run_sched(L, n)
+        n = mat_o - ASOF
+        if L["extended"]:
+            bals, ints = run_sched(L, n)
+            prev = L["bal"]
+            for k in range(n):
+                Cf[k] += ints[k] + prev - bals[k] + (bals[k] if k == n - 1 else 0.0)
+                prev = bals[k]
+            continue
+        p = float(pfun(L))
+        q = float(psale(L)) if psale else 0.0
+        bals, ints = run_sched(L, n + (SALE_MONTHS if q > 0 else 0))
         prev = L["bal"]
         for k in range(n):
-            o = START + k
-            sched = prev - bals[k]
-            if o < mat_o:
-                Cf[k] += ints[k] + sched
-            elif o == mat_o:
-                Cf[k] += ints[k] + sched + (1 - p) * bals[k]
-            elif o < last:
-                Cf[k] += p * (ints[k] + sched)
-            else:
-                Cf[k] += p * (ints[k] + sched + bals[k])
+            Cf[k] += ints[k] + prev - bals[k]
             prev = bals[k]
+        due = bals[n - 1]
+        Cf[n - 1] += (1.0 - p - q) * due + p * EXT_PAYDOWN * due
+        if p > 0:
+            B = due * (1.0 - EXT_PAYDOWN)
+            r = ext_rate / 1200.0
+            pay = B * r / (1 - (1 + r) ** (-EXT_AMORT))
+            for j in range(ext_months):
+                o = mat_o + 1 + j
+                days = month_days(o - 1) if L["basis"] == "ACT/360" else 30
+                it = B * ext_rate / 100.0 * days / 360.0
+                pr = min(pay - it, B)
+                B -= pr
+                Cf[n + j] += p * (it + pr + (B if j == ext_months - 1 else 0.0))
+        if q > 0:
+            for j in range(SALE_MONTHS):
+                k = n + j
+                Cf[k] += q * (ints[k] + prev - bals[k] + (bals[k] if j == SALE_MONTHS - 1 else 0.0))
+                prev = bals[k]
     return Cf
 
 
@@ -576,9 +600,9 @@ def golden(pack, verbose=False):
 
     def p_cover(L):
         return float(logit_pred(G.cover_beta, np.array([covers[id(L)]]))[0])
-    G.cre_cf = cre_cf(loans, p_cover)
+    G.cre_cf = cre_cf(loans, p_cover, ext_rate=P.cre)
     G.CRE, _ = measure(G.cre_cf, W)
-    G.CRE_contractual, _ = measure(cre_cf(loans, lambda L: 0.0), W)
+    G.CRE_contractual, _ = measure(cre_cf(loans, lambda L: 0.0, ext_rate=P.cre), W)
     # the 2027 balloons: December 2026 to December 2027
     wall = [L for L in loans if not L["extended"] and ASOF < ordinal(L["omat"]) <= mo(2027, 12)]
     G.wall = wall
@@ -740,17 +764,22 @@ def cre_linear(G):
     and for every loan not yet extended its loss repaid when due (m0) and the change if it extends (d), in dollars"""
     if getattr(G, "_lin", None) is None:
         loans = G.cre_loans
+        er = G.plan.cre
         fut = [L for L in loans if not L["extended"]]
-        base = measure(cre_cf([L for L in loans if L["extended"]], lambda L: 0.0), G.W)[0]
-        m0 = np.array([measure(cre_cf([L], lambda L: 0.0), G.W)[0] for L in fut])
-        m1 = np.array([measure(cre_cf([L], lambda L: 1.0), G.W)[0] for L in fut])
-        G._lin = (fut, base, m0, m1 - m0)
+        base = measure(cre_cf([L for L in loans if L["extended"]], lambda L: 0.0, ext_rate=er), G.W)[0]
+        m0 = np.array([measure(cre_cf([L], lambda L: 0.0, ext_rate=er), G.W)[0] for L in fut])
+        m1 = np.array([measure(cre_cf([L], lambda L: 1.0, ext_rate=er), G.W)[0] for L in fut])
+        m6 = np.array([measure(cre_cf([L], lambda L: 0.0, ext_rate=er, psale=lambda L: 1.0), G.W)[0] for L in fut])
+        G._lin = (fut, base, m0, m1 - m0, m6 - m0)
     return G._lin
 
 
-def cre_total(G, p):
-    fut, base, m0, d = cre_linear(G)
-    return float(base + (m0 + np.asarray(p, float) * d).sum()) / 1e6
+def cre_total(G, p, q=None):
+    fut, base, m0, d, d6 = cre_linear(G)
+    tot = base + (m0 + np.asarray(p, float) * d).sum()
+    if q is not None:
+        tot += (np.asarray(q, float) * d6).sum()
+    return float(tot) / 1e6
 
 
 def routes(G):
@@ -838,10 +867,23 @@ def routes(G):
     S["cover and rate gap"] = brier(logit_pred(b3t, X3[te]))
     F["income trended at -2 per cent a year"] = logit_pred(G.cover_beta, cov * 0.98 ** yrs)
     S["income trended at -2 per cent a year"] = S["cover, every maturity since 2015"]
+    # the sale-pending six months: dropped from the fit, or counted as extensions, or carried forward at its share
+    for how, nm in (("dropped", "sale-pending outcomes dropped from the fit"),
+                    ("extended", "sale-pending outcomes counted as extensions")):
+        Hs = cre_history(C_, G.rates, sale=how)
+        xs_ = np.array([h["cover"] for h in Hs])
+        ys_ = np.array([h["y"] for h in Hs])
+        trs = np.array([h["date"] <= dt.date(2024, 12, 31) for h in Hs])
+        F[nm] = logit_pred(logit_fit(xs_, ys_), cov)
+        bt_s = logit_fit(xs_[trs], ys_[trs])
+        S[nm] = float(np.mean((logit_pred(bt_s, xs_[~trs]) - ys_[~trs]) ** 2))
     fam = {k: cre_total(G, v) for k, v in F.items()}
+    sale_share = float(np.mean([h["out"] == "SALE" for h in H]))
+    fam["sale-pending six months carried forward"] = cre_total(G, pg * (1 - sale_share), np.full(len(fut), sale_share))
+    S["sale-pending six months carried forward"] = S["cover, every maturity since 2015"]
     loans360 = [dict(L, basis="30/360") for L in loans]
     fam["interest on 30/360"] = measure(cre_cf(loans360, lambda L: float(logit_pred(G.cover_beta, np.array(
-        [cre_cover_now(C_, L, P.cre)]))[0])), W)[0] / 1e6
+        [cre_cover_now(C_, L, P.cre)]))[0]), ext_rate=P.cre), W)[0] / 1e6
     S["interest on 30/360"] = S["cover, every maturity since 2015"]
     # the routes the bin must not hold
     O["the 1.25 cover convention"] = (cov < 1.25).astype(float)
@@ -871,6 +913,9 @@ def routes(G):
         pt[t] = float(y[s_].mean()) if s_.sum() else 0.0
     O["property type shares since 2023"] = np.array([pt.get(L["ptype"], 0.0) for L in fut])
     O["repaid when due"] = np.zeros(len(fut))
+    O["in-place cover below 1.20"] = (cur_now < 1.20).astype(float)
+    O["in-place cover below 1.25"] = (cur_now < 1.25).astype(float)
+    O["the watch list (grade 6 or worse)"] = np.array([1.0 if L["grade"] >= 6 else 0.0 for L in fut])
     out = {k: cre_total(G, v) for k, v in O.items()}
     M0 = cre_total(G, np.zeros(len(fut)))
     S_all = cre_total(G, np.ones(len(fut))) - M0

@@ -178,20 +178,42 @@ def cre_alive(L):
         return False
     if L["mat"] > K.ASOF_M:
         return True
-    return bool(L["ext"]) and L["mat"] + WD.CRE_EXT_MONTHS > K.ASOF_M
+    return bool(L["ext"]) and L["mat"] + L["ext_months"] > K.ASOF_M
+
+
+def cre_extended_now(L):
+    return L["mat"] <= K.ASOF_M and bool(L["ext"])
 
 
 def cre_balance_asof(L):
+    if cre_extended_now(L):
+        return L["ext_path"][K.ASOF_M - L["mat"] - 1]
     k = K.ASOF_M - L["orig"]
     return L["bal_path"][k - 1]
 
 
-def risk_grade(L, noi):
-    dscr = noi / (L["payment"] * 12)
-    for lo, gr in ((1.50, 3), (1.35, 4), (1.20, 5), (1.10, 6), (1.00, 7)):
+def cre_terms_now(L):
+    """the terms in force at the as-of: an extended loan carries its extension's rate, payment and maturity"""
+    if cre_extended_now(L):
+        return L["ext_rate"], L["ext_pay"], L["mat"] + L["ext_months"], (WD.EXT_AMORT if not L["sale"] else L["amort"])
+    return L["r0"], L["payment"], L["mat"], L["amort"]
+
+
+GRADE_STEPS = ((1.40, 3), (1.20, 4), (1.00, 5), (0.90, 6), (0.80, 7))
+
+
+def risk_grade(L, noi=None):
+    """the bank's scale of 1 to 9 on the in-place cover of the current payment, moved a grade either way by the
+    credit officer's judgment in a few files; 6 watch, 7 special mention, 8 substandard"""
+    rate, pay, _, _ = cre_terms_now(L)
+    s = latest_stmt(L)
+    dscr = (noi if noi is not None else s["noi"]) / (pay * 12)
+    gr = 8
+    for lo, g_ in GRADE_STEPS:
         if dscr >= lo:
-            return gr
-    return 8
+            gr = g_
+            break
+    return int(min(8, max(2, gr + L.get("grade_adj", 0))))
 
 
 def latest_stmt(L, by=None):
@@ -210,8 +232,8 @@ def obligation(L):
 
 CRE_COLS = ["loan_number", "obligor_number", "property_number", "property_type", "msa", "state", "origination_date",
             "original_maturity_date", "maturity_date", "rate_type", "note_rate", "rate_index", "rate_spread",
-            "interest_basis", "amortization_months", "original_principal", "principal_balance", "monthly_payment",
-            "next_due_date", "risk_grade"]
+            "interest_basis", "interest_only_months", "amortization_months", "original_principal", "principal_balance",
+            "monthly_payment", "next_due_date", "risk_grade"]
 PT_NAME = {"MF": "Multifamily", "OFF": "Office", "RET": "Retail", "IND": "Industrial", "MIX": "Mixed use"}
 
 
@@ -222,12 +244,13 @@ def cre_rows(W):
             continue
         od = day_in(L["orig"], L["oday"])
         omat = day_in(L["mat"], L["oday"])
-        mat = day_in(L["mat"] + WD.CRE_EXT_MONTHS, L["oday"]) if L["mat"] <= K.ASOF_M else omat
-        s = latest_stmt(L)
+        rate, pay, mat_o, amort = cre_terms_now(L)
+        mat = day_in(mat_o, L["oday"])
+        io = 0 if (cre_extended_now(L) and not L["sale"]) else L["io"]
         rows.append([loan_number(L), "%06d" % L["obligor"], "P%05d" % L["prop"], PT_NAME[L["ptype"]], L["msa"],
-                     L["state"], iso(od), iso(omat), iso(mat), "FIXED", "%.3f" % L["r0"], "", "", L["basis"],
-                     L["amort"], m2(L["b0"]), m2(cre_balance_asof(L)), m2(L["payment"]), "2026-12-%02d" % L["oday"],
-                     risk_grade(L, s["noi"])])
+                     L["state"], iso(od), iso(omat), iso(mat), "FIXED", "%.3f" % rate, "", "", L["basis"], io,
+                     amort, m2(L["b0"]), m2(cre_balance_asof(L)), m2(pay), "2026-12-%02d" % L["oday"],
+                     risk_grade(L)])
     for F in W.cre_float:
         od = day_in(F["orig"], F["oday"])
         mat = day_in(F["orig"] + F["term"], F["oday"])
@@ -235,8 +258,8 @@ def cre_rows(W):
         pay = float(WD.pmt(F["bal"], rate, 300 - (K.ASOF_M - F["orig"])))
         rows.append(["44%06d01" % F["obligor"], "%06d" % F["obligor"], "P%05d" % F["prop"], PT_NAME[F["ptype"]],
                      F["msa"], F["state"], iso(od), iso(mat), iso(mat), "FLOATING", "%.3f" % rate, "1M TERM SOFR",
-                     "%.3f" % F["spread"], "ACT/360", 300, m2(F["b0"]), m2(F["bal"]), m2(pay),
-                     "2026-12-%02d" % F["oday"], 5])
+                     "%.3f" % F["spread"], "ACT/360", 0, 300, m2(F["b0"]), m2(F["bal"]), m2(pay),
+                     "2026-12-%02d" % F["oday"], F["grade"]])
     rows.sort(key=lambda r: r[0])
     return rows
 
@@ -251,13 +274,13 @@ def maturity_log(W):
         md = day_in(L["mat"], L["oday"])
         bal = L["bal_mat"]
         if L["ext"]:
-            new = day_in(L["mat"] + WD.CRE_EXT_MONTHS, L["oday"])
+            new = day_in(L["mat"] + L["ext_months"], L["oday"])
             by_year.setdefault(md.year, []).append(dict(ob=obligation(L), prop=L["prop"], date=md, bal=bal,
-                                                        out="EXT", new=new, L=L))
-            if L["mat"] + WD.CRE_EXT_MONTHS <= K.ASOF_M:
-                bal2 = L["bal_path"][L["term"] + WD.CRE_EXT_MONTHS - 1]
+                                                        out=L["outcome"], new=new, L=L))
+            if L["outcome2"] is not None:
+                bal2 = L["ext_path"][-1]
                 by_year.setdefault(new.year, []).append(dict(ob=obligation(L), prop=L["prop"], date=new, bal=bal2,
-                                                             out="PO-EXT", new=None, L=L))
+                                                             out=L["outcome2"], new=None, L=L))
         else:
             by_year.setdefault(md.year, []).append(dict(ob=obligation(L), prop=L["prop"], date=md, bal=bal, out="PO",
                                                         new=None, L=L))
@@ -278,17 +301,28 @@ def stmt_rows(W):
         for s in L["stmts"]:
             if s["review"] > K.PULL:
                 continue
-            last = (L["mat"] + (WD.CRE_EXT_MONTHS if L["ext"] else 0))
+            last = (L["mat"] + (L["ext_months"] if L["ext"] else 0))
             if s["end_o"] > last:
                 continue
             if s["end_o"] < mo(2013, 1):
                 continue
             rows.append(["P%05d" % L["prop"], iso(s["end"]), s["basis"], "%.0f" % s["rev"], "%.0f" % s["exp"],
                          "%.0f" % s["noi"], iso(s["review"])])
+    for F in W.cre_float:
+        rows += F["stmt_rows"]
+    rows.sort(key=lambda r: (r[0], r[1]))
+    return rows
+
+
+def float_statements(W):
+    """the floating-rate loans' reviewed statements, and each loan's grade on the latest one"""
     g = K.rng(42)
+    ga = K.rng(43)
     for F in W.cre_float:
         noi = F["b0"] * WD.dc(5.5, 300) * 1.35 * float(np.exp(g.normal(0, 0.12)))
         fye = int(g.choice([12, 6, 9], p=[0.74, 0.16, 0.10]))
+        F["stmt_rows"] = []
+        last = None
         for fy in range(ym(F["orig"])[0] + 1, 2027):
             end = K.month_end(mo(fy, fye))
             rev_d = end + dt.timedelta(days=int(g.integers(70, 160)))
@@ -297,10 +331,22 @@ def stmt_rows(W):
             n = noi * float(np.exp(g.normal(0, 0.05)))
             er = float(np.clip(g.normal(0.42, 0.05), 0.2, 0.65))
             rev = n / (1 - er)
-            rows.append(["P%05d" % F["prop"], iso(end), str(g.choice(["Borrower prepared", "CPA reviewed"])),
-                         "%.0f" % rev, "%.0f" % (rev - n), "%.0f" % n, iso(rev_d)])
-    rows.sort(key=lambda r: (r[0], r[1]))
-    return rows
+            F["stmt_rows"].append(["P%05d" % F["prop"], iso(end), str(g.choice(["Borrower prepared", "CPA reviewed"])),
+                                   "%.0f" % rev, "%.0f" % (rev - n), "%.0f" % n, iso(rev_d)])
+            last = n
+        rate = WD.SOFR[K.ASOF_M] + F["spread"]
+        pay = float(WD.pmt(F["bal"], rate, 300 - (K.ASOF_M - F["orig"])))
+        adj = int(ga.choice([-1, 0, 1], p=[0.12, 0.76, 0.12]))
+        if last is None:
+            F["grade"] = 5
+            continue
+        dscr = last / (pay * 12)
+        gr = 8
+        for lo, g_ in GRADE_STEPS:
+            if dscr >= lo:
+                gr = g_
+                break
+        F["grade"] = int(min(8, max(2, gr + adj)))
 
 
 # ------------------------------------------------------------------------------------------------- securities
@@ -359,6 +405,7 @@ def other_securities(W):
 
 def prepare(W):
     """identifiers and the rest of the portfolio, built once so every file reads the same objects"""
+    float_statements(W)
     W.other = other_securities(W)
     g = K.rng(47)
     used = set()

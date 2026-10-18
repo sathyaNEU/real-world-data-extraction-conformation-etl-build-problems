@@ -54,7 +54,7 @@
     {
       "path": "alm_report_2026_q3.pdf",
       "format": "pdf",
-      "bytes": 42099,
+      "bytes": 42256,
       "rows": null,
       "source": "Constructed: Carrick Valley Bank ALM, report for the third quarter of 2026 (14 October 2026)",
       "date": "2026-12-03",
@@ -81,8 +81,8 @@
     {
       "path": "cre_maturity_log.xlsx",
       "format": "xlsx",
-      "bytes": 51423,
-      "rows": 589,
+      "bytes": 63353,
+      "rows": 797,
       "source": "Constructed: Carrick Valley Bank credit administration, commercial real estate maturity log, 2015 to 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -90,8 +90,8 @@
     {
       "path": "cre_operating_statements.csv",
       "format": "csv",
-      "bytes": 377269,
-      "rows": 5715,
+      "bytes": 382689,
+      "rows": 5837,
       "source": "Constructed: Carrick Valley Bank credit administration, borrowers' annual operating statements as reviewed, from 2013",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -99,8 +99,8 @@
     {
       "path": "cre_term_loans_20261130.csv",
       "format": "csv",
-      "bytes": 168605,
-      "rows": 1069,
+      "bytes": 110083,
+      "rows": 672,
       "source": "Constructed: Carrick Valley Bank commercial loan system, commercial real estate term loans at 30 November 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -126,7 +126,7 @@
     {
       "path": "extract_notes.txt",
       "format": "txt",
-      "bytes": 5621,
+      "bytes": 6455,
       "rows": null,
       "source": "Constructed: Carrick Valley Bank ALM, notes on the files pulled for the overlay designation memo (3 December 2026)",
       "date": "2026-12-03",

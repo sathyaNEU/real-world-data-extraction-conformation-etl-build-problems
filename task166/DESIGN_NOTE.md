@@ -20,13 +20,12 @@ planning cycle's base case.
    stress on each pool's expected cash flows through a forward year, which is interest-rate risk in the banking book,
    the rate-stress part of `stress-testing-capital`; the task type serves forecasting, and the forecast that decides
    is each pool's behavioural balance path under the planning cycle's base case.
-3. Niche: a Pittsburgh regional bank holding company (about $31 billion of assets) designating its one $1.2 billion
+3. Niche: a Pittsburgh regional bank holding company (about $38 billion of assets) designating its one $1.2 billion
    four-year pay-fixed swap overlay, traded on 15 December 2026 and starting on 4 January 2027, against the
    fixed-rate pool whose +200 bp economic value loss averaged over calendar 2027 is largest, when the 2023-24
-   portfolio jumbo mortgages carry rates the planning path's 6.25 per cent now beats and about $4.7 billion of
-   fixed-rate CRE balloons, nearly all written in the bank's push of December 2021 to April 2022 (its cash-out deals at
-   the credit box's full proceeds on pro forma rents, its rate-and-term refinances at far lower leverage), fall due
-   from December 2026 through 2027.
+   portfolio jumbo mortgages carry rates the planning path's 6.25 per cent now beats and about $3.2 billion of
+   fixed-rate CRE balloons, nearly all written in the bank's push of December 2021 to April 2022 (sized on pro forma
+   rents at the credit box's full proceeds, half of them interest only), fall due from December 2026 through 2027.
 4. Call and shape: the pool the overlay is designated against (`pick_one_of_n`, a named pool, question form which) and
    its +200 bp loss averaged over the twelve month-ends of 2027, in $ millions to the nearest $10 million (the
    precision every out-of-sample-valid construction shares within a quarter of the bin, measured below). Shape `other`: the call with its critical
@@ -63,12 +62,12 @@ planning cycle's base case.
 
 **Data-native sentence.** Carrick Valley's records show every pool's monthly balance and every CRE maturity's outcome,
 so nothing is hidden: but the fixed-rate CRE pool's balloons due from December 2026 through 2027 were written in the
-bank's push of December 2021 to April 2022, its cash-out deals sized on pro forma rents at the credit box's full
-proceeds and its refinances at far lower leverage, and their properties' income has slipped since, so at the planning
-cycle's 6.95 per cent the cash-out loans cannot carry a new loan of their balloon on the bank's 25-year amortization
-and will be extended for 36 months at their note rates, as the maturity log shows for every loan that fell due below a
-cover of about 1.10 since 2015 (9 of 9 below 1.0), while the maturities of 2023 to 2026 mostly refinanced and leave the
-recent extension share near 15 per cent.
+bank's push of December 2021 to April 2022, at the credit box's full proceeds on pro forma rents and half of them
+interest only, and their properties' income has slipped since, so at the planning cycle's 6.95 per cent most of them
+cannot carry a new loan of their balloon on the bank's 25-year amortization and will take the bank's one extension
+(36 months, a tenth paid down, the rest at the posted rate), as the maturity log shows for nearly every loan that fell
+due below a cover of about 1.08 since 2015, while the maturities of 2023 to 2026, written in the pandemic years' tighter
+box, mostly refinanced and leave the recent extension share near an eighth.
 
 **Guard and similarity.** `guard.py check` WARN at registration, one line: `repeat.question_form` (which, against
 task245 and task471): the decision is a pick of one pool, so the form is the decision's own. The structural
@@ -120,21 +119,21 @@ None shares the latent structure, the default path and the correction together.
    incentive against the posted jumbo rate a month earlier, the strong analyst's reflex; at the planning cycle's 6.25
    per cent the pool prepays about 30 per cent a year ($85.2 million).
 5. Indirect auto: the roll's monthly prepayment rate over the last twelve months ($30.7 million).
-6. Fixed-rate CRE: the term loans' payments to maturity, each balloon taken out at the extension share the maturity log
-   shows for the last twelve months (0.154), or repaid when due ($55.7 million; $19.5 million).
+6. Fixed-rate CRE: the term loans' payments to maturity, each balloon taken out on the bank's extension at the share
+   the maturity log shows for the last twelve months (0.119), or repaid when due ($38.1 million; $19.6 million).
 7. Rank and designate the largest.
 
 Ends on: Agency MBS, $110 million (110.5 to the nearest $10 million)
-Golden: Fixed-rate commercial real estate, $150 million (150.05 to the nearest $10 million)
+Golden: Fixed-rate commercial real estate, $150 million (149.99 to the nearest $10 million)
 
 ## Stump sentence
 Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at
 the extension share the maturity log shows lately files Agency MBS, $110 million; the step that lands it there is
 carrying the recent share of due balloons that extended as a constant, when each balloon extends according to
-whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and of the
-$4.7 billion due from December 2026 through 2027 the push's cash-out loans, written at full leverage on pro forma
-rents, cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on
-the 2025-26 maturities held out, puts about three-fifths of that principal on 36-month extensions and the pool's
+whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and the
+$3.2 billion due from December 2026 through 2027, nearly all written in the early-2022 push on pro forma rents, mostly
+cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the
+2025-26 maturities held out, puts about nine-tenths of that principal on the bank's 36-month extension and the pool's
 averaged loss at $150 million.
 
 ## Three rules
@@ -142,10 +141,10 @@ averaged loss at $150 million.
 Task type: stress-testing-capital (Banking, Credit & Financial Risk: interest-rate risk in the banking book, the +200 bp economic value stress), which serves Forecasting & Predictive Modeling in the taxonomy; the decisive forecast is each fixed-rate pool's behavioural run-off through 2027 under the planning cycle's base case.
 Domain test: the deciding quantity is each pool's +200 bp loss in economic value averaged over the overlay's first year, the IRRBB stress a bank's ALM function computes on behavioural cash flows, and it turns on the field's two run-off forecasts: residential prepayment on the refinancing incentive at the planning rate, and commercial real estate balloon extension conditioned on refinance cover (the property's income against a new loan's debt service at the refinance rate), the credit test that decides whether a balloon can be taken out at maturity.
 Swap: "which plant gets the one spare turbine, ranked on the megawatt-hours each would lose under a 20 per cent demand surge averaged over next year" keeps a ranking of five assets on a stressed loss, but loses discounted cash flows re-priced under a rate shock, and above all a borrower's refinance cover at a planning rate deciding whether a balloon leaves at maturity or stays for three years: with turbines nothing refinances, so the quantity the call turns on stops making sense.
-Layer 1: the servicing platform conversion (legacy extract to the August 2024 cycle with uppercase codes, MMDDYYYY dates, rates in per cent, curtailments and payoffs apart and a trailer row; the new platform with decimals, combined unscheduled principal and zero-balance codes; the xref), loans held for sale in both extracts, the rate sheet archive (weekly sheets, mid-week re-prices, codes renamed with the pricing engine on 1 January 2024), the CRE file's floating loans and extended loans' current against original maturities, ACT/360 interest, the maturity log's two sheet layouts and its obligation and property numbers in credit administration's formats, operating statements by the borrower's own fiscal year with their review dates, the custodian's thousands, pool factors and the rest of the AFS account, the agency payment delay, and the auto portfolio's dynamic roll; each is how its system writes, none carries the call (each asserted neutral in checks.py, R2).
+Layer 1: the servicing platform conversion (legacy extract to the August 2024 cycle with uppercase codes, MMDDYYYY dates, rates in per cent, curtailments and payoffs apart and a trailer row; the new platform with decimals, combined unscheduled principal and zero-balance codes; the xref), loans held for sale in both extracts, the rate sheet archive (weekly sheets, mid-week re-prices, codes renamed with the pricing engine on 1 January 2024), the CRE file's floating loans, extended loans' current terms against their original maturities and interest-only loans beside amortizing ones, ACT/360 interest, the maturity log's two sheet layouts, its five outcome codes and its obligation and property numbers in credit administration's formats, operating statements by the borrower's own fiscal year with their review dates and the underwriting row, the custodian's thousands, pool factors and the rest of the AFS account, the agency payment delay, and the auto portfolio's dynamic roll; each is how its system writes, none carries the call (each asserted neutral in checks.py, R2).
 Layer 2: forecast_uncertainty (the conditioning of a behavioural share chosen on held-out outcomes): the choice that flips the call is forecasting each balloon's extension from its own refinance cover at the planning rate, chosen against the recent share, the rate gap and the note-rate DSCR on the 2025-26 maturities held out, not carrying the share recent maturities showed onto a wall whose cover mix the history never saw at that weight.
-Decisive step: model the probability that a commercial real estate balloon is extended at maturity as a function of its refinance cover (the latest reviewed net operating income over a new loan of the balloon at the posted five-year rate on the bank's 25-year amortization), fit it on every maturity since 2015, validate it on the maturities held out, and apply it at the planning cycle's 6.95 per cent to every loan not yet extended.
-Not semantics: every field is read correctly on the default path (the outcome codes, the extended maturities, the statements, the rates, the policy's measure); the maturity log's recent extension share is correctly read as about 15 per cent of the due balloons and is still the wrong forecast for a wall three-fifths of whose principal sits below a cover of 1.10, a mix no recent year had.
+Decisive step: model the probability that a commercial real estate balloon is extended at maturity as a function of its refinance cover (the latest reviewed net operating income over a new loan of the balloon at the posted five-year rate on the bank's 25-year amortization), fit it on every original maturity since 2015, validate it on the maturities held out, and apply it at the planning cycle's 6.95 per cent to every loan not yet extended, an extension running on the bank's filed terms.
+Not semantics: every field is read correctly on the default path (the outcome codes, the extended maturities, the statements, the rates, the policy's measure); the maturity log's recent extension share is correctly read as about an eighth of the due balloons and is still the wrong forecast for a wall nine-tenths of whose principal sits below a cover of 1.05, a mix no recent year had.
 Not rule application: the policy files the measure (shock, curve, window, cash flows before credit losses, the pool at the as-of, eligibility) and says nothing about how any pool behaves; no filed rule forecasts extension, and executing every filed rule with balloons repaid when due or extended at the recent share files Agency MBS.
 Analyst test: a strong analyst who stitches the servicing extracts, reads every code, fits the mortgage prepayment curve at 6.25 per cent and takes the commercial real estate balloons out at the log's recent extension share (or when due) files Agency MBS, $110 million; only conditioning each balloon's extension on its refinance cover at 6.95 per cent files Fixed-rate commercial real estate at $150 million (executed in checks.py on the generator's clean truth: R3a, R3b, every single lower correction wrong).
 Estimand: the hedging policy (section 3, balance_sheet_hedging_policy.pdf) files the population (the positions in each Schedule A pool at the close on the memo's as-of date, positions added after it excluded), the outcome (present value of the pool's base-case expected cash flows after each month-end on the planning cycle's base-case zero curve, the same rates at every month-end, less the same at +200 bp), the window (the month-ends of the overlay's first twelve months), the unit ($ millions) and the comparison (the largest among the eligible pools); the prompt adds the overlay's start (4 January, which fixes the twelve month-ends as January to December 2027) and the rounding.
@@ -162,10 +161,10 @@ subtraction, ratio or half of a figure). Figures are built (generator/calc.py ro
 |---|---|---|---|---|---|---|---|
 | R0 every pool at its own last twelve months, balloons repaid when due (2023-24 mortgages, $129.1 million) | the policy names the measure, which invites each pool's recent behaviour | the servicing extracts and the factors carry the last year | yes, the default | none ships; the analyst's own back-test of last year's speed on the 2024 and 2025 dips misses | no | yes, one rate | readable |
 | R1 the mortgages on a fitted prepayment curve at the planning cycle's 6.25 per cent (Agency MBS, $110.5 million against $85.2 million) | the planning workbook files 6.25 per cent | the extracts' note rate and the rate sheet | yes, the ALM reflex | none | no | no | readable |
-| R2a the balloons at the log's last-twelve-month extension share, 0.154 (Agency MBS; CRE $55.7 million) | no | the log's outcome column | yes, a historical share | none | no | yes | readable |
-| R2b extension on the rate gap, the posted rate at maturity less the note rate (Agency MBS; CRE $47.7 million) | no | the log's note rate and the rate sheet | yes, the rate-sensitive reflex | its own hold-out (Brier 0.111) | no | no | readable |
-| R2c extension on the debt service coverage at the note rate, the credit file's metric (Agency MBS; CRE $89.1 million) | no | the risk grade and the statements | yes, the credit reflex | its own hold-out (Brier 0.065) | no | no | readable |
-| R3 (decisive) extension on refinance cover at the planning rate, every future maturity (CRE $150.1 million) | no sentence names cover, refinancing, a debt constant or what drives an extension; the log defines an extension's terms only | no column carries net operating income, cover or a probability on the loan file; the statements sit in their own file keyed in another format | no: the reflexes are a share, a rate gap, a note-rate DSCR | none ships: the log's outcomes are read alike by every route; only the analyst's own hold-out separates them | no: keys normalise and every join matches | no: a fitted conditional share applied loan by loan, then the cash flows re-discounted month by month | silent |
+| R2a the balloons at the log's last-twelve-month extension share, 0.119 (Agency MBS; CRE $38.1 million) | no | the log's outcome column | yes, a historical share | none | no | yes | readable |
+| R2b extension on the rate gap, the posted rate at maturity less the note rate (Agency MBS; CRE $32.1 million) | no | the log's note rate and the rate sheet | yes, the rate-sensitive reflex | its own hold-out (Brier 0.099) | no | no | readable |
+| R2c extension on the debt service coverage at the note rate, the credit file's metric (Agency MBS; CRE $52.4 million) | no | the risk grade and the statements | yes, the credit reflex | its own hold-out (Brier 0.065) | no | no | readable |
+| R3 (decisive) extension on refinance cover at the planning rate, every future maturity (CRE $150.0 million) | no sentence names cover, refinancing, a debt constant or what drives an extension; the log defines an extension's terms only | no column carries net operating income, cover or a probability on the loan file; the statements sit in their own file keyed in another format | no: the reflexes are a share, a rate gap, a note-rate DSCR | none ships: the log's outcomes are read alike by every route; only the analyst's own hold-out separates them | no: keys normalise and every join matches | no: a fitted conditional share applied loan by loan, then the cash flows re-discounted month by month | silent |
 
 ## Semantic fork table
 
@@ -176,15 +175,15 @@ asserted in `generator/checks.py`.
 |---|---|---|---|---|---|
 | SF1 | "our five fixed-rate pools" | the five pools of the policy's Schedule A | every fixed-rate book the bank holds | same five candidates (no other book is named) | the policy ("the eligible pool in Schedule A") |
 | SF2 | "designated against" | ALCO's designation of the overlay under the policy, section 3 | a hedge accounting designation with its own tests | same call | the policy section 3 and section 4 (the memo names the pool) |
-| SF3 | "averaged loss under the hedging policy's +200 basis point test" | the mean over the overlay's first twelve month-ends | the loss at the as-of alone | CRE, $200 million (196.8) | the policy ("averaged over the month-ends of the overlay's first twelve months") |
-| SF4 | the month-ends of the first twelve months | 31 January to 31 December 2027: the overlay starts on 4 January | a spot start on 17 December, December 2026 to November 2027; thirteen month-ends to January 2028 | CRE, $160 million (155.6); CRE, $150 million (147.5) | the prompt ("starts on Monday 4 January") and the policy ("the month-ends of the overlay's first twelve months"), asserted |
-| SF5 | the curve at each month-end | the base-case zero rates applied from each month-end | forwards implied for each month-end | same call (150.3) | the policy ("the same zero rates at every month-end"); same call, asserted |
+| SF3 | "averaged loss under the hedging policy's +200 basis point test" | the mean over the overlay's first twelve month-ends | the loss at the as-of alone | CRE, $190 million (189.3) | the policy ("averaged over the month-ends of the overlay's first twelve months") |
+| SF4 | the month-ends of the first twelve months | 31 January to 31 December 2027: the overlay starts on 4 January | a spot start on 17 December, December 2026 to November 2027; thirteen month-ends to January 2028 | CRE, $160 million (155.0); CRE, $150 million (147.6) | the prompt ("starts on Monday 4 January") and the policy ("the month-ends of the overlay's first twelve months"), asserted |
+| SF5 | the curve at each month-end | the base-case zero rates applied from each month-end | forwards implied for each month-end | same call (150.2) | the policy ("the same zero rates at every month-end"); same call, asserted |
 | SF6 | time and placement | months over twelve, each cash flow at its payment month's end | day fractions | same call | the policy ("a month counting as a twelfth of a year") |
 | SF7 | expected cash flows | base-case behaviour, before credit losses | net of charge-offs | same call | the policy ("before credit losses") |
 | SF8 | the pool | the positions at the close on 30 November 2026 | the pool with the plan's new business | same call | the policy ("positions added after it are not part of it") |
 | SF9 | eligible | principal at the as-of at least $1.2 billion: all five | principal expected to stay above $1.2 billion to the swap's maturity | no pool designated | the policy ("its principal outstanding at the close on the as-of date") |
 | SF10 | the base case | ALCO's September 2026 planning cycle: the zero curve and product rates, held after December 2027 | today's market | same call | the policy ("ALCO's most recent planning cycle") and the workbook's cycle sheet |
-| SF11 | fixed-rate commercial real estate | term loans with a fixed note rate, the extended ones included | the extended loans left out | same call (146.9, $150 million) | Schedule A ("Commercial real estate term loans with a fixed note rate"); asserted |
+| SF11 | fixed-rate commercial real estate | term loans with a fixed note rate, the extended ones included | the extended loans left out | CRE, $140 million (144.5) | Schedule A ("Commercial real estate term loans with a fixed note rate"); asserted |
 | SF12 | agency MBS | the pass-throughs bought in 2020 and 2021 | every agency pool in the account | same call | Schedule A ("bought in 2020 and 2021"); same call, asserted |
 | SF13 | 2023-24 residential mortgages | held for investment, originated 2023 and 2024 | the loans held for sale too | same call (none is left at the as-of) | Schedule A ("held for investment"); same call, asserted |
 | SF14 | the rounding | the averaged loss to the nearest $10 million | a finer unit | same call; every out-of-sample-valid construction sits in the bin's middle half | the prompt |
@@ -193,6 +192,9 @@ asserted in `generator/checks.py`.
 | SF17 | overlays, funding hedges, loan hedges | by what each swap is designated against | by the register's strategy code | Ask A only (overlays and funding hedges move by $275.0 million) | the policy ("Overlays are pay-fixed swaps designated against a fixed-rate asset pool") |
 | SF18 | the new one included | $1.2 billion in overlays at every 2027 quarter-end | left out | Ask A only | the prompt |
 | SF19 | notional | the notional of the calculation period in effect | the register's current notional held flat | Ask A only | the register ("an amortizing swap's current period") and the schedules |
+| SF20 | a loan already extended | repays at its extended date | extended again on cover (the 32 extended loans) | same call (152.7) | the extract notes ("An extended loan is not extended again: at its extended maturity it is paid or goes to special assets"), asserted |
+| SF21 | the extension's terms | a tenth of the principal due paid down, the rest at the posted five-year rate on the maturity date (the plan's 6.95 per cent in 2027) amortizing over 25 years, 36 months | the note's rate and payment held, nothing paid down; November's posted rate | CRE, $160 million (159.9); same call (149.6) | the extract notes ("one extension, of 36 months, on a paydown of 10 per cent of the principal due, at the bank's posted five-year fixed rate on the maturity date, the payment amortizing the rest over 25 years"), asserted |
+| SF22 | EXT-S | six months on the note's terms for a sale under contract, read as the repayment it precedes | dropped from the fit; carried forward at its share; read as the 36-month extension | same call (150.0; 149.4); CRE, $130 million (130.1) | the extract notes ("EXT-S, extended six months on the note's terms for a sale under contract"), asserted |
 
 ## Ladder
 Built figures from `generator/calc.py` (`golden`, `routes`), every row asserted in `generator/checks.py` (LADDER, FAM,
@@ -200,97 +202,104 @@ OUT, BYPASS, OOS, R3b). Each pool's averaged loss in $ millions.
 
 | Rung | Construction | Treasury | Agency MBS | 2023-24 mortgages | Auto | Fixed-rate CRE | Names | Margin |
 |---|---|---|---|---|---|---|---|---|
-| R0 | every pool's last twelve months, balloons repaid when due | 67.0 | 110.5 | 129.1 | 30.7 | 19.5 | 2023-24 mortgages | 1.17 over Agency MBS; CRE 5th |
-| R1 default | the mortgages on the fitted prepayment curve at 6.25 per cent | 67.0 | 110.5 | 85.2 | 30.7 | 19.5 | Agency MBS | 1.30 |
-| R2a | R1, balloons at the log's last-year share (0.154) | | | | | 55.7 | Agency MBS | 1.30 over the mortgages; CRE 4th |
-| R2b | R1, extension on the rate gap | | | | | 47.7 | Agency MBS | 1.30; CRE 4th |
-| R2c | R1, extension on the note-rate DSCR | | | | | 89.1 | Agency MBS | 1.24 over CRE, CRE 2nd |
-| R3 decisive | R1, extension on refinance cover at 6.95 per cent, every future maturity | | | | | 150.1 | Fixed-rate CRE | 1.36 over Agency MBS |
+| R0 | every pool's last twelve months, balloons repaid when due | 67.0 | 110.5 | 129.1 | 30.7 | 19.6 | 2023-24 mortgages | 1.17 over Agency MBS; CRE 5th |
+| R1 default | the mortgages on the fitted prepayment curve at 6.25 per cent | 67.0 | 110.5 | 85.2 | 30.7 | 19.6 | Agency MBS | 1.30 |
+| R2a | R1, balloons at the log's last-year share (0.119) | | | | | 38.1 | Agency MBS | 1.30 over the mortgages; CRE 4th |
+| R2b | R1, extension on the rate gap | | | | | 32.1 | Agency MBS | 1.30; CRE 4th |
+| R2c | R1, extension on the note-rate DSCR | | | | | 52.4 | Agency MBS | 1.30; CRE 4th |
+| R3 decisive | R1, extension on refinance cover at 6.95 per cent, every future maturity | | | | | 150.0 | Fixed-rate CRE | 1.36 over Agency MBS |
 
-**Position and separation.** The golden is 5th on R0 and on R1, never first on an intermediate rung, 2nd only on R2c
-(Agency MBS 1.24x ahead); no rung margin is under 1.15x; the final margin is 1.36x. **Dominance:** the decisive axis
-moves the pool 130.6 (19.5 to 150.1) against Agency MBS's carried lead of 91.0 on R1, 1.43x. **Grid:** the cover step
-alone, with the mortgages at last year's speed, still names the pool (150.1 against 129.1, 1.16x); the mortgages'
-scheduled amortization alone names the mortgages (386.9); a debt yield fitted on every maturity names the pool by
-1.03x at $114.2 million (the $110 million bin), a note-rate DSCR fitted on 2023 onward at $121.5 million (the $120
-million bin); every balloon extended names the pool at $255.0 million (the $260 million bin).
+**Position and separation.** The golden is 5th on R0 and on R1 and 4th on every R2 rung, never first on an intermediate
+rung; no rung margin is under 1.15x; the final margin is 1.36x. **Dominance:** the decisive axis moves the pool 130.4
+(19.6 to 150.0) against Agency MBS's carried lead of 90.9 on R1, 1.43x. **Grid:** the cover step alone, with the
+mortgages at last year's speed, still names the pool (150.0 against 129.1, 1.16x); the mortgages' scheduled
+amortization alone names the mortgages (386.9); a debt yield fitted on every maturity names the pool by 1.23x at $136.0
+million (the $140 million bin), a note-rate DSCR fitted on 2023 onward files $65.5 million; every balloon extended
+names the pool at $174.6 million (the $170 million bin).
 
 **The golden family (C3, asserted: FAM).** Every out-of-sample-valid construction of the decisive step, with its
-hold-out Brier score (refitted on the 482 maturities to December 2024, scored on the 102 of 2025 and 2026), files
-$150 million and sits in the bin's middle half (147.5 to 152.5):
+hold-out Brier score (refitted on the 510 maturities to December 2024, scored on the 274 of 2025 and 2026), files
+$150 million, and each plus or minus one sigma sits inside 147.5 to 152.5:
 
 | Construction | Figure | Hold-out Brier |
 |---|---|---|
-| cover logit, every maturity since 2015 (the golden) | 150.05 | 0.0065 |
-| cover logit, maturities since 2023 | 150.13 | 0.0066 |
-| log cover | 150.06 | 0.0065 |
-| cover bands of 0.05 (edges at 0.70, 0.75, ...) | 149.54 | 0.0164 |
-| cover bands of 0.05, offset (0.725, 0.775, ...) | 149.87 | 0.0171 |
-| cover bands of 0.10 (0.70, 0.80, ...) | 148.57 | 0.0178 |
-| cover bands of 0.10, offset (0.75, 0.85, ...) | 148.73 | 0.0289 |
-| hard cut at 1.08 (data-chosen) | 148.74 | 0.0098 |
-| hard cut at 1.09 (data-chosen) | 149.62 | 0.0098 |
-| hard cut at 1.10 (data-chosen) | 149.92 | 0.0196 |
-| hard cut at 1.11 (data-chosen) | 150.37 | 0.0098 |
-| debt yield logit, maturities since 2023 | 148.31 | 0.0129 |
-| debt yield and the refinance rate | 150.16 | 0.0064 |
-| cover logit, the 2027 balloons only (later ones repaid when due) | 148.77 | 0.0065 |
-| refinance rate a month before maturity | 150.03 | 0.0100 |
-| statement by fiscal year end rather than review date | 148.41 | 0.0173 |
-| cover and rate gap | 150.49 | 0.0053 |
-| income trended at minus 2 per cent a year | 150.86 | 0.0065 |
-| interest on 30/360 | 149.74 | 0.0065 |
+| cover logit, every maturity since 2015 (the golden) | 149.99 | 0.0126 |
+| cover logit, maturities since 2023 | 150.39 | 0.0115 |
+| log cover | 150.08 | 0.0126 |
+| cover bands of 0.05 (edges at 0.70, 0.75, ...) | 149.68 | 0.0143 |
+| cover bands of 0.05, offset (0.725, 0.775, ...) | 150.09 | 0.0160 |
+| cover bands of 0.10 (0.70, 0.80, ...) | 149.09 | 0.0139 |
+| cover bands of 0.10, offset (0.75, 0.85, ...) | 149.52 | 0.0205 |
+| hard cut at 1.09 (the data's choice) | 149.98 | 0.0109 |
+| debt yield logit, maturities since 2023 | 149.17 | 0.0123 |
+| debt yield and the refinance rate | 150.24 | 0.0122 |
+| cover logit, the 2027 balloons only (later ones repaid when due) | 149.35 | 0.0126 |
+| refinance rate a month before maturity | 149.85 | 0.0130 |
+| statement by fiscal year end rather than review date | 149.82 | 0.0137 |
+| cover and rate gap | 150.11 | 0.0115 |
+| income trended at minus 2 per cent a year | 150.61 | 0.0126 |
+| sale-pending outcomes dropped from the fit | 150.04 | 0.0125 |
+| sale-pending six months carried forward at their share | 149.40 | 0.0126 |
+| interest on 30/360 | 149.50 | 0.0126 |
 
-The data-chosen cuts are those whose hold-out or in-sample Brier is within 10 per cent of the best (1.08 to 1.11); a
-cut from 1.13 up scores 0.039 or worse on the hold-out, four to thirteen times the best, and files 153.6 to 162.4
-(asserted: no cut scoring within 1.5 times the best leaves the middle half). Cover with property type files 148.4
-(H14). The bootstrap of the 584 maturities (200 resamples, seeded) puts one sigma of the golden at 0.26; every
-construction plus or minus one sigma (148.0 to 151.1) stays inside the bin. The 30-year and 20-year debt constants
-are ruled out by the rate sheet's product line ("25-year amortization").
+The data-chosen cut is 1.09 (hold-out 0.0109, the best; in-sample also the best); every cut that scores within 1.25
+times the best lands in the middle half, and cuts from 1.12 up score 0.018 or worse and file 152.4 to 157.7. Cover with
+property type files 150.3 (H14). The bootstrap of the 784 maturities (200 resamples, seeded) puts one sigma of the
+golden at 0.77; the constructions run 149.09 to 150.61, 148.33 to 151.38 with one sigma. Reading the sale-pending six
+months as the 36-month extension misreads a filed code and files 130.1 (hold-out 0.0445).
 
 **The routes kept outside (asserted: OUT, RIVALS).**
 
 | Construction | Figure | Hold-out Brier | Against the bin |
 |---|---|---|---|
-| the 1.25 cover convention (a balloon extends below 1.25) | 162.38 | 0.1275 | 7.4 above |
-| the 1.00 cover rule | 135.54 | 0.0784 | 9.5 below |
-| note-rate DSCR logit, every maturity | 89.10 | 0.0650 | 55.9 below |
-| note-rate DSCR logit, maturities since 2023 | 121.46 | 0.0596 | 23.5 below |
-| debt yield logit, every maturity | 114.21 | 0.0683 | 30.8 below |
-| the 2027 balloons' model share carried to every balloon | 159.76 | as the golden's | 4.8 above |
-| every balloon extended | 255.03 | 0.8824 | 100.0 above |
-| every 2027 balloon extended | 236.96 | | 82.0 above |
-| rate gap logit, every maturity; since 2023 | 47.71; 43.77 | 0.1109; 0.1084 | below |
-| the last twelve months' share; since 2023; pooled | 55.73; 41.54; 29.17 | 0.1039; 0.1056; 0.1124 | below |
-| property type shares since 2023; repaid when due | 39.81; 19.49 | | below |
+| the 1.25 cover convention (a balloon extends below 1.25) | 157.73 | 0.2007 | 2.7 above |
+| the 1.00 cover rule | 141.53 | 0.0401 | 3.5 below |
+| note-rate DSCR logit, every maturity | 52.40 | 0.0654 | 92.6 below |
+| note-rate DSCR logit, maturities since 2023 | 65.50 | 0.0540 | 79.5 below |
+| debt yield logit, every maturity | 136.02 | 0.0389 | 9.0 below |
+| the 2027 balloons' model share carried to every balloon | 160.46 | as the golden's | 5.5 above |
+| every balloon extended | 174.58 | 0.9088 | 19.6 above |
+| every 2027 balloon extended | 162.92 | | 7.9 above |
+| in-place cover (on the current payment) below 1.20 | 75.28 | | 74.7 under the golden |
+| in-place cover below 1.25 | 77.66 | | 72.3 under the golden |
+| the watch list (grade 6 or worse) extending | 32.93 | | 117.1 under the golden |
+| rate gap logit, every maturity; since 2023 | 32.11; 33.63 | 0.0989; 0.0848 | below |
+| the last twelve months' share; since 2023; pooled | 38.10; 33.68; 27.70 | 0.0829; 0.0829; 0.0865 | below |
+| property type shares since 2023; repaid when due | 33.90; 19.59 | | below |
 
-**The constant-share bypass (asserted: BYPASS).** A single extension share applied to every balloon not yet extended
-lands the bin only between 0.533 and 0.575: one half files 137.3, three-fifths 160.8, two-thirds 176.5, 0.7 184.4,
-three-quarters 196.1, four-fifths 207.9, nine-tenths 231.5, all 255.0. Applied to the 2027 balloons alone, later ones
-repaid when due, it lands between 0.577 and 0.623: three-fifths lands (150.0, the wall's own model share being 0.596),
-and one half 128.2, two-thirds 164.5, 0.7 171.7, three-quarters 182.6, four-fifths 193.5, nine-tenths 215.2 and all
-237.0 miss.
+The in-place and watch-list routes miss by more than a bin because in-place cover and grade are set by the current
+payment and refinance cover by the balloon at the planning rate: the push's interest-only loans (128 of the pool's
+360) carry in-place cover near 1.8 on their interest-only payment and refinance cover near 0.8 on their whole balance,
+while the later high-coupon loans carry in-place cover near 1.2 and refinance cover above 1.3.
 
-**Out of sample.** Cover's Brier score is 0.0065 against 0.065 for the note-rate DSCR, 0.068 for the debt yield,
-0.104 for the last year's share, 0.111 for the rate gap and 0.112 for the pooled share (asserted: cover beats every
-rival by half; every history maturity below a cover of 1.0, 9 of 9, extended).
+**The constant-share bypass (asserted: BYPASS).** A single extension share on every balloon not yet extended lands only
+between 0.809 and 0.874: 0.85 lands (151.3); one half files 97.1, three-fifths 112.6, two-thirds 122.9, 0.7 128.1,
+three-quarters 135.8, four-fifths 143.6, nine-tenths 159.1, all 174.6. On the 2027 balloons alone, later ones repaid
+when due, it lands between 0.875 and 0.945: nine-tenths lands (148.6, the wall's own model share being 0.909), and one
+half 91.3, two-thirds 115.1, 0.7 119.9, three-quarters 127.1, four-fifths 134.3, 0.85 141.4 and all 162.9 miss.
+
+**Out of sample.** Cover's Brier score is 0.013 against 0.039 for the debt yield, 0.065 for the note-rate DSCR, 0.083
+for the last year's share, 0.0865 for the pooled share and 0.099 for the rate gap (asserted: cover beats every rival by
+half). The history carries the exceptions a book has: 2 payoffs below the fitted break (1.087) and 6 extensions above
+it, 4 six-month extensions for a sale and 2 loans sent to special assets at their extended maturity (REAL).
 
 **Worth on the graded quantity.** The mortgage prepayment curve moves the mortgages' loss from 129.1 to 85.2 and the
-designation from the mortgages to Agency MBS; the cover step moves the pool's loss from 19.5 (or 55.7 at the recent
-share) to 150.1 and the designation to the pool.
+designation from the mortgages to Agency MBS; the cover step moves the pool's loss from 19.6 (or 38.1 at the recent
+share) to 150.0 and the designation to the pool.
 
-**Strength.** P(one strong solver lands the pool and the $150 million bin) about 0.13: it must see that the balloons
+**Strength.** P(one strong solver lands the pool and the $150 million bin) about 0.14: it must see that the balloons
 due through 2027 decide the ranking (about 0.6), condition each balloon's extension on its refinance cover from the
-history rather than on the 1.25 convention, a share, a rate gap, the note-rate DSCR or a debt yield on the full
-history (about 0.3), and execute the cash flows and the average within $5 million (about 0.75); the guess route that
-lands (three-fifths on the 2027 balloons alone) adds under 0.01. P(both top responses land) about 0.02 if
-independent, about 0.04 with a correlation of 0.2, under 0.08 with margin. The seed was fixed by rule (the task
-number, then the memo's month and day: 1661214) before any data was generated and is never searched; the world's
-extension response and the push's leverage mix were chosen against criteria fixed before the search (every
-construction above in the bin's middle half, the five named routes and every rival outside it, both constant-share
-bands clear of two-thirds, 0.7, three-quarters and four-fifths), and the golden was then re-centred by one rule
-written before any route was measured: the push loans' income scale is solved so the file-built golden sits within
-$0.5 million of $150 million (1.011; the build gives 150.05).
+history rather than on the 1.25 convention, the 1.00 rule, a share, the rate gap, the note-rate DSCR, the in-place
+cover, the grade or a debt yield on the full history (about 0.3), and execute the cash flows on the bank's extension
+terms and the average within $5 million (about 0.75); the guess routes that land (0.85 on every balloon, nine-tenths on
+the 2027 balloons alone) add about 0.01. P(both top responses land) about 0.02 if independent, about 0.04 with a
+correlation of 0.2, under 0.08 with margin. The seed was fixed by rule (the task number, then the memo's month and day:
+1661214) before any data was generated and is never searched; the world's extension response, the book's origination
+profile, the push's sizing and its interest-only share were chosen against criteria fixed before the search (every
+construction above plus or minus one sigma in the bin's middle half, the named routes and every rival outside the bin,
+the in-place and watch-list routes a full bin away, no listed share in either constant-share band, the ladder held),
+and the golden was then re-centred by one rule written before any route was measured: the push loans' income scale is
+solved so the file-built golden sits within $0.5 million of $150 million (1.491; the build gives 149.99).
 
 ## Closure table
 
@@ -307,14 +316,14 @@ $0.5 million of $150 million (1.011; the build gives 150.05).
 | 9 | Boundary inclusivity | cash flows after each month-end; eligibility at least the notional | filed (policy) |
 | 10 | Rounding path | the unrounded average to the nearest $10 million | filed (prompt); SF14 |
 | 11 | Tie-break | none: the margin is 1.36x | n/a |
-| 12 | Maturity and censoring | the balloons due after the as-of are unresolved; their extension is the forecast | the decisive step itself (open, forced by the hold-out) |
+| 12 | Maturity and censoring | the balloons due after the as-of are unresolved; their extension is the forecast; a loan already extended is not extended again | the decisive step itself (open, forced by the hold-out); SF20 filed |
 | 13 | Order of operations | each pool's cash flows, the measure per month-end, the mean | filed (policy) |
 | 14 | Row order | none matters | C1 |
 | 15 | Duplicate resolution | the loans converted in August 2024 appear in both servicing extracts on their own cycles only | C1: the xref joins them; no cycle is in both extracts (asserted) |
 | 16 | Identity normalisation | legacy loan numbers to loan ids; obligation and property numbers to the loan file's | the xref and the formats in the extract notes; C1 (every log row joins its statements, asserted) |
 | 17 | Netting against gross | none on the call | n/a |
 | 18 | Dimensional units | the custodian's thousands; rates in per cent and decimals | the extract notes; R2 asserted |
-| 19 | Code and status semantics | outcome codes in two layouts; servicing status and zero-balance codes | the extract notes; R2 asserted |
+| 19 | Code and status semantics | five outcome codes in two layouts (PO, EXT, EXT-S, PO-EXT, SA); servicing status and zero-balance codes | the extract notes; SF22 and R2 asserted |
 | 20 | Integerisation | none before the rounding | the golden within $0.5 million of the bin's centre, every construction in the middle half with one sigma (asserted) |
 | 21 | Clause scope | the policy's measure applies to every Schedule A pool | filed |
 | 22 | Forward window contents | each pool's behaviour through 2027 and beyond under the base case | forecast from the records (the decisive step and its rungs) |
@@ -324,8 +333,9 @@ Executing the prompt and the hedging policy word for word gives each Schedule A 
 200 bp parallel rise of the September 2026 planning cycle's base-case zero curve, the same zero rates at every
 month-end, on the base-case expected cash flows before credit losses of the positions held at the close on 30 November
 2026, averaged over the month-ends of the overlay's first twelve months, 31 January to 31 December 2027 (it starts on
-4 January), the largest designated and its figure given to the nearest $10 million; no shipped sentence says how any
-pool's payments, prepayments or maturities behave, so a literal reader must forecast them; the easy method on the same
+4 January), the largest designated and its figure given to the nearest $10 million; no shipped sentence says how fast
+any pool prepays or which balloons extend (the extract notes file the terms of the bank's one extension, never when a
+loan takes it), so a literal reader must forecast them; the easy method on the same
 literal estimand (the mortgages on a prepayment curve at 6.25 per cent, the balloons at the log's recent extension
 share) files Agency MBS at $110 million, and the fork table leaves no reading under which a lower rung is the golden.
 
@@ -335,7 +345,8 @@ share) files Agency MBS at $110 million, and the fork table leaves no reading un
   the recent share; only the analyst's own hold-out separates the conditionings, and no shipped figure scores them.
 - The servicing history and the agency factors: read alike by every route.
 - The third-quarter ALM report: the bank's EVE and NII against limits at 30 September, consistent with every route; it
-  carries no pool and no programme figure.
+  carries no pool and no programme figure, and its credit quality line (the CRE book's watch-list share, 7.4 per cent)
+  is the loan file's grades summed, which the watch-list route reads and misses with (32.9).
 - The custody statement's prices and the operating statements' revenue lines: read by no route.
 - Ask A: the clearing statement ties every cleared trade's clearing ref under every handling; no control total ties
   only under the golden.
@@ -413,30 +424,44 @@ Mirror leakage: 18.8 per cent of ask weight (the chart's three structural parts 
 Measured by: generator/cracker.py (run on a fresh unzip of target.zip)
 
 ## Residual
-What stage 3 leaves standing after the stage 4 round 1 rework, as measured (every figure asserted in checks.py):
-- The income routes. The note-rate DSCR fitted on every maturity names Agency MBS by 1.24x (CRE 89.1); fitted on 2023
-  onward it names the pool at $121.5 million, the $120 million bin. The debt yield fitted on every maturity names the
-  pool by 1.03x at $114.2 million (the $110 million bin); fitted on 2023 onward it files $148.3 million, the golden's
-  bin and a family member: on the 2023 to 2026 maturities the refinance rates sit near the planning rate's level, so
-  the debt yield there is the cover up to a constant. An income-based extension model is the decisive insight in either
-  form; the rate adjustment separates the two only on the full history.
-- The tightest routes outside the bin: the 2027 balloons' model share carried to every balloon files 159.8 (4.8 above
-  the bin's top) and the 1.25 convention 162.4 (7.4 above); with one sigma at 0.26 both stay out.
-- One natural share lands: three-fifths applied to the 2027 balloons alone (150.0), because the wall's own model share
-  is 0.596 and the extension effect per balloon dollar is near uniform, so any route that gets the wall's share right
-  lands; applied to every balloon, three-fifths files 160.8, and no other natural share lands either way.
-- The mortgages' own loss moves with the prepayment construction (80.6 to 85.7 over the curve's variants) and is never
-  above Agency MBS; the call never rests on it (the cover step with last year's mortgage speed still names the pool,
-  1.16x).
+What stage 4 round 2 leaves standing, as measured (every figure asserted in checks.py):
+- The nearest routes outside the bin: the 1.25 cover convention files 157.7 (2.7 above the bin's top) and the 1.00
+  rule 141.5 (3.5 below its foot); with one sigma at 0.77 both stay out, and both score worse on the hold-out than the
+  cover logit (Brier 0.2007 and 0.0401 against 0.0126), so a solver who validates drops them.
+- The income routes. The debt yield fitted on every maturity names the pool at $136.0 million (the $140 million bin,
+  hold-out 0.0389); fitted on 2023 onward it files $149.2 million, the golden's bin and a family member: on the 2023 to
+  2026 maturities the refinance rates sit near the planning rate's level, so the debt yield there is the cover up to a
+  constant. An income-based extension model is the decisive insight in either form; the rate adjustment separates the
+  two only on the full history. The note-rate DSCR names Agency MBS fitted either way (52.4 and 65.5).
+- The in-place and watch-list routes. In-place cover and the risk grade run on the current payment, refinance cover on
+  the balloon at the planning rate: the push's interest-only loans (128 of the pool's 360, $1.85 billion) carry
+  in-place cover near 1.8 and refinance cover near 0.8, the later high-coupon loans in-place cover near 1.2 and
+  refinance cover above 1.3. Extending below an in-place cover of 1.20 or 1.25 files 75.3 and 77.7 and the watch list
+  (grade 6 or worse) 32.9, each naming Agency MBS.
+- Two natural shares land: 0.85 on every balloon not yet extended (151.3), and nine-tenths on the 2027 balloons alone
+  (148.6, the wall's own model share being 0.909), because the extension effect per balloon dollar is near uniform, so
+  a guess that falls on the wall's share lands; every other listed share misses either way (BYPASS).
+- The extended loans: 32 loans ($169.4 million) are on their one extension; extended again on cover they would file
+  152.7, the same bin, and the extract notes file that they are not (SF20).
+- The mortgages' own loss moves with the stitching (85.7 on the new platform's months alone, 65.2 with the
+  held-for-sale deliveries counted as payoffs) and is never above Agency MBS; the call never rests on it (the cover
+  step with last year's mortgage speed still names the pool, 1.16x).
 - Rung 0's margin is 1.17x (the mortgages at last year's speed against Agency MBS). A wrong answer either way.
 - Every agency pool in the account read as the MBS pool: 124.8, still 1.20x under the golden.
-- The book's size: the push of December 2021 to April 2022 is $4.5 billion of the $5.3 billion fixed-rate pool, half
-  of it cash-out deals at the box's full proceeds; the ALM report's commercial real estate line carries $6.93 billion
-  with the floating-rate book (C&I $4.62 billion, total assets unchanged at $31.15 billion).
-- The fingerprint heart gate: WARN (`repeat.question_form`, answered at the draw). The BLOCK recorded at stage 3
-  (`ban.forum` against task198 v2, registered one minute before this card) no longer fires: task198 was redrawn as v4
-  (forum `trustees_or_governors`, registered 06:28:12Z, after this card), so this card's ban window is task163,
-  task245 and task471. Nothing on this card moved for it; the forum was never redrawn.
+- The book: fixed-rate originations run 40 to 53 a year to 2017, 73 in 2018, 107 in 2019, 70 in 2020, 234 in 2021 and
+  229 in 2022 (nearly all before May), then 7, 11, 4 and 5 a year as new lending moved to floating rate (68, 62, 67 and
+  75 floating loans a year). The push of December 2021 to April 2022 is $3.04 billion of the $3.64 billion fixed-rate
+  pool (243 of 360 loans), half of it interest only; $3.21 billion of balloons not yet extended fall due by December
+  2027 (277 loans), 8.4 per cent of total assets of $38.06 billion. The ALM report's commercial real estate line
+  carries $5.28 billion with the floating-rate book, and its credit quality line puts grades 6 to 8 at 7.4 per cent of
+  that book and grades 7 and 8 at 3.0 per cent, the loan file's own grades.
+- The history's exceptions: 739 payoffs, 41 extensions, 4 six-month extensions for a sale, 11 payoffs at an extended
+  maturity and 2 loans sent to special assets there; 2 loans paid below the fitted break (cover 1.03 and 1.08) and 6
+  extended above it; every loan below a cover of 1.0 extended (23 of 23) and 3 of 92 between 1.12 and 1.25 (REAL).
+- The fingerprint heart gate: WARN (`repeat.question_form`, answered at the draw); the ban window is task163, task245
+  and task471. `guard.py surface` now promotes task167 back to back (decisive pattern E and the close_out_summary
+  context artifact on both cards): task167's v2 card was registered at 06:59:01Z, after this card (05:26:01Z), so the
+  repeat sits in the later draw's window, and nothing on this card moved for it.
 
 ## Leak sweep
 `leak.py task166 --asof 2026-12-03` returns REVIEW (no LEAK); every line answered:
@@ -444,45 +469,60 @@ What stage 3 leaves standing after the stage 4 round 1 rework, as measured (ever
 - Sweep 3, the call's words in the policy, the extract notes and the ALM report (overlay, fixed-rate, commercial real
   estate, pool): the policy names the pools it governs and the notes the files; none states a loss, ranks a pool or
   names the designation.
-- Sweep 4, design-note vocabulary in the policy (maturity, agency, planning, mortgages, recent, credit), the notes
-  (maturity, agency, planning, servicing, extended, credit) and the ALM report (mortgages, twelve, balance, estate):
-  the files' own subjects; none names refinance cover, a debt constant, a debt yield or what drives an extension
-  (asserted in checks.py, R3c).
+- Sweep 4, design-note vocabulary in the policy (maturity, agency, mortgages, planning, recent, credit), the notes
+  (extension, maturity, agency, planning, extended, servicing) and the ALM report (mortgages, credit, twelve, balance,
+  estate): the files' own subjects. The notes file the bank's extension terms (one extension, 36 months, a tenth paid
+  down, the posted rate, 25-year amortization) as the credit file's practice; no file names refinance cover, a debt
+  constant, a debt yield or what decides whether a loan is extended (asserted in checks.py, R3c).
 - Sweep 9, dates after the pull: records that carry future dates by nature (loan and swap maturities, next due dates,
   rate-lock expirations, the plan's months, amortization periods, the log's extended-to dates).
+- Sweep 10: INFO only (the audit reports no writer signature).
 
 ## Surface screen
-`guard.py surface task166` exits 0 and promotes seven pairs for the author's adjudicated `/clone-check`: task155,
-task37, task117, task137, task44, task97 and task197, every one the card-level signature differentiated at the draw
-(decisive gap time and pattern E with Gate G forecasting, or the decision family), none sharing a file name, schema,
-same-seed table or invented name (task197's surface score is 0.024). Before the first cut it promoted task133 on a
-prompt construction the two prompts shared ("i also need two slides for"); the deck sentence was rewritten and the
-pair dropped out.
+`guard.py surface task166` exits 0 and promotes eight pairs for the author's adjudicated `/clone-check`: task167 back to
+back (decisive pattern E and the close_out_summary context artifact; task167's v2 card registered after this one, its
+gap population, decision a quantity figure, domain grant making, no file name, schema or invented name shared), and
+task155, task37, task117, task137, task44, task97 and task197, every one the card-level signature differentiated at
+the draw (decisive gap time and pattern E with Gate G forecasting, or the decision family), none sharing a file name,
+schema, same-seed table or invented name. Before the first cut it promoted task133 on a prompt construction the two
+prompts shared ("i also need two slides for"); the deck sentence was rewritten and the pair dropped out.
 
 ## Build record
-Stage 3, 2026-10-18; rebuilt after stage 4 round 1 the same day. `build.py`: checks 103 run, 0 failed (the
-three-rules block R1 to R3c on the generator's clean truth, every SF row SF1 to SF19, the ladder and its grid, the
-golden family of 19 constructions with their hold-out scores and the bootstrap, the eight routes kept outside, the
-constant-share bands, the out-of-sample choice, the ask's devices, the separation line, the distractors' deletion, the
-input gates and the realism sweep); `verify.py` (pandas, no generator import, every format read with a positive
-control) 14 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json); `figures_check.py`
-48 figures, 0 absent; `precut.py` PASS; `voice-check.py` PASS (938 characters); H1 audit clean on the pack and the
-goldens; `leak.py` REVIEW, no LEAK; `guard.py validate` clean, `surface` exit 0, `heart` WARN (Residual);
-`cracker.py` on a fresh unzip of target.zip: pair ceiling 38.8, mirror leakage 18.8 per cent. 20 files in 4 formats,
-the largest the servicing extract at 116,277 rows; distractors `deposit_decay_study_2026.xlsx` and
-`mortgage_lock_pipeline_20261130.csv`. Invented names searched: Carrick Valley Bancorp and Carrick Valley Bank (no bank
-of that name), the dealers Halvorsen Markets, Pemberly Securities, Corvane Bank NA, Ostrander Securities and Larkmoor
-Capital Markets (no firm of those names; Redfern Capital Markets was renamed, a letter from a real Florida real estate
-investor); personas from `guard.py names`.
+Stage 3, 2026-10-18; rebuilt after stage 4 round 1 and again after round 2 the same day. `build.py`: checks 110 run, 0
+failed (the three-rules block R1 to R3c on the generator's clean truth, every SF row SF1 to SF22, the ladder and its
+grid, the golden family of 18 constructions with their hold-out scores and the bootstrap, the data-chosen cuts, the
+misread code, the routes kept outside with the in-place and watch-list routes a full bin away, the constant-share
+bands, the out-of-sample choice, the history's exceptions, the ask's devices, the separation line, the distractors'
+deletion, the input gates and the realism sweep); `verify.py` (pandas, no generator import, every format read with a
+positive control, the extension terms recomputed) 14 passed, 0 failed; two consecutive builds byte-identical (target,
+golden, figures.json); `figures_check.py` 51 figures, 0 absent; `precut.py` PASS; `voice-check.py` PASS (938
+characters); H1 audit clean on the pack and the goldens; `leak.py` REVIEW, no LEAK; `guard.py validate` clean,
+`surface` exit 0, `heart` WARN (Residual); `cracker.py` on a fresh unzip of target.zip: pair ceiling 38.8, mirror
+leakage 18.8 per cent. 20 files in 4 formats, the largest the servicing extract at 116,277 rows; distractors
+`deposit_decay_study_2026.xlsx` and `mortgage_lock_pipeline_20261130.csv`. Invented names searched: Carrick Valley
+Bancorp and Carrick Valley Bank (no bank of that name), the dealers Halvorsen Markets, Pemberly Securities, Corvane
+Bank NA, Ostrander Securities and Larkmoor Capital Markets (no firm of those names; Redfern Capital Markets was
+renamed, a letter from a real Florida real estate investor); personas from `guard.py names`.
 
 Round 1 rework (the judge DETERMINISTIC, APPROVE; the reader no leak; the rule 3 audit PASS but tighter): the
-extension response sharpened (a logistic scale of 0.012 in cover around 1.10), the push written half as cash-out
-deals at full proceeds on pro forma rents and half as lower-leverage refinances (120 loans a month, income scale 1.011
-by the rule above), seven-year terms more common at the 2020-21 lows, no fixed-rate CRE after April 2022, the bin cut to
-$10 million, the overlay's start filed in the prompt, the ALM report's CRE line moved with the book; the extract notes
-now say Hedged item is what the swap is designated against and client_trade_ref is the trade number the bank gave the
-broker when it submitted the trade for clearing (the two facts that settle Ask A's devices); the goldens' and the
-write-up's dates are the prompt's.
+extension response sharpened, the push written half as cash-out deals at full proceeds on pro forma rents and half as
+lower-leverage refinances, the bin cut to $10 million, the overlay's start filed in the prompt, the ALM report's CRE
+line moved with the book; the extract notes now say Hedged item is what the swap is designated against and
+client_trade_ref is the trade number the bank gave the broker when it submitted the trade for clearing (the two facts
+that settle Ask A's devices); the goldens' and the write-up's dates are the prompt's.
+
+Round 2 rework (110523a5: the judge DETERMINISTIC, APPROVE, reproducing CRE 150.7 and MBS 110.5; the reader no leak;
+the rule 3 recheck PASS with P(one) 0.13 to 0.15; realism AT_RISK and one fork unfiled), in one rebuild: the bank's one
+extension filed as a plain fact in the extract notes with its terms (36 months, a tenth of the principal due paid
+down, the posted five-year rate on the maturity date, 25-year amortization) and the cash flows recomputed on them (SF20,
+SF21); six-month sale extensions (EXT-S) and transfers to special assets (SA) added to the log's codes with payoffs
+below the break and extensions above it (SF22, REAL); the origination history ramped through 2020 to 2022 with fixed-
+rate lending slowing to a handful a year after April 2022 and the floating-rate book growing; total assets raised to
+$38.06 billion so the wall is 8.4 per cent of them; half the push written interest only for its whole term and grades
+set on in-place cover with the officer's adjustment, so in-place cover and grade part from refinance cover (the in-place
+and watch-list routes now a full bin away, OUT); the watch-list share brought to 7.4 per cent and given a line in the
+ALM report; the golden re-centred by the rule (149.99); every construction plus or minus one sigma inside 147.5 to
+152.5 at $10 million, no loosening needed.
 
 ## Tried and rejected
 
@@ -522,3 +562,25 @@ write-up's dates are the prompt's.
   against the bands and the debt yield since 2023.
 - More seven-year 2021 loans to widen the gap between the two constant-share bands: the note-rate DSCR fitted on 2023
   onward moved into the bin (145 to 148) and R2c past 1.2x.
+- Repaying the already-extended loans at their extended date with the practice stated only in the write-up, at stage 4
+  round 2: the cover model run on their current maturities gave 156.1 on that pack, so the reading was an open fork;
+  the bank's one extension is now filed in the extract notes with its terms, and the second extension (152.7 on this
+  book) is asserted as the alternative.
+- An extension on the note's rate and payment with nothing paid down (round 1's terms), at stage 4 round 2: no bank
+  extends a five-year balloon three years on unchanged terms; the filed terms are a tenth paid down, the posted
+  five-year rate on the maturity date and 25-year amortization, and on this book the old terms would file 159.9 (SF21).
+- A break at a cover of 1.05: the 1.00 rule came within $7 million of the golden in half the lab draws and the
+  bootstrap sigma ran 1.4 to 1.9 in the median draw; at 1.12 the 1.25 convention came within $7 million in most draws;
+  the break was set at 1.08.
+- A softer extension response (a logistic scale of 0.03 in cover, for a more gradual book): the 1.25 convention moved
+  to within $5 million of the golden and, with the break at 1.10, the sigma rose to 1.4; kept at 0.025.
+- Interest-only on a third of the push: the bootstrap sigma rose to 1.8 in the median lab draw, the family's plus or
+  minus one sigma out of the middle half; interest only for the first 24 months and amortizing after left in-place
+  cover too close to refinance cover; half the push interest only for its whole term puts the in-place and watch-list
+  routes 72 to 117 below the golden.
+- A larger later fixed-rate book (1.5 then 1.0 loans a month after 2022, or a quarter to a third of it on seven- and
+  ten-year terms): the balloons-repaid loss rose to $42 to $44 million and the sigma to 1.5 to 1.9 in the median draw,
+  the later balloons' extension adding model spread outside the wall; the later book was cut to a handful of five-year
+  loans a year, new lending moved to floating rate.
+- Total assets held at $31.15 billion: the 2027 wall would be 10.3 per cent of the balance sheet falling due in one
+  year; raised to $38.06 billion (8.4 per cent), C&I taking up the rest, the EVE figures unchanged.

@@ -1,0 +1,100 @@
+{
+  "task": "task170",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 7, sathya8571 forecasting lane, seed FC41 (world, decision and quantity only)",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization-access-demand-forecasting",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "national ARV quantification of the adult first-line pack across the paediatric weight-band transition",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "generator/figures.json",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the Central Medical Stores quantification lead",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "paediatric register visit extract",
+    "rows": 0,
+    "entity": "one clinic visit of a child on antiretroviral treatment, with the weighing and the regimen dispensed",
+    "grain": "child x clinic visit",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "fictional",
+    "currency": "USD",
+    "org_type": "national Central Medical Stores of a southern African ministry of health, ordering antiretrovirals for a programme of about 13 million people",
+    "invented_names": [],
+    "people": [
+      "Nomalanga Magubane",
+      "Thabisile Mahlinza",
+      "Sibongile Sikhosana"
+    ]
+  },
+  "deliverables": [
+    "c7_tld_order.xlsx",
+    "transition_forecast.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "Units move to another line at the first of their scheduled measurements that reads at or above a fixed level, and a single measurement scatters around each unit's own path by more than the path rises between measurements, so most moves come months before the paths reach the level; only the chance that each scheduled measurement reads over the level, taken from each unit's own path and the record's scatter, forecasts them, while paths projected to the level, a fixed age, the recent count of moves, the moves seen at each recorded level or a pooled rate each misplace them.",
+  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a quarter of a kilogram a month, so most switches come months before the line reaches 30 kg; the C7 order needs each child's chance of a qualifying weighing at each scheduled visit, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each leave the order thousands of bottles short.",
+  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD in the month the line reaches 30 kg and files an order several thousand bottles short, because the first weighing that reads 30 kg comes months before the line gets there.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read and the 30 kg dosing band applied as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files a C7 order more than one 5,000-bottle step short of the order the scheduled weighings imply.",
+  "domain_test": "The order turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, visit schedules and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order stop meaning anything.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:first-scheduled-weighing-over-the-dosing-band-from-each-childs-growth-line-and-the-scale-scatter",
+  "layer1": [
+    "the paediatric register's migration from the legacy electronic register to the national EPR: legacy visit rows with day/month/year dates and regimen lines as free text, EPR rows with ISO dates and national regimen codes, the migration months present in both",
+    "children keyed by facility ART numbers in the legacy export and by the national patient identifier in the EPR, a crosswalk between them, and a new ART number on each transfer between facilities",
+    "drug collections by a caregiver with no weighing recorded",
+    "visit rows re-sent by clinic tablets after a failed sync",
+    "deaths, transfers out and loss to follow-up recorded weeks after the last visit",
+    "the logistics information system's facility reports with resubmitted months, some districts reporting tablets and others bottles",
+    "the warehouse stock by batch with expiry dates and shipments whose arrival dates slip",
+    "the programme's patient projection by region and month in its own layout"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task132": "spares failures on a wear curve with replacement; here a threshold crossing read through noisy repeated measurements",
+    "task142": "same task type, an upper percentile of home visits from stay lengths; here a point forecast of regimen transitions",
+    "task166": "loan maturities extended by refinance cover; different world and mechanism",
+    "task167": "fund call schedules by first-year draw class; different world and mechanism",
+    "task124": "lead service lines by era and main; different world and mechanism",
+    "task134": "redevelopment yield above a cost step; different world and mechanism",
+    "task161": "stock built ahead of a cost step drawn down at each holder's steady share of use; here each child's switch to another product at the first scheduled weighing over a dosing band",
+    "task259": "a level carried to a reference date by grade-specific drift across report dates; here the timing of a band crossing read through scattered weighings",
+    "task87": "an exclusivity between owed items in one time slot caps a delivered count; here no capacity or slot conflict, the switch timing is set by noisy weighings",
+    "task105": "an outlet can only win commitments agreed after it opens; here the forward count of units crossing a band at scheduled measurements",
+    "task229": "a convex conversion of a daily mean biased by within-day swings; here a first passage of noisy repeated measurements over a fixed band"
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167.",
+  "registered": "2026-10-18T09:10:20Z"
+}

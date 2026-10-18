@@ -1,6 +1,6 @@
 """task166 constants and helpers shared by every generator module.
 
-Carrick Valley Bancorp, Pittsburgh (bank subsidiary Carrick Valley Bank), about $31 billion of assets, footprint
+Carrick Valley Bancorp, Pittsburgh (bank subsidiary Carrick Valley Bank), about $38 billion of assets, footprint
 western Pennsylvania, Ohio and West Virginia. ALCO approved one $1.2 billion four-year pay-fixed swap overlay at its
 November 2026 meeting; the hedge designation memo is due on Monday 14 December 2026, the swap trades on Tuesday
 15 December 2026 and is effective on Monday 4 January 2027. Every position is as of the close on Monday 30 November

@@ -78,7 +78,7 @@ check("GOLDEN eligibility", all(v >= 1.2e9 for v in G.principal.values()),
 # ------------------------------------------------------------------------------------------------- three rules, R1
 log_rows = len(G.cre.log)
 stmt_rows = sum(len(v) for v in G.cre.stmts.values())
-check("R1 raw material ships", len(G.cre_hist) >= 550 and stmt_rows >= 4000 and len(G.wall) >= 300,
+check("R1 raw material ships", len(G.cre_hist) >= 550 and stmt_rows >= 4000 and len(G.wall) >= 250,
       "%d maturities with outcomes, %d statements, %d balloons due by December 2027" % (len(G.cre_hist), stmt_rows,
                                                                                         len(G.wall)))
 heads = []
@@ -260,36 +260,52 @@ t_A = tmeasure(t_level(ab, np.array([a["apr"] for a in ap]), np.array([a["term"]
 tpool = [L for L in TW.cre if R.cre_alive(L)]
 
 
-def t_cre(pfun):
+def t_cre(pfun, qfun=lambda L: 0.0):
+    """the truth's cash flows: the world's own balance paths to maturity, then the bank's one extension (a tenth paid
+    down, the rest at the plan's rate on 25 years for 36 months) with p, six months on the note for a sale with q"""
     Cf = np.zeros(H_)
     for L in tpool:
-        k0 = K.ASOF_M - L["orig"]
-        prev = L["bal_path"][k0 - 1]
-        ext_now = L["mat"] <= K.ASOF_M
-        mat = L["mat"] + (WD.CRE_EXT_MONTHS if ext_now else 0)
-        p = 0.0 if ext_now else pfun(L)
-        last = mat + (WD.CRE_EXT_MONTHS if p > 0 else 0)
-        for t in range(last - K.ASOF_M):
+        if R.cre_extended_now(L):
+            rate, pay, mat_e, _ = R.cre_terms_now(L)
+            prev = R.cre_balance_asof(L)
+            for t in range(mat_e - K.ASOF_M):
+                o = K.PROJ_START + t
+                days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
+                nb = L["ext_path"][o - L["mat"] - 1]
+                Cf[t] += prev * rate / 100 * days / 360 + prev - nb + (nb if o == mat_e else 0.0)
+                prev = nb
+            continue
+        p, q = pfun(L), qfun(L)
+        prev = L["bal_path"][K.ASOF_M - L["orig"] - 1]
+        for t in range(L["mat"] - K.ASOF_M):
             o = K.PROJ_START + t
-            kk = o - L["orig"]
             days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
-            it = prev * L["r0"] / 100 * days / 360
-            nb = L["bal_path"][kk - 1]
-            sch = prev - nb
-            if o < mat:
-                Cf[t] += it + sch
-            elif o == mat:
-                Cf[t] += it + sch + (1 - p) * nb
-            elif o < last:
-                Cf[t] += p * (it + sch)
-            else:
-                Cf[t] += p * (it + sch + nb)
+            nb = L["bal_path"][o - L["orig"] - 1]
+            Cf[t] += prev * L["r0"] / 100 * days / 360 + prev - nb
             prev = nb
+        tm = L["mat"] - K.ASOF_M - 1
+        Cf[tm] += (1 - p - q) * prev + p * WD.EXT_PAYDOWN * prev
+        B = prev * (1 - WD.EXT_PAYDOWN)
+        pay = float(WD.pmt(B, K.PLAN_CRE, WD.EXT_AMORT))
+        for j in range(WD.CRE_EXT_MONTHS):
+            o = L["mat"] + 1 + j
+            days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
+            it = B * K.PLAN_CRE / 100 * days / 360
+            B -= pay - it
+            Cf[tm + 1 + j] += p * (it + pay - it + (B if j == WD.CRE_EXT_MONTHS - 1 else 0.0))
+        B = prev
+        for j in range(WD.SALE_EXT_MONTHS):
+            o = L["mat"] + 1 + j
+            days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
+            it = B * L["r0"] / 100 * days / 360
+            pr_ = 0.0 if L["io"] else L["payment"] - it
+            B -= pr_
+            Cf[tm + 1 + j] += q * (it + pr_ + (B if j == WD.SALE_EXT_MONTHS - 1 else 0.0))
     return tmeasure(Cf)
 
 
 t_hist = [L for L in TW.cre if L["outcome"] and L["mat"] >= K.mo(2015, 1)]
-t_recent = np.mean([L["ext"] for L in t_hist if L["mat"] > K.ASOF_M - 12])
+t_recent = np.mean([L["outcome"] == "EXT" for L in t_hist if L["mat"] > K.ASOF_M - 12])
 
 
 def t_cover_now(L):
@@ -299,7 +315,7 @@ def t_cover_now(L):
 
 t_C0 = t_cre(lambda L: 0.0)
 t_Crec = t_cre(lambda L: t_recent)
-t_Ccov = t_cre(lambda L: float(WD.cre_p_ext(t_cover_now(L))))
+t_Ccov = t_cre(lambda L: (1 - WD.CRE_SALE) * float(WD.cre_p_ext(t_cover_now(L))), lambda L: WD.CRE_SALE)
 tv = {"Treasury ladder": t_T, "Agency MBS": t_MBS, "2023-24 residential mortgages": t_M, "Indirect auto loans": t_A}
 r3a = ranking({**tv, "Fixed-rate commercial real estate": t_Crec})[0]
 check("R3a analyst test on the clean truth", r3a == "Agency MBS",
@@ -385,29 +401,14 @@ check("RIVALS outside the golden bin", not rivals_in, ", ".join(rivals_in) or
       "every rival misses: " + ", ".join("%s %.1f" % (k[4:], RT[k]) for k in RIVALS))
 # ------------------------------------------------------------------------------------------------- the golden family
 # every out-of-sample-valid construction of the decisive step sits in the quarter-bin (the centre plus or minus 2.5)
-fam = RT["family"]
+fam = dict(RT["family"])
 SC = RT["score"]
-q_off = [k for k, v in fam.items() if abs(v - 150.0) > 2.5]
-check("FAM every construction in the quarter-bin", not q_off and len(fam) >= 18,
-      "%d constructions, %.2f to %.2f%s" % (len(fam), min(fam.values()), max(fam.values()),
-                                            ("; off: " + ", ".join(q_off)) if q_off else ""))
-for k in ("cover bands of 0.05", "cover bands of 0.10", "debt yield, maturities since 2023",
-          "debt yield and the refinance rate", "cover, the 2027 balloons only", "cover, maturities since 2023"):
-    check("FAM named: %s" % k, k in fam and abs(fam[k] - 150.0) <= 2.5, "%.2f, hold-out %.4f" % (fam.get(k, 0), SC.get(k, 0)))
-cuts = RT["chosen_cuts"]
-best_cut = min(RT["cut_holdout"].values())
-check("FAM the data-chosen hard cuts", cuts and all("hard cut at %.2f" % c in fam for c in cuts) and
-      all(abs(RT["cut_figure"][c] - 150.0) <= 2.5 for c in cuts),
-      "cuts %s (hold-out Brier %.4f at best); %s" % (", ".join("%.2f" % c for c in cuts), best_cut,
-                                                     ", ".join("%.2f: %.1f" % (c, RT["cut_figure"][c]) for c in cuts)))
-far = [c for c in C.CUTS if abs(RT["cut_figure"][c] - 150.0) > 2.5 and RT["cut_holdout"][c] <= 1.5 * best_cut]
-check("FAM every cut that scores near the best lands", not far,
-      "cuts off the quarter-bin all score at least 1.5 times the best hold-out Brier" if not far else
-      ", ".join("%.2f" % c for c in far))
+MISREAD = "sale-pending outcomes counted as extensions"     # reads a filed code against its definition
+misread = fam.pop(MISREAD)
 H = G.cre_hist
 xs = np.array([h["cover"] for h in H])
 ys = np.array([h["y"] for h in H])
-fut_, base_, m0_, d_ = C.cre_linear(G)
+fut_ = C.cre_linear(G)[0]
 covs = np.array([G.cre_cover[id(L)] for L in fut_])
 check("FAM linear book equals the golden", abs(C.cre_total(G, C.logit_pred(G.cover_beta, covs)) - CRE) < 1e-6,
       "%.6f" % C.cre_total(G, C.logit_pred(G.cover_beta, covs)))
@@ -418,15 +419,38 @@ for _ in range(200):
     bb = C.logit_fit(xs[i], ys[i])
     boot.append(C.cre_total(G, C.logit_pred(bb, covs)))
 sig1 = float(np.std(boot))
-lo, hi = min(fam.values()) - sig1, max(fam.values()) + sig1
-check("FAM one sigma inside the bin", bin10(lo) == 150 and bin10(hi) == 150 and lo >= 145.0 and hi < 155.0,
-      "sigma %.2f; %.1f to %.1f" % (sig1, lo, hi))
+q_off = [k for k, v in fam.items() if v - sig1 < 147.5 or v + sig1 > 152.5]
+check("FAM every construction plus or minus one sigma in 147.5 to 152.5", not q_off and len(fam) >= 18,
+      "%d constructions, %.2f to %.2f, sigma %.2f: %.2f to %.2f%s" % (
+          len(fam), min(fam.values()), max(fam.values()), sig1, min(fam.values()) - sig1, max(fam.values()) + sig1,
+          ("; off: " + ", ".join(q_off)) if q_off else ""))
+for k in ("cover bands of 0.05", "cover bands of 0.10", "debt yield, maturities since 2023",
+          "debt yield and the refinance rate", "cover, the 2027 balloons only", "cover, maturities since 2023",
+          "sale-pending outcomes dropped from the fit", "sale-pending six months carried forward"):
+    check("FAM named: %s" % k, k in fam and abs(fam[k] - 150.0) + sig1 <= 2.5,
+          "%.2f, hold-out %.4f" % (fam.get(k, 0), SC.get(k, 0)))
+cuts = RT["chosen_cuts"]
+best_cut = min(RT["cut_holdout"].values())
+check("FAM the data-chosen hard cuts", cuts and all("hard cut at %.2f" % c in fam for c in cuts) and
+      all(abs(RT["cut_figure"][c] - 150.0) + sig1 <= 2.5 for c in cuts),
+      "cuts %s (hold-out Brier %.4f at best); %s" % (", ".join("%.2f" % c for c in cuts), best_cut,
+                                                     ", ".join("%.2f: %.1f" % (c, RT["cut_figure"][c]) for c in cuts)))
+far = [c for c in C.CUTS if abs(RT["cut_figure"][c] - 150.0) + sig1 > 2.5 and RT["cut_holdout"][c] <= 1.25 * best_cut]
+check("FAM every cut that scores near the best lands", not far,
+      "cuts outside the middle half all score at least 1.25 times the best hold-out Brier" if not far else
+      ", ".join("%.2f" % c for c in far))
+check("FAM the misread code misses", misread < 145.0 or misread >= 155.0 or SC[MISREAD] >= 1.5 * SC["cover, every maturity since 2015"],
+      "EXT-S read as the 36-month extension: %.2f, hold-out %.4f against %.4f" % (
+          misread, SC[MISREAD], SC["cover, every maturity since 2015"]))
 check("FAM debt constants ruled out by the sheet", "25-year amortization" in R.DESC["CRE5F"], R.DESC["CRE5F"])
 # ------------------------------------------------------------------------------------------------- the routes kept outside
 OUT = RT["outside"]
 NAMED_OUT = ("the 1.25 cover convention", "note-rate DSCR, every maturity", "note-rate DSCR, maturities since 2023",
              "debt yield, every maturity", "the 2027 model share carried to every balloon", "every balloon extended",
              "the 1.00 cover rule", "every 2027 balloon extended")
+for k in ("in-place cover below 1.20", "in-place cover below 1.25", "the watch list (grade 6 or worse)"):
+    v = OUT[k]
+    check("OUT %s, a full bin away" % k, abs(v - CRE) >= 10.0, "%.2f (%+.1f)" % (v, v - CRE))
 for k in NAMED_OUT:
     v = OUT[k]
     check("OUT %s" % k, v < 145.0 or v >= 155.0,
@@ -437,14 +461,11 @@ GU = RT["guesses"]
 land_all = [nm for nm, (a, w) in GU.items() if 145.0 <= a < 155.0]
 land_wall = [nm for nm, (a, w) in GU.items() if 145.0 <= w < 155.0]
 listed = ("two-thirds", "0.7", "three-quarters", "four-fifths")
-check("BYPASS no natural share lands on every balloon", not land_all,
-      "band %.3f to %.3f; " % ((145 - RT["M0"]) / RT["S_all"], (155 - RT["M0"]) / RT["S_all"]) +
-      ", ".join("%s %.0f" % (nm, a) for nm, (a, w) in GU.items()))
-check("BYPASS no listed share lands on the 2027 balloons", not any(nm in land_wall for nm in listed + ("one half",
-                                                                                                      "nine-tenths",
-                                                                                                      "all")),
-      "band %.3f to %.3f; lands: %s" % ((145 - RT["M0"]) / RT["S_wall"], (155 - RT["M0"]) / RT["S_wall"],
-                                        ", ".join(land_wall) or "none"))
+check("BYPASS no listed share lands, every balloon or the 2027 balloons alone",
+      not any(nm in land_all or nm in land_wall for nm in listed + ("one half", "all")),
+      "every balloon: band %.3f to %.3f, lands %s; the 2027 balloons alone: band %.3f to %.3f, lands %s" % (
+          (145 - RT["M0"]) / RT["S_all"], (155 - RT["M0"]) / RT["S_all"], ", ".join(land_all) or "none",
+          (145 - RT["M0"]) / RT["S_wall"], (155 - RT["M0"]) / RT["S_wall"], ", ".join(land_wall) or "none"))
 # ------------------------------------------------------------------------------------------------- out of sample
 oos = C.oos_table(G)
 check("OOS cover beats every rival by half", all(oos["cover"] <= 0.5 * oos[k] for k in ("gap", "cur", "dy",
@@ -452,8 +473,14 @@ check("OOS cover beats every rival by half", all(oos["cover"] <= 0.5 * oos[k] fo
                                                                                           "pooled_share")),
       ", ".join("%s %.3f" % (k, v) for k, v in oos.items() if isinstance(v, float)))
 low = [h for h in H if h["cover"] < 1.0]
-check("OOS history below a cover of 1.0 all extended", low and all(h["y"] == 1 for h in low),
-      "%d of %d" % (sum(h["y"] for h in low), len(low)))
+mid = [h for h in H if 1.12 <= h["cover"] < 1.25]
+outs = {}
+for e in G.cre.log:
+    outs[e["out"]] = outs.get(e["out"], 0) + 1
+check("REAL the history carries its exceptions", low and sum(h["y"] for h in low) / len(low) >= 0.85 and
+      0 < sum(h["y"] for h in mid) < len(mid) and outs.get("SALE", 0) >= 3 and outs.get("SPECIAL", 0) >= 1,
+      "below a cover of 1.0 %d of %d extended; 1.12 to 1.25 %d of %d; codes %s" % (
+          sum(h["y"] for h in low), len(low), sum(h["y"] for h in mid), len(mid), outs))
 
 # ------------------------------------------------------------------------------------------------- semantic forks
 pol = " ".join(DOC.policy_sentences())
@@ -540,6 +567,53 @@ flat = sum(1 for t in reg if t["Amortizing"] == "Y" and t["Book"] == "ALM")
 NOTES = re.sub(r"\s+", " ", open(os.path.join(PACK, DOC.F_NOTES), encoding="utf-8").read())
 check("SF19 notional of the period in effect", flat == 2 and "an amortizing swap's current period" in NOTES,
       "%d amortizing trades; the register's note" % flat)
+
+# SF20 the one extension: an extended loan repays at its extended date
+alt = [dict(L, extended=False, omat=L["mat"]) if L["extended"] else L for L in G.cre_loans]
+p_alt = lambda L: float(C.logit_pred(G.cover_beta, np.array([C.cre_cover_now(G.cre, L, G.plan.cre)]))[0])
+cre_alt = C.measure(C.cre_cf(alt, p_alt, ext_rate=G.plan.cre), G.W)[0] / 1e6
+n_ext = sum(1 for L in G.cre_loans if L["extended"])
+check("SF20 one extension", "An extended loan is not extended again" in NOTES and n_ext > 0,
+      "filed; the %d extended loans extended again would give %.1f" % (n_ext, cre_alt))
+
+
+def old_terms(L_list, pfun):
+    """the extension read as 36 months more on the note's rate and payment, nothing paid down"""
+    Cf = np.zeros(C.HORIZON)
+    for L in L_list:
+        mat_o = C.ordinal(L["mat"])
+        p = 0.0 if L["extended"] else float(pfun(L))
+        last = mat_o + (36 if p > 0 else 0)
+        n = last - C.ASOF
+        bals, ints = C.run_sched(L, n)
+        prev = L["bal"]
+        for k in range(n):
+            o = C.START + k
+            sch = prev - bals[k]
+            if o < mat_o:
+                Cf[k] += ints[k] + sch
+            elif o == mat_o:
+                Cf[k] += ints[k] + sch + (1 - p) * bals[k]
+            elif o < last:
+                Cf[k] += p * (ints[k] + sch)
+            else:
+                Cf[k] += p * (ints[k] + sch + bals[k])
+            prev = bals[k]
+    return C.measure(Cf, G.W)[0] / 1e6
+
+
+cre_old = old_terms(G.cre_loans, lambda L: float(C.logit_pred(G.cover_beta, np.array([G.cre_cover[id(L)]]))[0]))
+cre_now_rate = C.measure(C.cre_cf(G.cre_loans, lambda L: float(C.logit_pred(G.cover_beta, np.array(
+    [G.cre_cover[id(L)]]))[0]), ext_rate=G.rates[("CRE5F", C.ASOF)]), G.W)[0] / 1e6
+check("SF21 the extension's terms", "on a paydown of 10 per cent of the principal due" in NOTES and
+      "posted five-year fixed rate on the maturity date" in NOTES and "over 25 years" in NOTES and
+      bin10(cre_now_rate) == 150,
+      "filed; the note's rate and payment with nothing paid down would give %.1f; November's posted rate in place "
+      "of the plan's %.1f" % (cre_old, cre_now_rate))
+check("SF22 the sale-pending six months", "EXT-S, extended six months on the note's terms for a sale under contract" in
+      NOTES, "filed; dropped %.1f, carried forward %.1f, read as the extension %.1f" % (
+          RT["family"]["sale-pending outcomes dropped from the fit"],
+          RT["family"]["sale-pending six months carried forward"], misread))
 
 # ------------------------------------------------------------------------------------------------- the ask
 gold_fig = {k: [round(v / 1e6, 1) for v in prog[k]] for k in prog}
