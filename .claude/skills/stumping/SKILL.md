@@ -274,7 +274,19 @@ sorted column and no clean subset reproduces it.** task197 files the output a un
 the driving signal stayed inside its dead band, which nothing records; recovering it needs the programme
 schedule (one grain) read against the high-resolution archive (another), and the ramp between setpoints has
 to be fitted rather than looked up, from recordings that are a minority of an archive carrying five capture
-kinds, 222 lengths and 97 offsets. Each clause of that sentence answers a screen: unobserved satisfies the
+kinds, 222 lengths and 97 offsets. **The construction must be uniquely determined by the data's structure, not merely the preferred reading of
+it.** That is the clause the day's eighth death turned on and the one most easily waved through. task194's
+decision was robust under all twelve estimator variants and against the nine ineligible units, Gate F strong,
+Gates G and H passing, and it died because the completion method was not forced: several standard
+chain-ladder variants fit the record equally, so the graded figure was one of 36.6, 44.6, 44.7, 45.1, 45.2 or
+49.0, and one committed cell was simply wrong under both of the two leading variants. Pinning the method
+would have made the step rule application; leaving it open forked the figure. Same dial, both ends. task197's
+ramp is the contrast: least squares on the recordings returns one answer, so the construction is forced by
+the design, which is the case `determinism-check` section 1 ranks first. **So the test at the draw is not
+"is a construction available" but "do the standard variants of it agree on the graded figure", and that is
+one computation on the clean truth.**
+
+Each clause of that sentence answers a screen: unobserved satisfies the
 dichotomy; two grains means no one file publishes it; fitted means no subset reveals it; and varied inputs
 mean the organ does not announce itself. Where a candidate is missing one of those clauses, that is the
 screen it will die on.
