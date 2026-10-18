@@ -403,6 +403,68 @@ Pair ceiling: 34.6 (the worst natural path, created: the cracker 54.2 with 3 of 
 the legacy path 31.6; with every device found, the old number read from the labels and the changelog as well and the
 filing time from the old tracker, 57.5).
 
+## Pre-ship check
+
+- Rule 1, the domain: the deciding quantity is each first-quarter release week's first-use report wave, read the way
+  product analytics reads version adoption (an install reaches a version at its next restart, and the Windows restart
+  wave after Patch Tuesday sets how many reach it in its release week); the swap test holds (the judge's Gate H: domain
+  pass).
+- Rule 2, two layers: Layer 1 is the old tracker's Bugzilla-style export (Helsinki local times, the security group's
+  column, beta and nightly builds, the run's reports closed MOVED into Archive), the portal's shares by major version and
+  installs in thousands, the release calendar inside a PDF, the dashboard's own basis, the record's partial weeks and the
+  year-end lull, each asserted neutral on the call (R2); Layer 2 decides (the judge's Gate H: layers pass, decisive step
+  analytical).
+- Rule 3: no plant, no filed method, no field or sentence carries the restart cycle (the rule 3 audit: PASS, P(one)
+  about 0.13, P(both) about 0.02 to 0.05; the burst is in the pack's own data and needs no outside fact; the one landing
+  bypass, an arbitrary uplift of 20 to 37 per cent, is rare); the easy route on the clean truth files 6 (R3a).
+- Determinism: the judge DETERMINISTIC, APPROVE, no fix (its own forecast puts the release weeks at 861, 895 and 907, so
+  900 and 8; every ask figure reproduced; Gates F, G and H pass; the readings it tried, the run ending on 30 November,
+  the export of 4 December, the bridge's created against the old tracker's opened and who counts as a rota triager,
+  each ruled out by the rota, the working agreement or the old export's definitions); the leak reader clean, Q6
+  analytical. The realism pass after stage 4 (the rota as the team kept it, the staffing mail in the director's voice,
+  the register's footer) moved no graded figure (figures.json and submission.md byte-identical to the judged build), and
+  its targeted re-read was clean.
+- Residual, recorded as measured: a solver who finds every device (the old tracker's filing times, the old numbers in
+  the catch-up writes' labels and in the moved reports' changelogs) lands every ask figure (pair 57.5); the natural
+  cracker paths measure 31.6 and 34.6.
+
+## Surface screen
+
+`guard.py surface task162` promotes four pairs for adjudication; none carries a hard tell (no shared file name, schema,
+same-seed table, invented name or prompt wording), and `guard.py heart` returns WARN (the strategy risk and the question
+form, answered on the card; nearest stump text 0.08, task146). For the author, who alone runs the adjudicated
+`/clone-check`:
+- task161 (consecutive) and task160 (two apart), this wave's siblings: the decisive gap (time) and the decision type
+  (`quantity_figure`) match on the cards, text overlap 0.085 and 0.001; both were in the ban window at this draw and
+  `guard.py check` passed; the drivers share nothing (task161 draws a stock built ahead of a cost step down at its
+  holders' own rate of use; task160 times regional surge waves by a stable lag behind the leading region).
+- task102 and task130 (v4): gap time, G13 and Gate G forecasting, the same-driver signature, differentiated on the card
+  at the draw (task102 recovers a next-business-day release rule from a payment history; task130 prices a short
+  reporting window by how soon past events were reported); here no rule is recovered and nothing is reported late: an
+  adoption process is estimated from the adoption series across every release.
+
+## Leak sweep
+
+`leak.py task162 --asof 2026-12-18` returns REVIEW (no LEAK); every line answered: the field notes, the release calendar
+and the runbook carry design-note words (release, version, update, export, record) as their own subjects, and none names
+a restart, Patch Tuesday, a burst, adoption or reach (asserted in checks.py, HOW); the component register names the
+groups Ask B asks about and ranks nothing.
+
+## Build record
+
+Stage 3 on 2026-10-18 (target.zip 00d073b0); stage 4 the same day (the judge and the leak reader on 00d073b0); the
+realism pass and its targeted re-read on fe719dd5; shipped the same day. `build.py`: checks 70 run, 0 failed (the
+three-rules block R1 to R3c on the generator's clean truth, SF1 to SF13, the closure axes that can move, the ladder and
+its out-of-sample record, C1 over 168 constructions, both asks with their cracker paths and devices, the separation
+line, the realism sweep, the input gates and the distractors' deletion test); `verify.py` (its own code path, no
+generator import) 15 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json);
+`figures_check.py` 0 absent (37 figures); `voice-check.py` PASS (689 characters); `precut.py` 50 checks, 0 FAIL; the H1
+audit clean on the pack and the goldens; `leak.py` REVIEW, no LEAK; `guard.py validate` clean, `heart` WARN, `surface`
+four card-level promotions (above); 15 files in 7 formats, the largest the old tracker's export at 29,275 rows;
+distractors `public_bug_statistics_monthly.csv` and `stability_monthly.csv` in `metadata.json`. Invented names checked:
+no browser or software firm called Usva turned up in a web search (Finnish firms with usva in their names work in other
+trades); personas from `guard.py names --geo Finland --seed 162`.
+
 ## Tried and rejected
 - 2026-10-18 draw: the seed's own route made analytical, a new-to-old conversion whose duplicate share rises with the
   spike, so the quiet parallel-run ratio fails in release weeks; its honest key is composition (task470 held it in the ban

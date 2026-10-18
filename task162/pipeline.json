@@ -1,11 +1,11 @@
 {
  "task": "task162",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "product-analytics/feature-adoption-diffusion-modeling",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs, onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when all three releases ship on Patch Tuesday and the Windows restart burst falls inside each release week, so the busiest week carries about 900 items and needs 8.",
  "architecture": 1,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-18 (no LEAK: three design-note vocabulary lines, one ranking INFO)",
-  "reader": "no leak, Q6: the call is an analytical choice; targeted re-read of the rota, the mail thread and the register pending"
+  "reader": "clean, Q6 analytical (stage 4 on 00d073b0); the targeted re-read of the realism pass on fe719dd5 clean (Q1, Q2 and Q4 none, Q6 analytical, nothing planted)"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-18 (strategy risk and question form, answered on the card)",
@@ -24,13 +24,13 @@
  },
  "judge": {
   "verdict": "APPROVE",
-  "disposition": "DETERMINISTIC, no fix (release weeks 861, 895 and 907 on its own forecast: 900 and 8; every ask figure reproduced; Gates F, G and H pass)",
+  "disposition": "DETERMINISTIC, no fix (its own forecast 861, 895 and 907 for the release weeks: 900 and 8; every ask figure reproduced; Gates F, G and H pass); rule 3 audit PASS, P(one) about 0.13, P(both) about 0.02 to 0.05",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: the targeted re-read of triage_rota_2026-11.xlsx, staffing_plan_q1_2027.eml and component_groups.xlsx, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
