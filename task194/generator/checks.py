@@ -457,47 +457,82 @@ def run(target, g, state):
     ok(sum(chained_loose.values()) < sum(o["separations"] for o in g["outside"]),
        "A3 the over-corrected read lands below the answer overall (%d against %d)"
        % (sum(chained_loose.values()), sum(o["separations"] for o in g["outside"])))
-    # A2: the register's current alignment moves every hospital
-    reg = {c: u["hospital_code"] for c, u in b["units"].items()}
-    wrong = defaultdict(lambda: [0, 0, 0.0])
-    for eid, (unit, sep, fy) in b["inscope_episode"].items():
-        if not (dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31)):
-            continue
-        site = reg[unit]
-        wrong[site][0] += 1
+    # ---------- A2: what the indicator does not measure at each hospital ----------
+    # The ask is sited over every unit at the site, acute and non-acute alike, so the truth is the
+    # summary's separations less the in-scope episodes the indicator measured. Two devices act on it and
+    # they act in opposite directions, neither of them inside the call's own population:
+    #   the statistical discharge, which sends one separation to the feed as two episode records at the
+    #   three non-acute units, so counting the extract's rows runs HIGH at the three sites that have one;
+    #   the day-procedure feed's two missing months at two placed units, which the summary counted and
+    #   the extract never received, so counting the extract's rows runs LOW at those two sites.
     ok(len(W.REALIGNED) == 3, "A2 three cost centres were realigned")
-    # A2's primary: the day-procedure feed's two missing months at three units. The activity summary counts
-    # those separations and the extract never received them, so counting the extract's own rows runs low at
-    # three of the four sites, and the gap is visible only by reconciling the two files across their grains
-    ok(len(W.FEED_GAP) == 3, "A2 the feed gap covers three units (%d)" % len(W.FEED_GAP))
+    ok(len(W.FEED_GAP) == 2, "A2 the feed gap covers two units (%d)" % len(W.FEED_GAP))
     gap_rows = [r for r in state["rows"]
                 if r["unit"] in W.FEED_GAP and r["los"] == 0
                 and r["sep_date"].isoformat()[:7] in W.FEED_GAP[r["unit"]]]
-    ok(len(gap_rows) > 150, "A2 the feed missed %d separations" % len(gap_rows))
+    ok(len(gap_rows) > 100, "A2 the feed missed %d separations" % len(gap_rows))
     ok(all(not r["in_scope"] for r in gap_rows),
        "A2 every record the feed missed is outside the indicator, so no in-scope episode moves")
     cand = {d["unit"] for d in units}
     ok(not (set(W.FEED_GAP) & cand),
        "A2 no candidate's separations are touched by the feed gap")
+    ok(all(b["units"][c]["service_type"] == "Acute inpatient" for c in W.FEED_GAP),
+       "A2 the feed gap sits on acute units the team has already been placed with")
     ext_codes = {r["unit_code"] for r in read(target, "episode_outcomes_extract.csv")}
     ok(set(W.FEED_GAP) <= ext_codes, "A2 the units with the gap are otherwise in the extract")
-    ext_by_site = defaultdict(int)
+
+    # the truth reconciles, site by site, and the naive read misses every one of the eight figures
+    bands_ = b["bands"]
+    naive = defaultdict(lambda: [0, 0])
+    keyed = defaultdict(lambda: [set(), set()])
     for r in read(target, "episode_outcomes_extract.csv"):
-        if r["unit_code"] not in acute_units:
-            continue
+        u = r["unit_code"]
         sep = dt.date.fromisoformat(r["separation_date"])
         if not (dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31)):
             continue
-        ext_by_site[b["facility"][(r["unit_code"], sep.replace(day=1).isoformat())]] += 1
-    short = [h["hospital"] for h in g["hospitals"] if ext_by_site[h["hospital"]] < h["reported"]]
-    ok(len(short) == 3,
-       "A2 the extract runs short of the reported separations at three of the four sites (%s)"
-       % ", ".join(short))
+        band = bands_.get(r["drg_code"], "")
+        if (u in acute_units and r["care_type"] == "Acute" and int(r["los_days"]) >= 1
+                and band not in ("", "SAME-DAY")):
+            continue                                  # the indicator measures this one
+        site = b["facility"][(u, sep.replace(day=1).isoformat())]
+        k = (u, r["patient_uid"], r["admission_date"], r["drg_code"])
+        naive[site][0] += 1
+        keyed[site][0].add(k)
+        if r["hac_recorded"] == "1":
+            naive[site][1] += 1
+            keyed[site][1].add(k)
     for h in g["hospitals"]:
-        d_ = h["reported"] - ext_by_site[h["hospital"]]
-        ok(d_ >= 0, "A2 the extract never runs above the summary at %s" % h["hospital"])
-    ok(sum(h["reported"] - ext_by_site[h["hospital"]] for h in g["hospitals"]) == len(gap_rows),
-       "A2 the whole shortfall is the feed's missing records and nothing else")
+        c = h["hospital"]
+        ok(h["reported"] == h["measured"] + h["separations"],
+           "A2 %s's three figures reconcile: %d reported, %d measured, %d not measured"
+           % (c, h["reported"], h["measured"], h["separations"]))
+        for i, (lab, owed) in enumerate((("separations", h["separations"]),
+                                         ("with a complication", h["complications"]))):
+            # the bin is half a separation; the bar is 3, because two devices acting in opposite
+            # directions at one site can land a figure one unit from the truth, which is outside the
+            # bin and still a coin flip. That is the defect this bar exists to catch.
+            ok(abs(naive[c][i] - owed) >= 3,
+               "A2 counting the extract's own rows misses %s's %s by %d (%d against %d)"
+               % (c, lab, naive[c][i] - owed, naive[c][i], owed))
+            ok(abs(len(keyed[c][i]) - owed) >= 3,
+               "A2 de-duplicating on the stated key and stopping misses %s's %s by %d (%d against %d)"
+               % (c, lab, len(keyed[c][i]) - owed, len(keyed[c][i]), owed))
+    # every site carries at least one device, which is what the earlier siting could not do for Carrowdean
+    feed_sites = {b["facility"][(c, "%s-01" % W.FEED_GAP[c][0])] for c in W.FEED_GAP}
+    nonacute_sites = {u["hospital_code"] for c, u in b["units"].items()
+                      if u["service_type"] != "Acute inpatient"}
+    ok(feed_sites | nonacute_sites == {h["hospital"] for h in g["hospitals"]},
+       "A2 every one of the four sites carries a device (feed gap %s, non-acute unit %s)"
+       % (sorted(feed_sites), sorted(nonacute_sites)))
+    # a site may carry both devices; what is not allowed is for them to cancel there. The margin is
+    # measured over all eight figures and both wrong reads rather than argued.
+    worst = min(min(abs(naive[h["hospital"]][i] - owed), abs(len(keyed[h["hospital"]][i]) - owed))
+                for h in g["hospitals"]
+                for i, owed in enumerate((h["separations"], h["complications"])))
+    ok(worst >= 3,
+       "A2 the smallest gap between a wrong read and the truth over all eight figures is %d, on a bin of "
+       "half a separation" % worst)
+
     detail = read(target, "hac_detail_extract.csv")
     # A4: the detail extract alone runs low in every group, and a raw code join mis-sorts
     detail_units = {r["unit_code"] for r in detail}
@@ -520,12 +555,12 @@ def run(target, g, state):
                         else cat26[r["complication_code"]]].add(eid)
         if r["complication_code"] in cat26:
             raw_join[fy][cat26[r["complication_code"]]].add(eid)
-    for x in g["groups"]:
+    for x in g["groups_by_year"]:
         ok(len(only_detail["2025-26"][x["group"]]) < x["fy2025"],
            "A4 the detail extract alone runs low in %s for 2025-26" % x["group"])
         ok(len(only_detail["2026-27"][x["group"]]) < x["fy2026"],
            "A4 the detail extract alone runs low in %s for 2026-27" % x["group"])
-    moved = sum(1 for x in g["groups"]
+    moved = sum(1 for x in g["groups_by_year"]
                 if len(raw_join["2025-26"][x["group"]]) != len(only_detail["2025-26"][x["group"]]))
     ok(moved >= 3, "A4 a raw code join mis-sorts %d groups before the revision" % moved)
     # the distractors move nothing
@@ -659,25 +694,40 @@ def run(target, g, state):
         ok(isinstance(row_[3], float), "every scored figure carries what the response computed")
     ok(all(abs(x[3] - x[4]) > 1e-9 for x in cr["mirror_construction"]),
        "the mirror's twelve construction figures are all attempted and all wrong")
-    gap(not any(kept.values()),
-        "supplemental-stumping 1.1: the cracker keeps %d of %d ask figures, on %s. Both are Carrowdean's, "
-        "whose only acute units are two of the twelve candidates, so A2's feed gap cannot reach the site "
-        "without changing a candidate's separations. The ask sheet states it and says what buying the last "
-        "two figures would cost."
-        % (cr["cracker_ask_kept"], cr["n_ask"],
-           ", ".join(a for a, n in sorted(kept.items()) if n)))
+    ok(not any(kept.values()),
+       "supplemental-stumping 1.1: the cracker keeps %d of %d ask figures%s"
+       % (cr["cracker_ask_kept"], cr["n_ask"],
+          "" if not any(kept.values()) else ", on " + ", ".join(a for a, n in sorted(kept.items()) if n)))
+    ok(cr["mirror_ask_kept"] == 0,
+       "the mirror keeps none of the %d ask figures either" % cr["n_ask"])
 
     # ---------- figures.json agrees with the bundle ----------
     fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
     if os.path.exists(fp):
         fig = json.load(open(fp))
-        ok(fig["avoidable_at_pick"] == round(answer["avoidable"]),
-           "figures.json carries the call's figure")
-        ok(all(fig["avoidable_by_unit"][d["unit"]] == round(d["avoidable"]) for d in units),
-           "figures.json carries every unit's avoidable count")
-        ok(fig["readings_of_clause_43"] == len(conv)
+        # the asking sentence states avoidable complications to one decimal, so figures.json carries
+        # them at one decimal and nothing coarser: a figure stated coarser than the prompt asked for is
+        # a wrong figure, and figures_check.py cannot see it because both sides would carry the same
+        # coarse value
+        ok(fig["avoidable_at_pick"] == round(answer["avoidable"], 1),
+           "figures.json carries the call's figure at the stated one decimal (%s)"
+           % fig["avoidable_at_pick"])
+        ok(all(fig["avoidable_by_unit"][d["unit"]] == round(d["avoidable"], 1) for d in units),
+           "figures.json carries every unit's avoidable count at one decimal")
+        for k in ("avoidable_at_pick", "avoidable_at_runner", "avoidable_at_third", "gap_complications"):
+            ok(len(("%s" % fig[k]).split(".")[-1]) == 1 and "." in "%s" % fig[k],
+               "figures.json states %s to exactly one decimal (%s)" % (k, fig[k]))
+        for key in ("not_measured_by_hospital", "not_measured_with_a_complication_by_hospital"):
+            ok(all(float(v).is_integer() for v in fig[key].values()),
+               "figures.json states %s whole, as the asking sentence says" % key)
+        ok(fig["readings_of_the_development"] == len(conv)
            and fig["readings_naming_the_call"] == len(conv),
            "figures.json carries the convergence and says every reading names the call")
+        ok(fig["call_unit_code"] == answer["unit"] and fig["rung0_unit_code"] == r0["first"],
+           "figures.json names the call and rung 0's unit")
+        ok(fig["recorded_rank_of_call"] == g["recorded_rank"],
+           "figures.json carries the call's rank on the record as it stands (%d)"
+           % fig["recorded_rank_of_call"])
     if FAILS:
         print("\n".join("FAILED: " + f for f in FAILS))
         print("%d failures of %d" % (len(FAILS), N))

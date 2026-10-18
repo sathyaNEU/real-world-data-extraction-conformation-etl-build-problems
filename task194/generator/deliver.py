@@ -144,7 +144,7 @@ def workbook(path, g):
            "Codes read against the national list revision in force at separation, Appendix B of "
            "specification 4.0.",
            ["Group", "Reporting group", "2025-26", "2026-27 to 31 December 2026"],
-           [[x["group"], x["name"], x["fy2025"], x["fy2026"]] for x in g["groups"]],
+           [[x["group"], x["name"], x["fy2025"], x["fy2026"]] for x in g["groups_by_year"]],
            [9, 44, 12, 16], {3: "#,##0", 4: "#,##0"})
 
     notes = wb.create_sheet("Notes")

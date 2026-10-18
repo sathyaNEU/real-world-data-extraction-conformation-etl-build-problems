@@ -81,6 +81,15 @@ def loc(d, sec):
     base = dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(sec))
     return base.strftime("%Y-%m-%dT%H:%M:%S+02:00")
 
+def norm(d, sec):
+    """A (local date, second of day) pair for a second count that may fall outside the day."""
+    sec = int(sec)
+    while sec < 0:
+        d, sec = d - dt.timedelta(days=1), sec + sim.DAY
+    while sec >= sim.DAY:
+        d, sec = d + dt.timedelta(days=1), sec - sim.DAY
+    return d, sec
+
 _PLACED = {}
 _PLACE_CACHE = {}
 _WIN_CACHE = {}
@@ -244,8 +253,10 @@ def main():
     os.makedirs(TGT); os.makedirs(GOLD)
     counts = {}
 
-    # patch sim's FCR gate so unavailability removes the obligation, before anything is computed
+    # patch sim's FCR gate so unavailability removes the obligation, before anything is computed,
+    # and clause 2's scope gate so a withdrawn part of a block is out of the measured population
     sim._fcr_gate = fcr_active
+    core._scope_gate = scope_gate
     print("[stage] window", flush=True)
     W = core.window()
     print("[stage] recordings", flush=True)
@@ -311,10 +322,17 @@ def main():
             eid = "%s-%02d" % (d.strftime("%Y%m%d"), k)
             for t in range(a, b + 1):
                 rows.append((eid, utc(d, t), round(float(f[t]), 4)))
+        held = held_minutes()
         for m in range(1440):
             seg = f[m * 60:(m + 1) * 60]
-            mins.append((utc(d, m * 60), round(float(seg.min()), 4), round(float(seg.mean()), 4),
-                         round(float(seg.max()), 4)))
+            if (d, m) in held:
+                # the summariser fell back to the SCADA chain's own one-minute average, so all
+                # three columns carry that single value
+                v = round(float(seg.mean()), 4)
+                mins.append((utc(d, m * 60), v, v, v))
+            else:
+                mins.append((utc(d, m * 60), round(float(seg.min()), 4), round(float(seg.mean()), 4),
+                             round(float(seg.max()), 4)))
     counts["freq_1s"] = write_csv(os.path.join(TGT, "operator", "system_frequency_1s_extracts.csv"),
                                   ["extract_id", "ts_utc", "frequency_hz"], rows)
     counts["freq_min"] = write_csv(os.path.join(TGT, "operator", "system_frequency_minute_summary.csv"),
@@ -332,20 +350,29 @@ def main():
             unit = "kWh" if s["id"] == KWH_SITE else "MWh"
             scale = 1000.0 if unit == "kWh" else 1.0
             ean = METER_EAN[s["id"]]
+            # The meter data platform stamps each interval with the instant it closes and derives
+            # the period index from that instant, so the row carrying the interval 00:00 to 00:15
+            # is stamped 00:15 and indexed 2. The export covers the intervals that closed inside
+            # the window, which is the window's 2,016 intervals per metering point, no more.
             for p in range(96):
+                dd, ss = norm(d, (p + 1) * 900)
+                if dd > sim.WINDOW_END + dt.timedelta(days=1):
+                    continue
                 code = ean[0]
                 if ean[1] and core.local_to_utc(d, p * 900).date() >= ean[2]:
                     code = ean[1]
-                met_rows.append((code, loc(d, p * 900), p + 1, round(float(mw[p]) * scale, 4), unit))
+                met_rows.append((code, loc(dd, ss), ss // 900 + 1,
+                                 round(float(mw[p]) * scale, 4), unit))
             for b in sim.commitments(s, d):
                 lo_h, hi_h = sim.BLOCK_HOURS[b]
                 com_rows.append((d.isoformat(), b + 1, "%02d:00" % lo_h, "%02d:00" % hi_h, s["id"],
                                  round(s["cap"], 2)))
     com_rows.sort(key=lambda r: (r[0], r[1], r[4]))
+    met_rows.sort(key=lambda r: (r[0], r[1]))
     counts["programme"] = write_csv(os.path.join(TGT, "platform", "site_programme_15min.csv"),
                                     ["site_id", "period_start_local", "settlement_period", "programme_mw"], prog_rows)
     counts["metered"] = write_csv(os.path.join(TGT, "settlement", "metered_volumes_15min.csv"),
-                                  ["metering_point", "period_start_local", "settlement_period", "net_volume", "unit"], met_rows)
+                                  ["metering_point", "interval_ts_local", "settlement_period", "net_volume", "unit"], met_rows)
     counts["commitments"] = write_csv(os.path.join(TGT, "platform", "fcr_block_commitments.csv"),
                                       ["delivery_date", "block", "block_start_local", "block_end_local",
                                        "site_id", "committed_mw"], com_rows)
