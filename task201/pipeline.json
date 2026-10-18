@@ -22,7 +22,7 @@
   "rule_earned_2": "the perturbation that separates the lead variant from the causal one is the perturbation the licensed methods disagree about, so the method family closes only when the answer is trivial; and where the well-posed answer to which-one is a set, grading a name grades an arbitrary element of it.",
   "architecture_2": "energy-systems-utilities/grid-reliability-outage-analysis, shape 12 drill-down to one leaf; the pre-notification interval recovered from the parallel telemetry channel and conditioned on the section class"
  },
- "resume": "Stage 4, both threads spawned on the pack at target.zip aa3a19b3ba7c5a321a3511dc6769e4f9. The card is registered and every gate the orchestrator re-ran on the shipped bytes is green: precut 51 checks with 0 FAIL and 0 WARN, checks 68 of 68, verify 70 of 70, figures_check 83 figures with none absent, a fresh build byte-identical under diff -rq on target, golden and figures.json, the zip reproducible at the same digest twice, 16 files in four formats with a 55,272-row spine, and heart WARN with no BLOCK. guard.py surface promotes five pairs for adjudication; four are single-axis proximity and the fifth, task199 two builds back on pattern G12, the decision type and a published-series artifact, is answered in the design note's Surface screen section and on the card.",
+ "resume": "Stage 4 round 1: the reader is in and the judge is still running. No leak, and question 5 executes to the default path's wrong answer rather than to the golden, which is right for this build. Two things are owed. First, Gate F is a live question: the reader reached the leaf by measuring the detection lag on the telemetered subset and adding it back by class, which is the decisive step, though its runner-up is wrong and it says so, and the runner-up and the shares are graded. Second, a real defect verified here: the pack uses a flat UTC plus one hour throughout, asserted by checks.py R2.utc_offset at 99 per cent, while Poland leaves summer time on 25 October 2026 and 366 of the 1,505 telemetry stamps fall before that, so a quarter of the file is an hour out and every duration built from it in that period is an hour short. A transition inside the window is good Layer 1 mess but it has to be the real transition. Realism tells the reader also listed, for the same pass: PR-07 spells out the share-of-parent tree and asks for the runner-up, which restates the prompt, and pre-defines every exclusion; the URE figures are too small for monthly minutes per customer against a 171-minute annual SAIDI; every first planned event starts at exactly window start plus twenty minutes; every planned row carries one identical cause; and the provenance counts equal every file's row count exactly. Hold the repair until the judge lands so it is one pass.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -32,7 +32,7 @@
  "card_draft": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task201/task201_card.json",
  "leak": {
   "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
-  "reader": "running"
+  "reader": "landed the leaf at about 60 per cent, runner-up wrong and the reader says so; found a real clock defect"
  },
  "judge": {
   "verdict": "",
