@@ -741,8 +741,8 @@ def pdf(path, title, blocks):
 def write_protocol():
     pdf(os.path.join(TARGET, "protocolo_designacion.pdf"),
         "Protocolo de designacion semestral y mision de verificacion",
-        [("p", "Observatorio Territorial del Nororiente. Version 4, aprobada el 12 de febrero de 2026. "
-               "Reemplaza la version 3 de julio de 2024."),
+        [("p", "Observatorio Territorial del Nororiente. Version 4, aprobada el 12 de febrero de 2026 por "
+               "Yaneth Amaya, coordinacion de campo. Reemplaza la version 3 de julio de 2024."),
          ("h", "2. Panel de seguimiento"),
          ("p", "2.1 El panel comprende once municipios: Valledupar, Barrancabermeja, Aguachica, "
                "Ocana, Tibu, Sardinata, El Tarra, Convencion, Teorama, San Calixto y Hacari. El "
@@ -780,8 +780,8 @@ def write_protocol():
 def write_manual():
     pdf(os.path.join(TARGET, "manual_codificacion.pdf"),
         "Manual de codificacion de acciones colectivas",
-        [("p", "Observatorio Territorial del Nororiente. Edicion 7, enero de 2026. Uso interno del "
-               "equipo de codificacion."),
+        [("p", "Observatorio Territorial del Nororiente. Edicion 7, enero de 2026. Uso interno del equipo "
+               "de codificacion. Revision: Fabian Benavides, mesa de codificacion."),
          ("h", "1. Que es una entrada"),
          ("p", "1.1 Existe una entrada cuando ocurrio una accion y una fuente monitoreada remitio una "
                "cuenta de ella. El codificador no abre entrada por una accion de la que no haya "
