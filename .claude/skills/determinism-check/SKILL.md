@@ -87,6 +87,19 @@ is rule application and the stump is gone.
 decoy and a fork at once. **The stump lives in HOW, never in WHAT.** If a literal estimand makes the call
 easy, the stump was a fork; redesign the decisive step (`stumping`), never keep the estimand vague.
 
+**What is left open after the WHAT is filed must be a method, not a knob.** Filing the five parts is
+mandatory, so a design whose decisive step is one of them has no stump once it is filed, and a design
+whose only remaining residue is a tolerance, a cut-off, a rounding or a nearest-k has a convention rather
+than a method: close it (section 3 requires that) and the stump is gone, leave it open and Gate C fails on
+a flip nobody can defend. task198's architecture 1 filed the comparison correctly, as a candidate's share
+against its own earlier quarters "which carried the same offered load", and the residue was how closely
+"the same" must match: three different queues win across licensed readings (a band of 0.05 to 0.2 or load
+to one decimal gives one, a band of 0.22 to 0.3 or load rounded to whole units gives the plain
+highest-share answer, five or more nearest quarters pooled gives a third), and its judge read Gate H as
+rule application because executing the clause correctly is all the answer needs. The test at the draw:
+name the residue, then ask whether a competent analyst could defend a different value of it. If the honest
+answer is that any value is as good as another, it is a knob and the design has no decisive step.
+
 ## 2. The literal-reader test and the semantic fork table
 
 On paper before data is cut, again on the finished pack; the result is the design note's
@@ -177,6 +190,11 @@ figures were wrong on the face of the submission while every gate stayed green. 
 see it, because it asks whether each number in the blocks is in `figures.json` and both carried the same
 coarse value. Read the prompt's rounding sentence, list the figures it governs, and check each one's
 printed precision against it by hand or in the verifier.
+
+**A robustness claim is graded over the whole range it names.** "Furthest above under every number of
+matched quarters" is checked at every number: task198's held for one to four quarters pooled and failed at
+five, where a different queue leads. Compute the claim across its stated range or narrow the claim to the
+range you computed.
 
 **A clause that says what another method would give is a graded claim.** "Not a background taken from the
 position's own record, which puts NSL03 and NSL12 in" names two candidates, so the judge builds that
