@@ -1,0 +1,48 @@
+{
+ "task": "task171",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "",
+ "architecture": 2,
+ "loops": 0,
+ "card_registered": false,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "screen": {
+  "assigned": "re-root at stage 1 after the receiving-desk architecture (never registered); pick an under-used Forecasting cell among actuarial mortality-longevity, election polling, population pharmacokinetics and human reliability where a paper prototype shows the standard estimators agreeing a quarter bin inside with one sigma, every reflex route and rule of thumb missing by a bin, and the rival rejected out of sample",
+  "actuarial_release": "miners' trust 2027 release, larger pensions die sooner: head-count route minus 10.4 to 11.5 per cent, textbook factors minus 15 to 20, table minus 27 to 29, hold-out rejection 3.3 to 5.6 sd; killed by persistence: last year's release rate on the December roll lands 3.1 to 5.8 per cent from the golden against an estimator range of 1.2 and one sigma of 1.0",
+  "actuarial_liability": "same fund at 6 per cent: head-count multiplier plus 4.1 per cent, single amounts multiplier minus 1.0, service GLM minus 0.2, table plus 13.0; no bin separates the rival while holding the estimators",
+  "life_post_level_term": "ten-year term premium step: 117 analogue deaths in the first post-step year, 32 in the forecast year, band rates carry 10 to 20 per cent error; band-matched route minus 13 and plus 33 per cent across two seeds; the anniversary step is task107's driver",
+  "human_reliability": "screener detection under 30-minute stints and a new-hire cohort: routes 1.5 to 4.3 points above a golden family spreading 0.34 to 0.38 points, the learning-curve form alone 0.34 to 0.38; both moves visible attributes (task202's time-on-task death, task182's experience composition); the break-reset variant repeats task132",
+  "paper_only": "pandemic-contaminated window (the 2020 to 2021 exclusion reflex lands within 2 per cent; outside-knowledge fork), experience-rated worst groups (credibility reflex lands), election polling (estimator families spread past any rival margin), population PK (filed formulas or tail counts)",
+  "prototypes": "scratchpad b171/proto: p1-p27 queue, a1-a7 mortality, b1 term step, h1-h2 screeners; guard nearest on four candidate drivers 0.05 to 0.08, which the lexical score cannot read (task202's blind spot)"
+ },
+ "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Read the design note's structural sentence and ## Tried and rejected first: a near-term mortality quantity of a population the record observes every year is reproduced by carrying the last period's amount-weighted rate onto the roll, so the decisive step must act on a period the record never contained (a known schedule change), and in mortality those are premium steps on thin life deaths or benefit changes that persistence re-weights. The human-reliability grounds were already closed by task182 and task202. Next session: the coordinator picks the ground. The most promising unscreened ground in the same actuarial forecasting cell is reserving-development-triangles (never drawn; the reserve is never observed until claims close, so no persistence route; a calendar-year process change the record measures about itself, such as a settlement-speed change read from its own closure counts), screened first against task127 v3's lineage (a motor bodily injury reserve restated at the latest closed shares) by the abstraction test, then prototyped for the paid, incurred and adjusted method family's spread before any card is filed.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
