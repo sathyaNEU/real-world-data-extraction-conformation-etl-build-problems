@@ -1,0 +1,232 @@
+{
+  "task": "task164",
+  "title": "How many of 400 proactive service transformer replacements each of a California utility's twelve districts gets in 2027, in proportion to its forecast transformers at risk of summer overload, when a plug-in vehicle on the default rate adds most of its charger's draw to a small transformer's recorded peak",
+  "domain": "Energy Systems & Utilities",
+  "client_domain": "Energy Systems & Utilities",
+  "subdomain": "load-forecasting (each service transformer's summer 2027 4 to 9 pm peak forecast from its own recorded summer peaks and the plug-in vehicles registered at its service points on the record date, each vehicle taken at the rise in recorded peak it brings by rate schedule)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "an allocation of 400 replacements over twelve districts with each district's forecast at-risk count and Foothill's figure on its own, the 2025-26 pilot's replacements, kVA added and cost per replacement in its three districts, each district's summer 2026 failure customer-hours and customers out more than eight hours, and a chart of the customer-hours",
+  "as_of": "2027-04-05",
+  "deliverables": [
+    "ptr_2027_district_allocation.xlsx",
+    "summer_2026_transformer_failures.png"
+  ],
+  "distractor_files": [
+    "iepr_2026_pev_forecast_by_district.xlsx",
+    "feeder_peak_summary_2026.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 21,
+    "formats": [
+      "csv",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "ev_load_study_2026_intervals.parquet",
+    "largest_file_rows": 3671683
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task164/generator/build.py (seeded, deterministic) around a fictional California electric utility, in the layouts of a transformer load management system's season runs, a GIS register and change log, a customer system's service points and rate changes, a DMV plug-in vehicle notification feed, an EV charging load study, an outage management system export, a work management system and a general ledger; no real organisation's records or person is depicted.",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task164/generator/build.py",
+  "files": [
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 12420,
+      "rows": 138,
+      "source": "Constructed: Calloway Valley Power Regulatory Compliance, data dictionary for the 5 April 2027 pull",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "decision_26-11-019_excerpt.pdf",
+      "format": "pdf",
+      "bytes": 46345,
+      "rows": null,
+      "source": "Constructed: Decision 26-11-019 on Application 26-03-008, excerpt (fictional proceeding)",
+      "date": "2026-11-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "district_codes.csv",
+      "format": "csv",
+      "bytes": 449,
+      "rows": 12,
+      "source": "Constructed: Calloway Valley Power Distribution Planning, district codes, service centers and weather stations",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "district_weather_daily_max.csv",
+      "format": "csv",
+      "bytes": 199056,
+      "rows": 4392,
+      "source": "Constructed: Calloway Valley Power district weather stations, daily maximum temperature, summers 2024 to 2026",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dmv_pev_notifications.csv",
+      "format": "csv",
+      "bytes": 5081866,
+      "rows": 39423,
+      "source": "Constructed: Calloway Valley Power Customer Systems, DMV plug-in vehicle notification feed with the address match",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ev_load_study_2026_intervals.parquet",
+      "format": "parquet",
+      "bytes": 6300715,
+      "rows": 3671683,
+      "source": "Constructed: Calloway Valley Power Load Research, 2026 EV charging load study, EVSE submeter intervals",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ev_load_study_2026_participants.csv",
+      "format": "csv",
+      "bytes": 19354,
+      "rows": 322,
+      "source": "Constructed: Calloway Valley Power Load Research, 2026 EV charging load study participants",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 2593,
+      "rows": 20,
+      "source": "Constructed: Calloway Valley Power, export manifest for the 5 April 2027 pull",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "feeder_peak_summary_2026.csv",
+      "format": "csv",
+      "bytes": 8976,
+      "rows": 193,
+      "source": "Constructed: Calloway Valley Power Distribution Planning, feeder-head peaks from SCADA, summer 2026",
+      "date": "2026-10-19",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gis_service_transformers.csv",
+      "format": "csv",
+      "bytes": 3857053,
+      "rows": 51815,
+      "source": "Constructed: Calloway Valley Power GIS Records, single-phase residential service transformer locations at the pull",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gis_unit_changes_2024-2027.csv",
+      "format": "csv",
+      "bytes": 109531,
+      "rows": 1255,
+      "source": "Constructed: Calloway Valley Power GIS Records, unit changes posted 1 January 2024 to the pull",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "iepr_2026_pev_forecast_by_district.xlsx",
+      "format": "xlsx",
+      "bytes": 7790,
+      "rows": 14,
+      "source": "Constructed: Calloway Valley Power Forecasting & Analytics, 2026 IEPR plug-in vehicle forecast by district",
+      "date": "2026-08-22",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "oms_transformer_outages_summer2026.csv",
+      "format": "csv",
+      "bytes": 282434,
+      "rows": 3357,
+      "source": "Constructed: Calloway Valley Power Reliability, outage management system transformer outage lines, 16 May to 15 October 2026",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ptr_pilot_cost_lines.csv",
+      "format": "csv",
+      "bytes": 83383,
+      "rows": 1244,
+      "source": "Constructed: Calloway Valley Power Finance, internal order 7100-PTR25 line items",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ptr_pilot_work_orders.xlsx",
+      "format": "xlsx",
+      "bytes": 18536,
+      "rows": 273,
+      "source": "Constructed: Calloway Valley Power Construction Services, 2025-26 proactive replacement pilot work orders",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rate_schedule_changes.csv",
+      "format": "csv",
+      "bytes": 1354027,
+      "rows": 21393,
+      "source": "Constructed: Calloway Valley Power Customer Systems, rate schedule changes to R-EV2",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "residential_rate_schedules_excerpt.pdf",
+      "format": "pdf",
+      "bytes": 41909,
+      "rows": null,
+      "source": "Constructed: Calloway Valley Power residential rate schedules, excerpt, rates effective 1 March 2026",
+      "date": "2026-03-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "service_points.csv",
+      "format": "csv",
+      "bytes": 24419729,
+      "rows": 297919,
+      "source": "Constructed: Calloway Valley Power Customer Systems, residential service points and their transformers at the pull",
+      "date": "2027-04-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tlm_summer_peaks_2024.csv",
+      "format": "csv",
+      "bytes": 3772385,
+      "rows": 51815,
+      "source": "Constructed: Calloway Valley Power Distribution Planning, transformer load management summer peaks, 2024 season run (TLM 4.2 layout)",
+      "date": "2024-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tlm_summer_peaks_2025.csv",
+      "format": "csv",
+      "bytes": 3413992,
+      "rows": 51815,
+      "source": "Constructed: Calloway Valley Power Distribution Planning, transformer load management summer peaks, 2025 season run",
+      "date": "2025-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tlm_summer_peaks_2026.csv",
+      "format": "csv",
+      "bytes": 3413967,
+      "rows": 51815,
+      "source": "Constructed: Calloway Valley Power Distribution Planning, transformer load management summer peaks, 2026 season run",
+      "date": "2026-10-19",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
