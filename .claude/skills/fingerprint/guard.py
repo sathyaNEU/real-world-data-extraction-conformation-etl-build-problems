@@ -879,7 +879,28 @@ def cmd_coverage(args):
         print(row)
     empty = [(d, o) for d in LIVE_DOMAINS for o in objs
              if not any(c.get("domain") == d and c.get("objective") == o for c in live)]
-    print("\nnever-built pairings (%d): %s" % (len(empty), "; ".join("%s x %s" % e for e in empty) or "none"))
+    client = vocab.get("client_domains", {})
+    house = vocab.get("house_domains", {})
+
+    def serving(d, o):
+        """The task types of d (or of the client domains a house domain maps to) that serve o."""
+        doms = [d] if d in client else (house.get(d, {}).get("maps_to") or [])
+        return ["%s/%s" % (c, k) for c in doms
+                for k, objs_ in client.get(c, {}).get("task_types", {}).items() if o in objs_]
+
+    open_cells = [(d, o, serving(d, o)) for d, o in empty]
+    drawable = [(d, o, t) for d, o, t in open_cells if t]
+    closed = [(d, o) for d, o, t in open_cells if not t]
+    print("\nnever-built pairings a task type serves, so drawable (%d of %d): %s"
+          % (len(drawable), len(empty), "; ".join("%s x %s" % (d, o) for d, o, _ in drawable) or "none"))
+    print("\nnever-built pairings no task type serves, so not drawable (%d): %s"
+          % (len(closed), "; ".join("%s x %s" % e for e in closed) or "none"))
+    print("\nhow wide each objective's ground is: client task types the taxonomy lets it be drawn from")
+    for o in objs:
+        n = sum(1 for c in client.values() for k, objs_ in c.get("task_types", {}).items() if o in objs_)
+        print("   %-28s %3d" % (o, n))
+    print("   coverage lists the cells; `mechanisms --objective <o>` lists the drivers each cell has spent,")
+    print("   and a cell is drawable again three builds later, so what binds a redraw is the driver.")
 
     def axis(title, field, allowed, multi=False):
         cnt, win = Counter(), Counter()

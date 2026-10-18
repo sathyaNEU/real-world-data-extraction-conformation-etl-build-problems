@@ -169,6 +169,23 @@ back; the better outcome is never to face it.
   exists so no untrue key is forced.
 - **A family offered on its label:** a mechanism `coverage` shows as never drawn may have died in lineage
   (confirm_surface_read: zero main uses, four lineage architectures, all solved). Read the fates first.
+- **A never-built pairing read as a menu.** Most of the pairings `coverage` prints as never built cannot be
+  drawn at all: no task type in that domain serves that objective, so `guard.py check`'s legality rules and
+  `precut.py`'s `Task type:` line refuse them (actuarial-science-insurance offers forecasting, opportunity
+  sizing and descriptive task types only, so its anomaly-detection cell is empty by construction). Before a
+  pairing is drawn, read the objective tags beside each of that domain's subdomains in
+  `../guide-to-prompt/references/domains/README.md`. The taxonomy is narrow on several objectives: ETL is
+  served by 6 subdomains, data-quality-monitoring by 8, root-cause by 13 and anomaly-detection by 14,
+  against 45 for forecasting. A house domain inherits the task types of the client domains it maps to, so
+  its cells are drawable wherever theirs are; `coverage` separates the never-built pairings a task type
+  serves from the ones nothing serves.
+- **A spent cell read as a spent objective.** `ban.subdomain` reaches the last three builds, so a cell
+  whose mechanism search came up empty is drawable again next sitting: what binds a redraw there is
+  `driver.text`, `test.same_puzzle` and `test.same_driver`, all of which are about the mechanism. A lane
+  whose objective holds few cells will keep returning to them, and the honest pause note says the driver
+  search on that cell is spent, never that the ground is. Moving the number to another cell is one way to
+  find a fresh driver and the slowest: the drivers a cell leaves open are listed by
+  `guard.py mechanisms --objective <o>`, which is one screen.
 - **Not registering.** An unfiled card protects nobody.
 
 ## Part 5. Maintenance
