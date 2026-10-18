@@ -428,6 +428,23 @@ dichotomy; two grains means no one file publishes it; fitted means no subset rev
 mean the organ does not announce itself. Where a candidate is missing one of those clauses, that is the
 screen it will die on.
 
+**A fourth clause, and run it first because it is one correlation: the forcing file must not publish a
+scalar summary of the construction it forces.** Starting from the forcing file rather than the estimator is
+the right inversion, but a file that pins a construction usually also ships a one-column precis of it, and
+that column is a one-divide route to the answer. Three for three on measurements already on file: a
+voluntary notification register publishes its own take-up, so a one-divide take-up route reached the truth
+13 of 20 against the decisive route's 6 of 20, with corr(notification rate, latent propensity) at
+**-0.9681**; a shipped occasion calendar publishes its own cardinality, so counting occasions touched
+reached the truth 13 of 20 against the decisive route's 12 of 20, at **+0.9407**; and a family-breadth
+quantity on other ground measured **+0.9986** against the plainest column of its own family definition.
+**The test:** correlate the construction's output with the plainest column of its own forcing file across
+world draws, and separately score the one-line route (take that column, divide, rank) for how often it
+reaches the truth. Run it before any separation measurement, because **a wrong easy route is no
+protection**: in one of those cases the easy route was wrong 14 of 20 while the decisive route reached the
+truth only 6 of 20. Where it fires, force the quantity from something the file pins that it does not also
+summarise, typically its timing, its completeness conditions or the incentives that put rows in it, none of
+which ship as a column.
+
 ## Part 2. Make it survive the opponent
 
 ### 2.1 The readability screen
@@ -624,8 +641,21 @@ than doing nothing, and the boundary sat 0.47 standard errors away. **And on tha
 twice over**, empirical Bayes beating the designed step more than three to one on accuracy and James-Stein
 filing the golden verdict in 40 of 40 seeds. The ground-level rule it earns: a decisive step whose graded
 object is **a level at a selected unit** cannot hold, because every such level is a shrinkage target and
-shrinkage is both the opponent's reflex and the better estimator. Draw a non-level object there instead
-(a rank verified, an extremum judged against a null extremum) or draw elsewhere.
+shrinkage is both the opponent's reflex and the better estimator. The two non-level objects this rule used
+to offer as the way out, **a rank verified and an extremum judged against a null extremum, are now both
+spent**, so the list is exhausted rather than half spent and the rule has no drawable exception left: the
+extremum against a null extremum is a shipped build's whole mechanism, and the rank object is dead across
+all four of its possible determinacy criteria. Those four are exhaustive, because "verified" means
+"determined under a stated admissible set" and such a set is filed, recorded, or the estimator family
+itself: a probability bar is a filed level and degenerate besides (the certified set came back **empty at
+every one of 0.80, 0.90, 0.95 and 0.99**); records-fixed disclosure bounds and a filed materiality
+tolerance are both exact arithmetic, so rule application, the tolerance equalling the plain sort **8 of
+20**; and licensed-family unanimity **is the plain sort in 18 of 20 seeds** at a mean of 1.10 distinct
+sets, with **corr(distinct sets, positions left undetermined) = +1.0000**, an identity rather than a near
+miss, because the positions the family leaves undetermined are exactly the positions it disagrees on. So
+that criterion has content exactly and only where the designation screen refuses the call. **The law
+behind it: removing the bar does not remove the criterion, it relocates it into the records, where it
+becomes arithmetic.** On selected-unit ground, draw elsewhere.
 
 **Four screens that each closed a whole cell in one sitting, run before the pricing sequence** because
 each is one computation on the clean truth and each kills a family the field's own vocabulary makes look
