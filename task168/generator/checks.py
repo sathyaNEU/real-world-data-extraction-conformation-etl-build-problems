@@ -245,6 +245,20 @@ def main(target):
           round(lo_, 2) == 0.48 and round(hi_, 2) == 0.95 and over == figs["nine_departures_demand_over_232"] == 118,
           "%.3f to %.3f; %d departures" % (lo_, hi_, over))
 
+    past_ = R.gauge_changes_s25(target)
+    _, legs24_ = R.read_ym3(target)
+    b24 = sum(L["bkd"][-1] for L in legs24_ if R.route_of(L["orig"], L["dest"]) in past_)
+    c24 = sum(L["cap"] for L in legs24_ if R.route_of(L["orig"], L["dest"]) in past_)
+    b25 = sum(int(dcs[(r["flt"], r["dep"].isoformat())]["pax_booked"]) for r in rows
+              if R.route_of(r["orig"], r["dest"]) in past_)
+    c25 = sum(r["cap"] for r in rows if R.route_of(r["orig"], r["dest"]) in past_)
+    sold_ps = (b25 - b24) / (c25 - c24)
+    check("L14 rung 0's 0.80 is passengers carried per extra seat, lap infants out of both summers; summer 2024 with "
+          "its lap infants (the close-out's basis) gives 0.74 and seats sold 0.82",
+          round(resp["per_seat"], 2) == 0.80 and round(resp["per_seat_infants_left_in"], 2) == 0.74
+          and round(sold_ps, 2) == 0.82,
+          "%.4f; %.4f; %.4f" % (resp["per_seat"], resp["per_seat_infants_left_in"], sold_ps))
+
     # ============================================================ coarse groupings of months, EM, own-route windows
     bk = R.buckets(target, g)
     mh = R.month_holdout(target, g)
