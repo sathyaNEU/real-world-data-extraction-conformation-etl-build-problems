@@ -350,7 +350,7 @@ def write_all(W):
                 d0 = C.next_busday(cs.received + D_(days=int(rng.integers(130, 150))))
                 act(cs, d0, "Case inquiry", "Outside normal processing time", sr_number(d0), "Responded",
                     C.next_busday(d0 + D_(days=int(rng.integers(10, 30)))))
-            if cs.resched and rng.random() < 0.7:
+            if cs.resched == "applicant" and rng.random() < 0.85:
                 act(cs, C.prev_busday(cs.appt_first - D_(days=int(rng.integers(3, 20)))), "Biometrics reschedule request",
                     str(rng.choice(["Travel", "Medical", "Work conflict", "Family emergency"])))
             if rng.random() < 0.05:
@@ -503,6 +503,7 @@ def roster(W, R):
         label0 = None
         for k, c in enumerate(cl):
             c.roster, c.roster_cat, c.entered_on, c.entered_via = False, None, None, None
+            c.roster_holder = None
             if c.valid_from > C.EXPORT:
                 continue
             if c.htype == "Employee":
@@ -535,7 +536,11 @@ def roster(W, R):
                 lab = "(c)(26)"          # the upload form carries the category of the holder's first entry
             c.roster, c.roster_cat, c.entered_on, c.entered_via = True, lab, ent, via
             sp_id = c.holder.principal.id if (c.htype == "Spouse" and via == "Onboarding") else ""
-            rows.append(dict(card=c, holder=c.holder.id, htype=c.htype, cat=lab, number=c.number, vf=c.valid_from,
+            hid = c.holder.id
+            if c.htype == "Spouse" and via == "Portal upload" and c.holder.late_enroll and ent >= c.holder.late_enroll:
+                hid = c.holder.dep_id              # the portal knows a spouse on the plan by her dependant ID
+            c.roster_holder = hid
+            rows.append(dict(card=c, holder=hid, htype=c.htype, cat=lab, number=c.number, vf=c.valid_from,
                              vt=c.valid_to, ent=ent, via=via, sponsor=sp_id))
     rows.sort(key=lambda r: (r["ent"], r["holder"], r["vf"]))
     R.roster = rows
@@ -567,6 +572,11 @@ def people(W, R):
     deps = []
     for s in W.spouses:
         e = s.principal
+        if s.late_enroll and not s.enrolled:
+            if e.hire <= exp and (e.term is None or e.term > exp):
+                deps.append(dict(id=s.dep_id, enroll=e.enroll, rel="Spouse", start=s.late_enroll, birth=s.dob_year,
+                                 sp=s))
+            continue
         if not s.enrolled or e.hire > exp:
             continue
         active = e.term is None or e.term > exp

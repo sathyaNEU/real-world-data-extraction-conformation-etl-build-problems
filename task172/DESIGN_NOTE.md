@@ -4,11 +4,12 @@ Architecture 1, wave 7 (new), Forecasting lane (sathya8571), numbered from seed 
 company's mobility team quoting, in its benefits portal, the wait within which four in five of next quarter's
 work-permit renewals will have their decision) was read at its header and Situation only. Its world, decision and
 quantity are kept. Its mechanism (whether USCIS still holds a filer's fingerprints, read off the record) is not used:
-the share of renewals that need a new fingerprint appointment is stable across the record and decides nothing. The
-pitfall is re-found from how a renewal's wait ends since the automatic extension stopped: a renewal still pending on
-the day the filer's current card expires gets an expedite request from the team and is decided about a week
-later, and USCIS now sets fingerprint appointments so far out that most of next quarter's renewals will reach that day
-before the review that follows the appointment ends.
+the share of renewals that need a new fingerprint appointment is stable within each category across the record (most
+(c)(9) renewals reuse the adjustment's fingerprints, most (c)(26) renewals go to an appointment) and moves the quote
+only inside its half month. The pitfall is re-found from how a renewal's wait ends since the automatic extension
+stopped: a renewal still pending around the day the filer's current card expires gets an expedite request from the
+team and is decided about a week later, and USCIS now sets fingerprint appointments so far out that about nine in ten
+of next quarter's renewals that need one will reach that day before the review that follows the appointment ends.
 
 ## Draw
 
@@ -29,10 +30,10 @@ before the review that follows the appointment ends.
    to the nearest half month (`quantity_figure`, `date_or_period`, question form what). Shape `other`: the call with
    its critical components, two ask tables on rows the call never reads, and a chart on an ask's quantity; criteria
    counted in `## Ask sheet`.
-5. Mechanism keys: gap time (the decided record is about renewals whose appointments came about four weeks after
+5. Mechanism keys: gap time (the decided record is about renewals whose appointments came four to five weeks after
    receipt; the quote bets on a quarter whose appointments come about seventeen weeks out); decisive generator G3 (for
-   most of next quarter's renewals the decision is ended by the team's expedite request at the card's expiry, not by
-   the review the record's waits measure), then G16 (which model of the wait the record supports, chosen on the
+   most of next quarter's renewals that need an appointment the decision is ended by the team's expedite request at the
+   card's expiry, not by the review the record's waits measure), then G16 (which model of the wait the record supports, chosen on the
    renewals filed since the rule change that were still pending at their card's expiry), G13 (the forward window's
    appointment delay, which no decided renewal met), G17 (censoring); Gate G `method_or_model_selection`; strategy
    `forecast_method_backtest` (the natural fit is wrong out of sample under the new appointment regime, and the honest
@@ -48,14 +49,17 @@ before the review that follows the appointment ends.
    purchase_order_or_contract, register, local_government, operations_director, line_manager_or_team, G14 and
    single-figure are all avoided.
 8. Spine: counsel's case-management export of every USCIS notice and case-status event on the renewal matters
-   (case x notice), 73,101 rows, constructed in the layout of an immigration law firm's export.
+   (case x notice), 72,572 rows, constructed in the layout of an immigration law firm's export.
 9. Deliverables: `q1_2027_renewal_quote.xlsx` (the quote, its components and the ask tables) and
    `q1_2027_expiring_permits.svg` (a chart on an ask's quantity, never on the quote).
 10. World: Sallowmere Software (invented; no company of that name found), Bellevue, Washington; its Global Mobility team
     files renewals of work permits (Form I-765) through outside counsel (Marrowby Teale LLP, invented; no firm of
     that name found) for employees whose green-card applications are pending (category (c)(9)) and for the spouses of
-    employees in H-1B status ((c)(26)), about 800 a quarter in the record and about 1,100 in the coming quarter, when
-    the 18-month (c)(9) cards issued from 5 December 2025 first come due. Two real events are used as the standard and
+    employees in H-1B status ((c)(26)), about 800 a quarter in the record and about 1,150 in the coming quarter, about
+    half of them (c)(9), when the 18-month (c)(9) cards issued from 5 December 2025 first come due. Post-rule (c)(9)
+    renewal history does not exist under the real validity rules: a (c)(9) card approved before 27 September 2023 ran
+    out by September 2025, so its renewal reached USCIS by spring 2025, and later cards ran five years or, from 5
+    December 2025, 18 months, first due in June 2027; the record's (c)(9) renewals are the 2024 and 2025 ones. Two real events are used as the standard and
     the thread state them, never as USCIS's own words: the end of automatic extension for renewals filed on or after
     30 October 2025 (DHS interim final rule of that date), and the 18-month cap on (c)(9) cards approved from 5 December
     2025. Card validities follow the real rules: (c)(9) cards approved before 27 September 2023 run two years, those to
@@ -77,8 +81,8 @@ before the review that follows the appointment ends.
 13. Data-native sentence: the deadline lives in a different record from the wait, each renewed card's expiry in the
     team's register and the team's expedite request in its own case-action log, while counsel's notice export the quote
     is naturally built from carries only USCIS's notices, so the cut shows only where a renewal's decision is laid
-    against the expiry of the card it renews, and in the record that happened only on the slowest tail (110 of the
-    2,597 renewals filed since the rule change on the old appointment lead).
+    against the expiry of the card it renews, and in the record that happened only on the slowest tail (201 of the
+    2,665 renewals filed since the rule change on the old appointment lead, 7.5 per cent).
 
 ## Screens (stumping 1.2, as code)
 
@@ -89,15 +93,21 @@ Measured by `generator/ladder.py` and the screens script on the clean world; `ge
   ten slots share vocabulary only (charging, mortality review, trimming, irrigation, garage queues, lead lines,
   collections). No slot records this mechanism dying.
 - Dispersion: the decisive quantity is a level (the forward 80th percentile), not a spread; the estimator family is
-  closed on the pack, fourteen constructions from 5.49 to 5.53 months, all in the 5.5 bin.
+  closed on the pack, seventeen constructions from 5.39 to 5.53 months, all in the 5.5 bin (the margin rule in
+  `## Residual`).
 - Variance-only: the decisive step moves the point estimate (7.0 on the default path, 5.5 with the cut), it does not
   widen an interval; of 18 conservative reflexes on the record (buffers, multiples, high percentiles, mean plus sd)
   one lands by coincidence (the record plus 1.5 months) and one more by quoting a 97.5th percentile against the
   standard's four in five.
-- Common-exposure subset: no decided renewal attains the forward exposure (the longest decided appointment lead since
-  the rule change is 60 days against the forward tenth percentile of 97); the decided renewals with appointments
-  42 or 56 days or more out give 4.7 and 4.5 months. The subset of renewals expedited at expiry lands (5.5), but
-  choosing it is the decisive step itself.
+- Common-exposure subset: three decided renewals filed since the rule attain the forward exposure (appointment leads
+  at or past the forward tenth percentile of 96 days), too few to read a percentile from; the honest reason is the
+  rule itself, since once a pending renewal no longer extends the card a reschedule past the card's expiry costs the
+  employee leave, so applicants' reschedules fall from about one appointment in twenty-two to one in a hundred and
+  seventy and coordinators send conflicts to walk-in biometrics. The whole record's eleven (filed before the rule,
+  their cards extended, so never cut) give 6.7 months. Below the exposure the long-lead subsets since the rule give
+  4.8 (42 days or more out, 303 renewals), 5.2 (56 days, 34) and 5.3 (70 days, 11, thin, landing by 0.05); the whole
+  record's give 5.0, 5.8, 6.1, 6.1 and 6.7 at 42 to 98 days. The subset of renewals expedited at expiry lands (5.4),
+  but choosing it is the decisive step itself.
 - Truncation direction: the record's censoring and the cut both hide the top (open renewals are the recent and the
   long ones; a cut renewal's natural wait runs past its decision), so the forward percentile needs the latent upper
   part, which is the case the screen keeps alive.
@@ -107,9 +117,9 @@ Measured by `generator/ladder.py` and the screens script on the clean world; `ge
 1. Join counsel's notices to the register, keep each renewal's receipt date, its latest appointment notice and its
    decision, leave out withdrawn renewals, censor open renewals at the export and stopped ones at the stop.
 2. The record's own 80th percentile, Kaplan-Meier: 4.0 months (3.98 to 4.11 over every window).
-3. Read the appointment notices on the newest receipts: about seventeen weeks out against about four before, 89 days
-   more.
-4. Add the extra 89 days to the appointment-route waits of the renewals filed since the rule change and take the 80th
+3. Read the appointment notices on the newest receipts: about seventeen weeks out against four to five before, 86
+   days more than the post-rule record's median.
+4. Add the extra 86 days to the appointment-route waits of the renewals filed since the rule change and take the 80th
    percentile: 6.9 months, quoted 7.0.
 
 Ends on: 7.0 months
@@ -117,11 +127,12 @@ Golden: 5.5 months
 
 ## Stump sentence
 
-A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen
+A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the twelve
 extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases
-censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the
-automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request
-the team files when the card expires, so the quarter's 80th percentile is 5.5 months.
+censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card
+expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a
+week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is
+5.5 months.
 
 ## Three rules
 
@@ -140,8 +151,9 @@ the team files when the card expires, so the quarter's 80th percentile is 5.5 mo
   rejection notices with no receipt number in the same export, and the register lagging counsel's notices.
 - Layer 2: forecast_uncertainty; the methodological choice is the forward model of the wait, a stage model cut at each
   filer's card expiry plus the expedite response, against the record's pooled percentile and the uncapped stage model.
-- Decisive step: recognising that the appointment delay now being set pushes most renewals past their card's expiry, so
-  each forward wait ends at that expiry plus the expedite response, a cut the record shows only on its slowest tail.
+- Decisive step: recognising that the appointment delay now being set pushes about nine in ten of the renewals that
+  need an appointment past their card's expiry, so each of those forward waits ends at the team's request around that
+  expiry plus the expedite response, a cut the record shows only on its slowest tail.
 - Not semantics: every field, code and date in the pack read correctly (the receipt date, the latest appointment, the
   decision notice, the card's expiry, the case log's expedite requests) still leaves the default path on 7.0, because
   no field says that the forward renewals will be cut; that is a forecast about who ends each wait.
@@ -152,7 +164,8 @@ the team files when the card expires, so the quarter's 80th percentile is 5.5 mo
 - Analyst test: a strong analyst who joins the notices to the cases, keeps the latest appointment notice, censors open
   cases, reads the standard correctly and sees the appointment delay now being set adds that delay to the record's
   appointment-route waits and quotes 7.0 months, where the card expiries those renewals will reach first, each
-  followed about a week later by a decision on the team's expedite request, put the quarter at 5.5.
+  followed about a week later by a decision on the team's expedite request, put the quarter at 5.5 (5.4 to 5.5 over
+  every construction, the quarter's category mix moving it by four days inside the half month).
 - Estimand: mobility_renewal_standard.pdf 2.3 and 4.1 to 4.3 (the renewals Global Mobility files in the coming
   quarter, filed on the receipt date, the wait to USCIS's decision notice, four in five, months of 30.4 days, nearest
   half month, withdrawn renewals left out), with the prompt naming January to March 2027.
@@ -193,26 +206,36 @@ the team files when the card expires, so the quarter's 80th percentile is 5.5 mo
 | SF12 | percentile convention | empirical 80th percentile of the simulated wait | interpolated | 5.5 (same call) | same call, mid-bin |
 | SF13 | the as-of | the export of 4 December 2026 | the release date of 15 December | 5.5 (same call) | same call, no record after the export |
 | SF14 | the latest appointment notice | the latest notice stands | the first notice | 5.5 (same call) | dictionary Codes, same call |
+| SF15 | the decision date | counsel's decision notice | the register's decided_on | 5.5 (same call) | the two agree on all 9,245 cases both hold (asserted) |
+| SF16 | the quarter's categories | the quarter's own mix (about half (c)(9)) | the record's mix, or the post-rule (c)(26) share | 5.5 (same call) | a construction, not a reading; every construction in the family lands (`## Residual`) |
+| SF17 | ask A, "work permits held by" | each person's card approved most recently, held to its last day | every card in hand; the latest-ending card | pinned | GM-07 1.4 |
+| SF18 | ask A, the card's category | the category on its approval | the roster's entry | pinned | GM-07 1.4 |
+| SF19 | ask A, "current employees" and their spouses | Active on HR's program roster at the export; a spouse while her household's employee is | Benefits coverage; any record of employment | pinned | GM-07 1.3 |
+| SF20 | ask B, "within 30 days" | received no later than the 30th day after the notice date | day 30 excluded | pinned, and moot: no refiling lands on day 30 or 31 (asserted) | GM-07 2.4 |
+| SF21 | ask B, "filed again" | USCIS's receipt of the renewal | the packet's dispatch | pinned | GM-07 2.3 and 2.4 |
 
 ## Ladder
 
 | Rung | Route | Quote (months) | Rounds to |
 |---|---|---|---|
 | 0 | USCIS's posted time, latest capture (Potomac, Vermont, Nebraska, the NBC line) | 4.0, 5.0, 3.0, 4.5 | miss |
-| 1 | the record's own waits, Kaplan-Meier, all receipts / since the rule / last 12 months | 4.05 / 4.11 / 4.11 | 4.0 |
-| 1 | decided renewals only / decided in September to November / mean plus one sd | 3.98 / 4.57 / 4.20 | 4.0, 4.5, 4.0 |
+| 1 | the record's own waits, Kaplan-Meier, all receipts / since the rule / last 12 months | 4.08 / 4.15 / 4.15 | 4.0 |
+| 1 | decided renewals only / decided in September to November / mean plus one sd | 4.01 / 4.70 / 4.31 | 4.0, 4.5, 4.5 |
 | 2 | default: the new delay laid on the post-rule appointment-route waits | 6.88 | 7.0 |
-| 2 | the record since the rule plus the new delay, flat / times the appointment share | 7.01 / 6.13 | 7.0, 6.0 |
+| 2 | the record since the rule plus the new delay, flat / times the appointment share | 6.94 / 5.96 | 7.0, 6.0 |
 | 3 | the stage model with the new delay, uncapped | 6.94 | 7.0 |
-| 3 | renewals with appointments 42 or 56 days or more out (whole record) | 4.70 / 4.51 | 4.5 |
-| 4 | golden: stage model cut at each filer's card expiry plus the expedite response | 5.53 | 5.5 |
-| 4 | cut at expiry with no response time / every renewal cut / renewals expedited at expiry | 5.30 / 5.59 / 5.49 | 5.5 (contain the cut) |
-| flag | the record plus 1.5 months / the post-rule 97.5th percentile | 5.55 / 5.33 | 5.5 (no analysis; not four in five) |
+| 3 | renewals with appointments 42 / 56 / 70 / 84 / 98 days or more out (whole record) | 5.03 / 5.79 / 6.07 / 6.14 / 6.72 | 5.0, 6.0, 6.0, 6.0, 6.5 |
+| 3 | the same since the rule, 42 / 56 / 70 days (303, 34, 11 renewals) | 4.80 / 5.18 / 5.30 | 5.0, 5.0, 5.5 (thin) |
+| 4 | golden: stage model cut at each filer's request plus the expedite response, the quarter's category mix | 5.39 | 5.5 |
+| 4 | the record's own route share / the post-rule share, no category mix | 5.53 / 5.53 | 5.5 (same call) |
+| 4 | cut at expiry with no response time / every renewal cut / renewals expedited at expiry | 5.23 / 5.56 / 5.39 | 5.0, 5.5, 5.5 (contain the cut) |
+| flag | the record plus 1.5 months / the post-rule 97.5th percentile | 5.58 / 5.39 | 5.5 (no analysis; not four in five) |
+| flag | an expedite response assumed at 14 / 21 days | 5.59 / 5.76 | 5.5, 6.0 (the log says a week) |
 
-Back-test at depth (the 104 renewals filed since the rule change that were pending at their card's expiry and had an
-accepted expedite): decided a median of 6 days after the request, 99 per cent within 14; the uncapped stage model
-fitted on the renewals filed before the change predicts a median remaining wait of 18.5 days for them, a mean absolute
-error of 13.5 days against 2.6 for the cut model.
+Back-test at depth (the 173 renewals filed since the rule change that were pending at their card's expiry and had an
+accepted expedite): decided a median of 7 days after the request, 98 per cent within 14; the uncapped stage model
+fitted on the renewals filed before the change predicts a median remaining wait of 20.6 days for them, a mean absolute
+error of 14.9 days against 2.8 for the cut model.
 
 ## Closure table
 
@@ -225,7 +248,7 @@ error of 13.5 days against 2.6 for the cut model.
 | 5 | Version basis | the latest appointment notice stands | dictionary Codes; C1 (the first notice gives the same call) |
 | 6 | Denominator | every renewal received in the quarter, withdrawn ones out | standard 4.2 |
 | 7 | Weighting | each renewal once | the standard's percentile over renewals; C1 |
-| 8 | Window length | the record's components from every window give one bin | C3 over the lead and card-gap windows (5.49 to 5.53) |
+| 8 | Window length | the record's components from every window give one bin | C3 over the lead and card-gap windows (5.39 to 5.40) |
 | 9 | Boundary inclusivity | receipts on 1 January and 31 March are in | C1; no forward receipt record ships |
 | 10 | Rounding path | once, the quote to the nearest half month | prompt and standard 4.3 |
 | 11 | Tie-break | none; one figure | not applicable, asserted single value |
@@ -239,15 +262,16 @@ error of 13.5 days against 2.6 for the cut model.
 | 19 | Code and status semantics | approval and denial notices are decisions; a withdrawal acknowledgement is not | dictionary Codes, standard 4.2 |
 | 20 | Integerisation | none in the quote | not applicable |
 | 21 | Clause scope | standard 2.3 defines filing for every renewal | the clause's own words |
-| 22 | Forward window contents | the coming quarter's appointment delay, from the newest notices | the export's appointment notices for receipts from October 2026 |
+| 22 | Forward window contents | the coming quarter's appointment delay, from the newest notices, and its categories, from the permits whose renewals reach USCIS in it | the export's appointment notices for receipts from October 2026; the current permits by last day; C3 (the record's mix gives the same call) |
 
 ## Literal reader
 
 Executed word for word, the standard defines the quantity (the 80th percentile of the receipt-to-decision wait of the
 renewals filed in the coming quarter, in months of 30.4 days, to the nearest half month) and leaves the forecast to
 the analyst; no clause names a method, so no literal reading files a number. Every licensed reading of the estimand
-(SF1 to SF14) gives 5.5 under the cut model, the readings that differ (SF5, the card's delivery) violate standard 4.2,
-and the easy answers (4.0 and 7.0) come from easy methods on the same estimand, never from another reading.
+(SF1 to SF16; SF17 to SF21 are the asks' pins) gives 5.5 under the cut model, the readings that differ (SF5, the
+card's delivery) violate standard 4.2, and the easy answers (4.0 and 7.0) come from easy methods on the same estimand,
+never from another reading.
 
 ## Oracles
 
@@ -258,45 +282,114 @@ the thread carries no figure about the wait.
 
 ## Ask sheet
 
-Criteria: the quote (1), three critical components (the appointment lead now set, 17 weeks; more than half the
-quarter's renewals reaching the card's expiry undecided; the expedite response, about a week), ask A's six cells (three
-months by two categories), the chart's six labelled bars, ask B's eight cells (four quarters by rejected and refiled
-within 30 days) and the two files: 26.
+Criteria: the quote (1), three critical components (the appointment lead now set, 17 weeks against 4 through 2024 and
+2025; about nine in ten of the quarter's appointment-route renewals reaching the card's expiry undecided; the expedite
+response, about a week), ask A's six cells (three months by two categories), the chart's six labelled bars, ask B's
+eight cells (four quarters by rejected and refiled within 30 days) and the two files: 26.
 
-- Ask A, permits expiring July to September 2027 by category. Rows: HR's roster, counsel's approval notices' card
-  validity, the register's new-card expiries, the tracker's (c)(9) cards, HR's program roster, Benefits' dependants;
-  the call reads none of the roster, the tracker or Benefits, and no approval notice's valid_to. Devices: A1 (D5, a
-  silently partial extract: about a fifth of the spouses' renewed cards and a quarter of the derivatives' (c)(9) cards
-  never reach the roster, held in counsel's approvals, the register and the tracker), A5 (D2, a label stored before a
-  silent switch: a spouse who moved from (c)(26) to (c)(9) uploads her new card under the category of her first entry),
-  A2 (hazard: Benefits covers today's dependants only, so spouses of departed employees and spouses off the plan fall
-  out of the natural join), A3 (hazard, over-cleaning: permanent residents still hold their (c)(9) cards, which expire).
-- Ask B, lockbox rejections October 2025 to September 2026. Rows: counsel's rejection notices, the case log's
-  forwarded notices, counsel's receipt notices, the register's receipts, the mailroom's dispatch log; the call reads no
-  rejection notice and no dispatch row. Devices: B4 (D4, absence: a fifth of the rejection notices went to the applicant
-  alone, since the lockbox did not accept the G-28 on those packets, and reach the team only as a forwarded notice in
-  the case log), B6 (D5: about a third of those applicants refiled online themselves, a filing only the register
-  holds), B1 (D2, a field overwritten later: from 2 March 2026 the new dispatch system writes a resend over the packet's
-  row), B3 (D5: the earlier dispatch system's Returned holds courier returns beside lockbox rejections), B7 (hazard:
-  applicants' copies of rejections counsel also holds, under the case reference in use that day).
+- Ask A, permits expiring July to September 2027 by category, each current person's permit as GM-07 1.3 and 1.4 pin it
+  (the card USCIS approved for the person most recently, in its approval's category, held to its last day; current
+  while HR's program roster shows the employee, or the spouse's household employee, as Active). Rows: HR's roster,
+  counsel's approval notices, the register's approved filings, the tracker's (c)(9) cards, HR's program roster,
+  Benefits' dependants. The call reads the same card records only for the quarter's category mix, and with every ask A
+  device left uncracked it moves one day inside its half month (5.43 against 5.39, asserted). Silent devices: A1 (D5, a
+  silently partial extract: a fifth of the spouses' renewed cards and a quarter of the derivatives' first (c)(9) cards
+  never reach the roster; the renewals are in counsel's approvals, but the first (c)(9) cards, filed with the
+  adjustment, are held only by the register's initial filings and the tracker), A6 (a grain of identity: a spouse who
+  joined Sallowmere benefits after the household came into Global Mobility's care keeps her MP- person ID on the
+  register, the tracker, counsel's matters and her onboarding entry, and the benefits portal files her later uploads
+  under the dependant ID Benefits gave her, so one card sits under two IDs; 897 households carry two spouse IDs and
+  571 of them share a card to the day, and an employee has one spouse). Documented and pinned: A2 (the household link,
+  Benefits covering only spouses on the plan today, the roster's onboarding entry, the register and the tracker
+  carrying the rest), A5 (GM-07 1.4 names the roster's category as not always the approval's; a spouse who moved from
+  (c)(26) to (c)(9) uploads her new card under the category of her first entry), A3 (GM-07 1.4 keeps a permanent
+  resident's last card to its last day).
+- Ask B, lockbox rejections October 2025 to September 2026, filed again as GM-07 2.3 and 2.4 pin it (USCIS's receipt
+  no later than the 30th day after the notice's date). Rows: counsel's rejection notices, the case log's forwarded
+  notices, counsel's receipt notices, the register's receipts, the mailroom's dispatch log; the call reads no rejection
+  notice and no dispatch row. Devices: B4 (D4, absence: a fifth of the rejection notices went to the applicant alone,
+  since the lockbox did not accept the G-28 on those packets, and reach the team only as a forwarded notice in the case
+  log), B6 (D5: about a third of those applicants refiled online themselves, a filing only the register holds), B1 (D2,
+  a field overwritten later: from 2 March 2026 the new dispatch system writes a resend over the packet's row), B3 (D5:
+  the earlier dispatch system's Returned holds courier returns beside lockbox rejections), B7 (hazard: applicants'
+  copies of rejections counsel also holds, under the case reference in use that day).
 
 How each ask enters the call (H18): ask A is the population behind the quote's quarter, the permits whose renewals
 Global Mobility opens from January to March 2027 under GM-07 2.1 (cards expiring July to September 2027), the
 page's recurring chart; ask B is the audit trail of the filing date the quote counts from, the renewal packets the
 lockbox returned before USCIS received them (GM-07 2.3) and how fast they were filed again.
 
-Pair ceiling: 33.1 (the strongest response on the call, credited with every sponsor link and the forwarded
-rejection notices, keeps 4 of 20 ask cells, 20.0 per cent; the best response off the call keeps none; with both top
-responses on the call and no device cracked, 44.0)
+Pair ceiling: 33.1 (the strongest response on the call, executing GM-07 1.3, 1.4 and 2.4, joining the roster to
+counsel's approvals, linking every spouse and credited with any one more device, keeps at most 4 of 20 ask cells, 20.0
+per cent, with the forwarded rejection notices; with the register's filings and the tracker 2, with a spouse's two IDs
+merged 0; the best response off the call keeps none; with both top responses on the call and no device cracked, 44.0)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/cracker.py
 
 | Ask | Cracker sheet (executes every pin, runs the battery, links every spouse) | Hits | Verdict |
 |---|---|---|---|
-| Ask A, six cells | the roster's cards by the roster's category, current holders through every link | 0 of 6 | miss |
+| Ask A, six cells | the roster's cards with counsel's approvals and their categories, current persons by ID through every link | 0 of 6 | miss |
 | Chart, six labelled bars | the same counts | 0 of 6 | miss |
 | Ask B, rejected, four quarters | counsel's rejection notices by notice date | 0 of 4 | miss |
 | Ask B, refiled within 30 days, four quarters | counsel's receipt notices within 30 days of each notice date | 0 of 4 | miss |
+
+## Residual
+
+Re-centre rule, fixed on 2026-10-18 before any outcome of the stage 4 rework was measured: after the realism changes
+(the appointment lead's drift, the reschedules, the expedite handling, the (c)(9) fingerprint reuse share, the
+paperwork tail), the mean of the main paperwork component (opening to dispatch, in whole days from 12 to 30, its sd a
+third of the mean) is set to the value at which the generator's process 80th percentile for the quarter (every
+renewal received in the quarter, its own category, state and card gap, the process re-run 200 times) is nearest 5.50
+months. No other parameter moves to place the bin. If no value in that range leaves every construction a quarter-bin
+from both edges with one sigma, the rework is reported, not loosened.
+
+Applied, in two passes, both on the full range 12 to 30. The first pass picked 23 days (process 167 days, 5.49) with an
+artifact in the generator: a request for evidence not yet issued at the team's expedite request still held the decision
+back to its response. With the artifact removed, the value nearest 5.50 is 22 (process 5.49), and there the family
+fails the margin: the constructions that read the quarter's category mix sit at 163 to 164 days, 0.11 from the 5.25
+edge with one sigma. The rule's gate reads over the range, so the family (fixed in `ladder.py` before the scan:
+seventeen constructions, the margin taken with the golden's largest one-sigma move) was run at every value: 18, 19 and
+21 clear it, and 21 is the one whose process is nearest 5.50 (168 days, 5.53). Adopted: PAPER_MEAN 21. The scan is
+`generator/recentre.py` (about forty minutes; exit 0 when the chosen value is the world's).
+
+What stays open after the rework, and why each is accepted:
+
+- The record-based constructions sit one to four days under the generator's process (golden 164 days, process 168,
+  the realised quarter 167). The record reads USCIS's expedite response on renewals close to their own natural
+  decision, so a share of the record's responses are the earlier of the two and the response reads short (median 7
+  days against a drawn median of about 9). Every construction carries the same bias, so it does not open a fork, and
+  the bias keeps the truth inside the golden's half month.
+- The family spans 5.39 to 5.53 (164 to 168 days). Its width is the quarter's category mix: about half the quarter is
+  (c)(9), whose renewals mostly reuse fingerprints, against a record nine in ten (c)(26); a solver who ignores the mix
+  quotes 5.53, one who reads it 5.39 to 5.46. With one sigma the family runs 5.38 to 5.54, 0.129 and 0.215 from the
+  edges. The margin is integer-day: one day is 0.033 months.
+- An expedite response assumed rather than measured: 14 days gives 5.59 (lands), 21 days 5.76 (6.0). The case log's
+  209 requests say a week, and say it in the busiest request months (September and October 2026, 95 requests, median
+  7 days, against 7 in the rest) and after the appointment queue tripled; the company's requests are a sliver of the
+  national flow, and the forward quarter's run under the same appointment regime the autumn's did.
+- The thin analog: decided renewals filed since the rule with appointments 70 days or more out (11 of them) give 5.30,
+  inside the bin by 0.05; at the forward exposure (96 days or more) there are 3. Reschedules after the rule are rare
+  because a reschedule past the card's expiry now costs the employee leave.
+- Ask A's identity device (A6) is a grain the pin forces: GM-07 1.4 counts a person's permit, and an employee has one
+  spouse; the 897 households the pack shows with two spouse IDs each carry them for one spouse (asserted against the
+  world), and 571 of them share a card to the day across the two IDs, which is the figure that makes per-ID counting
+  wrong. A same-day pair of approvals exists for one current person; neither card ends from June to September 2027.
+- No post-rule (c)(9) renewal history exists (the real validity rules, `## Draw` 10); the (c)(9) route share is read on
+  the 2024 and 2025 renewals, and the route share is a property of the category, stable across the rule for (c)(26)
+  (0.70 before the rule, 0.72 after).
+
+## Strength
+
+P(one strong solver lands 5.5): about 0.27 (0.2 to 0.38). P(both): about 0.10 (0.06 to 0.14), above the independent
+0.07 because the same signals drive both. Against the audit's 0.25 and 0.09 on the earlier pack: the cut is more
+visible (201 of the 2,665 renewals filed since the rule on the old lead carry an expedite request, 7.5 per cent against
+3), and an expedite response assumed at two weeks now lands; the coarse route that cuts at expiry with no response no
+longer lands (5.23), and the thin analog adds about 0.01. Every construction that models the cut lands whatever it
+does with the category mix, so the mix moves no probability. The landing pressure is the insight itself, not a bypass:
+the flagged reflexes (the record plus 1.5 months, 5.58; the post-rule 97.5th percentile, 5.39) add about 0.03 per
+solver, as before. No hardening beyond the realism changes was made: the one the audit priced (USCIS's response growing
+with load) moves the golden toward an edge and opens a construction fork on the forward load, so the asks carry the bar
+(pair ceiling 33.1, both on the call 44.0).
 
 ## Tried and rejected
 
@@ -334,3 +427,33 @@ Measured by: generator/cracker.py
 - v1 names Quillwater Software and Lindqvist Arceneaux LLP (2026-10-18, house fix H21): edit distance 2 from QuikWater
   (utility billing software) and 1 from Lindquist & Vennum (a former Minneapolis law firm); renamed Sallowmere Software
   (nearest real name Sealmere Limited, distance 4) and Marrowby Teale LLP (no firm of that name found).
+- v1 the re-centre rule's first pass, PAPER_MEAN 23 (2026-10-18, rework round 1): carried a generator artifact, a
+  request for evidence not yet issued at the team's expedite request still holding the decision back to its response,
+  a forward-only floor no record shows; removed, and the rule run again on the whole range.
+- v1 PAPER_MEAN 22, the rule's value nearest 5.50 on the process alone (2026-10-18): the constructions that read the
+  quarter's category mix sat at 163 to 164 days, 0.11 from the 5.25 edge with one sigma; the rule's own gate, read over
+  the range, chose 21 (`## Residual`).
+- v1 reschedules of 7 to 21 days for every appointment (2026-10-18, retired at rework round 1): read as tuned to the
+  common-exposure screen. Replaced by applicants' reschedules of about one queue length (several weeks to a couple of
+  months) before the rule, rare after it (a reschedule past the card's expiry now costs leave, so conflicts go to
+  walk-in biometrics), and USCIS's own moves of one to three weeks in both regimes; the subset at the forward exposure
+  stays thin (3 since the rule) for that reason, not by a band.
+- v1 one appointment share for both categories (retired at rework round 1): (c)(9) renewals reuse the adjustment's
+  biometrics far more often; with three in ten sent to an appointment the quarter's category mix enters the forecast
+  and widens the family by four days, inside the half month.
+- v1 a flat four-week lead for 31 months (retired at rework round 1): the lead now drifts by month and season, differs
+  by support centre (the filer's state) and rises about a day a month after the rule, to five weeks by the summer of
+  2026, before the autumn's seventeen.
+- v1 expedite decisions about a week after every request, 95 per cent accepted, every request on the card's expiry
+  (retired at rework round 1): now about 85 per cent accepted, a response drawn around nine days, and a quarter of the
+  requests a few days before or after the expiry; the record still reads a week (the response is read on renewals close
+  to their own natural decision) and the same week in busy and quiet months.
+- v1 option B for the expedite response, a response growing with USCIS's load and estimated forward (2026-10-18, on
+  paper): the forward load is a quantity the pack would have to file or the solver choose, a construction fork on the
+  main call, and the response growing toward three weeks takes the golden to the 5.75 edge; option A kept (the record
+  shows the response held across months of very different volume).
+- v1 ask A counting every card in hand (stage 4 round 1, judge NOT_DETERMINISTIC): no shipped text said which card
+  counts, which category or which holders are current; GM-07 1.3 and 1.4 now pin each, and the golden is their literal
+  execution. Under the pins the roster's category (A5) and the roster's gaps for renewals (counsel's approvals) are
+  found by executing 1.4, so the identity device A6 was added beside A1; with every approval record taken and persons
+  keyed by ID the cracker still misses five of the six cells.

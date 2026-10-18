@@ -191,28 +191,43 @@ def components(rens, export=C.EXPORT, regime=NEW_REGIME, d_from=C.IFR, q_mode="k
     if q_mode == "decided":
         qrows = [q for q in qrows if q[1] == 1]
     D = np.array([(r["card_exp"] - r["received"]).days for r in rec if r["card_exp"] and r["received"] >= d_from], float)
-    ex = [r for r in rens if r["exp_req"]]
+    ex = [r for r in rens if r["exp_req"] and r["received"] >= d_from]
     with_out = [r for r in ex if r["exp_out"] in ("Accepted", "Denied")]
     accept = float(np.mean([r["exp_out"] == "Accepted" for r in with_out])) if with_out else 1.0
     E = np.array([(r["decided"] - r["exp_req"]).days for r in ex if r["exp_out"] == "Accepted" and r["decided"] and
                   r["decided"] >= r["exp_req"]], float)
-    return dict(pA=pA, L=L, qrows=qrows, D=D, E=E, accept=accept, n_rec=len(rec))
+    R = np.array([(r["exp_req"] - r["card_exp"]).days for r in ex if r["card_exp"]], float)
+    pA_cat = {cat: float(np.mean([r["route"] == "appointment" for r in rec if r["cat"] == cat])) for cat in C.CATS}
+    n_cat = {cat: sum(1 for r in rec if r["cat"] == cat) for cat in C.CATS}
+    return dict(pA=pA, pA_cat=pA_cat, n_cat=n_cat, L=L, qrows=qrows, D=D, E=E, R=R, accept=accept, n_rec=len(rec))
 
 
-def simulate(comp, seed=172, n=N_SIM, cap=True, use_accept=True, lead_add=None):
+def simulate(comp, seed=172, n=N_SIM, cap=True, use_accept=True, lead_add=None, mix=None, offsets=True):
+    """the quarter's waits by simulation: the route (by category where a mix is given), the appointment lead now set,
+    the review (Kaplan-Meier), and for a renewal still pending when the team's request goes in (its card's expiry plus
+    the record's request offset), the decision after the record's expedite response"""
     rng = np.random.default_rng(seed)
-    appt = rng.random(n) < comp["pA"]
+    if mix is None:
+        appt = rng.random(n) < comp["pA"]
+    else:
+        cats = list(mix)
+        k = rng.choice(len(cats), n, p=np.array([mix[c] for c in cats], float) / sum(mix.values()))
+        pa = np.array([comp["pA_cat"][c] for c in cats])[k]
+        appt = rng.random(n) < pa
     L = rng.choice(comp["L"], n) if lead_add is None else lead_add(rng, n)
     vals, ps = km_points(comp["qrows"])
     Q = rng.choice(vals, n, p=ps)
     Dd = rng.choice(comp["D"], n)
     E = rng.choice(comp["E"], n)
+    Rr = rng.choice(comp["R"], n) if (offsets and len(comp["R"])) else np.zeros(n)
     wn = np.where(appt, L, 0.0) + Q
+    req = Dd + Rr
     if not cap:
         return wn, dict(reach=float((wn > Dd).mean()), cut=0.0)
     ok = rng.random(n) < (comp["accept"] if use_accept else 1.0)
-    w = np.where((wn > Dd) & ok, np.minimum(wn, Dd + E), wn)
-    return w, dict(reach=float((wn > Dd).mean()), cut=float(((wn > Dd) & ok & (Dd + E < wn)).mean()))
+    w = np.where((wn > req) & ok, np.minimum(wn, req + E), wn)
+    return w, dict(reach=float((wn > Dd).mean()), cut=float(((wn > req) & ok & (req + E < wn)).mean()),
+                   reach_appt=float((wn[appt] > Dd[appt]).mean()))
 
 
 def quote(target=None, T=None):
@@ -220,30 +235,33 @@ def quote(target=None, T=None):
     cases, ref = register(T)
     rens = renewals(T, cases, ref)
     comp = components(rens)
-    w, info = simulate(comp)
+    mix, n_mix = forward_mix(T, cases, ref, float(np.median(comp["D"])))
+    w, info = simulate(comp, mix=mix)
     q80 = float(np.quantile(w, 0.8))
     months = q80 / C.MONTH_DAYS
     return dict(q80_days=q80, months=months, quote=C.half_month(months), lead_weeks=float(np.median(comp["L"])) / 7,
-                reach=info["reach"], cut=info["cut"], e_days=float(np.median(comp["E"])), accept=comp["accept"],
-                pA=comp["pA"], n_L=len(comp["L"]), n_E=len(comp["E"]), n_D=len(comp["D"]),
-                d_median=float(np.median(comp["D"])), comp=comp, rens=rens, cases=cases, ref=ref, T=T)
+                reach=info["reach"], reach_appt=info["reach_appt"], cut=info["cut"], e_days=float(np.median(comp["E"])),
+                accept=comp["accept"], pA=comp["pA"], pA_cat=comp["pA_cat"], mix=mix, n_mix=n_mix, n_L=len(comp["L"]),
+                n_E=len(comp["E"]), n_D=len(comp["D"]), d_median=float(np.median(comp["D"])), comp=comp, rens=rens,
+                cases=cases, ref=ref, T=T)
 
 
 # ------------------------------------------------------------------------------------------------------- ask A
 def holders_current(T, cases):
-    """employees active at the export, and spouses whose sponsoring employee is active, the sponsor taken from any
-    record that links the two: the register's cases, the green-card tracker, or Benefits' current coverage"""
+    """employees HR's program roster shows as Active at the export, and each spouse's household employee, taken from any
+    record that links the two: the roster's onboarding entry, the register's cases, the green-card tracker, or
+    Benefits' coverage"""
     active = {e["employee_id"] for e in T["employees"] if e["status"] == "Active"}
     sponsor = {}
-    for c in cases.values():
-        if c["ptype"] == "spouse" and c["sponsor"]:
-            sponsor[c["person"]] = c["sponsor"]
-    for t in T["tracker"]:
-        if t["relationship"] == "Spouse":
-            sponsor.setdefault(t["applicant_id"], t["principal_employee_id"])
     for p in T["permits"]:
         if p.get("household_employee_id"):
             sponsor.setdefault(p["holder_id"], p["household_employee_id"])
+    for c in cases.values():
+        if c["ptype"] == "spouse" and c["sponsor"]:
+            sponsor.setdefault(c["person"], c["sponsor"])
+    for t in T["tracker"]:
+        if t["relationship"] == "Spouse":
+            sponsor.setdefault(t["applicant_id"], t["principal_employee_id"])
     enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
     for d in T["dependants"]:
         if d["relationship"] in ("Spouse", "Domestic partner") and d["benefits_enrollment_id"] in enroll:
@@ -251,49 +269,98 @@ def holders_current(T, cases):
     return active, sponsor
 
 
-def cards_held(T, cases, ref):
-    """every card in someone's hands at the export: the roster's, the cards counsel's approval notices and the register
-    record for the team's filings, and the latest (c)(9) cards on the green-card tracker; one card per holder and
-    last day, its category from the filing where a filing records it"""
+def cards_held(T, cases, ref, sources=("roster", "register", "counsel", "tracker")):
+    """every work permit card on record, one per holder and approval date: the roster's entries, the register's approved
+    filings (renewals and initial filings), counsel's approval notices and the tracker's (c)(9) cards; the category is
+    the one USCIS approved, from a filing record wherever one holds the card, the roster's entry only where none does"""
     cards = {}
-    for p in T["permits"]:
-        vt, vf = _d(p["valid_to"]), _d(p["valid_from"])
-        key = (p["holder_id"], vt)
-        cards.setdefault(key, dict(holder=p["holder_id"], vf=vf, vt=vt, cat=p["category"], src="roster"))
-    for c in cases.values():
-        if c["new_exp"] and c["decided"] and c["status"] == "Approved":
-            key = (c["person"], c["new_exp"])
-            cards[key] = dict(holder=c["person"], vf=c["decided"], vt=c["new_exp"], cat=c["cat"], src="register")
-    for n in T["notices"]:
-        if n["notice_type"] == "Approval notice":
-            k = ref.get(n["client_ref"])
-            c = cases.get(k)
-            if c is None:
-                continue
-            key = (c["person"], _d(n["valid_to"]))
-            cards[key] = dict(holder=c["person"], vf=_d(n["valid_from"]), vt=_d(n["valid_to"]),
-                              cat=n["eligibility_category"], src="counsel")
-    for t in T["tracker"]:
-        if t["ead_valid_to"]:
-            vt = _d(t["ead_valid_to"])
-            key = (t["applicant_id"], vt)
-            cards[key] = dict(holder=t["applicant_id"], vf=_d(t["ead_approved"]), vt=vt, cat="(c)(9)", src="tracker")
-    return [c for c in cards.values() if c["vf"] and c["vf"] <= C.EXPORT]
+
+    def put(holder, vf, vt, cat, src, filing):
+        if not (holder and vf and vt):
+            return
+        key = (holder, vf)
+        cur = cards.get(key)
+        if cur is None:
+            cards[key] = dict(holder=holder, vf=vf, vt=vt, cat=cat, src=src, filing=filing, srcs={src})
+            return
+        cur["srcs"].add(src)
+        if filing and not cur["filing"]:
+            cur.update(cat=cat, filing=True)
+    if "roster" in sources:
+        for p in T["permits"]:
+            put(p["holder_id"], _d(p["valid_from"]), _d(p["valid_to"]), p["category"], "roster", False)
+    if "register" in sources:
+        for c in cases.values():
+            if c["status"] == "Approved" and c["decided"] and c["new_exp"]:
+                put(c["person"], c["decided"], c["new_exp"], c["cat"], "register", True)
+    if "counsel" in sources:
+        for n in T["notices"]:
+            if n["notice_type"] == "Approval notice":
+                c = cases.get(ref.get(n["client_ref"]))
+                if c is not None:
+                    put(c["person"], _d(n["valid_from"]), _d(n["valid_to"]), n["eligibility_category"], "counsel", True)
+    if "tracker" in sources:
+        for t in T["tracker"]:
+            if t["ead_approved"] and t["ead_valid_to"]:
+                put(t["applicant_id"], _d(t["ead_approved"]), _d(t["ead_valid_to"]), "(c)(9)", "tracker", True)
+    return [c for c in cards.values() if c["vf"] <= C.EXPORT]
 
 
-def ask_a(T, cases, ref):
+def latest_cards(T, cases, ref, sources=("roster", "register", "counsel", "tracker"), links="all", merge=True):
+    """GM-07 1.3 and 1.4: each current person's work permit, the card USCIS approved for the person most recently; a
+    person is current while HR's program roster shows the employee (or, for a spouse, the employee whose household she
+    belongs to) as Active. One person may carry two IDs: a spouse keeps her Global Mobility person ID (MP-) on the
+    team's records and is known to Benefits, and so to the benefits portal, by a dependant ID once she joins the plan;
+    an employee has one spouse, so a spouse is the household she belongs to (merge=False keys persons by ID instead)"""
     active, sponsor = holders_current(T, cases)
+    if links == "benefits":
+        enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
+        sponsor = {d["dependant_id"]: enroll[d["benefits_enrollment_id"]] for d in T["dependants"]
+                   if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enroll}
     emp_ids = {e["employee_id"] for e in T["employees"]}
-    out = {(y, m, cat): 0 for (y, m) in C.ASK_A_MONTHS for cat in C.CATS}
-    for c in cards_held(T, cases, ref):
+    best = {}
+    for c in cards_held(T, cases, ref, sources):
         h = c["holder"]
-        cur = (h in active) if h in emp_ids else (sponsor.get(h) in active)
+        if h in emp_ids:
+            person, cur = h, h in active
+        else:
+            e = sponsor.get(h)
+            person, cur = (("spouse of", e) if merge else h), e in active
         if not cur:
             continue
+        b = best.get(person)
+        if b is None or c["vf"] > b["vf"]:
+            best[person] = dict(c)
+        elif c["vf"] == b["vf"] and c["filing"] and not b["filing"]:
+            b.update(cat=c["cat"], filing=True)      # one card under two IDs: the approval's category stands
+    return best
+
+
+def ask_a(T, cases, ref, **kw):
+    out = {(y, m, cat): 0 for (y, m) in C.ASK_A_MONTHS for cat in C.CATS}
+    for c in latest_cards(T, cases, ref, **kw).values():
         key = (c["vt"].year, c["vt"].month, c["cat"])
         if key in out:
             out[key] += 1
     return out
+
+
+def forward_mix(T, cases, ref, d_median):
+    """the quarter's renewals by category: the current work permits whose renewal reaches USCIS in the quarter (the
+    card's last day less the record's median card gap falls from 1 January to 31 March 2027), leaving out the (c)(9)
+    cards of applicants whose adjustment the tracker shows approved"""
+    lpr = set()
+    for t in T["tracker"]:
+        if t["i485_status"] == "Approved":
+            lpr.add(t["applicant_id"] if t["relationship"] == "Principal" else ("spouse of", t["principal_employee_id"]))
+    n = {cat: 0 for cat in C.CATS}
+    for person, c in latest_cards(T, cases, ref).items():
+        if c["cat"] == "(c)(9)" and person in lpr:
+            continue
+        if C.Q_START <= c["vt"] - D_(days=int(round(d_median))) <= C.Q_END:
+            n[c["cat"]] += 1
+    tot = sum(n.values())
+    return {cat: n[cat] / tot for cat in C.CATS}, n
 
 
 # ------------------------------------------------------------------------------------------------------- ask B
@@ -348,9 +415,10 @@ def solve(target):
 if __name__ == "__main__":
     Q, A, B = solve(sys.argv[1])
     print("quote %.1f months (q80 %.1f days = %.3f months); lead %.2f weeks (n %d); E median %.1f days (n %d); "
-          "accept %.3f; reach %.3f; cut %.3f; pA %.3f; D median %.0f (n %d)" % (
-              Q["quote"], Q["q80_days"], Q["months"], Q["lead_weeks"], Q["n_L"], Q["e_days"], Q["n_E"], Q["accept"],
-              Q["reach"], Q["cut"], Q["pA"], Q["d_median"], Q["n_D"]))
+          "accept %.3f; reach %.3f (appointment route %.3f); cut %.3f; pA %.3f by category %s; mix %s; D median %.0f (n %d)"
+          % (Q["quote"], Q["q80_days"], Q["months"], Q["lead_weeks"], Q["n_L"], Q["e_days"], Q["n_E"], Q["accept"],
+             Q["reach"], Q["reach_appt"], Q["cut"], Q["pA"], {k: round(v, 3) for k, v in Q["pA_cat"].items()},
+             Q["n_mix"], Q["d_median"], Q["n_D"]))
     for (y, m), in [((y, m),) for (y, m) in C.ASK_A_MONTHS]:
         print("  %d-%02d  (c)(9) %4d  (c)(26) %4d" % (y, m, A[(y, m, "(c)(9)")], A[(y, m, "(c)(26)")]))
     for k, v in B.items():

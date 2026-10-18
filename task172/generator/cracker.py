@@ -4,7 +4,7 @@ The cracker landed the call, ran the hygiene battery (key uniqueness, exact dupl
 executed every filed sentence and pin, and links a spouse to her sponsoring employee through every record that carries
 the link (it is credited with the most obvious device on each ask). The mirror stops at the most attractive wrong rung
 of the call and works the asks the natural way. Each ask figure is scored a hit within half a unit of its rounding;
-the pair ceiling uses the build's rubric weights."""
+the pair ceiling is the strongest response with any one more device cracked, at the build's rubric weights."""
 from __future__ import annotations
 
 import datetime as dt
@@ -21,31 +21,9 @@ W_CALL, W_COMP, W_IF, W_ASK = 25.0, 12.0, 7.0, 56.0     # per cent of the rubric
 N_ASK = 6 + 6 + 8                                          # ask A cells, the chart's labelled bars, ask B cells
 
 
-def ask_a_roster(T, cases, link="all"):
-    """count the roster's cards by the roster's own category, current holders only"""
-    active, sponsor_all = K.holders_current(T, cases)
-    emp_ids = {e["employee_id"] for e in T["employees"]}
-    if link == "dependants":
-        enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
-        sponsor = {d["dependant_id"]: enroll[d["benefits_enrollment_id"]] for d in T["dependants"]
-                   if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enroll}
-    else:
-        sponsor = sponsor_all
-    seen = set()
-    out = {(y, m, c): 0 for (y, m) in C.ASK_A_MONTHS for c in C.CATS}
-    for p in T["permits"]:
-        if p["card_number"] in seen:
-            continue
-        seen.add(p["card_number"])
-        h = p["holder_id"]
-        vt = K._d(p["valid_to"])
-        if h in emp_ids:
-            ok = h in active
-        else:
-            ok = sponsor.get(h) in active
-        if ok and (vt.year, vt.month, p["category"]) in out:
-            out[(vt.year, vt.month, p["category"])] += 1
-    return out
+def ask_a_by(T, cases, ref, **kw):
+    """ask A executed on the pack with one handling changed (calc.latest_cards' options): sources, links, merge"""
+    return K.ask_a(T, cases, ref, **kw)
 
 
 def ask_b_counsel(T, cases, ref, with_forwarded=False, with_register=False):
@@ -117,21 +95,39 @@ def sheets(target):
     T, cases, ref = Q["T"], Q["cases"], Q["ref"]
     A = K.ask_a(T, cases, ref)
     B = K.ask_b(T, cases, ref)
+    # the cracker executes GM-07 1.3, 1.4, 2.3 and 2.4 and runs the battery on the joins they make: 1.4's category
+    # sends it from HR's roster to counsel's approval notices, so it adds the approvals the roster lacks and takes each
+    # approval's category; it links every spouse through every record (credited); it keys persons by the ID each
+    # record carries. Its two ask A devices: cards only the register's filings and the tracker hold (A1), and a
+    # spouse's two IDs (A6)
+    crack_a = dict(sources=("roster", "counsel"), merge=False)
     rows = {}
-    rows["cracker"] = (score(A, B, ask_a_roster(T, cases, "all"), ask_b_counsel(T, cases, ref)),
-                       "roster with every sponsor link; counsel's rejection notices and receipt notices")
+    rows["cracker"] = (score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref)),
+                       "the roster with counsel's approvals and their categories, every spouse link, persons by ID; "
+                       "counsel's rejection and receipt notices")
     rows["cracker, most obvious device cracked"] = (
-        score(A, B, ask_a_roster(T, cases, "all"), ask_b_counsel(T, cases, ref, True, False)),
+        score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref, True, False)),
         "as the cracker, with the rejection notices applicants forwarded")
     rows["cracker, the other device cracked"] = (
-        score(A, B, ask_a_roster(T, cases, "all"), ask_b_counsel(T, cases, ref, False, True)),
+        score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref, False, True)),
         "as the cracker, with every receipt the register holds")
-    rows["mirror"] = (score(A, B, ask_a_roster(T, cases, "dependants"), ask_b_dispatch(T, cases, ref)),
-                      "roster linked through Benefits; the mailroom's returned packets")
-    rows["mirror, counsel's notices"] = (score(A, B, ask_a_roster(T, cases, "dependants"), ask_b_counsel(T, cases, ref)),
-                                         "roster linked through Benefits; counsel's rejection notices")
+    rows["cracker, ask A's roster gap cracked"] = (
+        score(A, B, ask_a_by(T, cases, ref, merge=False), ask_b_counsel(T, cases, ref)),
+        "as the cracker, with the register's filings and the tracker's cards")
+    rows["cracker, ask A's two IDs cracked"] = (
+        score(A, B, ask_a_by(T, cases, ref, sources=("roster", "counsel")), ask_b_counsel(T, cases, ref)),
+        "as the cracker, a spouse's two IDs taken as one person")
+    rows["mirror"] = (score(A, B, ask_a_by(T, cases, ref, sources=("roster",), links="benefits", merge=False),
+                            ask_b_dispatch(T, cases, ref)),
+                      "the roster's cards and categories, spouses linked through Benefits; the mailroom's returned packets")
+    rows["mirror, counsel's notices"] = (
+        score(A, B, ask_a_by(T, cases, ref, sources=("roster", "counsel"), links="benefits", merge=False),
+              ask_b_counsel(T, cases, ref)),
+        "the roster with counsel's approvals, spouses linked through Benefits; counsel's rejection notices")
     base = rows["cracker"][0]["total"]
-    cr = max(rows["cracker, most obvious device cracked"][0]["total"], rows["cracker, the other device cracked"][0]["total"])
+    cr_rows = ("cracker, most obvious device cracked", "cracker, the other device cracked",
+               "cracker, ask A's roster gap cracked", "cracker, ask A's two IDs cracked")
+    cr = max(rows[k][0]["total"] for k in cr_rows)
     mi = max(rows["mirror"][0]["total"], rows["mirror, counsel's notices"][0]["total"])
     lc = cr / N_ASK
     ls = mi / N_ASK
@@ -139,13 +135,17 @@ def sheets(target):
     off_call = 4.0 + W_IF + W_ASK * ls          # the mirror keeps the lead, a component the easy route also reads
     both = W_CALL + W_COMP + W_IF + W_ASK * base / N_ASK
     return dict(rows=rows, lc=lc, ls=ls, pair=(on_call + off_call) / 2, both_on_call=both, mirror_leak=ls * 100,
-                base=base, truth_a=A, truth_b=B)
+                base=base, truth_a=A, truth_b=B,
+                pair_by_row={k: (W_CALL + W_COMP + W_IF + W_ASK * rows[k][0]["total"] / N_ASK + off_call) / 2
+                             for k in cr_rows})
 
 
 if __name__ == "__main__":
     S = sheets(sys.argv[1])
     for k, (sc, how) in S["rows"].items():
         print("%-55s ask A %d/6  chart %d/6  ask B %d/8  (%s)" % (k, sc["ask_a"], sc["chart"], sc["ask_b"], how))
-    print("cracker keeps %d of %d ask cells; with its most obvious device cracked %.1f%% of ask weight; mirror %.1f%%; "
-          "pair ceiling %.1f; both top responses on the call with no device cracked %.1f" % (
-              S["base"], N_ASK, S["lc"] * 100, S["ls"] * 100, S["pair"], S["both_on_call"]))
+    print("cracker keeps %d of %d ask cells; with one device cracked at most %.1f%% of ask weight; mirror %.1f%%; "
+          "pair ceiling %.1f (%s); both top responses on the call with no device cracked %.1f" % (
+              S["base"], N_ASK, S["lc"] * 100, S["ls"] * 100, S["pair"],
+              ", ".join("%s %.1f" % (k.replace("cracker, ", ""), v) for k, v in S["pair_by_row"].items()),
+              S["both_on_call"]))

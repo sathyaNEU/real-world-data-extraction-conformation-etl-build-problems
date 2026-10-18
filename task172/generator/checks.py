@@ -28,6 +28,7 @@ import world as Wm     # noqa: E402
 
 M = C.MONTH_DAYS
 ROWS = []
+MIX = {}            # the quarter's category mix the golden reads, set in main
 
 
 def check(label, ok, detail=""):
@@ -36,7 +37,7 @@ def check(label, ok, detail=""):
 
 def qm(rens, comp_kw=None, sim_kw=None):
     comp = K.components(rens, **(comp_kw or {}))
-    w, info = K.simulate(comp, **(sim_kw or {}))
+    w, info = K.simulate(comp, **dict(dict(mix=MIX or None), **(sim_kw or {})))
     return float(np.quantile(w, 0.8)) / M, info
 
 
@@ -66,22 +67,28 @@ def main(target):
     W, R = P.records()
     Q = K.quote(target)
     T, cases, ref, rens, comp = Q["T"], Q["cases"], Q["ref"], Q["rens"], Q["comp"]
+    MIX.update(Q["mix"])
     gold = C.half_month(Q["months"])
     exp = C.EXPORT
 
     # ------------------------------------------------------------------ the golden and its edge
     check("golden quote 5.5 months", gold == 5.5, "%.3f months" % Q["months"])
-    check("golden mid-bin (a quarter-bin clear of each edge)", C.edge(Q["months"], 0.5) >= 0.125,
-          "edge distance %.3f" % C.edge(Q["months"], 0.5))
+    mg = L.margin(Q)
+    check("the margin rule: every construction, moved by the golden's largest one-sigma move, a quarter-bin clear of "
+          "both edges", mg["ok"], "%d constructions %.3f to %.3f; with one sigma %.3f to %.3f, edges %.3f and %.3f" % (
+              len(mg["var"]), min(mg["var"].values()), max(mg["var"].values()), mg["lo"], mg["hi"], mg["edge_lo"],
+              mg["edge_hi"]))
     fw = Wm.forward_truth(W)
     truth = float(np.quantile(fw, 0.8)) / M
     check("generator truth: the realised quarter's 80th percentile rounds to the golden", C.half_month(truth) == gold,
           "%.3f months over %d renewals" % (truth, len(fw)))
-    dpost = [(c.card.valid_to - c.received).days for c in W.cases if c.received and C.IFR <= c.received <= exp and
-             c.filed_by == "Counsel"]
-    mq, reach_m, cut_m = Wm.model_quantile(d_samples=dpost)
-    check("generator truth: the process's 80th percentile rounds to the golden", C.half_month(mq / M) == gold,
-          "%.3f months" % (mq / M))
+    pq, n_fw, _ = Wm.process_q80(W)
+    check("generator truth: the process 80th percentile (every renewal of the quarter re-run 200 times) rounds to the "
+          "golden", C.half_month(pq / M) == gold, "%.3f months over %d renewals" % (pq / M, n_fw))
+    fq = [cs for cs in W.cases if cs.received and C.Q_START <= cs.received <= C.Q_END and cs.filed_by == "Counsel"]
+    share9 = sum(cs.cat == "(c)(9)" for cs in fq) / len(fq)
+    check("the quarter's category mix read from the pack is the quarter's own (within three points)",
+          abs(Q["mix"]["(c)(9)"] - share9) < 0.03, "pack %.3f, world %.3f" % (Q["mix"]["(c)(9)"], share9))
 
     # ------------------------------------------------------------------ R1: the field's raw material ships
     rec = [r for r in rens if r["received"] and r["received"] <= exp]
@@ -171,7 +178,7 @@ def main(target):
     v, _ = qm(sf5)
     check("SF5 the wait to the card's delivery is another quantity (standard 4.2 rules it out)",
           "date of USCIS's decision notice" in " ".join(D.policy_text()) and C.half_month(v) != gold, "%.3f" % v)
-    w, _ = K.simulate(comp)
+    w, _ = K.simulate(comp, mix=MIX)
     v = float(np.quantile(w, 0.8)) / (365.25 / 12)
     check("SF6 a month of 365.25/12 days gives the same call", C.half_month(v) == gold, "%.3f" % v)
     check("SF7 rounding is pinned to the nearest half month (prompt, standard 4.3)",
@@ -187,7 +194,7 @@ def main(target):
     comp11 = dict(comp)
     comp11["D"] = np.array([(r["card_exp"] - r["received"]).days for r in rens if r["card_exp"] and
                             r["received"] >= dt.date(2026, 1, 1)], float)
-    v = float(np.quantile(K.simulate(comp11)[0], 0.8)) / M
+    v = float(np.quantile(K.simulate(comp11, mix=MIX)[0], 0.8)) / M
     check("SF11 card gaps from 2026 renewals only give the same call", C.half_month(v) == gold, "%.3f" % v)
     v = float(np.quantile(w, 0.8, method="linear")) / M
     v2 = float(np.quantile(w, 0.8, method="lower")) / M
@@ -197,20 +204,48 @@ def main(target):
           "%d" % len(late))
     v, _ = qm(renewals_with(T, cases, ref, appt="first"))
     check("SF14 the first appointment notice gives the same call", C.half_month(v) == gold, "%.3f" % v)
+    dn = defaultdict(set)
+    for n in T["notices"]:
+        if n["notice_type"] in ("Approval notice", "Denial notice"):
+            dn[ref.get(n["client_ref"])].add(K._d(n["notice_date"]))
+    both = [(c["decided"], dn[c["id"]]) for c in cases.values() if c["decided"] and c["id"] in dn]
+    check("SF15 the register's decided_on is the decision notice's date on every case both hold", len(both) > 3000 and
+          all(d in ds and len(ds) == 1 for d, ds in both), "%d cases" % len(both))
+    pol = " ".join(D.policy_text())
+    v, _ = qm(rens, sim_kw=dict(mix=None))
+    check("SF16 the record's own category mix in place of the quarter's gives the same call", C.half_month(v) == gold,
+          "%.3f" % v)
+    check("SF17 GM-07 1.4 files ask A's permit: the card approved for the person most recently, held to its last day",
+          "approved for the person most recently" in pol and "until its last day" in pol)
+    check("SF18 GM-07 1.4 files ask A's category: the one on the card's approval notice, not the roster's entry",
+          "category on its approval notice" in pol and "not always the category entered on HR's work permit roster" in pol)
+    check("SF19 GM-07 1.3 files ask A's current employees (Active on HR's program roster) and their spouses",
+          "shows the employee as Active" in pol and "spouses of current employees" in pol)
+    check("SF20 GM-07 2.4 files ask B's within 30 days (USCIS's receipt no later than the 30th day after the notice's "
+          "date); no refiling lands on day 30 or 31, so the inclusive and exclusive readings agree (asserted below)",
+          "no later than the 30th day after the date on the rejection notice" in pol)
+    check("SF21 GM-07 2.3 and 2.4 file ask B's filed again as USCIS's receipt", "filed on the date USCIS receives it" in pol
+          and "when USCIS receives it" in pol)
 
     # ------------------------------------------------------------------ constructions, one sigma, rivals
-    var = L.variants(Q)
-    worst = min(var.values(), key=lambda x: C.edge(x, 0.5))
-    check("every standard construction lands the golden bin a quarter-bin clear",
-          all(C.half_month(x) == gold and C.edge(x, 0.5) >= 0.125 for x in var.values()),
-          "%d constructions %.3f to %.3f, tightest edge %.3f" % (len(var), min(var.values()), max(var.values()),
-                                                                C.edge(worst, 0.5)))
-    sig = L.one_sigma(Q)
+    var, sig = mg["var"], mg["sig"]
+    check("every construction in the family lands the golden bin", all(C.half_month(x) == gold for x in var.values()),
+          "; ".join("%s %.3f" % (k[:38], v) for k, v in var.items()))
     check("a one-sigma move in each component leaves the quote", all(C.half_month(x) == gold for x in sig.values()),
           "%.3f to %.3f" % (min(sig.values()), max(sig.values())))
+    mr = L.misreads(Q)
+    check("misreads of a shipped record still land the bin (none is in the family)",
+          all(C.half_month(x) == gold for x in mr.values()), "; ".join("%s %.3f" % (k, v) for k, v in mr.items()))
+    thin = [k for k in routes if k.startswith("decided renewals with an appointment") and k.endswith("since the rule")
+            and not np.isnan(routes[k]) and routes["_n_lead_%s_post" % k.split(" days")[0].split()[-1]] < 15]
+    check("the long-lead analogs filed since the rule that land are thin (fewer than 15 renewals each)",
+          all(routes["_n_lead_%s_post" % k.split(" days")[0].split()[-1]] < 15 for k in thin
+              if C.half_month(routes[k]) == gold),
+          "; ".join("%s %.3f (n %d)" % (k.replace("decided renewals with an appointment ", ""), routes[k],
+                                       routes["_n_lead_%s_post" % k.split(" days")[0].split()[-1]]) for k in thin))
     natural = [k for k in routes if not k.startswith("_") and not k.startswith("cut at the card") and
                not k.startswith("every renewal cut") and not k.startswith("renewals decided after an expedite") and
-               k not in ("record plus 1.5 months", "post-rule record, 97.5th percentile")]
+               k not in ("record plus 1.5 months", "post-rule record, 97.5th percentile") and k not in thin]
     misses = {k: routes[k] for k in natural if not np.isnan(routes[k])}
     bad = [k for k, x in misses.items() if abs(C.half_month(x) - gold) < 0.5]
     check("every natural route misses the golden by a bin or more", not bad,
@@ -232,10 +267,16 @@ def main(target):
             whole.append(((end - r["received"]).days + add, 0))
     v = K.km_quantile(whole) / M
     check("the write-up's 7.0 rival holds on the whole record too", C.half_month(v) == 7.0, "%.3f" % v)
-    check("the subset at the forward exposure is empty (no decided renewal met the new delay)",
-          routes["_longest_decided_post_rule_lead"] < np.percentile(comp["L"], 10),
-          "longest decided post-rule lead %.0f days, forward tenth percentile %.0f" % (
-              routes["_longest_decided_post_rule_lead"], np.percentile(comp["L"], 10)))
+    p10 = float(np.percentile(comp["L"], 10))
+    dec_a = [r for r in rens if r["decided"] and not r["withdrawn"] and r["route"] == "appointment" and r["appt"]]
+    at_post = [r for r in dec_a if r["received"] >= C.IFR and (r["appt"] - r["received"]).days >= p10]
+    at_all = [r for r in dec_a if (r["appt"] - r["received"]).days >= p10]
+    q_all = float(np.quantile([(r["decided"] - r["received"]).days for r in at_all], 0.8)) / M if at_all else float("nan")
+    check("common-exposure screen: the decided renewals at the forward exposure filed since the rule are too few to read "
+          "a percentile from, and the whole record's (filed before the rule, their cards extended) miss the golden",
+          len(at_post) <= 5 and (len(at_all) < 5 or abs(C.half_month(q_all) - gold) >= 0.5),
+          "%d since the rule, %d in the whole record (80th percentile %.3f), at or past %.0f days" % (
+              len(at_post), len(at_all), q_all, p10))
     bt = L.backtest(Q)
     check("separation: the cut model predicts the post-rule renewals pending at expiry, the uncapped model does not",
           bt["uncapped_mae"] >= 3 * bt["capped_mae"] and bt["share_within_14"] >= 0.9,
@@ -247,17 +288,17 @@ def main(target):
           bt["uncapped_pred_median"] > 14 and bt["obs_median"] <= 7, "%.1f against %.0f days" % (
               bt["uncapped_pred_median"], bt["obs_median"]))
     # H14: the quote at the finer grain the data allows (components by category where the category has them)
-    per = []
-    for cat in C.CATS:
+    parts = []
+    for k, cat in enumerate(C.CATS):
         sub = [r for r in rens if r["cat"] == cat]
-        c2 = K.components(sub) if cat == "(c)(26)" else dict(K.components(rens), qrows=K.components(sub)["qrows"],
-                                                             pA=K.components(sub)["pA"])
-        per.append(float(np.quantile(K.simulate(c2)[0], 0.8)) / M)
-    check("H14 the quote holds with the components by category", all(C.half_month(x) == gold for x in per),
-          "(c)(9) %.3f, (c)(26) %.3f" % tuple(per))
+        c2 = dict(comp, pA=comp["pA_cat"][cat], qrows=K.components(sub)["qrows"])
+        parts.append(K.simulate(c2, seed=500 + k, n=int(K.N_SIM * Q["mix"][cat]))[0])
+    v = float(np.quantile(np.concatenate(parts), 0.8)) / M
+    check("H14 the quote at the finest grain the record allows (route share and review by category, mixed by the "
+          "quarter's categories)", C.half_month(v) == gold, "%.3f" % v)
     last12 = [r for r in rens if r["received"] >= dt.date(2025, 12, 1)]
     c3 = dict(comp, qrows=K.components(last12)["qrows"])
-    v = float(np.quantile(K.simulate(c3)[0], 0.8)) / M
+    v = float(np.quantile(K.simulate(c3, mix=MIX)[0], 0.8)) / M
     check("H14 the quote holds with the review from the last 12 months of receipts", C.half_month(v) == gold, "%.3f" % v)
 
     # ------------------------------------------------------------------ critical components
@@ -268,11 +309,16 @@ def main(target):
         check("CC1 the appointment lead rounds to 17 weeks, receipts %s to %s" % (a, b),
               round(np.median(s) / 7) == 17 and C.edge(np.median(s) / 7, 1) >= 0.1, "%.2f weeks" % (np.median(s) / 7))
     old = [(r["appt"] - r["received"]).days for r in rens if r["route"] == "appointment" and r["appt"] and
-           r["received"] < dt.date(2026, 9, 1)]
-    check("CC1 the earlier lead rounds to 4 weeks", round(np.median(old) / 7) == 4, "%.2f" % (np.median(old) / 7))
-    reaches = [K.simulate(K.components(rens, regime=rg))[1]["reach"] for rg in (
-        K.NEW_REGIME, (dt.date(2026, 11, 1), dt.date(2026, 11, 30)), (dt.date(2026, 9, 14), dt.date(2026, 11, 30)))]
-    check("CC2 more than half reach their card's expiry undecided under every lead window", min(reaches) > 0.55,
+           r["received"] < dt.date(2026, 1, 1)]
+    check("CC1 the lead through 2024 and 2025 rounds to 4 weeks", round(np.median(old) / 7) == 4 and
+          C.edge(np.median(old) / 7, 1) >= 0.1, "%.2f" % (np.median(old) / 7))
+    reaches = []
+    for rg in (K.NEW_REGIME, (dt.date(2026, 11, 1), dt.date(2026, 11, 30)), (dt.date(2026, 9, 14), dt.date(2026, 11, 30))):
+        for qm_ in ("km", "decided"):
+            for dfr in (C.IFR, C.RECORD_START):
+                reaches.append(K.simulate(K.components(rens, regime=rg, q_mode=qm_, d_from=dfr), mix=Q["mix"])[1]["reach_appt"])
+    check("CC2 about nine in ten of the quarter's appointment-route renewals reach their card's expiry undecided, under "
+          "every lead window, review estimator and card-gap window", 0.85 <= min(reaches) and max(reaches) < 0.95,
           "%.3f to %.3f" % (min(reaches), max(reaches)))
     ex = [r for r in rens if r["exp_req"] and r["decided"] and r["decided"] >= r["exp_req"]]
     e_all = np.median([(r["decided"] - r["exp_req"]).days for r in ex])
@@ -280,37 +326,137 @@ def main(target):
     check("CC3 the expedite response is about a week, accepted or all requests", 3.5 <= e_all < 10.5 and 3.5 <= e_acc < 10.5,
           "%.1f and %.1f days" % (e_all, e_acc))
     pend = [c for c in W.cases if c.received and C.IFR <= c.received and c.filed_by == "Counsel" and
-            c.w_nat > (c.card.valid_to - c.received).days and c.card.valid_to < exp and
-            not (c.principal.term and c.principal.term <= c.card.valid_to)]
-    check("the case log carries an expedite request for every post-rule renewal still in the team's care at expiry",
-          all(c.exp_req for c in pend), "%d renewals" % len(pend))
+            c.w_nat > (c.card.valid_to - c.received).days + 15 and c.card.valid_to + dt.timedelta(days=15) < exp and
+            not (c.principal.term and c.principal.term <= c.card.valid_to + dt.timedelta(days=15))]
+    check("the case log carries an expedite request for every post-rule renewal still pending in the team's care two "
+          "weeks past its card's expiry", all(c.exp_req for c in pend), "%d renewals" % len(pend))
+    # H2/H3: the write-up's other claims
+    summer = [(r["appt"] - r["received"]).days for r in rens if r["route"] == "appointment" and r["appt"] and
+              dt.date(2026, 6, 1) <= r["received"] <= dt.date(2026, 8, 23)]
+    check("H3 the lead rose to about 5 weeks by the summer of 2026 (receipts June to 23 August)",
+          round(np.median(summer) / 7) == 5, "%.2f weeks" % (np.median(summer) / 7))
+    check("H3 about half the quarter's renewals are (c)(9); fewer than three in ten (c)(9) renewals went to an "
+          "appointment against seven in ten (c)(26)", 0.45 <= Q["mix"]["(c)(9)"] < 0.55 and Q["pA_cat"]["(c)(9)"] < 0.3
+          and round(Q["pA_cat"]["(c)(26)"], 1) == 0.7, "mix %.3f; %.3f and %.3f" % (
+              Q["mix"]["(c)(9)"], Q["pA_cat"]["(c)(9)"], Q["pA_cat"]["(c)(26)"]))
+    offs = Counter()
+    for r in rens:
+        if r["exp_req"] and r["received"] >= C.IFR and r["card_exp"]:
+            o = (r["exp_req"] - r["card_exp"]).days
+            offs["on" if 0 <= o <= 3 and r["exp_req"] == C.next_busday(r["card_exp"]) else ("before" if o < 0 else "after")] += 1
+    check("H3 the team's requests come mostly on the card's expiry date (or the next business day), some days before "
+          "or after it", offs["on"] > 0.5 * sum(offs.values()) and offs["before"] >= 10 and offs["after"] >= 10,
+          str(dict(offs)))
+    check("H3 USCIS accepted most of the requests", 0.75 <= comp["accept"] < 0.95, "%.3f" % comp["accept"])
+    # option A: USCIS's response held across months of very different volume, and after the appointment queue tripled
+    exr = [r for r in rens if r["exp_req"] and r["received"] >= C.IFR and r["exp_out"] == "Accepted" and r["decided"]
+           and r["decided"] >= r["exp_req"]]
+    per_m = Counter(r["exp_req"].strftime("%Y-%m") for r in exr)
+    busy = {m for m, n in per_m.items() if n >= 2 * np.median(list(per_m.values()))}
+    e_busy = [(r["decided"] - r["exp_req"]).days for r in exr if r["exp_req"].strftime("%Y-%m") in busy]
+    e_rest = [(r["decided"] - r["exp_req"]).days for r in exr if r["exp_req"].strftime("%Y-%m") not in busy]
+    e_late = [(r["decided"] - r["exp_req"]).days for r in exr if r["exp_req"] >= dt.date(2026, 9, 1)]
+    e_early = [(r["decided"] - r["exp_req"]).days for r in exr if r["exp_req"] < dt.date(2026, 9, 1)]
+    check("option A: the expedite response is the same in the busiest request months and the rest, and since the "
+          "appointment queue tripled", busy and len(e_busy) >= 20 and abs(np.median(e_busy) - np.median(e_rest)) <= 2
+          and len(e_late) >= 20 and abs(np.median(e_late) - np.median(e_early)) <= 2,
+          "busiest months %s (%d requests, median %.1f days) against %.1f; from September 2026 %d requests, median "
+          "%.1f against %.1f; requests a month %d to %d" % (",".join(sorted(busy)), len(e_busy), np.median(e_busy),
+                                                             np.median(e_rest), len(e_late), np.median(e_late),
+                                                             np.median(e_early), min(per_m.values()), max(per_m.values())))
 
     # ------------------------------------------------------------------ asks: truth, devices, cracker, separation line
     def active(e):
         return e.hire <= exp and (e.term is None or e.term > exp)
-    ta = {(y, m, c): 0 for (y, m) in C.ASK_A_MONTHS for c in C.CATS}
-    a1 = Counter()
-    a5 = Counter()
+    latest, ties = {}, []
     for c in W.cards:
         if c.valid_from > exp or (c.case is not None and (c.case.withdrawn or c.case.received is None)):
             continue
-        if c.case is not None and c.case.decided and c.case.decided > exp:
+        if not (active(c.holder) if c.htype == "Employee" else active(c.holder.principal)):
             continue
-        cur = active(c.holder) if c.htype == "Employee" else active(c.holder.principal)
+        h = id(c.holder)
+        if h in latest and latest[h].valid_from == c.valid_from:
+            ties.append((latest[h], c))
+        if h not in latest or c.valid_from > latest[h].valid_from:
+            latest[h] = c
+    lo_w, hi_w = dt.date(2027, 6, 1), dt.date(2027, 9, 30)
+    check("ask A: GM-07 1.4 names one card per person wherever it counts (no current person with two cards approved "
+          "the same day holds either to a last day from June to September 2027)",
+          not any(lo_w <= x.valid_to <= hi_w for pair in ties for x in pair), "%d same-day pairs, none in the window" %
+          len(ties))
+    enr_active = {e["benefits_enrollment_id"] for e in T["employees"] if e["status"] == "Active"}
+    dep_linked = {d["dependant_id"] for d in T["dependants"] if d["relationship"] != "Child" and
+                  d["benefits_enrollment_id"] in enr_active}
+    ta = {(y, m, c): 0 for (y, m) in C.ASK_A_MONTHS for c in C.CATS}
+    a1, a2, a5, a3 = Counter(), Counter(), Counter(), Counter()
+    for c in latest.values():
         k = (c.valid_to.year, c.valid_to.month, c.cat)
-        if cur and k in ta:
-            ta[k] += 1
-            if not c.roster:
-                a1[k] += 1
-            elif c.roster_cat != c.cat:
-                a5[k] += 1
-                a5[(k[0], k[1], c.roster_cat)] += 1
+        if k not in ta:
+            continue
+        ta[k] += 1
+        if not c.roster:
+            a1[k] += 1
+        if c.htype == "Spouse" and c.holder.id not in dep_linked:
+            a2[k] += 1
+        if c.roster and c.roster_cat != c.cat:
+            a5[k] += 1
+        p = c.holder if c.htype == "Employee" else c.holder.principal
+        if c.cat == "(c)(9)" and p.gc_approved and p.gc_approved <= exp:
+            a3[k] += 1
     A = K.ask_a(T, cases, ref)
-    check("ask A: the pack's answer equals the clean truth, cell by cell", A == ta, str(sorted(A.items())))
-    check("ask A: device A1 (cards missing from the roster) moves every cell", all(a1[k] >= 1 for k in ta),
-          str(dict(a1)))
-    check("ask A: device A5 (category stored before the switch) moves every cell", all(a5[k] >= 1 for k in ta),
-          str(dict(a5)))
+    check("ask A: the pack's literal execution of GM-07 1.3 and 1.4 equals the clean truth, cell by cell", A == ta,
+          str(sorted(A.items())))
+    check("ask A: silent device A1 (the person's latest card never reached HR's roster) moves every cell",
+          all(a1[k] >= 1 for k in ta), str(dict(a1)))
+    check("ask A: silent device A2 (a spouse Benefits does not link to a current employee) moves every cell",
+          all(a2[k] >= 1 for k in ta), str(dict(a2)))
+    check("ask A: seen device A5 (the roster's category is not the approval's; GM-07 1.4) and hazard A3 (permanent "
+          "residents' last cards, GM-07 1.4 keeps them) are present", sum(a5.values()) >= 3 and sum(a3.values()) >= 1,
+          "A5 %s; A3 %s" % (dict(a5), dict(a3)))
+    # A6: a spouse who joined the plan after intake carries her MP- ID on Global Mobility's records and a dependant ID
+    # in Benefits and on the portal's uploads; an employee has one spouse, so the two IDs are one person
+    by_id = K.ask_a(T, cases, ref, merge=False)
+    moved6 = [k for k in A if by_id[k] != A[k]]
+    _, spons = K.holders_current(T, cases)
+    inv = defaultdict(set)
+    for sid, eid in spons.items():
+        inv[eid].add(sid)
+    pairs = {eid: ids for eid, ids in inv.items() if len(ids) > 1}
+    world_pair = {s.principal.id: {s.id, s.dep_id} for s in W.spouses if s.late_enroll}
+    held = defaultdict(set)
+    for c in K.cards_held(T, cases, ref):
+        held[c["holder"]].add((c["vf"], c["vt"]))
+    shared = sum(1 for eid, ids in pairs.items() if len(set.intersection(*[held[i] for i in ids])) > 0)
+    one_each = all(sum(1 for x in W.spouses if x.principal is e) <= 1 for e in W.emps if e.spouse is not None)
+    check("ask A: silent device A6 (one spouse under two IDs) moves five or more cells, and every household the pack "
+          "shows with two spouse IDs is one spouse's two IDs (an employee has one spouse; the pairs share a card)",
+          len(moved6) >= 5 and one_each and all(world_pair.get(eid) == ids for eid, ids in pairs.items()) and
+          shared >= 0.5 * len(pairs), "%d cells moved %s; %d households with two IDs, %d sharing a card" % (
+              len(moved6), {k: by_id[k] - A[k] for k in moved6}, len(pairs), shared))
+    # the call through ask A's devices un-cracked: roster cards and labels only, spouses linked through Benefits only
+    enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
+    dlink = {d["dependant_id"]: enroll[d["benefits_enrollment_id"]] for d in T["dependants"]
+             if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enroll}
+    act_e = {e["employee_id"] for e in T["employees"] if e["status"] == "Active"}
+    emp_ids = {e["employee_id"] for e in T["employees"]}
+    best = {}
+    for p_ in T["permits"]:
+        h, vf, vt = p_["holder_id"], K._d(p_["valid_from"]), K._d(p_["valid_to"])
+        cur = (h in act_e) if h in emp_ids else (dlink.get(h) in act_e)
+        if cur and vf <= exp and (h not in best or vf > best[h][0]):
+            best[h] = (vf, vt, p_["category"])
+    lpr = {t["applicant_id"] for t in T["tracker"] if t["i485_status"] == "Approved"}
+    g50 = int(round(Q["d_median"]))
+    nm = Counter()
+    for h, (vf, vt, cat) in best.items():
+        if not (cat == "(c)(9)" and h in lpr) and C.Q_START <= vt - dt.timedelta(days=g50) <= C.Q_END:
+            nm[cat] += 1
+    mix_bad = {c: nm[c] / sum(nm.values()) for c in C.CATS}
+    v_bad = float(np.quantile(K.simulate(comp, mix=mix_bad)[0], 0.8)) / M
+    check("separation line: the call through ask A's devices un-cracked is the same call within a day",
+          C.half_month(v_bad) == gold and abs(v_bad - Q["months"]) * M <= 1.0 + 1e-9,
+          "%.3f against %.3f; the quarter's (c)(9) share %.3f against %.3f" % (v_bad, Q["months"], mix_bad["(c)(9)"],
+                                                                           Q["mix"]["(c)(9)"]))
     tb = {}
     appl = Counter()
     selfref = Counter()
@@ -344,7 +490,7 @@ def main(target):
     T_cut["actions"] = [a for a in T["actions"] if a["action"] != "Notice forwarded by applicant"]
     T_cut["notices"] = [n for n in T["notices"] if n["notice_type"] != "Rejection notice"]
     Qc = K.components(K.renewals(T_cut, cases, ref))
-    v = float(np.quantile(K.simulate(Qc)[0], 0.8)) / M
+    v = float(np.quantile(K.simulate(Qc, mix=MIX)[0], 0.8)) / M
     check("separation line: the call reads no ask device (forwarded notices, rejection notices removed)",
           abs(v - Q["months"]) < 1e-9, "%.3f" % v)
 

@@ -2,10 +2,11 @@
 recomputes the quote by exact convolution rather than simulation, then both ask tables, and compares every owed figure
 with generator/figures.json at the prompt's rounding.
 
-For a renewal of the coming quarter the natural wait is the appointment lead (with the appointment share) plus the
-review; it is cut at the card gap plus the expedite response when the request is accepted. Because the cut happens
-only once the natural wait has passed the card's expiry, P(W > w) = P(natural > w) * (1 - a * P(gap + response <= w)),
-every distribution read from the record in whole days.
+For a renewal of the coming quarter the natural wait is the appointment lead (with its category's appointment share)
+plus the review; once the natural wait has passed the team's request (the card's expiry plus the request offset), an
+accepted request ends it at the request plus the expedite response. So P(W > w) = P(natural > w) * (1 - a * P(gap +
+offset + response <= w)), every distribution read from the record in whole days, the natural wait mixed over the
+quarter's categories.
 
     python3 task172/generator/verify.py task172/target"""
 from __future__ import annotations
@@ -23,6 +24,7 @@ from openpyxl import load_workbook
 EXPORT = dt.date(2026, 12, 4)
 RULE = dt.date(2025, 10, 30)
 LEAD_WINDOW = (dt.date(2026, 10, 1), dt.date(2026, 11, 30))
+QUARTER = (dt.date(2027, 1, 1), dt.date(2027, 3, 31))
 MONTH = 30.4
 FAILS = []
 
@@ -127,10 +129,10 @@ def main(target):
         c = case.get(k, {})
         st = stop.get(k) or (c.get("closed") if c.get("status") == "Closed - no longer tracked" else None)
         rq = sorted(req.get(k, []))
-        ren.append(dict(rcv=rcv, appt=day(ap[-1]["appointment_date"]) if ap else None, reuse=reuse and not ap,
-                        decided=decided, stop=st, card=c.get("card"), req=rq[-1] if rq else None))
+        ren.append(dict(rcv=rcv, cat=rc[0]["eligibility_category"], appt=day(ap[-1]["appointment_date"]) if ap else None,
+                        reuse=reuse and not ap, decided=decided, stop=st, card=c.get("card"), req=rq[-1] if rq else None))
     ren = [r for r in ren if r["appt"] or r["reuse"]]
-    pA = np.mean([r["appt"] is not None for r in ren])
+    pA = {cat: np.mean([r["appt"] is not None for r in ren if r["cat"] == cat]) for cat in ("(c)(9)", "(c)(26)")}
     L = np.array([(r["appt"] - r["rcv"]).days for r in ren if r["appt"] and LEAD_WINDOW[0] <= r["rcv"] <= LEAD_WINDOW[1]])
     qt, qe = [], []
     for r in ren:
@@ -148,13 +150,87 @@ def main(target):
             qt.append(t)
             qe.append(ev)
     SQ = kaplan_meier(qt, qe)
-    gap = np.array([(r["card"] - r["rcv"]).days for r in ren if r["card"] and r["rcv"] >= RULE])
-    with_req = [r for r in ren if r["req"]]
+    post = [r for r in ren if r["rcv"] >= RULE]
+    gap = np.array([(r["card"] - r["rcv"]).days for r in post if r["card"]])
+    with_req = [r for r in post if r["req"]]
     outs = [r["req"][1] for r in with_req if r["req"][1] in ("Accepted", "Denied")]
     acc = outs.count("Accepted") / len(outs)
     E = np.array([(r["decided"] - r["req"][0]).days for r in with_req if r["req"][1] == "Accepted" and r["decided"] and
                   r["decided"] >= r["req"][0]])
-    H = 800
+    OFF = np.array([(r["req"][0] - r["card"]).days for r in with_req if r["card"]])
+
+    # ------------------------------------------------------------------- ask A's records: each current person's permit
+    emp = rows_csv(os.path.join(target, "employees_2026-12.csv"))
+    dep = rows_csv(os.path.join(target, "dependants_2026-12.csv"))
+    permits = rows_xlsx(os.path.join(target, "work_permits_2026-12.xlsx"), "Permits")
+    tracker = rows_xlsx(os.path.join(target, "green_card_tracker_2026-12.xlsx"), "Applicants")
+    active = {e["employee_id"] for e in emp if e["status"] == "Active"}
+    employees = {e["employee_id"] for e in emp}
+    sponsor = {}
+    for p in permits:
+        if p.get("household_employee_id"):
+            sponsor.setdefault(p["holder_id"], p["household_employee_id"])
+    for c in case.values():
+        if c["ptype"] == "Spouse" and c["sponsor"]:
+            sponsor.setdefault(c["person"], c["sponsor"])
+    for t in tracker:
+        if t["relationship"] == "Spouse":
+            sponsor.setdefault(t["applicant_id"], t["principal_employee_id"])
+    enr = {e["benefits_enrollment_id"]: e["employee_id"] for e in emp}
+    for d in dep:
+        if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enr:
+            sponsor.setdefault(d["dependant_id"], enr[d["benefits_enrollment_id"]])
+    cards = {}                      # (holder, first day) -> [last day, category, from a filing]
+
+    def put(h, vf, vt, cat, filing):
+        if not (h and vf and vt) or vf > EXPORT:
+            return
+        cur = cards.get((h, vf))
+        if cur is None:
+            cards[(h, vf)] = [vt, cat, filing]
+        elif filing and not cur[2]:
+            cards[(h, vf)] = [vt, cat, True]
+    for p in permits:
+        put(p["holder_id"], day(p["valid_from"]), day(p["valid_to"]), p["category"], False)
+    for c in case.values():
+        if c["status"] == "Approved" and c["new"] and c["decided"]:
+            put(c["person"], c["decided"], c["new"], c["cat"], True)
+    for n in notices:
+        if n["notice_type"] == "Approval notice":
+            c = case.get(key.get(n["client_ref"]))
+            if c:
+                put(c["person"], day(n["valid_from"]), day(n["valid_to"]), n["eligibility_category"], True)
+    for t in tracker:
+        if t["ead_approved"] and t["ead_valid_to"]:
+            put(t["applicant_id"], day(t["ead_approved"]), day(t["ead_valid_to"]), "(c)(9)", True)
+    permit = {}                     # person -> the card approved most recently; a spouse is her household (an employee
+    for (h, vf), (vt, cat, _) in cards.items():     # has one), whichever ID a record files her card under
+        person = h if h in employees else ("spouse of", sponsor.get(h))
+        cur = (h in active) if h in employees else (sponsor.get(h) in active)
+        if not cur:
+            continue
+        if person not in permit or vf > permit[person][0]:
+            permit[person] = (vf, vt, cat, _)
+        elif vf == permit[person][0] and _ and not permit[person][3]:
+            permit[person] = (vf, vt, cat, True)     # one card under two IDs: the approval's category stands
+    permit = {k: v[:3] for k, v in permit.items()}
+
+    # the quarter's categories: current permits whose renewal reaches USCIS in the quarter (last day less the median
+    # card gap), less the (c)(9) permits of applicants whose adjustment is approved
+    lpr = {t["applicant_id"] if t["relationship"] == "Principal" else ("spouse of", t["principal_employee_id"])
+           for t in tracker if t["i485_status"] == "Approved"}
+    g50 = int(round(float(np.median(gap))))
+    nmix = defaultdict(int)
+    for h, (vf, vt, cat) in permit.items():
+        if cat == "(c)(9)" and h in lpr:
+            continue
+        if QUARTER[0] <= vt - dt.timedelta(days=g50) <= QUARTER[1]:
+            nmix[cat] += 1
+    tot = sum(nmix.values())
+    mix = {cat: nmix[cat] / tot for cat in ("(c)(9)", "(c)(26)")}
+    pA_mix = sum(mix[c] * pA[c] for c in mix)
+
+    H = 900
 
     def sq(k):
         k = np.asarray(k)
@@ -165,24 +241,32 @@ def main(target):
     w = np.arange(H)
     pl = np.bincount(L.astype(int), minlength=H)[:H] / len(L)
     s_appt = np.array([np.sum(pl * sq(x - np.arange(H))) for x in w])
-    s_nat = (1 - pA) * sq(w) + pA * s_appt
+    s_nat = (1 - pA_mix) * sq(w) + pA_mix * s_appt
+    lo = int(min(0, OFF.min()))
     pd_ = np.bincount(gap.astype(int), minlength=H)[:H] / len(gap)
+    po = np.bincount((OFF - lo).astype(int)) / len(OFF)
     pe = np.bincount(E.astype(int), minlength=H)[:H] / len(E)
-    g = np.cumsum(np.convolve(pd_, pe)[:H])
-    S_w = s_nat * (1 - acc * g)
+    conv = np.convolve(np.convolve(pd_, po), pe)
+    g = np.cumsum(conv)                           # index i of the convolution is day i + lo
+    G = np.array([g[min(i - lo, len(g) - 1)] if i - lo >= 0 else 0.0 for i in range(H)])
+    S_w = s_nat * (1 - acc * G)
     q80 = int(np.argmax(1 - S_w >= 0.8))
     months = q80 / MONTH
     quote = np.floor(months * 2 + 0.5) / 2
-    reach = float(np.sum(np.convolve(pd_, np.ones(1))[:H] * s_nat))
-    say(quote == figs["quote_months"], "the quote recomputes by exact convolution", "%d days, %.3f months, %.1f" % (
-        q80, months, quote))
+    say(quote == figs["quote_months"], "the quote recomputes by exact convolution", "%d days, %.3f months, %.1f (the "
+        "quarter %.0f%% (c)(9), appointment share %.3f)" % (q80, months, quote, 100 * mix["(c)(9)"], pA_mix))
     edge = 0.25 - abs(months - quote)
     say(edge >= 0.125, "the quote sits a quarter-bin clear of its edges", "edge distance %.3f" % edge)
     say(round(np.median(L) / 7) == figs["lead_weeks_now"], "the appointment lead now set", "%.2f weeks" % (
         np.median(L) / 7))
-    oldL = [(r["appt"] - r["rcv"]).days for r in ren if r["appt"] and r["rcv"] < dt.date(2026, 9, 1)]
-    say(round(np.median(oldL) / 7) == figs["lead_weeks_before"], "the earlier lead", "%.2f weeks" % (np.median(oldL) / 7))
-    say(reach > 0.5, "more than half reach their card's expiry undecided", "%.3f" % reach)
+    oldL = [(r["appt"] - r["rcv"]).days for r in ren if r["appt"] and r["rcv"] < dt.date(2026, 1, 1)]
+    say(round(np.median(oldL) / 7) == figs["lead_weeks_before"], "the lead through 2024 and 2025", "%.2f weeks" % (
+        np.median(oldL) / 7))
+    # appointment-route renewals of the quarter past their card's expiry undecided: P(L + Q > D)
+    pdist = np.bincount(gap.astype(int), minlength=H)[:H] / len(gap)
+    reach_appt = float(np.sum(pdist * s_appt))
+    say(abs(reach_appt - figs["reach_appt_share"]) < 0.03 and 0.85 <= reach_appt < 0.95,
+        "about nine in ten appointment-route renewals reach the card's expiry undecided", "%.3f" % reach_appt)
     say(round(np.median(E) / 7) == figs["expedite_response_weeks"], "the expedite response, about a week",
         "%.1f days" % np.median(E))
     # the rival the write-up names: the record's own 80th percentile, open renewals censored
@@ -201,46 +285,9 @@ def main(target):
         "%.3f months" % (rec80 / MONTH))
 
     # ------------------------------------------------------------------- ask A
-    emp = rows_csv(os.path.join(target, "employees_2026-12.csv"))
-    dep = rows_csv(os.path.join(target, "dependants_2026-12.csv"))
-    permits = rows_xlsx(os.path.join(target, "work_permits_2026-12.xlsx"), "Permits")
-    tracker = rows_xlsx(os.path.join(target, "green_card_tracker_2026-12.xlsx"), "Applicants")
-    active = {e["employee_id"] for e in emp if e["status"] == "Active"}
-    employees = {e["employee_id"] for e in emp}
-    sponsor = {}
-    for c in case.values():
-        if c["ptype"] == "Spouse" and c["sponsor"]:
-            sponsor[c["person"]] = c["sponsor"]
-    for t in tracker:
-        if t["relationship"] == "Spouse":
-            sponsor.setdefault(t["applicant_id"], t["principal_employee_id"])
-    for p in permits:
-        if p.get("household_employee_id"):
-            sponsor.setdefault(p["holder_id"], p["household_employee_id"])
-    enr = {e["benefits_enrollment_id"]: e["employee_id"] for e in emp}
-    for d in dep:
-        if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enr:
-            sponsor.setdefault(d["dependant_id"], enr[d["benefits_enrollment_id"]])
-    cards = {}
-    for p in permits:
-        cards.setdefault((p["holder_id"], day(p["valid_to"])), (day(p["valid_from"]), p["category"]))
-    for c in case.values():
-        if c["status"] == "Approved" and c["new"]:
-            cards[(c["person"], c["new"])] = (c["decided"], c["cat"])
-    for n in notices:
-        if n["notice_type"] == "Approval notice":
-            c = case.get(key.get(n["client_ref"]))
-            if c:
-                cards[(c["person"], day(n["valid_to"]))] = (day(n["valid_from"]), n["eligibility_category"])
-    for t in tracker:
-        if t["ead_valid_to"]:
-            cards[(t["applicant_id"], day(t["ead_valid_to"]))] = (day(t["ead_approved"]), "(c)(9)")
     got = defaultdict(int)
-    for (h, vt), (vf, cat) in cards.items():
-        if not vf or vf > EXPORT:
-            continue
-        cur = (h in active) if h in employees else (sponsor.get(h) in active)
-        if cur and vt.year == 2027 and vt.month in (7, 8, 9):
+    for h, (vf, vt, cat) in permit.items():
+        if vt.year == 2027 and vt.month in (7, 8, 9):
             got["2027-%02d %s" % (vt.month, cat)] += 1
     for k, v in figs["ask_a"].items():
         say(got[k] == v, "ask A " + k, "%d" % got[k])
