@@ -353,6 +353,14 @@ the ladder.
   separations first spends the design time twice: task194's architecture 3 had every filed floor cleared,
   1.50x on rung 0 and 2.008x on the decisive rung, and died anyway because 6 of 22 reflexes reached the
   golden, the worst at 3.47x.
+  **Orthogonality is a construction, not a check.** With the 9 to 16 units a slate-valued call carries, a
+  driver drawn independently of the visible attributes still correlates with one of them up to about 0.75
+  by chance: task182's first model hit +0.751 against night share on its first draw. Residualise the
+  driver against every visible attribute at draw time, which holds the maximum absolute correlation at
+  0.000, and then assert it. Drawing independently and testing afterwards costs a redraw every few seeds.
+  **And a slate needs as many real effects as it has places.** An internally standardised score puts every
+  non-anomalous unit at exactly 1.00, so a slate of k has its boundary inside the noise unless k units
+  carry a real effect; task182's first sweep failed on that before its realism problem even appeared.
   **What makes a reflex reach it is a correlation the designer put there.** If the thing that creates the
   signal also predicts the outcome's level, a finer standardisation gets the answer for free: there the
   lag's depth followed the complication groups, those groups come from old, comorbid, long-staying
