@@ -79,17 +79,29 @@ def main(target, golden):
             return None
         return "single" if a["NO-ENG"] == "1" else "multi"
 
-    by_hex = {}
+    by_hex, by_n = {}, {}
     for g in regs:
         by_hex.setdefault(g[1], []).append(g)
+        by_n.setdefault(g[0], []).append(g)
 
-    def aircraft(h, day):
+    def aircraft(h, day, fid):
+        # the registration that held the address that day; an operation that broadcast as its flight ID the N-number
+        # of another airframe registered that day is that airframe's
         gs = by_hex.get(h, [])
+        out = None
         for g in gs:
             if g[5] is not None and g[4] <= day < g[5]:
-                return g
-        cur = [g for g in gs if g[5] is None]
-        return cur[0] if cur else None
+                out = g
+        if out is None:
+            cur = [g for g in gs if g[5] is None]
+            out = cur[0] if cur else None
+        f = re.sub(r"[\s-]", "", fid or "").upper()
+        if f:
+            f = f if f.startswith("N") else "N" + f
+            for g in by_n.get(f, []):
+                if g[4] <= day and (g[5] is None or day < g[5]) and (out is None or g[2:4] != out[2:4]):
+                    out = g
+        return out
 
     # the tower hours
     wb = openpyxl.load_workbook(t("directory"), read_only=True, data_only=True)
@@ -128,7 +140,7 @@ def main(target, golden):
             n = 2 if e == "touch_and_go" else 1
             if l in hours and open_(l, ts):
                 heard_hours[l] += n
-            g = aircraft(h, ts.date())
+            g = aircraft(h, ts.date(), r["flight_id"])
             c = engines(g[2]) if g else None
             if c:
                 lead[l] += factors[(c, e)] * n
@@ -156,9 +168,8 @@ def main(target, golden):
     say("counted fields: %d towers and %d count studies" % (len(towers), len(study)), len(unrec) == 10)
 
     # the based piston airplanes the network never recorded (every address the airframe carried in 2026)
-    by_n, by_air = {}, {}
+    by_air = {}
     for g in regs:
-        by_n.setdefault(g[0], []).append(g)
         by_air.setdefault((g[3], g[2]), []).append(g)
     nd = {l: 0 for l in dirx}
     wb = openpyxl.load_workbook(t("based"), read_only=True, data_only=True)

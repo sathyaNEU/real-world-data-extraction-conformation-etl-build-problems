@@ -307,44 +307,84 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
 
     # ------------------------------------------------------------------ separation: the ask's device and the call
     cur = G.inventory(how="current")
-    check("separation: today's register in place of the register's history leaves every non-towered field's lead, "
-          "the counted fields' unrecorded operations and k unchanged",
-          all(abs(cur["lead"][l] - lead[l]) < 1e-9 for l in W.UNTOWERED) and cur["unrec"] == gi["unrec"] and
-          abs(cur["k"] - gi["k"]) < 1e-12)
+    reg = G.inventory(how="asof")
+    for nm, inv in (("today's register", cur), ("the register's own dates", reg)):
+        check("separation: %s in place of the aircraft that broadcast each operation leaves every non-towered "
+              "field's lead, the counted fields' unrecorded operations and k unchanged" % nm,
+              all(abs(inv["lead"][l] - lead[l]) < 1e-9 for l in W.UNTOWERED) and inv["unrec"] == gi["unrec"] and
+              abs(inv["k"] - gi["k"]) < 1e-12)
+    ev_reg = G.priced("asof")
+    differ = ev[ev["cls"].values != ev_reg["cls"].values]
+    check("separation: the %d operations the register's own dates price as another aircraft's are all at the "
+          "towered fields" % len(differ), len(differ) > 1500 and set(differ["site"]) <= set(W.TOWERED),
+          sorted(set(differ["site"])))
     moved = [g for g in R["regs"] if not g["current"] and g["cancel"].year == 2026 and
-             any(c["current"] and c["hex"] == g["hex"] and c["serial"] != g["serial"] for c in R["regs"])]
-    before = ev[ev["icao24"].isin({g["hex"] for g in moved})]
-    cut = {g["hex"]: g["cancel"] for g in moved}
-    before = before[[d < cut[h] for h, d in zip(before["icao24"], before["date"])]]
-    check("separation: the %d addresses that passed in 2026 to another aircraft carried the piston airplanes' %d "
-          "events before the change at the towered fields only" % (len(moved), len(before)),
-          len(moved) == 8 and set(before["site"]) <= set(W.TOWERED) and len(before) > 1000, sorted(set(before["site"])))
+             any(c["current"] and c["hex"] == g["hex"] and (c["serial"], c["model"]) != (g["serial"], g["model"])
+                 for c in R["regs"])]
+    holder = {g["hex"]: [c for c in R["regs"] if c["current"] and c["hex"] == g["hex"]][0] for g in moved}
+    kinds = sorted(holder[g["hex"]]["cls"] for g in moved)
+    check("ask: %d N-numbers passed in 2026 to another airframe, %d of them from a piston airplane to a turbine and "
+          "%d to a piston airplane of the same kind" % (len(moved), kinds.count("other"), len(moved) -
+                                                         kinds.count("other")),
+          len(moved) == 12 and kinds.count("other") == 8 and all(g["piston"] for g in moved), kinds)
+    dev = []
+    for g in moved:
+        if holder[g["hex"]]["cls"] != "other":
+            continue
+        newer = [c for c in R["regs"] if c["current"] and (c["serial"], c["model"]) == (g["serial"], g["model"])]
+        e = ev[(ev["icao24"] == g["hex"]) & (ev["date"] >= g["cancel"]) & (ev["cls"] != "other")]
+        dev.append((g["n"], newer[0]["n"] if newer else None, len(e), set(e["flight_id"].fillna(""))))
+    check("ask device: after each of the eight moves to a turbine the old airplane flew %d operations under its old "
+          "address, every one broadcasting its new N-number (the register's same airframe), none blank" % sum(
+              d[2] for d in dev), len(dev) == 8 and all(d[1] and d[2] > 0 and d[3] == {d[1]} for d in dev), dev)
+    first = {}
+    for g in moved:
+        h = holder[g["hex"]]
+        if h["cls"] != "other":
+            continue
+        e = ev[(ev["icao24"] == g["hex"]) & (ev["cls"] == "other")]
+        first[g["n"]] = (e["date"].min(), g["cancel"])
+    check("ask device: each turbine's first operation under the number came weeks to months after the Registry's "
+          "move (%d to %d days)" % (min((a - b).days for a, b in first.values()),
+                                    max((a - b).days for a, b in first.values())),
+          all((a - b).days >= 25 for a, b in first.values()), first)
 
     # ------------------------------------------------------------------ the ask: the towered fields
-    stops = {"today's register (the cracker)": cur}
+    stops = {"the register's own dates (the cracker)": reg, "today's register": cur}
     drop = B.Pack(target, _cache=cache)
     drop.ev = drop.ev[~drop.ev["icao24"].isin({g["hex"] for g in moved})]
     stops["the passed addresses' events dropped"] = drop.inventory()
     allyear = B.Pack(target, _cache=cache)
     for g in allyear.R["regs"]:
-        if g in moved:
+        if any(g is m for m in moved) or (not g["current"] and g["hex"] in holder and g["cancel"].year == 2026):
             g["_cancel"] = g["cancel"]
             g["cancel"] = dt.date(2027, 12, 31)
-    stops["the passed addresses read as the piston airplane all year"] = allyear.inventory()
+    stops["the passed addresses read as the piston airplane all year"] = allyear.inventory(how="asof")
     for g in allyear.R["regs"]:
         if "_cancel" in g:
             g["cancel"] = g.pop("_cancel")
     for k, inv in stops.items():
         miss = sum((round(inv["lead"][l]) != gk[l]) + (round(inv["ops"][l] / 100.0) != go[l]) for l in W.TOWERED)
-        check("ask: %s misses %d of the 12 towered figures" % (k, miss), miss == 12 if "cracker" in k else miss >= 6)
+        check("ask: %s misses %d of the 12 towered figures" % (k, miss),
+              miss == 12 if k.startswith(("the register's", "today's")) else miss >= 6)
+    for k, inv in (("the register's own dates", reg), ("today's register", cur)):
+        gap = min(min(max(gk[l] - 0.5 - inv["lead"][l], inv["lead"][l] - gk[l] - 0.5) for l in W.TOWERED),
+                  min(max(go[l] * 100 - 50 - inv["ops"][l], inv["ops"][l] - go[l] * 100 - 50) for l in W.TOWERED) / 400)
+        check("ask: %s lands every towered figure outside the golden's bin by at least 0.25 kg and 100 operations" % k,
+              all(max(gk[l] - 0.5 - inv["lead"][l], inv["lead"][l] - gk[l] - 0.5) >= 0.25 and
+                  max(go[l] * 100 - 50 - inv["ops"][l], inv["ops"][l] - go[l] * 100 - 50) >= 100 for l in W.TOWERED),
+              round(gap, 3))
     for k in ("L1 times read at UTC-8 all year", "SF10 tower hours without the winter hours and closed days",
               "SF9 the towers' military columns taken as civil"):
         inv = vinv[k]
         mv = sum((round(inv["lead"][l]) != gk[l]) + (round(inv["ops"][l] / 100.0) != go[l]) for l in W.TOWERED)
         check("ask hazard %s moves %d towered figures" % (k, mv), mv >= 1)
     deltas = {l: (lead[l] - cur["lead"][l], ops[l] - cur["ops"][l]) for l in W.TOWERED}
-    check("ask: the device moves every tower by at least 1 kg and 500 operations",
+    check("ask: today's register moves every tower by at least 1 kg and 500 operations",
           all(d[0] >= 1.0 and d[1] >= 500 for d in deltas.values()), deltas)
+    dreg = {l: (round(lead[l] - reg["lead"][l], 2), int(ops[l] - reg["ops"][l])) for l in W.TOWERED}
+    check("ask: the register's own dates move every tower by at least 0.75 kg and 300 operations",
+          all(d[0] >= 0.75 and d[1] >= 300 for d in dreg.values()), dreg)
 
     # ------------------------------------------------------------------ bins
     e1 = {l: edge(lead[l], 1.0) for l in B.FIELDS}

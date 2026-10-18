@@ -8,6 +8,7 @@ import datetime as dt
 import numpy as np
 
 import activity as A
+import catalog as CT
 import fleet as FL
 import world as W
 
@@ -50,7 +51,8 @@ def derive(x):
     rows = []
     for aid, lid, t, kind, itin in ops:
         a = ac[aid]
-        rows.append(dict(a=a, lid=lid, t=t, kind=kind, itin=itin or a["role"] == "survey", blank=aid in blank_id))
+        rows.append(dict(a=a, lid=lid, t=t, kind=kind, itin=itin or a["role"] == "survey",
+                         blank=aid in blank_id and not a.get("mover")))
     return rows
 
 
@@ -72,6 +74,12 @@ def event_rows(x):
             wind[key] = 0 if rng.random() < 0.72 else 1
         if a.get("stale_flight_id") and d >= a["changed_on"]:
             fid = a["n_before"]
+        elif a.get("mover") and d >= a["fid_from"]:      # the old airplane's pilot broadcasting its new number
+            fid = a["n_after"]
+        elif a.get("swap_on") and a["fid_from_b"] <= d < a["swap_on"] and not r["blank"]:
+            fid = a["n_new_b"]
+        elif a.get("callsign") and not r["blank"]:
+            fid = a["callsign"]
         else:
             fid = "" if r["blank"] else n_at(a, d)
         u = W.to_utc(r["t"]) + dt.timedelta(seconds=int(rng.integers(0, 60)))
@@ -109,20 +117,21 @@ def _ymd(d):
 
 
 def _kit(a):
-    return ("VANS AIRCRAFT INC", "RV-7A") if a["model"] == "05628KW" else ("", "")
+    k = CT.BY_CODE[a["reg_model"]]["kit"]
+    return k if k else ("", "")
 
 
 def master_rows(x):
     out = []
     for r in FL.REG["master"]:
         a = r["a"]
-        m = FL.MODEL_BY_CODE[a["model"]]
+        m = CT.BY_CODE[a["reg_model"]]
         hx = FL.icao_hex(r["n"])
         kit = _kit(a)
         exp = r["issued"].replace(year=r["issued"].year + 7) if not (r["issued"].month == 2 and r["issued"].day == 29) \
             else dt.date(r["issued"].year + 7, 3, 1)
-        out.append([r["n"][1:], a["serial"], a["model"], m[8] or "", str(a["year"]), a["kind_code"], "7",
-                    _ymd(r["last"]), _ymd(r["issued"]), a["cert"], str(m[3]), str(m[4]), r["status"],
+        out.append([r["n"][1:], a["reg_serial"], m["code"], a["reg_engine"], str(a["year"]), a["kind_code"], "7",
+                    _ymd(r["last"]), _ymd(r["issued"]), a["cert"], str(m["ta"]), str(m["te"]), r["status"],
                     "%08o" % int(hx, 16),
                     a["fract"], _ymd(a["air_worth"]), _ymd(exp), a["uid"], kit[0], kit[1], hx])
     out.sort(key=lambda z: z[0])
@@ -133,11 +142,11 @@ def dereg_rows(x):
     out = []
     for r in FL.REG["dereg"]:
         a = r["a"]
-        m = FL.MODEL_BY_CODE[a["model"]]
+        m = CT.BY_CODE[a["reg_model"]]
         hx = FL.icao_hex(r["n"])
         kit = _kit(a)
         last = r["cancel"]
-        out.append([r["n"][1:], a["serial"], a["model"], m[8] or "", str(a["year"]), a["cert"], "7",
+        out.append([r["n"][1:], a["reg_serial"], m["code"], a["reg_engine"], str(a["year"]), a["cert"], "7",
                     _ymd(a["air_worth"]), _ymd(r["cancel"]), "%08o" % int(hx, 16), r["exp"], _ymd(last),
                     _ymd(r["issued"]), kit[0], kit[1], hx])
     out.sort(key=lambda z: (z[0], z[8]))
@@ -145,22 +154,20 @@ def dereg_rows(x):
 
 
 def acftref_rows(x):
-    used = {r["a"]["model"] for r in FL.REG["master"]} | {r["a"]["model"] for r in FL.REG["dereg"]}
+    used = {r["a"]["reg_model"] for r in FL.REG["master"]} | {r["a"]["reg_model"] for r in FL.REG["dereg"]}
     out = []
-    for m in FL.MODELS:
-        if m[0] not in used:
+    for m in CT.CATALOG:
+        if m["code"] not in used:
             continue
-        code, mfr, model, ta, te, ne, seats, bc = m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7]
-        out.append([code, mfr, model, str(ta), str(te), "1", str(bc), str(ne), str(seats), FL.weight_class(code),
-                    str(FL.SPEED[code])])
+        out.append([m["code"], m["mfr"], m["model"], str(m["ta"]), str(m["te"]), "1", str(m["bc"]), str(m["ne"]),
+                    str(m["seats"]), CT.weight_class(m["wt"]), str(m["spd"])])
     out.sort(key=lambda z: z[0])
     return out
 
 
 def engine_rows(x):
-    used = {FL.MODEL_BY_CODE[r["a"]["model"]][8] for r in FL.REG["master"]} | \
-           {FL.MODEL_BY_CODE[r["a"]["model"]][8] for r in FL.REG["dereg"]}
-    out = [[e[0], e[1], e[2], str(e[3]), str(e[4]), str(e[5])] for e in FL.ENGINES if e[0] in used]
+    used = {r["a"]["reg_engine"] for r in FL.REG["master"]} | {r["a"]["reg_engine"] for r in FL.REG["dereg"]}
+    out = [[e[0], e[1], e[2], str(e[3]), str(e[4]), str(e[5])] for e in CT.ENGINES if e[0] in used]
     out.sort(key=lambda z: z[0])
     return out
 
@@ -257,23 +264,15 @@ def monthly(daily):
 
 
 # ---------------------------------------------------------------------------------------------- based aircraft
-TYPE_WORD = {"single": "Single Engine", "multi": "Multi Engine", "rotor": "Helicopter", "glider": "Glider"}
-JETS = {"2075340", "1370512"}
-PRETTY = {"CESSNA": "Cessna", "PIPER": "Piper", "CIRRUS DESIGN CORP": "Cirrus", "BEECH": "Beech", "MOONEY": "Mooney",
-          "DIAMOND": "Diamond", "VANS": "Vans", "AERONCA": "Aeronca", "TAYLORCRAFT": "Taylorcraft",
-          "LUSCOMBE": "Luscombe", "ERCO": "Ercoupe", "STINSON": "Stinson", "PILATUS": "Pilatus", "EMBRAER": "Embraer",
-          "AIRBUS HELICOPTERS": "Airbus", "BELL": "Bell", "SCHWEIZER": "Schweizer"}
-
-
 def based_type(a):
-    m = FL.MODEL_BY_CODE[a["model"]]
-    if a["model"] in JETS:
+    m = CT.BY_CODE[a["reg_model"]]
+    if m["te"] == 5:
         return "Jet"
-    if m[3] == 6:
+    if m["ta"] == 6:
         return "Helicopter"
-    if m[3] == 1:
+    if m["ta"] == 1:
         return "Glider"
-    return "Single Engine" if m[3] == 4 else "Multi Engine"
+    return "Single Engine" if m["ta"] == 4 else "Multi Engine"
 
 
 def based_list(x):
@@ -304,16 +303,22 @@ def based_rows(x):
     """{county: [rows]}, each row [LocID, airport name, N-number as the county wrote it, make/model, type,
     validated date]."""
     rng = np.random.default_rng(4753)
+    rn = np.random.default_rng(4754)
     names = {f["lid"]: (f["name"], f["county"]) for f in W.F}
     names.update({lid: (nm, c) for lid, nm, c in W.STRIPS})
+    # each airport's sponsor writes make and model its own way: as the owner gave it, some in capitals
+    caps = {lid: (sum(map(ord, lid)) % 5 == 0) for lid in names}
     sheets = {c: [] for c in W.COUNTIES}
     for a in based_list(x):
         nm, county = names[a["home"]]
-        m = FL.MODEL_BY_CODE[a["model"]]
-        mm = "%s %s" % (PRETTY.get(m[1], m[1].title()), m[2])
-        if rng.random() < 0.18:
+        cands = CT.BY_CODE[a["reg_model"]]["names"]
+        mm = cands[int(rn.integers(0, len(cands)))]
+        rng.random()
+        if caps[a["home"]]:
             mm = mm.upper()
         val = dt.date(2026, int(rng.integers(9, 13)), int(rng.integers(1, 29)))
+        if a.get("cancelled_on") and val >= a["cancelled_on"]:   # validated while the registration stood
+            val = a["cancelled_on"] - dt.timedelta(days=9 + int(rn.integers(0, 40)))
         sheets[county].append([a["home"], nm, _nfmt(a["n"], county, rng), mm, based_type(a), val])
     for c in sheets:
         sheets[c].sort(key=lambda z: (z[0], z[2].strip().upper().lstrip("N")))

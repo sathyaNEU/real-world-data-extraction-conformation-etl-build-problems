@@ -1,35 +1,6 @@
 # task470 design note: Corrisan Valley's 2027 unleaded avgas grants
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Leak check
-
-`leak.py --asof 2027-02-12`: REVIEW, no LEAK. Each REVIEW line answered: the guidelines carry 12.5 kg, the round's
-threshold, which every literal reading uses; the method, the network and register notes and the two count reports
-share the inventory's own words (operation, network, register, recorded, counts) and name no estimator, rate per
-airplane or never-recorded set; the 5010 records (the declared wrong-basis distractor), the directory and the based
-list name the fields beside counts, elevations and N-numbers and rank nothing on the call. Harmless.
-
-Reader, round 1 (answers appended to `leak_check_report.md`): nothing quoted for question 1 beyond method 4.4, which
-names no estimator; no file ranks the fields; question 6 an analytical choice. Its own answer qualified four fields
-(A71 F37 L08 T13): it read only the first county sheet of the based validation, estimated the never-recorded share of
-based airplanes there (R4b's route, checked against F37) and a median share elsewhere; on the towered fields it read
-today's register for the 198 addresses MASTER and DEREG share and missed all twelve figures (16,900 and 20 kg at HWK
-and so on, today's-register stop exactly). Fixed in the generator in one pass with the judge's note: MASTER now
-carries pending registrations (status R) among the county's other aircraft and no current registration expires before
-the download; the export's event ids take the network database's irregular share of keys; trips over more than a day
-are commoner (odd daily counts at D19 on about three days in ten); method 4.2 says the towers' unrecorded operations are
-taken as piston-engine operations; W33's recorded lead raised so R4b clears the line by 5.2 per cent. Harmless as
-the systems' own: no air carrier operations at the towers (general aviation towers), the lead monitors at two towered
-fields, a flight ID left at a cancelled number after an owner's N-number change, the 5010 records' stale and rounded
-estimates (their own notes say so).
-
-Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every figure reproduced (23,376 over 338,
-69.16; the 20 never-recorded counts; the 24 leads; the towers' operations and lead); the seven hold for any rate from
-56 to 923 operations an airplane. Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no;
-Gate H domain, layers, decisive step analytical. Advisory notes: method 4.4 names no estimator (closed by the data:
-the per-airplane rate's coefficient of variation is 4 per cent at the counted fields against 42 to 50 for the others);
-the towers' unrecorded operations taken whole as piston (now pinned in method 4.2 and write-up step 7).
-
-## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
 
 ## Draw
 
@@ -270,7 +241,7 @@ completes an undercounted record from the units that never registered.
 | 2 | Unit of account | the field; lead in kilograms (method 3.3); an operation a takeoff or a landing (2.1) |
 | 3 | Attribution window | calendar 2026 in Pacific time (method 1.1); padding days and the UTC year change no figure (SF2, L1) |
 | 4 | As-of dating | the export of 8 January 2027, the register of 1 February 2027 with its cancelled registrations, the based validation of 1 January 2027 |
-| 5 | Version basis | one version of every file; the register's history read by date for an address that changed hands (Layer 1, the ask) |
+| 5 | Version basis | one version of every file; the call reads each address through the register by date (Layer 1); the ask reads each operation as the aircraft that flew it, the register by date and, where the flight ID names another airframe registered that day, that airframe |
 | 6 | Denominator | the rate per never-recorded airplane over the ten counted fields (SF13); the decisive step (HOW), every member of the family agreeing |
 | 7 | Weighting | the ratio of totals; mean of ratios, median and least squares agree (SF13) |
 | 8 | Window length | the whole 2026 year at every counted field |
@@ -316,40 +287,107 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
 - **Ask A, each towered field's 2026 piston-engine operations (nearest hundred) and lead (whole kilograms): twelve
   figures.** H18 home: the six towered fields complete the district's 2026 inventory that the board reads beside the
   round; they are the counted fields whose counts the call consumes, and their piston lead is the trail from those
-  counts and the network's events through device rows the call never prices. Use: the inventory goes to the board
-  whole. Path: the export (event_time_utc, site, event, icao24), MASTER.txt (N-NUMBER, MODE S CODE HEX, MFR MDL CODE,
-  CERT ISSUE DATE), DEREG.txt (MODE S CODE HEX, MFR-MDL-CODE, CERT-ISSUE-DATE, CANCEL-DATE), ACFTREF.txt (TYPE-ACFT,
-  TYPE-ENG, NO-ENG), the towers' daily counts (Date, Facility, the civil columns), the directory's tower hours, the
-  method (2.1, 3, 4.2), the network notes (UTC) and the register notes (codes): nine files, seventeen columns. Primary
-  device: D2, an attribute at the wrong vintage: at each tower an owner or operator moved its N-number in 2026 from a
-  piston twin (or, at KTY, a T210) to the turbine aircraft that replaced it (three at CRV), so today's MASTER lists
-  every one of those addresses on a turboprop or jet whose certificate dates from the move, while the network heard
-  the piston airplane under it from January; DEREG holds the piston airplane's cancelled registration with the move's
-  date. Every address resolves in MASTER (no unmatched join, no key repeats), and the benign twins are the 190
-  N-numbers reissued years ago, where the current registration is right. Hazards: daylight time in the tower-hours
-  filter (moves all six towers' figures when ignored), the winter hours and closed days at VNL and DMR, the military
-  columns (HWK, CRV), a touch-and-go two operations, turboprops on TYPE AIRCRAFT 4 with TYPE ENGINE 2.
-  Stops (asserted, checks.py and generator/ceiling.py): today's register misses all 12; the moved addresses' events
-  dropped misses 10; the moved addresses read as the piston airplane all year misses 8; the register's history read
-  by date gives all 12. The device moves every tower by at least 1.1 kg and 600 operations.
-  Realism: owners keep a personalised number across aircraft, the FAA reassigns it on the change date, and the address
-  follows the number.
+  counts and the network's events through rows the call never prices (which aircraft flew each recorded operation).
+  Use: the inventory goes to the board whole. Path: the export (event_time_utc, site, event, icao24, flight_id),
+  MASTER.txt (N-NUMBER, MODE S CODE HEX, MFR MDL CODE, SERIAL NUMBER, CERT ISSUE DATE), DEREG.txt (MODE S CODE HEX,
+  MFR-MDL-CODE, SERIAL-NUMBER, CERT-ISSUE-DATE, CANCEL-DATE), ACFTREF.txt (TYPE-ACFT, TYPE-ENG, NO-ENG), the towers'
+  daily counts (Date, Facility, the civil columns), the directory's tower hours, the method (2.1, 3, 4.2), the network
+  notes (UTC, flight_id) and the register notes (codes): nine files, nineteen columns.
+  Primary device: D2 with D9, a label stored before a silent switch that the register's own history dates wrongly. At
+  each tower an owner or operator moved its N-number in 2026 from a piston airplane (Chieftain, 310, Baron, Seneca,
+  T210) to the turbine that replaced it (three at CRV). The Registry moved each number on paper 30 to 150 days before
+  the turbine came out of completion and arrived; until then the piston airplane, its transponder not yet
+  reprogrammed, kept flying at home on the old address with its pilot broadcasting its own new N-number as flight_id,
+  and it left the day before the turbine first appeared under the address. DEREG holds the piston airplane's
+  registration cancelled on the Registry's date, MASTER the turbine's issued that day and the piston airplane's new
+  registration (same serial and model). Read by the register's own dates, which is how a careful analyst resolves the
+  MASTER and DEREG fan-out, the piston airplane's last weeks or months price as the turbine's (nothing); read as the
+  aircraft that flew each operation, they are the piston airplane's, its broadcast identity naming it on every one.
+  No sweep sees it: every address resolves, nothing repeats, the dates tie, and flight IDs that are not the address's
+  own N-number are common texture (charter call signs, owners' changed numbers left in the avionics, four owners at the
+  towers who moved a number to an airplane of the same kind the same way, where both readings price alike).
+  Hazards: daylight time in the tower-hours filter (moves all six towers' figures when ignored), the winter hours and
+  closed days at VNL and DMR, the military columns (HWK, CRV), a touch-and-go two operations, turboprops on TYPE
+  AIRCRAFT 4 with TYPE ENGINE 2.
+  Stops (asserted, checks.py and generator/ceiling.py): the register's own dates misses all 12 (HWK 17,200 and 21 kg,
+  CRV 9,300 and 16, OSY 19,000 and 22, VNL 11,800 and 15, KTY 13,100 and 15, DMR 7,600 and 12); today's register misses
+  all 12; the moved addresses' events dropped and the moved addresses read as the piston airplane all year miss at
+  least 6; the aircraft that flew each operation gives all 12. The register's dates move every tower by 0.82 kg and 336
+  operations or more and land every figure at least 0.28 kg and 250 operations outside the golden's bin.
+  Realism: owners keep a personalised number across aircraft; the Registry's dates are its processing dates, and a
+  number change waits on the avionics shop; flight IDs are entered by the crew and change when they do.
 - **The construction layer:** the seven qualifying fields, the 24 leads and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** under today's register every non-towered field's lead, the counted fields'
-  unrecorded operations and the rate are unchanged; the moved addresses' events before each move are all at the towers.
-- **Hazard table (asserted):** D2 moves all 12 figures; daylight time ignored moves six; winter hours ignored one;
-  military as civil two; none moves the call or a non-towered lead.
+- **Main population zero-counts (asserted):** under the register's own dates and under today's register every
+  non-towered field's lead, the counted fields' unrecorded operations and the rate are unchanged; every operation the
+  two readings price differently (2,257) is at a towered field.
+- **Hazard table (asserted):** the device moves all 12 figures; daylight time ignored moves six; winter hours ignored
+  one; military as civil two; none moves the call or a non-towered lead.
 - **Referee:** none; the towers' counts tie under every pricing (they count operations, not engines).
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, each towered field's 2026 piston-engine operations and lead | converts UTC with daylight time, keeps tower hours with the winter hours and closed days and the civil columns, counts a touch-and-go twice, prices by TYPE ENGINE and NO-ENG, resolves every address in MASTER and the few it no longer lists in DEREG; the moved addresses resolve in MASTER to turbine aircraft and their piston months price at nothing | miss |
+| A, each towered field's 2026 piston-engine operations and lead | converts UTC with daylight time, keeps tower hours with the winter hours and closed days and the civil columns, counts a touch-and-go twice, prices by TYPE ENGINE and NO-ENG, resolves every address's MASTER and DEREG rows by issue and cancel dates (reader round 2's route); the moved addresses' last piston weeks resolve to the turbines and price at nothing | miss |
 
-- Mirror leakage: 0.0 per cent of ask weight (every rung computes the towers as the cracker does: generator/ceiling.py).
+- Mirror leakage: 0.0 per cent of ask weight (every rung reads the towers' register the cracker's way and misses all 12:
+  generator/ceiling.py).
 - Pair ceiling: 39.1 (weights 38 / 7 / 55: the call 8, each of the 24 leads 1.25; the cracker keeps the main block and
   instructions, 45.0; the best mirror, R4, keeps 21 of the 24 leads, 33.2; average 39.1), rerun from the generated
   rubric at ship.
 - Measured by: generator/ceiling.py on the cut pack.
+
+## Leak check
+
+`leak.py --asof 2027-02-12`: REVIEW, no LEAK. Each REVIEW line answered: the guidelines carry 12.5 kg, the round's
+threshold, which every literal reading uses; the method, the network and register notes and the two count reports
+share the inventory's own words (operation, network, register, recorded, counts) and name no estimator, rate per
+airplane or never-recorded set; the 5010 records (the declared wrong-basis distractor), the directory and the based
+list name the fields beside counts, elevations and N-numbers and rank nothing on the call. Harmless.
+
+Reader, round 1 (answers appended to `leak_check_report.md`): nothing quoted for question 1 beyond method 4.4, which
+names no estimator; no file ranks the fields; question 6 an analytical choice. Its own answer qualified four fields
+(A71 F37 L08 T13): it read only the first county sheet of the based validation, estimated the never-recorded share of
+based airplanes there (R4b's route, checked against F37) and a median share elsewhere; on the towered fields it read
+today's register for the 198 addresses MASTER and DEREG share and missed all twelve figures (16,900 and 20 kg at HWK
+and so on, today's-register stop exactly). Fixed in the generator in one pass with the judge's note: MASTER now
+carries pending registrations (status R) among the county's other aircraft and no current registration expires before
+the download; the export's event ids take the network database's irregular share of keys; trips over more than a day
+are commoner (odd daily counts at D19 on about three days in ten); method 4.2 says the towers' unrecorded operations are
+taken as piston-engine operations; W33's recorded lead raised so R4b clears the line by 5.2 per cent. Harmless as
+the systems' own: no air carrier operations at the towers (general aviation towers), the lead monitors at two towered
+fields, a flight ID left at a cancelled number after an owner's N-number change, the 5010 records' stale and rounded
+estimates (their own notes say so).
+
+Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every figure reproduced (23,376 over 338,
+69.16; the 20 never-recorded counts; the 24 leads; the towers' operations and lead); the seven hold for any rate from
+56 to 923 operations an airplane. Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no;
+Gate H domain, layers, decisive step analytical. Advisory notes: method 4.4 names no estimator (closed by the data:
+the per-airplane rate's coefficient of variation is 4 per cent at the counted fields against 42 to 50 for the others);
+the towers' unrecorded operations taken whole as piston (now pinned in method 4.2 and write-up step 7).
+
+Reader, round 2 (answers appended to `leak_check_report.md`): no leak; question 1 quotes method 2.2 and 4.4 and calls
+the network notes' sentence on aircraft without ADS-B Out and the based list the hint (the mechanism the determinism
+rule requires the network notes to state, never which or how many); no file ranks the fields; question 6 an analytical
+choice. It landed the call (the pooled rate per silent based airplane, 68.96) and all twelve towered figures: it read
+the 2026 DEREG rows of the moved addresses by their cancel dates, so the device of the time (today's register) was a
+mirror device the register notes' DEREG description resolves, and the cracker sheet had described the mirror. Rebuilt
+in the generator: the Registry's move now precedes each swap by 30 to 150 days, the old airplanes fly on under the old
+address broadcasting their new numbers, the turbines arrive on the swap day; ceiling.py's cracker reads the register by
+date (0 of 12). Realism fixed in the same pass: the register carries 141 aircraft models and 111 engines, each airframe
+on a model of its own class built in its year, strips flying Cubs, Champs, Huskies and RVs, engines corrected per model
+(the Chieftain's TIO-540-J2BD, the Baron's IO-550-C); the based list writes make and model as each sponsor does; a
+lapsed airplane validated before its cancellation; two charter operators' call signs; S27 sells 100LL; the network
+notes give the commissioning comparison's counts (9,603 of 9,617); the guidelines carry eligible costs, acceptance and
+reporting. Harmless: one emitter category per address (set at installation), the towers' counts a full 365-day grid (as
+the FAA's daily counts are), D19's daily spread (weather and weekends), even monthly turbine counts at G42 (each visit
+an arrival and a departure).
+
+Judge, pass 2 (`determinism_check_report_pass2.md`, the one re-judge): DETERMINISTIC, APPROVE on the fix-pass build.
+Every figure reproduced, the seven unchanged under eight fork combinations; Gate G method_or_model_selection,
+analytical_non_defect; Gate H domain, layers, decisive step analytical. Notes: method 4.4 names no estimator (the data
+separates); the L08 tow-plane reading (69.75 against 69.16, no graded figure moves); the DEREG same-day boundary (17
+events, no rounded figure moves). The ask's device was rebuilt after this pass with every main figure byte-identical;
+its golden is the aircraft that flew each operation, asserted in checks.py and recomputed by verify.py's own reading of
+the flight ID.
 
 ## Tried and rejected
 
@@ -374,3 +412,9 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
 - 2026-10-18, at stage 4: W33 under R4b (the never-recorded share of based airplanes as the unrecorded share, reader
   round 1's route) sat 0.1 per cent under the line, so that rung named no set; W33's recorded lead raised 0.38 kg, R4b
   now 5.2 per cent over, the golden W33 at 14.1 kg.
+- 2026-10-18, at stage 4: today's register as the ask's primary device (the moved addresses' piston months priced as
+  the turbines): reader round 2 resolved MASTER and DEREG by issue and cancel dates and hit all twelve figures, so the
+  honest cracker scored 100 and the pair 66.6; the device became the Registry's dates leading the swap.
+- 2026-10-18, at stage 4: the Registry's dates trailing the swap (the turbine flying under the number before its
+  certificate): the turbines visit fields without a tower in that window, so the register's dates would price
+  untowered operations as piston and move the call, and four towers' turbines fly too little to clear the bins.

@@ -16,13 +16,13 @@ Their 2026 lead from piston-engine aircraft runs from 14 to 22 kg against the ro
 
 ## 3. Step-by-Step Solution
 
-1. Read adsb_field_events_20251230_20270102.csv with times from UTC to Pacific time, kept 2026, and gave each event its aircraft through icao24 and MASTER.txt or, for a registration cancelled during 2026, DEREG.txt by its issue and cancel dates; priced each piston-engine operation by ACFTREF.txt's engines and Table 1 of cvaqd_aircraft_lead_inventory_method_rev3.pdf, a touch-and-go two operations.
+1. Read adsb_field_events_20251230_20270102.csv with times from UTC to Pacific time, kept 2026, and gave each event the aircraft that flew it: icao24 through MASTER.txt or, for a registration cancelled during 2026, DEREG.txt by its issue and cancel dates, except where the event's flight_id was the N-number of another airframe registered that day; priced each piston-engine operation by ACFTREF.txt's engines and Table 1 of cvaqd_aircraft_lead_inventory_method_rev3.pdf, a touch-and-go two operations.
 2. At the six towers, took atct_daily_operations_2026.csv's civil operations less the civil events the network recorded in the tower hours of state_airport_directory_2026.xlsx (method 4.2); at the four count fields, the studies' piston-engine operations less those recorded (method 4.3).
 3. Matched state_based_aircraft_validation_2027.xlsx's N-numbers, written four ways, to the register and found the based piston airplanes whose addresses the network never recorded in 2026.
 4. Divided the counted fields' unrecorded operations by their never-recorded airplanes: 69.2 operations an airplane.
 5. At each field without a count, priced 69.2 operations for each never-recorded airplane at 1.625 g (method 3.2 and 4.4) and added the recorded lead.
 6. Compared each field's 2026 lead with the 12.5 kg of the round's guidelines (section 2.2): seven qualify.
-7. Built the towered fields' piston operations and lead the same way, each recorded operation assigned to the aircraft that held its address that day and each tower's unrecorded civil operations taken as piston-engine operations (method 4.2).
+7. Built the towered fields' piston operations and lead the same way. Where the Registry moved an N-number from a piston airplane to a turbine in 2026, the piston airplane went on flying under the old icao24, broadcasting its own new N-number as flight_id, until the turbine first appeared under that address, so those operations are the piston airplane's; each tower's unrecorded civil operations are taken as piston-engine operations (method 4.2).
 8. Recommended the seven fields for the 2027 round.
 
 ## 4. Deliverable Answers

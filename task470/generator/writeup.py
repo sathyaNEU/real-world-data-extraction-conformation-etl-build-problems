@@ -52,8 +52,9 @@ def write(fig_path, out_path):
         "",
         "## 3. Step-by-Step Solution",
         "",
-        "1. Read %s with times from UTC to Pacific time, kept 2026, and gave each event its aircraft through icao24 "
-        "and MASTER.txt or, for a registration cancelled during 2026, DEREG.txt by its issue and cancel dates; "
+        "1. Read %s with times from UTC to Pacific time, kept 2026, and gave each event the aircraft that flew it: "
+        "icao24 through MASTER.txt or, for a registration cancelled during 2026, DEREG.txt by its issue and cancel "
+        "dates, except where the event's flight_id was the N-number of another airframe registered that day; "
         "priced each piston-engine operation by ACFTREF.txt's engines and Table 1 of %s, a touch-and-go two "
         "operations." % (W.FILES["events"], W.FILES["method"]),
         "2. At the six towers, took %s's civil operations less the civil events the network recorded in the tower "
@@ -67,8 +68,10 @@ def write(fig_path, out_path):
         "and 4.4) and added the recorded lead." % (c["per_airplane"], f["unrecorded_g"]),
         "6. Compared each field's 2026 lead with the %s kg of the round's guidelines (section 2.2): %s qualify." % (
             f["threshold_kg"], f["count_word"].lower()),
-        "7. Built the towered fields' piston operations and lead the same way, each recorded operation assigned to "
-        "the aircraft that held its address that day and each tower's unrecorded civil operations taken as "
+        "7. Built the towered fields' piston operations and lead the same way. Where the Registry moved an N-number "
+        "from a piston airplane to a turbine in 2026, the piston airplane went on flying under the old icao24, "
+        "broadcasting its own new N-number as flight_id, until the turbine first appeared under that address, so "
+        "those operations are the piston airplane's; each tower's unrecorded civil operations are taken as "
         "piston-engine operations (method 4.2).",
         "8. Recommended the %s fields for the 2027 round." % f["count_word"].lower(),
         "",

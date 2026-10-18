@@ -281,22 +281,28 @@ def build(seed=4700):
             model = FAMILY[fam][int(rng.integers(0, len(FAMILY[fam])))]
             new(model, lid, "strip", rng.random() < 0.7)
     # owners and operators at the towered fields who moved their N-number from a piston airplane to the turbine
-    # aircraft that replaced it in 2026: the piston airplane leaves under a new number, the newcomer arrives under its
-    # delivery number and takes the old one on the day of the move
-    MOVES = [("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter"),
-             ("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter"),
-             ("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter"),
-             ("HWK", "2073905", "2075340", dt.date(2026, 6, 3), "charter"),
-             ("OSY", "0566012", "6440012", dt.date(2026, 8, 19), "mover"),
-             ("VNL", "7103405", "6440012", dt.date(2026, 5, 27), "mover"),
-             ("KTY", "2073505", "2074520", dt.date(2026, 9, 8), "survey"),
-             ("DMR", "0566012", "0569020", dt.date(2026, 7, 29), "mover")]
+    # aircraft that replaced it in 2026. The Registry moved each number on paper weeks or months before the swap (the
+    # newcomer was in completion or modification out of the valley): from then the old airplane, its transponder not
+    # yet reprogrammed, kept flying at home on the old address with its pilot broadcasting its new number as the flight
+    # ID, until it left the valley the day before the newcomer arrived broadcasting the number. Columns: home, piston
+    # model, turbine model, the swap day, role, days the Registry's move preceded the swap, days the old airplane's new
+    # flight ID preceded the Registry's move.
+    MOVES = [("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter", 30, 3),
+             ("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter", 45, 0),
+             ("CRV", "7103106", "0569020", dt.date(2026, 7, 14), "charter", 60, 5),
+             ("HWK", "2073905", "2075340", dt.date(2026, 6, 3), "charter", 70, 2),
+             ("OSY", "0566012", "6440012", dt.date(2026, 8, 19), "mover", 110, 1),
+             ("VNL", "7103405", "6440012", dt.date(2026, 5, 27), "mover", 60, 4),
+             ("KTY", "2073505", "2074520", dt.date(2026, 9, 8), "survey", 150, 0),
+             ("DMR", "0566012", "0569020", dt.date(2026, 7, 29), "mover", 80, 2)]
     movers = []
-    for home, pm, tm, day, role in MOVES:
+    for home, pm, tm, day, role, lead, early in MOVES:
         p_ = new(pm, home, role, True, owner_kind="company" if role != "mover" else "individual")
         t_ = new(tm, home, "charter" if role == "charter" else "private", True,
                  owner_kind="company" if role != "mover" else "individual")
         p_["mover"] = True
+        p_["reg_on"] = t_["reg_on"] = day - dt.timedelta(days=lead)
+        p_["fid_from"] = p_["reg_on"] - dt.timedelta(days=early)
         movers.append((p_, t_, day))
     # the other aircraft registered to addresses in the four counties (kept in hangars elsewhere or not flown)
     for i in range(650):
@@ -313,14 +319,14 @@ def build(seed=4700):
     events = []
     for p_, t_, day in movers:
         moved = p_["n"]
-        p_["n_after"] = spare.pop()          # the piston airplane leaves the valley under a new number
+        p_["n_after"] = spare.pop()          # the piston airplane's new number, registered at home, flown elsewhere
         p_["changed_on"] = day
         p_["leaves_on"] = day
-        t_["n_before"] = t_["n"]             # the newcomer flies under its delivery number until the move
-        t_["n"] = moved
-        t_["arrives_on"] = day - dt.timedelta(days=int(rng.integers(12, 30)))
+        t_["n"] = moved                      # the newcomer arrives on the swap day broadcasting the number
+        rng.integers(12, 30)
+        rng.integers(20, 60)
+        t_["arrives_on"] = day
         t_["changed_on"] = day
-        t_["delivered_on"] = t_["arrives_on"] - dt.timedelta(days=int(rng.integers(20, 60)))
         events.append(("moved_number", moved, p_["id"], t_["id"], day))
     # owners who took a new N-number in 2026 (the transponder reprogrammed the same day)
     changers = [a for a in aircraft if a["home"] in W.BY_LID and a["broadcasts"] and a["role"] == "private"
@@ -357,7 +363,51 @@ def build(seed=4700):
         if "n_after" in a:
             a["hex_after"] = icao_hex(a["n_after"])
     registry(rng, aircraft)
-    return dict(aircraft=aircraft, register_events=events, rng_state=int(rng.integers(0, 2 ** 31)))
+    state = int(rng.integers(0, 2 ** 31))
+    # each airframe registered as a catalog model of its class (the movers and the glider club keep theirs)
+    import catalog as CT
+    keep = {a["id"] for a in aircraft if a.get("mover") or a.get("reg_on") or a["home"] == "L08" and
+            a["family"] in ("glider", "towplane")}
+    CT.relabel(aircraft, REG["dereg"], keep)
+    # owners at the towered fields who moved their number to a newer airplane of the same kind in 2026, the same way:
+    # the Registry first, the old airplane flying on under the old address with its new number as flight ID until it
+    # left, the newcomer arriving with the number (columns: home, swap day, Registry's lead in days, flight ID lead)
+    rb = np.random.default_rng(4769)
+    for home, day, lead, early in (("HWK", dt.date(2026, 4, 22), 41, 2), ("KTY", dt.date(2026, 6, 30), 33, 3),
+                                   ("OSY", dt.date(2026, 10, 6), 58, 0), ("DMR", dt.date(2026, 3, 17), 27, 1)):
+        pool = [a for a in aircraft if a["home"] == home and a["role"] == "private" and a["broadcasts"] and
+                a["piston_airplane"] and a["cls"] == "single" and CT.BY_CODE[a["reg_model"]]["bc"] == 0 and not any(
+                    k in a for k in ("n_before", "exported_on", "cancelled_on", "reg_on", "swap_on"))]
+        a = pool[int(rb.integers(0, len(pool)))]
+        reg_on = day - dt.timedelta(days=lead)
+        a["swap_on"], a["reg_on_b"], a["fid_from_b"], a["n_new_b"] = day, reg_on, reg_on - dt.timedelta(days=early), \
+            spare.pop()
+        row = [r for r in REG["master"] if r["a"] is a][0]
+        REG["master"].remove(row)
+        old = dict(a)                                     # the old airplane: cancelled, registered under a new number
+        REG["dereg"].append(dict(a=old, n=a["n"], issued=row["issued"], cancel=reg_on, exp=""))
+        REG["master"].append(dict(a=old, n=a["n_new_b"], issued=reg_on, last=reg_on, status="V"))
+        k = CT.klass(CT.BY_CODE[a["reg_model"]])
+        cands = [m for m in CT.CATALOG if CT.klass(m) == k and m["years"][1] >= 2016 and m["bc"] == 0]
+        m = cands[int(rb.integers(0, len(cands)))]
+        y = int(rb.integers(max(m["years"][0], 2016), min(m["years"][1], 2025) + 1))
+        new_ = dict(id=None, model=a["model"], reg_model=m["code"], reg_serial=CT.serial(rb, m), year=y,
+                    reg_engine=m["eng"][int(rb.integers(0, len(m["eng"])))], kind_code=a["kind_code"], cert="1N",
+                    fract="", air_worth=dt.date(y, int(rb.integers(1, 13)), int(rb.integers(1, 28))),
+                    uid="%08d" % int(rb.integers(1004211, 2600000)))
+        a.update(reg_model=new_["reg_model"], reg_serial=new_["reg_serial"], reg_engine=new_["reg_engine"],
+                 year=new_["year"], air_worth=new_["air_worth"], uid=new_["uid"], cert="1N")
+        REG["master"].append(dict(a=a, n=a["n"], issued=reg_on, last=reg_on, status="V"))
+        events.append(("moved_number_same_kind", a["n"], a["id"], None, day))
+    # flight IDs: the two valley charter operators that hold designators fly under them, as do visiting charter jets
+    rc = np.random.default_rng(4771)
+    desig = {"CRV": "CVQ", "HWK": "HKJ"}
+    for a in aircraft:
+        if a["role"] == "charter" and a["cls"] == "turbine" and not a.get("reg_on") and a["home"] in desig:
+            a["callsign"] = "%s%d" % (desig[a["home"]], int(rc.integers(11, 89)))
+        elif a["role"] == "visitor" and a.get("charter"):
+            a["callsign"] = "%s%d" % (("WSX", "PJT", "SKQ")[int(rc.integers(0, 3))], int(rc.integers(101, 989)))
+    return dict(aircraft=aircraft, register_events=events, rng_state=state)
 
 
 def registry(rng, aircraft):
@@ -392,14 +442,13 @@ def registry(rng, aircraft):
     for a in aircraft:
         lo = dt.date(2020, 3, 2)
         issued = _day(rng, lo, dt.date(2025, 11, 30))
-        if a.get("delivered_on"):                       # a newcomer: its delivery registration, then the moved number
-            dereg.append(dict(a=a, n=a["n_before"], issued=a["delivered_on"], cancel=a["changed_on"], exp=""))
-            issued = a["changed_on"]
+        if a.get("reg_on") and not a.get("mover"):      # a newcomer: registered under the moved number
+            issued = a["reg_on"]
         elif "n_before" in a:                           # an owner's new N-number
             dereg.append(dict(a=a, n=a["n_before"], issued=issued, cancel=a["changed_on"], exp=""))
             issued = a["changed_on"]
         if a.get("mover"):                              # the piston airplane whose number moved: cancelled from it
-            dereg.append(dict(a=a, n=a["n"], issued=issued, cancel=a["changed_on"], exp=""))
+            dereg.append(dict(a=a, n=a["n"], issued=issued, cancel=a["reg_on"], exp=""))
             continue
         if "exported_on" in a:
             dereg.append(dict(a=a, n=a["n"], issued=issued, cancel=a["exported_on"], exp=a["exp_country"]))
@@ -425,6 +474,10 @@ def registry(rng, aircraft):
         issued = _day(rng, cancel - dt.timedelta(days=6000), cancel - dt.timedelta(days=400))
         dereg.append(dict(a=old, n=r["n"], issued=issued, cancel=cancel,
                           exp=["", "", "", "CA", "MX"][int(rng.integers(0, 5))]))
+    # the piston airplanes whose number moved, registered under their new numbers on the day of the move
+    for a in aircraft:
+        if a.get("mover"):
+            master.append(dict(a=a, n=a["n_after"], issued=a["reg_on"], last=a["reg_on"], status="V"))
     for r in master:
         r["a"]["reg_issued"] = r["issued"]
     REG["master"] = master

@@ -211,7 +211,9 @@ def write_docx(X, F, path):
     rc.font.size = Pt(8)
     doc.add_paragraph("The towered fields. They are outside the round but complete the 2026 inventory; their "
                       "operations are the network's recorded piston operations, each assigned to the aircraft that "
-                      "held its address on the day, and the towers' counts beyond what the network recorded.")
+                      "flew it, and the towers' counts beyond what the network recorded. Where an owner moved an "
+                      "N-number to a turbine in 2026, the piston airplane kept flying on its old address until the "
+                      "turbine arrived, weeks after the Registry's date, and those operations are counted as its own.")
     tbl = doc.add_table(rows=1, cols=4)
     tbl.style = "Light List Accent 1"
     for c, txt in zip(tbl.rows[0].cells, ("Field", "LocID", "Piston operations, 2026", "Lead, 2026 (kg)")):

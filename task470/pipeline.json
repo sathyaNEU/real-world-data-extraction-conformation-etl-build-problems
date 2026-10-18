@@ -15,19 +15,19 @@
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 on the final build: the guidelines' 12.5 kg; generic inventory words in the method, network and register notes and two count reports; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields; no LEAK",
-  "reader": "round 1: stumped (four fields on the never-recorded-share route, read from the first county sheet only), all twelve towered figures missed through today's register, question 6 analytical; its realism findings fixed (MASTER statuses and expiries, event ids, multi-day trips), W33 cleared under its route; round 2 running"
+  "leak_py": "REVIEW 2026-10-18 on the rebuilt pack (target.zip 7a6f0ece4fb32808): the guidelines' 12.5 kg; generic inventory words in the method, network and register notes and two count reports; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields; no LEAK",
+  "reader": "round 1: stumped (four fields on the never-recorded-share route), all twelve towered figures missed through today's register; realism fixed. Round 2: no leak, question 6 analytical, but landed the call and all twelve towered figures by reading DEREG by cancel date, so the ask's device was a mirror device: rebuilt (the Registry's move precedes each swap by 30 to 150 days, the old airplane flying on under the old address with its new number as flight ID), the register given a 141-model catalogue and other realism fixes. Round 3 running on the rebuilt pack"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-18 after redrawing the context artifact (operations_log) and the organisation family (local_government); same-driver older matches differentiated (task107, task129, task36, task44)"
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC; pass 2 (the one re-judge, fix-pass build) running",
-  "disposition": "pass 1 APPROVE",
-  "report": "task470/determinism_check_report.md"
+  "verdict": "pass 1 DETERMINISTIC; pass 2 (the one re-judge, fix-pass build) DETERMINISTIC",
+  "disposition": "pass 1 APPROVE; pass 2 APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H pass, decisive step analytical); the ask's device rebuilt after pass 2 with every main figure byte-identical",
+  "report": "task470/determinism_check_report.md, task470/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4: reader round 2 (/tmp/leakread-task470-r2/answers.md) and judge pass 2 (/tmp/determinism-check-task470-r2/, brief judge_brief.md) were running on the fix-pass build at this checkpoint; if lost, rebuild (python3 task470/generator/build.py) and rerun both from a fresh unzip of target.zip; then ship",
+ "resume": "stage 4: reader round 3 (/tmp/leakread-task470-r3/answers.md) was running on the rebuilt pack (target.zip 7a6f0ece4fb32808) at this checkpoint; if lost, rebuild (python3 task470/generator/build.py) and rerun it from a fresh unzip of target.zip; append it to leak_check_report.md after the last leak.py run, fix any finding in the generator, then ship (no further judge pass without the author's licence: the one re-judge is spent)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -35,6 +35,7 @@
  "ceiling": {
   "pair": 39.1,
   "cracker": 45.0,
+  "cracker_path": "the register by its own dates (reader round 2's route), 0 of 12",
   "best_mirror": "33.2 on R4",
   "mirror_leakage": 0.0,
   "script": "generator/ceiling.py"

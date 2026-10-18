@@ -66,29 +66,41 @@ def register(target):
     return dict(regs=regs, ref=ref, eng=eng)
 
 
-def resolve(R, how="asof", dereg=True):
-    """A function (hex, local date) -> registration. 'asof': the registration that held the address on that date
-    (a cancelled one by its issue and cancel dates); 'current': today's register, falling back to the latest
-    cancelled registration for an address it no longer lists; dereg=False: today's register only."""
-    by_hex = {}
+def held(g, d):
+    """Was registration g in force on local date d?"""
+    return g["issued"] <= d and (g["cancel"] is None or d < g["cancel"])
+
+
+def resolve(R, how="broadcast", dereg=True):
+    """A function (hex, local date, flight ID) -> registration. 'asof': the registration that held the address on that
+    date by the register's dates (a cancelled one by its issue and cancel dates); 'broadcast': the same, except that an
+    operation whose flight ID is the N-number of another airframe's registration in force that day is that airframe's
+    (the aircraft that flew it); 'current': today's register, falling back to the latest cancelled registration for
+    an address it no longer lists; dereg=False: today's register only."""
+    by_hex, by_n = {}, {}
     for g in R["regs"]:
         by_hex.setdefault(g["hex"], []).append(g)
+        by_n.setdefault(g["n"], []).append(g)
     cache = {}
 
-    def f(h, d):
-        k = (h, d) if how == "asof" else h
+    def f(h, d, fid=None):
+        k = (h, d, fid) if how == "broadcast" else ((h, d) if how == "asof" else h)
         if k in cache:
             return cache[k]
         gs = by_hex.get(h, [])
         cur = [g for g in gs if g["current"]]
         old = sorted([g for g in gs if not g["current"]], key=lambda g: g["cancel"]) if dereg else []
         out = None
-        if how == "asof":
+        if how in ("asof", "broadcast"):
             for g in old:
                 if g["issued"] <= d < g["cancel"]:
                     out = g
             if out is None and cur:
                 out = cur[0]
+            if how == "broadcast" and fid:
+                for g in by_n.get(norm_n(fid), []):
+                    if held(g, d) and (out is None or (g["serial"], g["model"]) != (out["serial"], out["model"])):
+                        out = g
         else:
             out = cur[0] if cur else (old[-1] if old else None)
         cache[k] = out
@@ -207,13 +219,13 @@ class Pack:
         return dict(ev=events(self.target, True), R=self.R, based=self.based, dir=self.dir, atct=self.atct,
                     study=self.study)
 
-    def priced(self, how="asof"):
-        """The year's events with their registration's class and lead (g)."""
+    def priced(self, how="broadcast"):
+        """The year's events with their aircraft's class and lead (g)."""
         ev = self.ev.copy()
         f = resolve(self.R, how, self.opts["dereg"])
         cls = []
-        for h, d in zip(ev["icao24"].values, ev["date"].values):
-            g = f(h, d)
+        for h, d, fid in zip(ev["icao24"].values, ev["date"].values, ev["flight_id"].fillna("").values):
+            g = f(h, d, fid)
             cls.append(g["cls"] if g else "unknown")
         ev["cls"] = cls
         L = W.LEAD
@@ -290,7 +302,7 @@ class Pack:
             out[lid] = float(e["piston_ops"].sum()) / nh if nh else 0.0
         return out
 
-    def inventory(self, how="asof", k_method="ratio", k_fields=None):
+    def inventory(self, how="broadcast", k_method="ratio", k_fields=None):
         ev = self.priced(how)
         heard = ev.groupby("site").agg(lead=("lead_g", "sum"), ops=("piston_ops", "sum"),
                                         all_ops=("n_ops", "sum")).reindex(FIELDS).fillna(0)

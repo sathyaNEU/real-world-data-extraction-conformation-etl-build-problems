@@ -163,11 +163,24 @@ def write_grants(path):
             "containment, and the first load of unleaded fuel. The field's owner provides the site and keeps the "
             "installation for at least ten years.",
             "3.2 Grants are paid against invoices in two installments, at the order of the tank and at "
-            "commissioning."]),
+            "commissioning.",
+            "3.3 Eligible costs are the tank, dispenser, card reader, spill containment and leak monitoring, the "
+            "electrical work, permits and the first load of fuel. Land, buildings and the removal of an existing "
+            "tank are not eligible."]),
         ("4. Timetable", [
             "4.1 Staff publish the qualifying fields with the inventory. The Governing Board adopts the round with the "
             "District's 2027 budget at its meeting of 10 March 2027. Field owners have until 30 June 2027 to accept "
             "the grant and must commission the installation by 30 June 2028."]),
+        ("5. Accepting a grant", [
+            "5.1 After the Board adopts the round, staff write to the owner of each qualifying field. The owner accepts "
+            "on the District's form with a site plan, a contractor's quote and a letter from the field's fuel seller "
+            "agreeing to stock the unleaded grade.",
+            "5.2 A field whose owner does not accept by the deadline may apply again in a later round."]),
+        ("6. Conditions and reporting", [
+            "6.1 The installation meets the state fire code and holds the District's permit for fuel storage.",
+            "6.2 The field sells unleaded aviation gasoline from the tank for at least ten years.",
+            "6.3 The owner reports the gallons of unleaded and leaded aviation gasoline sold at the field each quarter "
+            "for three years after commissioning."]),
     ]
     story = _story("Unleaded Avgas Transition Grants: 2027 round guidelines",
                    "%s, Grants Program. Issued 4 December 2026 for the Governing Board's adoption of the round." %
@@ -187,7 +200,7 @@ def write_network(path):
             ["icao24", "The aircraft's 24-bit address as broadcast, in lower-case hexadecimal. The FAA register lists "
                        "each registration's address as MODE S CODE HEX."],
             ["flight_id", "The flight identification the aircraft broadcast, as its avionics were set: usually the "
-                          "N-number, sometimes blank."],
+                          "N-number, a charter operator's call sign on some aircraft, sometimes blank."],
             ["emitter_cat", "The emitter category broadcast: A1 light (under 15,500 lb), A2 small (15,500 to "
                             "75,000 lb), A7 rotorcraft, B1 glider."],
             ["runway", "The runway end used."]]
@@ -197,9 +210,11 @@ def write_network(path):
             "valley. Each receiver decodes ADS-B Out broadcasts on 1090 MHz (extended squitter) and 978 MHz (UAT) and "
             "turns each track that meets or leaves a runway into an event: a takeoff, a landing or a touch-and-go.",
             "An aircraft that broadcasts ADS-B Out is recorded at every field it uses. An aircraft without ADS-B Out, "
-            "or with it switched off, is not recorded. When the receivers were commissioned they were run for four "
-            "weeks beside the six control towers' logs, and every takeoff, landing and touch-and-go by an aircraft "
-            "broadcasting ADS-B Out was recorded. The export leaves out aircraft broadcasting military addresses."]),
+            "or with it switched off, is not recorded. When the receivers were commissioned in May 2025 they were run "
+            "for four weeks beside the six control towers' logs: of the 9,617 takeoffs, landings and touch-and-goes "
+            "the towers logged by aircraft broadcasting ADS-B Out, the network recorded 9,603, and the 14 it missed "
+            "fell in two receiver restarts at Ostrey Field. The export leaves out aircraft broadcasting military "
+            "addresses."]),
         ("The export", [
             "The export of 8 January 2027 covers 30 December 2025 to 2 January 2027, local time, one row per event.",
             _table(cols, [1.2 * inch, 5.4 * inch]), Spacer(1, 6),
@@ -455,7 +470,8 @@ def directory_rows(x):
     for f in W.F:
         lid = f["lid"]
         rw = P.RUNWAYS[lid]
-        fuel = "100LL, Jet A" if (f["towered"] or f["turbines"] >= 3) else ("100LL" if f["B"] >= 60 else "None")
+        fuel = "100LL, Jet A" if (f["towered"] or f["turbines"] >= 3) else ("100LL" if f["B"] >= 60 or f["H"] >= 9
+                                                                            else "None")
         rows.append([lid, f["name"], f["county"], "Public", "Public" if f["B"] >= 50 or f["towered"] else "Private",
                      "Y" if f["towered"] else "N", tower_hours_text(lid) if f["towered"] else "",
                      "%s/%s" % rw, fuel, "Y" if f["school"] else "N", ELEV[lid]])

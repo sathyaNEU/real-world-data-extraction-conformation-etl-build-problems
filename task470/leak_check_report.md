@@ -39,6 +39,7 @@ Stump terms swept: counted, never-recorded, network, unrecorded, recorded, airpl
 
 ## 11 prompt gate (clean)
 
+
 ## Solver's-eye read
 
 Verdicts on the REVIEW lines (main thread): the guidelines' 12.5 kg is the round's threshold, harmless; the method, network and register notes and the two count reports use the inventory's own words and name no estimator, harmless; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields beside counts and identifiers and rank nothing on the call, harmless.
@@ -171,3 +172,91 @@ The unrecorded figure is tower civil operations less all network-recorded civil 
 
 
 Main thread on round 1: stumped (four fields on a never-recorded-share route read from the first county sheet only); all twelve towered figures missed through today's register; question 6 analytical. Fixed in the generator: MASTER statuses and expiries, irregular event ids, more multi-day trips, method 4.2's pin on the towers' unrecorded operations, W33 cleared under the reader's route. No graded figure moved except W33's lead (14 kg either way).
+
+### Round 2 (isolated reader, sonnet, medium; the fix-pass pack, before the ask's device was rebuilt)
+
+Main-thread rulings: no leak (question 1 quotes method 2.2 and 4.4 and the network notes' statement that aircraft
+without ADS-B Out are not recorded, which the determinism rule requires the network notes to carry; question 2 none;
+question 3 the register and network notes are each system's own documentation; question 6 an analytical choice). The
+reader landed the call and every towered figure by reading the moved addresses' DEREG rows by their cancel dates, so the
+ask's device of the time was a mirror device: rebuilt in the generator (the Registry's move precedes each swap; the
+honest cracker now misses all twelve). Its realism notes were fixed in the same pass (the register's model and engine
+catalogue, the based list's make and model, a lapsed airplane's validation date, call signs, S27's fuel, the network
+notes' commissioning counts, the guidelines' fuller text); the towers' full daily grid, one emitter category per
+address, D19's daily spread and G42's even turbine months are the systems' own, harmless.
+
+#### Answers (round 2)
+
+## Part A
+
+### A1. Main answer
+**7 of the 24 fields qualify (2026 lead of 12.5 kg or more):**
+Fennick Airpark (F37) 14 kg; Lanthorne Field (L08) 16 kg; Umber Creek Airport (U44) 15 kg; Orrin Flats Airport (O16) 14 kg; Wickrow Airfield (W33) 14 kg; Ambrell County Airport (A71) 21 kg; Thornacre Regional (T13) 22 kg.
+
+2026 lead, whole kg, all 24 fields (unrounded kg in brackets):
+F37 14 (14.10), L08 16 (16.10), G42 Graylow Municipal 10 (10.17), D19 Dunmarsh Airport 9 (9.04), T61 Tavish Aero Field 11 (10.89), P05 Pellow Municipal 11 (11.11), S27 Saltry Field 11 (11.08), U44 15 (14.79), O16 14 (14.09), W33 14 (14.13), Y02 Yarrow Bend Strip 6 (6.13), A71 21 (20.83), N26 Norwick Field 10 (9.96), T13 22 (22.12), K58 Kestrel Ridge Airpark 11 (11.07), Z14 Zellner Field 6 (5.81), H52 Hollin Gap Airport 9 (9.10), M09 Marsh Hollow Field 4 (4.19), C66 Cobbett Airport 8 (8.16), B48 Brannoch Airstrip 3 (3.12), D73 Dellow Strip 2 (1.83), R31 Ravelle Field 4 (3.85), W85 Wenmore Airport 9 (8.97), L29 Lissom Field 6 (5.78).
+
+### A2. Six towered fields (piston ops nearest 100 / lead kg)
+| Field | recorded piston ops | unrecorded (tower civil less network in tower hours) | piston ops | ops (nearest 100) | lead kg |
+|---|---|---|---|---|---|
+| HWK Halwick Municipal | 14,336 | 3,290 | 17,626 | 17,600 | 22 (22.12) |
+| CRV Corrisan Valley Regional | 7,378 | 2,544 | 9,922 | 9,900 | 18 (17.95) |
+| OSY Ostrey Field | 16,427 | 2,988 | 19,415 | 19,400 | 23 (23.19) |
+| KTY Kesterly Field | 11,104 | 2,512 | 13,616 | 13,600 | 16 (16.04) |
+| VNL Varnell County Airport | 9,424 | 2,768 | 12,192 | 12,200 | 16 (16.04) |
+| DMR Dunmore Municipal | 5,559 | 2,368 | 7,927 | 7,900 | 13 (12.92) |
+
+Towered total is about 80,700 piston operations.
+
+### A3. Path
+1. Read the grant guidelines (12.5 kg, method CVAQD-AQ-17 Rev 3, no tower, public use), the method (Table 1 factors; touch-and-go is 2 ops; unrecorded ops get 1.625 g; sections 4.2 to 4.4), the receiver notes (UTC; UTC-8 and UTC-7 from 8 Mar to 1 Nov) and the register notes. The state directory gives 24 public fields with ATCT = N and 6 with ATCT = Y (HWK, CRV, OSY, VNL, KTY, DMR) plus 6 private strips.
+2. ADS-B export: 187,609 events. I converted to Pacific local time and kept calendar 2026 (186,717 events; the export also covers 30 Dec 2025 to 2 Jan 2027, so the edges are dropped). The UTC year or the full export moves any field by 0.1 kg at most and flips nothing.
+3. Join icao24 to MASTER MODE S CODE HEX (case-insensitive, trimmed fixed-width padding). Engine type comes from ENGINE.txt through MASTER's ENG MFR MDL; engine count from ACFTREF NO-ENG. Piston means engine TYPE 1 (reciprocating); gliders, turboprops, turboshafts and fans are excluded. 25 addresses are only in DEREG.txt (cancelled in 2026), so I used their DEREG aircraft and engine codes.
+4. Registration reuse. Eight addresses (N276SR, N3002F, N469HQ, N5172C, N51BY, N8144N, N9024A, N9305H; 570 to 900 events each) have a DEREG row cancelled in 2026 for a piston twin or single and a new MASTER row issued the same day for a turbine aircraft (PC-12, B200, Citation). I attributed events up to and including the cancel date (local) to the old piston aircraft and later events to the new turbine one. This only touches towered fields: using MASTER only drops HWK to 20.17 kg, CRV to 11.98, OSY to 21.34, KTY to 14.88, VNL to 14.01 and DMR to 11.12. None of the 24 fields moves (T13 by 2 ops).
+5. Lead for recorded ops: takeoff, landing and 2 x the per-op touch-and-go factor, single or multi by NO-ENG (Table 1).
+6. Unrecorded ops at the 4 counted fields (section 4.3), count piston ops less recorded piston ops:
+   - F37: 10,504 (report) less 8,384 = 2,120.
+   - G42: 7,150 less 5,222 = 1,928.
+   - D19: daily sheet piston sum 6,138 less 3,426 = 2,712.
+   - L08: takeoffs + landings + 2 x circuits = 17,685 (the sheet total is formulas) less 17,539 = 146.
+7. Unrecorded ops at the 6 towered fields (section 4.2): tower civil ops (air carrier + air taxi + GA itinerant + local civil, military excluded) less all network ops (touch-and-go as 2) inside tower hours on open days. Hours: HWK 0700-2100, CRV 0600-2200, OSY 0700-2100, KTY 0700-2000, VNL 0700-2100 (Nov to Feb 0700-1900, closed 25 Dec and 1 Jan), DMR 0700-2000 (Nov to Feb 0700-1800, closed 25 Dec and 1 Jan). No day had more network than tower ops. Result: HWK 3,290, CRV 2,544, OSY 2,988, KTY 2,512, VNL 2,768, DMR 2,368, all valued at 1.625 g.
+8. The 20 other fields (section 4.4: "estimates them from the fields with a count"). The method does not say how.
+   - Alternatives I weighed: (a) a flat share of unrecorded to recorded piston ops (mean 0.31, pooled 0.237 over the 10 count fields); (b) ADS-B-silent based aircraft. For each field I took the based aircraft on the state validation list (N-numbers cleaned: case, spaces, missing N), matched them to the register and counted those whose address never appears in the export (zero events; a clean gap, since only 9 aircraft have 1 to 4 events). Two based aircraft (6574V at F37, 625EY at G42) are only in DEREG and do appear in the export, so they are not silent.
+   - Across the 10 fields with a count, unrecorded ops per silent based aircraft are tight: CRV 65, F37 71, KTY 72, DMR 66, HWK 72, G42 67, OSY 71, D19 71, VNL 68, with L08 an outlier at 49 (3 silent aircraft). Unrecorded share of ops, by contrast, runs from 1 percent to 44 percent and is not stable. I chose (b): through-origin pooled slope 68.96 ops per silent based aircraft (69.14 without L08; the mean of ratios is 67.0; a regression with intercept gives 71.5/aircraft less 85). Estimated unrecorded ops = slope x silent based aircraft, then x 1.625 g, added to the recorded lead.
+   - Why: the shares method sends the field with many silent aircraft (U44, O16, W33) below 12.5 and sends T61, P05, S27, K58 up above it, which is the opposite of what the based-aircraft evidence says. Rank is sensitive to this choice only through U44, O16, W33 (14.1 to 14.8 under (b), 9.2 to 10.7 under shares) and T61, P05, S27, K58 (about 11 under (b), 14 to 18 under shares).
+9. Totals: recorded-only gives only L08, A71 and T13 (3 fields); the silent-aircraft estimate gives 7. Shares estimate gives 8 or 9 (different set). Method variants for the slope (all 10, ex-L08, mean of ratios, intercept) all give the same 7.
+
+## Part B
+
+1. The decisive step is not announced. The nearest sentences are method 2.2, "A field's operations in the inventory year are every operation by a piston-engine aircraft at the field in that year, based or visiting, whether or not the District's receiver network recorded it", and 4.4, "At every other field, the inventory estimates them from the fields with a count." The guidelines (2.2) say the 12.5 kg is the lead "as the District's aircraft lead inventory estimates it under method CVAQD-AQ-17, Revision 3". Nothing tells the solver what to estimate from. The receiver notes say "An aircraft without ADS-B Out, or with it switched off, is not recorded", which, with the based-aircraft list, is the hint.
+2. No file ranks the 24 fields. The 5010 workbook (Ops: GA Local and GA Itinerant, as last filed, with out-of-date as-of dates) and the lead monitoring file (two towered sites only) are the nearest, and a solver using 5010 ops would get the wrong answer. Revision history row 1 ("operations from the airports' 5010 records") flags 5010 as the old method.
+3. Files existing only to help: cvaqd_faa_register_extract_notes.pdf and cvaqd_adsb_receiver_network_notes.pdf (code tables, time zone); the Notes sheets of the L08/D19 workbooks. state_based_aircraft_validation_2027.xlsx is the key input for the estimate, not only a helper. Not used by the solution: airport_master_records_5010.xlsx, cvaqd_lead_monitoring_2026.csv, state_airport_directory columns other than ATCT (decoys).
+4. Reads as the answer: "12.5 kg or more" (threshold, guidelines 2.2) and "$214,000"; the count totals "10,944 operations... 10,504 of them by piston-engine airplanes" are context. No candidate name stands out. The L08 sheet (very high touch-and-go circuits, flight school) hints that L08 is a big field, but nothing names a winner.
+5. Literal sentences: method 4.3, "they are the count's piston-engine operations less those the network recorded" (F37 2,120; G42 1,928; D19 2,712; L08 146); 4.2, "the tower's count of civil operations in the tower's hours of operation less the civil operations the network recorded at the field in those hours; the inventory takes them as operations by piston-engine aircraft" (HWK 3,290 ... DMR 2,368). 4.4 read literally ("estimates them from the fields with a count") does not fix a figure, so the main figure for 20 fields is not fixed by any filed sentence: the population (based aircraft not on ADS-B) is not stated.
+6. An analytical choice: how to estimate the operations the receivers missed at uncounted fields (what drives the missing ops). No single sentence decides it; 4.4 is the only pointer and the receiver notes sentence "An aircraft without ADS-B Out ... is not recorded" and the based list are the evidence. Data semantics (registration reuse by the 8 addresses) matters for towered figures only.
+
+## Part C. Realism
+- Register: every airframe model has exactly one engine model in MASTER (ACFTREF 38 rows, ENGINE 20 rows); 4,562 aircraft share 38 models, and the same mix of models appears at every field, including strips (e.g. Cirrus SR20/SR22, Mooney M20J, PA-32R-301 and an RV-7A at a grass strip). A real extract would show hundreds of models and many engine variants. Year of manufacture for a model spans a plausible range, but the PC-12/47E code carries 2008 and 2019 builds for the same registrations in DEREG vs MASTER.
+- 142 of the 3,228 addresses seen have both a MASTER and a DEREG row; many DEREG rows are for the same N-number as a completely different aircraft (e.g. 1019V: PC-12 in DEREG, PA-28-181 in MASTER; 1255G; 2042T PA-28 vs PC-12). Eight in 2026 convert piston twins/singles to turbines on the same N-number and cancel date equal to the new CERT ISSUE DATE (276SR, 3002F, 469HQ, 5172C, 51BY, 8144N, 9024A, 9305H), and each flies 570 to 900 events in the year. A single-engine to turboprop change on one tail number does not happen in the real registry. They read as placed.
+- 25 addresses are only in DEREG with 2026 cancel dates, and their events stop exactly before the cancel date (e.g. a16e6b last event 3 Jul, cancel 22 Jul); two of them (6574V, 625EY) are on the 2027 based list, with validation dates (15 Dec 2026, 8 Oct 2026) after or before cancel (17 Nov 2026, 27 Dec 2026), so validation "against the FAA register" of an aircraft cancelled 27 Dec is inconsistent.
+- ADS-B: every address has exactly one emitter category; B200 (CLASS 2 in ACFTREF) and PC-12 broadcast A1, 7-passenger Bell 407 A7 (fine). Flight_id is the N-number for every row where non-blank (real avionics often carry callsigns), blank 4.2 percent. Events at night are thin but present; no event gaps; event_ids ascending with gaps (missing ids are the military exclusion or random). The 12-hour tower-hours pattern in network events looks smooth.
+- The receiver notes say a four-week comparison found every ADS-B-equipped op recorded, a clean claim not found in real validation reports; "30 public-use airfields" and "six control towers" match the directory.
+- State list: N-number formatting (lower case, leading N missing, trailing/leading spaces) is plausible mess; but Make/Model casing flips between rows ("CESSNA 172S" and "Cessna 172S") and 3,774 aircraft are all "validated" 1 Sep to 31 Dec 2026, for "1 January 2027" status, 11 of 36 sheets per county. The Make/Model strings are identical to ACFTREF's (no "Cessna 172 Skyhawk"). 'Aircraft Type' includes glider (2) but 5 other categories match the register.
+- Based aircraft counts: the 5010 (e.g. HWK single 170, multi 15) is wildly different from the 2027 validation (HWK 243); 5010 "Ops" are round tens/hundreds (fine), but "Based aircraft as of" dates run 2016 to 2024 while "Operations for 12 months ending" runs 2018 to 2025 and are mismatched in the same row (CRV ops 2024, based 2016). Looks purposely stale. 5010 workbook says "Copied ... 30 September 2026" (file date 30 Sep) while the others have 2027 dates; fine.
+- Directory: S27 Saltry Field has Fuel "None" and private ownership, yet has the third-highest ADS-B traffic (13,585 ops) and 5010 shows 100LL-like piston base; B48, D73, R31 are privately owned public-use with Fuel None. ADS-B ops at fuel-less fields are fine. The directory has a "Flight Training" column that, with L08 Y, hints at L08's circuits.
+- Count reports: F37 PDF and G42 PDF are very clean one-page tables with round totals; F37 has a piston/turbine/helicopter/glider split that sums exactly (all totals tie). L08 workbook total row is formulas with no cached values. D19 daily sheet has days of 0 and 29 to 30 ops alongside 1 to 2 (very spiky: Jan 31 = 30, Jan 6 = 1), looks synthetic. The F37 report says "a takeoff or a landing is one operation and a touch-and-go two", all counts round to even numbers in turbine/helicopter columns (20, 16, 36...), which suggests generated rounding.
+- ATCT file: 6 x 365 rows exactly, no missing/duplicate/zero days, internal totals tie, no revisions or blank days, including 25 Dec and 1 Jan zero rows at VNL/DMR (consistent with closure); a real FAA OPSNET export has Air Carrier/Taxi/GA/Military columns and tower-hour caveats; here the dates are mm/dd/yyyy text.
+- Lead monitoring: only two sites (CV-0412 at HWK Runway 31 end, CV-0418 at CRV North), both at towered fields, each every 6 days for 61 samples, method 192; the AN qualifier on 6 rows with blank values. Nothing for the 24 fields, so it reads as a distractor.
+- Method document: lead-per-operation table has round numbers, "1.625 g, the mean of a single-engine takeoff and landing" (exactly (2.30+0.95)/2) is neat; the grant text is unusually brief for a district program (no application criteria, no match).
+
+## Part D. Ambiguities
+- Estimation at uncounted fields (4.4): see A3 step 8. Silent-aircraft slope: 7 qualify (F37, L08, U44, O16, W33, A71, T13). Share of recorded (mean 0.312): 9 (F37, L08, T61, P05, S27, A71, N26, T13, K58). Pooled share 0.237: 8 (F37, L08, T61, P05, S27, A71, T13, K58). Recorded-only (no estimate): 3 (L08, A71, T13). Recorded-only is also how a solver reads 2.2 if 4.4 is ignored.
+- Definition of "never recorded" based aircraft: any event at any field (my reading) vs events at this field. At a field, an aircraft based there but only seen elsewhere would count as silent under the second reading; the second gives different silent counts and slopes (not computed beyond noting that 2C9 style fields would be all silent).
+- Touch-and-go: method 2.1 says 2 ops, Table 1 gives the factor "each operation of a touch-and-go". Read as one event at 0.55/1.35 g once, lead falls about 10 to 20 percent: L08 recorded 12.30 kg (12.5 for the two-op reading is 15.86); F37 9.71, A71 16.30, T13 16.78, T61 8.46; the qualification set with the estimate would shrink. Count reports and 4.3/4.2 also use the 2-op convention.
+- Year: local Pacific 2026 (my reading) vs UTC 2026 vs the whole export: at most 0.1 kg per field, no flips.
+- Registration in force: dated attribution (my reading) vs the current MASTER row. Towered only: HWK 22 vs 20, CRV 18 vs 12, OSY 23 vs 21, KTY 16 vs 15, VNL 16 vs 14, DMR 13 vs 11 kg (ops 17,600 vs 16,900; 9,900 vs 7,900; 19,400 vs 18,800; 13,600 vs 12,900; 12,200 vs 11,500; 7,900 vs 7,300). The boundary day (events on the cancel date itself) is ambiguous but appeared not to matter at the rounding level.
+- Tower hours: end time inclusive vs exclusive changes unrecorded by at most 1 (HWK 3,289); seasonal windows ("Nov-Feb") applied by calendar month. Hours-of-operation edges relative to DST are not an issue since both are local.
+- "Civil operations" at tower: whether Itinerant Military and Local Military are excluded (my reading). Including them adds HWK 62, CRV 96, KTY 18, OSY 30, VNL 8 ops (about +0.1 kg at CRV).
+- Unrecorded ops "taken as piston": at towers all unrecorded ops (including turbine/helicopter) become piston, vs subtracting the tower's own non-piston share (not given, so no alternative figure).
+- L08 total: the sheet's Total row is formulas (17,685 ops from takeoffs + landings + 2 x circuits). Reading each circuit as 1 operation would cut the count to about 11,400 (17,685 less the 6,283 circuits), below the 17,539 recorded, so count less recorded would be negative; the 2-op convention is forced.
+- Rounding: lead "whole kilograms" from unrounded sums (my reading) vs from rounded per-field values: DMR 12.92 and CRV 17.95 round to 13 and 18 either way; no flip. The 12.5 test applied to unrounded kg: none of the 24 fields is within 0.3 kg of 12.5 under the silent-aircraft estimate (nearest: W33 14.13, K58 11.07, P05 11.11).
