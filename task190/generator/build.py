@@ -318,7 +318,7 @@ def main():
         pa, pr = prior[k]
         stated += ["%d" % pa, "%d" % pr, "%.1f" % (100.0 * pr / pa)]
     stated += ["%.1f" % (cv25 * 100), "%d" % int(round(tot25)),
-               "{:,}".format(int(round(tot25))), "46", "36,735", "36735"]
+               "{:,}".format(int(round(tot25))), "%d" % W.MODULE_DAYS, "36,735", "36735"]
     for v in (3.0, 2.0, 2.5, 1.0, 1.0):
         stated.append("%.1f" % v)
     stated += ["214", "143", "178", "71", "69"]

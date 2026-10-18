@@ -51,7 +51,7 @@ Its rate is 56.6 per cent against a 59.5 per cent target, a 2.9 point shortfall 
    - Plastic wastes: 22,659 t arising, 11,001 t despatched, 10,638 t confirmed at a final treatment operation, 7,659 t confirmed at a recovery operation, pass through 48.6 per cent, 96.7 per cent, 72.0 per cent
    - Textile and leather wastes: 6,429 t arising, 3,438 t despatched, 3,307 t confirmed at a final treatment operation, 1,819 t confirmed at a recovery operation, pass through 53.5 per cent, 96.2 per cent, 55.0 per cent
 3. Collection effort, a row per region with the field days consumed and the usable returns per field day:
-   - Norte: 32.54 field days, 16.66 usable returns per field day
+   - Norte: 32.54 field days, 16.53 usable returns per field day
    - Centro: 25.69 field days, 14.83 usable returns per field day
    - Lisboa: 29.80 field days, 14.43 usable returns per field day
    - Alentejo: 10.11 field days, 16.42 usable returns per field day

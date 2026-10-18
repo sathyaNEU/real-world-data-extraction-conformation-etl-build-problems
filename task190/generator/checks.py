@@ -6,6 +6,7 @@ E the closure axes that need an assertion, F the graded figures' bin distances, 
 """
 import collections
 import csv
+import datetime as dt
 import json
 import math
 import os
@@ -50,6 +51,9 @@ def main():
     gold = W.GOLDEN_STREAM
     loud = W.LOUD_STREAM
     keys = [k for k, *_ in W.STREAMS]
+    a2 = {k: int(round(v)) for k, v in B.recovered_by_stream(
+        ch25, kind_of, code2stream, facility_permits, 2025, drop_renotified=True).items()}
+    a2_lazy = B.recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025)
 
     def z_under(cvf):
         return {k: att[k]["shortfall"] / (att[k]["rate"] * cvf(k)) for k in keys}
@@ -60,7 +64,9 @@ def main():
         return (cl[0] if cl else "NONE"), cl, z
 
     cv_design = lambda k: math.sqrt(sim.var_design(samp, k)) / att[k]["arisings"]
-    nat_cv, _nt = sim.national_cv(samp)
+    nat_cv, _nt = sim.national_cv(samp)                  # the 2026 round's own, published nowhere
+    cv_pub, tot25, est25 = sim.round_2025(pop, idx)      # the figure the 2025 release publishes
+    figs = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
 
     print("\nA. The three rules, executed on the generator's clean truth")
     # the easy route: rank the shortfall against target
@@ -70,7 +76,7 @@ def main():
        "%s at %.1f pp against %s at %.1f pp" % (W.STREAM_NAME[loud], sh[loud] * 100,
                                                 W.STREAM_NAME[gold], sh[gold] * 100))
     # the easy route with the only precision figures the pack publishes
-    n1, cl1, z1 = names(lambda k: nat_cv)
+    n1, cl1, z1 = names(lambda k: cv_pub)
     ok("A2 easy route (published national CV) files the loud stream", n1 == loud,
        "establishes %s; %s z %.2f, %s z %.2f" % (cl1, loud, z1[loud], gold, z1[gold]))
     n2, cl2, z2 = names(lambda k: 1.0 / math.sqrt(att[k]["reporting"]))
@@ -81,6 +87,17 @@ def main():
     ok("A4 decisive step alone files the golden", n3 == gold and cl3 == [gold],
        "establishes %s; %s z %.2f (p %.8f)" % (cl3, gold, z3[gold], _p2(z3[gold])))
     ok("A5 the golden is the only established stream", len(cl3) == 1, "cleared: %s" % cl3)
+    a1 = B.ask_a1(log, region_of)
+    a3 = B.ask_a3(B.rows(P["mret"]), B.rows(P["mrec"]), set(pack.AUTHORITY.values()))
+    raw = sum(1 for r in log if r[9] == "usable return")
+    dup = len(log) - len({(r[0], r[2], r[3], r[9]) for r in log})
+    ok("A7 a usable return is a collection case, not a log row, and the five regions tie to the "
+       "micro-data", sum(a1[r]["returns"] for r in W.REGIONS) == len(md) and raw > len(md),
+       "%d cases over five regions against %d micro-data records and %d+%d+%d+%d design-table "
+       "returns; the log carries %d rows with that outcome because an operations batch of %d "
+       "duplicate rows was re-sent"
+       % (sum(a1[r]["returns"] for r in W.REGIONS), len(md), *[r for _c, _l, _N, r in W.STRATA],
+          raw, dup))
     ok("A6 clean-data test: the easy route is wrong on repaired data too",
        max(sh, key=lambda k: sh[k]) == loud and n3 == gold,
        "no device or hazard sits in the call's population, so the clean pack is the shipped pack")
@@ -93,10 +110,14 @@ def main():
     bad = [k for k in keys if att[k]["recovered_t"] / max(unw[k], 1e-9) > 1.0]
     ok("SF2 the unweighted sample sum is self-refuting",
        len(bad) >= 4, "%d of 8 streams exceed 100 per cent recovery unweighted: %s" % (len(bad), bad))
-    rec_conf = _by_confirmation_date(ch26, kind_of, code2stream, facility_permits)
-    n_c, cl_c, _z = names(cv_design)
-    ok("SF3 window on the confirmation date gives the same call",
-       *_same_call_alt_window(rec_conf, att, samp, gold))
+    rec_conf = _by_confirmation_date(ch26, kind_of, code2stream, facility_permits, drop_renotified=True)
+    conf_in = _by_confirmation_date(ch25, kind_of, code2stream, facility_permits, drop_renotified=True)
+    full = {k: rec_conf[k] + conf_in[k] for k in keys}
+    ok("SF3 window on the confirmation date, read over both reference years, gives the same call",
+       *_same_call_alt_window(full, att, samp, gold))
+    ok("SF3b the half-read window (2026 despatches only) loses the register's January "
+       "confirmations and establishes two streams, which the memo's one-stream clause refutes",
+       *_sf3_half(rec_conf, att, samp, gold))
     ok("SF4 the producer's intended code reading gives the same call",
        *_same_call_intended(ch26, kind_of, code2stream, facility_permits, att, samp, gold))
     ok("SF5 summing every confirmation leg inflates and names another stream",
@@ -118,10 +139,13 @@ def main():
     ok("SF10 rounding each term first gives the same call", *_sf10(att, gold))
     ok("SF11 the permit supersessions move no main figure", *_sf11(P, md))
     ok("SF12 the field-days unit column moves ask A1 only", *_sf12(log, region_of))
+    ok("SF13 the municipalities' reported collections are the municipalities' own returns",
+       *_sf13(P, a3))
+    ok("SF14 a municipal receipt's region is the region the waste arose in", *_sf14(P))
 
     print("\nC. The ladder, measured on the shipped cut")
     rungs = [
-        ("rung 1 published national CV", lambda k: nat_cv, loud),
+        ("rung 1 published national CV", lambda k: cv_pub, loud),
         ("rung 1b reporting-enterprise count", lambda k: 1.0 / math.sqrt(att[k]["reporting"]), loud),
         ("rung 2 strata, no finite-population correction",
          lambda k: math.sqrt(sim.var_no_fpc(samp, k)) / att[k]["arisings"], "NONE"),
@@ -241,9 +265,6 @@ def main():
                 iv = (d, "%s %s" % (k, label))
     ok("F2 every asked interval bound sits inside its printed cell",
        iv[0] > 0.004, "tightest edge distance %.4f pp on %s (cell 0.1 pp)" % iv)
-    figs = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
-    a1 = B.ask_a1(log, region_of)
-    a3 = B.ask_a3(B.rows(P["mret"]), B.rows(P["mrec"]), set(pack.AUTHORITY.values()))
     aw = (1e9, "")
     for reg in W.REGIONS:
         for lab, val, unit in (("field days", figs["a1_%s" % reg]["field_days"], 0.01),
@@ -260,6 +281,162 @@ def main():
     ok("F4 the standard error column is context the prompt does not ask for",
        "call_se_pp" in json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8")),
        "carried in figures.json and the workbook, not graded in the write-up's answer blocks")
+
+    print("\nH. The conventions this pack files, and what the 2025 release publishes")
+    dsg = _pdf("bws_2026_design_and_weighting.pdf")
+    memo = _pdf("collection_capacity_note_2027.pdf")
+    rel = _pdf("waste_statistics_2025_release.pdf")
+    conv = "field days of %s hours" % {8: "eight"}[W.FIELD_DAY_HOURS]
+    ok("H1 the survey's own collection documentation states the field-day convention "
+       "(control: the frame size, through the same extractor and the same parse)",
+       conv in dsg and "36,735 such enterprises" in dsg,
+       "%d characters extracted; '%s' present" % (len(dsg), conv))
+    alt = {}
+    for hours in (7.0, 7.5, 8.0):
+        d2, r2 = collections.Counter(), collections.Counter()
+        seen = set()
+        for r in log:
+            fd = float(r[7]) / (hours if r[8] == "h" else 1.0)
+            if r[5]:
+                if r[5] in seen:
+                    continue
+                seen.add(r[5])
+            d2[region_of[r[1]]] += fd
+        alt[hours] = round(d2["Alentejo"], 2)
+    ok("H2 the convention is load-bearing and now filed: the hour-recorded region's figure moves "
+       "with it", len({v for v in alt.values()}) == 3 and alt[8.0] == figs["a1_Alentejo"]["field_days"],
+       "Alentejo field days %.2f at seven hours, %.2f at seven and a half, %.2f at eight, which is "
+       "the committed figure" % (alt[7.0], alt[7.5], alt[8.0]))
+    ok("H3 the convention is filed once, in the document whose file it describes",
+       sum(1 for t in (dsg, memo, rel, _pdf("national_waste_management_plan_targets.pdf"))
+           if conv in t) == 1, "one of four shipped documents states it")
+    cands = {"stratified with the correction": sim.var_design,
+             "stratified without it": sim.var_no_fpc,
+             "weighted with replacement": sim.var_with_replacement,
+             "pooled as a simple random sample": sim.var_srs_pooled,
+             "reporting units only": sim.var_reporting_only,
+             "delete-one jackknife": sim.var_jackknife}
+    nat = {}
+    for nm, fn in cands.items():
+        V = 0.0
+        for h, (_c, _l, N, r) in enumerate(W.STRATA):
+            rows_h = np.sum([samp[k][h] for k in keys], axis=0)
+            if fn is sim.var_design or fn is sim.var_jackknife:
+                V += 0.0 if r >= N else N * N * (1.0 - r / float(N)) * float(rows_h.var(ddof=1)) / r
+            elif fn is sim.var_no_fpc:
+                V += N * N * float(rows_h.var(ddof=1)) / r
+            elif fn is sim.var_srs_pooled:
+                V = None
+                break
+            else:
+                V += N * N * float(rows_h.var(ddof=1)) / r if r < N else 0.0
+        if V is not None:
+            nat[nm] = round(math.sqrt(V) / sum(att[k]["arisings"] for k in keys) * 100, 1)
+    pub_cv = figs["published_national_cv_pct_2025"]
+    ok("H4 the published precision figure is not a control on the variance method: it prints "
+       "differently from every estimator of the 2026 round's own national CV",
+       all(abs(pub_cv - v) >= 0.1 for v in nat.values()),
+       "published %.1f per cent against %s" % (pub_cv, ", ".join("%s %.1f" % (k, v)
+                                                                 for k, v in sorted(nat.items()))))
+    # the take-all stratum's weight is 1.000000 in every round, so only the sampled strata's
+    # weights would identify the 2025 round
+    w25 = ["%.6f" % (N / float(r)) for _c, N, r in W.STRATA_2025 if r < N]
+    body = dsg + " " + memo + " " + rel
+    csvs = " ".join(open(os.path.join(TASK, "target", f), encoding="utf-8").readline()
+                    for f in sorted(os.listdir(os.path.join(TASK, "target"))) if f.endswith(".csv"))
+    ok("H5 nothing in the bundle reproduces the published figure: no 2025 micro-data, weight or "
+       "sample count ships", not any(x in body for x in w25)
+       and "%d" % sum(r for _c, _N, r in W.STRATA_2025) not in body
+       and not any("2025" in c and "arisings" in c for c in csvs.split(",")),
+       "the four 2025 design weights and the round's own return count appear in no document, and "
+       "no shipped file carries a 2025 arisings record")
+    pub = _table1(rel, {n: k for k, n, _p, _m, _c in W.STREAMS})
+    ok("H6 Table 1 of the 2025 release yields all eight rows", len(pub) == 8, "%d rows" % len(pub))
+    gaps = {k: (a2[k] - pub[k][1]) / float(a2[k]) for k in pub}
+    lazy = {k: (a2_lazy[k] - pub[k][1]) / float(a2_lazy[k]) for k in pub}
+    ok("H7 the published 2025 recovered column is nobody's answer: it sits well below the register "
+       "recompute, with the release stating the extract it came from",
+       all(0.025 <= g <= 0.06 for g in gaps.values()) and all(v > 0.02 for v in lazy.values())
+       and "as extracted on 30 June 2026" in rel and "not revised for them" in rel,
+       "below the filed 2025 figure by %.1f to %.1f per cent and below the undeduplicated figure by "
+       "%.1f to %.1f per cent" % (100 * min(gaps.values()), 100 * max(gaps.values()),
+                                  100 * min(lazy.values()), 100 * max(lazy.values())))
+    no_r1 = _a2_variant(ch25, kind_of, code2stream, facility_permits, drop_r1=True)
+    first_op = _a2_variant(ch25, kind_of, code2stream, facility_permits, first_op=True)
+    ok("H8 Table 1 still pins R1 as a recovery operation: excluding it would publish nothing for "
+       "the two streams that recover only through it",
+       no_r1["mixed_ci"] == 0 and no_r1["wood"] == 0 and pub["mixed_ci"][1] > 50000,
+       "excluding R1 gives 0 t for mixed commercial and industrial and 0 t for wood against the "
+       "published %s t and %s t" % ("{:,}".format(pub["mixed_ci"][1]), "{:,}".format(pub["wood"][1])))
+    ok("H9 Table 1 still rules out a first-operation-only read",
+       pub[gold][1] > 1.2 * first_op[gold],
+       "the published %s t for metal against %s t if the holding site's own code were taken"
+       % ("{:,}".format(pub[gold][1]), "{:,}".format(int(first_op[gold]))))
+    sg = {k: abs(pub[k][0] - att[k]["arisings"]) / math.sqrt(sim.var_design(samp, k)) for k in pub}
+    ok("H10 every published 2025 arisings figure moves from the 2026 estimate by less than the "
+       "stream's own design standard error allows", all(v < 2.5 for v in sg.values()),
+       "largest movement %.2f design standard errors (%s)"
+       % (max(sg.values()), max(sg, key=lambda k: sg[k])))
+
+    print("\nJ. The register's own records: lags, weights and names")
+    desp, recv, conf = {}, {}, {}
+    for c, rs in ch26.items():
+        for r in rs:
+            if r[2] == "PRODUCER_DESPATCH":
+                desp[c] = dt.date.fromisoformat(r[3])
+            elif r[2] == "FACILITY_RECEIPT":
+                recv[c] = dt.date.fromisoformat(r[3])
+            elif r[2] == "TREATMENT_CONFIRMED":
+                conf[c] = dt.date.fromisoformat(r[3])
+    tl = [(recv[c] - desp[c]).days for c in recv]
+    cl = [(conf[c] - recv[c]).days for c in conf if c in recv]
+    ok("J1 the transit lag is a distribution, not a constant",
+       len(set(tl)) >= 6 and float(np.std(tl)) > 0.8 and max(tl) >= 8,
+       "%d distinct values, mean %.2f days, sd %.2f, %.1f per cent at three days or more, longest %d"
+       % (len(set(tl)), float(np.mean(tl)), float(np.std(tl)),
+          100.0 * sum(1 for v in tl if v >= 3) / len(tl), max(tl)))
+    ok("J2 the treatment-confirmation lag has a real right tail",
+       len(set(cl)) >= 15 and float(np.std(cl)) > 1.5 and max(cl) >= 20,
+       "%d distinct values, mean %.2f days, sd %.2f, longest %d, %.1f per cent beyond ten days"
+       % (len(set(cl)), float(np.mean(cl)), float(np.std(cl)), max(cl),
+          100.0 * sum(1 for v in cl if v > 10) / len(cl)))
+    we = [d for d in desp.values() if d.weekday() >= 5]
+    ok("J3 movements carry a weekday structure, with a minority at weekends",
+       0.01 < len(we) / float(len(desp)) < 0.12,
+       "%.1f per cent of despatch legs fall at a weekend against %.1f per cent of calendar days"
+       % (100.0 * len(we) / len(desp), 100.0 * 2 / 7))
+    cents = [int(round(float(r[8]) * 100)) % 100 for c in ch26 for r in ch26[c]
+             if r[2] == "PRODUCER_DESPATCH"]
+    ok("J4 tonnages carry the precision a weighbridge records, and still sum to the whole tonnes "
+       "the deliverables state",
+       sum(1 for v in cents if v) / float(len(cents)) > 0.9 and len(set(cents)) >= 40,
+       "%.1f per cent of consignments carry a fractional tonnage over %d distinct hundredths, and "
+       "every stream and stage total is a whole tonne (asserted in build.exact)"
+       % (100.0 * sum(1 for v in cents if v) / len(cents), len(set(cents))))
+    fr = B.rows(P["fac"])
+    pl_ok = all(any(nm.endswith(" de " + pl) for pl in pack.PLACES[reg])
+                for _p, nm, reg, _role, _o, _l in fr)
+    ok("J5 the facilities are named, not numbered, and each name is a place in its own region",
+       len({r[1] for r in fr}) == len(fr) and not any(any(ch.isdigit() for ch in r[1]) for r in fr)
+       and pl_ok, "%d distinct names over %d sites, no digit in any name, every place in region"
+       % (len({r[1] for r in fr}), len(fr)))
+    veh = B.rows(P["veh"])
+    ok("J6 the carriers are named, not numbered",
+       len({r[1] for r in veh}) == 140 and not any(any(ch.isdigit() for ch in r[1]) for r in veh),
+       "%d distinct carrier names, none carrying its row number" % len({r[1] for r in veh}))
+    lic = {r[5] for r in fr}
+    vf = {r[6] for r in B.rows(P["cw"])}
+    ok("J7 no licence or registration date is a constant down the column",
+       len(lic) > 80 and len(vf) > 1000,
+       "%d distinct facility licence dates over %d sites, %d distinct permit valid-from dates over "
+       "%d rows" % (len(lic), len(fr), len(vf), len(B.rows(P["cw"]))))
+    allrows = [r for f in ("h1", "h2", "y25") for r in B.rows(P[f])]
+    ok("J8 no leg is dated after the extract the register was taken at",
+       max(r[3] for r in allrows) <= W.EXTRACT_REGISTER
+       and sum(1 for r in allrows if r[3] == W.EXTRACT_REGISTER) < 10,
+       "latest leg %s against the extract of %s, %d legs on the extract date itself"
+       % (max(r[3] for r in allrows), W.EXTRACT_REGISTER,
+          sum(1 for r in allrows if r[3] == W.EXTRACT_REGISTER)))
 
     print("\nG. Input gates")
     files = sorted(os.listdir(os.path.join(TASK, "target")))
@@ -343,11 +520,122 @@ def _family(samp, att, keys):
     return out
 
 
+def _pdf(name):
+    """Every shipped PDF is read through one extractor and one parse, with whitespace flattened, so
+    a presence check and its control run over exactly the same text."""
+    from pypdf import PdfReader
+    t = " ".join(" ".join((p.extract_text() or "").split())
+                 for p in PdfReader(os.path.join(TASK, "target", name)).pages)
+    assert len(t) > 400, (name, len(t))
+    return t
+
+
+def _table1(text, name2key):
+    """Table 1 of the 2025 release: arisings, recovered and the published rate per stream."""
+    out = {}
+    for nm, k in name2key.items():
+        i = text.find(nm + " ")
+        if i < 0:
+            continue
+        parts = text[i + len(nm):].split()
+        if len(parts) >= 4 and parts[0].isdigit() and parts[1].isdigit():
+            out[k] = (int(parts[0]), int(parts[1]), float(parts[2]))
+    return out
+
+
+def _a2_variant(ch, kind_of, code2stream, facility_permits, drop_r1=False, first_op=False):
+    """the 2025 recovered tonnage under two readings Table 1 rules out: R1 not counted as recovery,
+    and the holding site's own confirmation taken instead of the operation it forwards to"""
+    child_of = {}
+    for c, rs in ch.items():
+        if rs[0][10]:
+            child_of.setdefault(rs[0][10], c)
+    po = {c for c, rs in ch.items()
+          if [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0][4] not in facility_permits}
+    out = collections.Counter({k: 0.0 for k, *_ in W.STREAMS})
+    for c in po:
+        d = [x for x in ch[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if not d[3].startswith("2025") or (d[10] and d[10] in po):
+            continue
+        conf = [x for x in ch[c] if x[2] == "TREATMENT_CONFIRMED"]
+        op = conf[0][9] if conf else ""
+        if not first_op and kind_of.get(op) == "interim":
+            k2 = child_of.get(c)
+            cc = [x for x in ch[k2] if x[2] == "TREATMENT_CONFIRMED"] if k2 else []
+            op = cc[0][9] if cc else ""
+        kind = kind_of.get(op)
+        if drop_r1 and op == "R1":
+            kind = "disposal"
+        if kind == "recovery":
+            out[code2stream[d[7]]] += float(d[8])
+    return out
+
+
+def _sf13(P, a3):
+    """"the municipalities' reported collections": the 27 municipalities' own returns. The memo
+    files the counting convention, the receipts file's origin entities are exactly those 27, and
+    taking all 32 returns moves every region's gap by a factor of nine or more."""
+    ret = B.rows(P["mret"])
+    rec = B.rows(P["mrec"])
+    auth = set(pack.AUTHORITY.values())
+    own = {r[0] for r in ret} - auth
+    origins = {r[2] for r in rec}
+    allin = collections.Counter()
+    for r in ret:
+        v = float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
+        allin[r[1]] += v
+    rcv = collections.Counter()
+    for r in rec:
+        rcv[r[3]] += float(r[4])
+    ratio = [(allin[reg] - rcv[reg]) / a3[reg]["gap"] for reg in W.REGIONS]
+    memo = _pdf("collection_capacity_note_2027.pdf")
+    return (own == origins and len(own) == 27 and min(ratio) > 5.0
+            and "each municipality's collected tonnage counted once" in memo
+            and "counted once at the producer's despatch leg" in memo), \
+        ("%d municipalities file their own returns and they are exactly the %d origin entities of "
+         "the receipts file; the memo files the counting convention; counting all %d returns "
+         "inflates the regional gaps by %.1f to %.1f times"
+         % (len(own), len(origins), len({r[0] for r in ret}), min(ratio), max(ratio)))
+
+
+def _sf14(P):
+    """"by origin region": the region the waste arose in, which is the receipts file's own column.
+    The facility's own region is a different basis and gives a different answer."""
+    rec = B.rows(P["mrec"])
+    ret = B.rows(P["mret"])
+    reg_of_m = {r[0]: r[1] for r in ret}
+    fac_reg = {r[0]: r[2] for r in B.rows(P["fac"])}
+    bad = [r for r in rec if reg_of_m.get(r[2]) != r[3]]
+    by_origin, by_facility = collections.Counter(), collections.Counter()
+    for r in rec:
+        by_origin[r[3]] += float(r[4])
+        by_facility[fac_reg[r[0]]] += float(r[4])
+    col = collections.Counter()
+    for r in ret:
+        col[r[1]] += float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
+    auth = set(pack.AUTHORITY.values())
+    col = collections.Counter()
+    for r in ret:
+        if r[0] in auth:
+            continue
+        col[r[1]] += float(r[3]) / (10.0 if r[4] == "100kg" else 1.0)
+    moved = [abs((col[reg] - by_facility[reg]) - (col[reg] - by_origin[reg]))
+             / abs(col[reg] - by_origin[reg]) for reg in W.REGIONS]
+    return (not bad and min(moved) > 1.0), \
+        ("every receipt's origin region is the region of the municipality that collected it (%d "
+         "mismatches), and reading the facility's own region instead moves every region's gap by "
+         "%.1f to %.1f times the gap itself" % (len(bad), min(moved), max(moved)))
+
+
 def _p2(z):
     return math.erfc(abs(z) / math.sqrt(2.0))
 
 
-def _by_confirmation_date(ch, kind_of, code2stream, facility_permits):
+def _by_confirmation_date(ch, kind_of, code2stream, facility_permits, drop_renotified=False):
+    """Recovered tonnage whose terminal confirmation falls in 2026, whatever year the consignment
+    was despatched in. Run over both register files this is the consistent reading of a
+    confirmation-date window, and the register holds both halves of it: consignments despatched in
+    December and confirmed in January, and the previous year's confirmed in this one."""
     child_of = {}
     for c, rs in ch.items():
         if rs[0][10]:
@@ -357,6 +645,8 @@ def _by_confirmation_date(ch, kind_of, code2stream, facility_permits):
     out = collections.Counter()
     for c in po:
         d = [x for x in ch[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if drop_renotified and d[10] and d[10] in po:
+            continue
         op = B.terminal_op(ch, c, kind_of, child_of)
         if kind_of.get(op) != "recovery":
             continue
@@ -367,7 +657,7 @@ def _by_confirmation_date(ch, kind_of, code2stream, facility_permits):
             cc = [x for x in ch[k] if x[2] == "TREATMENT_CONFIRMED"] if k else []
             cd = cc[0][3] if cc else cd
         if cd.startswith("2026"):
-            out[code2stream[d[7]]] += int(d[8])
+            out[code2stream[d[7]]] += float(d[8])
     return out
 
 
@@ -393,7 +683,15 @@ def _sf1(ch, kind_of, code2stream, facility_permits, att, gold, loud):
 
 def _same_call_alt_window(recs, att, samp, gold):
     cl = _call_from(recs, samp, att, gold)
-    return cl == [gold], "confirmation-date window establishes %s" % cl
+    worst = max(abs(recs[k] / att[k]["recovered_t"] - 1.0) for k, *_ in W.STREAMS)
+    return cl == [gold], ("confirmation-date window establishes %s; no stream's tonnage moves by "
+                          "more than %.2f per cent" % (cl, 100 * worst))
+
+
+def _sf3_half(recs, att, samp, gold):
+    cl = _call_from(recs, samp, att, gold)
+    return len(cl) > 1 and gold in cl, ("2026 despatches confirmed in 2026 alone establishes %s, "
+                                        "against the memo's one stream so established" % cl)
 
 
 def _same_call_intended(ch, kind_of, code2stream, facility_permits, att, samp, gold):
@@ -408,7 +706,7 @@ def _sf5(ch, kind_of, code2stream, facility_permits, att, samp, gold):
     for c, rs in ch.items():
         for r in rs:
             if r[2] == "TREATMENT_CONFIRMED" and kind_of.get(r[9]) in ("recovery", "interim"):
-                out[code2stream[r[7]]] += int(r[8])
+                out[code2stream[r[7]]] += float(r[8])
     cl = _call_from(out, samp, att, gold)
     return cl != [gold], "summing every confirmation leg establishes %s" % (cl or "NONE")
 

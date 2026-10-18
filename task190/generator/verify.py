@@ -116,13 +116,22 @@ def main():
         d = [x for x in ch[c] if x[2] == "PRODUCER_DESPATCH"][0]
         if not d[3].startswith("2026"):
             continue
-        s, t = code2stream[d[7]], int(d[8])
+        s, t = code2stream[d[7]], float(d[8])
         desp[s] += t
         op = terminal(c)
         if kinds.get(op) in ("recovery", "disposal"):
             conf_t[s] += t
             if kinds[op] == "recovery":
                 rec[s] += t
+
+    for c in (rec, desp, conf_t):
+        for k, v in c.items():
+            assert abs(v - round(v)) < 1e-6, (k, v)
+    rec = {k: int(round(v)) for k, v in rec.items()}
+    desp = {k: int(round(v)) for k, v in desp.items()}
+    conf_t = {k: int(round(v)) for k, v in conf_t.items()}
+    ok("every stream's register total is a whole tonne once the weighbridge noise is summed",
+       True, "net tonnes are recorded to 20 kg and sum to whole tonnes by stream and stage")
 
     # ---- the plan targets, read out of the plan PDF
     txt = pdf_text("national_waste_management_plan_targets.pdf")
@@ -220,9 +229,14 @@ def main():
                 continue
             seenv.add(r[5])
         days[reg] += fd
+    done = set()
     for r in lg:
-        if r[9] == "usable return":
+        if r[9] == "usable return" and r[0] not in done:
+            done.add(r[0])
             ret[region_of[r[1]]] += 1
+    ok("the usable returns counted by case tie to the micro-data's records",
+       sum(ret.values()) == len(md), "%d usable returns over five regions, %d micro-data records"
+       % (sum(ret.values()), len(md)))
     ws = wb["Collection effort"]
     for row in ws.iter_rows(min_row=5, max_row=9, values_only=True):
         if not row[0]:
@@ -259,13 +273,14 @@ def main():
             cc = [x for x in ch2[k2] if x[2] == "TREATMENT_CONFIRMED"] if k2 else []
             op = cc[0][9] if cc else ""
         if kinds.get(op) == "recovery":
-            a2[code2stream[d[7]]] += int(d[8])
+            a2[code2stream[d[7]]] += float(d[8])
+    a2 = {k: int(round(v)) for k, v in a2.items()}
     ws = wb["Recovery 2025"]
     for row in ws.iter_rows(min_row=4, max_row=11, values_only=True):
         if not row[0]:
             continue
         k = name2key[row[0]]
-        ok("Recovery 2025 recomputes: %s" % k, row[1] == a2[k], "%r != %r" % (row[1], a2[k]))
+        ok("Recovery 2025 recomputes: %s" % k, row[1] == a2[k], "%s t" % a2[k])
 
     _h, mret = read("municipal_waste_returns_2026.csv")
     _h, mrec = read("municipal_facility_receipts_2026.csv")
@@ -313,6 +328,53 @@ def main():
             if got != want:
                 bad.append("%s %r != %r" % (label, got, want))
         ok("Municipal reconciliation row recomputes: %s" % reg, not bad, "; ".join(bad))
+
+    # ---- the conventions the deliverables lean on, read back out of the documents that carry
+    # them. Each absence or presence check runs through the same extractor and the same parse as
+    # its own positive control, so a check that cannot read the file fails instead of passing.
+    def flat(name):
+        return " ".join(pdf_text(name).split())
+
+    dsg = flat("bws_2026_design_and_weighting.pdf")
+    ok("the design document states the field-day convention (control: the frame size)",
+       "field days of eight hours" in dsg and "36,735 such enterprises" in dsg,
+       "%d characters of text, convention present: %s"
+       % (len(dsg), "field days of eight hours" in dsg))
+    memo = flat("collection_capacity_note_2027.pdf")
+    ok("the capacity memo states the municipal counting convention (control: the estimand clause)",
+       "each municipality's collected tonnage counted once" in memo
+       and "counted once at the producer's despatch leg" in memo,
+       "%d characters of text" % len(memo))
+    rel = flat("waste_statistics_2025_release.pdf")
+    ok("the 2025 release states the extract its register column came from (control: the revision)",
+       "as extracted on 30 June 2026" in rel and "supersedes the preliminary release" in rel,
+       "%d characters of text" % len(rel))
+    ok("no shipped document states hours per field day twice",
+       sum(1 for nm in sorted(os.listdir(TGT)) if nm.endswith(".pdf")
+           and "field days of eight hours" in flat(nm)) == 1,
+       "the convention is filed once, in the survey's own collection documentation")
+
+    # ---- Table 1 of the 2025 release against the register recompute. The release says the column
+    # is an earlier extract and is not revised, so it has to sit visibly below the recompute: a
+    # published column that nearly ties would read as a calibration target for the 2025 ask.
+    lines = [l.strip() for l in pdf_text("waste_statistics_2025_release.pdf").splitlines()]
+    pub = {}
+    for i, l in enumerate(lines):
+        if l.endswith("wastes") and l in name2key and i + 3 < len(lines):
+            m = re.match(r"^([0-9]{1,2}\.[0-9]) per cent$", lines[i + 3])
+            if m and lines[i + 1].isdigit() and lines[i + 2].isdigit():
+                pub[name2key[l]] = (int(lines[i + 1]), int(lines[i + 2]), float(m.group(1)))
+    ok("Table 1 of the 2025 release yields all eight rows", len(pub) == 8, "%d rows read" % len(pub))
+    gaps = [(a2[k] - pub[k][1]) / float(a2[k]) for k in pub]
+    ok("every published 2025 recovered tonnage sits below the register recompute by 2.5 to 6 per cent",
+       all(0.025 <= g <= 0.06 for g in gaps),
+       "gaps %s" % ", ".join("%.1f" % (100 * g) for g in sorted(gaps)))
+    ok("every published 2025 rate is the published tonnages' own ratio",
+       all(abs(round(100.0 * pub[k][1] / pub[k][0], 1) - pub[k][2]) < 0.05 for k in pub),
+       "eight rows internally consistent")
+    tot_txt = "{:,}".format(sum(v[0] for v in pub.values()))
+    ok("the release's stated national total is the sum of its own arisings column",
+       "estimated at %s tonnes" % tot_txt in rel, "total %s t" % tot_txt)
 
     ok("the chart ships", os.path.exists(os.path.join(GLD, "attainment_against_target_2026.png")),
        "attainment_against_target_2026.png")

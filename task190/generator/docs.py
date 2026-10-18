@@ -16,6 +16,14 @@ import world as W                                                   # noqa: E402
 
 NUMWORD = {6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
 
+
+def _long(iso):
+    """a date as a division memo writes it"""
+    d = dt.date.fromisoformat(iso)
+    return "%d %s %d" % (d.day, ["January", "February", "March", "April", "May", "June", "July",
+                                 "August", "September", "October", "November",
+                                 "December"][d.month - 1], d.year)
+
 SS = getSampleStyleSheet()
 BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Times-Roman", fontSize=9.5, leading=13)
 H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Times-Bold", fontSize=13, leading=16, spaceAfter=6)
@@ -141,7 +149,7 @@ def release_2025(path, cv_2025, nat_total, prior):
                     "Table 1 is as extracted on %s, the extract this release was compiled from. "
                     "The register goes on receiving treatment confirmations for consignments "
                     "despatched in earlier reference years, and the published series is not "
-                    "revised for them." % (W.REGISTER, W.PRIOR_EXTRACT), BODY),
+                    "revised for them." % (W.REGISTER, _long(W.PRIOR_EXTRACT)), BODY),
           Spacer(1, 10),
           Paragraph("%s. Reproduced under the open licence for public-sector information."
                     % W.INSTITUTE, SMALL)]
@@ -149,41 +157,67 @@ def release_2025(path, cv_2025, nat_total, prior):
 
 
 def capacity_note(path, targets):
+    """The head of collection operations' memo to the division director. It is the division's own
+    note: what the establishment leaves for 2027, why the choice cannot wait, and the quantity the
+    division commits to measuring. It states no method and ranks no stream."""
     d = _doc(path, "Collection capacity, 2027 round")
     p = W.PEOPLE
-    f = [Paragraph("Collection capacity note, 2027 round", H1),
-         Paragraph("Business and Environment Statistics Division. Prepared for the division "
-                   "director's weekly review.", BODY),
-         Paragraph("1. Capacity for 2027", H2),
-         Paragraph("The division's field establishment for 2027 is five regional teams at the 2026 "
-                   "complement. After the core rounds the establishment leaves room for one "
-                   "supplementary module of 46 field days, to be attached to the %s collection "
-                   "round. One module only: a second would take field days the core rounds need."
-                   % W.SURVEY, BODY),
-         Paragraph("2. What forces the choice now", H2),
-         Paragraph("The %s wrote to the institute on %s about the statistical stream figures in "
-                   "the waste statistics, and the institute's complaints procedure requires a "
-                   "substantive answer by %s. The division's answer is the module: it is committed "
-                   "to the one stream where the 2026 attainment figures establish a shortfall "
-                   "against the plan, and the module collects the reasons for that shortfall from "
-                   "the enterprises whose arisings make it up."
-                   % (W.COUNCIL, W.COMPLAINT_DATE, W.RESPONSE_DUE), BODY),
-         Paragraph("3. The quantity the choice runs on", H2),
-         Paragraph("For the 2026 reference year a stream's recovery rate is the tonnage of that "
-                   "stream despatched by its producer during the 2026 calendar year and confirmed "
-                   "received at a recovery operation, counted once at the producer's despatch leg, "
-                   "over the total tonnage of that stream arising during 2026 at every enterprise "
-                   "in the %s frame whether sampled or not, as estimated from the 2026 survey. A "
-                   "stream is established below target where its 2026 recovery rate is below its "
-                   "%s target at the 95 per cent level. The module goes to the one stream so "
-                   "established." % (W.SURVEY, W.PLAN), BODY),
-         Paragraph("4. Sources as at the extract dates", H2),
-         Paragraph("The register extract is as at %s and covers every leg of a consignment "
-                   "despatched in the reference year. The survey file is the 2026 round as at %s. "
-                   "The agency's operation-code list was revised on %s and the waste code list on "
-                   "the same date; the agency's own mappings ship with the extract."
-                   % (W.EXTRACT_REGISTER, W.EXTRACT_SURVEY, W.CODE_REVISION), BODY),
-         Paragraph("5. Field days by team, 2026 round", H2)]
+    f = [Paragraph("Memorandum", H1),
+         Spacer(1, 2)]
+    head = [["To", "%s, Division Director" % p["division_director"]],
+            ["From", "%s, Head of Collection Operations" % p["head_collection"]],
+            ["Date", _long(W.NOTE_DATE)],
+            ["Subject", "2027 collection capacity, and where the supplementary module goes"]]
+    t = Table(head, colWidths=[18 * mm, 148 * mm])
+    t.setStyle(TableStyle([("FONT", (0, 0), (0, -1), "Times-Bold", 9.5),
+                           ("FONT", (1, 0), (1, -1), "Times-Roman", 9.5),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                           ("TOPPADDING", (0, 0), (-1, -1), 1),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
+                           ("LINEBELOW", (0, -1), (-1, -1), 0.6, colors.HexColor("#999999"))]))
+    f += [t, Spacer(1, 7),
+          Paragraph("We go into 2027 with the five regional teams at their 2026 complement. Once "
+                    "the core rounds are covered the establishment leaves room for one "
+                    "supplementary module of %d field days, and I would attach it to the %s "
+                    "collection round. One module is what there is: a second would come out of "
+                    "field days the core rounds need." % (W.MODULE_DAYS, W.SURVEY), BODY),
+          Spacer(1, 4),
+          Paragraph("What makes the choice urgent is the Council. The %s wrote to us on %s about "
+                    "the statistical stream figures in the waste statistics, and the complaints "
+                    "procedure has us answering substantively by %s. My answer is the module: it "
+                    "is committed to the one stream where the 2026 attainment figures establish a "
+                    "shortfall against the plan, and it goes back to the enterprises whose "
+                    "arisings make that stream up to collect the reasons for it."
+                    % (W.COUNCIL, _long(W.COMPLAINT_DATE), _long(W.RESPONSE_DUE)), BODY),
+          Spacer(1, 4),
+          Paragraph("So that we are all measuring the same thing, the quantity is this. For the "
+                    "2026 reference year a stream's recovery rate is the tonnage of that stream "
+                    "despatched by its producer during the 2026 calendar year and confirmed "
+                    "received at a recovery operation, counted once at the producer's despatch "
+                    "leg, over the total tonnage of that stream arising during 2026 at every "
+                    "enterprise in the %s frame whether sampled or not, as estimated from the 2026 "
+                    "survey. A stream is established below target where its 2026 recovery rate is "
+                    "below its %s target at the 95 per cent level. The module goes to the one "
+                    "stream so established." % (W.SURVEY, W.PLAN), BODY),
+          Spacer(1, 4),
+          Paragraph("The figures come off the extracts we hold: the register extract of %s, which "
+                    "carries every leg of a consignment despatched in the reference year, and the "
+                    "2026 survey round as at %s. The agency moved system in July and reissued both "
+                    "the operation-code list and the waste code list on %s; its own mappings came "
+                    "with the extract." % (_long(W.EXTRACT_REGISTER), _long(W.EXTRACT_SURVEY),
+                                           _long(W.CODE_REVISION)), BODY),
+          Spacer(1, 4),
+          Paragraph("Two other things for the release while I have your attention. The mid-term "
+                    "review quotes the prior reference year's recovered tonnage, and we take that "
+                    "out of the register on the same basis as 2026. The municipal series goes out "
+                    "beside this one: it carries the tonnage the municipalities return as "
+                    "collected, each municipality's collected tonnage counted once, against what "
+                    "the licensed facilities record receiving.", BODY),
+          Spacer(1, 6),
+          Paragraph("The table is what the 2027 plan allows each team against its establishment. "
+                    "These are plan figures and not the 2026 outturn: the outturn is in the "
+                    "collection operations log.", BODY),
+          Spacer(1, 4)]
     rows = [["Regional team", "Establishment (FTE)", "Core rounds (field days)"]]
     est = {"Norte": 3.0, "Centro": 2.0, "Lisboa": 2.5, "Alentejo": 1.0, "Algarve": 1.0}
     core = {"Norte": 214, "Centro": 143, "Lisboa": 178, "Alentejo": 71, "Algarve": 69}
@@ -191,13 +225,10 @@ def capacity_note(path, targets):
         rows.append(["EQ-%s (%s)" % (r[:3].upper(), r), "%.1f" % est[r], "%d" % core[r]])
     t = Table(rows, colWidths=[72 * mm, 40 * mm, 48 * mm])
     t.setStyle(GRID)
-    f += [t, Spacer(1, 5),
-          Paragraph("The core-round figures are the 2027 plan, not the 2026 outturn; the 2026 "
-                    "outturn is in the collection operations log.", BODY),
-          Spacer(1, 8),
-          Paragraph("Prepared by %s, Head of Collection Operations. For %s, Division Director. "
-                    "Register queries to %s at the %s."
-                    % (p["head_collection"], p["division_director"], p["register_liaison"], W.AGENCY), SMALL)]
+    f += [t, Spacer(1, 10),
+          Paragraph("%s, Business and Environment Statistics Division. Our reference "
+                    "DEA/2027/014. Register queries go to %s at the %s."
+                    % (W.INSTITUTE, p["register_liaison"], W.AGENCY), SMALL)]
     d.build(f)
 
 

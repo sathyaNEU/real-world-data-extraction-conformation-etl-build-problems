@@ -21,8 +21,8 @@
   },
   "a1_Norte": {
     "field_days": 32.54,
-    "returns_per_day": 16.66,
-    "usable_returns": 542
+    "returns_per_day": 16.53,
+    "usable_returns": 538
   },
   "a2_cd_rubble": 91788,
   "a2_glass": 12868,
@@ -150,7 +150,8 @@
     "Metal and metal-bearing wastes"
   ],
   "golden_take_all_share_pct": 95.8,
-  "national_arisings_cv_pct": 3.9,
+  "national_arisings_cv_pct_2026": 3.9,
+  "published_national_cv_pct_2025": 3.4,
   "register_legs_2026": 82835,
   "renotified_pairs": 43,
   "runner_up": "Mixed commercial and industrial wastes",

@@ -102,11 +102,33 @@ def _unique(rng, make, n):
 
 
 # -------------------------------------------------------------- consignment dates: lags and weights
+# the fixed-date national holidays the division and the sites keep; movements thin out on them
+HOLIDAYS = {(1, 1), (4, 25), (5, 1), (6, 10), (8, 15), (10, 5), (11, 1), (12, 1), (12, 8), (12, 25)}
+
+
 def _bump(d, rl, back_first=False):
-    """A date that falls on a weekend moves to the adjacent working day most of the time; a
-    register of continuously operating sites still carries some Saturday movements."""
-    if d.weekday() < 5 or rl.random() >= 0.85:
+    """A date that falls on a weekend or a national holiday moves to the adjacent working day most
+    of the time; a register of continuously operating sites still carries some Saturday and
+    holiday movements."""
+    closed = d.weekday() >= 5 or (d.month, d.day) in HOLIDAYS
+    if not closed or rl.random() >= 0.85:
         return d
+    if d.weekday() >= 5:
+        if d.weekday() == 5:
+            return d - dt.timedelta(days=1) if back_first and rl.random() < 0.7 else d + dt.timedelta(days=2)
+        return d + dt.timedelta(days=1) if not back_first or rl.random() < 0.7 else d - dt.timedelta(days=2)
+    step = -1 if (back_first and rl.random() < 0.6) else 1
+    nd = _open_day(d, step)
+    if nd.year != d.year:                    # a holiday at either end of the year moves inwards
+        nd = _open_day(d, -step)
+    return nd
+
+
+def _open_day(d, step):
+    nd = d + dt.timedelta(days=step)
+    while nd.weekday() >= 5 or (nd.month, nd.day) in HOLIDAYS:
+        nd += dt.timedelta(days=step)
+    return nd
     if d.weekday() == 5:
         return d - dt.timedelta(days=1) if back_first and rl.random() < 0.7 else d + dt.timedelta(days=2)
     return d + dt.timedelta(days=1) if not back_first or rl.random() < 0.7 else d - dt.timedelta(days=2)
@@ -115,7 +137,7 @@ def _bump(d, rl, back_first=False):
 def _lag(rl, median, sigma, cap, start, limit):
     """A transit, treatment or storage lag: a short mode with a real right tail, truncated to the
     window the extract can observe rather than clamped onto its last day."""
-    room = (limit - start).days
+    room = (limit - start).days - 1          # the extract's own day is not a landing place
     if room <= 1:
         return max(1, room)
     for _ in range(6):
@@ -126,8 +148,14 @@ def _lag(rl, median, sigma, cap, start, limit):
 
 
 def _then(rl, prev, median, sigma, cap, limit):
+    """The next leg's date. A draw that would land on or past the extract is redrawn inside the
+    window the extract can see, so the tail thins towards the extract date instead of piling onto
+    it: a spike on the last day of an extract is an artefact of the cut, not of the register."""
     d = _bump(prev + dt.timedelta(days=_lag(rl, median, sigma, cap, prev, limit)), rl)
-    return min(d, limit)
+    if d >= limit:
+        room = (limit - prev).days
+        d = prev + dt.timedelta(days=int(rl.integers(1, room))) if room >= 2 else prev
+    return max(d, prev)
 
 
 def _kg_noise(rl, n):

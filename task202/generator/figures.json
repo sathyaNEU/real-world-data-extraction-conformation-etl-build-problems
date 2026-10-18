@@ -1,0 +1,64 @@
+{
+  "awards": 49265,
+  "bands": {
+    "1": {
+      "awards": 9149,
+      "ceiling": 3900,
+      "factor": 0.5,
+      "referred_share": 6.2,
+      "referred_value_share": 22.9
+    },
+    "2": {
+      "awards": 9080,
+      "ceiling": 5600,
+      "factor": 0.707,
+      "referred_share": 5.8,
+      "referred_value_share": 22.1
+    },
+    "3": {
+      "awards": 8987,
+      "ceiling": 6800,
+      "factor": 0.866,
+      "referred_share": 5.8,
+      "referred_value_share": 21.9
+    },
+    "4": {
+      "awards": 8829,
+      "ceiling": 7800,
+      "factor": 1.0,
+      "referred_share": 6.1,
+      "referred_value_share": 22.5
+    },
+    "5": {
+      "awards": 7063,
+      "ceiling": 8800,
+      "factor": 1.118,
+      "referred_share": 6.0,
+      "referred_value_share": 22.4
+    },
+    "6": {
+      "awards": 6157,
+      "ceiling": 9600,
+      "factor": 1.225,
+      "referred_share": 5.7,
+      "referred_value_share": 21.8
+    }
+  },
+  "call": 7800,
+  "call_php": "PHP 7,800",
+  "cells": 528,
+  "committed_pct": 6.0,
+  "cv": 0.72,
+  "default_call": 5800,
+  "default_share_pct": 9.82,
+  "ks_gamma": 19,
+  "ks_lognormal": 16,
+  "partners": 88,
+  "portal_partners": 22,
+  "portal_window_rows": 11788,
+  "referred_awards": 2928,
+  "referred_share": 5.9,
+  "referred_value_share": 22.2,
+  "share_down_pct": 6.04,
+  "share_pct": 5.94
+}
