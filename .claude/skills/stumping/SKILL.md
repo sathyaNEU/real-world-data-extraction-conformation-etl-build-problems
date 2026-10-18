@@ -457,6 +457,25 @@ rather than a change. One computation prices it: take the unit's own period-to-p
 and the correct standard error, and if the first is within about a factor of two of the second, the
 decisive rung is readable off the series.
 
+**Where a design withholds the exposure a quantity scales with, check every adjustment the pack already
+publishes for another reason.** A standardisation performed on an observable that correlates with the
+withheld exposure is a free partial recovery of it, and it costs the solver no construction at all.
+task194's architecture 6 withheld patient movement as the driver and died there: the excess a solver builds
+by hand designated nobody at every confound strength, while the pack's own published standardised ratio,
+read straight against the filed tolerance, reproduced the golden set, because the units that take more
+handovers are the units that take sicker patients and case-mix standardisation absorbs enough of the
+withheld driver to put the right two units over the line. **And the enumeration has a second axis: the
+parameter range the world makes plausible, not only the value the generator uses.** That kill fired at a
+confound correlation of 0.6 and not at 0 or 0.9, so sweeping one setting would have missed it; sweeping the
+range also showed there is no setting where the published column is comfortably wrong, since at zero
+correlation it still names both true members plus one false positive. Tuning the confound away from the
+middle is not a repair, because the build would then rest on asserting that case mix and patient movement
+are uncorrelated in a hospital, or correlated so strongly that standardisation overshoots, and a reviewer
+grants neither. On healthcare-delivery ground this is close to structural rather than incidental, since
+risk adjustment is what that domain publishes most and nearly every patient-flow driver correlates with a
+clinically standardised observable; that last claim has a mechanism but too few builds on file to test it
+the way the corpus refused the data-type and decision-type claims above.
+
 **The reflex sweep is only as good as the enumeration behind it,** which is why it is run as code and why
 the enumeration is written down and argued rather than listed from memory. Ten reflexes landing wrong is
 evidence about those ten. Enumerate by asking what the decisive quantity is a substitute for, then list

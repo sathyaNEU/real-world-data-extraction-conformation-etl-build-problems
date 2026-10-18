@@ -1631,3 +1631,46 @@ against the ranked quantity's noise and against the unit's own history), the rea
 reflex I have not run: the **filed-strata excess** route, which `episode_outcomes_extract.csv` supports
 directly through its `comorbidity_score` and `drg_code` columns. That route reached the golden in
 candidate 1 and it has not been tested against a designation set.
+
+### Architecture 6, killed by the filed-strata excess reflex through the pack's own published ratio (2026-10-18)
+
+Run before the four remaining screens, on the instruction that one computation is cheaper than five. The
+route: take `episode_outcomes_extract.csv`'s `comorbidity_score` and `drg_code`, build the stratum mix per
+unit, apply a filed stratum rate to get an expected count, and designate on the excess. Two forms of it,
+the one a solver constructs and the one the pack already prints.
+
+Golden designated set `[1, 3]` against the charter tolerance of 22.0 avoidable complications per 1,000
+separations. Tested at three confound strengths, where the confound is the realistic one: sicker patients
+genuinely move between units more, so `comorbidity_score` correlates with handover exposure.
+
+| Confound strength | excess projected on separations | published `standardised_ratio` |
+|---|---|---|
+| comorbidity independent of handovers | `[]`, 0 of 2 | `[1, 3, 9]`, 2 of 2 in common |
+| **comorbidity correlated (realistic)** | `[]`, 0 of 2 | **`[1, 3]`, reproduces the golden** |
+| comorbidity strongly correlated | `[]`, 0 of 2 | `[3]`, 1 of 2 |
+
+**Why it dies.** The pack publishes `standardised_ratio`, observed over expected by stratum, and reading
+that column against the tolerance hands back the golden set at the middle confound strength with no
+construction at all. The handover exposure the design withholds is partly *proxied by case mix*, because
+the units that take more handovers are the units that take sicker patients, so the standardisation the
+pack already performs for a different purpose absorbs enough of the withheld driver to put the right two
+units over the line.
+
+**The honest reading, which is not that the kill is structural.** The route is clear at rho=0 and at
+rho=0.9 and fires only at rho=0.6, so this is a confound-strength-dependent failure, and tuning rho away
+from 0.6 would make it pass. That is exactly the move that is not available: the architecture would then
+be resting on the claim that case mix and patient movement are *uncorrelated* in a hospital, or
+correlated so strongly that standardisation overshoots, and neither is a world a reviewer would accept.
+A designation set cannot be defended on a confound strength chosen to miss. Note also that `[1, 3, 9]` at
+rho=0 contains both true members plus one false positive, so even where the published ratio does not
+match it sits one unit away from the answer.
+
+**The general rule this adds.** Where a design withholds the exposure a quantity scales with, check every
+*adjustment the pack already publishes for another reason*: a standardisation performed on an observable
+that correlates with the withheld exposure is a free partial recovery of it, and it costs the solver no
+construction. The reflex sweep must therefore include the pack's published derived columns at every
+confound strength the world makes plausible, not only at the one the generator happens to use.
+
+Per the stop rule, the pass stops here: the four remaining screens (the dichotomy, the unit's own history,
+move available against move needed in the tolerance's units, and the standard error of what the
+construction estimates), the silent-row readability screen and the full enumerated sweep were not run.
