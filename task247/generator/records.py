@@ -179,20 +179,29 @@ class Records:
 
     # ------------------------------------------------------------ the loggers
     def logger_deployments(self):
+        deps = sorted(self.X["deps"], key=lambda d: (d["deployed"], d["site"]))
+        notes = [""] * len(deps)
+        trial = [i for i, d in enumerate(deps) if d["model"] == "MX2203" and d["site"] in insitu.MX_TRIAL]
+        notes[trial[0]] = "MX2203 on trial here and at %s" % " and ".join(
+            P.SITES[s][0] for s in insitu.MX_TRIAL if s != deps[trial[0]]["site"])
+        only = [i for i, d in enumerate(deps) if d["retrieved"] is not None and d["retrieved_boat"] == "Cozumel II"
+                and d["retrieved"].date() < dt.date(2025, 8, 18) and d["retrieved"].year == 2025]
+        notes[only[0]] = "retrieved only; new loggers went in from the Ixchel on 18 to 21 August"
+        kept = [i for i, d in enumerate(deps) if d["model"] == "TidbiT v2" and d["deployed"].date() >= dt.date(2025, 8, 18)]
+        notes[kept[0]] = "TidbiT again; the MX2203 order came three short"
+        # the odd remark the dive team adds at a retrieval
+        rng = np.random.default_rng(P.SEED + 29)
+        remarks = ["new cable ties", "housing scratched", "light fouling", "fouled, brushed clean", "ties replaced"]
+        free = [i for i, d in enumerate(deps) if d["retrieved"] is not None and not notes[i]]
+        for i, t in zip(sorted(rng.choice(free, len(remarks), replace=False)), rng.permutation(len(remarks))):
+            notes[int(i)] = remarks[int(t)]
         rows = []
-        for d in sorted(self.X["deps"], key=lambda d: (d["deployed"], d["site"])):
+        for d, n in zip(deps, notes):
             dep = insitu.logged(d["deployed"], d["deployed_utc"])
             ret = insitu.logged(d["retrieved"], d["retrieved_utc"]) if d["retrieved"] else None
-            notes = ""
-            if d["retrieved"] is None:
-                notes = "in the water"
-            elif d["retrieved_boat"] == "Cozumel II" and d["retrieved"].month == 8 and d["retrieved"].year == 2025:
-                notes = "retrieved only; new loggers went in from the Ixchel on 18 to 21 August"
-            if d["model"] == "MX2203" and d["deployed"].date() < dt.date(2025, 9, 1):
-                notes = notes or "first MX2203 at the site"
             rows.append((P.SITES[d["site"]][0], d["serial"], d["model"], P.SITE_DEPTH[d["site"]],
                          dep.strftime("%Y-%m-%d %H:%M"), d["deployed_boat"],
-                         ret.strftime("%Y-%m-%d %H:%M") if ret else "", d["retrieved_boat"], notes))
+                         ret.strftime("%Y-%m-%d %H:%M") if ret else "", d["retrieved_boat"], n))
         return pd.DataFrame(rows, columns=["site_code", "serial", "model", "depth_m", "deployed", "deployed_from",
                                            "retrieved", "retrieved_from", "notes"])
 

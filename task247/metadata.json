@@ -141,7 +141,7 @@
     {
       "path": "logger_log_2023-08_2027-04.csv",
       "format": "csv",
-      "bytes": 11509,
+      "bytes": 10042,
       "rows": 128,
       "source": "Constructed (seeded generator)",
       "date": "2027-11-03",

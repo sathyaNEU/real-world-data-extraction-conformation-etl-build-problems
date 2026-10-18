@@ -347,6 +347,75 @@ Pair ceiling: 34.6 ((38 + 7 + 55 x 0) and (17.2 + 7 + 55 x 0), averaged)
 
 Mirror leakage: 0.0 per cent of ask weight
 
+## Pre-ship check
+
+1. Domain: the call stands on each site's 2027 season maximum degree heating weeks on the reprocessed record of
+   reference, anticipated from the near-real-time analysis by refilling its cloud gaps from the observations on both
+   sides, as the reprocessed analysis fills them; with another field's nouns (a hospital's provisional and final case
+   counts, a utility's estimated and actual meter reads) there is no clear-sky observation, no relaxation toward
+   climatology under cloud and no HotSpot accumulation over twelve weeks, so the task stops making sense.
+2. Two layers: Layer 1 (re-issued days, the flag recoded with version 3.2, the day with no analysis, kelvin in the
+   reprocessed record, pixel keys, bulletins dated by the station's Tuesday while they report the UTC Monday) is neutral
+   on the call (SF1 to SF17). Layer 2 is the reconstruction of the filled days, asserted alone to move the default path
+   (the flag-mean correction, three sites) to the golden (nine) on the simulator's clean truth (R3).
+3. No banned stump decides: nothing is planted (the bulletins are the declared levels the prompt asks the call to be
+   compared against, not a ranking on the reference record); not semantics (every field read right, the flag-mean
+   route still files three); not rule application (the methods note files the estimand, and nothing in the pack says
+   how to anticipate the reprocessed record).
+4. Gate G: no shipped artifact ranks the sites on the reference record; the two distractors (water clarity, the port's
+   tide gauge) give no site a heat-stress figure.
+5. Determinism: the refill's six variants (the anomaly or the temperature interpolated, a shape-preserving curve, each
+   site's own or the heat seasons' clear-sky difference, the last observed anomaly carried, the nearer observed day)
+   give the same sixteen whole numbers; 17 fork rows asserted; the verifier recomputes every graded figure by its own
+   code (239 checks); two builds byte-identical.
+6. Fingerprint: heart WARN (overuse.gate_g, repeat.deliverables, repeat.question_form, answered in the Draw); the
+   people screen reads the four card personas and no other. The surface screen promotes five pairs, all in this
+   author's wave: task245 on the same pairing two builds apart (legal at the draw, its three newest neighbours being
+   task170, task244 and task172; differentiated on the card), and task246, task243, task244 and task242 on the shared
+   README name and the population gap (task242 the G13 generator), each a different world and driver. Against task245:
+   there the record loses days, the analysers stop on the very days the terminal's plume reaches them, and each lost
+   day is rebuilt from that day's wind against the station's own response, interpolation in time being one of the
+   wrong routes; here no day is missing (the analysis writes every day), the filled values are a one-sided relaxation
+   written as the season ran, and interpolating between the clear days either side is the reconstruction the record of
+   reference itself makes.
+7. Judge (one isolated thread, Sonnet, medium, the bundle and the graded blocks only): DETERMINISTIC, APPROVE; every
+   graded figure reproduced (the sixteen season maxima, levels, verdicts and declared levels, the 32 survey figures,
+   the 16 hour counts, the 0.06 and the back-test); Gate G method_or_model_selection, analytical_non_defect; Gate H
+   domain, layers and decisive step pass; spec gates pass. Its notes: PB06 the thinnest margin (8.85, every variant keeps
+   it on the list); the colony repeats an ask-level reading the protocol's "recorded once" and the two observers'
+   pattern pin; and the write-up's regression rival not reproduced because the pack carries no specification for it.
+   Fixed: block 1's regression clause and its six sites removed (determinism-check section 5), and the workbook's Basis
+   label for that route corrected to the direction fitted (the reprocessed anomaly regressed on the filled days'
+   near-real-time anomaly). The two remaining rivals reproduce (four and three sites).
+
+## Leak check
+
+`leak.py --asof 2027-11-03`: REVIEW, no LEAK. Each REVIEW line:
+- Sweep 4, the dictionary, README, survey protocol, methods note, user guide and release note: the shared terms are the
+  field's nouns (analysis, near-real-time, observation, reference, temperature, station); none names a refill, an
+  interpolation or the filled days' conditional error. The user guide's section 6 (differences larger where cloud keeps
+  satellites from the sea; the reprocessed analysis for the best estimate of a past period) is the provider's ordinary
+  statement of its two products and says nothing of how to anticipate the later one. Harmless.
+- Sweep 6, the bulletins: each site's near-real-time DHW and level week by week, the declared basis the prompt asks the
+  verdicts against; they rank nothing on the reference record. Harmless (the reader and the judge read them the same
+  way).
+- Sweep 8, `obs_flag`: the provider's column, documented in its user guide section 4, as satellite products carry
+  quality and observation flags. Harmless.
+
+Reader (one isolated agent, Sonnet, medium, the prompt and the pack only), on the first cut: Q1 to Q4 none; Q5 methods
+sections 3 to 6 fix the estimand and leave open how the 2027 reprocessed record is anticipated (the design's open
+method); Q6 an analytical choice ("building the expected reprocessed value from NRT using the overlap years, on a
+method I would have to defend"). Its attempt filed the bulletins' four (PB06, PB07, PB09, PB10), stumped: it found the
+filled days running cool by more when the anomaly is large and still corrected by offsets. Asks: it saw no open reading
+on the survey and found no repeats; it flagged the boats' GPS times as possibly UTC and did not resolve them. Realism:
+the logger models split exactly 64 and 64 and one note repeated on every row of a trip. Fixed in the generator: each
+site alternates a pair of loggers of a model (64 serials, numbered by delivery), three MX2203 on trial from August 2024
+and three sites keeping a TidbiT until April 2026 (61 TidbiT v2, 67 MX2203), the notes sparse and varied; the readings
+are the same draws, so every graded figure held (figures.json unchanged; checks 534, verify 239, two builds
+byte-identical, precut 51 with no FAIL, figures_check 76 with none absent, pair ceiling 34.6, mirror leakage 0.0). Its
+other realism note (the survey's prevalences spread from 5.9 to 78.4 by site) kept: a 2023 bleaching year's site
+prevalences run that wide, in no order of the register. A data-only repair, so leak.py alone after it.
+
 ## Tried and rejected
 
 - 2026-10-18, the seed's own air quality network, the alert rule replayed on the archived provisional data against the

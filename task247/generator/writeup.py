@@ -175,10 +175,9 @@ def submission(fig):
       "analysis let the last observed anomaly fade toward the climatology, and under the August cloud over the south "
       "that took most of their HotSpots out. Not the %s a correction by the past mean differences of observed "
       "and filled days keeps (%s): on hot filled days the analysis reads %.2f degrees low, which the mean difference of "
-      "all filled days (%+.3f) does not restore. Not the %s the regression of filled-day anomalies gives (%s), which "
-      "restores a day or two after each clear day and not the long gaps." % (
+      "all filled days (%+.3f) does not restore." % (
           WORD[len(R["as issued"])], _list(R["as issued"]), WORD[len(R["flag"])], _list(R["flag"]),
-          -bt["flag"]["hot_mean"], fig["constants"]["b_fill"], WORD[len(R["regression"])], _list(R["regression"])))
+          -bt["flag"]["hot_mean"], fig["constants"]["b_fill"]))
     w("")
     w("## 2. Critical Components")
     w("")

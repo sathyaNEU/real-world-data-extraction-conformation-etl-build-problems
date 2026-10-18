@@ -37,6 +37,13 @@ TRIPS = [
      "swap", False),
 ]
 DAY_OF_SITE = [0] * 4 + [1] * 4 + [2] * 4 + [3] * 4     # four sites a day, north to south
+# the MX2203s: three on trial from the August 2024 trip, every other site from the Ixchel's August 2025 trip but three
+# that kept a TidbiT until the April 2026 trip
+MX_TRIAL = (2, 7, 13)                                    # PB03, PB08, PB14
+TIDBIT_KEPT = (4, 10, 15)                                # PB05, PB11, PB16
+# each model's deliveries: the date from which its loggers went in and the delivery's first serial
+LOTS = {"TidbiT v2": [(dt.date(2023, 1, 1), 20581406)],
+        "MX2203": [(dt.date(2024, 8, 1), 21143210), (dt.date(2025, 8, 1), 21166031), (dt.date(2026, 4, 1), 21190557)]}
 
 
 def _site_times(rng, n, start_h=8.4):
@@ -73,11 +80,9 @@ def make(W, seed=P.LOGGER_SEED):
                 visits[(name, s)] = t
     # deployments: a logger goes in at one trip and comes out at the next trip that retrieves
     deps = []
-    serial_old, serial_new = 20581406, 21143210
-    order = [t for t in TRIPS]
     for s in range(P.NSITE):
         current = None
-        for name, boat, days, what, utc in order:
+        for name, boat, days, what, utc in TRIPS:
             t = visits[(name, s)]
             if what in ("swap", "retrieve") and current is not None:
                 current["retrieved"] = t
@@ -88,15 +93,26 @@ def make(W, seed=P.LOGGER_SEED):
                 td = t + dt.timedelta(minutes=int(rng.integers(6, 18))) if what == "swap" else t
                 if td.minute == 0:
                     td += dt.timedelta(minutes=3)
-                mx = td.date() >= dt.date(2025, 8, 18)
-                if mx:
-                    serial, serial_new = serial_new, serial_new + int(rng.integers(3, 40))
-                else:
-                    serial, serial_old = serial_old, serial_old + int(rng.integers(2, 30))
-                current = dict(site=s, serial=str(serial), model="MX2203" if mx else "TidbiT v2", deployed=td,
+                day = td.date()
+                mx = day >= dt.date(2026, 4, 1) or (day >= dt.date(2024, 8, 1) and s in MX_TRIAL) or \
+                    (day >= dt.date(2025, 8, 18) and s not in TIDBIT_KEPT)
+                gap = int(rng.integers(3, 40)) if mx else int(rng.integers(2, 30))     # serials passed over in a delivery
+                current = dict(site=s, serial=None, model="MX2203" if mx else "TidbiT v2", deployed=td, gap=gap,
                                deployed_boat=boat, deployed_utc=utc, retrieved=None, retrieved_boat="",
                                retrieved_utc=False, depth=None, offset=float(rng.normal(0, 0.025)))
                 deps.append(current)
+    # serials: a site keeps a pair of loggers of a model and alternates them, one on the reef while the other is
+    # downloaded and relaunched in the lab; a pair comes from the delivery in hand when its first logger goes in
+    pair, nxt, used = {}, {}, {}
+    for d in sorted(deps, key=lambda d: (d["deployed"], d["site"])):
+        k = (d["site"], d["model"])
+        if k not in pair:
+            lot = max(i for i, (since, first) in enumerate(LOTS[d["model"]]) if d["deployed"].date() >= since)
+            n = nxt.setdefault((d["model"], lot), LOTS[d["model"]][lot][1])
+            pair[k] = [str(n), str(n + 1)]
+            nxt[(d["model"], lot)] = n + 2 + d["gap"]
+        d["serial"] = pair[k][used.get(k, 0) % 2]
+        used[k] = used.get(k, 0) + 1
     # readings: hourly from the launch (the afternoon before the trip, in the lab) to the download. Before it goes in
     # a logger sits in the lab, then in a cooler of the station's tank water on the boat; after it comes out it rides
     # back in that cooler and waits in the lab's seawater tank for the download.

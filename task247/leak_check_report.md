@@ -37,3 +37,25 @@ Stump terms swept: analysis, reference, filled, monitoring, anomaly, station, ob
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+One isolated reader (Sonnet, medium), the prompt and a fresh copy of the pack only, on the first cut.
+1. The decisive step: no sentence names it; the methods note's section 6 and the request say the levels are set on a
+   record not yet released, and neither says how to anticipate it.
+2. A file ranking the candidates on the question: none; the bulletins rank on the near-real-time record, the declared
+   basis the prompt compares against.
+3. A file existing only to help the analyst: none (the dictionary's pointer to the flag recode is mild).
+4. A figure or name reading as the answer: none.
+5. Filed sentences fixing the figure: methods sections 3 to 6 fix the estimand (HotSpots of 1.0 or more above the MMM,
+   84 days over 7, the season maximum, the levels at 4 and 8, the declared level as the highest a season bulletin
+   gave); the estimator of the 2027 reprocessed record is left open, the design's open method.
+6. What decides: an analytical choice, building the expected reprocessed value from the near-real-time record with the
+   overlap years. Its attempt filed the bulletins' four (PB06, PB07, PB09, PB10): stumped.
+
+Verdicts on the REVIEW lines: sweep 4 (field nouns, no document names the move), sweep 6 (the bulletins are the
+declared basis, not a ranking on the reference record) and sweep 8 (the provider's documented flag column): harmless,
+each answered in the design note's Leak check. Realism notes (the 64 and 64 logger model split, a note repeated on a
+trip's rows) fixed in the generator; the asks' readings it raised (the colony repeats, the boats' GPS clocks) are the
+asks' devices.
+
