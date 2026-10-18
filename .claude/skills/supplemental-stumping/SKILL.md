@@ -43,6 +43,18 @@ cell) and the all-nil response. More than about a quarter of the cells recoverab
 component measures the data's shape rather than the solver's analysis, and the ask's shape has to change,
 not its wording.
 
+**A fork is not a device, and this is the commonest way an ask layer fails.** A device is found only by an
+internal inconsistency; a fork is resolved by reading a sentence. So closing the fork hands the ask to every
+response that reads it, and leaving it open is a determinism finding against the build. Two builds in one
+sitting lived in that gap: one ask's primary became a filed rule the moment the determinism judge required
+the grain pinned, and the measured pair ceiling went from 28.5 to 38.3, with 48.1 if both responses read the
+pinned clause and 67.8 with a second such ask also found, against a bar of 50; the other build's whole ask
+layer was the call's own construction over the call's own population, so the cracker kept 26 of 26 criteria
+and the pair measured 65.5. **Test every ask against the pin the call needs:** if filing what the call must
+file resolves the ask, the ask is sited wrong, and no device can repair it in place, because an ask over the
+call's own population may carry no device rows at all (Part 2.1). Re-site it onto quantities the call never
+reads.
+
 **1.2 Four bans.**
 1. **No filed rule adjudicates a device on the ask's path, and nothing narrates one**: only an internal inconsistency finds it (a wrong cardinality, an impossible row, a rollup above its parts), as a filed rule gets executed; a filed sentence may exist but never adjudicates.
 2. **No marker**: no batch id, source value, load stamp, flag or single column isolates device rows; blend benign rows into every batch touched, give each classifier column a benign twin.

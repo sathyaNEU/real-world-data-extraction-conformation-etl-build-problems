@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: design, variance, stratum, sample, decisive, asserted, published, correction, register, national, release, sampled, estimand, method, estimate, denominator, estimator, population, finite-population, consignment, enterprise, reference, sentence, strata, survey
+Stump terms swept: design, variance, stratum, sample, decisive, register, asserted, published, correction, national, release, sampled, estimand, method, estimate, denominator, estimator, population, finite-population, consignment, enterprise, reference, sentence, strata, survey
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `collection_capacity_note_2027.pdf`: carries 11 of 15 distinctive words of the committed call: 'The 2027 supplementary collection module goes to Metal and metal-bearing wastes, the only stream whose 2026 recovery rat'
@@ -12,7 +12,7 @@ Stump terms swept: design, variance, stratum, sample, decisive, asserted, publis
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `bws_2026_design_and_weighting.pdf`: 10 of 25 stump-paragraph terms appear (design, stratum, sample, register, national, release); read whether the document names the move
 - **REVIEW** `collection_capacity_note_2027.pdf`: 10 of 25 stump-paragraph terms appear (sample, register, national, release, sampled, estimate); read whether the document names the move
-- **REVIEW** `waste_statistics_2025_release.pdf`: 9 of 25 stump-paragraph terms appear (published, register, national, release, method, estimate); read whether the document names the move
+- **REVIEW** `waste_statistics_2025_release.pdf`: 9 of 25 stump-paragraph terms appear (register, published, national, release, method, estimate); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,6 +32,7 @@ Stump terms swept: design, variance, stratum, sample, decisive, asserted, publis
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -167,21 +168,32 @@ What I would need to be told to be sure: whether the E1 census and fpc are the i
 
 ### What the pins pass of 2026-10-18 changed under these two reports
 
-The judge's second pass closed the Gate C fork (both estimators of the denominator's design variance are
-forced by the records, and the published 3.4 per cent confirms nothing), and its three pins are made here.
-Two of them change what a reader sees, so **both reader rounds above are now stale on those points and a
-fresh reader round is owed**:
+The judge's second pass returned DETERMINISTIC and closed the Gate C fork (both estimators of the
+denominator's design variance are forced by the records, and the published 3.4 per cent confirms nothing).
+Its three pins are made here. Two of them change what a reader sees, so **both reader rounds above are now
+stale on those points and a fresh reader round is owed**:
 
 - `bws_2026_design_and_weighting.pdf` section 5 now states the visit grain outright ("a visit covers several
   enterprises in one region on one trip, and the visit's field days are recorded on each case the visit
-  covered, under the visit reference the log carries"), so ask A1's grain is a filed rule and no longer a
-  silent device. Measured cost: the pair ceiling moves from 28.5 to 38.3 against a gate of 40.
-- `prompt.txt` now names the four chain stages, so the stage sheet cannot be decomposed another way.
-- The 2025 release's recovered column is now the register at the 30 June 2026 extract it names, the register
-  carries 230 confirmation legs of 2025 consignments after that cut (longest lag 626 days), and no basis
-  reproduces the column (the nearest, a recompute at that cut, is off by 0.24 to 0.76 per cent a stream).
-  The round-2 reader's "metal 65,074" and the round-1 reader's "3.9 per cent" both describe earlier packs.
-- The register's stream and stage totals are no longer whole numbers and the unconfirmed despatches now rise
-  towards the extract (33 in January against 139 in December). The round-2 reader's "the 2026 rates land on
-  exact tenths" survives at the fourth decimal and cannot be cleared without moving a graded tonnage: with
-  70,384 t and 124,354 t both frozen and printed, the rate is pinned to 56.5991 to 56.6004.
+  covered, under the visit reference the log carries"), and the clause that licensed the row sum ("with the
+  field days attributed to the contact") is gone. Ask A1's grain is a filed rule and no longer a silent
+  device. Measured cost: the pair ceiling moves from 28.5 to 38.3 against a gate of 40, and `precut.py`'s
+  "cracker misses every ask" now fails on the A1 row.
+- `prompt.txt` now names the four chain stages (arising, despatched, confirmed at a final operation,
+  confirmed at a recovery operation), so the stage sheet cannot be decomposed another way. 995 characters,
+  `voice-check.py` exit 0.
+- The 2025 release's recovered column is now carried off the register at the 30 June 2026 extract it names:
+  the register holds 230 confirmation legs of 2025 consignments after that cut, the longest
+  despatch-to-confirmation lag on a 2025 consignment is 626 days, and those confirmations are 3,913 t of the
+  5,323 t distance, on every one of the eight streams. No basis reproduces the column (the nearest, a
+  recompute at that cut, is off by 0.24 to 0.76 per cent a stream, 12 to 461 t). The round-2 reader's "metal
+  65,074" is now 66,611 and the round-1 reader's "3.9 per cent" is 3.4 per cent: both describe earlier packs.
+- The register's stream and stage totals are no longer whole numbers (0.02 to 0.38 of a tonne off, inside the
+  printed tonne) and the unconfirmed despatches now rise towards the extract (33 in January against 139 in
+  December, the last quarter 2.8 times the first). The round-2 reader's "the 2026 rates land on exact tenths"
+  survives at the fourth decimal and cannot be cleared without moving a graded tonnage: with 70,384 t and
+  124,354 t both printed and frozen, metal's rate is pinned to 56.5991 to 56.6003.
+
+**If `leak.py` is run again it overwrites this file.** The two reader rounds and these rulings are kept at
+`/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task190p/leak_reader_rounds.md`
+and are appended back after each sweep.

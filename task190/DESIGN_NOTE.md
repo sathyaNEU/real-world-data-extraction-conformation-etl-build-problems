@@ -1,10 +1,14 @@
 # task190 design note
 
 Architecture 6, drawn 2026-10-18 on new ground after architecture 5 died at stage 1 on measurement,
-built to stage 3, judged NOT_DETERMINISTIC with a FIX_NOW on the ask side, and repaired in one pass on
-2026-10-18 (the six repairs are the last six lines of `## Tried and rejected`). The main call, its eight
-streams' rates, targets, intervals and standard errors, and the ladder are byte-identical to the judged
-pack; what moved is one ask figure, two filed conventions, the 2025 release and the register's realism.
+built to stage 3, judged NOT_DETERMINISTIC with a FIX_NOW on the ask side, repaired in one pass, judged
+DETERMINISTIC on the second pass with a FIX_NOW of three note-level pins, and pinned in a third pass on
+2026-10-18 (both passes are at the end of `## Tried and rejected`). The main call, its eight streams'
+rates, targets, intervals and standard errors, all 32 stage-chain cells, the five field-day rows, the eight
+2025 tonnages, the five municipal rows and the ladder are byte-identical to the judged pack, key by key in
+`generator/figures.json`; what moved is the 2025 release's recovered column and the register's own clock
+behind it, the visit grain the design documentation now states, the four chain stages the prompt now names,
+and the weighbridge residues that stop a stream total being a whole number.
 Architectures 1, 2 and 3 died on determinism verdicts; 4 on a model constraint plus a measured null; 5 on
 a measured reflex. The live design is this block; everything from `## Architecture 3, spent` down is kept
 as record.
@@ -127,7 +131,10 @@ metal-bearing, on a smaller shortfall, at 4.60.
   moved system in July (renamed columns, a revised operation-code list); the waste classification codes
   were revised on the same date, with the agency's own mapping; consignments routed through an interim
   facility appear on two legs because the forwarding leg is a child consignment in the same register;
-  despatch date against confirmation date straddles both year boundaries; one legacy municipal extract
+  despatch date against confirmation date straddles both year boundaries, and the register runs on three
+  clocks, so a load held for aggregation or re-keyed after the July system move is confirmed months after
+  its despatch and what an extract leaves unconfirmed rises towards its own cut date; one legacy municipal
+  extract
   reports in hundreds of kilograms because that was the old return's unit; agency permit numbers against
   business register enterprise numbers, with supersessions and one duplicate, because the two registers are
   maintained by different bodies; the 2025 release exists in a preliminary and a revised version; the
@@ -210,8 +217,8 @@ metal-bearing, on a smaller shortfall, at 4.60.
 |---|---|---|---|---|
 | SF1 | "recovery rate" | confirmed recovered tonnage over estimated arisings | recovered over tonnage moved off-site (the register's own denominator): names Mineral construction and demolition | the memo's estimand paragraph names the denominator as total arising at every enterprise in the frame |
 | SF2 | "arising at every enterprise in the frame whether sampled or not" | the design-weighted population total | the sum of sampled enterprises' reported tonnage: every rate above 100 per cent for four streams, self-refuting | the clause's own words, plus the release's published national arisings total which the weighted estimate reproduces |
-| SF3 | the 2026 window | consignments despatched by the producer in calendar 2026 | window on the confirmation date, read over both register files as that reading requires: `same call`, asserted, no stream's tonnage moving more than 0.73 per cent | the memo names the despatch date; convergence asserted |
-| SF3b | the same window read over the 2026 file alone | not a reading the files support: it drops the 762 confirmations the extract carries in January 2027 and counts none of the 2025 despatches confirmed in 2026 | establishes two streams, metal and mixed commercial and industrial | the memo's "the module goes to the one stream so established", which two established streams contradict; and the despatch-date pin |
+| SF3 | the 2026 window | consignments despatched by the producer in calendar 2026 | window on the confirmation date, read over both register files as that reading requires: `same call`, asserted. The register's confirmation tail puts the two windows 1.0 to 4.2 per cent apart a stream and the call does not move: metal stands at 3.13 standard errors under that reading against 4.57 under the filed one, and no second stream reaches 1.07 | the memo names the despatch date; convergence asserted |
+| SF3b | the same window read over the 2026 file alone | not a reading the files support: it drops the 972 confirmations the extract carries in January 2027 and counts none of the 2025 despatches confirmed in 2026 | establishes two streams, metal and mixed commercial and industrial | the memo's "the module goes to the one stream so established", which two established streams contradict; and the despatch-date pin |
 | SF4 | "confirmed received at a recovery operation" | an R code confirmed by the final treatment facility | the producer's intended operation code at despatch: `same call`, asserted | the clause says confirmed received; convergence asserted |
 | SF5 | consignments routed through an interim facility | the producer's despatch leg tonnage once, carrying the final facility's confirmed code | sum both legs: inflates five streams and names Mineral construction and demolition | the clause's "counted once at the producer's despatch leg" |
 | SF6 | consignments with no returned confirmation | excluded, being unconfirmed | included as recovered: `same call`, asserted | the clause says confirmed; convergence asserted |
@@ -318,14 +325,19 @@ national CV: 3.9 with the correction, 4.1 without it inside the sampled strata, 
 bundle).
 
 **What the remaining published figures confirm, on every route.** The 2025 release's published arisings and
-recovery rates are a prior year's and no 2026 route reproduces them; its recovered column is the register as
-at the 30 June 2026 extract the release was compiled from, which the release states, and it sits 3.3 to 5.0
-per cent below a recompute on the shipped 2027-01-31 extract, so it is neither the filed answer to the 2025
-ask nor the undeduplicated one (3.6 to 6.7 per cent away from that), and nobody can mistake it for a
-calibration target. It still does the two jobs the design needs it for, and both are asserted: excluding R1
-from recovery would publish nothing at all for the two streams that recover only through it (H8), and taking
-the holding site's own confirmation instead of the operation it forwards to would publish 47,767 t for metal
-against the released 65,074 t (H9). Every published 2025 arisings figure sits within one design standard
+recovery rates are a prior year's and no 2026 route reproduces them. Its recovered column is now carried off
+the register at the 30 June 2026 extract the release says it was compiled from, so the reason the release
+gives for sitting below a later extract is true of the records: 230 confirmation legs of 2025 consignments
+fall after that cut, the longest despatch-to-confirmation lag on a 2025 consignment is 626 days, and those
+confirmations are 3,913 t of the 5,323 t distance, on every one of the eight streams. The rest is the
+register's ordinary post-cut amendment, which is why no basis reproduces the column: the nearest, a recompute
+at the stated cut, is off by 0.24 to 0.76 per cent a stream (12 to 461 t), and the distance to the published
+column runs 1.4 to 4.9 per cent across the eight streams while deduplicating the re-notified consignments
+moves the median stream by 0.51 per cent, so the column cannot settle the one choice ask A2 turns on. It
+still does the two jobs the design needs it for, and both are asserted: excluding R1 from recovery would
+publish nothing at all for the two streams that recover only through it (H8), and taking the holding site's
+own confirmation instead of the operation it forwards to would publish 47,770 t for metal against the
+released 66,611 t (H9). Every published 2025 arisings figure sits within one design standard
 error of the 2026 estimate (H10), so the year-on-year movements are what the survey's own precision allows.
 The plan's targets are constants every route needs. No shipped artifact ranks the eight streams on the
 decision question.
@@ -338,14 +350,20 @@ Three asks, 28 separately gradable figures, all three sited on populations the m
 each of the five regions, the field days consumed and the usable 2026 returns per field day, both to two
 decimals: 10 figures. H18 home: the trail from the survey the call consumes, through rows the call never
 reads, to the round's own field effort. Use: the division's 2027 capacity note needs the 2026 cost per
-usable return by region. Primary device (D6 grain, silent, touching all 10 figures): the response log is
-one row per contact, and a field visit covers several enterprises in one region on one trip, so the trip's
-own `field_days` value sits on every row it covers with the grain unstated; summing rows multiplies the
-region's field effort by the average trip size and depresses every region's returns per field day. The
-internal inconsistency is that for the visit dates a team's row-level field days sum to between 2.0 and
-7.0 on a single calendar date, which is impossible, while at visit grain no team-day exceeds 1.0; nothing
-in the pack invites reconciling field days per team per day, and no battery sweep performs it (the visit
-references are not duplicate rows, every row joins, and no count in the pack exceeds a published total).
+usable return by region. Primary device (D6 grain, **filed, not silent**, since the determinism
+judge's second pass pinned it, touching all 10 figures): the response log is one row per contact, and a
+field visit covers several enterprises in one region on one trip, so the trip's own `field_days` value sits
+on every row it covers; summing rows multiplies the region's field effort by the average trip size and
+depresses every region's returns per field day. The internal inconsistency behind it is that for the visit
+dates a team's row-level field days sum to between 2.0 and 7.0 on a single calendar date, which is
+impossible, while at visit grain no team-day exceeds 1.0. Until the pin nothing in the pack invited that
+reconciliation and no battery sweep performed it; section 5 of `bws_2026_design_and_weighting.pdf` now
+states the grain outright ("a visit covers several enterprises in one region on one trip, and the visit's
+field days are recorded on each case the visit covered, under the visit reference the log carries"),
+because it was the only literal reading in the pack that pointed at a wrong number and Gate C's closure on
+ask A was thin without it. The price is measured and paid in the open: a response that reads section 5
+resolves all ten figures, so the cracker does, the pair ceiling moves from 28.5 to 38.3 against a gate of
+40, and `precut.py`'s "cracker misses every ask" fails on this row.
 Hazards: H1 (one regional team logs its effort in hours, the unit stated in its own column and the length
 of a field day stated in the survey's own collection documentation), H3 (a re-sent operations batch of
 fifteen exact duplicate rows), H4. The usable-return count is a per-case outcome, so it is counted once per
@@ -416,12 +434,12 @@ unmatched joins, fan-out, count ties) and executed every filed rule the pack poi
 
 | Ask | Figures | What the cracker computes | Verdict |
 |---|---|---|---|
-| A1 usable returns and days per return by region | 10 | counts by case reference after the battery's duplicate and join sweeps, which leave the five supersessions intact because both case references join cleanly | miss |
+| A1 usable returns and days per return by region | 10 | counts by visit reference, which section 5 of the design documentation now tells it to do, after the battery's duplicate and join sweeps | hit, 10 of 10 |
 | A2 2025 confirmed recovery tonnage by stream | 8 | the sum over confirmed R legs after the battery, which finds no duplicate because each re-notification is a distinct consignment number | miss |
 | A3 municipal gap by region and the named items' share | 10 | the return-level sum, which the battery accepts because the authority's return is a valid distinct return | miss |
 
 **Measured by:** `generator/ceiling.py`, run on the designed stops and re-run on the cut pack.
-**Pair ceiling:** 28.5
+**Pair ceiling:** 38.3
 **Mirror leakage:** 0.0 per cent of ask weight
 
 **A3's sensitivity to the convention filed in the repair pass, measured both ways.** The memo now files the
@@ -436,11 +454,22 @@ bar of 50 and above the 40 this build was built to. That is the price of closing
 knowingly: a Gate E finding on an ask's population costs a determinism verdict, while the ceiling cost is
 bounded and sits under the bar either way.
 
+**What the A1 pin costs, measured.** The cracker lands the call (38 of the 38 recommendation weight), keeps
+7 for instruction following and now keeps 10 of 28 ask figures, so 64.64; the mirror misses the call and
+every ask, so 12.00; the pair is 38.3 against the gate of 40 and the mirror leakage stays 0.0 per cent
+(`generator/ceiling.json`, cut from `ceiling_deltas.json` on the shipped pack). The mirror takes each ask's
+lazy stop, which on A1 is the row sum whatever the documentation says, which is why the leakage does not
+move. If a second response also reads section 5 and resolves A1 in full, the measured pair is 48.1, inside
+the house bar of 50 and above the 40 this build was built to; with A3 found as well it is 67.8, and that is
+the exposure the pin buys. The alternative was to leave a sentence in the pack whose literal execution files
+55.57 field days for Alentejo against 13 dated visits, which costs a determinism verdict.
+
 The two rows agree on the asks by construction, which is what `supplemental-stumping` Part 7 asks to be
 stated rather than printed as a duplicate measurement: the three asks consume nothing the call's
 construction produces, so a response's ask score does not depend on whether it landed the call, and the
-`## Ask sheet` separation assertions are what prove it. The cracker row is 0 of 28 because each primary is
-an inconsistency across grains that no column description asks for and no battery sweep performs, and the
+`## Ask sheet` separation assertions are what prove it. The cracker row is 10 of 28, all of them ask A1's,
+because A1's primary is now a filed rule, while the other two primaries are each an inconsistency across
+grains that no column description asks for and no battery sweep performs, and the
 hazards the cracker does resolve (the documented unit column, the dated code revision, the re-sent batch,
 the permit supersessions a failing join exposes) touch no figure that a primary does not also touch. The
 premise this arithmetic rests on, that only one of the top two responses lands the call, is not something
@@ -1853,6 +1882,61 @@ were round too, so both were redrawn.
   across-grain reconciliation to be done, which holds the measured ceiling at 28.5. Both numbers are in
   `## Ask sheet`. "By origin region" did go in the prompt, which cost seven characters and was paid for by
   dropping "movement" from the stage-chain clause (994 characters).
+
+### The pins pass of 2026-10-18, one line per thing the judge's second pass moved or killed
+
+The second judge pass returned DETERMINISTIC with a FIX_NOW of three note-level pins and three hygiene
+findings. Every graded figure is frozen through this pass and the freeze is proved key by key against
+`generator/figures.json` (193 keys, 0 moved).
+
+- Regenerating the 2025 release's published recovered column so that a stated cut of the register
+  reproduces it: refused on the judge's own instruction, because a column that reconciles confirms the
+  roots-only chain basis to anyone who checks, which is the oracle shape this build has already paid to
+  remove once. The column is carried off the register at the 30 June 2026 extract the release names and then
+  moved by the register's ordinary post-cut amendment (`world.PRIOR_DRIFT`, 0.24 to 0.76 per cent a stream,
+  one sign, no constant ratio), so the nearest basis is off by 12 to 461 t a stream and nothing reproduces
+  it. Asserted in `checks.py` H7b and independently in `verify.py`.
+- `late = U(0.028, 0.052)` as the published column's construction: dead, and it is what the judge caught.
+  It made the release's stated reason false: the 2025 file held no leg after 2026-03-09 and a maximum
+  confirmation lag of 48 days, so a 30 June 2026 extract would have held everything and the 12,296 t gap had
+  no source. The gap is now the register's own tail, 3,913 t of the 5,323 t distance, on all eight streams.
+- One long clock for the confirmation lag at `CONF_LONG_P = 0.045`: dead on measurement. It carried the 2025
+  tail (3,923 t) but left textile at zero, flattened the censoring the extract leaves (December only 2.6
+  times January) and pushed the confirmation-date reading of SF3 to metal at 2.96 standard errors. Two clocks
+  at 0.110 (median 55 days) and 0.040 (median 250 days) carry all three: tail 3,913 t on every stream,
+  December 4.2 times January, SF3 metal at 3.13.
+- Making the 2025 unconfirmed class concentrate too, for one never-closes rate across both years: dead. The
+  class totals are the frozen chain cells and the 2025 despatch dates come off the shared draw stream that
+  the response log and the municipal returns are cut from, so moving them moves ask A1 and ask A3. Measured
+  residual: the never-closes rate reads 3.35 per cent in 2025 against 1.4 per cent in 2026, visible only to a
+  solver who models both years' censoring, and the July 2026 system move is the obvious reading if one does.
+- Clearing the exact-tenth read on the eight 2026 rates: impossible under the freeze, with the arithmetic as
+  the reason. The recovered tonnage and the arisings are both printed and frozen (70,384 t and 124,354 t for
+  metal), and a ratio of two printed integers is pinned: metal's rate cannot leave [56.5991, 56.6004]
+  whatever the legs do, and the same holds for all 24 pass-through rates. What was free is taken: the 24
+  stream and stage totals are no longer whole numbers (they sit 0.02 to 0.38 of a tonne off, inside the
+  printed tonne, `world.CLASS_RESID`), so no total in the register reads as having been solved from a round
+  number, and `build.cell` now asserts both edges instead of asserting a whole tonne. Clearing the residual
+  needs one printed tonnage a stream to move by 12 to 62 t, which is a graded figure and the author's call.
+- Quoting the 2025 coefficient of variation for the activity-class publication domain instead of the national
+  total, the judge's optional hardening: declined with a proof rather than a preference. The nudge is the
+  ordering of the 2026 round's own estimators against the published 3.4 per cent (3.9 with the correction,
+  4.5 without), and rung 1's measured arithmetic is built on that same 3.4 (metal 1.51 standard errors,
+  mixed commercial and industrial 2.42). Holding the rung means holding the number and holding the number
+  holds the nudge, because the domain the figure is published for enters neither calculation. The change
+  would also relocate the check rather than remove it (the 2026 micro-data ships `nace_division`, so an
+  activity-class CV for the 2026 round is recomputable, while a 2025 one is not) and would need an activity
+  class at frame level, which the population does not carry.
+- Keeping ask A1's visit grain silent: given up on the judge's pin, and it is the one real trade in this
+  pass. The design documentation now states that a visit's field days are recorded on each case the visit
+  covered, which is a filed rule, so the cracker resolves A1's ten figures: the measured pair ceiling moves
+  from 28.5 to 38.3 against a gate of 40, and `precut.py`'s "cracker misses every ask" fails on the A1 row.
+  The pin buys the last literal reading in the pack that pointed at a wrong number (the row sum files 55.57
+  field days for Alentejo against 13 dated visits), which is a determinism verdict against an ask's silence.
+- Shortening the prompt to pay for the four chain stages: "The answer is due" became "Due", the xlsx clause
+  lost its verb and "confirmed recovered" became "recovered", the png clause lost "showing its", the field
+  day clause lost one "field" and the municipal clause lost "reported". The stages cost 89 characters and the
+  prompt stands at 995; no requirement, unit or rounding was dropped.
 
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 
