@@ -1,25 +1,26 @@
 {
  "task": "task172",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "general-statistics-data-science/regression-classification-model-diagnostics",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "A competent solver who sees the fingerprint appointments now being set about sixteen weeks out adds the twelve extra weeks to the record's appointment-route waits and quotes 6.5 months or more (the record's own waits, open cases censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the automatic extension ended every renewal pending at expiry has been decided about three weeks after the expedite request the team files that day, so the quarter's 80th percentile is 5.5 months.",
+ "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files when the card expires, so the quarter's 80th percentile is 5.5 months.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-10-18): the standard shares the call's vocabulary; future dates only in forward-looking columns",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (overuse.objective; driver.near 0.13 task127, differentiated)",
+  "surface": "0 of 241 pairs promoted",
   "nearest": "task127 v2 0.13 (driver, differentiated)"
  },
  "judge": {
@@ -28,11 +29,27 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: default path figures from the generator prototype, ladder, fork table, closure table, asks, prompt.txt, precut.py",
+ "resume": "stage 4: reader and judge",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "answer": "5.5 months",
+ "stage3": {
+  "checks": "83 of 83",
+  "verify": "0 failed",
+  "rebuild": "19 files byte-identical",
+  "figures_check": "exit 0, 31 figures",
+  "screens": "dispersion, variance-only, common-exposure subset and truncation direction pass (stumping 1.2); slots: no repeat",
+  "pair_ceiling": 33.1,
+  "both_on_call": 44.0,
+  "mirror_leakage": 0.0,
+  "target_zip": {
+   "members": 14,
+   "bytes": 5801055,
+   "sha256": "82f8e087dad7a2291e2b0abe1c64cbe6c06cf51e9af5acb50d94b8430f8a60e3"
+  }
+ }
 }
