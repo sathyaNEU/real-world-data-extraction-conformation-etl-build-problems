@@ -35,7 +35,7 @@ def r10(x):
 
 
 SHARE_WORDS = [(0.5, "half"), (0.6, "three-fifths"), (2 / 3, "two-thirds"), (0.75, "three-quarters"),
-               (0.8, "four-fifths"), (0.9, "nine-tenths")]
+               (0.8, "four-fifths"), (0.9, "nine-tenths"), (0.97, "nearly all")]
 
 
 def share_words(x):
@@ -118,8 +118,9 @@ def write_book(path, G, prog, f):
         ("Fixed-rate commercial real estate",
          "%s of balloons fall due from December 2026 to December 2027 (%d loans, mostly the push of December 2021 to "
          "April 2022). At the planning cycle's %.2f per cent five-year rate about %s of that principal is expected to "
-         "extend 36 months at its note rate: the extension share each loan's refinance cover carries in the maturity "
-         "log since 2015. Loans already extended repay at their extended maturity."
+         "take the bank's 36-month extension (a tenth paid down, the rest at the posted rate on 25 years): the "
+         "extension share each loan's refinance cover carries in the maturity log since 2015. Loans already extended "
+         "repay at their extended maturity."
          % ("$%.1f billion" % f["wall_balloon_busd"], f["wall_loans"], f["planning_cre_rate_pct"],
             f["wall_share_words"])),
         ("2023-24 residential mortgages",
@@ -254,10 +255,9 @@ def write_deck(path, G, f):
          size=22, bold_first=True)
     text(s1, 0.6, 2.25, 6.6, 4.4, [
         "About $%.1f billion of the pool's balloons fall due from December 2026 to December 2027, most of them "
-        "written in the early-2022 push. At the planning cycle's %.2f per cent the push's cash-out loans, sized at full "
-        "leverage on pro forma rents, cannot carry a new loan of their balance; about %s of that principal is "
-        "expected to extend for 36 months at its note rate." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"],
-                                                                 f["wall_share_words"]),
+        "written in the early-2022 push on pro forma rents. At the planning cycle's %.2f per cent few of those "
+        "properties' incomes can carry a new loan of their balance; about %s of that principal is expected to take "
+        "the bank's 36-month extension." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"], f["wall_share_words"]),
         "Agency MBS is next, at about $%d million." % f["runner_up_loss_musd_nearest10"],
         "The 2023-24 mortgages lose most at last year's prepayment speed, but at %.2f per cent they are expected to "
         "prepay about %d per cent a year in 2027." % (f["planning_mortgage_rate_pct"], f["m_cpr_2027_pct"]),

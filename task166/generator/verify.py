@@ -224,10 +224,13 @@ lgc = pd.concat(logs)
 lgc["prop"] = "P" + lgc["prop"].astype(str).str.zfill(5)
 lgc["date"] = pd.to_datetime(lgc["date"])
 lgc["out"] = lgc["out"].replace({"PO": "PAID", "Paid at maturity": "PAID", "EXT": "EXT", "Extended": "EXT",
-                                  "PO-EXT": "PX", "Paid at extended maturity": "PX"})
-lgc = lgc[lgc.out != "PX"]
-ok("XLSX maturity log", len(lgc) >= 550 and set(lgc.out) == {"PAID", "EXT"}, "%d maturities, %d extended" % (
-    len(lgc), (lgc.out == "EXT").sum()))
+                                  "EXT-S": "SALE", "Extended, sale pending": "SALE", "PO-EXT": "PX",
+                                  "Paid at extended maturity": "PX", "SA": "SA", "Transferred to special assets": "SA"})
+n_sa = int((lgc.out == "SA").sum())
+lgc = lgc[~lgc.out.isin(["PX", "SA"])]
+ok("XLSX maturity log", len(lgc) >= 550 and set(lgc.out) == {"PAID", "EXT", "SALE"},
+   "%d maturities, %d extended, %d sale-pending, %d to special assets at the extended date" % (
+       len(lgc), (lgc.out == "EXT").sum(), (lgc.out == "SALE").sum(), n_sa))
 
 
 def dcon(rate, n=300):
@@ -284,28 +287,36 @@ def run(r, months):
         yy, mo_ = divmod(m, 12)
         days = (pd.Timestamp(yy, mo_ + 1, 1) + pd.offsets.MonthEnd(0)).day if r.interest_basis == "ACT/360" else 30
         it = B * r.note_rate / 100 * days / 360
-        pr_ = min(r.monthly_payment - it, B)
+        pr_ = 0.0 if r.interest_only_months > 0 else min(r.monthly_payment - it, B)
         B -= pr_
         out.append((it, pr_, B))
     return out
 
 
 def cre_loss(pfun):
+    """payments to maturity; at the original maturity the balloon repays, or with p the one extension runs: a tenth
+    paid down, the rest at the plan's five-year CRE rate amortizing over 25 years, repaid 36 months later"""
     cf = np.zeros(H)
+    r_e = CRER / 1200
     for _, r in fx.iterrows():
         mat = ordm(r.mat)
         p = 0.0 if r.ext else pfun(r)
-        last = mat + (36 if p > 0 else 0)
-        for k, (it, pr_, B) in enumerate(run(r, last - ASOF)):
-            m = FIRST + k
-            if m < mat:
-                cf[k] += it + pr_
-            elif m == mat:
-                cf[k] += it + pr_ + (1 - p) * B
-            elif m < last:
-                cf[k] += p * (it + pr_)
-            else:
-                cf[k] += p * (it + pr_ + B)
+        sched = run(r, mat - ASOF)
+        for k, (it, pr_, B) in enumerate(sched):
+            cf[k] += it + pr_
+        due = sched[-1][2]
+        cf[mat - ASOF - 1] += (1 - p) * due + p * 0.10 * due
+        if p > 0:
+            B = 0.9 * due
+            pay = B * r_e / (1 - (1 + r_e) ** (-300))
+            for j in range(36):
+                m = mat + 1 + j - 1
+                yy, mo_ = divmod(m, 12)
+                days = (pd.Timestamp(yy, mo_ + 1, 1) + pd.offsets.MonthEnd(0)).day if r.interest_basis == "ACT/360" else 30
+                it = B * CRER / 100 * days / 360
+                pr_ = min(pay - it, B)
+                B -= pr_
+                cf[mat - ASOF + j] += p * (it + pr_ + (B if j == 35 else 0.0))
     return loss(cf)
 
 

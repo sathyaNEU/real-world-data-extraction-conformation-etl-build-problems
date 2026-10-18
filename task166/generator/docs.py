@@ -70,7 +70,8 @@ LOG_A = ["Obligation", "Property", "Prop Type", "Orig Amt", "Rate", "Maturity", 
 LOG_B = ["Obligation No.", "Property No.", "Property Type", "Original Principal", "Note Rate", "Maturity Date",
          "Principal at Maturity", "Outcome", "Extended To"]
 PT_A = {"MF": "MF", "OFF": "OFF", "RET": "RTL", "IND": "IND", "MIX": "MXD"}
-OUT_B = {"PO": "Paid at maturity", "EXT": "Extended", "PO-EXT": "Paid at extended maturity"}
+OUT_B = {"PO": "Paid at maturity", "EXT": "Extended", "EXT-S": "Extended, sale pending",
+         "PO-EXT": "Paid at extended maturity", "SA": "Transferred to special assets"}
 
 
 def write_log(path, W):
@@ -307,9 +308,39 @@ ALM_BALANCE = [("Cash and due from banks", 1.48), ("Securities available for sal
                ("Other assets", 3.68)]
 
 
-def write_alm(path):
+def cre_book(W):
+    """the commercial real estate book at the as-of: principal, and the share graded watch or worse"""
+    fx = [(R.cre_balance_asof(L), R.risk_grade(L)) for L in W.cre if R.cre_alive(L)]
+    fl = [(F["bal"], F["grade"]) for F in W.cre_float]
+    tot = sum(b for b, _ in fx + fl)
+    w6 = sum(b for b, g_ in fx + fl if g_ >= 6) / tot
+    w7 = sum(b for b, g_ in fx + fl if g_ >= 7) / tot
+    return tot, w6, w7
+
+
+ALM_TOTAL = 38.06          # total assets at 30 September 2026, $ billions
+
+
+def alm_balance(W):
+    """the balance sheet at 30 September: the commercial real estate line is the book, C&I takes up the rest"""
+    tot, _, _ = cre_book(W)
+    cre = round(tot / 1e9 + 0.04, 2)
+    others = sum(v for k, v in ALM_BALANCE if k not in ("Commercial real estate loans", "Commercial and industrial loans"))
+    rows = []
+    for k, v in ALM_BALANCE:
+        if k == "Commercial real estate loans":
+            v = cre
+        elif k == "Commercial and industrial loans":
+            v = round(ALM_TOTAL - others - cre, 2)
+        rows.append((k, v))
+    return rows
+
+
+def write_alm(path, W):
     st = _styles()
-    tot = sum(v for _, v in ALM_BALANCE)
+    bal = alm_balance(W)
+    tot = sum(v for _, v in bal)
+    _, w6, w7 = cre_book(W)
     s = [Paragraph("ALM Report, Third Quarter 2026", st["h1"]),
          Paragraph("%s. Positions at Wednesday 30 September 2026. Prepared by %s, ALM, for ALCO's meeting of 19 October "
                    "2026." % (K.BANK, K.PEOPLE["alm"]), st["sub"]),
@@ -331,9 +362,14 @@ def write_alm(path):
     for k, v in ALM_NII:
         data.append([Paragraph(k, st["cell"]), Paragraph("%.1f" % v, st["cell"])])
     s.append(_table(data, [2.4 * inch, 1.8 * inch], st))
+    s.append(Paragraph("Credit quality", st["h2"]))
+    s.append(Paragraph("Commercial real estate loans graded watch or worse (grades 6 to 8) were %.1f per cent of the "
+                       "commercial real estate book at 30 September, against %.1f per cent at 30 June; special mention "
+                       "and substandard loans (grades 7 and 8) were %.1f per cent." %
+                       (100 * w6, 100 * w6 - 0.6, 100 * w7), st["body"]))
     s.append(Paragraph("Balance sheet", st["h2"]))
     data = [[Paragraph(x, st["cellb"]) for x in ("Assets at 30 September 2026", "$ billions")]]
-    for k, v in ALM_BALANCE:
+    for k, v in bal:
         data.append([Paragraph(k, st["cell"]), Paragraph("%.2f" % v, st["cell"])])
     data.append([Paragraph("Total assets", st["cellb"]), Paragraph("%.2f" % tot, st["cellb"])])
     s.append(_table(data, [3.4 * inch, 1.4 * inch], st))
@@ -378,23 +414,30 @@ def notes_text(n):
     w("  J15F, CNF30 C30F, CNF15 C15F and CRE5 CRE5F.")
     w("")
     w("cre_term_loans_20261130.csv (%s rows)" % format(n[R.F_CRE], ","))
-    w("  Every commercial real estate term loan at the close on 30 November 2026, fixed and floating. The loan")
-    w("  number is 44, the obligor number and the note number. maturity_date is the current maturity and")
-    w("  original_maturity_date the maturity at origination. interest_basis ACT/360 charges the month's actual days")
-    w("  over 360 and 30/360 thirty days over 360; the monthly payment is fixed and principal is what it leaves after")
-    w("  interest. On floating loans note_rate is the rate in force (one-month Term SOFR plus rate_spread). risk_grade")
-    w("  is the bank's scale of 1 to 9: 6 watch, 7 special mention, 8 substandard.")
+    w("  Every commercial real estate term loan at the close on 30 November 2026, fixed and floating; loans in special")
+    w("  assets are not in it. The loan number is 44, the obligor number and the note number. maturity_date is the")
+    w("  current maturity and original_maturity_date the maturity at origination; on an extended loan note_rate,")
+    w("  monthly_payment and amortization_months are the extension's. interest_basis ACT/360 charges the month's actual")
+    w("  days over 360 and 30/360 thirty days over 360; the monthly payment is fixed and principal is what it leaves")
+    w("  after interest. interest_only_months is the interest-only period from origination, after which the payment")
+    w("  amortizes the loan over amortization_months. On floating loans note_rate is the rate in force (one-month Term")
+    w("  SOFR plus rate_spread). risk_grade is the bank's scale of 1 to 9: 6 watch, 7 special mention, 8 substandard.")
     w("")
     w("cre_maturity_log.xlsx (%s rows)" % format(n[F_LOG], ","))
     w("  Credit administration's log of term loans reaching a maturity date, one sheet a year from 2015, one row per")
     w("  loan and maturity date. The sheet layout changed in 2020. Obligation is the obligor and note number;")
     w("  Property is the property number without its P. Disposition (to 2019) and Outcome: PO, paid at maturity;")
-    w("  EXT, extended (the maturity moved out 36 months, the note rate and payment unchanged); PO-EXT, paid at the")
-    w("  extended maturity.")
+    w("  EXT, extended; EXT-S, extended six months on the note's terms for a sale under contract; PO-EXT, paid at")
+    w("  the extended maturity; SA, transferred to special assets at the extended maturity. The bank grants a")
+    w("  maturing term loan one extension, of 36 months, on a paydown of 10 per cent of the principal due, at the")
+    w("  bank's posted five-year fixed rate on the maturity date, the payment amortizing the rest over 25 years. An")
+    w("  extended loan is not extended again: at its extended maturity it is paid or goes to special assets.")
     w("")
     w("cre_operating_statements.csv (%s rows)" % format(n[R.F_STMT], ","))
-    w("  Borrowers' annual operating statements as reviewed, one row per property and fiscal year from 2013.")
-    w("  Fiscal years end in the borrower's own month. review_completed is the date the review was signed off.")
+    w("  Borrowers' annual operating statements as reviewed, one row per property and fiscal year from 2013, with the")
+    w("  underwriting row (statement_basis Underwriting: the net operating income the loan was sized on, its year")
+    w("  ending the month before the loan closed). Fiscal years end in the borrower's own month. review_completed is")
+    w("  the date the review was signed off.")
     w("")
     w("custody_holdings_20261130.csv (%s rows)" % format(n[R.F_CUSTODY], ","))
     w("  The custodian's statement of the available-for-sale account at the close on 30 November 2026. Faces, cost,")
@@ -450,6 +493,6 @@ def write_all(out, W, S, n):
     n[F_REGISTER] = write_register(p(F_REGISTER), S)
     write_nmd(p(F_NMD))
     write_policy(p(F_POLICY))
-    write_alm(p(F_ALM))
+    write_alm(p(F_ALM), W)
     write_notes(p(F_NOTES), n)
     return n

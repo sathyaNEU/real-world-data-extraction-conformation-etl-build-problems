@@ -6,12 +6,12 @@
   "domain": "banking-credit-financial-risk",
   "subdomain": "stress-testing-capital",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a Pittsburgh regional bank's ALCO designating its one $1.2 billion four-year pay-fixed swap overlay against the fixed-rate pool whose +200 bp economic value loss, averaged over the swap's first twelve months (calendar 2027), is largest, when the 2023-24 jumbo mortgages are in the money at the planning cycle's 6.25 per cent and about $4.7 billion of five-year CRE balloons from the bank's push of December 2021 to April 2022 fall due inside the year",
+  "niche": "a Pittsburgh regional bank's ALCO designating its one $1.2 billion four-year pay-fixed swap overlay against the fixed-rate pool whose +200 bp economic value loss, averaged over the swap's first twelve months (calendar 2027), is largest, when the 2023-24 jumbo mortgages are in the money at the planning cycle's 6.25 per cent and about $3.2 billion of five-year CRE balloons from the bank's push of December 2021 to April 2022, half of them interest only, fall due inside the year",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "designate the overlay against fixed-rate commercial real estate: its +200 bp loss averaged over the month-ends of 2027 is $150 million to the nearest $10 million (150.05), against agency MBS at about $110 million",
+  "answer": "designate the overlay against fixed-rate commercial real estate: its +200 bp loss averaged over the month-ends of 2027 is $150 million to the nearest $10 million (149.99), against agency MBS at about $110 million",
   "answer_source": "task166/generator/calc.py golden(), recomputed by verify.py, asserted in checks.py",
   "gap": [
     "time",
@@ -48,7 +48,7 @@
   "world": {
     "geography": "United States, Pennsylvania (Pittsburgh; footprint western Pennsylvania, Ohio and West Virginia)",
     "currency": "USD",
-    "org_type": "regional bank holding company, about $31 billion in assets",
+    "org_type": "regional bank holding company, about $38 billion in assets",
     "invented_names": [
       "Carrick Valley Bancorp",
       "Carrick Valley Bank"
@@ -68,7 +68,8 @@
     "rates on different bases and day counts: Treasuries semi-annual, agency pools monthly with a payment delay, CRE notes on actual/360, auto loans monthly",
     "the custodian's holdings in thousands with pool factors, the rest of the available-for-sale account (2023-24 agency pools, municipal bonds, agency multifamily) beside the two pools",
     "the pricing desk's rate sheet archive (weekly sheets, mid-week re-prices, product codes renamed on 1 January 2024) against the planning cycle's monthly paths",
-    "operating statements on each borrower's own fiscal year with their review dates; the CRE loan file holds floating-rate loans and extended loans' current and original maturities"
+    "operating statements on each borrower's own fiscal year with their review dates; the CRE loan file holds floating-rate loans and extended loans' current and original maturities",
+    "the maturity log's five outcome codes (paid, extended, a six-month extension for a sale under contract, paid at the extended maturity, special assets) and the loan file's interest-only loans beside amortizing ones, with the extension's own rate and payment on an extended loan"
   ],
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:balloon-maturities-extended-by-refinance-cover",
@@ -79,8 +80,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Two parts of a stock answer the same forward terms in opposite directions: one, whose units hold rates the terms now beat, leaves faster than its own past, while the other, whose units fall due inside the window, keeps every due unit whose own earnings no longer cover the terms it would have to roll onto, at a share read from past due dates by that cover; the part with the most exposure over the window is found only when both answers are projected, because the schedule, a recent share or a price gap leaves the second part running off and names a third part that is neither.",
-  "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $4.7 billion of balloons falling due from December 2026 through 2027, nearly all written in the push of December 2021 to April 2022, its cash-out deals at the credit box's full proceeds on pro forma rents and its refinances at far lower leverage; about three-fifths of that principal is expected to extend for 36 months at its note rate because those properties' latest reviewed income no longer covers a new 25-year loan of the balloon at the planning cycle's 6.95 per cent, the cover below which (about 1.10) the bank's record of maturities since 2015 shows loans extending; the CRE pool's +200 bp loss averaged over the swap's first year is then $150 million, the largest of the five, while every route that repays the balloons when due, at the recent extension share, by rate gap, by property type or by the note-rate DSCR designates the agency MBS.",
-  "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate are extended for 36 months, and three-fifths of the 2027 wall's principal is such loans.",
+  "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $3.2 billion of balloons falling due from December 2026 through 2027, nearly all written in the push of December 2021 to April 2022 at the credit box's full proceeds on pro forma rents, half of them interest only; about nine-tenths of that principal is expected to take the bank's one extension (36 months, a tenth paid down, the rest at the posted rate on 25-year amortization) because those properties' latest reviewed income no longer covers a new 25-year loan of the balloon at the planning cycle's 6.95 per cent, the cover below which (about 1.09) the bank's record of maturities since 2015 shows loans extending; the CRE pool's +200 bp loss averaged over the swap's first year is then $150 million, the largest of the five, while every route that repays the balloons when due, at the recent extension share, by rate gap, by property type, by the note-rate DSCR, by in-place cover or by the watch list designates the agency MBS.",
+  "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate take the bank's one 36-month extension, and nine-tenths of the 2027 wall's principal is such loans.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads the hedge policy, the planning cycle and every file correctly, prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the 6.25 per cent planning rate and runs the CRE loans to their contractual maturities designates the agency MBS; only extending each 2027 CRE balloon at the share the bank's maturity record shows for its property's income cover at the planning CRE rate designates the CRE pool.",
   "domain_test": "The deciding quantity is each pool's +200 bp loss in economic value on its expected cash flows through the hedge year, which asset-liability management projects from behaviour: mortgage prepayment by refinancing incentive at the planning rate, and balloon outcomes at maturity by refinance cover (the property's income against a new loan's debt service at the market rate); with another field's nouns (a hospital's wards, a utility's feeders) neither the incentive curve nor the refinance test on maturing balloons exists, so the quantity that decides the call has nothing to stand on.",
