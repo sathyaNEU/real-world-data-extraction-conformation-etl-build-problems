@@ -151,7 +151,7 @@ INCIDENTS = {           # unplanned infeed losses: date -> (local hour decimal, 
 # few seconds to count, and shallow ones the extract publisher never triggers on at all. None of
 # them creates a qualifying episode of either sign, so none of them changes what the determination
 # measures; checks.py asserts the qualifying sets are identical with and without them.
-QUIET_PER_DAY = 15
+QUIET_PER_DAY = 22
 QUIET_CLEAR = 460          # seconds an added excursion keeps clear of a published deviation window
 
 
@@ -169,7 +169,9 @@ def _quiet_excursions(d, base):
     out = []
     for k in range(QUIET_PER_DAY):
         p = int(r.randint(0, 96))
-        t0 = p * 900 + int(r.randint(170, 760))      # away from the period boundary
+        # inside the period and after the first five minutes of it, which is the span a traverse is
+        # fitted over and whose frequency has to be quiet for the fit to use that boundary
+        t0 = p * 900 + int(r.randint(310, 700))
         kind = int(r.randint(0, 3))
         sgn = 1.0 if r.random_sample() < 0.5 else -1.0
         spike = 0.0
@@ -181,6 +183,8 @@ def _quiet_excursions(d, base):
         else:
             peak, length = 0.0260 + 0.0330 * r.random_sample(), int(r.randint(90, 420))
         if t0 - 50 < 0 or t0 + length + 50 >= DAY:
+            continue
+        if t0 + length + 30 >= p * 900 + 880:        # never into the next boundary's own span
             continue
         if any(not (t0 + length <= x or t0 >= y) for (x, y) in keep):
             continue
