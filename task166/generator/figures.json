@@ -10,22 +10,22 @@
  "mortgage_loss_musd_about": 90,
  "notional_busd": 1.2,
  "oos_brier": {
-  "cover": 0.01261,
-  "cur": 0.06545,
-  "dy": 0.03888,
-  "gap": 0.09891,
-  "last_year_share": 0.08293,
-  "n_test": 274,
-  "n_train": 510,
-  "pooled_share": 0.0865
+  "cover": 0.0333,
+  "cur": 0.17308,
+  "dy": 0.0875,
+  "gap": 0.19979,
+  "last_year_share": 0.20981,
+  "n_test": 284,
+  "n_train": 555,
+  "pooled_share": 0.22878
  },
  "oos_brier_2dp": {
-  "cover": 0.01,
-  "cur": 0.07,
-  "dy": 0.04,
-  "gap": 0.1,
-  "last_year_share": 0.08,
-  "pooled_share": 0.09
+  "cover": 0.03,
+  "cur": 0.17,
+  "dy": 0.09,
+  "gap": 0.2,
+  "last_year_share": 0.21,
+  "pooled_share": 0.23
  },
  "planning_cre_rate_pct": 6.95,
  "planning_mortgage_rate_pct": 6.25,
@@ -43,7 +43,7 @@
   "Fixed-rate commercial real estate": {
    "loss_musd": 149.99,
    "loss_musd_nearest10": 150,
-   "principal_musd": 3642.9
+   "principal_musd": 3615.7
   },
   "Indirect auto loans": {
    "loss_musd": 30.66,
@@ -98,9 +98,9 @@
  "runner_up_loss_musd_nearest10": 110,
  "shock_bp": 200,
  "treasury_loss_musd_about": 70,
- "wall_balloon_busd": 3.2,
- "wall_extended_busd": 2.9,
- "wall_loans": 277,
- "wall_share": 0.909,
- "wall_share_words": "nine-tenths"
+ "wall_balloon_busd": 2.6,
+ "wall_extended_busd": 2.4,
+ "wall_loans": 278,
+ "wall_share": 0.935,
+ "wall_share_words": "over nine-tenths"
 }

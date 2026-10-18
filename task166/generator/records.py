@@ -199,12 +199,32 @@ def cre_terms_now(L):
     return L["r0"], L["payment"], L["mat"], L["amort"]
 
 
+def cre_final_date(L):
+    """the day the bank's file on a loan closes: its payoff (early, at maturity or at the extended maturity), its
+    transfer to special assets, or the pull for a loan still on the books"""
+    if L["early"] is not None:
+        return day_in(L["early"], L["oday"])
+    if cre_alive(L) or L["outcome"] is None:
+        return K.PULL
+    if L["ext"]:
+        return day_in(L["mat"] + L["ext_months"], L["oday"])
+    return day_in(L["mat"], L["oday"])
+
+
+def stmt_in_file(L, s):
+    """a statement the operating statement file carries: reviewed by the pull and before the file closed, from 2013"""
+    if s["review"] > K.PULL or s["end_o"] < mo(2013, 1):
+        return False
+    return s["review"] <= cre_final_date(L)
+
+
 GRADE_STEPS = ((1.40, 3), (1.20, 4), (1.00, 5), (0.90, 6), (0.80, 7))
 
 
 def risk_grade(L, noi=None):
     """the bank's scale of 1 to 9 on the in-place cover of the current payment, moved a grade either way by the
-    credit officer's judgment in a few files; 6 watch, 7 special mention, 8 substandard"""
+    credit officer's judgment in a few files, and held at 5 or 6 where the officer doubts a loan due within the year
+    can be refinanced; 6 watch, 7 special mention, 8 substandard"""
     rate, pay, _, _ = cre_terms_now(L)
     s = latest_stmt(L)
     dscr = (noi if noi is not None else s["noi"]) / (pay * 12)
@@ -213,7 +233,7 @@ def risk_grade(L, noi=None):
         if dscr >= lo:
             gr = g_
             break
-    return int(min(8, max(2, gr + L.get("grade_adj", 0))))
+    return int(min(8, max(2, gr + L.get("grade_adj", 0), L.get("refi_floor", 0))))
 
 
 def latest_stmt(L, by=None):
@@ -234,7 +254,8 @@ CRE_COLS = ["loan_number", "obligor_number", "property_number", "property_type",
             "original_maturity_date", "maturity_date", "rate_type", "note_rate", "rate_index", "rate_spread",
             "interest_basis", "interest_only_months", "amortization_months", "original_principal", "principal_balance",
             "monthly_payment", "next_due_date", "risk_grade"]
-PT_NAME = {"MF": "Multifamily", "OFF": "Office", "RET": "Retail", "IND": "Industrial", "MIX": "Mixed use"}
+PT_NAME = {"MF": "Multifamily", "OFF": "Office", "RET": "Retail", "IND": "Industrial", "MIX": "Mixed use",
+           "HOT": "Hotel"}
 
 
 def cre_rows(W):
@@ -299,12 +320,7 @@ def stmt_rows(W):
         if not (cre_alive(L) or (L["outcome"] is not None and L["mat"] >= mo(2015, 1))):
             continue
         for s in L["stmts"]:
-            if s["review"] > K.PULL:
-                continue
-            last = (L["mat"] + (L["ext_months"] if L["ext"] else 0))
-            if s["end_o"] > last:
-                continue
-            if s["end_o"] < mo(2013, 1):
+            if not stmt_in_file(L, s):
                 continue
             rows.append(["P%05d" % L["prop"], iso(s["end"]), s["basis"], "%.0f" % s["rev"], "%.0f" % s["exp"],
                          "%.0f" % s["noi"], iso(s["review"])])

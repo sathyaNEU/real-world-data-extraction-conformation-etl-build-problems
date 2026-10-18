@@ -174,14 +174,17 @@ def m_smm(incent, month_of_year, age):
     return turn + refi
 
 
-CRE_C0, CRE_S = 1.08, 0.025  # the 36-month extension: logistic in refinance cover
-CRE_SALE = 0.012            # a sale pending at maturity: six months more on the note's terms, whatever the cover
+CRE_C0, CRE_S = 1.10, 0.025  # the 36-month extension: logistic in refinance cover
+CRE_CONV = 0.0              # an extension taken whatever the cover: none (noise there moves the fitted response)
+CONV_BAND = (1.10, 1.35)    # the covers it would be taken at
+CRE_SALE = 0.012            # a sale pending at maturity: six months more on the note's terms
+SALE_MIN = 1.0              # a sale repays the loan only from a property with equity: none below this cover
 CRE_SA = (0.35, 0.05)       # at the extended maturity: to special assets, cover below 1.0 / at or above it
 EXT_PAYDOWN, EXT_AMORT, SALE_EXT_MONTHS = 0.10, 300, 6
 # the push loans' income scale: the one design parameter set against the golden, by a rule written before any route
 # was measured: solved so the file-built cover-logit figure sits within $0.5 million of $150 million, the centre of
 # its $10 million reporting bin
-PUSH_SCALE = 1.491
+PUSH_SCALE = 1.065
 CRE_EXT_MONTHS = 36
 CRE_EARLY = 0.0006          # monthly hazard of an early sale payoff (with the prepayment premium)
 # the fixed-rate book's origination intensity (loans a month): flat to 2018, a ramp through 2020-21 to the push of
@@ -190,6 +193,10 @@ LAM_FLAT = (3.4, 4.8, 9.0)                  # before 2013, 2013-18, 2019
 LAM_2020 = (6.5, 4.0, 7.0)                  # to March, the April to August pause, September to December
 LAM_RAMP21 = (9.0, 25.0)                    # January to November 2021, linear
 PUSH_FROM, PUSH_TO, PUSH_LAM = mo(2021, 12), mo(2022, 4), 55.0
+# the push's leverage came in through the second half of 2021 and went out through mid-2022: the share of the push's
+# sizing (pro forma rents, the box's full proceeds, interest only) a month's loans carried
+RAMP_IN = (mo(2021, 6), mo(2021, 12))       # zero at the first month, full at the second, linear between
+RAMP_OUT = (0.6, 0.3, 0.1)                  # May, June and July 2022
 LAM_SLOW22 = (10.0, 7.0, 5.0, 4.0, 3.0)     # May to September 2022
 LAM_TAIL = (0.8, 0.5)                       # October 2022 to 2023, then 2024 on
 PUSH_PROFORMA = 1.15        # the push was underwritten on pro forma rents
@@ -198,8 +205,48 @@ PUSH_FIT, PUSH_LOWLEV_P, PUSH_LOWLEV = (0.97, 1.0), 0.0, (0.60, 0.80)
 # interest only to maturity on part of the push (sized on 25-year amortization like the rest)
 IO_P = 0.50
 # term mix (five, seven, ten years); borrowers locked longer terms at the 2020-21 lows
-TERMS, LATE_TERMS, TAIL_TERMS = [0.70, 0.24, 0.06], [0.92, 0.05, 0.03], [0.60, 0.30, 0.10]
+TERMS, LATE_TERMS, TAIL_TERMS = [0.70, 0.24, 0.06], [0.92, 0.05, 0.03], [0.80, 0.15, 0.05]
 NOI_SD, NOI_SHOCK_P, NOI_SHOCK = 0.03, 0.025, (0.66, 0.86)
+# department-store closings of 2016 to 2019 (Bon-Ton, Sears, the regional chains): a retail centre losing an anchor
+ANCHOR_YEARS, ANCHOR_P, ANCHOR = (2016, 2019), 0.09, (0.45, 0.70)
+# the officer's refinance view on a loan maturing within twelve months of the pull: cover at the posted rate below
+# 1.0, a floor of 6 or 5; from 1.0 to 1.15, a floor of 5
+GR_FLOOR = (0.10, 0.50, 0.30)               # below 1.0: P(floor 6), P(floor 5); 1.0 to 1.15: P(floor 5)
+# the pandemic in property income (truth only): a month's net operating income against its trend, hotels and retail
+HOT_PATH = path({(2020, 2): 1.0, (2020, 3): 0.45, (2020, 4): -0.25, (2020, 5): -0.15, (2020, 6): 0.05,
+                 (2020, 7): 0.20, (2020, 8): 0.25, (2020, 9): 0.20, (2020, 10): 0.20, (2020, 11): 0.10,
+                 (2020, 12): 0.05, (2021, 1): 0.05, (2021, 2): 0.10, (2021, 3): 0.25, (2021, 4): 0.35,
+                 (2021, 5): 0.50, (2021, 6): 0.65, (2021, 7): 0.80, (2021, 8): 0.80, (2021, 9): 0.70,
+                 (2021, 10): 0.70, (2021, 11): 0.65, (2021, 12): 0.60, (2022, 1): 0.70, (2022, 12): 0.95,
+                 (2023, 12): 0.98}, mo(2020, 2), K.ASOF_M)
+RET_PATH = path({(2020, 2): 1.0, (2020, 3): 0.85, (2020, 4): 0.45, (2020, 5): 0.55, (2020, 6): 0.75,
+                 (2020, 7): 0.80, (2020, 8): 0.82, (2020, 9): 0.84, (2020, 10): 0.85, (2020, 12): 0.85,
+                 (2021, 1): 0.86, (2021, 12): 0.92, (2022, 12): 0.96, (2023, 12): 0.97}, mo(2020, 2), K.ASOF_M)
+COVID_SEV = {"HOT": (0.8, 1.2), "RET": (0.6, 2.2)}
+COVID_FLOOR = 0.0
+
+
+def push_w(o):
+    """the share of the push's sizing a month's fixed-rate loans carried"""
+    if o <= RAMP_IN[0] or o > PUSH_TO + len(RAMP_OUT):
+        return 0.0
+    if o < RAMP_IN[1]:
+        return (o - RAMP_IN[0]) / float(RAMP_IN[1] - RAMP_IN[0])
+    if o <= PUSH_TO:
+        return 1.0
+    return RAMP_OUT[o - PUSH_TO - 1]
+
+
+def covid_mult(L, o):
+    """a month's income against its trend for one property"""
+    if L["ptype"] not in COVID_SEV or o < mo(2020, 2):
+        return 1.0
+    m = (HOT_PATH if L["ptype"] == "HOT" else RET_PATH)[min(o, K.ASOF_M)]
+    return max(COVID_FLOOR, 1.0 - L["covid_sev"] * (1.0 - m))
+
+
+def covid_avg(L, end_o):
+    return sum(covid_mult(L, o) for o in range(end_o - 11, end_o + 1)) / 12.0
 
 
 def cre_lam(o):
@@ -330,100 +377,118 @@ def build_hfs(W):
     W.hfs = rows
 
 
-PTYPES = ["MF", "OFF", "RET", "IND", "MIX"]
+PTYPES = ["MF", "OFF", "RET", "IND", "MIX", "HOT"]
 MSAS = [("Pittsburgh", "PA", 0.52), ("Cleveland", "OH", 0.14), ("Columbus", "OH", 0.10), ("Erie", "PA", 0.06),
         ("Morgantown", "WV", 0.06), ("Wheeling", "WV", 0.04), ("Youngstown", "OH", 0.04), ("State College", "PA", 0.04)]
 
 
+PT_MIX = [0.30, 0.18, 0.19, 0.17, 0.07, 0.09]      # the fixed-rate book by property type, PTYPES' order
+PT_MIX_FLOAT = [0.36, 0.12, 0.13, 0.25, 0.09, 0.05]
+
+
+def lrng(stream, o, j):
+    """one generator per loan and component, keyed by its origination month and its place in the month, so a change
+    in one loan or one knob never moves another loan's draws"""
+    return np.random.default_rng([K.SEED, stream, o, j])
+
+
 def build_cre(W):
-    g = K.rng(12)
     rows = []
     lid = 0
     for o in range(mo(2007, 1), K.ASOF_M + 1):
         lam = cre_lam(o)
         push = PUSH_FROM <= o <= PUSH_TO
-        for _ in range(g.poisson(lam)):
+        w = push_w(o)
+        for j in range(int(np.random.default_rng([K.SEED, 12, o]).poisson(lam))):
+            g = lrng(12, o, j)
             lid += 1
             late = mo(2020, 1) <= o <= mo(2021, 11)
             tail = o > PUSH_TO
-            term = int(g.choice([60, 84, 120], p=[1.0, 0.0, 0.0] if push else LATE_TERMS if late else
-                                TAIL_TERMS if tail else TERMS))
+            base = LATE_TERMS if late else TAIL_TERMS if tail else TERMS
+            term = int(g.choice([60, 84, 120], p=[w + (1 - w) * base[0], (1 - w) * base[1], (1 - w) * base[2]]))
             amort = int(g.choice([300, 240, 360], p=[0.78, 0.12, 0.10]))
             io = 0
-            if push and g.random() < IO_P:
+            if g.random() < IO_P * w:
                 io = term                            # interest only to maturity
                 amort = 300
             r0 = round((W.CRE5[o] + g.normal(0.05, 0.12)) * 100) / 100
-            noi0 = float(np.exp(g.normal(math.log(560000), 0.62))) * (PUSH_SCALE if push else 1.0)
+            noi0 = float(np.exp(g.normal(math.log(560000), 0.62))) * (1.0 + (PUSH_SCALE - 1.0) * w)
             value = noi0 / (CAP[o] / 100.0 * math.exp(g.normal(0, 0.05)))
             if o > PUSH_TO:
-                ltv_max, dscr_min = 0.70, POST_DSCR  # the box tightened after the push
+                ltv_max, dscr_min = 0.70 + 0.02 * w, POST_DSCR - (POST_DSCR - 1.25) * w   # the box tightened after
             elif o >= mo(2021, 12):
                 ltv_max, dscr_min = 0.72, 1.25
             elif o >= mo(2020, 4):
-                ltv_max, dscr_min = 0.62, 1.25      # pandemic caution
+                ltv_max, dscr_min = 0.62 + 0.10 * w, 1.25      # pandemic caution, loosening into the push
             elif o >= mo(2017, 7):
                 ltv_max, dscr_min = 0.75, 1.20      # the 2017-19 credit box
             else:
                 ltv_max, dscr_min = 0.70, 1.25
-            uw_noi = noi0 * (PUSH_PROFORMA if push else 1.0)   # the push was sized on pro forma rents
+            uw_noi = noi0 * (1.0 + (PUSH_PROFORMA - 1.0) * w)   # the push was sized on pro forma rents
             b_ltv = ltv_max * uw_noi / (CAP[o] / 100.0 * math.exp(g.normal(0, 0.05)))
             b_dscr = uw_noi / (dscr_min * float(dc(r0, amort)))   # interest-only loans sized on 25 years too
-            if push:      # cash-out deals took the box's full proceeds; rate-and-term refinances took far less
-                fit = g.uniform(*PUSH_LOWLEV) if g.random() < PUSH_LOWLEV_P else g.uniform(*PUSH_FIT)
+            u_ll, u_fit = g.random(), g.random()
+            if push and u_ll < PUSH_LOWLEV_P:     # a rate-and-term refinance took far less than the box allowed
+                lo, hi = PUSH_LOWLEV
+            elif push:                            # cash-out deals took the box's full proceeds
+                lo, hi = PUSH_FIT
             else:
-                fit = g.uniform(0.86, 1.0)
+                lo, hi = 0.86 + (PUSH_FIT[0] - 0.86) * w, 1.0
+            fit = lo + (hi - lo) * u_fit
             b0 = min(b_ltv, b_dscr) * fit
             b0 = round(b0 / 1000) * 1000
-            ptype = str(g.choice(PTYPES, p=[0.34, 0.18, 0.20, 0.18, 0.10]))
-            rows.append(dict(lid=lid, orig=o, term=term, amort=amort, io=io, r0=r0, noi0=noi0, b0=b0, value0=value,
-                             ptype=ptype, push=push, fit=fit, uw_noi=uw_noi))
-    # property income by the borrower's fiscal year (annual reviews), a random walk on the market index
-    for L in rows:
-        fy_start = ym(L["orig"])[0]
-        walk = 1.0
-        L["noi"] = {}
-        for fy in range(fy_start, 2027):
-            walk *= math.exp(g.normal(0, NOI_SD))
-            if g.random() < NOI_SHOCK_P:
-                walk *= g.uniform(*NOI_SHOCK)     # a tenant lost, a cost shock the rents never caught
-            L["noi"][fy] = walk                   # the walk only; the level comes with the fiscal year's midpoint
-    # life: early sale payoff before maturity
-    for L in rows:
-        L["mat"] = L["orig"] + L["term"]
-        L["early"] = None
-        for o in range(L["orig"] + 1, min(L["mat"], K.ASOF_M + 1)):
-            if g.random() < CRE_EARLY:
-                L["early"] = o
-                break
-    # attributes, identifiers, the day count, statements (a second stream: the behaviour's draws stay put)
-    ga = K.rng(19)
+            ptype = str(g.choice(PTYPES, p=PT_MIX))
+            # life: an early sale payoff before maturity (a monthly hazard)
+            u_e = g.random()
+            k_e = int(math.ceil(math.log(1.0 - u_e) / math.log(1.0 - CRE_EARLY))) if u_e > 0 else 10 ** 6
+            mat = o + term
+            early = o + k_e if o + k_e < min(mat, K.ASOF_M + 1) else None
+            # property income by the borrower's fiscal year: a random walk on the market index
+            gw = lrng(14, o, j)
+            walk, noi = 1.0, {}
+            for fy in range(ym(o)[0], 2027):
+                walk *= math.exp(gw.normal(0, NOI_SD))
+                u_s, u_v, u_a, v_a = gw.random(), gw.random(), gw.random(), gw.random()
+                if u_s < NOI_SHOCK_P:
+                    walk *= NOI_SHOCK[0] + (NOI_SHOCK[1] - NOI_SHOCK[0]) * u_v   # a tenant lost, a cost shock
+                if ptype == "RET" and ANCHOR_YEARS[0] <= fy <= ANCHOR_YEARS[1] and u_a < ANCHOR_P:
+                    walk *= ANCHOR[0] + (ANCHOR[1] - ANCHOR[0]) * v_a           # the anchor store closed
+                noi[fy] = walk                    # the walk only; the level comes with the fiscal year's midpoint
+            rows.append(dict(lid=lid, orig=o, j=j, term=term, amort=amort, io=io, r0=r0, noi0=noi0, b0=b0,
+                             value0=value, ptype=ptype, push=push, pw=w, fit=fit, uw_noi=uw_noi, noi=noi, mat=mat,
+                             early=early))
+    # attributes, identifiers, the day count (a second stream per loan: the behaviour's draws stay put)
     obligors = []
     for L in rows:
-        y, m = ym(L["orig"])
+        ga = lrng(19, L["orig"], L["j"])
         L["basis"] = "ACT/360" if L["orig"] >= mo(2012, 1) else "30/360"
         L["oday"] = int(ga.integers(1, 29))
         msa = MSAS[int(ga.choice(len(MSAS), p=[x[2] for x in MSAS]))]
         L["msa"], L["state"] = msa[0], msa[1]
-        if obligors and ga.random() < 0.08:
-            L["obligor"] = obligors[int(ga.integers(0, len(obligors)))]
+        u_ob, new_ob, pick = ga.random(), int(ga.integers(100000, 999999)), ga.random()
+        if obligors and u_ob < 0.08:
+            L["obligor"] = obligors[int(pick * len(obligors))]
         else:
-            L["obligor"] = int(ga.integers(100000, 999999))
-            obligors.append(L["obligor"])
+            L["obligor"] = new_ob
+            obligors.append(new_ob)
         L["fye"] = int(ga.choice([12, 6, 9], p=[0.74, 0.16, 0.10]))
-        L["exp_ratio"] = float(np.clip(ga.normal({"MF": 0.46, "OFF": 0.44, "RET": 0.36, "IND": 0.30, "MIX": 0.42}[L["ptype"]],
-                                                 0.05), 0.18, 0.68))
+        L["exp_ratio"] = float(np.clip(ga.normal({"MF": 0.46, "OFF": 0.44, "RET": 0.36, "IND": 0.30, "MIX": 0.42,
+                                                  "HOT": 0.66}[L["ptype"]], 0.05), 0.18, 0.78))
         L["review_lag"] = [int(ga.integers(70, 160)) for _ in range(30)]
         L["basis_stmt"] = [str(ga.choice(["Borrower prepared", "CPA reviewed", "Audited"], p=[0.55, 0.35, 0.10]))
                            for _ in range(30)]
         L["grade_adj"] = int(ga.choice([-1, 0, 1], p=[0.12, 0.76, 0.12]))   # the credit officer's judgment
+        L["prop_off"] = int(ga.integers(0, 7))
+        gc = lrng(21, L["orig"], L["j"])            # the pandemic's weight on a hotel or retail property
+        lo, hi = COVID_SEV.get(L["ptype"], (0.0, 0.0))
+        L["covid_sev"] = lo + (hi - lo) * float(gc.random())
     seen = {}
     for L in rows:
         k = (L["obligor"])
         seen[k] = seen.get(k, 0) + 1
         L["note_no"] = seen[k]
     for i, L in enumerate(rows):
-        L["prop"] = 10000 + i * 7 + int(ga.integers(0, 7))
+        L["prop"] = 10000 + i * 7 + L["prop_off"]
         if L["io"]:      # interest only to maturity: the payment is the interest, the balance stays put
             L["payment"] = float(np.round(L["b0"] * L["r0"] / 100.0 * 30 / 360.0, 2))
             L["bal_path"] = [float(L["b0"])] * L["term"]
@@ -433,7 +498,7 @@ def build_cre(W):
         L["bal_mat"] = L["bal_path"][L["term"] - 1]
     # each fiscal year's statement: the twelve months to the borrower's year end, reviewed some months later
     for L in rows:
-        od = dt.date(*ym(L["orig"]), L["oday"]) if "oday" in L else K.month_end(L["orig"])
+        od = dt.date(*ym(L["orig"]), L["oday"])
         uw_rev = L["uw_noi"] / (1.0 - L["exp_ratio"])
         st = [dict(fy=None, end=K.month_end(L["orig"] - 1), end_o=L["orig"] - 1, noi=L["uw_noi"], rev=uw_rev,
                    exp=uw_rev - L["uw_noi"], review=od, basis="Underwriting")]      # the NOI the loan was sized on
@@ -443,7 +508,7 @@ def build_cre(W):
             if end_o < L["orig"] + 12:              # the first statement covers a full year on the bank's loan
                 continue
             mid = end_o - 6
-            lvl = L["noi0"] * NOI_IDX[min(mid, K.ASOF_M)] / NOI_IDX[L["orig"]] * L["noi"][fy]
+            lvl = L["noi0"] * NOI_IDX[min(mid, K.ASOF_M)] / NOI_IDX[L["orig"]] * L["noi"][fy] * covid_avg(L, end_o)
             rev = lvl / (1.0 - L["exp_ratio"])
             end_d = K.month_end(end_o)
             rdate = end_d + dt.timedelta(days=L["review_lag"][j % 30])
@@ -454,6 +519,8 @@ def build_cre(W):
     # months on the note's terms; otherwise a loan whose income cannot carry a new loan of its balloon takes the
     # bank's one extension (36 months, a tenth paid down, the posted rate, 25-year amortization), or it repays
     for L in rows:
+        gd = lrng(22, L["orig"], L["j"])
+        u, u2, u3 = gd.random(), gd.random(), gd.random()
         L["mat_date"] = dt.date(*ym(L["mat"]), L["oday"])
         L["ext"] = None
         L["sale"] = False
@@ -464,16 +531,16 @@ def build_cre(W):
             s = prior[-1]
             L["noi_review"] = s["noi"]
             L["cover"] = L["noi_review"] / (L["bal_mat"] * float(dc(W.CRE5[L["mat"]], 300)))
-            L["p_ext"] = float(cre_p_ext(L["cover"]))
-            u = g.random()
-            if u < CRE_SALE:
+            conv = CRE_CONV if CONV_BAND[0] <= L["cover"] < CONV_BAND[1] else 0.0
+            L["p_ext"] = conv + (1.0 - conv) * float(cre_p_ext(L["cover"]))
+            if u3 < CRE_SALE and L["cover"] >= SALE_MIN:
                 L["ext"], L["sale"], L["outcome"] = True, True, "EXT-S"
                 L["ext_months"] = SALE_EXT_MONTHS
                 L["ext_rate"], L["ext_pay"] = L["r0"], L["payment"]
                 L["ext_path"] = ([L["bal_mat"]] * SALE_EXT_MONTHS if L["io"] else
                                  run_balance(L["bal_mat"], L["r0"], L["payment"], L["mat"] + 1, SALE_EXT_MONTHS,
                                              L["basis"]))
-            elif u < CRE_SALE + (1 - CRE_SALE) * L["p_ext"]:
+            elif u < L["p_ext"]:
                 L["ext"], L["outcome"] = True, "EXT"
                 L["ext_months"] = CRE_EXT_MONTHS
                 L["ext_rate"] = float(posted_cre(W, L["mat_date"]))
@@ -489,7 +556,19 @@ def build_cre(W):
                 ed = dt.date(*ym(emat), L["oday"])
                 prior = [s for s in L["stmts"] if s["review"] < ed]
                 cov2 = prior[-1]["noi"] / (L["ext_path"][-1] * float(dc(W.CRE5[emat], 300)))
-                L["outcome2"] = "SA" if g.random() < (CRE_SA[0] if cov2 < 1.0 else CRE_SA[1]) else "PO-EXT"
+                L["outcome2"] = "SA" if u2 < (CRE_SA[0] if cov2 < 1.0 else CRE_SA[1]) else "PO-EXT"
+    # the officer's refinance view on a loan due within twelve months of the pull
+    rate_now = float(posted_cre(W, K.PULL))
+    for L in rows:
+        L["refi_floor"] = 0
+        u = float(lrng(23, L["orig"], L["j"]).random())
+        if L["early"] is None and K.ASOF_M < L["mat"] <= K.ASOF_M + 12:
+            s = [x for x in L["stmts"] if x["review"] <= K.PULL][-1]
+            cv = s["noi"] / (L["bal_mat"] * float(dc(rate_now, 300)))
+            if cv < 1.0:
+                L["refi_floor"] = 6 if u < GR_FLOOR[0] else 5 if u < GR_FLOOR[0] + GR_FLOOR[1] else 0
+            elif cv < 1.15:
+                L["refi_floor"] = 5 if u < GR_FLOOR[2] else 0
     # the risk grade on the latest reviewed statement: in-place debt service cover on the current payment
     for L in rows:
         s = [x for x in L["stmts"] if x["review"] <= K.PULL]
@@ -515,7 +594,7 @@ def build_cre_floating(W):
             age = K.ASOF_M - o
             bal = b0 * (1 - age / amort * 0.55)
             out.append(dict(lid=lid, orig=o, term=term, spread=spread, b0=b0, bal=round(bal, 2), msa=msa[0],
-                            state=msa[1], ptype=str(g.choice(PTYPES, p=[0.38, 0.12, 0.14, 0.26, 0.10])),
+                            state=msa[1], ptype=str(g.choice(PTYPES, p=PT_MIX_FLOAT)),
                             oday=int(g.integers(1, 29)), obligor=int(g.integers(100000, 999999)),
                             prop=60000 + lid * 5 + int(g.integers(0, 5))))
     W.cre_float = out

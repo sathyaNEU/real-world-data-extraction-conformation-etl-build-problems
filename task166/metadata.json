@@ -54,7 +54,7 @@
     {
       "path": "alm_report_2026_q3.pdf",
       "format": "pdf",
-      "bytes": 42256,
+      "bytes": 42255,
       "rows": null,
       "source": "Constructed: Carrick Valley Bank ALM, report for the third quarter of 2026 (14 October 2026)",
       "date": "2026-12-03",
@@ -63,7 +63,7 @@
     {
       "path": "balance_sheet_hedging_policy.pdf",
       "format": "pdf",
-      "bytes": 42580,
+      "bytes": 42622,
       "rows": null,
       "source": "Constructed: Carrick Valley Bancorp treasury, balance sheet hedging policy version 1.0 (24 March 2026)",
       "date": "2026-12-03",
@@ -81,8 +81,8 @@
     {
       "path": "cre_maturity_log.xlsx",
       "format": "xlsx",
-      "bytes": 63353,
-      "rows": 797,
+      "bytes": 68789,
+      "rows": 889,
       "source": "Constructed: Carrick Valley Bank credit administration, commercial real estate maturity log, 2015 to 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -90,8 +90,8 @@
     {
       "path": "cre_operating_statements.csv",
       "format": "csv",
-      "bytes": 382689,
-      "rows": 5837,
+      "bytes": 396689,
+      "rows": 6040,
       "source": "Constructed: Carrick Valley Bank credit administration, borrowers' annual operating statements as reviewed, from 2013",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -99,8 +99,8 @@
     {
       "path": "cre_term_loans_20261130.csv",
       "format": "csv",
-      "bytes": 110083,
-      "rows": 672,
+      "bytes": 121282,
+      "rows": 747,
       "source": "Constructed: Carrick Valley Bank commercial loan system, commercial real estate term loans at 30 November 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -126,7 +126,7 @@
     {
       "path": "extract_notes.txt",
       "format": "txt",
-      "bytes": 6455,
+      "bytes": 6843,
       "rows": null,
       "source": "Constructed: Carrick Valley Bank ALM, notes on the files pulled for the overlay designation memo (3 December 2026)",
       "date": "2026-12-03",
@@ -216,7 +216,7 @@
     {
       "path": "swap_register_20261130.xlsx",
       "format": "xlsx",
-      "bytes": 17959,
+      "bytes": 18420,
       "rows": 161,
       "source": "Constructed: Carrick Valley Bank treasury system, register of interest-rate swaps at 30 November 2026",
       "date": "2026-12-03",

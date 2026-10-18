@@ -368,7 +368,8 @@ def load_cre(pack):
     code = {"PO": "PAID", "Paid at maturity": "PAID", "EXT": "EXTENDED", "Extended": "EXTENDED",
             "EXT-S": "SALE", "Extended, sale pending": "SALE", "PO-EXT": "PAID_EXT",
             "Paid at extended maturity": "PAID_EXT", "SA": "SPECIAL", "Transferred to special assets": "SPECIAL"}
-    ptype = {"MF": "Multifamily", "OFF": "Office", "RTL": "Retail", "IND": "Industrial", "MXD": "Mixed use"}
+    ptype = {"MF": "Multifamily", "OFF": "Office", "RTL": "Retail", "IND": "Industrial", "MXD": "Mixed use",
+             "HTL": "Hotel"}
     for ws in wb.worksheets:
         for r in ws.iter_rows(min_row=2, values_only=True):
             if r[0] is None:
@@ -639,8 +640,8 @@ def load_register(pack):
         if r[0] is None:
             continue
         d = dict(zip(head, r))
-        for k in ("Trade date", "Effective date", "Maturity date"):
-            v = d[k]
+        for k in ("Trade date", "Effective date", "Maturity date", "Terminated on"):
+            v = d.get(k)
             d[k] = v.date() if isinstance(v, dt.datetime) else v
         out.append(d)
     return out
@@ -666,7 +667,10 @@ def programme_category(t):
 
 
 def notional_in_effect(t, d, sched):
+    """the policy's in effect: effective on or before d, the maturity and any early termination after d"""
     if not (t["Effective date"] <= d < t["Maturity date"]):
+        return 0.0
+    if t.get("Terminated on") and d >= t["Terminated on"]:
         return 0.0
     rows = sched.get(str(t["Trade No."]))
     if rows:
@@ -677,7 +681,7 @@ def notional_in_effect(t, d, sched):
     return float(t["Notional (USD)"])
 
 
-def programme(pack, read_backload=True, by="item", dedupe_terms=False, include_overlay=True):
+def programme(pack, read_backload=True, by="item", dedupe_terms=False, include_overlay=True, any_status=False):
     """the hedge programme's notional in effect at each 2027 quarter-end by part. read_backload: a live bilateral
     trade whose number the clearing broker holds as the client reference of a different cleared trade has been
     backloaded into clearing, and only the cleared trade is live. by: 'item' classifies pay-fixed swaps by what they
@@ -685,7 +689,7 @@ def programme(pack, read_backload=True, by="item", dedupe_terms=False, include_o
     reg = load_register(pack)
     sched = load_schedules(pack)
     clr = load_clearing(pack)
-    live = [t for t in reg if t["Book"] == "ALM" and t["Status"] == "LIVE"]
+    live = [t for t in reg if t["Book"] == "ALM" and (any_status or t["Status"] == "LIVE")]
     if read_backload:
         held = {}
         for c in clr:
@@ -917,11 +921,22 @@ def routes(G):
     O["in-place cover below 1.25"] = (cur_now < 1.25).astype(float)
     O["the watch list (grade 6 or worse)"] = np.array([1.0 if L["grade"] >= 6 else 0.0 for L in fut])
     out = {k: cre_total(G, v) for k, v in O.items()}
+    # the hard rules a solver might apply in place of a fitted response: the cover test at a convention on 25 or 30
+    # years, a debt yield hurdle, the grade
+    cov30 = noi / (bal * dconst(P.cre, 360))
+    RU = {}
+    for c in (1.10, 1.15, 1.20, 1.25, 1.30):
+        RU["a cover test at %.2f on 30-year amortization" % c] = cre_total(G, (cov30 < c).astype(float))
+    for c in (1.10, 1.15, 1.20, 1.25):
+        RU["a cover test at %.2f on 25-year amortization" % c] = cre_total(G, (cov < c).astype(float))
+    for h_ in (0.08, 0.085, 0.09, 0.095, 0.10, 0.105, 0.11):
+        RU["a debt yield hurdle of %.1f per cent" % (100 * h_)] = cre_total(G, (dy_now < h_).astype(float))
+    RU["grade 5 or worse"] = cre_total(G, np.array([1.0 if L["grade"] >= 5 else 0.0 for L in fut]))
     M0 = cre_total(G, np.zeros(len(fut)))
     S_all = cre_total(G, np.ones(len(fut))) - M0
     S_wall = cre_total(G, wall.astype(float)) - M0
     guesses = {nm: (M0 + g * S_all, M0 + g * S_wall) for nm, g in GUESSES}
-    R = dict(family=fam, outside=out, score=S, chosen_cuts=chosen, cut_holdout=cut_te, cut_insample=cut_in,
+    R = dict(family=fam, outside=out, rules=RU, score=S, chosen_cuts=chosen, cut_holdout=cut_te, cut_insample=cut_in,
              cut_figure={c: cre_total(G, (cov < c).astype(float)) for c in CUTS}, guesses=guesses, M0=M0,
              S_all=S_all, S_wall=S_wall, wall_model_share=ws, recent_share=float(y[rec].mean()))
     # the ladder's names for the rivals
