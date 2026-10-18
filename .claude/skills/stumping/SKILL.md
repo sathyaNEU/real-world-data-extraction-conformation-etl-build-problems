@@ -308,7 +308,14 @@ disqualifying, and the family that actually keeps failing is narrower than eithe
 carries a free weighting or shrinkage choice.** The coarse grounds that shipped avoided it by deciding
 something else, a unit of analysis, an audit subsample's transported error rate, the uncertainty of a paired
 difference, a construction over orderings, a density from grouped tests with the pooling fixed by the design.
-Draw from those shapes on coarse ground rather than concluding the ground is closed.
+Draw from those shapes on coarse ground rather than concluding the ground is closed. The same corpus refuses a second
+tempting generalisation, that a pick over units of different size cannot hold because a per-unit quantity is
+either a count volume publishes or a rate whose denominator is a choice: `pick_one_of_n` is 5 of the 15
+ships against 2 of the 5 pauses, and **3 of the 9 coarse-grained ships answer a pick** (task119, task183,
+task188), so the decision type is not the wall either. What the table does show, weakly and worth using, is
+that `designation_set` is 3 of the 9 coarse ships and none of the pauses. **Both failed generalisations
+failed the same way: a pattern across the five pauses read as a law without checking it against the fifteen
+ships.** Before filing any claim of the form "this ground or shape cannot hold", count it on both sides.
 
 Each clause of that sentence answers a screen: unobserved satisfies the
 dichotomy; two grains means no one file publishes it; fitted means no subset reveals it; and varied inputs

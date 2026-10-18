@@ -4,12 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, protocol, clause, decisive, golden, measured, sentence, definitive, extract, denominator, counts, population, reading, baseline, material, record, asserted, pattern, published, volume, activity, exposure, citations, nothing, sardinata
-
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `facturas_resena_andina_2025.pdf`: golden figure 699 appears: ...83 1840.1 Curumani mayo 806 1894.1 Curumani junio 699 1642.7 La Esperanza abril 322 676.2 La Esperanza...
-- **REVIEW** `facturas_resena_andina_2025.pdf`: golden figure 806 appears: ...152 319.2 Curumani abril 783 1840.1 Curumani mayo 806 1894.1 Curumani junio 699 1642.7 La Esperanza abr...
-- **REVIEW** `facturas_resena_andina_2025.pdf`: golden figure 783 appears: ...152 319.2 Cachira junio 152 319.2 Curumani abril 783 1840.1 Curumani mayo 806 1894.1 Curumani junio 69...
+Stump terms swept: window, protocol, clause, decisive, golden, measured, sentence, denominator, counts, definitive, extract, population, reading, baseline, record, asserted, pattern, material, volume, activity, exposure, published, citations, nothing, sardinata
 
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `protocolo_designacion.pdf`: 3 of 25 stump-paragraph terms appear (protocol, extract, sardinata); read whether the document names the move
@@ -32,6 +27,8 @@ Stump terms swept: window, protocol, clause, decisive, golden, measured, sentenc
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
+
+## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 

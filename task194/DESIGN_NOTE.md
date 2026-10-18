@@ -1458,3 +1458,56 @@ if pinning it would make the decisive step executable, it is a method and the fo
 **So the objective question is premature on this evidence.** Candidate A died on the sixth screen with its
 conventions legitimately closeable, not on 1.6a. Candidate C, a construction over orderings, scored the
 cleanest driver of the three at **0.05** and has not been tested.
+
+### Architecture 5 candidate C, killed by the sixth screen on volume proxies (2026-10-18)
+
+**Candidate C**, the count of complications whose coded onset precedes the patient's arrival at the unit
+charged with them: records-fixed, an integer, no rate and no denominator anywhere, driver 0.05. Built to
+the author's caution with **every unit on the same daily propensity**, so no unit makes the spells it
+touches eventful and the signal lives only in position within a spell. Sixth screen run first.
+
+| Route | uniform hazard | front-loaded hazard |
+|---|---|---|
+| the construction (onset precedes arrival) | unit 0, count 1,703 | unit 0, count 1,556 |
+| pre-arrival patient-days, movement file alone | **reaches it** | **reaches it** |
+| spells discharged | **reaches it** | **reaches it** |
+| total complications charged, the reported route | **reaches it** | **reaches it** |
+| mean segment length | **reaches it** | **reaches it** |
+| mean arrival day within the spell | unit 6, lands wrong | unit 6, lands wrong |
+| own-onset containment (candidate A) | reaches it | unit 9, lands wrong |
+
+Reflex sweep: discharging, longest stay and pro-rata all reach it; only the admitting unit lands wrong.
+**Four routes reach the golden without building the ordering, under both hazard shapes, and the worst of
+them is the reported route itself**, so there is no stump at all.
+
+**Why, and it is the eighth instance of one number on both sides.** The quantity is a **count**, and a
+count across units of different size ranks on **volume**. Unit 0 discharges the most spells, so it has the
+most charged complications, the most inherited ones, the most pre-arrival patient-days and the longest
+segments. Every volume proxy in the pack publishes the answer. This is the size tell that killed task57 at
+a correlation of +0.98, arriving through the one property that made candidate C attractive: being an
+integer with no denominator. **Normalising the count would fix it and would reintroduce a denominator,
+which is the weighting freedom that killed candidate 1 and architecture 3.** A count is published by
+volume; a rate needs a denominator and a denominator is a choice.
+
+**What the corpus says to do instead, and it is a decision-type finding rather than a quantity one.** None
+of the coarse ships on this objective answers a per-unit league table:
+
+| Build | Decision type | Answer unit |
+|---|---|---|
+| task48 | `designation_set` | set of items |
+| task103 | `go_hold_or_stop` | currency |
+| task184 | `ranked_slate_under_cap` | set of items |
+| task192 | `quantity_figure` | count |
+| task188 | `pick_one_of_n` | named option, but its density's pooling is fixed by the group sizes |
+
+`pick_one_of_n` is 13 of the 32 builds on this objective, the most common decision type, which is why the
+objective keeps meeting this wall: **a pick-one-of-N over units of different size forces a per-unit
+quantity, and a per-unit quantity is either a count that volume publishes or a rate whose denominator is a
+weighting choice.** The coarse ships escape by answering a set, a slate, a hold or one population figure,
+where no cross-unit comparison of heterogeneous sizes is made at all. task188 is the single exception and
+it escapes the other way, through a pooling the design fixes.
+
+**So architecture 6 should change the decision type, not the quantity.** This world supports a designation
+set (which complications or which units enter the improvement programme), one population figure (how many
+of the partnership's complications were avoidable) or a hold (whether the placement is funded at all), and
+each escapes the volume leak by construction rather than by tuning.

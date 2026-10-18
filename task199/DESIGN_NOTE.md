@@ -27,6 +27,7 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | `guard.py surface` found a persona "Campo Plantilla" | the surface screen | The manual's table header read as a name; the column was renamed and the screen now finds only the two carded personas, who sign the protocol and the manual |
 | The eligibility condition excluded nobody once the thin cities were thickened, leaving a graded column with eleven identical values | the golden's own figures | The protocol's floor was raised to seventy actions, which removes Hacari at 56 and nobody else, with the nearest other city 16 actions clear of it; the condition stays inert for the call, asserted |
 | Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
+| Six of ask C's eight "largest single action" figures did not move: the biggest action in a sector is usually not one the coder recorded as a range | the forcing measurement on the cut pack | The figure was replaced by the sector's total participants, which the device moves in all eight sectors by 197 to 3,721, and the ask's unit was tied to the register's own entry (the 2025 export holds one per gathering-day, as the dictionary states) so the term carries no second reading |
 
 ## Tried and rejected`) |
 | World | Colombia; Observatorio Territorial del Nororiente keeps the Registro de Acciones Colectivas from material delivered by the Resena Andina clipping service; personas drawn with `guard.py names --locale es_CO --seed 199` |
@@ -310,14 +311,15 @@ with its effective dates, 12 columns. Stops: the summary as published 1,352; raw
 an unmatched-row drop 1,131; golden 1,268. Realism: a register publishes a monthly summary from its desk
 returns, and the desks are seated in one municipality.
 
-**Ask C. Participants per action and the largest single action, by actor sector, 2025.** 14 figures (6 x 2,
-plus 2 corridor totals). H18 home: the scale behind the register's counts, a measure every city carries that
+**Ask C. Participants per action and in total, by actor sector, 2025, the municipalities outside the
+panel.** 16 figures (8 sectors x 2). H18 home: the scale behind the register's counts, a measure every city carries that
 the designation does not turn on, in a column the call never reads. Primary: radio-transcript coding writes a
 reported range's lower bound into the numeric column while the note field holds the range, against the
 manual's sentence that the column carries a central estimate; radio transcripts reach every sector. Hazards:
 H4 (the sector code list gained two codes in 2025), H3. Files and columns: the register's participants and
-note columns, the sector code list, the manual, 9 columns. Stops: numeric column as exported with zeros
-counted 318.4; zeros dropped 372.1; ranges read at their upper bound 436.7; golden 401.6. Realism: a coder
+note columns, the sector code list, the manual, 9 columns. Stops, measured on the cut pack: the numeric
+column as exported gives 239.6 participants per action for the largest sector against the golden's 275.6,
+and 62,449 in total against 66,170. Realism: a coder
 transcribing a radio report writes what was said and fills the numeric field with the lower figure.
 
 **The separation line.** Zero device and zero hazard rows inside the call's declared population (the eleven
@@ -339,6 +341,12 @@ altogether.
 the city table's effective dates, ask C's by the manual's sentence on the participants column. Each says
 which rows, never which value, so none hands over a level.
 
+**Forcing, measured on the cut pack** (`generator/ceiling.py --forcing`): 35 of 35 sampled figures move
+beyond the rounding their asking sentence states. Ask A's four billed quarters move by 49 to 126 items and
+its three difference lines from zero to 82, 125 and 7; ask B's twelve municipal figures move by 17 to 131
+gathering-days, three of them from zero; ask C's sixteen move by 18 to 56 participants per action and by 197
+to 3,721 in total.
+
 | Ask figure group | The cracker's path | Cracker verdict |
 |---|---|---|
 | A items delivered, 16 quarter x outlet-type cells | reconciles the log to the invoice, finds the gap, drops by publication date | miss |
@@ -347,9 +355,8 @@ which rows, never which value, so none hands over a level.
 | B actions held, 12 municipalities | takes the published monthly summary, which is the natural municipal source | miss |
 | B months holding no action, 12 | same source, so the empty months follow it | miss |
 | B corridor totals, 3 | sums the summary | miss |
-| C participants per action, 6 sectors | reads the numeric column, which the dictionary describes accurately | miss |
-| C largest single action, 6 sectors | same column | miss |
-| C corridor totals, 2 | same column | miss |
+| C participants per action, 8 sectors | reads the numeric column, which the dictionary describes accurately | miss |
+| C participants in total, 8 sectors | same column | miss |
 
 Pair ceiling: 28.5 (bar 40, build to 40), cracker 45.0 and mirror 12.0 on Part 0's weights of 38, 7 and 55;
 33.0 to 34.0 at the ends of CLAUDE.md's legal bands, so the figure is not an artifact of a favourable point
@@ -399,6 +406,7 @@ Of every file and every sentence added to force a convention: what else does the
 | `guard.py surface` found a persona "Campo Plantilla" | the surface screen | The manual's table header read as a name; the column was renamed and the screen now finds only the two carded personas, who sign the protocol and the manual |
 | The eligibility condition excluded nobody once the thin cities were thickened, leaving a graded column with eleven identical values | the golden's own figures | The protocol's floor was raised to seventy actions, which removes Hacari at 56 and nobody else, with the nearest other city 16 actions clear of it; the condition stays inert for the call, asserted |
 | Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
+| Six of ask C's eight "largest single action" figures did not move: the biggest action in a sector is usually not one the coder recorded as a range | the forcing measurement on the cut pack | The figure was replaced by the sector's total participants, which the device moves in all eight sectors by 197 to 3,721, and the ask's unit was tied to the register's own entry (the 2025 export holds one per gathering-day, as the dictionary states) so the term carries no second reading |
 
 ## Tried and rejected
 

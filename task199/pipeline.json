@@ -2,15 +2,15 @@
   "task": "task199",
   "owner": "oviya13ya",
   "status": "BUILD",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "architecture": "v1",
   "objective": "anomaly-detection",
   "domain": "political-science-public-policy",
   "subdomain": "conflict-protest-event-data-analysis",
   "wave": 4,
   "drawn": "2026-10-18",
-  "updated": "2026-10-18",
+  "updated": "2026-10-19",
   "card": ".claude/skills/fingerprint/cards/task199.json",
   "call": "Tibu, at 92.2 recorded collective actions per 100,000 residents over 1 April to 30 September 2026 (137 gathering-days over a published projection of 148,590).",
   "stump": "A competent solver cleans the register, ranks the eleven panel cities on their own recorded rise with residents as the only denominator, and files Sardinata at 121.4 per 100,000, whose whole rise is the material three outlets began filing from it.",
@@ -28,13 +28,13 @@
     "figures_check.py": "exit 0, 125 figures in blocks 1 to 4, 0 absent from figures.json",
     "precut.py": "exit 0, 50 checks, 0 FAIL, 0 WARN",
     "voice-check.py": "exit 0, 13 checks PASS, prompt.txt 986 characters",
-    "ceiling.py": "pair ceiling 28.5 (bar 40), mirror leakage 0.0 per cent (bar under 35), cracker keeps 0 of 64, sweep limit 26 of 64",
+    "ceiling.py": "pair ceiling 28.5 (bar 40), mirror leakage 0.0 per cent (bar under 35), cracker keeps 0 of 64, sweep limit 26 of 64; --forcing measures 35 of 35 sampled ask figures moving beyond their stated rounding on the cut pack",
     "leak.py": "REVIEW, 0 LEAK (4 REVIEW on register files naming their own municipalities beside counts, 1 on the protocol's panel list, answered in the design note)",
     "guard surface": "clean, personas found are the two on the card",
     "guard heart": "WARN, 0 BLOCK, nearest driver 0.06",
     "guard check": "WARN, 0 BLOCK (repeat.decision only)",
     "container audit": "target/ and golden/ clean, no producer signature and no out-of-band timestamp",
-    "rebuilds": "two consecutive full rebuilds byte identical; target tree digest a4a215a5cfa28736b6467691603ef4f5, golden digest cbad02cf8f0b522d66ebd59090583849, target.zip md5 b5eddfa098ee9f43a4cde07d5e88cb67 with 17 members",
+    "rebuilds": "two consecutive full rebuilds byte identical; target tree digest a4a215a5cfa28736b6467691603ef4f5, golden digest 7345838eb522401cd5416377282b727d, target.zip md5 b5eddfa098ee9f43a4cde07d5e88cb67 with 17 members",
     "input_gates": "17 files, four formats (csv, xlsx, pdf, md), envios_resena_andina.csv at 51,173 rows, two declared distractors"
   },
   "measured": {
@@ -47,5 +47,11 @@
     "graded_figures": "every panel city's rate sits 0.50 of the printed unit from its bin edge, none round, closest pair 0.5 apart"
   },
   "resume_step": "Stage 4: the parent spawns the isolated leak reader and the determinism judge from target.zip, prompt.txt and submission.md's graded blocks. Findings come back here for one generator pass.",
-  "notes": "Three axis BLOCKs were cleared at stage 2 by redrawing (shape, stump strategy, forcing event), each raised by the corpus moving while other builders were live. Stage 3's own findings are tabled in the design note under Stage 3 findings answered, including the counting convention the independent verifier caught and the leak sweep's English TODO marker matching Spanish prose. No git run by this session."
+  "notes": "Three axis BLOCKs were cleared at stage 2 by redrawing (shape, stump strategy, forcing event), each raised by the corpus moving while other builders were live. Stage 3's own findings are tabled in the design note under Stage 3 findings answered, including the counting convention the independent verifier caught and the leak sweep's English TODO marker matching Spanish prose. No git run by this session.",
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-19",
+    "checks": "50 checks, 0 FAIL, 0 WARN"
+  },
+  "resume": "Stage 4 running: the isolated reader and the determinism judge spawned together against the pack whose target.zip md5 is b5eddfa098ee9f43a4cde07d5e88cb67. Every stage-3 gate verified by the orchestrating session rather than taken from the builder report: checks 95 of 95, verify 76 of 76 reading only the bundle, precut 50 checks 0 FAIL 0 WARN, figures_check 125 figures 0 absent, the prompt gate PASS, ceiling 28.5 with mirror leakage 0.0, and input gates at 17 files, four formats, a 51,173-row csv and two declared distractors. Next: collect both reports, fix every finding in one generator pass, re-run the stage-3 gates, re-judge once only on FIX_NOW, re-read only if a document or the prompt changed, then ship."
 }
