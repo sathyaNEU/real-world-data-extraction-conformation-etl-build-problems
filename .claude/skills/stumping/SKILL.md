@@ -260,7 +260,12 @@ Each is cheap, each is run as code before any separation is measured, and each c
   distinct leaders. A set can be indeterminate without being crude-reachable (that audit slate had the
   crude route inside the golden family in 0 of 20), which fails the screen just the same: and neither
   discretises out where the family differs by which units sit at the boundary rather than by a figure a
-  band absorbs. Above one, the call is not determinate, and **discretising against a filed tolerance rescues it
+  band absorbs. **Count the family wide enough to include the forms that skip the conditioning the decisive
+  step adds**, or the count is measured on the assumption being tested: one build's screen reported a single
+  path across six members and all six conditioned on the class its decisive step conditions on, while the
+  judge, counting the pooled forms nothing in the pack forbids, found three leaves (pooled mean one,
+  pooled median another, class-stratified the golden). Where the conditioning is genuinely forced, the data
+  refutes the pooled form loudly, and that refutation is what the note has to show. Above one, the call is not determinate, and **discretising against a filed tolerance rescues it
   only where the family's spread does not cross the line**, which a concentration's and a denominator's
   spreads do. The other half is measured too: where the designation *is* determinate, the crude route
   reaches it (a slate identical under all six licensed bandings and all eight conditioning forms in 20 of

@@ -1,13 +1,13 @@
 {
  "task": "task201",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-18",
- "architecture": 6,
+ "architecture": 7,
  "loops": 0,
  "call": "The remediation slot goes to the SN-odgalezienie fused spurs in rejon Borowa Puszcza of the Grabownik branch, carrying 7,152 customer-interruptions in that rejon",
  "stump": "The dispatch record times every interruption on a feeder without line telemetry from the first customer notification rather than from the loss of supply, and that unrecorded opening runs 242.5 minutes on the fused rural spurs that carry Grabownik's exposure against 8.6 on the trunks that carry Zanowiec's, so the recorded drill commits the slot inside Zanowiec",
@@ -22,7 +22,7 @@
   "rule_earned_2": "the perturbation that separates the lead variant from the causal one is the perturbation the licensed methods disagree about, so the method family closes only when the answer is trivial; and where the well-posed answer to which-one is a set, grading a name grades an arbitrary element of it.",
   "architecture_2": "energy-systems-utilities/grid-reliability-outage-analysis, shape 12 drill-down to one leaf; the pre-notification interval recovered from the parallel telemetry channel and conditioned on the section class"
  },
- "resume": "Stage 4 round 1: the reader is in and the judge is still running. No leak, and question 5 executes to the default path's wrong answer rather than to the golden, which is right for this build. Two things are owed. First, Gate F is a live question: the reader reached the leaf by measuring the detection lag on the telemetered subset and adding it back by class, which is the decisive step, though its runner-up is wrong and it says so, and the runner-up and the shares are graded. Second, a real defect verified here: the pack uses a flat UTC plus one hour throughout, asserted by checks.py R2.utc_offset at 99 per cent, while Poland leaves summer time on 25 October 2026 and 366 of the 1,505 telemetry stamps fall before that, so a quarter of the file is an hour out and every duration built from it in that period is an hour short. A transition inside the window is good Layer 1 mess but it has to be the real transition. Realism tells the reader also listed, for the same pass: PR-07 spells out the share-of-parent tree and asks for the runner-up, which restates the prompt, and pre-defines every exclusion; the URE figures are too small for monthly minutes per customer against a 171-minute annual SAIDI; every first planned event starts at exactly window start plus twenty minutes; every planned row carries one identical cause; and the provenance counts equal every file's row count exactly. Hold the repair until the judge lands so it is one pass.",
+ "resume": "Architecture 6 is spent on the judge's SEND_BACK and architecture 7 is being drawn on the same world. Gate G failed as a surface-read rejection: the difficulty was catching that the record's own duration column is misleading on the 4,940 notification-timed interruptions, and sole_data_defect was the judge's distinction from the two shipped builds in this lane that rest on a separate record of a different thing. The re-root keeps the world and most of the pack and moves the decisive step to a binding constraint, one crew-week of remediation capacity against honest customer-hours, with the clock correction demoted to Layer 1 mess and checks.py asserting the call is invariant across the recorded clock and all three corrections. Verified here before the re-root was commissioned: answer 9's 3,400 is the count of distinct nr_ppe while the notifications with an empty id_zdarzenia number 3,542. Also in scope: answers 10 and 11 (the shipped correction is +0.42 and +10.687 per cent, and +0.15 and exactly 6.2500 per cent, which is a rounding fork on a graded figure), the flat UTC plus one hour against Poland's 25 October transition, two documentation counts that disagree with the data, and five realism tells.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -35,8 +35,11 @@
   "reader": "landed the leaf at about 60 per cent, runner-up wrong and the reader says so; found a real clock defect"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "task201/determinism_check_report.md",
+  "gate_g": "FAIL banned_stumping_type: planted_defect_flip (mixed measurement clock), surface_read_rejection, surface_read_dependency yes, sole_data_defect yes",
+  "gates": "H pass, G FAIL, A FAIL (answers 9, 10, 11), B FAIL, C FAIL, D FAIL, E FAIL, F high but invalid",
+  "order": "derivation written before the graded blocks; the judge independently filed the default path answer"
  }
 }
