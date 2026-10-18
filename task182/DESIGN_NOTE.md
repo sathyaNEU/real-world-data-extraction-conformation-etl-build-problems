@@ -1,17 +1,78 @@
-# task182 design note (architecture 3)
+# task182 design note (architecture 4)
 
-Architecture 1 (make-good bore assessments at a central Queensland coal mine) shipped on 2026-10-11 and the
-portal solved it. Architecture 2 (this world, the residual measured in the plant's own process stops) was
-spent at stage 4 on 2026-10-17 without shipping, because both cold threads landed the call. Architecture 3
-is a new decisive step in architecture 2's world: the card's lineage carries both earlier identities with
-their fates, `architecture` is 3 and `loops` 0.
+Four architectures have been drawn on this number. Architecture 1 (make-good bore assessments at a central
+Queensland coal mine) shipped on 2026-10-11 and the portal solved it. Architecture 2 (the Drumlorne noise
+survey, the residual measured in the plant's own process stops) was spent at stage 4 on 2026-10-17 because
+both cold threads landed the call. Architecture 3 (the same world, the residual estimated inside the
+assessment period from a fit to the plant's own output) was spent at the feasibility check on 2026-10-18,
+before a row was cut. Architecture 4 moves the world as well as the decisive step. The card's lineage
+carries all three earlier identities with their fates; `architecture` is 4 and `loops` 0.
 
-**Reading order while architecture 3 is at stage 1.** The `## ARCHITECTURE 3 RE-ROOT` section below is the
-current draw. Every section from `## Default path` to `## Pre-ship check` is architecture 2's and is
-replaced at stage 2; it is left in place only so the re-root can be read against what it replaces, and
-`precut.py` is not run against architecture 3 until those sections are rewritten. `## Tried and rejected`
-is append-only and spans all three architectures. Architecture 2's own evidence is in
-`determinism_check_report.md` and `leak_check_report.md`.
+**Reading order.** `## ARCHITECTURE 4 RE-ROOT` and `## Draw` are the current build. `## ARCHITECTURE 3
+FEASIBILITY` is kept deliberately, because the numbers in it are the most useful thing this number has
+produced and they are what settled architecture 3. Everything under an `### Archived` heading belongs to
+architecture 2 or 3 and is read by no gate. `## Tried and rejected` is append-only and spans all four.
+Architecture 2's pack, generator, goldens, prompt and submission were removed when this draw registered;
+its evidence survives as `determinism_check_report.md` and `leak_check_report.md`.
+
+## ARCHITECTURE 4 RE-ROOT (stage 1, the draw)
+
+**The diagnosis this slot's three deaths share, which is the thing worth writing down.** In every one of
+them the decisive quantity was an unobserved component of an observed total: the plant's own share of the
+sound at a dwelling. Architecture 1 reached it through each dwelling's lagged response to a shared driver
+and shipped without stumping. Architecture 2 made the component observable in a window the pack has to
+carry, and the window handed the route over, because a filed clause demanded a residual and the equipment
+log labelled the only place to get one in its own words. Architecture 3 made it identifiable only through a
+fit, and the fit left every graded figure open by nine to eighteen printed units while agreeing on the
+names. **A latent component of a measured total is readable when a window supplies it and indeterminate
+when a fit supplies it, and that world had no third source.** So architecture 4 is not another route to
+that component. It has no latent component and no subtraction at all: every quantity it needs is recorded,
+and what is wrong with the record is the probability with which an item enters it.
+
+**And the world goes with it.** Physical and environmental sciences against this objective is the lane's
+most crowded ground, task180, task189 and this slot all having sat on environmental monitoring exceedance,
+so a fourth architecture there would be a monoculture finding waiting for the clone screen even if it drew
+clean. The task type moves to general statistics and data science, exploratory data analysis and
+distribution assessment, where the deciding quantity has to be the task type's own statistical object. It
+is: a duration distribution, and the sampling mechanism the record of it was produced by.
+
+**The decisive step.** A scholarly publisher ranks its twelve subject desks on the share of manuscripts
+whose first decision takes longer than the house standard. The submissions platform's reporting view holds
+only manuscripts that are still live, so the analytics desk's entire history of review times is a run of
+Monday extracts of everything under review that day. A manuscript therefore enters that record once for
+every week it was under review, which is to say with probability proportional to its own duration, and the
+distribution the record carries is the duration-weighted one rather than the desks' own. The weighting
+inflates each desk's long tail in proportion to its own spread of review times, so the desks whose review
+times are widely spread are inflated most, and the ranking of tail shares moves. Deduplicating the rows to
+distinct manuscripts, which is the hygiene step every careful solver takes, leaves the weighting entirely
+untouched.
+
+**Why it is analytical, and the three rules at the draw.** No shipped clause says how to estimate a desk's
+distribution, says the snapshots are unrepresentative, or names a weight; the editorial standard files the
+estimand, which is the share of a desk's manuscripts exceeding the standard, and nothing more. Nothing is
+planted and no document argues a position. No field reading flips the answer: a solver who reads every
+column correctly and dedupes perfectly still files the wrong slate, because the defect is in which items
+the record contains rather than in what any field of it says. The domain really decides, because the
+object is a distribution and its observation mechanism, which is this task type's own statistical object,
+and the correction, un-weighting by each item's own duration, is the field's own treatment of
+length-biased sampling.
+
+**Why it answers architecture 3's own death.** The correction is exact arithmetic on fully observed
+durations, a reciprocal-duration weight, with no fitted parameter and no choice of fit space, so the graded
+figures have no live degree of freedom to begin with. That is the first thing stage 2 has to prove rather
+than assume, under the rule this slot earned.
+
+**The two rules this slot earned, carried into the draw.** A supplemental device may never touch the call's
+own construction: architecture 3 failed that quietly, because its call would have read the plant's aeration
+output, which is exactly where ask A2's primary device sat. And every graded figure's determinacy is
+checked against the printed unit, across every route the data does not close, before any data is cut.
+
+**Guard verdict (run before any design time was spent).** `guard.py check` on the registered card: **WARN,
+no BLOCK.** The nearest driver on the whole corpus is 0.07 (task255), and this slot's own three earlier
+drivers do not reach the list at all, which is what moving the world was for. Five WARNs and one NOTE, all
+answered in `## Draw`. One axis and one persona were redrawn at the guard before registration, and the
+three structural neighbours are differentiated on the card.
+
 
 ## ARCHITECTURE 3 RE-ROOT (stage 1, the draw)
 
@@ -567,7 +628,7 @@ on the common mode of the 29 bands, each band keeps its own residual of 0.4 to 2
 mean shapes differ by up to 3.5 dB in a band. Measured, not asserted, because neither is a figure any
 deliverable carries.
 
-## Draw
+### Archived, architecture 3: Draw
 
 **Pairing.** Domain physical and environmental sciences, task type environmental monitoring and exceedance,
 objective anomaly detection and diagnostics. The decision-maker is the site's environmental engineer; the
