@@ -20,7 +20,12 @@ reader then reads the pack as a solver would.
   rather than finds it; repeated passes cost task132 and task180 most of a day), and again only when a fix
   changed a document or the prompt. A data-only repair is checked by `leak.py` alone.
 - Before `/approve`, which refuses a build whose last report is LEAK.
-- **Returned tasks** (`/fix-determinism`, `/fix-rubric`): `leak.py` only, no reader.
+- **Returned tasks** (`/fix-determinism`, `/fix-rubric`): `leak.py` after every rebuild, and **the reader
+  again whenever the repair added or reworded a sentence under `target/` or in the prompt**. A determinism
+  repair closes a fork by filing something, and the sentence that fixes a basis can name the move:
+  task196's repair added one line to an operations note to close a fork the records already closed by
+  convergence, `leak.py` saw nothing, and the next reader quoted that line as what pointed it at the
+  decisive step and landed the call exactly. A data-only repair is still `leak.py` alone.
 
 ## The mechanical half: `leak.py`
 
@@ -53,6 +58,19 @@ design note saying why it is harmless, or a fix.
 **What it cannot see:** a sentence naming the move in other words; a document teaching the method by
 example; a file whose presence is the hint; an ordinary column whose values partition the candidates on
 the decisive property; a filed sentence whose literal execution is the easy answer.
+
+**The single-use test, run by the builder before the reader, because `leak.py` reads vocabulary and
+figures and never purpose.** Of every file in the pack and every sentence a repair adds, ask what else
+the organisation uses it for. A file with exactly one use, and that use being the decisive step,
+announces it; so does a lone sentence whose only work is to make the solver notice a structure, and so
+does a column of commentary that names what a source omits. What settles it is the deletion test from
+`stumping` Part 4: take the file or the clause out and recompute, and if the answer stays forced it
+handed over the insight and goes. Two stage-4 readers in one window landed the call and each named a
+single-use artifact as what pointed it there: a close-out register whose only use was to show how
+incomplete the recent counts were, and the repair-added line above, which the generator's own
+measurement showed was unnecessary because the fork converged without it. The repair for an announcement
+is to delete it, or to give the file the other uses its genre really has, never to redesign the decisive
+step: `build-pipeline` classes a rung executed as a work order as announced, not as a design failure.
 
 ## The reader: `/leak-check`
 

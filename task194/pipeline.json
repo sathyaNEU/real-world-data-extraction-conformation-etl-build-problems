@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (not LEAK), exit 0, as-of 2027-03-18, no finding",
-    "reader": "spawned 2026-10-18, stage 4"
+    "reader": "LANDED THE CALL 2026-10-18. Named 41210 at about 45.1 against the golden 44.6, with the route stated correctly including developing each unit's recent quarters on its own chain-ladder factors from the register, at about 50 per cent confidence. Question 1 clean (nothing tells the decisive step). Question 6 clean and better than clean: it read the decisive step as an analytical choice, right-truncation of recent coded counts, and said it is not a stated rule, so Gate H holds. The finding is question 3: coding_close_out_register.csv, \"its only use is to show how incomplete the recent counts are\". A file whose presence is the hint, which leak.py cannot see. Second signpost: quality_dashboard_2026q2.xlsx cell A2, \"Quarter-end position; not a projection of any later quarter\", which the reader called a warning aimed at the solver. Diagnosis is announcement, not design (build-pipeline: a rung executed as a work order was announced), so the fix is to give the register the other uses a coding close-out register really has and to cut the A2 note, not to redesign the decisive step. Also reported: the dashboard ranks every unit on standardised ratio and names 41240 top while declared_wrong_basis_distractor is null, which the judge should rule on under Gate G; placement_cycle_notes.txt contradicts itself on the committee date (24 February says the 24th, 3 March says papers close on the 20th); unit_register.csv cis_registered_date is unused with dates to 2027-03-01; the three distractors are justified only by \"in case the committee asks what else moved\"."
   },
   "duplicate_check": {
     "heart": "WARN (repeat.question_form only), cleared from BLOCK by ordering the generators decisive first, G13 ahead of G12, plus differentiation against task122 v2 and task501 v4",
@@ -29,7 +29,7 @@
     "report": "spawned 2026-10-18, stage 4"
   },
   "returned": [],
-  "resume": "Stage 4 running: the isolated leak reader and the determinism judge were spawned together in the background on 2026-10-18 against the pack whose target.zip md5 is e2bf0f23c4b4c23dff5aff8bebea38db. Every free gate was verified by the orchestrating session rather than taken from the builder report: precut 50 checks 0 FAIL 0 WARN exit 0; build.py 746 generator assertions and 492 independent verify checks exit 0; two independent cuts byte-identical with matching zip md5; figures_check 133 figures 0 absent exit 0; leak.py REVIEW not LEAK exit 0; guard.py surface personas clean; guard.py heart WARN; cracker.py pair ceiling 34.4 with mirror leakage 0.0 and both columns printed; input gates 21 files, 4 formats, a 465,882-row csv, 3 declared distractors. Next: collect both reports, fix every finding in one generator pass, re-run the free gates, re-judge once on FIX_NOW, then ship.",
+  "resume": "Stage 4: the reader landed the call, so there is a Gate F finding to fix. The determinism judge is still running and the fix is one generator pass over both reports together, per build-pipeline stage 4. Fix list so far: stop coding_close_out_register.csv being single-use, cut the dashboard A2 note, resolve the cycle-notes date contradiction, give cis_registered_date a use or cut it, and answer the Gate G question about the dashboard ranking. Then re-run every stage-3 gate, re-read (documents changed) and re-judge only on FIX_NOW.",
   "approved": null,
   "delivered": null,
   "portal": null,
