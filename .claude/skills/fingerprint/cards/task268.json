@@ -1,0 +1,109 @@
+{
+  "task": "task268",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 4, Descriptive lane; seed DA18 keeps the world (a quick-commerce grocer's one weekday dark-store pilot among six candidate metros), the decision and the quantity (each core's delivery-weighted density of the people present in service hours); the pitfall is re-found from the data",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "small-area-estimation",
+  "niche": "a quick-commerce grocer choosing the metro for its 2027 weekday dark-store pilot by each core's delivery-weighted density, the people present in each core tract on a weekday estimated by carrying a national working-arrangements survey's days on the employer's premises onto the regional commuting table's tract-to-tract primary jobs",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Tessavon",
+  "answer_source": "design_note",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the grocer's vice president of network expansion, who takes the pilot metro to the board",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "commuting_od_tract_2022.csv",
+    "rows": 60000,
+    "entity": "one tract-of-residence to tract-of-work pair's primary jobs, by industry group",
+    "grain": "home tract x work tract",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "retailer_or_ecommerce",
+  "world": {
+    "geography": "United States, six metros in six states (the grocer, the metros, their counties and tracts are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "quick-commerce grocer",
+    "invented_names": [
+      "Larderline",
+      "Quillmere",
+      "Tessavon",
+      "Halberdine",
+      "Corrisford",
+      "Dunnaway",
+      "Ashcombe"
+    ],
+    "people": [
+      "Megan Swanson",
+      "Carolyn Cook"
+    ]
+  },
+  "deliverables": [
+    "pilot_metro_2027.xlsx",
+    "pilot_metro_board_2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is how many people are at each small area on a typical day, known completely only as the members attached to each area and observed day by day only in a broad sample whose on-site rate falls with how far a member lives from the area; carrying the sample's rate for each kind of member onto the complete attachments credits the areas that draw their members from far away with too many present, so the rate has to be carried within the groups it varies across.",
+  "driver_concrete": "Each candidate core tract's weekday presence, built from the commuting table's tract-to-tract primary jobs with each flow's share of days on the employer's premises taken from the national working-arrangements survey for the flow's industry group and the type of county the worker lives in (the metro's central county, an outlying county, or outside the metro), not the survey's single share for the industry group.",
+  "stump": "A competent solver builds each core tract's weekday presence from the commuting table and the residents, scales each job flow by the survey's share of days on premises for its industry group, and sends the pilot to Corrisford; the step that lands it there is carrying one share per industry group onto flows whose workers live mostly in outlying counties and beyond, where the survey shows far fewer days on premises, while the default path counts every job as present every weekday and sends it to Halberdine.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the commuting table as primary jobs by home and work tract and the survey's days on premises correctly carries the survey's on-premises share for each industry group onto every flow and picks Corrisford; carried at the share for the flow's industry group and the type of county its workers live in, the same flows pick Tessavon.",
+  "domain_test": "The deciding quantity is each core tract's weekday presence, a small-area estimate made by carrying a rate from a national survey onto complete administrative counts (a synthetic estimator) within the strata where the rate holds; with another field's nouns in (megawatt-hours for people present) there is no sample of members, no register of attachments and no synthetic rate whose strata must match the counts' composition, so the task stops reading the same.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task228": "shares the gap, pattern E and a pick: task228 builds a ratio's variance at the randomised units of a labelled corpus; task268 carries a survey's on-premises share onto a complete commuting table within the residence strata the share varies across, with no test and no corpus",
+    "task28": "shares the gap, pattern E and a pick: task28 reaches a flagged excess through batch events and a closed outcome set; task268 has no closed outcomes and no reach rule, only a synthetic estimate of weekday presence",
+    "task30": "shares the gap, pattern E, Gate G and a pick: task30 carries a component across from closed parallel cases on an unstated transmission variable; task268 states nothing to recover and carries a measured on-premises share within residence strata",
+    "task32": "shares the gap, pattern E and a pick: task32 is a binding constraint seen only at a finer time resolution; task268 has no constraint and no forecast",
+    "task53": "shares the gap, pattern E, Gate G and a pick: task53 pools eligible volume against a scale break a closed log draws; task268 has no break and no log, only a rate carried within strata",
+    "task31": "shares the gap, pattern E and Gate G: task31 splits a lag on a prior-approval property behind a join with censored closed cases; task268 carries an on-premises share measured in a survey to administrative flows within residence strata",
+    "task448": "shares the domain, gap, pattern E and Gate G: task448 completes a register from a second list whose capture depends on filing route (coverage of producers); task268 converts a complete register of attachments into daily presence with a rate that depends on where each member lives, and the target is a density, not a count",
+    "task500": "shares the gap, pattern E and Gate G: task500 recovers a matched-reference method pinned by certified statements; task268 recovers nothing and has no certified figure",
+    "task57": "shares the gap, pattern E and Gate G: task57 unions two archives with different field names; task268's decisive step is estimation on clean data, the mess only Layer 1",
+    "task69": "shares the gap, pattern E and Gate G: task69 values a capped set of overlapping contributions; task268 has no set and no cap",
+    "task76": "shares the gap, pattern E and Gate G: task76 reduces a forward count by a class seen only through a look-back; task268 carries a survey rate onto flows by strata",
+    "task256": "shares the lane, the gap, G14 and composition_mix: task256 carries a reference group's multivariate distribution through two recorded measurements to size a fit box; task268 carries a one-dimensional on-premises share from a survey to tract-to-tract flows within residence strata (a synthetic small-area estimator), and the deciding figure is a presence-weighted density"
+  },
+  "lineage": [],
+  "notes": "WARN overuse.gate_g answered in the design note: the decisive step chooses the strata of a synthetic estimator, a method choice, and no other mechanism describes it honestly. Personas drawn with guard.py names --geo 'United States' --seed 268; Nathan Watkins and Elizabeth Walton set aside (first names on file).",
+  "client_domain": "survey-research-official-statistics",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "survey-research-official-statistics/small-area-estimation/3",
+  "layer1": [
+    "the commuting table's main and auxiliary files (workers living in the same state, and in another state)",
+    "the census population table's GEO_ID with its summary-level prefix against the gazetteer's eleven-digit GEOID",
+    "the gazetteer's land area in square metres and square miles, water-only tracts with no land",
+    "the survey's industry as two-digit NAICS sectors, ranges such as 31-33 and 44-45, against the commuting table's three industry groups",
+    "the survey's twelve monthly waves, each weighted to its own month",
+    "the OMB delineation file's header rows and footnotes, county codes as text"
+  ],
+  "people": [
+    "Megan Swanson",
+    "Carolyn Cook"
+  ],
+  "registered": "2026-10-18T16:11:12Z"
+}

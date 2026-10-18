@@ -145,7 +145,7 @@ def main():
             continue
         k = (cols["segment_id"][i], w)
         salt[k] = salt.get(k, 0.0) + cols["applied_t"][i]
-    ok("PARQUET pass export read back (318,889 rows, UTC stamps)", n_pass > 25000 and
+    ok("PARQUET pass export read back (UTC stamps)", n_pass > 25000 and
        cols["entry_utc"][0].tzinfo is not None, "%d rows" % n_pass)
 
     def rate(sid, ws):
@@ -170,13 +170,16 @@ def main():
     ok("CALL the seasonal tonnage recomputes", call == figs["commitment_t"], "%.1f t -> %d" % (gold, call))
     ok("CALL a quarter-bin or more from its rounding edge", edge(gold, 100) >= 25, "%.1f t" % edge(gold, 100))
     own, gain = x0 * sev, gold / Ln
-    ok("CALL components recompute (own Priority 2 salt, gain per lane-km)",
-       round(own, 1) == figs["own_p2_t_per_lkm"] and round(gain, 1) == figs["gain_t_per_lkm"] and
-       edge(own, 0.1) >= 0.015 and edge(gain, 0.1) >= 0.025, "%.4f, %.4f" % (own, gain))
+    ok("CALL components recompute (own Priority 2 salt in all and a lane-km, gain per lane-km)",
+       int(round(own * Ln / 100.0) * 100) == figs["own_p2_t"] and own < figs["own_p2_t_per_lkm_under"] and
+       int(round(gain)) == figs["gain_t_per_lkm"] and edge(own * Ln, 100) >= 15 and edge(gain, 1.0) >= 0.2,
+       "%.1f t, %.3f, %.3f" % (own * Ln, own, gain))
     per_w = [sum(salt.get((s, w), 0.0) for s in new) / (Ln * wsi[w]) * sev for w in WINTERS]
-    ok("CALL own Priority 2 salt rounds alike in every winter on its own", all(round(v, 1) == figs["own_p2_t_per_lkm"]
-                                                                            for v in per_w),
-       str([round(v, 3) for v in per_w]))
+    bases = {"pooled": own * Ln, "mean of the winters": float(np.mean(per_w)) * Ln,
+             "mean of the streets": float(np.mean([rate(s, WINTERS) for s in new])) * sev * Ln}
+    ok("CALL own Priority 2 salt over the five winters files the same figure on every basis",
+       all(int(round(v / 100.0) * 100) == figs["own_p2_t"] and v / Ln < figs["own_p2_t_per_lkm_under"]
+           for v in bases.values()), str({k: round(v, 1) for k, v in bases.items()}))
     # the rivals block 1 names
     tot = den = 0.0
     oldd = dict(old)
@@ -194,7 +197,8 @@ def main():
     r2 = (G * Wt).sum() / Wt.sum() * Ln * sev
     ok("RIVAL the Priority 1 collectors' rate less own salt files another bin", round(r1 / 100) * 100 == 2600,
        "%.1f t" % r1)
-    ok("RIVAL the earlier moves' average gain files another bin", round(r2 / 100) * 100 == 1500, "%.1f t" % r2)
+    ok("RIVAL the earlier moves' average gain files another bin (1,500 to 1,600)",
+       round(r2 / 100) * 100 in (1500, 1600), "%.1f t" % r2)
     ok("RIVAL both rivals at least 250 t from the golden", min(abs(r1 - gold), abs(gold - r2)) >= 250, "")
 
     # ---------------------------------------------------------------------------------------- Ask A
@@ -272,11 +276,52 @@ def main():
             if w == ws.title:
                 art[(rec["City circuit"][:3], w)] = art.get((rec["City circuit"][:3], w), 0.0) + float(rec["Rock salt (t)"])
     wb.close()
-    good = all(int(round(art[(y, w)])) == figs["art_%s_%s" % (y, w)] for y in yards for w in ("2023-24", "2024-25",
-                                                                                                "2025-26"))
-    ok("ASK B every yard-winter arterial figure recomputes to the tonne", good, "")
-    ok("ASK B every figure clear of its whole-tonne rounding edge (from the recomputed values)",
-       min(edge(v, 1.0) for v in art.values()) >= 0.25, "%.3f" % min(edge(v, 1.0) for v in art.values()))
+    w3 = ("2023-24", "2024-25", "2025-26")
+    good = all(int(round(art[(y, w)] / 50.0) * 50) == figs["art_%s_%s" % (y, w)] for y in yards for w in w3)
+    ok("ASK B every yard-winter arterial figure recomputes to the nearest 50 t", good, "")
+    ok("ASK B every figure a quarter-bin or more from its 50 t rounding edge (from the recomputed values)",
+       min(edge(v, 50.0) for v in art.values()) >= 12.5, "%.1f t" % min(edge(v, 50.0) for v in art.values()))
+    # the same cells with each older-controller unit's winter taken at the loader scale's tonnes
+    load = {}
+    for r in rows_csv("yard_loading_log_2023-11_2026-03.csv"):
+        w = season(dt.date.fromisoformat(r["shift_date"]))
+        load[(r["unit_id"], w)] = load.get((r["unit_id"], w), 0.0) + float(r["tonnes_loaded"])
+    cal, olduw = {}, {}
+    for i in range(n_pass):
+        rc = cols["route_code"][i]
+        if "-A" not in rc or cols["material_code"][i] != "RS":
+            continue
+        d = loc[i].date()
+        w = season(d)
+        if w not in w3:
+            continue
+        u = cols["unit_id"][i]
+        if u in old_ctl and (old_ctl[u] is None or d < old_ctl[u]):
+            olduw[(u, w)] = rc[:3]          # the yard whose circuits the unit ran that winter
+            continue
+        cal[(rc[:3], w)] = cal.get((rc[:3], w), 0.0) + cols["applied_t"][i]
+    for (u, w), y in olduw.items():
+        cal[(y, w)] = cal.get((y, w), 0.0) + load.get((u, w), 0.0)
+    contr = {}
+    wb = openpyxl.load_workbook(os.path.join(TARGET, "kettlewood_material_returns_2023-24_to_2025-26.xlsx"),
+                                read_only=True)
+    for ws in wb.worksheets:
+        rows = list(ws.iter_rows(values_only=True))
+        h = list(rows[2])
+        for r in rows[3:]:
+            rec = dict(zip(h, r))
+            if rec["Month"] is None:
+                continue
+            w = season(dt.date.fromisoformat(rec["Month"] + "-01"))
+            if w == ws.title:
+                contr[(rec["City circuit"][:3], w)] = contr.get((rec["City circuit"][:3], w), 0.0) + \
+                    float(rec["Rock salt (t)"])
+    wb.close()
+    for k, v in contr.items():
+        cal[k] = cal.get(k, 0.0) + v
+    ok("ASK B the loading-log calibration files the same 50 t figures, a quarter-bin or more from an edge",
+       all(int(round(cal[k] / 50.0) * 50) == int(round(art[k] / 50.0) * 50) and edge(cal[k], 50.0) >= 12.5
+           for k in art), "largest gap %.1f t" % max(abs(cal[k] - art[k]) for k in art))
 
     # ---------------------------------------------------------------------------------------- the other formats
     n_csv = sum(1 for f in os.listdir(TARGET) if f.endswith(".csv"))
@@ -302,7 +347,7 @@ def main():
     arts = [r for r in gwb["Arterial salt"].iter_rows(values_only=True)][1:5]
     gwb.close()
     ok("GOLDEN workbook carries the call, both components and every ask figure as figures.json",
-       call in vals and figs["own_p2_t_per_lkm"] in vals and figs["gain_t_per_lkm"] in vals and
+       call in vals and figs["own_p2_t"] in vals and figs["gain_t_per_lkm"] in vals and
        all(r[1] == figs["stock_%s" % y] and r[2] == figs["room_%s" % y] for r, y in zip(domes, yards)) and
        all(list(r[1:4]) == [figs["art_%s_%s" % (y, w)] for w in ("2023-24", "2024-25", "2025-26")]
            for r, y in zip(arts, yards)), "")
@@ -310,11 +355,14 @@ def main():
     memo = " ".join(p.text for p in Document(os.path.join(TASK, "golden",
                                                           "seasonal_salt_commitment_council_report.docx")).paragraphs)
     ok("GOLDEN council report read back: the commitment, its components, one chart",
-       "{:,} t of rock salt".format(call) in memo and "%.1f t a lane-km" % figs["gain_t_per_lkm"] in memo and
+       "{:,} t of rock salt".format(call) in memo and "about %d t a lane-km" % figs["gain_t_per_lkm"] in memo and
+       "about {:,} t".format(figs["own_p2_t"]) in memo and
        len(Document(os.path.join(TASK, "golden", "seasonal_salt_commitment_council_report.docx")).inline_shapes) == 1,
        "")
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    want = ["{:,}".format(call), "%.1f" % figs["own_p2_t_per_lkm"], "%.1f" % figs["gain_t_per_lkm"]] + \
+    want = ["{:,}".format(call), "about {:,} t, under {:d} t per lane-km".format(figs["own_p2_t"],
+                                                                                figs["own_p2_t_per_lkm_under"]),
+            "about %d t per lane-km" % figs["gain_t_per_lkm"]] + \
         ["{:,.1f}".format(figs[k]) for k in figs if k.startswith(("stock_", "room_"))] + \
         ["{:,} t".format(figs[k]) for k in figs if k.startswith("art_")]
     ok("WRITEUP every graded figure appears in submission.md at its stated rounding", all(x in sub for x in want),

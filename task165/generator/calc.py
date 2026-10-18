@@ -354,10 +354,20 @@ def ask_a(target, mode="golden", cutoff="time", dome_by="remarks", flows="all", 
     return stock, room
 
 
+ART_UNIT = 50.0              # the arterial figures, asked to the nearest 50 t
+
+
+def r50(v):
+    return int(round(v / ART_UNIT) * ART_UNIT)
+
+
 def arterial_salt(target, mode="golden"):
     """Rock salt on each yard's Priority 1 arterials in each of the three winters since October 2023. Modes:
-    golden; rows (every row summed); no_contract (the contractor's returns left out); register_yard (the
-    register's yard instead of the route code's); utc_season (season dates read in UTC)."""
+    golden; rows (every row summed); runs_once (run totals once, the brine left in); net_brine (every row summed,
+    the brine taken off); prewet_rate (the salt read back from the litres); loader_cal (each older-controller unit's
+    winter at the loader scale's tonnes); halve (the older controllers' rows summed and halved); no_contract (the
+    contractor's returns left out); register_yard (the register's yard instead of the route code's); utc_season
+    (season dates read in UTC)."""
     ps = pd.read_parquet(os.path.join(target, F_PASSES))
     ps = ps[(ps["material_code"] == "RS") & ps["route_code"].str.contains("-A")]
     if mode == "utc_season":
@@ -381,7 +391,18 @@ def arterial_salt(target, mode="golden"):
         ps["day"] = ps["local"].dt.date
         is410 = [u in retro and (retro[u] is None or d < retro[u]) for u, d in zip(ps["unit_id"], ps["day"])]
         ps["m410"] = is410
-        if mode == "runs_once":          # run totals taken once, the combined mass left as it is
+        if mode in ("loader_cal", "halve"):
+            a = ps[~ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum()
+            if mode == "halve":          # the older controllers read about twice the loader's tonnes: halved
+                b = ps[ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum() / 2.0
+            else:                        # each older-controller unit's winter at the loader scale's tonnes
+                lg = pd.read_csv(os.path.join(target, F_LOADING), dtype={"unit_id": str})
+                lg["winter"] = [season_of_local(dt.date.fromisoformat(d)) for d in lg["shift_date"]]
+                uw = set(zip(ps.loc[ps["m410"], "unit_id"], ps.loc[ps["m410"], "winter"]))
+                lg = lg[[(u, w) in uw for u, w in zip(lg["unit_id"], lg["winter"])]]
+                b = lg.groupby(["yard", "winter"])["tonnes_loaded"].sum()     # the yard that loaded it that winter
+            tot = pd.concat([a, b]).groupby(level=[0, 1]).sum()
+        elif mode == "runs_once":        # run totals taken once, the combined mass left as it is
             ps["solid"] = ps["applied_t"]
         elif mode == "prewet_rate":      # the salt read back from the brine at the plan's 40 litres a tonne
             ps["solid"] = ps["prewet_l"] / PREWET_L_T
@@ -389,7 +410,9 @@ def arterial_salt(target, mode="golden"):
             ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
         else:
             ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
-        if mode == "net_brine":
+        if mode in ("loader_cal", "halve"):
+            pass
+        elif mode == "net_brine":
             tot = ps.groupby(["yard", "winter"])["solid"].sum()
         else:
             a = ps[~ps["m410"]].groupby(["yard", "winter"])["solid"].sum()
@@ -496,6 +519,44 @@ def golden_did(P: Pack):
     nn = P.new_rates()
     x0 = float((nn["p2"] * nn["lane_km"]).sum() / nn["lane_km"].sum())
     return float((b[0] + b[1] * x0) * nn["lane_km"].sum() * PLAN_SEV)
+
+
+def control_index(P: Pack):
+    """Each winter's salt per lane-km per point on the never-moved Priority 2 collectors, over their five winters'
+    salt over points: the winter's own swing, which the index does not carry."""
+    reg = P.reg
+    moved = set(P.moves()["segment_id"])
+    ctrl = reg[(reg["func_class"] == "COLLECTOR") & (reg["priority"] == "2") & (~reg["segment_id"].isin(moved))]
+    lk = ctrl["lane_km"].sum()
+    tot = {w: sum(float(P.salt.get((s, w), 0.0)) for s in ctrl["segment_id"]) for w in K.WINTERS}
+    base = sum(tot.values()) / (lk * sum(P.wsi[w] for w in K.WINTERS))
+    return {w: tot[w] / (lk * P.wsi[w]) / base for w in K.WINTERS}
+
+
+def golden_netted(P: Pack, pre_last=False, post_first=False):
+    """The golden with each winter's points weighted by that winter's swing on the never-moved collectors (salt per
+    netted point), the new streets' own salt netted alike."""
+    ix = control_index(P)
+
+    def nrate(sid, ws, lk):
+        return sum(float(P.salt.get((sid, w), 0.0)) for w in ws) / (lk * sum(P.wsi[w] * ix[w] for w in ws))
+    rows = []
+    for _, r in P.earlier_moves().iterrows():
+        first = "%d-%02d" % (r["eff"].year, (r["eff"].year + 1) % 100)
+        pre = [w for w in K.WINTERS if K.WINTERS.index(w) < K.WINTERS.index(first)]
+        post = [w for w in K.WINTERS if K.WINTERS.index(w) >= K.WINTERS.index(first)]
+        if pre_last:
+            pre = pre[-1:]
+        if post_first:
+            post = post[:1]
+        rows.append((r["lane_km"], nrate(r["segment_id"], pre, r["lane_km"]), nrate(r["segment_id"], post, r["lane_km"])))
+    L, pre, post = map(np.array, zip(*rows))
+    b = wls(pre, post - pre, L)
+    nn = P.new_pool()
+    x = np.array([nrate(s_, K.WINTERS, lk_) for s_, lk_ in zip(nn["segment_id"], nn["lane_km"])])
+    lk = nn["lane_km"].values
+    x0 = float((x * lk).sum() / lk.sum())
+    return float((b[0] + b[1] * x0) * lk.sum() * PLAN_SEV)
 
 
 def bootstrap_sd(P: Pack, n=400, seed=1650925):

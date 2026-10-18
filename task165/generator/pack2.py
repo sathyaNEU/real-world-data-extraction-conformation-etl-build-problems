@@ -456,25 +456,75 @@ def arterial_cells(W, S, pr):
     return tot
 
 
-def settle_arterial_edges(W, S, pr):
-    """Keep every yard-winter figure at least 0.3 t from a whole-tonne rounding edge: where one sits closer, the
-    winter's last five ordinary arterial pass rows at that yard share the difference (a few tens of kilograms each),
-    their pre-wet litres following at the filed rate."""
-    tot = arterial_cells(W, S, pr)
-    for key, v in sorted(tot.items()):
-        if K.bin_edge_distance(v, 1.0) >= 0.3:
+ART_UNIT = 50.0     # the arterial figures are asked to the nearest 50 t
+ART_EDGE = 16.0     # each route's figure at least this far from a 50 t rounding edge (a quarter bin is 12.5 t)
+
+
+def loader_cells(W, S, pr):
+    """The loading-log calibration of the same cells: each older-controller unit's winter taken at the tonnes the yard's
+    loader scale put into it, every other arterial row as the platform wrote it, the contractor's returns added."""
+    lt = {}
+    for (yard, sd, sh, unit, loads, tl) in Y.loading_log(W, S, np.random.default_rng(W.seed + 42)):
+        w = K.winter_of(dt.date.fromisoformat(sd))
+        if w in K.NEW_WINTERS:
+            lt[(unit, w)] = lt.get((unit, w), 0.0) + float(tl)
+    tot, old = {}, set()
+    for r in pr:
+        if "-A" not in r["route_code"] or r["material_code"] != "RS":
             continue
-        k_ = K.stable_int(key[0], key[1], "edge") % 22
-        off = (0.05 + 0.01 * (k_ % 11)) * (1 if k_ < 11 else -1)     # 0.05 to 0.15 t either side of the centre
-        delta = round(v) + off - v
-        cand = [r for r in pr if r["route_code"][:3] == key[0] and "-A" in r["route_code"]
-                and K.winter_of(_local(r["entry_utc"]).date()) == key[1]
-                and W.controller_on(r["unit_id"], _local(r["entry_utc"]).date()) == "M720" and r["applied_t"] > 0.6]
-        for r in cand[-5:]:
-            r["applied_t"] = round(r["applied_t"] + delta / 5.0, 3)
-            r["prewet_l"] = round(r["applied_t"] * P.PREWET_L_T, 1)
-    tot = arterial_cells(W, S, pr)
-    assert all(K.bin_edge_distance(v, 1.0) >= 0.3 for v in tot.values()), tot
+        day = _local(r["entry_utc"]).date()
+        w = K.winter_of(day)
+        if w not in K.NEW_WINTERS:
+            continue
+        if W.controller_on(r["unit_id"], day) == "M410":
+            old.add((r["unit_id"], w))
+            continue
+        key = (r["route_code"][:3], w)
+        tot[key] = tot.get(key, 0.0) + r["applied_t"]
+    for u, w in old:
+        key = (W.unit_by_id[u]["yard"], w)
+        tot[key] = tot.get(key, 0.0) + lt.get((u, w), 0.0)
+    for (w, m, rc), t in Y.contractor_returns(W, S).items():
+        tot[(rc[:3], w)] = tot.get((rc[:3], w), 0.0) + round(t, 1)
+    return tot
+
+
+def _cell_safe(a, b):
+    return round(a / ART_UNIT) == round(b / ART_UNIT) and \
+        min(K.bin_edge_distance(a, ART_UNIT), K.bin_edge_distance(b, ART_UNIT)) >= ART_EDGE
+
+
+def settle_arterial_cells(W, S):
+    """Keep every yard-winter arterial figure, as the records give it and as the loading-log calibration gives it, in
+    one 50 t cell at least ART_EDGE from its edges: where a cell sits closer, the City trucks' newer-controller passes
+    of that yard and winter share the difference in proportion (a fraction of a per cent of each), on the simulated
+    truth itself, so the platform rows, the loader log and every total follow. Returns the pass rows."""
+    for _ in range(3):
+        pr = P.pass_rows(W, S)
+        g, c = arterial_cells(W, S, pr), loader_cells(W, S, pr)
+        bad = [k for k in sorted(g) if not _cell_safe(g[k], c[k])]
+        if not bad:
+            return pr
+        for key in bad:
+            mid = (g[key] + c[key]) / 2.0
+            target = round(mid / ART_UNIT) * ART_UNIT + (K.stable_int(key[0], key[1], "cell") % 11 - 5)
+            ps_ = [p for p in S.passes if p["kind"] == "ART" and not p["contract"] and p["winter"] == key[1]
+                   and p["route_code"][:3] == key[0] and p["rows"]
+                   and W.controller_on(p["unit"], p["rows"][0]["entry"].date()) == "M720"]
+            base = sum(r["t"] for p in ps_ for r in p["rows"])
+            f = 1.0 + (target - mid) / base
+            for p in ps_:
+                for r in p["rows"]:
+                    r["t"] *= f
+        S.truth = {}
+        for p in S.passes:
+            for r in p["rows"]:
+                k_ = (r["segment_id"], p["winter"])
+                S.truth[k_] = S.truth.get(k_, 0.0) + r["t"]
+    pr = P.pass_rows(W, S)
+    g, c = arterial_cells(W, S, pr), loader_cells(W, S, pr)
+    assert all(_cell_safe(g[k], c[k]) for k in g), {k: (round(g[k], 1), round(c[k], 1)) for k in g}
+    return pr
 
 
 def settle_dome_edges(Yd):
@@ -501,13 +551,12 @@ def build_pack(out, W=None, S=None):
     os.makedirs(out, exist_ok=True)
     W = W or Wd.World()
     S = S or R.Sim(W)
+    pr = settle_arterial_cells(W, S)
     Yd = Y.Yards(W, S)
     n = {}
     lr = P.legacy_rows(W, S)
     P._csv(os.path.join(out, P.F_LEGACY), ["SHIFT_DATE", "SHIFT", "YARD", "ROUTE", "SEG_ID", "PASSES", "MATL", "KG"], lr)
     n[P.F_LEGACY] = len(lr)
-    pr = P.pass_rows(W, S)
-    settle_arterial_edges(W, S, pr)
     settle_dome_edges(Yd)
     P.write_passes(os.path.join(out, P.F_PASSES), pr)
     n[P.F_PASSES] = len(pr)

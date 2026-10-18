@@ -117,7 +117,7 @@ def plan_text(W):
         "event down (procedure RO-OP-03). A season's Winter Severity Index (WSI) is the sum of the points of its "
         "events declared between 1 November and 31 March.",
         "Material planning uses the planning severity of 61.7 WSI points, the 1991 to 2020 average of the index "
-        "rebuilt from the airport station's records.",
+        "rebuilt from the airport station's records, and plans each road's salt per WSI point.",
     ]),
     ("5. Materials", [
         "Roads are salted with bulk rock salt from the supply contract. Priority 3 hills take a sand and salt mix "

@@ -4,7 +4,7 @@ The cracker lands the call (the earlier moves' gain read at each new street's ow
 battery (keys, duplicates, unmatched joins, units and clocks converted) and executes every filed rule on the fields it
 holds: each dome's stock from the survey's date brought forward by every weighing at its own scale house and the latest
 dispatch issue; the arterial salt as the platform's rows by the route code's yard, the contractor's returns added and
-the season read on local dates. The mirror stops at the default path (the Priority 1 collectors' rate less the new
+the season read on local dates, to the nearest 50 t. The mirror stops at the default path (the Priority 1 collectors' rate less the new
 streets' own Priority 2 salt) and is as careful on the asks. Each response is scored on Part 0's weights: the call and
 its components 38, the instructions 7, the asks 55 shared over every ask figure and the chart's parts.
 
@@ -30,7 +30,7 @@ def r1(v):
 def ask_points(stock, room, art, gold):
     gs, gr, ga = gold
     ka = sum(1 for y in C.YARDS if r1(stock[y]) == r1(gs[y])) + sum(1 for y in C.YARDS if r1(room[y]) == r1(gr[y]))
-    kb = sum(1 for k in ga if round(art[k]) == round(ga[k]))
+    kb = sum(1 for k in ga if C.r50(art[k]) == C.r50(ga[k]))
     content = 1 if kb == len(ga) else 0
     n = 8 + 12 + CHART_CONTENT + CHART_PARTS
     keep = ka + kb + content + CHART_PARTS

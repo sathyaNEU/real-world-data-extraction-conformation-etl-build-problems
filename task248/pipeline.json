@@ -1,0 +1,38 @@
+{
+  "task": "task248",
+  "owner": "perssathya",
+  "status": "DESIGN",
+  "domain": "epidemiology-public-health",
+  "objective": "data-quality-monitoring",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-18",
+  "stump": "Restoring each sample's shed load with the paired study's single decay rate over the plant's travel time (or reading levels on PMMoV-normalized concentrations) files the dashboard's published count of winter 2027 alert episodes, because a correction constant over the year cancels against each plant's own baseline; only the decay rate as a function of the water's temperature, applied over each plant's travel time, removes the episodes the colder water alone raised at the long trunk sewers.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task170, task99 v1 lineage, task234 v1 lineage at 0.06"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: tune the simulator (24 plants, travel times, inlet temperatures, the shedding waves, the paired study) so each plant's winter episode count is robust on both bases and across the decay model's forms; then the default path, ladder, fork table, closure, asks and prompt to precut exit 0.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}

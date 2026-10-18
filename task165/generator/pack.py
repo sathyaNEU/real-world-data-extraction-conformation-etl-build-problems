@@ -194,56 +194,80 @@ def register_rows(W):
 
 
 REASONS = {
-    "hill": ["Council motion 2022-31, Garrow Hill and Ridge escarpment streets", "Ridge Yard hill review",
-             "Council motion 2024-19, winter service petitions, Ward 6"],
-    "school": ["School bus route review (QDSB transportation)", "School bus route review (QDSB transportation)"],
-    "hospital": ["Access to Quellbrook General, east entrance", "Ambulance access review (Paramedic Services)"],
-    "transit": ["QRT Route 14 to 15-minute service", "QRT Route 22 to 15-minute service"],
+    "hill": {"A": "Council motion 2022-31, Garrow Hill and Ridge escarpment streets",
+             "C": "Council motion 2024-19, winter service petitions, Ward 6"},
+    "school": {"A": "School bus route review 2022-23 (QDSB transportation)",
+               "C": "School bus route review 2024-25 (QDSB transportation)",
+               "D": "School bus route review 2025-26 (QDSB transportation)"},
+    "hospital": {"B": "Access to Quellbrook General, east entrance",
+                 "C": "Ambulance access review (Paramedic Services)"},
+    "transit": {"B": "QRT Route 14 to 15-minute service", "D": "QRT Route 22 to 15-minute service"},
 }
+AUDIT_USERS = ["rta02", "rta05", "rta07", "rta11"]
+
+
+def _weekday(d, step):
+    while d.weekday() >= 5:
+        d += dt.timedelta(days=step)
+    return d
+
+
+def _sittings(key, n, eff):
+    """The entry dates of one change of n segments effective eff: the audit keys a change in sittings of 40 to 90
+    segments, the first two to six weeks ahead, the next a few working days apart, and finishes one change in four
+    in the week after it took effect. Each sitting is one user's."""
+    size = 40 + K.stable_int(key, "size") % 51
+    k = max(1, -(-n // size))
+    day = eff - dt.timedelta(days=14 + K.stable_int(key, "lead") % 29)
+    out = []
+    for i in range(k):
+        out.append(_weekday(day, -1))
+        day = out[-1] + dt.timedelta(days=1 + K.stable_int(key, "gap", i) % 5)
+    if k > 1 and K.stable_int(key, "late") % 4 == 0:
+        out[-1] = _weekday(eff + dt.timedelta(days=2 + K.stable_int(key, "after") % 6), 1)
+    users = [AUDIT_USERS[K.stable_int(key, "user", i) % 4] for i in range(k)]
+    per = -(-n // k)
+    return [(out[i // per], users[i // per]) for i in range(n)]
 
 
 def revision_rows(W):
     rng = np.random.default_rng(W.seed + 22)
-    rows = []
+    changes = {}          # (effective date, reason) -> [(segment, rows)]
     for s in W.segments:
         if s["pool"] == "MOVE":
-            d = K.MOVE_DATES[s["batch"]]
-            opts = REASONS[s["reason"]]
-            if s["reason"] == "hill":
-                txt = opts[0] if s["batch"] == "A" else (opts[2] if s["batch"] == "C" else opts[1])
-            elif s["reason"] == "transit":
-                txt = opts[0] if s["batch"] == "B" else opts[1]
-            else:
-                txt = opts[int(rng.integers(0, len(opts)))]
-            rows.append((d, s["segment_id"], "PRIORITY", "2", "1", txt))
-            rows.append((d, s["segment_id"], "ROUTE", s["route_code_p2"], s["route_code_p1"], txt))
+            d, txt = K.MOVE_DATES[s["batch"]], REASONS[s["reason"]][s["batch"]]
         elif s["pool"] == "NEW":
-            txt = "QRT frequent network redesign, launch 30 August 2026"
-            rows.append((K.REDESIGN, s["segment_id"], "PRIORITY", "2", "1", txt))
-            rows.append((K.REDESIGN, s["segment_id"], "ROUTE", s["route_code_p2"], s["route_code_p1"], txt))
+            d, txt = K.REDESIGN, "QRT frequent network redesign, launch 30 August 2026"
+        else:
+            continue
+        changes.setdefault((d, txt), []).append((s, [("PRIORITY", "2", "1"),
+                                                     ("ROUTE", s["route_code_p2"], s["route_code_p1"])]))
     for rc in W.contract_circuits:
+        txt = "Arterial winter maintenance contract RW-2023-07 (Kettlewood Road Services)"
         for sid in W.circuits[rc]["segments"]:
-            rows.append((dt.date(2023, 11, 1), sid, "OPERATOR", "CITY", "CONTRACT",
-                         "Arterial winter maintenance contract RW-2023-07 (Kettlewood Road Services)"))
+            changes.setdefault((dt.date(2023, 11, 1), txt), []).append((W.by_id[sid], [("OPERATOR", "CITY", "CONTRACT")]))
     for rc in W.realigned:
+        txt = "Yard boundary realignment, Mapleford to Kelvin Road"
         for sid in W.circuits[rc]["segments"]:
-            rows.append((K.REALIGN, sid, "YARD", "MPF", "KLV", "Yard boundary realignment, Mapleford to Kelvin Road"))
-            rows.append((K.REALIGN, sid, "ROUTE", rc, W.realigned_codes[rc],
-                         "Yard boundary realignment, Mapleford to Kelvin Road"))
-    # older housekeeping entries: new subdivision collectors taken into Priority 2, a few locals to Priority 3
+            changes.setdefault((K.REALIGN, txt), []).append((W.by_id[sid], [("YARD", "MPF", "KLV"),
+                                                                             ("ROUTE", rc, W.realigned_codes[rc])]))
+    rows = []
+    for (d, txt), segs in sorted(changes.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        segs = sorted(segs, key=lambda x: (x[0]["street"], x[0]["segment_id"]))
+        for (s, fields), (ent, user) in zip(segs, _sittings(txt, len(segs), d)):
+            for field, old, new in fields:
+                rows.append((min(ent, dt.date(2026, 9, 14)), d, s["segment_id"], field, old, new, txt, user))
+    # older housekeeping entries, keyed one at a time: new subdivision collectors taken into Priority 2
     p2 = [s for s in W.segments if s["pool"] == "P2"]
     for s in [p2[i] for i in rng.choice(len(p2), 30, replace=False)]:
-        rows.append((dt.date(2020, 10, 15) + dt.timedelta(days=int(rng.integers(0, 400))), s["segment_id"],
-                     "PRIORITY", "3", "2", "Assumed from developer, subdivision collector"))
-    rows.sort(key=lambda r: (r[0], r[1], r[2]))
-    out = []
-    people = ["rta02", "rta05", "rta07", "rta11"]
-    for i, (d, sid, field, old, new, txt) in enumerate(rows):
-        lag = int(K.stable_int(sid, field, "lag") % 52) - 9          # from nine days after to 42 days before
-        entered = min(d - dt.timedelta(days=lag), dt.date(2026, 9, 14))
-        out.append(("RA-%05d" % (10421 + i), d.isoformat(), sid, field, old, new, txt,
-                    people[K.stable_int(txt) % 4], entered.isoformat()))
-    return out
+        d = dt.date(2020, 10, 15) + dt.timedelta(days=int(rng.integers(0, 400)))
+        ent = _weekday(d - dt.timedelta(days=int(K.stable_int(s["segment_id"], "lag") % 52) - 9), -1)
+        rows.append((ent, d, s["segment_id"], "PRIORITY", "3", "2", "Assumed from developer, subdivision collector",
+                     AUDIT_USERS[K.stable_int(s["segment_id"], "user") % 4]))
+    # change numbers run in the order the entries were keyed
+    rows.sort(key=lambda r: (r[0], r[1], r[6], r[2], r[3]))
+    return [("RA-%05d" % (10421 + i), d.isoformat(), sid, field, old, new, txt, user, ent.isoformat())
+            for i, (ent, d, sid, field, old, new, txt, user) in enumerate(rows)]
 
 
 def crosswalk_rows(W):
