@@ -1,0 +1,22 @@
+{
+ "answer": null,
+ "as_of": "2026-11-05",
+ "bundle": "target/",
+ "distractor_files": [
+  "indice_menciones_redes.csv",
+  "incidencias_viales.csv"
+ ],
+ "files": {
+  "citas_rac.csv": 13809,
+  "envios_resena_andina.csv": 51173,
+  "incidencias_viales.csv": 759,
+  "indice_menciones_redes.csv": 27,
+  "rac_acciones_2024.csv": 2954,
+  "rac_acciones_2025.csv": 2935,
+  "rac_acciones_2026.csv": 2441,
+  "resumen_mensual_rac_2025.csv": 204,
+  "tabla_municipios.csv": 26
+ },
+ "notes": "Synthetic pack. The register, the delivery log, the invoices and the published summary are generated from generator/core.py's parameters; municipality names and DIVIPOLA codes are real, every organisation, outlet and person is invented.",
+ "task": "task199"
+}

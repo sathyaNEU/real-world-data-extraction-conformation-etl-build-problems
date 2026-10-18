@@ -134,7 +134,16 @@ because both screens see the one specimen. A multiplicative thinning of a count 
 observable (the count distribution, the repeat shares, the inter-event structure) moves only through the
 product of rate and reporting. **Price it by profiling the likelihood of the claimed self-measurement over
 the parameter to be recovered with the nuisance parameters free, and reading the width of the set within two
-log-likelihood units.** A flat profile is case three whatever the mechanism's story sounds like. task200's
+log-likelihood units.** A flat profile is case three whatever the mechanism's story sounds like. **And curvature is not a yes or no: read
+the set's width against the printed precision, because a bounded profile can still be useless.** A thinned
+count observed through event times does carry curvature, of order the process's regularity, and the set's
+width falls only as the square root of that, so no realistic event stream supplies enough: task202 measured
+the graded figure pinned to 0.46x to 4.50x the truth at an exponential process and still 0.86x to 1.06x at
+an inter-arrival shape of 8 with 600 observed events, which is a markedly more regular process than any
+incident stream, and reaching plus or minus 2 per cent would need a shape of order 200, a coefficient of
+variation near 0.07, which is clockwork. task201's bounded profile failed the same way from the other
+direction, its sharpest setting still twice the printed precision. So the shape to look for is not times as
+well as counts, which is one view measured twice, but two structurally different views of the same events. task200's
 dark-figure candidate passed every paper screen and died here: the profile over the reporting level was flat
 from 0.10 to 1.00 within 0.08 log-likelihood units, so true incidence was pinned only to 38.0 to 367.3 per
 1,000 households, about 8,200 times the printed precision, and state dependence did not rescue it because a
