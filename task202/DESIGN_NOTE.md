@@ -119,8 +119,8 @@ with a one-off capital item on about nine awards in a hundred at about four time
 the ceiling is nested across household sizes by the scheme's own equivalence scale.
 
 **Layer 1:** the claim workbooks' band columns were renamed and a header block added from July 2026 (a
-system change the foundation made); the equivalence scale and rounding rule sit in a table inside a scanned
-policy PDF (how the policy was filed); partner identifiers differ between the claims ledger and the portal
+system change the foundation made); the equivalence scale is filed as a rule and the rounding as a separate
+clause of the policy PDF, with no factor tabulated anywhere (how the policy was drafted); partner identifiers differ between the claims ledger and the portal
 and join on an imperfect crosswalk (two systems procured years apart); the scheme's fiscal year runs July to
 June while the policy names the twelve months to 31 March (the policy was drafted to the claim cycle);
 amounts are in pesos in the returns and thousands of pesos in the published summary; a preliminary and a
@@ -332,10 +332,10 @@ one separately gradable and determinate, each with its unit and rounding inside 
 
 | Ask | Figures | Device against the careful solver's path |
 |---|---|---|
-| A1 each band's 2027/28 referral ceiling, pesos to the nearest PHP 100 | 6 | the scale's formula is in a table inside the policy PDF and the rounding rule is a separate clause of it |
+| A1 each band's 2027/28 referral ceiling, pesos to the nearest PHP 100 | 6 | the scale is filed as a rule inside the policy PDF and the rounding rule is a separate clause of it, applied once and after the factor |
 | A2 each band's referred share of its own window awards, one decimal | 6 | the band mix differs between the pilot and the portfolio, so a portal-only read misses every band; counting a superseded return as well as its revision moves band 4 from 6.1 to 6.0, measured |
 | A3 each band's referred share of its own window award value, one decimal | 6 | value share against count share: the capital-item components carry 22 per cent of value against 6 per cent of count |
-| A4 the equivalence-scale factor applied at each band, three decimals | 6 | schedule B tabulates four of the six bands; bands 5 and 6 are only stated through B.2's formula, and the band's size for band 6 is its lower bound |
+| A4 the equivalence-scale factor applied at each band, three decimals | 6 | schedule B tabulates no factor at all: every band's factor has to be computed from B.2's rule, and the band's size is its lower bound, which is what fixes the open band |
 | D1, D2 the two deliverables | 2 content criteria | the schedule workbook and the board paper, which must carry the distribution against the ceilings |
 
 **Dropped, and why each is out.** The designating ask (which partners' own referred share would exceed 12
@@ -384,7 +384,7 @@ worse of the two numbers.
 | A1 | lands the call and generates the band ceilings by schedule B | keeps 6 of 6 |
 | A2 | lands the call and cuts the rebuilt distribution per band | keeps 6 of 6 |
 | A3 | lands the call and takes the value above each band ceiling | keeps 6 of 6 |
-| A4 | reads schedule B.2 and computes the two untabulated factors | keeps 6 of 6 |
+| A4 | reads schedule B.2 and computes all six factors from the rule | keeps 6 of 6 |
 | D1, D2 | produces both named files with the schedule and the chart | keeps 2 of 2 |
 
 ## Tried and rejected

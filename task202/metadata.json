@@ -154,7 +154,7 @@
     {
       "path": "referral_ceiling_request.eml",
       "format": "eml",
-      "bytes": 1385,
+      "bytes": 1387,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",

@@ -429,7 +429,7 @@ The trustees take the 2027/28 referral ceiling schedule at the June meeting, so 
 by 24 May. Clause 9 went into the policy in February and this is the first year we set one, so there
 is nothing to roll forward.
 
-Ronald has put the round's folder on the shared drive: the claim returns the claims system holds,
+Steven has put the round's folder on the shared drive: the claim returns the claims system holds,
 the portal export for the pilot provinces, the accreditation register and the reference tables, and
 the 2027 edition of the policy. The returns for November and February were reopened for the
 reconciliation exercise, so take care with those two.

@@ -19,7 +19,7 @@ DOMAIN = "lakandulafoundation.org"
 # personas: guard.py names --geo PH --seed 202 (never typed by hand)
 PEOPLE = {
     "assurance": ("Erica Costa", "e.costa", "Assurance and Standards Lead, Household Relief Grant"),
-    "systems": ("Ronald Rosales", "r.rosales", "Claims and Partner Systems Officer"),
+    "systems": ("Steven Espinoza", "s.espinoza", "Claims and Partner Systems Officer"),
     "director": ("Robert Gonzalez", "r.gonzalez", "Executive Director"),
 }
 
