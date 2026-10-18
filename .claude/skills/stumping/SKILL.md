@@ -79,6 +79,27 @@ changes the decisive step alone and asserts the golden (`dataset-generation` §7
 written means redesign, never harden. Choosing the estimand or unit is analysis; the card's `stump_class`
 is `analytical`.
 
+### 1.2a Prefer a decisive step that picks among records-fixed answers
+
+The decisive step may decide a selection, a threshold crossing, a count of qualifying units or which of
+several recorded quantities the comparison runs on, and then every graded figure is something the records
+fix exactly. It may instead produce an estimate, and then every graded figure is an estimator's output and
+has to survive every estimator the data does not close. Four architectures in one lane died on that second
+shape: a residual identifiable only through a fit (task182 v3, the fourteen graded levels forked nine to
+eighteen printed units), a length-bias correction (task182 v4, seven routes spread 7.8 to 14.4 points
+against a printed unit of 0.1 to 1, and the easy route the best estimator at the realistic interval so the
+ladder inverted), a fitted counterfactual whose two forms were collinear (task194 v1), and a conditional
+expectation whose matching tolerance was a knob (task198 v1).
+
+**An estimator's output may be graded, but only with its family closed to one form**, by a standard's own
+definition (a pooled-sample maximum likelihood estimate, 188) or by the data's structure (which measured
+rates transport outside the window they were measured in, 192). Closure is measured before any data is
+cut, not argued: enumerate every form a competent analyst would use, compute the graded figure under each,
+and require the spread inside 0.4 of the printed unit. **Watch for the single dial.** In both task182
+deaths, ladder strength and licensed spread rose together with one parameter (the fit's output range, the
+snapshot interval against the median duration), so re-tuning moved along the curve rather than off it. If
+the two cannot be separated, the mechanism is spent.
+
 ### 1.2 The stump lives in HOW, never in WHAT
 
 The estimand (population, outcome, window, unit, comparison) is filed so its literal execution is the

@@ -172,8 +172,14 @@ the card's driver says.
 | 8 weeks | 47.0% | 14.3 / 22.3 | D10,D05,D03 vs D10,D03,D01 | no | 13.0 |
 | 13 weeks | 56.2% | 38.0 / 46.7 | D10,D05,D03 vs D03,D05,D10 | yes | 12.4 |
 
-(The missed share is dominated by manuscripts submitted near the window's end whose reviews are still
-open, which is right-truncation and not the length-bias selection the draw is about.)
+(The missed share was first written up as right-truncation. It is not: splitting it by cause gives 32.5
+of the 32.8 points at the weekly interval to manuscripts that finished before the record opens, 0.3 to
+manuscripts that fell inside one inter-snapshot gap, and 0.0 to manuscripts submitted after the last
+snapshot. So it is left truncation, and the only channel the length bias runs through is the gap column,
+which is 0.3 points at one week, 11.2 at eight and 21.8 at thirteen. Re-running the whole screen with the
+estimand window opening at the first snapshot, which removes the left truncation and leaves the gap
+channel alone, moves no conclusion: the easy route still files the truth's three desks at one, two, four
+and six weeks and the corrected routes still spread 4.5 to 12.8 points.)
 
 **3. Where the mechanism does bite, the estimators disagree on the call itself.** The bias only moves the
 slate once the interval is comparable to the durations. At eight weeks E1, E2 and E3 file the truth's three
@@ -188,25 +194,101 @@ printed unit of 0.1 of a point that is a hundred times over; against a whole poi
 The true third-to-fourth margin is also 0.10 to 0.34 of a point, which is a tie no estimator could be
 asked to resolve.
 
-**5. Both ways out were tested and neither holds.** Grading a quantity the correction is insensitive to
-fails for a reason that is logical before it is numerical: if the graded quantity is insensitive to the
-correction then the correction cannot decide the call, and the table shows exactly that, the slate being
-identical under the easy route and the truth at every interval short enough for the mechanism to be
-realistic. Letting the data close the unstable estimators is only partly available: the snapshot interval
-does bound the shortest observable duration, which closes the estimators that need sub-interval durations,
-but E2 is the estimator the snapshot grain itself licenses and E4 is closed by nothing, and at eight weeks
-those two file different sets.
+The seven routes on the four leading desks, as the share past the nine-week standard in per cent, with the
+clean truth beside them. At one week (the realistic interval, gap-miss 0.3 per cent, 7.4 per cent of items
+seen once):
+
+| desk | truth | E0 | E1 | E2 | E3 | E4 | E5 | E6 | E7 | spread |
+|---|---|---|---|---|---|---|---|---|---|---|
+| D10 | 49.81 | 40.85 | 22.16 | 30.57 | 19.45 | 21.40 | 16.13 | 22.71 | 23.28 | 14.44 |
+| D05 | 38.01 | 33.68 | 16.95 | 23.48 | 15.21 | 20.03 | 13.66 | 17.02 | 21.39 | 9.82 |
+| D03 | 36.79 | 34.12 | 11.52 | 17.27 | 9.52 | 11.56 | 10.31 | 11.72 | 12.38 | 7.74 |
+| D12 | 36.75 | 31.75 | 15.30 | 20.12 | 13.42 | 18.08 | 13.10 | 15.46 | 18.33 | 7.02 |
+
+And at eight weeks, the only interval where a correction beats the easy route (gap-miss 15.5 per cent,
+75.3 per cent of items seen once):
+
+| desk | truth | E0 | E1 | E2 | E3 | E4 | E5 | E6 | E7 | spread |
+|---|---|---|---|---|---|---|---|---|---|---|
+| D10 | 50.36 | 58.35 | 43.96 | 52.91 | 43.16 | 41.68 | 41.78 | 46.57 | 81.68 | 40.00 |
+| D05 | 37.54 | 51.98 | 37.51 | 46.94 | 37.40 | 35.47 | 35.50 | 41.05 | 79.20 | 43.73 |
+| D03 | 37.01 | 57.05 | 37.83 | 48.24 | 37.29 | 40.94 | 40.38 | 41.62 | 79.31 | 42.01 |
+| D12 | 36.06 | 49.96 | 35.51 | 44.74 | 35.26 | 34.99 | 35.14 | 40.19 | 78.04 | 43.05 |
+
+Mean absolute error against the truth over all twelve desks, percentage points: at one week E0 2.9, E1
+21.2, E2 16.0, E3 22.8, E4 20.2, E5 22.7, E6 21.1, E7 19.9; at eight weeks E0 18.6, E1 2.3, E2 10.9, E3
+2.4, E4 4.5, E5 4.6, E6 5.8, E7 46.5.
+
+**5. The route list was short by three, and completing it widens the spread.** The first pass screened E0
+to E4. Length-bias correction also admits the renewal relation between the observed and the underlying
+mean (E5, the moment identities for the un-weighted density read at a lognormal tail share), the
+interval-censored quantile read (E6, interpolating the weighted distribution inside the snapshot bin
+rather than stepping it, which is licensed because the record dates the completion only to its grain) and
+a fit restricted to the longest observable items (E7). Nothing in a records pack closes any of them. The
+seven-route spread per desk is 5.6 to 14.4 points at the weekly interval and 40.0 to 52.6 at eight weeks.
+Dropping E7 as the least plausible still leaves 7.8 to 13.6 points wherever the correction is worth
+taking. Architecture 3 was killed at nine to eighteen printed units; architecture 4 at its best available
+point is 7.8 to 13.6 units against a whole point and 78 to 136 against a tenth, so it is in the same band
+or worse.
+
+**5a. The easy route is the best estimator at the realistic interval, so the ladder is inverted rather
+than merely forked.** Mean absolute error against the clean truth over the twelve desks, percentage
+points: at one week E0 is 2.9 and the corrected routes are 16.0 to 22.8; at two weeks E0 is 1.8 against
+14.8 to 20.7. The reason is the one section 2 gives: with nothing missed there is no selection left to
+correct, so a reciprocal-duration weight does not remove a bias, it introduces one, and it destroys the
+tail share it is supposed to recover (D10's true 49.8 reads 16.1 to 30.6 across the seven routes). A
+decisive step that makes every graded figure worse cannot be a rung at all, whatever the spread is.
+
+**5b. Way out A, a graded quantity the correction is insensitive to, measured rather than argued.** The
+first pass rejected it on a logical ground, that a quantity insensitive to the correction cannot be
+decided by it. That conflates two insensitivities: to whether one corrects at all, which is fatal, and to
+which corrected estimator one picks, which is exactly what is wanted. Twenty-two candidate quantities
+(the top one to five as a set, the count over thresholds from 10 to 70 per cent, the full twelve-ranking)
+were searched at seven intervals for the pair of conditions a way out needs, that the easy route differs
+from the truth and all seven corrected routes equal it. Cells exist. None survives the world being drawn
+again: over twenty seeds the best non-degenerate quantity is the top two as a set at 12 of 20, the top
+three at 8 of 20, and the only quantity above 17 of 20 is the count of desks over 55 per cent, whose true
+value is 0 in every seed. A count that is always zero supplies one criterion, not a rubric, and abandons
+the ranked slate the draw and the card are built on. The sets that do pass pass by accident: at the weekly
+interval the corrected routes reorder the desks (D03 falls from third to fifth under E1) while sitting 16
+to 23 points below the truth, so a surviving top-two agreement is a rank pair preserved under a near
+uniform distortion, not the correction working.
+
+**5c. Way out B, the records closing the unstable estimators, priced and falsified by its own magnitude.**
+The hypothesis is right in form: the snapshot interval does bound the shortest observable duration, so an
+item seen at one snapshot has no measurable duration and the reciprocal weight needs a floor. The
+magnitude kills it. The share of observed items appearing at exactly one snapshot is 7.4 per cent at the
+weekly interval and 75.3 per cent at eight weeks, so at the interval the ladder needs, the floor
+convention is applied to three quarters of the record and is the largest single HOW choice in the build.
+Measured across four defensible floors (half an interval, one interval, one week, one day) it moves every
+desk's share by up to 0.91 points at one week and 7.12 at eight, without moving the slate at either. That
+is architecture 3's signature restated: the call robust, the figures forked. And the estimator the record
+most naturally licenses is the wrong one, E2 at 10.9 points from the truth at eight weeks against E1's
+2.3, so closing E2 with the records would be closing the better estimator out by a sentence, which files
+the HOW.
+
+**5d. The one dial.** Ladder strength (the easy route's error less the best corrected route's) and the
+licensed spread are both monotone in the ratio of snapshot interval to median duration, and they rise
+together: at a ratio of 0.16 the ladder is minus 13.1 points and the six-route spread 14.4; at 0.62 the
+ladder is plus 2.3 and the spread 8.1; at 1.25 the ladder is plus 16.4 and the spread 11.5; at 1.56 plus
+16.4 and 13.6. There is no cell where the ladder is positive and the spread is inside a printed point, let
+alone the 0.4 of a unit a mid-bin figure needs. Re-tuning the interval moves along this curve; it does not
+leave it.
 
 **6. The shape this shares with architecture 3, which is the finding.** A corrected summary is an
 estimator's output, and the property that makes the correction big enough to decide the call is the same
 property that makes the licensed estimators disagree. Architecture 3 met this as curvature against
-identifiability; architecture 4 meets it as interval against selection. **A decisive step that is a
-correction to a summary cannot carry a call whose graded figures are that summary.** The way through, if
+identifiability; architecture 4 meets it as interval against selection, and section 5d measures it as one
+dial rather than two. **A decisive step that is a correction to a summary cannot carry a call whose graded
+figures are that summary.** The way through, if
 this slot goes a fifth time, is a call that turns on a correction while every printed figure is a quantity
 the records fix exactly, so that no graded number is an estimator's output at all.
 
-**7. What this costs and what it saves.** One turn, no files. The screen the author filed an hour before
-has now stopped two architectures before any data was cut, which is two builds' work it did not cost.
+**7. What this costs and what it saves.** Two turns, no files. The screen the author filed has now stopped
+two architectures before any data was cut, which is two builds' work it did not cost. Verdict: **FAIL at
+every interval**, both ways out priced and falsified, and the estimator is deliberately not pinned,
+because pinning it files the HOW. Work in `scratchpad/r182v4/screen.py` and `full.py`, which reproduce the
+first pass's table exactly before extending it.
 
 **8. The card.** `cards/task182.json` stands registered as architecture 4 with the WARN verdict, and one
 clause of its `driver` is now false: "while deduplicating the record to distinct items leaves the weighting
@@ -1337,6 +1419,28 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- Architecture 4's own estimator screen, completed: **the draw is dead at every snapshot interval, and the
+  two ways out are dead measured rather than argued.** The first pass screened five routes and rejected
+  way out A on a logical ground; completing the route list to the seven the field licenses and searching
+  twenty-two candidate graded quantities over twenty world draws settles both. The ladder is negative
+  below an interval-to-median ratio of about 0.6 (at one week the easy route is 2.9 points from the truth
+  and every correction 16.0 to 22.8, so the correction makes every figure worse), and above it the ladder
+  and the licensed spread rise together, 11.5 points of spread where the ladder is 16.4. The best
+  non-degenerate insensitive quantity holds on 12 of 20 seeds and only where the corrected routes are 16
+  to 23 points wrong, so it passes by rank accident; the only quantity above 17 of 20 has the true value 0
+  in every seed. The records close nothing that matters: the floor for items seen at one snapshot is a HOW
+  choice applied to 75.3 per cent of the record at eight weeks, worth 7.12 points of figure movement on
+  its own, and the estimator the record most naturally licenses (reciprocal appearances) is the one
+  furthest from the truth among the plausible set, so closing it with the records would close the better
+  estimator out by a sentence. The estimator is not pinned. Numbers in `## ARCHITECTURE 4 ESTIMATOR
+  SCREEN` sections 4 to 5d; work in `scratchpad/r182v4/screen.py` and `full.py`.
+- The screen's own first write-up called the missed share right-truncation. It is left truncation: 32.5 of
+  the 32.8 points at the weekly interval are manuscripts that finished before the record opens, and the
+  gap channel, which is the only one the length bias runs through, is 0.3. Recorded because the wrong
+  attribution would have sent a fifth draw at the wrong channel: the left-truncated items are truncated at
+  a time the record states exactly (submission date against the first snapshot), which is a different and
+  much better determinacy profile than length bias, and any draw that reaches for it has to pass this same
+  screen before a row is cut.
 - **An author error to correct, and it is on a graded figure.** When the margin was moved off its
   edge, the builder reported that the sixth-to-seventh gap fell from 0.098 to 0.062 dB and declined to
   tune it away, and I accepted that with the reason "it is not a graded figure, the prompt asks only
