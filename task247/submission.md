@@ -11,7 +11,7 @@
 
 Their expected 2027 season maxima on the reprocessed record are 9, 11, 10, 12, 13, 10, 12, 9 and 11 degree Celsius weeks, all at Alert Level 2: PB06, PB07, PB09 and PB10 confirm the bulletins' Alert Level 2 and PB11, PB12, PB13, PB14 and PB15 raise their declared Alert Level 1.
 
-Not the bulletins' four (PB06, PB07, PB09 and PB10), which leave out the southern sites: on every cloud-filled day the near-real-time analysis let the last observed anomaly fade toward the climatology, and under the August cloud over the south that took most of their HotSpots out. Not the three a correction by the past mean differences of observed and filled days keeps (PB07, PB09 and PB10): on hot filled days the analysis reads 0.26 degrees low, which the mean difference of all filled days (-0.007) does not restore. Not the six the regression of filled-day anomalies gives (PB06, PB07, PB09, PB10, PB11 and PB15), which restores a day or two after each clear day and not the long gaps.
+Not the bulletins' four (PB06, PB07, PB09 and PB10), which leave out the southern sites: on every cloud-filled day the near-real-time analysis let the last observed anomaly fade toward the climatology, and under the August cloud over the south that took most of their HotSpots out. Not the three a correction by the past mean differences of observed and filled days keeps (PB07, PB09 and PB10): on hot filled days the analysis reads 0.26 degrees low, which the mean difference of all filled days (-0.007) does not restore.
 
 ## 2. Critical Components
 

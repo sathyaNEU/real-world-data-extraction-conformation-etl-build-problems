@@ -1,11 +1,11 @@
 {
   "task": "task247",
   "owner": "perssathya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "data-quality-monitoring",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-18",
   "stump": "Correcting the 2027 near-real-time sea surface temperature record by the past seasons' mean differences from the reprocessed record, observed and filled days apart (+0.060 and -0.007), files three sites at Alert Level 2 (PB07, PB09, PB10); refilling each cloud gap from the observed days either side, as the reprocessed analysis will, files nine (PB06, PB07, PB09, PB10 confirmed and PB11 to PB15 raised).",
   "architecture": 1,
@@ -15,22 +15,23 @@
     "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "REVIEW (sweeps 4, 6 and 8; no LEAK)",
-    "reader": ""
+    "leak_py": "REVIEW (sweeps 4, 6 and 8; every line answered in the design note; no LEAK)",
+    "reader": "one read: Q1 to Q4 none, Q6 analytical, its attempt filed the bulletins' four; realism notes taken in one data pass"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form; answered in the Draw)",
-    "nearest": "task138 v1 lineage 0.06; task458 v1 lineage, task245, task70 v1, task123 v2 at 0.05"
+    "heart": "WARN (overuse.gate_g, repeat.deliverables, repeat.question_form; no BLOCK)",
+    "nearest": "task138 v1 lineage 0.06; task458 v1 lineage, task245, task70 v1, task123 v2 at 0.05",
+    "surface": "five promoted pairs in the wave (task245 the same pairing two apart, differentiated on the card; task246, task243, task244, task242 on the shared README name and gap)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 1)",
+    "disposition": "APPROVE",
+    "report": "task247/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the leak reader and the determinism judge (thread spawned from /tmp/determinism-check-task247-1792337187/judge_brief.md) were running on the cut pack (target.zip sha256 2e50716a); read both reports (rerun them if their scratch folders are gone), fix every finding in the generator in one pass, rebuild with make.py, then ship (target.zip and golden/ with git add -f, the ledger row, the card, the board).",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-18",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

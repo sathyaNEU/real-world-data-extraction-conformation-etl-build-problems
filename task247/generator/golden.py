@@ -118,7 +118,7 @@ def _workbook(path, A):
                   "Mean difference on hot days, anomaly above 0.6 (degrees Celsius)", "Days", "Hot days"], 58)
     names = [("as issued", "As issued (the bulletins' record)"),
              ("flag", "Less the mean differences of observed and filled days"),
-             ("regression", "Filled days' anomaly regressed on the reprocessed record's"),
+             ("regression", "Reprocessed anomaly regressed on the filled days' near-real-time anomaly"),
              ("carry", "The last observed anomaly carried"),
              ("nearest", "The nearer observed day's anomaly"),
              ("refill", "Interpolated between the observed days either side (used)")]
