@@ -1,13 +1,53 @@
-{"task": "task161", "owner": "sathya8571", "status": "DESIGN",
- "domain": "supply-chain-logistics", "objective": "forecasting",
- "stage": 2, "stage_name": "design", "updated": "2026-10-18",
- "stump": "A strong solver who reads the rush as temporary fades this rush's excess positions at the half-life the 2019 and 2025 rushes showed and takes no block; the excess is stock each customer burns at a steady share of its own shipments, so it keeps two blocks full through June.",
- "architecture": 1, "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
- "returned": [],
- "resume": "stage 2: ladder, fork table, closure, asks, prompt; then precut.py",
- "approved": null, "delivered": null, "portal": null,
- "portal_id": "", "portal_status": "", "portal_status_date": ""}
+{
+  "task": "task161",
+  "owner": "sathya8571",
+  "status": "BUILD",
+  "domain": "supply-chain-logistics",
+  "objective": "forecasting",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-18",
+  "stump": "A strong solver who stacks the two WMS exports, projects December from the booking notices and fades the book's excess at the 0.97-month half-life the 2019 and 2025 rushes showed leaves overflow only in January and takes no block (zero); the excess is stock each account burns at a steady share of its own shipments, and five seasonal accounts that bought for their whole 2027 season hold 17,541 of its 20,063 pallets, so the second block stays 97 per cent used through June (two blocks).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-18",
+    "checks": 50
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK): the block offer carries the call's words; the policy and advisories carry stump terms but name no method; dates after the as-of only in the December tracker, the export manifest's coverage line and the sublease's end; each answered in ## Leak sweep",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (overuse.gate_g, repeat.decision and repeat.question_form against task160), nearest drivers 0.06 (task120 v3), 0.05 (task159)",
+    "surface": "nine pairs promoted for adjudication, no hard tell: task267, task448, task266, task194 on surface 0.102 sharing only export_manifest.csv; task451, task135, task460, task87, task259 on the card signature differentiated at registration",
+    "nearest": "driver 0.06 (task120 v3)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 4: reader and judge",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "build": {
+    "checks_py": "77 run, 0 failed (R1a to R3c, L1 to L10, SF1 to SF12, A1a to A5, G1 to G3.2, S1 to S15, P1 to P3, F1 to F3)",
+    "verify_py": "green on its own code path (pandas and pdftotext): the call and block uses, the overflow by month, the 31 December and 30 June excess, the default path (0.97 months, 0 blocks), the per-account monthly fall (1 block), A1 and A2, the goldens",
+    "rebuilds": "two builds byte-identical (18 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip)",
+    "target_zip_sha256": "594bac9832c1bbdd5c33ff2958d334964858c390986557b5b3d71552394e9629",
+    "figures_check": "exit 0, 84 figures",
+    "input_gates": "18 files, 4 formats (csv, pdf, txt, xlsx), largest 93,160 rows, 2 distractors in metadata.json",
+    "golden_realism": "pass done: finding titles, a notes sheet, a rounding note, the front-loading months marked on the chart, pack-true texture only",
+    "house_fixes": "container audit clean (target and golden); manifest set equality; forward dates on the allow-list; three client names near real firms renamed (H21)",
+    "cracker": "pair ceiling 38.0 (C2 with the mirror; C1 34.2), mirror leakage 10.3 per cent"
+  },
+  "wave": "wave 6 (new), seed FC32 (world, decision and quantity kept; the seed's error band, option date and booking notices for the half-year not used)",
+  "answer": "take 2 of the 6 blocks (B-1 and B-2), $2,200,000; default path 0 blocks"
+}
