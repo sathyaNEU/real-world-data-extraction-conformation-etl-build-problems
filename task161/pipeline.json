@@ -1,0 +1,13 @@
+{"task": "task161", "owner": "sathya8571", "status": "DESIGN",
+ "domain": "supply-chain-logistics", "objective": "forecasting",
+ "stage": 2, "stage_name": "design", "updated": "2026-10-18",
+ "stump": "A strong solver who reads the rush as temporary fades this rush's excess positions at the half-life the 2019 and 2025 rushes showed and takes no block; the excess is stock each customer burns at a steady share of its own shipments, so it keeps two blocks full through June.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: ladder, fork table, closure, asks, prompt; then precut.py",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
