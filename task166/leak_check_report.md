@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: extension, maturity, agency, decisive, refinance, extended, planning, mortgages, balloons, balloon, fitted, asserted, recent, maturities, golden, credit, forecast, servicing, extract, hold-out, balance, twelve, pattern, family, prompt
+Stump terms swept: extension, maturity, balloon, agency, decisive, extended, planning, balloons, mortgages, refinance, income, maturities, fitted, asserted, recent, family, statements, golden, credit, extract, months, forecast, servicing, hold-out, balance
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `balance_sheet_hedging_policy.pdf`: \bladder\b x1, a field term declared in metadata.json: ...ar. Schedule A. Pools for overlay designation Pool Positions Treasury ladder United States Treasury notes held in the available-for-sale portfolio...
@@ -15,9 +15,9 @@ Stump terms swept: extension, maturity, agency, decisive, refinance, extended, p
 - **REVIEW** `extract_notes.txt`: carries 7 of 9 distinctive words of the committed call: 'Designate the $1.2 billion overlay against the fixed-rate commercial real estate pool.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `alm_report_2026_q3.pdf`: 4 of 25 stump-paragraph terms appear (mortgages, credit, balance, twelve); read whether the document names the move
+- **REVIEW** `alm_report_2026_q3.pdf`: 5 of 25 stump-paragraph terms appear (mortgages, income, credit, months, balance); read whether the document names the move
 - **REVIEW** `balance_sheet_hedging_policy.pdf`: 8 of 25 stump-paragraph terms appear (maturity, agency, planning, mortgages, recent, credit); read whether the document names the move
-- **REVIEW** `extract_notes.txt`: 9 of 25 stump-paragraph terms appear (extension, maturity, agency, extended, planning, credit); read whether the document names the move
+- **REVIEW** `extract_notes.txt`: 12 of 25 stump-paragraph terms appear (extension, maturity, agency, extended, planning, income); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 9)
 - **REVIEW** `clearing_statement_20261130.csv`: 32 ISO dates after 2026-12-03, e.g. 2027-07-01, 2028-01-12, 2028-04-04, 2028-06-08, 2028-06-23

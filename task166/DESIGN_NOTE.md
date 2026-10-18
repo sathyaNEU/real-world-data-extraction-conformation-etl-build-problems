@@ -197,7 +197,7 @@ asserted in `generator/checks.py`.
 | SF20 | a loan already extended | repays at its extended date | extended again on cover (the 98 extended loans) | CRE, $160 million (163.4) | the extract notes ("An extended loan is not extended again: at its extended maturity it is paid or goes to special assets"), asserted |
 | SF21 | the extension's terms | a tenth of the principal due paid down, the rest at the posted five-year rate on the maturity date (the plan's 6.95 per cent in 2027) amortizing over 25 years, 36 months | the note's rate and payment held, nothing paid down; November's posted rate | CRE, $160 million (157.8); same call (149.7) | the extract notes ("one extension, of 36 months, on a paydown of 10 per cent of the principal due, at the bank's posted five-year fixed rate on the maturity date, the payment amortizing the rest over 25 years"), asserted |
 | SF22 | EXT-S | six months on the note's terms for a sale under contract, read as the repayment it precedes | dropped from the fit; carried forward at its share; read as the 36-month extension | same call (150.2; 148.5); CRE, $140 million (141.3) | the extract notes ("EXT-S, extended six months on the note's terms for a sale under contract"), asserted |
-| SF23 | an extension whose payments the property's income does not cover | granted on the guarantor's support agreement with an interest reserve funded at the extension; the payments made as scheduled | the loan defaults on its extension or goes to special assets at its maturity | same expected cash flows: a shortfall would be a credit loss, which the policy leaves out | the extract notes ("the extension is granted on the guarantor's support agreement with an interest reserve funded at the extension, and the payments are made as scheduled") and the policy ("before credit losses"), asserted |
+| SF23 | an extended loan's payments | made as scheduled: every extension is granted on the guarantor's reaffirmed support agreement with an interest reserve funded at the extension | a weak extended loan defaults on its extension or goes to special assets at its maturity | same expected cash flows: a shortfall would be a credit loss, which the policy leaves out | the extract notes ("Every extension is granted on the guarantor's reaffirmed support agreement, with an interest reserve funded at the extension; the extended loan's payments are made as scheduled") and the policy ("before credit losses"), asserted |
 
 ## Ladder
 Built figures from `generator/calc.py` (`golden`, `routes`), every row asserted in `generator/checks.py` (LADDER, FAM,
@@ -289,10 +289,25 @@ repaid when due, it lands between 0.904 and 0.991 and no listed share does (nine
 rules that land: a cover test at 1.10, 1.15, 1.20 or 1.25 on 30-year amortization (148.7 to 153.6), at 1.10, 1.15 or
 1.20 on the sheet's 25 years (150.4 to 154.4), and a debt yield hurdle of 9, 9.5 or 10 per cent (150.1 to 153.6); the
 1.25 convention on 25 years (158.5), 1.30 on 30 years (155.9), the 1.00 rule (144.1), hurdles of 8.5 and 10.5 per cent
-(144.7, 156.1) and grade 5 or worse (133.0) miss. Each rule that lands conditions a balloon's extension on its
-property's income against the balloon at the planning rate, the decisive step in a hard form; 89 per cent of the
-wall's principal sits below a cover of 1.0, so a threshold anywhere from about 1.03 to 1.21 on the sheet's terms
-lands.
+(144.7, 156.1) and grade 5 or worse (133.0) miss. A cover test on the extension's own payment (a tenth paid down, the
+rest at the plan's rate on 25 years) lands at every convention from 1.15 to 1.35 (149.1 to 154.4, the 1.25 reflex at
+151.8) and misses at 1.10 (141.8), 1.40 (158.9) and the 1.00 line (111.6). The latest months' extension share carried
+to every balloon lands for November 2026 alone (0.792, 147.0) and for October and November (0.807, 149.1) and misses
+for the trailing quarter, September to November (0.753, 141.8). Each cover test or hurdle that lands conditions a
+balloon's extension on its property's income against the balloon at the planning rate, the decisive step in a hard
+form; 89 per cent of the wall's principal sits below a cover of 1.0, so a threshold anywhere from about 1.03 to 1.21
+on the sheet's terms lands. The latest months' share lands because the push's front edge fell due in October and
+November 2026 with income the wall's own loans share; a solver who reads it as the recent rate files the bin without
+the cover step.
+
+| Route that lands (asserted: RULES, BYPASS) | Figure |
+|---|---|
+| a cover test at 1.10, 1.15, 1.20, 1.25 on 30-year amortization | 148.7, 150.4, 151.8, 153.6 |
+| a cover test at 1.10, 1.15, 1.20 on the sheet's 25 years | 150.4, 152.8, 154.4 |
+| a cover test at 1.15, 1.20, 1.25, 1.30, 1.35 on the extension's own payment | 149.1, 150.1, 151.8, 153.4, 154.4 |
+| a debt yield hurdle of 9, 9.5, 10 per cent | 150.1, 151.8, 153.6 |
+| four-fifths, 0.85 on every balloon not yet extended | 148.1, 154.9 |
+| the share of November 2026's maturities (0.792); of October and November's (0.807) | 147.0; 149.1 |
 
 **Out of sample.** Cover's Brier score is 0.033 against 0.088 for the debt yield, 0.173 for the note-rate DSCR, 0.200
 for the rate gap, 0.210 for the last year's share and 0.229 for the pooled share (asserted: cover beats every rival by
@@ -306,14 +321,15 @@ their 2020 statements) (REAL).
 designation from the mortgages to Agency MBS; the cover step moves the pool's loss from 40.3 (or 86.4 at the recent
 share) to 150.0 and the designation to the pool.
 
-**Strength.** P(one strong solver lands the pool and the $150 million bin) about 0.2: it must see that the balloons
+**Strength.** P(one strong solver lands the pool and the $150 million bin) about 0.22: it must see that the balloons
 due through 2027 decide the ranking (about 0.6), condition each balloon's extension on its property's income against
 the balloon at the planning rate in a construction that lands, a fitted response, a hard cover test from about 1.03 to
-1.21 on 25 or 30 years or a debt yield hurdle of 9 to 10 per cent, rather than a share, the rate gap, the note-rate
-DSCR, the in-place cover, the grade, the 1.25 convention on 25 years, the 1.00 rule or a debt yield logit on the full
-history (about 0.45), and execute the cash flows on the bank's extension terms and the average within $5 million
-(about 0.7); the shares that land (four-fifths or 0.85 on every balloon) add about 0.02. P(both top responses land)
-about 0.04 if independent, about 0.07 with a correlation of 0.2, under 0.1 with margin. The seed was fixed by rule (the
+1.21 on 25 or 30 years or from 1.15 to 1.35 on the extension's own payment, or a debt yield hurdle of 9 to 10 per cent,
+rather than a share, the rate gap, the note-rate DSCR, the in-place cover, the grade, the 1.25 convention on 25 years,
+the 1.00 rule or a debt yield logit on the full history (about 0.45), and execute the cash flows on the bank's
+extension terms and the average within $5 million (about 0.7); the shares that land (four-fifths or 0.85 on every
+balloon, or the latest one or two months' share carried to every balloon) add about 0.03. P(both top responses land)
+about 0.05 if independent, about 0.09 with a correlation of 0.2. The seed was fixed by rule (the
 task number, then the memo's month and day: 1661214) before any data was generated and is never searched; each
 commercial real estate loan draws from its own streams, keyed by its origination month and its place in the month, so
 a design change moves only what it changes. The world's extension response, the book's origination profile and the
@@ -457,8 +473,9 @@ What stage 4 round 4 leaves standing, as measured (every figure asserted in chec
   balloon extended 156.1 (1.1 above its top), the 1.25 convention 158.5 (3.5 above). Each is a fixed rule with no fit,
   so the bootstrap does not move it; the 1.00 rule scores a hold-out Brier more than twice the cover logit's.
 - The routes that land beside the family (Ladder, counted in Strength): hard cover tests from about 1.03 to 1.21 on
-  the sheet's 25 years (1.10, 1.15 and 1.20 listed) and from 1.10 to 1.25 on 30 years, debt yield hurdles of 9 to 10
-  per cent, and a constant share of four-fifths or 0.85 on every balloon. The wall's principal sits 89 per cent below a
+  the sheet's 25 years (1.10, 1.15 and 1.20 listed), from 1.10 to 1.25 on 30 years and from 1.15 to 1.35 on the
+  extension's own payment, debt yield hurdles of 9 to 10 per cent, a constant share of four-fifths or 0.85 on every
+  balloon, and the latest one or two months' extension share (November 2026, 147.0; October and November, 149.1). The wall's principal sits 89 per cent below a
   cover of 1.0, so every threshold on the property's income against the balloon that falls in that span lands.
 - The income routes. The debt yield fitted on every maturity names the pool at $136.2 million (the $140 million bin,
   hold-out 0.088); fitted on 2023 onward it files $149.7 million, a family member: on the 2023 to 2026 maturities the
@@ -489,7 +506,7 @@ What stage 4 round 4 leaves standing, as measured (every figure asserted in chec
   1.25 (0 of 603), no softened shoulder (3 of 87 from 1.12 to 1.25), no 2020 extension decided on pandemic income the
   statements file does not show (the one 2020 extension is a retail centre after its anchor closed), and no loan sent to
   special assets at its original maturity; below a cover of 1.0, 99 of 99 extend, as the support agreement and interest
-  reserve now filed in the extract notes make real.
+  reserve now filed in the extract notes (every extension, no income condition) make real.
 - The fingerprint heart gate: WARN (`repeat.question_form`, answered at the draw); the ban window is task163, task245
   and task471. `guard.py surface` promotes task167 back to back (decisive pattern E and the close_out_summary context
   artifact on both cards): task167's v2 card was registered at 06:59:01Z, after this card (05:26:01Z), so the repeat
@@ -501,12 +518,14 @@ What stage 4 round 4 leaves standing, as measured (every figure asserted in chec
 - Sweep 3, the call's words in the policy, the extract notes and the ALM report (overlay, fixed-rate, commercial real
   estate, pool): the policy names the pools it governs and the notes the files; none states a loss, ranks a pool or
   names the designation.
-- Sweep 4, design-note vocabulary in the policy (maturity, agency, mortgages, planning, recent, credit), the notes
-  (extension, maturity, agency, extended, planning, credit) and the ALM report (mortgages, credit, balance, twelve):
-  the files' own subjects. The notes file the bank's extension terms and that an extension whose payments the
-  property's income does not cover is granted on the guarantor's support agreement with an interest reserve; no file
-  names refinance cover, a debt constant, a debt yield or what decides whether a loan is extended (asserted in
-  checks.py, R3c).
+- Sweep 4, design-note vocabulary in the policy (maturity, agency, planning, mortgages, recent, credit), the notes
+  (extension, maturity, agency, extended, planning, income, among twelve) and the ALM report (mortgages, income,
+  credit, months, balance): the files' own subjects; income appears in the notes only as the underwriting row's net
+  operating income the loan was sized on, and in the ALM report as net interest income. The notes file the bank's extension terms and, as a blanket servicing practice with no
+  income condition, that every extension is granted on the guarantor's reaffirmed support agreement with an interest
+  reserve and its payments are made as scheduled; no file names refinance cover, a debt constant, a debt yield or what
+  decides whether a loan is extended, and no sentence sets income against an extension's payments (asserted in
+  checks.py, R3c and SF23).
 - Sweep 9, dates after the pull: records that carry future dates by nature (loan and swap maturities, next due dates,
   rate-lock expirations, the plan's months, amortization periods, the log's extended-to dates).
 - Sweep 10: INFO only (the audit reports no writer signature).
@@ -565,6 +584,16 @@ the post-push tail mostly five-year; the officer's floor on grades within a year
 and interest reserve filed as a plain fact in the extract notes (SF23); the register's Terminated on and the policy's
 in-effect test to the earlier of maturity and termination (SF16); the memo's mortgages line corrected; the golden
 re-centred by the rule (1.065, 149.99). Dropped for determinism: extensions at high cover and the softened shoulder.
+
+Round 4 (judge-task166d: DETERMINISTIC, APPROVE, no fix, CRE 149.6 probability-weighted and 150.1 thresholded against
+MBS 112, the window unique, the Brier scores and all twelve notionals reproduced; the rule 3 recheck PASS, P(one)
+about 0.22, P(both) about 0.05 to 0.09, two landing routes added; the reader clean on Q1 to Q4, one sentence read as a
+mild hint). Round 5 fix, one sentence: the extract notes' support-agreement sentence, which set the property's income
+against the extension's payments, now reads as a blanket servicing practice ("Every extension is granted on the
+guarantor's reaffirmed support agreement, with an interest reserve funded at the extension; the extended loan's
+payments are made as scheduled."), the pin that payments are made as scheduled kept (SF23); the cover test on the
+extension's own payment and the latest months' share asserted with the routes that land (RULES). Every other file in
+target.zip, both goldens and figures.json byte-identical to the round 4 pack; no figure moved.
 
 ## Tried and rejected
 
@@ -654,3 +683,8 @@ re-centred by the rule (1.065, 149.99). Dropped for determinism: extensions at h
   1.00 rule and every 2027 balloon extended landed; kept at 15 per cent.
 - More lending after the push (14 to 18 loans a month from May 2022) to lift every 2027 balloon extended further above
   the bin: the near-best cut at 1.12 left the middle half (lab 2.8 to 3.0); kept at 10.
+- The support agreement filed with an income condition ("Where the property's net operating income falls short of the
+  extension's payments, the extension is granted on the guarantor's support agreement..."), at stage 4 round 4: the
+  reader read it as a mild-to-moderate hint and the recheck as the first filed sentence setting income against forward
+  debt service, one step from the cover metric; reworded as a blanket practice on every extension, the pin that the
+  payments are made as scheduled kept, no figure moved.
