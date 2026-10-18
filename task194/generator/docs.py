@@ -60,9 +60,8 @@ def charter(target):
                    "inside three years, so that the gains a unit holds are the unit's own to hold.", BODY),
          Paragraph("4.3 A placement is made with the unit carrying the most avoidable complications. The "
                    "complications a unit carries as avoidable over a period are the complications its own "
-                   "patients had, less the complications that patients of the same risk band and age band "
-                   "ordinarily have, counted patient by patient and summed over the unit's episodes in "
-                   "that period.", BODY),
+                   "patients had, less the expected complications of the unit's episodes in that period "
+                   "under the current indicator specification, counted patient by patient and summed.", BODY),
          Paragraph("4.4 A placement is assessed on the separations planned for the unit for the assessment "
                    "quarter, as published in the network's activity plan for that quarter.", BODY),
          Paragraph("4.5 The Director of Clinical Improvement recommends the placement for each cycle and "

@@ -48,31 +48,30 @@
    - Terborgh (VKF-TRB): 101 per cent, 77 episodes, under tolerance no
 2. Realised response gain and episode count on the qualifying over-frequency episodes, nine sites in site order:
    - Dollardkust (VKF-DLK): 92 per cent, 20 episodes
-   - Hoogezand (VKF-HGZ): 87 per cent, 153 episodes
-   - Kampvliet (VKF-KPV): 73 per cent, 21 episodes
+   - Hoogezand (VKF-HGZ): 87 per cent, 152 episodes
+   - Kampvliet (VKF-KPV): 73 per cent, 20 episodes
    - Meppelerdiep (VKF-MPD): none, 0 episodes
    - Nieuwveen (VKF-NWV): 89 per cent, 72 episodes
-   - Oosterhout (VKF-OOS): 96 per cent, 16 episodes
+   - Oosterhout (VKF-OOS): 96 per cent, 15 episodes
    - Reiderland (VKF-RDL): 81 per cent, 22 episodes
-   - Terborgh (VKF-TRB): 98 per cent, 72 episodes
-   - Zwartewater (VKF-ZWT): 94 per cent, 72 episodes
-3. Reserve capacity hours committed, held available and short, six delivery blocks, MWh to one decimal place:
-   - Block 1 (00:00-04:00): committed 560.0, held available 560.0, shortfall 0.0
-   - Block 2 (04:00-08:00): committed 1168.0, held available 1159.8, shortfall 8.2
-   - Block 3 (08:00-12:00): committed 1428.0, held available 1419.0, shortfall 9.0
-   - Block 4 (12:00-16:00): committed 360.0, held available 360.0, shortfall 0.0
-   - Block 5 (16:00-20:00): committed 1642.0, held available 1631.5, shortfall 10.5
-   - Block 6 (20:00-24:00): committed 252.0, held available 248.3, shortfall 3.7
-   - Portfolio: committed 5410.0, held available 5378.6, shortfall 31.4
-4. Net metered volume for the window and the difference against the operator's settlement statements, nine sites in site order, MWh to one decimal place:
-   - Dollardkust (VKF-DLK): metered -1533.6, settled -1540.0, difference -6.4
-   - Hoogezand (VKF-HGZ): metered 1570.8, settled 1570.8, difference -0.0
-   - Kampvliet (VKF-KPV): metered 428.4, settled 428.4, difference 0.0
-   - Meppelerdiep (VKF-MPD): metered 1319.6, settled 1319.6, difference 0.0
-   - Nieuwveen (VKF-NWV): metered 96.8, settled 96.8, difference -0.0
-   - Oosterhout (VKF-OOS): metered 78.1, settled 78.1, difference -0.0
-   - Reiderland (VKF-RDL): metered 1542.1, settled 1542.1, difference 0.0
-   - Terborgh (VKF-TRB): metered -1827.7, settled -1827.7, difference -0.0
-   - Zwartewater (VKF-ZWT): metered 949.8, settled 953.8, difference 4.0
-   - Portfolio: metered 2624.3, settled 2621.9, difference -2.4
+   - Terborgh (VKF-TRB): 98 per cent, 71 episodes
+   - Zwartewater (VKF-ZWT): 94 per cent, 71 episodes
+3. Reserve capacity hours held available and the shortfall against commitment, six delivery blocks, MWh to one decimal place:
+   - Block 1 (00:00-04:00): held available 541.8, shortfall 18.2
+   - Block 2 (04:00-08:00): held available 1157.0, shortfall 11.0
+   - Block 3 (08:00-12:00): held available 1414.7, shortfall 13.3
+   - Block 4 (12:00-16:00): held available 352.9, shortfall 7.1
+   - Block 5 (16:00-20:00): held available 1625.0, shortfall 17.0
+   - Block 6 (20:00-24:00): held available 247.0, shortfall 5.0
+4. Energy delivered above programme and below programme in the settlement periods the site held no delivery-block commitment for, nine sites in site order, MWh to one decimal place:
+   - Dollardkust (VKF-DLK): above 20.2, below 50.7
+   - Hoogezand (VKF-HGZ): above 8.9, below 17.8
+   - Kampvliet (VKF-KPV): above 10.8, below 22.5
+   - Meppelerdiep (VKF-MPD): above 10.2, below 15.8
+   - Nieuwveen (VKF-NWV): above 11.3, below 28.0
+   - Oosterhout (VKF-OOS): above 9.0, below 24.2
+   - Reiderland (VKF-RDL): above 11.2, below 18.1
+   - Terborgh (VKF-TRB): above 15.6, below 22.1
+   - Zwartewater (VKF-ZWT): above 16.5, below 48.6
+   - Portfolio: above 113.7, below 247.8
 5. Bar chart of the under-frequency realised gains by site on the Scorecard sheet, one bar per site in gain order, with the tolerance line drawn across at 90 per cent and the axis titled in per cent of contracted gain.

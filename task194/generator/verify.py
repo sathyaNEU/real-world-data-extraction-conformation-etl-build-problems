@@ -523,13 +523,31 @@ def run(target, figures_path):
         import pypdf
         txt = " ".join(" ".join(pg.extract_text() for pg in pypdf.PdfReader(
             os.path.join(task, "golden", "embed_placement_brief.pdf")).pages).split())
+        ok(len(txt) > 2000, "the brief extracts %d characters of text" % len(txt))
+        ok("Clinical Improvement Partnership" in txt,
+           "positive control: the brief carries its own kicker line")
         ok(str(fig["avoidable_at_pick"]) in txt and fig["call_unit_code"] in txt,
            "the brief states the call and its figure")
-        ok("%.2f" % fig["margin"] in txt and "%.1f" % fig["standard_error_lead"] in txt,
-           "the brief states the margin and the lead in standard errors")
-        ok(fig["rung0_unit_code"] in txt and fig["demonstration_unit_code"] in txt,
-           "the brief names the unit the indicator points at and the demonstration unit")
-        ok("ordinarily have" in txt, "the brief uses the charter's own words for the comparison")
+        ok("%.1f" % fig["gap_complications"] in txt, "the brief states the gap it claims")
+        ok("%.1f" % fig["avoidable_at_runner"] in txt, "the brief states the closest unit's figure")
+        ok("%.3f" % fig["pick_factor_at_lag_0"] in txt
+           and "%.3f" % fig["runner_factor_at_lag_0"] in txt,
+           "the brief states both development factors it compares")
+        ok("%.0f" % fig["pick_uplift_complications"] in txt,
+           "the brief states the uplift the development adds to the call's record")
+        # the brief claims a range over the readings of the development; it is checked at both ends
+        lo = min(fig["reading_margins"].values())
+        hi = max(fig["reading_margins"].values())
+        ok("%.2f" % lo in txt and "%.2f" % hi in txt,
+           "the brief's robustness range is the measured range (%.2f to %.2f)" % (lo, hi))
+        ok("standard error" not in txt.lower(),
+           "the brief claims no figure the prompt did not ask for")
+        ok(fig["rung0_unit_code"] in txt and fig["route_winners"]["R1"] in txt,
+           "the brief names the unit the record as it stands points at and the recency rung's unit")
+        ok("published stratum table expects" in txt,
+           "the brief states the comparison as the published table the charter files")
+        ok("%.1f" % fig["rung0_as_recorded"] in txt and "%.1f" % fig["route_first_values"]["R1"] in txt,
+           "every rejected route the brief names carries the figure it recomputes to")
     except ImportError:
         pass
     return K

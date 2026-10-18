@@ -384,23 +384,34 @@ def run(target, g, state):
     ok("0.1683" in spec and "HAC13" in spec, "R2 the specification's appendices are in the PDF")
     dsrc = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "deliver.py"),
                 encoding="utf-8").read()
-    ok("215 " in dsrc, "the brief names the panel's size as the series carries it")
-    ok("ordinarily have" in dsrc,
-       "the brief states the comparison in the charter's own words, not in a method's")
+    ok("len(g[\"bundle\"][\"panel\"])" in dsrc,
+       "the brief takes the panel's size from the record rather than stating a literal")
+    ok("published stratum table expects" in dsrc,
+       "the brief states the comparison as the published table, which is what the charter files")
     ok("avoided" not in dsrc, "no deliverable states a quantity the record does not carry")
     for clause in ("3.3", "3.4", "2.1", "2.2"):
         ok(clause in spec, "the specification carries clause %s" % clause)
     for clause in ("4.1", "4.2", "4.3", "4.4"):
         ok(clause in charter, "the charter carries clause %s" % clause)
-    ok("that patients of the same risk band and age band ordinarily have" in charter,
-       "the charter files the comparison in clause 4.3, and no rate set with it")
+    # the comparison is one of the five parts of the estimand, so charter 4.3 files it by the
+    # specification's own defined term rather than leaving the frequency open. Architecture 2 died
+    # exactly here: executed word for word on the only rates the pack carried, the literal reading
+    # named a different unit.
+    ok("less the expected complications of the unit's episodes in that period under the current "
+       "indicator specification" in charter,
+       "the charter files the comparison in clause 4.3 by the specification's defined term")
+    ok("expected complications of a group of episodes" in spec
+       and "rates published with this specification are in Appendix A" in spec,
+       "the specification's defined term resolves to the published table of Appendix A")
+    ok("ordinarily have" not in charter and "ordinarily have" not in spec,
+       "no shipped clause leaves the comparison frequency open")
     ok("separations planned" in charter, "the charter files the activity basis in clause 4.4")
     ok("standardised ratio is reported" in spec, "the specification files the reporting period")
     ok(charter.count("most avoidable complications") == 1
-       and charter.count("ordinarily have") == 1,
+       and charter.count("expected complications") == 1,
        "the pin is stated once, at authority, and not restated")
-    ok(spec.count("ordinarily have") == 0 and charter.count("stratum") == 0,
-       "neither document restates the other's term")
+    ok(charter.count("stratum") == 0 and charter.count("Appendix A") == 0,
+       "the charter points at the specification rather than restating its table")
 
     # ---------- the asks: separation, devices and stops ----------
     acute_units = {c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"}
