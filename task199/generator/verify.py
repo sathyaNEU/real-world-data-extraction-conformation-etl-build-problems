@@ -268,6 +268,72 @@ def main():
                 pubdiff += 1
     ok(pubdiff == 0, "ask.A_device_never_inside_the_call", "%d exceptions" % pubdiff)
 
+    # ---- ask A's reconciliation, closing each quarter from the shipped bytes alone
+    # A mesa serves two municipalities and reports under its seat, so the partner is the one whose
+    # own detail closes the seat's published rows every month. That is what names the mesa the
+    # credit note rejects.
+    allmun = {x["municipio"] for x in rows("tabla_municipios.csv")}
+    outside = sorted(allmun - set(PANEL))
+    bymonth = {(x["municipio_sede"], int(x["mes"])): int(x["acciones_dia"]) for x in summ}
+    seats = sorted({x["municipio_sede"] for x in summ if x["municipio_sede"] not in PANEL})
+    partner = {}
+    for st in seats:
+        for pm_ in outside:
+            if pm_ == st or pm_ in seats:
+                continue
+            if all(bymonth.get((st, mo), 0) == detail.get((st, mo), 0) + detail.get((pm_, mo), 0)
+                   for mo in range(1, 13)):
+                partner[st] = pm_
+    ok(len(partner) == len(seats), "askA.every_mesa_resolves_to_a_pair",
+       "%d of %d seats" % (len(partner), len(seats)))
+    desk = {"Rio de Oro", partner.get("Rio de Oro")}
+    ok("lote del 11 de agosto de la mesa de rio de oro" in fac,
+       "askA.the_credit_note_names_the_lote_and_the_mesa")
+
+    MONTHS = ["", "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
+              "septiembre", "octubre", "noviembre", "diciembre"]
+    billq, nlines = {}, 0
+    fac_lines = text_of_pdf("facturas_resena_andina_2025.pdf").splitlines()
+    for line in fac_lines:
+        mm = re.match(r"^(.+?)\s+(%s)\s+(\d+)\s+([\d.]+)$" % "|".join(MONTHS[1:]), line.strip())
+        if mm:
+            q = (MONTHS.index(mm.group(2)) - 1) // 3 + 1
+            billq[q] = billq.get(q, 0) + int(mm.group(3))
+            nlines += 1
+    ok(nlines == 72, "askA.invoice_lines_read_back", "%d desk-month lines" % nlines)
+
+    delq, groups = {}, {}
+    for r in rows("envios_resena_andina.csv"):
+        if r["municipio_fecha"] in PANEL:
+            continue
+        dt = d_iso(r["fecha_envio"])
+        n = int(r["items_entregados"])
+        py, pmn = int(r["periodo_publicacion"][:4]), int(r["periodo_publicacion"][5:7])
+        dq = (dt.month - 1) // 3 + 1 if dt.year == 2025 else 0
+        if dq:
+            delq[dq] = delq.get(dq, 0) + n
+        cred = (r["fecha_envio"] == "2025-08-11" and r["municipio_fecha"] in desk)
+        bq = 0 if (cred or dt.year != 2025 or py != 2025) else (pmn - 1) // 3 + 1
+        if dq == bq or (dq == 0 and bq == 0):
+            continue
+        groups[(dq, bq, cred)] = groups.get((dq, bq, cred), 0) + n
+    ok(len(groups) == 5, "askA.five_groups_close_the_four_quarters",
+       ", ".join("%s=%d" % (k, v) for k, v in sorted(groups.items())))
+    for q in (1, 2, 3, 4):
+        gap = delq.get(q, 0) - billq.get(q, 0)
+        closed = (sum(v for k, v in groups.items() if k[0] == q)
+                  - sum(v for k, v in groups.items() if k[1] == q))
+        ok(gap == closed, "askA.quarter_closes.T%d" % q, "gap %+d, lines %+d" % (gap, closed))
+    annual = {k: v for k, v in groups.items() if k[1] == 0}
+    ok(sum(delq.values()) - sum(billq.values()) == sum(annual.values()), "askA.annual_identity",
+       "%d delivered less %d billed = %d" % (sum(delq.values()), sum(billq.values()),
+                                             sum(annual.values())))
+    ok(sum(1 for q in (1, 2, 3, 4)
+           if delq.get(q, 0) - billq.get(q, 0)
+           == sum(v for k, v in annual.items() if k[0] == q)) == 0,
+       "askA.the_annual_line_set_closes_no_quarter")
+    ok(all(k[0] != 0 for k in groups), "askA.every_closing_group_is_delivered_inside_2025")
+
     # ---- provenance and the distractors
     man_rows = rows("manifiesto_exportacion.csv")
     listed = {x["archivo"] for x in man_rows}

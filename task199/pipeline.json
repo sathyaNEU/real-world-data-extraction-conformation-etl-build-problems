@@ -15,13 +15,7 @@
   "call": "Tibu, at 92.2 recorded collective actions per 100,000 residents over 1 April to 30 September 2026 (137 gathering-days over a published projection of 148,590).",
   "stump": "A competent solver cleans the register, ranks the eleven panel cities on their own recorded rise with residents as the only denominator, and files Sardinata at 121.4 per 100,000, whose whole rise is the material three outlets began filing from it.",
   "returned": [],
-  "judge": {
-    "verdict": "NOT_DETERMINISTIC",
-    "disposition": "FIX_NOW",
-    "taxonomy": "Gate C and E fail on supplementary asks 4 and 6; the main call and its printed rate are forced",
-    "report": "task199/determinism_check_report.md",
-    "gates": "A fail in part (ask 6 only, plus one write-up defect), B PASS, C fail on the asks and PASS on the main call, D PASS, E fail in part, F moderate to good, G PASS, H PASS"
-  },
+  "judge": "architecture 1 pass 1: NOT_DETERMINISTIC, FIX_NOW, 2026-10-18; repaired on the ask side and ready for the single re-judge",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -29,19 +23,20 @@
   "portal_status": "",
   "portal_status_date": "",
   "gates": {
-    "checks.py": "exit 0, 95 checks, 95 PASS, 0 FAIL (floor 40), three-rules block R1 to R3c executed on the clean truth",
+    "checks.py": "exit 0, 100 checks, 100 PASS, 0 FAIL (floor 40), three-rules block R1 to R3c executed on the clean truth",
     "verify.py": "exit 0, 76 checks, 76 PASS, 0 FAIL, reading only the shipped bundle, every format read back with a positive control on the same code path and a non-zero extraction length check",
-    "figures_check.py": "exit 0, 125 figures in blocks 1 to 4, 0 absent from figures.json",
+    "figures_check.py": "exit 0, 122 figures in blocks 1 to 4, 0 absent from figures.json",
     "precut.py": "exit 0, 50 checks, 0 FAIL, 0 WARN",
-    "voice-check.py": "exit 0, 13 checks PASS, prompt.txt 986 characters",
-    "ceiling.py": "pair ceiling 28.5 (bar 40), mirror leakage 0.0 per cent (bar under 35), cracker keeps 0 of 64, sweep limit 26 of 64; --forcing measures 35 of 35 sampled ask figures moving beyond their stated rounding on the cut pack",
+    "voice-check.py": "exit 0, 13 checks PASS, prompt.txt 995 characters, the call sentence unchanged from the snapshot",
+    "ceiling.py": "pair ceiling 28.5 (bar 40), mirror leakage 0.0 per cent (bar under 35), cracker keeps 0 of 64; --forcing measures 35 of 35 sampled ask figures moving beyond their stated rounding on the cut pack",
     "leak.py": "REVIEW, 0 LEAK (4 REVIEW on register files naming their own municipalities beside counts, 1 on the protocol's panel list, answered in the design note)",
     "guard surface": "clean, personas found are the two on the card",
     "guard heart": "WARN, 0 BLOCK, nearest driver 0.06",
     "guard check": "WARN, 0 BLOCK (repeat.decision only)",
     "container audit": "target/ and golden/ clean, no producer signature and no out-of-band timestamp",
-    "rebuilds": "two consecutive full rebuilds byte identical; target tree digest a4a215a5cfa28736b6467691603ef4f5, golden digest 7345838eb522401cd5416377282b727d, target.zip md5 b5eddfa098ee9f43a4cde07d5e88cb67 with 17 members",
-    "input_gates": "17 files, four formats (csv, xlsx, pdf, md), envios_resena_andina.csv at 51,173 rows, two declared distractors"
+    "rebuilds": "two consecutive full rebuilds byte identical; target tree digest add86acc04d24590a88fd1049fd0e8e3, golden digest 5ff8433fedfbc9cfb5c8a917a6ba1712, target.zip md5 91c50754df47d329e4ab9c20e6483e19 with 17 members",
+    "input_gates": "17 files, four formats (csv, xlsx, pdf, md), envios_resena_andina.csv at 51,173 rows, two declared distractors",
+    "freeze.py check --mode rubric": "two frozen items moved, both required by the judge's FIX_NOW and recorded in the design note: block 1 lost the two ratios and gained the four integer components (the committed 92.2 unchanged), and the note's ladder row was corrected to the measured fact that only the citations route names Teorama. The allow list is keyed to figures.json values and cannot express either, so neither was suppressed."
   },
   "measured": {
     "ladder_on_the_cut_pack": "rung 0 Convencion 3.013, rung 1 Sardinata 3.175 (the default path), rung 2 Teorama 1.748, rung 3 Tibu 2.435",
@@ -50,9 +45,9 @@
     "screens": "all four of stumping Part 3 pass, plus the sixth: a short pre-window baseline leaks the golden only where presence steps before activity, so both step on 2026-04-01 and the invariant is asserted",
     "seed_sweep": "60 seeds on the clean mechanism: decisive route names the golden 60 of 60, default path misses it 60 of 60; 80-seed run 80 of 80 and 78 of 80",
     "seed_choice": "40 seeds scanned against the stage-3 floors, 3 cleared them, the first (230875) taken",
-    "graded_figures": "every panel city's rate sits 0.50 of the printed unit from its bin edge, none round, closest pair 0.5 apart"
+    "graded_figures": "no ratio is graded anywhere; every panel city's rate sits 0.50 of the printed unit from its bin edge and every sector mean at least 0.30, none round, after a deterministic mid-bin pass in the generator"
   },
-  "resume_step": "Stage 4: the parent spawns the isolated leak reader and the determinism judge from target.zip, prompt.txt and submission.md's graded blocks. Findings come back here for one generator pass.",
+  "resume_step": "Stage 4 re-run: the leak reader re-reads because four documents changed (the bulletin's methodological note, the dictionary, the manual's participants clause and the prompt), and the determinism judge re-judges once, this being a FIX_NOW.",
   "notes": "Three axis BLOCKs were cleared at stage 2 by redrawing (shape, stump strategy, forcing event), each raised by the corpus moving while other builders were live. Stage 3's own findings are tabled in the design note under Stage 3 findings answered, including the counting convention the independent verifier caught and the leak sweep's English TODO marker matching Spanish prose. No git run by this session.",
   "precut": {
     "exit": 0,

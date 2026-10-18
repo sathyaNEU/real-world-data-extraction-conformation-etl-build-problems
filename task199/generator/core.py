@@ -241,7 +241,7 @@ def screen6(t):
 ASKS = {
     "A": {
         "name": "intake reconciled to the service's invoices, 2025, by quarter and outlet type",
-        "figures": 23,          # 4 quarters x 4 outlet types + 5 reconciling items + 2 totals
+        "figures": 25,          # 4 quarters x 4 outlet types + 4 billed amounts + 5 reconciling groups
         "home": "audit trail: an input the call consumes, through rows the call never reads, to another system's control total",
         "population": "every delivery row for 2025, all 23 municipalities; the device rows are the Rio de Oro desk's",
         "primary": "D1 duplication under fresh item ids: the service re-sent the Rio de Oro desk's August batch after a transmission failure and the log holds both copies, while the invoice bills the batch once",

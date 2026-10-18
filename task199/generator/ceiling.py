@@ -50,7 +50,7 @@ add("A", "items delivered, quarter x radio", 4, True, False)
 add("A", "items delivered, quarter x digital", 4, True, False)
 add("A", "items delivered, quarter x agency", 4, True, False)
 add("A", "amount billed, quarter", 4, True, True)       # hazard H2: invoice amounts in thousands
-add("A", "reconciling item", 3, True, False)
+add("A", "reconciling item group", 5, True, False)
 
 # Ask B: what the register holds for the twelve municipalities outside the designation panel, 2025.
 # Primary: the register's published monthly summary is built at desk grain and named by municipality,
@@ -191,13 +191,13 @@ def forcing():
     moved = []
 
     # Ask A. The natural read takes each quarter's delivery rows as that quarter's billing, so the
-    # billed column equals the delivered column and every difference line is zero.
+    # billed column equals the delivered column and no quarter has a gap to close.
     for q in (1, 2, 3, 4):
         nat = fig["ask_a_totals"]["T%d" % q]
         gold = fig["ask_a_billed"]["T%d" % q]
         moved.append(("A billed T%d" % q, nat, gold, abs(nat - gold) >= 1))
-    for k, v in fig["ask_a_differences"].items():
-        moved.append(("A difference %s" % k, 0, v, v >= 1))
+    for k, v in fig["ask_a_lines"].items():
+        moved.append(("A reconciling group %s" % k, 0, v, v >= 1))
 
     # Ask B. The natural read takes the published monthly summary, which is seated by desk.
     summ = {}

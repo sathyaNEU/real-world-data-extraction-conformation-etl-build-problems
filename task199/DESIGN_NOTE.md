@@ -29,6 +29,17 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
 | Six of ask C's eight "largest single action" figures did not move: the biggest action in a sector is usually not one the coder recorded as a range | the forcing measurement on the cut pack | The figure was replaced by the sector's total participants, which the device moves in all eight sectors by 197 to 3,721, and the ask's unit was tied to the register's own entry (the 2025 export holds one per gathering-day, as the dictionary states) so the term carries no second reading |
 
+## The judge's FIX_NOW, answered
+
+| Finding | What was done |
+|---|---|
+| Ask 6's data contradicted the manual: all ranged entries held the range's low end in `participantes_est` while the manual promised a central estimate, and the committed figures reproduced only if each midpoint was floored before summing | The coder now leaves the numeric field empty where the source reported a range and no figure, which is what the manual and the dictionary state, and every range is drawn so its endpoints sum to an even number, so the midpoint is a whole participant and nothing has to be floored. The reconstruction and its grain are pinned in the asking sentence ("the participants per entry and in total for each actor sector, taking the midpoint where only a range is held") and the closing rounding clause now covers each class: actions, items and participant totals whole, participants per entry and every rate to one decimal |
+| Ask 4's "with a line for each difference" equally carried the per-quarter arithmetic deltas | Reworded to "with a line for each item reconciling the gap" |
+| The chart ask was internally inconsistent: bars of gathering-days per 1,000 items received cannot carry a line at 1.00, which belongs to the ratio | The bars carry the ratio of the half year's gathering-days per item received to the same figure over the comparison period, the axis says so, and the write-up's description matches |
+| Step 5 said the retained-items and citations denominators both rank Teorama first | Measured on the cut pack: citations rank Teorama first with the golden fourth at 1.071, while retained items rank the golden first at 1.658. Step 5 now names the citations route alone, and the ladder and readability rows say the same |
+| Seven graded figures sat inside the bin-edge floor, the worst being the designation ratio at 0.00013 and a sector mean on an exact tie at 330.85000 | No ratio is graded anywhere now: the chart prints no per-bar value, block 1 states the call on the four integer components instead, and the steps name the ordering rather than the ratios. The sector means are held clear by a deterministic pass in the generator that adjusts one plain entry per sector until the mean clears 0.3 of the printed unit and does not print round; the tightest is now 0.30 of the unit |
+| The leak reader's three quotes | The bulletin's methodological note is cut to one sentence, its "no compara municipios entre si ni anticipa la designacion" is gone, and the dictionary's line telling the analyst which two files do not enter the register is replaced by a plain listing. Protocol 4.1 is untouched: deleting it would open the Gate C fork the judge certified closed, and it names no normaliser, no city and no file |
+
 ## Tried and rejected`) |
 | World | Colombia; Observatorio Territorial del Nororiente keeps the Registro de Acciones Colectivas from material delivered by the Resena Andina clipping service; personas drawn with `guard.py names --locale es_CO --seed 199` |
 | Spine | `envios_resena_andina.csv`, one row per outlet x city x delivery day, about 31,000 rows, 2024-01-01 to 2026-09-30 |
@@ -168,7 +179,7 @@ verdict last. The decisive rung is silent on all six.
 |---|---|---|---|---|---|---|---|
 | 0 rows as the exports hold them, ranked on the rise (Convencion 3.013) | the window and unit clauses send a reader to the action date and the gathering-day | two date columns and a day count column | yes, the first group-by | none ships | yes, the duplicate check finds the extract overlap | yes | readable |
 | 1 battery run, actions on the filed unit, per 100,000, ranked on the rise (Sardinata 3.175) | the protocol's comparison clause gives the baseline | counts and a population join | yes, the opponent default | none ships | yes | yes | readable |
-| 2 conditioned on the register's own protest material: retained items, citations or citing outlets (Teorama 1.748 on citations) | no sentence names a denominator; the field's published caveat is general | the retained-item and citation columns sit in the files the call already reads | yes, the media-reach reflex reaches exactly here | none ships | no, no sweep divides a count by its own coverage | one ratio | readable |
+| 2 conditioned on the citations the register holds per action (Teorama 1.748, the golden fourth at 1.071) | no sentence names a denominator; the field's published caveat is general | the retained-item and citation columns sit in the files the call already reads | yes, the media-reach reflex reaches exactly here | none ships | no, no sweep divides a count by its own coverage | one ratio | readable |
 | 3 (decisive) conditioned on the material the service delivered, every parameter-free form (Tibu 2.435) | no sentence names the delivered-item column, a denominator or an exposure; the protocol says only what an entry is | the delivered-item column sits in the same table as the retained-item column, named after the service's own delivery, with nothing marking it as the exposure and nothing excluding the other | no, measured: 10 of 10 reflexes name a wrong city, worst at 1.346 against the golden's 1.980 | none ships, and no audit, gold standard or certified figure measures the register's completeness | no, the battery does not reconcile a count against a volume at another grain | no, two ratios and a comparison across eleven cities | silent |
 
 **The eligibility condition is not a rung.** A response that ignores it still files Sardinata, because
@@ -199,7 +210,7 @@ It supplies the scorecard's threshold column and is asserted inert against every
 |---|---|---|---|---|
 | 0 | the exports read as they come | Convencion | 3.013 | the publication clause (the definitive supersedes) and the manual's unit |
 | 1 | battery run, filed unit, per 100,000, rise against the city's own baseline (the default path) | Sardinata | 3.175 | the protocol's outcome: a rise in the actions occurring, not in the entries held |
-| 2 | conditioned on the register's own protest material (citations 1.748 against the golden's 1.071), or capture estimated from citation redundancy | Teorama | 1.748 | the volumes are produced by the recorded actions, so the ratio cancels the rise; the redundancy family needs a free parameter the pack does not fix, and its winner moves from Teorama to Sardinata as that parameter moves |
+| 2 | conditioned on the citations the register holds per action (the golden fourth at 1.071), or capture estimated from citation redundancy | Teorama | 1.748 | the volumes are produced by the recorded actions, so the ratio cancels the rise; the redundancy family needs a free parameter the pack does not fix, and its winner moves from Teorama to Sardinata as that parameter moves |
 | 3 | conditioned on the material the service delivered, the only volume not produced by the actions | **Tibu** | 2.435 | nothing |
 
 **Arithmetic, on the cut pack.** Golden 4th of 11 on rung 1 (the default path), 1st on rung 3. Default-path
@@ -216,6 +227,13 @@ activity multiplier).
 **Mechanisms, from different gaps.** Rung 0 time and identity (an extract vintage and a template's unit),
 rung 2 objective (the metric is right and the denominator is not), rung 3 population (the file is not the
 thing). The decisive gap is not rung 1's.
+
+**The two volumes the record offers do not behave alike on the cut pack, and the measured fact is what
+ships.** The citations held per action rank Teorama first at 1.748 with the golden fourth at 1.071, so that
+is rung 2. The items retained for screening rank the golden first at 1.658, so the retained-item route is a
+second exposure measure that reaches the same city rather than a rung, and the choice between the two is
+forced by the dictionary's own split between what the service delivered and what the filter kept. The
+write-up's step 5 names the citations route alone for that reason.
 
 **The agreement across rung 3's forms is structural, not insensitivity.** The golden's delivered volume does
 not move between the two spans, so no transformation of it can absorb its rise, while the rivals' scores
@@ -311,15 +329,16 @@ with its effective dates, 12 columns. Stops: the summary as published 1,352; raw
 an unmatched-row drop 1,131; golden 1,268. Realism: a register publishes a monthly summary from its desk
 returns, and the desks are seated in one municipality.
 
-**Ask C. Participants per action and in total, by actor sector, 2025, the municipalities outside the
+**Ask C. Participants per entry and in total, by actor sector, 2025, the municipalities outside the
 panel.** 16 figures (8 sectors x 2). H18 home: the scale behind the register's counts, a measure every city carries that
-the designation does not turn on, in a column the call never reads. Primary: radio-transcript coding writes a
-reported range's lower bound into the numeric column while the note field holds the range, against the
-manual's sentence that the column carries a central estimate; radio transcripts reach every sector. Hazards:
+the designation does not turn on, in a column the call never reads. Primary: where the source reported a range and no figure, the
+coder leaves the numeric field empty and transcribes the range in the note, which is what the manual and the
+dictionary both state; the entries are reconstructed at the range's midpoint, which every range makes a
+whole participant. Radio transcripts reach every sector, so the primary reaches all sixteen figures. Hazards:
 H4 (the sector code list gained two codes in 2025), H3. Files and columns: the register's participants and
-note columns, the sector code list, the manual, 9 columns. Stops, measured on the cut pack: the numeric
-column as exported gives 239.6 participants per action for the largest sector against the golden's 275.6,
-and 62,449 in total against 66,170. Realism: a coder
+note columns, the sector code list, the manual, 9 columns. Stops, measured on the cut pack: reading the numeric
+column alone gives 221.7 participants per entry for the largest sector against the golden's 275.2, and
+53,219 in total against 61,921. Realism: a coder
 transcribing a radio report writes what was said and fills the numeric field with the lower figure.
 
 **The separation line.** Zero device and zero hazard rows inside the call's declared population (the eleven
@@ -408,6 +427,17 @@ Of every file and every sentence added to force a convention: what else does the
 | Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
 | Six of ask C's eight "largest single action" figures did not move: the biggest action in a sector is usually not one the coder recorded as a range | the forcing measurement on the cut pack | The figure was replaced by the sector's total participants, which the device moves in all eight sectors by 197 to 3,721, and the ask's unit was tied to the register's own entry (the 2025 export holds one per gathering-day, as the dictionary states) so the term carries no second reading |
 
+## The judge's FIX_NOW, answered
+
+| Finding | What was done |
+|---|---|
+| Ask 6's data contradicted the manual: all ranged entries held the range's low end in `participantes_est` while the manual promised a central estimate, and the committed figures reproduced only if each midpoint was floored before summing | The coder now leaves the numeric field empty where the source reported a range and no figure, which is what the manual and the dictionary state, and every range is drawn so its endpoints sum to an even number, so the midpoint is a whole participant and nothing has to be floored. The reconstruction and its grain are pinned in the asking sentence ("the participants per entry and in total for each actor sector, taking the midpoint where only a range is held") and the closing rounding clause now covers each class: actions, items and participant totals whole, participants per entry and every rate to one decimal |
+| Ask 4's "with a line for each difference" equally carried the per-quarter arithmetic deltas | Reworded to "with a line for each item reconciling the gap" |
+| The chart ask was internally inconsistent: bars of gathering-days per 1,000 items received cannot carry a line at 1.00, which belongs to the ratio | The bars carry the ratio of the half year's gathering-days per item received to the same figure over the comparison period, the axis says so, and the write-up's description matches |
+| Step 5 said the retained-items and citations denominators both rank Teorama first | Measured on the cut pack: citations rank Teorama first with the golden fourth at 1.071, while retained items rank the golden first at 1.658. Step 5 now names the citations route alone, and the ladder and readability rows say the same |
+| Seven graded figures sat inside the bin-edge floor, the worst being the designation ratio at 0.00013 and a sector mean on an exact tie at 330.85000 | No ratio is graded anywhere now: the chart prints no per-bar value, block 1 states the call on the four integer components instead, and the steps name the ordering rather than the ratios. The sector means are held clear by a deterministic pass in the generator that adjusts one plain entry per sector until the mean clears 0.3 of the printed unit and does not print round; the tightest is now 0.30 of the unit |
+| The leak reader's three quotes | The bulletin's methodological note is cut to one sentence, its "no compara municipios entre si ni anticipa la designacion" is gone, and the dictionary's line telling the analyst which two files do not enter the register is replaced by a plain listing. Protocol 4.1 is untouched: deleting it would open the Gate C fork the judge certified closed, and it names no normaliser, no city and no file |
+
 ## Tried and rejected
 
 - Multi-source deduplication against the coding manual: the decisive step would be executing the manual,
@@ -457,6 +487,12 @@ Of every file and every sentence added to force a convention: what else does the
   the mission is a maximum rather than a cap that runs out mid-list, and 10's hard seam is different
   denominators per metric. The protocol's eligibility condition supplies the threshold column and is
   asserted to remove no city any route names, so no stated check decides the call.
+- Grading any ratio: the decisive ratio printed to two decimals sat 0.00013 from its bin edge and five
+  per-city ratios were inside the floor, and the only lever that could move them is the delivery log, which
+  is the main-call surface and had to stay byte-identical. Cutting the ratios from the graded surface was
+  the available fix and it costs nothing: the call is stated on the four integer components, the chart
+  keeps its ordering, its line at 1.00 and its annotation, and `freeze.py check --mode rubric` is run with
+  the ratio keys allowed for this reason.
 - The sixth pricing screen, run on this pack before a row was cut: a short pre-window baseline isolates the
   golden with no denominator at all, but only where press presence has already moved and activity has not.
   Measured in `core.screen6`: with presence stepping first the raw comparison against the quarter before the

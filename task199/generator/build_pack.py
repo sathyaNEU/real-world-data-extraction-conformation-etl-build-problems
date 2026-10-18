@@ -302,24 +302,30 @@ def sector_means(actions, panel):
     return {s: (tot[s] / n[s], tot[s], n[s]) for s in tot}
 
 
-def nudge_participants(actions, unit=0.1, floor=0.3):
-    """Hold every graded sector mean clear of its printed bin's edge. A mean sitting on a tie prints
-    two ways depending on the rounding rule, which returns a build, so the pass adjusts one plain
-    entry per sector, never a row whose note states a range, until the mean clears. Deterministic:
-    the rows are taken in id order and the step is always one participant."""
+def nudge_participants(actions, unit=0.1, floor=0.3, off=0.05):
+    """Hold every graded sector mean clear of its printed bin's edge and off the bin's centre. A mean
+    sitting on a tie prints two ways depending on the rounding rule, which returns a build, and a
+    mean that equals the tenth it prints exactly reads as a set figure rather than a measured one, so
+    the pass adjusts one plain entry per sector, never a row whose note states a range, until the
+    mean sits inside the band. Deterministic: the rows are taken in id order and the step is always
+    one participant."""
     panel = {m[0] for m in PANEL_NAMES_SRC}
     for _ in range(400):
         means = sector_means(actions, panel)
         bad = [s for s, (m, _t, _n) in means.items()
                if unit / 2 - abs(m - round(m / unit) * unit) < floor * unit - 1e-12
+               or abs(m - round(m / unit) * unit) < off * unit
                or abs(round(m, 1) - round(round(m, 1))) < 1e-9]   # never a round printed mean
         if not bad:
             return
         for s in sorted(bad):
+            # a one-day entry, so one participant moves the mean by exactly one entry's worth: a
+            # prolonged entry carries its figure on every day it ran, and the mean then steps in
+            # multiples that can skip the band altogether
             pool = [x for x in actions
                     if x["sector"] == s and x["city"] not in panel and not x["rango"][0]
                     and x["truth_participants"] is not None
-                    and any((x["date"] + timedelta(days=k)).year == 2025 for k in range(x["days"]))]
+                    and x["days"] == 1 and x["date"].year == 2025]
             if not pool:
                 continue
             pick = sorted(pool, key=lambda x: x["action_id"])[0]
@@ -348,11 +354,14 @@ def delivered(deliveries, city, lo, hi):
                if r["city"] == city and lo <= r["date"] <= hi)
 
 
-def tune_population(count, planned, unit=0.1, floor=0.3):
+def tune_population(count, planned, unit=0.1, floor=0.3, off=0.05):
     """Choose the published population so the graded rate sits at least `floor` of the printed unit
-    from its bin edge, on a value that is not round and a population that is not round either: a
-    projection of exactly 150,000 and a rate of exactly 40.0 both read as synthetic. The search is a
-    deterministic scan over a narrow band around the planned projection."""
+    from its bin edge and at least `off` of it from the bin's centre, on a value that is not round
+    and a population that is not round either: a projection of exactly 150,000 and a rate of exactly
+    40.0 both read as synthetic, and so does a rate that equals the tenth it prints, since a measured
+    count over a published projection does not land on the printed value. The search is a
+    deterministic scan over a narrow band around the planned projection, taking the population
+    nearest the plan that holds the rate inside the band."""
     best = None
     for pop in range(int(planned * 0.985), int(planned * 1.015)):
         if pop % 50 == 0:                       # a projection is never a round figure
@@ -361,14 +370,21 @@ def tune_population(count, planned, unit=0.1, floor=0.3):
         printed = round(v, 1)
         if abs(printed - round(printed)) < 1e-9:  # never a round printed rate
             continue
-        edge = unit / 2 - abs(v - round(v / unit) * unit)
-        if edge < floor * unit:
+        centre = abs(v - round(v / unit) * unit)
+        edge = unit / 2 - centre
+        if edge < floor * unit or centre < off * unit:
             continue
-        # prefer the value furthest from its bin edge, then the population closest to the plan
-        key = (round(edge, 6), -abs(pop - planned))
-        if best is None or key > (round(best[1], 6), -abs(best[0] - planned)):
+        # the population closest to the plan, the smaller one where two are equally close
+        key = (-abs(pop - planned), -pop)
+        if best is None or key > (-abs(best[0] - planned), -best[0]):
             best = (pop, edge, v)
     return best
+
+
+# The designated city's published projection, as the watch note and the invoice-signing coordinator
+# already carry it. The register's own counts fix the rate, so the denominator is taken as published
+# rather than re-tuned: moving it would move the printed rate and the population the write-up states.
+PINNED_POP = {"Tibu": 148590}
 
 
 def rungs(d):
@@ -465,11 +481,16 @@ def main():
     print("decisive ranking:    ", ", ".join(
         "%s %.3f" % (k, rows[k]["dec"]) for k in sorted(rows, key=lambda k: -rows[k]["dec"])[:5]))
     print()
-    print("population tuning, so every graded rate clears 0.3 of the printed unit:")
+    print("population tuning, every graded rate 0.3 to 0.45 of the printed unit inside its bin:")
     planned = {m[0]: m[1] for m in core.PANEL}
     pops = {}
     for city in panel:
-        pop, edge, v = tune_population(rows[city]["aw"], planned[city])
+        if city in PINNED_POP:
+            pop = PINNED_POP[city]
+            v = rows[city]["aw"] / pop * 1e5
+            edge = 0.05 - abs(v - round(v, 1))
+        else:
+            pop, edge, v = tune_population(rows[city]["aw"], planned[city])
         pops[city] = pop
         print("  %-17s count %4d  pop %7d  rate %8.3f prints %6.1f  edge %.4f = %.2f u"
               % (city, rows[city]["aw"], pop, v, round(v, 1), edge, edge / 0.1))
@@ -501,7 +522,7 @@ def desk_seat(city):
 
 
 def code_for(city, when):
-    """The national code list merged two municipalities in July 2025 and reissued three codes."""
+    """The national code list reissued three municipalities' codes in July 2025."""
     if city in RETIRED_CODE and when >= CODE_EFFECTIVE:
         return NEW_CODE[city]
     return DIVIPOLA[city]
@@ -716,8 +737,9 @@ def write_workbooks(pops):
             ws.append([code, name, t, amb, "primario" if t in PUSHED else "consulta"])
         ws.column_dimensions["B"].width = 30
     ws = wb.create_sheet("Notas")
-    ws.append(["Panel vigente al 5 de noviembre de 2026. El ambito declarado es el que cada medio"])
-    ws.append(["reporta en su ficha; no describe el volumen que remite."])
+    ws.append(["Panel vigente al 5 de noviembre de 2026."])
+    ws.append(["El ambito declarado es el que cada medio reporta en su ficha."])
+    ws.append(["El canal de entrega distingue las mesas primarias de las de consulta."])
     ws.append(["Las fichas se revisan al cierre de cada semestre."])
     wb.save(os.path.join(TARGET, "panel_fuentes.xlsx"))
 
@@ -845,13 +867,15 @@ def write_manual():
                "deja el campo numerico vacio."),
          ("p", "2.3 El campo sector_actor toma su valor de la lista vigente. La lista se amplio en "
                "2025 con dos sectores."),
-         ("h", "3. Revision"),
-         ("p", "3.1 El equipo revisa una muestra de entradas cada mes y corrige la que no cumpla 1.1."),
+         ("p", "2.4 Campos presentes en cada plantilla:"),
          ("t", [["Campo del registro", "en 2024", "en 2025", "en 2026"],
                 ["fecha de accion", "si", "si", "si"],
                 ["dias", "no", "no", "si"],
                 ["extracto", "no", "no", "si"],
-                ["nota_registro", "si", "si", "si"]])])
+                ["nota_registro", "si", "si", "si"]]),
+         ("h", "3. Revision"),
+         ("p", "3.1 El equipo revisa una muestra de entradas cada mes y corrige la que no cumpla "
+               "1.1.")])
 
 
 def write_bulletin(d):
@@ -915,7 +939,7 @@ def write_dictionary(rowcounts):
     with open(p, "w", encoding="utf-8") as f:
         f.write("""# Diccionario de datos, Registro de Acciones Colectivas
 
-Edicion 9, 5 de noviembre de 2026. Describe los archivos del extracto definitivo de esa fecha.
+Edicion 9, 5 de noviembre de 2026. Describe los archivos del extracto de esa fecha.
 
 ## rac_acciones_2024.csv, rac_acciones_2025.csv, rac_acciones_2026.csv
 
@@ -940,7 +964,7 @@ corrio. La exportacion de 2025 renombro las columnas y escribe las fechas en for
 ## envios_resena_andina.csv
 
 Una fila es un dia en que un medio remitio material fechado en un municipio. `items_entregados`
-cuenta cuanto remitio el servicio desde ese municipio, sea cual sea el tema.
+cuenta cuanto remitio el servicio desde ese municipio.
 `items_retenidos` cuenta los items que el filtro del registro conservo para revision, es decir los
 que pueden describir una accion. `periodo_publicacion` es el mes en que se publicaron los items de
 la fila, que no siempre es el mes de la remision. Los codigos de fuente llevan el prefijo RSA desde
@@ -949,7 +973,7 @@ la fila, que no siempre es el mes de la remision. Los codigos de fuente llevan e
 ## citas_rac.csv
 
 Una fila es una cita: un item que el registro vinculo a una entrada. Una entrada puede tener varias
-citas y un item puede citar una sola entrada.
+citas y un item puede citar mas de una entrada.
 
 ## resumen_mensual_rac_2025.csv
 
@@ -960,7 +984,7 @@ mesa y no necesariamente el municipio de ocurrencia.
 ## tabla_municipios.csv
 
 Codigos DIVIPOLA con sus fechas de vigencia. Tres municipios recibieron codigo nuevo en julio de
-2025 cuando la lista nacional fusiono dos entidades.
+2025 cuando la lista nacional reasigno sus codigos.
 
 ## panel_fuentes.xlsx, proyecciones_poblacion.xlsx
 

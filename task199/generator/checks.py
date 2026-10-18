@@ -212,6 +212,10 @@ def main():
     ok(worst >= 0.03 - 1e-12, "SF10.sector_means_clear_their_bin", "tightest %.4f" % worst)
     ok(all(abs(round(m, 1) - round(round(m, 1))) > 1e-9 for m, _t, _n in sm.values()),
        "SF10.no_sector_mean_prints_round")
+    ok(min(abs(m - round(m, 1)) for m, _t, _n in sm.values()) >= 0.005 - 1e-12,
+       "SF10.no_sector_mean_sits_on_its_printed_tenth",
+       "tightest %.4f from the tenth it prints"
+       % min(abs(m - round(m, 1)) for m, _t, _n in sm.values()))
     # SF11 rounding once at the end
     ok(near(round(gold_rate, 1), round(days_w / float(pops[g]) * 1e5, 1)), "SF11.rounding_once")
     # SF12 the open HOW: the two outcome-fed volumes contain the action count by construction
@@ -287,11 +291,81 @@ def main():
        "ask.C_column_does_not_touch_the_call")
     ok(near(B.action_days(stripped, g, *B.WIN), days_w), "ask.C_column_does_not_touch_the_count")
 
+    # ------------------------------------ ask A's reconciliation closes at the grain it is asked at
+    # The ask asks for a line per item group closing each quarter's gap, so the line set is the one
+    # that closes all four quarters: the groups whose delivery quarter and billed quarter differ,
+    # plus the lote the invoice credited. The coarser annual reading and the publication basis are
+    # the readings the old wording admitted, and both are measured here against the same rows.
+    delq, pubq, billq = {}, {}, {}
+    for r in d["deliveries"]:
+        if r["city"] not in nonpanel:
+            continue
+        pub = B.publication_period(r["city"], r["date"])
+        if r["date"].year == 2025:
+            q = (r["date"].month - 1) // 3 + 1
+            delq[q] = delq.get(q, 0) + r["delivered"]
+        if pub.year == 2025:
+            q = (pub.month - 1) // 3 + 1
+            pubq[q] = pubq.get(q, 0) + r["delivered"]
+    for _seat, m, items, _val in inv:
+        q = (m - 1) // 3 + 1
+        billq[q] = billq.get(q, 0) + items
+    groups = {}
+    for r in d["deliveries"]:
+        if r["city"] not in nonpanel:
+            continue
+        pub = B.publication_period(r["city"], r["date"])
+        cred = (r["date"] == B.REJECTED_LOTE[1] and B.desk_seat(r["city"]) == B.REJECTED_LOTE[0])
+        dq = (r["date"].month - 1) // 3 + 1 if r["date"].year == 2025 else 0
+        bq = 0 if (cred or r["date"].year != 2025 or pub.year != 2025) else (pub.month - 1) // 3 + 1
+        if dq == bq or (dq == 0 and bq == 0):
+            continue
+        groups[(dq, bq, cred)] = groups.get((dq, bq, cred), 0) + r["delivered"]
+    ok(len(groups) == 5, "askA.five_groups_close_the_four_quarters",
+       ", ".join("%s=%d" % (k, v) for k, v in sorted(groups.items())))
+    for q in (1, 2, 3, 4):
+        gap = delq.get(q, 0) - billq.get(q, 0)
+        closed = (sum(v for k, v in groups.items() if k[0] == q)
+                  - sum(v for k, v in groups.items() if k[1] == q))
+        ok(gap == closed, "askA.quarter_closes.T%d" % q, "gap %+d, lines %+d" % (gap, closed))
+    annual = {k: v for k, v in groups.items() if k[1] == 0}
+    ok(sum(delq.values()) - sum(billq.values()) == sum(annual.values()),
+       "askA.annual_identity", "%d delivered less %d billed = %d"
+       % (sum(delq.values()), sum(billq.values()), sum(annual.values())))
+    closes = 0
+    for q in (1, 2, 3, 4):
+        gap = delq.get(q, 0) - billq.get(q, 0)
+        if gap == sum(v for k, v in annual.items() if k[0] == q):
+            closes += 1
+    ok(closes == 0, "askA.the_annual_line_set_closes_no_quarter",
+       "%d of 4 quarters close on the two annual lines" % closes)
+    dec25 = sum(r["delivered"] for r in d["deliveries"]
+                if r["city"] in nonpanel and r["date"].year == 2026
+                and B.publication_period(r["city"], r["date"]).year == 2025)
+    ok(dec25 > 0 and sum(pubq.values()) - sum(billq.values()) == dec25 + sum(
+        v for k, v in groups.items() if k[2]),
+       "askA.the_publication_basis_is_a_different_gap",
+       "%d published less %d billed; %d items published in 2025 reach the service in 2026"
+       % (sum(pubq.values()), sum(billq.values()), dec25))
+    ok(all(k[0] != 0 for k in groups), "askA.every_closing_group_is_delivered_inside_2025",
+       "the items published in 2025 and delivered in 2026 form no closing group")
+
     # ---------------------------------------------------- graded figures, bins
     for c in panel:
         v = rt[c]
         e = 0.05 - abs(v - round(v, 1))
         ok(e >= 0.03 - 1e-9, "bin.%s" % c, "%.3f prints %.1f edge %.4f" % (v, round(v, 1), e))
+    # a rate that equals the tenth it prints is a tuned denominator rather than a measured one. The
+    # designated city keeps its published projection, which the write-up states and this repair may
+    # not move, so its rate is the one that still sits on the printed value.
+    ok(pops[g] == B.PINNED_POP[g], "bin.the_designated_city_keeps_its_published_projection",
+       "%s %d" % (g, pops[g]))
+    for c in panel:
+        if c in B.PINNED_POP:
+            continue
+        centre = abs(rt[c] - round(rt[c], 1))
+        ok(centre >= 0.005 - 1e-9, "bin.off_the_printed_tenth.%s" % c,
+           "%.5f from the tenth it prints" % centre)
     ok(abs(round(gold_rate, 1) - round(round(gold_rate, 1))) > 1e-9,
        "bin.golden_is_not_a_round_value", "%.1f" % round(gold_rate, 1))
     others = sorted(round(rt[c], 1) for c in panel)

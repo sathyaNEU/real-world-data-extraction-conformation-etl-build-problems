@@ -42,9 +42,61 @@ def watch_note(d, pops):
     return rows, best
 
 
+def item_groups(d):
+    """The groups of items that close each quarter's gap between what the service delivered in 2025
+    and what its 2025 invoices bill, for the twelve municipalities outside the panel.
+
+    A row is delivered in one quarter and billed in the quarter its items were published in, so a
+    group whose two quarters differ sits on one side of a quarter's figures and not the other. Each
+    group is keyed by (the quarter it was delivered in, the quarter the 2025 invoice bills it in,
+    whether the invoice credited it), with 0 for a quarter outside 2025: the items published in
+    December 2024 are delivered in 2025 and billed on no 2025 invoice, the lote the register
+    rejected is delivered and credited, and the items published in December 2025 and delivered in
+    January 2026 are on neither side of 2025 and so close nothing.
+    """
+    groups = {}
+    for r in d["deliveries"]:
+        if r["city"] in PANEL:
+            continue
+        pub = B.publication_period(r["city"], r["date"])
+        credited = (r["date"] == B.REJECTED_LOTE[1]
+                    and B.desk_seat(r["city"]) == B.REJECTED_LOTE[0])
+        dq = (r["date"].month - 1) // 3 + 1 if r["date"].year == 2025 else 0
+        bq = 0 if (credited or r["date"].year != 2025 or pub.year != 2025) \
+            else (pub.month - 1) // 3 + 1
+        if dq == bq or (dq == 0 and bq == 0):
+            continue
+        key = (dq, bq, credited)
+        groups[key] = groups.get(key, 0) + r["delivered"]
+    carried = sorted(k for k in groups if not k[2])
+    credits = sorted(k for k in groups if k[2])
+    return [(k, groups[k]) for k in carried + credits]
+
+
+def line_key(k):
+    """The figures.json key for one reconciling group."""
+    dq, bq, credited = k
+    if credited:
+        return "lote_rechazado"
+    if bq == 0:
+        return "remitido_T%d_publicado_2024" % dq
+    return "facturado_T%d_remitido_T%d" % (bq, dq)
+
+
+def line_label(k):
+    dq, bq, credited = k
+    if credited:
+        return "Lote del 11 de agosto de 2025 rechazado y acreditado"
+    if bq == 0:
+        return "Items publicados en diciembre de 2024 y remitidos en enero de 2025"
+    return "Items facturados en T%d y remitidos en T%d" % (bq, dq)
+
+
 def ask_a(d):
     """Items the service delivered against items its invoices bill, 2025, the twelve municipalities
-    outside the panel, by quarter and outlet type, with a line for each difference."""
+    outside the panel, by quarter and outlet type, with a line per item group closing each quarter's
+    gap. The gap each quarter is the delivered total less the billed total, and the groups that
+    close it are the items the two sides place in different quarters plus the credited lote."""
     cells = {}
     for row in d["deliveries"]:
         if row["city"] in PANEL or row["date"].year != 2025:
@@ -60,18 +112,14 @@ def ask_a(d):
     for seat, m, items, val in B.invoice_lines(d):
         q = (m - 1) // 3 + 1
         amounts[q] = round(amounts.get(q, 0.0) + val, 1)
-    # the three differences between what 2025's rows hold and what 2025's invoice bills
-    dec24 = sum(r["delivered"] for r in d["deliveries"]
-                if r["city"] not in PANEL and r["date"].year == 2025
-                and B.publication_period(r["city"], r["date"]).year == 2024)
-    dec25 = sum(r["delivered"] for r in d["deliveries"]
-                if r["city"] not in PANEL and r["date"].year == 2026
-                and B.publication_period(r["city"], r["date"]).year == 2025)
-    rejected = sum(r["delivered"] for r in d["deliveries"]
-                   if r["city"] not in PANEL and r["date"] == B.REJECTED_LOTE[1]
-                   and B.desk_seat(r["city"]) == B.REJECTED_LOTE[0])
-    return cells, billed, amounts, dict(publicado_2024=dec24, publicado_2025_remitido_2026=dec25,
-                                        lote_rechazado=rejected)
+    lines = item_groups(d)
+    # every quarter closes: delivered less billed is the groups it is delivered in, the credited
+    # lote among them, less the groups the invoice bills in it and the service delivered elsewhere
+    for q in (1, 2, 3, 4):
+        gap = sum(cells.get((q, t), 0) for t in TYPE_LABEL) - billed.get(q, 0)
+        closed = sum(v for k, v in lines if k[0] == q) - sum(v for k, v in lines if k[1] == q)
+        assert gap == closed, (q, gap, closed)
+    return cells, billed, amounts, lines
 
 
 def ask_b(d):
@@ -158,7 +206,7 @@ def main():
     d = B.draw()
     pops = json.load(open(os.path.join(HERE, "populations.json")))["populations"]
     rows, best = watch_note(d, pops)
-    cells, billed, amounts, diffs = ask_a(d)
+    cells, billed, amounts, lines = ask_a(d)
     bee = ask_b(d)
     cee = ask_c(d)
     if os.path.isdir(GOLD):
@@ -210,31 +258,33 @@ def main():
     ws2["A1"].font = bold
     ws2.append([])
     ws2.append(["Trimestre"] + [TYPE_LABEL[t] for t in ("diario", "radio", "digital", "agencia")]
-               + ["Remitido total", "Facturado", "Valor facturado (miles COP)"])
-    for j in range(1, 8):
+               + ["Remitido total", "Facturado", "Diferencia", "Valor facturado (miles COP)"])
+    for j in range(1, 9):
         ws2.cell(row=3, column=j).font = bold
     for q in (1, 2, 3, 4):
         tot = sum(cells.get((q, t), 0) for t in ("diario", "radio", "digital", "agencia"))
         ws2.append(["T%d" % q] + [cells.get((q, t), 0) for t in
                                   ("diario", "radio", "digital", "agencia")]
-                   + [tot, billed.get(q, 0), amounts.get(q, 0.0)])
+                   + [tot, billed.get(q, 0), tot - billed.get(q, 0), amounts.get(q, 0.0)])
     ws2.append([])
-    ws2.append(["Diferencias entre lo remitido en 2025 y lo facturado en 2025", "Items"])
-    ws2.cell(row=ws2.max_row, column=1).font = bold
-    ws2.append(["Items publicados en diciembre de 2024 y remitidos en enero de 2025",
-                diffs["publicado_2024"]])
-    ws2.append(["Items publicados en diciembre de 2025 y remitidos en enero de 2026",
-                diffs["publicado_2025_remitido_2026"]])
-    ws2.append(["Lote del 11 de agosto de 2025 rechazado y acreditado", diffs["lote_rechazado"]])
-    for row in ws2.iter_rows(min_row=4, max_row=7, min_col=2, max_col=6):
+    ws2.append(["Items que cierran la diferencia de cada trimestre", "Remitido en", "Facturado en",
+                "Items"])
+    for j in (1, 2, 3, 4):
+        ws2.cell(row=ws2.max_row, column=j).font = bold
+    for k, v in lines:
+        ws2.append([line_label(k), "T%d" % k[0] if k[0] else "",
+                    "T%d" % k[1] if k[1] else "no facturado", v])
+    for row in ws2.iter_rows(min_row=4, max_row=7, min_col=2, max_col=7):
         for c in row:
             c.number_format = "#,##0"
-    for row in ws2.iter_rows(min_row=4, max_row=7, min_col=7, max_col=7):
+    for row in ws2.iter_rows(min_row=4, max_row=7, min_col=8, max_col=8):
         for c in row:
             c.number_format = "#,##0.0"
+    for i in range(10, 10 + len(lines)):
+        ws2.cell(row=i, column=4).number_format = "#,##0"
     ws2.freeze_panes = "A4"
     ws2.column_dimensions["A"].width = 62
-    for col in "BCDEFG":
+    for col in "BCDEFGH":
         ws2.column_dimensions[col].width = 16
 
     ws3 = wb.create_sheet("Fuera del panel 2025")
@@ -330,7 +380,7 @@ def main():
                          for q in (1, 2, 3, 4)},
         "ask_a_billed": {"T%d" % q: billed.get(q, 0) for q in (1, 2, 3, 4)},
         "ask_a_amounts": {"T%d" % q: amounts.get(q, 0.0) for q in (1, 2, 3, 4)},
-        "ask_a_differences": diffs,
+        "ask_a_lines": {line_key(k): v for k, v in lines},
         "ask_b": [{"city": x["city"], "held": x["held"], "empty_months": x["empty"]} for x in bee],
         "ask_c": [{"sector": x["sector"], "per_action": x["per_action"], "total": x["total"]}
                   for x in cee],
