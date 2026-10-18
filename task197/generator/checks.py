@@ -26,7 +26,7 @@ def main():
     sim._fcr_gate = build.fcr_active
     core._scope_gate = build.scope_gate
     W = core.window()
-    recs = core.recordings(W)
+    recs = core.recordings(W, build.capture_events())
     cache = core.power_cache(W, recs)
     under = core.episode_table(W, recs, cache, "under")
     over = core.episode_table(W, recs, cache, "over")

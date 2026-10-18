@@ -81,6 +81,29 @@ is `analytical`.
 
 ### 1.2a Prefer a decisive step that picks among records-fixed answers
 
+**First, one line that decides whether the rest of this section is even the right question: is the filed
+quantity observed in the records?** A decisive step that corrects a naive figure is one of exactly two
+things. Either it estimates the same filed quantity better, and for two estimators of one quantity to
+stand at all that quantity must be **unobserved**: a true rate, a future value, a causal effect, a latent
+count, a counterfactual output. Or it computes a different quantity, and then filing that quantity is rule
+application while not filing it is a fork on the main recommendation. There is no third position, which is
+the WHAT screen's own wording reached from the other end. So where the filed quantity is a recorded
+statistic the records fix it, nothing is left to estimate, and anything calling itself a correction is a
+different quantity: the only live levers there are selection and nonlinearity in how the records relate to
+it, and a records-fixed decisive step is available only in that case.
+
+The test has predictive content, not just explanatory, which is why it leads. It gives 1.2's survivor list
+exactly: regression to the mean in a unit chosen for standing worst files a true or future level, and the
+staggered-adoption counterfactual files a causal effect, both unobserved and both survivors, while a ratio
+of totals against a mean of ratios files a recorded statistic and fails, which is what task200 measured
+from the other end. It also holds across every shipped driver on Anomaly Detection: a true density behind
+grouped tests, a true count behind an instrument's labels, events only partly captured, an average over
+values known only as bounds, an understated small-event count, a per-slot count the records never state
+because they carry windows, an ultimate count still being coded, a counterfactual output at one second.
+Every one files something unobserved, and no counterexample stands in the corpus. It also explains the
+deaths: task198's architectures 2 and 3 both filed a recorded change and corrected its variance, so both
+were computing a different quantity and both died.
+
 The decisive step may decide a selection, a threshold crossing, a count of qualifying units or which of
 several recorded quantities the comparison runs on, and then every graded figure is something the records
 fix exactly. It may instead produce an estimate, and then every graded figure is an estimator's output and

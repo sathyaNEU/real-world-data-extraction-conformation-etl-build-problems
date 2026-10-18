@@ -10,7 +10,7 @@ Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemn
 | Card | `.claude/skills/fingerprint/cards/task196.json`, v2, registered 2026-10-17, verdict WARN |
 | Pairing | banking-credit-financial-risk / `fraud-aml-detection`, objective anomaly-detection |
 | Niche | sizing the scam cases a payment firm's own detection never sees, from its payments' matches against the scheme's register of reported mule accounts |
-| Shape | 03, bridge between two totals: the member's recorded case count walked to its estimated true case count, one reconciling line at a time |
+| Shape | 03, bridge between two totals: the member's recorded incidence walked to its estimated true incidence, one reconciling line at a time, every line in index units |
 | Strategy | `other`, capture interference (the honest vocabulary key, `causal_design`, was taken by task197 five minutes before this card filed; the mechanism is named in the card's notes) |
 | Gap, generators, Gate G | population and time; G12 decisive, then G3 and G17; `method_or_model_selection` |
 | Layer 2 | `estimand_identification`, pattern `own:contaminated-second-capture` |
@@ -199,7 +199,8 @@ value before rounding, every one is more than 6 per cent from the golden, and no
 | SF9 | matched payment | the account reference normalised as the feed note files it, digits with the account number padded back to eight | the raw string, which drops the accounts whose number starts with a zero | same call: the call reads the match extract's own registration date and case reference and never joins to the register | C1 asserted in `checks.py` and `verify.py`: the filed normalisation selects all 8,588 match rows, a raw join selects fewer, and the index is identical either way |
 | SF10 | register status | registered and expired registrations count | exclude expired | same call | C1: no matched payment's account carries status expired or withdrawn, asserted at zero |
 | SF12 | the two-source estimate | plain Petersen, 400 x 270 / 157 = 687.9 cases, 30.940 per million | Chapman 686.8 (30.890); Bailey 686.1 (30.858); continuity-corrected Petersen 687.3 (30.915); the conditional maximum likelihood estimate 687 (30.900); and the same estimate written as the independent channel over a capture probability read off the member's own cases, which can be taken off every own case (30.940), off the cases it asked the receiving firm about (30.935) or off the cases it never asked about (30.947); the observed union 513 (23.073) quoted as a lower bound | 31 under all eight forms; 23 under the union bound | C1 asserted in `checks.py` and again in `verify.py` on the shipped bytes: the eight forms span 0.29 per cent of the figure and every one prints 31, and the three capture-probability readings agree to four decimal places (0.392405, 0.392500, 0.392562) because the independent capture is assigned at the same rate inside every subset an analyst can cut, so no choice of subset crosses the printed bin; the union is not an estimator of the filed population but the count of cases the two channels did record, which clause 4.2's own words exclude |
-| SF13 | a registration that predates its own payment | counts: the register is a standing list and the account was already on it | drop them, on the reading that a second sighting must postdate the event | same call | C1 asserted in `checks.py` and `verify.py`: 167 of the 270 independent registrations predate their payment, and the share is the same on both sides of the overlap (0.618 of the member's own cases against 0.619 of the rest), so dropping every one of them divides a smaller numerator by a proportionally smaller overlap and prints 31 (30.885); the feed note states that an account stays on the register once it is reported |
+| SF13 | a registration that predates its own payment | counts: the register is a standing list and the account was already on it | drop them, on the reading that a second sighting must postdate the event | same call | C1 alone, with no sentence anywhere in the pack: 167 of the 270 independent registrations predate their payment and the share is the same on both sides of the overlap (0.618 of the member's own cases against 0.619 of the rest), so dropping every one of them divides a smaller numerator by a proportionally smaller overlap and prints 31 (30.885), asserted in `checks.py` and `verify.py`. The feed note's sentence stating the persistence fact was deleted after the second leak read: the convergence had already closed the row, so the sentence bought nothing and pointed at the method (the single-use test) |
+| SF14 | the quarter an indemnity payment belongs to (ask 1) | the quarter the line itself settles in, which the asking sentence pins | the quarter of the advice that pays it | a different set of sixteen figures, asserted | the asking sentence, "each line in the quarter it settles in", worded the way ask 3 pins its own population; every advice total ties to the sum of its own detail lines, so the two readings differ only on the quarter and not on any unexplained amount |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
 
 ## Ladder
@@ -633,6 +634,41 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   which is what a triennial cycle does and what the register's own review field already implied, and the
   member rows of the mule register draw their report reason the way the industry rows always did, so the
   column carries three reasons rather than one.
+- **The unexplained residual inside the settlement advice totals** (re-judge finding 1): 49 of 144
+  unauthorised-fraud advices carried a total above the sum of their own detail lines, at ratios of 1.15 to
+  8.40 and 815,234.74 across the year, while `case_lines` equalled the detail row count on all 288 advices,
+  so the detail said it was complete and the total said otherwise and nothing in the pack explained the
+  difference. That is a generator bug in the costume of messiness, not authentic mess. The prior-period
+  adjustment is now one of the advice's own detail lines carrying the month it settles in, so **every one of
+  the 288 advices ties to the sum of its lines and every `case_lines` matches its row count**, asserted.
+  Measured on both bases afterwards: the advice-total reading and the own-month reading still differ, by
+  640,285.12 across the year, but every pound of that is now the quarter a line belongs to rather than an
+  unexplained residual, so the asking sentence pins the grain the way ask 3 pins its population (SF14). The
+  prompt clause was not reached for first, and it is only there because the bases still differ.
+- **The walk in whole cases** (re-judge finding 2): the index survives every licensed form, 30.842 to
+  30.974 against a bin edge at 30.500, but the whole-case walk did not, running 686 to 689 indexed and 286
+  to 289 not held, so three of the eight forms printed a different walk. Restated in index units, where it
+  is **18, 13 and 31 under all eight forms** (one distinct walk, asserted, against three distinct whole-case
+  walks), and the two lines add to the index. The asking sentence changed with it, which is what makes this
+  pass a rerun.
+- **Saltmarch Pay's index 0.091 from its printed bin edge** (not a judge finding; the author raised it from
+  the judge's own margins table): the member volume was derived from the design's own counts while the index
+  is read off the counts as built, so the printed index drifted by the rounding between them. The review
+  group's volumes now come from the realised estimate, and **every review-group index is mid-bin: 0.440,
+  0.390, 0.380 and 0.430** against the 0.30 floor, with Castlegate's two walk lines at 0.491 and 0.449.
+  The distance is asserted per member rather than for the named member alone.
+- **The feed note's standing-list sentence** (second leak read): added in the previous pass to make the
+  pre-payment registrations unambiguous, and deleted here. The reader landed the call exactly and quoted it
+  as the clearest hint aimed at the analyst. The deletion test settles it: dropping every pre-payment
+  registration prints 31 by convergence with the sentence gone, so the sentence closed nothing and only
+  pointed at the method. The export manifest's `what_it_omits` commentary went with it, for the same reason.
+- **"Not a rule on the registration date" beside a step that was one** (re-judge, small): the Final
+  Recommendation rejected a registration-date rule while step 5 described the decisive step as a comparison
+  of the registration date against the request date. The step now says what it does, which is attributing
+  each match to a cause through the request log; no figure moves.
+- **The writing library's epoch date in both PDFs** (re-judge, small): `/CreationDate` and `/ModDate` read
+  `D:20000101000000` against a 2027 fiction. The scrub now substitutes the pull date at the same byte
+  length, so the rebuild stays identical, and the verifier reopening both documents is the control on it.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.

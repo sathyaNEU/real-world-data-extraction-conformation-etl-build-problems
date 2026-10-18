@@ -165,9 +165,17 @@ the twelve candidates. A grouping that isolated them would score 1.00.
 | `opened_date` before 2019 | 1 | none | 4 | 0.50 |
 | covered by the detail extract | 2 | covered, 10 units | 3 | 0.43 |
 | specialty (not a shipped column) | 7 | vasc, 1 unit | 1 | 0.40 |
+| register's `episodes_awaiting_coding`, split at the median | 2 | high, 6 units | 3 | 0.60 |
+| register's `episodes_coded_since_last_close`, at the median | 2 | high, 6 units | 3 | 0.60 |
+| register's `coder_fte_allocated`, at the median | 2 | high, 6 units | 3 | 0.60 |
+| register's `principal_reason_open` | 1 | every unit sees every reason | 4 | 0.50 |
 
 The four shortest records sit at three hospitals and in four specialties, and their registration dates are
-2023-07, 2024-01, 2027-01 and 2027-03, spread across the whole programme. 41430, registered in October
+2023-07, 2024-01, 2027-01 and 2027-03, spread across the whole programme. The close-out register's four
+queue columns, added in this pass so that reading the register is not equivalent to being handed the
+development triangle, are in the table for the same reason as the rest: they scale with a cost centre's
+volume and with the season of the close, never with how far its coding has settled, and none of them
+separates the short records any better than a coin split of the twelve would. 41430, registered in October
 2022, is 4.45 per cent short and 41320, registered in January 2024, is 0.71 per cent short, so the date
 explains only part of it and no cut on the date separates the short from the rest. Depth is a continuum,
 0.42 to 9.14 per cent. The pattern is visible by joining the register to the close-out register's own
@@ -811,6 +819,78 @@ measurements.
 
 ## Tried and rejected
 
+- **This pass, the judge's FIX_NOW and the reader's one finding, closed in one generator pass.** The judge
+  returned DETERMINISTIC with SOLUTION_WRONG on five write-up defects, Gates A to H all passing and F
+  rated STRONG; the reader landed the call at about 45.1 against 44.6 and its question 6 read the decisive
+  step as an analytical choice and said so, which is Gate H holding from outside the design. No input file
+  changed a graded figure: the twelve avoidable counts, the margin, the gap, the rung winners and all 44
+  ask figures are identical before and after, asserted by comparing the emitted `figures.json` across the
+  pass.
+- **The serious defect was a filter that read the lag index backwards, and it was in the code, not the
+  prose.** `lags[q]` is the index of the publication the record holds for a quarter, so every quarter in
+  it is still filling and index 0 is the shortest of them, held at its own coding close and nothing after
+  it. `figures.json`, `checks.py`, `verify.py`, `build.py`'s own print, the brief and the workbook's notes
+  all filtered on a positive index and so named the four most settled of the five and dropped the one that
+  carries most of the answer: of the golden's 311.55 of uplift, the dropped quarter carries 166.33 and one
+  of the four named carries 0.00. The count, the set and the per-quarter uplift are now emitted, asserted
+  in `checks.py`, recomputed independently in `verify.py`, and stated in the write-up. **The lesson: a
+  derived index whose direction is a convention gets its direction asserted, not commented, because every
+  consumer of it inherits the same mistake from the same line.**
+- **Four of the five per-quarter uplifts were edge-fragile at one decimal, which is why one recomputation
+  read 11.7 where the code gives 11.6.** 2025-26 Q3's uplift is 11.64968, three ten-thousandths from the
+  11.65 boundary, and the golden's own developed count and uplift sit 3408.54965 and 311.54965, each four
+  ten-thousandths from a one-decimal edge. The development arithmetic is now stated to two decimals, where
+  all seven figures clear 0.3 of the unit, and `checks.py` and `verify.py` both assert the edge distance.
+  The avoidable counts stay at the one decimal the asking sentence states. **Rejected: stating the
+  per-quarter uplift to whole complications or as whole-per-cent shares**; both are worse, 11.65 sitting
+  0.15 from a whole-complication edge and 3.74 per cent sitting 0.24 from a whole-per-cent edge. The
+  quantity cannot be re-centred, because unlike the graded count it does not run through the planned
+  volume `centre_plans` moves.
+- **Step 7's numeric range is gone rather than corrected.** It claimed "between 1.528 and 1.608 times"
+  over an unnamed variant set; the judge measured its own eight variants at 1.530 to 1.608 and the
+  shipped five gave 1.5277. Both measurements are honest and the lower bound sits 0.0023 from a
+  two-decimal edge, so any variant set prints a different digit. The convergence set is now the eight
+  readings the register actually leaves open, and the claim is the count that name the same unit, which is
+  exact. **The lesson: a range over a variant set the write-up does not enumerate is a claim nobody can
+  reproduce, and the fix is to claim the count rather than the bound.**
+- **Two inverted sentences, both the same inversion in two places.** The Final Recommendation said 41220
+  "falls to 27.8" when developing raises it from 26.1 to 27.8 and it loses the lead on rank, not on value.
+  Critical Component 2 and the brief both said a quarter "carries 1.763 of its eventual count at its own
+  close" when 1.763 is the multiplier from the close to the ultimate and the share at the close is its
+  reciprocal. Both now state the direction as a multiplier, and `verify.py` asserts the brief contains the
+  word "multiplied" so the direction cannot drift back.
+- **"Cycle IP-11" existed only in the write-up, and the fix went in the pack rather than the write-up.**
+  No shipped file carried the string: the placement register ends at IP-10, the cycle in progress, and
+  `placement_cycle_notes.txt` headed the April 2027 cycle "IP-10" while its own body made IP-10 the
+  January cycle. The judge recommended repairing the write-up to avoid voiding prior runs; there are none,
+  so the notes now head IP-11 and `checks.py` asserts that the register ends at IP-10, that the notes head
+  IP-11, and that IP-11 is not in the register of closed and in-progress placements. The notes' two bare
+  ordinals are dates now ("on 24 March", "20 March, four days before the committee"), which was the
+  reader's independent finding on the same file.
+- **The reader's one finding: the close-out register's presence was the hint.** It read the file as having
+  no use but to show how incomplete the recent counts are, which `leak.py` cannot see because it sweeps
+  vocabulary and figures and never purpose. The fix is the announcement, not the decisive step
+  (`build-pipeline`: a rung executed as a work order is announced). The register now carries what a real
+  coding close-out register carries beside the two vintages: the episodes still awaiting a code at that
+  close, the episodes coded since the previous close, the coder establishment allocated, and the standing
+  reason most open codes sit under. The queue scales with the cost centre's volume and with the season the
+  cycle notes already mention and carries no signal about how far a cost centre's coding has settled,
+  which is measured rather than intended: no cut on any of the four new columns reaches F1 0.75 against
+  the four shortest records, asserted. **Rejected: keying the queue to the lag depth**, which is what a
+  real queue would do and which would have handed over the mechanism in a column.
+- **`cis_registered_date` was decorative to the reader and load-bearing to the judge, which is the
+  problem.** The reader called it a planted clue; the judge used its near-monotone relation to the
+  development factor as the evidence that pooling the factors is a demonstrable error rather than a
+  licensed alternative. Both readings were available because nothing in the write-up used it. Step 4 now
+  names it as that evidence, so the rubric owes it and it is load-bearing rather than decorative.
+  **Rejected: giving it a second use inside the register**, which would have coupled the rollout to the
+  queue columns and undone the orthogonality the mechanism rests on.
+- **Left alone on the judge's reading, against the reader's.** The dashboard's cell A2 ("Quarter-end
+  position; not a projection of any later quarter") reads to the reader as a warning aimed at the solver
+  and to the judge as what a real quarter-end dashboard says, with its 41210 figure of 218 matching that
+  quarter's first publication exactly. The `leak-check` test settles it: the sentence would exist without
+  the trap. The three distractors stay for the same reason, the cycle notes giving them an in-world
+  purpose.
 - **Charter 4.3 still carried architecture 2's open phrase, and that would have killed architecture 3 the
   same way.** The clause read "less the complications that patients of the same risk band and age band
   ordinarily have", which architecture 2 wrote precisely so the comparison frequency stayed open. But the

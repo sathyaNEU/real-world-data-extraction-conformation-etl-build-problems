@@ -29,13 +29,15 @@ request produced.
 3. Summed its revised 2026/27 quarters in member_quarterly_returns.xlsx: 22,233,300 payments sent.
 4. Took its payments matching an account on mule_account_register.csv from member_payment_matches.csv:
    395 matches.
-5. Attributed each match through fund_return_requests.csv: 125 were registered on or after a fund-return
-   request Castlegate had already sent on that payment, so they are its own case coming back rather than a
-   second sighting of it.
+5. Attributed each match to a cause through fund_return_requests.csv: on 125 of them Castlegate had
+   already asked the receiving firm for the money back, so the firm's registration answers Castlegate's
+   own request and the match is its own case coming back rather than a second sighting of it. The
+   remaining 270 are sightings its own action cannot have caused.
 6. Estimated the cases its customers suffered from the two sightings that do not depend on each other, its
    own register and the 270 registrations no request of its own preceded, 157 of which it also holds:
    400 x 270 / 157 = 688 cases, 30.94 per million payments.
-7. Walked its register to the index: 400 recorded, 288 its own record did not hold, 688 indexed.
+7. Walked its register to the index in index units, which every licensed form of the estimate gives
+   alike: 18 recorded, 13 its own record did not hold, 31 indexed, per million payments sent.
 8. Set the index at 31 scam cases per million payments sent, and indexed the other three members of the
    review group on the same basis.
 
@@ -48,18 +50,20 @@ request produced.
    - Saltmarch Pay (KM-112): 22, on 109 recorded and 139 indexed cases
    - Trentmoor Money (KM-108): 15, on 246 recorded and 301 indexed cases
    - Brindlemere Remit (KM-101): 12, on 443 recorded and 517 indexed cases
-2. Castlegate's walk from its recorded cases to its index, one line per reconciling item, whole cases:
-   - Cases Castlegate's own register holds: 400
-   - Cases its own record did not hold: 288
-   - Indexed cases: 688
+2. Castlegate's walk from its recorded incidence to the one to plan on, one line per reconciling item,
+   cases per million payments sent, nearest whole case:
+   - Incidence its own register holds: 18
+   - Incidence its own record did not hold: 13
+   - Indexed incidence: 31
 3. Bar chart of recorded against indexed incidence for the four review-group members on the incidence
    chart sheet, ordered by the indexed figure, Castlegate marked and annotated, titled on the finding
    that its own record holds under three in five of the cases its customers suffered.
-4. Indemnity paid on unauthorised fraud by member tier for each 2026/27 quarter, GBP to the nearest
-   pound, each quarter total taken from the unrounded tier amounts:
-   - Q1 tier A: 311,088; tier B: 271,791; tier C: 81,499; quarter total: 664,379
-   - Q2 tier A: 309,882; tier B: 228,966; tier C: 83,191; quarter total: 622,039
-   - Q3 tier A: 317,029; tier B: 222,673; tier C: 75,171; quarter total: 614,872
+4. Indemnity paid on unauthorised fraud by member tier for each 2026/27 quarter, each advice line in
+   the quarter it settles in, GBP to the nearest pound, each quarter total taken from the unrounded tier
+   amounts:
+   - Q1 tier A: 389,667; tier B: 390,380; tier C: 204,473; quarter total: 984,521
+   - Q2 tier A: 349,939; tier B: 277,918; tier C: 101,820; quarter total: 729,677
+   - Q3 tier A: 343,190; tier B: 237,744; tier C: 92,670; quarter total: 673,605
    - Q4 tier A: 339,633; tier B: 181,104; tier C: 75,823; quarter total: 596,560
 5. Cases notified in the quarter to 30 June 2027 and the value reported, per member, GBP to the nearest
    pound:

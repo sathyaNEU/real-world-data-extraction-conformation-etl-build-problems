@@ -1,19 +1,114 @@
 # task198 design note
 
-Motu Korero Research, a survey research institute running Tatauranga Aotearoa's continuous Household
-Living Conditions Survey under contract. Whether the rise in dwellings with damp or mould that the
-survey measured in Manawatu-Whanganui is established as a population change, and so whether that
-region's 2027 Q1 addresses are issued to a fresh interviewer panel.
+**Architecture 4 is being drawn** on healthcare-delivery-health-economics /
+payment-claims-health-plan-analytics. Architectures 1 (pensions answer-time), 2 (interviewer attribution,
+and its approved repair) and 3 (the replication groups a supplied interval is formed over) are all spent;
+each carries `### ARCHIVE` headings below, their fates are in the card's `lineage`, and the measurements
+that killed them are in `## Tried and rejected`.
 
-**Architecture 3 is live.** Architectures 1 (pensions answer-time) and 2 (interviewer attribution by
-measurer portability, and its approved repair) are spent; both carry `### ARCHIVE` headings below and
-their fates are in the card's `lineage` and in `## Tried and rejected`. Architecture 3 keeps
-architecture 2's world, pack and variance component and moves the decision from a pick of one region to a
-characterisation of one named region's move, which is the positive clause of the rule architecture 2's
-death filed in `stumping` Part 3: a decisive step that moves a variance cannot carry a ranking, but it can
-carry a verdict on one named candidate against a stated threshold.
+**What the three deaths bought, and it governs this draw.** All three died on a variance lever. Architecture
+1's residue was a knob; architecture 2's lever and its ranked quantity's noise were one variance;
+architecture 3's lever was readable off the unit's own series, because a component has to be redrawn each
+period to inflate a change's variance and that is exactly what makes a series wobble. Architecture 4
+therefore takes a **bias in a point estimate the whole population estimates**, not a variance, which is the
+one shape those three results leave open: a bias persists, so it is invisible in the unit's own series, and
+it still moves the level.
 
 ## Draw
+
+Keewatin Valley Health Trust, a member-governed employers' health purchasing cooperative running a
+self-funded medical plan. Which of its eight contracted multi-specialty physician groups takes the one
+contract renegotiation its trustees fund for the 2027 plan year.
+
+| Field | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task198.json`, architecture v4, registered 2026-10-18; `guard.py check` re-run **against the registered card as the last act of stage 1**, returning **WARN, no BLOCK** |
+| Domain / subdomain | `healthcare-delivery-health-economics` / `payment-claims-health-plan-analytics` (the one AD-serving task type this lane had never drawn) |
+| Objective | Anomaly Detection & Diagnostics |
+| Shape | 07, grid of cells: the group by procedure-family grid of observed against contracted price |
+| Decision type | `pick_one_of_n`, answer unit `named_option` plus one price level |
+| Gate G | `method_or_model_selection` |
+| Strategy | `other`: the reported value on a row is the lesser of an ask and an entitlement, and the decision is about the entitlement |
+| Layer 2 family | `field_method`, pattern `own:contracted-price-behind-a-lesser-of-plateau` |
+| Gaps | `objective` (decisive), `population` |
+| Generators | G1 unit-of-value swap (decisive), G3 record versus operation |
+
+**Why a bias and not a variance, which is what the three dead architectures bought.** Architecture 1's
+residue was a knob; architecture 2's lever and its ranked quantity's noise were one variance; architecture
+3's lever was readable off the unit's own series, because a component must be redrawn each period to
+inflate a change's variance and that is exactly what makes a series wobble. **A bias is the shape those
+three results leave open:** it persists, so it does not move the unit's series and is invisible in it, and
+it still moves the level. Screens 4 and 5 below are where that shows up as numbers.
+
+**The decisive step.** Every claim line is priced as the lesser of the group's billed charge and its
+contracted rate, which is ordinary adjudication. So where a group bills below its own contract, the
+allowed amount is its charge and not the price its contract entitles it to. The decision is about which
+contract is dear; the file reports allowed amounts. The contracted percentage of the reference schedule is
+recovered exactly from the codes a group does bill above, where its allowed amounts plateau at the rate.
+
+**The five screens, run on the clean truth before a word of design** (`stumping` Part 3). Units are dollars
+per standardised line, on one common service mix held identical across groups so that no composition lever
+is in play.
+
+1. **The residue is a method, not a knob.** With the estimand filed, what stays open is whether the
+   contract's price level is the average allowed amount or the entitlement the allowed amounts are censored
+   against. Both are exact computations on the shipped record. The pooling residue that a first cut had
+   (recovering a rate from a sparsely populated plateau drifts with how many quarters are pooled) is closed
+   structurally rather than pinned: the contract is **one** percentage of the schedule, as these contracts
+   are written, so any code whose plateau is reached gives the same multiple and every reasonable estimator
+   of it agrees exactly. **Case two of the pincer:** the book measures its own contract.
+2. **Move available against move needed: 134.09 against 43.21, a ratio of 3.10.** The easy route names
+   PG-ARDEN; the decisive route names PG-BRYMER, which holds the dearest contract at 2.05 times schedule
+   while showing the fourth-highest observed price. Decisive margin 1.206x; easy-route margin 1.110x, which
+   is under the 1.15 floor and is the first thing stage 2 widens.
+3. **The standard error of what the step must estimate: 0.0000 per cent, for all eight groups.** The
+   contract multiple is a plateau, so a single quarter recovers it exactly. This is the "quantity the whole
+   population estimates" at its limit, against the 4.1 per cent of architecture 2's repair and the roughly
+   100 per cent of its drawn step.
+4. **The lever is not the ranked quantity's noise.** The golden group's bias is 134.15 while the quarterly
+   standard deviation of its observed price is 0.642, a ratio of 209. The lever is a level bias fixed by
+   billing practice and the noise is sampling in a mean, so making the lever bigger randomises nothing.
+   This is the screen architecture 2 failed.
+5. **The unit's own history does not estimate what the step computes.** The golden group's own
+   quarter-to-quarter change in observed price has a standard deviation of 0.903 against a bias of 134.15,
+   a ratio of 149, where the rule's threshold is a factor of two. A bias persists, so the series is flat
+   and the bias is invisible in it. This is the screen architecture 3 failed, and it passes here for a
+   structural reason rather than a tuned one.
+
+**The enumerated sweep, per the rule the three deaths earned.** Enumerated by asking what the decisive
+quantity is a substitute for, then listing every other way the pack measures that same thing. Eight
+measures of a contract's price level, **every one naming a wrong group**:
+
+| Measure of the contract's price level | Names | Verdict |
+|---|---|---|
+| mean allowed per standardised line (the easy route) | PG-ARDEN | loud |
+| mean billed charge per standardised line | PG-ARDEN | loud |
+| mean allowed-to-charge ratio, the discount | PG-ELLIOR | other wrong |
+| mean allowed over the reference schedule | PG-ARDEN | loud |
+| median allowed per code, standardised | PG-ARDEN | loud |
+| trim 5 per cent each tail then average | PG-ARDEN | loud |
+| 90th percentile of allowed per code | PG-ARDEN | loud |
+| 99th percentile of allowed per code | PG-ELLIOR | other wrong |
+| **the contract multiple off the plateau (decisive)** | **PG-BRYMER** | **golden** |
+
+**Two thin margins stage 2 must widen, named now.** The 99th percentile names PG-ELLIOR with the golden
+second at 1.007x, and the allowed-to-charge ratio at 1.002x. Neither reaches the golden, but a percentile
+approaches the plateau from below, so the gap between the golden and the nearest decoy on those two
+measures is widened in the data before the ladder is accepted.
+
+**The two traps on this ground, screened at the draw and not in the design.** Completion and development of
+immature periods is task194's live driver: both plan years are closed here, every line is final and nothing
+is developed. Two capture channels with dependence is task196's: there is one record of each line and no
+second channel. The subdomain's three existing cards are all ETL (task447 composition_mix, task451 and
+task458 maturity_censoring) and none is anomaly-detection, so the pairing is unspent.
+
+**Guard WARNs answered.** `repeat.decision` and `repeat.question_form`: the decision is a pick of one
+contract from eight for one funded renegotiation, so the form follows the decision. `ban.org_family` fired
+on the re-check and the organisation was redrawn from a university system to a member-governed purchasing
+cooperative, which the world carries better anyway; the mechanism was this slot's own registration pushing
+architecture 3 out of the three-build window and pulling task199 into it.
+
+### ARCHIVE architecture 3 (spent): Draw
 
 | Field | Value |
 |---|---|
@@ -114,7 +209,7 @@ name no method. The questionnaire change note states the item's wording and rout
 them. No note says a file is the wrong basis. Every graded figure is records-fixed except the two
 intervals, which are graded only because their estimator family is closed to 0.15 per cent, asserted.
 
-## Default path
+### ARCHIVE architecture 3 (spent): Default path
 
 The pipeline a competent and careful analyst builds, using the most rigorous instrument the pack supplies.
 
@@ -143,7 +238,7 @@ Ends on: the rise is established as a population change, +6.6 points at 3.5 stan
 Golden: the rise is not established, +6.6 points at 0.9 standard errors once the replication spans the
 field workload, so the region's 2027 Q1 addresses go to a fresh interviewer panel
 
-## Stump sentence
+### ARCHIVE architecture 3 (spent): Stump sentence
 
 A competent solver rebuilds both quarters across the two questionnaire layouts, rebases the region across
 the amalgamation, rules out every rival explanation the pack carries on a shipped fact, judges the +6.6
@@ -152,7 +247,7 @@ as an established population change, because every replicate the pack ships is f
 units and no replicate ever varies the interviewer composition of the quarter, so the interval cannot see
 the one source that produced the move.
 
-## Three rules
+### ARCHIVE architecture 3 (spent): Three rules
 
 - **Task type:** `survey-research-official-statistics` / `anomaly-detection`, which serves Anomaly
   Detection & Diagnostics; the build works the field's own complex-survey variance estimation on a probed
@@ -212,7 +307,7 @@ the one source that produced the move.
   uncertainty cannot see. No build on file teaches it: task192 turns on a validation rate's reach, task195
   on a paired interval over shared units and task194 on when records arrive.
 
-## Readability screen
+### ARCHIVE architecture 3 (spent): Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -221,7 +316,7 @@ the one source that produced the move.
 | 2 supplied replicate weights (**the default path**) | the design documentation states the replication method for the weights it supplies | 84 replicate weight columns, named | yes, the rigorous reflex, and it is the right instrument for sampling error | none | no | one standard formula | readable |
 | 3 replication re-formed over the field workload (**decisive**) | no sentence says units sharing an interviewer are not independent, nor that the replication should be re-formed | the workload log is at assignment grain and carries no outcome; the grouping must be built across three files | no: every reflex files the supplied verdict, measured, ten of them at z 2.38 to 4.14 | no control or published figure ties only under it | the battery passes under both replications | not a subtraction or a ratio of a reported figure; the component is estimated from the whole workforce | silent |
 
-## Semantic fork table
+### ARCHIVE architecture 3 (spent): Semantic fork table
 
 | id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -236,7 +331,7 @@ the one source that produced the move.
 | SF9 | rounding path | once at the end, one decimal place in points | per quarter then differenced | `same call`, asserted | the prompt's last sentence |
 | SF10 | "a population change" | a change in the dwellings, not in the measurement | any change in the published figure | the verdict itself | the framework defines the reported change as a change in the population |
 
-## Ladder
+### ARCHIVE architecture 3 (spent): Ladder
 
 Four rungs, four distinct verdicts or figures. Each reproduces from the raw files and dies to one shipped
 fact or construction.
@@ -268,7 +363,7 @@ mix, layout change, base change, vintage, seasonality, frame vintage), and every
 +6.6 point change and the supplied verdict standing, which is what makes the grid the construction layer
 rather than the stump: cleaning the data does not decide the verdict.
 
-## Closure table
+### ARCHIVE architecture 3 (spent): Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -295,7 +390,7 @@ rather than the stump: cleaning the data does not decide the verdict.
 | 21 | Clause scope | the framework's 2.x governs the estimand and the bar; the design documentation's 4.x governs the replicate weights it supplies | each document names its scope |
 | 22 | Forward window contents | the committed window (2027 Q1) holds no interviews: the verdict is about the closed quarters and the action is the panel the coming quarter's addresses are issued to | the framework files the quantity on closed quarters and the letter sets the 2027 Q1 decision |
 
-## Literal reader
+### ARCHIVE architecture 3 (spent): Literal reader
 
 Executed word for word, `quality_framework_2026.pdf` files the estimand and states that a movement is
 reported as a population change only where it is significant at the 95 per cent level, and
@@ -309,7 +404,7 @@ is contradicted by the workload log itself. Every licensed reading of the estima
 the whole estimator family for the component, which spans 0.15 per cent, with 61 per cent of room to the
 flip.
 
-## Oracles
+### ARCHIVE architecture 3 (spent): Oracles
 
 - `quarterly_release_2026q4.xlsx` reproduces on its own stated provisional basis under every method,
   golden and supplied alike, and presents regions in code order with no ranking and no interval. It
@@ -322,7 +417,7 @@ flip.
 - No control, published figure or reconciliation column in the pack ties only under the re-formed
   replication. The workload log records assignments as a field operation records them and explains nothing.
 
-## Ask sheet
+### ARCHIVE architecture 3 (spent): Ask sheet
 
 Three asks, 25 graded ask figures, solved by `generator/asks_measure.py`. Ask 1 is the one free
 construction figure both responses bank; Ask 2 is a mirror device the cracker recovers by executing a
