@@ -1,0 +1,233 @@
+{
+  "task": "task165",
+  "title": "How much rock salt a lakeshore city's roads division commits above its rolled-over supply contract for the first winter after a bus network redesign moved 424 lane-km of collectors to bare-pavement service, when the collectors it moved before were streets its hazard-spot salting already covered along much of their length",
+  "domain": "Urban & Regional Science",
+  "client_domain": "Urban & Regional Science",
+  "house_domain": "urban-regional-science",
+  "subdomain": "municipal service demand and resource allocation (a city's winter road salt for a change of service level, forecast from the spreader records of the streets that went through the same change before, conditioned on how much of each street the old service already salted)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a one-page memo charting the arterial figures",
+  "as_of": "2026-09-25",
+  "deliverables": [
+    "salt_commitment_2026-27.xlsx",
+    "seasonal_salt_commitment_memo.docx"
+  ],
+  "distractor_files": [
+    "yard_timesheets_2025-26.csv",
+    "brine_production_log_2023-10_to_2026-09.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 21,
+    "formats": [
+      "csv",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
+    "largest_file_rows": 318889
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift summaries and a fleet telematics platform's segment-pass export, a route register and its revision log, a storm log, scale house and loader logs, a supplier's dispatch schedules, a contractor's returns, a drone survey report and the division's plan and procedure; no real organisation's records or person is depicted.",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task165/generator/build.py",
+  "files": [
+    {
+      "path": "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv",
+      "format": "csv",
+      "bytes": 7539799,
+      "rows": 154096,
+      "source": "Constructed: City of Quellbrook Roads Division, legacy AVL segment-by-shift material summaries, 1 November 2021 to 31 March 2023",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brine_production_log_2023-10_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 5136,
+      "rows": 189,
+      "source": "Constructed: City of Quellbrook Roads Division, yard brine plant production log, 1 October 2023 to 23 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 10952,
+      "rows": 106,
+      "source": "Constructed: City of Quellbrook Roads Division fleet telematics, data dictionary for the 25 September 2026 pull",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dome_stock_survey_2026-09.pdf",
+      "format": "pdf",
+      "bytes": 35531,
+      "rows": null,
+      "source": "Constructed: Tessaline Geomatics, salt dome stock survey report TG-2026-0917 for the City of Quellbrook (16 September 2026)",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 2184,
+      "rows": 20,
+      "source": "Constructed: City of Quellbrook Roads Division fleet telematics, export manifest for the 25 September 2026 pull",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_units_2026-09.csv",
+      "format": "csv",
+      "bytes": 8685,
+      "rows": 216,
+      "source": "Constructed: City of Quellbrook Fleet Services, winter fleet units at 24 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gis_segment_crosswalk_2023.csv",
+      "format": "csv",
+      "bytes": 84536,
+      "rows": 2009,
+      "source": "Constructed: City of Quellbrook GIS Services, segment crosswalk for the 21 August 2023 GIS release",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kettlewood_material_returns_2023-24_to_2025-26.xlsx",
+      "format": "xlsx",
+      "bytes": 9184,
+      "rows": 51,
+      "source": "Constructed: Kettlewood Road Services, monthly material returns under contract RW-2023-07, winters 2023-24 to 2025-26",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "northgrit_dispatch_2026-10_issued_2026-09-14.csv",
+      "format": "csv",
+      "bytes": 9773,
+      "rows": 201,
+      "source": "Constructed: Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 14 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "northgrit_dispatch_2026-10_issued_2026-09-21.csv",
+      "format": "csv",
+      "bytes": 9827,
+      "rows": 202,
+      "source": "Constructed: Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 21 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qrt_frequent_network_2026_streets.xlsx",
+      "format": "xlsx",
+      "bytes": 8261,
+      "rows": 37,
+      "source": "Constructed: Quellbrook Regional Transit Service Planning, frequent network streets for the 30 August 2026 network",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "road_salt_procurement_procedure_RO-PR-07.pdf",
+      "format": "pdf",
+      "bytes": 41417,
+      "rows": null,
+      "source": "Constructed: City of Quellbrook Roads Division, road salt procurement procedure RO-PR-07, revision 3 (12 May 2025)",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "route_audit_revision_log.csv",
+      "format": "csv",
+      "bytes": 110365,
+      "rows": 941,
+      "source": "Constructed: City of Quellbrook Roads Operations Centre, route audit revision log to 14 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "salt_dome_register.csv",
+      "format": "csv",
+      "bytes": 274,
+      "rows": 4,
+      "source": "Constructed: City of Quellbrook Facilities Services, salt dome register at 2 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "scale_house_log_2026-08-24_to_2026-09-24.xlsx",
+      "format": "xlsx",
+      "bytes": 25197,
+      "rows": 225,
+      "source": "Constructed: City of Quellbrook Roads Division, yard scale house logs, 24 August to 24 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "storm_log_2021-22_to_2025-26.xlsx",
+      "format": "xlsx",
+      "bytes": 18349,
+      "rows": 163,
+      "source": "Constructed: City of Quellbrook Roads Operations Centre, storm log and Winter Severity Index, winters 2021-22 to 2025-26",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
+      "format": "parquet",
+      "bytes": 7701372,
+      "rows": 318889,
+      "source": "Constructed: City of Quellbrook Roads Division, fleet telematics platform segment passes, 1 October 2023 to 23 September 2026 (UTC)",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "winter_maintenance_plan_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 42881,
+      "rows": null,
+      "source": "Constructed: City of Quellbrook Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "winter_route_register_2026-09-14.csv",
+      "format": "csv",
+      "bytes": 219518,
+      "rows": 2009,
+      "source": "Constructed: City of Quellbrook Roads Operations Centre, winter route register at 14 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yard_loading_log_2023-11_2026-03.csv",
+      "format": "csv",
+      "bytes": 648254,
+      "rows": 20154,
+      "source": "Constructed: City of Quellbrook Roads Division, yard loader scale log, 1 November 2023 to 31 March 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yard_timesheets_2025-26.csv",
+      "format": "csv",
+      "bytes": 300497,
+      "rows": 6995,
+      "source": "Constructed: City of Quellbrook Payroll, yard winter timesheets, winter 2025-26",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

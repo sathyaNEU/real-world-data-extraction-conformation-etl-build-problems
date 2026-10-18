@@ -11,8 +11,8 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Commit 2,200 t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.",
+  "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "avl_segment_passes (the fleet telematics platform's segment-pass export from the October 2023 replacement, beside the legacy AVL's shift summaries for the two winters before it)",
-    "rows": 0,
+    "file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet (the fleet telematics platform's segment passes from the October 2023 replacement) beside avl_legacy_segment_shift_2021-11-01_2023-03-31.csv (the legacy AVL's segment-by-shift summaries for the two winters before it)",
+    "rows": 318889,
     "entity": "one spreader truck's pass over one route segment, with the rock salt it put down",
     "grain": "truck pass x segment",
     "source": "synthetic (constructed in the layout of a winter-maintenance telematics platform's segment-pass export, beside a legacy AVL's segment-by-shift material summary)"
@@ -54,7 +54,10 @@
       "Quellbrook Regional Transit",
       "Northgrit Salt Supply",
       "Tessaline Geomatics",
-      "Kettlewood Road Services"
+      "Kettlewood Road Services",
+      "Quellbrook General",
+      "Quellbrook District School Board",
+      "Northgrit Transport"
     ],
     "people": [
       "Doris Wilkerson",
