@@ -92,6 +92,26 @@ def post_case_index(w, code):
     return est, est / vol * 1e6
 
 
+def capture_readings(w, code, ix):
+    """The same two-source estimate written as the independent channel over a capture probability read
+    off the member's own cases. The probability can be read off every own case, off the cases the member
+    asked the receiving firm about, or off the cases it never asked about, and the three are one number
+    because another firm's victim reporting the account has nothing to do with whether this member
+    asked for its money back. Each is a licensed form of the same estimate, so each is asserted."""
+    rec = [c for c in w["cases"] if c.member == code and c.year == W.MEASURED and c.recorded]
+    never = [c for c in rec if c.request_date is None]
+    asked = [c for c in rec if c.request_date is not None]
+    out = {}
+    for label, cs in (("capture probability off every own case", rec),
+                      ("capture probability off the cases never asked about", never),
+                      ("capture probability off the cases asked about", asked)):
+        hit = [c for c in cs if c.independent_reg]
+        p = len(hit) / len(cs) if cs else 0.0
+        out[label] = dict(cases=ix["independent"] / p if p else 0.0, p=round(p, 6),
+                          n=len(cs), hit=len(hit))
+    return out
+
+
 def estimator_family(ix):
     """Every two-source form the data does not close, on the same three counts."""
     n1, n2, m = ix["recorded"], ix["independent"], ix["both"]
@@ -162,9 +182,12 @@ def ask_c(w):
         for route in W.ROUTES:
             got = sum(c.recovery_amount for c in sel if c.recovery_route == route)
             figs["Q%d %s" % (q, route)] = round(got / reimb * 100.0, 1) if reimb else 0.0
+    # the route total covers the same four quarters the rows cover, so the rows and the total
+    # reconcile on one population: cases closed inside the scheme year 2025/26
+    sel = [c for c in w["cases"] if c.year == "2025/26" and c.recorded and c.closed_date
+           and W.quarter_of(c.closed_date, "2025/26") is not None]
+    reimb = sum(c.reimbursed for c in sel)
     for route in W.ROUTES:
-        sel = [c for c in w["cases"] if c.year == "2025/26" and c.recorded and c.closed_date]
-        reimb = sum(c.reimbursed for c in sel)
         got = sum(c.recovery_amount for c in sel if c.recovery_route == route)
         figs["year %s" % route] = round(got / reimb * 100.0, 1)
     return figs
@@ -369,6 +392,9 @@ def build(task, target, w):
     csvp = index_csv(task, review)
 
     fam = estimator_family(cg)
+    for k, v in capture_readings(w, "KM-104", cg).items():
+        fam[k] = dict(cases=v["cases"], rate=v["cases"] / cg["volume"] * 1e6,
+                      index=round(v["cases"] / cg["volume"] * 1e6), p=v["p"], n=v["n"], hit=v["hit"])
     naive_cases, naive_rate = naive_index(w, "KM-104")
     pc_cases, pc_rate = post_case_index(w, "KM-104")
     w14_cases, w14_rate = window_index(w, "KM-104", 14)

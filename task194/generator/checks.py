@@ -9,6 +9,7 @@ import datetime as dt
 import json
 import math
 import os
+import re
 from collections import Counter, defaultdict
 
 import golden as G
@@ -81,6 +82,36 @@ def run(target, g, state):
     ok(any(f.endswith(".csv") and rows_of(target, f) >= 25000 for f in files), "a file of 25,000+ rows")
     meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
     ok(len(meta["distractor_files"]) >= 2, "two or more distractors declared")
+    # H9: the registers learn about every file, by set equality rather than spot membership. The manifest
+    # row for itself states that it covers every file in the folder, so a missing row is a stated fact the
+    # data contradicts as well as an unregistered file.
+    man = read(target, "export_manifest.csv")
+    man_names = {r["file_name"] for r in man}
+    ok(man_names == set(files),
+       "H9 the manifest names every shipped file and nothing else (missing %s, extra %s)"
+       % (sorted(set(files) - man_names), sorted(man_names - set(files))))
+    ok(any(r["file_name"] == "export_manifest.csv" and r["covers"] == "every file in the folder"
+           for r in man), "H9 the manifest's own row says what it covers")
+    dic = read(target, "data_dictionary.csv")
+    dic_names = {r["file_name"] for r in dic}
+    ok("coding_close_out_register.csv" in dic_names,
+       "H9 the dictionary covers the decisive input")
+    ok(dic_names <= set(files), "H9 the dictionary names no file the pack does not ship")
+    # H16: only the forward-looking files carry a date after the pull date, by allow-list
+    import datetime as _dt
+    forward = {"activity_plan_2027q4.csv", "improvement_placements.csv"}
+    late = set()
+    for f in files:
+        if not f.endswith(".csv"):
+            continue
+        with open(os.path.join(target, f), newline="", encoding="utf-8", errors="replace") as fh:
+            for r in csv.reader(fh):
+                for c in r:
+                    m = re.fullmatch(r"(20\d\d)-(\d\d)-(\d\d)", c or "")
+                    if m and _dt.date(int(m.group(1)), int(m.group(2)), int(m.group(3))) > W.PULL_DATE:
+                        late.add(f)
+    ok(late <= forward,
+       "H16 only the forward-looking files carry a date after the pull date (%s)" % sorted(late))
     ok(all("distractor" not in f.lower() for f in files), "no file name says distractor")
     ok(not any(f.startswith(".") or f.endswith((".py", ".ipynb", ".md")) for f in files),
        "no code, notes or dot files in the pack")

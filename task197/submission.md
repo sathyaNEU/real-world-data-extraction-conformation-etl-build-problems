@@ -57,11 +57,11 @@
    - Terborgh (VKF-TRB): 98 per cent, 71 episodes
    - Zwartewater (VKF-ZWT): 94 per cent, 71 episodes
 3. Reserve capacity hours held available and the shortfall against commitment, six delivery blocks, MWh to one decimal place:
-   - Block 1 (00:00-04:00): held available 541.8, shortfall 18.2
+   - Block 1 (00:00-04:00): held available 542.0, shortfall 18.0
    - Block 2 (04:00-08:00): held available 1157.0, shortfall 11.0
-   - Block 3 (08:00-12:00): held available 1414.7, shortfall 13.3
+   - Block 3 (08:00-12:00): held available 1416.5, shortfall 11.5
    - Block 4 (12:00-16:00): held available 352.9, shortfall 7.1
-   - Block 5 (16:00-20:00): held available 1625.0, shortfall 17.0
+   - Block 5 (16:00-20:00): held available 1625.5, shortfall 16.5
    - Block 6 (20:00-24:00): held available 247.0, shortfall 5.0
 4. Energy delivered above programme and below programme in the settlement periods the site held no delivery-block commitment for, nine sites in site order, MWh to one decimal place:
    - Dollardkust (VKF-DLK): above 20.2, below 50.7

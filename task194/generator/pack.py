@@ -535,6 +535,10 @@ MANIFEST = [
     ("unit_indicator_series.csv", "Quarterly complication indicator series as reported",
      "specification 4.0 period", "quarters before 1 July 2024", "Clinical Governance",
      "Indicator reporting database"),
+    ("coding_close_out_register.csv", "Coding close-out register, counts by cost centre and quarter at "
+     "each close",
+     "every close from the first in the specification 4.0 period", "quarters before 1 July 2024",
+     "Clinical Information and Coding", "Coding close-out schedule"),
     ("activity_summary_monthly.csv", "Monthly activity and complication counts as published",
      "every unit and month", "nothing", "Activity Reporting", "Activity reporting cube"),
     ("activity_plan_2027q4.csv", "Planned separations for the quarter from 1 April 2027",

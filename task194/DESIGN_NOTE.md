@@ -173,16 +173,20 @@ explains only part of it and no cut on the date separates the short from the res
 0.42 to 9.14 per cent. The pattern is visible by joining the register to the close-out register's own
 vintages, cost centre by cost centre, and not otherwise.
 
-**Readability screen, test 1, on every document that carries the migration fact.** Swept the dictionary, the
-manifest, the unit register, the two PDFs, the placement notes and the dashboard for any sentence naming a
-backlog, a delay, a restatement, completeness, development, paper records or late coding. Four hits, all
-flat definitions of what a column holds: `cis_registered_date` is "Date the unit's wards were registered on
-the clinical information system under the network's rollout programme"; `published_date` is "Publication
-date of the figure on the row"; `separations_with_complication` is the count "as the figure stood on the
-publication date"; the detail extract's manifest row omits "the Carrowdean campus, whose detail stays in the
-campus module". No sentence says a cost centre reports late, that a quarter is short, or that anything needs
-developing. The explanatory clause that was on `published_date` ("or for a quarter after it") is cut: the
-grain statement carries it.
+**Readability screen, test 1, measured in two sweeps.** The first sweeps all 21 shipped files, the two PDFs
+and the workbook's cells included, for any form of `backlog`, `delay`, `restate`, `completeness`,
+`development`, `paper record`, `late coding`, `reports late`, `incomplete`, `provisional`, `preliminary`,
+`immature`, `still being coded`, `not yet complete` or `run-off`: **zero hits**, asserted in `checks.py`
+over both PDFs and the placement notes with a positive control on the same extractor. The second lists
+every place the migration and vintage facts surface at all, which is five, each a flat statement of what a
+column or a file holds: `cis_registered_date` is "Date the unit's wards were registered on the clinical
+information system under the network's rollout programme"; `published_date` is "Publication date of the
+figure on the row"; `separations_with_complication` is the count "as the figure stood on the publication
+date"; the register's grain is "One row per reporting quarter, cost centre and publication date"; and the
+manifest's row for it reads "Coding close-out register, counts by cost centre and quarter at each close".
+No sentence says a cost centre reports late, that a quarter is short, or that anything needs developing.
+The explanatory clause that was on `published_date` ("or for a quarter after it") is cut: the grain
+statement carries it.
 
 ### Condition 3: all 23 reflexes, on the cut pack
 
@@ -800,6 +804,37 @@ measurements.
 
 ## Tried and rejected
 
+- **Charter 4.3 still carried architecture 2's open phrase, and that would have killed architecture 3 the
+  same way.** The clause read "less the complications that patients of the same risk band and age band
+  ordinarily have", which architecture 2 wrote precisely so the comparison frequency stayed open. But the
+  comparison is one of the five parts of the estimand, architecture 3's whole premise is that it is filed,
+  and the note and the card both said it was filed when the shipped text did not file it: a literal reader
+  could still have answered "ordinarily have" with the record's own frequencies. 4.3 now reads "less the
+  expected complications of the unit's episodes in that period under the current indicator specification",
+  which routes to specification 3.1's defined term and from there to Appendix A, so the comparison is
+  beyond argument and the only thing left open is the observation process. `checks.py` asserts the new
+  clause, asserts that "ordinarily have" appears in neither document, and asserts that 3.1's defined term
+  resolves to the published table. **The lesson: a part of the estimand the note says is filed is filed in
+  a shipped sentence or it is not filed, and the way to find out is to grep the built document rather than
+  to read the design.**
+- **H9, found by set equality rather than by spot check: the decisive input was not in the export
+  manifest.** `coding_close_out_register.csv` is the file the whole call rests on and the manifest, whose
+  own row says it covers "every file in the folder", never learned about it. That is the exact shape the
+  register warns about, the newly load-bearing file shipping unregistered, and it was invisible because
+  nothing compared the manifest's names with the folder's. The register now carries a flat row in the
+  manifest's own voice, and `checks.py` asserts manifest names equal shipped files both ways, that the
+  manifest's self-row says what it covers, and that the dictionary covers the register.
+- **H16, answered by allow-list rather than by repair.** One file carries a date after the 5 March 2027
+  pull, `improvement_placements.csv` at 2027-03-31, which is the in-progress placement's scheduled end.
+  That is a forward-looking validity window and legitimate, as is the April quarter's activity plan, so
+  the two are an allow-list that `checks.py` now asserts; no other shipped file carries a date past the
+  pull.
+- **The readability claim was two sweeps reported as one.** The note said it swept for backlog, delay,
+  restatement and the rest and found "four hits", then listed four flat column definitions, which do not
+  contain any of those words. Both facts were true and the sentence joined them wrongly. Measured
+  separately on the final pack: the signposting sweep returns zero hits across all 21 files, and the
+  migration and vintage facts surface in five places, every one a statement of what a column or a file
+  holds.
 - **This pass, stage 2 finished for architecture 3 and four items closed.** The 23-reflex sweep was re-run
   on a fresh cut of the current mechanism and **none reaches the golden**, so the mechanism is not spent
   and the slot does not re-root. The golden's rung-0 position was re-measured at **5th of 12**, inside

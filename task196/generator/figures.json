@@ -1,21 +1,21 @@
 {
  "ask_a_indemnity_unauthorised": {
   "Q1 A": 311087.84,
-  "Q1 B": 272896.45,
+  "Q1 B": 271791.35,
   "Q1 C": 81499.33,
-  "Q1 total": 665483.62,
+  "Q1 total": 664378.52,
   "Q2 A": 309881.88,
-  "Q2 B": 230898.82,
+  "Q2 B": 228966.01,
   "Q2 C": 83191.04,
-  "Q2 total": 623971.74,
+  "Q2 total": 622038.93,
   "Q3 A": 317028.59,
-  "Q3 B": 220954.03,
+  "Q3 B": 222672.81,
   "Q3 C": 75170.67,
-  "Q3 total": 613153.29,
+  "Q3 total": 614872.07,
   "Q4 A": 339633.35,
-  "Q4 B": 182147.39,
+  "Q4 B": 181103.67,
   "Q4 C": 75823.3,
-  "Q4 total": 597604.04
+  "Q4 total": 596560.32
  },
  "ask_b_q1_notifications": {
   "KM-101 notified": 193,
@@ -24,8 +24,8 @@
   "KM-102 value": 285422,
   "KM-103 notified": 60,
   "KM-103 value": 153760,
-  "KM-104 notified": 110,
-  "KM-104 value": 322554,
+  "KM-104 notified": 109,
+  "KM-104 value": 307226,
   "KM-106 notified": 64,
   "KM-106 value": 135016,
   "KM-108 notified": 111,
@@ -44,21 +44,21 @@
   "KM-124 value": 231542
  },
  "ask_c_recovery_share": {
-  "Q1 beneficiary recall": 5.7,
-  "Q1 insurer contribution": 2.3,
-  "Q1 repatriation": 4.4,
-  "Q2 beneficiary recall": 12.9,
-  "Q2 insurer contribution": 2.0,
-  "Q2 repatriation": 3.8,
-  "Q3 beneficiary recall": 5.8,
-  "Q3 insurer contribution": 0.9,
-  "Q3 repatriation": 7.4,
-  "Q4 beneficiary recall": 8.7,
-  "Q4 insurer contribution": 3.7,
-  "Q4 repatriation": 5.1,
-  "year beneficiary recall": 7.9,
-  "year insurer contribution": 2.3,
-  "year repatriation": 5.4
+  "Q1 beneficiary recall": 6.5,
+  "Q1 insurer contribution": 2.8,
+  "Q1 repatriation": 3.4,
+  "Q2 beneficiary recall": 15.1,
+  "Q2 insurer contribution": 3.8,
+  "Q2 repatriation": 3.3,
+  "Q3 beneficiary recall": 8.5,
+  "Q3 insurer contribution": 5.9,
+  "Q3 repatriation": 2.5,
+  "Q4 beneficiary recall": 5.4,
+  "Q4 insurer contribution": 7.4,
+  "Q4 repatriation": 2.5,
+  "year beneficiary recall": 8.5,
+  "year insurer contribution": 6.0,
+  "year repatriation": 2.7
  },
  "bridge": [
   {
@@ -66,29 +66,29 @@
    "line": "Cases Castlegate's own register holds"
   },
   {
-   "cases": 290,
+   "cases": 288,
    "line": "Cases its own record did not hold"
   },
   {
-   "cases": 690,
+   "cases": 688,
    "line": "Indexed cases"
   }
  ],
  "call": {
   "index_per_million": 31,
   "index_unrounded": 30.94,
-  "indexed_cases": 690,
-  "payments_sent": 22301200,
+  "indexed_cases": 688,
+  "payments_sent": 22233300,
   "recorded_cases": 400,
   "sentence": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent"
  },
  "critical_components": {
-  "cases_its_record_did_not_hold": 290,
-  "independent_sightings": 207,
-  "independent_sightings_also_recorded": 120,
-  "matches_in_total": 412,
-  "matches_its_own_requests_produced": 205,
-  "own_detection_coverage_per_cent": 58.0
+  "cases_its_record_did_not_hold": 288,
+  "independent_sightings": 270,
+  "independent_sightings_also_recorded": 157,
+  "matches_in_total": 395,
+  "matches_its_own_requests_produced": 125,
+  "own_detection_coverage_per_cent": 58.1
  },
  "deliverables": [
   "member_incidence_review.xlsx",
@@ -96,37 +96,61 @@
  ],
  "estimator_family": {
   "bailey": {
-   "cases": 687.603305785124,
+   "cases": 686.0759493670886,
    "index": 31,
-   "rate": 30.83256980723566
+   "rate": 30.858034991075936
+  },
+  "capture probability off every own case": {
+   "cases": 687.8980891719744,
+   "hit": 157,
+   "index": 31,
+   "n": 400,
+   "p": 0.3925,
+   "rate": 30.939990427510732
+  },
+  "capture probability off the cases asked about": {
+   "cases": 687.7894736842105,
+   "hit": 95,
+   "index": 31,
+   "n": 242,
+   "p": 0.392562,
+   "rate": 30.935105165864293
+  },
+  "capture probability off the cases never asked about": {
+   "cases": 688.0645161290323,
+   "hit": 62,
+   "index": 31,
+   "n": 158,
+   "p": 0.392405,
+   "rate": 30.947475909065783
   },
   "chapman": {
-   "cases": 688.3223140495868,
+   "cases": 686.7911392405064,
    "index": 31,
-   "rate": 30.864810595375445
+   "rate": 30.890202499876597
   },
   "conditional maximum likelihood": {
-   "cases": 690.0,
+   "cases": 687.0,
    "index": 31,
-   "rate": 30.940039101034923
+   "rate": 30.89959655111927
   },
   "continuity corrected": {
-   "cases": 689.1576763485477,
+   "cases": 687.3428571428572,
    "index": 31,
-   "rate": 30.9022687724673
+   "rate": 30.915017435237104
   },
   "petersen": {
-   "cases": 690.0,
+   "cases": 687.8980891719746,
    "index": 31,
-   "rate": 30.940039101034923
+   "rate": 30.93999042751074
   }
  },
  "ladder": {
   "golden": 30.94,
-  "recorded_register_rate": 17.936,
-  "rung0_all_matches": 22.738,
-  "rung1_fortnight_window": 25.661,
-  "rung2_all_post_case": 39.914
+  "recorded_register_rate": 17.991,
+  "rung0_all_matches": 25.2,
+  "rung1_fortnight_window": 26.642,
+  "rung2_all_post_case": 35.669
  },
  "review_group_detail": {
   "KM-101": {
@@ -137,8 +161,8 @@
   },
   "KM-104": {
    "index": 31,
-   "indexed": 690,
-   "payments_sent": 22301200,
+   "indexed": 688,
+   "payments_sent": 22233300,
    "recorded": 400
   },
   "KM-108": {

@@ -95,11 +95,16 @@ def main():
         prog[(r["site_id"], tl(r["period_start_local"]))] = float(r["programme_mw"])
     ev = rd("platform/control_platform_event_log.csv")
     cancelled = {e["supersedes_event_id"] for e in ev if e["event_type"] == "correction"}
+    # The window a logged withdrawal actually covers. The platform writes its log row 90 seconds
+    # after the window opens, on every row; the start_local field agrees with that on most rows and
+    # sits 7,290 seconds from it on the rest, which cannot be a local offset of a 90 second lag. The
+    # log timestamp is the clock that holds across the whole file, so it is the one the hours are
+    # taken from. The verifier records both gaps and asserts the set below.
     unavail = defaultdict(list)
     for e in ev:
         if e["event_type"] != "reserve_unavailable" or e["event_id"] in cancelled:
             continue
-        a = tl(e["start_local"]) - OFFSET
+        a = ts(e["logged_utc"]) - dt.timedelta(seconds=90)
         unavail[e["site_id"]].append((a, a + dt.timedelta(minutes=int(e["duration_min"]))))
 
     def contracted(site, t_utc):
@@ -263,8 +268,116 @@ def main():
             ck("%s states %r" % (name, m), m in text, "not found in the shipped pdf")
         for m in mustnot:
             ck("%s silent on %r" % (name, m), m not in text.lower(), "the pdf states it")
-    ck("positive control on the pdf sweep", "Veerkracht" in std and "zzqq" not in std,
-       "the assertion can find and fail to find text")
+    # Positive controls on the same code path as the absence checks: a sentence the writer put in
+    # each pdf, searched the way the absence checks search, and a sentence that is not there.
+    for name, text, control in (("standard", std, "reserve performance standard"),
+                                ("conditions", tc, "frequency containment reserve")):
+        ck("positive control, %s pdf extraction is non-empty" % name, len(text) > 500,
+           "%d characters extracted" % len(text))
+        ck("positive control, %s absence check can find what is there" % name,
+           control in text.lower(), "control sentence %r not found" % control)
+        ck("positive control, %s absence check can fail" % name,
+           "zzqq-not-in-this-document" not in text.lower(), "")
+    # clause 4 and clause 5 carry the ask quantities; the call leans on clause 2 and clause 3
+    for m in ["in fact not holding reserve", "one decimal place",
+              "no delivery-block commitment", "above programme", "below programme",
+              "rounded once at the end", "grid loss adjustment"]:
+        ck("standard states %r" % m, m in std, "not found in the shipped pdf")
+    for m in ["correction", "two hours", "settlement_period", "interval it closes",
+              "period ending", "utc clock"]:
+        ck("standard silent on %r" % m, m not in std.lower(), "the pdf states it")
+
+    # ---- the shipped register, read back through the verifier's own reader -------------------
+    import openpyxl
+    rwb = openpyxl.load_workbook(os.path.join(TGT, "register", "asset_register.xlsx"))
+    ck("register sheets read", "Sites" in rwb.sheetnames and "Notes" in rwb.sheetnames,
+       ", ".join(rwb.sheetnames))
+    rws = rwb["Sites"]
+    rhdr = [c.value for c in rws[1]]
+    reg = {}
+    for row in rws.iter_rows(min_row=2, values_only=True):
+        d = dict(zip(rhdr, row))
+        reg[d["Site id"]] = d
+    ck("positive control, the register reader sees nine rows and the capacity column",
+       len(reg) == 9 and "Contracted FCR (MW)" in rhdr, "%d rows, %d columns" % (len(reg), len(rhdr)))
+    ck("register capacities match the contracted gains the call uses",
+       all(abs(float(reg[r["site"]]["Contracted FCR (MW)"]) / 0.190 - r["contract_gain"]) < 0.01
+           for r in F["scorecard"]), "")
+    nblob = " ".join(str(c.value) for c in rwb["Notes"]["A"] if c.value)
+    ck("positive control, the register notes reader finds text", "asset master" in nblob.lower(),
+       nblob[:60])
+    ck("register notes silent on the interval index and the logged clock",
+       "interval" not in nblob.lower() and "utc" not in nblob.lower(), nblob[:80])
+
+    # ---- ask B recomputed from the bundle ----------------------------------------------------
+    cap = {k: float(v["Contracted FCR (MW)"]) for k, v in reg.items()}
+    com = {}
+    for r in rd("platform/fcr_block_commitments.csv"):
+        com.setdefault((r["site_id"], r["delivery_date"]), set()).add(int(r["block"]))
+    committed = dict.fromkeys(range(1, 7), 0.0)
+    for (sid, _d), blocks in com.items():
+        for b in blocks:
+            committed[b] += cap[sid] * 4.0
+    ev = rd("platform/control_platform_event_log.csv")
+    cancelled = {e["supersedes_event_id"] for e in ev if e["event_type"] == "correction"}
+    lag = {}
+    lost = dict.fromkeys(range(1, 7), 0.0)
+    for e in ev:
+        if e["event_type"] != "reserve_unavailable":
+            continue
+        start = ts(e["logged_utc"]) - dt.timedelta(seconds=90) + dt.timedelta(hours=2)
+        gap = (ts(e["logged_utc"]) + dt.timedelta(hours=2) - tl(e["start_local"])).total_seconds()
+        lag[gap] = lag.get(gap, 0) + 1
+        if e["event_id"] in cancelled:
+            continue
+        lost[start.hour // 4 + 1] += cap[e["site_id"]] * int(e["duration_min"]) / 60.0
+    ck("the event log's two clocks disagree on a known set of rows",
+       set(lag) == {90.0, 7290.0}, ", ".join("%.0fs x%d" % (k, v) for k, v in sorted(lag.items())))
+    for b in F["availability"]:
+        ck("held available block %d" % b["block"],
+           abs(committed[b["block"]] - lost[b["block"]] - b["available"]) < 0.05,
+           "verifier %.1f, golden %.1f" % (committed[b["block"]] - lost[b["block"]], b["available"]))
+        ck("shortfall block %d" % b["block"], abs(lost[b["block"]] - b["shortfall"]) < 0.05,
+           "verifier %.1f, golden %.1f" % (lost[b["block"]], b["shortfall"]))
+
+    # ---- ask C recomputed from the bundle ----------------------------------------------------
+    met = rd("settlement/metered_volumes_15min.csv")
+    ck("the meter file is indexed by the interval it closes, not the one it opens",
+       "interval_ts_local" in met[0] and "period_start_local" not in met[0],
+       ", ".join(sorted(met[0])))
+    ean = {str(v["Metering point (EAN)"]): k for k, v in reg.items()}
+    for e in ev:
+        if e["event_type"] == "metering":
+            for c in {r["metering_point"] for r in met} - set(ean):
+                ean[c] = e["site_id"]
+    prog = {}
+    for r in rd("platform/site_programme_15min.csv"):
+        prog[(r["site_id"], tl(r["period_start_local"]))] = float(r["programme_mw"])
+    above = dict.fromkeys(reg, 0.0)
+    below = dict.fromkeys(reg, 0.0)
+    for r in met:
+        sid = ean.get(r["metering_point"])
+        key = tl(r["interval_ts_local"]) - dt.timedelta(minutes=15)
+        if sid is None or (sid, key) not in prog:
+            continue
+        if key.hour // 4 + 1 in com.get((sid, key.date().isoformat()), ()):
+            continue
+        v = float(r["net_volume"]) / (1000.0 if r["unit"] == "kWh" else 1.0)
+        dv = v - prog[(sid, key)] * 0.25
+        if dv >= 0:
+            above[sid] += dv
+        else:
+            below[sid] += -dv
+    for r in F["exposure"]:
+        ck("above programme %s" % r["site"], abs(above[r["site"]] - r["above"]) < 0.05,
+           "verifier %.1f, golden %.1f" % (above[r["site"]], r["above"]))
+        ck("below programme %s" % r["site"], abs(below[r["site"]] - r["below"]) < 0.05,
+           "verifier %.1f, golden %.1f" % (below[r["site"]], r["below"]))
+    ck("exposure portfolio totals", abs(sum(above.values()) - F["exposure_above_total"]) < 0.05
+       and abs(sum(below.values()) - F["exposure_below_total"]) < 0.05,
+       "verifier %.1f / %.1f" % (sum(above.values()), sum(below.values())))
+    ck("the meter file covers the window's intervals once per metering point",
+       len(met) == 9 * 21 * 96, "%d rows" % len(met))
 
     # ---- input gates -------------------------------------------------------------------------
     files, fmts = [], set()

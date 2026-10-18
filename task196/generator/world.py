@@ -39,6 +39,26 @@ INDEMNITY_YEAR = "1 October 2027 to 30 September 2028"
 # makes the attribution exact rather than a date rule.
 RECALL_WINDOW_DAYS = 30
 
+# The least number of days a fund-return request can follow an independent registration. An account
+# another firm's victim reported is on the register long before this member ever asks about it, so there
+# is no band of registrations sitting a day or two ahead of a request where the two could be confused:
+# either the request precedes the registration, or the registration precedes it by at least this many
+# days. Asserted in checks.py and verify.py as a gap with nothing inside it.
+REQUEST_GAP_DAYS = 22
+
+# The share of independent registrations that predate the payment they match. The register is a standing
+# industry list and an account stays on it, so a member's payment can land on an account already
+# reported. The share is held the same among the member's own recorded cases and the cases it never
+# recorded, so an analyst who reads the channel without those rows divides a smaller numerator by a
+# proportionally smaller overlap and makes the same call (SF13, a C1 convergence).
+PRE_PAYMENT_SHARE = 0.62
+
+# The share of recorded cases that surface inside the recall window, and so draw a fund-return request.
+# Investment and romance scams, where the victim is strung along, surface long after the window and the
+# member never asks for the money back, which is what leaves a body of its own cases whose registrations
+# no request of its own can explain. It is a property of the scam mix rather than of this mutual.
+REQUEST_SHARE = 0.60
+
 # ---------------------------------------------------------------------------
 # Members. The review group is the third of the membership whose triennial review falls this cycle.
 # Volumes for the review group are derived in build_members() so each one's index lands mid-bin.
@@ -46,7 +66,7 @@ RECALL_WINDOW_DAYS = 30
 MEMBERS = [
     # code, name, tier, joined, review group, true cases 2026/27, member coverage, scheme coverage,
     # registration rate after a request, target index (review group only)
-    ("KM-104", "Castlegate Payments",  "B", dt.date(2016, 4, 1),  True,  690, 400 / 690, 207 / 690, 0.850, 30.94),
+    ("KM-104", "Castlegate Payments",  "B", dt.date(2016, 4, 1),  True,  690, 400 / 690, 270 / 690, 0.850, 30.94),
     ("KM-101", "Brindlemere Remit",    "A", dt.date(2014, 10, 1), True,  515, 0.860, 0.310, 0.780, 12.11),
     ("KM-112", "Saltmarch Pay",        "C", dt.date(2019, 4, 1),  True,  140, 0.780, 0.330, 0.800, 21.88),
     ("KM-108", "Trentmoor Money",      "B", dt.date(2017, 7, 1),  True,  300, 0.820, 0.290, 0.760, 15.07),
@@ -59,6 +79,11 @@ MEMBERS = [
     ("KM-124", "Garnock Exchange",     "A", dt.date(2023, 10, 17), False, 331, 0.870, 0.315, 0.770, None),
     ("KM-103", "Wrenhall Pay",         "A", dt.date(2015, 4, 1),  False, 356, 0.915, 0.300, 0.700, None),
 ]
+
+# A contribution tier is set at a member's triennial review and holds until the next one, so a member
+# whose volumes have fallen since is carried at the tier its last review set. The register's own
+# triennial-review field says whose review falls this cycle.
+TIER_HELD_FROM = {"KM-103": "2024"}
 
 TIER_NAMES = {"A": "Tier A, over 25 million payments a year",
               "B": "Tier B, 10 to 25 million payments a year",
@@ -191,10 +216,7 @@ def build_cases(members):
                                   recovery_date=None))
             order = list(range(n_true))
             r.shuffle(order)
-            s_set = set(order[:n_s])                      # independently registered accounts
-            rest = order[n_s:]
-            in_both = order[:both]                        # recorded and independently registered
-            m_set = set(in_both) | set(rest[:n_m - both])  # recorded
+            m_set = set(order[:n_m])                      # recorded by the member
             # report lag: a case is opened when the customer or the monitoring finds it. Cases on
             # already-reported accounts are found the same way as any other.
             for i in sorted(m_set):
@@ -203,13 +225,11 @@ def build_cases(members):
                 # most cases surface inside the recall window, the slow ones (investment and romance
                 # scams, where the victim is strung along) long after it
                 room = max(RECALL_WINDOW_DAYS + 3, (PULL - c.payment_date).days - 4)
-                if r.random() < 0.72:
+                if r.random() < REQUEST_SHARE:
                     c.report_lag = r.randint(1, RECALL_WINDOW_DAYS - 1)
                 else:
                     c.report_lag = r.randint(RECALL_WINDOW_DAYS + 2, min(190, room))
                 c.open_date = c.payment_date + dt.timedelta(days=c.report_lag)
-            for i in sorted(s_set):
-                group[i].independent_reg = True
             # fund-return requests come first, because where a member asked for the money back the
             # request is what the receiving firm's own registration answers. A request is only sent
             # while there is a chance of recovering the funds.
@@ -219,24 +239,60 @@ def build_cases(members):
                 c = group[i]
                 # the fraud team works a queue, so the request goes days after the case is opened
                 c.request_date = c.open_date + dt.timedelta(days=r.randint(1, 5))
-            # independent registration dates. An account another firm's victim reported is on the
-            # register before this member ever asks about it: for a case inside the recall window the
-            # registration lands before the member's own request, either before the case was opened or
-            # in the days between the case and the request going out.
+            never = [i for i in sorted(m_set) if group[i].request_date is None]
+            unrec = [i for i in order if i not in m_set]
+            # The independent capture: another firm's victim reports the receiving account, which has
+            # nothing to do with whether this member asked for its money back. The rate is therefore
+            # held the same inside every subset an analyst can cut, the cases the member asked about and
+            # the cases it never asked about alike, so the capture probability is one number however it
+            # is read off the member's own register (SF12's sixth form).
+            k_req = round(len(requested) * p_s)
+            k_never = both - k_req
+            req_sh, never_sh, unrec_sh = list(requested), list(never), list(unrec)
+            r.shuffle(req_sh)
+            r.shuffle(never_sh)
+            r.shuffle(unrec_sh)
+            assert 0 <= k_req <= len(req_sh) and 0 <= k_never <= len(never_sh), (
+                "stratified capture does not fit: %s %s" % (m["code"], y))
+            s_set = set(req_sh[:k_req]) | set(never_sh[:k_never]) | set(unrec_sh[:n_s - both])
+            for i in sorted(s_set):
+                group[i].independent_reg = True
+            # Independent registration dates. The register is a standing list, so some of these accounts
+            # were reported before the member's payment ever landed on them and the rest were reported
+            # after. Two properties are built here and asserted in checks.py and verify.py. First, where
+            # the member did send a request, the registration precedes it by at least REQUEST_GAP_DAYS,
+            # so there is no band of registrations sitting a day or two ahead of a request that a reading
+            # could attribute either way. Second, the share that predates the payment is the same among
+            # the member's own cases and the cases it never recorded, so dropping them is the same call.
+            rec_ind = [i for i in sorted(s_set) if i in m_set]
+            unrec_ind = [i for i in sorted(s_set) if i not in m_set]
+            # a request this close behind the payment leaves no room for a registration in front of it
+            forced = [i for i in rec_ind if group[i].request_date is not None
+                      and (group[i].request_date - group[i].payment_date).days - REQUEST_GAP_DAYS < 1]
+            want_pre = max(len(forced), round(len(rec_ind) * PRE_PAYMENT_SHARE))
+            spare = [i for i in rec_ind if i not in set(forced)]
+            r.shuffle(spare)
+            pre = set(forced) | set(spare[:want_pre - len(forced)])
+            unrec_pre = list(unrec_ind)
+            r.shuffle(unrec_pre)
+            # the same share, so the ratio the estimate divides is untouched by dropping these rows
+            share = len(pre) / len(rec_ind) if rec_ind else 0.0
+            pre |= set(unrec_pre[:round(len(unrec_ind) * share)])
             for i in sorted(s_set):
                 c = group[i]
-                if c.request_date is not None:
-                    room = (c.request_date - c.open_date).days
-                    if room >= 2 and r.random() < 0.45:
-                        c.independent_reg_date = c.open_date + dt.timedelta(days=r.randint(0, room - 1))
-                    else:
-                        c.independent_reg_date = c.open_date - dt.timedelta(days=r.randint(1, 95))
+                if i in pre:
+                    # reported before this member's payment landed on the account
+                    back = min(150, max(20, (c.payment_date - dt.date(2022, 10, 1)).days - 1))
+                    c.independent_reg_date = c.payment_date - dt.timedelta(
+                        days=r.randint(min(20, back), back))
+                elif c.request_date is not None:
+                    room = (c.request_date - c.payment_date).days - REQUEST_GAP_DAYS
+                    c.independent_reg_date = c.payment_date + dt.timedelta(days=r.randint(1, room))
                 elif c.recorded:
-                    ahead = max(1, min(190, (PULL - c.open_date).days - 2))
-                    if r.random() < 0.62:
-                        c.independent_reg_date = c.open_date + dt.timedelta(days=r.randint(1, ahead))
-                    else:
-                        c.independent_reg_date = c.open_date - dt.timedelta(days=r.randint(1, 120))
+                    # the member never asked for the money back, and another firm's victim reported the
+                    # account later, after this member had already opened its own case
+                    ahead = max(2, min(210, (PULL - c.open_date).days - 2))
+                    c.independent_reg_date = c.open_date + dt.timedelta(days=r.randint(1, ahead))
                 else:
                     ahead = max(2, min(210, (PULL - c.payment_date).days - 2))
                     c.independent_reg_date = c.payment_date + dt.timedelta(days=r.randint(2, ahead))
@@ -244,7 +300,7 @@ def build_cases(members):
             # requests on accounts nobody else had reported
             candidates = [i for i in requested if not group[i].independent_reg]
             r.shuffle(candidates)
-            want = round((n_m - both) * m["q"])
+            want = round(len(candidates) * m["q"])
             for i in candidates[:want]:
                 c = group[i]
                 lo_b, hi_b = REGISTRATION_CADENCE[c.dest_firm]

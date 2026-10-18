@@ -180,7 +180,7 @@ if __name__ == "__main__":
     DL.brief(os.path.join(gold, "embed_placement_brief.pdf"), g, chart_png)
     PP.normalize_ooxml(os.path.join(gold, "embed_placement_2027q4.xlsx"), "Maureen Watts",
                        "Maureen Watts", "2027-03-17T23:15:00Z", "2027-03-18T04:05:00Z",
-                       title="Cycle IP-09 placement", excel=True)
+                       title="Cycle IP-11 placement", excel=True)
     PP.normalize_pdf(os.path.join(gold, "embed_placement_brief.pdf"),
                      b"D:20270318151000+11'00'", b"D:20270318151000+11'00'")
     MD.write(task, g)
@@ -197,22 +197,27 @@ if __name__ == "__main__":
         print()
     print("call    : %s %s, %.1f avoidable complications on %d planned separations"
           % (g["answer"]["unit"], g["answer"]["name"], g["answer"]["avoidable"], g["answer"]["plan"]))
-    print("closest : %s %s, %.1f; lead %.2f complications, %.2fx, %.2f standard errors (SE gap %.2f)"
+    print("closest : %s %s, %.1f; lead %.2f complications, %.3fx, %.2f standard errors (SE gap %.2f)"
           % (g["runner"]["unit"], g["runner"]["name"], g["runner"]["avoidable"], g["gap"], g["margin"],
              g["se_lead"], g["se_gap"]))
-    print("rungs   : 0 %s %.1f published, 3 %s %.1f per 1,000, 4 %s %.1f; answer %d of %d published"
-          % (g["rung0"]["unit"], g["rung0"]["published_excess"], g["rung3"]["unit"],
-             g["rung3"]["per_1000"], g["rung4"]["unit"], g["rung4"]["avoidable"],
-             g["published_rank"], len(g["eligible"])))
-    print("forcing : band drift %.3f to %.3f (factor %.2f); surgical share %.3f to %.3f, %d carrying none"
-          % (g["facts"]["drift_low"], g["facts"]["drift_high"], g["facts"]["drift_spread"],
-             g["facts"]["surgical_low"], g["facts"]["surgical_high"], g["facts"]["surgical_none"]))
-    print("demo    : %s published %.1f to %.1f (x%.1f), internal %.1f to %.1f (spread %.2f)"
-          % (g["demo"]["unit"], g["demo"]["published_low"], g["demo"]["published_high"],
-             g["demo"]["published_multiple"], g["demo"]["internal_low"], g["demo"]["internal_high"],
-             g["demo"]["internal_spread"]))
+    R = {k.split()[0]: v for k, v in g["routes"].items()}
+    print("rungs   : " + "; ".join("%s %s %.1f" % (lab, R[lab]["first"], R[lab]["first_value"])
+                                   for lab in ("R0", "R1", "R2", "R3", "R4", "R5")))
+    print("          answer %d of %d on the record as it stands, margins %s"
+          % (g["recorded_rank"], len(g["eligible"]),
+             ", ".join("%s %.3fx" % (lab, R[lab]["margin"]) for lab in sorted(R))))
+    short = sorted((100.0 * (1.0 - d["completeness"]), d["unit"]) for d in g["units"])
+    print("lag     : %d of 10 closed quarters still filling (%s); shortfall %.2f to %.2f per cent"
+          % (sum(1 for v in g["lags"].values() if v > 0),
+             ", ".join(sorted(q for q, v in g["lags"].items() if v > 0)), short[0][0], short[-1][0]))
+    print("factors : lag 0 %.4f at %s against %.4f at %s; uplift %.1f complications at the answer"
+          % (g["factors"][(g["answer"]["unit"], 0)], g["answer"]["unit"],
+             g["factors"][(g["rung0"]["unit"], 0)], g["rung0"]["unit"], g["answer"]["uplift"]))
     moved = [k for k, v in g["convergence"].items() if v["first"] != g["answer"]["unit"]]
-    print("converge: %d readings of charter 4.3, %d naming another unit" % (len(g["convergence"]), len(moved)))
+    print("converge: %d readings of the development, %d naming another unit, margins %.3f to %.3f"
+          % (len(g["convergence"]), len(moved),
+             min(v["margin"] for v in g["convergence"].values()),
+             max(v["margin"] for v in g["convergence"].values())))
     if tgt == os.path.join(task, "target"):
         zip_pack(tgt, os.path.join(task, "target.zip"))
         print("zip     : %s" % os.path.join(task, "target.zip"))

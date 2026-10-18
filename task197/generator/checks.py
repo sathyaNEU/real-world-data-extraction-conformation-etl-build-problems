@@ -282,25 +282,39 @@ def main():
               + [abs(gc_g[1][k] - gc_n[1][k]) for k in gc_g[1]])
     ck("device C moves every site's exposure figure by more than the stated rounding",
        min(gaps_c) > 0.05, "smallest site gap %.1f MWh, largest %.1f MWh" % (min(gaps_c), max(gaps_c)))
-    inb_own = inb_prev = nbig = 0
+    nbig = nearer_prev = nearer_own = 0
+    dev_own = dev_prev = []
+    dev_own, dev_prev = [], []
     for d in sim.dates():
         for s_site in sim.SITES:
-            prog = W[d]["prog"][s_site["id"]]
-            E = core.metered(W, d, s_site["id"])
+            sid = s_site["id"]
+            prog = W[d]["prog"][sid]
+            E = core.metered(W, d, sid)
+            cmask = np.zeros(96, dtype=bool)
+            for b in sim.commitments(s_site, d):
+                lo_h, hi_h = sim.BLOCK_HOURS[b]
+                cmask[lo_h * 4:hi_h * 4] = True
             for pp in range(1, 96):
+                if not cmask[pp]:
+                    dev_prev.append(abs(E[pp] - prog[pp] * 0.25))
+                    dev_own.append(abs(E[pp - 1] - prog[pp] * 0.25))
                 if abs(prog[pp] - prog[pp - 1]) < 1.0:
                     continue
                 nbig += 1
-                lo_e, hi_e = sorted((prog[pp - 1] * 0.25, prog[pp] * 0.25))
-                if lo_e < E[pp - 1] < hi_e:
-                    inb_own += 1
-                if lo_e < E[pp] < hi_e:
-                    inb_prev += 1
-    ck("device C is forced by the programme's own steps",
-       inb_prev > 2 * inb_own and nbig > 500,
-       "over %d periods whose setpoint steps by more than 1 MW, the energy the row's own index "
-       "names lies inside the step in %d, the energy one period earlier in %d"
-       % (nbig, inb_own, inb_prev))
+                if abs(E[pp - 1] - prog[pp - 1] * 0.25) < abs(E[pp - 1] - prog[pp] * 0.25):
+                    nearer_prev += 1
+                else:
+                    nearer_own += 1
+    mo, mp = float(np.mean(dev_own)), float(np.mean(dev_prev))
+    ck("device C is forced by the programme the rows are paired against",
+       mo > 4 * mp and len(dev_prev) > 10000,
+       "over %d scored periods the mean absolute deviation from programme is %.4f MWh when a row is "
+       "paired with the interval it closes and %.4f MWh when it is paired with the period its own "
+       "index names, a factor of %.1f" % (len(dev_prev), mp, mo, mo / mp))
+    ck("the rows indexed at a setpoint step carry the level before the step",
+       nearer_prev > 20 * nearer_own,
+       "of %d periods whose setpoint steps by more than 1 MW, the row carrying that index sits "
+       "nearer the previous setpoint in %d and nearer its own in %d" % (nbig, nearer_prev, nearer_own))
     ca = ceiling.ask_a(P, ("true", "extracts"))
     cs = ceiling.ask_a(P, ("stamped", "summary"))
     cx = ceiling.ask_a(P, ("stamped", "extracts"))

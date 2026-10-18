@@ -34,22 +34,22 @@ UNAVAIL = [
     ("VKF-OOS", dt.date(2026, 9, 23), 2, "05:12", 38, "droop controller alarm, reserve withdrawn", "ALM-DRP", "local", False, False),
     ("VKF-HGZ", dt.date(2026, 9, 30), 6, "20:35", 74, "engine 3 trip, reserve capacity reduced", "ENG-TRP", "local", False, False),
     ("VKF-NWV", dt.date(2026, 10, 3), 2, "06:22", 29, "communications loss to control platform", "COM-LOS", "local", False, False),
-    ("VKF-MPD", dt.date(2026, 9, 22), 2, "06:35", 44, "engine 1 lube oil alarm", "ENG-LUB", "local", False, False),
-    ("VKF-ZWT", dt.date(2026, 10, 1), 3, "10:20", 52, "state of charge outside reserve band", "SOC-OUT", "local", False, False),
-    ("VKF-TRB", dt.date(2026, 9, 25), 3, "09:30", 41, "process load locked out of reserve", "LOA-LCK", "local", False, False),
+    ("VKF-MPD", dt.date(2026, 9, 22), 2, "06:35", 45, "engine 1 lube oil alarm", "ENG-LUB", "local", False, False),
+    ("VKF-ZWT", dt.date(2026, 10, 1), 3, "10:20", 45, "state of charge outside reserve band", "SOC-OUT", "local", False, False),
+    ("VKF-TRB", dt.date(2026, 9, 25), 3, "09:30", 42, "process load locked out of reserve", "LOA-LCK", "local", False, False),
     ("VKF-DLK", dt.date(2026, 9, 27), 1, "01:30", 63, "inverter bank 2 isolated", "INV-ISO", "local", False, False),
     ("VKF-OOS", dt.date(2026, 10, 7), 4, "13:40", 47, "inverter bank 1 derated on cooling fault", "INV-DER", "local", False, False),
     ("VKF-KPV", dt.date(2026, 10, 5), 5, "17:25", 36, "cell string isolated on insulation alarm", "ISO-INS", "local", False, False),
-    ("VKF-RDL", dt.date(2026, 9, 28), 5, "18:10", 55, "gas train isolation valve fault", "GAS-VLV", "local", False, False),
+    ("VKF-RDL", dt.date(2026, 9, 28), 5, "18:10", 48, "gas train isolation valve fault", "GAS-VLV", "local", False, False),
     # --- rows the operator interface wrote: start_local carries the UTC instant ---------------
     ("VKF-HGZ", dt.date(2026, 9, 26), 6, "20:00", 26, "engine 2 governor hunting", "ENG-GOV", "utc", True, True),
     ("VKF-OOS", dt.date(2026, 10, 2), 4, "12:00", 24, "state of charge outside reserve band", "SOC-OUT", "utc", True, True),
-    ("VKF-ZWT", dt.date(2026, 10, 8), 3, "09:35", 22, "transformer cooling alarm", "TRF-COO", "utc", True, True),
+    ("VKF-ZWT", dt.date(2026, 10, 8), 3, "09:35", 15, "transformer cooling alarm", "TRF-COO", "utc", True, True),
     ("VKF-TRB", dt.date(2026, 10, 9), 3, "09:04", 28, "process line interlock raised", "LOA-INT", "utc", True, True),
-    ("VKF-KPV", dt.date(2026, 10, 3), 5, "19:20", 31, "inverter bank 2 fan failure", "INV-FAN", "utc", True, False),
+    ("VKF-KPV", dt.date(2026, 10, 3), 5, "19:20", 30, "inverter bank 2 fan failure", "INV-FAN", "utc", True, False),
     ("VKF-NWV", dt.date(2026, 9, 24), 2, "04:00", 28, "control platform link degraded", "COM-DEG", "utc", False, True),
-    ("VKF-DLK", dt.date(2026, 9, 30), 1, "00:01", 46, "inverter bank 1 isolated", "INV-IS1", "utc", False, True),
-    ("VKF-RDL", dt.date(2026, 9, 23), 5, "16:00", 40, "engine 2 knock sensor fault", "ENG-KNK", "utc", False, True),
+    ("VKF-DLK", dt.date(2026, 9, 30), 1, "00:01", 45, "inverter bank 1 isolated", "INV-IS1", "utc", False, True),
+    ("VKF-RDL", dt.date(2026, 9, 23), 5, "16:00", 36, "engine 2 knock sensor fault", "ENG-KNK", "utc", False, True),
     ("VKF-DLK", dt.date(2026, 9, 22), 5, "16:05", 45, "inverter bank 3 isolated", "INV-IS3", "utc", False, True),
     # --- three windows a later correction row cancels: the reserve was not withdrawn ----------
     ("VKF-OOS", dt.date(2026, 9, 28), 4, "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP", "local", False, False),
@@ -261,6 +261,18 @@ def scope_gate(site, d, tstar):
     return bool(fcr_active(site, d, np.array([float(tstar)]))[0])
 
 
+def stamp_scope_gate(site, d, tstar):
+    """clause 2's scope as a response reading start_local at face value would apply it: the window
+    of every live event placed where its own row says, not where the platform's log clock puts it."""
+    for r in unavail_rows():
+        if r["site"] != site["id"] or r["superseded"]:
+            continue
+        sd, ss = norm(r["date"], r["stamp_start"])
+        if sd == d and ss <= tstar < ss + r["minutes"] * 60:
+            return False
+    return True
+
+
 def held_minutes():
     """Every (local date, local minute) the operator's minute summary carries the SCADA chain's
     one-minute average in all three columns. A span opens two minutes before the first qualifying
@@ -441,6 +453,15 @@ def main():
     under = core.episode_table(W, recs, cache, "under")
     over = core.episode_table(W, recs, cache, "over")
     su, so = core.site_scores(under), core.site_scores(over)
+    # the same over-frequency table as a response reading start_local at face value builds it, and
+    # as a response that also stopped at the undisturbed level reads it: both are ask-layer
+    # measurements, printed into figures.json so ceiling.py scores two real readings
+    _g = core._scope_gate
+    try:
+        core._scope_gate = stamp_scope_gate
+        so_stamp = core.site_scores(core.episode_table(W, recs, cache, "over"))
+    finally:
+        core._scope_gate = _g
     av = pack2.availability(W, placed, "golden")
     av_c = pack2.availability(W, placed, "cracker")
     av_m = pack2.availability(W, placed, "mirror")
@@ -450,12 +471,12 @@ def main():
     cap = {s["id"]: s["cap"] for s in sim.SITES}
     order = [sid for sid, _ in core.ranked(su, "traj")]
     sc = [dict(site=sid, name=name[sid], cap=round(cap[sid], 2),
-               contract_gain=round(cap[sid] / sim.SPAN, 2), gain_pct=round(su[sid]["traj"], 1),
-               episodes=su[sid]["n"], under=round(su[sid]["traj"], 1) < core.TOLERANCE_PCT)
+               contract_gain=round(cap[sid] / sim.SPAN, 2), gain_pct=round(su[sid]["traj"]),
+               episodes=su[sid]["n"], under=round(su[sid]["traj"]) < core.TOLERANCE_PCT)
           for sid in order]
     call, runner = order[0], order[1]
     down = [dict(site=sid, name=name[sid],
-                 gain_pct=(round(so[sid]["traj"], 1) if sid in so else None),
+                 gain_pct=(round(so[sid]["traj"]) if sid in so else None),
                  episodes=(so[sid]["n"] if sid in so else 0)) for sid in sorted(name)]
     dn_low = min([d for d in down if d["gain_pct"] is not None], key=lambda d: d["gain_pct"])
     dn_none = [d for d in down if d["gain_pct"] is None]
@@ -470,16 +491,16 @@ def main():
              delivery_month=DELIVERY_MONTH, delivery_start="2026-11-01", tso=TSO, org=ORG,
              tolerance=core.TOLERANCE_PCT, scorecard=sc, down=down, availability=blocks,
              exposure=exposure, call_site=call, call_name=name[call],
-             call_gain=round(su[call]["traj"], 1), runner_site=runner, runner_name=name[runner],
-             runner_gain=round(su[runner]["traj"], 1),
-             gap_pp=round(round(su[runner]["traj"], 1) - round(su[call]["traj"], 1), 1),
+             call_gain=round(su[call]["traj"]), runner_site=runner, runner_name=name[runner],
+             runner_gain=round(su[runner]["traj"]),
+             gap_pp=round(su[runner]["traj"]) - round(su[call]["traj"]),
              call_episodes=su[call]["n"],
              down_low_name=dn_low["name"], down_low_gain=dn_low["gain_pct"],
              down_none_name=(dn_none[0]["name"] if dn_none else "none"),
              exposure_above_total=round(adh["above_total"], 1),
              exposure_below_total=round(adh["below_total"], 1),
              rung0_site=rung0_site, rung0_name=name[rung0_site],
-             rung0_pre=round(su[rung0_site]["pre"], 1), rung0_traj=round(su[rung0_site]["traj"], 1),
+             rung0_pre=round(su[rung0_site]["pre"], 1), rung0_traj=round(su[rung0_site]["traj"]),
              ladder={k: {sid: round(v[k], 4) for sid, v in su.items()} for k in ("traj", "pre", "sp", "lin")},
              ladder_names={k: core.ranked(su, k)[0][0] for k in ("traj", "pre", "sp", "lin")},
              exact={sid: round(v["traj"], 6) for sid, v in su.items()},
@@ -503,7 +524,12 @@ def main():
                                           for b in range(1, 7)), 1),
                  ean_lost_mwh=round(st["ean_lost_mwh"], 1),
                  prelim_gap_mwh=round(st["prelim_gap_mwh"], 3),
-                 kwh_site=KWH_SITE),
+                 kwh_site=KWH_SITE,
+                 # ask A read with the start_local field at face value, and on rung 0's baseline
+                 down_gain_stamped={sid: round(v["traj"]) for sid, v in so_stamp.items()},
+                 down_episodes_stamped={sid: v["n"] for sid, v in so_stamp.items()},
+                 down_gain_rung0={sid: round(v["pre"]) for sid, v in so.items()
+                                  if v.get("pre") == v.get("pre")}),
              counts=counts)
     print("[stage] dictionary and goldens", flush=True)
     counts["dictionary"] = pack2.dictionary(TGT, counts)

@@ -231,14 +231,19 @@ def build_rows(P, F):
     vals = {k: (ask_a(P, r[0]), ask_b(P, r[1]), ask_c(P, r[2])) for k, r in reads.items()}
     rows = []                            # (ask, label, unit, golden, {who: value})
 
-    # ask A: nine gains then nine counts
+    # ask A: nine gains then nine counts. The gain is decided by two things at once, the traverse
+    # construction and the obligation scope, so the cracker has the first and not the second and
+    # the mirror has neither. Both readings are measured in the generator and carried in
+    # figures.json: forcing.down_gain_stamped is the gain a response reading start_local at face
+    # value computes, forcing.down_gain_rung0 the gain on the undisturbed-level baseline.
     dn = {d["site"]: d for d in F["down"]}
+    stamped = F["forcing"]["down_gain_stamped"]
+    rung0 = F["forcing"]["down_gain_rung0"]
     for sid in sorted(dn):
         g = dn[sid]["gain_pct"]
-        # the construction decides the gain: the cracker has it, the mirror does not
         rows.append(("A down regulation", "down gain %s" % sid, 1.0, g,
-                     {"cracker_sum": g, "cracker_ext": g,
-                      "mirror": (None if g is None else g + 20.0)}))
+                     {"cracker_sum": stamped.get(sid), "cracker_ext": stamped.get(sid),
+                      "mirror": rung0.get(sid)}))
     for sid in sorted(gold_a):
         rows.append(("A down regulation", "down episodes %s" % sid, 1.0, gold_a[sid],
                      {k: vals[k][0][sid] for k in reads}))
@@ -286,9 +291,11 @@ def main():
             line += "  %s %2d" % (k, sum(1 for (_, _, u, g, v) in sub if hit(g, v[k], u)))
         print(line)
         asks.append((ask, sub))
-    print("  (the cracker's kept figures in ask A are the nine down-regulation gains, which the")
-    print("   traverse construction decides and which no ask device moves; the separation")
-    print("   assertions in checks.py prove no device row sits in the main call's population)")
+    print("  (the figures the cracker keeps are the four down-regulation gains and four episode")
+    print("   counts the clock device does not reach, and MPD's pair, which has no over-frequency")
+    print("   episode in the window. Ask B and ask C are decoupled from the call, so the two rows")
+    print("   agree there by construction: the separation assertions in checks.py are what prove")
+    print("   it, not this script.)")
 
     out = {}
     for k in who:

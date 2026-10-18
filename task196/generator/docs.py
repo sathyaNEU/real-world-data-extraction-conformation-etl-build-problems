@@ -175,7 +175,7 @@ def trustee_pack(target, w):
                   "circulated separately.", SMALL),
         Paragraph("Agenda", H2),
         Paragraph("1. Minutes of the meeting of 11 March 2027 and matters arising. 2. Secretariat "
-                  "report, including the register feed change of February 2027. 3. Settlement position "
+                  "report. 3. Settlement position "
                   "for the scheme year ended 31 March 2027. 4. Triennial experience reviews for the "
                   "members shown in the register as falling in this cycle, taken together with the "
                   "membership position below. 5. Loss-control programme placement for the indemnity "
@@ -186,7 +186,8 @@ def trustee_pack(target, w):
                   "coming indemnity year.", BODY),
         t,
         Spacer(1, 3 * mm),
-        Paragraph("The reviews at item 4 are prepared from the mutual's evidence base at 31 March 2027. "
+        Paragraph("The reviews at item 4 cover the scheme year ended 31 March 2027 and are prepared "
+                  "from the mutual's evidence base as pulled for this meeting on 2 July 2027. "
                   "No index is proposed in this pack; the reviews are tabled at the meeting.", SMALL),
     ]
     d.build(f, canvasmaker=_Canvas)

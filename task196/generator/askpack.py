@@ -279,9 +279,10 @@ def reference_files(target, w):
             "matching run writes the sort code hyphenated and drops leading zeros from the account\n"
             "number. Pad the account number back to eight digits before matching anything against the\n"
             "register, or the match loses every account whose number starts with a zero.\n\n"
+            "An account stays on the register once it is reported, so a member payment can match an\n"
+            "account that was already on the register before that payment was sent.\n\n"
             "The weekly run writes one row per member payment that matched a registered account, with\n"
-            "the register's date for that account. Where a member had its own case on the payment the\n"
-            "case reference is carried through; where it had none the field is blank.\n"
+            "the register's date for that account.\n"
             % W.PULL.strftime("%d %B %Y"))
 
 

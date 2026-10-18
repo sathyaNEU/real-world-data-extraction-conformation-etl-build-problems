@@ -197,17 +197,20 @@ def mule_register(target, w):
     """The scheme's central register of beneficiary accounts firms have reported. Industry wide, so most
     rows have nothing to do with this mutual's members."""
     rows = []
+    rr = W.rng("reason")
     for c in w["cases"]:
         if c.registration_date is None:
             continue
         rows.append([_pad(c.account), _d(c.registration_date), "reported",
-                     _firm_of(c), "scam proceeds"])
+                     _firm_of(c),
+                     rr.choices(["scam proceeds", "mule recruitment", "unauthorised proceeds"],
+                                weights=[64, 15, 21])[0]])
     # the rest of the industry's reporting over the same window
     r = W.rng("industry")
     lo = dt.date(2023, 1, 1)
     for i in range(21400):
         acc = W.account_ref(r)
-        d = lo + dt.timedelta(days=r.randrange((W.AS_OF - lo).days))
+        d = lo + dt.timedelta(days=r.randrange((W.PULL - lo).days))
         rows.append([_pad(acc), _d(d), r.choices(["reported", "closed by firm", "reported"],
                                                  weights=[72, 19, 9])[0],
                      r.choices(["clearing bank", "e-money institution", "building society",
@@ -282,7 +285,10 @@ def fund_return_requests(target, w):
 def member_register(target, w):
     rows = []
     for m in w["members"]:
-        rows.append([m["code"], m["name"], m["tier"], W.TIER_NAMES[m["tier"]], _d(m["joined"]),
+        basis = W.TIER_NAMES[m["tier"]]
+        if not m["review"] and m["code"] in W.TIER_HELD_FROM:
+            basis = "%s, held from the %s review" % (basis, W.TIER_HELD_FROM[m["code"]])
+        rows.append([m["code"], m["name"], m["tier"], basis, _d(m["joined"]),
                      "yes" if m["review"] else "no",
                      int(round(w["volumes"][(m["code"], W.MEASURED)] * 1.04 / 1000.0) * 1000),
                      "scam reimbursement, unauthorised fraud"])

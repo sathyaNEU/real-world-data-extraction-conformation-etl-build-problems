@@ -147,7 +147,7 @@ reverses the ranking.
 | 2 Unit of account | the reserve-providing unit (site) | the question names the site; the register is one row per unit |
 | 3 Attribution window | the episode falls in the period holding its extreme second | asserted: no extreme second within 5 s of a period boundary |
 | 4 As-of dating | determination dated 2026-10-13, window closed 2026-10-11 | filed in clause 3 |
-| 5 Version basis | the latest settlement statement issued per month | filed in clause 5 (ask side only) |
+| 5 Version basis | the settlement statements are the operator's record and carry two October issues; nothing graded reads them | clause 5 names them as the monthly reconciliation and grades nothing from them; the ask side reads the desk's own meter file |
 | 6 Denominator | deviation beyond the dead band, times contracted gain | filed in clause 2 of both documents |
 | 7 Weighting | equal weight per episode | filed in clause 2; asserted against the ratio-of-sums variant |
 | 8 Window length | 21 delivery dates | filed in clause 3 |
@@ -190,48 +190,91 @@ results and imbalance prices are the two declared distractors and touch no grade
 
 ## Ask sheet
 
-Three asks, each a component of the determination's own case, each computed over rows the main call
-never reads.
+Three asks, 50 graded figures. Each is a component of the determination's own case, each is computed
+over rows the main call never reads, and each carries one primary device the cracker misses: an
+internal inconsistency nothing in the pack invites, found only by a cross-file or cross-grain cut,
+with its forcing stated as a number measured on the cut pack.
 
-| Ask | Figures | H18 home | Use | Population the call does not read | Primary device | Hazards |
-|---|---|---|---|---|---|---|
-| A down regulation | 9 gains, 9 episode counts | the other half of the same contract: the desk owes the operator a view of both directions | the down-regulation product is contracted and reviewed on the same characteristic | qualifying over-frequency episodes (f at or above 50.080 Hz), which the call's population excludes by sign | D1 replay: one delivery date's recordings for one site were restored twice after the storage fault the event log carries, so a response averaging per recording rather than per episode double counts that date | the kWh meter, the UTC against local market time join |
-| B block availability | 6 blocks by committed, held available and shortfall, plus 3 portfolio totals | capacity settlement: the desk is paid on capacity held available | the operator settles capacity per block and the desk reports the shortfall | the control platform's reserve-withdrawal events and their corrections, placed clear of every measured episode | D2 version: three withdrawal events a later correction row cancels, which a naive sum of outage minutes counts twice | the block grain against the minute grain of the event log |
-| C settlement reconciliation | 9 metered volumes, 9 differences, 2 portfolio totals | clause 5 of the standard: the desk reconciles its own meters to the operator's statements | the difference drives the imbalance position the desk carries | the settlement meter file and the operator's daily statements | D7 keys: one site's metering point was replaced mid-window, so its September volumes sit under a code the register no longer carries | D2 the preliminary against the amended October statement, D3 one meter reporting kWh |
+| Ask | Figures | H18 home | Population the call does not read | Primary device | Hazards |
+|---|---|---|---|---|---|
+| A down regulation | 9 gains, 9 episode counts | the other half of the same contract: the desk owes the operator a view of both directions, and the down product is reviewed on the same characteristic | qualifying over-frequency episodes (f at or above 50.080 Hz), which the call's population excludes by sign | **D9 self-validation.** For 32 minutes the operator's summary ran on the SCADA chain's own one-minute average, so those rows carry that single value in all three columns and the published extract reaches above the summary's own stated maximum for the same minute. A response that locates episodes from the summary, which is the pack's index to a 97,730 row extract file and the route the under-frequency call rewards, never opens them. | the clock device below (shared), the restored recording, the kWh feed, UTC against local market time |
+| B capacity held available | 6 held-available, 6 shortfall | capacity settlement: the desk is paid on the capacity it holds available and reports the shortfall per block | the control platform's reserve-withdrawal rows, every one placed clear of every qualifying under-frequency episode of the call's population | **D8 clocks.** The alarm handler stamps `start_local` from the local clock; the operator interface stamps the same field from the UTC clock and the export appends the house offset either way, so nine rows read two hours early. Nothing says so. The file's own `logged_utc` is 90 seconds after the window opens on every row the platform wrote, which is a convention no document states and only a column-against-column cut shows. | the three correction rows, the block grain against the minute grain |
+| C imbalance exposure | 9 above programme, 9 below programme, 2 portfolio totals | clause 5: outside the blocks it is committed to, the whole gap between what a site delivers and what its programme sets falls to the desk's imbalance position, and upward and downward exposure are priced apart | the settlement periods the site held no delivery-block commitment for, the complement of the call's own population, read off a meter file the call never opens | **D6 grain.** The meter data platform stamps each interval with the instant it closes and derives the period index from that instant, so every row carries the interval before the one it names. The column is named for the timestamp the platform writes, not for a convention, so nothing in the pack asserts either reading, and the only evidence is the programme the rows are paired against. | the replaced metering point, the kWh meter, the preliminary against the amended October statement |
 
-**Separation line.** Zero device rows inside the main call's population, asserted by count in
-`checks.py`: every reserve-withdrawal window is placed in seconds holding no qualifying episode of either
-sign for that site, and the restored recording holds no qualifying under-frequency episode. Deleting every
-device leaves the call exactly as hard, because the call reads the archive, the frequency extracts, the
-programme, the commitments and the two governing documents, and no ask device sits in any of them.
+**The separation line, asserted by count in `checks.py`.** Zero device and hazard rows in the main
+call's declared row population:
 
-**Forcing, measured on the cut pack** (`generator/ceiling.py` prints each one):
+| Assertion | Measured |
+|---|---|
+| withdrawal windows touching a qualifying under-frequency episode at their true place | 0 |
+| withdrawal windows touching one at the place their own `start_local` field reads | 0 |
+| held summary minutes holding a second at or below 49.920 Hz | 0 of 32 |
+| held summary rows moving a minute into or out of the set the call locates | 0 of 32 |
+| main-call gains that move when the withdrawal scope is opened | 0 of 9 |
+| reads of the settlement meter series on the call's path | 0 |
 
-| Device | Natural read | Golden | Gap against the asking sentence's rounding |
-|---|---|---|---|
-| B superseded corrections | shortfall summed over every logged withdrawal, 43.7 MWh | shortfall over the withdrawals no correction cancels, 31.4 MWh | 12.3 MWh against a stated 0.1 MWh |
-| C replaced metering point | window volume joined on the register's current code | both codes, as clause 5's "that site's metering points" requires | 38.2 MWh against a stated 0.1 MWh |
-| C preliminary statement | the preliminary October issue | the amended issue, per clause 5's "latest statement issued" | 4.4 MWh against a stated 0.1 MWh |
-| A restored recording | per-recording average, which counts one site's restored date twice | per-episode average | moves two of ask A's eighteen figures, measured by ceiling.py |
+The last two are the ones that matter. The clock device sits on rows the call reads (it drops
+withdrawn block parts), so the assertion is run on the call's figures and not on the file: with the
+withdrawal scope opened entirely, every under-frequency gain prints the same whole per cent. The
+interval-index device sits in a file the call never opens, and that is asserted by counting the
+reads of the metered series while the under-frequency table is built, rather than by reasoning
+about it.
 
-Pair ceiling: 65.8
-Mirror leakage: 52.5
+**Forcing, measured on the cut pack.** `generator/ceiling.py` recomputes each figure from the
+shipped bytes under both readings and `checks.py` asserts each line.
+
+| Device | The arithmetic that makes the wrong reading wrong | Natural read | Golden | Against a stated rounding of |
+|---|---|---|---|---|
+| B, the logged clock | `logged_utc` less `start_local` is 90 s on 13 withdrawal rows and 7,290 s on 9 of them; 7,290 s is not a local offset of a 90 second lag | shortfall per block misplaced by 1.3 to 7.7 MWh, every one of the six blocks moved | 18.0, 11.0, 11.5, 7.1, 16.5, 5.0 MWh | 0.1 MWh |
+| C, the interval index | over 13,873 scored periods the mean absolute deviation from programme is 0.0258 MWh when a row is paired with the interval it closes and 0.1436 MWh when it is paired with the period its own index names; of the 2,874 periods whose setpoint steps by more than 1 MW, the row carrying that index sits nearer the previous setpoint in 2,872 and nearer its own in 2 | 940.2 above and 1,056.0 below | 113.7 above and 247.8 below | 0.1 MWh |
+| A, the held summary rows | the published extract reaches above the summary's own stated maximum in the held minutes, and 5 qualifying over-frequency episodes sit inside them | 8 of 9 episode counts move on a summary-first route | 20, 152, 20, none, 72, 15, 22, 71, 71 | 1 episode |
+| A and B, the clock hazard | the same 9 rows withdraw 5 over-frequency obligations the face-value reading leaves in | 5 of 9 counts and 5 of 9 gains move on either route | as above | 1 episode, 1 per cent |
+| hazard, the correction rows | three logged withdrawals a later row cancels | 12.3 MWh of shortfall counted twice | excluded | 0.1 MWh |
+
+**The cracker sheet.** The cracker is the response that landed the call, so it has the traverse
+construction; it ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins,
+fan-out, count ties) and executed every filed sentence it points at: clause 2's scope, clause 4's
+availability, clause 5's exposure, the unit column on the kWh meter, the replaced metering point the
+event log records, the amended October statement and the three correction rows. Device A is the only
+one whose bite depends on the route a response takes, so the cracker is scored twice and the gated
+figure is the worse of the two, the cracker that scans the extracts directly and so beats device A.
+
+| Ask (cracker, extract-scanning: the gated reading) | What it keeps | Verdict |
+|---|---|---|
+| A down regulation, 18 figures | 8 of 18: the four gains and four counts the clock device does not reach, plus Meppelerdiep's pair, which has no qualifying over-frequency episode in the window | miss |
+| B capacity held available, 12 figures | 0 of 12 | miss |
+| C imbalance exposure, 20 figures | 0 of 20 | miss |
+
+| Ask (cracker, summary-first) | What it keeps | Verdict |
+|---|---|---|
+| A down regulation, 18 figures | 5 of 18 | miss |
+| B capacity held available, 12 figures | 0 of 12 | miss |
+| C imbalance exposure, 20 figures | 0 of 20 | miss |
+
+| Ask (mirror, stopped at rung 0 and named VKF-ZWT) | What it keeps | Verdict |
+|---|---|---|
+| A down regulation, 18 figures | 3 of 18: every gain is on the undisturbed-level baseline and wrong | miss |
+| B capacity held available, 12 figures | 0 of 12 | miss |
+| C imbalance exposure, 20 figures | 0 of 20 | miss |
+
+Asks B and C consume nothing the call's construction produces, so the two columns agree there by
+construction; the separation assertions above are what prove the decoupling, not the agreement of
+two rows in a script. The columns part on ask A, which is the construction layer and is meant to.
+
+Mirror leakage: 6.0
+Pair ceiling: 34.5
 Measured by: generator/ceiling.py
 
-| Ask (cracker, the response that landed the call and ran the battery) | Verdict |
-|---|---|
-| A down regulation, 18 figures | cracker keeps 16, mirror keeps 16 |
-| B block availability, 21 figures | cracker keeps 13, mirror keeps 7 |
-| C settlement reconciliation, 20 figures | cracker keeps 20, mirror keeps 8 |
+**Why the pair sits below the 40 target rather than on it.** The three primaries are one per ask and
+nothing is stacked. The clock device turned out to reach two figure families in ask A rather than one,
+because a withdrawn over-frequency obligation leaves a near-zero response in the average as well as
+a missing episode in the count, so five gains move as well as five counts. That was measured, not
+designed, and the honest number is the measured one. The free figures the gated cracker still banks
+are eight, and the sweep in `ceiling.py` puts the 40 line at nineteen, so the margin is real rather
+than a rounding of it. Raising the pair would mean adding figures no device reaches, which Part 6 of
+`supplemental-stumping` says to cut rather than add.
 
-**The ask layer does not yet clear the bar, and the measurement says why.** Every device above is mess the
-pack documents: a correction row with its own `supersedes_event_id`, a metering change in the event log, a
-unit column, two statement issues. A cracker that landed the call runs the hygiene battery and executes
-every filed sentence, so it handles all four and keeps most of the ask weight; the measured pair sits above
-40 and the honest figure is in the gated field. The fix `supplemental-stumping` prescribes is a cracker-grade
-primary per ask, an inconsistency nothing in the pack invites, which in practice is a grain or
-self-validation shape: a figure for each ask whose every row moves on one cross-grain reconciliation. The
-candidate carried into `## Tried and rejected` is a period-label convention change in the settlement meter
+## Tried and rejected` is a period-label convention change in the settlement meter
 file, which moves every row of an ask computed on programme deviation and touches no file the call reads.
 
 ## Tried and rejected
@@ -249,3 +292,12 @@ file, which moves every row of an ask computed on programme deviation and touche
 - The register's declared maximum ramp rate as a rung: cut from the pack entirely, because a document that files a ramp rate turns the decisive step into executing it.
 - An outage window placed by hand in the event log: replaced by a placement that searches each delivery date for seconds holding no qualifying episode of either sign, after three hand-placed windows landed inside the measured population and moved three graded figures.
 
+- The ask layer as first built: every device was adjudicated by a sentence the work reads anyway. Clause 4 said an event a later correction cancels is not a withdrawal, clause 5 said to take the latest statement issued and to read that site's metering points, and the unit column named the kWh meter. A cracker that executes filed sentences handled all four, so it kept 49 of 59 ask figures and the measured pair was 65.8 with mirror leakage at 52.5. The whole layer was documented mess. Rebuilt against supplemental-stumping Part 6: clauses 4 and 5 now file the quantity and adjudicate nothing, and each ask carries one undocumented inconsistency instead. Clauses 1, 2 and 3, which the call reads, are byte-identical.
+- The settlement reconciliation as an ask: cut, not repaired. A window total over 21 delivery dates is immune to every shift, label and clock device, because the edge effects cancel, and the only devices it can carry are mapping devices that reach two sites. Four candidates were drafted (a crossed EAN registration, an hourly operator read cycle, a UTC delivery date, a delta-only amended statement) and each either moved two figures or was loud on the ask's own difference column, which is its own control. The quantity was replaced by programme exposure over the periods the site holds no commitment, which is the complement of the call's population and sits on a 18,144 row meter file the call never opens.
+- The down-regulation gains as a device target: measured and abandoned as a population device. The per-episode ratio has a standard deviation of 0.8 to 1.9 percentage points within a site, so removing episodes from a site with 16 to 153 of them moves its mean by less than a fifth of a point. A device that changes which episodes are in the population therefore moves the counts and not the gains. What does move the gains is a withdrawal that leaves a near-zero response in the average, which is how the clock device came to reach both figure families.
+- Hiding over-frequency episodes by lowering the minute summary's stated maximum: rejected on arithmetic. Any 15 second run at or above 50.080 Hz contains at least one instant of a 10 second sampler, so a coarser sampling chain cannot read below the threshold, and a calibration offset would move the minima the call locates on. The fallback to the SCADA chain's own one-minute average in all three columns is the form that is both arithmetically consistent and confined to minutes holding no qualifying under-frequency second.
+- A device on the commitment file: cut at the draw. The call joins it by delivery date and block to scope every episode, so a row covering two blocks or over-stating a committed volume changes the call's own population. Held in this note rather than built, which is the right order.
+- A referee per device: dropped to one. The group availability statement was drafted as an arbiter for the capacity-hours ask and cut, because a control that ties only under an ask's golden is a death on file. Device B is settled by two columns of the same row, device C by the programme the rows are paired against, and device A by the extract against the summary that summarises it; none of the three hands over a level.
+- Three sites withdrawn in the same minutes: the first placement put the block 3 over-frequency drops for Zwartewater, Terborgh and Nieuwveen on one date and the block 5 drops for Kampvliet, Dollardkust and Reiderland on another, because the under-frequency exclusion left one feasible window each. Shortened to fifteen and thirty minute windows, which opened enough dates to separate them; Nieuwveen, Dollardkust and Reiderland keep their counts rather than share a date, and those three figures are free to the cracker.
+- The mid-bin floor applied to the capacity and exposure figures: replaced, after measuring that twenty arbitrary sums cannot be driven mid-bin by any seed (the best of forty draws left the tightest figure at 0.13 of a unit). A gain is recovered through the traverse span, which a solver lands within a second or two of, so it carries path spread and keeps the 0.3 floor. A block's capacity hours and a site's exposure are exact sums over shipped rows on a population the commitment file fixes, with the rounding path pinned, so nothing on the solver's side can move them; those are asserted for exactness, with a floor that keeps no figure on a printed boundary. Every withdrawal duration was then chosen per site capacity so that capacity times hours lands on an exact tenth of a megawatt hour, which puts all twelve capacity figures on a bin centre by construction rather than by luck.
+- Gains carried at one decimal place in figures.json while the asking sentence says whole per cent: caught by the verifier, which reproduced 95.87 for Oosterhout against a golden of 95.9 and failed. The figure is now carried and printed at the precision the asking sentence states, and checks.py reads submission.md's own graded block to assert it, which figures_check.py cannot do.

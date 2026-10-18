@@ -236,9 +236,22 @@ def main():
         ok("review-group index mid-bin: %s" % m["name"], edge >= 0.3,
            "%.3f prints %d, edge %.3f" % (i2["rate"], i2["index"], edge))
     fam = G.estimator_family(ix)
+    for k, v in G.capture_readings(w, code, ix).items():
+        fam[k] = dict(cases=v["cases"], rate=v["cases"] / ix["volume"] * 1e6,
+                      index=round(v["cases"] / ix["volume"] * 1e6), p=v["p"], n=v["n"])
     ok("every licensed estimator form prints the golden integer",
-       {v["index"] for v in fam.values()} == {gold_index},
-       ", ".join("%s %.3f" % (k, v["rate"]) for k, v in sorted(fam.items())))
+       {v["index"] for v in fam.values()} == {gold_index} and len(fam) >= 8,
+       "%d forms: %s" % (len(fam), ", ".join("%s %.3f" % (k, v["rate"])
+                                             for k, v in sorted(fam.items()))))
+    # SF12's sixth form: the capture probability read off a subset of the member's own cases. The three
+    # readings are one number by construction, so no subset choice crosses the printed bin.
+    caps = {k: v for k, v in fam.items() if "p" in v}
+    ok("the capture probability is the same off every subset of the member's own cases",
+       max(v["p"] for v in caps.values()) - min(v["p"] for v in caps.values()) < 0.002,
+       ", ".join("%.6f on %d" % (v["p"], v["n"]) for v in caps.values()))
+    ok("SF12 the capture-probability readings print the golden integer",
+       {v["index"] for v in caps.values()} == {gold_index} and len(caps) == 3,
+       ", ".join("%.3f" % v["rate"] for v in caps.values()))
     spread = (max(v["rate"] for v in fam.values()) - min(v["rate"] for v in fam.values())) / gold_rate
     ok("the estimator family's spread is inside the printed bin", spread < 0.5 / gold_rate,
        "%.2f per cent against a half bin of %.2f per cent" % (100 * spread, 100 * 0.5 / gold_rate))
