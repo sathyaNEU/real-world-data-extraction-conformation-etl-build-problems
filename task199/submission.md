@@ -52,10 +52,12 @@ Tibu's 137 gathering-days in the half year came with 3,220 items received, again
    - T2: 7,531 items, 16,812.7
    - T3: 7,598 items, 16,980.5
    - T4: 7,234 items, 16,174.0
-4. The items that reconcile the gap between what 2025 holds and what 2025 bills, whole items:
-   - Items published in December 2024 and delivered in January 2025: 82
-   - Items published in December 2025 and delivered in January 2026: 125
-   - The lote of 11 August 2025 rejected and credited: 7
+4. The item groups that close each quarter's gap between what the service delivered and what the invoices bill, whole items:
+   - Delivered in T1, published in December 2024, billed on no 2025 invoice: 82
+   - Billed in T1 and delivered in T2: 138
+   - Billed in T2 and delivered in T3: 70
+   - Billed in T3 and delivered in T4: 126
+   - Delivered in T3 in the lote of 11 August 2025, rejected and credited: 7
 5. What the register holds for each municipality outside the panel in 2025, gathering-days and months holding none:
    - Abrego: 146, 0
    - Bucarasica: 17, 4
@@ -76,8 +78,8 @@ Tibu's 137 gathering-days in the half year came with 3,220 items received, again
    - Juntas comunales: 289.7, 16,514
    - Juventudes: 162.6, 4,390
    - Mineria artesanal: 331.1, 66,216
-   - Mujeres organizadas: 356.5, 5,704
-   - Transportadores: 275.2, 61,921
+   - Mujeres organizadas: 356.2, 5,699
+   - Transportadores: 275.2, 61,922
 
 ### grafico_vigilancia_2026S2.png
 

@@ -354,15 +354,19 @@ def delivered(deliveries, city, lo, hi):
                if r["city"] == city and lo <= r["date"] <= hi)
 
 
-def tune_population(count, planned, unit=0.1, floor=0.3, off=0.05):
+def tune_population(count, planned, unit=0.1, floor=0.3, off=0.06, seed=""):
     """Choose the published population so the graded rate sits at least `floor` of the printed unit
     from its bin edge and at least `off` of it from the bin's centre, on a value that is not round
     and a population that is not round either: a projection of exactly 150,000 and a rate of exactly
-    40.0 both read as synthetic, and so does a rate that equals the tenth it prints, since a measured
-    count over a published projection does not land on the printed value. The search is a
-    deterministic scan over a narrow band around the planned projection, taking the population
-    nearest the plan that holds the rate inside the band."""
-    best = None
+    40.0 both read as synthetic, and so does a rate that equals the tenth it prints, because a
+    measured count over a published projection does not land on the printed value.
+
+    Two deterministic passes over a narrow band around the planned projection. The first takes the
+    projection nearest the plan whose rate sits furthest inside its bin, which fixes the printed
+    rate. The second keeps that printed rate and moves the projection off the bin's centre to a
+    per-city offset, so the eleven rates carry the spread a set of real denominators would.
+    """
+    cands = []
     for pop in range(int(planned * 0.985), int(planned * 1.015)):
         if pop % 50 == 0:                       # a projection is never a round figure
             continue
@@ -371,14 +375,17 @@ def tune_population(count, planned, unit=0.1, floor=0.3, off=0.05):
         if abs(printed - round(printed)) < 1e-9:  # never a round printed rate
             continue
         centre = abs(v - round(v / unit) * unit)
-        edge = unit / 2 - centre
-        if edge < floor * unit or centre < off * unit:
-            continue
-        # the population closest to the plan, the smaller one where two are equally close
-        key = (-abs(pop - planned), -pop)
-        if best is None or key > (-abs(best[0] - planned), -best[0]):
-            best = (pop, edge, v)
-    return best
+        cands.append((pop, unit / 2 - centre, v, printed, centre))
+    if not cands:
+        return None
+    first = max(cands, key=lambda c: (round(c[1], 6), -abs(c[0] - planned)))
+    lo, hi = off * unit, unit / 2 - floor * unit
+    band = [c for c in cands if c[3] == first[3] and lo - 1e-12 <= c[4] <= hi + 1e-12]
+    if not band:
+        return None
+    target = random.Random("pop|%s" % seed).uniform(lo + 0.001, hi - 0.002)
+    pick = min(band, key=lambda c: (round(abs(c[4] - target), 9), abs(c[0] - planned), c[0]))
+    return pick[0], pick[1], pick[2]
 
 
 # The designated city's published projection, as the watch note and the invoice-signing coordinator
@@ -490,7 +497,7 @@ def main():
             v = rows[city]["aw"] / pop * 1e5
             edge = 0.05 - abs(v - round(v, 1))
         else:
-            pop, edge, v = tune_population(rows[city]["aw"], planned[city])
+            pop, edge, v = tune_population(rows[city]["aw"], planned[city], seed=city)
         pops[city] = pop
         print("  %-17s count %4d  pop %7d  rate %8.3f prints %6.1f  edge %.4f = %.2f u"
               % (city, rows[city]["aw"], pop, v, round(v, 1), edge, edge / 0.1))

@@ -177,9 +177,11 @@
   "T3": 16980.5,
   "T4": 16174.0
  },
- "ask_a_differences": {
-  "publicado_2024": 82,
-  "publicado_2025_remitido_2026": 125,
+ "ask_a_lines": {
+  "remitido_T1_publicado_2024": 82,
+  "facturado_T1_remitido_T2": 138,
+  "facturado_T2_remitido_T3": 70,
+  "facturado_T3_remitido_T4": 126,
   "lote_rechazado": 7
  },
  "ask_b": [
@@ -277,13 +279,13 @@
   },
   {
    "sector": "Mujeres organizadas",
-   "per_action": 356.5,
-   "total": 5704
+   "per_action": 356.2,
+   "total": 5699
   },
   {
    "sector": "Transportadores",
    "per_action": 275.2,
-   "total": 61921
+   "total": 61922
   }
  ],
  "units": {
