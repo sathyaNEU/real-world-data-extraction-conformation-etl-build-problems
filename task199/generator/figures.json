@@ -247,43 +247,43 @@
  "ask_c": [
   {
    "sector": "Campesinado",
-   "per_action": 264.9,
-   "total": 30195
+   "per_action": 275.6,
+   "total": 34444
   },
   {
    "sector": "Comerciantes",
-   "per_action": 340.4,
-   "total": 5787
+   "per_action": 378.3,
+   "total": 8702
   },
   {
    "sector": "Docentes",
-   "per_action": 295.4,
-   "total": 25107
+   "per_action": 302.9,
+   "total": 29379
   },
   {
    "sector": "Juntas comunales",
-   "per_action": 282.3,
-   "total": 13267
+   "per_action": 289.5,
+   "total": 16501
   },
   {
    "sector": "Juventudes",
-   "per_action": 183.9,
-   "total": 3310
+   "per_action": 162.5,
+   "total": 4388
   },
   {
    "sector": "Mineria artesanal",
-   "per_action": 329.2,
-   "total": 52674
+   "per_action": 330.9,
+   "total": 66170
   },
   {
    "sector": "Mujeres organizadas",
-   "per_action": 370.4,
-   "total": 4445
+   "per_action": 355.9,
+   "total": 5695
   },
   {
    "sector": "Transportadores",
-   "per_action": 276.6,
-   "total": 50623
+   "per_action": 275.1,
+   "total": 61902
   }
  ],
  "units": {

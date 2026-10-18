@@ -69,15 +69,15 @@ Tibu's register rises 2.44 times once the material the monitor received from eac
    - Pelaya: 66, 0
    - Rio de Oro: 54, 0
    - San Martin: 89, 0
-6. Participants per action and the largest single action by actor sector, 2025, the municipalities outside the panel, to one decimal and whole participants:
-   - Campesinado: 264.9, 851
-   - Comerciantes: 340.4, 699
-   - Docentes: 295.4, 793
-   - Juntas comunales: 282.3, 783
-   - Juventudes: 183.9, 466
-   - Mineria artesanal: 329.2, 818
-   - Mujeres organizadas: 370.4, 806
-   - Transportadores: 276.6, 807
+6. Participants per action and in total by actor sector, 2025, the municipalities outside the panel, to one decimal and whole participants:
+   - Campesinado: 275.6, 34,444
+   - Comerciantes: 378.3, 8,702
+   - Docentes: 302.9, 29,379
+   - Juntas comunales: 289.5, 16,501
+   - Juventudes: 162.5, 4,388
+   - Mineria artesanal: 330.9, 66,170
+   - Mujeres organizadas: 355.9, 5,695
+   - Transportadores: 275.1, 61,902
 
 ### grafico_vigilancia_2026S2.png
 
