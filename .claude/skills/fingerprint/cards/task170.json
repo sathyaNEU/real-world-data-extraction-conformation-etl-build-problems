@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
+  "answer": "2,690,000 bottles of TLD 30s in the C7 order",
   "answer_source": "generator/figures.json",
   "gap": [
     "time",
@@ -37,7 +37,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "paediatric register visit extract",
-    "rows": 0,
+    "rows": 790033,
     "entity": "one clinic visit of a child on antiretroviral treatment, with the weighing and the regimen dispensed",
     "grain": "child x clinic visit",
     "source": "synthetic"
@@ -58,26 +58,30 @@
   },
   "deliverables": [
     "c7_tld_order.xlsx",
-    "transition_forecast.png"
+    "c4_c5_tld_flows.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Units move to another line at the first of their scheduled measurements that reads at or above a fixed level, and a single measurement scatters around each unit's own path by more than the path rises between measurements, so most moves come months before the paths reach the level; only the chance that each scheduled measurement reads over the level, taken from each unit's own path and the record's scatter, forecasts them, while paths projected to the level, a fixed age, the recent count of moves, the moves seen at each recorded level or a pooled rate each misplace them.",
-  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a quarter of a kilogram a month, so most switches come months before the line reaches 30 kg; the C7 order needs each child's chance of a qualifying weighing at each scheduled visit, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each leave the order thousands of bottles short.",
-  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD in the month the line reaches 30 kg and files an order several thousand bottles short, because the first weighing that reads 30 kg comes months before the line gets there.",
+  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a fifth of a kilogram a month, so most switches come months before the line reaches 30 kg; the C7 order needs each child's chance of a qualifying weighing at each scheduled visit, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each leave the order thousands of bottles short.",
+  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD at the first scheduled visit after the line reaches 30 kg and files an order of 2,665,000 bottles against 2,690,000, because the first weighing that reads 30 kg comes months before the line gets there.",
   "stump_class": "analytical",
-  "analyst_test": "With every field read and the 30 kg dosing band applied as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files a C7 order more than one 5,000-bottle step short of the order the scheduled weighings imply.",
+  "analyst_test": "With every field read and the 30 kg dosing band applied as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files a C7 order of 2,665,000 bottles, 5 steps of 5,000 below the 2,690,000 the scheduled weighings imply.",
   "domain_test": "The order turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, visit schedules and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order stop meaning anything.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:first-scheduled-weighing-over-the-dosing-band-from-each-childs-growth-line-and-the-scale-scatter",
   "layer1": [
-    "the paediatric register's migration from the legacy electronic register to the national EPR: legacy visit rows with day/month/year dates and regimen lines as free text, EPR rows with ISO dates and national regimen codes, the migration months present in both",
+    "the paediatric register's migration from the legacy electronic register to the national EPR: legacy visit rows with day/month/year dates and regimen lines as free text, EPR rows with ISO dates and national regimen codes, the June 2024 migration month present in both",
     "children keyed by facility ART numbers in the legacy export and by the national patient identifier in the EPR, a crosswalk between them, and a new ART number on each transfer between facilities",
+    "paper-captured legacy sites recording weights to the half kilogram until May 2024",
+    "estimated dates of birth entered as 1 July of the year",
     "drug collections by a caregiver with no weighing recorded",
     "visit rows re-sent by clinic tablets after a failed sync",
-    "deaths, transfers out and loss to follow-up recorded weeks after the last visit",
-    "the logistics information system's facility reports with resubmitted months, some districts reporting tablets and others bottles",
-    "the warehouse stock by batch with expiry dates and shipments whose arrival dates slip",
+    "deaths, transfers out and loss to follow-up entered weeks after the last visit",
+    "the logistics information system's monthly facility reports with returned and resubmitted months, each stamped with the requisition group's region at submission",
+    "the warehouse system's delivery documents: posting dates days before the proof of delivery, transfers between CMS warehouses, returns from customers and the odd delivery refused at the gate",
+    "the customer master's delivery region not updated after the April 2026 regional boundary change, and facility codes reissued to new sites after closures",
+    "the warehouse stock by batch with a quarantined lot, and a planned framework call-off beside the confirmed lots",
     "the programme's patient projection by region and month in its own layout"
   ],
   "mechanism_source": "design_note",
