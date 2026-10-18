@@ -130,6 +130,7 @@
  "role_family": "statistical_office_head",
  "scoring_unit": "per episode",
  "shape": "other",
+ "slot_note": "PAUSED at architecture 5 with no card drawn. The live axes on this card are architecture 4's epidemiological ground, retained deliberately rather than blanked, so the guard keeps blocking that dead ground and does not block criminology, which this slot searched and did not take, for the other builds in flight. The ground was searched to exhaustion rather than left mid-draw: eleven candidates died, the one that cleared the WHAT screen and the swap test died on a measured reflex, and the structural reason is in the note and in pipeline.json's resume line. The next session on this slot starts from the axis map in the note and re-runs the axis prober rather than trusting it, because the three builds the bans reach move as the wave ships.",
  "spine": {
   "entity": "one laboratory-confirmed notifiable enteric infection case",
   "file": "case_notifications_2022_2026.csv",
