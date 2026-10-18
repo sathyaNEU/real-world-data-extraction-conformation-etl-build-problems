@@ -11,8 +11,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "2 blocks: take blocks B-1 and B-2 at Tamarind Avenue Logistics Park Building B for January to June 2027 ($2,200,000)",
+  "answer_source": "golden/overflow_blocks_h1_2027.xlsx (Blocks sheet) and submission.md block 1; recomputed by generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -36,10 +36,10 @@
   "role_family": "capacity_planner",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "WMS daily on-hand extract by account and location class (old WMS layout to September 2022, new WMS layout from October 2022)",
-    "rows": 0,
-    "entity": "one customer account's pallets on hand at the close of one business day in one location class (rack, floor and staging, yard trailer, sublease)",
-    "grain": "account x business day x location class",
+    "file": "wms_inventory_nightly_20220913_20261207.csv (new WMS nightly inventory run by site and client, from the close of 12 September 2022) with wms1_inv_daily_20190401-20220930.txt (legacy WMS1 daily inventory by client to 30 September 2022)",
+    "rows": 93160,
+    "entity": "one client's pallets on hand at one site at the close of one business day (legacy: one client code's business day)",
+    "grain": "client x site x close",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -51,37 +51,58 @@
     "org_type": "third-party logistics operator (import warehousing and transload)",
     "invented_names": [
       "Pellerin Distribution Services",
-      "Tamarind Avenue Logistics Park"
+      "Tamarind Avenue Logistics Park",
+      "Ridley-Ames Industrial Properties",
+      "Yamamoto & Vance Customs Brokers",
+      "Avila Transload Services",
+      "Dominguez sublease",
+      "Quillan Furniture Group",
+      "Avendano Housewares Corp.",
+      "Fanshaw Toy Co.",
+      "KDT Mobile Accessories, Inc.",
+      "Rosales Apparel Group",
+      "Ostrander Footwear LLC",
+      "Ashby Linens Inc.",
+      "Coronado Patio & Garden",
+      "Bramwell Pet Supply Co.",
+      "Garza Auto Parts Imports",
+      "Halloran Holiday Decor Co.",
+      "Kitano Appliance USA",
+      "Lockhart Fitness Imports",
+      "Penrose Office Products",
+      "Bellamy Kitchen Co.",
+      "Hollins Apparel"
     ],
     "people": [
       "Jerome Lam",
-      "Nicole Freeman",
+      "Frederick James",
       "Brandon Page",
       "Mariah Norman"
     ]
   },
   "deliverables": [
     "overflow_blocks_h1_2027.xlsx",
-    "h1_2027_space_outlook.pdf"
+    "port_share_2026.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Stock built up ahead of a cost step leaves only as each holder uses its own, at the steady share of its use that every earlier build was drawn down at, so a build several times the earlier ones, drawn down through the lowest-use months, outlasts every earlier build's half-life, time back to normal and per-period fall, while carrying the level or the season through the build keeps all of it.",
-  "driver_concrete": "The pallets each customer brought in ahead of the 1 January duty step leave the buildings only as that customer ships, at the steady share of its own shipments that every earlier rush in the book was burned at (its receipts ran that share short of its shipments until its own excess was gone), so this rush's excess, several times any earlier one and burning through the January and February trough, keeps two blocks full through June, while the earlier rushes' half-life or time back to normal clears it by March (no block), a book-wide burn or the earlier rushes' monthly fall in positions leaves one, and no payback or a seasonal carry of the rush takes three to five.",
-  "stump": "A strong solver who reads the rush as temporary measures how fast the 2019 and 2025 rushes' excess positions faded (about a month's half-life) and fades this one the same way, clearing it by March and taking no block (zero); the step that lands it there is treating the excess as a proportional decay when it is stock each customer burns at a steady share of its own shipments, so a rush several times larger, burning through the low season, keeps two blocks full.",
+  "driver_concrete": "The pallets each customer brought in ahead of the 1 January duty step leave the buildings only as that customer ships, at the steady share of its own shipments that every earlier rush in the book was burned at (its receipts ran that share short of its shipments until its own excess was gone), so this rush's excess, several times any earlier one and burning through the January and February trough, keeps two blocks full through June, while the earlier rushes' half-life or time back to normal leaves overflow only in January (no block), a book-wide burn leaves none or one and each account's own monthly fall one, today's stock held flat or no payback takes three, and a seasonal carry of the rush five or six.",
+  "stump": "A strong solver who reads the rush as temporary measures how fast the 2019 and 2025 rushes' excess positions faded (about a month's half-life) and fades this one the same way, leaving overflow only in January and taking no block (zero); the step that lands it there is treating the excess as a proportional decay when it is stock each customer burns at a steady share of its own shipments, so a rush several times larger, held mostly by five seasonal accounts shipping at their first-half low, keeps two blocks full.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who cleans the WMS history, converts every booking notice and reads the block test correctly, then fades the rush's excess positions at the half-life the 2019 and 2025 rushes showed, files no block (zero), where burning each customer's excess at the share of its own shipments those rushes show files two.",
   "domain_test": "The deciding quantity is the burn-down of bought-ahead stock, the warehouse planner's projected on-hand netted against each owner's own shipments (weeks of supply burned at sales pace, as DRP nets receipts against stock on hand); swap in hospital beds after an admissions surge and the task stops reading, because patients are not stock their owners bought ahead of a price step and draw down by selling, and no later intake is netted against the stock already held.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:bought-ahead-stock-burned-per-owner-at-a-share-of-its-own-shipments",
   "layer1": [
-    "WMS migration in October 2022 changed the on-hand export layout, the location codes and the account keys",
-    "the new WMS stamps snapshots in UTC while the old one wrote Pacific business dates",
-    "overflow held in floor, staging, yard-trailer and sublease locations carried as virtual location classes",
-    "accounts renamed or split at the migration and one merger of two accounts in 2024",
-    "December booking notices in containers by size from some customers and in pallets or TEU from others, in PDF, xlsx and email text",
-    "port TEU statistics in the ports' monthly release layout, the latest months preliminary and revised later",
-    "the capacity report on the 3PL's 4-4-5 fiscal calendar against calendar months in the WMS"
+    "the legacy WMS1 daily inventory to its retirement on 30 September 2022: MM/DD/YYYY business dates, rows Monday to Saturday only, mnemonic client codes, one client on two codes until the migration",
+    "the new WMS nightly inventory run stamped in UTC at 07:00Z or 08:00Z, each run holding the previous Pacific close, balances by site with a sublease as a fifth site while let",
+    "the two systems' parallel run of 12 to 30 September 2022 present in both exports",
+    "two former accounts in the history",
+    "December booking notices in boxes by size, with the customer's pallet count from most accounts and boxes only from three",
+    "the receipts export with UTC confirmation stamps, ISO 6346 size-type codes, 53ft transload and domestic trailers, boxes devanned over two shifts and shipper-owned boxes returning months later",
+    "the transload partner's delivery manifest naming the ocean containers each trailer carried",
+    "the two ports' monthly container statistics in each port's own layout (Loaded Imports against Inbound Loaded)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

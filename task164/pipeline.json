@@ -1,21 +1,34 @@
 {
  "task": "task164",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "energy-systems-utilities/load-forecasting",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "",
+ "stump": "Adding each vehicle's average 4 to 9 pm charging demand from the load study (0.61 kVA on the default rate) to its transformer's recorded 2026 peak files Foothill 59 of the 400; the transformers that gained a default-rate vehicle between summers show their recorded peak rising about 4.9 kVA, which files Foothill 77.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (five REVIEW lines answered in the note's ## Leak sweep)",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN, no BLOCK (warns answered at the draw)",
+  "nearest": "heart: task94 ledger row 0.11; surface: task453 promoted at 0.102 (differentiated on the card)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: default path, ladder, fork and closure tables, asks, prompt; precut.py",
+ "resume": "stage 4: reader and judge",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -110,9 +110,10 @@ def write_fieldnote(path, recs, m):
           ["Q4", "How many adults and children are with you today?", "Adults in party, Children in party / n_adults, n_children"],
           ["Q6", "How did you travel here today?", "Arrived by / mode"],
           ["Q7", "What was the main thing you came to do?", "Main activity / activity"],
-          ["Q9", "Including today, about how many times in the last 12 months have you visited any of the "
-                 "Authority's six parks? (interviewers ask for a best estimate as a number)",
-           "Visits to Authority parks, last 12 months (incl. today) / q9_visits_12m"],
+          ["Q9", "Including today, about how many times in the last 12 months have you visited each of these parks? "
+                 "(interviewers read the six parks' names in turn and ask for a best estimate as a number for each, "
+                 "0 for a park not visited)",
+           "Visits, last 12 months (incl. today): one column per park / q9_bw, q9_cc, q9_gf, q9_dw, q9_lm, q9_th"],
           ["Q14", "Overall, how would you rate your visit today, from 1 (very poor) to 5 (excellent)?",
            "Overall rating (1-5) / q14_rating"]]
     st.append(_table(S, qs, [12, 104, 54]))
@@ -245,8 +246,9 @@ def write_codebook(path):
                 ("Home area", "Q1 (coded)", "Area code, see Codes"), ("Age group", "Q2", ", ".join(R.AGE1)),
                 ("Sex", "Q3", "Female, Male, Prefer not to say"), ("Adults in party", "Q4", "Number of adults in the group"),
                 ("Children in party", "Q4", "Number of children in the group"), ("Dog with party", "Q5", "Yes, No"),
-                ("Arrived by", "Q6", ", ".join(R.MODES)), ("Main activity", "Q7", "See Codes"),
-                ("Visits to Authority parks, last 12 months (incl. today)", "Q9", "Number of visits to any of the six parks"),
+                ("Arrived by", "Q6", ", ".join(R.MODES)), ("Main activity", "Q7", "See Codes")] + [
+                ("Visits, last 12 months (incl. today): %s" % K.PARK_NAME[q], "Q9",
+                 "Number of visits to %s" % K.PARK_NAME[q]) for q in K.PARK_CODES] + [
                 ("Overall rating (1-5)", "Q14", "1 very poor to 5 excellent")]:
         ws.append([x or None for x in row])
     ws = wb.create_sheet("Wave 2 fields")
@@ -257,8 +259,8 @@ def write_codebook(path):
                 ("home_area_code", "Q1 (coded)", "Area code, see Codes"), ("age_band", "Q2", ", ".join(R.AGE2)),
                 ("gender", "Q3", "F, M, X (prefer not to say)"), ("n_adults", "Q4", "Number of adults in the group"),
                 ("n_children", "Q4", "Number of children in the group"), ("dog", "Q5", "Y, N"),
-                ("mode", "Q6", "CAR, ON, BICYCLE, BUS, MOTORCYCLE, OTHER"), ("activity", "Q7", "Upper case, see Codes"),
-                ("q9_visits_12m", "Q9", "Number of visits to any of the six parks"),
+                ("mode", "Q6", "CAR, ON, BICYCLE, BUS, MOTORCYCLE, OTHER"), ("activity", "Q7", "Upper case, see Codes")] + [
+                ("q9_%s" % q.lower(), "Q9", "Number of visits to %s" % K.PARK_NAME[q]) for q in K.PARK_CODES] + [
                 ("q14_rating", "Q14", "1 very poor to 5 excellent")]:
         ws.append([x or None for x in row])
     ws = wb.create_sheet("Codes")

@@ -167,7 +167,7 @@ register's population counts each system's own customers only.
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
 | A, for each county, how much water the listed systems' wells pumped in 2025, in million gallons to one decimal | 4 | each listed system's 2025 production, a measure every candidate carries that the call does not turn on | the board's view of the water the list's wells deliver | D6: where two wells discharge to one header and share a meter, the operator writes the meter's readings and gallons on both wells' lines (Lindvik Lake, Halvorsen, Skogen, Elvholm Falls, one in each county, and three systems off the list); the meter register lists both facilities on the one meter | H1 (D5): Ackerholt Creek's emergency interconnect, purchased water on its own line in September; H2: Fjelstad's Well 2 meter changed out in June (the readings restart, the gallons are right); H3: Kesselring's emergency well ran three days in July (it is a listed system's well that pumped) | the operating reports (pws_id, report_month, facility_id, meter_start, meter_end, volume_gal), the meter register (meter_id, facility_ids, removed), the inventory (facility_type, status), the plan's Table 6-1 (county); 4 files, 10 columns | every row: over by 136.3 to 322.6 million gallons a county; wells only, each row: the same; active wells only: Hedstrom 912.7 against 913.5 once the meter is right; readings in place of gallons: Granlund 1,135.2 against 1,342.9 | a common discharge meter written on each well's line is what a monthly operating report form produces |
-| B, for each county, how many people get their water from the listed systems' wells | 4 | each listed system's reach, a measure every candidate carries that the call does not turn on | the board's view of the people the list's wells serve | D7 and D5: systems that buy all their water from a listed system, and systems that buy from those buyers (Tamsholt to Oakmere, Halvorsen Township to Haldorsen Estates, Hedstrom Rural to Stensrud and Gunderholm, Fjelstad Junction to Lundquist); the register counts each system's own customers, and the chain is only in the connections file | H4: an emergency tie (Solberg Lake to Elvholm Falls) and a purchase that ended on 30 June 2025 (Hagestad Corners from Ackerholt Creek); H5: buyers living in another county than their seller (Arneberg, Gunderholm, Oakmere) | the register (pws_id, county, population_served, primary_source), the wholesale connections (buyer_pws_id, seller_pws_id, connection_type, in_service_to), Table 6-1; 3 files, 8 columns | listed systems only: under by 586 to 3,871 a county; buyers one step out: under by 156 to 611 in every county; every tie followed with no regard to type or end date: Granlund over by 846, Sandholm by 1,271 | consecutive systems buying from a buyer, emergency ties and ended purchases are what a state's system register holds |
+| B, for each county, how many people living in the county get their water from any of the listed systems' wells | 4 | each listed system's reach, a measure every candidate carries that the call does not turn on | the board's view of the people the list's wells serve | D7, a retired id on the chain (silent): one buyer in each county (Fjelstad Junction, Halvorsen Township, Torvik East, Wikstrom Heights) took a new PWS id when it changed hands, and the register keeps the old id as an inactive system of the same name and county at the population last reported under it while every wholesale connection still carries the old id, so the chain lands on the inactive row; found only by an in-service purchase to an inactive system. Under it, D7 and D5: systems that buy all their water from a listed system and systems that buy from those buyers (Tamsholt to Oakmere, Halvorsen Township to Haldorsen Estates, Hedstrom Rural to Stensrud and Gunderholm, Fjelstad Junction to Lundquist), the chain only in the connections file | H4: an emergency tie (Solberg Lake to Elvholm Falls) and a purchase that ended on 30 June 2025 (Hagestad Corners from Ackerholt Creek); H5: buyers living in another county than their seller (Arneberg, Gunderholm, Oakmere); the closed systems the register keeps, none matching an active name | the register (pws_id, system_name, county, population_served, status), the wholesale connections (buyer_pws_id, seller_pws_id, connection_type, in_service_to), Table 6-1; 3 files, 9 columns | listed systems only: under by 586 to 3,871 a county; buyers one step out: under by 246 to 778; the chains with each id's register row as found (the cracker): under by 51 to 297 in every county; the chains with inactive ids left out: under by 318 to 1,436; every tie followed with no regard to type or end date: Granlund over by 846, Sandholm by 1,271 | a system renumbered on a change of owner, its old id kept as inactive, consecutive systems buying from a buyer, emergency ties and ended purchases are what a state's system register holds |
 | C, the chart | its parts | the construction | the call's own exhibit | none | none | the golden's well levels | R0 to R3 | the analyst's own exhibit |
 
 - **Main population zero-counts.** No ask device or hazard sits in the twenty systems' 2024 and 2025 PFOA and PFOS
@@ -175,7 +175,7 @@ register's population counts each system's own customers only.
   with the operating reports, meter register, register and connections deleted equals the golden (asserted).
 - **Hazard table.** H1 moves Granlund in A; H2 moves Granlund for a path reading meter readings; H3 moves Hedstrom for a path
   keeping active wells only; H4 moves Granlund and Sandholm in B for a path following every tie; H5 moves Hedstrom, Sandholm and
-  Engvall for a path placing buyers in their seller's county.
+  Engvall for a path placing buyers in their seller's county, closed by the ask's "people living in the county".
 - **Referee.** The register's notes file the counting rule for B (a system's population counts its own customers) and
   the inventory's notes file the facility types for A; no file says which meters are shared on the reports or which
   buyers sell on.
@@ -183,11 +183,13 @@ register's population counts each system's own customers only.
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
 | A pumpage (4) | the operating reports' gallons for the listed systems' wells, facility types from the inventory, summed by county | over by 136.3 to 322.6 million gallons in every county (the shared meters counted on both wells) | miss |
-| B people (4) | the listed systems' populations plus the systems buying from them (full purchase, in service), by the buyer's county | under by 156 to 611 in every county (the buyers of buyers) | miss |
+| B people (4) | the listed systems and every system buying all its water from them, directly or through another buyer, on the full purchases in service, each system's register row as the connection's id finds it, by the county it serves | under by 51 to 297 in every county (the renumbered buyers at their old ids' populations) | miss |
 
 Mirror leakage: 0 per cent of the ask weight: the mirror (R0) takes A and B the cracker's way and misses all 8; it
 keeps only the chart's format parts where it draws the chart.
-Pair ceiling: 31 (the cracker at about 50 with the call, its components and the chart; the mirror at about 12).
+Pair ceiling: 31.0 (the cracker 50 with the call, its components and the chart; the mirror 12).
+Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the
+cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
 
 ## Build record
 
@@ -225,6 +227,15 @@ Pair ceiling: 31 (the cracker at about 50 with the call, its components and the 
   the fixed pack: the same answers (no decisive-step sentence, no ranking, Q6 analytical); its texture notes fixed
   (varied field notes, six closed systems in the register, connection dates off the first of the month), the
   listed systems' rows again unchanged.
+- **Wave 3 audit (2026-10-18).** cracker.py, run on the strict battery, followed the purchase chains (the plain
+  reading of "get their water from") and landed Ask B in all four counties; Ask B is now held by four buyers, one in
+  each county, still on the connections under the id the register holds as inactive beside the active system of
+  the same name and county (the cracker under by 51 to 297 a county, asserted). Judge pass 2 DETERMINISTIC, APPROVE
+  (every figure reproduced; soft readings: the renumbering resolved by name, the county people are counted in, the
+  emergency well); its optional tightening taken into the prompt after the verdict ("people living in the county
+  ... any of those wells"), no graded figure moved. Reader loop 3 clean (Q1 none, Q6 analytical, neither ask's
+  device named). checks 102, verify PASS, two builds byte-identical, figures_check 61 of 61, precut 50 of 50; the
+  call's files and every listed row unchanged.
 
 ## Pre-ship check
 
@@ -264,3 +275,4 @@ Pair ceiling: 31 (the cracker at about 50 with the call, its components and the 
 - 2026-10-16, at build: field reagent blanks carrying the visit's sources in service let a careless mass balance pull Halvorsen's Well 3 over the line; blanks' records now carry no sources (the sampler's habit), and Halvorsen's levels were lowered so every handling keeps the same wells.
 - 2026-10-16, at build: a fixed daily run-time cap repeated monthly volumes across systems; the cap now varies by day and small systems' wells are sized to their demand.
 - 2026-10-17, at stage 4: rounding the unlisted systems' pump ratings to 5 gpm changed their blends and confirmation samples, which renumbered the statewide samples and moved the listed systems' blank records and revisions; reverted to 25 gpm so every listed row stays as judged.
+- Ask B held by the purchase chain alone (wave 3 audit): following buyers of buyers is the plain reading of "get their water from", and measured in code the cracker's closure landed all four counties; the chain now runs through a buyer renumbered on a change of owner, the connections still on its retired id.

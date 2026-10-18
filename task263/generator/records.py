@@ -390,6 +390,9 @@ def write_register(path, S):
             src = "Ground water"
         conn = int(round(s["pop"] / r.uniform(2.3, 2.7)))
         rows.append([s["pws"], s["full"].upper(), s["county"], s["pop"], src, conn, "Active"])
+        if s.get("old_pws"):
+            rows.append([s["old_pws"], s["full"].upper(), s["county"], s["old_pop"], src,
+                         int(round(s["old_pop"] / r.uniform(2.3, 2.7))), "Inactive"])
     # systems the register still carries after they closed or merged
     r = K.rng("register closed")
     for name, county, pop, src in CLOSED:
@@ -407,8 +410,8 @@ def write_connections(path, S, conns):
     rows = []
     for c in conns:
         b, s = get(c["buyer"]), get(c["seller"])
-        rows.append([b["pws"], b["full"], s["pws"], s["full"], c["kind"], c["start"].isoformat(),
-                     c["end"].isoformat() if c["end"] else ""])
+        rows.append([b.get("old_pws", b["pws"]), b["full"], s.get("old_pws", s["pws"]), s["full"], c["kind"],
+                     c["start"].isoformat(), c["end"].isoformat() if c["end"] else ""])
     pax = by[W.PURCHASE[0]]
     hr = next(s for s in S if s.get("is_regional"))
     rows.append([pax["pws"], pax["full"], hr["pws"], hr["full"], "Emergency", "2011-08-15", ""])

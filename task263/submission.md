@@ -22,7 +22,7 @@ The grants rest on the 23 wells whose own water, solved from each entry point's 
 4. Sized each system's grant at $2.4 million per MGD of the rated capacity of those wells (gallons a minute times 1,440 over 1,000,000), capped at $6 million (section 6.3).
 5. Funded Table 6-1 in order until the remaining set-aside did not cover the next grant (section 6.4): 16 systems, $451,200 left, Nordvold's $691,200 not covered.
 6. Summed the 2025 gallons in monthly_operating_reports_2025.csv for the listed systems' wells (facility type Well in the inventory), each meter in source_meter_register_2026.csv counted once a month where two wells share it, by each system's county in Table 6-1.
-7. Added to each listed system's population in community_water_system_register_2026.csv the populations of the systems that buy all their water from it, directly or through another buyer, on the in-service full-purchase connections in wholesale_connections_2026.csv, each in its own county.
+7. Added to each listed system's population in community_water_system_register_2026.csv the populations of the systems that buy all their water from it, directly or through another buyer, on the in-service full-purchase connections in wholesale_connections_2026.csv (a buyer the register holds under an inactive id taken to the active system of the same name and county), each counted in the county where it is.
 8. The $36 million reaches 16 systems, Torvik Water Utility through Valdahl Sanitary District.
 
 ## 4. Deliverable Answers
@@ -58,7 +58,7 @@ The grants rest on the 23 wells whose own water, solved from each entry point's 
    - Engvall: 1,318.4
    - Hedstrom: 913.5
    - Sandholm: 714.6
-6. People who get their water from those wells:
+6. People living in the county who get their water from any of those wells:
    - Granlund: 30,167
    - Engvall: 29,442
    - Hedstrom: 21,518

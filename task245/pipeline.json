@@ -1,0 +1,38 @@
+{
+  "task": "task245",
+  "owner": "perssathya",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "data-quality-monitoring",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-18",
+  "stump": "Scaling each station's count over its valid days by its data capture, reading the 90.4th percentile of its valid days, interpolating in time or filling the lost days from the rest of the network that day all treat a station's lost days as ordinary for it, flag the two council stations with long outages in quiet spells and miss the four stations whose analysers faulted on the days the bulk terminal's plume blew onto them.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: tune the simulator to the ladder (generator/params.py), then the asks, fork table, closure and prompt to precut exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}

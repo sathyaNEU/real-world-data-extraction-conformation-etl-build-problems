@@ -365,9 +365,12 @@ def ask_a(D, target, mode="golden"):
 
 def ask_b(D, target, mode="golden"):
     """People who get their water from the listed systems' wells, by the county they live in. mode: golden (chains
-    of full purchases in service), listed (the listed systems alone), one_step (buyers of a listed system),
-    every_tie (chains through every connection)."""
+    of full purchases in service, an id the register holds as inactive taken to the active system of that name and
+    county), as_found (the chains, each id's register row as found), active_only (the chains, inactive ids left out),
+    listed (the listed systems alone), one_step (buyers of a listed system), every_tie (chains through every
+    connection)."""
     reg = {r["pws_id"]: r for r in rd(target, K.FILES["register"])}
+    live = {(r["system_name"], r["county"]): r["pws_id"] for r in reg.values() if r["status"] == "Active"}
     con = rd(target, K.FILES["connections"])
     base = set(D["listed"])
     if mode == "listed":
@@ -383,6 +386,11 @@ def ask_b(D, target, mode="golden"):
             if nxt == reach:
                 break
             reach = nxt
+    if mode in ("golden", "every_tie"):
+        reach = {live.get((reg[p]["system_name"], reg[p]["county"]), p) if reg[p]["status"] == "Inactive" else p
+                 for p in reach}
+    elif mode == "active_only":
+        reach = {p for p in reach if reg[p]["status"] == "Active"}
     out = collections.defaultdict(int)
     for p in reach:
         out[reg[p]["county"]] += int(reg[p]["population_served"])

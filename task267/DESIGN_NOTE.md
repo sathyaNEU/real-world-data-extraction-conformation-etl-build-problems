@@ -177,6 +177,7 @@ Referee: none (Oracles).
 
 Mirror leakage: 0 per cent of the ask weight (the mirror takes the same reads on both asks; `checks.py` asserts the cracker's path misses every ask figure).
 Pair ceiling: 32 (the cracker about 45 on the call, its components and instruction-following, none of the asks; the mirror about 18, the six referral shares and instruction-following; about 40 if the generated rubric grades the twelve rule figures as asks; to be rerun on the generated rubric).
+Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the cracker keeps 0 of 30 ask figures (A 0 of 12, B 0 of 18), the mirror the same; measured pair ceiling 31.5.
 
 ## Build record
 

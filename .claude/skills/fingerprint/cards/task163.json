@@ -1,0 +1,100 @@
+{
+  "task": "task163",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6 (new), seed FC34: the world (a payroll software company sizing its 2027 sales plan on first-time employers in its twelve core states from business-application and formation statistics, after three states changed how businesses file), the decision and the quantity kept; the seed's channel-field conversion and change-log adjustment are not shipped; the pitfall is re-found from how a filing reform changes who applies",
+  "domain": "economics-econometrics",
+  "subdomain": "forecasting-forecast-evaluation",
+  "client_domain": "economics-econometrics",
+  "niche": "a Columbus payroll software company sizing the first-time-employer line of its 2027 sales plan across twelve Great Lakes, Ohio Valley and Mid-Atlantic states from the Census business formation statistics, when Ohio, Pennsylvania and Michigan, its three largest markets, put the IRS employer identification number application inside the state's online business formation filing in 2024 and retired their older filing routes in 2025 and 2026, so business applications there roughly doubled while the other nine states rose about a fifth on a common wave",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "2,300 new first-time employers in the 2027 plan's first-time-employer line (twelve core states, nearest 100)",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the company's revenue planning lead in finance, who signs the first-time-employer line of the 2027 sales plan",
+  "role_family": "finance_controller",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "onboarding_accounts_2022-2025.csv (the current account system's onboarding export)",
+    "rows": 31912,
+    "entity": "one payroll account, with its business identifiers, address state, opening stamp, first pay date, onboarding answer, channel and product",
+    "grain": "account",
+    "source": "synthetic (constructed in the layout of a payroll platform's account onboarding export)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "United States, twelve states of the Great Lakes, Ohio Valley and Mid-Atlantic (the company, its people, systems and customer data are fictional; the state filing reforms of 2024 to 2026 belong to the constructed world)",
+    "currency": "USD",
+    "org_type": "regional payroll services company for small businesses (payroll processing and payroll tax filing on its own platform)",
+    "invented_names": [
+      "Kilbourne Payroll"
+    ],
+    "people": [
+      "Dominique Thomas",
+      "Charles Fernandez",
+      "Cheryl Mitchell",
+      "Calvin Garrett"
+    ]
+  },
+  "layer1": [
+    "the Census business formation statistics as the research team pulled them: the October release from the API in its long layout with FIPS state codes and adjusted and unadjusted rows, formations within four and eight quarters published only for closed cohorts",
+    "the April release kept from the monthly download in the wide layout with postal codes, its latest three months preliminary and its seasonal factors estimated on less data",
+    "the onboarding export's two layouts across the June 2024 migration: legacy client-since stamps in Eastern month/day/year text and upper-case legal names against UTC ISO stamps",
+    "employer identification numbers hyphenated, plain, and with the leading zero lost on legacy rows",
+    "legacy quarterly wages in cents by pay group with the client's company-level group, current wages in dollars with no state, the migration quarter split across both files",
+    "legacy client numbers through the migration crosswalk, state registrations keyed by account, the successor register keyed by EIN",
+    "accounts reopened under the old EIN, successors under a new EIN, relocations, and product changes (the HR bundle, tax filing only)"
+  ],
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:marginal-applicant-employer-yield-read-against-untreated-states",
+  "deliverables": [
+    "first_time_employer_plan_2027.xlsx",
+    "first_time_employer_plan_2027_note.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A cut in the cost of entering a leading count draws in marginal entrants who seldom go on to the outcome, so each entrant the cut adds yields a fraction of what an ordinary entrant yields, while a common rise in the count across every region over the same months is ordinary and yields in full; only the treated regions read against the untreated ones, before and after, separate the two and give the added entrants' yield, and carried per added entrant onto a forward period holding far more of them than any closed cohort, it puts the treated regions' outcome below their own latest yield, above zero, and far below the average or high-propensity yield.",
+  "driver_concrete": "Ohio's, Pennsylvania's and Michigan's online formation filings now file the IRS application for an employer identification number for every new business that ticks the box, so applications there roughly doubled once each state retired its older filing route, while the other nine states rose about an eighth on a common wave from mid-2023 to mid-2024; read against those nine before and after, the applications the reform added formed employers within four quarters at under a fifth of the ordinary rate in the closed 2024 and 2025 cohorts, and carried per added application onto the plan's twelve months of applications to September 2026, with the common wave at the ordinary rate, it puts Kilbourne's 2027 first-time employers at 2,300, well under each state's latest closed rate (2,800), the high-propensity split or the pre-reform rate, and well over a zero yield for the added applications (2,100).",
+  "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's 2025 share files 2,800; the step that lands it there is treating the reform states' latest closed rate as theirs, when it is a mix of ordinary and added applications whose added share rose from about a fifth of the closed cohorts to nearly half of the twelve months, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives 2,300.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stacks the formation statistics by state, keeps only cohorts old enough to have closed, reads the plan standard's estimand and share table correctly and carries each state's latest closed formation rate per application onto the twelve months of applications to September 2026 files 2,800, and the cheaper corrections (the latest closed quarter's rate 2,700, a before-and-after split in the reform states alone 2,500, the filing's effect carried as a level 2,200, a zero yield for the added applications 2,100, the high-propensity split 2,900) file other wrong figures; only estimating the added applications' yield against the nine other states and carrying it per added application gives 2,300 (executed in checks.py on the generator's clean truth).",
+  "domain_test": "The deciding quantity is the employer yield of the business applications a filing reform added, identified the way an econometrician identifies a policy's effect on business formation (difference-in-differences of applications and of closed formation cohorts against the states the reform did not reach, before and after) and carried into a formation forecast; with a clinic's referrals or a utility's connection requests in place of applications there is no federal application register whose filings become employers only after a four-quarter window, no high-propensity classification that the marginal filer inflates, and no filing cost whose cut changes who applies, so the call has nothing to stand on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task136": "task136 nets out enrolments a scheduled campaign drew from households about to install anyway, by sites read against sites whose campaign had not yet run; here nothing is pulled forward, the reform adds filers who mostly never hire, the outcome observed is a lagged conversion of a leading count rather than the count itself, and the decisive quantity is the conversion yield of the added filers carried onto a forward period whose added share has more than doubled",
+    "task137": "task137 rebuilds, unit by unit, which deposits a temporary premium won from each unit's price against its entry cohort's floor; here no unit can be classed (an added application looks like any other in every field and flag), and the two kinds exist only as an aggregate counterfactual from untreated states",
+    "task95": "task95 recovers a fixed class weight by differencing two dated events on each unit across two registers; here there is no unit-level class, the added share is the gap between treated and untreated states before and after, and its yield is a causal effect per added application, not a class rate read off a register",
+    "task157": "task157 sizes a returning cohort from the part already back at a timing ratio earlier cohorts kept; here no cohort is completed from its own early arrivals, the closed formation cohorts are read as they are, and the forward quantity is an added share's yield identified against untreated states",
+    "task446": "task446 backs a moved base rate out of a screen's flagged share through stable error rates; here the propensity flag is not the instrument, it misclassifies the added filers, and the yield of the added filers comes from the reform's natural experiment across states",
+    "task124": "task124 prices unexamined units by the kind of group and cohort they sit in, the kind read off the surviving records of each group's other members, every measured sample drawn toward the flagged groups; here no record or group membership classes an application, the added applications exist only as the gap between reform and other states before and after, and the forward quantity is their conversion yield on a forward volume holding more of them",
+    "task132": "task132 restarts a replaced item at the bottom of its wear curve so the old item's rate overcounts failures; here nothing is replaced or aged, and the decisive quantity is the conversion yield of applications a filing reform added, identified across states",
+    "task144": "task144 values a seeded intervention as its seeds times a branching process set by the seeds' follower reach; here no adoption propagates, the reform's added applications convert on their own at a fraction of the ordinary rate, and the fraction comes from a difference-in-differences against the states the reform did not reach",
+    "task465": "task465's lineage priced an area-yield cover from published totals that fix withheld low years; here nothing is withheld, the formation cohorts are published as they close, and the decisive quantity is the added applications' yield read against untreated states"
+  },
+  "lineage": [],
+  "notes": "Domain: the seed's house label is economics; the deciding analysis is a policy effect on business formation (the employer yield of the applications a filing reform added, identified by a difference-in-differences across states) feeding a formation forecast, so the honest home is economics-econometrics/forecasting-forecast-evaluation, not product analytics, whose platform rule would apply if the decisive step were the company's own funnel. Strategy: the decisive move is the comparison the design implies (untreated states before and after) for a rate that depends on who applies (stumping F9); composition_mix (F5) is the neighbouring key and is not used because no record classes an application as added, the mix is identified only through the comparison. Organisation: Kilbourne is a payroll services company (NAICS 541214, payroll services, inside professional, scientific and technical services), which processes its clients' payroll and files their payroll taxes on its own platform; professional_services is the industry classification's own home for it.",
+  "registered": "2026-10-18T01:45:42Z"
+}

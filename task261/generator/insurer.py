@@ -247,6 +247,109 @@ def events(B):
              or B.P[n["person"]]["notified"] > AS_AT]
 
 
+# ---------------------------------------------------------------------------------------------- how the systems file people
+def second_accounts(B, per_group=12):
+    """Members who began a second Retirement Income Account pension with super paid in after their first began. The
+    administration system draws a member's income across their pensions, and the period-end run takes the balance and
+    the annual payment from the member's summary, so each of the member's rows carries the member's totals."""
+    r = K.rng("insurer-two-accounts")
+    n_acc = {}
+    for a in B.acc:
+        if not a.get("closed"):
+            n_acc[a["owner"]] = n_acc.get(a["owner"], 0) + 1
+    lives = {c["life1"] for c in B.ann} | {c["life2"] for c in B.ann if c["life2"] is not None}
+    pending = {B.acc[k]["owner"] for ks in B.pending.values() for k in ks}
+    by_group = {g: [] for g in OLDER}
+    for o in sorted(n_acc):
+        p = B.P[o]
+        if (n_acc[o] != 1 or p["dod"] is not None or o in lives or o in pending or p.get("joined_by_reversion")
+                or age_at(p["dob"]) < 60):
+            continue
+        first = next(a for a in B.acc if a["owner"] == o and not a.get("closed"))
+        q = B.hh_true.get(o)
+        mem = [o] + ([q] if q is not None and B.P[q]["dod"] is None else [])
+        g = placed(B, mem)
+        if g in by_group and first["type"] == "ABP" and first["commenced"] < dt.date(2025, 7, 1):
+            by_group[g].append(o)
+    for g in OLDER:
+        pool = by_group[g]
+        for o in [pool[i] for i in r.permutation(len(pool))[:per_group]]:
+            k0 = next(k for k, a in enumerate(B.acc) if a["owner"] == o and not a.get("closed"))
+            first = B.acc[k0]
+            start = rand_date(r, max(first["commenced"] + dt.timedelta(days=365), dt.date(2019, 7, 1)),
+                              dt.date(2026, 11, 30))
+            bal = round(float(np.exp(np.log(first["balance"] * 0.45) + r.normal(0, 0.35))), 2)
+            rate = next(v for lim, v in MIN_DRAW if age_at(B.P[o]["dob"], dt.date(2026, 7, 1)) < lim) \
+                + float(r.choice([0, 0, 0.01]))
+            first["member_total"] = True
+            B.acc.append(dict(account=None, owner=o, owner_id=None, type="ABP", commenced=start, balance=bal,
+                              freq=first["freq"], reverted_from=None, payment=round(bal * rate * 1.03, -1),
+                              member_total=True))
+            k = len(B.acc) - 1
+            B.nom += [dict(n, acc=k) for n in B.nom if n["acc"] == k0]
+    B.second = sorted({a["owner"] for a in B.acc if a.get("member_total")})
+
+
+def register_lag(B):
+    """Annuitants who died in 2026 and whom the annuity system recorded when it stopped their payments, but whose
+    death the client register never took up: each the partner of a member holding a pension, so the register still
+    holds the dead partner in the member's household."""
+    r = K.rng("insurer-deaths-unregistered")
+    pens = {}
+    for a in B.acc:
+        if not a.get("closed"):
+            pens.setdefault(a["owner"], []).append(a)
+    busy = set(B.jan_deaths) | {B.acc[k]["owner"] for ks in B.pending.values() for k in ks}
+    want = {(5, 4): 3, (4, 3): 2, (5, 3): 1}
+    pool = {k: [] for k in want}
+    began = {}
+    for c in B.ann:
+        P, M = c["life1"], B.hh_true.get(c["life1"])
+        if c["commenced"] > dt.date(2026, 6, 30) or c["pay_from"] is not None or M is None or M not in pens:
+            continue
+        if B.P[P]["dod"] is not None or B.P[M]["dod"] is not None or M in busy \
+                or any(a.get("member_total") for a in pens[M]) or B.P[M].get("joined_by_reversion"):
+            continue
+        k = (placed(B, [P, M]), placed(B, [M]))
+        if k in pool:
+            pool[k].append(P)
+            began[P] = c["commenced"]
+    B.register_lag = []
+    for k, n in want.items():
+        for P in [pool[k][i] for i in r.permutation(len(pool[k]))[:n]]:
+            B.P[P]["dod"] = rand_date(r, max(dt.date(2026, 2, 1), began[P] + dt.timedelta(days=30)),
+                                      dt.date(2026, 11, 15))
+            B.P[P]["notified"] = B.P[P]["dod"] + dt.timedelta(days=int(r.integers(6, 30)))
+            B.P[P]["register_unaware"] = True
+            B.register_lag.append(P)
+
+
+def separations(B, per_group=2):
+    """Couples on a reversionary lifetime annuity who have since separated: the reversionary annuitant stays on the
+    contract, and the register files each in a household of their own."""
+    r = K.rng("insurer-separations")
+    owners = {a["owner"] for a in B.acc}
+    by_group = {g: [] for g in OLDER}
+    for c in B.ann:
+        l1, l2 = c["life1"], c["life2"]
+        if l2 is None or c["commenced"] > AS_AT or c["pay_from"] is not None or B.hh_true.get(l1) != l2:
+            continue
+        if any(B.P[x]["dod"] is not None or x in owners or not B.P[x]["client"] for x in (l1, l2)):
+            continue
+        g = placed(B, [l2])
+        if g in by_group and placed(B, [l1]) in OLDER:
+            by_group[g].append(c)
+    B.separated = []
+    for g in OLDER:
+        pool = by_group[g]
+        for c in [pool[i] for i in r.permutation(len(pool))[:per_group]]:
+            l1, l2 = c["life1"], c["life2"]
+            B.hh_true.pop(l1, None)
+            B.hh_true.pop(l2, None)
+            B.P[l1]["separated"] = B.P[l2]["separated"] = True
+            B.separated.append(c)
+
+
 def new_business(B):
     """Lifetime annuities that began in January 2027, before the listing was pulled."""
     r = K.rng("insurer-newbiz")
@@ -315,10 +418,14 @@ def register(B):
         if q is None:
             p["marital"] = r.choice(["Single", "Widowed", "Divorced", "Separated"], p=[.35, .35, .2, .1]) \
                 if age_at(p["dob"]) >= 55 else r.choice(["Single", "Divorced", "Separated"], p=[.7, .2, .1])
-        elif B.P[q]["dod"] is not None and B.P[q]["notified"] is not None and B.P[q]["notified"] <= PULL:
+        elif B.P[q]["dod"] is not None and B.P[q]["notified"] is not None and B.P[q]["notified"] <= PULL \
+                and not B.P[q].get("register_unaware"):
             p["marital"] = "Widowed" if r.random() < 0.5 else "Married"
         else:
             p["marital"] = "Married" if r.random() < 0.82 else "De facto"
+    for p in B.P:
+        if p.get("separated"):
+            p["marital"] = "Divorced"
     # 2026 merges: a duplicate record raised when a second product was opened, retired into the original; the fund's
     # system still holds the retired number on the pension
     owners = [a["owner"] for a in B.acc if not a.get("closed")]
@@ -401,7 +508,7 @@ def golden(B):
         l1, l2 = c["life1"], c["life2"]
         if alive(B, l1):
             pay, amt = l1, c["amount"]
-            q = l2 if (l2 is not None and alive(B, l2)) else B.hh_true.get(l1)
+            q = B.hh_true.get(l1)
         elif l2 is not None and alive(B, l2):
             pay, amt = l2, round(c["amount"] * c["pct"] / 100, 2)
             q = None

@@ -150,6 +150,11 @@ def main(target):
         if not more:
             break
         reach |= more
+    # a connection still carrying an id the register holds as inactive: the active system of that name and county
+    act = reg[reg.status == "Active"].set_index(["system_name", "county"]).pws_id
+    old = reg.set_index("pws_id")
+    reach = {act.get((old.at[p, "system_name"], old.at[p, "county"]), p) if old.at[p, "status"] == "Inactive" else p
+             for p in reach}
     b = reg[reg.pws_id.isin(reach)].groupby("county").population_served.sum().to_dict()
     same("Ask B people by county", {k: int(v) for k, v in b.items()}, F["ask_b"])
     print("verify: %s" % ("PASS" if ok else "FAIL"))

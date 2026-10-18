@@ -89,7 +89,7 @@ def workbook(path, D, G, ask_a, ask_b, n_ep):
 
     ws = wb.create_sheet("Counties")
     _head(ws, ["County", "Water pumped by the listed systems' wells, 2025 (million gallons)",
-               "People who get their water from those wells"], [12, 26, 24])
+               "People living in the county who get their water from any of those wells"], [12, 26, 30])
     for c in COUNTIES:
         ws.append([c, ask_a[c], ask_b[c]])
         ws.cell(ws.max_row, 2).number_format = "#,##0.0"
@@ -131,7 +131,9 @@ NOTES = [
     "left out; Kesselring's emergency well (three days in July) is in.",
     "People: each listed system's own customers plus the customers of every system that buys all its water from it, "
     "directly or through another buyer, on the connections in service (Solberg Lake's emergency tie and Hagestad "
-    "Corners' purchase, closed 30 June 2025, are left out), counted in the county where the buyer is.",
+    "Corners' purchase, closed 30 June 2025, are left out), counted in the county where the buyer is. Four buyers "
+    "are on the connections under an id the register holds as inactive beside an active system of the same name and "
+    "county; each is counted as that active system, at its current population.",
 ]
 
 

@@ -337,6 +337,11 @@ def run(target, T):
     crb = bstops["every row by its own date column, credits on the memo's date"]
     ok(all(abs(b_gold[m][i] - crb[m][i]) >= 3850 for m in K.MONTHS for i in (0, 1)),
        "Ask B cracker: every figure at least one test's price away")
+    import cracker as CR
+    rows_cr = CR.score(target)
+    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
+    ok(lc == 0 and pair <= 40, "cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
+        ", ".join("%s %d of %d" % (a_, h_, n_) for a_, n_, h_ in rows_cr), pair))
     inv = A._csv(P("invoices"))
     ok(len({tuple(sorted(r.items())) for r in inv}) == len(inv), "Ask B: no exact duplicate row")
     lines = {(r["document_number"], r["line"]): r for r in inv}

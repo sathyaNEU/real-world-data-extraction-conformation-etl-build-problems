@@ -29,36 +29,55 @@ class Files:
         self.rev = self.nom[self.nom.nomination_type == "Reversionary"]
         self.sp = self.nom[self.nom.relationship.isin(["Spouse", "De facto partner"])]
         self.revset = set(self.rev.account_no)
+        dead = self.ann[self.ann.life_status == "Deceased"]
+        self.died = dict(zip(dead.client_id, dead.date_of_death))
 
     def resolve(self, cid, follow=True):
         return self.merge[cid] if (follow and cid in self.merge.index) else cid
 
-    def alive31(self, cid):
+    def alive31(self, cid, listing=False):
         d = self.by.at[cid, "date_of_death"]
+        if listing and pd.isna(d) and cid in self.died:
+            d = self.died[cid]
         return pd.isna(d) or d > AS
 
     def status_alive(self, cid):
         return self.by.at[cid, "status"] != "Deceased"
 
-    def house(self, cid, rule):
+    def house(self, cid, rule, listing=False):
         hh = self.by.at[cid, "household_id"]
         ms = self.members.get(hh, [cid]) if self.by.at[cid, "status"] != "Merged" else [cid]
         if rule == "all":
             return ms
         if rule == "status":
             return [m for m in ms if self.status_alive(m)]
-        return [m for m in ms if self.alive31(m)]
+        return [m for m in ms if self.alive31(m, listing)]
 
 
-def ask_a(F, follow=True, keep_dead_owner=False, life="alive31", nominee=False, revert=False):
+def ask_a(F, follow=True, keep_dead_owner=False, life="alive31", nominee=False, revert=False, totals="rows",
+          listing=False):
+    """totals: 'rows' adds every account row; 'once' takes a member's rows that carry one balance and one payment
+    between them once. listing: a household member whose death the annuity listing records counts as dead though the
+    register holds them alive."""
     out = {g: [set(), 0.0, 0.0] for g in range(6)}
     owners = F.acc.member_id.map(lambda x: F.resolve(x, follow))
-    for a, cid in zip(F.acc.itertuples(), owners):
+    rows = list(zip(F.acc.itertuples(), owners))
+    if totals == "once":
+        seen, keep = {}, []
+        for a, cid in rows:
+            seen.setdefault(cid, []).append((a, cid))
+        for cid, xs in seen.items():
+            if len(xs) > 1 and len({a.balance_31_12_2026 for a, _ in xs}) == 1 and \
+                    len({a.annual_payment_2026_27 for a, _ in xs}) == 1:
+                xs = xs[:1]
+            keep += xs
+        rows = keep
+    for a, cid in rows:
         if cid not in F.by.index:
             continue
-        ok = F.alive31(cid) if life == "alive31" else (F.status_alive(cid) if life == "status" else True)
+        ok = F.alive31(cid, listing) if life == "alive31" else (F.status_alive(cid) if life == "status" else True)
         if ok:
-            ms = F.house(cid, life)
+            ms = F.house(cid, life, listing)
             ms = ms if cid in ms else ms + [cid]
             ages = [F.by.at[m, "age"] for m in ms]
             key = ("hh", F.by.at[cid, "household_id"])
@@ -68,7 +87,7 @@ def ask_a(F, follow=True, keep_dead_owner=False, life="alive31", nominee=False, 
                     ages.append(K.AS_AT.year - sp.nominee_date_of_birth.iloc[0].year)
         elif revert and a.account_no in F.revset:
             nd = F.rev.loc[F.rev.account_no == a.account_no, "nominee_date_of_birth"].iloc[0]
-            ms = [m for m in F.house(cid, "alive31") if m != cid]
+            ms = [m for m in F.house(cid, "alive31", listing) if m != cid]
             ages = [F.by.at[m, "age"] for m in ms] if ms else [K.AS_AT.year - nd.year]
             key = ("hh", F.by.at[cid, "household_id"]) if ms else ("rev", a.account_no)
         elif keep_dead_owner:
@@ -84,7 +103,21 @@ def ask_a(F, follow=True, keep_dead_owner=False, life="alive31", nominee=False, 
     return {g: dict(households=len(v[0]), balance=v[1], payments=v[2]) for g, v in out.items()}
 
 
-def ask_b(F, life="alive31", in_payment=False, deflate=False, nominee=False, deferred=False):
+def _placed(F, cid, rule, nominee, owners, listing=False):
+    ms = F.house(cid, rule, listing)
+    ms = ms if cid in ms else ms + [cid]
+    ages = [F.by.at[m, "age"] for m in ms]
+    if nominee and len(F.house(cid, "all")) == 1:
+        sp = F.sp[F.sp.account_no.isin(F.acc.loc[owners == cid, "account_no"])]
+        if len(sp):
+            ages.append(K.AS_AT.year - sp.nominee_date_of_birth.iloc[0].year)
+    return int(K.band_of(max(ages)))
+
+
+def ask_b(F, life="alive31", in_payment=False, deflate=False, nominee=False, deferred=False, listing=False):
+    """in_payment: the life being paid only (the annuitant while alive, then the reversionary annuitant), placed with
+    its household; otherwise every living life on the listing at its listed amount, each with its own household.
+    listing: a household member whose death the listing records counts as dead though the register holds them."""
     out = {g: [set(), 0.0] for g in range(6)}
     c = F.ann[F.ann.commenced <= AS].copy()
     if deferred:
@@ -92,6 +125,7 @@ def ask_b(F, life="alive31", in_payment=False, deflate=False, nominee=False, def
     c["a31"] = c.date_of_death.isna() | (c.date_of_death > AS)
     c["anow"] = c.life_status == "Alive"
     flag = "a31" if life == "alive31" else "anow"
+    rule = "alive31" if life == "alive31" else "status"
     owners = F.acc.member_id.map(F.resolve)
     for k, grp in c.groupby("contract_no"):
         lives = grp[grp[flag]].sort_values("life_no")
@@ -99,45 +133,35 @@ def ask_b(F, life="alive31", in_payment=False, deflate=False, nominee=False, def
             continue
         if in_payment:
             lives = lives.iloc[:1]
-        amt = lives.annual_amount.sum()
-        if deflate:
-            s = grp.commenced.iloc[0]
-            if s.month == 1 and s.day <= K.PULL.day:
+        s = grp.commenced.iloc[0]
+        jan = s.month == 1 and s.day <= K.PULL.day
+        for lv in lives.itertuples():
+            amt = lv.annual_amount
+            if deflate and jan:
                 ann_day = pd.Timestamp(2027, 1, s.day)
-                lv = lives.iloc[0]
-                if lv.life_no == 2 or pd.isna(lv.date_of_death) or lv.date_of_death > ann_day:
+                l1 = grp[grp.life_no == 1].iloc[0]
+                if lv.life_no == 2 or pd.isna(l1.date_of_death) or l1.date_of_death > ann_day:
                     amt = amt / (1 + RATE[grp.indexation.iloc[0]])
-        pay = lives.iloc[0].client_id
-        ms = F.house(pay, "alive31" if life == "alive31" else "status")
-        ms = ms if pay in ms else ms + [pay]
-        ages = [F.by.at[m, "age"] for m in ms]
-        if in_payment and len(grp) == 2:
-            other = grp[grp.life_no != lives.iloc[0].life_no]
-            if len(other) and bool(other[flag].iloc[0]):
-                ages.append(K.AS_AT.year - other.date_of_birth.iloc[0].year)
-        if nominee and len(F.house(pay, "all")) == 1 and not (in_payment and len(grp) == 2):
-            sp = F.sp[F.sp.account_no.isin(F.acc.loc[owners == pay, "account_no"])]
-            if len(sp):
-                ages.append(K.AS_AT.year - sp.nominee_date_of_birth.iloc[0].year)
-        g = int(K.band_of(max(ages)))
-        out[g][0].add(F.by.at[pay, "household_id"])
-        out[g][1] += amt
+            g = _placed(F, lv.client_id, rule, nominee, owners, listing)
+            out[g][0].add(F.by.at[lv.client_id, "household_id"])
+            out[g][1] += amt
     return {g: dict(households=len(v[0]), income=v[1]) for g, v in out.items()}
 
 
 A_STOPS = {"naive": dict(follow=False, keep_dead_owner=True, life="all"),
            "status": dict(life="status"),
-           "cracker": dict(nominee=True),
            "register only": dict(),
            "reversion only": dict(revert=True),
-           "golden": dict(nominee=True, revert=True)}
+           "cracker": dict(nominee=True, revert=True),
+           "member totals once": dict(nominee=True, revert=True, totals="once"),
+           "the listing's deaths read": dict(nominee=True, revert=True, listing=True),
+           "golden": dict(nominee=True, revert=True, totals="once", listing=True)}
 B_STOPS = {"alive now, every life": dict(life="now"),
-           "cracker": dict(nominee=True),
-           "every life summed, register only": dict(),
-           "deferred out": dict(deferred=True),
-           "every life summed, deferred out": dict(deferred=True, deflate=True, nominee=True),
+           "every life, register only": dict(),
+           "every life, deferred kept": dict(nominee=True),
+           "cracker": dict(deferred=True, deflate=True, nominee=True),
            "in payment, deferred out": dict(in_payment=True, deferred=True),
            "January increase kept": dict(in_payment=True, deferred=True, nominee=True),
            "nominations unread": dict(in_payment=True, deflate=True, deferred=True),
            "deferred kept": dict(in_payment=True, deflate=True, nominee=True),
-           "golden": dict(in_payment=True, deflate=True, nominee=True, deferred=True)}
+           "golden": dict(in_payment=True, deflate=True, nominee=True, deferred=True, listing=True)}

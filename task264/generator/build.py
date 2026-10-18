@@ -54,12 +54,12 @@ def build(out):
     crow, ent, ext = O.counts(C)
     n["counts"] = O.write_counts(p("counts"), crow)
     n["assets"] = O.write_assets(p("assets"))
-    inv = O.invoices()
+    inv = O.all_invoices()
     pays = O.payments(inv)
     n["invoices"] = O.write_invoices(p("invoices"), inv)
-    others = O.other_receipts(T, mrows, lines)
-    n["receipts"] = O.write_receipts(p("receipts"), pays, others)
-    n["remittances"] = O.write_remittances(p("remittances"), pays, inv)
+    rows = O.credits(pays, O.other_receipts(T, mrows, lines))
+    n["bank"] = O.write_bank_credits(p("bank"), rows)
+    n["cashbook"] = O.write_cash_book(p("cashbook"), rows)
     n["payments"] = O.write_supplier_payments(p("payments"), inv)
     n["permits"] = O.write_permits(p("permits"))
     O.write_population(p("population"))
@@ -82,7 +82,8 @@ def build(out):
     PP.normalize_pdf(p("levypapers"), b"D:20270107154411+00'00'", b"D:20270108090236+00'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
-    T.update(recs=recs, m=m, mrows=mrows, lines=lines, counts=crow, ent=ent, ext=ext, inv=inv, pays=pays, n=n)
+    T.update(recs=recs, m=m, mrows=mrows, lines=lines, counts=crow, ent=ent, ext=ext, inv=inv, pays=pays, rows=rows,
+             n=n)
     return T
 
 
@@ -109,12 +110,14 @@ def manifest(n):
          n["assets"]),
         (F["counts"], "Hourly counts from the car-park vehicle counters, survey year", "Parks and GIS", "6 January 2027",
          n["counts"]),
-        (F["invoices"], "Levy invoices issued for 2025-26", "Finance", "6 January 2027", n["invoices"]),
-        (F["receipts"], "Credits to the Authority's main account, 1 April 2025 to 7 April 2026 by Date: Date is the day "
-                        "the finance system posted the line from the bank's morning statement, Value date the day the "
-                        "bank credited the funds", "Finance (cash book export)", "6 January 2027", n["receipts"]),
-        (F["remittances"], "Remittance advices received with 2025-26 levy payments", "Finance", "6 January 2027",
-         n["remittances"]),
+        (F["invoices"], "Invoices raised to the member councils from 1 March 2025 to 28 February 2026: the 2025-26 "
+                        "levy instalments and sundry charges", "Finance", "6 January 2027", n["invoices"]),
+        (F["cashbook"], "Receipts on the Authority's main account as the finance system holds them for 2025-26, 1 April "
+                        "2025 to 31 March 2026 by posting date (the day the finance system booked the receipt), the "
+                        "member councils' receipts allocated to the invoices they pay", "Finance (cash book export)",
+         "6 January 2027", n["cashbook"]),
+        (F["bank"], "Credits to the Authority's main account, 1 April 2025 to 7 April 2026 by value date (the day the "
+                    "bank credited the funds)", "Finance (online banking download)", "6 January 2027", n["bank"]),
         (F["payments"], "Supplier payment runs, 1 April 2025 to 7 April 2026", "Finance", "6 January 2027",
          n["payments"]),
         (F["permits"], "Annual parking permits sold for 2025-26", "Visitor services", "6 January 2027", n["permits"]),

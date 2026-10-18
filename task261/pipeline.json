@@ -1,39 +1,47 @@
 {
-  "task": "task261",
-  "owner": "sathay3012",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics",
-  "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-15",
-  "stump": "The default path files four segments, under 35 | 35-44 | 45-54 | 55 and over, because it takes the error of each adjacent difference from the two age groups' own standard errors added as if the groups were independent samples; both groups are drawn from the same 120 survey areas and their medians move together from replicate to replicate (correlation 0.70), so the error of the difference recomputed on the replicate weights is about $95,000, not $165,000, and 55-64 stands apart from 65-74 (2.7 times its error), giving five segments.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK), every line answered",
-    "reader": "loop 0: the bulletin regrouped (8.3); loops 1 to 6 clean on the call (nothing names the move, the decisive step analytical); loops 2 to 5 on the dictionary's ask wording; loop 5: the bulletin's age bands moved off the brief's groups (8.3); loop 6 clean"
-  },
-  "duplicate_check": {
-    "heart": "PASS",
-    "nearest": "task143 0.09; surface promotes task259 (same pairing, two numbers apart), differentiated on the card"
-  },
-  "judge": {
-    "verdict": "r2 DETERMINISTIC on the call, FIX_NOW on Ask A and B's households (three forks); r3 (the one re-judge) DETERMINISTIC on the call, FIX_NOW on how a non-client partner is known",
-    "disposition": "r2 fixed in the generator (dictionary codes and notes; no annuity anniversary on the pull day); r3's item filed after the verdict as task457 filed its second pass (the nominations' About line and the register's household line), the cracker still missing every ask figure (asserted); Gate G statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical",
-    "report": "task261/determinism_check_report.md, task261/determinism_check_report_pass2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-15",
-  "portal": null,
-  "draw": {
-    "card": "cards/task261.json registered 2026-10-15T06:16:36Z",
-    "guard": "PASS; nearest driver 0.09 (task143; task229 v1 in lineage)"
-  }
+ "task": "task261",
+ "owner": "sathay3012",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "descriptive-distribution",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-18",
+ "stump": "The default path files four segments, under 35 | 35-44 | 45-54 | 55 and over, because it takes the error of each adjacent difference from the two age groups' own standard errors added as if the groups were independent samples; both groups are drawn from the same 120 survey areas and their medians move together from replicate to replicate (correlation 0.70), so the error of the difference recomputed on the replicate weights is about $95,000, not $165,000, and 55-64 stands apart from 65-74 (2.7 times its error), giving five segments.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-15"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every line answered",
+  "reader": "loop 0: the bulletin regrouped (8.3); loops 1 to 6 clean on the call (nothing names the move, the decisive step analytical); loops 2 to 5 on the dictionary's ask wording; loop 5: the bulletin's age bands moved off the brief's groups (8.3); loop 6 clean; wave 3 audit reader clean (Q1 none, Q6 analytical, neither new device named)"
+ },
+ "duplicate_check": {
+  "heart": "PASS",
+  "nearest": "task143 0.09; surface promotes task259 (same pairing, two numbers apart), differentiated on the card"
+ },
+ "judge": {
+  "verdict": "r2 DETERMINISTIC on the call, FIX_NOW on Ask A and B's households (three forks); r3 (the one re-judge) DETERMINISTIC on the call, FIX_NOW on how a non-client partner is known; wave 3 audit pass 3 DETERMINISTIC, APPROVE (the re-cut asks reproduced)",
+  "disposition": "r2 fixed in the generator (dictionary codes and notes; no annuity anniversary on the pull day); r3's item filed after the verdict as task457 filed its second pass (the nominations' About line and the register's household line), the cracker still missing every ask figure (asserted); Gate G statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical",
+  "report": "task261/determinism_check_report.md, task261/determinism_check_report_pass2.md, task261/determinism_check_report_pass3.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-15",
+ "portal": null,
+ "draw": {
+  "card": "cards/task261.json registered 2026-10-15T06:16:36Z",
+  "guard": "PASS; nearest driver 0.09 (task143; task229 v1 in lineage)"
+ },
+ "gates": {
+  "checks": 253,
+  "verify": "PASS (43 figures)",
+  "rebuild": "byte-identical",
+  "figures_check": "198 of 198",
+  "precut": "50 of 50",
+  "cracker": "0 of 15 kept, pair ceiling 37.0"
+ }
 }

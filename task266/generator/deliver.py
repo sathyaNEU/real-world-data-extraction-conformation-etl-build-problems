@@ -154,9 +154,10 @@ def write_scorecard(path, res):
         "the fall 2026 schedule (laboratory, shop and clinical sections carry none, and English Composition I and "
         "College Algebra ran at three), by each student's program of record for fall 2026, divided by 15.",
         "Classes under ten students: sections of each program's own subjects that ran in fall 2026, sections taught "
-        "together at one meeting (interactive video between campuses) counted as one class with their students "
-        "added; the accelerated sections that share a room and time in the first and second eight weeks are two "
-        "classes; census registrations as above.",
+        "together at one meeting (interactive video between campuses, the second campus's section meeting from the "
+        "second week to the last day of classes) counted as one class with their students added; the accelerated "
+        "sections that share a room and time in the first and second eight weeks are two classes; census "
+        "registrations as above.",
         "Shares are rounded to one decimal place from the unrounded estimate; the floor is applied to the unrounded "
         "share.",
         "Prepared by %s, Director of Institutional Research, 4 June 2027." % K.PEOPLE["ir"],

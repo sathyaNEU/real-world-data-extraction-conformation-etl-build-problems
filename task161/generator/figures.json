@@ -1,0 +1,448 @@
+{
+ "a2_share": {
+  "April 2026": "0.281",
+  "August 2026": "0.323",
+  "February 2026": "0.292",
+  "January 2026": "0.211",
+  "July 2026": "0.301",
+  "June 2026": "0.283",
+  "March 2026": "0.282",
+  "May 2026": "0.272",
+  "October 2026": "0.352",
+  "September 2026": "0.364"
+ },
+ "a2_share_raw": {
+  "April 2026": 0.2808908770535084,
+  "August 2026": 0.3227919880585149,
+  "February 2026": 0.29181590844928146,
+  "January 2026": 0.21093303542152647,
+  "July 2026": 0.3009566896619985,
+  "June 2026": 0.283055399344967,
+  "March 2026": 0.2819498921096549,
+  "May 2026": 0.2721205614218167,
+  "October 2026": 0.3521756597062368,
+  "September 2026": 0.3641398264670951
+ },
+ "a2_teu": {
+  "April 2026": 2367,
+  "August 2026": 3151,
+  "February 2026": 2181,
+  "January 2026": 1801,
+  "July 2026": 2919,
+  "June 2026": 2602,
+  "March 2026": 2387,
+  "May 2026": 2441,
+  "October 2026": 3603,
+  "September 2026": 3612
+ },
+ "a2_teu_raw": {
+  "April 2026": 2367.25,
+  "August 2026": 3150.75,
+  "February 2026": 2181.0,
+  "January 2026": 1801.25,
+  "July 2026": 2919.0,
+  "June 2026": 2602.25,
+  "March 2026": 2387.25,
+  "May 2026": 2440.75,
+  "October 2026": 3603.0,
+  "September 2026": 3611.75
+ },
+ "accounts": {
+  "PD2041": {
+   "burn_share": 0.142,
+   "close_31dec": 6559,
+   "episodes": [
+    [
+     "2025-04-05",
+     0.15
+    ],
+    [
+     "2025-08-07",
+     0.134
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 735,
+   "name": "Quillan Furniture Group",
+   "normal_31dec": 5823,
+   "notices": 2608,
+   "on_hand_6dec": 6911
+  },
+  "PD2047": {
+   "burn_share": 0.147,
+   "close_31dec": 8170,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.151
+    ],
+    [
+     "2025-04-05",
+     0.175
+    ],
+    [
+     "2025-08-07",
+     0.129
+    ]
+   ],
+   "excess_30jun": 3409,
+   "excess_31dec": 5260,
+   "name": "Avendano Housewares Corp.",
+   "normal_31dec": 2910,
+   "notices": 2686,
+   "on_hand_6dec": 8357
+  },
+  "PD2052": {
+   "burn_share": 0.137,
+   "close_31dec": 7359,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.168
+    ],
+    [
+     "2025-04-05",
+     0.115
+    ],
+    [
+     "2025-08-07",
+     0.121
+    ]
+   ],
+   "excess_30jun": 3372,
+   "excess_31dec": 4803,
+   "name": "Fanshaw Toy Co.",
+   "normal_31dec": 2556,
+   "notices": 2319,
+   "on_hand_6dec": 7431
+  },
+  "PD2058": {
+   "burn_share": 0.156,
+   "close_31dec": 5138,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.12
+    ],
+    [
+     "2025-04-05",
+     0.188
+    ],
+    [
+     "2025-08-07",
+     0.169
+    ]
+   ],
+   "excess_30jun": 1782,
+   "excess_31dec": 3428,
+   "name": "KDT Mobile Accessories, Inc.",
+   "normal_31dec": 1710,
+   "notices": 2487,
+   "on_hand_6dec": 4933
+  },
+  "PD2063": {
+   "burn_share": 0.091,
+   "close_31dec": 2930,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.107
+    ],
+    [
+     "2025-04-05",
+     0.082
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 313,
+   "name": "Rosales Apparel Group",
+   "normal_31dec": 2616,
+   "notices": 1917,
+   "on_hand_6dec": 2867
+  },
+  "PD2071": {
+   "burn_share": 0.119,
+   "close_31dec": 2086,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.135
+    ],
+    [
+     "2025-04-05",
+     0.09
+    ],
+    [
+     "2025-08-07",
+     0.142
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 79,
+   "name": "Ostrander Footwear LLC",
+   "normal_31dec": 2007,
+   "notices": 1387,
+   "on_hand_6dec": 2096
+  },
+  "PD2076": {
+   "burn_share": 0.125,
+   "close_31dec": 2831,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.129
+    ],
+    [
+     "2025-04-05",
+     0.103
+    ],
+    [
+     "2025-08-07",
+     0.149
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 295,
+   "name": "Ashby Linens Inc.",
+   "normal_31dec": 2535,
+   "notices": 1456,
+   "on_hand_6dec": 2919
+  },
+  "PD2083": {
+   "burn_share": 0.165,
+   "close_31dec": 2199,
+   "episodes": [
+    [
+     "2025-04-05",
+     0.165
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 0,
+   "name": "Coronado Patio & Garden",
+   "normal_31dec": 2363,
+   "notices": 935,
+   "on_hand_6dec": 2412
+  },
+  "PD2089": {
+   "burn_share": 0.107,
+   "close_31dec": 1470,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.154
+    ],
+    [
+     "2025-04-05",
+     0.057
+    ],
+    [
+     "2025-08-07",
+     0.148
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 0,
+   "name": "Bramwell Pet Supply Co.",
+   "normal_31dec": 1550,
+   "notices": 1437,
+   "on_hand_6dec": 1622
+  },
+  "PD2094": {
+   "burn_share": 0.114,
+   "close_31dec": 2238,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.123
+    ],
+    [
+     "2025-04-05",
+     0.1
+    ],
+    [
+     "2025-08-07",
+     0.122
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 126,
+   "name": "Garza Auto Parts Imports",
+   "normal_31dec": 2111,
+   "notices": 1287,
+   "on_hand_6dec": 2213
+  },
+  "PD2102": {
+   "burn_share": 0.209,
+   "close_31dec": 2986,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.234
+    ],
+    [
+     "2025-04-05",
+     0.228
+    ],
+    [
+     "2025-08-07",
+     0.19
+    ]
+   ],
+   "excess_30jun": 1850,
+   "excess_31dec": 2326,
+   "name": "Halloran Holiday Decor Co.",
+   "normal_31dec": 660,
+   "notices": 253,
+   "on_hand_6dec": 3341
+  },
+  "PD2108": {
+   "burn_share": 0.192,
+   "close_31dec": 4014,
+   "episodes": [
+    [
+     "2025-04-05",
+     0.198
+    ],
+    [
+     "2025-08-07",
+     0.188
+    ]
+   ],
+   "excess_30jun": 1413,
+   "excess_31dec": 2694,
+   "name": "Kitano Appliance USA",
+   "normal_31dec": 1321,
+   "notices": 1439,
+   "on_hand_6dec": 4090
+  },
+  "PD2115": {
+   "burn_share": 0.214,
+   "close_31dec": 1972,
+   "episodes": [
+    [
+     "2025-08-07",
+     0.214
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 33,
+   "name": "Lockhart Fitness Imports",
+   "normal_31dec": 1939,
+   "notices": 1083,
+   "on_hand_6dec": 1920
+  },
+  "PD2121": {
+   "burn_share": 0.126,
+   "close_31dec": 1121,
+   "episodes": [
+    [
+     "2019-09-01",
+     0.107
+    ],
+    [
+     "2025-04-05",
+     0.147
+    ],
+    [
+     "2025-08-07",
+     0.125
+    ]
+   ],
+   "excess_30jun": 0,
+   "excess_31dec": 74,
+   "name": "Penrose Office Products",
+   "normal_31dec": 1048,
+   "notices": 875,
+   "on_hand_6dec": 1068
+  }
+ },
+ "call": {
+  "blocks": 2,
+  "cost": "$2,200,000",
+  "cost_n": 2200000,
+  "of": 6,
+  "price": "$1,100,000"
+ },
+ "components": {
+  "block_use_pct": [
+   100.0,
+   100.0,
+   17.8,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "block_use_whole": [
+   100,
+   100,
+   18,
+   0,
+   0,
+   0
+  ],
+  "excess_30jun": 11826,
+  "excess_31dec": 20166,
+  "five_excess_half": 9256,
+  "five_jan2026_shipments": 5458,
+  "on_hand_6dec": 52180,
+  "overflow": {
+   "April 2027": 9006,
+   "February 2027": 8063,
+   "January 2027": 8773,
+   "June 2027": 8689,
+   "March 2027": 8786,
+   "May 2027": 8946
+  },
+  "overflow_max": 9006,
+  "overflow_min": 8063,
+  "positions": {
+   "April 2027": 49006,
+   "February 2027": 48063,
+   "January 2027": 48773,
+   "June 2027": 48689,
+   "March 2027": 48786,
+   "May 2027": 48946
+  },
+  "seasonal_excess_31dec": 18511
+ },
+ "rivals": {
+  "book_burn_blocks": 0,
+  "book_burn_share": 0.128,
+  "book_burn_totals_blocks": 1,
+  "fade_block1_pct": 14,
+  "fade_blocks": 0,
+  "fade_half_life_months": 0.87,
+  "flat_hold_blocks": {
+   "close": 3,
+   "december": 3,
+   "november": 3
+  },
+  "no_payback_blocks": 3,
+  "per_account_fall_blocks": 1
+ },
+ "steps": {
+  "block_positions": 4000,
+  "close_31dec_total": 51071,
+  "episode_floor_pct": 12,
+  "episode_min_days": 15,
+  "hurdle_pct": 75,
+  "legacy_last_close": "11 September 2022",
+  "legacy_year": 2022,
+  "notice_window_days": 90,
+  "notices_total": 22170,
+  "past_steps": [
+   "2019-09-01",
+   "2025-04-05",
+   "2025-08-07"
+  ],
+  "policy_sections": [
+   "3.1",
+   "4.2"
+  ],
+  "position_months": 24000,
+  "rack_positions": 40000,
+  "saturday_weight": "0.40",
+  "window_year": 2027
+ }
+}

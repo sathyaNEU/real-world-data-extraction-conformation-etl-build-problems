@@ -1,0 +1,122 @@
+{
+ "ask_a": {
+  "Brookside": {
+   "cost_per_replacement": 7008,
+   "kva_added": 1615.0,
+   "replaced": 88
+  },
+  "Canal": {
+   "cost_per_replacement": 7049,
+   "kva_added": 1532.5,
+   "replaced": 81
+  },
+  "Railyard": {
+   "cost_per_replacement": 6799,
+   "kva_added": 1812.5,
+   "replaced": 94
+  }
+ },
+ "ask_b": {
+  "Brookside": {
+   "customer_hours": 652,
+   "customers_over_8h": 35
+  },
+  "Canal": {
+   "customer_hours": 1185,
+   "customers_over_8h": 54
+  },
+  "Crestview": {
+   "customer_hours": 717,
+   "customers_over_8h": 39
+  },
+  "Foothill": {
+   "customer_hours": 1010,
+   "customers_over_8h": 50
+  },
+  "Highland": {
+   "customer_hours": 764,
+   "customers_over_8h": 18
+  },
+  "Kingsley": {
+   "customer_hours": 1063,
+   "customers_over_8h": 35
+  },
+  "Lakeside": {
+   "customer_hours": 540,
+   "customers_over_8h": 21
+  },
+  "Mission": {
+   "customer_hours": 1231,
+   "customers_over_8h": 52
+  },
+  "Railyard": {
+   "customer_hours": 1676,
+   "customers_over_8h": 80
+  },
+  "Sandhill": {
+   "customer_hours": 1527,
+   "customers_over_8h": 87
+  },
+  "Sunrise": {
+   "customer_hours": 1181,
+   "customers_over_8h": 41
+  },
+  "West Bluff": {
+   "customer_hours": 810,
+   "customers_over_8h": 42
+  }
+ },
+ "at_risk": {
+  "Brookside": 211,
+  "Canal": 228,
+  "Crestview": 22,
+  "Foothill": 353,
+  "Highland": 36,
+  "Kingsley": 123,
+  "Lakeside": 19,
+  "Mission": 105,
+  "Railyard": 312,
+  "Sandhill": 324,
+  "Sunrise": 23,
+  "West Bluff": 74
+ },
+ "at_risk_total": 1830,
+ "call": {
+  "Brookside": 46,
+  "Canal": 50,
+  "Crestview": 5,
+  "Foothill": 77,
+  "Highland": 8,
+  "Kingsley": 27,
+  "Lakeside": 4,
+  "Mission": 23,
+  "Railyard": 68,
+  "Sandhill": 71,
+  "Sunrise": 5,
+  "West Bluff": 16
+ },
+ "default_path_at_risk_total": 1596,
+ "default_path_foothill": 59,
+ "foothill_replacements": 77,
+ "increment_default_pooled_kva": 4.9,
+ "increment_ev_kva": 0.9,
+ "load_study_avg_default_kva": 0.61,
+ "load_study_avg_ev_kva": 0.01,
+ "share": {
+  "Brookside": 46.12,
+  "Canal": 49.836,
+  "Crestview": 4.809,
+  "Foothill": 77.158,
+  "Highland": 7.869,
+  "Kingsley": 26.885,
+  "Lakeside": 4.153,
+  "Mission": 22.951,
+  "Railyard": 68.197,
+  "Sandhill": 70.82,
+  "Sunrise": 5.027,
+  "West Bluff": 16.175
+ },
+ "threshold_pct": 120,
+ "threshold_ratio": 1.2,
+ "total_replacements": 400
+}

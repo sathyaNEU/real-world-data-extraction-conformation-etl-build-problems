@@ -1,0 +1,38 @@
+{
+  "task": "task244",
+  "owner": "perssathya",
+  "status": "PAUSED",
+  "domain": "",
+  "objective": "data-quality-monitoring",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-18",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 1 draw, seed DQ17 (which coding categories trip the reinterview quality alert): every honest framing of the seed's world measures coding quality on a reinterview or recoding subsample, calibration form gold_standard_subsample, which task470 (another lane, registered 2026-10-18T00:06) bans until it leaves the last three draws; the seed's survey and census-register pairing is also banned against task243. Resume the draw once task470 is out of the window (after task245 and task246, or any two later draws elsewhere), in a DQ-serving task type outside survey research; task245 is drawn meanwhile.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}

@@ -41,7 +41,7 @@ def interviews(T):
     """One record per completed interview, in fieldwork order: who was interviewed (their home, kind and
     reported 12-month visit count) and the survey's own fields."""
     P, S = T["P"], T["S"]
-    rr = W.rng("report")
+    rr = W.rng("report", 35)        # the reporting stream, drawn so no estimate lands on a round hundred
     ra = W.rng("attrs")
     out = []
     for j, (pk, s, d) in enumerate(K.STRATA):
@@ -54,7 +54,13 @@ def interviews(T):
             for t in range(m):
                 idx = int(picks[k])
                 k += 1
-                code, typ, f, _, _ = P[idx]
+                code, typ, f, nz, cnt = P[idx]
+                per = {}
+                for jj, c in zip(nz, cnt):
+                    per[K.STRATA[int(jj)][0]] = per.get(K.STRATA[int(jj)][0], 0) + int(c)
+                # Q9 asks for each park in turn: each answer as people give it, the park they are leaving at least 1
+                vp = {q: (W.report(per[q], rr) if per.get(q) else 0) for q in K.PARK_CODES}
+                vp[pk] = max(vp[pk], 1)
                 age = _age_years(typ, ra)
                 place = (K.OUTSIDE_PLACES[int(ra.integers(len(K.OUTSIDE_PLACES)))] if code == "OUT" else
                          K.SETTLEMENTS[code][int(min(ra.geometric(.45) - 1, 5))])
@@ -72,7 +78,8 @@ def interviews(T):
                 adults = int(1 if typ == "reg" and ra.random() < .7 else min(1 + ra.poisson(.9), 6))
                 kids = int(0 if typ == "reg" else ra.poisson(.55 if typ in ("occ", "trip") else .4))
                 out.append(dict(park=pk, season=s, daytype=d, date=day, start=int(starts[t]), interviewer=iv[t],
-                                code=code, kind=typ, f_true=f, visits=W.report(f, rr), age=age, place=place,
+                                code=code, kind=typ, f_true=f, f_here=per[pk], vp=vp, visits=sum(vp.values()),
+                                age=age, place=place,
                                 sex=str(ra.choice(["Female", "Male", "Prefer not to say"], p=[.53, .46, .01])),
                                 adults=adults, children=kids, dog=dog, mode=mode, activity=act,
                                 rating=int(ra.choice([2, 3, 4, 5], p=[.03, .12, .41, .44])), stratum=j, person=idx))
@@ -129,7 +136,8 @@ def write_wave1(path, recs):
     ws.title = "Interviews"
     header = ["Interview No", "Park", "Interview date", "Start", "Interviewer", "Home town/village", "Home area",
               "Age group", "Sex", "Adults in party", "Children in party", "Dog with party", "Arrived by",
-              "Main activity", "Visits to Authority parks, last 12 months (incl. today)", "Overall rating (1-5)"]
+              "Main activity"] + ["Visits, last 12 months (incl. today): %s" % K.PARK_NAME[q] for q in K.PARK_CODES] + [
+              "Overall rating (1-5)"]
     rows = []
     for o in recs:
         if o["wave"] != 1:
@@ -137,8 +145,8 @@ def write_wave1(path, recs):
         rows.append(["DV25-1-%04d" % o["serial"], K.PARK_NAME[o["park"]], o["date"],
                      "%02d:%02d" % divmod(o["start"], 60), o["interviewer"], o["place"] or None, o["code"],
                      _band(o["age"], AGE1), o["sex"], o["adults"], o["children"], "Yes" if o["dog"] else "No",
-                     o["mode"], o["activity"], o["visits"], o["rating"]])
-    _xl(ws, header, rows, [14, 24, 13, 7, 11, 20, 10, 10, 16, 9, 9, 9, 13, 18, 16, 9], {"C": "dd/mm/yyyy"})
+                     o["mode"], o["activity"]] + [o["vp"][q] for q in K.PARK_CODES] + [o["rating"]])
+    _xl(ws, header, rows, [14, 24, 13, 7, 11, 20, 10, 10, 16, 9, 9, 9, 13, 18] + [13] * 6 + [9], {"C": "dd/mm/yyyy"})
     ws2 = wb.create_sheet("Notes")
     for line in ["Daskbeck Valley Regional Park Authority visitor survey 2025-26, wave 1 (fieldwork 1 April to 30 "
                  "September 2025).", "Delivered by %s, 14 October 2025. One row per completed interview." % K.CONTRACTOR,
@@ -153,7 +161,8 @@ def write_wave1(path, recs):
 
 def write_wave2(path, recs):
     header = ["case_ref", "site_code", "int_date", "int_time", "int_id", "home_place", "home_area_code", "age_band",
-              "gender", "n_adults", "n_children", "dog", "mode", "activity", "q9_visits_12m", "q14_rating"]
+              "gender", "n_adults", "n_children", "dog", "mode", "activity"] + ["q9_%s" % q.lower() for q in K.PARK_CODES] + [
+              "q14_rating"]
     n = 0
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
@@ -166,7 +175,7 @@ def write_wave2(path, recs):
                         "%02d:%02d" % divmod(o["start"], 60), o["interviewer"], o["place"], o["code"],
                         _band(o["age"], AGE2), {"Female": "F", "Male": "M"}.get(o["sex"], "X"), o["adults"],
                         o["children"], "Y" if o["dog"] else "N", o["mode"].split(" ")[0].upper(),
-                        o["activity"].upper().replace(" ", "_"), o["visits"], o["rating"]])
+                        o["activity"].upper().replace(" ", "_")] + [o["vp"][q] for q in K.PARK_CODES] + [o["rating"]])
     return n
 
 

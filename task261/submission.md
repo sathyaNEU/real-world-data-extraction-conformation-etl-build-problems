@@ -20,8 +20,8 @@ The boundary at 65 decides it: 55 to 64 and 65 to 74 differ by $258,000 in media
 2. As nhws2025_user_guide.pdf sets out for an estimate, took each group's weighted median net worth on each of the five implicates and averaged them: $69,000, $281,000, $534,000, $790,000, $1,048,000 and $815,000.
 3. Recomputed each neighbouring difference with each of the 200 weights in nhws2025_replicate_weights.csv on implicate 1 and added 1.2 times the variance of the five implicate differences, the user guide's method applied to the difference: standard errors $24,000, $45,000, $77,000, $95,000 and $149,000.
 4. Applied the brief's rule (apart above 1.96 times the standard error): every boundary holds except 65 to 74 against 75 and over (1.6 times), five segments.
-5. Counted the households holding a pension in ria_pension_accounts_20261231.csv at 31 December 2026, members alive on that date in crm_clients_20270112.csv with merged numbers followed, a non-client partner placed from ria_nominations_20261231.csv and a December death's pension with a reversionary counted with the survivor (retirement_income_account_pds_2026.pdf, section 5): 442, 1,168 and 746 households.
-6. Took each contract's life in payment at 31 December 2026 from lifetime_annuity_lives_20270112.csv (a reversionary's amount only after the annuitant's death, deferred annuities not yet paying left out), took back the January 2027 anniversary increase (lifetime_annuity_key_facts_2026.pdf) and placed households the same way: 176, 467 and 284 households.
+5. Counted the households holding a pension in ria_pension_accounts_20261231.csv at 31 December 2026, members alive on that date in crm_clients_20270112.csv with merged numbers followed, a partner whose 2026 death lifetime_annuity_lives_20270112.csv records counted as dead though the register still holds them, a non-client partner placed from ria_nominations_20261231.csv, a member whose rows repeat one balance and payment taken once, and a December death's pension with a reversionary counted with the survivor (retirement_income_account_pds_2026.pdf, section 5): 445, 1,169 and 742 households.
+6. Took each contract's life in payment at 31 December 2026 from lifetime_annuity_lives_20270112.csv (a reversionary's amount only after the annuitant's death, so a former partner still named on a contract is not paid, deferred annuities not yet paying left out), took back the January 2027 anniversary increase (lifetime_annuity_key_facts_2026.pdf) and placed the paid life's household the same way: 179, 468 and 280 households.
 7. Set the 2027 range on five segments: under 35, 35 to 44, 45 to 54, 55 to 64, and 65 and over.
 
 ## 4. Deliverable Answers
@@ -48,9 +48,9 @@ The boundary at 65 decides it: 55 to 64 and 65 to 74 differ by $258,000 in media
    - 55 to 64 / 65 to 74: $258,000, $95,000, 2.7, kept apart
    - 65 to 74 / 75 and over: -$233,000, $149,000, -1.6, one segment
 3. Our customer households in each of the three groups from 55, by the older partner's age at 31 December 2026: households holding a Retirement Income Account pension, their combined balance and their annual payments set for 2026-27; households with a lifetime annuity in payment and the annual income it was paying them:
-   - 55 to 64: 442 households, $207,655,000, $11,448,000; 176 households, $3,606,000
-   - 65 to 74: 1,168 households, $520,479,000, $30,320,000; 467 households, $9,011,000
-   - 75 and over: 746 households, $249,568,000, $17,994,000; 284 households, $5,614,000
+   - 55 to 64: 445 households, $210,509,000, $11,589,000; 179 households, $3,653,000
+   - 65 to 74: 1,169 households, $521,126,000, $30,350,000; 468 households, $9,041,000
+   - 75 and over: 742 households, $249,685,000, $18,003,000; 280 households, $5,510,000
 
 ### adjacent_differences_2027.svg
 

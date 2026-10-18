@@ -1,0 +1,25 @@
+{
+ "task": "task471",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-18",
+ "stump": "The default path expands each wave's returned parking-survey cards to its quarter's parking entries and pitches the markets the valley's short trips go to, because a card comes back only when its car leaves and the boxes came in two days after each wave's last handout, so the two- to four-week stays of the Gulf Coast and desert markets are thinned out of the replies.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "guard_check": "WARN only 2026-10-18 after naming the decisive generator G7 (with G12 first the signature repeated task196 v2, task255, task456 and task462); WARNs answered in the design note"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: prototype generator (register entries, card waves with handout days, stays and replies), ladder calibration, fork table, asks on the ticket sample's fares, prompt.txt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
+}

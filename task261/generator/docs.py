@@ -402,7 +402,7 @@ DICT = {
                 ("investment_option", "Balanced, Growth, Conservative or Cash"),
                 ("payment_frequency", "Fortnightly, Monthly, Quarterly or Annually"),
                 ("annual_payment_2026_27", "Annual payment set for the 2026-27 financial year, dollars"),
-                ("balance_31_12_2026", "Account balance at 31 December 2026, dollars")]),
+                ("balance_31_12_2026", "Balance at 31 December 2026, dollars")]),
     K.NOMS: ("Nominations current on each Retirement Income Account pension at 31 December 2026: one row per nominee. "
              "A member's spouse or de facto partner who is not our client is known to us only from these nominations, "
              "whatever their type. "

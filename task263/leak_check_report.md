@@ -23,6 +23,9 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 - **REVIEW** `source_facility_inventory_2026.xlsx`: names 15 of 15 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `wholesale_connections_2026.csv`: names 8 of 15 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
@@ -35,8 +38,6 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 
@@ -82,3 +83,34 @@ meter readings carrying over month to month (each is what the systems' own recor
 
 Verdict after the read: no LEAK; the decisive step is not stated anywhere in the pack; the deciding step is analytical
 in both loops.
+
+### Loop 3 (wave 3 audit: Ask B re-cut, ask 6 now "people living in the county ... any of those wells")
+
+One isolated reader (Sonnet, medium) on fresh copies of prompt.txt and target/.
+
+1. Decisive step: none stated. It quotes 6.3's own-water definition and the guide's sources-in-service field as what
+   a solver works from; nothing says how a well's own level is obtained.
+2. Ranking file: none (Table 6-1 orders the systems by priority only).
+3. Analyst-only file: none clearly; the department's notes read as a covering email.
+4. Reads as the answer: nothing; the $36 million and the 4.0 ng/L line are inputs.
+5. Literal sentence: 6.3 with 6.4, executing to the golden's procedure (active wells whose own PFOA or PFOS averaged
+   over 4.0 ng/L, rated capacity to MGD, the cap, the walk with a stop); the per-sample or per-day mean it raised
+   leaves the same 23 wells (convergence, asserted).
+6. What decides: an analytical choice (separating each well's own water from the entry-point blends), with cleaning
+   around it; it could not tell without computing whether cleaning moves the call. It does not: every Layer 1 item
+   mishandled leaves the same 23 wells and the same walk (R2, asserted).
+7. County figures: (a) the listed systems' own populations against adding the systems that buy all their water from
+   them (the "listed systems only" stop, under by 586 to 3,871; "get their water from any of those wells" takes in
+   every full-purchase buyer), and "any of those wells" read as the wells over the line, which files the same
+   figures (each of the twenty listed systems has a well over the line and a population is counted by system);
+   (b) all the listed systems' wells against active wells only (the Kesselring emergency well, the judge's soft
+   reading: the clause says "the listed systems' wells" where the chart sentence says "each active well").
+   It named the wholesale chain, the buyers' counties, the inactive buyer ids and the meter register as what makes
+   the county figures hard, without saying how any of them resolves.
+
+Realism notes, each harmless: invented names in one Scandinavian-settled style beside English ones (the fiction's
+state; H21 screened); register names in capitals (the state register's own style); ids stored as text in the
+workbook (leading-zero ids); section 6 is a two-page extract of the draft plan (its file name says so); round
+populations on a few systems (registers carry estimates); the notes state the export's row count (a transmittal).
+
+Verdict after loop 3: no LEAK; nothing names the decisive step or either ask's device; Q6 analytical.

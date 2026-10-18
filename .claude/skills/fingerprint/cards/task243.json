@@ -5,13 +5,13 @@
   "slot_note": "wave 4, DQ16 seed (which local areas' register counts breach the undercoverage alert): the world, decision and quantity kept (local areas' register counts, the undercoverage alert, the register-improvement programme); the seed's dual-system pitfall dropped, since capture-recapture traps are spent (task448 stratified capture, task196 a second source fed by the first), and the pitfall re-found in the data: the death register's undercoverage read through the growth balance of two censuses, open to the movement of the oldest residents",
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a province's civil registry review: the share of adult deaths each city's and municipality's local civil registry office registers between two censuses, estimated from the balance of the two censuses' age counts against the deaths registered above each age, where the oldest residents move to their children's homes",
+  "niche": "a province's civil registry review: the share of adult deaths each city's and municipality's local civil registry office registers between two censuses, estimated from the balance of the two censuses' age counts against the deaths registered above each age, where the oldest residents leave for their children's homes",
   "objective": "data-quality-monitoring",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Five offices go into the first round of CRIP 2024: the City of Santa Cruz, San Isidro, Libertad, San Luis and Del Carmen register fewer than 80 per cent of their residents' adult deaths between the 2015 and 2020 census reference dates (about 63, 63, 56, 64 and 52 per cent); the other seven register 89 per cent or more.",
+  "answer_source": "task243/submission.md, Final Recommendation (generator/figures.json)",
   "gap": [
     "population"
   ],
@@ -30,27 +30,28 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "published_series",
-  "stakeholder_role": "the provincial planning office's population officer, who reviews each local civil registry office's death registration for the provincial civil registration committee",
-  "role_family": "policy_adviser",
+  "stakeholder_role": "a research associate at the state university's population studies centre, engaged by the provincial civil registration committee to review each local civil registry office's death registration",
+  "role_family": "research_desk",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "crs_death_records_extract_20220331.csv",
-    "rows": 0,
+    "file": "crs_death_records_extract_20230331.csv",
+    "rows": 56866,
     "entity": "one Certificate of Death registered in one of the province's local civil registry offices",
     "grain": "certificate (registration)",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
   "forcing_event": "launch_or_rollout",
-  "org_family": "local_government",
+  "org_family": "university_or_school",
   "world": {
     "geography": "Philippines, a fictional province in Mindanao (the Province of Kalinawan, its component city and eleven municipalities, their local civil registry offices; real national censuses of 2015 and 2020 and real civil registration law)",
     "currency": "PHP",
-    "org_type": "provincial government (planning and development office) with the local civil registry offices of its city and municipalities",
+    "org_type": "state university population studies centre reviewing, for the province's inter-agency civil registration committee, the local civil registry offices of its two cities and ten municipalities",
     "invented_names": [
       "Province of Kalinawan",
       "Kalinawan City",
-      "Kalinawan Provincial Civil Registration Committee"
+      "Kalinawan Provincial Civil Registration Committee",
+      "Kalinawan State University"
     ],
     "people": [
       "Randy Cortez",
@@ -66,10 +67,10 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the share of a population's exits that a register records, recovered from how the count above each age changed between two complete counts against the exits recorded above that age; part of each age group's change is members leaving for or arriving from other places at rates that rise with their own chance of exiting, so the balance taken without that movement keeps its straight line and books the leavers as unrecorded exits and the arrivals as recorded ones, and only the counts' own question on where each member lived before restores the missing term.",
-  "driver_concrete": "Each city's and municipality's death registration completeness is read from the general growth balance of the 2015 and 2020 census age counts against the deaths registered above each age, but Kalinawan's oldest residents move to their children's homes, out of the farming municipalities and into the peri-urban ones, at rates that follow their mortality, so the balance taken as closed keeps its straight line, reads the departures as unregistered deaths and the arrivals as registered ones, and only the balance carrying each place's net movement above each age from the 2020 census's residence five years earlier gives the golden set.",
-  "stump": "A competent demographer fits the general growth balance to each LGU's 2015 and 2020 census age counts and its registered adult deaths with the population taken as closed, as the method is set out, over the usual ages or a range trimmed for the young adults' labour moves, and flags the farming municipalities whose oldest residents leave while passing the peri-urban municipality they move to; the step that lands it there is leaving the oldest residents' movement out of the balance, which the fit's straight line never shows.",
+  "driver_concrete": "Each city's and municipality's death registration completeness is read from the general growth balance of the 2015 and 2020 census age counts against the deaths registered above each age, but Kalinawan's oldest residents leave the farming and remote municipalities for their children's homes, most of them out of the province, at rates that follow their mortality, so the balance taken as closed keeps its straight line and reads the departures as deaths nobody registered, and only the balance carrying each place's net movement above each age from the 2020 census's residence five years earlier, the former residents enumerated elsewhere in the country included, gives the golden set.",
+  "stump": "A competent demographer fits the general growth balance to each LGU's 2015 and 2020 census age counts and its registered adult deaths with the population taken as closed, as the method is set out, over the usual ages or a range trimmed for the young adults' labour moves, and flags eight offices, the three farming municipalities whose oldest residents leave among them at 72 to 78 per cent; the step that lands it there is leaving the oldest residents' movement out of the balance, which the fit's straight line never shows.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who dedupes the register, places each death by usual residence and date of death, and fits the general growth balance to the two censuses as the method is set out (closed to migration, over the usual ages or a trimmed range) flags the farming municipalities whose oldest residents leave and passes the peri-urban municipality they move to; only carrying the 2020 census's count of who moved above each age into the balance gives the golden set.",
+  "analyst_test": "A strong analyst who dedupes the register, places each death by usual residence and date of death, and fits the general growth balance to the two censuses as the method is set out (closed to migration, over the usual ages or a trimmed range) flags eight offices, Esperanza, Magsaysay and Mabini wrongly at 72 to 78 per cent; only carrying the 2020 census's count of who moved above each age into the balance, the former residents enumerated elsewhere in the country included, gives the golden five, the three at 89 per cent.",
   "domain_test": "Completeness of death registration is the demographer's quantity, estimated by a death distribution method (Hill's general growth balance, with Hill and Queiroz's migration term for open populations) from how the population above each age changed between two censuses against the deaths registered above that age; with a hospital, a school or megawatt-hours in place of a municipality there is no population ageing between two counts and no balance to fit, so the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:migration-term-in-the-growth-balance",
@@ -87,6 +88,6 @@
     "task129": "task129 separates a maintenance provider's servicing from a surroundings-driven rise in tree failures at matched time since servicing; task243 separates deaths from migration in the shrinkage of each age group between two censuses, a demographic balance with no provider, servicing or failure in it."
   },
   "lineage": [],
-  "notes": "",
+  "notes": "role and organisation redrawn at stage 3 (research_desk, university_or_school): task470, registered 21 minutes earlier in another lane, reached main only after this card's check, and its policy_adviser and local_government ban both; the reviewer moved from the provincial planning office to the university centre the committee engages",
   "registered": "2026-10-18T00:27:53Z"
 }

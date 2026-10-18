@@ -15,7 +15,7 @@
     "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read",
+    "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read; wave 3 second pass (data only): REVIEW, the same two documents, harmless",
     "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations); round 3 (wave 3 ask re-cut): Q1 none, Q2 none, Q4 none, Q6 an analytical choice; the asks' new devices unfound"
   },
   "duplicate_check": {
@@ -24,9 +24,9 @@
     "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
   },
   "judge": {
-    "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut)",
-    "disposition": "APPROVE",
-    "report": "task266/determinism_check_report_pass3.md"
+    "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut); pass 4 after Ask B's second device NOT_DETERMINISTIC, SEND_BACK by the thread, every graded figure reproduced",
+    "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
+    "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
   },
   "returned": [],
   "resume": "",

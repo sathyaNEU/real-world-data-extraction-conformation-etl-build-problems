@@ -113,15 +113,16 @@ def workbook(path, o):
     ws.freeze_panes = "B2"
 
     ws = wb.create_sheet("Levy 2025-26 collection")
-    _head(ws, ["Member council", "Levy 2025-26 invoiced (GBP)", "Paid by 31 March 2026 (GBP)",
-               "Still owed on 31 March 2026 (GBP)"], [30, 16, 16, 16])
+    _head(ws, ["Member council", "Levy 2025-26 invoiced (GBP)", "Paid by the instalments' due dates (GBP)",
+               "Paid after the due date, by 31 March 2026 (GBP)", "Unpaid on 31 March 2026 (GBP)"], [30, 16, 18, 18, 16])
     B = o["collection"]
     for c in K.CODES:
-        ws.append([K.NAME[c], pounds(B[c]["levy"]), pounds(B[c]["paid"]), pounds(B[c]["owed"])])
-    ws.append(["Total", pounds(sum(B[c]["levy"] for c in K.CODES)), pounds(sum(B[c]["paid"] for c in K.CODES)),
-               pounds(sum(B[c]["owed"] for c in K.CODES))])
+        ws.append([K.NAME[c], pounds(B[c]["levy"]), pounds(B[c]["on_time"]), pounds(B[c]["late"]),
+                   pounds(B[c]["unpaid"])])
+    ws.append(["Total", pounds(sum(B[c]["levy"] for c in K.CODES)), pounds(sum(B[c]["on_time"] for c in K.CODES)),
+               pounds(sum(B[c]["late"] for c in K.CODES)), pounds(sum(B[c]["unpaid"] for c in K.CODES))])
     _total(ws)
-    _fmt(ws, "BCD", "#,##0;-#,##0")
+    _fmt(ws, "BCDE", "#,##0;-#,##0")
     ws.freeze_panes = "B2"
 
     ws = wb.create_sheet("Notes")
@@ -135,8 +136,8 @@ def workbook(path, o):
         "between 1 April 2025 and 31 March 2026, each once. The survey interviewed adults leaving the parks, every eighth "
         "adult crossing the survey line, so each adult's chance of being interviewed rises with how often they came. Each "
         "interview is counted as its expansion weight (its stratum's estimated adult visits over the stratum's interviews) "
-        "divided by the respondent's visits to the parks in the last 12 months including that day (Q9), which counts "
-        "each resident once; summed by the home area the contractor coded. %s of the %s interviews were with residents "
+        "divided by the respondent's visits to the six parks in the last 12 months including that day (Q9, the six "
+        "parks' answers added, since a resident can be met at any park they visit), which counts each resident once; summed by the home area the contractor coded. %s of the %s interviews were with residents "
         "of the member councils; %s lived outside them and %s gave no home that could be placed, and neither is counted "
         "(paragraphs 4 and 6)." % ("{:,}".format(n["members"]), "{:,}".format(n["interviews"]), "{:,}".format(n["out"]),
                                    n["nk"]),
@@ -153,10 +154,15 @@ def workbook(path, o):
         "halved; C-05 and C-10 both reported Gorthfield's lakeside entrance from 3 to 24 February 2026 and the entrance "
         "is counted once; C-07 stood at Thruscote Hall until 14 October 2025, when it moved to Lockshaw Moor's valley car "
         "park and C-11 took its place.",
-        "Levy collection. Receipts are the 2025-26 levy invoices their references quote, taken on the date the bank "
-        "credited them (value date); the fourth instalments, due and credited on 31 March 2026, were posted to the cash "
-        "book on 1 April. The shared finance service's transfers for Hornmere and Wendstow are split by its remittance "
-        "advices. Chaldale paid its third instalment at its 2024-25 amount.",
+        "Levy collection. Each receipt counts once against the invoices the cash book allocates it to, each at its own "
+        "amount where a council's payment run paid a sundry invoice with an instalment (the receipts listing prints "
+        "the receipt's amount on each of its lines), and is dated by the day the bank credited it (the bank's report, "
+        "matched on the reference and amount), not the day the finance system posted it: a payment credited on its "
+        "due date is on time. The fourth instalments credited on 31 March were posted on 1 April, after the cash "
+        "book's year, and are taken from the bank's report against each payer's open invoice: the shared finance "
+        "service's transfer pays Hornmere's and Wendstow's, and Ferncote's quoted Grinbury's invoice and is "
+        "Ferncote's. Chaldale paid its third instalment at its 2024-25 amount; Grinbury's fourth instalment reached the "
+        "bank on 8 April 2026.",
     ]:
         ws.append([line])
         ws.cell(ws.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
@@ -300,9 +306,10 @@ def report(path, o, png):
          "The contractor's weights expand each of the %s interviews to the adult visits it stands for in its park, "
          "season and day type." % m(d["interviews"]))
     para("To count people, each interview is weighted by its expansion weight divided by the number of visits the "
-         "respondent said they had made in the last 12 months, including the day of the interview. A respondent who "
-         "came twice then stands for half as many people as their weight stands for visits, and one who came two "
-         "hundred times for a two-hundredth: across everyone the visit sample can reach, each resident is counted once. "
+         "respondent said they had made to the six parks in the last 12 months, including the day of the interview, "
+         "every park counted because the survey could have met them leaving any of them. A respondent who came twice "
+         "then stands for half as many people as their weight stands for visits, and one who came two hundred times for "
+         "a two-hundredth: across everyone the visit sample can reach, each resident is counted once. "
          "On that basis %s of the nine councils' residents aged 16 and over visited in 2025-26, %s of them from "
          "Keldmere, Ravenwick and Snelgarth." % (m(hundred(sum(N.values()))), m(hundred(o["valley_N"]))))
     para("Two shortcuts give a different split and are not used. Summing the weights by council counts visits, not "
@@ -310,7 +317,9 @@ def report(path, o, png):
          "visits by its respondents' average visit count looks like a count of people, but in an exit survey that "
          "average is weighted towards the people who come most, because they are the ones most often interviewed; it "
          "overstates how often residents come, most where everyday walkers and occasional visitors mix, and would put "
-         "only %.1f per cent on the valley councils." % (o["valley"]["visits"], o["valley"]["mean"]))
+         "only %.1f per cent on the valley councils. Dividing by the visits to the park where the interview took place "
+         "alone counts a resident who walks in two parks once at each, %.1f per cent on the valley councils." % (
+             o["valley"]["visits"], o["valley"]["mean"], o["valley"]["here"]))
     doc.add_picture(png, width=Mm(150))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.LEFT
     note("Interviews by home area: %s with residents of the member councils, %s with visitors from elsewhere (not counted, "
@@ -338,16 +347,22 @@ def report(path, o, png):
 
     h("The 2025-26 levy at 31 March 2026")
     B = o["collection"]
-    rows = [[K.NAME[c], m(B[c]["levy"]), m(B[c]["paid"]), m(B[c]["owed"])] for c in K.CODES]
-    rows.append(["Total", m(sum(B[c]["levy"] for c in K.CODES)), m(sum(B[c]["paid"] for c in K.CODES)),
-                 m(sum(B[c]["owed"] for c in K.CODES))])
-    table(["Member council", "Levy 2025-26 (£)", "Paid by 31 March 2026 (£)", "Owed on 31 March 2026 (£)"], rows,
+    rows = [[K.NAME[c], m(B[c]["levy"]), m(B[c]["on_time"]), m(B[c]["late"])] for c in K.CODES]
+    rows.append(["Total", m(sum(B[c]["levy"] for c in K.CODES)), m(sum(B[c]["on_time"] for c in K.CODES)),
+                 m(sum(B[c]["late"] for c in K.CODES))])
+    table(["Member council", "Levy 2025-26 (£)", "Paid by the due dates (£)", "Paid late, by 31 March 2026 (£)"], rows,
           (1, 2, 3), [56, 34, 36, 36])
-    short = B["CHD"]["owed"]
-    para("Every council had paid its 2025-26 levy in full by the year end except Chaldale, which paid its third "
-         "instalment at its 2024-25 amount and owed £%s on 31 March 2026. The fourth instalments were due on 31 March "
-         "and the bank credited them that day; the cash book posted them on 1 April. Hornmere's and Wendstow's instalments from July were paid by their shared finance service in single "
-         "transfers, divided here by its remittance advices." % m(short))
+    late = [c for c in K.CODES if B[c]["late"] > 0]
+    clean = [K.NAME[c].split()[0] for c in K.CODES if B[c]["late"] == 0 and B[c]["unpaid"] == 0]
+    words = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine"}
+    para("%s councils paid at least one instalment after its due date by 31 March. %s paid every instalment on time; "
+         "Grinbury's fourth instalment reached us on 8 April 2026, and Chaldale paid its third instalment at its 2024-25 "
+         "amount, leaving £%s unpaid. Payments are dated by the day the bank credited them: the cash book posts each "
+         "receipt from the bank's statement the next working day, so a payment made on its due date shows there a day "
+         "late, and the fourth instalments paid on 31 March fall in April's postings, outside the finance system's "
+         "2025-26 receipts, and are taken from the bank's report. Where a council's payment run paid a sundry invoice "
+         "with an instalment, the receipt counts once and the instalment at its own amount." % (
+             words[len(late)], " and ".join(clean), m(B["CHD"]["unpaid"])))
     for p in doc.paragraphs:
         p.paragraph_format.line_spacing = 1.08
     doc.core_properties.author = "Finance"
@@ -372,8 +387,8 @@ def figures(o):
         ask_a={K.PARK_NAME[p]: dict(machines=pounds(o["parts"][p][0]), app=pounds(o["parts"][p][1]),
                                     total=pounds(o["income"][p])) for p in K.CHARGING},
         ask_a_total=pounds(sum(o["income"].values())),
-        ask_b={K.NAME[c]: dict(levy=pounds(B[c]["levy"]), paid=pounds(B[c]["paid"]), owed=pounds(B[c]["owed"]))
-               for c in K.CODES},
+        ask_b={K.NAME[c]: dict(levy=pounds(B[c]["levy"]), on_time=pounds(B[c]["on_time"]), late=pounds(B[c]["late"]),
+                               unpaid=pounds(B[c]["unpaid"])) for c in K.CODES},
         ask_c={K.PARK_NAME[p]: int(o["vehicles"][p]) for p in K.CHARGING},
         ask_c_total=int(sum(o["vehicles"].values())))
 

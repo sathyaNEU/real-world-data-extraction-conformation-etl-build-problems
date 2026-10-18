@@ -1,0 +1,114 @@
+{
+  "task": "task162",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6 (new), seed FC33: the world (a browser's bug-triage team staffing its quarter to the busiest week at 120 triage items per triager-week, moving to a new tracker on 4 January 2027 after a four-week November parallel run, releases on a four-week train on 12 January, 9 February and 9 March), the decision and the quantity kept; the seed's merged-against-unmerged-duplicates reading is filed as a plain counting fact and its merge records carry no planted defect; the pitfall is re-found in how a release reaches its users",
+  "domain": "product-analytics",
+  "subdomain": "feature-adoption-diffusion-modeling",
+  "client_domain": "product-analytics",
+  "niche": "a Tampere browser vendor's bug-triage team filing its first-quarter 2027 triage headcount before the holidays, when the browser's update applies only when the browser restarts, most Windows machines restart in the two days after Microsoft's monthly Patch Tuesday, and all three of the quarter's releases (12 January, 9 February, 9 March) ship on Patch Tuesday itself, which no release in the past year did",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "8 triagers for the first quarter of 2027 (the busiest week, a release week, forecast at about 900 triage items)",
+  "answer_source": "task162/generator/calc.py forecast on the cut pack (the restart model: each release's adoption from ordinary restarts plus the Windows restart wave after Patch Tuesday, carried through first-use reports per install); figures.json",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G7"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "the browser's triage team lead, who files the team's first-quarter headcount for the engineering staffing review before the holidays",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "old_tracker_export_20251001_20261217.csv (the old tracker's bug export, one row per report filed through the form, duplicates included, 1 October 2025 to 17 December 2026)",
+    "rows": 29275,
+    "entity": "one report filed on the old tracker, with its product and component, reporter's version and platform, severity, status, resolution, duplicate-of link and security group",
+    "grain": "report",
+    "source": "synthetic (constructed in the layout of a Bugzilla-style CSV bug export)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "Finland, Tampere (the vendor and its triage team; the browser's users are worldwide; the vendor, its browser, trackers, people and data are fictional)",
+    "currency": "EUR",
+    "org_type": "independent desktop browser vendor with a bug-triage team",
+    "invented_names": [
+      "Usva Software Oy",
+      "Usva (the browser)",
+      "usvasoftware.fi",
+      "tracker-bridge",
+      "Browser intake (BRW)",
+      "Web compatibility (WEBC)"
+    ],
+    "people": [
+      "Ulla Kauppinen",
+      "Juhani Immonen",
+      "Timo Huttunen",
+      "Ritva Grönroos",
+      "Simo Kinnunen",
+      "Helena Pakarinen",
+      "Linnea Kärki",
+      "Johannes Laukkanen",
+      "Saara Väisänen",
+      "Tapio Kallio",
+      "Arja Turunen",
+      "Sakari Puhakka",
+      "Milla Ojanen",
+      "Antero Järvinen"
+    ]
+  },
+  "layer1": [
+    "the old tracker's Bugzilla-style CSV export (Helsinki local timestamps, product and component as two columns, the security group in its own column, beta and nightly builds beside release builds, the parallel run's reports closed MOVED and put in an Archive product)",
+    "the public data portal's daily shares of each platform's active installs by major version and its daily active installs in thousands",
+    "the release calendar as a table inside a PDF, point releases listed",
+    "the old triage dashboard's weekly new defects on its own basis (duplicates, invalid and MOVED reports out, the run's weeks empty)",
+    "the record's partial first and last weeks and the year-end lull",
+    "the new tracker's Jira-style REST export of the parallel run (UTC times, component paths, multi-valued components, a changelog, two projects, the bridge's service account, catch-up writes carrying the old number in a label, a move dropping Legacy bug, the pilot project's own Old tracker ID, a Close transition without a resolution, re-sent copies, the team's tasks, restricted issues)"
+  ],
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:release-week-reach-set-by-the-monthly-restart-burst",
+  "deliverables": [
+    "triage_staffing_q1_2027.xlsx",
+    "parallel_run_triage.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
+  "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships a week or two before or after Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later, while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
+  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who rebuilds the new tracker's items from the old export (every report, duplicates included), reads the counting basis, the 120-item standard and the release calendar correctly, and scales last year's busiest first-quarter week for growth, or forecasts with the record's release-week profile, a last-release uplift or the record's typical first-month reach, files 6 triagers; only modelling each release's adoption as ordinary restarts plus the monthly Windows restart burst after Patch Tuesday, which the public adoption series shows month after month, and placing all three first-quarter releases on Patch Tuesday files 8.",
+  "domain_test": "The deciding quantity is each release week's first-use report wave, forecast the way product analytics forecasts version-driven activity: from the version's adoption curve (the update applies at the next browser restart, and on Windows most restarts come in the two days after Patch Tuesday) carried through the reports users file in their first days on the version; with a hospital's patients or a utility's megawatt-hours there is no update applied at restart and no operating-system restart cycle deciding when users reach a new version, so the quantity that decides the call has nothing to stand on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task156": "task156 sizes paid moderators from the work a shrinking volunteer pool cannot absorb, capacity seen only where it fell short; here no capacity is censored and no pool shrinks: the triage load is a demand forecast whose release weeks are set by when users reach each new version, and the decisive quantity is the share of users a release reaches in its first week.",
+    "task160": "task160 times regional surge waves by a stable propagation lag behind the region the wave starts in, observed this season; here nothing propagates: an external monthly restart cycle fixed by the operating system's calendar decides when each release reaches its users, and the forward releases' position in that cycle is known from the release calendar, not read from this season's wave.",
+    "task161": "task161 draws down a stock built ahead of a cost step at each holder's own use share; here there is no stock or drawdown: each release's reach in its first week is set by an external monthly restart burst, and the forecast is of first-use reports.",
+    "task157": "task157 completes a returning cohort's wave from the part already back at the as-of; here no wave is in flight at the as-of: the forward releases are not yet shipped, and their first-week reach comes from where each sits in the monthly restart cycle.",
+    "task148": "task148 drains a queue by abandonment; here no queue or patience enters: the forecast is of arrivals.",
+    "task159": "task159 builds a backlog where services arrive with less room than one interval's arrivals; here arrivals are forecast and no service capacity censors them.",
+    "task102": "task102 recovers a next-business-day release rule from the payment history and applies it to a forward period that ends on a weekend; here no rule is recovered and no period boundary moves anything: an adoption process (each install updates at its next restart, Windows restarts bunched in the two days after Patch Tuesday) is estimated from the public adoption series across every release, and the forward releases' place in the monthly cycle sets how many users each reaches in its first week.",
+    "task130": "task130 prices a short cover window from past events by how soon each was reported; here there is no cover window and no reporting delay to price: the forecast is of the first-use reports that follow each release's adoption, set by when its users restart.",
+    "task134": "task134's second architecture scaled an announced threshold step from the one smaller step its history held; here nothing is announced and nothing is scaled from one event: the restart burst recurs every month in the adoption record and every release since 2023 met it at some point of its first month.",
+    "task501": "task501's third architecture read a facility buffer off the furthest a cumulative path ran ahead of its forecast; here the quantity is one week's first-use reports, set by where each release sits in the monthly restart cycle, and no buffer, path or validation error is graded."
+  },
+  "lineage": [],
+  "notes": "Domain: the seed's label was Product Analytics, software quality operations; the client taxonomy's product-analytics task type that serves forecasting and fits a browser release reaching its users is feature-adoption-diffusion-modeling (the version's adoption curve and the first-use activity it drives, library pattern 1: effect by time since first exposure). Generators: G13 is decisive because the stump is that the forward release weeks sit where no release week in the recent record did in the monthly restart cycle (the decision window differs from the evidence windows; stumping strategies F1 lists G13 first for time_semantics); G7 is second (an update can apply only at a restart). Role: the triage team lead runs the frontline unit and files its headcount; capacity_planner and operations_director were banned by task161 and task182 at the draw and are not the stakeholder drawn. Artifact: the staffing-plan thread; filed_standard was banned by task161 and task182. Forum: the quarterly engineering staffing review that approves each team's headcount (committee_or_panel); line_manager_or_team was banned by task182 at the check.",
+  "registered": "2026-10-18T01:37:52Z"
+}

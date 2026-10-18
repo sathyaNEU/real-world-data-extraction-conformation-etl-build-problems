@@ -6,7 +6,7 @@
   "objective": "descriptive-distribution",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-17",
+  "updated": "2026-10-18",
   "stump": "The default path funds 7 systems and stops at Nesvold with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Nordvold with $451,200 left.",
   "architecture": 1,
   "loops": 0,
@@ -16,18 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK; every REVIEW line answered in leak_check_report.md)",
-    "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed"
+    "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed; wave 3 audit loop 3 clean on the re-cut pack and the reworded ask 6 (Q1 none, Q6 analytical, neither ask's device named)"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g vs task152 answered; repeat.deliverables vs task189 answered)",
     "nearest": "task234 0.08, task181 v1 lineage 0.08"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
+    "verdict": "DETERMINISTIC (r1); wave 3 audit pass 2 DETERMINISTIC (the re-cut Ask B reproduced)",
     "disposition": "APPROVE",
-    "report": "task263/determinism_check_report.md",
+    "report": "task263/determinism_check_report.md, task263/determinism_check_report_pass2.md",
     "gate_g": "method_or_model_selection, analytical_non_defect",
-    "gate_h": "domain pass, layers pass, decisive step analytical"
+    "gate_h": "domain pass, layers pass, decisive step analytical",
+    "pass2": "APPROVE; soft readings the renumbering resolved by name, the county people are counted in, the emergency well; its optional tightening (people living in the county) taken into the prompt after the verdict, no graded figure moved"
   },
   "returned": [],
   "resume": "",
