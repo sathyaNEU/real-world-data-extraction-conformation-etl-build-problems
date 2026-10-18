@@ -58,8 +58,8 @@
   "tolerance_pct": 90.0
  },
  "counts": {
-  "archive_recordings": 4629,
-  "archive_rows": 1180875,
+  "archive_recordings": 4617,
+  "archive_rows": 1194352,
   "auction_results": 126,
   "commitments": 256,
   "dictionary": 15,
@@ -118,7 +118,7 @@
    "site": "VKF-RDL"
   },
   {
-   "episodes": 67,
+   "episodes": 66,
    "gain_pct": 98,
    "name": "Terborgh",
    "site": "VKF-TRB"
@@ -133,9 +133,9 @@
  "down_low_gain": 73,
  "down_low_name": "Kampvliet",
  "down_none_name": "Meppelerdiep",
- "episodes_total": 910,
+ "episodes_total": 911,
  "exact": {
-  "VKF-DLK": 93.150023,
+  "VKF-DLK": 93.14997,
   "VKF-HGZ": 88.079998,
   "VKF-KPV": 72.109951,
   "VKF-MPD": 97.059985,
@@ -143,7 +143,7 @@
   "VKF-OOS": 94.88999,
   "VKF-RDL": 82.860041,
   "VKF-TRB": 101.130036,
-  "VKF-ZWT": 98.830016
+  "VKF-ZWT": 98.859863
  },
  "exact_down": {
   "VKF-DLK": 92.069996,
@@ -152,7 +152,7 @@
   "VKF-NWV": 89.089967,
   "VKF-OOS": 95.840012,
   "VKF-RDL": 80.860001,
-  "VKF-TRB": 98.140031,
+  "VKF-TRB": 98.13985,
   "VKF-ZWT": 93.910009
  },
  "exposure": [
@@ -272,7 +272,7 @@
    "VKF-NWV": 71,
    "VKF-OOS": 16,
    "VKF-RDL": 20,
-   "VKF-TRB": 68,
+   "VKF-TRB": 66,
    "VKF-ZWT": 70
   },
   "down_gain_rung0": {
@@ -292,7 +292,7 @@
    "VKF-NWV": 89,
    "VKF-OOS": 90,
    "VKF-RDL": 81,
-   "VKF-TRB": 97,
+   "VKF-TRB": 98,
    "VKF-ZWT": 93
   },
   "ean_lost_mwh": 28.8,
@@ -305,7 +305,7 @@
  "gap_pp": 11,
  "ladder": {
   "lin": {
-   "VKF-DLK": 100.01,
+   "VKF-DLK": 99.9995,
    "VKF-HGZ": 95.9285,
    "VKF-KPV": 96.2402,
    "VKF-MPD": 106.7106,
@@ -313,10 +313,10 @@
    "VKF-OOS": 82.0544,
    "VKF-RDL": 97.3617,
    "VKF-TRB": 107.0343,
-   "VKF-ZWT": 74.2582
+   "VKF-ZWT": 74.288
   },
   "pre": {
-   "VKF-DLK": 98.4256,
+   "VKF-DLK": 98.4319,
    "VKF-HGZ": 96.0925,
    "VKF-KPV": 93.2509,
    "VKF-MPD": 107.0957,
@@ -324,10 +324,10 @@
    "VKF-OOS": 83.3416,
    "VKF-RDL": 97.5842,
    "VKF-TRB": 108.2913,
-   "VKF-ZWT": 76.3594
+   "VKF-ZWT": 76.389
   },
   "sp": {
-   "VKF-DLK": 91.0727,
+   "VKF-DLK": 91.0602,
    "VKF-HGZ": 75.0074,
    "VKF-KPV": 68.5564,
    "VKF-MPD": 78.7443,
@@ -335,7 +335,7 @@
    "VKF-OOS": 95.8057,
    "VKF-RDL": 57.5179,
    "VKF-TRB": 76.8886,
-   "VKF-ZWT": 99.3273
+   "VKF-ZWT": 99.3571
   },
   "traj": {
    "VKF-DLK": 93.15,
@@ -346,7 +346,7 @@
    "VKF-OOS": 94.89,
    "VKF-RDL": 82.86,
    "VKF-TRB": 101.13,
-   "VKF-ZWT": 98.83
+   "VKF-ZWT": 98.8599
   }
  },
  "ladder_names": {
@@ -355,7 +355,7 @@
   "sp": "VKF-RDL",
   "traj": "VKF-KPV"
  },
- "obliged_pairs": 910,
+ "obliged_pairs": 911,
  "org": "Veerkracht Flex",
  "rung0_name": "Zwartewater",
  "rung0_pre": 76.4,
@@ -404,7 +404,7 @@
   {
    "cap": 10.0,
    "contract_gain": 52.63,
-   "episodes": 143,
+   "episodes": 144,
    "gain_pct": 93,
    "name": "Dollardkust",
    "site": "VKF-DLK",

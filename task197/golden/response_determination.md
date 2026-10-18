@@ -16,7 +16,7 @@ The runner-up is Reiderland (VKF-RDL) at 83 per cent, 11 percentage points above
 | VKF-RDL Reiderland | 2.50 | 83 | 152 | yes |
 | VKF-HGZ Hoogezand | 3.00 | 88 | 152 | yes |
 | VKF-NWV Nieuwveen | 6.00 | 91 | 111 | no |
-| VKF-DLK Dollardkust | 10.00 | 93 | 143 | no |
+| VKF-DLK Dollardkust | 10.00 | 93 | 144 | no |
 | VKF-OOS Oosterhout | 6.00 | 95 | 39 | no |
 | VKF-MPD Meppelerdiep | 2.00 | 97 | 30 | no |
 | VKF-ZWT Zwartewater | 8.00 | 99 | 73 | no |
@@ -26,7 +26,7 @@ Two further sites sit under tolerance: Reiderland at 83 per cent, Hoogezand at 8
 
 ## How the figure is built
 
-Each qualifying episode is read at its extreme second on the published one-second frequency. The response credited to a site is its recorded power at that second less the power its own programme was taking it to at that second, and the programme is moving: every site traverses between settlement period setpoints over a span its controller fixes, which the archive shows at the boundaries at which the site held no reserve commitment. Taking the undisturbed level instead of the moving programme, which is the site's recorded power at the last second before the episode at which the published frequency was still inside the dead band, credits each site with whatever its programme did during the episode, and is why Zwartewater reads 76 per cent on that basis against 99 per cent here.
+Each qualifying episode is read at its extreme second on the published one-second frequency. The response credited to a site is its recorded power at that second less the power its own programme was taking it to at that second, and the programme is moving: every site traverses between settlement period setpoints over a span its controller fixes, which the archive shows at the boundaries at which the site held no reserve commitment. Taking the undisturbed level instead of the moving programme, which is the site's recorded power at the last second before the episode at which the published frequency was still inside the dead band, credits each site with whatever its programme did during the episode, and puts Zwartewater furthest below contract rather than Kampvliet.
 
 ## Down regulation, availability and imbalance
 

@@ -17,7 +17,7 @@
 ## 3. Step-by-Step Solution
 
 1. Took every qualifying under-frequency episode from the published one-second frequency in system_frequency_1s_extracts.csv, at or below 49.920 Hz for 15 or more consecutive seconds per clause 2 of the reserve performance standard.
-2. Scoped each episode to the sites contracted for that settlement period in fcr_block_commitments.csv and dropped the block parts the control platform event log records as withdrawn from reserve, leaving 910 site-episode pairs the archive carries a recording of the extreme second for.
+2. Scoped each episode to the sites contracted for that settlement period in fcr_block_commitments.csv and dropped the block parts the control platform event log records as withdrawn from reserve, leaving 911 site-episode pairs the archive carries a recording of the extreme second for.
 3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement period boundaries at which the site held no reserve commitment: the span from the boundary to the new setpoint in site_programme_15min.csv is a constant of the site's controller, 90 seconds at Kampvliet.
 4. Took each site's delivered response at an episode's extreme second as its recorded power less its programme traverse at that second, over the deviation beyond the 10 mHz dead band and over its contracted gain, which is its contracted FCR capacity in asset_register.xlsx divided by 0.190 Hz per clause 2 of the technical conditions.
 5. Averaged the per-episode ratios with equal weight for each site: Kampvliet 72 per cent, Reiderland 83 per cent, Hoogezand 88 per cent, Nieuwveen 91 per cent.
@@ -41,7 +41,7 @@
    - Reiderland (VKF-RDL): 83 per cent, 152 episodes, below tolerance yes
    - Hoogezand (VKF-HGZ): 88 per cent, 152 episodes, below tolerance yes
    - Nieuwveen (VKF-NWV): 91 per cent, 111 episodes, below tolerance no
-   - Dollardkust (VKF-DLK): 93 per cent, 143 episodes, below tolerance no
+   - Dollardkust (VKF-DLK): 93 per cent, 144 episodes, below tolerance no
    - Oosterhout (VKF-OOS): 95 per cent, 39 episodes, below tolerance no
    - Meppelerdiep (VKF-MPD): 97 per cent, 30 episodes, below tolerance no
    - Zwartewater (VKF-ZWT): 99 per cent, 73 episodes, below tolerance no
@@ -54,7 +54,7 @@
    - Nieuwveen (VKF-NWV): 89 per cent, 71 episodes
    - Oosterhout (VKF-OOS): 96 per cent, 15 episodes
    - Reiderland (VKF-RDL): 81 per cent, 20 episodes
-   - Terborgh (VKF-TRB): 98 per cent, 67 episodes
+   - Terborgh (VKF-TRB): 98 per cent, 66 episodes
    - Zwartewater (VKF-ZWT): 94 per cent, 69 episodes
 3. Reserve capacity hours held available and the shortfall against commitment, six delivery blocks, MWh to one decimal place:
    - Block 1 (00:00-04:00): held available 542.0, shortfall 18.0

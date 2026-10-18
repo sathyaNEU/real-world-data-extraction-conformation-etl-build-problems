@@ -460,13 +460,14 @@ def main():
     ramps = [s_site["ramp_s"] for s_site in sim.SITES]
     thrs = [sim.RECORDER[s_site["id"]]["thr"] for s_site in sim.SITES]
     holds = [sim.RECORDER[s_site["id"]]["hold"] for s_site in sim.SITES]
+    flush = [sim.RECORDER[s_site["id"]]["flush"] for s_site in sim.SITES]
     settle = [posts[s_site["id"]] for s_site in sim.SITES]
     ck("no capture's length or offset carries anything about the site's traverse span",
-       max(abs(_spear(x, ramps)) for x in (rings, thrs, holds, settle)) <= 0.25
+       max(abs(_spear(x, ramps)) for x in (rings, thrs, holds, flush, settle)) <= 0.25
        and len(set(rings)) >= 6,
        "rank correlation against the traverse span: ring buffer %.3f, recorder threshold %.3f, "
-       "hold-off %.3f, settle window %.3f, over %d distinct pre-rolls"
-       % (_spear(rings, ramps), _spear(thrs, ramps), _spear(holds, ramps),
+       "hold-off %.3f, flush ceiling %.3f, settle window %.3f, over %d distinct pre-rolls"
+       % (_spear(rings, ramps), _spear(thrs, ramps), _spear(holds, ramps), _spear(flush, ramps),
           _spear(settle, ramps), len(set(rings))))
     # the organ's exactness: the span recovers at the boundaries the determination names, which are
     # the ones the site held no reserve commitment at, by least squares over the DPDT captures there

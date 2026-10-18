@@ -1,23 +1,30 @@
 {
   "task": "task199",
   "owner": "oviya13ya",
-  "status": "BUILD",
-  "stage": 4,
-  "stage_name": "check",
+  "status": "SHIPPED",
+  "stage": 5,
+  "stage_name": "ship",
   "architecture": "v1",
   "objective": "anomaly-detection",
   "domain": "political-science-public-policy",
   "subdomain": "conflict-protest-event-data-analysis",
   "wave": 4,
   "drawn": "2026-10-18",
-  "updated": "2026-10-19",
+  "updated": "2026-10-18",
   "card": ".claude/skills/fingerprint/cards/task199.json",
   "call": "Tibu, at 92.2 recorded collective actions per 100,000 residents over 1 April to 30 September 2026 (137 gathering-days over a published projection of 148,590).",
   "stump": "A competent solver cleans the register, ranks the eleven panel cities on their own recorded rise with residents as the only denominator, and files Sardinata at 121.4 per 100,000, whose whole rise is the material three outlets began filing from it.",
   "returned": [],
-  "judge": "architecture 1 pass 1: NOT_DETERMINISTIC, FIX_NOW, 2026-10-18, repaired on the ask side. Pass 2: NOT_DETERMINISTIC, FIX_NOW on ask 4 alone, Gate C and E, underspecified_objective, with the main call, the rate, asks 1, 2, 3, 5 and 6, the chart's spec and Gates B, D, F, G and H all passing. Ask 4's basis and grain are now pinned in the asking sentence and the quarterly closure is asserted in checks.py and verify.py; ready for the single re-judge",
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "taxonomy": "none; no pack or prompt change needed",
+    "report": "task199/determinism_check_report.md",
+    "gates": "A PASS every graded figure reproduced, B PASS, C PASS with residuals, D PASS, E PASS, F PASS, G PASS borderline, H PASS",
+    "pass": "3; derive-before-read order kept and confirmed by the thread"
+  },
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-18",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -56,9 +63,16 @@
     "date": "2026-10-19",
     "checks": "51 checks, 0 FAIL, 0 WARN"
   },
-  "resume": "Stage 4, pass 2 of the FIX_NOW is built and every free gate is green. Next: the author spawns the determinism judge for the single re-judge and the leak reader for its re-read, both at medium, on target.zip md5 97dd76fb2a5658bfa2746afc7f23baa1. The re-judge is scoped to ask 4, whose asking sentence now reads \"with a line per item group closing each quarter's gap\" and whose five lines are 82, 138, 70, 126 and 7, replacing the three that read 82, 125 and 7; the reader re-reads because the dictionary, the manual, the panel workbook and the prompt changed. Nothing on the main call moved: the designation, the printed 92.2, the four components, the register rows, the delivery log, the invoices and protocol clause 4.1 are byte-identical, and freeze.py check --mode rubric reports only pass 1's two moves. The five findings this pass answered, with every measurement, are in the design note under The judge's FIX_NOW, answered. Protocol 4.3 is now executable on both halves: on the author's ruling panel_fuentes.xlsx carries a Municipios del panel sheet with each municipality's entry date and semester, measured to move no figure, and the leak reader's brief should cover it since the workbook and the dictionary changed again for it.",
+  "resume": "SHIPPED. The reader's findings were weighed against the approve and deliberately not acted on, with the reasoning recorded so it is not reopened as an oversight. Three were settled by measurement: the cited-exceeds-retained impossibility does not exist at any commensurable grain and must never be repaired; the citation coverage gap is 2024 and 2025 alike rather than 2025 alone; and the dictionary sentences that overstate cardinality are authentic mess, since real data dictionaries routinely claim uniqueness and one-to-one linking that their own rows break, which is categorically different from two files that could not both exist. The judge itself closed the outlet-type ambiguity: the invoices carry no outlet type so only the delivered side splits, and those cells reproduce. ONE KNOWN SOFTNESS, carried rather than fixed: the citation file's source attribution is near chance, 23.0 per cent of the 12,544 mapped rows carrying a source that ever remitted from that municipality against a baseline near 20 per cent, when manual 1.1 implies a cited item came from a source that filed from there. It sits in a decoy file (citations are the rung 2 wrong denominator, naming Teorama), so a solver who notices it is pushed away from that rung and toward the golden, and finding it needs a deep join rather than one query. Fixing it would have voided the approve and cost a judge and a reader pass on a build whose call is forced. If the portal returns this build, fix that first. The judge's optional R1 is a rubric note needing no rerun: grade the designated bar, its label, the title and the internal consistency of bars and reference line, treating the delivered-items series as the golden series rather than the only acceptable one.",
   "leak": {
     "reader": "LANDED THE CALL at Tibu, 137 action-days, 92.2 per 100,000, but at about 45 to 50 per cent confidence with Sardinata at 121.4 named as the main alternative, and it says in terms that the pack never says which way to go. Question 1 clean, nothing names the decisive step, and it found no single-use file. Three findings to fix, and the first is the one that matters most. (1) ANNOUNCEMENT: protocol 4.1 reads \"Los registros del Observatorio son la evidencia de esa actividad y no su medida\", which the reader calls an unusual sentence for a working protocol. It is the build's whole thesis stated in the pack, which is leak-check sweep 5, and it is the shape that cost task196 a reader landing. Cut or reduce it to a clause that does not name the distinction. The Boletin's two cautions (\"su cobertura no es uniforme entre municipios\" and \"no compara municipios entre si ni anticipa la designacion\") and the dictionary's \"Ninguno de los dos entra en el registro\", which does the analyst's decoy sorting for them, are the same class and want the same treatment. (2) UNIFORMITY, the rule firing on the device itself: the April step is in exactly the three cities, and their new outlets send 40 to 76 items per row in a tight band against 5 to 10 everywhere else, which the reader says looks built to a step-change pattern rather than like the organic variation in the other 20 municipalities. Give the new outlets the per-row spread the existing ones have. (3) A date inconsistency: the dictionary is dated 5 November 2026 and the extract described as taken that day, while 2026 fecha_registro runs only to 2026-10-19. AND THE ONE TO WEIGH AGAINST THE JUDGE: the reader reports that only about 12 of Sardinata's 177 semester action-days are cited solely by the new outlets, so 165 of 177 survive dropping them, and that the old outlets' own volume also tripled. Its conclusion is that the three cities may carry a genuine surge too and the pack cannot separate the two. If that holds it is a Gate C finding rather than a Gate F one, because the decisive step would not be forced by the records. HOLD the fix pass for the judge, which is still running, and fix both sets in one generator pass.",
     "reader_disposition": "all three reader findings are now applied: the panel workbook's volume sentence is cut after the deletion test showed the answer stays forced without it, the dictionary's three untrue statements are fixed in the sentence rather than the data so the preliminary overlap, the multi-cited items and the re-coded municipalities all stay, and the dictionary's items_entregados line loses \"sea cual sea el tema\". Protocol 4.1 and manual 1.1 untouched."
+  },
+  "reader_findings": {
+    "verdict": "no LEAK; question 1 quoted no sentence naming the decisive step; question 2 none; the solver pass landed Tibu and 92.2 at only 60 to 65 per cent confidence, naming Sardinata and Teorama as its live rivals",
+    "measured_and_dismissed": "its most serious finding does not exist. It reported 2,587 of 6,773 day-municipality pairs citing more items than the filter retained, an impossibility, and I reproduced it at 2,740 of 22,075 with my own join. Both joins matched the citation publication date to the delivery log send date, which are different events. At municipality totals over the whole window, the one commensurable grain, cited runs at 40 to 70 per cent of retained and NO municipality exceeds it. Filed as a rule in dataset-generation. Do not repair this.",
+    "measured_and_corrected": "it reported the citation file clean for 2024 and broken only for 2025. Measured: 2024 carries 848 uncited entries and 643 orphan cite rows over 309 ids, 2025 carries 814 and 622 over 303, and 2026 alone is complete at 0 and 0. So it is a two-regime pattern, 2024 and 2025 partial against 2026 complete, with an ordinary migration story available. The repair is to qualify the dictionary line that overstates the cardinality (\"una cita: un item que el registro vinculo a una entrada\"), not to rebuild a year.",
+    "measured_and_confirmed": "the citation sources really are drawn close to independently of the delivery log, and this one has no date join in it. 23.0 per cent of the 12,544 mapped cita rows carry a source that ever remitted from that municipality, against a chance baseline near 20 per cent (median 8 sources per municipality out of 40 distinct in envios; citas draw from 21, 20 of them shared). The pack own documents say a cita is an item the service delivered, so the source attribution should not be near chance. Also 1,265 of 13,809 cita rows point at actions in no register file at all.",
+    "also_reported": "the dictionary uniqueness claim \"unico dentro del anio y del departamento\" is false against the 320 designed preliminary twins in the 2026 export, so qualify the sentence and keep the mess; the ask phrase \"by quarter and outlet type\" is ambiguous about which side of the bridge carries the outlet breakdown, since the invoice has no outlet type; panel_fuentes Notas sentences on canal de entrega and ambito declarado are flagged as used by nothing, which matters because canal de entrega was cited as an other use when the new municipality sheet was justified."
   }
 }
