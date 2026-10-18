@@ -1528,3 +1528,132 @@ ground routes into one of them, into revelation on a subset, or into not being e
 named rule, and measuring a candidate already dead would be the dressing-up the pricing sequence exists to
 prevent. The ground is not exhausted in the sense task182's thirteen affordances were, but the four latent
 quantities a payment ledger admits are, and that is the part the decision needs.
+
+### Architecture 6: the rate's denominator searched mechanism by mechanism, four measured (2026-10-18)
+
+Architecture 5 enumerated latent quantities on the **numerator** only. All ten of its branch-A candidates ask
+what a payment ledger cannot see about **payments**, and A6 (member cost sharing actually collected) was
+retired with "nothing in a claims pack estimates it, so not a design". The **eligibility record and the
+denominator never entered that enumeration**, which is the hole this pass searched. Four structurally distinct
+Layer 2 mechanisms, each killed by a number computed on a clean truth generator before any file was cut.
+Scripts: `screen_M2.py` and `screen_M1_M3_M4.py` in the builder's scratch directory.
+
+- **M1, the exposure base itself** (a rate per covered-life month, against lives times twelve or a period-end
+  stock). Dead on the WHAT screen and confirmed by measurement: with the unit filed as the rate's
+  denominator, the span integral **is** the filed quantity, so the reflex "compute life-months from the
+  spans" returns a reflex-over-golden ratio of **1.000000 for every one of twelve accounts**, and all four
+  routes name the same account. A route that disagrees is not computing the filed quantity, which makes the
+  error arithmetic rather than analysis.
+- **M2, a repeat-event share evaluated at a common length of cover** (the share of lives reaching two or more
+  admissions in a benefit year, which is convex in each life's own exposure and rises with the spread of use
+  inside the account, so no exposure-normalised mean rate can order the accounts). The strongest of the four
+  and the one the pass was opened on. Dead on the reflex sweep, run as code before separation was measured:
+  of nine routes, **five reach the golden account and two of those are the crudest in the list**. The golden
+  names HUATULCO at 7.72 per 1,000 with a margin of **1.075x** over its runner-up; the raw per-life share
+  with no exposure handling at all names the same account with a margin of **1.382x**; restricting to the
+  lives that carried a full year, a filter and a divide, names it at 8.85 with a margin of **1.147x**. Only
+  the frequency rate per 1,000 life-months and a mean-only Poisson evaluated at twelve months land wrong
+  (both on BERRENDO). Two routes land wrong and five land right, and the two crudest land right with a wider
+  margin than the decisive route's own.
+- **M3, the episode grain** (claims grouped into episodes on a clean-period window, so a per-episode cost is a
+  per-claim cost times a grain the pack never states at one level). Dead on the residue test, measured: the
+  call **moves with the window**, naming one account at 7, 14, 21 and 30 days and a different one at 45, 60
+  and 90 days, with a margin of **1.006x** at the pivot and **1.000x** (an exact tie) at every window above
+  it. The window is a knob and the answer is a function of the knob, which is architecture 1's death.
+- **M4, left truncation of per-life spend at an account-specific deducible** (eligible expense per life is
+  latent below each account's own deducible, and the book's spread of deducibles identifies it, which is the
+  A6 that architecture 5 retired as not estimable). Two easy routes do land wrong, paid per life and the
+  add-back of the deducible times the claimant count, both naming account B against the golden's I. Dead
+  anyway, three times over: the **mean spend among claimants**, one groupby, names I; re-truncating at a
+  common retention names I; and the plain high-cost-claimant rate names I. Structural reason, and it
+  generalises: **a deducible suppresses only the bottom of the per-life distribution**, so every tail
+  functional is exact (the largest deducible is MXN 150,000 against a 600,000 threshold, so no tail life is
+  ever truncated away) and only the mean is latent, and recovering the mean is the paid-against-eligible
+  basis question, which is branch B1's semantic fork on the main recommendation. Dead on lineage besides:
+  task189, on this objective two days earlier, spends a per-unit average over measurements known only to lie
+  below a limit that differs by the instrument that produced them, naming "censoring them all at one common
+  limit" as a wrong route, which is this mechanism and this construction.
+
+**Two reusable screens this pass earned, both measured rather than argued.**
+
+- **The common-exposure subset screen.** A decisive step of the form "put the units on a common exposure
+  before comparing them" cannot carry a stump, because the subset of units already at that exposure is a
+  filter and a divide that estimates the same quantity without any model (8.85 against the golden's 7.72, the
+  same account, at a wider margin). The only escapes are that no unit attains the exposure, which is
+  completion and task194 holds it; that too few do, which is variance and three of this slot's four deaths
+  were variance levers; or that the attaining subset is unrepresentative, which is a selection plant.
+- **The truncation-direction screen.** Before designing on a threshold that suppresses records, ask which end
+  it suppresses. One that suppresses the bottom leaves every tail functional exactly observable and leaves
+  only the mean latent, and the mean is a basis question. Only a threshold that suppresses the **top** leaves
+  a latent quantity a tail functional needs.
+
+**Where the pass stopped, and it is an axis and not a mechanism.** `guard.py check` on a probe card carrying
+the drawn axes returns **BLOCK ban.pairing, "domain plus objective pairing repeats a recent build against
+task194 (v3)", fix: redraw the domain or the objective**, with task194 v3 registered in this same domain on
+the anomaly-detection objective. An axis ban is not clearable by differentiation and `register` refuses a
+BLOCK, so **no driver whatever makes this cell registrable while task194 v3 sits in the window**: the block
+is independent of the mechanism and of everything above. The honest move is to hand it back rather than
+relabel the pairing to pass, and the window clears on its own as later builds register. The remaining axes
+drawn here all came back clear on that same probe (shape 03, `grain_or_unit`, `settled_transaction_ledger`,
+`finance_controller`, `binding_constraint` legal, gap `population`, `committee_or_panel`, `period_close`,
+`financial_institution`), so the pairing is the only thing standing.
+
+### The pin pincer run on architecture 6's four candidates, and the client's four patterns for this task type (2026-10-18)
+
+Run after the four measurements, on the author's correction. The test: **a rigor pattern whose pin fixes one
+of the estimand's five parts (population, outcome, window, unit, comparison) cannot carry the decisive step.**
+File the pin and the step is the execution of a filed clause, which rule 3 bans; leave it unfiled and the main
+call forks across the licensed readings, which `precut.py` refuses on the fork table. Only a pattern whose
+quantity is **estimated** rather than **defined** can carry HOW. This is not a new finding: it is already
+filed at `stumping/SKILL.md` 211 to 224, earned by task200's slot, which is the read this pass owed before
+designing and did not make. Its words: "what separates them is the estimand's unit, and the unit is one of the
+five parts: name it and the computation follows from the clause, which is rule application; leave it unnamed
+and the readings are three different numbers, which is a semantic fork on the main recommendation."
+
+| Candidate | Part the pin fixes | Defined or estimated | Verdict |
+|---|---|---|---|
+| M1 member months (pattern 4) | **unit**, the rate's denominator | defined | **dead on the pincer**, both horns |
+| M3 episode grain | **unit**, the grain | defined | **dead on the pincer**, both horns |
+| M2 repeat-event share at a common length of cover | none; a functional of a distribution | **estimated** | escapes the pincer, dead on the reflex sweep |
+| M4 left truncation at the deducible | none; mean eligible expense per life | **estimated** | escapes the pincer, dead on measurement and on task189 |
+
+**The pincer predicted both measurements it applies to, which is the strongest evidence it is right.** M1's
+filed horn is the measured 1.000000 reflex-over-golden ratio across all twelve accounts: the span integral
+**is** the filed quantity, so no analytical step survives. M3's unfiled horn is the measured fork: one account
+at 7, 14, 21 and 30 days, another at 45, 60 and 90, a margin of 1.006x at the pivot and an exact tie above it.
+Neither needed killing twice, and the pincer would have killed both before a line of generator code.
+
+**M2 and M4 escape the pincer and the distinction is worth keeping**, because it marks where this ground's
+remaining room is: both quantities are functionals of a distribution rather than clauses of an estimand, so
+two methods of estimating one filed quantity genuinely stand, which is what the screen at
+`stumping/SKILL.md` 207 asks for. They died on the data instead, M2 because the subset already at the common
+length of cover is a filter and a divide, M4 because a deducible suppresses only the bottom of the
+distribution. So the room is real and the two mechanisms that occupy it are both spent.
+
+**Ratio of totals is spent three times over in this slot**, and no later pass should re-screen it: the pincer
+(weighting alone separates the two, so what separates them is the unit); the filed rule at
+`stumping/SKILL.md` 211, earned by task200, which measured the unnamed clause at 12.22, 12.22 and 9.20 on one
+cut and found no third position; and this note's own earlier closure-table death, that weighting is axis 7,
+which `precut.py` requires closed, so it cannot also be the open decisive step.
+
+**All four of the client's patterns for `payment-claims-health-plan-analytics` are now shut, with the reason
+for each.** This is the part that decides whether the cell is worth another pass.
+
+1. **Complete recent claims with lag-triangle factors.** Spent: task194's vintage family, with task451 and
+   task130 on file.
+2. **Voluntary bundles need a comparison group, DiD with checked pre-trends.** Pin: "voluntary participation;
+   non-participant episodes available", which fixes the **comparison**, one of the five parts. Dead on the
+   pincer, and `causal_design` sits next door on task199 and task163 besides.
+3. **Reconcile in contract order.** Pin: "the contract sequence is stated". Rule application on its face,
+   banned by rule 3 as a decisive step.
+4. **Risk-adjusted PMPM as a ratio of totals over member months.** Pin fixes the **unit**. Dead on the
+   pincer, measured as M1 at 1.000000, and spent three times over as above.
+
+**The conclusion, and it is about the cell and not about this pass.** Architecture 5 enumerated the
+**numerator's** latent quantities and found four, three live or spent in this subdomain and the fourth banned
+by rule 3. Architecture 6 searched the **denominator** and found that it is the unit, so the pincer shuts it,
+and that the two distribution-shaped escapes are both spent. The client's own library for the task type is
+shut four ways. Both terms of a claims rate have now been searched, which is the part architecture 5 could not
+claim. **The cell is shut for this objective on the mechanism**, independently of the `ban.pairing` BLOCK that
+shuts it on the axis, and a further pass here should be spent only if the author reassigns the task type or
+the objective.
