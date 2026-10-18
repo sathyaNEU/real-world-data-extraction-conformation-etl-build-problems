@@ -1,0 +1,52 @@
+{
+ "task": "task176",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "card_registered": false,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "wave": "wave 8 (new), seed FC47: the world, the decision and the quantity kept (360 satellites for 2027, six rideshare launches of at most 60, release at 210 km, storm loss below 350 km, expected storm loss two or fewer per launch, the rest to 2028); the seed's onsets-against-storm-days mechanism set aside as a unit reading",
+ "screen": {
+  "assigned": "new draw in the seed's world, the decisive step a forecasting judgment a space-weather or mission-assurance analyst would recognise, inferred from the data, with the rival rejected out of sample; ideas named: the solar cycle's phase, exposure below 350 km from the raising log and the season, cycle amplitude, a back-test on past declining phases",
+  "data": "GFZ (kp.gfz-potsdam.de, datapub.gfz-potsdam.de), NOAA, NASA and SILSO hosts all 403 at the proxy; screened on CelesTrak SW-All.txt (21 July 2025, from the spaceweather 0.4.2 wheel on PyPI): GFZ definitive Kp and Ap (CC BY 4.0) and NRCan F10.7, 1957-10-01 to 2025-07-20, 24,765 days, plus the July 2025 monthly predicted F10.7; cycles 19 to 24 in full, cycle 25 to 0.7 years after its October 2024 maximum; SILSO sunspot number (CC BY-NC 4.0) only as a screen covariate",
+  "phase_amplitude": "Kp 5o, 24-hour gap, onsets a year at 2.0 to 3.5 years after maximum: all years 32.9, cycle 25's last 2.7 years 28.8, cycle 24's same phase 24.7, phase-only 42.4 (cycles 19 to 24: 56.7, 30.7, 62.0, 54.0, 26.7, 24.7); amplitude family 32.6 to 40.6 (Poisson phase bins with log sunspot amplitude 34.3, with log F10.7 amplitude 40.6, level times shape 34.8 and 32.6), 25 per cent wide and holding the all-years rate; Poisson dispersion 2.51; the same at 48 and 72-hour gaps and at Kp 6-, 7-, 5- and 4o, the lever and the spread one dial",
+  "backtest": "leave-forward on cycles 20 to 24, RMS log error: sunspot-amplitude model 0.297, F10.7-amplitude 0.337, last 2.7 years 0.346, all years 0.363, level times shape 0.365 (4 cycles), phase-only 0.512, previous cycle 0.528; phase-only worse than climatology, the best form 0.05 better than persistence, no rival rejected by a visible margin",
+  "exposure": "climb from 210 km under electric thrust against an MSIS-tuned exponential thermosphere on real F10.7 and Ap to July 2025 then the predicted F10.7 with noise, 47 to 48 launches 2020 to 2026, seeds 1 to 3 fixed before outcomes, two regimes: climb 6.80 days at F10.7 70 to 8.55 at 240 with thrust margin (near stall 6.95 to 9.70, 12.05 at 280, 1 to 2 launches stalled); golden 7.05 to 7.64 days, family 0.93 to 1.06 of its median; routes over golden: plan 1.01 to 1.08, all-history mean 1.01 to 1.06, last four 0.97 to 1.05, latest 0.97 to 1.11, plan times overrun 0.97 to 1.06, same months 0.98 to 1.14, trend 1.08 to 1.19 (0.04 clear of the family's top at its nearest); a procedural overrun makes the latest launches right, a heavier bus is a register column",
+  "eda6c8c_screens": "run as code on both: dispersion and truncation direction do not apply (levels, no suppressing threshold); variance-only passes both (phase-only 1.29 times climatology); the common-exposure subset fires on both (the same-phase years filtered and divided are the phase-only route, above the family; the launches at the 2027 flux filtered and divided sit at 0.93 to 1.02 of the exposure golden)",
+  "paper_only": "storm-attributable loss net of background deployment failures (50 to 70 batch-storm encounters, about 20 per cent at one sigma); loss per onset by altitude or intensity (composition_mix, held for task165 and task173, and the same encounter count); the stragglers' tail of time below 350 km (the per-satellite mean is the careful default, a coin flip); a loss per onset rising with storm duration (unscreened, the same encounter count)",
+  "repeat_screen": "guard.py recent, mechanisms --objective forecasting and slots before any card; slots on both candidate drivers and on solar, geomagnetic, storm, satellite, sunspot, launch, orbit, thermosphere, drag, density, flux, hazard, excess, attributable, background rate: no slot spent either mechanism; cards task138, task164 and the hazard and cycle forecasting cards (task142, task143, task149, task152, task154, task160, task166, task170, task172) carry no solar-cycle or storm-frequency driver",
+  "taxonomy": "a storm-frequency step sits in physical-environmental-sciences climate-weather-extremes (F, never drawn); the exposure step is at its edge (the thermosphere's solar-cycle climate); actuarial claims-frequency-severity fits only an insurer's world; the seed's Supply Chain line has no forecasting home for a hazard rate",
+  "prototypes": "scratchpad b176/proto: load.py, phase1.py to phase3.py, backtest1.py, season1.py, f107phase.py, screen_c1.py (output screen_c1.out, byte-identical over two runs); expo1.py, expo_run.py, screen_c2.py (output screen_c2.out, byte-identical over two runs); the record at b176/dl"
+ },
+ "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Both of the brief's candidates failed on measurement: the solar cycle's phase with or without amplitude (on the real 1957 to 2025 Kp record the amplitude-conditioned family spreads 25 per cent and holds the all-years rate, and phase-only loses to climatology out of sample) and exposure below 350 km through the thermosphere (the climb is thrust-set, every cheap route within the family's own spread). Read the design note's structural paragraph and ## Tried and rejected first. The brief allowed no third design; the coordinator or the author decides whether the number is redrawn in another world, moved or retired.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
