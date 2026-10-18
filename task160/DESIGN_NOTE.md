@@ -551,7 +551,7 @@ no LEAK, every line answered; the H1 audit clean on the pack and the goldens; `g
 (five pairs, above), `heart` WARN (answered). 16 files in 4 formats (csv, xlsx, pdf, json), the largest the legacy
 capacity export at 26,406 rows; distractors `rn_workforce_survey_2025q1_2026q3.xlsx` and
 `agency_rate_schedule_2026-27.pdf` in `metadata.json`, each deletion leaving the call and every ask unchanged.
-`target.zip` cut from the final rebuild, 16 entries equal to `target/` byte for byte. The seed was fixed by rule
+`target.zip` cut from the final rebuild (54fb09ce), 16 entries equal to `target/` byte for byte; shipped 2026-10-18. The seed was fixed by rule
 (1601221) before any data was generated and never searched. Every file in the pack carries the pull's modification
 time, 21 December 2026 09:30 Eastern (`dataset-generation` section 9).
 
@@ -572,6 +572,10 @@ The 10/10 rules re-read against the built pack (the judged cut 5d7a4619, with th
 - Determinism: the judge DETERMINISTIC, APPROVE, no fix (its own North waves 594, 575, 601, 614 and 586 shift by shift;
   the left-out-winter error favours Central, 3.0 days against 5.3; the member table, the chart and Gates G and H
   reproduce).
+- The targeted re-read of the joining lines on 54fb09ce: clean (Q1, Q2 and Q4 none, Q6 analytical); neither changed
+  file names a lead, a lag or how to time the North, and the 16-hospital table is unambiguous through `pool_member_from`.
+  Its mild tells (the `pool_member_from` line volunteers the capacity-reporting history and carries a little narrative)
+  are left as they are.
 - Since the judged cut: the North's activations before 1 November 2026 carry their own capacity-reporting numbers
   (CAP-) in place of pool surge requests, and the dictionary's `pool_member_from` line says when and why the eight
   northern members joined (their own regional contract ended on 31 October 2026); solution step 3 and block 1 now say
