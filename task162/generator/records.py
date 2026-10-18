@@ -518,12 +518,30 @@ def write_groups(path):
     ws.cell(row=n + 1, column=1, value="Not in a group")
     ws.cell(row=n + 1, column=2, value=PR.HOUSEKEEPING)
     ws.cell(row=n + 1, column=3, value="the triage team's own tasks")
-    ws.cell(row=n + 3, column=1, value="Agreed in the triage team, 26.10.2026 (UK).")
+    ws.cell(row=n + 3, column=1, value="Agreed at the triage team's weekly, 26.10.2026.")
     ws.column_dimensions["A"].width = 24
     ws.column_dimensions["B"].width = 40
     ws.column_dimensions["C"].width = 26
     wb.save(path)
     return rows
+
+
+# the rota as the team kept it: the week's plan, with the changes made during the run noted on the day
+ROTA_NOTES = {
+    dt.date(2026, 11, 2): "Sakari Puhakka on call for 47.0.1 this week (point release Thu 5.11.), Saturday cover 7.11.",
+    dt.date(2026, 11, 9): "Saara Väisänen on the cutover rehearsal with tracker migration this week",
+    dt.date(2026, 11, 14): "swapped with Johannes Laukkanen",
+    dt.date(2026, 11, 16): "Johannes Laukkanen on the component mapping with tracker migration this week",
+    dt.date(2026, 11, 17): "Arja, Tapio and Sakari at the new tracker workflow training 13:00-16:30",
+    dt.date(2026, 11, 21): "swapped with Saara Väisänen",
+    dt.date(2026, 11, 23): "Tapio Kallio on the 48.0 sign-off this week, Saturday cover 28.11.",
+    dt.date(2026, 11, 24): "Linnea Kärki until 12:00",
+    dt.date(2026, 11, 30): "follow-up on the new tracker; Arja Turunen back on the old tracker's queue",
+    dt.date(2026, 12, 2): "Sakari Puhakka sick",
+    dt.date(2026, 12, 4): "last follow-up items before the run's export",
+}
+ROTA_OFF = {dt.date(2026, 12, 2): {"Sakari Puhakka"}}
+ROTA_DAY = {dt.date(2026, 12, 4): (["Johannes Laukkanen"], "08:00-10:00")}
 
 
 def rota_rows():
@@ -532,10 +550,15 @@ def rota_rows():
     while d <= dt.date(2026, 12, 4):
         wk = K.monday(d)
         names, sat = PR.ROTA[wk]
-        if d.weekday() < 5:
-            rows.append((d, "08:00-16:30", ", ".join(names), "follow-up" if d > K.RUN_END else ""))
+        note = ROTA_NOTES.get(d, "")
+        if d in ROTA_DAY:
+            who, hours = ROTA_DAY[d]
+            rows.append((d, hours, ", ".join(who), note))
+        elif d.weekday() < 5:
+            on = [n for n in names if n not in ROTA_OFF.get(d, set())]
+            rows.append((d, "08:00-16:30", ", ".join(on), note))
         elif d.weekday() == 5 and sat:
-            rows.append((d, "10:00-14:00", sat, "Saturday cover"))
+            rows.append((d, "10:00-14:00", sat, ("Saturday cover, " + note) if note else "Saturday cover"))
         d += dt.timedelta(days=1)
     return rows
 
@@ -562,5 +585,6 @@ def write_rota(path):
     ws.column_dimensions["B"].width = 6
     ws.column_dimensions["C"].width = 13
     ws.column_dimensions["D"].width = 72
-    ws.column_dimensions["E"].width = 16
+    ws.column_dimensions["E"].width = 70
+    ws.freeze_panes = "A4"
     wb.save(path)

@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: release, restart, record, version, releases, adoption, installs, reports, first-quarter, tuesday, windows, restarts, calendar, thread, install, profile, first-use, exposure, method, forward, export, scaled, dashboard, update, ordinary
+Stump terms swept: release, restart, record, releases, installs, version, reports, tuesday, adoption, first-quarter, windows, restarts, thread, calendar, install, profile, first-use, exposure, method, forward, export, scaled, dashboard, update, ordinary
 
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `old_tracker_export_fields.txt`: 6 of 25 stump-paragraph terms appear (release, version, reports, install, export, update); read whether the document names the move
-- **REVIEW** `release_calendar_2025_2027.pdf`: 5 of 25 stump-paragraph terms appear (release, version, releases, calendar, update); read whether the document names the move
+- **REVIEW** `release_calendar_2025_2027.pdf`: 5 of 25 stump-paragraph terms appear (release, releases, version, calendar, update); read whether the document names the move
 - **REVIEW** `tracker_cutover_runbook.docx`: 5 of 25 stump-paragraph terms appear (release, record, version, reports, export); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 1)

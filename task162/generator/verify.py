@@ -77,10 +77,11 @@ def main(t):
     # ---- the thread (email, quoted-printable)
     body, msg = eml_body(os.path.join(t, "staffing_plan_q1_2027.eml"))
     flat = re.sub(r"\s+", " ", body.replace("> ", " ").replace(">", " "))
-    check("READ eml: the thread files 120 triage items per triager-week, the busiest week's expected items over 120 "
-          "rounded up, and the 13 weeks from Monday 4 January to Sunday 4 April 2027",
-          "120 triage items per triager-week" in flat and "divided by 120 and rounded up to a whole triager" in flat
-          and "13 weeks from Monday 4 January to Sunday 4 April 2027" in flat and msg["Date"].startswith("Thu, 17 Dec"))
+    check("READ eml: the thread files the expected load in the quarter's busiest week at 120 triage items per "
+          "triager-week, rounding up, and the 13 weeks from Monday 4 January to Sunday 4 April",
+          "expected load in the quarter's busiest week at 120 triage items per triager-week, rounding up" in flat
+          and "13 weeks Mon 4 Jan to Sun 4 Apr" in flat and "Monday to Sunday, Helsinki time" in flat
+          and msg["Date"].startswith("Thu, 17 Dec"))
     # ---- the runbook and the agreement (python-docx)
     rb = " ".join(docx_paras(os.path.join(t, "tracker_cutover_runbook.docx")))
     check("READ docx: the runbook files the counting basis (every report through the form, duplicates included; "

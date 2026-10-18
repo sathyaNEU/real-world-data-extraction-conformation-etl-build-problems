@@ -186,7 +186,7 @@ subtraction, ratio or half of a figure). Built figures from `generator/calc.py` 
 | R2a trend and seasonality on daily active installs plus the record's release-week profile by week since release (6) | no | the release calendar's dates | yes, the modeller's default | the profile fitted on the record's offset-7 releases puts its own two offset-14 releases' third weeks at about 40 per cent of what they brought | no | no | readable |
 | R2b a one-scalar uplift from the 1 December release's peak week over its week before, on each first-quarter release's week before (6) | no | no | yes, the last event as template | the uplift moves with each release's place in the cycle | no | yes | readable |
 | R2c an exposure model (daily items on the installs reaching the newest version) with the record's typical first-month reach carried onto the releases (6) | no | the adoption series | a half-step: exposure without its clock | no recorded week reached more than about half the installs, so the record cannot show the release-week reach | no | no | readable |
-| R3 (decisive) each first-quarter release's adoption built from ordinary restarts plus the Windows restart burst on the Wednesday and Thursday after Patch Tuesday, the burst inside each release week because each ships on Patch Tuesday, carried through the record's first-use reports per install (8) | no sentence names a restart, an update mechanism, Patch Tuesday, a burst or a reach; the calendar lists dates and the thread names the standard | no column marks a restart or a burst: the adoption series carries daily shares by major version and platform, and the step-ups are visible only by reading the days on which shares jump against the calendar | no: the reflexes are a seasonal analog, a profile by week since release, a last-event uplift and a typical reach | none ships: the record's weeks are history every method reads alike, and no document scores a method | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: an adoption process with two clocks, ordinary restarts and the monthly burst, placed on each release's calendar and carried through first-use reports | silent |
+| R3 (decisive) each first-quarter release's adoption built from ordinary restarts plus the Windows restart burst on the Wednesday and Thursday after Patch Tuesday, the burst inside each release week because each ships on Patch Tuesday, carried through the record's first-use reports per install (8) | no sentence names a restart, an update mechanism, Patch Tuesday, a burst or a reach; the calendar lists dates and the thread names the standard | no column marks a restart or a burst; the Windows step-ups stand out in any daily plot of the shares, and what keeps a solver off 8 is linking the 2027 release dates to where that burst falls in the month (each ships on the second Tuesday, so the burst lands in its release week), which no column, key or sentence does | no: the reflexes are a seasonal analog, a profile by week since release, a last-event uplift and a typical reach | none ships: the record's weeks are history every method reads alike, and no document scores a method | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: an adoption process with two clocks, ordinary restarts and the monthly burst, placed on each release's calendar and carried through first-use reports | silent |
 
 ## Semantic fork table
 
@@ -195,12 +195,12 @@ Every term in the main ask and every convention the main computation needs. Ever
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "how many triagers" | the busiest week's expected triage items over 120, rounded up to a whole triager | rounded to the nearest | 8 (same call; 912 over 120 is 7.6) | the thread ("divided by 120 and rounded up to a whole triager") |
+| SF1 | "how many triagers" | the busiest week's expected triage items over 120, rounded up to a whole triager | rounded to the nearest | 8 (same call; 912 over 120 is 7.6) | the thread ("at 120 triage items per triager-week, rounding up") |
 | SF2 | a triage item | every report filed through the report form, duplicates included, security-restricted reports out | duplicates out; restricted in | 5 with duplicates out; 8 with restricted in | the runbook ("Every report filed through the report form is a triage item, duplicates included ... Reports in the security group go to the security team's queue and are not triage items.") |
 | SF3 | the quarter | the 13 weeks from Monday 4 January to Sunday 4 April 2027 | calendar January to March | same call (the busiest week is a release week inside both) | the thread |
 | SF4 | a week | Monday 00:00 to Sunday 24:00, Helsinki time | UTC weeks | same call (the busiest week moves 0.6 per cent) | the thread |
-| SF5 | "busiest week" | the week with the most expected triage items | the week with the largest rise over the week before | same call (the same release week) | the thread ("the quarter is staffed for its busiest week") |
-| SF6 | expected | the forecast's central value, the mean count | a high percentile | 8 (a 90th percentile of the busiest week, 951, also files 8) | the thread ("the busiest week's expected triage items") |
+| SF5 | "busiest week" | the week with the most expected triage items | the week with the largest rise over the week before | same call (the same release week) | the thread ("size for the expected load in the quarter's busiest week") |
+| SF6 | expected | the forecast's central value, the mean count | a high percentile | 8 (a 90th percentile of the busiest week, 951, also files 8) | the thread ("the expected load in the quarter's busiest week") |
 | SF7 | the as-of | the files taken on 18 December 2026; the export holds reports filed to 23:59:59 on Thursday 17 December | data through the last full week (Sunday 13 December) | same call | the export's run line and the thread's date |
 | SF8 | a report's week | the week of its filing on the old tracker (`opened`, Helsinki time) | the week it was last changed | 6 under changeddate | the runbook ("A report is counted in the week it is filed.") and the field notes (opened, when the report was filed) |
 | SF9 | moved reports | in: a report the team moved to the web-compatibility team was filed through the form (the export holds it under Web Compatibility) | out | 7 with them out | the runbook ("A report the team moves to another team's project during triage stays a triage item.") |
@@ -220,7 +220,7 @@ Built figures (`generator/calc.py` on the cut pack; `checks.py` asserts each row
 | R2b | a one-scalar uplift (the 1 December release's peak week over its week before, 2.0) on each first-quarter release's week before | 712 | 6 | the uplift is the 1 December release's place in the cycle (its burst in its second week) |
 | R2c | the reports model with the record's typical first-month reach carried onto the releases | 658 | 6 | no recorded week reached more than 48 per cent of the installs; the release-week reach is the forecast, not a constant |
 | the record's busiest week scaled; the busiest week of the last quarter scaled; the busiest week per active install on the quarter's installs | (bypasses) | 700, 628, 725 | 6, 6, 7 | each carries a recorded week, and no recorded week sat on Patch Tuesday |
-| R3 decisive | each release's adoption from ordinary restarts plus the restart burst on the Wednesday and Thursday after Patch Tuesday (Windows hazards about 60 and 46 per cent against 12 on other weekdays), the burst in the release week, carried through the record's first-use reports per install | 912 | 8 | golden |
+| R3 decisive | each release's adoption from ordinary restarts plus the restart burst on the Wednesday and Thursday after Patch Tuesday (Windows hazards about 60 and 46 per cent against 12 on other weekdays, plain in any daily plot of the shares), the 2027 release dates linked to where the burst falls in the month so it lands in each release week, carried through the record's first-use reports per install | 912 | 8 | golden |
 
 **Position and margins.** The golden is the extreme cell: every rung files fewer triagers, and the nearest (725, the
 busiest week per active install) sits 115 items under the 840 edge. The golden sits mid-bin (912, 0.40 of the 120-item
@@ -242,10 +242,12 @@ weekly model) files 897.
 **Worth on the graded quantity.** Rebuilding the new counting is worth three triagers (R0 to R1); seeing that the
 quarter's release weeks sit in the restart cycle where no recorded week did is worth about 210 items and two triagers.
 
-**Strength.** P(one strong solver lands) about 0.12: it must rebuild the new counting, read the release weeks as
-adoption-driven, find the monthly step-ups in Windows adoption on the Wednesday and Thursday after the second Tuesday,
-see that the quarter's three release dates are second Tuesdays, and build the release weeks' adoption from the burst
-rather than carry any recorded week. P(both land) about 0.02 if independent, under 0.1 with any plausible correlation.
+**Strength.** P(one strong solver lands) about 0.12 (the stage 4 audit put it at 0.13): the Windows step-ups on the
+Wednesday and Thursday after the second Tuesday stand out in any daily plot of the shares, so seeing them is not the
+hurdle; the solver must rebuild the new counting, read the release weeks as adoption-driven, link the 2027 release dates
+to where that burst falls in the month (all three are second Tuesdays, so the burst lands in each release week, where no
+recorded release met it) and build the release weeks' adoption from the burst rather than carry any recorded week.
+P(both land) about 0.02 if independent (the audit: 0.02 to 0.05), under 0.1 with any plausible correlation.
 The seed is fixed by rule (the task number then the as-of month and day: 1621217) before any data is generated and is
 never searched.
 

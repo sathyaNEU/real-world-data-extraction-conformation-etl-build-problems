@@ -127,7 +127,7 @@
     {
       "path": "staffing_plan_q1_2027.eml",
       "format": "eml",
-      "bytes": 1627,
+      "bytes": 1434,
       "rows": null,
       "source": "Constructed: Usva engineering, mail thread on first-quarter headcount (7 and 17 December 2026)",
       "date": "2026-12-18",
@@ -154,7 +154,7 @@
     {
       "path": "triage_rota_2026-11.xlsx",
       "format": "xlsx",
-      "bytes": 7080,
+      "bytes": 7416,
       "rows": 31,
       "source": "Constructed: Usva triage team, rota for the parallel run and the follow-up week",
       "date": "2026-12-18",

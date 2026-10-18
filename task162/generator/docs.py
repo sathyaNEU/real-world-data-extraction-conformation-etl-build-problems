@@ -52,19 +52,18 @@ def sentences(paras):
 # ---------------------------------------------------------------------------------------------------- the thread
 THREAD_FIRST = [
     "Hi all,",
-    "The engineering staffing review meets on Monday 21 December to approve first-quarter headcount team by team. "
-    "Please put your team's number in the planning sheet by Friday 18 December.",
-    "Ulla, triage is sized the way we agreed in the spring: the quarter is staffed for its busiest week at the "
-    "standard of 120 triage items per triager-week, so the headcount is the busiest week's expected triage items "
-    "divided by 120 and rounded up to a whole triager. For this plan the quarter is the 13 weeks from Monday "
-    "4 January to Sunday 4 April 2027, weeks Monday to Sunday, Helsinki time.",
+    "The staffing review is on Monday 21 December, so I need each team's Q1 headcount in the planning sheet by Friday "
+    "the 18th.",
+    "Ulla, triage the way we agreed in the spring: size for the expected load in the quarter's busiest week at 120 "
+    "triage items per triager-week, rounding up. Q1 for this plan is the 13 weeks Mon 4 Jan to Sun 4 Apr, weeks "
+    "Monday to Sunday, Helsinki time.",
     "Thanks,",
     "Juhani",
 ]
 THREAD_REPLY = [
     "Juhani,",
-    "Will do. From the cutover we count triage items the way Ritva's cutover runbook sets out, so the number won't "
-    "compare with the old dashboard's new defects. You'll have it tomorrow.",
+    "Will do. Remember the count changes at the cutover: triage items are counted the way Ritva's runbook sets out, so "
+    "the number won't line up with the old dashboard's new defects. You'll have it tomorrow.",
     "Ulla",
 ]
 THREAD_SENTENCES = sentences(THREAD_FIRST + THREAD_REPLY)

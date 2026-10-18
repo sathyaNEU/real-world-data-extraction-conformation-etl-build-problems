@@ -329,7 +329,8 @@ def main():
         wr, F["weeks"][wr]), 840 < F["weeks"][wr] <= 960)
     p90 = F["busiest"] + 1.2816 * math.sqrt(F["busiest"])
     ok("SF6 expected read as a 90th percentile of a Poisson week (%.0f) files the same 8; the thread asks the expected "
-       "items" % p90, math.ceil(p90 / 120) == 8 and "expected triage items" in text[DOC.F_THREAD])
+       "load" % p90, math.ceil(p90 / 120) == 8 and "expected load in the quarter's busiest week" in re.sub(
+           r"\s+", " ", re.sub(r"(?m)^>\s?", "", text[DOC.F_THREAD])))
     ok("SF7 the as-of: every file taken by 18 December 2026; the export holds reports filed to 23:59:59 on Thursday "
        "17 December", max(r["opened"] for r in D.export) <= "2026-12-17 23:59:59" and
        "2026-12-18 06:40" in text[R.F_FIELDS])

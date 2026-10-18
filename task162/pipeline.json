@@ -16,19 +16,19 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-18 (no LEAK: three design-note vocabulary lines, one ranking INFO)",
-  "reader": ""
+  "reader": "no leak, Q6: the call is an analytical choice; targeted re-read of the rota, the mail thread and the register pending"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-18 (strategy risk and question form, answered on the card)",
   "nearest": "stump text 0.08 task146; driver 0.08 task98 v4; surface: task102 and task130 promoted on card mechanism only, differentiated at the draw"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "APPROVE",
+  "disposition": "DETERMINISTIC, no fix (release weeks 861, 895 and 907 on its own forecast: 900 and 8; every ask figure reproduced; Gates F, G and H pass)",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: reader and judge",
+ "resume": "stage 4: the targeted re-read of triage_rota_2026-11.xlsx, staffing_plan_q1_2027.eml and component_groups.xlsx, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
