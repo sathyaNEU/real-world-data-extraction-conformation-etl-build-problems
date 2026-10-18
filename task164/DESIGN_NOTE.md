@@ -364,6 +364,68 @@ Measured by: generator/cracker.py
 - Sweep 8, `qc_flag`, `device_id`, `internal_order`: a weather network's quality flag, an OMS device field and the
   ledger's internal order, each the system's own column name.
 
+## Pre-ship check
+
+- Rule 1, the domain: the deciding quantity is each single-phase residential service transformer's forecast summer 2027
+  4 to 9 pm peak, every vehicle registered since its 2026 peak taken at its schedule's expected effect on a recorded
+  peak, built the way distribution planning builds diversified demand on a transformer (a lone vehicle's coincident draw
+  in the quarter hours a small transformer's peak is set) and measured on the transformers' own recorded peaks before
+  and after they gained a vehicle, about 4.9 kVA a default-rate vehicle and 0.9 kVA an R-EV2 one; the swap test holds
+  (classrooms and pupils lose the maximum of a small sum and the rate schedule), and the judge's Gate H reads domain pass.
+- Rule 2, two layers: Layer 1 is the 2024 run in the TLM 4.2 layout, the GIS T prefix against TLM's integer, DMV address
+  strings with 3.1 percent left blank by the matcher, notifications at addresses on no residential single-phase service,
+  the 1 to 4 April registrations in the 5 April feed, AMI read shares under 100 percent, the GIS install-date sentinel,
+  rate changes carrying a request and an effective date, and the load study's kWh intervals with head-end gaps, each
+  asserted neutral on the call (R2). Layer 2 decides: the coincident increment by schedule against the load study's
+  window average, separated out of sample by the 2025 to 2026 back-test (4.23 kVA of each added default-rate vehicle's
+  rise left unforecast, BACKTEST); cleaning the data leaves the default path at Foothill 59 (R3a, R3a-pack). Gate H:
+  layers pass, decisive step analytical.
+- Rule 3: no plant (no document argues a per-vehicle figure or ranks a district, the load study measures what it
+  measures and concludes nothing, the IEPR forecast and the feeder peaks are declared distractors that rank nothing on
+  the decision, and nothing certified is replayed); not semantics (every field read right still prices a default-rate
+  vehicle at 0.61 kVA); not rule application (OP 4 files the quantity and its granularity, one expected effect per
+  schedule, and no rule, document or column says how it is measured; every filed rule executed with the load study's
+  figures files Foothill 59). The rule 3 audit passed on both rounds; at round 2 the residue is a method, not a knob,
+  and the bottom-up load-study route is defensible but the back-test rejects it by about 4 kVA; P(one) about 0.15,
+  P(both) about 0.04.
+- Determinism, round 1 on 83c6815f: NOT_DETERMINISTIC, SEND_BACK (Gates C and E, the effect's granularity unfiled:
+  estimators by fuel type, district, size, a pooled median and R-EV2 nil filed Foothill 74 to 79). Repaired by filing
+  the WHAT only in OP 4, one expected effect per schedule (filing the panel method was refused as rule application); the
+  hole family recut on the eleven per-schedule estimators (all eleven file the twelve counts, FAMILY-pack; every changed
+  transformer at least 0.2 kVA from the line under each, HOLES; every quota at least 0.26 from a half); the R-EV2 nil and
+  0.2 readings reported (SF18); the failure district pinned to the operating district of the transformer each line
+  de-energised and the pilot cost basis to the lines on its work orders in that district, net of reversals; the load
+  study's role stated in `metadata.json`; the back-test figure set to the pack's 4.23.
+- Determinism, round 2 on 1d00350a: DETERMINISTIC, APPROVE, no fix. It reproduced 1,824 at risk, Foothill 361, all
+  twelve counts and the allocation with no near-tie (the sixth remainder 0.789 against the seventh 0.202), the effects
+  from the TLM history (pooled means 4.90 and 0.88 kVA, least squares 4.5 to 4.8 and 0.66 to 0.75), an allocation stable
+  for default effects of 4.1 to 5.3 kVA and R-EV2 effects of 0.5 to 1.1, and every pilot and failure figure; the
+  load-study routes file Foothill 59, 67 or 78. Gate G `method_or_model_selection` / `analytical_non_defect`, no
+  surface-read dependency, no sole data defect; Gate F moderate. Its low notes need no change: "expected" reads as the
+  mean (the median, 5.3 and 0.15 kVA, files Foothill 81), and the cost basis follows the asking sentence (completed
+  orders alone would give $6,794, $7,034 and $6,996).
+- Leak reader: no leak on either round (83c6815f, 1d00350a), Q6 analytical; its literal OP 4 run on the load study
+  files Foothill 58 to 78.
+- Free gates, re-run on the shipped pack at ship: `checks.py` 99, 0 FAIL; `verify.py` 11 on its own code path, 0 FAIL;
+  the final build and its rebuild byte-identical, and a third build from the committed generator at ship identical on
+  all 21 files, both goldens, figures.json and submission.md, its zip cut to the same sha256; input gates 21 files in 4
+  formats (csv, parquet, pdf, xlsx), the load study's 3,671,683 interval rows and 297,919 service points, two
+  distractors declared in `metadata.json` and named in no file name; `figures_check.py` 70 of 70; `precut.py` 50, 0
+  FAIL, 0 WARN; `voice-check.py` PASS at 992 characters; `leak.py --asof 2027-04-05` REVIEW, no LEAK, every line
+  answered in `## Leak sweep (stage 3)`; the container audit clean; `guard.py validate` clean, `surface` one promoted
+  pair (task453 at 0.102, surface proximity only, differentiated on the card), `heart` WARN, nearest 0.10 (task94's
+  ledger row), on the strategy risk, a persona first name, the Gate G mechanism's repeat and the png and xlsx pair, no
+  BLOCK. `target.zip` is the judged cut, 21 entries equal to `target/` byte for byte, sha256 1d00350a. The card is
+  current (the answer, stump, analyst test and notes carry the per-schedule estimand and Foothill 79).
+- Gate G: no shipped artifact ranks the districts on the allocation question, and `metadata.json` declares no
+  wrong-basis distractor. Delete every wrong number in the pack and the call still turns on pricing a vehicle at its
+  effect on a recorded maximum rather than at its average evening draw.
+- Residual, recorded as measured: constant per-vehicle figures land the allocation for a default-rate figure of 4.2 to
+  5.2 kVA with an R-EV2 figure of 0.1 to 1.5 kVA (a coincidence factor of 0.66 to 0.82 on the 6.34 kVA mean charging
+  rate with a small R-EV2 factor; with R-EV2 nil no factor lands); each participant's mean 4 to 9 pm maximum files
+  Foothill 78 with ten districts off; Foothill alone lands on two minority routes with two or three districts off,
+  which the round 2 rule 3 recheck accepts; pair ceiling 31.6 (cracker 48.1, mirror 15.1), mirror leakage 5.6 per cent.
+
 ## Tried and rejected
 
 - The seed's pilot reproduction (a filed set of pilot determinations that only one charging-start method reproduces):
