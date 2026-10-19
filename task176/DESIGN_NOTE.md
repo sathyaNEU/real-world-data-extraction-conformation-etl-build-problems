@@ -43,6 +43,19 @@ spread below, which comes from how the cycle's strength is measured. SILSO's sun
 used only as a screen covariate. A pack set at a late-2026 as-of would need Kp from August 2025 onward by
 another route, since a constructed Kp may not carry GFZ's or NOAA's name.
 
+**Redraw in a new world, 2026-10-19 (actuarial-science-insurance / reserving-development-triangles,
+Forecasting), screened at stage 1 and failed; no card registered, nothing cut.** The coordinator allocated the
+cell; the client's reserving cards (`actuarial-science-insurance/loss-reserving-claims-development/1` to `/3`:
+Berquist-Sherman on disposal rates, a fitted tail, a Mack or bootstrap range) and Bornhuetter-Ferguson against the
+chain ladder are the careful reader's routes, so a stump had to be a judgment those take for granted that the data
+settle. The structural sentence for the cell: every maturity shift (exposure attaching later in its period, reports
+arriving sooner, settlement speeding up) moves the chain ladder by 15 to 170 per cent but moves
+Bornhuetter-Ferguson materially only where the unpaid share is mid-range, and the disposal-rate card restates it
+away whenever closed counts track the shift; the rest of the cell's triangle judgments are spent on file (case
+adequacy, settlement speed, completion of immature periods, a cap that binds more often), banned this round (every
+mix shift, `composition_mix`), need a filed future rate (calendar-year inflation, which is rule application or a
+fork), or are a variance (ranges, tails). Prototypes are in the session scratchpad (r176/proto).
+
 ## Tried and rejected
 
 - **The solar cycle's phase, with or without the cycle's amplitude, as the decisive step** (the brief's first
@@ -130,3 +143,50 @@ another route, since a constructed Kp may not carry GFZ's or NOAA's name.
     between a batch figure and a per-satellite one.
   - A loss per onset that rises with storm duration, since declining-phase recurrent storms last longer:
     unscreened; it needs a duration response fitted on the same few dozen encounters.
+- **Redraw P1, 2026-10-19: an underwriting-year (risks-attaching) triangle whose recent periods' contracts attach
+  late in the period, read on each period's own exposure clock** (prototype `p1_ev.py`, expected values). With 52
+  per cent of a period's contracts moved from mostly 1 January to a 1 October inception, the period chain ladder
+  files 0.55 to 0.93 of the true ultimate at ages 12 to 48 months (gamma payment patterns with means of 20, 30 and 45
+  months), but Bornhuetter-Ferguson on the true prior files 0.79 to 0.99 of the true unpaid (0.88 to 0.94 at 36 to
+  48 months on the 30-month pattern) and about 0.95 on the 2024 to 2026 total, so the textbook route for immature
+  periods lands inside any bin the 30 per cent bar allows. A whole-period shift of inception is fixed exactly by the
+  age-shift reflex (the old pattern read at the age less the shift). The re-based clock is also task468's live
+  driver (development by months in the current episode, not since first activity) by the abstraction test, and
+  `guard.py slots` on the driver hit task468's draw lines. Died at stage 1 on the BF reflex and the driver repeat.
+- **Redraw P2, 2026-10-19: reports arrive sooner for recent accident years while settlement from report is
+  unchanged, projected from reports and the payment delay from report** (prototypes `p2_ev.py`, `p2_sim.py`). On
+  expected values, cutting the mean report lag from 12 to 4 months puts the chain ladder at 1.10 to 2.67 times the
+  true ultimate and Bornhuetter-Ferguson at 1.05 to 2.20 times the true unpaid at ages 12 to 60. On a claim-level
+  simulation (15 accident years, about 4,000 claims a year, larger claims settling later; seeds 1 and 2), the
+  unpaid for accident years 2023 to 2026 over the truth is: paid chain ladder 2.01 to 2.17, Bornhuetter-Ferguson with
+  the exact expected ultimate 1.19 to 1.20, Berquist-Sherman on all-years count ultimates 1.42 to 1.46, and
+  Berquist-Sherman on latest-three count factors 1.05 to 1.08. The disposal-rate card is the careful reader's route
+  once the reported-count factors visibly drop, and it lands within a bin. Died on the library test (stumping 1.3).
+- **Redraw paper screens, 2026-10-19, each dead before code:**
+  - a per-claim benefit cap that binds more as treatment intensity drifts up: task172's driver by the abstraction
+    test (a per-unit cap that cut only the record's tail now binds most forward units), close to task168;
+  - settlement speed through Berquist-Sherman or operational time: task127 architecture 3's mechanism (judge
+    SEND_BACK, frequency-severity $350M against the restatement's $400M); case-reserve adequacy: task228's kill;
+  - a calendar-year step (a fee schedule or benefit revision): a dated cause an event study finds, and rule
+    application once filed; chronic calendar-year inflation: the forward rate is an assumption (a fork) or a filed
+    index (rule application), with a lever of 5 to 15 per cent;
+  - a tail from claimant-level annuities: a mortality-longevity task, a filed table is rule application, and the
+    claimants' own deaths give about 6 per cent at one sigma; a fitted tail where the factor curve bends: the
+    decay rate of late increments is too poorly determined (a 1 against 2 per cent decay halves the tail);
+  - a reserve range or 75th percentile with diagonal dependence: the variance-only screen, and a spread estimated
+    from 10 to 40 diagonals carries 20 per cent or more relative error;
+  - chain-ladder leverage on immature years, additive against proportional development: the BF reflex lands;
+  - every mix shift (channel, litigation share, claim type, deductible mix, closure order): `composition_mix`;
+  - reopened claims by time since closure after closures accelerate: a lever of a few per cent (reopenings are a
+    small share of the reserve), and returns by time since leaving read as task157's driver;
+  - the split of development into new reports and growth on reported claims under a filed notification cut-off:
+    once the window is filed as the WHAT, the report-year triangle and a reported-count projection are the careful
+    reader's routes;
+  - settlement timed by a litigation calendar's trial dates: task172's per-unit scheduled date ending the wait, and
+    a timing-only lever on a reserve; claims-unit closure capacity: the swap test fails (any queue);
+  - excess-layer, large-deductible and per-policy aggregate development: too few claims for a sigma near 1 per
+    cent and an open per-claim family; retro-rating and corridor treaties: the contract formula is rule
+    application; a large-loss transfer between claims systems: a filed threshold plus a join;
+  - a closed exposed pool depleting as members claim (latent and mass claims): the hazard's shape on the remaining
+    pool is a fork (constant against heterogeneous), the forcing rosters sit in epidemiology, and the natural
+    instances are sensitive.
