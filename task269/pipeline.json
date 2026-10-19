@@ -1,35 +1,35 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "BUILD",
   "domain": "education-learning-sciences",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "re-root",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-19",
-  "stump": "The default path keeps 12 stations, because it reads the reliability of single-examiner marks off the 2026 sitting, where the same two examiners marked every candidate at each station, so each examiner's leniency shifted every candidate alike and never moved one candidate against another; in 2027's three parallel circuits each candidate meets one examiner per station drawn from the faculty pool, so the leniency spread between examiners becomes error in every candidate's total, and only the 2026 marks' variance components recombined for that arrangement put the 2027 examination at 15 stations.",
-  "architecture": 1,
-  "loops": 1,
+  "stump": "The default path files 16 stations, because it decomposes the 2026 marks as if each year's stations were drawn from one undivided bank, so a candidate's strength in a domain lands in the candidate-by-station error; the blueprint draws the same number of stations from each of the four domains every year, so that strength recurs in every form and is true score, and only the decomposition with the domains as a fixed facet, the examiner's stringency still error for single examining, puts the 2027 examination at 13.",
+  "architecture": 2,
+  "loops": 0,
   "precut": {
     "exit": 0,
     "date": "2026-10-19"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-19 (asof 2026-12-02), every line harmless",
-    "reader": "round 1 (2026-10-19): landed the call and every graded figure, score_reader 100 per cent, Gate F failed"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.question_form against task468 v2, answered at the draw)",
-    "nearest": "task104 0.07 (driver)",
-    "surface": "task152 and task232 promoted on card keys, differentiated on the card"
+    "heart": "WARN (driver.near own lineage 0.18, overuse.gate_g, repeat.question_form), answered in the note",
+    "nearest": "task269 v1 0.18 (own lineage)",
+    "surface": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (wording only)",
-    "report": "determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "re-root architecture 2 (architecture 1 spent at stage 4 on Gate F): fingerprint (v1 into lineage, its card marked architecture_spent), guide-to-prompt pairing, stumping; read the design note's Tried and rejected first; the decision study for a new examining design is spent, so a re-root in the OSCE world needs a decisive step the textbook decision study itself gets wrong, else a new world; the v1 generator stays as reference until the re-root replaces it",
+  "resume": "stage 3: architecture 2's generator builds green (seed 11822, 7,732 checks, verify, byte-identical); next the write-up, golden realism, house fixes, leak.py and the guards, then stage 4 with two scored readers and the judge",
   "approved": null,
   "delivered": null,
   "portal": null,
