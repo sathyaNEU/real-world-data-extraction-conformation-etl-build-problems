@@ -24,6 +24,174 @@ Architecture 1, drawn 2026-10-19 (wave 4, Descriptive lane, sathay3012). A consu
     - Seed scan (`scan1.py`, eight hospitals, 1,710 operations, 120 to 170 deaths): 14 of 300 worlds keep the golden trio identical across four model forms (logit, probit, with interactions and an age term, and an empirical Bayes ratio), differ from the raw ranking, from the index-only model and from the three largest hospitals, with at least 0.06 between the third and fourth ratios and 0.04 between the referral centre's index-only ratio and the third; the generator's own scan repeats this on the built records.
     - To be measured at stage 2 before the ladder is written: the common-exposure subset (first operations only, the referral centres' ratio on patients with no earlier operation), the broad definitions of an earlier operation (any upper abdominal operation, gallbladder removal, endoscopic stenting of the bile duct), the volume heuristic and a shrinkage route, each against the golden trio.
 
+## Default path
+
+1. Read the programme criteria: the board names the three eligible hospitals with the lowest ratio of deaths within 90 days of a pancreatic resection in 2023 to 2025 to the deaths the same patients' condition before surgery would have produced at the eight hospitals together (3.1 to 3.5), every Appendix A code a resection.
+2. Build the operations from the 2023-2025 file (Appendix A codes in any procedure slot, adults, operation dates in the window, six-digit IDs through the directory) and link each patient's death through the person key: 2,022 operations, 175 deaths within 90 days.
+3. Fit the expected deaths the way the field does it from a discharge abstract: a logistic model of death within 90 days on everything the operation's own admission records before the knife (age, sex, a malignant diagnosis, the operation, the urgency of the admission, the conditions present on admission: heart failure, chronic kidney disease, chronic lung disease, liver disease, diabetes, atrial fibrillation, weight loss), pooled over the eight hospitals; each hospital's expected deaths are its patients' predicted probabilities summed.
+4. Rank the eight ratios unrounded; the three lowest are the centres.
+
+Ends on: Netherfold Medical Center (0.58), Ferncastle Health (0.77) and Farrowmere Regional Medical Center (0.87), with Aldermoor University Hospital fifth (0.95).
+Golden: Netherfold Medical Center (0.6), Ferncastle Health (0.8) and Aldermoor University Hospital (0.9, 0.867 unrounded), with Farrowmere Regional Medical Center (0.921) the first below.
+
+## Stump sentence
+
+A competent solver who builds the 2023 to 2025 resections, links the deaths and risk-adjusts on everything the operation's own admission records names Netherfold, Ferncastle and Farrowmere, Aldermoor fifth at 0.95, because 18 per cent of Aldermoor's patients and 17 per cent of Brackwell's had already had an operation on the pancreas or bile ducts (2 to 5 per cent elsewhere), an operation that carries about three times the odds of death (a coefficient of 1.21) and sits only in each patient's earlier admission at whichever hospital did it; only rebuilding that earlier operation from the patients' earlier admissions through the person key, the consortium's files back to 2016, and putting it in the risk model brings Aldermoor to 0.87 and into the three, Farrowmere (0.92) the first below.
+
+## Three rules
+
+Task type: provider-quality-risk-adjustment (Healthcare Delivery & Health Economics), which serves Descriptive & Distribution Analysis in the taxonomy.
+Domain test: the quantity that decides the call is each hospital's ratio of observed to expected deaths after pancreatic resection, which surgical outcomes research estimates by indirect standardisation on a patient-level model of pre-operative risk, and a re-operation on the pancreas or bile ducts is among the strongest pre-operative risks a resection carries and is concentrated by referral at the centres that take the hard cases.
+Swap: "which three of eight schools should a trust name as reading hubs, on each school's failing pupils against what the pupils' starting attainment would produce": no earlier event at another school makes a pupil several times likelier to fail through the same channel a previous operation does, nothing sends such pupils on to two schools the way surgeons refer re-operations, and the separation the call turns on stops making sense.
+Layer 1: the consortium's discharge files in three layouts (fixed width to 2018 with the 2018 file's county column moving every later field, comma-separated with codes without decimal points and US dates to 2022, renamed columns with ISO dates from 2023); four-digit hospital numbers to 2022 and six-digit IDs from 2023, with Maplewick reporting under Ferncastle's ID from its merger in July 2024; a person key blank on about one record in a hundred before 2019; only the first procedure dated before 2019; a resection coded with the other parts of the operation beside it; the death linkage giving every key sent with a found flag, an imputed day flagged; the 2026 releases with their own record numbers; the plan's claims from two platforms. Each is produced by the consortium's or the plan's own systems, nothing is placed to be caught, and each mishandled keeps the call (routes asserted).
+Layer 2: estimand_identification: the expected deaths are a counterfactual estimated by a risk model of the patients' condition before surgery, and the model the data entitle carries a pre-operative risk the index record does not hold, an earlier operation on the pancreas or bile ducts, rebuilt from each patient's own earlier admissions and concentrated at the referral centres.
+Decisive step: build each patient's pre-operative condition from their whole record in the consortium's files, not from the operation's own admission alone: find the earlier operation on the pancreas or bile ducts in their earlier admissions at any hospital since 2016 through the person key and put it in the risk model, so the referral centres are no longer charged for their patients' surgical history.
+Not semantics: every field read correctly (the procedure codes in every slot, the present-on-admission flags, the admission type, the six-digit IDs, the person key, the death dates) and every code mapped right still leave the earlier operation out of a model built on the operation's own record, because nothing on that record shows it: the decision to rebuild a patient's history from other admissions is a modelling choice no field or code makes.
+Not rule application: the criteria fix the operations, the deaths, the window, the unit and the comparison, and say the expectation is the deaths the patients' condition before surgery would have produced; no clause says which conditions, or that a patient's condition is read beyond the operation's own record, and executing every filed rule with the expectation modelled on the index record files Netherfold, Ferncastle and Farrowmere.
+Analyst test: a strong analyst who builds the 2,022 operations, links the 175 deaths and fits the expected deaths on every pre-operative factor the operation's own admission records (age, sex, diagnosis, operation, urgency, the seven conditions present on admission), in logit or probit, with the harmless conditions added or a complication flag, names Netherfold, Ferncastle and Farrowmere with Aldermoor fifth at 0.95; only the earlier operation rebuilt from the patients' earlier admissions names Netherfold, Ferncastle and Aldermoor.
+Estimand: the programme criteria (a filed PDF), 3.2 to 3.5: every pancreatic resection (Appendix A) on an adult at the eight hospitals with an operation date from 1 January 2023 to 31 December 2025, each operation counted; a death from any cause within 90 days of the operation date from the consortium's death linkage; "the deaths the same patients' condition before surgery would have produced at the eight hospitals together, over the same three years"; the ratio of deaths to expected deaths; the three lowest, compared unrounded and reported to one decimal.
+No decoy: no memo, draft, briefing or stakeholder figure argues for a slate; the public star ratings (a distractor) rate whole hospitals on another period and the travel estimates (a distractor) cost the benefit, and nothing in the pack ranks the eight on deaths after resection.
+No certified replay: no published or certified ratio, expected death count or risk model is shipped to be reproduced, and the method is not recovered from controls.
+Lesson: a risk model is only as good as the patient's history it can see: a pre-operative risk recorded in the patient's earlier admissions at other hospitals, and sent by referral to the centres that take the hard cases, makes those centres look worse on the operation's own record; the field's fix is to rebuild the history through the linkage key. No build on file teaches a risk held in earlier episodes at other providers.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 crude 90-day death rates, the three lowest | the criteria name a ratio of observed to expected deaths | the deaths and the operations | none: the criteria rule out a crude rate | none | none | one rate per hospital | readable |
+| R1 the expected deaths from a logistic model on the operation's own record, every pre-operative factor it carries (the default path) | the criteria name the deaths the patients' condition before surgery would have produced | the index record's age, sex, diagnoses with their present-on-admission flags, procedures, admission type | the analyst's risk model from a discharge abstract | none | none | one pooled model | readable |
+| R1b the same with complications, conditions the index record flags not present on admission | none | the present-on-admission flag | an analyst who keeps every diagnosis | none | none | one pooled model | readable |
+| R1c the ratios shrunk toward the mean (empirical Bayes) or the model in probit or with more terms | none | none | the careful analyst's small-hospital reflex | none | none | one model | readable |
+| R1d volume: the three hospitals that operate most | none | the operation counts | the volume-outcome literature | none | none | a count | readable |
+| (decisive) R2 an earlier operation on the pancreas or bile ducts, found in each patient's earlier admissions at any hospital since 2016 through the person key, in the risk model | the criteria say "condition before surgery" and name no condition | the person key is documented as a linkage key; no field on the index record carries the earlier operation | none: adding controls, shrinking, re-weighting or dropping hospitals does not bring a risk the index record does not hold into the model | none | none: the battery (duplicates, keys, unmatched IDs, codes, dates) passes on the index records as they are | a model with one more term, once the history is built | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a pancreatic resection | any Appendix A code in any procedure slot | the code as the first procedure only | same call (asserted) | the criteria, Appendix A ("any of these procedure codes") |
+| SF2 | the operation date | the date recorded for the Appendix A code | the admission or discharge date (the population by discharge date) | same call (asserted: the same 2,022 operations) | the criteria, 3.2 and Appendix A |
+| SF3 | within 90 days of the operation date | 0 to 90 days after the operation date | 89 or 91 days | same call (asserted, the same 175 deaths) | the criteria, 3.3 |
+| SF4 | a death after a transfer | counts for the operating hospital | counts for the receiving hospital | same call (asserted: deaths are linked to the operation's record) | the criteria, 3.3 |
+| SF5 | expected deaths at the eight hospitals together | one model pooled over the eight hospitals, predicted for each hospital's patients | a model per hospital | not a fork: a model per hospital predicts each hospital's own deaths, its ratio is 1 by construction | the criteria, 3.4 |
+| SF6 | the patients' condition before surgery | every pre-operative factor the records hold for the patient, the earlier operation in their earlier admissions included | the index admission's own record only | R1 (Netherfold, Ferncastle and Farrowmere) | the data: the earlier operation is pre-operative, carries a coefficient of 1.21 (deviance 27.6 lower on one term) and is concentrated at the referral centres (Ladder) |
+| SF7 | an earlier operation on the pancreas or bile ducts | the operations in the procedure classes' pancreas and bile duct classes, each its own term beside an earlier gallbladder removal and an earlier endoscopic stent | the three lumped into one flag | lumped: Netherfold, Ferncastle and Farrowmere; separate terms or the operation with a gallbladder removal: the golden (asserted) | the data: the stent's own term is 0.05 (standard error 0.22) and the lumped flag fits worse (deviance 1107.5 against 1093.0) |
+| SF8 | the three lowest | ranked unrounded | ranked at one decimal (Aldermoor and Farrowmere both 0.9) | same call unrounded (0.867 against 0.921) | the criteria, 3.5 |
+| SF9 | an adult | aged 18 or over at admission | at the operation | same call (asserted: every patient 25 or over) | the criteria, 3.2 |
+| SF10 | Ferncastle Health | the hospital at the Ferncastle campus, Maplewick's records under 550745 from July 2024 included | Maplewick's records apart | same call (asserted: Maplewick performed no resections from 2023) | the directory |
+| SF11 | each operation counts | a patient operated twice counts twice | a patient once | same call (asserted: no patient has two operations in the window) | the criteria, 3.2 |
+
+## Ladder
+
+Built figures from the cut pack (`generator/analysis.py`, every route in `generator/routes.py`, asserted in `generator/checks.py`, recomputed by `generator/verify.py`). Ratio of deaths within 90 days to expected deaths; Aldermoor (ALD), Brackwell (BRA), Farrowmere (FAR), Kestwick (KES), Netherfold (NET), Yarrowdale (YAR), Ferncastle (FER), Elmhaven (ELM):
+
+| Rung | Construction | ALD | BRA | FAR | KES | NET | YAR | FER | ELM | Three lowest | What kills it |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| R0 | crude 90-day death rate (per cent) | 8.8 | 11.1 | 7.0 | 10.1 | 5.0 | 10.8 | 6.5 | 7.0 | NET, FER, ELM | the criteria compare observed with expected deaths |
+| R1 (default) | a logistic model on the operation's own record | 0.948 | 1.178 | 0.869 | 1.252 | 0.579 | 1.316 | 0.774 | 0.893 | NET, FER, FAR | the earlier operation is missing from the patients' condition |
+| R1 | the same in probit, or with the eight conditions that carry no added risk and an age curve | 0.948, 0.939 | 1.177, 1.181 | 0.865, 0.871 | 1.252, 1.254 | 0.577, 0.586 | 1.321, 1.311 | 0.776, 0.781 | 0.887, 0.892 | NET, FER, FAR | as above |
+| R1 | the diagnosis in groups (chronic pancreatitis, other benign) | 0.947 | 1.175 | 0.867 | 1.255 | 0.580 | 1.324 | 0.778 | 0.890 | NET, FER, FAR | the diagnosis does not carry the earlier operation |
+| R1 | five factors only (age, sex, operation, urgency) | 0.951 | 1.179 | 0.858 | 1.264 | 0.566 | 1.334 | 0.779 | 0.895 | NET, FER, FAR | as above |
+| R1b | complications not present on admission added | 0.977 | 1.219 | 1.007 | 1.338 | 0.575 | 1.179 | 0.655 | 0.731 | NET, FER, ELM | a complication is the operation's outcome, not the patient's condition before it |
+| R1c | the default ratios shrunk toward the mean (empirical Bayes) | 0.989 | 1.069 | 0.977 | 1.069 | 0.950 | 1.072 | 0.978 | 0.994 | NET, FAR, FER | the shrinkage keeps the default's order on the model that misses the earlier operation |
+| R1d | volume: the three that operate most | 430 | 369 | 299 | 247 | 181 | 185 | 153 | 158 | ALD, BRA, FAR | volume is not the criteria's measure |
+| R2b | an earlier operation, a gallbladder removal and an endoscopic stent lumped into one flag | 0.918 | 1.139 | 0.892 | 1.296 | 0.605 | 1.322 | 0.779 | 0.920 | NET, FER, FAR | the stent, in 17 to 19 per cent of every hospital's patients, carries no risk (0.05) and dilutes the flag; the lumped model fits worse than separate terms |
+| R2c | the earlier operation found in the 2023-2025 file only | 0.948 | 1.178 | 0.869 | 1.252 | 0.579 | 1.316 | 0.774 | 0.893 | NET, FER, FAR | the earlier operations fall before 2023 |
+| R2 (golden) | the earlier operation from every file since 2016, through the person key | 0.867 | 1.077 | 0.921 | 1.386 | 0.624 | 1.401 | 0.814 | 0.976 | NET, FER, ALD | none |
+
+The family closes on the call and on every graded figure: the golden's model in logit and in probit, with an age curve, with the earlier gallbladder removal and the endoscopic stent as their own terms, with the conditions as a count, with the eight conditions that carry no added risk, with all of those together, with the diagnosis in groups, and with the earlier operation and a gallbladder removal as one flag, name Netherfold, Ferncastle and Aldermoor in all nine, and every hospital's nine ratios land on one decimal (the closest, Aldermoor's 0.860 under the widest model, 0.010 inside its bin). The earlier operation rebuilt from the 2019 files on only (88 per cent of the earlier operations) names the same three (Aldermoor 0.882). Two routes that keep the earlier operation but leave the filed estimand land the call with other ratios: comorbidities dropped (Aldermoor 0.872), and the golden ratios shrunk (Aldermoor 0.970); and comparing first operations only (each hospital's patients with no earlier operation) names the same three (Aldermoor 0.844) with ratios the criteria do not file (3.2 counts every operation). The clean-data test (`checks.py`): on the generator's truth the index-record model files Netherfold, Ferncastle and Farrowmere, and the earlier operation alone files the golden.
+
+The world under it: each hospital's patients carry the same rates of heart failure, kidney and lung disease, liver disease, diabetes, atrial fibrillation and the conditions with no added risk, year by year, so a model's choice among them moves no ratio; what differs is the operation mix and the earlier operations referral brings (Aldermoor 18 and Brackwell 15 per cent of their patients against 3 to 5 elsewhere, each with odds of death about 3.3 times a first operation's). Each hospital's own care moves its true risk (Aldermoor's and Farrowmere's lowest, Elmhaven's and Yarrowdale's highest); complications follow care differently (Ferncastle's and Elmhaven's highest), so a complication flag reorders the small hospitals.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | every Appendix A resection on an adult at the eight eligible hospitals with an operation date in 2023 to 2025 | filed: the criteria, 3.2 (SF1, SF2, SF9) |
+| 2 Unit of account | the operation | filed: 3.2 (SF11) |
+| 3 Attribution window | operation dates 1 January 2023 to 31 December 2025; deaths within 90 days | filed: 3.2, 3.3 |
+| 4 As-of dating | the death linkage of 31 August 2026, after every 90-day window closed | C1 asserted |
+| 5 Version basis | one file per period, the 2023-2025 file for the operations | C1 |
+| 6 Denominator | each hospital's expected deaths | filed: 3.4 |
+| 7 Weighting | each operation's predicted probability | filed: 3.4 (SF5) |
+| 8 Window length | three years | filed |
+| 9 Boundary inclusivity | both ends; 0 to 90 days | C1 asserted (SF3) |
+| 10 Rounding path | ranked unrounded, reported to one decimal | filed: 3.5; the prompt (SF8) |
+| 11 Tie-break | none needed: Aldermoor 0.867 against Farrowmere 0.921 | C1 asserted |
+| 12 Maturity and censoring | every 90-day window closes by 31 March 2026, inside the linkage | C1 asserted |
+| 13 Order of operations | the operations, each patient's history from every file, the model on the eight hospitals together, the ratios | C1 |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | none in the main population (asserted: each operation one record) | C1 asserted |
+| 16 Identity normalisation | four-digit numbers and six-digit IDs to hospitals through the directory; Maplewick under Ferncastle from July 2024 | the directory (SF10) |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | a ratio of counts | C1 |
+| 19 Code and status semantics | ICD-10-PCS and ICD-10-CM, present-on-admission flags, admission types, discharge statuses | the file guide |
+| 20 Integerisation | none | C1 |
+| 21 Clause scope | the criteria, section 3 and Appendix A | filed |
+| 22 Forward window contents | the eight hospitals' 2023 to 2025 results stand for their 2027 results | filed: the criteria, sections 1 and 3 |
+
+## Literal reader
+
+Executed word for word, the criteria file each hospital's ratio as its deaths within 90 days of its 2023 to 2025 resections divided by the deaths the same patients' condition before surgery would have produced at the eight hospitals together. A patient's condition before surgery is everything about the patient that precedes the operation, and the records hold one pre-operative risk the operation's own admission does not: an earlier operation on the pancreas or bile ducts, in the patient's earlier admission at whichever hospital did it, found through the consortium's person key. It carries a coefficient of 1.21 in the pooled model (standard error 0.22), it is not the operation's outcome, and leaving it out misstates the expected deaths at the two hospitals that receive the re-operations; a model on the operation's own record is therefore an estimate of a different quantity. A complication is not part of the condition before surgery (the present-on-admission flag says so), and a shrunk ratio is not the filed ratio.
+
+## Oracles
+
+None. No shipped figure states a ratio, an expected death count, a risk model or a mortality rate by hospital, ranks the eight, or counts earlier operations. The criteria define the measure; the file guide documents the files; the public star ratings rate whole hospitals over July 2021 to June 2024 on summary groups, and the travel estimates cost the benefit.
+
+## Ask sheet
+
+The asks are decoupled from the call: neither reads the 2016 to 2025 discharge files, the death linkage or the criteria's section 3, and the main population (the 2023-2025 file's resections at the eight hospitals, every earlier record of their patients, the death linkage, the directory and the criteria) carries zero device rows (asserted: the call computes identically with every ask file deleted, and no device row is an index patient's record). Both are figures the criteria's section 4 says the board sees beside the ratios.
+
+**Ask A. Each hospital's pancreatic resections discharged January to June 2026 (8 figures).**
+- H18 home: the hospital's current volume, a measure every candidate carries that the call does not turn on.
+- Use: the board paper's volume column, whether each candidate still operates at volume in 2026.
+- Path: the revised release (rec_no, hosp_id, link_key, admission_date, discharge_date, proc_1 to proc_25 and their dates), the preliminary release, the directory (Hospital ID), the procedure classes and Appendix A's codes, the file guide's 2026 clause: five files, ten columns.
+- Primary device (D1, the same records under two keys): the consortium matches a hospital's correction to the record it corrects on the hospital's account number and the discharge date, and the research files carry no account number, so a correction that changed the discharge date, or the admission date (an emergency department arrival corrected to the inpatient admission), or the admission and operation dates of a case rebooked by a day, loads beside the record it corrects: 42 resection stays stand twice in the revised release (22 by discharge date, 6 by admission date, 14 rebooked), each hospital with at least one corrected discharge date and one rebooked case (asserted). Each pair is the same person at the same hospital with overlapping stays and the same procedures; the record numbers are reissued at the cut, so nothing marks either copy.
+- Over-cleaning half: a completion pancreatectomy on readmission weeks after a partial resection earlier in 2026, at every hospital (two at Aldermoor and Brackwell): the same person, the same hospital, a second resection stay, so keeping one resection per person at a hospital drops a real operation.
+- Hazards: the preliminary release (first-quarter records missing from its cut at every hospital, 11 duplicate records withdrawn before the revision, 8 operations abandoned after exploration and recoded to a diagnostic excision in the revision); the six-digit IDs through the directory.
+- Stops (built, each misses all eight, asserted): the revised release's records (the cracker: 89, 74, 54, 41, 39, 34, 20, 29); a stay keyed on person, hospital, admission and discharge (the same); keyed on person, hospital and operation date (86, 71, 49, 37, 36, 30, 17, 26); one resection per person at a hospital (82, 64, 46, 35, 34, 28, 15, 24); the preliminary's first quarter with the revision's second (88, 71, 51, 39, 37, 26, 19, 29); the answer, stays that overlap counted once: 84, 66, 47, 36, 35, 29, 16, 25.
+- Realism: a statewide discharge database matches resubmissions on the hospital's account number and a date, a correction to that date defeats the match, and research releases strip the account number.
+
+**Ask B. The average amount the cooperative allowed per stay for its members' resection stays discharged 2023 to 2025, at each hospital (8 figures, whole dollars).**
+- H18 home: what the cooperative pays each candidate for the operation the programme covers, a measure every candidate carries that the call does not turn on (the base for the centres' case rates in the criteria's section 4).
+- Use: the board paper's finance column.
+- Path: the plan's facility claims (claim_id, original_claim_id, member_id, line_of_business, billing_npi, bill_type, admit_date, statement_from, statement_through, allowed_amount, received_date), the directory (NPI): two files, twelve columns.
+- Primary device (D7, the true key on a prior-id chain, two conventions in one column): the extract unions the plan's two claims platforms. On its own platform (commercial and BadgerCare) a replacement claim names the claim it replaces; on the Medicare Advantage platform every later version of a claim names the claim first received. The Medicare Advantage platform re-priced its 2024 claims twice (the 2024 hospital rates loaded in June, a mid-year correction in November), so every Medicare Advantage claim with a statement-through date from 1 January to 15 May 2024 has three versions, two naming the first (14 chains, at least one at every hospital, asserted); a hospital also corrects a claim twice now and then on the plan's own platform, the second replacement naming the first (8 chains, one at every hospital, asserted). Dropping every claim a replacement names keeps both Medicare Advantage re-pricings; keeping the latest claim of each family keyed on original_claim_id keeps both commercial replacements. Only following each chain to the claim first received and taking its latest version holds both.
+- Hazards: replacements that correct the discharge date (10 chains, at every hospital, asserted: a version keyed on the statement period keeps both copies); stays over 21 days billed in interim claims for their own days (13 stays: one claim per stay drops the earlier interim claims); claims billed to the wrong member of a household, voided and rebilled (3).
+- Stops (built, each misses all eight, asserted): every claim summed (36,947 to 48,497); voids out, every named claim dropped, a stay's claims summed (the cracker: 37,824, 38,840, 37,501, 32,221, 33,022, 31,112, 35,164, 26,362); the latest claim per family keyed on original_claim_id; the latest version per stay and statement period; the latest claim per stay; every replacement dropped; the answer: 36,722, 36,265, 31,668, 30,394, 31,410, 30,007, 34,135, 25,329.
+- Realism: health plans run Medicare Advantage on a separate claims platform whose adjustment chains carry the original claim number, extracts union the platforms under one column, plans re-price Medicare Advantage claims when rates load late or change mid-year, and hospitals correct discharge dates by replacement claim.
+
+Main population zero-counts: device and hazard rows in the 2016 to 2025 discharge files, the death linkage, the directory and the criteria: 0 (asserted: the call computes identically with the releases and the claims deleted; no correction pair, re-operation, re-priced chain or interim stay sits in a file the call reads, and the member reassignments touch only the payer fields).
+
+| Hazard | Asks moved | Per-ask delta (built) |
+|---|---|---|
+| the preliminary release's first quarter | A | every hospital, 2 to 5 off |
+| a version keyed on the statement period (the corrected discharge dates) | B | every hospital high |
+| one claim per stay (interim claims) | B | the hospitals with interim stays low |
+| every replacement dropped | B | every hospital off |
+
+Referee: the revised release's own dates for Ask A (overlapping stays of one person at one hospital); the received dates of each chain's versions for Ask B. Neither ties only under the golden, and no file states a 2026 count or an allowed amount per stay.
+
+| Ask figure | Cracker (lands the call, runs the battery: record numbers and claim ids unique, exact duplicates, unmatched IDs and NPIs, every void and replacement naming a claim in the extract; executes the revised release in place of the preliminary, Appendix A's codes, voids, replacements and interim claims) |
+|---|---|
+| A, each hospital's resections discharged January to June 2026 (8) | miss |
+| B, each hospital's average allowed per member stay (8) | miss |
+
+Mirror leakage: 0 per cent of the ask weight (the mirror stops at R1 on the call and takes the same reads on the asks; `checks.py` asserts the cracker's paths hit no ask figure).
+Pair ceiling: 28.5 (the cracker 45 on the call, its components and instruction-following, none of the asks; the mirror 12; to be rerun on the generated rubric).
+Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the cracker keeps 0 of 16 ask figures (A 0 of 8, B 0 of 8), the mirror the same; measured pair ceiling 28.5.
+
+## Build record
+
+- Seed 4172 (`generator/core.py`), chosen by a scan of 8,000 worlds (`t271/scan5.py`, scratch) as the one that keeps the golden three across the model family with every hospital's family range inside one one-decimal bin and the widest distance from a bin edge (0.0097, Aldermoor), the default path on Netherfold, Ferncastle and Farrowmere, and Aldermoor 0.08 above the default's third.
+- `python3 task271/generator/build.py`: 362 checks pass (`generator/checks.py`), the independent verifier recomputes every graded figure with pandas and statsmodels alone (`generator/verify.py`, 0 failed), a second build is byte-identical, `target.zip` cut from the final build.
+- `precut.py` exit 0; `voice-check.py` PASS (689 characters); `figures_check.py` 72 figures, 0 absent.
+- `generator/cracker.py`: the cracker keeps 0 of 16 ask figures (Ask A 0 of 8, Ask B 0 of 8), measured pair ceiling 28.5.
+- `leak.py` REVIEW, each line harmless: the criteria name the eight eligible hospitals in their table with city and ID and rank none; the criteria's estimand sentence and the guide's code lists carry stump-paragraph words (condition, patients, admission, the admission source "clinic or physician referral") as the documents' own vocabulary, and neither names an earlier operation; the star ratings and the travel estimates are the declared distractors (whole-hospital ratings on another period, and travel costs), the directory's numbers are IDs.
+- The single-use test: the 2016 to 2022 discharge files are the consortium's standard research series, and the criteria's section 4 gives the board each hospital's record of pancreatic resections since 2016 (the volume record a board weighing surgical centres sees), so the history files have the organisation's own use beside the decisive step.
+- `guard.py heart` WARN (overuse.shape, repeat.gate_g against task270's retired third architecture, repeat.question_form against two retired builds; each answered in Draw item 9); `guard.py surface` promotes task270, task269, task268, task448, task470 and task36 on card keys and surface vocabulary, each answered by a differentiation line on the card; personas in the cut pack: Katrina Newman and Luis Thomas, both drawn.
+- The NPIs are invented and fail the NPI check digit, so none is a real provider's number (recorded in `metadata.json` provenance).
+
 ## Tried and rejected
 
 - The seed DA21's design (a nonprofit health plan's 2027 intensive care-management track by rate cell), set aside at the draw on 2026-10-19: its own stump split one Medicaid line into two rate cells by aid code, which is data semantics as the decisive step; the cell's top-5% share of 2026 spending completed for claims not yet received moved by 0.3 to 1.0 points in simulation, under any threshold's margin; the concentration measure against the board's stated threshold is a stated score deciding the call. The world (a nonprofit health plan, its board, its 2027 programme) is kept.

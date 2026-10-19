@@ -1,95 +1,106 @@
 {
-  "task": "task271",
-  "architecture": "v1",
-  "drawn": "2026-10-19",
-  "slot_note": "the slot's seed DA21 (a nonprofit health plan's 2027 intensive care-management track by rate cell) lends its world only: its own stump split one Medicaid line into two rate cells by aid code (data semantics), and the concentration measure's completion moved the share by under a point at realistic lags (screened 2026-10-19); the plan here decides its 2027 pancreatic surgery centres",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "provider-quality-risk-adjustment",
-  "niche": "a consumer-governed health plan's 2027 pancreatic surgery centres, chosen on each eligible hospital's 90-day deaths after pancreatic resection against the deaths its patients' pre-operative condition would produce, from a hospital data consortium's linked discharges, where re-operations on the pancreas and bile ducts concentrate at the two referral centres and show only in the patients' earlier admissions",
-  "objective": "descriptive-distribution",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Name Ardmore, Carrow and Elmstead as the plan's 2027 Pancreatic Surgery Centres.",
-  "answer_source": "task271/DESIGN_NOTE.md, Draw (target set; submission.md written at stage 3)",
-  "gap": [
-    "population"
+ "task": "task271",
+ "architecture": "v1",
+ "drawn": "2026-10-19",
+ "slot_note": "the slot's seed DA21 (a nonprofit health plan's 2027 intensive care-management track by rate cell) lends its world only: its own stump split one Medicaid line into two rate cells by aid code (data semantics), and the concentration measure's completion moved the share by under a point at realistic lags (screened 2026-10-19); the plan here decides its 2027 pancreatic surgery centres",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "provider-quality-risk-adjustment",
+ "niche": "a consumer-governed health plan's 2027 pancreatic surgery centres, chosen on each eligible hospital's 90-day deaths after pancreatic resection against the deaths its patients' pre-operative condition would produce, from a hospital data consortium's linked discharges, where re-operations on the pancreas and bile ducts concentrate at the two referral centres and show only in the patients' earlier admissions",
+ "objective": "descriptive-distribution",
+ "shape": "01",
+ "decision_type": "ranked_slate_under_cap",
+ "answer_unit": "set_of_items",
+ "answer": "Name Netherfold Medical Center, Ferncastle Health and Aldermoor University Hospital as the 2027 Pancreatic Surgery Centres.",
+ "answer_source": "task271/submission.md, block 1",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "E"
+ ],
+ "generators": [
+  "G14",
+  "G16"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who builds the 2023 to 2025 resections from the consortium's files, links the death index and risk-adjusts each hospital's 90-day deaths on everything the operation's own admission records (age, sex, a malignant diagnosis, the operation, the urgency, the conditions present on admission) finds Aldermoor's ratio at 0.95, fifth, and names Netherfold, Ferncastle and Farrowmere; only the earlier operation on the pancreas or bile ducts, rebuilt from each patient's earlier admissions anywhere in the state, brings Aldermoor to 0.87 and names Netherfold, Ferncastle and Aldermoor.",
+ "domain_test": "The deciding quantity is each hospital's observed against expected 90-day deaths after pancreatic resection, which surgical outcomes research estimates with a patient-level model of pre-operative risk, and a re-operation on the pancreas or bile ducts is among the strongest pre-operative risks and is concentrated by referral; with schools and exam failures in, no earlier operation done at another institution changes what the same pupil brings, so the referral centres' excess has nothing to come from and the task stops making sense.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:pre-operative-risk-held-only-in-earlier-admissions",
+ "layer1": [
+  "discharge files in three layouts across years (fixed width to 2018, the 2018 file's county column shifting every later field; comma-separated with codes without decimal points and US dates to 2022; renamed columns and ISO dates from 2023)",
+  "four-digit hospital numbers to 2022 and six-digit IDs from 2023, and a 2024 merger reporting one campus under another's ID",
+  "a person key blank on about one record in a hundred before 2019",
+  "only the first procedure dated before 2019; one operation coded by several procedure codes",
+  "a death linkage listing every key sent with a found flag and an imputed day flagged",
+  "a preliminary and a revised 2026 release with their own record numbers",
+  "a health plan's claims extract unioning two platforms with different replacement-chain conventions"
+ ],
+ "stakeholder_role": "Director of Network Strategy",
+ "role_family": "procurement_lead",
+ "scoring_unit": "per episode",
+ "spine": {
+  "file": "ulhdc_hbp_discharges_2023_2025.csv (with ulhdc_hbp_discharges_2016.txt to 2019_2022.csv for the history)",
+  "rows": 10383,
+  "entity": "one row is one inpatient discharge with a hepatobiliary or pancreatic procedure",
+  "grain": "discharge",
+  "source": "synthetic"
+ },
+ "forum": "board_of_directors",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "cooperative_or_member_body",
+ "world": {
+  "geography": "United States (Wisconsin)",
+  "currency": "USD",
+  "org_type": "consumer-governed nonprofit health plan",
+  "invented_names": [
+   "Corrisbrook Health Cooperative",
+   "Upper Lakes Hospital Data Consortium",
+   "Aldermoor University Hospital",
+   "Brackwell Medical Center",
+   "Farrowmere Regional Medical Center",
+   "Kestwick Memorial Hospital",
+   "Netherfold Medical Center",
+   "Yarrowdale Regional Hospital",
+   "Ferncastle Health",
+   "Elmhaven Memorial Hospital",
+   "Maplewick Community Hospital"
   ],
-  "pattern": [
-    "E"
-  ],
-  "generators": [
-    "G14",
-    "G16"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds the 2023 to 2025 resections from the consortium's files, links the death index and risk-adjusts each hospital's 90-day deaths on everything the operation's own admission records (age, sex, conditions present on admission, the procedure, the urgency, the diagnosis) finds Ardmore's ratio near one and names Carrow, Elmstead and Fenwick; only the earlier operation on the pancreas or bile ducts, rebuilt from each patient's earlier admissions anywhere in the state, brings Ardmore to about 0.83 and names Ardmore, Carrow and Elmstead.",
-  "domain_test": "The deciding quantity is each hospital's observed against expected 90-day deaths after pancreatic resection, which surgical outcomes research estimates with a patient-level model of pre-operative risk, and a re-operation on the pancreas or bile ducts is among the strongest pre-operative risks and is concentrated by referral; with schools and exam failures in, no earlier operation done at another institution changes what the same pupil brings, so the referral centres' excess has nothing to come from and the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:pre-operative-risk-held-only-in-earlier-admissions",
-  "layer1": [
-    "annual discharge files whose layout changes across years (diagnosis slots, present-on-admission flags, disposition codes)",
-    "hospital identifiers that change with a 2024 merger, bridged by a crosswalk",
-    "a person key missing on a share of records",
-    "one operation coded by several procedure codes",
-    "a death index linked by the person key, with dates in two formats",
-    "codes against names (procedure and payer code lists)"
-  ],
-  "stakeholder_role": "Director of Network Strategy",
-  "role_family": "procurement_lead",
-  "scoring_unit": "per episode",
-  "spine": {
-    "file": "lhdc_discharges_2016_2025 (ten annual files)",
-    "rows": 0,
-    "entity": "one row is one hospital discharge with a digestive-system or hepatobiliary operation",
-    "grain": "discharge",
-    "source": "synthetic"
-  },
-  "forum": "board_of_directors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "United States (Wisconsin)",
-    "currency": "USD",
-    "org_type": "consumer-governed nonprofit health plan",
-    "invented_names": [
-      "Ardmore",
-      "Carrow",
-      "Elmstead",
-      "Fenwick"
-    ],
-    "people": [
-      "Katrina Newman",
-      "Luis Thomas"
-    ]
-  },
-  "deliverables": [
-    "pancreatic_centres_2027.xlsx",
-    "pancreatic_centres_2027.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is each unit's outcome rate against what its cases' prior state would produce, where a strong risk property of some cases is recorded only in their earlier episodes at other units and concentrates at the units that receive referrals, so a risk model built from the current episode alone charges those units for their cases' history.",
-  "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
-  "stump": "A competent solver risk-adjusts on the index admission's own record, finds Ardmore's ratio near one and names Carrow, Elmstead and Fenwick; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide, brings Ardmore's ratio to about 0.83 and names Ardmore, Carrow and Elmstead.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task448": "task448 completes a register that misses whole producers from a second list whose capture differs by filing route; task271 completes nothing: every operation and death is recorded, and the decisive step is a pre-operative risk that sits in each patient's earlier admissions at other hospitals, entering the expected deaths",
-    "task107": "task107 asks which past failures a new check could have stopped, by how each source delivers; task271 compares hospitals' deaths with what their patients' condition would produce, the condition including an earlier operation recorded only at another hospital",
-    "task129": "task129 names the root cause of a rise by separating two causes through a state no column carries; task271 ranks hospitals on observed against expected deaths, with no cause to name and the hidden state a patient's surgical history",
-    "task36": "task36 names a root cause after a filed exclusion and a counterfactual conditioned on a structural property; task271 has no filed exclusion and no cause: it designates three hospitals on a risk model whose missing pre-operative risk lives in earlier admissions",
-    "task44": "task44 carries a pilot's pooled effect onto a request with another mix of a behavioural moderator; task271 carries no effect anywhere: the pooled risk model's expected deaths miss a pre-operative risk that referral concentrates at two hospitals and only the patients' earlier admissions record",
-    "task470": "task470 rebuilds activity a sensor never records from never-recorded based aircraft; task271 rebuilds no activity: every death is recorded, and the expected deaths need a risk held in the patients' earlier admissions"
-  },
-  "lineage": [],
-  "notes": "",
-  "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-19T21:55:36Z"
+  "people": [
+   "Katrina Newman",
+   "Luis Thomas"
+  ]
+ },
+ "deliverables": [
+  "pancreatic_centres_2027.xlsx",
+  "pancreatic_centres_2027.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is each unit's outcome rate against what its cases' prior state would produce, where a strong risk property of some cases is recorded only in their earlier episodes at other units and concentrates at the units that receive referrals, so a risk model built from the current episode alone charges those units for their cases' history.",
+ "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
+ "stump": "A competent solver risk-adjusts on the index admission's own record, finds Aldermoor's ratio at 0.95 and names Netherfold, Ferncastle and Farrowmere; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide since 2016, brings Aldermoor's ratio to 0.87 and names Netherfold, Ferncastle and Aldermoor.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task448": "task448 completes a register that misses whole producers from a second list whose capture differs by filing route; task271 completes nothing: every operation and death is recorded, and the decisive step is a pre-operative risk that sits in each patient's earlier admissions at other hospitals, entering the expected deaths",
+  "task107": "task107 asks which past failures a new check could have stopped, by how each source delivers; task271 compares hospitals' deaths with what their patients' condition would produce, the condition including an earlier operation recorded only at another hospital",
+  "task129": "task129 names the root cause of a rise by separating two causes through a state no column carries; task271 ranks hospitals on observed against expected deaths, with no cause to name and the hidden state a patient's surgical history",
+  "task36": "task36 names a root cause after a filed exclusion and a counterfactual conditioned on a structural property; task271 has no filed exclusion and no cause: it designates three hospitals on a risk model whose missing pre-operative risk lives in earlier admissions",
+  "task44": "task44 carries a pilot's pooled effect onto a request with another mix of a behavioural moderator; task271 carries no effect anywhere: the pooled risk model's expected deaths miss a pre-operative risk that referral concentrates at two hospitals and only the patients' earlier admissions record",
+  "task470": "task470 rebuilds activity a sensor never records from never-recorded based aircraft; task271 rebuilds no activity: every death is recorded, and the expected deaths need a risk held in the patients' earlier admissions",
+  "task270": "task270's third architecture (retired) reads each clinic's decline from repeated tests whose second sitting carries a one-time gain; task271 has no repeated measurement: it ranks hospitals on deaths against a risk model whose decisive pre-operative risk sits in the patients' earlier admissions at other hospitals",
+  "task269": "task269's third architecture (retired) ranks bus routes on each rider's excess wait over the departures serving the rider's own stop; task271 ranks hospitals on observed against expected deaths, the expectation built from a risk held in each patient's earlier episodes elsewhere",
+  "task268": "task268 picks one hospital on two-year survival where the registry loses patients who move after their state worsened (informative censoring); task271 loses no one: every death is linked, and the decisive step adds a pre-operative risk to the expected deaths"
+ },
+ "lineage": [],
+ "notes": "",
+ "client_domain": "healthcare-delivery-health-economics",
+ "registered": "2026-10-19T21:55:36Z"
 }

@@ -1,28 +1,28 @@
 {
   "task": "task271",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-19",
   "stump": "The default path risk-adjusts each eligible hospital's 90-day deaths after pancreatic resection on the operation's own admission record (age, sex, conditions present on admission, the procedure, the urgency, the diagnosis) and names the three lowest ratios without either referral centre; only adding the earlier operation on the pancreas or bile ducts, rebuilt from each patient's earlier admissions anywhere in the state, brings the first referral centre's ratio down into the three.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
+    "exit": 0,
+    "date": "2026-10-19",
     "checks": 0
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (each line harmless, design note Build record)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN",
     "nearest": "0.08 task190 v1 lineage",
-    "surface": ""
+    "surface": "promoted pairs answered by card differentiation lines"
   },
   "judge": {
     "verdict": "",
@@ -30,7 +30,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: default path, stump sentence, three rules, fork table, ladder (with the subset, broad-definition, volume and shrinkage routes measured), closure, the asks, prompt.txt, then precut.py",
+  "resume": "stage 4 running on target.zip ccbce5c1: two isolated scored readers (scratch r271a, r271b; score each reader.json with score_reader.py and check ratios.json against figures.json) and the determinism judge's thread (brief /tmp/determinism-check-task271-452201/judge_brief.md, verdict.md there; re-invoke the determinism-judge agent with it for the report). A call either reader lands spends architecture 1 (re-root); otherwise fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship.",
   "architectures": [],
   "approved": null,
   "delivered": null,

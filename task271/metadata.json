@@ -1,0 +1,108 @@
+{
+ "answer": "Centres for 2027: Netherfold Medical Center, Ferncastle Health, Aldermoor University Hospital",
+ "distractors": [
+  "hospital_overall_star_ratings_2026.csv",
+  "corrisbrook_travel_benefit_estimates_2026.xlsx"
+ ],
+ "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "contents.txt": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "corrisbrook_facility_claims_pancreas_2023_2025.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "corrisbrook_pancreatic_centres_criteria_v2.pdf": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "corrisbrook_travel_benefit_estimates_2026.xlsx": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "hospital_overall_star_ratings_2026.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_death_linkage_2016_2026.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_2026q1_preliminary.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_2026q1q2_revised.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_discharges_2016.txt": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_discharges_2017.txt": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_discharges_2018.txt": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_discharges_2019_2022.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hbp_discharges_2023_2025.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_hospital_directory.xlsx": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_procedure_classes.csv": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  },
+  "ulhdc_research_file_guide_2026.pdf": {
+   "date": "2026-10-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+  }
+ },
+ "rows": {
+  "corrisbrook_facility_claims_pancreas_2023_2025.csv": 310,
+  "corrisbrook_travel_benefit_estimates_2026.xlsx": 8,
+  "hospital_overall_star_ratings_2026.csv": 22,
+  "ulhdc_death_linkage_2016_2026.csv": 33829,
+  "ulhdc_hbp_2026q1_preliminary.csv": 845,
+  "ulhdc_hbp_2026q1q2_revised.csv": 1796,
+  "ulhdc_hbp_discharges_2016.txt": 3123,
+  "ulhdc_hbp_discharges_2017.txt": 3228,
+  "ulhdc_hbp_discharges_2018.txt": 3073,
+  "ulhdc_hbp_discharges_2019_2022.csv": 12911,
+  "ulhdc_hbp_discharges_2023_2025.csv": 10383,
+  "ulhdc_hospital_directory.xlsx": 23,
+  "ulhdc_procedure_classes.csv": 29
+ },
+ "task": "task271",
+ "title": "Corrisbrook Health Cooperative: the three 2027 Pancreatic Surgery Centres"
+}

@@ -1,0 +1,121 @@
+{
+ "call": {
+  "centres": [
+   "Netherfold Medical Center",
+   "Ferncastle Health",
+   "Aldermoor University Hospital"
+  ],
+  "first_below": "Farrowmere Regional Medical Center"
+ },
+ "ratio": {
+  "Aldermoor University Hospital": 0.9,
+  "Brackwell Medical Center": 1.1,
+  "Farrowmere Regional Medical Center": 0.9,
+  "Kestwick Memorial Hospital": 1.4,
+  "Netherfold Medical Center": 0.6,
+  "Yarrowdale Regional Hospital": 1.4,
+  "Ferncastle Health": 0.8,
+  "Elmhaven Memorial Hospital": 1.0
+ },
+ "ratio_unrounded": {
+  "Aldermoor University Hospital": 0.867,
+  "Brackwell Medical Center": 1.0767,
+  "Farrowmere Regional Medical Center": 0.9212,
+  "Kestwick Memorial Hospital": 1.3863,
+  "Netherfold Medical Center": 0.6239,
+  "Yarrowdale Regional Hospital": 1.4006,
+  "Ferncastle Health": 0.8139,
+  "Elmhaven Memorial Hospital": 0.9759
+ },
+ "operations": {
+  "Aldermoor University Hospital": 430,
+  "Brackwell Medical Center": 369,
+  "Farrowmere Regional Medical Center": 299,
+  "Kestwick Memorial Hospital": 247,
+  "Netherfold Medical Center": 181,
+  "Yarrowdale Regional Hospital": 185,
+  "Ferncastle Health": 153,
+  "Elmhaven Memorial Hospital": 158
+ },
+ "deaths": {
+  "Aldermoor University Hospital": 38,
+  "Brackwell Medical Center": 41,
+  "Farrowmere Regional Medical Center": 21,
+  "Kestwick Memorial Hospital": 25,
+  "Netherfold Medical Center": 9,
+  "Yarrowdale Regional Hospital": 20,
+  "Ferncastle Health": 10,
+  "Elmhaven Memorial Hospital": 11
+ },
+ "expected": {
+  "Aldermoor University Hospital": 43.8,
+  "Brackwell Medical Center": 38.1,
+  "Farrowmere Regional Medical Center": 22.8,
+  "Kestwick Memorial Hospital": 18.0,
+  "Netherfold Medical Center": 14.4,
+  "Yarrowdale Regional Hospital": 14.3,
+  "Ferncastle Health": 12.3,
+  "Elmhaven Memorial Hospital": 11.3
+ },
+ "totals": {
+  "operations": 2022,
+  "deaths": 175
+ },
+ "earlier_share": {
+  "Aldermoor University Hospital": 17.9,
+  "Brackwell Medical Center": 17.1,
+  "Farrowmere Regional Medical Center": 4.0,
+  "Kestwick Memorial Hospital": 2.4,
+  "Netherfold Medical Center": 5.0,
+  "Yarrowdale Regional Hospital": 3.8,
+  "Ferncastle Health": 4.6,
+  "Elmhaven Memorial Hospital": 3.2
+ },
+ "earlier_coefficient": 1.21,
+ "filed": {
+  "follow_up_days": 90,
+  "clauses": {
+   "population": "3.2",
+   "deaths": "3.3",
+   "expected": "3.4",
+   "comparison": "3.5"
+  }
+ },
+ "rival": {
+  "own_record_ratio": {
+   "Aldermoor University Hospital": 0.95,
+   "Brackwell Medical Center": 1.18,
+   "Farrowmere Regional Medical Center": 0.87,
+   "Kestwick Memorial Hospital": 1.25,
+   "Netherfold Medical Center": 0.58,
+   "Yarrowdale Regional Hospital": 1.32,
+   "Ferncastle Health": 0.77,
+   "Elmhaven Memorial Hospital": 0.89
+  },
+  "own_record_centres": [
+   "Netherfold Medical Center",
+   "Ferncastle Health",
+   "Farrowmere Regional Medical Center"
+  ]
+ },
+ "ask_a": {
+  "Aldermoor University Hospital": 84,
+  "Brackwell Medical Center": 66,
+  "Farrowmere Regional Medical Center": 47,
+  "Kestwick Memorial Hospital": 36,
+  "Netherfold Medical Center": 35,
+  "Yarrowdale Regional Hospital": 29,
+  "Ferncastle Health": 16,
+  "Elmhaven Memorial Hospital": 25
+ },
+ "ask_b": {
+  "Aldermoor University Hospital": 36722,
+  "Brackwell Medical Center": 36265,
+  "Farrowmere Regional Medical Center": 31668,
+  "Kestwick Memorial Hospital": 30394,
+  "Netherfold Medical Center": 31410,
+  "Yarrowdale Regional Hospital": 30007,
+  "Ferncastle Health": 34135,
+  "Elmhaven Memorial Hospital": 25329
+ }
+}
