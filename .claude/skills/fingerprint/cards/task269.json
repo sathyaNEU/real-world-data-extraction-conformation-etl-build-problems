@@ -1,0 +1,99 @@
+{
+  "task": "task269",
+  "architecture": "v1 (Callowfield University's 2027 final-year OSCE, single-examined in three parallel circuits once Fennabeg Clinical School's cohort joins: the number of stations its total marks need for the school's reliability standard of 0.80, projected from the 2026 sitting's dual-examined marks with each station's examiner stringency counted as error)",
+  "drawn": "2026-10-19",
+  "slot_note": "re-drawn from seed DA19 (civil-service IT attrition baseline): its break chains are identity resolution, its average roll a reading and its FY2025 release a certified replay, so the world moved to the same Policy & Education group's psychometrics task type",
+  "domain": "education-learning-sciences",
+  "subdomain": "psychometrics",
+  "client_domain": "education-learning-sciences",
+  "niche": "a medical school's final-year objective structured clinical examination whose 2026 sitting ran in one circuit with the same two examiners marking every candidate at each station, moving in 2027 to one examiner per station in three parallel circuits at three sites when a partner clinical school's cohort joins",
+  "objective": "descriptive-distribution",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G13",
+    "G17"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and the assessment policy correctly computes the reliability of the 2026 sitting from single-examiner marks (Cronbach's alpha across the stations, or a generalizability study with the examiners crossed with the candidates) and steps it to more stations with the Spearman-Brown formula, filing the current 12 stations as enough; at every 2026 station the same two examiners marked every candidate, so their leniency moved everyone alike and never a ranking, but in 2027's three circuits each candidate meets one examiner per station drawn from the faculty pool, and counted as error that leniency spread puts the 2027 exam at 15 stations.",
+  "domain_test": "The deciding quantity is the reliability of the final OSCE's total mark under its 2027 examining arrangement, a generalizability and decision study that splits the 2026 marks into candidate, case-specificity, examiner-stringency and residual variance and recombines them for single examining in parallel circuits, the field's own analysis of a clinical examination's reliability; with another field's nouns (megawatt-hours for marks, meters for stations) there is no examiner whose leniency a new examining arrangement redistributes across candidates and no case specificity that makes the number of stations the dial, so the task stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:examiner-stringency-shared-in-the-measured-sitting-turns-to-error-in-the-next-arrangement",
+  "layer1": [
+    "the examination system's item-level export in two day files whose column names and mark labels changed with a software update between the days",
+    "examiner identifiers in the export against the faculty roster's staff numbers, and candidate examination numbers against student numbers",
+    "a checklist item withdrawn by the board of examiners after day 1, recorded in its minutes, and items marked not applicable when the simulated patient did not give the cue",
+    "station marks scaled differently by station (checklists of 14 to 22 items) and global grades as text labels"
+  ],
+  "stakeholder_role": "the medical school's head of assessment, who files the 2027 final OSCE blueprint with the accreditation board",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "osce2026_item_marks.csv",
+    "rows": 0,
+    "entity": "one checklist item's mark given by one examiner to one candidate at one station of the 2026 final OSCE",
+    "grain": "candidate x station x examiner x checklist item",
+    "source": "synthetic",
+    "row_meaning": "an examiner's mark on one checklist item for one candidate's encounter at one station",
+    "source_dataset": "constructed (seeded generator; the university, its partner school, the board and people are fictional)"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "Ireland (the university, its partner clinical school, the accreditation board and people are fictional)",
+    "currency": "EUR",
+    "org_type": "university medical school",
+    "invented_names": [
+      "Callowfield University",
+      "Callowfield University School of Medicine",
+      "Fennabeg Clinical School"
+    ],
+    "people": [
+      "Meghan Daniel",
+      "Cillian Garland"
+    ]
+  },
+  "people": [
+    "Meghan Daniel",
+    "Cillian Garland"
+  ],
+  "deliverables": [
+    "osce2027_station_plan.xlsx",
+    "osce2027_reliability_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how consistently a total over several scored parts will rank units once each part is scored by one scorer drawn from a pool and different units meet different scorers, estimated from a round in which the same two scorers scored every unit on each part; in that round a scorer's own level was shared by every unit and so never moved a ranking, so the agreement between parts, each scorer's marks taken alone and a decomposition that keeps the scorers shared all leave it out, while under the new arrangement it adds to every unit's error, so the number of parts has to come from the round's sources of variance recombined with the scorers' levels counted as error.",
+  "driver_concrete": "The 2027 final OSCE's reliability for ranking candidates when each station is single-examined in three parallel circuits, projected from the 2026 dual-examined marks' variance components (candidate, station, candidate by station, examiner within station, residual) with examiner stringency, shared by every candidate in 2026's single circuit, counted as error, which puts the exam at 15 stations rather than the 12 that alpha on single-examiner marks or a crossed generalizability study keeps.",
+  "stump": "A competent solver computes the 2026 sitting's reliability on single-examiner marks (alpha across the stations, or a generalizability study with the examiners crossed with the candidates) and steps it to more stations by Spearman-Brown, filing the current 12 stations as enough; the step that lands it there is reading each examiner's leniency as 2026 showed it, a shift every candidate at that station shared, when in 2027's parallel circuits different candidates meet different examiners and the leniency spread between examiners becomes error in every candidate's total.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task232": "task232 attributes delayed outcomes to an exposure only inside a known delay window to estimate a transmission rate; task269 attributes no outcome to any period: it recombines the variance components of a dual-examined sitting for an examining arrangement in which the examiners' stringency, shared by every candidate in the measured sitting, becomes each candidate's error",
+    "task152": "task152 books a loss that accumulates between resets apart from wear to forecast the output a replacement restores; task269 projects a reliability coefficient for a new examining arrangement from variance components, the examiners' stringency moving from a shift every candidate at a station shared to error in each candidate's total",
+    "task260": "task260 widens an interval for a mean improvement by resampling raters and items together; task269 estimates no interval: it recombines the sources of score variance for a new examining arrangement and reads the number of stations a reliability standard needs",
+    "task239": "task239 separates a group-level factor from members' own covariance carried into group averages; task269 separates examiner stringency from the candidate by station interaction and residual, and the decisive step is the next arrangement turning the stringency into error",
+    "task257": "task257 counts the latent dimensions of categorical items by correlating them as cuts of continuous views; task269 decomposes one clinical examination's mark variance across candidates, stations and examiners"
+  },
+  "lineage": [],
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19): the seed's stumps are banned as decisive steps (identity resolution across break chains, a reading of the average roll, a certified replay of the FY2025 release) and the attrition world's remaining levers are survival, composition and population selection, each spent or banned in this window.",
+  "registered": "2026-10-19T03:43:22Z"
+}
