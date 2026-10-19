@@ -1,47 +1,45 @@
 {
  "task": "task249",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "psychology-behavioral-science",
+ "status": "DESIGN",
+ "domain": "product-analytics",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-19",
- "stump": "A strong analyst who applies the referral rule to the equivalence study's supervised pairs and carries its rates by interval (2.3 per cent within three days, 6.6 per cent at six weeks or more) to each account's 2029 selection days moves 0 accounts to MAT-V Extended: the shortlisted were chosen on the very MAT-R estimate the check compares against, so their MAT-V falls short of it by regression to the mean, set by how small a share the account shortlists and how wide MAT-R's error runs at the candidates' ability, offset by the retest gain; built that way 15 accounts pass the cap.",
- "architecture": 3,
+ "stump": "A competent solver counts each signed-in WebKit browser once from the device register and replays the seven-day cookie expiry on the signed-out visitors of other browsers in the same edition and device class, understating every WebKit overcount and dropping editions from the measurement note, because the paywall meter in the same capped storage keeps WebKit's weekly and occasional readers signed out while their counterparts elsewhere registered.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-19",
-  "checks": 51
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), every REVIEW line answered in the note",
-  "reader": "LANDED: the call and 19 of 19 ask figures (score_reader.py exit 1); second reader stopped once the first landed"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective, repeat.gate_g, repeat.question_form answered)",
-  "nearest": "task242 0.06"
+  "heart": "",
+  "nearest": "0.04 (draw)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task249/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "architecture 3 spent at stage 4 on Gate F (the reader modelled each account's shortlist with a latent-ability model and landed the call and every ask figure; the judge DETERMINISTIC, APPROVE). This is the slot's third spent architecture, so the number retires unless the author orders a fourth (author file: a re-root past the third architecture is the author's call). Four architecture-4 candidates, each with a default path and a screen, are in handoffs/perssathya.md. On a re-root: fingerprint (v3 into lineage, its card marked architecture_spent), guide-to-prompt pairing, stumping; read the design note's Tried and rejected first; the v3 generator stays as reference until the re-root replaces it. On retirement: a ## Retired section in the design note, status RETIRED, every card kept.",
+ "resume": "architecture 4 drawn and registered 2026-10-19 (Product Analytics, metric definition, a regional publisher's monthly unique browsers under WebKit's seven-day cookie cap, the meter in the same storage); next: stage 2, the simulator tuned to the ladder (golden: replay the cap within edition and device class, print subscribers apart, every other browser pooled over sign-in; rungs: signed-in device ratio, sign-in held fixed, device-only pooled, devices pooled, a fit to WebKit's truncated gaps), the asks, fork table, closure, prompt, precut exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "build": {
-  "target_zip_md5": "3a097683ea6ff33166093c2ec837dbda",
-  "checks": "0 failures",
-  "verify": "0 failures",
-  "figures_check": "43 of 43",
-  "byte_identical": "x2, 23 files",
-  "precut": "51 checks, 0 FAIL"
- }
+ "history": [
+  {
+   "architecture": 3,
+   "status": "spent at stage 4 on 2026-10-19",
+   "commit": "e081ee4e"
+  }
+ ]
 }
