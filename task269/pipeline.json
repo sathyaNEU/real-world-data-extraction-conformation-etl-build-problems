@@ -1,11 +1,11 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-19",
   "stump": "The default path gives the 2027 supervisor teams to routes 7, 14, 31 and 40, because it works every corridor rider's excess wait from all of the route's departures; on the branched routes a rider bound for a branch can take only that branch's buses, which on route 14 keep an even interval while the branches run as bunched pairs, and only working each rider's wait over the departures serving the stop the rider taps off at puts route 3 in and route 14 fifth.",
   "architecture": 3,
@@ -16,13 +16,13 @@
     "checks": 51
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN 2026-10-19 (strategy risk, gate_g repeat and overuse, question form; answered in Draw item 9)",
     "nearest": "task148 v2 0.11 (a queue whose units leave), others 0.06 or under",
-    "surface": ""
+    "surface": "2 structural promotions (task263, task239: gap population and G2), both differentiated on the card; surface 0.092 and 0.077"
   },
   "judge": {
     "verdict": "",
@@ -30,12 +30,19 @@
     "report": ""
   },
   "returned": [],
-  "resume": "architecture 3, the number's last: stage 3 (generator from the passenger-level world screened in scratch t269v3, pack, goldens, submission), then stage 4 with two scored readers and the judge; a reader landing the call retires task269",
+  "resume": "architecture 3, the number's last: stage 4 running, two isolated scored readers (score_reader.py on each; both must miss the call and neither exit 1) and the determinism judge; a reader landing the call retires task269, otherwise every finding fixed in the generator in one pass, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA20_headway-supervisor-posts-frequent-network-segments.md (header and Situation only; the world and quantity taken at architecture 3, the seed's own step not; task270 draws its own world)"
+  "seed": "analytical_tasks/03_descriptive_distribution/DA20_headway-supervisor-posts-frequent-network-segments.md (header and Situation only; the world and quantity taken at architecture 3, the seed's own step not; task270 draws its own world)",
+  "gates": {
+    "checks": "279 assertions, 0 failed",
+    "verify": "50 figures, 0 disagreements",
+    "rebuild": "byte-identical",
+    "figures_check": "80 figures, 0 absent",
+    "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
+  }
 }

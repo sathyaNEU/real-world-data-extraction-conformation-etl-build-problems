@@ -42,25 +42,25 @@
     "two timetable feeds, the second in force from Monday 17 August with new running times on every frequent route",
     "stops renumbered at a relocation during the fortnight, recorded in the stop changes log"
   ],
-  "stakeholder_role": "Pellbrook Metro's network performance manager, who runs the headway management programme and settles its 2027 routes with the bus operator in the contract variation",
+  "stakeholder_role": "Pellbrook Metro's network performance manager (Pellbrook City Council's public transport business), who runs the headway management programme and puts its 2027 routes to the council's Public Transport Committee",
   "role_family": "capacity_planner",
   "scoring_unit": "per boarded entity",
   "spine": {
     "file": "avl_timingpoint_departures_census_revised.csv",
-    "rows": 0,
+    "rows": 55434,
     "entity": "one bus's departure from one timing point on one trip on one service day",
     "grain": "trip x timing point x service day",
     "source": "synthetic",
     "row_meaning": "the location vendor's revised record of a bus leaving a timing point",
     "source_dataset": "constructed (seeded generator; the city, its transport agency, the bus operator and people are fictional)"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
   "world": {
-    "geography": "Australia (the city of Pellbrook, its transport agency, the bus operator and people are fictional)",
+    "geography": "Australia (the city of Pellbrook, its council's public transport business, the bus operator and people are fictional)",
     "currency": "AUD",
-    "org_type": "state transport agency's city bus network",
+    "org_type": "city council's public transport business (the frequent routes run under contract)",
     "invented_names": [
       "Pellbrook",
       "Pellbrook Metro",
@@ -154,6 +154,6 @@
       "fate": "spent 2026-10-19 at stage 4 round 3 (Gate F): of six scored readers five filed 16 stations by the pooled decision study and the sixth stratified the 2026 marks by the blueprint's domains under policy 4.2 and landed the call (13) and every reliability; the judge's pass 3 found Ask B's namesake device unfair, repaired before round 3"
     }
   ],
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded.",
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call. | v3 drawn 2026-10-19 as the number's last architecture: the shape, forum, forcing event, organisation, role and strategy redrawn against the window (task249, task468, task268); shape 10 (a scorecard against a threshold) was the first draw and is banned by task249, so the programme's cap of four routes makes it a ranked slate under a cap, which is how the programme is funded. | Redrawn at stage 3 on 2026-10-19 against task177 (registered 07:01, reaching this checkout only with the DRAWN pull): forum, forcing event and organisation family. The network is Pellbrook City Council's (Australian councils do run bus networks), so local_government is the honest organisation; the council's Public Transport Committee approves the programme's routes (committee_or_panel) at its November meeting (vote_or_meeting), and the operator's contract variation follows the approval.",
   "registered": "2026-10-19T07:19:41Z"
 }

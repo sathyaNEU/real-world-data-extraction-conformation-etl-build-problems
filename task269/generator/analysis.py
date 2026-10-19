@@ -1,174 +1,207 @@
-"""task269's analysis: the generalizability study of the 2026 marks and the decision study for 2027, the golden
-and every rung of the ladder, computed from station marks (candidates x stations x the station's two examiners).
+"""The analysis, shared by checks.py (on the generator's clean truth) and verify.py (on the shipped files): excess
+wait in cells (timing point, peak, census day, set of departures), each corridor boarding given its cell, and every
+route's figure under the golden, every reflex of the sweep and every member of the golden's own family.
 
-The blueprint (policy 4.2) draws the same number of stations from each of the four domains every year, the
-remainder in the policy's order, so the domains are fixed in every form: a candidate's strength in a domain recurs
-in every form and is part of the universe score, while the case specificity within a domain, the examiner's
-stringency and the residual are error once each candidate meets one examiner a station in three circuits."""
-import math
+Tables: deps has one row per departure at a timing point (day, route, direction, trip, variant, stop, sched, actual,
+minutes after midnight); jour one row per journey (day, route, direction, trip, variant, board, alight or None, on);
+geo holds each route-direction's corridor stops in order, which of them are timing points, and which variants serve
+every stop of the route in that direction."""
+import collections
+
 import numpy as np
+import pandas as pd
 
 import common as K
 
-DOM_OF = [K.DOMAINS.index(st[3]) for st in K.STATIONS26]
+PEAKS = K.PEAKS
 
 
-def by_domain(y):
-    """The station marks regrouped candidates x domain x station within domain x examiner, in the blueprint's
-    domain order and each domain's stations in circuit order."""
-    idx = [[si for si, d in enumerate(DOM_OF) if d == k] for k in range(len(K.DOMAINS))]
-    return np.stack([y[:, ix, :] for ix in idx], axis=1)
+def awt(h):
+    h = np.asarray(h, float)
+    return float((h ** 2).sum() / (2 * h.sum())) if len(h) else float("nan")
 
 
-def gstudy(y):
-    """Variance components of one examiner's station mark from the balanced p x (r:s:d) design, by expected mean
-    squares: candidate, candidate by domain, case specificity within domain (candidate by station), examiner within
-    station, residual (the examiner's reading of the encounter), and the stations' and domains' own difficulty."""
-    z = by_domain(y)
-    n_p, n_d, n_s, n_r = z.shape
-    g = z.mean()
-    m_p = z.mean(axis=(1, 2, 3))
-    m_d = z.mean(axis=(0, 2, 3))
-    m_pd = z.mean(axis=(2, 3))
-    m_sd = z.mean(axis=(0, 3))
-    m_psd = z.mean(axis=3)
-    m_rsd = z.mean(axis=0)
-    ss = {"p": n_d * n_s * n_r * ((m_p - g) ** 2).sum(),
-          "d": n_p * n_s * n_r * ((m_d - g) ** 2).sum(),
-          "pd": n_s * n_r * ((m_pd - m_p[:, None] - m_d[None, :] + g) ** 2).sum(),
-          "sd": n_p * n_r * ((m_sd - m_d[:, None]) ** 2).sum(),
-          "psd": n_r * ((m_psd - m_pd[:, :, None] - m_sd[None] + m_d[None, :, None]) ** 2).sum(),
-          "rsd": n_p * ((m_rsd - m_sd[:, :, None]) ** 2).sum()}
-    res = z - m_psd[..., None] - m_rsd[None] + m_sd[None, :, :, None]
-    ss["e"] = (res ** 2).sum()
-    df = {"p": n_p - 1, "d": n_d - 1, "pd": (n_p - 1) * (n_d - 1), "sd": n_d * (n_s - 1),
-          "psd": (n_p - 1) * n_d * (n_s - 1), "rsd": n_d * n_s * (n_r - 1), "e": (n_p - 1) * n_d * n_s * (n_r - 1)}
-    ms = {k: ss[k] / df[k] for k in ss}
-    v = {"e": ms["e"], "rs": (ms["rsd"] - ms["e"]) / n_p, "ps": (ms["psd"] - ms["e"]) / n_r,
-         "pd": (ms["pd"] - ms["psd"]) / (n_s * n_r), "p": (ms["p"] - ms["pd"]) / (n_d * n_s * n_r),
-         "s": (ms["sd"] - ms["psd"] - ms["rsd"] + ms["e"]) / (n_p * n_r),
-         "d": (ms["d"] - ms["pd"] - ms["sd"] + ms["psd"]) / (n_p * n_s * n_r)}
-    return v, ms
+def geometry(patterns, corridor, is_tp):
+    """corridor[(route, dir)]: stops in travel order; is_tp: stop -> bool; patterns[(route, dir, variant)]: stops.
+    Returns per route-direction: the corridor list, its timing points, each corridor stop's timing point, and each
+    stop's serving variants."""
+    geo = {}
+    for (rt, d), cor in corridor.items():
+        tps = [s for s in cor if is_tp(s)]
+        tp_of, cur = {}, None
+        for s in cor:
+            if is_tp(s):
+                cur = s
+            tp_of[s] = cur
+        serve = collections.defaultdict(set)
+        for (r2, d2, v), pat in patterns.items():
+            if r2 == rt and d2 == d:
+                for s in pat:
+                    serve[s].add(v)
+        geo[(rt, d)] = dict(cor=cor, cor_set=set(cor), tps=tps, tp_of=tp_of, serve=dict(serve))
+    return geo
 
 
-def gstudy_pooled(y):
-    """The same marks decomposed with the stations taken as one undivided set (p x (r:s)): candidate, station,
-    candidate by station, examiner within station and residual."""
-    n_p, n_s, n_r = y.shape
-    g = y.mean()
-    yp, ys, yps, yrs = y.mean(axis=(1, 2)), y.mean(axis=(0, 2)), y.mean(axis=2), y.mean(axis=0)
-    ms = {"p": n_s * n_r * ((yp - g) ** 2).sum() / (n_p - 1), "s": n_p * n_r * ((ys - g) ** 2).sum() / (n_s - 1),
-          "rs": n_p * ((yrs - ys[:, None]) ** 2).sum() / (n_s * (n_r - 1)),
-          "ps": n_r * ((yps - yp[:, None] - ys[None, :] + g) ** 2).sum() / ((n_p - 1) * (n_s - 1))}
-    res = y - yps[:, :, None] - yrs[None, :, :] + ys[None, :, None]
-    ms["e"] = (res ** 2).sum() / ((n_p - 1) * n_s * (n_r - 1))
-    return {"e": ms["e"], "ps": (ms["ps"] - ms["e"]) / n_r, "p": (ms["p"] - ms["ps"]) / (n_s * n_r),
-            "rs": (ms["rs"] - ms["e"]) / n_p, "s": (ms["s"] - ms["ps"] - ms["rs"] + ms["e"]) / (n_p * n_r)}
+def _window(x, t0, t1):
+    x = np.sort(np.asarray(x, float))
+    return x[(x >= t0) & (x < t1)]
 
 
-def blueprint(n):
-    """Policy 4.2: the same number of stations from each domain, the remainder from the domains in the policy's
-    order (history taking, physical examination, communication, procedural skills)."""
-    q, r = divmod(n, len(K.DOMAINS))
-    return [q + (1 if k < r else 0) for k in range(len(K.DOMAINS))]
-
-
-def rel_2027(v, n, examiner_share=1.0):
-    """The 2027 total mark's reliability for ranking candidates at n stations on the blueprint, one examiner a
-    station: universe score candidate + candidate by domain weighted by the blueprint's shares, error the case
-    specificity, the examiner's stringency and the residual over n stations."""
-    S = sum((k / n) ** 2 for k in blueprint(n))
-    tau = v["p"] + S * v["pd"]
-    return tau / (tau + (v["ps"] + examiner_share * v["rs"] + v["e"]) / n)
-
-
-def rel_multivariate(y, n):
-    """The same coefficient from a separate p x (r:s) study in each domain: the domain composite's universe
-    covariance (each domain's candidate variance on the diagonal, the domain means' covariances off it) and each
-    domain's own error, weighted by the blueprint's stations."""
-    z = by_domain(y)
-    nd = blueprint(n)
-    w = np.array(nd) / n
-    comps = [gstudy_pooled(z[:, k]) for k in range(z.shape[1])]
-    U = np.cov(z.mean(axis=(2, 3)).T)
-    for k in range(z.shape[1]):
-        U[k, k] = comps[k]["p"]
-    tau = float(w @ U @ w)
-    err = sum(w[k] ** 2 * (comps[k]["ps"] + comps[k]["rs"] + comps[k]["e"]) / nd[k] for k in range(len(nd)))
-    return tau / (tau + err)
-
-
-def smallest(f, bar=K.STANDARD, top=60):
-    for n in range(4, top):
-        if f(n) >= bar:
-            return n
-    return None
-
-
-def alpha(x):
-    k = x.shape[1]
-    return k / (k - 1) * (1 - x.var(axis=0, ddof=1).sum() / x.sum(axis=1).var(ddof=1))
-
-
-def sb(rel, k, n):
-    f = n / k
-    return f * rel / (1 + (f - 1) * rel)
-
-
-def ladder(y, seed=0):
-    v, ms = gstudy(y)
-    vp = gstudy_pooled(y)
-    n_s = y.shape[1]
-    out = {"v": v, "ms": ms, "vp": vp}
-    # R0: the 2026 sitting as it ran, alpha on the two examiners' mean mark, stepped by Spearman-Brown
-    a0 = alpha(y.mean(axis=2))
-    out["R0"] = {"alpha12": a0, "stations": smallest(lambda n: sb(a0, n_s, n))}
-    # R1: single-examiner marks, alpha on each examiner's marks, stepped by Spearman-Brown, or the pooled study
-    # keeping each station's examiner crossed with the candidates
-    a1, a2 = alpha(y[:, :, 0]), alpha(y[:, :, 1])
-    cross = lambda n: vp["p"] / (vp["p"] + (vp["ps"] + vp["e"]) / n)
-    out["R1"] = {"alpha_lead": a1, "alpha_second": a2, "crossed12": cross(n_s),
-                 "stations": max(smallest(lambda n: sb(a1, n_s, n)), smallest(lambda n: sb(a2, n_s, n)),
-                                 smallest(cross))}
-    # R2: single examining simulated by one of the two examiners' marks taken at random for each encounter
-    rng = np.random.default_rng([seed, 99])
-    pick = rng.integers(0, 2, y.shape[:2])
-    yp = np.take_along_axis(y, pick[:, :, None], 2)[:, :, 0]
-    a3 = alpha(yp)
-    half = lambda n: vp["p"] / (vp["p"] + (vp["ps"] + vp["rs"] / 2 + vp["e"]) / n)
-    out["R2"] = {"alpha": a3, "stations": smallest(lambda n: sb(a3, n_s, n)), "half_stations": smallest(half)}
-    # R3: the textbook decision study, stations and examiners random from one undivided bank, the stringency error
-    flat = lambda n: vp["p"] / (vp["p"] + (vp["ps"] + vp["rs"] + vp["e"]) / n)
-    out["R3"] = {"stations": smallest(flat), "at": {n: flat(n) for n in K.SETTINGS}}
-    # the blueprint's domains counted but the examiner left crossed (stratified, no stringency)
-    strat_x = lambda n: rel_2027(v, n, examiner_share=0.0)
-    out["R1s"] = {"stations": smallest(strat_x), "at12": strat_x(n_s)}
-    # the absolute coefficient on the pooled study (station difficulty error too)
-    absf = lambda n: vp["p"] / (vp["p"] + (vp["s"] + vp["ps"] + vp["rs"] + vp["e"]) / n)
-    out["abs"] = {"stations": smallest(absf)}
-    # golden and its estimator family
-    gold = lambda n: rel_2027(v, n)
-    out["golden"] = {"stations": smallest(gold), "at": {n: gold(n) for n in K.SETTINGS},
-                     "multivariate": {n: rel_multivariate(y, n) for n in K.SETTINGS},
-                     "shared_eleven_twelfths": {n: rel_2027(v, n, 11 / 12) for n in K.SETTINGS}}
+def cells(deps, pooled=False, sched_col="sched", act_col="actual"):
+    """Excess wait per (day, route, direction, peak, timing point, set) with set 'ALL', 'A' or 'B' (branched routes),
+    worked from the departures inside the peak: the random-arrival wait over the actual headways less the same over
+    the timetable's. pooled=True pools each cell's headways over the census days (a family member)."""
+    out = {}
+    g = deps.groupby(["route", "direction", "stop"] + ([] if pooled else ["day"]), sort=True)
+    for key, df in g:
+        rt, d, stop = key[:3]
+        day = None if pooled else key[3]
+        sets = ["ALL"] + (["A", "B"] if rt in K.BRANCHED else [])
+        for pk, (t0, t1) in PEAKS.items():
+            for st in sets:
+                sub = df if st == "ALL" else df[df["variant"] == st]
+                if pooled:
+                    ha, hs = [], []
+                    for _, dd in sub.groupby("day"):
+                        ha.append(np.diff(_window(dd[act_col], t0, t1)))
+                        hs.append(np.diff(_window(dd[sched_col], t0, t1)))
+                    a = awt(np.concatenate(ha)) if ha else float("nan")
+                    s = awt(np.concatenate(hs)) if hs else float("nan")
+                else:
+                    a, s = awt(np.diff(_window(sub[act_col], t0, t1))), awt(np.diff(_window(sub[sched_col], t0, t1)))
+                out[(day, rt, d, pk, stop, st)] = (a - s, a, s)
     return out
 
 
-def pass_fail(w, y):
-    """The board's 2026 results: each station's pass mark by borderline regression of its examiners' station
-    marks on their global grades (1 clear fail to 5 excellent), read at the borderline grade (2); a candidate passes
-    when their total mark (the mean of the two examiners at each station, summed) reaches the sum of the stations'
-    pass marks and they pass at least eight of the twelve stations."""
-    n, S = y.shape[0], y.shape[1]
-    cut = np.zeros(S)
-    for si, st in enumerate(K.STATIONS26):
-        xs, ys = [], []
-        for i in range(n):
-            for ro in (0, 1):
-                xs.append(w["global"][(i, st[0], ro)] + 1)
-                ys.append(y[i, si, ro])
-        b, a = np.polyfit(xs, ys, 1)
-        cut[si] = a + 2 * b
-    m = y.mean(axis=2)
-    ok = (m.sum(axis=1) >= cut.sum()) & ((m >= cut[None, :]).sum(axis=1) >= 8)
-    return int(ok.sum()), int(n - ok.sum()), cut
+def peak_of(t):
+    for pk, (t0, t1) in PEAKS.items():
+        if t0 <= t < t1:
+            return pk
+    return None
+
+
+def corridor_boardings(jour, geo):
+    """The corridor boardings in the census peaks, each with its timing point, its peak and the set of departures
+    that can carry it (the golden's usable set: from the tap-off stop outbound, every bus inbound; "?" when the
+    tap-off is missing)."""
+    rows = []
+    for r in jour.itertuples(index=False):
+        G = geo[(r.route, r.direction)]
+        if r.board not in G["cor_set"]:
+            continue
+        pk = peak_of(r.on)
+        if pk is None:
+            continue
+        if r.route in K.BRANCHED and r.direction == "out":
+            if r.alight is None or (isinstance(r.alight, float) and np.isnan(r.alight)):
+                use = "?"
+            else:
+                sv = G["serve"].get(int(r.alight), set())
+                use = "ALL" if sv == {"A", "B"} else (next(iter(sv)) if len(sv) == 1 else "?")
+        else:
+            use = "ALL"
+        rows.append((r.day, r.route, r.direction, pk, G["tp_of"][r.board], r.trip, r.variant, use))
+    return pd.DataFrame(rows, columns=["day", "route", "direction", "peak", "tp", "trip", "variant", "use"])
+
+
+def figures(cb, cl, method="golden", missing="impute"):
+    """Each route's excess wait per corridor boarding under a method:
+    golden  each boarding over its usable set (outbound tap-off; inbound every bus)
+    R0      every boarding over all of the route's departures
+    R1      every boarding over the branch of the bus it boarded
+    R2      inbound over all departures, outbound over the boarded bus's branch
+    R2b     outbound over its usable set, inbound over the boarded bus's branch
+    Rx      the golden with the branch-bound boardings left out
+    missing (golden family): impute (a boarding with no tap-off takes the average of its cell's tapped-off
+    boardings), drop, all (as if corridor-bound), boarded (its bus's branch)."""
+    tot = collections.defaultdict(float)
+    cnt = collections.defaultdict(float)
+    grp = cb.groupby(["day", "route", "direction", "peak", "tp"], sort=True)
+    for (day, rt, d, pk, tp), df in grp:
+        def e(st):
+            return cl[(day, rt, d, pk, tp, st)][0]
+        vals = []
+        n_missing = 0
+        for u, v in zip(df["use"], df["variant"]):
+            br = rt in K.BRANCHED
+            if method == "R0":
+                vals.append(e("ALL"))
+            elif method == "R1":
+                vals.append(e(v) if br else e("ALL"))
+            elif method == "R2":
+                vals.append(e(v) if (br and d == "out") else e("ALL"))
+            else:
+                if u == "?":
+                    if missing == "drop":
+                        continue
+                    if missing == "all":
+                        vals.append(e("ALL"))
+                        continue
+                    if missing == "boarded":
+                        vals.append(e(v))
+                        continue
+                    n_missing += 1
+                    continue
+                if method == "Rx" and u in ("A", "B"):
+                    continue
+                if method == "R2b" and br and d == "in":
+                    vals.append(e(v))
+                    continue
+                vals.append(e(u))
+        if n_missing and vals:
+            vals.extend([float(np.mean(vals))] * n_missing)
+        tot[rt] += float(np.sum(vals)) if vals else 0.0
+        cnt[rt] += len(vals)
+    return {rt: tot[rt] / cnt[rt] for rt in K.ROUTES if cnt[rt]}
+
+
+def figures_unweighted(cl):
+    """R0u: the route-level excess wait with every cell (timing point, peak, day) counted once."""
+    acc = collections.defaultdict(list)
+    for (day, rt, d, pk, tp, st), (e, a, s) in cl.items():
+        if st == "ALL" and not np.isnan(e):
+            acc[rt].append(e)
+    return {rt: float(np.mean(v)) for rt, v in acc.items()}
+
+
+def figures_peak_direction(cb, cl):
+    """R0p: the route-level measure on the peak direction only (morning inbound, afternoon outbound)."""
+    keep = cb[((cb["peak"] == "AM") & (cb["direction"] == "in")) | ((cb["peak"] == "PM") & (cb["direction"] == "out"))]
+    return figures(keep, cl, "R0")
+
+
+def figures_half_gap(cb, deps, cl, usable=False):
+    """Rh (usable=False): each boarding credited half the gap before the bus it took at its timing point, over all
+    the route's departures, less the timetable's random-arrival wait over all of them; usable=True takes the gap and
+    the timetable over the boarding's usable set (a member of the golden's family, not the standard's formula)."""
+    prev = {}
+    for (day, rt, d, stop), df in deps.groupby(["day", "route", "direction", "stop"], sort=True):
+        df = df.sort_values("actual")
+        t = df["actual"].to_numpy()
+        trips = df["trip"].tolist()
+        var = df["variant"].tolist()
+        gap_all = np.concatenate([[np.nan], np.diff(t)])
+        for i, tr in enumerate(trips):
+            prev[(day, tr, stop, "ALL")] = gap_all[i]
+        for v in ("A", "B"):
+            idx = [i for i, x in enumerate(var) if x == v]
+            for a, b in zip(idx[:-1], idx[1:]):
+                prev[(day, trips[b], stop, v)] = t[b] - t[a]
+    tot = collections.defaultdict(float)
+    cnt = collections.defaultdict(float)
+    for r in cb.itertuples(index=False):
+        st = (r.use if r.use != "?" else "ALL") if usable else "ALL"
+        g = prev.get((r.day, r.trip, r.tp, st))
+        if g is None or np.isnan(g):
+            continue
+        tot[r.route] += g / 2 - cl[(r.day, r.route, r.direction, r.peak, r.tp, st)][2]
+        cnt[r.route] += 1
+    return {rt: tot[rt] / cnt[rt] for rt in K.ROUTES if cnt[rt]}
+
+
+def top(fig, n=K.TEAMS):
+    return sorted(fig, key=lambda r: -fig[r])[:n]
+
+
+def ranking(fig):
+    return sorted(fig, key=lambda r: -fig[r])

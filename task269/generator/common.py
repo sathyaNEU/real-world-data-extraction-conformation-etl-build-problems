@@ -1,82 +1,53 @@
-"""Shared constants for task269: Callowfield University School of Medicine, its 2026 final-year OSCE, the 2027
-sitting with Fennabeg Clinical School's first graduate-entry cohort, the case bank and the examiner register."""
+"""Shared constants for task269: Pellbrook Metro, the state transport agency's bus network in the city of Pellbrook,
+its 2027 headway management programme, the August 2026 census fortnight and the 2026 headway supervision pilot."""
 import datetime as dt
 
-UNIVERSITY = "Callowfield University"
-SCHOOL = "Callowfield University School of Medicine"
-FENNABEG = "Fennabeg Clinical School"
-HOSPITAL = "Callowfield University Hospital"
-BOARD = "Medical Programmes Accreditation Board"
-PEOPLE = {"assessment": "Meghan Daniel", "skills": "Cillian Garland"}
+CITY = "Pellbrook"
+AGENCY = "Pellbrook Metro"
+COUNCIL = "Pellbrook City Council"
+OPERATOR = "Pellbrook Bus Company"
+PEOPLE = {"manager": "Mary Patton", "operator": "Jason Neal"}
+TZ = "+10:00"                                            # AEST; no daylight saving in August
 
-# the 2026 sitting: one circuit at the Clinical Skills Centre, the same two examiners at each station both days
-SIT26 = (dt.date(2026, 5, 12), dt.date(2026, 5, 13))
-ROUNDS26 = {1: (1, 2, 3, 4), 2: (5, 6, 7)}             # day -> rounds; twelve candidates a round
-N_CAND26 = 84
-SYSTEM_UPDATE = dt.datetime(2026, 5, 12, 21, 30)      # the OSCE system's overnight update between the two days
+# the census fortnight and the timetable change inside it
+CENSUS = [dt.date(2026, 8, 10) + dt.timedelta(days=d) for d in range(12)
+          if (dt.date(2026, 8, 10) + dt.timedelta(days=d)).weekday() < 5]
+CHANGE = dt.date(2026, 8, 17)                            # the 17 August timetable: new running times
+FEED1 = (dt.date(2026, 7, 20), dt.date(2026, 8, 16))
+FEED2 = (dt.date(2026, 8, 17), dt.date(2026, 10, 4))
+RELOCATION = dt.date(2026, 8, 17)                        # a corridor stop on route 22 moved, new stop number
+PEAKS = {"AM": (7 * 60, 9 * 60), "PM": (15 * 60 + 30, 18 * 60)}   # minutes after midnight, start included
+EXTRACT = [(6 * 60, 10 * 60), (14 * 60 + 30, 19 * 60)]           # the vendor's and ticketing extracts' windows
+FIRST_RELEASE = dt.date(2026, 8, 24)
+REVISED_RELEASE = dt.date(2026, 9, 2)
+TEAMS = 4                                                # the 2027 programme's supervisor teams
 
-# the 2027 sitting and its delivery plan
-SIT27 = (dt.date(2027, 5, 11), dt.date(2027, 5, 12))
-SITES27 = [("CSC", "Clinical Skills Centre, Callowfield"), ("CUH", "Simulation Suite, Callowfield University Hospital"),
-           ("FCS", "Clinical Skills Unit, Fennabeg Clinical School")]
-ROOMS27 = 18                                           # rooms each site can hold an OSCE station in
-STANDARD = 0.80                                        # the policy's reliability standard for the total mark
-SETTINGS = list(range(12, ROOMS27 + 1))               # the numbers of stations the plan allows
+ROUTES = ["3", "7", "9", "14", "22", "31", "40", "52"]
+BRANCHED = ["7", "14", "31", "52"]
 
-# the policy's dates for the two supporting checks
-REVIEW_FROM = dt.date(2024, 5, 11)                     # a case reviewed in the three years before the sitting
-EXPOSURE_YEARS = (2025, 2026)                          # a case set at a final OSCE sitting (main or supplemental)
-ALLOCATION = dt.date(2026, 12, 7)                      # the examinations office allocates examiners
-TRAINED_FROM = dt.date(2023, 12, 7)                    # examiner training completed in the three years before it
-BANK_MIGRATION = dt.date(2025, 11, 14)                 # the case bank's move to its new system
-FORM_OPENED = dt.datetime(2026, 10, 19, 9, 0)          # the examiners' availability form, sent and closed
-FORM_CLOSED = dt.datetime(2026, 11, 27, 17, 0)
-REGISTER_EXPORT = dt.date(2026, 11, 30)
-BANK_EXPORT = dt.date(2026, 11, 30)
-PACK_DATE = dt.date(2026, 12, 2)
-
-DOMAINS = ["History taking", "Physical examination", "Communication", "Procedural skills"]
-DOMAIN_PREFIX = {"History taking": "HIS", "Physical examination": "EXM", "Communication": "COM",
-                 "Procedural skills": "PRO"}
-SESSIONS = [("d1_am", "Tuesday 11 May, morning"), ("d1_pm", "Tuesday 11 May, afternoon"),
-            ("d2_am", "Wednesday 12 May, morning"), ("d2_pm", "Wednesday 12 May, afternoon")]
-
-# the twelve 2026 stations: number, case code, title, domain, checklist items, simulated patient or trainer
-STATIONS26 = [
-    (1, "HIS-031", "Chest pain: history", "History taking", 18, "SP"),
-    (2, "EXM-017", "Cardiovascular examination", "Physical examination", 20, "SP"),
-    (3, "COM-024", "Explaining a new diagnosis of type 2 diabetes", "Communication", 15, "SP"),
-    (4, "PRO-009", "Venepuncture and blood cultures", "Procedural skills", 19, "SP and task trainer"),
-    (5, "HIS-044", "Tiredness in a young woman: history", "History taking", 16, "SP"),
-    (6, "EXM-022", "Knee examination", "Physical examination", 16, "SP"),
-    (7, "COM-030", "Consent for a lumbar puncture", "Communication", 16, "SP"),
-    (8, "PRO-014", "Male urinary catheterisation", "Procedural skills", 21, "Manikin"),
-    (9, "HIS-038", "Altered bowel habit: history", "History taking", 17, "SP"),
-    (10, "EXM-029", "Cranial nerve examination", "Physical examination", 22, "SP"),
-    (11, "COM-027", "Breaking bad news: biopsy result", "Communication", 14, "SP"),
-    (12, "PRO-019", "Adult basic life support", "Procedural skills", 15, "Manikin"),
-]
-WITHDRAWN = (7, 14)          # station 7's item 14, withdrawn by the board of examiners after day 1
-NA_ITEMS = {1: 17, 5: 15, 9: 16}   # an item the simulated patient's cue opens, not applicable when it was not given
-
-LABELS_DAY1 = {0: "Not done", 1: "Partly done", 2: "Done well", None: "N/A"}
-GLOBAL = ["Clear fail", "Borderline", "Clear pass", "Good", "Excellent"]
+# the 2026 pilot
+PILOT_START = dt.date(2026, 2, 2)
+PILOT_END = dt.date(2026, 6, 26)
+WAVES = {dt.date(2026, 2, 2): ["3", "40"], dt.date(2026, 3, 2): ["7", "14", "22"], dt.date(2026, 4, 20): ["9", "31", "52"]}
+CUTOVER = (dt.date(2026, 5, 4), dt.date(2026, 5, 15))    # timesheets logged in both systems
+POST_DAY = 536.80                                        # the operator's charge for a post on a pilot weekday (both peaks)
+FEE = {2: 3150.00, 3: 4725.00, 4: 5512.50, 5: 6300.00, 6: 6300.00}   # monthly coordination fee by month
 
 FILES = {
-    "marks": "osce2026_marks_export.csv",
-    "global": "osce2026_global_grades.csv",
-    "stations": "osce2026_station_sheet.xlsx",
-    "examiners26": "osce2026_examiner_allocation.xlsx",
-    "minutes": "board_of_examiners_minutes_2026-05-14.pdf",
-    "policy": "assessment_policy_v7.pdf",
-    "plan": "final_osce_2027_delivery_plan.docx",
-    "bank": "case_bank_export_2026-11-30.xlsx",
-    "usage": "case_usage_history_2021_2026.csv",
-    "migration": "casebank_migration_report_2025-11.pdf",
-    "register": "examiner_register_2026-11-30.xlsx",
-    "availability": "examiner_availability_2027_responses.csv",
-    "training": "examiner_training_attendance_2021_2026.csv",
-    "sp_invoices": "sp_agency_invoices_2026.xlsx",
-    "feedback": "osce2026_candidate_feedback_summary.pdf",
-    "contents": "osce2027_blueprint_working_pack_index.txt",
+    "avl_rev": "avl_timingpoint_departures_census_revised.csv",
+    "avl_first": "avl_timingpoint_departures_census_first_release.csv",
+    "journeys": "ticketing_journeys_census_2026-08.csv",
+    "gtfs1": "gtfs_pellbrook_2026-07-20.zip",
+    "gtfs2": "gtfs_pellbrook_2026-08-17.zip",
+    "corridors": "frequent_corridors_2026.xlsx",
+    "stops_log": "stop_changes_log_2026.csv",
+    "standard": "bus_service_reliability_standard_v4.pdf",
+    "guidelines": "headway_programme_guidelines_2027.pdf",
+    "pilot_plan": "headway_supervision_pilot_plan_2026.pdf",
+    "timesheets": "pbc_supervision_timesheets_feb-jun_2026.csv",
+    "staff": "pbc_staff_list_2026-10-01.csv",
+    "ledger": "ledger_network_performance_fy2026_fy2027.csv",
+    "report": "service_performance_report_august_2026.pdf",
+    "feedback": "customer_feedback_term3_2026.xlsx",
+    "contents": "census_working_pack_contents.txt",
 }

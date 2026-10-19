@@ -1,0 +1,106 @@
+{
+ "answer": "Routes 3, 7, 31, 40",
+ "distractors": [
+  "service_performance_report_august_2026.pdf",
+  "customer_feedback_term3_2026.xlsx"
+ ],
+ "domain": "Urban & Regional Science (network analysis)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "avl_timingpoint_departures_census_first_release.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "avl_timingpoint_departures_census_revised.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "bus_service_reliability_standard_v4.pdf": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "census_working_pack_contents.txt": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "customer_feedback_term3_2026.xlsx": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "frequent_corridors_2026.xlsx": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "gtfs_pellbrook_2026-07-20.zip": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "gtfs_pellbrook_2026-08-17.zip": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "headway_programme_guidelines_2027.pdf": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "headway_supervision_pilot_plan_2026.pdf": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "ledger_network_performance_fy2026_fy2027.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "pbc_staff_list_2026-10-01.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "pbc_supervision_timesheets_feb-jun_2026.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "service_performance_report_august_2026.pdf": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "stop_changes_log_2026.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  },
+  "ticketing_journeys_census_2026-08.csv": {
+   "date": "2026-10-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Pellbrook, Pellbrook Metro, Pellbrook Bus Company and every person are fictional"
+  }
+ },
+ "rows": {
+  "avl_timingpoint_departures_census_first_release.csv": 54818,
+  "avl_timingpoint_departures_census_revised.csv": 55434,
+  "customer_feedback_term3_2026.xlsx": 318,
+  "frequent_corridors_2026.xlsx": 272,
+  "gtfs_pellbrook_2026-07-20.zip": 38010,
+  "gtfs_pellbrook_2026-08-17.zip": 38010,
+  "ledger_network_performance_fy2026_fy2027.csv": 64,
+  "pbc_staff_list_2026-10-01.csv": 16,
+  "pbc_supervision_timesheets_feb-jun_2026.csv": 1541,
+  "stop_changes_log_2026.csv": 5,
+  "ticketing_journeys_census_2026-08.csv": 123997
+ },
+ "task": "task269",
+ "title": "Pellbrook Metro: the four frequent routes for the 2027 headway supervisor teams"
+}

@@ -1,6 +1,5 @@
-"""task269's golden deliverables and their figures: osce2027_station_plan.xlsx (the number of stations with the
-reliability at every number from 12 to 18, the case bank's eligible cases by blueprint domain, the eligible
-examiners by site and session) and osce2027_reliability_chart.png; generator/figures.json and metadata.json."""
+"""The goldens and figures.json, every figure computed from the shipped pack: the programme workbook
+(pellbrook_2027_headway_programme_routes.xlsx) and the ranking chart (excess_wait_by_route_census_2026.png)."""
 import json
 import os
 
@@ -10,293 +9,177 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 import analysis as A
 import common as K
-import postprocess as PP
+import pack as PK
 import world as W
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-SITE_NAME = {s[0]: s[1] for s in K.SITES27}
-SESS_NAME = dict(K.SESSIONS)
+WB = "pellbrook_2027_headway_programme_routes.xlsx"
+CHART = "excess_wait_by_route_census_2026.png"
 
 
-def figures(w):
-    y = W.station_marks(w["marks"])
-    L = A.ladder(y, w["seed"])
-    g = L["golden"]
-    v = L["v"]
-    G = g["stations"]
-    keys = ("p", "pd", "ps", "rs", "e", "s", "d")
-    tot = sum(v[k] for k in keys)
-    a = W.bank_truth(w["bank"])
-    b = W.examiners_truth(w["examiners"])
-    vp = L["vp"]
-    fig = {
-        "call": {"stations": G, "below": G - 1, "reliability_committed": "%.2f" % g["at"][G],
-                 "reliability_below": "%.2f" % g["at"][G - 1]},
-        "reliability": {str(n): "%.2f" % g["at"][n] for n in K.SETTINGS},
-        "reliability_curve": {str(n): round(float(g["at"][n]), 4) for n in K.SETTINGS},
-        "components": {k: round(float(v[k]), 2) for k in keys},
-        "shares": {k: round(100 * float(v[k]) / tot, 1) for k in keys},
-        "total_variance": round(float(tot), 2),
-        "error_per_station": round(float(v["ps"] + v["rs"] + v["e"]), 2),
-        "ladder": {
-            "R0_alpha12": "%.2f" % L["R0"]["alpha12"], "R0_stations": L["R0"]["stations"],
-            "R1_alpha_lead12": "%.2f" % L["R1"]["alpha_lead"], "R1_alpha_second12": "%.2f" % L["R1"]["alpha_second"],
-            "R1_crossed12": "%.2f" % L["R1"]["crossed12"], "R1_stations": L["R1"]["stations"],
-            "R1s_stations": L["R1s"]["stations"], "R2_stations": L["R2"]["stations"],
-            "R3_stations": L["R3"]["stations"], "R3_at": {str(n): "%.2f" % L["R3"]["at"][n] for n in K.SETTINGS},
-            "abs_stations": L["abs"]["stations"],
-            "pooled": {k: round(float(vp[k]), 2) for k in ("p", "ps", "rs", "e", "s")},
-        },
-        "blueprint": {str(n): A.blueprint(n) for n in K.SETTINGS},
-        "ask_a": {d: list(a[d]) for d in K.DOMAINS},
-        "ask_b": {"%s %s" % k: int(n) for k, n in b.items()},
-        "candidates_2026": int(y.shape[0]),
-        "standard": "%.2f" % K.STANDARD, "rooms": K.ROOMS27,
-        "results_2026": {"passed": w["pass"][0], "not_passed": w["pass"][1]},
-    }
-    return fig
+def compute(target):
+    L = PK.load(target)
+    geo = A.geometry(L["patterns"], L["corridor"], lambda s: L["tp"].get(s, False))
+    cl = A.cells(L["deps"])
+    cb = A.corridor_boardings(L["jour"], geo)
+    gold = A.figures(cb, cl, "golden")
+    r0 = A.figures(cb, cl, "R0")
+    r2 = A.figures(cb, cl, "R2")
+    rank = A.ranking(gold)
+    four = sorted(rank[:K.TEAMS], key=int)
+    # components: route 14's and route 7's outbound corridor riders by where they go
+    comp = {}
+    for rt in ("14", "7"):
+        sub = cb[(cb["route"] == rt) & (cb["direction"] == "out") & (cb["use"] != "?")]
+        br = sub[sub["use"].isin(["A", "B"])]
+        e_own = np.mean([cl[(r.day, r.route, r.direction, r.peak, r.tp, r.use)][0] for r in br.itertuples()])
+        e_all = np.mean([cl[(r.day, r.route, r.direction, r.peak, r.tp, "ALL")][0] for r in br.itertuples()])
+        comp[rt] = dict(branch_share=100.0 * len(br) / len(sub), branch_ewt_own=float(e_own),
+                        branch_ewt_all=float(e_all))
+    shifts = PK.pilot_shifts(target)
+    cost = PK.pilot_cost(target, shifts)
+    tot = {rt: sum(n for (r, _), n in shifts.items() if r == rt) for rt in K.ROUTES}
+    fig = dict(
+        call=dict(routes=[int(r) for r in four]),
+        ewt={rt: round(gold[rt], 1) for rt in K.ROUTES},
+        first_below=int(rank[K.TEAMS]),
+        ask_a={rt: tot[rt] for rt in K.ROUTES},
+        ask_b={rt: int(round(cost[rt])) for rt in K.ROUTES},
+        components=dict(
+            r14_branch_share=round(comp["14"]["branch_share"]),
+            r14_branch_ewt_own=round(comp["14"]["branch_ewt_own"], 1),
+            r14_branch_ewt_all=round(comp["14"]["branch_ewt_all"], 1),
+            r7_corridor_share=round(100 - comp["7"]["branch_share"]),
+            cut_fourth=dict(route=int(rank[K.TEAMS - 1]), ewt=round(gold[rank[K.TEAMS - 1]], 1)),
+            cut_fifth=dict(route=int(rank[K.TEAMS]), ewt=round(gold[rank[K.TEAMS]], 1)),
+        ),
+        rivals=dict(
+            route_level=dict(routes=sorted(int(r) for r in A.top(r0)), r14=round(r0["14"], 1), r3=round(r0["3"], 1)),
+            boarded_branch=dict(routes=sorted(int(r) for r in A.top(r2)), r7=round(r2["7"], 1)),
+        ),
+        boardings=int(len(cb)),
+        routes=[int(r) for r in K.ROUTES],
+        relocated_stop=[int(r) for r in _relocated(target)],
+    )
+    exact = dict(gold=gold, r0=r0, r2=r2, cost=cost)
+    return fig, exact
 
 
-def write_workbook(path, fig):
+THIN = Side(style="thin", color="B8C4CC")
+
+
+def _relocated(target):
+    rows = PK._rows(os.path.join(target, K.FILES["stops_log"]))
+    r = next(x for x in rows if x["new_stop_number"])
+    return int(r["stop_number"]), int(r["new_stop_number"])
+
+
+def write_workbook(path, fig, exact):
     wb = openpyxl.Workbook()
-    thin = Side(style="thin", color="B4BDC3")
-    head = PatternFill("solid", fgColor="DCE6F0")
-    mark = PatternFill("solid", fgColor="E3EFE6")
-    bold = Font(bold=True)
-    note = Font(italic=True, size=9, color="4A4F54")
-    n_call = fig["call"]["stations"]
-
-    def header(ws, row, wrap=False):
-        for c in ws[row]:
-            if c.value is not None:
-                c.font = bold
-                c.fill = head
-                c.border = Border(bottom=thin)
-                c.alignment = Alignment(wrap_text=wrap, vertical="top")
-
-    def notes(ws, row, lines):
-        for k, t in enumerate(lines):
-            c = ws.cell(row + k, 1, t)
-            c.font = note
-            c.alignment = Alignment(wrap_text=False)
-
-    # the number, and the reliability it rests on
     ws = wb.active
-    ws.title = "Stations"
-    ws["A1"] = "Final OSCE 2027: %d stations" % n_call
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("The fewest stations at which the total mark ranks candidates with a reliability of at least "
-                "%s (policy 4.3), with one examiner a station in each of the three circuits." % fig["standard"])
-    ws["A4"], ws["B4"] = "Stations to set", n_call
-    ws["A5"], ws["B5"] = "Rooms a site", fig["rooms"]
-    for r in (4, 5):
-        ws.cell(r, 1).font = bold
-        ws.cell(r, 2).alignment = Alignment(horizontal="right")
-    ws["B4"].fill = mark
+    ws.title = "Ranking"
+    ws.append(["2027 headway management programme: routes by excess wait per corridor boarding, census fortnight "
+               "10 to 21 August 2026"])
+    ws["A1"].font = Font(bold=True, size=12)
+    ws.append(["Supervisor teams for 2027: routes %s. First route below them: route %d." %
+               (", ".join(str(r) for r in fig["call"]["routes"][:-1]) + " and %d" % fig["call"]["routes"][-1],
+                fig["first_below"])])
     ws.append([])
-    ws.append(["Stations", "Reliability of the total mark", "Meets %s" % fig["standard"]])
-    top = ws.max_row
-    header(ws, top)
-    for n in K.SETTINGS:
-        r = fig["reliability"][str(n)]
-        ws.append([n, float(r), "Yes" if n >= n_call else "No"])
-        ws.cell(ws.max_row, 2).number_format = "0.00"
-        ws.cell(ws.max_row, 3).alignment = Alignment(horizontal="center")
-        if n == n_call:
-            for c in ws[ws.max_row]:
-                c.fill = mark
-    notes(ws, ws.max_row + 2, [
-        "Reliability: the share of the variance among candidates' total marks that reflects differences in their "
-        "clinical performance (policy 4.3), for a total over that many stations drawn as policy 4.2 sets out, each "
-        "candidate marked by one examiner a station.",
-        "From the variance components of the 2026 sitting's marks (Sources of variance): the blueprint draws the same "
-        "domains every year, so a candidate's strength in a domain is part of what each form measures, weighted by "
-        "the domains' shares of the stations; case specificity, the examiner's stringency and the residual are error.",
-        "Rounded to two decimals; the standard is met on the unrounded value."])
-    ws.freeze_panes = ws.cell(top + 1, 1)
-    ws.column_dimensions["A"].width = 16
-    ws.column_dimensions["B"].width = 27
-    ws.column_dimensions["C"].width = 12
-
-    # the components the 2027 reliability is built from
-    ws2 = wb.create_sheet("Sources of variance")
-    ws2["A1"] = "Final OSCE May 2026: where the variance in one examiner's station mark comes from"
-    ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = ("84 candidates, 12 stations (three from each blueprint domain), the same two examiners at each station "
-                 "on both days; marks out of 20 (policy 3.2), station 7's item 14 withdrawn (board of examiners, "
-                 "14 May 2026, item 2).")
-    ws2.append([])
-    ws2.append(["Source", "Variance (marks out of 20, squared)", "Share (%)", "Error in 2027"])
-    top2 = ws2.max_row
-    header(ws2, top2)
-    labels = [("p", "Candidates", "No: what the total mark measures"),
-              ("pd", "Candidate by domain", "No: every form draws the same domains (policy 4.2)"),
-              ("d", "Domains (difficulty)", "No: the same for every candidate"),
-              ("s", "Stations within domain (difficulty)", "No: every circuit runs the same stations"),
-              ("ps", "Candidate by station within domain", "Yes"),
-              ("rs", "Examiner within station (stringency)", "Yes: candidates at a station meet different examiners"),
-              ("e", "Residual", "Yes")]
-    for k, lab, err in labels:
-        ws2.append([lab, fig["components"][k], fig["shares"][k], err])
-        ws2.cell(ws2.max_row, 2).number_format = "0.00"
-        ws2.cell(ws2.max_row, 3).number_format = "0.0"
-    ws2.append(["Total", fig["total_variance"], 100.0, None])
-    ws2.cell(ws2.max_row, 2).number_format = "0.00"
-    ws2.cell(ws2.max_row, 3).number_format = "0.0"
-    for c in ws2[ws2.max_row]:
-        c.font = bold
-        c.border = Border(top=thin)
-    notes(ws2, ws2.max_row + 2, [
-        "Estimated by expected mean squares on the balanced design (candidates crossed with examiners nested in "
-        "stations nested in domains); every component positive.",
-        "In 2026 an examiner's stringency moved every candidate at the station alike, so it did not enter the "
-        "ranking; in 2027 it does. A candidate's strength in a domain recurs in every form the blueprint draws."])
-    ws2.freeze_panes = ws2.cell(top2 + 1, 1)
-    ws2.column_dimensions["A"].width = 38
-    ws2.column_dimensions["B"].width = 33
-    ws2.column_dimensions["C"].width = 10
-    ws2.column_dimensions["D"].width = 52
-
-    # policy 4.4 against the bank
-    ws3 = wb.create_sheet("Case bank")
-    ws3["A1"] = "Cases that can be set at the May 2027 final OSCE (policy 4.4)"
-    ws3["A1"].font = Font(bold=True, size=12)
-    ws3.append([])
-    ws3.append(["Blueprint domain", "Cases that can be set", "Of which need a simulated patient"])
-    top3 = ws3.max_row
-    header(ws3, top3)
-    for d in K.DOMAINS:
-        ws3.append([d] + fig["ask_a"][d])
-    ws3.append(["All domains", sum(fig["ask_a"][d][0] for d in K.DOMAINS), sum(fig["ask_a"][d][1] for d in K.DOMAINS)])
-    for c in ws3[ws3.max_row]:
-        c.font = bold
-        c.border = Border(top=thin)
-    notes(ws3, ws3.max_row + 2, [
-        "Active (edits pending included), reviewed by the OSCE assessment group on or after 11 May 2024, and not "
-        "set at a final OSCE sitting, main or supplemental, in 2025 or 2026.",
-        "A case re-created under a new code at the November 2025 cut-over (a 2025 code above version 1) keeps the "
-        "sittings of its retired record, the one of its domain, specialty and resources at the version before "
-        "(cut-over report, section 2).",
-        "Need a simulated patient: resources SP, or SP and task trainer. Case bank export of 30 November 2026."])
-    ws3.freeze_panes = ws3.cell(top3 + 1, 1)
-    ws3.column_dimensions["A"].width = 22
-    ws3.column_dimensions["B"].width = 22
-    ws3.column_dimensions["C"].width = 33
-
-    # policy 5.2 against the register, the training record and the form
-    ws4 = wb.create_sheet("Examiners")
-    ws4["A1"] = "Examiners eligible at the 7 December 2026 allocation who offered each session (policy 5.2)"
-    ws4["A1"].font = Font(bold=True, size=12)
-    ws4.append([])
-    ws4.append(["Site"] + [s[1] for s in K.SESSIONS])
-    top4 = ws4.max_row
-    header(ws4, top4, wrap=True)
-    for site in [s[0] for s in K.SITES27]:
-        ws4.append([SITE_NAME[site]] + [fig["ask_b"]["%s %s" % (site, s[0])] for s in K.SESSIONS])
-    notes(ws4, ws4.max_row + 2, [
-        "Active on the register, at an eligible grade, with the examiner training or a refresher attended on or "
-        "after 7 December 2023 (training record).",
-        "A session signed in under the hospital's or Fennabeg's own staff number counts for the register examiner "
-        "of that name on their staff.",
-        "Each examiner's latest response to the availability form stands (form closed 27 November 2026).",
-        "An examiner who offered several sessions is counted in each, so a row does not add to a head count."])
-    ws4.freeze_panes = ws4.cell(top4 + 1, 2)
-    ws4.column_dimensions["A"].width = 46
-    for col in "BCDE":
-        ws4.column_dimensions[col].width = 15
-    ws4.row_dimensions[top4].height = 30
-    for w_ in wb.worksheets:
-        w_.page_setup.orientation = "landscape"
-        w_.page_setup.fitToWidth = 1
-        w_.sheet_properties.pageSetUpPr.fitToPage = True
+    head = ["Rank", "Route", "Corridor", "Excess wait per corridor boarding (min)", "2027 team"]
+    ws.append(head)
+    for c in ws[4]:
+        c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="DDE7EE")
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    rank = sorted(K.ROUTES, key=lambda r: -exact["gold"][r])
+    for i, rt in enumerate(rank, 1):
+        team = "Yes" if int(rt) in fig["call"]["routes"] else None
+        ws.append([i, int(rt), W.NET[rt]["road"], fig["ewt"][rt], team])
+        row = ws.max_row
+        ws.cell(row, 4).number_format = "0.0"
+        if team:
+            for c in ws[row]:
+                c.fill = PatternFill("solid", fgColor="E3F1E8")
+        if i == K.TEAMS:
+            for c in ws[row]:
+                c.border = Border(bottom=Side(style="medium", color="2E5E4E"))
+    for col, w in zip("ABCDE", (7, 8, 18, 22, 11)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A5"
+    p = wb.create_sheet("Pilot 2026")
+    p.append(["Route", "Supervisor shifts worked", "Pilot cost ($)"])
+    for c in p[1]:
+        c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="DDE7EE")
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for rt in K.ROUTES:
+        p.append([int(rt), fig["ask_a"][rt], fig["ask_b"][rt]])
+        p.cell(p.max_row, 3).number_format = "#,##0"
+    p.append(["Total", sum(fig["ask_a"].values()), int(round(sum(exact["cost"].values())))])
+    for c in p[p.max_row]:
+        c.font = Font(bold=True)
+    p.cell(p.max_row, 3).number_format = "#,##0"
+    for col, w in zip("ABC", (8, 14, 14)):
+        p.column_dimensions[col].width = w
+    p.freeze_panes = "A2"
+    n = wb.create_sheet("Notes")
+    notes = [
+        "Excess wait as the Bus Service Reliability Standard (version 4, section 3) defines it: each corridor boarding's "
+        "wait worked at its timing point for its peak and day from the vendor's revised release and the timetable in "
+        "force that day, over the departures that serve the stop the rider tapped off at (both branches' buses for a "
+        "corridor stop and for every inbound rider, one branch's buses for a branch stop).",
+        "Boardings with no tag-off (default fare) are in each route's average; on the branched routes outbound they "
+        "take the average of the boardings with a tag-off at the same timing point, peak and day.",
+        "%s corridor boardings in the census weekday peaks (07:00 to 09:00 and 15:30 to 18:00)." % format(fig["boardings"], ","),
+        "Pilot shifts: each supervisor's shift at a pilot post counted once (the operator's payroll timesheets and its "
+        "rostering app both hold the shifts of 4 to 15 May); cancelled peaks and depot supervision out.",
+        "Pilot cost: the operator's post charges on each route's cost centre (the 30 June journal out, reversed on "
+        "1 July; June's invoices posted in July) plus each month's coordination fee shared by the month's shifts.",
+        "Prepared by Network Performance, %s, for the December 2026 contract variation." % K.AGENCY,
+    ]
+    for t in notes:
+        n.append([t])
+    n.column_dimensions["A"].width = 120
+    for row in n.iter_rows():
+        for c in row:
+            c.alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
 
 
-def write_chart(path, fig):
+def write_chart(path, fig, exact):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams["svg.hashsalt"] = "task269"
-    xs = K.SETTINGS
-    ys = [fig["reliability_curve"][str(n)] for n in xs]
-    n = fig["call"]["stations"]
-    r = fig["reliability_curve"][str(n)]
-    fig_, ax = plt.subplots(figsize=(8.8, 5.2), dpi=110)
-    ax.plot(xs, ys, color="#2f4a63", lw=2, zorder=3)
-    ax.scatter([x for x in xs if x != n], [y for x, y in zip(xs, ys) if x != n], s=36, color="#2f4a63", zorder=4)
-    for x, y in zip(xs, ys):
-        if x != n:
-            right = x == fig["rooms"]
-            ax.annotate("%.2f" % y, (x, y), xytext=(-8 if right else 0, -15), textcoords="offset points",
-                        ha="right" if right else "center", fontsize=8.5, color="#41505c")
-    ax.scatter([n], [r], s=150, color="#1f6b4a", zorder=5)
-    ax.annotate("%d stations: %.2f" % (n, r), (n, r), xytext=(-12, 16), textcoords="offset points", ha="right",
-                fontsize=10.5, fontweight="bold", color="#1f6b4a")
-    std = float(fig["standard"])
-    ax.axhline(std, color="#b3412f", ls="--", lw=1.3, zorder=2)
-    ax.text(17.85, std + 0.0012, "Standard %s (policy 4.3)" % fig["standard"], color="#b3412f", fontsize=9,
-            va="bottom", ha="right")
-    ax.axvline(fig["rooms"], color="#6b6b6b", ls=":", lw=1.4, zorder=2)
-    ax.text(fig["rooms"] - 0.08, 0.7645, "%d rooms a site" % fig["rooms"], color="#55595c", fontsize=9, ha="right",
-            va="bottom")
-    ax.set_xticks(xs)
-    ax.set_xlim(11.5, 18.5)
-    ax.set_ylim(0.76, 0.87)
-    ax.set_yticks([0.76, 0.78, 0.80, 0.82, 0.84, 0.86])
-    ax.set_yticklabels(["%.2f" % v for v in [0.76, 0.78, 0.80, 0.82, 0.84, 0.86]])
-    ax.set_xlabel("Stations in the circuit")
-    ax.set_ylabel("Reliability of the total mark")
-    fig_.text(0.012, 0.965, "Final OSCE 2027: %d stations are the fewest that meet the %s standard"
-              % (n, fig["standard"]), fontsize=12.5, fontweight="bold", color="#1d2830", va="top")
-    fig_.text(0.012, 0.918, "One examiner a station in each of three circuits, the same number of stations from each "
-              "blueprint domain\nFrom the variance components of the May 2026 marks (84 candidates, 12 stations)",
-              fontsize=8.6, color="#4a4f54", va="top", linespacing=1.4)
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    ax.grid(axis="y", alpha=0.3)
-    fig_.text(0.01, 0.01, "Examinations Office, December 2026. Reliabilities to two decimals.", fontsize=7.8,
-              color="#6b6f73")
-    fig_.tight_layout(rect=(0, 0.03, 1, 0.85))
-    fig_.savefig(path, metadata={"Software": None})
-    plt.close(fig_)
+    plt.rcParams.update({"font.family": "DejaVu Sans", "svg.hashsalt": "task269", "font.size": 10})
+    rank = sorted(K.ROUTES, key=lambda r: exact["gold"][r])
+    vals = [exact["gold"][r] for r in rank]
+    team = [int(r) in fig["call"]["routes"] for r in rank]
+    fg, ax = plt.subplots(figsize=(8.4, 4.8), dpi=150)
+    cols = ["#2e6e57" if t else "#a7b4bc" for t in team]
+    ax.barh(["Route %s" % r for r in rank], vals, color=cols, height=0.62)
+    for i, v in enumerate(vals):
+        ax.text(v + 0.02, i, "%.1f" % v, va="center", fontsize=9, color="#1c2428")
+    cut = (len(rank) - K.TEAMS) - 0.5
+    ax.axhline(cut, color="#2e3b44", lw=1.0, ls="--")
+    ax.text(max(vals) * 0.98, cut + 0.12, "four teams", ha="right", va="bottom", fontsize=8.5, color="#2e3b44")
+    ax.set_xlabel("Excess wait per corridor boarding, weekday peaks (minutes)")
+    ax.set_xlim(0, max(vals) * 1.15)
+    ax.spines[["top", "right"]].set_visible(False)
+    four = fig["call"]["routes"]
+    ax.set_title("Routes %s, %s, %s and %s get the 2027 supervisor teams" % tuple(four), loc="left", fontsize=11.5,
+                 fontweight="bold", color="#1c2428")
+    fg.text(0.01, 0.01, "Census fortnight 10 to 21 August 2026, weekday peaks. Sources: location vendor's revised "
+                        "release; ticketing journeys.", fontsize=7.4, color="#5a646b")
+    fg.tight_layout(rect=(0, 0.04, 1, 1))
+    fg.savefig(path, metadata={"Software": None})
+    plt.close(fg)
 
 
-def write(target, golden, w):
-    fig = figures(w)
-    # the policy's section numbers as the shipped policy carries them, for the write-up's citations
-    import re
-    import verify as V
-    pol = V.pdf_text(os.path.join(target, K.FILES["policy"]))
-    fig["policy_sections"] = sorted({float(m) for m in re.findall(r"(?<![\d.])(\d\.\d)(?= [A-Z])", pol)})
-    json.dump(fig, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+def write(target, golden):
+    fig, exact = compute(target)
     if os.path.exists(golden):
         for f in os.listdir(golden):
             os.remove(os.path.join(golden, f))
-    else:
-        os.makedirs(golden)
-    xl = os.path.join(golden, "osce2027_station_plan.xlsx")
-    write_workbook(xl, fig)
-    PP.COMPANY = K.UNIVERSITY
-    PP.normalize_ooxml(xl, K.PEOPLE["assessment"], K.PEOPLE["assessment"], "2026-12-03T09:12:40Z",
-                       "2026-12-04T15:47:12Z", excel=True)
-    write_chart(os.path.join(golden, "osce2027_reliability_chart.png"), fig)
-    meta = {"task": "task269",
-            "distractor_files": ["target/" + K.FILES[k] for k in ("sp_invoices", "feedback", "global")],
-            "deliverables": ["osce2027_station_plan.xlsx", "osce2027_reliability_chart.png"],
-            "stated_inputs": [],
-            "call_files": [K.FILES[k] for k in ("marks", "stations", "examiners26", "minutes", "policy", "plan")],
-            "ask_files": [K.FILES[k] for k in ("bank", "usage", "migration", "register", "availability", "training")],
-            "distractor_notes": {K.FILES["sp_invoices"]: "the simulated patient agency's 2026 invoices: what the stations "
-                                                    "cost, relevant to the size of the 2027 sitting and unused by "
-                                                    "every answer",
-                            K.FILES["feedback"]: "candidates' ratings of the 2026 stations: relevant to which cases "
-                                                 "run well and unused by every answer",
-                            K.FILES["global"]: "the examiners' global grades for every 2026 encounter: the same "
-                                               "encounters' holistic judgement, relevant to how the stations "
-                                               "performed and unused by every answer (policy 3.2 makes the "
-                                               "checklist the station mark)"},
-            "sources": {f: "constructed for this task (seeded generator); the university, its partner school, the "
-                           "accreditation board and every person are fictional" for f in sorted(K.FILES.values())},
-            "license": "original synthetic data, CC0", "as_at": K.PACK_DATE.isoformat()}
-    json.dump(meta, open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=1)
-    return fig
+    os.makedirs(golden, exist_ok=True)
+    write_workbook(os.path.join(golden, WB), fig, exact)
+    write_chart(os.path.join(golden, CHART), fig, exact)
+    return fig, exact

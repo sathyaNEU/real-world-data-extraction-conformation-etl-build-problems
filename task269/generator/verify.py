@@ -1,318 +1,212 @@
-"""task269's independent verifier: reads only the shipped pack (and, given a second folder, the goldens) and
-recomputes every graded figure from the files, with no generator state.
+"""An independent recomputation of every graded figure from the shipped files alone (it imports nothing from the
+generator but the file names): the excess wait per corridor boarding of every route, the four routes and the first
+below them, the pilot's shifts and cost by route; then the goldens are read back and compared.
 
-    python3 verify.py <target> [<golden>]
-
-The call: each examiner's station mark from the OSCE system's export (both days' formats, the withdrawn item out,
-items not applicable out of the points available), the generalizability study of the 2026 marks (candidates x
-stations x the station's two examiners), and the decision study for 2027's single examining in parallel circuits.
-Ask A: the case bank's cases eligible for May 2027 under policy 4.4, by blueprint domain, and how many need a
-simulated patient. Ask B: the examiners eligible at the December allocation (policy 5.2) who offered each site and
-session in their latest response."""
+    python3 task269/generator/verify.py"""
 import csv
 import datetime as dt
+import io
 import json
 import os
 import re
 import sys
-import unicodedata
+import zipfile
+from collections import defaultdict
 
 import numpy as np
 import openpyxl
 
-LABEL = {"Not done": 0, "Partly done": 1, "Done well": 2, "N/A": None}
-DOMAINS = ["History taking", "Physical examination", "Communication", "Procedural skills"]
-SITES = {"Clinical Skills Centre, Callowfield": "CSC", "Simulation Suite, Callowfield University Hospital": "CUH",
-         "Clinical Skills Unit, Fennabeg Clinical School": "FCS"}
-SESS = ["d1_am", "d1_pm", "d2_am", "d2_pm"]
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from common import FILES   # noqa: E402
+
+TASK = os.path.dirname(HERE)
+PEAKS = {"AM": (420, 540), "PM": (930, 1080)}
 
 
-def rows_xlsx(path, sheet=None):
-    wb = openpyxl.load_workbook(path, data_only=True)
-    ws = wb[sheet] if sheet else wb.worksheets[0]
-    it = ws.iter_rows(values_only=True)
-    head = next(it)
-    return [dict(zip(head, r)) for r in it]
+def rows(path):
+    with open(path, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def mins(stamp):
+    t = dt.datetime.fromisoformat(stamp)
+    return t.hour * 60 + t.minute + t.second / 60
+
+
+def hmsm(x):
+    h, m, s = (int(v) for v in x.split(":"))
+    return h * 60 + m + s / 60
+
+
+def wait(times):
+    h = np.diff(np.sort(np.asarray(times, float)))
+    return float((h ** 2).sum() / (2 * h.sum())) if len(h) else float("nan")
 
 
 def pdf_text(path):
     from pypdf import PdfReader
-    txt = "\n".join(p.extract_text() for p in PdfReader(path).pages)
-    return re.sub(r"\s+", " ", txt)
+    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
 
 
-def docx_text(path):
-    import docx
-    return re.sub(r"\s+", " ", " ".join(p.text for p in docx.Document(path).paragraphs))
-
-
-def documents(t):
-    """Every document the computations lean on, read through its own format's extractor, each with a positive
-    control (a sentence the document carries) on the same code path as the values taken from it."""
-    pol = pdf_text(os.path.join(t, "assessment_policy_v7.pdf"))
-    mins = pdf_text(os.path.join(t, "board_of_examiners_minutes_2026-05-14.pdf"))
-    plan = docx_text(os.path.join(t, "final_osce_2027_delivery_plan.docx"))
-    for name, txt in (("policy", pol), ("minutes", mins), ("plan", plan)):
-        assert len(txt) > 500, name
-    assert "A candidate's total mark is the sum of their station marks" in pol
-    m = re.search(r"must rank candidates with a reliability of at least (0\.\d+)", pol)
-    assert m, "policy 4.3 not read"
-    standard = float(m.group(1))
-    assert "an item marked not applicable not being available, expressed out of 20" in pol
-    assert "in the three years before the sitting" in pol and "in either of the two previous years" in pol
-    assert "who have completed the examiner training or an examiner refresher in the three years before the " \
-           "allocation" in pol
-    m = re.search(r"item (\d+) \(", mins)
-    assert m and "Station 7, item 14" in mins and "removed from every candidate's mark" in mins
-    withdrawn = (7, int(m.group(1)))
-    m = re.search(r"the same number from each of the four blueprint domains: ([a-z ,]+?)\. Where the number of "
-                  r"stations is not a multiple of four, the remaining stations are drawn from the domains in that "
-                  r"order", pol)
-    assert m, "policy 4.2 not read"
-    order = [x.strip() for x in re.split(r",| and ", m.group(1)) if x.strip()]
-    assert len(order) == 4, order
-    m = re.search(r"Each site has (\w+) rooms that can hold a station", plan)
-    assert m and "Each station will have one examiner in each circuit" in plan
-    rooms = {"eighteen": 18}[m.group(1)]
-    assert "their latest response stands" in plan
-    return {"standard": standard, "withdrawn": withdrawn, "rooms": rooms, "order": order}
-
-
-def station_marks(t, withdrawn=(7, 14)):
-    st = rows_xlsx(os.path.join(t, "osce2026_station_sheet.xlsx"))
-    num_of_code = {r["Case code"]: int(r["Station"]) for r in st}
-    al = rows_xlsx(os.path.join(t, "osce2026_examiner_allocation.xlsx"))
-    role_of_staff = {(int(r["Station"]), r["Staff no."]): 0 if r["Role"].startswith("Lead") else 1 for r in al}
-    role_of_badge = {(int(r["Station"]), r["Badge"]): 0 if r["Role"].startswith("Lead") else 1 for r in al}
-    pts, avail = {}, {}
-    cands = set()
-    with open(os.path.join(t, "osce2026_marks_export.csv"), newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            if r["item"] == "GG":
-                continue
-            if r["exam_day"] == "1":
-                sno = int(r["station"])
-                ro = role_of_badge[(sno, r["examiner"])]
-                v = LABEL[r["response"]]
-            else:
-                sno = num_of_code[r["station"]]
-                ro = role_of_staff[(sno, r["examiner"])]
-                v = None if r["response"] == "NA" else int(r["response"])
-            if sno == withdrawn[0] and r["item"] == str(withdrawn[1]):   # withdrawn by the board (minutes)
-                continue
-            key = (r["exam_no"], sno, ro)
-            cands.add(r["exam_no"])
-            if v is None:
-                continue
-            pts[key] = pts.get(key, 0) + v
-            avail[key] = avail.get(key, 0) + 2
-    cands = sorted(cands)
-    y = np.zeros((len(cands), 12, 2))
-    for i, c in enumerate(cands):
-        for s in range(1, 13):
-            for ro in (0, 1):
-                y[i, s - 1, ro] = 20.0 * pts[(c, s, ro)] / avail[(c, s, ro)]
-    return y, cands
-
-
-def station_domains(t):
-    st = rows_xlsx(os.path.join(t, "osce2026_station_sheet.xlsx"))
-    return {int(r["Station"]): r["Blueprint domain"].lower() for r in st}
-
-
-def gstudy(y, dom):
-    """Candidate, candidate by domain, candidate by station within domain, examiner within station and residual
-    variance of one examiner's station mark, from the long-format marks by expected mean squares (the design is
-    balanced: four domains of three stations, two examiners a station)."""
-    doms = sorted(set(dom.values()))
-    cols = {d: [s - 1 for s in sorted(dom) if dom[s] == d] for d in doms}
-    z = np.stack([y[:, cols[d], :] for d in doms], axis=1)          # p, d, s, r
-    P, D, S, R = z.shape
-    grand = z.mean()
-    a_p = z.mean(axis=(1, 2, 3)) - grand
-    a_d = z.mean(axis=(0, 2, 3)) - grand
-    a_pd = z.mean(axis=(2, 3)) - grand - a_p[:, None] - a_d[None, :]
-    a_sd = z.mean(axis=(0, 3)) - grand - a_d[:, None]
-    a_psd = z.mean(axis=3) - grand - a_p[:, None, None] - a_d[None, :, None] - a_pd[:, :, None] - a_sd[None]
-    a_rsd = z.mean(axis=0) - grand - a_d[:, None, None] - a_sd[:, :, None]
-    resid = z - (grand + a_p[:, None, None, None] + a_d[None, :, None, None] + a_pd[:, :, None, None]
-                 + a_sd[None, :, :, None] + a_psd[..., None] + a_rsd[None])
-    MS = {"p": D * S * R * (a_p ** 2).sum() / (P - 1), "pd": S * R * (a_pd ** 2).sum() / ((P - 1) * (D - 1)),
-          "psd": R * (a_psd ** 2).sum() / ((P - 1) * D * (S - 1)), "rsd": P * (a_rsd ** 2).sum() / (D * S * (R - 1)),
-          "e": (resid ** 2).sum() / ((P - 1) * D * S * (R - 1))}
-    e = MS["e"]
-    ps = (MS["psd"] - e) / R
-    pd = (MS["pd"] - MS["psd"]) / (S * R)
-    return {"p": (MS["p"] - MS["pd"]) / (D * S * R), "pd": pd, "ps": ps, "rs": (MS["rsd"] - e) / P, "e": e}
-
-
-def reliability(v, n, order):
-    """The 2027 total mark at n stations on policy 4.2's blueprint (the same number from each domain, the
-    remainder in the policy's order), one examiner a station: the domains fixed, so each candidate's strength in a
-    domain is part of what every form measures; the case specificity, the examiner's stringency and the residual
-    are error."""
-    nd = [n // 4 + (1 if k < n % 4 else 0) for k in range(4)]
-    share = sum((x / n) ** 2 for x in nd)
-    true = v["p"] + share * v["pd"]
-    return true / (true + (v["ps"] + v["rs"] + v["e"]) / n)
-
-
-def call(t):
-    doc = documents(t) if os.path.exists(os.path.join(t, "assessment_policy_v7.pdf")) else \
-        {"standard": 0.80, "withdrawn": (7, 14), "rooms": 18, "order": None}
-    y, cands = station_marks(t, doc["withdrawn"])
-    dom = station_domains(t)
-    assert doc["order"] is None or sorted(doc["order"]) == sorted(set(dom.values())), (doc["order"], dom)
-    v = gstudy(y, dom)
-    rel = {n: reliability(v, n, doc["order"]) for n in range(12, doc["rooms"] + 1)}
-    stations = min(n for n in rel if rel[n] >= doc["standard"])
-    return {"components": v, "reliability": rel, "stations": stations, "candidates": len(cands)}
-
-
-# ---------------------------------------------------------------------------------------------- Ask A
-def bank_date(x):
-    if isinstance(x, dt.datetime):
-        return x.date()
-    if isinstance(x, dt.date):
-        return x
-    d, m, y = (int(p) for p in str(x).split("/"))
-    return dt.date(y, m, d)
-
-
-def recreated_pairs(cases):
-    """The records the November 2025 cut-over re-created (migration report, section 2): a record written in the new
-    bank in 2025 (code CV-25-) above version 1, which a case written there cannot be (the bank's Fields tab), is a
-    re-created record; its old record is the retired one of the same domain, specialty and resources at the version
-    before (the revision may have renamed the case, and the group signed it off on the new record)."""
-    retired = [c for c in cases if c["Status"] == "Retired"]
-    out = {}
-    for c in cases:
-        if c["Case code"].startswith("CV-25-") and int(c["Version"]) > 1:
-            old = [o for o in retired if (o["Blueprint domain"], o["Specialty"], o["Resources"]) ==
-                   (c["Blueprint domain"], c["Specialty"], c["Resources"])
-                   and int(o["Version"]) == int(c["Version"]) - 1 and not o["Case code"].startswith("CV-")]
-            assert len(old) == 1, (c["Case code"], len(old))
-            out[c["Case code"]] = old[0]["Case code"]
-    return out
-
-
-def ask_a(t):
-    mig = pdf_text(os.path.join(t, "casebank_migration_report_2025-11.pdf"))
-    assert len(mig) > 500 and "re-created as a new record under a new code" in mig, "migration report not read"
-    cases = rows_xlsx(os.path.join(t, "case_bank_export_2026-11-30.xlsx"), "Cases")
-    exposed = set()
-    with open(os.path.join(t, "case_usage_history_2021_2026.csv"), newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            if int(r["sitting_date"][:4]) in (2025, 2026):
-                exposed.add(r["case_code"])
-    origin = recreated_pairs(cases)
-    out = {}
-    for d in DOMAINS:
-        el = [c for c in cases if c["Blueprint domain"] == d and c["Status"] in ("Active", "Active - edits pending")
-              and bank_date(c["Last reviewed"]) >= dt.date(2024, 5, 11) and c["Case code"] not in exposed
-              and origin.get(c["Case code"]) not in exposed]
-        out[d] = (len(el), sum(1 for c in el if c["Resources"] in ("SP", "SP and task trainer")))
-    return out
-
-
-# ---------------------------------------------------------------------------------------------- Ask B
-def norm_name(x):
-    x = re.sub(r"^(dr|prof|mr|ms|mrs)\.?\s+", "", x.strip(), flags=re.I)
-    x = unicodedata.normalize("NFKD", x).encode("ascii", "ignore").decode().lower()
-    return re.sub(r"[^a-z]", "", x)
-
-
-def ask_b(t):
-    reg = rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"), "Register")
-    by_email = {r["Email"].lower(): r["Staff no."] for r in reg}
-    by_name = {}
-    for r in reg:
-        by_name.setdefault(norm_name("%s %s" % (r["Forename"], r["Surname"])), []).append(r["Staff no."])
-    on_register = {r["Staff no."] for r in reg}
-    base = {r["Staff no."]: r["Base"] for r in reg}
-    # the hospital's staff numbers (H) are its own staff's and Fennabeg's (F) Fennabeg's; anyone else signs in at their
-    # sessions under a University number, so a GP trainer in general practice holds neither
-    employer = {"H": ("CUH",), "F": ("Fennabeg",)}
-    attended = {}
-    with open(os.path.join(t, "examiner_training_attendance_2021_2026.csv"), newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            if r["outcome"] != "Attended":
-                continue
-            who = r["staff_no"]
-            if who not in on_register:
-                # a hospital or Fennabeg sign-in sheet's own staff number: the register examiner of that name who
-                # works there; anyone else of that name is a different person
-                hits = [s for s in by_name.get(norm_name(r["examiner"]), []) if base[s] in employer.get(who[0], ())]
-                if len(hits) != 1:
+def excess_wait(t):
+    p = lambda k: os.path.join(t, FILES[k])
+    moved = {r["new_stop_number"]: r["stop_number"] for r in rows(p("stops_log")) if r["new_stop_number"]}
+    wb = openpyxl.load_workbook(p("corridors"), read_only=True)
+    cor = defaultdict(list)
+    for r in list(wb["Corridor stops"].iter_rows(values_only=True))[1:]:
+        cor[(str(r[0]), r[2])].append((r[3], str(r[4]), r[6] == "Yes"))
+    tp_of = {}
+    for key, lst in cor.items():
+        cur = None
+        for _, s, tp in sorted(lst):
+            if tp:
+                cur = s
+            tp_of[(key, s)] = cur
+    # the stops each outbound headsign serves, and each trip's direction
+    serve = defaultdict(set)
+    tdir = {}
+    for name in ("gtfs1", "gtfs2"):
+        z = zipfile.ZipFile(p(name))
+        trips = {r["trip_id"]: r for r in csv.DictReader(io.TextIOWrapper(z.open("trips.txt"), encoding="utf-8"))}
+        for tid, r in trips.items():
+            tdir[tid] = ("Outbound" if r["direction_id"] == "0" else "Inbound", r["route_id"], r["trip_headsign"])
+        for r in csv.DictReader(io.TextIOWrapper(z.open("stop_times.txt"), encoding="utf-8")):
+            d, rt, sign = tdir[r["trip_id"]]
+            if d == "Outbound":
+                serve[(rt, moved.get(r["stop_id"], r["stop_id"]))].add(sign)
+    signs = defaultdict(set)
+    for (rt, s), v in serve.items():
+        signs[rt] |= v
+    # departures: the revised release, the later of a doubled record; scheduled times from the vendor's column
+    dep = {}
+    for r in rows(p("avl_rev")):
+        k = (r["service_date"], r["trip_id"], moved.get(r["timing_point"], r["timing_point"]))
+        m = mins(r["departure_time"])
+        if k not in dep or m > dep[k][0]:
+            dep[k] = (m, hmsm(r["scheduled_time"]), r["route"], r["direction"], r["destination"])
+    cells = defaultdict(lambda: ([], []))
+    for (day, tid, stop), (m, s, rt, d, dest) in dep.items():
+        for pk, (a, b) in PEAKS.items():
+            for st in ("ALL", dest):
+                if st == dest and (d == "Inbound" or len(signs[rt]) < 2):
                     continue
-                who = hits[0]
-            d = dt.date.fromisoformat(r["session_date"])
-            attended[who] = max(d, attended.get(who, d))
-    elig_grades = {"Professor", "Associate Professor", "Senior Lecturer", "Lecturer", "Consultant", "GP Trainer"}
-    ok = set()
-    for r in reg:
-        last = max(bank_date(r["Examiner training"]), attended.get(r["Staff no."], dt.date(1900, 1, 1)))
-        if r["Status"] == "Active" and r["Grade"] in elig_grades and last >= dt.date(2023, 12, 7):
-            ok.add(r["Staff no."])
-    latest = {}
-    with open(os.path.join(t, "examiner_availability_2027_responses.csv"), newline="", encoding="utf-8") as f:
-        rd = csv.reader(f)
-        head = next(rd)
-        for r in rd:
-            when = dt.datetime.strptime(r[0], "%d/%m/%Y %H:%M:%S")
-            staff = by_email.get(r[1].lower())
-            if staff is None:
-                hits = by_name.get(norm_name(r[2]), [])
-                staff = hits[0] if len(hits) == 1 else None
-            if staff is None:
+                c = cells[(day, rt, d, stop, pk, st)]
+                if a <= m < b:
+                    c[0].append(m)
+                if a <= s < b:
+                    c[1].append(s)
+    ew = {k: wait(v[0]) - wait(v[1]) for k, v in cells.items()}
+    tot, n = defaultdict(float), defaultdict(int)
+    pend = defaultdict(list)
+    for r in rows(p("journeys")):
+        d, rt, _ = tdir[r["trip_id"]]
+        board = moved.get(r["tag_on_stop"], r["tag_on_stop"])
+        if (( rt, d), board) not in tp_of:
+            continue
+        m = mins(r["tag_on_time"])
+        pk = next((k for k, (a, b) in PEAKS.items() if a <= m < b), None)
+        if pk is None:
+            continue
+        tp = tp_of[((rt, d), board)]
+        day = r["tag_on_time"][:10]
+        if d == "Outbound" and len(signs[rt]) == 2:
+            if not r["tag_off_stop"]:
+                pend[(day, rt, d, tp, pk)].append(None)
                 continue
-            if staff not in latest or when > latest[staff][0]:
-                latest[staff] = (when, SITES[r[3]], {s: r[4 + k] == "Yes" for k, s in enumerate(SESS)})
-    out = {}
-    for site in ("CSC", "CUH", "FCS"):
-        for s in SESS:
-            out[(site, s)] = sum(1 for st, (_, si, ti) in latest.items() if st in ok and si == site and ti[s])
-    return out
+            sv = serve.get((rt, moved.get(r["tag_off_stop"], r["tag_off_stop"])), set())
+            st = "ALL" if len(sv) == 2 else next(iter(sv))
+        else:
+            st = "ALL"
+        pend[(day, rt, d, tp, pk)].append(ew[(day, rt, d, tp, pk, st)])
+    for (day, rt, d, tp, pk), vals in pend.items():
+        known = [v for v in vals if v is not None]
+        fill = float(np.mean(known)) if known else 0.0
+        tot[rt] += sum(known) + fill * (len(vals) - len(known))
+        n[rt] += len(vals)
+    return {rt: tot[rt] / n[rt] for rt in tot}
 
 
-def main():
-    t = sys.argv[1]
-    c = call(t)
-    a = ask_a(t)
-    b = ask_b(t)
-    print("call: %d stations; reliability %s" % (c["stations"], {n: round(r, 4) for n, r in c["reliability"].items()}))
-    print("components", {k: round(x, 4) for k, x in c["components"].items()})
-    print("ask A", a)
-    print("ask B", b)
-    if len(sys.argv) > 2:
-        g = sys.argv[2]
-        fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
-        assert fig["call"]["stations"] == c["stations"], (fig["call"]["stations"], c["stations"])
-        for n in range(12, 19):
-            assert fig["reliability"][str(n)] == "%.2f" % c["reliability"][n], n
-        for d in DOMAINS:
-            assert tuple(fig["ask_a"][d]) == a[d], d
-        for (site, s), v in b.items():
-            assert fig["ask_b"]["%s %s" % (site, s)] == v, (site, s)
-        wb = openpyxl.load_workbook(os.path.join(g, "osce2027_station_plan.xlsx"), data_only=True)
-        assert wb.sheetnames == ["Stations", "Sources of variance", "Case bank", "Examiners"], wb.sheetnames
-        cells = {}
-        for ws in wb.worksheets:
-            for row in ws.iter_rows(values_only=True):
-                if row and row[0] is not None:
-                    cells[(ws.title, row[0])] = row[1:]
-        assert cells[("Stations", "Stations to set")][0] == c["stations"]
-        for n in range(12, 19):
-            assert "%.2f" % cells[("Stations", n)][0] == "%.2f" % c["reliability"][n], n
-            assert cells[("Stations", n)][1] == ("Yes" if c["reliability"][n] >= 0.80 else "No"), n
-        for d in DOMAINS:
-            assert tuple(cells[("Case bank", d)][:2]) == a[d], d
-        names = {code: name for name, code in SITES.items()}
-        for (site, s_), v in b.items():
-            assert cells[("Examiners", names[site])][SESS.index(s_)] == v, (site, s_)
-        print("goldens agree with the pack")
-    print("verify: PASS")
+def pilot(t):
+    p = lambda k: os.path.join(t, FILES[k])
+    plan = pdf_text(p("pilot_plan"))
+    posts = {m.group(2): (m.group(1), m.group(3).strip()) for m in
+             re.finditer(r"\b(\d{1,2}) (HP\d\d) Route \1, (.+?) (?:Monday|Tuesday|Wednesday|Thursday|Friday)", plan)}
+    assert len(posts) == 8, posts
+    loc = {(rt, place) for rt, place in posts.values()}
+    app2emp = {r["roster_app_user"]: r["employee_number"] for r in rows(p("staff"))}
+    seen = set()
+    month = defaultdict(int)
+    for r in rows(p("timesheets")):
+        if r["source_system"] == "Payroll":
+            if r["post_code"] not in posts:
+                continue
+            rt = posts[r["post_code"]][0]
+            day = dt.datetime.strptime(r["work_date"], "%d/%m/%Y").date()
+            key = (r["employee_number"], rt, day, r["shift"])
+        else:
+            if r["status"] != "Worked" or (r["route"], r["location"]) not in loc:
+                continue
+            st = dt.datetime.fromisoformat(r["shift_start"])
+            key = (app2emp[r["app_user"]], r["route"], st.date(), "AM" if st.hour < 12 else "PM")
+        if key not in seen:
+            seen.add(key)
+            month[(key[1], key[2].month)] += 1
+    shifts = defaultdict(int)
+    for (rt, m), v in month.items():
+        shifts[rt] += v
+    led = rows(p("ledger"))
+    gone = {r["narration"].split()[-1] for r in led if r["narration"].startswith("Reverse 30 June journal")}
+    cost = defaultdict(float)
+    for r in led:
+        if r["account"] == "6421" and r["cost_centre"] != "NP00" and r["document"] not in gone:
+            cost[str(int(r["cost_centre"][2:]))] += float(r["amount"])
+    names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+    for r in led:
+        if r["account"] == "6422":
+            mm = next(i for i, x in enumerate(names, 1) if " %s-26" % x in r["narration"])
+            tot = sum(v for (rt, m), v in month.items() if m == mm)
+            for (rt, m), v in month.items():
+                if m == mm:
+                    cost[rt] += float(r["amount"]) * v / tot
+    return dict(shifts), dict(cost)
+
+
+def run(task=TASK):
+    t = os.path.join(task, "target")
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    bad = []
+    ew = excess_wait(t)
+    order = sorted(ew, key=lambda r: -ew[r])
+    if sorted(int(r) for r in order[:4]) != fig["call"]["routes"]:
+        bad.append("the four routes %s" % sorted(order[:4]))
+    if int(order[4]) != fig["first_below"]:
+        bad.append("the first below %s" % order[4])
+    for rt, v in ew.items():
+        if round(v, 1) != fig["ewt"][rt]:
+            bad.append("route %s excess wait %.3f against %.1f" % (rt, v, fig["ewt"][rt]))
+    shifts, cost = pilot(t)
+    for rt in fig["ask_a"]:
+        if shifts.get(rt) != fig["ask_a"][rt]:
+            bad.append("route %s shifts %s against %s" % (rt, shifts.get(rt), fig["ask_a"][rt]))
+        if int(round(cost.get(rt, -1))) != fig["ask_b"][rt]:
+            bad.append("route %s cost %.2f against %s" % (rt, cost.get(rt, -1), fig["ask_b"][rt]))
+    wb = openpyxl.load_workbook(os.path.join(task, "golden", "pellbrook_2027_headway_programme_routes.xlsx"),
+                                data_only=True)
+    ws = wb["Ranking"]
+    got = {str(r[1]): (r[3], r[4]) for r in ws.iter_rows(min_row=5, values_only=True) if r[1] is not None}
+    for rt in fig["ewt"]:
+        if got[rt][0] != fig["ewt"][rt] or (got[rt][1] == "Yes") != (int(rt) in fig["call"]["routes"]):
+            bad.append("golden workbook route %s" % rt)
+    pil = {str(r[0]): (r[1], r[2]) for r in wb["Pilot 2026"].iter_rows(min_row=2, values_only=True) if r[0] != "Total"}
+    for rt in fig["ask_a"]:
+        if pil[rt] != (fig["ask_a"][rt], fig["ask_b"][rt]):
+            bad.append("golden workbook pilot route %s" % rt)
+    print("verify: %d figures recomputed, %d disagreements" % (8 + 2 + 16 + 24, len(bad)))
+    for x in bad:
+        print("  DISAGREE", x)
+    return 0 if not bad else 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(run())

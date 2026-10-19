@@ -1,11 +1,11 @@
-"""The pack's record files as each system exports them: the OSCE system's marks for the 2026 sitting, the station
-sheet and examiner allocation for it, the case bank and its sitting history, the examiner register, the training
-team's attendance record, the availability form's responses and the two operational files the pack carries. Each
-writer returns its row count."""
+"""The pack's record files as each system exports them: the location vendor's timing-point departures (first release
+and revised), the ticketing system's journeys, the timetable feeds, the corridor workbook, the stop changes log, the
+operator's pilot timesheets and staff list, and the agency's ledger. Each writer returns its row count."""
 import csv
 import datetime as dt
-import unicodedata
-import zlib
+import hashlib
+import io
+import zipfile
 
 import numpy as np
 import openpyxl
@@ -13,6 +13,8 @@ from openpyxl.styles import Alignment, Font, PatternFill
 
 import common as K
 import world as W
+
+RELOCATED = None   # set by relocation(net): (old stop number, new stop number)
 
 
 def _csv(path, header, rows, delim=","):
@@ -23,15 +25,11 @@ def _csv(path, header, rows, delim=","):
     return len(rows)
 
 
-def _ascii(x):
-    return unicodedata.normalize("NFKD", x).encode("ascii", "ignore").decode()
-
-
-def _sheet(ws, header, rows, widths, date_cols=(), freeze=True):
+def _sheet(ws, header, rows, widths, date_cols=(), freeze=True, fmt=None):
     ws.append(header)
     for c in ws[1]:
         c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="DCE6F0")
+        c.fill = PatternFill("solid", fgColor="DDE7EE")
         c.alignment = Alignment(vertical="top", wrap_text=True)
     for row in rows:
         ws.append(row)
@@ -41,328 +39,394 @@ def _sheet(ws, header, rows, widths, date_cols=(), freeze=True):
         for cell in ws[openpyxl.utils.get_column_letter(c + 1)][1:]:
             if isinstance(cell.value, (dt.date, dt.datetime)):
                 cell.number_format = "dd/mm/yyyy"
+    for c, f in (fmt or {}).items():
+        for cell in ws[openpyxl.utils.get_column_letter(c + 1)][1:]:
+            cell.number_format = f
     if freeze:
         ws.freeze_panes = "A2"
     ws.auto_filter.ref = ws.dimensions
 
 
-# ---------------------------------------------------------------------------------------------- the 2026 sitting
-def schedule():
-    """Each candidate's day, round and the slot (start and end) of each station in their rotation: eight minutes a
-    station and two to change, a round of twelve candidates in two hours."""
-    starts = {1: [(8, 30), (10, 45), (13, 30), (15, 45)], 2: [(8, 30), (10, 45), (13, 30)]}
-    out, i = {}, 0
-    for dno, rounds in K.ROUNDS26.items():
-        dd = K.SIT26[dno - 1]
-        for ri, rno in enumerate(rounds):
-            h, m = starts[dno][ri]
-            t0 = dt.datetime(dd.year, dd.month, dd.day, h, m)
-            for j in range(12):
-                for slot in range(12):
-                    sno = (j + slot) % 12 + 1
-                    beg = t0 + dt.timedelta(minutes=10 * slot)
-                    out[(i, sno)] = (dno, rno, beg, beg + dt.timedelta(minutes=8))
-                i += 1
-    return out
+def hms(m):
+    s = int(round(m * 60))
+    return "%02d:%02d:%02d" % (s // 3600, (s // 60) % 60, s % 60)
 
 
-def exam_no(i):
-    return "FM26-%04d" % (i + 1)
+def stamp(day, m):
+    s = int(round(m * 60))
+    t = dt.datetime(day.year, day.month, day.day) + dt.timedelta(seconds=s)
+    return t.strftime("%Y-%m-%dT%H:%M:%S") + K.TZ
 
 
-def badge(sno, ro):
-    return "S%02d-%s" % (sno, "L" if ro == 0 else "2")
+def in_extract(m):
+    return any(a <= m < b for a, b in K.EXTRACT)
 
 
-def write_marks(path, w, alloc):
-    """One row an item an examiner marked (and one for the global grade): day 1 as the OSCE system stored it before
-    its overnight update (station number, examiner badge, the mark's label), day 2 after it (case code, staff number,
-    the mark's code). Station 7's item 14 was on the day 1 forms only; an item a cue opens is N/A when it was not
-    given."""
-    rng = np.random.default_rng([w["seed"], 41])
-    sch = schedule()
-    code_of = {st[0]: st[1] for st in K.STATIONS26}
+def relocation(net):
+    """Route 22's outbound stop after Brewery Lane moved 80 metres for roadworks from Monday 17 August and took a new
+    stop number; the old number was retired."""
+    global RELOCATED
+    cor = net["corridor"][("22", "out")]
+    old = cor[5]
+    RELOCATED = (old, old + 88)
+    return RELOCATED
+
+
+def stop_number(code, day):
+    if RELOCATED and code == RELOCATED[0] and day >= K.RELOCATION:
+        return RELOCATED[1]
+    return code
+
+
+def trip_meta(trip):
+    head = trip.split("-")[0]
+    rt = "".join(ch for ch in head if ch.isdigit())
+    d = "out" if head[len(rt)] == "O" else "in"
+    return rt, d, head[len(rt) + 1:]
+
+
+def headsign(net, rt, d, v):
+    if d == "in":
+        return "City"
+    if v:
+        return W.NET[rt]["branches"][v]["name"]
+    return W.NET[rt]["tps"][-1]
+
+
+# ------------------------------------------------------------------------------------------------- departures
+def departures(net, S, seed=W.SEED):
+    """The vendor's revised departures at timing points, one row a trip a timing point (not the trip's last stop),
+    in the extract windows; a bus that reopened its doors at a timing point left two records, the later one the
+    time it left. Returns (revised rows, first-release rows)."""
+    rng = np.random.default_rng([seed, 31])
+    fleet = {}
     rows = []
-    order = sorted(sch.items(), key=lambda kv: (kv[1][2], kv[0][1], kv[0][0]))
-    for (i, sno), (dno, rno, beg, end) in order:
-        for ro in (0, 1):
-            rec = w["rec"][(i, sno, ro)]
-            stamp = end + dt.timedelta(seconds=int(rng.integers(15, 170)))
-            n_items = [st[4] for st in K.STATIONS26 if st[0] == sno][0]
-            for item in range(1, n_items + 1):
-                if sno == K.WITHDRAWN[0] and item == K.WITHDRAWN[1]:
-                    if dno == 2:
-                        continue
-                    v = w["withdrawn"][(i, ro)]
-                elif item in rec["items"]:
-                    v = rec["items"][item]
-                else:
-                    v = None                                          # not applicable: the cue was not given
-                if dno == 1:
-                    resp = K.LABELS_DAY1[v]
-                    rows.append([exam_no(i), dno, rno, str(sno), badge(sno, ro), "Lead" if ro == 0 else "Second",
-                                 str(item), resp, stamp.strftime("%Y-%m-%d %H:%M:%S")])
-                else:
-                    resp = "NA" if v is None else str(v)
-                    rows.append([exam_no(i), dno, rno, code_of[sno], alloc[(sno, ro)]["staff"],
-                                 "L" if ro == 0 else "S", str(item), resp, stamp.strftime("%Y-%m-%d %H:%M:%S")])
-    return _csv(path, ["exam_no", "exam_day", "round", "station", "examiner", "role", "item", "response",
-                       "recorded_at"], rows)
+    for (day, trip), arr in sorted(S["deps"].items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        rt, d, v = trip_meta(trip)
+        pat = net["patterns"][(rt, d, v)]
+        sch = S["sched"][(day, trip)]
+        veh = fleet.setdefault((day, trip), 1100 + int(rng.integers(0, 420)))
+        for i, s in enumerate(pat[:-1]):
+            if not net["stops"][s]["tp"] or np.isnan(arr[i]) or not in_extract(arr[i]):
+                continue
+            rows.append([day, rt, "Outbound" if d == "out" else "Inbound", trip, headsign(net, rt, d, v), veh,
+                         stop_number(s, day), net["stops"][s]["name"], hms(sch[i]), float(arr[i]), 0])
+    # doubled records where the doors reopened: an earlier record 15 to 70 seconds before the bus left
+    extra = []
+    for r in rows:
+        if rng.random() < 0.006:
+            e = list(r)
+            e[9] = r[9] - rng.uniform(15, 70) / 60
+            e[10] = 1
+            extra.append(e)
+    allr = rows + extra
+    allr.sort(key=lambda r: (r[0], r[9], r[3]))
+    first = [r for r in allr if not (r[10] == 0 and rng.random() < 0.011)]
+    return allr, first
 
 
-def write_global(path, w, alloc):
-    """The OSCE system's global grades table: one row an examiner an encounter, in each day's format (day 1 the
-    grade's label, day 2 its code from 1, clear fail, to 5, excellent)."""
-    rng = np.random.default_rng([w["seed"], 44])
-    sch = schedule()
-    code_of = {st[0]: st[1] for st in K.STATIONS26}
+def write_departures(path, rows, release):
+    out = []
+    for n, r in enumerate(rows, 1):
+        day = r[0]
+        rid = "%s-%s-%06d" % (release, day.strftime("%m%d"), n)
+        out.append([day.isoformat(), r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], stamp(day, r[9]), rid])
+    return _csv(path, ["service_date", "route", "direction", "trip_id", "destination", "vehicle", "timing_point",
+                       "timing_point_name", "scheduled_time", "departure_time", "record_id"], out)
+
+
+# ------------------------------------------------------------------------------------------------- journeys
+def card_id(n):
+    return hashlib.sha1(("pellcard-%d" % n).encode()).hexdigest()[:14].upper()
+
+
+def write_journeys(path, J):
     rows = []
-    order = sorted(sch.items(), key=lambda kv: (kv[1][2], kv[0][1], kv[0][0]))
-    for (i, sno), (dno, rno, beg, end) in order:
-        for ro in (0, 1):
-            g = w["global"][(i, sno, ro)]
-            stamp = (end + dt.timedelta(seconds=int(rng.integers(20, 190)))).strftime("%Y-%m-%d %H:%M:%S")
-            if dno == 1:
-                rows.append([exam_no(i), dno, str(sno), badge(sno, ro), K.GLOBAL[g], stamp])
-            else:
-                rows.append([exam_no(i), dno, code_of[sno], alloc[(sno, ro)]["staff"], str(g + 1), stamp])
-    return _csv(path, ["exam_no", "exam_day", "station", "examiner", "global_grade", "recorded_at"], rows)
+    sel = [j for j in J if in_extract(j["on"])]
+    sel.sort(key=lambda j: (j["day"], j["on"], j["trip"]))
+    for n, j in enumerate(sel, 1):
+        day = j["day"]
+        off_stop = stop_number(j["alight"], day) if j["alight"] is not None else ""
+        rows.append(["J%s%07d" % (day.strftime("%m%d"), n), card_id(j["card"]), j["fare"], j["route"], j["trip"],
+                     stop_number(j["board"], day), stamp(day, j["on"]), off_stop,
+                     stamp(day, j["off"]) if j["off"] is not None else "",
+                     "Complete" if j["alight"] is not None else "Default fare"])
+    return _csv(path, ["journey_id", "card_id", "fare_type", "route", "trip_id", "tag_on_stop", "tag_on_time",
+                       "tag_off_stop", "tag_off_time", "fare_status"], rows)
 
 
-def allocation(e, seed):
-    """The 2026 sitting's two examiners at each station, drawn from the register's eligible examiners as it stood
-    in December 2025 (active, an eligible grade, training attended in the three years before)."""
-    r = np.random.default_rng([seed, 42])
-    ok = [p for p in e["people"] if p["status"] == "Active" and p["grade"] in W.ELIGIBLE_GRADES
-          and p["base"] in ("Callowfield", "CUH", "General practice") and p["staff"] not in e["device"]
-          and p["initial"] <= dt.date(2025, 11, 30)]
-    ok.sort(key=lambda p: p["staff"])
-    pick = [ok[j] for j in r.choice(len(ok), size=24, replace=False).tolist()]
-    out = {}
-    for k, st in enumerate(K.STATIONS26):
-        for ro in (0, 1):
-            p = pick[2 * k + ro]
-            out[(st[0], ro)] = {"staff": p["staff"], "name": "%s %s" % (p["fore"], p["sur"]), "title": p["title"],
-                                "grade": p["grade"]}
-    return out
+# ------------------------------------------------------------------------------------------------- timetable feeds
+def _zip(path, files):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for name, text in files:
+            info = zipfile.ZipInfo(name, date_time=(2026, 7, 17, 9, 30, 0) if "07-20" in path else (2026, 8, 13, 11, 5, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            z.writestr(info, text)
 
 
-def write_station_sheet(path):
+def _txt(header, rows):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n")
+    w.writerow(header)
+    w.writerows(rows)
+    return buf.getvalue()
+
+
+def write_gtfs(path, net, tt, feed):
+    a, b = K.FEED1 if feed == 1 else K.FEED2
+    sid = "WD-%s" % a.strftime("%m%d")
+    day = a
+    stops_used = set()
+    trips, times = [], []
+    for x in tt:
+        rt, d, v = x["route"], x["direction"], x["variant"]
+        pat = net["patterns"][(rt, d, v)]
+        trips.append([rt, sid, x["trip"], headsign(net, rt, d, v), 0 if d == "out" else 1,
+                      "%s-%s%s" % (rt, d.upper(), v)])
+        for i, s in enumerate(pat):
+            code = stop_number(s, day)
+            stops_used.add(code)
+            t = hms(x["times"][i])
+            times.append([x["trip"], t, t, code, i + 1, 1 if net["stops"][s]["tp"] else 0])
+    stops = []
+    for code in sorted(stops_used):
+        src = RELOCATED[0] if RELOCATED and code == RELOCATED[1] else code
+        st = net["stops"][src]
+        lat, lon = _coords(src)
+        if RELOCATED and code == RELOCATED[1]:
+            lat += 0.0007
+        stops.append([code, code, st["name"], "%.6f" % lat, "%.6f" % lon])
+    routes = [[rt, "PM", rt, "%s" % W.NET[rt]["road"], 3, "1f5a8c" if rt in K.BRANCHED else "2e7d4f"] for rt in K.ROUTES]
+    files = [
+        ("agency.txt", _txt(["agency_id", "agency_name", "agency_url", "agency_timezone", "agency_lang"],
+                            [["PM", K.AGENCY, "https://www.pellbrookmetro.example", "Australia/Brisbane", "en"]])),
+        ("feed_info.txt", _txt(["feed_publisher_name", "feed_publisher_url", "feed_lang", "feed_start_date",
+                                "feed_end_date", "feed_version"],
+                               [[K.AGENCY, "https://www.pellbrookmetro.example", "en", a.strftime("%Y%m%d"),
+                                 b.strftime("%Y%m%d"), "%s.1" % a.strftime("%Y%m%d")]])),
+        ("calendar.txt", _txt(["service_id", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
+                               "sunday", "start_date", "end_date"],
+                              [[sid, 1, 1, 1, 1, 1, 0, 0, a.strftime("%Y%m%d"), b.strftime("%Y%m%d")]])),
+        ("routes.txt", _txt(["route_id", "agency_id", "route_short_name", "route_long_name", "route_type",
+                             "route_color"], routes)),
+        ("stops.txt", _txt(["stop_id", "stop_code", "stop_name", "stop_lat", "stop_lon"], stops)),
+        ("trips.txt", _txt(["route_id", "service_id", "trip_id", "trip_headsign", "direction_id", "shape_id"], trips)),
+        ("stop_times.txt", _txt(["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence",
+                                 "timepoint"], times)),
+    ]
+    _zip(path, files)
+    return len(times)
+
+
+def _coords(code):
+    r = np.random.default_rng([W.SEED, 41, int(code)])
+    return -27.47 + r.uniform(-0.18, 0.18), 153.02 + r.uniform(-0.2, 0.2)
+
+
+# ------------------------------------------------------------------------------------------------- corridors
+def write_corridors(path, net):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Stations"
-    rows = [[st[0], st[1], st[2], st[3], st[4], st[5], "8 minutes"] for st in K.STATIONS26]
-    _sheet(ws, ["Station", "Case code", "Case title", "Blueprint domain", "Checklist items", "Resources",
-                "Station time"], rows, [8, 11, 40, 20, 14, 20, 12])
-    ws2 = wb.create_sheet("Marking")
-    notes = [["Each checklist item is marked 0 (not done), 1 (partly done) or 2 (done well), or N/A where the item "
-              "depends on a cue the simulated patient gives and the cue was not given."],
-             ["The station mark is the points scored over the points the station's available items carry, out of 20 "
-              "(assessment policy 3.2)."],
-             ["Each examiner also gives a global grade: clear fail, borderline, clear pass, good or excellent."],
-             ["Both examiners at a station mark every candidate independently; the candidate's station mark is the "
-              "mean of the two."]]
-    for n in notes:
-        ws2.append(n)
-    ws2.column_dimensions["A"].width = 120
+    ws.title = "Corridor stops"
+    rows = []
+    for rt in K.ROUTES:
+        for d in ("out", "in"):
+            for i, s in enumerate(net["corridor"][(rt, d)], 1):
+                rows.append([rt, W.NET[rt]["road"], "Outbound" if d == "out" else "Inbound", i, s,
+                             net["stops"][s]["name"], "Yes" if net["stops"][s]["tp"] else "No"])
+    _sheet(ws, ["Route", "Corridor", "Direction", "Sequence", "Stop number", "Stop name", "Timing point"], rows,
+           [7, 16, 11, 9, 12, 40, 12])
+    ws2 = wb.create_sheet("About")
+    notes = [
+        ["Frequent corridors, July 2026"],
+        ["Network Planning, Pellbrook Metro. Issued 6 July 2026 for the July timetable."],
+        [None],
+        ["A frequent corridor is the run of stops on a frequent route where a bus comes at least every ten minutes "
+         "from 7 am to 7 pm on weekdays. On routes 7, 14, 31 and 52 it runs from the City Interchange to the junction "
+         "where the route's two branches part; on routes 3, 9, 22 and 40 it is the whole route."],
+        ["Stops are listed in travel order for each direction. Timing points are the stops the timetable times "
+         "buses at."],
+    ]
+    for r in notes:
+        ws2.append(r)
+    ws2.column_dimensions["A"].width = 110
+    for row in ws2.iter_rows():
+        for c in row:
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws2["A1"].font = Font(bold=True, size=12)
     wb.save(path)
     return len(rows)
 
 
-def write_allocation(path, alloc):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Examiners"
+def write_stop_changes(path, net):
+    old, new = RELOCATED
+    nm = net["stops"][old]["name"]
+    def nm_(code):
+        return net["stops"][code]["name"]
+    rows = [
+        ["SC-26-014", "2026-03-09", 209109, "", nm_(209109), "Renamed", "9", "Stop name corrected on signs and feed"],
+        ["SC-26-021", "2026-05-18", 252110, "", nm_(252110), "Shelter replaced", "52", "No change to stop number"],
+        ["SC-26-033", "2026-08-17", old, new, nm, "Relocated", "22",
+         "Moved 80 m north for the Mardale Road roadworks; new stop number from the first service"],
+        ["SC-26-034", "2026-08-17", 240122, "", nm_(240122), "Temporary closure", "40",
+         "Closed 9 pm to 5 am for night works; weekday services unaffected"],
+        ["SC-26-041", "2026-09-28", 231114, "", nm_(231114), "Accessibility upgrade", "31", "Raised platform"],
+    ]
+    return _csv(path, ["change_id", "effective_date", "stop_number", "new_stop_number", "location", "change",
+                       "routes", "note"], rows)
+
+
+# ------------------------------------------------------------------------------------------------- the pilot
+def write_staff(path, P):
+    rows = [[s["emp"], s["app"], s["surname"], s["given"], s["role"], s["depot"], s["start"].isoformat()]
+            for s in sorted(P["staff"], key=lambda s: s["emp"])]
+    return _csv(path, ["employee_number", "roster_app_user", "surname", "given_name", "position", "depot",
+                       "start_date"], rows)
+
+
+def timesheet_rows(P, seed=W.SEED):
+    """The operator's export of supervisor shifts, February to June 2026, stacking its payroll timesheets (to Friday
+    15 May) and its rostering app (from Monday 4 May); in the two cut-over weeks every shift went into both."""
+    rng = np.random.default_rng([seed, 51])
     rows = []
-    for st in K.STATIONS26:
-        for ro in (0, 1):
-            a = alloc[(st[0], ro)]
-            rows.append([st[0], st[1], "Lead examiner" if ro == 0 else "Second examiner", badge(st[0], ro),
-                         a["staff"], "%s %s" % (a["title"], a["name"]), a["grade"]])
-    _sheet(ws, ["Station", "Case code", "Role", "Badge", "Staff no.", "Examiner", "Grade"], rows,
-           [8, 11, 16, 9, 10, 30, 22])
-    wb.save(path)
-    return len(rows)
+    a, b = K.CUTOVER
+    for s in P["shifts"]:
+        day = s["day"]
+        (h0, m0), (h1, m1) = W.SHIFTS[s["peak"]]
+        a0, a1 = h0 * 60 + m0, h1 * 60 + m1
+        part = s.get("part", 0)
+        if part == 1:
+            a1 = a0 + 75
+        if part == 2:
+            a0 = a0 + 75
+        hours = (a1 - a0) / 60
+        if s.get("route"):
+            post, loc = W.POSTS[s["route"]]
+            app_route = s["route"]
+        else:
+            post, loc = s["depot"], W.DEPOT_POSTS[s["depot"]]
+            app_route = ""
+        payroll = day <= b
+        app = day >= a
+        if payroll and s["status"] == "Worked":
+            rows.append(dict(src="Payroll", day=day, emp=s["who"]["emp"], post=post, date_text=day.strftime("%d/%m/%Y"),
+                             shift=s["peak"], hours="%.2f" % hours))
+        if app:
+            st = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=a0)
+            en = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=a1)
+            who = s["who"]["app"] if s["who"] else ""
+            rows.append(dict(src="Roster app", day=day, user=who, route=app_route, location=loc,
+                             start=st.strftime("%Y-%m-%dT%H:%M") + K.TZ, end=en.strftime("%Y-%m-%dT%H:%M") + K.TZ,
+                             status=s["status"]))
+    order = sorted(range(len(rows)), key=lambda i: (rows[i]["day"], rows[i]["src"], rng.random()))
+    return [rows[i] for i in order]
 
 
-# ---------------------------------------------------------------------------------------------- the case bank
-def _bank_date(d):
-    """The bank keeps a review date entered in the old system as the text it was typed in, day first; a date
-    entered since the migration is a date."""
-    if d < K.BANK_MIGRATION:
-        return d.strftime("%d/%m/%Y")
-    return d
+def write_timesheets(path, rows):
+    out = []
+    for r in rows:
+        if r["src"] == "Payroll":
+            out.append(["Payroll", r["emp"], r["post"], r["date_text"], r["shift"], r["hours"], "", "", "", "", "", ""])
+        else:
+            out.append(["Roster app", "", "", "", "", "", r["user"], r["route"], r["location"], r["start"], r["end"],
+                        r["status"]])
+    return _csv(path, ["source_system", "employee_number", "post_code", "work_date", "shift", "hours",
+                       "app_user", "route", "location", "shift_start", "shift_end", "status"], out)
 
 
-def write_bank(path, b):
+def ledger_rows(P, T, seed=W.SEED):
+    """The agency's general ledger lines on the network performance cost centres, July 2025 to September 2026: the
+    operator's monthly pilot invoices by route (posted the month after), the coordination fee, the June charges
+    accrued at the 30 June year end (each route's cost centre) and reversed in July in one line at the central cost
+    centre, June's invoices and fee posted in July, and the centre's other running costs."""
+    rng = np.random.default_rng([seed, 61])
+    rows = []
+    inv = iter(range(5107, 9999))
+    names = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct",
+             11: "Nov", 12: "Dec"}
+
+    def post(day, cc, acct, amt, doc, narr):
+        rows.append([day, cc, acct, round(amt, 2), doc, narr])
+
+    for m in (2, 3, 4, 5, 6):
+        when = dt.date(2026, m + 1, int(rng.integers(9, 17))) if m < 6 else dt.date(2026, 7, int(rng.integers(13, 18)))
+        no = "PBC-%d" % next(inv)
+        for rt in K.ROUTES:
+            n = T["post_days"][m].get(rt, 0)
+            if n:
+                post(when, "NP%s" % rt.zfill(2), "6421", n * K.POST_DAY, no,
+                     "PBC headway supervision %s-26 route %s" % (names[m], rt))
+        fee_day = when if m < 6 else dt.date(2026, 7, int(rng.integers(20, 25)))
+        post(fee_day, "NP00", "6422", K.FEE[m], "PBC-%d" % next(inv), "PBC headway pilot coordination %s-26" % names[m])
+    acc = 0.0
+    for rt in K.ROUTES:
+        n = T["post_days"][6].get(rt, 0)
+        if n:
+            post(dt.date(2026, 6, 30), "NP%s" % rt.zfill(2), "6421", n * K.POST_DAY, "JNL-260630-11",
+                 "PBC headway supervision Jun-26 route %s" % rt)
+            acc += n * K.POST_DAY
+    post(dt.date(2026, 7, 1), "NP00", "6421", -acc, "JNL-260701-02", "Reverse 30 June journal JNL-260630-11")
+    # the central cost centre's other running costs
+    for y, m in [(2025, x) for x in range(7, 13)] + [(2026, x) for x in range(1, 10)]:
+        d0 = dt.date(y, m, int(rng.integers(3, 9)))
+        post(d0, "NP00", "6310", 4180.00, "VND-%d" % int(rng.integers(20000, 29999)), "Location data licence %s-%d" %
+             (names[m], y % 100))
+        if m in (3, 8) or (y == 2025 and m == 11):
+            post(dt.date(y, m, int(rng.integers(18, 27))), "NP00", "6450", float(np.round(rng.uniform(7800, 12400), 2)),
+                 "VND-%d" % int(rng.integers(20000, 29999)), "On-board survey fieldwork %s-%d" % (names[m], y % 100))
+    rows.sort(key=lambda r: (r[0], r[1], r[4]))
+    return rows
+
+
+CC_NAMES = {"NP00": "Network Performance (central)"}
+CC_NAMES.update({"NP%s" % rt.zfill(2): "Network Performance, route %s" % rt for rt in K.ROUTES})
+ACCOUNTS = {"6421": "Contracted supervision", "6422": "Contract management fees", "6310": "Data licences",
+            "6450": "Surveys and research"}
+
+
+def fy_period(day):
+    fy = day.year + 1 if day.month >= 7 else day.year
+    p = day.month - 6 if day.month >= 7 else day.month + 6
+    return "FY%d-P%02d" % (fy % 100, p)
+
+
+def write_ledger(path, rows):
+    out = [[r[0].isoformat(), fy_period(r[0]), r[1], CC_NAMES[r[1]], r[2], ACCOUNTS[r[2]], "%.2f" % r[3], r[4], r[5]]
+           for r in rows]
+    return _csv(path, ["posting_date", "period", "cost_centre", "cost_centre_name", "account", "account_name",
+                       "amount", "document", "narration"], out)
+
+
+# ------------------------------------------------------------------------------------------------- distractors
+FEEDBACK_CATS = [("Bus did not come or long wait", 0.24), ("Buses arrived together", 0.11), ("Running late", 0.16),
+                 ("Driver", 0.14), ("Crowding", 0.12), ("Cleanliness", 0.05), ("Tickets and fares", 0.10),
+                 ("Stop or shelter", 0.08)]
+
+
+def write_feedback(path, seed=W.SEED):
+    """The customer contact centre's feedback cases on the frequent routes, Term 3 2026 (20 July to 25 September)."""
+    rng = np.random.default_rng([seed, 71])
+    weight = {"3": 1.0, "7": 1.1, "9": 0.7, "14": 1.3, "22": 0.8, "31": 0.9, "40": 1.4, "52": 0.9}
+    rts = list(weight)
+    p = np.array([weight[r] for r in rts]) / sum(weight.values())
+    cats = [c for c, _ in FEEDBACK_CATS]
+    cp = np.array([w for _, w in FEEDBACK_CATS])
+    rows = []
+    day0 = dt.date(2026, 7, 20)
+    n = 318
+    for i in range(n):
+        d = day0 + dt.timedelta(days=int(rng.integers(0, 68)))
+        rt = rts[int(rng.choice(len(rts), p=p))]
+        c = cats[int(rng.choice(len(cats), p=cp / cp.sum()))]
+        ch = ["Phone", "Web form", "Email", "App"][int(rng.choice(4, p=[0.31, 0.37, 0.12, 0.20]))]
+        st = "Closed" if d < dt.date(2026, 9, 14) or rng.random() < 0.6 else "Open"
+        rows.append(["CF-%06d" % (412000 + i * 7 + int(rng.integers(0, 6))), d, rt, c, ch, st])
+    rows.sort(key=lambda r: (r[1], r[0]))
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Cases"
-    rows = []
-    for c in sorted(b["cases"], key=lambda c: (K.DOMAINS.index(c["domain"]), c["code"])):
-        rows.append([c["code"], c["title"], c["domain"], c["specialty"], c["resources"], c["version"], c["status"],
-                     _bank_date(c["reviewed"])])
-    _sheet(ws, ["Case code", "Title", "Blueprint domain", "Specialty", "Resources", "Version", "Status",
-                "Last reviewed"], rows, [12, 46, 20, 24, 20, 9, 22, 14], date_cols=(7,))
-    ws2 = wb.create_sheet("Fields")
-    for line in [["Field", "Meaning"],
-                 ["Case code", "The case's code in the bank"],
-                 ["Resources", "What the station needs: SP (a simulated patient), Manikin, Task trainer, SP and task "
-                               "trainer, Video, Paper case"],
-                 ["Version", "The case's current version; a case written in the Assessment Item Bank starts at 1"],
-                 ["Status", "Active; Active - edits pending (usable as it stands); Under review (not usable until the "
-                            "assessment group signs it off); Retired"],
-                 ["Last reviewed", "The date the OSCE assessment group last reviewed the case"]]:
-        ws2.append(line)
-    ws2.column_dimensions["A"].width = 16
-    ws2.column_dimensions["B"].width = 110
+    _sheet(ws, ["Case", "Received", "Route", "Category", "Channel", "Status"], rows, [12, 12, 8, 30, 11, 9],
+           date_cols=(1,))
     wb.save(path)
     return len(rows)
-
-
-def write_usage(path, b):
-    rows = [[u["sitting"], u["date"].isoformat(), u["station"], u["code"], u["title"]] for u in b["usage"]]
-    return _csv(path, ["sitting", "sitting_date", "station", "case_code", "title_as_set"], rows)
-
-
-# ---------------------------------------------------------------------------------------------- examiners
-def write_register(path, e):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Register"
-    rows = []
-    for p in sorted(e["people"], key=lambda p: (p["sur"], p["fore"])):
-        rows.append([p["staff"], p["title"], p["fore"], p["sur"], p["grade"], p["base"], p["email"], p["initial"],
-                     p["last_refresher"], p["status"]])
-    _sheet(ws, ["Staff no.", "Title", "Forename", "Surname", "Grade", "Base", "Email", "Examiner training",
-                "Last refresher", "Status"], rows, [10, 7, 14, 22, 22, 18, 40, 17, 15, 11], date_cols=(7, 8))
-    ws2 = wb.create_sheet("Fields")
-    for line in [["Field", "Meaning"],
-                 ["Staff no.", "The examiner's University staff number"],
-                 ["Base", "Where the examiner works: the University (Callowfield), Callowfield University Hospital "
-                          "(CUH), Fennabeg Clinical School (Fennabeg) or a general practice"],
-                 ["Examiner training", "The date the examiner completed the School's examiner training"],
-                 ["Last refresher", "The latest examiner refresher booked through the University's booking system, "
-                                    "once its date has passed"],
-                 ["Status", "Active; On leave; Inactive (no longer examining)"]]:
-        ws2.append(line)
-    ws2.column_dimensions["A"].width = 18
-    ws2.column_dimensions["B"].width = 110
-    wb.save(path)
-    return len(rows)
-
-
-def _signed(title, fore, sur, venue):
-    """A name as each venue's sign-in sheet carries it: the training team's own sheet from the register, the
-    hospital's and Fennabeg's typed from the sheet with the title and without the accents."""
-    if venue == W.VENUES[0]:
-        return "%s %s" % (fore, sur)
-    return "%s %s %s" % (title, _ascii(fore), _ascii(sur))
-
-
-def write_training(path, e):
-    """The training team's record of every session since 2021: its own sessions from the booking system by
-    university staff number, and the sessions the hospital's postgraduate centre and Fennabeg run, from their
-    sign-in sheets, by their own staff numbers for their own staff."""
-    by_staff = {p["staff"]: p for p in e["people"]}
-    rows = []
-    for a in e["attendance"]:
-        p = by_staff[a["staff"]]
-        v = a["session"]["venue"]
-        no = p["alt"][0] if "alt" in p and p["alt"][1] == v else p["staff"]
-        rows.append([a["session"]["id"], a["session"]["date"].isoformat(), a["session"]["type"], v, no,
-                     _signed(p["title"], p["fore"], p["sur"], v), a["att"]])
-    for t in e["trainees"]:
-        v = t["session"]["venue"]
-        rows.append([t["session"]["id"], t["session"]["date"].isoformat(), t["session"]["type"], v, t["no"],
-                     _signed("Dr", t["name"][0], t["name"][1], v), t["att"]])
-    rows.sort(key=lambda x: (x[1], x[0], x[4]))
-    return _csv(path, ["session_id", "session_date", "session_type", "venue", "staff_no", "examiner", "outcome"], rows)
-
-
-PERSONAL = ["gmail.com", "hotmail.com", "outlook.com", "icloud.com", "eircom.net", "yahoo.ie"]
-
-
-def write_availability(path, e):
-    """The form's export: one row a submission, the time it was submitted, the email it came from and the name
-    typed, the site and a Yes for each session offered. About one examiner in ten answered from a personal address
-    and typed their name without its accents; about one in ten submitted again later, changing their sessions or
-    site (the form says the latest response stands); a few who are not on the register answered too."""
-    r = np.random.default_rng([e["seed"], 43])
-    rp = np.random.default_rng([e["seed"], 44])      # how each personal address is made up
-    by_staff = {p["staff"]: p for p in e["people"]}
-    t0 = K.FORM_OPENED
-    subs = []
-    for x in sorted(e["responses"], key=lambda x: x["staff"]):
-        p = by_staff[x["staff"]]
-        personal = r.random() < 0.10
-        if personal:
-            fo, su = _ascii(p["fore"]).lower(), _ascii(p["sur"]).lower().replace(" ", "").replace("'", "")
-            digits = int(r.integers(1, 99))
-            shape = int(rp.integers(0, 5))
-            local = [fo + su + str(digits), fo + "." + su, fo[0] + su, fo + "_" + su + str(digits % 10),
-                     su + "." + fo][shape]
-            email = "%s@%s" % (local, str(r.choice(PERSONAL)))
-            name = "%s %s" % (_ascii(p["fore"]), _ascii(p["sur"]))
-            if r.random() < 0.5:
-                name = name.replace("O ", "O'", 1) if " O " in " %s " % name else name
-        else:
-            email = p["email"]
-            name = "%s %s" % (p["fore"], p["sur"])
-        if r.random() < 0.25:
-            name = "Dr %s" % name
-        final = dict(x["ticks"]), x["site"]
-        when = t0 + dt.timedelta(minutes=int(r.integers(0, 39 * 24 * 60)))
-        if r.random() < 0.10 and x["staff"] not in e["device"]:
-            # an earlier submission that the later one replaced: other sessions or another site
-            first_ticks = dict(x["ticks"])
-            flip = [k for k in first_ticks]
-            k = flip[int(r.integers(0, 4))]
-            first_ticks[k] = not first_ticks[k]
-            if not any(first_ticks.values()):
-                first_ticks[flip[0]] = True
-            first_site = x["site"]
-            if r.random() < 0.3:
-                first_site = [s[0] for s in K.SITES27 if s[0] != x["site"]][int(r.integers(0, 2))]
-            gap = dt.timedelta(minutes=int(r.integers(600, 9000)))
-            early = when - gap
-            if early < t0 + dt.timedelta(minutes=40):
-                # the first answer came in during the form's first days and the change followed it
-                early = t0 + dt.timedelta(minutes=40 + gap.seconds // 60 % 2400)
-                when = max(when, early + gap)
-            subs.append((early, email, name, first_site, first_ticks))
-        subs.append((when, email, name, final[1], final[0]))
-    for fore, sur in e["extra"][:4]:
-        ticks = {s[0]: bool(r.random() < 0.6) for s in K.SESSIONS}
-        if not any(ticks.values()):
-            ticks["d1_am"] = True
-        subs.append((t0 + dt.timedelta(minutes=int(r.integers(0, 39 * 24 * 60))),
-                     "%s.%s@callowfield.ie" % (_ascii(fore).lower(), _ascii(sur).lower().replace(" ", "")),
-                     "%s %s" % (fore, sur), K.SITES27[int(r.integers(0, 3))][0], ticks))
-    subs.sort(key=lambda s: s[0])
-    site_label = {s[0]: s[1] for s in K.SITES27}
-    # what a few examiners typed in the form's last box: logistics only, about the site they chose and nothing
-    # about other sites or sessions; no note used more than twice
-    notes = {"CSC": ["Is there parking at the Clinical Skills Centre?", "Which entrance for the Clinical Skills Centre?"],
-             "CUH": ["Parking permit for CUH please", "Where do examiners meet at the Simulation Suite?"],
-             "FCS": ["First time examining at Fennabeg, directions would help",
-                     "Is there a car park at the Clinical Skills Unit?"],
-             None: ["Please send the station briefing by email", "Vegetarian lunch please",
-                    "Can a medical student observe my station?", "Please use this address for anything about the OSCE",
-                    "Could I have a ground-floor room? Knee surgery in March", "Thanks",
-                    "Happy to help with the briefing if needed", "Gluten-free lunch if possible"]}
-    used = {}
-    rc = np.random.default_rng([e["seed"], 45])
-    rows = []
-    for when, email, name, site, ticks in subs:
-        when = when + dt.timedelta(seconds=zlib.crc32(("%s|%s" % (email, when)).encode()) % 60)
-        assert K.FORM_OPENED < when <= K.FORM_CLOSED
-        note = ""
-        if rc.random() < 0.07:
-            pool = [x for x in notes[site] + notes[None] if used.get(x, 0) < 2]
-            note = pool[int(rc.integers(0, len(pool)))]
-            used[note] = used.get(note, 0) + 1
-        rows.append([when.strftime("%d/%m/%Y %H:%M:%S"), email, name, site_label[site]] +
-                    ["Yes" if ticks[s[0]] else "" for s in K.SESSIONS] + [note])
-    return _csv(path, ["Timestamp", "Email address", "Your name", "Which site can you examine at?"] +
-                ["Sessions you can examine [%s]" % s[1] for s in K.SESSIONS] + ["Anything we should know?"], rows)
