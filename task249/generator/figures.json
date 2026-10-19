@@ -1,0 +1,107 @@
+{
+ "filed": {
+  "standard_cap_section": 3.3,
+  "conditional_error_table": 4.3,
+  "band_multiple": 1.96,
+  "exposure_ceiling_pct": 12,
+  "restart_reference_release": "5.3.2"
+ },
+ "call": {
+  "flagged": [
+   "ABH",
+   "ANV",
+   "CHT",
+   "KSP",
+   "KVR",
+   "LVN",
+   "MTL",
+   "PBH",
+   "PRM",
+   "RNJ",
+   "SHY",
+   "SQR",
+   "TJM",
+   "TRG",
+   "VRD"
+  ],
+  "n_flagged": 15,
+  "kept": [
+   "AKR",
+   "BHM",
+   "EKD",
+   "IDP",
+   "KTV",
+   "MDN",
+   "NVK",
+   "OJS",
+   "PGT",
+   "RNG",
+   "UDN",
+   "UJB",
+   "VKT"
+  ],
+  "n_kept": 13,
+  "min_flagged_share_pct_floor": 20
+ },
+ "components": {
+  "study_rate_within_3_days_pct": 2.3,
+  "study_rate_6_weeks_or_more_pct": 6.6,
+  "retest_gain_c": 0.04,
+  "retest_gain_a": 0.31,
+  "retest_gain_tau_days": 19.5,
+  "retest_gain_at_2_days": 0.32,
+  "elite_depth_lo_pct": 1.8,
+  "elite_depth_hi_pct": 4.5,
+  "cap_pct": 15,
+  "study_top_tenth_n": 223,
+  "study_top_tenth_mat_v_scored": 1.335,
+  "study_top_tenth_mat_v_at_ability": 1.352,
+  "study_top_tenth_mat_v_at_reported_error": 1.223,
+  "kelley_reported_error_adds": [
+   "NVK",
+   "OJS",
+   "UJB"
+  ],
+  "no_gain_adds": [
+   "NVK",
+   "OJS",
+   "UJB"
+  ],
+  "constant_error_drops": [
+   "ABH",
+   "KSP",
+   "VRD"
+  ]
+ },
+ "asks": {
+  "items_over_ceiling": {
+   "week_of_3_july": 31,
+   "week_of_10_july": 10,
+   "week_of_17_july": 5,
+   "week_of_24_july": 5
+  },
+  "items_rested_for_2029": 41,
+  "impersonations_confirmed": {
+   "T1": 5,
+   "T2": 62,
+   "T3": 273,
+   "T4": 244
+  },
+  "impersonations_per_thousand_shortlisted": {
+   "T1": 2.5,
+   "T2": 3.5,
+   "T3": 10.8,
+   "T4": 22.6
+  },
+  "interrupted_share_pct": {
+   "desktop": 1.64,
+   "laptop": 4.74,
+   "tablet": 9.33
+  },
+  "interrupted_finished_on_another_device": {
+   "desktop": 29,
+   "laptop": 209,
+   "tablet": 88
+  }
+ }
+}

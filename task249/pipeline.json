@@ -1,38 +1,47 @@
 {
-  "task": "task249",
-  "owner": "perssathya",
-  "status": "DESIGN",
-  "domain": "psychology-behavioral-science",
-  "objective": "data-quality-monitoring",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-19",
-  "stump": "A strong analyst who carries the equivalence study's referral rates by timing to each account's 2029 selection days leaves off every account that shortlists deep: the shortlisted were chosen on the very online score the check compares against, so their verification falls short of it by regression to the mean, set by how deep the account shortlists and how wide the adaptive test's error runs there, offset by the retest gain.",
-  "architecture": 3,
-  "loops": 0,
-  "precut": {
-    "exit": null,
-    "date": ""
-  },
-  "leak": {
-    "leak_py": "",
-    "reader": ""
-  },
-  "duplicate_check": {
-    "heart": "",
-    "nearest": "task242 0.06"
-  },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "returned": [],
-  "resume": "architecture 3 drawn 2026-10-19 (psychology, psychometric-measurement-scale-validation; a 2029 verification check's genuine referral rate per client account, regression to the mean among the shortlisted with a retest gain); next: stage 2 design (simulator tuned to the ladder, asks, fork table, closure, prompt, precut)",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": ""
+ "task": "task249",
+ "owner": "perssathya",
+ "status": "PAUSED",
+ "domain": "psychology-behavioral-science",
+ "objective": "data-quality-monitoring",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-19",
+ "stump": "A strong analyst who applies the referral rule to the equivalence study's supervised pairs and carries its rates by interval (2.3 per cent within three days, 6.6 per cent at six weeks or more) to each account's 2029 selection days moves 0 accounts to MAT-V Extended: the shortlisted were chosen on the very MAT-R estimate the check compares against, so their MAT-V falls short of it by regression to the mean, set by how small a share the account shortlists and how wide MAT-R's error runs at the candidates' ability, offset by the retest gain; built that way 15 accounts pass the cap.",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-19",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every REVIEW line answered in the note",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.objective, repeat.gate_g, repeat.question_form answered)",
+  "nearest": "task242 0.06"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "architecture 3 built and through every stage 3 gate (target.zip md5 3a097683ea6ff33166093c2ec837dbda, not committed until ship); stage 4 running: the isolated leak reader (/tmp/t249-reader-r1, reader.json and reader_answers.md) and the determinism judge thread (/tmp/determinism-check-task249-r1/verdict.md, to be handed back to the determinism-judge agent for task249/determinism_check_report.md). Next: score the reader with score_reader.py, read both reports, fix every finding in one generator pass and rerun the free gates; if the reader lands the call, architecture 3 is spent and the author decides on retirement; otherwise ship (target.zip and golden/ force-added, ledger row drafted, board row updated).",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "build": {
+  "target_zip_md5": "3a097683ea6ff33166093c2ec837dbda",
+  "checks": "0 failures",
+  "verify": "0 failures",
+  "figures_check": "43 of 43",
+  "byte_identical": "x2, 23 files",
+  "precut": "51 checks, 0 FAIL"
+ }
 }

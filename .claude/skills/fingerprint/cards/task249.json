@@ -1,106 +1,106 @@
 {
-  "task": "task249",
-  "architecture": "v3",
-  "drawn": "2026-10-19",
-  "slot_note": "",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "psychometric-measurement-scale-validation",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "an industrial-organisational assessment firm's unproctored online adaptive reasoning test and the proctored verification test it adds at its clients' 2029 campus selection days: which client accounts' verification checks will refer more than one genuine shortlisted candidate in eight under the firm's confidence-band referral rule",
-  "objective": "data-quality-monitoring",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "task249/submission.md, Final Recommendation",
-  "gap": [
-    "population",
-    "time"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G16",
-    "G17"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly and applies the confidence-band referral rule to the equivalence study's supervised pairs, by the days between the two sittings, carries the study's referral rates (low for same-week selection days, higher at six weeks or more) to each account's 2029 timing and leaves off the accounts that shortlist deeply: the study's volunteers were not shortlisted, and candidates chosen for a high score on a noisy adaptive test fall back on the verification test, so the rule refers genuine candidates far more often at deep-shortlisting accounts than any unselected group shows. An analyst who models the shortlisting but drops the retest gain the study measures flags every same-week campus account as well.",
-  "domain_test": "The quantity that decides is a verification check's false-referral rate among candidates shortlisted on the very score it verifies, built the way psychometrics builds it: each shortlisted candidate's ability given the online score, through the account's own applicant distribution and the adaptive test's conditional standard error (true-score regression), against the verification test's error and the retest gain by days between sittings. Swap in sensors, patients or stores and the adaptive test's ceiling, the shortlist-on-score selection and the retest gain have no counterpart, so the task no longer reads the same.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:false-referral-rate-of-a-verification-check-among-candidates-shortlisted-on-the-score-it-verifies",
-  "layer1": [
-    "the testing platform's sitting export in UTC beside client shortlist exports in IST",
-    "client files carrying reported scale scores (50 plus 10 per logit, whole numbers) while the platform export carries logits and standard errors",
-    "restarted sittings: an abandoned partial row and the completed row under one booking reference",
-    "one client account under two codes after a merger in July 2028",
-    "the firm's own QA and demo sittings under internal account codes",
-    "campus codes in two formats (AISHE-style codes and the firm's short codes) across the shortlist and plan files",
-    "the 2029 plan workbook with merged header rows, per-account notes and dates typed as text",
-    "the equivalence study's gap held as two dates in one file and as days in the report table"
-  ],
-  "stakeholder_role": "the head of assessment integrity, who sets each client account's verification band before the 2029 campus season opens",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "uit_sittings_2028.parquet: the platform's export of every 2028 online sitting of the adaptive reasoning test (logit score, standard error, items, timing, account, campus)",
-    "rows": 0,
-    "entity": "one online sitting",
-    "grain": "sitting",
-    "source_dataset": "constructed (the firm, its clients and candidates are fictional; the psychometric model is standard item response theory)"
+ "task": "task249",
+ "architecture": "v3",
+ "drawn": "2026-10-19",
+ "slot_note": "",
+ "domain": "psychology-behavioral-science",
+ "subdomain": "psychometric-measurement-scale-validation",
+ "client_domain": "psychology-behavioral-science",
+ "niche": "an industrial-organisational assessment firm's unproctored online adaptive reasoning test and the proctored verification test it adds at its clients' 2029 campus selection days: which client accounts' verification checks will refer more than 15 per cent of the genuine candidates they shortlist under the firm's confidence-band referral rule",
+ "objective": "data-quality-monitoring",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "15 client accounts move to MAT-V Extended for the 2029 season: KSP, VRD, ANV, PRM, SQR, ABH, MTL, TJM, SHY, TRG, PBH, KVR, RNJ, CHT, LVN; the other 13 stay on the 12-item MAT-V",
+ "answer_source": "submission.md block 1; generator/figures.json call.flagged",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G17"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "gold_standard_subsample",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every file correctly and applies the confidence-band referral rule to the equivalence study's supervised pairs, by the days between the two sittings, carries the study's referral rates (2.3 per cent for same-week selection days, 6.6 per cent at six weeks or more) to each account's 2029 timing and moves 0 accounts: the study's volunteers were not shortlisted, and candidates chosen for a high score on a noisy adaptive test fall back on the verification test. An analyst who models the shortlisting but drops the retest gain, or who shrinks each candidate's score with the reported standard error (the error at the estimate, not at the ability), also moves NVK, UJB and OJS; one who uses a single MAT-R error for every ability leaves KSP, VRD and ABH under the cap.",
+ "domain_test": "The quantity that decides is a verification check's false-referral rate among candidates shortlisted on the very score it verifies, built the way psychometrics builds it: each shortlisted candidate's ability given the online score, through the account's own applicant distribution and the adaptive test's conditional standard error (true-score regression), against the verification test's error and the retest gain by days between sittings. Swap in sensors, patients or stores and the adaptive test's ceiling, the shortlist-on-score selection and the retest gain have no counterpart, so the task no longer reads the same.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:false-referral-rate-of-a-verification-check-among-candidates-shortlisted-on-the-score-it-verifies",
+ "layer1": [
+  "the testing platform's sitting export in UTC beside client shortlist exports in IST",
+  "client files carrying reported scale scores (50 plus 10 per logit, whole numbers) while the platform export carries logits and standard errors",
+  "restarted sittings: an abandoned partial row and the completed row under one booking reference",
+  "one client account under two codes after a merger in July 2028",
+  "the firm's own QA and demo sittings under internal account codes",
+  "campus codes in two formats (AISHE-style codes and the firm's short codes) across the shortlist and plan files",
+  "the 2029 plan workbook with merged header rows, per-account notes and dates typed as text",
+  "the equivalence study's gap held as two dates in one file and as days in the report table"
+ ],
+ "stakeholder_role": "the head of assessment integrity, who sets each client account's verification band before the 2029 campus season opens",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "mat_r_exposure_2028.parquet: the platform's log of every item shown in a 2028 MAT-R attempt, beside mat_r_attempts_2028.parquet (one row per attempt: logit estimate, standard error, device, release)",
+  "rows": 1949365,
+  "entity": "one item shown in an attempt",
+  "grain": "item administration",
+  "source_dataset": "constructed (the firm, its clients and candidates are fictional; the psychometric model is standard item response theory)"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "season_or_peak",
+ "org_family": "professional_services",
+ "world": {
+  "geography": "India (the assessment firm, its client employers, the colleges and the people are fictional; the testing practices modelled, unproctored online testing followed by proctored verification, are real)",
+  "currency": "INR",
+  "org_type": "industrial-organisational psychology assessment firm (online aptitude testing for employers)",
+  "invented_names": [],
+  "people": [
+   "Vasudha Padmanabhan",
+   "Abhiram Sarin",
+   "Rachita Sunder",
+   "Nachiket Sarna",
+   "Ishwar Tella"
+  ]
+ },
+ "deliverables": [
+  "verification_bands_2029.xlsx",
+  "account_referral_note_2029.pdf"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is how often a check comparing a second reading with a first flags units whose first reading was honest, among units chosen because their first reading was high; a unit chosen on a noisy first reading falls back on the second by an amount set by how small a share the choice takes and how noisy the first reading is where it reaches, so a flag rate measured on unchosen units understates every selective choice, while a gain between the readings that fades with the time between them lowers the rate where the second reading follows soon.",
+ "driver_concrete": "Each client account's genuine referral rate under the 2029 confidence-band rule has to be built from its own applicant pool and shortlist depth: shortlisted candidates were chosen for high online scores, so their online scores overstate their ability by an amount that grows with how small a share the account shortlists and with the adaptive test's standard error there (the bank thins at the top), and the verification shortfall the rule reads carries that overstatement; the retest gain the equivalence study measures by days between sittings lowers the rate at same-week campus selection days.",
+ "stump": "A competent solver carries the equivalence study's referral rates by interval (2.3 per cent within three days, 6.6 per cent at six weeks or more) to each account's 2029 selection days and moves no account to MAT-V Extended, because the study's volunteers were not shortlisted: the shortlisted were chosen on the very online score the check compares against, so their verification falls short of it by regression to the mean, and at the 15 accounts that shortlist most selectively where the online test's error is wide the rule refers 22 to 33 per cent of them.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task236": "there a source's capture is read against an independent fixed-protocol sample because the source's own attempts move with its change; here nothing is captured: a verification check's honest referral rate among candidates shortlisted on the score it verifies is built by true-score regression, because an unselected study's rate does not carry to a selected pool",
+  "task463": "there a spending-weighted price index drifts when linked through stock-up periods; here no index or linking exists: a check's honest flag rate is rebuilt for units chosen on the first of two noisy readings",
+  "task168": "there capped units' demand is completed from the build of units from the same month; here nothing is capped or completed: units chosen high on a noisy first reading fall back on the second, so a rate measured on unchosen units understates every selective choice",
+  "task453": "there (v1) a seasonal adjustment estimated across a documented level change leaks it into later periods; here no series or seasonal filter exists: a verification check's honest referral rate depends on how small a share a shortlist takes on a noisy adaptive score and on the days before the second sitting",
+  "task249": "v1 and v2 read a sensor's gain against distant references (an attenuated slope, then the mixed afternoon hours); v3 leaves sensors and gain altogether: the rate at which a verification check refers honest candidates among those shortlisted on the very score it verifies, built by true-score regression through each account's applicant pool and the adaptive test's conditional error, offset by the retest gain"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references at other positions that share the truth's distribution over weeks but agree with it only partly hour by hour, so a slope fitted on the paired readings is pulled toward zero by that imperfect agreement, making healthy distant units look low and units drifted high look healthy, while matching the unit's spread to the references' spread recovers the gain.",
+   "fate": "stage 4 reader landed the call (errors-in-variables slope) and every ask figure, 2026-10-18; re-rooted to architecture 2"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "season_or_peak",
-  "org_family": "professional_services",
-  "world": {
-    "geography": "India (the assessment firm, its client employers, the colleges and the people are fictional; the testing practices modelled, unproctored online testing followed by proctored verification, are real)",
-    "currency": "INR",
-    "org_type": "industrial-organisational psychology assessment firm (online aptitude testing for employers)",
-    "invented_names": [],
-    "people": [
-      "Vasudha Padmanabhan",
-      "Abhiram Sarin",
-      "Rachita Sunder",
-      "Nachiket Sarna",
-      "Ishwar Tella"
-    ]
-  },
-  "deliverables": [
-    "verification_bands_2029.xlsx",
-    "account_referral_note_2029.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how often a check comparing a second reading with a first flags units whose first reading was honest, among units chosen because their first reading was high; a unit chosen on a noisy first reading falls back on the second by an amount set by how deep the choice reaches and how noisy the first reading is where it reaches, so a flag rate measured on unchosen units understates every deep choice, while a gain between the readings that fades with the time between them lowers the rate where the second reading follows soon.",
-  "driver_concrete": "Each client account's genuine referral rate under the 2029 confidence-band rule has to be built from its own applicant pool and shortlist depth: shortlisted candidates were chosen for high online scores, so their online scores overstate their ability by an amount that grows with how deep the account shortlists and with the adaptive test's standard error there (the bank thins at the top), and the verification shortfall the rule reads carries that overstatement; the retest gain the equivalence study measures by days between sittings lowers the rate at same-week campus selection days.",
-  "stump": "A competent solver carries the equivalence study's referral rates by timing to each account's 2029 selection days and flags almost none of the deep-shortlisting accounts, because the study's volunteers were not shortlisted: the shortlisted were chosen on the very online score the check compares against, so their verification falls short of it by regression to the mean, which at the deep accounts several times the study's rate.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task236": "there a source's capture is read against an independent fixed-protocol sample because the source's own attempts move with its change; here nothing is captured: a verification check's honest referral rate among candidates shortlisted on the score it verifies is built by true-score regression, because an unselected study's rate does not carry to a selected pool",
-    "task463": "there a spending-weighted price index drifts when linked through stock-up periods; here no index or linking exists: a check's honest flag rate is rebuilt for units chosen on the first of two noisy readings",
-    "task168": "there capped units' demand is completed from the build of units from the same month; here nothing is capped or completed: units chosen high on a noisy first reading fall back on the second, so a rate measured on unchosen units understates every deep choice",
-    "task453": "there (v1) a seasonal adjustment estimated across a documented level change leaks it into later periods; here no series or seasonal filter exists: a verification check's honest referral rate depends on how deep a shortlist reaches on a noisy adaptive score and on the days before the second sitting",
-    "task249": "v1 and v2 read a sensor's gain against distant references (an attenuated slope, then the mixed afternoon hours); v3 leaves sensors and gain altogether: the rate at which a verification check refers honest candidates among those shortlisted on the very score it verifies, built by true-score regression through each account's applicant pool and the adaptive test's conditional error, offset by the retest gain"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references at other positions that share the truth's distribution over weeks but agree with it only partly hour by hour, so a slope fitted on the paired readings is pulled toward zero by that imperfect agreement, making healthy distant units look low and units drifted high look healthy, while matching the unit's spread to the references' spread recovers the gain.",
-      "fate": "stage 4 reader landed the call (errors-in-variables slope) and every ask figure, 2026-10-18; re-rooted to architecture 2"
-    },
-    {
-      "architecture": "v2",
-      "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references elsewhere that share the truth only in the hours a daily process mixes the medium; outside those hours the units standing apart from the references differ for reasons that are not their gain, so any comparison over all hours, however it corrects for the references' imperfect agreement, misreads those units, and only the comparison restricted to the mixed hours reads every unit's gain.",
-      "fate": "stage 4 reader landed the call 2026-10-19 (afternoon regression after the 900 m sites' night-time intercepts); judge DETERMINISTIC APPROVE; re-rooted to architecture 3 in another client domain at the author's request (fresh re-root)"
-    }
-  ],
-  "notes": "Re-rooted 2026-10-19 to architecture 3 at the author's request (perssathya, 'Fresh re-root'): a new draw in another client domain whose task type serves Data Quality Monitoring, new world and decisive step; architectures 1 and 2 (physical-environmental sciences, sensor calibration, an ozone network's pull list) kept in lineage, both landed by the stage 4 reader. The re-root also clears architecture 2's pairing override against task247. Seed DQ22's world is not carried: the slot keeps only its objective (which monitored units fail a quality tolerance). stump_strategy causal_design: regression to the mean among units selected on the noisy score the check verifies, with a retest gain as the second component. calibration_form gold_standard_subsample: the equivalence study's supervised pairs (genuine by design, unselected) are the organ the retest gain is read from; it never refutes the naive read, which uses it.",
-  "registered": "2026-10-19T02:37:42Z"
+  {
+   "architecture": "v2",
+   "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references elsewhere that share the truth only in the hours a daily process mixes the medium; outside those hours the units standing apart from the references differ for reasons that are not their gain, so any comparison over all hours, however it corrects for the references' imperfect agreement, misreads those units, and only the comparison restricted to the mixed hours reads every unit's gain.",
+   "fate": "stage 4 reader landed the call 2026-10-19 (afternoon regression after the 900 m sites' night-time intercepts); judge DETERMINISTIC APPROVE; re-rooted to architecture 3 in another client domain at the author's request (fresh re-root)"
+  }
+ ],
+ "notes": "Re-rooted 2026-10-19 to architecture 3 at the author's request (perssathya, 'Fresh re-root'): a new draw in another client domain whose task type serves Data Quality Monitoring, new world and decisive step; architectures 1 and 2 (physical-environmental sciences, sensor calibration, an ozone network's pull list) kept in lineage, both landed by the stage 4 reader. The re-root also clears architecture 2's pairing override against task247. Seed DQ22's world is not carried: the slot keeps only its objective (which monitored units fail a quality tolerance). stump_strategy causal_design: regression to the mean among units selected on the noisy score the check verifies, with a retest gain as the second component. calibration_form gold_standard_subsample: the equivalence study's supervised pairs (genuine by design, unselected) are the organ the retest gain is read from; it never refutes the naive read, which uses it.",
+ "registered": "2026-10-19T02:37:42Z"
 }

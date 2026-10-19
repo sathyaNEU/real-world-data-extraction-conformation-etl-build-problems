@@ -1,0 +1,57 @@
+{
+ "task": "task249",
+ "title": "Which client accounts sit the extended verification test in the 2029 campus season because their check would refer more than 15 per cent of the genuine candidates they shortlist, beside the 2028 season's item exposure, impersonations and interrupted bookings",
+ "domain": "Psychology & Behavioral Science",
+ "subdomain": "psychometric-measurement-scale-validation (an unproctored adaptive aptitude test verified by a proctored adaptive test: measurement error, the test's conditional standard error, the retest gain and the referral rule's false referrals among shortlisted candidates)",
+ "objective": "Data Quality Monitoring & Alerting",
+ "prompt_shape": "10: a scorecard of the 28 client accounts against the 15 per cent referral cap, beside three 2028 integrity tables",
+ "deliverables": [
+  "verification_bands_2029.xlsx",
+  "account_referral_note_2029.pdf"
+ ],
+ "input_files": [
+  "DATA_DICTIONARY.md",
+  "MAL-IS-04_integrity_standard.pdf",
+  "candidate_feedback_2028.csv",
+  "candidate_register_2028.csv",
+  "client_accounts.csv",
+  "client_plans_2029.xlsx",
+  "colleges.csv",
+  "integrity_cases_2028.xlsx",
+  "mat_r_attempts_2028.parquet",
+  "mat_r_exposure_2028.parquet",
+  "mat_r_item_bank.csv",
+  "mat_technical_manual_ch4.pdf",
+  "mat_v_equivalence_study_2028.csv",
+  "mat_v_equivalence_study_report.pdf",
+  "results_shared_2028.csv",
+  "selection_venues_2029.csv",
+  "shortlists_2028.csv"
+ ],
+ "file_count": 17,
+ "formats": [
+  "csv",
+  "md",
+  "parquet",
+  "pdf",
+  "xlsx"
+ ],
+ "largest_file": {
+  "name": "mat_r_exposure_2028.parquet",
+  "rows": 1949365
+ },
+ "distractors": [
+  {
+   "file": "selection_venues_2029.csv",
+   "why_relevant": "the assessment-centre venues and seats for 2029 selection days, where MAT-V would be sat",
+   "why_unused": "seat counts bear on logistics, not on how often the check refers a genuine candidate"
+  },
+  {
+   "file": "candidate_feedback_2028.csv",
+   "why_relevant": "candidates' own reports of technical problems in their 2028 sittings",
+   "why_unused": "a sample survey of experience; interruptions are counted from the platform's attempts and nothing in the call reads it"
+  }
+ ],
+ "sources": "Constructed: the firm, its client employers, the colleges, the candidates and the people are fictional. The psychometric model (an adaptive test's conditional standard error, true-score regression among candidates chosen on a score, the retest gain fading with the interval) and the practice of verifying unproctored internet tests under proctoring are real. License: CC BY 4.0 (the task author's own work).",
+ "as_of": "2029-05-14"
+}
