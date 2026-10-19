@@ -1,11 +1,15 @@
 # task175 design note
 
-**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** The wave
-brief for this number says to screen by measurement before any card and to stop after two candidates
-that do not hold. Two candidate designs on the seed's world, decision and quantity were prototyped and
-measured over three seeds each; neither meets the bar (every reflex route a full bin from the golden,
-the right family inside a quarter-bin of the bin centre with one sigma, P(both) clearly under 0.08).
-Nothing was cut, `architecture` stays 0, and no axis of the guard's window was spent.
+**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** Two screens
+have run on this number and neither produced a design that meets the bar (every reflex route a full bin
+from the golden, the right family inside a quarter-bin of the bin centre with one sigma, a lever of 30
+per cent or more of the graded figure with sigma near 1 per cent). The first (2026-10-18) took the seed
+FC46's world, decision and quantity and measured two capped-cost candidates dead over three seeds each.
+The second (2026-10-19) redrew the number in the cell the coordinator allocated,
+human-factors-ergonomics / human-reliability-assessment for Forecasting, set nine candidates aside on
+paper against the deaths already on file in this cell and measured the two survivors dead on code
+(`## Redraw screen` below). Nothing was cut, `architecture` stays 0, and no axis of the guard's window was
+spent.
 
 ## What was screened
 
@@ -80,6 +84,39 @@ inside one bin; at bins wide enough to hold the family (6 to 10 per cent), the p
 and analog routes land in the golden's bin or the next. This is the same dial at both ends
 that `stumping` 1.6a and `determinism-check` section 1 record for task194, met here on a capped sum.
 
+## Redraw screen: human-reliability-assessment (2026-10-19)
+
+- **Cell and fences.** human-factors-ergonomics / human-reliability-assessment (serves Forecasting), a
+  pairing never built. The round's bans: pattern G14, `composition_mix`, `local_government`,
+  `committee_or_panel` and `executive_team`, `programme_officer` and `capacity_planner`,
+  `monitoring_export` and `filed_standard`. The guard's window after task249, task269 and task468 adds
+  patterns G16, G2 and G13, strategies `causal_design`, `decomposition_attribution` and `composition_mix`,
+  and shapes 04 and 05. The library refresh (b7a54be) leaves Human Factors with no cards, so the seeds
+  were the five families in `two-layer-task-design.md` and the nearest domains' cards (healthcare
+  delivery's patient-flow and provider-quality cards, general statistics' calibration, robustness and
+  measurement-error cards, banking's reviewer-capacity and labels-above-the-line cards).
+- **Deaths read first, all binding on this cell.** task171 (screeners' detection under short stints and a
+  new-hire cohort; dispensing errors under longer shifts, task149's within-person driver); task230 v2
+  (the low-prevalence effect at a shared verification pool, shipped in this task type and retired);
+  task194 architecture 8 (signal detection's discriminability against criterion, accident-proneness, an
+  own rate behind a load-dependent downstream catch); task202's six human-factors drivers (an unpublished
+  opportunity count a forward change multiplies, which is task181 v4; within-period clustering; two
+  checks' joint miss; a practice curve; a classification lag; a marginal contribution to a set); task181
+  (losses of separation follow level crossings); task182 (composition and observability screens).
+- **The structural finding.** In its own form, human reliability forecasting carries an error
+  probability conditioned on performance-shaping factors onto the forward mix of those factors, which an
+  honest card labels G14 or `composition_mix`, both out this round. The structures in this field that
+  are not a mix (dependence between checks, prevalence and detection criteria, thinned counts, time on
+  task, learning, shift length, unpublished opportunity counts, co-presence pairs, classification lags,
+  bursts, proneness, load-dependent catch, latency waves, caps, calendar locks) are each spent on file.
+  The residue was two candidates, a time-reliability race read at each demand's own window and a
+  performance-shaping factor's slope flattened by a noisy record, and both died on measurement.
+- **The harness.** `scratchpad/r175/proto/c11.py` (the race, five seeds, a `vol` multiplier) and
+  `c10.py` (the flattened slope, three seeds, settings `b` and `lam`), session-scoped; each was run twice
+  with byte-identical output, and the settings and figures are in the Tried and rejected lines so the
+  harness rebuilds from this note. `guard.py slots` on both driver sentences returned lexical overlaps
+  only (task182, task194, task117, task132, task201), no screen of either mechanism.
+
 ## Tried and rejected
 
 - **Candidate 1, the cap priced on each member's predictive year, with the spread of individual
@@ -138,22 +175,85 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   shipping weeks as the response (a promotion measures stockpiling, not the unbatching a membership
   causes); uptake of the invitation (a censored activation clock on the lightest members, a lever of a
   few per cent); members going quiet in the year (the analog cohort hands it over by recency band).
+- **Redraw candidate 11, a time-reliability race read at each demand's own window** (2026-10-19, stage 1,
+  human-reliability-assessment, `c11.py`, five seeds). World: a bulk liquids terminal whose operators stop
+  each transfer between the high-level alarm and the automatic overfill trip; the time each alarm leaves
+  is the tank's headspace between the two levels over the transfer's fill rate; the operator's response
+  is a two-component lognormal (attentive, median 4.0 minutes; lapses, 12 per cent, median 16) independent
+  of the rate; 2027 raises the pipeline receipt rate into the gasoline tanks from 700 to 1,000 to 1,600 to
+  2,000 cubic metres an hour. Graded figure: expected automatic trips in 2027. Driver as drafted: the
+  chance a demand fails is the response-time survival read at that demand's own window, so shorter
+  windows raise trips by the curve's bend across demands rather than at their average window. At a
+  typical terminal (about 10,800 transfers and 480 alarm demands a year, 23 to 41 trips in four years,
+  2027 truth 11.2 to 12.8 trips) the golden family (Kaplan-Meier on response times censored at each
+  trip's window, and the two-component mixture) agrees within 2.4 points but sits -11.0 to +14.5 per
+  cent from the truth, sigma about 9 per cent. At the largest realistic terminal (three times the volume,
+  88 to 108 trips in four years, truth 33.3 to 38.3) the golden sits -2.6 to +8.7 (sigma about 4) while
+  the trip share by window band, a filter and a divide once each demand's window is built, lands -12.3
+  to +5.7 (mean -1.8); trips per demand by stream with the changed stream rate-scaled -13.1 to -30.7;
+  persistence -18.9 to -41.3; the field's textbook time-reliability curve (one lognormal fitted to the
+  operators' stop times, read at the nominal window) -77.3 to -85.3, and with the trips taken as
+  censored -67.0 to -76.2; single-component censored Weibull and log-logistic fits 25 to 50 per cent
+  under. Only at ten times a terminal's volume (about 20,000 demands, 350 trips) does the golden reach
+  +0.1 to +5.8, and there the window-band share lands -7.0 to +7.9. Dead three ways: sigma 4 to 9 per
+  cent at any real volume, because trips are rare and the lapse tail that decides them is read from
+  those few; the subset screen (the window-band share lands inside the golden's own seed range); and
+  the library test (the golden is the censored survival curve applied demand by demand, the
+  probabilistic-analysis card's "not at the mean" with the forcing fact, faster receipts, cueing the
+  window). An honest card also reads it as a trip rate conditioned on each demand's window carried to the
+  forward window mix, G14.
+- **Redraw candidate 10, a performance-shaping factor's slope flattened by a noisy record** (2026-10-19,
+  stage 1, `c10.py`, three seeds). World: medication administration errors per ward-shift Poisson in
+  administrations, log rate rising by `b` per patient per nurse actually on the floor; the staffing
+  system records the ratio with classical error (reliability `lam`); a badge-swipe audit on four wards for
+  six months (2,160 ward-shifts) carries the true ratio; 2027 mandates at most 5 patients per nurse
+  against a recorded mean of 6.3. Graded figure: expected 2027 administration errors (truth about 11,700).
+  At a realistic effect and record (`b` 0.15, `lam` 0.6, 43,000 errors in three years) the naive slope
+  misses by only +7.0 to +9.3 per cent (fitted 0.089 to 0.091 against 0.15), against the 30 per cent
+  that held; the golden (regression calibration, moments) sits -1.6 to +1.3, SIMEX with a quadratic
+  extrapolant +3.3 to +4.0, and the slope fitted on the audited ward-shifts alone -5.7 to +2.2. The lever
+  is exp(-b(1-lam)D) for a forward shift D, so 30 per cent needs `b` 0.30 with `lam` 0.4 at once; there
+  the naive slope misses by +27.5 to +31.1, but the golden's own seed range widens to -7.1 to +7.0
+  (reliability estimated 0.36 to 0.40 from the audit), SIMEX splits the family at +15.0 to +21.9, and
+  the audited rows alone land -0.6 to +2.4, nearer the truth than the designed correction. Dead on the
+  lever at any plausible setting, on the subset screen (the card's own validation rows are a filter that
+  beats the correction), on an open method family (the extrapolant), on the library test (general
+  statistics' measurement-error card 2 applied as stated, its pin the audit file), on the swap test
+  (staffing and errors swap for any load proxy and failure count) and on the label (an error rate
+  conditioned on staffing carried to the mandated ratio is G14), beside task149's workload driver.
+- **Also set aside in the human-reliability cell, on paper, before either prototype:** the low-prevalence
+  effect at a final check after an upstream improvement (task230 v2, and G14 by its honest label;
+  inside the observed range a filter and a divide, outside it a 15 per cent family spread on paper);
+  confusable items or addresses grouped together (task181's co-presence); red-signal approaches as the
+  exposure for a new timetable (task202 C1, task181 v4, and the forecast of red approaches is an
+  operations simulation); errors at the first execution after a change (C1 again, and G14); adding or
+  removing a redundant check (task202 C3, and a read-across); latent maintenance errors found at
+  scheduled inspections (a dose-response conditioned yield, task77 v1's pipeline and task157's wave);
+  time-reliability tails for a single action (the empirical share is a filter and a divide,
+  extrapolated tails spread by form, and samples per action are sparse); a reminder or re-alarm moved
+  inside a response duration (task172's driver in other nouns); fatigue states under a new roster
+  (task171's shift death, G14, and the fatigue models' own spread).
 
 ## Resume
 
-Do not re-screen the per-member capped forecast in this world: the three laws above close it for any
-decisive step that refines a member's predictive year (rate uncertainty, response spread, batching,
-severity), because the refinements form a continuum wider than a quarter-bin and the cap makes the
-common-factor and point-forecast errors cancel. Two routes for the next pass, priced before drawing:
+Neither screen left a live design, so the next move is the coordinator's or the author's: move the
+number to another Forecasting cell, or come back to human reliability when the round's G14 and
+`composition_mix` bans lapse. Do not re-screen, in either world, anything in `## Tried and rejected`:
 
-1. **Keep the world and move the decisive step off the member's predictive year**, to a level that
-   neither the pilot (law 3) nor the analog cohort (task130 v3) hands over and that is not a filed
-   forward condition. On paper the candidates for that are few, because the record measures standard
-   behaviour (the analog) and membership behaviour (the pilot) for like members, and what neither
-   measures is mostly a filed 2027 change, which is rule application. Price any such candidate on the
-   harness against laws 1 and 2 before writing a sentence.
-2. **Re-number to another seed in the lane** if the author prefers: the seed's quantity, a per-member
-   capped benefit over a year, is the structure that fails, not the domain.
+1. **The seed's world (FC46).** The three laws close the per-member capped forecast for any decisive step
+   that refines a member's predictive year, because the refinements form a continuum wider than a
+   quarter-bin and the cap makes the common-factor and point-forecast errors cancel.
+2. **Human reliability under this round's bans.** The cell's own form is a conditioned error probability,
+   which is G14 by an honest label, and its non-mix structures are spent on file (the redraw screen's list).
+   A time-reliability race dies on rare trips and the window-band filter and divide; a flattened factor
+   slope dies on its lever and on the audited rows. A further draw here would start from a file the
+   organisation keeps whose forcing input no stratification of the error log reproduces, and would price
+   the four unscreened card seeds first, with their predicted deaths: labels that exist only above a
+   review line (a verified subsample, spent, and a filter and a divide on it); reviewer-capacity yield (a
+   binding constraint on a filed integer of hours); an error-risk score's calibration against its ranking
+   (the card applied as stated, the library test); blocking probability against occupancy for a staffed
+   desk (queueing, the swap test).
 
-Window facts for whoever draws next: `single-figure` is likely blocked by `ban.shape` once task165
-registers, and `composition_mix` by `ban.strategy` until three builds register after task173.
+Window facts on 2026-10-19 after task468: patterns G16, G2 and G13, strategies `causal_design`,
+`decomposition_attribution` and `composition_mix`, and shapes 04 and 05 sit in the ban window, and this
+round's six serial registrations will move it again.

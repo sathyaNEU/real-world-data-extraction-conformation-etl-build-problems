@@ -2,28 +2,55 @@
   "task": "task175",
   "owner": "sathya8571",
   "status": "PAUSED",
-  "domain": "product-analytics/retention-cohort-lifetime-value-modeling",
+  "domain": "human-factors-ergonomics/human-reliability-assessment",
   "objective": "forecasting",
   "stage": 1,
   "stage_name": "draw",
-  "updated": "2026-10-18",
+  "updated": "2026-10-19",
   "stump": "",
   "architecture": 0,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
   "grounds_closed": [
-    "product-analytics/retention-cohort-lifetime-value-modeling: a member-level forecast of a per-member capped benefit (FC46's quantity), any decisive step that refines the member's predictive year"
+    "product-analytics/retention-cohort-lifetime-value-modeling: a member-level forecast of a per-member capped benefit (FC46's quantity), any decisive step that refines the member's predictive year",
+    "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)"
   ],
-  "resume": "PAUSED at stage 1 under the wave brief's two-candidate rule; no card written or registered, nothing cut, architecture 0. Read DESIGN_NOTE.md first and re-screen nothing in it. Two candidates on FC46's world, decision and quantity were prototyped and measured on three seeds and both fail the bar: candidate 1 (the cap priced on each member's predictive year with the spread of individual responses the pilot measures) and candidate 2 (membership orders are the cart's purchase sessions that paid-shipping orders batched). The structural finding: the right family is a continuum (the member's own rate uncertainty alone moves the capped total +1.26% to +1.54%, the response form +0.41% to +0.51%, pilot sampling about 0.6% one sigma), and under a per-member cap a common-factor error cancels the point-forecast error (point-capped average-uplift routes +1.77% to +3.06%), while a 52-week pilot would hand the golden over by filter and divide (-0.86%, SD 0.58%). No bin both holds the family inside a quarter-bin and puts every partial route a full bin away. Next pass: either keep the world and move the decisive step off the member's predictive year to a level neither the pilot nor the analog cohort hands over (price it on the harness against laws 1 and 2 first), or re-number to another seed in the lane (the author's call).",
+  "resume": "PAUSED at stage 1, no card written or registered, nothing cut, architecture 0. Two screens are dead: the seed FC46's world (two capped-cost candidates, 2026-10-18) and the redraw in human-factors-ergonomics / human-reliability-assessment (2026-10-19: nine candidates set aside on paper against the cell's deaths on file, candidates 10 and 11 measured dead on code). Read DESIGN_NOTE.md's Redraw screen and Tried and rejected first and re-screen nothing in them. The next move is the coordinator's or the author's: move the number to another Forecasting cell, or return to human reliability once the round's G14 and composition_mix bans lapse, pricing the four unscreened card seeds named in the note's Resume first.",
   "screens": {
     "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
     "candidates_measured": 2,
-    "seeds": [1, 2, 3],
-    "paper_rejections_at_draw": 10
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "paper_rejections_at_draw": 10,
+    "redraw_2026_10_19": {
+      "cell": "human-factors-ergonomics/human-reliability-assessment (Forecasting)",
+      "harness": "scratchpad/r175/proto/c11.py (race, five seeds, vol multiplier) and c10.py (flattened slope, three seeds); session-scoped, each run twice byte-identical; rebuild from DESIGN_NOTE.md's Tried and rejected lines",
+      "candidates_measured": 2,
+      "paper_rejections": 9,
+      "c11_time_reliability_race": "large terminal: golden -2.6 to +8.7 per cent (sigma about 4), window-band filter and divide -12.3 to +5.7, rate-scaled stream route -13.1 to -30.7, persistence -18.9 to -41.3, textbook lognormal TRC at the nominal window -77.3 to -85.3; typical terminal sigma about 9",
+      "c10_flattened_slope": "realistic (b 0.15, lam 0.6): naive +7.0 to +9.3, golden -1.6 to +1.3, SIMEX +3.3 to +4.0, audited rows -5.7 to +2.2; strong (b 0.30, lam 0.4): naive +27.5 to +31.1, golden -7.1 to +7.0, SIMEX +15.0 to +21.9, audited rows -0.6 to +2.4",
+      "slots": "both driver sentences: lexical overlaps only, no screen of either mechanism on file"
+    }
   },
   "approved": null,
   "delivered": null,
