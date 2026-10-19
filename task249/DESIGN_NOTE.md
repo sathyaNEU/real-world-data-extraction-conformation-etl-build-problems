@@ -290,3 +290,9 @@ content, column names, dates and the prompt gate clean. Each REVIEW line, answer
 - The firmware table without a date for OZ19 read as OZ19 never reaching 4.2: the spare's records after the 25 January
   rename lost their humid hours (OZ19 +89 against +18 to +24 elsewhere); OZ19 runs 4.2 from the spare's start at 11:00
   on 9 January, in the solver, the verifier and A1.
+- Architecture 2 (each node's span read on the mixed afternoon hours, the hill villages above the night's surface
+  layer): the stage 4 reader (Sonnet, medium, about four minutes) landed the call with a regression on the four
+  analysers, the 900 m sites' night-time intercepts and the register's altitudes pointing it to the midday hours;
+  the judge's pass on the same bundle was DETERMINISTIC, APPROVE, and Ask A held (0 of 36). A site's night-time
+  decoupling shows in any residual by hour of day, so the decisive step is readable to a strong model.
+

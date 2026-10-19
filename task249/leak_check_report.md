@@ -38,3 +38,17 @@ Stump terms swept: afternoon, reference, network, analysers, decisive, compariso
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+One isolated reader (Sonnet, medium, the prompt and a fresh unzip of b0efc2e9 only, about four minutes). It landed
+the call: OZ06, OZ17, OZ21, OZ25 and OZ32 low, OZ29, OZ33 and OZ34 high, the golden list with every direction. Its
+route: a regression of each node on the four analysers, the eight nodes at 900 m or more showing night-time intercepts
+of 9 to 20 ppb ("the valley analysers at about 700 m decouple at night"), then the span on the midday hours (11:00 to
+16:00 local), other midday windows agreeing. score_reader.py: the call hit, exit 1 (Gate F failed); the 36 capture
+hours all missed (+18 to +24 each: it placed the records stamped in 2000 by their received times but read status 1
+as accepted before each node's update). Q1 to Q4: no sentence names the step, nothing ranks the nodes, no figure reads
+as the answer; Q5 the plan's span sentence; Q6 an analytical choice. Realism notes taken: OZN-B and OZ19B arrival lags
+very uniform, the bench week eight days before installation for almost every node, the register's OZ19 row still
+carrying the original unit's model and head serial, the visit sheet's alternating technicians and uniform remarks.
+

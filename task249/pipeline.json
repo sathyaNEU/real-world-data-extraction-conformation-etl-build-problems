@@ -13,12 +13,12 @@
   "precut": "exit 0 (51 checks)",
   "leak": {
     "leak_py": "REVIEW (sweeps 3 and 4; every line answered in the design note; no LEAK)",
-    "reader": "running on target.zip b0efc2e9"
+    "reader": "read 1 on target.zip b0efc2e9: landed the call (afternoon regression after the 900 m sites' night-time intercepts), all 36 ask figures missed; score_reader exit 1; Q6 analytical"
   },
   "duplicate_check": "guard.py heart WARN, surface no hard tell (folder_contents renamed, Santa Cruz de Alcorna renamed Peñalba de Alcorna)",
-  "judge": "running on target.zip b0efc2e9",
+  "judge": "pass 1 on b0efc2e9: DETERMINISTIC, APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H pass)",
   "returned": [],
-  "resume": "stage 4 on target.zip b0efc2e9 (card force-registered on the author's decision, design note at architecture 2, precut 51/51, checks 62, verifier, figures_check, guard heart WARN and surface clean, leak.py REVIEW answered): the solver's-eye reader (prompt and a fresh unzip only, scratchpad reader249, reader.json) and the determinism judge thread (brief at /tmp/determinism-check-task249-r1/judge_brief.md, verdict.md there; re-invoke the determinism-judge agent with it to write determinism_check_report.md) were running. If either is lost, run it again on the same zip. Then score the reader with score_reader.py, fix every finding in the generator in one pass, re-judge a FIX_NOW once, and ship (target.zip from the final rebuild, golden and zip force-added, ledger row, card current, board).",
+  "resume": "architecture 2 spent at stage 4 (the reader landed the call; the judge passed it). Waiting on the author: re-root (a fresh draw in another domain, or a third decisive step in this world) or retire. On a re-root move architecture 2 into the card's lineage with its fate and draw again (fingerprint Part 2.3).",
   "approved": null,
   "delivered": null,
   "portal": null,
