@@ -39,3 +39,18 @@ Stump terms swept: shortlisted, candidate, standard, online, decisive, regressio
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Reader: one isolated Sonnet agent at medium on fresh copies of `prompt.txt` and `target/` (2026-10-19, pack md5 3a097683ea6ff33166093c2ec837dbda). It committed the 15 accounts and every graded figure; `score_reader.py` scored the call hit and 19 of 19 ask figures (Gate F failed, the architecture spent). A second reader on its own copy was stopped once the first had landed the call, since a call any reader lands is spent.
+
+1. The decisive step: none literally; it quoted MAL-IS-04 s.3.3 (the cap over the genuine shortlisted candidates on the plan) as the rule and not the method. Verdict: the filed estimand, no announcement; the step is the field's textbook regression to the mean under selection.
+2. A ranking file: none; it named the study report's Table 2 (2.3 to 6.6 per cent) as the easy route's figure, which ranks no account. Verdict: harmless, the study's own result.
+3. A file only for the analyst: the equivalence study's file and report and the manual's Table 4.3, used to calibrate its model. Verdict: each has the organisation's own use (the equivalence evidence for MAT-V, the manual's precision table).
+4. A figure reading as the answer: none; Table 2's rates read as the easy answer pointing the wrong way. Verdict: harmless.
+5. The literal computation: s.3.2's band over s.3.3's population, executed through its model, gives the 15. Verdict: the golden, no main-call fork.
+6. What decided: an analytical choice, modelling the thin top slice's regression to the mean with the calendar's interval instead of carrying the study's rates. Verdict: rule 3 holds; stump power does not.
+7. Realism: round plan counts and shortlist ratios, the 6,400 unregistered sittings' identical Monday 01:00 to 04:00 IST timing and short durations, uniform selection-day spreads and the study's fixed interval grid read as generated. Verdict: noted for any re-root.
+8. Odd: the unregistered identities, fresh booking references from 5.3.2 against s.6, 67 case rows without a booking reference, T4 over-represented in the study. Verdict: Layer 1 and the three ask devices, each found.
+
+REVIEW lines (leak.py): every line harmless (design note, Leak check).

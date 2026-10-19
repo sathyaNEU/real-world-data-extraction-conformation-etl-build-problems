@@ -335,3 +335,13 @@ leak.py --asof 2029-05-14: REVIEW, no LEAK. Each REVIEW line, answered:
   their MAT-V a tenth of a logit lower than scored) while the shrinkage at the ability, the full posterior and the
   world's own truth all file the 15. Kept as a rung and stated in the write-up's critical components, so a judge sees
   the refutation in the shipped data.
+- Architecture 3 (each account's 2029 referral share read through its shortlist's regression to the mean, MAT-R's
+  error at the ability and the retest gain at the interval): the stage 4 reader (Sonnet, medium, about eleven
+  minutes) landed the call with a latent-ability model (a tier prior deconvolved from the 2028 pool, Table 4.3's
+  errors, the study's fitted gain), checked against the study's referral rates by interval and by MAT-R level, and
+  kept all 19 ask figures, finding the 6,400 Monday-night identities outside the register, each candidate's latest
+  case decision and the fresh booking references from release 5.3.2; the judge's pass on the same bundle was
+  DETERMINISTIC, APPROVE. Selection on a noisy score is the textbook regression to the mean, a shrink the author file
+  names as a reflex, so the decisive step is readable to a strong model, and three devices one cross-file check deep
+  each fall to the hygiene battery. Realism tells it named: round plan counts and shortlist ratios, the suite's
+  identical early-Monday timing and short sittings, uniform selection-day spreads, the study's fixed interval grid.

@@ -17,19 +17,19 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), every REVIEW line answered in the note",
-  "reader": ""
+  "reader": "LANDED: the call and 19 of 19 ask figures (score_reader.py exit 1); second reader stopped once the first landed"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective, repeat.gate_g, repeat.question_form answered)",
   "nearest": "task242 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task249/determinism_check_report.md"
  },
  "returned": [],
- "resume": "architecture 3 built and through every stage 3 gate (target.zip md5 3a097683ea6ff33166093c2ec837dbda, not committed until ship); stage 4 running: the isolated leak reader (/tmp/t249-reader-r1, reader.json and reader_answers.md) and the determinism judge thread (/tmp/determinism-check-task249-r1/verdict.md, to be handed back to the determinism-judge agent for task249/determinism_check_report.md). Next: score the reader with score_reader.py, read both reports, fix every finding in one generator pass and rerun the free gates; if the reader lands the call, architecture 3 is spent and the author decides on retirement; otherwise ship (target.zip and golden/ force-added, ledger row drafted, board row updated).",
+ "resume": "architecture 3 spent at stage 4 on Gate F (the reader modelled each account's shortlist with a latent-ability model and landed the call and every ask figure; the judge DETERMINISTIC, APPROVE). This is the slot's third spent architecture, so the number retires unless the author orders a fourth (author file: a re-root past the third architecture is the author's call). Four architecture-4 candidates, each with a default path and a screen, are in handoffs/perssathya.md. On a re-root: fingerprint (v3 into lineage, its card marked architecture_spent), guide-to-prompt pairing, stumping; read the design note's Tried and rejected first; the v3 generator stays as reference until the re-root replaces it. On retirement: a ## Retired section in the design note, status RETIRED, every card kept.",
  "approved": null,
  "delivered": null,
  "portal": null,
