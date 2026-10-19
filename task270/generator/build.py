@@ -17,7 +17,6 @@ import sys           # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import books as BK         # noqa: E402
 import common as K         # noqa: E402
 import docs as DC          # noqa: E402
 import records as R        # noqa: E402
@@ -27,20 +26,20 @@ TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
 CONTENTS = [
-    ("basis", "Pricing Committee paper PC/26/09: the definitions of the 2027 private car rating basis."),
-    ("scale", "The no-claims step scale, private car, 2024 revision, with Step Protection."),
-    ("guide", "Management Information: guide to the claims and policy extracts of 30 September 2026."),
-    ("pol_legacy", "Legacy policy system: private car policy years incepting 1 January 2023 to 30 June 2025."),
-    ("pol_platform", "Policy platform: private car policy years incepting 1 July 2025 to 30 September 2026."),
-    ("crosswalk", "Legacy policy numbers and the platform numbers they renewed under."),
-    ("mta", "Data warehouse: mid-term adjustments on both policy systems, 2023 to September 2026."),
-    ("clm_legacy", "Legacy claims system: claims notified 1 January 2023 to 30 June 2025, as at 30 September 2026."),
-    ("clm_platform", "Claims platform: claims notified 1 July 2025 to 30 September 2026."),
-    ("glass", "%s: job file, jobs booked in 2025." % K.PARTNER),
-    ("salvage", "%s: sale statements, 2025 and 2026 to September." % K.SALVAGE),
-    ("regions", "The rating region map: postcode districts and regions, with effective dates."),
-    ("industry", "Private Motor Statistics Service: national private car claims statistics, 2021 to 2025."),
-    ("complaints", "Customer Relations: complaints received in 2025."),
+    ("paper", "Research Committee paper RC/26/11: recruiting sites for ARV-1102 (for decision, 21 October 2026)."),
+    ("questionnaire", "%s: %s site feasibility questionnaire, version 2.0." % (K.SPONSOR, K.TRIAL)),
+    ("guide", "Information team: guide to the Memory Assessment Service extracts, 6 October 2026."),
+    ("cis_ace", "CIS archive: ACE-III forms, April 2014 to 5 January 2024."),
+    ("cis_dx", "CIS archive: diagnoses recorded, April 2014 to 5 January 2024."),
+    ("epr_obs", "EPR: ACE-III observations, 8 January 2024 to 2 October 2026."),
+    ("epr_dx", "EPR: problem list entries for the Memory Assessment Service's patients."),
+    ("episodes", "EPR: Memory Assessment Service episodes open on or after 8 January 2024."),
+    ("appts", "EPR: Memory Assessment Service outpatient appointments from 8 January 2024."),
+    ("pmi", "Master patient index: hospital patient numbers, NHS numbers, dates of birth and death."),
+    ("tracker", "Memory Assessment Service pathway tracker, referrals from 8 January 2024."),
+    ("clinics", "Memory Assessment Service clinic register, with the postcode districts each clinic serves."),
+    ("audit", "Memory Assessment Service annual audit for the commissioners, 2024-25."),
+    ("population", "Planning team: residents aged 65 and over by postcode district, mid-2025."),
 ]
 
 
@@ -50,36 +49,38 @@ def build(out, seed=W.SEED, keep=False):
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
     w = W.world(seed)
-    bk = BK.books(w, seed)
+    R.derive(w)
     n = {}
-    n["pol_legacy"] = R.write_policy_legacy(p("pol_legacy"), bk)
-    n["pol_platform"] = R.write_policy_platform(p("pol_platform"), bk)
-    n["crosswalk"] = R.write_crosswalk(p("crosswalk"), bk)
-    n["mta"] = R.write_mtas(p("mta"), bk)
-    lines = R.glass_jobs(bk)
-    n["glass"] = R.write_glass(p("glass"), lines)
-    n["clm_legacy"] = R.write_claims_legacy(p("clm_legacy"), bk)
-    n["clm_platform"] = R.write_claims_platform(p("clm_platform"), bk)
-    n["salvage"] = R.write_salvage(p("salvage"), bk, w, seed)
-    n["regions"] = R.write_region_map(p("regions"))
-    n["industry"] = R.write_industry(p("industry"), seed)
-    n["complaints"] = R.write_complaints(p("complaints"), bk, seed)
-    DC.write_scale(p("scale"))
-    DC.write_basis(p("basis"))
+    n["pmi"] = R.write_pmi(p("pmi"), w)
+    n["cis_ace"] = R.write_cis_ace(p("cis_ace"), w)
+    n["cis_dx"] = R.write_cis_dx(p("cis_dx"), w)
+    n["epr_obs"] = R.write_epr_obs(p("epr_obs"), w)
+    n["epr_dx"] = R.write_epr_dx(p("epr_dx"), w)
+    n["episodes"] = R.write_episodes(p("episodes"), w)
+    n["appts"] = R.write_appointments(p("appts"), w)
+    n["tracker"] = R.write_tracker(p("tracker"), w)
+    n["clinics"] = R.write_clinics(p("clinics"))
+    n["audit"] = R.write_audit(p("audit"), w)
+    n["population"] = R.write_population(p("population"), w["seed"])
+    DC.write_paper(p("paper"))
+    DC.write_questionnaire(p("questionnaire"))
     DC.write_guide(p("guide"))
     DC.write_contents(p("contents"), [(K.FILES[k], d) for k, d in CONTENTS])
-    return dict(w=w if keep else None, bk=bk if keep else None, counts=n)
+    return dict(w=w if keep else None, counts=n)
 
 
 DOC_DATES = {
-    "scale": ("D:20231012143000+01'00'", "D:20231012143000+01'00'"),
-    "basis": ("D:20260916101500+01'00'", "D:20260922164000+01'00'"),
-    "guide": ("D:20261002111200+01'00'", "D:20261005152500+01'00'"),
+    "paper": ("D:20261007154200+01'00'", "D:20261008093500+01'00'"),
+    "questionnaire": ("D:20260918110500+01'00'", "D:20260921142000+01'00'"),
+    "guide": ("D:20261005160800+01'00'", "D:20261006121500+01'00'"),
 }
 OOXML = {
-    "salvage": (K.SALVAGE, K.SALVAGE, "2025-01-31T17:05:00Z", "2026-09-30T16:48:00Z", "Sale statements"),
-    "industry": ("Private Motor Statistics Service", "Private Motor Statistics Service", "2026-05-11T09:30:00Z",
-                 "2026-05-14T08:02:00Z", "Private car claims statistics 2025"),
+    "clinics": ("Information team", "Information team", "2019-04-02T09:12:00Z", "2026-10-02T10:41:00Z",
+                "Memory Assessment Service clinic register"),
+    "tracker": ("Information team", "Information team", "2024-02-05T08:30:00Z", "2026-10-02T07:05:00Z",
+                "MAS pathway tracker"),
+    "audit": ("Information team", "Information team", "2025-04-28T13:20:00Z", "2025-05-16T11:02:00Z",
+              "MAS annual audit 2024-25"),
 }
 
 
@@ -97,17 +98,18 @@ def finish(out):
 def metadata(fig, counts):
     return {
         "task": "task270",
-        "title": "%s: the three rating regions in band C of the 2027 private car rating basis" % K.SOCIETY,
-        "domain": "Actuarial Science & Insurance (claims frequency and severity)",
+        "title": "%s: the two memory clinics that recruit for %s" % (K.TRUST, K.TRIAL),
+        "domain": "Psychology & Behavioral Science (longitudinal growth curve modelling)",
         "objective": "Descriptive & Distribution Analysis",
-        "distractors": [K.FILES["industry"], K.FILES["complaints"]],
-        "provenance": {name: {"source": "constructed by the task generator (seeded); %s, %s, %s, the Private Motor "
-                                        "Statistics Service and every person are fictional; postcode districts are "
-                                        "real district codes used as labels only" % (K.SOCIETY, K.PARTNER, K.SALVAGE),
-                              "date": "2026-10-05", "licence": "CC0 1.0 (constructed for this task)"}
+        "distractors": [K.FILES["audit"], K.FILES["population"]],
+        "provenance": {name: {"source": "constructed by the task generator (seeded); %s, its clinics, %s, %s and every "
+                                        "person are fictional; NHS numbers are drawn from a range the NHS does not "
+                                        "issue" % (K.TRUST, K.SPONSOR, K.TRIAL),
+                              "date": "2026-10-09", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in counts.items()},
-        "answer": "Band C: %s" % ", ".join(fig["call"]["band_names"]),
+        "answer": "Recruiting sites: %s and %s; first clinic below: %s" % (fig["call"]["sites"][0],
+                                                                         fig["call"]["sites"][1], fig["call"]["below"]),
     }
 
 

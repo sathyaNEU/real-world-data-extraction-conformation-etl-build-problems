@@ -1,276 +1,125 @@
-"""The analysis on the shipped pack: each region's vehicle-years and accident claims over the 2024 and 2025 accident
-years, the ladder (the reported frequency, the Step Protection lift on steps 6 to 9 and on every step, and the
-size-based recovery of the claims the old wording kept out of the record), band C, and the two asks (the 2025
-windscreen and theft rates). Every figure is computed from the files in target/."""
+"""The golden on the cut pack: the second sitting's gain read within patients, each patient's own decline net of it,
+each clinic's average and the two that recruit; the slope through every sitting beside it; and the sponsor's two
+feasibility figures for every clinic."""
 import datetime as dt
-
+import numpy as np
+import pandas as pd
 import common as K
 import pack as PK
 
-T_GOLDEN = 2500.0            # the size above which no policyholder's own payment reaches (the golden's threshold)
-T_GRID = (1500.0, 2000.0, 2500.0, 3000.0)
+YEAR = 365.25
 
 
-def accident_claims(P, years=K.ACC_YEARS, when="loss", keep=None, skipped=None):
-    """Accident claims with an amount paid or reserved above nil, dated in the accident years, each with its
-    policy year, region on the accident date, step and protection at inception. (when and keep serve the checks'
-    readings; a claim no policy year covers is listed in skipped.)"""
-    out = []
-    for c in P["claims"]:
-        if c["type"] != "ACC" or c["incurred"] <= 0 or c[when].year not in years:
-            continue
-        if keep is not None and not keep(c):
-            continue
-        t = PK.term_for(P, c["ref"], c["loss"])
-        if t is None:
-            if skipped is not None:
-                skipped.append(c["no"])
-            continue
-        d, _ = PK.state_on(t, c["loss"])
-        out.append(dict(c, region=P["rmap"].region(d, c["loss"]), step=t["step"], prot=t["prot"],
-                        full=t["step"] == 0 or t["prot"]))
-    return out
+def slopes(w, y):
+    g = w.groupby("pid")
+    tm = g.t.transform("mean")
+    ym = g[y].transform("mean")
+    return ((w.t - tm) * (w[y] - ym)).groupby(w.pid).sum() / ((w.t - tm) ** 2).groupby(w.pid).sum()
 
 
-def top3(v):
-    o = sorted(K.CODES, key=lambda c: -v[c])
-    return dict(band=o[:3], below=o[3], order=o, margin=v[o[2]] / v[o[3]] - 1.0)
+def endpoint(w, y):
+    g = w.sort_values("t").groupby("pid")
+    return (g[y].last() - g[y].first()) / (g.t.last() - g.t.first())
 
 
-def reported(E, A):
-    n = {c: 0 for c in K.CODES}
-    for a in A:
-        n[a["region"]] += 1
-    return n, {c: 100.0 * n[c] / E[c] for c in K.CODES}
+def gain(w, cols=("step",)):
+    """Each patient's totals on time with their own intercept and slope, a step shared by all: the step's estimate.
+    Patients with two sittings fit their own line exactly and carry nothing on the step."""
+    v = w[w.groupby("pid").t.transform("size") >= 3]
+    gg = v.groupby("pid")
+    xt = v.t - gg.t.transform("mean")
+    stt = (xt * xt).groupby(v.pid).transform("sum")
+
+    def resid(col):
+        ym = gg[col].transform("mean")
+        return v[col] - ym - ((xt * (v[col] - ym)).groupby(v.pid).transform("sum") / stt) * xt
+    X = np.column_stack([resid(c) for c in cols])
+    return np.linalg.lstsq(X, resid("s").values, rcond=None)[0]
 
 
-def lift(P, A, steps=K.PILOT_STEPS):
-    """The analyst's lift: the Step Protection holders' claim frequency over other policyholders' on steps 6 to 9,
-    applied to the unprotected policies on the given steps."""
-    Es = PK.exposure(P, K.ACC_YEARS, by=("region", "step", "prot"))
-    num = {True: 0, False: 0}
-    den = {True: 0.0, False: 0.0}
-    for (r, s, pr), v in Es.items():
-        if s in K.PILOT_STEPS:
-            den[pr] += v
-    for a in A:
-        if a["step"] in K.PILOT_STEPS:
-            num[a["prot"]] += 1
-    u = (num[True] / den[True]) / (num[False] / den[False])
-    E = {c: sum(v for (r, s, pr), v in Es.items() if r == c) for c in K.CODES}
-    n = {c: 0.0 for c in K.CODES}
-    for a in A:
-        n[a["region"]] += u if (a["step"] in steps and not a["prot"]) else 1.0
-    return u, {c: 100.0 * n[c] / E[c] for c in K.CODES}
+def clinic_of(w):
+    return w.sort_values(["pid", "t"]).groupby("pid").clinic.last()
 
 
-def share_above(A, T, source="both"):
-    pick = {"both": lambda a: a["full"], "step0": lambda a: a["step"] == 0, "prot": lambda a: a["prot"]}[source]
-    base = [a["incurred"] for a in A if pick(a)]
-    return sum(1 for x in base if x > T) / len(base), len(base)
+def clinic_means(w, b):
+    return -(b.groupby(clinic_of(w)).mean())
 
 
-def recovered(E, A, T=T_GOLDEN, source="both"):
-    """Claims above T are complete on every step; each region's claims above T over the share of claims that large
-    among the policies a claim costs nothing (step 0 and Step Protection) recover the claims made under protection."""
-    S, nbase = share_above(A, T, source)
-    n = {c: 0 for c in K.CODES}
-    for a in A:
-        if a["incurred"] > T:
-            n[a["region"]] += 1
-    return S, {c: n[c] / S for c in K.CODES}, {c: 100.0 * n[c] / S / E[c] for c in K.CODES}
+def half(x):
+    return float(np.floor(x * 2 + 0.5) / 2)
 
 
-def recovered_insured(E, A, T=T_GOLDEN):
-    """The same recovery applied only to the claims of policies that pay for a claim with their steps (steps 1 to 9
-    without Step Protection), the full reporters' claims taken as made."""
-    S, _ = share_above(A, T)
-    n = {c: 0.0 for c in K.CODES}
-    for a in A:
-        if a["full"]:
-            n[a["region"]] += 1
-        elif a["incurred"] > T:
-            n[a["region"]] += 1.0 / S
-    return {c: 100.0 * n[c] / E[c] for c in K.CODES}
+def call(w, P_gain=None):
+    if P_gain is None:
+        P_gain = gain(w)[0]
+    v = w.copy()
+    v["a"] = v.s - P_gain * v.step
+    dec = clinic_means(v, slopes(v, "a"))
+    order = list(dec.sort_values(ascending=False).index)
+    return dict(gain=P_gain, decline=dec, order=order, sites=order[:2], below=order[2],
+                naive=clinic_means(v, slopes(v, "s")))
 
 
-def size_profile(A, edges=(0, 250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 3000, 4000, 6000, 1e12)):
-    """Claims by size band for the full reporters and for the other policies (the comparison that shows the cut)."""
-    rows = []
-    full = [a["incurred"] for a in A if a["full"]]
-    rest = [a["incurred"] for a in A if not a["full"]]
-    for lo, hi in zip(edges, edges[1:]):
-        rows.append((lo, hi, sum(lo < x <= hi for x in full), sum(lo < x <= hi for x in rest)))
-    return rows
+def main(P):
+    w = PK.frame(P)
+    res = call(w)
+    res["frame"] = w
+    res["n"] = clinic_of(w).value_counts()
+    res["gain_history"] = gain(PK.history(P))[0]
+    nav = res["naive"].sort_values(ascending=False)
+    res["naive_order"] = list(nav.index)
+    return res
 
 
-# ------------------------------------------------------------------------------------------------- the asks
-WORK = ("Windscreen replacement", "Windscreen repair")
-
-
-def partner_jobs(P):
-    """The partner's jobs billed to the Society: a job's lines are one claim, at their amount with VAT. A job with no
-    repair or replacement line is a camera recalibration alone (work is False)."""
-    jobs = {}
-    for g in P["glass"]:
-        if g["billed"] != K.SHORT:
-            continue
-        j = jobs.setdefault(g["job"], dict(job=g["job"], booked=g["booked"], ref=g["ref"], gross=0.0, net=0.0,
-                                           work=False))
-        j["gross"] += g["net"] + g["vat"]
-        j["net"] += g["net"]
-        j["work"] = j["work"] or g["desc"] in WORK
-    return jobs
-
-
-def feed_matches(P, jobs):
-    """The platform's windscreen claims that are the partner's jobs again: same policy number, registered on the day
-    the partner booked the job, at the job's amount before VAT. Returns {claim number: job reference}."""
-    index = {}
-    for j in jobs.values():
-        index.setdefault((j["ref"], j["booked"], round(j["net"], 2)), []).append(j["job"])
+# ------------------------------------------------------------------ Ask A: under follow-up on 30 September 2026
+def ask_a(P, day=K.WINDOW[1]):
+    ep = P["episodes"].copy()
+    ep["nhs"] = PK.digits(ep.nhs_number)
+    ep["start"] = pd.to_datetime(ep.episode_start).dt.date
+    ep["end"] = pd.to_datetime(ep.episode_end.replace("", None)).dt.date
+    ep["clinic"] = ep.site_code.map(P["site2clinic"])
+    open_ = ep[(ep.start <= day) & (ep.end.isna() | (ep.end > day))]
+    # a discharge at a review the episode has not yet been closed for
+    ap = P["appts"]
+    ap = ap[ap.outcome.str.contains("discharged from service|care passed to")].copy()
+    ap["nhs"] = PK.digits(ap.nhs_number)
+    ap["date"] = pd.to_datetime(ap.appointment_start.str[:10]).dt.date
+    open_ = open_.merge(ap[["nhs", "date"]], on="nhs", how="left")
+    gone = open_[(open_.date >= open_.start) & (open_.date <= day)].nhs.unique()
+    keep = open_[~open_.nhs.isin(gone)].drop_duplicates("episode_id")
+    pmi = P["pmi"][P["pmi"].record_status == "Active"].set_index("nhs")
+    dod = pd.to_datetime(pmi.date_of_death.replace("", None)).dt.date
+    keep = keep[~keep.nhs.map(dod).apply(lambda d: d is not None and not pd.isna(d) and d <= day)]
+    lat = PK.latest_dx(P, day)
+    keep = keep[keep.nhs.map(lat).fillna("").map(PK.in_scope)]
+    dob = pd.to_datetime(pmi.date_of_birth).dt.date
+    age = keep.nhs.map(dob).apply(lambda b: K.TRIAL_ENTRY.year - b.year - ((K.TRIAL_ENTRY.month, K.TRIAL_ENTRY.day)
+                                                                           < (b.month, b.day)))
+    keep = keep.assign(age=age.values)
     out = {}
-    for c in P["claims"]:
-        if c["type"] != "WSC" or c["sys"] != "P":
-            continue
-        hit = index.get((c["ref"], c["notified"], round(c["incurred"], 2)))
-        if hit:
-            out[c["no"]] = hit
-    return out
+    for c in K.NAMES:
+        k = keep[keep.clinic == c]
+        out[c] = dict(under=int(k.nhs.nunique()), age_ok=int(k[k.age <= K.AGE_LIMIT].nhs.nunique()))
+    return out, keep
 
 
-def policy_key(P, ref):
-    """One key per policy across the two numbering schemes (the legacy number where the policy has one)."""
-    return P["xw"].get(ref, ref) if ref.startswith("FNM") else ref
-
-
-def own_repairer(P, jobs, feed, pairs=None):
-    """The windscreen claims of repairers the policyholder chose (every windscreen claim that is not a partner job
-    registered again), each with the partner's recalibration of the screen that repairer fitted: a partner job that
-    is a camera recalibration alone belongs to the claim of the other repairer's replacement it follows on the same
-    policy. Yields (claim, the recalibration's amount with VAT)."""
-    rows = [c for c in P["claims"] if c["type"] == "WSC" and c["no"] not in feed and c["incurred"] > 0]
-    by_pol = {}
-    for c in rows:
-        by_pol.setdefault(policy_key(P, c["ref"]), []).append(c)
-    extra = {}
-    for j in jobs.values():
-        if j["work"]:
-            continue
-        before = [c for c in by_pol.get(policy_key(P, j["ref"]), []) if c["loss"] <= j["booked"]]
-        c = max(before, key=lambda c: (c["loss"], c["notified"], c["no"]))
-        extra[c["no"]] = extra.get(c["no"], 0.0) + j["gross"]
-        if pairs is not None:
-            pairs.append((c, j))
-    for c in rows:
-        yield c, extra.get(c["no"], 0.0)
-
-
-def windscreen(P, E25c):
-    """Ask A: each region's 2025 windscreen claims per 100 comprehensive vehicle-years and their average cost
-    including VAT: the partner's jobs billed to the Society that repair or replace a screen, and the claims of
-    repairers the policyholder chose (the claims that are not the partner's jobs registered again on the platform),
-    each with the partner's recalibration of the screen it replaced."""
-    n = {c: 0 for c in K.CODES}
-    cost = {c: 0.0 for c in K.CODES}
-    jobs = partner_jobs(P)
-    feed = feed_matches(P, jobs)
-    for j in jobs.values():
-        if j["booked"].year != 2025 or not j["work"]:
-            continue
-        t = PK.term_for(P, j["ref"], j["booked"])
-        d, cv = PK.state_on(t, j["booked"])
-        r = P["rmap"].region(d, j["booked"])
-        n[r] += 1
-        cost[r] += j["gross"]
-    own = 0
-    for c, extra in own_repairer(P, jobs, feed):
-        if c["notified"].year != 2025:
-            continue
-        t = PK.term_for(P, c["ref"], c["notified"])
-        d, cv = PK.state_on(t, c["notified"])
-        r = P["rmap"].region(d, c["notified"])
-        n[r] += 1
-        cost[r] += c["incurred"] + extra
-        own += 1
-    freq = {c: 100.0 * n[c] / E25c[c] for c in K.CODES}
-    avg = {c: cost[c] / n[c] for c in K.CODES}
-    return dict(n=n, cost=cost, freq=freq, avg=avg, own=own, feed=len(feed),
-                jobs=len([j for j in jobs.values() if j["booked"].year == 2025 and j["work"]]),
-                recalibrations=len([j for j in jobs.values() if j["booked"].year == 2025 and not j["work"]]))
-
-
-def thefts(P, E25):
-    """Ask B: each region's 2025 thefts per 100 vehicle-years and their average cost net of salvage: a theft's claims
-    share its police crime reference (written with separators on the legacy system), it is dated by its earliest
-    claim's loss date, and its cost is every claim's incurred less the salvage agent's net proceeds."""
-    groups = {}
-    for c in P["claims"]:
-        if c["type"] != "THF":
-            continue
-        groups.setdefault(c["police"], []).append(c)
-    net = {}
-    for s in P["salvage"]:
-        net[s["claim"]] = net.get(s["claim"], 0.0) + s["net"]
-    n = {c: 0 for c in K.CODES}
-    cost = {c: 0.0 for c in K.CODES}
-    for ref, cs in groups.items():
-        first = min(cs, key=lambda c: (c["loss"], c["notified"], c["no"]))
-        if first["loss"].year != 2025:
-            continue
-        inc = sum(c["incurred"] for c in cs)
-        if inc <= 0:
-            continue
-        t = PK.term_for(P, first["ref"], first["loss"])
-        d, _ = PK.state_on(t, first["loss"])
-        r = P["rmap"].region(d, first["loss"])
-        n[r] += 1
-        cost[r] += inc - sum(net.get(c["no"], 0.0) for c in cs)
-    freq = {c: 100.0 * n[c] / E25[c] for c in K.CODES}
-    avg = {c: cost[c] / n[c] for c in K.CODES}
-    return dict(n=n, cost=cost, freq=freq, avg=avg)
-
-
-def run(target):
-    P = PK.load(target)
-    E = {k[0]: v for k, v in PK.exposure(P, K.ACC_YEARS).items()}
-    A = accident_claims(P)
-    n0, R0 = reported(E, A)
-    u, R1 = lift(P, A)
-    _, R1b = lift(P, A, steps=range(1, 10))
-    S, N2, R2 = recovered(E, A)
-    grid = {}
-    for T in T_GRID:
-        for src in ("both", "step0", "prot"):
-            grid[(T, src)] = recovered(E, A, T, src)[2]
-    R2i = recovered_insured(E, A)
-    E25 = {k[0]: v for k, v in PK.exposure(P, (2025,)).items()}
-    E25c = {k[0]: v for k, v in PK.exposure(P, (2025,), cover="COMP").items()}
-    return dict(P=P, E=E, A=A, n0=n0, R0=R0, u=u, R1=R1, R1b=R1b, S=S, N2=N2, R2=R2, grid=grid, R2i=R2i,
-                profile=size_profile(A), E25=E25, E25c=E25c, glass=windscreen(P, E25c), theft=thefts(P, E25))
-
-
-if __name__ == "__main__":
-    import os
-    import sys
-    import time
-    t0 = time.time()
-    res = run(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__))), "target"))
-    print("%.0fs" % (time.time() - t0))
-    for nm in ("R0", "R1", "R1b", "R2", "R2i"):
-        v = res[nm]
-        t = top3(v)
-        print(nm, t["band"], "below", t["below"], "margin %.3f" % t["margin"],
-              " ".join("%s %.2f" % (c, v[c]) for c in K.CODES))
-    print("u %.3f S %.3f" % (res["u"], res["S"]))
-    for k, v in sorted(res["grid"].items()):
-        t = top3(v)
-        print(k, sorted(t["band"]), t["below"], "%.3f" % t["margin"])
-    for row in res["profile"]:
-        print(row)
-    g, th = res["glass"], res["theft"]
-    for c in K.CODES:
-        print(c, "E %.0f E25 %.0f E25c %.0f" % (res["E"][c], res["E25"][c], res["E25c"][c]),
-              "glass %d %.2f %.2f" % (g["n"][c], g["freq"][c], g["avg"][c]),
-              "theft %d %.3f %.2f" % (th["n"][c], th["freq"][c], th["avg"][c]))
+# ------------------------------------------------------------------ Ask B: referral to diagnosis
+def ask_b(P):
+    tr = P["tracker"].copy()
+    tr["nhs"] = PK.digits(tr["NHS number"])
+    tr["ref"] = pd.to_datetime(tr["Referral date"]).dt.date
+    ap = P["appts"]
+    given = ap[ap.outcome.str.contains("diagnosis given")].copy()
+    given["nhs"] = PK.digits(given.nhs_number)
+    given["date"] = pd.to_datetime(given.appointment_start.str[:10]).dt.date
+    first_given = given.sort_values("date").groupby("nhs").date.first()
+    tr["given"] = tr.nhs.map(first_given)
+    a0, a1 = K.ASK_YEAR
+    t = tr[tr.given.notna()].copy()
+    t = t[(t.given >= a0) & (t.given <= a1) & (t.given >= t.ref)]
+    t["days"] = [(g - r).days for g, r in zip(t.given, t.ref)]
+    out = {}
+    for c in K.NAMES:
+        k = t[t.Clinic == c]
+        out[c] = dict(n=int(len(k)), share=100.0 * float((k.days <= K.SIX_WEEKS).mean()), mean=float(k.days.mean()))
+    return out, t

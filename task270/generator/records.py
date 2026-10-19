@@ -1,299 +1,569 @@
-"""The pack's record files as each system exports them: the two policy administration exports, the policy number
-crosswalk, the data warehouse's mid-term adjustments, the two claims exports, the glass partner's job file, the
-salvage agent's statements, the rating region map, the industry statistics and the complaints log. Each writer
-returns its row count."""
+"""The exports the trust's systems write from the clean truth: the old clinical information system's ACE-III forms and
+diagnoses (to 5 January 2024), the electronic patient record's cognitive observations, problem list, episodes and
+outpatient appointments (from 8 January 2024), the master patient index, the Memory Assessment Service's pathway
+tracker, the clinic register, last year's service audit and the planning team's catchment populations.
+
+Everything random here draws from streams of its own, so the world's draws never move."""
 import csv
 import datetime as dt
-
 import numpy as np
-import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-
-import books as B
 import common as K
 import world as W
 
-LEG_TYPE = {"ACC": "ACC", "WSC": "WSC", "THF": "THF", "FIR": "FIR"}
-PLAT_TYPE = {"ACC": "Accident", "WSC": "Windscreen", "THF": "Theft", "FIR": "Fire"}
-LEG_SECTION = {"OD": "OD", "TPP": "TPP", "TPI": "TPI", "NTF": "NTF", "GLASS": "GLS", "THEFT": "THF", "FIRE": "FIR"}
-PLAT_SECTION = {"OD": "Own damage", "TPP": "Third party property", "TPI": "Third party injury",
-                "NTF": "Notification only", "GLASS": "Glass", "THEFT": "Theft", "FIRE": "Fire"}
-PLAT_LIAB = {"F": "At fault", "S": "Split", "N": "Not at fault", "P": "Pending", "": ""}
-LEG_STATUS = {"Open": "O", "Closed": "C", "Reopened": "R"}
-PLAT_COVER = {"COMP": "Comprehensive", "TPFT": "Third party, fire and theft"}
-PLAT_CHANNEL = {"Direct web": "Direct web", "Direct phone": "Direct phone", "Broker": "Broker"}
-LEG_CHANNEL = {"Direct web": "WEB", "Direct phone": "PHONE", "Broker": "BROKER"}
-PLAT_EXTRA = {"LEGAL": "Legal expenses", "BREAKDOWN": "Breakdown", "COURTESY": "Courtesy car"}
+GO = K.EPR_GO_LIVE
+EXTRACT = K.EXTRACT
+END = K.WINDOW[1]
+ROLES_CIS = ["Nurse specialist", "Specialty doctor", "Consultant psychiatrist", "Assistant psychologist"]
+ROLES_EPR = ["Memory nurse specialist", "Specialty doctor", "Consultant psychiatrist", "Assistant psychologist"]
+ITEMS = [("ACE3_ATT", 0), ("ACE3_MEM", 1), ("ACE3_FLU", 2), ("ACE3_LAN", 3), ("ACE3_VIS", 4)]
 
 
-def _csv(path, header, rows, delim=","):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, delimiter=delim, lineterminator="\r\n")
+def stream(seed, k):
+    return np.random.default_rng([seed, 7000 + k])
+
+
+def bst(d):
+    """British Summer Time: last Sunday of March to last Sunday of October."""
+    def last_sunday(y, m):
+        x = dt.date(y, m, 31)
+        return x - dt.timedelta(days=(x.weekday() + 1) % 7)
+    return last_sunday(d.year, 3) <= d < last_sunday(d.year, 10)
+
+
+def stamp(d, minutes):
+    off = "+01:00" if bst(d) else "+00:00"
+    return "%sT%02d:%02d:00%s" % (d.isoformat(), minutes // 60, minutes % 60, off)
+
+
+def ddmmyyyy(d):
+    return d.strftime("%d/%m/%Y")
+
+
+def workdays_after(d, n):
+    for _ in range(n):
+        d = W.weekday(d + dt.timedelta(days=1))
+    return d
+
+
+def write_csv(path, header, rows):
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(header)
         w.writerows(rows)
     return len(rows)
 
 
-def _sheet(ws, header, rows, widths, fmt=None, freeze=True, fill="D9E2EC"):
-    ws.append(header)
+# ------------------------------------------------------------------ the derived record of each patient
+def derive(w):
+    """Admin dates, appointment bookings, set identifiers and the rest the exports need, from their own streams."""
+    seed = w["seed"]
+    rng = stream(seed, 1)
+    pats = w["patients"]
+    by_clinic_day = {}
+    for p in pats:
+        for i, s in enumerate(p["sittings"]):
+            by_clinic_day.setdefault((s["clinic"], s["date"]), []).append((p["pid"], i))
+    for p in pats:
+        r = np.random.default_rng([seed, 31, p["pid"]])
+        # episodes: when the record was closed on the system
+        for ep in p["episodes"]:
+            if ep["end"] is None:
+                ep["closed_on"] = None
+                continue
+            reason = ep["reason"]
+            if reason == "Died":
+                lag = int(r.integers(5, 61))
+                ep["closed_on"] = W.weekday(ep["end"] + dt.timedelta(days=lag))
+            elif reason.startswith("Transferred"):
+                ep["closed_on"] = ep["end"]
+            elif reason.startswith("Care passed"):
+                ep["closed_on"] = workdays_after(ep["end"], int(min(60, 4 + r.geometric(0.055))))
+            elif reason == "Moved out of area":
+                ep["closed_on"] = W.weekday(ep["end"] + dt.timedelta(days=int(r.integers(0, 11))))
+            else:
+                # a discharge is closed when the discharge letter goes, a few days to some weeks on
+                ep["closed_on"] = workdays_after(ep["end"], int(min(60, 4 + r.geometric(0.055))))
+        # sittings: identifiers and the role who gave the test
+        for s in p["sittings"]:
+            s["minutes"] = int(r.choice([9 * 60, 9 * 60 + 30, 10 * 60 + 15, 11 * 60, 13 * 60 + 45, 14 * 60 + 30,
+                                         15 * 60 + 15]))
+            s["role"] = int(r.choice(4, p=[0.55, 0.2, 0.1, 0.15]))
+            s["hpn_used"] = p["hpn"]
+            if p["hpn2"] and s["date"] < GO and r.random() < 0.4:
+                s["hpn_used"] = p["hpn2"]
+        # the care home liaison team also advises on patients who stay under the clinic
+        if p["typ"] in ("AD", "MCI") and p["sittings"] and r.random() < 0.05:
+            d0 = p["sittings"][-1]["date"]
+            d1 = min(p["episodes"][-1]["end"] or END, END)
+            if d0 >= GO and (d1 - d0).days > 20:
+                p["events"].append(dict(kind="advice", date=W.weekday(d0 + dt.timedelta(days=int(r.integers(7, (d1 - d0).days)))),
+                                        clinic=p["episodes"][-1]["clinic"]))
+        # a stable patient discharged to the GP is often told at the review before
+        revs = [e for e in p["events"] if e["kind"] == "review"]
+        if len(revs) >= 2 and revs[-1].get("discharged") and p["episodes"][-1]["reason"] == "Discharged to GP" \
+                and r.random() < 0.6:
+            revs[-2]["planned"] = True
+        # and a stable patient still under follow-up whose next review will be the last
+        last_ep = p["episodes"][-1] if p["episodes"] else None
+        if (revs and last_ep and last_ep["end"] is None and p.get("stable_at") and p["typ"] == "MCI"
+                and not any(x["code"] != "MCI" for x in p["dx"]) and revs[-1]["date"] >= dt.date(2025, 10, 1)
+                and p["stable_at"] <= revs[-1]["date"] + dt.timedelta(days=430) and r.random() < 0.6):
+            revs[-1]["planned"] = True
+        # appointments in the electronic record's time
+        appts = []
+        for ev in p["events"]:
+            d = ev["date"]
+            if d < GO:
+                continue
+            kind = ev["kind"]
+            if kind == "assessment":
+                typ, dur = "New patient assessment", 90
+                out = "Attended - diagnosis given" if ev.get("dx_given") else "Attended"
+            elif kind == "feedback":
+                typ, dur, out = "Diagnosis feedback", 45, "Attended - diagnosis given"
+            elif kind == "discharge_at_feedback":
+                continue
+            elif kind == "nurse_call":
+                typ, dur, out = "Medication review (telephone)", 20, "Attended"
+            elif kind == "handover":
+                typ, dur, out = "Care home liaison (telephone)", 30, "Attended - care passed to care home liaison team"
+            elif kind == "advice":
+                typ, dur, out = "Care home liaison (telephone)", 30, "Attended - advice given, memory clinic follow-up continues"
+            else:
+                typ, dur = "Memory review", 60
+                out = "Attended - discharged from service" if ev.get("discharged") else "Attended"
+                if ev.get("planned"):
+                    out = "Attended - discharge planned at next review"
+            if kind == "feedback" and any(e["kind"] == "discharge_at_feedback" for e in p["events"]):
+                out = "Attended - diagnosis given, discharged from service"
+            # an earlier booking the patient missed or cancelled
+            if kind in ("feedback", "review", "assessment") and r.random() < 0.13:
+                pre = W.weekday(d - dt.timedelta(days=int(r.integers(14, 43))))
+                if pre >= GO:
+                    o = "Did not attend" if r.random() < 0.55 else ("Cancelled by patient" if r.random() < 0.6
+                                                                   else "Cancelled by service")
+                    appts.append(dict(date=pre, type=typ, dur=dur, outcome=o, clinic=ev["clinic"],
+                                      booked=pre - dt.timedelta(days=int(r.integers(20, 70)))))
+            appts.append(dict(date=d, type=typ, dur=dur, outcome=out, clinic=ev["clinic"],
+                              booked=d - dt.timedelta(days=int(r.integers(14, 80))), ev=ev))
+        # the next review, booked ahead, for a patient still under follow-up at the extract
+        last = p["episodes"][-1] if p["episodes"] else None
+        if last and last["end"] is None and p.get("first") and p["typ"] not in ("NOD", "DEP"):
+            reviews = [e["date"] for e in p["events"] if e["kind"] in ("review", "assessment", "feedback")]
+            nxt = W.weekday(max(reviews) + dt.timedelta(days=int(r.integers(300, 420))))
+            if nxt > EXTRACT and nxt < dt.date(2027, 6, 30):
+                appts.append(dict(date=nxt, type="Memory review", dur=60, outcome="", clinic=last["clinic"],
+                                  booked=max(reviews) + dt.timedelta(days=int(r.integers(0, 20)))))
+        for a in appts:
+            a["minutes"] = int(r.choice([9 * 60, 9 * 60 + 30, 10 * 60 + 30, 11 * 60 + 15, 13 * 60 + 30, 14 * 60 + 15,
+                                         15 * 60]))
+            a["role"] = int(r.choice(4, p=[0.45, 0.25, 0.2, 0.1]))
+            if a["type"] == "Medication review (telephone)":
+                a["role"] = 0
+            if a["booked"] >= a["date"]:
+                a["booked"] = a["date"] - dt.timedelta(days=7)
+        p["appts"] = sorted(appts, key=lambda a: (a["date"], a["minutes"]))
+    number(w, stream(seed, 4))
+    # a test entered on the wrong patient's record, then marked entered in error and entered again on the right one
+    eie = []
+    for p in pats:
+        for i, s in enumerate(p["sittings"]):
+            if s["date"] >= GO and rng.random() < 0.003:
+                if rng.random() < 0.75:
+                    slip = int(rng.choice([-3, -2, -1, 1, 2, 3]))
+                    eie.append(dict(pid=p["pid"], of=p["pid"], sitting=i, slip=slip,
+                                    obs_id="OBS-%08d" % (int(s["obs_id"][4:]) - 1)))
+                    continue
+                others = [q for q, j in by_clinic_day.get((s["clinic"], s["date"]), []) if q != p["pid"]]
+                if not others:
+                    others = [q["pid"] for q in pats[max(0, p["pid"] - 40):p["pid"] + 40]
+                              if q["pid"] != p["pid"] and q["sittings"]]
+                wrong = others[int(rng.integers(0, len(others)))]
+                eie.append(dict(pid=wrong, of=p["pid"], sitting=i, slip=0,
+                                obs_id="OBS-%08d" % (int(s["obs_id"][4:]) - 1)))
+    w["eie"] = eie
+    return w
+
+
+def number(w, r):
+    """Identifiers as the systems hand them out: in the order things were recorded."""
+    pats = w["patients"]
+    forms = sorted(((s["date"], s["minutes"], p["pid"], i) for p in pats for i, s in enumerate(p["sittings"])
+                    if s["date"] < GO))
+    n = 300017
+    for d, m, pid, i in forms:
+        n += int(r.integers(1, 4))
+        pats[pid]["sittings"][i]["form_id"] = "CIS-ACE-%06d" % n
+    sets = sorted(((s["date"], s["minutes"], p["pid"], i) for p in pats for i, s in enumerate(p["sittings"])
+                   if s["date"] >= GO))
+    n = 40011237
+    for d, m, pid, i in sets:
+        n += int(r.integers(2, 9))          # a set entered on the wrong record takes the number before its own
+        pats[pid]["sittings"][i]["obs_id"] = "OBS-%08d" % n
+    eps = sorted(((ep["start"], p["pid"], j) for p in pats for j, ep in enumerate(p["episodes"])))
+    n = 5000031
+    for d, pid, j in eps:
+        n += int(r.integers(1, 4))
+        pats[pid]["episodes"][j]["id"] = "EP%08d" % n
+    apps = sorted(((a["booked"], a["date"], p["pid"], j) for p in pats for j, a in enumerate(p["appts"])))
+    n = 210004518
+    for b, d, pid, j in apps:
+        n += int(r.integers(1, 6))
+        pats[pid]["appts"][j]["id"] = "APT%09d" % n
+    paths = sorted(((p["registered"], p["pid"]) for p in pats))
+    n = 880112
+    for d, pid in paths:
+        n += int(r.integers(1, 3))
+        pats[pid]["pathway_id"] = "MAS-%07d" % n
+
+
+# ------------------------------------------------------------------ the master patient index
+def nhs_fmt(n, r):
+    return "%s %s %s" % (n[:3], n[3:6], n[6:]) if r.random() < 0.03 else n
+
+
+def postcode(p, r):
+    last = p["episodes"][-1] if p["episodes"] else None
+    if last and last.get("reason") == "Moved out of area":
+        return "BM%d" % int(r.integers(2, 15))
+    clinic = last["clinic"] if last else p["clinic0"]
+    if last and last.get("reason", "") and last["reason"].startswith("Transferred"):
+        clinic = last["reason"].split(" to ")[1]
+    ds = K.DISTRICTS[clinic]
+    if clinic == p["clinic0"]:
+        return p["district"]
+    return ds[int(r.integers(0, len(ds)))]
+
+
+def write_pmi(path, w):
+    r = stream(w["seed"], 2)
+    rows = []
+    for p in w["patients"]:
+        death = p["death"].isoformat() if (p["death"] and p["death"] <= EXTRACT) else ""
+        pc = postcode(p, r)
+        rows.append((p["hpn"], nhs_fmt(p["nhs"], r), p["dob"].isoformat(), p["sex"], pc, death, "Active"))
+        if p["hpn2"]:
+            rows.append((p["hpn2"], nhs_fmt(p["nhs"], r), p["dob"].isoformat(), p["sex"], pc, death,
+                         "Merged into %s" % p["hpn"]))
+    rows.sort(key=lambda x: x[0])
+    return write_csv(path, ["hpn", "nhs_number", "date_of_birth", "sex", "postcode_district", "date_of_death",
+                            "record_status"], rows)
+
+
+# ------------------------------------------------------------------ the old system
+def write_cis_ace(path, w):
+    r = stream(w["seed"], 3)
+    rows = []
+    for p in w["patients"]:
+        for s in p["sittings"]:
+            if s["date"] >= GO:
+                continue
+            doms = ["" if x is None else x for x in s["domains"]]
+            hpn = s["hpn_used"] + (" " if r.random() < 0.004 else "")
+            rows.append((s["form_id"], hpn, K.CIS_CODE[s["clinic"]], ddmmyyyy(s["date"]), ROLES_CIS[s["role"]],
+                         "C" if s["completed"] else "A", *doms, s["total"]))
+    rows.sort(key=lambda x: x[0])
+    return write_csv(path, ["form_id", "hpn", "clinic_code", "assessment_date", "administered_by", "form_status",
+                            "attention", "memory", "fluency", "language", "visuospatial", "total"], rows)
+
+
+def write_cis_dx(path, w):
+    rows = []
+    for p in w["patients"]:
+        for x in p["dx"]:
+            if x["entered"] >= GO:
+                continue
+            code, desc = K.DX[x["code"]]
+            rows.append((p["hpn"], ddmmyyyy(x["entered"]), code, desc, x["status"], K.CIS_CODE[x["clinic"]]))
+    rows.sort(key=lambda x: (x[0], dt.datetime.strptime(x[1], "%d/%m/%Y")))
+    return write_csv(path, ["hpn", "diagnosis_date", "icd10_code", "diagnosis", "diagnosis_status", "clinic_code"],
+                     rows)
+
+
+# ------------------------------------------------------------------ the electronic patient record
+def write_epr_obs(path, w):
+    rows = []
+    pats = w["patients"]
+    eie_by = {}
+    for e in w["eie"]:
+        eie_by.setdefault(e["pid"], []).append(e)
+    for p in pats:
+        for s in p["sittings"]:
+            if s["date"] < GO:
+                continue
+            when = stamp(s["date"], s["minutes"])
+            status = "Final" if s["completed"] else "Incomplete"
+            for code, i in ITEMS:
+                if s["domains"][i] is None:
+                    continue
+                rows.append((s["obs_id"], p["nhs"], K.SITE[s["clinic"]], when, code, s["domains"][i], status,
+                             ROLES_EPR[s["role"]]))
+            rows.append((s["obs_id"], p["nhs"], K.SITE[s["clinic"]], when, "ACE3_TOTAL", s["total"], status,
+                         ROLES_EPR[s["role"]]))
+        for e in eie_by.get(p["pid"], []):
+            src = pats[e["of"]]["sittings"][e["sitting"]]
+            when = stamp(src["date"], src["minutes"])
+            doms = list(src["domains"])
+            if e["slip"]:
+                j = 1 if doms[1] is not None else 0
+                doms[j] = int(min(max(0, doms[j] + e["slip"]), K.DOMAINS[j][2]))
+            for code, i in ITEMS:
+                if doms[i] is None:
+                    continue
+                rows.append((e["obs_id"], p["nhs"], K.SITE[src["clinic"]], when, code, doms[i],
+                             "Entered in error", ROLES_EPR[src["role"]]))
+            rows.append((e["obs_id"], p["nhs"], K.SITE[src["clinic"]], when, "ACE3_TOTAL",
+                         int(sum(x for x in doms if x is not None)), "Entered in error", ROLES_EPR[src["role"]]))
+    order = {c: i for i, (c, _) in enumerate(ITEMS + [("ACE3_TOTAL", 5)])}
+    rows.sort(key=lambda x: (x[3][:10], x[0], order[x[4]]))
+    return write_csv(path, ["obs_set_id", "nhs_number", "site_code", "performed_at", "item_code", "value",
+                            "set_status", "entered_by_role"], rows)
+
+
+def migrated_dx(p):
+    """The diagnosis copied onto the new record for a patient still under the service at go-live."""
+    open_at_go = any(ep["start"] < GO and (ep["end"] is None or ep["end"] >= GO) for ep in p["episodes"])
+    before = [x for x in p["dx"] if x["entered"] < GO]
+    if not open_at_go or not before:
+        return None
+    return max(before, key=lambda x: (x["entered"], x["given"]))
+
+
+def write_epr_dx(path, w):
+    rows = []
+    for p in w["patients"]:
+        entries = []
+        m = migrated_dx(p)
+        if m:
+            entries.append((GO, m["code"], "CIS migration"))
+        for x in p["dx"]:
+            if GO <= x["entered"] <= EXTRACT:
+                entries.append((x["entered"], x["code"], "EPR"))
+        entries.sort(key=lambda e: e[0])
+        for i, (d, code, src) in enumerate(entries):
+            c, desc = K.DX[code]
+            status = "Active" if i == len(entries) - 1 else "Inactive"
+            rows.append((p["nhs"], c, desc, d.isoformat(), status, src))
+    rows.sort(key=lambda x: (x[3], x[0]))
+    return write_csv(path, ["nhs_number", "problem_code", "problem_description", "recorded_on", "problem_status",
+                            "source"], rows)
+
+
+def write_episodes(path, w):
+    rows = []
+    for p in w["patients"]:
+        for ep in p["episodes"]:
+            if ep["end"] is not None and ep["end"] < GO:
+                continue
+            if ep["start"] > EXTRACT:
+                continue
+            closed = ep["closed_on"] is not None and ep["closed_on"] <= EXTRACT
+            rows.append((ep["id"], p["nhs"], K.SITE[ep["clinic"]], ep["start"].isoformat(),
+                         ep["end"].isoformat() if closed else "", ep["reason"] if closed else "",
+                         "Y" if ep["start"] < GO else "N"))
+    rows.sort(key=lambda x: x[0])
+    return write_csv(path, ["episode_id", "nhs_number", "site_code", "episode_start", "episode_end", "end_reason",
+                            "migrated_from_cis"], rows)
+
+
+def write_appointments(path, w):
+    rows = []
+    for p in w["patients"]:
+        for a in p["appts"]:
+            if a["booked"] > EXTRACT:
+                continue
+            rows.append((a["id"], p["nhs"], K.SITE[a["clinic"]], a["type"], ROLES_EPR[a["role"]],
+                         a["booked"].isoformat(), stamp(a["date"], a["minutes"]), a["dur"],
+                         a["outcome"] if a["date"] <= EXTRACT else ""))
+    rows.sort(key=lambda x: (x[6][:10], x[0]))
+    return write_csv(path, ["appointment_id", "nhs_number", "site_code", "appointment_type", "clinician_role",
+                            "booked_on", "appointment_start", "duration_min", "outcome"], rows)
+
+
+# ------------------------------------------------------------------ the service's pathway tracker
+def tracker_rows(w):
+    rows = []
+    for p in w["patients"]:
+        reg = p["registered"]
+        first = p.get("first")
+        if reg < GO and not (first and first >= GO):
+            continue
+        dx0 = p["dx"][0] if p["dx"] else None
+        diag = dx0 if (dx0 and dx0["entered"] <= EXTRACT) else None
+        if first is None or first > EXTRACT:
+            status = "Awaiting assessment"
+        elif diag is None:
+            status = "Assessed, awaiting diagnosis"
+        else:
+            status = "Diagnosed"
+        rows.append(dict(pathway=p["pathway_id"], nhs=p["nhs"], clinic=p["clinic0"], referral=reg,
+                         source=p["source"], first=first if (first and first <= EXTRACT) else None,
+                         diagnosis_date=diag["entered"] if diag else None,
+                         diagnosis=K.DX[diag["code"]][1] if diag else "", status=status))
+    rows.sort(key=lambda x: x["pathway"])
+    return rows
+
+
+def write_tracker(path, w):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    rows = tracker_rows(w)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Pathways"
+    head = ["Pathway ID", "NHS number", "Clinic", "Referral date", "Referral source", "First assessment",
+            "Diagnosis date", "Diagnosis", "Pathway status"]
+    ws.append(head)
     for c in ws[1]:
         c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor=fill)
-        c.alignment = Alignment(vertical="top", wrap_text=True)
-    for row in rows:
-        ws.append(row)
-    for i, w in enumerate(widths):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
-    for c, f in (fmt or {}).items():
-        for cell in ws[openpyxl.utils.get_column_letter(c + 1)][1:]:
-            cell.number_format = f
-    if freeze:
-        ws.freeze_panes = "A2"
-
-
-def dmy(d):
-    return d.strftime("%d/%m/%Y") if d else ""
-
-
-def iso(d):
-    return d.isoformat() if d else ""
-
-
-def pence(x):
-    return int(round(x * 100))
-
-
-def money(x):
-    return "%.2f" % x
-
-
-def police_legacy(crime):
-    return "%s/%02d/%06d" % crime
-
-
-def police_platform(crime):
-    return "%s%02d%06d" % crime
-
-
-# ------------------------------------------------------------------------------------------------- policy terms
-def write_policy_legacy(path, bk):
-    rows = []
-    for r in sorted(bk["leg_terms"], key=lambda r: (r["start"], r["ref"])):
-        rows.append([r["ref"], r["seq"], dmy(r["start"]), dmy(r["end"]), dmy(r["cancelled"]), r["district"], r["step"],
-                     "Y" if r["protected"] else "N", r["cover"], r["reg"], r["veh_group"], r["veh_year"], r["age"],
-                     LEG_CHANNEL[r["channel"]], money(r["prem_net"]), money(r["ipt"]), "|".join(r["extras"])])
-    return _csv(path, ["POLICY_NO", "TERM_NO", "INCEPTION_DATE", "EXPIRY_DATE", "CANCELLATION_DATE",
-                       "GARAGING_DISTRICT", "NCD_STEP", "STEP_PROTECTION", "COVER", "VEHICLE_REG", "ABI_GROUP",
-                       "VEHICLE_YEAR", "MAIN_DRIVER_AGE", "CHANNEL", "NET_PREMIUM", "IPT", "ADDONS"], rows)
-
-
-def write_policy_platform(path, bk):
-    rows = []
-    for r in sorted(bk["plat_terms"], key=lambda r: (r["start"], r["ref"])):
-        cancel = r["cancelled"] + dt.timedelta(days=1) if r["cancelled"] else None
-        rows.append([r["ref"], r["seq"], iso(r["start"]), iso(r["end"] + dt.timedelta(days=1)), iso(cancel),
-                     "%s %s" % (r["district"], r["inward"]), r["step"], "true" if r["protected"] else "false",
-                     PLAT_COVER[r["cover"]], r["reg"], r["veh_group"], r["veh_year"], r["age"],
-                     PLAT_CHANNEL[r["channel"]], money(r["prem_net"]), money(r["ipt"]),
-                     ";".join(PLAT_EXTRA[e] for e in r["extras"])])
-    return _csv(path, ["policy_number", "term_number", "term_start", "term_end", "cancellation_date",
-                       "garaging_postcode", "ncd_step", "step_protection", "cover_type", "vehicle_registration",
-                       "abi_group", "year_of_manufacture", "main_driver_age_band", "sales_channel", "net_premium_gbp",
-                       "ipt_gbp", "add_ons"], rows)
-
-
-def write_crosswalk(path, bk):
-    rows = [[a, b, iso(d)] for a, b, d in bk["crosswalk"]]
-    return _csv(path, ["legacy_policy_no", "platform_policy_number", "first_platform_term_start"], rows)
-
-
-def write_mtas(path, bk):
-    rows = []
-    for m in sorted(bk["mtas"], key=lambda m: (m["day"], m["ref"], m["kind"])):
-        plat = m["system"] == "P"
-        where = cover = reg = group = ""
-        if m["kind"] == "Change of address":
-            where = "%s %s" % (m["district"], m["inward"]) if plat else m["district"]
-        elif m["kind"] == "Change of cover":
-            cover = PLAT_COVER[m["cover"]] if plat else m["cover"]
-        else:
-            reg, group = m["reg"], m["veh_group"]
-        rows.append(["PLATFORM" if plat else "LEGACY", m["ref"], m["seq"], iso(m["start"]), iso(m["day"]),
-                     m["kind"], where, cover, reg, group, money(m["prem"])])
-    return _csv(path, ["source_system", "policy_number", "term_number", "term_start", "effective_date",
-                       "adjustment_type", "new_garaging", "new_cover", "new_vehicle_reg", "new_abi_group",
-                       "premium_change_gbp"], rows)
-
-
-# ------------------------------------------------------------------------------------------------- claims
-def _in_export(c, system):
-    if c["system"] != system:
-        return False
-    d = c["notified"].date()
-    return K.FIRST_INCEPTION <= d <= K.EXTRACT
-
-
-def write_claims_legacy(path, bk):
-    rows = []
-    for c in bk["claims"]:
-        if not _in_export(c, "L"):
-            continue
-        rows.append([c["no"], c["ref"], dmy(c["loss"]), dmy(c["notified"].date()), LEG_TYPE[c["kind"]],
-                     LEG_SECTION[c["section"]], c["liab"], LEG_STATUS[c["status"]], pence(c["paid"]),
-                     pence(c["outstanding"]), pence(c["recovered"]),
-                     police_legacy(c["police"]) if c["police"] else "", c["supplier"], c["supplier_ref"]])
-    return _csv(path, ["CLAIM_NO", "POLICY_NO", "LOSS_DATE", "NOTIFIED_DATE", "CLAIM_TYPE", "SECTION", "FAULT",
-                       "STATUS", "PAID_AMT", "OS_AMT", "RECOV_AMT", "POLICE_REF", "SUPPLIER", "SUPPLIER_REF"], rows)
-
-
-def write_claims_platform(path, bk):
-    rows = []
-    for c in bk["claims"]:
-        if not _in_export(c, "P"):
-            continue
-        rows.append([c["no"], c["ref"], iso(c["loss"]), B.utc(c["notified"]).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                     PLAT_TYPE[c["kind"]], PLAT_SECTION[c["section"]], PLAT_LIAB[c["liab"]], c["status"],
-                     money(c["paid"]), money(c["outstanding"]), money(c["recovered"]),
-                     police_platform(c["police"]) if c["police"] else "", c["supplier"], c["supplier_ref"]])
-    return _csv(path, ["claim_number", "policy_number", "loss_date", "notified_at", "claim_type", "section",
-                       "liability", "status", "paid_gbp", "outstanding_gbp", "recovered_gbp", "police_reference",
-                       "supplier", "supplier_reference"], rows)
-
-
-# ------------------------------------------------------------------------------------------------- glass partner
-def glass_jobs(bk):
-    """The partner's 2025 job lines, its job references in booking order."""
-    jobs = [g for g in bk["glass"] if g["network"] and g["booked"].year == 2025]
-    lines = []
-    n = 2507000
-    for g in sorted(jobs, key=lambda g: (g["booked"], g["ev"], g["follow"])):
-        n += 1
-        ref = "CVG%07d" % n
-        g["job_ref"] = ref
-        billed = "Customer" if g["customer"] else K.SHORT
-        work = []
-        if not g.get("calib_only"):
-            work.append(("Windscreen replacement" if g["repl"] else "Windscreen repair", g["net"]))
-        if g["calib"]:
-            work.append(("ADAS camera recalibration", g["calib"]))
-        for no, (desc, amount) in enumerate(work, 1):
-            lines.append([ref, no, g["booked"].strftime("%d/%m/%Y %H:%M"), dmy(g["fitted"]), g["ref"], g["reg"],
-                          g["fit_district"], desc, billed, money(amount), money(round(amount * 0.2, 2)),
-                          g["fitted"].strftime("%Y-%m")])
-    return lines
-
-
-def write_glass(path, lines):
-    return _csv(path, ["job_ref", "line_no", "booked", "fitted_date", "insurer_policy_ref", "vehicle_reg",
-                       "fitting_postcode_district", "description", "billed_to", "net_amount", "vat_amount",
-                       "invoice_month"], lines)
-
-
-# ------------------------------------------------------------------------------------------------- salvage
-def write_salvage(path, bk, w, seed=W.SEED):
-    rng = np.random.default_rng([seed, 31])
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
-    n = 0
-    for year in (2025, 2026):
-        rows = []
-        for s in bk["salvage"]:
-            if s["sold"].year != year:
-                continue
-            c = s["claim"]
-            fees = round(float(rng.uniform(85, 180)), 2)
-            cat = {"THF": "Recovered theft", "FIR": "Cat B"}.get(c["kind"], "Cat S" if rng.random() < 0.7 else "Cat N")
-            rows.append([s["lot"], s["sold"], c["no"], B.term_on(w["terms"][c["term"]], c["loss"])[2], cat,
-                         round(s["proceeds"] + fees, 2), fees, s["proceeds"]])
-        ws = wb.create_sheet("Statements %d" % year)
-        _sheet(ws, ["Lot", "Sale date", "Client claim ref", "Registration", "Category", "Hammer price (GBP)",
-                    "Agent fees (GBP)", "Net proceeds remitted (GBP)"], rows, [10, 12, 16, 12, 16, 16, 15, 22],
-               fmt={1: "dd/mm/yyyy", 5: "#,##0.00", 6: "#,##0.00", 7: "#,##0.00"})
-        n += len(rows)
-    wb.save(path)
-    return n
-
-
-# ------------------------------------------------------------------------------------------------- region map
-def write_region_map(path):
-    rows = []
-    for code, name, ds in K.REGIONS:
-        for d in ds:
-            if d in K.REMAP:
-                old, new = K.REMAP[d]
-                rows.append([d, old, K.NAME[old], "2019-01-01", (K.REMAP_DATE - dt.timedelta(days=1)).isoformat()])
-                rows.append([d, new, K.NAME[new], K.REMAP_DATE.isoformat(), ""])
-            else:
-                rows.append([d, code, name, "2019-01-01", ""])
-
-    def key(r):
-        import re
-        m = re.match(r"([A-Z]+)(\d+)", r[0])
-        return (m.group(1), int(m.group(2)), r[3])
-    rows.sort(key=key)
-    return _csv(path, ["postcode_district", "rating_region_code", "rating_region", "effective_from", "effective_to"],
-                rows)
-
-
-# ------------------------------------------------------------------------------------------------- distractors
-def write_industry(path, seed=W.SEED):
-    """National private car claims statistics by cover and peril, 2021 to 2025 (frequency per 100 vehicle-years and
-    average incurred cost), as the statistics service publishes them."""
-    rng = np.random.default_rng([seed, 41])
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
-    base = {("Comprehensive", "Accident"): (10.9, 3260), ("Comprehensive", "Windscreen"): (10.6, 452),
-            ("Comprehensive", "Theft"): (0.74, 9850), ("Comprehensive", "Fire"): (0.09, 6420),
-            ("Third party, fire and theft", "Accident"): (12.8, 3910), ("Third party, fire and theft", "Theft"): (1.02, 6340),
-            ("Third party, fire and theft", "Fire"): (0.11, 4980)}
-    growth = {2021: 0.86, 2022: 0.91, 2023: 1.00, 2024: 1.06, 2025: 1.09}
-    rows = []
-    for (cover, peril), (f, a) in base.items():
-        for y in sorted(growth):
-            fy = round(f * (0.97 + 0.06 * rng.random()) * (1.0 if y > 2021 else 0.93), 2)
-            ay = int(round(a * growth[y] * (0.98 + 0.04 * rng.random())))
-            vy = int(round(21.4e6 * (0.62 if cover == "Comprehensive" else 0.14) * (0.99 + 0.02 * rng.random())))
-            rows.append([y, cover, peril, vy, fy, ay])
-    ws = wb.create_sheet("Private car by peril")
-    _sheet(ws, ["Year", "Cover", "Peril", "Vehicle-years (all contributors)", "Claims per 100 vehicle-years",
-                "Average incurred (GBP)"], rows, [7, 26, 12, 18, 16, 16],
-           fmt={3: "#,##0", 4: "0.00", 5: "#,##0"})
+    for x in rows:
+        ws.append([x["pathway"], x["nhs"], x["clinic"], x["referral"], x["source"], x["first"], x["diagnosis_date"],
+                   x["diagnosis"] or None, x["status"]])
+    for col in ("D", "F", "G"):
+        for cell in ws[col][1:]:
+            cell.number_format = "dd/mm/yyyy"
+    widths = [13, 13, 13, 14, 26, 16, 14, 52, 28]
+    for i, wdt in enumerate(widths):
+        ws.column_dimensions[chr(65 + i)].width = wdt
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = "A1:I%d" % (len(rows) + 1)
     notes = wb.create_sheet("Notes")
-    for line in ["Private Motor Statistics Service: contributor returns, private car, Great Britain.",
-                 "Claims are counted on a notified basis and costed at the contributor's incurred at 31 March after the "
-                 "year end. Windscreen claims include repairs and replacements settled direct with a glass network.",
-                 "Vehicle-years are earned exposure on policies in force at any time in the year.",
-                 "Released 14 May 2026. Contributors with fewer than 25,000 vehicle-years are pooled."]:
-        notes.append([line])
+    for line in [
+        ["Memory Assessment Service pathway tracker"],
+        ["One row per referral accepted by a memory clinic since the service moved to the electronic patient "
+         "record on 8 January 2024, with the referrals still waiting for a first assessment on that day."],
+        ["Refreshed from the electronic patient record on %s." % EXTRACT.strftime("%d %B %Y").lstrip("0")],
+        ["Maintained by the service's information team for the six-week referral to diagnosis standard."],
+    ]:
+        notes.append(line)
     notes.column_dimensions["A"].width = 120
     wb.save(path)
     return len(rows)
 
 
-def write_complaints(path, bk, seed=W.SEED):
-    rng = np.random.default_rng([seed, 43])
-    cats = [("Claims handling", 0.31), ("Premium at renewal", 0.22), ("No-claims step", 0.12),
-            ("Windscreen repair", 0.08), ("Cancellation and refunds", 0.09), ("Policy documents", 0.07),
-            ("Courtesy car", 0.05), ("Data protection", 0.03), ("Broker service", 0.03)]
-    names, probs = zip(*cats)
-    pool = [r for r in bk["leg_terms"] + bk["plat_terms"] if r["start"] <= dt.date(2025, 12, 31) and r["end"] >= dt.date(2025, 1, 1)]
+# ------------------------------------------------------------------ the clinic register, the audit, the populations
+def write_clinics(path):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Clinics"
+    ws.append(["Clinic", "CIS clinic code", "EPR site code", "First clinic held", "Base", "Consultant sessions a week",
+               "Notes"])
+    base = {"Thurlwick": "Thurlwick Health Centre", "Penwardine": "Penwardine Community Hospital",
+            "Swinholt": "Swinholt Resource Centre", "Brindlemere": "Brindlemere Health Centre",
+            "Ravensfold": "Ravensfold Clinic", "Corvale": "Corvale Community Hospital",
+            "Mosswick": "Mosswick Primary Care Centre", "Quarndale": "Quarndale Health and Wellbeing Hub"}
+    sess = {"Thurlwick": 4, "Penwardine": 4, "Swinholt": 3, "Brindlemere": 3, "Ravensfold": 3, "Corvale": 3,
+            "Mosswick": 2, "Quarndale": 3}
+    notes = {"Quarndale": "Opened 8 April 2024 for districts HL19 and HL20 (from Corvale), HL23 and HL24 (from "
+                          "Mosswick) and HL25 to HL27 (commissioned from April 2024). Patients already under Corvale "
+                          "or Mosswick stayed with those clinics.",
+             "Corvale": "Districts HL19 and HL20 passed to Quarndale on 8 April 2024.",
+             "Mosswick": "Districts HL23 and HL24 passed to Quarndale on 8 April 2024."}
+    for nm, cis, site, opened in K.CLINICS:
+        ws.append([nm, cis, site, opened, base[nm], sess[nm], notes.get(nm)])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for cell in ws["D"][1:]:
+        cell.number_format = "dd/mm/yyyy"
+    for col, wd in zip("ABCDEFG", (14, 15, 14, 16, 36, 12, 90)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A2"
+    ds = wb.create_sheet("Districts")
+    ds.append(["Postcode district", "Clinic", "From", "To"])
     rows = []
-    n = 0
-    for k in range(1640):
-        day = dt.date(2025, 1, 2) + dt.timedelta(days=int(rng.integers(0, 362)))
-        r = pool[int(rng.integers(len(pool)))]
-        cat = names[int(rng.choice(len(names), p=np.array(probs) / sum(probs)))]
-        outcome = str(rng.choice(["Upheld", "Partly upheld", "Not upheld", "Withdrawn"], p=[0.27, 0.19, 0.47, 0.07]))
-        closed = day + dt.timedelta(days=int(min(56, rng.gamma(2.0, 9.0))) + 1)
-        redress = 0.0
-        if outcome in ("Upheld", "Partly upheld"):
-            redress = round(float(rng.choice([25, 50, 75, 100, 150, 250])) if rng.random() < 0.7
-                            else float(rng.uniform(40, 900)), 2)
-        n += 1
-        rows.append(["CMP-25-%05d" % n, iso(day), str(rng.choice(["Phone", "Email", "Web form", "Letter"],
-                                                                   p=[0.48, 0.27, 0.2, 0.05])),
-                     r["ref"], cat, outcome, iso(closed) if closed <= K.EXTRACT else "", money(redress),
-                     "Y" if rng.random() < 0.04 else "N"])
-    rows.sort(key=lambda r: (r[1], r[0]))
-    return _csv(path, ["complaint_ref", "received", "channel", "policy_number", "category", "outcome", "closed",
-                       "redress_gbp", "referred_to_ombudsman"], rows)
+    for nm, cis, site, opened in K.CLINICS:
+        for d in K.DISTRICTS.get(nm, []):
+            if nm == "Quarndale":
+                rows.append((d, nm, K.OPENED["Quarndale"], None))
+            elif nm in K.QUARNDALE_FROM and d in K.QUARNDALE_FROM[nm]:
+                rows.append((d, nm, opened, K.OPENED["Quarndale"] - dt.timedelta(days=1)))
+            else:
+                rows.append((d, nm, opened, None))
+    rows.sort(key=lambda r: (int(r[0][2:]), r[2]))
+    for r in rows:
+        ds.append(list(r))
+    for c in ds[1]:
+        c.font = Font(bold=True)
+    for col in ("C", "D"):
+        for cell in ds[col][1:]:
+            cell.number_format = "dd/mm/yyyy"
+    for col, wd in zip("ABCD", (16, 14, 12, 12)):
+        ds.column_dimensions[col].width = wd
+    ds.freeze_panes = "A2"
+    wb.save(path)
+    return len(K.CLINICS) + len(rows)
+
+
+def under_follow_up(p, day):
+    """The clinic following the patient on a day (the clean truth), or None."""
+    if p["death"] and p["death"] <= day:
+        return None
+    for ep in p["episodes"]:
+        if ep["start"] <= day and (ep["end"] is None or ep["end"] > day):
+            return ep["clinic"]
+    return None
+
+
+def write_audit(path, w):
+    """The service's 2024-25 audit for the commissioners: another year and other measures."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    a0, a1 = dt.date(2024, 4, 1), dt.date(2025, 3, 31)
+    stats = {c: dict(ref=0, waits=[], appts=0, dna=0, dx=0, case=0) for c in K.NAMES}
+    for p in w["patients"]:
+        c0 = p["clinic0"]
+        if a0 <= p["registered"] <= a1:
+            stats[c0]["ref"] += 1
+        if p.get("first") and a0 <= p["first"] <= a1:
+            stats[c0]["waits"].append((p["first"] - p["registered"]).days / 7.0)
+        for a in p.get("appts", []):
+            if a0 <= a["date"] <= a1 and a["outcome"]:
+                if a["outcome"].startswith("Cancelled"):
+                    continue
+                stats[a["clinic"]]["appts"] += 1
+                stats[a["clinic"]]["dna"] += a["outcome"] == "Did not attend"
+        if p["dx"] and a0 <= p["dx"][0]["given"] <= a1 and p["dx"][0]["code"] not in ("MCI", "NOD", "DEP"):
+            stats[c0]["dx"] += 1
+        c = under_follow_up(p, a1)
+        if c:
+            stats[c]["case"] += 1
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Audit 2024-25"
+    ws.append(["Memory Assessment Service: annual audit for the commissioners, 1 April 2024 to 31 March 2025"])
+    ws.append([])
+    head = ["Clinic", "Referrals accepted", "Median weeks, referral to first assessment",
+            "Appointments not attended (%)", "New diagnoses of dementia", "Caseload, 31 March 2025"]
+    ws.append(head)
+    for c in K.NAMES:
+        st = stats[c]
+        med = float(np.median(st["waits"])) if st["waits"] else None
+        ws.append([c, st["ref"], round(med, 1) if med is not None else None,
+                   round(100.0 * st["dna"] / st["appts"], 1) if st["appts"] else None, st["dx"], st["case"]])
+    for cell in ws[3]:
+        cell.font = Font(bold=True)
+    ws["A1"].font = Font(bold=True)
+    for col, wd in zip("ABCDEF", (14, 12, 18, 16, 14, 14)):
+        ws.column_dimensions[col].width = wd
+    ws.append([])
+    ws.append(["Quarndale's figures run from its opening on 8 April 2024. Dementia diagnoses exclude mild cognitive "
+               "impairment. Prepared by the information team, May 2025."])
+    wb.save(path)
+    return len(K.NAMES)
+
+
+def write_population(path, seed):
+    r = stream(seed, 9)
+    rows = []
+    owner = {}
+    for nm, ds in K.DISTRICTS.items():
+        for d in ds:
+            owner[d] = nm if nm == "Quarndale" or d not in K.QUARNDALE_FROM.get(nm, []) else "Quarndale"
+    for d in sorted(owner, key=lambda x: int(x[2:])):
+        p65 = int(r.integers(3800, 11200))
+        p80 = int(p65 * r.uniform(0.24, 0.33))
+        rows.append((d, owner[d], p65, p80))
+    return write_csv(path, ["postcode_district", "memory_clinic", "residents_65_and_over", "residents_80_and_over"],
+                     rows)

@@ -1,5 +1,5 @@
-"""The pack's documents: the no-claims step scale (2024 revision), the pricing committee's 2027 rating basis note,
-the data team's guide to the claims and policy extracts, and the working pack's contents."""
+"""The pack's documents: the research committee's site selection paper, the sponsor's site feasibility questionnaire,
+the information team's guide to the extracts, and the pack's contents."""
 from __future__ import annotations
 
 from reportlab import rl_config
@@ -23,9 +23,9 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
 INK, GREY, RULE = colors.HexColor("#1f2428"), colors.HexColor("#5d646a"), colors.HexColor("#b8bfc4")
-PLUM = colors.HexColor("#4b2a4f")
-TEAL = colors.HexColor("#1d4f55")
-SLATE = colors.HexColor("#2f3b48")
+NHSBLUE = colors.HexColor("#005eb8")
+DEEP = colors.HexColor("#2b3a67")
+GREEN = colors.HexColor("#215c4a")
 
 
 def styles(font, accent):
@@ -57,7 +57,8 @@ def _table(S, rows, widths, right=()):
     data = [[Paragraph(str(c), S["cellb"] if i == 0 else S["cell"]) for c in r] for i, r in enumerate(rows)]
     t = Table(data, colWidths=[w * mm for w in widths], repeatRows=1, hAlign="LEFT")
     st = [("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("LINEBELOW", (0, -1), (-1, -1), .4, RULE),
-          ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]
+          ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2),
+          ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]
     for c in right:
         st.append(("ALIGN", (c, 0), (c, -1), "RIGHT"))
     t.setStyle(TableStyle(st))
@@ -73,240 +74,160 @@ def _clause(S, num, text):
     return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S["clause"])
 
 
-# ---------------------------------------------------------------------------------------------- the step scale
-def write_scale(path):
-    S = styles("Serif", PLUM)
-    doc = _doc(path, "No-claims step scale: 2024 revision", K.SOCIETY)
-    rel = [["Step", "Relativity", "Step", "Relativity"]]
-    for k in range(5):
-        rel.append([str(k), "%.2f" % K.REL[k], str(k + 5), "%.2f" % K.REL[k + 5]])
-    s = [Paragraph("No-claims step scale, private car: 2024 revision", S["h1"]),
-         Paragraph("%s. Approved by the Board on 12 October 2023 for policy years starting on or after 1 January "
-                   "2024. Replaces the 2019 scale." % K.SOCIETY, S["meta"]),
-         Paragraph("1. The steps", S["h2"]),
-         Paragraph("Every private car policy stands on one of ten steps, numbered 0 to 9. The step sets the no-claims "
-                   "relativity that multiplies the policy's premium at inception and at each renewal. Step 9 carries "
-                   "the largest reduction and step 0 none; the 2024 revision kept the 2019 scale's ten steps and its "
-                   "rules of movement and changed the relativities to those below.", S["body"]),
-         _table(S, rel, [22, 30, 22, 30], right=(1, 3)),
+# ---------------------------------------------------------------------------------------------- the paper
+def write_paper(path):
+    S = styles("Sans", NHSBLUE)
+    doc = _doc(path, "RC/26/11 Recruiting sites for ARV-1102", K.TRUST)
+    clinics = [["Clinic", "Opened", "Records before 8 January 2024", "Records from 8 January 2024"]]
+    for nm, cis, site, opened in K.CLINICS:
+        clinics.append([nm, opened.strftime("%B %Y"), "CIS, clinic code %s" % cis if cis else "None (opened later)",
+                        "EPR, site %s" % site])
+    s = [Paragraph("Recruiting sites for ARV-1102: naming two memory clinics", S["h1"]),
+         Paragraph("Research Committee paper RC/26/11, for decision on 21 October 2026. From %s, Lead for Dementia "
+                   "Research, Research and Development, with %s, Clinical Lead, %s. 8 October 2026."
+                   % (K.PEOPLE["lead"], K.PEOPLE["clinical"], K.SERVICE), S["meta"]),
+         Paragraph("1. Purpose", S["h2"]),
+         Paragraph("%s has offered the trust two recruiting sites for ARV-1102, its phase 3 trial of a "
+                   "disease-modifying treatment in early Alzheimer's disease, which opens to recruitment in January "
+                   "2027. Our %s runs eight memory clinics. This paper sets out how the committee will choose the two "
+                   "that recruit and asks it to name them." % (K.SPONSOR, K.SERVICE), S["body"]),
+         Paragraph("2. What the sponsor asks of a site", S["h2"]),
+         Paragraph("The trial's primary endpoint is the change in cognition over 18 months, and its power rests on the "
+                   "patients it enrols declining with their disease over that time. %s asks each trust to recruit "
+                   "from the clinics whose patients' cognition has declined fastest with their disease, judged on the "
+                   "trust's own records, and to return its site feasibility questionnaire for every clinic the trust "
+                   "runs." % K.SPONSOR, S["body"]),
+         Paragraph("3. How the committee will compare the clinics", S["h2"]),
+         _clause(S, "3.1", "Each clinic's figure is the average, over its patients, of the rate at which each "
+                           "patient's cognition declined between 1 January 2022 and 30 September 2026, in ACE-III "
+                           "points a year, each patient's own rate counting once."),
+         _clause(S, "3.2", "A clinic's patients are those whose latest diagnosis on the record on or before 30 "
+                           "September 2026 is Alzheimer's disease (ICD-10 F00 or G30, mixed Alzheimer's and vascular "
+                           "dementia included) or mild cognitive impairment (F06.7), and who completed two or more "
+                           "ACE-III assessments in that period. A patient counts at the clinic that held their last "
+                           "completed assessment in the period. An assessment stopped before all five domains were "
+                           "scored is not a completed assessment."),
+         _clause(S, "3.3", "The two clinics whose patients declined fastest are named. The committee compares the "
+                           "clinics' figures unrounded and reports them to the nearest half point."),
+         Paragraph("4. The clinics and their records", S["h2"]),
+         Paragraph("The service's records were held on the trust's clinical information system (CIS) until 5 January "
+                   "2024 and on the electronic patient record (EPR) from 8 January 2024. The information team's guide "
+                   "of 6 October 2026 describes the extracts it has prepared for this paper.", S["body"]),
+         _table(S, clinics, [30, 28, 56, 56]),
          Spacer(1, 4),
-         Paragraph("2. Moving on the scale", S["h2"]),
-         _clause(S, "2.1", "At each renewal a policy moves up one step, to at most step 9, if no claim that counts "
-                           "against the steps was made in the policy year just ending."),
-         _clause(S, "2.2", "It moves down three steps for each claim that counts against the steps made in the policy "
-                           "year, to no lower than step 0, and does not move up that year."),
-         _clause(S, "2.3", "Claims that count against the steps: an accident claim on which the policyholder was at "
-                           "fault or liability was split, including one whose liability is still being decided at "
-                           "renewal; a theft claim; a fire claim."),
-         _clause(S, "2.4", "Claims that do not count against the steps: an accident claim on which the policyholder was "
-                           "not at fault; a windscreen claim; an accident notification closed without any payment by the "
-                           "Society."),
-         _clause(S, "2.5", "A claim counts in the policy year in which the incident happened. A change of car, address "
-                           "or cover during the year does not move the policy."),
-         Paragraph("3. New policies", S["h2"]),
-         Paragraph("A new policy starts on the step matching the proposer's proven years without a claim with a "
-                   "previous insurer, one step a year to step 9, or on step 0 where the proposer has made an at-fault "
-                   "claim in the last three years. Proof is taken from the previous insurer's renewal notice or a "
-                   "letter of no-claims entitlement.", S["body"]),
-         Paragraph("4. Step Protection", S["h2"]),
-         _clause(S, "4.1", "From 1 January 2024 a policy renewing on step 6, 7, 8 or 9 may add Step Protection for the "
-                           "policy year, at 11 per cent of the premium after the step's relativity."),
-         _clause(S, "4.2", "A policy with Step Protection does not move down for claims made in that policy year. It "
-                           "moves up one step at renewal only if no claim that counts against the steps was made; "
-                           "otherwise it stays on its step."),
-         _clause(S, "4.3", "Step Protection is chosen afresh at each renewal and lapses if the policy renews on a step "
-                           "below 6."),
-         Paragraph("5. Administration", S["h2"]),
-         Paragraph("The step at inception and whether Step Protection applies are recorded on each policy year. Moves "
-                   "are applied by the policy administration system at renewal from the claims notified in the year; "
-                   "a correction after renewal (a claim settled not at fault, a claim withdrawn) is made at the next "
-                   "renewal and is not backdated.", S["body"])]
-    doc.build(s, onFirstPage=_frame(K.SOCIETY, "No-claims step scale, 2024 revision", "Serif"),
-              onLaterPages=_frame(K.SOCIETY, "No-claims step scale, 2024 revision", "Serif"))
+         Paragraph("Quarndale opened on 8 April 2024. It took the referrals from two districts each that Corvale and "
+                   "Mosswick had served and from three districts the service took on that month; the patients "
+                   "already under Corvale and Mosswick stayed with them.", S["body"]),
+         Paragraph("5. The feasibility questionnaire", S["h2"]),
+         Paragraph("The trust's return to %s's questionnaire (version 2.0, 21 September 2026) goes with the "
+                   "nomination and gives the sponsor's population and diagnostic pathway figures for each of the "
+                   "eight clinics, on the questionnaire's own definitions." % K.SPONSOR, S["body"]),
+         Paragraph("6. Decision", S["h2"]),
+         Paragraph("The committee is asked to name two clinics as recruiting sites for ARV-1102 and to approve the "
+                   "questionnaire return.", S["body"])]
+    doc.build(s, onFirstPage=_frame(K.TRUST, "Research Committee RC/26/11", "Sans"),
+              onLaterPages=_frame(K.TRUST, "Research Committee RC/26/11", "Sans"))
 
 
-# ---------------------------------------------------------------------------------------------- the basis note
-def write_basis(path):
-    S = styles("Sans", TEAL)
-    doc = _doc(path, "Private car rating basis 2027: definitions", K.PEOPLE["actuary"])
-    s = [Paragraph("Private car rating basis 2027: definitions", S["h1"]),
-         Paragraph("Pricing Committee paper PC/26/09. %s, Pricing Actuary. Definitions adopted by the committee "
-                   "(chair %s) on 16 September 2026; figures to be prepared on the data cut of 30 September 2026 for "
-                   "the meeting of 21 October 2026." % (K.PEOPLE["actuary"], K.PEOPLE["chair"]), S["meta"]),
-         Paragraph("1. The 2027 wording", S["h2"]),
-         Paragraph("From the renewals of 1 January 2027 every private car policy carries step protection as standard: "
-                   "a claim made in a policy year will no longer move the policy down the no-claims steps, and the "
-                   "Step Protection add-on is withdrawn. The relativities of the 2024 scale stay as they are, and a "
-                   "policy moves up one step at renewal after a year without a claim that would have counted against "
-                   "the steps. The 2027 rating basis prices private car business on that wording from the first "
-                   "renewal; this note fixes the definitions the basis uses. Rating regions are the eight regions of "
-                   "the Society's region map.", S["body"]),
-         Paragraph("2. Accident frequency bands", S["h2"]),
-         _clause(S, "2.1", "Each rating region's accident frequency is the number of accident claims that the "
-                           "region's policies would have made over the 2024 and 2025 accident years had every policy "
-                           "already carried step protection, per 100 vehicle-years earned."),
-         _clause(S, "2.2", "Accident claims are claims under the accident section of the policy (damage to the insured "
-                           "car, damage to third-party property and injury to third parties), whether the policyholder "
-                           "was at fault, liability was split or the policyholder was not at fault, and whether or not "
-                           "liability is settled, with an amount paid or reserved by the Society above nil at the data "
-                           "cut, before any recovery from another insurer. Windscreen, theft and fire claims are "
-                           "outside. A claim falls in the accident year of its accident date."),
-         _clause(S, "2.3", "Vehicle-years are the days each policy was on cover within the period, divided by 365, "
-                           "counted in the rating region of the policy's garaging postcode on each day under the region "
-                           "map in force on that day. A claim is counted in the region of the garaging postcode on its "
-                           "accident date."),
-         _clause(S, "2.4", "Band C, the top accident band, holds the three regions with the highest accident frequency; "
-                           "band A holds the three lowest and band B the other two. Each band's relativity is set "
-                           "separately at the November meeting."),
-         Paragraph("3. Windscreen rate", S["h2"]),
-         _clause(S, "3.1", "Each region's windscreen frequency for the 2025 rating year is the number of windscreen "
-                           "claims dated in 2025 per 100 vehicle-years with glass cover in 2025. Glass cover comes with "
-                           "comprehensive cover only, so these are the vehicle-years on comprehensive cover, counted as "
-                           "in 2.3 by the cover and garaging postcode on each day."),
-         _clause(S, "3.2", "A windscreen claim is a repair or a replacement of the windscreen of a comprehensively "
-                           "insured car at the Society's cost, whether the work was done by the Society's glass "
-                           "partner or by a repairer the policyholder chose. It is dated on the day the job was booked "
-                           "with the partner or, for other repairers, the day the claim was notified, and it is counted "
-                           "in the region of the garaging postcode on that day. A replacement and the camera "
-                           "recalibration it needs are one claim. Work the partner does for a policyholder on third "
-                           "party, fire and theft cover is charged to the policyholder and is not a claim."),
-         _clause(S, "3.3", "The average cost of a windscreen claim is the amount the Society pays for it including VAT."),
-         Paragraph("4. Theft rate", S["h2"]),
-         _clause(S, "4.1", "Each region's theft frequency for the 2025 rating year is the number of thefts in 2025 per "
-                           "1,000 vehicle-years on either cover in 2025, counted as in 2.3."),
-         _clause(S, "4.2", "A theft is a theft of the car or from it, or an attempt at either, reported to the police. It "
-                           "is dated on the day it happened, counted in the region of the garaging postcode on that "
-                           "day, and counted where it cost the Society something."),
-         _clause(S, "4.3", "The average cost of a theft is everything the Society paid or reserved on it at the data cut, "
-                           "less the net proceeds the salvage agent remitted for the car."),
-         Paragraph("5. Sources", S["h2"]),
-         Paragraph("The figures are prepared from the policy administration and claims extracts of 30 September 2026, "
-                   "the glass partner's job file for 2025 and the salvage agent's statements, as the data guide of "
-                   "5 October 2026 describes them. National statistics are for context and do not enter the basis.",
-                   S["body"])]
-    doc.build(s, onFirstPage=_frame(K.SOCIETY + ", Pricing Committee", "PC/26/09", "Sans"),
-              onLaterPages=_frame(K.SOCIETY + ", Pricing Committee", "PC/26/09", "Sans"))
+# ---------------------------------------------------------------------------------------------- the questionnaire
+def write_questionnaire(path):
+    S = styles("Serif", DEEP)
+    doc = _doc(path, "%s site feasibility questionnaire" % K.TRIAL, K.SPONSOR)
+    s = [Paragraph("%s: site feasibility questionnaire" % K.TRIAL, S["h1"]),
+         Paragraph("%s. A phase 3, randomised, placebo-controlled trial in early Alzheimer's disease. Version 2.0, "
+                   "21 September 2026. Return one questionnaire for each trust by 30 October 2026." % K.SPONSOR,
+                   S["meta"]),
+         Paragraph("Section A. The trust", S["h2"]),
+         Paragraph("A1 to A6 (trust details, principal investigator, research team, pharmacy and governance contacts) "
+                   "are answered on the cover sheet.", S["body"]),
+         Paragraph("Section B. Patient population", S["h2"]),
+         Paragraph("Answer for each memory clinic the trust runs.", S["body"]),
+         _clause(S, "B1", "The number of patients with Alzheimer's disease or mild cognitive impairment under the "
+                          "clinic's follow-up on 30 September 2026. A patient is under a clinic's follow-up from the "
+                          "clinic accepting their referral until the memory service discharges them, they die or "
+                          "their care passes to another clinic or service. Count each patient once, at the clinic "
+                          "following them on that day, by their latest recorded diagnosis on that day."),
+         _clause(S, "B2", "Of the patients in B1, the number who will be 85 or under on 1 January 2027, the trial's "
+                          "upper age limit when it opens."),
+         _clause(S, "B3", "The clinic's experience of research in dementia since 2022 (studies, recruits, "
+                          "withdrawals): answered on the cover sheet."),
+         Paragraph("Section C. Diagnostic pathway", S["h2"]),
+         Paragraph("Answer for each memory clinic, for the patients the clinic gave a diagnosis in the 12 months "
+                   "from 1 October 2025 to 30 September 2026. A patient's diagnosis is the first the memory service "
+                   "gave them on the referral, whatever it was (a finding of no dementia included).", S["body"]),
+         _clause(S, "C1", "The share of those patients who received their diagnosis within 42 days (42 days or "
+                          "fewer) of the clinic receiving their referral."),
+         _clause(S, "C2", "The average number of days from the clinic receiving the referral to the patient receiving "
+                          "their diagnosis."),
+         Paragraph("Section D. Imaging, laboratory and rating", S["h2"]),
+         Paragraph("D1 to D7 (MRI capacity and wait, amyloid PET or CSF access, blood biomarkers, certified raters "
+                   "for the trial's cognitive battery) are answered by the trust's radiology and research teams on "
+                   "the cover sheet.", S["body"]),
+         Paragraph("Notes", S["h2"]),
+         Paragraph("Days are calendar days. Give percentages to one decimal place and averages of days to one decimal "
+                   "place. Where a figure rests on the trust's own records, keep the working: %s may ask to see it "
+                   "at the site initiation visit." % K.SPONSOR, S["body"])]
+    doc.build(s, onFirstPage=_frame(K.SPONSOR, "%s feasibility v2.0" % K.TRIAL, "Serif"),
+              onLaterPages=_frame(K.SPONSOR, "%s feasibility v2.0" % K.TRIAL, "Serif"))
 
 
 # ---------------------------------------------------------------------------------------------- the data guide
 def write_guide(path):
-    S = styles("Sans", SLATE)
-    doc = _doc(path, "Claims and policy extracts: data guide", "Management Information")
+    S = styles("Sans", GREEN)
+    doc = _doc(path, "Memory Assessment Service: guide to the extracts", K.TRUST)
     F = K.FILES
-    leg_pol = [["Column", "Meaning"],
-               ["POLICY_NO", "Policy number on the legacy system (FM and seven digits)"],
-               ["TERM_NO", "The policy year's number, counting from the policy's first year"],
-               ["INCEPTION_DATE", "First day on cover (day/month/year)"],
-               ["EXPIRY_DATE", "Last day on cover"],
-               ["CANCELLATION_DATE", "Last day on cover of a policy year cancelled before expiry; blank otherwise"],
-               ["GARAGING_DISTRICT", "Postcode district where the car is kept, at inception"],
-               ["NCD_STEP", "No-claims step at inception (0 to 9)"],
-               ["STEP_PROTECTION", "Y where Step Protection was bought for the policy year"],
-               ["COVER", "COMP comprehensive, TPFT third party, fire and theft, at inception"],
-               ["VEHICLE_REG, ABI_GROUP, VEHICLE_YEAR", "The insured car at inception: registration, group, year"],
-               ["MAIN_DRIVER_AGE", "Age band of the main driver at inception"],
-               ["CHANNEL", "WEB, PHONE or BROKER"],
-               ["NET_PREMIUM, IPT", "Premium after the step's relativity, and insurance premium tax, in pounds"],
-               ["ADDONS", "Optional covers bought, separated by |"]]
-    plat_pol = [["Column", "Meaning"],
-                ["policy_number", "Policy number on the platform (FNM- and seven digits)"],
-                ["term_number", "The policy year's number, carried over from the legacy system at migration"],
-                ["term_start", "First day on cover (ISO date)"],
-                ["term_end", "Renewal date: cover runs to midnight at the start of this day"],
-                ["cancellation_date", "Date from which a cancelled policy year has no cover; blank otherwise"],
-                ["garaging_postcode", "Full postcode where the car is kept, at term start"],
-                ["ncd_step, step_protection", "No-claims step at term start; true where Step Protection applies"],
-                ["cover_type", "Comprehensive, or Third party, fire and theft, at term start"],
-                ["net_premium_gbp, ipt_gbp", "Premium after the step's relativity, and insurance premium tax"]]
-    leg_clm = [["Column", "Meaning"],
-               ["CLAIM_NO", "Claim number (C and seven digits); a reopened claim keeps its number"],
-               ["POLICY_NO", "Policy number the claim is registered against"],
-               ["LOSS_DATE, NOTIFIED_DATE", "Date of the incident; date the claim was notified (day/month/year)"],
-               ["CLAIM_TYPE", "ACC accident, WSC windscreen, THF theft, FIR fire"],
-               ["SECTION", "OD own damage, TPP third-party property, TPI third-party injury, NTF notification only, "
-                           "GLS glass, THF theft, FIR fire"],
-               ["FAULT", "Accident claims: F at fault, S split, N not at fault, P liability not yet settled"],
-               ["STATUS", "O open, C closed, R reopened"],
-               ["PAID_AMT, OS_AMT, RECOV_AMT", "Paid to date, outstanding reserve and amount recovered from another "
-                                               "party, in pence"],
-               ["POLICE_REF", "Crime reference given by the police, where there is one"],
-               ["SUPPLIER, SUPPLIER_REF", "Firm instructed by the Society for the work, and its reference"]]
-    plat_clm = [["Column", "Meaning"],
-                ["claim_number", "Claim number (FCL and seven digits); a reopened claim keeps its number"],
-                ["policy_number", "The policy's number when the claim was registered"],
-                ["loss_date", "Date of the incident (UK date)"],
-                ["notified_at", "Date and time the claim was registered, in UTC"],
-                ["claim_type, section", "As on the legacy system, in words"],
-                ["liability", "Accident claims: At fault, Split, Not at fault, Pending"],
-                ["paid_gbp, outstanding_gbp, recovered_gbp", "Paid to date, outstanding reserve and amount recovered "
-                                                             "from another party, in pounds"],
-                ["police_reference", "Crime reference given by the police, where there is one"],
-                ["supplier, supplier_reference", "Firm instructed by the Society for the work, and its reference"]]
-    s = [Paragraph("Claims and policy extracts of 30 September 2026: data guide", S["h1"]),
-         Paragraph("Management Information, %s. Issued 5 October 2026 with the extracts for the 2027 rating basis. "
-                   "Questions to the MI mailbox." % K.SOCIETY, S["meta"]),
-         Paragraph("1. Systems and extracts", S["h2"]),
-         Paragraph("Private car policies were administered on the legacy policy system until 30 June 2025. From 1 July "
-                   "2025 each policy moved to the new platform at its next renewal and was given a platform policy "
-                   "number; policy years that started on the legacy system ran to their expiry there. Claims notified "
-                   "up to 30 June 2025 were registered on the legacy claims system and are still settled on it; claims "
-                   "notified from 1 July 2025 are registered on the platform. Every extract was taken on 30 September "
-                   "2026.", S["body"]),
-         _table(S, [["File", "Holds"],
-                    [F["pol_legacy"], "Legacy policy years incepting 1 January 2023 to 30 June 2025, one row a policy year"],
-                    [F["pol_platform"], "Platform policy years incepting 1 July 2025 to 30 September 2026, one row a "
-                                        "policy year"],
-                    [F["crosswalk"], "Each legacy policy number with the platform number it renewed under"],
-                    [F["mta"], "Mid-term adjustments on both systems, one row an adjustment (data warehouse)"],
-                    [F["clm_legacy"], "Legacy claims notified 1 January 2023 to 30 June 2025, one row a claim"],
-                    [F["clm_platform"], "Platform claims notified 1 July 2025 to 30 September 2026, one row a claim"],
-                    [F["glass"], "%s's 2025 job file, one row a job line" % K.PARTNER],
-                    [F["salvage"], "%s's sale statements, 2025 and 2026 to September" % K.SALVAGE],
-                    [F["regions"], "Postcode districts and their rating regions, with effective dates"]],
-                [62, 108]),
-         Paragraph("2. Policy years", S["h2"]),
-         Paragraph("A policy year is one row. Its step, Step Protection, cover, car, garaging and premium are as at its "
-                   "inception; changes during the year are in the mid-term adjustments file.", S["body"]),
-         _table(S, leg_pol, [55, 115]),
-         Spacer(1, 5),
-         _table(S, plat_pol, [55, 115]),
-         Paragraph("3. Mid-term adjustments", S["h2"]),
-         Paragraph("One row an adjustment, keyed by the policy number and term number the policy year was written "
-                   "under. effective_date is the first day the change applies. new_garaging, new_cover and "
-                   "new_vehicle_reg carry the source system's own values (a postcode district and COMP or TPFT on the "
-                   "legacy system; a full postcode and the cover in words on the platform). premium_change_gbp is the "
-                   "pro-rata additional premium (negative for a refund).", S["body"]),
-         Paragraph("4. Claims", S["h2"]),
-         _table(S, leg_clm, [55, 115]),
-         Spacer(1, 5),
-         _table(S, plat_clm, [55, 115]),
-         Paragraph("Amounts are cumulative to the extract. Incurred is paid plus outstanding. Recoveries from other "
-                   "insurers are recorded as they are received. A windscreen claim for a repairer the policyholder "
-                   "chose is paid on that repairer's invoice, VAT included.", S["body"]),
-         Paragraph("5. Glass partner and salvage files", S["h2"]),
-         Paragraph("%s's job file has one row a job line: job_ref and line_no; booked (date and time the job was "
-                   "booked, UK time); fitted_date; insurer_policy_ref (the policy number the customer gave when "
-                   "booking); vehicle_reg; fitting_postcode_district (where the work was done); description; billed_to "
-                   "(the party the partner invoiced); net_amount and vat_amount in pounds; invoice_month." % K.PARTNER,
-                   S["body"]),
-         Paragraph("%s's statements have a sheet a year and one row a vehicle sold: lot, sale date, the Society's "
-                   "claim number the vehicle was handed over under, registration, category, hammer price, the "
-                   "agent's fees and the net proceeds remitted to the Society." % K.SALVAGE, S["body"]),
-         Paragraph("6. Region map", S["h2"]),
-         Paragraph("One row a postcode district and region assignment, with the first day it applies and, where it "
-                   "was replaced, the last. Two districts were reassigned from 1 April 2025.", S["body"])]
-    doc.build(s, onFirstPage=_frame(K.SOCIETY + ", Management Information", "Data guide, extracts of 30 September 2026",
-                                    "Sans"),
-              onLaterPages=_frame(K.SOCIETY + ", Management Information", "Data guide, extracts of 30 September 2026",
-                                  "Sans"))
+    rows = [["File", "One row is", "Notes"],
+            [F["cis_ace"], "an ACE-III form recorded on CIS, 14 April 2014 to 5 January 2024",
+             "Dates day/month/year. form_status C (completed) or A (abandoned: the domains not reached are blank and "
+             "the total is the sum of the domains scored). Patients are identified by their hospital patient number "
+             "(hpn)."],
+            [F["cis_dx"], "a diagnosis recorded on CIS", "diagnosis_status Provisional or Confirmed. Dates "
+                                                         "day/month/year."],
+            [F["epr_obs"], "one item of an ACE-III set recorded on the EPR, from 8 January 2024",
+             "Six items a set: the five domain scores and the total (ACE3_TOTAL). set_status Final, Incomplete (the "
+             "test was stopped; only the domains scored are present and the total is their sum) or Entered in error "
+             "(recorded against the wrong patient; the set is on the right patient's record as well). performed_at "
+             "is local time with its UTC offset."],
+            [F["epr_dx"], "a problem on the EPR problem list", "source EPR, or CIS migration: the diagnosis current "
+                                                               "on CIS for each patient the service was seeing on 8 "
+                                                               "January 2024, recorded on that day."],
+            [F["pmi"], "a hospital patient number", "record_status Active, or Merged into another number when one "
+                                                   "patient had been registered twice; both numbers carry the same "
+                                                   "NHS number. Dates of death come from the NHS Spine."],
+            [F["episodes"], "an episode of care with the Memory Assessment Service",
+             "From the clinic accepting the referral until the episode is ended on the EPR; episode_end is blank "
+             "while the episode is open. migrated_from_cis Y for the episodes open on CIS on 8 January 2024."],
+            [F["appts"], "an outpatient appointment booked on the EPR", "appointment_start is local time with its UTC "
+                                                                       "offset; outcome is recorded by the clinic, "
+                                                                       "blank for appointments still to come."],
+            [F["tracker"], "a referral accepted by a memory clinic", "Kept by the information team for the six-week "
+                                                                    "referral to diagnosis standard; one row per "
+                                                                    "referral, with the first assessment and the "
+                                                                    "diagnosis."],
+            [F["clinics"], "a clinic, and a postcode district", "The districts sheet gives the clinic each district "
+                                                               "was referred to, with the dates."],
+            [F["audit"], "a clinic's figures for 2024-25", "The service's annual audit for the commissioners, "
+                                                          "financial year 1 April 2024 to 31 March 2025."],
+            [F["population"], "a postcode district", "Residents aged 65 and over and 80 and over, mid-2025, from the "
+                                                    "trust's planning team."]]
+    s = [Paragraph("Memory Assessment Service: guide to the extracts", S["h1"]),
+         Paragraph("Information team, %s. Prepared by %s for the Research and Development site selection, 6 October "
+                   "2026. EPR extracts taken on 2 October 2026; the CIS archive extract was taken on 5 January 2024."
+                   % (K.TRUST, K.PEOPLE["analyst"]), S["meta"]),
+         Paragraph("The service moved from the clinical information system (CIS) to the electronic patient record "
+                   "(EPR) on 8 January 2024. CIS identifies a patient by the hospital patient number, the EPR by the "
+                   "NHS number; the master patient index carries both. CIS clinic codes and EPR site codes are both in "
+                   "the clinic register.", S["body"]),
+         _table(S, rows, [48, 46, 76]),
+         Spacer(1, 6),
+         Paragraph("Questions about the extracts go to the information team, quoting the file name.", S["meta"])]
+    doc.build(s, onFirstPage=_frame(K.TRUST, "Information team", "Sans"),
+              onLaterPages=_frame(K.TRUST, "Information team", "Sans"))
 
 
-def write_contents(path, rows):
-    lines = ["2027 rating basis: working pack",
-             "Pricing, %s. Assembled 5 October 2026 for the Pricing Committee meeting of 21 October 2026." % K.SOCIETY,
-             ""]
-    for name, desc in rows:
-        lines.append(name)
-        lines.append("    " + desc)
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(lines) + "\n")
+def write_contents(path, items):
+    with open(path, "w") as f:
+        f.write("ARV-1102 site selection: working pack\n")
+        f.write("Research and Development, %s, assembled %s\n\n" % (K.TRUST, K.ASSEMBLED.strftime("%d %B %Y").lstrip("0")))
+        for name, desc in items:
+            f.write("%s\n    %s\n" % (name, desc))

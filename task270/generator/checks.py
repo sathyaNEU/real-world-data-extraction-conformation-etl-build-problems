@@ -1,496 +1,619 @@
-"""task270's checks, run by build.py on every build: the input gates; the client's three rules executed on the
-generator's clean truth (R1 the raw material ships, R2 each Layer 1 item neutral, R3a the analyst test, R3b the
-decisive step alone, R3c no plant); the ladder, the threshold family and the margins on the shipped pack; the semantic
-fork rows; the asks tied back to the books, their stops, the forcing of each device and the separation line; the
-cracker; the realism sweep; Gate G and the leak greps."""
-import collections
-import copy
-import csv
+"""Assertions on the build: the input gates, the golden reproduced from the cut pack and from the generator's clean
+truth (R1 the raw material ships, R2 each Layer 1 item neutral, R3a the analyst test, R3b the decisive step alone,
+R3c nothing planted), the ladder, every shortcut a reader might take, the golden's estimator family and its
+half-point grid, the two ask devices on the careful path and the over-cleaner's, the separation of the asks from the
+call, and the realism sweep."""
 import datetime as dt
 import json
 import os
 import re
+import sys
+import zipfile
 
-import analysis as A
-import books as BK
-import common as K
-import cracker as CR
-import pack as PK
-import world as W
+import numpy as np
+import pandas as pd
 
-N = {"ok": 0, "fail": 0}
-FAILS = []
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import analysis as A      # noqa: E402
+import common as K        # noqa: E402
+import pack as PK         # noqa: E402
+import routes as RT       # noqa: E402
+
+FAILS = []
+COUNT = [0]
 
 
-def check(label, cond, detail=""):
-    if cond:
-        N["ok"] += 1
-    else:
-        N["fail"] += 1
-        FAILS.append("%s %s" % (label, detail))
+def check(label, ok, detail=""):
+    COUNT[0] += 1
+    if not ok:
+        FAILS.append(label)
+    print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [%s]" % (detail,)) if not (isinstance(detail, str) and detail == "") else ""))
 
 
-def _pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+def half(x):
+    return np.floor(np.asarray(x, float) * 2 + 0.5) / 2
 
 
-def band(v):
-    return sorted(A.top3(v)["band"])
+def half_edge(x):
+    return 0.25 - abs(float(x) - float(half(x)))
 
 
-# ------------------------------------------------------------------------------------------------- the clean truth
-def clean(w, T=A.T_GOLDEN):
-    """The world before any record is written: exposure from the segments, every accident that costs the Society,
-    the ones claimed under the 2024 scale, the Step Protection lift and the size-based recovery on the true costs."""
-    E = W.exposure(w["segs"])
-    Es = collections.defaultdict(float)
-    for s in w["segs"]:
-        for y in K.ACC_YEARS:
-            a, b = max(s["a"], dt.date(y, 1, 1)), min(s["b"], dt.date(y + 1, 1, 1))
-            if b > a:
-                Es[(s["region"], s["step"], s["protected"])] += (b - a).days / 365.0
-    acc = [e for e in w["events"] if e["kind"] in ("AF", "NAF") and e["day"].year in K.ACC_YEARS and W.costs_mutual(e)]
-    made = [e for e in acc if e["claimed"]]
-    truth = {c: 100.0 * sum(1 for e in acc if e["region"] == c) / E[c] for c in K.CODES}
-    rep = {c: 100.0 * sum(1 for e in made if e["region"] == c) / E[c] for c in K.CODES}
-    num = collections.Counter((e["protected"]) for e in made if e["step"] in K.PILOT_STEPS)
-    den = collections.Counter()
-    for (r, s, p), v in Es.items():
-        if s in K.PILOT_STEPS:
-            den[p] += v
-    u = (num[True] / den[True]) / (num[False] / den[False])
-    lift = {c: 100.0 * sum(u if (e["step"] in K.PILOT_STEPS and not e["protected"]) else 1.0
-                           for e in made if e["region"] == c) / E[c] for c in K.CODES}
-    full = [e["cost"] for e in made if e["step"] == 0 or e["protected"]]
-    S = sum(1 for x in full if x > T) / len(full)
-    rec = {c: 100.0 * sum(1 for e in made if e["region"] == c and e["cost"] > T) / S / E[c] for c in K.CODES}
-    absorbed_max = max(e["cost"] for e in acc if not e["claimed"])
-    return dict(E=E, truth=truth, rep=rep, lift=lift, rec=rec, u=u, absorbed_max=absorbed_max)
+def dec_edge(x, nd=1):
+    q = 10 ** nd
+    return 0.5 / q - abs(float(x) - round(float(x) * q) / q)
 
 
-def books_truth(bk):
-    """The asks' answers from the books themselves (before any file is written)."""
-    n = {c: 0 for c in K.CODES}
-    cost = {c: 0.0 for c in K.CODES}
-    for g in bk["glass"]:
-        if g["customer"]:
-            continue
-        if g["network"]:
-            if g["booked"].year == 2025 and not g.get("calib_only"):
-                n[g["region"]] += 1
-                cost[g["region"]] += g["net"] + round(g["net"] * 0.2, 2) + g["calib"] + round(g["calib"] * 0.2, 2)
-        elif g["claim"] is not None and g["claim"]["notified"].year == 2025:
-            c = g["claim"]
-            day = c["notified"].date()
-            d = BK.term_on(bk["_terms"][g["term"]], day)[0]
-            r = W.district_region(d, day)
-            n[r] += 1
-            cost[r] += c["paid"] + c["outstanding"]
-            if g.get("cal_job") is not None:
-                cost[r] += g["cal_job"]["calib"] + round(g["cal_job"]["calib"] * 0.2, 2)
-    glass = dict(n=n, avg={c: cost[c] / n[c] for c in K.CODES})
-    proceeds = collections.defaultdict(float)
-    for s in bk["salvage"]:
-        proceeds[id(s["claim"])] += s["proceeds"]
-    tn = {c: 0 for c in K.CODES}
-    tc = {c: 0.0 for c in K.CODES}
-    for th in bk["thefts"]:
-        if th["day"].year != 2025 or not th["claims"]:
-            continue
-        inc = sum(c["paid"] + c["outstanding"] for c in th["claims"])
-        if inc <= 0:
-            continue
-        tn[th["region"]] += 1
-        tc[th["region"]] += inc - sum(proceeds[id(c)] for c in th["claims"])
-    theft = dict(n=tn, avg={c: tc[c] / tn[c] for c in K.CODES})
-    return glass, theft
+def top2(s):
+    return frozenset(s.sort_values(ascending=False).index[:2])
 
 
-# ------------------------------------------------------------------------------------------------- readings
-def ladder(P, **kw):
-    E = {k[0]: v for k, v in PK.exposure(P, K.ACC_YEARS).items()}
-    skipped = []
-    Acl = A.accident_claims(P, skipped=skipped, **kw)
-    _, R0 = A.reported(E, Acl)
-    _, _, R2 = A.recovered(E, Acl)
-    return dict(R0=R0, R2=R2, skipped=len(skipped))
-
-
-def variant(P, name):
-    Q = copy.copy(P)
-    if name == "mid-term adjustments ignored":
-        Q["terms"] = [dict(t, mtas=[]) for t in P["terms"]]
-    elif name == "the current region map throughout":
-        rm = copy.copy(P["rmap"])
-        rm.by = {d: [(dt.date(2019, 1, 1), dt.date(2099, 12, 31), v[-1][2])] for d, v in P["rmap"].by.items()}
-        rm.changes = []
-        Q["rmap"] = rm
-    elif name == "the legacy expiry date read as the day cover ends":
-        Q["terms"] = [dict(t, end=min(t["end"], t["expiry"] - dt.timedelta(days=1))) if t["sys"] == "L" else t
-                      for t in P["terms"]]
-    elif name == "cancellations ignored":
-        Q["terms"] = [dict(t, end=t["expiry"]) for t in P["terms"]]
-    elif name == "the crosswalk ignored":
-        Q["xw"] = {}
-    else:
-        raise KeyError(name)
-    if "terms" in Q and Q["terms"] is not P["terms"]:
-        by_ref = {}
-        for t in Q["terms"]:
-            by_ref.setdefault(t["ref"], []).append(t)
-        for v in by_ref.values():
-            v.sort(key=lambda t: t["start"])
-        Q["by_ref"] = by_ref
-    return Q
+def third(s):
+    return s.sort_values(ascending=False).index[2]
 
 
 def run(task, b, fig, res):
     target = os.path.join(task, "target")
-    w, bk = b["w"], b["bk"]
-    bk["_terms"] = w["terms"]
+    w = b["w"]
     P = res["P"]
-    gold = ["NWE", "WMI", "YHU"]
-    wrong = ["SEA", "WMI", "YHU"]
-
-    # ------------------------------------------------------------------ input gates
+    GOLD = frozenset(fig["call"]["sites"])
+    NAIVE = frozenset(["Thurlwick", "Penwardine"])
+    below = fig["call"]["below"]
+    # ---------------------------------------------------------------- input gates
     files = sorted(os.listdir(target))
-    check("INPUT ten or more files", len(files) >= 10, len(files))
-    exts = {f.rsplit(".", 1)[-1] for f in files}
-    check("INPUT three or more formats", len(exts) >= 3, exts)
-    check("INPUT a file of 25,000 rows or more", max(b["counts"].values()) >= 25000, max(b["counts"].values()))
-    check("INPUT every file in the registry is shipped", set(K.FILES.values()) == set(files), set(files) ^ set(K.FILES.values()))
+    check("GATE ten or more files", len(files) >= 10, len(files))
+    exts = {f.rsplit(".", 1)[1] for f in files}
+    check("GATE three or more formats", len(exts) >= 3, sorted(exts))
+    big = max(b["counts"].values())
+    check("GATE a file of 25,000 rows or more", big >= 25000, big)
     meta = json.load(open(os.path.join(task, "metadata.json")))
-    check("INPUT two or more distractors named in metadata", len(meta["distractors"]) >= 2)
-    for d in meta["distractors"]:
-        check("INPUT distractor shipped " + d, d in files)
-        check("INPUT distractor not named for its role " + d, "distract" not in d.lower())
-    check("INPUT every file has provenance", set(meta["provenance"]) >= set(files))
-    contents = open(os.path.join(target, K.FILES["contents"]), encoding="utf-8").read()
-    listed = {l.strip() for l in contents.splitlines() if l.strip() and not l.startswith(" ") and "." in l
-              and not l.startswith("Pricing")}
-    check("INPUT contents lists every other file (H9)", listed == set(files) - {K.FILES["contents"]},
-          listed ^ (set(files) - {K.FILES["contents"]}))
-    texts = {k: _pdf_text(os.path.join(target, K.FILES[k])) for k in ("scale", "basis", "guide")}
-    for k in ("pol_legacy", "pol_platform", "crosswalk", "mta", "clm_legacy", "clm_platform", "glass", "salvage",
-              "regions"):
-        check("INPUT the data guide names %s" % K.FILES[k], K.FILES[k] in texts["guide"].replace(" ", ""))
-
-    # ------------------------------------------------------------------ R3a and R3b on the clean truth
-    cl = clean(w)
-    check("R3a the analyst test: the reported frequency on the clean truth files the wrong band", band(cl["rep"]) == wrong,
-          band(cl["rep"]))
-    check("R3a the Step Protection lift on the clean truth keeps South East in band C", "SEA" in band(cl["lift"]) and
-          "NWE" not in band(cl["lift"]), band(cl["lift"]))
-    check("R3b the decisive step alone on the clean truth files the golden", band(cl["rec"]) == gold, band(cl["rec"]))
-    check("R3 the clean truth's band (every accident that costs the Society) is the golden", band(cl["truth"]) == gold,
-          band(cl["truth"]))
-    check("R3 the threshold clears every absorbed claim", cl["absorbed_max"] < A.T_GOLDEN, cl["absorbed_max"])
-    check("R3 the pack's exposure is the clean truth's", all(abs(res["E"][c] - cl["E"][c]) < 1e-6 for c in K.CODES))
-    check("R3 the pack's reported frequency is the clean truth's", all(abs(res["R0"][c] - cl["rep"][c]) < 1e-9
-                                                                       for c in K.CODES))
-    check("R3 the lift factor on the pack is the clean truth's", abs(res["u"] - cl["u"]) < 1e-9, (res["u"], cl["u"]))
-
-    # ------------------------------------------------------------------ R1: the field's raw material ships
-    def hdr(k):
-        with open(os.path.join(target, K.FILES[k]), encoding="utf-8") as f:
-            return next(csv.reader(f))
-    check("R1 the legacy claims carry each claim's amounts, fault and dates",
-          {"PAID_AMT", "OS_AMT", "FAULT", "LOSS_DATE", "POLICY_NO"} <= set(hdr("clm_legacy")))
-    check("R1 the platform claims carry each claim's amounts, liability and dates",
-          {"paid_gbp", "outstanding_gbp", "liability", "loss_date", "policy_number"} <= set(hdr("clm_platform")))
-    check("R1 the policy years carry the step and Step Protection",
-          {"NCD_STEP", "STEP_PROTECTION"} <= set(hdr("pol_legacy")) and {"ncd_step", "step_protection"} <= set(hdr("pol_platform")))
-    for k in ("pol_legacy", "pol_platform", "clm_legacy", "clm_platform", "mta", "glass", "regions", "crosswalk"):
-        h = " ".join(hdr(k)).lower().replace("age_band", "age")
-        for wd in ("frequency", "absorb", "would", "2027", "band", "unreported"):
-            check("R1 no shipped column names the deciding quantity (%s, %s)" % (k, wd), wd not in h)
-    check("R1 every 2024 and 2025 accident claim joins a policy year", ladder(P)["skipped"] == 0, ladder(P)["skipped"])
-
-    # ------------------------------------------------------------------ R2: each Layer 1 item is neutral
-    for name in ("mid-term adjustments ignored", "the current region map throughout",
-                 "the legacy expiry date read as the day cover ends", "cancellations ignored", "the crosswalk ignored"):
-        lv = ladder(variant(P, name))
-        check("R2 neutral: %s keeps the call%s" % (name, " (SF12)" if name == "cancellations ignored" else ""),
-              band(lv["R2"]) == gold, band(lv["R2"]))
-        check("R2 neutral: %s keeps the default path wrong" % name, band(lv["R0"]) == wrong, band(lv["R0"]))
-        check("R2 neutral: %s keeps the first region below" % name, A.top3(lv["R2"])["below"] == "SEA",
-              A.top3(lv["R2"])["below"])
-    for name, kw in (("SF1 liability settled only", dict(keep=lambda c: c["liab"] != "P")),
-                     ("SF2 paid above nil only", dict(keep=lambda c: c["paid"] > 0)),
-                     ("SF2 net of recoveries above nil", dict(keep=lambda c: c["incurred"] - c["rec"] > 0)),
-                     ("SF8 by notification date", dict(when="notified"))):
-        lv = ladder(P, **kw)
-        check("SF %s keeps the call" % name, band(lv["R2"]) == gold, band(lv["R2"]))
-        check("SF %s keeps the default path wrong" % name, band(lv["R0"]) == wrong, band(lv["R0"]))
-    # the legacy amounts read as pounds: loud (the median accident claim becomes six figures), the reported count
-    # (incurred above nil) does not move
-    leg = sorted(c["incurred"] for c in P["claims"] if c["sys"] == "L" and c["type"] == "ACC" and c["incurred"] > 0)
-    check("R2 the legacy amounts read as pounds are loud: median accident claim over 100,000",
-          leg[len(leg) // 2] * 100 > 100000, leg[len(leg) // 2] * 100)
-    check("SF6 the claims as recorded (the reported frequency) file another band: the stump, not a reading",
-          band(res["R0"]) != gold, band(res["R0"]))
-    check("SF7 the Step Protection holders' claims taken as made (recovery on the insured steps only) keep the call",
-          band(res["R2i"]) == gold, band(res["R2i"]))
-    Q10 = copy.copy(P)
-    Q10["claims"] = [dict(c, type="ACC") if c["type"] in ("WSC", "THF", "FIR") else c for c in P["claims"]]
-    lv = ladder(Q10)
-    check("SF10 windscreen, theft and fire claims counted as accident claims keep the call", band(lv["R2"]) == gold,
-          band(lv["R2"]))
-    check("SF3 vehicle-years over 365.25 keep the call (a common factor)", band({c: v * 365.25 / 365 for c, v in
-                                                                                  res["R2"].items()}) == gold)
-    check("SF4 the region at inception is mid-term adjustments ignored (asserted above)", True)
-    check("SF9 no tie at the band's edge on the golden", A.top3(res["R2"])["margin"] > 0.05, A.top3(res["R2"])["margin"])
-    check("SF11 every claim number is unique across both exports", len({c["no"] for c in P["claims"]}) == len(P["claims"]))
-    check("SF5 the remap is in force on the day (two districts, both moved region)",
-          {d for d, v in P["rmap"].by.items() if len(v) > 1} == set(K.REMAP))
-
-    # ------------------------------------------------------------------ R3c: no plant
-    for k in ("pol_legacy", "pol_platform", "clm_legacy", "clm_platform", "mta", "glass"):
-        rows = list(csv.reader(open(os.path.join(target, K.FILES[k]), encoding="utf-8")))[1:]
-        body = [tuple(r[1:]) for r in rows]
-        runs = sum(1 for i in range(2, len(body)) if body[i] == body[i - 1] == body[i - 2])
-        check("R3c no copied block of rows, three alike in a row (%s)" % k, runs == 0, runs)
-    for k, t in texts.items():
-        for nm in K.NAME.values():
-            check("R3c no shipped document names a region (%s, %s)" % (k, nm), nm not in t)
-
-    # ------------------------------------------------------------------ the ladder on the pack
-    check("LADDER R0 (reported) files South East, West Midlands, Yorkshire and the Humber", band(res["R0"]) == wrong,
-          band(res["R0"]))
-    check("LADDER R0's first region below is North West", A.top3(res["R0"])["below"] == "NWE")
-    check("LADDER R1 (lift on steps 6 to 9) keeps South East in, North West out", "SEA" in band(res["R1"]) and
-          "NWE" not in band(res["R1"]), band(res["R1"]))
-    check("LADDER R1b (lift on every step) keeps South East in, North West out", "SEA" in band(res["R1b"]) and
-          "NWE" not in band(res["R1b"]), band(res["R1b"]))
-    check("LADDER R2 (golden) files North West, West Midlands, Yorkshire and the Humber", band(res["R2"]) == gold)
-    check("LADDER R2's first region below is South East", A.top3(res["R2"])["below"] == "SEA")
-    check("LADDER R2 recovered only on the insured steps agrees", band(res["R2i"]) == gold, band(res["R2i"]))
-    for (T, src), v in sorted(res["grid"].items()):
-        check("LADDER the golden band holds at T=%d from %s" % (T, src), band(v) == gold, band(v))
-        check("LADDER margin at T=%d from %s is 5 per cent or more" % (T, src), A.top3(v)["margin"] >= 0.05,
-              A.top3(v)["margin"])
-    pos = {nm: A.top3(res[nm])["order"].index("NWE") for nm in ("R0", "R1", "R1b", "R2")}
-    check("LADDER North West is fourth or lower before the decisive step", all(pos[n] >= 3 for n in ("R0", "R1", "R1b")), pos)
-    check("LADDER North West is never first on an intermediate rung", pos["R1"] != 0 and pos["R1b"] != 0)
-    check("LADDER R0 margin (South East over North West) 5 per cent or more", A.top3(res["R0"])["margin"] >= 0.05,
-          A.top3(res["R0"])["margin"])
-    check("LADDER R2 margin (North West over South East) 7 per cent or more", A.top3(res["R2"])["margin"] >= 0.07,
-          A.top3(res["R2"])["margin"])
-    edge = res["R2"]["NWE"] - res["R0"]["NWE"]
-    carried = res["R0"]["SEA"] - res["R0"]["NWE"]
-    check("LADDER dominance: the decisive step moves North West 1.2 times South East's reported lead", edge >= 1.2 * carried,
-          (round(edge, 2), round(carried, 2)))
-    holders = [a for a in res["A"] if a["step"] in K.PILOT_STEPS]
-    Es = PK.exposure(P, K.ACC_YEARS, by=("step", "prot"))
-    big = {p: sum(1 for a in holders if a["prot"] == p and a["incurred"] > A.T_GOLDEN) /
-           sum(v for (s, pp), v in Es.items() if s in K.PILOT_STEPS and pp == p) for p in (True, False)}
-    check("LADDER the holders claim more often above the threshold too (they bought the add-on): 1.10 times or more",
-          big[True] / big[False] >= 1.10, big[True] / big[False])
-
-    # ------------------------------------------------------------------ the asks
-    tg, tt = books_truth(bk)
-    g, th = res["glass"], res["theft"]
-    check("ASK A every region's windscreen claims tie to the books", all(g["n"][c] == tg["n"][c] for c in K.CODES),
-          [(c, g["n"][c], tg["n"][c]) for c in K.CODES if g["n"][c] != tg["n"][c]])
-    check("ASK A every region's average cost ties to the books", all(abs(g["avg"][c] - tg["avg"][c]) < 0.005
-                                                                      for c in K.CODES))
-    check("ASK B every region's thefts tie to the books", all(th["n"][c] == tt["n"][c] for c in K.CODES),
-          [(c, th["n"][c], tt["n"][c]) for c in K.CODES if th["n"][c] != tt["n"][c]])
-    check("ASK B every region's average net cost ties to the books", all(abs(th["avg"][c] - tt["avg"][c]) < 0.005
-                                                                          for c in K.CODES))
-    # the forcing: the platform's windscreen claims that are the partner's jobs, one to one
-    jobs = A.partner_jobs(P)
-    feed = A.feed_matches(P, jobs)
-    check("ASK A each matched platform claim matches exactly one partner job", all(len(v) == 1 for v in feed.values()))
-    h2 = [j for j in jobs.values() if j["booked"] >= K.MIGRATION]
-    matched_jobs = {v[0] for v in feed.values()}
-    check("ASK A every partner job from 1 July 2025 is on the platform once", len(matched_jobs) == len(h2) == len(feed),
-          (len(matched_jobs), len(h2), len(feed)))
-    check("ASK A no partner job before 1 July 2025 is a claim", all(j["booked"] >= K.MIGRATION for j in
-                                                                    (jobs[v[0]] for v in feed.values())))
-    # the recalibrations: each partner job that is a camera recalibration alone goes to the claim of the replacement
-    # the books had it recalibrate, and to nothing else
-    cal_books = {(g["claim"]["no"], g["cal_job"]["job_ref"]) for g in bk["glass"] if g.get("cal_job") is not None
-                 and g["cal_job"]["booked"].year == 2025}
-    pairs = []
-    rows = [c for c in P["claims"] if c["type"] == "WSC" and c["no"] not in feed and c["incurred"] > 0]
-    list(A.own_repairer(P, jobs, feed, pairs))
-    found = {(c["no"], j["job"]) for c, j in pairs}
-    check("ASK A every recalibration-only partner job goes to the replacement the books recalibrated",
-          found == cal_books and len(found) >= 100, (len(found), len(cal_books), len(found ^ cal_books)))
-    check("ASK A each recalibration-only job follows its replacement's loss date by 21 days or fewer",
-          all(0 <= (j["booked"] - c["loss"]).days <= 21 for c, j in pairs),
-          max((j["booked"] - c["loss"]).days for c, j in pairs))
-    by_pol = collections.defaultdict(list)
-    for c in rows:
-        by_pol[A.policy_key(P, c["ref"])].append(c)
-    near = [(c, [d for d in by_pol[A.policy_key(P, j["ref"])] if 0 <= (j["booked"] - d["loss"]).days <= 21])
-            for c, j in pairs]
-    check("ASK A each recalibration-only job's replacement is the latest and the largest claim of another repairer on "
-          "the policy in the 21 days before it", all(c is max(ds, key=lambda d: (d["loss"], d["notified"]))
-                                                    and c is max(ds, key=lambda d: d["incurred"]) for c, ds in near),
-          collections.Counter(len(ds) for c, ds in near))
-    check("ASK A a recalibration and its replacement are dated in one year, in one region",
-          all(c["notified"].year == j["booked"].year and CR.region_of(P, c["ref"], c["notified"])
-              == CR.region_of(P, j["ref"], j["booked"]) for c, j in pairs))
-    own25 = [c for c in rows if c["notified"].year == 2025]
-    check("ASK A every 2025 claim of a repairer the policyholder chose is settled at its exact amount (closed)",
-          all(c["status"] in ("C", "Closed") for c in own25), collections.Counter(c["status"] for c in own25))
-    alone = [j for j in jobs.values() if not j["work"] and j["booked"].year == 2025]
-    check("ASK A recalibration-only jobs are a small minority of the partner's 2025 jobs (100 to 400)",
-          100 <= len(alone) <= 400 and len(alone) < 0.05 * len(jobs), (len(alone), len(jobs)))
-    plat_ws = [c for c in P["claims"] if c["type"] == "WSC" and c["sys"] == "P" and c["notified"].year == 2025]
-    leg_ws = [c for c in P["claims"] if c["type"] == "WSC" and c["sys"] == "L" and c["notified"].year == 2025]
-    check("ASK A the platform's 2025 windscreen claims run four times the legacy system's monthly rate or more",
-          len(plat_ws) / 6.0 >= 4 * len(leg_ws) / 6.0, (len(plat_ws), len(leg_ws)))
-    check("ASK A no windscreen claim names the partner", all(c["supplier"] != K.PARTNER for c in P["claims"]))
-    stops = {
-        "partner's jobs and every claim with no supplier (the cracker)": CR.glass_by_source(P, res["E25c"]),
-        "the claims exports alone": CR.glass_by_source(P, res["E25c"], partner=False, supplier_split=False),
-        "the partner's jobs alone": CR.glass_by_source(P, res["E25c"], claims=False),
-    }
-    stops["the partner's jobs and the other claims once, each partner job a claim (the careful path)"] = \
-        CR.glass_careful(P, res["E25c"])
-    for name, (fq, av) in stops.items():
-        miss_f = sum(abs(fq[c] - fig["ask_a"]["frequency"][K.NAME[c]]) >= 0.05 for c in K.CODES)
-        miss_a = sum(abs(av[c] - fig["ask_a"]["average"][K.NAME[c]]) >= 0.5 for c in K.CODES)
-        check("ASK A stop '%s' misses every frequency" % name, miss_f == 8, miss_f)
-        check("ASK A stop '%s' misses six or more averages" % name, miss_a >= 6, miss_a)
-    fb, ab = CR.theft_by_claim(P, res["E25"])
-    check("ASK B stop 'every theft claim with a cost' misses every frequency",
-          sum(abs(fb[c] - fig["ask_b"]["frequency"][K.NAME[c]]) >= 0.05 for c in K.CODES) == 8)
-    check("ASK B stop 'every theft claim with a cost' misses every average",
-          sum(abs(ab[c] - fig["ask_b"]["average"][K.NAME[c]]) >= 0.5 for c in K.CODES) == 8)
-    groups = collections.defaultdict(list)
-    for c in P["claims"]:
-        if c["type"] == "THF":
-            groups[c["police"]].append(c)
-    multi = [cs for cs in groups.values() if len(cs) > 1]
-    check("ASK B every police reference's claims sit on one policy", all(len({PK.term_for(P, c["ref"], min(x["loss"] for x in cs))["ref"]
-                                                                               if PK.term_for(P, c["ref"], min(x["loss"] for x in cs)) else c["ref"]
-                                                                               for c in cs}) == 1 for cs in multi))
-    cross = [cs for cs in multi if len({c["sys"] for c in cs}) == 2]
-    check("ASK B some thefts have their claims on both systems (separators on one)", len(cross) >= 10, len(cross))
-    check("ASK B a theft's second claim is dated after its first", all(sorted(c["loss"] for c in cs)[0] <
-                                                                        sorted(c["loss"] for c in cs)[1] for cs in multi))
-    pols = collections.Counter()
-    for ref, cs in groups.items():
-        first = min(cs, key=lambda c: (c["loss"], c["no"]))
-        if first["loss"].year == 2025 and sum(c["incurred"] for c in cs) > 0:
-            t = PK.term_for(P, first["ref"], first["loss"])
-            pols[t["ref"]] += 1
-    check("ASK B genuine repeat thefts of one car in 2025 exist (the over-cleaning half)", sum(1 for v in pols.values() if v > 1) >= 5,
-          sum(1 for v in pols.values() if v > 1))
-    sal = collections.Counter(s["sold"].year for s in P["salvage"])
-    check("ASK B salvage for 2025 thefts posted in 2026 exists", any(
-        s["sold"].year == 2026 and s["cat"] == "Recovered theft" for s in P["salvage"]), sal)
-
-    # ------------------------------------------------------------------ separation
-    Q = copy.copy(P)
-    Q["claims"] = [c for c in P["claims"] if c["type"] == "ACC"]
-    Q["glass"], Q["salvage"] = [], []
-    lv = ladder(Q)
-    check("SEPARATION the call is identical with every ask record deleted",
-          all(abs(lv["R2"][c] - res["R2"][c]) < 1e-12 and abs(lv["R0"][c] - res["R0"][c]) < 1e-12 for c in K.CODES))
-    check("SEPARATION no accident claim carries a police reference", all(not c["police"] for c in Q["claims"]))
-    check("SEPARATION the asks' devices have zero rows among the accident claims",
-          sum(1 for c in res["A"] if c["type"] != "ACC") == 0)
-
-    # ------------------------------------------------------------------ cracker and pair
-    cr = CR.run(task, quiet=True)
+    check("GATE two distractors named in metadata.json", len(meta["distractors"]) >= 2 and
+          all(d in files for d in meta["distractors"]), meta["distractors"])
+    check("GATE every file has provenance", set(meta["provenance"]) == set(files), len(meta["provenance"]))
+    contents = open(os.path.join(target, K.FILES["contents"])).read()
+    check("GATE contents lists every other file", all(f in contents for f in files if f != K.FILES["contents"]))
+    check("GATE no file named after the stump", not any(re.search(r"practice|retest|gain|known|issue", f) for f in files))
+    # ---------------------------------------------------------------- the golden from the pack and from the truth
+    df = RT.frame(w)
+    out = RT.routes(df)
+    gold_truth = out["gold"]
+    gold_pack = res["decline"]
+    check("GOLDEN the pack's decline equals the clean truth's in every clinic",
+          all(abs(gold_truth[c] - gold_pack[c]) < 1e-9 for c in K.NAMES),
+          max(abs(gold_truth[c] - gold_pack[c]) for c in K.NAMES))
+    check("GOLDEN the pack's population equals the clean truth's",
+          all(int(out["_n"].get(c, 0)) == int(res["n"].get(c, 0)) for c in K.NAMES), res["n"].to_dict())
+    check("GOLDEN the pack's gain equals the clean truth's", abs(out["_P"][0] - res["gain"]) < 1e-9, res["gain"])
+    check("GOLDEN the recruiting pair is Quarndale and Thurlwick", GOLD == frozenset(["Quarndale", "Thurlwick"]),
+          fig["call"]["sites"])
+    check("GOLDEN the first clinic below is Mosswick", below == "Mosswick", below)
+    # ---------------------------------------------------------------- R1 the raw material ships
+    s = P["sittings"]
+    check("R1 every sitting ships with its date, total and clinic", s.date.notna().all() and s.total.notna().all() and
+          s.clinic.notna().all(), len(s))
+    check("R1 the decisive computation reads each patient's dated totals (5,000 or more patients, 15,000 or more "
+          "sittings in the population)", res["frame"].pid.nunique() >= 5000 and len(res["frame"]) >= 15000,
+          (res["frame"].pid.nunique(), len(res["frame"])))
+    for f in files:
+        if f.endswith(".csv"):
+            cols = re.split(r"[,_ ]", open(os.path.join(target, f)).readline().strip().lower())
+            for wd in ("slope", "decline", "rate", "gain", "practice", "retest", "sitting", "visit"):
+                check("R1 no shipped column names the deciding quantity (%s, %s)" % (f, wd), wd not in cols)
+    # ---------------------------------------------------------------- R3 on the clean truth
+    truth = out["truth"]
+    check("R3 the clean truth's two fastest clinics (true rates) are the golden pair", top2(truth) == GOLD,
+          truth.sort_values(ascending=False).round(3).to_dict())
+    check("R3a the analyst test: the slope through every sitting on the clean truth files Thurlwick and Penwardine",
+          top2(out["naive"]) == NAIVE, out["naive"].sort_values(ascending=False).round(3).to_dict())
+    check("R3a Quarndale is fourth or lower on the slope through every sitting", RT.rank_of(out["naive"], "Quarndale") >= 4,
+          RT.rank_of(out["naive"], "Quarndale"))
+    check("R3b the decisive step alone (the gain separated) files the golden pair", top2(gold_truth) == GOLD)
+    check("SF9 on the pack, the slope of the recorded totals names Thurlwick and Penwardine and the trend net of the "
+          "gain names the golden pair (the decisive step, not a reading)",
+          top2(res["naive"]) == NAIVE and top2(res["decline"]) == GOLD,
+          ("+".join(res["naive"].sort_values(ascending=False).index[:2]),
+           "+".join(res["decline"].sort_values(ascending=False).index[:2])))
+    nv = out["naive"]
+    check("R3a margin: the naive pair's second leads the third by 0.10 point or more",
+          min(nv["Thurlwick"], nv["Penwardine"]) - nv.drop(["Thurlwick", "Penwardine"]).max() >= 0.10,
+          round(min(nv["Thurlwick"], nv["Penwardine"]) - nv.drop(["Thurlwick", "Penwardine"]).max(), 3))
+    g = gold_truth.sort_values(ascending=False)
+    check("LADDER golden: the pair's second leads the first clinic below by 0.15 point or more",
+          g.iloc[1] - g.iloc[2] >= 0.15, round(g.iloc[1] - g.iloc[2], 3))
+    check("LADDER golden: the first clinic below leads the fourth by 0.08 point or more",
+          g.iloc[2] - g.iloc[3] >= 0.08, round(g.iloc[2] - g.iloc[3], 3))
+    # ---------------------------------------------------------------- shortcuts that skip the decisive step
+    for k in RT.NO_INSIGHT:
+        check("SHORTCUT %s does not name the golden pair" % k, top2(out[k]) != GOLD,
+              "+".join(out[k].sort_values(ascending=False).index[:2]))
+    check("SHORTCUT each patient's first completed sitting dropped (a practice guard that leaves out the patients "
+          "with two sittings in the period) does not name the golden pair and puts Quarndale last",
+          top2(out["dropfirst"]) != GOLD and RT.rank_of(out["dropfirst"], "Quarndale") == 8,
+          "+".join(out["dropfirst"].sort_values(ascending=False).index[:2]))
+    pop = RT.population(df)
+    # ---------------------------------------------------------------- the write-up's words about the rivals (H3)
+    new = (pop.groupby("pid").first_t.first() >= 0).groupby(RT.clinic_of(pop)).mean()
+    check("WRITEUP Penwardine is fourth once the gain is out", list(g.index).index("Penwardine") == 3,
+          list(g.index).index("Penwardine") + 1)
+    check("WRITEUP nearly half of Penwardine's patients sat their first ACE-III before 2022 (40 to 50 per cent)",
+          0.40 <= 1 - new["Penwardine"] < 0.50, round(1 - new["Penwardine"], 3))
+    check("WRITEUP most of Mosswick's patients are new to the test (over 60 per cent)", new["Mosswick"] > 0.60,
+          round(new["Mosswick"], 3))
+    check("WRITEUP Quarndale is last on the slope through every sitting", RT.rank_of(nv, "Quarndale") == 8,
+          RT.rank_of(nv, "Quarndale"))
+    check("WRITEUP nearly all of Quarndale's patients are new to the test (95 per cent or more)",
+          new["Quarndale"] >= 0.95, round(new["Quarndale"], 3))
+    mm = RT.mixed_models(pop)
+    for ax in RT.AXES:
+        for kind, what in (("rs", "random intercepts and slopes"), ("ri", "random intercepts only")):
+            key = "%s_%s" % (kind, ax)
+            sr = mm[key].sort_values(ascending=False)
+            check("SHORTCUT %s without the step (%s, each patient at the paper's clinic) converges and does not name "
+                  "the golden pair" % (what, ax), mm["_conv_" + key] and top2(mm[key]) != GOLD, "+".join(sr.index[:2]))
+            check("SHORTCUT %s without the step (%s): Quarndale 0.10 point or more below the second" % (what, ax),
+                  sr.iloc[1] - mm[key]["Quarndale"] >= 0.10, round(sr.iloc[1] - mm[key]["Quarndale"], 3))
+    acc = RT.accidental(pop)
+    for key in ("pooled_t_win", "pooled_t_dx", "perrow_rs_t_cal", "perrow_rs_t_cal_stayers"):
+        sr = acc[key].sort_values(ascending=False)
+        print("INFO  ACCIDENTAL %s: %s (third %s, %.3f behind the second)" % (key, "+".join(sr.index[:2]), sr.index[2],
+                                                                           sr.iloc[1] - sr.iloc[2]))
+    check("ACCIDENTAL the calendar-time model with each sitting at its own clinic loses the golden pair once the "
+          "patients seen at two clinics are left out (they carry it)", top2(acc["perrow_rs_t_cal"]) == GOLD and
+          top2(acc["perrow_rs_t_cal_stayers"]) != GOLD and acc["_conv_perrow_rs_t_cal"], acc["_movers"])
+    # ---------------------------------------------------------------- the golden's estimator family
+    fam = family(df, pop, mm)
+    for nm, sr in fam["declines"].items():
+        check("FAMILY (SF11 least squares or first to last) %s names the golden pair and the first clinic below" % nm,
+              top2(sr) == GOLD and third(sr) == below, "+".join(sr.sort_values(ascending=False).index[:3]))
+    tab = pd.DataFrame(fam["declines"])
+    lo, hi = tab.min(axis=1), tab.max(axis=1)
+    for c in K.NAMES:
+        check("FAMILY %s: every member lands on the golden's half point (%.1f), 0.01 or more inside the bin"
+              % (c, fig["decline"][c]), half(lo[c]) == half(hi[c]) == fig["decline"][c] and
+              min(half_edge(lo[c]), half_edge(hi[c])) >= 0.01,
+              (round(lo[c], 3), round(hi[c], 3), round(min(half_edge(lo[c]), half_edge(hi[c])), 3)))
+    gains = fam["gains"]
+    check("FAMILY every estimate of the gain rounds to %.1f, 0.05 or more inside the bin" % fig["gain"],
+          all(half(v) == fig["gain"] and half_edge(v) >= 0.05 for v in gains.values()),
+          {k: round(v, 3) for k, v in gains.items()})
+    for ax in RT.AXES:
+        sr = mm["rs_step_" + ax].sort_values(ascending=False)
+        print("INFO  RANDOM EFFECTS with the step (%s): gain %.3f, %s" % (ax, mm["_P_rs_step_" + ax],
+                                                                       " ".join("%s %.3f" % (c[:4], v) for c, v in
+                                                                                sr.items())))
+        sr = mm["mundlak_" + ax]
+        check("FAMILY the random-slopes model with the step and the patient's mean of it (%s) converges and names the "
+              "golden pair and the first clinic below" % ax, mm["_conv_mundlak_" + ax] and top2(sr) == GOLD and
+              third(sr) == below, "+".join(sr.sort_values(ascending=False).index[:3]))
+    for ax in ("t_cal", "t_win"):
+        check("FAMILY the patient's mean of the step is far from zero on %s (|z| 3 or more), so the random-effects step "
+              "without it leans on comparisons between patients" % ax, abs(mm["_z_mstep_" + ax]) >= 3,
+              round(mm["_z_mstep_" + ax], 1))
+    cross = []
+    for gn in np.arange(1.0, 4.001, 0.05):
+        v = pop.copy()
+        v["a"] = v.s - gn * v.step
+        cross.append((round(gn, 2), top2(RT.cavg(v, RT.slopes(v, "a"))) == GOLD))
+    lowest = min(gn for gn, _ in cross if all(o for q, o in cross if q >= gn))
+    check("FAMILY every gain from 1.40 to 4.00 names the golden pair (lowest gain that does, on a 0.05 grid)",
+          lowest <= 1.40, lowest)
+    # ---------------------------------------------------------------- R2 each Layer 1 item, mishandled
+    for name, sr in layer1_mishandled(target, P).items():
+        check("R2 neutral: %s keeps the call" % name, top2(sr) == GOLD,
+              "+".join(sr.sort_values(ascending=False).index[:3]))
+    # ---------------------------------------------------------------- the semantic fork table
+    sf_checks(target, P, fig, gold_pack)
+    # ---------------------------------------------------------------- the asks
+    asks(P, fig, w)
+    # ---------------------------------------------------------------- separation
+    check("SEPARATION the call reads no episode, appointment or tracker row (computed from the main files alone)",
+          separation(target, P, fig))
+    # ---------------------------------------------------------------- documents and realism
+    documents(target)
+    realism(target, P, w)
+    containers(task)
+    import cracker
+    cr = cracker.run(task, quiet=True)
     check("CRACKER keeps none of the 32 ask figures", cr["cracker_hits"] == 0, cr["cracker_hits"])
-    check("CRACKER pair ceiling 40 or under", cr["pair"] <= 40, cr["pair"])
-    check("CRACKER mirror leakage under 35 per cent", cr["mirror_hits"] / cr["total"] < 0.35, cr["mirror_hits"])
-
-    # ------------------------------------------------------------------ realism
-    for key in ("frequency", "average"):
-        for ask in ("ask_a", "ask_b"):
-            vals = list(fig[ask][key].values())
-            top = collections.Counter(vals).most_common(1)[0][1]
-            check("REALISM blind response: one constant hits at most two of eight (%s %s)" % (ask, key), top <= 2, vals)
-    for key in ("claims",):
-        check("REALISM windscreen claim counts differ by region", len(set(fig["ask_a"][key].values())) == 8)
-    check("REALISM theft counts differ by region", len(set(fig["ask_b"]["thefts"].values())) >= 7)
-    check("REALISM reported claim counts differ by region", len(set(fig["components"]["reported_claims"].values())) == 8)
-    card = json.load(open(os.path.join(os.path.dirname(task), ".claude", "skills", "fingerprint", "cards", "task270.json")))
-    allt = " ".join(texts.values())
-    for p in card["world"]["people"]:
-        check("REALISM persona from the card appears: " + p, p in allt)
-    for f in files:
-        data = open(os.path.join(target, f), "rb").read()
-        for wd in (b"ReportLab", b"openpyxl", b"python-docx", b"matplotlib"):
-            check("REALISM no writer's name in %s (%s)" % (f, wd.decode()), wd not in data)
-    forward = {"EXPIRY_DATE", "term_end"}
-    latest = {}
-    for f in files:
-        if not f.endswith(".csv"):
-            continue
-        with open(os.path.join(target, f), encoding="utf-8") as fh:
-            rd = csv.reader(fh)
-            h = next(rd)
-            for row in rd:
-                for col, cell in zip(h, row):
-                    if col in forward:
-                        continue
-                    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", cell) or None
-                    if m:
-                        d = dt.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-                    else:
-                        m = re.match(r"^(\d{2})/(\d{2})/(\d{4})", cell)
-                        if not m:
-                            continue
-                        d = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
-                    latest[(f, col)] = max(latest.get((f, col), d), d)
-    late = {k: v for k, v in latest.items() if v > K.EXTRACT and not (k[0] == K.FILES["glass"] and k[1] == "fitted_date")
-            and not (k[0] == K.FILES["regions"])}
-    check("REALISM no record after the extract (30 September 2026) outside the forward-dated columns (H16)", not late, late)
-    gl = max(v for (f, col), v in latest.items() if f == K.FILES["glass"] and col == "fitted_date")
-    check("REALISM the partner's 2025 jobs were fitted by mid-January 2026", gl <= dt.date(2026, 1, 15), gl)
-    bad = h21()
-    check("H21 invented names clear of real places and firms (none within two edits of one, none containing one)",
-          not bad, bad)
-    for nm in ("Marrowby", "Lurwick", "Kessling", "Halvorsen", "Pellwyn"):
-        check("H21 no retired name survives: " + nm, all(nm.encode() not in open(os.path.join(target, f), "rb").read()
-                                                         for f in files))
-
-    # ------------------------------------------------------------------ Gate G and the leak greps
-    docs = " ".join(texts.values()).lower() + contents.lower()
-    for wd in ("absorb", "hunger", "unreported", "not reported", "small claim", "privately", "threshold", "truncat",
-               "incentive", "behaviour", "self-select", "adverse", "pay for it themselves", "would not claim",
-               "under-report", "underreport", "deter"):
-        check("LEAK no shipped document says '%s'" % wd, wd not in docs)
-    for wd in ("registered again", "twice", "duplicate", "same job", "second claim", "found damaged", "recovered damaged",
-               "before vat", "excluding vat", "net of vat", "without vat", "booking feed", "repair claim"):
-        check("LEAK no shipped document narrates an ask device ('%s')" % wd, not re.search(r"\b%s\b" % wd, docs))
-    check("GATE G no shipped file states a frequency by rating region", "per 100" not in " ".join(
-        open(os.path.join(target, K.FILES[k]), encoding="utf-8").readline() for k in
-        ("pol_legacy", "pol_platform", "clm_legacy", "clm_platform", "regions", "complaints")).lower())
-
-    print("checks: %d passed, %d failed" % (N["ok"], N["fail"]))
-    for f in FAILS[:60]:
-        print("  FAIL", f)
+    check("CRACKER the mirror keeps under 35 per cent of the ask figures", cr["mirror_hits"] < 0.35 * cr["total"],
+          cr["mirror_hits"])
+    check("CRACKER the pair ceiling is 40 or under", cr["pair"] <= 40.0, round(cr["pair"], 1))
+    print("checks: %d, failed: %d" % (COUNT[0], len(FAILS)))
+    for f in FAILS:
+        print("  failed:", f)
     return 0 if not FAILS else 1
 
 
-# the invented names, screened against 5,617 places in Great Britain (h21_reference_places.txt) and the motor
-# insurers, glass networks and salvage agents the fiction sits beside
-FIRMS = ["Aviva", "Admiral", "Direct Line", "Churchill", "Ageas", "Allianz", "Zurich", "NFU Mutual", "Covea", "Esure",
-         "Hastings", "Saga", "Markerstudy", "Sabre", "Ecclesiastical", "Marshmallow", "Hiscox", "Swinton", "Endsleigh",
-         "Highway", "Autoglass", "National Windscreens", "Auto Windscreens", "Belron", "Copart", "Synetiq",
-         "Silverlake", "Motorhub", "Royal London", "Prudential", "Wesleyan", "Liverpool Victoria", "Cornish Mutual",
-         "Engage Mutual", "Police Mutual", "Royal Liver", "Clearview", "Clearwater", "Tremlett", "Fenwick"]
-INVENTED = ["Fennacre", "Clearvane", "Tremlow", "Fennacre Mutual", "Clearvane Auto Glass", "Tremlow Vehicle Remarketing"]
-GENERIC = {"mutual", "insurance", "society", "auto", "glass", "vehicle", "remarketing", "the", "of", "services",
-           "statistics", "service", "private", "motor", "and", "limited", "ltd"}
+def family(df, pop, mm):
+    """The gain from every licensed estimator and each clinic's average of its patients' own declines net of it."""
+    gains = {"within, window": RT.fe(pop)[0], "within, whole record": RT.fe(RT.all_history(df))[0]}
+    ww = pop.copy()
+    ww["k2"] = (ww.k >= 2).astype(float)
+    gains["within, third-sitting term"] = RT.fe(ww, ("step", "k2"))[0]
+    gains["random slopes, time since first sitting"] = mm["_P_rs_step_t_dx"]
+    for ax, nm in (("t_cal", "calendar time"), ("t_win", "time in the period"), ("t_dx", "time since first sitting")):
+        gains["random slopes with the patient's mean of the step, %s" % nm] = mm["_P_mundlak_" + ax]
+    declines = {}
+    for nm, p in gains.items():
+        v = pop.copy()
+        v["a"] = v.s - p * v.step
+        declines[nm + " / least squares"] = RT.cavg(v, RT.slopes(v, "a"))
+        declines[nm + " / first to last"] = RT.cavg(v, RT.endpoint(v, "a"))
+    return dict(gains=gains, declines=declines)
 
 
-def _key(name):
-    return " ".join(w for w in re.sub(r"[^a-z ]", " ", name.lower()).split() if w not in GENERIC)
+def sf_checks(target, P, fig, gold):
+    GOLD = frozenset(fig["call"]["sites"])
+
+    def call_with(sittings=None, dx=None, window=None, scope=None):
+        Q = dict(P)
+        if dx is not None:
+            Q["dx"] = dx
+        s = Q["sittings"]
+        w0, w1 = window or K.WINDOW
+        lat = PK.latest_dx(Q)
+        f = s[s.completed & (s.date >= w0) & (s.date <= w1)].copy()
+        f["latest"] = f.nhs.map(lat)
+        keep = scope or PK.in_scope
+        f = f[f.latest.fillna("").map(keep)]
+        if scope == "ever":
+            pass
+        f = f[f.groupby("nhs").date.transform("size") >= 2].copy()
+        f["t"] = (pd.to_datetime(f.date) - pd.Timestamp(K.WINDOW[0])).dt.days / 365.25
+        f["step"] = (f.k >= 1).astype(float)
+        f["s"] = f.total.astype(float)
+        f["pid"] = f.nhs
+        return A.call(f)["decline"]
+    sr = call_with(scope=lambda c: (c.startswith("F00") or c.startswith("G30") or c == "F06.7") and c != "F00.2")
+    check("SF1 mixed Alzheimer's and vascular dementia (F00.2) left out keeps the call", top2(sr) == GOLD,
+          "+".join(sr.sort_values(ascending=False).index[:3]))
+    d = P["dx"]
+    Q = dict(P)
+    lat_extract = d[d.date <= K.EXTRACT].groupby("nhs").tail(1).set_index("nhs").code
+    s = P["sittings"]
+    f = s[s.completed & (s.date >= K.WINDOW[0]) & (s.date <= K.WINDOW[1])].copy()
+    f = f[f.nhs.map(lat_extract).fillna("").map(PK.in_scope)]
+    f = f[f.groupby("nhs").date.transform("size") >= 2].copy()
+    f["t"] = (pd.to_datetime(f.date) - pd.Timestamp(K.WINDOW[0])).dt.days / 365.25
+    f["step"] = (f.k >= 1).astype(float)
+    f["s"] = f.total.astype(float)
+    f["pid"] = f.nhs
+    sr = A.call(f)["decline"]
+    check("SF2 the latest diagnosis on the record at the extract (2 October) keeps the call", top2(sr) == GOLD)
+    ever = set(d[d.code.map(PK.in_scope) & (d.date <= K.WINDOW[1])].nhs)
+    f = s[s.completed & (s.date >= K.WINDOW[0]) & (s.date <= K.WINDOW[1]) & s.nhs.isin(ever)].copy()
+    f = f[f.groupby("nhs").date.transform("size") >= 2].copy()
+    f["t"] = (pd.to_datetime(f.date) - pd.Timestamp(K.WINDOW[0])).dt.days / 365.25
+    f["step"] = (f.k >= 1).astype(float)
+    f["s"] = f.total.astype(float)
+    f["pid"] = f.nhs
+    sr = A.call(f)["decline"]
+    check("SF2 any Alzheimer's or MCI diagnosis ever on the record keeps the call", top2(sr) == GOLD,
+          "+".join(sr.sort_values(ascending=False).index[:3]))
+    sr = call_with(window=(K.WINDOW[0], K.WINDOW[1] - dt.timedelta(days=1)))
+    check("SF4 the period's last day left out keeps the call", top2(sr) == GOLD)
+    w = PK.frame(P)
+    v = w.copy()
+    gn = A.gain(v)[0]
+    v["a"] = v.s - gn * v.step
+    b = A.slopes(v, "a")
+    cl = A.clinic_of(v)
+    wt = ((v.t - v.groupby("pid").t.transform("mean")) ** 2).groupby(v.pid).sum()
+    sr = -((b * wt).groupby(cl).sum() / wt.groupby(cl).sum())
+    check("SF7 each patient weighted by the spread of their assessment dates keeps the call", top2(sr) == GOLD,
+          "+".join(sr.sort_values(ascending=False).index[:3]))
+    sr = -(b.groupby(cl).median())
+    check("SF8 the median patient in place of the average keeps the call", top2(sr) == GOLD,
+          "+".join(sr.sort_values(ascending=False).index[:3]))
+    g = gold.sort_values(ascending=False)
+    check("SF10 the unrounded figures order the clinics with no tie (the pair's second 0.15 or more above the first "
+          "clinic below)", g.is_unique and g.iloc[1] - g.iloc[2] >= 0.15, round(g.iloc[1] - g.iloc[2], 3))
+    cis = pd.read_csv(os.path.join(target, K.FILES["cis_ace"]), dtype=str, keep_default_na=False)
+    day = cis.assessment_date.str[:2].astype(int)
+    check("SF13 a month-first read of the CIS dates fails loudly (40 per cent or more of days above 12)",
+          (day > 12).mean() >= 0.4, round(float((day > 12).mean()), 3))
 
 
-def _edits(a, b):
+def layer1_mishandled(target, P):
+    """The golden method with one Layer 1 item mishandled at a time."""
+    out = {}
+    base = P["sittings"]
+
+    def golden_from(s, dxf=None):
+        Q = dict(P)
+        Q["sittings"] = s
+        if dxf is not None:
+            Q["dx"] = dxf
+        w = PK.frame(Q)
+        return A.call(w)["decline"]
+    # abandoned forms and incomplete sets read as completed
+    s = base.copy()
+    s["completed"] = True
+    s["k"] = s.groupby("nhs").completed.transform(lambda c: c.astype(int).cumsum().shift(fill_value=0))
+    out["SF3 abandoned and incomplete sittings counted"] = golden_from(s)
+    # sets entered in error kept
+    obs = pd.read_csv(os.path.join(target, K.FILES["epr_obs"]), dtype=str, keep_default_na=False)
+    eie = obs[(obs.set_status == "Entered in error") & (obs.item_code == "ACE3_TOTAL")].copy()
+    eie["nhs"] = PK.digits(eie.nhs_number)
+    eie["date"] = pd.to_datetime(eie.performed_at.str[:10]).dt.date
+    eie["clinic"] = eie.site_code.map(P["site2clinic"])
+    eie["completed"] = True
+    eie["total"] = eie.value.astype(int)
+    eie["system"] = "EPR"
+    eie["set"] = eie.obs_set_id
+    s = pd.concat([base[["nhs", "date", "clinic", "completed", "total", "system", "set"]],
+                   eie[["nhs", "date", "clinic", "completed", "total", "system", "set"]]], ignore_index=True)
+    s = s.sort_values(["nhs", "date", "set"]).reset_index(drop=True)
+    s["k"] = s.groupby("nhs").completed.transform(lambda c: c.astype(int).cumsum().shift(fill_value=0))
+    out["sets entered in error kept"] = golden_from(s)
+    # merged hospital numbers left out of the join
+    pmi = P["pmi"]
+    merged = set(pmi[pmi.record_status != "Active"].hpn)
+    cis = pd.read_csv(os.path.join(target, K.FILES["cis_ace"]), dtype=str, keep_default_na=False)
+    drop_sets = set(cis[cis.hpn.str.strip().isin(merged)].form_id)
+    s = base[~base.set.isin(drop_sets)].copy()
+    s["k"] = s.groupby("nhs").completed.transform(lambda c: c.astype(int).cumsum().shift(fill_value=0))
+    out["SF12 merged hospital numbers not joined"] = golden_from(s)
+    # NHS numbers written with spaces not matched
+    spaced = set(PK.digits(pmi[pmi.nhs_number.str.contains(" ")].nhs_number))
+    s = base[~(base.nhs.isin(spaced) & (base.system == "CIS"))].copy()
+    s["k"] = s.groupby("nhs").completed.transform(lambda c: c.astype(int).cumsum().shift(fill_value=0))
+    out["spaced NHS numbers in the index not matched"] = golden_from(s)
+    # the migrated problem-list entries left out
+    ed = pd.read_csv(os.path.join(target, K.FILES["epr_dx"]), dtype=str, keep_default_na=False)
+    mig = ed[ed.source == "CIS migration"]
+    keyset = set(zip(PK.digits(mig.nhs_number), pd.to_datetime(mig.recorded_on).dt.date, mig.problem_code))
+    d = P["dx"]
+    dxf = d[~d.apply(lambda r: (r.nhs, r.date, r.code) in keyset, axis=1)]
+    out["migrated diagnoses left out"] = golden_from(base, dxf)
+    # each patient placed at their first clinic in the period
+    Q = dict(P)
+    w = PK.frame(Q)
+    first_clinic = w.sort_values(["pid", "t"]).groupby("pid").clinic.first()
+    w2 = w.copy()
+    w2["clinic"] = w2.pid.map(first_clinic)
+    out["SF5 patients placed at their first clinic in the period"] = A.call(w2)["decline"]
+    # time in years of 365 days
+    w3 = w.copy()
+    w3["t"] = w3.t * 365.25 / 365.0
+    out["SF6 years of 365 days"] = A.call(w3)["decline"]
+    return out
+
+
+def asks(P, fig, w):
+    a, a_rows = A.ask_a(P)
+    b, b_rows = A.ask_b(P)
+    # the clean truth
+    day = K.WINDOW[1]
+    import records as RC
+    tru = {c: [0, 0] for c in K.NAMES}
+    for p in w["patients"]:
+        c = RC.under_follow_up(p, day)
+        if c is None:
+            continue
+        dxs = sorted([x for x in p["dx"] if x["entered"] <= day], key=lambda x: (x["entered"], x["given"]))
+        if dxs and dxs[-1]["code"] in K.IN_SCOPE:
+            bb = p["dob"]
+            age = K.TRIAL_ENTRY.year - bb.year - ((K.TRIAL_ENTRY.month, K.TRIAL_ENTRY.day) < (bb.month, bb.day))
+            tru[c][0] += 1
+            tru[c][1] += age <= K.AGE_LIMIT
+    for c in K.NAMES:
+        check("ASK A the golden equals the clean truth (%s)" % c, [a[c]["under"], a[c]["age_ok"]] == tru[c],
+              (a[c]["under"], a[c]["age_ok"], tru[c]))
+    # the careful path: open episodes, Spine deaths, latest diagnosis, no look at the appointments
+    careful = ask_a_careful(P)
+    for c in K.NAMES:
+        check("ASK A device: the careful path misses %s's patients under follow-up" % c,
+              careful[c][0] != a[c]["under"], (careful[c][0], a[c]["under"]))
+        check("ASK A device: the careful path misses %s's patients 85 or under" % c,
+              careful[c][1] != a[c]["age_ok"], (careful[c][1], a[c]["age_ok"]))
+    over = ask_a_careful(P, keyword=True)
+    for c in K.NAMES:
+        check("ASK A over-cleaner (every outcome naming a discharge) misses %s" % c,
+              over[c][0] != a[c]["under"], (over[c][0], a[c]["under"]))
+    # Ask B: the truth from the world
+    a0, a1 = K.ASK_YEAR
+    tb = {c: [] for c in K.NAMES}
+    for p in w["patients"]:
+        if not p["dx"]:
+            continue
+        g = p["dx"][0]["given"]
+        if a0 <= g <= a1 and p["registered"] >= K.EPR_GO_LIVE - dt.timedelta(days=400):
+            if p["registered"] < K.EPR_GO_LIVE and not (p.get("first") and p["first"] >= K.EPR_GO_LIVE):
+                continue
+            tb[p["clinic0"]].append((g - p["registered"]).days)
+    for c in K.NAMES:
+        v = np.array(tb[c])
+        check("ASK B the golden equals the clean truth (%s)" % c,
+              len(v) == b[c]["n"] and abs(100.0 * (v <= 42).mean() - b[c]["share"]) < 1e-9 and
+              abs(v.mean() - b[c]["mean"]) < 1e-9, (len(v), b[c]["n"]))
+        check("ASK B %s's figures sit off their rounding edges" % c,
+              dec_edge(b[c]["share"]) >= 0.002 and dec_edge(b[c]["mean"]) >= 0.002,
+              (round(b[c]["share"], 4), round(b[c]["mean"], 4)))
+    careful_b = ask_b_careful(P)
+    for c in K.NAMES:
+        check("ASK B device: the tracker's own dates miss %s's share" % c,
+              round(careful_b[c][0], 1) != fig["ask_b"]["within_42_days_pct"][c],
+              (round(careful_b[c][0], 1), fig["ask_b"]["within_42_days_pct"][c]))
+        check("ASK B device: the tracker's own dates miss %s's average" % c,
+              round(careful_b[c][1], 1) != fig["ask_b"]["average_days"][c],
+              (round(careful_b[c][1], 1), fig["ask_b"]["average_days"][c]))
+    over_b = ask_b_feedback_only(P)
+    for c in K.NAMES:
+        check("ASK B over-cleaner (the feedback appointment only) misses %s" % c,
+              round(over_b[c][0], 1) != fig["ask_b"]["within_42_days_pct"][c] and
+              round(over_b[c][1], 1) != fig["ask_b"]["average_days"][c], over_b[c])
+    vals = list(fig["ask_a"]["under_follow_up"].values())
+    check("ASK A no two clinics share a figure", len(set(vals)) == len(vals))
+
+
+def ask_a_careful(P, keyword=False):
+    day = K.WINDOW[1]
+    ep = P["episodes"].copy()
+    ep["nhs"] = PK.digits(ep.nhs_number)
+    ep["start"] = pd.to_datetime(ep.episode_start).dt.date
+    ep["end"] = pd.to_datetime(ep.episode_end.replace("", None)).dt.date
+    ep["clinic"] = ep.site_code.map(P["site2clinic"])
+    op = ep[(ep.start <= day) & (ep.end.isna() | (ep.end > day))]
+    if keyword:
+        ap = P["appts"]
+        hit = ap[ap.outcome.str.contains("discharge|care passed", case=False)]
+        op = op[~op.nhs.isin(set(PK.digits(hit.nhs_number)))]
+    pmi = P["pmi"][P["pmi"].record_status == "Active"].set_index("nhs")
+    dod = pd.to_datetime(pmi.date_of_death.replace("", None)).dt.date
+    op = op[~op.nhs.map(dod).apply(lambda d: d is not None and not pd.isna(d) and d <= day)]
+    lat = PK.latest_dx(P, day)
+    op = op[op.nhs.map(lat).fillna("").map(PK.in_scope)]
+    dob = pd.to_datetime(pmi.date_of_birth).dt.date
+    age = op.nhs.map(dob).apply(lambda b: K.TRIAL_ENTRY.year - b.year - ((1, 1) < (b.month, b.day)))
+    op = op.assign(age=age.values)
+    return {c: (op[op.clinic == c].nhs.nunique(), op[(op.clinic == c) & (op.age <= 85)].nhs.nunique())
+            for c in K.NAMES}
+
+
+def ask_b_careful(P):
+    tr = P["tracker"].copy()
+    tr["ref"] = pd.to_datetime(tr["Referral date"]).dt.date
+    tr["dxd"] = pd.to_datetime(tr["Diagnosis date"]).dt.date
+    a0, a1 = K.ASK_YEAR
+    t = tr[tr.dxd.notna()]
+    t = t[(t.dxd >= a0) & (t.dxd <= a1)].copy()
+    t["days"] = [(d - r).days for d, r in zip(t.dxd, t.ref)]
+    return {c: (100.0 * (t[t.Clinic == c].days <= 42).mean(), t[t.Clinic == c].days.mean()) for c in K.NAMES}
+
+
+def ask_b_feedback_only(P):
+    tr = P["tracker"].copy()
+    tr["ref"] = pd.to_datetime(tr["Referral date"]).dt.date
+    tr["nhs"] = PK.digits(tr["NHS number"])
+    ap = P["appts"]
+    fb = ap[(ap.appointment_type == "Diagnosis feedback") & ap.outcome.str.contains("diagnosis given")].copy()
+    fb["nhs"] = PK.digits(fb.nhs_number)
+    fb["date"] = pd.to_datetime(fb.appointment_start.str[:10]).dt.date
+    tr["fb"] = tr.nhs.map(fb.groupby("nhs").date.first())
+    a0, a1 = K.ASK_YEAR
+    u = tr[tr.fb.notna()]
+    u = u[(u.fb >= a0) & (u.fb <= a1)].copy()
+    u["days"] = [(d - r).days for d, r in zip(u.fb, u.ref)]
+    return {c: (round(100.0 * (u[u.Clinic == c].days <= 42).mean(), 1), round(u[u.Clinic == c].days.mean(), 1))
+            for c in K.NAMES}
+
+
+def separation(target, P, fig):
+    """The call recomputed from the sittings, diagnoses, index and register alone."""
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp()
+    try:
+        for k in ("cis_ace", "epr_obs", "cis_dx", "epr_dx", "pmi", "clinics"):
+            shutil.copy(os.path.join(target, K.FILES[k]), os.path.join(tmp, K.FILES[k]))
+        # stand-ins for the ask files so the loader runs: empty, with headers
+        for k in ("episodes", "appts"):
+            with open(os.path.join(target, K.FILES[k])) as f:
+                head = f.readline()
+            open(os.path.join(tmp, K.FILES[k]), "w").write(head)
+        shutil.copy(os.path.join(target, K.FILES["tracker"]), os.path.join(tmp, K.FILES["tracker"]))
+        Q = PK.load(tmp)
+        r = A.main(Q)
+        return r["sites"] == fig["call"]["sites"] and r["below"] == fig["call"]["below"] and \
+            all(abs(r["decline"][c] - P_decl(P)[c]) < 1e-12 for c in K.NAMES)
+    finally:
+        shutil.rmtree(tmp)
+
+
+def P_decl(P):
+    return A.main(P)["decline"]
+
+
+LEAK = ["practice", "retest", "re-test", "learning", "familiar", "gain", "repeat", "second assessment",
+        "second sitting", "first sitting", "sat the test", "test effect", "exposure", "alternate version",
+        "parallel form", "version a", "version b"]
+
+
+def documents(target):
+    from pypdf import PdfReader
+    for k in ("paper", "questionnaire", "guide"):
+        txt = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, K.FILES[k])).pages).lower()
+        txt = re.sub(r"\s+", " ", txt)
+        for wd in LEAK:
+            check("DOC %s does not say '%s'" % (k, wd), not re.search(r"\b%s" % re.escape(wd), txt))
+        check("DOC %s ranks no clinic on decline (no decline figure)" % k,
+              not re.search(r"\d\.\d+ (ace-iii )?points a year", txt))
+    txt = open(os.path.join(target, K.FILES["contents"])).read().lower()
+    for wd in LEAK:
+        check("DOC contents does not say '%s'" % wd, not re.search(r"\b%s" % re.escape(wd), txt))
+
+
+def containers(task):
+    """H1 and H16: no writer's name in any shipped container, and no stamp before the oldest clinic opened or after
+    the pack was assembled (the goldens inside October 2026, after the extracts)."""
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".claude", "skills", "reduce-house-fixes", "scripts",
+                        "scrub_producer_metadata.py")
+    spec = importlib.util.spec_from_file_location("scrub_producer_metadata", path)
+    sm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sm)
+    for folder, floor, ceiling in (("target", "2014-04-01", K.ASSEMBLED.date().isoformat()),
+                                   ("golden", "2026-10-02", "2026-10-31")):
+        d = os.path.join(task, folder)
+        if not os.path.isdir(d):
+            continue
+        for f in sorted(os.listdir(d)):
+            r = sm.audit(os.path.join(d, f), floor, ceiling)
+            check("CONTAINER %s/%s carries no writer's name and no stamp outside %s to %s" % (folder, f, floor, ceiling),
+                  r is None or not (r[0] or r[1]), r)
+
+
+def realism(target, P, w):
+    # no copied block of rows: no run of five identical totals for one patient
+    s = P["sittings"]
+    runs = 0
+    for _, g in s.groupby("nhs"):
+        t = g.total.values
+        if len(t) >= 5 and any(len(set(t[i:i + 5])) == 1 for i in range(len(t) - 4)):
+            runs += 1
+    check("R3c no patient's totals repeat five times running (no copied block)", runs == 0, runs)
+    # every record dated on or before the extract, the booked appointments aside
+    ap = P["appts"]
+    late = ap[(ap.appointment_start.str[:10] > K.EXTRACT.isoformat()) & (ap.outcome != "")]
+    check("REALISM no appointment after the extract carries an outcome", len(late) == 0, len(late))
+    check("REALISM no ACE-III set after the extract", (s.date <= K.EXTRACT).all())
+    booked = ap[ap.booked_on > K.EXTRACT.isoformat()]
+    check("REALISM no appointment booked after the extract", len(booked) == 0, len(booked))
+    # identities
+    pmi = P["pmi"]
+    check("REALISM NHS numbers are ten digits with a valid check digit",
+          pmi.nhs.map(valid_nhs).all(), int((~pmi.nhs.map(valid_nhs)).sum()))
+    check("REALISM NHS numbers come from a range the NHS does not issue (first digit 9)", pmi.nhs.str[0].eq("9").all())
+    check("REALISM one NHS number per active hospital number", pmi[pmi.record_status == "Active"].nhs.is_unique)
+    # containers
+    for f in os.listdir(target):
+        b = open(os.path.join(target, f), "rb").read()
+        check("REALISM no writer's name in %s" % f, b"ReportLab" not in b and b"openpyxl" not in b.lower()
+              and b"matplotlib" not in b.lower())
+    # H21: invented names away from real places
+    places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
+    for nm in K.NAMES + ["Hollinsmere", "Arvenna"]:
+        n = nm.lower()
+        near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
+        check("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
+    # personas
+    check("REALISM the personas are the ones drawn", set(K.PEOPLE.values()) == {"Georgina Khan", "Jeremy Hurst",
+                                                                                "Nicola Lynch"})
+
+
+def valid_nhs(n):
+    if not re.fullmatch(r"\d{10}", n):
+        return False
+    s = sum((10 - i) * int(d) for i, d in enumerate(n[:9]))
+    c = 11 - (s % 11)
+    c = 0 if c == 11 else c
+    return c != 10 and c == int(n[9])
+
+
+def edit(a, b):
+    if abs(len(a) - len(b)) > 2:
+        return 3
     prev = list(range(len(b) + 1))
     for i, ca in enumerate(a, 1):
         cur = [i]
@@ -498,17 +621,3 @@ def _edits(a, b):
             cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
         prev = cur
     return prev[-1]
-
-
-def h21():
-    places = [l.strip() for l in open(os.path.join(HERE, "h21_reference_places.txt"), encoding="utf-8") if l.strip()]
-    bad = []
-    for inv in INVENTED:
-        ki = _key(inv)
-        for real in places + FIRMS:
-            kr = _key(real)
-            if not ki or not kr or len(kr) <= 4:
-                continue
-            if ki == kr or kr in ki or ki in kr or _edits(ki, kr) <= 2:
-                bad.append((inv, real))
-    return bad
