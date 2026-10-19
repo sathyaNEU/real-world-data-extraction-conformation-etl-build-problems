@@ -1,374 +1,347 @@
-"""The world under task268: six haddock grounds on the organisation's grid, each ground's stock by cell and year, the
-members' fleet and where it tows, and the autumn survey's fixed stations. Everything downstream (the records, the
-documents, the analysis, the checks) reads from build().
+"""The clean truth for task268: every patient the Heronmere Heart Failure Registry enrolled from 2022 to 2025, their
+heart failure course a quarter at a time (NYHA class, death), the clinic visits that record it, the moves out of
+Florida reported at those visits, the deaths each source can see, Wrenhaven's 2024 re-consent, the 2025 re-enrolments
+after the record-number migration, and the hospitals' 2025 NT-proBNP results with the corrections the laboratory
+system re-accessions. Each part draws from its own random stream so a change to one leaves the others where they were.
 
-A ground's stock follows its own path from 2019 to 2026. As it shrinks it keeps its density longest in its best
-cells (the deep band), to a degree set by alpha: alpha 1 is an even decline, alpha near 0 holds the best cells while
-the rest empty. The boats work a ground's cells in proportion to the square of their density and leave a cell once
-its density is under three-tenths of the ground's best. The survey tows the same stations every October, twelve in
-each depth band of every ground, wherever the fish are."""
+Days are counted from 1 January 2022 (day 0)."""
 import datetime as dt
-import math
 
 import numpy as np
 
 import common as K
 
-SEED = 69
+SEED = 28
+DAY0 = dt.date(2022, 1, 1)
+Q = 91                                   # a quarter, the clinic's visit interval in days
+EXTRACT_DAY = (K.EXTRACT - DAY0).days
+DEATHS_DAY = (K.DEATHS_TO - DAY0).days
+RECONSENT_DAY = (K.RECONSENT - DAY0).days
+MIGRATION_DAY = (K.MIGRATION - DAY0).days
+SPLIT_DAY = (K.SPLIT - DAY0).days
 
-# relative stock by year 2019..2026, alpha, cells, band shares (A, B, C), base mean density (kg per km2), fleet hours
-SPEC = {
-    "Skiravie Bank":   dict(trend=[1.00, 0.98, 1.02, 0.95, 0.88, 0.81, 0.75, 0.70], alpha=0.5, cells=46,
-                            shares=(0.45, 0.35, 0.20), d0=1250, hours=4800),
-    "Halmorie Deep":   dict(trend=[1.00, 1.03, 0.97, 0.89, 0.77, 0.62, 0.50, 0.41], alpha=0.12, mid=2.0, cells=80,
-                            shares=(0.68, 0.24, 0.08), d0=1150, hours=6800),
-    "Moraskie Ground": dict(trend=[1.00, 1.02, 0.99, 0.95, 0.90, 0.85, 0.80, 0.76], alpha=0.7, cells=44,
-                            shares=(0.40, 0.40, 0.20), d0=1150, hours=4400),
-    "Brettach Bank":   dict(trend=[1.00, 0.99, 1.01, 0.91, 0.81, 0.71, 0.62, 0.53], alpha=1.0, cells=58,
-                            shares=(0.40, 0.35, 0.25), d0=1300, hours=6400),
-    "Vallaskie Hole":  dict(trend=[1.00, 1.01, 1.00, 0.97, 0.93, 0.89, 0.85, 0.82], alpha=0.8, cells=40,
-                            shares=(0.35, 0.40, 0.25), d0=1050, hours=4000),
-    "Cullardy Patch":  dict(trend=[1.00, 0.97, 1.03, 1.00, 0.97, 0.94, 0.91, 0.88], alpha=0.9, cells=48,
-                            shares=(0.45, 0.35, 0.20), d0=1100, hours=4600),
-}
-CENTRES = {"Skiravie Bank": (6, 5), "Halmorie Deep": (6, 17), "Moraskie Ground": (17, 6),
-           "Brettach Bank": (18, 18), "Vallaskie Hole": (29, 5), "Cullardy Patch": (29, 17)}
-QUAL = {"A": 0.10, "B": 0.35, "C": 1.0}     # habitat quality by depth band
-BETA, FLOOR = 2.0, 0.30                      # the fleet's preference for density and the density it leaves a cell at
-SIGMA_COMM = 0.45                            # haul-to-haul noise in the members' catches
-QC = 0.08                                    # km2 a member trawler fishes in an hour, at full efficiency
-QS = 0.039                                   # km2 the survey trawl fishes in a standard 30-minute tow
-NB_K = 8.0                                   # overdispersion of the survey's haddock counts
-STATION_SD = 0.35                            # a station's lasting patchiness
-MONTH_W = [0.70, 0.75, 0.90, 1.00, 1.05, 1.10, 1.05, 1.00, 0.95, 0.90, 0.80, 0.60]
-LAT_N, LON_W = 61.5, -2.0                    # the grid's north-west corner; rows of 5', columns of 10'
-ELOG_END = dt.date(2026, 10, 31)             # the e-logbook export runs to the end of October 2026
-
-
-# ---------------------------------------------------------------------------------------------- the grid
-def cell_geometry(row, col):
-    """A sub-square's code, rectangle, number, bounds, centre and area (km2)."""
-    lat_n = LAT_N - row * 5 / 60
-    lat_s = lat_n - 5 / 60
-    lon_w = LON_W + col * 10 / 60
-    lon_e = lon_w + 10 / 60
-    latc, lonc = (lat_n + lat_s) / 2, (lon_w + lon_e) / 2
-    ices_row = int(math.floor((latc - 36.0) / 0.5)) + 1
-    lon_deg = int(math.floor(lonc))
-    colcode = ("E%d" % (lon_deg + 10)) if lon_deg < 0 else ("F%d" % lon_deg)
-    rect = "%02d%s" % (ices_row, colcode)
-    rect_lat_n = 36.0 + ices_row * 0.5
-    sub_r = int(round((rect_lat_n - lat_n) * 12))
-    sub_c = int(round((lon_w - lon_deg) * 6))
-    sub = sub_r * 6 + sub_c + 1
-    area = 9.26 * 18.52 * math.cos(math.radians(latc))
-    return dict(row=row, col=col, rect=rect, sub=sub, code="%s/%02d" % (rect, sub), lat_n=lat_n, lat_s=lat_s,
-                lon_w=lon_w, lon_e=lon_e, lat=latc, lon=lonc, area=round(area, 2))
+# the course of heart failure a quarter at a time: class transitions and the chance of dying within the quarter,
+# by the class at its start
+T0 = np.array([[0.90, 0.09, 0.01, 0.00],
+               [0.03, 0.88, 0.08, 0.01],
+               [0.00, 0.04, 0.86, 0.10],
+               [0.00, 0.00, 0.08, 0.92]])
+D0 = np.array([0.008, 0.018, 0.050, 0.140])
+# Gullhaven's patients are older: in every class they worsen faster and die more often
+WORSEN = {"GUL": 1.90}
+DMULT = {"GUL": 1.16}
+MIX = {"FEN": (0.10, 0.36, 0.40, 0.14), "LIN": (0.22, 0.46, 0.26, 0.06), "BRE": (0.16, 0.42, 0.32, 0.10),
+       "GUL": (0.24, 0.49, 0.22, 0.05), "WRE": (0.20, 0.45, 0.28, 0.07)}
+PER_YEAR = {"FEN": 800, "LIN": 750, "BRE": 750, "GUL": 1200, "WRE": 850}
+AGE = {"FEN": (69, 12), "LIN": (72, 10), "BRE": (73, 10), "GUL": (79, 7), "WRE": (71, 11)}
+# a move out of Florida reported at a clinic visit: north, beyond the death linkage, by a logistic in the hospital and
+# the class recorded at that visit; or to a state the exchange covers, mostly while well
+NORTH_A = {"GUL": -5.9}
+NORTH_A_OTHER = -9.6
+NORTH_B = np.array([0.0, 0.5, 2.2, 4.8])
+EXCH = {"GUL": (0.030, 0.020, 0.005, 0.002)}
+EXCH_OTHER = (0.004, 0.003, 0.001, 0.0)
+RECONSENT_LOST = 0.75                    # Wrenhaven's patients who did not return the new consent form
+MISSED_VISIT = 0.04
 
 
-def smooth_field(rng, n=3, scale=4.0):
-    fr = rng.uniform(0.15, 0.45, (n, 2)) / scale * 4
-    ph = rng.uniform(0, 2 * np.pi, n)
-    amp = rng.uniform(0.5, 1.0, n)
-    return lambda r, c: float(sum(a * math.cos(f[0] * r + f[1] * c + p) for a, f, p in zip(amp, fr, ph)))
+def expit(x):
+    return 1.0 / (1.0 + np.exp(-x))
 
 
-def grid(rng):
-    cells = []
-    taken = set()
-    for gname, gcode, kind in K.GROUNDS:
-        s = SPEC[gname]
-        r0, c0 = CENTRES[gname]
-        ar, ac = rng.uniform(0.85, 1.25), rng.uniform(0.85, 1.25)
-        noise = smooth_field(rng)
-        cand = []
-        for r in range(max(0, r0 - 9), min(36, r0 + 10)):
-            for c in range(max(0, c0 - 9), min(24, c0 + 10)):
-                if any((r + dr, c + dc) in taken for dr in (-1, 0, 1) for dc in (-1, 0, 1)):
-                    continue
-                d = math.hypot((r - r0) / ar, (c - c0) / ac) + 0.9 * noise(r, c)
-                cand.append((d, r, c))
-        cand.sort()
-        chosen = cand[:s["cells"]]
-        taken |= {(r, c) for _, r, c in chosen}
-        theta = rng.uniform(0, 2 * np.pi)
-        noise2 = smooth_field(rng)
-        pots = []
-        for d, r, c in chosen:
-            if kind == "deep":
-                pot = -d
-            elif kind == "bank":
-                pot = d
-            else:
-                pot = (r - r0) * math.cos(theta) + (c - c0) * math.sin(theta)
-            pots.append(pot + 0.6 * noise2(r, c) + rng.normal(0, 0.25))
-        order = np.argsort(pots)            # shallowest first
-        n = s["cells"]
-        nA = int(round(n * s["shares"][0]))
-        nB = int(round(n * s["shares"][1]))
-        band = {}
-        for k, i in enumerate(order):
-            band[i] = "A" if k < nA else ("B" if k < nA + nB else "C")
-        deep_max = 212 if kind == "deep" else 178
-        for k, i in enumerate(order):
-            b = band[i]
-            lo, hi = {"A": (68, 99), "B": (100, 139), "C": (140, deep_max)}[b]
-            ranks = [j for j in order if band[j] == b]
-            pos = ranks.index(i) / max(1, len(ranks) - 1)
-            depth = int(round(lo + 1 + pos * (hi - lo - 2) + rng.normal(0, 1.5)))
-            depth = min(hi, max(lo + 1, depth)) if b != "A" else min(99, max(lo, depth))
-            if b == "B":
-                depth = min(139, max(100, depth))
-            if b == "C":
-                depth = max(140, depth)
-            _, r, c = chosen[i]
-            g = cell_geometry(r, c)
-            g.update(ground=gname, band=b, depth=depth)
-            cells.append(g)
-    codes = [c["code"] for c in cells]
-    assert len(set(codes)) == len(codes), "grounds overlap"
-    return cells
+def matrices(h):
+    T = T0.copy()
+    w = WORSEN.get(h, 1.0)
+    for a in range(4):
+        T[a, a + 1:] *= w
+        T[a, a] = 1.0 - T[a].sum() + T[a, a]
+    return T, np.minimum(D0 * DMULT.get(h, 1.0), 0.95)
 
 
-# ---------------------------------------------------------------------------------------------- the stock
-def stock(rng, cells):
-    """Density (kg per km2) by cell and year. A ground's deep band keeps a share B ** alpha of its base density, the
-    middle band B ** mid (by default 1 + (1 - alpha) / 2), and the shallow band holds the rest of the stock, so the
-    ground's total is B times its base total: the basin a shrinking stock retreats into."""
-    dens = {}
-    qual = {}
-    for gname in K.GROUND_NAMES:
-        s = SPEC[gname]
-        idx = [i for i, c in enumerate(cells) if c["ground"] == gname]
-        a = np.array([cells[i]["area"] for i in idx])
-        band = np.array([cells[i]["band"] for i in idx])
-        q = np.array([QUAL[b] for b in band]) * np.exp(rng.normal(0, 0.12, len(idx)))
-        for i, v in zip(idx, q):
-            qual[i] = float(v)
-        tot = {b: float(np.sum((q * a)[band == b])) for b in K.BANDS}
-        scale = s["d0"] * a.sum() / sum(tot.values())
-        for yi, y in enumerate(K.YEARS):
-            B = s["trend"][yi]
-            m = {"C": B ** s["alpha"], "B": B ** s.get("mid", 1 + (1 - s["alpha"]) / 2)}
-            m["A"] = (B * sum(tot.values()) - m["C"] * tot["C"] - m["B"] * tot["B"]) / tot["A"]
-            assert m["A"] > 0, (gname, y, m)
-            for i, qi, b in zip(idx, q, band):
-                dens[(i, y)] = float(scale * qi * m[b])
-    return dens, qual
+def north_p(h):
+    return expit(NORTH_A.get(h, NORTH_A_OTHER) + NORTH_B)
 
 
-# ---------------------------------------------------------------------------------------------- the fleet
-VESSEL_NAMES = ["Arcturus", "Starlight", "Catriona Rose", "Dawn Harvester", "Emulator", "Fairwind", "Gleaming Star",
-                "Heather Bell", "Islander", "Jasper", "Kestrel", "Harvest Moon", "Ocean Dawn", "Northern Lass",
-                "Ocean Reaper", "Provider", "Quiet Waters", "Rosebud", "Sea Harvester", "Tranquility", "Unity",
-                "Valhalla", "Golden Venture", "Brighter Morn", "Zephyr", "Brighter Dawn", "Celtic Mist", "Endurance",
-                "Good Hope", "Silver Spray"]
+def exch_p(h):
+    return np.array(EXCH.get(h, EXCH_OTHER))
 
 
-def fleet(rng):
-    vessels = []
-    used = set()
-    for i, name in enumerate(VESSEL_NAMES):
-        port = K.PORT_NAMES[i % 4] if i < 28 else K.PORT_NAMES[(i + 1) % 4]
-        while True:
-            num = int(rng.integers(12, 480))
-            pln = "%s %d" % (K.PORT_LETTERS[port], num)
-            if pln not in used:
-                used.add(pln)
-                break
-        while True:
-            rss = "C%05d" % int(rng.integers(15000, 22999))
-            if rss not in used:
-                used.add(rss)
-                break
-        pool = K.POOL_CODES[[0, 1, 2, 3, 0, 1, 2, 4, 1, 0, 3, 2, 0, 1, 2, 3, 4, 0, 1, 2, 0, 1, 3, 2, 0, 1, 4, 2, 1, 0][i]]
-        g = list(rng.choice(K.GROUND_NAMES, size=int(rng.integers(2, 4)), replace=False))
-        length = round(float(rng.uniform(14.5, 27.9)), 2) if pool != "I" else round(float(rng.uniform(11.2, 14.9)), 2)
-        registered = dt.date(int(rng.integers(1996, 2018)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
-        since = max(registered, dt.date(int(rng.integers(2004, 2019)), int(rng.integers(1, 13)), 1))
-        vessels.append(dict(name=name, pln=pln, port=port, rss=rss, pool=pool, grounds=g, length=length,
-                            q=float(np.exp(rng.normal(0, 0.18))), registered=registered, since=since,
-                            history=[(pln, registered, None, port)]))
-    # every ground worked by at least four boats
-    for gname in K.GROUND_NAMES:
-        have = [v for v in vessels if gname in v["grounds"]]
-        k = 0
-        while len(have) < 4:
-            v = vessels[(K.GROUND_NAMES.index(gname) * 5 + k) % len(vessels)]
-            if gname not in v["grounds"]:
-                v["grounds"].append(gname)
-                have.append(v)
-            k += 1
-    # two re-registrations at a new home port: one in March 2024, one on 1 June 2026
-    a, b = vessels[2], vessels[5]
-    for v, when, newport in ((a, dt.date(2024, 3, 11), "Haldness"), (b, dt.date(2026, 6, 1), "Eastquay")):
-        old = v["pln"]
-        while True:
-            num = int(rng.integers(12, 480))
-            new = "%s %d" % (K.PORT_LETTERS[newport], num)
-            if new not in used:
-                used.add(new)
-                break
-        v["history"] = [(old, v["registered"], when - dt.timedelta(days=1), v["port"]), (new, when, None, newport)]
-        v["pln"], v["port"] = new, newport
-    return vessels
+def year_days(y):
+    a = (dt.date(y, 1, 1) - DAY0).days
+    return a, (dt.date(y, 12, 31) - DAY0).days
 
 
-def pln_on(v, day):
-    for pln, start, end, _ in v["history"]:
-        if day >= start and (end is None or day <= end):
-            return pln
-    return v["history"][0][0]
+def diagnosis_days(r, n, y):
+    """Diagnosis dates over a year, a little heavier in the winter months."""
+    a, b = year_days(y)
+    span = b - a + 1
+    out = []
+    while len(out) < n:
+        d = r.integers(0, span, 2 * n)
+        doy = d / span
+        keep = r.random(2 * n) < 0.82 + 0.18 * np.cos(2 * np.pi * doy)
+        out.extend((a + d[keep]).tolist())
+    return np.array(sorted(out[:n]), dtype=int)
 
 
-def port_on(v, day):
-    for _, start, end, port in v["history"]:
-        if day >= start and (end is None or day <= end):
-            return port
-    return v["history"][0][3]
-
-
-# ---------------------------------------------------------------------------------------------- the fishing
-def fishing(rng, cells, dens, vessels):
-    """Trips and hauls 2019 to October 2026: each trip works one ground, hauls rotating round a few cells chosen by
-    the density the skipper expects there."""
-    trips, hauls = [], []
-    by_ground = {g: [i for i, c in enumerate(cells) if c["ground"] == g] for g in K.GROUND_NAMES}
-    mw = np.array(MONTH_W) / sum(MONTH_W)
-    tno = 0
-    for y in K.YEARS:
-        for gname in K.GROUND_NAMES:
-            idx = by_ground[gname]
-            d = np.array([dens[(i, y)] for i in idx])
-            att = d ** BETA
-            att[d < FLOOR * d.max()] = 0.0
-            p = att / att.sum()
-            target = SPEC[gname]["hours"] * float(np.exp(rng.normal(0, 0.05)))
-            boats = [v for v in vessels if gname in v["grounds"]]
-            bw = np.array([1.0 + 0.5 * (v["pool"] != "I") for v in boats])
-            bw /= bw.sum()
-            done = 0.0
-            while done < target:
-                v = boats[int(rng.choice(len(boats), p=bw))]
-                m = int(rng.choice(12, p=mw)) + 1
-                start = dt.date(y, m, 1) + dt.timedelta(days=int(rng.integers(0, 28)))
-                ndays = int(rng.integers(4, 8))
-                end = start + dt.timedelta(days=ndays)
-                focus = [idx[int(j)] for j in rng.choice(len(idx), size=3, p=p)]
-                t0 = dt.datetime(start.year, start.month, start.day, 4, 0) + dt.timedelta(hours=float(rng.uniform(8, 20)))
-                stop = dt.datetime(end.year, end.month, end.day, 0, 0) - dt.timedelta(hours=float(rng.uniform(10, 18)))
-                tno += 1
-                trip = dict(id=tno, vessel=v["rss"], ground=gname, start=start, end=end, year=y, hauls=[])
-                t = t0
-                while True:
-                    hrs = float(np.exp(rng.normal(math.log(3.8), 0.14)))
-                    if t + dt.timedelta(hours=hrs) > stop:
-                        break
-                    c = focus[int(rng.integers(3))] if rng.random() < 0.8 else idx[int(rng.choice(len(idx), p=p))]
-                    mon = t.month
-                    mq = 1.0 + 0.15 * math.cos(2 * math.pi * (mon - 3) / 12)
-                    live = v["q"] * mq * dens[(c, y)] * hrs * QC * float(np.exp(rng.normal(-SIGMA_COMM ** 2 / 2, SIGMA_COMM)))
-                    h = dict(trip=tno, vessel=v["rss"], cell=c, start=t, hours=hrs, had=live,
-                             cod=live * float(np.exp(rng.normal(math.log(0.16), 0.6))),
-                             whg=live * float(np.exp(rng.normal(math.log(0.28), 0.5))),
-                             pok=live * float(np.exp(rng.normal(math.log(0.12), 0.8))))
-                    trip["hauls"].append(len(hauls))
-                    hauls.append(h)
-                    done += hrs
-                    t = t + dt.timedelta(hours=hrs + float(rng.uniform(0.35, 1.1)))
-                if trip["hauls"]:
-                    trips.append(trip)
-    # the e-logbook export ends with October 2026
-    keep = [t for t in trips if not (t["year"] == 2026 and t["end"] > ELOG_END)]
-    return keep, hauls
-
-
-# ---------------------------------------------------------------------------------------------- the survey
-def survey(rng, cells, dens):
-    """Stations drawn in 2019, twelve in each depth band of every ground and fixed since; two replaced in 2023 after
-    the net was torn on them in 2022; one not fished in 2020 for weather. One tow a station each October."""
-    stations = []
-    for gname in K.GROUND_NAMES:
-        for b in K.BANDS:
-            idx = [i for i, c in enumerate(cells) if c["ground"] == gname and c["band"] == b]
-            n = K.STATIONS_PER_BAND
-            pick = list(rng.choice(idx, size=min(n, len(idx)), replace=False))
-            while len(pick) < n:
-                pick.append(int(rng.choice(idx)))
-            for i in pick:
-                stations.append(dict(cell=int(i), ground=gname, band=b, eff=float(np.exp(rng.normal(-STATION_SD ** 2 / 2, STATION_SD)))))
-    for s in stations:
-        c = cells[s["cell"]]
-        s["lat"] = c["lat_s"] + (c["lat_n"] - c["lat_s"]) * float(rng.uniform(0.12, 0.88))
-        s["lon"] = c["lon_w"] + (c["lon_e"] - c["lon_w"]) * float(rng.uniform(0.12, 0.88))
-        lo, hi = K.BAND_LIMITS[s["band"]]
-        s["depth"] = int(min(hi - 1, max(lo, round(c["depth"] + rng.normal(0, 3)))))
-    order = sorted(range(len(stations)), key=lambda k: (-round(stations[k]["lat"], 2), stations[k]["lon"]))
-    for no, k in enumerate(order, 1):
-        stations[k]["id"] = "S%03d" % no
-        stations[k]["from"], stations[k]["to"] = 2019, 2026
-    # replacements from 2023: drawn at random within the same ground and depth band
-    torn = [k for k in rng.permutation(len(stations)) if stations[k]["band"] != "C"
-            and stations[k]["ground"] == "Vallaskie Hole"][:2]
-    nxt = len(stations)
-    for k in sorted(torn, key=lambda k: stations[k]["id"]):
-        s = stations[k]
-        s["to"] = 2022
-        idx = [i for i, c in enumerate(cells) if c["ground"] == s["ground"] and c["band"] == s["band"]]
-        i = int(rng.choice(idx))
-        c = cells[i]
-        nxt += 1
-        r = dict(cell=i, ground=s["ground"], band=s["band"], eff=float(np.exp(rng.normal(-STATION_SD ** 2 / 2, STATION_SD))),
-                 id="S%03d" % nxt, lat=c["lat_s"] + (c["lat_n"] - c["lat_s"]) * float(rng.uniform(0.12, 0.88)),
-                 lon=c["lon_w"] + (c["lon_e"] - c["lon_w"]) * float(rng.uniform(0.12, 0.88)), replaces=s["id"])
-        lo, hi = K.BAND_LIMITS[s["band"]]
-        r["depth"] = int(min(hi - 1, max(lo, round(c["depth"] + rng.normal(0, 3)))))
-        r["from"], r["to"] = 2023, 2026
-        stations.append(r)
-    weather = [k for k in rng.permutation(len(stations)) if stations[k]["from"] == 2019 and stations[k]["to"] == 2026
-               and stations[k]["ground"] == "Cullardy Patch"][0]
-    missed = {(stations[weather]["id"], 2020)}
-    tows = []
-    mean_w = {(g, y): 0.45 * float(np.exp(rng.normal(0, 0.08))) for g in K.GROUND_NAMES for y in K.YEARS}
-    juv = {y: float(rng.uniform(0.12, 0.34)) for y in K.YEARS}
-    for y in K.YEARS:
-        day0 = dt.date(y, 10, 1) + dt.timedelta(days=int(rng.integers(2, 7)))
-        live = [s for s in stations if s["from"] <= y <= s["to"] and (s["id"], y) not in missed]
-        route = sorted(live, key=lambda s: (s["ground"] != K.GROUND_NAMES[0], K.GROUND_NAMES.index(s["ground"]), -s["lat"], s["lon"]))
-        per_day = int(rng.integers(17, 20))
-        for k, s in enumerate(route):
-            day = day0 + dt.timedelta(days=k // per_day + (1 if (k // per_day) >= 6 else 0))
-            hh = 6 + (k % per_day) * 0.72 + float(rng.uniform(0, 0.3))
-            mu_kg = dens[(s["cell"], y)] * s["eff"] * QS
-            wbar = mean_w[(s["ground"], y)]
-            mu_n = mu_kg / wbar
-            n = int(rng.negative_binomial(NB_K, NB_K / (NB_K + mu_n))) if mu_n > 0 else 0
-            kg = round(n * wbar * float(np.exp(rng.normal(0, 0.06))), 1) if n else 0.0
-            if n and kg == 0.0:
-                kg = 0.1
-            c = cells[s["cell"]]
-            lat = min(c["lat_n"] - 0.002, max(c["lat_s"] + 0.002, s["lat"] + float(rng.normal(0, 0.004))))
-            lon = min(c["lon_e"] - 0.003, max(c["lon_w"] + 0.003, s["lon"] + float(rng.normal(0, 0.006))))
-            tows.append(dict(year=y, station=s["id"], ground=s["ground"], band=s["band"], cell=s["cell"], date=day,
-                             time="%02d:%02d" % (int(hh), int((hh % 1) * 60)), lat=round(lat, 4),
-                             lon=round(lon, 4), depth=s["depth"] + int(rng.integers(-1, 2)),
-                             had_kg=kg, had_n=n, had_juv=int(rng.binomial(n, juv[y])) if n else 0,
-                             cod_kg=round(float(rng.gamma(1.2, 9.0)), 1), whg_kg=round(float(rng.gamma(1.5, 14.0)), 1),
-                             pok_kg=round(float(rng.gamma(0.6, 12.0)), 1), spurdog_n=int(rng.poisson(1.4)),
-                             skate_kg=round(float(rng.gamma(0.5, 6.0)), 1), porpoise_n=int(rng.random() < 0.006),
-                             seabird_n=int(rng.random() < 0.004)))
-    for t in tows:
-        lo, hi = K.BAND_LIMITS[t["band"]]
-        t["depth"] = int(min(hi - 1, max(lo, t["depth"])))
-    return stations, tows, missed
+def course(r, h, dx):
+    """The quarter-by-quarter course of each patient from diagnosis: clinic visits about every 91 days (day 0 is the
+    diagnosis), the class recorded at each visit, death at a uniform time between two visits with the chance set by
+    the class at the earlier one, and the moves reported at visits."""
+    n = len(dx)
+    T, D = matrices(h)
+    npn, epn = north_p(h), exch_p(h)
+    kmax = (EXTRACT_DAY - int(dx.min())) // Q + 2
+    jit = r.integers(-10, 11, size=(n, kmax + 1))
+    jit[:, 0] = 0
+    vday = dx[:, None] + np.arange(kmax + 1)[None, :] * Q + jit
+    cls = np.full((n, kmax + 1), -1, dtype=int)
+    cls[:, 0] = r.choice(4, size=n, p=MIX[h])
+    death = np.full(n, -1, dtype=int)
+    north = np.full(n, -1, dtype=int)
+    exch = np.full(n, -1, dtype=int)
+    vatt = np.zeros((n, kmax + 1), dtype=bool)
+    vatt[:, 0] = True
+    alive = np.ones(n, dtype=bool)
+    infl = np.ones(n, dtype=bool)
+    u_d, u_t, u_m, u_v, u_w = (r.random((n, kmax + 1)) for _ in range(5))
+    cum = np.cumsum(T, axis=1)
+    for k in range(1, kmax + 1):
+        a, b = vday[:, k - 1], vday[:, k]
+        c = np.clip(cls[:, k - 1], 0, 3)
+        live = alive & (a <= EXTRACT_DAY + Q)
+        dies = live & (u_d[:, k] < D[c])
+        death[dies] = a[dies] + 1 + (u_w[:, k][dies] * (b - a)[dies] - 1).clip(0).astype(int)
+        alive &= ~dies
+        live &= ~dies
+        nxt = (u_t[:, k][:, None] > cum[c]).sum(axis=1)
+        cls[live, k] = nxt[live]
+        at = live & infl & (b <= EXTRACT_DAY) & (u_v[:, k] >= MISSED_VISIT)
+        vatt[:, k] = at
+        cc = np.clip(cls[:, k], 0, 3)
+        um = u_m[:, k]
+        go_n = at & (um < npn[cc])
+        go_e = at & ~go_n & (um < npn[cc] + epn[cc])
+        north[go_n] = b[go_n]
+        exch[go_e] = b[go_e]
+        infl &= ~(go_n | go_e)
+    return dict(c0=cls[:, 0], cls=cls, death=death, north=north, exch=exch, vday=vday, vatt=vatt)
 
 
 def build(seed=SEED):
-    rng = np.random.default_rng(seed)
-    cells = grid(rng)
-    dens, qual = stock(rng, cells)
-    vessels = fleet(rng)
-    trips, hauls = fishing(rng, cells, dens, vessels)
-    stations, tows, missed = survey(rng, cells, dens)
-    return dict(seed=seed, cells=cells, dens=dens, qual=qual, vessels=vessels, trips=trips, hauls=hauls,
-                stations=stations, tows=tows, missed=missed)
+    """The registry's patients, enrolment by enrolment, with their course."""
+    W = dict(seed=seed, patients=[])
+    seq = {}
+    for y in K.YEARS_ENROLLED:
+        for hi, h in enumerate(K.CODES):
+            r = np.random.default_rng([seed, y, hi, 1])
+            n = PER_YEAR[h] + int(r.integers(-25, 26))
+            dx = diagnosis_days(r, n, y)
+            C = course(r, h, dx)
+            am, asd = AGE[h]
+            ages = np.clip(np.round(r.normal(am, asd, n)), 38, 99).astype(int)
+            sex = np.where(r.random(n) < (0.46 if h == "GUL" else 0.43), "F", "M")
+            ef = r.choice(["HFrEF", "HFmrEF", "HFpEF"], size=n, p=(0.42, 0.18, 0.40))
+            setting = r.choice(["Inpatient", "Outpatient", "Emergency department"], size=n, p=(0.58, 0.32, 0.10))
+            lag = r.integers(0, 21, n)
+            sat = (h == "BRE") & (r.random(n) < 0.35)          # diagnosed at Brenmoor's north campus
+            for i in range(n):
+                seq[y] = seq.get(y, 0) + 1
+                W["patients"].append(dict(
+                    rid="HF%02d-%05d" % (y % 100, seq[y]), year=y, hosp=h, sat=bool(sat[i]), dx=int(dx[i]),
+                    enrol=int(dx[i] + lag[i]), age=int(ages[i]), sex=str(sex[i]), ef=str(ef[i]), setting=str(setting[i]),
+                    c0=int(C["c0"][i]), cls=C["cls"][i], death=int(C["death"][i]), north=int(C["north"][i]),
+                    exch=int(C["exch"][i]), vday=C["vday"][i], vatt=C["vatt"][i], wd=-1, reenrol=None))
+    reconsent(W, seed)
+    numbers(W, seed)
+    reenrolments(W, seed)
+    problem_list(W, seed)
+    W["lab"] = lab_results(W, seed)
+    return W
+
+
+def reconsent(W, seed):
+    """Wrenhaven re-consented its patients enrolled before 2024; those who had not returned the form by 1 April 2024
+    left the registry's follow-up that day, at random."""
+    r = np.random.default_rng([seed, 7])
+    for p in W["patients"]:
+        if p["hosp"] != "WRE" or p["year"] >= 2024:
+            continue
+        alive = p["death"] < 0 or p["death"] > RECONSENT_DAY
+        followed = p["north"] < 0 or p["north"] > RECONSENT_DAY
+        u = r.random()
+        if alive and followed and u < RECONSENT_LOST:
+            p["wd"] = RECONSENT_DAY
+
+
+def numbers(W, seed):
+    """Record numbers: a legacy number for everyone the system knew before the June 2024 migration, a new number for
+    everyone from it; the crosswalk maps one to the other."""
+    r = np.random.default_rng([seed, 11])
+    used_l, used_n = set(), set()
+
+    def legacy():
+        while True:
+            x = "H%07d" % r.integers(100000, 9999999)
+            if x not in used_l:
+                used_l.add(x)
+                return x
+
+    def new():
+        while True:
+            x = "10%08d" % r.integers(10000000, 99999999)
+            if x not in used_n:
+                used_n.add(x)
+                return x
+    W["xwalk"] = []
+    for p in W["patients"]:
+        p["mrn_new"] = new()
+        known_before = p["enrol"] < MIGRATION_DAY or r.random() < 0.72
+        p["mrn_legacy"] = legacy() if known_before else None
+        if p["mrn_legacy"]:
+            W["xwalk"].append((p["mrn_legacy"], p["mrn_new"]))
+    # other patients of the system in the crosswalk extract the registry team holds (anyone with a 2022 to 2024
+    # encounter at a cardiology or medicine service)
+    W["others"] = []
+    for _ in range(26000):
+        a, b = legacy(), new()
+        W["xwalk"].append((a, b))
+        W["others"].append(b)
+    W["new_numbers"] = used_n
+
+
+def reenrolments(W, seed):
+    """After the migration, a 2022 or 2023 patient still under the clinic who is seen again with heart failure in 2025
+    is sometimes enrolled afresh under the new record number: a second enrolment for a patient not newly diagnosed.
+    Only patients past their two-year date and never lost to a move or the re-consent."""
+    r = np.random.default_rng([seed, 13])
+    seq = max(int(p["rid"][5:]) for p in W["patients"] if p["year"] == 2025)
+    add = []
+    for h in K.CODES:
+        pool = [p for p in W["patients"] if p["hosp"] == h and p["year"] in (2022, 2023) and p["north"] < 0
+                and p["exch"] < 0 and p["wd"] < 0]
+        a, b = year_days(2025)
+        cands = []
+        for p in pool:
+            dxd = DAY0 + dt.timedelta(days=p["dx"])
+            two = (dt.date(dxd.year + 2, dxd.month, dxd.day) - DAY0).days
+            lo = max(a, two + 30)
+            top = b if p["death"] < 0 else min(b, p["death"] - 5)
+            if top - lo > 20:
+                cands.append((p, lo, top))
+        m = int(r.integers(15, 41))
+        pick = r.choice(len(cands), size=m, replace=False)
+        for j in sorted(pick):
+            p, lo, top = cands[j]
+            d = int(r.integers(lo, top))
+            seq += 1
+            setting = "Inpatient" if r.random() < 0.66 else ("Emergency department" if r.random() < 0.3 else "Outpatient")
+            q = dict(rid="HF25-%05d" % seq, year=2025, hosp=h, sat=p["sat"], dx=d, enrol=d + int(r.integers(0, 15)),
+                     age=p["age"] + (d - p["dx"]) // 365, sex=p["sex"], ef=p["ef"], setting=setting,
+                     c0=int(p["cls"][min(len(p["cls"]) - 1, (d - p["dx"]) // Q)]), cls=None, death=-1, north=-1,
+                     exch=-1, vday=None, vatt=None, wd=-1, reenrol=p["rid"], mrn_new=p["mrn_new"], mrn_legacy=None)
+            p["reenrolled_as"] = q["rid"]
+            p["reenrol_day"] = d
+            add.append(q)
+    W["patients"].extend(add)
+
+
+def problem_list(W, seed):
+    """Between the registry module's November 2024 update and the February 2025 release that fixed it, a new
+    enrolment's diagnosis date was overwritten with the date of the heart failure entry on the patient's problem list
+    when that entry was added after the registry nurse had enrolled the patient, so the record shows a diagnosis date
+    after the enrolment date; an entry added after the fix overwrote nothing. Enrolments of patients diagnosed the
+    year before, and January's enrolments, are left as entered."""
+    r = np.random.default_rng([seed, 19])
+    lo, hi = (K.MODULE_UPDATE - DAY0).days, (K.MODULE_FIX - DAY0).days
+    for p in W["patients"]:
+        if not (lo <= p["enrol"] < hi) or p["reenrol"] is not None:
+            continue
+        u, lag = r.random(), int(r.integers(3, 41))
+        e = DAY0 + dt.timedelta(days=p["enrol"])
+        d = DAY0 + dt.timedelta(days=p["dx"])
+        if u < 0.35 and p["enrol"] + lag < hi and d.year == e.year and e.month != 1:
+            p["dx_shown"] = p["enrol"] + lag
+
+
+def shown(v):
+    """The result as the analyser reports it: a whole number within its range, text outside it."""
+    return ">35000" if v >= 35000 else ("<35" if v < 35 else int(round(v)))
+
+
+def lab_results(W, seed):
+    """Each hospital laboratory's NT-proBNP results released in the export window, with genuine same-day second
+    specimens and the corrections the laboratory system re-accessions (a new accession, the same patient and collection
+    time, released later, both rows final)."""
+    r = np.random.default_rng([seed, 17])
+    a, b = (K.LAB_FROM - DAY0).days, (K.LAB_TO - DAY0).days
+    reg = [p for p in W["patients"] if p["cls"] is not None]
+    per_lab = {"FEN": 10400, "LIN": 8170, "BRE": 8800, "GUL": 11600, "WRE": 9300}
+    rows = []
+    others = W["others"]
+    for h in K.CODES:
+        mine = [p for p in reg if p["hosp"] == h]
+        n = per_lab[h] + int(r.integers(-200, 201))
+        # collection times across the window and the days either side of it
+        days = r.integers(a - 3, b - 2, n)
+        mins = r.integers(0, 1440, n)
+        for i in range(n):
+            if r.random() < 0.30 and mine:
+                p = mine[int(r.integers(0, len(mine)))]
+                mrn = p["mrn_new"]
+                base = 7.3 + 0.5 * p["c0"]
+            else:
+                mrn = others[int(r.integers(0, len(others)))]
+                base = 6.1
+            v = float(np.exp(r.normal(base, 1.25)))
+            col = int(days[i]) * 1440 + int(mins[i])
+            rec = col + int(r.integers(8, 90))
+            rel = rec + int(r.integers(35, 300))
+            loc = r.choice(["ED", "INPT", "OUTPT", "PCN"], p=(0.36, 0.30, 0.20, 0.14))
+            rows.append(dict(lab=h, acc=None, mrn=mrn, col=col, rec=rec, rel=rel, val=v, loc=str(loc), kind="result",
+                             sat=(h == "BRE" and r.random() < 0.3)))
+            if r.random() < 0.028:                       # a genuine second specimen the same day, hours later
+                col2 = col + int(r.integers(180, 720))
+                rows.append(dict(lab=h, acc=None, mrn=mrn, col=col2, rec=col2 + 30, rel=col2 + 30 + int(r.integers(35, 300)),
+                                 val=float(v * np.exp(r.normal(0, 0.25))), loc=str(loc), kind="repeat", sat=rows[-1]["sat"]))
+    # corrections: a released result corrected after release, re-accessioned
+    rows.sort(key=lambda x: (x["lab"], x["rel"], x["col"], x["mrn"]))
+    out = []
+    corrections = []
+    for h in K.CODES:
+        mine = [x for x in rows if x["lab"] == h and a * 1440 <= x["rel"] < (a + 360) * 1440 and x["kind"] == "result"]
+        m = int(r.integers(22, 58))
+        pick = r.choice(len(mine), size=m, replace=False)
+        for j in pick:
+            x = mine[int(j)]
+            kind = r.random()
+            if kind < 0.45:                           # a value keyed with a slipped decimal, mostly a dropped point
+                v2 = x["val"] * (0.1 if r.random() < 0.85 else 10.0)
+            else:                                     # a re-run after a flagged specimen
+                v2 = x["val"] * float(np.exp(r.normal(0, 0.6)))
+            rel2 = x["rel"] + int(r.integers(180, 4300))
+            if shown(v2) == shown(x["val"]):          # a re-run that reports the same result is not a correction
+                continue
+            corrections.append(dict(lab=h, acc=None, mrn=x["mrn"], col=x["col"], rec=x["rec"],
+                                    rel=rel2, val=v2, loc=x["loc"], kind="correction",
+                                    sat=x["sat"]))
+    allrows = rows + corrections
+    for x in allrows:
+        x["acc_at"] = x["rec"] if x["kind"] != "correction" else x["rel"] - int(r.integers(10, 40))
+    allrows.sort(key=lambda x: (x["lab"], x["acc_at"]))
+    for h in K.CODES:
+        nxt = int(r.integers(1000000, 1900000))
+        for x in allrows:
+            if x["lab"] == h:
+                nxt += int(r.integers(1, 4))
+                x["acc"] = nxt
+    by_old = {}
+    for x in allrows:
+        if x["kind"] != "correction":
+            by_old[(x["lab"], x["mrn"], x["col"])] = x["acc"]
+    for x in allrows:
+        if x["kind"] == "correction":
+            x["corrects"] = by_old[(x["lab"], x["mrn"], x["col"])]
+    keep = [x for x in allrows if a * 1440 <= x["rel"] <= (b + 1) * 1440 - 1]
+    keep.sort(key=lambda x: (x["rel"], x["lab"], x["acc"]))
+    return keep

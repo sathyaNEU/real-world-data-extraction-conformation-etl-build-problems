@@ -1,116 +1,277 @@
 {
  "ask_a": {
-  "Eastquay": {
-   "tonnes": 1257,
-   "value": 2512050
+  "Brenmoor Regional Medical Center": {
+   "referral": 5718,
+   "tests": 8704
   },
-  "Haldness": {
-   "tonnes": 1550,
-   "value": 3059583
+  "Fennick General Hospital": {
+   "referral": 6991,
+   "tests": 10639
   },
-  "Kelmoor": {
-   "tonnes": 1833,
-   "value": 3582185
+  "Gullhaven Hospital": {
+   "referral": 7723,
+   "tests": 11770
   },
-  "Tolsetter": {
-   "tonnes": 1213,
-   "value": 2387574
+  "Linmoor Hospital": {
+   "referral": 5460,
+   "tests": 8364
+  },
+  "Wrenhaven Medical Center": {
+   "referral": 6040,
+   "tests": 9368
   }
  },
  "ask_b": {
-  "E": 1079,
-  "I": 250,
-  "N": 1503,
-  "S": 713,
-  "T": 670
+  "Brenmoor Regional Medical Center": {
+   "inpatient": 404,
+   "new": 734
+  },
+  "Fennick General Hospital": {
+   "inpatient": 465,
+   "new": 795
+  },
+  "Gullhaven Hospital": {
+   "inpatient": 723,
+   "new": 1222
+  },
+  "Linmoor Hospital": {
+   "inpatient": 417,
+   "new": 736
+  },
+  "Wrenhaven Medical Center": {
+   "inpatient": 494,
+   "new": 833
+  }
  },
  "call": {
-  "fall": 63,
-  "gap": 11,
-  "ground": "Halmorie Deep",
-  "runner_fall": 52,
-  "runner_up": "Brettach Bank"
+  "gap": 2,
+  "hospital": "Gullhaven Hospital",
+  "runner_survival": 67,
+  "runner_up": "Fennick General Hospital",
+  "survival": 65
  },
- "falls": {
-  "Brettach Bank": 52,
-  "Cullardy Patch": 5,
-  "Halmorie Deep": 63,
-  "Moraskie Ground": 32,
-  "Skiravie Bank": 34,
-  "Vallaskie Hole": 23
+ "cohort_total": 8783,
+ "counts": {
+  "Brenmoor Regional Medical Center": {
+   "consent": 0,
+   "deaths": 475,
+   "n": 1492,
+   "north": 9
+  },
+  "Fennick General Hospital": {
+   "consent": 0,
+   "deaths": 529,
+   "n": 1622,
+   "north": 19
+  },
+  "Gullhaven Hospital": {
+   "consent": 0,
+   "deaths": 654,
+   "n": 2430,
+   "north": 526
+  },
+  "Linmoor Hospital": {
+   "consent": 0,
+   "deaths": 409,
+   "n": 1536,
+   "north": 8
+  },
+  "Wrenhaven Medical Center": {
+   "consent": 942,
+   "deaths": 342,
+   "n": 1703,
+   "north": 6
+  }
+ },
+ "km": {
+  "Brenmoor Regional Medical Center": 68,
+  "Fennick General Hospital": 67,
+  "Gullhaven Hospital": 70,
+  "Linmoor Hospital": 73,
+  "Wrenhaven Medical Center": 72
+ },
+ "move_rate": {
+  "Brenmoor Regional Medical Center": {
+   "class_3": 0.1,
+   "class_4": 0.5
+  },
+  "Fennick General Hospital": {
+   "class_3": 0.1,
+   "class_4": 0.8
+  },
+  "Gullhaven Hospital": {
+   "class_3": 2.2,
+   "class_4": 24.3
+  },
+  "Linmoor Hospital": {
+   "class_3": 0.1,
+   "class_4": 0.4
+  },
+  "Wrenhaven Medical Center": {
+   "class_3": 0.0,
+   "class_4": 0.5
+  }
+ },
+ "moves_class_3_4": {
+  "Brenmoor Regional Medical Center": 9,
+  "Fennick General Hospital": 18,
+  "Gullhaven Hospital": 503,
+  "Linmoor Hospital": 6,
+  "Wrenhaven Medical Center": 5
  },
  "params": {
-  "as_of": "2026-09-30",
-  "base_years": [
-   2019,
-   2020,
-   2021
+  "chart_max": 100,
+  "charter_clauses": [
+   2.3,
+   3.1,
+   3.2
   ],
-  "chart_base": 100,
-  "deep_share": 9,
-  "gutted_factor": 1.17,
-  "latest": 2026,
-  "plan_clauses": [
+  "cohort_years": [
+   2022,
+   2023
+  ],
+  "diagnoses_year": 2025,
+  "manual_sections": [
+   2.1,
+   2.2,
+   3.2,
+   3.3,
    4.1,
-   4.2
+   4.2,
+   4.3,
+   4.4
   ],
-  "stations_per_band": 12
+  "referral": 400,
+  "results_year": 2025,
+  "years": 2
  },
  "rungs": {
-  "R0": {
-   "falls": {
-    "Brettach Bank": 46.6,
-    "Cullardy Patch": 7.0,
-    "Halmorie Deep": -10.2,
-    "Moraskie Ground": 10.6,
-    "Skiravie Bank": 16.0,
-    "Vallaskie Hole": 19.4
-   },
-   "pick": "Brettach Bank"
+  "complete_case": {
+   "pick": "Wrenhaven Medical Center",
+   "survival": {
+    "Brenmoor Regional Medical Center": 68.0,
+    "Fennick General Hospital": 67.0,
+    "Gullhaven Hospital": 65.7,
+    "Linmoor Hospital": 73.2,
+    "Wrenhaven Medical Center": 54.7
+   }
   },
-  "R1": {
-   "falls": {
-    "Brettach Bank": 47.8,
-    "Cullardy Patch": 13.2,
-    "Halmorie Deep": 14.4,
-    "Moraskie Ground": 22.6,
-    "Skiravie Bank": 18.3,
-    "Vallaskie Hole": 22.6
-   },
-   "pick": "Brettach Bank"
+  "crude": {
+   "pick": "Fennick General Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 68.2,
+    "Fennick General Hospital": 67.4,
+    "Gullhaven Hospital": 73.1,
+    "Linmoor Hospital": 73.4,
+    "Wrenhaven Medical Center": 79.9
+   }
   },
-  "R1v": {
-   "falls": {
-    "Brettach Bank": 45.6,
-    "Cullardy Patch": 3.0,
-    "Halmorie Deep": -56.4,
-    "Moraskie Ground": 3.1,
-    "Skiravie Bank": 3.9,
-    "Vallaskie Hole": 18.8
-   },
-   "pick": "Brettach Bank"
+  "golden": {
+   "pick": "Gullhaven Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.9,
+    "Fennick General Hospital": 67.0,
+    "Gullhaven Hospital": 64.9,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.2
+   }
   },
-  "R2": {
-   "falls": {
-    "Brettach Bank": 51.6,
-    "Cullardy Patch": 2.6,
-    "Halmorie Deep": 43.6,
-    "Moraskie Ground": 29.6,
-    "Skiravie Bank": 31.4,
-    "Vallaskie Hole": 21.7
-   },
-   "pick": "Brettach Bank"
+  "ipcw_class_by_quarter": {
+   "pick": "Gullhaven Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.9,
+    "Fennick General Hospital": 67.0,
+    "Gullhaven Hospital": 64.8,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.3
+   }
   },
-  "R3": {
-   "falls": {
-    "Brettach Bank": 52.0,
-    "Cullardy Patch": 5.0,
-    "Halmorie Deep": 62.8,
-    "Moraskie Ground": 32.0,
-    "Skiravie Bank": 34.0,
-    "Vallaskie Hole": 22.8
-   },
-   "pick": "Halmorie Deep"
+  "ipcw_diagnosis_class": {
+   "pick": "Fennick General Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 68.0,
+    "Fennick General Hospital": 67.1,
+    "Gullhaven Hospital": 68.5,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.3
+   }
+  },
+  "ipcw_logistic": {
+   "pick": "Gullhaven Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.9,
+    "Fennick General Hospital": 67.0,
+    "Gullhaven Hospital": 65.0,
+    "Linmoor Hospital": 73.2,
+    "Wrenhaven Medical Center": 72.2
+   }
+  },
+  "ipcw_pooled": {
+   "pick": "Fennick General Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 66.5,
+    "Fennick General Hospital": 65.6,
+    "Gullhaven Hospital": 68.6,
+    "Linmoor Hospital": 72.0,
+    "Wrenhaven Medical Center": 70.9
+   }
+  },
+  "ipcw_stabilised": {
+   "pick": "Gullhaven Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.9,
+    "Fennick General Hospital": 67.0,
+    "Gullhaven Hospital": 65.0,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.2
+   }
+  },
+  "km": {
+   "pick": "Fennick General Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 68.0,
+    "Fennick General Hospital": 67.2,
+    "Gullhaven Hospital": 69.6,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.3
+   }
+  },
+  "km_exchange_censored": {
+   "pick": "Fennick General Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 68.0,
+    "Fennick General Hospital": 67.1,
+    "Gullhaven Hospital": 69.1,
+    "Linmoor Hospital": 73.0,
+    "Wrenhaven Medical Center": 72.2
+   }
+  },
+  "projection": {
+   "pick": "Gullhaven Hospital",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.9,
+    "Fennick General Hospital": 67.1,
+    "Gullhaven Hospital": 65.0,
+    "Linmoor Hospital": 73.3,
+    "Wrenhaven Medical Center": 72.1
+   }
+  },
+  "worst_case": {
+   "pick": "Wrenhaven Medical Center",
+   "survival": {
+    "Brenmoor Regional Medical Center": 67.6,
+    "Fennick General Hospital": 66.2,
+    "Gullhaven Hospital": 51.4,
+    "Linmoor Hospital": 72.9,
+    "Wrenhaven Medical Center": 24.3
+   }
   }
+ },
+ "survival": {
+  "Brenmoor Regional Medical Center": 68,
+  "Fennick General Hospital": 67,
+  "Gullhaven Hospital": 65,
+  "Linmoor Hospital": 73,
+  "Wrenhaven Medical Center": 72
  }
 }

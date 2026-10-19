@@ -1,13 +1,12 @@
-"""The pack's documents: the haddock stock recovery plan the members adopted in March 2026, the autumn survey's field
-manual (revision 3), the 2026 quota management rules, the 2025 square-mesh panel trial note and the pack's contents
-list."""
+"""The pack's documents: the service line committee's charter for the 2027 heart failure early-diagnosis programme, the
+heart failure registry's manual (version 5) and the pack's contents list."""
 from __future__ import annotations
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                                    # noqa: E402
-from reportlab.lib.pagesizes import A4                                              # noqa: E402
+from reportlab.lib.pagesizes import letter                                          # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                                     # noqa: E402
 from reportlab.lib.units import mm                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
@@ -27,26 +26,26 @@ INK, GREY, RULE = colors.HexColor("#1c2428"), colors.HexColor("#5a646b"), colors
 
 
 def styles(font, accent):
-    body = ParagraphStyle("b", fontName=font, fontSize=9.8, leading=13.6, textColor=INK, spaceAfter=5)
+    body = ParagraphStyle("b", fontName=font, fontSize=10, leading=13.8, textColor=INK, spaceAfter=5)
     return dict(
         body=body,
-        h1=ParagraphStyle("h1", fontName=font + "-B", fontSize=14.5, leading=18.5, textColor=accent, spaceAfter=2),
-        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.6, leading=14, textColor=INK, spaceBefore=7,
+        h1=ParagraphStyle("h1", fontName=font + "-B", fontSize=15, leading=19, textColor=accent, spaceAfter=2),
+        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.8, leading=14, textColor=INK, spaceBefore=8,
                           spaceAfter=2, keepWithNext=1),
-        meta=ParagraphStyle("m", fontName=font, fontSize=8.4, leading=11.4, textColor=GREY, spaceAfter=9),
-        cell=ParagraphStyle("c", fontName=font, fontSize=8.2, leading=10.4, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.2, leading=10.4, textColor=INK),
-        clause=ParagraphStyle("p", parent=body, leftIndent=24, firstLineIndent=-24))
+        meta=ParagraphStyle("m", fontName=font, fontSize=8.6, leading=11.6, textColor=GREY, spaceAfter=9),
+        cell=ParagraphStyle("c", fontName=font, fontSize=8.4, leading=10.6, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.4, leading=10.6, textColor=INK),
+        clause=ParagraphStyle("p", parent=body, leftIndent=26, firstLineIndent=-26))
 
 
 def _frame(left, right, font):
     def draw(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont(font, 7.4)
-        canvas.drawString(19 * mm, A4[1] - 11.5 * mm, left)
-        canvas.drawRightString(A4[0] - 19 * mm, A4[1] - 11.5 * mm, right)
-        canvas.drawRightString(A4[0] - 19 * mm, 10 * mm, "Page %d" % doc.page)
+        canvas.setFont(font, 7.6)
+        canvas.drawString(19 * mm, letter[1] - 11.5 * mm, left)
+        canvas.drawRightString(letter[0] - 19 * mm, letter[1] - 11.5 * mm, right)
+        canvas.drawRightString(letter[0] - 19 * mm, 10 * mm, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
@@ -63,218 +62,129 @@ def _table(S, rows, widths, right=()):
 
 
 def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=A4, leftMargin=19 * mm, rightMargin=19 * mm, topMargin=20 * mm,
+    return SimpleDocTemplate(path, pagesize=letter, leftMargin=19 * mm, rightMargin=19 * mm, topMargin=20 * mm,
                              bottomMargin=17 * mm, title=title, author=author, subject="", creator="", producer="")
 
 
-# ---------------------------------------------------------------------------------------------- the recovery plan
-def write_plan(path, grounds):
-    S = styles("Serif", colors.HexColor("#1F4E63"))
-    doc = _doc(path, "Haddock stock recovery plan 2026", K.ORG_LTD)
-    st = [Paragraph("Haddock Stock Recovery Plan", S["h1"]),
-          Paragraph("%s. Adopted by the members in general meeting on 24 March 2026. Replaces nothing; it adds to the "
-                    "organisation's fishing rules for 2026 and later years." % K.ORG_LTD, S["meta"])]
+# ---------------------------------------------------------------------------------------------- the charter
+def write_charter(path):
+    S = styles("Sans", colors.HexColor("#0E5A6E"))
+    doc = _doc(path, "Heart Failure Early Diagnosis Programme 2027: Charter", K.ORG_INC)
+    st = [Paragraph("Heart Failure Early Diagnosis Programme 2027", S["h1"]),
+          Paragraph("Charter of the %s, %s. Approved at the committee's meeting of 17 February 2026." % (K.COMMITTEE, K.ORG),
+                    S["meta"])]
     P = lambda t: st.append(Paragraph(t, S["body"]))
-    H = lambda t: st.append(Paragraph(t, S["h2"]))
+    Hd = lambda t: st.append(Paragraph(t, S["h2"]))
     C = lambda n, t: st.append(Paragraph("%s&nbsp;&nbsp;%s" % (n, t), S["clause"]))
-    H("1. Why the members adopted this plan")
-    P("Haddock is the members' main catch, and the members take most of it from six grounds east and north-east of the "
-      "home ports. After the poorer seasons of 2023 to 2025 the members agreed at the November 2025 general meeting to "
-      "add measures of their own, on their own grounds, to the national management of the stock, and asked the "
-      "management committee to bring a plan to the spring meeting. This is that plan.")
-    H("2. Scope")
-    P("The plan applies to every member vessel fishing with towed gear on the six grounds named in Annex A, whatever "
-      "the target species. A ground's stock area is the set of cells Annex A assigns to it. Fishing outside the six "
-      "grounds is not affected.")
-    H("3. Measures")
-    C("3.1", "Codends of 120 mm mesh or more on the six grounds, as already required by the organisation's 2024 rules.")
-    C("3.2", "Real-time closures: where a member's haul on one of the grounds holds more than 30 per cent haddock under "
-             "30 cm by number, the cell is closed to members for 14 days and the closure is posted to every member that day.")
-    C("3.3", "One ground closed to members' towed gear each year, chosen as section 4 sets out.")
-    C("3.4", "Members keep reporting every haul through the organisation's e-logbook app, as they have done since "
-             "January 2023.")
-    H("4. The annual ground closure")
-    C("4.1", "Each December the management committee closes one ground to members' towed gear for the following "
-             "calendar year: the ground whose haddock stock in the year before that year has fallen furthest below its "
-             "base, as a share of the base. A ground's base is its average stock over 2019, 2020 and 2021.")
-    C("4.2", "A ground's haddock stock in a year is the weight of haddock on its stock area.")
-    C("4.3", "A closed ground is closed from 1 January to 31 December of its closure year. Members may steam through it "
-             "with their gear stowed.")
-    C("4.4", "The science and sustainability officer puts the evidence for every ground to the committee before its "
-             "December meeting. The first closure is for 2027.")
-    H("5. Compliance")
-    P("The organisation checks the closures against members' e-logbook positions and the vessel monitoring data the "
-      "administration shares with producer organisations. A member vessel that tows in a closed ground or a closed "
-      "cell is dealt with under article 14 of the organisation's articles: a first breach costs the licence 10 tonnes "
-      "of the pool's haddock quota for the rest of the year, a second within three years suspends the member's quota "
-      "transfers for twelve months. A skipper who believes a breach was recorded in error may ask the committee to "
-      "review it within 28 days.")
-    H("6. Costs and support")
-    P("The organisation meets the cost of the real-time closure notices and of the science office's work for the plan "
-      "from the members' levy. Members whose usual ground is closed may ask the quota office for help finding leases "
-      "on other grounds; the office keeps a list of members willing to lease out haddock for the year.")
-    H("7. Review")
-    P("The general meeting reviews the plan in 2029, or sooner if the management committee asks it to.")
-    H("Annex A. The grounds")
-    P("The organisation's grid divides each ICES statistical rectangle into 36 cells, each 5 minutes of latitude by 10 "
-      "minutes of longitude, numbered 1 to 36 from the north-west corner along each row. Annex A lists every cell of the "
-      "six grounds with its depth band (A under 100 m, B 100 m to under 140 m, C 140 m and deeper, from the cell's "
-      "charted depth), its charted depth, its bounds and its area. It is kept as a data file, ground_grid_annex_a.csv, "
-      "so that the boundaries can be loaded into the members' plotters; this table summarises it.")
-    rows = [["Ground", "Code", "Cells", "Stock area (km²)"]]
-    for g, code, n, area in grounds:
-        rows.append([g, code, str(n), "{:,.0f}".format(area)])
-    st.append(_table(S, rows, (52, 22, 22, 34), right=(2, 3)))
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Haddock Stock Recovery Plan", "Serif"),
-              onLaterPages=_frame(K.ORG_LTD, "Haddock Stock Recovery Plan", "Serif"))
+    Hd("1. Purpose")
+    P("Most heart failure in the communities our hospitals serve is still diagnosed during an emergency admission, when "
+      "the disease is already advanced. The programme moves diagnosis earlier and out of hospital: primary care "
+      "practices test patients with breathlessness, swollen ankles or unexplained fatigue for NT-proBNP, and a "
+      "rapid-access heart failure clinic sees the patients the test points to, with echocardiography the same week.")
+    Hd("2. The programme")
+    C("2.1", "Community testing. Participating primary care practices in the host hospital's service area order "
+             "NT-proBNP through the host hospital's laboratory, on the programme's request form.")
+    C("2.2", "Rapid-access clinic. An advanced practice provider and a cardiac sonographer run three clinic sessions a "
+             "week at the host hospital, with a cardiologist's review of every new diagnosis.")
+    C(K.CHARTER_CLAUSES["referral"], "Referral. A patient whose NT-proBNP is at or above %d pg/mL is referred to the rapid-access clinic and seen "
+             "within two weeks; below that level the practice manages the patient and re-tests if symptoms persist."
+      % K.REFERRAL)
+    C("2.4", "Resources. The first year is funded at $1.42 million: the clinic staff, the echocardiography sessions, a "
+             "programme coordinator and the practices' testing.")
+    Hd("3. Choosing the host hospital")
+    C(K.CHARTER_CLAUSES["host"], "The programme starts at one hospital in April 2027. It goes to the hospital whose patients newly diagnosed "
+             "with heart failure in 2022 and 2023 had the lowest two-year survival from diagnosis: survival from "
+             "diagnosis is shortest where heart failure is found latest, and that is where finding it earlier has the "
+             "most to give.")
+    C(K.CHARTER_CLAUSES["survival"], "Two-year survival is the share of the hospital's patients newly diagnosed with heart failure in 2022 and "
+             "2023 who were alive two years after their diagnosis date. Every patient newly diagnosed at the hospital in "
+             "those years counts, including patients the registry no longer follows.")
+    C("3.3", "The figures come from the %s, whose manual (section 2) sets out who is newly diagnosed and at which "
+             "hospital." % K.REGISTRY)
+    Hd("4. Timeline")
+    P("The committee chooses the host hospital at its May 2026 meeting. Practices are recruited from September 2026, "
+      "the clinic opens in March 2027 and the first community referrals are expected in April 2027.")
+    Hd("5. Review")
+    P("The committee reviews the programme after its first twelve months: the practices taking part, the tests ordered, "
+      "the referrals made, the diagnoses reached and how many of them were made outside an emergency admission. A "
+      "second hospital is considered at that review.")
+    st.append(Spacer(1, 8))
+    P("<i>Chair of the committee: %s, Medical Director, Heart and Vascular Services.</i>" % K.PEOPLE["director"])
+    frame = _frame(K.ORG + "  |  " + K.COMMITTEE, "Charter, approved 17 February 2026", "Sans")
+    doc.build(st, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- the survey manual
-def write_manual(path, replaced, missed, vessel):
-    S = styles("Sans", colors.HexColor("#2C5F2D"))
-    doc = _doc(path, "Autumn gear and bycatch survey: field manual, revision 3", K.ORG_LTD)
-    st = [Paragraph("Autumn Gear and Bycatch Survey: Field Manual", S["h1"]),
-          Paragraph("Revision 3, 4 September 2023. %s, science and sustainability office. Revision 1 (August 2019) set "
-                    "the survey up; revision 2 (September 2021) changed the catch sheet; this revision records the 2023 "
-                    "station replacements and the electronic catch records." % K.ORG_LTD, S["meta"])]
+# ---------------------------------------------------------------------------------------------- the registry manual
+def write_manual(path):
+    S = styles("Serif", colors.HexColor("#33415C"))
+    doc = _doc(path, "Heronmere Heart Failure Registry: manual, version 5", K.ORG_INC)
+    st = [Paragraph(K.REGISTRY + ": Manual", S["h1"]),
+          Paragraph("Version 5, 3 March 2025. Replaces version 4 (August 2023). Maintained by the registry team, "
+                    "Heart and Vascular Services, %s." % K.ORG, S["meta"])]
     P = lambda t: st.append(Paragraph(t, S["body"]))
-    H = lambda t: st.append(Paragraph(t, S["h2"]))
-    H("1. What the survey is for")
-    P("Each October the organisation charters a member vessel for about two weeks to do two jobs on the grounds the "
-      "members fish. The first is to monitor bycatch: juvenile haddock, cod and whiting, spurdog, skates and rays, and "
-      "the porpoises and seabirds the members must report, in every depth of every ground. The second is to give the "
-      "members a fixed platform for trials of selective gear, such as square-mesh panels and larger codends, fished on "
-      "the same grounds at the same season each year.")
-    H("2. Stations")
-    P("The survey tows the same stations every year. In August 2019 twelve stations were placed in each depth band of "
-      "each of the six grounds, 216 in all: for each station a cell was drawn at random from the band's cells in the "
-      "organisation's grid and a position drawn at random inside it, so a cell may hold more than one station. A "
-      "station's depth band is the band the grid gives its cell. Each band has the same number of stations so that "
-      "bycatch rates in shallow and in deep water are measured with the same precision.")
-    P("A station where the net is torn on the bottom is replaced by a new position drawn the same way within the same "
-      "ground and depth band, and the old position is not fished again. After the net was torn at stations %s in "
-      "October 2022, they were replaced from 2023 by %s." % (" and ".join(r[0] for r in replaced),
-                                                         " and ".join(r[1] for r in replaced)))
-    P("A station that cannot be fished before the charter ends is left out that year and fished again the next. In "
-      "2020 station %s was not fished: the weather closed in on the last two days of the charter." % missed)
-    H("3. Gear and towing")
-    P("The survey trawl is the organisation's own: a 32 m headline two-panel trawl with a 40 mm codend liner, rigged "
-      "the same way since 2019 and carried from charter to charter. Each tow lasts 30 minutes from the moment the "
-      "winch brakes are set to the start of hauling, at 3.5 knots over the ground. A tow that comes fast or is cut "
-      "short before 25 minutes is towed again at the same station; only the valid tow is recorded. Towing is in "
-      "daylight, from about 06:00 to 19:00 local time.")
-    H("4. Catch")
-    P("The whole catch is sorted on deck. Every species is weighed to 0.1 kg; haddock, cod and whiting are counted, "
-      "and haddock under 30 cm counted separately; spurdog are counted; skates and rays weighed together. Porpoises "
-      "and seabirds caught are recorded by number. A species not caught in a tow is recorded as zero.")
-    H("5. Records")
-    P("The survey's records are one row per valid tow: survey year; tow (year and running number); station; ground "
-      "code; date; shot time (local time); shot latitude and longitude (decimal degrees); depth at the shot (m, from "
-      "the sounder); duration (minutes); then haddock (kg, number, number under 30 cm), cod, whiting and saithe (kg), "
-      "spurdog (number), skates and rays (kg), porpoises and seabirds (number). Revision 3 moves the records from the "
-      "paper catch sheet to the survey laptop; the 2019 to 2022 sheets have been keyed in to the same layout.")
-    H("6. Vessel and staff")
-    P("The %s, a member trawler, has fished every survey since 2019 under charter, with her own skipper and crew. "
-      "The science and sustainability officer leads the survey with one contracted observer; both sort and record the "
-      "catch, and the observer keeps the protected species log." % vessel)
-    H("7. Permits and safety")
-    P("The administration's scientific fishing permit covers the 40 mm liner, the gear trials and the landing of "
-      "undersized fish for measurement; it is renewed each August and carried on board. The observer holds a current "
-      "sea survival certificate and is briefed by the skipper on the first day. Any protected species brought aboard "
-      "alive is returned at once and logged; a dead porpoise is kept for the strandings scheme if the scheme asks for it.")
-    H("8. Survey history")
-    rows = [["Year", "Survey dates", "Valid tows", "Note"]]
-    for y, d0, d1, n, note in MANUAL_HISTORY:
-        rows.append([y, "%s to %s" % (d0, d1), str(n), note])
-    st.append(Spacer(1, 4))
-    st.append(_table(S, rows, (14, 50, 22, 86), right=(2,)))
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Autumn survey field manual, rev. 3", "Sans"),
-              onLaterPages=_frame(K.ORG_LTD, "Autumn survey field manual, rev. 3", "Sans"))
-
-
-MANUAL_HISTORY = []   # filled by build.py from the survey records, years 2019 to 2022 (revision 3 is dated 2023)
-
-
-# ---------------------------------------------------------------------------------------------- the quota rules
-def write_rules(path):
-    S = styles("Sans", colors.HexColor("#5B3A73"))
-    doc = _doc(path, "Quota management rules 2026: haddock", K.ORG_LTD)
-    st = [Paragraph("Quota Management Rules 2026: Haddock", S["h1"]),
-          Paragraph("%s. Issued 12 January 2026 by the management committee under the organisation's articles; in force "
-                    "for the 2026 quota year." % K.ORG_LTD, S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    H = lambda t: st.append(Paragraph(t, S["h2"]))
+    Hd = lambda t: st.append(Paragraph(t, S["h2"]))
     C = lambda n, t: st.append(Paragraph("%s&nbsp;&nbsp;%s" % (n, t), S["clause"]))
-    H("1. Pools")
-    P("The organisation manages its members' haddock quota in five pools: North trawl (N), East trawl (E), Twin rig "
-      "(T), Seine net (S) and Inshore (I). Each fishing licence the organisation manages belongs to one pool, as the "
-      "members' list records. Quota is fished by the licences of a pool; a pool lends to another only by a lease "
-      "between licences.")
-    H("2. What moves a pool's quota")
-    C("2.1", "Allocation: each licence's quota for the year, from its fixed quota allocation units, with effect from 1 "
-             "January.")
-    C("2.2", "Carry-in: quota banked from the previous year, once the fisheries administration confirms it, with effect "
-             "from the date it is confirmed.")
-    C("2.3", "Swaps with other producer organisations, agreed by the organisation for a pool, with effect from the date "
-             "agreed.")
-    C("2.4", "Leases between licences, with effect from the date the lease is agreed. A lease cancelled before the end "
-             "of the year is reversed with effect from the date it is cancelled.")
-    C("2.5", "Landings, in live weight, counted against the licence from the day of landing. The ledger records each "
-             "licence's landings for a month as one entry dated the last day of the month, posted when the "
-             "administration's monthly statement arrives.")
-    H("3. Quota left")
-    P("A pool's quota left on a date is everything under 2.1 to 2.4 with effect on or before that date, less its "
-      "landings to that date. A licence's quota left is worked out the same way.")
-    H("4. The ledger")
-    P("The ledger keeps every entry with the date it takes effect and the date it was posted. No entry is changed once "
-      "posted; a correction is a new entry. Members can see their own licence's entries in the members' area of the "
-      "website; pool totals are reported to each pool meeting.")
-    H("5. Leases")
-    P("A member who wants to lease haddock in or out asks the quota office, which posts the request to the members' "
-      "area for five working days. A lease between licences in different pools needs the agreement of both pools' "
-      "representatives. The office charges a fee of 25 pence a tonne on leases between pools; leases within a pool are "
-      "free. Leases run to the end of the quota year unless cancelled by both parties.")
-    H("6. Overfishing")
-    P("A pool that lands more than its quota for the year pays the excess back from its quota for the following year, "
-      "as the administration deducts it from the organisation. The committee may close a pool's fishing for haddock "
-      "for the rest of the year when its quota left falls under 5 per cent of its allocation.")
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Quota management rules 2026", "Sans"),
-              onLaterPages=_frame(K.ORG_LTD, "Quota management rules 2026", "Sans"))
+    Hd("1. About the registry")
+    P("The registry has enrolled every patient newly diagnosed with heart failure at a Heronmere hospital since 1 January "
+      "2022. It follows them in the hospitals' heart failure clinics and records their deaths, so that the service line "
+      "can see how its patients fare and plan its services.")
+    Hd("2. Enrolment")
+    C(K.MANUAL_SECTIONS["enrolment"], "A patient is enrolled when heart failure is first diagnosed at a Heronmere hospital, in an admission, in "
+             "an emergency department visit or in an outpatient clinic. The diagnosis date is the date of that "
+             "encounter. The enrolment date is the date the registry nurse entered the patient, usually within three "
+             "weeks of the diagnosis.")
+    C(K.MANUAL_SECTIONS["hospital"], "The hospital is the hospital of the diagnosing encounter. The North Campus of Brenmoor Regional Medical "
+             "Center used the main campus's code (BRE) until 1 July 2024 and its own code (BRN) from that date; both "
+             "campuses are Brenmoor Regional Medical Center.")
+    C("2.3", "The registry nurse records the NYHA functional class at diagnosis, the ejection fraction category (reduced, "
+             "mildly reduced, preserved) and the setting of the diagnosing encounter.")
+    Hd("3. Clinic follow-up")
+    C("3.1", "Enrolled patients are seen in the heart failure clinic of their hospital about every three months. At each "
+             "visit the clinician records the NYHA functional class, weight, blood pressure, heart rate and the daily "
+             "loop diuretic dose.")
+    C(K.MANUAL_SECTIONS["spelling"], "The legacy record writes the NYHA class as I to IV or as Class I to Class IV; the new record, from 1 June "
+             "2024, writes it as 1 to 4 or as NYHA 1 to NYHA 4. The diagnosis setting is IP, OP or ED in the legacy "
+             "record and Inpatient (or INPT), Outpatient or ED visit in the new one.")
+    C(K.MANUAL_SECTIONS["relocation"], "A patient who tells the clinic that they are moving out of Florida is recorded as a relocation (event REL) "
+             "on the date of that visit, with the state they are moving to. The clinic does not see them again.")
+    Hd("4. Vital status")
+    C(K.MANUAL_SECTIONS["florida"], "Deaths in Florida are found by the state's death certificate linkage, run each March on the record numbers "
+             "of the patients in follow-up. The linkage returns one row for each linked death, under the patient's "
+             "current record number.")
+    C(K.MANUAL_SECTIONS["exchange"], "Deaths of patients who have moved to Georgia, Alabama or South Carolina are returned each quarter by the "
+             "%s, under the registry identifier." % K.EXCHANGE)
+    C(K.MANUAL_SECTIONS["no_source"], "The registry has no source for deaths in any other state. A patient who moves to any other state leaves "
+             "vital status follow-up on the date of the relocation, and the registry holds nothing on them after it.")
+    C(K.MANUAL_SECTIONS["reconsent"], "In 2024 the registry re-consented the patients Wrenhaven Medical Center had enrolled before 2024, after a "
+             "change to that hospital's data-sharing agreement. Patients who had not returned the new consent form by "
+             "1 April 2024 left follow-up that day (event CNR); the registry holds nothing on them after it.")
+    Hd("5. Record numbers")
+    P("On 1 June 2024 Heronmere moved to a new electronic health record and every patient was given a new medical record "
+      "number. The registry keeps the number under which each patient was enrolled. The record-number crosswalk maps "
+      "each legacy number to the patient's new number.")
+    Hd("6. Files")
+    rows = [["File", "One row is", "Key fields"],
+            [K.FILES["patients"], "an enrolment", "registry_id, mrn (the number at enrolment), hospital, diagnosis_date, "
+                                                 "enrolment_date, nyha_at_diagnosis, diagnosis_setting"],
+            [K.FILES["visits"], "a heart failure clinic visit", "registry_id, visit_date, clinic, nyha_class"],
+            [K.FILES["events"], "a relocation or a consent withdrawal", "registry_id, event_date, event (REL, CNR), "
+                                                                       "destination_state"],
+            [K.FILES["fl_deaths"], "a linked Florida death", "MRN (current), date of death"],
+            [K.FILES["exchange"], "a death returned by the exchange", "PARTNER_ID (the registry identifier), STATE, DOD"],
+            [K.FILES["crosswalk"], "a legacy record number", "legacy_mrn, new_mrn"]]
+    st.append(_table(S, rows, (58, 38, 82)))
+    frame = _frame(K.REGISTRY, "Manual, version 5", "Serif")
+    doc.build(st, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- the gear trial note
-def write_gear_trial(path, table):
-    S = styles("Sans", colors.HexColor("#2C5F2D"))
-    doc = _doc(path, "Square-mesh panel trial, autumn 2025", K.ORG_LTD)
-    st = [Paragraph("Square-Mesh Panel Trial, Autumn 2025: Note to Members", S["h1"]),
-          Paragraph("%s, science and sustainability office, 18 December 2025." % K.ORG_LTD, S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    H = lambda t: st.append(Paragraph(t, S["h2"]))
-    H("What we tried")
-    P("During the October 2025 survey charter the vessel fished 24 extra pairs of tows on Skiravie Bank and Moraskie "
-      "Ground: in each pair one tow with the members' standard 120 mm codend and one with the same codend carrying a "
-      "3 m panel of 140 mm square mesh, towed side by side in time, at the same depth, for 60 minutes each. The extra "
-      "tows are not survey stations and are not in the survey's records.")
-    H("What we found")
-    P("Summed over the 24 pairs, the panel let out a third of the whiting and close to half of the haddock under 30 cm, "
-      "for a loss of about one marketable haddock in fourteen by weight.")
-    st.append(_table(S, [["Species", "Standard codend (kg)", "With panel (kg)", "Change"]] + table, (50, 38, 34, 24),
-                     right=(1, 2, 3)))
-    H("What happens next")
-    P("The committee will consider at its March 2026 meeting whether to ask members to fit the panel on the six grounds "
-      "from 2027. Members who want to try the panel before then can borrow one of the two the organisation holds.")
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Square-mesh panel trial 2025", "Sans"),
-              onLaterPages=_frame(K.ORG_LTD, "Square-mesh panel trial 2025", "Sans"))
-
-
-# ---------------------------------------------------------------------------------------------- the contents list
+# ---------------------------------------------------------------------------------------------- contents
 def write_contents(path, rows):
-    w = [max(len(r[i]) for r in rows) for i in range(len(rows[0]))]
-    lines = ["%s: evidence pack for the management committee, ground closure 2027" % K.ORG_LTD,
-             "Assembled by the science and sustainability office, 6 November 2026. Every file is the organisation's own",
-             "record or document, for the committee's and members' use only.", ""]
-    for k, r in enumerate(rows):
-        lines.append("  ".join(c.ljust(w[i]) for i, c in enumerate(r)).rstrip())
-        if k == 0:
-            lines.append("  ".join("-" * w[i] for i in range(len(w))))
-    open(path, "w", encoding="utf-8", newline="\r\n").write("\n".join(lines) + "\n")
+    widths = [max(len(str(r[i])) for r in rows) for i in range(len(rows[0]))]
+    lines = ["Committee pack: 2027 Heart Failure Early Diagnosis Programme, host hospital",
+             "Prepared for the %s, %s" % (K.COMMITTEE, K.PACK_DATE.strftime("%d %B %Y").lstrip("0")), ""]
+    for i, r in enumerate(rows):
+        lines.append("  ".join(str(c).ljust(widths[j]) for j, c in enumerate(r)).rstrip())
+        if i == 0:
+            lines.append("  ".join("-" * w for w in widths))
+    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
+        f.write("\n".join(lines) + "\n")

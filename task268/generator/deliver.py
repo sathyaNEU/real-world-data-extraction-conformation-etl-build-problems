@@ -1,55 +1,45 @@
-"""The goldens: ground_closure_2027.xlsx (each ground's stock by year and its fall, the survey by depth band, the
-landings by port, the quota left by pool) and closure_committee_2027.pptx (the recommendation to the management
-committee, with the chart of each ground's stock against its base), plus generator/figures.json and metadata.json.
-Every figure comes from analysis.py run on the shipped pack."""
+"""The goldens: hf_programme_site_2027.xlsx (each hospital's two-year survival and how its patients left follow-up, the
+2025 laboratory testing, the 2025 new diagnoses) and service_line_committee_hf_2027.pptx (the recommendation to the
+service line committee with the chart of the five hospitals' two-year survival), plus generator/figures.json and
+metadata.json. Every figure comes from analysis.py run on the shipped pack."""
 import json
 import os
 import shutil
-from collections import defaultdict
 
 import analysis as A
 import common as K
 import postprocess as PP
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX, PPTX = "ground_closure_2027.xlsx", "closure_committee_2027.pptx"
+XLSX, PPTX = "hf_programme_site_2027.xlsx", "service_line_committee_hf_2027.pptx"
 
 
 def whole(x):
-    """Round half up to the whole unit (percent, point, tonne, pound)."""
+    """Round half up to the whole unit (percent, point, count)."""
     return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
 
 
 def results(target):
     D = A.load(target)
-    ix = A.survey_index(D)
-    f = A.falls(ix)
-    c = A.call(f)
-    base = {g: sum(ix[g][y] for y in K.BASE) / 3 for g in K.GROUND_NAMES}
-    T = A.tows(D)
-    bands = {}
-    area = A.band_areas(D)
-    ncell = defaultdict(int)
-    for r in D["grid"]:
-        ncell[(r["ground"], r["depth_band"])] += 1
-    for g in K.GROUND_NAMES:
-        tot = sum(area[(g, b)] for b in K.BANDS)
-        for b in K.BANDS:
-            means = {}
-            tows = {}
-            for y in K.YEARS:
-                xs = [t["kg"] for t in T if t["ground"] == g and t["band"] == b and t["year"] == y]
-                means[y], tows[y] = sum(xs) / len(xs), len(xs)
-            bands[(g, b)] = dict(area=area[(g, b)], share=area[(g, b)] / tot, cells=ncell[(g, b)], means=means, tows=tows)
-    rec = A.records(D)
-    worked = {g: {y: len({r[2] for r in rec if r[1] == g and r[0] == y}) for y in K.YEARS} for g in K.GROUND_NAMES}
-    rungs = A.ladder(D)
-    return dict(D=D, ix=ix, f=f, call=c, base=base, bands=bands, worked=worked, rungs=rungs,
-                falls={g: whole(100 * f[g]) for g in K.GROUND_NAMES}, gap=whole(100 * c["gap"]),
-                pct={g: {y: 100 * ix[g][y] / base[g] for y in K.YEARS} for g in K.GROUND_NAMES},
-                ask_a=A.ask_a(D), ask_b=A.ask_b(D),
-                area={g: sum(area[(g, b)] for b in K.BANDS) for g in K.GROUND_NAMES},
-                cpue=A.falls(A.cpue_index(D, "nominal")))
+    L = A.ladder(D)
+    C = L["_cohort"]
+    S = L["golden"]
+    order = sorted(K.CODES, key=lambda h: S[h])
+    pick, runner = order[0], order[1]
+    gap = 100 * (S[runner] - S[pick])
+    G = A.by_h(C)
+    counts = {}
+    for h in K.CODES:
+        g = G[h]
+        counts[h] = dict(n=len(g), deaths=sum(p["E"] for p in g), north=sum(p["lost"] == "north" for p in g),
+                         consent=sum(p["lost"] == "consent" for p in g))
+    rates = {h: A.censor_rates(G[h]) for h in K.CODES}
+    visits = {h: [sum(1 for p in G[h] for d, c in p["visits"] if d <= p["T"] and c == k) for k in range(4)] for h in K.CODES}
+    moves = {h: [sum(1 for p in G[h] if p["lost"] == "north" and p["visits"] and p["visits"][-1][0] == p["T"]
+                     and p["visits"][-1][1] == k) for k in range(4)] for h in K.CODES}
+    return dict(D=D, L=L, S=S, order=order, pick=pick, runner=runner, gap=gap, counts=counts, rates=rates, visits=visits,
+                moves=moves, surv={h: whole(100 * S[h]) for h in K.CODES}, gap_pts=whole(gap),
+                km={h: whole(100 * L["km"][h]) for h in K.CODES}, ask_a=A.ask_a(D), ask_b=A.ask_b(D))
 
 
 # ---------------------------------------------------------------------------------------------- the workbook
@@ -57,13 +47,13 @@ def workbook(path, o):
     import openpyxl
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     wb = openpyxl.Workbook()
-    ink, accent = "1C2428", "8E3B13"
+    ink, accent = "1C2428", "0E5A6E"
     thin = Side(style="thin", color="B4BDC3")
-    head_fill = PatternFill("solid", fgColor="E6EDF0")
-    pick_fill = PatternFill("solid", fgColor="F8E5D8")
-    c = o["call"]
+    head_fill = PatternFill("solid", fgColor="E3EEF1")
+    pick_fill = PatternFill("solid", fgColor="FBE7D6")
+    pick, runner = o["pick"], o["runner"]
 
-    def header(ws, row, cols, height=30):
+    def header(ws, row, cols, height=42):
         for j, v in enumerate(cols, 1):
             cell = ws.cell(row=row, column=j, value=v)
             cell.font = Font(bold=True, color=ink)
@@ -74,7 +64,7 @@ def workbook(path, o):
 
     def landscape(ws):
         ws.page_setup.orientation = "landscape"
-        ws.page_setup.paperSize = ws.PAPERSIZE_A4
+        ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
         ws.page_setup.fitToWidth, ws.page_setup.fitToHeight = 1, 0
         ws.sheet_properties.pageSetUpPr.fitToPage = True
         ws.print_title_rows = "4:4"
@@ -85,120 +75,125 @@ def workbook(path, o):
         ws["A2"] = sub
         ws["A2"].font = Font(italic=True, size=9, color="5A646B")
 
-    # Grounds
+    def widths(ws, ws_w):
+        for j, w in enumerate(ws_w, 1):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+
+    # Survival
     ws = wb.active
-    ws.title = "Grounds"
-    title(ws, "Close %s in 2027: its haddock stock has fallen furthest below its base" % c["pick"],
-          "Autumn gear and bycatch survey, October 2019 to 2026. Stock: mean haddock catch per standard tow in each depth "
-          "band, weighted by the band's share of the ground's stock area (Annex A). Base: average of 2019, 2020 and 2021.")
-    cols = ["Ground", "Code", "Stock area (km²)"] + [str(y) for y in K.YEARS] + ["Base 2019-21", "2026 as % of base",
-                                                                              "Fall from base (%)"]
-    header(ws, 4, cols)
+    ws.title = "Survival"
+    title(ws, "Host the 2027 programme at %s: the lowest two-year survival from diagnosis" % K.NAME[pick],
+          "Patients newly diagnosed with heart failure in 2022 and 2023, %s. Two-year survival with each patient who moved "
+          "beyond the registry's death linkage carried by the NYHA class recorded at the visit where the move was "
+          "reported." % K.REGISTRY)
+    header(ws, 4, ["Hospital", "Patients diagnosed 2022-23", "Deaths within two years on file",
+                   "Moved beyond the death linkage before two years", "Left at the re-consent before two years",
+                   "Two-year survival (%)"])
     r = 5
-    for g in c["order"]:
-        vals = [g, K.GROUND_CODE[g], round(o["area"][g])] + [round(o["ix"][g][y], 1) for y in K.YEARS] + \
-               [round(o["base"][g], 1), round(o["pct"][g][2026]), o["falls"][g]]
+    for h in o["order"]:
+        c = o["counts"][h]
+        vals = [K.NAME[h], c["n"], c["deaths"], c["north"], c["consent"], o["surv"][h]]
         for j, v in enumerate(vals, 1):
             cell = ws.cell(row=r, column=j, value=v)
-            if j >= 3:
+            if j >= 2:
                 cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0" if j in (3, 14, 15) else "0.0"
-            if g == c["pick"]:
+                cell.number_format = "#,##0"
+            if h == pick:
                 cell.fill = pick_fill
                 cell.font = Font(bold=True, color=ink)
         r += 1
     r += 1
-    ws.cell(row=r, column=1, value="Recommendation: close %s to members' towed gear from 1 January to 31 December 2027. "
-            "Its fall is %d points more than %s's, the next largest." % (c["pick"], o["gap"], c["runner"])).font = Font(bold=True)
-    ws.cell(row=r + 1, column=1, value="Stock figures are kg of haddock per standard 30-minute tow. In 2020 one station "
-            "was not fished for weather and its band's mean is over the stations towed; two stations replaced in 2023 "
-            "stand for their bands (field manual, revision 3).").font = Font(size=9, color="5A646B")
-    widths = [17, 7, 10] + [8] * 8 + [10, 10, 10]
-    for j, w in enumerate(widths, 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+    ws.cell(row=r, column=1, value="Recommendation: host the programme at %s from April 2027. Its patients' two-year "
+            "survival is %d%%, %d points below %s's %d%%, the next lowest." % (
+                K.NAME[pick], o["surv"][pick], o["gap_pts"], K.NAME[runner], o["surv"][runner])).font = Font(bold=True)
+    ws.cell(row=r + 1, column=1, value="Survival is the product-limit estimate at two years, each patient still followed "
+            "weighted, visit by visit, by the inverse of the hospital's chance that a patient of the class recorded at "
+            "that visit stays within the death linkage's reach. The gap is worked from the unrounded figures.").font = \
+        Font(size=9, color="5A646B")
+    widths(ws, [34, 14, 14, 18, 16, 14])
     ws.freeze_panes = "B5"
     landscape(ws)
 
-    # Survey by band
-    ws = wb.create_sheet("Survey by band")
-    title(ws, "Mean haddock catch per standard tow by depth band (kg)",
-          "Depth bands from Annex A: A under 100 m, B 100 m to under 140 m, C 140 m and deeper. Twelve stations a band.")
-    header(ws, 4, ["Ground", "Band", "Cells", "Area (km²)", "Share of stock area"] + [str(y) for y in K.YEARS])
+    # Moves by class
+    ws = wb.create_sheet("Moves by class")
+    title(ws, "How the patients left follow-up: moves beyond the death linkage by the NYHA class at the visit",
+          "Clinic visits within each patient's first two years, while followed; a move is counted at the visit where it "
+          "was reported.")
+    header(ws, 4, ["Hospital", "Visits in class I", "II", "III", "IV", "Moves in class I", "II", "III", "IV",
+                   "Chance of moving at a class III visit (%)", "At a class IV visit (%)"])
     r = 5
-    for g in K.GROUND_NAMES:
-        for b in K.BANDS:
-            x = o["bands"][(g, b)]
-            vals = [g, b, x["cells"], round(x["area"]), round(x["share"], 3)] + [round(x["means"][y], 1) for y in K.YEARS]
-            for j, v in enumerate(vals, 1):
-                cell = ws.cell(row=r, column=j, value=v)
-                if j >= 3:
-                    cell.alignment = Alignment(horizontal="right")
-                    cell.number_format = {3: "0", 4: "#,##0", 5: "0.0%"}.get(j, "0.0")
-            r += 1
-    for j, w in enumerate([17, 6, 7, 10, 10] + [8] * 8, 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
-    ws.freeze_panes = "C5"
+    for h in K.CODES:
+        v, m, rt = o["visits"][h], o["moves"][h], o["rates"][h]
+        vals = [K.NAME[h]] + v + m + [round(100 * rt.get(2, 0.0), 1), round(100 * rt.get(3, 0.0), 1)]
+        for j, x in enumerate(vals, 1):
+            cell = ws.cell(row=r, column=j, value=x)
+            if j >= 2:
+                cell.alignment = Alignment(horizontal="right")
+                cell.number_format = "#,##0" if j <= 9 else "0.0"
+            if h == pick:
+                cell.fill = pick_fill
+        r += 1
+    widths(ws, [34] + [10] * 8 + [16, 14])
     landscape(ws)
 
-    # Ports
-    ws = wb.create_sheet("Ports")
-    title(ws, "Haddock landed by members, 1 January to 30 September 2026",
-          "Sales notes by landing date; live weight (gutted x 1.17); each landing's notes counted once, a corrected note "
-          "in place of the note it corrects.")
-    header(ws, 4, ["Port", "Landed (t, live weight)", "Value at first sale (£)"])
+    # Laboratory
+    ws = wb.create_sheet("Laboratory")
+    title(ws, "NT-proBNP tests reported in 2025, by hospital laboratory",
+          "Each specimen once, at its final result; the referral level is %d pg/mL (charter, 2.3)." % K.REFERRAL)
+    header(ws, 4, ["Hospital", "NT-proBNP tests reported in 2025", "At or above %d pg/mL" % K.REFERRAL], 32)
     r = 5
-    for p in K.PORT_NAMES:
-        t, v = o["ask_a"][p]
-        for j, val in enumerate([p, whole(t), whole(v)], 1):
-            cell = ws.cell(row=r, column=j, value=val)
-            if j > 1:
-                cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0" if j == 2 else "£#,##0"
-        r += 1
-    tt = sum(o["ask_a"][p][0] for p in K.PORT_NAMES)
-    tv = sum(o["ask_a"][p][1] for p in K.PORT_NAMES)
-    for j, val in enumerate(["All four ports", whole(tt), whole(tv)], 1):
-        cell = ws.cell(row=r, column=j, value=val)
-        cell.font = Font(bold=True)
-        cell.border = Border(top=thin)
-        if j > 1:
-            cell.alignment = Alignment(horizontal="right")
-            cell.number_format = "#,##0" if j == 2 else "£#,##0"
-    for j, w in enumerate([16, 14, 16], 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
-
-    # Pools
-    ws = wb.create_sheet("Pools")
-    title(ws, "Haddock quota left by pool, 30 September 2026",
-          "Quota ledger 2026, entries with effect on or before 30 September (quota rules, section 3); each pool's 1 "
-          "January allocation counted once.")
-    header(ws, 4, ["Pool", "Name", "Quota left (t)"])
-    r = 5
-    for code, name in K.POOLS:
-        for j, val in enumerate([code, name, whole(o["ask_b"][code])], 1):
-            cell = ws.cell(row=r, column=j, value=val)
-            if j == 3:
+    for h in K.CODES:
+        a = o["ask_a"][h]
+        for j, x in enumerate([K.NAME[h], a[0], a[1]], 1):
+            cell = ws.cell(row=r, column=j, value=x)
+            if j >= 2:
                 cell.alignment = Alignment(horizontal="right")
                 cell.number_format = "#,##0"
         r += 1
-    for j, w in enumerate([6, 14, 12], 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+    widths(ws, [34, 18, 18])
+
+    # New diagnoses
+    ws = wb.create_sheet("New diagnoses 2025")
+    title(ws, "Patients newly diagnosed with heart failure in 2025, by hospital",
+          "By diagnosis date (a record showing its diagnosis after its enrolment is dated at the enrolment); a patient "
+          "enrolled again after the 2024 record-number migration is not a new diagnosis.")
+    header(ws, 4, ["Hospital", "Newly diagnosed in 2025", "Of whom during an inpatient stay"], 32)
+    r = 5
+    for h in K.CODES:
+        b = o["ask_b"][h]
+        for j, x in enumerate([K.NAME[h], b[0], b[1]], 1):
+            cell = ws.cell(row=r, column=j, value=x)
+            if j >= 2:
+                cell.alignment = Alignment(horizontal="right")
+                cell.number_format = "#,##0"
+        r += 1
+    widths(ws, [34, 18, 22])
 
     # Notes
     ws = wb.create_sheet("Notes")
     notes = [
-        "Prepared by the science and sustainability office for the management committee meeting of 9 December 2026.",
-        "Closure rule: Haddock Stock Recovery Plan, section 4.1 and 4.2 (adopted 24 March 2026).",
-        "Grounds and stock areas: Annex A, ground_grid_annex_a.csv. Survey: survey_tows_2019_2026.csv, each tow placed "
-        "in its grid cell by its shot position.",
-        "Falls are rounded to the whole percent; the gap between the two largest falls is worked from the unrounded falls.",
-        "Landings: sales_notes_2026.csv with member_vessels.xlsx (registration history) and conversion_factors.csv.",
-        "Quota: quota_ledger_2026.csv under the quota management rules 2026.",
+        "Cohort: every enrolment in %s with a diagnosis date from 1 January 2022 to 31 December 2023; the hospital "
+        "is the hospital of diagnosis (Brenmoor's North Campus is Brenmoor Regional)." % K.FILES["patients"],
+        "Deaths: the Florida certificate linkage (by current record number, legacy numbers through the crosswalk) and "
+        "the Tri-State exchange (by registry identifier); a patient alive on the second anniversary of diagnosis "
+        "survived two years.",
+        "Follow-up ends at a relocation to a state outside Georgia, Alabama and South Carolina and at Wrenhaven's 1 "
+        "April 2024 re-consent; patients who moved to those three states stay in vital status follow-up.",
+        "At %s most patients who moved beyond the linkage were in NYHA class III or IV at the visit where the move was "
+        "reported, so the product-limit estimate with the moves as ordinary censoring credits them with the survival "
+        "of the patients who stayed (%d%% against %d%% weighted). The chance of a move by class is measured hospital "
+        "by hospital." % (K.NAME[pick], o["km"][pick], o["surv"][pick]),
+        "Laboratory: results released in 2025; a corrected result released again under a new accession (same patient "
+        "and collection time) counts once, at its final value.",
+        "New diagnoses: by diagnosis date; the registry module's update of November 2024 overwrote some diagnosis "
+        "dates with a later problem-list date, so a record showing its diagnosis after its enrolment is dated at the "
+        "enrolment (the diagnosis came first). A 2025 enrolment whose record number maps through the crosswalk to a "
+        "patient enrolled earlier is not counted; the inpatient stays are those the setting records as Inpatient or INPT.",
     ]
-    ws["A1"] = "Notes"
-    ws["A1"].font = Font(bold=True, size=13, color=accent)
+    ws["A1"] = "Notes on the figures"
+    ws["A1"].font = Font(bold=True, size=12, color=accent)
     for k, t in enumerate(notes, 3):
-        ws.cell(row=k, column=1, value=t)
+        ws.cell(row=k, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
     ws.column_dimensions["A"].width = 120
     wb.save(path)
 
@@ -208,16 +203,15 @@ def deck(path, o):
     from pptx import Presentation
     from pptx.chart.data import CategoryChartData
     from pptx.dml.color import RGBColor
-    from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
-    from pptx.enum.dml import MSO_LINE_DASH_STYLE
+    from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Emu, Pt
     prs = Presentation()
     prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
     blank = prs.slide_layouts[6]
-    INK, GREY, ACC = RGBColor(0x1C, 0x24, 0x28), RGBColor(0x5A, 0x64, 0x6B), RGBColor(0x8E, 0x3B, 0x13)
-    c = o["call"]
-    win, run = c["pick"], c["runner"]
+    INK, GREY, ACC = RGBColor(0x1C, 0x24, 0x28), RGBColor(0x5A, 0x64, 0x6B), RGBColor(0xB2, 0x4A, 0x16)
+    TEAL = RGBColor(0x0E, 0x5A, 0x6E)
+    pick, runner = o["pick"], o["runner"]
 
     def text(slide, x, y, w, h, s, size=14, bold=False, color=INK, align=None):
         tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
@@ -232,19 +226,19 @@ def deck(path, o):
         return tf
 
     def footer(slide, n, source):
-        text(slide, 457200, 6400800, 10300000, 300000, "Science and sustainability office | Management committee, "
-             "9 December 2026 | Source: " + source, 9, color=GREY)
+        text(slide, 457200, 6400800, 10300000, 300000, "Heart and vascular outcomes | Service line committee, May 2026 | "
+             "Source: " + source, 9, color=GREY)
         text(slide, 11000000, 6400800, 800000, 300000, str(n), 9, color=GREY, align=PP_ALIGN.RIGHT)
 
-    HEAD, BAND, PICK = RGBColor(0x24, 0x3B, 0x46), RGBColor(0xF2, 0xF4, 0xF5), RGBColor(0xF8, 0xE5, 0xD8)
+    HEAD, BAND, PICK = RGBColor(0x1F, 0x4E, 0x5C), RGBColor(0xF2, 0xF5, 0xF6), RGBColor(0xFB, 0xE7, 0xD6)
 
-    def table(slide, rows, x, y, w, h, bold_row=None, size=13, widths=None):
+    def table(slide, rows, x, y, w, h, bold_row=None, size=13, cw=None):
         shape = slide.shapes.add_table(len(rows), len(rows[0]), Emu(x), Emu(y), Emu(w), Emu(h))
         tb = shape.table
         tb.first_row = True
         tb.horz_banding = False
-        if widths:
-            for j, f in enumerate(widths):
+        if cw:
+            for j, f in enumerate(cw):
                 tb.columns[j].width = Emu(int(w * f))
         for i, r in enumerate(rows):
             for j, v in enumerate(r):
@@ -262,152 +256,127 @@ def deck(path, o):
                     para.alignment = PP_ALIGN.RIGHT
         return tb
 
-    F = o["falls"]
+    S = o["surv"]
     # 1. the call
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 1300000, 11200000, 900000, "Close %s to towed gear in 2027" % win, 36, True, ACC)
-    tf = text(s, 457200, 2450000, 11000000, 1500000,
-              "%s's haddock stock in 2026 was %d%% below its 2019 to 2021 average, the largest fall of the six grounds "
-              "and %d points more than %s's %d%%." % (win, F[win], o["gap"], run, F[run]), 20)
+    text(s, 457200, 1250000, 11200000, 900000, "Host the 2027 programme at %s" % K.NAME[pick], 34, True, ACC)
+    tf = text(s, 457200, 2350000, 11000000, 1500000,
+              "Its patients newly diagnosed with heart failure in 2022 and 2023 had a two-year survival of %d%%, the "
+              "lowest of our five hospitals and %d points below %s's %d%%." % (S[pick], o["gap_pts"], K.NAME[runner],
+                                                                             S[runner]), 20)
     p = tf.add_paragraph()
-    p.text = ("Stock recovery plan, section 4: the ground whose haddock stock has fallen furthest below its base closes "
-              "for the following year. Each ground's stock is read from the autumn survey's fixed stations across its "
-              "whole stock area.")
+    p.text = ("Charter, section 3: the programme goes to the hospital whose newly diagnosed patients had the lowest "
+              "two-year survival from diagnosis, every patient counted, those the registry no longer follows included.")
     p.font.size, p.font.color.rgb = Pt(14), GREY
-    rows = [["Ground"] + [g for g in c["order"]],
-            ["Fall in haddock stock, 2026 against 2019 to 2021"] + ["%d%%" % F[g] for g in c["order"]]]
-    table(s, rows, 457200, 4300000, 11200000, 900000, size=13, widths=[0.28] + [0.12] * 6)
-    footer(s, 1, "autumn gear and bycatch survey 2019 to 2026")
+    rows = [["Hospital"] + [K.SHORT[h] for h in o["order"]],
+            ["Two-year survival, 2022-23 diagnoses"] + ["%d%%" % S[h] for h in o["order"]]]
+    table(s, rows, 457200, 4250000, 11200000, 900000, size=13, cw=[0.30] + [0.14] * 5)
+    footer(s, 1, K.REGISTRY + ", extract of 31 March 2026")
     # 2. the chart
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "%s has fallen furthest below its 2019 to 2021 base" % win, 26, True, INK)
-    text(s, 457200, 900000, 11200000, 400000, "Haddock stock on each ground, autumn survey, as a percentage of the ground's "
-         "2019 to 2021 average (base = 100)", 13, color=GREY)
+    text(s, 457200, 300000, 11200000, 700000, "%s's patients have the lowest two-year survival" % K.SHORT[pick], 26, True)
+    text(s, 457200, 900000, 11200000, 400000, "Two-year survival from diagnosis, patients newly diagnosed with heart "
+         "failure in 2022 and 2023, per cent", 13, color=GREY)
     cd = CategoryChartData()
-    cd.categories = [str(y) for y in K.YEARS]
-    order = [win, run] + [g for g in c["order"] if g not in (win, run)]
-    for g in order:
-        cd.add_series(g, [round(o["pct"][g][y], 1) for y in K.YEARS])
-    cd.add_series("Base (2019 to 2021 average)", [100.0] * len(K.YEARS))
-    gf = s.shapes.add_chart(XL_CHART_TYPE.LINE_MARKERS, Emu(457200), Emu(1350000), Emu(11200000), Emu(4900000), cd)
+    cd.categories = [K.SHORT[h] for h in o["order"]]
+    cd.add_series("Two-year survival (%)", [S[h] for h in o["order"]])
+    gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Emu(457200), Emu(1400000), Emu(11200000), Emu(4800000), cd)
     ch = gf.chart
     ch.has_title = False
-    ch.has_legend = True
-    ch.legend.position = XL_LEGEND_POSITION.RIGHT
-    ch.legend.include_in_layout = False
-    ch.legend.font.size = Pt(12)
-    palette = [RGBColor(0xB5, 0x48, 0x1C), RGBColor(0x2F, 0x6B, 0x8F), RGBColor(0x8A, 0x9A, 0x5B),
-               RGBColor(0xB8, 0x9B, 0x5E), RGBColor(0x8C, 0x72, 0x98), RGBColor(0x6E, 0x86, 0x8F)]
-    for k, ser in enumerate(ch.plots[0].series):
-        ser.smooth = False
-        line = ser.format.line
-        if k < len(order):
-            line.color.rgb = palette[k]
-            line.width = Pt(3.25 if k == 0 else 2.0)
-            ser.marker.format.fill.solid()
-            ser.marker.format.fill.fore_color.rgb = palette[k]
-            ser.marker.format.line.color.rgb = palette[k]
-            ser.marker.size = 7 if k == 0 else 5
-        else:
-            line.color.rgb = GREY
-            line.width = Pt(1.5)
-            line.dash_style = MSO_LINE_DASH_STYLE.DASH
-            from pptx.enum.chart import XL_MARKER_STYLE
-            ser.marker.style = XL_MARKER_STYLE.NONE
+    ch.has_legend = False
+    plot = ch.plots[0]
+    plot.gap_width = 70
+    plot.has_data_labels = True
+    dl = plot.data_labels
+    dl.number_format, dl.number_format_is_linked = '0"%"', False
+    dl.position = XL_LABEL_POSITION.OUTSIDE_END
+    dl.font.size = Pt(14)
+    ser = plot.series[0]
+    for k, h in enumerate(o["order"]):
+        pt = ser.points[k]
+        pt.format.fill.solid()
+        pt.format.fill.fore_color.rgb = ACC if h == pick else TEAL
     va = ch.value_axis
-    va.minimum_scale, va.maximum_scale, va.major_unit = 20, 120, 20
+    va.minimum_scale, va.maximum_scale, va.major_unit = 0, 100, 20
     va.has_major_gridlines = True
     va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xE2, 0xE5)
     va.tick_labels.font.size = Pt(12)
-    va.tick_labels.number_format, va.tick_labels.number_format_is_linked = "0", False
-    ch.category_axis.tick_labels.font.size = Pt(12)
-    footer(s, 2, "autumn gear and bycatch survey 2019 to 2026; ground_grid_annex_a.csv")
-    # 3. every ground's fall
+    ch.category_axis.tick_labels.font.size = Pt(14)
+    footer(s, 2, K.REGISTRY + "; Florida death certificate linkage; Tri-State exchange")
+    # 3. why the plain estimate misleads at the pick
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Every ground's fall, 2026 against its 2019 to 2021 average", 26, True, INK)
-    rows = [["Ground", "Base 2019-21 (kg a tow)", "2026 (kg a tow)", "Fall"]]
-    for g in c["order"]:
-        rows.append([g, "%.1f" % o["base"][g], "%.1f" % o["ix"][g][2026], "%d%%" % F[g]])
-    table(s, rows, 457200, 1300000, 11200000, 3300000, bold_row=win, size=15)
-    text(s, 457200, 4900000, 11200000, 900000, "Stock is the mean haddock catch per standard tow in each depth band, "
-         "weighted by the band's share of the ground's stock area. The gap between %s and %s is worked from the "
-         "unrounded falls." % (win, run), 13, color=GREY)
-    footer(s, 3, "autumn gear and bycatch survey 2019 to 2026; ground_grid_annex_a.csv")
-    # 4. why not the catch rates
-    s = prs.slides.add_slide(blank)
-    hb = o["bands"]
-    text(s, 457200, 300000, 11200000, 700000, "On %s the boats followed the fish into the deep band" % win, 26, True, INK)
-    deep = hb[(win, "C")]
-    cp = whole(100 * o["cpue"][win])
-    moved = ("rose %d%%" % -cp) if cp < 0 else ("fell only %d%%" % cp)
+    v, m = o["visits"][pick], o["moves"][pick]
+    tot = sum(m)
+    hi = m[2] + m[3]
+    text(s, 457200, 300000, 11200000, 700000, "At %s the patients who moved north had worsened" % K.SHORT[pick], 26, True)
     lines = [
-        "Members towed %d of %s's %d cells in 2019 and %d in 2026. The cells they left are the ones the stock emptied "
-        "first, so their catch per hour towed there %s while the stock fell %d%%." % (
-            o["worked"][win][2019], win, sum(hb[(win, b)]["cells"] for b in K.BANDS), o["worked"][win][2026],
-            moved, F[win]),
-        "The survey tows the same twelve stations in each depth band every October, whatever they hold. Weighting each "
-        "band by its share of the ground's area counts the deep band, %d%% of the area, for what it holds and no more."
-        % whole(100 * deep["share"]),
+        "{:,} of {}'s {:,} patients moved beyond the registry's death linkage within two years of diagnosis; {:,} of them "
+        "were in NYHA class III or IV at the visit where they told the clinic.".format(tot, K.SHORT[pick],
+                                                                                        o["counts"][pick]["n"], hi),
+        "Counting those moves as ordinary losses puts %s's survival at %d%%, as if the movers fared like the patients "
+        "who stayed. Weighted by the class at each visit it is %d%%." % (K.SHORT[pick], o["km"][pick], S[pick]),
     ]
     tf = text(s, 457200, 1250000, 11200000, 1900000, lines[0], 16)
-    for line in lines[1:]:
-        p = tf.add_paragraph()
-        p.text = line
-        p.font.size = Pt(16)
-        p.space_before = Pt(10)
-    rows = [["%s, depth band" % win, "Share of stock area", "2019 to 2021 (kg a tow)", "2026 (kg a tow)"]]
-    for b in K.BANDS:
-        x = hb[(win, b)]
-        rows.append(["%s (%s)" % (b, K.BAND_TEXT[b]), "%d%%" % whole(100 * x["share"]),
-                     "%.1f" % (sum(x["means"][y] for y in K.BASE) / 3), "%.1f" % x["means"][2026]])
-    table(s, rows, 457200, 3500000, 11200000, 1700000, size=14, widths=[0.34, 0.2, 0.24, 0.22])
-    footer(s, 4, "e-logbook and tow sheets 2019 to 2026; autumn survey 2019 to 2026")
-    # 5. landings and quota
+    p = tf.add_paragraph()
+    p.text = lines[1]
+    p.font.size = Pt(16)
+    p.space_before = Pt(10)
+    rt = o["rates"][pick]
+    rows = [["NYHA class at the visit", "Visits", "Moves beyond the linkage", "Chance of moving at the visit"]]
+    for k in range(4):
+        rows.append([K.CLASSES[k], "{:,}".format(v[k]), "{:,}".format(m[k]), "%.1f%%" % (100 * rt.get(k, 0.0))])
+    table(s, rows, 457200, 3450000, 11200000, 2000000, size=14, cw=[0.31, 0.2, 0.25, 0.24])
+    footer(s, 3, K.REGISTRY + ", clinic visits and follow-up events")
+    # 4. the testing and the diagnoses the programme builds on
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Landings by port and quota left by pool", 26, True, INK)
-    rows = [["Port", "Haddock landed Jan to Sep 2026 (t live)", "Value at first sale"]]
-    for p in K.PORT_NAMES:
-        t, v = o["ask_a"][p]
-        rows.append([p, "{:,}".format(whole(t)), "£{:,}".format(whole(v))])
-    table(s, rows, 457200, 1300000, 6300000, 2400000, size=13)
-    rows = [["Pool", "Quota left 30 Sep 2026 (t)"]]
-    for code, name in K.POOLS:
-        rows.append(["%s (%s)" % (name, code), "{:,}".format(whole(o["ask_b"][code]))])
-    table(s, rows, 7100000, 1300000, 4600000, 2800000, size=13)
-    text(s, 457200, 4500000, 11200000, 1200000, "A closed ground's boats fish their remaining quota on the other five "
-         "grounds; pools with quota left can lease to them under the quota rules.", 14, color=GREY)
-    footer(s, 5, "sales notes 2026; quota ledger 2026")
+    text(s, 457200, 300000, 11200000, 700000, "Testing and new diagnoses, 2025", 26, True)
+    rows = [["Hospital", "NT-proBNP tests reported", "At or above %d pg/mL" % K.REFERRAL, "Newly diagnosed",
+             "Diagnosed as inpatients"]]
+    for h in K.CODES:
+        a, b = o["ask_a"][h], o["ask_b"][h]
+        rows.append([K.NAME[h], "{:,}".format(a[0]), "{:,}".format(a[1]), "{:,}".format(b[0]), "{:,}".format(b[1])])
+    table(s, rows, 457200, 1300000, 11200000, 2600000, bold_row=K.NAME[pick], size=14, cw=[0.32, 0.17, 0.17, 0.17, 0.17])
+    text(s, 457200, 4300000, 11200000, 1100000, "Tests: each specimen once at its final result. New diagnoses: by "
+         "diagnosis date, a record dated after its own enrolment taken at the enrolment; a patient enrolled again after "
+         "the 2024 record-number migration is not counted.", 13, color=GREY)
+    footer(s, 4, "laboratory results 2025; " + K.REGISTRY)
     prs.save(path)
 
 
 def figures(o):
-    c = o["call"]
+    L = o["L"]
     return {
-        "call": dict(ground=c["pick"], runner_up=c["runner"], gap=o["gap"], fall=o["falls"][c["pick"]],
-                     runner_fall=o["falls"][c["runner"]]),
-        "falls": o["falls"],
-        "rungs": {r: dict(pick=A.call(f)["pick"], falls={g: round(100 * v, 1) for g, v in f.items()})
-                  for r, f in o["rungs"].items()},
-        "ask_a": {p: dict(tonnes=whole(o["ask_a"][p][0]), value=whole(o["ask_a"][p][1])) for p in K.PORT_NAMES},
-        "ask_b": {p: whole(o["ask_b"][p]) for p in K.POOL_CODES},
-        "params": dict(base_years=K.BASE, latest=K.LATEST, stations_per_band=K.STATIONS_PER_BAND, as_of="2026-09-30",
-                       gutted_factor=1.17, deep_share=whole(100 * o["bands"][(c["pick"], "C")]["share"]),
-                       plan_clauses=[float(K.PLAN_CLAUSES["closure"]), float(K.PLAN_CLAUSES["stock"])], chart_base=100),
+        "call": dict(hospital=K.NAME[o["pick"]], runner_up=K.NAME[o["runner"]], gap=o["gap_pts"], survival=o["surv"][o["pick"]],
+                     runner_survival=o["surv"][o["runner"]]),
+        "survival": {K.NAME[h]: o["surv"][h] for h in K.CODES},
+        "rungs": {r: dict(pick=K.NAME[A.pick(L[r])[0]], survival={K.NAME[h]: round(100 * L[r][h], 1) for h in K.CODES})
+                  for r in A.WRONG + A.FAMILY},
+        "counts": {K.NAME[h]: o["counts"][h] for h in K.CODES},
+        "ask_a": {K.NAME[h]: dict(tests=o["ask_a"][h][0], referral=o["ask_a"][h][1]) for h in K.CODES},
+        "ask_b": {K.NAME[h]: dict(new=o["ask_b"][h][0], inpatient=o["ask_b"][h][1]) for h in K.CODES},
+        "km": {K.NAME[h]: o["km"][h] for h in K.CODES},
+        "cohort_total": sum(o["counts"][h]["n"] for h in K.CODES),
+        "moves_class_3_4": {K.NAME[h]: o["moves"][h][2] + o["moves"][h][3] for h in K.CODES},
+        "move_rate": {K.NAME[h]: {"class_3": round(100 * o["rates"][h].get(2, 0.0), 1),
+                                  "class_4": round(100 * o["rates"][h].get(3, 0.0), 1)} for h in K.CODES},
+        "params": dict(cohort_years=[2022, 2023], years=2, referral=K.REFERRAL, results_year=2025, diagnoses_year=2025,
+                       charter_clauses=sorted(float(v) for v in K.CHARTER_CLAUSES.values()),
+                       manual_sections=sorted(float(v) for v in K.MANUAL_SECTIONS.values()), chart_max=100),
     }
 
 
-def write(target, golden, T=None):
+def write(target, golden, W=None):
     o = results(target)
     if os.path.exists(golden):
         shutil.rmtree(golden)
     os.makedirs(golden)
     workbook(os.path.join(golden, XLSX), o)
     deck(os.path.join(golden, PPTX), o)
-    PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(os.path.join(golden, XLSX), K.PEOPLE["science"], K.PEOPLE["science"], "2026-11-09T10:14:22Z",
-                       "2026-11-20T16:41:05Z", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, PPTX), K.PEOPLE["science"], K.PEOPLE["ceo"], "2026-11-23T09:02:47Z",
-                       "2026-12-01T17:26:31Z", title="Ground closure 2027")
+    PP.COMPANY = K.ORG_INC
+    PP.normalize_ooxml(os.path.join(golden, XLSX), K.PEOPLE["epi"], K.PEOPLE["epi"], "2026-04-16T13:05:41Z",
+                       "2026-04-29T21:12:08Z", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, PPTX), K.PEOPLE["epi"], K.PEOPLE["director"], "2026-04-30T14:22:19Z",
+                       "2026-05-06T22:47:55Z", title="HF early diagnosis programme: host hospital")
     json.dump(figures(o), open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS], "deliverables": [XLSX, PPTX],
             "stated_inputs": []}

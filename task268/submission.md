@@ -1,54 +1,54 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science, missing data, censoring and measurement error (which of six haddock grounds the Dunvarra Fish Producers' Organisation closes to its members' towed gear in 2027, by each ground's haddock stock in 2026 against its 2019 to 2021 average, estimated over the whole stock area from the autumn survey's fixed stations when the members' logbooks cover only the cells the boats chose to tow).
-**Analytical objective:** Descriptive & Distribution Analysis (how each ground's haddock stock is distributed over its depth bands and how far each ground's total has fallen against its base).
+**Domain:** Biomedical & Clinical Research, survival and time-to-event analysis (which of Heronmere Health's five hospitals hosts the 2027 heart failure early-diagnosis programme, by the two-year survival from diagnosis of each hospital's patients newly diagnosed with heart failure in 2022 and 2023, from a registry whose follow-up ends when a patient moves beyond its death linkage).
+**Analytical objective:** Descriptive & Distribution Analysis (each hospital's distribution of time from heart failure diagnosis to death, read at two years, with the patients lost to a move carried from their recorded clinical state).
 
 ## 1. Final Recommendation
 
-**We should close Halmorie Deep to members' towed gear for 2027.**
-Its haddock stock in 2026 was 63% below its 2019 to 2021 average, 11 points more than Brettach Bank's 52%, the next largest fall. Not Brettach Bank on the members' catch per hour towed, which ranks it first because on Halmorie Deep the boats followed the shrinking stock into the deep band and stopped towing the cells it left, so the catch rate held up while the stock fell. Not Brettach Bank on the survey's plain average of every tow either, which counts Halmorie Deep's deep band, 9% of its stock area, as a third of the ground.
+**Host the 2027 heart failure early-diagnosis programme at Gullhaven Hospital.**
+Its patients newly diagnosed with heart failure in 2022 and 2023 had a two-year survival of 65%, the lowest of the five hospitals and 2 points below Fennick General Hospital's 67%, the next lowest. Not Fennick General Hospital, which Kaplan-Meier with every move as ordinary censoring puts lowest (67% against Gullhaven's 70%), because 526 of Gullhaven's 2,430 patients moved beyond the registry's death linkage within two years, 503 of them in NYHA class III or IV at the visit where they reported the move, and Kaplan-Meier credits them with the survival of the patients who stayed. Not Wrenhaven Medical Center, which comes out lowest only when the 942 patients who left at its 2024 re-consent are dropped or counted as dead.
 
 ## 2. Critical Components
 
-1. Halmorie Deep's haddock stock fell **63%** from its 2019 to 2021 average to 2026.
-2. Brettach Bank's fell **52%**, the next largest fall.
-3. Halmorie Deep's fall exceeds Brettach Bank's by **11 points**.
+1. Gullhaven Hospital's two-year survival from diagnosis, each patient who moved beyond the death linkage carried by the NYHA class recorded at the visit where the move was reported: **65%**.
+2. Fennick General Hospital, the next lowest: **67%**; Gullhaven is **2 points** below it.
+3. Kaplan-Meier with the moves as ordinary censoring: Fennick **67%**, Gullhaven **70%**.
 
 ## 3. Step-by-Step Solution
 
-1. Per the recovery plan (stock_recovery_plan_2026.pdf, 4.1 and 4.2) the 2027 closure goes to the ground whose 2026 haddock stock, the weight of haddock on the Annex A cells of its stock area, has fallen furthest below its 2019 to 2021 average.
-2. Placed each tow in survey_tows_2019_2026.csv in its grid cell by its shot position and took the cell's ground and depth band from ground_grid_annex_a.csv; the survey puts twelve stations in each depth band of every ground whatever the band's area (autumn_survey_manual_rev3.pdf, section 2).
-3. For each ground and year, averaged haddock_kg over each band's tows and weighted each band by its share of the ground's stock area (the sum of its cells' area_km2), so Halmorie Deep's deep band, 9% of its area, counts for 9%.
-4. Divided each ground's 2026 stock by its 2019 to 2021 average: falls of 63% for Halmorie Deep, 52% for Brettach Bank, 34% for Skiravie Bank, 32% for Moraskie Ground, 23% for Vallaskie Hole and 5% for Cullardy Patch.
-5. Halmorie Deep's fall exceeds Brettach Bank's by 11 points, worked from the unrounded falls.
-6. Took the haddock lines of sales_notes_2026.csv landed from 1 January to 30 September 2026 by member vessels under the letters member_vessels.xlsx's registration history gives them on the landing day, each re-issued note (same buyer, vessel and landing, the same lots, issued later) in place of the note it corrects, every presentation put on live weight by conversion_factors.csv, summed by port.
-7. Summed quota_ledger_2026.csv by pool over the entries with effect on or before 30 September 2026 (quota rules, section 3), the blank-licence 1 January allocation of each pool, which equals the sum of its licences' allocations, counted once.
-8. Recommended closing Halmorie Deep for 2027, its fall of 63% the largest of the six grounds.
+1. Took every enrolment in hf_registry_patients.csv with a diagnosis date in 2022 or 2023 (charter 3.1 and 3.2, manual 2.1), at the hospital of diagnosis (BRN is Brenmoor Regional, manual 2.2): 8,783 patients.
+2. Deaths from fl_death_linkage_2022_2025.xlsx by current record number, legacy numbers through mrn_crosswalk_2024.csv (manual 4.1), and from tristate_exchange_deaths_2022_2025.txt by registry identifier (manual 4.2); a death on or before the second anniversary of diagnosis is a death within two years.
+3. Follow-up ends at a relocation (REL) to a state outside Georgia, Alabama and South Carolina (manual 3.3 and 4.3) and at Wrenhaven's re-consent withdrawals (CNR, manual 4.4); relocations to those three states stay in follow-up.
+4. Read each clinic visit's NYHA class as one scale (manual 3.2) and measured, hospital by hospital, the chance that a visit in each class ends in a move beyond the linkage: Gullhaven 2.2% at a class III visit and 24.3% at class IV.
+5. Weighted each patient still followed, from each visit on, by the inverse of the product of the hospital's chances of staying in reach at the classes recorded so far, and took the weighted product-limit estimate at two years.
+6. Two-year survival: Gullhaven 65%, Fennick 67%, Brenmoor 68%, Wrenhaven 72%, Linmoor 73%; carrying the movers instead through the class changes and class-specific death rates of the patients still followed gives the same five figures.
+7. Counted the NT-proBNP results each laboratory released in 2025, a corrected result released again under a new accession (same patient and collection time) once, at its final value; a result reported above the analyser's range is at or above 400 pg/mL.
+8. Counted the 2025 diagnoses by diagnosis date, a record showing its diagnosis after its enrolment taken at the enrolment date (the diagnosis comes first, manual 2.1), leaving out a 2025 enrolment whose record number maps through the crosswalk to a patient enrolled earlier; inpatient diagnoses are those whose setting reads Inpatient or INPT.
 
 ## 4. Deliverable Answers
 
-### ground_closure_2027.xlsx
+### hf_programme_site_2027.xlsx
 
-1. Each ground's fall in haddock stock from its 2019 to 2021 average to 2026, whole percent:
-   - Skiravie Bank: 34%
-   - Halmorie Deep: 63%
-   - Moraskie Ground: 32%
-   - Brettach Bank: 52%
-   - Vallaskie Hole: 23%
-   - Cullardy Patch: 5%
-2. Haddock members landed at each port from 1 January to 30 September 2026, in tonnes live weight, and its value at first sale:
-   - Eastquay: 1,257 t; £2,512,050
-   - Kelmoor: 1,833 t; £3,582,185
-   - Tolsetter: 1,213 t; £2,387,574
-   - Haldness: 1,550 t; £3,059,583
-3. Haddock quota each pool had left on 30 September 2026, in tonnes:
-   - North trawl (N): 1,503
-   - East trawl (E): 1,079
-   - Twin rig (T): 670
-   - Seine net (S): 713
-   - Inshore (I): 250
+1. Each hospital's two-year survival from diagnosis, patients newly diagnosed with heart failure in 2022 and 2023 (whole percent):
+   - Gullhaven Hospital: 65%
+   - Fennick General Hospital: 67%
+   - Brenmoor Regional Medical Center: 68%
+   - Wrenhaven Medical Center: 72%
+   - Linmoor Hospital: 73%
+2. NT-proBNP tests each hospital's laboratory reported in 2025; of them, at or above 400 pg/mL:
+   - Fennick General Hospital: 10,639; 6,991
+   - Linmoor Hospital: 8,364; 5,460
+   - Brenmoor Regional Medical Center: 8,704; 5,718
+   - Gullhaven Hospital: 11,770; 7,723
+   - Wrenhaven Medical Center: 9,368; 6,040
+3. Patients newly diagnosed with heart failure at each hospital in 2025; of them, diagnosed during an inpatient stay:
+   - Fennick General Hospital: 795; 465
+   - Linmoor Hospital: 736; 417
+   - Brenmoor Regional Medical Center: 734; 404
+   - Gullhaven Hospital: 1,222; 723
+   - Wrenhaven Medical Center: 833; 494
 
-### closure_committee_2027.pptx
+### service_line_committee_hf_2027.pptx
 
-1. The recommendation on slide 1: close Halmorie Deep to towed gear in 2027, its fall 11 points more than Brettach Bank's.
-2. Line chart on slide 2 of each ground's haddock stock from 2019 to 2026 as a percentage of its 2019 to 2021 average, with the base drawn at 100 and Halmorie Deep highlighted.
+1. Recommendation: host the programme at Gullhaven Hospital, two-year survival 65%, 2 points below Fennick General Hospital's 67%.
+2. Chart of the five hospitals' two-year survival from diagnosis, lowest first, Gullhaven Hospital highlighted.

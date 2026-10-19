@@ -1,64 +1,65 @@
-"""Shared constants for task268: the Dunvarra Fish Producers' Organisation, its six haddock grounds, the autumn survey,
-the members' fleet, its landing ports and quota pools."""
+"""Shared constants for task268: Heronmere Health, its five hospitals, the heart failure registry and the 2027
+early-diagnosis programme."""
 import datetime as dt
 
-ORG = "Dunvarra Fish Producers' Organisation"
-ORG_LTD = ORG + " Ltd"
-ORG_SHORT = "Dunvarra FPO"
-PEOPLE = {"science": "Carol Thorpe", "ceo": "Iain Ali"}
+ORG = "Heronmere Health"
+ORG_INC = "Heronmere Health, Inc."
+REGISTRY = "Heronmere Heart Failure Registry"
+COMMITTEE = "Heart and Vascular Service Line Committee"
+PEOPLE = {"epi": "Louis Harrington", "director": "Megan Swanson"}
 
-PLAN_ADOPTED = dt.date(2026, 3, 24)        # the members' general meeting adopts the recovery plan
-RULES_ISSUED = dt.date(2026, 1, 12)        # the 2026 quota management rules
-MANUAL_REV = dt.date(2023, 9, 4)           # the survey manual, revision 3
-PACK_DATE = dt.date(2026, 11, 6)           # the science officer's evidence pack for the committee
-COMMITTEE = dt.date(2026, 12, 9)           # the management committee's December meeting
-AS_OF = dt.date(2026, 9, 30)               # the date the asks are taken at
+# the five hospitals: code, name, county (real Florida counties, used only to place the fictional hospitals)
+HOSPITALS = [("FEN", "Fennick General Hospital", "Pinellas"), ("LIN", "Linmoor Hospital", "Pasco"),
+             ("BRE", "Brenmoor Regional Medical Center", "Hernando"), ("GUL", "Gullhaven Hospital", "Citrus"),
+             ("WRE", "Wrenhaven Medical Center", "Hillsborough")]
+CODES = [h[0] for h in HOSPITALS]
+NAME = {h[0]: h[1] for h in HOSPITALS}
+SHORT = {"FEN": "Fennick", "LIN": "Linmoor", "BRE": "Brenmoor", "GUL": "Gullhaven", "WRE": "Wrenhaven"}
+COUNTY = {h[0]: h[2] for h in HOSPITALS}
+SATELLITE = ("BRN", "Brenmoor Regional Medical Center, North Campus")   # shared BRE's code until 1 July 2024
+SPLIT = dt.date(2024, 7, 1)
 
-YEARS = list(range(2019, 2027))
-BASE = [2019, 2020, 2021]
-LATEST = 2026
-PAPER_YEARS = [2019, 2020, 2021, 2022]     # paper trip forms
-ELOG_YEARS = [2023, 2024, 2025, 2026]      # the members' e-logbook app
+COHORT = (dt.date(2022, 1, 1), dt.date(2023, 12, 31))   # the programme charter's cohort
+YEARS_ENROLLED = (2022, 2023, 2024, 2025)
+MIGRATION = dt.date(2024, 6, 1)        # the record-number migration to the new electronic record
+MODULE_UPDATE = dt.date(2024, 11, 18)  # a registry module update overwrote diagnosis dates from the problem list
+MODULE_FIX = dt.date(2025, 2, 3)       # the release that stopped it
+RECONSENT = dt.date(2024, 4, 1)        # Wrenhaven's re-consent: patients who had not returned the form left follow-up
+DEATHS_TO = dt.date(2025, 12, 31)      # both death sources are complete to this date
+EXTRACT = dt.date(2026, 3, 31)         # the registry extract
+LAB_FROM, LAB_TO = dt.date(2025, 1, 1), dt.date(2026, 1, 6)   # the laboratory export: results released in this window
+CHARTER_DATE = dt.date(2026, 2, 17)
+MANUAL_DATE = dt.date(2025, 3, 3)
+PACK_DATE = dt.date(2026, 4, 14)
+REFERRAL = 400                          # pg/mL, the programme's referral level for NT-proBNP
 
-# the six grounds in Annex A order: name, code on the organisation's charts, how its depth runs
-GROUNDS = [("Skiravie Bank", "SKB", "bank"), ("Halmorie Deep", "HMD", "deep"), ("Moraskie Ground", "MRG", "slope"),
-           ("Brettach Bank", "BRB", "bank"), ("Vallaskie Hole", "VKH", "deep"), ("Cullardy Patch", "CLP", "slope")]
-GROUND_NAMES = [g[0] for g in GROUNDS]
-GROUND_CODE = {g[0]: g[1] for g in GROUNDS}
-CODE_GROUND = {g[1]: g[0] for g in GROUNDS}
+EXCHANGE = "Southeast Tri-State Vital Records Exchange"
+EXCHANGE_STATES = ("GA", "AL", "SC")
+STATES_NORTH = ["NY", "NJ", "PA", "OH", "MI", "IL", "MA", "CT", "IN", "WI", "MD", "MN", "VA", "NC", "TN", "KY"]
+STATE_W = [16, 9, 10, 12, 11, 8, 6, 4, 5, 4, 3, 3, 3, 3, 2, 2]
 
-# depth bands of the organisation's grid (Annex A), by a cell's charted depth
-BANDS = ["A", "B", "C"]
-BAND_LIMITS = {"A": (0, 100), "B": (100, 140), "C": (140, 400)}
-BAND_TEXT = {"A": "under 100 m", "B": "100 m to under 140 m", "C": "140 m and deeper"}
-STATIONS_PER_BAND = 12
-
-# the landing ports and their port letters; the quota pools
-PORTS = [("Eastquay", "EQ"), ("Kelmoor", "KR"), ("Tolsetter", "TL"), ("Haldness", "HN")]
-PORT_NAMES = [p[0] for p in PORTS]
-PORT_LETTERS = {p[0]: p[1] for p in PORTS}
-POOLS = [("N", "North trawl"), ("E", "East trawl"), ("T", "Twin rig"), ("S", "Seine net"), ("I", "Inshore")]
-POOL_CODES = [p[0] for p in POOLS]
-
-SPECIES = {"HAD": "Haddock", "COD": "Cod", "WHG": "Whiting", "POK": "Saithe", "HKE": "Hake", "MON": "Monkfish",
-           "LEM": "Lemon sole", "PLE": "Plaice", "WIT": "Witch"}
+CLASSES = ["I", "II", "III", "IV"]
+# the class as each era writes it: the legacy record (to 31 May 2024) and the new record (from 1 June 2024)
+SPELL_LEGACY = {0: ["I", "Class I"], 1: ["II", "Class II"], 2: ["III", "Class III"], 3: ["IV", "Class IV"]}
+SPELL_NEW = {0: ["1", "NYHA 1"], 1: ["2", "NYHA 2"], 2: ["3", "NYHA 3"], 3: ["4", "NYHA 4"]}
 
 FILES = {
-    "plan": "stock_recovery_plan_2026.pdf",
-    "grid": "ground_grid_annex_a.csv",
-    "paper": "tow_sheets_2019_2022.csv",
-    "elog": "elogbook_hauls_2023_2026.csv",
-    "survey": "survey_tows_2019_2026.csv",
-    "manual": "autumn_survey_manual_rev3.pdf",
-    "members": "member_vessels.xlsx",
-    "factors": "conversion_factors.csv",
-    "notes": "sales_notes_2026.csv",
-    "ledger": "quota_ledger_2026.csv",
-    "rules": "quota_rules_2026.pdf",
-    "temperature": "sea_temperature_rectangles_2019_2026.csv",
-    "gear_trial": "gear_trial_note_2025.pdf",
+    "patients": "hf_registry_patients.csv",
+    "visits": "hf_registry_visits_2022_2026.csv",
+    "events": "hf_registry_followup_events.csv",
+    "fl_deaths": "fl_death_linkage_2022_2025.xlsx",
+    "exchange": "tristate_exchange_deaths_2022_2025.txt",
+    "crosswalk": "mrn_crosswalk_2024.csv",
+    "hospitals": "hospital_reference.xlsx",
+    "lab": "ntprobnp_results_2025.csv",
+    "charter": "hf_early_diagnosis_programme_charter_2027.pdf",
+    "manual": "hf_registry_manual_v5.pdf",
+    "echo": "echo_lab_activity_2025.xlsx",
+    "clinics": "hf_clinic_sessions_2026.csv",
     "contents": "pack_contents.txt",
 }
-DISTRACTORS = ["temperature", "gear_trial"]
+DISTRACTORS = ["echo", "clinics"]
 
-PLAN_CLAUSES = {"closure": "4.1", "stock": "4.2", "season": "4.3"}
+CHARTER_CLAUSES = {"host": "3.1", "survival": "3.2", "referral": "2.3"}
+MANUAL_SECTIONS = {"enrolment": "2.1", "hospital": "2.2", "spelling": "3.2", "relocation": "3.3", "florida": "4.1",
+                   "exchange": "4.2", "no_source": "4.3", "reconsent": "4.4"}

@@ -17,26 +17,15 @@ import sys           # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import askworld as AW      # noqa: E402
 import common as K         # noqa: E402
-import docs as D           # noqa: E402
+import docs as DC          # noqa: E402
 import postprocess as PP   # noqa: E402
 import records as R        # noqa: E402
 import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
-EXPORT = dt.datetime(2026, 11, 6, 15, 12)               # the science office's pack, UK time (GMT)
+EXPORT = dt.datetime(2026, 4, 14, 16, 42)             # the committee pack, assembled by the outcomes team
 MTIME = calendar.timegm(EXPORT.timetuple())
-GEAR_TRIAL = [["Haddock 30 cm and over", "1,846.2", "1,712.9", "-7%"], ["Haddock under 30 cm", "212.4", "113.8", "-46%"],
-              ["Whiting", "934.7", "618.0", "-34%"], ["Cod", "288.3", "276.5", "-4%"], ["Saithe", "141.0", "139.2", "-1%"]]
-
-
-def world(seed=W.SEED):
-    T = W.build(seed)
-    T["licences"] = AW.licences(T)
-    T["notes"] = AW.sales_notes(T)
-    T["ledger"], T["ledger_info"] = AW.ledger(T, T["notes"], T["licences"])
-    return T
 
 
 def build(out, seed=W.SEED):
@@ -44,53 +33,37 @@ def build(out, seed=W.SEED):
         shutil.rmtree(out)
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
-    T = world(seed)
+    w = W.build(seed)
     n = {}
-    n["grid"] = R.write_grid(p("grid"), T)
-    n["paper"] = R.write_paper(p("paper"), T)
-    n["elog"] = R.write_elog(p("elog"), T)
-    n["survey"] = R.write_survey(p("survey"), T)
-    n["factors"] = R.write_factors(p("factors"))
-    n["members"] = R.write_members(p("members"), T, T["licences"])
-    n["notes"] = R._csv(p("notes"), ["note_no", "buyer_reg", "buyer", "issued", "port", "landing_date", "vessel_pln", "line",
-                                     "species", "presentation", "grade", "boxes", "weight_kg", "price_per_kg", "value_gbp"],
-                        AW.note_rows(T["notes"]))
-    n["ledger"] = R._csv(p("ledger"), ["entry_no", "effective", "posted", "pool", "licence", "type", "tonnes", "reference"],
-                         T["ledger"])
-    n["temperature"] = R.write_temperature(p("temperature"), T)
-    grounds = []
-    for g in K.GROUND_NAMES:
-        cs = [c for c in T["cells"] if c["ground"] == g]
-        grounds.append((g, K.GROUND_CODE[g], len(cs), sum(c["area"] for c in cs)))
-    D.write_plan(p("plan"), grounds)
-    st = {s["id"]: s for s in T["stations"]}
-    replaced = sorted((s["replaces"], s["id"]) for s in T["stations"] if s.get("replaces"))
-    missed = sorted(T["missed"])[0][0]
-    charter = sorted(T["vessels"], key=lambda v: v["name"])[3]["name"]
-    D.MANUAL_HISTORY[:] = []
-    for y in (2019, 2020, 2021, 2022):
-        ds = sorted(t["date"] for t in T["tows"] if t["year"] == y)
-        note = {2019: "first survey", 2020: "station %s not fished (weather)" % missed, 2021: "",
-                2022: "net torn at %s" % " and ".join(r[0] for r in replaced)}[y]
-        D.MANUAL_HISTORY.append((str(y), ds[0].strftime("%d %b"), ds[-1].strftime("%d %b"), len(ds), note))
-    D.write_manual(p("manual"), replaced, missed, charter)
-    D.write_rules(p("rules"))
-    D.write_gear_trial(p("gear_trial"), GEAR_TRIAL)
+    n["patients"] = R.write_patients(p("patients"), w)
+    n["visits"] = R.write_visits(p("visits"), w)
+    n["events"] = R.write_events(p("events"), w)
+    n["fl_deaths"] = R.write_fl_deaths(p("fl_deaths"), w)
+    n["exchange"] = R.write_exchange(p("exchange"), w)
+    n["crosswalk"] = R.write_crosswalk(p("crosswalk"), w)
+    n["hospitals"] = R.write_hospitals(p("hospitals"))
+    n["lab"] = R.write_lab(p("lab"), w)
+    n["echo"] = R.write_echo(p("echo"), w)
+    n["clinics"] = R.write_clinics(p("clinics"), w)
+    DC.write_charter(p("charter"))
+    DC.write_manual(p("manual"))
     from pypdf import PdfReader
-    for k in ("plan", "manual", "rules", "gear_trial"):
+    for k in ("charter", "manual"):
         n[k + "_pages"] = len(PdfReader(p(k)).pages)
-    D.write_contents(p("contents"), contents(n))
-    PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(p("members"), "Membership office", K.PEOPLE["science"], "2019-02-04T09:12:40Z",
-                       "2026-10-29T14:31:02Z", excel=True)
-    PP.normalize_pdf(p("plan"), b"D:20260325101208+00'00'", b"D:20260325101208+00'00'")
-    PP.normalize_pdf(p("manual"), b"D:20230904142231+01'00'", b"D:20230904153716+01'00'")
-    PP.normalize_pdf(p("rules"), b"D:20260112091544+00'00'", b"D:20260112093310+00'00'")
-    PP.normalize_pdf(p("gear_trial"), b"D:20251218113005+00'00'", b"D:20251218114420+00'00'")
+    DC.write_contents(p("contents"), contents(n))
+    PP.COMPANY = K.ORG_INC
+    PP.normalize_ooxml(p("fl_deaths"), "Bureau of Vital Statistics", "Bureau of Vital Statistics", "2026-03-06T14:02:51Z",
+                       "2026-03-06T14:09:37Z", excel=True)
+    PP.normalize_ooxml(p("hospitals"), "Registry team", K.PEOPLE["epi"], "2021-09-14T15:31:08Z", "2024-07-02T13:47:20Z",
+                       excel=True)
+    PP.normalize_ooxml(p("echo"), "Cardiac imaging", "Cardiac imaging", "2026-01-12T16:20:44Z", "2026-01-12T16:26:03Z",
+                       excel=True)
+    PP.normalize_pdf(p("charter"), b"D:20260217163314-05'00'", b"D:20260218091127-05'00'")
+    PP.normalize_pdf(p("manual"), b"D:20250303104406-05'00'", b"D:20250303112952-05'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
-    T["n"] = n
-    return T
+    w["n"] = n
+    return w
 
 
 def contents(n):
@@ -99,24 +72,22 @@ def contents(n):
     rw = lambda k: "{:,} rows".format(n[k])
     return [
         ["File", "What it holds", "Kept by", "As at", "Size"],
-        [F["plan"], "Haddock stock recovery plan, adopted 24 March 2026", "Management committee", "2026-03-24", pg("plan")],
-        [F["grid"], "Annex A to the plan: the grid cells of the six grounds", "Science office", "2026-03-24", rw("grid")],
-        [F["paper"], "Members' paper tow sheets 2019 to 2022, keyed in", "Science office", "2023-02-17", rw("paper")],
-        [F["elog"], "Members' e-logbook hauls, January 2023 to October 2026", "E-logbook app export", "2026-11-02", rw("elog")],
-        [F["survey"], "Autumn gear and bycatch survey tows, 2019 to 2026", "Science office", "2026-10-30", rw("survey")],
-        [F["manual"], "Autumn survey field manual, revision 3", "Science office", "2023-09-04", pg("manual")],
-        [F["members"], "Member vessels, their registrations and licences", "Membership office", "2026-10-29",
-         "%d vessels" % n["members"]],
-        [F["factors"], "Live-weight conversion factors used by the landings system", "Landings system", "2026-11-02",
-         rw("factors")],
-        [F["notes"], "Buyers' sales notes issued 1 January to 2 November 2026", "Landings system export", "2026-11-02",
-         rw("notes")],
-        [F["ledger"], "Haddock quota ledger 2026", "Quota office", "2026-11-03", rw("ledger")],
-        [F["rules"], "Quota management rules 2026: haddock", "Management committee", "2026-01-12", pg("rules")],
-        [F["temperature"], "Sea temperatures from members' net sensors, by rectangle and month", "Science office",
-         "2026-11-02", rw("temperature")],
-        [F["gear_trial"], "Square-mesh panel trial, autumn 2025: note to members", "Science office", "2025-12-18",
-         pg("gear_trial")],
+        [F["charter"], "Heart Failure Early Diagnosis Programme 2027: charter", "Service line committee", "2026-02-17",
+         pg("charter")],
+        [F["patients"], "Registry enrolments, January 2022 to March 2026", "HF registry team", "2026-03-31", rw("patients")],
+        [F["visits"], "Heart failure clinic visits of enrolled patients", "HF registry team", "2026-03-31", rw("visits")],
+        [F["events"], "Relocations and consent withdrawals", "HF registry team", "2026-03-31", rw("events")],
+        [F["manual"], "Heart failure registry manual, version 5", "HF registry team", "2025-03-03", pg("manual")],
+        [F["fl_deaths"], "Florida death certificate linkage, March 2026 run", "Bureau of Vital Statistics", "2026-03-06",
+         rw("fl_deaths")],
+        [F["exchange"], "Deaths returned by the Tri-State exchange", "Vital records exchange", "2026-03-12", rw("exchange")],
+        [F["crosswalk"], "Legacy to new medical record numbers", "Health information management", "2024-06-01",
+         rw("crosswalk")],
+        [F["hospitals"], "Hospital and campus codes", "HF registry team", "2024-07-02", "%d codes" % n["hospitals"]],
+        [F["lab"], "NT-proBNP results released 1 January 2025 to 6 January 2026", "Laboratory information system",
+         "2026-01-07", rw("lab")],
+        [F["echo"], "Echocardiography studies by month, 2025", "Cardiac imaging", "2026-01-12", "%d rows" % n["echo"]],
+        [F["clinics"], "Heart failure clinic sessions, 2026 timetable", "Clinic operations", "2026-01-05", rw("clinics")],
     ]
 
 
@@ -135,19 +106,19 @@ def main():
     ap.add_argument("--seed", type=int, default=W.SEED)
     a = ap.parse_args()
     if a.out:
-        T = build(a.out, a.seed)
-        print("pack:", T["n"])
+        w = build(a.out, a.seed)
+        print("pack:", w["n"])
         return
     target = os.path.join(TASK, "target")
-    T = build(target)
-    print("pack:", T["n"])
+    w = build(target)
+    print("pack:", w["n"])
     import deliver
-    deliver.write(target, os.path.join(TASK, "golden"), T)
+    deliver.write(target, os.path.join(TASK, "golden"), w)
     if a.golden:
         return
     import checks
-    checks.run(target, T)
-    r = os.system("python3 %s %s" % (os.path.join(HERE, "verify.py"), target))
+    checks.run(target, w)
+    r = os.system("python3 %s %s %s" % (os.path.join(HERE, "verify.py"), target, os.path.join(TASK, "golden")))
     assert r == 0, "verify failed"
     scratch = os.path.join(TASK, ".rebuild")
     build(scratch)
@@ -161,7 +132,7 @@ def main():
     import zipfile
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(target)):
-            zi = zipfile.ZipInfo("target/" + f, date_time=EXPORT.timetuple()[:6])
+            zi = zipfile.ZipInfo(f, date_time=EXPORT.timetuple()[:6])
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(target, f), "rb").read())

@@ -1,35 +1,35 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-18",
-  "stump": "The default path names Fennick General Hospital, about 63 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are mostly in NYHA class III or IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, about 60 per cent, as the lowest.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-19",
+  "stump": "The default path names Fennick General Hospital, 67 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are mostly in NYHA class III or IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, 65 per cent, as the lowest.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (asof 2026-04-14): sweeps 3, 4, 6 and 9, each harmless (design note build record)",
+    "reader": "round 1 (2026-10-19): the call missed (Kaplan-Meier, Fennick 67); Q1 the estimand only, Q6 an analytical choice; score_reader exit 1 on the gap's coincident 2 and Ask B 10 of 10 (re-enrolments found through the crosswalk), survival 4 of 5; fixed in one pass (Brenmoor's mix, Ask B's primary re-sited); round 2 running"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task134 v1 lineage 0.17, task265 0.15 (draw check)",
-    "surface": ""
+    "heart": "WARN (driver.near task134 v1 0.17 and task265 0.15; repeat.gate_g, overuse.gate_g, repeat.question_form against task249 v2), answered at the draw",
+    "nearest": "task134 ledger 0.12; task134 v1 lineage driver 0.10",
+    "surface": "eight pairs promoted near 0.10 or on card keys, answered by the card's differentiation lines; persona sweep: Megan Swanson"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1 DETERMINISTIC",
+    "disposition": "APPROVE (advisory: estimator and ask conventions unfiled, left so)",
+    "report": "determinism_check_report.md (round 2 running after the fix pass)"
   },
   "returned": [],
-  "resume": "Architecture 3 drawn 2026-10-18 (the slot's last): Heronmere Health's 2027 heart failure early-diagnosis programme, each hospital's two-year survival from diagnosis with the patients lost to a move beyond the death linkage carried from their NYHA class at the move. Next: stage 2 (readability screen, semantic fork table, ladder from the draw's prototype (the per-hospital age multipliers, the north and exchange move rates by class, the group departure share), ported into the generator, closure table, literal reader, oracles, ask sheet, prompt.txt) to precut exit 0, then the stage-3 generator.",
+  "resume": "Stage 4 round 2 on 2026-10-19: a fresh leak reader on the repaired pack and the judge (brief at /tmp/determinism-check-task268-r2/) after the fix pass (Brenmoor's mix, Ask B's overwritten diagnosis dates). Next: score_reader.py on round 2's reader.json; the judge's verdict; then ship (ledger rows for v1, v2 and v3, card current, target.zip and golden/ force-added) or, if the reader lands Gullhaven, retire the number.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,5 +37,5 @@
   "portal_status": "",
   "portal_status_date": "",
   "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
-  "seed_world": null
+  "seed_world": 28
 }

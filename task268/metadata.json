@@ -1,11 +1,11 @@
 {
   "distractor_files": [
-    "target/sea_temperature_rectangles_2019_2026.csv",
-    "target/gear_trial_note_2025.pdf"
+    "target/echo_lab_activity_2025.xlsx",
+    "target/hf_clinic_sessions_2026.csv"
   ],
   "deliverables": [
-    "ground_closure_2027.xlsx",
-    "closure_committee_2027.pptx"
+    "hf_programme_site_2027.xlsx",
+    "service_line_committee_hf_2027.pptx"
   ],
   "stated_inputs": []
 }

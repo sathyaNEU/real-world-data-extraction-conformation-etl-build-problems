@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Gullhaven Hospital: two-year survival 65%, 2 points below Fennick General Hospital's 67%",
+  "answer_source": "submission.md (block 1) and generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -47,8 +47,8 @@
   "role_family": "research_desk",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "hf_registry_visits_2022_2025.csv",
-    "rows": 0,
+    "file": "hf_registry_visits_2022_2026.csv",
+    "rows": 97172,
     "entity": "one heart failure clinic visit with the patient's NYHA class",
     "grain": "visit",
     "source": "synthetic"
@@ -61,7 +61,14 @@
     "currency": "USD",
     "org_type": "nonprofit health system",
     "invented_names": [
-      "Kestrel Coast Health"
+      "Heronmere Health",
+      "Heronmere Heart Failure Registry",
+      "Fennick General Hospital",
+      "Linmoor Hospital",
+      "Brenmoor Regional Medical Center",
+      "Gullhaven Hospital",
+      "Wrenhaven Medical Center",
+      "Southeast Tri-State Vital Records Exchange"
     ],
     "people": [
       "Louis Harrington",
@@ -83,7 +90,14 @@
   "stump": "A competent solver runs Kaplan-Meier for each hospital with follow-up ending at each recorded move beyond the death linkage and names the urban hospital lowest; the step that lands it there is treating those moves as uninformative, when at the retirement-coast hospital they are concentrated among patients whose class had worsened to III or IV, while the movers whose deaths the exchange does report are the healthier ones.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task453": "task453 v2 reads a measurement change's effect in a rotating panel occasion by occasion against the same occasion before the change; task268 v3 measures nothing that changes: the patients still followed thin out by clinical state as the frail move beyond the death linkage, and each lost patient's survival is carried from the class recorded at the loss"
+    "task453": "task453 v2 reads a measurement change's effect in a rotating panel occasion by occasion against the same occasion before the change; task268 v3 measures nothing that changes: the patients still followed thin out by clinical state as the frail move beyond the death linkage, and each lost patient's survival is carried from the class recorded at the loss",
+    "task267": "task267 inverse-weights a screen's capture rate where the reference test reached members by a known rule at one moment; task268 v3 has no verification design: the losses accrue visit by visit as the frail move beyond the death linkage, and the chance of loss is estimated from the clinical class each visit records",
+    "task266": "task266 counts spells that ended another way as if still open (competing endings); task268 v3's moves are true censoring, informative through the patient's worsening class",
+    "task263": "task263 apportions a level measured only in mixtures of running sources; task268 v3 estimates survival under follow-up that ends by clinical state",
+    "task459": "task459 reads an input-output ratio that bends with the operating level; task268 v3 carries each lost patient's survival from the class recorded at the loss",
+    "task127": "task127 sizes the part of a fused wait an intervention removes; task268 v3 estimates two-year survival under informative censoring",
+    "task150": "task150 projects counts from carry-on rates, steady arrivals and sibling transfers; task268 v3 is a time-to-event estimate whose risk set thins by clinical state",
+    "task455": "task455 resolves identifiers that continue an existing unit under a new number; task268 v3's record-number crosswalk is Layer 1 and its decisive step is the survival estimator"
   },
   "lineage": [
     {

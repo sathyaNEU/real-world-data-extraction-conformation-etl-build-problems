@@ -1,332 +1,409 @@
-"""Every figure, read from the shipped pack alone: each ground's haddock stock by year from the autumn survey (the
-golden, its variants and the lower rungs), the members' catch rates (the default path), and the two asks with each
-handling a response might take."""
+"""Every figure, computed from the shipped pack alone: the 2022 and 2023 cohort's follow-up assembled from the registry's
+patients, visits and follow-up events and the two death sources, each hospital's two-year survival under every route a
+solver might take (the ladder) and every form of the decisive estimator (the family), and the two asks with the
+handlings the cracker and the over-cleaners use."""
 import csv
 import datetime as dt
 import os
-from collections import defaultdict
 
 import numpy as np
 
 import common as K
 
-YEARS = K.YEARS
+CLASS = {"I": 0, "II": 1, "III": 2, "IV": 3, "Class I": 0, "Class II": 1, "Class III": 2, "Class IV": 3,
+         "1": 0, "2": 1, "3": 2, "4": 3, "NYHA 1": 0, "NYHA 2": 1, "NYHA 3": 2, "NYHA 4": 3}
+INPATIENT = {"IP", "Inpatient", "INPT"}
+HOSP = {"FEN": "FEN", "LIN": "LIN", "BRE": "BRE", "BRN": "BRE", "GUL": "GUL", "WRE": "WRE"}
+H = K.CODES
 
 
-def read_csv(path):
+def _rows(path, delim=","):
     with open(path, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+        return list(csv.DictReader(f, delimiter=delim))
+
+
+def _d(s):
+    return dt.date.fromisoformat(s)
 
 
 def load(pack):
     import openpyxl
-    p = lambda k: os.path.join(pack, K.FILES[k])
-    D = {k: read_csv(p(k)) for k in ("grid", "paper", "elog", "survey", "factors", "notes", "ledger")}
-    wb = openpyxl.load_workbook(p("members"), read_only=True)
-    sheet = lambda n: [r for r in wb[n].iter_rows(values_only=True)]
-    rows = sheet("Vessels")
-    D["vessels"] = [dict(zip(rows[0], r)) for r in rows[1:]]
-    rows = sheet("Registration history")
-    D["history"] = [dict(zip(rows[0], r)) for r in rows[1:]]
-    rows = sheet("Licences")
-    D["licences"] = [dict(zip(rows[0], r)) for r in rows[1:]]
-    wb.close()
-    D["cells"] = {r["cell"]: r for r in D["grid"]}
-    D["cell_rs"] = {(r["rectangle"], r["sub_square"]): r["cell"] for r in D["grid"]}
+    f = lambda k: os.path.join(pack, K.FILES[k])
+    D = dict(patients=_rows(f("patients")), visits=_rows(f("visits")), events=_rows(f("events")),
+             exchange=_rows(f("exchange"), "|"), crosswalk=_rows(f("crosswalk")), lab=_rows(f("lab")))
+    wb = openpyxl.load_workbook(f("fl_deaths"), read_only=True)
+    ws = wb["Linked deaths"]
+    D["fl"] = [dict(mrn=str(r[0]), dod=r[1].date() if hasattr(r[1], "date") else r[1])
+               for r in ws.iter_rows(min_row=2, values_only=True) if r[0]]
     return D
 
 
-# ---------------------------------------------------------------------------------------------- the survey
-def locate(D):
-    """Each survey tow's cell, found from its shot position and the grid's bounds."""
-    g = D["grid"]
-    lat_n = np.array([float(r["lat_north"]) for r in g])
-    lat_s = np.array([float(r["lat_south"]) for r in g])
-    lon_w = np.array([float(r["lon_west"]) for r in g])
-    lon_e = np.array([float(r["lon_east"]) for r in g])
+# ---------------------------------------------------------------------------------------------- the cohort
+def cohort(D, exchange_censors=False, basis="diagnosis", horizon=None, drop=(), exchange_deaths=True, raw_class=False):
+    """One record per patient newly diagnosed in 2022 or 2023: hospital, time to death or loss within two years (days
+    from diagnosis), and the clinic visits up to that time with the class each recorded. The keywords give the
+    readings the fork table and the mess tests compare: the cohort chosen by enrolment date or by first clinic visit,
+    two years as 730 days, patients dropped, the exchange's deaths left unread, the class kept as the record spells it."""
+    lo, hi = K.COHORT
+    leg2new = {r["legacy_mrn"]: r["new_mrn"] for r in D["crosswalk"]}
+    first = {}
+    if basis == "first_visit":
+        for r in D["visits"]:
+            v = _d(r["visit_date"])
+            if r["registry_id"] not in first or v < first[r["registry_id"]]:
+                first[r["registry_id"]] = v
+    pts = {}
+    for r in D["patients"]:
+        dx = _d(r["diagnosis_date"])
+        sel = {"diagnosis": dx, "enrolment": _d(r["enrolment_date"]),
+               "first_visit": first.get(r["registry_id"], dx)}[basis]
+        if not (lo <= sel <= hi) or not (lo <= dx) or r["registry_id"] in drop:
+            continue
+        mrn = r["mrn"]
+        c0 = r["nyha_at_diagnosis"] if raw_class else CLASS[r["nyha_at_diagnosis"]]
+        pts[r["registry_id"]] = dict(rid=r["registry_id"], h=HOSP[r["hospital"]], dx=dx, c0=c0,
+                                     new=leg2new.get(mrn, mrn), death=None, end=None, why=None, visits=[], exch=None)
+    by_new = {}
+    for p in pts.values():
+        by_new.setdefault(p["new"], []).append(p)
+    for r in D["fl"]:
+        for p in by_new.get(r["mrn"], []):
+            p["death"] = r["dod"] if p["death"] is None else min(p["death"], r["dod"])
+    for r in D["exchange"] if exchange_deaths else []:
+        p = pts.get(r["PARTNER_ID"])
+        if p:
+            d = dt.datetime.strptime(r["DOD"], "%Y%m%d").date()
+            p["death"] = d if p["death"] is None else min(p["death"], d)
+    for r in D["events"]:
+        p = pts.get(r["registry_id"])
+        if not p:
+            continue
+        d = _d(r["event_date"])
+        if r["event"] == "REL" and r["destination_state"] in K.EXCHANGE_STATES:
+            p["exch"] = d
+            if exchange_censors and (p["end"] is None or d < p["end"]):
+                p["end"], p["why"] = d, "exchange"
+            continue
+        if p["end"] is None or d < p["end"]:
+            p["end"], p["why"] = d, ("north" if r["event"] == "REL" else "consent")
+    for r in D["visits"]:
+        p = pts.get(r["registry_id"])
+        if p:
+            p["visits"].append((_d(r["visit_date"]), r["nyha_class"] if raw_class else CLASS[r["nyha_class"]]))
     out = []
-    for t in D["survey"]:
-        la, lo = float(t["shot_lat"]), float(t["shot_lon"])
-        k = np.nonzero((la < lat_n) & (la >= lat_s) & (lo >= lon_w) & (lo < lon_e))[0]
-        assert len(k) == 1, t
-        out.append(g[int(k[0])]["cell"])
+    for p in pts.values():
+        two = dt.date(p["dx"].year + 2, p["dx"].month, p["dx"].day) if horizon is None else p["dx"] + dt.timedelta(horizon)
+        hor = (two - p["dx"]).days
+        t_end = (p["end"] - p["dx"]).days if p["end"] is not None and p["end"] < two else None
+        t_death = (p["death"] - p["dx"]).days if p["death"] is not None and p["death"] <= two else None
+        if t_death is not None and (t_end is None or t_death <= t_end):
+            T, E, lost = t_death, 1, None
+        elif t_end is not None:
+            T, E, lost = t_end, 0, p["why"]
+        else:
+            T, E, lost = hor, 0, None
+        vis = sorted(((v - p["dx"]).days, c) for v, c in p["visits"] if 0 < (v - p["dx"]).days <= T)
+        # the whole observed history, for the projection's class changes and death rates: deaths to the sources'
+        # completeness date, follow-up to its end, visits to the extract
+        rel = lambda x: (x - p["dx"]).days if x is not None else None
+        out.append(dict(rid=p["rid"], h=p["h"], c0=p["c0"], T=T, E=E, lost=lost, hor=hor, visits=vis,
+                        last=vis[-1][1] if vis else p["c0"], d_full=rel(p["death"]),
+                        end_full=rel(p["end"]), why_full=p["why"], exch_full=rel(p["exch"]),
+                        obs_full=rel(K.DEATHS_TO), allvis=sorted(((v - p["dx"]).days, c) for v, c in p["visits"])))
+    out.sort(key=lambda x: x["rid"])
     return out
 
 
-def tows(D):
-    if "_tows" not in D:
-        cells = locate(D)
-        T = []
-        for t, c in zip(D["survey"], cells):
-            cell = D["cells"][c]
-            T.append(dict(year=int(t["survey_year"]), station=t["station"], ground=cell["ground"], band=cell["depth_band"],
-                          code=t["ground_code"], depth=int(t["depth_m"]), kg=float(t["haddock_kg"]), n=int(t["haddock_n"]),
-                          cell=c))
-        D["_tows"] = T
-    return D["_tows"]
+# ---------------------------------------------------------------------------------------------- estimators
+NDAY = 733
 
 
-def band_areas(D, weights="area"):
-    A = defaultdict(float)
-    for r in D["grid"]:
-        A[(r["ground"], r["depth_band"])] += float(r["area_km2"]) if weights == "area" else 1.0
-    return A
+def wkm(pts, weight=None):
+    """The product-limit estimate at each patient's own two-year date, with optional time-varying weights:
+    weight(p) returns [(from_day, w), ...] in increasing day order, the weight in force from that day on."""
+    N = np.zeros(NDAY + 2)
+    Dd = np.zeros(NDAY + 2)
+    for p in pts:
+        segs = weight(p) if weight else [(0, 1.0)]
+        T = p["T"]
+        for j, (s, w) in enumerate(segs):
+            e = segs[j + 1][0] if j + 1 < len(segs) else NDAY + 1
+            a, b = max(s, 1), min(e, T + 1)
+            if a < b:
+                N[a] += w
+                N[b] -= w
+        if p["E"]:
+            w = 1.0
+            for s, ww in segs:
+                if s <= T:
+                    w = ww
+            Dd[T] += w
+    N = np.cumsum(N)
+    S = 1.0
+    for t in range(1, NDAY + 1):
+        if Dd[t] > 0:
+            S *= 1.0 - Dd[t] / N[t]
+    return S
 
 
-def survey_index(D, weights="area", missed="drop", moved="keep", measure="kg", stat="mean", band_by="cell"):
-    """Each ground's stock by year: the mean haddock catch per tow in each depth band, weighted by the band's share
-    of the ground's stock area (weights='area'); 'cells' weights bands by their count of cells; 'tows' is the plain
-    mean of the ground's tows."""
-    T = tows(D)
-    if band_by == "depth":
-        T = [dict(t, band="A" if t["depth"] < 100 else ("B" if t["depth"] < 140 else "C")) for t in T]
-    if moved == "drop":
-        years = defaultdict(set)
-        for t in T:
-            years[t["station"]].add(t["year"])
-        full = {s for s, ys in years.items() if len(ys) >= len(YEARS) - 1}
-        T = [t for t in T if t["station"] in full]
-    val = (lambda t: t["kg"]) if measure == "kg" else (lambda t: t["n"])
-    if stat == "geo":
-        f = lambda xs: float(np.exp(np.mean(np.log(np.array(xs) + 1.0))) - 1.0)
-    else:
-        f = lambda xs: float(np.mean(xs))
-    by = defaultdict(list)
-    for t in T:
-        by[(t["ground"], t["year"], t["band"])].append(val(t))
-    if missed == "impute":
-        # the station missed in 2020 carried at its own other years scaled by its band's 2020 level
-        st = defaultdict(dict)
-        for t in T:
-            st[t["station"]][t["year"]] = (t["ground"], t["band"], val(t))
-        for s, ys in st.items():
-            if 2020 not in ys and min(ys) == 2019 and max(ys) == 2026:
-                g, b, _ = ys[2019]
-                others = [s2 for s2, y2 in st.items() if y2.get(2019, (None, None))[0:2] == (g, b) and 2020 in y2 and s2 != s]
-                lvl20 = np.mean([st[s2][2020][2] for s2 in others])
-                lvl = np.mean([np.mean([st[s2][y][2] for y in ys if y != 2020 and y in st[s2]]) for s2 in others])
-                own = np.mean([v[2] for y, v in ys.items()])
-                by[(g, 2020, b)].append(own * lvl20 / lvl if lvl > 0 else 0.0)
-    A = band_areas(D, weights if weights != "tows" else "area")
-    out = {}
-    for g in K.GROUND_NAMES:
-        out[g] = {}
-        for y in YEARS:
-            if weights == "tows":
-                xs = [x for b in K.BANDS for x in by[(g, y, b)]]
-                out[g][y] = f(xs)
-            else:
-                tot = sum(A[(g, b)] for b in K.BANDS)
-                out[g][y] = sum(A[(g, b)] * f(by[(g, y, b)]) for b in K.BANDS) / tot
-    return out
+def censor_rates(pts, key="visit", time_key=None):
+    """The chance a visit ends in a move north beyond the death linkage, by the class the visit recorded (or the class
+    at diagnosis), from every visit while the patient was followed."""
+    n = {}
+    m = {}
+    for p in pts:
+        for d, c in p["visits"]:
+            if d > p["T"]:
+                break
+            k = c if key == "visit" else p["c0"]
+            if time_key:
+                k = (k, min(8, int(round(d / 91.0))))
+            n[k] = n.get(k, 0) + 1
+            if p["lost"] in ("north", "exchange") and d == p["T"]:
+                m[k] = m.get(k, 0) + 1
+    return {k: min(0.9, m.get(k, 0) / n[k]) for k in n}
 
 
-def falls(index, latest=K.LATEST, base="avg", pooled=None):
-    out = {}
-    for g, ix in index.items():
-        b = np.mean([ix[y] for y in K.BASE]) if base == "avg" else pooled[g]
-        out[g] = 1.0 - ix[latest] / b
-    return out
-
-
-def pooled_base(D, weights="area"):
-    """The base as one stratified mean over the three base years' tows pooled."""
-    T = tows(D)
-    A = band_areas(D, weights)
-    out = {}
-    for g in K.GROUND_NAMES:
-        tot = sum(A[(g, b)] for b in K.BANDS)
-        out[g] = sum(A[(g, b)] * np.mean([t["kg"] for t in T if t["ground"] == g and t["band"] == b and t["year"] in K.BASE])
-                     for b in K.BANDS) / tot
-    return out
-
-
-def call(f):
-    order = sorted(f, key=lambda g: -f[g])
-    return dict(order=order, pick=order[0], runner=order[1], gap=f[order[0]] - f[order[1]],
-                margin=f[order[0]] / f[order[1]] if f[order[1]] > 0 else float("inf"))
-
-
-# ---------------------------------------------------------------------------------------------- the logbooks
-def pln_to_rss(D):
-    hist = defaultdict(list)
-    for h in D["history"]:
-        hist[h["PLN"]].append((h["RSS no"], h["Registered from"], h["Registered to"]))
-    return hist
-
-
-def _as_date(x):
-    if x is None or isinstance(x, dt.date) and not isinstance(x, dt.datetime):
-        return x
-    return x.date()
-
-
-def records(D):
-    """Every logbook record on the live-weight and hours basis: (year, ground, cell, vessel, month, hours, live kg)."""
-    if "_rec" in D:
-        return D["_rec"]
-    hist = pln_to_rss(D)
-    out = []
-    for r in D["paper"]:
-        cell = D["cells"][D["cell_rs"][(r["rectangle"], r["sub_square"])]]
-        day = dt.date.fromisoformat(r["landed"])
-        v = r["vessel_pln"]
-        for rss, a, b in hist.get(v, []):
-            if _as_date(a) <= day and (b is None or day <= _as_date(b)):
-                v = rss
-        out.append((day.year if day.year in YEARS else int(r["departed"][:4]), cell["ground"], cell["cell"], v,
-                    int(r["departed"][5:7]), float(r["hours_fished"]), float(r["haddock_kg"])))
-    for r in D["elog"]:
-        cell = D["cells"][r["cell"]]
-        s = dt.datetime.strptime(r["haul_start_utc"], "%Y-%m-%dT%H:%MZ")
-        e = dt.datetime.strptime(r["haul_end_utc"], "%Y-%m-%dT%H:%MZ")
-        out.append((s.year, cell["ground"], cell["cell"], r["vessel_rss"], s.month, (e - s).total_seconds() / 3600,
-                    float(r["had_gutted_kg"]) * 1.17))
-    D["_rec"] = out
-    return out
-
-
-def cpue_index(D, how="nominal"):
-    R = records(D)
-    out = {}
-    for g in K.GROUND_NAMES:
-        rs = [r for r in R if r[1] == g and r[0] in YEARS and r[5] > 0]
-        out[g] = {}
-        if how == "nominal":
-            for y in YEARS:
-                sel = [r for r in rs if r[0] == y]
-                out[g][y] = sum(r[6] for r in sel) / sum(r[5] for r in sel)
-        elif how == "cells":
-            area = {r["cell"]: float(r["area_km2"]) for r in D["grid"]}
-            for y in YEARS:
-                agg = defaultdict(lambda: [0.0, 0.0])
-                for r in rs:
-                    if r[0] == y:
-                        agg[r[2]][0] += r[6]
-                        agg[r[2]][1] += r[5]
-                out[g][y] = sum(area[c] * a[0] / a[1] for c, a in agg.items()) / sum(area[c] for c in agg)
-        elif how == "glm":
-            rs = [r for r in rs if r[6] > 0]
-            Y = np.log(np.array([r[6] / r[5] for r in rs]))
-            cols, X = [], []
-            for key, idx in (("y", 0), ("c", 2), ("v", 3), ("m", 4)):
-                lv = sorted({r[idx] for r in rs})
-                for j, l in enumerate(lv):
-                    if key != "y" and j == 0:
-                        continue
-                    cols.append((key, idx, l))
-            M = np.zeros((len(rs), len(cols)))
-            pos = {(k, l): j for j, (k, i, l) in enumerate(cols)}
-            for i, r in enumerate(rs):
-                for key, idx in (("y", 0), ("c", 2), ("v", 3), ("m", 4)):
-                    j = pos.get((key, r[idx]))
-                    if j is not None:
-                        M[i, j] = 1.0
-            beta = np.linalg.lstsq(M, Y, rcond=None)[0]
-            for y in YEARS:
-                out[g][y] = float(np.exp(beta[pos[("y", y)]]))
-    return out
-
-
-def ladder(D):
-    f = {}
-    f["R0"] = falls(cpue_index(D, "nominal"))
-    f["R1"] = falls(cpue_index(D, "glm"))
-    f["R1v"] = falls(cpue_index(D, "cells"))
-    f["R2"] = falls(survey_index(D, weights="tows"))
-    f["R3"] = falls(survey_index(D))
+def ipcw_weights(rates, key="visit", time_key=False, stab=None):
+    def f(p):
+        segs = [(0, 1.0)]
+        w = 1.0
+        num = 1.0
+        for d, c in p["visits"]:
+            if d >= p["T"]:
+                break
+            k = c if key == "visit" else p["c0"]
+            if time_key:
+                k = (k, min(8, int(round(d / 91.0))))
+            w /= 1.0 - rates.get(k, 0.0)
+            if stab is not None:
+                num *= 1.0 - stab
+            segs.append((d + 1, w * num))
+        return segs
     return f
 
 
+def ipcw(pts, key="visit", pool=None, time_key=False, stabilise=False):
+    rates = censor_rates(pool if pool is not None else pts, key, time_key)
+    stab = None
+    if stabilise:
+        n = sum(1 for p in pts for d, c in p["visits"] if d <= p["T"])
+        m = sum(1 for p in pts if p["lost"] == "north")
+        stab = m / n
+    return wkm(pts, ipcw_weights(rates, key, time_key, stab))
+
+
+def logistic_rates(allpts):
+    """A pooled logistic model of a visit ending in a move north: a term for each hospital and each class."""
+    X, y = [], []
+    for p in allpts:
+        for d, c in p["visits"]:
+            if d > p["T"]:
+                break
+            row = [1.0 if p["h"] == h else 0.0 for h in H] + [1.0 if c == k else 0.0 for k in (1, 2, 3)]
+            X.append(row)
+            y.append(1.0 if (p["lost"] == "north" and d == p["T"]) else 0.0)
+    X, y = np.array(X), np.array(y)
+    b = np.zeros(X.shape[1])
+    b[:5] = -6.0
+    lam = 1e-3
+    for _ in range(100):
+        eta = np.clip(X @ b, -30, 30)
+        mu = 1.0 / (1.0 + np.exp(-eta))
+        Wt = mu * (1 - mu) + 1e-12
+        g = X.T @ (y - mu) - lam * b
+        Hm = (X * Wt[:, None]).T @ X + lam * np.eye(X.shape[1])
+        step = np.linalg.solve(Hm, g)
+        step = np.clip(step, -2.0, 2.0)
+        b += step
+        if np.max(np.abs(step)) < 1e-10:
+            break
+    return {(h, c): 1.0 / (1.0 + np.exp(-np.clip(b[i] + (b[4 + c] if c else 0.0), -30, 30)))
+            for i, h in enumerate(H) for c in range(4)}
+
+
+def ipcw_logistic(pts, h, rates):
+    return wkm(pts, ipcw_weights({c: rates[(h, c)] for c in range(4)}))
+
+
+def gform(pts):
+    """The multi-state projection: one-quarter class changes and deaths by the class at a visit, estimated from every
+    patient's observed history, and every patient lost before two years carried from the class recorded at the loss
+    to the two-year date. An interval runs from a visit to the next visit when it was kept a quarter later (survived,
+    and the class it recorded); otherwise over a nominal quarter, counted only where a death or survival through it is
+    on record."""
+    Tn = np.zeros((4, 4))
+    Dn = np.zeros(4)
+    Nn = np.zeros(4)
+    for p in pts:
+        stop_clinic = min(x for x in (p["end_full"], p["exch_full"], 10 ** 6) if x is not None)
+        dead_seen = min(x for x in ((p["end_full"] if p["why_full"] in ("north", "consent") else None), p["obs_full"])
+                        if x is not None)
+        dd = p["d_full"] if p["d_full"] is not None and p["d_full"] <= dead_seen else None
+        vis = [(0, p["c0"])] + [v for v in p["allvis"] if v[0] <= stop_clinic]
+        for j, (d, c) in enumerate(vis):
+            if p["why_full"] == "north" and p["end_full"] is not None and d >= p["end_full"]:
+                break
+            if p["why_full"] == "consent" and p["end_full"] is not None and d >= p["end_full"]:
+                break
+            nxt = vis[j + 1] if j + 1 < len(vis) else None
+            if dd is not None and d < dd and (nxt is None or nxt[0] > dd):
+                if dd - d <= 91:
+                    Nn[c] += 1
+                    Dn[c] += 1
+                break
+            if nxt is not None and 60 <= nxt[0] - d <= 125:
+                Nn[c] += 1
+                Tn[c, nxt[1]] += 1
+                continue
+            # no visit kept a quarter later: a nominal quarter, survived if the record shows the patient alive past it
+            if d + 91 <= dead_seen and (dd is None or dd > d + 91):
+                Nn[c] += 1
+            if p["exch_full"] is not None and d >= p["exch_full"]:
+                break
+    Th = Tn / np.maximum(Tn.sum(1), 1)[:, None]
+    Dh = Dn / np.maximum(Nn, 1)
+    gform.last_fit = (Th, Dh)
+    tot = 0.0
+    for p in pts:
+        if p["E"]:
+            continue
+        if p["lost"] is None:
+            tot += 1.0
+            continue
+        v = np.zeros(4)
+        v[p["last"]] = 1.0
+        rem = (p["hor"] - p["T"]) / 91.0
+        full = int(rem)
+        for _ in range(full):
+            v = (v * (1 - Dh)) @ Th
+        frac = rem - full
+        tot += float((v * (1 - Dh * frac)).sum())
+    return tot / len(pts)
+
+
+def by_h(pts):
+    return {h: [p for p in pts if p["h"] == h] for h in H}
+
+
+def golden(D, **kw):
+    """The golden estimator (each hospital's patients weighted visit by visit by the inverse of the hospital's chance
+    of a move beyond the linkage at the class recorded) on the cohort under any of cohort()'s readings."""
+    G = by_h(cohort(D, **kw))
+    return {h: ipcw(G[h]) for h in H}
+
+
+def ladder(D):
+    """Each hospital's two-year survival under every rung and every form of the decisive estimator."""
+    C = cohort(D)
+    G = by_h(C)
+    Cx = by_h(cohort(D, exchange_censors=True))
+    logit = logistic_rates(C)
+    R = {}
+    for h in H:
+        g = G[h]
+        n = len(g)
+        R.setdefault("crude", {})[h] = 1 - sum(p["E"] for p in g) / n
+        known = [p for p in g if p["lost"] is None]
+        R.setdefault("complete_case", {})[h] = sum(1 for p in known if not p["E"]) / len(known)
+        R.setdefault("worst_case", {})[h] = sum(1 for p in g if not p["E"] and p["lost"] is None) / n
+        R.setdefault("km", {})[h] = wkm(g)
+        R.setdefault("km_exchange_censored", {})[h] = wkm(Cx[h])
+        R.setdefault("ipcw_diagnosis_class", {})[h] = ipcw(g, key="diagnosis")
+        R.setdefault("ipcw_pooled", {})[h] = ipcw(g, pool=C)
+        R.setdefault("golden", {})[h] = ipcw(g)
+        R.setdefault("ipcw_class_by_quarter", {})[h] = ipcw(g, time_key=True)
+        R.setdefault("ipcw_stabilised", {})[h] = ipcw(g, stabilise=True)
+        R.setdefault("ipcw_logistic", {})[h] = ipcw_logistic(g, h, logit)
+        R.setdefault("projection", {})[h] = gform(g)
+    R["_cohort"] = C
+    return R
+
+
+FAMILY = ["golden", "ipcw_class_by_quarter", "ipcw_stabilised", "ipcw_logistic", "projection"]
+WRONG = ["crude", "complete_case", "worst_case", "km", "km_exchange_censored", "ipcw_diagnosis_class", "ipcw_pooled"]
+
+
+def pick(v):
+    o = sorted(H, key=lambda h: v[h])
+    return o[0], o[1], v[o[1]] - v[o[0]]
+
+
 # ---------------------------------------------------------------------------------------------- Ask A
-def member_plns(D, current_only=False):
-    if current_only:
-        return {v["PLN"]: (dt.date(1900, 1, 1), None) for v in D["vessels"]}
-    out = {}
-    for h in D["history"]:
-        out.setdefault(h["PLN"], []).append((_as_date(h["Registered from"]), _as_date(h["Registered to"])))
-    return out
+def _num(t):
+    if t.startswith(">"):
+        return float(t[1:]) + 1.0
+    if t.startswith("<"):
+        return float(t[1:]) - 1.0
+    return float(t)
 
 
 def ask_a(D, handling="golden"):
-    """Each port's haddock landed by members from 1 January to 30 September 2026 (by landing date), tonnes live
-    weight and value at first sale. Handlings: golden, plain (the export as it stands, members by current letters),
-    session (one note a buyer a landing), lots (identical lots on a note collapsed), current (golden, current letters
-    only), issued (golden, by the note's issue date)."""
-    fac = {(r["species_code"], r["presentation_code"]): float(r["factor_to_live"]) for r in D["factors"]}
-    if handling in ("plain", "current"):
-        cur = {v["PLN"] for v in D["vessels"]}
-        is_member = lambda pln, day: pln in cur
-    else:
-        valid = member_plns(D)
-        is_member = lambda pln, day: any(a <= day and (b is None or day <= b) for a, b in valid.get(pln, []))
-    notes = defaultdict(list)
-    for r in D["notes"]:
-        notes[r["note_no"]].append(r)
-    keep = set(notes)
-    if handling not in ("plain",):
-        groups = defaultdict(list)
-        for no, ls in notes.items():
-            h = ls[0]
-            groups[(h["buyer_reg"], h["vessel_pln"], h["landing_date"], h["port"])].append(no)
-        for key, nos in groups.items():
-            if len(nos) < 2:
-                continue
-            if handling == "session":
-                last = max(nos, key=lambda n: (notes[n][0]["issued"], n))
-                keep -= set(nos) - {last}
-                continue
-            sig = lambda n: tuple(sorted((l["species"], l["presentation"], l["grade"], l["boxes"], l["weight_kg"]) for l in notes[n]))
-            bysig = defaultdict(list)
-            for n in nos:
-                bysig[sig(n)].append(n)
-            for s, ns in bysig.items():
-                if len(ns) > 1:
-                    last = max(ns, key=lambda n: (notes[n][0]["issued"], n))
-                    keep -= set(ns) - {last}
-    out = {p: [0.0, 0.0] for p in K.PORT_NAMES}
-    lo, hi = "2026-01-01", "2026-09-30"
-    for no in keep:
-        ls = notes[no]
-        if handling == "lots":
-            seen, kept = set(), []
-            for l in ls:
-                k = (l["species"], l["presentation"], l["grade"], l["boxes"], l["weight_kg"])
-                if k not in seen:
-                    seen.add(k)
-                    kept.append(l)
-            ls = kept
-        for l in ls:
-            if l["species"] != "HAD":
-                continue
-            day = l["issued"] if handling == "issued" else l["landing_date"]
-            if not (lo <= day <= hi):
-                continue
-            if not is_member(l["vessel_pln"], dt.date.fromisoformat(l["landing_date"])):
-                continue
-            out[l["port"]][0] += float(l["weight_kg"]) * fac[(l["species"], l["presentation"])] / 1000
-            out[l["port"]][1] += float(l["value_gbp"])
-    return {p: (v[0], v[1]) for p, v in out.items()}
+    rows = [r for r in D["lab"] if r["released"][:4] == "2025"]
+    if handling == "golden":
+        last = {}
+        for r in rows:
+            k = (r["performing_lab"], r["mrn"], r["collected"])
+            if k not in last or r["released"] > last[k]["released"]:
+                last[k] = r
+        rows = list(last.values())
+    elif handling == "first":
+        first = {}
+        for r in rows:
+            k = (r["performing_lab"], r["mrn"], r["collected"])
+            if k not in first or r["released"] < first[k]["released"]:
+                first[k] = r
+        rows = list(first.values())
+    elif handling == "day":
+        last = {}
+        for r in rows:
+            k = (r["performing_lab"], r["mrn"], r["collected"][:10])
+            if k not in last or r["released"] > last[k]["released"]:
+                last[k] = r
+        rows = list(last.values())
+    out = {h: [0, 0] for h in H}
+    for r in rows:
+        h = r["performing_lab"]
+        out[h][0] += 1
+        out[h][1] += _num(r["result"]) >= K.REFERRAL
+    return {h: tuple(v) for h, v in out.items()}
 
 
 # ---------------------------------------------------------------------------------------------- Ask B
-def ask_b(D, handling="golden", day="2026-09-30"):
-    """Each pool's haddock quota left on 30 September 2026: every ledger entry effective that day or before, the
-    pool-level copy of the 1 January allocation taken once. Handlings: golden, plain (every entry), blank (every entry
-    without a licence dropped), posted (by posting date), cancel (a lease cancelled later taken out from the start)."""
-    rows = D["ledger"]
-    cancelled = {r["reference"].replace(" cancelled", "") for r in rows if r["reference"].endswith(" cancelled")}
-    out = {p: 0.0 for p in K.POOL_CODES}
-    for r in rows:
-        when = r["posted"] if handling == "posted" else r["effective"]
-        if when > day:
+def diagnosed(r):
+    """The diagnosis date as the record supports it: the date shown, or the enrolment date where the record shows the
+    diagnosis after the enrolment (the diagnosis came on or before it)."""
+    return min(r["diagnosis_date"], r["enrolment_date"])
+
+
+def ask_b(D, handling="golden"):
+    """golden: by the supported diagnosis date, a 2025 enrolment of a patient enrolled before (through the crosswalk)
+    left out. plain: the registry as it stands, by the date shown. reader: the re-enrolments left out, by the date shown.
+    enrolment: the re-enrolments left out, by the enrolment date. dated: the supported date, the re-enrolments kept.
+    drop_crosswalked: by the supported date, every 2025 enrolment whose number is in the crosswalk dropped."""
+    leg2new = {r["legacy_mrn"]: r["new_mrn"] for r in D["crosswalk"]}
+    new_in_xwalk = set(leg2new.values())
+    when = {"golden": diagnosed, "dated": diagnosed, "drop_crosswalked": diagnosed,
+            "plain": lambda r: r["diagnosis_date"], "reader": lambda r: r["diagnosis_date"],
+            "enrolment": lambda r: r["enrolment_date"]}[handling]
+    enrolled_new = {}
+    for r in D["patients"]:
+        enrolled_new.setdefault(leg2new.get(r["mrn"], r["mrn"]), []).append(r)
+    out = {h: [0, 0] for h in H}
+    for r in D["patients"]:
+        if when(r)[:4] != "2025":
             continue
-        blank = r["licence"] == ""
-        if handling != "plain" and blank and r["type"] == "allocation":
-            continue
-        if handling == "blank" and blank:
-            continue
-        if handling == "cancel" and r["reference"] in cancelled:
-            continue
-        out[r["pool"]] += float(r["tonnes"])
-    return out
+        if handling in ("golden", "reader", "enrolment"):
+            if any(q["registry_id"] != r["registry_id"] and when(q) < when(r) for q in enrolled_new.get(r["mrn"], [])):
+                continue
+        elif handling == "drop_crosswalked":
+            if r["mrn"] in new_in_xwalk:
+                continue
+        h = HOSP[r["hospital"]]
+        out[h][0] += 1
+        out[h][1] += r["diagnosis_setting"] in INPATIENT
+    return {h: tuple(v) for h, v in out.items()}
+
+
+def asks(D):
+    return dict(a=ask_a(D), b=ask_b(D))
