@@ -1,27 +1,27 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "psychology-behavioral-science",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-19",
- "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files about 33 per cent of jobseekers' own contacts in the assistant for March and April; the overflow-redirected contacts in the record teach about a fifth as much as chosen ones, so the share is about 22 per cent.",
+ "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 26 per cent.",
  "architecture": 1,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-19 (one line, sweep 3, answered in the design note's ## Leak sweep; no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-19 (org overuse, gate_g repeat and overuse answered in the design note's Guard paragraph)",
+  "nearest": "task107 ledger row 0.07; drivers task242 0.06, task238 0.05"
  },
  "judge": {
   "verdict": "",
@@ -29,8 +29,8 @@
   "report": ""
  },
  "returned": [],
- "wave": "wave 8 (new), seed FC48: the world, the decision and the quantity kept (thirty unstaffed drop-off points opened in December and January with 15 bins of 1,100 litres, ten on the coast and twenty in town, five at the Larchmere lake enclave; forecast July average weekly fill at most 80 per cent of a point's bins; weekly emptying logs with side waste; the bin order by 15 March); the seed's filed 'of like demand', district-index decoy and holiday-home flag set aside",
- "resume": "stage 2: write the precut sections (default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet) and prompt.txt for the imposed-contact learning draw; precut.py exit 0",
+ "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -56,5 +56,25 @@
    "paper_only": "new points' ramp (FC04, task133's seed); peers' July completed past capacity (task168's driver); the two Julys weather-normalised (8 to 12 per cent, inside the bin); the summer holiday's start (the same late-July days in 2025 to 2027, no lever); deposits diverted from nearby points (no lever); dwellings times a kind's yield (determinate only under lockstep capture); the total July weekly fill (a flat uplift lands)",
    "prototypes": "scratchpad b177/proto: world1.py, world3.py, world4.py, p1.py to p11.py, typestats.py, sig6.py, screen177.py (output screen177.out, byte-identical with screen177_run2.out over two runs)"
   }
+ },
+ "stage3": {
+  "build": "generator/build.py 2026-10-19: checks.py PASS 92 of 92, verify.py PASS 24 of 24, a second full build byte-identical (18 files), target.zip cut from the final rebuild",
+  "figures_check": "exit 0 (42 figures)",
+  "voice_check": "PASS (735 characters)",
+  "precut": "exit 0 (51 checks)",
+  "scrub": "target and golden clean",
+  "surface": "exit 0; promoted pairs card-level only (task168, task70, task463, task104 differentiated on the card), no shared table schema",
+  "cracker": "pair ceiling 28.5, mirror leakage 0.0",
+  "call_keys": [
+   "call_share"
+  ],
+  "ask_keys": [
+   "ask_employers.<Month>",
+   "ask_own.<Month>"
+  ],
+  "component_keys": [
+   "ratio_words",
+   "share_af"
+  ]
  }
 }
