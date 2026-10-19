@@ -11,7 +11,7 @@
  "shape": "05",
  "decision_type": "allocation_to_total",
  "answer_unit": "count",
- "answer": "Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: IMM 14, MS 7, ONC 6, HCV 1, GLP 7, HIV 6, AST 4, CF 4, CGR 5.",
+ "answer": "",
  "answer_source": "submission.md block 1; the staffing workbook",
  "gap": [
   "population",
@@ -135,6 +135,6 @@
    "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
   }
  ],
- "notes": "Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE.",
+ "notes": "Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE. Architecture 3 spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break from the bimodal refill gaps and landed the call (Gate F). task468 RETIRED with three architectures spent.",
  "registered": "2026-10-19T05:07:57Z"
 }

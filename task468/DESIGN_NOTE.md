@@ -327,3 +327,18 @@ alike. The rebate statement is the ask's file and the projection never reads it.
   returns being rare before 2026), replaced by the record's own comparison of returners with continuing members and
   new starters. The rebate statement's repeated product-quarter amount (caught on sight by v2's reader) kept as a
   hazard; the primary moved to the contract year's February start.
+- 2026-10-19, architecture 3 spent at stage 4 (the specialty pharmacists by months in the current episode): the
+  isolated reader built persistence by time since episode start, an episode broken by a gap of more than 100 days,
+  because the refill gaps were a few days and the returns months, and landed the call (10 of 10; score_reader exit 1).
+  A clock the gap distribution displays is not silent; with the third architecture spent the number retires.
+
+## Retired
+
+task468 retired on 2026-10-19 with its third architecture spent, every card kept. Architecture 1 (the Larkhaven transit
+nominations, review weighted by its design) fell to four isolated readers and a NOT_DETERMINISTIC ask; architecture 2
+(specialty spend developed by months since first fill) was judged DETERMINISTIC and APPROVE and fell to one reader who
+took the tenure-conditioned projection as a first move; architecture 3 (developed by months in the current episode)
+fell to one reader who read the episodes off the bimodal refill gaps. The lesson the three share: a forward window over a
+record that displays the process invites the careful reader's persistence model, and every clock the record shows
+plainly (tenure, episode) is a reflex at medium effort. A stump in this world would need the quantity's driver to be
+absent from the claims (a process outside the window, or a selection the fills cannot show).

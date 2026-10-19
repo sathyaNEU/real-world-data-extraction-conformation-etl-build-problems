@@ -1,7 +1,7 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "RETIRED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
  "stage": 4,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-19 on target.zip 383f5fa8c9f39c33 (no LEAK)",
-  "reader": ""
+  "reader": "architecture 3 round 1: landed the call (10 of 10; episodes by a 100-day break read off the bimodal refill gaps), asks 17 of 28, rebates 0 of 9 (score_reader exit 1, Gate F)"
  },
  "duplicate_check": {
   "guard_check": "WARN only 2026-10-19 (repeat.gate_g against task249; driver.near against this slot's v2, differentiated)",
@@ -24,12 +24,13 @@
   "surface": "promotes task464 (surface 0.102, corpus top 1 per cent, same decisive gap) for the author; not adjudicated"
  },
  "judge": {
-  "verdict": "",
+  "verdict": "not run to completion",
   "disposition": "",
-  "report": ""
+  "report": "",
+  "note": "architecture 3's judge thread stopped once Gate F had spent the architecture; architecture 2's pass was DETERMINISTIC/APPROVE"
  },
  "returned": [],
- "resume": "stage 4 in flight: reader and judge spawned on target.zip 383f5fa8c9f39c33; on their reports score the reader (score_reader.py), read the judge, fix in one generator pass, then ship",
+ "resume": "retired 2026-10-19: three architectures spent (design note ## Retired); every card kept",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -58,6 +59,10 @@
   {
    "architecture": 2,
    "fate": "spent 2026-10-19: reader round 1 landed the call (score_reader exit 1); judge APPROVE"
+  },
+  {
+   "architecture": 3,
+   "fate": "spent 2026-10-19: reader round 1 landed the call (score_reader exit 1); the number retires with its third architecture spent"
   }
  ]
 }

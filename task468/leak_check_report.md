@@ -71,3 +71,25 @@ Realism notes, each answered: work orders against inventory flags lag by inspect
 - **Q6 what decided:** an analytical choice (projection by tenure from history); nothing planted.
 - **Verdict:** the decisive step is the careful reader's first move, not a silent rung, and the rebate device sits on
   the reader's path. Architecture 2 spent (Gate F).
+
+## Solver's-eye read
+
+Architecture 2's round is in git history (commit 26e34e23): it landed the call and 27 of 28 ask figures.
+
+### Round 1 on architecture 3 (target.zip 383f5fa8c9f39c33, sonnet at medium, fresh unzip, neutral brief)
+
+- **Figures:** the call 10 of 10 (54 pharmacists, every class), managed spend 8 of 9 (AST 6 against 5: its reader
+  banded the episode months 0-1, 1-2, 2-3, 3-4, 4-6, 6-9, 9-12, 12-24 and 24+ and used month ends from 2020 only,
+  putting AST at $5.58 million), rebates 0 of 9 (it read contract quarters as calendar quarters and valued each
+  quarter's claims units at the contract quarter's rate per unit, missing every class by 1 to 41 thousand).
+  score_reader.py: call landed, asks 17 of 28 (60.7 per cent). Gate F failed.
+- **Route:** conformed both files as the golden does; seeing the program year unobserved, it built persistence by time
+  since episode start, defining an episode by a break of more than 100 days because "fills within an episode are 0 to
+  3 days from continuous; real gaps are 120 days or more"; checked that the 2026 starters' second and third fills
+  persisted as earlier cohorts' did.
+- **Q1 decisive sentence:** none; the transition notes' early-2019 sentence read as a left-truncation hint.
+- **Q6 what decided:** an analytical choice (persistence by time since episode start); nothing planted.
+- **Verdict:** the episode clock is visible in the gap distribution itself (refills a few days apart, returns months
+  apart), so the careful reader's persistence model found it unprompted. Architecture 3 spent (Gate F). The rebate
+  device held, and the reader's banding moved AST's spend across a million edge, a determinism finding the retirement
+  makes moot.
