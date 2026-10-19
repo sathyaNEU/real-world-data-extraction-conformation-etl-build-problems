@@ -77,7 +77,7 @@ def main():
     import pandas as pd
     st = pd.to_datetime(pk.raw.reading_start_utc, utc=True)
     ok("S1 no OZ19B record in the window", not ((pk.raw.node_id == pk.spare) & (st >= w0) & (st < w1)).any())
-    ok("S2 every node on firmware 4.2 before the window", all(v < w0 for v in pk.fw.values()))
+    ok("S2 every node on firmware 4.2 before the window", all(v < w0 for v in pk.fw.values()) and len(pk.fw) == 36)
     old = st < pd.Timestamp("2020-01-01", tz="UTC")
     rec = pd.to_datetime(pk.raw.received_utc, utc=True)
     ok("S3 every record stamped from a restart clock arrived before the window", bool(old.any()) and (rec[old] < w0).all())
@@ -92,7 +92,8 @@ def main():
     pk._nodes(merge_spare=False)
     A_sp = pk.ask_a()
     pk._nodes()
-    ok("A1 the firmware device moves every node's hours", all(A_fw[c] > A[c] for c in pk.codes), min(A_fw[c] - A[c] for c in pk.codes))
+    ok("A1 the firmware device moves every node's hours, by the warm-ups before its update",
+       all(15 <= A_fw[c] - A[c] <= 30 for c in pk.codes), sorted(A_fw[c] - A[c] for c in pk.codes))
     ok("A6 the restart clocks move every node's hours", all(A_ck[c] < A[c] for c in pk.codes), min(A[c] - A_ck[c] for c in pk.codes))
     ok("A7 with both devices met wrong, every node's hours differ", all(A_both[c] != A[c] for c in pk.codes))
     ok("A8 the restart clocks re-timed from the log's restarts agree with the received times", _retime_log(pk))
@@ -132,7 +133,7 @@ def _retime_log(pk):
     st = pd.to_datetime(raw.reading_start_utc, utc=True)
     rec = pd.to_datetime(raw.received_utc, utc=True)
     old = st < pd.Timestamp("2020-01-01", tz="UTC")
-    storm = {c for c, town, _, _ in N.NODES if town in {"Villarejo de Mencia", "Campillo de Mencia", "Santa Cruz de Alcorna"}}
+    storm = {c for c, town, _, _ in N.NODES if town in {"Villarejo de Mencia", "Campillo de Mencia", "Peñalba de Alcorna"}}
     for i in raw.index[old]:
         node = raw.at[i, "node_id"]
         off = st[i] - pd.Timestamp("2000-01-01", tz="UTC")

@@ -24,8 +24,9 @@ def workbook(path, G):
     ws = wb.active
     ws.title = "Pull list"
     ws.append(["June 2028 round: span of every node over the eight weeks to 31 May 2028 (6 April to 31 May, local time)"])
-    ws.append(["Span read against the regional network's four analysers: the spread of the node's hourly ozone over the "
-               "window against the spread of the analysers' hourly ozone over the same window. Band 0.85 to 1.15 (QA plan v3, section 4)."])
+    ws.append(["Span read against the regional network's four analysers on the window's afternoon hours (hours starting 12:00 "
+               "to 17:00 local): the spread of the node's hourly ozone over those hours against the spread of the analysers' "
+               "pooled hourly ozone over the same hours. Band 0.85 to 1.15 (QA plan v3, section 4)."])
     ws.append([])
     head = ["Node", "Municipality", "Model", "Span", "June round", "Reads"]
     ws.append(head)
@@ -72,7 +73,9 @@ def workbook(path, G):
         "Afternoon hours only (12:00 to 18:00 local): at night the hill villages stand above the plain's surface inversion and "
         "keep ozone the analysers lose, so all-hours comparisons misread their heads.",
         "Data capture: hours in local time with at least one accepted reading (QA plan section 6); OZ19B's records are OZ19's "
-        "(maintenance log, 9 to 25 January 2028); status 1 was a warm-up before each node's firmware 4.2 (release note).",
+        "(maintenance log, 9 to 25 January 2028); before a node's firmware 4.2 date its status-1 records are the warm-up after "
+        "a restart, since humidity compensation came with 4.2; records stamped in 2000 come from a node's clock counting from "
+        "a restart and are placed by their received time.",
     ]
     for n in notes:
         ws4.append([n])

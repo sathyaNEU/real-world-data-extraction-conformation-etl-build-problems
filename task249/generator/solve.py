@@ -39,6 +39,10 @@ class Pack:
         for c, d in re.findall(r"(OZ\d\d)\s+(\d\d \w\w\w 2028)", text):
             out[c] = pd.Timestamp(dt.datetime.strptime(d, "%d %b %Y").replace(hour=10, tzinfo=MAD).astimezone(UTC))
         self.spare = re.search(r"reported as (OZ\d\dB)", text).group(1)
+        # the replaced node runs 4.2 from the spare's start (the firmware table gives it no date of its own)
+        m = re.search(r"(\d{1,2} \w{3} 2028)\s*(OZ\d\d): spare unit.*?up at\s*(\d{1,2}):(\d\d)", text, re.S)
+        out[m.group(2)] = pd.Timestamp(dt.datetime.strptime(m.group(1), "%d %b %Y").replace(
+            hour=int(m.group(3)), minute=int(m.group(4)), tzinfo=MAD).astimezone(UTC))
         return out
 
     def _nodes(self, dedup="latest", merge_spare=True, fw_aware=True, retime=True):

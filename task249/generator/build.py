@@ -17,7 +17,7 @@ FILES = {
     "provisional": "rrvca_o3_horario_provisional_2027-12_2028-05.csv",
     "weather": "meteo_alcorna_parque_2027-10_2028-05.csv",
     "dict": "DATA_DICTIONARY.md",
-    "contents": "folder_contents.md",
+    "contents": "indice_de_ficheros.md",
     "deliv_xlsx": "ozone_nodes_june_2028_round.xlsx",
     "deliv_pdf": "june_2028_pull_list.pdf",
 }

@@ -7,7 +7,7 @@ TOWNS = [  # municipality, analyser it sits around (index) or None, number of no
     ("Alcorna", 0, 6), ("Alcorna", 1, 4), ("Torralba del Campo", 2, 5), ("Villarejo de Mencia", 3, 5),
 ]
 VILLAGES = ["Navalcuerno", "Valdeolmos del Llano", "Hontanar de la Vega", "Fresnedilla del Campo",
-            "Villanueva de Alcorna", "Santa Cruz de Alcorna", "Campillo de Mencia", "Quintanar de Alcorna"]
+            "Villanueva de Alcorna", "Peñalba de Alcorna", "Campillo de Mencia", "Quintanar de Alcorna"]
 SITE_TYPES = ["school roof", "town hall roof", "health centre roof", "sports hall roof", "library roof"]
 
 
@@ -36,10 +36,10 @@ def layout():
 
 
 NODES = layout()
-HILL = {"Navalcuerno": 0.72, "Santa Cruz de Alcorna": 0.68, "Campillo de Mencia": 0.75, "Quintanar de Alcorna": 0.70}
+HILL = {"Navalcuerno": 0.72, "Peñalba de Alcorna": 0.68, "Campillo de Mencia": 0.75, "Quintanar de Alcorna": 0.70}
 ALT = {"Alcorna": 702, "Torralba del Campo": 688, "Villarejo de Mencia": 731, "Valdeolmos del Llano": 694,
        "Hontanar de la Vega": 676, "Fresnedilla del Campo": 712, "Villanueva de Alcorna": 705,
-       "Navalcuerno": 948, "Santa Cruz de Alcorna": 905, "Campillo de Mencia": 962, "Quintanar de Alcorna": 921}
+       "Navalcuerno": 948, "Peñalba de Alcorna": 905, "Campillo de Mencia": 962, "Quintanar de Alcorna": 921}
 CODES = [c for c, _, _, _ in NODES]
 MODEL_B = {"OZ03", "OZ08", "OZ12", "OZ15", "OZ19", "OZ22", "OZ24", "OZ27", "OZ29", "OZ31", "OZ33", "OZ35"}  # half-hourly
 # two nodes moved at the March cleaning round to a better roof in the same municipality: (new x, new y, date)

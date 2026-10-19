@@ -9,9 +9,9 @@
 
 **Take 8 nodes down for the bench at the June round: OZ06, OZ17, OZ21, OZ25, OZ29, OZ32, OZ33, OZ34.**
 
-OZ06 (Alcorna), OZ17 (Villarejo de Mencía), OZ21 (Navalcuerno), OZ25 (Hontanar de la Vega), OZ32 (Santa Cruz de Alcorna) read low and OZ29 (Villanueva de Alcorna), OZ33 (Campillo de Mencía), OZ34 (Campillo de Mencía) read high: each node's span over the eight weeks to 31 May 2028 (6 April to 31 May, local time) lies outside 0.85 to 1.15. The other 28 nodes stay up and get the inlet cleaning.
+OZ06 (Alcorna), OZ17 (Villarejo de Mencía), OZ21 (Navalcuerno), OZ25 (Hontanar de la Vega), OZ32 (Peñalba de Alcorna) read low and OZ29 (Villanueva de Alcorna), OZ33 (Campillo de Mencía), OZ34 (Campillo de Mencía) read high: each node's span over the eight weeks to 31 May 2028 (6 April to 31 May, local time) lies outside 0.85 to 1.15. The other 28 nodes stay up and get the inlet cleaning.
 
-Read over every hour of the eight weeks, the hill villages' nodes mislead: at night the plain's ozone is lost under the surface inversion while Navalcuerno, Santa Cruz de Alcorna, Campillo de Mencía and Quintanar de Alcorna stand above it and keep theirs, so their hourly spread is narrower than the analysers' for reasons that are not the head's. Every all-hours comparison reads a healthy hill node low and a hill node drifted high as healthy: the slope on paired hours against each node's nearest analyser gives 9 nodes (OZ06, OZ17, OZ21, OZ22, OZ25, OZ31, OZ32, OZ35, OZ36), and the spreads over all hours, which correct that slope's attenuation, give 9 (OZ06, OZ17, OZ21, OZ22, OZ25, OZ29, OZ31, OZ32, OZ36). In the convective afternoon the comarca shares one ozone, so each node's span is read on the hours starting 12:00 to 17:00 local, against the four analysers' pooled hours over the same afternoons.
+Read over every hour of the eight weeks, the hill villages' nodes mislead: at night the plain's ozone is lost under the surface inversion while Navalcuerno, Peñalba de Alcorna, Campillo de Mencía and Quintanar de Alcorna stand above it and keep theirs, so their hourly spread is narrower than the analysers' for reasons that are not the head's. Every all-hours comparison reads a healthy hill node low and a hill node drifted high as healthy: the slope on paired hours against each node's nearest analyser gives 9 nodes (OZ06, OZ17, OZ21, OZ22, OZ25, OZ31, OZ32, OZ35, OZ36), and the spreads over all hours, which correct that slope's attenuation, give 9 (OZ06, OZ17, OZ21, OZ22, OZ25, OZ29, OZ31, OZ32, OZ36). In the convective afternoon the comarca shares one ozone, so each node's span is read on the hours starting 12:00 to 17:00 local, against the four analysers' pooled hours over the same afternoons.
 
 ## 2. Critical Components
 
@@ -55,7 +55,7 @@ Read over every hour of the eight weeks, the hill villages' nodes mislead: at ni
 | OZ16 | Villarejo de Mencía | 2,142 |
 | OZ17 | Villarejo de Mencía | 2,115 |
 | OZ18 | Villarejo de Mencía | 2,139 |
-| OZ19 | Villarejo de Mencía | 2,035 |
+| OZ19 | Villarejo de Mencía | 2,104 |
 | OZ20 | Villarejo de Mencía | 2,136 |
 | OZ21 | Navalcuerno | 2,128 |
 | OZ22 | Navalcuerno | 2,162 |
@@ -67,8 +67,8 @@ Read over every hour of the eight weeks, the hill villages' nodes mislead: at ni
 | OZ28 | Fresnedilla del Campo | 2,029 |
 | OZ29 | Villanueva de Alcorna | 2,146 |
 | OZ30 | Villanueva de Alcorna | 2,141 |
-| OZ31 | Santa Cruz de Alcorna | 2,156 |
-| OZ32 | Santa Cruz de Alcorna | 2,136 |
+| OZ31 | Peñalba de Alcorna | 2,156 |
+| OZ32 | Peñalba de Alcorna | 2,136 |
 | OZ33 | Campillo de Mencía | 2,140 |
 | OZ34 | Campillo de Mencía | 2,127 |
 | OZ35 | Quintanar de Alcorna | 2,086 |

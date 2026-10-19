@@ -40,7 +40,10 @@ log = " ".join(p.extract_text() for p in PdfReader(f(r"maintenance_log")).pages)
 fw = {c: dt.datetime.strptime(d, "%d %b %Y").replace(hour=10, tzinfo=MAD).astimezone(UTC)
       for c, d in re.findall(r"(OZ\d\d)\s+(\d\d \w\w\w 2028)", log)}
 spare = re.search(r"reported as (OZ\d\dB)", log).group(1)
+m = re.search(r"(\d{1,2} \w{3} 2028)\s*(OZ\d\d): spare unit.*?up at\s*(\d{1,2}):(\d\d)", log, re.S)
+spare_up = dt.datetime.strptime(m.group(1), "%d %b %Y").replace(hour=int(m.group(3)), minute=int(m.group(4)), tzinfo=MAD).astimezone(UTC)
 check("log gives 35 firmware dates and OZ19 on 4.2 as the spare", len(fw) == 35 and "OZ19" not in fw)
+fw[spare[:-1]] = spare_up            # the replaced node runs 4.2 from the spare's start
 EPOCH = dt.datetime(2000, 1, 1, tzinfo=UTC)
 
 # the node export: the latest received record of each node and start

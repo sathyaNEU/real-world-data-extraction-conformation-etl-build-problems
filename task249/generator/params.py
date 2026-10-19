@@ -37,6 +37,6 @@ CONTRACTOR = "Servicios Ambientales Mencia S.L."
 CONTRACTOR_DOMAIN = "sam-mencia.es"
 VENDOR = "Ozonet Sensing"
 COORDINATOR = ("Matilde Criado", "mcriado")
-TECHNICIAN = ("Adan Ruano", "aruano")
+TECHNICIAN = ("Adán Ruano", "aruano")
 NETWORK_OFFICER = ("Edelmira Urrutia", "eurrutia")
 SCIENTIST = ("Paulino Cardona", "pcardona")

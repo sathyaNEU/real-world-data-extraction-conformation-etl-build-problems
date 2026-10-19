@@ -1,5 +1,6 @@
 """The pack's records: the nodes' export, the register, the regional network's releases and the station's weather."""
 import datetime as dt
+import unicodedata
 import math
 from zoneinfo import ZoneInfo
 import numpy as np
@@ -94,7 +95,7 @@ class World:
         true = self.true
         storm0, storm1 = utc_of_local(dt.datetime(2027, 11, 27, 14)), utc_of_local(dt.datetime(2027, 11, 27, 19))
         cut0, cut1 = utc_of_local(dt.datetime(2027, 12, 12, 8)), utc_of_local(dt.datetime(2027, 12, 14, 2))
-        storm_towns = {"Villarejo de Mencia", "Campillo de Mencia", "Santa Cruz de Alcorna"}
+        storm_towns = {"Villarejo de Mencia", "Campillo de Mencia", "Peñalba de Alcorna"}
         for i, (code, town, _, _) in enumerate(N.NODES):
             rng = np.random.default_rng(3000 + i)
             half = code in N.MODEL_B
@@ -249,7 +250,8 @@ class World:
             lon = P.LON0 + x / (111.0 * math.cos(math.radians(P.LAT0)))
             site = N.SITE_TYPES[int(r.integers(0, len(N.SITE_TYPES)))]
             alt = N.ALT[town] + int(r.integers(-14, 15))
-            rows.append((code, town, "%s-%02d" % (town[:3].upper(), i + 1), site, round(lat, 5), round(lon, 5), alt,
+            stem = unicodedata.normalize("NFKD", town[:3]).encode("ascii", "ignore").decode().upper()
+            rows.append((code, town, "%s-%02d" % (stem, i + 1), site, round(lat, 5), round(lon, 5), alt,
                          N.install_date(i).isoformat(), "OZN-B" if code in N.MODEL_B else "OZN-A",
                          "H%05d" % int(r.integers(40100, 49900))))
         return pd.DataFrame(rows, columns=["node_id", "municipality", "site_code", "mounting", "lat", "lon",

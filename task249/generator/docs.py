@@ -84,7 +84,7 @@ Content-Transfer-Encoding: 8bit
 
 Hola,
 
-Adan needs the pull list for the June round by tomorrow (his note below). It is
+Adán needs the pull list for the June round by tomorrow (his note below). It is
 the last round before the ozone season, so the list follows the quality plan as
 it stands: every node whose span over the eight weeks to 31 May is outside the
 band goes to the bench. The node export runs to 31 May (23:00 UTC) and the
@@ -112,7 +112,7 @@ usual inlet cleaning on the same visit.
 OZ14 and OZ30 are on their new roofs since March, as in my visit sheets.
 
 Un saludo,
-Adan Ruano
+Adán Ruano
 {P.CONTRACTOR}
 """
     with open(path, "w", encoding="utf-8") as fh:
@@ -230,7 +230,7 @@ def maintenance(path):
     s.append(Paragraph("Events", h2))
     ev = [["Date (local)", "Event"],
           ["27 Nov 2027", "Storm. Power cut 14:00 to 19:00 in Villarejo de Mencía, Campillo de Mencía and "
-                          "Santa Cruz de Alcorna; the nodes there restarted when power came back."],
+                          "Peñalba de Alcorna; the nodes there restarted when power came back."],
           ["12 to 14 Dec 2027", "The mobile operator moved the comarca to its new network. Links down from 08:00 on 12 "
                                 "December to 02:00 on 14 December. On reconnecting each node sent its buffer again (OZN-A "
                                 "keeps 24 hours, OZN-B 48 hours)."],
