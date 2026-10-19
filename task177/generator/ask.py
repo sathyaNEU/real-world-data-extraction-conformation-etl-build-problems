@@ -5,6 +5,9 @@ start and end times in UTC although the export's other channels carry Manitoba t
 service's own use: advisers in the staff console, the training team's and the digital channels team's accounts on
 the claimant channels (typed claimant until the vendor's release 3.4 re-typed them as staff), and the digital
 channels team's test employers on the employer portal, registered to Prairie Works Manitoba's own business number.
+Beside them the vendor's support desk works in the tenant's staff console under its own accounts, registered to
+Riverlot's business number: the vendor's use, not the service's. Employers' wage-subsidy claims fall due on each
+month's last day, and many are filed that evening.
 
 The truth here is what each ask's golden counts; calc.py recomputes every figure from the shipped files."""
 from __future__ import annotations
@@ -22,11 +25,18 @@ EMP_SEASON = (0.85, 0.90, 1.15, 1.30, 1.30, 1.20, 0.95, 0.85, 1.05, 1.00, 0.95, 
 EMP_HOURS = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.7, 1.4, 1.7, 1.6, 1.4, 1.1, 1.4, 1.5, 1.4, 1.1, 0.8, 0.70, 0.65,
              0.60, 0.50, 0.35, 0.15)
 EMP_WEEKEND = 0.22             # weekend activity relative to a weekday
+MONTH_END = (34.0, 21.0)       # employers' conversations on a month's last evening (a weekday, a weekend day)
+MONTH_END_HOURS = (0.6, 0.9, 1.2, 1.4, 1.5, 1.3, 0.8)   # 17:00 to 23:00, Manitoba time
+MONTH_END_DRAW = "k"
 TEST_EMPLOYERS = 5             # the digital channels team's test employer accounts
 TEST_PER_WEEK = 11.0           # their regression conversations a week, more in a release week
 INTERNAL_ACCOUNTS = 14         # training practice and test accounts on the claimant channels
 INTERNAL_PER_WEEK = 21.0
 CONSOLE_PER_WEEKDAY = 52.0     # advisers' conversations in the staff console
+VENDOR_ACCOUNTS = 7            # the vendor's support desk in the tenant's staff console
+VENDOR_PER_WEEKDAY = 1.3
+VENDOR_RELEASE = 9.0           # more on a release day and the day after
+VENDOR_CASE_P = 0.08           # a weekday the desk is working a case the service raised
 
 
 def _bns(rng, n):
@@ -34,7 +44,7 @@ def _bns(rng, n):
     out = []
     while len(out) < n:
         x = int(rng.integers(100000000, 999999999))
-        if x in nums or str(x) == C.BN:
+        if x in nums or str(x) in (C.BN, C.VENDOR_BN):
             continue
         nums.add(x)
         out.append(str(x))
@@ -114,22 +124,44 @@ def build_employers(rec):
                 acct = test_accts[int(rng.integers(0, TEST_EMPLOYERS))]
                 sessions += _sessions(rng, conv, local, _end_state(rng), 0.05, _emp_mk(rng, acct, C.BN))
                 truth.append((local, "test", conv))
+    _month_end(rate, joined, bns, accts, users, sessions, truth)
     rec.sessions_employer = sessions
     rec.employer_truth = truth
     rec.employer_bns = bns
     rec.legs_employer = _employer_line(rec, rng, bns, pairs)
 
 
-def _emp_mk(rng, acct, bn):
+def _emp_mk(rng, acct, bn, intent=None):
     def mk(conv, j, s, e, st):
         # the partner's widget writes UTC (no zone marker), unlike every other channel in the export
         su, eu = C.to_utc(s), C.to_utc(e)
         return dict(session_id="s_" + Rc.hexid("esess", conv, j), conversation_id=conv, account_ref=acct,
                     account_type="employer", org_ref=bn, channel="employer", call_ref="",
                     started=Rc.iso_local(su), ended=Rc.iso_local(eu), user_turns=int(rng.integers(2, 12)),
-                    assistant_turns=int(rng.integers(3, 14)), intent=_emp_intent(rng), end_state=st,
+                    assistant_turns=int(rng.integers(3, 14)), intent=intent or _emp_intent(rng), end_state=st,
                     release=Rc.release_at(s))
     return mk
+
+
+def _month_end(rate, joined, bns, accts, users, sessions, truth):
+    """wage-subsidy claims fall due on each month's last day: employers file them that evening and into the night
+    (drawn from their own stream, so the rest of the employer record is as drawn before)"""
+    rng = C.stream("ask/employers/month_end/" + MONTH_END_DRAW)
+    hp = np.array(MONTH_END_HOURS) / sum(MONTH_END_HOURS)
+    for mth in range(1, 13):
+        last = (dt.date(2026, mth, 28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
+        dd = (last - C.REC_START).days
+        live = np.flatnonzero(joined <= dd)
+        w = rate[live] / rate[live].sum()
+        for j in range(rng.poisson(MONTH_END[0] if last.weekday() < 5 else MONTH_END[1])):
+            e = int(live[int(rng.choice(live.size, p=w))])
+            local = dt.datetime.combine(last, dt.time(17 + int(rng.choice(len(hp), p=hp)))) + dt.timedelta(
+                seconds=int(rng.integers(0, 3600)))
+            acct = accts[e][int(rng.integers(0, users[e]))]
+            conv = "c_" + Rc.hexid("empme", bns[e], mth, j)
+            intent = "wage_subsidy" if rng.random() < 0.72 else None
+            sessions += _sessions(rng, conv, local, _end_state(rng), 0.08, _emp_mk(rng, acct, bns[e], intent))
+            truth.append((local, "employer", conv))
 
 
 EMP_INTENTS = ("job_posting", "wage_subsidy", "hiring_incentive", "account_access", "other")
@@ -197,7 +229,7 @@ def build_internal(rec):
             conv = "c_" + Rc.hexid("console", k)
             acct = advisers[int(rng.integers(0, len(advisers)))]
             sessions += _sessions(rng, conv, local, "resolved" if rng.random() < 0.8 else "abandoned", 0.02,
-                                  _local_mk(rng, acct, "staff", "console"))
+                                  _local_mk(rng, acct, "staff", "console", org=C.BN))
             truth.append((local, "console", conv))
     # training practice accounts and the digital team's test accounts on the claimant app and web
     internal = ["acc_" + Rc.hexid("internal", a, n=10) for a in range(INTERNAL_ACCOUNTS)]
@@ -217,14 +249,41 @@ def build_internal(rec):
             st = ("resolved", "handoff", "abandoned")[int(rng.choice(3, p=[0.55, 0.30, 0.15]))]
             sessions += _sessions(rng, conv, local, st, 0.06, _local_mk(rng, acct, atype, chan))
             truth.append((local, "internal", conv))
+    rec.vendor_truth = _vendor_support(sessions)
     rec.sessions_internal = sessions
     rec.internal_truth = truth
 
 
-def _local_mk(rng, acct, atype, chan):
+def _vendor_support(sessions):
+    """the vendor's support desk in the tenant's staff console (Kitchener, an hour ahead): its daily checks, the days
+    around each release and the cases the service raises with it; its accounts are registered to Riverlot's own
+    business number. Drawn from their own stream."""
+    rng = C.stream("ask/vendor_support")
+    desk = ["acc_" + Rc.hexid("rdsupport", a, n=10) for a in range(VENDOR_ACCOUNTS)]
+    rel_days = {t.date() for t, _ in Rc.RELEASES[1:]}
+    out = []
+    k = 0
+    for d in C.days(C.REC_START, C.REC_END):
+        if d.weekday() >= 5 or d in C.HOLIDAYS:
+            continue
+        lam = VENDOR_PER_WEEKDAY + (VENDOR_RELEASE if any(0 <= (d - r).days <= 1 for r in rel_days) else 0.0)
+        if rng.random() < VENDOR_CASE_P:
+            lam += rng.gamma(2.0, 4.0)
+        for _ in range(rng.poisson(lam)):
+            local = dt.datetime.combine(d, dt.time(7, 30)) + dt.timedelta(seconds=int(rng.integers(0, 8 * 3600 + 1800)))
+            k += 1
+            conv = "c_" + Rc.hexid("rdsupport", k)
+            acct = desk[int(rng.integers(0, VENDOR_ACCOUNTS))]
+            sessions += _sessions(rng, conv, local, "resolved" if rng.random() < 0.85 else "abandoned", 0.03,
+                                  _local_mk(rng, acct, "staff", "console", org=C.VENDOR_BN))
+            out.append((local, conv))
+    return out
+
+
+def _local_mk(rng, acct, atype, chan, org=""):
     def mk(conv, j, s, e, st):
         return dict(session_id="s_" + Rc.hexid("isess", conv, j), conversation_id=conv, account_ref=acct,
-                    account_type=atype, org_ref="", channel=chan, call_ref="", started=Rc.iso_local(s),
+                    account_type=atype, org_ref=org, channel=chan, call_ref="", started=Rc.iso_local(s),
                     ended=Rc.iso_local(e), user_turns=int(rng.integers(1, 10)), assistant_turns=int(rng.integers(2, 12)),
                     intent=Rc.INTENTS[int(rng.integers(0, len(Rc.INTENTS)))], end_state=st, release=Rc.release_at(s))
     return mk

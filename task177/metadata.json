@@ -13,8 +13,7 @@
  ],
  "distractor_files": [
   "overflow_episodes_2026.csv",
-  "post_contact_survey_2026.csv",
-  "vendor_invoices_2026.xlsx"
+  "post_contact_survey_2026.csv"
  ],
  "distractors": [
   {
@@ -30,13 +29,6 @@
    "why_relevant": "jobseekers' satisfaction with each channel, which looks like a driver of channel choice",
    "why_unused": "a 6 per cent sample with about three in ten answering; the choices and outcomes themselves are in the exports; no figure reads it",
    "ruled_out_by": "its own coverage (a sample of contacts)"
-  },
-  {
-   "file": "vendor_invoices_2026.xlsx",
-   "wrong_basis": false,
-   "why_relevant": "what the vendor billed in 2026, the order's own currency",
-   "why_unused": "it gives each month's billed tier band, not counts; no figure reads it",
-   "ruled_out_by": "its own columns"
   }
  ],
  "stated_inputs": [
@@ -72,7 +64,7 @@
   {
    "path": "assistant_first_rollout_plan.pdf",
    "format": "pdf",
-   "bytes": 54587,
+   "bytes": 54665,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, Ask Prairie Works 4.0 rollout plan version 1.4",
    "date": "2026-12-16",
@@ -81,8 +73,8 @@
   {
    "path": "assistant_sessions_2026.jsonl",
    "format": "jsonl",
-   "bytes": 38905755,
-   "rows": 118253,
+   "bytes": 39343984,
+   "rows": 119197,
    "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc. (fictional assistant vendor), session export for the Prairie Works tenant",
    "date": "2027-01-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -180,7 +172,7 @@
   {
    "path": "vendor_invoices_2026.xlsx",
    "format": "xlsx",
-   "bytes": 7098,
+   "bytes": 7265,
    "rows": 12,
    "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba accounts payable, the vendor's 2026 invoices",
    "date": "2027-01-04",

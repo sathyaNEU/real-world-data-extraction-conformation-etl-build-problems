@@ -9,28 +9,28 @@
  "updated": "2026-10-19",
  "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 26 per cent.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "card_registered": true,
  "precut": {
   "exit": 0,
   "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-19 (one line, sweep 3, answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-19 on the round 2 pack (four lines, each answered in the design note's ## Leak sweep; no LEAK)",
+  "reader": "round 1 on target.zip 2c536aaa: reader A call 11 (missed), asks 5 of 24 (exit 2); reader B call 13 (missed), asks 14 of 24 (exit 1, own use 12 of 12 through the accounts ever typed staff, employers February and July unconverted); repaired in the generator"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-19 (org overuse, gate_g repeat and overuse answered in the design note's Guard paragraph)",
   "nearest": "task107 ledger row 0.07; drivers task242 0.06, task238 0.05"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "round 1 on target.zip 2c536aaa: 26 reproduced at 26.0, one rate 39.7, trailing 13.7, every ask count; one weak fork (release 4.0's rate for the app and the web), closed by plan 1.3"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "stage 4 round 2: two scored readers and the re-judge",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -76,5 +76,13 @@
    "ratio_words",
    "share_af"
   ]
+ },
+ "round2": {
+  "zip_sha256": "2c11b94b6f21b973a4b7eb825faaed037ca6119732720e7f3f6b58a87928c8dd",
+  "repair": "ask B's primary re-sited onto the vendor's support desk in the staff console (org_ref 724906318, the supplier's GST/HST number on the invoices); ask A's clock moves every month (employers' month-end wage-subsidy filings, draw k); plan 1.3 files release 4.0's resolution for the app, the web and the voice service",
+  "moved_figures": "ask_employers (all twelve months); vendor_bn added; the call, both components and every other figure unchanged",
+  "build": "checks.py PASS 109 of 109 (J: the call's files and rows are the judged pack's), verify.py PASS 25 of 25, a second full build byte-identical (18 files)",
+  "gates": "figures_check exit 0 (43); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart WARN",
+  "cracker": "pair ceiling 28.5 (cracker and mirror keep 0 of 24 on the round 1 readers' paths), mirror leakage 0.0"
  }
 }

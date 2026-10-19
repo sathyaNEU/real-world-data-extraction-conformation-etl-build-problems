@@ -149,11 +149,13 @@ def fit(S, spec, starts=(0, 1)):
 
 
 def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone, p_over, reps=60, seed=1,
-             life=None, sched_af=None, sched_free=None):
+             life=None, sched_af=None, sched_free=None, p_chat=None, p_sent_free=None):
     """the expected share of the population's own contacts started in the assistant over the free days, after the
     assistant-first days (every phone choice met by the upgraded assistant). Each claimant makes sched_af and
     sched_free scheduled contacts in the two phases (none when not given) and further contacts at rate_day a day;
-    p_over is the share of free-day calls the overflow transfers; life (optional) each claimant's days left"""
+    p_over is the share of free-day calls the overflow transfers; life (optional) each claimant's days left. p_chat
+    and p_sent_free (optional, the semantic-fork rows only) resolve the conversations a claimant opens, and the
+    free days' transfers, at another rate than p_new"""
     rng = np.random.default_rng(seed)
     exp_persev = spec["persev"] == "experienced"
     tb = tt = 0.0
@@ -181,7 +183,16 @@ def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone
                 else:
                     rd = (~cb) & (rng.random(ii.size) < p_over)
                 gb = cb | rd
-                r = np.where(gb, rng.random(ii.size) < p_new, rng.random(ii.size) < p_phone).astype(float)
+                u1 = rng.random(ii.size)
+                u2 = rng.random(ii.size)
+                thr = p_new
+                if p_chat is not None or (p_sent_free is not None and phase == "free"):
+                    thr = np.full(ii.size, p_new)
+                    if p_chat is not None:
+                        thr = np.where(cb, p_chat, thr)
+                    if p_sent_free is not None and phase == "free":
+                        thr = np.where(rd, p_sent_free, thr)
+                r = np.where(gb, u1 < thr, u2 < p_phone).astype(float)
                 a = np.where(rd, P["a_forced"], P["a_free"])
                 b[ii] = np.where(gb, b[ii] + a * (r - b[ii]), b[ii])
                 p[ii] = np.where(~gb, p[ii] + P["a_free"] * (r - p[ii]), p[ii])

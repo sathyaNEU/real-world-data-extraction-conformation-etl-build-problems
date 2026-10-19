@@ -360,6 +360,13 @@ def semantic_forks(D, fi, rows, G, golden_of, P):
     ev["sf9"] = golden_of(D, fi, rows, P=P, aux_over=dict(p_phone=sum(r[4] for r in h2) / len(h2)))["share"]
     ev["sf10"] = golden_of(D, fi, rows, P=P, aux_over=dict(p_over=0.0))["share"]
     ev["sf6"] = golden_of(D, fi, rows, P=P, aux_over=dict(adhoc_day=K.adhoc_rate(D, rows) * 55.75 / 56))["share"]
+    ev["plan13"] = has(plan, "Rollout planning takes release 4.0 to resolve conversations in the app, on the web and on "
+                             "the voice service at the rate it resolved the acceptance test's conversations.")
+    chosen = [r[4] for r in rows if r[2]]
+    sent = [r[4] for r in rows if r[3]]
+    ev["p_chat26"], ev["p_voice26"] = sum(chosen) / len(chosen), sum(sent) / len(sent)
+    ev["sf15"] = golden_of(D, fi, rows, P=P, aux_over=dict(p_chat=ev["p_chat26"]))["share"]
+    ev["sf16"] = golden_of(D, fi, rows, P=P, aux_over=dict(p_sent_free=ev["p_voice26"]))["share"]
     pop = K.population(D)
     ev["no_later"] = all(v <= C.POP_DATE for v in pop.values())
     return ev
@@ -372,25 +379,50 @@ def fi_adhoc(rows, D):
 # ----------------------------------------------------------------------------------------------- the ask devices
 def ask_devices(D, fi, emp, own):
     out = []
-    flags = {"natural (no device found)": (False, False, False), "own business number found": (True, False, False),
-             "the widget's UTC found": (False, True, False), "the re-typed accounts found": (False, False, True)}
-    for label, f in flags.items():
-        e, o = K.ask_counts(D, bn=fi["bn"], own_bn=f[0], employer_utc=f[1], retyped=f[2])
-        he = sum(a == b for a, b in zip(e, emp))
-        ho = sum(a == b for a, b in zip(o, own))
-        if label.startswith("natural"):
-            out.append(("A cracker path, %s: every month of both asks missed" % label, he == 0 and ho == 0,
-                        "employers %d of 12, own use %d of 12" % (he, ho)))
-        else:
-            out.append(("A one device found (%s): the other devices still hold most months" % label,
-                        he + ho <= 6, "employers %d of 12, own use %d of 12" % (he, ho)))
-    e, o = K.ask_counts(D, bn=fi["bn"], own_bn=True, employer_utc=True, retyped=False)
-    out.append(("A the employers' figures need both the business number and the clock", sum(
-        a == b for a, b in zip(e, emp)) == 12 and sum(a == b for a, b in zip(o, own)) <= 3, ""))
+
+    def hits(own_bn, utc, retyped, vendor):
+        e, o = K.ask_counts(D, bn=fi["bn"], own_bn=own_bn, employer_utc=utc, retyped=retyped,
+                            vendor_bn=fi["vendor_bn"] if vendor else None)
+        return sum(a == b for a, b in zip(e, emp)), sum(a == b for a, b in zip(o, own))
+    he, ho = hits(False, False, False, False)
+    out.append(("A cracker path, natural (no device found): every month of both asks missed", he == 0 and ho == 0,
+                "employers %d of 12, own use %d of 12" % (he, ho)))
+    for label, f in (("own business number found", (True, False, False, False)),
+                     ("the widget's UTC found", (False, True, False, False)),
+                     ("the re-typed accounts found", (False, False, True, False)),
+                     ("the vendor's support desk found", (False, False, False, True))):
+        he, ho = hits(*f)
+        out.append(("A one device found (%s): the others still hold every month" % label, he == 0 and ho == 0,
+                    "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(True, False, True, False)
+    out.append(("A the business number and every account ever typed staff, clock as recorded: both asks missed every "
+                "month", he == 0 and ho == 0, "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(True, True, False, False)
+    out.append(("A the employers' figures need both the business number and the clock", he == 12 and ho == 0,
+                "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(True, False, True, True)
+    out.append(("A the widget's clock moves every month's employer count", he == 0 and ho == 12,
+                "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(True, True, True, False)
+    out.append(("A our own use needs the vendor's support desk left out, in every month", ho == 0,
+                "own use %d of 12" % ho))
+    he, ho = hits(True, True, False, True)
+    out.append(("A our own use needs the re-typed accounts, January to September", ho <= 3, "own use %d of 12" % ho))
+    he, ho = hits(True, True, True, True)
+    out.append(("A every device handled: both asks reproduce", he == 12 and ho == 12, ""))
     # each device is fair: one handling reproduces the truth, and the evidence ships
     n_bn = sum(1 for s in D["sessions"] if s["channel"] == "employer" and s["org_ref"] == fi["bn"])
     out.append(("A own business number on employer test accounts: on the order form and in the export",
                 n_bn > 0 and fi["bn"] == C.BN, "%d sessions" % n_bn))
+    first = {}
+    for s in D["sessions"]:
+        if s["channel"] == "console" and s["org_ref"] == fi["vendor_bn"]:
+            c = s["conversation_id"]
+            if c not in first or s["started"] < first[c]:
+                first[c] = s["started"]
+    per = [sum(1 for v in first.values() if v[:7] == "2026-%02d" % m) for m in range(1, 13)]
+    out.append(("A the vendor's support desk: its business number on the invoices, its accounts in the console every "
+                "month", fi["vendor_bn"] == C.VENDOR_BN and min(per) >= 8, "%s" % per))
     return out
 
 

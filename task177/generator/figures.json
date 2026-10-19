@@ -4,18 +4,18 @@
  "accept_n": 2400,
  "accept_resolved": 2041,
  "ask_employers": {
-  "April": 1656,
-  "August": 1360,
-  "December": 1172,
-  "February": 1020,
-  "January": 930,
-  "July": 1621,
-  "June": 1815,
-  "March": 1519,
-  "May": 1840,
-  "November": 1760,
-  "October": 1772,
-  "September": 1811
+  "April": 1686,
+  "August": 1399,
+  "December": 1203,
+  "February": 1040,
+  "January": 945,
+  "July": 1660,
+  "June": 1852,
+  "March": 1555,
+  "May": 1850,
+  "November": 1799,
+  "October": 1794,
+  "September": 1838
  },
  "ask_own": {
   "April": 1171,
@@ -102,5 +102,6 @@
  "share_one_rate": 40,
  "share_persev_exp": 28,
  "share_teach_nothing": 20,
- "share_unrounded": 0.2605
+ "share_unrounded": 0.2605,
+ "vendor_bn": "724906318"
 }

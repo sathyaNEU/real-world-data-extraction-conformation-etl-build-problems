@@ -59,6 +59,7 @@ def figures(target):
         p_new_pct=round(100 * Q["filed"]["p_new"], 1),
         cycle=Q["filed"]["cycle"],
         bn=Q["filed"]["bn"],
+        vendor_bn=Q["filed"]["vendor_bn"],
         accept_resolved=Q["filed"]["accept_resolved"],
         accept_n=Q["filed"]["accept_n"],
         p_phone_pct=round(100 * Q["aux"]["p_phone"], 1),
@@ -216,7 +217,9 @@ def write_workbook(path, F):
     c.font = bold
     ws4.cell(row=16, column=1, value="A conversation counts once, in the month its first session started, Manitoba "
                                      "time. The test employers registered to our own business number are our own use; "
-                                     "the employer widget writes UTC, moved here to Manitoba time.")
+                                     "the employer widget writes UTC, moved here to Manitoba time. Riverlot's support "
+                                     "desk works in the staff console under accounts registered to Riverlot's business "
+                                     "number; those conversations are the vendor's and are not counted.")
     for col, w in zip("ABC", (30, 24, 34)):
         ws4.column_dimensions[col].width = w
     ws5 = wb.create_sheet("Notes")
@@ -440,8 +443,10 @@ def write_submission(path, F):
         "5. Counted the conversations in %s once each, in the month their first session started, employer-widget times "
         "(written in UTC, as their hours and the employer line's calls a few minutes later show) moved to Manitoba time, "
         "with the employer accounts registered to Prairie Works Manitoba's own business number (%s, on %s) and the "
-        "accounts the vendor re-typed as staff on 14 September counted as our own use for the whole year: the monthly "
-        "counts below." % (C.F_CONV, C.BN, C.F_ORDER),
+        "accounts the vendor re-typed as staff on 14 September counted as our own use for the whole year, and the "
+        "staff-console accounts registered to Riverlot's business number (%s, its GST/HST number on %s) left out as "
+        "the vendor's own support desk: the monthly counts below." % (C.F_CONV, F["bn"], C.F_ORDER, F["vendor_bn"],
+                                                                       C.F_INVOICES),
         "",
         "## 4. Deliverable Answers",
         "",

@@ -284,10 +284,13 @@ def _band(tiers, v):
 
 
 def invoice_tiers(rec):
-    """the vendor bills sessions by the UTC month they start in, and voice by the started minute"""
+    """the vendor bills sessions by the UTC month they start in, and voice by the started minute; its own support
+    desk's sessions are not billed"""
     chat = [0] * 13
     voice = [0] * 13
     for s in rec.sessions_claimant + rec.sessions_employer + rec.sessions_internal:
+        if s["org_ref"] == C.VENDOR_BN:
+            continue
         t = dt.datetime.fromisoformat(s["started"])
         u = t if s["channel"] == "employer" else C.to_utc(t)
         if u.year != 2026:
@@ -310,13 +313,15 @@ def write_invoices(out, rec):
         ct_, vt = tiers[mth]
         fee = chat[ct_][1] + voice[vt][1]
         issued = dt.date(2026 + (mth == 12), 1 if mth == 12 else mth + 1, 4 if mth == 12 else 6)
-        rows.append(("RDI-INV-26%02d-0412" % mth, "2026-%02d" % mth, issued.isoformat(), ct_, chat[ct_][0], vt,
-                     voice[vt][0], fee, round(fee * 0.05, 2), round(fee * 1.05, 2)))
+        rows.append(("RDI-INV-26%02d-0412" % mth, C.VENDOR, C.VENDOR_BN + " RT0001", "2026-%02d" % mth,
+                     issued.isoformat(), ct_, chat[ct_][0], vt, voice[vt][0], fee, round(fee * 0.05, 2),
+                     round(fee * 1.05, 2)))
     wb = Workbook()
     ws = wb.active
     ws.title = "invoices_2026"
-    _sheet(ws, ("invoice_no", "service_month", "issued", "chat_tier", "chat_band", "voice_tier", "voice_band",
-                "fees_cad", "gst_cad", "total_cad"), rows, widths=[20, 14, 12, 10, 20, 10, 20, 12, 10, 12])
+    _sheet(ws, ("invoice_no", "supplier", "supplier_gst_hst", "service_month", "issued", "chat_tier", "chat_band",
+                "voice_tier", "voice_band", "fees_cad", "gst_cad", "total_cad"), rows,
+           widths=[20, 24, 18, 14, 12, 10, 20, 10, 20, 12, 10, 12])
     _save(wb, path, C.F_INVOICES)
 
 

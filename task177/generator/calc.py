@@ -33,7 +33,7 @@ def parse_utc(s):
     return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
 
 
-READS = (C.F_LEGS, C.F_CONV, C.F_CLAIMS, C.F_XWALK, C.F_PLAN, C.F_ACCEPT, C.F_ORDER)
+READS = (C.F_LEGS, C.F_CONV, C.F_CLAIMS, C.F_XWALK, C.F_PLAN, C.F_ACCEPT, C.F_ORDER, C.F_INVOICES)
 
 
 def load(target):
@@ -166,18 +166,20 @@ def forecast(D, spec="split", reps=200, seed=17, S=None, aux=None, P=None, fit_o
     sch = np.array([schedule(pop[k], aux.get("cycle", 14)) for k in keys])
     rate = aux.get("adhoc_day", 0.0)
     out = M.simulate(P, sp, qb, qp, la, np.full(len(keys), rate), AF_DAYS, WIN_DAYS, aux["p_new"], aux["p_phone"],
-                     aux["p_over"], reps=reps, seed=seed, sched_af=sch[:, 0], sched_free=sch[:, 1])
+                     aux["p_over"], reps=reps, seed=seed, sched_af=sch[:, 0], sched_free=sch[:, 1],
+                     p_chat=aux.get("p_chat"), p_sent_free=aux.get("p_sent_free"))
     out["P"] = P
     out["n_pop"] = len(keys)
     return out
 
 
 # ------------------------------------------------------------------------------------------------------------ asks
-def ask_counts(D, bn, own_bn=True, employer_utc=True, retyped=True):
+def ask_counts(D, bn, own_bn=True, employer_utc=True, retyped=True, vendor_bn=None):
     """for each month of 2026 (Manitoba time, a conversation in the month its first session started): conversations
-    employers held, and conversations the service's own staff and test accounts held. The three switches are the
-    handlings the golden takes: an employer account registered to the service's own business number is a test
-    account; the employer portal's widget records UTC; an account the vendor re-typed as staff was staff before."""
+    employers held, and conversations the service's own staff and test accounts held. The switches are the handlings
+    the golden takes: an employer account registered to the service's own business number is a test account; the
+    employer portal's widget records UTC; an account the vendor re-typed as staff was staff before; a staff-console
+    account registered to the vendor's business number (vendor_bn, from its invoices) is the vendor's, not ours."""
     first = {}
     for s in D["sessions"]:
         cid = s["conversation_id"]
@@ -199,6 +201,8 @@ def ask_counts(D, bn, own_bn=True, employer_utc=True, retyped=True):
             else:
                 emp[mth] += 1
         elif s["channel"] == "console":
+            if vendor_bn and s["org_ref"] == vendor_bn:
+                continue
             own[mth] += 1
         elif s["channel"] in ("app", "web"):
             if s["account_type"] == "staff" or (retyped and s["account_ref"] in staff_accounts):
@@ -226,8 +230,17 @@ def filed_inputs(target):
     order = " ".join(pdf_text(os.path.join(target, C.F_ORDER)).split())
     bn = re.search(r"Business number\s+(\d{9})", order).group(1)
     rel = re.search(r"Ask Prairie Works release (\d+\.\d+)", " ".join(acc.split())).group(1)
+    from openpyxl import load_workbook
+    ws = load_workbook(os.path.join(target, C.F_INVOICES), read_only=True).worksheets[0]
+    head = None
+    vendor = set()
+    for row in ws.iter_rows(values_only=True):
+        if head is None:
+            head = list(row)
+            continue
+        vendor.add(str(row[head.index("supplier_gst_hst")]).split()[0][:9])
     return dict(p_new=r / n, accept_n=n, accept_resolved=r, cycle=int(cyc.group(1)), plan_text=plan_flat,
-                accept_text=" ".join(acc.split()), order_text=order, bn=bn, release=rel)
+                accept_text=" ".join(acc.split()), order_text=order, bn=bn, release=rel, vendor_bn=vendor.pop())
 
 
 def solve(target, reps=400):
@@ -290,7 +303,7 @@ def solve(target, reps=400):
         prev = r
     out["next_choice"] = {k: (a[0] / a[1], a[1]) for k, a in nxt.items()}
     out["backtest"] = backtest(D, rows)
-    emp, own = ask_counts(D, bn=fi["bn"])
+    emp, own = ask_counts(D, bn=fi["bn"], vendor_bn=fi["vendor_bn"])
     out["ask_employers"] = emp
     out["ask_own"] = own
     return out

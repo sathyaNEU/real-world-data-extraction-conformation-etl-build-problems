@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -33,6 +34,24 @@ def check(label, ok, detail=""):
 
 def in_bin(v, target_pct):
     return C.pct(v) == target_pct
+
+
+# the pack the stage 4 readers and judge saw (target.zip 2c536aaa): the files the call reads that no ask touches
+JUDGED = {
+    "claims_register_2026.csv": "be407db35fc60906d6c75ea4265a610dcde1b03caa85e48726d707335972d9c2",
+    "contact_details_crosswalk.csv": "540a58def6081741c0c7409e6b686e310ffc66eca0dbf24d43559a2fb9faf208",
+    "contact_legs_2026.csv": "ec5472f533e9a09afb79a17b6634eb69200ddeede60e70f85a7e7df69b11b118",
+    "overflow_episodes_2026.csv": "64364c04a67d34d7131bdf1eb48e005bdce6cbe2146e673e058b6581ef69f07d",
+    "post_contact_survey_2026.csv": "7efb9911d46ea03cfe6fc8bfe493bb2650cf5858643f2ae413f7b2998ad74266",
+    "release4_acceptance_summary.pdf": "494012a7177cc5a535d1e7c3e3b397ac10c23386f874c14775d8ff2f5c4adeb9",
+    "telephony_migration_codes.xlsx": "c5500172f1e136515f510eb515c068b4726d54d65c49d1420dfd9b8ee1e22b94",
+    "usage_tier_order_form_2027.pdf": "f641b76233e2726fb3a66e2e03517b1215e619a71abb1b9941bdb9091a782358",
+}
+JUDGED_SESSIONS = "abce448196c2b03e7c268d0405abf37ff48440ee19c5e51fdc1f18f299a289cf"
+
+
+def sha(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
 
 
 def golden_of(D, fi, rows, spec="split", reps=200, seed=17, P=None, fit_rows=None, aux_over=None, pop=None):
@@ -245,9 +264,14 @@ def main(target):
           in_bin(r2["sessions' times read as UTC"], G))
     check("SF14 calls keyed by the case number or the caller's number: same call",
           in_bin(r2["calls keyed by the caller's number"], G))
+    check("SF15 release 4.0 resolves the conversations jobseekers open at its acceptance rate: plan 1.3; the 2026 rate "
+          "kept for them files another call", ev["plan13"] and not in_bin(ev["sf15"], G),
+          "%.4f with the 2026 rate %.3f" % (ev["sf15"], ev["p_chat26"]))
+    check("SF16 a transfer after 1 March meets release 4.0 on the voice service: plan 1.3", ev["plan13"],
+          "%.4f with the 2026 voice rate %.3f" % (ev["sf16"], ev["p_voice26"]))
 
     # --------------------------------------------------------------------------------------------- the asks
-    emp, own = K.ask_counts(D, bn=fi["bn"])
+    emp, own = K.ask_counts(D, bn=fi["bn"], vendor_bn=fi["vendor_bn"])
     truth_emp, truth_own = __import__("ask").golden_counts(rec)
     check("A the employers' counts equal the generator's truth", emp == truth_emp, "%s" % emp)
     check("A our own use equals the generator's truth", own == truth_own, "%s" % own)
@@ -258,6 +282,18 @@ def main(target):
     sep = LD.separation(D, rows)
     for label, ok, detail in sep:
         check(label, ok, detail)
+    # the stage 4 repair moved ask rows and the plan only: every file the call reads and no ask touches is the judged
+    # pack's byte for byte, and so are the call's own session rows
+    for f, h in JUDGED.items():
+        check("J unchanged since the judged pack: %s" % f, sha(os.path.join(target, f)) == h, "")
+    xw = {r["detail_value"] for r in D["xwalk"] if r["detail_type"] == "assistant_account"}
+    hh = hashlib.sha256()
+    with open(os.path.join(target, C.F_CONV), "rb") as fh:
+        for line in fh:
+            ss = json.loads(line)
+            if ss["channel"] == "voice" or ss["account_ref"] in xw:
+                hh.update(line)
+    check("J the call's own session rows are the judged pack's", hh.hexdigest() == JUDGED_SESSIONS, "")
 
     # --------------------------------------------------------------- the default path's own back-test (card 1)
     bt = K.backtest(D, rows)

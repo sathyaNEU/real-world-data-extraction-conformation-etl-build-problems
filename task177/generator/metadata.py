@@ -71,10 +71,6 @@ def write(task_dir):
              why_unused="a 6 per cent sample with about three in ten answering; the choices and outcomes themselves are "
                         "in the exports; no figure reads it",
              ruled_out_by="its own coverage (a sample of contacts)"),
-        dict(file=C.F_INVOICES, wrong_basis=False,
-             why_relevant="what the vendor billed in 2026, the order's own currency",
-             why_unused="it gives each month's billed tier band, not counts; no figure reads it",
-             ruled_out_by="its own columns"),
     ]
     meta = dict(
         task="task177", title=TITLE,

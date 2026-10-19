@@ -263,7 +263,10 @@ def main(target):
     t_loc = firsts.t0.copy()
     t_loc[emp_mask] = utc_to_winnipeg(firsts.t0[emp_mask])
     staff = set(sess[sess.account_type == "staff"].account_ref)
-    is_own = (firsts.channel == "console") | (emp_mask & (firsts.org_ref == bn)) | \
+    inv = pd.read_excel(os.path.join(target, "vendor_invoices_2026.xlsx"), dtype=str)
+    vendor_bn = set(inv.supplier_gst_hst.str.slice(0, 9))
+    ok("the vendor's business number, from its invoices", len(vendor_bn) == 1, ", ".join(sorted(vendor_bn)))
+    is_own = ((firsts.channel == "console") & ~firsts.org_ref.isin(vendor_bn)) | (emp_mask & (firsts.org_ref == bn)) | \
         (firsts.channel.isin(["app", "web"]) & firsts.account_ref.isin(staff))
     is_emp = emp_mask & (firsts.org_ref != bn)
     yr = t_loc.dt.year == 2026

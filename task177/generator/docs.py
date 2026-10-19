@@ -39,6 +39,8 @@ PLAN = [
         "1.1 Release 4.0 of Ask Prairie Works, the vendor's rebuilt assistant, replaces release 3.4 in the app, on the "
         "web and on the voice service at 06:00 on Monday 4 January 2027.",
         "1.2 Release 4.0 passed the vendor's acceptance test on 30 November 2026. The summary is filed with this plan.",
+        "1.3 Rollout planning takes release 4.0 to resolve conversations in the app, on the web and on the voice "
+        "service at the rate it resolved the acceptance test's conversations.",
     ]),
     ("2. Assistant-first weeks", [
         "2.1 From 06:00 on Monday 4 January to the end of Sunday 28 February 2027, Ask Prairie Works answers every call "
@@ -69,8 +71,8 @@ PLAN = [
     ]),
 ]
 PLAN_REVISIONS = ("Version 1.4 (16 December 2026): section 6 after the January and February order. Version 1.3 "
-                  "(9 December 2026): section 4 added. Version 1.2 (25 November 2026): dates confirmed with the "
-                  "vendor. Version 1.1 (2 November 2026): section 3.2.")
+                  "(9 December 2026): 1.3 and section 4 added. Version 1.2 (25 November 2026): dates confirmed with "
+                  "the vendor. Version 1.1 (2 November 2026): section 3.2.")
 
 ACC_DATE = dt.date(2026, 12, 1)
 ACC_TITLE = "Acceptance test summary, Ask Prairie Works release 4.0"

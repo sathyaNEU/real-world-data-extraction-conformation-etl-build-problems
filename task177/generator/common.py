@@ -15,6 +15,7 @@ ASSISTANT = "Ask Prairie Works"
 BN = "812447093"                       # Prairie Works Manitoba's own business number (the vendor's customer record)
 VENDOR = "Riverlot Dialogue Inc."
 VENDOR_CITY = "Kitchener, Ontario"
+VENDOR_BN = "724906318"                # Riverlot's business number (its GST/HST registration on every invoice)
 
 # ------------------------------------------------------------------------------------------------ the pack's files
 F_LEGS = "contact_legs_2026.csv"
@@ -32,7 +33,7 @@ F_SURVEY = "post_contact_survey_2026.csv"
 F_MANIFEST = "export_manifest.csv"
 ALL_FILES = (F_LEGS, F_CONV, F_CLAIMS, F_XWALK, F_CODES, F_OVERFLOW, F_PLAN, F_ACCEPT, F_ORDER, F_INVOICES,
              F_DICT, F_SURVEY, F_MANIFEST)
-DISTRACTORS = (F_OVERFLOW, F_SURVEY, F_INVOICES)
+DISTRACTORS = (F_OVERFLOW, F_SURVEY)
 
 # ------------------------------------------------------------------------------------------- the in-fiction calendar
 LAUNCH = dt.date(2026, 1, 5)            # Ask Prairie Works went live in the app and on the web (a Monday)

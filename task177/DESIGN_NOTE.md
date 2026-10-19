@@ -1,6 +1,12 @@
 # task177 design note
 
-**Status: stage 3 green, waiting on the stage 4 readers and judge (2026-10-19), architecture 1 in a new world.** The
+**Status: stage 4 round 1 fixed, waiting on the round 2 readers and the re-judge (2026-10-19), architecture 1 in a
+new world.** Round 1 on target.zip 2c536aaa: the judge DETERMINISTIC / APPROVE (26.0, one rate 39.7, the trailing
+13.7, every ask count); both scored readers missed the call (11 and 13 per cent) and kept 5 and 14 of the 24 ask
+figures. The repair re-sited ask B's primary (the vendor's support desk in the staff console), made the widget's clock
+move every month of ask A (employers' month-end filings), and filed release 4.0's resolution for every channel (plan
+1.3), the judge's one weak fork; the call, the stump and every call-side figure are unchanged and asserted against the
+judged pack (the J block in checks.py). The
 seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card was filed (its record is kept
 below under `## Seed world` and in `## Tried and rejected`). The redraw was handed the cell psychology-behavioral-science
 / decision-making-computational-behavioral-modeling and searched it by prototype on 2026-10-19: goals as reference
@@ -119,7 +125,7 @@ Lesson: an experience a person did not choose teaches them less than one they ch
 |---|---|---|---|---|---|---|---|
 | Contacts rebuilt across the two exports | plan 5.1, 5.2; dictionary | caller_entered, call_ref, conversation_id | yes | none | the joins | no | readable |
 | One-rate learning model fitted and back-tested (card route) | none | none | the field's textbook | none | no | no | readable |
-| The plan's weeks simulated with release 4.0's acceptance share | plan 2.1 to 4.1; acceptance summary | none | yes | none | no | no | readable |
+| The plan's weeks simulated with release 4.0's acceptance share | plan 1.3, 2.1 to 4.1; acceptance summary | none | yes | none | no | no | readable |
 | (decisive) A separate learning rate for the contacts the jobseeker did not choose | none: the plan routes calls and never says what a transfer teaches | the transfer is a routing fact on the queue leg; nothing marks how much it teaches | one rate for every contact is the reflex | none: no file scores a model | no sweep reaches it | no: a jointly fitted rate, not a ratio of counts | silent |
 
 ## Semantic fork table
@@ -140,6 +146,8 @@ Lesson: an experience a person did not choose teaches them less than one they ch
 | SF12 | rounding | the unrounded share rounded once, halves away | rounding the weeks first | same call | the prompt's rounding sentence |
 | SF13 | the order of a jobseeker's contacts | start times on one clock (legs UTC, sessions Manitoba time) | both read as one clock unconverted | same call (26.04, R2) | converges |
 | SF14 | a call keyed by its caller | the case number keyed on its first leg | the caller's number through the contact details | same call (26.07, R2) | converges |
+| SF15 | release 4.0's resolution of the conversations jobseekers open | the acceptance test's rate, as for calls | the 2026 assistant's rate (0.501) kept for the app and the web | 16 | plan 1.3 |
+| SF16 | a transfer's outcome after 1 March | release 4.0 on the voice service at the acceptance rate | the 2026 voice service's rate (0.496) | same call (25.98) | plan 1.3; converges |
 
 ## Ladder
 
@@ -166,7 +174,7 @@ no single correction walks the default path to the answer.
 | 2 Unit of account | a contact (a call, a conversation) | plan 5.1, 5.2; SF1 to SF3 |
 | 3 Attribution window | a contact in the window by the day it starts, Manitoba time | the prompt; SF6 converges |
 | 4 As-of dating | the record to 3 January 2027, the plan's dates after it | the exports' coverage (manifest), the plan |
-| 5 Version basis | release 4.0 at its acceptance share; the phone as in 2026 | plan 1.2, the summary; SF8, SF9 converge |
+| 5 Version basis | release 4.0 at its acceptance share on every channel; the phone as in 2026 | plan 1.2, 1.3, the summary; SF8, SF9, SF16 converge, SF15 ruled out |
 | 6 Denominator | every contact the population starts in the window | plan 5.1 |
 | 7 Weighting | contacts, not jobseekers | the prompt's "share of the contacts" |
 | 8 Window length | the fit on the whole record | C3: fitted to 31 October or on the population only, same figure |
@@ -189,18 +197,21 @@ no single correction walks the default path to the answer.
 
 The method is open and forced by the record: the reinforcement-learning family beats every reduced form on held-out
 choices by 1,419 log-likelihood units or more, and inside it the separate transfer rate beats one rate by 382 held
-out (1,419 on the whole record) and "transfers teach nothing" by 93. Executed word for word, the prompt fixes the population, window, outcome and rounding, and the plan's 2.1 to 5.2 fix
-the routing, the check-in and what a contact is; every reading the text leaves open (the window's clock, the intents'
-weighting, the phone's period, the overflow from 1 March, the fit's data, the starting values, the closures) gives
-26 per cent on the pack (SF6 to SF14, the family rows in checks.py), and the readings that do not (transfers as
-assistant starts, each jobseeker's own contact rate) each violate a quotable sentence of the plan.
+out (1,419 on the whole record) and "transfers teach nothing" by 93. Executed word for word, the prompt fixes the
+population, window, outcome and rounding, and the plan's 1.3 and 2.1 to 5.2 fix release 4.0's resolution on every
+channel, the routing, the check-in and what a contact is; every reading the text leaves open (the window's clock, the
+intents' weighting, the phone's period, the overflow from 1 March, a transfer's outcome after it, the fit's data, the
+starting values, the closures) gives 26 per cent on the pack (SF6 to SF14 and SF16, the family rows in checks.py), and
+the readings that do not (transfers as assistant starts, each jobseeker's own contact rate, the 2026 assistant's rate
+kept for the conversations jobseekers open) each violate a quotable sentence of the plan.
 
 ## Oracles
 
 - `overflow_episodes_2026.csv`: marks exactly the calls the legs mark as transferred (asserted); it confirms which
   contacts were imposed, never how much they teach, and ties under every reading.
-- `vendor_invoices_2026.xlsx`: each month's billed tier band only; no count to reconcile, so it ties under every
-  handling of the asks' devices.
+- `vendor_invoices_2026.xlsx`: each month's billed tier band and the supplier's GST/HST number; the bands are too
+  coarse to reconcile any count, so they tie under every handling of the asks' devices, and the number is ask B's
+  referee for the second organisation in the staff console.
 - `release4_acceptance_summary.pdf`: release 4.0's resolution, an input every route uses alike.
 - `export_manifest.csv`: each file's coverage; it ranks nothing.
 - None ranks the forecast or confirms a learning model.
@@ -211,73 +222,92 @@ assistant starts, each jobseeker's own contact rate) each violate a quotable sen
 `contact_legs_2026.csv`), the voice sessions their transfers met, the app and web conversations under accounts linked
 to a case in `contact_details_crosswalk.csv`, the register, the plan and the acceptance summary. Device and hazard rows
 in it: 0 (asserted, SEPARATION: no employer account and no account ever typed staff links to a case; the employer
-widget's rows are their own channel).
+widget's rows and the staff console's are their own channels). The round 1 repair touched none of it: the files the
+call reads and no ask touches, and the call's own session rows, are the judged pack's byte for byte (J in checks.py).
 
 **Ask A. For each month of 2026, the conversations employers held with Ask Prairie Works** (12 figures, whole
-conversations). Golden: 930, 1,020, 1,519, 1,656, 1,840, 1,815, 1,621, 1,360, 1,811, 1,772, 1,760, 1,172.
+conversations). Golden: 945, 1,040, 1,555, 1,686, 1,850, 1,852, 1,660, 1,399, 1,838, 1,794, 1,799, 1,203.
 - H18 home: a component of the March and April chat tiers the order commits to; employers' conversations ride the
   same tier as jobseekers'.
 - Basis: the asking sentence (a conversation once, in the month it started, Manitoba time); plan 5.2.
-- Primary A1 (D5 out-of-scope rows known only by structure, D9 totals invariant; silent): Digital Channels tests the
-  employer portal under five test employer accounts registered to Prairie Works Manitoba's own business number
-  (812447093, the customer's business number on the order form); the export types them employer like any employer
-  account, so counted as employers every month is high by 39 to 76. Fair: the order form names the number. Silent:
-  nothing in the export or the dictionary marks the accounts, and the invoices bill every conversation alike.
 - Primary A2 (D8 a clock against the month boundary, a per-source clock; silent): the employer portal's widget, built
-  by the vendor's integration partner, writes UTC with no zone marker where every other channel writes Manitoba time;
-  read as Manitoba time the conversations started on a month's last evening fall in the next month, moving ten of
-  twelve months by 1 to 13. Fair: the widget's hours (employer conversations peaking at 15:00 to 17:00 read as local)
-  and the employer line's calls a few minutes after an abandoned conversation (UTC on the legs, the widget's own
-  minute) show it. Silent: the dictionary describes started as when the session started, for every channel.
+  by the vendor's integration partner, writes UTC with no zone marker where every other channel writes Manitoba time.
+  Employers' wage-subsidy claims fall due on each month's last day and many are filed that evening and into the
+  night, so read as Manitoba time those conversations fall in the next month and every month moves, by 4 to 33
+  (January -15, February -5, March -21, April +6, May +27, June -33, July +6, August -6, September +19, October +4,
+  November -31, December +9). Fair: the widget's hours (employer conversations peaking at 15:00 to 17:00 read as
+  local, and the month-end filings at 00:00 to 05:00 on the 1st) and the employer line's calls a few minutes after an
+  abandoned conversation (UTC on the legs, the widget's own minute) show it. Silent: the dictionary describes started
+  as when the session started, for every channel.
+- A1 (D5 out-of-scope rows known only by structure, D9 totals invariant; found by both round 1 readers, so a hazard
+  now): Digital Channels tests the employer portal under five test employer accounts registered to Prairie Works
+  Manitoba's own business number (812447093, the customer's business number on the order form); counted as employers
+  every month is high by 39 to 76.
 - Hazards: sessions (a conversation reopened after a timeout keeps its conversation_id; plan 5.2 and the dictionary
   pin it).
-- Stops (each a complete pipeline, `cracker.py`): natural (channel employer, recorded month) 0 of 12; the business
-  number found 2 of 12; the clock found 0 of 12; both found 12 of 12.
+- Stops (each a complete pipeline, `cracker.py`): natural 0 of 12; the business number found (both round 1 readers)
+  0 of 12; the clock found 0 of 12; both found 12 of 12.
 - Span: the session export, the order form, the employer line's legs, the dictionary, the plan (5 files).
 - Realism: departments test their own portals under their own registration; an integration partner's widget logging
-  UTC beside a vendor's local-time export is how mixed integrations really ship.
+  UTC beside a vendor's local-time export is how mixed integrations really ship; claims due on a month's last day are
+  filed that evening.
 
 **Ask B. For each month of 2026, the conversations our own staff and test accounts held** (12 figures, whole
 conversations). Golden: 1,256, 1,148, 1,326, 1,171, 1,163, 1,217, 1,332, 1,161, 1,224, 1,208, 1,252, 1,244.
-- H18 home: the other component of the chat tiers; the vendor bills internal use like any other.
-- Primary B1 (D2 a label stored before a silent switch; silent): the training team's practice accounts and Digital
-  Channels' test accounts on the app and the web were created through the claimant sign-up and typed claimant; the
-  vendor's release 3.4 on 14 September 2026 re-typed them staff, and the export carries each session's type as it
-  stood, so counted by type January to September are low by 39 to 124. Fair: one account typed claimant before the
-  release and staff after, never linked to a case. Silent: the type is valid on every row.
-- A1 shared: the test employers' conversations are our own test use, low by 39 to 76 in every month on the natural
-  path.
-- Hazards: the staff console (typed staff all year), sessions against conversations.
-- Stops: natural 0 of 12; the business number found 3 of 12 (October to December); the re-typed accounts found 0 of
-  12; both 12 of 12.
-- Span: the session export, the order form, the crosswalk, the dictionary (4 files).
+- H18 home: the other component of the chat tiers; the vendor bills internal use like any other, and not its own
+  support desk's.
+- Primary B2 (D5 out-of-scope rows known only by structure, D9 a name agreement that lies; silent): Riverlot's support
+  desk works in the tenant's staff console under seven accounts of its own (its daily checks, the days around each
+  release, the cases the service raises), typed staff like ours. Ours carry Prairie Works Manitoba's business number
+  in org_ref; the desk's carry Riverlot's (724906318, the supplier's GST/HST number on every invoice in
+  `vendor_invoices_2026.xlsx`), on 572 of the console's 13,623 sessions. Counted as our staff, every month is high by
+  29 to 71. Fair: the console carries two business numbers, the order form's customer and the invoices' supplier.
+  Silent: the type is staff on every one of them, the dictionary describes org_ref for employer accounts only, and
+  nothing else in the pack names the desk.
+- B1 (D2 a label stored before a silent switch; one round 1 reader found it through the accounts' later staff rows,
+  so a hazard now): the training team's practice accounts and Digital Channels' test accounts on the app and the web
+  were created through the claimant sign-up and typed claimant until the vendor's release 3.4 re-typed them staff on
+  14 September 2026; counted by type, January to September are low by 39 to 124.
+- A1 shared: the test employers' conversations are our own test use, low by 39 to 76 in every month without it.
+- Hazards: the staff console (staff all year), sessions against conversations.
+- Stops: natural 0 of 12; the business number found (round 1 reader A) 0 of 12; the business number and every account
+  ever typed staff (round 1 reader B) 0 of 12; the business number and the vendor's desk 3 of 12 (October to
+  December); all three 12 of 12.
+- Span: the session export, the order form, the invoices, the crosswalk, the dictionary (5 files).
+- Realism: a vendor's support staff work inside a customer's tenant under their own organisation's accounts; a
+  platform records each staff user's organisation; a type-only migration leaves the re-typed accounts without one.
 
-**Hazard table:** sessions (both asks, every month, pinned); the employer widget's clock (ask A every month, ask B's
-test conversations); the own business number (both asks, every month).
+**Hazard table:** sessions (both asks, every month, pinned); the employer widget's clock (ask A every month, by 4 to
+33); the own business number (both asks, every month, 39 to 76); the vendor's support desk (ask B every month, 29 to
+71); the re-typed accounts (ask B, January to September, 39 to 124).
 
-**Referee:** the order form's business number, the only record of whose accounts the test employers are.
+**Referee:** the order form's business number (whose accounts the test employers and our console are) and the
+invoices' supplier GST/HST number (whose the desk's are), the only records of either.
 
-Pair ceiling: 28.5 (the cracker lands the call and keeps 0 of 24 ask figures; the mirror keeps 0 of 24; with the
-business number found the cracker would keep 5 of 24, a ceiling of 34.3)
+Pair ceiling: 28.5 (the cracker lands the call with every filed rule and both handlings the round 1 readers found,
+and keeps 0 of 24 ask figures; the mirror, off the call with the business number, keeps 0 of 24; a cracker finding
+the vendor's desk as well, or the widget's clock instead, keeps 12 of 24, a ceiling of 42.3)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/cracker.py
 
-| Ask | Cracker sheet (every filed rule, conversation grain, recorded month, channel and per-session type) | Hits | Verdict |
+| Ask | Cracker sheet (every filed rule, recorded month, the business number, every account ever typed staff) | Hits | Verdict |
 |---|---|---|---|
-| Ask A, employers' conversations, twelve months | employer channel, all accounts, recorded month | 0 of 12 | miss |
-| Ask B, our own staff and test conversations, twelve months | console and accounts typed staff, recorded month | 0 of 12 | miss |
+| Ask A, employers' conversations, twelve months | employer channel less the business number's accounts, recorded month | 0 of 12 | miss |
+| Ask B, our own staff and test conversations, twelve months | console, accounts ever typed staff and the business number's employer accounts | 0 of 12 | miss |
 
 ## Leak sweep
 
-`leak.py --asof 2027-01-04` on the final cut pack: REVIEW, one line (sweep 3), no LEAK; earlier sweeps of the same
-pack, taking their term list from an earlier draft of this note, also returned the two sweep 4 lines. Each, harmless:
+`leak.py --asof 2027-01-04` on the round 2 pack: REVIEW, four lines, no LEAK (earlier sweeps of this pack's round 1
+cut, taking their term list from earlier drafts of this note, returned the same kinds of line). Each, harmless:
+- Sweep 3, January's employer count 945 appears in the rollout plan: it is the exchange of the claimant line's number
+  (204-945-0100), not a count.
 - Sweep 3, the rollout plan carries 8 of 10 words of the committed call: they are the plan's own nouns for the
   estimand it files (jobseekers, the register, contacts they start, March and April); the plan states no share, no
   count and no forecast for any window.
-- Sweep 4, the rollout plan carries contact, overflow and claimant: the plan's routing vocabulary (the claimant line,
-  the overflow transfer back on from 1 March, what a contact is); it never says what a transfer does to a later choice.
-- Sweep 4, the prompt's question carries contacts and claimant-line: they name what is counted and the routing the
-  question conditions on, which the prompt has to state; neither names the learning model or the transfers.
+- Sweep 4, the acceptance summary carries window, routing and jobseeker: its test window, the assistant-first routing
+  its voice conversations followed, and what jobseekers asked in 2026; it reports release 4.0's resolution only.
+- Sweep 4, the prompt's question carries two terms of the note: they name what is counted and the routing the question
+  conditions on, which the prompt has to state; neither names the learning model or the transfers.
 
 ## Seed world (FC48), set aside on 2026-10-18
 
@@ -513,3 +543,16 @@ its group's surviving records), the same family by its label.
     transfers' rate about a fifth of the chosen rate, ratios 0.193 to 0.200; the gain over one rate more than 1,300 on
     the whole record, 1,419 with fixed starting values and 1,383 with them estimated); the workbook keeps the golden's
     own fit at two decimals.
+  - Ask B's primary on the re-typed accounts (round 1, target.zip 2c536aaa): one reader collected every account that
+    ever appears as staff and counted it staff all year (12 of 12 own-use months), and after the 14 September re-type
+    those accounts read as staff anyway, so the other reader kept October to December. Re-sited onto the vendor's
+    support desk in the staff console, which moves every month and which neither reader's path reaches; the re-typed
+    accounts stay as a hazard.
+  - Ask A's clock on the employers' ordinary evenings only (round 1): no employer conversation crossed February's
+    boundaries on balance (31 January and 28 February both Saturdays) nor July's (30 June and 31 July crossing in equal
+    numbers), and both readers kept those two months with the clock unconverted. Employers' month-end filings now move
+    every month; of twelve draws of their own stream (a to l) only k moves every month by 4 or more, and k was taken.
+  - The plan silent on release 4.0's resolution outside calls (round 1): the judge read 2.1 as filing the acceptance
+    rate for the claimant line only, and the 2026 assistant's rate (0.501) kept for the app and the web files 16. Plan
+    1.3 now files the planning assumption for every channel, the voice service's transfers after 1 March included
+    (25.98 at the 2026 voice rate, the same call).
