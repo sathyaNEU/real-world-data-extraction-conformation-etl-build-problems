@@ -12,7 +12,7 @@
  "decision_type": "ranked_slate_under_cap",
  "answer_unit": "set_of_items",
  "answer": "The Research Committee should name Quarndale and Thurlwick as the recruiting sites for ARV-1102.",
- "answer_source": "submission.md block 1 (the golden workbook's Recruiting sites sheet: Quarndale and Thurlwick, first clinic below Mosswick)",
+ "answer_source": "task270/submission.md, block 1 (Final Recommendation); retired 2026-10-19, not shipped",
  "gap": [
   "population"
  ],
@@ -177,6 +177,7 @@
    "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers took the claims above 2,500 pounds as fully reported and scaled them by the protected policies' share above that size, landing the call and the first region below; readers 1 to 5 filed the reported or uplifted band; reader 5 took all 32 ask figures. Section 2.1's counterfactual wording says a correction is owed, and claim sizes by step show where the scale stops mattering, so the recovery is reachable for a strong reader."
   }
  ],
- "notes": "Re-rooted 2026-10-19 (architecture 3, the slot's last). Prototype in scratch (t270c3/proto, gen/scan3.py, family.py): each patient on their own random stream; the world's parameters searched over 1,200 simulated worlds and the seed over 180; seed 521 holds the golden pair, the first clinic below, the naive pair and every shortcut in routes.py with margin, and the estimator family closes on the half-point grid. scoring_unit other: a trial site is chosen on its patients' decline, paid per recruited patient by the sponsor, which no vocabulary unit names.",
- "registered": "2026-10-19T15:34:26Z"
+ "notes": "Re-rooted 2026-10-19 (architecture 3, the slot's last). Prototype in scratch (t270c3/proto, gen/scan3.py, family.py): each patient on their own random stream; the world's parameters searched over 1,200 simulated worlds and the seed over 180; seed 521 holds the golden pair, the first clinic below, the naive pair and every shortcut in routes.py with margin, and the estimator family closes on the half-point grid. scoring_unit other: a trial site is chosen on its patients' decline, paid per recruited patient by the sponsor, which no vocabulary unit names. Architecture 3 spent 2026-10-19 at stage 4 round 2 (Gate F): with the outcome filed in the paper's 3.1 (\"a change in a patient's scores that the test itself produces is not part of it\"), both scored readers estimated the second-sitting gain within patients over each whole record and landed Quarndale and Thurlwick; round 1's readers had missed the call with the outcome unfiled, and the judge had sent the unfiled outcome back, so filing the WHAT handed over the HOW. task270 retired; architecture_spent set so the card holds no axis ban.",
+ "registered": "2026-10-19T15:34:26Z",
+ "architecture_spent": true
 }

@@ -34,3 +34,8 @@ Stump terms swept: patient, sitting, sittings, thurlwick, quarndale, change, sec
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Isolated readers (stage 4)
+
+- Round 1 (target.zip e137a4a3, the outcome unfiled): two scored readers, both missed the call (Thurlwick and Penwardine by the slope through every sitting) and Ask A; both took Ask B 16 of 16 (`score_reader.py` exit 1 on the first clinic below and on 50 per cent of the ask figures). Repaired in one pass.
+- Round 2 (target.zip d6f415d7, 3.1 filing that a change the test itself produces is not part of the rate): both readers landed the call, Quarndale and Thurlwick, each estimating the one-time gain of a second completed sitting within patients over the whole record at about 2.5; reader 3 Ask B 16 of 16 and Ask A 0 of 16, reader 4 32 of 32. `score_reader.py` FAIL on both (the call): Gate F failed, architecture 3 spent, task270 retired.
