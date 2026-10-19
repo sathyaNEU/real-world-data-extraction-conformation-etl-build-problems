@@ -1,0 +1,72 @@
+{
+ "ask_a": {
+  "Oral board": 97.35,
+  "Physical ability test": 16.18,
+  "Situational judgement test": 24.21,
+  "Work style inventory": 13.69,
+  "Written test": 52.07
+ },
+ "ask_b": {
+  "applicants": {
+   "Autumn 2024": 2263,
+   "Autumn 2025": 2307,
+   "Spring 2024": 2141,
+   "Spring 2025": 2058
+  },
+  "applicants_total": 8769,
+  "completion": {
+   "Oral board": 45.11,
+   "Physical ability test": 43.62,
+   "Situational judgement test": 44.38,
+   "Work style inventory": 44.06,
+   "Written test": 46.4
+  }
+ },
+ "call": {
+  "first_below": "Work style inventory",
+  "keep": [
+   "Written test",
+   "Oral board"
+  ],
+  "order": [
+   "Written test",
+   "Oral board",
+   "Work style inventory",
+   "Situational judgement test",
+   "Physical ability test"
+  ]
+ },
+ "components": {
+  "appointee_r": {
+   "Oral board": 0.14,
+   "Physical ability test": 0.12,
+   "Situational judgement test": 0.14,
+   "Work style inventory": 0.25,
+   "Written test": 0.24
+  },
+  "appointees": 787,
+  "oral_over_inventory_floor": 0.14,
+  "pool": 3668
+ },
+ "rivals": {
+  "appointees": [
+   "Written test",
+   "Work style inventory"
+  ],
+  "case2": [
+   "Written test",
+   "Work style inventory"
+  ],
+  "mixed": [
+   "Written test",
+   "Work style inventory"
+  ]
+ },
+ "sat": {
+  "Oral board": 3956,
+  "Physical ability test": 3825,
+  "Situational judgement test": 3892,
+  "Work style inventory": 3864,
+  "Written test": 4069
+ }
+}

@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Keep the written test and the oral board in the 2027 entry examination.",
-  "answer_source": "task270/DESIGN_NOTE.md, Draw (target set; submission.md written at stage 3)",
+  "answer": "The 2027 entry examination should keep the written test and the oral board.",
+  "answer_source": "task270/submission.md, block 1 (stage 3 build, 2026-10-19)",
   "gap": [
     "population"
   ],
@@ -31,24 +31,24 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "Correlating each component with the academy final average among the 2024 and 2025 appointees (the only candidates with an academy grade), or correcting each of those correlations on its own by Thorndike's Case II with that component's spread across the candidate pool, keeps the written test and the personality inventory; only a correction that models the appointments as made in rank order of the written test and oral board composite (the multivariate correction on the variables the offers were made on) keeps the written test and the oral board.",
+  "analyst_test": "Correlating each component with the academy final average among the 2024 and 2025 appointees (the only candidates with an academy grade), or correcting each of those correlations on its own by Thorndike's Case II with that component's spread across the candidate pool, keeps the written test and the work style inventory; only a correction that models the appointments as made in rank order of the written test and oral board composite (the multivariate correction on the variables the offers were made on) keeps the written test and the oral board.",
   "domain_test": "The deciding quantity is each component's predictive validity across the candidate pool, the field's own estimand for a selection procedure, recovered from a range-restricted validation sample by the multivariate correction for selection on the components the appointments were ranked on; put school visits or megawatt-hours in place of candidates and academy grades and there is no selection test whose validity the appointments restricted.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
   "layer1": [
-    "three testing vendors' exports keyed by their own candidate numbers, joined to the city's applicant numbers through the examination roster",
-    "the oral board recorded as each board member's rating on each dimension, averaged into the board score",
-    "the physical ability test recorded as an event time with a pass mark and a retest",
-    "the academy's grade book kept one workbook sheet per class, its layout changed for the 2025 classes",
-    "veterans' preference points added to the final score under the civil service rules",
-    "candidates passed over at background or medical review and offers declined"
+    "two written test forms the vendor equates by its scaled score, the raw score beside it",
+    "the oral board recorded as each member's rating on each of six dimensions, a member standing down for a candidate they know",
+    "the physical ability test recorded run by run, a second run for a first-run failure, the faster counting",
+    "the situational judgement vendor's own identifiers and a sheet an examination; the inventory under the testing vendor's identifiers with five scales",
+    "the academy gradebook a sheet a class, its layout changed from class 25-3 with the average at separation in its own column",
+    "eligibility lists carrying only listed candidates, with veterans' credit, pass-overs and declined offers"
   ],
   "stakeholder_role": "the police department's personnel research analyst, preparing the 2027 examination announcement for the Civil Service Commission",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "oral_board_ratings_2024_2025.csv",
-    "rows": 0,
+    "rows": 70110,
     "entity": "one board member's rating of one candidate on one oral board dimension",
     "grain": "candidate x board member x dimension",
     "row_meaning": "the rating a member of a three-person oral board gave a candidate on one of the board's six dimensions",
@@ -62,7 +62,17 @@
     "geography": "United States, a fictional mid-sized city in Ohio (the city, its police department and academy, its civil service commission, its testing vendors and people are fictional)",
     "currency": "USD",
     "org_type": "a city police department and its civil service commission",
-    "invented_names": [],
+    "invented_names": [
+      "Kessling",
+      "Kessling Division of Police",
+      "Kessling Civil Service Commission",
+      "Kessling Police Training Academy",
+      "Halvorsen Selection Systems",
+      "Pellwyn Assessment Partners",
+      "Kessling Temporary Services",
+      "Kessling State College",
+      "Kessling Convention Center"
+    ],
     "people": [
       "Melanie Howard",
       "Julia Larson"
@@ -75,8 +85,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
-  "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' points and the physical ability pass mark the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the personality inventory.",
-  "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the personality inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
+  "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' credit and the physical ability test's points the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the work style inventory.",
+  "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the work style inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task267": "task267 recovers a screening rule's capture rate from a reference check given to everyone the old rule flagged and a random fifth of the rest, by weighting the checked by their verification probability; here no one outside the appointees has an outcome at all, and what is recovered is each component's correlation through the covariance structure of the selection variables, where the per-component correction a validity analyst applies first is the wrong one",
