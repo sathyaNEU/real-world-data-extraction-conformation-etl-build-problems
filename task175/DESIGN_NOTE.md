@@ -333,3 +333,14 @@ and `composition_mix` bans lapse. Do not re-screen, in any of the three worlds, 
 Window facts on 2026-10-19 after the b7a54be refresh: task249 is spent and skipped, so patterns G6, G2 and
 G13, strategies `population_selection`, `decomposition_attribution` and `composition_mix`, and shapes 04
 and 05 sit in the ban window, and this round's serial registrations will move it again.
+
+## Retired
+
+task175 retired on 2026-10-19 under the author's rule for this round (a number that dies in its second new cell retires);
+no card was ever written or registered. The seed FC46's world died on 2026-10-18 (a member-level capped forecast is a
+continuum and the cap cancels), and the redraw round's two cells died on code: human-factors-ergonomics /
+human-reliability-assessment (67d2099: the time-reliability race sits inside the window-band filter and divide on rare
+trips, and the flattened factor slope is a 7 to 9 per cent lever the audited rows beat) and quantitative-finance /
+strategy-backtesting-evaluation (248746c: impact carried across days splits into model classes no one-way execution
+record can tell apart, and own borrow demand is a minor line whose attaining band lands). The lesson: a lever that
+needs a record the organisation does not keep is a fork, and one the record does keep is a filter and a divide.

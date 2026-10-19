@@ -1,11 +1,11 @@
 {
  "task": "task171",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "RETIRED",
  "domain": "",
  "objective": "forecasting",
  "stage": 1,
- "stage_name": "draw",
+ "stage_name": "retired",
  "updated": "2026-10-19",
  "stump": "",
  "architecture": 2,
@@ -50,7 +50,7 @@
   "scaling_holdout_direction": "overtrained 1B at about 250 tokens per parameter: where forms differ enough, every holdout and the in-sample fit pick the true form (RMSE 3.6 against 39 to 62 thousandths); a token budget near the size's loss limit swings -22 to +96 per cent across seeds under the true form",
   "scaling_paper": "repeated data and learning-rate drift (filter and divide at the plan's condition, or an extrapolated dependence that spreads); downstream accuracy through loss (nearest external models); continued pretraining (matched pairs); back-test interval calibration (few origins); best-of-attempts selection (tiny lever); compute accounting, rolled-back tokens, eval drift (rule application or Layer 1)"
  },
- "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Five screens on code have failed: the fourth (political-science-public-policy / election-polling-forecasting) and the fifth (general-statistics-data-science / scaling-laws, the client's three cards as the default path) found nothing at the bar under the round's bans. Read the note's status paragraph, its two cell sentences and ## Tried and rejected first; the coordinator or the author decides whether the number is redrawn in another cell, moved or retired.",
+ "resume": "retired 2026-10-19: no card registered; the seed's world and both redraw cells dead on code (design note ## Retired)",
  "approved": null,
  "delivered": null,
  "portal": null,

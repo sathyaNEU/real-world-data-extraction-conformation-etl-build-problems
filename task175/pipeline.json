@@ -1,11 +1,11 @@
 {
   "task": "task175",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "RETIRED",
   "domain": "quantitative-finance/strategy-backtesting-evaluation",
   "objective": "forecasting",
   "stage": 1,
-  "stage_name": "draw",
+  "stage_name": "retired",
   "updated": "2026-10-19",
   "stump": "",
   "architecture": 0,
@@ -33,7 +33,7 @@
     "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
     "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
   ],
-  "resume": "PAUSED at stage 1, no card written or registered, nothing cut, architecture 0. Three screens are dead: the seed FC46's world (2026-10-18), human-reliability-assessment (2026-10-19, candidates 10 and 11 on code) and quantitative-finance / strategy-backtesting-evaluation (2026-10-19, QF1, QF1c and QF6 on code, the rest on paper). Read DESIGN_NOTE.md's two Redraw screen sections and Tried and rejected first and re-screen nothing in them. The next move is the coordinator's or the author's: another Forecasting cell, or a return once the round's G14 and composition_mix bans lapse.",
+  "resume": "retired 2026-10-19: no card written; the seed's world and both redraw cells dead on code (design note ## Retired)",
   "screens": {
     "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
     "candidates_measured": 2,

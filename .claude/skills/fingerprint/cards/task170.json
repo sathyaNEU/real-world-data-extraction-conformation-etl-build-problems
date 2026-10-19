@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "11 pallets (88,704 bottles) of TLD 30s on line 2, the children's line, of the C7 order",
+  "answer": "",
   "answer_source": "generator/figures.json",
   "gap": [
     "time",
@@ -101,6 +101,6 @@
     "task229": "a convex conversion of a daily mean biased by within-day swings; here a first passage of noisy repeated measurements over a fixed band"
   },
   "lineage": [],
-  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167. Stage 4 round 1: the call moved from the whole C7 order to line 2, the children's line, in whole pallets; context_artifact redrawn from monitoring_export (it collided with task246's redraw, and the stock status report no longer carries the call) to operations_log, the paediatric register's encounter extract the forecast is built from. Architecture 1 spent on strength (stage 4, round 1 repair): with the call on line 2 in pallets the first-passage lead is 1.03 pallets, so the default misses by one pallet, knobs near the right value land and P(both) is about 0.2; the number needs a re-root.",
+  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167. Stage 4 round 1: the call moved from the whole C7 order to line 2, the children's line, in whole pallets; context_artifact redrawn from monitoring_export (it collided with task246's redraw, and the stock status report no longer carries the call) to operations_log, the paediatric register's encounter extract the forecast is built from. Architecture 1 spent on strength (stage 4, round 1 repair): with the call on line 2 in pallets the first-passage lead is 1.03 pallets, so the default misses by one pallet, knobs near the right value land and P(both) is about 0.2; the number needs a re-root. Redraw round 2026-10-19: architecture 2's search died in pharmacology popPK and banking deposit behaviour before any card. task170 RETIRED (dead in its second new cell).",
   "registered": "2026-10-18T09:10:20Z"
 }
