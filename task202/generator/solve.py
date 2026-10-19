@@ -1,6 +1,7 @@
 """Clause 9's quantity, and every route to it.
 
-Clause 9 files the quantity: the lowest amount in schedule E such that when each band's ceiling is
+Clause 9 files the quantity: the lowest whole multiple of one thousand pesos such that when each
+band's ceiling is
 generated from it by schedule B's scale and rounded up to the nearest PHP 100, the share of the
 scheme's awards that would be referred is at or below 6.0 per cent. It files no method, and
 the seven routes below all execute it; they differ in which distribution the share is computed on.
@@ -47,15 +48,14 @@ def share_pool(C, vals, bands, weight):
 
 
 def candidates():
-    """Schedule E, the amounts the Board approves a reference-size ceiling from."""
+    """The amounts clause 9.1 lets the Board set a reference-size ceiling at."""
     return list(range(P.CANDIDATE_FROM, P.CANDIDATE_TO + 1, P.CANDIDATE_STEP))
 
 
 def lowest(fn, cap=None, lo=1000, hi=90000):
-    """The lowest amount in schedule E whose share is at or below the cap (clause 9's own words).
-    The search is over schedule E's own spacing, which is what clause 9.1 names as the candidate
-    set; it is deliberately wider than schedule B's PHP 100 rounding of the generated band
-    ceilings, which is a separate rule."""
+    """The lowest candidate whose share is at or below the cap (clause 9's own words). The search is
+    over the grid clause 9.1 names, which is deliberately wider than schedule B's PHP 100 rounding of
+    the generated band ceilings, a separate rule."""
     cap = P.COMMITTED_SHARE if cap is None else cap
     S = P.CANDIDATE_STEP
     a, b = int(lo // S * S), int(-(-hi // S) * S)

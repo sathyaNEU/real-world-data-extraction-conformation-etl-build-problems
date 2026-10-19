@@ -1,11 +1,15 @@
 # task202 design note
 
-**Status: architecture v1 built, stage 3 complete, every free gate green.** The ask layer was
-re-sited onto the closed period in a `/fix-rubric` pass with the recommendation side frozen
-(`freeze.py check task202 --mode rubric` PASS): the pair ceiling is **28.5** against the bar of 40 and
-mirror leakage **0.0 per cent** against 35, measured by `generator/cracker.py` on the cut pack. The
-call, its schedule, the stump and the ladder are byte-identical to the pass before. Four grounds were
-screened to
+**Status: architecture v2 built, stage 3 complete, every free gate green.** Architecture v2 re-roots
+the graded quantity on the candidate grid clause 9 sets the ceiling on: the ceiling is now the lowest
+whole multiple of one thousand pesos meeting the commitment, not the lowest multiple of one hundred,
+and the call moves from PHP 7,800 to **PHP 8,000** with the default path's filed wrong answer moving
+from PHP 5,800 to **PHP 6,000**. That closes the determinism judge's one open finding: the preceding
+candidate now fails the commitment by **0.8471 points** against the 0.0432 of v1, the committed
+candidate clears it by **0.4122** against 0.0571, and **seven of seven licensed readings of the
+measured award shape file PHP 8,000** where only three of seven filed PHP 7,800. The ask layer's
+reader-calibrated pair is **39.5** against the bar of 50, built to 40, with mirror leakage **0.0 per
+cent** against 35, measured by `generator/cracker.py` on the cut pack. Four grounds were screened to
 death before it (human-factors thinned-count and time-on-task, multiple-testing selective inference, the
 designation-set device on task181's safety-incident ground, and environmental-monitoring exceedance on four
 mechanisms and five candidates); all of those kills, with their measurements, are in `## Tried and
@@ -25,7 +29,8 @@ and `guard.py check` returns WARN with no BLOCK.
    partner per household-size band, a total amount and an award count, and nothing else. Since January 2025
    the partners in two pilot provinces have claimed award by award on the foundation's partner claim portal.
 3. **Call and shape.** One figure: the 2027/28 referral ceiling at the reference household size (four
-   persons), in pesos to the nearest PHP 100 (`dial_setting`, answer unit currency). Shape 14 supplies the
+   persons), in pesos, a whole multiple of one thousand under clause 9.1 (`dial_setting`, answer unit
+   currency). Shape 14 supplies the
    criteria: two committed shares across six household-size bands, each band's ceiling, each band's referred
    share and referred value share, the equivalence-scale factor at each band, and the exhibit.
 4. **Why anomaly detection and not descriptive distribution.** The object is a detector: an award above its
@@ -74,30 +79,33 @@ are fixed by the generator at the cut.
 1. Parse the monthly claim returns for the twelve months to 31 March 2027, including the two months whose
    revised return supersedes a preliminary one, and fix the partner crosswalk between the claims ledger and
    the portal.
-2. Read the operating policy's equivalence scale (six factors, three decimals) and its rounding rule
-   (each band's ceiling rounded up to the nearest PHP 100).
+2. Read the operating policy's equivalence scale (six factors, three decimals), its rounding rule
+   (each band's ceiling rounded up to the nearest PHP 100) and the grid clause 9.1 sets the
+   reference-size ceiling on (a whole multiple of one thousand pesos).
 3. Build each partner-band's own average award from the return's total and award count. This is the only
    award-level figure the claim returns state, and it is correct.
 4. Cut the distribution of those partner-band averages, weighted by award count, at the committed share.
 5. Solve the reference-size ceiling backwards through the equivalence scale and the rounding rule.
 6. File the schedule and report each band's referred share.
 
-**Ends on:** PHP 5,800 at the reference band, a schedule that would refer 9.82 per cent of the window's
+**Ends on:** PHP 6,000 at the reference band, a schedule that would refer 8.93 per cent of the window's
 awards against the 6.0 per cent the board committed to.
 
-**Golden:** PHP 7,800 at the reference band, 20.0 printed units above the default path, referring 5.94 per
-cent of the window's awards. The design read PHP 7,830 before the pack was cut, which was the mean of ten
-draws of the world rather than a ceiling any world prints: clause 9 makes every ceiling a multiple of
-PHP 100, so 7,830 is unattainable and the cut pack prints the attainable figure nearest it. Clause 9's own
-margin at that figure is measured, not assumed: the schedule refers 5.9429 per cent against the 6.0000 per
-cent cap, which is 0.57 of the step the last PHP 100 of ceiling buys, and PHP 7,700 refers 6.0432 per cent,
-0.43 of the step above it.
+**Golden:** PHP 8,000 at the reference band, two schedule steps above the default path and 25.0 per cent
+of the committed figure away from it, referring 5.59 per cent of the window's awards. Clause 9's own
+margin is measured, not assumed. The raw crossing, the lowest peso amount whose share is at or below the
+cap, is PHP 7,601; the committed candidate PHP 8,000 refers 5.5878 per cent against the 6.0000 per cent
+cap, which clears it by 0.4122 points and is 0.33 of the step one schedule candidate buys, and the
+preceding candidate PHP 7,000 refers 6.8471 per cent, 0.8471 points above the cap. Both margins are many
+times the shape's own resampling error: a 400-resample bootstrap of the measured shape puts the share's
+standard error at 0.139 points clustered by portal partner and 0.179 unclustered, so the committed
+candidate qualifies in 98.3 per cent of clustered resamples and the preceding candidate in none of 400.
 
 ## Stump sentence
 
 A competent solver parses every claim return, supersedes the revised months, fixes the partner crosswalk,
 reads the equivalence scale and the rounding rule, builds each partner-band's own correct average award
-from the stated total and count, cuts that distribution at the committed share and files PHP 5,800, because
+from the stated total and count, cuts that distribution at the committed share and files PHP 6,000, because
 the distribution of partner averages carries the spread **between** partners and none of the spread
 **within** them; the portal is the only record of that within-partner spread, and no route that pools it,
 rescales it by one ratio or reweights it to the portfolio's band mix reproduces the averages the claim
@@ -116,15 +124,17 @@ distribution from each partner's own stated average and a scale-free within-part
 the partners that claim award by award.
 
 **Swap:** the General Statistics swap is of the method, and it breaks: replace the distribution's shape with
-a generic summary, the partner average, and the reference ceiling moves from PHP 7,800 to PHP 5,800, 20.0
-printed units, and the referral rate from 5.94 per cent to 9.82; on the domain's own nouns the swap fails too,
+a generic summary, the partner average, and the reference ceiling moves from PHP 8,000 to PHP 6,000, two
+schedule candidates and a quarter of the committed figure, and the referral rate from 5.59 per cent to
+8.93; on the domain's own nouns the swap fails too,
 because the award shape is bimodal for a reason only a relief scheme produces, a standard living-cost award
 with a one-off capital item on about nine awards in a hundred at about four times the standard, and because
 the ceiling is nested across household sizes by the scheme's own equivalence scale.
 
 **Layer 1:** the claim workbooks' band columns were renamed and a header block added from July 2026 (a
-system change the foundation made); the equivalence scale is filed as a rule and the rounding as a separate
-clause of the policy PDF, with no factor tabulated anywhere (how the policy was drafted); partner identifiers differ between the claims ledger and the portal
+system change the foundation made); the equivalence scale is filed as a rule, the rounding as a separate
+clause and the candidate grid as a third, with no factor and no amount tabulated anywhere in the policy
+(how the policy was drafted); partner identifiers differ between the claims ledger and the portal
 and join on an imperfect crosswalk (two systems procured years apart); the scheme's fiscal year runs July to
 June while the policy names the twelve months to 31 March (the policy was drafted to the claim cycle);
 amounts are in pesos in the returns and thousands of pesos in the published summary; a preliminary and a
@@ -141,21 +151,23 @@ has to be struck on awards, not on partner averages.
 
 **Not semantics:** every field is read correctly on the default path. The claim return's total and award
 count mean exactly what they say, their quotient is the partner-band's true average award, the equivalence
-scale and the rounding rule are read off the policy correctly, and the crosswalk and the superseding
-revision are resolved correctly. The easy route is still wrong by 20.3 printed units, because what is
-missing is not a reading but a distribution the record never states.
+scale, the rounding rule and the candidate grid are read off the policy correctly, and the crosswalk and
+the superseding revision are resolved correctly. The easy route is still wrong by two schedule candidates,
+PHP 2,000 on a committed figure of PHP 8,000, because what is missing is not a reading but a distribution
+the record never states.
 
 **Not rule application:** the operating policy files the estimand (population, outcome, window, unit,
-comparison, the scale and the rounding) and no shipped sentence says how to recover the award-level
-distribution from aggregate returns; executing every filed rule correctly produces the default path's PHP
-5,800. The seven routes measured all execute the same filed rules and print seven different ceilings.
+comparison, the scale, the rounding and the candidate grid) and no shipped sentence says how to recover the
+award-level distribution from aggregate returns; executing every filed rule correctly produces the default
+path's PHP 6,000. The seven routes measured all execute the same filed rules and print four different
+ceilings across a PHP 4,000 span.
 
 **Analyst test:** a strong analyst who has read the operating policy, applied the equivalence scale and the
 rounding rule, superseded the revised returns and fixed the partner crosswalk still cuts the distribution of
-partner average awards, because that is the only award figure the claim returns state, and files PHP 5,800.
+partner average awards, because that is the only award figure the claim returns state, and files PHP 6,000.
 
 **Estimand:** filed in the scheme's operating policy, clause 9: the referral ceiling at the reference
-household size is the lowest amount, a multiple of PHP 100, such that when each band's ceiling is generated
+household size is the lowest whole multiple of one thousand pesos such that when each band's ceiling is generated
 from it by the scale in schedule B and rounded up to the nearest PHP 100, the share of the scheme's awards
 that would be referred is at or below 6.0 per cent, where the scheme's awards are those of all accredited
 partners at the award volumes and award levels of the twelve months to 31 March 2027, an award is one
@@ -200,56 +212,69 @@ awards are expressed as multiples of their own partner-band average, and no file
 
 ## Ladder
 
-Seven routes to the one filed quantity, each executing every filed rule, measured on the locked model over
-ten seeds (`lock.py`). Printed unit PHP 100. "Ties" counts seeds on which the route prints the golden's
-value.
+Seven routes to the one filed quantity, each executing every filed rule. Clause 9.1 sets the
+reference-size ceiling on a grid of whole thousands of pesos, so each route's answer is the lowest
+candidate on that grid whose own share is at or below the cap; the route's **crossing**, the lowest
+peso amount it would have filed on a continuous grid, is printed beside it so the mechanism's own
+separation can be read independently of the grid.
 
-Measured on the shipped pack (`generator/checks.py`, asserted rung by rung), with the same route measured
-over the 84 draws of this world the scan covered beside it, each rescaled so clause 9's ceiling lands on
-PHP 7,800, so the separation can be read as the mechanism's and not the draw's.
+Measured on the shipped pack (`generator/checks.py`, asserted rung by rung).
 
-| Rung | Route | Ceiling | Against golden | Over 84 draws (mean, median) |
-|---|---|---|---|---|
-| 1 | partner-band averages, award-count weighted (default path) | PHP 5,800 | -20.0 pu | -18.9, -20 pu |
-| 2 | the portal's awards pooled as they stand | PHP 6,600 | -12.0 pu | -14.2, -12 pu |
-| 3 | the pooled portal rescaled by one portfolio-to-portal ratio | PHP 9,600 | +18.0 pu | +13.6, +14 pu |
-| 4 | the portal rescaled per band and reweighted to the portfolio's band counts | PHP 8,800 | +10.0 pu | +5.2, +6 pu |
-| 5a | rebuilt per partner-band, one lognormal at the portal's CV | PHP 8,400 | +6.0 pu | +5.0, +5 pu |
-| 5b | rebuilt per partner-band, one gamma at the portal's CV | PHP 8,700 | +9.0 pu | +8.1, +8 pu |
-| 6 | **rebuilt per partner-band with the measured shape (golden)** | **PHP 7,800** | 0 | 0 |
-| - | rebuilt per partner-band, a correctly specified two-component mixture fitted by EM | PHP 7,800 | 0 | +0 pu on 80 of 84 |
+| Rung | Route | Crossing | Files | Against golden | Its share at PHP 8,000 |
+|---|---|---|---|---|---|
+| 1 | partner-band averages, award-count weighted (default path) | PHP 5,633 | PHP 6,000 | -2,000, -25.0 per cent | 0.00 |
+| 2 | the portal's awards pooled as they stand | PHP 6,401 | PHP 7,000 | -1,000, -12.5 per cent | 3.83 |
+| 3 | the pooled portal rescaled by one portfolio-to-portal ratio | PHP 9,388 | PHP 10,000 | +2,000, +25.0 per cent | 7.43 |
+| 4 | the portal rescaled per band and reweighted to the portfolio's band counts | PHP 8,601 | PHP 9,000 | +1,000, +12.5 per cent | 6.78 |
+| 5a | rebuilt per partner-band, one lognormal at the portal's CV | PHP 8,201 | PHP 9,000 | +1,000, +12.5 per cent | 6.45 |
+| 5b | rebuilt per partner-band, one gamma at the portal's CV | PHP 8,498 | PHP 9,000 | +1,000, +12.5 per cent | 7.20 |
+| 6 | **rebuilt per partner-band with the measured shape (golden)** | **PHP 7,601** | **PHP 8,000** | 0 | 5.59 |
+| - | rebuilt per partner-band, a correctly specified two-component mixture fitted by EM | PHP 7,643 | PHP 8,000 | 0 | 5.59 |
 
-**How much of the shipped separation is the mechanism and how much is the draw, stated as a number.** The
-three large rungs are the mechanism and hold on essentially every draw: dropping the within-partner spread
-costs about 19 printed units, pooling the portal as it stands about 14, and rescaling that pool by one
-ratio about 14 the other way. The *thinnest* rung is the draw's: across the 84 draws the smallest
-separation in a draw has a median of 2.0 printed units and sits under 3 in 47 of them, and the routes that
-come closest are the two nearest neighbours of the decisive step (rung 4 and rung 5a, which both rebuild
-something per cell). The shipped draw was selected where that thinnest rung is widest, at 6.0 printed
-units, PHP 600, which is what `checks.py` asserts on the pack the judge will see; the selection is recorded
-here rather than presented as the mechanism's typical behaviour.
+**What the grid does and does not do.** It does not create the separation: the crossings of the six wrong
+routes stand PHP 600 to PHP 3,755 away from the golden's own crossing, which is the mechanism's. What it
+does is stop the answer resting on the last hundred pesos. On the shipped pack no wrong route reaches the
+committed candidate: the nearest, the single lognormal at the portal's own coefficient of variation, has a
+crossing PHP 201 above PHP 8,000 and its share at PHP 8,000 is 6.45 per cent, 0.45 points above the cap, so
+it files PHP 9,000. Minimum separation across the six wrong routes is one whole schedule candidate,
+PHP 1,000, 12.5 per cent of the committed figure, where v1's minimum on the PHP 100 grid was PHP 600.
 
 The last row is not a rung and is the strongest determinism evidence in the build: the award shape is a
 two-component lognormal mixture, so a correctly specified fit recovers it (fitted weight 0.9102 against a
 true 0.9100) and prints the same ceiling. How the shape is represented is therefore a C3 corridor rather
 than a fork, while every route that substitutes a single smooth family (5a, 5b) or that skips the rebuild
-altogether (1 to 4) is 6 to 20 printed units away. The minimum separation across the six wrong routes on
-the shipped pack is 6.0 printed units, PHP 600.
+altogether (1 to 4) is a schedule candidate or two away.
 
-The arithmetic. The measured shape's coefficient of variation is 0.72. Rung 1 drops it entirely, which is
-why it is the largest error and why its schedule refers 9.82 per cent of awards instead of 6.0. Rungs 2 to 4
+**The licensed readings of the shape, which is the Gate C question in its own currency.** Seven ways of
+measuring the same filed object, all licensed by clause 9's sentence, each scored on the cut pack: the
+pooled shape (the committed one), each band's own, each partner-level tercile's own, the odd and the even
+portal partners alone, and the window's first and last six months alone. On the PHP 100 grid of v1 these
+filed **7,600, 7,800, 7,900 and 8,000** and only three of the seven landed on the committed 7,800. On the
+grid clause 9.1 now sets, **all seven file PHP 8,000.** That is what the re-root bought, and it is a
+stronger answer to the judge's finding than either margin number.
+
+The arithmetic. The measured shape's coefficient of variation is 0.7231. Rung 1 drops it entirely, which is
+why it is the largest error and why its schedule refers 8.93 per cent of awards instead of 6.0. Rungs 2 to 4
 use the portal's awards, which carry the shape but also the pilot's own level range and household-size mix:
 the pilot is two provinces of eight, so its partners are alike in level (within-province level spread 0.12
 against 0.42 between provinces) and its mix is 27/24/19/14/9/7 per cent against the portfolio's
-16/17/18/19/16/14. Rungs 5a to 5c keep each partner's own average and replace the measured shape with a
-fitted one, which is what the portal refuses.
+16/17/18/19/16/14. Rungs 5a and 5b keep each partner's own average and replace the measured shape with a
+fitted one, which is what the portal's own goodness of fit refuses.
 
 **Two independent dials, which is why this is not the single-dial death that killed S1.** Rung 1's
 separation is set by the within-award spread; rungs 2 to 4 by the gap between the portfolio's and the
-pilot's between-partner level spread; rungs 5a to 5c by the capital-item mode. The first two trade against
-each other on one parameter, and the third moves independently, so the sweep found a setting where all
-three hold (`tune.py`, `tune2.py`, `lock.py`): minimum separation across the seven wrong routes 1.8
-printed units.
+pilot's between-partner level spread; rungs 5a and 5b by the capital-item mode. The first two trade against
+each other on one parameter and the third moves independently, so the sweep found a setting where all three
+hold (`tune.py`, `tune2.py`, `lock.py`).
+
+**What the draw contributes, stated as a number and not hidden.** The 84-draw scan that selected this world
+was run on v1's PHP 100 grid, where it measured the thinnest rung's separation at a median of 2.0 printed
+units across draws and 6.0 on the shipped draw. That scan is not re-run here and its figures do not
+describe v2's grid; what is asserted on the shipped pack is the only claim v2 rests on, which is that no
+wrong route's crossing falls inside the committed candidate's own interval of PHP 7,001 to PHP 8,000. The
+binding constraint on how far the crossing can be pushed down inside that interval is rung 5a, whose
+crossing sits only PHP 600 above the golden's: that is the frontier, and it is in `## Tried and rejected`
+with its numbers.
 
 ## Semantic fork table
 
@@ -257,10 +282,10 @@ printed units.
 |---|---|---|---|
 | SF1 | "the scheme's awards" | all accredited partners' awards, or only the portal partners' | clause 9 names all accredited partners; `same call` is false, so the sentence closes it (C1 by filing) |
 | SF2 | the window | the fiscal year July to June, or the twelve months to 31 March 2027 | clause 9 files the twelve months to 31 March 2027; the generator keeps every award clear of both boundaries (C1) |
-| SF3 | which awards measure the award shape | the portal's 27 months, or the portal's awards inside the window | the records decide it, not a clause: the two capital-item components became eligible only on 1 July 2025 (schedule D and the policy's amendment history), so the portal's earlier claims are a different award mix and the component codes show it. Measured: the 27-month reading prints PHP 7,200, 6.0 printed units low (C4, the alternative violates a shipped fact) |
+| SF3 | which awards measure the award shape | the portal's 27 months, or the portal's awards inside the window | `same call` on the grid clause 9.1 sets, measured on the cut pack: both readings file PHP 8,000, asserted. The records still separate the readings and are what the write-up cites: the two capital-item components became eligible only on 1 July 2025 (schedule D and the policy's amendment history), so the portal's earlier claims are a different award mix, the component codes show it, and the 27-month shape moves the share at PHP 8,000 by more than 0.0005 points while leaving the candidate where it was (C0 by convergence, with C4 behind it) |
 | SF4 | the shape pooled or per band | one shape across bands, or each band's own | `same call`, measured on the cut pack: the per-band reading and the per-partner-level-tercile reading both print PHP 7,800, asserted in `checks.py`. The 7.0 printed units the design reported was the spread of nine separate subset ceilings, which is not the alternative reading; the per-band reading uses all 11,788 claims partitioned, so its errors cancel. Each band's own 94th percentile of the shape sits within 12 per cent of the pooled one, asserted band by band |
-| SF5 | "rounded to the nearest PHP 100" | up, down or nearest | schedule B files "rounded up"; asserted in `checks.py` |
-| SF6 | "at or below 6.0 per cent" | the lowest qualifying ceiling, or the closest to 6.0 | clause 9 files the lowest; the share falls monotonically in the ceiling, so the lowest is unique (C1) |
+| SF5 | "rounded to the nearest PHP 100" | up, down or nearest | schedule B files "rounded up"; asserted in `checks.py`. This is the rounding of each band's generated ceiling and is a separate rule from clause 9.1's candidate grid, which the pin names explicitly so the two do not read as one |
+| SF6 | "at or below 6.0 per cent" | the lowest qualifying ceiling, or the closest to 6.0 | clause 9 files "the lowest whole multiple of one thousand pesos such that"; the share falls monotonically in the ceiling, so the lowest candidate is unique, and `checks.py` asserts every lower candidate fails (C1) |
 | SF7 | share of awards or of value | the count share, or the value share | clause 9 files "the share of the scheme's awards"; the value share is a separate graded ask |
 | SF8 | band 6 | exactly six, or six or more | schedule B files "six or more"; no award sits at a seven-person band boundary |
 | SF9 | the normalisation of the measured shape | each award over its own partner-band average, normalised or not | identical by construction: each cell's ratios average exactly one, so the pooled mean is exactly one and the normalisation is a no-op; asserted |
@@ -268,7 +293,7 @@ printed units.
 | SF11 | the partner accredited mid-window and the one that exited | in or out of the window's volumes | clause 9's "at the award volumes of the twelve months" counts each partner's own awards in the window; neither partner's awards straddle the boundary |
 | SF12 | amounts in the published summary | pesos or thousands of pesos | the summary's own column header and a reconciliation to the returns, which only one reading satisfies |
 | SF13 | the grain an award level is taken at | the partner's band over the twelve months, the partner's band in each claim month, or a monthly cell paired with a twelve-month shape | clause 9.2 files it: "A partner's household-size band has one award level for those twelve months, being the average award the partner claimed in that band across them; an award level is not taken claim month by claim month." The sentence is the closure (C1 by filing), not the data: `checks.py` measures what the two finer readings print and asserts the clause carries the pin. The clause defines the grain of a level, which is the estimand's unit; it says nothing about how the award-level distribution is recovered from those levels, which is the decisive step |
-| SF14 | "at or below 6.0 per cent", tested on which figure | the share as computed, or the share as the prompt orders it reported (one decimal place) | clause 9.1 files it: "The share is tested as it is computed and not as it is rounded for reporting." Load-bearing and asserted as such: at PHP 7,700 the share is 6.0432 per cent, which reports as 6.0 and would satisfy the commitment on the reported figure, so without the sentence a literal reader could quote 9.1 and file PHP 7,700 |
+| SF14 | "at or below 6.0 per cent", tested on which figure | the share as computed, or the share as the prompt orders it reported (one decimal place) | closed on the records rather than on the sentence, which is what the re-root changed: no candidate on clause 9.1's grid has a share that reports as 6.0 while exceeding it (the nearest candidate above the commitment reports 6.8), so the test cannot turn on the rounding, asserted as `clause9.no_entry_reports_the_commitment_while_exceeding_it`. Clause 9.1's sentence is kept as belt and braces and is asserted present, no longer as load-bearing |
 
 ## Closure table
 
@@ -284,7 +309,7 @@ printed units.
 | 8 | Window length | twelve months, filed; the shape is measured over the same twelve. C1 |
 | 9 | Boundary inclusivity | "exceed" the ceiling is strict; the generator puts no award within PHP 20 of any band ceiling. C1 |
 | 10 | Rounding path | each band's ceiling rounded up to PHP 100 once, after the scale is applied, filed in schedule B. Asserted |
-| 11 | Tie-break | the lowest qualifying multiple of PHP 100; the share is strictly monotone in the ceiling over the solve range. C1 |
+| 11 | Tie-break | the lowest qualifying whole multiple of one thousand pesos; the share is strictly monotone in the ceiling over the solve range and every lower candidate is asserted to fail. C1 |
 | 12 | Maturity and censoring | no censoring anywhere: every award in the window is resolved and paid, and nothing is truncated or capped. Stated |
 | 13 | Order of operations | scale then round then compare, filed; comparing before rounding is refused by schedule B's wording. Filed order |
 | 14 | Row order | the solve is a sum of per-cell tail shares, invariant to row order; asserted over six permutations |
@@ -293,8 +318,8 @@ printed units.
 | 17 | Netting against gross | awards are gross; one partner's recovered award is shown as a separate negative claim line and is out of scope by clause 9. Filed scope |
 | 18 | Dimensional units | pesos throughout the returns, thousands in the published summary only; the summary is not in the solve path. C4 |
 | 19 | Code and status semantics | the return's status codes and the award's component codes; dictionary semantics, never the stump |
-| 20 | Integerisation | ceilings are whole multiples of PHP 100 by construction; award counts are whole. C1 |
-| 21 | Clause scope | clause 9 governs the scheme, schedule B the scale and rounding; the scope of each is filed in its own heading. Filed scope |
+| 20 | Integerisation | the reference-size ceiling is a whole multiple of one thousand pesos under clause 9.1 and each generated band ceiling a whole multiple of PHP 100 under schedule B.3; award counts are whole. C1 |
+| 21 | Clause scope | clause 9 governs the scheme and the candidate grid, schedule B the scale and the rounding of each generated ceiling; the scope of each is filed in its own heading, and clause 9.6 states why the grid is whole thousands. Filed scope |
 | 22 | Forward window contents | the 2027/28 window is not observed; clause 9 fixes its contents as the window's own volumes and levels, which the returns state. Filed |
 
 ## Literal reader
@@ -302,17 +327,17 @@ printed units.
 A judge executing the shipped text word for word reads clause 9, takes the claim returns for the twelve
 months to 31 March 2027 with the revised months superseding, computes each partner-band's average award as
 total over count, expresses each portal award in the same window as a multiple of its own partner-band
-average to get the award shape, then for each candidate multiple of PHP 100 generates the six band ceilings
-by schedule B's scale rounded up, computes for each partner-band cell the share of the shape above that
-cell's ceiling over its average, weights by the cell's award count, and takes the lowest candidate whose
-total is at or below 6.0 per cent. That execution is the golden. Nothing in clause 9 names a method, and
+average to get the award shape, then for each whole multiple of one thousand pesos generates the six band ceilings
+by schedule B's scale rounded up to PHP 100, computes for each partner-band cell the share of the shape
+above that cell's ceiling over its average, weights by the cell's award count, and takes the lowest
+candidate whose total is at or below 6.0 per cent. That execution is the golden, PHP 8,000. Nothing in clause 9 names a method, and
 the sentence it files is a quantity, not a procedure: the population, outcome, window, unit and comparison
 are fixed and how the award distribution is recovered is left to the analysis.
 
 ## Oracles
 
-- `generator/checks.py`: the analyst test executed on the clean truth (rung 1 files PHP 5,800), then the
-  decisive step alone changed and the golden asserted (PHP 7,800); every SF row asserted;
+- `generator/checks.py`: the analyst test executed on the clean truth (rung 1 files PHP 6,000), then the
+  decisive step alone changed and the golden asserted (PHP 8,000); every SF row asserted;
   the edge distance of every graded figure from its printed cell boundary; row-order invariance over six
   permutations; the award-count and value reconciliation between the returns, the portal and the summary.
 - `verify.py`: reads only the shipped bundle and recomputes the ceiling schedule, each band's referred
@@ -321,19 +346,25 @@ are fixed and how the award distribution is recovered is left to the analysis.
   mid-bin clearance.
 - **Implementation invariance of the solve itself**, measured rather than argued: the committed share falls
   monotonically in the ceiling, and two independent implementations of the backward solve (an exhaustive
-  grid over every multiple of PHP 100, and a binary search) return the **same ceiling on all ten seeds at
-  each of three committed shares, 6, 10 and 15 per cent**, on the second model cut. The solve is therefore
-  not itself a fork, and the ladder's spread is the shape's, not the search's.
+  walk over every candidate and a binary search over them) return the same ceiling at each of three
+  committed shares, 6, 10 and 15 per cent. `verify.py` reads the grid off clause 9.1's own words rather
+  than assuming it, and its own walk over the candidates reproduces PHP 8,000 from the bundle alone. The
+  solve is therefore not itself a fork, and the ladder's spread is the shape's, not the search's.
 - **The ask layer's own oracles**, all in `generator/checks.py` under `separation.*`, `deviceA.*`,
   `deviceB.*`, `deviceC.*`, `ladder.*` and `closure.*`: the main call recomputed from a folder
   holding only the four files it reads (PHP 7,800 and 5.94 per cent, so deleting every device leaves
   the call where it was), zero ask-layer rows and zero device partner-months inside clause 9's
   window, each device's forcing figure on the cut pack, every ask stop's hit count against the
-  golden, and the quarter closure to the centavo. `verify.py` rebuilds all eighteen annex figures
-  from the bundle alone on its own code path (`closed_annex`), against the golden workbook and the
-  write-up.
+  golden, the reader-calibrated keep count and the pair it implies, and the quarter closure to the
+  centavo. `verify.py` rebuilds all thirty annex figures from the bundle alone on its own code path
+  (`closed_annex`), against the golden workbook and the write-up.
+- **The bootstrap of the measured shape, in the judge's own currency**: 400 resamples, unclustered and
+  clustered by portal partner, put the share's standard error at 0.179 and 0.139 points. The committed
+  candidate qualifies in 92.2 and 98.3 per cent of resamples and the preceding candidate in 0 of 400. On
+  v1's PHP 100 grid the same measurement put the committed candidate at 63.0 and 68.5 per cent, which is
+  the finding this architecture answers.
 - The portal's goodness of fit, which is the pack's own closure evidence: KS against a single lognormal
-  16.1 times the five per cent critical value, against a gamma 19.1 times, against an EM two-component fit
+  16 times the five per cent critical value, against a gamma 19 times, against an EM two-component fit
   0.33 times, which accepts it and is why the correctly specified fit is a corridor and not a rung; and the
   within-partner spread scaling with the partner's level at a correlation of 0.969 over the 22 portal
   partners, which refuses an additive shape.
@@ -346,10 +377,9 @@ and six scale factors, twenty-four figures that are generated from the committed
 over exactly the population clause 9 declares. **Those twenty-four are the recommendation's critical
 components and are scored in the 38-point recommendation block, not in the ask band.** A response that
 lands the call has all of them, which is what Part 0's arithmetic already assumes when it gives a
-landed call 38 + 7 before any ask. The previous pass scored them inside the 55-point ask band, which is
-the whole of its 65.5 measurement: scoring the call's own construction as an ask is Part 1.2 ban 4, and
-Part 2.1's corollary says no device can sit under such an ask because the separation line puts zero
-device rows inside the main call's declared population. The ask band is now the third deliverable.
+landed call 38 + 7 before any ask. Scoring the call's own construction as an ask is Part 1.2 ban 4,
+and Part 2.1's corollary says no device can sit under such an ask because the separation line puts
+zero device rows inside the main call's declared population. The ask band is the third deliverable.
 
 `claims_annex.xlsx` answers the audit committee, whose question is in the round's own request: the
 Desk referral clause 7 creates is a pre-payment control, the scheme already had one, and before the
@@ -359,36 +389,50 @@ whether what the Treasury sent out ties to what partners claimed. The annex cove
 withdrawn on 1 January 2026. The ceiling's window is the twelve months to 31 March 2027. The two do
 not overlap by a single row.
 
-### Ask A, what the payment runs transferred, by scheme quarter
+**Thirty graded figures, and why they are 12, 12 and 6 rather than 10 each.** The layer carried
+eighteen and a reader kept twelve of them, a pair of 65.2. Two asks' primaries were measured silent by
+that reader and one was measured cracked, so the two that hold were widened a second measure each,
+along the dimension their own device already gates, and the one that does not hold was left at six.
+That is Part 6's free-figure rule rather than a convenience: widening an ask whose primary reaches one
+figure of six would hand six more figures to the same reader, and the arithmetic below prices it
+either way.
 
-- **Figures:** 6, one per scheme quarter from 2024/25 Q1 to 2025/26 Q2, in pesos to the nearest peso.
-  Golden 32,135,504 / 30,755,712 / 24,385,079 / 26,754,851 / 39,755,121 / 39,301,120.
+### Ask A, of each quarter's claims the pesos settled and the instructions settling them
+
+- **Figures:** 12, two per scheme quarter from 2024/25 Q1 to 2025/26 Q2: the pesos in pesos to the
+  nearest peso and the instructions as a whole count.
+  Golden pesos 31,571,689 / 30,216,105 / 23,957,244 / 26,285,439 / 39,057,620 / 38,611,585 and
+  instructions 486 / 483 / 493 / 481 / 488 / 484.
 - **H18 home:** the audit trail. The claim returns are the input the call consumes; the trail runs
   from them, through run lines the ceiling never reads, to the Treasury's own control total.
 - **Use:** the committee is asking whether the claims record the ceiling is struck on is the record
-  the money followed. The quarter is the grain its own papers use.
+  the money followed, and on how many instructions it went out. Both are in its own request.
 - **Primary device (D6, grain, one of the four shapes that costs the cracker anything):** the archive
   is an export of payment **instructions** against run lines. Where one instruction settled both of a
   partner's half-month runs, because the first half's release was held for a mandate re-validation,
   the instruction's amounts stand on both lines it covers. 138 of 1,527 partner claim-months. No
   flag, no marker, no status column, every key unique, every join matched, no duplicated row, counts
   tie: the hygiene battery sees nothing.
-- **The convention is filed, because a device has to be fair.** The judge's finding was that nothing in
-  the pack licensed dropping the second line: the two runs carry distinct references, run dates and value
-  dates, there is no reversal and no recovery against them, and the word "instruction" returned zero hits
-  across all 17 files, so no handling of the data reproduced the committed figures. The archive's data
-  dictionary entry now states it, in the file's own vocabulary: the export is of instructions against the
-  run lines they settle, the instruction's own gross, recoveries and net stand on each line it covers, and
-  a line repeating all three amounts of another line for the same partner and claim month is that
-  instruction a second time and is counted once. The asking sentence carries the basis ("each instruction
-  once"), and the quarter basis with it ("by the claim month's scheme quarter"), which closes the second
-  fork the judge found, run-date quarter against claim-month quarter. The six figures do not move: what
-  moves is that one handling now reproduces them. **The ask's difficulty is finding and applying the
-  convention across 138 cases**, and it is expected to be found; what it is priced at is in the hand-back.
+- **Silent again, which is what this pass changed.** The previous pass filed the convention in the
+  archive's data dictionary entry, because the judge had found that nothing in the pack licensed
+  dropping the second line. A filed convention is a rule a reader applies in one step, so closing the
+  fork handed back all six figures: that is `supplemental-stumping` 1.1c's "a fork is not a device",
+  and it is why the reader-calibrated pair measured 65.2. The sentence is gone, asserted absent as
+  `deviceA.the_convention_is_not_filed`, and the reading is closed by the **asking sentence** instead:
+  "of those claims the pesos settled". The amount of a claim that has been settled cannot exceed the
+  claim, and in those 138 partner claim-months the run lines sum to more than the partner claimed for
+  the month, so the line-sum reading does not answer the question asked. The term the ask uses is in
+  the pack in the committee's own voice ("on how many payment instructions it went out"), so no figure
+  rides on an undefined word.
 - **The figure that makes the wrong reading wrong:** in those 138 partner claim-months the run lines
   sum to more than the partner claimed for the month, which cannot be paid, and in all 138 the lines
   state the same three amounts; in the other 1,389 the lines sum to the claim net of what the check
   held, exactly. Asserted as `deviceA.*` in `generator/checks.py`.
+- **Why the second measure is the instruction count and not a second amount.** It is gated by the same
+  grain device and is not derivable from the first: a response that sums the lines counts 1,665 lines
+  where the Treasury issued 1,527 instructions, so every one of the six counts moves. A measure that
+  the device does not reach would be a free figure, and Part 6's rule is to cut those rather than
+  print them.
 - **Hazards on this ask:** H2 (the recovery lag), H4 (the claim-months the archive does not carry).
 - **Files on the golden's path:** `target/treasury_disbursement_runs_2024_2025.csv`,
   `hrg_claim_returns_fy2024-25.xlsx`, `hrg_claim_returns_fy2025-26.xlsx`, `export_manifest.csv`,
@@ -396,92 +440,81 @@ not overlap by a single row.
   `hrg_partner_accreditation_register.csv` (8 files); 11 columns on the path (`run_ref`, `run_date`,
   `partner_code`, `claim_months_covered`, `gross_php`, `recoveries_php`, `net_php`, and the returns'
   claim month, partner code, award count and claim total).
-- **Stops, each a complete competent pipeline** (`writeup.ask_stops`, asserted stop by stop):
-  A1 every run line summed as the export states it, 35,627,385 / 33,616,978 / 26,125,629 /
-  29,770,915 / 42,575,957 / 42,606,146; A2 the gross column summed with recoveries left in,
-  35,627,385 / 33,619,348 / 26,128,092 / 29,774,467 / 42,580,799 / 42,606,146; A3 the over-stated
-  claim-months dropped altogether, 28,643,623 / 27,894,446 / 22,644,528 / 23,738,786 / 36,934,285 /
-  35,996,094; A4 the instruction counted once but attributed to the quarter of its run date,
-  21,097,145 / 32,759,841 / 25,075,983 / 25,308,513 / 35,607,152 / 41,896,511; A5 the instruction
-  counted once by the quarter of the claim month, the answer. **Lazy delta 3,491,881 pesos**, and no
-  stop reproduces a single graded figure.
+- **Stops, each a complete competent pipeline** (`writeup.ask_stops`, asserted stop by stop, scored
+  across all twelve figures): A1 every run line summed as the export states it, **0 of 12**; A2 the
+  gross column summed with recoveries left in, **0 of 12**; A3 the over-stated claim-months dropped
+  altogether, **0 of 12**; A4 the instruction counted once but attributed to the quarter of its run
+  date, **1 of 12**, the single hit being one quarter's instruction count and a coincidence of this
+  draw rather than a property of the route, recorded rather than smoothed over; A5 the instruction
+  counted once by the quarter of the claim month, the answer. **Lazy delta 3,430,616 pesos** on the
+  first stop.
 - **Realism:** a payment system that exports instructions against the run lines they settle, and
   repeats the instruction's amounts on each line, is what a Treasury archive extract looks like; the
   round's folder holds it because the committee asked for the closed months.
 
-### Ask B, what the claim check held back, by scheme quarter
+### Ask B, the pesos the claim checks passed and the pesos they held back, by scheme quarter
 
-- **Figures:** 6, one per scheme quarter, in pesos to the nearest peso. Golden 267,012 / 147,874 /
-  270,559 / 165,711 / 275,978 / 228,163.
+- **Figures:** 12, two per scheme quarter, in pesos to the nearest peso.
+  Golden held 262,327 / 145,280 / 265,812 / 162,803 / 271,136 / 224,160 and passed
+  31,794,406 / 31,066,751 / 24,486,170 / 27,483,702 / 40,061,966 / 39,820,548.
 - **H18 home:** a qualifier on the call's own input. The returns state what partners **claimed**; the
   check held part of it back, so the committee is being told how much of the claimed amount the
   record actually stood behind.
 - **Use:** the size of the control the Desk referral replaces, which is the committee's question.
-- **Primary device, re-devised (D11, an attribute stored before a silent switch): the year the running
-  totals turn over on is the partner's own accreditation year, not the scheme year.** The claims system
-  carries each partner's running position against the accreditation term it bills against, so the series
-  restarts on the partner's accreditation anniversary and the restart month differs partner by partner.
-  Nothing says so. What does say so is the accreditation register's `accredited_from`, which ships for
-  every partner and which the dictionary documents as the date the current term runs from, and the
-  restarts themselves, which are visible in the series once a solver knows it is reading a running total.
-  **Why it replaces the old primary:** the isolated reader cracked the previous one. The year-to-date
-  convention is refereed, not silent, and it is refereed by the most obvious file in the pack: 1,387 of
-  1,604 rows state an amount passed above what the month was claimed for, which is impossible, so a
-  reader that reconciles the register against the claim returns finds the convention immediately. It kept
-  6 of 6 on this ask by doing exactly that. The scheme year it then assumed is now wrong for most
-  partners, and the reset month it would have to find is the partner's own.
+- **Primary device (D11, an attribute stored before a silent switch): the year the running totals turn
+  over on is the partner's own accreditation year, not the scheme year.** The claims system
+  carries each partner's running position against the accreditation term it bills against, so the
+  series restarts on the partner's accreditation anniversary and the restart month differs partner by
+  partner. Nothing says so. What does say so is the accreditation register's `accredited_from`, which
+  ships for every partner and which the dictionary documents as the date the current term runs from,
+  and the restarts themselves, which are visible in the series once a solver knows it is reading a
+  running total. The isolated reader took the scheme year and kept 0 of 6 on this ask, which is the
+  only reader measurement on this layer that came back clean.
 - **The figure that makes the wrong reading wrong:** differencing inside the **accreditation** year
   restores claimed less passed as held in **every** one of the 1,566 partner claim-months, to the
   centavo, and differencing inside the scheme year, the year the return workbooks label, fails the same
   reconciliation on 195 of them. Asserted as `deviceB.differencing_restores_claimed_less_passed_as_held`
   and `deviceB.the_scheme_year_reading_fails_the_same_reconciliation`, both computed on the cut pack.
+- **Why the second measure is the passed side.** Both currency columns are running positions, so both
+  figures are gated by the same three resolutions, and every wrong stop misses all twelve rather than
+  the six it missed before. The two sides are not independent, since the month's claim is their sum,
+  and the annex prints both because a reconciliation that shows one side is not one; what matters for
+  the pair is that neither is reachable without the device.
 - **The year-to-date convention is kept as a hazard**, because it still has to be found before the
-  accreditation year matters, and `verify.py` rebuilds the six figures from the bundle alone on both
-  readings.
-- **Second resolution this ask needs, now stated:** 38 partner claim-months carry two checks, the
-  later one standing after the partner answered the hold. Taking the earlier check moves all six
-  figures (stop B4). The register's dictionary entry now says it, because the judge found that
-  nothing in the pack did and that the earlier check of each pair was dated **before the return was
-  received**, which cannot be and is what made the supersession inferable only by arithmetic. Both
-  dates are now after receipt, the standing check is the later one, and the dictionary entry states
-  that where the register holds more than one check for the same partner and claim month the later
-  check supersedes the earlier one.
+  accreditation year matters, and `verify.py` rebuilds the twelve figures from the bundle alone.
+- **Second resolution this ask needs, stated in the register's dictionary entry:** 38 partner
+  claim-months carry two checks, the later one standing after the partner answered the hold. Taking the
+  earlier check moves all twelve figures (stop B4). Both dates are after the return was received, the
+  standing check is the later one, and the dictionary entry says so, which is the documented half of a
+  pinned convention with a silent device under it.
 - **Hazards on this ask:** H1 (the separator the claims system changed in January 2025), H3 (the
-  two checks), and the year-to-date convention itself, kept as a hazard now that the reader has shown
-  it is refereed by the claim returns.
+  two checks), and the year-to-date convention itself.
 - **Files on the golden's path:** `target/hrg_claim_check_register_2024_2025.csv`,
   `hrg_claim_returns_fy2024-25.xlsx`, `hrg_claim_returns_fy2025-26.xlsx`,
   `hrg_partner_accreditation_register.csv`, `export_manifest.csv`, `DATA_DICTIONARY.md`,
   `hrg_operating_policy_2027_edition.pdf`, `referral_ceiling_request.eml` (8 files); 10 columns
   (`claim_month`, `claims_partner_ref`, `checked_date`, `awards_passed`, `amount_passed_php`,
   `amount_held_php`, and the returns' claim month, partner code, award count and claim total).
-- **Stops:** B1 the held column summed as it stands, 507,638 / 860,204 / 1,251,028 / 1,327,371 /
-  1,591,247 / 1,670,684; B2 differenced per partner with no period reset at all, 175,860 / 35,293 /
-  135,589 / -54,829 / 53,033 / -70,751; B3 the later check differenced inside the **scheme** year,
-  which is the route the isolated reader took and the one the new primary defeats, 175,860 / 35,293 /
-  135,589 / -54,829 / 478,386 / -70,751; B4 the accreditation year found but the **first** check of
-  each claim month taken, 269,639 / 145,247 / 280,082 / 168,768 / 272,308 / 229,293; B5 the answer.
-  **Lazy delta 2,150,045 pesos**, and no stop reproduces a graded figure. B4 is the one worth
-  reading: a response that finds the running total and the partner's own year and still takes the
-  earlier of two checks lands within a few thousand pesos of every figure and misses all six, so the
-  three resolutions this ask needs do not collapse into one. B2 and B3 return a negative amount held
-  in two quarters, which is impossible and is the signal that makes the device fair rather than
-  silent; it is priced as such in the hand-back.
+- **Stops:** B1 the two currency columns summed as they stand, **0 of 12**; B2 differenced per partner
+  with no period reset at all, **0 of 12**; B3 the later check differenced inside the **scheme** year,
+  which is the route the isolated reader took and the one the primary defeats, **0 of 12**; B4 the
+  accreditation year found but the **first** check of each claim month taken, **0 of 12**; B5 the
+  answer. **Lazy delta 188,256,057 pesos** on the first stop. B4 is the one worth reading: a response
+  that finds the running total and the partner's own year and still takes the earlier of two checks
+  lands within a few thousand pesos of every figure and misses all twelve, so the three resolutions
+  this ask needs do not collapse into one. B2 and B3 return a negative amount held in two quarters,
+  which is impossible and so visible; that is the caveat on this device and it is not repaired here,
+  because a running total that resets cannot be differenced across the reset without going negative.
+  It is priced in the hand-back rather than argued away.
 - **Realism:** a claims system whose figure columns were turned year-to-date for the finance report
   and whose award count was left alone is an ordinary release artefact; the register was extracted for
   the reconciliation and nobody re-stated it.
 
-### Ask C, the partner claim-months the check recorded a hold in, by reason
+### Ask C, the partner claim-months a hold was recorded in, by reason
 
 - **Figures:** 6, one per reason, as whole counts. Golden Receipts incomplete 73, Household record
   incomplete 46, Duplicate application 36, Component not eligible 30, Arithmetic error on return 17,
   no reason recorded 76.
-- **The unit is now in the asking sentence.** The judge read "the claim-months with a hold by reason"
-  as open between a partner's claim month (202 after the re-check drop, 231 before) and a calendar
-  claim month (17/16/15/13/12), and the deliverable's "partner claim-months" was a gloss the prompt
-  did not carry. The prompt now asks for "the partner claim-months the check recorded a hold in, by
-  reason", which is the unit the golden counts, and the supersession that decides which check records
-  the hold is in the register's dictionary entry.
 - **H18 home:** the same audit trail, read for what the old control was catching rather than for how
   much; a component of the committee's case that does not touch the ceiling.
 - **Use:** the Desk inherits these cases from 2027/28, so their mix is what the Board is being asked
@@ -490,6 +523,18 @@ not overlap by a single row.
   was held and where a hold's reason was never recorded, because the field was free text and not
   mandatory until the April 2025 release. 76 partner claim-months have a hold of their own and no
   reason; 1,288 have a blank reason and no hold.
+- **This ask's device was cracked by the isolated reader and is NOT replaced in this pass, which is
+  the open item on the layer.** The reader cross-tabulated the increments against the reason column and
+  read the blank both ways, keeping 6 of 6. Two facts follow and both are measured rather than argued.
+  First, the primary reaches **one figure of six**: stop C3, the response that differences the register
+  and folds the free text but reads a blank as the absence of a hold, keeps five of the six, so the
+  other five rest on the hold population and the free-text folding, which are record-settled and a
+  hazard. Second, every replacement screened needs rows or columns in the check register, and the
+  register also carries Ask B's running totals, so a row added for C perturbs B's series and a column
+  that separates the regimes is a marker (ban 2); the one family that does not touch the series is D4,
+  which is the family this ask has already spent. The kills are in `## Tried and rejected`. Because the
+  primary reaches one figure of six, Part 6's free-figure rule is why this ask was **not** widened with
+  the other two: widening an ungated ask hands figures away.
 - **The figure that makes the wrong reading wrong:** the hold's existence is settled by the record and
   not by the blank. 278 partner claim-months passed fewer awards than the return claims for them, and
   those are exactly the 278 whose own held amount is above zero: the two routes agree on every row,
@@ -497,7 +542,7 @@ not overlap by a single row.
 - **Second resolution this ask needs:** the reason was free text before the release, so 74 entries in
   21 spellings are the same five reasons in whatever case and punctuation the checker typed; each
   folds onto exactly one of the five on the list, asserted.
-- **Hazards on this ask:** H1 (the separator), H3 (the two checks, now stated), and Ask B's
+- **Hazards on this ask:** H1 (the separator), H3 (the two checks, stated), and Ask B's
   year-to-date convention on its own accreditation year, which decides which claim-months count as
   held if the amount column is used for the test.
 - **Files on the golden's path:** `target/hrg_claim_check_register_2024_2025.csv`,
@@ -507,12 +552,9 @@ not overlap by a single row.
   `claim_month`, `claims_partner_ref`, `checked_date`, `checker_ref`, `awards_passed`,
   `amount_passed_php`, `amount_held_php`, `hold_reason`, and the returns' claim month, partner code
   and award count).
-- **Stops:** C1 rows with a held amount grouped by the reason column, 54 / 35 / 32 / 23 / 13 / 0;
-  C2 the same with blanks counted as a line of their own, 54 / 35 / 32 / 23 / 13 / 856; C3 each
-  month's own hold with the blanks dropped, 73 / 46 / 36 / 30 / 17 / 0; C4 the answer. **Lazy delta
-  812 claim-months.** C1 and C2 reproduce no graded figure; C3, the response that differences the
-  register and folds the free text and still reads a blank as no reason, keeps five of the six and is
-  the deepest stop measured anywhere in this layer.
+- **Stops:** C1 rows with a held amount grouped by the reason column, **0 of 6**; C2 the same with
+  blanks counted as a line of their own, **0 of 6**; C3 each month's own hold with the blanks dropped,
+  **5 of 6**; C4 the answer. **Lazy delta 76 claim-months**, the blank line the first stop never prints.
 - **Realism:** a free-text field that became a list, left unmigrated, is the most ordinary thing in a
   case register.
 
@@ -528,22 +570,21 @@ Zero device and hazard rows inside the main call's declared population, asserted
 | `separation.device_partner_months_in_the_window` (consolidated, deferred or held) | 0 |
 | `separation.recoveries_outside_the_window` | 0 in the window |
 | `separation.checks_months_are_closed` / `archive_months_are_closed` | 2024-07 to 2025-12 |
-| `separation.ceiling_without_either_ask_file` | PHP 7,800 from a folder holding only the four files the call reads |
-| `separation.share_without_either_ask_file` | 5.94 per cent |
-| `separation.main_call_*_unmoved` | call 7,800, down 7,700, default 5,800, cells 528, awards 49,265, partners 88, shares 5.94 / 6.04 / 9.82, cv 0.72 |
+| `separation.ceiling_without_either_ask_file` | PHP 8,000 from a folder holding only the four files the call reads |
+| `separation.share_without_either_ask_file` | 5.59 per cent |
+| `separation.main_call_*_unmoved` | call 8,000, down 7,000, default 6,000, cells 528, awards 49,265, partners 88, shares 5.59 / 6.85 / 8.93, cv 0.72 |
 
-**And the pack itself, diffed rather than argued.** Rebuilding the pack from the generator as it stood
-before this pass and comparing file by file: the four files the call reads
-(`hrg_claim_returns_fy2025-26.xlsx`, `hrg_claim_returns_fy2026-27.xlsx`,
-`portal_awards_2025-01_2027-03.csv`, `partner_identifier_crosswalk.csv`) are **byte-identical**, as are
-the policy, the band and province tables, the accreditation register and all three distractors. Four
-files changed and each is off the call's path: `hrg_claim_returns_fy2024-25.xlsx` gained the four
-recovery lines and is read by neither the call nor its verifier, `DATA_DICTIONARY.md` and
-`export_manifest.csv` register the two new files, and `referral_ceiling_request.eml` carries the audit
-committee's paragraph. Two files are new. That is the whole diff.
+**What moved in this pass and what did not.** This pass is a re-root of the graded quantity and every
+money figure in the pack moves with it, because the award level was reset so the crossing sits well
+inside one schedule candidate: `freeze.py check task202 --mode determinism` reports 61 frozen items
+moved and that is the expected result, not a finding to work around. What is asserted rather than
+claimed is the direction of the dependence: the call is recomputed from a folder holding only the four
+files it reads and gets PHP 8,000 and 5.59 per cent, no ask-layer row sits inside clause 9's window,
+and the main call's own figures are pinned to their new values in `checks.py` so a device that reached
+them would fail there first.
 
 Delete every device and the call is the same call, struck on the same rows, at the same distance from
-the next multiple of PHP 100. The only file the call reads that the asks touch at all is
+the next candidate. The only file the call reads that the asks touch at all is
 `hrg_claim_returns_fy2025-26.xlsx`, and they read its July-to-December 2025 rows, which are outside
 clause 9's window; `hrg_claim_returns_fy2024-25.xlsx` is read by neither the call's path nor its
 verifier, and it is where the four recovery lines were added.
@@ -552,10 +593,10 @@ verifier, and it is where the four recovery lines were added.
 
 | # | Hazard | Asks moved | Measured delta |
 |---|---|---|---|
-| H1 | the claims system moved the partner reference's separator in January 2025 and the register was not reloaded, so 536 of 1,604 rows carry `HRG/ALB/001` | B, C | B's first two quarters fall to 0 from 267,012 and 147,874 if the unjoined months are dropped |
-| H2 | a recovery is applied against the partner's next transfer, so its run sits in the quarter after the negative claim line's | A | 5 of the 6 quarters move, by 1,231 to 4,842 pesos |
-| H3 | the register holds the original check and the later one for 38 partner claim-months, both now dated after the return was received, with the later one standing and the dictionary saying so | B, C | all six of B's figures move (stop B4) |
-| H4 | 39 partner claim-months were released in a run dated after the archive's cut-off and are not in it | A | imputing them moves all six of A's figures, by up to 1,230,553 pesos |
+| H1 | the claims system moved the partner reference's separator in January 2025 and the register was not reloaded, so 536 of 1,604 rows carry `HRG/ALB/001` | B, C | B's first two quarters fall to 0 from 262,327 and 145,280 if the unjoined months are dropped |
+| H2 | a recovery is applied against the partner's next transfer, so its run sits in the quarter after the negative claim line's | A | 5 of the 6 quarters move, by 1,118 to 4,757 pesos |
+| H3 | the register holds the original check and the later one for 38 partner claim-months, both dated after the return was received, with the later one standing and the dictionary saying so | B, C | all twelve of B's figures move (stop B4) |
+| H4 | 39 partner claim-months were released in a run dated after the archive's cut-off and are not in it | A | imputing them moves all six of A's peso figures, by up to 1,208,963 pesos |
 | H5 | the reason was free text in 21 spellings before the April 2025 release | C | all five named reasons move (stop C1) |
 
 No subset of these composes back inside a bin: H1 and H3 move B in opposite directions and H4 moves A
@@ -575,9 +616,9 @@ closes nothing it needed to close, and no graded figure turns on it.
 
 | Ask | The cracker's route, run on the cut pack | Figures kept | Verdict |
 |---|---|---|---|
-| A, what the payment runs transferred by scheme quarter | lands the call, runs the battery, sums every run line as the export states it (stop A1) | 0 of 6 | miss |
-| B, what the claim check held back by scheme quarter | sums the held column as the register states it (stop B1) | 0 of 6 | miss |
-| C, the claim-months with a hold by reason | counts rows with a held amount, grouped by the reason column with the blanks as their own line (stop C2) | 0 of 6 | miss |
+| A, of each quarter's claims the pesos settled and the instructions | lands the call, runs the battery, sums every run line as the export states it and counts the lines (stop A1) | 0 of 12 | miss |
+| B, the pesos the checks passed and held back by scheme quarter | sums the two currency columns as the register states them (stop B1) | 0 of 12 | miss |
+| C, the partner claim-months a hold was recorded in, by reason | counts rows with a held amount, grouped by the reason column with the blanks as their own line (stop C2) | 0 of 6 | miss |
 
 **Measured by:** `generator/cracker.py`, run on the cut pack. It scores the cracker from the stops
 `writeup.ask_stops` computes on the shipped files, prints one row per response on Part 0's weights (38
@@ -585,6 +626,14 @@ recommendation and components, 7 instruction-following, 55 asks, r = 5), sweeps 
 keep count, and prints the audit line for the accounting the previous pass used.
 
 **Pair ceiling:** 28.5 (measured on the cut pack: cracker 45.0, mirror 12.0).
+
+**Reader-calibrated pair:** 39.5, which is the number the gate should be read against, because the
+cracker's stops are the author's model and a real isolated reader beat all three of them on the
+previous cut. It is the measured stop of that reader on each ask, re-scored on this cut: 0 of 12 on A
+(it summed the run lines; the pin that handed the ask back is gone), 0 of 12 on B (it took the scheme
+year), 6 of 6 on C (it cracked the blank), 6 of 30 in all. The sensitivity is printed with it: a reader
+that also cracked A or B would keep 18 of 30 for a pair of 61.5, so the layer rests on those two
+primaries holding, and each of them has held against one real reader.
 
 **Mirror leakage:** 0.0 per cent of ask weight (measured).
 
@@ -597,12 +646,13 @@ test is answered by them: no graded annex figure changes when the call changes, 
 changes when a device is deleted.
 
 **What the sweep prices, stated as the sensitivity it is.** With the asks decoupled, both rows move
-together, so the pair is 28.5 + 55 L and the bar needs both responses held to 3 of 18 figures or fewer,
-which is the fifth each Part 0 prices. The deepest stop measured keeps 5 of 18 (C3, pair 43.8), and a
-response that cracked one whole ask would keep 6 of 18 (pair 46.8). The register's year-to-date
-convention is the load-bearing one: it gates Ask B's six figures and the amount route into Ask C's six.
-Nothing in the prompt or the pack invites the cross-file comparison that reveals it, which is the
-property the design rests on, and it is recorded here rather than presented as margin.
+together, so the pair is 28.5 + 55 L and the bar needs both responses held to 6 of 30 figures or fewer,
+which is the fifth each Part 0 prices and is exactly where the reader-calibrated row sits. The deepest
+stop measured on a single ask keeps 5 of 6 (C3). The register's year-to-date convention on the
+partner's own accreditation year is the load-bearing device: it gates Ask B's twelve figures and the
+amount route into Ask C's six. Nothing in the prompt or the pack invites the cross-file comparison that
+reveals it, which is the property the design rests on, and it is recorded here rather than presented as
+margin.
 
 **Dropped, and why each is out.** The designating ask (which partners' own referred share would exceed
 12 per cent) died at the design stage because the golden's own estimator family returned 2 distinct
@@ -612,9 +662,131 @@ prompt never asked for is an open fork by construction. All three are still comp
 annex's claimed, recovered and not-settled columns are workings, not graded figures: they are in the
 golden because a reconciliation that does not show its lines is not one, and `checks.py` asserts the
 closure at the quarter, each quarter's claim less what was held, recovered and not yet settled equalling
-what was transferred, to the centavo.
+what was settled, and the claim less what was held equalling what was passed, to the centavo. The
+largest single hold in each quarter was drafted as Ask B's second measure and dropped: it reproduced
+four of six on three of the four wrong stops, because a quarter's maximum is usually attained at a
+partner-month the handling happens to agree on.
 
 ## Tried and rejected
+
+### The candidate grid reopened: the fourth lever held, and what it cost (2026-10-18)
+
+The determinism repair of the pass before measured three levers to death against a 0.30-point failure
+margin and closed the third, the coarseness of the candidate grid, with `gcd(5800, 7800) = 200`, "so the
+only coarser grid available is PHP 200". That arithmetic assumed both the golden and the default path's
+answer have to be exact grid points. **The default path's answer does not: it is whatever the easy route
+computes, which then lands on the nearest filed candidate.** Relaxing that reopened the lever and it held.
+The three earlier kills stand as measured and none of them binds this architecture:
+
+- *The data's own spread.* 8,640 settings scored on the exact world; six reached a margin above 0.30 with a
+  clearance above 0.15 and every one of them put a wrong rung within one printed unit of the golden. The
+  sentence worth keeping is that the ceiling reads one quantile of the award distribution convolved with the
+  cell-level spread, so once the shape's own spread is small against that spread every distribution with the
+  same mean and coefficient of variation puts that quantile in the same place.
+- *The commitment.* Swept 6 to 16 per cent; the margin rises from 0.066 to 0.280 and never reaches 0.30,
+  and it is bought by the default path, which closes on the golden monotonically and reaches it at 13 per
+  cent.
+- *The grid, as the pass had it.* PHP 200, margin at most 0.13.
+
+**What the fourth reading of the third lever measures.** Every schedule spacing a multiple of PHP 100 and
+every offset within it, scored on the exact world with `fast.py`, against five requirements at once: the
+margin below, the clearance above, no wrong rung on the committed candidate, seven of seven licensed
+readings of the measured shape on it, and every graded share clear of its printed rounding boundary.
+
+| Step | Golden | Preceding | Margin | Clearance | Default path | Separation | Licensed readings | Wrong rung on it |
+|---|---|---|---|---|---|---|---|---|
+| 100 (v1) | 7,800 | 7,700 | 0.0432 | 0.0571 | 5,800 | 25.6 per cent | 3 of 7 | none |
+| 200 | 7,800 | 7,600 | 0.2131 | 0.0571 | 5,800 | 25.6 per cent | 3 of 7 | none |
+| 300 | 7,800 | 7,500 | 0.2990 | 0.0571 | 6,000 | 23.1 per cent | 5 of 7 | none |
+| 500 | 8,000 | 7,500 | 0.2990 | 0.2631 | 6,000 | 25.0 per cent | 7 of 7 | none |
+| 600 | 7,800 | 7,200 | 0.7437 | 0.0571 | 6,000 | 23.1 per cent | 5 of 7 | none |
+| 800 | 8,000 | 7,200 | 0.7437 | 0.2631 | 6,400 | 20.0 per cent | 7 of 7 | none |
+| 900 | 8,100 | 7,200 | 0.7437 | 0.4060 | 6,300 | 22.2 per cent | 7 of 7 | none |
+| **1,000** | **8,000** | **7,000** | **1.0441** | **0.2631** | **6,000** | **25.0 per cent** | **7 of 7** | **none** |
+| 1,200 | 8,400 | 7,200 | 0.7437 | 0.6556 | 6,000 | 28.6 per cent | 7 of 7 | 5a |
+| 1,300 | 7,800 | 6,500 | 1.9474 | 0.0571 | 6,500 | 16.7 per cent | 7 of 7 | 2 |
+| 1,500 | 9,000 | 7,500 | 0.2990 | 1.1857 | 6,000 | 33.3 per cent | 7 of 7 | 4, 5a, 5b |
+| 2,000 | 8,000 | 6,000 | 3.2461 | 0.2631 | 6,000 | 25.0 per cent | 7 of 7 | 2 |
+
+Three findings came out of that table and all three changed the design.
+
+**The clearance, not the margin, is what keeping PHP 7,800 costs.** Every spacing that keeps the golden on
+7,800 leaves its share at 5.9429 and so its clearance at 0.0571, because the clearance is a property of the
+committed figure and not of the grid. The judge's bootstrap put the shipped golden's own qualification at
+63.0 per cent of resamples, so a spacing that widens only the margin leaves the finding half-answered. That
+is why the golden moves to PHP 8,000 rather than being held at 7,800 on a PHP 600 schedule, which the brief
+asked to be answered with numbers either way.
+
+**The licensed readings are the better measurement and they decided it.** Seven ways of measuring the same
+filed shape, all licensed by clause 9: on the PHP 100 grid they file 7,600, 7,800, 7,900 and 8,000 and only
+three land on the committed figure. At 500 and above, all seven agree. That is the judge's Gate C question
+answered in its own terms rather than in points.
+
+**The spacing was then set by a constraint the sweep had not been asked about: every graded share has to
+print clear of its rounding boundary.** At the award level as it stood, PHP 7,800 was the only candidate in
+the whole range whose twelve band shares all clear the 0.15-of-a-half-cell floor; PHP 8,000 put band 4's
+referred share 0.0006 from the 5.85 boundary and band 2's 0.0054 from 5.65. So the award level was reset
+with it, by 1.75 per cent, from a `BASE` of 3,311.5 to 3,253.4, chosen by scanning that one parameter at
+PHP 0.10 against all five requirements at once: the shipped setting has a margin of 0.8471, a clearance of
+0.4122, all fourteen graded shares at least 0.0113 from a printing boundary, seven of seven licensed
+readings on PHP 8,000 and no wrong rung nearer than a whole schedule candidate. Pushing the crossing
+further down inside the candidate's interval buys more clearance and runs into rung 5a, whose crossing sits
+only PHP 600 above the golden's, and that is the frontier of this architecture, now stated in money rather
+than in points.
+
+**Not taken.** A PHP 900 schedule reaches a clearance of 0.4060 with the same margin and no data change at
+all, and a PHP 1,100 schedule offset to 8,300 reaches 0.5725. Both were refused on realism: a board
+publishes a relief ceiling in whole thousands, and a filed schedule spaced nine hundred or eleven hundred
+pesos apart is furniture built for the measurement. Listing the candidate amounts as a Schedule E was built
+and reverted: `leak.py` returned LEAK on it, because a list containing PHP 8,000, PHP 7,000, PHP 9,000,
+PHP 6,000 and PHP 4,000 is a list of the golden's own figures however innocent its purpose. The grid is
+filed as a rule in clause 9.1 instead, with 9.6 giving the reason the Office would give, and the policy now
+prints no peso amount anywhere, asserted.
+
+### The ask layer re-measured against the reader rather than the cracker (2026-10-18)
+
+The finding this answers is the leak reader's, not the cracker's: a medium thread holding only the pack and
+`prompt.txt` kept 12 of 18 graded ask figures where `cracker.py` said nought of eighteen, for a pair of
+65.2. It kept 0 of 6 on Ask A, 6 of 6 on Ask B and 6 of 6 on Ask C. Each of the three was worked
+separately.
+
+- **Ask A's pin, removed.** The previous pass filed the re-issue convention in the archive's dictionary
+  entry to make the device fair after the judge found nothing licensed dropping the second line. That is
+  `supplemental-stumping` 1.1c exactly: a fork is not a device, and closing it with a sentence hands the ask
+  to every response that reads the sentence. The repair is not another pin but the asking sentence: "of
+  those claims the pesos settled" cannot be answered by a figure above what the partner claimed, and the
+  run lines of those 138 months sum to more than the claim. The dictionary entry is now plain provenance,
+  asserted to contain none of the convention's words, and the term the ask uses sits in the committee's own
+  request. Ask A's measured stop goes back to 0 of 12.
+- **Ask B, kept and widened.** Its accreditation-year device is the one reader measurement on this layer
+  that came back clean. Its caveat is not repaired: stops B2 and B3 return a negative amount held in two
+  quarters, which is impossible and so visible, and a running total that resets cannot be differenced across
+  the reset without going negative. Priced as it stands rather than argued away.
+- **Ask B's second measure, two drafts.** The largest single hold in each quarter was built first and
+  dropped on measurement: it reproduced four of six on three of the four wrong stops, because a quarter's
+  maximum is usually attained at a partner-month whose handling the wrong stop happens to get right. The
+  passed side of the same two columns was taken instead and separates on every figure of every stop.
+- **Ask C's device, not replaced, and why every candidate died.** The reader cracked the blank-reason device
+  and the primary reaches one figure of six, so this ask has no effective device mass. Four replacements
+  were screened and all four died on the same structural fact, which is worth more than the four kills: the
+  check register carries both Ask B's running totals and Ask C's reason, so a row added for C perturbs B's
+  series, and a column that separates two checking regimes is a marker. A post-payment assurance regime
+  sharing the register (D5) needs rows with amounts, which corrupt the series; rows without amounts are a
+  marker. A preliminary-filing check (D5 again, through clause 4.2) is in Ask B's own D2 family, which
+  Part 2.1 forbids sharing. A replayed batch under fresh references (D1) is the same "two rows with
+  identical amounts are one thing" shape as Ask A's primary, which is a template finding inside one build.
+  Turning `awards_passed` year-to-date as well was already killed by the pass before, on the ground that it
+  puts one device in front of most of the layer. **The fix that does exist and was not attempted here is
+  structural: split the register into a payment-control register carrying the amounts and a hold case log
+  carrying the reasons, which decouples B from C and lets C take a grain or scope device of its own.** That
+  is a new file, a dictionary entry, a manifest row and a verifier path, and it is the next pass's work.
+  With it the reader-calibrated row is 28.5; without it it is 39.5.
+- **Widening, and the figure it is not.** Eighteen graded figures cannot absorb one cracked ask: six of
+  eighteen is a third of the ask weight. Thirty can, because the two asks whose primaries hold carry
+  twelve each and the one that does not carries six, so the measured keep is 6 of 30, a fifth, which is
+  what Part 0 prices. Widening Ask C with the others was refused on Part 6's free-figure rule and the
+  arithmetic is in the ask sheet: it would have handed the same reader six more figures and put the row at
+  46.8.
 
 ### The designation-set device on task181's ground: six candidate drivers, all six already on file (2026-10-18)
 

@@ -347,7 +347,7 @@ def main(target, golden, figures_path, submission_path):
             break
     need(C is not None, "a qualifying ceiling exists")
     need(all(share(c, cells, shape, scale) > CAP for c in cands if c < C),
-         "the ceiling is the lowest qualifying amount in schedule E")
+         "the ceiling is the lowest qualifying whole thousand")
 
     fig = json.load(open(figures_path))
     need(fig["call"] == C, "the call", "%s vs %s" % (fig["call"], C))
@@ -359,7 +359,7 @@ def main(target, golden, figures_path, submission_path):
     need(round(100 * share(C - step, cells, shape, scale), 2) == fig["share_down_pct"],
          "the share one schedule step down")
     need(fig["call_down"] == C - step, "the preceding schedule entry")
-    need(fig["candidate_step"] == step, "schedule E's spacing")
+    need(fig["candidate_step"] == step, "the grid clause 9.1 names")
     mu = sum(shape) / len(shape)
     sd = (sum((x - mu) ** 2 for x in shape) / (len(shape) - 1)) ** 0.5
     need(round(sd / mu, 2) == fig["cv"], "the coefficient of variation", sd / mu)

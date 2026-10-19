@@ -27,9 +27,9 @@ PEOPLE = {
 COMMITTED_SHARE = 0.060          # clause 9, the share of awards that may be referred
 REF_BAND = 4                     # the reference household size
 ROUND_TO = 100                   # schedule B rounds each band ceiling up to the nearest PHP 100
-# schedule E: the Board approves the reference-size ceiling from a filed list of whole thousands,
-# because the figure is printed on the partner guidance and loaded into the portal validation table
-CANDIDATE_STEP = 1000            # the spacing of schedule E
+# clause 9.1 sets the reference-size ceiling on a grid of whole thousands of pesos, because the
+# figure is printed on the partner guidance and loaded into the portal validation table (clause 9.6)
+CANDIDATE_STEP = 1000            # the spacing clause 9.1 names
 CANDIDATE_FROM = 3000
 CANDIDATE_TO = 15000
 BANDS = [1, 2, 3, 4, 5, 6]
@@ -54,7 +54,7 @@ CAPITAL_FROM = (2025, 7)
 
 # ------------------------------------------------------------------ the award process
 BASE = 3253.4                    # the standard living-cost award at the reference band, pesos
-# BASE is set, with schedule E's spacing, so that clause 9's crossing sits well inside one
+# BASE is set, with clause 9.1's grid, so that clause 9's crossing sits well inside one
 # schedule step: the preceding entry fails the commitment by 0.85 points and the committed
 # entry clears it by 0.41, and every graded share prints clear of its rounding boundary.
 PROV_SD = 0.42                   # between-province spread of partner award level, log scale

@@ -77,7 +77,7 @@ def schedule_workbook(path, fig):
 
     bs = wb.create_sheet("Basis")
     rows = [
-        ("Clause 9 quantity", "lowest amount in Schedule E referring at or below 6.0 per cent of the "
+        ("Clause 9 quantity", "lowest whole multiple of one thousand pesos referring at or below 6.0 per cent of the "
                               "scheme's awards"),
         ("Window", "the twelve months to 31 March 2027, award counted in the month it was paid"),
         ("Awards in the window", fig["awards"]),
@@ -319,7 +319,7 @@ def board_paper(path, fig, test, png):
                    % "{:,}".format(fig["call"]), body),
          Paragraph("The schedule below would refer %.2f per cent of the awards the scheme resolved in "
                    "the twelve months to 31 March 2027, within the %.1f per cent the Board committed "
-                   "to in clause 9. PHP %s, the next amount down in Schedule E, would refer "
+                   "to in clause 9. PHP %s, the next whole thousand down, would refer "
                    "%.2f per cent and is outside it." %
                    (fig["share_pct"], 100 * P.COMMITTED_SHARE, "{:,}".format(fig["call_down"]),
                     fig["share_down_pct"]), body),

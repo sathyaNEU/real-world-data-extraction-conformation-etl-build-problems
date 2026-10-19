@@ -25,8 +25,8 @@ N = 0
 FAIL = []
 
 # clause 9's margin, in percentage points of the committed share: how far the preceding entry in
-# schedule E fails the commitment, and how far the committed entry clears it. Both are set by
-# schedule E's spacing against the award level, and both are measured: at the shipped setting the
+# clause 9.1's grid fails the commitment, and how far the committed candidate clears it. Both are
+# set by the grid's spacing against the award level, and both are measured: at the shipped setting the
 # preceding entry fails by 0.85 points and the committed entry clears by 0.41, against a clustered
 # bootstrap standard error of 0.14 points on the share. The frontier that fixes how far they can be
 # pushed is in the design note's `## Tried and rejected`: driving the crossing further down inside
@@ -120,7 +120,7 @@ def run(target, world, fig, golden_dir):
     for r in ("R2", "R3", "R4", "R5a", "R5b"):
         ok("R3b.rung_%s_separated" % r, abs(L[r] - G) >= P.CANDIDATE_STEP,
            "%s at %d, %+d schedule steps" % (r, L[r], (L[r] - G) // P.CANDIDATE_STEP))
-    # on schedule E's spacing several wrong routes land on the same wrong entry, which is a wrong
+    # on clause 9.1's spacing several wrong routes land on the same wrong candidate, which is a wrong
     # answer each; what has to hold is that none of them lands on the committed entry
     ok("R3b.no_wrong_rung_on_the_golden", all(L[r] != G for r in solve.ROUTES),
        sorted(L[r] for r in solve.ROUTES + ["R6"]))
@@ -251,8 +251,8 @@ def run(target, world, fig, golden_dir):
     # the rounding sentence in 9.1 is load-bearing, not decoration: the prompt orders shares to one
     # decimal place, and at the preceding multiple the reported share is exactly the commitment, so
     # without the sentence a literal reader could quote 9.1 and file the preceding multiple
-    # schedule E's spacing closes the reporting-precision fork on the records rather than on the
-    # sentence: no amount in schedule E has a share that reports as the commitment while exceeding
+    # the grid's spacing closes the reporting-precision fork on the records rather than on the
+    # sentence: no candidate has a share that reports as the commitment while exceeding
     # it, so the test cannot turn on the rounding. 9.1's sentence is kept as belt and braces.
     rep = [(c, 100 * solve.share_cells(c, mean, cnt, shape)) for c in solve.candidates()]
     ok("clause9.no_entry_reports_the_commitment_while_exceeding_it",
@@ -299,7 +299,7 @@ def run(target, world, fig, golden_dir):
        "no capital component before the amendment")
     ok("SF3.amendment_shipped", "1 July 2025" in txt[B.FILES["policy"]]
        and "SHL" in txt[B.FILES["policy"]])
-    # on schedule E's spacing the 27-month reading files the same entry, so the fork does not
+    # on clause 9.1's spacing the 27-month reading files the same candidate, so the fork does not
     # reach the call at all; the record still separates the readings and is what the write-up cites
     eq("SF3.alternative_same_call_on_the_schedule", sf3, G, 0, "%d" % sf3)
     ok("SF3.alternative_shape_really_differs",

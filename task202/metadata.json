@@ -51,7 +51,7 @@
   "generator": "task202/generator/make.py",
   "answer": {
     "call": "PHP 8,000",
-    "unit": "pesos, an amount listed in the operating policy's schedule E"
+    "unit": "pesos, a whole multiple of one thousand under the policy's clause 9.1"
   },
   "files": [
     {

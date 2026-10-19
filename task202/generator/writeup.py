@@ -627,7 +627,7 @@ def submission(fig):
     A("3. At PHP %s the schedule refers **%.2f per cent** of those awards" %
       ("{:,}".format(fig["call"]), fig["share_pct"]))
     A("4. At PHP %s it refers **%.2f per cent**, above the commitment, so PHP %s is the lowest "
-      "qualifying amount in Schedule E" % ("{:,}".format(fig["call_down"]), fig["share_down_pct"],
+      "qualifying whole thousand" % ("{:,}".format(fig["call_down"]), fig["share_down_pct"],
                                           "{:,}".format(fig["call"])))
     A("")
     A("## 3. Step-by-Step Solution")

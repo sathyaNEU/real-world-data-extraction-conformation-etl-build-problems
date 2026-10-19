@@ -15,7 +15,7 @@ The schedule it generates refers 5.59 per cent of the awards the scheme resolved
 1. The twelve months to end-March 2027 hold **49,265** awards in **528** partner-band cells across **88** accredited partners
 2. The award shape measured on the window's portal claims has a coefficient of variation of **0.72**
 3. At PHP 8,000 the schedule refers **5.59 per cent** of those awards
-4. At PHP 7,000 it refers **6.85 per cent**, above the commitment, so PHP 8,000 is the lowest qualifying amount in Schedule E
+4. At PHP 7,000 it refers **6.85 per cent**, above the commitment, so PHP 8,000 is the lowest qualifying whole thousand
 
 ## 3. Step-by-Step Solution
 
