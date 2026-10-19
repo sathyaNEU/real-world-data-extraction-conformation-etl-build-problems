@@ -1,11 +1,11 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-19",
  "stump": "The default path develops each class's caseload by months since each member's first fill and files 57 pharmacists with GLP 8, AST 5 and CGR 6; developed by months since the current episode of therapy began (members back after a lapse restart the curve), the classes take GLP 7, AST 4 and CGR 5, 54 in all.",
  "architecture": 3,
@@ -15,12 +15,13 @@
   "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-19 on target.zip 383f5fa8c9f39c33 (no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN only 2026-10-19 (repeat.gate_g against task249; driver.near against this slot's v2, differentiated)",
-  "heart": ""
+  "heart": "PASS 2026-10-19, nearest driver task157 at 0.08",
+  "surface": "promotes task464 (surface 0.102, corpus top 1 per cent, same decisive gap) for the author; not adjudicated"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "architecture 3 drawn and designed (precut exit 0, fast build green); next: full build, stage-3 gates, stage 4 (reader and judge), ship",
+ "resume": "stage 4 in flight: reader and judge spawned on target.zip 383f5fa8c9f39c33; on their reports score the reader (score_reader.py), read the judge, fix in one generator pass, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

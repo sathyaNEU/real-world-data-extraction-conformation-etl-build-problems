@@ -39,6 +39,9 @@ def figures(g):
         "classes": list(W.CANDIDATES),
         "per_pharmacist_m": P / 1_000_000,
         "duration_pooled_from_months": 36,
+        "episode_gap_days": M.GAP,
+        "rival_totals": {k: int(sum(np.ceil(v[c] / P) for c in W.CANDIDATES)) for k, v in g["rivals"].items()},
+        "rebate_year": 2025,
         "program_year": {"start": 2026, "end": 2027},
         "charter_sections": {"caseload": 2.1, "spend": 2.2, "staffing": 3.1},
     }
@@ -58,7 +61,7 @@ def write_workbook(path, f):
     ws["A1"].font = Font(name="Calibri", bold=True, size=12)
     ws.append(["One pharmacist for each $1.5 million of a class's managed spend, or part (charter 3.1). Managed spend "
                "is projected for the members on therapy on June 30, 2026 from each class's spend and continuation by "
-               "months on therapy, at the Tallis 2026 schedule."])
+               "months into the current episode of therapy, at the Tallis 2026 schedule."])
     ws.append([])
     ws.append(["Class", "Class name", "Members on therapy June 30, 2026", "Managed spend, $ million",
                "Clinical pharmacists", "Rebates on fills dispensed in 2025, $ thousand"])
@@ -106,8 +109,10 @@ def write_workbook(path, f):
         ("Caseload", "Members with a fill in the class whose days' supply reaches June 30, 2026 (charter 2.1)."),
         ("Managed spend", "Each caseload member's fills in the class from July 2026 to June 2027, projected from the "
                           "class's own record: the following twelve months' spend of members on therapy at each month "
-                          "end since 2019, by months since their first fill, applied at the months each caseload member "
-                          "has reached. Members already on therapy when the Orrin file begins are counted with the "
+                          "end since 2019, by months into their current episode of therapy, applied at the months each "
+                          "caseload member's episode has run. A fill more than 60 days after the last supply ran out "
+                          "starts a new episode, so a member back on a drug after stopping is projected as a new "
+                          "starter. Members already on therapy when the Orrin file begins are counted with the "
                           "longest-standing members."),
         ("Pharmacists", "One for each $1.5 million of managed spend, or part (charter 3.1), on the unrounded spend."),
         ("Rebates", "%s rebate statement. Its contract year runs February to January (the statement's units tie "

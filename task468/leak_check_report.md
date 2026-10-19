@@ -4,18 +4,18 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: caseload, member, therapy, members, months, charter, duration, development, decisive, record, silent, device, schedule, twelve, review, durations, january, claims, trailing, run-rate, window, timetable, service, tallis, forward
+Stump terms swept: member, months, members, caseload, development, episode, therapy, decisive, record, charter, silent, device, current, reader, schedule, review, twelve, step-therapy, window, architecture, stopped, starters, golden, timetable, service
 
 ## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: golden figure 760 appears: ...s (biologic and targeted therapy) $21,641,680 $21,760,941 +0.6% 515 Multiple sclerosis $10,199,814 $10,...
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: carries 23 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 48 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
-- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: carries 30 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 48 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: golden figure 614 appears: ...s (biologic and targeted therapy) $22,612,071 $23,614,753 +4.4% 583 Multiple sclerosis $10,624,034 $10,...
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: carries 23 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
+- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: carries 30 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `formulary_bulletin_january_2026.pdf`: 6 of 25 stump-paragraph terms appear (member, therapy, members, january, service, tallis); read whether the document names the move
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: 4 of 25 stump-paragraph terms appear (member, therapy, members, january); read whether the document names the move
-- **REVIEW** `pbm_transition_file_notes.pdf`: 7 of 25 stump-paragraph terms appear (member, members, schedule, january, claims, service); read whether the document names the move
-- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: 9 of 25 stump-paragraph terms appear (caseload, member, therapy, members, charter, schedule); read whether the document names the move
+- **REVIEW** `formulary_bulletin_january_2026.pdf`: 4 of 25 stump-paragraph terms appear (member, members, therapy, service); read whether the document names the move
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: 3 of 25 stump-paragraph terms appear (member, members, therapy); read whether the document names the move
+- **REVIEW** `pbm_transition_file_notes.pdf`: 4 of 25 stump-paragraph terms appear (member, members, schedule, service); read whether the document names the move
+- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: 7 of 25 stump-paragraph terms appear (member, members, caseload, therapy, charter, schedule); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

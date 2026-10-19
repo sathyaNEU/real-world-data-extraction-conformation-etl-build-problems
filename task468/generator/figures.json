@@ -117,6 +117,15 @@
  ],
  "per_pharmacist_m": 1.5,
  "duration_pooled_from_months": 36,
+ "episode_gap_days": 60,
+ "rival_totals": {
+  "first_fill": 57,
+  "trailing": 62,
+  "run_rate": 78,
+  "analog": 62,
+  "from_start": 45
+ },
+ "rebate_year": 2025,
  "program_year": {
   "start": 2026,
   "end": 2027
