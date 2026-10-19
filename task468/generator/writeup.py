@@ -65,10 +65,12 @@ def write(fig_path, out_path):
             routes(meets), routes(fails)),
         "6. Ranked the qualifying routes by average weekday boardings in %s (guidance 5.1): Routes %s, with Route %s "
         "the first qualifying route left out." % (W.FILES["ridership"], routes(c["five"]), c["first_left_out"]),
-        "7. Timed each departure tied to a trip against the trip's scheduled departure from the designated stop in "
-        "the feed in effect that day (%s to April 4, %s from April 5; the published timetable, guidance 4.1 and 4.2), "
-        "not the minute-rounded schedule "
-        "time in Arbor's export, for the on-time shares." % (W.FILES["gtfs_jan"], W.FILES["gtfs_apr"]),
+        "7. For the shelters, took each candidate's outbound stops from %s (stops.txt, trips.txt with direction 0, "
+        "stop_times.txt) and joined them to %s by stop code; where a stop's position in the spring feed lies away from "
+        "where Facilities last inspected it (the spring timetable moved it across its intersection after the "
+        "inspection), took its shelter only from %s work orders completed there between April 5 and June 30; "
+        "elsewhere took the inventory's shelter, moved forward by work orders completed after the inspection and "
+        "back by those completed after June 30." % (W.FILES["gtfs_apr"], W.FILES["amenities"], W.FILES["shelter_wo"]),
         "8. Recommended nominating Routes %s." % routes(c["five"]),
         "",
         "## 4. Deliverable Answers",
@@ -82,10 +84,10 @@ def write(fig_path, out_path):
     lines += [
         "2. Nominated: Routes %s." % routes(c["five"]),
         "3. First qualifying route left out: Route %s." % c["first_left_out"],
-        "4. Share of the departures tied to a trip that left no more than one minute early or five minutes late:",
+        "4. Stops its outbound trips serve in the spring timetable that had no shelter on June 30, 2026:",
     ]
     for r in sorted(W.CANDIDATES, key=int):
-        lines.append("   - Route %s: %d%%" % (r, f["on_time_pct"][r]))
+        lines.append("   - Route %s: %d" % (r, f["no_shelter"][r]))
     lines += [
         "5. Bar chart of each candidate's lowest hourly average against the standard of four, on the Nominations sheet.",
         "",

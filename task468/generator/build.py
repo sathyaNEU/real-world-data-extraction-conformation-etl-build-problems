@@ -50,6 +50,7 @@ def build(out, x=None, quiet=False):
     n["review"] = P.write_csv(f("review"), P.REVIEW_COLS, P.review_rows(x))
     n["fleet"] = P.write_csv(f("fleet"), P.FLEET_COLS, P.fleet_rows())
     n["candidates"] = P.write_csv(f("candidates"), P.CANDIDATE_COLS, P.candidate_rows())
+    n["amenities"] = P.write_csv(f("amenities"), P.AMENITY_COLS, P.amenity_rows())
     G.write_feed(f("gtfs_jan"), "2601")
     G.write_feed(f("gtfs_apr"), "2604")
     rv = x["review"]
@@ -67,12 +68,15 @@ def build(out, x=None, quiet=False):
     DC.write_equity(f("equity"))
     DC.write_ridership(f("ridership"), P.ridership_table())
     DC.write_farebox(f("farebox"), P.farebox_table())
+    DC.write_shelter_wo(f("shelter_wo"))
     for k, stamp in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), stamp, stamp)
     PP.normalize_ooxml(f("ridership"), "Service Planning", "Service Planning", "2026-07-20T15:02:00Z",
                        "2026-07-22T21:14:37Z", excel=True, company=W.DEPARTMENT)
     PP.normalize_ooxml(f("farebox"), "Finance", "Finance", "2026-07-15T13:41:00Z", "2026-07-16T18:22:51Z",
                        excel=True, company=W.DEPARTMENT)
+    PP.normalize_ooxml(f("shelter_wo"), "Capital Projects", "Capital Projects", "2025-08-04T14:10:00Z",
+                       "2026-07-10T16:48:12Z", excel=True, company=W.DEPARTMENT)
     asof = {k: d for k, src, d, desc in __import__("docs").INDEX}
     for i, k in enumerate(W.FILES):
         y, m, d = (int(v) for v in asof[k].split("-"))

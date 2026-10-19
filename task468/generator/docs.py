@@ -222,7 +222,7 @@ def write_review_memo(path, frame_rows, findings):
          Paragraph("How the sample is drawn", h2),
          Paragraph("When a month's service is complete we list its bus-days (a bus and a service day) on which the "
                    "AVL system left at least one stop event at the five transfer points without a trip. We "
-                   "draw 250 bus-days from the list at random. For each bus-day drawn we draw one of its events "
+                   "draw 400 bus-days from the list at random. For each bus-day drawn we draw one of its events "
                    "without a trip at random, retrieve the bus's CCTV for that moment, and record the route the bus "
                    "was operating, or that it was not in service, and why the matcher missed it. CCTV is kept for 30 "
                    "days, so the review runs monthly; pulling one recording per bus-day keeps it to a day's work a "
@@ -333,6 +333,43 @@ def write_farebox(path, table):
     wb.save(path)
 
 
+def write_shelter_wo(path):
+    """Capital Projects' tracking workbook for the bus stop shelter program."""
+    import stops as ST
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    sh = ST.shelters()
+    st = ST.network()["stops"]
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Work orders"
+    ws.append(["Larkhaven Transit, Capital Projects: bus stop shelter program work orders"])
+    ws["A1"].font = Font(name="Calibri", bold=True, size=12)
+    ws.append(["Shelters are installed, moved and taken down only under a Capital Projects work order. Status as of "
+               "July 10, 2026."])
+    ws["A2"].font = Font(name="Calibri", italic=True, size=9)
+    ws.append([])
+    ws.append(["WO", "Stop code", "Location", "Work", "Status", "Issued", "Completed", "Contractor"])
+    for c in ws[4]:
+        c.font = Font(name="Calibri", bold=True)
+        c.fill = PatternFill("solid", fgColor="DDEBF7")
+    contractors = ["Brightline Site Services", "Kessler Concrete", "Plainsview Shelter Co."]
+    for i, w in enumerate(sh["wo"]):
+        done = w["completed"]
+        ws.append([w["wo"], int(w["code"]), st[w["key"]]["name"], w["work"], w["status"], w["issued"],
+                   done if done else None,
+                   None if w["status"] == "Cancelled" else contractors[(int(w["code"]) + len(w["work"])) % 3]])
+    for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
+        row[5].number_format = "mm/dd/yyyy"
+        row[6].number_format = "mm/dd/yyyy"
+        row[1].alignment = Alignment(horizontal="left")
+    for col, wd in zip("ABCDEFGH", (13, 10, 34, 19, 11, 12, 12, 24)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A5"
+    ws.auto_filter.ref = "A4:H%d" % ws.max_row
+    wb.save(path)
+
+
 # ---------------------------------------------------------------- each file's date in the folder
 INDEX = [
     ("avl_q1", "Larkhaven Transit (Arbor Fleetware CAD/AVL export)", "2026-04-02",
@@ -351,4 +388,6 @@ INDEX = [
     ("farebox", "Larkhaven Transit, Finance", "2026-07-16", "Farebox revenue by route, January to June 2026."),
     ("candidates", "Larkhaven Transit, Planning", "2026-07-24",
      "Candidate routes for the FY2027 nominations, with the designated stop each would name."),
+    ("amenities", "Larkhaven Transit, Facilities", "2026-07-10", "Bus stop amenity inventory, extract of July 10, 2026."),
+    ("shelter_wo", "Larkhaven Transit, Capital Projects", "2026-07-10", "Bus stop shelter program work orders."),
 ]

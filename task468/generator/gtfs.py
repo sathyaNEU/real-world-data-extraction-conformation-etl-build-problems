@@ -180,6 +180,7 @@ def stop_table():
         c = int(W.STOPS[k][0]) + 1
         rows.append((k + "o", "%04d" % c, "%d" % (int(W.STOPS[k][1]) + 1), "%d" % (int(W.STOPS[k][2]) + 1), nm))
     seen = {v[3] for v in W.STOPS.values()} | set(OPPOSITE.values())
+    used = {r_[1] for r_ in rows}
     code = 1100
     for r in sorted(STREETS, key=lambda x: int(x)):
         for nm in STREETS[r]:
@@ -187,8 +188,11 @@ def stop_table():
                 continue
             seen.add(nm)
             code += 37
-            rows.append(("x%d" % code, "%04d" % (code % 9000 + 1000), "%d" % (code * 10 + 3), "%d" % (7000 + code % 1000),
-                         nm))
+            sc = code % 9000 + 1000
+            while "%04d" % sc in used:
+                sc += 1
+            used.add("%04d" % sc)
+            rows.append(("x%d" % code, "%04d" % sc, "%d" % (code * 10 + 3), "%d" % (7000 + code % 1000), nm))
     return rows
 
 
@@ -212,9 +216,12 @@ def pattern_stops(route):
 
 
 def write_feed(path, fd):
+    import stops as ST
     f = FEEDS[fd]
-    stops = stop_table()
-    sid = {nm: (rid_jan if fd == "2601" else rid_apr) for _, _, rid_jan, rid_apr, nm in stops}
+    net = ST.network()
+    allstops = net["stops"]
+    pos_key = "pos_jan" if fd == "2601" else "pos_apr"
+    sid = {k: (v["jan"] if fd == "2601" else v["apr"]) for k, v in allstops.items()}
     files = {}
 
     def table(name, header, rows):
@@ -234,8 +241,10 @@ def write_feed(path, fd):
                          "route_text_color"],
           [[r, "LKT", r, W.ROUTE_NAMES[r], "3", "1F4E79" if r in W.CANDIDATES else "6B6B6B", "FFFFFF"]
            for r in sorted(W.SCHED, key=int)])
-    table("stops.txt", ["stop_id", "stop_code", "stop_name", "location_type"],
-          [[(j if fd == "2601" else a), c, nm, "0"] for _, c, j, a, nm in stops])
+    in_feed = sorted((k for k, v in allstops.items() if v[pos_key] is not None), key=lambda k: int(sid[k]))
+    table("stops.txt", ["stop_id", "stop_code", "stop_name", "stop_lat", "stop_lon", "location_type"],
+          [[sid[k], allstops[k]["code"], allstops[k]["name"], "%.6f" % allstops[k][pos_key][0],
+            "%.6f" % allstops[k][pos_key][1], "0"] for k in in_feed])
     cal = []
     for s, days in SERVICES[fd].items():
         cal.append([s] + list(days) + [f["start"].strftime("%Y%m%d"), f["end"].strftime("%Y%m%d")])
@@ -256,7 +265,10 @@ def write_feed(path, fd):
     table("calendar_dates.txt", ["service_id", "date", "exception_type"], cd)
     trips, times, freqs = [], [], []
     for r in sorted(W.SCHED, key=int):
-        pat = pattern_stops(r)
+        pat = net["outbound"][fd][r]
+        inv = net["inbound"][fd][r]
+        last = allstops[pat[-1][0]]["name"]
+        first = allstops[pat[0][0]]["name"]
         off = W.OFFSET[r]
         for s in SERVICES[fd]:
             ms = minutes(fd, s, r)
@@ -267,35 +279,31 @@ def write_feed(path, fd):
                 rest = [m for m in ms if not 360 <= m < 1140]
                 if window:
                     t = "%s_%s_%s_F0600" % (r, fd, s)
-                    trips.append([r, s, t, W.ROUTE_NAMES[r] + " to " + pat[-1][0], "0"])
-                    for i, (nm, mm) in enumerate(pat):
+                    trips.append([r, s, t, W.ROUTE_NAMES[r] + " to " + last, "0"])
+                    for i, (kk, mm, tp) in enumerate(pat):
                         tt = gtfs_time(360 + mm)
-                        times.append([t, tt, tt, sid[nm], str(i + 1), "1" if i in (0, len(pat) - 1) else "0"])
+                        times.append([t, tt, tt, sid[kk], str(i + 1), "1" if i in (0, len(pat) - 1) else "0"])
                     for a_, b_ in frequency_blocks(window):
                         freqs.append([t, a_, b_, "600", "1"])
                 ms = rest
             for m in ms:
                 t = trip_id(fd, s, r, m)
-                trips.append([r, s, t, W.ROUTE_NAMES[r] + " to " + pat[-1][0], "0"])
+                trips.append([r, s, t, W.ROUTE_NAMES[r] + " to " + last, "0"])
                 start = m - off
                 ps = W.pub_sec(r, m)
-                for i, (nm, mm) in enumerate(pat):
+                for i, (kk, mm, tp) in enumerate(pat):
                     dep = (start + mm) * 60 + (ps if mm >= off else 0)
                     arr = dep
-                    if mm == off and off > 0:
+                    if kk == W.STOP_OF[r] and off > 0:
                         arr = dep - W.DWELL.get(r, 0) * 60
-                    times.append([t, gtfs_hms(arr), gtfs_hms(dep), sid[nm], str(i + 1),
-                                  "1" if (i in (0, len(pat) - 1) or mm == off) else "0"])
+                    times.append([t, gtfs_hms(arr), gtfs_hms(dep), sid[kk], str(i + 1), tp])
                 # the inbound trip that brings the bus back
                 ti = trip_id(fd, s, r, m, 1)
-                trips.append([r, s, ti, W.ROUTE_NAMES[r] + " to " + pat[0][0], "1"])
+                trips.append([r, s, ti, W.ROUTE_NAMES[r] + " to " + first, "1"])
                 back = start + W.RUN_MIN[r] + W.LAYOVER.get(r, 7)
-                inv = [(OPPOSITE[W.STOP_OF[r]] if nm == W.STOPS[W.STOP_OF[r]][3] else nm, W.RUN_MIN[r] - mm)
-                       for nm, mm in reversed(pat)]
-                for i, (nm, mm) in enumerate(inv):
+                for i, (kk, mm, tp) in enumerate(inv):
                     dep = back + mm
-                    times.append([ti, gtfs_time(dep), gtfs_time(dep), sid[nm], str(i + 1),
-                                  "1" if i in (0, len(inv) - 1) else "0"])
+                    times.append([ti, gtfs_time(dep), gtfs_time(dep), sid[kk], str(i + 1), tp])
     table("trips.txt", ["route_id", "service_id", "trip_id", "trip_headsign", "direction_id"], trips)
     table("stop_times.txt", ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "timepoint"], times)
     table("frequencies.txt", ["trip_id", "start_time", "end_time", "headway_secs", "exact_times"], freqs)

@@ -158,3 +158,45 @@ def ridership(target):
         if row and row[0] is not None and str(row[0]).strip().isdigit() and isinstance(row[-1], (int, float)):
             out[str(row[0]).strip()] = float(row[-1])
     return out
+
+
+def amenities(target):
+    """Facilities' inventory, one row per stop code as last inspected."""
+    a = pd.read_csv(path(target, "amenities"), dtype=str, keep_default_na=False)
+    a["lat"] = a["latitude"].astype(float)
+    a["lon"] = a["longitude"].astype(float)
+    a["inspected"] = pd.to_datetime(a["last_inspected"]).dt.date
+    return a.set_index("stop_code", drop=False)
+
+
+def shelter_orders(target):
+    """Capital Projects' shelter work orders."""
+    from openpyxl import load_workbook
+    ws = load_workbook(path(target, "shelter_wo"), data_only=True)["Work orders"]
+    rows = []
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if not r or not r[0]:
+            continue
+        day = lambda v: v.date() if hasattr(v, "date") else v
+        rows.append(dict(wo=r[0], code="%04d" % int(r[1]), location=r[2], work=r[3], status=r[4], issued=day(r[5]),
+                         completed=day(r[6]) if r[6] else None))
+    return pd.DataFrame(rows)
+
+
+def feed_positions(target, key):
+    """Each stop code's position in a feed: {code: (lat, lon)}."""
+    s = gtfs_table(target, key, "stops.txt")
+    return {c: (float(a), float(b)) for c, a, b in zip(s["stop_code"], s["stop_lat"], s["stop_lon"])}
+
+
+def outbound_stops(target, key="gtfs_apr"):
+    """Each route's stop codes on its outbound (direction 0) trips in a feed."""
+    code = dict(zip(*(gtfs_table(target, key, "stops.txt")[c] for c in ("stop_id", "stop_code"))))
+    tr = gtfs_table(target, key, "trips.txt")
+    route = {t: r for t, r, d in zip(tr["trip_id"], tr["route_id"], tr["direction_id"]) if d == "0"}
+    st = gtfs_table(target, key, "stop_times.txt")
+    out = {}
+    for t, sid in zip(st["trip_id"], st["stop_id"]):
+        if t in route:
+            out.setdefault(route[t], set()).add(code[sid])
+    return out

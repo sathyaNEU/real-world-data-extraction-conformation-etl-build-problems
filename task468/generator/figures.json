@@ -22,21 +22,21 @@
   "counting_days": 125,
   "events_in_hours": 106687,
   "no_trip_in_hours": 17112,
-  "mall_share_17_weighted_pct": 57,
+  "mall_share_17_weighted_pct": 56,
   "mall_share_17_raw_pct": 35,
-  "riverside_share_weighted_pct": 6,
+  "riverside_share_weighted_pct": 7,
   "riverside_share_proportional_pct": 59
  },
  "verdicts": {
   "2": {
    "meets": true,
-   "lowest": 4.7,
+   "lowest": 4.8,
    "hour": 18,
    "boardings": 6850
   },
   "4": {
    "meets": true,
-   "lowest": 4.9,
+   "lowest": 4.8,
    "hour": 11,
    "boardings": 6120
   },
@@ -54,7 +54,7 @@
   },
   "11": {
    "meets": true,
-   "lowest": 5.7,
+   "lowest": 5.6,
    "hour": 18,
    "boardings": 3240
   },
@@ -72,7 +72,7 @@
   },
   "22": {
    "meets": true,
-   "lowest": 4.8,
+   "lowest": 4.9,
    "hour": 11,
    "boardings": 3710
   },
@@ -84,7 +84,7 @@
   },
   "40": {
    "meets": true,
-   "lowest": 4.8,
+   "lowest": 4.9,
    "hour": 11,
    "boardings": 2410
   },
@@ -105,7 +105,7 @@
     "11"
    ],
    "route17_lowest": 3.6,
-   "route2_lowest": 4.2
+   "route2_lowest": 4.3
   },
   "proportional": {
    "five": [
@@ -119,48 +119,35 @@
    "route17_lowest": 2.2
   }
  },
- "on_time_pct": {
-  "2": 62,
-  "4": 70,
-  "6": 54,
-  "9": 71,
-  "11": 73,
-  "14": 72,
-  "17": 37,
-  "22": 72,
-  "31": 72,
-  "40": 75,
-  "51": 73
+ "no_shelter": {
+  "2": 15,
+  "4": 16,
+  "6": 8,
+  "9": 6,
+  "11": 9,
+  "14": 10,
+  "17": 13,
+  "22": 8,
+  "31": 7,
+  "40": 12,
+  "51": 13
  },
- "on_time_n": {
-  "2": 6629,
-  "4": 7388,
-  "6": 5080,
-  "9": 7194,
-  "11": 8994,
-  "14": 7469,
-  "17": 2844,
-  "22": 7927,
-  "31": 7099,
-  "40": 8283,
-  "51": 6721
- },
- "on_time_k": {
-  "2": 4099,
-  "4": 5153,
-  "6": 2735,
-  "9": 5104,
-  "11": 6582,
-  "14": 5358,
-  "17": 1056,
-  "22": 5686,
-  "31": 5133,
-  "40": 6187,
-  "51": 4905
+ "outbound_stops": {
+  "2": 24,
+  "4": 24,
+  "6": 18,
+  "9": 17,
+  "11": 16,
+  "14": 17,
+  "17": 25,
+  "22": 21,
+  "31": 17,
+  "40": 22,
+  "51": 19
  },
  "review": {
-  "bus_days_drawn_month": 250,
-  "events_reviewed": 1500
+  "bus_days_drawn_month": 400,
+  "events_reviewed": 2400
  },
  "routes": [
   "2",

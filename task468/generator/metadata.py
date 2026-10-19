@@ -28,7 +28,7 @@ def write(target, out_path):
                  "Transit Corridors Program for FY2027 (at most five), on the departures its buses made from the "
                  "routes' designated stops from January to June 2026 as two AVL systems recorded them, the departures "
                  "the trip matchers tied to no trip shared out through Service Quality's review weighted by its "
-                 "design; with each candidate's share of departures that left on time against the timetable",
+                 "design; with each candidate's outbound stops that had no shelter on June 30, 2026",
         "domain": "General Statistics & Data Science",
         "subdomain": "data-integration-record-linkage-entity-resolution (two AVL vendors' stop events conformed and "
                      "linked to the timetable's trips; the links the matchers missed, which fall on the late trunk "
@@ -37,19 +37,19 @@ def write(target, out_path):
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "01: ranked list under a cap: each of eleven candidate routes passes or fails the delivered "
                         "frequency standard and the five with the most weekday boardings are nominated, with each "
-                        "candidate's on-time share",
+                        "candidate's count of outbound stops without a shelter",
         "as_of": W.AS_OF,
         "deliverables": DELIVERABLES,
         "distractor_files": DISTRACTORS,
-        "stated_inputs": ["FY2027", "January to June 2026", "6 a.m.", "7 p.m.", "one minute", "five minutes"],
+        "stated_inputs": ["FY2027", "January to June 2026", "April 5", "June 30, 2026"],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": big, "largest_file_rows": rows[big]},
         "sources": [
             {"files": "all files under target/",
              "origin": "constructed for this task by task468/generator/build.py (seeded, deterministic) in the layouts "
                        "of a city transit department's CAD/AVL stop-event exports from two vendors, its GTFS feeds, "
                        "a service-quality review log and memo, a fleet roster, a candidate route list, ridership and "
-                       "farebox reports and a Title VI monitoring report, and a state department of transportation's "
-                       "program guidance; the "
+                       "farebox reports, a Title VI monitoring report, a bus stop amenity inventory and a shelter "
+                       "work-order log, and a state department of transportation's program guidance; the "
                        "state is unnamed and the city, its transit department, vendors, routes and people are "
                        "fictional",
              "date": W.AS_OF,

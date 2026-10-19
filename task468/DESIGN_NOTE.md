@@ -30,7 +30,7 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   nominations.
 - **Shape:** 01, a ranked list under a cap: each of the eleven candidate routes passes or fails the delivered
   standard, and the state takes at most five per agency, the highest in average weekday boardings first; the criteria
-  are each route's verdict, the five, the first qualifying route left out, plus each candidate's on-time share.
+  are each route's verdict, the five, the first qualifying route left out, plus each candidate's count of outbound stops with no shelter on 30 June 2026.
 - **Strategy:** identity_resolution (linking records to the units they belong to), decisive generator G6 (the
   unmatched departures' route mix is not the matched mix, and the review's raw mix is not the unmatched mix), with G12
   (no route on a record is not no departure) and G3 (the AVL record against the bus that ran).
@@ -45,7 +45,7 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   Quinnell Transit Systems, whose export is in UTC, keyed by public stop code and asset tag and concatenated from daily
   files); both vendors' trip matchers tie a stop event to a scheduled trip when the bus is within seven minutes of the
   timetable and leave it with no trip otherwise. Service Quality reviews the matchers each month: it lists the bus-days
-  with at least one unmatched event at the five transfer points, draws 250 at random, and reviews one unmatched event
+  with at least one unmatched event at the five transfer points, draws 400 at random, and reviews one unmatched event
   on each, chosen at random, against the bus's CCTV, recording the route the bus was operating or that it was out of
   service.
 - **Forcing fact:** the state's application closes on 1 December 2026; the City Council authorizes the nominations by
@@ -72,7 +72,7 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   estimated from records a sixth of which carry no trip, through a review whose raw mix the data's own structure (the
   review's one event per bus-day against bus-days carrying 1 to 16 unmatched events) shows to be unrepresentative.
 - **Deliverables:** `larkhaven_frequent_corridor_nominations_fy2027.xlsx` (the call, each candidate's verdict and
-  lowest hour, its share of departures on time against the timetable, and the chart of the lowest hours).
+  lowest hour, its outbound stops with no shelter on 30 June 2026, and the chart of the lowest hours).
 - **Sources, one line each:**
   - `stumping/references/client/layer2-rigor-patterns.md`, data-integration-record-linkage-entity-resolution 1: the
     client's own pattern for the task type; here the missed links select by lateness and the clerical review is the
@@ -120,11 +120,11 @@ Domain test: the deciding quantity is each route's departures per hour estimated
 
 Swap: "a hospital's discharges per ward counted through a patient-matching engine, the unmatched discharges shared out by a chart review that pulls one chart per sampled shift" keeps the shape, because in a methods field the setting is always another field's; the swap is of the method, and the call fails the moment the design-weighted review is replaced by the raw review mix or a proportional share-out, while the seven-minute window, the Transit Mall's interlined trunk routes and the bus-day as the review's unit are the department's own.
 
-Layer 1: Arbor's export in local time keyed by GTFS stop id and fleet number with each event's service date; Quinnell's in UTC keyed by public stop code and asset tag, concatenated from daily files whose heads repeat the previous file's last ten minutes under new EventIDs, its schedule times to the second from the feeds; Arbor's schedule times held to the minute where the timetable sets some departures at the transfer points to the half minute; both systems recording the evening of 31 March; the April timetable's renumbered stop ids; Good Friday on the Saturday timetable and the 3 February snow day run on it though the feed shows a weekday; the feeds' frequency-based University Connector, College Hill's class-day trips in calendar_dates only, trips past 24:00. Each is the department's systems as they run, asserted neutral for the call (checks.py R2 and the separation check, which blanks every schedule field), the schedule times moving only the on-time shares.
+Layer 1: Arbor's export in local time keyed by GTFS stop id and fleet number with each event's service date; Quinnell's in UTC keyed by public stop code and asset tag, concatenated from daily files whose heads repeat the previous file's last ten minutes under new EventIDs, its schedule times to the second from the feeds; Arbor's schedule times held to the minute where the timetable sets some departures at the transfer points to the half minute; both systems recording the evening of 31 March; the April timetable's renumbered stop ids; Good Friday on the Saturday timetable and the 3 February snow day run on it though the feed shows a weekday; the feeds' frequency-based University Connector, College Hill's class-day trips in calendar_dates only, trips past 24:00. Each is the department's systems as they run, asserted neutral for the call (checks.py R2 and the separation check, which blanks every schedule field).
 
 Layer 2: estimation_fit, the design-based estimate of the missed links' composition: the clerical review samples bus-days with equal probability and one event within each, so each reviewed event carries its bus-day's count of unmatched events as its weight, and the raw mix understates the bus-days the matcher failed most.
 
-Decisive step: weighting each reviewed event by its bus-day's unmatched events at the five stops (and each month by its bus-days listed over the 250 drawn) before taking each stop's route mix, which puts Route 17 at 57 per cent of the Transit Mall's events with no trip against the raw 35 and lifts its lowest hour from 3.6 to 4.8, nominating Routes 2, 4, 6, 17 and 22 instead of Routes 2, 4, 6, 22 and 11.
+Decisive step: weighting each reviewed event by its bus-day's unmatched events at the five stops (and each month by its bus-days listed over the 400 drawn) before taking each stop's route mix, which puts Route 17 at 56 per cent of the Transit Mall's events with no trip against the raw 35 and lifts its lowest hour from 3.6 to 4.8, nominating Routes 2, 4, 6, 17 and 22 instead of Routes 2, 4, 6, 22 and 11.
 
 Not semantics: every field, code, unit and definition read correctly (stop ids and codes, UTC, asset tags, the repeated file heads, the review's route and finding, the guidance's departures whether or not tied to the route) still leaves the easy route sharing the unmatched events by the review's raw mix, because no field says the reviewed events are unequally likely to be drawn; the review memo states how the sample is drawn, as every audit does, and turning that into weights is the estimator's choice, not a reading.
 
@@ -166,10 +166,10 @@ Lesson: a clerical review that samples clusters (bus-days) and takes a fixed num
 | SF10 | the cutover evening | 31 March's service from Arbor's export (Quinnell's copy of 7 p.m. onward dropped), or the reverse | both copies kept | same call (outside the counting hours; asserted) | C1: the main population holds none of these events |
 | SF11 | Quinnell's repeated file-head rows | dropped (same bus, stop and second as the row before them) | kept | same call (23:50 to midnight, outside the counting hours; asserted) | C1 |
 | SF12 | the review's frame | bus-days by service day with at least one event with no trip at the five stops, any hour | counting days and hours only | same call (asserted) | the review memo's procedure |
-| SF13 | on time | no more than one minute before and no more than five minutes after the scheduled departure, bounds included | strict bounds | same call; six on-time shares move (asserted) | guidance 4.2 and the prompt, "no more than" |
-| SF14 | the on-time window | departures that left from 6:00 to 6:59 p.m. by the clock hour the bus left | windowed by the scheduled time | same call; no share moves (asserted) | guidance 3.2 "counted in the clock hour in which the bus left the stop" |
-| SF15 | the trip's scheduled departure | the trip's departure from the designated stop in the feed in effect that day (winter to 4 April, spring from 5 April) | the schedule field each export carries | same call; every on-time share moves (Arbor's held to the minute) | guidance 4.1 (the application carries "the GTFS feeds of its published timetable") and 4.2 ("the trip's scheduled departure in the published timetable"); the change note: Quinnell's ScheduledDeparture is the feed's |
-| SF16 | Quinnell's DeviationSec | the departure against ScheduledDeparture, seconds | an adherence at arrival | same call; same shares (asserted) | the change note's field table |
+| SF13 | the stops its outbound trips serve | every stop in the stop_times of the route's direction 0 trips in the spring feed, the first, the last and the designated stop included | the stops after the designated stop only; both directions | the call untouched (an ask term); every candidate's count moves under either | the candidate list's direction ("Outbound, to ...") and the feed's direction_id; every outbound trip of a route serves the same stops (asserted) |
+| SF14 | the timetable that began on April 5 | the spring feed (larkhaven_gtfs_20260405.zip) | the winter feed | the call untouched; Routes 2, 17 and 40 move (stops closed in April) | the prompt names the date; the feed's start date is 20260405 |
+| SF15 | had no shelter on June 30, 2026 | the shelter standing at the stop on that date: work orders completed by then count, scheduled and cancelled ones do not, and one completed in July is undone where the inspection came after it | the inventory's flag as extracted on July 10 | the call untouched; every count moves under the extracted flag (asserted) | the prompt's date; the work-order log's status and completion dates |
+| SF16 | for each candidate | a stop two candidates serve counts for each | each stop counted once across the candidates | the call untouched; five shared stops (the transfer points and College Dr & Pell St) | the ask is per candidate |
 
 ## Ladder
 
@@ -186,17 +186,19 @@ Lesson: a clerical review that samples clusters (bus-days) and takes a fixed num
   to one shipped fact: the review finds Riverside in about 6 per cent of Main St & 9th St's events with no trip, not
   the 59 per cent its attributed departures would give it.
 - **R2, the sophisticated one: the review's raw mix (Routes 2, 4, 6, 22 and 11).** Sharing by the reviewed events'
-  route mix puts Route 17 at 35 per cent of the Transit Mall's misses and its lowest hour at 3.6; Route 2 at 4.2. Dies
+  route mix puts Route 17 at 35 per cent of the Transit Mall's misses and its lowest hour at 3.6; Route 2 at 4.3. Dies
   to one construction: each reviewed event is one of its bus-day's unmatched events (1 to 16 of them), so weighting it
-  by that count puts Route 17 at 57 per cent.
+  by that count puts Route 17 at 56 per cent.
 - **R3, the decisive move: the review weighted by its design (Routes 2, 4, 6, 17 and 22).** Route 17's lowest hour 4.8,
-  Route 9's 3.7, Route 6's 4.7, Route 2's 4.7; the first qualifying route left out is Route 11.
+  Route 9's 3.7, Route 6's 4.7, Route 2's 4.8; the first qualifying route left out is Route 11.
 - **Bins and margins:** the verdicts are the graded quantities; under every weighted variant (the full weights, the
-  within-bus-day weight alone, by month, by vendor, by time band, counting-day reviews only) Route 17's lowest hour
-  sits 0.74 or more above four, Route 9's 0.25 or more below, Route 2's 0.53 or more above, Route 6's 0.64 or more
-  above; under every unweighted variant Route 17 sits 0.44 or more below four (asserted). The flip: Route 17 qualifies
-  once its share of the Transit Mall's events with no trip passes about 43 per cent; the raw review gives 35 and the
-  weighted 57.
+  within-bus-day weight alone, by month, by vendor, by time band, by stop and clock hour, counting-day reviews only)
+  Route 17's lowest hour sits 0.45 or more above four, Route 9's 0.28 or more below, Route 2's 0.33 or more above,
+  Route 6's 0.43 or more above; under every unweighted variant (by stop, month, band, stop and clock hour, the stage-1
+  factor alone) Route 17 sits 0.41 or more below four (asserted). The review draws 400 bus-days a month, so the
+  stop-hour cells hold enough reviewed events that the finest grain agrees with the stop grain. The flip: Route 17
+  qualifies once its share of the Transit Mall's events with no trip passes about 43 per cent; the raw review gives 35
+  and the weighted 56.
 - **Position, separation and dominance:** a slate; each rung names its own five (R0 with Riverside, R1 four routes, R1c
   Riverside and the Connector, R2 the Connector, R3 Prairie Road and Fairgrounds); no two adjacent rungs share a slate.
   Every correction from R1 walks the trunk routes up; R1c walks Riverside up past the line and only the review turns it
@@ -214,11 +216,11 @@ Lesson: a clerical review that samples clusters (bus-days) and takes a fixed num
 | 2 | Unit of account | the departure; the standard in departures per clock hour |
 | 3 | Attribution window | service days 1 January to 30 June 2026; the counting hours carry no event from another service day (asserted) |
 | 4 | As-of dating | the exports as delivered (Arbor's of 2 April, Quinnell's of 6 July); the review log closed 31 July |
-| 5 | Version basis | one export per system; Quinnell's repeated file heads and its copy of 31 March's evening dropped (C1 on the call); scheduled departures from the feed in effect each day (SF15) |
+| 5 | Version basis | one export per system; Quinnell's repeated file heads and its copy of 31 March's evening dropped (C1 on the call); for the shelters the spring feed (SF14), the inventory as last inspected and the work-order log as of 10 July |
 | 6 | Denominator | the 125 counting days (guidance 3.3) |
-| 7 | Weighting | each reviewed event by its bus-day's events with no trip at the five stops, each month by its bus-days listed over drawn; the within-bus-day weight alone, by month, by vendor and by time band give the same five (C1, asserted) |
+| 7 | Weighting | each reviewed event by its bus-day's events with no trip at the five stops, each month by its bus-days listed over drawn; the within-bus-day weight alone, by month, by vendor, by time band and by stop and clock hour give the same five (C1, asserted) |
 | 8 | Window length | the half-year as filed |
-| 9 | Boundary inclusivity | an hour from :00:00 to :59:59 by the departure second; "at least four" inclusive (guidance 3.3); on time includes its bounds (guidance 4.2, SF13); the frequency blocks end between two trips, so either reading of an end time gives the same trips |
+| 9 | Boundary inclusivity | an hour from :00:00 to :59:59 by the departure second; "at least four" inclusive (guidance 3.3); the shelter on June 30 counts work completed that day (SF15); the frequency blocks end between two trips, so either reading of an end time gives the same trips |
 | 10 | Rounding path | unrounded averages compared with four; no candidate within 0.05 of it (asserted) |
 | 11 | Tie-break | none in the ridership order (distinct boardings) |
 | 12 | Maturity and censoring | the period closed 30 June; the review covers every month |
@@ -227,7 +229,7 @@ Lesson: a clerical review that samples clusters (bus-days) and takes a fixed num
 | 15 | Duplicate resolution | Quinnell's file-head repeats (same bus, stop and second) dropped; none in the counting hours (C1) |
 | 16 | Identity normalisation | stop ids to stop codes by the feeds' stops.txt; asset tags to fleet numbers by the roster; the review's bus and stop code join both |
 | 17 | Netting | none |
-| 18 | Dimensional units | departures, hours, local time; Quinnell's UTC converted (guidance 1.4); lateness in seconds against the feeds' times |
+| 18 | Dimensional units | departures, hours, local time; Quinnell's UTC converted (guidance 1.4); stops whole |
 | 19 | Code and status semantics | MatchStatus and a blank trip both mean no trip; the review's "Not in service" a non-departure |
 | 20 | Integerisation | departures whole; averages unrounded |
 | 21 | Clause scope | guidance 3 for the standard, 5 for the cap; the review memo describes its own sample only |
@@ -242,10 +244,11 @@ and the rest are estimated, which the guidance requires without saying how; of t
 proportional share-out is contradicted by the review's route mix at every stop and the review's raw mix by its own
 draw (one event per bus-day, bus-days holding 1 to 16), and the design-weighted review is the one every stratification
 agrees on, so the literal execution nominates Routes 2, 4, 6, 17 and 22 with Route 11 the first qualifying route left
-out; no filed rule, basis or formula reads to another list. For the on-time shares, guidance 4.2 read literally times
-each departure against the trip's scheduled departure, which is the timetable's: the feed in effect that day, carried to
-the second by Quinnell's export (its notes say so) and held to the minute by Arbor's, so each share is timed against
-the feeds, with its bounds included.
+out; no filed rule, basis or formula reads to another list. For the shelters, the prompt read literally takes
+each candidate's direction 0 trips in the spring feed, every stop they serve, and asks which had no shelter on 30 June
+2026: the inventory says what stood where Facilities last inspected each stop, the work-order log what was installed,
+moved or taken down since, and the feeds where each stop stands; a stop the spring timetable moved after its inspection
+stands away from the inventory's position, so its shelter is whatever a completed work order put at the new position.
 
 ## Oracles
 
@@ -255,56 +258,70 @@ the feeds, with its bounds included.
 - The GTFS feeds: the timetable rung (R0) reads them; nothing in them ties to delivered departures.
 - The farebox workbook and the Title VI report (distractors): revenue by route and 2025 equity classifications, with
   no departure counts; no figure ties under any reading.
-- Quinnell's ScheduledDeparture equals the feeds' time to the second, including the 1 to 4 April departures on the
-  winter feed's trips that Arbor timed to the minute in March: split evidence for the on-time device, confirming the
-  timetable, never a share; no published on-time figure exists.
+- The Title VI report's "stops with shelter" (2025, every stop of each route in both directions, as a percentage): a
+  different year, scope and unit; it ties under no reading of the shelter ask.
+- The work-order log's statuses and dates: true under every handling; the log states no count of stops without a
+  shelter, and no file does.
 - None ties only under the golden.
 
 ## Ask sheet
 
-- **The on-time ask: for each candidate, of its departures from 6 a.m. to 7 p.m. on the counting days that the AVL
-  record ties to a trip, the share that left no more than one minute early or five minutes late (whole per cent; 11
-  figures).** H18 home: a measure every candidate carries that the call does not turn on; the state's application gives
-  it beside the frequency figures (guidance 4.2). Use: the Transportation Committee reads each route's reliability
-  beside its frequency before the council signs. Path: both exports (departure times, trips, schedule fields), both
-  feeds (stops, trips, stop_times, frequencies), the candidate list: five files, twenty columns. Primary device: D3, a
-  per-source precision that passes every identity check: Arbor's export holds each trip's schedule time to the minute
-  (sched_dep, and adherence_min computed on it), while the timetable sets the transfer points' departures to the half
-  minute in some periods of the day (the Transit Mall and Westgate in the peaks, Oak Street and College Hill from 9
-  a.m., Union Station until 3 p.m.), and Quinnell's export carries the feed's time to the second. A response that times
-  each departure against the schedule field its own export carries misses all eleven shares. Hazards: Arbor's
-  adherence_min rounded to a tenth of a minute; Quinnell's DeviationSec (its departure against ScheduledDeparture, so
-  right for the second quarter); the winter feed's trips running to 4 April under Quinnell. Stops (asserted): each
-  export's own schedule field misses 11 of 11; the adherence columns miss 11 of 11; thirty seconds added to every Arbor
-  schedule time misses 8 of 11; the feeds' times give the golden, every share at least 0.19 points from its rounding
-  edge. Realism: a legacy CAD/AVL holding schedule times to the minute beside a scheduling system that publishes half
-  minutes; the feeds and the newer system agree to the second.
+- **The shelter ask: for each candidate, how many of the stops its outbound trips serve in the timetable that began on
+  April 5 had no shelter on June 30, 2026 (whole stops; 11 figures).** H18 home: a measure every candidate carries that
+  the call does not turn on; the program funds stop and shelter work on the routes nominated (guidance 1.1), and each
+  candidate's unsheltered stops are the scope of that work. Use: the Transportation Committee reads each route's shelter
+  gap beside its verdict before the council signs. Path: the spring feed (stops.txt with positions, trips.txt with
+  direction_id, stop_times.txt), the winter feed's stops.txt, Facilities' amenity inventory (stop_code, location,
+  latitude, longitude, shelter, last_inspected), Capital Projects' work orders (stop code, work, status, completed), the
+  candidate list: five files, sixteen columns.
+  Primary device: D7 with D4, the true key elsewhere and absence as the signal. The spring timetable moved stops on
+  every route to the far side of their intersections (58 to 112 metres) and kept each stop's code and name; Facilities
+  inspects each stop about once a year, so the inventory still holds 32 moved stops where they stood before April, with
+  the shelter that stood there. A shelter moves only under a Capital Projects work order; where none was completed by
+  June 30 the shelter stayed on the old pad and the stop at its new position had none. Joined on stop code, every
+  inventory row matches its stop, every name agrees, nothing repeats, and the work orders carry the inventory forward
+  correctly, so no sweep sees it; it shows only at a cross-file cut nothing invites, the inventory's position against
+  the spring feed's (or the winter feed's position against the spring feed's for the same code). Every candidate holds
+  one to three such stops (asserted). Benign twins: 13 moved stops whose row reads right (re-inspected after the move,
+  relocated by a completed work order, or never sheltered), and every other stop within 11 metres of the feed (the
+  inspectors' GPS).
+  Hazards: work orders scheduled or cancelled; seven completed in July, after the date asked: five relocations at moved
+  stops and two new shelters at stops Facilities inspected a few days later, whose rows record a shelter that was not
+  there on June 30; stops the spring timetable closed (still in the inventory, out of
+  service); the inventory's posted routes column (the routes on the sign at inspection, both directions); the Title VI
+  report's 2025 shelter percentages.
+  Stops (asserted, checks.py and generator/ceiling.py): the inventory carried forward and back by the work orders, joined
+  on stop code (the cracker) misses all 11 (Route 2 13 against 15, Route 4 14 against 16, Route 6 6 against 8, Route 9
+  4 against 6, Route 11 7 against 9, Route 14 8 against 10, Route 17 10 against 13, Route 22 6 against 8, Route 31 5
+  against 7, Route 40 10 against 12, Route 51 12 against 13); the inventory as extracted misses all 11; the inventory
+  rows whose posted routes include the candidate miss all 11; the golden equals the stops' true shelters on June 30.
+  Fair: the moved stops are exactly those standing more than 30 metres from their inventory position (at least 60
+  metres; every other stop within 11), and exactly those the spring feed moved before their inspection was due (C1,
+  asserted). Realism: a far-side stop programme carried out with a timetable change, a facilities inventory refreshed on
+  an annual inspection cycle, and shelters on concrete pads that only a contractor moves.
 - **The construction layer:** the call, the eleven verdicts, the five and the first route left out; the cracker has
   them.
 - **Main population zero-counts (asserted):** the call reads the counting-day events from 6 a.m. to 7 p.m. (departure
-  time, stop, bus, trip, route, match status), the review log and the ridership report's period averages, and no
-  schedule field: with every schedule field of both exports blanked and service days taken by the clock, the five are
-  unchanged (the separation check). The device lives only in sched_dep, adherence_min, ScheduledDeparture and the
-  feeds' stop_times and frequencies.
-- **Hazard table (asserted):** the minute-held schedule moves all 11 shares; the adherence rounding moves Arbor's
-  quarter of every route; strict bounds would move six (closed by "no more than").
-- **Referee:** Quinnell's ScheduledDeparture, the feed's time to the second, on the same winter trip ids Arbor timed
-  to the minute: split evidence for the timetable, never a share.
+  time, stop, bus, trip, route, match status), the review log and the ridership report's period averages, and no stop
+  position, shelter or work order; the distractor copy test deletes the inventory's and the log's rows from nothing the
+  call reads, and the separation check blanks every schedule field with the same five. The device lives only in the
+  feeds' stop positions, the inventory and the work-order log.
+- **Hazard table (asserted):** the extracted flag moves all 11 counts; the posted-routes column moves all 11; the two
+  July shelters move Routes 4 and 22 under the extracted flag and nothing once the work orders are carried back.
+- **Referee:** the winter feed's position for the same stop code, which agrees with the inventory's for every stop the
+  spring timetable moved before its inspection: split evidence that the stop moved, never a count.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| On-time departures by candidate | times each departure against the published timetable that guidance 4.1 and 4.2 now name, the two feeds by date with route 11's frequency blocks (reader round 3 did, 11 of 11) | hit |
+| Stops without a shelter by candidate | joins the spring feed's outbound stops to the inventory on stop code (every code matches, every name agrees), carries each flag forward by the work orders completed after the inspection and back by those completed after June 30: 0 of 11 | miss |
 
-- Mirror leakage: 100 per cent of ask weight after the guidance pin (a response on R2 that reads 4.2 times against the
-  feeds too and hits the same eleven shares); 0 per cent before it.
-- Pair ceiling: 91.5 after the guidance pin (planning weights 38 / 7 / 55, the main block split as the call 10, the
-  five 8, the first route left out 4 and the eleven verdicts 16, the ask weight over the eleven shares; the cracker
-  keeps everything, 100.0; the mirror on R2 keeps ten verdicts (14.5), four of the five (6.4), instruction-following
-  (7.0) and the eleven shares (55.0), 82.9). Before the pin, with each export's own schedule field as the careful path,
-  it was 36.5 (the cracker 45.0, the mirror 27.9). The ask is rebuilt before this build ships (pipeline.json resume).
-- Measured by: generator/ceiling.py on the cut pack measures the pre-pin rows (the cracker 45.0 with 0 of 11 shares,
-  the mirror 27.9 with 0 of 11, pair ceiling 36.5, mirror leakage 0.0 per cent); reader round 3 on the pinned pack is
-  the measurement after the pin, 11 of 11 shares.
+- Mirror leakage: 0.0 per cent of ask weight (the mirror on R2 scores the best of the cracker's path, the extracted
+  flag and the posted routes, 0 of 11).
+- Pair ceiling: 36.5 (planning weights 38 / 7 / 55, the main block split as the call 10, the five 8, the first route
+  left out 4 and the eleven verdicts 16, the ask weight over the eleven counts; the cracker 45.0 with 0 of 11, the
+  mirror on R2 27.9 with ten verdicts, four of the five, instruction-following and 0 of 11).
+- Measured by: generator/ceiling.py on the cut pack (cracker 45.0, mirror 27.9, pair ceiling 36.5, mirror leakage 0.0
+  per cent).
 
 ## Tried and rejected
 
@@ -354,6 +371,18 @@ the feeds, with its bounds included.
   4.2 closed it, and reader round 3 then timed all eleven shares against the feeds. A device whose basis a filed
   sentence must name dies with the pin, and every other column the ask reads (the departure, the trip tie, the window,
   the days) is the call's own population, so no device on this ask can stay off the call's rows.
+- 2026-10-19, repair: the stop-hour grain fork (reader round 3): the review drew 250 bus-days a month, so the
+  stop-by-clock-hour cells held one to seven reviewed events and the minimum of thirteen noisy hourly estimates sat
+  biased low; at 400 bus-days a month, with the within-bus-day draw on its own stream, every weighted grain (stop, stop
+  and hour, band, month, vendor, the within-bus-day weight, counting-day reviews) files the golden and every raw grain
+  the R2 slate (checks.py R3b, verify.py's stop-hour estimator).
+- 2026-10-19, repair: replacing the dead on-time ask, measures tried on paper and dropped: the average scheduled wait
+  (computed exactly from the feeds by any GTFS-literate solver, and "a weekday of current service" splits on the class
+  days); missed trips from a dispatch log (it would hand every solver each route's delivered departures, the call's own
+  quantity); APC boardings at the designated stops (doors open only in service, which would identify the out-of-service
+  passes the review estimates); the fleet roster's asset tags moved between buses (it would move the review's bus-day
+  join on the call's path); evening and Saturday counts (Quinnell's repeats and the cutover overlap are seen, not
+  silent). The shelter ask takes none of the call's rows.
 
 ## Leak check
 
@@ -402,8 +431,8 @@ the feeds, with its bounds included.
   design-weighted review Routes 2, 4, 6, 17 and 22, on the clean truth and on the pack (checks.py R3a, R3b). Two
   layers: the Layer 1 inventory in `## Three rules`, each asserted neutral for the call (R2: the repeated file heads
   kept, both copies of 31 March's evening, Quinnell's copy instead of Arbor's, calendar dates for service days, all the
-  same five; the separation check: every schedule field blanked, the same five); the on-time device confined to the
-  schedule fields and the feeds' times; Layer 2 the weighting. The decisive step is none of the three banned kinds,
+  same five; the separation check: every schedule field blanked, the same five); the shelter device confined to the
+  stops' positions, the amenity inventory and the work-order log; Layer 2 the weighting. The decisive step is none of the three banned kinds,
   each executed in `checks.py`: not a plant (R1, R3c); not data semantics (SF1 to SF16: every term read right still
   leaves the raw mix on Routes 2, 4, 6, 22 and 11); not rule application (R3a, R3b).
 - **Judge pass 1** (2026-10-17, `determinism_check_report.md`): NOT_DETERMINISTIC on the asks only, SEND_BACK in the

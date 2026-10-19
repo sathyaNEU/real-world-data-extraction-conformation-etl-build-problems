@@ -1,5 +1,6 @@
 """An independent verifier for task468: reads only the shipped bundle (target/) and the goldens, with its own readers and
-arithmetic (no generator module), and recomputes the call, the verdicts and every on-time share.
+arithmetic (no generator module), and recomputes the call, the verdicts, the call at the stop-hour grain and every
+shelter count.
 
     python3 task468/generator/verify.py
 """
@@ -21,7 +22,8 @@ NAMES = {"q1": "avl_stop_events_2026q1_arbor.csv", "q2": "avl_stop_events_2026q2
          "review": "trip_matching_review_2026h1.csv", "fleet": "fleet_roster_2026.csv",
          "jan": "larkhaven_gtfs_20260101.zip", "apr": "larkhaven_gtfs_20260405.zip",
          "ride": "ridership_by_route_2026h1.xlsx", "guide": "dot_ftc_program_guidance_fy2027.pdf",
-         "cand": "ftc_candidate_routes_fy2027.csv"}
+         "cand": "ftc_candidate_routes_fy2027.csv", "amen": "facilities_bus_stop_amenities_20260710.csv",
+         "wo": "capital_projects_shelter_work_orders.xlsx"}
 GOLD = {"wb": "larkhaven_frequent_corridor_nominations_fy2027.xlsx"}
 
 
@@ -101,6 +103,7 @@ def main(target, golden):
         drawn[int(r["service_date"][5:7])] += 1
     mix = defaultdict(lambda: defaultdict(float))
     rawmix = defaultdict(lambda: defaultdict(float))
+    mixh = defaultdict(lambda: defaultdict(float))
     for r in rv:
         sd = dt.date.fromisoformat(r["service_date"])
         u = unm[(r["bus"], sd)]
@@ -109,7 +112,8 @@ def main(target, golden):
         lab = "NIS" if r["route_operated"] == "Not in service" else r["route_operated"]
         mix[r["stop_code"]][lab] += w
         rawmix[r["stop_code"]][lab] += 1
-    for m in (mix, rawmix):
+        mixh[(r["stop_code"], int(r["event_time"][:2]))][lab] += w
+    for m in (mix, rawmix, mixh):
         for s in m:
             tot = sum(m[s].values())
             for k in m[s]:
@@ -123,12 +127,12 @@ def main(target, golden):
             else:
                 una[(e[3], e[4].hour)] += 1
 
-    def estimate(sh):
+    def estimate(sh, by_hour=False):
         est = defaultdict(float)
         for k, v in att.items():
             est[k] += v
         for (s, h), n in una.items():
-            for r, w in sh[s].items():
+            for r, w in sh[(s, h) if by_hour else s].items():
                 if r != "NIS":
                     est[(r, h)] += n * w
         return {k: v / n_days for k, v in est.items()}
@@ -143,39 +147,54 @@ def main(target, golden):
     raw = estimate(rawmix)
     raw_low = {r: min(raw.get((r, h), 0.0) for h in range(6, 19)) for r in cand}
     raw_five = sorted([r for r in cand if raw_low[r] >= 4.0], key=lambda r: -ride[r])[:5]
-    # on-time, against each trip's departure from its designated stop in the feeds
-    pub, blocks = {}, []
-    for k in ("jan", "apr"):
-        sc = {x["stop_id"]: x["stop_code"] for x in feed(p(k), "stops.txt")}
-        rt = {x["trip_id"]: x["route_id"] for x in feed(p(k), "trips.txt")}
-        for x in feed(p(k), "stop_times.txt"):
-            r = rt[x["trip_id"]]
-            if r in stop_of and sc[x["stop_id"]] == stop_of[r]:
-                pub[x["trip_id"]] = mins(x["departure_time"])
-        for x in feed(p(k), "frequencies.txt"):
-            blocks.append((rt[x["trip_id"]], mins(x["start_time"]), mins(x["end_time"]), int(x["headway_secs"]) / 60.0))
+    est_h = estimate(mixh, by_hour=True)
+    low_h = {r: min(est_h.get((r, h), 0.0) for h in range(6, 19)) for r in cand}
+    five_h = sorted([r for r in cand if low_h[r] >= 4.0], key=lambda r: -ride[r])[:5]
+    # the shelters: each candidate's outbound stops in the spring feed, Facilities' inventory, Capital Projects' orders
+    def m_between(a, b):
+        import math
+        return math.hypot((a[0] - b[0]) * 111320.0, (a[1] - b[1]) * 111320.0 * math.cos(math.radians(a[0])))
 
-    def scheduled(e):
-        if e[6] in pub:
-            return pub[e[6]]
-        m = int(e[8] + 1e-9)
-        for r, a, b, h in blocks:
-            k = round((m - a) / h)
-            if r == e[7] and a <= m + 59 / 60.0 and m < b and abs(a + k * h - m) < 1:
-                return a + k * h
-        raise SystemExit("no scheduled departure for %s" % (e[6],))
-
-    ok, n = defaultdict(int), defaultdict(int)
-    for e in ev:
-        if e[6] and e[7] in stop_of and e[5] in dayset and 6 <= e[4].hour <= 18 and e[4].date() == e[5]:
-            late = (e[4] - dt.datetime.combine(e[5], dt.time())).total_seconds() - scheduled(e) * 60
-            n[e[7]] += 1
-            ok[e[7]] += int(-60 <= late <= 300)
-    otp = {r: 100.0 * ok[r] / n[r] for r in cand}
+    st_apr = feed(p("apr"), "stops.txt")
+    code_apr = {x["stop_id"]: x["stop_code"] for x in st_apr}
+    pos_apr = {x["stop_code"]: (float(x["stop_lat"]), float(x["stop_lon"])) for x in st_apr}
+    dir0 = {x["trip_id"]: x["route_id"] for x in feed(p("apr"), "trips.txt") if x["direction_id"] == "0"}
+    served = defaultdict(set)
+    for x in feed(p("apr"), "stop_times.txt"):
+        if x["trip_id"] in dir0:
+            served[dir0[x["trip_id"]]].add(code_apr[x["stop_id"]])
+    inv = {r["stop_code"]: r for r in rows(p("amen"))}
+    wsw = load_workbook(p("wo"), data_only=True)["Work orders"]
+    orders = []
+    for r in wsw.iter_rows(min_row=5, values_only=True):
+        if r and r[0] and r[4] == "Completed" and r[3] in ("Install shelter", "Remove shelter", "Relocate shelter"):
+            orders.append(("%04d" % int(r[1]), r[3], r[6].date() if hasattr(r[6], "date") else r[6]))
+    cut, spring = dt.date(2026, 6, 30), dt.date(2026, 4, 5)
+    shelter = {}
+    for code, r in inv.items():
+        if code not in pos_apr:
+            continue
+        here = m_between((float(r["latitude"]), float(r["longitude"])), pos_apr[code]) > 30.0
+        insp = dt.date.fromisoformat(r["last_inspected"])
+        on = r["shelter"] == "Y"
+        mine = sorted((d_, w_) for c_, w_, d_ in orders if c_ == code)
+        if here:
+            on = False
+            for d_, w_ in mine:
+                if spring <= d_ <= cut:
+                    on = w_ != "Remove shelter"
+        else:
+            for d_, w_ in mine:
+                if insp < d_ <= cut:
+                    on = w_ != "Remove shelter"
+                elif cut < d_ <= insp:
+                    on = w_ == "Remove shelter"
+        shelter[code] = on
+    bare = {r: sum(1 for c_ in served[r] if not shelter[c_]) for r in cand}
     # against the goldens
     wb = load_workbook(os.path.join(golden, GOLD["wb"]), data_only=True)
     nom = {str(r[0]): r for r in wb["Nominations"].iter_rows(min_row=6, values_only=True) if isinstance(r[0], int)}
-    otw = {str(r[0]): r for r in wb["On-time departures"].iter_rows(min_row=5, values_only=True) if isinstance(r[0], int)}
+    shw = {str(r[0]): r for r in wb["Shelters"].iter_rows(min_row=5, values_only=True) if isinstance(r[0], int)}
     r1 = lambda v: int(v * 10 + 0.5) / 10.0
     checks = {
         "the five": [r for r in nom if str(nom[r][7] or "").startswith("Nominated")] == sorted(five, key=lambda r: -ride[r])
@@ -183,13 +202,14 @@ def main(target, golden):
         "the first left out": below == "11" and "First qualifying" in str(nom[below][7]),
         "the verdicts": all((nom[r][5] == "Yes") == (lowest[r] >= 4.0) and nom[r][3] == r1(lowest[r]) for r in cand),
         "the raw mix's five": raw_five == ["2", "4", "6", "22", "11"],
-        "on-time": all(int(otw[r][4] * 100 + 0.5) == int(otp[r] + 0.5) for r in cand) and sorted(cand) == sorted(
+        "the stop-hour grain's five": five_h == five,
+        "the shelters": all(shw[r][3] == bare[r] for r in cand) and sorted(cand) == sorted(
             ["2", "4", "6", "9", "11", "14", "17", "22", "31", "40", "51"]),
     }
     for k, v in checks.items():
         print("%s  verify: %s" % ("PASS" if v else "FAIL", k))
-    print("verify: %d counting days, %d qualifying (%s), five %s, first left out %s" % (
-        n_days, len(qual), ", ".join(qual), ", ".join(five), below))
+    print("verify: %d counting days, %d qualifying (%s), five %s, first left out %s; no shelter %s" % (
+        n_days, len(qual), ", ".join(qual), ", ".join(five), below, bare))
     if not all(checks.values()):
         raise SystemExit("verify failed")
 

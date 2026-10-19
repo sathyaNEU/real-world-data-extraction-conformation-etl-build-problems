@@ -147,16 +147,45 @@ def scheduled(gtfs_minutes_on):
     return {k: v / N for k, v in est.items()}
 
 
-# ---------------------------------------------------------------- the on-time ask
-def on_time(c, counts=False, basis="pub"):
-    """The share of each candidate's attributed departures (the counting days, 6 a.m. to 7 p.m.) that left no more than
-    one minute before and no more than five minutes after the trip's scheduled departure in the feeds ("pub"); with
-    basis "sched", against the schedule time each AVL export carries."""
-    a = c[c["attributed"]].copy()
-    mid = pd.to_datetime(pd.Series(a["service_day"].to_numpy(), index=a.index))
-    late = (a["dep"] - mid).dt.total_seconds() - a[basis] * 60.0
-    a["ok"] = (late >= W.ON_TIME[0] - 1e-9) & (late <= W.ON_TIME[1] + 1e-9)
-    g = a.groupby("route")["ok"]
-    if counts:
-        return {r: int(g.sum()[r]) for r in W.CANDIDATES}
-    return {r: 100.0 * g.mean()[r] for r in W.CANDIDATES}
+# ---------------------------------------------------------------- the shelter ask
+def metres(a, b):
+    dy = (a[0] - b[0]) * 111320.0
+    dx = (a[1] - b[1]) * 111320.0 * np.cos(np.radians((a[0] + b[0]) / 2.0))
+    return float(np.hypot(dx, dy))
+
+
+def no_shelter(target, how="golden", cutoff=dt.date(2026, 6, 30), moved_m=30.0):
+    """For each candidate, the stops its outbound trips serve in the spring feed that had no shelter on the cutoff.
+    how: "golden" (a stop standing elsewhere than where Facilities last inspected it takes its shelter only from work
+    orders completed at its present position, that is after the spring timetable began); "cracker" (the inventory's
+    shelter carried forward and back by every work order completed between the inspection and the cutoff);
+    "inventory" (the inventory's shelter as extracted); "sign" (the inventory rows whose posted routes include the
+    candidate)."""
+    import bundle as B
+    a = B.amenities(target)
+    wo = B.shelter_orders(target)
+    wo = wo[(wo["status"] == "Completed") & wo["work"].isin(["Install shelter", "Remove shelter", "Relocate shelter"])]
+    ob = B.outbound_stops(target)
+    pos = B.feed_positions(target, "gtfs_apr")
+    start = W.TIMETABLE_CHANGE
+    status = {}
+    for code, row in a.iterrows():
+        sh = row["shelter"] == "Y"
+        d0 = row["inspected"]
+        here = code in pos and metres((row["lat"], row["lon"]), pos[code]) > moved_m
+        if how == "golden" and here:
+            sh = False
+            for _, w in wo[wo["code"] == code].sort_values("completed").iterrows():
+                if start <= w["completed"] <= cutoff:
+                    sh = w["work"] != "Remove shelter"
+        elif how in ("golden", "cracker"):
+            for _, w in wo[wo["code"] == code].sort_values("completed").iterrows():
+                if d0 < w["completed"] <= cutoff:
+                    sh = w["work"] != "Remove shelter"
+                elif cutoff < w["completed"] <= d0:
+                    sh = w["work"] == "Remove shelter"
+        status[code] = sh
+    if how == "sign":
+        return {r: int(sum(1 for code, row in a.iterrows() if r in row["routes"].split() and row["shelter"] == "N"))
+                for r in W.CANDIDATES}
+    return {r: sum(1 for c_ in ob[r] if not status[c_]) for r in W.CANDIDATES}

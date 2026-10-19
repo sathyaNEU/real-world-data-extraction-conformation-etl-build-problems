@@ -107,8 +107,9 @@ LATE = {"2": (4.5, 4.5, 5.0), "4": (3.5, 3.5, 4.0), "17": (8.0, 8.0, 8.5), "3": 
         "22": (2.5, 2.5, 3.0), "12": (1.0, 1.0, 1.0), "31": (1.0, 1.0, 1.5), "40": (1.5, 1.5, 2.0),
         "51": (1.2, 1.2, 1.5), "60": (1.0, 1.0, 1.0)}
 LATE_SD = 3.0
-REVIEW_BUS_DAYS = 250                      # bus-days Service Quality draws each month
+REVIEW_BUS_DAYS = 400                      # bus-days Service Quality draws each month
 REVIEW_TAKE = 1                            # unmatched events it reviews on each
+REVIEW_PICK_SEED = 18                      # the stream for the event reviewed within each drawn bus-day
 OUT_OF_SERVICE = {"A": 0.6, "B": 0.2, "C": 0.4, "D": 0.1, "E": 0.3}   # buses an hour through each stop, out of service
 FILE_OVERLAP_MIN = 10                      # Quinnell's daily files repeat the previous file's last ten minutes
 # average weekday boardings, January to June 2026 (the ridership report's order decides the cap)
@@ -146,6 +147,8 @@ FILES = {
     "equity": "title_vi_service_monitoring_2025.pdf",
     "farebox": "farebox_revenue_by_route_2026h1.xlsx",
     "candidates": "ftc_candidate_routes_fy2027.csv",
+    "amenities": "facilities_bus_stop_amenities_20260710.csv",
+    "shelter_wo": "capital_projects_shelter_work_orders.xlsx",
 }
 GOLDEN = {"workbook": "larkhaven_frequent_corridor_nominations_fy2027.xlsx"}
 DISTRACTORS = ["equity", "farebox"]

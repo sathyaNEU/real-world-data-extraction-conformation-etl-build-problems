@@ -4,6 +4,7 @@ asset tags, concatenated from its daily export files), Service Quality's trip-ma
 the ridership report and the farebox workbook."""
 import csv
 import datetime as dt
+import math
 
 import numpy as np
 import pandas as pd
@@ -253,4 +254,41 @@ def farebox_table():
     for rt in sorted(W.RIDERSHIP, key=int):
         b = W.RIDERSHIP[rt]
         out.append((rt, W.ROUTE_NAMES[rt], [round(b * 21.3 * 0.71 * (1 + r.normal(0, 0.04)), 2) for _ in range(6)]))
+    return out
+
+
+# ---------------------------------------------------------------- Facilities' bus stop amenity inventory
+AMENITY_COLS = ["stop_code", "location", "facing", "latitude", "longitude", "routes", "shelter", "bench",
+                "info_display", "in_service", "last_inspected"]
+
+
+def _facing(dx, dy):
+    a = math.degrees(math.atan2(dy, dx)) % 360
+    return ["EB", "NB", "WB", "SB"][int(((a + 45) % 360) // 90)]
+
+
+def amenity_rows():
+    """One row per stop as Facilities last inspected it: where the inspector stood, the routes then posted on the
+    stop's sign, and what was there."""
+    import stops as ST
+    net = ST.network()
+    sh = ST.shelters()
+    st = net["stops"]
+    heading = {}
+    for d in ("outbound", "inbound"):
+        for fd in ("2601", "2604"):
+            for r, pat in net[d][fd].items():
+                pos = [st[k]["pos_jan"] for k, _, _ in pat]
+                for i, (k, _, _) in enumerate(pat):
+                    if k in heading:
+                        continue
+                    a, b = pos[max(i - 1, 0)], pos[min(i + 1, len(pos) - 1)]
+                    heading[k] = _facing(b[1] - a[1], b[0] - a[0])
+    out = []
+    yn = lambda v: "Y" if v else "N"
+    for k in sorted(st, key=lambda k: st[k]["code"]):
+        v, iv = st[k], sh["inv"][k]
+        out.append([v["code"], v["name"], heading.get(k, ""), "%.6f" % iv["pos"][0], "%.6f" % iv["pos"][1],
+                    " ".join(iv["routes"]), yn(iv["shelter"]), yn(iv["bench"]), yn(iv["sign"]), yn(iv["in_service"]),
+                    iv["date"].isoformat()])
     return out

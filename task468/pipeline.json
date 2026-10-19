@@ -6,17 +6,17 @@
  "objective": "etl",
  "stage": 4,
  "stage_name": "check",
- "updated": "2026-10-17",
+ "updated": "2026-10-19",
  "stump": "The default path shares each stop's events with no trip by the raw route mix of Service Quality's review, which takes one unmatched event from each sampled bus-day, so Route 17 falls to 3.6 in its lowest hour and the default path nominates Routes 2, 4, 6, 22 and 11; sharing in proportion to the matched departures files Routes 2, 4, 9, 22 and 11; the review weighted by each event's bus-day count of unmatched events gives the golden Routes 2, 4, 6, 17 and 22.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": "0 at design; the ask sheet now records the pinned cracker's 11 of 11 (pair ceiling 91.5), so precut fails until the ask is rebuilt",
-  "date": "2026-10-17"
+  "exit": "0 (51 checks, 0 FAIL)",
+  "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on the pinned pack: the program's name in the guidance, the program's and the review's own words in the guidance, notes and memo, the ridership report (the cap's filed order), the distractors, the candidate list in route order, two GTFS zips (nested_zip)",
-  "reader": "round 1: no leak, six findings fixed; round 2: no leak, the folder list dropped, on-time device held 11 of 11; round 3 (pinned pack 2c828983): no leak, landed the call and all eleven on-time shares against the feeds (device dead), and an H14 grain fork on the call (the review's weighted mix per stop and hour files 4, 6, 22, 11 and 40)"
+  "leak_py": "REVIEW (no LEAK) on the rebuilt pack d79138b0",
+  "reader": "round 1: no leak, six findings fixed; round 2: no leak, the folder list dropped, on-time device held 11 of 11; round 3 (pinned pack 2c828983): no leak, landed the call and all eleven on-time shares against the feeds (device dead), and an H14 grain fork on the call (the review's weighted mix per stop and hour files 4, 6, 22, 11 and 40); round 4 (d79138b0, shelter ask): no leak, rule 3 analytical, landed the call (score_reader exit 1) and missed all 11 shelter counts (the cracker's path)"
  },
  "duplicate_check": {
   "heart": "WARN (answered in ## Draw)",
@@ -28,9 +28,17 @@
   "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4 repair, two findings from reader round 3 before any ship. (1) The call: an H14 grain fork. The review's weighted mix applied per stop and clock hour files Routes 4, 6, 22, 11 and 40 (Route 2 3.94, Route 17 3.86) against the golden's 2, 4, 6, 17 and 22; per stop, per stop and band and per stop and month agree with the golden. Repair in the data: draw each sampled bus-day's reviewed event so every stop-hour's weighted mix tracks its stop's, with the raw mix still failing Route 17 at every grain; assert the stop-hour estimator in checks.py and verify.py; re-assert the ladder. (2) The asks: the on-time device died with the guidance pin (round 3 hit 11 of 11 against the feeds) and every other column the ask reads sits on the call's population; rebuild the ask layer on a per-candidate measure the nomination carries that the call does not read, with a device a GTFS-literate cracker misses, then ceiling.py, precut, the stage-3 gates, leak.py and a reader round; a judge pass only if the author licenses it (the one re-judge is spent)",
+ "resume": "stage 4, the author's decision. The repairs are built and green: the grain fork closed (400 bus-days a month, the within-bus-day draw on its own stream, every weighted grain files the golden and every raw grain the R2 slate), the ask rebuilt on each candidate's outbound stops without a shelter on June 30 (far-side moves in the spring feed, Facilities' inventory as last inspected, Capital Projects' work orders; pair ceiling 36.5, cracker 0 of 11), precut 0 FAIL, checks, verify and two byte-identical builds. Reader round 4 missed all 11 shelter counts but landed the call, as rounds 1 to 3 did, so score_reader.py exits 1 (Gate F). The licensed judge pass 3 is in determinism_check_report_pass3.md when it completes. Ship as is (both top responses expected on the call, each near 45 with the asks held) or re-root the call; the author decides.",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall"
+ "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall",
+ "ceiling": {
+  "pair": 36.5,
+  "cracker": 45.0,
+  "mirror": 27.9,
+  "mirror_leakage": 0.0,
+  "script": "generator/ceiling.py"
+ },
+ "target_zip": "d79138b03f492a10"
 }

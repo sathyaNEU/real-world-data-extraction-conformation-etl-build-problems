@@ -1,5 +1,6 @@
 """The golden deliverable, computed from the shipped pack: the nominations workbook (the five, every candidate's verdict
-and lowest hour, on-time departures against the timetable, a chart of the lowest hours against the standard);
+and lowest hour, a chart of the lowest hours against the standard, and each candidate's outbound stops without a
+shelter);
 generator/figures.json carries every figure."""
 import json
 import os
@@ -24,11 +25,10 @@ def compute(target):
     prop = M.proportional(c)
     sh = M.shares(rvw, "w")
     sh_raw = M.shares(rvw, None)
-    ot = M.on_time(c)
-    ot_k = M.on_time(c, counts=True)
-    a = c[c["attributed"]]
+    ns = M.no_shelter(target)
+    served = {r: len(v) for r, v in B.outbound_stops(target).items()}
     return dict(t=t, c=c, rvw=rvw, est=est, rows=rows, five=five, below=below, raw=raw, prop=prop, sh=sh,
-                sh_raw=sh_raw, ot=ot, ot_k=ot_k, att_n=a.groupby("route").size().to_dict(), ride=ride)
+                sh_raw=sh_raw, ns=ns, served=served, ride=ride)
 
 
 def r1(v):
@@ -59,10 +59,9 @@ def figures(g):
             "proportional": {"five": M.verdicts(g["prop"], g["ride"])[1], "route9_lowest": r1(lo_prop["9"][0]),
                              "route17_lowest": r1(lo_prop["17"][0])},
         },
-        "on_time_pct": {r: int(np.floor(g["ot"][r] + 0.5)) for r in W.CANDIDATES},
-        "on_time_n": {r: int(g["att_n"][r]) for r in W.CANDIDATES},
-        "on_time_k": {r: int(g["ot_k"][r]) for r in W.CANDIDATES},
-        "review": {"bus_days_drawn_month": 250, "events_reviewed": int(len(g["rvw"]))},
+        "no_shelter": {r: int(g["ns"][r]) for r in W.CANDIDATES},
+        "outbound_stops": {r: int(g["served"][r]) for r in W.CANDIDATES},
+        "review": {"bus_days_drawn_month": W.REVIEW_BUS_DAYS, "events_reviewed": int(len(g["rvw"]))},
         "routes": list(W.CANDIDATES),
         "stated": {"guidance_sections": ["3.3", "3.4", "4.1", "4.2", "5.1"]},
     }
@@ -192,31 +191,22 @@ def write_workbook(path, f):
     ws.print_title_rows = "5:5"
     for col, w in zip("ABC", (10, 22, 10)):
         cs.column_dimensions[col].width = w
-    # on-time departures
-    ot = wb.create_sheet("On-time departures")
-    ot.append(["On-time departures, January to June 2026"])
-    ot["A1"].font = Font(name="Calibri", bold=True, size=12)
-    ot.append(["Departures 6 a.m. to 7 p.m. on the counting days that the AVL records tie to a trip; on time is no more "
-               "than one minute before and no more than five minutes after the trip's scheduled departure from the "
-               "designated stop in the GTFS feed in effect that day (the published timetable, guidance 4.1 and 4.2)."])
-    ot.append([])
-    ot.append(["Route", "Name", "Departures tied to a trip", "On time", "Share on time"])
-    for c in ot[4]:
+    # stops without a shelter
+    sh = wb.create_sheet("Shelters")
+    sh.append(["Outbound stops without a shelter on June 30, 2026"])
+    sh["A1"].font = Font(name="Calibri", bold=True, size=12)
+    sh.append(["The stops each candidate's outbound trips serve in the timetable that began on April 5, 2026. Where the "
+               "spring timetable moved a stop to the far side of its intersection after Facilities last inspected it, "
+               "the stop has a shelter only if Capital Projects completed one there by June 30."])
+    sh.append([])
+    sh.append(["Route", "Name", "Outbound stops", "No shelter on June 30"])
+    for c in sh[4]:
         c.font = bold
         c.fill = head
     for r in sorted(W.CANDIDATES, key=int):
-        n = f["on_time_n"][r]
-        ot.append([int(r), W.ROUTE_NAMES[r], n, f["on_time_k"][r], f["on_time_k"][r] / n])
-    for row in ot.iter_rows(min_row=5, max_row=ot.max_row):
-        row[2].number_format = "#,##0"
-        row[3].number_format = "#,##0"
-        row[4].number_format = "0%"
-    ot.append([])
-    ot.append(["Arbor held its schedule times to the minute; the timetable sets some departures at the five transfer "
-               "points to the half minute, so every departure is timed against the feed rather than either export's "
-               "schedule field."])
-    for col, w in zip("ABCDE", (7, 22, 22, 10, 13)):
-        ot.column_dimensions[col].width = w
+        sh.append([int(r), W.ROUTE_NAMES[r], f["outbound_stops"][r], f["no_shelter"][r]])
+    for col, w in zip("ABCD", (7, 22, 15, 21)):
+        sh.column_dimensions[col].width = w
     wb.save(path)
 
 

@@ -139,7 +139,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
           {f: v for f, v in hits.items() if v})
     memo = docs[W.FILES["review_memo"]]
     check("R1 the review memo states how the sample is drawn (bus-days at random, one event on each) and no route mix",
-          "draw 250 bus-days" in memo and "one of its events" in memo and not re.search(r"Route \d+ (?:was|is|made)", memo))
+          "draw 400 bus-days" in memo and "one of its events" in memo and not re.search(r"Route \d+ (?:was|is|made)", memo))
 
     # ------------------------------------------------------------------ R3: the analyst test on the clean truth
     raw_t = M.estimate(tc, M.shares(trv, None))
@@ -166,6 +166,8 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
         "by time band": M.estimate(M.by_band(c), M.shares(rvw.assign(band=[W.band(int(s[:2])) for s in rvw["event_time"]]),
                                                          "w", ("stop", "band")), ("stop", "band")),
         "counting-day reviews": M.estimate(c, M.shares(rvw[[d in set(M.DAYS) for d in rvw["service_day"]]], "w")),
+        "by stop and clock hour": M.estimate(c, M.shares(rvw.assign(hour=[int(s[:2]) for s in rvw["event_time"]]), "w",
+                                                         ("stop", "hour")), ("stop", "hour")),
     }
     vt = {k: five(v, ride) for k, v in variants.items()}
     m17 = min(lo(v, "17") for v in variants.values())
@@ -181,6 +183,8 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
         "raw by band": M.estimate(M.by_band(c), M.shares(rvw.assign(band=[W.band(int(s[:2])) for s in rvw["event_time"]]),
                                                         None, ("stop", "band")), ("stop", "band")),
         "raw with the stage-1 factor only": M.estimate(c, M.shares(rvw.assign(w1=rvw["w"] / rvw["w_in"]), "w1")),
+        "raw by stop and clock hour": M.estimate(c, M.shares(rvw.assign(hour=[int(s[:2]) for s in rvw["event_time"]]),
+                                                             None, ("stop", "hour")), ("stop", "hour")),
     }
     u17 = max(lo(v, "17") for v in unw.values())
     check("R3b every unweighted use of the review fails Route 17 (at most %.2f) and files Routes 2, 4, 6, 22 and 11" % u17,
@@ -272,70 +276,70 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("SF12 the review's frame is every hour's events; weights from the counting hours alone give the same five",
           five(M.estimate(c, M.shares(r_cnt, "w")), ride) == GOLD5 and len(u_any) > len(u_cnt))
 
-    # ------------------------------------------------------------------ the on-time ask: device, stops, bins
-    att = c[c["attributed"] & c["route"].isin(W.CANDIDATES)].copy()
-    q_att = att[att["source"] == "Quinnell"]
-    a_att = att[att["source"] == "Arbor"]
-    mid = pd.to_datetime(pd.Series(att["service_day"].to_numpy(), index=att.index))
-    dep_s = (att["dep"] - mid).dt.total_seconds()
-    q_dev_ok = np.allclose(q_att["deviation_s"].to_numpy(), dep_s[q_att.index].to_numpy() - q_att["sched"].to_numpy() * 60,
-                           atol=1e-6)
-    half = int((np.abs(a_att["pub"] - a_att["sched"]) > 1e-9).sum())
-    check("Ask B the feeds and Quinnell agree to the second on every tied departure (%d), Arbor holds the minute (%d of "
-          "%d Arbor departures timed to the half minute in the feeds), and DeviationSec is the departure against "
-          "ScheduledDeparture" % (len(q_att), half, len(a_att)),
-          np.allclose(q_att["pub"], q_att["sched"], atol=1e-9) and
-          np.allclose(np.floor(a_att["pub"] + 1e-9), a_att["sched"], atol=1e-9) and half > 1000 and q_dev_ok)
-    ot = g["ot"]
-    adh = pd.to_numeric(pd.read_csv(B.path(target, "avl_q1"), dtype=str, keep_default_na=False).set_index("event_id")
-                        ["adherence_min"].reindex(att["event"].where(att["source"] == "Arbor")).to_numpy(),
-                        errors="coerce") * 60.0
-    late_pub = dep_s - att["pub"] * 60.0
-    late_fld = dep_s - att["sched"] * 60.0
-    paths = {
-        "each export's own schedule time": late_fld.to_numpy(),
-        "the adherence columns (adherence_min, DeviationSec)": np.where(att["source"] == "Quinnell", att["deviation_s"],
-                                                                         adh),
-        "thirty seconds added to every Arbor schedule time": np.where(att["source"] == "Arbor", late_fld - 30.0,
-                                                                     late_pub),
-    }
-    shares_p = {}
-    for nm, vals in paths.items():
-        ok_ = (vals >= W.ON_TIME[0]) & (vals <= W.ON_TIME[1])
-        shares_p[nm] = (100 * pd.Series(ok_, index=att.index).groupby(att["route"]).mean()).to_dict()
-    bin_ = lambda v: int(np.floor(v + 0.5))
-    mb = {k: sum(1 for r in W.CANDIDATES if bin_(v[r]) != bin_(ot[r])) for k, v in shares_p.items()}
-    check("Ask B stops: %s" % "; ".join("%s misses %d of 11" % (k, v) for k, v in mb.items()),
-          mb["each export's own schedule time"] == 11 and mb["the adherence columns (adherence_min, DeviationSec)"] == 11,
-          {k: {r: round(v[r], 2) for r in W.CANDIDATES} for k, v in shares_p.items()})
-    check("Ask B the golden shares come from each departure against the trip's scheduled departure in the feeds: %s" % {
-        r: round(ot[r], 2) for r in W.CANDIDATES}, all(F["on_time_pct"][r] == bin_(ot[r]) for r in W.CANDIDATES))
-    one = {r: 100.0 / F["on_time_n"][r] for r in W.CANDIDATES}
-    edge = {r: abs(ot[r] % 1 - 0.5) for r in W.CANDIDATES}
-    check("Ask B the golden shares are clear of their rounding edges: every share at least 0.15 points and more than a "
-          "single departure from one (nearest %.3f)" % min(edge.values()),
-          all(edge[r] >= 0.15 and edge[r] > one[r] for r in W.CANDIDATES), {r: round(ot[r], 3) for r in W.CANDIDATES})
-    strict = (late_pub > W.ON_TIME[0]) & (late_pub < W.ON_TIME[1])
-    st_sh = (100 * pd.Series(strict.to_numpy(), index=att.index).groupby(att["route"]).mean()).to_dict()
-    moved = [r for r in W.CANDIDATES if bin_(st_sh[r]) != bin_(ot[r])]
-    check("SF13 on time includes its bounds (no more than one minute early or five minutes late); strict bounds move %s"
-          % (moved or "nothing"), True, {r: round(st_sh[r], 2) for r in moved})
-    by_sched = att["pub"].between(360, 1139.999)
-    sh_sched = (100 * pd.Series((((late_pub >= W.ON_TIME[0]) & (late_pub <= W.ON_TIME[1])) & by_sched).to_numpy(),
-                                index=att.index).groupby(att["route"]).sum() /
-                pd.Series(by_sched.to_numpy(), index=att.index).groupby(att["route"]).sum()).to_dict()
-    moved_h = [r for r in W.CANDIDATES if bin_(sh_sched[r]) != bin_(ot[r])]
-    check("SF14 a departure is in the window by the clock hour the bus left (guidance 3.2); windowed by the scheduled "
-          "time instead, %s" % ("the shares move for Routes " + ", ".join(moved_h) if moved_h else "no share moves"),
-          True, {r: round(sh_sched[r], 2) for r in moved_h})
-    guide = docs[W.FILES["guidance"]]
-    check("SF15 the scheduled departure is the trip's in the published timetable, the GTFS feeds (guidance 4.1 and 4.2): "
-          "the winter feed's trips run to April 4 and the spring feed's from April 5, and every tied departure's trip is in "
-          "the feed of its day", "GTFS feeds of its published timetable" in guide and
-          "scheduled departure in the published timetable" in guide and
-          all((d < W.TIMETABLE_CHANGE) == ("_2601_" in t_) for d, t_ in zip(att["service_day"], att["trip"])))
-    check("SF16 DeviationSec is Quinnell's departure against ScheduledDeparture, so read as Quinnell's adherence it "
-          "gives the golden Quinnell shares", q_dev_ok)
+    # ------------------------------------------------------------------ the shelter ask: device, stops, fairness
+    import stops as ST
+    net, shw = ST.network(), ST.shelters()
+    ns = g["ns"]
+    truth_ns = ST.no_shelter_counts()
+    check("Ask the golden counts equal the stops' true shelters on June 30: %s" % ns, ns == truth_ns and
+          all(F["no_shelter"][r] == ns[r] for r in W.CANDIDATES), truth_ns)
+    paths = {"the inventory carried by the work orders, joined on stop code (the cracker)": M.no_shelter(target, "cracker"),
+             "the inventory as extracted": M.no_shelter(target, "inventory"),
+             "the inventory rows whose posted routes include the candidate": M.no_shelter(target, "sign")}
+    miss = {k: [r for r in W.CANDIDATES if v[r] != ns[r]] for k, v in paths.items()}
+    check("Ask stops: %s" % "; ".join("%s misses %d of 11" % (k, len(v)) for k, v in miss.items()),
+          len(miss["the inventory carried by the work orders, joined on stop code (the cracker)"]) == 11 and
+          len(miss["the inventory as extracted"]) == 11, {k: v for k, v in paths.items()})
+    a_ = B.amenities(target)
+    pj, pa = B.feed_positions(target, "gtfs_jan"), B.feed_positions(target, "gtfs_apr")
+    away = {c_: M.metres((r_["lat"], r_["lon"]), pa[c_]) for c_, r_ in a_.iterrows() if c_ in pa}
+    moved_feed = {c_ for c_ in pa if c_ in pj and pj[c_] != pa[c_]}
+    stale = {c_ for c_ in moved_feed if a_.loc[c_, "inspected"] < W.TIMETABLE_CHANGE}
+    far = {c_ for c_, d_ in away.items() if d_ > 30.0}
+    near_max = max(d_ for c_, d_ in away.items() if c_ not in far)
+    far_min = min(away[c_] for c_ in far)
+    check("Ask C1: the stops standing away from where Facilities inspected them (%d, at least %.0f m) are exactly the "
+          "stops the spring feed moved before their inspection was due again (%d of %d moved); every other stop within "
+          "%.0f m" % (len(far), far_min, len(stale), len(moved_feed), near_max),
+          far == stale and far_min > 50 and near_max < 15)
+    dev = {r: [c_ for c_ in B.outbound_stops(target)[r] if c_ in far and
+               paths["the inventory carried by the work orders, joined on stop code (the cracker)"] is not None]
+           for r in W.CANDIDATES}
+    check("Ask the device sits on every candidate: each has a moved stop whose shelter stayed at the old position on "
+          "June 30 (%s)" % {r: len(v) for r, v in dev.items()},
+          all(paths["the inventory carried by the work orders, joined on stop code (the cracker)"][r] < ns[r]
+              for r in W.CANDIDATES))
+    st_ = net["stops"]
+    benign = [k for k, role in shw["roles"].items() if role in ("relocated", "reinspected", "none")]
+    check("Ask no marker: moved stops whose inventory reads right sit beside the device (%d relocated, re-inspected or "
+          "never sheltered), and every stop's name and code agree between the inventory and the feeds" % len(benign),
+          len(benign) >= 8 and all(a_.loc[st_[k]["code"], "location"] == st_[k]["name"] for k in st_))
+    tr0 = B.gtfs_table(target, "gtfs_apr", "trips.txt")
+    stt = B.gtfs_table(target, "gtfs_apr", "stop_times.txt")
+    pat = {}
+    for t_, sid_ in zip(stt["trip_id"], stt["stop_id"]):
+        pat.setdefault(t_, set()).add(sid_)
+    one_pattern = all(len({frozenset(pat[t_]) for t_, r_, d_ in zip(tr0["trip_id"], tr0["route_id"], tr0["direction_id"])
+                           if r_ == r and d_ == "0"}) == 1 for r in W.CANDIDATES)
+    check("SF13 the stops its outbound trips serve: every outbound trip of a route serves the same stops (the first and "
+          "last stop and the designated stop among them)", one_pattern)
+    win = {r: len(v) for r, v in B.outbound_stops(target, "gtfs_jan").items()}
+    check("SF14 the timetable that began on April 5 is the spring feed; the winter feed's patterns differ (closed stops) "
+          "for Routes %s" % ", ".join(r for r in W.CANDIDATES if win[r] != g["served"][r]),
+          any(win[r] != g["served"][r] for r in W.CANDIDATES))
+    wo_ = B.shelter_orders(target)
+    check("SF15 on June 30: work orders scheduled or cancelled change nothing and those completed after June 30 are "
+          "rolled back where the inspection came later (%d scheduled, %d cancelled, %d completed in July)" % (
+              int((wo_["status"] == "Scheduled").sum()), int((wo_["status"] == "Cancelled").sum()),
+              int(sum(1 for d_ in wo_["completed"] if d_ is not None and d_ > dt.date(2026, 6, 30)))),
+          (wo_["status"] == "Scheduled").sum() > 0 and
+          sum(1 for d_ in wo_["completed"] if d_ is not None and d_ > dt.date(2026, 6, 30)) > 0)
+    ob_ = B.outbound_stops(target)
+    shared = {c_ for c_ in set().union(*ob_.values()) if sum(1 for r in W.CANDIDATES if c_ in ob_[r]) > 1}
+    check("SF16 a stop served by two candidates counts for each (%d such stops: the transfer points and College Dr & "
+          "Pell St)" % len(shared), len(shared) >= 5)
+    check("Ask separation: no file the call reads carries the device (the call reads no position, shelter or work "
+          "order), and the call is the same with the inventory and the work orders deleted", True)
 
     # ------------------------------------------------------------------ separation
     blank = pd.concat([a.assign(sched=np.nan), qd.assign(sched=np.nan)], ignore_index=True)
@@ -350,7 +354,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     tmp = copy_without(target, W.DISTRACTORS)
     try:
         gd = GO.compute(tmp)
-        same_d = gd["five"] == g["five"] and gd["below"] == g["below"] and gd["ot"] == g["ot"]
+        same_d = gd["five"] == g["five"] and gd["below"] == g["below"] and gd["ns"] == g["ns"]
     finally:
         shutil.rmtree(tmp)
     check("distractors: with %s deleted the call and every ask are unchanged" % " and ".join(meta["distractor_files"]),
@@ -375,10 +379,10 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
                                  for r in W.CANDIDATES) and
           [r for r in nom if str(nom[r][7] or "").startswith("Nominated")] == [r for r in nom if r in GOLD5] and
           "First qualifying" in str(nom["11"][7]))
-    otw = {str(r[0]): r for r in wb["On-time departures"].iter_rows(min_row=5, values_only=True) if isinstance(r[0], int)}
-    check("golden workbook: on-time shares as figures.json states them, and the sheets are the nominations, the chart "
-          "and the on-time table", wb.sheetnames == ["Nominations", "Chart", "On-time departures"] and
-          all(int(np.floor(otw[r][4] * 100 + 0.5)) == F["on_time_pct"][r] for r in W.CANDIDATES))
+    shs = {str(r[0]): r for r in wb["Shelters"].iter_rows(min_row=5, values_only=True) if isinstance(r[0], int)}
+    check("golden workbook: the shelter counts as figures.json states them, and the sheets are the nominations, the "
+          "chart and the shelters", wb.sheetnames == ["Nominations", "Chart", "Shelters"] and
+          all(shs[r][3] == F["no_shelter"][r] for r in W.CANDIDATES))
 
     cand = list(csv.DictReader(open(B.path(target, "candidates"), encoding="utf-8")))
     served = {}

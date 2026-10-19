@@ -65,14 +65,16 @@ def everything(review_days=None, take=None):
     ev["local_day"] = ev["time"].dt.date
     ev = ev.sort_values(["time", "stop", "vehicle"], kind="stable").reset_index(drop=True)
     ev["event_id"] = 7_310_000 + np.arange(len(ev)) * 3 + R["ids"].integers(0, 3, len(ev))
-    review = review_sample(ev, R["review"], review_days or W.REVIEW_BUS_DAYS, take or W.REVIEW_TAKE)
+    review = review_sample(ev, R["review"], review_days or W.REVIEW_BUS_DAYS, take or W.REVIEW_TAKE,
+                           np.random.default_rng([W.SEED, 9, W.REVIEW_PICK_SEED]))
     return dict(ev=ev, review=review, R=R)
 
 
-def review_sample(ev, r, n_days, take):
+def review_sample(ev, r, n_days, take, pick_rng=None):
     """Each month Service Quality lists the bus-days (bus and service day) with at least one stop event the matcher
     left without a trip at the five stops, draws `n_days` of them at random, and reviews `take` of each one's unmatched
-    events, chosen at random, against the bus's CCTV."""
+    events, chosen at random, against the bus's CCTV. The draw within each bus-day has its own stream."""
+    pick_rng = pick_rng or r
     un = ev[~ev["matched"]].copy()
     un["month"] = pd.to_datetime(un["day"]).dt.month
     picks = []
@@ -83,7 +85,7 @@ def review_sample(ev, r, n_days, take):
             v, sd = vd.iloc[j]["vehicle"], vd.iloc[j]["day"]
             rows = g[(g["vehicle"] == v) & (g["day"] == sd)]
             k = min(take, len(rows))
-            pick = r.choice(len(rows), size=k, replace=False)
+            pick = pick_rng.choice(len(rows), size=k, replace=False)
             picks.append(rows.iloc[np.sort(pick)].assign(vd_u=len(rows), frame=len(vd), drawn=min(n_days, len(vd))))
     return pd.concat(picks, ignore_index=True)
 
