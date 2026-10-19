@@ -6,7 +6,7 @@
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-18",
+ "updated": "2026-10-19",
  "stump": "",
  "architecture": 1,
  "loops": 0,
@@ -39,11 +39,20 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. The upstream-gas world's spacing and vintage mechanisms are spent, with measurements in the design note's ## Tried and rejected, and the number needs a new world, which the coordinator picks. Read the structural sentence first: calendar-year gas from that year's new wells is their first months, so a usable difference has to be large there, invisible in the young wells' own months and measured in full elsewhere in the record.",
+ "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Two worlds screened (upstream gas, then the education early-warning cell) and no draw holds; the deaths with measurements are in the design note's ## Tried and rejected. The number needs a new cell or a lifted constraint (composition_mix and G14 are out this round; university_or_school is blocked by task269 v2), which the coordinator picks.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "screen_ews": {
+  "assigned": "redraw 2026-10-19 in education-learning-sciences / learning-analytics-early-warning-models (Forecasting), the organisation, decision, quantity and mechanism left to the build; no card drafted beyond a guard probe",
+  "measured_13": "an earlier alert this year pulling withdrawals forward with the year's total unchanged (proto13.py, seeds 174-193, 30,000 a year): development +43.6 to +85.8 per cent at weeks 5-6, but the landmark early-warning model +4.0 to +7.5 (sd 0.9), BF +10 to +16, golden = the plain entry-model sum (-0.2, sd 1.3); the unchanged-total claim rests on one past event (post/pre 0.998, sd 0.009); library test fails (loss-reserving card 1, the cell's own risk model)",
+  "measured_21": "the week-6 rule replayed on a history whose week-6 engagement the retired week-3 alert's coaching lifted (proto21.py, six faculties live 2022-2025): latest-cohort replay -11.2 to -17.2 per cent, short of the bar; the go-live step is 5 to 8 sigma in the faculty-by-year series; drift 0.02 a year splits the golden constructions (+7.6, +10.7, +3.9); golden = the staggered-rollout card's not-yet-treated comparison",
+  "paper": "nineteen more on the structural screens (each a line in the design note's Tried and rejected): contaminated model comparison and coaching cuts (causal, lever only on the band, a band call names the change), lead time (WHAT screen), weekly scoring (task170, replay), base-rate yield (task446), marks-release lag (landed class, task160), deadline phase (task162, subset), teaching-week hazard (task46), predicted grades (field reading), k assessments (subset or unidentified), cross-course frailty (task143), chronic absence (task253/464, local_government), advising-hold booking curve (swap test), feature vintages (card 1, field reading), exam sitters with deferrers (task150), sparser-timetable attendance (swap test, task170), label against covariate shift (card, dated shock), vendor recalibration (rule or recovered rule), new-module mixed model (pooled logistic right)",
+  "finding": "a forward early-warning question changes who is coached (causal: lever only on the band, a band call is readable, holdout sigma 2-3 per cent), what the alert outputs (replays exactly on the history's scores, or shows a 5-8 sigma step at go-live and moves 11-17 per cent), or who arrives (composition, out this round); the nearest early-warning forms of today's held shapes are spent (task172, task162, task165, task170)",
+  "window_at_screen": "live last three task268, task468 v3, task269 v2: blocked population_selection, composition_mix, decomposition_attribution, org university_or_school, role research_desk, forcing budget_or_appropriation; causal_design open",
+  "prototypes": "scratchpad r174: proto13.py, proto21.py, STATE.md"
+ }
 }
