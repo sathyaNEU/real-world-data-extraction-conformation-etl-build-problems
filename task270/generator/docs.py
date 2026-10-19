@@ -173,7 +173,7 @@ def write_basis(path):
          _clause(S, "3.3", "The average cost of a windscreen claim is the amount the Society pays for it including VAT."),
          Paragraph("4. Theft rate", S["h2"]),
          _clause(S, "4.1", "Each region's theft frequency for the 2025 rating year is the number of thefts in 2025 per "
-                           "100 vehicle-years on either cover in 2025, counted as in 2.3."),
+                           "1,000 vehicle-years on either cover in 2025, counted as in 2.3."),
          _clause(S, "4.2", "A theft is a theft of the car or from it, or an attempt at either, reported to the police. It "
                            "is dated on the day it happened, counted in the region of the garaging postcode on that "
                            "day, and counted where it cost the Society something."),
@@ -281,7 +281,8 @@ def write_guide(path):
          Spacer(1, 5),
          _table(S, plat_clm, [55, 115]),
          Paragraph("Amounts are cumulative to the extract. Incurred is paid plus outstanding. Recoveries from other "
-                   "insurers are recorded as they are received.", S["body"]),
+                   "insurers are recorded as they are received. A windscreen claim for a repairer the policyholder "
+                   "chose is paid on that repairer's invoice, VAT included.", S["body"]),
          Paragraph("5. Glass partner and salvage files", S["h2"]),
          Paragraph("%s's job file has one row a job line: job_ref and line_no; booked (date and time the job was "
                    "booked, UK time); fitted_date; insurer_policy_ref (the policy number the customer gave when "

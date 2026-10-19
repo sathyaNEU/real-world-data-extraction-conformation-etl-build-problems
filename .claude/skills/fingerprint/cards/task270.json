@@ -133,5 +133,6 @@
     }
   ],
   "notes": "Re-rooted 2026-10-19. Prototype in scratch (t270b/proto2.py, tune3.py): with a step scale whose claim cost peaks on the middle steps (a claim moves a policy down three steps), thresholds bounded at 1.3 times the step's cost and lognormal damage above a GBP 250 excess, the analytic search found region sets where the protected-wording top three and the reported top three differ by one region with margins of 7 to 10 per cent and the Step Protection lift lands a third set; the build tunes one at stage 3 and asserts every route.",
-  "registered": "2026-10-19T11:42:48Z"
+  "registered": "2026-10-19T11:42:48Z",
+  "architecture_spent": true
 }

@@ -60,6 +60,47 @@ def glass_by_source(P, E25c, partner=True, claims=True, supplier_split=True):
     return ({c: 100.0 * n[c] / E25c[c] for c in K.CODES}, {c: cost[c] / n[c] if n[c] else 0.0 for c in K.CODES})
 
 
+def glass_careful(P, E25c):
+    """The careful path: the partner's jobs billed to the Society, a job's lines one claim, and every other windscreen
+    claim once (the platform's claims that are the partner's jobs again set aside), each claim counted as it stands."""
+    jobs = A.partner_jobs(P)
+    feed = A.feed_matches(P, jobs)
+    n = {c: 0 for c in K.CODES}
+    cost = {c: 0.0 for c in K.CODES}
+    for j in jobs.values():
+        if j["booked"].year == 2025:
+            r = region_of(P, j["ref"], j["booked"])
+            n[r] += 1
+            cost[r] += j["gross"]
+    for c in P["claims"]:
+        if c["type"] != "WSC" or c["no"] in feed or c["notified"].year != 2025 or c["incurred"] <= 0:
+            continue
+        r = region_of(P, c["ref"], c["notified"])
+        n[r] += 1
+        cost[r] += c["incurred"]
+    return ({c: 100.0 * n[c] / E25c[c] for c in K.CODES}, {c: cost[c] / n[c] for c in K.CODES})
+
+
+def glass_dropped(P, E25c):
+    """The careful path that sets the recalibration-only jobs aside as no claim, their amount with them."""
+    jobs = A.partner_jobs(P)
+    feed = A.feed_matches(P, jobs)
+    n = {c: 0 for c in K.CODES}
+    cost = {c: 0.0 for c in K.CODES}
+    for j in jobs.values():
+        if j["booked"].year == 2025 and j["work"]:
+            r = region_of(P, j["ref"], j["booked"])
+            n[r] += 1
+            cost[r] += j["gross"]
+    for c in P["claims"]:
+        if c["type"] != "WSC" or c["no"] in feed or c["notified"].year != 2025 or c["incurred"] <= 0:
+            continue
+        r = region_of(P, c["ref"], c["notified"])
+        n[r] += 1
+        cost[r] += c["incurred"]
+    return ({c: 100.0 * n[c] / E25c[c] for c in K.CODES}, {c: cost[c] / n[c] for c in K.CODES})
+
+
 def theft_by_claim(P, E25):
     net = {}
     for s in P["salvage"]:

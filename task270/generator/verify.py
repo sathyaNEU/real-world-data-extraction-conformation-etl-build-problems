@@ -168,21 +168,33 @@ def run(task):
     gl["net"] = gl.net_amount.astype(float)
     gl["gross"] = gl.net + gl.vat_amount.astype(float)
     gl["day"] = gl.booked.map(lambda s: dt.datetime.strptime(s[:10], "%d/%m/%Y").date())
+    gl["work"] = gl.description.isin(["Windscreen replacement", "Windscreen repair"])
     jobs = gl.groupby("job_ref").agg(pol=("insurer_policy_ref", "first"), day=("day", "first"), net=("net", "sum"),
-                                     gross=("gross", "sum")).reset_index()
+                                     gross=("gross", "sum"), work=("work", "any")).reset_index()
     seen = set(zip(jobs.pol, jobs.day, jobs.net.round(2)))
     ws = cl[(cl.kind == "WSC") & (cl.incurred > 0)]
-    own = ws[[not (r.sys == "P" and (r.pol, r.notified, round(r.incurred, 2)) in seen) for r in ws.itertuples()]]
+    own = ws[[not (r.sys == "P" and (r.pol, r.notified, round(r.incurred, 2)) in seen) for r in ws.itertuples()]].copy()
+    # a partner job that is a camera recalibration alone: the recalibration of the screen another repairer fitted,
+    # part of that repairer's claim on the same policy (the last one dated on or before the job)
+    own["person"] = [other.get(p, p) if p.startswith("FNM") else p for p in own.pol]
+    add = {}
+    for r in jobs[~jobs.work].itertuples():
+        person = other.get(r.pol, r.pol) if r.pol.startswith("FNM") else r.pol
+        cand = own[(own.person == person) & (own.loss <= r.day)].sort_values(["loss", "notified", "no"])
+        if cand.empty:
+            bad.append(("recalibration with no replacement", r.job_ref))
+            continue
+        add[cand.no.iloc[-1]] = add.get(cand.no.iloc[-1], 0.0) + r.gross
     own = own[own.notified.map(lambda d: d.year == 2025)]
     n, cost = {}, {}
-    for r in jobs.itertuples():
+    for r in jobs[jobs.work].itertuples():
         reg = region(spans, state(cover_term(r.pol, r.day), changes, r.day), r.day)
         n[reg] = n.get(reg, 0) + 1
         cost[reg] = cost.get(reg, 0) + r.gross
     for r in own.itertuples():
         reg = region(spans, state(cover_term(r.pol, r.notified), changes, r.notified), r.notified)
         n[reg] = n.get(reg, 0) + 1
-        cost[reg] = cost.get(reg, 0) + r.incurred
+        cost[reg] = cost.get(reg, 0) + r.incurred + add.get(r.no, 0.0)
     for c in REGION_NAMES:
         if round(100 * n[c] / E25c[c], 1) != fig["ask_a"]["frequency"][REGION_NAMES[c]]:
             bad.append(("windscreen frequency", c))

@@ -10,9 +10,8 @@ North West's policyholders stand mostly on the middle no-claims steps, where a c
 
 ## 2. Critical Components
 
-1. Vehicle-years earned over the 2024 and 2025 accident years, by garaging region on the day: North East and Cumbria **19,197**, North West **27,386**, Yorkshire and the Humber **23,765**, East Midlands **20,660**, West Midlands **25,654**, East of England **20,688**, South East **26,732**, South West and Wales **18,174**; **182,255** in all
-2. Accident claims paid or reserved above nil at the data cut, 2024 and 2025 accident years: North East and Cumbria **1,761**, North West **3,220**, Yorkshire and the Humber **3,046**, East Midlands **1,798**, West Midlands **3,265**, East of England **1,687**, South East **3,342**, South West and Wales **1,473**; **19,592** in all
-3. Reported frequency per 100 vehicle-years: South East **12.5** against North West **11.8**
+1. Vehicle-years earned over the 2024 and 2025 accident years: **182,255**; accident claims paid or reserved above nil: **19,592**
+2. Reported frequency per 100 vehicle-years: South East **12.5** against North West **11.8**
 
 ## 3. Step-by-Step Solution
 
@@ -20,7 +19,7 @@ North West's policyholders stand mostly on the middle no-claims steps, where a c
 2. Took the accident claims in claims_legacy_export_2023_2025.csv (amounts in pence) and claims_platform_export_2025_2026.csv with incurred above nil and an accident date in 2024 or 2025 (section 2), each joined to the policy year covering its accident date, through policy_number_crosswalk_2025.csv where a claim carries the platform number: 19,592 claims, South East reporting 12.5 per 100 vehicle-years and North West 11.8.
 3. Compared claim sizes by step: a claim costs a step 0 or Step Protection policy no steps, and their claims show the full size distribution; on steps 1 to 9 without protection small claims are missing in proportion to the premium a claim costs on the step (no_claims_step_scale_2024.pdf), and above £2,500 the two distributions agree.
 4. Divided each region's accident claims above £2,500 by 37.8 per cent, the share of step 0 and Step Protection claims above £2,500, over its vehicle-years: North West, West Midlands and Yorkshire and the Humber lead, South East next; the same band at every threshold from £1,500 to £3,000.
-5. Windscreen (the basis note, section 3): counted Clearvane Auto Glass's jobs billed to the Society in glass_partner_jobs_2025.csv, a job's lines one claim, at net plus VAT, and the windscreen claims of repairers the policyholder chose; the platform's windscreen claims from 1 July 2025 that carry a partner job's policy number, booking day and net amount are that job registered again and are not counted twice; over comprehensive vehicle-years in 2025 by cover and region on the day.
+5. Windscreen (the basis note, section 3): counted Clearvane Auto Glass's jobs billed to the Society in glass_partner_jobs_2025.csv that repair or replace a screen, a job's lines one claim, at net plus VAT, and the windscreen claims of repairers the policyholder chose; the platform's windscreen claims from 1 July 2025 that carry a partner job's policy number, booking day and net amount are that job registered again and are not counted twice, and a partner job that is a camera recalibration alone recalibrates the screen another repairer fitted on the same policy just before, so its amount with VAT is part of that repairer's claim and it is not a claim of its own; over comprehensive vehicle-years in 2025 by cover and region on the day.
 6. Theft (the basis note, section 4): grouped the theft claims of both exports by police crime reference (the legacy system writes it with separators), so a recovered car's repair claim stays with its theft, dated each theft by its first claim's loss date, kept those with a cost, and took every claim's incurred less the net proceeds in salvage_sales_statements_2025_2026.xlsx (both years' statements), over 2025 vehicle-years on either cover.
 7. Band C for 2027: North West, West Midlands and Yorkshire and the Humber; first region below, South East.
 
@@ -31,14 +30,14 @@ North West's policyholders stand mostly on the middle no-claims steps, where a c
 1. Band C: North West, West Midlands, Yorkshire and the Humber
 2. First region below band C: South East
 3. 2025 windscreen claims per 100 vehicle-years with glass cover, and their average cost including VAT:
-   - North East and Cumbria: 10.6; £270
-   - North West: 13.0; £313
-   - Yorkshire and the Humber: 11.3; £274
-   - East Midlands: 10.7; £302
-   - West Midlands: 12.7; £318
-   - East of England: 9.6; £309
-   - South East: 11.7; £359
-   - South West and Wales: 10.1; £296
+   - North East and Cumbria: 10.7; £273
+   - North West: 13.0; £307
+   - Yorkshire and the Humber: 11.3; £285
+   - East Midlands: 10.7; £296
+   - West Midlands: 12.7; £324
+   - East of England: 9.5; £322
+   - South East: 11.7; £369
+   - South West and Wales: 10.2; £292
 4. 2025 thefts per 1,000 vehicle-years, and their average cost net of salvage:
    - North East and Cumbria: 7.5; £5,474
    - North West: 13.7; £4,959

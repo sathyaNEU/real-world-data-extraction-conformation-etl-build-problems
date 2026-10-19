@@ -1,32 +1,32 @@
 {
  "ask_a": {
   "average": {
-   "East Midlands": 302,
-   "East of England": 309,
-   "North East and Cumbria": 270,
-   "North West": 313,
-   "South East": 359,
-   "South West and Wales": 296,
-   "West Midlands": 318,
-   "Yorkshire and the Humber": 274
+   "East Midlands": 296,
+   "East of England": 322,
+   "North East and Cumbria": 273,
+   "North West": 307,
+   "South East": 369,
+   "South West and Wales": 292,
+   "West Midlands": 324,
+   "Yorkshire and the Humber": 285
   },
   "claims": {
-   "East Midlands": 920,
-   "East of England": 843,
-   "North East and Cumbria": 851,
+   "East Midlands": 923,
+   "East of England": 839,
+   "North East and Cumbria": 855,
    "North West": 1470,
    "South East": 1389,
-   "South West and Wales": 803,
-   "West Midlands": 1375,
-   "Yorkshire and the Humber": 1112
+   "South West and Wales": 812,
+   "West Midlands": 1381,
+   "Yorkshire and the Humber": 1114
   },
   "frequency": {
    "East Midlands": 10.7,
-   "East of England": 9.6,
-   "North East and Cumbria": 10.6,
+   "East of England": 9.5,
+   "North East and Cumbria": 10.7,
    "North West": 13.0,
    "South East": 11.7,
-   "South West and Wales": 10.1,
+   "South West and Wales": 10.2,
    "West Midlands": 12.7,
    "Yorkshire and the Humber": 11.3
   },

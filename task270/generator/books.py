@@ -40,7 +40,7 @@ def term_on(term, day):
     return d, c, r
 
 
-GLASS_SALT, THEFT_SALT = 11, 0      # the glass and theft streams, apart from the accident claims
+GLASS_SALT, THEFT_SALT = 2, 0      # the glass and theft streams, apart from the accident claims
 # glass by region: the partner's price level and the share of jobs that are replacements (older cars, motorway miles)
 GLASS_PRICE = {"NEC": 0.93, "NWE": 0.99, "YHU": 0.95, "EMI": 0.97, "WMI": 1.02, "EOE": 1.05, "SEA": 1.11, "SWW": 1.00}
 GLASS_REPL = {"NEC": 0.43, "NWE": 0.49, "YHU": 0.45, "EMI": 0.47, "WMI": 0.50, "EOE": 0.46, "SEA": 0.52, "SWW": 0.44}
@@ -151,7 +151,7 @@ def books(w, seed=W.SEED):
     def system_of(when):
         return "L" if when.date() < K.MIGRATION else "P"
 
-    def develop(c, cost, recovery=0.0, r=None):
+    def develop(c, cost, recovery=0.0, r=None, reopen=True):
         """Paid and outstanding at the extract: closed once settled, larger and recent claims still open."""
         r = r or rng
         age = (K.EXTRACT - c["notified"].date()).days
@@ -161,7 +161,7 @@ def books(w, seed=W.SEED):
         if age > settle:
             c["status"] = "Closed"
             c["paid"], c["outstanding"] = round(cost, 2), 0.0
-            if r.random() < 0.02:
+            if reopen and r.random() < 0.02:
                 c["status"] = "Reopened"
                 c["outstanding"] = round(float(cost * r.uniform(0.05, 0.25)), 2)
         else:
@@ -289,6 +289,7 @@ def books(w, seed=W.SEED):
     # ---------------------------------------------------------------- glass
     glass = []
     jobs = []
+    own_last = {}
     for k, e in enumerate(events):
         if e["kind"] not in ("GLASS", "GLASS_TPFT"):
             continue
@@ -303,15 +304,24 @@ def books(w, seed=W.SEED):
         customer = cover == "TPFT"
         network = customer or grng.random() < 0.85
         repl = grng.random() < GLASS_REPL[greg]
+        if not network:
+            # a second chip within three weeks of the last on the same car is the same damage, already claimed
+            prev = own_last.get(t["pid"])
+            if prev is not None and booked - prev < dt.timedelta(days=21):
+                continue
+            own_last[t["pid"]] = booked
         jobs.append(dict(ev=k, term=e["term"], day=e["day"], booked=booked, network=network, customer=customer,
                          repl=repl, camera=bool(e["camera"]), veh_group=e["veh_group"], follow=False))
-        if network and not customer and not repl and grng.random() < 0.09:
-            # the chip is repaired, then the crack spreads and the screen is replaced
+        if not customer and not repl and grng.random() < 0.09:
+            # the chip is repaired, then the crack spreads and the screen is replaced, by the same kind of repairer
             b2 = booked + dt.timedelta(days=int(grng.integers(6, 41)), hours=int(grng.integers(-4, 5)))
             if b2.date() <= K.EXTRACT and b2.date() <= (t["cancelled"] or t["end"]):
-                jobs.append(dict(ev=k, term=e["term"], day=b2.date(), booked=b2, network=True, customer=False,
+                jobs.append(dict(ev=k, term=e["term"], day=b2.date(), booked=b2, network=network, customer=False,
                                  repl=True, camera=bool(e["camera"]), veh_group=e["veh_group"], follow=True))
+                if not network:
+                    own_last[t["pid"]] = b2
     jobs.sort(key=lambda j: (j["booked"], j["ev"], j["follow"]))
+    own_claimed = {}
     for j in jobs:
         t = terms[j["term"]]
         dist, cover, reg = term_on(t, j["booked"].date())
@@ -328,11 +338,16 @@ def books(w, seed=W.SEED):
         else:
             fit_district = dist
         g = dict(j, region=W.district_region(dist, j["booked"].date()), district=dist, reg=reg, net=net, calib=calib,
-                 fitted=fitted, fit_district=fit_district, ref=quoted_ref(j["term"], j["booked"].date()), claim=None)
+                 fitted=fitted, fit_district=fit_district, ref=quoted_ref(j["term"], j["booked"].date()), claim=None,
+                 calib_claim=None)
         glass.append(g)
         if g["customer"]:
             continue
         if g["network"]:
+            prev = own_claimed.get(t["pid"])
+            if g["booked"].year > 2025 and prev is not None and g["booked"] - prev < dt.timedelta(days=21):
+                # the policyholder's own glazier is still on the job: the partner's booking is cancelled
+                continue
             if g["booked"].date() >= K.MIGRATION:
                 c = claim("WSC", g["ev"], g["term"], g["day"], g["booked"], region=g["region"], section="GLASS")
                 cost = round(net + calib, 2)
@@ -347,12 +362,41 @@ def books(w, seed=W.SEED):
             last = min(t["cancelled"] or t["end"], t["end"])
             if nd.date() > last:
                 nd = dt.datetime.combine(last, nd.time())
+            own_claimed[t["pid"]] = nd
             if nd.date() <= K.EXTRACT:
-                gross = round((net + calib) * 1.2 * float(grng.uniform(1.00, 1.18)), 2)
+                gross = round(net * 1.2 * float(grng.uniform(1.00, 1.18)), 2)
                 c = claim("WSC", g["ev"], g["term"], g["day"], nd, region=g["region"], section="GLASS")
-                develop(c, gross, r=grng)
+                develop(c, gross, r=grng, reopen=False)
                 c["cost"] = gross
                 g["claim"] = c
+                if calib:
+                    # the policyholder's own glazier fits the screen but cannot set up the camera: the Society's
+                    # partner recalibrates it a few days later, in a job of its own billed to the Society
+                    cal = fitted + dt.timedelta(days=int(grng.integers(0, 4)))
+                    when = dt.time(int(grng.integers(8, 18)), int(grng.integers(0, 60)))
+                    d_cal = term_on(t, cal)[0]
+                    away = grng.random() < 0.18
+                    pool = K.REGIONS[int(grng.integers(8))][2]
+                    fit_cal = pool[int(grng.integers(len(pool)))] if away else d_cal
+                    if (cal.year == nd.year and cal <= K.EXTRACT and W.district_region(d_cal, cal)
+                            == W.district_region(term_on(t, nd.date())[0], nd.date())):
+                        gc = dict(ev=g["ev"], term=g["term"], day=g["day"], booked=dt.datetime.combine(cal, when),
+                                  network=True, customer=False, repl=False, camera=True, veh_group=g["veh_group"],
+                                  follow=g["follow"], calib_only=True, region=W.district_region(d_cal, cal),
+                                  district=d_cal, reg=reg, net=0.0, calib=calib,
+                                  fitted=cal + dt.timedelta(days=int(grng.integers(0, 3))), fit_district=fit_cal,
+                                  ref=quoted_ref(g["term"], cal), claim=None, calib_claim=None, for_claim=c)
+                        glass.append(gc)
+                        g["cal_job"] = gc
+                        if cal >= K.MIGRATION:
+                            cf = claim("WSC", g["ev"], g["term"], g["day"], gc["booked"], region=gc["region"],
+                                       section="GLASS")
+                            if (K.EXTRACT - gc["fitted"]).days > 21:
+                                cf["status"], cf["paid"] = "Closed", calib
+                            else:
+                                cf["status"], cf["outstanding"] = "Open", calib
+                            cf["cost"] = calib
+                            gc["claim"] = cf
     # ---------------------------------------------------------------- salvage: write-offs from accidents and fires,
     # and stolen cars recovered after the total loss was paid
     salvage = []

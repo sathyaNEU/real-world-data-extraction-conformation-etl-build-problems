@@ -171,14 +171,15 @@ def glass_jobs(bk):
         ref = "CVG%07d" % n
         g["job_ref"] = ref
         billed = "Customer" if g["customer"] else K.SHORT
-        desc = "Windscreen replacement" if g["repl"] else "Windscreen repair"
-        lines.append([ref, 1, g["booked"].strftime("%d/%m/%Y %H:%M"), dmy(g["fitted"]), g["ref"], g["reg"],
-                      g["fit_district"], desc, billed, money(g["net"]), money(round(g["net"] * 0.2, 2)),
-                      g["fitted"].strftime("%Y-%m")])
+        work = []
+        if not g.get("calib_only"):
+            work.append(("Windscreen replacement" if g["repl"] else "Windscreen repair", g["net"]))
         if g["calib"]:
-            lines.append([ref, 2, g["booked"].strftime("%d/%m/%Y %H:%M"), dmy(g["fitted"]), g["ref"], g["reg"],
-                          g["fit_district"], "ADAS camera recalibration", billed, money(g["calib"]),
-                          money(round(g["calib"] * 0.2, 2)), g["fitted"].strftime("%Y-%m")])
+            work.append(("ADAS camera recalibration", g["calib"]))
+        for no, (desc, amount) in enumerate(work, 1):
+            lines.append([ref, no, g["booked"].strftime("%d/%m/%Y %H:%M"), dmy(g["fitted"]), g["ref"], g["reg"],
+                          g["fit_district"], desc, billed, money(amount), money(round(amount * 0.2, 2)),
+                          g["fitted"].strftime("%Y-%m")])
     return lines
 
 

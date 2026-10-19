@@ -17,8 +17,6 @@ def write(task):
     band = call["band_names"]
     below = call["below_name"]
     rep = comp["reported_frequency"]
-    vy = comp["vehicle_years"]
-    rc = comp["reported_claims"]
     order = [K.NAME[c] for c in K.CODES]
     joins = [x for x in band if x not in riv["reported"]]
     drops = [x for x in riv["reported"] if x not in band]
@@ -52,11 +50,9 @@ def write(task):
     lines.append("")
     lines.append("## 2. Critical Components")
     lines.append("")
-    lines.append("1. Vehicle-years earned over the 2024 and 2025 accident years, by garaging region on the day: " +
-                 ", ".join("%s **%s**" % (x, n(vy[x])) for x in order) + "; **%s** in all" % n(comp["vehicle_years_total"]))
-    lines.append("2. Accident claims paid or reserved above nil at the data cut, 2024 and 2025 accident years: " +
-                 ", ".join("%s **%s**" % (x, n(rc[x])) for x in order) + "; **%s** in all" % n(comp["reported_claims_total"]))
-    lines.append("3. Reported frequency per 100 vehicle-years: %s **%s** against %s **%s**" % (d, rep[d], j, rep[j]))
+    lines.append("1. Vehicle-years earned over the 2024 and 2025 accident years: **%s**; accident claims paid or reserved "
+                 "above nil: **%s**" % (n(comp["vehicle_years_total"]), n(comp["reported_claims_total"])))
+    lines.append("2. Reported frequency per 100 vehicle-years: %s **%s** against %s **%s**" % (d, rep[d], j, rep[j]))
     lines.append("")
     lines.append("## 3. Step-by-Step Solution")
     lines.append("")
@@ -79,11 +75,14 @@ def write(task):
                  "every threshold from £%s to £%s." % (n(b27["threshold"]), b27["share_above"], n(b27["threshold"]),
                                                         band[0], band[1], band[2], below, n(b27["range"][0]),
                                                         n(b27["range"][1])))
-    lines.append("5. Windscreen (the basis note, section 3): counted %s's jobs billed to the Society in %s, a job's lines one claim, "
-                 "at net plus VAT, and the windscreen claims of repairers the policyholder chose; the platform's "
-                 "windscreen claims from 1 July 2025 that carry a partner job's policy number, booking day and net "
-                 "amount are that job registered again and are not counted twice; over comprehensive vehicle-years in "
-                 "2025 by cover and region on the day." % (K.PARTNER, K.FILES["glass"]))
+    lines.append("5. Windscreen (the basis note, section 3): counted %s's jobs billed to the Society in %s that repair "
+                 "or replace a screen, a job's lines one claim, at net plus VAT, and the windscreen claims of repairers "
+                 "the policyholder chose; the platform's windscreen claims from 1 July 2025 that carry a partner job's "
+                 "policy number, booking day and net amount are that job registered again and are not counted twice, "
+                 "and a partner job that is a camera recalibration alone recalibrates the screen another repairer "
+                 "fitted on the same policy just before, so its amount with VAT is part of that repairer's claim and it "
+                 "is not a claim of its own; over comprehensive vehicle-years in 2025 by cover and region on the day." %
+                 (K.PARTNER, K.FILES["glass"]))
     lines.append("6. Theft (the basis note, section 4): grouped the theft claims of both exports by police crime reference (the legacy "
                  "system writes it with separators), so a recovered car's repair claim stays with its theft, dated each "
                  "theft by its first claim's loss date, kept those with a cost, and took every claim's incurred less "

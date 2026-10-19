@@ -78,7 +78,7 @@ def books_truth(bk):
         if g["customer"]:
             continue
         if g["network"]:
-            if g["booked"].year == 2025:
+            if g["booked"].year == 2025 and not g.get("calib_only"):
                 n[g["region"]] += 1
                 cost[g["region"]] += g["net"] + round(g["net"] * 0.2, 2) + g["calib"] + round(g["calib"] * 0.2, 2)
         elif g["claim"] is not None and g["claim"]["notified"].year == 2025:
@@ -88,6 +88,8 @@ def books_truth(bk):
             r = W.district_region(d, day)
             n[r] += 1
             cost[r] += c["paid"] + c["outstanding"]
+            if g.get("cal_job") is not None:
+                cost[r] += g["cal_job"]["calib"] + round(g["cal_job"]["calib"] * 0.2, 2)
     glass = dict(n=n, avg={c: cost[c] / n[c] for c in K.CODES})
     proceeds = collections.defaultdict(float)
     for s in bk["salvage"]:
@@ -308,6 +310,37 @@ def run(task, b, fig, res):
           (len(matched_jobs), len(h2), len(feed)))
     check("ASK A no partner job before 1 July 2025 is a claim", all(j["booked"] >= K.MIGRATION for j in
                                                                     (jobs[v[0]] for v in feed.values())))
+    # the recalibrations: each partner job that is a camera recalibration alone goes to the claim of the replacement
+    # the books had it recalibrate, and to nothing else
+    cal_books = {(g["claim"]["no"], g["cal_job"]["job_ref"]) for g in bk["glass"] if g.get("cal_job") is not None
+                 and g["cal_job"]["booked"].year == 2025}
+    pairs = []
+    rows = [c for c in P["claims"] if c["type"] == "WSC" and c["no"] not in feed and c["incurred"] > 0]
+    list(A.own_repairer(P, jobs, feed, pairs))
+    found = {(c["no"], j["job"]) for c, j in pairs}
+    check("ASK A every recalibration-only partner job goes to the replacement the books recalibrated",
+          found == cal_books and len(found) >= 100, (len(found), len(cal_books), len(found ^ cal_books)))
+    check("ASK A each recalibration-only job follows its replacement's loss date by 21 days or fewer",
+          all(0 <= (j["booked"] - c["loss"]).days <= 21 for c, j in pairs),
+          max((j["booked"] - c["loss"]).days for c, j in pairs))
+    by_pol = collections.defaultdict(list)
+    for c in rows:
+        by_pol[A.policy_key(P, c["ref"])].append(c)
+    near = [(c, [d for d in by_pol[A.policy_key(P, j["ref"])] if 0 <= (j["booked"] - d["loss"]).days <= 21])
+            for c, j in pairs]
+    check("ASK A each recalibration-only job's replacement is the latest and the largest claim of another repairer on "
+          "the policy in the 21 days before it", all(c is max(ds, key=lambda d: (d["loss"], d["notified"]))
+                                                    and c is max(ds, key=lambda d: d["incurred"]) for c, ds in near),
+          collections.Counter(len(ds) for c, ds in near))
+    check("ASK A a recalibration and its replacement are dated in one year, in one region",
+          all(c["notified"].year == j["booked"].year and CR.region_of(P, c["ref"], c["notified"])
+              == CR.region_of(P, j["ref"], j["booked"]) for c, j in pairs))
+    own25 = [c for c in rows if c["notified"].year == 2025]
+    check("ASK A every 2025 claim of a repairer the policyholder chose is settled at its exact amount (closed)",
+          all(c["status"] in ("C", "Closed") for c in own25), collections.Counter(c["status"] for c in own25))
+    alone = [j for j in jobs.values() if not j["work"] and j["booked"].year == 2025]
+    check("ASK A recalibration-only jobs are a small minority of the partner's 2025 jobs (100 to 400)",
+          100 <= len(alone) <= 400 and len(alone) < 0.05 * len(jobs), (len(alone), len(jobs)))
     plat_ws = [c for c in P["claims"] if c["type"] == "WSC" and c["sys"] == "P" and c["notified"].year == 2025]
     leg_ws = [c for c in P["claims"] if c["type"] == "WSC" and c["sys"] == "L" and c["notified"].year == 2025]
     check("ASK A the platform's 2025 windscreen claims run four times the legacy system's monthly rate or more",
@@ -318,6 +351,8 @@ def run(task, b, fig, res):
         "the claims exports alone": CR.glass_by_source(P, res["E25c"], partner=False, supplier_split=False),
         "the partner's jobs alone": CR.glass_by_source(P, res["E25c"], claims=False),
     }
+    stops["the partner's jobs and the other claims once, each partner job a claim (the careful path)"] = \
+        CR.glass_careful(P, res["E25c"])
     for name, (fq, av) in stops.items():
         miss_f = sum(abs(fq[c] - fig["ask_a"]["frequency"][K.NAME[c]]) >= 0.05 for c in K.CODES)
         miss_a = sum(abs(av[c] - fig["ask_a"]["average"][K.NAME[c]]) >= 0.5 for c in K.CODES)

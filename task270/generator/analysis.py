@@ -105,15 +105,21 @@ def size_profile(A, edges=(0, 250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250,
 
 
 # ------------------------------------------------------------------------------------------------- the asks
+WORK = ("Windscreen replacement", "Windscreen repair")
+
+
 def partner_jobs(P):
-    """The partner's jobs billed to the Society: a job's lines are one claim, at their amount with VAT."""
+    """The partner's jobs billed to the Society: a job's lines are one claim, at their amount with VAT. A job with no
+    repair or replacement line is a camera recalibration alone (work is False)."""
     jobs = {}
     for g in P["glass"]:
         if g["billed"] != K.SHORT:
             continue
-        j = jobs.setdefault(g["job"], dict(job=g["job"], booked=g["booked"], ref=g["ref"], gross=0.0, net=0.0))
+        j = jobs.setdefault(g["job"], dict(job=g["job"], booked=g["booked"], ref=g["ref"], gross=0.0, net=0.0,
+                                           work=False))
         j["gross"] += g["net"] + g["vat"]
         j["net"] += g["net"]
+        j["work"] = j["work"] or g["desc"] in WORK
     return jobs
 
 
@@ -133,16 +139,44 @@ def feed_matches(P, jobs):
     return out
 
 
+def policy_key(P, ref):
+    """One key per policy across the two numbering schemes (the legacy number where the policy has one)."""
+    return P["xw"].get(ref, ref) if ref.startswith("FNM") else ref
+
+
+def own_repairer(P, jobs, feed, pairs=None):
+    """The windscreen claims of repairers the policyholder chose (every windscreen claim that is not a partner job
+    registered again), each with the partner's recalibration of the screen that repairer fitted: a partner job that
+    is a camera recalibration alone belongs to the claim of the other repairer's replacement it follows on the same
+    policy. Yields (claim, the recalibration's amount with VAT)."""
+    rows = [c for c in P["claims"] if c["type"] == "WSC" and c["no"] not in feed and c["incurred"] > 0]
+    by_pol = {}
+    for c in rows:
+        by_pol.setdefault(policy_key(P, c["ref"]), []).append(c)
+    extra = {}
+    for j in jobs.values():
+        if j["work"]:
+            continue
+        before = [c for c in by_pol.get(policy_key(P, j["ref"]), []) if c["loss"] <= j["booked"]]
+        c = max(before, key=lambda c: (c["loss"], c["notified"], c["no"]))
+        extra[c["no"]] = extra.get(c["no"], 0.0) + j["gross"]
+        if pairs is not None:
+            pairs.append((c, j))
+    for c in rows:
+        yield c, extra.get(c["no"], 0.0)
+
+
 def windscreen(P, E25c):
     """Ask A: each region's 2025 windscreen claims per 100 comprehensive vehicle-years and their average cost
-    including VAT: the partner's jobs billed to the Society, and the claims of repairers the policyholder chose (the
-    claims that are not the partner's jobs registered again on the platform)."""
+    including VAT: the partner's jobs billed to the Society that repair or replace a screen, and the claims of
+    repairers the policyholder chose (the claims that are not the partner's jobs registered again on the platform),
+    each with the partner's recalibration of the screen it replaced."""
     n = {c: 0 for c in K.CODES}
     cost = {c: 0.0 for c in K.CODES}
     jobs = partner_jobs(P)
     feed = feed_matches(P, jobs)
     for j in jobs.values():
-        if j["booked"].year != 2025:
+        if j["booked"].year != 2025 or not j["work"]:
             continue
         t = PK.term_for(P, j["ref"], j["booked"])
         d, cv = PK.state_on(t, j["booked"])
@@ -150,19 +184,20 @@ def windscreen(P, E25c):
         n[r] += 1
         cost[r] += j["gross"]
     own = 0
-    for c in P["claims"]:
-        if c["type"] != "WSC" or c["no"] in feed or c["notified"].year != 2025 or c["incurred"] <= 0:
+    for c, extra in own_repairer(P, jobs, feed):
+        if c["notified"].year != 2025:
             continue
         t = PK.term_for(P, c["ref"], c["notified"])
         d, cv = PK.state_on(t, c["notified"])
         r = P["rmap"].region(d, c["notified"])
         n[r] += 1
-        cost[r] += c["incurred"]
+        cost[r] += c["incurred"] + extra
         own += 1
     freq = {c: 100.0 * n[c] / E25c[c] for c in K.CODES}
     avg = {c: cost[c] / n[c] for c in K.CODES}
     return dict(n=n, cost=cost, freq=freq, avg=avg, own=own, feed=len(feed),
-                jobs=len([j for j in jobs.values() if j["booked"].year == 2025]))
+                jobs=len([j for j in jobs.values() if j["booked"].year == 2025 and j["work"]]),
+                recalibrations=len([j for j in jobs.values() if j["booked"].year == 2025 and not j["work"]]))
 
 
 def thefts(P, E25):

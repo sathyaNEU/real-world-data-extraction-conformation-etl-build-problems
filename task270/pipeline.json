@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "actuarial-science-insurance",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-19",
   "stump": "The default path ranks the eight rating regions by their 2024 and 2025 reported accident claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, because North West's policyholders stand mostly on the middle no-claims steps, where an at-fault claim costs the most premium over the climb back, and pay small damage themselves; only recovering the absorbed claims, from the claims above the size no policyholder absorbs scaled by the share of claims that large among step 0 and Step Protection policies, puts North West in band C with South East first below.",
   "architecture": 2,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (4 design-note vocabulary lines and forward term_end dates, each harmless in the note; the LLM plate hit fixed in the generator)",
-    "reader": ""
+    "reader": "six isolated scored readers over three rounds on architecture 2: readers 1 to 5 missed the call (the reported band or the holders' uplift), reader 6 landed it (claims above £2,500 scaled by the protected policies' share above that size); reader 5 took all 32 ask figures"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.gate_g, repeat.question_form; no BLOCK)",
@@ -25,16 +25,20 @@
     "surface": "2 promoted: task268 (layout and format mix only, no shared name, prompt or submission wording), task192 (same-driver signature, differentiated on the card)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (Ask A: a recalibration booked alone, section 3.2)",
+    "report": "determinism_check_report_pass3.md (pass 2 NOT_DETERMINISTIC on Ask A, repaired)"
   },
   "returned": [],
-  "resume": "stage 4: two isolated scored readers (fresh copies of prompt.txt and target/, figures keyed as generator/figures.json, scored with score_reader.py; both must miss the call) and the determinism judge on the built pack (build 317fc1d2604d6449c1add0c48673cfe1, 315 checks, verify clean, byte-identical); then fix in the generator, ship (target.zip, golden/, ledger row, board)",
+  "resume": "re-root: architecture 3, the slot's last, at stage 1 (a new draw in the Descriptive lane; architecture 2's card moves into lineage, spent at Gate F because one reader in six recovered the absorbed claims from the claim sizes); then stages 2 to 5. Read ## Tried and rejected first",
   "architectures": [
     {
       "architecture": 1,
       "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
+    },
+    {
+      "architecture": 2,
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
     }
   ],
   "approved": null,
