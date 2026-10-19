@@ -1,0 +1,93 @@
+{
+  "task": "task270",
+  "architecture": "v1 (a city police department's 2027 entry examination: which two of the five components every 2024 and 2025 candidate sat to keep, each judged by its correlation with the police academy's final average across the whole candidate pool, when only the candidates appointed in rank order of the written test and oral board reached the academy)",
+  "drawn": "2026-10-19",
+  "slot_note": "drawn in its own world: the slot's seed DA20 (headway supervisor posts) went to task269's architecture 3, so task270 takes no seed world",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "psychometric-measurement-scale-validation",
+  "niche": "the predictive validity of a civil-service police entry examination's components across the candidate pool, estimated from an academy outcome that exists only for the candidates appointed in rank order of two of the components",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "Keep the written test and the oral board in the 2027 entry examination.",
+  "answer_source": "task270/DESIGN_NOTE.md, Draw (target set; submission.md written at stage 3)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G17",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "Correlating each component with the academy final average among the 2024 and 2025 appointees (the only candidates with an academy grade), or correcting each of those correlations on its own by Thorndike's Case II with that component's spread across the candidate pool, keeps the written test and the personality inventory; only a correction that models the appointments as made in rank order of the written test and oral board composite (the multivariate correction on the variables the offers were made on) keeps the written test and the oral board.",
+  "domain_test": "The deciding quantity is each component's predictive validity across the candidate pool, the field's own estimand for a selection procedure, recovered from a range-restricted validation sample by the multivariate correction for selection on the components the appointments were ranked on; put school visits or megawatt-hours in place of candidates and academy grades and there is no selection test whose validity the appointments restricted.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:indirect-range-restriction-on-a-selection-composite",
+  "layer1": [
+    "three testing vendors' exports keyed by their own candidate numbers, joined to the city's applicant numbers through the examination roster",
+    "the oral board recorded as each board member's rating on each dimension, averaged into the board score",
+    "the physical ability test recorded as an event time with a pass mark and a retest",
+    "the academy's grade book kept one workbook sheet per class, its layout changed for the 2025 classes",
+    "veterans' preference points added to the final score under the civil service rules",
+    "candidates passed over at background or medical review and offers declined"
+  ],
+  "stakeholder_role": "the police department's personnel research analyst, preparing the 2027 examination announcement for the Civil Service Commission",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "oral_board_ratings_2024_2025.csv",
+    "rows": 0,
+    "entity": "one board member's rating of one candidate on one oral board dimension",
+    "grain": "candidate x board member x dimension",
+    "row_meaning": "the rating a member of a three-person oral board gave a candidate on one of the board's six dimensions",
+    "source": "synthetic",
+    "source_dataset": "constructed (seeded generator; the city, its police department, its civil service commission, its testing vendors and people are fictional)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, a fictional mid-sized city in Ohio (the city, its police department and academy, its civil service commission, its testing vendors and people are fictional)",
+    "currency": "USD",
+    "org_type": "a city police department and its civil service commission",
+    "invented_names": [],
+    "people": [
+      "Melanie Howard",
+      "Julia Larson"
+    ]
+  },
+  "deliverables": [
+    "pd_2027_entry_examination_components.xlsx",
+    "entry_examination_validity_candidate_pool.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how strongly each of several measures predicts an outcome across a whole pool when the outcome exists only for the members picked from the pool in rank order of a weighted sum of two of the measures; the correlations among those picked understate every measure, and correcting each measure as if it alone had picked them leaves the two that formed the sum understated, so only a correction that models the pick on the sum, with the measures' spread across the whole pool, restores which measures predict best.",
+  "driver_concrete": "Each examination component's correlation with the police academy's final average across everyone who sat the 2024 and 2025 examinations, recovered from the appointees' grades by the multivariate correction on the written test, the oral board, the veterans' points and the physical ability pass mark the appointments were made on; the appointees' own correlations and a per-component Case II correction both leave the written test and the oral board looking weaker than they are and keep the personality inventory.",
+  "stump": "A competent solver correlates each component with the academy final average among the appointees, or corrects each correlation separately by Case II, and keeps the written test and the personality inventory, because the appointments were made in rank order of the written test and oral board composite, which restricted those two (and the oral board most, beside the written test it was ranked with) far more than the per-component spreads show.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task267": "task267 recovers a screening rule's capture rate from a reference check given to everyone the old rule flagged and a random fifth of the rest, by weighting the checked by their verification probability; here no one outside the appointees has an outcome at all, and what is recovered is each component's correlation through the covariance structure of the selection variables, where the per-component correction a validity analyst applies first is the wrong one",
+    "task268": "task268 carries patients lost to follow-up from their recorded class to recover a survival proportion; here the outcome is never observed outside the appointed and the quantity is a correlation corrected for selection on a composite",
+    "task269": "task269's first architecture recombined variance components for a new examining design (a decision study); here nothing is projected to a new design: the 2024 and 2025 candidate pool is the population and the correction is for who reached the academy",
+    "task182": "task182's fourth architecture reads durations off snapshots of the items still in progress, so each item enters in proportion to its own length and the fix is to undo a length weighting; here every candidate sat every component and the outcome is missing outside the appointed, so the fix models the appointment rule's selection on two components and carries the pool's covariance through it",
+    "task139": "task139 reads a randomised intervention per assigned unit rather than per recorded costly case; here nothing is randomised and the quantity is a correlation restored from a sample selected on a composite of the predictors",
+    "task265": "task265's first architecture counts earlier starters at risk only from their entry to the record (left truncation of a survival curve); here no one is followed over time and the selection is on predictor scores, not on survival to an entry date",
+    "task452": "task452's second architecture reweights reference observations by inclusion probabilities a revised classification moved; here there are no inclusion probabilities to weight by (the appointments are a deterministic cut on the ranking), so the correction runs through the selection variables' covariance, not through weights"
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-19. Prototype in scratch (t270/proto.py): over 300 seeds of the world at police-department scale (about 3,650 candidates over four administrations, about 800 appointees), 210 had every licensed correction (Lawley on the selection variables, Lawley on everything recorded before appointment, Case III on the final score with the physical ability pass mark, and the two that forget the veterans' points or the pass mark) keep the written test and the oral board while the appointees' correlations and the per-component Case II correction keep another pair; the corrected coefficients themselves differ between licensed corrections by about 0.03, so the graded construction is the call, the first component below and the order, not the coefficients.",
+  "registered": "2026-10-19T09:14:46Z"
+}
