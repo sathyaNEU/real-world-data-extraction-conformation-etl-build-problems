@@ -67,7 +67,7 @@ The recommendation turns on doing the analysis correctly. The failure being buil
 
 The client's own examples of the kind of choice an expert recognises: comparing against the right group (in a staggered rollout, each wave against units not yet treated, not a simple before and after); handling the data's real structure (time to an event with people who left the study early treated as censored); judging the evidence (a guardrail metric read with its confidence interval, not only "it was not significant"); validating a forecast properly (testing it only on data it was not built on).
 
-Every domain in `layer2-rigor-patterns.md` lists about twenty rigor patterns grouped by task type. Use them to see what a methodological pitfall looks like in that field, then build your own version.
+Every client domain but three (Physical & Environmental Sciences, Energy Systems & Utilities, Human Factors & Ergonomics) has its rigor patterns in `layer2-rigor-patterns.md`, grouped by task type. Use them to see what a methodological pitfall looks like in that field, then build your own version: a card's method is the textbook route a strong solver takes, so the stump is the judgment the method takes for granted and the data settle (`../../SKILL.md` 1.3), and the card's pin is filed as the estimand and the design, never as a sentence naming the method.
 
 ## Keeping the answer deterministic without a plant
 

@@ -122,6 +122,8 @@ the rows a device needs are rows the call does not see.
 
 Families: D1 duplication, D2 version, D3 units and meaning, D4 absence, D5 scope, D6 grain, D7 keys, D8 clocks, D9 self-validation.
 
+The client's rigor cards (`../stumping/references/client/layer2-rigor-patterns.md`) that turn on the data's own structure rather than on a method (vintages and reporting lags, point-in-time universes, censored young cohorts, exposure denominators, incomplete recent periods, event-level quantities on every line) are ask-device seeds in the D2, D5, D6 and D8 families: an ask may turn on them because rule 3 binds the call only (2.1). The seed is the structure, never the card's pin; the device still obeys the nine laws, and a grader must be able to verify the handling (the law 6 note above).
+
 **Silent, the primaries** (no habitual sweep sees it, or every tie passes wrong):
 - D1 a replay under fresh ids, key kept, beside genuine same-day pairs
 - D1 the same records under two key schemes or sources

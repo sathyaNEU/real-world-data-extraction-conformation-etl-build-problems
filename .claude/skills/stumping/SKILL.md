@@ -309,6 +309,34 @@ The decisive step is the field's own method for the deciding quantity, which an 
 generalist replaces with a generic move. Read the patterns, exemplars and family record first; the note
 gives one line per source: what it teaches, how this build differs.
 
+**A card is a pitfall, not a stump, and its pin is translated.** The client's library
+(`references/client/layer2-rigor-patterns.md`, about 310 cards over eighteen domains) gives each task
+type's rigorous method against the capable analyst's shortcut, with a pin that often names the method ("the
+prompt names the model to calibrate", "a named linking convention"). Three things follow.
+
+- **The card's method is the textbook route, and a strong solver takes textbook routes.** Of nine shipped
+  builds measured by blind readers holding only the prompt and the pack, the readers landed the four whose
+  golden was a card's method applied as the card states it (task160's lag timed off a neighbour, task166's
+  fitted extension on the obvious covariate, task167's analogue cohorts paced by age, task168's booking
+  build at sell-out) and missed the five where the golden turned on a judgment the method takes for
+  granted and the data settle (task172's cap that truncates the waits, task162's calendar-locked wave in a
+  daily series, task165's gain conditioned on each unit's own baseline, task161's own-shipment burn against
+  a half-life, task163's reform-inflated applications at their real yield). So the card supplies the
+  Layer 2 family and usually the default path's shortcut; the stump is the judgment between knowing the
+  method and getting the figure (which units are the comparison, which exits compete, which exposure is at
+  risk, where the curve bends, what a cap truncates), and it is priced like any other candidate (the
+  sequence in Part 3, the four screens as code) before a card is drafted.
+- **The pin is a WHAT, never a filed HOW.** A shipped sentence naming the method makes the decisive step
+  rule application (`CLAUDE.md`, rule 3; `determinism-check` §1). What the card pins by naming a method is
+  filed here as the estimand and the design (population, outcome, window, unit, comparison, the horizon,
+  the randomised or decided unit), with the data's structure ruling the shortcut out; the method is named
+  only where the design or a standard's general method forces it, and never recovered from certified or
+  published figures.
+- **One card, one build, the card's wording never.** The card's key goes on the fingerprint card as
+  `layer2_pattern`; the data-native sentence (1.7) says what in this dataset makes the pitfall bite; the
+  same pattern on the same data structure is blocked by the guard, and a build that could be told with the
+  card's own nouns swapped in is the card copied, not learned.
+
 ### 1.4 The four gaps, and the patterns with a record
 
 Pick the gap, then the mechanism (`strategies.md` Part 4), then the scenario. **1 Time:** what the
@@ -893,6 +921,9 @@ the ladder.
   0.30 similarity and warns at 0.12.
 - **The record:** nothing drawn is dead (`strategies.md` Part 6, `shipped-ledger.md`), the pattern's
   discriminator (1.4) can be built here, and a re-root moves the decisive rung.
+- **The library test:** if the golden is a card's method applied as the card states it, a blind reader
+  lands it (1.3). Name the judgment beyond the card that the data settle and the default path misses, or
+  the card is the default path, not the stump.
 
 **No monoculture.** The guard blocks a strategy within three builds and warns at three in twelve: rotate
 the strategy, Layer 2 family and gap across the batch. The semantics-risk strategies (`time_semantics`,

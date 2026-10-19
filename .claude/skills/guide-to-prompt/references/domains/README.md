@@ -9,10 +9,11 @@ Experiment & Causal Analysis, DD Descriptive & Distribution Analysis, ETL Data E
 Opportunity Sizing & Decision Support, DQ Data Quality Monitoring & Alerting.
 
 Layer 2 patterns per task type: `../../../stumping/references/client/layer2-rigor-patterns.md`. Layer 1 mess per
-domain: `../../../dataset-generation/references/layer1-messiness.md`. Six domains (Quantitative Finance; Banking,
-Credit & Financial Risk; Actuarial Science & Insurance; Physical & Environmental Sciences; Energy Systems & Utilities;
-Human Factors & Ergonomics) have Layer 1 techniques but no Layer 2 patterns: take the pitfall from the five Layer 2
-families in `../../../stumping/references/client/two-layer-task-design.md`.
+domain: `../../../dataset-generation/references/layer1-messiness.md`. Three domains (Physical & Environmental Sciences;
+Energy Systems & Utilities; Human Factors & Ergonomics) have Layer 1 techniques but no Layer 2 patterns: take the
+pitfall from the five Layer 2 families in `../../../stumping/references/client/two-layer-task-design.md`. Quantitative
+Finance, Banking and Actuarial Science carry their patterns under the client's finer stumping-page task types, each
+mapped in the library to the taxonomy task type the card's `subdomain` takes.
 
 **Close calls.** Biomedical & Clinical Research is study data on treatments and trials; Epidemiology & Public Health
 is populations, exposures and surveillance; Pharmacology is drug exposure and safety; Healthcare Delivery & Health
