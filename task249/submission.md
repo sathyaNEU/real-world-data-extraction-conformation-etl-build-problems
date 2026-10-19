@@ -2,65 +2,63 @@
 
 ## Tags
 
-**Domain:** Psychology & Behavioral Science (psychometric measurement and scale validation: an assessment firm's unproctored adaptive aptitude test, MAT-R, checked by a proctored verification test, MAT-V, at client employers' selection days).
-**Analytical objective:** Data Quality Monitoring & Alerting (how often the new verification check would refer genuine candidates at each client account in 2029, and so which accounts move to the extended verification before the season).
+**Domain:** Product Analytics (metric definition and measurement science: a regional newspaper group's monthly unique browsers per local edition, counted by an analytics identifier that WebKit drops after seven days without a visit).
+**Analytical objective:** Data Quality Monitoring & Alerting (which editions' published audience figure fails the 2029 policy's tolerance and carries the measurement note).
 
 ## 1. Final Recommendation
 
-**Move 15 accounts to MAT-V Extended for 2029: KSP, VRD, ANV, PRM, SQR, ABH, MTL, TJM, SHY, TRG, PBH, KVR, RNJ, CHT, LVN; the other 13 stay on the 12-item MAT-V.**
+**Eight of the twelve editions carry the measurement note in the 2029 media kit: Rhenhagen Stadt, Kirchbrunn, Wiesbrück, Hollerfeld, Sonnweiler, Mühlenstedt, Grauheim and Lindenau; Altenhorst, Eichtal, Bergstetten and Falkenried print their figures without it.**
 
-On their 2029 plans each of the 15 would see its check refer at least 20 per cent of its genuine shortlisted candidates, against the 15 per cent cap of MAL-IS-04 section 3.3, while the other 13 stay under the cap. The equivalence study's own rates (2.3 per cent within three days, 6.6 per cent at six weeks or more) keep every account under the cap, because its volunteers were not shortlisted on MAT-R.
+Each of the 8 reports more than 26 per cent above the browsers that read it in October to December 2028, the other four less than 23 per cent, against the policy's 25. Not the sign-in split (signed-in browsers from the register, signed-out identifiers on signed-out readers of other browsers), which leaves Grauheim, Lindenau, Sonnweiler and Wiesbrück under the line: the meter sits in the same capped storage, so on WebKit it restarts with the identifier and keeps weekly and occasional readers signed out who on other browsers met the wall and registered (signed-in WebKit devices carry fewer identifiers a month than the replay gives signed-in readers of other browsers, while print subscribers' WebKit devices carry as many as the replay gives their other browsers). Not the device-only replay, which drops Hollerfeld, Kirchbrunn and Mühlenstedt by pooling print subscribers, who read weekly on Apple devices. Not the signed-in identifiers per device, which are frequent readers' and drop Grauheim, Lindenau, Rhenhagen Stadt, Sonnweiler and Wiesbrück.
 
 ## 2. Critical Components
 
-1. An account shortlists on MAT-R, so the candidates it invites are those whose MAT-R estimate ran above their ability, by more the smaller the share it shortlists (the eight finance, consulting and analytics accounts take 1.8 to 4.5 per cent of their applicants) and where MAT-R's standard error widens above +1 logit (Table 4.3); their MAT-V falls short of MAT-R by that much and s.3.2 reads the shortfall.
-2. MAT-V sat soon after MAT-R runs higher (the study's retest gain, fitted 0.04 + 0.31 exp(-days/19.5) logit, 0.32 at two days): it keeps the mid-sized day-one accounts NVK, OJS, UJB under the cap, not the day-one accounts that shortlist most selectively, ABH, KSP, VRD, whose shortlisted candidates sit where MAT-R's error is widest.
-3. The shortfall is read with MAT-R's error at the candidate's ability, not at the estimate. On the study's own top tenth of MAT-R scorers (223 volunteers), true-score shrinkage with Table 4.3's error at the shrunken ability predicts their mean MAT-V within a fiftieth of a logit of what they scored; with each volunteer's reported error (the error at the estimate, manual s.4.2) it predicts about a tenth of a logit too low, and the same shortcut on the accounts' pools moves NVK, OJS, UJB over the cap.
-4. Carrying the study's own rates (2.3 per cent within three days, 6.6 per cent at six weeks or more) moves no account; one MAT-R error for every ability leaves ABH, KSP, VRD under the cap; leaving out the retest gain moves NVK, OJS, UJB over it.
+1. On other browsers an identifier is a browser; the seven-day rule replayed on their site-wide session histories, within edition, month and device class, gives the identifiers a WebKit browser carries.
+2. Print subscribers are held apart and counted from the sign-in register: their access does not depend on the meter, and **61 per cent** of their signed-in devices are WebKit against **27 per cent** of other signed-in devices.
+3. Every other reader is pooled whether signed in or not: registration is a consequence of the cap, so the comparison is matched only on what the cap cannot change.
+4. The 8 noted editions overstate by more than **26 per cent**, the other four by less than **23 per cent**.
 
 ## 3. Step-by-Step Solution
 
-1. Pool per account: candidates whose 2028 result was shared with it (results_shared_2028.csv, PGL folded into NVK per client_accounts.csv, each candidate once), at their completed MAT-R attempt among registered candidates (mat_r_attempts_2028.parquet, candidate_register_2028.csv).
-2. Depth: the 2029 plan's shortlist over its expected applicants (client_plans_2029.xlsx).
-3. Interval from MAT-R to MAT-V: two days at day-one and first-company drives (Calendar sheet: sitting on day 1, selection day on day 3); otherwise the plan's selection days against the July 2029 test weeks.
-4. Retest gain: equivalence study pairs, MAT-V minus MAT-R by interval in days (dates in the file), fitted by least squares weighted by pairs to c + a exp(-days/tau).
-5. For each account: abilities drawn normal with the pool's mean and the pool's variance less its mean squared standard error; MAT-R = ability + error at Table 4.3's MAT-R value; the top share by depth shortlisted; MAT-V = ability + retest gain at the interval + error at Table 4.3's MAT-V value; referred when MAT-R exceeds MAT-V + 1.96 x MAT-V's standard error at its estimate; the referred share of the shortlisted.
-6. Over 15 per cent: MAT-V Extended.
-7. Exposure (MAL-IS-04 s.4): every attempt by a candidate in the register (interrupted attempts included; identities outside the register are not candidates, s.2), test weeks Monday to Sunday in IST, the distinct candidates shown each item over the week's distinct candidates; an item over 12 per cent in any week is rested for 2029.
-8. Impersonations (s.5): one sitting per candidate a season, so a sitting's standing is the latest decision on any of the candidate's cases, the desk's appeal cases included (confirmed impersonation or confirmed on appeal stands; overturned on appeal or cleared does not); tier through the candidate register and the college register; per thousand distinct candidates on any 2028 shortlist.
-9. Interruptions (s.6): a candidate's attempts in time order make up the season's booking, linked by candidate (from release 5.3.2 a restart carries a fresh booking reference); the booking's device is its first attempt's; interrupted when any attempt was interrupted; finished on another device when the last attempt ran on a different device.
+1. Took the quarter's sessions from web_sessions_2028q4.parquet without is_bot rows, the newsroom's addresses and the re-sent duplicate rows, HKR read as HOL, months in Berlin time, and WebKit as every iOS browser and Safari on the Mac (analytics_tag_notes.pdf).
+2. Reported figure: each edition's distinct client_ids per month averaged over October to December, the same as platform_users_by_month_2028.xlsx with HKR and HOL joined.
+3. Print subscribers' browsers: client_ids in signin_device_register_2028q4.csv whose account's origin in reader_accounts.csv is print subscription, counted by device_id.
+4. For each edition, month and device class: non-WebKit browsers as client_ids; WebKit print devices counted; WebKit non-print client_ids divided by the mean number of runs (a new run after more than seven days between one session's end and the next start, across all editions) that touch the edition and month among non-WebKit non-print client_ids; summed over device classes and averaged over the three months.
+5. Overstatement: reported over estimated browsers less one; RHS, KBR, WBR, HOL, SOW, MST, GRH, LDN exceed 25 per cent (8 of 12).
+6. Newsletter: status at 2028-12-31 23:00 UTC (midnight in Berlin) from newsletter_contacts_2029-01-15.csv with each contact's first status event after that moment in newsletter_activity_log.csv (a click is not a status event). Groups at that moment by undoing every change after it, newest first: the preference centre's changes in newsletter_group_changes.csv (the groups before) and the editions the newsletters' one-click links added, the clicked links to /newsletter/ausgabe-hinzufuegen in the activity log, which the preference centre's log does not hold (906 after midnight; the 458 clicked before it stand). Confirmed subscribers counted in each of their groups.
+7. Sold copies: subscription numbers are issued in order as subscriptions are entered (DATA_DICTIONARY.md), so a start date later than that of a subscription numbered after it is not a first day of delivery: those 451 subscriptions, each shown starting between November and mid-December 2028 (the COMBI ones beside Digital Plus accesses that started years before), were delivered from before the quarter. Then for each publication day (Monday to Saturday less 3 October, 25 and 26 December, and 1 November in Rhineland-Palatinate) the DAILY and COMBI copies and SATURDAY copies on Saturdays, less pauses, plus e-paper accesses except the Digital Plus accesses (each the e-paper of a COMBI subscription, order_ref Kombi and its sub_no) and trials, plus delivered less returned single copies, averaged over the edition's publication days.
+8. The 8 editions above carry the note in media_kit_2029_edition_figures.xlsx and measurement_note_2029.pdf.
 
 ## 4. Deliverable Answers
 
-### verification_bands_2029.xlsx and account_referral_note_2029.pdf
+### media_kit_2029_edition_figures.xlsx and measurement_note_2029.pdf
 
-**MAT-V Extended (15):** KSP (Kshitijpath Strategy Partners), VRD (Vardhanmaan Capital), ANV (Anvayam Analytics), PRM (Pramaanika Advisory), SQR (Sumedhika Quant Research), ABH (Abhyudayam Securities), MTL (Mitralekha Consulting), TJM (Tejomaya Asset Management), SHY (Sahyagiri Foods), TRG (Tarangini Telecom), PBH (Prabhatam Motors), KVR (Kaverika Life Sciences), RNJ (Ranjitgarh Energy), CHT (Chaitanyam Insurance), LVN (Lavanyam Retail).
-**Standard MAT-V (13):** NVK, UJB, OJS, IDP, RNG, EKD, PGT, AKR, BHM, KTV, UDN, VKT, MDN.
-
-### Item exposure, July 2028 test weeks (ceiling 12 per cent)
-
-| Test week beginning | Items over 12 per cent |
-|---|---|
-| 3 July | 31 |
-| 10 July | 10 |
-| 17 July | 5 |
-| 24 July | 5 |
-
-Items to be rested before the 2029 season (over 12 per cent in any test week): 41.
-
-### Impersonations standing confirmed, 2028
-
-| College tier | Sittings confirmed | Per thousand candidates shortlisted |
-|---|---|---|
-| T1 | 5 | 2.5 |
-| T2 | 62 | 3.5 |
-| T3 | 273 | 10.8 |
-| T4 | 244 | 22.6 |
-
-### Interrupted bookings, 2028
-
-| Device | Share of bookings started on it interrupted | Interrupted bookings finished on another device |
-|---|---|---|
-| desktop | 1.64 per cent | 29 |
-| laptop | 4.74 per cent | 209 |
-| tablet | 9.33 per cent | 88 |
+1. Editions carrying the measurement note (8): RHS (Rhenhagen Stadt), KBR (Kirchbrunn), WBR (Wiesbrück), HOL (Hollerfeld), SOW (Sonnweiler), MST (Mühlenstedt), GRH (Grauheim), LDN (Lindenau).
+2. Editions printed without the note (4): ALH (Altenhorst), EIT (Eichtal), BST (Bergstetten), FKR (Falkenried).
+3. Average sold copies per publication day, fourth quarter 2028:
+   - RHS: 7,288
+   - KBR: 9,225
+   - ALH: 3,154
+   - WBR: 4,073
+   - HOL: 5,044
+   - SOW: 3,038
+   - MST: 5,428
+   - GRH: 2,328
+   - EIT: 4,020
+   - BST: 2,119
+   - LDN: 2,616
+   - FKR: 3,667
+4. Newsletter subscribers at the end of 31 December 2028:
+   - RHS: 3,434
+   - KBR: 2,330
+   - ALH: 1,233
+   - WBR: 2,137
+   - HOL: 1,467
+   - SOW: 1,793
+   - MST: 1,625
+   - GRH: 1,220
+   - EIT: 1,016
+   - BST: 1,039
+   - LDN: 1,582
+   - FKR: 984
+5. Chart on page 1 of measurement_note_2029.pdf: each edition's reported users against its estimated browsers, the 25 per cent line drawn and the noted editions marked.

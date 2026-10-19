@@ -1,112 +1,111 @@
-"""The data dictionary shipped with task249's folder: what each file and column is, never what it explains."""
+"""DATA_DICTIONARY.md for task249's target folder."""
+import params as P
 
-TEXT = """# Data dictionary: integrity desk folder, 2029 season preparation
+TEXT = """# Data dictionary
 
-Medhavi Assessment Labs. Compiled by Ishwar Tella (platform data) for the integrity desk, 9 May 2029.
-Platform files carry UTC; client-facing files carry IST (UTC plus 5 hours 30 minutes).
+{org}, audience data. Files gathered on 15 January 2029 for the 2029 media kit, which quotes the fourth quarter of
+2028 (October to December). Times marked UTC are UTC; everything else is Berlin time unless a file says otherwise.
 
-## {attempts}
+## {sessions}
+The analytics platform's export of the quarter's sessions on rhenhagener-anzeiger.de, one row per session, ordered by
+client_id and session start.
 
-Platform export of MAT-R attempts in the 2028 season, July 2028. One row per attempt.
-
-| Column | Meaning |
+| column | meaning |
 |---|---|
-| booking_ref | the booking reference the attempt ran under |
-| attempt_no | 1 for the first attempt under the booking reference, 2 for a second |
-| candidate_id | the candidate the booking was made for |
-| college_code | the candidate's college, short code (college register) |
-| started_utc, ended_utc | attempt start and end, UTC |
-| attempt_status | completed or interrupted |
-| items_shown | items administered in the attempt |
-| theta_logit | final estimate, logits (completed attempts) |
-| se_logit | standard error of the estimate, logits (completed attempts) |
-| scale_score | client scale score, 50 plus 10 per logit, whole number |
-| device | the device the attempt ran on |
-| platform_release | platform release in service when the attempt started |
-
-## {exposure}
-
-Platform log of MAT-R item administrations, July 2028. One row per item shown in an attempt.
-
-| Column | Meaning |
-|---|---|
-| booking_ref, attempt_no | the attempt (as in the attempts file) |
-| position | order of the item in the attempt, 1 to 16 |
-| item_id | MAT-R bank item |
-| shown_utc | time the item was shown, UTC |
-
-## {bank}
-
-MAT-R item bank, one row per item: item_id, content_area (NUM, VER, ABS), difficulty_b and discrimination_a
-(two-parameter logistic, logit scale), introduced (bank release date), status (operational, retired, or pretest for
-the pool replacements are drawn from).
+| client_id | the analytics tag's identifier (see analytics_tag_notes.pdf) |
+| session_start, session_end | first and last hit of the session, UTC |
+| content_group | the edition, from the page's path |
+| page_views | pages viewed in the session |
+| user_agent | the browser's user-agent string |
+| device_category, browser, os | the platform's reading of the user agent |
+| ip_prefix | the visitor's address with its last part set to zero |
+| user_ref | hashed account number while the reader is signed in, else empty |
+| is_bot | the platform's automated-traffic flag |
 
 ## {register}
+The reader-account service's sign-in register for the quarter: one row per account, device and client_id seen while
+signed in.
 
-The 2028 season candidate register, one row per registered candidate: candidate_id, college_code, registered_on.
-
-## {shares}
-
-Client results feed, 2028 season. One row per share event: a candidate's MAT-R result made available to a client
-account.
-
-| Column | Meaning |
+| column | meaning |
 |---|---|
-| share_id | share event identifier |
-| candidate_id | candidate whose result was shared |
-| account_code | client account (client accounts register) |
-| shared_at_ist | time of the share, IST, day/month/year |
-| channel | campus drive or careers page |
-| share_status | active, or withdrawn by the candidate |
-
-## {shortlists}
-
-Selection-day operations, 2028 season. One row per account and shortlisted candidate: account_code, candidate_id,
-shortlist_rank (the account's rank on MAT-R), selection_day, venue, outcome (attended, no show, rescheduled, withdrew,
-result voided).
-
-## {cases}
-
-Integrity desk case log, 2028 season, sheet "Case log". One row per decision recorded on a case: case_ref, opened,
-account_code (the client account the case concerns), candidate_id, booking_ref, finding, decided.
-
-## {study}
-
-MAT-V equivalence study pairs (report EQ-2028-03). One row per volunteer: volunteer_id, college_code,
-mat_r_started_ist, mat_r_logit, mat_r_se, mat_v_started_ist, mat_v_logit, mat_v_se. Volunteers who did not attend
-MAT-V have no MAT-V values.
-
-## {plans}
-
-Client plans for the 2029 season (client services), sheet "2029 plans" one row per client account; sheet "Calendar"
-for the 2029 season calendar.
+| account_no | reader account |
+| device_id | the account service's login cookie on one browser |
+| client_id | an analytics identifier the browser carried while signed in |
+| first_signed_in, last_signed_in | first and last signed-in session with that client_id, UTC |
+| signed_in_sessions | signed-in sessions with that client_id |
 
 ## {accounts}
+Reader accounts as of 15 January 2029: account_no, created (UTC), origin (registration, digital subscription, print
+subscription), home_edition, status, subscriber_no (print subscriptions).
 
-Client accounts register: account_code, client_name, sector, onboarded, status, note.
+## {paywall}
+The paywall console's log of the walls shown in the quarter: shown, client_id, edition, outcome, meter_started.
 
-## {colleges}
+## {report}
+The analytics platform's monthly report of users (distinct client_ids) by content group for 2028.
 
-College register: college_code (short code), aishe_code, tier (T1 to T4), state, test_week_2028 (Monday of the
-college's 2028 MAT-R test week), study_partner (Y for the equivalence study's partner colleges).
+## {editions}
+The twelve editions: code, name, state, district, households (census 2022), former content group.
 
-## {venues}
+## {policy}, {tag}, {paynotes}
+The audience figures' definitions; the analytics tag and its export; the paywall, accounts and sign-in.
 
-Assessment centre venues offered for 2029 selection days: venue_code, city, seats_per_session, sessions_per_day,
-available_from, available_to, step_free_access (Y or N).
+## {subs}
+The circulation system's print subscriptions active at some time in the quarter.
 
-## {feedback}
+| column | meaning |
+|---|---|
+| sub_no | subscription number, issued in order as subscriptions are entered |
+| customer_no | customer |
+| edition | the edition delivered |
+| product | DAILY (Monday to Saturday), SATURDAY (the Saturday paper only), COMBI (Monday to Saturday, with the e-paper), TRIAL (two weeks) |
+| copies | copies a day |
+| start_date, end_date | first and last day of delivery (end_date empty: open); subscriptions taken over when the system went live carry 4 January 1999 |
+| monthly_price_eur | price a month |
 
-Post-sitting candidate survey, 2028 (a sample of candidates): candidate_id, overall_rating (1 to 5),
-technical_problem, comment_theme.
+## {susp}
+Suspensions in the quarter: sub_no, from_date, to_date (both included), kind (pause, forward, donation).
 
-## Documents
+## {epaper}
+The e-paper platform's accesses active at some time in the quarter: access_id, edition, plan, start_date, end_date
+(empty: open), price_eur (a month; Digital Annual a year), order_ref (the shop's or app store's order), channel.
 
-{standard}: the assessment integrity standard, issue 4. {manual}: the technical manual's chapter 4 (scoring,
-precision, Table 4.3). {report}: the equivalence study report.
+## {single}
+The wholesaler's single-copy figures for each issue of the quarter at each retail point: issue_date, retail_point,
+delivered, returned.
+
+## {points}
+Retail points: retail_point, edition, type.
+
+## {nl_contacts}
+The newsletter platform's contact export, taken 15 January 2029 at 06:12 UTC.
+
+| column | meaning |
+|---|---|
+| contact_id | contact |
+| email_md5 | hashed address (MD5 of the lower-case address) |
+| status | subscribed, unsubscribed, cleaned (address bounced), pending (not confirmed) |
+| groups | the editions' newsletters the contact receives, separated by a vertical bar |
+| first_optin_utc | when the contact first signed up |
+| last_changed_utc | the last change to the contact's record |
+| source | where the contact signed up |
+
+## {nl_log}
+The platform's activity log (it keeps six months): contact_id, event (subscribed, confirmed, unsubscribed, cleaned,
+resubscribed, clicked), at_utc, link (the address of a link clicked in a newsletter).
+
+## {nl_groups}
+Changes contacts made to their groups in the preference centre in the same six months: contact_id, changed_utc,
+groups_before, groups_after.
+
+## {ads}
+The ad server's daily delivery by edition and device: impressions served and viewable, eCPM.
+
+## {reach}
+The Media-Analyse 2028 extract by edition: readers per issue, reach, median reader age, interviews.
 """
 
 
 def write(path, files):
     with open(path, "w", encoding="utf-8") as fh:
-        fh.write(TEXT.format(**files))
+        fh.write(TEXT.format(org=P.ORG, **files))

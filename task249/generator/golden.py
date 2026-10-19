@@ -1,162 +1,120 @@
-"""task249's goldens: the integrity desk's verification bands workbook and the note to client services."""
+"""The golden deliverables: the media kit's edition figures workbook and the measurement note for advertisers."""
 import io
 import numpy as np
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Image, Paragraph, Spacer
+import docs as D
 import params as P
 import postprocess
 
-FMT_SHORT = {"Day-one campus drive": "Day-one drive", "First-company campus drive": "First-company drive",
-             "Later campus drive": "Later drive", "Assessment centre": "Assessment centre"}
+NAMES = {e["code"]: e["name"] for e in P.EDITIONS}
+HFILL = PatternFill("solid", fgColor="DDE3EA")
+NOTEFILL = PatternFill("solid", fgColor="FBE3D6")
 
 
 def workbook(path, G):
+    res = G["res"]
     wb = Workbook()
     ws = wb.active
-    ws.title = "2029 bands"
-    ws["A1"] = "MAT-V bands for the 2029 campus season: genuine referrals projected per client account"
+    ws.title = "Digital audience"
+    ws.append(["2029 media kit: digital audience by edition, October to December 2028"])
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Projected share of each account's genuine shortlisted candidates that MAL-IS-04 s.3.2 would refer, "
-                "on the account's 2029 plan and its 2028 applicant pool. Cap 15 per cent (s.3.3).")
-    ws.merge_cells("A2:K2")
-    hdr = ["Code", "Client", "Selection format", "2028 applicants (pool)", "2029 expected applicants", "2029 shortlist",
-           "Share shortlisted", "Days MAT-R to MAT-V (mean)", "Retest gain at that interval (logit)",
-           "Projected genuine referral share", "2029 MAT-V"]
-    thin = Side(style="thin", color="B7BDC6")
-    for j, h in enumerate(hdr, 1):
-        c = ws.cell(row=4, column=j, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="E6EAF0")
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        c.border = Border(bottom=thin)
-    r = 5
-    for a in G["accounts"]:
-        vals = [a["code"], a["client"], FMT_SHORT[a["fmt"]], a["pool_n"], a["expected"], a["shortlist"], a["depth"],
-                round(a["mean_gap"]), a["gain_at"], a["gold"], "Extended (24 items)" if a["flag"] else "Standard (12 items)"]
-        for j, v in enumerate(vals, 1):
-            c = ws.cell(row=r, column=j, value=v)
-            if j in (4, 5, 6):
-                c.number_format = "#,##0"
-            if j in (7, 10):
-                c.number_format = "0.0%"
-            if j == 9:
-                c.number_format = "0.00"
-        if a["flag"]:
-            for j in range(1, 12):
-                ws.cell(row=r, column=j).fill = PatternFill("solid", fgColor="FBE9E7")
-        r += 1
-    ws.cell(row=r + 1, column=1, value="Accounts moving to MAT-V Extended").font = Font(bold=True)
-    ws.cell(row=r + 1, column=4, value=G["n_flag"])
-    widths = [7, 30, 19, 13, 13, 11, 10, 13, 13, 14, 19]
-    for j, wdt in enumerate(widths, 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-    ws.row_dimensions[4].height = 58
+    ws.append(["Reported users: the analytics platform's distinct identifiers, average of the three months. Browsers: "
+               "estimated unique browsers (audience policy, section 2). Note: reported above browsers by more than 25 per cent."])
+    ws.append([])
+    ws.append(["Edition", "Name", "Reported users", "Estimated browsers", "Reported above browsers", "Measurement note"])
+    for c in ws[4]:
+        c.font = Font(bold=True); c.fill = HFILL; c.alignment = Alignment(wrap_text=True, vertical="top")
+    for code in P.CODES:
+        r = res.loc[code]
+        ws.append([code, NAMES[code], G["reported"][code], int(round(r["browsers"], -1)), round(float(r["golden"]) / 100, 3),
+                   "Yes" if r["note"] else "No"])
+        if r["note"]:
+            for c in ws[ws.max_row]:
+                c.fill = NOTEFILL
+    for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
+        row[2].number_format = "#,##0"; row[3].number_format = "#,##0"; row[4].number_format = "0%"
+        row[5].alignment = Alignment(horizontal="center")
+    ws.append([])
+    ws.append(["Editions with the note", G["n_noted"]])
+    ws.cell(ws.max_row, 1).font = Font(bold=True)
+    for i, w in enumerate([9, 18, 15, 18, 15, 12], 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+    ws.row_dimensions[4].height = 30
     ws.freeze_panes = "C5"
-    ws.auto_filter.ref = "A4:K%d" % (r - 1)
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-    ws.page_setup.fitToHeight = 0
-    ws.sheet_properties.pageSetUpPr.fitToPage = True
-    ws.print_title_rows = "4:4"
-    ws.print_area = "A1:K%d" % (r + 1)
-    # the asks
-    w2 = wb.create_sheet("Integrity 2028")
-    w2["A1"] = "2028 season: item exposure, impersonations and interrupted bookings"
+
+    w2 = wb.create_sheet("Sold copies")
+    w2.append(["Sold copies per publication day, fourth quarter 2028 (IVW basis; audience policy, section 5)"])
     w2["A1"].font = Font(bold=True, size=12)
-    row = 3
-    w2.cell(row=row, column=1, value="MAT-R exposure by test week (IST, Monday to Sunday); ceiling 12 per cent (MAL-IS-04 s.4)").font = Font(bold=True)
-    row += 1
-    for j, h in enumerate(["Test week beginning", "Candidates", "Items over 12 per cent", "Highest exposure", "Item"], 1):
-        w2.cell(row=row, column=j, value=h).font = Font(bold=True)
-    for k, e in enumerate(G["exposure"]):
-        row += 1
-        vals = [["3 July", "10 July", "17 July", "24 July"][k], e["candidates"], e["over"], round(e["top"], 3), e["top_item"]]
-        for j, v in enumerate(vals, 1):
-            c = w2.cell(row=row, column=j, value=v)
-            if j == 4:
-                c.number_format = "0.0%"
-            if j == 2:
-                c.number_format = "#,##0"
-    row += 1
-    w2.cell(row=row, column=1, value="Items to rest for 2029 (over 12 per cent in any test week)")
-    w2.cell(row=row, column=3, value=G["rested"]).font = Font(bold=True)
-    row += 2
-    w2.cell(row=row, column=1, value="Impersonations standing confirmed by college tier (each sitting's latest decision, "
-                                     "appeal cases included; one sitting a candidate)").font = Font(bold=True)
-    row += 1
-    for j, h in enumerate(["Tier", "Sittings confirmed", "Candidates shortlisted", "Per thousand shortlisted"], 1):
-        w2.cell(row=row, column=j, value=h).font = Font(bold=True)
-    for t in G["impersonation"]:
-        row += 1
-        for j, v in enumerate([t["tier"], t["confirmed"], t["shortlisted"], round(t["per_thousand"], 1)], 1):
-            c = w2.cell(row=row, column=j, value=v)
-            if j == 3:
-                c.number_format = "#,##0"
-            if j == 4:
-                c.number_format = "0.0"
-    row += 2
-    w2.cell(row=row, column=1, value="Interrupted bookings by the device the booking started on").font = Font(bold=True)
-    row += 1
-    for j, h in enumerate(["Device", "Bookings started", "Interrupted", "Share interrupted", "Finished on another device"], 1):
-        w2.cell(row=row, column=j, value=h).font = Font(bold=True)
-    for d in G["interrupted"]:
-        row += 1
-        for j, v in enumerate([d["device"], d["bookings"], d["interrupted"], round(d["share"] / 100, 4), d["moved"]], 1):
-            c = w2.cell(row=row, column=j, value=v)
-            if j == 4:
-                c.number_format = "0.00%"
-            if j in (2, 3):
-                c.number_format = "#,##0"
-    for j, wdt in enumerate([34, 16, 22, 18, 24], 1):
-        w2.column_dimensions[get_column_letter(j)].width = wdt
-    notes = wb.create_sheet("Notes")
-    lines = [
-        "Prepared by the integrity desk, 14 May 2029, for the 2029 bands (MAL-IS-04 s.3.3).",
-        "Pool: candidates whose 2028 MAT-R result was shared with the account (PGL folded into NVK), at their completed "
-        "MAT-R estimate; the 14 August 2028 re-send and withdrawals do not change who applied.",
-        "Projection: 2029 applicants drawn from the pool's ability distribution (mean of the estimates; spread with the "
-        "mean squared standard error taken out), MAT-R and MAT-V errors from Table 4.3 of the technical manual read at "
-        "each applicant's ability (the error reported with a 2028 result is the error at its estimate), the "
-        "retest gain fitted to the equivalence study's pairs by interval, the shortlist the top of the account's applicants "
-        "on MAT-R, the referral rule of s.3.2; 1.2 million simulated applicants per account.",
-        "Intervals: day-one and first-company drives sit MAT-V two days after MAT-R; later drives and assessment centres "
-        "on the plan's selection days against the July 2029 test weeks.",
-    ]
-    for k, t in enumerate(lines, 1):
-        notes.cell(row=k, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
-    notes.column_dimensions["A"].width = 120
+    w2.append([])
+    w2.append(["Edition", "Name", "Sold copies per publication day"])
+    for c in w2[3]:
+        c.font = Font(bold=True); c.fill = HFILL
+    for code in P.CODES:
+        w2.append([code, NAMES[code], G["copies"][code]])
+        w2.cell(w2.max_row, 3).number_format = "#,##0"
+    w2.column_dimensions["A"].width = 9; w2.column_dimensions["B"].width = 18; w2.column_dimensions["C"].width = 30
+    w2.freeze_panes = "C4"
+
+    w3 = wb.create_sheet("Newsletter")
+    w3.append(["Newsletter subscribers at the end of 31 December 2028 (Berlin time; audience policy, section 6)"])
+    w3["A1"].font = Font(bold=True, size=12)
+    w3.append([])
+    w3.append(["Edition", "Name", "Subscribers"])
+    for c in w3[3]:
+        c.font = Font(bold=True); c.fill = HFILL
+    for code in P.CODES:
+        w3.append([code, NAMES[code], G["newsletter"][code]])
+        w3.cell(w3.max_row, 3).number_format = "#,##0"
+    w3.append(["", "Contacts in two groups count in both.", None])
+    w3.column_dimensions["A"].width = 9; w3.column_dimensions["B"].width = 34; w3.column_dimensions["C"].width = 14
+    w3.freeze_panes = "C4"
+
+    w4 = wb.create_sheet("Notes")
+    for line in [
+        "Prepared by audience data for the 2029 media kit, 15 January 2029; figures certified before the kit goes to advertisers on 1 February.",
+        "Digital: sessions of October to December 2028 (Berlin months) without automated traffic, the newsroom's addresses and the export's re-sent rows; Hollerfeld's HKR and HOL joined.",
+        "Browsers on WebKit (every iPhone and iPad browser, Safari on the Mac) are estimated: the seven-day rule replayed on other browsers' histories within edition, month and device class gives the identifiers a browser carries; print subscribers' browsers are counted from the sign-in register.",
+        "Sold copies: subscriptions (print and e-paper, once each) and single copies sold, over each edition's publication days; Rhineland-Palatinate's editions did not appear on 1 November. "
+        "%s subscriptions show a start between November and mid-December though their numbers were issued long before, so those dates are not their first days of delivery; they are counted from 1 October." % "{:,}".format(G["moved_subs"]),
+        "Newsletter: confirmed subscribers in each edition's group at midnight on 31 December, from the platform's export taken back through its activity log and the preference centre's log; "
+        "the editions added through the new year's mailing's one-click links (%s) are taken off, those added through the links before the year's end stay." % "{:,}".format(G["link_adds_after"]),
+    ]:
+        w4.append([line])
+        w4.cell(w4.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
+    w4.column_dimensions["A"].width = 120
     wb.save(path)
-    postprocess.scrub(path, P.FIRM, "2029-05-14T15:30:00")
-    postprocess.finish_office(path, "2029-05-13T09:00:00Z", "2029-05-14T15:30:00Z", P.FIRM)
+    postprocess.scrub(path, P.ORG, "2029-01-16T17:45:00")
+    postprocess.finish_office(path, "2029-01-15T09:10:00Z", "2029-01-16T17:45:00Z", P.ORG)
 
 
 def _chart(G):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    acc = sorted(G["accounts"], key=lambda a: a["gold"])
-    fig, ax = plt.subplots(figsize=(7.2, 5.4), dpi=150)
-    y = np.arange(len(acc))
-    col = ["#B5442F" if a["flag"] else "#5A7896" for a in acc]
-    ax.barh(y, [100 * a["gold"] for a in acc], color=col, height=0.7)
-    ax.scatter([100 * a["study_rate"] for a in acc], y, marker="|", color="#222222", s=60, zorder=3,
-               label="equivalence study's rate at the account's interval")
-    ax.axvline(100 * P.CAP, color="#222222", lw=1, ls="--")
-    ax.text(100 * P.CAP + 0.4, len(acc) - 0.6, "15 per cent cap", fontsize=7.5)
-    ax.set_yticks(y)
-    ax.set_yticklabels([a["code"] for a in acc], fontsize=7)
-    ax.set_xlabel("Projected share of genuine shortlisted candidates referred, 2029 (per cent)", fontsize=8)
-    ax.set_title("15 accounts' checks would refer more than the cap", fontsize=10)
-    ax.tick_params(axis="x", labelsize=7.5)
-    ax.legend(fontsize=7, loc="lower right", frameon=False)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
+    matplotlib.rcParams["svg.hashsalt"] = "task249"
+    res = G["res"]
+    order = sorted(P.CODES, key=lambda c: -res.loc[c, "golden"])
+    fig, ax = plt.subplots(figsize=(7.2, 3.9), dpi=150)
+    x = np.arange(len(order))
+    rep = np.array([G["reported"][c] for c in order]) / 1000
+    est = np.array([res.loc[c, "browsers"] for c in order]) / 1000
+    ax.bar(x - 0.2, rep, 0.4, color="#9AA7B8", label="Reported users")
+    ax.bar(x + 0.2, est, 0.4, color=["#C0504D" if res.loc[c, "note"] else "#4F81BD" for c in order], label="Estimated browsers")
+    ax.scatter(x - 0.2, est * 1.25, marker="_", s=260, linewidths=2.2, color="#222222", zorder=3,
+               label="Estimated browsers plus 25 per cent")
+    ax.set_xticks(x)
+    ax.set_xticklabels(["%s%s" % (c, " *" if res.loc[c, "note"] else "") for c in order], fontsize=8)
+    ax.set_ylabel("Thousands, monthly average Oct to Dec 2028", fontsize=8)
+    ax.tick_params(axis="y", labelsize=8)
+    ax.set_title("Reported users above the 25 per cent mark carry the note (*)", fontsize=9.5)
+    ax.legend(fontsize=7.5, frameon=False, loc="upper right")
+    ax.spines["top"].set_visible(False); ax.spines["right"].set_visible(False)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -166,37 +124,30 @@ def _chart(G):
 
 
 def note(path, G):
-    ss = getSampleStyleSheet()
-    body = ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=9.3, leading=12.8, spaceAfter=5)
-    h1 = ParagraphStyle("h", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=12.5, leading=15.5, spaceAfter=3)
-    small = ParagraphStyle("s", parent=body, fontSize=7.8, leading=10, textColor=colors.HexColor("#444444"))
-    cell = ParagraphStyle("c", fontName="Helvetica", fontSize=7.8, leading=9.4)
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=19 * mm, rightMargin=19 * mm, topMargin=16 * mm,
-                            bottomMargin=16 * mm, title="2029 verification bands", author=P.PEOPLE["head"],
-                            creator=P.PEOPLE["head"], subject="MAT-V bands for client accounts", invariant=1)
-    flag = [a for a in G["accounts"] if a["flag"]]
-    keep = [a for a in G["accounts"] if not a["flag"]]
-    s = [Paragraph("15 client accounts move to MAT-V Extended for the 2029 season", h1),
-         Paragraph("To: %s, client services. From: %s, Head of Assessment Integrity. 14 May 2029. Ref: MAL-IS-04 s.3.3."
-                   % (P.PEOPLE["client"], P.PEOPLE["head"]), small), Spacer(1, 3)]
-    s.append(Paragraph(
-        "On their 2029 plans, the verification check would refer more than 15 per cent of the genuine candidates at "
-        "%s; they sit MAT-V Extended (24 items) at their selection days. The other %d accounts stay on the standard "
-        "MAT-V." % (", ".join(a["code"] for a in flag), len(keep)), body))
-    s.append(Paragraph(
-        "The equivalence study's referral rates (%.1f per cent within three days of MAT-R, %.1f per cent at six weeks "
-        "or more) are not what these accounts will see: its volunteers sat both tests without being shortlisted. An "
-        "account shortlists on MAT-R, so the candidates it invites are those whose online estimate ran high, the more "
-        "so the smaller the share it shortlists and where MAT-R's standard error widens above +1 logit; their MAT-V falls short of "
-        "MAT-R by that margin and the rule reads the shortfall. MAT-V sat two days after MAT-R runs about 0.3 logit "
-        "higher, which keeps the mid-sized day-one accounts (NVK, UJB, OJS) under the cap, though not the day-one "
-        "accounts that shortlist most selectively (KSP, VRD, ABH)." % (100 * G["study_short"], 100 * G["study_long"]), body))
-    s.append(Image(_chart(G), width=150 * mm, height=112 * mm))
-    s.append(Paragraph("Source: integrity desk projection, 14 May 2029 (workbook verification_bands_2029.xlsx). "
-                       "Bars: projected share; ticks: the study's own rate at the account's interval.", small))
-    s.append(Spacer(1, 3))
-    s.append(Paragraph("NVK's pool includes the former Paisaghar Lending campuses (PGL until the merger of 2 September "
-                       "2028). VRD moves from assessment centres to day-one campus drives in 2029, so its candidates sit "
-                       "MAT-V two days after MAT-R.", small))
-    doc.build(s)
-    postprocess.scrub(path, P.PRODUCER, "2029-05-14T15:40:00")
+    body, h1, h2, small, cell = D._styles()
+    doc = D._doc(path, "Measurement note, 2029 media kit", P.PEOPLE["head"], "Which editions carry the note")
+    noted = [c for c in P.CODES if G["res"].loc[c, "note"]]
+    s = [Paragraph("Measurement note in the 2029 media kit: %d of 12 editions" % len(noted), h1),
+         Paragraph("%s, audience data, for advertisers and the sales team. 16 January 2029." % P.PEOPLE["head"], small),
+         Spacer(1, 4),
+         Paragraph("The editions %s carry the note <i>Reported users include browsers counted more than once; see the "
+                   "methods page</i> beside their digital figure for October to December 2028. Their reported users "
+                   "exceed the browsers that read them by more than a quarter. %s print their figures without it."
+                   % (", ".join(NAMES[c] for c in noted[:-1]) + " and " + NAMES[noted[-1]],
+                      ", ".join(NAMES[c] for c in G["kept"][:-1]) + " and " + NAMES[G["kept"][-1]]), body),
+         Image(_chart(G), width=170 * mm, height=92 * mm),
+         Paragraph("Why reported users run above browsers", h2),
+         Paragraph("Our analytics tag recognises a browser by an identifier stored in a cookie. Safari on the Mac and "
+                   "every browser on an iPhone or iPad delete that cookie after seven days without a visit, so a reader "
+                   "who comes back after a week away is counted again. The overcount is largest where many readers use "
+                   "Apple devices and come by every week or two.", body),
+         Paragraph("Methods", h2),
+         Paragraph("For each edition, month and device class we replayed the seven-day rule on the visit histories of "
+                   "readers whose browsers keep the cookie, and divided the Apple browsers' identifiers by the number of "
+                   "identifiers a browser would carry. Print subscribers, who sign in with their subscriber number and "
+                   "read us mostly on Apple devices, are counted directly from our sign-in records. Registered readers "
+                   "are not set apart: on Apple devices the free-article meter is deleted with the cookie, so fewer of "
+                   "those readers meet the registration wall, and the signed-in group there is not like the signed-in "
+                   "group elsewhere.", body)]
+    doc.build(s, onFirstPage=D._footer("%s, audience data." % P.ORG), onLaterPages=D._footer("%s, audience data." % P.ORG))
+    postprocess.scrub(path, P.ORG, "2029-01-16T17:50:00")

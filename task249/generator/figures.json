@@ -1,107 +1,126 @@
 {
  "filed": {
-  "standard_cap_section": 3.3,
-  "conditional_error_table": 4.3,
-  "band_multiple": 1.96,
-  "exposure_ceiling_pct": 12,
-  "restart_reference_release": "5.3.2"
+  "tolerance_pct": 25,
+  "cap_days": 7,
+  "free_metered_articles": 5,
+  "months": [
+   "2028-10",
+   "2028-11",
+   "2028-12"
+  ],
+  "public_holidays_day_of_month": [
+   3,
+   25,
+   26,
+   1
+  ],
+  "newsletter_cutoff_utc_hour": 23
  },
  "call": {
-  "flagged": [
-   "ABH",
-   "ANV",
-   "CHT",
-   "KSP",
-   "KVR",
-   "LVN",
-   "MTL",
-   "PBH",
-   "PRM",
-   "RNJ",
-   "SHY",
-   "SQR",
-   "TJM",
-   "TRG",
-   "VRD"
+  "noted": [
+   "RHS",
+   "KBR",
+   "WBR",
+   "HOL",
+   "SOW",
+   "MST",
+   "GRH",
+   "LDN"
   ],
-  "n_flagged": 15,
-  "kept": [
-   "AKR",
-   "BHM",
-   "EKD",
-   "IDP",
-   "KTV",
-   "MDN",
-   "NVK",
-   "OJS",
-   "PGT",
-   "RNG",
-   "UDN",
-   "UJB",
-   "VKT"
+  "n_noted": 8,
+  "not_noted": [
+   "ALH",
+   "EIT",
+   "BST",
+   "FKR"
   ],
-  "n_kept": 13,
-  "min_flagged_share_pct_floor": 20
- },
- "components": {
-  "study_rate_within_3_days_pct": 2.3,
-  "study_rate_6_weeks_or_more_pct": 6.6,
-  "retest_gain_c": 0.04,
-  "retest_gain_a": 0.31,
-  "retest_gain_tau_days": 19.5,
-  "retest_gain_at_2_days": 0.32,
-  "elite_depth_lo_pct": 1.8,
-  "elite_depth_hi_pct": 4.5,
-  "cap_pct": 15,
-  "study_top_tenth_n": 223,
-  "study_top_tenth_mat_v_scored": 1.335,
-  "study_top_tenth_mat_v_at_ability": 1.352,
-  "study_top_tenth_mat_v_at_reported_error": 1.223,
-  "kelley_reported_error_adds": [
-   "NVK",
-   "OJS",
-   "UJB"
+  "n_not_noted": 4,
+  "noted_names": [
+   "Rhenhagen Stadt",
+   "Kirchbrunn",
+   "Wiesbrück",
+   "Hollerfeld",
+   "Sonnweiler",
+   "Mühlenstedt",
+   "Grauheim",
+   "Lindenau"
   ],
-  "no_gain_adds": [
-   "NVK",
-   "OJS",
-   "UJB"
-  ],
-  "constant_error_drops": [
-   "ABH",
-   "KSP",
-   "VRD"
+  "not_noted_names": [
+   "Altenhorst",
+   "Eichtal",
+   "Bergstetten",
+   "Falkenried"
   ]
  },
+ "components": {
+  "noted_floor_pct": 26,
+  "kept_ceiling_pct": 23,
+  "print_devices_webkit_pct": 61,
+  "other_signed_devices_webkit_pct": 27,
+  "sign_in_split_drops": [
+   "GRH",
+   "LDN",
+   "SOW",
+   "WBR"
+  ],
+  "device_only_drops": [
+   "HOL",
+   "KBR",
+   "MST"
+  ],
+  "signed_in_ratio_drops": [
+   "GRH",
+   "LDN",
+   "RHS",
+   "SOW",
+   "WBR"
+  ],
+  "link_additions_after_midnight": 906,
+  "link_additions_before_midnight": 458,
+  "subscriptions_started_before_quarter": 451
+ },
+ "reported": {
+  "RHS": 15558,
+  "KBR": 13464,
+  "ALH": 7220,
+  "WBR": 12838,
+  "HOL": 6898,
+  "SOW": 11195,
+  "MST": 8286,
+  "GRH": 7106,
+  "EIT": 5114,
+  "BST": 6724,
+  "LDN": 9539,
+  "FKR": 5056
+ },
  "asks": {
-  "items_over_ceiling": {
-   "week_of_3_july": 31,
-   "week_of_10_july": 10,
-   "week_of_17_july": 5,
-   "week_of_24_july": 5
+  "newsletter_subscribers_2028_12_31": {
+   "RHS": 3434,
+   "KBR": 2330,
+   "WBR": 2137,
+   "SOW": 1793,
+   "MST": 1625,
+   "LDN": 1582,
+   "HOL": 1467,
+   "ALH": 1233,
+   "GRH": 1220,
+   "BST": 1039,
+   "EIT": 1016,
+   "FKR": 984
   },
-  "items_rested_for_2029": 41,
-  "impersonations_confirmed": {
-   "T1": 5,
-   "T2": 62,
-   "T3": 273,
-   "T4": 244
-  },
-  "impersonations_per_thousand_shortlisted": {
-   "T1": 2.5,
-   "T2": 3.5,
-   "T3": 10.8,
-   "T4": 22.6
-  },
-  "interrupted_share_pct": {
-   "desktop": 1.64,
-   "laptop": 4.74,
-   "tablet": 9.33
-  },
-  "interrupted_finished_on_another_device": {
-   "desktop": 29,
-   "laptop": 209,
-   "tablet": 88
+  "sold_copies_per_publication_day_q4": {
+   "RHS": 7288,
+   "KBR": 9225,
+   "ALH": 3154,
+   "WBR": 4073,
+   "HOL": 5044,
+   "SOW": 3038,
+   "MST": 5428,
+   "GRH": 2328,
+   "EIT": 4020,
+   "BST": 2119,
+   "LDN": 2616,
+   "FKR": 3667
   }
  }
 }

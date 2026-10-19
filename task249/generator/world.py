@@ -1,181 +1,214 @@
-"""The clean truth for task249: colleges, candidates and their abilities, the 2028 season's applications, sittings,
-shortlists and selection days, the 2028 equivalence study, the 2029 plans, and the exposure log.
-
-Nothing here is written to a file; records.py writes the exports from this truth with each system's own mess."""
+"""The simulated world for task249: every browser of the twelve editions, simulated day by day from 1 January to
+31 December 2028 (local days, Europe/Berlin).  A browser's visits follow its reader type.  On WebKit the analytics
+identifier and the paywall meter live in script-written storage that is dropped once seven days pass without a page
+view (elapsed time, so the clock change counts); the meter also restarts each calendar month; a reader past the free
+count meets the registration wall and may register, signed in from the next session.  Print subscribers activated
+their digital access before 2028 and are signed in throughout.  The fourth quarter is kept session by session."""
 import datetime as dt
 import numpy as np
 import params as P
 
-STATES = ["Karnataka", "Tamil Nadu", "Maharashtra", "Telangana", "Andhra Pradesh", "Kerala", "Gujarat",
-          "Uttar Pradesh", "Delhi", "West Bengal", "Rajasthan", "Madhya Pradesh", "Odisha", "Punjab", "Haryana"]
-STATE_W = np.array([14, 13, 14, 10, 8, 6, 5, 8, 5, 5, 4, 3, 2, 2, 1], float)
+DAYS = [P.HIST_START + dt.timedelta(days=i) for i in range((P.END - P.HIST_START).days + 1)]
+NDAY = len(DAYS)
+MONTH = np.array([(d.year - 2028) * 12 + d.month - 1 for d in DAYS])
+WALL_FIRST = DAYS.index(P.WALL_START)
+Q4_FIRST = DAYS.index(P.Q4_START)
+DST_ON, DST_OFF = DAYS.index(dt.date(2028, 3, 26)), DAYS.index(dt.date(2028, 10, 29))
+OFF = np.array([2.0 if DST_ON <= k < DST_OFF else 1.0 for k in range(NDAY)])   # hours ahead of UTC
 
 
-class World:
-    def __init__(self, seed=P.SEED):
-        self.rng = np.random.default_rng(seed)
-        self._colleges()
-        self._candidates()
-        self._applications()
-        self._calendar()
-        self._sittings()
-        self._shortlists()
-        self._study()
-        self._plans()
+def tod(rng, n):
+    """time of day in hours: morning, lunch and evening peaks"""
+    c = rng.choice(3, n, p=[0.36, 0.22, 0.42])
+    mu = np.array([7.4, 12.6, 20.3])[c]
+    sd = np.array([1.1, 1.0, 1.6])[c]
+    return np.clip(rng.normal(mu, sd), 5.0, 23.6)
 
-    # ------------------------------------------------------------------ colleges and candidates
-    def _colleges(self):
-        r = self.rng
-        rows = []
-        k = 0
-        for tier, d in P.TIERS.items():
-            for i in range(d["n"]):
-                k += 1
-                st = r.choice(len(STATES), p=STATE_W / STATE_W.sum())
-                size = int(r.integers(d["size"][0], d["size"][1] + 1))
-                aishe = "C-%05d" % int(r.integers(10000, 59999))
-                rows.append(dict(cid=k, tier=tier, state=STATES[st], size=size, aishe=aishe,
-                                 short="%s%03d" % (tier, i + 1)))
-        # AISHE-style codes unique
-        seen = set()
-        for c in rows:
-            while c["aishe"] in seen:
-                c["aishe"] = "C-%05d" % int(r.integers(10000, 59999))
-            seen.add(c["aishe"])
-        self.colleges = rows
-        self.col_by_id = {c["cid"]: c for c in rows}
 
-    def _candidates(self):
-        r = self.rng
-        cid, tier, th = [], [], []
-        for c in self.colleges:
-            d = P.TIERS[c["tier"]]
-            n = c["size"]
-            cid += [c["cid"]] * n
-            tier += [c["tier"]] * n
-            th.append(r.normal(d["mu"], d["sd"], n))
-        self.cand_college = np.array(cid)
-        self.cand_tier = np.array(tier)
-        self.theta = np.concatenate(th)
-        self.N = len(self.theta)
+class Edition:
+    def __init__(self, idx, spec, rng):
+        self.idx, self.spec = idx, spec
+        n = spec["pop"]
+        self.n = n
+        self.dev = rng.choice(3, n, p=spec["dev"])
+        mix = {}
+        for d, key in enumerate(P.DEVICES):
+            v = np.array(P.BASE_MIX[key], float)
+            v[2] *= spec["tilt"]
+            v[4] *= spec.get("xmult", 1.0)
+            v[1] *= spec.get("rmult", 1.0)
+            v /= v.sum()
+            mix[d] = v
+        self.type = np.zeros(n, int)
+        for d in range(3):
+            m = self.dev == d
+            self.type[m] = rng.choice(5, m.sum(), p=mix[d])
+        pp = np.array([min(0.9, P.PRINT_P[t] * spec["print_scale"]) for t in P.TYPES])
+        self.printed = rng.random(n) < pp[self.type]
+        wk = np.array(spec["wk"])[self.dev]
+        wk_pr = np.minimum(0.95, wk * spec["skew"])
+        self.webkit = rng.random(n) < np.where(self.printed, wk_pr, wk)
+        self.family = np.empty(n, dtype=object)
+        for d, key in enumerate(P.DEVICES):
+            for w in (True, False):
+                m = (self.dev == d) & (self.webkit == w)
+                fams, ps = zip(*P.UA_FAMILIES[(key, w)])
+                self.family[m] = rng.choice(np.array(fams, dtype=object), m.sum(), p=np.array(ps) / sum(ps))
+        self.multi = rng.random(n) < P.MULTI_EDITION
+        self.second = np.where(self.multi, (idx + 1 + rng.integers(0, 2, n) * 10) % 12, idx)
+        # renewal processes for W, O and X: next visit (in days from history start)
+        self.next = np.full(n, np.inf)
+        self.gapmean = np.ones(n)
+        for t, (shape, mean) in (("W", P.W_GAP), ("O", P.O_GAP), ("X", P.X_GAP)):
+            m = self.type == P.TYPES.index(t)
+            self.gapmean[m] = mean
+            g = rng.gamma(shape, self.gapmean[m] / shape)
+            self.next[m] = -rng.random(m.sum()) * g
+        self.refuser = rng.random(n) < P.REFUSER
+        self.walled_month = np.full(n, -999)
+        self.reg = self.printed.copy()
+        self.source = np.where(self.printed, "print", "").astype(object)
+        self.reg_day = np.where(self.printed, -1, 10 ** 6)
+        self.reg_time = np.full(n, np.nan)          # absolute hours of the registering wall session
+        self.cookie = np.zeros(n, int)               # the identifier in use (counter per browser)
+        self.cookie_born = np.full(n, np.nan)        # absolute hours the identifier in use was first written
+        self.vcookie = np.zeros(n, int)              # the seven-day rule replayed on every browser
+        self.last_end = np.full(n, -1e9)             # absolute days
+        self.meter = np.zeros(n)
+        self.meter_month = np.full(n, -999)
+        self.meter_since = np.full(n, np.nan)        # absolute hours of the first read the meter in use counts
 
-    # ------------------------------------------------------------------ applications
-    def _applications(self):
-        """each account draws applicants from its tiers' campuses; a candidate may apply to several accounts"""
-        r = self.rng
-        self.acc = {}
-        apps = []          # (cand, account code)
-        tier_idx = {t: np.where(self.cand_tier == t)[0] for t in P.TIERS}
-        for code, name, sector, grp, mix, f28, f29, q29 in P.ACCOUNTS:
-            lo, hi = P.POOL_SIZE[grp]
-            target = int(r.integers(lo, hi + 1))
-            # covered campuses: a share of each tier's colleges
-            cover = {}
-            members = []
-            for t, share in mix.items():
-                cols = [c["cid"] for c in self.colleges if c["tier"] == t]
-                frac = {"E": 0.85, "M": 0.6, "V": 0.55}[grp]
-                m = max(3, int(round(len(cols) * frac)))
-                chosen = sorted(r.choice(cols, size=min(m, len(cols)), replace=False).tolist())
-                cover[t] = chosen
-                pool = tier_idx[t][np.isin(self.cand_college[tier_idx[t]], chosen)]
-                want = int(round(target * share))
-                want = min(want, len(pool))
-                # students apply with a pull toward ability inside covered campuses (elite accounts more so)
-                tilt = {"E": 0.9, "M": 0.35, "V": -0.05}[grp]
-                w = np.exp(tilt * self.theta[pool])
-                pick = r.choice(pool, size=want, replace=False, p=w / w.sum())
-                members.append(pick)
-            mem = np.sort(np.concatenate(members))
-            self.acc[code] = dict(code=code, name=name, sector=sector, grp=grp, mix=mix, f28=f28, f29=f29,
-                                  q29=q29, cover=cover, members=mem)
-            apps += [(int(i), code) for i in mem]
-        self.apps = apps
-        applied = np.zeros(self.N, bool)
-        applied[[a for a, _ in apps]] = True
-        self.applied = applied
 
-    # ------------------------------------------------------------------ the season calendar
-    def _calendar(self):
-        """each college's test week falls in July (top-tier campuses early, as the day-one companies come first);
-        D1 and S drives hold the selection day on day 3 of the week, later drives in September, assessment centres
-        in October and November"""
-        r = self.rng
-        starts = [dt.date(2028, 7, 3), dt.date(2028, 7, 10), dt.date(2028, 7, 17), dt.date(2028, 7, 24)]
-        wp = {"T1": [0.7, 0.3, 0, 0], "T2": [0.4, 0.4, 0.2, 0], "T3": [0.15, 0.35, 0.35, 0.15], "T4": [0, 0.1, 0.4, 0.5]}
-        self.test_week = {c["cid"]: starts[int(r.choice(4, p=wp[c["tier"]]))] for c in self.colleges}
+def _advance_renewal(rng, E, k, tmask):
+    """W, O and X: visit today if the next renewal falls on day k; draw the following gap"""
+    hit = tmask & (np.floor(E.next) <= k)
+    idx = np.where(hit)[0]
+    if len(idx):
+        tt = E.type[idx]
+        shapes = np.select([tt == 2, tt == 3], [P.W_GAP[0], P.O_GAP[0]], P.X_GAP[0])
+        g = rng.gamma(shapes, E.gapmean[idx] / shapes)
+        E.next[idx] = np.maximum(E.next[idx] + g, k + 1)
+    return hit
 
-    # ------------------------------------------------------------------ sittings (2028)
-    def _sittings(self):
-        r = self.rng
-        n = self.N
-        # proxies: a small share of sittings were taken by someone else, concentrated in T3 and T4 campuses
-        p_proxy = np.select([self.cand_tier == "T1", self.cand_tier == "T2", self.cand_tier == "T3"], [0.001, 0.003, 0.008], 0.012)
-        self.proxy = (r.random(n) < p_proxy) & self.applied
-        ab_sit = np.where(self.proxy, r.normal(1.25, 0.35, n), self.theta)
-        e = r.normal(0, 1, n) * P.se_online(ab_sit)
-        est = ab_sit + e
-        se = P.se_online(est) * np.exp(r.normal(0, 0.025, n))
-        self.u_est = np.round(est, 3)
-        self.u_se = np.round(se, 3)
-        # sitting day and time inside the college's test week window (Monday 00:00 to Tuesday 23:59 IST): campus
-        # lab sittings at day-one and first-company campuses in office hours on the Monday, home sittings across
-        # the two days, some just after midnight
-        lab = np.zeros(n, bool)
-        for code, a in self.acc.items():
-            if a["f28"] in ("D1", "S"):
-                lab[a["members"]] = True
-        self.lab = lab
-        day = np.where(lab, 0, (r.random(n) < 0.38).astype(int))
-        self.sit_date = np.array([self.test_week[c] + dt.timedelta(days=int(d)) for c, d in zip(self.cand_college, day)])
-        home_min = np.where(r.random(n) < 0.09, r.integers(0, 150, n), r.integers(8 * 60, 23 * 60 + 50, n))
-        self.sit_minute = np.where(lab, r.integers(9 * 60 + 30, 16 * 60 + 30, n), home_min)
-        # restarts: an interrupted attempt abandoned, then the completed attempt under the same booking; the device
-        # is drawn in records (lab sittings run on the college's desktops), so the restart chance is set there
-        self.restart_u = r.random(n)
-        self.restart_items = r.integers(3, 13, n)
 
-    # ------------------------------------------------------------------ 2028 shortlists and selection days
-    def _shortlists(self):
-        r = self.rng
-        self.short28 = {}
-        for code, a in self.acc.items():
-            mem = a["members"]
-            q28 = a["q29"] * (1.0 if a["grp"] != "E" else r.uniform(0.9, 1.15))
-            n_sl = max(12, int(round(len(mem) * q28)))
-            order = mem[np.argsort(-self.u_est[mem], kind="stable")]
-            self.short28[code] = order[:n_sl]
+def simulate(seed=P.SEED):
+    rng = np.random.default_rng(seed)
+    eds = [Edition(i, s, rng) for i, s in enumerate(P.EDITIONS)]
+    q4, monthly, walls = [], [], []
+    for E in eds:
+        recs, tally = [], {}
+        isD, isR = (E.type == 0), (E.type == 1)
+        isRen = E.type >= 2
+        cur_m = None
+        st_ = {}
 
-    # ------------------------------------------------------------------ the equivalence study (Oct to Dec 2028)
-    def _study(self):
-        r = self.rng
-        part = [c for c in self.colleges if c["tier"] in ("T1", "T2", "T3", "T4")]
-        chosen = sorted(r.choice([c["cid"] for c in part], size=14, replace=False).tolist())
-        # volunteers: 2,412 students at 14 partner colleges, abilities from their tiers
-        sizes = r.multinomial(2412, np.ones(14) / 14)
-        th, col = [], []
-        for cid, s in zip(chosen, sizes):
-            d = P.TIERS[self.col_by_id[cid]["tier"]]
-            th.append(r.normal(d["mu"], d["sd"], s))
-            col += [cid] * s
-        th = np.concatenate(th)
-        m = len(th)
-        gaps = np.array([1, 2, 3, 7, 14, 21, 28, 42, 56, 70, 84])
-        g = r.choice(gaps, m)
-        u = th + r.normal(0, 1, m) * P.se_online(th)
-        v = th + P.retest_gain(g) + r.normal(0, 1, m) * P.se_verify(th)
-        self.study = dict(col=np.array(col), theta=th, gap=g, u=np.round(u, 3),
-                          u_se=np.round(P.se_online(u) * np.exp(r.normal(0, 0.025, m)), 3),
-                          v=np.round(v, 3), v_se=np.round(P.se_verify(v) * np.exp(r.normal(0, 0.025, m)), 3),
-                          attended=r.random(m) > 0.078, partners=chosen)
+        def flush(m):
+            if m is None or m < 0:
+                return
+            tally[m] = {k2: v.copy() for k2, v in st_.items()}
+        for k in range(NDAY):
+            m = MONTH[k]
+            if m != cur_m:
+                flush(cur_m)
+                cur_m = m
+                st_ = dict(act=np.zeros((E.n, 2), bool), c0=np.full((E.n, 2), -1), c1=np.full((E.n, 2), -1),
+                           v0=np.full((E.n, 2), -1), v1=np.full((E.n, 2), -1), sg=np.zeros((E.n, 2), bool),
+                           sess=np.zeros((E.n, 2), int), pages=np.zeros((E.n, 2), int))
+            visit = np.zeros(E.n, bool)
+            visit |= isD & (rng.random(E.n) < P.DAY_P["D"])
+            visit |= isR & (rng.random(E.n) < P.DAY_P["R"])
+            visit |= _advance_renewal(rng, E, k, isRen)
+            idx = np.where(visit)[0]
+            if not len(idx):
+                continue
+            tp = E.type[idx]
+            ns = 1 + rng.poisson(np.array([P.SESS_PER_DAY[t] - 1 for t in P.TYPES])[tp])
+            ns = np.minimum(ns, 6)
+            maxs = ns.max()
+            valid = np.arange(maxs)[None, :] < ns[:, None]
+            st = np.sort(np.where(valid, tod(rng, len(idx) * maxs).reshape(len(idx), maxs), np.inf), axis=1)
+            dur = rng.gamma(2.0, 3.2, (len(idx), maxs)) / 60.0          # hours
+            en = np.minimum(st + dur, 23.99)
+            abs0 = 24.0 * k - OFF[k]                                     # absolute hours (UTC) of local midnight
+            first = (abs0 + st[:, 0]) / 24.0
+            last = (abs0 + np.max(np.where(valid, en, -np.inf), axis=1)) / 24.0
+            # the seven-day rule, in elapsed time
+            gap = first - E.last_end[idx]
+            reset = gap > P.CAP_DAYS
+            E.vcookie[idx] += reset
+            wk = E.webkit[idx]
+            E.cookie[idx] += reset & wk
+            newborn = np.isnan(E.cookie_born[idx]) | (reset & wk)
+            E.cookie_born[idx] = np.where(newborn, abs0 + st[:, 0], E.cookie_born[idx])
+            mreset = (E.meter_month[idx] != m) | (reset & wk)
+            E.meter[idx] = np.where(mreset, 0, E.meter[idx]); E.meter_month[idx] = m
+            E.meter_since[idx] = np.where(mreset, np.nan, E.meter_since[idx])
+            reads = rng.poisson(np.array([P.METERED[t] for t in P.TYPES])[tp][:, None] * np.ones((1, maxs)))
+            reads = np.where(valid, reads, 0)
+            pv = 1 + rng.poisson(np.array([P.PAGES[t] - 1 for t in P.TYPES])[tp][:, None] * np.ones((1, maxs)))
+            pv = np.where(valid, np.maximum(pv, reads), 0)
+            free = ~E.reg[idx]
+            refd = E.refuser[idx] & (E.walled_month[idx] == m)
+            reads = np.where(refd[:, None], 0, reads)
+            cum = E.meter[idx][:, None] + np.cumsum(reads, axis=1)
+            first_read = np.argmax(reads > 0, axis=1)
+            has_read = (reads > 0).any(axis=1)
+            start_meter = free & has_read & np.isnan(E.meter_since[idx])
+            E.meter_since[idx] = np.where(start_meter, abs0 + st[np.arange(len(idx)), first_read], E.meter_since[idx])
+            wall_s = free[:, None] & (cum > P.FREE) & (reads > 0) & (k >= WALL_FIRST) & valid
+            nwall = wall_s.sum(axis=1)
+            E.meter[idx] = np.where(free, cum[:, -1], E.meter[idx])
+            u = rng.random(len(idx))
+            p_any = 1 - (1 - P.P_REG - P.P_SUB) ** nwall
+            newreg = (nwall > 0) & (u < p_any) & ~E.refuser[idx]
+            E.walled_month[idx[(nwall > 0) & E.refuser[idx]]] = m
+            sub = newreg & (rng.random(len(idx)) < P.P_SUB / (P.P_REG + P.P_SUB))
+            first_wall = np.argmax(wall_s, axis=1)
+            signed_before = E.reg[idx] & (E.reg_day[idx] < k)
+            sig = valid & (signed_before[:, None] | (newreg[:, None] & (np.arange(maxs)[None, :] > first_wall[:, None])))
+            ridx = idx[newreg]
+            E.reg[ridx] = True; E.reg_day[ridx] = k
+            E.reg_time[ridx] = abs0 + st[np.where(newreg)[0], first_wall[newreg]]
+            E.source[idx[newreg & ~sub]] = "registration"; E.source[idx[sub]] = "subscription"
+            E.last_end[idx] = last
+            ed2 = E.multi[idx] & (rng.random(len(idx)) < P.MULTI_SHARE)
+            slot = ed2.astype(int)
+            S = st_
+            S["act"][idx, slot] = True
+            cc = E.cookie[idx]; vv = E.vcookie[idx]
+            S["c0"][idx, slot] = np.where(S["c0"][idx, slot] < 0, cc, S["c0"][idx, slot]); S["c1"][idx, slot] = cc
+            S["v0"][idx, slot] = np.where(S["v0"][idx, slot] < 0, vv, S["v0"][idx, slot]); S["v1"][idx, slot] = vv
+            S["sg"][idx, slot] |= sig.any(axis=1)
+            S["sess"][idx, slot] += ns; S["pages"][idx, slot] += pv.sum(axis=1)
+            if k >= Q4_FIRST:
+                ws = np.where(nwall > 0)[0]
+                for j in ws:
+                    for s_ in np.where(wall_s[j])[0]:
+                        out = ("subscription" if sub[j] else "registration") if (newreg[j] and s_ == first_wall[j]) else "closed"
+                        walls.append((E.idx, int(idx[j]), int(E.second[idx[j]] if slot[j] else E.idx), abs0 + st[j, s_],
+                                      int(cc[j]), out, E.meter_since[idx[j]]))
+                recs.append(dict(day=k, b=idx, ns=ns, st=abs0 + st, en=abs0 + en, pv=pv, reads=reads, sig=sig,
+                                 cookie=cc, born=E.cookie_born[idx].copy(), ed=np.where(slot == 1, E.second[idx], E.idx)))
+        flush(cur_m)
+        q4.append(recs)
+        monthly.append(tally)
+    return eds, q4, monthly, walls
 
-    # ------------------------------------------------------------------ 2029 plans
-    def _plans(self):
-        r = self.rng
-        self.plan = {}
-        for code, a in self.acc.items():
-            n28 = len(a["members"]) + (len(self.acc_pgl) if code == "NVK" and hasattr(self, "acc_pgl") else 0)
-            growth = r.uniform(0.96, 1.08)
-            exp_app = int(round(n28 * growth, -1))
-            sl = int(round(exp_app * a["q29"]))
-            self.plan[code] = dict(expected=exp_app, shortlist=sl, fmt=a["f29"])
+
+def sessions(eds, q4):
+    """the fourth quarter as one table of sessions: one row per session of a regular browser"""
+    import pandas as pd
+    parts = []
+    for E, recs in zip(eds, q4):
+        for r in recs:
+            ns = r["ns"]
+            maxs = r["st"].shape[1]
+            valid = np.arange(maxs)[None, :] < ns[:, None]
+            rows, cols = np.where(valid)
+            parts.append(pd.DataFrame({
+                "home": np.full(len(rows), E.idx, np.int8), "b": r["b"][rows].astype(np.int32),
+                "ed": r["ed"][rows].astype(np.int8), "day": np.full(len(rows), r["day"], np.int16),
+                "start": r["st"][rows, cols], "end": r["en"][rows, cols], "pv": r["pv"][rows, cols].astype(np.int16),
+                "reads": r["reads"][rows, cols].astype(np.int16), "sig": r["sig"][rows, cols],
+                "cookie": r["cookie"][rows].astype(np.int32), "born": r["born"][rows]}))
+    return pd.concat(parts, ignore_index=True)

@@ -1,153 +1,146 @@
 """figures.json and submission.md for task249, both from the solver's results on the built target."""
 import json
+import numpy as np
 import params as P
 import solve as S
 
-WEEKS = ["3 July", "10 July", "17 July", "24 July"]
-WK_KEY = ["week_of_3_july", "week_of_10_july", "week_of_17_july", "week_of_24_july"]
+NAMES = {e["code"]: e["name"] for e in P.EDITIONS}
 
 
 def figures(target, files):
     L = S.load(target, files)
-    df, rt, st = S.main_call(L)
-    acc = df.to_dict("records")
-    G = dict(accounts=acc, n_flag=int(df["flag"].sum()), flagged=[a["code"] for a in acc if a["flag"]],
-             kept=[a["code"] for a in acc if not a["flag"]], study_short=st["study_short"], study_long=st["study_long"],
-             gain_c=rt["c"], gain_a=rt["a"], gain_tau=rt["tau"],
-             gain_2=float(rt["c"] + rt["a"] * __import__("math").exp(-2 / rt["tau"])),
-             exposure=S.ask_exposure(target, files), impersonation=S.ask_impersonation(target, files),
-             interrupted=S.ask_interrupted(target, files))
-    G["shrink"] = S.shrinkage_check(rt)
-    G["kelley_adds"] = sorted(set(df.loc[df["kelley_reported"] > P.CAP, "code"]) - set(G["flagged"]))
-    G["no_gain_adds"] = sorted(set(df.loc[df["no_gain"] > P.CAP, "code"]) - set(G["flagged"]))
-    G["const_se_drops"] = sorted(set(G["flagged"]) - set(df.loc[df["const_se"] > P.CAP, "code"]))
-    G["rested"] = G["exposure"][0]["rested_2029"]
-    G["min_flag"] = float(min(a["gold"] for a in acc if a["flag"]))
-    G["max_keep"] = float(max(a["gold"] for a in acc if not a["flag"]))
-    e_depth = [a["depth"] for a in acc if a["code"] in ("KSP", "VRD", "ANV", "PRM", "SQR", "ABH", "MTL", "TJM")]
-    G["elite_depth_lo"], G["elite_depth_hi"] = float(min(e_depth)), float(max(e_depth))
+    res = S.main_call(L)
+    A = L["A"]
+    noted = [c for c in P.CODES if res.loc[c, "note"]]
+    kept = [c for c in P.CODES if not res.loc[c, "note"]]
+    rep = S.report_average(L)
+    G = dict(res=res, noted=noted, kept=kept, n_noted=len(noted), reported={c: int(round(rep[c])) for c in P.CODES})
+    fam = res[["golden", "g_q", "g_nodev", "g_vis", "g_vis2", "g_pv"]]
+    G["min_noted"] = float(fam.loc[noted].min().min())
+    G["max_kept"] = float(fam.loc[kept].max().max())
+    G["sets"] = {k: S.golden_set(res, k) for k in ("r3a", "r4", "r4p", "r2d", "r2", "r1a", "r1c", "r1b", "r6")}
+    G["drop_signin"] = sorted(set(noted) - set(G["sets"]["r3a"]))
+    G["drop_print"] = sorted(set(noted) - set(G["sets"]["r2d"]))
+    G["drop_ratio"] = sorted(set(noted) - set(G["sets"]["r1a"]))
+    # print subscribers on Apple devices, from the register: devices of print accounts and of others, by engine
+    dv = A[A["signed"]].drop_duplicates("device_id")
+    G["print_wk_pct"] = round(100 * dv.loc[dv["printed"], "wk"].mean())
+    G["other_signed_wk_pct"] = round(100 * dv.loc[~dv["printed"], "wk"].mean())
+    G["newsletter"] = {c: int(v) for c, v in S.newsletter(target, files).items()}
+    sc = S.sold_copies(target, files)
+    G["copies"] = {c: int(round(sc[c])) for c in P.CODES}
+    import os
+    import pandas as pd
+    E = pd.read_csv(os.path.join(target, files["nl_log"]), keep_default_na=False)
+    adds = E[E["link"].str.contains(S.ADD_PATH, regex=False)]
+    G["link_adds_after"] = int((adds["at_utc"] >= str(S.YEAR_END_UTC)).sum())
+    G["link_adds_before"] = int((adds["at_utc"] < str(S.YEAR_END_UTC)).sum())
+    subs = pd.read_csv(os.path.join(target, files["subs"]), parse_dates=["start_date", "end_date"])
+    G["moved_subs"] = S.restore_starts(subs)[1]
     return L, G
 
 
 def write_figures(path, G):
     out = {
-        "filed": {"standard_cap_section": 3.3, "conditional_error_table": 4.3, "band_multiple": 1.96,
-                  "exposure_ceiling_pct": 12, "restart_reference_release": "5.3.2"},
-        "call": {"flagged": sorted(G["flagged"]), "n_flagged": G["n_flag"], "kept": sorted(G["kept"]), "n_kept": len(G["kept"]),
-                 "min_flagged_share_pct_floor": int(100 * G["min_flag"] // 5 * 5)},
-        "components": {"study_rate_within_3_days_pct": round(100 * G["study_short"], 1),
-                       "study_rate_6_weeks_or_more_pct": round(100 * G["study_long"], 1),
-                       "retest_gain_c": round(G["gain_c"], 2), "retest_gain_a": round(G["gain_a"], 2),
-                       "retest_gain_tau_days": round(G["gain_tau"], 1), "retest_gain_at_2_days": round(G["gain_2"], 2),
-                       "elite_depth_lo_pct": round(100 * G["elite_depth_lo"], 1),
-                       "elite_depth_hi_pct": round(100 * G["elite_depth_hi"], 1), "cap_pct": 15,
-                       "study_top_tenth_n": G["shrink"]["n"],
-                       "study_top_tenth_mat_v_scored": round(G["shrink"]["scored"], 3),
-                       "study_top_tenth_mat_v_at_ability": round(G["shrink"]["at_ability"], 3),
-                       "study_top_tenth_mat_v_at_reported_error": round(G["shrink"]["at_reported"], 3),
-                       "kelley_reported_error_adds": G["kelley_adds"], "no_gain_adds": G["no_gain_adds"],
-                       "constant_error_drops": G["const_se_drops"]},
-        "asks": {
-            "items_over_ceiling": {WK_KEY[e["week"]]: e["over"] for e in G["exposure"]},
-            "items_rested_for_2029": G["rested"],
-            "impersonations_confirmed": {t["tier"]: t["confirmed"] for t in G["impersonation"]},
-            "impersonations_per_thousand_shortlisted": {t["tier"]: round(t["per_thousand"], 1) for t in G["impersonation"]},
-            "interrupted_share_pct": {d["device"]: round(d["share"], 2) for d in G["interrupted"]},
-            "interrupted_finished_on_another_device": {d["device"]: d["moved"] for d in G["interrupted"]},
-        },
+        "filed": {"tolerance_pct": 25, "cap_days": 7, "free_metered_articles": 5, "months": ["2028-10", "2028-11", "2028-12"],
+                  "public_holidays_day_of_month": [3, 25, 26, 1], "newsletter_cutoff_utc_hour": 23},
+        "call": {"noted": G["noted"], "n_noted": G["n_noted"], "not_noted": G["kept"], "n_not_noted": len(G["kept"]),
+                 "noted_names": [NAMES[c] for c in G["noted"]], "not_noted_names": [NAMES[c] for c in G["kept"]]},
+        "components": {"noted_floor_pct": int(np.floor(G["min_noted"])), "kept_ceiling_pct": int(np.ceil(G["max_kept"])),
+                       "print_devices_webkit_pct": G["print_wk_pct"], "other_signed_devices_webkit_pct": G["other_signed_wk_pct"],
+                       "sign_in_split_drops": G["drop_signin"], "device_only_drops": G["drop_print"],
+                       "signed_in_ratio_drops": G["drop_ratio"], "link_additions_after_midnight": G["link_adds_after"],
+                       "link_additions_before_midnight": G["link_adds_before"], "subscriptions_started_before_quarter": G["moved_subs"]},
+        "reported": G["reported"],
+        "asks": {"newsletter_subscribers_2028_12_31": G["newsletter"], "sold_copies_per_publication_day_q4": G["copies"]},
     }
     with open(path, "w", encoding="utf-8") as fh:
-        json.dump(out, fh, indent=1)
-    return out
+        json.dump(out, fh, indent=1, ensure_ascii=False)
+
+
+def _names(codes):
+    n = [NAMES[c] for c in codes]
+    return ", ".join(n[:-1]) + " and " + n[-1] if len(n) > 1 else n[0]
 
 
 def submission(G):
-    names = {a["code"]: a["client"] for a in G["accounts"]}
-    fl = G["flagged"]
-    lines = []
-    lines.append("# task249 submission\n")
-    lines.append("## Tags\n")
-    lines.append("**Domain:** Psychology & Behavioral Science (psychometric measurement and scale validation: an assessment "
-                 "firm's unproctored adaptive aptitude test, MAT-R, checked by a proctored verification test, MAT-V, at "
-                 "client employers' selection days).")
-    lines.append("**Analytical objective:** Data Quality Monitoring & Alerting (how often the new verification check would "
-                 "refer genuine candidates at each client account in 2029, and so which accounts move to the extended "
-                 "verification before the season).\n")
-    lines.append("## 1. Final Recommendation\n")
-    lines.append("**Move %d accounts to MAT-V Extended for 2029: %s; the other %d stay on the 12-item MAT-V.**\n"
-                 % (G["n_flag"], ", ".join(fl), len(G["kept"])))
-    lines.append("On their 2029 plans each of the %d would see its check refer at least %d per cent of its genuine "
-                 "shortlisted candidates, against the 15 per cent cap of MAL-IS-04 section 3.3, while the other %d stay "
-                 "under the cap. The equivalence study's own rates (%.1f per cent within three days, %.1f per cent at six "
-                 "weeks or more) keep every account under the cap, because its volunteers were not shortlisted on MAT-R.\n"
-                 % (G["n_flag"], int(100 * G["min_flag"] // 5 * 5), len(G["kept"]), 100 * G["study_short"], 100 * G["study_long"]))
-    lines.append("## 2. Critical Components\n")
-    lines.append("1. An account shortlists on MAT-R, so the candidates it invites are those whose MAT-R estimate ran above "
-                 "their ability, by more the smaller the share it shortlists (the eight finance, consulting and analytics accounts take %.1f to "
-                 "%.1f per cent of their applicants) and where MAT-R's standard error widens above +1 logit (Table 4.3); "
-                 "their MAT-V falls short of MAT-R by that much and s.3.2 reads the shortfall."
-                 % (100 * G["elite_depth_lo"], 100 * G["elite_depth_hi"]))
-    lines.append("2. MAT-V sat soon after MAT-R runs higher (the study's retest gain, fitted %.2f + %.2f exp(-days/%.1f) "
-                 "logit, %.2f at two days): it keeps the mid-sized day-one accounts %s under the cap, not the day-one "
-                 "accounts that shortlist most selectively, %s, whose shortlisted candidates sit where MAT-R's error is "
-                 "widest."
-                 % (G["gain_c"], G["gain_a"], G["gain_tau"], G["gain_2"], ", ".join(G["no_gain_adds"]),
-                    ", ".join(G["const_se_drops"])))
-    lines.append("3. The shortfall is read with MAT-R's error at the candidate's ability, not at the estimate. On the "
-                 "study's own top tenth of MAT-R scorers (%d volunteers), true-score shrinkage with Table 4.3's error at "
-                 "the shrunken ability predicts their mean MAT-V within a fiftieth of a logit of what they scored; with each "
-                 "volunteer's reported error (the error at the estimate, manual s.4.2) it predicts about a tenth of a logit "
-                 "too low, and the same shortcut on the accounts' pools moves %s over the cap."
-                 % (G["shrink"]["n"], ", ".join(G["kelley_adds"])))
-    lines.append("4. Carrying the study's own rates (%.1f per cent within three days, %.1f per cent at six weeks or more) "
-                 "moves no account; one MAT-R error for every ability leaves %s under the cap; leaving out the retest gain "
-                 "moves %s over it.\n"
-                 % (100 * G["study_short"], 100 * G["study_long"], ", ".join(G["const_se_drops"]), ", ".join(G["no_gain_adds"])))
-    lines.append("## 3. Step-by-Step Solution\n")
-    lines.append("1. Pool per account: candidates whose 2028 result was shared with it (results_shared_2028.csv, PGL folded "
-                 "into NVK per client_accounts.csv, each candidate once), at their completed MAT-R attempt among registered "
-                 "candidates (mat_r_attempts_2028.parquet, candidate_register_2028.csv).")
-    lines.append("2. Depth: the 2029 plan's shortlist over its expected applicants (client_plans_2029.xlsx).")
-    lines.append("3. Interval from MAT-R to MAT-V: two days at day-one and first-company drives (Calendar sheet: sitting on "
-                 "day 1, selection day on day 3); otherwise the plan's selection days against the July 2029 test weeks.")
-    lines.append("4. Retest gain: equivalence study pairs, MAT-V minus MAT-R by interval in days (dates in the file), fitted "
-                 "by least squares weighted by pairs to c + a exp(-days/tau).")
-    lines.append("5. For each account: abilities drawn normal with the pool's mean and the pool's variance less its mean "
-                 "squared standard error; MAT-R = ability + error at Table 4.3's MAT-R value; the top share by depth "
-                 "shortlisted; MAT-V = ability + retest gain at the interval + error at Table 4.3's MAT-V value; referred "
-                 "when MAT-R exceeds MAT-V + 1.96 x MAT-V's standard error at its estimate; the referred share of the "
-                 "shortlisted.")
-    lines.append("6. Over 15 per cent: MAT-V Extended.")
-    lines.append("7. Exposure (MAL-IS-04 s.4): every attempt by a candidate in the register (interrupted attempts included; "
-                 "identities outside the register are not candidates, s.2), test weeks Monday to Sunday in IST, the distinct "
-                 "candidates shown each item over the week's distinct candidates; an item over 12 per cent in any week is "
-                 "rested for 2029.")
-    lines.append("8. Impersonations (s.5): one sitting per candidate a season, so a sitting's standing is the latest decision "
-                 "on any of the candidate's cases, the desk's appeal cases included (confirmed impersonation or confirmed on "
-                 "appeal stands; overturned on appeal or cleared does not); tier through the candidate register and the "
-                 "college register; per thousand distinct candidates on any 2028 shortlist.")
-    lines.append("9. Interruptions (s.6): a candidate's attempts in time order make up the season's booking, linked by "
-                 "candidate (from release 5.3.2 a restart carries a fresh booking reference); the booking's device is its "
-                 "first attempt's; interrupted when any attempt was interrupted; finished on another device when the last "
-                 "attempt ran on a different device.\n")
-    lines.append("## 4. Deliverable Answers\n")
-    lines.append("### verification_bands_2029.xlsx and account_referral_note_2029.pdf\n")
-    lines.append("**MAT-V Extended (%d):** %s." % (G["n_flag"], ", ".join("%s (%s)" % (c, names[c]) for c in fl)))
-    lines.append("**Standard MAT-V (%d):** %s.\n" % (len(G["kept"]), ", ".join(G["kept"])))
-    lines.append("### Item exposure, July 2028 test weeks (ceiling 12 per cent)\n")
-    lines.append("| Test week beginning | Items over 12 per cent |")
-    lines.append("|---|---|")
-    for e in G["exposure"]:
-        lines.append("| %s | %d |" % (WEEKS[e["week"]], e["over"]))
-    lines.append("\nItems to be rested before the 2029 season (over 12 per cent in any test week): %d.\n" % G["rested"])
-    lines.append("### Impersonations standing confirmed, 2028\n")
-    lines.append("| College tier | Sittings confirmed | Per thousand candidates shortlisted |")
-    lines.append("|---|---|---|")
-    for t in G["impersonation"]:
-        lines.append("| %s | %d | %.1f |" % (t["tier"], t["confirmed"], t["per_thousand"]))
-    lines.append("\n### Interrupted bookings, 2028\n")
-    lines.append("| Device | Share of bookings started on it interrupted | Interrupted bookings finished on another device |")
-    lines.append("|---|---|---|")
-    for d in G["interrupted"]:
-        lines.append("| %s | %.2f per cent | %d |" % (d["device"], d["share"], d["moved"]))
-    return "\n".join(lines) + "\n"
+    f = lambda v: "{:,}".format(v)
+    noted, kept = G["noted"], G["kept"]
+    lo, hi = int(np.floor(G["min_noted"])), int(np.ceil(G["max_kept"]))
+    s = []
+    s.append("# task249 submission\n")
+    s.append("## Tags\n")
+    s.append("**Domain:** Product Analytics (metric definition and measurement science: a regional newspaper group's "
+             "monthly unique browsers per local edition, counted by an analytics identifier that WebKit drops after seven "
+             "days without a visit).")
+    s.append("**Analytical objective:** Data Quality Monitoring & Alerting (which editions' published audience figure "
+             "fails the 2029 policy's tolerance and carries the measurement note).\n")
+    s.append("## 1. Final Recommendation\n")
+    s.append("**%s of the twelve editions carry the measurement note in the 2029 media kit: %s; %s print their figures "
+             "without it.**\n" % (["Eight", "Seven", "Nine", "Six"][[8, 7, 9, 6].index(len(noted))] if len(noted) in (6, 7, 8, 9) else str(len(noted)),
+                                 _names(noted), _names(kept)))
+    s.append("Each of the %d reports more than %d per cent above the browsers that read it in October to December 2028, "
+             "the other four less than %d per cent, against the policy's 25. Not the sign-in split (signed-in browsers "
+             "from the register, signed-out identifiers on signed-out readers of other browsers), which leaves %s under "
+             "the line: the meter sits in the same capped storage, so on WebKit it restarts with the identifier and keeps "
+             "weekly and occasional readers signed out who on other browsers met the wall and registered (signed-in "
+             "WebKit devices carry fewer identifiers a month than the replay gives signed-in readers of other browsers, "
+             "while print subscribers' WebKit devices carry as many as the replay gives their other browsers). Not the "
+             "device-only replay, which drops %s by pooling print subscribers, who read weekly on Apple devices. Not the "
+             "signed-in identifiers per device, which are frequent readers' and drop %s."
+             % (len(noted), lo, hi, _names(G["drop_signin"]), _names(G["drop_print"]), _names(G["drop_ratio"])))
+    s.append("\n## 2. Critical Components\n")
+    s.append("1. On other browsers an identifier is a browser; the seven-day rule replayed on their site-wide session "
+             "histories, within edition, month and device class, gives the identifiers a WebKit browser carries.")
+    s.append("2. Print subscribers are held apart and counted from the sign-in register: their access does not depend on "
+             "the meter, and **%d per cent** of their signed-in devices are WebKit against **%d per cent** of other "
+             "signed-in devices." % (G["print_wk_pct"], G["other_signed_wk_pct"]))
+    s.append("3. Every other reader is pooled whether signed in or not: registration is a consequence of the cap, so the "
+             "comparison is matched only on what the cap cannot change.")
+    s.append("4. The %d noted editions overstate by more than **%d per cent**, the other four by less than **%d per cent**."
+             % (len(noted), lo, hi))
+    s.append("\n## 3. Step-by-Step Solution\n")
+    s.append("1. Took the quarter's sessions from web_sessions_2028q4.parquet without is_bot rows, the newsroom's "
+             "addresses and the re-sent duplicate rows, HKR read as HOL, months in Berlin time, and WebKit as every iOS "
+             "browser and Safari on the Mac (analytics_tag_notes.pdf).")
+    s.append("2. Reported figure: each edition's distinct client_ids per month averaged over October to December, the same "
+             "as platform_users_by_month_2028.xlsx with HKR and HOL joined.")
+    s.append("3. Print subscribers' browsers: client_ids in signin_device_register_2028q4.csv whose account's origin in "
+             "reader_accounts.csv is print subscription, counted by device_id.")
+    s.append("4. For each edition, month and device class: non-WebKit browsers as client_ids; WebKit print devices "
+             "counted; WebKit non-print client_ids divided by the mean number of runs (a new run after more than seven "
+             "days between one session's end and the next start, across all editions) that touch the edition and month "
+             "among non-WebKit non-print client_ids; summed over device classes and averaged over the three months.")
+    s.append("5. Overstatement: reported over estimated browsers less one; %s exceed 25 per cent (%d of 12)."
+             % (", ".join(noted), len(noted)))
+    s.append("6. Newsletter: status at 2028-12-31 23:00 UTC (midnight in Berlin) from newsletter_contacts_2029-01-15.csv "
+             "with each contact's first status event after that moment in newsletter_activity_log.csv (a click is not a "
+             "status event). Groups at that moment by undoing every change after it, newest first: the preference "
+             "centre's changes in newsletter_group_changes.csv (the groups before) and the editions the newsletters' "
+             "one-click links added, the clicked links to /newsletter/ausgabe-hinzufuegen in the activity log, which the "
+             "preference centre's log does not hold (%s after midnight; the %s clicked before it stand). Confirmed "
+             "subscribers counted in each of their groups." % (f(G["link_adds_after"]), f(G["link_adds_before"])))
+    s.append("7. Sold copies: subscription numbers are issued in order as subscriptions are entered (DATA_DICTIONARY.md), "
+             "so a start date later than that of a subscription numbered after it is not a first day of delivery: those "
+             "%s subscriptions, each shown starting between November and mid-December 2028 (the COMBI ones beside Digital "
+             "Plus accesses that started years before), were delivered from before the quarter. Then for each "
+             "publication day (Monday to Saturday less 3 October, 25 and 26 December, and 1 November in "
+             "Rhineland-Palatinate) the DAILY and COMBI copies and SATURDAY copies on Saturdays, less pauses, plus "
+             "e-paper accesses except the Digital Plus accesses (each the e-paper of a COMBI subscription, order_ref "
+             "Kombi and its sub_no) and trials, plus delivered less returned single copies, averaged over the edition's "
+             "publication days." % f(G["moved_subs"]))
+    s.append("8. The %d editions above carry the note in media_kit_2029_edition_figures.xlsx and measurement_note_2029.pdf."
+             % len(noted))
+    s.append("\n## 4. Deliverable Answers\n")
+    s.append("### media_kit_2029_edition_figures.xlsx and measurement_note_2029.pdf\n")
+    s.append("1. Editions carrying the measurement note (%d): %s." % (len(noted), ", ".join("%s (%s)" % (c, NAMES[c]) for c in noted)))
+    s.append("2. Editions printed without the note (%d): %s." % (len(kept), ", ".join("%s (%s)" % (c, NAMES[c]) for c in kept)))
+    s.append("3. Average sold copies per publication day, fourth quarter 2028:")
+    for c in P.CODES:
+        s.append("   - %s: %s" % (c, f(G["copies"][c])))
+    s.append("4. Newsletter subscribers at the end of 31 December 2028:")
+    for c in P.CODES:
+        s.append("   - %s: %s" % (c, f(G["newsletter"][c])))
+    s.append("5. Chart on page 1 of measurement_note_2029.pdf: each edition's reported users against its estimated "
+             "browsers, the 25 per cent line drawn and the noted editions marked.")
+    return "\n".join(s) + "\n"

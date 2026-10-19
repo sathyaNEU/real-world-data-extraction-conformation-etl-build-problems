@@ -15,7 +15,7 @@ import writeup
 def zipdir(src, dst):
     with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(src)):
-            info = zipfile.ZipInfo("target/" + f, date_time=(2029, 5, 14, 9, 0, 0))
+            info = zipfile.ZipInfo("target/" + f, date_time=(2029, 1, 15, 9, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             with open(os.path.join(src, f), "rb") as fh:
@@ -44,41 +44,43 @@ def main(target=os.path.join(TASK, "target")):
 def metadata(target):
     import pandas as pd
     files = sorted(os.listdir(target))
-    rows = len(pd.read_parquet(os.path.join(target, B.FILES["exposure"]), columns=["item_id"]))
+    rows = pd.read_parquet(os.path.join(target, B.FILES["sessions"]), columns=["client_id"]).shape[0]
     m = {
         "task": "task249",
-        "title": "Which client accounts sit the extended verification test in the 2029 campus season because their "
-                 "check would refer more than 15 per cent of the genuine candidates they shortlist, beside the 2028 "
-                 "season's item exposure, impersonations and interrupted bookings",
-        "domain": "Psychology & Behavioral Science",
-        "subdomain": "psychometric-measurement-scale-validation (an unproctored adaptive aptitude test verified by a "
-                     "proctored adaptive test: measurement error, the test's conditional standard error, the retest gain "
-                     "and the referral rule's false referrals among shortlisted candidates)",
+        "title": "Which of a regional newspaper group's twelve local editions carry the measurement note in the 2029 media "
+                 "kit because their reported monthly unique browsers for October to December 2028 overstate the browsers "
+                 "that read them by more than 25 per cent, beside each edition's sold copies and newsletter subscribers",
+        "domain": "Product Analytics",
+        "subdomain": "metric-definition-measurement-science (a published audience metric counted by an analytics identifier "
+                     "that WebKit deletes after seven days without a visit; the unique browsers it represents estimated by "
+                     "replaying the identifier rule on browsers that keep it, matched on what the limit cannot change)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "10: a scorecard of the 28 client accounts against the 15 per cent referral cap, beside three "
-                        "2028 integrity tables",
+        "prompt_shape": "10: a scorecard of the twelve editions against the 25 per cent tolerance, beside two per-edition "
+                        "figures of the kit",
         "deliverables": [B.FILES["deliv_xlsx"], B.FILES["deliv_pdf"]],
         "input_files": files,
         "file_count": len(files),
         "formats": sorted({f.rsplit(".", 1)[1] for f in files}),
-        "largest_file": {"name": B.FILES["exposure"], "rows": rows},
+        "largest_file": {"name": B.FILES["sessions"], "rows": int(rows)},
         "distractors": [
-            {"file": "selection_venues_2029.csv", "why_relevant": "the assessment-centre venues and seats for 2029 "
-             "selection days, where MAT-V would be sat", "why_unused": "seat counts bear on logistics, not on how often "
-             "the check refers a genuine candidate"},
-            {"file": "candidate_feedback_2028.csv", "why_relevant": "candidates' own reports of technical problems in "
-             "their 2028 sittings", "why_unused": "a sample survey of experience; interruptions are counted from the "
-             "platform's attempts and nothing in the call reads it"},
+            {"file": B.FILES["ads"], "why_relevant": "the ad server's delivered and viewable impressions by edition and device, "
+             "the kit's inventory figures", "why_unused": "impressions are counted by the ad server per ad shown and say "
+             "nothing about how many browsers an identifier stands for"},
+            {"file": B.FILES["reach"], "why_relevant": "the Media-Analyse survey's readers per issue by edition, quoted in the "
+             "kit beside print", "why_unused": "a survey of print readership; neither the note nor sold copies nor the "
+             "newsletter count reads it"},
         ],
-        "sources": "Constructed: the firm, its client employers, the colleges, the candidates and the people are fictional. "
-                   "The psychometric model (an adaptive test's conditional standard error, true-score regression among "
-                   "candidates chosen on a score, the retest gain fading with the interval) and the practice of verifying "
-                   "unproctored internet tests under proctoring are real. License: CC BY 4.0 (the task author's own work).",
-        "as_of": "2029-05-14",
+        "sources": "Constructed: the group, its editions, readers, accounts, subscriptions, retail points, newsletter contacts "
+                   "and the people are fictional. The measurement facts are real: WebKit's tracking prevention limits "
+                   "script-written cookies and storage to seven days from the last write (Safari on macOS and every iOS and "
+                   "iPadOS browser); German dailies' sold copies follow the IVW's per-publication-day averages; newsletter "
+                   "platforms export current status and keep activity logs. License: CC BY 4.0 (the task author's own work).",
+        "as_of": "2029-01-15",
     }
     with open(os.path.join(TASK, "metadata.json"), "w", encoding="utf-8") as fh:
         json.dump(m, fh, indent=1)
 
 
 if __name__ == "__main__":
-    main()
+    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
+    main(t)

@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-19 (wave 4 fully shipped, task243 to task248; wave 5: task249 PAUSED on its third spent architecture, retirement or a fourth at the author's call; task250 to task252 not started, at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-19 (wave 4 fully shipped, task243 to task248; wave 5: task249 PAUSED at stage 4 of its fourth architecture, shipping as measured, a fifth or retirement at the author's call; task250 to task252 not started, at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,55 +18,40 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task249: PAUSED 2026-10-19, architecture 3 spent at stage 4; retirement or a fourth architecture is the author's call.**
-- Architecture 3 (Psychology & Behavioral Science, psychometric measurement x Data Quality Monitoring): an assessment
-  firm's 2029 verification bands, which client accounts move to MAT-V Extended because the check would refer more than
-  15 per cent of their genuine shortlisted candidates (golden: 15 accounts). Every stage 3 gate passed (target.zip md5
-  3a097683ea6ff33166093c2ec837dbda); the judge returned DETERMINISTIC, APPROVE; the stage 4 reader (Sonnet, medium)
-  built a latent-ability model of each account's shortlist (regression to the mean, Table 4.3's errors, the study's
-  retest gain) and landed the call and all 19 ask figures. The slot's three architectures died the same way: the
-  decisive step was a general statistical correction (an errors-in-variables slope, a residual by hour, regression to
-  the mean under selection) that a strong model runs unprompted. Wave 4's six builds held because each turned on a
-  mechanism of the field itself (decay by temperature, an observer's offset, a gap fill's persistence).
-- Four candidates for a fourth architecture, each with its default path and screen (none drawn or registered):
-  1. Product Analytics, metric definition and measurement science (the lane's least used DQ cell, two builds). A
-     regional publisher certifies each market's 2028 monthly unique visitors for its 2029 media kit, while Safari keeps
-     a script-set cookie only seven days after the last visit, so a reader returning after a longer gap arrives as a
-     new visitor. Call: which markets' figures carry the measurement note. Default path: unique cookies as counted, no
-     market noted. Reflex rung: the logged-in readers' cookies per person applied to Safari traffic, too few markets,
-     because logged-in readers return every few days and most anonymous returners after a week or more. Golden: the
-     anonymous readers' revisit gaps taken from uncapped browsers (desktop and Android, not Chrome on iOS, which runs on
-     WebKit), with the logged-in readers' gaps agreeing across browsers as the check that the browser does not change
-     behaviour. Screen: the swap test holds (cookie lifetimes and revisit gaps have no other field's nouns); Layer 1 is
-     real (consent gaps, bot filtering, user-agent strings, UTC against local months, a tag migration); the step is a
-     comparison group, not a plant, a reading or a rule. Risk: a reader who knows the browser policy may reach for the
-     uncapped browsers at once.
-  2. Survey Research, nonresponse and measurement error. A statistics office's 2028 living-conditions survey states
-     each region's margin of error from strata and PSUs only, while 40 neighbouring PSU pairs had their interviewers
-     assigned at random. Call: which regional estimates carry the precision note. Default path: the published
-     standard errors, no note. Reflex rung: clustering by interviewer on the main sample, which counts each
-     interviewer's area as interviewer error, far too many. Golden: the interviewer correlation from the randomly
-     assigned pairs, by item type, times each region's effective workload. Screen: swap test and layers pass. Risk: the
-     random-assignment study announces its use, survey methodologists know Kish's design effect, and the cell is the
-     lane's most used (six builds, task240's variance driver next door).
-  3. Epidemiology & Public Health, disease surveillance. A ministry's 2028 immunization data quality review, each
-     district's third-dose coverage from doses over a projected target population. Call: which districts' coverage goes
-     into the national report with the denominator note. Default path: the administrative coverage as reported. Reflex
-     rung: the coverage survey's third-dose coverage as the reference (the review's external consistency check), wrong
-     where caregivers without a card under-recall the later doses. Golden: the survey's first-dose coverage times the
-     administrative ratio of third to first doses, whose shared denominator cancels, checked on card holders. Screen:
-     swap test and layers pass (district splits, doses by facility against residence, late monthly reports). Risk:
-     programme monitoring sits at the edge of the surveillance task type, and immunization specialists know the dropout
-     method.
-  4. Survey Research, census, register and administrative data quality. A population register's 2029 counts at ages
-     90 and over, inflated by emigrants and deaths abroad never deregistered. Call: which municipalities' oldest-old
-     counts carry the overcoverage note. Default path: the register as published. Reflex rung: the last census aged
-     forward with life-table survival. Golden: the population rebuilt from registered deaths by cohort (extinct
-     generations, survivor ratios for the cohorts still alive). Screen: demography's own method; Layer 1 is real (age
-     misstatement, municipal mergers, late registrations). Risk: the survivor ratio's reference years are a knob (Gate C)
-     unless the extinct cohorts decide, and task243's provincial death-registration world sits next door.
-- Assessment: 1 is the best placed (an unused cell, a comparison group the field's own mechanism forces), then 3; 2 and
-  4 carry overlap or determinism risk. Retiring the number is the pipeline's default after a third spent architecture.
+**task249: PAUSED 2026-10-19 at stage 4 of architecture 4; shipping as measured, a fifth architecture or retirement is the author's call.**
+- Architecture 4 (Product Analytics, metric definition and measurement science x Data Quality Monitoring, the author's
+  choice of the ITP candidate). A German regional newspaper group's 2029 media kit: which of twelve local editions'
+  average monthly unique browsers for October to December 2028 carry the measurement note (reported above browsers by
+  more than 25 per cent), while WebKit keeps the analytics tag's cookie only seven days after the last visit and the
+  paywall meter sits in the same capped storage. Golden: eight editions (the replay on other browsers' histories within
+  edition, month and device class, print subscribers counted from the register, every other reader pooled over
+  sign-in); the default path (sign-in held fixed) files four.
+- State: every free gate green on target.zip 31ad0d1e (checks 0 FAIL, verify 0 FAIL, two byte-identical builds,
+  figures_check, precut, leak.py REVIEW only, heart WARN); the judge DETERMINISTIC, APPROVE on three packs; the asks
+  (newsletter subscribers through one-click links outside the preference centre's log; sold copies through a
+  circulation release that re-dated start dates) held 0 of 24 for both round 3 readers.
+- Stage 4, three rounds of two scored readers. Round 1:
+  - one reader landed the call through a fingerprint (every browser one address and agent), and the generator was
+    repaired;
+  - both readers kept the asks, and both devices were re-sited.
+
+  Round 2:
+  - both readers missed the call;
+  - one kept the sold copies through impossible records, which were repaired.
+
+  Round 3:
+  - one reader landed the call, by a calibration on signed-in WebKit browsers stratified by edition, cookie age and
+    sessions per identifier, which leans on the print subscribers in the light strata;
+  - the other reader missed (four).
+
+  Four of five clean readers missed, but one landing spends the architecture under the two-reader rule.
+- Options: ship as measured (the client's bar tolerates one top response on the call when the asks hold, and they
+  held at 0; risk: two top portal responses taking the stratified calibration); a fifth architecture (the remaining
+  candidates below, 3 then 2 or 4); or retire the number (the pipeline's default after spent architectures).
+- Earlier candidates still undrawn: 2 (survey interviewer effects from randomly assigned PSU pairs), 3 (immunization
+  coverage through the survey's first-dose coverage times the administrative third-to-first ratio), 4 (a register's
+  oldest-old counts rebuilt from deaths by cohort). Architectures 1 to 3 died the same way: a general statistical
+  correction a strong model runs unprompted.
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

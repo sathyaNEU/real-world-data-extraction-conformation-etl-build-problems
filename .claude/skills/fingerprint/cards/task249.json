@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Eight of the twelve editions carry the measurement note in the 2029 media kit: Rhenhagen Stadt, Kirchbrunn, Wiesbrück, Hollerfeld, Sonnweiler, Mühlenstedt, Grauheim and Lindenau; Altenhorst, Eichtal, Bergstetten and Falkenried print their figures without it.",
+  "answer_source": "task249/submission.md, Final Recommendation (generator/figures.json call.noted)",
   "gap": [
     "population"
   ],
@@ -32,26 +32,29 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and document correctly counts each signed-in WebKit browser once from the reader-account service's device register and replays the seven-day expiry on the visit histories of the signed-out visitors on other browsers in the same edition and device class to estimate the signed-out WebKit browsers; that under-states the overcount and drops editions from the note, because the meter, held in the same capped storage, resets on WebKit and sends fewer of its weekly and occasional readers to the registration wall, so the signed-out WebKit pool keeps the returners whose counterparts on other browsers registered.",
+  "analyst_test": "A strong analyst who reads every field and document correctly counts each signed-in WebKit browser once from the sign-in register and transports the seven-day replay of signed-out readers of other browsers to the signed-out WebKit identifiers within edition, month and device class, filing 4 editions and dropping Wiesbrück, Sonnweiler, Grauheim and Lindenau (22.0 to 22.8 per cent against the golden's 27.9 to 29.4), because sign-in is a consequence of the cap: the meter in the same capped storage keeps WebKit's weekly and occasional readers signed out.",
   "domain_test": "The quantity that decides is how many distinct browsers an analytics identifier count represents when one browser family caps the identifier's life at seven idle days, estimated the way audience measurement estimates it: the identifier rule replayed on the visit histories of browsers whose identifiers persist, matched on what the cap cannot change (edition, device class, a print subscription activated before any meter ran) and pooled over the sign-in status the meter produces. Put patients and wristbands in place of browsers and cookies, or kilowatt-hours in place of visits, and the cookie rule, the meter sharing its storage and the registrations the meter drives have no counterpart: the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:transporting-revisit-behaviour-across-a-cookie-cap-conditioned-only-on-what-the-cap-cannot-change",
   "layer1": [
     "the analytics export's session start and end in UTC against calendar months in Europe/Berlin across the clock change of 29 October 2028",
     "raw user-agent strings beside the platform's parsed browser field, which reports Chrome on iPhone as Chrome although it runs on WebKit",
-    "sessions re-sent in a replayed upload batch under new session ids with the original client id and timestamps",
-    "the platform's bot and internal-traffic flags beside sessions from the newsroom's own address range",
-    "one edition re-coded after the merger of two local desks on 1 November 2028",
-    "reader-account references hashed differently in the device register and the session export",
-    "the monthly platform report's figures for the whole year beside the session export for the quarter",
-    "dates typed as text in the paywall configuration workbook and a meter count that restarts each calendar month"
+    "the export job's re-sent rows of 21 November 2028, identical second copies",
+    "the platform's bot flag beside sessions from the newsroom's own address range, both filtered from reports but not from the export",
+    "Hollerfeld's content group re-coded from HKR to HOL on 1 November 2028",
+    "account references hashed in the export and in clear in the sign-in register",
+    "the platform's monthly report for the whole year beside the quarter's export",
+    "the paywall console's dates typed as German text",
+    "addresses that change as household lines reconnect and phones move between mobile networks, and user agents that change with each browser release, so neither marks a browser",
+    "the circulation system's release of 6 November 2028 writing the date of a saved change of address, bank details or payment into the subscription's start date until its fix (Ask B)",
+    "the newsletters' one-click links adding a neighbouring edition's group outside the preference centre's change log, recorded only as clicks in the activity log (Ask A)"
   ],
   "stakeholder_role": "the head of audience data, who certifies the media kit's audience figures before the 2029 kit is sent to advertisers",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
     "file": "web_sessions_2028q4.parquet: the analytics platform's session export for October to December 2028",
-    "rows": 0,
+    "rows": 3012902,
     "entity": "one analytics session",
     "grain": "session by analytics client identifier",
     "source": "constructed: a fully simulated export (declared in metadata.json); no public session-level dataset carries the cookie cap"
@@ -72,14 +75,14 @@
     ]
   },
   "deliverables": [
-    "media_kit_2029_unique_browsers.xlsx",
+    "media_kit_2029_edition_figures.xlsx",
     "measurement_note_2029.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is how many distinct units a count of identifiers represents when one class of unit loses its identifier after a fixed idle gap, recovered by replaying the expiry on the histories of units whose identifiers persist, matched only on attributes the expiry cannot alter, because a status that a quota held in the same expiring storage hands out differently on the two sides sorts the frequent returners unevenly between its groups.",
   "driver_concrete": "Each edition's WebKit browsers are estimated by replaying the seven-day cookie expiry on the visit histories of browsers on other browsers in the same edition and device class, with print subscribers (who activated digital access whatever the meter did) held apart and counted from the device register, and every other browser pooled whether signed in or not: the meter shares the capped storage, so on WebKit it resets, fewer weekly and occasional readers meet the registration wall, and conditioning on sign-in compares a signed-out WebKit pool full of returners with a signed-out pool on other browsers whose returners registered.",
-  "stump": "A competent solver counts each signed-in WebKit browser once from the reader-account service's device register and replays the seven-day cookie expiry on the signed-out visitors of other browsers in the same edition and device class, and so files the measurement note on too few editions, each WebKit overcount understated by three to six points, because the paywall meter sits in the same capped storage: on WebKit it resets, fewer weekly and occasional readers meet the registration wall, and the signed-out WebKit pool keeps the returners whose counterparts on other browsers registered.",
+  "stump": "A competent solver counts the signed-in WebKit browsers once from the sign-in register and divides the signed-out WebKit identifiers by the seven-day replay of signed-out readers on other browsers in the same edition, month and device class, filing 4 editions (Rhenhagen Stadt, Kirchbrunn, Hollerfeld, Mühlenstedt) and leaving Wiesbrück, Sonnweiler, Grauheim and Lindenau under the 25 per cent line at 22.0 to 22.8, because the paywall meter sits in the same capped storage: on WebKit it restarts with the identifier, so weekly and occasional readers there seldom meet the registration wall and stay signed out while their counterparts on other browsers registered; the golden pools every non-print reader over sign-in, holds print subscribers apart and files 8.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task233": "there a departure measured on a follow-up is carried across base rates as odds; here a revisit-gap distribution is replayed through an identifier-expiry rule, and the decisive choice is which statuses the replay conditions on (a print activation that predates the cap in, the sign-in the capped meter produces out)",

@@ -1,7 +1,8 @@
-"""task249's documents: the integrity standard, the technical manual's chapter 4 extract, the equivalence study
-report, the 2029 client plans workbook, the registers and the data dictionary."""
+"""task249's documents: the audience policy, the analytics tag's notes, the paywall and accounts notes, the platform's
+monthly report, the paywall log workbook and the editions register."""
 import datetime as dt
 import numpy as np
+import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -13,7 +14,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 import params as P
 import postprocess
 
-VAS, ABH, RAC, NAC, ISH = (P.PEOPLE[k] for k in ("head", "psychometrician", "client", "ops", "data"))
+HEAD, ENG, ACC, SALES = (P.PEOPLE[k] for k in ("head", "analytics", "accounts", "sales"))
 
 
 def _styles():
@@ -59,197 +60,181 @@ def _sections(s, sec, body, h2):
             s.append(Paragraph(p, body))
 
 
-# ------------------------------------------------------------------ the integrity standard
-def standard(path):
+# ------------------------------------------------------------------ the audience policy
+def policy(path):
     body, h1, h2, small, cell = _styles()
-    doc = _doc(path, "MAL-IS-04 Assessment integrity standard", VAS, "Assessment integrity standard, issue 4")
-    s = [Paragraph("Medhavi Assessment Labs: Assessment integrity standard (MAL-IS-04)", h1),
-         Paragraph("Issue 4, approved 24 April 2029, in force from the 2029 campus season. Owner: %s, Head of "
-                   "Assessment Integrity. Supersedes issue 3 (May 2027)." % VAS, small), Spacer(1, 4)]
+    doc = _doc(path, "Audience figures for advertisers", HEAD, "Definitions for the 2029 media kit")
+    s = [Paragraph("%s: audience figures for advertisers" % P.ORG, h1),
+         Paragraph("Definitions for the 2029 media kit, which quotes the fourth quarter of 2028. Approved 4 December "
+                   "2028 by %s, head of audience data. Replaces the definitions of November 2027; section 4 is new."
+                   % HEAD, small), Spacer(1, 4)]
     sec = [
         ("1. Scope", [
-            "This standard governs how Medhavi keeps the results it shares with client employers fit to use: who may "
-            "sit MAT-R, how sittings are logged, how an item is kept from over-use, and, from the 2029 season, how a "
-            "shortlisted candidate's online result is verified under proctoring before the client relies on it."]),
-        ("2. Terms", [
-            "<b>Candidate</b>: a person in the season's candidate register. <b>Booking</b>: a candidate's one MAT-R "
-            "booking for the season; a candidate sits MAT-R once a season and the result is shared with every client "
-            "account the candidate applies to. <b>Attempt</b>: one run of the test under a booking. <b>Genuine "
-            "candidate</b>: a candidate who sat their own MAT-R. <b>Shortlisted</b>: invited by a client account to its "
-            "selection day on the account's ranking of the results shared with it.",
-            "Platform records (attempts, item administrations) carry UTC; client-facing exports carry IST. Estimates "
-            "and standard errors are held in logits to three decimals; the scale score shown to clients is 50 plus 10 "
-            "per logit, rounded to a whole number (technical manual, chapter 4)."]),
-        ("3. Verification of shortlisted candidates (from the 2029 season)", [
-            "<b>3.1 Verification.</b> Every candidate a client account shortlists sits MAT-V, the 12-item proctored "
-            "adaptive test drawn from "
-            "the secure bank, at the start of the account's selection day. The platform compares the candidate's "
-            "MAT-R estimate with the MAT-V estimate.",
-            "<b>3.2 Referral.</b> A candidate is referred to the integrity desk when the MAT-R estimate lies above the "
-            "upper limit of the 95 per cent band around the MAT-V estimate, that is, above the MAT-V estimate plus "
-            "1.96 times the MAT-V standard error, both in logits as the platform holds them. A referral is not a "
-            "finding: the desk reviews the case and decides it.",
-            "<b>3.3 Referral cap.</b> Over a season, the check at a client account may refer no more than 15 per cent "
-            "of the genuine candidates the account shortlists. Before each season the desk takes each account's plan "
-            "for the season, with an applicant pool like the account's previous season, and sets the account on MAT-V "
-            "Extended (24 items) for the season where the share of its genuine shortlisted candidates the check would "
-            "refer exceeds 15 per cent.",
-            "<b>3.4</b> The cap protects candidates and clients from referrals that a genuine candidate cannot "
-            "answer; it is not a target for the number of impersonations found."]),
-        ("4. Item exposure", [
-            "An item's weekly exposure is the share of the candidates who sat MAT-R in the test week who were shown "
-            "the item. An item "
-            "whose exposure exceeds 12 per cent in any test week of a season is rested for the next season and its "
-            "replacement drawn from the pretest pool. Test weeks run Monday to Sunday, IST."]),
-        ("5. Impersonation", [
-            "A sitting found to have been taken by someone other than the registered candidate is an impersonation. "
-            "Selection-day staff check photo identity against the booking; a suspected case is opened by the account's "
-            "selection-day lead and decided by the integrity desk. A candidate may appeal a decision within 30 days. "
-            "A confirmed impersonation voids the sitting's result for every account it was shared with."]),
-        ("6. Interrupted attempts", [
-            "An attempt interrupted by a connection or device failure may be restarted once within the test week. The "
-            "restart is a new attempt under the same booking and starts its item selection afresh."]),
+            "The media kit quotes, for each of the twelve local editions of the %s, its digital audience, its sold "
+            "copies and its newsletter subscribers. Advertisers buy local packages on these figures, so each one is "
+            "defined once, here, and the head of audience data certifies the kit's figures before the kit goes to "
+            "advertisers on 1 February 2029." % P.PAPER]),
+        ("2. Unique browsers", [
+            "An edition's unique browsers in a calendar month (Europe/Berlin) are the browsers that loaded at least one "
+            "of the edition's pages that month. A browser counts once, however many identifiers the analytics tag gave "
+            "it in the month, and a browser that read two editions counts in both. Automated traffic and the "
+            "newsroom's own addresses are left out.",
+            "The kit quotes the quarter's figure: the average of its three monthly figures."]),
+        ("3. The reported figure", [
+            "The kit prints, for each edition, the analytics platform's users for the quarter: the platform's distinct "
+            "identifiers for the edition in each month of the quarter, averaged over the three months. The platform "
+            "filters automated traffic and the newsroom's addresses out of its reports."]),
+        ("4. The measurement note", [
+            "From the 2029 kit, an edition whose reported figure for the quarter exceeds its unique browsers for the "
+            "quarter by more than 25 per cent carries this note beside the figure: <i>Reported users include browsers "
+            "counted more than once; see the methods page.</i> An edition at or below 25 per cent is printed without "
+            "it. The note applies to the digital figure only."]),
+        ("5. Sold copies", [
+            "Sold copies follow the IVW's rules for daily newspapers: the paid copies of each publication day, "
+            "averaged over the edition's publication days in the quarter. A publication day's paid copies are one for "
+            "each paid subscription that day, whatever it is delivered as, and every single copy sold at retail "
+            "(delivered less returned).",
+            "Trial and free copies are not paid. A paused subscription's copies are not sold on the days they are not "
+            "delivered; a copy forwarded to a holiday address, or donated to a school by the subscriber, is delivered "
+            "and sold. The papers appear Monday to Saturday, except on public holidays in the edition's state "
+            "(Hesse or Rhineland-Palatinate)."]),
+        ("6. Newsletter subscribers", [
+            "Each edition has its morning newsletter, sent as a group of the one local-newsletter list. The kit quotes "
+            "the edition's subscribers at the end of the quarter's last day (Berlin time): contacts whose subscription "
+            "was confirmed and active, in the edition's group. A contact in two groups counts in both."]),
+        ("7. Rounding", [
+            "Unique browsers and the reported figure to the nearest browser, sold copies to the nearest copy, "
+            "subscribers exact; the comparison in section 4 is made before rounding."]),
     ]
     _sections(s, sec, body, h2)
-    doc.build(s, onFirstPage=_footer("MAL-IS-04, issue 4"), onLaterPages=_footer("MAL-IS-04, issue 4"))
-    postprocess.scrub(path, P.PRODUCER, "2029-04-24T10:15:00")
+    doc.build(s, onFirstPage=_footer("%s, audience data. Internal." % P.ORG), onLaterPages=_footer("%s, audience data. Internal." % P.ORG))
+    postprocess.scrub(path, P.ORG, "2028-12-04T16:20:00")
 
 
-# ------------------------------------------------------------------ technical manual, chapter 4 extract
-def manual(path):
+# ------------------------------------------------------------------ the analytics tag's notes
+def tag_notes(path):
     body, h1, h2, small, cell = _styles()
-    doc = _doc(path, "MAT-R and MAT-V technical manual, chapter 4", ABH, "Scoring and precision")
-    s = [Paragraph("MAT-R and MAT-V technical manual: chapter 4, scoring and precision (extract)", h1),
-         Paragraph("Edition 2028.2, September 2028. Psychometrics team: %s." % ABH, small), Spacer(1, 4)]
+    doc = _doc(path, "Analytics tag: notes for the data team", ENG, "The site's analytics tag and its export")
+    s = [Paragraph("Analytics tag on rhenhagener-anzeiger.de: notes for the data team", h1),
+         Paragraph("%s, web analytics. Revised 9 January 2029." % ENG, small), Spacer(1, 4)]
     sec = [
-        ("4.1 Banks and selection", [
-            "MAT-R draws 16 items from an operational bank of 340 two-parameter logistic items in three content "
-            "areas (numerical, verbal, abstract), taken in rotation. The first item is chosen at the typical level of "
-            "the candidate's college tier; each later item is drawn at random from the five unused items of the due "
-            "area that carry the most information at the running estimate. MAT-V draws 12 items, and MAT-V Extended "
-            "24, from a separate secure bank of 228 items under the same rules; MAT-V is delivered only under "
-            "proctoring.",
-            "Both banks are dense between about -2 and +1 logit and hold fewer items above that."]),
-        ("4.2 Estimates", [
-            "The final estimate is the weighted likelihood estimate on the bank's logit scale, which stays finite for "
-            "a candidate who answers every item correctly. The standard error reported with it is the inverse square "
-            "root of the test information at the estimate. The client scale score is 50 plus 10 per logit, rounded to "
-            "a whole number; the standard error in scale points is ten times the logit value."]),
-        ("4.3 Conditional standard error", [
-            "Table 4.3 gives the standard error at each ability, from the design simulations (20,000 simulees per "
-            "point) that set the test lengths. Between the tabled points the standard error may be interpolated."]),
+        ("The identifier", [
+            "The tag keeps its identifier, the client_id, in a first-party cookie (<i>_rhm_id</i>) that its script "
+            "writes on our domain and writes again on every page view, with an expiry of 400 days. A client_id is a "
+            "random number, a point, and the second (Unix time) at which the cookie was first written.",
+            "Since 2019 WebKit's tracking prevention limits a cookie that a page's script writes, and any other storage "
+            "a script writes, to seven days from its last write. WebKit is Safari's engine on the Mac and, on iPhone "
+            "and iPad, the engine of every browser: Safari, Chrome, Firefox, Edge and the browsers inside apps. A reader "
+            "who comes back to us on WebKit after more than seven days without a page view arrives with a new "
+            "client_id. On other browsers the cookie lasts."]),
+        ("The session export", [
+            "One row per session (30 minutes without a hit ends a session); session_start and session_end are the "
+            "session's first and last hits, in UTC. content_group is the edition, read from the page's path. "
+            "device_category, browser and os are the platform's reading of the user agent; on iPhone and iPad, Chrome, "
+            "Firefox and Edge appear under their own names and the browsers inside apps as Safari (in-app). ip_prefix "
+            "is the address with its last part set to zero. user_ref is set when the reader is signed in: the SHA-256 "
+            "of <i>rhm-</i> followed by the account number, its first 20 hexadecimal characters. is_bot is the "
+            "platform's automated-traffic flag.",
+            "The platform's reports count users as distinct client_ids and filter out automated traffic and the "
+            "newsroom's addresses (%s); the export keeps every session." % P.NEWSROOM_PREFIX]),
+        ("Changes in the fourth quarter", [
+            "1 November 2028: Hollerfeld's pages moved from /hollerfeld-kreis/ to /hollerfeld/, and its content group "
+            "changed from HKR to HOL.",
+            "21 November 2028: the export job ran twice for the sessions that started between 03:00 and 09:00 UTC; "
+            "those sessions appear twice, the second copy identical to the first. The platform's reports were not "
+            "affected."]),
     ]
     _sections(s, sec, body, h2)
-    grid = np.round(np.arange(-3.0, 3.01, 0.25), 2)
-    rows = [["Ability (logit)", "MAT-R, 16 items", "MAT-V, 12 items", "MAT-V Extended, 24 items"]]
-    for t in grid:
-        rows.append(["%+.2f" % t, "%.3f" % P.se_online(t), "%.3f" % P.se_verify(t), "%.3f" % (P.se_verify(t) / np.sqrt(2.0))])
-    s.append(_grid(rows, [34 * mm, 38 * mm, 38 * mm, 44 * mm], cell))
-    s.append(Spacer(1, 4))
-    s.append(Paragraph("Standard errors in logits. Source: design simulations, September 2028.", small))
-    doc.build(s, onFirstPage=_footer("MAT technical manual, chapter 4"), onLaterPages=_footer("MAT technical manual, chapter 4"))
-    postprocess.scrub(path, P.PRODUCER, "2028-09-22T16:40:00")
+    doc.build(s, onFirstPage=_footer("Web analytics. Internal."), onLaterPages=_footer("Web analytics. Internal."))
+    postprocess.scrub(path, P.ORG, "2029-01-09T11:05:00")
 
 
-# ------------------------------------------------------------------ the equivalence study report
-def study_report(path, tab_gain, tab_ref, n_vol, n_att, r_corr):
+# ------------------------------------------------------------------ the paywall and accounts notes
+def paywall_notes(path):
     body, h1, h2, small, cell = _styles()
-    doc = _doc(path, "MAT-V equivalence study 2028", ABH, "Equivalence study report")
-    s = [Paragraph("MAT-V equivalence study, October to December 2028", h1),
-         Paragraph("Report EQ-2028-03, 19 January 2029. %s, psychometrics. For the integrity desk." % ABH, small),
-         Spacer(1, 4)]
+    doc = _doc(path, "Paywall and reader accounts", ACC, "How the meter, the wall and sign-in work")
+    s = [Paragraph("Paywall and reader accounts: how they work", h1),
+         Paragraph("%s, paywall and reader accounts. Written for the data team, 20 December 2028." % ACC, small), Spacer(1, 4)]
     sec = [
-        ("Purpose", [
-            "Before MAT-V is used at the 2029 selection days, the study checks that MAT-V and MAT-R report on one "
-            "scale and measures the gain a second sitting brings, so that the integrity desk can read a difference "
-            "between the two tests."]),
-        ("Design", [
-            "%s volunteers, final-year students at 14 partner colleges recruited through the colleges' placement "
-            "cells after the 2028 season, sat MAT-R under supervision in their college laboratory between 16 and 27 "
-            "October 2028 and MAT-V at a Medhavi centre after an interval fixed in advance (1, 2, 3, 7, 14, 21, 28, "
-            "42, 56, 70 or 84 days). %s sat both tests; the others did not attend MAT-V. Both sittings were "
-            "supervised, so every pair is a genuine candidate's." % (f"{n_vol:,}", f"{n_att:,}")]),
-        ("Results", [
-            "The two tests correlate at %.2f over the pairs. Table 1 gives the mean of MAT-V minus MAT-R by interval: "
-            "the second sitting runs higher, most within the first days and fading over the following weeks." % r_corr]),
+        ("The meter and the wall", [
+            "Metered articles are free up to five a calendar month. Since 1 March 2028 the sixth asks the reader to "
+            "register a free account (until then the paywall showed a subscription offer after the tenth). A signed-in "
+            "reader reads without a meter.",
+            "The meter is kept on the reader's device, in the browser storage our paywall script writes, and starts "
+            "again on the first of each month. A reader who deletes our site data starts again as well."]),
+        ("Accounts", [
+            "An account's origin is how it was opened: <i>registration</i> at the wall or on the sign-up page; "
+            "<i>digital subscription</i>, bought online; <i>print subscription</i>, when a print subscriber activates "
+            "digital access with the subscriber number (open to every print subscriber since 2019). home_edition is "
+            "the edition the reader chose, as it stands today."]),
+        ("Sign-in", [
+            "The account service keeps a reader signed in with its own login cookie, set by our server for 180 days, "
+            "one for each browser: its id is the device_id. The sign-in register lists, for each account and device, "
+            "every client_id the analytics tag carried while the reader was signed in on that device in the fourth "
+            "quarter, with the first and last signed-in session."]),
+        ("The paywall log", [
+            "One row each time the wall was shown in the fourth quarter: when (Berlin time, as the paywall console "
+            "writes it), the client_id, the edition, the outcome (registered, subscribed, or closed without either) and "
+            "when the meter that reached the wall started counting."]),
     ]
     _sections(s, sec, body, h2)
-    rows = [["Interval (days)", "Pairs", "Mean MAT-V minus MAT-R (logit)"]] + tab_gain
-    s.append(_grid(rows, [40 * mm, 30 * mm, 60 * mm], cell))
-    s.append(Spacer(1, 6))
-    s.append(Paragraph("Table 2 applies the referral rule of MAL-IS-04 section 3.2 to the pairs, by interval band.", body))
-    rows = [["Interval band", "Pairs", "Referred", "Share referred"]] + tab_ref
-    s.append(_grid(rows, [40 * mm, 30 * mm, 30 * mm, 40 * mm], cell))
-    s.append(Spacer(1, 4))
-    s.append(Paragraph("Source: equivalence study pairs (file mat_v_equivalence_study_2028.csv).", small))
-    doc.build(s, onFirstPage=_footer("EQ-2028-03"), onLaterPages=_footer("EQ-2028-03"))
-    postprocess.scrub(path, P.PRODUCER, "2029-01-19T11:05:00")
+    doc.build(s, onFirstPage=_footer("Paywall and reader accounts. Internal."), onLaterPages=_footer("Paywall and reader accounts. Internal."))
+    postprocess.scrub(path, P.ORG, "2028-12-20T09:40:00")
 
 
-# ------------------------------------------------------------------ the 2029 client plans workbook
-def plans(path, w):
+# ------------------------------------------------------------------ workbooks
+HFILL = PatternFill("solid", fgColor="DDE3EA")
+
+
+def report_xlsx(path, rep):
     wb = Workbook()
     ws = wb.active
-    ws.title = "2029 plans"
-    ws["A1"] = "Client plans for the 2029 campus season"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Compiled by client services (%s) from the accounts' returns due 30 April 2029. Shortlist is the number of " \
-               "candidates the account will invite to its selection day, ranked on MAT-R." % RAC
-    ws.merge_cells("A2:I2")
-    ws["A4"] = "Account"; ws.merge_cells("A4:C4")
-    ws["D4"] = "2029 plan"; ws.merge_cells("D4:I4")
-    hdr = ["Code", "Client", "Sector", "Selection format", "Campuses", "Expected applicants", "Shortlist",
-           "Selection days", "Notes"]
-    for j, h in enumerate(hdr, 1):
-        c = ws.cell(row=5, column=j, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="E6EAF0")
-    fmt_txt = {"D1": "Day-one campus drive", "S": "First-company campus drive", "L": "Later campus drive",
-               "C": "Assessment centre"}
-    days = {"D1": "Day 3 of each campus's test week", "S": "Day 3 of each campus's test week",
-            "L": None, "C": None}
-    r = np.random.default_rng(P.SEED + 3)
-    row = 6
-    for code, name, sector, grp, mix, f28, f29, q29 in P.ACCOUNTS:
-        a = w.acc[code]
-        pl = w.plan[code]
-        ncamp = sum(len(v) for v in a["cover"].values())
-        if f29 == "L":
-            d0 = dt.date(2029, 9, 3) + dt.timedelta(days=int(r.integers(0, 8)))
-            sd = "%s to %s" % (d0.strftime("%d %B %Y").lstrip("0"), (d0 + dt.timedelta(days=int(r.integers(10, 18)))).strftime("%d %B %Y").lstrip("0"))
-        elif f29 == "C":
-            d0 = dt.date(2029, 10, 8) + dt.timedelta(days=int(r.integers(0, 15)))
-            sd = "%s to %s (Bengaluru, Pune, Hyderabad)" % (d0.strftime("%d %B %Y").lstrip("0"), (d0 + dt.timedelta(days=int(r.integers(14, 30)))).strftime("%d %B %Y").lstrip("0"))
-        else:
-            sd = days[f29]
-        note = ""
-        if code == "NVK":
-            note = "Includes the former Paisaghar Lending campus list (PGL in 2028)."
-        if code == "VRD":
-            note = "Moves from assessment centres to day-one campus drives in 2029."
-        vals = [code, name, sector, fmt_txt[f29], ncamp, pl["expected"], pl["shortlist"], sd, note]
-        for j, v in enumerate(vals, 1):
-            ws.cell(row=row, column=j, value=v)
-        row += 1
-    widths = [8, 32, 24, 26, 10, 18, 11, 44, 52]
-    for j, wdt in enumerate(widths, 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-    ws.freeze_panes = "A6"
-    cal = wb.create_sheet("Calendar")
-    cal["A1"] = "2029 campus season calendar"
-    cal["A1"].font = Font(bold=True, size=12)
-    lines = [
-        "MAT-R test weeks run in July 2029: each college's week begins on Monday 2, 9, 16 or 23 July, as in 2028 "
-        "(college register). Candidates sit MAT-R once, on day 1 or day 2 of their college's week; a candidate who has "
-        "applied to a day-one or first-company drive sits it in the campus lab on day 1.",
-        "Day-one and first-company campus drives hold the selection day on day 3 of the campus's test week.",
-        "Later campus drives and assessment centres hold their selection days on the dates in the plans sheet.",
-        "MAT-V is sat at the start of the selection day, under proctoring (MAL-IS-04, section 3).",
-    ]
-    for k, t in enumerate(lines, 3):
-        cal.cell(row=k, column=1, value=t)
-        cal.cell(row=k, column=1).alignment = Alignment(wrap_text=True, vertical="top")
-    cal.column_dimensions["A"].width = 120
+    ws.title = "Users by month"
+    months = ["Jan 2028", "Feb 2028", "Mar 2028", "Apr 2028", "May 2028", "Jun 2028", "Jul 2028", "Aug 2028",
+              "Sep 2028", "Oct 2028", "Nov 2028", "Dec 2028"]
+    ws.append(["Users (distinct client_ids) by content group and month, Europe/Berlin. Filters: automated traffic, "
+               "internal traffic (newsroom). Exported 8 January 2029."])
+    ws.append([])
+    ws.append(["Content group"] + months)
+    for c in ws[3]:
+        c.font = Font(bold=True); c.fill = HFILL
+    for _, row in rep.iterrows():
+        ws.append([row["content_group"]] + [None if pd.isna(row[m]) else int(row[m]) for m in range(1, 13)])
+    for r in ws.iter_rows(min_row=4, min_col=2):
+        for c in r:
+            c.number_format = "#,##0"
+    ws.column_dimensions["A"].width = 15
+    for i in range(2, 14):
+        ws.column_dimensions[get_column_letter(i)].width = 10.5
+    ws.freeze_panes = "B4"
     wb.save(path)
-    postprocess.scrub(path, P.FIRM, "2029-05-06T18:20:00")
-    postprocess.finish_office(path, "2029-04-30T09:00:00Z", "2029-05-06T18:20:00Z", P.FIRM)
+    postprocess.scrub(path, P.ORG, "2029-01-08T10:12:00")
+    postprocess.finish_office(path, "2029-01-08T10:12:00Z", "2029-01-08T10:12:00Z", P.ORG)
+
+
+def paywall_xlsx(path, PW):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Wall shown"
+    ws.append(["shown", "client_id", "edition", "outcome", "meter_started"])
+    for c in ws[1]:
+        c.font = Font(bold=True); c.fill = HFILL
+    outc = {"registration": "registered", "subscription": "subscribed", "closed": "closed"}
+    for t, cid, ed, out, since in zip(PW["shown_local"], PW["client_id"], PW["edition"], PW["outcome"], PW["since_local"]):
+        ws.append([t.strftime("%d.%m.%Y %H:%M"), cid, ed, outc[out], since.strftime("%d.%m.%Y %H:%M")])
+    ws.column_dimensions["A"].width = 17; ws.column_dimensions["B"].width = 23; ws.column_dimensions["E"].width = 17
+    ws.freeze_panes = "A2"
+    wb.save(path)
+    postprocess.scrub(path, P.ORG, "2029-01-03T08:30:00")
+    postprocess.finish_office(path, "2029-01-03T08:30:00Z", "2029-01-03T08:30:00Z", P.ORG)
+
+
+def editions_table():
+    rows = []
+    kreis = {"HE": "Rhenhagen-Land", "RP": "Kreis Hollerfeld"}
+    hh = {"RHS": 61800, "KBR": 48200, "ALH": 21900, "WBR": 33600, "HOL": 29400, "SOW": 27100, "MST": 31800,
+          "GRH": 18900, "EIT": 22400, "BST": 17600, "LDN": 23300, "FKR": 20700}
+    for e in P.EDITIONS:
+        rows.append((e["code"], e["name"], e["state"], kreis[e["state"]], hh[e["code"]],
+                     P.OLD_CODE.get(e["code"], "")))
+    return pd.DataFrame(rows, columns=["edition", "name", "state", "district", "households_2022", "former_content_group"])
