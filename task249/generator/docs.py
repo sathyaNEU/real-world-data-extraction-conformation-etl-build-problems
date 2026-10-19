@@ -247,7 +247,7 @@ def maintenance(path):
     for k in range(0, 36, 3):
         r = []
         for c in codes[k:k + 3]:
-            r += [c, N.FW_DATES[c].strftime("%d %b %Y")]
+            r += [c, "on 4.2 (the spare)" if c == N.REPLACED[0] else N.FW_DATES[c].strftime("%d %b %Y")]
         fw.append(r)
     s.append(_grid(fw, [16 * mm, 40 * mm] * 3, cell))
     d = _doc(path, "Maintenance log, low-cost ozone network", P.CENTRE, "Maintenance log")
@@ -259,21 +259,25 @@ def maintenance(path):
 def firmware(path):
     body, h1, h2, small, cell = _styles()
     s = [Paragraph("OZN firmware 4.2 release note", h1),
-         Paragraph("%s, December 2027. For OZN-A and OZN-B nodes from firmware 3.7." % P.VENDOR, small), Spacer(1, 4)]
+         Paragraph("%s, December 2027. For OZN-A and OZN-B nodes on firmware 3.7." % P.VENDOR, small), Spacer(1, 4)]
     sec = [("What changes", [
         "4.2 adds humidity compensation for the tungsten oxide head. When the relative humidity at the head is above "
-        "85 per cent the node corrects its reading for the head's humidity response and marks the record.",
-        "The status codes are renumbered to make room for it:"])]
+        "85 per cent the node corrects its reading for the head's humidity response and sends the record as "
+        "humidity-compensated.",
+        "Records carry these status codes:"])]
     _sections(s, sec, body, h2)
-    rows = [["Status", "Up to 3.7", "From 4.2"],
-            ["0", "accepted", "accepted"],
-            ["1", "warm-up: the first two hours after a restart; the reading is low", "accepted, humidity-compensated"],
-            ["2", "head fault: no reading", "warm-up: the first two hours after a restart; the reading is low"],
-            ["3", "", "head fault: no reading"]]
-    s.append(_grid(rows, [16 * mm, 72 * mm, 72 * mm], cell))
-    _sections(s, [("Unchanged", [
-        "The weekly restart at 03:00 local time on Sundays, the record intervals (OZN-A one hour, OZN-B 30 minutes), "
-        "the units (ppb) and the time stamps (start of the interval, UTC)."])], body, h2)
+    rows = [["Status", "Meaning"],
+            ["0", "accepted"],
+            ["1", "accepted, humidity-compensated"],
+            ["2", "warm-up: the first two hours after a restart, while the head heats; the reading is low"],
+            ["3", "head fault: no reading"]]
+    s.append(_grid(rows, [16 * mm, 144 * mm], cell))
+    _sections(s, [("Installing", [
+        "The node downloads 4.2 over the mobile network and installs it at once. It then restarts, so its first two "
+        "hours on 4.2 are warm-up."]),
+        ("Unchanged", [
+            "The weekly restart at 03:00 local time on Sundays, the record intervals (OZN-A one hour, OZN-B 30 "
+            "minutes), the units (ppb) and the time stamps (start of the interval, UTC)."])], body, h2)
     d = _doc(path, "OZN firmware 4.2 release note", P.VENDOR, "Release note")
     _build(d, s, "%s - OZN firmware 4.2" % P.VENDOR)
     postprocess.scrub(path, P.VENDOR, "2027-12-14")

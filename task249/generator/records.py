@@ -25,6 +25,28 @@ def utc_of_local(t):
     return t.replace(tzinfo=MAD).astimezone(P.UTC)
 
 
+EPOCH = dt.datetime(2000, 1, 1, tzinfo=P.UTC)       # a node's clock after a restart, until it is set
+
+
+def next_weekly(t):
+    """the first weekly restart (Sunday 03:00 local time) after t; the node sets its clock from the network then"""
+    loc = t.astimezone(MAD)
+    d = loc.date()
+    while True:
+        c = dt.datetime.combine(d, dt.time(3)).replace(tzinfo=MAD)
+        if c.weekday() == 6 and c > loc:
+            return c.astimezone(P.UTC)
+        d += dt.timedelta(days=1)
+
+
+def stamped(start, episodes):
+    """the start the node writes: its own clock, which counts from 2000-01-01 after any restart but the weekly one"""
+    for r0, r1 in episodes:
+        if r0 <= start < r1:
+            return EPOCH + (start - r0)
+    return start
+
+
 def iso(t):
     return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -79,6 +101,12 @@ class World:
             vals = H.readings(true, code, half=half)
             t0 = H.paths(code)[0]
             fw = utc_of_local(dt.datetime.combine(N.FW_DATES[code], dt.time(10)))
+            restarts = [storm1] if town in storm_towns else []
+            if code != N.REPLACED[0]:
+                restarts.append(fw)                      # the update installs at once and restarts the node
+            if code in N.MOVES:
+                restarts.append(utc_of_local(dt.datetime.combine(N.MOVES[code][2], dt.time(11))))
+            episodes = [(r0, next_weekly(r0)) for r0 in restarts]
             rh_off = rng.normal(0, 4)
             faults = set()
             for _ in range(rng.integers(1, 4)):        # a few heater faults, each a few hours
@@ -107,6 +135,7 @@ class World:
                 after_fw = t >= fw
                 warm = (loc.weekday() == 6 and loc.hour in (3, 4)) or \
                        (town in storm_towns and storm1 <= t < storm1 + dt.timedelta(hours=2)) or \
+                       (code != N.REPLACED[0] and fw <= t < fw + dt.timedelta(hours=2)) or \
                        (code in N.MOVES and utc_of_local(dt.datetime.combine(N.MOVES[code][2], dt.time(11))) <= t <
                         utc_of_local(dt.datetime.combine(N.MOVES[code][2], dt.time(13))))
                 humid = after_fw and self.rh[k] + rh_off > 88
@@ -135,13 +164,15 @@ class World:
                         if start < cut1 - keep:
                             continue                     # lost: older than the buffer when the link came back
                         rec = cut1 + dt.timedelta(minutes=rng.uniform(4, 40))
-                    out.append((code, iso(start), val, st, iso(rec)))
+                    out.append((code, iso(stamped(start, episodes)), val, st, iso(rec)))
                     if cut0 - dt.timedelta(hours=3) <= start < cut0:
                         # the buffer replayed the last hours before the drop as well
-                        out.append((code, iso(start), val, st, iso(cut1 + dt.timedelta(minutes=rng.uniform(4, 40)))))
+                        out.append((code, iso(stamped(start, episodes)), val, st,
+                                    iso(cut1 + dt.timedelta(minutes=rng.uniform(4, 40)))))
         out += self._spare_rows()
         df = pd.DataFrame(out, columns=["node_id", "reading_start_utc", "o3_ppb", "status", "received_utc"])
-        return df.sort_values(["node_id", "reading_start_utc", "received_utc"], kind="mergesort").reset_index(drop=True)
+        # the centre writes records in the order they arrive
+        return df.sort_values(["received_utc", "node_id", "reading_start_utc"], kind="mergesort").reset_index(drop=True)
 
     def _spare_rows(self):
         """The spare unit at OZ19's site: hourly, firmware 4.2, as OZ19B until the register was moved."""
@@ -154,6 +185,8 @@ class World:
         vals = span * s + N.ZERO[code] * 0.3 + rng.standard_normal(sim.HOURS) * P.NODE_NOISE
         out = []
         ren = utc_of_local(renamed)
+        up_t = utc_of_local(up)
+        episodes = [(up_t, next_weekly(up_t))]
         rh_off = rng.normal(0, 4)
         for k in range(k0, sim.HOURS):
             t = self.t[k]
@@ -162,7 +195,7 @@ class World:
             st = 2 if warm else (1 if self.rh[k] + rh_off > 88 else 0)
             v = vals[k] * (0.82 if warm else 1.0)
             rec = t + dt.timedelta(minutes=60 + rng.uniform(2, 9))
-            out.append((N.SPARE_ID if t < ren else code, iso(t), "%.1f" % max(v, 0.0), st, iso(rec)))
+            out.append((N.SPARE_ID if t < ren else code, iso(stamped(t, episodes)), "%.1f" % max(v, 0.0), st, iso(rec)))
         return out
 
     # -- the regional network --

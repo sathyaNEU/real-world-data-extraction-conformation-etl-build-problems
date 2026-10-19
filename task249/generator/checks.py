@@ -1,5 +1,6 @@
 """task249 generator checks: the call, the fork rows, the three rules on the clean truth, the asks, realism, gates."""
 import collections
+import datetime as dt
 import json
 import os
 import re
@@ -77,14 +78,24 @@ def main():
     st = pd.to_datetime(pk.raw.reading_start_utc, utc=True)
     ok("S1 no OZ19B record in the window", not ((pk.raw.node_id == pk.spare) & (st >= w0) & (st < w1)).any())
     ok("S2 every node on firmware 4.2 before the window", all(v < w0 for v in pk.fw.values()))
+    old = st < pd.Timestamp("2020-01-01", tz="UTC")
+    rec = pd.to_datetime(pk.raw.received_utc, utc=True)
+    ok("S3 every record stamped from a restart clock arrived before the window", bool(old.any()) and (rec[old] < w0).all())
     # ---- asks ----
     A = pk.ask_a()
     pk._nodes(fw_aware=False)
     A_fw = pk.ask_a()
+    pk._nodes(retime=False)
+    A_ck = pk.ask_a()
+    pk._nodes(fw_aware=False, retime=False)
+    A_both = pk.ask_a()
     pk._nodes(merge_spare=False)
     A_sp = pk.ask_a()
     pk._nodes()
     ok("A1 the firmware device moves every node's hours", all(A_fw[c] > A[c] for c in pk.codes), min(A_fw[c] - A[c] for c in pk.codes))
+    ok("A6 the restart clocks move every node's hours", all(A_ck[c] < A[c] for c in pk.codes), min(A[c] - A_ck[c] for c in pk.codes))
+    ok("A7 with both devices met wrong, every node's hours differ", all(A_both[c] != A[c] for c in pk.codes))
+    ok("A8 the restart clocks re-timed from the log's restarts agree with the received times", _retime_log(pk))
     ok("A2 the spare's id moves OZ19 only", A_sp["OZ19"] < A["OZ19"] and all(A_sp[c] == A[c] for c in pk.codes if c != "OZ19"))
     rows = pk.ask_a(count="rows")
     ok("A3 rows over-count every OZN-B node", all(rows[c] > A[c] for c in N.MODEL_B))
@@ -110,6 +121,36 @@ def main():
 
 def _is_person(n):
     return n.split()[0] in {"Matilde", "Paulino", "Edelmira"}
+
+
+def _retime_log(pk):
+    """each record stamped from a restart clock, placed from the log's restart (the storm's 19:00, the node's update at
+    10:00, the spare at 11:00 on 9 January) plus its clock time, against the solver's placement from received times"""
+    import pandas as pd
+    import records as RC
+    raw = pk.raw.copy()
+    st = pd.to_datetime(raw.reading_start_utc, utc=True)
+    rec = pd.to_datetime(raw.received_utc, utc=True)
+    old = st < pd.Timestamp("2020-01-01", tz="UTC")
+    storm = {c for c, town, _, _ in N.NODES if town in {"Villarejo de Mencia", "Campillo de Mencia", "Santa Cruz de Alcorna"}}
+    for i in raw.index[old]:
+        node = raw.at[i, "node_id"]
+        off = st[i] - pd.Timestamp("2000-01-01", tz="UTC")
+        cands = []
+        if node == N.SPARE_ID:
+            cands.append(RC.utc_of_local(N.REPLACED[2]))
+        else:
+            if node in storm:
+                cands.append(RC.utc_of_local(dt.datetime(2027, 11, 27, 19)))
+            if node != N.REPLACED[0]:
+                cands.append(RC.utc_of_local(dt.datetime.combine(N.FW_DATES[node], dt.time(10))))
+            if node in N.MOVES:
+                cands.append(RC.utc_of_local(dt.datetime.combine(N.MOVES[node][2], dt.time(11))))
+        fits = [r0 for r0 in cands if dt.timedelta(0) < rec[i] - (r0 + off) < dt.timedelta(minutes=75)]
+        placed = (rec[i] - off - pd.Timedelta(minutes=30)).floor("h") + off
+        if len(fits) != 1 or pd.Timestamp(fits[0]) + off != placed:
+            return False
+    return True
 
 
 def _utc_window(pk):

@@ -41,10 +41,15 @@ class Pack:
         self.spare = re.search(r"reported as (OZ\d\dB)", text).group(1)
         return out
 
-    def _nodes(self, dedup="latest", merge_spare=True, fw_aware=True):
+    def _nodes(self, dedup="latest", merge_spare=True, fw_aware=True, retime=True):
         d = self.raw.copy()
         d["start"] = pd.to_datetime(d.reading_start_utc, utc=True)
         d["recv"] = pd.to_datetime(d.received_utc, utc=True)
+        if retime:
+            # a record stamped in 2000 came from a clock counting from a restart: its received time places it
+            old = d.start < pd.Timestamp("2020-01-01", tz=UTC)
+            off = d.start[old] - pd.Timestamp("2000-01-01", tz=UTC)
+            d.loc[old, "start"] = (d.recv[old] - off - pd.Timedelta(minutes=30)).dt.floor("h") + off
         if merge_spare:
             d["fw42"] = d.node_id == self.spare
             d["node_id"] = d.node_id.replace({self.spare: self.spare[:-1]})

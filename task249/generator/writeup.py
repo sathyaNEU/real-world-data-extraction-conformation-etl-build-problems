@@ -73,11 +73,11 @@ Read over every hour of the eight weeks, the hill villages' nodes mislead: at ni
 
 ## 3. Step-by-Step Solution
 
-1. Node export: records sent twice after a link drop counted once (the latest received), OZ19B's records read as OZ19's (maintenance log, 9 to 25 January 2028), accepted readings by each node's firmware (status 0 before its 4.2 date in the maintenance log; status 0 or 1 from it, firmware 4.2 release note), OZN-B half-hours averaged into hours.
+1. Node export: records sent twice after a link drop counted once (the latest received). Records stamped in 2000 come from a node's clock counting from a restart, so each is placed at its restart plus the clock time it carries, the restart being the hour that its received time, less that clock time and 30 minutes, falls in (the storm's 19:00 on 27 November 2027, the node's update at 10:00, the spare's 11:00 on 9 January 2028); a stamp is the start of the record's interval in UTC (QA plan v3, section 2). OZ19B's records read as OZ19's (maintenance log, 9 to 25 January 2028). Accepted readings by each node's firmware: from its 4.2 date (maintenance log, 10:00 local) status 0 or 1 (firmware 4.2 release note); before it status 0 only, since humidity compensation came with 4.2 and the earlier status-1 records are the two warm-up hours after each restart, reading low. OZN-B half-hours averaged into hours.
 2. Window: the hours starting 6 April 2028 00:00 to 31 May 2028 23:00 local time (Europe/Madrid), 22:00 UTC on 5 April to 21:00 UTC on 31 May.
 3. Analysers: the provisional release, P-flagged hours with a value; hora is the hour ending, UTC+1 (station sheet); micrograms per cubic metre to ppb over 1.996 (20 degrees C).
 4. Span: on the window's hours starting 12:00 to 17:00 local, each node's standard deviation of its accepted hourly ozone over the standard deviation of the four analysers' pooled hours; outside 0.85 to 1.15 goes on the list.
-5. Data capture (QA plan section 6): per node, the local hours from 1 November 2027 00:00 to 31 January 2028 24:00 (CET, UTC+1) with at least one accepted reading, steps 1's handling of duplicates, OZ19B and firmware.
+5. Data capture (QA plan section 6): per node, the local hours from 1 November 2027 00:00 to 31 January 2028 24:00 (CET, UTC+1) with at least one accepted reading, step 1's handling of duplicates, restart clocks, OZ19B and firmware.
 
 ## 4. Deliverable Answers
 

@@ -21,11 +21,11 @@ Read over every hour of the eight weeks, the hill villages' nodes mislead: at ni
 
 ## 3. Step-by-Step Solution
 
-1. Node export: records sent twice after a link drop counted once (the latest received), OZ19B's records read as OZ19's (maintenance log, 9 to 25 January 2028), accepted readings by each node's firmware (status 0 before its 4.2 date in the maintenance log; status 0 or 1 from it, firmware 4.2 release note), OZN-B half-hours averaged into hours.
+1. Node export: records sent twice after a link drop counted once (the latest received). Records stamped in 2000 come from a node's clock counting from a restart, so each is placed at its restart plus the clock time it carries, the restart being the hour that its received time, less that clock time and 30 minutes, falls in (the storm's 19:00 on 27 November 2027, the node's update at 10:00, the spare's 11:00 on 9 January 2028); a stamp is the start of the record's interval in UTC (QA plan v3, section 2). OZ19B's records read as OZ19's (maintenance log, 9 to 25 January 2028). Accepted readings by each node's firmware: from its 4.2 date (maintenance log, 10:00 local) status 0 or 1 (firmware 4.2 release note); before it status 0 only, since humidity compensation came with 4.2 and the earlier status-1 records are the two warm-up hours after each restart, reading low. OZN-B half-hours averaged into hours.
 2. Window: the hours starting 6 April 2028 00:00 to 31 May 2028 23:00 local time (Europe/Madrid), 22:00 UTC on 5 April to 21:00 UTC on 31 May.
 3. Analysers: the provisional release, P-flagged hours with a value; hora is the hour ending, UTC+1 (station sheet); micrograms per cubic metre to ppb over 1.996 (20 degrees C).
 4. Span: on the window's hours starting 12:00 to 17:00 local, each node's standard deviation of its accepted hourly ozone over the standard deviation of the four analysers' pooled hours; outside 0.85 to 1.15 goes on the list.
-5. Data capture (QA plan section 6): per node, the local hours from 1 November 2027 00:00 to 31 January 2028 24:00 (CET, UTC+1) with at least one accepted reading, steps 1's handling of duplicates, OZ19B and firmware.
+5. Data capture (QA plan section 6): per node, the local hours from 1 November 2027 00:00 to 31 January 2028 24:00 (CET, UTC+1) with at least one accepted reading, step 1's handling of duplicates, restart clocks, OZ19B and firmware.
 
 ## 4. Deliverable Answers
 
@@ -37,42 +37,42 @@ Read over every hour of the eight weeks, the hill villages' nodes mislead: at ni
 
 | Node | Municipality | Hours |
 |---|---|---|
-| OZ01 | Alcorna | 2,144 |
-| OZ02 | Alcorna | 2,141 |
-| OZ03 | Alcorna | 2,161 |
-| OZ04 | Alcorna | 2,142 |
-| OZ05 | Alcorna | 2,152 |
-| OZ06 | Alcorna | 2,121 |
-| OZ07 | Alcorna | 2,145 |
-| OZ08 | Alcorna | 2,159 |
-| OZ09 | Alcorna | 2,087 |
-| OZ10 | Alcorna | 2,154 |
-| OZ11 | Torralba del Campo | 2,145 |
+| OZ01 | Alcorna | 2,142 |
+| OZ02 | Alcorna | 2,139 |
+| OZ03 | Alcorna | 2,159 |
+| OZ04 | Alcorna | 2,140 |
+| OZ05 | Alcorna | 2,150 |
+| OZ06 | Alcorna | 2,119 |
+| OZ07 | Alcorna | 2,143 |
+| OZ08 | Alcorna | 2,157 |
+| OZ09 | Alcorna | 2,085 |
+| OZ10 | Alcorna | 2,152 |
+| OZ11 | Torralba del Campo | 2,143 |
 | OZ12 | Torralba del Campo | 2,061 |
-| OZ13 | Torralba del Campo | 2,153 |
-| OZ14 | Torralba del Campo | 2,153 |
-| OZ15 | Torralba del Campo | 2,134 |
-| OZ16 | Villarejo de Mencía | 2,144 |
-| OZ17 | Villarejo de Mencía | 2,117 |
-| OZ18 | Villarejo de Mencía | 2,141 |
-| OZ19 | Villarejo de Mencía | 2,104 |
-| OZ20 | Villarejo de Mencía | 2,138 |
-| OZ21 | Navalcuerno | 2,130 |
-| OZ22 | Navalcuerno | 2,164 |
-| OZ23 | Valdeolmos del Llano | 2,144 |
-| OZ24 | Valdeolmos del Llano | 2,094 |
-| OZ25 | Hontanar de la Vega | 2,142 |
-| OZ26 | Hontanar de la Vega | 2,164 |
-| OZ27 | Fresnedilla del Campo | 2,149 |
-| OZ28 | Fresnedilla del Campo | 2,031 |
-| OZ29 | Villanueva de Alcorna | 2,148 |
-| OZ30 | Villanueva de Alcorna | 2,143 |
-| OZ31 | Santa Cruz de Alcorna | 2,158 |
-| OZ32 | Santa Cruz de Alcorna | 2,138 |
-| OZ33 | Campillo de Mencía | 2,142 |
-| OZ34 | Campillo de Mencía | 2,129 |
-| OZ35 | Quintanar de Alcorna | 2,088 |
-| OZ36 | Quintanar de Alcorna | 2,135 |
+| OZ13 | Torralba del Campo | 2,151 |
+| OZ14 | Torralba del Campo | 2,151 |
+| OZ15 | Torralba del Campo | 2,132 |
+| OZ16 | Villarejo de Mencía | 2,142 |
+| OZ17 | Villarejo de Mencía | 2,115 |
+| OZ18 | Villarejo de Mencía | 2,139 |
+| OZ19 | Villarejo de Mencía | 2,035 |
+| OZ20 | Villarejo de Mencía | 2,136 |
+| OZ21 | Navalcuerno | 2,128 |
+| OZ22 | Navalcuerno | 2,162 |
+| OZ23 | Valdeolmos del Llano | 2,142 |
+| OZ24 | Valdeolmos del Llano | 2,092 |
+| OZ25 | Hontanar de la Vega | 2,140 |
+| OZ26 | Hontanar de la Vega | 2,162 |
+| OZ27 | Fresnedilla del Campo | 2,147 |
+| OZ28 | Fresnedilla del Campo | 2,029 |
+| OZ29 | Villanueva de Alcorna | 2,146 |
+| OZ30 | Villanueva de Alcorna | 2,141 |
+| OZ31 | Santa Cruz de Alcorna | 2,156 |
+| OZ32 | Santa Cruz de Alcorna | 2,136 |
+| OZ33 | Campillo de Mencía | 2,140 |
+| OZ34 | Campillo de Mencía | 2,127 |
+| OZ35 | Quintanar de Alcorna | 2,086 |
+| OZ36 | Quintanar de Alcorna | 2,133 |
 
 ### june_2028_pull_list.pdf
 

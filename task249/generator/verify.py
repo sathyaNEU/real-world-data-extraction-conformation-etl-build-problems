@@ -40,7 +40,8 @@ log = " ".join(p.extract_text() for p in PdfReader(f(r"maintenance_log")).pages)
 fw = {c: dt.datetime.strptime(d, "%d %b %Y").replace(hour=10, tzinfo=MAD).astimezone(UTC)
       for c, d in re.findall(r"(OZ\d\d)\s+(\d\d \w\w\w 2028)", log)}
 spare = re.search(r"reported as (OZ\d\dB)", log).group(1)
-check("log gives 36 firmware dates", len(fw) == 36)
+check("log gives 35 firmware dates and OZ19 on 4.2 as the spare", len(fw) == 35 and "OZ19" not in fw)
+EPOCH = dt.datetime(2000, 1, 1, tzinfo=UTC)
 
 # the node export: the latest received record of each node and start
 latest = {}
@@ -49,13 +50,19 @@ for r in csv.DictReader(open(f(r"nodes_o3_export"), encoding="utf-8")):
     is_spare = node == spare
     if is_spare:
         node = node[:-1]
-    key = (node, r["reading_start_utc"])
+    t = utc(r["reading_start_utc"])
+    if t < dt.datetime(2020, 1, 1, tzinfo=UTC):
+        # stamped by a clock counting from a restart: placed by its received time
+        off = t - EPOCH
+        rec = utc(r["received_utc"]) - off - dt.timedelta(minutes=30)
+        t = rec.replace(minute=0, second=0) + off
+    key = (node, t.strftime("%Y-%m-%dT%H:%M:%SZ"))
     if key not in latest or r["received_utc"] >= latest[key][2]:
         latest[key] = (r["o3_ppb"], int(r["status"]), r["received_utc"], is_spare)
 acc = defaultdict(lambda: defaultdict(list))
 for (node, start), (v, st, _, sp) in latest.items():
     t = utc(start)
-    ok = st == 0 or (st == 1 and (sp or t >= fw[node]))
+    ok = st == 0 or (st == 1 and (sp or t >= fw.get(node, dt.datetime(2099, 1, 1, tzinfo=UTC))))
     if ok and v != "":
         acc[node][t.replace(minute=0)].append(float(v))
 w0, w1 = loc(2028, 4, 6), loc(2028, 6, 1)
