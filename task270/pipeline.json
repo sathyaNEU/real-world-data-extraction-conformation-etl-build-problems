@@ -7,17 +7,17 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-19",
-  "stump": "The default path fits each memory clinic's decline as the slope of its patients' ACE-III scores on time, per patient or in a random-slopes mixed model, and names Thurlwick and Penwardine as ARV-1102's two recruiting sites, because every patient's second completed sitting carries a one-time gain from having sat the test before that flattens a slope most where patients have sat it only two or three times; Quarndale, opened in April 2024, declines fastest and reads as the slowest. Only separating the second sitting's gain from each patient's trend puts Quarndale with Thurlwick, Mosswick first below.",
+  "stump": "The default path reads the paper's 3.1, sizes the change the test itself produces on the period's sittings (each patient's first sitting from 2022 as their first, 1.24 points) and names Thurlwick and Penwardine as ARV-1102's recruiting sites, because the gain of a second completed sitting belongs to each patient's whole record and the patients first assessed before 2022 carry it through the period; only the whole-record estimate within patients (2.63) puts Quarndale with Thurlwick.",
   "architecture": 3,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-19",
     "checks": 51
   },
   "leak": {
-    "leak_py": "REVIEW (asof 2026-10-09): the paper's register table names all eight clinics, and the flagged terms are the documents' own vocabulary; every line harmless",
-    "reader": ""
+    "leak_py": "REVIEW (asof 2026-10-09), every line harmless",
+    "reader": "round 1: both readers missed the call and Ask A, took Ask B 16 of 16"
   },
   "duplicate_check": {
     "heart": "WARN (people.first, overuse.shape, repeat.question_form), no BLOCK",
@@ -25,12 +25,12 @@
     "surface": "3 promoted (task268, task269, task194), each answered by a differentiation line on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (round 1, run r5)",
+    "disposition": "SEND_BACK, repaired as FIX_NOW (Gates G and H pass)",
+    "report": "/tmp/determinism-check-task270-r5/verdict.md"
   },
   "returned": [],
-  "resume": "stage 4 on the build of 2026-10-19 (365 checks, verify clean, byte-identical, target.zip md5 e137a4a32c99f037c114eda954d6ebef): two isolated scored readers (score_reader.py, reader folders t270c3_reader_r1 and r2 in the session scratchpad) and the determinism judge (run id r5); a call any reader lands spends architecture 3, the slot's last, and the build retires; a judge finding confined to an ask is an ask-layer repair; then SHIPPED with target.zip, golden/, the ledger row and the card",
+  "resume": "stage 4 round 2 on the repaired build (395 checks, verify clean, byte-identical, target.zip md5 d6f415d7a9d8f9d4ba496bfa349abe11): two fresh isolated scored readers (no first clinic below in their keys) and the one re-judge (run r6); a call any reader lands spends architecture 3, the slot's last, and the build retires; a judge finding confined to an ask is an ask-layer repair; then SHIPPED or RETIRED",
   "architectures": [
     {
       "architecture": 1,

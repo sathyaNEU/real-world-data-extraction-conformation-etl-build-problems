@@ -108,9 +108,12 @@ def run(task):
     # C1 and C2
     tr = pd.read_excel(os.path.join(t, "mas_pathway_tracker_2024_2026.xlsx"), sheet_name="Pathways",
                        dtype={"NHS number": str})
-    given = ap[ap.outcome.str.contains("diagnosis given")].groupby("nhs_number").day.min()
-    tr["given"] = tr["NHS number"].map(given)
     tr["ref"] = pd.to_datetime(tr["Referral date"])
+    gv = ap[ap.outcome.str.contains("diagnosis given") | (ap.outcome == "Attended - discharged from service")]
+    m = tr[["NHS number", "ref"]].merge(gv[["nhs_number", "day"]], left_on="NHS number", right_on="nhs_number")
+    m = m[m.day >= m.ref].groupby(["NHS number", "ref"]).day.min()
+    tr["given"] = [m.get((n, r)) for n, r in zip(tr["NHS number"], tr["ref"])]
+    tr["given"] = pd.to_datetime(tr["given"])
     u = tr[(tr.given >= pd.Timestamp("2025-10-01")) & (tr.given <= W1)].copy()
     u["days"] = (u.given - u.ref).dt.days
     for c in fig["ask_b"]["within_42_days_pct"]:

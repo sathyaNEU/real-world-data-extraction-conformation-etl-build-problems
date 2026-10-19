@@ -39,6 +39,8 @@ def compute(target):
         ask_b=dict(within_42_days_pct={c: half_up(b[c]["share"], 1) for c in K.NAMES},
                    average_days={c: half_up(b[c]["mean"], 1) for c in K.NAMES}),
         terms=dict(six_weeks_days=K.SIX_WEEKS, age_limit=K.AGE_LIMIT),
+        rivals=dict(slope_through_every_sitting=list(res["naive"].sort_values(ascending=False).index[:2]),
+                    period_only=list(res["period_only"].sort_values(ascending=False).index[:2])),
         counts=dict(patients_compared=int(res["n"].sum()),
                     patients_by_clinic={c: int(res["n"].get(c, 0)) for c in K.NAMES},
                     diagnosed_by_clinic={c: b[c]["n"] for c in K.NAMES}),
@@ -76,8 +78,8 @@ def write_workbook(path, fig, res):
     s1, s2 = fig["call"]["sites"]
     ws.append(["Recruiting sites for ARV-1102: %s and %s" % (s1, s2)])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Decline in cognition, 1 January 2022 to 30 September 2026, as paper RC/26/11 section 3 defines it. "
-               "First clinic below the two sites: %s." % fig["call"]["below"]])
+    ws.append(["Decline in cognition, 1 January 2022 to 30 September 2026, as paper RC/26/11 section 3 defines it, "
+               "ranked on the unrounded figures."])
     ws.append([])
     ws.append(["Clinic", "Decline, ACE-III points a year", "Rank", "Recruiting site"])
     _head(ws, 4)
@@ -153,8 +155,9 @@ def write_workbook(path, fig, res):
         "ends an episode when the letter goes, so some were still open in the extract of 2 October), and less deaths "
         "on the NHS Spine. Age on 1 January 2027 from the master patient index.",
         "C1 and C2: the pathway tracker's referral date to the appointment at which the patient was given their "
-        "diagnosis (the EPR outcome 'diagnosis given'). The tracker's diagnosis date is the day the diagnosis went on "
-        "the problem list, often some days later.",
+        "first diagnosis on the referral (the EPR outcome 'diagnosis given'; for a finding of no dementia or of "
+        "depression, the appointment that discharged the patient with it, which the tracker shows as discharged). The "
+        "tracker's diagnosis date is the day the diagnosis went on the problem list, often some days later.",
         "Prepared by %s, Lead for Dementia Research, for the Research Committee of 21 October 2026. EPR extracts of 2 "
         "October 2026." % K.PEOPLE["lead"],
     ]

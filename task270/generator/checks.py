@@ -107,6 +107,12 @@ def run(task, b, fig, res):
           top2(out["naive"]) == NAIVE, out["naive"].sort_values(ascending=False).round(3).to_dict())
     check("R3a Quarndale is fourth or lower on the slope through every sitting", RT.rank_of(out["naive"], "Quarndale") >= 4,
           RT.rank_of(out["naive"], "Quarndale"))
+    check("R3a the analyst test with the paper's 3.1 applied the easy way (the test's change estimated on the period's "
+          "sittings alone) files Thurlwick and Penwardine on the clean truth", top2(out["winstep"]) == NAIVE,
+          (round(out["_Pwin"], 3), "+".join(out["winstep"].sort_values(ascending=False).index[:3])))
+    for k in RT.EASY_WITH_PIN:
+        check("SHORTCUT %s (the paper's 3.1 applied without the whole record) does not name the golden pair" % k,
+              top2(out[k]) != GOLD, "+".join(out[k].sort_values(ascending=False).index[:2]))
     check("R3b the decisive step alone (the gain separated) files the golden pair", top2(gold_truth) == GOLD)
     check("SF9 on the pack, the slope of the recorded totals names Thurlwick and Penwardine and the trend net of the "
           "gain names the golden pair (the decisive step, not a reading)",
@@ -139,6 +145,9 @@ def run(task, b, fig, res):
           0.40 <= 1 - new["Penwardine"] < 0.50, round(1 - new["Penwardine"], 3))
     check("WRITEUP most of Mosswick's patients are new to the test (over 60 per cent)", new["Mosswick"] > 0.60,
           round(new["Mosswick"], 3))
+    check("WRITEUP the gain estimated from the period's sittings alone names the slope's pair again (pack)",
+          set(fig["rivals"]["period_only"]) == set(fig["rivals"]["slope_through_every_sitting"]) == NAIVE,
+          fig["rivals"])
     check("WRITEUP Quarndale is last on the slope through every sitting", RT.rank_of(nv, "Quarndale") == 8,
           RT.rank_of(nv, "Quarndale"))
     check("WRITEUP nearly all of Quarndale's patients are new to the test (95 per cent or more)",
@@ -172,6 +181,10 @@ def run(task, b, fig, res):
               % (c, fig["decline"][c]), half(lo[c]) == half(hi[c]) == fig["decline"][c] and
               min(half_edge(lo[c]), half_edge(hi[c])) >= 0.01,
               (round(lo[c], 3), round(hi[c], 3), round(min(half_edge(lo[c]), half_edge(hi[c])), 3)))
+    sr = fam["declines"]["within, third-sitting term / least squares"]
+    check("SF14 a further step at the third sitting as well keeps the call and every clinic's half point",
+          top2(sr) == GOLD and all(half(sr[c]) == fig["decline"][c] for c in K.NAMES),
+          "+".join(sr.sort_values(ascending=False).index[:2]))
     gains = fam["gains"]
     check("FAMILY every estimate of the gain rounds to %.1f, 0.05 or more inside the bin" % fig["gain"],
           all(half(v) == fig["gain"] and half_edge(v) >= 0.05 for v in gains.values()),
@@ -443,6 +456,16 @@ def asks(P, fig, w):
         check("ASK B over-cleaner (the feedback appointment only) misses %s" % c,
               round(over_b[c][0], 1) != fig["ask_b"]["within_42_days_pct"][c] and
               round(over_b[c][1], 1) != fig["ask_b"]["average_days"][c], over_b[c])
+    # the careful path the stage 4 readers took: the appointments that record a diagnosis given, from the tracker's
+    # referral date; and its two repairs, the tracker's date for the discharged findings, and every discharge counted
+    for nm, kw in (("the appointments recording a diagnosis given", {}),
+                   ("the same, the tracker's date for the patients it shows discharged", {"tracker_for_discharged": True}),
+                   ("every outcome naming a discharge counted as a diagnosis", {"every_discharge": True})):
+        cb = ask_b_appointments(P, **kw)
+        for c in K.NAMES:
+            check("ASK B device: %s misses %s's share and average" % (nm, c),
+                  cb[c][0] != fig["ask_b"]["within_42_days_pct"][c] and cb[c][1] != fig["ask_b"]["average_days"][c],
+                  (cb[c], fig["ask_b"]["within_42_days_pct"][c], fig["ask_b"]["average_days"][c]))
     vals = list(fig["ask_a"]["under_follow_up"].values())
     check("ASK A no two clinics share a figure", len(set(vals)) == len(vals))
 
@@ -480,6 +503,28 @@ def ask_b_careful(P):
     t = t[(t.dxd >= a0) & (t.dxd <= a1)].copy()
     t["days"] = [(d - r).days for d, r in zip(t.dxd, t.ref)]
     return {c: (100.0 * (t[t.Clinic == c].days <= 42).mean(), t[t.Clinic == c].days.mean()) for c in K.NAMES}
+
+
+def ask_b_appointments(P, tracker_for_discharged=False, every_discharge=False):
+    tr = P["tracker"].copy()
+    tr["ref"] = pd.to_datetime(tr["Referral date"]).dt.date
+    tr["nhs"] = PK.digits(tr["NHS number"])
+    ap = P["appts"]
+    pat = "diagnosis given|discharge" if every_discharge else "diagnosis given"
+    g = ap[ap.outcome.str.contains(pat)].copy()
+    g["nhs"] = PK.digits(g.nhs_number)
+    g["date"] = pd.to_datetime(g.appointment_start.str[:10]).dt.date
+    tr["given"] = tr.nhs.map(g.groupby("nhs").date.min()) if not every_discharge else tr.nhs.map(
+        g[g.date >= K.ASK_YEAR[0]].groupby("nhs").date.min())
+    if tracker_for_discharged:
+        dis = tr["Pathway status"].eq("Discharged")
+        tr.loc[dis, "given"] = pd.to_datetime(tr.loc[dis, "Diagnosis date"]).dt.date
+    a0, a1 = K.ASK_YEAR
+    u = tr[tr.given.notna()]
+    u = u[(u.given >= a0) & (u.given <= a1)].copy()
+    u["days"] = [(d - r).days for d, r in zip(u.given, u.ref)]
+    return {c: (round(100.0 * (u[u.Clinic == c].days <= 42).mean(), 1), round(u[u.Clinic == c].days.mean(), 1))
+            for c in K.NAMES}
 
 
 def ask_b_feedback_only(P):

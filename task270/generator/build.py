@@ -108,8 +108,7 @@ def metadata(fig, counts):
                               "date": "2026-10-09", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in counts.items()},
-        "answer": "Recruiting sites: %s and %s; first clinic below: %s" % (fig["call"]["sites"][0],
-                                                                         fig["call"]["sites"][1], fig["call"]["below"]),
+        "answer": "Recruiting sites: %s and %s" % (fig["call"]["sites"][0], fig["call"]["sites"][1]),
     }
 
 

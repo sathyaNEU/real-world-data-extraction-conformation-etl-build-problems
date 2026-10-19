@@ -289,7 +289,7 @@ def follow(p, rng):
     s = sitting(p, first, clinic, 0, rng)
     p["sittings"].append(s)
     done += 1
-    same_day = rng.random() < 0.12
+    same_day = rng.random() < (0.66 if typ in ("NOD", "DEP") else 0.12)
     given = first if same_day else weekday(add_days(first, rng.uniform(7, 35)))
     p["events"].append(dict(kind="assessment", date=first, clinic=clinic, dx_given=same_day))
     working = typ in ("AD", "VAS") and rng.random() < 0.08

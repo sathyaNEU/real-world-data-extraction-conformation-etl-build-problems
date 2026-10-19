@@ -23,24 +23,24 @@
  },
  "ask_b": {
   "average_days": {
-   "Brindlemere": 48.6,
-   "Corvale": 48.8,
-   "Mosswick": 49.5,
-   "Penwardine": 48.7,
-   "Quarndale": 47.6,
-   "Ravensfold": 50.4,
-   "Swinholt": 49.6,
-   "Thurlwick": 48.1
+   "Brindlemere": 46.8,
+   "Corvale": 47.5,
+   "Mosswick": 47.1,
+   "Penwardine": 47.2,
+   "Quarndale": 46.8,
+   "Ravensfold": 47.8,
+   "Swinholt": 47.8,
+   "Thurlwick": 46.9
   },
   "within_42_days_pct": {
-   "Brindlemere": 31.5,
-   "Corvale": 31.7,
-   "Mosswick": 35.3,
-   "Penwardine": 33.3,
-   "Quarndale": 37.6,
-   "Ravensfold": 29.5,
-   "Swinholt": 29.3,
-   "Thurlwick": 32.8
+   "Brindlemere": 36.8,
+   "Corvale": 35.8,
+   "Mosswick": 42.6,
+   "Penwardine": 37.0,
+   "Quarndale": 38.8,
+   "Ravensfold": 38.0,
+   "Swinholt": 35.2,
+   "Thurlwick": 37.7
   }
  },
  "call": {
@@ -62,14 +62,14 @@
  },
  "counts": {
   "diagnosed_by_clinic": {
-   "Brindlemere": 162,
+   "Brindlemere": 163,
    "Corvale": 123,
-   "Mosswick": 102,
+   "Mosswick": 101,
    "Penwardine": 216,
-   "Quarndale": 290,
-   "Ravensfold": 183,
-   "Swinholt": 198,
-   "Thurlwick": 241
+   "Quarndale": 291,
+   "Ravensfold": 184,
+   "Swinholt": 199,
+   "Thurlwick": 239
   },
   "patients_by_clinic": {
    "Brindlemere": 662,
@@ -94,6 +94,16 @@
   "Thurlwick": 4.5
  },
  "gain": 2.5,
+ "rivals": {
+  "period_only": [
+   "Thurlwick",
+   "Penwardine"
+  ],
+  "slope_through_every_sitting": [
+   "Thurlwick",
+   "Penwardine"
+  ]
+ },
  "terms": {
   "age_limit": 85,
   "six_weeks_days": 42

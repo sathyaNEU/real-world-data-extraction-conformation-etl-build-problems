@@ -118,6 +118,23 @@ def routes(df, mixed=False):
     d = w[w.k >= 1]
     d = d[d.groupby("pid").t.transform("size") >= 2]
     out["dropfirst"] = cavg(d, slopes(d, "s"))
+    # the paper's 3.1 applied the easy way: the test's change estimated on the period's sittings alone, each
+    # patient's first sitting in the period taken as their first
+    wn = w.copy()
+    wn["wk"] = wn.sort_values("t").groupby("pid").cumcount().reindex(wn.index)
+    wn["step"] = (wn.wk >= 1).astype(float)
+    Pwin = fe(wn)[0]
+    wn["a"] = wn.s - Pwin * wn.step
+    out["winstep"] = cavg(wn, slopes(wn, "a"))
+    out["_Pwin"] = Pwin
+    # or each patient's first completed sitting dropped where the rest still give a rate, the raw slope otherwise
+    raw = slopes(w, "s")
+    for nm, sub in (("dropfirst_raw", w[w.k >= 1]), ("dropwin_raw", wn[wn.wk >= 1])):
+        sub = sub[sub.groupby("pid").t.transform("size") >= 2]
+        sl = slopes(sub, "s")
+        mix = raw.copy()
+        mix.loc[sl.index] = sl
+        out[nm] = -(mix.groupby(clinic_of(w)).mean())
     b = slopes(w, "s")
     cl = clinic_of(w)
     nn = w.groupby("pid").t.size()
@@ -255,6 +272,7 @@ NAIVE = frozenset([T, PW])
 NO_INSIGHT = ["naive", "recent_naive", "recent0_naive", "recent5_naive", "since23_naive", "incident_naive", "two_new",
               "adj_nsit", "adj_base", "adj_both", "wls_naive", "epr_only_naive", "ad_only_naive", "mci_only_naive",
               "median_naive", "trimmed_naive", "ge3_naive", "ends_naive"]
+EASY_WITH_PIN = ["winstep", "dropfirst_raw", "dropwin_raw"]
 
 
 def summary(out):

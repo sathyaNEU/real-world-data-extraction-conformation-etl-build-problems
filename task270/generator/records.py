@@ -119,6 +119,8 @@ def derive(w):
             if kind == "assessment":
                 typ, dur = "New patient assessment", 90
                 out = "Attended - diagnosis given" if ev.get("dx_given") else "Attended"
+                if ev.get("dx_given") and p["typ"] in ("NOD", "DEP"):
+                    out = "Attended - discharged from service"
             elif kind == "feedback":
                 typ, dur, out = "Diagnosis feedback", 45, "Attended - diagnosis given"
             elif kind == "discharge_at_feedback":
@@ -135,7 +137,7 @@ def derive(w):
                 if ev.get("planned"):
                     out = "Attended - discharge planned at next review"
             if kind == "feedback" and any(e["kind"] == "discharge_at_feedback" for e in p["events"]):
-                out = "Attended - diagnosis given, discharged from service"
+                out = "Attended - discharged from service"
             # an earlier booking the patient missed or cancelled
             if kind in ("feedback", "review", "assessment") and r.random() < 0.13:
                 pre = W.weekday(d - dt.timedelta(days=int(r.integers(14, 43))))
@@ -394,6 +396,8 @@ def tracker_rows(w):
             status = "Awaiting assessment"
         elif diag is None:
             status = "Assessed, awaiting diagnosis"
+        elif p["typ"] in ("NOD", "DEP"):
+            status = "Discharged"
         else:
             status = "Diagnosed"
         rows.append(dict(pathway=p["pathway_id"], nhs=p["nhs"], clinic=p["clinic0"], referral=reg,

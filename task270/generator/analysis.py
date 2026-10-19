@@ -68,6 +68,13 @@ def main(P):
     res["gain_history"] = gain(PK.history(P))[0]
     nav = res["naive"].sort_values(ascending=False)
     res["naive_order"] = list(nav.index)
+    # the paper's 3.1 applied the easy way: the test's change estimated on the period's sittings alone
+    v = w.copy()
+    v["wk"] = v.sort_values("t").groupby("pid").cumcount().reindex(v.index)
+    v["step"] = (v.wk >= 1).astype(float)
+    res["period_only_gain"] = gain(v)[0]
+    v["a"] = v.s - res["period_only_gain"] * v.step
+    res["period_only"] = clinic_means(v, slopes(v, "a"))
     return res
 
 
@@ -109,11 +116,15 @@ def ask_b(P):
     tr["nhs"] = PK.digits(tr["NHS number"])
     tr["ref"] = pd.to_datetime(tr["Referral date"]).dt.date
     ap = P["appts"]
-    given = ap[ap.outcome.str.contains("diagnosis given")].copy()
+    # the appointment that gave the referral's first diagnosis: one whose outcome records it, or, for a finding of
+    # no dementia or of depression, the one that discharged the patient with it
+    given = ap[ap.outcome.str.contains("diagnosis given") | ap.outcome.eq("Attended - discharged from service")].copy()
     given["nhs"] = PK.digits(given.nhs_number)
     given["date"] = pd.to_datetime(given.appointment_start.str[:10]).dt.date
-    first_given = given.sort_values("date").groupby("nhs").date.first()
-    tr["given"] = tr.nhs.map(first_given)
+    found = tr[["nhs", "ref"]].merge(given[["nhs", "date"]], on="nhs")
+    found = found[found.date >= found.ref]
+    first_given = found.sort_values("date").groupby(["nhs", "ref"]).date.first()
+    tr["given"] = [first_given.get((n, r)) for n, r in zip(tr.nhs, tr.ref)]
     a0, a1 = K.ASK_YEAR
     t = tr[tr.given.notna()].copy()
     t = t[(t.given >= a0) & (t.given <= a1) & (t.given >= t.ref)]
