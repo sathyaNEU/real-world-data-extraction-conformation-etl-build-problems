@@ -159,7 +159,7 @@ def censor_rates(pts, key="visit", time_key=None):
             if time_key:
                 k = (k, min(8, int(round(d / 91.0))))
             n[k] = n.get(k, 0) + 1
-            if p["lost"] in ("north", "exchange") and d == p["T"]:
+            if p["lost"] in ("north", "exchange") and d == p["visits"][-1][0]:
                 m[k] = m.get(k, 0) + 1
     return {k: min(0.9, m.get(k, 0) / n[k]) for k in n}
 
@@ -202,7 +202,7 @@ def logistic_rates(allpts):
                 break
             row = [1.0 if p["h"] == h else 0.0 for h in H] + [1.0 if c == k else 0.0 for k in (1, 2, 3)]
             X.append(row)
-            y.append(1.0 if (p["lost"] == "north" and d == p["T"]) else 0.0)
+            y.append(1.0 if (p["lost"] == "north" and d == p["visits"][-1][0]) else 0.0)
     X, y = np.array(X), np.array(y)
     b = np.zeros(X.shape[1])
     b[:5] = -6.0
@@ -230,8 +230,8 @@ def gform(pts):
     """The multi-state projection: one-quarter class changes and deaths by the class at a visit, estimated from every
     patient's observed history, and every patient lost before two years carried from the class recorded at the loss
     to the two-year date. An interval runs from a visit to the next visit when it was kept a quarter later (survived,
-    and the class it recorded); otherwise over a nominal quarter, counted only where a death or survival through it is
-    on record."""
+    and the class it recorded), or to a death before that visit within 125 days; otherwise over a nominal quarter,
+    counted only where survival through it is on record."""
     Tn = np.zeros((4, 4))
     Dn = np.zeros(4)
     Nn = np.zeros(4)
@@ -248,7 +248,7 @@ def gform(pts):
                 break
             nxt = vis[j + 1] if j + 1 < len(vis) else None
             if dd is not None and d < dd and (nxt is None or nxt[0] > dd):
-                if dd - d <= 91:
+                if dd - d <= 125:
                     Nn[c] += 1
                     Dn[c] += 1
                 break
@@ -257,7 +257,7 @@ def gform(pts):
                 Tn[c, nxt[1]] += 1
                 continue
             # no visit kept a quarter later: a nominal quarter, survived if the record shows the patient alive past it
-            if d + 91 <= dead_seen and (dd is None or dd > d + 91):
+            if d + 125 <= dead_seen and (dd is None or dd > d + 125):
                 Nn[c] += 1
             if p["exch_full"] is not None and d >= p["exch_full"]:
                 break
@@ -279,6 +279,109 @@ def gform(pts):
             v = (v * (1 - Dh)) @ Th
         frac = rem - full
         tot += float((v * (1 - Dh * frac)).sum())
+    return tot / len(pts)
+
+
+def ctmc(pts, pool=None):
+    """The continuous-time multi-state projection: class-to-class and class-to-death intensities from the time each
+    patient spends in a class between visits (the class held from one visit to the next, a change dated at the visit
+    that records it), and each lost patient carried from the class at the loss by the matrix exponential of those
+    intensities to the two-year date."""
+    from scipy.linalg import expm
+    src = pool if pool is not None else pts
+    expo, trans, dth = np.zeros(4), np.zeros((4, 4)), np.zeros(4)
+    for p in src:
+        vis = [(0, p["c0"])] + list(p["visits"])
+        for j, (d, c) in enumerate(vis):
+            nxt = vis[j + 1] if j + 1 < len(vis) else None
+            end = nxt[0] if nxt is not None else p["T"]
+            if end > d:
+                expo[c] += end - d
+            if nxt is not None and nxt[1] != c:
+                trans[c, nxt[1]] += 1
+            if nxt is None and p["E"]:
+                dth[c] += 1
+    Q = np.zeros((5, 5))
+    for c in range(4):
+        if expo[c] > 0:
+            Q[c, :4] = trans[c] / expo[c]
+            Q[c, 4] = dth[c] / expo[c]
+            Q[c, c] = Q[c, c] - Q[c].sum()
+    tot, cache = 0.0, {}
+    for p in pts:
+        if p["E"]:
+            continue
+        if p["lost"] is None:
+            tot += 1.0
+            continue
+        t = p["hor"] - p["T"]
+        if t not in cache:
+            cache[t] = expm(Q * t)
+        tot += 1.0 - float(cache[t][_lost_class(p), 4])
+    return tot / len(pts)
+
+
+def residual(pts, c):
+    """Survival from a clinic visit recorded in class c, each such visit a landmark: days from the visit to death,
+    censored at the patient's own loss or two-year date."""
+    t, e = [], []
+    for p in pts:
+        for d, cc in p["visits"]:
+            if cc == c and d < p["T"]:
+                t.append(p["T"] - d)
+                e.append(p["E"])
+    t, e = np.array(t), np.array(e)
+    order = np.argsort(t, kind="stable")
+    t, e = t[order], e[order]
+    times, surv, s, i, n = [], [], 1.0, 0, len(t)
+    while i < n:
+        j = i
+        while j < n and t[j] == t[i]:
+            j += 1
+        dd = int(e[i:j].sum())
+        if dd:
+            s *= 1 - dd / (n - i)
+        times.append(t[i])
+        surv.append(s)
+        i = j
+    times, surv = np.array(times), np.array(surv)
+    return lambda x: float(surv[np.searchsorted(times, x, side="right") - 1]) if len(times) and x >= times[0] else 1.0
+
+
+def _lost_class(p):
+    return p["visits"][-1][1] if p["visits"] else p["c0"]
+
+
+def landmark(pts, pool=None):
+    """Each lost patient carried by the remaining survival of the patients seen in the same class at a visit."""
+    src = pool if pool is not None else pts
+    f = {c: residual(src, c) for c in range(4)}
+    tot = 0.0
+    for p in pts:
+        if p["E"]:
+            continue
+        tot += 1.0 if p["lost"] is None else f[_lost_class(p)](p["hor"] - p["T"])
+    return tot / len(pts)
+
+
+def fixed_last(pts, pool=None):
+    """Each lost patient carried at the constant death rate of the class recorded at the loss."""
+    src = pool if pool is not None else pts
+    expo, dth = np.zeros(4), np.zeros(4)
+    for p in src:
+        vis = [(0, p["c0"])] + list(p["visits"])
+        for j, (d, c) in enumerate(vis):
+            nxt = vis[j + 1][0] if j + 1 < len(vis) else p["T"]
+            if nxt > d:
+                expo[c] += nxt - d
+                if j + 1 == len(vis) and p["E"]:
+                    dth[c] += 1
+    h = dth / np.maximum(expo, 1)
+    tot = 0.0
+    for p in pts:
+        if p["E"]:
+            continue
+        tot += 1.0 if p["lost"] is None else float(np.exp(-h[_lost_class(p)] * (p["hor"] - p["T"])))
     return tot / len(pts)
 
 
@@ -316,11 +419,18 @@ def ladder(D):
         R.setdefault("ipcw_stabilised", {})[h] = ipcw(g, stabilise=True)
         R.setdefault("ipcw_logistic", {})[h] = ipcw_logistic(g, h, logit)
         R.setdefault("projection", {})[h] = gform(g)
+        R.setdefault("landmark", {})[h] = landmark(g)
+        R.setdefault("landmark_pooled", {})[h] = landmark(g, pool=C)
+        R.setdefault("fixed_last", {})[h] = fixed_last(g)
+        R.setdefault("fixed_last_pooled", {})[h] = fixed_last(g, pool=C)
+        R.setdefault("projection_ct", {})[h] = ctmc(g)
+        R.setdefault("projection_ct_pooled", {})[h] = ctmc(g, pool=C)
     R["_cohort"] = C
     return R
 
 
-FAMILY = ["golden", "ipcw_class_by_quarter", "ipcw_stabilised", "ipcw_logistic", "projection"]
+FAMILY = ["golden", "ipcw_class_by_quarter", "ipcw_stabilised", "ipcw_logistic", "projection", "projection_ct",
+          "projection_ct_pooled", "landmark", "landmark_pooled", "fixed_last", "fixed_last_pooled"]
 WRONG = ["crude", "complete_case", "worst_case", "km", "km_exchange_censored", "ipcw_diagnosis_class", "ipcw_pooled"]
 
 

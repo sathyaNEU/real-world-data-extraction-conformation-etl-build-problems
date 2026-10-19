@@ -114,16 +114,30 @@ def write_visits(path, w):
 
 
 # ---------------------------------------------------------------------------------------------- follow-up events
-def write_events(path, w):
+def destinations(w):
+    """The state each relocating patient moved to: north beyond the death linkage, or within the exchange's reach."""
     r = np.random.default_rng([w["seed"], 41])
+    north, exch = {}, {}
+    for p in w["patients"]:
+        if p["north"] >= 0:
+            north[p["rid"]] = str(r.choice(K.STATES_NORTH, p=np.array(K.STATE_W) / sum(K.STATE_W)))
+        if p["exch"] >= 0:
+            exch[p["rid"]] = str(r.choice(K.EXCHANGE_STATES, p=(0.52, 0.18, 0.30)))
+    return north, exch
+
+
+def write_events(path, w):
+    north, exch = destinations(w)
     rows = []
     for p in w["patients"]:
-        if p["north"] >= 0 and p["north"] <= W.EXTRACT_DAY:
-            st = str(r.choice(K.STATES_NORTH, p=np.array(K.STATE_W) / sum(K.STATE_W)))
-            rows.append([p["rid"], iso(p["north"]), "REL", st])
-        if p["exch"] >= 0 and p["exch"] <= W.EXTRACT_DAY:
-            st = str(r.choice(K.EXCHANGE_STATES, p=(0.52, 0.18, 0.30)))
-            rows.append([p["rid"], iso(p["exch"]), "REL", st])
+        # the registry records nothing on a patient after a consent withdrawal
+        seen = lambda x: 0 <= x <= W.EXTRACT_DAY and not (p["wd"] >= 0 and x > p["wd"])
+        if p["north"] >= 0:
+            if seen(p["north_rec"]):
+                rows.append([p["rid"], iso(p["north_rec"]), "REL", north[p["rid"]]])
+        if p["exch"] >= 0:
+            if seen(p["exch_rec"]):
+                rows.append([p["rid"], iso(p["exch_rec"]), "REL", exch[p["rid"]]])
         if p["wd"] >= 0:
             rows.append([p["rid"], iso(p["wd"]), "CNR", ""])
     rows.sort(key=lambda x: (x[1], x[0]))
@@ -187,13 +201,13 @@ def write_fl_deaths(path, w):
 
 
 def write_exchange(path, w):
-    r = np.random.default_rng([w["seed"], 47])
+    _, exch = destinations(w)
     rows = []
     for p in w["patients"]:
         if p["cls"] is None or death_source(p) != "exchange":
             continue
         d = day(p["death"])
-        st = str(r.choice(K.EXCHANGE_STATES, p=(0.52, 0.18, 0.30)))
+        st = exch[p["rid"]]                       # the death is registered in the state the patient moved to
         rq = "%dQ%d" % (d.year + (1 if d.month >= 10 else 0), ((d.month - 1) // 3 + 1) % 4 + 1)
         rows.append([p["rid"], st, d.strftime("%Y%m%d"), p["sex"], p["age"] + (p["death"] - p["dx"]) // 365, rq])
     rows.sort(key=lambda x: (x[2], x[0]))

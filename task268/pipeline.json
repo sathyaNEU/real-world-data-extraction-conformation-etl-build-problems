@@ -1,13 +1,13 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-19",
-  "stump": "The default path names Fennick General Hospital, 67 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are mostly in NYHA class III or IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, 65 per cent, as the lowest.",
+  "stump": "The default path names Fennick General Hospital, 61 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are almost all in NYHA class IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, 58 per cent, as the lowest.",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (asof 2026-04-14): sweeps 3, 4, 6 and 9, each harmless (design note build record)",
-    "reader": "round 1 (2026-10-19): the call missed (Kaplan-Meier, Fennick 67); Q1 the estimand only, Q6 an analytical choice; score_reader exit 1 on the gap's coincident 2 and Ask B 10 of 10 (re-enrolments found through the crosswalk), survival 4 of 5; fixed in one pass (Brenmoor's mix, Ask B's primary re-sited); round 2 running"
+    "reader": "rounds 1 to 4 (2026-10-19) missed the call (Kaplan-Meier, Fennick); round 1 exit 1 on the gap's coincident 2 and Ask B 10 of 10, fixed; rounds 2 to 4 exit 0 (16 per cent of ask figures, the survival figures only); Q6 analytical"
   },
   "duplicate_check": {
     "heart": "WARN (driver.near task134 v1 0.17 and task265 0.15; repeat.gate_g, overuse.gate_g, repeat.question_form against task249 v2), answered at the draw",
@@ -24,18 +24,18 @@
     "surface": "eight pairs promoted near 0.10 or on card keys, answered by the card's differentiation lines; persona sweep: Megan Swanson"
   },
   "judge": {
-    "verdict": "round 1 DETERMINISTIC",
-    "disposition": "APPROVE (advisory: estimator and ask conventions unfiled, left so)",
-    "report": "determinism_check_report.md (round 2 running after the fix pass)"
+    "verdict": "round 4 DETERMINISTIC (rounds: 1 DETERMINISTIC, 2 NOT_DETERMINISTIC, 3 NOT_DETERMINISTIC on Ask A only)",
+    "disposition": "APPROVE (round 4); round 2's SEND_BACK read as FIX_NOW by the gate table (G and H passing), round 3's FIX_NOW confined to Ask A",
+    "report": "determinism_check_report_pass4.md (rounds 2 and 3: determinism_check_report.md, determinism_check_report_pass3.md)"
   },
   "returned": [],
-  "resume": "Stage 4 round 2 on 2026-10-19: a fresh leak reader on the repaired pack and the judge (brief at /tmp/determinism-check-task268-r2/) after the fix pass (Brenmoor's mix, Ask B's overwritten diagnosis dates). Next: score_reader.py on round 2's reader.json; the judge's verdict; then ship (ledger rows for v1, v2 and v3, card current, target.zip and golden/ force-added) or, if the reader lands Gullhaven, retire the number.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-19",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
-  "seed_world": 28
+  "seed_world": 273
 }

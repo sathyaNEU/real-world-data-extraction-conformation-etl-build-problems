@@ -35,8 +35,8 @@ def results(target):
                          consent=sum(p["lost"] == "consent" for p in g))
     rates = {h: A.censor_rates(G[h]) for h in K.CODES}
     visits = {h: [sum(1 for p in G[h] for d, c in p["visits"] if d <= p["T"] and c == k) for k in range(4)] for h in K.CODES}
-    moves = {h: [sum(1 for p in G[h] if p["lost"] == "north" and p["visits"] and p["visits"][-1][0] == p["T"]
-                     and p["visits"][-1][1] == k) for k in range(4)] for h in K.CODES}
+    moves = {h: [sum(1 for p in G[h] if p["lost"] == "north" and p["visits"] and p["visits"][-1][1] == k)
+                 for k in range(4)] for h in K.CODES}
     return dict(D=D, L=L, S=S, order=order, pick=pick, runner=runner, gap=gap, counts=counts, rates=rates, visits=visits,
                 moves=moves, surv={h: whole(100 * S[h]) for h in K.CODES}, gap_pts=whole(gap),
                 km={h: whole(100 * L["km"][h]) for h in K.CODES}, ask_a=A.ask_a(D), ask_b=A.ask_b(D))
@@ -138,9 +138,10 @@ def workbook(path, o):
 
     # Laboratory
     ws = wb.create_sheet("Laboratory")
-    title(ws, "NT-proBNP tests reported in 2025, by hospital laboratory",
-          "Each specimen once, at its final result; the referral level is %d pg/mL (charter, 2.3)." % K.REFERRAL)
-    header(ws, 4, ["Hospital", "NT-proBNP tests reported in 2025", "At or above %d pg/mL" % K.REFERRAL], 32)
+    title(ws, "Specimens with an NT-proBNP result reported in 2025, by hospital laboratory",
+          "Each specimen once: a result corrected and released again under a new accession is the same specimen; the "
+          "referral level is %d pg/mL (charter, 2.3)." % K.REFERRAL)
+    header(ws, 4, ["Hospital", "Specimens reported in 2025", "At or above %d pg/mL" % K.REFERRAL], 32)
     r = 5
     for h in K.CODES:
         a = o["ask_a"][h]
@@ -177,8 +178,9 @@ def workbook(path, o):
         "Deaths: the Florida certificate linkage (by current record number, legacy numbers through the crosswalk) and "
         "the Tri-State exchange (by registry identifier); a patient alive on the second anniversary of diagnosis "
         "survived two years.",
-        "Follow-up ends at a relocation to a state outside Georgia, Alabama and South Carolina and at Wrenhaven's 1 "
-        "April 2024 re-consent; patients who moved to those three states stay in vital status follow-up.",
+        "Follow-up ends at a relocation to a state outside Georgia, Alabama and South Carolina and at Wrenhaven's "
+        "re-consent of %s; patients who moved to those three states stay in vital status follow-up."
+        % K.RECONSENT.strftime("%-d %B %Y"),
         "At %s most patients who moved beyond the linkage were in NYHA class III or IV at the visit where the move was "
         "reported, so the product-limit estimate with the moves as ordinary censoring credits them with the survival "
         "of the patients who stayed (%d%% against %d%% weighted). The chance of a move by class is measured hospital "
@@ -330,13 +332,13 @@ def deck(path, o):
     # 4. the testing and the diagnoses the programme builds on
     s = prs.slides.add_slide(blank)
     text(s, 457200, 300000, 11200000, 700000, "Testing and new diagnoses, 2025", 26, True)
-    rows = [["Hospital", "NT-proBNP tests reported", "At or above %d pg/mL" % K.REFERRAL, "Newly diagnosed",
+    rows = [["Hospital", "NT-proBNP specimens reported", "At or above %d pg/mL" % K.REFERRAL, "Newly diagnosed",
              "Diagnosed as inpatients"]]
     for h in K.CODES:
         a, b = o["ask_a"][h], o["ask_b"][h]
         rows.append([K.NAME[h], "{:,}".format(a[0]), "{:,}".format(a[1]), "{:,}".format(b[0]), "{:,}".format(b[1])])
     table(s, rows, 457200, 1300000, 11200000, 2600000, bold_row=K.NAME[pick], size=14, cw=[0.32, 0.17, 0.17, 0.17, 0.17])
-    text(s, 457200, 4300000, 11200000, 1100000, "Tests: each specimen once at its final result. New diagnoses: by "
+    text(s, 457200, 4300000, 11200000, 1100000, "Specimens: each once, a corrected result released under a new accession being the same specimen. New diagnoses: by "
          "diagnosis date, a record dated after its own enrolment taken at the enrolment; a patient enrolled again after "
          "the 2024 record-number migration is not counted.", 13, color=GREY)
     footer(s, 4, "laboratory results 2025; " + K.REGISTRY)

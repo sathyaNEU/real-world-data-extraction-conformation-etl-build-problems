@@ -11,7 +11,7 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Gullhaven Hospital: two-year survival 65%, 2 points below Fennick General Hospital's 67%",
+  "answer": "Gullhaven Hospital: two-year survival 58%, 3 points below Fennick General Hospital's 61%",
   "answer_source": "submission.md (block 1) and generator/figures.json",
   "gap": [
     "time",
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the committee's criterion correctly runs a Kaplan-Meier estimate for each hospital, ending each patient's follow-up at the move out of the death linkage's reach that the registry records, and names the urban hospital lowest; Kaplan-Meier credits the patients who moved north with the survival of those who stayed, but at the retirement-coast hospital they were mostly in NYHA class III or IV at their last visit, and carried at the survival their class implies its two-year survival is the lowest of the five.",
+  "analyst_test": "A strong analyst who reads every field and the committee's criterion correctly runs a Kaplan-Meier estimate for each hospital, ending each patient's follow-up at the move out of the death linkage's reach that the registry records, and names the urban hospital lowest; Kaplan-Meier credits the patients who moved north with the survival of those who stayed, but at the retirement-coast hospital they were almost all in NYHA class IV at their last visit, and carried at the survival their class implies its two-year survival is the lowest of the five.",
   "domain_test": "The deciding quantity is each hospital's two-year survival from heart failure diagnosis, a time-to-event estimate whose loss to follow-up is driven by the patient's recorded NYHA class (frail retirees moving back to family beyond the registry's death linkage), the field's informative censoring, handled by carrying each lost patient's survival from the clinical state recorded at the loss; with another field's nouns the class progression, the class-specific death rates and the migration of the frail elderly do not exist and the task stops reading the same.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:informative-censoring-by-clinical-state",
@@ -48,7 +48,7 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "hf_registry_visits_2022_2026.csv",
-    "rows": 97172,
+    "rows": 104323,
     "entity": "one heart failure clinic visit with the patient's NYHA class",
     "grain": "visit",
     "source": "synthetic"
@@ -87,7 +87,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
   "driver_concrete": "Each hospital's two-year survival from heart failure diagnosis for its 2022 and 2023 patients, the patients who moved beyond the registry's death linkage carried from their NYHA class at their last visit through the class changes and class-specific death rates of the patients still followed (equivalently, the followed patients weighted by the inverse of their chance of staying in reach given their class), not Kaplan-Meier with each move as ordinary censoring, which credits the retirement coast's frail movers with the survival of those who stayed.",
-  "stump": "A competent solver runs Kaplan-Meier for each hospital with follow-up ending at each recorded move beyond the death linkage and names the urban hospital lowest; the step that lands it there is treating those moves as uninformative, when at the retirement-coast hospital they are concentrated among patients whose class had worsened to III or IV, while the movers whose deaths the exchange does report are the healthier ones.",
+  "stump": "A competent solver runs Kaplan-Meier for each hospital with follow-up ending at each recorded move beyond the death linkage and names the urban hospital lowest; the step that lands it there is treating those moves as uninformative, when at the retirement-coast hospital they are concentrated among patients whose class had worsened to IV, while the movers whose deaths the exchange does report are the healthier ones.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task453": "task453 v2 reads a measurement change's effect in a rotating panel occasion by occasion against the same occasion before the change; task268 v3 measures nothing that changes: the patients still followed thin out by clinical state as the frail move beyond the death linkage, and each lost patient's survival is carried from the class recorded at the loss",

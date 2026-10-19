@@ -20,7 +20,7 @@ import world as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 N = [0]
-GUL, FEN, WRE = "GUL", "FEN", "WRE"
+GUL, FEN, WRE, LIN = "GUL", "FEN", "WRE", "LIN"
 
 
 def ok(cond, label):
@@ -63,7 +63,7 @@ def world_cohort(w, view):
             out.append(dict(h=p["hosp"], T=(p["death"] - p["dx"]) if dead else hor, E=int(dead), lost=None, hor=hor,
                             visits=[], c0=p["c0"]))
             continue
-        ends = sorted((x, why) for x, why in ((p["north"], "north"), (p["wd"], "consent")) if x >= 0)
+        ends = sorted((x, why) for x, why in ((p["north_rec"], "north"), (p["wd"], "consent")) if x >= 0)
         end = ends[0] if ends else None
         seen = R.death_source(p) is not None and p["death"] <= two
         if seen and (end is None or p["death"] <= end[0]):
@@ -91,8 +91,8 @@ def run(target, w):
     pick, runner, gap = A.pick(S)
 
     # ---------------------------------------------------------------- the ladder
-    want = [("crude", FEN, 0.6), ("complete_case", WRE, 1.0), ("worst_case", WRE, 3.0), ("km", FEN, 0.6),
-            ("km_exchange_censored", FEN, 0.6), ("ipcw_diagnosis_class", FEN, 0.6), ("ipcw_pooled", FEN, 0.6)]
+    want = [("crude", FEN, 2.0), ("complete_case", WRE, 1.0), ("worst_case", WRE, 1.0), ("km", FEN, 1.0),
+            ("km_exchange_censored", FEN, 0.8), ("ipcw_diagnosis_class", FEN, 0.6), ("ipcw_pooled", FEN, 1.5)]
     for r, h, m in want:
         a, b, g = A.pick(L[r])
         ok(a == h and 100 * g >= m, "ladder %s closes %s with margin %.1f (%s %.2f)" % (r, h, m, a, 100 * g))
@@ -100,27 +100,29 @@ def run(target, w):
                                                                       "rung" % r)
     for r in A.FAMILY:
         a, b, g = A.pick(L[r])
-        ok(a == GUL and b == FEN and 100 * g >= (2.0 if r == "golden" else 1.5),
+        ok(a == GUL and b == FEN and 100 * g >= 2.5,
            "family %s closes Gullhaven, Fennick next, margin %.2f" % (r, 100 * g))
     ok(pick == GUL and runner == FEN, "the golden picks Gullhaven, Fennick the next lowest")
     for h in K.CODES:
         vals = [100 * L[r][h] for r in A.FAMILY]
-        ok(len({DL.whole(v) for v in vals}) == 1, "%s: every form of the decisive estimator prints the same whole percent "
-                                                  "(%s)" % (h, ", ".join("%.2f" % v for v in vals)))
-        ok(edge(100 * S[h]) >= 0.15, "%s: the golden survival %.2f is 0.15 or more from its whole percent's edge"
-           % (h, 100 * S[h]))
+        lo, hi = min(vals), max(vals)
+        ok(DL.whole(lo) == DL.whole(hi) and min(lo - (DL.whole(lo) - 0.5), DL.whole(hi) + 0.5 - hi) >= (
+           0.2 if h in (GUL, WRE) else 0.05), "%s: every form of the decisive estimator prints the same whole percent, "
+                                               "the whole family clear of the edges (%.2f to %.2f)" % (h, lo, hi))
     gaps = [100 * A.pick(L[r])[2] for r in A.FAMILY]
-    ok(len({DL.whole(x) for x in gaps}) == 1 and edge(100 * gap) >= 0.3, "the gap prints the same whole point under every "
-                                                                         "form and sits 0.3 from its edge")
+    ok(DL.whole(min(gaps)) == DL.whole(max(gaps)) and min(min(gaps) - (DL.whole(min(gaps)) - 0.5),
+                                                          DL.whole(max(gaps)) + 0.5 - max(gaps)) >= 0.3,
+       "the gap prints the same whole point under every form, the family 0.3 or more from the edges (%.2f to %.2f)"
+       % (min(gaps), max(gaps)))
     ok(DL.whole(100 * gap) == DL.whole(100 * S[runner]) - DL.whole(100 * S[pick]),
        "SF7 the gap from unrounded and from rounded survival agree")
     pos = [sorted(K.CODES, key=lambda x: L[r][x]).index(GUL) + 1 for r in ("crude", "km", "ipcw_diagnosis_class",
                                                                            "ipcw_pooled", "golden")]
-    ok(pos == [3, 3, 3, 3, 1], "position: Gullhaven 3rd crude, by Kaplan-Meier, weighted by the class at diagnosis and "
-                               "weighted pooled, 1st at the decisive step (%s)" % pos)
+    ok(pos == [4, 2, 2, 2, 1], "position: Gullhaven 4th crude, 2nd by Kaplan-Meier, weighted by the class at diagnosis "
+                               "and weighted pooled, 1st at the decisive step (%s)" % pos)
     km_gap = 100 * A.pick(L["km"])[2]
-    ok(A.pick(L["km"])[1] == "BRE" and DL.whole(km_gap) != DL.whole(100 * gap) and edge(km_gap) >= 0.15,
-       "the default path's gap (Fennick to Brenmoor, %.2f) prints a different whole point from the golden's" % km_gap)
+    ok(A.pick(L["km"])[1] == GUL and DL.whole(km_gap) != DL.whole(100 * gap) and edge(km_gap) >= 0.15,
+       "the default path's gap (Fennick to Gullhaven, %.2f) prints a different whole point from the golden's" % km_gap)
     ok(100 * (L["km"][GUL] - S[GUL]) >= 4.0 and abs(100 * (L["km"][FEN] - S[FEN])) < 0.5,
        "dominance: the decisive step moves Gullhaven by 4 points or more and Fennick by under half a point")
     ok(100 * (L["ipcw_diagnosis_class"][GUL] - S[GUL]) >= 3.0,
@@ -133,8 +135,10 @@ def run(target, w):
     # ---------------------------------------------------------------- the semantic fork table
     ok(same_print(S, A.golden(D, basis="enrolment"), [GUL, FEN]),
        "SF1 the cohort chosen by enrolment date: the call, both hospitals' figures and the gap the same")
-    ok(same_print(S, A.golden(D, basis="first_visit"), [GUL, FEN]),
-       "SF1 the cohort chosen by first clinic visit: the call, both hospitals' figures and the gap the same")
+    fv = A.golden(D, basis="first_visit")
+    ok(same_print(S, fv, [GUL]) and printed(fv)[FEN] != printed(S)[FEN],
+       "SF1 the cohort chosen by first clinic visit: the call, Gullhaven's figure and the gap the same, Fennick at %d per "
+       "cent, ruled out by the manual's 2.1 (the diagnosis date is the date of the diagnosing encounter)" % printed(fv)[FEN])
     hosp_of = {r["registry_id"]: A.HOSP[r["hospital"]] for r in D["patients"]}
     ok(all(A.HOSP[r["clinic"]] == hosp_of[r["registry_id"]] for r in D["visits"]),
        "SF2 every clinic visit is at the hospital of diagnosis")
@@ -143,12 +147,21 @@ def run(target, w):
     ok(A.pick(nx)[0] == GUL and printed(nx)[GUL] != printed(S)[GUL],
        "SF4 the exchange's deaths unread: Gullhaven at %d per cent, ruled out by the manual's 4.2" % printed(nx)[GUL])
     ok(A.pick(L["complete_case"])[0] == WRE, "SF5 the patients no longer followed left out: Wrenhaven")
-    ok(min(K.CODES, key=lambda h: printed(S)[h]) == GUL and len({printed(S)[h] for h in K.CODES}) == 5,
-       "SF6 lowest after rounding: the same hospital, no tie")
+    ok(min(K.CODES, key=lambda h: printed(S)[h]) == GUL and sum(printed(S)[h] == printed(S)[GUL] for h in K.CODES) == 1,
+       "SF6 lowest after rounding: the same hospital, no hospital tying it")
     cnr = {r["registry_id"] for r in D["events"] if r["event"] == "CNR"}
     ok(A.pick(A.golden(D, drop=cnr))[0] == WRE, "SF8 the re-consent's withdrawals left out of Wrenhaven's cohort: "
                                                 "Wrenhaven, ruled out by the charter's 3.2")
-    ok(all(hosp_of[r] == WRE for r in cnr) and len(cnr) > 500, "SF8 every withdrawal is Wrenhaven's")
+    ok(all(hosp_of[r] == WRE for r in cnr) and len(cnr) > 300, "SF8 every withdrawal is Wrenhaven's")
+    last_visit = {}
+    for r in D["visits"]:
+        last_visit[r["registry_id"]] = max(last_visit.get(r["registry_id"], ""), r["visit_date"])
+    rel = [r for r in D["events"] if r["event"] == "REL"]
+    ok(all(r["registry_id"] in last_visit and last_visit[r["registry_id"]] < r["event_date"] for r in rel),
+       "SF12 every relocation is recorded after the visit where the patient reported it, the last visit on record, so the "
+       "class at the loss is the same whether the loss date's own visits are counted or not")
+    movers = [p for p in C if p["lost"] == "north"]
+    ok(all(p["visits"] and p["visits"][-1][0] < p["T"] for p in movers), "SF12 every mover's last visit precedes the loss")
     fl_new = {r["mrn"] for r in D["fl"]}
     ex_ids = {r["PARTNER_ID"] for r in D["exchange"]}
     leg2new = {r["legacy_mrn"]: r["new_mrn"] for r in D["crosswalk"]}
@@ -178,8 +191,10 @@ def run(target, w):
                 ok(not bad.search(" ".join(str(x) for x in first if x)), "R1 no survival column in %s/%s" % (f, ws.title))
     ok(same_print(S, A.golden(D, raw_class=True)), "R2 the class spellings left unharmonised (each spelling its own "
                                                     "class): every printed figure and the gap the same")
-    ok(same_print(S, A.golden(D, exchange_censors=True)), "R2 the moves to Georgia, Alabama and South Carolina read as "
-                                                          "losses too: every printed figure and the gap the same")
+    xc = A.golden(D, exchange_censors=True)
+    ok(same_print(S, xc, [GUL, FEN]), "R2 the moves to Georgia, Alabama and South Carolina read as losses too: the call, "
+                                      "Gullhaven's and Fennick's figures and the gap the same (Linmoor at %d per cent, "
+                                      "ruled out by the manual's 4.2)" % printed(xc)[LIN])
     legacy_enrolled = [r for r in D["patients"] if r["mrn"].startswith("H") and r["diagnosis_date"] < "2024-01-01"]
     ok(len(legacy_enrolled) > 8000 and not any(r["mrn"] in fl_new for r in legacy_enrolled),
        "R2 the crosswalk unread: no 2022 or 2023 patient finds a Florida death (loud)")
@@ -228,6 +243,12 @@ def run(target, w):
             ok(int(b["accession"][1:]) > int(a["accession"][1:]) and a["result_status"] == b["result_status"] == "F"
                and a["result"] != b["result"], "Ask A: a correction carries a later accession, both final, a new value")
     ok(len({r["accession"] for r in D["lab"]}) == len(D["lab"]), "Ask A: accessions unique")
+    for k, rs in by.items():
+        if len(rs) == 2:
+            a, b = rs
+            ok(a["received"] == b["received"], "Ask A: a correction keeps its specimen's collection and receipt times")
+            ok((A._num(a["result"]) >= K.REFERRAL) == (A._num(b["result"]) >= K.REFERRAL),
+               "Ask A C1: no correction moves a specimen across the referral level, so either result counts it the same")
     ok(len({tuple(r.values()) for r in D["lab"]}) == len(D["lab"]), "Ask A: no exact duplicate row")
     times = {}
     for r in rows25:
@@ -297,7 +318,7 @@ def run(target, w):
             ok(x[c][0] != aa[c][0] and x[c][1] != aa[c][1], "Ask A %s: %s misses both figures" % (c, what))
     x = A.ask_a(D, "first")
     for c in K.CODES:
-        ok(x[c][0] == aa[c][0] and x[c][1] != aa[c][1], "Ask A %s: the first release kept misses the referral count" % c)
+        ok(x[c] == aa[c], "Ask A %s C1: the first release kept gives the same specimens and referral count" % c)
     for h, what in (("plain", "the registry as it stands (the cracker)"), ("drop_crosswalked", "every crosswalked number "
                                                                                               "dropped"),
                     ("reader", "the re-enrolments left out by the date shown (stage 4 round 1's reader)"),
@@ -371,6 +392,33 @@ def run(target, w):
     ok(all(r["from"] >= "2026-01-05" for r in csv.DictReader(open(os.path.join(target, K.FILES["clinics"]),
                                                                    encoding="utf-8"))),
        "H16 the 2026 clinic timetable is the one forward-dated file (allowed)")
+    cnr_day = {r["registry_id"]: r["event_date"] for r in D["events"] if r["event"] == "CNR"}
+    ok(not any(r["event"] == "REL" and r["registry_id"] in cnr_day and r["event_date"] > cnr_day[r["registry_id"]]
+               for r in D["events"]), "realism: no relocation recorded after a consent withdrawal")
+    dx_of = {r["registry_id"]: r["diagnosis_date"] for r in D["patients"]}
+    new_of = {r["registry_id"]: leg2new.get(r["mrn"], r["mrn"]) for r in D["patients"]}
+    fl_day = {}
+    for r in D["fl"]:
+        fl_day[r["mrn"]] = min(fl_day.get(r["mrn"], r["dod"]), r["dod"])
+    ok(not any(new_of[k] in fl_day and str(fl_day[new_of[k]]) < v for k, v in dx_of.items())
+       and not any(r["DOD"] < dx_of[r["PARTNER_ID"]].replace("-", "") for r in D["exchange"]),
+       "realism: no death dated before the diagnosis the record shows")
+    gone_by = {}
+    for r in D["patients"]:
+        m = new_of[r["registry_id"]]
+        if m in fl_day:
+            gone_by[m] = str(fl_day[m])
+    rid_new = {r["registry_id"]: new_of[r["registry_id"]] for r in D["patients"]}
+    for r in D["exchange"]:
+        m = rid_new[r["PARTNER_ID"]]
+        d = "%s-%s-%s" % (r["DOD"][:4], r["DOD"][4:6], r["DOD"][6:])
+        gone_by[m] = min(gone_by.get(m, d), d)
+    for r in D["events"]:
+        if r["event"] == "REL":
+            m = rid_new[r["registry_id"]]
+            gone_by[m] = min(gone_by.get(m, r["event_date"]), r["event_date"])
+    ok(not any(r["mrn"] in gone_by and r["collected"][:10] >= gone_by[r["mrn"]] for r in D["lab"]),
+       "realism: no laboratory specimen from a registry patient after their death or relocation")
     ok(all(r["destination_state"] in K.STATES_NORTH + list(K.EXCHANGE_STATES) for r in D["events"] if r["event"] == "REL")
        and all(r["destination_state"] == "" for r in D["events"] if r["event"] == "CNR"), "events carry their states")
     yrs = Counter(r["diagnosis_date"][:4] for r in D["patients"])
@@ -378,9 +426,9 @@ def run(target, w):
     from pypdf import PdfReader
     must = {"charter": ["had the lowest two-year survival from diagnosis",
                         "including patients the registry no longer follows", "at or above 400 pg/mL"],
-            "manual": ["The diagnosis date is the date of that encounter", "recorded as a relocation (event REL) on the "
-                       "date of that visit", "The registry has no source for deaths in any other state",
-                       "returned each quarter by the", "left follow-up that day (event CNR)"]}
+            "manual": ["The diagnosis date is the date of that encounter", "is recorded as a relocation (event REL), with the "
+                       "state they are moving to", "The registry has no source for deaths in any other state",
+                       "returned each quarter by the", "leaves follow-up that day (event CNR)"]}
     for k, sentences in must.items():
         path = os.path.join(target, K.FILES[k])
         strict = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path, strict=True).pages)

@@ -72,6 +72,7 @@ coh["E"] = dead.astype(int)
 coh["T"] = np.where(dead, (coh["death"] - coh["dx"]).dt.days,
                     np.where(cens, (coh["end"] - coh["dx"]).dt.days, (coh["two"] - coh["dx"]).dt.days))
 coh["north"] = cens & (coh["why"] == "REL")
+pat_by_id = dict(zip(pat["registry_id"], pat["nyha_at_diagnosis"]))
 check(coh["T"].max() <= 731 and (coh["two"] <= pd.Timestamp("2025-12-31")).all(),
       "every two-year date falls inside the death sources' completeness")
 vis["date"] = pd.to_datetime(vis["visit_date"])
@@ -79,7 +80,7 @@ vis["cls"] = vis["nyha_class"].map(nyha)
 v = vis.merge(coh[["registry_id", "dx", "T", "north", "hospital_name"]], on="registry_id")
 v["d"] = (v["date"] - v["dx"]).dt.days
 v = v[(v["d"] > 0) & (v["d"] <= v["T"])].copy()
-v["move"] = v["north"] & (v["d"] == v["T"])
+v["move"] = v["north"] & (v["d"] == v.groupby("registry_id")["d"].transform("max"))
 
 
 def km(df, w_at=None):
@@ -124,6 +125,37 @@ for h in names:
     df = coh[coh["hospital_name"] == h]
     kms[h] = km(df)
     surv[h] = km(df, ipcw_weights(df, v[v["hospital_name"] == h]))
+# a second estimator on its own path: each patient lost to a move carried at the constant death rate of the class
+# recorded at the visit where the move was reported (deaths over days at risk in each class, the hospital's own)
+fixed = {}
+for h in names:
+    df = coh[coh["hospital_name"] == h].set_index("registry_id")
+    vh = v[v["hospital_name"] == h].sort_values(["registry_id", "d"])
+    expo, dth = np.zeros(5), np.zeros(5)
+    groups = {rid: g for rid, g in vh.groupby("registry_id")}
+    last_cls = {rid: int(g["cls"].iloc[-1]) for rid, g in groups.items()}
+    for rid, row in df.iterrows():
+        g = groups.get(rid)
+        c0 = nyha(pat_by_id[rid])
+        pts = [(0, c0)] + ([] if g is None else list(zip(g["d"], g["cls"])))
+        for j, (d0, c) in enumerate(pts):
+            d1 = pts[j + 1][0] if j + 1 < len(pts) else row["T"]
+            if d1 > d0:
+                expo[c] += d1 - d0
+                if j + 1 == len(pts) and row["E"] == 1:
+                    dth[c] += 1
+    hz = dth / np.maximum(expo, 1)
+    tot = 0.0
+    for rid, row in df.iterrows():
+        if row["E"] == 1:
+            continue
+        lost = row["north"] or (row["why"] == "CNR" and pd.notna(row["end"]) and row["end"] < row["two"])
+        if not lost:
+            tot += 1
+            continue
+        c = last_cls.get(rid, nyha(pat_by_id[rid]))
+        tot += float(np.exp(-hz[c] * ((row["two"] - row["dx"]).days - row["T"])))
+    fixed[h] = tot / len(df)
 order = sorted(names, key=lambda h: surv[h])
 pick, runner = order[0], order[1]
 gap = 100 * (surv[runner] - surv[pick])
@@ -134,6 +166,9 @@ check(pick == "Gullhaven Hospital" and runner == "Fennick General Hospital", "th
                                                                               "Fennick next")
 check(km_pick == "Fennick General Hospital", "the default path (Kaplan-Meier, the moves as ordinary censoring) files "
                                              "Fennick")
+print("  fixed last class:", ", ".join("%s %.2f" % (h, 100 * fixed[h]) for h in sorted(names, key=lambda h: fixed[h])))
+check(min(names, key=lambda h: fixed[h]) == pick and all(half_up(100 * fixed[h]) == half_up(100 * surv[h]) for h in names),
+      "a second estimator (the lost carried at their class's constant death rate) gives the same five whole percents")
 km_order = sorted(names, key=lambda h: kms[h])
 check(half_up(100 * (kms[km_order[1]] - kms[km_order[0]])) != half_up(gap),
       "the default path's gap prints a different whole point from the golden's")

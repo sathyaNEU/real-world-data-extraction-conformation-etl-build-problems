@@ -11,7 +11,7 @@ import numpy as np
 
 import common as K
 
-SEED = 28
+SEED = 273
 DAY0 = dt.date(2022, 1, 1)
 Q = 91                                   # a quarter, the clinic's visit interval in days
 EXTRACT_DAY = (K.EXTRACT - DAY0).days
@@ -25,23 +25,24 @@ SPLIT_DAY = (K.SPLIT - DAY0).days
 T0 = np.array([[0.90, 0.09, 0.01, 0.00],
                [0.03, 0.88, 0.08, 0.01],
                [0.00, 0.04, 0.86, 0.10],
-               [0.00, 0.00, 0.08, 0.92]])
-D0 = np.array([0.008, 0.018, 0.050, 0.140])
-# Gullhaven's patients are older: in every class they worsen faster and die more often
-WORSEN = {"GUL": 1.90}
-DMULT = {"GUL": 1.16}
+               [0.00, 0.00, 0.02, 0.98]])
+D0 = np.array([0.008, 0.018, 0.050, 0.180])
+# Gullhaven's patients are older and mostly diagnosed in class I or II, then worsen faster; in a given class every
+# hospital's patients die at the same rate
+WORSEN = {"GUL": 3.0}
 MIX = {"FEN": (0.10, 0.36, 0.40, 0.14), "LIN": (0.22, 0.46, 0.26, 0.06), "BRE": (0.16, 0.42, 0.32, 0.10),
-       "GUL": (0.24, 0.49, 0.22, 0.05), "WRE": (0.20, 0.45, 0.28, 0.07)}
-PER_YEAR = {"FEN": 800, "LIN": 750, "BRE": 750, "GUL": 1200, "WRE": 850}
+       "GUL": (0.30, 0.55, 0.13, 0.02), "WRE": (0.14, 0.40, 0.33, 0.13)}
+PER_YEAR = {"FEN": 800, "LIN": 750, "BRE": 760, "GUL": 1500, "WRE": 850}
+GROWTH = {2022: 1.0, 2023: 1.0, 2024: 1.02, 2025: 1.04}   # new diagnoses rise a little each year from 2024
 AGE = {"FEN": (69, 12), "LIN": (72, 10), "BRE": (73, 10), "GUL": (79, 7), "WRE": (71, 11)}
 # a move out of Florida reported at a clinic visit: north, beyond the death linkage, by a logistic in the hospital and
 # the class recorded at that visit; or to a state the exchange covers, mostly while well
 NORTH_A = {"GUL": -5.9}
 NORTH_A_OTHER = -9.6
-NORTH_B = np.array([0.0, 0.5, 2.2, 4.8])
+NORTH_B = np.array([0.0, 0.3, 0.6, 4.3])
 EXCH = {"GUL": (0.030, 0.020, 0.005, 0.002)}
 EXCH_OTHER = (0.004, 0.003, 0.001, 0.0)
-RECONSENT_LOST = 0.75                    # Wrenhaven's patients who did not return the new consent form
+RECONSENT_LOST = 0.90                    # Wrenhaven's patients who did not return the new consent form
 MISSED_VISIT = 0.04
 
 
@@ -55,7 +56,7 @@ def matrices(h):
     for a in range(4):
         T[a, a + 1:] *= w
         T[a, a] = 1.0 - T[a].sum() + T[a, a]
-    return T, np.minimum(D0 * DMULT.get(h, 1.0), 0.95)
+    return T, D0.copy()
 
 
 def north_p(h):
@@ -135,11 +136,13 @@ def build(seed=SEED):
     for y in K.YEARS_ENROLLED:
         for hi, h in enumerate(K.CODES):
             r = np.random.default_rng([seed, y, hi, 1])
-            n = PER_YEAR[h] + int(r.integers(-25, 26))
+            n = int(round(PER_YEAR[h] * GROWTH[y])) + int(r.integers(-25, 26))
             dx = diagnosis_days(r, n, y)
             C = course(r, h, dx)
             am, asd = AGE[h]
-            ages = np.clip(np.round(r.normal(am, asd, n)), 38, 99).astype(int)
+            x = r.normal(am, asd, n)
+            x = np.where(x > 96, 96 + 0.45 * (x - 96), np.where(x < 40, 40 - 0.5 * (40 - x), x))   # thinner tails
+            ages = np.clip(np.round(x), 24, 108).astype(int)
             sex = np.where(r.random(n) < (0.46 if h == "GUL" else 0.43), "F", "M")
             ef = r.choice(["HFrEF", "HFmrEF", "HFpEF"], size=n, p=(0.42, 0.18, 0.40))
             setting = r.choice(["Inpatient", "Outpatient", "Emergency department"], size=n, p=(0.58, 0.32, 0.10))
@@ -156,13 +159,14 @@ def build(seed=SEED):
     numbers(W, seed)
     reenrolments(W, seed)
     problem_list(W, seed)
+    recorded(W, seed)
     W["lab"] = lab_results(W, seed)
     return W
 
 
 def reconsent(W, seed):
-    """Wrenhaven re-consented its patients enrolled before 2024; those who had not returned the form by 1 April 2024
-    left the registry's follow-up that day, at random."""
+    """Wrenhaven re-consented its patients enrolled before 2024; those who had not returned the form by the deadline
+    (common.RECONSENT) left the registry's follow-up that day, at random."""
     r = np.random.default_rng([seed, 7])
     for p in W["patients"]:
         if p["hosp"] != "WRE" or p["year"] >= 2024:
@@ -246,6 +250,16 @@ def reenrolments(W, seed):
     W["patients"].extend(add)
 
 
+def recorded(W, seed):
+    """The registry records a relocation when it processes the note of the visit at which the patient said so, one to
+    four days after the visit."""
+    r = np.random.default_rng([seed, 29])
+    for p in W["patients"]:
+        lag = int(r.integers(1, 5))
+        p["north_rec"] = p["north"] + lag if p["north"] >= 0 else -1
+        p["exch_rec"] = p["exch"] + lag if p["exch"] >= 0 else -1
+
+
 def problem_list(W, seed):
     """Between the registry module's November 2024 update and the February 2025 release that fixed it, a new
     enrolment's diagnosis date was overwritten with the date of the heart failure entry on the patient's problem list
@@ -260,7 +274,8 @@ def problem_list(W, seed):
         u, lag = r.random(), int(r.integers(3, 41))
         e = DAY0 + dt.timedelta(days=p["enrol"])
         d = DAY0 + dt.timedelta(days=p["dx"])
-        if u < 0.35 and p["enrol"] + lag < hi and d.year == e.year and e.month != 1:
+        alive = p["death"] < 0 or p["death"] > p["enrol"] + lag
+        if u < 0.35 and alive and p["enrol"] + lag < hi and d.year == e.year and e.month != 1:
             p["dx_shown"] = p["enrol"] + lag
 
 
@@ -274,9 +289,14 @@ def lab_results(W, seed):
     specimens and the corrections the laboratory system re-accessions (a new accession, the same patient and collection
     time, released later, both rows final)."""
     r = np.random.default_rng([seed, 17])
+    rr = np.random.default_rng([seed, 23])
     a, b = (K.LAB_FROM - DAY0).days, (K.LAB_TO - DAY0).days
     reg = [p for p in W["patients"] if p["cls"] is not None]
-    per_lab = {"FEN": 10400, "LIN": 8170, "BRE": 8800, "GUL": 11600, "WRE": 9300}
+
+    def here(p, day):
+        """Alive and still in the hospitals' reach on the day the specimen was collected."""
+        return not any(0 <= x <= day for x in (p["death"], p["north"], p["exch"]))
+    per_lab = {"FEN": 10400, "LIN": 8170, "BRE": 8800, "GUL": 11640, "WRE": 9300}
     rows = []
     others = W["others"]
     for h in K.CODES:
@@ -286,6 +306,7 @@ def lab_results(W, seed):
         days = r.integers(a - 3, b - 2, n)
         mins = r.integers(0, 1440, n)
         for i in range(n):
+            p = None
             if r.random() < 0.30 and mine:
                 p = mine[int(r.integers(0, len(mine)))]
                 mrn = p["mrn_new"]
@@ -295,6 +316,8 @@ def lab_results(W, seed):
                 base = 6.1
             v = float(np.exp(r.normal(base, 1.25)))
             col = int(days[i]) * 1440 + int(mins[i])
+            if p is not None and not here(p, col // 1440):
+                mrn = others[int(rr.integers(0, len(others)))]      # the specimen is another patient's
             rec = col + int(r.integers(8, 90))
             rel = rec + int(r.integers(35, 300))
             loc = r.choice(["ED", "INPT", "OUTPT", "PCN"], p=(0.36, 0.30, 0.20, 0.14))
@@ -310,7 +333,7 @@ def lab_results(W, seed):
     corrections = []
     for h in K.CODES:
         mine = [x for x in rows if x["lab"] == h and a * 1440 <= x["rel"] < (a + 360) * 1440 and x["kind"] == "result"]
-        m = int(r.integers(22, 58))
+        m = int(r.integers(34, 82))
         pick = r.choice(len(mine), size=m, replace=False)
         for j in pick:
             x = mine[int(j)]
@@ -322,6 +345,8 @@ def lab_results(W, seed):
             rel2 = x["rel"] + int(r.integers(180, 4300))
             if shown(v2) == shown(x["val"]):          # a re-run that reports the same result is not a correction
                 continue
+            if (v2 >= K.REFERRAL - 0.5) != (x["val"] >= K.REFERRAL - 0.5):
+                continue                              # the corrections kept here never move a result across the referral level
             corrections.append(dict(lab=h, acc=None, mrn=x["mrn"], col=x["col"], rec=x["rec"],
                                     rel=rel2, val=v2, loc=x["loc"], kind="correction",
                                     sat=x["sat"]))

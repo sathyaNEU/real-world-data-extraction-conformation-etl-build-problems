@@ -131,8 +131,8 @@ def write_manual(path):
     Hd("2. Enrolment")
     C(K.MANUAL_SECTIONS["enrolment"], "A patient is enrolled when heart failure is first diagnosed at a Heronmere hospital, in an admission, in "
              "an emergency department visit or in an outpatient clinic. The diagnosis date is the date of that "
-             "encounter. The enrolment date is the date the registry nurse entered the patient, usually within three "
-             "weeks of the diagnosis.")
+             "encounter. The enrolment date is the date the registry nurse entered the patient, within three weeks "
+             "after the diagnosing encounter.")
     C(K.MANUAL_SECTIONS["hospital"], "The hospital is the hospital of the diagnosing encounter. The North Campus of Brenmoor Regional Medical "
              "Center used the main campus's code (BRE) until 1 July 2024 and its own code (BRN) from that date; both "
              "campuses are Brenmoor Regional Medical Center.")
@@ -145,8 +145,9 @@ def write_manual(path):
     C(K.MANUAL_SECTIONS["spelling"], "The legacy record writes the NYHA class as I to IV or as Class I to Class IV; the new record, from 1 June "
              "2024, writes it as 1 to 4 or as NYHA 1 to NYHA 4. The diagnosis setting is IP, OP or ED in the legacy "
              "record and Inpatient (or INPT), Outpatient or ED visit in the new one.")
-    C(K.MANUAL_SECTIONS["relocation"], "A patient who tells the clinic that they are moving out of Florida is recorded as a relocation (event REL) "
-             "on the date of that visit, with the state they are moving to. The clinic does not see them again.")
+    C(K.MANUAL_SECTIONS["relocation"], "A patient who tells the clinic that they are moving out of Florida is recorded as a relocation (event REL), "
+             "with the state they are moving to, when the registry processes the note of that visit, a few days later. "
+             "The clinic does not see them again.")
     Hd("4. Vital status")
     C(K.MANUAL_SECTIONS["florida"], "Deaths in Florida are found by the state's death certificate linkage, run each March on the record numbers "
              "of the patients in follow-up. The linkage returns one row for each linked death, under the patient's "
@@ -155,9 +156,10 @@ def write_manual(path):
              "%s, under the registry identifier." % K.EXCHANGE)
     C(K.MANUAL_SECTIONS["no_source"], "The registry has no source for deaths in any other state. A patient who moves to any other state leaves "
              "vital status follow-up on the date of the relocation, and the registry holds nothing on them after it.")
-    C(K.MANUAL_SECTIONS["reconsent"], "In 2024 the registry re-consented the patients Wrenhaven Medical Center had enrolled before 2024, after a "
-             "change to that hospital's data-sharing agreement. Patients who had not returned the new consent form by "
-             "1 April 2024 left follow-up that day (event CNR); the registry holds nothing on them after it.")
+    C(K.MANUAL_SECTIONS["reconsent"], "The registry is re-consenting the patients Wrenhaven Medical Center enrolled before 2024, after a change "
+             "to that hospital's data-sharing agreement. A patient who has not returned the new consent form by %s "
+             "leaves follow-up that day (event CNR), and the registry holds nothing on them after it."
+      % K.RECONSENT.strftime("%-d %B %Y"))
     Hd("5. Record numbers")
     P("On 1 June 2024 Heronmere moved to a new electronic health record and every patient was given a new medical record "
       "number. The registry keeps the number under which each patient was enrolled. The record-number crosswalk maps "

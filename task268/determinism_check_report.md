@@ -1,60 +1,62 @@
-# determinism-check report, task268, 2026-10-19
+# determinism-check report, task268, 2026-10-19 (round 2 of architecture 3)
 
-Round 1 of architecture 3 (Gullhaven / heart failure survival). This file replaces architecture 2's report (the haddock survey task), overwritten at the coordinator's instruction.
+Round 1 (same date): DETERMINISTIC, APPROVE, advisory findings only (estimator not filed, moderate; ask 2 and 3 dedupe conventions unfiled, low to moderate). Round 2 follows the rebuild for the reader's Gate F findings (Brenmoor now 68, Ask B's 2025 counts with a further record-level issue). This file replaces round 1's report.
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE (optional in-house pins on the asks and on the filing of the estimand, none required)
+NOT_DETERMINISTIC (governing label: margin_or_boundary_fragility)
+**Disposition:** SEND_BACK (the repair widens a decisive margin or files a method-forcing criterion, both of which change what solvers see; a model rerun is required)
 **Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One judge thread (general-purpose, sonnet, medium) saw only a fresh unzip at /tmp/determinism-check-task268-r1/target/ and the inlined blocks. The charter (3.2) files the estimand: the share of every patient newly diagnosed in 2022 and 2023, including patients the registry no longer follows, alive two years after diagnosis. The judge reproduced the five two-year survivals (65, 67, 69, 72, 73) under the time-varying class-weighted estimator, and an independent class-transition projection gave GUL 65.4, FEN 67.1, BRE 69.3, LIN 73.3: Gullhaven lowest and a 2-point gap under both (unrounded 2.1 and 1.7). The easy routes land elsewhere (KM with moves as censoring, no record = alive, baseline-class stratified KM: Fennick; leavers dropped or counted dead: Wrenhaven). The data separates them: 503 of Gullhaven's 526 movers left from NYHA III or IV, while Wrenhaven's re-consent leavers show no class gradient, so ordinary censoring is right for them. Gate A passes.
+One judge thread (general-purpose, sonnet, medium) saw only a fresh unzip and the inlined blocks. Every graded figure reproduces under the golden's estimator (hospital-specific, time-varying-class inverse-probability-of-censoring weights): GUL 64.9, FEN 67.0, BRE 67.9, LIN 73.25, WRE 72.2, gap 2.1. But charter 3.2 asks for the share alive at two years including patients the registry no longer follows, which for Gullhaven's 526 movers is unobserved, so the figure is a modelled estimate and no shipped file selects the model. Equally licensed class-adjusted estimators on the same cleaned data give Gullhaven 64.9 to 67.3 against Fennick's steady 67.0 to 67.05, and the gap comes out at 2.1, 0.8, 0.2 or -0.3 points. Gullhaven's lead (about one standard error of the difference, roughly 1.6 points) is inside method noise, and the thread's own claim that class-progression projection "gives the same five figures" (submission step 6) did not reproduce (it gives Gullhaven 66).
+
+Formal reconciliation: the margin rule fails only when the thinness meets real uncertainty, with multiple valid methods whose range straddles the deciding line. Here the lowest-hospital pick holds under every hospital-specific class-adjusted method (IPCW, multi-state, landmark) and flips only under pooled-transition variants and baseline-class weighting, which are weaker choices. That alone I would weigh as a thin-but-mostly-clean call. The gap is the second half of the main ask ("by how many points"), and it is 2, 1 or 0 by method among hospital-specific estimators, with nothing shipped (no standard, selection criterion or filed back-test) to choose among them. The `Current spec` requires the method open only where the design, a standard or a filed criterion forces it, with the data separating candidates; the data here do not separate them. NOT_DETERMINISTIC stands, and since the repair changes solver-visible artifacts, SEND_BACK, not FIX_NOW.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Cohort 2022 to 2023 | 8,783 | 8,783 (GUL 2,430, WRE 1,703, FEN 1,622, LIN 1,536, BRE 1,492) | yes |
-| GUL survival | 65% | 64.9 (IPW), 65.4 (projection) | yes |
-| FEN / BRE / WRE / LIN survival | 67 / 69 / 72 / 73 | 67.0 / 69.3 / 72.2 / 73.3 | yes |
-| Gap | 2 points | 2.1 and 1.7 | yes |
-| KM, moves censored | FEN 67, GUL 70 | FEN 67.2, GUL 69.6 | yes |
-| GUL movers, class III or IV | 526; 503 | 526; 503 (82 + 421) | yes |
-| WRE re-consent leavers | 942 | 942 | yes |
-| GUL move chance at class III / IV | 2.2% / 24.3% | 1.7% / 17% over all visits | not replicated (in-window visits not rebuilt); not graded |
-| NT-proBNP tests; at or above 400 | FEN 10,639; 6,991, LIN 8,364; 5,460, BRE 8,704; 5,710, GUL 11,770; 7,723, WRE 9,368; 6,040 | identical | yes |
-| 2025 diagnoses; inpatient | FEN 795; 465, LIN 736; 417, BRE 734; 404, GUL 1,222; 723, WRE 833; 494 | identical | yes |
+| Cohort 2022 to 2023 | GUL 2,430; FEN 1,622; BRE 1,492; LIN 1,536; WRE 1,703 | identical | yes |
+| GUL movers beyond linkage within 2 years | 526 | 526 (WRE 948 lost, mostly CNR) | yes |
+| KM, moves and CNR as censoring | GUL 70, FEN 67 | GUL 69.6, FEN 67.2, BRE 68.0, LIN 73.3, WRE 72.3 | yes |
+| GUL move chance at class III / IV | 2.2% / 24.3% | 2.19% / 24.5% | yes |
+| Two-year survival, golden method | 65 / 67 / 68 / 73 / 72 (GUL, FEN, BRE, LIN, WRE) | 64.9 / 67.0 / 67.9 / 73.25 / 72.2 | yes, under that one method |
+| Gap | 2 points | 2.1 (IPCW), 0.8 (multi-state), 0.2 (landmark), -0.3 (pooled landmark) | only under IPCW |
+| Step 6 claim: projection gives the same five figures | same | GUL 66.2 to 66.6, WRE 71.6 to 71.7 | no |
+| Ask 2, NT-proBNP | FEN 10,639; 6,991, LIN 8,364; 5,460, BRE 8,704; 5,718, GUL 11,770; 7,723, WRE 9,368; 6,040 | identical | yes, all ten |
+| Ask 3, 2025 diagnoses; inpatient | FEN 795; 465, LIN 736; 417, BRE 734; 404, GUL 1,222; 723, WRE 833; 494 | identical | yes (with the stated reading, below) |
 
 ## Competing answers that survived
-1. Method for patients whose status the registry no longer holds. The charter files that they count but not how. Readings: no record = alive (FEN 67, BRE 70, gap 3), KM censoring (FEN), baseline-class KM (FEN), leavers dead (WRE), time-varying class adjustment (GUL 65). Only the last uses the class at the reported move, which the visit file carries; the design says the method stays open because the data separates the candidates (fork rows SF4, SF5, SF8 close the semantic terms). A literal grader could dispute the method pick: moderate residual risk, not a surviving defensible alternative.
-2. Ask 2 and 3 conventions: a corrected NT-proBNP result re-released under a new accession counts once (raw GUL 11,810 against 11,770), and a 2025 enrolment mapping through the crosswalk to an earlier patient is not a new diagnosis (143 dropped; raw GUL 1,256 against 1,222). Neither is spelled out in a shipped document. Low to moderate risk, asks only.
-3. The 364 probabilistic linkage death matches are kept; dropping them leaves Gullhaven lowest.
+1. Estimator of the deciding quantity (main call and Ask 1). Two answers on the gap and Gullhaven's whole-percent figure: 65 and 2 points (hospital-specific IPCW) against 66 and 1 point (continuous-time multi-state) or 67 and 0 points (landmark); the lowest hospital flips to Fennick under the pooled variants and baseline-class weighting. The shipped rule meant to close it: none (the design's ladder asserts separation among its own rungs, but the later methods are not on it and nothing filed selects among them).
+2. Ask 3 diagnosis date. 208 rows carry a diagnosis date after the enrolment date, 95 dated 2025 but enrolled in 2024 with an HF24- id. Read as written, the counts are BRE 756, FEN 811, GUL 1,244, LIN 750, WRE 854. The golden takes the enrolment date for those rows. Manual 2.1 (diagnosis precedes entry) and the id prefix close it only by inference.
+3. Wrenhaven's CNR leavers as ordinary censoring: KM 72.3, multi-state 71.7, landmark 71.6; all round to 72. No effect on the pick.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
 | Files | 10 or more | 13 | yes |
-| Formats | 3 or more | 4 (pdf 2, csv 6, xlsx 3, txt 2) | yes |
-| Large file | 25,000 rows or more | hf_registry_visits 97,172 rows (also ntprobnp 49,471, crosswalk 41,514) | yes |
-| Distractors | 2 or more in metadata.json, no file name labels one | echo_lab_activity_2025.xlsx, hf_clinic_sessions_2026.csv; names neutral | yes |
-| Distractor weight | unused, relevant enough to weigh; one answering a graded quantity is ruled out | neither answers a graded quantity (echo activity, 2026 clinic sessions); the judge did not use either; not independently stress-tested by me | yes (light check) |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, pptx), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | five-hospital, multi-measure; whole percent and nearest point stated; counts have no rounding needed | yes |
-| Prompt shape and rubric | identifiable, 25 or more criteria | prompt 850 characters, one paragraph; 15 ask figures plus call, gap, components and chart; the 25 count is not computable from the bundle | yes (estimated) |
-| Reads as real | no LLM tells | no authoring disclosure seen; coherent timeline; in-fiction pack_contents.txt | yes |
+| Formats | 3 or more | 4 (csv, pdf, xlsx, txt) | yes |
+| Large file | 25,000 rows or more | visits file 97,172 rows (also ntprobnp, crosswalk) | yes |
+| Distractors | 2 or more, in metadata.json, not labelled by file name | echo_lab_activity_2025.xlsx, hf_clinic_sessions_2026.csv; neutral names | yes |
+| Distractor weight | unused; relevant enough to weigh | not used by the thread's recomputation; not independently stress-tested by me | yes (light check) |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, pptx) | yes |
+| Asks | multi-dimensional, unit and rounding stated | five-hospital multi-measure; whole percent and nearest point stated | yes |
+| Prompt shape and rubric | 25 or more criteria | one paragraph, 850 characters; 25 not computable from the bundle | yes (estimated) |
+| Reads as real | no LLM tells | none seen; dates coherent with the 14 April 2026 pack | yes |
+Hygiene is clean: nothing exclusion-level. The determinism gates (A partly, C, margin) are the failures.
 
 ## Gate G reconciliation
-Thread: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump_class analytical, mechanism informative censoring in a time-to-event estimate, nothing planted ("No decoy" line), difficulty survives on clean data (Gullhaven lowest by 2.2 on the generator truth). The two declared distractors are not the surface read carrying the task; the surface read is KM with moves as censoring (Fennick 67), which is a method, not a shipped artifact. No shipped artifact ranks the candidates wrongly. Gate G: clean, match, no finding.
+Thread: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note and card say the same (stump_class analytical; the surface read is KM with moves as censoring, a method rather than a shipped artifact; the two declared distractors do not carry the task). Match, no Gate G finding. Gate H: domain pass, layers pass, decisive_step analytical, matching the note's Three rules (Layer 1: legacy and new record numbers, code changes, tri-state and Florida death sources, corrected lab re-releases; Layer 2: class-dependent moves). The note's analyst test (a strong analyst runs KM and names Fennick 67 against Gullhaven 70) reproduces. The mismatch the send-back rests on is not Gate G or H but the note's closure: its fork table treats the estimator as closed by the ladder (R4), where the thread finds valid sibling estimators the ladder does not carry.
 
-Gate H: domain: pass (survival and informative censoring are field concepts; the swap test fails to preserve the task), layers: pass (Layer 1: legacy and new record numbers, BRE/BRN code change, mixed NYHA and setting codings, corrected lab re-releases, tri-state lag; Layer 2: class-dependent loss to follow-up), decisive_step: analytical. Matches the design note's Three rules and the card's analyst_test and domain_test.
+Realism items applied after the thread's unzip (two diagnosis dates after a death, 29 relocations after a consent withdrawal, specimens after death or move) leave every graded figure unchanged and do not bear on these findings; they were not part of the thread's pack, so the next pass must unzip the rebuilt target.zip fresh.
 
 ## Stump power (Gate F)
-Good. A strong analyst who cleans the data and reads every rule gets Fennick at 67 with KM, or Fennick again with no record = alive, or Wrenhaven by dropping the leavers; only weighting or projecting by the class recorded at the move gives Gullhaven 65 and the 2-point gap.
+Good, and not the problem. KM on the cleaned data names Fennick (or Wrenhaven if movers are dropped or counted dead); only class-adjusted handling reaches Gullhaven. The weakness is too open, not too easy: even the intended insight does not yield a single number.
 
 ## Findings, ranked
-1. (Advisory, moderate) The estimator is not filed. The judge accepted the pick because the data separates the candidates and the class at the move is in the visit file, but a very literal grader could dispute it. Optional repair: in the charter, state that the share alive is of the whole cohort and that patients with unobserved status are not assumed alive. File the WHAT only; do not name the method (a named method turns the decisive step into rule application).
-2. (Advisory, low to moderate, asks only) The two dedupe conventions in asks 2 and 3 are unfiled. Optional repair: one sentence in the manual or prompt that a corrected result released again counts as one test, and that a re-enrolment of an already-registered patient is not a new diagnosis. Either edit changes solver-visible text and needs a rerun if adopted.
-3. (Housekeeping) The GUL class-III and class-IV move chances in step 4 (2.2%, 24.3%) were not replicated by the judge; they are not graded.
-4. (Housekeeping) The design note's `## Tried and rejected` section, as read, lists the commuting architecture 1 and seed-world rejections, not architecture 2 (haddock) as the coordinator described; confirm the haddock architecture's retirement line is recorded.
+1. (Blocking) The gap and Gullhaven's whole-percent figure are not forced: hospital-specific class-adjusted estimators give a 2.1, 0.8 or 0.2 point gap, and some pooled variants flip the lowest hospital. Gullhaven's lead is about one standard error. Gates C and the margin test fail on the main call.
+2. (Blocking, same cause) Submission step 6 claims the class-progression projection gives the same five figures; it did not reproduce (Gullhaven 66, Wrenhaven 71.6 to 71.7). Drop or substantiate it.
+3. (Should fix) Ask 3 turns on an inferred reading of 208 diagnosis-after-enrolment rows. Close it in the manual or repair the dates.
+4. (Advisory) Carried from round 1: nothing files the estimand's treatment of unobserved status beyond "counts"; file the WHAT, never name the method.
 
 ## Next action for the author
-Proceed to the pre-ship check and ship; optionally adopt finding 1 (and 2) in the charter and manual and rebuild twice if you want the closed-form insurance.
+Redesign the margin, not the wording: either widen Gullhaven's real deficit so it leads under every hospital-specific class-adjusted estimator and rounds to the same whole percent and gap (with Fennick unchanged), or file a selection criterion the estimators can be held to (for example a filed out-of-sample back-test that the data resolve; never the method by name, never consecutive builds). Correct step 6, close the Ask 3 date reading, rebuild twice, and run one fresh determinism pass on the new target.zip.
