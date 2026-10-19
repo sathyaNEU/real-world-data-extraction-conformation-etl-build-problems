@@ -162,13 +162,14 @@ def write_workbook(path, F):
         c.number_format, c.font, c.border = "#,##0", bold, Border(top=thin)
     ws2["A10"] = ("Each current person's work permit (GM-07 1.3 and 1.4): the card USCIS approved most recently, from HR's "
                   "roster, counsel's approval notices, the case register and the green-card tracker, in the category "
-                  "of the approval. A spouse is counted once, whether Global Mobility's records or Benefits' ID "
-                  "carries her card, and belongs to the household the register, the tracker, the roster's onboarding "
-                  "entry or Benefits names.")
+                  "of the approval. Each person is counted once under all her IDs: an employee under every ID HR's "
+                  "program roster gives him (one benefits enrollment), a spouse whether Global Mobility's records, "
+                  "Benefits' ID or her own employee ID carries her card (one card number); a spouse belongs to the "
+                  "household the register, the tracker, the roster's onboarding entry or Benefits names.")
     ws2["A10"].font = sub
     ws2["A10"].alignment = wrap
     ws2.merge_cells("A10:D10")
-    ws2.row_dimensions[10].height = 54
+    ws2.row_dimensions[10].height = 84
     ws2.column_dimensions["A"].width = 26
     for col in "BCD":
         ws2.column_dimensions[col].width = 12
@@ -198,13 +199,15 @@ def write_workbook(path, F):
     for j, v in enumerate(tr):
         c = ws3.cell(row=9, column=2 + j, value=v)
         c.number_format, c.font, c.border = "#,##0", bold, Border(top=thin)
-    ws3["A11"] = ("Rejection notices counsel logged and those applicants forwarded to Global Mobility, one per case and "
-                  "notice date. Filed again within 30 days means USCIS received the renewal again no later than the "
-                  "30th day after the notice's date (GM-07 2.3 and 2.4), whoever filed it.")
+    ws3["A11"] = ("Rejection notices counsel logged and those applicants forwarded to Global Mobility, one per renewal "
+                  "and notice date, dated after the renewal's first packet left the mailroom and before USCIS had the "
+                  "renewal (the others are rejections of applicants' own other filings). Filed again within 30 days "
+                  "means USCIS received the renewal again no later than the 30th day after the notice's date (GM-07 "
+                  "2.3 and 2.4), whoever filed it and whichever case the register holds it under.")
     ws3["A11"].font = sub
     ws3["A11"].alignment = wrap
     ws3.merge_cells("A11:C11")
-    ws3.row_dimensions[11].height = 40
+    ws3.row_dimensions[11].height = 92
     ws3.column_dimensions["A"].width = 32
     ws3.column_dimensions["B"].width = 12
     ws3.column_dimensions["C"].width = 26
@@ -309,16 +312,17 @@ def write_submission(path, F):
         "after it); USCIS accepted most of the requests and decided those renewals a median of about a week later, in "
         "the busiest request months as in the quiet ones and after the appointment queue tripled, where the stage "
         "model fitted on the earlier renewals puts their typical remaining wait at more than two weeks.",
-        "5. Took each current person's work permit (standard 1.3 and 1.4) from %s, the register, counsel's approval "
-        "notices and %s: the card approved most recently for every employee Active in %s and for the one spouse of "
-        "each such household Global Mobility took into its care, counted once whether a record files her card under "
-        "Global Mobility's ID for her or under her Benefits ID in %s (%s of September 2027's (c)(26) cards are on "
-        "record only under the Benefits ID), leaving out employees not Active, their spouses, children, and the "
-        "spouses Benefits covers in households Global Mobility never took in." % (
-            C.F_PERMITS, C.F_TRACKER, C.F_EMPLOYEES, C.F_DEPENDANTS, WORDS[bo["2027-09 (c)(26)"]]),
-        "6. Read the quarter's mix from those work permits whose renewals reach USCIS in it: about half are (c)(9), "
-        "whose renewals mostly reuse fingerprints (fewer than three in ten went to an appointment, against seven in "
-        "ten of the (c)(26) renewals).",
+        "5. Took the people standard 1.3 tracks: every employee %s shows as Active under any of his IDs (one person "
+        "to a benefits enrollment) and the one spouse of each such household Global Mobility took into its care, "
+        "one person whichever ID a record files her card under (Global Mobility's, her Benefits ID in %s, or her own "
+        "employee ID where she works at Sallowmere, one card number in %s), leaving out employees not Active, their "
+        "spouses, children, and the spouses Benefits covers in households Global Mobility never took in." % (
+            C.F_EMPLOYEES, C.F_DEPENDANTS, C.F_PERMITS),
+        "6. Took each person's work permit (standard 1.4), the card approved most recently in the roster, the register, "
+        "counsel's approval notices and %s, in its approval's category (%s of September 2027's (c)(26) cards are on "
+        "record only under the Benefits ID), and read the quarter's mix from those whose renewals reach USCIS in it: "
+        "about half are (c)(9), whose renewals mostly reuse fingerprints (fewer than three in ten went to an "
+        "appointment, against seven in ten of the (c)(26) renewals)." % (C.F_TRACKER, WORDS[bo["2027-09 (c)(26)"]]),
         "7. Simulated the quarter's renewals with that mix, the new appointment lead, the review, the card-expiry gaps "
         "of the renewals filed since 30 October 2025, the request timing and the expedite response: about nine in ten "
         "of those sent to an appointment reach their card's expiry undecided.",

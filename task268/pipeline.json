@@ -1,26 +1,41 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "DESIGN",
-  "domain": "survey-research-official-statistics",
+  "status": "SHIPPED",
+  "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-18",
-  "stump": "The default path sends the pilot to Halberdine because it counts every primary job in the commuting table as a person at work in its tract on every weekday; carrying the national survey's share of days on the employer's premises onto each flow by industry group alone moves it to Corrisford, and carried by industry group and the type of county the worker lives in, the share puts Tessavon first.",
-  "architecture": 1,
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-19",
+  "stump": "The default path names Fennick General Hospital, 61 per cent by Kaplan-Meier, because it treats every move beyond the registry's death linkage as ordinary censoring: on Gullhaven's retirement coast the patients who move north are almost all in NYHA class IV at their last visit, so Kaplan-Meier credits them with the survival of those who stayed, while the movers whose deaths the exchange still reports are the healthier ones; only carrying each lost patient's survival from the class recorded at the move (or weighting the patients still followed by the inverse of their chance of staying, given their class) shows Gullhaven Hospital's two-year survival, 58 per cent, as the lowest.",
+  "architecture": 3,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task253 0.10"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-18"
+  },
+  "leak": {
+    "leak_py": "REVIEW (asof 2026-04-14): sweeps 3, 4, 6 and 9, each harmless (design note build record)",
+    "reader": "rounds 1 to 4 (2026-10-19) missed the call (Kaplan-Meier, Fennick); round 1 exit 1 on the gap's coincident 2 and Ask B 10 of 10, fixed; rounds 2 to 4 exit 0 (16 per cent of ask figures, the survival figures only); Q6 analytical"
+  },
+  "duplicate_check": {
+    "heart": "WARN (driver.near task134 v1 0.17 and task265 0.15; repeat.gate_g, overuse.gate_g, repeat.question_form against task249 v2), answered at the draw",
+    "nearest": "task134 ledger 0.12; task134 v1 lineage driver 0.10",
+    "surface": "eight pairs promoted near 0.10 or on card keys, answered by the card's differentiation lines; persona sweep: Megan Swanson"
+  },
+  "judge": {
+    "verdict": "round 4 DETERMINISTIC (rounds: 1 DETERMINISTIC, 2 NOT_DETERMINISTIC, 3 NOT_DETERMINISTIC on Ask A only)",
+    "disposition": "APPROVE (round 4); round 2's SEND_BACK read as FIX_NOW by the gate table (G and H passing), round 3's FIX_NOW confined to Ask A",
+    "report": "determinism_check_report_pass4.md (rounds 2 and 3: determinism_check_report.md, determinism_check_report_pass3.md)"
+  },
   "returned": [],
-  "resume": "stage 2: ladder numbers from the generator prototype, the asks and their devices, the fork table, closure, prompt.txt, precut.py",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-19",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)"
+  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
+  "seed_world": 273
 }

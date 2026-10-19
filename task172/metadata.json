@@ -64,8 +64,8 @@
   {
    "path": "case_actions_2024-2026.csv",
    "format": "csv",
-   "bytes": 239624,
-   "rows": 2410,
+   "bytes": 238785,
+   "rows": 2409,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, case-action log",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -91,8 +91,8 @@
   {
    "path": "employees_2026-12.csv",
    "format": "csv",
-   "bytes": 1369056,
-   "rows": 19251,
+   "bytes": 1440889,
+   "rows": 20208,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software HR Systems, Global Mobility program roster (no names)",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -118,7 +118,7 @@
   {
    "path": "h1b_extension_calendar_2027.xlsx",
    "format": "xlsx",
-   "bytes": 129396,
+   "bytes": 129425,
    "rows": 4084,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software immigration team, 2027 H-1B extension calendar",
    "date": "2026-11-20",
@@ -172,8 +172,8 @@
   {
    "path": "renewal_case_register.xlsx",
    "format": "xlsx",
-   "bytes": 1615315,
-   "rows": 19066,
+   "bytes": 1596202,
+   "rows": 19082,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility (fictional), case register, two layouts across its April 2025 system change",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -181,8 +181,8 @@
   {
    "path": "work_permits_2026-12.xlsx",
    "format": "xlsx",
-   "bytes": 1920096,
-   "rows": 37936,
+   "bytes": 1951351,
+   "rows": 38617,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software HR Systems, work permit roster",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"

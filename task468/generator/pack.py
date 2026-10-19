@@ -1,18 +1,27 @@
-"""The data files as Larkhaven Transit's systems export them: Arbor Fleetware's stop events for the first quarter (local
-time, GTFS stop ids, fleet numbers), Quinnell Transit Systems' stop events from its go-live (UTC, public stop codes,
-asset tags, concatenated from its daily export files), Service Quality's trip-matching review log, the fleet roster,
-the ridership report and the farebox workbook."""
+"""The pack's data files: Orrin Rx's specialty claims (January 2019 to December 2025), Tallis Pharmacy Services'
+specialty claims (January to June 2026), the plan's member crosswalk, Tallis's specialty drug list and 2026 price
+schedule, and Orrin Rx's 2025 rebate statement."""
 import csv
 import datetime as dt
 
 import numpy as np
 import pandas as pd
 
-import gtfs as G
+import sim as S
 import world as W
 
-UTC = dt.timezone.utc
-GO_LIVE_LOCAL = W.GO_LIVE_UTC.astimezone(W.TZ).replace(tzinfo=None)      # 2026-03-31 19:00
+ORRIN_COLS = ["claim_no", "line_type", "fill_date", "member_key", "ndc", "product_desc", "qty", "days_supply",
+              "ingredient_cost", "dispensing_fee", "member_copay", "plan_paid", "pharmacy_npi"]
+TALLIS_COLS = ["ClaimID", "Status", "DateOfService", "MemberNo", "NDC11", "Quantity", "DaysSupply", "IngredientCost",
+               "DispFee", "CopayAmt", "PlanPaidAmt", "PharmacyNPI", "Channel"]
+XWALK_COLS = ["plan_member_id", "orrin_member_key", "tallis_member_no"]
+DRUG_COLS = ["ndc11", "product_name", "package", "class_code", "class_name", "route"]
+PHARMACIES = {"Specialty": ["1912048837", "1598810243"], "Health-system": ["1356442087", "1063918274"],
+              "Mail": ["1427093361"], "Retail": ["1083726641", "1366509028", "1740231185"]}
+
+
+def rng(k):
+    return np.random.default_rng([W.SEED, 31, k])
 
 
 def write_csv(path, header, rows):
@@ -23,234 +32,164 @@ def write_csv(path, header, rows):
     return len(rows)
 
 
-def gtfs_time(m):
-    return "%02d:%02d:00" % (m // 60, m % 60)
+def ids(x):
+    """Plan member ids, Orrin member keys and Tallis member numbers for every member the files show."""
+    if "ids" in x:
+        return x["ids"]
+    f = x["fills"]
+    r = rng(1)
+    seen = f[(f["date"] >= W.FIRST_MONTH) & (f["date"] <= W.LAST_DAY)]
+    mem = sorted(seen["member"].unique())
+    plan = {m: "MHP%08d" % v for m, v in zip(mem, r.choice(np.arange(10_000_000, 99_999_999), len(mem), replace=False))}
+    orrin_m = sorted(seen[seen["date"] < W.SWITCH]["member"].unique())
+    tallis_m = sorted(seen[seen["date"] >= W.SWITCH]["member"].unique())
+    orrin = {m: "OX-%07d" % v for m, v in zip(orrin_m, r.choice(np.arange(1_000_000, 9_999_999), len(orrin_m),
+                                                                replace=False))}
+    tallis = {m: "T%09d" % v for m, v in zip(tallis_m, r.choice(np.arange(300_000_000, 399_999_999), len(tallis_m),
+                                                                replace=False))}
+    x["ids"] = dict(plan=plan, orrin=orrin, tallis=tallis)
+    return x["ids"]
 
 
-def detail(x):
-    """Each event's dwell, the arrival it implies, and Quinnell's clock offset (its units read a few seconds later)."""
-    if "detail" in x:
-        return x["detail"]
-    ev = x["ev"]
-    r = np.random.default_rng([W.SEED, 31])
-    late = (ev["sec"].to_numpy() / 60.0 - ev["sched_min"].to_numpy())
-    route = ev["route"].to_numpy()
-    rev = ev["revenue"].to_numpy()
-    dwell = np.zeros(len(ev))
-    sched_dwell = np.zeros(len(ev))
-    for i in range(len(ev)):
-        if not rev[i]:
-            dwell[i] = 8 + r.integers(0, 35)
-            continue
-        rt = route[i]
-        if rt in W.LAYOVER:                 # the trip starts here: the bus waits at the terminal
-            sd = W.LAYOVER[rt]
-            sched_dwell[i] = 0.0
+def channel(row_days, prod_cls, r):
+    """Where a fill was dispensed: long supplies by mail; the maintenance classes partly at retail; every class partly
+    through the health systems' own specialty pharmacies."""
+    if row_days >= 84:
+        return "Mail"
+    u = r.random()
+    if prod_cls in ("HIV", "MS", "GLP", "CGR") and u < 0.3:
+        return "Retail"
+    if u > 0.72:
+        return "Health-system"
+    return "Specialty"
+
+
+def claims(x):
+    """Both PBMs' claim lines, with each fill's channel, reversals and rebills, as two lists of rows."""
+    if "claims" in x:
+        return x["claims"]
+    f = x["fills"]
+    f = f[(f["date"] >= W.FIRST_MONTH) & (f["date"] <= W.LAST_DAY)].sort_values(["date", "member"], kind="stable")
+    idm = ids(x)
+    r = rng(2)
+    prod = S.PROD
+    orrin, tallis, chans = [], [], []
+    n_o, n_t = 4_100_000, 0
+    for row in f.itertuples(index=False):
+        p = prod.loc[row.prod]
+        ch = channel(row.days, row.cls, r)
+        chans.append(ch)
+        npi = PHARMACIES[ch][int(r.integers(0, len(PHARMACIES[ch])))]
+        copay = 0.0 if row.cls in ("HIV",) else float(min(150.0, round(0.1 * row.paid26, 2)))
+        if row.date < W.SWITCH:
+            fac = W.ORRIN_PRICE_FACTOR[row.date.year]
+            ing = round(row.units * p["price"] * fac, 2)
+            fee = 1.50
+            paid = round(ing + fee - copay, 2)
+            ndc10 = "%s-%s-%s" % (row.ndc11[:5], row.ndc11[6:9], row.ndc11[9:])
+            n_o += int(r.integers(3, 40))
+            line = [str(n_o), "PAID", row.date.isoformat(), idm["orrin"][row.member], ndc10, p["product"],
+                    "%g" % row.units, str(row.days), "%.2f" % ing, "%.2f" % fee, "%.2f" % copay, "%.2f" % paid, npi]
+            orrin.append(line)
+            if r.random() < 0.025:      # reversed, and usually rebilled
+                rev = list(line)
+                rev[1] = "REVERSAL"
+                for k in (6, 8, 9, 10, 11):
+                    rev[k] = "-" + rev[k] if not rev[k].startswith("-") and float(rev[k]) != 0 else rev[k]
+                orrin.append(rev)
+                n_o += int(r.integers(3, 40))
+                rebill = list(line)
+                rebill[0] = str(n_o)
+                orrin.append(rebill)
         else:
-            sd = W.DWELL.get(rt, 1)
-            sched_dwell[i] = sd
-        lost = max(0.0, late[i])
-        dwell[i] = max(0.35, sd - lost * 0.8) * 60 + r.normal(0, 18)
-        dwell[i] = max(15.0, dwell[i])
-    x["detail"] = dict(dwell=np.round(dwell).astype(int), sched_dwell=sched_dwell,
-                       q_offset=r.integers(1, 9, len(ev)))
-    return x["detail"]
+            ing = round(row.units * p["price"], 2)
+            fee = W.DISPENSING_FEE
+            paid = round(ing + fee - copay, 2)
+            n_t += 1
+            cid = "TPS26%07d" % (n_t * 7 + int(r.integers(0, 7)))
+            line = [cid, "P", row.date.strftime("%m/%d/%Y"), idm["tallis"][row.member], row.ndc11, "%g" % row.units,
+                    str(row.days), "%.2f" % ing, "%.2f" % fee, "%.2f" % copay, "%.2f" % paid, npi, ch]
+            tallis.append(line)
+            if r.random() < 0.03:
+                rev = list(line)
+                rev[1] = "R"
+                tallis.append(rev)
+                n_t += 1
+                re_ = list(line)
+                re_[0] = "TPS26%07d" % (n_t * 7 + int(r.integers(0, 7)))
+                tallis.append(re_)
+    x["claims"] = (orrin, tallis)
+    x["channels"] = chans
+    return x["claims"]
 
 
-# ---------------------------------------------------------------- Arbor Fleetware, January to March
-ARBOR_COLS = ["event_id", "svc_date", "veh_no", "stop_id", "arr_time", "dep_time", "route", "trip_id", "sched_dep",
-              "adherence_min"]
-
-
-def arbor_rows(x):
-    ev, dd = x["ev"], detail(x)
-    sel = np.where(pd.to_datetime(ev["day"]).to_numpy() <= np.datetime64("2026-03-31"))[0]
-    jan_id = {k: v[1] for k, v in W.STOPS.items()}
+def crosswalk_rows(x):
+    idm = ids(x)
     rows = []
-    for i in sel:
-        e = ev.iloc[i]
-        dep = e["time"].to_pydatetime()
-        arr = dep - dt.timedelta(seconds=int(dd["dwell"][i]))
-        m = bool(e["matched"])
-        rows.append([int(e["event_id"]), e["day"].isoformat(), e["vehicle"], jan_id[e["stop"]],
-                     arr.strftime("%Y-%m-%d %H:%M:%S"), dep.strftime("%Y-%m-%d %H:%M:%S"),
-                     e["route"] if m else "", e["trip"] if m else "", gtfs_time(int(e["sched_min"])) if m else "",
-                     "%.1f" % ((e["sec"] - e["sched_min"] * 60) / 60.0) if m else ""])
+    for m, pid in idm["plan"].items():
+        rows.append([pid, idm["orrin"].get(m, ""), idm["tallis"].get(m, "")])
+    rows.sort()
     return rows
 
 
-# ---------------------------------------------------------------- Quinnell Transit Systems, from go-live
-QUINNELL_COLS = ["EventID", "VehicleID", "StopCode", "ActualDepartureUTC", "ScheduledDeparture", "TripID", "Route",
-                 "MatchStatus", "DeviationSec"]
-
-
-def quinnell_events(x):
-    """Quinnell's record of every event from its go-live: (index into ev, UTC departure)."""
-    ev, dd = x["ev"], detail(x)
-    t = ev["time"].to_numpy()
-    sel = np.where(t >= np.datetime64(GO_LIVE_LOCAL))[0]
-    out = []
-    for i in sel:
-        loc = ev["time"].iloc[i].to_pydatetime() + dt.timedelta(seconds=int(dd["q_offset"][i]))
-        out.append((i, loc.replace(tzinfo=W.TZ).astimezone(UTC)))
-    return out
-
-
-def quinnell_rows(x):
-    """The daily export files, concatenated: each file holds the events from 04:50 UTC to 05:00 UTC the next day, so
-    the ten minutes before each file's start are written again at its head with the next EventIDs."""
-    ev, dd = x["ev"], detail(x)
-    evs = sorted(quinnell_events(x), key=lambda p: (p[1], ev["stop"].iloc[p[0]]))
-    times = [u for _, u in evs]
-    first = dt.datetime(2026, 4, 1, 0, 0, tzinfo=UTC)
-    cut = dt.datetime(2026, 4, 1, 5, 0, tzinfo=UTC)
-    files = [(first, cut)]
-    while cut <= times[-1]:
-        files.append((cut - dt.timedelta(minutes=W.FILE_OVERLAP_MIN), cut + dt.timedelta(days=1)))
-        cut = cut + dt.timedelta(days=1)
-    code = {k: v[0] for k, v in W.STOPS.items()}
-    rows, n = [], 410_000_001
-    import bisect
-    for lo, hi in files:
-        for i, u in evs[bisect.bisect_left(times, lo):bisect.bisect_left(times, hi)]:
-            if True:
-                e = ev.iloc[i]
-                m = bool(e["matched"])
-                if m:
-                    pub = int(e["sched_min"]) * 60 + W.pub_sec(e["route"], int(e["sched_min"]))
-                    dev = str(int(e["sec"]) + int(dd["q_offset"][i]) - pub)
-                else:
-                    pub, dev = None, ""
-                rows.append([n, W.ASSET[e["vehicle"]], code[e["stop"]], u.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                             G.gtfs_hms(pub) if m else "", e["trip"] if m else "",
-                             e["route"] if m else "", "MATCHED" if m else "NO TRIP", dev])
-                n += 1
-    return rows
-
-
-# ---------------------------------------------------------------- Service Quality's review log
-REVIEW_COLS = ["review_id", "review_month", "service_date", "bus", "stop_code", "event_time", "source_system",
-               "source_event_id", "route_operated", "finding", "minutes_late", "reviewed_by"]
-
-
-def review_rows(x):
-    ev, rv = x["ev"], x["review"]
-    q = {i: u for i, u in quinnell_events(x)}
-    qid = first_quinnell_ids(x)
-    code = {k: v[0] for k, v in W.STOPS.items()}
-    idx = {int(e): i for i, e in enumerate(ev["event_id"].to_numpy())}
-    who = np.random.default_rng([W.SEED, 61]).choice(W.REVIEWERS, size=len(rv), p=[0.5, 0.3, 0.2])
+def drug_rows():
     rows = []
-    for mth, g in rv.groupby(pd.to_datetime(rv["day"]).dt.month):
-        for j, (_, e) in enumerate(g.iterrows()):
-            i = idx[int(e["event_id"])]
-            in_q = i in q and e["day"] >= dt.date(2026, 4, 1)
-            if in_q:
-                t = q[i].astimezone(W.TZ).strftime("%H:%M:%S")
-                src, sid = "Quinnell", str(qid[i])
-            else:
-                t = e["time"].strftime("%H:%M:%S")
-                src, sid = "Arbor", str(int(e["event_id"]))
-            if not e["revenue"]:
-                rt, fnd, ml = "Not in service", "Out of service", ""
-            elif e["fault"]:
-                rt, fnd, ml = e["route"], "Logon fault", ""
-            else:
-                lt = (e["sec"] - e["sched_min"] * 60) / 60.0
-                rt, fnd, ml = e["route"], "Late beyond window" if lt > 0 else "Early beyond window", "%.1f" % lt
-            rows.append(["SQ-2026%02d-%03d" % (mth, j + 1), "2026-%02d" % mth, e["day"].isoformat(), e["vehicle"],
-                         code[e["stop"]], t, src, sid, rt, fnd, ml, who[len(rows)]])
-    return rows
+    for p in S.PROD.itertuples(index=False):
+        for pk in [p.pack] + ([p.pack_long] if isinstance(p.pack_long, str) else []):
+            rows.append([p.labeler + p.code + pk, p.product, pk, p.cls, W.CLASSES[p.cls]["name"],
+                         "Subcutaneous" if ("pen" in p.product or "syringe" in p.product) else "Oral"])
+    return sorted(rows)
 
 
-def first_quinnell_ids(x):
-    if "qid" in x:
-        return x["qid"]
-    ev = x["ev"]
-    t = ev["time"].to_numpy()
-    sel = np.where(t >= np.datetime64(GO_LIVE_LOCAL))[0]
-    q = quinnell_events(x)
-    rows = x.get("qrows") or quinnell_rows(x)
-    x["qrows"] = rows
-    key = {}
-    for i, u in q:
-        key[(W.ASSET[ev["vehicle"].iloc[i]], {k: v[0] for k, v in W.STOPS.items()}[ev["stop"].iloc[i]],
-             u.strftime("%Y-%m-%dT%H:%M:%SZ"))] = i
-    out = {}
-    for r in rows:
-        i = key[(r[1], r[2], r[3])]
-        out.setdefault(i, r[0])
-    x["qid"] = out
-    assert len(out) == len(sel)
-    return out
-
-
-def review_frame(x):
-    """Bus-days listed, drawn and reviewed each month (Service Quality's own tally)."""
-    ev, rv = x["ev"], x["review"]
-    un = ev[~ev["matched"]]
-    out = []
-    for mth in range(1, 7):
-        g = un[pd.to_datetime(un["day"]).dt.month == mth]
-        listed = g.groupby(["vehicle", "day"]).size().shape[0]
-        drawn = int((pd.to_datetime(rv["day"]).dt.month == mth).sum())
-        out.append((mth, listed, drawn))
-    return out
-
-
-# ---------------------------------------------------------------- the fleet roster
-FLEET_COLS = ["fleet_no", "asset_tag", "make_model", "model_year", "length_ft", "propulsion", "garage", "in_service"]
-
-
-def fleet_rows():
-    out = []
-    for b in W.FLEET:
-        n = int(b)
-        if n < 1230:
-            mm, yr, ln, pr = "Gillig Low Floor", 2014 + (n - 1201) // 8, 40, "Diesel"
-        elif n < 1243:
-            mm, yr, ln, pr = "Gillig Low Floor Plus", 2019, 40, "Diesel-electric hybrid"
-        else:
-            mm, yr, ln, pr = "New Flyer Xcelsior", 2023 + (n - 1601) // 15, 35 if n <= 1606 else 40, "Diesel"
-        garage = "Kessler Yard" if n % 3 else "Westgate Yard"
-        out.append([b, W.ASSET[b], mm, yr, ln, pr, garage, "%d-%02d-%02d" % (yr, 3 + n % 8, 1 + n % 27)])
-    return out
-
-
-# ---------------------------------------------------------------- the candidate list for the application
-CANDIDATE_COLS = ["route", "route_name", "designated_stop_code", "designated_stop_name", "direction"]
-
-
-def candidate_rows():
-    """Planning's list of the routes the department is assessing, each with the designated stop it would name."""
-    out = []
-    for r in sorted(W.CANDIDATES, key=int):
-        k = W.STOP_OF[r]
-        out.append([r, W.ROUTE_NAMES[r], W.STOPS[k][0], W.STOPS[k][3], "Outbound, to " + G.pattern_stops(r)[-1][0]])
-    return out
-
-
-# ---------------------------------------------------------------- ridership and farebox workbooks
-def ridership_table():
-    """Average weekday boardings by route and month (APC, expanded), and the period average the report ranks by."""
-    r = np.random.default_rng([W.SEED, 41])
+def price_rows():
     rows = []
-    for rt in sorted(W.RIDERSHIP, key=int):
-        base = W.RIDERSHIP[rt]
-        months = [base * f for f in (0.95, 0.99, 1.02, 1.03, 1.02, 0.99)]
-        months = [int(round(v * (1 + r.normal(0, 0.012)))) for v in months]
-        shift = base * 6 - sum(months)
-        months[3] += shift
-        sat = int(round(base * 0.52 * (1 + r.normal(0, 0.03))))
-        sun = int(round(base * 0.36 * (1 + r.normal(0, 0.03))))
-        rows.append((rt, W.ROUTE_NAMES[rt], months, base, sat, sun))
+    for p in S.PROD.itertuples(index=False):
+        for pk in [p.pack] + ([p.pack_long] if isinstance(p.pack_long, str) else []):
+            rows.append((p.labeler + p.code + pk, p.product, round(p.price, 2), W.DISPENSING_FEE))
+    return sorted(rows)
+
+
+def contract_quarter(d):
+    """Orrin's rebate contract year runs February to January: the contract year and quarter a fill dispensed on d falls in."""
+    cy = d.year if d.month >= 2 else d.year - 1
+    return cy, (d.month - 2) % 12 // 3 + 1
+
+
+def rate(p, cy):
+    return p["rebate"] * (W.REBATE_2024 if cy == 2024 else 1.0)
+
+
+def rebate_rows(x):
+    """Orrin's rebate statement for contract years 2024 and 2025: one line for each product, channel and contract quarter
+    of dispensing, carrying that channel's units and the product's rebate for the quarter (all channels), with the
+    calendar quarter it was invoiced in."""
+    f = x["fills"]
+    claims(x)
+    f = f[(f["date"] >= W.FIRST_MONTH) & (f["date"] <= W.LAST_DAY)].sort_values(["date", "member"], kind="stable").copy()
+    f["channel"] = x["channels"]
+    f = f[(f["date"] >= dt.date(2024, 2, 1)) & (f["date"] < W.SWITCH)]
+    f["cq"] = [contract_quarter(d) for d in f["date"]]
+    rows = []
+    prod = S.PROD
+    for (pi, cq), g in f.groupby(["prod", "cq"]):
+        p = prod.loc[pi]
+        cy, q = cq
+        amount = round(g["units"].sum() * rate(p, cy), 2)
+        end_month = 2 + 3 * q          # the month after the quarter ends (5, 8, 11, 14)
+        iy, im = cy + (end_month - 1) // 12, (end_month - 1) % 12 + 1
+        inv = "%dQ%d" % (iy, (im - 1) // 3 + 1)
+        for ch, gc in g.groupby("channel"):
+            rows.append([inv, "%d-Q%d" % (cy, q), p["product"], p["cls"], ch, float(gc["units"].sum()), amount])
+    rows.sort(key=lambda r: (r[1], r[2], r[4]))
     return rows
 
 
-def farebox_table():
-    r = np.random.default_rng([W.SEED, 42])
-    out = []
-    for rt in sorted(W.RIDERSHIP, key=int):
-        b = W.RIDERSHIP[rt]
-        out.append((rt, W.ROUTE_NAMES[rt], [round(b * 21.3 * 0.71 * (1 + r.normal(0, 0.04)), 2) for _ in range(6)]))
+def truth_rebates(x):
+    """The rebates the manufacturers paid on the fills dispensed in calendar 2025, each at its contract year's rate."""
+    f = x["fills"]
+    f = f[(f["date"] >= dt.date(2025, 1, 1)) & (f["date"] < W.SWITCH)]
+    out = {c: 0.0 for c in W.CANDIDATES}
+    for row in f.itertuples(index=False):
+        p = S.PROD.loc[row.prod]
+        out[row.cls] += row.units * rate(p, contract_quarter(row.date)[0])
     return out

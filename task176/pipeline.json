@@ -1,12 +1,12 @@
 {
  "task": "task176",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "RETIRED",
  "domain": "",
  "objective": "forecasting",
  "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-18",
+ "stage_name": "retired",
+ "updated": "2026-10-19",
  "stump": "",
  "architecture": 1,
  "loops": 0,
@@ -40,9 +40,23 @@
   "paper_only": "storm-attributable loss net of background deployment failures (50 to 70 batch-storm encounters, about 20 per cent at one sigma); loss per onset by altitude or intensity (composition_mix, held for task165 and task173, and the same encounter count); the stragglers' tail of time below 350 km (the per-satellite mean is the careful default, a coin flip); a loss per onset rising with storm duration (unscreened, the same encounter count)",
   "repeat_screen": "guard.py recent, mechanisms --objective forecasting and slots before any card; slots on both candidate drivers and on solar, geomagnetic, storm, satellite, sunspot, launch, orbit, thermosphere, drag, density, flux, hazard, excess, attributable, background rate: no slot spent either mechanism; cards task138, task164 and the hazard and cycle forecasting cards (task142, task143, task149, task152, task154, task160, task166, task170, task172) carry no solar-cycle or storm-frequency driver",
   "taxonomy": "a storm-frequency step sits in physical-environmental-sciences climate-weather-extremes (F, never drawn); the exposure step is at its edge (the thermosphere's solar-cycle climate); actuarial claims-frequency-severity fits only an insurer's world; the seed's Supply Chain line has no forecasting home for a hazard rate",
-  "prototypes": "scratchpad b176/proto: load.py, phase1.py to phase3.py, backtest1.py, season1.py, f107phase.py, screen_c1.py (output screen_c1.out, byte-identical over two runs); expo1.py, expo_run.py, screen_c2.py (output screen_c2.out, byte-identical over two runs); the record at b176/dl"
+  "prototypes": "scratchpad b176/proto: load.py, phase1.py to phase3.py, backtest1.py, season1.py, f107phase.py, screen_c1.py (output screen_c1.out, byte-identical over two runs); expo1.py, expo_run.py, screen_c2.py (output screen_c2.out, byte-identical over two runs); the record at b176/dl",
+  "redraw_2026_10_19": {
+   "cell": "actuarial-science-insurance / reserving-development-triangles / forecasting, allocated by the coordinator; the client's reserving cards (loss-reserving-claims-development/1 Berquist-Sherman disposal rates, /2 fitted tail, /3 Mack or bootstrap range) and BF against the CL treated as the careful reader's routes (stumping 1.3 library test)",
+   "p1_exposure_clock": "underwriting-year triangle, 52 per cent of contracts moved to a 1 October inception: period CL 0.55 to 0.93 of the true ultimate at ages 12 to 48; BF on the true prior 0.79 to 0.99 of the true unpaid, about 0.95 on the 2024 to 2026 total; a whole-period shift fixed exactly by the age-shift reflex; the re-based clock is task468's live driver. Dead (BF reflex, driver repeat)",
+   "p2_reporting_speed": "report-lag mean 12 to 4 months: EV CL 1.10 to 2.67 of the ultimate, BF 1.05 to 2.20 of the unpaid; claim-level sim (seeds 1, 2) unpaid AY2023-26 over truth: paid CL 2.01 to 2.17, BF exact prior 1.19 to 1.20, BS all-years count ultimates 1.42 to 1.46, BS latest-3 count factors 1.05 to 1.08. Dead (the disposal-rate card lands)",
+   "paper": "benefit cap binding more (task172 driver); BS settlement speed (task127 arch 3) and case adequacy (task228); calendar-year step (dated, rule) and chronic inflation (assumption or filed index, lever 5 to 15 per cent); annuity tail (mortality, about 6 per cent sigma) and fitted tail bend (decay rate undetermined); reserve range (variance-only); CL leverage (BF lands); every mix shift (composition_mix banned); reopenings (lever a few per cent, task157-like); IBNR/IBNER split under a filed cut-off (report-year triangle lands); trial-calendar timing (task172-like, timing only); capacity (swap fails); excess, large deductible, aggregates (sigma); retro and corridors (rule); large-loss transfer (rule plus join); closed-pool depletion (hazard-shape fork, epidemiology, sensitive)",
+   "slots": "guard.py slots --driver on the four coded or near-coded drivers: vocabulary hits only, except task468's draw lines (development read on the right exposure clock)",
+   "prototypes": "session scratchpad r176/proto: p1_ev.py, p2_ev.py, p2_sim.py"
+  },
+  "redraw2_2026_10_19": {
+   "cell": "sociology-demography / population-estimation-demographic-projection / forecasting, allocated by the coordinator, the round's extra bans lifted; the cards (/1 cohort-component, /2 gross flows, /3 stated-coverage intervals, /4 control total, /5 shrinkage) treated as the careful demographer's routes",
+   "d1_diaspora_returns": "returns from a diaspora wave (left 1995-2010) ageing into 55-69: 2027-31 return flow, card-2 OD rates 0.62 of the truth, linear trend 0.81, latest year carried about 0.75; 55-74 population level moved about 4 per cent; abstraction is task134 v2 round 1's driver (an inflow from a pool outside the record at a hazard on that pool); birthplace column makes the split a row predicate. Dead",
+   "paper": "mover-stayer (task134 slot measured about 1 per cent; task468, task134 v2 driver); gross vs net (task150 shipped, task134 slot: gross variants split); births echo (time-since-entry family); housing-constrained (housing-unit method textbook, task79); vacancy chains (task132); special populations (population_selection in window via task270, census practice); control-total gap by component (readable, careful route lands); births-based base (about 5 per cent); correlated intervals (variance-only); shrinkage (stumping 1.2); tempo (assumption); cohort mortality 85+ (mortality card); group returns (task157); two-sex (form open); method back-test (forecast_method_backtest in window via task177); ageing-out caseload (task172 cap); education-specific rates (visible column); error-of-closure base (one past event)",
+   "prototypes": "session scratchpad r176/demog: d1_diaspora.py"
+  }
  },
- "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Both of the brief's candidates failed on measurement: the solar cycle's phase with or without amplitude (on the real 1957 to 2025 Kp record the amplitude-conditioned family spreads 25 per cent and holds the all-years rate, and phase-only loses to climatology out of sample) and exposure below 350 km through the thermosphere (the climb is thrust-set, every cheap route within the family's own spread). Read the design note's structural paragraph and ## Tried and rejected first. The brief allowed no third design; the coordinator or the author decides whether the number is redrawn in another world, moved or retired.",
+ "resume": "RETIRED 2026-10-19 under the author's rule (a number that dies in its second new cell this round is retired): the seed's world, actuarial reserving triangles and sociology population projection all screened at stage 1 with no architecture holding; no card registered. Read the design note's ## Retired and ## Tried and rejected.",
  "approved": null,
  "delivered": null,
  "portal": null,

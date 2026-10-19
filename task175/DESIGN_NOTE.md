@@ -1,10 +1,16 @@
 # task175 design note
 
-**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** The wave
-brief for this number says to screen by measurement before any card and to stop after two candidates
-that do not hold. Two candidate designs on the seed's world, decision and quantity were prototyped and
-measured over three seeds each; neither meets the bar (every reflex route a full bin from the golden,
-the right family inside a quarter-bin of the bin centre with one sigma, P(both) clearly under 0.08).
+**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** Three screens
+have run on this number and none produced a design that meets the bar (every reflex route a full bin
+from the golden, the right family inside a quarter-bin of the bin centre with one sigma, a lever of 30
+per cent or more of the graded figure with sigma near 1 per cent). The first (2026-10-18) took the seed
+FC46's world, decision and quantity and measured two capped-cost candidates dead over three seeds each.
+The second (2026-10-19) redrew the number in the cell the coordinator allocated,
+human-factors-ergonomics / human-reliability-assessment for Forecasting, set nine candidates aside on
+paper against the deaths already on file in this cell and measured the two survivors dead on code
+(`## Redraw screen: human-reliability-assessment` below). The third (2026-10-19) took the coordinator's
+next cell, quantitative-finance / strategy-backtesting-evaluation, measured three capacity mechanisms
+dead on code and set the rest aside on paper (`## Redraw screen: strategy-backtesting-evaluation`).
 Nothing was cut, `architecture` stays 0, and no axis of the guard's window was spent.
 
 ## What was screened
@@ -80,6 +86,65 @@ inside one bin; at bins wide enough to hold the family (6 to 10 per cent), the p
 and analog routes land in the golden's bin or the next. This is the same dial at both ends
 that `stumping` 1.6a and `determinism-check` section 1 record for task194, met here on a capped sum.
 
+## Redraw screen: human-reliability-assessment (2026-10-19)
+
+- **Cell and fences.** human-factors-ergonomics / human-reliability-assessment (serves Forecasting), a
+  pairing never built. The round's bans: pattern G14, `composition_mix`, `local_government`,
+  `committee_or_panel` and `executive_team`, `programme_officer` and `capacity_planner`,
+  `monitoring_export` and `filed_standard`. The guard's window after task249, task269 and task468 adds
+  patterns G16, G2 and G13, strategies `causal_design`, `decomposition_attribution` and `composition_mix`,
+  and shapes 04 and 05. The library refresh (b7a54be) leaves Human Factors with no cards, so the seeds
+  were the five families in `two-layer-task-design.md` and the nearest domains' cards (healthcare
+  delivery's patient-flow and provider-quality cards, general statistics' calibration, robustness and
+  measurement-error cards, banking's reviewer-capacity and labels-above-the-line cards).
+- **Deaths read first, all binding on this cell.** task171 (screeners' detection under short stints and a
+  new-hire cohort; dispensing errors under longer shifts, task149's within-person driver); task230 v2
+  (the low-prevalence effect at a shared verification pool, shipped in this task type and retired);
+  task194 architecture 8 (signal detection's discriminability against criterion, accident-proneness, an
+  own rate behind a load-dependent downstream catch); task202's six human-factors drivers (an unpublished
+  opportunity count a forward change multiplies, which is task181 v4; within-period clustering; two
+  checks' joint miss; a practice curve; a classification lag; a marginal contribution to a set); task181
+  (losses of separation follow level crossings); task182 (composition and observability screens).
+- **The structural finding.** In its own form, human reliability forecasting carries an error
+  probability conditioned on performance-shaping factors onto the forward mix of those factors, which an
+  honest card labels G14 or `composition_mix`, both out this round. The structures in this field that
+  are not a mix (dependence between checks, prevalence and detection criteria, thinned counts, time on
+  task, learning, shift length, unpublished opportunity counts, co-presence pairs, classification lags,
+  bursts, proneness, load-dependent catch, latency waves, caps, calendar locks) are each spent on file.
+  The residue was two candidates, a time-reliability race read at each demand's own window and a
+  performance-shaping factor's slope flattened by a noisy record, and both died on measurement.
+- **The harness.** `scratchpad/r175/proto/c11.py` (the race, five seeds, a `vol` multiplier) and
+  `c10.py` (the flattened slope, three seeds, settings `b` and `lam`), session-scoped; each was run twice
+  with byte-identical output, and the settings and figures are in the Tried and rejected lines so the
+  harness rebuilds from this note. `guard.py slots` on both driver sentences returned lexical overlaps
+  only (task182, task194, task117, task132, task201), no screen of either mechanism.
+
+## Redraw screen: strategy-backtesting-evaluation (2026-10-19)
+
+- **Cell and fences.** quantitative-finance / strategy-backtesting-evaluation (serves Forecasting), the
+  graded call forward facing (a capacity, a capital or a net return at a planned capital, never a
+  retrospective backtest statistic). The window re-read after the b7a54be refresh: task249 carries
+  `architecture_spent`, so the live three are task268, task269 and task468 (patterns G6, G2 and G13;
+  strategies `population_selection`, `decomposition_attribution` and `composition_mix`; roles
+  `research_desk`, `programme_officer`, `operations_director`; forums `committee_or_panel`,
+  `regulator_or_inspector`, `executive_team`; organisation families `hospital_or_health_provider`,
+  `university_or_school`, `other`; shapes 04 and 05), on top of the round's bans; task170 draws in banking
+  this round, so a bank's ALM desk was kept off every axis.
+- **Seeds.** The library's Quantitative Finance cards (next-bar fills, point-in-time universes, reporting
+  lags, deflated Sharpe, Fama-MacBeth, linked attribution, constrained and shrunk portfolios) are the
+  default path and Layer 1 here; the judgment sought was one they take for granted, and for a capacity call
+  that is what a strategy's own trading at the planned capital does to its costs and alpha. The domain's
+  only cards on file are task135 (asynchronous valuation strikes) and task445 (13F completion), and `slots`
+  found no screen of impact, capacity or crowding.
+- **The structural finding.** A capacity forecast's decisive quantity is the market's response to the
+  strategy's own flow, and the routes the data leave open are either the textbook square-root cost per
+  trade (the default, which lands wherever the strategy's trades are isolated) or a model of how impact
+  carries across days, whose classes agree on every one-way execution on file and part two to four times on
+  a strategy's own runs and reversals; every judgment beyond that (informed drift in the slippage, the
+  firm's netting, borrow demand) is a reflex control, a shared-pool clone or a minor cost line.
+- **The harness.** `scratchpad/r175/proto/qf_runs.py`, `qf_family.py`, `qf1c.py` and `qf6.py`,
+  session-scoped and deterministic per seed; settings and figures are in the Tried and rejected lines.
+
 ## Tried and rejected
 
 - **Candidate 1, the cap priced on each member's predictive year, with the spread of individual
@@ -138,22 +203,144 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   shipping weeks as the response (a promotion measures stockpiling, not the unbatching a membership
   causes); uptake of the invitation (a censored activation clock on the lightest members, a lever of a
   few per cent); members going quiet in the year (the analog cohort hands it over by recency band).
+- **Redraw candidate 11, a time-reliability race read at each demand's own window** (2026-10-19, stage 1,
+  human-reliability-assessment, `c11.py`, five seeds). World: a bulk liquids terminal whose operators stop
+  each transfer between the high-level alarm and the automatic overfill trip; the time each alarm leaves
+  is the tank's headspace between the two levels over the transfer's fill rate; the operator's response
+  is a two-component lognormal (attentive, median 4.0 minutes; lapses, 12 per cent, median 16) independent
+  of the rate; 2027 raises the pipeline receipt rate into the gasoline tanks from 700 to 1,000 to 1,600 to
+  2,000 cubic metres an hour. Graded figure: expected automatic trips in 2027. Driver as drafted: the
+  chance a demand fails is the response-time survival read at that demand's own window, so shorter
+  windows raise trips by the curve's bend across demands rather than at their average window. At a
+  typical terminal (about 10,800 transfers and 480 alarm demands a year, 23 to 41 trips in four years,
+  2027 truth 11.2 to 12.8 trips) the golden family (Kaplan-Meier on response times censored at each
+  trip's window, and the two-component mixture) agrees within 2.4 points but sits -11.0 to +14.5 per
+  cent from the truth, sigma about 9 per cent. At the largest realistic terminal (three times the volume,
+  88 to 108 trips in four years, truth 33.3 to 38.3) the golden sits -2.6 to +8.7 (sigma about 4) while
+  the trip share by window band, a filter and a divide once each demand's window is built, lands -12.3
+  to +5.7 (mean -1.8); trips per demand by stream with the changed stream rate-scaled -13.1 to -30.7;
+  persistence -18.9 to -41.3; the field's textbook time-reliability curve (one lognormal fitted to the
+  operators' stop times, read at the nominal window) -77.3 to -85.3, and with the trips taken as
+  censored -67.0 to -76.2; single-component censored Weibull and log-logistic fits 25 to 50 per cent
+  under. Only at ten times a terminal's volume (about 20,000 demands, 350 trips) does the golden reach
+  +0.1 to +5.8, and there the window-band share lands -7.0 to +7.9. Dead three ways: sigma 4 to 9 per
+  cent at any real volume, because trips are rare and the lapse tail that decides them is read from
+  those few; the subset screen (the window-band share lands inside the golden's own seed range); and
+  the library test (the golden is the censored survival curve applied demand by demand, the
+  probabilistic-analysis card's "not at the mean" with the forcing fact, faster receipts, cueing the
+  window). An honest card also reads it as a trip rate conditioned on each demand's window carried to the
+  forward window mix, G14.
+- **Redraw candidate 10, a performance-shaping factor's slope flattened by a noisy record** (2026-10-19,
+  stage 1, `c10.py`, three seeds). World: medication administration errors per ward-shift Poisson in
+  administrations, log rate rising by `b` per patient per nurse actually on the floor; the staffing
+  system records the ratio with classical error (reliability `lam`); a badge-swipe audit on four wards for
+  six months (2,160 ward-shifts) carries the true ratio; 2027 mandates at most 5 patients per nurse
+  against a recorded mean of 6.3. Graded figure: expected 2027 administration errors (truth about 11,700).
+  At a realistic effect and record (`b` 0.15, `lam` 0.6, 43,000 errors in three years) the naive slope
+  misses by only +7.0 to +9.3 per cent (fitted 0.089 to 0.091 against 0.15), against the 30 per cent
+  that held; the golden (regression calibration, moments) sits -1.6 to +1.3, SIMEX with a quadratic
+  extrapolant +3.3 to +4.0, and the slope fitted on the audited ward-shifts alone -5.7 to +2.2. The lever
+  is exp(-b(1-lam)D) for a forward shift D, so 30 per cent needs `b` 0.30 with `lam` 0.4 at once; there
+  the naive slope misses by +27.5 to +31.1, but the golden's own seed range widens to -7.1 to +7.0
+  (reliability estimated 0.36 to 0.40 from the audit), SIMEX splits the family at +15.0 to +21.9, and
+  the audited rows alone land -0.6 to +2.4, nearer the truth than the designed correction. Dead on the
+  lever at any plausible setting, on the subset screen (the card's own validation rows are a filter that
+  beats the correction), on an open method family (the extrapolant), on the library test (general
+  statistics' measurement-error card 2 applied as stated, its pin the audit file), on the swap test
+  (staffing and errors swap for any load proxy and failure count) and on the label (an error rate
+  conditioned on staffing carried to the mandated ratio is G14), beside task149's workload driver.
+- **Also set aside in the human-reliability cell, on paper, before either prototype:** the low-prevalence
+  effect at a final check after an upstream improvement (task230 v2, and G14 by its honest label;
+  inside the observed range a filter and a divide, outside it a 15 per cent family spread on paper);
+  confusable items or addresses grouped together (task181's co-presence); red-signal approaches as the
+  exposure for a new timetable (task202 C1, task181 v4, and the forecast of red approaches is an
+  operations simulation); errors at the first execution after a change (C1 again, and G14); adding or
+  removing a redundant check (task202 C3, and a read-across); latent maintenance errors found at
+  scheduled inspections (a dose-response conditioned yield, task77 v1's pipeline and task157's wave);
+  time-reliability tails for a single action (the empirical share is a filter and a divide,
+  extrapolated tails spread by form, and samples per action are sparse); a reminder or re-alarm moved
+  inside a response duration (task172's driver in other nouns); fatigue states under a new roster
+  (task171's shift death, G14, and the fatigue models' own spread).
+- **Quant candidate QF1, impact carried across days by a slow strategy's own trades** (2026-10-19,
+  strategy-backtesting-evaluation, `qf_runs.py` and `qf_family.py`). World: 800 names (ADV median $25m,
+  daily volatility about 1.8 per cent), a smoothed signal rebalanced daily, gross exposure twice capital;
+  the strategy's same-direction trades run 8.9 days on average. Driver as drafted: the market prices each
+  day's trade against the impact the strategy's own earlier trades left, so a per-trade square-root cost
+  understates what a slow strategy pays at the planned capital. Measured at $1bn on one square-root
+  calibration (Y 0.7): per-trade fresh start 92 bps of capital a year (the default); impact concave in the
+  decayed cumulative flow 249 to 309 for memories of 5 to 40 days (flat at 282 to 309 for 8 to 40, and
+  20,000 executions pin the memory to 13 to 34 days); each run priced fresh 500, and the opposite run's
+  netting is why it overshoots; concave per-day impacts superposed with exponential decay 543 to 1,228; a
+  power-law kernel 543 to 793. Dead on the estimator family: the model classes agree on every one-way
+  execution a desk's file holds and part 2.2 to 4.4 times on the strategy's runs and reversals, which no
+  one-way order tests, so pinning the class files the HOW and leaving it open forks the figure.
+- **Quant candidate QF1c, the same mechanism behind a no-trade band** (2026-10-19, `qf1c.py`). Built to
+  separate runs by idle gaps so that multi-day executions on file would force the class. The band makes
+  trades isolated instead (mean run 1.00 day, median idle gap 4 days, 9 per cent of name-days trading):
+  per-trade pricing sits at 0.99, 0.94, 0.81 and 0.63 of the truth for post-trade half-lives of 0.6, 1.0,
+  1.9 and 4.3 days, and the superposed class at 1.00 to 1.30, so the lever vanishes where the class is
+  forced and the family reopens where the lever returns. With a live record in the pack, the paper
+  portfolio's gap to the real one is Perold's implementation shortfall, the textbook route, and it lands;
+  set against the desk's slippage report it is a control that refutes the naive read.
+- **Quant candidate QF6, the fund's own short demand pushing borrow fees up a convex utilisation curve**
+  (2026-10-19, `qf6.py`, three seeds). At $2bn the fees cost 57.5 to 72.0 bps of capital a year against
+  33.2 to 40.7 at today's fees (0.50 to 0.61), a minor line beside the gross alpha; the median fee of names
+  already at the forward utilisation band, a filter and a divide on the prime broker history, lands at
+  0.976 to 1.003; and the curve fitted to the same history explodes for the few names pushed toward full
+  utilisation (log-linear 1.05 to 167 times, log-quadratic 6 times and far beyond), where the question is
+  a hard cap on unborrowable shorts. Dead on the lever, the subset screen and the cap.
+- **Also set aside in the quant cell, on paper:** informed drift in the desk's slippage (the golden's
+  regression is slippage on the square-root participation and the signal, so the opponent's add-a-control
+  reflex lands it); netting the new strategy's flow against the firm's other books (task164's and task106's
+  shared-resource increment in other nouns); a hard borrow cap (a single-purpose file and a min()); alpha
+  diluted into weaker signals at scale (a conditioned yield, G14); participation-capped multi-day
+  execution losing a front-loaded alpha (QF1's family returns, and a capped simulation is the reader's first
+  move); point-in-time vintages of a fundamental feed (alpha research card 2 applied as stated); merger
+  arbitrage completion conditioned on time pending (task133's driver); a volatility target's leverage cap
+  (G14 and a volatility forecast on the obvious covariate); auction and roll calendars (task162's
+  calendar lock); limit prices truncating the desk's slippage (the cap that truncates, task168 and task172);
+  alpha carried through cross-sectional dispersion (task446 v2 and task194's invariant abstraction);
+  post-publication decay read across older signals (a filter and a divide, and a known result); carry read
+  off today's curve (observable ex ante).
 
 ## Resume
 
-Do not re-screen the per-member capped forecast in this world: the three laws above close it for any
-decisive step that refines a member's predictive year (rate uncertainty, response spread, batching,
-severity), because the refinements form a continuum wider than a quarter-bin and the cap makes the
-common-factor and point-forecast errors cancel. Two routes for the next pass, priced before drawing:
+No screen left a live design, so the next move is the coordinator's or the author's: move the number to
+another Forecasting cell, or come back to human reliability or strategy evaluation when the round's G14
+and `composition_mix` bans lapse. Do not re-screen, in any of the three worlds, anything in
+`## Tried and rejected`:
 
-1. **Keep the world and move the decisive step off the member's predictive year**, to a level that
-   neither the pilot (law 3) nor the analog cohort (task130 v3) hands over and that is not a filed
-   forward condition. On paper the candidates for that are few, because the record measures standard
-   behaviour (the analog) and membership behaviour (the pilot) for like members, and what neither
-   measures is mostly a filed 2027 change, which is rule application. Price any such candidate on the
-   harness against laws 1 and 2 before writing a sentence.
-2. **Re-number to another seed in the lane** if the author prefers: the seed's quantity, a per-member
-   capped benefit over a year, is the structure that fails, not the domain.
+1. **The seed's world (FC46).** The three laws close the per-member capped forecast for any decisive step
+   that refines a member's predictive year, because the refinements form a continuum wider than a
+   quarter-bin and the cap makes the common-factor and point-forecast errors cancel.
+2. **Human reliability under this round's bans.** The cell's own form is a conditioned error probability,
+   which is G14 by an honest label, and its non-mix structures are spent on file (the redraw screen's list).
+   A time-reliability race dies on rare trips and the window-band filter and divide; a flattened factor
+   slope dies on its lever and on the audited rows. A further draw here would start from a file the
+   organisation keeps whose forcing input no stratification of the error log reproduces, and would price
+   the four unscreened card seeds first, with their predicted deaths: labels that exist only above a
+   review line (a verified subsample, spent, and a filter and a divide on it); reviewer-capacity yield (a
+   binding constraint on a filed integer of hours); an error-risk score's calibration against its ranking
+   (the card applied as stated, the library test); blocking probability against occupancy for a staffed
+   desk (queueing, the swap test).
+3. **Strategy evaluation under this round's bans.** A capacity call turns on how the market answers the
+   strategy's own flow; the per-trade square-root cost is the default and the only data-forced refinement
+   is how impact carries across days, whose model classes part 2.2 to 4.4 times on a strategy's runs and
+   reversals while agreeing on every one-way execution a desk records. A further draw here needs an
+   execution record that itself contains the strategy's runs and reversals, or a decisive step that is not
+   a cost of the strategy's own trading.
 
-Window facts for whoever draws next: `single-figure` is likely blocked by `ban.shape` once task165
-registers, and `composition_mix` by `ban.strategy` until three builds register after task173.
+Window facts on 2026-10-19 after the b7a54be refresh: task249 is spent and skipped, so patterns G6, G2 and
+G13, strategies `population_selection`, `decomposition_attribution` and `composition_mix`, and shapes 04
+and 05 sit in the ban window, and this round's serial registrations will move it again.
+
+## Retired
+
+task175 retired on 2026-10-19 under the author's rule for this round (a number that dies in its second new cell retires);
+no card was ever written or registered. The seed FC46's world died on 2026-10-18 (a member-level capped forecast is a
+continuum and the cap cancels), and the redraw round's two cells died on code: human-factors-ergonomics /
+human-reliability-assessment (67d2099: the time-reliability race sits inside the window-band filter and divide on rare
+trips, and the flattened factor slope is a 7 to 9 per cent lever the audited rows beat) and quantitative-finance /
+strategy-backtesting-evaluation (248746c: impact carried across days splits into model classes no one-way execution
+record can tell apart, and own borrow demand is a minor line whose attaining band lands). The lesson: a lever that
+needs a record the organisation does not keep is a fork, and one the record does keep is a filter and a divide.

@@ -213,6 +213,12 @@ back; the better outcome is never to face it.
   task244 the moment registration gave it a real stamp, with the pack already cut. Fixed in `guard.py`, and
   the lesson stands anyway: **an axis a draw cannot clear is cheapest to find before the generator is
   written, so probe with `check` at the draw and again the moment the card is filed.**
+- **A draw left unfiled past its day.** The same key places an unfiled card after everything filed on its
+  `drawn` date and before anything drawn later, so a draw parked unfiled past that day is tested forever
+  against the builds drawn by then, and no later registration clears its bans. A draw is filed on the day
+  it is registered: `drawn` is set to the filing day, `check` runs against that day's window, and the card
+  registers when it clears. task169 and task173, drawn the same day and parked unfiled, stayed blocked by
+  that day's last builds while the corpus moved on.
 - **A mechanism that died before registration.** The card corpus is a record of draws, not of screens, so
   every mechanism killed at stage 1 or 2 is invisible to `recent`, `mechanisms`, `nearest` and `heart`. Those
   kills live in each number's `## Tried and rejected` and in `pipeline.json`, and they are the cheapest

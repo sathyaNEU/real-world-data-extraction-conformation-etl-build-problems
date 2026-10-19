@@ -1,59 +1,62 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration, record linkage and entity resolution: two AVL systems' stop events linked to the timetable's trips, the links the matchers missed propagated into each route's departures through the department's clerical review).
+**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: two pharmacy benefit managers' specialty claim files conformed into one repriced record of fills, from which each class's program-year spend for the members now on therapy is projected).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Nominate Routes 2, 4, 6, 17 and 22 to the Frequent Transit Corridors Program for FY2027.**
-Seven candidates meet the standard once each stop's departures without a trip are shared by Service Quality's review weighted by its own design: Route 17 is 57 per cent of the Transit Mall's departures without a trip, its lowest hour averages 4.8 departures, and it ranks fourth of the seven by boardings, leaving Route 11 as the first qualifying route left out. Not Routes 2, 4, 6, 22 and 11, which share by the review's unweighted mix (Route 17 at 35 per cent) and leave Route 17 short at 3.6; not Routes 2, 4, 9, 22 and 11, which share in proportion to the departures the matchers tied to trips and give the short-handed Route 9 Oak Street's late buses.
+**Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory conditions (biologic and targeted therapy) 14; Multiple sclerosis 7; Oral oncology 6; Hepatitis C 1; Weight management (GLP-1 receptor agonists) 7; HIV 6; Severe asthma (biologics) 4; Cystic fibrosis 4; Migraine prevention (CGRP) 5.**
+Each class's managed spend is its members on therapy on June 30, 2026 carried forward by the class's own spend and continuation at each month of an episode of therapy, starting each member at the months their current episode has run; a member back on a drug after a lapse of more than 60 days starts a new episode. Not the same projection counted from each member's first fill in the class, which gives weight management 8, severe asthma 5 and migraine prevention 6 (57 in all), because the members who came back to those drugs in 2026 after the step therapy change would be projected like the long-standing members who never stopped; not last year's on-therapy members' following-year spend applied to this June's members, which gives weight management 10; not the trailing year, which gives hepatitis C 4 (its courses end within twelve weeks).
 
 ## 2. Critical Components
 
-1. Counting days: **125** (weekdays of January to June 2026, the four state holidays out).
-2. Departures in the counting hours that the AVL records tie to no trip: **17,112** of 106,687.
-3. Route 17's share of the Transit Mall's departures without a trip, each reviewed event weighted by its bus-day's departures without a trip: **57 per cent** (unweighted, 35).
-4. Route 17's lowest hourly average: **4.8** departures, at least four in each of the thirteen hours.
+1. Members on therapy on June 30, 2026 (the caseloads): IMM 484; MS 192; ONC 104; HCV 52; GLP 1,846; HIV 370; AST 287; CF 43; CGR 941.
+2. Projected managed spend for the program year, $ million at the 2026 schedule: IMM 20; MS 10; ONC 8; HCV 0; GLP 10; HIV 8; AST 5; CF 5; CGR 7; total 73.
+3. Pharmacists at one per $1.5 million of managed spend or part: IMM 14; MS 7; ONC 6; HCV 1; GLP 7; HIV 6; AST 4; CF 4; CGR 5; total 54.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed avl_stop_events_2026q1_arbor.csv and avl_stop_events_2026q2_quinnell.csv into one table of departures in Central time at the five designated stops: Arbor's stop ids to stop codes through the January feed's stops.txt, Quinnell's UTC to Central time and its asset tags to fleet numbers through fleet_roster_2026.csv, each event to its service day, Quinnell's rows repeated at the head of each daily file (same bus, stop and second) dropped, and March 31's service taken from Arbor's export.
-2. Kept the 125 counting days and the thirteen clock hours from 6 a.m. (guidance 3.3 and 3.4): 106,687 departures, 17,112 with no trip.
-3. Weighted each of the 1,500 events in trip_matching_review_2026h1.csv by the departures without a trip its bus-day had at the five stops (the review draws one from each of 250 bus-days a month) and by its month's bus-days listed over drawn: Route 17 is 57 per cent of the Transit Mall's departures without a trip.
-4. Shared each stop's departures without a trip in each hour among its routes by the weighted mix, buses out of service left out, added the departures tied to each route's trips, and averaged over the counting days.
-5. Took each candidate's lowest hour: Routes 2, 4, 6, 11, 17, 22 and 40 meet four in every hour; Routes 9, 14, 31 and 51 do not.
-6. Ranked the qualifying routes by average weekday boardings in ridership_by_route_2026h1.xlsx (guidance 5.1): Routes 2, 4, 6, 17 and 22, with Route 11 the first qualifying route left out.
-7. Timed each departure tied to a trip against the trip's scheduled departure from the designated stop in the feed in effect that day (larkhaven_gtfs_20260101.zip to April 4, larkhaven_gtfs_20260405.zip from April 5; the published timetable, guidance 4.1 and 4.2), not the minute-rounded schedule time in Arbor's export, for the on-time shares.
-8. Recommended nominating Routes 2, 4, 6, 17 and 22.
+1. Conformed orrin_rx_specialty_claims_2019_2025.csv and tallis_specialty_claims_2026h1.csv into one record of fills: reversed claims removed with the claims they reverse (Orrin's REVERSAL lines, Tallis's R status), members linked to plan IDs through member_id_crosswalk_2026.csv, Orrin's 10-digit NDCs padded to 11 digits, each NDC's class from tallis_specialty_drug_list_2026.csv.
+2. Priced every fill at tallis_specialty_price_schedule_2026.xlsx: units times the unit price plus the dispensing fee (charter 2.2).
+3. Took each class's caseload: members with a fill whose days' supply reaches June 30, 2026 (charter 2.1).
+4. Split each member's fills in a class into episodes of therapy, a new episode starting at a fill more than 60 days after every earlier supply had run out, and dated each member's months on therapy from the start of the episode; a member already filling in the first quarter of 2019 has an unseen start and sits in the longest-duration cell.
+5. For each class and each month of an episode, averaged the spend over the following twelve months of the members on therapy at a month end at that month, over every month end from January 2019 whose twelve months are in the record (months from 36 on pooled).
+6. Projected each caseload member at the month of the episode they had reached on June 30, 2026, summed by class, and staffed one pharmacist per $1.5 million or part (charter 3.1).
+7. For the rebates, took orrin_rx_rebate_statement_2025.xlsx's contract quarters 2025-Q1 to 2025-Q4 (a contract year runs February to January, the only calendar on which its units tie to the claims), each product's quarterly rebate once although the statement repeats it on each channel line, plus January 2025's units at contract quarter 2024-Q4's rebate per unit.
 
 ## 4. Deliverable Answers
 
-### larkhaven_frequent_corridor_nominations_fy2027.xlsx
+### merrow_specialty_pharmacist_staffing_2026_27.xlsx
 
-1. Verdicts on the program's standard:
-   - Route 2 Grand Avenue: meets
-   - Route 4 Lincoln Avenue: meets
-   - Route 6 Oak Street: meets
-   - Route 9 Riverside: does not meet
-   - Route 11 University Connector: meets
-   - Route 14 Elm Park: does not meet
-   - Route 17 Prairie Road: meets
-   - Route 22 Fairgrounds: meets
-   - Route 31 College Hill: does not meet
-   - Route 40 Westgate Crosstown: meets
-   - Route 51 Hillcrest: does not meet
-2. Nominated: Routes 2, 4, 6, 17 and 22.
-3. First qualifying route left out: Route 11.
-4. Share of the departures tied to a trip that left no more than one minute early or five minutes late:
-   - Route 2: 62%
-   - Route 4: 70%
-   - Route 6: 54%
-   - Route 9: 71%
-   - Route 11: 73%
-   - Route 14: 72%
-   - Route 17: 37%
-   - Route 22: 72%
-   - Route 31: 72%
-   - Route 40: 75%
-   - Route 51: 73%
-5. Bar chart of each candidate's lowest hourly average against the standard of four, on the Nominations sheet.
+1. Clinical pharmacists by class:
+   - Inflammatory conditions (biologic and targeted therapy): 14
+   - Multiple sclerosis: 7
+   - Oral oncology: 6
+   - Hepatitis C: 1
+   - Weight management (GLP-1 receptor agonists): 7
+   - HIV: 6
+   - Severe asthma (biologics): 4
+   - Cystic fibrosis: 4
+   - Migraine prevention (CGRP): 5
+2. Total: 54 pharmacists.
+3. Managed spend for July 2026 to June 2027, $ million:
+   - Inflammatory conditions (biologic and targeted therapy): 20
+   - Multiple sclerosis: 10
+   - Oral oncology: 8
+   - Hepatitis C: 0
+   - Weight management (GLP-1 receptor agonists): 10
+   - HIV: 8
+   - Severe asthma (biologics): 5
+   - Cystic fibrosis: 5
+   - Migraine prevention (CGRP): 7
+4. Manufacturer rebates on fills dispensed in 2025, $ thousand:
+   - Inflammatory conditions (biologic and targeted therapy): 5,328
+   - Multiple sclerosis: 1,750
+   - Oral oncology: 368
+   - Hepatitis C: 1,209
+   - Weight management (GLP-1 receptor agonists): 725
+   - HIV: 724
+   - Severe asthma (biologics): 744
+   - Cystic fibrosis: 201
+   - Migraine prevention (CGRP): 614
+5. Bar chart of the pharmacists by class, on the Staffing sheet.

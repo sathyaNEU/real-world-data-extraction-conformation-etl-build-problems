@@ -457,3 +457,9 @@ primary. PAUSED, not shipped.
   every number written counts them twice): reader round 3 recoded every party right. Both cuts are mirror devices: the
   verbatims are documented beside the coded column (methods report 4.2), so reconciling them is the cracker's reflex,
   and no reading of Q4 the frozen documents leave open is both determinate and missed by a careful parser.
+- 2026-10-19, re-root tried on paper: the same parking survey with the third pick held unless its lead over the first
+  market left out clears twice its design-based standard error (cards clustered by handout day, weighted by the return
+  window). Measured on the v1 pack it cannot bind: 73,909 returned cards put Phoenix, Tampa and Washington each 3.5
+  standard errors clear of New York on the weighted card-level variance and 2.3 to 3.4 clustered by day; binding it
+  would need a tenfold smaller sample and same-day group travel, a planted structure, and the clustering unit itself
+  is arguable when the waves are consecutive days. Dropped before any data was cut.

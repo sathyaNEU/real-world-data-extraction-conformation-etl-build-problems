@@ -1,43 +1,38 @@
 {
  "task": "task468",
- "architecture": 1,
- "title": "Which of Larkhaven Transit's eleven candidate routes the City should nominate to the state's Frequent Transit Corridors Program for FY2027 (at most five), on the departures its buses made from the routes' designated stops from January to June 2026 as two AVL systems recorded them, the departures the trip matchers tied to no trip shared out through Service Quality's review weighted by its design; with each candidate's share of departures that left on time against the timetable",
- "domain": "General Statistics & Data Science",
- "subdomain": "data-integration-record-linkage-entity-resolution (two AVL vendors' stop events conformed and linked to the timetable's trips; the links the matchers missed, which fall on the late trunk routes, propagated into each route's departures through a clerical review that samples bus-days and takes one event from each)",
+ "architecture": 2,
+ "title": "How many clinical pharmacists each of Merrow Health Plan's nine specialty classes gets for the program year from July 2026, one per $1.5 million of the spend its members on therapy on June 30, 2026 will run over the year at the 2026 schedule, from two pharmacy benefit managers' specialty claim files; with each class's managed spend and its 2025 manufacturer rebates",
+ "domain": "Healthcare Delivery & Health Economics",
+ "subdomain": "payment-claims-health-plan-analytics (two PBMs' specialty claims conformed and repriced; each class's program-year spend for its members on therapy projected by months on therapy)",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "01: ranked list under a cap: each of eleven candidate routes passes or fails the delivered frequency standard and the five with the most weekday boardings are nominated, with each candidate's on-time share",
- "as_of": "2026-10-30",
+ "prompt_shape": "05: allocation: each of nine classes gets its pharmacists from its projected managed spend, with each class's managed spend and rebates",
+ "as_of": "2026-08-03",
  "deliverables": [
-  "larkhaven_frequent_corridor_nominations_fy2027.xlsx"
+  "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
  ],
  "distractor_files": [
-  "title_vi_service_monitoring_2025.pdf",
-  "farebox_revenue_by_route_2026h1.xlsx"
+  "orrin_rx_specialty_trend_report_2025.pdf",
+  "medical_benefit_specialty_drugs_2025.xlsx"
  ],
  "stated_inputs": [
-  "FY2027",
-  "January to June 2026",
-  "6 a.m.",
-  "7 p.m.",
-  "one minute",
-  "five minutes"
+  "July 2026",
+  "2025"
  ],
  "input_gates": {
-  "files": 13,
+  "files": 11,
   "formats": [
    "csv",
    "pdf",
-   "xlsx",
-   "zip"
+   "xlsx"
   ],
-  "largest_file": "avl_stop_events_2026q2_quinnell.csv",
-  "largest_file_rows": 83843
+  "largest_file": "orrin_rx_specialty_claims_2019_2025.csv",
+  "largest_file_rows": 122245
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task468/generator/build.py (seeded, deterministic) in the layouts of a city transit department's CAD/AVL stop-event exports from two vendors, its GTFS feeds, a service-quality review log and memo, a fleet roster, a candidate route list, ridership and farebox reports and a Title VI monitoring report, and a state department of transportation's program guidance; the state is unnamed and the city, its transit department, vendors, routes and people are fictional",
-   "date": "2026-10-30",
+   "origin": "constructed for this task by task468/generator/build.py (seeded, deterministic) in the layouts of two pharmacy benefit managers' specialty claim extracts, a health plan's member crosswalk, a PBM's specialty drug list, price schedule and rebate statement, a specialty program charter, a formulary bulletin, PBM transition notes, a PBM trend report and a medical-benefit summary; the state is unnamed and the plan, PBMs, drugs and people are fictional",
+   "date": "2026-08-03",
    "license": "original work for this task; no third-party data"
   }
  ]

@@ -292,7 +292,12 @@ def write_all(W):
                    filed_by="Marrowby Teale")
 
         def init_status(when):
-            if x["decided"] and x["decided"] + D_(days=x["lag"]) <= when:
+            if x["cat"] == "(c)(9)":
+                # filed in the adjustment package: once USCIS has it, the case leaves the register for the green-card
+                # tracker, which follows the application and its work permit from there
+                if x["received"] and x["received"] + D_(days=x["lag"]) <= when:
+                    return "Closed - no longer tracked", None, x["received"] + D_(days=x["lag"])
+            elif x["decided"] and x["decided"] + D_(days=x["lag"]) <= when:
                 return "Approved", x["decided"], x["decided"]
             if x["received"] and x["received"] + D_(days=x["lag"]) <= when:
                 return "Filed", None, None
@@ -318,6 +323,71 @@ def write_all(W):
 
     # --------------------------------------------------------------- the team's case actions
     acts = []
+    r_oth = C.stream("other filings")
+
+    # the current system registers a renewal the applicant filed herself as a case of its own, numbered when the team
+    # learns of it (the next free GM number), and closes the team's case as not refiled by the team
+    used = {}
+    for cs in cases:
+        if cs.new_id:
+            used[int(cs.new_id[3:])] = cs.opened
+    for x in inits:
+        if x["new_id"]:
+            used[int(x["new_id"][3:])] = x["opened"]
+    nums = sorted(used)
+    free = [(g, used[max(n for n in nums if n < g)], used[min(n for n in nums if n > g)])
+            for g in range(nums[0] + 1, nums[-1]) if g not in used]
+    own_case = {}
+    pending = []
+
+    # the date on each notice counsel logged, by case and notice type (the earliest of a type)
+    counsel_on = defaultdict(dict)
+    for n in notes:
+        got = counsel_on[n["cs"].id]
+        if n["ntype"] not in got or n["ndate"] < got[n["ntype"]]:
+            got[n["ntype"]] = n["ndate"]
+    r_cp = C.stream("notice copies")
+    r_of = C.stream("other filing dates")
+
+    def held_copy(cs, which):
+        """the notice an applicant holds and forwards and the date on it: counsel's date where counsel logged the same
+        notice, otherwise the date drawn as USCIS issues that notice"""
+        got = counsel_on.get(cs.id, {})
+        rcpt = got.get("Receipt notice") or C.next_busday(cs.received + D_(days=max(1.0, Wm.gam(r_cp, 3.0, 1.5))))
+        if which == "Receipt notice":
+            return "Receipt notice", rcpt
+        if which == "Approval notice":
+            if cs.withdrawn:
+                return "Withdrawal acknowledgement", got.get("Withdrawal acknowledgement", cs.withdraw_ack)
+            kind = "Denial notice" if cs.denied else "Approval notice"
+            return kind, got.get(kind, cs.decided)
+        if cs.route == "appointment":
+            d = got.get("Biometrics appointment notice")
+            if d is None:
+                d = C.next_busday(cs.received + D_(days=max(5.0, Wm.gam(r_cp, 12.0, 4.0))))
+                d = min(d, C.prev_busday(cs.appt_first - D_(days=5)))
+            return "Biometrics appointment notice", d
+        d = got.get("Biometrics reuse notice")
+        if d is None:
+            d = C.next_busday(cs.received + D_(days=max(6.0, Wm.gam(r_cp, 20.0, 6.0))))
+            if cs.decided and d >= cs.decided:
+                return "Receipt notice", rcpt         # USCIS decided before a reuse notice went out
+        return "Biometrics reuse notice", d
+
+    def other_rejection(cs, before_packet):
+        """the lockbox's rejection of the applicant's own other filing, dated from that filing's own trip: sent before
+        the renewal's first packet (she forwards it with her receipt notice) or after USCIS received the renewal"""
+        first = cs.sends[0]["sent"]
+        for _ in range(60):
+            if before_packet:
+                sent = first - D_(days=int(r_of.integers(8, 26)))
+            else:
+                sent = cs.received + D_(days=int(r_of.integers(0, 50)))
+            arrive = C.next_busday(sent + D_(days=int(r_of.integers(1, 4))))
+            notice = C.next_busday(arrive + D_(days=max(3.0, Wm.gam(r_of, 12.0, 4.0))))
+            if (notice < first) if before_packet else (notice > cs.received):
+                return notice
+        return None
 
     def act(cs, when, action, detail="", ref="", outcome="", out_date=None, notice_date=None, by=None):
         if when is None or when > exp:
@@ -364,11 +434,23 @@ def write_all(W):
             # applicants forward copies of notices they receive
             if rng.random() < 0.06:
                 which = str(rng.choice(["Receipt notice", "Biometrics appointment notice", "Approval notice"]))
-                nd = {"Receipt notice": cs.received, "Biometrics appointment notice": cs.received + D_(days=12),
-                      "Approval notice": cs.decided}[which]
-                if nd and nd <= exp:
-                    act(cs, C.next_busday(nd + D_(days=int(rng.integers(4, 30)))), "Notice forwarded by applicant",
-                        which, notice_date=nd)
+                nd0 = {"Receipt notice": cs.received, "Biometrics appointment notice": cs.received + D_(days=12),
+                       "Approval notice": cs.decided}[which]        # the shared stream's draws turn on this date
+                what, on = held_copy(cs, which)
+                if which != "Approval notice" and r_oth.random() < Wm.P_OTHER_REJECT:
+                    # a lockbox rejection of the applicant's own other filing (an I-539 or I-131 she sent herself),
+                    # which the coordinator logs on the case she is in the team's care for: the one she forwards with
+                    # the receipt notice is older than the renewal's packet, the one with the appointment letter newer
+                    if which == "Receipt notice":
+                        r_oth.integers(3, 21)
+                    what, on = "Rejection notice", other_rejection(cs, which == "Receipt notice")
+                if nd0 and nd0 <= exp:
+                    lag = int(rng.integers(4, 30))
+                    by = str(rng.choice(STAFF)) if C.next_busday(nd0 + D_(days=lag)) <= exp else None
+                    when = C.next_busday(on + D_(days=lag)) if on else None
+                    if when and when <= exp:
+                        act(cs, when, "Notice forwarded by applicant", what, notice_date=on,
+                            by=by or str(r_cp.choice(STAFF)))
             if cs.decided and not cs.denied and not cs.withdrawn and rng.random() < 0.02:
                 act(cs, C.next_busday(cs.decided + D_(days=int(rng.integers(25, 60)))), "Card not received inquiry")
         for s in cs.sends:
@@ -380,14 +462,50 @@ def write_all(W):
                 act(cs, C.next_busday(s["notice"] + D_(days=int(rng.integers(6, 21)))), "Notice forwarded by applicant",
                     "Rejection notice", notice_date=s["notice"])
         if cs.filed_by == "Applicant" and cs.received is not None:
-            act(cs, C.next_busday(cs.received + D_(days=int(rng.integers(3, 15)))), "Notice forwarded by applicant",
-                "Receipt notice", notice_date=cs.received)
+            told = C.next_busday(cs.received + D_(days=int(rng.integers(3, 15))))
+            n0 = len(acts)
+            act(cs, told, "Notice forwarded by applicant", "Receipt notice", notice_date=cs.received)
+            if cs.new_id and told >= C.REGISTER_SWITCH and len(acts) > n0:
+                pending.append((cs, acts[-1]))
+    # the applicant's own filing takes the next free GM number from the day the team learns of it; the log keeps the
+    # action's place (its number was given when the coordinator logged the forwarded notice)
+    for cs, a in pending:
+        for j, (g, o1, o2) in enumerate(free):
+            if o2 >= a["when"]:
+                free.pop(j)
+                own_case[cs.id] = ("GM-%06d" % g, max(a["when"], o1))
+                break
+        else:
+            raise SystemExit("no free GM number after %s" % a["when"])
     acts.sort(key=lambda a: (a["when"], a["case"], a["action"]))
     aid = 58000
     for a in acts:
         aid += 1
         a["id"] = "CA%06d" % aid
+    for cs, a in pending:
+        a["case"] = own_case[cs.id][0]
     R.actions = acts
+
+    # the applicant's own filing as the current register holds it: the team's case closed as not refiled by the team,
+    # and the filing as a case of its own, filed by the applicant
+    by_new = {r["id"]: r for r in reg_rows_new}
+    for cs in cases:
+        if cs.id not in own_case:
+            continue
+        y_id, y_open = own_case[cs.id]
+        x = by_new[cs.new_id]
+        stt, dec, closed = status_at(cs, exp)
+        if stt == "Sent":
+            stt = "Open"                   # no packet of the team's: the receipt is not yet entered
+        y = dict(x, id=y_id, legacy="", opened=y_open, sent=None, matter="", receipt=cs.receipt or "",
+                 status=stt, decided=dec, closed=closed, filed_by="Applicant",
+                 received=cs.received if cs.received + D_(days=cs.reg_lag) <= exp else None,
+                 new_exp=cs.new_card.valid_to if (stt == "Approved" and cs.new_card) else None)
+        x.update(status="Rejected - not refiled", decided=None, closed=y_open, received=None, receipt="",
+                 new_exp=None, filed_by="Marrowby Teale")
+        reg_rows_new.append(y)
+    reg_rows_new.sort(key=lambda r: (r["opened"], r["id"]))
+    R.own_case = own_case
 
     # --------------------------------------------------------------- the dispatch log, 2025 and 2026
     disp = []
@@ -498,10 +616,12 @@ def roster(W, R):
     by_holder = defaultdict(list)
     for c in W.cards:
         by_holder[id(c.holder)].append(c)
+    R.label_rule = {}
     for hid, cl in by_holder.items():
         cl.sort(key=lambda c: (c.valid_from, c.valid_to))
         stale = rng.random() < Wm.P_STALE_LABEL
         label0 = None
+        R.label_rule[hid] = (stale, cl[0].cat)
         for k, c in enumerate(cl):
             c.roster, c.roster_cat, c.entered_on, c.entered_via = False, None, None, None
             c.roster_holder = None
@@ -683,6 +803,123 @@ def h1b_calendar(W, R):
     rows.sort(key=lambda r: (r["end"], r["id"]))
     R.h1b = rows
     return rows
+
+
+def _pick_at(u, table):
+    acc = 0.0
+    for v, p in table:
+        acc += p
+        if u < acc:
+            return v
+    return table[-1][0]
+
+
+def dual_roles(W, R):
+    """spouses in the team's care who took a job at Sallowmere during the life of their current card: HR's program
+    roster holds each as an employee of her own, her I-9 at hire records the card she presented, and she uploads the
+    same card on the spouse side too, so one card sits on HR's work permit roster under two IDs"""
+    rng = C.stream("dual role")
+    exp = C.EXPORT
+    taken = {r["id"] for r in R.employees} | {e.id for e in W.emps}
+    enrolls = {r["enroll"] for r in R.employees} | {e.enroll for e in W.emps}
+    by_holder = defaultdict(list)
+    for c in W.cards:
+        by_holder[id(c.holder)].append(c)
+    R.dual = []
+    for s in W.spouses:
+        u, h_off, fam = rng.random(), rng.random(), rng.random()
+        ent_off, up_off = int(rng.integers(0, 5)), int(rng.integers(1, 21))
+        e = s.principal
+        if not (e.hire <= exp and (e.term is None or e.term > exp)):
+            continue
+        cl = sorted((c for c in by_holder.get(id(s), ()) if c.valid_from <= exp), key=lambda c: (c.valid_from, c.valid_to))
+        if not cl or cl[-1].valid_to <= exp:
+            continue
+        cur = cl[-1]
+        lo = max(cur.valid_from + D_(days=15), dt.date(2023, 6, 1))
+        hi = exp - D_(days=20)
+        if u >= Wm.P_DUAL[cur.cat] or hi < lo:
+            continue
+        hire = C.next_busday(lo + D_(days=int(h_off * (hi - lo).days)))
+        eid = "%06d" % int(rng.integers(210000, 989999))
+        while eid in taken:
+            eid = "%06d" % int(rng.integers(210000, 989999))
+        taken.add(eid)
+        ben = "BEN%08d" % int(rng.integers(10 ** 7, 10 ** 8))
+        while ben in enrolls:
+            ben = "BEN%08d" % int(rng.integers(10 ** 7, 10 ** 8))
+        enrolls.add(ben)
+        if s.gc_approved and s.gc_approved <= exp:
+            basis = "Permanent resident"
+        else:
+            basis = "I-485 pending" if cur.cat == "(c)(9)" else "H-4 EAD"
+        R.employees.append(dict(emp=None, id=eid, hire=hire, status="Active", term=None, state=e.state,
+                                family=_pick_at(fam, Wm.FAMILIES), basis=basis, enroll=ben, dual=s))
+        R.roster.append(dict(card=cur, holder=eid, htype="Employee", cat=cur.cat, number=cur.number, vf=cur.valid_from,
+                             vt=cur.valid_to, ent=C.next_busday(hire + D_(days=ent_off)), via="I-9 at hire",
+                             sponsor=""))
+        if not cur.roster:
+            stale, label0 = R.label_rule[id(s)]
+            lab = "(c)(26)" if (label0 == "(c)(26)" and cur.cat == "(c)(9)" and stale) else cur.cat
+            up = C.next_busday(hire + D_(days=up_off))
+            hid = s.dep_id if (s.late_enroll and up >= s.late_enroll) else s.id
+            cur.roster, cur.roster_cat, cur.entered_on, cur.entered_via, cur.roster_holder = True, lab, up, \
+                "Portal upload", hid
+            R.roster.append(dict(card=cur, holder=hid, htype="Spouse", cat=lab, number=cur.number, vf=cur.valid_from,
+                                 vt=cur.valid_to, ent=up, via="Portal upload", sponsor=""))
+        R.dual.append((s, eid, cur, hire))
+    R.roster.sort(key=lambda r: (r["ent"], r["holder"], r["vf"]))
+    R.employees.sort(key=lambda r: r["id"])
+    return R.dual
+
+
+def entity_transfers(W, R):
+    """H-1B employees of the H-4 households moved in 2026 to another Sallowmere entity: HR's program roster ends the
+    employee's ID the day before the move and opens a new one from it, the benefits enrollment carried over; the
+    team's records, all made before the move, keep the ID it knew"""
+    rng = C.stream("entity moves")
+    exp = C.EXPORT
+    taken = {r["id"] for r in R.employees} | {e.id for e in W.emps}
+    rows = {r["id"]: r for r in R.employees}
+    last = defaultdict(lambda: dt.date(2000, 1, 1))
+    for cs in R.cases:
+        last[id(cs.holder)] = max(last[id(cs.holder)], cs.opened)
+    for x in R.initials:
+        last[id(x["holder"])] = max(last[id(x["holder"])], x["opened"])
+    for r in R.roster:
+        if r["via"] == "Onboarding":
+            last[id(r["card"].holder)] = max(last[id(r["card"].holder)], r["ent"])
+    by_holder = defaultdict(list)
+    for c in W.cards:
+        by_holder[id(c.holder)].append(c)
+    R.moves = []
+    for e in W.emps:
+        u, t_off = rng.random(), rng.random()
+        s = e.spouse
+        if s is None or e.gc_filed or s.switch or e.id not in rows or rows[e.id]["status"] != "Active":
+            continue
+        cl = sorted((c for c in by_holder.get(id(s), ()) if c.valid_from <= exp), key=lambda c: (c.valid_from, c.valid_to))
+        if not cl or cl[-1].valid_to <= exp or cl[-1].cat != "(c)(26)":
+            continue
+        lo = max(last[id(s)] + D_(days=30), dt.date(2026, 4, 1))
+        hi = exp - D_(days=15)
+        if u >= Wm.P_ENTITY_MOVE or hi < lo:
+            continue
+        move = C.next_busday(lo + D_(days=int(t_off * (hi - lo).days)))
+        nid = "%06d" % int(rng.integers(210000, 989999))
+        while nid in taken:
+            nid = "%06d" % int(rng.integers(210000, 989999))
+        taken.add(nid)
+        old = rows[e.id]
+        R.employees.append(dict(old, id=nid, hire=move, status="Active", term=None, moved_from=e.id))
+        old.update(status="Terminated", term=C.prev_busday(move - D_(days=1)), moved_to=nid)
+        for h in R.h1b:
+            if h["id"] == e.id:
+                h["id"] = nid
+        R.moves.append((e, e.id, nid, move))
+    R.employees.sort(key=lambda r: r["id"])
+    R.h1b.sort(key=lambda r: (r["end"], r["id"]))
+    return R.moves
 
 
 def posted_times(R):

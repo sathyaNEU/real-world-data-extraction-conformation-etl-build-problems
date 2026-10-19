@@ -1,0 +1,11 @@
+{
+  "distractor_files": [
+    "target/echo_lab_activity_2025.xlsx",
+    "target/hf_clinic_sessions_2026.csv"
+  ],
+  "deliverables": [
+    "hf_programme_site_2027.xlsx",
+    "service_line_committee_hf_2027.pptx"
+  ],
+  "stated_inputs": []
+}

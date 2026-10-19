@@ -1,0 +1,45 @@
+{
+ "task": "task249",
+ "owner": "perssathya",
+ "status": "PAUSED",
+ "domain": "product-analytics",
+ "objective": "data-quality-monitoring",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-19",
+ "stump": "A competent solver counts each signed-in WebKit browser once from the device register and replays the seven-day cookie expiry on the signed-out visitors of other browsers in the same edition and device class, understating every WebKit overcount and dropping editions from the measurement note, because the paywall meter in the same capped storage keeps WebKit's weekly and occasional readers signed out while their counterparts elsewhere registered.",
+ "architecture": 4,
+ "loops": 3,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-19"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), as-of 2029-01-15",
+  "reader": "three rounds of two scored readers: round 1 one landed through a fingerprint (repaired), both kept the asks (re-sited); round 2 both missed the call, one kept the sold copies through impossible records (repaired); round 3 one landed the call by a calibration on signed-in browsers stratified by activity (0 of 24 asks), one missed (0 of 24)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, answered under Draw)",
+  "nearest": "0.04"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass2.md (final pack 31ad0d1e; earlier passes on 6aaf417a and d00ed7b6 also APPROVE)"
+ },
+ "returned": [],
+ "resume": "architecture 4 at stage 4 round 3 on target.zip 31ad0d1e: every free gate green, the judge APPROVE, both asks held (0 of 24 for both readers); reader 5 landed the call by an activity-stratified calibration on signed-in WebKit browsers, so the two-reader rule calls the architecture spent. The author's call: ship as measured, a fifth architecture, or retire the number",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": [
+  {
+   "architecture": 3,
+   "status": "spent at stage 4 on 2026-10-19",
+   "commit": "e081ee4e"
+  }
+ ]
+}

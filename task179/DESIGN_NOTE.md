@@ -1,6 +1,11 @@
 # task179 design note
 
-**Status: PAUSED at stage 1, no card ever registered, nothing cut.** New, Forecasting, seed FC50. The world was
+**Status: PAUSED at stage 1, no card ever registered, nothing cut.** On 2026-10-19 the number was redrawn in a
+new cell, Economics & Econometrics, `time-series-macro-econometrics`, Forecasting (the ambulance world spent), and
+that cell yielded nothing that holds either: four candidates measured on code and seventeen screened on paper, each
+recorded under `## Tried and rejected` (the redraw-cell block). The paragraphs below are the first cell's record.
+
+**First cell.** New, Forecasting, seed FC50. The world was
 moved honestly off `local_government`: a private ambulance company holds a city's 911 ambulance contract (the city
 stays as the contract's counterparty) and decides its own summer surge pool, ten medic units for the weekend
 20:00 to 24:00 block from June to August, any it does not need offered to the county's mutual-aid roster for the
@@ -169,12 +174,87 @@ candidate touches them.
   - One 9-in-10 condition across the three districts jointly: the estimand again, and once filed the joint
     record's evenings answer it by a count.
 
+- **Redraw cell, 2026-10-19: Economics & Econometrics, `time-series-macro-econometrics`, Forecasting.** The cell's
+  three library cards (cointegration critical values, the Johansen rank's deterministic terms, shock identification)
+  were read first; `guard.py recent`, `coverage`, `mechanisms --objective forecasting` and `slots` (pass-through,
+  asymmetric, invoicing, indexation, cointegration, error correction, recovery, seasonal, mortgage, lock-in, rent,
+  catch-up, settlement, Phillips, kink, capacity utilisation) ran before any candidate. No build on file sits in this
+  task type. The live window at a932f79 is task249, task177 and task270 (strategies `causal_design`,
+  `forecast_method_backtest`, `population_selection`; patterns G14, G16, G12; task269 is spent and skipped). Prototypes
+  in the session scratchpad, b179r/screen: `s1_cp.py`, `lm1.py`, `d1.py`, `w1.py`, `w2.py`, and `screen179r.py`, whose
+  output `screen179r.out` is byte-identical with `screen179r_run2.out` (as `lm1.out` is with `lm1_run2.out`). Seeds
+  were fixed before outcomes. No card was drafted, because nothing passed the measurement.
+  - **Measured: a business survey's up, same and down shares against the quarter's mean output move** (the balance
+    bridge against a quantification that scales the shares by the firms' spread, Carlson-Parkin; `s1_cp.py`, 20
+    world draws a scenario, 1,500 firms a quarter, 127 quarters, t(5) firm growth). At ordinary spread the balance
+    bridge lands (truth -1.0: balance -0.86, golden -0.98); only a deep fall at an unprecedented spread separates it
+    (truth -3.0 at spread 12: balance -1.80, the up-and-down two-share regression -2.55, golden -2.89 with a sd of
+    0.35, 12 per cent of the figure). The nearest reflex sits about one golden sigma away, the golden's own sigma is
+    an order above the bar, and the separating world needs a recession no record has seen.
+  - **Measured: long memory, a fractionally integrated series against the AR chosen by AIC and the KPSS-chosen unit
+    root** (`lm1.py`, 40 draws, d 0.4, 480 months, the mean of months 25 to 36). The AR by AIC, the AR(1) and the
+    estimated-d forecast agree (mean absolute errors 0.605, 0.593 and 0.599 sd units, the random walk 0.936), and all
+    three miss the truth through the sample mean's own long-memory error (correlation -0.89 to -0.93 with it). No
+    lever between the textbook route and the golden: the residue is the mean, not the method.
+  - **Measured: national excess unemployment twelve months on when the shock sits in the slowest regions** (bottom-up
+    regional persistence against the national AR; `d1.py`, 30 seeds, eight regions at monthly persistence 0.90 to
+    0.985). The national AR understates the remaining excess by 0.108 (24 per cent of 0.459); the bottom-up AR(1)
+    overshoots by 0.087 with a sd of 0.085, so the golden's own error is the size of the lever, because forty years
+    of monthly data pin a near-unit-root persistence too loosely. By abstraction it is also composition weights that
+    moved (task95, task446).
+  - **Measured: new collective agreements' annualised increase once a long pre-surge wave expires** (the catch-up of
+    real pay lost since each agreement's own last settlement; `w1.py`, `w2.py`, seeds 1 to 5, about 13,600
+    agreements over 2000 to 2027). On the 2027 approvals the trailing-inflation regression lands within 0.15 to 0.50
+    points (2.50 against truths of 2.64 to 3.00, 5 to 17 per cent); the symmetric catch-up regression misses as
+    badly (2.20 to 2.57) and only an asymmetric catch-up lands (2.61 to 2.95), so the decisive step became the
+    asymmetry, a 0.4-point split inside the golden family against the lever. Catch-up since the last settlement is
+    also the first thing a labour economist checks after a surge, a cousin of task165's gain conditioned on each
+    unit's own baseline, and the settlement regression is panel estimation rather than this task type.
+  - Paper: invoicing-currency (dominant-currency) pass-through into import prices is task145's driver (units differ
+    in which currency they hold fixed), and task153 rejected its pass-through cousins.
+  - Paper: asymmetric error correction in a retail price (rockets and feathers) is the adjustment-speed cousin
+    task153 rejected.
+  - Paper: phase-asymmetric unemployment (steep rises, recoveries at a steady log pace) against a linear AR: a gap
+    closing at a fixed pace rather than in proportion is task161's driver (own-use burn against a half-life), its
+    honest strategy `forecast_method_backtest` (a regime) is in the window (task177), and the pace of past
+    recoveries, the natural analogue, is the golden.
+  - Paper: a rent index under a cap on sitting-tenant increases with vacancy decontrol (a backlog drawn down at the
+    cap, a nonlinear error correction): fixed-rate drawdown is task161's driver and the saturation task79's, and once
+    the cap is filed the sitting tenancies' path executes it.
+  - Paper: a convex price response to capacity utilisation read from an industry panel is task79's kink (task149
+    rejected the same).
+  - Paper: mortgage-rate lock-in holding down housing transactions and transfer-tax receipts is task166's driver
+    (units whose own rate the terms beat).
+  - Paper: a moving lunar holiday (Ramadan and Eid) in a monthly flow or in banknote demand is task162's
+    calendar-locked alignment, and a strong reader models it.
+  - Paper: a reset-month step in a price index sized by trailing inflation (state-dependent seasonality from annual
+    indexation), and year-end appropriation spending sized by the unspent balance: both task146's driver (a step at a
+    calendar turn is not a fixed seasonal share).
+  - Paper: downward nominal wage rigidity bending aggregate wage growth: at plausible desired growth for 2027 (1 to 3
+    per cent, a worker sd of 3) the floor moves aggregate growth 0.09 points from a linear extrapolation, and
+    aggregation over a per-unit floor is task16's driver.
+  - Paper: cointegration and error correction against a VAR in differences or ARIMA, including the partner that
+    reveals a shock's permanence and a trend in the cointegrating relation: the cell's own cards 1 and 2 applied as
+    stated, which the library test says a blind reader lands; where the golden is no reversion, ARIMA lands it; and
+    `coint` applies MacKinnon's critical values by default.
+  - Paper: signal extraction from a sampled series: IMA(1,1) is the optimal filter for a random walk plus noise and
+    lands, and autocorrelated sampling error needs the filed design variance (rule application).
+  - Paper: a minimum wage's effect through its bite is task165's untreated part; the shadow rate at the lower bound
+    is markets and lending ground, with a rule fitted on off-floor quarters both the default and the golden; an
+    uncertainty hold on a trend-growth revision (HAC against iid) fails the variance-only screen; inventory payback,
+    the accelerator and the carry-over are accounting a strong reader states; tariff diversion to untariffed origins
+    is a product-panel elasticity outside this task type and close to task88's displacement.
+  - The cell finding: the field's textbook routes (ARIMA, VAR, VECM, bridge, X-13) are routes a blind reader takes,
+    and every structural judgment beyond them that this search found is either a driver on file by abstraction
+    (fixed-pace drawdown, a kink, a calendar turn's step, a conditioned gain, a moved mix, a lock-in, pass-through)
+    or, where it is new, carries a golden whose own sigma (12 per cent, 18 per cent of the figure) or family split
+    is the size of its lever, because macro aggregates rest on too few independent events. Micro registers give the
+    precision and move the work out of this task type.
+
 ## Resume
 
-Do not re-screen anything above in this world. The binding finding is the sigma floor, which no decisive step
-moves: a district's whole units at the 9-in-10 percentile of one weekend evening's block, read from nine or ten
-summers, carry 0.40 to 0.91 units of the golden's own sigma in every realistic world, and the small districts that
-get under the 0.25 budget leave every lever at a unit or less. The pooling the seed turns on is the estimand's
-unit, and the district's own totals hand it over. The coordinator or the author decides whether the number is
-redrawn on another quantity in this world (one that rests on many more events, a season's unit-hours rather than
-one evening's percentile, which changes the seed's quantity), moved to another seed in the lane, or retired.
+Do not re-screen anything above, in either cell. The first cell's binding finding is the sigma floor of one evening's
+percentile; the redraw cell's is that every structural judgment beyond the textbook macro time-series routes is a
+driver on file by abstraction or carries a golden whose own sigma or family split is the size of its lever. Nothing is
+registered and nothing is cut. The main session decides a second cell for the number under the round's retirement
+rule (a number that dies in its second new cell is retired).

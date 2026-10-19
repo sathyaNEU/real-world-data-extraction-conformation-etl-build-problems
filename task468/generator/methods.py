@@ -1,7 +1,5 @@
-"""The analysis on the conformed stop events (bundle.events): each candidate route's average departures in every clock
-hour from 6 a.m. to 7 p.m. over the counting days, its stop's unattributed departures shared out by the review's route
-mix weighted by its design, the verdicts and the five; the rungs below it; and the asks (Quinnell's record by stop and
-month, on-time departures, scheduled waits)."""
+"""The projections, on a conformed record of fills (member, cls, date, days, paid at the 2026 schedule): the golden
+development by months on therapy at each member's own duration, and the routes a solver takes instead."""
 import datetime as dt
 
 import numpy as np
@@ -9,154 +7,175 @@ import pandas as pd
 
 import world as W
 
-DAYS = W.weekdays()
-N = len(DAYS)
+CAP = 36          # durations from three years on share one cell
+EARLY = dt.date(2019, 3, 31)   # a member first seen by here may have started before the files began
+GAP = 60          # a fill more than this many days after the last supply ran out begins a new episode of therapy
 
 
-def counting(t):
-    """The events the standard counts in: counting days, local clock hours 6 to 18, at the five stops."""
-    days = set(DAYS)
-    m = np.array([d in days for d in t["service_day"]]) & t["hour"].between(6, 18).to_numpy()
-    m &= (t["dep"].dt.date == pd.Series(t["service_day"].to_numpy(), index=t.index)).to_numpy()
-    return t[m]
+def prepare(f, gap=GAP):
+    """Add month index, first fill (per member and class, in the record), whether the start is seen, and each fill's
+    episode of therapy: a fill begins a new episode when it comes more than `gap` days after every earlier fill's
+    supply in the class ran out."""
+    f = f.sort_values(["member", "cls", "date"], kind="stable").copy()
+    f["mi"] = [W.month_index(d) for d in f["date"]]
+    first = f.groupby(["member", "cls"])["date"].transform("min")
+    f["first"] = first
+    f["fmi"] = [W.month_index(d) for d in first]
+    f["seen_start"] = first > EARLY
+    run_out = pd.to_datetime(f["date"]) + pd.to_timedelta(f["days"], unit="D")
+    prev = run_out.groupby([f["member"], f["cls"]]).transform(lambda s: s.cummax().shift(1))
+    new_ep = prev.isna() | ((pd.to_datetime(f["date"]) - prev).dt.days > gap)
+    epno = new_ep.astype(int).groupby([f["member"], f["cls"]]).cumsum()
+    eps = pd.Series(np.where(new_ep, pd.to_datetime(f["date"]), pd.NaT), index=f.index)
+    eps = eps.groupby([f["member"], f["cls"], epno]).transform("first")
+    f["eps"] = pd.to_datetime(eps).dt.date
+    f["emi"] = [W.month_index(d) for d in f["eps"]]
+    f["eseen"] = (epno > 1) | f["seen_start"]
+    return f.sort_values(["date", "member", "ndc11"], kind="stable")
 
 
-def attributed(c):
-    """Attributed departures per route and hour, summed over the counting days."""
-    a = c[c["attributed"]]
-    return a.groupby(["route", "hour"]).size()
+def on_therapy(f, day):
+    """The members on therapy in a class on the day (a fill on or before it whose days' supply reaches it), with the
+    covering fill's episode start and the member's first fill."""
+    d = pd.Timestamp(day)
+    fd = pd.to_datetime(f["date"])
+    cov = (fd <= d) & (fd + pd.to_timedelta(f["days"] - 1, unit="D") >= d)
+    cols = [c for c in ("member", "cls", "emi", "eseen", "fmi", "seen_start") if c in f]
+    return f[cov][cols].sort_values(cols[:3]).drop_duplicates(["member", "cls"], keep="last")
 
 
-def unattributed(c):
-    return c[~c["attributed"]].groupby(["stop", "hour"]).size()
+def duration(co, i, cap, band, clock):
+    """Months on therapy at month index i: since the episode began (the golden) or since the first fill in the class."""
+    if clock == "episode":
+        t = np.where(co["eseen"], np.minimum(i - co["emi"], cap), cap)
+    else:
+        t = np.where(co["seen_start"], np.minimum(i - co["fmi"], cap), cap)
+    return (t // band) * band
 
 
-def bus_day_unmatched(t):
-    """Each bus-day's stop events without a trip at the five stops (the review's frame), by service day."""
-    u = t[~t["attributed"]]
-    return u.groupby(["bus", "service_day"]).size()
+def month_end(i):
+    s = W.month_start(i + 1)
+    return s - dt.timedelta(days=1)
 
 
-def review_table(t, rv, strict=True):
-    """The review log with each reviewed event's design weight: its bus-day's unmatched events over the one reviewed,
-    times the month's bus-days listed over those drawn."""
-    rv = rv.copy()
-    rv["service_day"] = pd.to_datetime(rv["service_date"]).dt.date
-    rv["stop"] = rv["stop_code"].map({v[0]: k for k, v in W.STOPS.items()})
-    u = bus_day_unmatched(t)
-    rv["u"] = [int(u.get((b, d), 0)) for b, d in zip(rv["bus"], rv["service_day"])]
-    if strict:
-        assert (rv["u"] >= 1).all(), "a reviewed event's bus-day has no unmatched event in the record"
-    rv["u"] = rv["u"].clip(lower=1)
-    frame = u.reset_index()
-    frame["month"] = pd.to_datetime(frame["service_day"]).dt.month
-    listed = frame.groupby("month").size()
-    drawn = rv.groupby(pd.to_datetime(rv["service_day"]).dt.month).size()
-    rv["month"] = pd.to_datetime(rv["service_day"]).dt.month
-    rv["w_in"] = rv["u"].astype(float)
-    rv["w"] = rv["w_in"] * rv["month"].map(listed / drawn)
-    rv["label"] = np.where(rv["route_operated"] == "Not in service", "NIS", rv["route_operated"])
-    return rv
+def spend_after(f, members, i, months=W.HORIZON):
+    """Each listed (member, cls)'s paid amount over the months after month index i."""
+    sub = f[(f["mi"] > i) & (f["mi"] <= i + months)]
+    sub = sub.merge(members, on=["member", "cls"])
+    return sub.groupby(["member", "cls"])["paid26"].sum()
 
 
-def shares(rv, weight="w", by=("stop",)):
-    """Each stop's unattributed departures shared among its routes and 'not in service' by the reviewed events."""
+def development(f, cap=CAP, band=1, clock="episode"):
+    """For each class and duration T (months on therapy, banded, capped), the mean paid amount over the next twelve
+    months of the members on therapy at a month end at that duration, over every month end whose twelve months are in
+    the record. Members whose start is not seen sit in the capped cell."""
     out = {}
-    for k, g in rv.groupby(list(by)):
-        k = k if isinstance(k, tuple) else (k,)
-        if weight is None:
-            c = g["label"].value_counts()
-        else:
-            c = g.groupby("label")[weight].sum()
-        out[k] = (c / c.sum()).to_dict()
+    last = W.N_MONTHS - 1
+    for i in range(0, last - W.HORIZON + 1):
+        co = on_therapy(f, month_end(i))
+        if co.empty:
+            continue
+        sp = spend_after(f, co[["member", "cls"]], i)
+        co = co.set_index(["member", "cls"])
+        co["next"] = sp.reindex(co.index, fill_value=0.0)
+        co = co.reset_index()
+        co["T"] = duration(co, i, cap, band, clock)
+        for (c, t), g in co.groupby(["cls", "T"]):
+            s, n = out.get((c, t), (0.0, 0))
+            out[(c, t)] = (s + g["next"].sum(), n + len(g))
+    return {k: s / n for k, (s, n) in out.items()}
+
+
+def golden(f, cap=CAP, band=1, clock="episode"):
+    """Each class's projected paid amount over the program year for its members on therapy on 30 June 2026."""
+    f = prepare(f) if "mi" not in f else f
+    dev = development(f, cap, band, clock)
+    co = on_therapy(f, W.LAST_DAY)
+    last = W.N_MONTHS - 1
+    co["T"] = duration(co, last, cap, band, clock)
+    out = {}
+    for c in W.CANDIDATES:
+        tot = 0.0
+        for t in co[co["cls"] == c]["T"]:
+            key = (c, int(t))
+            while key not in dev and key[1] > 0:
+                key = (c, key[1] - 1)
+            tot += dev.get(key, 0.0)
+        out[c] = tot
     return out
 
 
-def estimate(c, sh, by=("stop",)):
-    """Average departures per route and hour: attributed plus the stop's unattributed in that hour by the shares."""
-    est = {}
-    att = attributed(c)
-    for (r, h), v in att.items():
-        est[(r, h)] = est.get((r, h), 0.0) + v
-    un = c[~c["attributed"]]
-    keys = list(by) + ["hour"]
-    for k, g in un.groupby(keys):
-        p = sh.get(tuple(k[:-1]))
-        if p is None:
-            continue
-        h = k[-1]
-        for r, q in p.items():
-            if r == "NIS":
-                continue
-            est[(r, h)] = est.get((r, h), 0.0) + len(g) * q
-    return {k: v / N for k, v in est.items()}
+def first_fill(f):
+    """The development by months since the member's first fill in the class (the careful analyst's clock)."""
+    return golden(f, clock="first")
 
 
-def by_band(df):
-    return df.assign(band=[W.band(h) for h in df["hour"]])
+def from_start(f):
+    """Each current member projected by the class's development from first fill (duration zero)."""
+    f = prepare(f) if "mi" not in f else f
+    dev = development(f)
+    co = on_therapy(f, W.LAST_DAY)
+    n = co.groupby("cls").size()
+    return {c: float(n.get(c, 0)) * dev.get((c, 0), 0.0) for c in W.CANDIDATES}
 
 
-def lowest(est, route):
-    vals = {h: est.get((route, h), 0.0) for h in W.HOURS}
-    h = min(vals, key=lambda k: (vals[k], k))
-    return vals[h], h
+def trailing(f):
+    f = prepare(f) if "mi" not in f else f
+    last = W.N_MONTHS - 1
+    s = f[(f["mi"] > last - 12) & (f["mi"] <= last)].groupby("cls")["paid26"].sum()
+    return {c: float(s.get(c, 0.0)) for c in W.CANDIDATES}
 
 
-def verdicts(est, ride):
-    rows = []
-    for r in W.CANDIDATES:
-        v, h = lowest(est, r)
-        rows.append(dict(route=r, lowest=v, hour=h, meets=v >= W.STANDARD, boardings=ride[r]))
-    order = sorted([x for x in rows if x["meets"]], key=lambda x: -x["boardings"])
-    five = [x["route"] for x in order[:W.CAP]]
-    below = order[W.CAP]["route"] if len(order) > W.CAP else None
-    return rows, five, below
+def run_rate(f):
+    f = prepare(f) if "mi" not in f else f
+    s = f[f["mi"] == W.N_MONTHS - 1].groupby("cls")["paid26"].sum()
+    return {c: 12 * float(s.get(c, 0.0)) for c in W.CANDIDATES}
 
 
-def golden(t, rv, strict=True):
-    c = counting(t)
-    rvw = review_table(t, rv, strict)
-    return estimate(c, shares(rvw, "w")), rvw, c
+def analog(f):
+    """This June's members times last June's members' following-year paid amount per member."""
+    f = prepare(f) if "mi" not in f else f
+    i = W.N_MONTHS - 13
+    prev = on_therapy(f, month_end(i))
+    sp = spend_after(f, prev, i).groupby(level="cls").sum()
+    n_prev = prev.groupby("cls").size()
+    n_now = on_therapy(f, W.LAST_DAY).groupby("cls").size()
+    return {c: float(n_now.get(c, 0)) * float(sp.get(c, 0.0)) / max(int(n_prev.get(c, 0)), 1) for c in W.CANDIDATES}
 
 
-# ---------------------------------------------------------------- the rungs
-def matched_only(c):
-    return {k: v / N for k, v in attributed(c).items()}
+def pharmacists(spend):
+    return {c: int(np.ceil(spend[c] / W.PER_PHARMACIST)) for c in W.CANDIDATES}
 
 
-def proportional(c):
-    """Each stop-hour's unattributed departures shared in proportion to the routes' attributed ones there."""
-    att = attributed(c)
-    est = {k: float(v) for k, v in att.items()}
-    for (s, h), n in unattributed(c).items():
-        rs = W.STOP_ROUTES[s]
-        m = {r: att.get((r, h), 0) for r in rs}
-        tot = sum(m.values())
-        for r in rs:
-            est[(r, h)] = est.get((r, h), 0.0) + n * m[r] / tot
-    return {k: v / N for k, v in est.items()}
-
-
-def scheduled(gtfs_minutes_on):
-    """The timetable's departures per route and hour averaged over the counting days (the feeds as published)."""
-    est = {}
-    for d in DAYS:
-        for r, m in gtfs_minutes_on(d):
-            if m < 1440 and 6 <= m // 60 <= 18:
-                est[(r, m // 60)] = est.get((r, m // 60), 0) + 1
-    return {k: v / N for k, v in est.items()}
-
-
-# ---------------------------------------------------------------- the on-time ask
-def on_time(c, counts=False, basis="pub"):
-    """The share of each candidate's attributed departures (the counting days, 6 a.m. to 7 p.m.) that left no more than
-    one minute before and no more than five minutes after the trip's scheduled departure in the feeds ("pub"); with
-    basis "sched", against the schedule time each AVL export carries."""
-    a = c[c["attributed"]].copy()
-    mid = pd.to_datetime(pd.Series(a["service_day"].to_numpy(), index=a.index))
-    late = (a["dep"] - mid).dt.total_seconds() - a[basis] * 60.0
-    a["ok"] = (late >= W.ON_TIME[0] - 1e-9) & (late <= W.ON_TIME[1] + 1e-9)
-    g = a.groupby("route")["ok"]
-    if counts:
-        return {r: int(g.sum()[r]) for r in W.CANDIDATES}
-    return {r: 100.0 * g.mean()[r] for r in W.CANDIDATES}
+def chain(f, cap=CAP, clock="episode"):
+    """The same development built month to month: the share of the members on therapy at a month end who are still on
+    therapy at the next, and their paid amount in that month, by duration, chained over the twelve months."""
+    f = prepare(f) if "mi" not in f else f
+    last = W.N_MONTHS - 1
+    paid = f.groupby(["member", "cls", "mi"])["paid26"].sum()
+    on = {}
+    for i in range(0, last + 1):
+        co = on_therapy(f, month_end(i))
+        co["T"] = duration(co, i, cap, 1, clock)
+        on[i] = co.set_index(["member", "cls"])
+    cell = {}
+    for i in range(0, last):
+        a, b = on[i], on[i + 1]
+        still = a.index.isin(b.index)
+        nxt = paid.reindex([(m_, c_, i + 1) for m_, c_ in a.index], fill_value=0.0).to_numpy()
+        for (c, t), idx in a.groupby(["cls", "T"]).indices.items():
+            s = cell.setdefault((c, int(t)), [0.0, 0, 0.0])
+            s[0] += still[idx].sum()
+            s[1] += len(idx)
+            s[2] += nxt[idx].sum()
+    out = {}
+    for c in W.CANDIDATES:
+        tot = 0.0
+        for t in on[last][on[last].index.get_level_values("cls") == c]["T"]:
+            surv = 1.0
+            for k in range(W.HORIZON):
+                s = cell.get((c, min(int(t) + k, cap))) or cell.get((c, cap)) or [1.0, 1, 0.0]
+                tot += surv * s[2] / s[1]
+                surv *= s[0] / s[1]
+        out[c] = tot
+    return out

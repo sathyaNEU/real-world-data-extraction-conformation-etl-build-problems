@@ -1,95 +1,121 @@
-"""The clean truth and the records it leaves: every bus departure from the designated stops from January to June 2026
-(the timetable each service day operated, less the trips cancelled), each bus's lateness, the bus that ran it, whether
-the AVL vendor's trip matcher tied the stop event to its scheduled trip, the buses that passed through out of service,
-and Service Quality's monthly review of the stop events the matchers left without a trip."""
+"""The clean truth: every specialty member's therapy (when it began, which product, the days' supply each fill carried,
+when each fill was dispensed, when the member stopped), from seven years before the claim files begin to the end of the
+program year, and each fill's units. The claim files, the crosswalk and the truth of the program year all come from
+here."""
 import datetime as dt
-import math
 
 import numpy as np
 import pandas as pd
 
-import gtfs as G
 import world as W
 
-DAYS = [W.FIRST_DAY + dt.timedelta(days=i) for i in range((W.LAST_DAY - W.FIRST_DAY).days + 1)]
+PROD = pd.DataFrame(W.PRODUCTS, columns=["cls", "product", "labeler", "code", "pack", "units", "price", "share", "pack_long",
+                                         "rebate"])
+PROD["ndc11"] = PROD["labeler"] + PROD["code"] + PROD["pack"]
+END_TRUTH = dt.date(2027, 6, 30)
 
 
-def rngs():
-    return {k: np.random.default_rng([W.SEED, i]) for i, k in enumerate(
-        ("cancel", "late", "match", "vehicles", "review", "ids", "seconds", "deadhead", "files"))}
+def rng(k):
+    return np.random.default_rng([W.SEED, 7, k])
 
 
-def everything(review_days=None, take=None):
-    R = rngs()
-    rows = []
-    for d in DAYS:
-        deps = G.departures(d)
-        kind = W.day_type(d)
-        order = [W.FLEET[i] for i in R["vehicles"].permutation(len(W.FLEET))]
-        used = 0
-        for pool in W.INTERLINE:
-            mine = [x for x in deps if x[0] in pool]
-            peak = len([x for x in mine if 15 * 60 <= x[1] < 18 * 60])
-            k = max(2, int(math.ceil(peak / 3.0 * 0.9)))
-            buses = order[used:used + k]
-            used += k
-            for i, (r, m, key) in enumerate(mine):
-                bus = buses[i % len(buses)]
-                if R["cancel"].random() < W.cancel_p(r, m // 60, kind):
-                    continue
-                h = min(m // 60, 23)
-                late = R["late"].normal(W.LATE[r][W.band(h)], W.LATE_SD)
-                late = max(late, -1.5)
-                fault = R["match"].random() < W.LOGON_FAULT
-                matched = (abs(late) <= W.WINDOW_MIN) and not fault
-                sec = int(round((m + late) * 60)) + int(R["seconds"].integers(0, 60))
-                rows.append((d, W.STOP_OF[r], r, key, m, sec, bus, matched, fault, True))
-        # buses running out of service through the stops (garage runs, reliefs, changeovers), any bus out that day
-        out_today = order[:used]
-        for stop, rate in W.OUT_OF_SERVICE.items():
-            share = {"WK": 1.0, "FR": 1.0, "SA": W.SATURDAY_SHARE, "SU": W.SUNDAY_SHARE}[W.day_type(d)]
-            n = int(R["deadhead"].poisson(rate * 19 * share))
-            for t in np.sort(R["deadhead"].integers(5 * 3600, 24 * 3600, n)):
-                bus = out_today[int(R["deadhead"].integers(0, len(out_today)))]
-                rows.append((d, stop, "", "", -1, int(t), bus, False, False, False))
-    ev = pd.DataFrame(rows, columns=["day", "stop", "route", "trip", "sched_min", "sec", "vehicle", "matched", "fault",
-                                     "revenue"])
-    # a bus passing out of service never meets its own stop event there within two minutes
-    ev = ev.sort_values(["vehicle", "stop", "day", "sec"], kind="stable").reset_index(drop=True)
-    near = (ev["vehicle"].eq(ev["vehicle"].shift()) & ev["stop"].eq(ev["stop"].shift()) & ev["day"].eq(ev["day"].shift())
-            & (ev["sec"] - ev["sec"].shift()).abs().le(120))
-    near = near | near.shift(-1, fill_value=False)
-    ev = ev[~(near & ~ev["revenue"])].reset_index(drop=True)
-    ev["time"] = pd.to_datetime(ev["day"]) + pd.to_timedelta(ev["sec"], unit="s")
-    ev["hour"] = ev["time"].dt.hour
-    ev["local_day"] = ev["time"].dt.date
-    ev = ev.sort_values(["time", "stop", "vehicle"], kind="stable").reset_index(drop=True)
-    ev["event_id"] = 7_310_000 + np.arange(len(ev)) * 3 + R["ids"].integers(0, 3, len(ev))
-    review = review_sample(ev, R["review"], review_days or W.REVIEW_BUS_DAYS, take or W.REVIEW_TAKE)
-    return dict(ev=ev, review=review, R=R)
+def first_day(m):
+    return W.month_start(m)
 
 
-def review_sample(ev, r, n_days, take):
-    """Each month Service Quality lists the bus-days (bus and service day) with at least one stop event the matcher
-    left without a trip at the five stops, draws `n_days` of them at random, and reviews `take` of each one's unmatched
-    events, chosen at random, against the bus's CCTV."""
-    un = ev[~ev["matched"]].copy()
-    un["month"] = pd.to_datetime(un["day"]).dt.month
-    picks = []
-    for mth, g in un.groupby("month"):
-        vd = g.groupby(["vehicle", "day"]).size().reset_index(name="u")
-        idx = r.choice(len(vd), size=min(n_days, len(vd)), replace=False)
-        for j in np.sort(idx):
-            v, sd = vd.iloc[j]["vehicle"], vd.iloc[j]["day"]
-            rows = g[(g["vehicle"] == v) & (g["day"] == sd)]
-            k = min(take, len(rows))
-            pick = r.choice(len(rows), size=k, replace=False)
-            picks.append(rows.iloc[np.sort(pick)].assign(vd_u=len(rows), frame=len(vd), drawn=min(n_days, len(vd))))
-    return pd.concat(picks, ignore_index=True)
+def episode(r, c, p, prods, pick, start, ds, mid, fills, ep):
+    """One therapy episode from its first fill: fills until the member stops (or the course ends) or the truth ends.
+    Returns the stop date, or None if the member is still on therapy at the end of the truth."""
+    course = p.get("course")
+    n_course = int(r.choice(course)) if course else None
+    d, k = start, 0
+    while d <= END_TRUTH:
+        units = prods.loc[pick, "units"] * (ds // 28 if ds >= 84 else 1)
+        if k == 0 and p["load"] > 1:
+            units = units * p["load"]
+        fills.append((mid, c, int(prods.loc[pick, "index"]), d, ds, float(units), k, start, ep))
+        k += 1
+        if n_course and k >= n_course:
+            return d + dt.timedelta(days=ds)
+        t = W.month_index(d) - W.month_index(start)
+        h = p["stop"](t)
+        if ds >= 84:
+            h = 1 - (1 - h) ** 3
+        if r.random() < h:
+            return d + dt.timedelta(days=ds)
+        d = d + dt.timedelta(days=ds - int(r.integers(0, 4)))      # specialty refills ship before the supply runs out
+    return None
 
 
-def counting(ev):
-    """The main population: departures at the designated stops on the counting days, 6 a.m. to 7 p.m."""
-    wd = set(W.weekdays())
-    m = np.array([d in wd for d in ev["day"]]) & ev["hour"].between(6, 18).to_numpy() & (ev["sec"] < 86400).to_numpy()
-    return ev[m]
+def restart_date(r, c, stop):
+    """When (if ever) a member who stopped comes back to the class: some members in every class return after a lapse of
+    at least six months; members of the three step-therapy classes who stopped from 2023 on came back in numbers once
+    the January 2026 bulletin removed step therapy."""
+    if c == "HCV":
+        return None
+    m_stop = W.month_index(stop)
+    if c in W.STEP_THERAPY_REMOVED and W.RETURN_FROM <= m_stop <= 83 and r.random() < W.RETURN_WAVE[c]:
+        m = int(r.integers(84, 90))
+        if m - m_stop >= 6:
+            return W.month_start(m) + dt.timedelta(days=int(r.integers(0, 28)))
+    if r.random() < W.RESTART[c]:
+        gap = 6 + int(r.exponential(14))
+        return W.month_start(m_stop + gap) + dt.timedelta(days=int(r.integers(0, 28)))
+    return None
+
+
+def simulate(price_scale=None):
+    """Return dict(fills, members): fills one row per dispensed fill (member, cls, product row, date, days' supply,
+    units, fill number in the episode, episode start, episode number), members one row per episode (id, cls, episode,
+    start date, stop date or None)."""
+    price_scale = price_scale or {}
+    r = rng(1)
+    fills, members = [], []
+    mid = 0
+    for ci, (c, p) in enumerate(W.CLASSES.items()):
+        prods = PROD[PROD["cls"] == c].reset_index()
+        share = prods["share"].to_numpy() / prods["share"].sum()
+        for m in range(-W.PRE_MONTHS, W.N_MONTHS + W.HORIZON):
+            for _ in range(int(r.poisson(p["starts"](m)))):
+                mid += 1
+                pick = int(r.choice(len(prods), p=share))
+                opts = p["supply"]
+                ds = int(opts[int(r.choice(len(opts), p=[o[1] for o in opts]))][0])
+                start = first_day(m) + dt.timedelta(days=int(r.integers(0, 28)))
+                ep = 0
+                while True:
+                    stop = episode(r, c, p, prods, pick, start, ds, mid, fills, ep)
+                    members.append((mid, c, ep, start, stop))
+                    if stop is None or ep >= 2:
+                        break
+                    back = restart_date(r, c, stop)
+                    if back is None or back > END_TRUTH:
+                        break
+                    start, ep = back, ep + 1
+    f = pd.DataFrame(fills, columns=["member", "cls", "prod", "date", "days", "units", "fill_no", "start", "ep"])
+    mem = pd.DataFrame(members, columns=["member", "cls", "ep", "start", "stop"])
+    f["price"] = PROD.loc[f["prod"], "price"].to_numpy() * f["cls"].map(lambda c: price_scale.get(c, 1.0)).to_numpy()
+    f["paid26"] = (f["units"] * f["price"]).round(2) + W.DISPENSING_FEE
+    long_pack = PROD.loc[f["prod"], "pack_long"].to_numpy()
+    f["ndc11"] = [PROD.loc[p, "labeler"] + PROD.loc[p, "code"] + (lp if (d >= 84 and isinstance(lp, str)) else PROD.loc[p, "pack"])
+                  for p, d, lp in zip(f["prod"], f["days"], long_pack)]
+    return dict(fills=f, members=mem)
+
+
+def cohort(f, day=W.LAST_DAY):
+    """Members whose fill in a class covers the day: a fill on or before it whose days' supply reaches it."""
+    d = pd.Timestamp(day)
+    fd = pd.to_datetime(f["date"])
+    cov = (fd <= d) & (fd + pd.to_timedelta(f["days"] - 1, unit="D") >= d)
+    return f[cov][["member", "cls"]].drop_duplicates()
+
+
+def truth_next_year(f, day=W.LAST_DAY):
+    """The cohort's paid amount (2026 prices) for its fills in the class over the twelve months after the day."""
+    co = cohort(f, day)
+    d0 = pd.Timestamp(day)
+    d1 = pd.Timestamp(dt.date(day.year + 1, day.month, day.day))
+    fd = pd.to_datetime(f["date"])
+    win = f[(fd > d0) & (fd <= d1)]
+    win = win.merge(co, on=["member", "cls"])
+    return win.groupby("cls")["paid26"].sum().reindex(W.CANDIDATES, fill_value=0.0).to_dict()

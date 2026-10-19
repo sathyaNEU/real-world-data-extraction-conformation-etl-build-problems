@@ -194,7 +194,7 @@ builds) force it. If the literal estimand makes the call easy, it was a fork.
 **The WHAT screen, run at the draw.** Name the decisive step, then ask which part of the estimand it
 settles. If it settles the population, the outcome, the window, the unit or the comparison, the draw is
 dead and no hardening saves it: file that part and the computation follows from the clause, which is rule
-application; leave it unfiled and the call is not determinate; there is no third position. Three
+application; leave it unfiled and the call is not determinate; there is no third position. Four
 architectures died at stage 4 on this one shape, each with Gate G and Gate H passing and every figure
 reproducing:
 
@@ -203,10 +203,15 @@ reproducing:
 | 190 | decide to nowcast the caseload rather than count it | whether members not yet observed are in the population |
 | 192 | count the processes behind the bursts, not the bursts | the unit of the count, which no parameter-free reading fixed |
 | 193 | leave the one dominant product out of the comparison | the comparison population |
+| 269 | work each rider's wait over only the departures serving the rider's destination where a corridor's routes branch | the outcome: which departures end a rider's wait, which the field's route-level excess wait takes as all of them |
 
 A step that survives the screen settles none of them: the estimand is beyond argument and two or more
 methods of estimating that one filed quantity still stand, with the data's own structure ruling out the
-easy one. Regression to the mean in a unit chosen for standing worst, the wrong counterfactual under
+easy one. **A definition that implies the step is not a filing of it.** A filed outcome in plain words ("the time
+passengers spend waiting at the stop") that the golden's step follows from does not rule out the field's
+standard computation of that outcome: the judge executes the standard's own formula on the data the clause
+names, and when that is the easy route the call is a fork. So a step the note defends as the outcome's
+true meaning gets a fork-table row like any other reading, and a row it cannot close is a dead draw. Regression to the mean in a unit chosen for standing worst, the wrong counterfactual under
 staggered adoption survive it, because each is a way of estimating a quantity the records already fix.
 **A ratio of totals against a mean of ratios survives only under a condition worth stating, because it
 usually fails.** Where the two differ by weighting alone, what separates them is the estimand's unit, and
@@ -308,6 +313,34 @@ degenerate cell, name the estimator the harness used.
 The decisive step is the field's own method for the deciding quantity, which an expert applies and a
 generalist replaces with a generic move. Read the patterns, exemplars and family record first; the note
 gives one line per source: what it teaches, how this build differs.
+
+**A card is a pitfall, not a stump, and its pin is translated.** The client's library
+(`references/client/layer2-rigor-patterns.md`, about 310 cards over eighteen domains) gives each task
+type's rigorous method against the capable analyst's shortcut, with a pin that often names the method ("the
+prompt names the model to calibrate", "a named linking convention"). Three things follow.
+
+- **The card's method is the textbook route, and a strong solver takes textbook routes.** Of nine shipped
+  builds measured by blind readers holding only the prompt and the pack, the readers landed the four whose
+  golden was a card's method applied as the card states it (task160's lag timed off a neighbour, task166's
+  fitted extension on the obvious covariate, task167's analogue cohorts paced by age, task168's booking
+  build at sell-out) and missed the five where the golden turned on a judgment the method takes for
+  granted and the data settle (task172's cap that truncates the waits, task162's calendar-locked wave in a
+  daily series, task165's gain conditioned on each unit's own baseline, task161's own-shipment burn against
+  a half-life, task163's reform-inflated applications at their real yield). So the card supplies the
+  Layer 2 family and usually the default path's shortcut; the stump is the judgment between knowing the
+  method and getting the figure (which units are the comparison, which exits compete, which exposure is at
+  risk, where the curve bends, what a cap truncates), and it is priced like any other candidate (the
+  sequence in Part 3, the four screens as code) before a card is drafted.
+- **The pin is a WHAT, never a filed HOW.** A shipped sentence naming the method makes the decisive step
+  rule application (`CLAUDE.md`, rule 3; `determinism-check` §1). What the card pins by naming a method is
+  filed here as the estimand and the design (population, outcome, window, unit, comparison, the horizon,
+  the randomised or decided unit), with the data's structure ruling the shortcut out; the method is named
+  only where the design or a standard's general method forces it, and never recovered from certified or
+  published figures.
+- **One card, one build, the card's wording never.** The card's key goes on the fingerprint card as
+  `layer2_pattern`; the data-native sentence (1.7) says what in this dataset makes the pitfall bite; the
+  same pattern on the same data structure is blocked by the guard, and a build that could be told with the
+  card's own nouns swapped in is the card copied, not learned.
 
 ### 1.4 The four gaps, and the patterns with a record
 
@@ -893,6 +926,9 @@ the ladder.
   0.30 similarity and warns at 0.12.
 - **The record:** nothing drawn is dead (`strategies.md` Part 6, `shipped-ledger.md`), the pattern's
   discriminator (1.4) can be built here, and a re-root moves the decisive rung.
+- **The library test:** if the golden is a card's method applied as the card states it, a blind reader
+  lands it (1.3). Name the judgment beyond the card that the data settle and the default path misses, or
+  the card is the default path, not the stump.
 
 **No monoculture.** The guard blocks a strategy within three builds and warns at three in twelve: rotate
 the strategy, Layer 2 family and gap across the batch. The semantics-risk strategies (`time_semantics`,

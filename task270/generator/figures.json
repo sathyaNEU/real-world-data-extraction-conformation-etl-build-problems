@@ -1,0 +1,101 @@
+{
+ "ask_a": {
+  "aged_85_or_under": {
+   "Brindlemere": 342,
+   "Corvale": 274,
+   "Mosswick": 235,
+   "Penwardine": 471,
+   "Quarndale": 276,
+   "Ravensfold": 342,
+   "Swinholt": 371,
+   "Thurlwick": 499
+  },
+  "under_follow_up": {
+   "Brindlemere": 500,
+   "Corvale": 383,
+   "Mosswick": 326,
+   "Penwardine": 687,
+   "Quarndale": 345,
+   "Ravensfold": 474,
+   "Swinholt": 553,
+   "Thurlwick": 792
+  }
+ },
+ "ask_b": {
+  "average_days": {
+   "Brindlemere": 48.6,
+   "Corvale": 48.8,
+   "Mosswick": 49.5,
+   "Penwardine": 48.7,
+   "Quarndale": 47.6,
+   "Ravensfold": 50.4,
+   "Swinholt": 49.6,
+   "Thurlwick": 48.1
+  },
+  "within_42_days_pct": {
+   "Brindlemere": 31.5,
+   "Corvale": 31.7,
+   "Mosswick": 35.3,
+   "Penwardine": 33.3,
+   "Quarndale": 37.6,
+   "Ravensfold": 29.5,
+   "Swinholt": 29.3,
+   "Thurlwick": 32.8
+  }
+ },
+ "call": {
+  "below": "Mosswick",
+  "order": [
+   "Quarndale",
+   "Thurlwick",
+   "Mosswick",
+   "Penwardine",
+   "Corvale",
+   "Ravensfold",
+   "Swinholt",
+   "Brindlemere"
+  ],
+  "sites": [
+   "Quarndale",
+   "Thurlwick"
+  ]
+ },
+ "counts": {
+  "diagnosed_by_clinic": {
+   "Brindlemere": 162,
+   "Corvale": 123,
+   "Mosswick": 102,
+   "Penwardine": 216,
+   "Quarndale": 290,
+   "Ravensfold": 183,
+   "Swinholt": 198,
+   "Thurlwick": 241
+  },
+  "patients_by_clinic": {
+   "Brindlemere": 662,
+   "Corvale": 551,
+   "Mosswick": 432,
+   "Penwardine": 902,
+   "Quarndale": 153,
+   "Ravensfold": 599,
+   "Swinholt": 776,
+   "Thurlwick": 999
+  },
+  "patients_compared": 5074
+ },
+ "decline": {
+  "Brindlemere": 4.0,
+  "Corvale": 4.0,
+  "Mosswick": 4.5,
+  "Penwardine": 4.5,
+  "Quarndale": 5.0,
+  "Ravensfold": 4.0,
+  "Swinholt": 4.0,
+  "Thurlwick": 4.5
+ },
+ "gain": 2.5,
+ "terms": {
+  "age_limit": 85,
+  "six_weeks_days": 42
+ }
+}

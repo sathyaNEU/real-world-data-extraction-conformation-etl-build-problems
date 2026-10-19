@@ -14,7 +14,8 @@ the call's documents' tables. Every Layer 1 item is applied here and named where
   S-L3  the Northern depot's restocking from the Main warehouse in the same delivery export.
   S-L4  logistics reports returned by the district reviewer and resubmitted; every submission in the export.
   S-L5  the reporting region stamped from the requisition group at submission.
-  S-L6  registry codes reissued from closed sites to new ones."""
+  S-L6  registry codes reissued from closed sites to new ones.
+  S-L7  returns from customers on their own document series: refused deliveries and short-dated stock alike."""
 from __future__ import annotations
 
 import datetime as dt
@@ -178,11 +179,11 @@ def supply(W, rng):
         for f in fac:
             kids_tld[(int(f), y, m)] = kids_tld.get((int(f), y, m), 0) + 1
     pats = WL.monthly_patients(recs, adults, kids_tld, rng)
-    disp, close, opening, recv, dels, don = WL.flows(recs, pats, rng)
+    disp, close, opening, recv, dels, don, rets = WL.flows(recs, pats, rng)
     proj = WL.projection(recs, adults, rng)
     batches, ship = WL.cms_stock(rng)
     return dict(recs=recs, old=old, new=new, adults=adults, pats=pats, disp=disp, close=close, opening=opening,
-                recv=recv, dels=dels, don=don, proj=proj, batches=batches, ship=ship)
+                recv=recv, dels=dels, don=don, rets=rets, proj=proj, batches=batches, ship=ship)
 
 
 def accounts(S, rng):
@@ -222,6 +223,7 @@ def deliveries(S, rng):
     recs = {r["rid"]: r for r in S["recs"]}
     acc = S["acc"]
     lines, pods = [], []
+    back = []
     dn = 80_412_000
     dep_need = {}
     for d in sorted(S["dels"], key=lambda x: (x["posted"], x["rid"])):
@@ -247,13 +249,23 @@ def deliveries(S, rng):
         pods.append(dict(delivery_no=str(dn), customer=acc[d["rid"]], signed_on=d["signed"].isoformat(), signed_by=sb,
                          vehicle="GVC %03d %s" % (int(rng.integers(100, 999)), ["CMS", "CMS", "NTH"][int(rng.integers(0, 3))])))
         if d.get("refused"):
-            dn2 = dn + 500_000
-            lines.append(dict(delivery_no=str(dn2), item=10, plant=plant, delivery_type="LR",
-                              posting_date=d["returned"].isoformat(), customer=acc[d["rid"]], material="ARV0412",
-                              batch=lines[-1]["batch"], qty=int(q)))
+            back.append(dict(posted=d["returned"], rid=d["rid"], plant=plant, batch=lines[-1]["batch"], qty=int(q)))
         if plant == "N01":
             key = (d["posted"].year, d["posted"].month)
             dep_need[key] = dep_need.get(key, 0) + q
+    # S-L7: returns from customers on their own document series: deliveries refused at the gate, and short-dated
+    # stock collected from facilities for redistribution
+    for x in S["rets"]:
+        rr = recs[x["rid"]]
+        plant = "N01" if rr["region"] in ("Northern", "Eastern") or rr["region_old"] in ("Northern",) else "M01"
+        back.append(dict(posted=x["posted"], rid=x["rid"], plant=plant,
+                         batch="TL%02d%04d" % (24 + int(rng.integers(1, 3)), int(rng.integers(1000, 9999))), qty=x["qty"]))
+    rn = 86_105_000
+    for x in sorted(back, key=lambda z: (z["posted"], z["rid"])):
+        rn += int(rng.integers(1, 6))
+        lines.append(dict(delivery_no=str(rn), item=10, plant=x["plant"], delivery_type="LR",
+                          posting_date=x["posted"].isoformat(), customer=acc[x["rid"]], material="ARV0412",
+                          batch=x["batch"], qty=int(x["qty"])))
     # S-L3: the depot's restocking, two transfers a month sized on the month's depot deliveries
     for (y, m), q in sorted(dep_need.items()):
         for half in (0, 1):

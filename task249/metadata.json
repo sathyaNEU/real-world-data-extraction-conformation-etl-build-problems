@@ -1,0 +1,60 @@
+{
+ "task": "task249",
+ "title": "Which of a regional newspaper group's twelve local editions carry the measurement note in the 2029 media kit because their reported monthly unique browsers for October to December 2028 overstate the browsers that read them by more than 25 per cent, beside each edition's sold copies and newsletter subscribers",
+ "domain": "Product Analytics",
+ "subdomain": "metric-definition-measurement-science (a published audience metric counted by an analytics identifier that WebKit deletes after seven days without a visit; the unique browsers it represents estimated by replaying the identifier rule on browsers that keep it, matched on what the limit cannot change)",
+ "objective": "Data Quality Monitoring & Alerting",
+ "prompt_shape": "10: a scorecard of the twelve editions against the 25 per cent tolerance, beside two per-edition figures of the kit",
+ "deliverables": [
+  "media_kit_2029_edition_figures.xlsx",
+  "measurement_note_2029.pdf"
+ ],
+ "input_files": [
+  "DATA_DICTIONARY.md",
+  "ad_delivery_2028q4.csv",
+  "analytics_tag_notes.pdf",
+  "audience_policy_2029.pdf",
+  "circulation_subscriptions_2028q4.csv",
+  "circulation_suspensions_2028q4.csv",
+  "editions.csv",
+  "epaper_accesses_2028q4.csv",
+  "media_analysis_2028_reach.csv",
+  "newsletter_activity_log.csv",
+  "newsletter_contacts_2029-01-15.csv",
+  "newsletter_group_changes.csv",
+  "paywall_and_accounts_notes.pdf",
+  "paywall_wall_log_2028q4.xlsx",
+  "platform_users_by_month_2028.xlsx",
+  "reader_accounts.csv",
+  "retail_points.csv",
+  "signin_device_register_2028q4.csv",
+  "single_copy_sales_2028q4.csv",
+  "web_sessions_2028q4.parquet"
+ ],
+ "file_count": 20,
+ "formats": [
+  "csv",
+  "md",
+  "parquet",
+  "pdf",
+  "xlsx"
+ ],
+ "largest_file": {
+  "name": "web_sessions_2028q4.parquet",
+  "rows": 3012902
+ },
+ "distractors": [
+  {
+   "file": "ad_delivery_2028q4.csv",
+   "why_relevant": "the ad server's delivered and viewable impressions by edition and device, the kit's inventory figures",
+   "why_unused": "impressions are counted by the ad server per ad shown and say nothing about how many browsers an identifier stands for"
+  },
+  {
+   "file": "media_analysis_2028_reach.csv",
+   "why_relevant": "the Media-Analyse survey's readers per issue by edition, quoted in the kit beside print",
+   "why_unused": "a survey of print readership; neither the note nor sold copies nor the newsletter count reads it"
+  }
+ ],
+ "sources": "Constructed: the group, its editions, readers, accounts, subscriptions, retail points, newsletter contacts and the people are fictional. The measurement facts are real: WebKit's tracking prevention limits script-written cookies and storage to seven days from the last write (Safari on macOS and every iOS and iPadOS browser); German dailies' sold copies follow the IVW's per-publication-day averages; newsletter platforms export current status and keep activity logs. License: CC BY 4.0 (the task author's own work).",
+ "as_of": "2029-01-15"
+}

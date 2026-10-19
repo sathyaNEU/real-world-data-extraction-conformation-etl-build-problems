@@ -79,8 +79,8 @@
     "segment re-identification through a GIS crosswalk that splits some old segments",
     "storm log layout changed in 2023 (title block and event points to coded events and a Season WSI row)",
     "free-text route audit reasons in the revision log",
-    "supplier dispatch schedule re-issued; dome survey capture times in UTC; loads weighed at another yard's scale house during scale outages; inter-yard transfers",
-    "older spreader controllers writing a run's total, salt and brine together, on every segment row; contractor circuits reporting outside the telematics; a yard boundary realignment",
+    "supplier dispatch schedule re-issued; dome survey capture times in UTC; loads weighed at another yard's scale house during scale outages, and the first trucks after each scale came back weighed there again on their way to their own yard, among supplier trucks on round trips from the terminal and scale houses keeping one stored tare a truck for each account; inter-yard transfers",
+    "older spreader controllers writing a run's total, salt and brine together, on every segment row, four of them replaced in 2025 in Fleet Services' work orders; contractor circuits reporting outside the telematics; a yard boundary realignment, the telematics platform carrying the renamed circuits' current codes on their old passes",
     "trucks rotating between circuits of their yard; route audit changes keyed in a few sittings, some after their effective dates; a register pull of the salted network only; each winter's own swing in salt per point, which the severity index does not carry"
   ],
   "driver": "The extra input an upgraded service level puts into a unit is the part of the unit the old level left untreated, so the average gain measured on units upgraded earlier, chosen because the old level already treated much of them, understates the gain for units the old level barely reached, while their upgraded level less the new units' present input overstates it; only the gain conditioned on how much of each unit the old level already treated, read from each unit's own record under it, carries across to the new units.",

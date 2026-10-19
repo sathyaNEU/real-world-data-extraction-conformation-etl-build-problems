@@ -24,6 +24,12 @@ D = dt.date
 DPM = 30.4375
 TLD = C.REG_TLD
 PAED1 = ("P1-AB3D10", "P1-AB3D50")
+THR_FROM = D(2026, 3, 1)        # the 2026 guidelines: TLD from 30 kg; 35 kg before
+
+
+def threshold_at(d):
+    """The weight from which a child on a paediatric first-line regimen moves onto TLD, on date d."""
+    return 30.0 if d >= THR_FROM else 35.0
 
 
 def add_months(d, k):
@@ -152,6 +158,39 @@ def fits(visits, uids, fr, window_months=None, form="lin", min_n=3):
     return a, b, sig, n
 
 
+def fitstats(c, window=None):
+    """The candidates' lines through their weighings (all, or the last `window` months): per child the level at the
+    origin a, the slope b, the number of weighings n, their mean time xb and spread sxx, and the pooled residual SD s
+    over the children's degrees of freedom."""
+    cache = c.__dict__.setdefault("_fs", {})
+    if window in cache:
+        return cache[window]
+    o = c.fr.origin
+    v = c.visits[c.visits.uid.isin(c.cand) & c.visits.weight.notna() & (c.visits.date <= o)]
+    if window is not None:
+        v = v[v.date > add_months(o, -window)]
+    x = np.array([(d - o).days / DPM for d in v.date])
+    df = pd.DataFrame(dict(uid=v.uid.values, x=x, y=v.weight.values.astype(float), fac=np.zeros(len(v))))
+    g = df.groupby("uid")
+    n = g.size()
+    xb, yb = g.x.mean(), g.y.mean()
+    dx = df.x - df.uid.map(xb)
+    dy = df.y - df.uid.map(yb)
+    sxx = (dx ** 2).groupby(df.uid).sum()
+    sxy = (dx * dy).groupby(df.uid).sum()
+    ok = (n >= 3) & (sxx > 1e-9)
+    n, xb, yb, sxx, sxy = n[ok], xb[ok], yb[ok], sxx[ok], sxy[ok]
+    b = sxy / sxx
+    a = yb - b * xb
+    d2 = df[df.uid.isin(a.index)]
+    res = d2.y.values - (a.reindex(d2.uid).values + b.reindex(d2.uid).values * d2.x.values)
+    s = float(np.sqrt(np.sum(res ** 2) / np.sum(1 - 2.0 / n.reindex(d2.uid).values)))
+    rss = pd.Series(res ** 2).groupby(d2.uid.values).sum()
+    out = dict(a=a, b=b, n=n, xb=xb, yb=yb, sxx=sxx, s=s, res=res, uid=d2.uid.values, x=d2.x.values, rss=rss)
+    cache[window] = out
+    return out
+
+
 def future_visits(last, uids, fr, monthly=False):
     """The scheduled visits from the origin to the window's end: the last visit's next appointment, then every
     `months dispensed` months; an appointment already passed at the origin is carried forward by the same
@@ -174,18 +213,50 @@ def future_visits(last, uids, fr, monthly=False):
     return out_x, out_k
 
 
-def first_passage(mu_list, k_list, sig, q, thr, nm):
-    """P(switched by the end of each window month): each scheduled visit has a weighing with probability q, the
-    weighing reads mu + N(0, sig), and the switch is the first reading at or over the threshold."""
+def first_passage(mu_list, k_list, sig, q, thr, nm, lag=0.0, sd_list=None):
+    """P(moved onto TLD by the end of each window month): each scheduled visit has a weighing with probability q, the
+    weighing reads mu + N(0, sd) (sd the scatter sig, or the visit's own from sd_list), and the first reading at or
+    over the threshold moves the child at that visit, or, for the share `lag` the clinician holds back, at the next
+    weighed visit."""
     P = np.zeros((len(mu_list), nm))
     for j, (mu, ks) in enumerate(zip(mu_list, k_list)):
         if len(mu) == 0:
             continue
-        p = (norm.sf((thr - mu) / sig) if sig > 0 else (mu >= thr).astype(float)) * q
-        cum = 1 - np.cumprod(1 - p)
+        sd = sig if sd_list is None else sd_list[j]
+        if np.all(np.asarray(sd) > 0):
+            p = norm.sf((thr - mu) / sd) * q
+        else:
+            p = (mu >= thr).astype(float) * q
+        if lag <= 0:
+            cum = 1 - np.cumprod(1 - p)
+        else:
+            cum = np.zeros(len(mu))
+            free, held, done = 1.0, 0.0, 0.0
+            for k in range(len(mu)):
+                moved_held = held * q
+                trig = free * p[k]
+                done += moved_held + trig * (1 - lag)
+                held = held - moved_held + trig * lag
+                free -= trig
+                cum[k] = done
         idx = np.searchsorted(ks, np.arange(nm), side="right") - 1
         P[j] = np.where(idx >= 0, cum[np.clip(idx, 0, None)], 0.0)
     return P
+
+
+def lag_share(visits, origin, thr, since):
+    """Among the first readings at or over the threshold, from `since` to the origin, of children whose visit before
+    was on a paediatric first-line regimen, the share not moved onto TLD at that visit (returns share, count)."""
+    v = visits[(visits.date <= origin) & visits.weight.notna()].sort_values(["uid", "date"])
+    prev = v.groupby("uid").regimen.shift(1)
+    v = v.assign(prev=prev)
+    hit = v[(v.weight >= thr) & (v.date >= since) & v.prev.isin(PAED1)]
+    # a child counts once: its first such reading
+    allhit = v[(v.weight >= thr) & (v.date >= since)].groupby("uid").head(1)
+    hit = hit[hit.index.isin(allhit.index)]
+    if not len(hit):
+        return 0.0, 0
+    return float((hit.regimen != TLD).mean()), int(len(hit))
 
 
 def pickup_share(visits, uids, fr):
@@ -215,6 +286,8 @@ def context(kids, visits, fr=MAIN, hz_months=12, by_age=True):
     v = visits[visits.uid.isin(c.cand) & visits.weight.notna() & (visits.date <= fr.origin)]
     c.lastw = v.sort_values(["uid", "date"]).groupby("uid").weight.last().to_dict()
     c.nm = len(fr.ends)
+    c.thr = threshold_at(fr.origin)
+    c.lag, c.lag_n = lag_share(visits, fr.origin, c.thr, THR_FROM if c.thr == 30.0 else C.SHIP_FROM)
     return c
 
 
@@ -245,14 +318,144 @@ def mu_line(c, a, b, form="lin", fx=None):
     return out
 
 
-def P_noisy(c, window=None, thr=29.95, q=None, form="lin", sig=None, monthly=False):
+def P_noisy(c, window=None, thr=None, q=None, form="lin", sig=None, monthly=False, lag=None):
+    """The decisive step: each scheduled visit's chance of a weighing that reads at or over the band, around the
+    child's own line, with the register's scatter; the first such reading moves the child (the share the register
+    shows held back moves at the next weighed visit)."""
     a, b, s, n = fits(c.visits, c.cand, c.fr, window, form)
     if monthly:
         fx, fk = future_visits(c.last, c.cand, c.fr, monthly=True)
     else:
         fx, fk = c.fx, c.fk
     mu = mu_line(c, a, b, form, fx)
-    return first_passage(mu, fk, s if sig is None else sig, c.q if q is None else q, thr, c.nm), s
+    thr = c.thr if thr is None else thr
+    lag = c.lag if lag is None else lag
+    return first_passage(mu, fk, s if sig is None else sig, c.q if q is None else q, thr, c.nm, lag=lag), s
+
+
+def _mu_from(c, F, slope=None):
+    out = []
+    for j, u in enumerate(c.cand):
+        xs = c.fx[j]
+        if u in F["a"].index:
+            bb = F["b"][u] if slope is None else slope[u]
+            out.append(F["yb"][u] + bb * (xs - F["xb"][u]))
+        else:
+            out.append(np.full(len(xs), c.lastw.get(u, 0.0)))
+    return out
+
+
+def _sd_from(c, F, kind, W=None):
+    s = F["s"]
+    out = []
+    for j, u in enumerate(c.cand):
+        xs = c.fx[j]
+        if u not in F["a"].index:
+            out.append(np.full(len(xs), s))
+            continue
+        n, xb, sxx = F["n"][u], F["xb"][u], F["sxx"][u]
+        if kind == "pv":
+            v = s ** 2 * (1 + 1.0 / n + (xs - xb) ** 2 / sxx)
+        elif kind == "ebpred":
+            v = s ** 2 * (1 + 1.0 / n) + W[u] * s ** 2 / sxx * (xs - xb) ** 2
+        else:
+            own = math.sqrt(F["rss"][u] / (n - 2)) if n > 3 else s
+            v = np.full(len(xs), own ** 2)
+        out.append(np.sqrt(v))
+    return out
+
+
+def shrink_weights(F):
+    """DerSimonian and Laird on the candidates' slopes: the random-effects mean, tau squared and each child's weight
+    on its own slope."""
+    se2 = F["s"] ** 2 / F["sxx"]
+    mu, t2, Q, k = dersimonian_laird(F["b"], se2)
+    return mu, t2, Q, k, t2 / (t2 + se2)
+
+
+def P_pv(c, window=None):
+    """Each visit's reading with the textbook prediction variance of an OLS line, s2 (1 + 1/n + (t - tbar)2 / Sxx),
+    the visits taken as independent."""
+    F = fitstats(c, window)
+    return first_passage(_mu_from(c, F), c.fk, F["s"], c.q, c.thr, c.nm, lag=c.lag, sd_list=_sd_from(c, F, "pv"))
+
+
+def P_shrunk(c, window=None, predictive=False):
+    """Each child's slope shrunk toward the candidates' random-effects mean slope by its own precision
+    (DerSimonian and Laird); the plug-in, or with the shrunk slope's posterior variance added at each visit."""
+    F = fitstats(c, window)
+    mu, t2, Q, k, W = shrink_weights(F)
+    bs = W * F["b"] + (1 - W) * mu
+    sd = _sd_from(c, F, "ebpred", W) if predictive else None
+    return first_passage(_mu_from(c, F, bs), c.fk, F["s"], c.q, c.thr, c.nm, lag=c.lag, sd_list=sd)
+
+
+def P_own_sd(c):
+    """Each child's own residual SD around its line in place of the pooled scatter."""
+    F = fitstats(c)
+    return first_passage(_mu_from(c, F), c.fk, F["s"], c.q, c.thr, c.nm, lag=c.lag, sd_list=_sd_from(c, F, "own"))
+
+
+def P_joint(c, shrink=False, draws=200, seed=11):
+    """Each child's line drawn jointly from its estimation error (level and slope; around the shrunk slope with its
+    posterior spread when shrink), the first passage averaged over the draws."""
+    F = fitstats(c)
+    s = F["s"]
+    mu, t2, Q, k, W = shrink_weights(F)
+    rng = np.random.default_rng(seed)
+    P = np.zeros((len(c.cand), c.nm))
+    for j, u in enumerate(c.cand):
+        xs, ks = c.fx[j], c.fk[j]
+        if len(xs) == 0:
+            continue
+        if u not in F["a"].index:
+            m = np.full((1, len(xs)), c.lastw.get(u, 0.0))
+        else:
+            n, xb, sxx, yb, b = F["n"][u], F["xb"][u], F["sxx"][u], F["yb"][u], F["b"][u]
+            se = s / math.sqrt(sxx)
+            bm, bsd = (W[u] * b + (1 - W[u]) * mu, math.sqrt(W[u]) * se) if shrink else (b, se)
+            A = yb + rng.normal(0, s / math.sqrt(n), draws)[:, None]
+            B = bm + rng.normal(0, bsd, draws)[:, None]
+            m = A + B * (xs - xb)[None, :]
+        p = norm.sf((c.thr - m) / s) * c.q
+        if c.lag <= 0:
+            cum = (1 - np.cumprod(1 - p, axis=1)).mean(0)
+        else:
+            cum = np.zeros(len(xs))
+            free = np.ones(len(m)); held = np.zeros(len(m)); done = np.zeros(len(m))
+            for kk in range(len(xs)):
+                mh = held * c.q
+                trig = free * p[:, kk]
+                done += mh + trig * (1 - c.lag)
+                held = held - mh + trig * c.lag
+                free -= trig
+                cum[kk] = done.mean()
+        idx = np.searchsorted(ks, np.arange(c.nm), side="right") - 1
+        P[j] = np.where(idx >= 0, cum[np.clip(idx, 0, None)], 0.0)
+    return P
+
+
+def season_offsets(c):
+    """The candidates' mean residual around their lines by calendar month."""
+    F = fitstats(c)
+    mon = np.array([(c.fr.origin + dt.timedelta(days=float(x) * DPM)).month for x in F["x"]])
+    return pd.Series(F["res"]).groupby(mon).mean().to_dict()
+
+
+def P_seasonal(c):
+    """The lines with the register's calendar-month residual added at each scheduled visit."""
+    F = fitstats(c)
+    off = season_offsets(c)
+    mu = []
+    for m_, xs in zip(_mu_from(c, F), c.fx):
+        months = [(c.fr.origin + dt.timedelta(days=float(x) * DPM)).month for x in xs]
+        mu.append(m_ + np.array([off.get(mm, 0.0) for mm in months]))
+    return first_passage(mu, c.fk, F["s"], c.q, c.thr, c.nm, lag=c.lag)
+
+
+def total_no_exits(c, P):
+    """Bottles with every child kept in care to the window's end."""
+    return total(c, P, np.ones_like(c.S_on), np.ones_like(c.S_c))[0]
 
 
 def scatter(c, kind):
@@ -276,16 +479,25 @@ def scatter(c, kind):
         bb = b.reindex(vv.uid).values
         m = ~np.isnan(dw)
         return float(np.sqrt(np.mean((dw[m] - bb[m] * dx[m]) ** 2) / 2))
-    near = v.uid.map(lambda u: 24 <= a[u] < 30).values
+    near = v.uid.map(lambda u: c.thr - 6 <= a[u] < c.thr).values
     return float(np.sqrt(np.sum(res[near] ** 2) / (near.sum() - 2 * len(set(v.uid[near])))))
 
 
-def P_smooth(c, window=None, form="lin", thr=30.0):
+def P_smooth(c, window=None, form="lin", thr=None):
+    """Rung: each child's line projected, the move at the first scheduled visit at or after it reaches the band."""
     a, b, s, n = fits(c.visits, c.cand, c.fr, window, form)
-    return first_passage(mu_line(c, a, b, form), c.fk, 0.0, 1.0, thr, c.nm)
+    return first_passage(mu_line(c, a, b, form), c.fk, 0.0, 1.0, c.thr if thr is None else thr, c.nm)
 
 
-def P_pooled_velocity(c, thr=29.95, pool="cand"):
+def P_line_shift(c, months=0.0, margin=0.0):
+    """Rung: each child's line moved earlier by `months` or raised by `margin` kg, the move at the first scheduled
+    visit at or after it reaches the band."""
+    a, b, s, n = fits(c.visits, c.cand, c.fr, None, "lin")
+    mu = [m + b.get(u, 0.0) * months + margin for m, u in zip(mu_line(c, a, b), c.cand)]
+    return first_passage(mu, c.fk, 0.0, 1.0, c.thr, c.nm)
+
+
+def P_pooled_velocity(c, thr=None, pool="cand"):
     """Each child's level at the origin from its line, the slope pooled by sex and year of age from consecutive
     weighings over the 24 months to the origin, over the candidates (pool "cand") or every child under 15 on a
     paediatric regimen at the weighing (pool "all")."""
@@ -311,10 +523,10 @@ def P_pooled_velocity(c, thr=29.95, pool="cand"):
         vv = vel.get((c.sex[u], float(math.floor(age0))), 0.2)
         w0 = a[u] if u in a.index else c.lastw.get(u, 0.0)
         mu.append(w0 + vv * c.fx[j])
-    return first_passage(mu, c.fk, s, c.q, thr, c.nm)
+    return first_passage(mu, c.fk, s, c.q, c.thr if thr is None else thr, c.nm, lag=c.lag)
 
 
-def P_eb(c, thr=29.95):
+def P_eb(c, thr=None):
     """Each child's slope shrunk toward the candidates' mean slope by its own precision, the between-child variance
     taken from unweighted moments (on this register it comes out at zero, so every child takes the mean slope)."""
     o = c.fr.origin
@@ -329,7 +541,7 @@ def P_eb(c, thr=29.95):
     w = vb / (vb + se2)
     bs = w * b + (1 - w) * float(b.mean())
     ash = g.weight.mean() - bs * xb
-    return first_passage(mu_line(c, ash, bs), c.fk, s, c.q, thr, c.nm)
+    return first_passage(mu_line(c, ash, bs), c.fk, s, c.q, c.thr if thr is None else thr, c.nm, lag=c.lag)
 
 
 def dersimonian_laird(bv, se2):
@@ -343,7 +555,7 @@ def dersimonian_laird(bv, se2):
     return mu, t2, Q, k
 
 
-def P_eb_dl(c, thr=30.0, by_group=False):
+def P_eb_dl(c, thr=None, by_group=False):
     """Each child's slope shrunk toward the candidates' random-effects mean slope (or its sex and year of age's) by
     its own precision, the between-child variance estimated by DerSimonian and Laird."""
     o = c.fr.origin
@@ -367,7 +579,7 @@ def P_eb_dl(c, thr=30.0, by_group=False):
         w = t2 / (t2 + se2)
         bs[:] = w * b + (1 - w) * mu
     ash = g.weight.mean() - bs * xb
-    return first_passage(mu_line(c, ash, bs), c.fk, s, c.q, thr, c.nm)
+    return first_passage(mu_line(c, ash, bs), c.fk, s, c.q, c.thr if thr is None else thr, c.nm, lag=c.lag)
 
 
 def slope_heterogeneity(c):
@@ -383,21 +595,30 @@ def slope_heterogeneity(c):
     return math.sqrt(t2), Q, k
 
 
-def P_monte_carlo(c, draws=400, seed=7, thr=29.95):
+def P_monte_carlo(c, draws=400, seed=7, thr=None):
+    """The golden's model simulated: readings drawn around each line, a weighing at each visit with the register's
+    share, the first reading at or over the band moving the child or, for the held-back share, the next weighing."""
     a, b, s, n = fits(c.visits, c.cand, c.fr, None, "lin")
     mu = mu_line(c, a, b)
+    thr = c.thr if thr is None else thr
     rng = np.random.default_rng(seed)
     P = np.zeros((len(c.cand), c.nm))
     for j, (m_, ks) in enumerate(zip(mu, c.fk)):
         if len(m_) == 0:
             continue
         r = m_[None, :] + rng.normal(0, s, (draws, len(m_)))
-        hit = (r >= thr) & (rng.random((draws, len(m_))) < c.q)
+        wd = rng.random((draws, len(m_))) < c.q
+        held = rng.random(draws) < c.lag
+        hit = (r >= thr) & wd
         first = np.where(hit.any(1), hit.argmax(1), 10 ** 6)
+        moved = first.copy()
+        for d in np.where(held & (first < 10 ** 6))[0]:
+            later = np.where(wd[d, first[d] + 1:])[0]
+            moved[d] = first[d] + 1 + later[0] if len(later) else 10 ** 6
         idx = np.searchsorted(ks, np.arange(c.nm), side="right") - 1
         for m in range(c.nm):
             if idx[m] >= 0:
-                P[j, m] = (first <= idx[m]).mean()
+                P[j, m] = (moved <= idx[m]).mean()
     return P
 
 
@@ -432,13 +653,15 @@ def P_band_hazard(c, bw=0.5, lo_months=30, hi_months=10):
     rows = []
     for back in range(lo_months, hi_months - 1, -1):
         S = mend(*divmod_month(o.year, o.month, -back))
+        if S < C.SHIP_FROM:
+            continue
         lw = vw[vw.date <= S].groupby("uid").weight.last()
         lr = vv[vv.date <= S].groupby("uid").regimen.last().reindex(lw.index)
         dob = kk.dob.reindex(lw.index)
         od = kk.outcome_date.reindex(lw.index)
         under15 = np.array([(S - b).days / 365.25 < 15 for b in dob])
         alive = np.array([(x is None) or pd.isna(x) or (x > S) for x in od])
-        ok = under15 & alive & lr.isin(PAED1).values & (lw.values >= 18) & (lw.values < 30)
+        ok = under15 & alive & lr.isin(PAED1).values & (lw.values >= c.thr - 12) & (lw.values < c.thr)
         for u, w in zip(lw.index[ok], lw.values[ok]):
             rows.append((u, S, w))
     R = pd.DataFrame(rows, columns=["uid", "S", "w"])
@@ -612,12 +835,12 @@ def crossing_age(c, look=12, bw=0.25, smooth=5, stat="median", interp=False, by_
         if smooth > 1:
             mm = mm.rolling(smooth, center=True, min_periods=1).median()
         idx, val = np.array(mm.index, float), np.array(mm.values, float)
-        k = np.where(val >= 30)[0]
+        k = np.where(val >= c.thr)[0]
         if not len(k):
             cross[s] = 99.0
         elif interp and k[0] > 0:
             j = k[0]
-            cross[s] = float(idx[j - 1] + (30 - val[j - 1]) / (val[j] - val[j - 1]) * (idx[j] - idx[j - 1]))
+            cross[s] = float(idx[j - 1] + (c.thr - val[j - 1]) / (val[j] - val[j - 1]) * (idx[j] - idx[j - 1]))
         else:
             cross[s] = float(idx[k[0]])
     if not by_sex:
@@ -675,7 +898,7 @@ def P_centile_tracking(c):
         lvl = a[u] if u in a.index else c.lastw.get(u, 0.0)
         at = a0 + c.fx[j] * DPM / 365.25
         mu.append(lvl + np.interp(at, ages, wts) - np.interp(a0, ages, wts))
-    return first_passage(mu, c.fk, 0.0, 1.0, 30.0, c.nm)
+    return first_passage(mu, c.fk, 0.0, 1.0, c.thr, c.nm)
 
 
 def P_lead_shift(c, months=24):
@@ -696,11 +919,11 @@ def P_lead_shift(c, months=24):
         bb, aa = np.polyfit(x, g.weight.values.astype(float), 1)
         if bb <= 0.02:
             continue
-        leads.append((30.0 - aa) / bb)
+        leads.append((c.thr - aa) / bb)
     L = float(np.median(leads))
     a, b, s, n = fits(c.visits, c.cand, c.fr, None, "lin")
     mu = [m + b.get(u, 0.0) * L for m, u in zip(mu_line(c, a, b), c.cand)]
-    return first_passage(mu, c.fk, 0.0, 1.0, 30.0, c.nm), L
+    return first_passage(mu, c.fk, 0.0, 1.0, c.thr, c.nm), L
 
 
 def actual_switches(c_origin, visits_all):

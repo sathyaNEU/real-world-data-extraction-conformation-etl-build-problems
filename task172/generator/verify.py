@@ -89,7 +89,7 @@ def main(target):
         case[r["Case ID"]] = dict(person=r["Person ID"], ptype=r["Person Type"], sponsor=r["Sponsor ID"], cat=r["Category"],
                                   kind=r["Case Type"].lower(), card=day(r["Card Expires"]), received=day(r["Received"]),
                                   status=r["Status"], closed=day(r["Closed"]), decided=day(r["Decided"]),
-                                  new=day(r["New Card Expires"]))
+                                  new=day(r["New Card Expires"]), sent=day(r["Packet Sent"]), by=r["Filed By"])
     for r in new:
         key[r["case_id"]] = r["case_id"]
         if r["legacy_case_id"]:
@@ -97,7 +97,8 @@ def main(target):
         case[r["case_id"]] = dict(person=r["person_id"], ptype=r["person_type"].title(), sponsor=r["sponsor_id"],
                                   cat=r["category"], kind=r["case_type"], card=day(r["card_expires"]),
                                   received=day(r["received_on"]), status=r["status"], closed=day(r["closed_on"]),
-                                  decided=day(r["decided_on"]), new=day(r["new_card_expires"]))
+                                  decided=day(r["decided_on"]), new=day(r["new_card_expires"]),
+                                  sent=day(r["packet_sent_on"]), by=r["filed_by"])
     # renewals by receipt number
     by = defaultdict(list)
     for n in notices:
@@ -164,8 +165,10 @@ def main(target):
     dep = rows_csv(os.path.join(target, "dependants_2026-12.csv"))
     permits = rows_xlsx(os.path.join(target, "work_permits_2026-12.xlsx"), "Permits")
     tracker = rows_xlsx(os.path.join(target, "green_card_tracker_2026-12.xlsx"), "Applicants")
-    active = {e["employee_id"] for e in emp if e["status"] == "Active"}
-    employees = {e["employee_id"] for e in emp}
+    # an employee is one person under every ID HR gives him (IDs sharing a benefits enrollment: a move between
+    # Sallowmere's entities), current while any of them is Active
+    eperson = {e["employee_id"]: e["benefits_enrollment_id"] for e in emp}
+    eactive = {e["benefits_enrollment_id"] for e in emp if e["status"] == "Active"}
     sponsor = {}
     for p in permits:
         if p.get("household_employee_id"):
@@ -180,18 +183,27 @@ def main(target):
     for d in dep:
         if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enr:
             sponsor.setdefault(d["dependant_id"], enr[d["benefits_enrollment_id"]])
-    cards = {}                      # (holder, first day) -> [last day, category, from a filing]
 
-    def put(h, vf, vt, cat, filing):
+    def who(h):
+        """the person behind an ID: an employee by enrollment, a spouse as her household's one spouse"""
+        if h in eperson:
+            return ("emp", eperson[h]), eperson[h] in eactive
+        hh = eperson.get(sponsor.get(h))
+        return (("sp", hh) if hh else ("none", h)), hh in eactive
+    cards = {}                      # (holder, first day) -> [last day, category, from a filing, card numbers]
+
+    def put(h, vf, vt, cat, filing, num=None):
         if not (h and vf and vt) or vf > EXPORT:
             return
         cur = cards.get((h, vf))
         if cur is None:
-            cards[(h, vf)] = [vt, cat, filing]
+            cur = cards[(h, vf)] = [vt, cat, filing, set()]
         elif filing and not cur[2]:
-            cards[(h, vf)] = [vt, cat, True]
+            cur[1], cur[2] = cat, True
+        if num:
+            cur[3].add(num)
     for p in permits:
-        put(p["holder_id"], day(p["valid_from"]), day(p["valid_to"]), p["category"], False)
+        put(p["holder_id"], day(p["valid_from"]), day(p["valid_to"]), p["category"], False, p["card_number"])
     for c in case.values():
         if c["status"] == "Approved" and c["new"] and c["decided"]:
             put(c["person"], c["decided"], c["new"], c["cat"], True)
@@ -203,22 +215,41 @@ def main(target):
     for t in tracker:
         if t["ead_approved"] and t["ead_valid_to"]:
             put(t["applicant_id"], day(t["ead_approved"]), day(t["ead_valid_to"]), "(c)(9)", True)
-    permit = {}                     # person -> the card approved most recently; a spouse is her household (an employee
-    for (h, vf), (vt, cat, _) in cards.items():     # has one), whichever ID a record files her card under
-        person = h if h in employees else ("spouse of", sponsor.get(h))
-        cur = (h in active) if h in employees else (sponsor.get(h) in active)
-        if not cur:
+    # one card number, one holder: the people two IDs share a card between are one person
+    up = {}
+
+    def top(x):
+        while up.get(x, x) != x:
+            x = up[x]
+        return x
+    holders_of = defaultdict(set)
+    for (h, vf), (_, _, _, nums) in cards.items():
+        for num in nums:
+            holders_of[num].add(who(h)[0])
+    for ps in holders_of.values():
+        ps = sorted(ps)
+        for q in ps[1:]:
+            a, b = top(ps[0]), top(q)
+            if a != b:
+                up[max(a, b)] = min(a, b)
+    live = defaultdict(bool)
+    for (h, vf) in cards:
+        p, cur = who(h)
+        live[top(p)] |= cur
+    permit = {}                     # person -> the card approved most recently
+    for (h, vf), (vt, cat, filing, _) in cards.items():
+        person = top(who(h)[0])
+        if not live[person]:
             continue
         if person not in permit or vf > permit[person][0]:
-            permit[person] = (vf, vt, cat, _)
-        elif vf == permit[person][0] and _ and not permit[person][3]:
+            permit[person] = (vf, vt, cat, filing)
+        elif vf == permit[person][0] and filing and not permit[person][3]:
             permit[person] = (vf, vt, cat, True)     # one card under two IDs: the approval's category stands
     permit = {k: v[:3] for k, v in permit.items()}
 
     # the quarter's categories: current permits whose renewal reaches USCIS in the quarter (last day less the median
     # card gap), less the (c)(9) permits of applicants whose adjustment is approved
-    lpr = {t["applicant_id"] if t["relationship"] == "Principal" else ("spouse of", t["principal_employee_id"])
-           for t in tracker if t["i485_status"] == "Approved"}
+    lpr = {top(who(t["applicant_id"])[0]) for t in tracker if t["i485_status"] == "Approved"}
     g50 = int(round(float(np.median(gap))))
     nmix = defaultdict(int)
     for h, (vf, vt, cat) in permit.items():
@@ -300,20 +331,30 @@ def main(target):
     for a in actions:
         if a["action"] == "Notice forwarded by applicant" and a["detail"] == "Rejection notice":
             rej.add((key.get(a["case_id"]), day(a["notice_date"])))
+    # a renewal is the card it renews for the person, whichever case the register files it under
+    renewal = {k: (c["person"], c["card"]) if c["kind"] == "renewal" and c["card"] else ("case", k)
+               for k, c in case.items()}
     rcv = defaultdict(set)
     for n in notices:
         if n["notice_type"] == "Receipt notice":
-            rcv[key.get(n["client_ref"])].add(day(n["received_date"]))
+            k = key.get(n["client_ref"])
+            rcv[renewal.get(k, ("case", k))].add(day(n["received_date"]))
+    first_out = {}
     for k, c in case.items():
         if c["kind"] == "renewal" and c["received"]:
-            rcv[k].add(c["received"])
+            rcv[renewal[k]].add(c["received"])
+        if c["kind"] == "renewal" and c["sent"]:
+            first_out[renewal[k]] = min(first_out.get(renewal[k], c["sent"]), c["sent"])
+    # a rejection of one of the renewal's packets falls after its first packet left and before USCIS had it
+    rej = {(k, d) for k, d in rej if not (first_out.get(renewal.get(k, ("case", k)), d) > d or
+                                          any(x < d for x in rcv.get(renewal.get(k, ("case", k)), ())))}
     quarters = {"2025 Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31)), "2026 Q1": (dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
                 "2026 Q2": (dt.date(2026, 4, 1), dt.date(2026, 6, 30)), "2026 Q3": (dt.date(2026, 7, 1), dt.date(2026, 9, 30))}
     for lab, (a, b) in quarters.items():
         inq = [(k, d) for k, d in rej if a <= d <= b]
         ref30 = 0
         for k, d in inq:
-            nxt = sorted(x for x in rcv.get(k, ()) if x > d)
+            nxt = sorted(x for x in rcv.get(renewal.get(k, ("case", k)), ()) if x > d)
             ref30 += bool(nxt and (nxt[0] - d).days <= 30)
         say(len(inq) == figs["ask_b"][lab]["rejected"], "ask B %s rejected" % lab, "%d" % len(inq))
         say(ref30 == figs["ask_b"][lab]["refiled_30"], "ask B %s filed again within 30 days" % lab, "%d" % ref30)

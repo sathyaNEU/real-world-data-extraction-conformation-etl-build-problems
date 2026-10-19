@@ -122,11 +122,15 @@ def donation_sites(recs, rng):
 
 def flows(recs, pats, rng):
     """Month by month at every site: dispensing, CMS deliveries (route day, posting and signature dates, the odd
-    delivery refused at the gate and returned), the partner donation, stock. Returns dispensing and closing stock per
-    site-month (CMS stock and donated stock apart) and the list of deliveries."""
+    delivery refused at the gate and returned), the partner donation, short-dated stock handed back to CMS, stock.
+    Returns dispensing and closing stock per site-month (CMS stock and donated stock apart), the deliveries and the
+    returns."""
     disp, close, opening, recv = {}, {}, {}, {}
     don = {}
     deliveries = []
+    returns = []
+    # short-dated stock a facility hands back to CMS for redistribution (its own draws, so every other draw stands)
+    rng_ret = np.random.default_rng(C.SEED + 404)
     route_day = {r["rid"]: int(rng.integers(3, 25)) for r in recs}
     every2 = {r["rid"]: bool(rng.random() < 0.35 and r["type"] in ("Clinic", "Private clinic") and r["closed"] is None)
               for r in recs}
@@ -193,12 +197,17 @@ def flows(recs, pats, rng):
             stock = stock + got - d_
             loss = int(rng.random() < 0.06) * int(rng.integers(1, 30))
             stock = max(0, stock - loss)
+            if rng_ret.random() < 0.035 and stock >= 240:
+                k = int(min(rng_ret.integers(2, 10), stock // 24)) * 12
+                coll = D(y, m, int(rng_ret.integers(5, 26)))
+                returns.append(dict(rid=rid, qty=k, collected=coll, posted=coll + DAYS(days=int(rng_ret.integers(3, 11)))))
+                stock -= k
             disp[(rid, y, m)] = d_
             recv[(rid, y, m)] = got
             close[(rid, y, m)] = int(round(stock))
             if rid in dsites and (d_open > 0 or d_got > 0):
                 don[(rid, y, m)] = dict(opening=d_open, received=d_got, dispensed=from_don, closing=int(round(dstock)))
-    return disp, close, opening, recv, deliveries, don
+    return disp, close, opening, recv, deliveries, don, returns
 
 
 # ------------------------------------------------------------------------------------------------ the call's inputs
@@ -218,7 +227,7 @@ def projection(recs, adults_aug, rng):
 
 def cms_stock(rng):
     """TLD 30-tablet bottles at CMS at the 31 August 2026 count, by warehouse and batch (usable and quarantined),
-    and the shipments on order. The November lot of the C6 order is set by the generator (see pack.place_order)."""
+    and the shipments on order. The November lot of the C6 order is set by the generator (pack.place_order)."""
     batches = []
     for wh, n, lo, hi in (("Main warehouse", 6, 90_000, 260_000), ("Northern depot", 3, 25_000, 75_000)):
         for k in range(n):

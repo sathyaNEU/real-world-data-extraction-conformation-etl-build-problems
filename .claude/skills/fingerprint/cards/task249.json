@@ -1,0 +1,115 @@
+{
+  "task": "task249",
+  "architecture": "v4",
+  "drawn": "2026-10-19",
+  "slot_note": "",
+  "domain": "product-analytics",
+  "subdomain": "metric-definition-measurement-science",
+  "client_domain": "product-analytics",
+  "niche": "a German regional newspaper group certifying each local edition's average monthly unique browsers for the fourth quarter of 2028 before its 2029 media kit goes out, while WebKit browsers (Safari and every browser on iPhone and iPad) expire the analytics tag's script-written cookie seven days after its last write and the metered paywall keeps its free-article count in the same browser storage: which editions' figures carry the measurement note",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Eight of the twelve editions carry the measurement note in the 2029 media kit: Rhenhagen Stadt, Kirchbrunn, Wiesbrück, Hollerfeld, Sonnweiler, Mühlenstedt, Grauheim and Lindenau; Altenhorst, Eichtal, Bergstetten and Falkenried print their figures without it.",
+  "answer_source": "task249/submission.md, Final Recommendation (generator/figures.json call.noted)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and document correctly counts each signed-in WebKit browser once from the sign-in register and transports the seven-day replay of signed-out readers of other browsers to the signed-out WebKit identifiers within edition, month and device class, filing 4 editions and dropping Wiesbrück, Sonnweiler, Grauheim and Lindenau (22.0 to 22.8 per cent against the golden's 27.9 to 29.4), because sign-in is a consequence of the cap: the meter in the same capped storage keeps WebKit's weekly and occasional readers signed out.",
+  "domain_test": "The quantity that decides is how many distinct browsers an analytics identifier count represents when one browser family caps the identifier's life at seven idle days, estimated the way audience measurement estimates it: the identifier rule replayed on the visit histories of browsers whose identifiers persist, matched on what the cap cannot change (edition, device class, a print subscription activated before any meter ran) and pooled over the sign-in status the meter produces. Put patients and wristbands in place of browsers and cookies, or kilowatt-hours in place of visits, and the cookie rule, the meter sharing its storage and the registrations the meter drives have no counterpart: the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:transporting-revisit-behaviour-across-a-cookie-cap-conditioned-only-on-what-the-cap-cannot-change",
+  "layer1": [
+    "the analytics export's session start and end in UTC against calendar months in Europe/Berlin across the clock change of 29 October 2028",
+    "raw user-agent strings beside the platform's parsed browser field, which reports Chrome on iPhone as Chrome although it runs on WebKit",
+    "the export job's re-sent rows of 21 November 2028, identical second copies",
+    "the platform's bot flag beside sessions from the newsroom's own address range, both filtered from reports but not from the export",
+    "Hollerfeld's content group re-coded from HKR to HOL on 1 November 2028",
+    "account references hashed in the export and in clear in the sign-in register",
+    "the platform's monthly report for the whole year beside the quarter's export",
+    "the paywall console's dates typed as German text",
+    "addresses that change as household lines reconnect and phones move between mobile networks, and user agents that change with each browser release, so neither marks a browser",
+    "the circulation system's release of 6 November 2028 writing the date of a saved change of address, bank details or payment into the subscription's start date until its fix (Ask B)",
+    "the newsletters' one-click links adding a neighbouring edition's group outside the preference centre's change log, recorded only as clicks in the activity log (Ask A)"
+  ],
+  "stakeholder_role": "the head of audience data, who certifies the media kit's audience figures before the 2029 kit is sent to advertisers",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "web_sessions_2028q4.parquet: the analytics platform's session export for October to December 2028",
+    "rows": 3012902,
+    "entity": "one analytics session",
+    "grain": "session by analytics client identifier",
+    "source": "constructed: a fully simulated export (declared in metadata.json); no public session-level dataset carries the cookie cap"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "period_close",
+  "org_family": "media_or_publishing",
+  "world": {
+    "geography": "Germany (the newspaper group, its editions, towns, vendors and people are fictional; the browser behaviour modelled, WebKit's seven-day cap on script-written cookies, is real)",
+    "currency": "EUR",
+    "org_type": "regional newspaper group with twelve local editions on one website, a metered paywall and a reader-account service",
+    "invented_names": [],
+    "people": [
+      "Nadin Schleich",
+      "Karl-Hans Schenk",
+      "Eugenia Oderwald",
+      "Almut Ladeck"
+    ]
+  },
+  "deliverables": [
+    "media_kit_2029_edition_figures.xlsx",
+    "measurement_note_2029.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how many distinct units a count of identifiers represents when one class of unit loses its identifier after a fixed idle gap, recovered by replaying the expiry on the histories of units whose identifiers persist, matched only on attributes the expiry cannot alter, because a status that a quota held in the same expiring storage hands out differently on the two sides sorts the frequent returners unevenly between its groups.",
+  "driver_concrete": "Each edition's WebKit browsers are estimated by replaying the seven-day cookie expiry on the visit histories of browsers on other browsers in the same edition and device class, with print subscribers (who activated digital access whatever the meter did) held apart and counted from the device register, and every other browser pooled whether signed in or not: the meter shares the capped storage, so on WebKit it resets, fewer weekly and occasional readers meet the registration wall, and conditioning on sign-in compares a signed-out WebKit pool full of returners with a signed-out pool on other browsers whose returners registered.",
+  "stump": "A competent solver counts the signed-in WebKit browsers once from the sign-in register and divides the signed-out WebKit identifiers by the seven-day replay of signed-out readers on other browsers in the same edition, month and device class, filing 4 editions (Rhenhagen Stadt, Kirchbrunn, Hollerfeld, Mühlenstedt) and leaving Wiesbrück, Sonnweiler, Grauheim and Lindenau under the 25 per cent line at 22.0 to 22.8, because the paywall meter sits in the same capped storage: on WebKit it restarts with the identifier, so weekly and occasional readers there seldom meet the registration wall and stay signed out while their counterparts on other browsers registered; the golden pools every non-print reader over sign-in, holds print subscribers apart and files 8.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task233": "there a departure measured on a follow-up is carried across base rates as odds; here a revisit-gap distribution is replayed through an identifier-expiry rule, and the decisive choice is which statuses the replay conditions on (a print activation that predates the cap in, the sign-in the capped meter produces out)",
+    "task458": "there staying observed is selected on the trait and the fully observed cannot stand in; here every browser is observed throughout, the selection is a sign-in status a quota in the capped storage hands out unevenly, and the remedy is to pool over that status rather than to reweight the observed units",
+    "task256": "there a reference group's conditional distribution is carried to a population through two shared measurements; here no reference distribution is carried: the expiry rule itself is replayed on persistent histories within strata the cap cannot change",
+    "task262": "there a reliability measured in a subsample selected on its level does not carry; here the selection runs through a status the measurement problem itself produces, so the fix is to drop that status from the conditioning set, not to rescale anything",
+    "task267": "there a verification design (everyone an older rule flagged plus a random fifth) is read for a capture rate; here there is no verification sample, only browsers whose identifiers persist, and a rule replayed on them",
+    "task465": "there two traits recorded in different sources are combined through shared attributes and a small joint source; here one behaviour distribution, fully recorded on one side, is carried across an identifier cap",
+    "task54": "there loss per event scales with custody exposure under a rule recovered from closed cases; here nothing is recovered: the expiry rule is filed and the decisive step is the conditioning set of the replay"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references at other positions that share the truth's distribution over weeks but agree with it only partly hour by hour, so a slope fitted on the paired readings is pulled toward zero by that imperfect agreement, making healthy distant units look low and units drifted high look healthy, while matching the unit's spread to the references' spread recovers the gain.",
+      "fate": "stage 4 reader landed the call (errors-in-variables slope) and every ask figure, 2026-10-18; re-rooted to architecture 2"
+    },
+    {
+      "architecture": "v2",
+      "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references elsewhere that share the truth only in the hours a daily process mixes the medium; outside those hours the units standing apart from the references differ for reasons that are not their gain, so any comparison over all hours, however it corrects for the references' imperfect agreement, misreads those units, and only the comparison restricted to the mixed hours reads every unit's gain.",
+      "fate": "stage 4 reader landed the call 2026-10-19 (afternoon regression after the 900 m sites' night-time intercepts); judge DETERMINISTIC APPROVE; re-rooted to architecture 3 in another client domain at the author's request (fresh re-root)"
+    },
+    {
+      "architecture": "v3",
+      "driver": "The decisive quantity is how often a check comparing a second reading with a first flags units whose first reading was honest, among units chosen because their first reading was high; a unit chosen on a noisy first reading falls back on the second by an amount set by how small a share the choice takes and how noisy the first reading is where it reaches, so a flag rate measured on unchosen units understates every selective choice, while a gain between the readings that fades with the time between them lowers the rate where the second reading follows soon.",
+      "fate": "stage 4 reader landed the call 2026-10-19 (a latent-ability model of each account's shortlist: a tier prior deconvolved from the pool, Table 4.3's errors, the study's retest gain) and all 19 ask figures; judge DETERMINISTIC APPROVE; re-rooted to architecture 4 in Product Analytics at the author's request"
+    }
+  ],
+  "notes": "Re-rooted 2026-10-19 to architecture 4 at the author's request (perssathya chose 'Re-root: ITP cookies' from four candidates written after architecture 3 was spent): Product Analytics, metric definition and measurement science, the lane's least used Data Quality cell. The candidate as offered (signed-out visitors on uncapped browsers as the comparison) was refined at the draw: holding every visible status fixed is the opponent's reflex and reaches it, so the decisive step moved to what that reflex gets wrong, the sign-in status the capped meter itself produces. stump_strategy causal_design: the conditioning set of a transport, pre-cap attributes in and the cap's own consequence out. calibration_form gold_standard_subsample: the reader-account service's device register gives exact browser identity for signed-in readers; the wrong routes lean on it and the golden uses it only for print subscribers.",
+  "registered": "2026-10-19T06:18:29Z"
+}

@@ -1,160 +1,101 @@
-"""Read the shipped pack as a solver would: both AVL exports conformed to one table of stop events in local time (each
-stop by its public code, each bus by its fleet number, each event on its service day; Quinnell's repeated file-head
-rows and the two systems' overlap on the evening of 31 March removed), Service Quality's review log, the two GTFS
-feeds, the fleet roster and the ridership report."""
-import csv
+"""Read the shipped pack as a solver would: both PBMs' claim files conformed into one record of fills (plan member ID,
+class, date dispensed, days' supply, units, 11-digit NDC) with reversed claims removed and every fill priced at the
+2026 schedule; the drug list, the price schedule and the rebate statement."""
 import datetime as dt
-import io
 import os
-import zipfile
 
-import numpy as np
 import pandas as pd
 
 import world as W
-
-CODE_OF_KEY = {k: v[0] for k, v in W.STOPS.items()}
-KEY_OF_CODE = {v[0]: k for k, v in W.STOPS.items()}
 
 
 def path(target, key):
     return os.path.join(target, W.FILES[key])
 
 
-def gtfs_table(target, key, name):
-    with zipfile.ZipFile(path(target, key)) as z:
-        return pd.read_csv(io.BytesIO(z.read(name)), dtype=str, keep_default_na=False)
+def ndc11(ndc10):
+    """Orrin's 10-digit hyphenated NDC (5-3-2) to 11 digits."""
+    a, b, c = ndc10.split("-")
+    return a.zfill(5) + b.zfill(4) + c.zfill(2)
 
 
-def stop_codes(target):
-    """GTFS stop_id to public stop code, both feeds."""
-    out = {}
-    for key in ("gtfs_jan", "gtfs_apr"):
-        st = gtfs_table(target, key, "stops.txt")
-        out.update(dict(zip(st["stop_id"], st["stop_code"])))
-    return out
+def drugs(target):
+    return pd.read_csv(path(target, "drugs"), dtype=str, keep_default_na=False).set_index("ndc11")
 
 
-def roster(target):
-    return pd.read_csv(path(target, "fleet"), dtype=str, keep_default_na=False)
-
-
-def svc_minutes(s):
-    h, m, sec = (int(v) for v in s.split(":"))
-    return h * 60 + m + sec / 60.0
-
-
-def arbor(target):
-    a = pd.read_csv(path(target, "avl_q1"), dtype=str, keep_default_na=False)
-    codes = stop_codes(target)
-    out = pd.DataFrame({
-        "source": "Arbor", "event": a["event_id"], "bus": a["veh_no"], "code": a["stop_id"].map(codes),
-        "service_day": pd.to_datetime(a["svc_date"]).dt.date, "dep": pd.to_datetime(a["dep_time"]),
-        "arr": pd.to_datetime(a["arr_time"]), "route": a["route"], "trip": a["trip_id"],
-        "attributed": a["trip_id"] != "",
-        "sched": [svc_minutes(s) if s else np.nan for s in a["sched_dep"]],
-        "deviation_s": np.nan})
-    return out
-
-
-def quinnell(target, repeats=False):
-    q = pd.read_csv(path(target, "avl_q2"), dtype=str, keep_default_na=False)
-    tag = dict(zip(roster(target)["asset_tag"], roster(target)["fleet_no"]))
-    utc = pd.to_datetime(q["ActualDepartureUTC"], utc=True)
-    dep = utc.dt.tz_convert(W.TZ).dt.tz_localize(None)
-    sched = [svc_minutes(s) if s else np.nan for s in q["ScheduledDeparture"]]
-    out = pd.DataFrame({
-        "source": "Quinnell", "event": q["EventID"], "bus": q["VehicleID"].map(tag), "code": q["StopCode"],
-        "dep": dep, "arr": pd.NaT, "route": q["Route"], "trip": q["TripID"], "attributed": q["MatchStatus"] == "MATCHED",
-        "sched": sched, "deviation_s": pd.to_numeric(q["DeviationSec"], errors="coerce")})
-    out["service_day"] = service_day(out)
-    if not repeats:
-        out = out[~out.duplicated(["bus", "code", "dep"], keep="first")]
-    return out
-
-
-def candidates(target):
-    """Planning's candidate routes and the designated stop code each would name."""
-    c = pd.read_csv(path(target, "candidates"), dtype=str, keep_default_na=False)
-    return dict(zip(c["route"], c["designated_stop_code"]))
-
-
-def secs(s):
-    h, m, x = (int(v) for v in s.split(":"))
-    return h * 3600 + m * 60 + x
-
-
-def timetable(target):
-    """The feeds' scheduled departures: each candidate trip's departure from its designated stop (seconds after the
-    service day's midnight), and the frequency blocks (route, start, end) of the trips that run by headway."""
-    stop_of = candidates(target)
-    dep, blocks = {}, []
-    for key in ("gtfs_jan", "gtfs_apr"):
-        code = dict(zip(*(gtfs_table(target, key, "stops.txt")[c] for c in ("stop_id", "stop_code"))))
-        route = dict(zip(*(gtfs_table(target, key, "trips.txt")[c] for c in ("trip_id", "route_id"))))
-        st = gtfs_table(target, key, "stop_times.txt")
-        for t, sid, d in zip(st["trip_id"], st["stop_id"], st["departure_time"]):
-            if route[t] in stop_of and code[sid] == stop_of[route[t]]:
-                dep[t] = secs(d)
-        fq = gtfs_table(target, key, "frequencies.txt")
-        blocks += [(route[t], secs(a), secs(b)) for t, a, b in zip(fq["trip_id"], fq["start_time"], fq["end_time"])]
-    return dep, blocks
-
-
-def published(t, target):
-    """Each candidate's tied departure's scheduled departure in the feeds, minutes after the service day's midnight: the
-    trip's own stop time, or for a trip run by headway, its minute in the frequency block that covers it."""
-    dep, blocks = timetable(target)
-    cand = candidates(target)
-    out = np.full(len(t), np.nan)
-    for j, (r, trip, sch, att) in enumerate(zip(t["route"], t["trip"], t["sched"], t["attributed"])):
-        if not att or r not in cand:
-            continue
-        if trip in dep:
-            out[j] = dep[trip] / 60.0
-            continue
-        m = int(np.floor(sch + 1e-9))
-        cover = [a for rr, a, b in blocks if rr == r and a // 60 <= m and m * 60 < b]
-        assert cover, (r, trip, sch)
-        out[j] = m + (cover[0] % 60) / 60.0
-    return out
-
-
-def service_day(t):
-    """A stop event's service day: a scheduled trip's own (the day whose midnight plus the scheduled time, past 24:00
-    after midnight, lies nearest the departure); an event with no trip before 3 a.m. belongs to the day before."""
-    dep = t["dep"]
-    sched = t["sched"].to_numpy(dtype=float)
-    has = ~np.isnan(sched)
-    base = dep - pd.to_timedelta(np.where(has, sched, 0.0), unit="m")
-    by_trip = (base + pd.Timedelta(hours=12)).dt.normalize()
-    mins = (dep - dep.dt.normalize()).dt.total_seconds().to_numpy() / 60.0
-    by_clock = dep.dt.normalize() - pd.to_timedelta((mins < 180).astype(int), unit="D")
-    return pd.Series(np.where(has, by_trip, by_clock), index=t.index).dt.date
-
-
-def events(target):
-    """One table of stop events at the five stops: Arbor to the end of 31 March's service, Quinnell after."""
-    a = arbor(target)
-    q = quinnell(target)
-    q = q[q["service_day"] >= dt.date(2026, 4, 1)]
-    t = pd.concat([a, q], ignore_index=True)
-    t["stop"] = t["code"].map(KEY_OF_CODE)
-    t["hour"] = t["dep"].dt.hour
-    t["month"] = pd.to_datetime(t["service_day"]).dt.month
-    t["pub"] = published(t, target)
-    return t
-
-
-def review(target):
-    return pd.read_csv(path(target, "review"), dtype=str, keep_default_na=False)
-
-
-def ridership(target):
+def prices(target):
     from openpyxl import load_workbook
-    ws = load_workbook(path(target, "ridership"), data_only=True)["Weekday average"]
+    ws = load_workbook(path(target, "prices"), data_only=True).active
     out = {}
-    for row in ws.iter_rows(min_row=1, values_only=True):
-        if row and row[0] is not None and str(row[0]).strip().isdigit() and isinstance(row[-1], (int, float)):
-            out[str(row[0]).strip()] = float(row[-1])
+    for r in ws.iter_rows(min_row=4, values_only=True):
+        if r and r[0]:
+            out[str(r[0])] = (float(r[2]), float(r[3]))
     return out
+
+
+def crosswalk(target):
+    x = pd.read_csv(path(target, "crosswalk"), dtype=str, keep_default_na=False)
+    return (dict(zip(x["orrin_member_key"], x["plan_member_id"])),
+            dict(zip(x["tallis_member_no"], x["plan_member_id"])))
+
+
+def fills(target):
+    """The conformed record: one row per fill that stands (reversed claims out), priced at the 2026 schedule."""
+    to_plan_o, to_plan_t = crosswalk(target)
+    dl = drugs(target)
+    pr = prices(target)
+    o = pd.read_csv(path(target, "orrin"), dtype=str, keep_default_na=False)
+    rev = set(o.loc[o["line_type"] == "REVERSAL", "claim_no"])
+    o = o[~o["claim_no"].isin(rev)]
+    o = pd.DataFrame({"member": o["member_key"].map(to_plan_o), "ndc11": [ndc11(v) for v in o["ndc"]],
+                      "date": pd.to_datetime(o["fill_date"]).dt.date, "days": o["days_supply"].astype(int),
+                      "units": o["qty"].astype(float), "source": "Orrin"})
+    t = pd.read_csv(path(target, "tallis"), dtype=str, keep_default_na=False)
+    rev = set(t.loc[t["Status"] == "R", "ClaimID"])
+    t = t[~t["ClaimID"].isin(rev)]
+    t = pd.DataFrame({"member": t["MemberNo"].map(to_plan_t), "ndc11": t["NDC11"],
+                      "date": pd.to_datetime(t["DateOfService"], format="%m/%d/%Y").dt.date,
+                      "days": t["DaysSupply"].astype(int), "units": t["Quantity"].astype(float), "source": "Tallis"})
+    f = pd.concat([o, t], ignore_index=True)
+    f["cls"] = f["ndc11"].map(dl["class_code"])
+    f["paid26"] = [round(u * pr[n][0], 2) + pr[n][1] for u, n in zip(f["units"], f["ndc11"])]
+    return f.sort_values(["date", "member", "ndc11"], kind="stable").reset_index(drop=True)
+
+
+def rebates(target):
+    from openpyxl import load_workbook
+    ws = load_workbook(path(target, "rebates"), data_only=True).active
+    rows = []
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if r and r[0]:
+            rows.append(dict(invoice=r[0], cq=r[1], product=r[2], cls=r[3], channel=r[4], units=float(r[5]),
+                             amount=float(r[6])))
+    return pd.DataFrame(rows)
+
+
+def rebates_2025(target, how="golden"):
+    """Each class's rebates on its fills dispensed in calendar 2025. The statement's contract year runs February to
+    January (its units by contract quarter tie to the claims' units only on that calendar), and each product's
+    quarterly rebate stands on every channel line: the golden takes contract quarters 2025-Q1 to 2025-Q4 once each
+    and January 2025's share of contract quarter 2024-Q4 at that quarter's rebate per unit ("golden"); the contract
+    year read as the calendar year, each product-quarter once ("calendar"); every 2025 line summed ("lines"); the
+    2025 invoices, each product-quarter once ("invoiced")."""
+    rb = rebates(target)
+    once = rb.drop_duplicates(["product", "cq"])
+    if how == "lines":
+        s = rb[rb["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
+    elif how == "invoiced":
+        s = once[once["invoice"].str.startswith("2025")].groupby("cls")["amount"].sum()
+    elif how == "calendar":
+        s = once[once["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
+    else:
+        s = once[once["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
+        q4 = rb[rb["cq"] == "2024-Q4"].groupby(["product", "cls"]).agg(units=("units", "sum"), amount=("amount", "first"))
+        f = fills(target)
+        dl = drugs(target)
+        jan = f[(f["date"] >= dt.date(2025, 1, 1)) & (f["date"] < dt.date(2025, 2, 1))]
+        jan_units = jan.groupby(jan["ndc11"].map(dl["product_name"]))["units"].sum()
+        s = s.copy()
+        for (prod, cls), r in q4.iterrows():
+            s[cls] = s.get(cls, 0.0) + r["amount"] / r["units"] * float(jan_units.get(prod, 0.0))
+    return {c: float(s.get(c, 0.0)) for c in W.CANDIDATES}

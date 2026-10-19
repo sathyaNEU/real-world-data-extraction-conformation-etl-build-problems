@@ -1,10 +1,13 @@
 """task172 cracker and mirror sheets, run on the cut pack (target/).
 
-The cracker landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out),
-executed every filed sentence and pin, and links a spouse to her sponsoring employee through every record that carries
-the link (it is credited with the most obvious device on each ask). The mirror stops at the most attractive wrong rung
-of the call and works the asks the natural way. Each ask figure is scored a hit within half a unit of its rounding;
-the pair ceiling is the strongest response with any one more device cracked, at the build's rubric weights."""
+The cracker is the stage 4 reader's measured path, not a guess at it: it landed the call, ran the hygiene battery,
+executed GM-07 1.3, 1.4, 2.3 and 2.4, linked every spouse through every record that carries the link and took a
+spouse's two household IDs as one person (round 3's settled cell), took each person's card approved most recently
+from HR's roster, counsel's approval notices and the register's approvals, counted counsel's rejection notices with the
+ones applicants forwarded (one per case and notice date) and looked for each case's next receipt. Each ask figure is
+scored a hit only when it equals the golden (whole numbers); the pair ceiling is the cracker with any one more device
+found, at the build's rubric weights. The mirror stops at the most attractive wrong rung of the call and works the
+asks the natural way."""
 from __future__ import annotations
 
 import datetime as dt
@@ -19,41 +22,19 @@ import common as C   # noqa: E402
 
 W_CALL, W_COMP, W_IF, W_ASK = 25.0, 12.0, 7.0, 56.0     # per cent of the rubric
 N_ASK = 6 + 6 + 8                                          # ask A cells, the chart's labelled bars, ask B cells
+ALL = ("roster", "register", "counsel", "tracker")
+CAREFUL_A = dict(sources=("roster", "counsel", "register"), dual=False, moves=False)
+CAREFUL_B = dict(by_renewal=False, scope=False)
 
 
 def ask_a_by(T, cases, ref, **kw):
-    """ask A executed on the pack with one handling changed (calc.latest_cards' options): sources, links, merge"""
+    """ask A executed on the pack with one handling changed (calc.persons' options)"""
     return K.ask_a(T, cases, ref, **kw)
 
 
-def ask_b_counsel(T, cases, ref, with_forwarded=False, with_register=False):
-    """counsel's rejection notices by notice date; refiled when the case's next receipt notice falls within 30 days"""
-    rej = {}
-    for n in T["notices"]:
-        if n["notice_type"] == "Rejection notice":
-            rej[(ref.get(n["client_ref"]), K._d(n["notice_date"]))] = 1
-    if with_forwarded:
-        for a in T["actions"]:
-            if a["action"] == "Notice forwarded by applicant" and a["detail"] == "Rejection notice":
-                rej.setdefault((ref.get(a["case_id"]), K._d(a["notice_date"])), 1)
-    rec = defaultdict(list)
-    for n in T["notices"]:
-        if n["notice_type"] == "Receipt notice":
-            rec[ref.get(n["client_ref"])].append(K._d(n["received_date"]))
-    if with_register:
-        for c in cases.values():
-            if c["received"]:
-                rec[c["id"]].append(c["received"])
-    out = {}
-    for label, a, b in C.ASK_B_QUARTERS:
-        nr = nf = 0
-        for (k, nd) in rej:
-            if a <= nd <= b:
-                nr += 1
-                later = sorted(x for x in rec.get(k, []) if x > nd)
-                nf += bool(later and (later[0] - nd).days <= C.REFILE_DAYS)
-        out[label] = (nr, nf)
-    return out
+def ask_b_by(T, cases, ref, **kw):
+    """ask B executed on the pack with one handling changed (calc.ask_b's options)"""
+    return K.ask_b(T, cases, ref, **kw)
 
 
 def ask_b_dispatch(T, cases, ref):
@@ -95,38 +76,29 @@ def sheets(target):
     T, cases, ref = Q["T"], Q["cases"], Q["ref"]
     A = K.ask_a(T, cases, ref)
     B = K.ask_b(T, cases, ref)
-    # the cracker executes GM-07 1.3, 1.4, 2.3 and 2.4 and runs the battery on the joins they make: 1.4's category
-    # sends it from HR's roster to counsel's approval notices, so it adds the approvals the roster lacks and takes each
-    # approval's category; it links every spouse through every record (credited); it keys persons by the ID each
-    # record carries. Its two ask A devices: cards only the register's filings and the tracker hold (A1), and a
-    # spouse's two IDs (A6)
-    crack_a = dict(sources=("roster", "counsel"), merge=False)
+    a_care = ask_a_by(T, cases, ref, **CAREFUL_A)
+    b_care = ask_b_by(T, cases, ref, **CAREFUL_B)
     rows = {}
-    rows["cracker"] = (score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref)),
-                       "the roster with counsel's approvals and their categories, every spouse link, persons by ID; "
-                       "counsel's rejection and receipt notices")
-    rows["cracker, most obvious device cracked"] = (
-        score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref, True, False)),
-        "as the cracker, with the rejection notices applicants forwarded")
-    rows["cracker, the other device cracked"] = (
-        score(A, B, ask_a_by(T, cases, ref, **crack_a), ask_b_counsel(T, cases, ref, False, True)),
-        "as the cracker, with every receipt the register holds")
-    rows["cracker, ask A's roster gap cracked"] = (
-        score(A, B, ask_a_by(T, cases, ref, merge=False), ask_b_counsel(T, cases, ref)),
-        "as the cracker, with the register's filings and the tracker's cards")
-    rows["cracker, ask A's two IDs cracked"] = (
-        score(A, B, ask_a_by(T, cases, ref, sources=("roster", "counsel")), ask_b_counsel(T, cases, ref)),
-        "as the cracker, a spouse's two IDs taken as one person")
-    rows["mirror"] = (score(A, B, ask_a_by(T, cases, ref, sources=("roster",), links="benefits", merge=False),
-                            ask_b_dispatch(T, cases, ref)),
+    rows["cracker"] = (score(A, B, a_care, b_care),
+                       "the reader's path: the roster with counsel's and the register's approvals, every spouse link, a "
+                       "spouse's two household IDs one person; counsel's and the forwarded rejections, receipts by case")
+    one = (("cracker, the tracker's approvals found", dict(CAREFUL_A, sources=ALL), None),
+           ("cracker, one card under two IDs found", dict(CAREFUL_A, dual=True), None),
+           ("cracker, an employee's two IDs found", dict(CAREFUL_A, moves=True), None),
+           ("cracker, the applicant's own filing found", None, dict(CAREFUL_B, by_renewal=True)),
+           ("cracker, the other filings' rejections found", None, dict(CAREFUL_B, scope=True)))
+    for name, ka, kb in one:
+        rows[name] = (score(A, B, ask_a_by(T, cases, ref, **ka) if ka else a_care,
+                            ask_b_by(T, cases, ref, **kb) if kb else b_care), name.split(", ", 1)[1])
+    rows["mirror"] = (score(A, B, ask_a_by(T, cases, ref, sources=("roster",), links="benefits", merge=False,
+                                            dual=False, moves=False), ask_b_dispatch(T, cases, ref)),
                       "the roster's cards and categories, spouses linked through Benefits; the mailroom's returned packets")
     rows["mirror, counsel's notices"] = (
-        score(A, B, ask_a_by(T, cases, ref, sources=("roster", "counsel"), links="benefits", merge=False),
-              ask_b_counsel(T, cases, ref)),
+        score(A, B, ask_a_by(T, cases, ref, sources=("roster", "counsel"), links="benefits", merge=False, dual=False,
+                             moves=False), ask_b_by(T, cases, ref, forwarded=False, **CAREFUL_B)),
         "the roster with counsel's approvals, spouses linked through Benefits; counsel's rejection notices")
     base = rows["cracker"][0]["total"]
-    cr_rows = ("cracker, most obvious device cracked", "cracker, the other device cracked",
-               "cracker, ask A's roster gap cracked", "cracker, ask A's two IDs cracked")
+    cr_rows = tuple(name for name, _, _ in one)
     cr = max(rows[k][0]["total"] for k in cr_rows)
     mi = max(rows["mirror"][0]["total"], rows["mirror, counsel's notices"][0]["total"])
     lc = cr / N_ASK

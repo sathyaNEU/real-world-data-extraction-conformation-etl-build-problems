@@ -179,9 +179,16 @@ def workbook(g, path):
         "4.2, rounded to the nearest 100 t.",
         "Collector figures are rock salt (RS) only; the collector and local circuits spread dry salt.",
         "Dome stock: survey report TG-2026-0917 brought forward by the scale house weighings after each capture, loads "
-        "weighed at another yard's scale counted at the dome named in the remarks, and the 21 September dispatch issue.",
-        "Arterial salt: older-controller runs counted once with the spinner brine taken off at 1.18 kg a litre; Kettlewood "
-        "Road Services circuits from its monthly returns; each circuit under the yard that ran it that winter.",
+        "weighed at another yard's scale counted at the dome named in the remarks, the five supplier loads weighed "
+        "again at another yard's scale on their way to their own yard (the same truck on the same gross, back at a "
+        "City scale inside its round trip from the supplier) counted once, on their own yard's ticket (RO-PR-07 section "
+        "2: deliveries weighed at the yard's scale house), and the BOOKED October loads of the 21 September dispatch "
+        "issue.",
+        "Arterial salt: the M410 spreader controllers' runs (up to each unit's replacement in Fleet Services' work "
+        "orders), which carry one total of salt and brine on every row, counted once with the spinner brine taken off "
+        "at 1.18 kg a litre; Kettlewood Road Services circuits from its monthly returns; each circuit under the yard it "
+        "belonged to that winter, the platform's current circuit codes taken back through the route audit's 1 July "
+        "2026 changes.",
     ]
     ws5.column_dimensions["A"].width = 120
     for i, t in enumerate(notes, 1):
@@ -340,8 +347,37 @@ def write_submission(path, g):
              "as a street's Priority 2 salt rises.")
     L.append("5. Read the line at the new segments' own Priority 2 salt and scaled to 61.7 WSI points "
              "(winter_maintenance_plan_2026-27.pdf, section 4) over their {:.1f} lane-km, the additional salt "
-             "road_salt_procurement_procedure_RO-PR-07.pdf 4.2 commits: {:,} t to the nearest 100 t.\n".format(
+             "road_salt_procurement_procedure_RO-PR-07.pdf 4.2 commits: {:,} t to the nearest 100 t.".format(
                  g["lane_km"], f["commitment_t"]))
+    L.append("6. Brought each dome's stock in dome_stock_survey_2026-09.pdf forward by the loads weighed in to it and "
+             "out of it after its capture's end (winter_maintenance_plan_2026-27.pdf section 5) in "
+             "scale_house_log_2026-08-24_to_2026-09-24.xlsx, the flight log's UTC taken to Eastern daylight time and a "
+             "weighing for another yard counted at the dome its remarks name, and counted each of the five supplier "
+             "loads also weighed at another yard's scale on its way to its own yard once, on its own yard's ticket, "
+             "since deliveries for each yard are \"weighed at the yard's scale house\" "
+             "(road_salt_procurement_procedure_RO-PR-07.pdf section 2) and the earlier ticket is the same delivery "
+             "weighed again (the same truck on the same gross, back at a City scale inside its own round trip from the "
+             "supplier); with the BOOKED October loads in northgrit_dispatch_2026-10_issued_2026-09-21.csv added, the "
+             "stock in each dome on 1 November is {}, and each dome's room is its rated capacity in "
+             "salt_dome_register.csv less that stock.".format(
+                 ", ".join("{} {:,.1f} t".format(YNAME[y], f["stock_%s" % y]) for y in C.YARDS[:-1]) +
+                 " and {} {:,.1f} t".format(YNAME[C.YARDS[-1]], f["stock_%s" % C.YARDS[-1]])))
+    L.append("7. Summed the rock salt on the arterial circuits in telematics_segment_passes_2023-10-01_2026-09-23.parquet "
+             "from 1 November to 31 March local time, counting each run of the M410 controllers (the units whose "
+             "segment rows repeat the run's total, salt and brine together, up to each M410 replacement in "
+             "fleet_work_orders_2023-07_to_2026-09.csv) once, less its pre-wet litres at the brine's weight in "
+             "winter_maintenance_plan_2026-27.pdf section 2, KLV-A15 and KLV-A16 under Mapleford before their 1 July "
+             "2026 entries in route_audit_revision_log.csv, and added Kettlewood's contract circuits under their City "
+             "circuits' yards from kettlewood_material_returns_2023-24_to_2025-26.xlsx: {} in 2023-24, 2024-25 and "
+             "2025-26.".format(
+                 ", ".join("{} {:,}, {:,} and {:,} t".format(YNAME[y], f["art_%s_2023-24" % y],
+                                                             f["art_%s_2024-25" % y], f["art_%s_2025-26" % y])
+                           for y in C.YARDS[:-1]) +
+                 " and {} {:,}, {:,} and {:,} t".format(YNAME[C.YARDS[-1]], f["art_%s_2023-24" % C.YARDS[-1]],
+                                                       f["art_%s_2024-25" % C.YARDS[-1]],
+                                                       f["art_%s_2025-26" % C.YARDS[-1]])))
+    L.append("8. Commit {:,} t of rock salt above the rolled-over 39,100 t contract for November 2026 to March "
+             "2027.\n".format(f["commitment_t"]))
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % F_WB)
     L.append("1. Seasonal tonnage above the rolled-over contract: {:,} t.".format(f["commitment_t"]))

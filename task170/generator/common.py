@@ -5,8 +5,9 @@ Central Medical Stores (CMS) on six-month cycles; C7 runs from January to June 2
 files a monthly projection of the adults on tenofovir/lamivudine/dolutegravir (TLD); the paediatric and adolescent
 ART register (the national EPR's paediatric module, the legacy register before June 2024) holds every child's clinic
 visits, weighings and regimens. Children move from paediatric regimens onto the adult TLD tablet at the first clinic
-weighing that reads 30 kg or more. CMS counted its stock on 31 August 2026, pulled every file on 2 September 2026 and
-files the C7 order at the quantification review of 22 September 2026.
+weighing that reads 30 kg or more (35 kg before the 2026 guidelines). CMS counted its stock on 31 August 2026, pulled
+every file on 2 September 2026 and files the C7 order, in two lines, at the quantification review of 22 September
+2026; line 2 carries the register's children.
 
 The seed was fixed by rule before any data was generated: the task number, then the count's month and day."""
 from __future__ import annotations
@@ -26,7 +27,8 @@ PULL = D(2026, 9, 2)            # every file pulled
 REVIEW = D(2026, 9, 22)         # the quantification review files the C7 order
 WINDOW = (D(2026, 9, 1), D(2027, 6, 30))
 MAX_MONTHS = 6                  # the maximum stock level, months of the last month's forecast consumption
-LOT = 5000                      # the call is rounded to the nearest 5,000 bottles
+CARTON = 96                     # bottles of TLD 30s to the shipper carton
+PALLET = 84 * CARTON            # each line of the order is placed in whole pallets of 84 cartons (8,064 bottles)
 C4 = (D(2025, 7, 1), D(2025, 12, 31))     # the last two closed cycles
 C5 = (D(2026, 1, 1), D(2026, 6, 30))
 EPR_LIVE = D(2024, 6, 1)        # the EPR's paediatric module went live; legacy rows end 30 June 2024
@@ -111,7 +113,8 @@ REGIMENS = [
     # code, line, regimen, weight band, legacy text
     ("P1-AB3D10", "first", "ABC/3TC 120/60 mg dispersible + DTG 10 mg dispersible", "3 to 19.9 kg",
      "ABC/3TC 120/60 disp + DTG 10mg disp"),
-    ("P1-AB3D50", "first", "ABC/3TC 600/300 mg + DTG 50 mg", "20 to 29.9 kg", "ABC/3TC 600/300 + DTG 50mg"),
+    ("P1-AB3D50", "first", "ABC/3TC 120/60 mg dispersible or 600/300 mg + DTG 50 mg", "20 to 29.9 kg",
+     "ABC/3TC + DTG 50mg"),
     ("P2-AZ3LR", "second", "AZT/3TC 60/30 mg + LPV/r 40/10 mg pellets or 100/25 mg tablets", "3 to 29.9 kg",
      "AZT/3TC + LPV/r"),
     (REG_TLD, "first", "TDF/3TC/DTG 300/300/50 mg (TLD)", "30 kg and over", "TDF/3TC/DTG 300/300/50"),

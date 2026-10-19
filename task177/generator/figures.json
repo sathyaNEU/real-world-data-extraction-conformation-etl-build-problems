@@ -1,0 +1,107 @@
+{
+ "a_forced": 0.08,
+ "a_free": 0.4,
+ "accept_n": 2400,
+ "accept_resolved": 2041,
+ "ask_employers": {
+  "April": 1686,
+  "August": 1399,
+  "December": 1203,
+  "February": 1040,
+  "January": 945,
+  "July": 1660,
+  "June": 1852,
+  "March": 1555,
+  "May": 1850,
+  "November": 1799,
+  "October": 1794,
+  "September": 1838
+ },
+ "ask_own": {
+  "April": 1171,
+  "August": 1161,
+  "December": 1244,
+  "February": 1148,
+  "January": 1256,
+  "July": 1332,
+  "June": 1217,
+  "March": 1326,
+  "May": 1163,
+  "November": 1252,
+  "October": 1208,
+  "September": 1224
+ },
+ "bn": "812447093",
+ "bt_ll_gain": 382,
+ "bt_n": "68,677",
+ "bt_observed": 14,
+ "bt_one_rate_pred": 14,
+ "bt_split_pred": 14,
+ "call_share": 26,
+ "cycle": 14,
+ "ll_gain_floor": 1300,
+ "ll_gain_no_persev": 1137,
+ "ll_gain_one_rate": 1419,
+ "ll_gain_persev_exp": 133,
+ "ll_gain_teach_nothing": 93,
+ "monthly_share": {
+  "April": 16,
+  "August": 14,
+  "December": 14,
+  "February": 24,
+  "January": 35,
+  "July": 15,
+  "June": 14,
+  "March": 19,
+  "May": 15,
+  "November": 14,
+  "October": 14,
+  "September": 15
+ },
+ "n_calls": 342358,
+ "n_contacts": 413866,
+ "n_conversations": 71508,
+ "n_pop": 12500,
+ "n_redirects": 11154,
+ "next_choice": {
+  "after_call_resolved": [
+   6.6,
+   272703
+  ],
+  "after_call_unresolved": [
+   28.7,
+   35994
+  ],
+  "after_chosen_resolved": [
+   64.7,
+   33571
+  ],
+  "after_chosen_unresolved": [
+   26.8,
+   33442
+  ],
+  "after_transfer_resolved": [
+   11.7,
+   4982
+  ],
+  "after_transfer_unresolved": [
+   9.1,
+   5085
+  ]
+ },
+ "p_new_pct": 85.0,
+ "p_over_pct": 3.3,
+ "p_phone_pct": 88.3,
+ "q0": 0.5,
+ "ratio": 0.2,
+ "ratio_words": "about a fifth",
+ "release": "4.0",
+ "share_af": 18,
+ "share_last8": 14,
+ "share_no_persev": 26,
+ "share_one_rate": 40,
+ "share_persev_exp": 28,
+ "share_teach_nothing": 20,
+ "share_unrounded": 0.2605,
+ "vendor_bn": "724906318"
+}

@@ -1,0 +1,51 @@
+{
+  "task": "task270",
+  "owner": "sathay3012",
+  "status": "PAUSED",
+  "domain": "psychology-behavioral-science",
+  "objective": "descriptive-distribution",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-19",
+  "stump": "The default path fits each memory clinic's decline as the slope of its patients' ACE-III scores on time, per patient or in a random-slopes mixed model, and names Thurlwick and Penwardine as ARV-1102's two recruiting sites, because every patient's second completed sitting carries a one-time gain from having sat the test before that flattens a slope most where patients have sat it only two or three times; Quarndale, opened in April 2024, declines fastest and reads as the slowest. Only separating the second sitting's gain from each patient's trend puts Quarndale with Thurlwick, Mosswick first below.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-19",
+    "checks": 51
+  },
+  "leak": {
+    "leak_py": "REVIEW (asof 2026-10-09): the paper's register table names all eight clinics, and the flagged terms are the documents' own vocabulary; every line harmless",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (people.first, overuse.shape, repeat.question_form), no BLOCK",
+    "nearest": "0.05 task122 v3 stump",
+    "surface": "3 promoted (task268, task269, task194), each answered by a differentiation line on the card"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 4 on the build of 2026-10-19 (365 checks, verify clean, byte-identical, target.zip md5 e137a4a32c99f037c114eda954d6ebef): two isolated scored readers (score_reader.py, reader folders t270c3_reader_r1 and r2 in the session scratchpad) and the determinism judge (run id r5); a call any reader lands spends architecture 3, the slot's last, and the build retires; a judge finding confined to an ask is an ask-layer repair; then SHIPPED with target.zip, golden/, the ledger row and the card",
+  "architectures": [
+    {
+      "architecture": 1,
+      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
+    },
+    {
+      "architecture": 2,
+      "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
+    }
+  ],
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "none: the slot's seed DA20 went to task269's third architecture; task270 draws its own world"
+}

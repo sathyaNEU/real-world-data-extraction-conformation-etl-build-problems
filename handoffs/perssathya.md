@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 fully shipped, task237 to task242; wave 4, task243 to task248, next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-19 (wave 4 fully shipped, task243 to task248; wave 5: task249 PAUSED at stage 4 of its fourth architecture, shipping as measured, a fifth or retirement at the author's call; task250 to task252 not started, at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4 (task243 to task248) is cut and next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -17,6 +17,41 @@ domain General Statistics) though its decisive method is web performance enginee
 author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (done,
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
+
+**task249: PAUSED 2026-10-19 at stage 4 of architecture 4; shipping as measured, a fifth architecture or retirement is the author's call.**
+- Architecture 4 (Product Analytics, metric definition and measurement science x Data Quality Monitoring, the author's
+  choice of the ITP candidate). A German regional newspaper group's 2029 media kit: which of twelve local editions'
+  average monthly unique browsers for October to December 2028 carry the measurement note (reported above browsers by
+  more than 25 per cent), while WebKit keeps the analytics tag's cookie only seven days after the last visit and the
+  paywall meter sits in the same capped storage. Golden: eight editions (the replay on other browsers' histories within
+  edition, month and device class, print subscribers counted from the register, every other reader pooled over
+  sign-in); the default path (sign-in held fixed) files four.
+- State: every free gate green on target.zip 31ad0d1e (checks 0 FAIL, verify 0 FAIL, two byte-identical builds,
+  figures_check, precut, leak.py REVIEW only, heart WARN); the judge DETERMINISTIC, APPROVE on three packs; the asks
+  (newsletter subscribers through one-click links outside the preference centre's log; sold copies through a
+  circulation release that re-dated start dates) held 0 of 24 for both round 3 readers.
+- Stage 4, three rounds of two scored readers. Round 1:
+  - one reader landed the call through a fingerprint (every browser one address and agent), and the generator was
+    repaired;
+  - both readers kept the asks, and both devices were re-sited.
+
+  Round 2:
+  - both readers missed the call;
+  - one kept the sold copies through impossible records, which were repaired.
+
+  Round 3:
+  - one reader landed the call, by a calibration on signed-in WebKit browsers stratified by edition, cookie age and
+    sessions per identifier, which leans on the print subscribers in the light strata;
+  - the other reader missed (four).
+
+  Four of five clean readers missed, but one landing spends the architecture under the two-reader rule.
+- Options: ship as measured (the client's bar tolerates one top response on the call when the asks hold, and they
+  held at 0; risk: two top portal responses taking the stratified calibration); a fifth architecture (the remaining
+  candidates below, 3 then 2 or 4); or retire the number (the pipeline's default after spent architectures).
+- Earlier candidates still undrawn: 2 (survey interviewer effects from randomly assigned PSU pairs), 3 (immunization
+  coverage through the survey's first-dose coverage times the administrative third-to-first ratio), 4 (a register's
+  oldest-old counts rebuilt from deaths by cohort). Architectures 1 to 3 died the same way: a general statistical
+  correction a strong model runs unprompted.
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

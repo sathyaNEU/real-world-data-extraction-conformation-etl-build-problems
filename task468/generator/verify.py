@@ -1,195 +1,161 @@
-"""An independent verifier for task468: reads only the shipped bundle (target/) and the goldens, with its own readers and
-arithmetic (no generator module), and recomputes the call, the verdicts and every on-time share.
+"""An independent verifier for task468: reads only the shipped bundle (target/) and the golden workbook, with its own
+readers and arithmetic (no generator module), and recomputes the caseloads, each class's projected managed spend, the
+staffing and the rebates.
 
     python3 task468/generator/verify.py
 """
 import csv
 import datetime as dt
-import io
+import math
 import os
-import re
-import subprocess
-import sys
-import zipfile
 from collections import defaultdict
-from zoneinfo import ZoneInfo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-CT = ZoneInfo("America/Chicago")
-NAMES = {"q1": "avl_stop_events_2026q1_arbor.csv", "q2": "avl_stop_events_2026q2_quinnell.csv",
-         "review": "trip_matching_review_2026h1.csv", "fleet": "fleet_roster_2026.csv",
-         "jan": "larkhaven_gtfs_20260101.zip", "apr": "larkhaven_gtfs_20260405.zip",
-         "ride": "ridership_by_route_2026h1.xlsx", "guide": "dot_ftc_program_guidance_fy2027.pdf",
-         "cand": "ftc_candidate_routes_fy2027.csv"}
-GOLD = {"wb": "larkhaven_frequent_corridor_nominations_fy2027.xlsx"}
+N = {"orrin": "orrin_rx_specialty_claims_2019_2025.csv", "tallis": "tallis_specialty_claims_2026h1.csv",
+     "xw": "member_id_crosswalk_2026.csv", "drugs": "tallis_specialty_drug_list_2026.csv",
+     "prices": "tallis_specialty_price_schedule_2026.xlsx", "rebates": "orrin_rx_rebate_statement_2025.xlsx"}
+GOLD = "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
+CLASSES = ["IMM", "MS", "ONC", "HCV", "GLP", "HIV", "AST", "CF", "CGR"]
 
 
-def rows(path):
-    with open(path, encoding="utf-8", newline="") as fh:
+def rows(p):
+    with open(p, encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
 
 
-def feed(path, name):
-    with zipfile.ZipFile(path) as z:
-        return list(csv.DictReader(io.StringIO(z.read(name).decode("utf-8"))))
+def mi(d):
+    return (d.year - 2019) * 12 + d.month - 1
 
 
-def mins(s):
-    h, m, x = (int(v) for v in s.split(":"))
-    return h * 60 + m + x / 60.0
+def month_end(i):
+    y, m = divmod(i + 1, 12)
+    return dt.date(2019 + y, m + 1, 1) - dt.timedelta(days=1)
 
 
 def main(target, golden):
-    p = lambda k: os.path.join(target, NAMES[k])
-    guide = re.sub(r"\s+", " ", subprocess.run(["pdftotext", "-raw", p("guide"), "-"], capture_output=True, text=True,
-                                               check=True).stdout)
-    hol = [dt.date(2026, {"January": 1, "February": 2, "May": 5}[m], int(d)) for m, d in
-           re.findall(r"\((January|February|May) (\d+)\)", guide)]
-    assert len(hol) == 4, hol
-    days, d = [], dt.date(2026, 1, 1)
-    while d <= dt.date(2026, 6, 30):
-        if d.weekday() < 5 and d not in hol:
-            days.append(d)
-        d += dt.timedelta(days=1)
-    dayset = set(days)
-    n_days = len(days)
-    # stops, buses and the five designated stops' routes
-    code = {}
-    for k in ("jan", "apr"):
-        for s in feed(p(k), "stops.txt"):
-            code[s["stop_id"]] = s["stop_code"]
-    tag = {r["asset_tag"]: r["fleet_no"] for r in rows(p("fleet"))}
-    # conform: (source, id, bus, code, departure local, service day, trip, route, scheduled minutes)
-    ev = []
-    for r in rows(p("q1")):
-        dep = dt.datetime.strptime(r["dep_time"], "%Y-%m-%d %H:%M:%S")
-        ev.append(("A", r["event_id"], r["veh_no"], code[r["stop_id"]], dep, dt.date.fromisoformat(r["svc_date"]),
-                   r["trip_id"], r["route"], mins(r["sched_dep"]) if r["sched_dep"] else None, None))
-    seen, q = set(), []
-    for r in rows(p("q2")):
-        u = dt.datetime.strptime(r["ActualDepartureUTC"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-        dep = u.astimezone(CT).replace(tzinfo=None)
-        key = (r["VehicleID"], r["StopCode"], r["ActualDepartureUTC"])
-        if key in seen:
-            continue
-        seen.add(key)
-        sch = mins(r["ScheduledDeparture"]) if r["ScheduledDeparture"] else None
-        if sch is not None:
-            base = dep - dt.timedelta(minutes=sch)
-            sday = (base + dt.timedelta(hours=12)).date()
-        else:
-            sday = dep.date() - dt.timedelta(days=1 if dep.hour < 3 else 0)
-        q.append(("Q", r["EventID"], tag[r["VehicleID"]], r["StopCode"], dep, sday, r["TripID"], r["Route"], sch,
-                  r["DeviationSec"]))
-    ev += [e for e in q if e[5] >= dt.date(2026, 4, 1)]
-    # the candidates and their designated stops, from Planning's list
-    clist = rows(p("cand"))
-    cand = [r["route"] for r in clist]
-    stop_of = {r["route"]: r["designated_stop_code"] for r in clist}
-    # the review's weights
-    unm = defaultdict(int)
-    for e in ev:
-        if not e[6]:
-            unm[(e[2], e[5])] += 1
-    listed = defaultdict(int)
-    for (b, sd) in unm:
-        listed[sd.month] += 1
-    rv = rows(os.path.join(target, NAMES["review"]))
-    drawn = defaultdict(int)
-    for r in rv:
-        drawn[int(r["service_date"][5:7])] += 1
-    mix = defaultdict(lambda: defaultdict(float))
-    rawmix = defaultdict(lambda: defaultdict(float))
-    for r in rv:
-        sd = dt.date.fromisoformat(r["service_date"])
-        u = unm[(r["bus"], sd)]
-        assert u >= 1
-        w = u * listed[sd.month] / drawn[sd.month]
-        lab = "NIS" if r["route_operated"] == "Not in service" else r["route_operated"]
-        mix[r["stop_code"]][lab] += w
-        rawmix[r["stop_code"]][lab] += 1
-    for m in (mix, rawmix):
-        for s in m:
-            tot = sum(m[s].values())
-            for k in m[s]:
-                m[s][k] /= tot
-    # the counting hours: attributed by route and hour, unattributed by stop and hour
-    att, una = defaultdict(int), defaultdict(int)
-    for e in ev:
-        if e[5] in dayset and 6 <= e[4].hour <= 18 and e[4].date() == e[5]:
-            if e[6]:
-                att[(e[7], e[4].hour)] += 1
-            else:
-                una[(e[3], e[4].hour)] += 1
-
-    def estimate(sh):
-        est = defaultdict(float)
-        for k, v in att.items():
-            est[k] += v
-        for (s, h), n in una.items():
-            for r, w in sh[s].items():
-                if r != "NIS":
-                    est[(r, h)] += n * w
-        return {k: v / n_days for k, v in est.items()}
-
-    est = estimate(mix)
-    lowest = {r: min(est.get((r, h), 0.0) for h in range(6, 19)) for r in cand}
     from openpyxl import load_workbook
-    ws = load_workbook(p("ride"), data_only=True)["Weekday average"]
-    ride = {str(r[0]): r[-1] for r in ws.iter_rows(values_only=True) if r and isinstance(r[0], int)}
-    qual = sorted([r for r in cand if lowest[r] >= 4.0], key=lambda r: -ride[r])
-    five, below = qual[:5], qual[5] if len(qual) > 5 else None
-    raw = estimate(rawmix)
-    raw_low = {r: min(raw.get((r, h), 0.0) for h in range(6, 19)) for r in cand}
-    raw_five = sorted([r for r in cand if raw_low[r] >= 4.0], key=lambda r: -ride[r])[:5]
-    # on-time, against each trip's departure from its designated stop in the feeds
-    pub, blocks = {}, []
-    for k in ("jan", "apr"):
-        sc = {x["stop_id"]: x["stop_code"] for x in feed(p(k), "stops.txt")}
-        rt = {x["trip_id"]: x["route_id"] for x in feed(p(k), "trips.txt")}
-        for x in feed(p(k), "stop_times.txt"):
-            r = rt[x["trip_id"]]
-            if r in stop_of and sc[x["stop_id"]] == stop_of[r]:
-                pub[x["trip_id"]] = mins(x["departure_time"])
-        for x in feed(p(k), "frequencies.txt"):
-            blocks.append((rt[x["trip_id"]], mins(x["start_time"]), mins(x["end_time"]), int(x["headway_secs"]) / 60.0))
+    p = lambda k: os.path.join(target, N[k])
+    xo, xt = {}, {}
+    for r in rows(p("xw")):
+        if r["orrin_member_key"]:
+            xo[r["orrin_member_key"]] = r["plan_member_id"]
+        if r["tallis_member_no"]:
+            xt[r["tallis_member_no"]] = r["plan_member_id"]
+    cls = {r["ndc11"]: r["class_code"] for r in rows(p("drugs"))}
+    price = {}
+    for r in load_workbook(p("prices"), data_only=True).active.iter_rows(min_row=4, values_only=True):
+        if r and r[0]:
+            price[str(r[0])] = (float(r[2]), float(r[3]))
+    fills = []    # (member, class, date, days, spend)
+    o = rows(p("orrin"))
+    rev = {r["claim_no"] for r in o if r["line_type"] == "REVERSAL"}
+    for r in o:
+        if r["claim_no"] in rev:
+            continue
+        a, b, c = r["ndc"].split("-")
+        n = a.zfill(5) + b.zfill(4) + c.zfill(2)
+        fills.append((xo[r["member_key"]], cls[n], dt.date.fromisoformat(r["fill_date"]), int(r["days_supply"]),
+                      round(float(r["qty"]) * price[n][0], 2) + price[n][1]))
+    t = rows(p("tallis"))
+    rev = {r["ClaimID"] for r in t if r["Status"] == "R"}
+    for r in t:
+        if r["ClaimID"] in rev:
+            continue
+        d = dt.datetime.strptime(r["DateOfService"], "%m/%d/%Y").date()
+        fills.append((xt[r["MemberNo"]], cls[r["NDC11"]], d, int(r["DaysSupply"]),
+                      round(float(r["Quantity"]) * price[r["NDC11"]][0], 2) + price[r["NDC11"]][1]))
+    first = {}
+    spend = defaultdict(float)
+    cover = defaultdict(list)
+    for m, c, d, ds, s in fills:
+        k = (m, c)
+        first[k] = min(first.get(k, d), d)
+        spend[(m, c, mi(d))] += s
+        cover[k].append((d, d + dt.timedelta(days=ds - 1)))
 
-    def scheduled(e):
-        if e[6] in pub:
-            return pub[e[6]]
-        m = int(e[8] + 1e-9)
-        for r, a, b, h in blocks:
-            k = round((m - a) / h)
-            if r == e[7] and a <= m + 59 / 60.0 and m < b and abs(a + k * h - m) < 1:
-                return a + k * h
-        raise SystemExit("no scheduled departure for %s" % (e[6],))
+    def on(day):
+        return {k for k, iv in cover.items() if any(a <= day <= b for a, b in iv)}
 
-    ok, n = defaultdict(int), defaultdict(int)
-    for e in ev:
-        if e[6] and e[7] in stop_of and e[5] in dayset and 6 <= e[4].hour <= 18 and e[4].date() == e[5]:
-            late = (e[4] - dt.datetime.combine(e[5], dt.time())).total_seconds() - scheduled(e) * 60
-            n[e[7]] += 1
-            ok[e[7]] += int(-60 <= late <= 300)
-    otp = {r: 100.0 * ok[r] / n[r] for r in cand}
-    # against the goldens
-    wb = load_workbook(os.path.join(golden, GOLD["wb"]), data_only=True)
-    nom = {str(r[0]): r for r in wb["Nominations"].iter_rows(min_row=6, values_only=True) if isinstance(r[0], int)}
-    otw = {str(r[0]): r for r in wb["On-time departures"].iter_rows(min_row=5, values_only=True) if isinstance(r[0], int)}
-    r1 = lambda v: int(v * 10 + 0.5) / 10.0
+    last = mi(dt.date(2026, 6, 30))
+    cap = 36
+    early = dt.date(2019, 3, 31)
+
+    # each member's episodes of therapy in a class: a fill more than 60 days after every earlier supply ran out
+    # begins a new one
+    eps = {}
+    for k, iv in cover.items():
+        starts, run_out = [], None
+        for a, b in sorted(iv):
+            if run_out is None or (a - run_out).days > 60:
+                starts.append(a)
+            end = b + dt.timedelta(days=1)
+            run_out = end if run_out is None else max(run_out, end)
+        eps[k] = starts
+
+    def dur(k, i):
+        day = month_end(i)
+        st = [s_ for s_ in eps[k] if s_ <= day]
+        if len(st) == 1 and first[k] <= early:
+            return cap
+        return min(i - mi(st[-1]), cap)
+
+    cell = defaultdict(lambda: [0.0, 0])
+    for i in range(0, last - 12 + 1):
+        for k in on(month_end(i)):
+            nxt = sum(spend.get((k[0], k[1], j), 0.0) for j in range(i + 1, i + 13))
+            s = cell[(k[1], dur(k, i))]
+            s[0] += nxt
+            s[1] += 1
+    case = on(dt.date(2026, 6, 30))
+    proj = defaultdict(float)
+    n_case = defaultdict(int)
+    for k in case:
+        t_ = dur(k, last)
+        while (k[1], t_) not in cell and t_ > 0:
+            t_ -= 1
+        s = cell[(k[1], t_)]
+        proj[k[1]] += s[0] / s[1]
+        n_case[k[1]] += 1
+    pharm = {c: int(math.ceil(proj[c] / 1_500_000)) for c in CLASSES}
+    # rebates on the fills dispensed in 2025: the statement's contract year runs February to January, so contract
+    # quarters 2025-Q1 to 2025-Q4 once each (each product-quarter's rebate stands on every channel line) and
+    # January 2025's units at contract quarter 2024-Q4's rebate per unit
+    names = {r["ndc11"]: r["product_name"] for r in rows(p("drugs"))}
+    jan = defaultdict(float)
+    o_rev = {r["claim_no"] for r in o if r["line_type"] == "REVERSAL"}
+    for r in o:
+        if r["claim_no"] in o_rev:
+            continue
+        d = dt.date.fromisoformat(r["fill_date"])
+        if d.year == 2025 and d.month == 1:
+            a_, b_, c_ = r["ndc"].split("-")
+            jan[names[a_.zfill(5) + b_.zfill(4) + c_.zfill(2)]] += float(r["qty"])
+    seen, reb = set(), defaultdict(float)
+    q4 = {}
+    for r in load_workbook(p("rebates"), data_only=True).active.iter_rows(min_row=5, values_only=True):
+        if not (r and r[0]):
+            continue
+        if str(r[1]).startswith("2025") and (r[2], r[1]) not in seen:
+            seen.add((r[2], r[1]))
+            reb[r[3]] += float(r[6])
+        if r[1] == "2024-Q4":
+            u, a_, c_ = q4.get(r[2], (0.0, float(r[6]), r[3]))
+            q4[r[2]] = (u + float(r[5]), a_, c_)
+    for prod, (u, a_, c_) in q4.items():
+        reb[c_] += a_ / u * jan.get(prod, 0.0)
+    ws = load_workbook(os.path.join(golden, GOLD), data_only=True)["Staffing"]
+    gw = {r[0]: r for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0] in CLASSES}
     checks = {
-        "the five": [r for r in nom if str(nom[r][7] or "").startswith("Nominated")] == sorted(five, key=lambda r: -ride[r])
-        and five == ["2", "4", "6", "17", "22"],
-        "the first left out": below == "11" and "First qualifying" in str(nom[below][7]),
-        "the verdicts": all((nom[r][5] == "Yes") == (lowest[r] >= 4.0) and nom[r][3] == r1(lowest[r]) for r in cand),
-        "the raw mix's five": raw_five == ["2", "4", "6", "22", "11"],
-        "on-time": all(int(otw[r][4] * 100 + 0.5) == int(otp[r] + 0.5) for r in cand) and sorted(cand) == sorted(
-            ["2", "4", "6", "9", "11", "14", "17", "22", "31", "40", "51"]),
+        "caseloads": all(gw[c][2] == n_case[c] for c in CLASSES),
+        "pharmacists": all(gw[c][4] == pharm[c] for c in CLASSES),
+        "managed spend": all(gw[c][3] == int(proj[c] / 1e6 + 0.5) for c in CLASSES),
+        "rebates": all(gw[c][5] == int(reb[c] / 1000 + 0.5) for c in CLASSES),
     }
     for k, v in checks.items():
         print("%s  verify: %s" % ("PASS" if v else "FAIL", k))
-    print("verify: %d counting days, %d qualifying (%s), five %s, first left out %s" % (
-        n_days, len(qual), ", ".join(qual), ", ".join(five), below))
+    print("verify: %d fills, caseload %d, pharmacists %s (total %d)" % (len(fills), len(case), pharm,
+                                                                      sum(pharm.values())))
     if not all(checks.values()):
         raise SystemExit("verify failed")
 

@@ -1,0 +1,182 @@
+{
+ "task": "task177",
+ "title": "The share of their own contacts a provincial employment service's jobseekers will start in its digital assistant in March and April 2027, after eight weeks in which the upgraded assistant answers every call",
+ "domain": "Psychology & Behavioral Science",
+ "client_domain": "psychology-behavioral-science",
+ "subdomain": "decision-making and computational behavioural modelling (a reinforcement-learning model of jobseekers' contact-by-contact channel choices, with the learning from contacts they did not choose estimated from overflow transfers and carried through eight weeks of such contacts)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "one forecast share to the whole per cent for an eight-week window; employers' conversations and the service's own staff and test conversations in each month of 2026",
+ "as_of": "2027-01-04",
+ "deliverables": [
+  "assistant_share_forecast_mar_apr_2027.xlsx",
+  "assistant_first_aftermath_note.docx"
+ ],
+ "distractor_files": [
+  "overflow_episodes_2026.csv",
+  "post_contact_survey_2026.csv"
+ ],
+ "distractors": [
+  {
+   "file": "overflow_episodes_2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the workforce team's record of when the claimant queue was in overflow, the episodes the transfers came from",
+   "why_unused": "the legs export marks every transfer on the call itself and the voice session gives its outcome; the log adds nothing a figure reads",
+   "ruled_out_by": "the legs export's leg_result and transfer_to"
+  },
+  {
+   "file": "post_contact_survey_2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "jobseekers' satisfaction with each channel, which looks like a driver of channel choice",
+   "why_unused": "a 6 per cent sample with about three in ten answering; the choices and outcomes themselves are in the exports; no figure reads it",
+   "ruled_out_by": "its own coverage (a sample of contacts)"
+  }
+ ],
+ "stated_inputs": [
+  "2,041 of 2,400",
+  "14 days",
+  "3 January 2027",
+  "4 January to 28 February 2027",
+  "1 March to 25 April 2027"
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "jsonl",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "contact_legs_2026.csv",
+  "largest_file_rows": 887515
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task177/generator/build.py (seeded, deterministic) around a fictional provincial employment and income assistance service in Manitoba (Prairie Works Manitoba), its fictional digital assistant (Ask Prairie Works) and assistant vendor (Riverlot Dialogue Inc.). Jobseekers and employers are identified by number only. No real organisation's records or person is depicted.",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-19",
+ "generator": "task177/generator/build.py",
+ "files": [
+  {
+   "path": "assistant_first_rollout_plan.pdf",
+   "format": "pdf",
+   "bytes": 54665,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, Ask Prairie Works 4.0 rollout plan version 1.4",
+   "date": "2026-12-16",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "assistant_sessions_2026.jsonl",
+   "format": "jsonl",
+   "bytes": 39343984,
+   "rows": 119197,
+   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc. (fictional assistant vendor), session export for the Prairie Works tenant",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "claims_register_2026.csv",
+   "format": "csv",
+   "bytes": 2482323,
+   "rows": 29473,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba case system, claims register",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "contact_details_crosswalk.csv",
+   "format": "csv",
+   "bytes": 2451656,
+   "rows": 53316,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba case system, contact details with history",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "contact_legs_2026.csv",
+   "format": "csv",
+   "bytes": 106169160,
+   "rows": 887515,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba (fictional), contact-centre platform interaction-leg export, both lines, in the layout of a cloud contact-centre platform's leg export with a legacy platform's history loaded at cutover",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 9163,
+   "rows": 57,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, field descriptions for the pull",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "export_manifest.csv",
+   "format": "csv",
+   "bytes": 1762,
+   "rows": 12,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, export manifest",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "overflow_episodes_2026.csv",
+   "format": "csv",
+   "bytes": 3890,
+   "rows": 60,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba workforce team, overflow log",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "post_contact_survey_2026.csv",
+   "format": "csv",
+   "bytes": 1363829,
+   "rows": 25120,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba survey platform, post-contact survey export",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "release4_acceptance_summary.pdf",
+   "format": "pdf",
+   "bytes": 54378,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc., acceptance test summary for release 4.0",
+   "date": "2026-12-01",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "telephony_migration_codes.xlsx",
+   "format": "xlsx",
+   "bytes": 10251,
+   "rows": 16,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Contact Centre Systems, cutover code list",
+   "date": "2026-07-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "usage_tier_order_form_2027.pdf",
+   "format": "pdf",
+   "bytes": 54521,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc., usage tier order form for January to April 2027",
+   "date": "2026-12-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "vendor_invoices_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 7265,
+   "rows": 12,
+   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba accounts payable, the vendor's 2026 invoices",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

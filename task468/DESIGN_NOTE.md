@@ -1,310 +1,253 @@
-# task468 design note: Larkhaven's frequent corridor nominations
+# task468 design note: the specialty clinical pharmacists, by the spend the members on therapy will run
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design of architecture 3, the last before retirement. Read
+`## Tried and rejected` first. Architecture 1 (the Larkhaven transit nominations) and architecture 2 (the same pharmacy
+world, developed by months since first fill) are spent; their records are in the card's lineage and the lines below.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task468.json` (architecture v1), registered 2026-10-17 after a pull, so
-  every card filed before it was in the check, and re-checked after the design moved the decisive step onto the
-  review's design weights. Guard check WARN only, each answered here: identity_resolution as the strategy (no field
-  resolves an unmatched departure's route; the review measures the routes only on a sample, so the step is error
-  propagation, not a reading); the data-integration pattern already carried by task449 (false links diluting a share
-  among k equally plausible targets), task454 (imputation within a known stratum) and task466 (a log-Pearson fit to
-  two linked records), where here missed links select and the clerical review must be weighted by its own design;
-  Gate G method_or_model_selection repeats task239 and is in six of the last twelve (it is the honest key: the review's
-  raw route mix against the mix its design weights give); the question form "which" repeats task239 and task158 and
-  comes from the decision, a slate of routes. Differentiated against task116 v3, task452 and task454 on the card.
-- **Seed:** ET25 (a transit agency brands routes Frequent Network, and qualifies them for a state capital grant, when
-  they meet a service standard on weekdays; a GTFS checker certified a 30-minute route and rejected a frequency-based
-  10-minute one). Kept: the world (a transit agency, its GTFS feed, a state capital program), the decision (which
-  routes qualify and are nominated) and the quantity (each route's frequency in every hour of the weekday span).
-  Dropped: the seed's mechanisms (service days, times past 24:00, frequency-based trips), which are data semantics;
-  they survive as Layer 1.
-- **Pairing:** General Statistics & Data Science / data-integration-record-linkage-entity-resolution / ETL, client
-  pattern 1 (propagate linkage error to the estimate, match weights and clerical review: false links attenuate, missed
-  links select; shortcut, links above a cutoff as truth). The state counts delivered departures, and the department's
-  only record of them is the AVL vendors' stop events, which reach a route only through the vendors' trip matchers; the
-  conformed evidence is a linked dataset, and the deciding counts are estimates from it. GSDS is a methods domain, so
-  the swap is of the method: replacing the propagation of the matchers' error (the clerical review weighted by its
-  design) with the links taken as truth, a share-out in proportion to the links, or the review's raw mix moves the
-  nominations.
-- **Shape:** 01, a ranked list under a cap: each of the eleven candidate routes passes or fails the delivered
-  standard, and the state takes at most five per agency, the highest in average weekday boardings first; the criteria
-  are each route's verdict, the five, the first qualifying route left out, plus each candidate's on-time share.
-- **Strategy:** identity_resolution (linking records to the units they belong to), decisive generator G6 (the
-  unmatched departures' route mix is not the matched mix, and the review's raw mix is not the unmatched mix), with G12
-  (no route on a record is not no departure) and G3 (the AVL record against the bus that ran).
-- **World:** the United States, an unnamed Midwestern state. The City of Larkhaven runs Larkhaven Transit as a city
-  department (about 64 buses out on a weekday, fourteen routes through five transfer points). The state Department of
-  Transportation's Frequent Transit Corridors Program funds stop, shelter and signal-priority work on routes that
-  delivered frequent service; for the FY2027 round an agency nominates at most five routes, each of which must have
-  averaged at least four departures from its designated stop in each clock hour from 6 a.m. to 7 p.m. on the weekdays
-  from January to June 2026 (state holidays excluded), counted from the agency's AVL records whether or not the records
-  tie a departure to its route; an agency with more qualifying routes nominates those with the highest average weekday
-  boardings in its ridership report. Larkhaven's CAD/AVL vendor changed at 7 p.m. on 31 March 2026 (Arbor Fleetware to
-  Quinnell Transit Systems, whose export is in UTC, keyed by public stop code and asset tag and concatenated from daily
-  files); both vendors' trip matchers tie a stop event to a scheduled trip when the bus is within seven minutes of the
-  timetable and leave it with no trip otherwise. Service Quality reviews the matchers each month: it lists the bus-days
-  with at least one unmatched event at the five transfer points, draws 250 at random, and reviews one unmatched event
-  on each, chosen at random, against the bus's CCTV, recording the route the bus was operating or that it was out of
-  service.
-- **Forcing fact:** the state's application closes on 1 December 2026; the City Council authorizes the nominations by
-  resolution at its 17 November 2026 meeting, and the service planning manager's workbook goes to the council's
-  Transportation Committee first. As-of: 30 October 2026. The call is retrospective by the program's own design (it
-  certifies service delivered in a closed period) and faces forward in what it funds (FY2027 work on the five routes).
-- **Forum and forcing event:** council_or_assembly (Larkhaven City Council), vote_or_meeting (the authorizing
-  resolution). Organisation local_government; role programme_officer. Personas from `guard.py names --geo "United
-  States" --seed 468`: Wendy James (Manager, Service Planning and Grants, who prepares the nominations), Eric Thomas
-  (ITS systems administrator, who signs the cutover notes) and Alfred Hensley (Service Quality analyst, who runs the
-  trip-matching review), with Mitchell Boyd and Jeffery Collins, the Service Quality analysts who share the reviews
-  (initials in the log); Diane Beck replaced, her first name in task105.
-- **Data-native sentence:** the matcher ties a stop event to a scheduled trip only when the bus is within seven minutes
-  of the timetable, and the buses outside it are the late ones on the trunk routes that share the Transit Mall, so the
-  events left without a trip are mostly the trunk routes' and pile up on their bus-days; a review that takes one event
-  from each sampled bus-day sees each late trunk bus-day once however many of its events went unmatched, so its raw
-  route mix understates exactly the routes the matcher failed most.
-- **The WHAT screen.** Population: departures by buses of the route in revenue service from its designated stop on the
-  counting days (guidance 3.2 and 3.4, departures counting whether or not the record ties them to the route; no
-  departure goes unrecorded). Outcome: the average number of such departures in each clock hour from 6 a.m. to 7 p.m.
-  by the time the bus left (guidance 3.3). Window: service days 1 January to 30 June 2026, weekdays less four state
-  holidays (125 days). Unit: departures. Comparison: four in every one of the thirteen hours, then the five-route cap
-  by the ridership report (guidance 5.1). The decisive step settles none of them: it is how a route's departures are
-  estimated from records a sixth of which carry no trip, through a review whose raw mix the data's own structure (the
-  review's one event per bus-day against bus-days carrying 1 to 16 unmatched events) shows to be unrepresentative.
-- **Deliverables:** `larkhaven_frequent_corridor_nominations_fy2027.xlsx` (the call, each candidate's verdict and
-  lowest hour, its share of departures on time against the timetable, and the chart of the lowest hours).
+- **Card:** `.claude/skills/fingerprint/cards/task468.json` (architecture v3), registered 2026-10-19 after a pull. Guard
+  check WARN only: `repeat.gate_g` (forecasting, as task249 v3 two builds back; the mechanism here is a development by
+  months in the current episode of therapy, and task249's is a calibration drift, so the two share a Gate G label and
+  nothing else) and `driver.near` against this slot's own v2 at 0.41, differentiated on the card (v2's clock was months
+  since first fill, which is v3's analyst test). Shape 05; v2's draw axes kept (the world is unchanged, the decisive
+  step is new).
+- **Pairing:** Healthcare Delivery & Health Economics / payment-claims-health-plan-analytics / Data Extraction &
+  Conformation (ETL). Two pharmacy benefit managers' specialty claim files (the outgoing PBM's January 2019 to December
+  2025, the incoming PBM's from January 2026) are conformed into one record of fills by plan member, drug class and
+  date, repriced at the incoming PBM's 2026 schedule; the call is the program's staffing, which turns on what that
+  record says the members now on therapy will cost over the program year.
+- **Shape:** 05, an allocation: the plan's Specialty Clinical Pharmacy Program staffs each of nine specialty classes
+  with one clinical pharmacist for each $1.5 million of the class's managed spend for July 2026 to June 2027, or part
+  (charter 3.1); managed spend is the 2026-schedule cost of the fills the class's members on therapy on 30 June 2026
+  will receive in the program year (charter 2.1, 2.2). Criteria: the nine classes' pharmacists (9), the total (1), the
+  nine classes' managed spend (9), the nine classes' rebates on 2025's fills (9), the chart with its parts (3) and the
+  file (1), 32 in all.
+- **Strategy:** composition_mix (the conditioning property is how long the member's current episode of therapy has run;
+  the caseload's mix on it moved when members who had stopped came back), decisive generator G13 (the program year is a
+  horizon the record covers only through members who have passed each month of an episode), with G6 and G14.
+- **World:** the United States, an unnamed state. Merrow Health Plan, a nonprofit regional plan (about 482,000
+  members). Its pharmacy benefit moved from Orrin Rx (to 31 December 2025) to Tallis Pharmacy Services (from 1 January
+  2026). The January 2026 formulary bulletin removed step therapy for the weight-management GLP-1s, the severe-asthma
+  biologics and the CGRP migraine drugs; new members started them in numbers and members who had stopped them since
+  2023 came back. A hepatitis C outreach drive ran from May 2025. Personas from `guard.py names --geo "United States"
+  --seed 468`: Erik Marks (Director of Pharmacy), John Henry (the plan's pharmacy data analyst), Caleb Fischer
+  (Tallis's account manager).
+- **Forcing fact:** the program year began on 1 July 2026; the staffing is set on the claims through 30 June and goes
+  to the executive team at its first August meeting (charter 3.1). The call faces forward: the spend is the twelve
+  months from July 2026, none of it observed.
+- **Forum and forcing event:** executive_team, budget_or_appropriation; org family other (a nonprofit health plan, an
+  insurer); role operations_director.
+- **Data-native sentence:** a specialty member's spend over the next year depends on how long their current run on the
+  drug has lasted (loading fills, early discontinuation, the near-lifelong persistence of those who stay), and a member
+  who stopped and came back starts that run again; the 2026 caseloads of the three step-therapy classes hold 261 of
+  1,846 (GLP), 81 of 287 (AST) and 268 of 941 (CGR) members back on the drug after a lapse, against 2 to 11 a year
+  earlier, so any clock started at a member's first fill puts them with the persistent long-standing members.
+- **The WHAT screen.** Population: the members on therapy in a class on 30 June 2026, by days' supply (charter 2.1),
+  none added after; outcome: the 2026-schedule cost of their fills in the class (2.2); window: dispensed 1 July 2026 to
+  30 June 2027 (2.2); unit: dollars, then whole pharmacists at $1.5 million or part (3.1); comparison: none, each class
+  staffed on its own spend. The decisive step settles none of them: it is how the caseload's unobserved twelve months
+  are estimated, and which clock indexes the development (HOW, forced by the data's structure: members back after a
+  lapse spend like new starters at the same month of their episode, and the caseload's share of them moved).
 - **Sources, one line each:**
-  - `stumping/references/client/layer2-rigor-patterns.md`, data-integration-record-linkage-entity-resolution 1: the
-    client's own pattern for the task type; here the missed links select by lateness and the clerical review is the
-    department's routine trip-matching audit, whose design (one event per sampled bus-day) is part of the propagation.
-  - `stumping/references/client/measured-drivers.md`: the held group is compound (a conjunction whose partial
-    application scores wrong); 133 v1 died on a development sample signposting its decisive step, so here using the
-    review is the rung below the decisive move and weighting it is the move.
-  - `dataset-generation/references/layer1-messiness.md`: two vendor exports (local against UTC, stop ids against stop
-    codes, fleet numbers against asset tags), a cutover overlap, repeated rows at daily-file heads, renumbered stops,
-    schedule times one vendor holds to the minute against the feeds' half minute, GTFS frequency-based trips, times
-    past 24:00, a class-day service; none on the decisive step, each asserted neutral.
+  - `stumping/references/client/layer2-rigor-patterns.md`, payment-claims 1 and 4: completion and exposure; here the
+    exposure clock is months in the current episode of therapy (pharmacy persistence work's new-user and re-initiation
+    episodes), which no build on file carries.
+  - `stumping/references/strategies.md` F5 and F7: a pool whose mix moved on a property rebuilt from a history (the
+    episode), and replacements that restart a curve (132, a failed item restarts at the bottom of its wear curve).
+  - `dataset-generation/references/layer1-messiness.md`: two PBM layouts, reversals and rebills, re-keyed member
+    identifiers, 10- and 11-digit NDCs, contract repricing, mail-order long supplies; none on the decisive step.
 
 ## Default path
 
-1. Conform the two AVL exports to one table of departures at the five designated stops in local time: Arbor's stop
-   ids to stop codes through the January feed's stops.txt, Quinnell's UTC to Central time and its asset tags to fleet
-   numbers through the roster, Quinnell's repeated file-head rows and its share of the evening of 31 March dropped.
-2. Keep the counting days (125 weekdays, the four state holidays out) and the clock hours 6 a.m. to 7 p.m.
-3. Count each route's departures in each hour from the events the matchers tied to its trips; 17,112 of the window's
-   106,687 events have no trip.
-4. Share each stop-hour's events with no trip among the stop's routes and "out of service" by the route mix Service
-   Quality's review found at that stop (the share of reviewed events by route).
-5. Average over the 125 counting days, take each route's lowest hour and compare it with four; Route 17's lowest hour
-   is 3.6, Route 2's 4.2.
-6. Rank the routes that qualify by average weekday boardings and take five.
+1. Conform `orrin_rx_specialty_claims_2019_2025.csv` and `tallis_specialty_claims_2026h1.csv`: drop reversed claims,
+   link members through `member_id_crosswalk_2026.csv`, convert Orrin's 10-digit NDCs to 11 digits and map each to its
+   class through `tallis_specialty_drug_list_2026.csv`, price each fill at `tallis_specialty_price_schedule_2026.xlsx`.
+2. Take each class's caseload: the members whose fill's days' supply reaches 30 June 2026 (charter 2.1).
+3. See that the program year is unobserved and that a member's next year depends on how long they have been on the
+   drug; build each class's development of next-twelve-months spend by months since the member's first fill in the
+   class from every month end whose twelve months the record holds, and apply it at each caseload member's months.
+4. Staff one pharmacist per $1.5 million or part.
 
-Ends on: Routes 2, 4, 6, 22 and 11
-
-Golden: Routes 2, 4, 6, 17 and 22
+Ends on: 57 pharmacists, IMM 14, MS 7, ONC 6, HCV 1, GLP 8, HIV 6, AST 5, CF 4, CGR 6 (the first-fill development puts
+the members back after a lapse with the persistent long-standing members: GLP 7.48, AST 4.23, CGR 5.62 pharmacists of
+spend).
+Golden: 54 pharmacists, IMM 14, MS 7, ONC 6, HCV 1, GLP 7, HIV 6, AST 4, CF 4, CGR 5, from the same development indexed
+by months since the start of the member's current episode of therapy (a fill more than 60 days after every earlier
+supply ran out starts one), applied at each caseload member's own months.
 
 ## Stump sentence
 
-The default path shares each stop's events with no trip by the raw route mix of Service Quality's reviewed events, but
-the review takes one event from each sampled bus-day, so a Prairie Road bus-day with a dozen unmatched events counts
-once like a Lincoln Avenue bus-day with one, Route 17's share at the Transit Mall comes out at 35 per cent against the
-57 its bus-days carry, Route 17's lowest hour falls to 3.6 and the default path nominates Routes 2, 4, 6, 22 and 11;
-weighted by each reviewed event's bus-day count of unmatched events, Route 17 averages at least 4.7 in every hour and
-the five are Routes 2, 4, 6, 17 and 22.
+The default path develops each class's caseload by months since each member's first fill in the class and files 57
+pharmacists with GLP 8, AST 5 and CGR 6, because the members who came back to those drugs in 2026 after a lapse are
+counted at their first fill's months with the persistent long-standing members; developed by months since the current
+episode began, the classes take GLP 7, AST 4 and CGR 5, 54 in all.
 
 ## Three rules
 
-Task type: data-integration-record-linkage-entity-resolution: two AVL vendors' stop events conformed to one record and linked to the timetable's trips by the vendors' matchers, whose missed links are propagated into each route's departures through the department's clerical review, a task type serving Data Extraction & Conformation (ETL).
+Task type: payment-claims-health-plan-analytics: two PBMs' specialty claim files conformed into one repriced record of fills by plan member, class and date, from which each class's program-year spend for its members now on therapy is projected, a task type serving Data Extraction & Conformation (ETL).
 
-Domain test: the deciding quantity is each route's departures per hour estimated from a linked record whose missed links select (late trunk buses fall outside the seven-minute window), and the field's estimator is the clerical review's measure of the missed links' route mix, weighted by the review's own sampling design (one event of a bus-day's unmatched events, so each reviewed event stands for its bus-day's count); taking the links as truth, sharing the misses in proportion to the links or reading the review's raw mix each moves the nominations.
+Domain test: the deciding quantity is each specialty class's spend over the program year for the members on therapy today, and the field's estimator is a persistence-and-cost development by months in the current episode of therapy (new-user and re-initiation episodes separated by a permissible gap, as pharmacy persistence work defines them), applied at each member's own months; the trailing year, the run-rate, last year's caseload and a clock started at first fill each move pharmacists between classes.
 
-Swap: "a hospital's discharges per ward counted through a patient-matching engine, the unmatched discharges shared out by a chart review that pulls one chart per sampled shift" keeps the shape, because in a methods field the setting is always another field's; the swap is of the method, and the call fails the moment the design-weighted review is replaced by the raw review mix or a proportional share-out, while the seven-minute window, the Transit Mall's interlined trunk routes and the bus-day as the review's unit are the department's own.
+Swap: "the hospital's wards staffed by the bed-days their current inpatients will use" keeps an arithmetic shape but loses why it moves: a ward census has no fill, no days' supply, no lapse between episodes of a drug and no member coming back to a therapy they stopped, and the step-therapy change that brought them back has no counterpart.
 
-Layer 1: Arbor's export in local time keyed by GTFS stop id and fleet number with each event's service date; Quinnell's in UTC keyed by public stop code and asset tag, concatenated from daily files whose heads repeat the previous file's last ten minutes under new EventIDs, its schedule times to the second from the feeds; Arbor's schedule times held to the minute where the timetable sets some departures at the transfer points to the half minute; both systems recording the evening of 31 March; the April timetable's renumbered stop ids; Good Friday on the Saturday timetable and the 3 February snow day run on it though the feed shows a weekday; the feeds' frequency-based University Connector, College Hill's class-day trips in calendar_dates only, trips past 24:00. Each is the department's systems as they run, asserted neutral for the call (checks.py R2 and the separation check, which blanks every schedule field), the schedule times moving only the on-time shares.
+Layer 1: Orrin Rx's file with reversals as negative lines and rebills under new claim numbers; Tallis's file with a status column, resubmissions and its own member numbers linked through the plan's crosswalk; 11-digit NDCs against Orrin's hyphenated 10-digit; Orrin's paid amounts at its own contract against the Tallis 2026 schedule; 28-, 30-, 84- and 90-day supplies with mail-order packages; late refills inside an episode. Each is the PBMs' systems as they run; none decides the call.
 
-Layer 2: estimation_fit, the design-based estimate of the missed links' composition: the clerical review samples bus-days with equal probability and one event within each, so each reviewed event carries its bus-day's count of unmatched events as its weight, and the raw mix understates the bus-days the matcher failed most.
+Layer 2: forecast_uncertainty, a development of spend by months in the current episode of therapy conditional on the months each current member has reached, estimated from every member who has passed each month of an episode.
 
-Decisive step: weighting each reviewed event by its bus-day's unmatched events at the five stops (and each month by its bus-days listed over the 250 drawn) before taking each stop's route mix, which puts Route 17 at 57 per cent of the Transit Mall's events with no trip against the raw 35 and lifts its lowest hour from 3.6 to 4.8, nominating Routes 2, 4, 6, 17 and 22 instead of Routes 2, 4, 6, 22 and 11.
+Decisive step: indexing the development by months since the member's current episode of therapy began, so a member back on the drug after a lapse is projected like a new starter at that month, instead of by months since the member's first fill in the class (or last year's caseload, the trailing year, the run-rate).
 
-Not semantics: every field, code, unit and definition read correctly (stop ids and codes, UTC, asset tags, the repeated file heads, the review's route and finding, the guidance's departures whether or not tied to the route) still leaves the easy route sharing the unmatched events by the review's raw mix, because no field says the reviewed events are unequally likely to be drawn; the review memo states how the sample is drawn, as every audit does, and turning that into weights is the estimator's choice, not a reading.
+Not semantics: every field read correctly (reversals, crosswalk, NDCs, the schedule, days' supply, the charter's caseload, spend and window) still leaves the careful route developing by months since first fill, because no field marks an episode, a lapse or a return; the episodes have to be built from each member's fill history across both PBMs' files, and the choice of clock is a modelling choice the record tests.
 
-Not rule application: the guidance fixes the population, the hours, the counting days, the standard and the cap, and the review memo fixes how Service Quality draws its sample; no rule or procedure says how the unattributed departures are shared among routes, and executing every filed rule with the review's raw mix files Routes 2, 4, 6, 22 and 11, so the step no rule performs is weighting the review by its design.
+Not rule application: the charter fixes the caseload, the window, the prices and the staffing rule; no rule or procedure says how the caseload's next twelve months are projected or which clock indexes them, and executing every filed rule with the first-fill development files 57 pharmacists, so the step no rule performs is the episode clock.
 
-Analyst test: a strong analyst who conforms both exports, reads every field and applies every program rule shares the unattributed departures by the review's raw route mix and files Routes 2, 4, 6, 22 and 11 (the default path's Ends on), with Route 17 at 3.6 in its lowest hour; one who shares them in proportion to the attributed departures files Routes 2, 4, 9, 22 and 11; the design-weighted review files Routes 2, 4, 6, 17 and 22.
+Analyst test: a strong analyst who conforms both files, reads every charter rule and develops the caseload by months since each member's first fill files 57 pharmacists with GLP 8, AST 5 and CGR 6 (the default path's Ends on); counting the months from the start of each member's current episode files 54 with GLP 7, AST 4 and CGR 5.
 
-Estimand: the State Department of Transportation's FY2027 program guidance (3.2 a departure is a bus of the route in revenue service leaving its designated stop, counted in the clock hour it left; 3.3 the standard, an average of at least four departures in each of the thirteen clock hours beginning 6 a.m. through 6 p.m. over the counting days; 3.4 the counting days and the evidence, departures counting whether or not the agency's records tie them to the route; 5.1 the cap of five by average weekday boardings in the agency's ridership report).
+Estimand: the Specialty Clinical Pharmacy Program charter (2.1 the members on therapy in a class on 30 June 2026 by days' supply; 2.2 the plan's spend on their fills in the class dispensed 1 July 2026 to 30 June 2027 at the Tallis 2026 schedule plus its fee, before cost sharing; 3.1 one pharmacist per $1.5 million or part), in the charter PDF.
 
-No decoy: nothing is planted to be caught; the exports are the vendors' records as delivered, the review log and memo are Service Quality's routine audit and state no route shares, no memo, draft or briefing argues a method, a share or a route list, and the ridership report, the candidate list, the fleet roster, the farebox workbook and the Title VI report are what the department keeps.
+No decoy: nothing is planted; the claim files are the PBMs' extracts as delivered, the drug list and schedule are Tallis's, the bulletin is the committee's notice of the step-therapy change and names no return, and no memo, draft or briefing argues a projection method or a staffing.
 
-No certified replay: no published or certified figure reproduces only under one method; the review memo's monthly tally (bus-days listed, drawn, reviewed, findings by kind) ties under every handling, no document gives a route's departures or a nomination, and nothing is recovered by matching a filed number.
+No certified replay: no published or certified figure reproduces under one projection only; Orrin's trend report (a distractor) states past spend by class on Orrin's prices and no staffing.
 
-Lesson: a clerical review that samples clusters (bus-days) and takes a fixed number of records within each must be weighted by each cluster's size before its mix stands for the records it audits, because the clusters the linkage fails most hold the most unmatched records and are seen no more often than the rest; no build on file propagates linkage error through a review whose within-cluster take makes its raw mix unrepresentative.
+Lesson: a member's forward cost runs on the clock of their current episode of therapy, so a member who stopped and came back is a new user again; the decisive skill is to rebuild episodes from the fill history and index the development by them, which no build on file teaches.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0, the timetable's departures (Routes 2, 4, 6, 17 and 9) | guidance 3.4 counts departures from the AVL records, not the timetable: fires | none | the feeds are the obvious schedule source: fires | none | none | one count per route-hour: fires | readable |
-| R1, the departures the matchers tied to a route (Routes 4, 22, 11 and 40) | guidance 3.4 counts a departure whether or not the record ties it to the route: fires | the blank trip on a sixth of the events: fires | none | none | none | one group-by: fires | readable |
-| R1c, the unattributed shared in proportion to the attributed (Routes 2, 4, 9, 22 and 11) | none | none | proportional allocation of unknowns is the reflex: fires | the review's mix at every stop contradicts it: fires | none | one ratio per stop-hour: fires | readable |
-| R2, the review's raw route mix (Routes 2, 4, 6, 22 and 11) | the review memo says what the review is: fires | the review log carries the route: fires | using the audit sample's mix is the reflex once found: fires | none | none | one share per stop: fires | readable |
-| R3 (decisive), the review weighted by its design (Routes 2, 4, 6, 17 and 22) | the memo says how the sample is drawn and nothing about weighting or about bus-days carrying different numbers of events: silent | no column carries a bus-day's count of unmatched events or a weight; it has to be built from the AVL record by bus and service day: silent | the reflex reweight is to a population margin (post-stratifying by stop, band or month), which leaves the raw mix in place: silent | no control or published share scores the review's estimate: silent | every file reconciles, nothing is anomalous: silent | the weight is a count joined from another file, not a ratio of reported figures: silent | silent |
+| R0, the trailing year (62) | "managed spend for the program year" invites last year's spend: fires | the claim files' spend columns: fires | trailing-twelve-months spend is the budget reflex: fires | none | none | one sum per class: fires | readable |
+| R1, the June run-rate times twelve (78) | none | the fill dates: fires | annualising the latest month: fires | none | none | one product: fires | readable |
+| R2, last year's caseload's following year per member (62) | charter 2.1 names a caseload on a day, so a past caseload on the same day is the natural analog: fires | none | the cohort analog: fires | the record holds last year's caseload's full year: fires | none | one ratio per class: fires | readable |
+| R2b, a development from first fill applied to every caseload member (45) | none | none | the textbook persistence curve starts at the first fill: fires | none | none | one curve per class: silent | readable |
+| R3, the development by months since first fill at each member's months (57) | none | the first fill is the first row per member and class: fires | tenure since first fill is the careful analyst's reflex (architecture 2's reader took it): fires | the three earlier Junes' back-tests pass it (mean errors 3.6 and 3.0 per cent): fires | none | a cell per class and month: silent | readable |
+| G (decisive), the same development by months since the current episode began (54) | no document names an episode, a lapse, a restart, a return, persistence or months on therapy (R1 assertion): silent | no column carries a start, a gap or an episode; episodes are built from each member's fill history across both files through the crosswalk: silent | the reflex clock is the first fill: silent | the back-tests pass both clocks equally, since returns were rare before 2026: silent | every file reconciles and no row is anomalous; a late refill and a return look alike until the gap is measured: silent | a cell per class and episode month over 78 month ends: silent | silent |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | departure | a bus of the route in revenue service leaving the designated stop | every stop event at the stop, out-of-service movements included | a different five (the out-of-service events shared to routes) | guidance 3.2 "in revenue service"; the review records out-of-service movements |
-| SF2 | the clock hour of a departure | the hour in which the bus left, local time | the scheduled hour, or UTC | same call on the scheduled hour (asserted); UTC is not a clock hour of the day in Larkhaven | guidance 3.2 "counted in the clock hour in which the bus left the stop"; 1.4 times are Central time |
-| SF3 | each hour from 6 a.m. to 7 p.m. | the thirteen hours beginning 6:00 a.m. through 6:00 p.m. | fourteen hours including 7 p.m. | same call (every candidate's 7 p.m. hour scheduled below four is off the standard, asserted) | guidance 3.3 "the thirteen clock hours beginning 6:00 a.m. through 6:00 p.m." |
-| SF4 | averaged over the counting days | the hour's departures summed over the 125 counting days, divided by 125 | over the days with a record, or a mean of daily minima | same call (every counting day has records; asserted) | guidance 3.3 "the total ... divided by the number of counting days" |
-| SF5 | the counting days | weekdays 1 January to 30 June 2026 less the four state holidays (125), Good Friday and the snow day in | Good Friday and the snow day out | same call (asserted) | guidance 3.4 lists the holidays; Good Friday is not one |
-| SF6 | departures whether or not tied to the route | an event with no trip is still the departure of whichever route's bus it was | events with no trip are not the route's departures | R1, Routes 4, 22, 11 and 40 | guidance 3.4 "a departure counts whether or not the agency's records tie it to the route" |
-| SF7 | meets the standard | the unrounded average at or above 4.0 in every hour | rounded to one decimal first | same call (no candidate's lowest hour within 0.05 of 4.0, asserted) | guidance 3.3 "at least four" |
-| SF8 | the cap's order | average weekday boardings in the department's ridership report, January to June 2026 | boardings recomputed or Saturday ridership | same call | guidance 5.1 "as reported in the agency's ridership report" |
-| SF9 | the first qualifying route left out | the qualifying route with the next highest boardings after the five | the highest-ridership route that fails | Route 9 (fails the standard) | the prompt asks for the first qualifying route left out |
-| SF10 | the cutover evening | 31 March's service from Arbor's export (Quinnell's copy of 7 p.m. onward dropped), or the reverse | both copies kept | same call (outside the counting hours; asserted) | C1: the main population holds none of these events |
-| SF11 | Quinnell's repeated file-head rows | dropped (same bus, stop and second as the row before them) | kept | same call (23:50 to midnight, outside the counting hours; asserted) | C1 |
-| SF12 | the review's frame | bus-days by service day with at least one event with no trip at the five stops, any hour | counting days and hours only | same call (asserted) | the review memo's procedure |
-| SF13 | on time | no more than one minute before and no more than five minutes after the scheduled departure, bounds included | strict bounds | same call; six on-time shares move (asserted) | guidance 4.2 and the prompt, "no more than" |
-| SF14 | the on-time window | departures that left from 6:00 to 6:59 p.m. by the clock hour the bus left | windowed by the scheduled time | same call; no share moves (asserted) | guidance 3.2 "counted in the clock hour in which the bus left the stop" |
-| SF15 | the trip's scheduled departure | the trip's departure from the designated stop in the feed in effect that day (winter to 4 April, spring from 5 April) | the schedule field each export carries | same call; every on-time share moves (Arbor's held to the minute) | guidance 4.1 (the application carries "the GTFS feeds of its published timetable") and 4.2 ("the trip's scheduled departure in the published timetable"); the change note: Quinnell's ScheduledDeparture is the feed's |
-| SF16 | Quinnell's DeviationSec | the departure against ScheduledDeparture, seconds | an adherence at arrival | same call; same shares (asserted) | the change note's field table |
+| SF1 | caseload | members whose fill's days' supply reaches 30 June 2026 | members with any fill in the last 30, 60 or 90 days | another caseload | charter 2.1 "a fill ... has a days' supply that reaches it" |
+| SF2 | managed spend's price | units times the 2026 schedule's unit price plus its fee, before cost sharing | Orrin's paid amounts for the 2019 to 2025 fills, plan paid net of copay | Orrin's amounts give IMM 13 (asserted) | charter 2.2 "priced at the Tallis 2026 specialty price schedule ... before member cost sharing" |
+| SF3 | the program year | fills dispensed 1 July 2026 to 30 June 2027 | days of supply falling in the year | none ships | charter 2.2 "dispensed from July 1, 2026 to June 30, 2027" |
+| SF4 | a drug's class | its class code in Tallis's drug list | Orrin's product descriptions | same call: every NDC is listed (asserted) | charter 1.2 |
+| SF5 | pharmacists | one per $1.5 million or part, a ceiling | rounding to the nearest | none ships | charter 3.1 "or part of $1.5 million" |
+| SF6 | the duration cap | every month to 36, then pooled | capped at 12, 24 or 48 | same call (asserted) | the data |
+| SF7 | the duration grain | single months | three- or six-month bands; the development chained month to month | same call (asserted) | the data |
+| SF8 | a member filling in early 2019 | started before the file, pooled with the longest durations | started at that fill | another staffing | the transition notes: "may have been on the drug for years before that" |
+| SF9 | managed spend's rounding | the nearest million | under every reading of SF6, SF7 and SF13 | same million in every class (asserted, nearest edge 0.13 million) | the data |
+| SF10 | rebates on fills dispensed in 2025 (ask) | contract quarters 2025-Q1 to 2025-Q4 and January 2025 | the contract year read as the calendar year | the ask's figures move | the statement's units tie to the claims only on a February-to-January contract year (asserted) |
+| SF11 | whose spend | the caseload members' fills only | every fill in the class in the program year | none ships | charter 2.2 "the plan's spend on its caseload members' fills in the class" |
+| SF12 | a member across the PBM change | one member through the crosswalk | every Tallis member a new start | another staffing (asserted) | the crosswalk; the transition notes |
+| SF13 | the lapse that starts a new episode | more than 60 days after every earlier supply ran out | 30, 90 or 180 days | same call (asserted): inside an episode a refill is never more than a few days late, and a return comes six months or more after the supply ran out | the data |
 
 ## Ladder
 
-- **R0, the timetable (Routes 2, 4, 6, 17 and 9).** The feeds as published, averaged over the counting days, put every
-  candidate but Routes 14, 31 and 51 at or above four in every hour (Riverside 4.98); the first qualifying route left out
-  is Route 22. Dies to one filed sentence: guidance 3.4 counts departures from the AVL record, and Riverside's afternoon
-  runs went short of operators.
-- **R1, the links as truth (Routes 4, 22, 11 and 40).** Only four routes reach four from the departures the matchers
-  tied to a route; Route 17's lowest hour is 1.5, Route 2's 3.6, Route 6's 2.8. Dies to one filed sentence: guidance
-  3.4 counts a departure whether or not the record ties it to the route.
-- **R1c, the obvious correction: proportional (Routes 2, 4, 9, 22 and 11).** Sharing each stop-hour's events with no
-  trip in proportion to the routes' attributed departures gives Riverside 5.0 (Main St & 9th St's misses are Oak
-  Street's late buses, shared to Riverside by its punctual record) and leaves Route 17 at 2.2 and Route 6 at 3.8. Dies
-  to one shipped fact: the review finds Riverside in about 6 per cent of Main St & 9th St's events with no trip, not
-  the 59 per cent its attributed departures would give it.
-- **R2, the sophisticated one: the review's raw mix (Routes 2, 4, 6, 22 and 11).** Sharing by the reviewed events'
-  route mix puts Route 17 at 35 per cent of the Transit Mall's misses and its lowest hour at 3.6; Route 2 at 4.2. Dies
-  to one construction: each reviewed event is one of its bus-day's unmatched events (1 to 16 of them), so weighting it
-  by that count puts Route 17 at 57 per cent.
-- **R3, the decisive move: the review weighted by its design (Routes 2, 4, 6, 17 and 22).** Route 17's lowest hour 4.8,
-  Route 9's 3.7, Route 6's 4.7, Route 2's 4.7; the first qualifying route left out is Route 11.
-- **Bins and margins:** the verdicts are the graded quantities; under every weighted variant (the full weights, the
-  within-bus-day weight alone, by month, by vendor, by time band, counting-day reviews only) Route 17's lowest hour
-  sits 0.74 or more above four, Route 9's 0.25 or more below, Route 2's 0.53 or more above, Route 6's 0.64 or more
-  above; under every unweighted variant Route 17 sits 0.44 or more below four (asserted). The flip: Route 17 qualifies
-  once its share of the Transit Mall's events with no trip passes about 43 per cent; the raw review gives 35 and the
-  weighted 57.
-- **Position, separation and dominance:** a slate; each rung names its own five (R0 with Riverside, R1 four routes, R1c
-  Riverside and the Connector, R2 the Connector, R3 Prairie Road and Fairgrounds); no two adjacent rungs share a slate.
-  Every correction from R1 walks the trunk routes up; R1c walks Riverside up past the line and only the review turns it
-  down; only the weights turn Prairie Road up.
-- **Worth on the graded quantities:** the eleven verdicts move between rungs on Routes 2, 6, 9 and 17 (R1 four of
-  them, R1c three, R2 one, R0 one); the five and the first route left out move on every rung.
-- **Grid:** the corrections (count the unattributed; use the review; weight it) taken in order land on R1, R1c or R2,
-  R3; weighting the proportional share-out is not defined; the review taken as extra links lands on R1's slate.
+- **R0, the trailing year (62 pharmacists).** IMM 16, MS 8, ONC 8, HCV 4, GLP 6, HIV 6, AST 5, CF 4, CGR 5. Dies to the
+  caseload: the year's spend includes members who stopped, the outreach's finished hepatitis C courses and loading fills.
+- **R1, the June run-rate times twelve (78).** IMM 15, MS 8, ONC 8, HCV 4, GLP 14, HIV 6, AST 9, CF 4, CGR 10. Dies to
+  the same fact and to June's new starters' loading fills.
+- **R2, last year's caseload's following year per member (62).** IMM 14, MS 7, ONC 6, HCV 1, GLP 10, HIV 6, AST 6, CF
+  4, CGR 8. Dies to the durations: the step-therapy classes' caseloads are mostly 2026 starters and returners.
+- **R2b, the development from first fill applied to every caseload member (45).** IMM 12, MS 7, ONC 3, HCV 1, GLP 5,
+  HIV 6, AST 3, CF 4, CGR 4. Dies to the caseload: its members have already reached their months.
+- **R3, the analyst test: the development by months since first fill (57).** IMM 14, MS 7, ONC 6, HCV 1, GLP 8, HIV 6,
+  AST 5, CF 4, CGR 6 (quotas GLP 7.48, AST 4.23, CGR 5.62). Dies to the record: members back after a lapse, early in
+  the new episode, spend 0.53 (ONC), 0.43 (AST) and 0.56 (CGR) of what continuing members at the same months since
+  first fill spend, and about what new starters at the same episode month spend (0.86 to 1.06); the caseload's share
+  of them moved from 2 to 11 members a class to 81 to 268 in the step-therapy classes.
+- **G, the decisive move (54).** IMM 14, MS 7, ONC 6, HCV 1, GLP 7, HIV 6, AST 4, CF 4, CGR 5; quotas 13.33, 6.67, 5.33,
+  0.17, 6.67, 5.33, 3.33, 3.33, 4.66; managed spend 20, 10, 8, 0, 10, 8, 5, 5, 7 million.
+- **Margins:** every reading in the fork table files the golden; R3 sits 0.48 (GLP), 0.23 (AST) and 0.62 (CGR) of a
+  pharmacist past the golden's bin edges; every rung differs from the golden in at least three classes and the total.
+- **Position, separation and dominance:** R0 and R1 err on the short-course and loading classes; R2 and R3 err only
+  on the step-therapy classes, R2 more; R2b errs the other way. Only the episode clock moves GLP, AST and CGR down from
+  R3 without moving another class.
+- **Worth on the graded quantities:** the call (6), each class's pharmacists (2), each managed spend (1.5): R3 keeps 6
+  of 9 pharmacists and 6 of 9 spends (main 21.0 of 37.5, generator/ceiling.py).
+- **Grid:** Orrin's own prices move IMM (SF2, charter 2.2 rules them out); the crosswalk ignored moves several classes
+  (SF12); every reading of SF6, SF7 and SF13 files the golden.
 
 ## Closure table
 
 | # | Axis | Reading and closure |
 |---|---|---|
-| 1 | Population | departures in revenue service from the designated stop (guidance 3.2), tied to a trip or not (3.4); out-of-service movements out by the review's finding |
-| 2 | Unit of account | the departure; the standard in departures per clock hour |
-| 3 | Attribution window | service days 1 January to 30 June 2026; the counting hours carry no event from another service day (asserted) |
-| 4 | As-of dating | the exports as delivered (Arbor's of 2 April, Quinnell's of 6 July); the review log closed 31 July |
-| 5 | Version basis | one export per system; Quinnell's repeated file heads and its copy of 31 March's evening dropped (C1 on the call); scheduled departures from the feed in effect each day (SF15) |
-| 6 | Denominator | the 125 counting days (guidance 3.3) |
-| 7 | Weighting | each reviewed event by its bus-day's events with no trip at the five stops, each month by its bus-days listed over drawn; the within-bus-day weight alone, by month, by vendor and by time band give the same five (C1, asserted) |
-| 8 | Window length | the half-year as filed |
-| 9 | Boundary inclusivity | an hour from :00:00 to :59:59 by the departure second; "at least four" inclusive (guidance 3.3); on time includes its bounds (guidance 4.2, SF13); the frequency blocks end between two trips, so either reading of an end time gives the same trips |
-| 10 | Rounding path | unrounded averages compared with four; no candidate within 0.05 of it (asserted) |
-| 11 | Tie-break | none in the ridership order (distinct boardings) |
-| 12 | Maturity and censoring | the period closed 30 June; the review covers every month |
-| 13 | Order of operations | conform, keep the counting days and hours, share, average, compare, rank |
-| 14 | Row order | no dependence (asserted on shuffled files) |
-| 15 | Duplicate resolution | Quinnell's file-head repeats (same bus, stop and second) dropped; none in the counting hours (C1) |
-| 16 | Identity normalisation | stop ids to stop codes by the feeds' stops.txt; asset tags to fleet numbers by the roster; the review's bus and stop code join both |
-| 17 | Netting | none |
-| 18 | Dimensional units | departures, hours, local time; Quinnell's UTC converted (guidance 1.4); lateness in seconds against the feeds' times |
-| 19 | Code and status semantics | MatchStatus and a blank trip both mean no trip; the review's "Not in service" a non-departure |
-| 20 | Integerisation | departures whole; averages unrounded |
-| 21 | Clause scope | guidance 3 for the standard, 5 for the cap; the review memo describes its own sample only |
-| 22 | Forward window contents | none: the program certifies a closed period |
+| 1 | Population | the members on therapy in each class on 30 June 2026 by days' supply (charter 2.1); no member added after (SF11) |
+| 2 | Unit of account | the member in a class; spend in dollars, pharmacists whole |
+| 3 | Attribution window | fills dispensed 1 July 2026 to 30 June 2027 (charter 2.2, SF3) |
+| 4 | As-of dating | the claims through 30 June 2026 (charter 3.1); both files end there |
+| 5 | Version basis | one version of every file; reversed claims out (charter 2.2 "A reversed claim is not spend") |
+| 6 | Denominator | none: each class's spend is a total |
+| 7 | Weighting | each caseload member once at their own months; the development cells pool every month end |
+| 8 | Window length | twelve months |
+| 9 | Boundary inclusivity | a fill whose days' supply reaches 30 June counts (2.1: "dispensed on or before that day") |
+| 10 | Rounding path | spend unrounded to the staffing, rounded to the million for reporting (SF9) |
+| 11 | Tie-break | none: each class is staffed on its own spend |
+| 12 | Maturity and censoring | the program year is unobserved; the development uses only month ends whose twelve months the record holds; members filling in early 2019 pooled with the longest durations (SF8) |
+| 13 | Order of operations | conform, price, caseload, episodes, development, projection, ceiling |
+| 14 | Row order | no dependence |
+| 15 | Duplicate resolution | a reversed claim and its original out, the rebill kept; Tallis R lines out with their claims, resubmissions kept |
+| 16 | Identity normalisation | Orrin keys and Tallis numbers to plan member IDs through the crosswalk (SF12) |
+| 17 | Netting | spend before cost sharing (SF2) |
+| 18 | Dimensional units | 10-digit 5-3-2 NDCs padded to 11; units per package from the drug list and schedule |
+| 19 | Code and status semantics | class codes from the drug list (SF4); Orrin REVERSAL and Tallis R lines; never the stump |
+| 20 | Integerisation | pharmacists a ceiling at $1.5 million (SF5) |
+| 21 | Clause scope | charter 2 and 3 for the call, 4.1 and the prompt for the rebates; the bulletin's step-therapy change from January 2026 |
+| 22 | Forward window contents | the twelve months from July 2026, none observed; the call faces forward |
 
 ## Literal reader
 
-Executed word for word, the guidance takes each candidate's revenue departures from its designated stop on the 125
-counting days, counted in the clock hour each bus left and whether or not the record ties it to the route, and asks
-whether each of the thirteen hours from 6 a.m. averaged at least four; the records tie five events in six to a trip,
-and the rest are estimated, which the guidance requires without saying how; of the estimates the files support, the
-proportional share-out is contradicted by the review's route mix at every stop and the review's raw mix by its own
-draw (one event per bus-day, bus-days holding 1 to 16), and the design-weighted review is the one every stratification
-agrees on, so the literal execution nominates Routes 2, 4, 6, 17 and 22 with Route 11 the first qualifying route left
-out; no filed rule, basis or formula reads to another list. For the on-time shares, guidance 4.2 read literally times
-each departure against the trip's scheduled departure, which is the timetable's: the feed in effect that day, carried to
-the second by Quinnell's export (its notes say so) and held to the minute by Arbor's, so each share is timed against
-the feeds, with its bounds included.
+Executed word for word, the charter fixes the caseload (2.1), the spend's basis and window (2.2) and the staffing rule
+(3.1), and leaves one thing open: how the caseload's spend over the unobserved program year is estimated. The candidates
+are the trailing year (R0), the run-rate (R1), last year's caseload (R2), a development from first fill applied to
+everyone (R2b), the development by months since first fill (R3) and the development by months in the current episode
+(G). The data separates them: a member's next twelve months depend on how long their current run on the drug has
+lasted; members back after a lapse spend 0.43 to 0.56 of continuing members at the same months since first fill and
+0.86 to 1.06 of new starters at the same episode month (checks.py, oral oncology, severe asthma, CGRP); and the
+step-therapy classes' caseloads now hold 81 to 268 such members. Every reading of G's construction (gaps of 30 to 180
+days, caps 12 to 48, one-, three- and six-month bands, the month-to-month chain) files the same 54 and the same spend
+to the million (checks.py). Every write-up step names the file and rule it executes.
 
 ## Oracles
 
-- The review memo's monthly tally (bus-days listed, drawn and reviewed; findings by kind): counts, true under every
-  handling; it states no route share.
-- The ridership report: filed boardings, used as filed for the cap; no figure in it depends on the AVL estimate.
-- The GTFS feeds: the timetable rung (R0) reads them; nothing in them ties to delivered departures.
-- The farebox workbook and the Title VI report (distractors): revenue by route and 2025 equity classifications, with
-  no departure counts; no figure ties under any reading.
-- Quinnell's ScheduledDeparture equals the feeds' time to the second, including the 1 to 4 April departures on the
-  winter feed's trips that Arbor timed to the minute in March: split evidence for the on-time device, confirming the
-  timetable, never a share; no published on-time figure exists.
-- None ties only under the golden.
+None. Nothing ships a staffing, a projection or a past caseload's cost; Orrin's trend report (a distractor) gives
+2024 to 2025 spend by class on Orrin's prices and ranks no staffing; the medical-benefit drug list (a distractor) is
+outside the program by charter 1.1; the back-tests a solver may run pass the first-fill clock and the episode clock
+alike. The rebate statement is the ask's file and the projection never reads it.
 
 ## Ask sheet
 
-- **The on-time ask: for each candidate, of its departures from 6 a.m. to 7 p.m. on the counting days that the AVL
-  record ties to a trip, the share that left no more than one minute early or five minutes late (whole per cent; 11
-  figures).** H18 home: a measure every candidate carries that the call does not turn on; the state's application gives
-  it beside the frequency figures (guidance 4.2). Use: the Transportation Committee reads each route's reliability
-  beside its frequency before the council signs. Path: both exports (departure times, trips, schedule fields), both
-  feeds (stops, trips, stop_times, frequencies), the candidate list: five files, twenty columns. Primary device: D3, a
-  per-source precision that passes every identity check: Arbor's export holds each trip's schedule time to the minute
-  (sched_dep, and adherence_min computed on it), while the timetable sets the transfer points' departures to the half
-  minute in some periods of the day (the Transit Mall and Westgate in the peaks, Oak Street and College Hill from 9
-  a.m., Union Station until 3 p.m.), and Quinnell's export carries the feed's time to the second. A response that times
-  each departure against the schedule field its own export carries misses all eleven shares. Hazards: Arbor's
-  adherence_min rounded to a tenth of a minute; Quinnell's DeviationSec (its departure against ScheduledDeparture, so
-  right for the second quarter); the winter feed's trips running to 4 April under Quinnell. Stops (asserted): each
-  export's own schedule field misses 11 of 11; the adherence columns miss 11 of 11; thirty seconds added to every Arbor
-  schedule time misses 8 of 11; the feeds' times give the golden, every share at least 0.19 points from its rounding
-  edge. Realism: a legacy CAD/AVL holding schedule times to the minute beside a scheduling system that publishes half
-  minutes; the feeds and the newer system agree to the second.
-- **The construction layer:** the call, the eleven verdicts, the five and the first route left out; the cracker has
-  them.
-- **Main population zero-counts (asserted):** the call reads the counting-day events from 6 a.m. to 7 p.m. (departure
-  time, stop, bus, trip, route, match status), the review log and the ridership report's period averages, and no
-  schedule field: with every schedule field of both exports blanked and service days taken by the clock, the five are
-  unchanged (the separation check). The device lives only in sched_dep, adherence_min, ScheduledDeparture and the
-  feeds' stop_times and frequencies.
-- **Hazard table (asserted):** the minute-held schedule moves all 11 shares; the adherence rounding moves Arbor's
-  quarter of every route; strict bounds would move six (closed by "no more than").
-- **Referee:** Quinnell's ScheduledDeparture, the feed's time to the second, on the same winter trip ids Arbor timed
-  to the minute: split evidence for the timetable, never a share.
+- **Ask A, each class's manufacturer rebates on its fills dispensed in 2025 (nearest thousand dollars): nine figures.**
+  H18 home: charter 4.1 reports each class's rebates on the previous year's utilization beside its staffing. Path:
+  `orrin_rx_rebate_statement_2025.xlsx` (invoice quarter, contract quarter, product, class code, channel, units,
+  rebate) and the Orrin claims for January 2025.
+  Primary device: D8, periods off the calendar. Orrin's rebate contract year runs February to January, and the
+  statement labels its periods 2024-Q1 to 2025-Q4 with no month or date anywhere; read as calendar quarters, contract
+  year 2025 (February to December 2025, Orrin's run-off ending in December) drops January 2025's fills, which sit in
+  contract quarter 2024-Q4 at the 2024 contract's lower rate per unit. Only reconciling the statement's units to the
+  claims finds it: on calendar quarters 133 of 136 product-quarters fail to tie, on February-to-January quarters every
+  one ties.
+  Hazard: D6, each product-quarter's rebate stands on each of its two to four channel lines, the same amount on each
+  (architecture 2's reader caught it on sight; it stays as a hazard that moves every figure).
+  Stops (asserted, checks.py and generator/ceiling.py): the contract year read as the calendar year, each
+  product-quarter once, misses 9 of 9; every 2025 line summed misses 9 of 9; the 2025 invoices, each product-quarter
+  once, miss 8 of 9 (cystic fibrosis coincides); the February-to-January reading with January 2025 at 2024-Q4's rate
+  per unit gives all 9.
+  Realism: rebate contracts run on the manufacturer's contract year, and statements report the contract's own periods;
+  per-unit rates change at the contract year.
+- **The construction layer:** the caseloads, the nine managed spends and the chart; the cracker has them.
+- **Separation (asserted):** the call reads no rebate; the statement is not read by the projection.
+- **Referee:** none.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| On-time departures by candidate | times each departure against the published timetable that guidance 4.1 and 4.2 now name, the two feeds by date with route 11's frequency blocks (reader round 3 did, 11 of 11) | hit |
+| A, each class's rebates on its fills dispensed in 2025 | counts each product-quarter's rebate once (the repetition is seen) and takes contract quarters 2025-Q1 to 2025-Q4 as calendar 2025; January 2025's fills, in contract quarter 2024-Q4, are left out | miss |
 
-- Mirror leakage: 100 per cent of ask weight after the guidance pin (a response on R2 that reads 4.2 times against the
-  feeds too and hits the same eleven shares); 0 per cent before it.
-- Pair ceiling: 91.5 after the guidance pin (planning weights 38 / 7 / 55, the main block split as the call 10, the
-  five 8, the first route left out 4 and the eleven verdicts 16, the ask weight over the eleven shares; the cracker
-  keeps everything, 100.0; the mirror on R2 keeps ten verdicts (14.5), four of the five (6.4), instruction-following
-  (7.0) and the eleven shares (55.0), 82.9). Before the pin, with each export's own schedule field as the careful path,
-  it was 36.5 (the cracker 45.0, the mirror 27.9). The ask is rebuilt before this build ships (pipeline.json resume).
-- Measured by: generator/ceiling.py on the cut pack measures the pre-pin rows (the cracker 45.0 with 0 of 11 shares,
-  the mirror 27.9 with 0 of 11, pair ceiling 36.5, mirror leakage 0.0 per cent); reader round 3 on the pinned pack is
-  the measurement after the pin, 11 of 11 shares.
+- Mirror leakage: 11.1 per cent of ask weight (the best mirror, R3, takes the 2025 invoices and keeps cystic fibrosis
+  only: generator/ceiling.py).
+- Pair ceiling: 39.3 (planning weights 38 / 7 / 55: the call 6, each class's pharmacists 2, each managed spend 1.5, each
+  rebate 55/9; the cracker keeps the main block and instructions, 44.5; the mirror on R3 keeps 6 pharmacists, 6 spends
+  and 1 rebate, 34.1; average 39.3), rerun from the generated rubric at ship.
+- Measured by: generator/ceiling.py on the cut pack.
 
 ## Tried and rejected
 
@@ -354,88 +297,48 @@ the feeds, with its bounds included.
   4.2 closed it, and reader round 3 then timed all eleven shares against the feeds. A device whose basis a filed
   sentence must name dies with the pin, and every other column the ask reads (the departure, the trip tie, the window,
   the days) is the call's own population, so no device on this ask can stay off the call's rows.
+- 2026-10-19, repair: the stop-hour grain fork (reader round 3): the review drew 250 bus-days a month, so the
+  stop-by-clock-hour cells held one to seven reviewed events and the minimum of thirteen noisy hourly estimates sat
+  biased low; at 400 bus-days a month, with the within-bus-day draw on its own stream, every weighted grain (stop, stop
+  and hour, band, month, vendor, the within-bus-day weight, counting-day reviews) files the golden and every raw grain
+  the R2 slate (checks.py R3b, verify.py's stop-hour estimator).
+- 2026-10-19, repair: replacing the dead on-time ask, measures tried on paper and dropped: the average scheduled wait
+  (computed exactly from the feeds by any GTFS-literate solver, and "a weekday of current service" splits on the class
+  days); missed trips from a dispatch log (it would hand every solver each route's delivered departures, the call's own
+  quantity); APC boardings at the designated stops (doors open only in service, which would identify the out-of-service
+  passes the review estimates); the fleet roster's asset tags moved between buses (it would move the review's bus-day
+  join on the call's path); evening and Saturday counts (Quinnell's repeats and the cutover overlap are seen, not
+  silent). The shelter ask takes none of the call's rows.
+- 2026-10-19, architecture 1 spent (the transit nominations): four isolated readers landed the call, so the review
+  weighted by its design was read off the memo's sampling procedure by every careful solver (Gate F, score_reader exit
+  1), and judge pass 3 found the shelter ask NOT_DETERMINISTIC (no file states the moved-stop rule, and stating it
+  hands over the device). The author chose to re-root.
+- 2026-10-19, architecture 2 spent at stage 4 (the specialty pharmacists by months on therapy): the isolated reader
+  projected the caseload by tenure since first fill from past month ends, its first move once it saw the program year
+  unobserved, and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1); the bulletin's step-therapy
+  sentence and the caseloads' 2026 starters made the duration mix visible, and the rebate statement's repeated
+  product-quarter amount was caught on sight. A forward window over a record that shows the process invites the
+  conditional development; the next architecture needs a decisive step the record does not display.
+- 2026-10-19, architecture 3 drawn: the same world, the decisive step moved to the clock. Members who stopped a drug
+  and came back after a lapse restart its persistence curve, so the development is indexed by months in the current
+  episode; v2's first-fill development is now the analyst test's wrong answer (57 against 54). Tried first: a wave of
+  returners 30 per cent of the step-therapy classes' past stoppers (GLP 177 of 1,809 back, first-fill clock only half
+  a pharmacist off), raised to 60 per cent; a separation by back-test (both clocks pass the earlier Junes alike,
+  returns being rare before 2026), replaced by the record's own comparison of returners with continuing members and
+  new starters. The rebate statement's repeated product-quarter amount (caught on sight by v2's reader) kept as a
+  hazard; the primary moved to the contract year's February start.
+- 2026-10-19, architecture 3 spent at stage 4 (the specialty pharmacists by months in the current episode): the
+  isolated reader built persistence by time since episode start, an episode broken by a gap of more than 100 days,
+  because the refill gaps were a few days and the returns months, and landed the call (10 of 10; score_reader exit 1).
+  A clock the gap distribution displays is not silent; with the third architecture spent the number retires.
 
-## Leak check
+## Retired
 
-- `leak.py --asof 2026-10-30`: REVIEW, no LEAK. Sweep 3: the guidance carries the program's name, which the call's
-  sentence repeats; not an answer. Sweep 4: the guidance, the change note and the memo use the program's and the
-  matching review's own words (review, sample, bus-day, timetable); the memo states how its sample is drawn and nothing
-  about weighting (R1). Sweep 6: the ridership report is the cap's filed order (guidance 5.1), the farebox workbook
-  and the Title VI report are the declared distractors, the candidate list runs in route-number order. Sweep 7: the
-  two GTFS feeds, zipped as an agency publishes them.
-- Reader round 1 (an isolated copy of prompt.txt and target/, one sonnet thread at medium): no sentence names the
-  decisive step (the pieces sit in guidance 3.4 and the memo's procedure), no file ranks the candidates on the
-  standard, no file exists only to help, no figure reads as the answer, every question-5 sentence executes to the
-  golden (the trip-tied-only reading is R1, ruled out by 3.4), and the decisive step is an analytical choice. It filed
-  the golden five, and on the old asks the on-time shares from the timestamps and the waits from the integral.
-  Fixed in the generator: the eleven candidates unnamed (the candidate list ships); DeviationSec unrelated to the
-  timestamps (now the departure against ScheduledDeparture); the folder list saved on 30 October (now 3 August, after
-  the last paper); every bus with CCTV (the column is gone, and bus lengths vary); one reviewer on 1,500 rows and an
-  empty "early beyond window" column (three analysts; the column is gone); route 11's explicit schedule times beside
-  frequencies.txt (exact_times 1, each block ending between two trips). Harmless: Good Friday and the snow day as
-  counting days (the guidance's literal reading, SF5); Arbor's one-decimal adherence (the device's lazy path).
-- Reader round 2 (the rebuilt pack, the same brief): nothing quoted for question 1, no ranking file, no answer-like
-  figure, the question-5 sentences executing to the golden's estimand, the decisive step "an estimand and sampling
-  choice, not a field reading or a planted item". It filed the golden five and timed the on-time shares against the
-  exports' own adherence fields: every share in a different whole per cent from the golden's (the device held on all
-  eleven). Fixed: the folder list read as a build artefact (question 3), so it no longer ships; its dates stay as each
-  file's saved date. Harmless: the file-head repeats and the cutover overlap (outside the window, explained by the
-  daily files), the review's 250 a month (the memo's design), route 11's ten-minute headway, stop-by-hour shares
-  (Route 17 still qualifies).
-- Reader round 3 (the pinned pack, target.zip 2c828983, the same brief): question 1 quotes guidance 3.4 and 5.2 and
-  the memo's procedure and finds nothing saying to weight; no ranking file, no helper file, no answer-like figure; the
-  question-5 sentences execute to the golden's estimand; the decisive step "estimand and estimator choice, not
-  semantics". It filed the golden five and all eleven on-time shares, timing against the feeds as guidance 4.1 and 4.2
-  now name them: the ask's device died with the pin (Ask sheet, Tried and rejected). Open finding on the call, an H14
-  grain fork: the review's weighted mix applied per stop and clock hour (thin cells, Stop D holding one to seven
-  reviewed events an hour) files Routes 4, 6, 22, 11 and 40, Route 2 at 3.94 and Route 17 at 3.86; per stop over the
-  half year (the golden), per stop and time band and per stop and month all give Routes 2, 4, 6, 17 and 22. Harmless:
-  Arbor's minute-held schedule and route 11's trip ids (the Layer 1 the ask reads), the night-time file-head repeats
-  (outside the window), Route 17's stark numbers (its late buses are the story).
-
-## Pre-ship check
-
-- **Three rules, re-read against the rebuilt pack.** Domain: the deciding quantity is each candidate's departures per
-  hour estimated from a linked record whose missed links select, the field's estimator being the clerical review's
-  measure of the missed links' route mix weighted by the review's own design; the links as truth file Routes 4, 22, 11
-  and 40, the proportional share-out Routes 2, 4, 9, 22 and 11, the review's raw mix Routes 2, 4, 6, 22 and 11, and the
-  design-weighted review Routes 2, 4, 6, 17 and 22, on the clean truth and on the pack (checks.py R3a, R3b). Two
-  layers: the Layer 1 inventory in `## Three rules`, each asserted neutral for the call (R2: the repeated file heads
-  kept, both copies of 31 March's evening, Quinnell's copy instead of Arbor's, calendar dates for service days, all the
-  same five; the separation check: every schedule field blanked, the same five); the on-time device confined to the
-  schedule fields and the feeds' times; Layer 2 the weighting. The decisive step is none of the three banned kinds,
-  each executed in `checks.py`: not a plant (R1, R3c); not data semantics (SF1 to SF16: every term read right still
-  leaves the raw mix on Routes 2, 4, 6, 22 and 11); not rule application (R3a, R3b).
-- **Judge pass 1** (2026-10-17, `determinism_check_report.md`): NOT_DETERMINISTIC on the asks only, SEND_BACK in the
-  judge's sense (a fix that changes what solvers see); the call forced and reproduced (Route 17 at 4.81 weighted, 3.56
-  raw; the seven qualifiers and the five under every allocation it tried); Gate F good; Gate G statistical_rigor,
-  analytical_non_defect, no surface read, no sole defect; Gate H domain pass, layers pass, decisive step analytical.
-  The four ask-side findings closed in the generator: the candidate list; the record ask dropped; the on-time basis
-  (the trip's scheduled departure, bounds included, DeviationSec coherent); the waits ask dropped.
-- **Judge pass 2** (the one re-judge, `determinism_check_report_pass2.md`): DETERMINISTIC, FIX_NOW. Every figure
-  reproduced from the bundle (125 days, 106,687 departures, 17,112 without a trip, Route 17 at 57 per cent weighted and
-  35 unweighted, its lowest hour 4.81, the seven qualifiers, the five and Route 11, all eleven on-time shares against
-  the feeds); a bootstrap of the review keeps every qualifier at or above four (Route 17's low end 4.56); Gate G
-  statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical. The one finding:
-  only the write-up named the feeds as the on-time basis, and Arbor's minute-held schedule moves every share. Closed at
-  authority rather than in the prompt (which carries the question and no convention): guidance 4.1 now has the
-  application carry "the GTFS feeds of its published timetable" and 4.2 times each departure against "the trip's
-  scheduled departure in the published timetable" (SF15, asserted). The pin was taken to leave the device silent for a
-  solver who trusts the export's schedule; reader round 3 timed every share against the feeds instead, so it does not
-  (Ask sheet). The judged bundle and the pinned one differ in that sentence and in the folder list's removal; no third
-  judge (the pipeline licenses one re-judge).
-- **Gates.** 13 files in 4 formats (csv, pdf, xlsx, zip); avl_stop_events_2026q2_quinnell.csv at 83,843 rows; two
-  distractors (the farebox workbook and the Title VI report) the solution never reads, each deletion asserted; 53
-  generator checks; `verify.py` from the bundle alone (its own readers for the exports, the feeds, the candidate list
-  and the workbooks, its own conformance, weights, estimate and on-time shares against the feeds); two builds
-  byte-identical; `figures_check.py` (48 figures), `precut.py` and `voice-check.py` exit 0; `leak.py` REVIEW (no
-  LEAK); guard heart WARN (answered in the draw); the surface screen's three promotions are card-level and go to the
-  author; the containers clean (H1 audit, pack and golden); the golden workbook prints on one landscape page with the
-  chart under the table.
-- **Paused at stage 4** (2026-10-17), not shipped. Reader round 3 left two findings the gates cannot pass: the on-time
-  ask's device died with the guidance pin (a cracker on the pinned text hits all eleven shares, pair ceiling 91.5
-  against the bar of 40), and the call carries an H14 grain fork at the stop-hour grain (Routes 4, 6, 22, 11 and 40).
-  The repair order is in pipeline.json: the review's draw first (each sampled bus-day's reviewed event drawn so every
-  stop-hour's weighted mix tracks its stop's, the raw mix still failing Route 17 at every grain, the stop-hour
-  estimator asserted in checks.py and verify.py), then a new ask on a measure the call does not read, carrying a
-  device a GTFS-literate cracker misses.
+task468 retired on 2026-10-19 with its third architecture spent, every card kept. Architecture 1 (the Larkhaven transit
+nominations, review weighted by its design) fell to four isolated readers and a NOT_DETERMINISTIC ask; architecture 2
+(specialty spend developed by months since first fill) was judged DETERMINISTIC and APPROVE and fell to one reader who
+took the tenure-conditioned projection as a first move; architecture 3 (developed by months in the current episode)
+fell to one reader who read the episodes off the bimodal refill gaps. The lesson the three share: a forward window over a
+record that displays the process invites the careful reader's persistence model, and every clock the record shows
+plainly (tenure, episode) is a reflex at medium effort. A stump in this world would need the quantity's driver to be
+absent from the claims (a process outside the window, or a selection the fills cannot show).

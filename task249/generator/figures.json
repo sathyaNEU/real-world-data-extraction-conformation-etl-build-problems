@@ -1,0 +1,126 @@
+{
+ "filed": {
+  "tolerance_pct": 25,
+  "cap_days": 7,
+  "free_metered_articles": 5,
+  "months": [
+   "2028-10",
+   "2028-11",
+   "2028-12"
+  ],
+  "public_holidays_day_of_month": [
+   3,
+   25,
+   26,
+   1
+  ],
+  "newsletter_cutoff_utc_hour": 23
+ },
+ "call": {
+  "noted": [
+   "RHS",
+   "KBR",
+   "WBR",
+   "HOL",
+   "SOW",
+   "MST",
+   "GRH",
+   "LDN"
+  ],
+  "n_noted": 8,
+  "not_noted": [
+   "ALH",
+   "EIT",
+   "BST",
+   "FKR"
+  ],
+  "n_not_noted": 4,
+  "noted_names": [
+   "Rhenhagen Stadt",
+   "Kirchbrunn",
+   "Wiesbrück",
+   "Hollerfeld",
+   "Sonnweiler",
+   "Mühlenstedt",
+   "Grauheim",
+   "Lindenau"
+  ],
+  "not_noted_names": [
+   "Altenhorst",
+   "Eichtal",
+   "Bergstetten",
+   "Falkenried"
+  ]
+ },
+ "components": {
+  "noted_floor_pct": 26,
+  "kept_ceiling_pct": 23,
+  "print_devices_webkit_pct": 61,
+  "other_signed_devices_webkit_pct": 27,
+  "sign_in_split_drops": [
+   "GRH",
+   "LDN",
+   "SOW",
+   "WBR"
+  ],
+  "device_only_drops": [
+   "HOL",
+   "KBR",
+   "MST"
+  ],
+  "signed_in_ratio_drops": [
+   "GRH",
+   "LDN",
+   "RHS",
+   "SOW",
+   "WBR"
+  ],
+  "link_additions_after_midnight": 906,
+  "link_additions_before_midnight": 458,
+  "subscriptions_started_before_quarter": 451
+ },
+ "reported": {
+  "RHS": 15558,
+  "KBR": 13464,
+  "ALH": 7220,
+  "WBR": 12838,
+  "HOL": 6898,
+  "SOW": 11195,
+  "MST": 8286,
+  "GRH": 7106,
+  "EIT": 5114,
+  "BST": 6724,
+  "LDN": 9539,
+  "FKR": 5056
+ },
+ "asks": {
+  "newsletter_subscribers_2028_12_31": {
+   "RHS": 3434,
+   "KBR": 2330,
+   "WBR": 2137,
+   "SOW": 1793,
+   "MST": 1625,
+   "LDN": 1582,
+   "HOL": 1467,
+   "ALH": 1233,
+   "GRH": 1220,
+   "BST": 1039,
+   "EIT": 1016,
+   "FKR": 984
+  },
+  "sold_copies_per_publication_day_q4": {
+   "RHS": 7288,
+   "KBR": 9225,
+   "ALH": 3154,
+   "WBR": 4073,
+   "HOL": 5044,
+   "SOW": 3038,
+   "MST": 5428,
+   "GRH": 2328,
+   "EIT": 4020,
+   "BST": 2119,
+   "LDN": 2616,
+   "FKR": 3667
+  }
+ }
+}

@@ -43,6 +43,36 @@ spread below, which comes from how the cycle's strength is measured. SILSO's sun
 used only as a screen covariate. A pack set at a late-2026 as-of would need Kp from August 2025 onward by
 another route, since a constructed Kp may not carry GFZ's or NOAA's name.
 
+**Redraw in a new world, 2026-10-19 (actuarial-science-insurance / reserving-development-triangles,
+Forecasting), screened at stage 1 and failed; no card registered, nothing cut.** The coordinator allocated the
+cell; the client's reserving cards (`actuarial-science-insurance/loss-reserving-claims-development/1` to `/3`:
+Berquist-Sherman on disposal rates, a fitted tail, a Mack or bootstrap range) and Bornhuetter-Ferguson against the
+chain ladder are the careful reader's routes, so a stump had to be a judgment those take for granted that the data
+settle. The structural sentence for the cell: every maturity shift (exposure attaching later in its period, reports
+arriving sooner, settlement speeding up) moves the chain ladder by 15 to 170 per cent but moves
+Bornhuetter-Ferguson materially only where the unpaid share is mid-range, and the disposal-rate card restates it
+away whenever closed counts track the shift; the rest of the cell's triangle judgments are spent on file (case
+adequacy, settlement speed, completion of immature periods, a cap that binds more often), banned this round (every
+mix shift, `composition_mix`), need a filed future rate (calendar-year inflation, which is rule application or a
+fork), or are a variance (ranges, tails). Prototypes are in the session scratchpad (r176/proto).
+
+**Second redraw, 2026-10-19 (sociology-demography / population-estimation-demographic-projection, Forecasting),
+screened at stage 1 and failed; no card registered, nothing cut.** The coordinator allocated the cell and lifted the
+round's extra bans. The cell's cards (`sociology-demography/population-estimation-demographic-projection/1` to `/5`:
+cohort-component ageing, gross migration flows, stated-coverage intervals, the control total, shrinking small-area
+rates) are the careful demographer's routes. The structural sentence for the cell: the judgments those cards take
+for granted that the records settle are each spent on file, closed by the guard's window, or a textbook route of
+their own:
+- who is at risk of a flow (duration since arrival, parity, a pool outside the area by age) is a hazard on a pool
+  whose composition shifted (task134 v2, task468);
+- a fixed stock's turnover is task132's renewal;
+- a housing capacity is the housing-unit method;
+- special populations are `population_selection` (task270's window) and census practice;
+- a back-test of projection methods is `forecast_method_backtest` (task177's window);
+- on population levels the structural levers run under 10 per cent, because flows are small against stocks.
+
+Prototypes are in the session scratchpad (r176/demog).
+
 ## Tried and rejected
 
 - **The solar cycle's phase, with or without the cycle's amplitude, as the decisive step** (the brief's first
@@ -130,3 +160,98 @@ another route, since a constructed Kp may not carry GFZ's or NOAA's name.
     between a batch figure and a per-satellite one.
   - A loss per onset that rises with storm duration, since declining-phase recurrent storms last longer:
     unscreened; it needs a duration response fitted on the same few dozen encounters.
+- **Redraw P1, 2026-10-19: an underwriting-year (risks-attaching) triangle whose recent periods' contracts attach
+  late in the period, read on each period's own exposure clock** (prototype `p1_ev.py`, expected values). With 52
+  per cent of a period's contracts moved from mostly 1 January to a 1 October inception, the period chain ladder
+  files 0.55 to 0.93 of the true ultimate at ages 12 to 48 months (gamma payment patterns with means of 20, 30 and 45
+  months), but Bornhuetter-Ferguson on the true prior files 0.79 to 0.99 of the true unpaid (0.88 to 0.94 at 36 to
+  48 months on the 30-month pattern) and about 0.95 on the 2024 to 2026 total, so the textbook route for immature
+  periods lands inside any bin the 30 per cent bar allows. A whole-period shift of inception is fixed exactly by the
+  age-shift reflex (the old pattern read at the age less the shift). The re-based clock is also task468's live
+  driver (development by months in the current episode, not since first activity) by the abstraction test, and
+  `guard.py slots` on the driver hit task468's draw lines. Died at stage 1 on the BF reflex and the driver repeat.
+- **Redraw P2, 2026-10-19: reports arrive sooner for recent accident years while settlement from report is
+  unchanged, projected from reports and the payment delay from report** (prototypes `p2_ev.py`, `p2_sim.py`). On
+  expected values, cutting the mean report lag from 12 to 4 months puts the chain ladder at 1.10 to 2.67 times the
+  true ultimate and Bornhuetter-Ferguson at 1.05 to 2.20 times the true unpaid at ages 12 to 60. On a claim-level
+  simulation (15 accident years, about 4,000 claims a year, larger claims settling later; seeds 1 and 2), the
+  unpaid for accident years 2023 to 2026 over the truth is: paid chain ladder 2.01 to 2.17, Bornhuetter-Ferguson with
+  the exact expected ultimate 1.19 to 1.20, Berquist-Sherman on all-years count ultimates 1.42 to 1.46, and
+  Berquist-Sherman on latest-three count factors 1.05 to 1.08. The disposal-rate card is the careful reader's route
+  once the reported-count factors visibly drop, and it lands within a bin. Died on the library test (stumping 1.3).
+- **Redraw paper screens, 2026-10-19, each dead before code:**
+  - a per-claim benefit cap that binds more as treatment intensity drifts up: task172's driver by the abstraction
+    test (a per-unit cap that cut only the record's tail now binds most forward units), close to task168;
+  - settlement speed through Berquist-Sherman or operational time: task127 architecture 3's mechanism (judge
+    SEND_BACK, frequency-severity $350M against the restatement's $400M); case-reserve adequacy: task228's kill;
+  - a calendar-year step (a fee schedule or benefit revision): a dated cause an event study finds, and rule
+    application once filed; chronic calendar-year inflation: the forward rate is an assumption (a fork) or a filed
+    index (rule application), with a lever of 5 to 15 per cent;
+  - a tail from claimant-level annuities: a mortality-longevity task, a filed table is rule application, and the
+    claimants' own deaths give about 6 per cent at one sigma; a fitted tail where the factor curve bends: the
+    decay rate of late increments is too poorly determined (a 1 against 2 per cent decay halves the tail);
+  - a reserve range or 75th percentile with diagonal dependence: the variance-only screen, and a spread estimated
+    from 10 to 40 diagonals carries 20 per cent or more relative error;
+  - chain-ladder leverage on immature years, additive against proportional development: the BF reflex lands;
+  - every mix shift (channel, litigation share, claim type, deductible mix, closure order): `composition_mix`;
+  - reopened claims by time since closure after closures accelerate: a lever of a few per cent (reopenings are a
+    small share of the reserve), and returns by time since leaving read as task157's driver;
+  - the split of development into new reports and growth on reported claims under a filed notification cut-off:
+    once the window is filed as the WHAT, the report-year triangle and a reported-count projection are the careful
+    reader's routes;
+  - settlement timed by a litigation calendar's trial dates: task172's per-unit scheduled date ending the wait, and
+    a timing-only lever on a reserve; claims-unit closure capacity: the swap test fails (any queue);
+  - excess-layer, large-deductible and per-policy aggregate development: too few claims for a sigma near 1 per
+    cent and an open per-claim family; retro-rating and corridor treaties: the contract formula is rule
+    application; a large-loss transfer between claims systems: a filed threshold plus a join;
+  - a closed exposed pool depleting as members claim (latent and mass claims): the hazard's shape on the remaining
+    pool is a fork (constant against heterogeneous), the forcing rosters sit in epidemiology, and the natural
+    instances are sensitive.
+- **Second redraw D1, 2026-10-19: returners drawn from the area's diaspora (people born there living elsewhere), a
+  wave that left at 20 to 30 in 1995 to 2010 now ageing into the return ages** (prototype `d1_diaspora.py`, expected
+  values, return hazard 0.5 per cent a year at 25 to 49 and 2.0 at 55 to 69). On the 2027 to 2031 return flow the
+  card-2 route (origin-destination rates by age on the origin population, struck over 2016 to 2025) files 0.62 of the
+  truth, a linear trend 0.81 and the latest year carried about 0.75; at 55 to 74 the card-2 route files 0.08 of the
+  flow. But on the 55 to 74 population level the returns move the figure about 4 per cent, and the abstraction is
+  task134 v2 round 1's driver (an inflow that a pool held outside the decision's record sends at a hazard on that
+  pool, whose composition shifted). The birthplace column on the in-migration records also makes the split a row
+  predicate. Died on the driver repeat and the level lever.
+- **Second redraw paper screens, 2026-10-19, each dead before code:**
+  - duration-dependent out-migration after an influx (mover-stayer): task134's slot measured it at about 1 per cent
+    (its `sim1.py`), and it is task468's and task134 v2's driver (a hazard by time since entry after a surge);
+  - gross against net migration (card 2): task150 shipped it on school attendance areas, and task134's slot found
+    the gross variants split unless every origin is static;
+  - second births echoing a surge of first births (parity and interval): the same time-since-entry family;
+  - housing-constrained growth: the housing-unit method (dwellings, occupancy, persons per household) or a
+    headship-rate household projection is the field's textbook for a capped small area, and task79 carries the
+    capacity insight;
+  - turnover in a fixed stock as its occupants age in place (vacancy chains): task132's renewal driver;
+  - special populations (students, prisons, barracks, care homes) that do not age in place: `population_selection`
+    sits in the window (task270), and projecting group quarters apart is census practice;
+  - the control-total gap allocated by the component that makes it up (card 4's judgment): the regional model's
+    closed-system note reads it out, and each area's own external migration, the careful route, lands;
+  - a births-based base for young children against a census undercount: a lever of about 5 per cent;
+  - stated-coverage intervals with cross-area correlation (card 3's judgment): the variance-only screen, and a
+    correlation estimated from 30 years carries about 15 per cent;
+  - shrinkage choices (card 5): the shrinkage family (stumping 1.2);
+  - fertility postponement and recuperation: a future-rate assumption, a fork;
+  - cohort mortality improvement at 85 and over: the mortality-longevity card;
+  - a group returning in a wave: task157;
+  - two-sex births (partner availability): the marriage function's form is open (harmonic, geometric, minimum)
+    and the real effect is weak;
+  - simple trend methods beating cohort-component out of sample: `forecast_method_backtest` sits in the window
+    (task177);
+  - a caseload ageing out at a fixed age: task172's cap;
+  - education-specific rates: a mix on a visible column;
+  - an error-of-closure correction of the base: one past event per area and a back-test organ.
+
+## Retired
+
+**RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
+retired.** Three worlds were screened at stage 1 and none held:
+- the seed's satellite storm-loss world, two architectures on code;
+- actuarial reserving triangles, P1 and P2 on code and 17 on paper;
+- sociology population projection, D1 on code and 18 on paper.
+
+No card was ever registered, so no guard axis is held. The screens above are the number's record for `guard.py
+slots`.

@@ -68,6 +68,10 @@ P_LATE_ENROLL = 0.35               # spouses off the plan at intake who join it 
 P_UPLOAD_RENEWAL = 0.80            # spouses who upload a renewed card to the benefits portal
 P_UPLOAD_C9 = 0.75                 # derivative spouses who upload their (c)(9) card
 P_STALE_LABEL = 0.85               # switchers whose uploaded (c)(9) card kept the (c)(26) label of their earlier entry
+P_DUAL = {"(c)(26)": 0.05,         # spouses in the team's care who took a job at Sallowmere during the life of their
+          "(c)(9)": 0.12}          # current card (H-4 spouses, and derivative spouses working on the (c)(9) card)
+P_ENTITY_MOVE = 0.04               # H-1B employees of the H-4 households moved to another Sallowmere entity in 2026
+P_OTHER_REJECT = 0.25              # notice copies applicants forward that are rejections of their own other filings
 N_H4_STOCK = 7400
 H4_INFLOW = 1250.0                 # new H-4 spouses with a first work permit per year
 

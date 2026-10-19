@@ -32,7 +32,7 @@
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift summaries and a fleet telematics platform's segment-pass export, a route register and its revision log, a storm log, scale house and loader logs, a supplier's dispatch schedules, a contractor's returns, a drone survey report and the division's plan and procedure; no real organisation's records or person is depicted.",
+      "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift summaries and a fleet telematics platform's segment-pass export, a route register and its revision log, a storm log, scale house logs, a supplier's dispatch schedules, a contractor's returns, a fleet list and its work orders, a drone survey report and the division's plan and procedure; no real organisation's records or person is depicted.",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work)"
     }
@@ -61,7 +61,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 10952,
+      "bytes": 10955,
       "rows": 106,
       "source": "Constructed: City of Quellbrook Roads Division fleet telematics, data dictionary for the 25 September 2026 pull",
       "date": "2026-09-25",
@@ -79,7 +79,7 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 2281,
+      "bytes": 2299,
       "rows": 20,
       "source": "Constructed: City of Quellbrook Roads Division fleet telematics, export manifest for the 25 September 2026 pull",
       "date": "2026-09-25",
@@ -88,9 +88,18 @@
     {
       "path": "fleet_units_2026-09.csv",
       "format": "csv",
-      "bytes": 9720,
+      "bytes": 8194,
       "rows": 241,
       "source": "Constructed: City of Quellbrook Fleet Services, winter fleet units at 24 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_work_orders_2023-07_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 554585,
+      "rows": 4690,
+      "source": "Constructed: City of Quellbrook Fleet Services, work orders on the winter fleet units, 1 July 2023 to 23 September 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -169,8 +178,8 @@
     {
       "path": "scale_house_log_2026-08-24_to_2026-09-24.xlsx",
       "format": "xlsx",
-      "bytes": 25197,
-      "rows": 225,
+      "bytes": 25425,
+      "rows": 230,
       "source": "Constructed: City of Quellbrook Roads Division, yard scale house logs, 24 August to 24 September 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -187,7 +196,7 @@
     {
       "path": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
       "format": "parquet",
-      "bytes": 8478632,
+      "bytes": 8478628,
       "rows": 344770,
       "source": "Constructed: City of Quellbrook Roads Division, fleet telematics platform segment passes, 1 October 2023 to 23 September 2026 (UTC)",
       "date": "2026-09-25",
@@ -208,15 +217,6 @@
       "bytes": 240412,
       "rows": 2166,
       "source": "Constructed: City of Quellbrook Roads Operations Centre, winter route register at 14 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "yard_loading_log_2023-11_2026-03.csv",
-      "format": "csv",
-      "bytes": 725117,
-      "rows": 22553,
-      "source": "Constructed: City of Quellbrook Roads Division, yard loader scale log, 1 November 2023 to 31 March 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },

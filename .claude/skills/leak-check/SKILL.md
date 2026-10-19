@@ -113,6 +113,12 @@ design note's cracker table is a model of the opponent written by the author; th
 it outranks the table. task190 architecture 6 shipped a cracker table claiming all three asks missed and a
 `precut.py` pair ceiling of 28.5 through three stage 4 rounds; its round-3 reader reported 43 of 43.
 
+**One reader is a sample, so the pack that ships is read twice.** Two isolated scored readers, each on its
+own fresh copy, each scored with `score_reader.py`; the build ships when both miss the call and neither
+exits 1. Readers on one pack differ by whole asks and by the call itself: three readers on task164's
+frozen call split two landed and one missed, and on task162 and task165 one of two readers found an ask
+device the other never saw. A call any reader lands is spent, whatever the other reader does.
+
 ## Not a leak
 
 - A figure the prompt states or `stated_inputs` lists.
@@ -128,4 +134,5 @@ it outranks the table. task190 architecture 6 shipped a cracker table claiming a
 - [ ] `leak.py --asof` CLEAN or REVIEW, sweep 11 clean; every REVIEW answered or fixed
 - [ ] Reader run once after the realism sweep: nothing quoted for question 1, every question-5 sentence executes to the golden
 - [ ] `score_reader.py` run on the reader's own figures before its verdict is read: exit 0, the call missed
+- [ ] The pack that ships read by two scored readers: both miss the call, neither exits 1
 - [ ] All reader findings fixed in the generator before the judge; `leak.py` re-run after every rebuild

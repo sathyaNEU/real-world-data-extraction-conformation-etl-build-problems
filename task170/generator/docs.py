@@ -28,11 +28,11 @@ ACCENT = colors.HexColor("#1f4e3d")
 RULE = colors.HexColor("#b9c4bd")
 HEAD = colors.HexColor("#e4ece7")
 
-F_DOSING = "paediatric_art_dosing_annex7_2025.pdf"
+F_DOSING = "paediatric_art_dosing_annex7_2026.pdf"
 F_SOP = "cms_sop_qp04_v3_cycle_quantification.pdf"
 F_EST = "hiv_estimates_2026_round_summary.pdf"
 
-DOSING_DATE = dt.date(2025, 6, 12)
+DOSING_DATE = dt.date(2026, 2, 9)
 SOP_DATE = dt.date(2026, 2, 26)
 EST_DATE = dt.date(2026, 7, 30)
 
@@ -89,10 +89,21 @@ def pdf_stamp(d, hh=9, mi=0):
 # ---------------------------------------------------------------------------------------------------- dosing annex
 DOSING_INTRO = [
     "Antiretroviral drugs for children and adolescents are dosed by weight band. Weigh the child at each clinical "
-    "visit and dispense the formulation and number of tablets for the band of the weight recorded at that visit.",
-    "Children stable on treatment for six months or more may be given two or three months of medicines at a visit. "
-    "A caregiver may collect a child's medicines between clinical visits; a collection dispenses the regimen of the "
-    "last clinical visit.",
+    "visit and dispense the formulation and number of tablets for the band of the weight recorded at that visit. A "
+    "child or adolescent started on TLD stays on TLD at later visits, whatever the weight recorded.",
+    "This edition lowers the weight from which TLD is given from 35 kg to 30 kg. A child on a first-line regimen who "
+    "weighs 30 kg or more at a clinical visit on or after 1 March 2026 moves onto TLD at that visit.",
+    "Children aged two or over who have been on treatment for six months or more and are well may be given two or three "
+    "months of medicines at a visit; the clinician sets the next appointment for the end of the supply. A caregiver may "
+    "collect a child's medicines between clinical visits; a collection dispenses the regimen of the last clinical "
+    "visit.",
+]
+DOSING_CHANGES = [
+    ("TLD", "From 35 kg", "From 30 kg"),
+    ("Adult second line", "From 35 kg", "From 30 kg"),
+    ("25 to 29.9 kg", "ABC/3TC 600/300 mg with DTG 50 mg up to 34.9 kg", "ABC/3TC 600/300 mg with DTG 50 mg up to 29.9 kg"),
+    ("Medicines at a visit", "One month as a rule; two or three at the clinician's discretion",
+     "Two or three months for children two or over, six months on treatment and well"),
 ]
 FIRST_LINE = [
     ("3 to 5.9", "ABC/3TC 120/60 mg dispersible", "1", "DTG 10 mg dispersible", "half"),
@@ -114,9 +125,9 @@ def write_dosing(out):
     st = styles()
     path = out + "/" + F_DOSING
     doc = _doc(path, "Annex 7. Antiretroviral dosing for children and adolescents", C.MOH)
-    el = [Paragraph("National Guidelines for HIV Prevention, Treatment and Care, 2025 edition", st["sub"]),
+    el = [Paragraph("National Guidelines for HIV Prevention, Treatment and Care, 2026 edition", st["sub"]),
           Paragraph("Annex 7. Antiretroviral dosing for children and adolescents", st["h1"]),
-          Paragraph("%s, %s. Effective 1 July 2025." % (C.MOH, C.PROG), st["sub"]),
+          Paragraph("%s, %s. Effective 1 March 2026; replaces Annex 7 of the 2023 edition." % (C.MOH, C.PROG), st["sub"]),
           Paragraph("7.1 Dosing by weight band", st["h2"])]
     for p in DOSING_INTRO:
         el.append(Paragraph(esc(p), st["body"]))
@@ -131,8 +142,10 @@ def write_dosing(out):
     el.append(Paragraph("7.4 Regimen codes in the electronic patient register", st["h2"]))
     el.append(_table(st, ["Code", "Line", "Regimen", "Weight band"],
                      [(r[0], r[1], r[2], r[3]) for r in C.REGIMENS], [24, 16, 92, 26]))
-    doc.build(el, onFirstPage=_footer("Annex 7. %s, %s, 2025 edition" % (C.MOH, C.PROG)),
-              onLaterPages=_footer("Annex 7. %s, %s, 2025 edition" % (C.MOH, C.PROG)))
+    el.append(Paragraph("7.5 Changes from the 2023 edition", st["h2"]))
+    el.append(_table(st, ["", "2023 edition", "This edition"], DOSING_CHANGES, [30, 64, 64]))
+    doc.build(el, onFirstPage=_footer("Annex 7. %s, %s, 2026 edition" % (C.MOH, C.PROG)),
+              onLaterPages=_footer("Annex 7. %s, %s, 2026 edition" % (C.MOH, C.PROG)))
     PP.normalize_pdf(path, pdf_stamp(DOSING_DATE, 10, 5), pdf_stamp(DOSING_DATE, 10, 5))
 
 
@@ -161,12 +174,20 @@ SOP = [
     ]),
     ("4. Forecast consumption", [
         "4.1 Consumption is forecast by month. For a once-daily tablet in bottles of 30, a month's consumption is one "
-        "bottle for each patient on the regimen at the end of the month.",
+        "bottle for each patient in care on the regimen at the end of the month; a patient who leaves care (lost to "
+        "follow-up, transferred out of the programme or died) is not counted from the month the patient leaves.",
         "4.2 TLD. Patients aged 15 and over at the count, and patients who start treatment after the count, are taken "
         "from the National ART Programme's patient projection. Children aged under 15 at the count who are on treatment "
         "in the paediatric and adolescent ART register (no outcome entered) are forecast by the Quantification Unit from "
         "the register to the last day of the cycle ordered, whatever their age by then.",
-        "4.3 Other products are forecast from the programme projection's regimen shares.",
+        "4.3 The TLD order has two lines. Line 2, which the paediatric grant funds, carries the children of section 4.2: "
+        "their forecast consumption from the first day of the month after the count to the last day of the cycle "
+        "ordered, plus six months of their forecast consumption in the last month of the cycle ordered. Line 1 carries "
+        "the patients of the projection on the same terms, less the usable stock on hand and the quantities on order "
+        "(section 3.1), which are netted on line 1 alone.",
+        "4.4 Each line is ordered in whole pallets of TLD 30s, 84 cartons of 96 bottles (8,064 bottles) to the pallet, "
+        "rounded to the nearest pallet.",
+        "4.5 Other products are forecast from the programme projection's regimen shares.",
     ]),
     ("5. The review", [
         "5.1 Before the order is filed, the review compares region by region the dispensing facilities reported for "
@@ -198,7 +219,8 @@ def write_sop(out):
     el.append(_table(st, ["Version", "Date", "Change"],
                      [("1", "14 March 2022", "First issue"),
                       ("2", "2 October 2023", "Maximum stock level set at six months; the Northern depot counted"),
-                      ("3", "26 February 2026", "Section 4.2: children under 15 forecast from the paediatric register")],
+                      ("3", "26 February 2026", "Sections 4.2 to 4.4: children under 15 forecast from the paediatric "
+                       "register on their own line; lines ordered in whole pallets")],
                      [18, 30, 110]))
     doc.build(el, onFirstPage=_footer("CMS QP-04 v3"), onLaterPages=_footer("CMS QP-04 v3"))
     PP.normalize_pdf(path, pdf_stamp(SOP_DATE, 15, 40), pdf_stamp(SOP_DATE, 15, 40))

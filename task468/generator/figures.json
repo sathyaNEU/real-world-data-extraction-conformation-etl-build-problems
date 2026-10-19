@@ -1,187 +1,138 @@
 {
  "call": {
-  "five": [
-   "2",
-   "4",
-   "6",
-   "17",
-   "22"
-  ],
-  "first_left_out": "11",
-  "qualifying": [
-   "2",
-   "4",
-   "6",
-   "17",
-   "22",
-   "11",
-   "40"
-  ]
+  "pharmacists": {
+   "IMM": 14,
+   "MS": 7,
+   "ONC": 6,
+   "HCV": 1,
+   "GLP": 7,
+   "HIV": 6,
+   "AST": 4,
+   "CF": 4,
+   "CGR": 5
+  },
+  "total": 54
  },
- "components": {
-  "counting_days": 125,
-  "events_in_hours": 106687,
-  "no_trip_in_hours": 17112,
-  "mall_share_17_weighted_pct": 57,
-  "mall_share_17_raw_pct": 35,
-  "riverside_share_weighted_pct": 6,
-  "riverside_share_proportional_pct": 59
+ "spend_m": {
+  "IMM": 20,
+  "MS": 10,
+  "ONC": 8,
+  "HCV": 0,
+  "GLP": 10,
+  "HIV": 8,
+  "AST": 5,
+  "CF": 5,
+  "CGR": 7
  },
- "verdicts": {
-  "2": {
-   "meets": true,
-   "lowest": 4.7,
-   "hour": 18,
-   "boardings": 6850
-  },
-  "4": {
-   "meets": true,
-   "lowest": 4.9,
-   "hour": 11,
-   "boardings": 6120
-  },
-  "6": {
-   "meets": true,
-   "lowest": 4.7,
-   "hour": 6,
-   "boardings": 4980
-  },
-  "9": {
-   "meets": false,
-   "lowest": 3.7,
-   "hour": 16,
-   "boardings": 3960
-  },
-  "11": {
-   "meets": true,
-   "lowest": 5.7,
-   "hour": 18,
-   "boardings": 3240
-  },
-  "14": {
-   "meets": false,
-   "lowest": 3.1,
-   "hour": 6,
-   "boardings": 1960
-  },
-  "17": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 6,
-   "boardings": 4450
-  },
-  "22": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 11,
-   "boardings": 3710
-  },
-  "31": {
-   "meets": false,
-   "lowest": 3.5,
-   "hour": 6,
-   "boardings": 2870
-  },
-  "40": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 11,
-   "boardings": 2410
-  },
-  "51": {
-   "meets": false,
-   "lowest": 2.9,
-   "hour": 13,
-   "boardings": 1380
-  }
+ "spend_total_m": 73,
+ "caseload": {
+  "IMM": 484,
+  "MS": 192,
+  "ONC": 104,
+  "HCV": 52,
+  "GLP": 1846,
+  "HIV": 370,
+  "AST": 287,
+  "CF": 43,
+  "CGR": 941
+ },
+ "rebates_k": {
+  "IMM": 5328,
+  "MS": 1750,
+  "ONC": 368,
+  "HCV": 1209,
+  "GLP": 725,
+  "HIV": 724,
+  "AST": 744,
+  "CF": 201,
+  "CGR": 614
  },
  "rivals": {
-  "raw_review": {
-   "five": [
-    "2",
-    "4",
-    "6",
-    "22",
-    "11"
-   ],
-   "route17_lowest": 3.6,
-   "route2_lowest": 4.2
+  "first_fill": {
+   "IMM": 14,
+   "MS": 7,
+   "ONC": 6,
+   "HCV": 1,
+   "GLP": 8,
+   "HIV": 6,
+   "AST": 5,
+   "CF": 4,
+   "CGR": 6
   },
-  "proportional": {
-   "five": [
-    "2",
-    "4",
-    "9",
-    "22",
-    "11"
-   ],
-   "route9_lowest": 5.0,
-   "route17_lowest": 2.2
+  "trailing": {
+   "IMM": 16,
+   "MS": 8,
+   "ONC": 8,
+   "HCV": 4,
+   "GLP": 6,
+   "HIV": 6,
+   "AST": 5,
+   "CF": 4,
+   "CGR": 5
+  },
+  "run_rate": {
+   "IMM": 15,
+   "MS": 8,
+   "ONC": 8,
+   "HCV": 4,
+   "GLP": 14,
+   "HIV": 6,
+   "AST": 9,
+   "CF": 4,
+   "CGR": 10
+  },
+  "analog": {
+   "IMM": 14,
+   "MS": 7,
+   "ONC": 6,
+   "HCV": 1,
+   "GLP": 10,
+   "HIV": 6,
+   "AST": 6,
+   "CF": 4,
+   "CGR": 8
+  },
+  "from_start": {
+   "IMM": 12,
+   "MS": 7,
+   "ONC": 3,
+   "HCV": 1,
+   "GLP": 5,
+   "HIV": 6,
+   "AST": 3,
+   "CF": 4,
+   "CGR": 4
   }
  },
- "on_time_pct": {
-  "2": 62,
-  "4": 70,
-  "6": 54,
-  "9": 71,
-  "11": 73,
-  "14": 72,
-  "17": 37,
-  "22": 72,
-  "31": 72,
-  "40": 75,
-  "51": 73
- },
- "on_time_n": {
-  "2": 6629,
-  "4": 7388,
-  "6": 5080,
-  "9": 7194,
-  "11": 8994,
-  "14": 7469,
-  "17": 2844,
-  "22": 7927,
-  "31": 7099,
-  "40": 8283,
-  "51": 6721
- },
- "on_time_k": {
-  "2": 4099,
-  "4": 5153,
-  "6": 2735,
-  "9": 5104,
-  "11": 6582,
-  "14": 5358,
-  "17": 1056,
-  "22": 5686,
-  "31": 5133,
-  "40": 6187,
-  "51": 4905
- },
- "review": {
-  "bus_days_drawn_month": 250,
-  "events_reviewed": 1500
- },
- "routes": [
-  "2",
-  "4",
-  "6",
-  "9",
-  "11",
-  "14",
-  "17",
-  "22",
-  "31",
-  "40",
-  "51"
+ "classes": [
+  "IMM",
+  "MS",
+  "ONC",
+  "HCV",
+  "GLP",
+  "HIV",
+  "AST",
+  "CF",
+  "CGR"
  ],
- "stated": {
-  "guidance_sections": [
-   "3.3",
-   "3.4",
-   "4.1",
-   "4.2",
-   "5.1"
-  ]
+ "per_pharmacist_m": 1.5,
+ "duration_pooled_from_months": 36,
+ "episode_gap_days": 60,
+ "rival_totals": {
+  "first_fill": 57,
+  "trailing": 62,
+  "run_rate": 78,
+  "analog": 62,
+  "from_start": 45
+ },
+ "rebate_year": 2025,
+ "program_year": {
+  "start": 2026,
+  "end": 2027
+ },
+ "charter_sections": {
+  "caseload": 2.1,
+  "spend": 2.2,
+  "staffing": 3.1
  }
 }

@@ -5,8 +5,6 @@ import os
 import world as W
 
 F = W.FILES
-DISTRACTORS = [F[k] for k in W.DISTRACTORS]
-DELIVERABLES = [W.GOLDEN["workbook"]]
 
 
 def rows_of(path):
@@ -23,35 +21,29 @@ def write(target, out_path):
     big = max((f for f in files if rows[f] is not None), key=lambda f: rows[f])
     meta = {
         "task": "task468",
-        "architecture": 1,
-        "title": "Which of Larkhaven Transit's eleven candidate routes the City should nominate to the state's Frequent "
-                 "Transit Corridors Program for FY2027 (at most five), on the departures its buses made from the "
-                 "routes' designated stops from January to June 2026 as two AVL systems recorded them, the departures "
-                 "the trip matchers tied to no trip shared out through Service Quality's review weighted by its "
-                 "design; with each candidate's share of departures that left on time against the timetable",
-        "domain": "General Statistics & Data Science",
-        "subdomain": "data-integration-record-linkage-entity-resolution (two AVL vendors' stop events conformed and "
-                     "linked to the timetable's trips; the links the matchers missed, which fall on the late trunk "
-                     "routes, propagated into each route's departures through a clerical review that samples bus-days "
-                     "and takes one event from each)",
+        "architecture": 2,
+        "title": "How many clinical pharmacists each of Merrow Health Plan's nine specialty classes gets for the program "
+                 "year from July 2026, one per $1.5 million of the spend its members on therapy on June 30, 2026 will "
+                 "run over the year at the 2026 schedule, from two pharmacy benefit managers' specialty claim files; "
+                 "with each class's managed spend and its 2025 manufacturer rebates",
+        "domain": "Healthcare Delivery & Health Economics",
+        "subdomain": "payment-claims-health-plan-analytics (two PBMs' specialty claims conformed and repriced; each "
+                     "class's program-year spend for its members on therapy projected by months on therapy)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "01: ranked list under a cap: each of eleven candidate routes passes or fails the delivered "
-                        "frequency standard and the five with the most weekday boardings are nominated, with each "
-                        "candidate's on-time share",
+        "prompt_shape": "05: allocation: each of nine classes gets its pharmacists from its projected managed spend, with "
+                        "each class's managed spend and rebates",
         "as_of": W.AS_OF,
-        "deliverables": DELIVERABLES,
-        "distractor_files": DISTRACTORS,
-        "stated_inputs": ["FY2027", "January to June 2026", "6 a.m.", "7 p.m.", "one minute", "five minutes"],
+        "deliverables": [W.GOLDEN["workbook"]],
+        "distractor_files": [F[k] for k in W.DISTRACTORS],
+        "stated_inputs": ["July 2026", "2025"],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": big, "largest_file_rows": rows[big]},
         "sources": [
             {"files": "all files under target/",
              "origin": "constructed for this task by task468/generator/build.py (seeded, deterministic) in the layouts "
-                       "of a city transit department's CAD/AVL stop-event exports from two vendors, its GTFS feeds, "
-                       "a service-quality review log and memo, a fleet roster, a candidate route list, ridership and "
-                       "farebox reports and a Title VI monitoring report, and a state department of transportation's "
-                       "program guidance; the "
-                       "state is unnamed and the city, its transit department, vendors, routes and people are "
-                       "fictional",
+                       "of two pharmacy benefit managers' specialty claim extracts, a health plan's member crosswalk, a "
+                       "PBM's specialty drug list, price schedule and rebate statement, a specialty program charter, a "
+                       "formulary bulletin, PBM transition notes, a PBM trend report and a medical-benefit summary; the "
+                       "state is unnamed and the plan, PBMs, drugs and people are fictional",
              "date": W.AS_OF,
              "license": "original work for this task; no third-party data"}],
     }

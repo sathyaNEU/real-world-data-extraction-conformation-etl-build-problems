@@ -14,8 +14,8 @@ SOURCES = {
     P.F_REVLOG: ORG + " Roads Operations Centre, route audit revision log to 14 September 2026",
     P.F_STORM: ORG + " Roads Operations Centre, storm log and Winter Severity Index, winters 2021-22 to 2025-26",
     P.F_FLEET: ORG + " Fleet Services, winter fleet units at 24 September 2026",
+    P.F_WORKORDERS: ORG + " Fleet Services, work orders on the winter fleet units, 1 July 2023 to 23 September 2026",
     P.F_QRT: "Quellbrook Regional Transit Service Planning, frequent network streets for the 30 August 2026 network",
-    P.F_LOADING: ORG + " Roads Division, yard loader scale log, 1 November 2023 to 31 March 2026",
     P.F_PELLARD: "Kettlewood Road Services, monthly material returns under contract RW-2023-07, winters 2023-24 to 2025-26",
     P.F_DOMES: ORG + " Facilities Services, salt dome register at 2 September 2026",
     P.F_SCALE: ORG + " Roads Division, yard scale house logs, 24 August to 24 September 2026",
@@ -89,8 +89,9 @@ def write(task_dir):
             "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a "
                       "fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift "
                       "summaries and a fleet telematics platform's segment-pass export, a route register and its "
-                      "revision log, a storm log, scale house and loader logs, a supplier's dispatch schedules, a "
-                      "contractor's returns, a drone survey report and the division's plan and procedure; no real "
+                      "revision log, a storm log, scale house logs, a supplier's dispatch schedules, a "
+                      "contractor's returns, a fleet list and its work orders, a drone survey report and the "
+                      "division's plan and procedure; no real "
                       "organisation's records or person is depicted.",
             "date": "2026-09-25",
             "license": "CC0-1.0 (original work)",
