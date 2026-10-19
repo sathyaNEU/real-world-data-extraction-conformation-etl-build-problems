@@ -1,0 +1,195 @@
+{
+ "ask_a": {
+  "average": {
+   "East Midlands": 302,
+   "East of England": 309,
+   "North East and Cumbria": 270,
+   "North West": 313,
+   "South East": 359,
+   "South West and Wales": 296,
+   "West Midlands": 318,
+   "Yorkshire and the Humber": 274
+  },
+  "claims": {
+   "East Midlands": 920,
+   "East of England": 843,
+   "North East and Cumbria": 851,
+   "North West": 1470,
+   "South East": 1389,
+   "South West and Wales": 803,
+   "West Midlands": 1375,
+   "Yorkshire and the Humber": 1112
+  },
+  "frequency": {
+   "East Midlands": 10.7,
+   "East of England": 9.6,
+   "North East and Cumbria": 10.6,
+   "North West": 13.0,
+   "South East": 11.7,
+   "South West and Wales": 10.1,
+   "West Midlands": 12.7,
+   "Yorkshire and the Humber": 11.3
+  },
+  "vehicle_years": {
+   "East Midlands": 8625,
+   "East of England": 8812,
+   "North East and Cumbria": 8019,
+   "North West": 11333,
+   "South East": 11866,
+   "South West and Wales": 7983,
+   "West Midlands": 10863,
+   "Yorkshire and the Humber": 9840
+  }
+ },
+ "ask_b": {
+  "average": {
+   "East Midlands": 4917,
+   "East of England": 4651,
+   "North East and Cumbria": 5474,
+   "North West": 4959,
+   "South East": 5289,
+   "South West and Wales": 6444,
+   "West Midlands": 5310,
+   "Yorkshire and the Humber": 4847
+  },
+  "frequency": {
+   "East Midlands": 10.6,
+   "East of England": 5.7,
+   "North East and Cumbria": 7.5,
+   "North West": 13.7,
+   "South East": 8.8,
+   "South West and Wales": 5.6,
+   "West Midlands": 15.8,
+   "Yorkshire and the Humber": 11.0
+  },
+  "thefts": {
+   "East Midlands": 108,
+   "East of England": 58,
+   "North East and Cumbria": 72,
+   "North West": 187,
+   "South East": 119,
+   "South West and Wales": 51,
+   "West Midlands": 202,
+   "Yorkshire and the Humber": 132
+  },
+  "vehicle_years": {
+   "East Midlands": 10147,
+   "East of England": 10170,
+   "North East and Cumbria": 9597,
+   "North West": 13661,
+   "South East": 13496,
+   "South West and Wales": 9085,
+   "West Midlands": 12813,
+   "Yorkshire and the Humber": 12025
+  }
+ },
+ "basis_2027": {
+  "claims": {
+   "East Midlands": 1773,
+   "East of England": 1731,
+   "North East and Cumbria": 1831,
+   "North West": 3884,
+   "South East": 3284,
+   "South West and Wales": 1546,
+   "West Midlands": 3633,
+   "Yorkshire and the Humber": 3239
+  },
+  "frequency": {
+   "East Midlands": 8.6,
+   "East of England": 8.4,
+   "North East and Cumbria": 9.5,
+   "North West": 14.2,
+   "South East": 12.3,
+   "South West and Wales": 8.5,
+   "West Midlands": 14.2,
+   "Yorkshire and the Humber": 13.6
+  },
+  "range": [
+   1500,
+   3000
+  ],
+  "share_above": 37.8,
+  "threshold": 2500
+ },
+ "call": {
+  "band": [
+   "NWE",
+   "WMI",
+   "YHU"
+  ],
+  "band_names": [
+   "North West",
+   "West Midlands",
+   "Yorkshire and the Humber"
+  ],
+  "below": "SEA",
+  "below_name": "South East",
+  "order": [
+   "North West",
+   "West Midlands",
+   "Yorkshire and the Humber",
+   "South East",
+   "North East and Cumbria",
+   "East Midlands",
+   "South West and Wales",
+   "East of England"
+  ]
+ },
+ "components": {
+  "reported_claims": {
+   "East Midlands": 1798,
+   "East of England": 1687,
+   "North East and Cumbria": 1761,
+   "North West": 3220,
+   "South East": 3342,
+   "South West and Wales": 1473,
+   "West Midlands": 3265,
+   "Yorkshire and the Humber": 3046
+  },
+  "reported_claims_total": 19592,
+  "reported_frequency": {
+   "East Midlands": 8.7,
+   "East of England": 8.2,
+   "North East and Cumbria": 9.2,
+   "North West": 11.8,
+   "South East": 12.5,
+   "South West and Wales": 8.1,
+   "West Midlands": 12.7,
+   "Yorkshire and the Humber": 12.8
+  },
+  "vehicle_years": {
+   "East Midlands": 20660,
+   "East of England": 20688,
+   "North East and Cumbria": 19197,
+   "North West": 27386,
+   "South East": 26732,
+   "South West and Wales": 18174,
+   "West Midlands": 25654,
+   "Yorkshire and the Humber": 23765
+  },
+  "vehicle_years_total": 182255
+ },
+ "rivals": {
+  "lift": [
+   "South East",
+   "West Midlands",
+   "Yorkshire and the Humber"
+  ],
+  "lift_every_step": [
+   "West Midlands",
+   "Yorkshire and the Humber",
+   "South East"
+  ],
+  "lift_factor": 1.27,
+  "reported": [
+   "Yorkshire and the Humber",
+   "West Midlands",
+   "South East"
+  ],
+  "reported_below": "North West"
+ },
+ "units": {
+  "claims_per_vehicle_years": 100,
+  "thefts_per_vehicle_years": 1000
+ }
+}

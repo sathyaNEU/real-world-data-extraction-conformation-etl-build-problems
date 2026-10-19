@@ -1,18 +1,18 @@
 {
   "task": "task270",
-  "architecture": "v2 (an English mutual motor insurer's 2027 rating bands: which three of its eight rating regions go in the top frequency band, by the claim frequency each region's policies show once an at-fault claim no longer moves a policy down the no-claims steps, when policyholders on the middle steps today pay small at-fault damage themselves rather than lose steps)",
+  "architecture": "v2 (an English mutual motor insurer's 2027 rating bands: which three of its eight rating regions go in the top frequency band, by the claim frequency each region's policies show over the 2024 and 2025 accident years once an at-fault claim no longer moves a policy down the no-claims steps, when policyholders on the middle steps today pay small at-fault damage themselves rather than lose steps)",
   "drawn": "2026-10-19",
   "slot_note": "re-rooted 2026-10-19 after architecture 1 was spent at stage 4; the slot takes no seed world (DA20 went to task269's third architecture)",
   "domain": "actuarial-science-insurance",
   "subdomain": "claims-frequency-severity",
   "client_domain": "actuarial-science-insurance",
-  "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step he stands on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
+  "niche": "a no-claims step scale makes an at-fault claim cost a policyholder future premium that depends on the step they stand on, so drivers on the middle steps pay small damage themselves; the frequency a region will show once the 2027 wording removes that cost is recovered from the claims nobody absorbs and the size distribution of the policyholders for whom a claim already costs nothing",
   "objective": "descriptive-distribution",
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Band C of the 2027 rating basis holds North West, West Midlands and Yorkshire and the Humber; South East is the first region below.",
+  "answer_source": "submission.md",
   "gap": [
     "objective",
     "population"
@@ -33,30 +33,30 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds each region's 2025 and 2026 earned vehicle-years and claims correctly (the policy system migration, mid-term moves between regions, fault settled or pending, windscreen claims out) ranks the regions by their reported claim frequency, or lifts the steps 6 to 9 by the Step Protection holders' frequency against other policyholders on those steps, and places the wrong third region in the top band; only recovering the claims absorbed on every insured step, from the claims too large for any policyholder to absorb scaled by the share of claims that large among the policyholders a claim costs nothing, places the third region whose policyholders sit mostly on the middle steps.",
+  "analyst_test": "A strong analyst who builds each region's 2024 and 2025 earned vehicle-years and accident claims correctly (the policy system migration and its crosswalk, mid-term moves between regions, the 1 April 2025 region map change, fault settled, split or pending, windscreen, theft and fire claims out, legacy amounts in pence) ranks the regions by their reported claim frequency, or lifts steps 6 to 9 by the Step Protection holders' frequency against other policyholders on those steps, and files band C as South East, West Midlands and Yorkshire and the Humber; only recovering the claims the middle steps kept back, from the claims above the size no policyholder absorbs and the share of claims that large among step 0 and Step Protection policies, puts North West in band C.",
   "domain_test": "The deciding quantity is each region's claim frequency under a wording where an at-fault claim costs no no-claims steps, the actuary's frequency of accidents above the excess recovered through the bonus-hunger truncation that a step scale imposes on reported claims (claims every policyholder reports, scaled by the ground-up size distribution of those for whom a claim already costs nothing); with another field's nouns there is no step scale making the cost of a claim depend on the claimant's own step, so nothing is absorbed and nothing is recovered.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:claims-absorbed-under-a-no-claims-step-scale-recovered-from-the-size-every-step-reports",
   "layer1": [
-    "the 2025 migration from the legacy policy system to the new platform, policy numbers re-issued and joined through a crosswalk",
-    "mid-term adjustments that move a vehicle to another postcode district and so another rating region, exposure split by days",
-    "the no-claims scale renumbered at the 2024 revision (years of no-claims discount to steps 0 to 9) with a conversion table",
-    "claims with fault settled, split or still pending; not-at-fault claims recovered from the other insurer; windscreen claims outside the scale",
-    "paid and outstanding amounts in pence in the legacy claims system and pounds in the new one, VAT and the excess deducted",
-    "two postcode districts remapped between rating regions from April 2026",
-    "incident dates in local time against system timestamps in UTC across the clock changes"
+    "the 2025 move from the legacy policy system to the new platform, policies renumbered at their first platform renewal and joined through a crosswalk, claims notified after that renewal registered under the new number",
+    "mid-term adjustments that move a car to another postcode district or change its cover, exposure split by days (a district on the legacy system, a full postcode on the platform)",
+    "the legacy expiry date the last day on cover against the platform's renewal date, and cancellation dates on each system's own convention",
+    "claims with fault settled, split or pending, not-at-fault claims recovered from the other insurer, nil notifications and rejected third-party claims",
+    "amounts in pence on the legacy claims system and pounds on the platform",
+    "two postcode districts reassigned between rating regions from 1 April 2025",
+    "notification times in UTC on the platform against UK dates elsewhere"
   ],
   "stakeholder_role": "the mutual's pricing actuary, preparing the 2027 rating basis for the pricing committee",
   "role_family": "portfolio_manager",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "policy_years_2025_2026.csv",
-    "rows": 0,
-    "entity": "one policy's cover in one policy year",
+    "file": "policy_terms_legacy_export_2023_2025.csv",
+    "rows": 230324,
+    "entity": "one policy year on the legacy system",
     "grain": "policy x policy year",
-    "row_meaning": "a private car policy's cover over one policy year: its region, its step at inception, the add-on, earned days",
+    "row_meaning": "a private car policy's cover over one policy year: inception and expiry, cancellation, garaging district, step and Step Protection at inception, cover, car, premium",
     "source": "synthetic",
-    "source_dataset": "constructed (seeded generator; the mutual, its regions and people are fictional)"
+    "source_dataset": "constructed (seeded generator; the mutual, its partner firms and people are fictional)"
   },
   "forum": "committee_or_panel",
   "forcing_event": "launch_or_rollout",
@@ -65,21 +65,29 @@
     "geography": "United Kingdom, England and Wales (a fictional mutual motor insurer)",
     "currency": "GBP",
     "org_type": "a member-owned motor insurer",
-    "invented_names": [],
+    "invented_names": [
+      "Fennacre Mutual Insurance Society",
+      "Clearvane Auto Glass",
+      "Tremlow Vehicle Remarketing",
+      "Private Motor Statistics Service"
+    ],
     "people": [
       "Jayne Gallagher",
       "Antony Evans"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "2027_rating_basis_bands.xlsx",
+    "band_c_frequency_2027_basis.png"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost him and that cost rises and falls with his position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
+  "driver": "The decisive quantity is how often each group's members will report an event once reporting costs them nothing, when today each member absorbs events smaller than what reporting would cost them and that cost rises and falls with their position on a scale, so the reported count understates most the groups whose members stand where reporting costs most; counting only the events too large for anyone to absorb, scaled by how common events that large are among members for whom reporting already costs nothing, recovers it, while a group that buys out the cost is self-selected and gives the size of events, not their rate.",
   "driver_concrete": "Each region's claims per 100 vehicle-years under the 2027 protected wording, recovered step by step from the at-fault claims above the size no policyholder absorbs, scaled by the share of claims that large among step-0 policyholders and Step Protection holders, plus the not-at-fault claims everyone already makes; the reported frequency and a lift taken from the Step Protection holders' frequency on steps 6 to 9 leave the middle-step regions understated.",
-  "stump": "A competent solver ranks the regions by their 2025 and 2026 reported claim frequency (or lifts steps 6 to 9 by the protection holders' frequency) and puts the wrong third region in the top band, because the drivers on the middle steps, where a claim costs the most steps' worth of premium, pay their small at-fault damage themselves and the region whose policyholders sit there reports the fewest of its claims.",
+  "stump": "A competent solver ranks the regions by their 2024 and 2025 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, South East in place of North West, because North West's policyholders stand mostly on the middle steps with the book's highest premiums, where a claim costs the most premium over the climb back, and pay small at-fault damage themselves, so North West reports the smallest share of its accidents while South East, on the top steps and under Step Protection, reports nearly all of its own.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task255": "task255 fits a severity tail through a floor recorded on every claim (the member's deductible) and a ceiling (the retention) to set a retention; here the decisive quantity is a frequency, the floor is the policyholder's own unrecorded choice driven by the cost of a claim at his step, and the recovery counts claims above the size nobody absorbs against the size distribution of policyholders for whom claiming costs nothing",
+    "task255": "task255 fits a severity tail through a floor recorded on every claim (the member's deductible) and a ceiling (the retention) to set a retention; here the decisive quantity is a frequency, the floor is the policyholder's own unrecorded choice driven by the cost of a claim at their step, and the recovery counts claims above the size nobody absorbs against the size distribution of policyholders for whom claiming costs nothing",
     "task267": "task267 reweights the verified by a verification probability the referral rule fixed; here nothing is verified and no probability is known: the absorbed claims never reach the record and are recovered through their size",
     "task180": "task180 recovers small events masked by daytime noise from the quiet hours' record and a magnitude law; here the masking is a choice the policyholder makes against a premium scale, its depth set by the step, and the recovery is nonparametric in size",
     "task262": "task262 removes transitory variance from a single-year reading; here nothing is noisy, events are missing below a size, and which ones depends on the scale step",

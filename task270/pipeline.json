@@ -1,28 +1,28 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "actuarial-science-insurance",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-19",
-  "stump": "The default path ranks the eight rating regions by their 2025 and 2026 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and puts the wrong third region in the top band, because policyholders on the middle no-claims steps, where an at-fault claim costs the most premium, pay small damage themselves; only recovering the absorbed claims step by step, from the claims too large for any policyholder to absorb scaled by the share of claims that large among the policyholders a claim costs nothing, places the region whose policyholders stand mostly on the middle steps.",
+  "stump": "The default path ranks the eight rating regions by their 2024 and 2025 reported accident claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and files band C as South East, West Midlands and Yorkshire and the Humber, because North West's policyholders stand mostly on the middle no-claims steps, where an at-fault claim costs the most premium over the climb back, and pay small damage themselves; only recovering the absorbed claims, from the claims above the size no policyholder absorbs scaled by the share of claims that large among step 0 and Step Protection policies, puts North West in band C with South East first below.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
-    "checks": 0
+    "exit": 0,
+    "date": "2026-10-19",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (4 design-note vocabulary lines and forward term_end dates, each harmless in the note; the LLM plate hit fixed in the generator)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "surface": ""
+    "heart": "WARN (overuse.gate_g, repeat.question_form; no BLOCK)",
+    "nearest": "0.11 task130 v4",
+    "surface": "2 promoted: task268 (layout and format mix only, no shared name, prompt or submission wording), task192 (same-driver signature, differentiated on the card)"
   },
   "judge": {
     "verdict": "",
@@ -30,7 +30,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: default path, stump sentence, readability screen, fork table (the absorbed-claims estimator row first, the threshold above every absorbed claim, the full-reporting groups, the 2027 wording's behaviour), ladder measured on the generator's world (reported, Step Protection lift on steps 6 to 9, lift on every insured step, size-based recovery at several thresholds and a parametric tail), closure, literal reader, oracles, ask sheet with a cracker coded on the cut pack, prompt.txt; precut.py",
+  "resume": "stage 4: two isolated scored readers (fresh copies of prompt.txt and target/, figures keyed as generator/figures.json, scored with score_reader.py; both must miss the call) and the determinism judge on the built pack (build 317fc1d2604d6449c1add0c48673cfe1, 315 checks, verify clean, byte-identical); then fix in the generator, ship (target.zip, golden/, ledger row, board)",
   "architectures": [
     {
       "architecture": 1,
