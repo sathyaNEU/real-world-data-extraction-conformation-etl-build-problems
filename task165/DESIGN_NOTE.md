@@ -21,7 +21,7 @@ street to Priority 1 adds depends on how much of it Priority 2 already salted.
 | Decision | `quantity_figure`, answer unit `count` (tonnes of rock salt) |
 | Mechanism | gap population (decisive: the gain was measured on collectors moved because they were hazardous, and the new streets are not), with time (the coming winter at the planning severity, not last winter's or the five winters' mean); pattern none; generators G14 (the earlier moves' gain conditioned on each street's own Priority 2 salt), G6 (the new pool's coverage sits far below the earlier moves'), G13 (the planning severity); Gate G `forecasting`; strategy `composition_mix` |
 | Layer 2 family / pattern | `estimation_fit` (a treatment gain carried from earlier treated units to new ones conditioned on the covariate that drives it, measured in each unit's own history); `own:service-upgrade-gain-conditioned-on-prior-partial-coverage` |
-| Layer 1 | the AVL system replaced on 1 October 2023 (legacy segment-by-shift summaries in kilograms and local time, then one row per pass in tonnes and UTC); the 2023 GIS re-segmentation splitting long arterial and Priority 2 segments through a crosswalk; the storm log's layout change in 2023; free-text revision reasons; each winter's own swing in salt per point, common to every road; and on the asks' rows only, the supplier's re-issued dispatch schedule, the survey's capture window in UTC, weighings at another yard's scale house, inter-yard transfers, older controllers writing a run's total on each segment, contractor circuits outside the telematics and the July 2026 yard realignment (full inventory in `## Layer 1 inventory`) |
+| Layer 1 | the AVL system replaced on 1 October 2023 (legacy segment-by-shift summaries in kilograms and local time, then one row per pass in tonnes and UTC); the 2023 GIS re-segmentation splitting long arterial and Priority 2 segments through a crosswalk; the storm log's layout change in 2023; free-text revision reasons; each winter's own swing in salt per point, common to every road; and on the asks' rows only, the supplier's re-issued dispatch schedule, the survey's capture window in UTC, weighings at another yard's scale house, trucks still weighed on the way for a day after each scale came back (the supplier's trucks on round trips from its terminal, each scale house's stored tares by account), inter-yard transfers, older controllers writing a run's total on each segment (four replaced in 2025, in Fleet Services' work orders), contractor circuits outside the telematics, the July 2026 yard realignment and the platform showing a renamed circuit's current code on its old passes (full inventory in `## Layer 1 inventory`) |
 | Furniture | forum `council_or_assembly` (spending above the contract quantity needs council's approval under the City's procurement by-law, so the winter operations manager's commitment goes to council as a one-page report before the supplier's 1 October deadline), forcing event `purchase_order_or_contract` (the supply contract's 1 October deadline for seasonal tonnage), organisation family `local_government`, role family `operations_director` (the roads division's winter operations manager), context artifact `register` (the winter route register), calibration `none`, opening `question-first`, question form `how-much` |
 | Spine | the fleet telematics platform's segment-pass export (one row per spreader pass over one route segment, with the rock salt put down), 1 October 2023 to 23 September 2026, 344,770 rows, beside the legacy AVL's segment-by-shift summaries for November 2021 to March 2023; constructed in the layout of a winter-maintenance telematics export |
 | Deliverables | `salt_commitment_2026-27.xlsx` (the commitment, its working and the ask tables) and `seasonal_salt_commitment_council_report.docx` (a one-page staff report to council recommending the commitment, with the chart of the arterial figures) |
@@ -150,8 +150,10 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
   neutral on the call in `checks.py` (R2 rows): the legacy AVL's segment-by-shift summaries in kilograms and local time
   against the telematics platform's passes in tonnes and UTC; the 2023 GIS re-segmentation and its crosswalk (no
   main-population segment is split); the storm log's layout change; free-text revision reasons; the asks' own records
-  (survey times in UTC, weighings at another yard's scale, transfers, dispatch re-issue, run totals on every segment,
-  combined salt and brine mass, contractor circuits, the yard realignment) sit on no row the call reads. Trucks rotate
+  (survey times in UTC, weighings at another yard's scale and the trucks still weighed there on the way after each
+  changeover, the supplier's round trips and the scale houses' stored tares, transfers, dispatch re-issue, run totals on
+  every segment, combined salt and brine mass, the fleet's work orders, contractor circuits, the yard realignment and
+  the current circuit codes on old passes) sit on no row the call reads. Trucks rotate
   between circuits of their yard, the route audit keys each change in a few sittings and some after the change takes
   effect, the register pull holds the salted network only (the manifest says so), and each winter carries its own swing
   in salt per point that the index does not carry (about 14 per cent between winters, common to every road; netted
@@ -394,18 +396,22 @@ the golden.
 - The never-moved Priority 2 collectors: a control for each winter's swing (the family's netted members read it);
   blind to the decisive move because none of them changed service (their gain is nil under every basis).
 - The storm log's WSI: an input every route reads alike.
-- The asks' referees (the scale houses' own times, the yard loading log, the contractor's returns) sit on no row the
-  call reads.
+- The asks' referees (the scale houses' own times, tares and dockets, the trucks' round trips, the plan's pre-wet rate
+  and the tandems' calibrations against the rows' litres, the work orders' controller replacements, the contractor's
+  returns) sit on no row the call reads.
 - No control ties only under the golden.
 
 ## Ask sheet
 
 **Main call's declared row population:** the AVL rows (both exports) of every collector segment, the winter route
 register's collector rows, the revision log's priority entries for collectors, the storm log's WSI, the procedure and the
-plan. Device and hazard rows in it: 0 (asserted, SEPARATION: no older-controller unit serves a collector circuit, the
-collectors spread dry salt, no collector segment the call reads is split by the crosswalk, no collector pass falls within
-six hours of a season boundary, the contractor and the realignment touch arterials only, and the golden is unchanged with
-every ask file deleted).
+plan. Device and hazard rows in it: 0 (asserted, SEPARATION: every older-controller unit is an arterial tandem whose every
+pass is on an arterial circuit, the collectors spread dry salt, no collector segment the call reads is split by the
+crosswalk, no collector pass falls within six hours of a season boundary, the contractor and the realignment touch
+arterials only, and the golden is unchanged with every ask file deleted). Against the shipped pack (target.zip d87ff77a)
+the rubric repair left the files the call reads byte-identical, the platform export's collector rows identical and its
+arterial rows identical in every column but the two realigned circuits' codes, the dictionary's rows for the call's files
+identical, and R0 and R0b at 5,045.3 and 5,392.8 (asserted, SEPARATION).
 
 **Ask A. For each works yard, the rock salt in its dome on 1 November 2026 once the October deliveries booked with the
 supplier have landed, and the tonnes more the dome can then take** (8 figures, tonnes to one decimal).
@@ -414,23 +420,42 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
 - Basis (filed in the plan's materials section, the owner's voice): "Each dome's stock is taken from its September
   survey and brought forward by the loads weighed in to it and out of it at the scale houses." The dome register gives
   capacities; the supplier's latest dispatch issue gives the October bookings.
-- Primary A1 (D8, a clock against a filed cutoff; silent): each dome was flown on a different September morning and
-  the survey report gives each capture window in UTC in its flight log; on every survey day the yard weighed supplier
-  loads in both before and after the flight, so the stock moves forward only by what crossed the scale after the
-  capture's end, local time. Rolled forward from the day after the survey, from the survey day whole, or from the UTC
-  times read as local, every figure moves. Fair: the scale-house log times every weighing to the minute.
-- Primary A2 (D7, the true key elsewhere; silent): while Lakeshore's scale was replaced (24 August to 14 September) its
-  supplier loads were weighed at Ridge, and while Mapleford's was recertified (14 to 18 September) at Kelvin Road; the
-  weighing yard's sheet carries them with the receiving dome only in the operator's remarks, in four spellings. Counted
-  by sheet, all four figures move. Fair: every such row names its dome.
+- Primary A3 (D1, the same records under two sources; silent; the re-site of A2): when Lakeshore's new scale came into
+  use on 15 September and Mapleford's was back from recertification on 21 September, the first B-trains bound there still
+  weighed at Ridge and Kelvin Road on the way, as the outage routing had them do: a gross and six to nine minutes on the
+  scale without tipping, then in again at their own yard's scale, where they tipped. On three of them the operator kept
+  the outage remark ("for Lakeshore", "LKS", "MPF") and with it the receiving yard's account, whose stored tare the
+  outage weighings used, so the two tickets repeat gross, tare and net; a reader who routes a remarked weighing to the
+  dome it names counts the load twice, Lakeshore by 87.5 t and Mapleford by 43.2 t. The two tickets carry the two
+  trailers' dockets of one B-train, one apart.
+- Primary A4 (D7, the true key elsewhere; silent; the same cause): two more such trucks weighed at Ridge on 16 September
+  and at Kelvin Road on 21 September with no remark, on that scale house's own account and its own stored tare for the
+  truck, 260 kg and 240 kg below the receiving yard's, so their nets differ and only the truck, the day, the gross, the
+  times and the docket pair tie the two tickets; a reader counts each as the weighing yard's own delivery, Ridge high by
+  44.3 t and Kelvin Road by 44.4 t.
+- Exposed by a consistency check, A3 and A4 alike (asserted): Northgrit's trucks run from its terminal, so none is back
+  at a City scale with another load sooner than the drive back, the loadout and the drive out; every other same-truck
+  pair of one truck's weighings on a day is 2 hours 36 minutes or more apart, and the five pairs are 35 to 58 minutes
+  apart on one gross, the
+  earlier ticket six to nine minutes on the scale and the later the 14 to 31 minutes of a load tipped there. The same
+  weighing cannot be two loads without a truck reloading inside the hour. Once found it admits one handling: the later
+  ticket is the load weighed in to the dome (the plan's basis), the earlier put nothing in to either dome, and the
+  receiving yard's ticket carries the tare that yard's account stores for the truck on every load it tipped there (each
+  scale house keeps one stored tare a truck for each account, asserted). Fair: no two loads that tipped share a truck, a
+  day and a gross across the scale houses (asserted).
 - Hazards: HA1 the supplier's dispatch schedule re-issued on 21 September (two loads cancelled, three moved into
   November, one added at Ridge); HA2 Ridge's salt sent to the rebuilt Lakeshore dome on a city tandem, weighed out at
-  Ridge and in at Lakeshore; HA3 a wet supplier load weighed in and turned back at Mapleford.
-- Stops (each a complete pipeline in `calc.py`, asserted): from the day after the survey with loads by sheet (the
-  cracker's natural read, every figure off by 147 t or more); the day after the survey with the remarks read (every
-  figure, 130 t or more); the survey day whole (every figure, 29 t or more); UTC as local (every figure, 87 t or more);
-  by sheet (every figure, 272 t or more); supplier loads only (three yards, 43 t or more); the first dispatch issue (three
-  yards, 17 t or more); the golden.
+  Ridge and in at Lakeshore; HA3 a wet supplier load weighed in and turned back at Mapleford, weighed out on the truck
+  that brought it; HA4 (was A1) each dome's capture window in UTC in the survey's flight log, the yard holding deliveries
+  through each flight; HA5 (was A2) the outage weighings at Ridge for Lakeshore (24 August to 14 September) and at
+  Kelvin Road for Mapleford (14 to 18 September), the receiving dome in the operator's remarks in four spellings.
+- Stops (each a complete pipeline in `calc.py`, asserted): both blind readers' paths and the judge's literal reading
+  (every weighing after each flight, remarks routed, the double weighings kept: every dome high by 43.2 t or more); only
+  the exact repeats of gross, tare and net dropped (Kelvin Road and Ridge, 44.3 t or more); from the day after the
+  survey by sheet (every figure, 272.5 t or more); the day after the survey with the remarks read (every figure, 130.0 t
+  or more); the survey day whole (every figure, 29.2 t or more); UTC as local (every figure, 86.9 t or more); by sheet
+  (every figure, 272.5 t or more); supplier loads only (three yards, 42.8 t or more); the first dispatch issue (three
+  yards, 17.0 t or more); the golden.
 - Span: the survey report, the scale-house log, the dispatch schedules (both issues), the dome register, the plan, the
   dictionary (7 files).
 
@@ -438,44 +463,59 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
 2024-25 and 2025-26, counting each circuit under the yard it belonged to that winter** (12 figures, to the nearest
 50 t).
 - H18 home: an audit of the input the call consumes. The call reads the telematics export's collector rows; this ask
-  reconciles the same export's arterial rows, by yard and winter, to the yards' own records and the contractor's
+  reconciles the same export's arterial rows, by yard and winter, to the route audit's history and the contractor's
   returns, on rows the call never reads.
-- The yard basis is WHAT and is filed in the ask's own sentence (the yard each circuit belonged to that winter: the
-  route code the pass carries, and the revision log's 1 July 2026 YARD entries), so the register's current yard, and
-  the fleet list's yard for the two Mapleford tandems that moved with their circuits, are misreadings, not second
-  readings.
-- The 50 t rounding is what every honest correction of the older controllers shares. The records' own route (run
-  totals once, the brine's mass taken off at the plan's 1.18 kg a litre) and the loading-log calibration (each
-  older-controller unit's winter taken at the tonnes its yard's loader scale put into it) differ by 4.5 t at most and
-  file the same figure in every cell, each 17.2 t or more from a 50 t edge (a quarter-bin is 12.5 t; asserted, and
-  recomputed by the verifier on its own path); the salt read back from the brine at the plan's 40 litres a tonne agrees
-  to 0.16 t. A flat halving of the older controllers' rows is a rougher correction (11 t below to 89 t above) and moves
-  five of the twelve figures. Where a cell would sit within 16 t of an edge under either route, the City trucks'
-  newer-controller passes of that yard and winter carry the difference in proportion (a fraction of a per cent of each),
-  on the simulated truth, so the platform, the loader log and every total follow.
+- The yard basis is WHAT and is filed in the ask's own sentence (the yard each circuit belonged to that winter, which
+  the revision log's 1 July 2026 ROUTE and YARD entries give), so the register's current yard, the fleet list's current
+  yard and the current code a pass carries are misreadings, not second readings.
+- The 50 t rounding is what every honest correction of the older controllers shares: the records' own route (each run
+  total once, the brine's mass taken off at the plan's 1.18 kg a litre) and the salt read back from the older
+  controllers' litres at the plan's 40 litres a tonne agree to 0.07 t, every cell 17.9 t or more from a 50 t edge
+  (asserted, and recomputed by the verifier on its own path). A flat halving of the older controllers' rows is a rougher
+  correction (11 t below to 89 t above) and moves five of the twelve figures. Where a cell would sit within 16 t of an
+  edge, the City trucks' newer-controller passes of that yard and winter carry the difference in proportion (a fraction
+  of a per cent of each), on the simulated truth, so the platform and every total follow.
 - Primary B1 (D6, an event's quantity on every line it covers; silent): the arterial tandems still carrying the older
   spreader controller report a run's total, and the platform writes that total on every segment row of the run; the
   rows carry their own segment and entry times, so no key repeats and nothing is a duplicate. Summed as rows, every
-  figure is high. Fair: every row of an older-controller run repeats one total (asserted over 18,705 runs), the run
-  reference groups them, and the fleet list dates each controller's replacement.
+  figure is high. No column isolates the older controllers: the fleet list carries no controller column and no loader
+  log ships; Fleet Services' work orders, a maintenance record of every City unit's jobs from July 2023 (services,
+  inspections, calibrations, repairs), name a controller model only on the four replaced, M410 to M720, in the summer
+  of 2025. Fair: every row of an older-controller run repeats one total (asserted over 18,705 runs), the run reference
+  groups them, the unit-winters whose runs do so are exactly the 32 that ran an M410, and each of the four replaced
+  units stops repeating its run totals across its work order (asserted).
 - Primary B1b (D3, a meaning set per source; silent): the same controllers report the run's material as one mass, salt
-  and spinner brine together, where the newer controllers report the salt alone beside the brine litres. Fair and exact:
-  the plan files the pre-wet rate (40 litres to the tonne) and the brine's weight (1.18 kg a litre); the newer
-  controllers' rows carry exactly 40 litres a tonne and the older ones 38.2, which is 40 litres over a tonne of salt plus
-  its brine (asserted). With the run totals taken once and the brine left in, every figure is high by 48.8 t or more and
-  lands a full 50 t cell or more above the golden's (asserted).
+  and spinner brine together, where the newer controllers report the salt alone beside the brine litres. With the run
+  totals taken once and the brine left in, every figure is high by 48.8 t or more and lands a full 50 t cell or more
+  above the golden's (asserted).
+- Exposed by a consistency check, B1 and B1b (asserted): litres a tonne against the plan's pre-wet rate (40 litres to
+  the tonne of salt, the brine 1.18 kg a litre) and every City tandem's calibration work order each autumn ("pre-wet
+  checked at 40 L/t", the older units' included, so 38.2 is no lower setting). The newer controllers' rows carry
+  40.0 and the older ones 38.2, and each replaced unit goes from 38.2 to 40.0 across its work order: the older
+  controllers' tonnes cannot be salt alone. Once found it admits one handling: only the brine's whole weight off each run
+  total restores the plan's 40.0; the brine's salt alone (23 per cent) leaves 38.6, and the brine's salt off every row
+  puts the newer rows at 40.4.
+- Primary B3 (D2, an attribute at the wrong vintage, a rename; silent; the re-site of HB2): the platform carries a
+  renamed circuit's current code on every pass it ever made, so the two Mapleford circuits that passed to Kelvin Road
+  on 1 July 2026 show KLV-A15 and KLV-A16 back to October 2023 and no pass carries MPF-A01 or MPF-A02; a reader who takes
+  the yard from the code a pass carries counts both circuits at Kelvin Road in all three winters, six figures by 962.1 t
+  or more. Fair: the revision log's ROUTE entries of 1 July 2026 take each current code back to the circuit it was
+  (asserted); the dictionary describes the field as the circuit the pass ran on.
 - Mirror device B2 (D4, a reporter absent): three arterial circuits at Kelvin Road and Mapleford are run by Kettlewood
   Road Services under contract RW-2023-07, whose trucks report to its own system; its salt is in its monthly returns,
-  which the plan points to. Six figures move by 351 t or more.
+  which the plan points to. Six figures move by 351.7 t or more.
 - Hazards: HB1 UTC against the season's dates (frost patrols on arterials late on 31 October 2024 at Lakeshore and late
   on 31 March 2026 at Ridge, 8.2 t each way), which at the nearest 50 t moves no figure; HB2 the register's current yard
-  against the yard a circuit belonged to that winter (the ask's sentence closes it).
-- Stops (asserted): every row summed (the cracker's natural read, every figure off by 1,032 t or more); run totals once,
-  brine left in (every figure, 48.8 t or more, a cell or more); brine netted on every row, run totals repeated (every
-  figure, 939 t or more); the contractor left out (six figures, 351 t or more); the register's yard (six figures, 962 t or
-  more); the golden.
-- Span: the telematics export, the fleet list, the plan, the contractor's returns, the register, the revision log, the
-  dictionary, the yard loading log (8 files).
+  against the yard a circuit belonged to that winter (six figures, 962.1 t or more).
+- Stops (asserted): every row summed (every figure off by 1,032.3 t or more); run totals once, brine left in, which is
+  the second blind reader's path and the judge's first reading (every figure, 48.8 t or more, a cell or more); the
+  brine's salt off the older runs (every figure); brine netted on every row, run totals repeated (every figure, 939.2 t
+  or more); the contractor left out (six figures, 351.7 t or more); the register's yard or the code's own yard (six
+  figures, 962.1 t or more); the first blind reader's path (every figure); the golden. The judge's second reading, the
+  brine's salt off every row, keeps seven of the twelve (`## Residual`).
+- Span: the telematics export, the plan, the contractor's returns, the revision log, the work orders and the
+  dictionary (6 files, under Part 4's eight, `## Residual`); the register and the fleet list are read by its
+  misreadings.
 
 **The report's chart** (`seasonal_salt_commitment_council_report.docx`): Ask B's figures, each yard's three winters as
 labelled bars, beside the council report's line that the rolled-over contract carries the arterial programme; graded on
@@ -488,30 +528,49 @@ its content (Ask B) and its parts (every yard and winter shown and labelled; the
 | HA1 dispatch re-issue | the supplier re-cut its October schedule on 21 September | A | three yards' stock and room by 17 to 73 t |
 | HA2 transfers | Ridge filled the rebuilt Lakeshore dome on a city tandem | A | Ridge and Lakeshore by 221 t when supplier loads only are counted |
 | HA3 wet load turned back | a supplier load weighed in and out at Mapleford | A | Mapleford by 43 t when only inbound supplier loads are counted |
+| HA4 survey clock | the flight log is in UTC | A | every dome by 86.9 t or more when the UTC end is read as local |
+| HA5 outage weighings | Lakeshore's and Mapleford's loads weighed at Ridge and Kelvin Road | A | every dome by 272.5 t or more when counted by sheet |
 | HB1 UTC | the platform stores UTC | B | none at the nearest 50 t (two cells by 8.2 t) |
-| HB2 realignment | arterials moved between yards on 1 July 2026 | B | Kelvin Road and Mapleford, every winter, by 962 t or more, when the register's current yard is read |
+| HB2 realignment | arterials moved between yards on 1 July 2026 | B | Kelvin Road and Mapleford, every winter, by 962.1 t or more, when the register's current yard is read |
 
-**Referee.** Ask A: the scale-house log's own times against the survey's flight log; Ask B: the yard loading log.
-Neither hands over a figure.
+**Referee.** Ask A: the scale houses' own times against the survey's flight log, each truck's times between scale
+houses against its round trip from the terminal, the stored tare each scale house keeps for a truck on each account,
+and the dockets of one B-train on two tickets; Ask B: the plan's pre-wet rate and brine weight and every tandem's
+calibration at 40 L/t against the rows' own litres, and the work orders' four controller replacements by unit and date.
+None hands over a figure. The yard loading log the shipped pack carried handed over every arterial cell (each unit's
+winter at its loader tonnes is the salt it spread, within its hopper's carry), so it is withdrawn (`## Tried and
+rejected`).
 
-**Cracker sheet** (the cracker landed the call, ran the hygiene battery, executed every filed rule and matched every
-control; both paths run on the cut pack by `generator/cracker.py`)
+**Cracker sheet** (the cracker landed the call and takes each blind scored reader's own path on the asks,
+re-implemented in `generator/cracker.py` from that reader's method and run on the cut pack, with the determinism
+judge's literal readings beside them)
 
-| Ask row | Figures | Cracker's path | Device that holds | Verdict |
+| Ask row | Figures | Cracker's paths | Devices that hold | Verdict |
 |---|---|---|---|---|
-| Ask A, dome stock and room | 8 | the survey's tonnes brought forward from the day after each survey by every weighing in and out on the yard's own sheet, transfers both ways, the latest dispatch issue | A1 the capture window in UTC and A2 the weighings at another yard's scale | miss |
-| Ask B, arterial salt by yard and winter | 12 | the platform's arterial rows summed by the route code's yard, local season dates, the contractor's returns added | B1 the run totals written on every segment and B1b the combined salt and brine mass | miss |
+| Ask A, dome stock and room | 8 | reader 1: the survey's tonnes brought forward by every weighing in and out after each flight's start, a weighing at another yard's scale counted at the dome its remarks name, transfers both ways, the wet load netting to nil, the latest dispatch issue's BOOKED October lines; reader 2 and the judge: the same from each flight's end, the double weighings kept | A3 the remarked weighings on the way and A4 the unremarked ones on another account's tare (0 of 8 on every path) | miss |
+| Ask B, arterial salt by yard and winter | 12 | reader 1: the arterial rows by the yard of the code each pass carries, the fleet list's older controllers halved (none named), the contractor's returns added; reader 2 and the judge's first reading: each older run once, the brine left in, the codes taken back, the returns added; the judge's second: the brine's salt off every row | B1b the combined salt and brine mass, and on reader 1's path B1 and B3 too (0 of 12 on both readers' paths and the judge's first reading; the judge's second keeps 7, `## Residual`) | miss |
 
 Blind responses (`checks.py`): one network rate times each yard's arterial lane-km recovers none of Ask B's cells; no
 single fill share of capacity recovers more than one of Ask A's.
 
 Measured by: `generator/cracker.py` (run on the cut pack: each response scored on a rubric modelled on Part 0's weights,
-the call and its components 38, the instructions 7, the asks 55 over every ask figure and the chart's parts).
+the call and its components 38, the instructions 7, the asks 55 over every ask figure and the chart's parts). Both
+readers' paths keep 0 of the 20 ask figures. One new device found on either path: the exact repeats dropped give back 4
+(Lakeshore and Mapleford); the trucks' round trips checked give back all 8 dome figures; on reader 2's path the brine's
+whole weight off gives back all 12 arterial cells; on reader 1's path the older runs once or the codes taken back give
+back none.
 
 Mirror leakage: 8.7 per cent of ask weight (the chart's two parts), measured on the cut pack.
 
-Pair ceiling: 33.3 measured on the cut pack (the cracker 49.8, the mirror 16.8); with one device cracked 33.3, with both
-of Ask A's devices cracked 42.8, with both of Ask B's 48.8.
+Pair ceiling: 33.3 measured on the cut pack on either reader's path (the cracker 49.8, the mirror 16.8); with the exact
+repeats dropped 38.1, with the trucks' round trips checked 42.8, with the brine found on reader 2's path 48.8.
+
+Measured on the reshipped pack (target.zip 7fc71582) by two fresh blind scored readers (scored-task165c and
+scored-task165d): both missed the call (2,600 and 2,700 t) and all eight dome figures (each kept both weighings of the
+changeover trucks); on the arterials one found the run totals and the brine's weight from the work orders and the litres
+a tonne and kept all twelve cells, the other kept none. The measured pair is 28.5. The re-judge on the final write-up
+(judge-task165f) reproduced the call (2,200.06 t), all eight dome figures and all twelve arterial cells with block 3's
+handling.
 
 ## Layer 1 inventory
 
@@ -524,8 +583,12 @@ of Ask A's devices cracked 42.8, with both of Ask B's 48.8.
 | night shifts dated by their start | the legacy AVL | the legacy export | dated by their end | same call: no collector shift on a season boundary (R2, asserted) |
 | free-text revision reasons | the route audit | the revision log | none | none |
 | dispatch re-issue, survey clock, weighings at another scale, transfers, wet load | the supplier, the survey contractor, the scale houses | the asks' files | the stops in `## Ask sheet` | none: no row the call reads |
+| trucks still weighed on the way after a scale came back, on one stored tare or another | the scale houses during the two changeovers (the outage routing kept for a day) | the scale-house log | a weighing counted at the dome its remark names, or at its own yard | none: no row the call reads |
+| supplier trucks on round trips from the terminal, one stored tare a truck for each account at each scale house, dockets in loadout order (one to each trailer of a B-train) | the supplier's terminal and dispatch, the scale houses' weighing software | the scale-house log | none of itself (it is the check that exposes the weighings on the way) | none: no row the call reads |
+| work orders on every City unit (services, inspections, calibrations, repairs, the four controller replacements of 2025) | Fleet Services' maintenance system | the work orders | a calibration's 40 L/t read as the controller's reporting | none: no row the call reads |
 | run totals, combined mass, contractor circuits, realignment | the older controllers, the contractor, the route audit | the pass export's arterial rows, the returns, the register | the stops in `## Ask sheet` | none: no row the call reads |
-| trucks rotating between circuits | yard dispatch (a spare or a swap most storms) | the pass export, the loading log, the timesheets | a circuit read as one truck | none: the call reads salt by segment, whoever spread it |
+| a renamed circuit's current code on every pass it made | the telematics platform (a circuit is one record, renamed in place) | the pass export's arterial rows | the yard of the code a pass carries | none: the call reads collectors by segment (its rows identical to the shipped export, asserted) |
+| trucks rotating between circuits | yard dispatch (a spare or a swap most storms) | the pass export, the timesheets | a circuit read as one truck | none: the call reads salt by segment, whoever spread it |
 | route audit sittings | the route audit keys each change in sittings of 40 to 90 segments on working days, a segment's priority and route rows together, one change in four finished after it took effect | the revision log | the entry date read as the effective date | none: the call reads the effective date (asserted no priority change after 31 March 2026 but the redesign's) |
 | each winter's swing in salt per point | the weather the index does not score (event mix, pavement temperatures, freezing rain), common to every road | every salt record | one winter either side of a move read as typical | same call, netted against the never-moved collectors or not (SF14, asserted) |
 | a pull of the salted network only | the register export's filter (Priority 1 and 2, and the Priority 3 hills) | the register, the manifest says so | the register read as every street | none |
@@ -539,10 +602,13 @@ report):
   only literal answer the files support, counts none, and no competing answer can be derived from the pack. The judge's
   optional pin (one clause, movements to 24 September) was not taken: the prompt does not change.
 - Its second advisory, on the arterial asks: the older controllers' fault (a run's total written on every segment row,
-  gross of the spinner brine) is documented nowhere. It is recoverable from the data (one repeated total per run
-  reference on the M410 and pre-retrofit units, 38.2 litres a tonne against 40, the loader-scale reconciliation), and the
-  data pick the corrected series over halving (five figures a cell off) or de-duplication without the brine step: Layer
-  1 plus semantics inside the asks, which the rules allow, on rows the call never reads.
+  gross of the spinner brine) is filed nowhere, by design, and no column names the controllers. Since the rubric
+  repair's second round the pack documents them where a fleet would: Fleet Services' work orders replace four M410
+  controllers with M720s in the summer of 2025 and calibrate every tandem's pre-wet at 40 L/t each autumn. The fault is
+  found by consistency: one repeated total per run reference on exactly the 32 unit-winters that ran an M410, ending on
+  each replaced unit across its work order, and 38.2 litres a tonne on them against the plan's and the calibrations' 40,
+  which only the brine's whole weight restores. Layer 1 plus semantics inside the asks, which the rules allow, on rows
+  the call never reads.
 - The main call's margin. The golden files 2,213.7 t, 36.3 t inside its bin. The judge's own construction (the new
   streets' own Priority 2 salt as the mean of the five winters, 665 t) files 2,203.7 t, 54 t over 2,150 and 46 t under
   2,250, and its estimators land from 2,158 to 2,221 t; the one exception it found, a fit on the 2025 cohort alone (53
@@ -552,8 +618,26 @@ report):
   (2,294.9 and 2,280.3 t) and a 0.1 t window over 24 streets (2,255.5 t); each closes on the golden as it is refined or
   thickened. Inside the bin but near an edge: a 0.9 t kernel (2,158.6 t) and the un-netted first winter after each move
   (2,162.5 t).
-- The arterial cells sit 17.2 t or more from a 50 t edge under the records' route and under the loading-log calibration
-  (4.5 t apart at most); the brine left in lands a full cell high in every cell, and the UTC season dates move none.
+- The arterial cells sit 17.9 t or more from a 50 t edge under the records' route, and the salt read back from the
+  older controllers' litres agrees to 0.07 t; the brine left in lands a full cell high in every cell, and the UTC season
+  dates move none.
+- The rubric repair, two rounds. The first blind scored reader kept 14 of the 20 ask figures on the shipped pack while
+  missing the call at 2,700 t; on round 1's pack the second kept none of the 20 (missing the call at 2,600 t) and the
+  re-judge (judge-task165d) reproduced the call at 2,203.7 t but neither ask, keeping both weighings of each changeover
+  truck (it could not find the rule) and reading the brine as an unfiled convention. Round 2 makes each device the
+  finding of a consistency check (the trucks' round trips for A3 and A4; litres a tonne against the plan, the
+  calibrations and the controller replacements for B1 and B1b) without filing either. Measured by `generator/cracker.py`
+  on this pack: both readers' paths keep 0 of the 20; the judge's readings that keep the double weighings, the brine,
+  or take the brine's salt off the older runs only keep none; the judge's other reading, the brine's salt (1.09 per cent
+  of a tonne of salt) off every row, keeps 7 of the 12 arterial cells, because that cut sits within a few tonnes of the
+  older runs' brine weight in seven cells; it cannot be moved without moving the frozen rows, and the newer rows'
+  litres a tonne refute it (40.4 against the plan's 40). The price of a device a grader can find: one check gives back a
+  whole ask, the trucks' round trips all eight dome figures (pair 42.8) and the brine on the second reader's path all
+  twelve arterial cells (pair 48.8), both over the build's 40 and under the bar's 50; dropping only the exact repeats
+  gives back 4 (38.1). Ask B's golden path is six files, under Part 4's span floor of eight; the realism of the
+  changeover weighings rests on the outage routing being kept a day after each scale came back. Measured since on the
+  reshipped pack: two fresh blind readers missed the call and every dome figure, one kept all twelve arterial cells and
+  the other none, a measured pair of 28.5 (`## Ask sheet`).
 - The round 3 reader's mild tells, left as they are: the survey's stocks sit a little off its printed volumes times
   1.20 t a cubic metre (4,980.4 t against 4,980.0), because the report converts the measured volume and prints volumes
   to the nearest cubic metre, as it says; one density serves all four domes (the bulk density agreed with the City); the
@@ -617,6 +701,19 @@ The 10/10 rules read again against the shipped pack (target.zip d87ff77a):
   container audit clean on target/ and golden/, guard validate clean, heart PASS, surface exit 0, cracker pair ceiling
   33.3 and mirror leakage 8.7 per cent; the archive's 21 members equal the tree and metadata.json by content; target.zip
   d87ff77a from the final rebuild.
+- Reship after the rubric repair (target.zip 7fc71582): the call side frozen (freeze.py rubric PASS; the eight files
+  the call reads byte-identical, the platform export's collector rows and the dictionary's call rows the shipped rows,
+  R0 and R0b unchanged), so rules 1 and 3 stand as read above; rule 2's Layer 1 on the asks' rows now carries the
+  changeover trucks weighed twice among the supplier's round trips and the scale houses' stored tares, the older
+  controllers found from their own rows beside Fleet Services' work orders, and the platform's current codes on the
+  realigned circuits' old passes, each asserted off the call's rows (SEPARATION). Judges on the repair: judge-task165d
+  (round 1's pack) and judge-task165e (round 2's) DETERMINISTIC on the call, SOLUTION_WRONG on asks whose handling the
+  write-up did not name; judge-task165f (round 3's write-up) DETERMINISTIC, every figure reproduced, its two wording
+  findings fixed in step 6. Readers: scored-task165b on round 1 kept none of the 20 ask figures; scored-task165c and
+  scored-task165d on round 2 as above (measured pair 28.5). Gates at reship: checks 187, verify 33 on its own path, two
+  byte-identical builds, figures_check 57, precut 51 with no FAIL or WARN, voice-check PASS, leak.py REVIEW (no LEAK, the
+  ship's seven lines), container audit clean on golden/, guard validate clean, heart PASS, freeze rubric PASS; target.zip
+  7fc71582 from the final rebuild, unchanged by round 3.
 
 ## Tried and rejected
 
@@ -697,3 +794,60 @@ The 10/10 rules read again against the shipped pack (target.zip d87ff77a):
   error, not each member's; restated in `## Ladder` and in SIGMA.
 - "On every pool alike" for the length effect: measured, it shows plainly on the redesign's streets and hardly on the
   earlier moves; the note now says what the data show and both pools are asserted.
+- A2, the weighings at another yard's scale with the receiving dome in the remarks: the stage 4 blind reader read the
+  four spellings and moved each load to the dome they name (Lakeshore's only after its flight), keeping all eight dome
+  figures; re-sited as A3 and A4, the trucks still weighed on the way for a day after each scale came back, which the same
+  remark routing counts twice or keeps at the weighing yard; the outage weighings stay as texture (HA5).
+- A1, the survey's capture window in UTC: the reader converted the flight log to Eastern daylight time and cut at each
+  flight's start; a clock re-sited onto the scale houses (a terminal on standard time, or one stamping UTC) was tried and
+  dropped, since the yards held deliveries through every flight, so a cut at the flight's start agrees with one at its
+  end for any offset under an hour, and a log stamped in UTC has nothing in the pack that forces the reading; it stays as
+  texture (HA4).
+- HA1, the dispatch re-issue: the reader took the latest issue's BOOKED October lines; re-siting it as an October booking
+  delivered early in late September was tried and dropped, since nothing in the pack ties a September weighing to an
+  October booking without a filed note; it stays as texture.
+- B2, the contractor's circuits: the reader added every row of Kettlewood's returns, which is right; two re-sitings were
+  tried and dropped, relief operators on City trucks reported in the returns (the rows would have to name City units,
+  which announces it, and a contractor reporting a City truck's salt reads as planted) and returns by billing period, the
+  26th to the 25th (it moves only Kelvin Road's and Mapleford's 2024-25 cells, the one winter with storms after 25
+  March); it stays as the mirror device.
+- HB2, the register's current yard: the reader took the yard from the route code as run and kept MPF-A01 and MPF-A02 at
+  Mapleford; re-sited as B3, the platform carrying the two circuits' current Kelvin Road codes on every pass they made,
+  so the code a pass carries is the misreading and the revision log's 1 July 2026 entries are the key.
+- B1 and B1b, the run totals and the combined mass: they held six cells, and the reader landed the other six by halving
+  the fleet list's M410 rows after reading them double against the loader log (a yard's runs average about two segments,
+  so halving sits inside a cell where the brine and the run lengths offset); the evidence is re-sited from the fleet
+  list's controller columns and the loader log to the rows' own run references and litres, the rows untouched (R0 and R0b
+  read them as written).
+- The yard loading log: each unit's winter at its loader tonnes is the salt it spread within its hopper's carry, so a
+  loader-only route lands every arterial cell and the per-unit ratio hands any reader the halving, an oracle under ban 3;
+  withdrawn, with the settle that kept the loader calibration inside each cell left as it was so the arterial rows stay
+  byte for byte.
+- The changeover weighings as one device: with every copy on the receiving yard's stored tare, dropping exact repeats gave
+  back all eight dome figures (a pair of 42.8 with one device found, against the build's 40); the two unremarked copies
+  carry their own scale house's older stored tare, so only the truck, the day and the gross tie them (A4).
+- HB1, the UTC season dates: the reader converted them; nothing at a season boundary carries enough salt to move a cell,
+  so it stays as texture.
+- A3 and A4 as built in the repair's first round: invisible to a grader who checks consistency, since the supplier's
+  trucks were drawn at random for each load (some at two scale houses minutes apart on ordinary days) and the tares at
+  random for each weighing, so nothing contradicted a load weighed twice; the re-judge (judge-task165d) kept both
+  weighings and could not find the golden's rule. The trucks now run round trips from the terminal and each scale house
+  keeps one stored tare a truck for each account, so the five pairs are the only trucks back inside a round trip.
+- B1 and B1b with nothing naming the controllers (the first round): the re-judge read the counting once as inferred and
+  the brine as an unfiled convention, its brine's salt off every row keeping seven cells; Fleet Services' work orders
+  now carry the four replacements and every tandem's calibration at 40 L/t, so the litres a tonne force the brine's whole
+  weight and the work orders tie the repeated totals to the controller.
+- A supplier's delivery statement by docket as Ask A's referee: one reconciliation would expose all five weighings at
+  once and its loadout weights would offer a second dome basis beside the scale houses; the trucks' own times between
+  scale houses do the work inside the log the ask already reads.
+- Filing the older controllers' conventions in the dictionary (the re-judge's fix): a filed sentence that adjudicates,
+  handing B1 and B1b to every reader; not taken.
+- The controller model on every calibration work order: a controller list by unit and winter, the fleet list's
+  withdrawn columns in another file; the model is named only where a controller was replaced.
+- The asks' handling left to the pack alone (rounds 1 and 2): both re-judges, cold on the pack, took the readers' paths,
+  and judge-task165e never tested the trucks' round trips, so the dome figures read as wrong although every arterial
+  cell reproduced; block 3 now names each ask's handling, its filed basis and its result (steps 6 and 7), the pack
+  unchanged.
+- Step 6's first wording (round 3): the dome stocks followed the dispatch file's BOOKED October loads, and
+  judge-task165f read them as the booked loads; each figure now carries its label, and the home yard's ticket cites
+  RO-PR-07 section 2's "weighed at the yard's scale house".

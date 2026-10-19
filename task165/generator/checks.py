@@ -8,6 +8,7 @@ and the distractors' deletion test."""
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -43,6 +44,22 @@ OWN_T, OWN_UNDER = 700, 2   # component 1: own Priority 2 salt over the five win
 GAIN = 5               # component 2: the gain, t a lane-km in that winter (nearest tonne)
 SEV = C.PLAN_SEV
 ASK_EDGE = 0.0295      # every ask figure at least this far (t) from its one-decimal rounding edge
+
+# the shipped pack (target.zip d87ff77a) the ask repair is held against: the files the call reads, byte for byte,
+# and the call's rows in the two files the repair changed (sha256 of the rows as pandas writes them to CSV)
+SHIPPED_CALL_FILES = {
+    "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv": "2a4e340a41ce7044da58ce4f770d8f7efa8fd097ec311d05454e87144142c792",
+    "winter_route_register_2026-09-14.csv": "224468a25e170f881667e3483c7768ca0fe926435ea4c9e8a250f696c1d8b695",
+    "route_audit_revision_log.csv": "34f88a2ec357f3674d7d6c8caa4720e8d193ec556681f6dabf2bceee435fd65e",
+    "storm_log_2021-22_to_2025-26.xlsx": "ad8e779838e7741e8f90f591544eab5264c16ddc826a1a59950268dc25c345e7",
+    "winter_maintenance_plan_2026-27.pdf": "13d1a904db688ddfe10ea40261e8079a1f40737ebb3c752c02fb292054193d2a",
+    "road_salt_procurement_procedure_RO-PR-07.pdf": "1f2dac155a5eb245d7e6c0b9c3d786f2a5e3831f508446c7b7a34aef9fcf231a",
+    "gis_segment_crosswalk_2023.csv": "959206e5c405cd26134fe070e2392ebed1abce0acf4fd7b6bd9db43d9e1fa3ac",
+    "qrt_frequent_network_2026_streets.xlsx": "1f5f964535cf919d07c695579752cc1888c8dbc96f6d5d1902bb371a1810242d",
+}
+SHIPPED_COLLECTOR_ROWS = "f0dde0c60e93bc88bec33dd93823b2890174992fe867868a7c8c9b84c5c6c8f0"
+SHIPPED_ARTERIAL_ROWS = "42fbbf1c59d6d0c8c8f0a1863b0dedd124c7c5d64a7075edfd54b51b02f167f0"   # less route_code
+SHIPPED_DICT_CALL_ROWS = "9a1242a1644c5d2a7e79572b68dd1de0de0cd351ab1ecc3956ce45dceb675e0f"
 
 
 def check(label, ok, detail=""):
@@ -476,8 +493,69 @@ def main():
                                                                      gr[y] > 0 for y in K.YARDS), "")
     ea = min(min(K.bin_edge_distance(gs[y], 0.1), K.bin_edge_distance(gr[y], 0.1)) for y in K.YARDS)
     check("ASK A every figure clear of its rounding edge", ea >= ASK_EDGE, "%.4f t" % ea)
+    # the changeover weighings (A3 and A4): a B-train weighed on its way at the yard that had weighed for its own
+    sl = C.scale_log(TARGET)
+    pw = C.preweighings(sl)
+    pw_same = C.preweighings(sl, ("Vehicle", "date", "Gross kg", "Tare kg", "Net kg"))
+    pairs = []
+    for i in sorted(pw):
+        a_ = sl.loc[i]
+        b_ = sl[(sl["Vehicle"] == a_["Vehicle"]) & (sl["date"] == a_["date"]) & (sl["Gross kg"] == a_["Gross kg"]) &
+                (sl.index != i)].iloc[0]
+        pairs.append((a_, b_))
+    dwell = lambda r: (dt.datetime.strptime(r["Time out"], "%H:%M") - dt.datetime.strptime(r["Time in"], "%H:%M")).seconds / 60
+    check("ASK A five B-trains weighed on their way, each in again the same day at its own yard on the same gross "
+          "under the other trailer's docket, a few minutes without tipping first and the stay at its own yard after",
+          len(pw) == 5 and all(abs(int(a_["Supplier ticket"][2:]) - int(b_["Supplier ticket"][2:])) == 1 and
+                                dwell(a_) <= 9 and dwell(b_) >= 14 and b_["t_in"] > a_["t_in"] and
+                                a_["sheet"] in ("RDG", "KLV") and b_["sheet"] in ("LKS", "MPF") for a_, b_ in pairs),
+          "%d weighings" % len(pw))
+    check("ASK A A3: three of them on the receiving yard's stored tare with the outage remark kept (identical weights)",
+          len(pw_same) == 3 and pw_same <= pw and all(str(sl.loc[i]["Remarks"]) != "" for i in pw_same),
+          "%d" % len(pw_same))
+    check("ASK A A4: two on the weighing scale house's own account and its own stored tare for the truck, no remark, "
+          "the net 240 and 260 kg above the receiving yard's",
+          sorted(int(a_["Net kg"] - b_["Net kg"]) for a_, b_ in pairs if a_.name not in pw_same) == [240, 260] and
+          all(str(a_["Remarks"]) == "" for a_, b_ in pairs if a_.name not in pw_same), "")
+    sup_ = sl[(sl["Direction"] == "IN") & sl["Carrier"].astype(str).str.startswith("Northgrit")].drop(index=sorted(pw))
+    check("ASK A no two loads that tipped share a truck, a day and a gross across the scale houses (the rule merges "
+          "no genuine pair)", int((sup_.groupby(["Vehicle", "date", "Gross kg"])["sheet"].nunique() > 1).sum()) == 0, "")
+    inb = sl[sl["Supplier ticket"].notna() & (sl["Direction"] == "IN")]
+    check("ASK A every supplier docket is keyed once on a weighing in across the four scale houses (the wet load's "
+          "weighing out carries its delivery's)", inb["Supplier ticket"].is_unique and
+          set(sl.loc[sl["Supplier ticket"].notna() & (sl["Direction"] == "OUT"), "Supplier ticket"]) <=
+          set(inb["Supplier ticket"]), "")
+    # the consistency check that exposes A3 and A4: a supplier truck cannot be back at a City scale with another load
+    # sooner than its round trip from the terminal
+    ng = sl[(sl["Direction"] == "IN") & sl["Carrier"].astype(str).str.startswith("Northgrit")]
+    gaps = []
+    for _, g_ in ng.groupby(["Vehicle", "date"]):
+        g_ = g_.sort_values("t_in")
+        for i1, i2 in zip(g_.index[:-1], g_.index[1:]):
+            gaps.append(((g_.loc[i2, "t_in"] - g_.loc[i1, "t_in"]).total_seconds() / 60.0, i1, i2))
+    inside = {i1 for m_, i1, i2 in gaps if m_ < C.ROUND_TRIP_MIN}
+    other = min(m_ for m_, i1, i2 in gaps if i1 not in pw)
+    check("ASK A the five are the only supplier trucks in at two scale houses inside a round trip from the terminal "
+          "(the consistency check finds them and nothing else); every other same-truck day is two hours or more apart",
+          inside == pw and other >= C.ROUND_TRIP_MIN and max(m_ for m_, i1, i2 in gaps if i1 in pw) < 60,
+          "pairs %s min; shortest other %.0f min" % (sorted(int(m_) for m_, i1, i2 in gaps if i1 in pw), other))
+    acct = ng.assign(acct=[C.dome_of(r_) for _, r_ in ng.iterrows()]).groupby(["acct", "Vehicle"])["Tare kg"].nunique()
+    check("ASK A each scale house weighs a truck on one stored tare for each account (a weighing for another yard's "
+          "dome on that yard's), so only where it tipped does a ticket carry the receiving yard's tare unremarked",
+          (acct == 1).all(), "%d account-truck tares" % len(acct))
+    lead = {}
+    for _, r_ in ng.iterrows():
+        n_ = int(r_["Supplier ticket"][2:]) - (1 if r_.name in pw else 0)
+        lo_ = r_["t_in"] - dt.timedelta(minutes=Y.TERMINAL_MIN[r_["sheet"]])
+        lead[n_] = min(lead.get(n_, lo_), lo_)
+    seq = [lead[k_] for k_ in sorted(lead)]
+    bt = ng[ng["Gross kg"] > 50000]
+    check("ASK A the terminal's dockets run in loadout order, a B-train taking two (the lead trailer's keyed at the "
+          "yard, the second only on the five)", all(a_ <= b_ for a_, b_ in zip(seq, seq[1:])) and
+          all(int(t_[2:]) + 1 not in lead for t_ in bt["Supplier ticket"] if int(t_[2:]) in lead), "%d loads" % len(lead))
     stopsA = {"day_after": K.YARDS, "day_after_dome": K.YARDS, "day_whole": K.YARDS, "utc_local": K.YARDS,
-              "sheets": K.YARDS, "supplier_only": ["MPF", "RDG", "LKS"], "first_issue": ["KLV", "MPF", "RDG"]}
+              "sheets": K.YARDS, "supplier_only": ["MPF", "RDG", "LKS"], "first_issue": ["KLV", "MPF", "RDG"],
+              "both_weighings": K.YARDS, "same_weights": ["KLV", "RDG"], "reader": K.YARDS}
     for m, want in stopsA.items():
         s_, r_ = C.ask_a(TARGET, m)
         moved = [y for y in K.YARDS if r1(s_[y]) != r1(gs[y])]
@@ -505,11 +583,82 @@ def main():
                 truthB[key] = truthB.get(key, 0.0) + rr["t"]
     dB = max(abs(ga[k] - truthB.get(k, 0.0)) for k in ga)
     check("ASK B the golden within a tonne of the simulated truth in every cell", dB < 1.0, "%.3f t" % dB)
-    lc = C.arterial_salt(TARGET, "loader_cal")
-    eb = min(min(K.bin_edge_distance(ga[k], C.ART_UNIT), K.bin_edge_distance(lc[k], C.ART_UNIT)) for k in ga)
-    check("ASK B the records and the loading-log calibration file the same 50 t figure in every cell, each a "
-          "quarter-bin or more from an edge", all(C.r50(lc[k]) == C.r50(ga[k]) for k in ga) and eb >= 12.5,
-          "nearest edge %.1f t, largest gap %.1f t" % (eb, max(abs(lc[k] - ga[k]) for k in ga)))
+    eb = min(K.bin_edge_distance(ga[k], C.ART_UNIT) for k in ga)
+    check("ASK B every cell a quarter-bin or more from its 50 t edge", eb >= 12.5, "nearest edge %.1f t" % eb)
+    # B1 and B1b re-sited: nothing names the older controllers; their own rows do
+    artp = ps[ps["route_code"].str.contains("-A") & (ps["material_code"] == "RS")].copy()
+    artp["local"] = artp["entry_utc"].dt.tz_convert("America/Toronto").dt.tz_localize(None)
+    artp["winter"] = [C.season_of_local(t_) for t_ in artp["local"]]
+    artp = artp[artp["winter"].isin(K.NEW_WINTERS)]
+    found = C.older_unit_winters(artp)
+    truth_uw = {(u, w) for u, d_, w in zip(artp["unit_id"], artp["local"].dt.date, artp["winter"])
+                if W.controller_on(u, d_) == "M410"}
+    check("ASK B the older controllers found from their own rows (one total on every row of a run) are exactly the "
+          "unit-winters that ran an M410", found == truth_uw, "%d unit-winters" % len(found))
+    fcols = list(pd.read_csv(os.path.join(TARGET, P.F_FLEET), nrows=0).columns)
+    fl0 = pd.read_csv(os.path.join(TARGET, P.F_FLEET), dtype=str)
+    wo = pd.read_csv(os.path.join(TARGET, P.F_WORKORDERS), dtype=str)
+    named = wo[wo["description"].str.contains("M410|M720")]
+    check("ASK B no column isolates the older controllers: the fleet list carries none, no loader log ships, and the "
+          "work orders name a controller model only on the four replacements",
+          not any("controller" in c_ for c_ in fcols) and not os.path.exists(os.path.join(TARGET, P.F_LOADING)) and
+          len(named) == 4, str(fcols))
+    # the maintenance record joined by unit and date, and the plan's pre-wet rate, expose B1 and B1b
+    artl = artp[artp["prewet_l"] > 0].copy()
+    artl["day"] = artl["local"].dt.date
+    artl["lpt"] = artl["prewet_l"] / artl["applied_t"]
+    flips = []
+    for u, closed in zip(named["unit_id"], named["closed"]):
+        c_ = dt.date.fromisoformat(closed)
+        a_ = artl[artl["unit_id"] == u]
+        pre, post = a_[a_["day"] <= c_], a_[a_["day"] > c_]
+        rpt = lambda x: float((x.groupby("run_ref")["applied_t"].nunique() == 1)[
+            x.groupby("run_ref").size() > 1].mean())
+        flips.append((u, round(float(pre["lpt"].median()), 2), round(float(post["lpt"].median()), 2),
+                      round(rpt(pre), 2), round(rpt(post), 3),
+                      W.unit_by_id[u]["retrofit"] is not None and c_ < W.unit_by_id[u]["retrofit"]))
+    check("ASK B the four controller replacements (M410 to M720), signed off before each unit's first run on its newer "
+          "controller, take its rows from 38.2 to 40.0 litres a tonne and end its repeated run totals",
+          len(flips) == 4 and all(a_ == 38.2 and b_ == 40.0 and c_ == 1.0 and d_ < 0.01 and e_
+                                  for u, a_, b_, c_, d_, e_ in flips), str(flips))
+    rest = {u for u, w in found} - set(named["unit_id"])
+    lr = artl[artl["unit_id"].isin(rest)].groupby(["unit_id", "winter"])["lpt"].median()
+    check("ASK B the other eight units whose runs repeat one total carry 38.2 litres a tonne in every winter",
+          len(rest) == 8 and ((lr - 40.0 / (1 + 40.0 * 1.18 / 1000)).abs() < 0.02).all() and len(lr) == 24,
+          "%d units, %.2f to %.2f" % (len(rest), lr.min(), lr.max()))
+    tand = set(fl0.loc[fl0["class"] == "TANDEM", "unit_id"])
+    calw = wo[wo["description"].str.startswith("Pre-season spreader calibration") &
+              wo["description"].str.contains("pre-wet checked at 40 L/t")]
+    yrs = calw.assign(y=calw["opened"].str[:4]).groupby("unit_id")["y"].apply(set)
+    check("ASK B every City tandem's spreader is calibrated each autumn with its pre-wet checked at 40 litres a tonne, "
+          "the older controllers' units included (the 38.2 is no lower setting)",
+          all({"2023", "2024", "2025"} <= yrs.get(u, set()) for u in tand), "%d tandems" % len(tand))
+    lpt = CR.litres_per_tonne(TARGET)
+    check("ASK B the litres a tonne admit one handling of the older rows: as written 38.2, the brine's salt off 38.6, "
+          "the brine's weight off 40.0 (the plan's rate); the brine's salt off the newer rows puts them at 40.4",
+          abs(lpt["older as written"] - 38.20) < 0.01 and abs(lpt["older, brine's salt off"] - 38.60) < 0.01 and
+          abs(lpt["older, brine's weight off"] - 40.0) < 0.005 and abs(lpt["newer as written"] - 40.0) < 0.005 and
+          abs(lpt["newer, brine's salt off"] - 40.44) < 0.01, "; ".join("%s %.2f" % kv for kv in lpt.items()))
+    busy = set(zip(ps["unit_id"], ps["entry_utc"].dt.tz_convert("America/Toronto").dt.date)) | \
+        set(zip(ps["unit_id"], ps["exit_utc"].dt.tz_convert("America/Toronto").dt.date))
+    clash = 0
+    for u, o_, c_ in zip(wo["unit_id"], wo["opened"], wo["closed"]):
+        d0, d1_ = dt.date.fromisoformat(o_), dt.date.fromisoformat(c_)
+        while d0 <= d1_:
+            clash += (u, d0) in busy
+            d0 += dt.timedelta(days=1)
+    check("ASK B no work order books a unit in on a day it spread or patrolled; every unit is in the fleet list; the "
+          "garage works weekdays", clash == 0 and set(wo["unit_id"]) <= set(fl0["unit_id"]) and
+          (pd.to_datetime(wo["opened"]).dt.weekday < 5).all() and (pd.to_datetime(wo["closed"]).dt.weekday < 5).all(),
+          "%d work orders" % len(wo))
+    # HB2 re-sited: the platform carries a renamed circuit's current code on every pass it made
+    hist = C.circuit_history(TARGET)
+    codes = set(artp["route_code"])
+    first = artp.groupby("route_code")["local"].min()
+    check("ASK B the platform shows the realigned circuits under their current codes back to October 2023, and the "
+          "revision log takes them back", not ({"MPF-A01", "MPF-A02"} & codes) and
+          {hist.get("KLV-A15", ("",))[0], hist.get("KLV-A16", ("",))[0]} == {"MPF-A01", "MPF-A02"} and
+          all(first[c_] < pd.Timestamp("2023-12-01") for c_ in ("KLV-A15", "KLV-A16")), str(sorted(hist)))
     gp = C.arterial_salt(TARGET, "prewet_rate")
     check("ASK B the salt read back from the brine at 40 litres a tonne files the same 50 t figures (C1)",
           all(C.r50(gp[k]) == C.r50(ga[k]) for k in ga), "largest gap %.3f t" % max(abs(gp[k] - ga[k]) for k in ga))
@@ -528,7 +677,7 @@ def main():
           "%d runs" % len(runs))
     two = [(y, w) for y in ("KLV", "MPF") for w in K.NEW_WINTERS]
     stopsB = {"rows": list(ga), "runs_once": list(ga), "net_brine": list(ga), "no_contract": two,
-              "register_yard": two}
+              "register_yard": two, "code_yard": two}
     for m, want in stopsB.items():
         a_ = C.arterial_salt(TARGET, m)
         moved = sorted(k for k in ga if C.r50(a_[k]) != C.r50(ga[k]))
@@ -556,16 +705,42 @@ def main():
 
     # ------------------------------------------------------------------------------------------ the cracker
     cr = CR.main(TARGET, quiet=True)
-    check("CRACKER pair ceiling 40 or under", cr["pair"] <= 40.0, "%.1f" % cr["pair"])
+    check("CRACKER both blind readers' own paths, re-run on this pack, keep no ask figure (ceiling a fifth, 4 of 20)",
+          all(v == 0 for v in cr["reader_hits"].values()), str(cr["reader_hits"]))
+    rd_ = cr["readings"]
+    check("CRACKER the judge's literal readings that keep the double weighings, the brine, or take the brine's salt "
+          "off the older runs keep no figure", rd_["judge, double weighings kept"] == 0 and
+          rd_["judge, brine kept"] == 0 and rd_["judge, brine's salt off the older runs"] == 0, str(rd_))
+    check("CRACKER pair ceiling 40 or under on the readers' paths", cr["pair"] <= 40.0, "%.1f" % cr["pair"])
     check("CRACKER mirror leakage under 35 per cent of ask weight", cr["leak"] < 35.0, "%.1f" % cr["leak"])
-    check("CRACKER the most obvious single device cracked keeps the pair at 40 or under", cr["worst"] <= 40.0,
-          "%.1f" % cr["worst"])
+    for name, (k_, tot_, pr_) in cr["single"].items():
+        print("INFO %-74s %d of 20, pair %.1f" % (name[:74], k_, pr_))
+    print("INFO %-74s %d of 12 (the newer rows then carry 40.4 litres a tonne)" % (
+        "the judge's brine's salt off every row", rd_["judge, brine's salt off every row"]))
 
     # ------------------------------------------------------------------------------------------ separation
     fl = pd.read_csv(os.path.join(TARGET, P.F_FLEET), dtype=str)
-    old = fl[(fl["spreader_controller"] == "M410") | fl["controller_retrofit"].notna()]
-    check("SEPARATION every older-controller unit runs an arterial circuit", old["home_circuit"].str.contains("-A").all()
-          and ps[ps["unit_id"].isin(set(old["unit_id"]))]["route_code"].str.contains("-A").all(), "%d units" % len(old))
+    old_units = {u for u, w in found}
+    check("SEPARATION every older-controller unit is an arterial tandem whose every pass is on an arterial circuit",
+          set(fl.loc[fl["unit_id"].isin(old_units), "class"]) == {"TANDEM"} and
+          ps[ps["unit_id"].isin(old_units)]["route_code"].str.contains("-A").all(), "%d units" % len(old_units))
+    # the repair's scope against the shipped commit (d87ff77a): the files the call reads, the call's rows in the
+    # platform export and the dictionary, and the two network rungs that read the arterial rows as written
+    sha = lambda f: hashlib.sha256(open(os.path.join(TARGET, f), "rb").read()).hexdigest()
+    rows_sha = lambda df_: hashlib.sha256(df_.to_csv(index=False).encode()).hexdigest()
+    check("SEPARATION the files the call reads are byte-identical to the shipped pack",
+          all(sha(f) == h for f, h in SHIPPED_CALL_FILES.items()), "%d files" % len(SHIPPED_CALL_FILES))
+    check("SEPARATION the platform export's collector rows are the shipped rows, and its arterial rows the shipped rows "
+          "in every column but the realigned circuits' codes",
+          rows_sha(ps[~ps["route_code"].str.contains("-A")]) == SHIPPED_COLLECTOR_ROWS and
+          rows_sha(ps[ps["route_code"].str.contains("-A")].drop(columns=["route_code"])) == SHIPPED_ARTERIAL_ROWS, "")
+    dic_f = pd.read_excel(os.path.join(TARGET, P.F_DICT), sheet_name="Fields")
+    check("SEPARATION the dictionary's rows for the call's files are the shipped rows",
+          rows_sha(dic_f[dic_f["File"].isin(list(SHIPPED_CALL_FILES) + [P.F_PASSES]) & (dic_f["Field"] != "route_code")])
+          == SHIPPED_DICT_CALL_ROWS, "")
+    r0, r0b = C.r0_network(P_, sev=P_.wsi["2025-26"], winters=["2025-26"]), C.r0_network(P_)
+    check("SEPARATION the network rungs that read the arterial rows recompute to the shipped figures (R0 5,045.3, "
+          "R0b 5,392.8)", round(r0, 1) == 5045.3 and round(r0b, 1) == 5392.8, "%.1f, %.1f" % (r0, r0b))
     check("SEPARATION the collectors spread dry salt (no brine on any collector row)",
           int(pc["prewet_l"].sum()) == 0, "")
     xw = pd.read_csv(os.path.join(TARGET, P.F_XWALK), dtype=str)
@@ -576,7 +751,8 @@ def main():
     yardch = rev[rev["field"].isin(["YARD", "OPERATOR"])].merge(P_.reg[["segment_id", "func_class"]], on="segment_id")
     check("SEPARATION the contractor and the realignment touch arterials only",
           set(con["func_class"]) == {"ARTERIAL"} and set(yardch["func_class"]) == {"ARTERIAL"}, "")
-    asks_files = [P.F_SCALE, P.F_DISPATCH1, P.F_DISPATCH2, P.F_SURVEY, P.F_DOMES, P.F_LOADING, P.F_PELLARD, P.F_FLEET]
+    asks_files = [P.F_SCALE, P.F_DISPATCH1, P.F_DISPATCH2, P.F_SURVEY, P.F_DOMES, P.F_PELLARD, P.F_FLEET,
+                  P.F_WORKORDERS]
     tmp = linked_copy(asks_files)
     try:
         g_del = C.golden(C.Pack(tmp))

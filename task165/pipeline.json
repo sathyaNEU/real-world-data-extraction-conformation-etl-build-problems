@@ -6,32 +6,62 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-10-19",
  "stump": "Taking the Priority 1 collectors' rock salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt at the planning severity files 2,600 t; the moved collectors' Priority 1 salt rises with how much of each street Priority 2 already salted and the gain is mostly the length Priority 2 left untreated, so only the earlier moves' gain read at the new streets' own Priority 2 salt files 2,200 t.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18",
+  "date": "2026-10-19",
   "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 --asof 2026-09-25, no LEAK (61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings, H16 allow-list)",
+  "leak_py": "REVIEW 2026-10-19 --asof 2026-09-25, no LEAK (the ship's seven lines: 61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings, H16 allow-list)",
   "reader": "round 1 (leak-task165) clean, Q6 analytical; round 2 (leak-task165b) clean, mild realism tells; round 3 (leak-task165c) clean, the plan's per-point sentence read as its ordinary severity convention"
  },
  "duplicate_check": {
-  "heart": "PASS 2026-10-18 (nearest driver 0.11, task118, differentiated at the draw)",
+  "heart": "PASS 2026-10-19 (nearest driver 0.11, task118, differentiated at the draw)",
   "nearest": "surface exit 0: nine pairs promoted (task164 back to back, task453 and task159 on surface similarity, task163 and task167 two apart on the decisive gap and decision type, task465, task134, task146 and task54 on gap, pattern and decision family), each with a differentiation line on the card, left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE, no fix (round 3, judge-task165c, on d87ff77a: 2,203.7 t by its own construction, estimators 2,158 to 2,221 t, all 8 dome and 12 arterial figures exact); round 1 NOT_DETERMINISTIC on supplementary answer 3 only, round 2 DETERMINISTIC with FIX_NOW on the arterial precision",
-  "disposition": "round 1 fixed in one pass (the arterial yard basis filed in the ask, the pre-wet rate and brine weight in the plan, with the rule 3 audit's points); round 2 fixed in one pass (the arterial figures to the nearest 50 t, block 2 at the shared precision, the recheck's forks and realism items); round 3's two advisories recorded under Residual, the prompt unchanged",
-  "report": "scratchpad judge-task165c/verdict.md (rounds 1 and 2: judge-task165, judge-task165b; rule 3: rule3/task165, rule3/task165b)"
+  "verdict": "DETERMINISTIC (judge-task165f, on the reship's write-up and target.zip 7fc71582: the call 2,200.06 t, all 8 dome and 12 arterial figures reproduced with block 3's handling); at the first ship round 3 (judge-task165c, on d87ff77a) DETERMINISTIC, APPROVE, round 1 NOT_DETERMINISTIC on supplementary answer 3 only, round 2 DETERMINISTIC with FIX_NOW on the arterial precision",
+  "disposition": "judge-task165f's FIX_NOW was wording only (step 6's labels, the home yard's ticket given its filed basis), fixed in block 3, no shipped file changed; the rubric repair's earlier re-judges (judge-task165d, judge-task165e) answered in rounds 2 and 3; the first ship's rounds fixed in one pass each, round 3's two advisories under Residual",
+  "report": "scratchpad judge-task165f/verdict.md (the repair: judge-task165d, judge-task165e; the first ship: judge-task165, judge-task165b, judge-task165c; rule 3: rule3/task165, rule3/task165b)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-19",
+   "portal": "none: the author's post-ship blind scored reader (scored-task165) on d87ff77a kept 14 of the 20 ask figures while missing the call at 2,700 t",
+   "repair": "rubric",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "7cb5e0d0",
+     "moves": "the outage weighings at another yard's scale (A2) and the survey's UTC window (A1) re-sited to the changeover trucks weighed twice (A3 with the remark kept, A4 without); the fleet list's controller columns and the loader log withdrawn, the older controllers left to their own rows (B1, B1b); the realigned circuits' current codes on their old passes (B3, from HB2)",
+     "reader": "scored-task165b: the call missed at 2,600 t, 0 of the 20 ask figures",
+     "judge": "judge-task165d: DETERMINISTIC on the call (2,203.7 t), SOLUTION_WRONG, FIX_NOW on both asks (the double weighings not found, the brine read as an unfiled convention)"
+    },
+    {
+     "round": 2,
+     "zip": "7fc71582",
+     "moves": "the supplier's trucks on round trips from its terminal, one stored tare a truck for each account at each scale house and dockets in loadout order, so a truck back inside its round trip exposes A3 and A4; Fleet Services' work orders with the four M410 replacements and every tandem's calibration at 40 L/t, so the litres a tonne expose B1 and B1b",
+     "reader": "scored-task165c and scored-task165d: both missed the call (2,600 and 2,700 t) and all 8 dome figures; the arterials 12 and 0 of 12; measured pair 28.5",
+     "judge": "judge-task165e: DETERMINISTIC on the call (2,214 t) and all 12 arterial cells, SOLUTION_WRONG, FIX_NOW on the domes (the trucks' round trips never tested)"
+    },
+    {
+     "round": 3,
+     "zip": "7fc71582, the pack unchanged",
+     "moves": "block 3's steps 6 to 8 name the dome and arterial handling with their filed basis and results; the golden workbook's notes aligned",
+     "judge": "judge-task165f: DETERMINISTIC, every figure reproduced; FIX_NOW wording only, fixed"
+    }
+   ],
+   "freeze": "rubric PASS: no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
+   "commit": "RESHIPPED (task165): rubric, trucks weighed twice at the scale changeovers, older controllers from their rows and work orders, realigned circuits re-keyed"
+  }
+ ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-18",
+ "delivered": "2026-10-19",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -39,13 +69,13 @@
  "wave": "wave 6 (new), seed FC36 (world, decision and quantity kept; the seed's planning-tool ranking, usage-model back-tests and route-register field reading not shipped)",
  "guard": "PASS at registration (2026-10-18T14:10:39Z) after waiting out bans on honest keys; the forum redrawn in the build to council_or_assembly when line_manager_or_team was banned against task247",
  "stage3": {
-  "generator_checks": "162 assertions, 0 failed",
-  "verify": "29 checks, 0 failed",
+  "generator_checks": "187 assertions, 0 failed",
+  "verify": "33 checks, 0 failed",
   "rebuild": "byte-identical (target, golden, figures, submission)",
-  "figures_check": "exit 0 (39 figures)",
+  "figures_check": "exit 0 (57 figures)",
   "voice_check": "exit 0",
-  "ceiling": "pair 33.3, mirror leakage 8.7 per cent (generator/cracker.py on the cut pack); the cracker 0 of 8 dome and 0 of 12 arterial figures",
+  "ceiling": "pair 33.3 on both blind readers' paths, mirror leakage 8.7 per cent (generator/cracker.py on the cut pack); measured pair 28.5 (scored-task165c, scored-task165d)",
   "call": "commit 2,200 t of rock salt above the rolled-over 39,100 t (golden 2,213.7 t)",
-  "zip": "target.zip d87ff77accb172cc683bb93d9f2a1add316122581dbde6bbca935e2ed741ab6a"
+  "zip": "target.zip 7fc715822098392458c31a950ef7c4bbba968fa54dec9ac127da61df09e121dc"
  }
 }

@@ -153,12 +153,6 @@ def write_dispatch(out, Yd):
     return len(Yd.dispatch[2])
 
 
-def write_loading(out, W, S):
-    rows = Y.loading_log(W, S, np.random.default_rng(W.seed + 42))
-    P._csv(os.path.join(out, P.F_LOADING), ["yard", "shift_date", "shift", "unit_id", "loads", "tonnes_loaded"], rows)
-    return len(rows)
-
-
 def write_pellard(out, W, S):
     path = os.path.join(out, P.F_PELLARD)
     ret = Y.contractor_returns(W, S)
@@ -188,8 +182,14 @@ def write_pellard(out, W, S):
 
 def write_fleet(out, W):
     rows = P.fleet_rows(W)
-    P._csv(os.path.join(out, P.F_FLEET), ["unit_id", "yard", "class", "home_circuit", "model_year",
-                                          "spreader_controller", "controller_retrofit"], rows)
+    P._csv(os.path.join(out, P.F_FLEET), ["unit_id", "yard", "class", "home_circuit", "model_year"], rows)
+    return len(rows)
+
+
+def write_work_orders(out, W, S):
+    rows = Y.work_orders(W, S)
+    P._csv(os.path.join(out, P.F_WORKORDERS), ["work_order", "unit_id", "opened", "closed", "system", "description",
+                                               "labour_hours", "parts_cost"], rows)
     return len(rows)
 
 
@@ -248,7 +248,7 @@ DICT = [
     ]),
     (P.F_PASSES, [
         ("unit_id", "Fleet unit."),
-        ("route_code", "Circuit the pass ran on, prefixed with the yard that ran it."),
+        ("route_code", "Circuit the pass ran on."),
         ("segment_id", "GIS road segment."),
         ("entry_utc", "When the unit entered the segment, UTC."),
         ("exit_utc", "When the unit left the segment, UTC."),
@@ -303,16 +303,16 @@ DICT = [
         ("class", "TANDEM or SINGLE AXLE."),
         ("home_circuit", "Circuit the unit normally runs, at the export date."),
         ("model_year", "Model year."),
-        ("spreader_controller", "Spreader controller fitted at the export date."),
-        ("controller_retrofit", "Date the controller was replaced, if it was."),
     ]),
-    (P.F_LOADING, [
-        ("yard", "Yard where the truck was loaded."),
-        ("shift_date", "Date the shift began, local."),
-        ("shift", "DAY or NIGHT."),
+    (P.F_WORKORDERS, [
+        ("work_order", "Fleet Services work order."),
         ("unit_id", "Fleet unit."),
-        ("loads", "Loader buckets."),
-        ("tonnes_loaded", "Rock salt loaded into the truck in the shift, from the loader scale, tonnes."),
+        ("opened", "Date the unit was booked in to the garage."),
+        ("closed", "Date the work was signed off."),
+        ("system", "System worked on."),
+        ("description", "Work done, as the technician signed it off."),
+        ("labour_hours", "Labour booked to the work order, hours."),
+        ("parts_cost", "Parts issued to the work order, dollars."),
     ]),
     (P.F_DOMES, [
         ("rated_capacity_t", "Rated capacity of the dome, tonnes of rock salt."),
@@ -409,8 +409,8 @@ def write_manifest(out, counts):
         (P.F_REVLOG, "Route audit", "Roads Operations Centre", "2026-09-14", "changes to 14 Sep 2026", counts.get(P.F_REVLOG, "")),
         (P.F_STORM, "Incident board", "Roads Operations Centre", "2026-04-09", "winters 2021-22 to 2025-26", counts.get(P.F_STORM, "")),
         (P.F_FLEET, "Fleet management", "Fleet Services", "2026-09-24", "units at 24 Sep 2026", counts.get(P.F_FLEET, "")),
+        (P.F_WORKORDERS, "Fleet management", "Fleet Services", "2026-09-24", "work orders opened 1 Jul 2023 to 23 Sep 2026", counts.get(P.F_WORKORDERS, "")),
         (P.F_QRT, "Quellbrook Regional Transit", K.PEOPLE["transit_planner"], "2026-08-11", "frequent network 2026", counts.get(P.F_QRT, "")),
-        (P.F_LOADING, "Yard loader scales", "Yard supervisors", "2026-09-24", "1 Nov 2023 to 31 Mar 2026", counts.get(P.F_LOADING, "")),
         (P.F_PELLARD, "Kettlewood Road Services", "Contract RW-2023-07", "2026-04-10", "winters 2023-24 to 2025-26", counts.get(P.F_PELLARD, "")),
         (P.F_DOMES, "Facilities", "Facilities Services", "2026-09-02", "domes at 2 Sep 2026", counts.get(P.F_DOMES, "")),
         (P.F_SCALE, "Scale houses", "Yard supervisors", "2026-09-25", "24 Aug to 24 Sep 2026", counts.get(P.F_SCALE, "")),
@@ -558,7 +558,9 @@ def build_pack(out, W=None, S=None):
     P._csv(os.path.join(out, P.F_LEGACY), ["SHIFT_DATE", "SHIFT", "YARD", "ROUTE", "SEG_ID", "PASSES", "MATL", "KG"], lr)
     n[P.F_LEGACY] = len(lr)
     settle_dome_edges(Yd)
-    P.write_passes(os.path.join(out, P.F_PASSES), pr)
+    Yd.add_changeover_weighings()
+    Yd.assign_trucks()
+    P.write_passes(os.path.join(out, P.F_PASSES), P.rekey_rows(W, pr))
     n[P.F_PASSES] = len(pr)
     rr = P.register_rows(W)
     P._csv(os.path.join(out, P.F_REGISTER), ["segment_id", "street", "from_street", "to_street", "yard", "route_code",
@@ -578,9 +580,9 @@ def build_pack(out, W=None, S=None):
     n[P.F_DOMES] = write_domes(out)
     n[P.F_DISPATCH2] = write_dispatch(out, Yd)
     n[P.F_DISPATCH1] = len(Yd.dispatch[1])
-    n[P.F_LOADING] = write_loading(out, W, S)
     n[P.F_PELLARD] = write_pellard(out, W, S)
     n[P.F_FLEET] = write_fleet(out, W)
+    n[P.F_WORKORDERS] = write_work_orders(out, W, S)
     n[P.F_TIMESHEETS] = write_timesheets(out, W, S)
     n[P.F_BRINE] = write_brine(out, W)
     D.write_plan(out, W)

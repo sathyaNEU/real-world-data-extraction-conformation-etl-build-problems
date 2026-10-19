@@ -240,7 +240,7 @@ F_DISPATCH2 = "northgrit_dispatch_2026-10_issued_2026-09-21.csv"
 F_SURVEY = "dome_stock_survey_2026-09.pdf"
 F_DOMES = "salt_dome_register.csv"
 F_FLEET = "fleet_units_2026-09.csv"
-F_LOADING = "yard_loading_log_2023-11_2026-03.csv"
+F_WORKORDERS = "fleet_work_orders_2023-07_to_2026-09.csv"
 F_PELLARD = "kettlewood_material_returns_2023-24_to_2025-26.xlsx"
 YARDS = ["KLV", "MPF", "RDG", "LKS"]
 BRINE_KG_L = 1.18            # the plan's plant brine, kilograms a litre
@@ -299,27 +299,55 @@ def dome_of(row):
     return row["sheet"]
 
 
+ROUND_TRIP_MIN = 120          # no supplier truck is back at a City scale within two hours of its last load
+
+
+def preweighings(df, on=("Vehicle", "date", "Gross kg"), within=ROUND_TRIP_MIN):
+    """Scale rows that are an earlier weighing of a supplier truck weighed in again at another scale house on the same
+    gross sooner than the truck could have gone back to the terminal for another load: one loaded truck, which tipped
+    where it was weighed last, so the earlier weighing put nothing in to either dome (its net is on the stored tare of
+    the account it was keyed to). on: the columns matched; with the tare and net added it finds only the trucks
+    weighed on the same account's stored tare at both."""
+    sup = df[(df["Direction"] == "IN") & df["Carrier"].astype(str).str.startswith("Northgrit")]
+    drop = set()
+    for _, g in sup.groupby(list(on)):
+        g = g.sort_values("t_in")
+        if len(g) > 1 and g["sheet"].nunique() == len(g) and \
+                (g["t_in"].iloc[-1] - g["t_in"].iloc[0]).total_seconds() / 60.0 < within:
+            drop.update(g.index[:-1])
+    return drop
+
+
 ASK_A_MODES = {
     "golden": {},
-    "day_after": {"cutoff": "day_after", "dome_by": "sheet"},        # the cracker's natural read
+    "day_after": {"cutoff": "day_after", "dome_by": "sheet", "dedupe": False},   # the natural read
     "day_after_dome": {"cutoff": "day_after"},                       # remarks read, the survey day left out
     "day_whole": {"cutoff": "day_whole"},
     "utc_local": {"cutoff": "utc_local"},
     "sheets": {"dome_by": "sheet"},
     "supplier_only": {"flows": "supplier_only"},
     "first_issue": {"issue": 1},
+    "both_weighings": {"dedupe": False},                             # every weighing counted, the device missed
+    "same_weights": {"dedupe": "weights"},                           # only the exact repeats of gross, tare and net
+    "reader": {"cutoff": "start", "dedupe": False},                  # the stage 4 reader's path, measured
 }
 
 
-def ask_a(target, mode="golden", cutoff="time", dome_by="remarks", flows="all", issue=2):
-    """Each dome's stock on 1 November 2026 and its room. cutoff: time (after the capture's end, local), day_after
-    (from the day after the survey), day_whole (the survey day whole), utc_local (the capture's UTC end read as
-    local); dome_by: remarks (a load weighed for another yard's dome counts there) or sheet; flows: all (in and out)
-    or supplier_only; issue: the dispatch issue used."""
-    kw = dict(cutoff=cutoff, dome_by=dome_by, flows=flows, issue=issue)
+def ask_a(target, mode="golden", cutoff="time", dome_by="remarks", flows="all", issue=2, dedupe=True):
+    """Each dome's stock on 1 November 2026 and its room. cutoff: time (after the capture's end, local), start
+    (after the capture's start, local), day_after (from the day after the survey), day_whole (the survey day whole),
+    utc_local (the capture's UTC end read as local); dome_by: remarks (a load weighed for another yard's dome counts
+    there) or sheet; flows: all (in and out) or supplier_only; issue: the dispatch issue used; dedupe: a truck's
+    earlier weighing on its way to another yard's scale left out (True, matched on the gross; "weights", only where
+    gross, tare and net all repeat; False, kept)."""
+    kw = dict(cutoff=cutoff, dome_by=dome_by, flows=flows, issue=issue, dedupe=dedupe)
     kw.update(ASK_A_MODES[mode])
     sv = survey(target)
     df = scale_log(target)
+    if kw["dedupe"] == "weights":
+        df = df.drop(index=sorted(preweighings(df, ("Vehicle", "date", "Gross kg", "Tare kg", "Net kg"))))
+    elif kw["dedupe"]:
+        df = df.drop(index=sorted(preweighings(df)))
     cap = pd.read_csv(os.path.join(target, F_DOMES)).set_index("yard")["rated_capacity_t"].astype(float)
     disp = pd.read_csv(os.path.join(target, F_DISPATCH1 if kw["issue"] == 1 else F_DISPATCH2))
     stock, room = {}, {}
@@ -329,6 +357,8 @@ def ask_a(target, mode="golden", cutoff="time", dome_by="remarks", flows="all", 
         end_local = end_utc - dt.timedelta(hours=4)       # EDT in September
         if kw["cutoff"] == "utc_local":
             end_local = end_utc
+        if kw["cutoff"] == "start":
+            end_local = sv[y]["capture_start_utc"] - dt.timedelta(hours=4)
         for _, r in df.iterrows():
             dome = r["sheet"] if kw["dome_by"] == "sheet" else dome_of(r)
             if dome != y:
@@ -361,65 +391,100 @@ def r50(v):
     return int(round(v / ART_UNIT) * ART_UNIT)
 
 
-def arterial_salt(target, mode="golden"):
-    """Rock salt on each yard's Priority 1 arterials in each of the three winters since October 2023. Modes:
-    golden; rows (every row summed); runs_once (run totals once, the brine left in); net_brine (every row summed,
-    the brine taken off); prewet_rate (the salt read back from the litres); loader_cal (each older-controller unit's
-    winter at the loader scale's tonnes); halve (the older controllers' rows summed and halved); no_contract (the
-    contractor's returns left out); register_yard (the register's yard instead of the route code's); utc_season
-    (season dates read in UTC)."""
+def circuit_history(target):
+    """Each current arterial circuit code that the route audit gave a circuit from an effective date, with the code it
+    replaced: {new code: (old code, effective date)} from the revision log's ROUTE entries."""
+    rev = pd.read_csv(os.path.join(target, F_REVLOG), dtype=str)
+    rt = rev[(rev["field"] == "ROUTE") & rev["old_value"].str.contains("-A", na=False) &
+             rev["new_value"].str.contains("-A", na=False) & (rev["old_value"] != rev["new_value"])]
+    out = {}
+    for (old, new, eff), _ in rt.groupby(["old_value", "new_value", "effective_date"]):
+        out[new] = (old, dt.date.fromisoformat(eff))
+    return out
+
+
+def older_unit_winters(ps):
+    """The unit-winters whose spreader runs carry one total on every segment row: the runs of two or more rows that
+    repeat a single applied_t, as a share of that unit-winter's runs of two or more rows."""
+    runs = ps.groupby("run_ref").agg(unit=("unit_id", "first"), winter=("winter", "first"), n=("applied_t", "size"),
+                                     nu=("applied_t", "nunique"))
+    multi = runs[runs["n"] > 1]
+    share = (multi["nu"] == 1).groupby([multi["unit"], multi["winter"]]).mean()
+    return set(share[share > 0.5].index)
+
+
+ART_MODES = {
+    "golden": {},
+    "rows": {"older": "none"},                 # every row summed
+    "runs_once": {"older": "runs_once"},       # the older controllers' run totals once, the brine left in
+    "net_brine": {"older": "net_brine"},       # every row summed, the older controllers' brine taken off
+    "prewet_rate": {"older": "prewet"},        # the older controllers' salt read back from their litres
+    "halve": {"older": "halve"},               # the older controllers' rows halved
+    "no_contract": {"contract": False},        # the contractor's returns left out
+    "register_yard": {"yard": "register"},     # the register's current yard
+    "code_yard": {"yard": "code"},             # the yard of the code each pass carries (the current code)
+    "utc_season": {"season": "utc"},           # season dates read in UTC
+}
+
+
+def arterial_salt(target, mode="golden", **kw):
+    """Rock salt on each yard's Priority 1 arterials in each of the three winters since October 2023, each circuit
+    under the yard it belonged to that winter, by a named mode (ART_MODES) or by the route's own settings."""
+    a = dict(ART_MODES[mode])
+    a.update(kw)
+    return arterial_route(target, **a)
+
+
+def arterial_route(target, yard="belonged", older="golden", contract=True, season="local", fleet_older=None):
+    """yard: belonged (the code a pass carries taken back through the revision log's ROUTE entries before their
+    effective date), code (the code's own yard) or register (the register's current yard); older: how the older
+    controllers' unit-winters (older_unit_winters) are handled, golden (each run once, the brine's mass off), none
+    (every row as written), runs_once, net_brine, prewet or halve; fleet_older, when given, the set of unit ids
+    treated as older instead (every winter); contract: the contractor's returns added; season: local or utc."""
     ps = pd.read_parquet(os.path.join(target, F_PASSES))
     ps = ps[(ps["material_code"] == "RS") & ps["route_code"].str.contains("-A")]
-    if mode == "utc_season":
+    if season == "utc":
         ps = ps.assign(local=ps["entry_utc"].dt.tz_convert(None))
     else:
         ps = ps.assign(local=ps["entry_utc"].dt.tz_convert("America/Toronto").dt.tz_localize(None))
     ps["winter"] = [season_of_local(t) for t in ps["local"]]
-    ps = ps[ps["winter"].isin(["2023-24", "2024-25", "2025-26"])]
-    if mode == "register_yard":
+    ps = ps[ps["winter"].isin(["2023-24", "2024-25", "2025-26"])].copy()
+    ps["day"] = ps["local"].dt.date
+    if yard == "register":
         reg = pd.read_csv(os.path.join(target, F_REGISTER), dtype=str)[["segment_id", "yard"]]
         ps = ps.merge(reg, on="segment_id")
-    else:
+    elif yard == "code":
         ps = ps.assign(yard=ps["route_code"].str[:3])
-    if mode == "rows":
-        tot = ps.groupby(["yard", "winter"])["applied_t"].sum()
     else:
-        fl = pd.read_csv(os.path.join(target, F_FLEET), dtype=str)
-        old = fl[fl["spreader_controller"].eq("M410") | fl["controller_retrofit"].notna()]
-        retro = {u: (pd.to_datetime(d).date() if isinstance(d, str) else None)
-                 for u, d in zip(old["unit_id"], old["controller_retrofit"])}
-        ps["day"] = ps["local"].dt.date
-        is410 = [u in retro and (retro[u] is None or d < retro[u]) for u, d in zip(ps["unit_id"], ps["day"])]
-        ps["m410"] = is410
-        if mode in ("loader_cal", "halve"):
-            a = ps[~ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum()
-            if mode == "halve":          # the older controllers read about twice the loader's tonnes: halved
-                b = ps[ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum() / 2.0
-            else:                        # each older-controller unit's winter at the loader scale's tonnes
-                lg = pd.read_csv(os.path.join(target, F_LOADING), dtype={"unit_id": str})
-                lg["winter"] = [season_of_local(dt.date.fromisoformat(d)) for d in lg["shift_date"]]
-                uw = set(zip(ps.loc[ps["m410"], "unit_id"], ps.loc[ps["m410"], "winter"]))
-                lg = lg[[(u, w) in uw for u, w in zip(lg["unit_id"], lg["winter"])]]
-                b = lg.groupby(["yard", "winter"])["tonnes_loaded"].sum()     # the yard that loaded it that winter
-            tot = pd.concat([a, b]).groupby(level=[0, 1]).sum()
-        elif mode == "runs_once":        # run totals taken once, the combined mass left as it is
+        back = circuit_history(target)
+        ps["yard"] = [(back[rc][0] if rc in back and d < back[rc][1] else rc)[:3]
+                      for rc, d in zip(ps["route_code"], ps["day"])]
+    if fleet_older is not None:
+        ps["m410"] = ps["unit_id"].isin(fleet_older)
+    elif older != "none":
+        olduw = older_unit_winters(ps)
+        ps["m410"] = [(u, w) in olduw for u, w in zip(ps["unit_id"], ps["winter"])]
+    if older == "none" and fleet_older is None:
+        tot = ps.groupby(["yard", "winter"])["applied_t"].sum()
+    elif older == "halve":
+        a_ = ps[~ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum()
+        b_ = ps[ps["m410"]].groupby(["yard", "winter"])["applied_t"].sum() / 2.0
+        tot = pd.concat([a_, b_]).groupby(level=[0, 1]).sum()
+    elif older == "net_brine":
+        ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
+        tot = ps.groupby(["yard", "winter"])["solid"].sum()
+    else:
+        if older == "runs_once":
             ps["solid"] = ps["applied_t"]
-        elif mode == "prewet_rate":      # the salt read back from the brine at the plan's 40 litres a tonne
-            ps["solid"] = ps["prewet_l"] / PREWET_L_T
-        elif mode == "net_brine":        # the brine's mass taken off, every row summed
-            ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
+        elif older == "prewet":
+            ps["solid"] = np.where(ps["m410"], ps["prewet_l"] / PREWET_L_T, ps["applied_t"])
         else:
             ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
-        if mode in ("loader_cal", "halve"):
-            pass
-        elif mode == "net_brine":
-            tot = ps.groupby(["yard", "winter"])["solid"].sum()
-        else:
-            a = ps[~ps["m410"]].groupby(["yard", "winter"])["solid"].sum()
-            b = ps[ps["m410"]].groupby(["yard", "winter", "run_ref"])["solid"].first().groupby(level=[0, 1]).sum()
-            tot = pd.concat([a, b]).groupby(level=[0, 1]).sum()
+        a_ = ps[~ps["m410"]].groupby(["yard", "winter"])["solid"].sum()
+        b_ = ps[ps["m410"]].groupby(["yard", "winter", "run_ref"])["solid"].first().groupby(level=[0, 1]).sum()
+        tot = pd.concat([a_, b_]).groupby(level=[0, 1]).sum()
     out = {(y, w): float(tot.get((y, w), 0.0)) for y in YARDS for w in ["2023-24", "2024-25", "2025-26"]}
-    if mode != "no_contract":
+    if contract:
         xl = pd.ExcelFile(os.path.join(target, F_PELLARD))
         for w in ["2023-24", "2024-25", "2025-26"]:
             df = xl.parse(w, header=2)

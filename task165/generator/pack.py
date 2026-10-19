@@ -42,6 +42,7 @@ F_DICT = "data_dictionary.xlsx"
 F_MANIFEST = "export_manifest.csv"
 F_TIMESHEETS = "yard_timesheets_2025-26.csv"
 F_BRINE = "brine_production_log_2023-10_to_2026-09.csv"
+F_WORKORDERS = "fleet_work_orders_2023-07_to_2026-09.csv"
 
 
 def _csv(path, header, rows):
@@ -121,6 +122,20 @@ def pass_rows(W, S):
                             "applied_t": round(val, 3), "prewet_l": float(lit), "run_ref": ref})
             i += n
     out.sort(key=lambda r: (r["entry_utc"], r["unit_id"], r["segment_id"]))
+    return out
+
+
+def rekey_rows(W, rows):
+    """The rows as the platform exports them: a circuit renamed in the platform carries its current code on every pass
+    it ever made, so the two Mapleford circuits that passed to Kelvin Road on 1 July 2026 show their Kelvin Road codes
+    back to October 2023. Applied after the arterial cells are settled, at write time only."""
+    out = []
+    for r in rows:
+        rc = r["route_code"]
+        if rc in W.realigned_codes:
+            r = dict(r)
+            r["route_code"] = W.realigned_codes[rc]
+        out.append(r)
     return out
 
 
@@ -293,6 +308,5 @@ def fleet_rows(W):
         if hc in W.realigned:
             yard, hc = "KLV", W.realigned_codes[hc]
         year = 2009 + K.stable_int(u["unit_id"]) % 13 if u["controller"] == "M410" else 2014 + K.stable_int(u["unit_id"]) % 11
-        rows.append((u["unit_id"], yard, u["class"], hc, year, "M720" if u["retrofit"] else u["controller"],
-                     u["retrofit"].isoformat() if u["retrofit"] else ""))
+        rows.append((u["unit_id"], yard, u["class"], hc, year))
     return rows

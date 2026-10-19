@@ -78,8 +78,9 @@ def main():
        "set in kilograms per lane-km" in plan)
     m = re.search(r"plant brine at (\d+) litres to the tonne of salt \(23 per cent salt by weight, ([\d.]+) kg a litre\)",
                   plan)
-    rate, brine = (float(m.group(1)), float(m.group(2))) if m else (None, None)
-    ok("PDF plan files the pre-wet rate and the brine's weight", rate == 40.0 and brine == 1.18, "%s, %s" % (rate, brine))
+    prewet, brine = (float(m.group(1)), float(m.group(2))) if m else (None, None)
+    ok("PDF plan files the pre-wet rate and the brine's weight", prewet == 40.0 and brine == 1.18,
+       "%s, %s" % (prewet, brine))
     ok("PDF procedure read back (positive control: its title)", "Road salt procurement" in proc)
     ok("PDF procedure 4.2 files the estimand and the rounding",
        "the additional rock salt the roads the change moves will need from 1 November to 31 March, over what they "
@@ -215,20 +216,49 @@ def main():
     ok("PDF survey: four domes' stock, survey day and capture end", len(stock0) == 4 and
        all(cap_end[y].date() == sday[y] for y in yards), str({y: str(cap_end[y])[5:16] for y in yards}))
     wb = openpyxl.load_workbook(os.path.join(TARGET, "scale_house_log_2026-08-24_to_2026-09-24.xlsx"), read_only=True)
-    st = dict(stock0)
+    recs = []
     for y in yards:
         rows = list(wb[y].iter_rows(values_only=True))
         h = list(rows[0])
         for r in rows[1:]:
             rec = dict(zip(h, r))
-            when = dt.datetime.combine(rec["Date"].date(), dt.datetime.strptime(rec["Time in"], "%H:%M").time())
-            rem = (rec["Remarks"] or "").upper()
-            dome = "LKS" if ("LKS" in rem or "LAKESHORE" in rem) else ("MPF" if ("MPF" in rem or "MAPLEFORD" in rem)
-                                                                       else y)
-            if when <= cap_end[dome]:
-                continue
-            st[dome] += (1 if rec["Direction"] == "IN" else -1) * rec["Net kg"] / 1000.0
+            rec["sheet"] = y
+            rec["when"] = dt.datetime.combine(rec["Date"].date(), dt.datetime.strptime(rec["Time in"], "%H:%M").time())
+            recs.append(rec)
     wb.close()
+    # on its own path: a B-train carries one docket per trailer, so the same truck weighed in at two scale houses on
+    # one day under the two dockets of one load is one load, which tipped at the later scale house
+    sup_in = sorted((x for x in recs if x["Direction"] == "IN" and str(x["Carrier"]).startswith("Northgrit")),
+                    key=lambda x: x["when"])
+    early = set()
+    for i, a_ in enumerate(sup_in):
+        for b_ in sup_in[i + 1:]:
+            if (b_["Vehicle"], b_["Date"].date()) == (a_["Vehicle"], a_["Date"].date()) and b_["sheet"] != a_["sheet"] \
+                    and abs(int(b_["Supplier ticket"][2:]) - int(a_["Supplier ticket"][2:])) == 1:
+                early.add(id(a_))
+    st = dict(stock0)
+    for rec in recs:
+        if id(rec) in early:
+            continue
+        rem = (rec["Remarks"] or "").upper()
+        dome = "LKS" if ("LKS" in rem or "LAKESHORE" in rem) else ("MPF" if ("MPF" in rem or "MAPLEFORD" in rem)
+                                                                   else rec["sheet"])
+        if rec["when"] <= cap_end[dome]:
+            continue
+        st[dome] += (1 if rec["Direction"] == "IN" else -1) * rec["Net kg"] / 1000.0
+    ok("ASK A the scale houses' earlier weighings of B-trains that tipped at another yard found by their dockets",
+       len(early) == 5, "%d weighings" % len(early))
+    # and on the consistency check a grader runs instead: a supplier truck is never in at a City scale again sooner
+    # than an hour and a half, a drive back to the terminal and out again, except where one load was weighed twice
+    by = {}
+    for x in sup_in:
+        by.setdefault((x["Vehicle"], x["Date"].date()), []).append(x)
+    gaps = [((b_["when"] - a_["when"]).total_seconds() / 60.0, a_, b_) for v in by.values() for a_, b_ in zip(v, v[1:])]
+    quick = {id(a_) for m_, a_, b_ in gaps if m_ < 90 and a_["sheet"] != b_["sheet"] and a_["Gross kg"] == b_["Gross kg"]}
+    ok("ASK A the same five found by the trucks' times between scale houses (one gross, under 90 minutes apart; every "
+       "other same-truck day 2 hours or more)", quick == early and
+       min(m_ for m_, a_, b_ in gaps if id(a_) not in early) >= 120,
+       "shortest other %.0f min" % min(m_ for m_, a_, b_ in gaps if id(a_) not in early))
     for r in rows_csv("northgrit_dispatch_2026-10_issued_2026-09-21.csv"):
         if r["status"] == "BOOKED" and r["delivery_date"][:7] == "2026-10":
             st[r["ship_to"][3:]] += float(r["planned_net_t"])
@@ -241,52 +271,14 @@ def main():
        "%.4f" % min(min(edge(st[y], 0.1), edge(capd[y] - st[y], 0.1)) for y in yards))
 
     # ---------------------------------------------------------------------------------------- Ask B
-    fleet = rows_csv("fleet_units_2026-09.csv")
-    old_ctl = {r["unit_id"]: (dt.date.fromisoformat(r["controller_retrofit"]) if r["controller_retrofit"] else None)
-               for r in fleet if r["spreader_controller"] == "M410" or r["controller_retrofit"]}
-    art, seen = {}, set()
-    for i in range(n_pass):
-        rc = cols["route_code"][i]
-        if "-A" not in rc or cols["material_code"][i] != "RS":
-            continue
-        d = loc[i].date()
-        w = season(d)
-        if w not in ("2023-24", "2024-25", "2025-26"):
-            continue
-        u = cols["unit_id"][i]
-        k = (rc[:3], w)
-        if u in old_ctl and (old_ctl[u] is None or d < old_ctl[u]):
-            if cols["run_ref"][i] in seen:
-                continue
-            seen.add(cols["run_ref"][i])
-            v = cols["applied_t"][i] - cols["prewet_l"][i] * brine / 1000.0
-        else:
-            v = cols["applied_t"][i]
-        art[k] = art.get(k, 0.0) + v
-    wb = openpyxl.load_workbook(os.path.join(TARGET, "kettlewood_material_returns_2023-24_to_2025-26.xlsx"),
-                                read_only=True)
-    for ws in wb.worksheets:
-        rows = list(ws.iter_rows(values_only=True))
-        h = list(rows[2])
-        for r in rows[3:]:
-            rec = dict(zip(h, r))
-            if rec["Month"] is None:
-                continue
-            w = season(dt.date.fromisoformat(rec["Month"] + "-01"))
-            if w == ws.title:
-                art[(rec["City circuit"][:3], w)] = art.get((rec["City circuit"][:3], w), 0.0) + float(rec["Rock salt (t)"])
-    wb.close()
+    # the yard each circuit belonged to that winter: the platform carries a renamed circuit's current code, so the
+    # revision log's ROUTE entries take a code back to the one it replaced before the change's effective date
+    back = {}
+    for r in rev:
+        if r["field"] == "ROUTE" and "-A" in r["old_value"] and "-A" in r["new_value"]:
+            back[r["new_value"]] = (r["old_value"], dt.date.fromisoformat(r["effective_date"]))
     w3 = ("2023-24", "2024-25", "2025-26")
-    good = all(int(round(art[(y, w)] / 50.0) * 50) == figs["art_%s_%s" % (y, w)] for y in yards for w in w3)
-    ok("ASK B every yard-winter arterial figure recomputes to the nearest 50 t", good, "")
-    ok("ASK B every figure a quarter-bin or more from its 50 t rounding edge (from the recomputed values)",
-       min(edge(v, 50.0) for v in art.values()) >= 12.5, "%.1f t" % min(edge(v, 50.0) for v in art.values()))
-    # the same cells with each older-controller unit's winter taken at the loader scale's tonnes
-    load = {}
-    for r in rows_csv("yard_loading_log_2023-11_2026-03.csv"):
-        w = season(dt.date.fromisoformat(r["shift_date"]))
-        load[(r["unit_id"], w)] = load.get((r["unit_id"], w), 0.0) + float(r["tonnes_loaded"])
-    cal, olduw = {}, {}
+    arts = []
     for i in range(n_pass):
         rc = cols["route_code"][i]
         if "-A" not in rc or cols["material_code"][i] != "RS":
@@ -295,14 +287,37 @@ def main():
         w = season(d)
         if w not in w3:
             continue
-        u = cols["unit_id"][i]
-        if u in old_ctl and (old_ctl[u] is None or d < old_ctl[u]):
-            olduw[(u, w)] = rc[:3]          # the yard whose circuits the unit ran that winter
-            continue
-        cal[(rc[:3], w)] = cal.get((rc[:3], w), 0.0) + cols["applied_t"][i]
-    for (u, w), y in olduw.items():
-        cal[(y, w)] = cal.get((y, w), 0.0) + load.get((u, w), 0.0)
-    contr = {}
+        code = back[rc][0] if rc in back and d < back[rc][1] else rc
+        arts.append((cols["unit_id"][i], w, code[:3], cols["run_ref"][i], cols["applied_t"][i], cols["prewet_l"][i]))
+    # the older controllers, on their own path: a unit-winter whose rows carry fewer litres a tonne than the plan's
+    # pre-wet rate (the salt and brine reported as one mass)
+    lit = {}
+    for u, w, y, ref, t_, l_ in arts:
+        if t_ >= 0.1:
+            lit.setdefault((u, w), []).append(l_ / t_)
+    older = {k for k, v in lit.items() if float(np.median(v)) < prewet - 0.9}
+    art, seen, art_l = {}, set(), {}
+    for u, w, y, ref, t_, l_ in arts:
+        k = (y, w)
+        if (u, w) in older:
+            if ref in seen:
+                continue
+            seen.add(ref)
+            v, vl = t_ - l_ * brine / 1000.0, l_ / prewet
+        else:
+            v, vl = t_, t_
+        art[k] = art.get(k, 0.0) + v
+        art_l[k] = art_l.get(k, 0.0) + vl
+    ok("ASK B older controllers found unit-winter by unit-winter on their litres a tonne (the plan's rate over salt "
+       "and brine)", len(older) > 0 and all(abs(float(np.median(lit[k])) - prewet / (1 + prewet * brine / 1000)) < 0.1
+                                            for k in older), "%d unit-winters" % len(older))
+    # the maintenance record joined by unit and date: each controller the work orders replaced was an older one in
+    # every winter before the replacement and in none after
+    wo = [r for r in rows_csv("fleet_work_orders_2023-07_to_2026-09.csv") if "M410 to M720" in r["description"]]
+    agree = all(((r["unit_id"], w) in older) == (dt.date(int(w[:4]), 11, 1) < dt.date.fromisoformat(r["closed"]))
+                for r in wo for w in w3 if (r["unit_id"], w) in lit)
+    ok("ASK B the work orders' controller replacements agree with the litres a tonne, unit by unit and winter by winter",
+       len(wo) == 4 and agree, "%d replacements" % len(wo))
     wb = openpyxl.load_workbook(os.path.join(TARGET, "kettlewood_material_returns_2023-24_to_2025-26.xlsx"),
                                 read_only=True)
     for ws in wb.worksheets:
@@ -314,14 +329,17 @@ def main():
                 continue
             w = season(dt.date.fromisoformat(rec["Month"] + "-01"))
             if w == ws.title:
-                contr[(rec["City circuit"][:3], w)] = contr.get((rec["City circuit"][:3], w), 0.0) + \
-                    float(rec["Rock salt (t)"])
+                for dd in (art, art_l):
+                    dd[(rec["City circuit"][:3], w)] = dd.get((rec["City circuit"][:3], w), 0.0) + \
+                        float(rec["Rock salt (t)"])
     wb.close()
-    for k, v in contr.items():
-        cal[k] = cal.get(k, 0.0) + v
-    ok("ASK B the loading-log calibration files the same 50 t figures, a quarter-bin or more from an edge",
-       all(int(round(cal[k] / 50.0) * 50) == int(round(art[k] / 50.0) * 50) and edge(cal[k], 50.0) >= 12.5
-           for k in art), "largest gap %.1f t" % max(abs(cal[k] - art[k]) for k in art))
+    good = all(int(round(art[(y, w)] / 50.0) * 50) == figs["art_%s_%s" % (y, w)] for y in yards for w in w3)
+    ok("ASK B every yard-winter arterial figure recomputes to the nearest 50 t", good, "")
+    ok("ASK B every figure a quarter-bin or more from its 50 t rounding edge (from the recomputed values)",
+       min(edge(v, 50.0) for v in art.values()) >= 12.5, "%.1f t" % min(edge(v, 50.0) for v in art.values()))
+    ok("ASK B the older controllers' salt read back from their litres at the plan's rate files the same 50 t figures",
+       all(int(round(art_l[k] / 50.0) * 50) == int(round(art[k] / 50.0) * 50) for k in art),
+       "largest gap %.2f t" % max(abs(art_l[k] - art[k]) for k in art))
 
     # ---------------------------------------------------------------------------------------- the other formats
     n_csv = sum(1 for f in os.listdir(TARGET) if f.endswith(".csv"))
