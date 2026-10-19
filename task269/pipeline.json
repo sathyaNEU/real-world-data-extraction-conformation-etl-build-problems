@@ -9,7 +9,7 @@
   "updated": "2026-10-19",
   "stump": "The default path files 16 stations, because it decomposes the 2026 marks as if each year's stations were drawn from one undivided bank, so a candidate's strength in a domain lands in the candidate-by-station error; the blueprint draws the same number of stations from each of the four domains every year, so that strength recurs in every form and is true score, and only the decomposition with the domains as a fixed facet, the examiner's stringency still error for single examining, puts the 2027 examination at 13.",
   "architecture": 2,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
     "date": "2026-10-19"
@@ -24,12 +24,12 @@
     "surface": "one pair promoted (task257, 0.081, card same-driver signature), answered by the card's differentiation line"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (pass 2, Ask B only: the allocation date unfiled)",
-    "disposition": "FIX_NOW",
-    "report": "determinism_check_report_pass2.md"
+    "verdict": "NOT_DETERMINISTIC (pass 3, Ask B only: the namesake rows' holder not filed; two write-up claims)",
+    "disposition": "SEND_BACK, read as FIX_NOW (Gates G and H pass, the main call forced)",
+    "report": "determinism_check_report_pass3.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2: both scored readers clear (0 of 23 each, the call missed); the one re-judge of pass 2's FIX_NOW is running on /tmp/determinism-check-task269-r31792390143 (report to determinism_check_report_pass3.md); on DETERMINISTIC ship (target.zip from the final build, ledger row, board), on a finding fix in the generator once",
+  "resume": "stage 4 round 3 running: two fresh scored readers (leak-task269v2-r5, r6) and the re-judge (pass 4) on fix pass 2's pack (target.zip md5 bb6653ee); pass 3's report being written; on both readers clear and DETERMINISTIC, ship",
   "approved": null,
   "delivered": null,
   "portal": null,

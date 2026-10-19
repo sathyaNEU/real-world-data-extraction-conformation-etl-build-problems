@@ -236,6 +236,18 @@ def write_register(path, e):
                      p["last_refresher"], p["status"]])
     _sheet(ws, ["Staff no.", "Title", "Forename", "Surname", "Grade", "Base", "Email", "Examiner training",
                 "Last refresher", "Status"], rows, [10, 7, 14, 22, 22, 18, 40, 17, 15, 11], date_cols=(7, 8))
+    ws2 = wb.create_sheet("Fields")
+    for line in [["Field", "Meaning"],
+                 ["Staff no.", "The examiner's University staff number"],
+                 ["Base", "Where the examiner works: the University (Callowfield), Callowfield University Hospital "
+                          "(CUH), Fennabeg Clinical School (Fennabeg) or a general practice"],
+                 ["Examiner training", "The date the examiner completed the School's examiner training"],
+                 ["Last refresher", "The latest examiner refresher booked through the University's booking system, "
+                                    "once its date has passed"],
+                 ["Status", "Active; On leave; Inactive (no longer examining)"]]:
+        ws2.append(line)
+    ws2.column_dimensions["A"].width = 18
+    ws2.column_dimensions["B"].width = 110
     wb.save(path)
     return len(rows)
 

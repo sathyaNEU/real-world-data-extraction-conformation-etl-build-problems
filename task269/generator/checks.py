@@ -350,8 +350,26 @@ def asks(t, w):
         if hit:
             shared.setdefault(hit[0], []).append(tr)
     ok(set(shared) == set(e["namesake"]), "ask B: trainees sharing register names %s" % sorted(shared))
+    # whose number a sign-in row carries: H only for the hospital's own staff at its sessions, F only for Fennabeg's
+    # at theirs; everyone else, GP trainers included, signs in there under a University number
+    with open(os.path.join(t, K.FILES["training"]), newline="", encoding="utf-8") as f:
+        log = list(csv.DictReader(f))
+    alt_of = {p["alt"][0]: p for p in e["people"] if "alt" in p}
+    trainee_nos = {tr["no"] for tr in e["trainees"]}
+    ok(not any(p["base"] == "Callowfield" and "alt" in p for p in e["people"]), "a University academic holds an H "
+       "or F number")
+    for r in log:
+        no = r["staff_no"]
+        if no[0] in "HF":
+            want = {"H": ("CUH", W.VENUES[1]), "F": ("Fennabeg", W.VENUES[2])}[no[0]]
+            ok(r["venue"] == want[1] and (no in trainee_nos or alt_of[no]["base"] == want[0]),
+               "sign-in row %s %s" % (no, r["venue"]))
+    gp_e = [r for r in log if r["staff_no"][0] == "E" and r["venue"] != W.VENUES[0]
+            and r["staff_no"] in people and people[r["staff_no"]]["base"] == "General practice"]
+    ok(len(gp_e) >= 3, "GP trainers' rows at the hospital's or Fennabeg's sessions (the write-up's step 8)")
     for st, (site, kind) in e["namesake"].items():
         p = people[st]
+        ok(site != {"CUH": "CUH", "Fennabeg": "FCS"}[kind], "ask B namesake %s offers its trainee's site" % st)
         ok(p["grade"] == "GP Trainer" and p["base"] == "General practice" and p["status"] == "Active"
            and p["last_attended"] < K.TRAINED_FROM, "ask B namesake %s eligible or not a GP trainer" % st)
         trs = shared[st]

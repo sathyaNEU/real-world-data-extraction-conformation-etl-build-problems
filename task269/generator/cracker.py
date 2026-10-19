@@ -86,7 +86,7 @@ def b_by_register(t, train="register", no_dedup=False, email_only=False):
     record's attended sessions joined on the staff number, architecture 2's second reader) or "name" (joined on the
     staff number, else on the name without titles, accents or punctuation, its first reader); the responses matched
     on email and then on the name, the latest standing."""
-    reg = V.rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"))
+    reg = V.rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"), "Register")
     by_email = {r["Email"].lower(): r["Staff no."] for r in reg}
     by_name = {}
     for r in reg:

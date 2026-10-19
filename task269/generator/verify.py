@@ -223,16 +223,16 @@ def norm_name(x):
 
 
 def ask_b(t):
-    reg = rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"))
+    reg = rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"), "Register")
     by_email = {r["Email"].lower(): r["Staff no."] for r in reg}
     by_name = {}
     for r in reg:
         by_name.setdefault(norm_name("%s %s" % (r["Forename"], r["Surname"])), []).append(r["Staff no."])
     on_register = {r["Staff no."] for r in reg}
     base = {r["Staff no."]: r["Base"] for r in reg}
-    # the hospital's staff numbers (H) are its own staff's, the university's clinical academics among them; Fennabeg's
-    # (F) are Fennabeg's staff's; a GP trainer in general practice holds neither
-    employer = {"H": ("CUH", "Callowfield"), "F": ("Fennabeg",)}
+    # the hospital's staff numbers (H) are its own staff's and Fennabeg's (F) Fennabeg's; anyone else signs in at their
+    # sessions under a University number, so a GP trainer in general practice holds neither
+    employer = {"H": ("CUH",), "F": ("Fennabeg",)}
     attended = {}
     with open(os.path.join(t, "examiner_training_attendance_2021_2026.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):

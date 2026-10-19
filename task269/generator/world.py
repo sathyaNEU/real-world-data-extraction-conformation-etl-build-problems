@@ -837,8 +837,8 @@ def examiners(seed=SEED):
         # the hospital's and Fennabeg's own staff numbers: everyone based there, and the university's academics who
         # hold an honorary consultant post at the hospital
         home = HOME_VENUE.get(p["base"])
-        if home is None and p["base"] == "Callowfield" and rv.random() < 0.25:
-            home = HOME_VENUE["CUH"]
+        if home is None and p["base"] == "Callowfield":
+            rv.random()   # the draw the stream was cut with; the University's own staff hold no hospital number
         if home:
             while True:
                 no = "%s%05d" % (home[1], int(rv.integers(10000, 99999)))
@@ -923,7 +923,9 @@ def examiners(seed=SEED):
     rd = np.random.default_rng([seed, 38])
     home_dev = {}
     for site in [x[0] for x in K.SITES27]:
-        pool = [p for p in people if elig_grade(p) and site in SITE_OF_BASE[p["base"]][:1] and "alt" in p
+        # the Clinical Skills Centre's: hospital consultants who offer to examine there
+        pool = [p for p in people if elig_grade(p) and "alt" in p and p["staff"] not in home_dev
+                and (p["base"] == "CUH" if site == "CSC" else site in SITE_OF_BASE[p["base"]][:1])
                 and p["staff"] not in device and p["initial"] < K.TRAINED_FROM
                 and any(a == "Attended" and d >= K.TRAINED_FROM for d, a, v in p["refreshers"])]
         pool.sort(key=lambda p: p["staff"])
@@ -952,7 +954,7 @@ def examiners(seed=SEED):
     # the register, who attended their employer's own refresher inside the window (the trainee rows below)
     rh = np.random.default_rng([seed, 39])
     namesake = {}
-    for site, kind in (("CSC", "CUH"), ("CUH", "CUH"), ("FCS", "Fennabeg")):
+    for site, kind in (("CSC", "Fennabeg"), ("CUH", "Fennabeg"), ("FCS", "CUH")):
         pool = [p for p in people if p["status"] == "Active" and p["grade"] == "GP Trainer"
                 and p["base"] == "General practice" and p["staff"] not in device and p["staff"] not in home_dev
                 and p["staff"] not in namesake and last_att(p) < dt.date(2023, 6, 1)

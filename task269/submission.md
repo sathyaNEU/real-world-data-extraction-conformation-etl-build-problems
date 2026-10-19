@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Set the 2027 final OSCE at 13 stations.**
-On the blueprint, which draws the same domains every year, with one examiner a station in each of three circuits, the total mark ranks candidates with a reliability of 0.81 at 13 stations and 0.79 at 12, against the 0.80 standard. Not 16 stations, which a decision study treating the stations as drawn from one undivided bank asks for, because it books each candidate's strength in a domain as error when every form carries the same domains. Not 12 stations, which one examiner's 2026 marks support (0.80 on the lead examiners' marks, 0.81 on the second examiners'), because in 2026 the same two examiners marked every candidate at a station, while in 2027 different candidates meet different examiners and the stringency variance of 1.06 is error. Not the 2026 sitting's own reliability of 0.84 over 12 stations, which rests on two examiners' marks averaged at every station.
+On the blueprint, which draws the same domains every year, with one examiner a station in each of three circuits, the total mark ranks candidates with a reliability of 0.81 at 13 stations and 0.79 at 12, against the 0.80 standard. Not 16 stations, which the decision study on the 2026 marks with the stations taken as one undivided set asks for (candidate 1.06, candidate by station 1.97), because it books most of each candidate's strength in a domain as case specificity when every form carries the same domains. Not 12 stations, which one examiner's 2026 marks support (0.80 on the lead examiners' marks, 0.81 on the second examiners'), because in 2026 the same two examiners marked every candidate at a station, while in 2027 different candidates meet different examiners and the stringency variance of 1.06 is error. Not the 2026 sitting's own reliability of 0.84 over 12 stations, which rests on two examiners' marks averaged at every station.
 
 ## 2. Critical Components
 
@@ -23,7 +23,7 @@ On the blueprint, which draws the same domains every year, with one examiner a s
 5. Counted, per blueprint domain, the cases in case_bank_export_2026-11-30.xlsx that policy 4.4 allows in May 2027: Active or Active - edits pending, last reviewed on or after 11 May 2024 (dates typed in the old bank read day first), and not set at a 2025 or 2026 sitting in case_usage_history_2021_2026.csv; SP and SP and task trainer cases need a simulated patient.
 6. A CV-25 record above version 1 is a record re-created at the November 2025 cut-over (casebank_migration_report_2025-11.pdf, section 2; a case written in the new bank starts at version 1, the bank's Fields tab), whatever its title or review date: it keeps the sittings of the retired record of the same domain, specialty and resources at the version before, never those of another retired record of its specialty or of a retired case of the same title; cases that can be set and of them needing a simulated patient: History taking 13 and 13, Physical examination 16 and 13, Communication 14 and 14, Procedural skills 14 and 6.
 7. Counted, per site and session, the examiners eligible at the allocation on 7 December 2026 (final_osce_2027_delivery_plan.docx; policy 5.2: Active on examiner_register_2026-11-30.xlsx, an eligible grade, and the examiner training or a refresher attended on or after 7 December 2023 in examiner_training_attendance_2021_2026.csv, a refresher booked and not attended not counting) whose latest response in examiner_availability_2027_responses.csv, matched by email or else by name without titles, accents or punctuation, offers that site and session.
-8. Training rows under hospital (H) or Fennabeg (F) staff numbers, signed in at the hospital's and Fennabeg's own sessions, are their own staff's: they belong to the register examiner of that name on the hospital's staff (a Callowfield academic may hold a hospital post) or Fennabeg's, never to a GP trainer in general practice who shares the name, so their attendance counts: Clinical Skills Centre 28, 28, 29, 30; Simulation Suite 33, 33, 34, 34; Clinical Skills Unit 22, 24, 21, 19; set the 2027 final OSCE at 13 stations.
+8. A training row signed in under a hospital (H) or Fennabeg (F) staff number is that employer's own staff member's, since everyone else signs in at those sessions under their University number (the record's GP trainers among them): it counts for the register examiner of that name based at the hospital or at Fennabeg, and a GP trainer in general practice who shares the name is someone else; Clinical Skills Centre 31, 30, 30, 32; Simulation Suite 31, 30, 31, 33; Clinical Skills Unit 22, 24, 21, 19; set the 2027 final OSCE at 13 stations.
 
 ## 4. Deliverable Answers
 
@@ -44,8 +44,8 @@ On the blueprint, which draws the same domains every year, with one examiner a s
    - Communication: 14; 14
    - Procedural skills: 14; 6
 4. Examiners eligible at the December allocation who offered each session:
-   - Clinical Skills Centre, Callowfield: Tuesday morning 28, Tuesday afternoon 28, Wednesday morning 29, Wednesday afternoon 30
-   - Simulation Suite, Callowfield University Hospital: Tuesday morning 33, Tuesday afternoon 33, Wednesday morning 34, Wednesday afternoon 34
+   - Clinical Skills Centre, Callowfield: Tuesday morning 31, Tuesday afternoon 30, Wednesday morning 30, Wednesday afternoon 32
+   - Simulation Suite, Callowfield University Hospital: Tuesday morning 31, Tuesday afternoon 30, Wednesday morning 31, Wednesday afternoon 33
    - Clinical Skills Unit, Fennabeg Clinical School: Tuesday morning 22, Tuesday afternoon 24, Wednesday morning 21, Wednesday afternoon 19
 
 ### osce2027_reliability_chart.png

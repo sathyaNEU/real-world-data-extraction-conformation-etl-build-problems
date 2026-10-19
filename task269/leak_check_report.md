@@ -1,10 +1,10 @@
 # leak check, task269
 
-**Verdict: REVIEW.** 16 files read, 8 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 9 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: blueprint, domain, decision, examiner, policy, reader, candidates, record, variance, method, decomposition, candidate, decisive, examining, review, pooled, carries, stringency, architecture, coefficient, selection, design, examination, single, checks
+Stump terms swept: blueprint, domain, examiner, decision, policy, reader, candidates, record, variance, method, decomposition, decisive, candidate, pooled, examining, review, carries, stringency, training, architecture, clinical, selection, coefficient, checks, design
 
 ## 3 answer figures in the pack (REVIEW 5)
 - **REVIEW** `assessment_policy_v7.pdf`: golden figure 0.80 appears: ...st rank candidates with a reliability of at least 0.80: the share of the variance among candidates' tot...
@@ -13,13 +13,12 @@ Stump terms swept: blueprint, domain, decision, examiner, policy, reader, candid
 - **REVIEW** `final_osce_2027_delivery_plan.docx`: carries 3 of 3 distinctive words of the committed call: 'Set the 2027 final OSCE at 13 stations.'
 - **REVIEW** `osce2027_blueprint_working_pack_index.txt`: carries 3 of 3 distinctive words of the committed call: 'Set the 2027 final OSCE at 13 stations.'
 
-## 4 design-note vocabulary (REVIEW 7)
-- **REVIEW** `assessment_policy_v7.pdf`: 11 of 25 stump-paragraph terms appear (blueprint, domain, decision, examiner, policy, candidates); read whether the document names the move
-- **REVIEW** `board_of_examiners_minutes_2026-05-14.pdf`: 6 of 25 stump-paragraph terms appear (blueprint, examiner, policy, candidates, candidate, examination); read whether the document names the move
-- **REVIEW** `casebank_migration_report_2025-11.pdf`: 5 of 25 stump-paragraph terms appear (blueprint, domain, record, review, examination); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 6)
+- **REVIEW** `assessment_policy_v7.pdf`: 12 of 25 stump-paragraph terms appear (blueprint, domain, examiner, decision, policy, candidates); read whether the document names the move
+- **REVIEW** `board_of_examiners_minutes_2026-05-14.pdf`: 6 of 25 stump-paragraph terms appear (blueprint, examiner, policy, candidates, candidate, clinical); read whether the document names the move
+- **REVIEW** `casebank_migration_report_2025-11.pdf`: 4 of 25 stump-paragraph terms appear (blueprint, domain, record, review); read whether the document names the move
 - **REVIEW** `final_osce_2027_delivery_plan.docx`: 8 of 25 stump-paragraph terms appear (blueprint, domain, examiner, policy, candidates, candidate); read whether the document names the move
-- **REVIEW** `osce2026_candidate_feedback_summary.pdf`: 3 of 25 stump-paragraph terms appear (candidates, candidate, examination); read whether the document names the move
-- **REVIEW** `osce2027_blueprint_working_pack_index.txt`: 5 of 25 stump-paragraph terms appear (blueprint, examiner, policy, candidate, examination); read whether the document names the move
+- **REVIEW** `osce2027_blueprint_working_pack_index.txt`: 6 of 25 stump-paragraph terms appear (blueprint, examiner, policy, candidate, training, clinical); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Put that number in osce2027_station_plan.xlsx with the reliability of the total mark at every number of stations from 12 to 18, and with it, for each of the case bank's four domains, how many of its cases can be set in M"
 
 ## 6 ranking artifacts (REVIEW 1, INFO 1)
