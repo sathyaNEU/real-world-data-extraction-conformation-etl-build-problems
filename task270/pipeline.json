@@ -1,28 +1,28 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "psychology-behavioral-science",
+  "status": "DESIGN",
+  "domain": "actuarial-science-insurance",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-19",
-  "stump": "The default path keeps the written test and the work style inventory, because it correlates each component with the academy final average among the appointees, or corrects each correlation on its own by Case II; the appointments were made in rank order of the written test and oral board composite, which cut those two far more than their own spreads among the appointees show, and only the multivariate correction on the variables the appointments were made on keeps the written test and the oral board.",
-  "architecture": 1,
+  "stump": "The default path ranks the eight rating regions by their 2025 and 2026 reported claim frequency (or lifts steps 6 to 9 by the Step Protection holders' frequency) and puts the wrong third region in the top band, because policyholders on the middle no-claims steps, where an at-fault claim costs the most premium, pay small damage themselves; only recovering the absorbed claims step by step, from the claims too large for any policyholder to absorb scaled by the share of claims that large among the policyholders a claim costs nothing, places the region whose policyholders stand mostly on the middle steps.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-19",
-    "checks": 51
+    "exit": null,
+    "date": "",
+    "checks": 0
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-19",
-    "reader": "two scored readers running"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "0.07 (task58 v7 lineage)",
-    "surface": "5 promoted on card axes and prompt idiom, answered"
+    "heart": "",
+    "nearest": "",
+    "surface": ""
   },
   "judge": {
     "verdict": "",
@@ -30,7 +30,13 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4 running: two isolated scored readers on fresh copies (/tmp/reader-task270-r1, r2) and the judge thread (/tmp/determinism-check-task270-task270-r1, verdict.md, then the determinism-judge agent writes task270/determinism_check_report.md); score both readers with score_reader.py, fix every finding in the generator in one pass, rebuild, then ship",
+  "resume": "stage 2: default path, stump sentence, readability screen, fork table (the absorbed-claims estimator row first, the threshold above every absorbed claim, the full-reporting groups, the 2027 wording's behaviour), ladder measured on the generator's world (reported, Step Protection lift on steps 6 to 9, lift on every insured step, size-based recovery at several thresholds and a parametric tail), closure, literal reader, oracles, ask sheet with a cracker coded on the cut pack, prompt.txt; precut.py",
+  "architectures": [
+    {
+      "architecture": 1,
+      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the multivariate correction for selection on the appointment composite), reader 2 all 14 ask figures, reader 1 Ask A; judge DETERMINISTIC, APPROVE; last commit 9507d43f"
+    }
+  ],
   "approved": null,
   "delivered": null,
   "portal": null,
