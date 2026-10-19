@@ -56,6 +56,23 @@ adequacy, settlement speed, completion of immature periods, a cap that binds mor
 mix shift, `composition_mix`), need a filed future rate (calendar-year inflation, which is rule application or a
 fork), or are a variance (ranges, tails). Prototypes are in the session scratchpad (r176/proto).
 
+**Second redraw, 2026-10-19 (sociology-demography / population-estimation-demographic-projection, Forecasting),
+screened at stage 1 and failed; no card registered, nothing cut.** The coordinator allocated the cell and lifted the
+round's extra bans. The cell's cards (`sociology-demography/population-estimation-demographic-projection/1` to `/5`:
+cohort-component ageing, gross migration flows, stated-coverage intervals, the control total, shrinking small-area
+rates) are the careful demographer's routes. The structural sentence for the cell: the judgments those cards take
+for granted that the records settle are each spent on file, closed by the guard's window, or a textbook route of
+their own:
+- who is at risk of a flow (duration since arrival, parity, a pool outside the area by age) is a hazard on a pool
+  whose composition shifted (task134 v2, task468);
+- a fixed stock's turnover is task132's renewal;
+- a housing capacity is the housing-unit method;
+- special populations are `population_selection` (task270's window) and census practice;
+- a back-test of projection methods is `forecast_method_backtest` (task177's window);
+- on population levels the structural levers run under 10 per cent, because flows are small against stocks.
+
+Prototypes are in the session scratchpad (r176/demog).
+
 ## Tried and rejected
 
 - **The solar cycle's phase, with or without the cycle's amplitude, as the decisive step** (the brief's first
@@ -190,3 +207,51 @@ fork), or are a variance (ranges, tails). Prototypes are in the session scratchp
   - a closed exposed pool depleting as members claim (latent and mass claims): the hazard's shape on the remaining
     pool is a fork (constant against heterogeneous), the forcing rosters sit in epidemiology, and the natural
     instances are sensitive.
+- **Second redraw D1, 2026-10-19: returners drawn from the area's diaspora (people born there living elsewhere), a
+  wave that left at 20 to 30 in 1995 to 2010 now ageing into the return ages** (prototype `d1_diaspora.py`, expected
+  values, return hazard 0.5 per cent a year at 25 to 49 and 2.0 at 55 to 69). On the 2027 to 2031 return flow the
+  card-2 route (origin-destination rates by age on the origin population, struck over 2016 to 2025) files 0.62 of the
+  truth, a linear trend 0.81 and the latest year carried about 0.75; at 55 to 74 the card-2 route files 0.08 of the
+  flow. But on the 55 to 74 population level the returns move the figure about 4 per cent, and the abstraction is
+  task134 v2 round 1's driver (an inflow that a pool held outside the decision's record sends at a hazard on that
+  pool, whose composition shifted). The birthplace column on the in-migration records also makes the split a row
+  predicate. Died on the driver repeat and the level lever.
+- **Second redraw paper screens, 2026-10-19, each dead before code:**
+  - duration-dependent out-migration after an influx (mover-stayer): task134's slot measured it at about 1 per cent
+    (its `sim1.py`), and it is task468's and task134 v2's driver (a hazard by time since entry after a surge);
+  - gross against net migration (card 2): task150 shipped it on school attendance areas, and task134's slot found
+    the gross variants split unless every origin is static;
+  - second births echoing a surge of first births (parity and interval): the same time-since-entry family;
+  - housing-constrained growth: the housing-unit method (dwellings, occupancy, persons per household) or a
+    headship-rate household projection is the field's textbook for a capped small area, and task79 carries the
+    capacity insight;
+  - turnover in a fixed stock as its occupants age in place (vacancy chains): task132's renewal driver;
+  - special populations (students, prisons, barracks, care homes) that do not age in place: `population_selection`
+    sits in the window (task270), and projecting group quarters apart is census practice;
+  - the control-total gap allocated by the component that makes it up (card 4's judgment): the regional model's
+    closed-system note reads it out, and each area's own external migration, the careful route, lands;
+  - a births-based base for young children against a census undercount: a lever of about 5 per cent;
+  - stated-coverage intervals with cross-area correlation (card 3's judgment): the variance-only screen, and a
+    correlation estimated from 30 years carries about 15 per cent;
+  - shrinkage choices (card 5): the shrinkage family (stumping 1.2);
+  - fertility postponement and recuperation: a future-rate assumption, a fork;
+  - cohort mortality improvement at 85 and over: the mortality-longevity card;
+  - a group returning in a wave: task157;
+  - two-sex births (partner availability): the marriage function's form is open (harmonic, geometric, minimum)
+    and the real effect is weak;
+  - simple trend methods beating cohort-component out of sample: `forecast_method_backtest` sits in the window
+    (task177);
+  - a caseload ageing out at a fixed age: task172's cap;
+  - education-specific rates: a mix on a visible column;
+  - an error-of-closure correction of the base: one past event per area and a back-test organ.
+
+## Retired
+
+**RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
+retired.** Three worlds were screened at stage 1 and none held:
+- the seed's satellite storm-loss world, two architectures on code;
+- actuarial reserving triangles, P1 and P2 on code and 17 on paper;
+- sociology population projection, D1 on code and 18 on paper.
+
+No card was ever registered, so no guard axis is held. The screens above are the number's record for `guard.py
+slots`.
