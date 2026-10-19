@@ -1,15 +1,17 @@
 # task175 design note
 
-**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** Two screens
-have run on this number and neither produced a design that meets the bar (every reflex route a full bin
+**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** Three screens
+have run on this number and none produced a design that meets the bar (every reflex route a full bin
 from the golden, the right family inside a quarter-bin of the bin centre with one sigma, a lever of 30
 per cent or more of the graded figure with sigma near 1 per cent). The first (2026-10-18) took the seed
 FC46's world, decision and quantity and measured two capped-cost candidates dead over three seeds each.
 The second (2026-10-19) redrew the number in the cell the coordinator allocated,
 human-factors-ergonomics / human-reliability-assessment for Forecasting, set nine candidates aside on
 paper against the deaths already on file in this cell and measured the two survivors dead on code
-(`## Redraw screen` below). Nothing was cut, `architecture` stays 0, and no axis of the guard's window was
-spent.
+(`## Redraw screen: human-reliability-assessment` below). The third (2026-10-19) took the coordinator's
+next cell, quantitative-finance / strategy-backtesting-evaluation, measured three capacity mechanisms
+dead on code and set the rest aside on paper (`## Redraw screen: strategy-backtesting-evaluation`).
+Nothing was cut, `architecture` stays 0, and no axis of the guard's window was spent.
 
 ## What was screened
 
@@ -116,6 +118,32 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   with byte-identical output, and the settings and figures are in the Tried and rejected lines so the
   harness rebuilds from this note. `guard.py slots` on both driver sentences returned lexical overlaps
   only (task182, task194, task117, task132, task201), no screen of either mechanism.
+
+## Redraw screen: strategy-backtesting-evaluation (2026-10-19)
+
+- **Cell and fences.** quantitative-finance / strategy-backtesting-evaluation (serves Forecasting), the
+  graded call forward facing (a capacity, a capital or a net return at a planned capital, never a
+  retrospective backtest statistic). The window re-read after the b7a54be refresh: task249 carries
+  `architecture_spent`, so the live three are task268, task269 and task468 (patterns G6, G2 and G13;
+  strategies `population_selection`, `decomposition_attribution` and `composition_mix`; roles
+  `research_desk`, `programme_officer`, `operations_director`; forums `committee_or_panel`,
+  `regulator_or_inspector`, `executive_team`; organisation families `hospital_or_health_provider`,
+  `university_or_school`, `other`; shapes 04 and 05), on top of the round's bans; task170 draws in banking
+  this round, so a bank's ALM desk was kept off every axis.
+- **Seeds.** The library's Quantitative Finance cards (next-bar fills, point-in-time universes, reporting
+  lags, deflated Sharpe, Fama-MacBeth, linked attribution, constrained and shrunk portfolios) are the
+  default path and Layer 1 here; the judgment sought was one they take for granted, and for a capacity call
+  that is what a strategy's own trading at the planned capital does to its costs and alpha. The domain's
+  only cards on file are task135 (asynchronous valuation strikes) and task445 (13F completion), and `slots`
+  found no screen of impact, capacity or crowding.
+- **The structural finding.** A capacity forecast's decisive quantity is the market's response to the
+  strategy's own flow, and the routes the data leave open are either the textbook square-root cost per
+  trade (the default, which lands wherever the strategy's trades are isolated) or a model of how impact
+  carries across days, whose classes agree on every one-way execution on file and part two to four times on
+  a strategy's own runs and reversals; every judgment beyond that (informed drift in the slippage, the
+  firm's netting, borrow demand) is a reflex control, a shared-pool clone or a minor cost line.
+- **The harness.** `scratchpad/r175/proto/qf_runs.py`, `qf_family.py`, `qf1c.py` and `qf6.py`,
+  session-scoped and deterministic per seed; settings and figures are in the Tried and rejected lines.
 
 ## Tried and rejected
 
@@ -233,12 +261,54 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   extrapolated tails spread by form, and samples per action are sparse); a reminder or re-alarm moved
   inside a response duration (task172's driver in other nouns); fatigue states under a new roster
   (task171's shift death, G14, and the fatigue models' own spread).
+- **Quant candidate QF1, impact carried across days by a slow strategy's own trades** (2026-10-19,
+  strategy-backtesting-evaluation, `qf_runs.py` and `qf_family.py`). World: 800 names (ADV median $25m,
+  daily volatility about 1.8 per cent), a smoothed signal rebalanced daily, gross exposure twice capital;
+  the strategy's same-direction trades run 8.9 days on average. Driver as drafted: the market prices each
+  day's trade against the impact the strategy's own earlier trades left, so a per-trade square-root cost
+  understates what a slow strategy pays at the planned capital. Measured at $1bn on one square-root
+  calibration (Y 0.7): per-trade fresh start 92 bps of capital a year (the default); impact concave in the
+  decayed cumulative flow 249 to 309 for memories of 5 to 40 days (flat at 282 to 309 for 8 to 40, and
+  20,000 executions pin the memory to 13 to 34 days); each run priced fresh 500, and the opposite run's
+  netting is why it overshoots; concave per-day impacts superposed with exponential decay 543 to 1,228; a
+  power-law kernel 543 to 793. Dead on the estimator family: the model classes agree on every one-way
+  execution a desk's file holds and part 2.2 to 4.4 times on the strategy's runs and reversals, which no
+  one-way order tests, so pinning the class files the HOW and leaving it open forks the figure.
+- **Quant candidate QF1c, the same mechanism behind a no-trade band** (2026-10-19, `qf1c.py`). Built to
+  separate runs by idle gaps so that multi-day executions on file would force the class. The band makes
+  trades isolated instead (mean run 1.00 day, median idle gap 4 days, 9 per cent of name-days trading):
+  per-trade pricing sits at 0.99, 0.94, 0.81 and 0.63 of the truth for post-trade half-lives of 0.6, 1.0,
+  1.9 and 4.3 days, and the superposed class at 1.00 to 1.30, so the lever vanishes where the class is
+  forced and the family reopens where the lever returns. With a live record in the pack, the paper
+  portfolio's gap to the real one is Perold's implementation shortfall, the textbook route, and it lands;
+  set against the desk's slippage report it is a control that refutes the naive read.
+- **Quant candidate QF6, the fund's own short demand pushing borrow fees up a convex utilisation curve**
+  (2026-10-19, `qf6.py`, three seeds). At $2bn the fees cost 57.5 to 72.0 bps of capital a year against
+  33.2 to 40.7 at today's fees (0.50 to 0.61), a minor line beside the gross alpha; the median fee of names
+  already at the forward utilisation band, a filter and a divide on the prime broker history, lands at
+  0.976 to 1.003; and the curve fitted to the same history explodes for the few names pushed toward full
+  utilisation (log-linear 1.05 to 167 times, log-quadratic 6 times and far beyond), where the question is
+  a hard cap on unborrowable shorts. Dead on the lever, the subset screen and the cap.
+- **Also set aside in the quant cell, on paper:** informed drift in the desk's slippage (the golden's
+  regression is slippage on the square-root participation and the signal, so the opponent's add-a-control
+  reflex lands it); netting the new strategy's flow against the firm's other books (task164's and task106's
+  shared-resource increment in other nouns); a hard borrow cap (a single-purpose file and a min()); alpha
+  diluted into weaker signals at scale (a conditioned yield, G14); participation-capped multi-day
+  execution losing a front-loaded alpha (QF1's family returns, and a capped simulation is the reader's first
+  move); point-in-time vintages of a fundamental feed (alpha research card 2 applied as stated); merger
+  arbitrage completion conditioned on time pending (task133's driver); a volatility target's leverage cap
+  (G14 and a volatility forecast on the obvious covariate); auction and roll calendars (task162's
+  calendar lock); limit prices truncating the desk's slippage (the cap that truncates, task168 and task172);
+  alpha carried through cross-sectional dispersion (task446 v2 and task194's invariant abstraction);
+  post-publication decay read across older signals (a filter and a divide, and a known result); carry read
+  off today's curve (observable ex ante).
 
 ## Resume
 
-Neither screen left a live design, so the next move is the coordinator's or the author's: move the
-number to another Forecasting cell, or come back to human reliability when the round's G14 and
-`composition_mix` bans lapse. Do not re-screen, in either world, anything in `## Tried and rejected`:
+No screen left a live design, so the next move is the coordinator's or the author's: move the number to
+another Forecasting cell, or come back to human reliability or strategy evaluation when the round's G14
+and `composition_mix` bans lapse. Do not re-screen, in any of the three worlds, anything in
+`## Tried and rejected`:
 
 1. **The seed's world (FC46).** The three laws close the per-member capped forecast for any decisive step
    that refines a member's predictive year, because the refinements form a continuum wider than a
@@ -253,7 +323,13 @@ number to another Forecasting cell, or come back to human reliability when the r
    binding constraint on a filed integer of hours); an error-risk score's calibration against its ranking
    (the card applied as stated, the library test); blocking probability against occupancy for a staffed
    desk (queueing, the swap test).
+3. **Strategy evaluation under this round's bans.** A capacity call turns on how the market answers the
+   strategy's own flow; the per-trade square-root cost is the default and the only data-forced refinement
+   is how impact carries across days, whose model classes part 2.2 to 4.4 times on a strategy's runs and
+   reversals while agreeing on every one-way execution a desk records. A further draw here needs an
+   execution record that itself contains the strategy's runs and reversals, or a decisive step that is not
+   a cost of the strategy's own trading.
 
-Window facts on 2026-10-19 after task468: patterns G16, G2 and G13, strategies `causal_design`,
-`decomposition_attribution` and `composition_mix`, and shapes 04 and 05 sit in the ban window, and this
-round's six serial registrations will move it again.
+Window facts on 2026-10-19 after the b7a54be refresh: task249 is spent and skipped, so patterns G6, G2 and
+G13, strategies `population_selection`, `decomposition_attribution` and `composition_mix`, and shapes 04
+and 05 sit in the ban window, and this round's serial registrations will move it again.
