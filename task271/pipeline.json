@@ -1,0 +1,42 @@
+{
+  "task": "task271",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "healthcare-delivery-health-economics",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-19",
+  "stump": "The default path risk-adjusts each eligible hospital's 90-day deaths after pancreatic resection on the operation's own admission record (age, sex, conditions present on admission, the procedure, the urgency, the diagnosis) and names the three lowest ratios without either referral centre; only adding the earlier operation on the pancreas or bile ducts, rebuilt from each patient's earlier admissions anywhere in the state, brings the first referral centre's ratio down into the three.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": "",
+    "checks": 0
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 task190 v1 lineage",
+    "surface": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: default path, stump sentence, three rules, fork table, ladder (with the subset, broad-definition, volume and shrinkage routes measured), closure, the asks, prompt.txt, then precut.py",
+  "architectures": [],
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA21 (world only: a nonprofit health plan's 2027 programme; its design set aside, Tried and rejected)"
+}
