@@ -209,7 +209,7 @@ def write_bank(path, b):
                  ["Case code", "The case's code in the bank"],
                  ["Resources", "What the station needs: SP (a simulated patient), Manikin, Task trainer, SP and task "
                                "trainer, Video, Paper case"],
-                 ["Version", "The case's current version"],
+                 ["Version", "The case's current version; a case written in the Assessment Item Bank starts at 1"],
                  ["Status", "Active; Active - edits pending (usable as it stands); Under review (not usable until the "
                             "assessment group signs it off); Retired"],
                  ["Last reviewed", "The date the OSCE assessment group last reviewed the case"]]:
@@ -240,14 +240,32 @@ def write_register(path, e):
     return len(rows)
 
 
+def _signed(title, fore, sur, venue):
+    """A name as each venue's sign-in sheet carries it: the training team's own sheet from the register, the
+    hospital's and Fennabeg's typed from the sheet with the title and without the accents."""
+    if venue == W.VENUES[0]:
+        return "%s %s" % (fore, sur)
+    return "%s %s %s" % (title, _ascii(fore), _ascii(sur))
+
+
 def write_training(path, e):
+    """The training team's record of every session since 2021: its own sessions from the booking system by
+    university staff number, and the sessions the hospital's postgraduate centre and Fennabeg run, from their
+    sign-in sheets, by their own staff numbers for their own staff."""
     by_staff = {p["staff"]: p for p in e["people"]}
     rows = []
-    for a in sorted(e["attendance"], key=lambda a: (a["session"]["date"], a["session"]["id"], a["staff"])):
+    for a in e["attendance"]:
         p = by_staff[a["staff"]]
-        rows.append([a["session"]["id"], a["session"]["date"].isoformat(), a["session"]["type"], a["staff"],
-                     "%s %s" % (p["fore"], p["sur"]), a["att"]])
-    return _csv(path, ["session_id", "session_date", "session_type", "staff_no", "examiner", "outcome"], rows)
+        v = a["session"]["venue"]
+        no = p["alt"][0] if "alt" in p and p["alt"][1] == v else p["staff"]
+        rows.append([a["session"]["id"], a["session"]["date"].isoformat(), a["session"]["type"], v, no,
+                     _signed(p["title"], p["fore"], p["sur"], v), a["att"]])
+    for t in e["trainees"]:
+        v = t["session"]["venue"]
+        rows.append([t["session"]["id"], t["session"]["date"].isoformat(), t["session"]["type"], v, t["no"],
+                     _signed("Dr", t["name"][0], t["name"][1], v), t["att"]])
+    rows.sort(key=lambda x: (x[1], x[0], x[4]))
+    return _csv(path, ["session_id", "session_date", "session_type", "venue", "staff_no", "examiner", "outcome"], rows)
 
 
 PERSONAL = ["gmail.com", "hotmail.com", "outlook.com", "icloud.com", "eircom.net", "yahoo.ie"]
@@ -259,6 +277,7 @@ def write_availability(path, e):
     and typed their name without its accents; about one in ten submitted again later, changing their sessions or
     site (the form says the latest response stands); a few who are not on the register answered too."""
     r = np.random.default_rng([e["seed"], 43])
+    rp = np.random.default_rng([e["seed"], 44])      # how each personal address is made up
     by_staff = {p["staff"]: p for p in e["people"]}
     t0 = K.FORM_OPENED
     subs = []
@@ -266,8 +285,12 @@ def write_availability(path, e):
         p = by_staff[x["staff"]]
         personal = r.random() < 0.10
         if personal:
-            local = _ascii(p["fore"]).lower() + _ascii(p["sur"]).lower().replace(" ", "").replace("'", "")
-            email = "%s%d@%s" % (local, int(r.integers(1, 99)), str(r.choice(PERSONAL)))
+            fo, su = _ascii(p["fore"]).lower(), _ascii(p["sur"]).lower().replace(" ", "").replace("'", "")
+            digits = int(r.integers(1, 99))
+            shape = int(rp.integers(0, 5))
+            local = [fo + su + str(digits), fo + "." + su, fo[0] + su, fo + "_" + su + str(digits % 10),
+                     su + "." + fo][shape]
+            email = "%s@%s" % (local, str(r.choice(PERSONAL)))
             name = "%s %s" % (_ascii(p["fore"]), _ascii(p["sur"]))
             if r.random() < 0.5:
                 name = name.replace("O ", "O'", 1) if " O " in " %s " % name else name
@@ -306,11 +329,28 @@ def write_availability(path, e):
                      "%s %s" % (fore, sur), K.SITES27[int(r.integers(0, 3))][0], ticks))
     subs.sort(key=lambda s: s[0])
     site_label = {s[0]: s[1] for s in K.SITES27}
+    # what a few examiners typed in the form's last box: logistics only, about the site they chose and nothing
+    # about other sites or sessions; no note used more than twice
+    notes = {"CSC": ["Is there parking at the Clinical Skills Centre?", "Which entrance for the Clinical Skills Centre?"],
+             "CUH": ["Parking permit for CUH please", "Where do examiners meet at the Simulation Suite?"],
+             "FCS": ["First time examining at Fennabeg, directions would help",
+                     "Is there a car park at the Clinical Skills Unit?"],
+             None: ["Please send the station briefing by email", "Vegetarian lunch please",
+                    "Can a medical student observe my station?", "Please use this address for anything about the OSCE",
+                    "Could I have a ground-floor room? Knee surgery in March", "Thanks",
+                    "Happy to help with the briefing if needed", "Gluten-free lunch if possible"]}
+    used = {}
+    rc = np.random.default_rng([e["seed"], 45])
     rows = []
     for when, email, name, site, ticks in subs:
         when = when + dt.timedelta(seconds=zlib.crc32(("%s|%s" % (email, when)).encode()) % 60)
         assert K.FORM_OPENED < when <= K.FORM_CLOSED
+        note = ""
+        if rc.random() < 0.07:
+            pool = [x for x in notes[site] + notes[None] if used.get(x, 0) < 2]
+            note = pool[int(rc.integers(0, len(pool)))]
+            used[note] = used.get(note, 0) + 1
         rows.append([when.strftime("%d/%m/%Y %H:%M:%S"), email, name, site_label[site]] +
-                    ["Yes" if ticks[s[0]] else "" for s in K.SESSIONS] + [""])
+                    ["Yes" if ticks[s[0]] else "" for s in K.SESSIONS] + [note])
     return _csv(path, ["Timestamp", "Email address", "Your name", "Which site can you examine at?"] +
                 ["Sessions you can examine [%s]" % s[1] for s in K.SESSIONS] + ["Anything we should know?"], rows)

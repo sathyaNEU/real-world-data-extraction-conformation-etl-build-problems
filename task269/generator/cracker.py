@@ -4,12 +4,13 @@ generator/figures.json, and the pair ceiling on the weights the bar was set on (
 
     python3 cracker.py <target>
 
-The cracker lands the call (15 stations) and works the asks the careful way that executes the filed rules: policy
-4.4 by the bank's status, its review dates read day first and the sittings joined on the case code; policy 5.2 by
-the register's grade, status and training dates, the availability responses matched on email and then on the name
-without titles, accents or punctuation, the latest response standing. The mirror stops at the default rung
-(12 stations) and works the asks the same way, since neither ask reads anything the call computes. The other
-routes are the over-cleaners and the careless readers each device is aimed against."""
+The cracker lands the call and works each ask the way the stage 4 reader who landed it did: policy 4.4 on the
+bank's status and day-first review dates with the sittings joined on the code, each re-created record linked to the
+retired record of its domain, specialty and review date; policy 5.2 on the register's grade and status with the
+training record's attended sessions joined on the staff number or else on the name, the responses matched on email
+and then on the name without titles, accents or punctuation, the latest standing. The mirror stops at the default
+rung and works the asks the same way, since neither ask reads anything the call computes. The other routes are the
+two readers' own, the over-cleaners' and the careless readers' each device is aimed against."""
 import csv
 import datetime as dt
 import json
@@ -22,16 +23,22 @@ import verify as V   # noqa: E402
 
 DOMAINS = V.DOMAINS
 SESS = V.SESS
+CRACKER = "cracker (lands the call; review-date link, training by number or name)"
 
 
-def a_by_code(t, title_match=False, month_first=False):
+def a_by_code(t, link=None, month_first=False):
+    """Ask A as a response files it: policy 4.4 on the bank's status and review dates, the sittings joined on the
+    code, a re-created record linked to an old one by link: None (no link), "title" (any record of the same domain
+    and title carries its sittings over, architecture 2's first reader), "date" (a CV-25 record to the retired record
+    of the same domain, specialty and review date, its second reader), "specialty" (a CV-25 record above version 1
+    to every retired record of its domain and specialty, exposed if any was set) or "latest" (to the retired record
+    of its domain, specialty and resources reviewed last)."""
     cases = V.rows_xlsx(os.path.join(t, "case_bank_export_2026-11-30.xlsx"), "Cases")
     exposed = set()
     with open(os.path.join(t, "case_usage_history_2021_2026.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             if int(r["sitting_date"][:4]) in (2025, 2026):
                 exposed.add(r["case_code"])
-    titles = {(c["Blueprint domain"], c["Title"]) for c in cases if c["Case code"] in exposed}
 
     def rev(x):
         if isinstance(x, (dt.date, dt.datetime)):
@@ -43,26 +50,67 @@ def a_by_code(t, title_match=False, month_first=False):
             except ValueError:
                 return dt.date(y, b, a)
         return dt.date(y, b, a)
+    retired = [c for c in cases if c["Status"] == "Retired"]
+    gone = set()
+    for c in cases:
+        if not c["Case code"].startswith("CV-"):
+            continue
+        key = (c["Blueprint domain"], c["Specialty"])
+        if link == "title":
+            olds = [o for o in cases if o is not c and (o["Blueprint domain"], o["Title"]) ==
+                    (c["Blueprint domain"], c["Title"])]
+        elif link == "date" and c["Case code"].startswith("CV-25-"):
+            olds = [o for o in retired if (o["Blueprint domain"], o["Specialty"]) == key
+                    and rev(o["Last reviewed"]) == rev(c["Last reviewed"])]
+        elif link == "specialty" and c["Case code"].startswith("CV-25-") and int(c["Version"]) > 1:
+            olds = [o for o in retired if (o["Blueprint domain"], o["Specialty"]) == key]
+        elif link == "latest" and c["Case code"].startswith("CV-25-") and int(c["Version"]) > 1:
+            olds = sorted([o for o in retired if (o["Blueprint domain"], o["Specialty"], o["Resources"]) ==
+                           key + (c["Resources"],)], key=lambda o: rev(o["Last reviewed"]))[-1:]
+        else:
+            olds = []
+        if any(o["Case code"] in exposed for o in olds):
+            gone.add(c["Case code"])
     out = {}
     for d in DOMAINS:
         el = [c for c in cases if c["Blueprint domain"] == d and c["Status"] in ("Active", "Active - edits pending")
               and rev(c["Last reviewed"]) >= dt.date(2024, 5, 11) and c["Case code"] not in exposed
-              and not (title_match and (d, c["Title"]) in titles)]
+              and c["Case code"] not in gone]
         out[d] = (len(el), sum(1 for c in el if c["Resources"] in ("SP", "SP and task trainer")))
     return out
 
 
-def b_by_register(t, initial_only=False, no_dedup=False, email_only=False):
+def b_by_register(t, train="register", no_dedup=False, email_only=False):
+    """Ask B as a response files it: policy 5.2 on the register's grade and status, the training from train:
+    "register" (its last refresher field), "initial" (its examiner training field alone), "number" (the training
+    record's attended sessions joined on the staff number, architecture 2's second reader) or "name" (joined on the
+    staff number, else on the name without titles, accents or punctuation, its first reader); the responses matched
+    on email and then on the name, the latest standing."""
     reg = V.rows_xlsx(os.path.join(t, "examiner_register_2026-11-30.xlsx"))
     by_email = {r["Email"].lower(): r["Staff no."] for r in reg}
     by_name = {}
     for r in reg:
         by_name.setdefault(V.norm_name("%s %s" % (r["Forename"], r["Surname"])), []).append(r["Staff no."])
+    on_register = {r["Staff no."] for r in reg}
     grades = {"Professor", "Associate Professor", "Senior Lecturer", "Lecturer", "Consultant", "GP Trainer"}
+    attended = {}
+    with open(os.path.join(t, "examiner_training_attendance_2021_2026.csv"), newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["outcome"] != "Attended":
+                continue
+            who = r["staff_no"]
+            if who not in on_register and train == "name":
+                hits = by_name.get(V.norm_name(r["examiner"]), [])
+                who = hits[0] if len(hits) == 1 else who
+            d = dt.date.fromisoformat(r["session_date"])
+            attended[who] = max(d, attended.get(who, d))
     ok = set()
     for r in reg:
         dates = [V.bank_date(r["Examiner training"])]
-        if r["Last refresher"] and not initial_only:
+        if train in ("number", "name"):
+            if r["Staff no."] in attended:
+                dates.append(attended[r["Staff no."]])
+        elif train == "register" and r["Last refresher"]:
             d = V.bank_date(r["Last refresher"])
             if d <= dt.date(2026, 12, 7):
                 dates.append(d)
@@ -105,12 +153,17 @@ def run(t, quiet=False):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     n_ask = 2 * len(DOMAINS) + 12
     routes = {
-        "cracker (lands the call; code join, register dates)": (a_by_code(t), b_by_register(t)),
-        "title matcher, register dates": (a_by_code(t, title_match=True), b_by_register(t)),
-        "month-first review dates": (a_by_code(t, month_first=True), b_by_register(t)),
-        "initial training only": (a_by_code(t), b_by_register(t, initial_only=True)),
-        "every response counted": (a_by_code(t), b_by_register(t, no_dedup=True)),
-        "email matches only": (a_by_code(t), b_by_register(t, email_only=True)),
+        CRACKER: (a_by_code(t, link="date"), b_by_register(t, train="name")),
+        "the first reader's routes (title link, training by number or name)": (a_by_code(t, link="title"),
+                                                                              b_by_register(t, train="name")),
+        "the second reader's routes (review-date link, training by number)": (a_by_code(t, link="date"),
+                                                                             b_by_register(t, train="number")),
+        "code join, register dates": (a_by_code(t), b_by_register(t)),
+        "specialty link, training date alone": (a_by_code(t, link="specialty"), b_by_register(t, train="initial")),
+        "latest-reviewed link, every response counted": (a_by_code(t, link="latest"),
+                                                        b_by_register(t, train="name", no_dedup=True)),
+        "month-first review dates, email matches only": (a_by_code(t, link="date", month_first=True),
+                                                        b_by_register(t, train="number", email_only=True)),
     }
     res = {}
     for name, (a, b) in routes.items():
@@ -120,7 +173,7 @@ def run(t, quiet=False):
             print("%-52s ask figures hit %2d of %d %s" % (name, len(h), n_ask, h))
             print("    A", a)
             print("    B", {"%s %s" % k: v for k, v in b.items()})
-    crack = res["cracker (lands the call; code join, register dates)"]
+    crack = res[CRACKER]
     cracker = 38 + 7 + 55 * len(crack) / n_ask
     mirror = 5 + 7 + 55 * len(crack) / n_ask
     leak = 100.0 * len(crack) / n_ask

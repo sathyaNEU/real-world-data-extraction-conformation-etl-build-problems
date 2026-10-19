@@ -1,35 +1,35 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "education-learning-sciences",
   "objective": "descriptive-distribution",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-19",
   "stump": "The default path files 16 stations, because it decomposes the 2026 marks as if each year's stations were drawn from one undivided bank, so a candidate's strength in a domain lands in the candidate-by-station error; the blueprint draws the same number of stations from each of the four domains every year, so that strength recurs in every form and is true score, and only the decomposition with the domains as a fixed facet, the examiner's stringency still error for single examining, puts the 2027 examination at 13.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-19"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-19, every line harmless (sweeps 3, 4, 6; design note Build record)",
+    "reader": "round 1 (2026-10-19): two scored readers missed the call (16 each, the pooled study); reader 1 exit 1 on Ask B (12 of 23), reader 2 exit 0 (Ask A, 4 of 23); both asks re-sited in the fix pass. Round 2 (the repaired pack): both readers missed the call (16 each) and every ask figure, 0 of 23, exit 0"
   },
   "duplicate_check": {
-    "heart": "WARN (driver.near own lineage 0.18, overuse.gate_g, repeat.question_form), answered in the note",
-    "nearest": "task269 v1 0.18 (own lineage)",
-    "surface": ""
+    "heart": "WARN (driver.near own lineage v1 0.18, repeat.gate_g task268 v3, overuse.gate_g, test.same_driver_older task257 differentiated), answered in the note",
+    "nearest": "task269 v1 0.18 (own lineage); other builds 0.06",
+    "surface": "one pair promoted (task257, 0.081, card same-driver signature), answered by the card's differentiation line"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (pass 2, Ask B only: the allocation date unfiled)",
+    "disposition": "FIX_NOW",
+    "report": "determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 3: architecture 2's generator builds green (seed 11822, 7,732 checks, verify, byte-identical); next the write-up, golden realism, house fixes, leak.py and the guards, then stage 4 with two scored readers and the judge",
+  "resume": "stage 4 round 2: both scored readers clear (0 of 23 each, the call missed); the one re-judge of pass 2's FIX_NOW is running on /tmp/determinism-check-task269-r31792390143 (report to determinism_check_report_pass3.md); on DETERMINISTIC ship (target.zip from the final build, ledger row, board), on a finding fix in the generator once",
   "approved": null,
   "delivered": null,
   "portal": null,

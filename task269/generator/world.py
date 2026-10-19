@@ -10,9 +10,9 @@ import numpy as np
 
 import common as K
 
-SEED = 9046
+SEED = 11822
 # variance components of one examiner's station mark, in marks out of 20 squared
-SIG = {"p": 1.0, "s": 1.3, "ps": 1.75, "rs": 0.9, "e": 1.0}
+SIG = {"p": 1.0, "pd": 0.9, "d": 0.8, "s": 1.0, "ps": 1.4, "rs": 1.2, "e": 1.0}
 MU = 13.2
 NA_SHARE = 0.10           # candidates at an NA station whose simulated patient did not give the cue
 
@@ -59,7 +59,12 @@ def marks(seed=SEED):
     ps = r.normal(0, math.sqrt(SIG["ps"]), (n, S))
     rs = r.normal(0, math.sqrt(SIG["rs"]), (S, 2))
     e = r.normal(0, math.sqrt(SIG["e"]), (n, S, 2))
-    true = MU + p[:, None, None] + s[None, :, None] + ps[:, :, None] + rs[None, :, :] + e
+    # each candidate's strength in each of the blueprint's four domains, beyond their general level
+    pd = r.normal(0, math.sqrt(SIG["pd"]), (n, len(K.DOMAINS)))
+    dom = [K.DOMAINS.index(st[3]) for st in K.STATIONS26]
+    dd = r.normal(0, math.sqrt(SIG["d"]), len(K.DOMAINS))      # how hard each domain's stations run
+    true = (MU + p[:, None, None] + pd[:, dom][:, :, None] + dd[dom][None, :, None] + s[None, :, None]
+            + ps[:, :, None] + rs[None, :, :] + e)
     ri = np.random.default_rng([seed, 2])
     ease = {}
     for st in K.STATIONS26:
@@ -98,7 +103,7 @@ def marks(seed=SEED):
     for key, v in rec.items():
         z = v["intended"] + rg.normal(0, 0.9)
         gg[key] = int(sum(z > c for c in cuts))
-    return {"n": n, "p": p, "s": s, "ps": ps, "rs": rs, "e": e, "true": true, "rec": rec, "withdrawn": wd,
+    return {"n": n, "p": p, "pd": pd, "s": s, "ps": ps, "rs": rs, "e": e, "true": true, "rec": rec, "withdrawn": wd,
             "global": gg, "na": na}
 
 
@@ -385,26 +390,84 @@ for _y in range(2021, 2027):
 
 
 
+# a pending revision completed at the cut-over sometimes renamed the case in the new bank
+REVISED_TITLE = {
+    "Blood in the urine: history": "Visible haematuria: history",
+    "Thirst and frequency: history": "Polyuria and polydipsia: history",
+    "Calf pain after a flight: history": "A painful swollen calf: history",
+    "Fever in a returning traveller: history": "Fever after travel abroad: history",
+    "Difficulty swallowing: history": "Dysphagia: history",
+    "Numb hands: history": "Tingling fingers: history",
+    "Hoarse voice: history": "A change in the voice: history",
+    "Collapse: history": "Transient loss of consciousness: history",
+    "Memory problems: history": "Forgetfulness in an older adult: history",
+    "Thyroid examination": "Examination of a goitre",
+    "Lymph node examination": "Lymphadenopathy: examination",
+    "Peripheral vascular examination": "Arterial examination of the legs",
+    "Cerebellar examination": "Coordination and gait: examination",
+    "Examination for parkinsonism": "Tremor: examination",
+    "Ear examination": "Otoscopy",
+    "Fundoscopy": "Ophthalmoscopy",
+    "Hernia examination": "Groin examination",
+    "Starting warfarin": "Anticoagulation counselling",
+    "Inhaler technique": "Teaching an inhaler",
+    "Stopping smoking": "Smoking cessation advice",
+    "An angry relative": "A distressed relative",
+    "Explaining a statin": "Lipid-lowering treatment: explanation",
+    "A request for antibiotics": "Antibiotics for a viral illness",
+    "Explaining HbA1c": "A raised blood sugar result",
+    "Talking with an interpreter": "Consultation through an interpreter",
+    "Discussing a frail parent's care": "Planning care for a frail parent",
+    "Peripheral cannulation": "Intravenous cannulation",
+    "Recording a 12-lead ECG": "Performing an electrocardiogram",
+    "Arterial blood gas sampling": "Radial arterial puncture",
+    "Capillary blood glucose": "Finger-prick glucose testing",
+    "Peak flow measurement": "Measuring expiratory flow",
+    "Urinalysis": "Dipstick urine testing",
+    "Bag-valve-mask ventilation": "Airway support with a bag and mask",
+    "Wound dressing": "Dressing a surgical wound",
+    "Taking a throat swab": "Pharyngeal swab",
+    "Measuring blood pressure": "Manual sphygmomanometry",
+}
+for _old, _new in REVISED_TITLE.items():
+    SPECIALTY_OF[_new] = SPECIALTY_OF[_old]
+    if _old in RESOURCES_OF:
+        RESOURCES_OF[_new] = RESOURCES_OF[_old]
+
 
 def bank(seed=SEED):
     """The case bank as it stood at the 30 November 2026 export, every final OSCE sitting's cases since 2021, and
     the records the November 2025 migration re-created. A case whose revision was pending at the cut-over was
-    re-created under a new code with the next version and its old record retired, its review date carried over;
-    its sitting history stays under the old code. A case retired outright at the migration may have a newer case
-    of the same title that is a different case."""
+    re-created under a new code at the next version and its old record retired; the assessment group signed the
+    revision off on the new record in 2026, so its review date is that sign-off. Its sitting history stays under the
+    old code. Retired records of the same specialty sit beside each old record, and a case retired outright at the
+    migration may have a newer case of the same title that is a different case. Legacy codes run in the order the
+    cases were written; the new bank numbers its records as it creates them."""
     import datetime as dt
     r = np.random.default_rng([seed, 21])
+    rc = np.random.default_rng([seed, 24])     # the codes
+    rs = np.random.default_rng([seed, 25])     # the sign-offs in the new bank and the retired records beside them
     day = lambda a, b: a + dt.timedelta(days=int(r.integers(0, (b - a).days + 1)))
+    wday = lambda a, b: _weekday_on_or_after(a + dt.timedelta(days=int(rs.integers(0, (b - a).days + 1))))
     mig = K.BANK_MIGRATION
     cases, usage, recreated = [], [], []
-    new25 = iter(range(101, 999, 3))
-    new26 = iter(range(4, 999, 5))
+    nxt = {"CV-25": 100, "CV-26": 0}
+
+    def cv_codes(prefix, n):
+        out = []
+        for _ in range(n):
+            nxt[prefix] += int(rc.integers(1, 9))
+            out.append("%s-%04d" % (prefix, nxt[prefix]))
+        rc.shuffle(out)
+        return iter(out)
     sit_dates = {("May", 2021): dt.date(2021, 5, 11), ("May", 2022): dt.date(2022, 5, 12),
                  ("May", 2023): dt.date(2023, 5, 16), ("May", 2024): dt.date(2024, 5, 14),
                  ("May", 2025): dt.date(2025, 5, 13), ("May", 2026): K.SIT26[0],
                  ("Aug", 2021): dt.date(2021, 8, 23), ("Aug", 2022): dt.date(2022, 8, 18),
                  ("Aug", 2023): dt.date(2023, 8, 22), ("Aug", 2024): dt.date(2024, 8, 20),
                  ("Aug", 2025): dt.date(2025, 8, 21), ("Aug", 2026): dt.date(2026, 8, 20)}
+    spec = lambda t: SPECIALTY_OF[t][0]
+    has_sp = lambda t: any(x in SP_NEED for x in resources_of(t))
     for d in K.DOMAINS:
         pre = K.DOMAIN_PREFIX[d]
         titles = list(TITLES[d])
@@ -412,22 +475,37 @@ def bank(seed=SEED):
         for st in fixed:
             titles.remove(st[2])
         r.shuffle(titles)
-        nums = iter(sorted(r.choice(np.arange(1, 70), size=60, replace=False).tolist()))
+        nums = sorted(r.choice(np.arange(1, 70), size=60, replace=False).tolist())
         used_nums = {int(st[1].split("-")[1]) for st in fixed}
+        nums = [x for x in nums if x not in used_nums]
+        c25, c26 = cv_codes("CV-25", 7), cv_codes("CV-26", 3)
 
-        def legacy_code():
-            while True:
-                x = next(nums)
-                if x not in used_nums:
-                    used_nums.add(x)
-                    return "%s-%03d" % (pre, x)
-
-        def take(need_sp=None):
-            """the next title whose station can (or cannot) need a simulated patient"""
+        def take(need_sp=None, revisable=False, sibling=None):
+            """the next title whose station can (or cannot) need a simulated patient (and, for a case renamed at
+            the cut-over, one the revision renamed; with sibling, one whose specialty has another title left, one
+            that can need a simulated patient when sibling is "sp")"""
             for i in range(len(titles) - 1, -1, -1):
-                if need_sp is None or any((x in SP_NEED) == need_sp for x in resources_of(titles[i])):
-                    return titles.pop(i)
+                t = titles[i]
+                if revisable and t not in REVISED_TITLE:
+                    continue
+                if need_sp is not None and not any((x in SP_NEED) == need_sp for x in resources_of(t)):
+                    continue
+                if sibling and not any(x != t and spec(x) == spec(t) and (sibling == "any" or has_sp(x))
+                                       for x in titles):
+                    continue
+                return titles.pop(i)
             raise AssertionError("no %s title left in %s" % (need_sp, d))
+
+        def take_sib(t, need_sp=False, res=None):
+            """a title left of t's specialty (one that can need a simulated patient when need_sp), one whose station
+            can use res when there is one"""
+            for strict in (True, False):
+                for i in range(len(titles) - 1, -1, -1):
+                    x = titles[i]
+                    if spec(x) == spec(t) and (not need_sp or has_sp(x)) and (not strict or res is None
+                                                                             or res in resources_of(x)):
+                        return titles.pop(i)
+            raise AssertionError("no title of %s's specialty left in %s" % (t, d))
 
         def res_pick(title, need_sp=None):
             opts = [x for x in resources_of(title) if need_sp is None or (x in SP_NEED) == need_sp]
@@ -447,6 +525,15 @@ def bank(seed=SEED):
         def old_review():
             return day(dt.date(2021, 3, 1), dt.date(2024, 4, 26))
 
+        def free_version(t, res, ver):
+            """an old record's version, other than another old record's of the same specialty and resources"""
+            taken = {c["version"] for c in cases if c["domain"] == d and c["cat"] == "recreated_old"
+                     and c["specialty"] == spec(t) and c["resources"] == res}
+            return ver if ver not in taken else min(v for v in range(1, 6) if v not in taken)
+
+        def signed_off():
+            return wday(dt.date(2026, 1, 13), dt.date(2026, 10, 22))
+
         # the three 2026 stations: legacy codes, set in May 2026
         for st in fixed:
             new_case("set_2026", st[2], st[1], st[5], day(dt.date(2014, 1, 1), dt.date(2021, 12, 31)),
@@ -455,52 +542,62 @@ def bank(seed=SEED):
         # the August 2026 supplemental: two legacy cases under their own codes
         for _ in range(2):
             t = take()
-            new_case("set_aug26", t, legacy_code(), res_pick(t), day(dt.date(2014, 1, 1), dt.date(2022, 6, 30)),
+            new_case("set_aug26", t, None, res_pick(t), day(dt.date(2014, 1, 1), dt.date(2022, 6, 30)),
                      recent_review(), "Active", int(r.integers(1, 4)), [("Aug", 2026)])
         # the August 2025 supplemental's unchanged case
         t = take()
-        new_case("set_aug25", t, legacy_code(), res_pick(t), day(dt.date(2014, 1, 1), dt.date(2022, 6, 30)),
+        new_case("set_aug25", t, None, res_pick(t), day(dt.date(2014, 1, 1), dt.date(2022, 6, 30)),
                  recent_review(), "Active", int(r.integers(1, 4)), [("Aug", 2025)])
-        # the device: three cases set in 2025 under their old codes and re-created at the migration
+        # the device: three cases set in 2025 under their old codes and re-created at the migration, the revision
+        # signed off on the new record in 2026; beside each old record, a retired record of the same specialty that
+        # the assessment group retired at the cut-over after reviewing it later in 2025
         dev_sp = {"History taking": [True, True, True], "Physical examination": [True, True, False],
                   "Communication": [True, True, True], "Procedural skills": [True, False, False]}[d]
         for k, (mon, need_sp) in enumerate(zip(["May", "May", "Aug"], dev_sp)):
-            t = take(need_sp)
+            renamed = k < 2                       # the revision renamed two of the three
+            t = take(need_sp, revisable=renamed, sibling="any")
             res = res_pick(t, need_sp)
-            ver = int(r.integers(1, 4))
-            old = new_case("recreated_old", t, legacy_code(), res, day(dt.date(2014, 1, 1), dt.date(2021, 12, 31)),
+            ver = free_version(t, res, int(r.integers(1, 4)))
+            old = new_case("recreated_old", t, None, res, day(dt.date(2014, 1, 1), dt.date(2021, 12, 31)),
                            day(dt.date(2024, 6, 3), dt.date(2025, 9, 30)), "Retired", ver, [(mon, 2025)])
-            nc = new_case("device", t, "CV-25-%04d" % next(new25), res, mig, old["reviewed"], "Active", ver + 1, [],
-                          origin=old["code"])
-            recreated.append((old["code"], nc["code"], t))
+            nc = new_case("device", REVISED_TITLE[t] if renamed else t, next(c25), res, mig, signed_off(),
+                          "Active", ver + 1, [], origin=old)
+            nc["specialty"] = old["specialty"]
+            sib = take_sib(t, res=res)
+            new_case("decoy", sib, None, res if res in resources_of(sib) else res_pick(sib),
+                     day(dt.date(2013, 1, 1), dt.date(2020, 12, 31)),
+                     wday(old["reviewed"] + dt.timedelta(days=14), dt.date(2025, 11, 6)), "Retired",
+                     int(rs.choice([v for v in (1, 2, 3, 4, 5) if v != ver])), [])
         # two re-created cases not set in 2025 or 2026 (last set earlier or never): eligible
+        cleans = []
         for k in range(2):
-            t = take(True if k == 0 else None)
+            t = take(True if k == 0 else None, sibling="sp" if k == 0 else None)
             res = res_pick(t, True if k == 0 else None)
-            ver = int(r.integers(1, 4))
-            old = new_case("recreated_old", t, legacy_code(), res, day(dt.date(2014, 1, 1), dt.date(2020, 12, 31)),
+            ver = free_version(t, res, int(r.integers(1, 4)))
+            old = new_case("recreated_old", t, None, res, day(dt.date(2014, 1, 1), dt.date(2020, 12, 31)),
                            day(dt.date(2024, 6, 3), dt.date(2025, 10, 31)), "Retired", ver, [])
             old["clean"] = True
-            nc = new_case("recreated_clean", t, "CV-25-%04d" % next(new25), res, mig, old["reviewed"], "Active",
-                          ver + 1, [], origin=old["code"])
-            recreated.append((old["code"], nc["code"], t))
-        # a case retired outright at the migration after its May 2025 sitting, and a newer case of the same title
-        t = take(True)
-        new_case("retired_twin_old", t, legacy_code(), res_pick(t), day(dt.date(2014, 1, 1), dt.date(2020, 12, 31)),
-                 day(dt.date(2023, 1, 1), dt.date(2025, 3, 31)), "Retired", int(r.integers(1, 4)), [("May", 2025)])
-        new_case("twin_new", t, "CV-26-%04d" % next(new26), res_pick(t, True),
+            new_case("recreated_clean", t, next(c25), res, mig, signed_off(), "Active", ver + 1, [], origin=old)
+            cleans.append((t, res, ver))
+        # a case of the first one's specialty retired outright at the migration after its May 2025 sitting, and a
+        # newer case of the same title
+        t0, res0, ver0 = cleans[0]
+        t = take_sib(t0, need_sp=True, res=res0)
+        new_case("retired_twin_old", t, None, res0 if res0 in resources_of(t) else res_pick(t, True),
+                 day(dt.date(2014, 1, 1), dt.date(2020, 12, 31)), day(dt.date(2023, 1, 1), dt.date(2025, 3, 31)),
+                 "Retired", int(rs.choice([v for v in (1, 2, 3, 4) if v != ver0])), [("May", 2025)])
+        new_case("twin_new", t, next(c26), res_pick(t, True),
                  day(dt.date(2026, 2, 2), dt.date(2026, 6, 30)), None, "Active", 1, [])
-        cases[-1]["specialty"] = SPECIALTY_OF[t][1]
         cases[-1]["reviewed"] = cases[-1]["created"] + dt.timedelta(days=int(r.integers(10, 50)))
         # cases authored in the new bank after the cut-over, in 2025 and in 2026
         for _ in range(2):
             t = take()
-            c = new_case("new25", t, "CV-25-%04d" % next(new25), res_pick(t),
+            c = new_case("new25", t, next(c25), res_pick(t),
                          day(dt.date(2025, 11, 20), dt.date(2025, 12, 19)), None, "Active", 1, [])
             c["reviewed"] = c["created"] + dt.timedelta(days=int(r.integers(10, 40)))
         for _ in range(2):
             t = take()
-            c = new_case("new26", t, "CV-26-%04d" % next(new26), res_pick(t),
+            c = new_case("new26", t, next(c26), res_pick(t),
                          day(dt.date(2026, 1, 12), dt.date(2026, 9, 25)), None, "Active", 1, [])
             c["reviewed"] = c["created"] + dt.timedelta(days=int(r.integers(10, 50)))
         # the rest of the legacy bank: earlier sittings, never set, under review, retired over the years
@@ -518,8 +615,31 @@ def bank(seed=SEED):
             rev = recent_review() if r.random() < 0.62 else old_review()
             if status == "Retired" and rev >= mig:
                 rev = old_review()
-            new_case("legacy", t, legacy_code(), res_pick(t), day(dt.date(2013, 1, 1), dt.date(2020, 12, 31)), rev,
+            new_case("legacy", t, None, res_pick(t), day(dt.date(2013, 1, 1), dt.date(2020, 12, 31)), rev,
                      status, int(r.integers(1, 5)), [])
+        # legacy codes in the order the cases were written, the bank's unused and deleted numbers between them
+        mine = [c for c in cases if c["domain"] == d and c["code"] is None]
+        mine.sort(key=lambda c: (c["created"], c["title"]))
+        pick = sorted(rc.choice(len(nums), size=len(mine), replace=False).tolist())
+        for c, j in zip(mine, pick):
+            c["code"] = "%s-%03d" % (pre, nums[j])
+        # a re-created record's old record is the one retired record of its domain, specialty and resources at the
+        # version before
+        olds = [c["origin"] for c in cases if c["domain"] == d and isinstance(c["origin"], dict)]
+        for o in olds:
+            for x in cases:
+                if (x is not o and x["domain"] == d and x["status"] == "Retired" and x["specialty"] == o["specialty"]
+                        and x["resources"] == o["resources"] and x["version"] == o["version"]):
+                    assert not any(x is y for y in olds), "two old records alike in %s" % d
+                    x["version"] = [v for v in (1, 2, 3, 4, 5, 6) if v != o["version"]][int(rs.integers(0, 5))]
+        for c in cases:
+            if c["domain"] == d and isinstance(c["origin"], dict):
+                o = c["origin"]
+                c["origin"] = o["code"]
+                recreated.append((o["code"], c["code"], o["title"]))
+    # the assessment group reviews cases at its weekday meetings
+    for c in cases:
+        c["reviewed"] = _weekday_on_or_after(c["reviewed"])
     # the 2021 to 2024 sittings: three cases a domain in May and two in August, from the legacy cases (not the
     # ones under review), the re-created cases' old records and the cases retired since; never the same case in
     # consecutive years
@@ -527,10 +647,10 @@ def bank(seed=SEED):
     for y in range(2021, 2025):
         for mon, k in (("May", 3), ("Aug", 2)):
             for d in K.DOMAINS:
-                pool = [c for c in cases if c["domain"] == d and c["cat"] in ("legacy", "recreated_old")
+                pool = [c for c in cases if c["domain"] == d and c["cat"] in ("legacy", "recreated_old", "decoy")
                         and c["status"] != "Under review" and c["created"] < sit_dates[(mon, y)]
                         and not any(yy >= y - 1 for _, yy in c["history"])
-                        and (c["cat"] == "legacy" or c.get("clean"))]
+                        and (c["cat"] in ("legacy", "decoy") or c.get("clean"))]
                 pool = sorted(pool, key=lambda c: c["code"])
                 pick = r.choice(len(pool), size=k, replace=False)
                 for j in sorted(pick.tolist()):
@@ -581,6 +701,8 @@ def bank_truth(b):
 # The examiner register, the training record and the 2027 availability form (the eligible-examiners check)
 
 ELIGIBLE_GRADES = {"Professor", "Associate Professor", "Senior Lecturer", "Lecturer", "Consultant", "GP Trainer"}
+VENUES = ["Clinical Skills Centre", "CUH Postgraduate Centre", "Fennabeg Clinical Skills Unit"]
+HOME_VENUE = {"CUH": (VENUES[1], "H"), "Fennabeg": (VENUES[2], "F")}   # a base's own venue and its staff numbers
 BASES = [("Callowfield", 82, ["Professor", "Associate Professor", "Senior Lecturer", "Lecturer", "Clinical Tutor"],
           [0.10, 0.15, 0.30, 0.33, 0.12]),
          ("CUH", 112, ["Consultant", "Specialist Registrar"], [0.84, 0.16]),
@@ -606,6 +728,14 @@ def _gender(fore):
         return "M" if fore in IRISH_MALE else "F"
     m, f = fore in Provider.first_names_male, fore in Provider.first_names_female
     return "M" if m and not f else ("F" if f and not m else None)
+
+
+def _weekday_on_or_after(d):
+    """The first weekday on or after d that is not a holiday: when the assessment group signs revisions off."""
+    import datetime as dt
+    while d.weekday() > 4 or (d.month, d.day) in WEEKDAY_HOLIDAYS:
+        d += dt.timedelta(days=1)
+    return d
 
 
 def _working_day(d):
@@ -654,7 +784,7 @@ def examiners(seed=SEED):
     r = np.random.default_rng([seed, 32])
     day = lambda a, b: a + dt.timedelta(days=int(r.integers(0, (b - a).days + 1)))
     total = sum(b[1] for b in BASES)
-    names = _names(seed, total + 8)
+    names = _names(seed, total + 40)
     people, k = [], 0
     staff = iter(sorted(r.choice(np.arange(10000, 99999), size=total + 8, replace=False).tolist()))
     for base, n, grades, gw in BASES:
@@ -689,6 +819,33 @@ def examiners(seed=SEED):
               {"id": "ET%03d" % next(sid), "date": dt.date(2027, 2, 23), "type": "Refresher"}]
     sessions += future
     sessions.sort(key=lambda s: s["date"])
+    # where each session ran: the training team's own sessions at the Clinical Skills Centre, booked through the
+    # university's booking system, and sessions run for their own staff by the hospital's postgraduate centre and by
+    # Fennabeg, whose sign-in sheets take the hospital's or Fennabeg's staff number for their own staff
+    rv = np.random.default_rng([seed, 35])
+    for x in sessions:
+        x["venue"] = VENUES[0]
+    window = [x for x in sessions if x["type"] == "Refresher" and K.TRAINED_FROM <= x["date"] < dt.date(2026, 11, 1)]
+    pick = sorted(rv.choice(len(window), size=3, replace=False).tolist())
+    window[pick[0]]["venue"], window[pick[1]]["venue"], window[pick[2]]["venue"] = VENUES[1], VENUES[1], VENUES[2]
+    for x in sessions:
+        if x["date"] < K.TRAINED_FROM:
+            u = rv.random()
+            x["venue"] = VENUES[1] if u < 0.2 else (VENUES[2] if u < 0.32 else VENUES[0])
+    used = set()
+    for p in people:
+        # the hospital's and Fennabeg's own staff numbers: everyone based there, and the university's academics who
+        # hold an honorary consultant post at the hospital
+        home = HOME_VENUE.get(p["base"])
+        if home is None and p["base"] == "Callowfield" and rv.random() < 0.25:
+            home = HOME_VENUE["CUH"]
+        if home:
+            while True:
+                no = "%s%05d" % (home[1], int(rv.integers(10000, 99999)))
+                if no not in used:
+                    used.add(no)
+                    p["alt"] = (no, home[0])
+                    break
     inits = [s for s in sessions if s["type"] == "Initial" and s["date"] < dt.date(2026, 12, 1)]
     refs = [s for s in sessions if s["type"] == "Refresher" and s["date"] < dt.date(2026, 12, 1)]
     attendance = []
@@ -711,7 +868,7 @@ def examiners(seed=SEED):
             s = cands[0]
             att = "Attended" if r.random() < 0.93 else str(r.choice(["Did not attend", "Cancelled by examiner"]))
             attendance.append({"session": s, "staff": p["staff"], "att": att})
-            p["refreshers"].append((s["date"], att))
+            p["refreshers"].append((s["date"], att, s["venue"]))
             if att == "Attended":
                 t = s["date"]
     att_by = {}
@@ -739,28 +896,75 @@ def examiners(seed=SEED):
     # 2027; each offers every session at their site (two with the booking not attended offer all four)
     elig_grade = lambda p: p["status"] == "Active" and p["grade"] in ELIGIBLE_GRADES
     def last_att(p):
-        ds = [p["initial"]] + [d for d, a in p["refreshers"] if a == "Attended"]
+        ds = [p["initial"]] + [d for d, a, v in p["refreshers"] if a == "Attended"]
         return max(ds)
-    dev_refs = [s for s in refs if s["date"] >= dt.date(2024, 2, 1)]
+    dev_refs = [s for s in refs if s["date"] >= dt.date(2024, 2, 1) and s["venue"] == VENUES[0]]
     device = {}
     for site in [x[0] for x in K.SITES27]:
         pool = [p for p in people if elig_grade(p) and site in SITE_OF_BASE[p["base"]][:1]
                 and last_att(p) < dt.date(2023, 6, 1) and p["staff"] not in device]
         pool.sort(key=lambda p: p["staff"])
-        pick = [pool[j] for j in sorted(r.choice(len(pool), size=3, replace=False).tolist())]
+        pick = [pool[j] for j in sorted(r.choice(len(pool), size=2, replace=False).tolist())]
         for j, p in enumerate(pick):
             s = dev_refs[int(r.integers(0, len(dev_refs)))]
             attendance.append({"session": s, "staff": p["staff"], "att": "Did not attend"})
-            p["refreshers"].append((s["date"], "Did not attend"))
+            p["refreshers"].append((s["date"], "Did not attend", s["venue"]))
             ticks = {x: True for x in sess}
-            if j == 2:
-                ticks[sess[int(r.integers(0, 4))]] = False
             device[p["staff"]] = site
             if p["staff"] in by_staff:
                 resp.remove(by_staff[p["staff"]])
             row = {"staff": p["staff"], "site": site, "ticks": ticks}
             resp.append(row)
             by_staff[p["staff"]] = row
+    # the second device: at each site, four active examiners of an eligible grade whose initial training is before
+    # the window and whose refreshers inside it were the hospital's or Fennabeg's own sessions, signed in under that
+    # employer's staff number (the register's booking system never sees them); they offer their site's sessions,
+    # the fourth all but one
+    rd = np.random.default_rng([seed, 38])
+    home_dev = {}
+    for site in [x[0] for x in K.SITES27]:
+        pool = [p for p in people if elig_grade(p) and site in SITE_OF_BASE[p["base"]][:1] and "alt" in p
+                and p["staff"] not in device and p["initial"] < K.TRAINED_FROM
+                and any(a == "Attended" and d >= K.TRAINED_FROM for d, a, v in p["refreshers"])]
+        pool.sort(key=lambda p: p["staff"])
+        pick = [pool[j] for j in sorted(rd.choice(len(pool), size=4, replace=False).tolist())]
+        for j, p in enumerate(pick):
+            own = sorted([x for x in refs if x["venue"] == p["alt"][1] and x["date"] >= K.TRAINED_FROM],
+                         key=lambda x: x["date"])
+            for a in attendance:
+                if a["staff"] == p["staff"] and a["session"]["date"] >= K.TRAINED_FROM and a["att"] == "Attended":
+                    a["session"] = min(own, key=lambda x: abs((x["date"] - a["session"]["date"]).days))
+            p["refreshers"] = [(d, a, v) for d, a, v in p["refreshers"] if not (d >= K.TRAINED_FROM and a == "Attended")]
+            for a in attendance:
+                if a["staff"] == p["staff"] and a["session"]["date"] >= K.TRAINED_FROM and a["att"] == "Attended":
+                    p["refreshers"].append((a["session"]["date"], "Attended", a["session"]["venue"]))
+            ticks = {x: True for x in sess}
+            if j == 3:
+                ticks[sess[int(rd.integers(0, 4))]] = False
+            home_dev[p["staff"]] = site
+            if p["staff"] in by_staff:
+                resp.remove(by_staff[p["staff"]])
+            row = {"staff": p["staff"], "site": site, "ticks": ticks}
+            resp.append(row)
+            by_staff[p["staff"]] = row
+    # the third device: at each site an active GP trainer whose last training was before the window and who offers
+    # every session there shares their name with someone the hospital or Fennabeg has newly appointed, not yet on
+    # the register, who attended their employer's own refresher inside the window (the trainee rows below)
+    rh = np.random.default_rng([seed, 39])
+    namesake = {}
+    for site, kind in (("CSC", "CUH"), ("CUH", "CUH"), ("FCS", "Fennabeg")):
+        pool = [p for p in people if p["status"] == "Active" and p["grade"] == "GP Trainer"
+                and p["base"] == "General practice" and p["staff"] not in device and p["staff"] not in home_dev
+                and p["staff"] not in namesake and last_att(p) < dt.date(2023, 6, 1)
+                and not any(d >= dt.date(2023, 6, 1) for d, a, v in p["refreshers"])]
+        pool.sort(key=lambda p: p["staff"])
+        p = pool[int(rh.integers(0, len(pool)))]
+        namesake[p["staff"]] = (site, kind)
+        if p["staff"] in by_staff:
+            resp.remove(by_staff[p["staff"]])
+        row = {"staff": p["staff"], "site": site, "ticks": {x: True for x in sess}}
+        resp.append(row)
+        by_staff[p["staff"]] = row
     # some already-eligible examiners booked their next refresher for 2027 (the register shows the booking)
     for p in people:
         if p["staff"] in device or not elig_grade(p):
@@ -768,14 +972,47 @@ def examiners(seed=SEED):
         if last_att(p) >= dt.date(2024, 3, 1) and r.random() < 0.06:
             s = future[int(r.integers(0, 2))]
             attendance.append({"session": s, "staff": p["staff"], "att": "Booked"})
-            p["refreshers"].append((s["date"], "Booked"))
+            p["refreshers"].append((s["date"], "Booked", s["venue"]))
     for p in people:
         # the register takes the latest refresher booked from the booking system once its date has passed,
         # attended or not; a cancelled booking is taken off, a booking for a future session is not yet shown
-        bookings = [d for d, a in p["refreshers"] if a != "Cancelled by examiner" and d <= K.REGISTER_EXPORT]
+        bookings = [d for d, a, v in p["refreshers"] if a != "Cancelled by examiner" and d <= K.REGISTER_EXPORT
+                    and v == VENUES[0]]
         p["last_refresher"] = max(bookings) if bookings else None
         p["last_attended"] = last_att(p)
+    # people the training record holds who are not on the register: the hospital's and Fennabeg's own trainees
+    # (registrars and newly appointed staff not yet added) and university staff who have since left
+    rt = np.random.default_rng([seed, 37])
+    trainees = []
+    past = [x for x in sessions if x["date"] < dt.date(2026, 11, 30)]
+    for j, (fore, sur) in enumerate(extra[4:28]):
+        kind = ["CUH", "CUH", "Fennabeg", "left"][j % 4]
+        if kind == "left":
+            pool = [x for x in past if x["venue"] == VENUES[0] and x["date"] < dt.date(2024, 6, 1)]
+            no = "E%05d" % int(rt.integers(10000, 99999))
+        else:
+            pool = [x for x in past if x["venue"] == HOME_VENUE[kind][0]]
+            no = "%s%05d" % (HOME_VENUE[kind][1], int(rt.integers(10000, 99999)))
+        while no in used or any(p["staff"] == no for p in people):
+            no = no[0] + "%05d" % int(rt.integers(10000, 99999))
+        used.add(no)
+        for x in sorted(rt.choice(len(pool), size=min(len(pool), 1 + int(rt.random() < 0.4)), replace=False).tolist()):
+            trainees.append({"session": pool[x], "no": no, "name": (fore, sur),
+                             "att": "Attended" if rt.random() < 0.92 else "Did not attend"})
+    rn = np.random.default_rng([seed, 40])
+    who = {p["staff"]: p for p in people}
+    for st in sorted(namesake):
+        site, kind = namesake[st]
+        p = who[st]
+        pool = [x for x in past if x["venue"] == HOME_VENUE[kind][0] and x["date"] >= dt.date(2024, 1, 15)]
+        no = "%s%05d" % (HOME_VENUE[kind][1], int(rn.integers(10000, 99999)))
+        while no in used:
+            no = no[0] + "%05d" % int(rn.integers(10000, 99999))
+        used.add(no)
+        trainees.append({"session": pool[int(rn.integers(0, len(pool)))], "no": no, "name": (p["fore"], p["sur"]),
+                         "att": "Attended", "namesake": st})
     return {"people": people, "sessions": sessions, "attendance": attendance, "extra": extra, "future": future,
+            "trainees": trainees, "home_device": home_dev, "namesake": namesake,
             "responses": resp, "device": device, "seed": seed}
 
 

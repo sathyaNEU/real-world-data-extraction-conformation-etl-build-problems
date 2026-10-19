@@ -23,25 +23,31 @@ def figures(w):
     L = A.ladder(y, w["seed"])
     g = L["golden"]
     v = L["v"]
-    tot = sum(v[k] for k in ("p", "s", "ps", "rs", "e"))
+    G = g["stations"]
+    keys = ("p", "pd", "ps", "rs", "e", "s", "d")
+    tot = sum(v[k] for k in keys)
     a = W.bank_truth(w["bank"])
     b = W.examiners_truth(w["examiners"])
+    vp = L["vp"]
     fig = {
-        "call": {"stations": g["stations"], "below": g["stations"] - 1,
-                 "reliability_committed": "%.3f" % g["at"][g["stations"]],
-                 "reliability_below": "%.3f" % g["at"][g["stations"] - 1], "unrounded_need": round(g["need"], 3)},
-        "reliability": {str(n): "%.3f" % g["at"][n] for n in K.SETTINGS},
-        "components": {k: round(float(v[k]), 3) for k in ("p", "s", "ps", "rs", "e")},
-        "shares": {k: round(100 * float(v[k]) / tot, 1) for k in ("p", "s", "ps", "rs", "e")},
-        "total_variance": round(float(tot), 3),
+        "call": {"stations": G, "below": G - 1, "reliability_committed": "%.2f" % g["at"][G],
+                 "reliability_below": "%.2f" % g["at"][G - 1]},
+        "reliability": {str(n): "%.2f" % g["at"][n] for n in K.SETTINGS},
+        "reliability_curve": {str(n): round(float(g["at"][n]), 4) for n in K.SETTINGS},
+        "components": {k: round(float(v[k]), 2) for k in keys},
+        "shares": {k: round(100 * float(v[k]) / tot, 1) for k in keys},
+        "total_variance": round(float(tot), 2),
+        "error_per_station": round(float(v["ps"] + v["rs"] + v["e"]), 2),
         "ladder": {
-            "R0_alpha12": "%.3f" % L["R0"]["alpha12"], "R0_stations": int(np.ceil(L["R0"]["need"])),
-            "R1_alpha_lead12": "%.3f" % L["R1"]["alpha_lead"], "R1_alpha_second12": "%.3f" % L["R1"]["alpha_second"],
-            "R1_crossed12": "%.3f" % L["R1"]["g_crossed12"],
-            "R1_stations": int(np.ceil(max(L["R1"]["need_lead"], L["R1"]["need_second"], L["R1"]["need_crossed"]))),
-            "R2_alpha12": "%.3f" % L["R2"]["alpha"], "R2_half_stations": int(np.ceil(L["R2"]["half"])),
-            "R3_stations": int(np.ceil(L["R3"]["need"])),
+            "R0_alpha12": "%.2f" % L["R0"]["alpha12"], "R0_stations": L["R0"]["stations"],
+            "R1_alpha_lead12": "%.2f" % L["R1"]["alpha_lead"], "R1_alpha_second12": "%.2f" % L["R1"]["alpha_second"],
+            "R1_crossed12": "%.2f" % L["R1"]["crossed12"], "R1_stations": L["R1"]["stations"],
+            "R1s_stations": L["R1s"]["stations"], "R2_stations": L["R2"]["stations"],
+            "R3_stations": L["R3"]["stations"], "R3_at": {str(n): "%.2f" % L["R3"]["at"][n] for n in K.SETTINGS},
+            "abs_stations": L["abs"]["stations"],
+            "pooled": {k: round(float(vp[k]), 2) for k in ("p", "ps", "rs", "e", "s")},
         },
+        "blueprint": {str(n): A.blueprint(n) for n in K.SETTINGS},
         "ask_a": {d: list(a[d]) for d in K.DOMAINS},
         "ask_b": {"%s %s" % k: int(n) for k, n in b.items()},
         "candidates_2026": int(y.shape[0]),
@@ -94,18 +100,19 @@ def write_workbook(path, fig):
     for n in K.SETTINGS:
         r = fig["reliability"][str(n)]
         ws.append([n, float(r), "Yes" if n >= n_call else "No"])
-        ws.cell(ws.max_row, 2).number_format = "0.000"
+        ws.cell(ws.max_row, 2).number_format = "0.00"
         ws.cell(ws.max_row, 3).alignment = Alignment(horizontal="center")
         if n == n_call:
             for c in ws[ws.max_row]:
                 c.fill = mark
     notes(ws, ws.max_row + 2, [
         "Reliability: the share of the variance among candidates' total marks that reflects differences in their "
-        "clinical performance (policy 4.3), for a total over that many stations, each candidate marked by one "
-        "examiner a station.",
-        "From the variance components of the 2026 sitting's marks (Sources of variance): candidates / (candidates + "
-        "(candidate by station + examiner within station + residual) / stations).",
-        "Rounded to three decimals; the standard is met on the unrounded value."])
+        "clinical performance (policy 4.3), for a total over that many stations drawn as policy 4.2 sets out, each "
+        "candidate marked by one examiner a station.",
+        "From the variance components of the 2026 sitting's marks (Sources of variance): the blueprint draws the same "
+        "domains every year, so a candidate's strength in a domain is part of what each form measures, weighted by "
+        "the domains' shares of the stations; case specificity, the examiner's stringency and the residual are error.",
+        "Rounded to two decimals; the standard is met on the unrounded value."])
     ws.freeze_panes = ws.cell(top + 1, 1)
     ws.column_dimensions["A"].width = 16
     ws.column_dimensions["B"].width = 27
@@ -115,32 +122,35 @@ def write_workbook(path, fig):
     ws2 = wb.create_sheet("Sources of variance")
     ws2["A1"] = "Final OSCE May 2026: where the variance in one examiner's station mark comes from"
     ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = ("84 candidates, 12 stations, the same two examiners at each station on both days; marks out of 20 "
-                 "(policy 3.2), station 7's item 14 withdrawn (board of examiners, 14 May 2026, item 2).")
+    ws2["A2"] = ("84 candidates, 12 stations (three from each blueprint domain), the same two examiners at each station "
+                 "on both days; marks out of 20 (policy 3.2), station 7's item 14 withdrawn (board of examiners, "
+                 "14 May 2026, item 2).")
     ws2.append([])
     ws2.append(["Source", "Variance (marks out of 20, squared)", "Share (%)", "Error in 2027"])
     top2 = ws2.max_row
     header(ws2, top2)
     labels = [("p", "Candidates", "No: what the total mark measures"),
-              ("s", "Stations (difficulty)", "No: every circuit runs the same stations"),
-              ("ps", "Candidate by station", "Yes"),
+              ("pd", "Candidate by domain", "No: every form draws the same domains (policy 4.2)"),
+              ("d", "Domains (difficulty)", "No: the same for every candidate"),
+              ("s", "Stations within domain (difficulty)", "No: every circuit runs the same stations"),
+              ("ps", "Candidate by station within domain", "Yes"),
               ("rs", "Examiner within station (stringency)", "Yes: candidates at a station meet different examiners"),
               ("e", "Residual", "Yes")]
     for k, lab, err in labels:
         ws2.append([lab, fig["components"][k], fig["shares"][k], err])
-        ws2.cell(ws2.max_row, 2).number_format = "0.000"
+        ws2.cell(ws2.max_row, 2).number_format = "0.00"
         ws2.cell(ws2.max_row, 3).number_format = "0.0"
     ws2.append(["Total", fig["total_variance"], 100.0, None])
-    ws2.cell(ws2.max_row, 2).number_format = "0.000"
+    ws2.cell(ws2.max_row, 2).number_format = "0.00"
     ws2.cell(ws2.max_row, 3).number_format = "0.0"
     for c in ws2[ws2.max_row]:
         c.font = bold
         c.border = Border(top=thin)
     notes(ws2, ws2.max_row + 2, [
         "Estimated by expected mean squares on the balanced design (candidates crossed with examiners nested in "
-        "stations); every component positive.",
+        "stations nested in domains); every component positive.",
         "In 2026 an examiner's stringency moved every candidate at the station alike, so it did not enter the "
-        "ranking; in 2027 it does."])
+        "ranking; in 2027 it does. A candidate's strength in a domain recurs in every form the blueprint draws."])
     ws2.freeze_panes = ws2.cell(top2 + 1, 1)
     ws2.column_dimensions["A"].width = 38
     ws2.column_dimensions["B"].width = 33
@@ -164,7 +174,8 @@ def write_workbook(path, fig):
     notes(ws3, ws3.max_row + 2, [
         "Active (edits pending included), reviewed by the OSCE assessment group on or after 11 May 2024, and not "
         "set at a final OSCE sitting, main or supplemental, in 2025 or 2026.",
-        "A case re-created under a new code at the November 2025 cut-over keeps the sittings of its retired record "
+        "A case re-created under a new code at the November 2025 cut-over (a 2025 code above version 1) keeps the "
+        "sittings of its retired record, the one of its domain, specialty and resources at the version before "
         "(cut-over report, section 2).",
         "Need a simulated patient: resources SP, or SP and task trainer. Case bank export of 30 November 2026."])
     ws3.freeze_panes = ws3.cell(top3 + 1, 1)
@@ -185,6 +196,8 @@ def write_workbook(path, fig):
     notes(ws4, ws4.max_row + 2, [
         "Active on the register, at an eligible grade, with the examiner training or a refresher attended on or "
         "after 7 December 2023 (training record).",
+        "A session signed in under the hospital's or Fennabeg's own staff number counts for the register examiner "
+        "of that name on their staff.",
         "Each examiner's latest response to the availability form stands (form closed 27 November 2026).",
         "An examiner who offered several sessions is counted in each, so a row does not add to a head count."])
     ws4.freeze_panes = ws4.cell(top4 + 1, 2)
@@ -205,44 +218,45 @@ def write_chart(path, fig):
     import matplotlib.pyplot as plt
     plt.rcParams["svg.hashsalt"] = "task269"
     xs = K.SETTINGS
-    ys = [float(fig["reliability"][str(n)]) for n in xs]
+    ys = [fig["reliability_curve"][str(n)] for n in xs]
     n = fig["call"]["stations"]
-    r = float(fig["reliability"][str(n)])
+    r = fig["reliability_curve"][str(n)]
     fig_, ax = plt.subplots(figsize=(8.8, 5.2), dpi=110)
     ax.plot(xs, ys, color="#2f4a63", lw=2, zorder=3)
     ax.scatter([x for x in xs if x != n], [y for x, y in zip(xs, ys) if x != n], s=36, color="#2f4a63", zorder=4)
     for x, y in zip(xs, ys):
         if x != n:
             right = x == fig["rooms"]
-            ax.annotate("%.3f" % y, (x, y), xytext=(-8 if right else 0, -15), textcoords="offset points",
+            ax.annotate("%.2f" % y, (x, y), xytext=(-8 if right else 0, -15), textcoords="offset points",
                         ha="right" if right else "center", fontsize=8.5, color="#41505c")
     ax.scatter([n], [r], s=150, color="#1f6b4a", zorder=5)
-    ax.annotate("%d stations: %.3f" % (n, r), (n, r), xytext=(-12, 16), textcoords="offset points", ha="right",
+    ax.annotate("%d stations: %.2f" % (n, r), (n, r), xytext=(-12, 16), textcoords="offset points", ha="right",
                 fontsize=10.5, fontweight="bold", color="#1f6b4a")
     std = float(fig["standard"])
     ax.axhline(std, color="#b3412f", ls="--", lw=1.3, zorder=2)
-    ax.text(11.65, std + 0.0012, "Standard %s (policy 4.3)" % fig["standard"], color="#b3412f", fontsize=9,
-            va="bottom")
+    ax.text(17.85, std + 0.0012, "Standard %s (policy 4.3)" % fig["standard"], color="#b3412f", fontsize=9,
+            va="bottom", ha="right")
     ax.axvline(fig["rooms"], color="#6b6b6b", ls=":", lw=1.4, zorder=2)
-    ax.text(fig["rooms"] - 0.08, 0.7445, "%d rooms a site" % fig["rooms"], color="#55595c", fontsize=9, ha="right",
+    ax.text(fig["rooms"] - 0.08, 0.7645, "%d rooms a site" % fig["rooms"], color="#55595c", fontsize=9, ha="right",
             va="bottom")
     ax.set_xticks(xs)
     ax.set_xlim(11.5, 18.5)
-    ax.set_ylim(0.74, 0.85)
-    ax.set_yticks([0.74, 0.76, 0.78, 0.80, 0.82, 0.84])
-    ax.set_yticklabels(["%.2f" % v for v in [0.74, 0.76, 0.78, 0.80, 0.82, 0.84]])
+    ax.set_ylim(0.76, 0.87)
+    ax.set_yticks([0.76, 0.78, 0.80, 0.82, 0.84, 0.86])
+    ax.set_yticklabels(["%.2f" % v for v in [0.76, 0.78, 0.80, 0.82, 0.84, 0.86]])
     ax.set_xlabel("Stations in the circuit")
     ax.set_ylabel("Reliability of the total mark")
     fig_.text(0.012, 0.965, "Final OSCE 2027: %d stations are the fewest that meet the %s standard"
               % (n, fig["standard"]), fontsize=12.5, fontweight="bold", color="#1d2830", va="top")
-    fig_.text(0.012, 0.918, "One examiner a station in each of three circuits; from the variance components of the "
-              "May 2026 marks (84 candidates, 12 stations)", fontsize=8.8, color="#4a4f54", va="top")
+    fig_.text(0.012, 0.918, "One examiner a station in each of three circuits, the same number of stations from each "
+              "blueprint domain\nFrom the variance components of the May 2026 marks (84 candidates, 12 stations)",
+              fontsize=8.6, color="#4a4f54", va="top", linespacing=1.4)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     ax.grid(axis="y", alpha=0.3)
-    fig_.text(0.01, 0.01, "Examinations Office, December 2026. Reliabilities to three decimals.", fontsize=7.8,
+    fig_.text(0.01, 0.01, "Examinations Office, December 2026. Reliabilities to two decimals.", fontsize=7.8,
               color="#6b6f73")
-    fig_.tight_layout(rect=(0, 0.03, 1, 0.88))
+    fig_.tight_layout(rect=(0, 0.03, 1, 0.85))
     fig_.savefig(path, metadata={"Software": None})
     plt.close(fig_)
 

@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import mm                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                        # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
 
 import common as K   # noqa: E402
 
@@ -79,7 +79,7 @@ def _long(d):
 def write_policy(path):
     S = styles("Serif", GREEN)
     P = lambda t: Paragraph(t, S["body"])
-    C = lambda n, t: Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (n, t), S["clause"])
+    C = lambda n, t: KeepTogether([Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (n, t), S["clause"])])
     H = lambda t: Paragraph(t, S["h2"])
     st = [Paragraph("Assessment policy", S["h1"]),
           Paragraph("%s. Version 7, approved by the Faculty Board on 23 September 2026; in force from the 2026-27 "
@@ -113,8 +113,10 @@ def write_policy(path):
           C("4.1", "The final OSCE's total mark decides whether a candidate passes the clinical component of the "
                    "final examination and places the candidates who pass in their order of merit, which the "
                    "national intern matching uses."),
-          C("4.2", "Its stations are drawn each year from the School's case bank, in about equal numbers from the four "
-                   "blueprint domains: history taking, physical examination, communication and procedural skills."),
+          C("4.2", "Its stations are drawn each year from the School's case bank, the same number from each of the "
+                   "four blueprint domains: history taking, physical examination, communication and procedural "
+                   "skills. Where the number of stations is not a multiple of four, the remaining stations are drawn "
+                   "from the domains in that order."),
           C("4.3", "The final OSCE's total mark must rank candidates with a reliability of at least 0.80: the share of "
                    "the variance among candidates' total marks that reflects differences in their clinical "
                    "performance, the stations being drawn from the case bank each year and the examiners from the "
@@ -198,7 +200,8 @@ def write_migration(path, b):
           H("2. Revisions in progress"),
           P("The Assessment Item Bank cannot carry a revision that is part-way through. A case whose revision was "
             "pending at the cut-over was re-created as a new record under a new code, and its old record was "
-            "retired. Cases the OSCE assessment group had already decided to retire were retired at the cut-over."),
+            "retired; the OSCE assessment group signs each of those revisions off on the new record. Cases the "
+            "group had already decided to retire were retired at the cut-over."),
           H("3. After the cut-over"),
           P("The old bank was closed to edits on 7 November 2025 and switched off on 28 November 2025, once the "
             "Examinations Office had checked the carried-across records against it. Requests for changes to case "
@@ -257,15 +260,15 @@ def write_plan(path):
     d.add_heading("Examining", level=2)
     d.add_paragraph("With three circuits running at once we cannot staff two examiners at every station as we did in "
                     "2026. Each station will have one examiner in each circuit. The examinations office allocates "
-                    "examiners in December from the register (policy 5.2), each to one site and the sessions they "
+                    "examiners on Monday 7 December from the register (policy 5.2), each to one site and the sessions they "
                     "offered, and a station's examiner stays for the whole session; the afternoon session has its own "
                     "examiners.")
     d.add_paragraph("The availability form for 2027 went to every examiner on the register on 19 October and closes "
                     "on 27 November. Examiners who need to change what they told us submit the form again; their "
                     "latest response stands.")
     d.add_heading("Stations", level=2)
-    d.add_paragraph("Stations are drawn from the case bank under policy 4.4, in about equal numbers from the four "
-                    "blueprint domains. The number of stations is for the Head of Assessment to set so that the "
+    d.add_paragraph("Stations are drawn from the case bank under policies 4.2 and 4.4, the same number from each "
+                    "blueprint domain. The number of stations is for the Head of Assessment to set so that the "
                     "total mark meets policy 4.3, within the eighteen rooms. The bank draw and the examiner "
                     "allocation follow once the number is set.")
     d.add_heading("Simulated patients", level=2)
