@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-19, every line harmless (sweeps 3, 4, 6; design note Build record)",
-    "reader": "round 1 (2026-10-19): two scored readers missed the call (16 each, the pooled study); reader 1 exit 1 on Ask B (12 of 23), reader 2 exit 0 (Ask A, 4 of 23); both asks re-sited in the fix pass. Round 2 (the repaired pack): both readers missed the call (16 each) and every ask figure, 0 of 23, exit 0"
+    "reader": "architecture 2 spent at stage 4 round 3 (2026-10-19): reader 6 of six landed the call (domains a fixed stratum, 13, every reliability; exit 1); readers 1 to 5 filed 16"
   },
   "duplicate_check": {
     "heart": "WARN (driver.near own lineage v1 0.18, repeat.gate_g task268 v3, overuse.gate_g, test.same_driver_older task257 differentiated), answered in the note",
@@ -24,12 +24,12 @@
     "surface": "one pair promoted (task257, 0.081, card same-driver signature), answered by the card's differentiation line"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (pass 3, Ask B only: the namesake rows' holder not filed; two write-up claims)",
-    "disposition": "SEND_BACK, read as FIX_NOW (Gates G and H pass, the main call forced)",
+    "verdict": "pass 3 NOT_DETERMINISTIC (Ask B only); pass 4 stopped when the call was landed",
+    "disposition": "architecture spent (Gate F)",
     "report": "determinism_check_report_pass3.md"
   },
   "returned": [],
-  "resume": "stage 4 round 3 running: two fresh scored readers (leak-task269v2-r5, r6) and the re-judge (pass 4) on fix pass 2's pack (target.zip md5 bb6653ee); pass 3's report being written; on both readers clear and DETERMINISTIC, ship",
+  "resume": "re-root to architecture 3, the number's last before retirement: a new draw at stage 1 in Descriptive & Distribution Analysis (fingerprint, guide-to-prompt, stumping), the v2 identity moved into the card's lineage, committed DRAWN",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -126,6 +126,7 @@
       "fate": "spent 2026-10-19 at stage 4 (Gate F): the cold reader split the 2026 marks into candidates by examiners within stations and counted the stringency as error for one examiner a station, committing the golden call and every ask figure; the judge DETERMINISTIC with Gates G and H passing"
     }
   ],
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains.",
-  "registered": "2026-10-19T05:05:36Z"
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19). Re-rooted the same day after v1 was spent at stage 4 on Gate F; the OSCE world and its operating files are kept, the decisive step moved from the examining arrangement (the reader's own route) to the blueprint's fixed domains. Architecture 2 spent at stage 4 on 2026-10-19: reader 6 of six stratified the decision study by the blueprint domains and landed the call.",
+  "registered": "2026-10-19T05:05:36Z",
+  "architecture_spent": true
 }
