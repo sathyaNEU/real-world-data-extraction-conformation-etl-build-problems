@@ -31,7 +31,7 @@ import world as W                 # noqa: E402
 
 TASK = os.path.dirname(HERE)
 PERSONAS = {"Wendy James", "Eric Thomas", "Alfred Hensley", "Mitchell Boyd", "Jeffery Collins"}   # guard.py names, seed 468
-DASH = re.compile("[–—]")
+DASH = re.compile("[\u2013\u2014]")
 GOLD5 = ["2", "4", "6", "17", "22"]
 
 
