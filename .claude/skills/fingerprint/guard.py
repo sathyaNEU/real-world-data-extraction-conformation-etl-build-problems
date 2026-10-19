@@ -614,7 +614,7 @@ def check(cand, cards, vocab, status=None):
                 "the spine derives from the same real dataset (%s)" % rs, tasks(hit),
                 "draw a different source dataset")
     sh = cand.get("shape")
-    hit = [c for c in ordered[-2:] if sh and sh not in ("other", "single-figure") and c.get("shape") == sh]
+    hit = [c for c in live[-2:] if sh and sh not in ("other", "single-figure") and c.get("shape") == sh]
     if hit:
         add("BLOCK", "ban.shape", "prompt shape %s repeats one of the last two builds" % sh, tasks(hit),
             "pick a different shape, the shape is visible in the prompt and the deliverables")
