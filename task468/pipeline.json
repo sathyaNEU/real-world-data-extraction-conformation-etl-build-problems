@@ -1,39 +1,45 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-19",
- "stump": "The default path projects each class's members on therapy at 30 June 2026 by last year's on-therapy cohort's following-year spend per member and staffs the weight-loss class above oncology; the development by months on therapy at each member's own duration gives the golden allocation.",
+ "stump": "The default path projects each class's caseload by last year's caseload's following-year spend per member and files 52 pharmacists with GLP 7, AST 5 and CGR 4; the development by months on therapy at each member's own duration files 48 with GLP 5, AST 4 and CGR 3.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-19 (no LEAK): the charter and trend report share the call's words; four documents share the survey's own vocabulary",
+  "reader": "round 1 2026-10-19: landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F): tenure-conditioned projection from history and the rebate lines counted once"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS 2026-10-19, nearest driver task231 at 0.11",
+  "surface": "clean (Orrin Rx is the PBM, not a persona)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md",
+  "note": "architecture 2, 2026-10-19; Gate H pass, decisive step analytical; moot after Gate F"
  },
  "returned": [],
- "resume": "architecture 2 drawn; next: calibrate the ladder (stump design and fork table), write the generator, precut",
+ "resume": "architecture 2 spent at stage 4: judge APPROVE but the reader landed the call and 27 of 28 asks (Gate F). Next: architecture 3, the last before retirement, a re-root at stage 1 with a decisive step the record does not display (the author decides whether to spend it)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall",
- "ceiling": null,
+ "ceiling": {
+  "pair": 34.8,
+  "cracker": 44.5,
+  "mirror": 25.0,
+  "mirror_leakage": 0.0
+ },
  "target_zip": null,
  "history": [
   {
@@ -48,6 +54,10 @@
     "leak_py": "REVIEW (no LEAK) on the rebuilt pack d79138b0",
     "reader": "round 1: no leak, six findings fixed; round 2: no leak, the folder list dropped, on-time device held 11 of 11; round 3 (pinned pack 2c828983): no leak, landed the call and all eleven on-time shares against the feeds (device dead), and an H14 grain fork on the call (the review's weighted mix per stop and hour files 4, 6, 22, 11 and 40); round 4 (d79138b0, shelter ask): no leak, rule 3 analytical, landed the call (score_reader exit 1) and missed all 11 shelter counts (the cracker's path)"
    }
+  },
+  {
+   "architecture": 2,
+   "fate": "spent 2026-10-19: reader round 1 landed the call (score_reader exit 1); judge APPROVE"
   }
  ]
 }

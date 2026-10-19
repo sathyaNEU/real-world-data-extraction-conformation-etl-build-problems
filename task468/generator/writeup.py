@@ -4,92 +4,80 @@ import json
 import world as W
 
 
-
-def routes(rs):
-    rs = list(rs)
-    return ", ".join(rs[:-1]) + " and " + rs[-1]
+def lst(items):
+    items = list(items)
+    return ", ".join(items[:-1]) + " and " + items[-1] if len(items) > 1 else items[0]
 
 
 def write(fig_path, out_path):
     f = json.load(open(fig_path, encoding="utf-8"))
-    c, k, v, rv = f["call"], f["components"], f["verdicts"], f["rivals"]
-    meets = [r for r in W.CANDIDATES if v[r]["meets"]]
-    fails = [r for r in W.CANDIDATES if not v[r]["meets"]]
+    ph, sp, cl, rb, rv = f["call"]["pharmacists"], f["spend_m"], f["caseload"], f["rebates_k"], f["rivals"]
+    name = {c: W.CLASSES[c]["name"] for c in W.CANDIDATES}
+    staffing = "; ".join("%s %d" % (name[c], ph[c]) for c in W.CANDIDATES)
     lines = [
         "## Tags",
         "",
-        "**Domain:** General Statistics & Data Science (data integration, record linkage and entity resolution: two "
-        "AVL systems' stop events linked to the timetable's trips, the links the matchers missed propagated into each "
-        "route's departures through the department's clerical review).",
+        "**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: two pharmacy "
+        "benefit managers' specialty claim files conformed into one repriced record of fills, from which each class's "
+        "program-year spend for the members now on therapy is projected).",
         "**Analytical objective:** Data Extraction & Conformation (ETL).",
         "",
         "## 1. Final Recommendation",
         "",
-        "**Nominate Routes %s to the Frequent Transit Corridors Program for FY2027.**" % routes(c["five"]),
-        "Seven candidates meet the standard once each stop's departures without a trip are shared by Service Quality's "
-        "review weighted by its own design: Route 17 is %d per cent of the Transit Mall's departures without a trip, "
-        "its lowest hour averages %.1f departures, and it ranks fourth of the seven by boardings, leaving Route %s as "
-        "the first qualifying route left out. Not Routes %s, which share by the review's unweighted mix (Route 17 at "
-        "%d per cent) and leave Route 17 short at %.1f; not Routes %s, which share in proportion to the departures the "
-        "matchers tied to trips and give the short-handed Route 9 Oak Street's late buses." % (
-            k["mall_share_17_weighted_pct"], v["17"]["lowest"], c["first_left_out"], routes(rv["raw_review"]["five"]),
-            k["mall_share_17_raw_pct"], rv["raw_review"]["route17_lowest"], routes(rv["proportional"]["five"])),
+        "**Staff the Specialty Clinical Pharmacy Program with %d clinical pharmacists for July 2026 to June 2027: %s.**"
+        % (f["call"]["total"], staffing),
+        "Each class's managed spend is its members on therapy on June 30, 2026 carried forward by the class's own spend "
+        "and continuation at each month on therapy, starting each member at the months they have already completed. "
+        "Not last year's on-therapy members' following-year spend applied to this June's members, which gives weight "
+        "management %d, severe asthma %d and migraine prevention %d (their 2026 members are new starters after the "
+        "step therapy change, most of whom stop within months); not the class's spend from first fill, which gives oral "
+        "oncology %d (its members on therapy have already passed the early discontinuation); not the trailing year "
+        "or the June run-rate, which give hepatitis C %d (its courses end within twelve weeks)." % (
+            rv["analog"]["GLP"], rv["analog"]["AST"], rv["analog"]["CGR"], rv["from_start"]["ONC"],
+            rv["trailing"]["HCV"]),
         "",
         "## 2. Critical Components",
         "",
-        "1. Counting days: **%d** (weekdays of January to June 2026, the four state holidays out)." % k["counting_days"],
-        "2. Departures in the counting hours that the AVL records tie to no trip: **{:,}** of {:,}.".format(
-            k["no_trip_in_hours"], k["events_in_hours"]),
-        "3. Route 17's share of the Transit Mall's departures without a trip, each reviewed event weighted by its "
-        "bus-day's departures without a trip: **%d per cent** (unweighted, %d)." % (k["mall_share_17_weighted_pct"],
-                                                                                   k["mall_share_17_raw_pct"]),
-        "4. Route 17's lowest hourly average: **%.1f** departures, at least four in each of the thirteen hours." % (
-            v["17"]["lowest"]),
+        "1. Members on therapy on June 30, 2026 (the caseloads): %s." % "; ".join(
+            "%s {:,}".format(cl[c]) % c for c in W.CANDIDATES),
+        "2. Projected managed spend for the program year, $ million at the 2026 schedule: %s; total %d." % (
+            "; ".join("%s %d" % (c, sp[c]) for c in W.CANDIDATES), f["spend_total_m"]),
+        "3. Pharmacists at one per $1.5 million of managed spend or part: %s; total %d." % (
+            "; ".join("%s %d" % (c, ph[c]) for c in W.CANDIDATES), f["call"]["total"]),
         "",
         "## 3. Step-by-Step Solution",
         "",
-        "1. Conformed %s and %s into one table of departures in Central time at the five designated stops: Arbor's stop "
-        "ids to stop codes through the January feed's stops.txt, Quinnell's UTC to Central time and its asset tags to "
-        "fleet numbers through %s, each event to its service day, Quinnell's rows repeated at the head of each daily "
-        "file (same bus, stop and second) dropped, and March 31's service taken from Arbor's export." % (
-            W.FILES["avl_q1"], W.FILES["avl_q2"], W.FILES["fleet"]),
-        "2. Kept the %d counting days and the thirteen clock hours from 6 a.m. (guidance 3.3 and 3.4): {:,} "
-        "departures, {:,} with no trip.".format(k["events_in_hours"], k["no_trip_in_hours"]) % k["counting_days"],
-        "3. Weighted each of the {:,} events in %s by the departures without a trip its bus-day had at the five stops "
-        "(the review draws one from each of %d bus-days a month) and by its month's bus-days listed over drawn: Route "
-        "17 is %d per cent of the Transit Mall's departures without a trip.".format(f["review"]["events_reviewed"]) % (
-            W.FILES["review"], f["review"]["bus_days_drawn_month"], k["mall_share_17_weighted_pct"]),
-        "4. Shared each stop's departures without a trip in each hour among its routes by the weighted mix, buses out "
-        "of service left out, added the departures tied to each route's trips, and averaged over the counting days.",
-        "5. Took each candidate's lowest hour: Routes %s meet four in every hour; Routes %s do not." % (
-            routes(meets), routes(fails)),
-        "6. Ranked the qualifying routes by average weekday boardings in %s (guidance 5.1): Routes %s, with Route %s "
-        "the first qualifying route left out." % (W.FILES["ridership"], routes(c["five"]), c["first_left_out"]),
-        "7. For the shelters, took each candidate's outbound stops from %s (stops.txt, trips.txt with direction 0, "
-        "stop_times.txt) and joined them to %s by stop code; where a stop's position in the spring feed lies away from "
-        "where Facilities last inspected it (the spring timetable moved it across its intersection after the "
-        "inspection), took its shelter only from %s work orders completed there between April 5 and June 30; "
-        "elsewhere took the inventory's shelter, moved forward by work orders completed after the inspection and "
-        "back by those completed after June 30." % (W.FILES["gtfs_apr"], W.FILES["amenities"], W.FILES["shelter_wo"]),
-        "8. Recommended nominating Routes %s." % routes(c["five"]),
+        "1. Conformed %s and %s into one record of fills: reversed claims removed with the claims they reverse "
+        "(Orrin's REVERSAL lines, Tallis's R status), members linked to plan IDs through %s, Orrin's 10-digit NDCs "
+        "padded to 11 digits, each NDC's class from %s." % (W.FILES["orrin"], W.FILES["tallis"], W.FILES["crosswalk"],
+                                                           W.FILES["drugs"]),
+        "2. Priced every fill at %s: units times the unit price plus the dispensing fee (charter 2.2)." % W.FILES["prices"],
+        "3. Took each class's caseload: members with a fill whose days' supply reaches June 30, 2026 (charter 2.1).",
+        "4. Dated each member's therapy from the first fill in the class; members already filling in the first quarter "
+        "of 2019 have an unseen start and sit in the longest-duration cell.",
+        "5. For each class and each month on therapy, averaged the spend over the following twelve months of the "
+        "members on therapy at a month end at that duration, over every month end from January 2019 whose twelve "
+        "months are in the record (durations from 36 months pooled).",
+        "6. Projected each caseload member at the duration they had reached on June 30, 2026, summed by class, and "
+        "staffed one pharmacist per $1.5 million or part (charter 3.1).",
+        "7. For the rebates, summed %s's lines with a 2025 utilization quarter, each product's rebate for a quarter "
+        "counted once although the statement repeats it on each channel line." % W.FILES["rebates"],
         "",
         "## 4. Deliverable Answers",
         "",
         "### %s" % W.GOLDEN["workbook"],
         "",
-        "1. Verdicts on the program's standard:",
+        "1. Clinical pharmacists by class:",
     ]
-    for r in sorted(W.CANDIDATES, key=int):
-        lines.append("   - Route %s %s: %s" % (r, W.ROUTE_NAMES[r], "meets" if v[r]["meets"] else "does not meet"))
-    lines += [
-        "2. Nominated: Routes %s." % routes(c["five"]),
-        "3. First qualifying route left out: Route %s." % c["first_left_out"],
-        "4. Stops its outbound trips serve in the spring timetable that had no shelter on June 30, 2026:",
-    ]
-    for r in sorted(W.CANDIDATES, key=int):
-        lines.append("   - Route %s: %d" % (r, f["no_shelter"][r]))
-    lines += [
-        "5. Bar chart of each candidate's lowest hourly average against the standard of four, on the Nominations sheet.",
-        "",
-    ]
+    for c in W.CANDIDATES:
+        lines.append("   - %s: %d" % (name[c], ph[c]))
+    lines.append("2. Total: %d pharmacists." % f["call"]["total"])
+    lines.append("3. Managed spend for July 2026 to June 2027, $ million:")
+    for c in W.CANDIDATES:
+        lines.append("   - %s: %d" % (name[c], sp[c]))
+    lines.append("4. Manufacturer rebates on 2025 utilization, $ thousand:")
+    for c in W.CANDIDATES:
+        lines.append("   - %s: {:,}".format(rb[c]) % name[c])
+    lines.append("5. Bar chart of the pharmacists by class, on the Staffing sheet.")
+    lines.append("")
     open(out_path, "w", encoding="utf-8").write("\n".join(lines))

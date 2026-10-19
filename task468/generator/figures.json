@@ -1,174 +1,118 @@
 {
  "call": {
-  "five": [
-   "2",
-   "4",
-   "6",
-   "17",
-   "22"
-  ],
-  "first_left_out": "11",
-  "qualifying": [
-   "2",
-   "4",
-   "6",
-   "17",
-   "22",
-   "11",
-   "40"
-  ]
+  "pharmacists": {
+   "IMM": 13,
+   "MS": 7,
+   "ONC": 5,
+   "HCV": 1,
+   "GLP": 5,
+   "HIV": 6,
+   "AST": 4,
+   "CF": 4,
+   "CGR": 3
+  },
+  "total": 48
  },
- "components": {
-  "counting_days": 125,
-  "events_in_hours": 106687,
-  "no_trip_in_hours": 17112,
-  "mall_share_17_weighted_pct": 56,
-  "mall_share_17_raw_pct": 35,
-  "riverside_share_weighted_pct": 7,
-  "riverside_share_proportional_pct": 59
+ "spend_m": {
+  "IMM": 19,
+  "MS": 10,
+  "ONC": 7,
+  "HCV": 0,
+  "GLP": 7,
+  "HIV": 8,
+  "AST": 5,
+  "CF": 5,
+  "CGR": 4
  },
- "verdicts": {
-  "2": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 18,
-   "boardings": 6850
-  },
-  "4": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 11,
-   "boardings": 6120
-  },
-  "6": {
-   "meets": true,
-   "lowest": 4.7,
-   "hour": 6,
-   "boardings": 4980
-  },
-  "9": {
-   "meets": false,
-   "lowest": 3.7,
-   "hour": 16,
-   "boardings": 3960
-  },
-  "11": {
-   "meets": true,
-   "lowest": 5.6,
-   "hour": 18,
-   "boardings": 3240
-  },
-  "14": {
-   "meets": false,
-   "lowest": 3.1,
-   "hour": 6,
-   "boardings": 1960
-  },
-  "17": {
-   "meets": true,
-   "lowest": 4.8,
-   "hour": 6,
-   "boardings": 4450
-  },
-  "22": {
-   "meets": true,
-   "lowest": 4.9,
-   "hour": 11,
-   "boardings": 3710
-  },
-  "31": {
-   "meets": false,
-   "lowest": 3.5,
-   "hour": 6,
-   "boardings": 2870
-  },
-  "40": {
-   "meets": true,
-   "lowest": 4.9,
-   "hour": 11,
-   "boardings": 2410
-  },
-  "51": {
-   "meets": false,
-   "lowest": 2.9,
-   "hour": 13,
-   "boardings": 1380
-  }
+ "spend_total_m": 65,
+ "caseload": {
+  "IMM": 433,
+  "MS": 186,
+  "ONC": 89,
+  "HCV": 61,
+  "GLP": 1603,
+  "HIV": 381,
+  "AST": 220,
+  "CF": 39,
+  "CGR": 738
+ },
+ "rebates_k": {
+  "IMM": 4735,
+  "MS": 1690,
+  "ONC": 340,
+  "HCV": 1226,
+  "GLP": 760,
+  "HIV": 754,
+  "AST": 722,
+  "CF": 183,
+  "CGR": 606
  },
  "rivals": {
-  "raw_review": {
-   "five": [
-    "2",
-    "4",
-    "6",
-    "22",
-    "11"
-   ],
-   "route17_lowest": 3.6,
-   "route2_lowest": 4.3
+  "trailing": {
+   "IMM": 15,
+   "MS": 7,
+   "ONC": 7,
+   "HCV": 4,
+   "GLP": 5,
+   "HIV": 6,
+   "AST": 4,
+   "CF": 4,
+   "CGR": 3
   },
-  "proportional": {
-   "five": [
-    "2",
-    "4",
-    "9",
-    "22",
-    "11"
-   ],
-   "route9_lowest": 5.0,
-   "route17_lowest": 2.2
+  "run_rate": {
+   "IMM": 15,
+   "MS": 7,
+   "ONC": 7,
+   "HCV": 4,
+   "GLP": 9,
+   "HIV": 6,
+   "AST": 7,
+   "CF": 4,
+   "CGR": 6
+  },
+  "analog": {
+   "IMM": 13,
+   "MS": 7,
+   "ONC": 5,
+   "HCV": 1,
+   "GLP": 7,
+   "HIV": 6,
+   "AST": 5,
+   "CF": 4,
+   "CGR": 4
+  },
+  "from_start": {
+   "IMM": 11,
+   "MS": 7,
+   "ONC": 3,
+   "HCV": 1,
+   "GLP": 4,
+   "HIV": 6,
+   "AST": 3,
+   "CF": 4,
+   "CGR": 2
   }
  },
- "no_shelter": {
-  "2": 15,
-  "4": 16,
-  "6": 8,
-  "9": 6,
-  "11": 9,
-  "14": 10,
-  "17": 13,
-  "22": 8,
-  "31": 7,
-  "40": 12,
-  "51": 13
- },
- "outbound_stops": {
-  "2": 24,
-  "4": 24,
-  "6": 18,
-  "9": 17,
-  "11": 16,
-  "14": 17,
-  "17": 25,
-  "22": 21,
-  "31": 17,
-  "40": 22,
-  "51": 19
- },
- "review": {
-  "bus_days_drawn_month": 400,
-  "events_reviewed": 2400
- },
- "routes": [
-  "2",
-  "4",
-  "6",
-  "9",
-  "11",
-  "14",
-  "17",
-  "22",
-  "31",
-  "40",
-  "51"
+ "classes": [
+  "IMM",
+  "MS",
+  "ONC",
+  "HCV",
+  "GLP",
+  "HIV",
+  "AST",
+  "CF",
+  "CGR"
  ],
- "stated": {
-  "guidance_sections": [
-   "3.3",
-   "3.4",
-   "4.1",
-   "4.2",
-   "5.1"
-  ]
+ "per_pharmacist_m": 1.5,
+ "duration_pooled_from_months": 36,
+ "program_year": {
+  "start": 2026,
+  "end": 2027
+ },
+ "charter_sections": {
+  "caseload": 2.1,
+  "spend": 2.2,
+  "staffing": 3.1
  }
 }

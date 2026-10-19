@@ -1,35 +1,24 @@
 # leak check, task468
 
-**Verdict: REVIEW.** 15 files read, 2 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 9 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: review, service, events, decisive, guidance, device, departure, weighted, record, on-time, shares, golden, design, unmatched, bus-day, schedule, sentence, silent, riverside, sample, repeats, lowest, reader, counts, bus-days
+Stump terms swept: caseload, member, therapy, members, months, charter, duration, development, decisive, record, silent, device, schedule, twelve, review, durations, january, claims, trailing, run-rate, window, timetable, service, tallis, forward
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `dot_ftc_program_guidance_fy2027.pdf`: carries 6 of 6 distinctive words of the committed call: 'Nominate Routes 2, 4, 6, 17 and 22 to the Frequent Transit Corridors Program for FY2027.'
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: golden figure 760 appears: ...s (biologic and targeted therapy) $21,641,680 $21,760,941 +0.6% 515 Multiple sclerosis $10,199,814 $10,...
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: carries 23 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 48 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
+- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: carries 30 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 48 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `dot_ftc_program_guidance_fy2027.pdf`: 9 of 25 stump-paragraph terms appear (service, guidance, departure, record, on-time, design); read whether the document names the move
-- **REVIEW** `quinnell_cutover_export_notes.pdf`: 8 of 25 stump-paragraph terms appear (review, service, events, departure, design, unmatched); read whether the document names the move
-- **REVIEW** `service_quality_trip_matching_review_2026.pdf`: 8 of 25 stump-paragraph terms appear (review, service, events, record, bus-day, schedule); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Which of Larkhaven Transit's eleven candidate routes should the City nominate to the state's Frequent Transit Corridors Program for FY2027, at most five, on its buses' departures from each route's designated stop from Ja"
-
-## 6 ranking artifacts (REVIEW 3, INFO 1)
-- **REVIEW** `farebox_revenue_by_route_2026h1.xlsx`: names 8 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `ridership_by_route_2026h1.xlsx`: names 8 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `title_vi_service_monitoring_2025.pdf`: names 8 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `ftc_candidate_routes_fy2027.csv`: names 8 of 13 answer-set candidates; confirm it does not rank them on the decision question
-
-## 7 hidden content (REVIEW 2)
-- **REVIEW** `larkhaven_gtfs_20260101.zip`: nested_zip: true
-- **REVIEW** `larkhaven_gtfs_20260405.zip`: nested_zip: true
+- **REVIEW** `formulary_bulletin_january_2026.pdf`: 6 of 25 stump-paragraph terms appear (member, therapy, members, january, service, tallis); read whether the document names the move
+- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: 4 of 25 stump-paragraph terms appear (member, therapy, members, january); read whether the document names the move
+- **REVIEW** `pbm_transition_file_notes.pdf`: 7 of 25 stump-paragraph terms appear (member, members, schedule, january, claims, service); read whether the document names the move
+- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: 9 of 25 stump-paragraph terms appear (caseload, member, therapy, members, charter, schedule); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: rounding at the close: no rounding words anywhere; every derived figure needs one, stated once at the end
 
 ## 1 file names (clean)
 
@@ -37,9 +26,16 @@ Stump terms swept: review, service, events, decisive, guidance, device, departur
 
 ## 5 announcements (clean)
 
+## 6 ranking artifacts (clean)
+
+## 7 hidden content (clean)
+
 ## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
+
+## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -55,3 +51,23 @@ Round 4 (2026-10-19, target.zip d79138b03f492a10, one isolated reader at medium 
 Its figures, scored by score_reader.py (exit 1): the call landed (Routes 2, 4, 6, 17 and 22, Route 11 left out), every verdict right, the shelter counts 0 of 11 (13, 14, 6, 4, 7, 8, 10, 6, 5, 10, 12, the inventory on stop code carried by the work orders, exactly the ceiling script's cracker). The device held; the call landed, as in rounds 1 to 3.
 
 Realism notes, each answered: work orders against inventory flags lag by inspection date (the inventory's annual cycle, by design); two July shelters inspected days later (the hazard); a relocation work order carries the stop's code (the stop's identity, as Capital Projects files it); the review tally recomputing exactly, interlined buses, 600-second headways on the frequency route, smooth ridership (answered in rounds 1 to 3).
+
+## Solver's-eye read
+
+### Round 1 (architecture 2, target.zip f9f35f57b4293ef0, sonnet at medium, fresh unzip, neutral brief)
+
+- **Figures:** the call 10 of 10 (48 pharmacists, every class), managed spend 8 of 9 (total 66 against 65), caseloads 9
+  of 9, rebates 9 of 9. score_reader.py: call landed, asks 27 of 28 (96.4 per cent). Gate F failed.
+- **Route:** conformed both files as the golden does, then, seeing the program year unobserved, averaged the next twelve
+  months' spend of members on therapy at month ends January 2021 to June 2025 by class and tenure since first fill
+  (eight tenure bands) and applied it to the caseload's tenure mix; cited the January bulletin's step-therapy removal and
+  the caseloads' 2026 starters as the reason. Rebates: noticed the product-quarter rebate repeated on each channel line
+  and counted it once, by utilization quarter.
+- **Q1 decisive sentence:** none; the future window against claims ending June 30 implied the projection.
+- **Q2 ranking file:** none; the trend report is backward looking at Orrin prices.
+- **Q3 helping file:** the transition notes (field definitions); the bulletin "a helpful hint".
+- **Q4 answer-like figure:** none.
+- **Q5 literal sentence:** charter 2.2 and 3.1, a forward quantity with no filed method; executes to the golden.
+- **Q6 what decided:** an analytical choice (projection by tenure from history); nothing planted.
+- **Verdict:** the decisive step is the careful reader's first move, not a silent rung, and the rebate device sits on
+  the reader's path. Architecture 2 spent (Gate F).
