@@ -1,7 +1,7 @@
 {
  "task": "task174",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "RETIRED",
  "domain": "",
  "objective": "forecasting",
  "stage": 1,
@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. Two worlds screened (upstream gas, then the education early-warning cell) and no draw holds; the deaths with measurements are in the design note's ## Tried and rejected. The number needs a new cell or a lifted constraint (composition_mix and G14 are out this round; university_or_school is blocked by task269 v2), which the coordinator picks.",
+ "resume": "RETIRED 2026-10-19 at stage 1 by the author's rule (a number that dies in its second new cell this round is retired). No card was registered and nothing was cut; three worlds screened (upstream gas, education early warning, product-analytics retention), every death in the design note's ## Tried and rejected.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -54,5 +54,14 @@
   "finding": "a forward early-warning question changes who is coached (causal: lever only on the band, a band call is readable, holdout sigma 2-3 per cent), what the alert outputs (replays exactly on the history's scores, or shows a 5-8 sigma step at go-live and moves 11-17 per cent), or who arrives (composition, out this round); the nearest early-warning forms of today's held shapes are spent (task172, task162, task165, task170)",
   "window_at_screen": "live last three task268, task468 v3, task269 v2: blocked population_selection, composition_mix, decomposition_attribution, org university_or_school, role research_desk, forcing budget_or_appropriation; causal_design open",
   "prototypes": "scratchpad r174: proto13.py, proto21.py, STATE.md"
+ },
+ "screen_pa": {
+  "assigned": "redraw 2026-10-19 in product-analytics / retention-cohort-lifetime-value-modeling (Forecasting), the number's last cell by the author's rule; the round's extra bans lifted",
+  "measured_Q1": "users on group plans, exits mostly their plan's (protoQ1.py, seeds 174-183, ~150,000 users): user-level KM by own tenure -0.3 to -0.9 per cent (sd 0.3), trailing year -1.6 to -1.9; only plan KM times today's members misses (+11 to +16)",
+  "measured_Q2": "committed monthly-billed plans after a 30 per cent spring upsell (protoQ2.py, seeds 174-179): tenure KM by plan -11.8 per cent (sd 0.7), trailing three months -12.3; KM by time on the current plan -0.3 (sd 0.9); at a 10 per cent upsell the default misses 1.7",
+  "paper": "seat headroom (task165), promo cliff (task137), credits stock (task161), returners (task157, task134 v2), card expiry (no wave), renewal month and auto-renew-off (visible-column stratification), involuntary floor under sBG (small in range, open extrapolation), purchase regularity under BG/NBD (RF cells land), payday failures (task162-like, modest), device wear-out (collinear), contract, regulation and partner exits (causal, one past event, causal_design blocked)",
+  "finding": "a tenure curve by the asked unit within its plan or group absorbs every stationary structure; the forward conditions natural to subscriptions are spent drivers, visible dates the plan-level curve reads, or causal responses sized from one past event",
+  "window_at_screen": "live last three task249 v4, task177, task270 v2: blocked causal_design, forecast_method_backtest, population_selection; G14, G16, G12; period_close, purchase_order_or_contract, launch_or_rollout",
+  "prototypes": "scratchpad r174: protoQ1.py, protoQ2.py, STATE.md"
  }
 }

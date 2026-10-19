@@ -1,7 +1,9 @@
 # task174 design note
 
-**Status: PAUSED at stage 1, no card ever registered, nothing cut.** Wave 8, new, Forecasting. Two worlds have
-been screened on this number and neither yields a draw that holds. The first is seed FC45's: a north-east
+**Status: RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
+product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
+`## Tried and rejected`. The first is seed FC45's: a north-east
 Pennsylvania gas producer committing, in a 2027 incremental firm-sale agreement with an LNG feedgas buyer, the
 gas from wells first turned in line on or after 1 January 2027 and delivered in calendar 2027. Two mechanisms in
 that world were screened on code, the second at the coordinator's call, and neither held on measurement (its
@@ -42,6 +44,25 @@ to 17 per cent. A change in who arrives is composition, out for this round. The 
 reads (a cap that truncates waits, a calendar-locked wave, a gain on each unit's own baseline) have their nearest
 early-warning forms already spent (task172, task162, task165, task170), and each of the cell's four cards is the
 textbook route those readers take.
+
+**The retention cell finding.** In product-analytics / retention-cohort-lifetime-value-modeling the cell's cards
+(censored young cohorts, heterogeneous churn, resampled users) hold up: a survival curve by the unit the question
+names, taken by the plan or the group the unit sits in, absorbs every stationary structure of a subscription book,
+so a stump needs a forward condition the record has not shown at the same tenure. The natural forward conditions in
+subscriptions are each closed. A temporary price ending is task137's driver, a stock drawn down before a
+cancellation task161's, a return wave task157's, a gain on each account's own headroom task165's, a surge read by
+time since entry task134 v2's. A commitment end, a renewal date or a plan is visible, and the plan-level curve
+reads it. A response to a policy (reminder laws, cooling-off rights, bundle partners, payment-method sunsets) is
+causal, sized from one past event, with causal_design blocked by task249 v4.
+
+## Retired
+
+Retired on 2026-10-19 at stage 1, by the author's rule that a number which dies in its second new cell this round
+is retired. No card was ever registered, no axis of the guard's window was spent, and nothing was cut. Three
+worlds were screened: seed FC45's upstream gas producer (two mechanisms, dead on code), education-learning-sciences
+/ learning-analytics-early-warning-models (twenty-one candidates, two on code) and product-analytics /
+retention-cohort-lifetime-value-modeling (fifteen candidates, two on code). Every death is a line in `## Tried and
+rejected`; the prototypes stay in the session scratchpads (b174/proto and r174).
 
 ## Tried and rejected
 
@@ -149,3 +170,43 @@ textbook route those readers take.
   retrain is a recovered rule. On paper.
 - **Mixed-model predictions for new modules at a zero module effect** (the typical module is not the average one):
   the plain pooled logistic already returns the marginal rate, so only a correcting solver goes wrong. On paper.
+- **Redraw of 2026-10-19, product-analytics / retention-cohort-lifetime-value-modeling, the number's last cell by the
+  author's rule.** Each line is one candidate, written when it died; the two measured ones first.
+- **Users on group plans whose exits are mostly their plan's** (a member leaves when its plan cancels, on the plan's
+  own age, or on its own tenure), measured on `protoQ1.py` (seeds 174 to 183, about 150,000 users on plans whose
+  hazards are heterogeneous and fall with the plan's age, late joiners going into old plans). The user-level
+  Kaplan-Meier by each user's own tenure, the cohort-retention default, lands within -0.3 to -0.9 per cent (sd 0.3)
+  of the users still on a plan a year on, and the trailing year's exit rate within -1.6 to -1.9; only the
+  plan-level curve with every member staying misses (+11 to +16). The join process is steady enough that the users'
+  own curve already carries their plans' ages.
+- **Committed plans billed monthly, whose cancellations wait for each subscriber's commitment end, after a spring
+  upsell moved a block of monthly subscribers onto the plan**, measured on `protoQ2.py` (seeds 174 to 179, a 30 per
+  cent spring upsell). The subscription-tenure curve by plan undercounts the next three months' cancellations by
+  11.8 per cent (sd 0.7) and the trailing three months by 12.3, short of the bar's lever, while the curve by time on
+  the current plan, the cheap route any plan-level analysis builds, lands at -0.3 (sd 0.9); at a 10 per cent upsell
+  the default misses by only 1.7.
+- **Seat headroom on per-seat business plans** (expansion is the user growth an account's unused seats cannot
+  absorb): task165's driver, a gain conditioned on each unit's own baseline, in other nouns. On paper.
+- **A promotional first term's cliff at its first renewal**: task137's driver (units a temporary premium brought in
+  take the costly path at the first repricing). On paper.
+- **Banked credits drawn down before a cancellation**: task161's driver (a stock leaves only as each holder uses its
+  own). On paper.
+- **Involuntary churners and win-back returners coming back**: task157's return wave and task134 v2's hazard by time
+  since entry. On paper.
+- **Card expiry as the involuntary clock**: no forward wave in a steady book, since cards' remaining validity at
+  sign-up is spread over about five years. On paper.
+- **Renewal-month seasonality and auto-renew-off reversals**: each a stratification on a visible column, the
+  opponent's reflex. On paper.
+- **The heterogeneity model fitted to every exit reading a flat involuntary floor as heterogeneity**: inside the
+  record's tenures the error is a few per cent, and the long-horizon value it moves is an extrapolation whose family
+  the data do not close. On paper.
+- **Purchase regularity against the buy-till-you-die models' Poisson purchasing (non-contractual value)**: last year's
+  recency-by-frequency cells, a filter and a divide, land, and beating them needs a regularity mix shift that only a
+  visible category produces. On paper.
+- **Payday-locked payment failures on month-end renewal days**: calendar-locked like task162, the lever modest and its
+  sign set by the retry schedule. On paper.
+- **Device-age wear-out of hardware-linked subscriptions, read on the device file's clock**: collinear with
+  subscription tenure except through replacements, which dilute it. On paper.
+- **Exits driven by contracts, regulation or partners** (renewal-reminder laws, cooling-off rights after renewal,
+  bundle partners, payment-method sunsets, operating-system support drops): each a causal or rule step sized from a
+  single past event, with causal_design blocked by task249 v4. On paper.
