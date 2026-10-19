@@ -1,11 +1,11 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "BUILD",
+  "status": "RETIRED",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": "retired",
+  "stage_name": "retired: architecture 3 spent at stage 4 (judge SEND_BACK on the first pass: the departure set that ends a rider's wait is unfiled, and filing it is rule application)",
   "updated": "2026-10-19",
   "stump": "The default path gives the 2027 supervisor teams to routes 7, 14, 31 and 40, because it works every corridor rider's excess wait from all of the route's departures; on the branched routes a rider bound for a branch can take only that branch's buses, which on route 14 keep an even interval while the branches run as bunched pairs, and only working each rider's wait over the departures serving the stop the rider taps off at puts route 3 in and route 14 fifth.",
   "architecture": 3,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-19: the programme's own nouns in the guidelines, plan and contents list; the standard's own vocabulary; feeds as zips (all harmless, Build record)",
-    "reader": ""
+    "reader": "two scored readers 2026-10-19: both missed the call (7, 14, 31 and 40, route 3 first below, the default path), both 20 of 25 ask figures (exit 1: every pilot figure recomputable from the plan and the timesheets); Q6 the standard's procedure"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-19 (strategy risk, gate_g repeat and overuse, question form; answered in Draw item 9)",
@@ -25,12 +25,12 @@
     "surface": "2 structural promotions (task263, task239: gap population and G2), both differentiated on the card; surface 0.092 and 0.077"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "pass 1 NOT_DETERMINISTIC (main call: the standard's 'the departures' read as a route's departures at the timing point files 7, 14, 31 and 40; every golden figure reproduced under the branch-conditioned reading)",
+    "disposition": "SEND_BACK",
+    "report": "task269/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "architecture 3, the number's last: stage 4 running, two isolated scored readers (score_reader.py on each; both must miss the call and neither exit 1) and the determinism judge; a reader landing the call retires task269, otherwise every finding fixed in the generator in one pass, then ship",
+  "resume": "",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -44,5 +44,8 @@
     "rebuild": "byte-identical",
     "figures_check": "80 figures, 0 absent",
     "target_zip_md5": "ba9925bdf4330615e4a01dd0685a07d6"
+  },
+  "history": {
+    "architecture_3": "v3 Pellbrook frequent network, each rider's excess wait over the departures serving the stop the rider taps off at (routes 3, 7, 31 and 40): built 2026-10-19, call held by two scored readers, judge SEND_BACK on the unfiled departure set; task269 retired"
   }
 }
