@@ -1,24 +1,34 @@
 {
   "task": "task249",
   "owner": "perssathya",
-  "status": "PAUSED",
-  "domain": "physical-environmental-sciences",
+  "status": "DESIGN",
+  "domain": "psychology-behavioral-science",
   "objective": "data-quality-monitoring",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-19",
-  "stump": "",
-  "architecture": 2,
-  "loops": 1,
-  "precut": "exit 0 (51 checks)",
-  "leak": {
-    "leak_py": "REVIEW (sweeps 3 and 4; every line answered in the design note; no LEAK)",
-    "reader": "read 1 on target.zip b0efc2e9: landed the call (afternoon regression after the 900 m sites' night-time intercepts), all 36 ask figures missed; score_reader exit 1; Q6 analytical"
+  "stump": "A strong analyst who carries the equivalence study's referral rates by timing to each account's 2029 selection days leaves off every account that shortlists deep: the shortlisted were chosen on the very online score the check compares against, so their verification falls short of it by regression to the mean, set by how deep the account shortlists and how wide the adaptive test's error runs there, offset by the retest gain.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
   },
-  "duplicate_check": "guard.py heart WARN, surface no hard tell (folder_contents renamed, Santa Cruz de Alcorna renamed Peñalba de Alcorna)",
-  "judge": "pass 1 on b0efc2e9: DETERMINISTIC, APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H pass)",
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task242 0.06"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "architecture 2 spent at stage 4 (the reader landed the call; the judge passed it). Waiting on the author: re-root (a fresh draw in another domain, or a third decisive step in this world) or retire. On a re-root move architecture 2 into the card's lineage with its fate and draw again (fingerprint Part 2.3).",
+  "resume": "architecture 3 drawn 2026-10-19 (psychology, psychometric-measurement-scale-validation; a 2029 verification check's genuine referral rate per client account, regression to the mean among the shortlisted with a retest gain); next: stage 2 design (simulator tuned to the ladder, asks, fork table, closure, prompt, precut)",
   "approved": null,
   "delivered": null,
   "portal": null,
