@@ -79,6 +79,9 @@ is the method, the shipped file or rule, and the one result it produced.
 
 - No sub-bullets; never pad to eight or cram two steps into one line.
 - Carry only the result the next step uses or the call rests on; owed detail lives in block 4, once.
+- The one exception: an ask whose device is silent gets a step naming the handling the golden uses and
+  the files it joins, ending in the ask's figures, so the grader can verify what the solver is never told
+  (`supplemental-stumping` Part 3). It counts toward the eight.
 - Cite where a convention is pinned ("per the revenue policy"), never restate it. A convention a
   competent analyst could reverse is an unpinned fork, fixed in a shipped file.
 - Name only files the pack ships, by their pack names, or the grader finds missing input.

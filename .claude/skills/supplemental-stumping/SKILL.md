@@ -118,6 +118,8 @@ the rows a device needs are rows the call does not see.
 
 **The nine laws.** 1 **Unflagged** (ban 1). 2 **Split evidence**: a column the wrong path never reads plus a corroborating file, neither enough alone. 3 **Silent** (2.3). 4 **Aimed**: each mishandling and mis-repair lands on a stated value outside the bin. 5 **Interior**: ship the genuine population blanket exclusion destroys. 6 **Fair**: one handling reproduces truth exactly, asserted; unrecoverable truth is cut. 7 **No marker** (ban 2). 8 **No oracle** (ban 3). 9 **Shared real causes**: one cause may feed several devices; the pack never reads as sabotage.
 
+**Fair means a grader can verify it, and silent means the solver is not told it.** A device must leave an inconsistency that a grader who checks consistency, knowing the golden figure, can find and confirm; the golden's handling of every silent device is then named in a block 3 step (`submission-writeup`), which only the grader reads. task165's double weighings left nothing to find: two judges, each told the gap to the golden, searched cutoff rules and never tested the trucks' round trips, and the third reproduced every figure once a step named the handling. **Withdrawing the evidence a device rests on opens a fork rather than silencing it:** with the loader log and the controller columns removed so a reader could not shortcut the arterial cells, nothing filed said whether the older controllers' mass included the brine, and the judge called it a live fork at the ask's rounding.
+
 Families: D1 duplication, D2 version, D3 units and meaning, D4 absence, D5 scope, D6 grain, D7 keys, D8 clocks, D9 self-validation.
 
 **Silent, the primaries** (no habitual sweep sees it, or every tie passes wrong):
@@ -160,7 +162,7 @@ Families: D1 duplication, D2 version, D3 units and meaning, D4 absence, D5 scope
 
 **Seen, repaired right** (hazards or texture): exact duplicates, re-sent batches, reprints · roll-ups and summaries inside detail · displaced fields, drifted fixed-width layouts, sign overpunch · key formats, padding, case, invisible characters, mis-keys · join fan-out.
 
-**Measured as executed by the hygiene battery** (seven in-house rounds across 228 to 230, each a work order the solver ran, never a primary): repeated-row dedup; minutes logged per session; change files over base lists; unit conversions; closed days; effective-dated maps; UTC against contract zones; latest reviews; band and indexation rules. The one device set that held (230 design 2) rode a domain effect the solver never modelled.
+**Measured as executed by the hygiene battery** (seven in-house rounds across 228 to 230, each a work order the solver ran, never a primary): repeated-row dedup; minutes logged per session; change files over base lists; unit conversions; closed days; effective-dated maps; UTC against contract zones; latest reviews; band and indexation rules; keeping the copy that was worked, or the one not closed as a duplicate of its twin, among a report's copies (task162, four readers of four across three copy mechanisms). The one device set that held (230 design 2) rode a domain effect the solver never modelled.
 
 ## Part 4. The ask ladder and the span floor
 
