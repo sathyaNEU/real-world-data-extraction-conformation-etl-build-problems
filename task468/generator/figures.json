@@ -1,96 +1,107 @@
 {
  "call": {
   "pharmacists": {
-   "IMM": 13,
+   "IMM": 14,
    "MS": 7,
-   "ONC": 5,
-   "HCV": 1,
-   "GLP": 5,
-   "HIV": 6,
-   "AST": 4,
-   "CF": 4,
-   "CGR": 3
-  },
-  "total": 48
- },
- "spend_m": {
-  "IMM": 19,
-  "MS": 10,
-  "ONC": 7,
-  "HCV": 0,
-  "GLP": 7,
-  "HIV": 8,
-  "AST": 5,
-  "CF": 5,
-  "CGR": 4
- },
- "spend_total_m": 65,
- "caseload": {
-  "IMM": 433,
-  "MS": 186,
-  "ONC": 89,
-  "HCV": 61,
-  "GLP": 1603,
-  "HIV": 381,
-  "AST": 220,
-  "CF": 39,
-  "CGR": 738
- },
- "rebates_k": {
-  "IMM": 4735,
-  "MS": 1690,
-  "ONC": 340,
-  "HCV": 1226,
-  "GLP": 760,
-  "HIV": 754,
-  "AST": 722,
-  "CF": 183,
-  "CGR": 606
- },
- "rivals": {
-  "trailing": {
-   "IMM": 15,
-   "MS": 7,
-   "ONC": 7,
-   "HCV": 4,
-   "GLP": 5,
-   "HIV": 6,
-   "AST": 4,
-   "CF": 4,
-   "CGR": 3
-  },
-  "run_rate": {
-   "IMM": 15,
-   "MS": 7,
-   "ONC": 7,
-   "HCV": 4,
-   "GLP": 9,
-   "HIV": 6,
-   "AST": 7,
-   "CF": 4,
-   "CGR": 6
-  },
-  "analog": {
-   "IMM": 13,
-   "MS": 7,
-   "ONC": 5,
+   "ONC": 6,
    "HCV": 1,
    "GLP": 7,
    "HIV": 6,
+   "AST": 4,
+   "CF": 4,
+   "CGR": 5
+  },
+  "total": 54
+ },
+ "spend_m": {
+  "IMM": 20,
+  "MS": 10,
+  "ONC": 8,
+  "HCV": 0,
+  "GLP": 10,
+  "HIV": 8,
+  "AST": 5,
+  "CF": 5,
+  "CGR": 7
+ },
+ "spend_total_m": 73,
+ "caseload": {
+  "IMM": 484,
+  "MS": 192,
+  "ONC": 104,
+  "HCV": 52,
+  "GLP": 1846,
+  "HIV": 370,
+  "AST": 287,
+  "CF": 43,
+  "CGR": 941
+ },
+ "rebates_k": {
+  "IMM": 5328,
+  "MS": 1750,
+  "ONC": 368,
+  "HCV": 1209,
+  "GLP": 725,
+  "HIV": 724,
+  "AST": 744,
+  "CF": 201,
+  "CGR": 614
+ },
+ "rivals": {
+  "first_fill": {
+   "IMM": 14,
+   "MS": 7,
+   "ONC": 6,
+   "HCV": 1,
+   "GLP": 8,
+   "HIV": 6,
    "AST": 5,
    "CF": 4,
-   "CGR": 4
+   "CGR": 6
+  },
+  "trailing": {
+   "IMM": 16,
+   "MS": 8,
+   "ONC": 8,
+   "HCV": 4,
+   "GLP": 6,
+   "HIV": 6,
+   "AST": 5,
+   "CF": 4,
+   "CGR": 5
+  },
+  "run_rate": {
+   "IMM": 15,
+   "MS": 8,
+   "ONC": 8,
+   "HCV": 4,
+   "GLP": 14,
+   "HIV": 6,
+   "AST": 9,
+   "CF": 4,
+   "CGR": 10
+  },
+  "analog": {
+   "IMM": 14,
+   "MS": 7,
+   "ONC": 6,
+   "HCV": 1,
+   "GLP": 10,
+   "HIV": 6,
+   "AST": 6,
+   "CF": 4,
+   "CGR": 8
   },
   "from_start": {
-   "IMM": 11,
+   "IMM": 12,
    "MS": 7,
    "ONC": 3,
    "HCV": 1,
-   "GLP": 4,
+   "GLP": 5,
    "HIV": 6,
    "AST": 3,
    "CF": 4,
-   "CGR": 2
+   "CGR": 4
   }
  },
  "classes": [

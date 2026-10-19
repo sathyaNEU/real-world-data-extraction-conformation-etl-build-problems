@@ -60,8 +60,10 @@ def write(fig_path, out_path):
         "months are in the record (durations from 36 months pooled).",
         "6. Projected each caseload member at the duration they had reached on June 30, 2026, summed by class, and "
         "staffed one pharmacist per $1.5 million or part (charter 3.1).",
-        "7. For the rebates, summed %s's lines with a 2025 utilization quarter, each product's rebate for a quarter "
-        "counted once although the statement repeats it on each channel line." % W.FILES["rebates"],
+        "7. For the rebates, took %s's contract quarters 2025-Q1 to 2025-Q4 (a contract year runs February to "
+        "January, the only calendar on which its units tie to the claims), each product's quarterly rebate once "
+        "although the statement repeats it on each channel line, plus January 2025's units at contract quarter "
+        "2024-Q4's rebate per unit." % W.FILES["rebates"],
         "",
         "## 4. Deliverable Answers",
         "",
@@ -75,7 +77,7 @@ def write(fig_path, out_path):
     lines.append("3. Managed spend for July 2026 to June 2027, $ million:")
     for c in W.CANDIDATES:
         lines.append("   - %s: %d" % (name[c], sp[c]))
-    lines.append("4. Manufacturer rebates on 2025 utilization, $ thousand:")
+    lines.append("4. Manufacturer rebates on fills dispensed in 2025, $ thousand:")
     for c in W.CANDIDATES:
         lines.append("   - %s: {:,}".format(rb[c]) % name[c])
     lines.append("5. Bar chart of the pharmacists by class, on the Staffing sheet.")

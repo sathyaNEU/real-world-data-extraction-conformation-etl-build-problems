@@ -17,7 +17,7 @@ def compute(target):
     g = dict(f=f, caseload=co.groupby("cls").size().reindex(W.CANDIDATES, fill_value=0).to_dict())
     g["spend"] = M.golden(f)
     g["pharm"] = M.pharmacists(g["spend"])
-    g["rivals"] = {k: getattr(M, k)(f) for k in ("trailing", "run_rate", "analog", "from_start")}
+    g["rivals"] = {k: getattr(M, k)(f) for k in ("first_fill", "trailing", "run_rate", "analog", "from_start")}
     g["rebates"] = B.rebates_2025(target)
     return g
 
@@ -61,7 +61,7 @@ def write_workbook(path, f):
                "months on therapy, at the Tallis 2026 schedule."])
     ws.append([])
     ws.append(["Class", "Class name", "Members on therapy June 30, 2026", "Managed spend, $ million",
-               "Clinical pharmacists", "Rebates on 2025 utilization, $ thousand"])
+               "Clinical pharmacists", "Rebates on fills dispensed in 2025, $ thousand"])
     for c in ws[4]:
         c.font = bold
         c.fill = head
@@ -110,9 +110,10 @@ def write_workbook(path, f):
                           "has reached. Members already on therapy when the Orrin file begins are counted with the "
                           "longest-standing members."),
         ("Pharmacists", "One for each $1.5 million of managed spend, or part (charter 3.1), on the unrounded spend."),
-        ("Rebates", "%s rebate statement, utilization quarters 2025Q1 to 2025Q4 (the quarter the fills were "
-                    "dispensed); each product's quarterly rebate is counted once, not once for each channel line it "
-                    "is shown on." % W.OLD_PBM),
+        ("Rebates", "%s rebate statement. Its contract year runs February to January (the statement's units tie "
+                    "to the claims only on that calendar), so 2025's fills are contract quarters 2025-Q1 to 2025-Q4 "
+                    "and January 2025, valued at contract quarter 2024-Q4's rebate per unit. Each product's quarterly "
+                    "rebate is counted once, not once for each channel line it is shown on." % W.OLD_PBM),
     ]
     nt.append(["Notes"])
     nt["A1"].font = Font(name="Calibri", bold=True, size=12)

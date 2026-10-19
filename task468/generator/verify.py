@@ -81,8 +81,24 @@ def main(target, golden):
     cap = 36
     early = dt.date(2019, 3, 31)
 
+    # each member's episodes of therapy in a class: a fill more than 60 days after every earlier supply ran out
+    # begins a new one
+    eps = {}
+    for k, iv in cover.items():
+        starts, run_out = [], None
+        for a, b in sorted(iv):
+            if run_out is None or (a - run_out).days > 60:
+                starts.append(a)
+            end = b + dt.timedelta(days=1)
+            run_out = end if run_out is None else max(run_out, end)
+        eps[k] = starts
+
     def dur(k, i):
-        return cap if first[k] <= early else min(i - mi(first[k]), cap)
+        day = month_end(i)
+        st = [s_ for s_ in eps[k] if s_ <= day]
+        if len(st) == 1 and first[k] <= early:
+            return cap
+        return min(i - mi(st[-1]), cap)
 
     cell = defaultdict(lambda: [0.0, 0])
     for i in range(0, last - 12 + 1):
@@ -102,11 +118,32 @@ def main(target, golden):
         proj[k[1]] += s[0] / s[1]
         n_case[k[1]] += 1
     pharm = {c: int(math.ceil(proj[c] / 1_500_000)) for c in CLASSES}
+    # rebates on the fills dispensed in 2025: the statement's contract year runs February to January, so contract
+    # quarters 2025-Q1 to 2025-Q4 once each (each product-quarter's rebate stands on every channel line) and
+    # January 2025's units at contract quarter 2024-Q4's rebate per unit
+    names = {r["ndc11"]: r["product_name"] for r in rows(p("drugs"))}
+    jan = defaultdict(float)
+    o_rev = {r["claim_no"] for r in o if r["line_type"] == "REVERSAL"}
+    for r in o:
+        if r["claim_no"] in o_rev:
+            continue
+        d = dt.date.fromisoformat(r["fill_date"])
+        if d.year == 2025 and d.month == 1:
+            a_, b_, c_ = r["ndc"].split("-")
+            jan[names[a_.zfill(5) + b_.zfill(4) + c_.zfill(2)]] += float(r["qty"])
     seen, reb = set(), defaultdict(float)
+    q4 = {}
     for r in load_workbook(p("rebates"), data_only=True).active.iter_rows(min_row=5, values_only=True):
-        if r and r[0] and str(r[1]).startswith("2025") and (r[2], r[1]) not in seen:
+        if not (r and r[0]):
+            continue
+        if str(r[1]).startswith("2025") and (r[2], r[1]) not in seen:
             seen.add((r[2], r[1]))
             reb[r[3]] += float(r[6])
+        if r[1] == "2024-Q4":
+            u, a_, c_ = q4.get(r[2], (0.0, float(r[6]), r[3]))
+            q4[r[2]] = (u + float(r[5]), a_, c_)
+    for prod, (u, a_, c_) in q4.items():
+        reb[c_] += a_ / u * jan.get(prod, 0.0)
     ws = load_workbook(os.path.join(golden, GOLD), data_only=True)["Staffing"]
     gw = {r[0]: r for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0] in CLASSES}
     checks = {

@@ -149,32 +149,47 @@ def price_rows():
     return sorted(rows)
 
 
+def contract_quarter(d):
+    """Orrin's rebate contract year runs February to January: the contract year and quarter a fill dispensed on d falls in."""
+    cy = d.year if d.month >= 2 else d.year - 1
+    return cy, (d.month - 2) % 12 // 3 + 1
+
+
+def rate(p, cy):
+    return p["rebate"] * (W.REBATE_2024 if cy == 2024 else 1.0)
+
+
 def rebate_rows(x):
-    """Orrin's 2025 rebate statement: one line for each product, channel and utilization quarter, carrying that line's
-    units and the product's rebate for the quarter (all channels); with the prior year's last quarter invoiced in 2025."""
+    """Orrin's rebate statement for contract years 2024 and 2025: one line for each product, channel and contract quarter
+    of dispensing, carrying that channel's units and the product's rebate for the quarter (all channels), with the
+    calendar quarter it was invoiced in."""
     f = x["fills"]
     claims(x)
     f = f[(f["date"] >= W.FIRST_MONTH) & (f["date"] <= W.LAST_DAY)].sort_values(["date", "member"], kind="stable").copy()
     f["channel"] = x["channels"]
-    f = f[(f["date"] >= dt.date(2024, 10, 1)) & (f["date"] < W.SWITCH)]
-    f["q"] = ["%dQ%d" % (d.year, (d.month - 1) // 3 + 1) for d in f["date"]]
+    f = f[(f["date"] >= dt.date(2024, 2, 1)) & (f["date"] < W.SWITCH)]
+    f["cq"] = [contract_quarter(d) for d in f["date"]]
     rows = []
     prod = S.PROD
-    for (pi, q), g in f.groupby(["prod", "q"]):
+    for (pi, cq), g in f.groupby(["prod", "cq"]):
         p = prod.loc[pi]
-        amount = round(g["units"].sum() * p["rebate"] * (W.REBATE_2024 if q.startswith("2024") else 1.0), 2)
-        inv = {"2024Q4": "2025Q1", "2025Q1": "2025Q2", "2025Q2": "2025Q3", "2025Q3": "2025Q4", "2025Q4": "2026Q1"}[q]
+        cy, q = cq
+        amount = round(g["units"].sum() * rate(p, cy), 2)
+        end_month = 2 + 3 * q          # the month after the quarter ends (5, 8, 11, 14)
+        iy, im = cy + (end_month - 1) // 12, (end_month - 1) % 12 + 1
+        inv = "%dQ%d" % (iy, (im - 1) // 3 + 1)
         for ch, gc in g.groupby("channel"):
-            rows.append([inv, q, p["product"], p["cls"], ch, float(gc["units"].sum()), amount])
-    rows.sort(key=lambda r: (r[0], r[2], r[4]))
+            rows.append([inv, "%d-Q%d" % (cy, q), p["product"], p["cls"], ch, float(gc["units"].sum()), amount])
+    rows.sort(key=lambda r: (r[1], r[2], r[4]))
     return rows
 
 
 def truth_rebates(x):
-    rows = rebate_rows(x)
-    seen, out = set(), {c: 0.0 for c in W.CANDIDATES}
-    for inv, q, prod, cls, ch, units, amount in rows:
-        if q.startswith("2025") and (prod, q) not in seen:
-            seen.add((prod, q))
-            out[cls] += amount
+    """The rebates the manufacturers paid on the fills dispensed in calendar 2025, each at its contract year's rate."""
+    f = x["fills"]
+    f = f[(f["date"] >= dt.date(2025, 1, 1)) & (f["date"] < W.SWITCH)]
+    out = {c: 0.0 for c in W.CANDIDATES}
+    for row in f.itertuples(index=False):
+        p = S.PROD.loc[row.prod]
+        out[row.cls] += row.units * rate(p, contract_quarter(row.date)[0])
     return out

@@ -49,28 +49,32 @@ CLASSES = {
 CANDIDATES = list(CLASSES)
 STEP_THERAPY_REMOVED = ("GLP", "AST", "CGR")   # the January 2026 formulary change
 OUTREACH_START = dt.date(2025, 5, 1)           # the hepatitis C outreach drive
-REBATE_2024 = 0.94                             # the 2024 contract year's rebate per unit against 2025's
+RESTART = {"IMM": 0.12, "MS": 0.10, "ONC": 0.05, "HCV": 0.0, "GLP": 0.12, "HIV": 0.15, "AST": 0.10, "CF": 0.10,
+           "CGR": 0.10}                       # a stopped member's chance of a later episode in the class
+RETURN_FROM = 48                               # members of the step-therapy classes who stopped from January 2023
+RETURN_WAVE = {"GLP": 0.60, "AST": 0.60, "CGR": 0.60}   # ... and came back January to June 2026
+REBATE_2024 = 0.91                             # the 2024 contract year's rebate per unit against 2025's
 
 # products: class, product name, labeler, product code, package, units per 28 or 30 days, 2026 price per unit, share,
 # the package code a long (84- or 90-day) supply is dispensed in, and the manufacturer's rebate per unit dispensed in 2025
 PRODUCTS = [
-    ("IMM", "Ravelta 40 mg/0.4 mL pen", "71842", "0215", "02", 2, 1756.10, 0.45, "06", 431.70),
-    ("IMM", "Ostinza 150 mg/mL pen", "71842", "0331", "01", 1, 3522.92, 0.30, "03", 812.40),
-    ("IMM", "Cordafin 15 mg tablet", "60371", "0712", "30", 28, 127.00, 0.25, "90", 22.65),
-    ("MS", "Velmira 20 mg/mL syringe", "60371", "0920", "28", 12, 361.81, 0.55, "36", 61.10),
-    ("MS", "Antrelle 0.25 mg capsule", "68594", "0104", "30", 30, 151.83, 0.45, "90", 24.85),
-    ("ONC", "Tessarib 100 mg tablet", "68594", "0451", "30", 30, 248.06, 0.5, None, 9.40),
-    ("ONC", "Lonquivir 40 mg tablet", "70135", "0218", "60", 60, 136.29, 0.5, None, 5.15),
+    ("IMM", "Ravelta 40 mg/0.4 mL pen", "71842", "0215", "02", 2, 1675.69, 0.45, "06", 431.70),
+    ("IMM", "Ostinza 150 mg/mL pen", "71842", "0331", "01", 1, 3361.60, 0.30, "03", 812.40),
+    ("IMM", "Cordafin 15 mg tablet", "60371", "0712", "30", 28, 121.19, 0.25, "90", 22.65),
+    ("MS", "Velmira 20 mg/mL syringe", "60371", "0920", "28", 12, 355.52, 0.55, "36", 61.10),
+    ("MS", "Antrelle 0.25 mg capsule", "68594", "0104", "30", 30, 149.19, 0.45, "90", 24.85),
+    ("ONC", "Tessarib 100 mg tablet", "68594", "0451", "30", 30, 257.23, 0.5, None, 9.40),
+    ("ONC", "Lonquivir 40 mg tablet", "70135", "0218", "60", 60, 141.32, 0.5, None, 5.15),
     ("HCV", "Sofivela 400/100 mg tablet", "70135", "0607", "28", 28, 228.60, 1.0, None, 71.90),
-    ("GLP", "Semavex 2.4 mg/0.75 mL pen", "73299", "0124", "04", 4, 154.76, 0.6, "12", 58.35),
-    ("GLP", "Tirzelor 10 mg/0.5 mL pen", "73299", "0287", "04", 4, 162.73, 0.4, "12", 49.80),
-    ("HIV", "Bictavir 50/200/25 mg tablet", "61958", "0901", "30", 30, 62.64, 0.7, "90", 6.05),
-    ("HIV", "Dovarine 50/300 mg tablet", "61958", "0802", "30", 30, 53.29, 0.3, "90", 3.90),
-    ("AST", "Mepozum 100 mg/mL pen", "66415", "0310", "01", 1, 2131.94, 0.6, None, 512.20),
-    ("AST", "Dupelta 300 mg/2 mL pen", "66415", "0440", "02", 2, 2050.83, 0.4, None, 447.65),
-    ("CF", "Elexavor 100/50/75 mg tablet", "51167", "0331", "84", 84, 119.34, 1.0, None, 4.10),
-    ("CGR", "Erelmab 70 mg/mL pen", "55513", "0841", "01", 1, 828.40, 0.55, "03", 243.15),
-    ("CGR", "Fremavo 225 mg/1.5 mL syringe", "55513", "0902", "01", 1, 813.86, 0.45, "03", 231.70),
+    ("GLP", "Semavex 2.4 mg/0.75 mL pen", "73299", "0124", "04", 4, 192.56, 0.6, "12", 58.35),
+    ("GLP", "Tirzelor 10 mg/0.5 mL pen", "73299", "0287", "04", 4, 202.48, 0.4, "12", 49.80),
+    ("HIV", "Bictavir 50/200/25 mg tablet", "61958", "0901", "30", 30, 62.12, 0.7, "90", 6.05),
+    ("HIV", "Dovarine 50/300 mg tablet", "61958", "0802", "30", 30, 52.84, 0.3, "90", 3.90),
+    ("AST", "Mepozum 100 mg/mL pen", "66415", "0310", "01", 1, 1854.67, 0.6, None, 512.20),
+    ("AST", "Dupelta 300 mg/2 mL pen", "66415", "0440", "02", 2, 1784.11, 0.4, None, 447.65),
+    ("CF", "Elexavor 100/50/75 mg tablet", "51167", "0331", "84", 84, 102.84, 1.0, None, 4.10),
+    ("CGR", "Erelmab 70 mg/mL pen", "55513", "0841", "01", 1, 1244.11, 0.55, "03", 243.15),
+    ("CGR", "Fremavo 225 mg/1.5 mL syringe", "55513", "0902", "01", 1, 1222.27, 0.45, "03", 231.70),
 ]
 DISPENSING_FEE = 5.00                      # the 2026 schedule, per fill
 ORRIN_PRICE_FACTOR = {2019: 0.86, 2020: 0.89, 2021: 0.91, 2022: 0.94, 2023: 0.97, 2024: 1.00, 2025: 1.03}   # Orrin's paid unit cost against Tallis 2026

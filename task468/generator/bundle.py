@@ -68,22 +68,34 @@ def rebates(target):
     rows = []
     for r in ws.iter_rows(min_row=5, values_only=True):
         if r and r[0]:
-            rows.append(dict(invoice=r[0], util=r[1], product=r[2], cls=r[3], channel=r[4], units=float(r[5]),
+            rows.append(dict(invoice=r[0], cq=r[1], product=r[2], cls=r[3], channel=r[4], units=float(r[5]),
                              amount=float(r[6])))
     return pd.DataFrame(rows)
 
 
 def rebates_2025(target, how="golden"):
-    """Each class's rebates on 2025 utilization: the product's quarterly rebate once ("golden"), or every line summed
-    ("lines")."""
+    """Each class's rebates on its fills dispensed in calendar 2025. The statement's contract year runs February to
+    January (its units by contract quarter tie to the claims' units only on that calendar), and each product's
+    quarterly rebate stands on every channel line: the golden takes contract quarters 2025-Q1 to 2025-Q4 once each
+    and January 2025's share of contract quarter 2024-Q4 at that quarter's rebate per unit ("golden"); the contract
+    year read as the calendar year, each product-quarter once ("calendar"); every 2025 line summed ("lines"); the
+    2025 invoices, each product-quarter once ("invoiced")."""
     rb = rebates(target)
-    rb = rb[rb["util"].str.startswith("2025")]
+    once = rb.drop_duplicates(["product", "cq"])
     if how == "lines":
-        s = rb.groupby("cls")["amount"].sum()
+        s = rb[rb["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
     elif how == "invoiced":
-        rb = rebates(target)
-        rb = rb[rb["invoice"].str.startswith("2025")].drop_duplicates(["product", "util"])
-        s = rb.groupby("cls")["amount"].sum()
+        s = once[once["invoice"].str.startswith("2025")].groupby("cls")["amount"].sum()
+    elif how == "calendar":
+        s = once[once["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
     else:
-        s = rb.drop_duplicates(["product", "util"]).groupby("cls")["amount"].sum()
+        s = once[once["cq"].str.startswith("2025")].groupby("cls")["amount"].sum()
+        q4 = rb[rb["cq"] == "2024-Q4"].groupby(["product", "cls"]).agg(units=("units", "sum"), amount=("amount", "first"))
+        f = fills(target)
+        dl = drugs(target)
+        jan = f[(f["date"] >= dt.date(2025, 1, 1)) & (f["date"] < dt.date(2025, 2, 1))]
+        jan_units = jan.groupby(jan["ndc11"].map(dl["product_name"]))["units"].sum()
+        s = s.copy()
+        for (prod, cls), r in q4.iterrows():
+            s[cls] = s.get(cls, 0.0) + r["amount"] / r["units"] * float(jan_units.get(prod, 0.0))
     return {c: float(s.get(c, 0.0)) for c in W.CANDIDATES}

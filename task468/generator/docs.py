@@ -181,7 +181,8 @@ def write_transition(path):
          Paragraph("The specialty claims for the program come in two files: %s (Orrin Rx, fills dispensed January 1, "
                    "2019 to December 31, 2025) and %s (Tallis, fills dispensed January 1 to June 30, 2026, extracted "
                    "July 13, 2026). Each holds every specialty fill in the nine program classes under the pharmacy "
-                   "benefit, with reversals." % (W.FILES["orrin"], W.FILES["tallis"]), SANS),
+                   "benefit, with reversals. Orrin's extract starts at its 2019 archive, so a member filling in early 2019 "
+                   "may have been on the drug for years before that." % (W.FILES["orrin"], W.FILES["tallis"]), SANS),
          Paragraph("Members", h2),
          Paragraph("Orrin keyed members by its own member key and Tallis by its own member number. %s gives each "
                    "member's plan ID with the Orrin key and the Tallis number the member held; a member who left the "
@@ -251,13 +252,13 @@ def write_rebates(path, rows):
     wb = Workbook()
     ws = wb.active
     ws.title = "Rebate statement"
-    ws.append(["%s: manufacturer rebate statement for %s, invoices 2025Q1 to 2026Q1" % (W.OLD_PBM, W.PLAN)])
+    ws.append(["%s: manufacturer rebate statement for %s, contract years 2024 and 2025" % (W.OLD_PBM, W.PLAN)])
     ws["A1"].font = Font(name="Calibri", bold=True, size=12)
-    ws.append(["Rebates pass through in full. Utilization quarter is the quarter the fills were dispensed; "
-               "invoice quarter is the quarter the manufacturer was invoiced."])
+    ws.append(["Rebates pass through in full. Contract quarter is the quarter of the rebate contract year in which the "
+               "fills were dispensed; invoice quarter is the calendar quarter the manufacturer was invoiced."])
     ws["A2"].font = Font(name="Calibri", italic=True, size=9)
     ws.append([])
-    ws.append(["Invoice quarter", "Utilization quarter", "Product", "Class code", "Channel", "Units", "Rebate"])
+    ws.append(["Invoice quarter", "Contract quarter", "Product", "Class code", "Channel", "Units", "Rebate"])
     for c in ws[4]:
         c.font = Font(name="Calibri", bold=True)
         c.fill = PatternFill("solid", fgColor="FFF2CC")
@@ -304,7 +305,7 @@ INDEX = [
     ("charter", W.PLAN + ", Pharmacy", "2026-05-28", "Specialty Clinical Pharmacy Program charter, program year 2026-27."),
     ("bulletin", W.PLAN + ", P&T Committee", "2025-12-08", "Formulary bulletin, January 2026."),
     ("transition", W.PLAN + ", Pharmacy data", "2026-07-14", "PBM transition: claim file notes."),
-    ("rebates", W.OLD_PBM, "2026-04-17", "Manufacturer rebate statement, invoices 2025Q1 to 2026Q1."),
+    ("rebates", W.OLD_PBM, "2026-04-17", "Manufacturer rebate statement, contract years 2024 and 2025."),
     ("trend", W.OLD_PBM, "2026-02-20", "Specialty drug trend report 2025."),
     ("infusions", W.PLAN + ", Medical economics", "2026-03-09", "Specialty drugs under the medical benefit, 2025."),
 ]

@@ -1,114 +1,140 @@
 {
- "task": "task468",
- "architecture": "v2",
- "drawn": "2026-10-19",
- "slot_note": "wave 5, third of six, re-rooted from architecture 1 (the transit nominations); the seed's world (ET25) dropped, the objective kept",
- "domain": "healthcare-delivery-health-economics",
- "subdomain": "payment-claims-health-plan-analytics",
- "client_domain": "healthcare-delivery-health-economics",
- "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
- "objective": "etl",
- "shape": "05",
- "decision_type": "allocation_to_total",
- "answer_unit": "count",
- "answer": "Staff the Specialty Clinical Pharmacy Program with 48 clinical pharmacists for July 2026 to June 2027: IMM 13, MS 7, ONC 5, HCV 1, GLP 5, HIV 6, AST 4, CF 4, CGR 3.",
- "answer_source": "submission.md block 1; the staffing workbook",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G13",
-  "G6",
-  "G14"
- ],
- "gate_g": "forecasting",
- "calibration_form": "none",
- "stump_strategy": "composition_mix",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stakeholder_role": "Director of Pharmacy, the plan's clinical pharmacy program",
- "role_family": "operations_director",
- "scoring_unit": "per covered member",
- "spine": {
-  "file": "orrin_rx_specialty_claims_2019_2025.csv",
-  "rows": 114301,
-  "entity": "one pharmacy claim line (a fill, a reversal or a rebill) for a specialty drug",
-  "grain": "claim line",
-  "source": "synthetic (constructed in the layout of a PBM's paid claims extract)",
-  "row_meaning": "a specialty fill, reversal or rebill as the outgoing PBM paid it",
-  "source_dataset": "constructed (seeded generator)"
- },
- "forum": "executive_team",
- "forcing_event": "budget_or_appropriation",
- "org_family": "other",
- "world": {
-  "geography": "United States, an unnamed state (the health plan, its PBMs, the drugs' product names and the people are fictional)",
-  "currency": "USD",
-  "org_type": "a nonprofit regional health plan",
-  "invented_names": [],
-  "people": [
-   "Erik Marks",
-   "John Henry",
-   "Caleb Fischer"
-  ]
- },
- "deliverables": [
-  "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
- "driver_concrete": "Each specialty class's spend over July 2026 to June 2027 on the members whose fill covers 30 June 2026 is built from the class's own month-by-month continuation and paid amount by months on therapy, read from every member who has passed each month since their first fill across both PBMs' files; the weight-loss class filled with new starters after its 2026 coverage change, so last year's cohort overstates it, oncology's current users have survived its early discontinuation, so a curve from first fill understates it, and hepatitis C's fixed courses end within weeks.",
- "stump": "The default path projects each class's caseload on 30 June 2026 by last year's caseload's following-year spend per member and files 52 pharmacists with GLP 7, AST 5 and CGR 4, because the January 2026 step-therapy change filled those classes with new starters who mostly stop within months; the development by months on therapy at each member's own duration gives GLP 5, AST 4, CGR 3 and 48 in all.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both PBMs' files (reversals out, members linked through the crosswalk, NDCs padded, the 2026 schedule applied) and reads every charter rule projects this June's caseload by last year's caseload's following-year spend per member and files 52 pharmacists (GLP 7, AST 5, CGR 4); the development by months on therapy at each member's own duration files 48 (GLP 5, AST 4, CGR 3).",
- "domain_test": "Pharmacy benefit forecasting's own analysis decides: a specialty class's forward spend for the members on therapy is the class's persistence and cost by months on therapy (loading doses, fixed courses, early discontinuation) applied at each member's own duration; swapping the nouns (hospital wards, megawatt-hours) leaves no months on therapy, no loading dose and no fixed course, which are why the classes' current users differ from last year's.",
- "layer2_family": "forecast_uncertainty",
- "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
- "layer1": [
-  "two PBMs' claim files in different layouts (the outgoing PBM's reversals as negative lines, the incoming PBM's as a status column)",
-  "member identifiers re-keyed at the PBM change through a crosswalk",
-  "NDC in 10-digit and 11-digit forms",
-  "the incoming PBM's 2026 contract prices against the outgoing PBM's paid amounts",
-  "transition-of-care fills at the January 2026 PBM change",
-  "days' supply of 28, 30, 84 and 90 days"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task98": "task98 v6 counts units under a score threshold whose closed periods were scored on a classifier the improvement programme could not move; here no classifier changes: the forward quantity is each group spend developed by how long its active units have been active, read from every unit that has passed each duration."
- },
- "lineage": [
-  {
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "C"
-   ],
-   "generators": [
+  "task": "task468",
+  "architecture": "v3",
+  "drawn": "2026-10-19",
+  "slot_note": "wave 5, third of six, re-rooted from architecture 1 (the transit nominations); the seed's world (ET25) dropped, the objective kept",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files, where members returning to therapy after a lapse sit among the long-standing members by their first fill",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "submission.md block 1; the staffing workbook",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
     "G6",
-    "G12",
-    "G3"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "identity_resolution",
-   "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
-   "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
-   "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
-   "subdomain": "data-integration-record-linkage-entity-resolution",
-   "domain": "general-statistics-data-science",
-   "architecture": "v1",
-   "drawn": "2026-10-17",
-   "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
-  }
- ],
- "notes": "Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE.",
- "registered": "2026-10-19T01:53:39Z"
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "Director of Pharmacy, the plan's clinical pharmacy program",
+  "role_family": "operations_director",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "orrin_rx_specialty_claims_2019_2025.csv",
+    "rows": 114301,
+    "entity": "one pharmacy claim line (a fill, a reversal or a rebill) for a specialty drug",
+    "grain": "claim line",
+    "source": "synthetic (constructed in the layout of a PBM's paid claims extract)",
+    "row_meaning": "a specialty fill, reversal or rebill as the outgoing PBM paid it",
+    "source_dataset": "constructed (seeded generator)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "other",
+  "world": {
+    "geography": "United States, an unnamed state (the health plan, its PBMs, the drugs' product names and the people are fictional)",
+    "currency": "USD",
+    "org_type": "a nonprofit regional health plan",
+    "invented_names": [],
+    "people": [
+      "Erik Marks",
+      "John Henry",
+      "Caleb Fischer"
+    ]
+  },
+  "deliverables": [
+    "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active depend on how long the current spell of activity has run, not on how long ago the unit was first active; units returning after a lapse look long-standing by their first activity but behave like new ones, and one group's returning units surged just before the reference date, so a development by time since first activity, applying last year's active units' following year, or carrying the trailing year forward each overstates exactly the groups the returners filled.",
+  "driver_concrete": "Each specialty class's spend over July 2026 to June 2027 on the members whose fill covers 30 June 2026 is the class's development by months since the member's current episode of therapy began (a fill more than a lapse after the last supply ran out starts one), read from every member who has passed each month of an episode across both PBMs' files and applied at each member's own months; after the January 2026 bulletin removed step therapy, members who had stopped the GLP-1, severe-asthma and CGRP drugs came back, so a development by months since first fill counts them with the persistent long-standing members and over-staffs those three classes.",
+  "stump": "The default path develops each class's caseload by months since each member's first fill in the class and files 57 pharmacists with GLP 8, AST 5 and CGR 6, because the members who came back to those drugs in 2026 after a lapse are counted at their first fill's months with the persistent long-standing members; developed by months since the current episode began, the classes take GLP 7, AST 4 and CGR 5, 54 in all.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms both PBMs' files (reversals out, members linked through the crosswalk, NDCs padded, the 2026 schedule applied), reads every charter rule and projects the caseload by the class's development by months on therapy from each member's first fill files 57 pharmacists (GLP 8, AST 5, CGR 6); counting months from the start of the member's current episode files 54 (GLP 7, AST 4, CGR 5).",
+  "domain_test": "The deciding quantity is each specialty class's program-year spend for the members on therapy today, projected the way pharmacy persistence work projects it: a development of continuation and paid amount by months in the current therapy episode (new-user and re-initiation episodes separated by a permissible gap), applied at each member's own months; with hospital wards in place of drug classes there is no fill, no days' supply, no lapse between episodes and no re-initiation, so the task does not survive the swap.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:specialty-spend-developed-by-months-in-the-current-episode-of-therapy",
+  "layer1": [
+    "two PBMs' claim files in different layouts (the outgoing PBM's reversals as negative lines, the incoming PBM's as a status column)",
+    "member identifiers re-keyed at the PBM change through a crosswalk",
+    "NDC in 10-digit and 11-digit forms",
+    "the incoming PBM's 2026 contract prices against the outgoing PBM's paid amounts",
+    "transition-of-care fills at the January 2026 PBM change",
+    "days' supply of 28, 30, 84 and 90 days"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v6 counts units under a score threshold whose closed periods were scored on a classifier the improvement programme could not move; here no classifier changes: the forward quantity is each group spend developed by how long its active units have been active, read from every unit that has passed each duration.",
+    "task468": "v2 (spent) developed spend by months since each member's first fill in the class; v3's decisive step is the clock itself: months since the current episode began, because members re-initiating after a lapse behave like new users, and v2's construction is now the analyst test's wrong answer."
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G6",
+        "G12",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "identity_resolution",
+      "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
+      "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
+      "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "domain": "general-statistics-data-science",
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
+      "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
+      "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v2",
+      "drawn": "2026-10-19",
+      "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
+    }
+  ],
+  "notes": "Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE.",
+  "registered": "2026-10-19T05:07:57Z"
 }

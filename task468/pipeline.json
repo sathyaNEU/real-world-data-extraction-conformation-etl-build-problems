@@ -1,44 +1,43 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-19",
- "stump": "The default path projects each class's caseload by last year's caseload's following-year spend per member and files 52 pharmacists with GLP 7, AST 5 and CGR 4; the development by months on therapy at each member's own duration files 48 with GLP 5, AST 4 and CGR 3.",
- "architecture": 2,
+ "stump": "The default path develops each class's caseload by months since each member's first fill and files 57 pharmacists with GLP 8, AST 5 and CGR 6; developed by months since the current episode of therapy began (members back after a lapse restart the curve), the classes take GLP 7, AST 4 and CGR 5, 54 in all.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-19 (no LEAK): the charter and trend report share the call's words; four documents share the survey's own vocabulary",
-  "reader": "round 1 2026-10-19: landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F): tenure-conditioned projection from history and the rebate lines counted once"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS 2026-10-19, nearest driver task231 at 0.11",
-  "surface": "clean (Orrin Rx is the PBM, not a persona)"
+  "guard_check": "WARN only 2026-10-19 (repeat.gate_g against task249; driver.near against this slot's v2, differentiated)",
+  "heart": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md",
-  "note": "architecture 2, 2026-10-19; Gate H pass, decisive step analytical; moot after Gate F"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "architecture 2 spent at stage 4: judge APPROVE but the reader landed the call and 27 of 28 asks (Gate F). Next: architecture 3, the last before retirement, a re-root at stage 1 with a decisive step the record does not display (the author decides whether to spend it)",
+ "resume": "architecture 3 drawn and designed (precut exit 0, fast build green); next: full build, stage-3 gates, stage 4 (reader and judge), ship",
  "approved": null,
  "delivered": null,
  "portal": null,
  "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall",
  "ceiling": {
-  "pair": 34.8,
+  "pair": 39.3,
   "cracker": 44.5,
-  "mirror": 25.0,
-  "mirror_leakage": 0.0
+  "mirror": 34.1,
+  "mirror_leakage": 11.1
  },
  "target_zip": null,
  "history": [

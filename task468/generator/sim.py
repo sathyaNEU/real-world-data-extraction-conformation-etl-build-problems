@@ -23,9 +23,51 @@ def first_day(m):
     return W.month_start(m)
 
 
+def episode(r, c, p, prods, pick, start, ds, mid, fills, ep):
+    """One therapy episode from its first fill: fills until the member stops (or the course ends) or the truth ends.
+    Returns the stop date, or None if the member is still on therapy at the end of the truth."""
+    course = p.get("course")
+    n_course = int(r.choice(course)) if course else None
+    d, k = start, 0
+    while d <= END_TRUTH:
+        units = prods.loc[pick, "units"] * (ds // 28 if ds >= 84 else 1)
+        if k == 0 and p["load"] > 1:
+            units = units * p["load"]
+        fills.append((mid, c, int(prods.loc[pick, "index"]), d, ds, float(units), k, start, ep))
+        k += 1
+        if n_course and k >= n_course:
+            return d + dt.timedelta(days=ds)
+        t = W.month_index(d) - W.month_index(start)
+        h = p["stop"](t)
+        if ds >= 84:
+            h = 1 - (1 - h) ** 3
+        if r.random() < h:
+            return d + dt.timedelta(days=ds)
+        d = d + dt.timedelta(days=ds - int(r.integers(0, 4)))      # specialty refills ship before the supply runs out
+    return None
+
+
+def restart_date(r, c, stop):
+    """When (if ever) a member who stopped comes back to the class: some members in every class return after a lapse of
+    at least six months; members of the three step-therapy classes who stopped from 2023 on came back in numbers once
+    the January 2026 bulletin removed step therapy."""
+    if c == "HCV":
+        return None
+    m_stop = W.month_index(stop)
+    if c in W.STEP_THERAPY_REMOVED and W.RETURN_FROM <= m_stop <= 83 and r.random() < W.RETURN_WAVE[c]:
+        m = int(r.integers(84, 90))
+        if m - m_stop >= 6:
+            return W.month_start(m) + dt.timedelta(days=int(r.integers(0, 28)))
+    if r.random() < W.RESTART[c]:
+        gap = 6 + int(r.exponential(14))
+        return W.month_start(m_stop + gap) + dt.timedelta(days=int(r.integers(0, 28)))
+    return None
+
+
 def simulate(price_scale=None):
     """Return dict(fills, members): fills one row per dispensed fill (member, cls, product row, date, days' supply,
-    units, fill number, first fill date), members one row per member (id, cls, start date, stop date or None)."""
+    units, fill number in the episode, episode start, episode number), members one row per episode (id, cls, episode,
+    start date, stop date or None)."""
     price_scale = price_scale or {}
     r = rng(1)
     fills, members = [], []
@@ -40,29 +82,18 @@ def simulate(price_scale=None):
                 opts = p["supply"]
                 ds = int(opts[int(r.choice(len(opts), p=[o[1] for o in opts]))][0])
                 start = first_day(m) + dt.timedelta(days=int(r.integers(0, 28)))
-                course = p.get("course")
-                n_course = int(r.choice(course)) if course else None
-                d, k, stop = start, 0, None
-                while d <= END_TRUTH:
-                    units = prods.loc[pick, "units"] * (ds // 28 if ds >= 84 else 1)
-                    if k == 0 and p["load"] > 1:
-                        units = units * p["load"]
-                    fills.append((mid, c, int(prods.loc[pick, "index"]), d, ds, float(units), k, start))
-                    k += 1
-                    if n_course and k >= n_course:
-                        stop = d + dt.timedelta(days=ds)
+                ep = 0
+                while True:
+                    stop = episode(r, c, p, prods, pick, start, ds, mid, fills, ep)
+                    members.append((mid, c, ep, start, stop))
+                    if stop is None or ep >= 2:
                         break
-                    t = W.month_index(d) - W.month_index(start)
-                    h = p["stop"](t)
-                    if ds >= 84:
-                        h = 1 - (1 - h) ** 3
-                    if r.random() < h:
-                        stop = d + dt.timedelta(days=ds)
+                    back = restart_date(r, c, stop)
+                    if back is None or back > END_TRUTH:
                         break
-                    d = d + dt.timedelta(days=ds - int(r.integers(0, 4)))      # specialty refills ship before the supply runs out
-                members.append((mid, c, start, stop))
-    f = pd.DataFrame(fills, columns=["member", "cls", "prod", "date", "days", "units", "fill_no", "start"])
-    mem = pd.DataFrame(members, columns=["member", "cls", "start", "stop"])
+                    start, ep = back, ep + 1
+    f = pd.DataFrame(fills, columns=["member", "cls", "prod", "date", "days", "units", "fill_no", "start", "ep"])
+    mem = pd.DataFrame(members, columns=["member", "cls", "ep", "start", "stop"])
     f["price"] = PROD.loc[f["prod"], "price"].to_numpy() * f["cls"].map(lambda c: price_scale.get(c, 1.0)).to_numpy()
     f["paid26"] = (f["units"] * f["price"]).round(2) + W.DISPENSING_FEE
     long_pack = PROD.loc[f["prod"], "pack_long"].to_numpy()

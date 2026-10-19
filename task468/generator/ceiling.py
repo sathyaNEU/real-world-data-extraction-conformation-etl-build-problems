@@ -1,6 +1,7 @@
-"""The pair ceiling for task468, measured on the cut pack: the cracker lands the call (the development by months on
-therapy) and sums the rebate statement's lines; the mirror stops on the best wrong rung (last year's on-therapy members'
-following-year spend) and scores the best of every wrong rebate path. Each criterion is scored against the golden,
+"""The pair ceiling for task468, measured on the cut pack: the cracker lands the call (the development by months since
+each episode of therapy began) and reads the rebate statement's contract year as the calendar year, each product-quarter
+once; the mirror stops on the best wrong rung (the same development by months since each member's first fill) and
+scores the best of every wrong rebate path. Each criterion is scored against the golden,
 pharmacists, spend to the nearest million and rebates to the nearest thousand as exact hits.
 
     python3 task468/generator/ceiling.py
@@ -48,11 +49,12 @@ def score(name, spend, rebates, F):
 def main(target):
     F = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
     g = GO.compute(target)
-    crack = score("cracker (lands the call; every rebate line summed)", g["spend"], B.rebates_2025(target, "lines"), F)
-    wrong_rb = {k: B.rebates_2025(target, k) for k in ("lines", "invoiced")}
+    crack = score("cracker (lands the call; contract year 2025 read as calendar 2025)", g["spend"],
+                  B.rebates_2025(target, "calendar"), F)
+    wrong_rb = {k: B.rebates_2025(target, k) for k in ("calendar", "lines", "invoiced")}
     best = max(wrong_rb, key=lambda k: sum(int(np.floor(wrong_rb[k][c] / 1000 + 0.5)) == F["rebates_k"][c]
                                            for c in W.CANDIDATES))
-    mirror = score("mirror (last year's on-therapy cohort; rebates %s)" % best, M.analog(g["f"]), wrong_rb[best], F)
+    mirror = score("mirror (months since first fill; rebates %s)" % best, M.first_fill(g["f"]), wrong_rb[best], F)
     pair = (crack[0] + mirror[0]) / 2.0
     print("pair ceiling %.1f (cracker %.1f with %d of 9 rebates, mirror %.1f with %d of 9); mirror leakage %.1f per "
           "cent of ask weight" % (pair, crack[0], crack[1], mirror[0], mirror[1], 100.0 * mirror[1] / 9))
