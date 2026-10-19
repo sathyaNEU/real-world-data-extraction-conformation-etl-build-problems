@@ -64,8 +64,8 @@
   {
    "path": "case_actions_2024-2026.csv",
    "format": "csv",
-   "bytes": 239184,
-   "rows": 2410,
+   "bytes": 238785,
+   "rows": 2409,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, case-action log",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"

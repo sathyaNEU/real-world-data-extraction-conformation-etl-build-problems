@@ -1,47 +1,47 @@
 {
  "task": "task172",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science/regression-classification-model-diagnostics",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-18",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-19",
  "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
  "architecture": 1,
- "loops": 4,
+ "loops": 5,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18, round 4 ask repair): the standard shares the call's vocabulary; future dates only in forward-looking columns",
-  "reader": "round 4: scored reader missed the call (6.5) and kept 14 of 14 ask figures, score_reader exit 1 (leak-task172d); round 3: clean, as a solver near 4.0; round 2: clean",
-  "score_reader": "round 4 reader on the round 3 pack: call 0 of 1, asks 14 of 14 (100 per cent), exit 1, Gate F failed on the asks; re-sited, the cracker (that reader's path) keeps 0 of 20 ask cells on the cut pack; a fresh scored reader is the bar (exit 0)"
+  "leak_py": "REVIEW, no LEAK (2026-10-19, the shipped cut f20b583e, as-of 2026-12-04): the standard shares the call's vocabulary; future dates only in forward-looking columns; every REVIEW line answered in the design note's Leak sweep",
+  "reader": "round 5: a fresh blind scored reader (scored-task172e) missed the call (4.0, the censored Kaplan-Meier route) and all 14 ask figures; round 4: the scored reader missed the call (6.5) and kept 14 of 14 ask figures on the round 3 pack, so the ask layer was re-sited; round 3: clean, as a solver near 4.0; round 2: clean",
+  "score_reader": "round 5 exit 0 (call 0 of 1, asks 0 of 14, re-scored on the shipped figures); round 4 exit 1 (asks 14 of 14) on the round 3 pack; the round 5 reader's path on the shipped cut lands 0 of 14"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective)",
-  "surface": "1 of 248 promoted for adjudication: task170 vs task172 (two apart; gap time and decision quantity_figure on the cards; decisive pattern G7 against G3, so not the same puzzle); adjudication is author-triggered",
+  "surface": "1 promoted for adjudication: task170 vs task172 (two apart, surface 0.086; gap time and decision quantity_figure on the cards; decisive pattern G7 against G3, not the same puzzle); adjudication is author-triggered",
   "nearest": "task127 v2 0.13 (driver, differentiated)"
  },
  "judge": {
-  "verdict": "round 4 targeted check: September 2027 (c)(26) 771 confirmed, table 1 determinate (judge-task172d/cell_check.md); round 3 DETERMINISTIC with SOLUTION_WRONG on that cell (settled at 771); round 2 NOT_DETERMINISTIC on the supplementary tables only; round 1 on table 1 only",
-  "disposition": "round 4: the ask layer re-sited under supplemental-stumping 1.1c after the scored reader kept 14 of 14 ask figures; the asks, roundings, pins and every golden figure unchanged, the call side byte-identical to the round 3 commit; a re-judge of both tables follows the fresh scored reader",
-  "report": "coordinator's scratchpad: judge-task172d/cell_check.md, leak-task172d/reader.json and reader_method.md (round 3: judge-task172c, leak-task172c; round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
+  "verdict": "round 5 DETERMINISTIC, APPROVE (judge-task172e/verdict.md): the 5.5 quote forced, both tables reproduced, Q1 2026 refiled settled at 26 on GM-07 2.4's receipt reading; round 4 targeted check: September 2027 (c)(26) 771 confirmed; round 3 DETERMINISTIC with SOLUTION_WRONG on that cell, settled at 771; round 2 NOT_DETERMINISTIC on the supplementary tables only; round 1 on table 1 only",
+  "disposition": "APPROVE; at ship one realism fix, data only (the judge's Files/Hygiene regularity): each forwarded copy of a notice counsel logged carries counsel's date, a copy counsel never logged the date USCIS issues it, and the other filings' rejections are dated from their own trips; the call side byte-identical and no golden moved",
+  "report": "coordinator's scratchpad: judge-task172e/verdict.md, scored-task172e/reader.json and reader_method.md (round 4: judge-task172d/cell_check.md, leak-task172d; round 3: judge-task172c, leak-task172c; round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
  },
  "returned": [],
- "resume": "stage 4 round 5: a fresh scored reader on the re-sited ask layer (score_reader exit 0, under a fifth of ask figures) and a re-judge of both tables, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-19",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "answer": "5.5 months",
  "stage3": {
-  "checks": "116 of 116",
+  "checks": "117 of 117",
   "verify": "0 failed",
-  "rebuild": "19 files byte-identical",
+  "rebuild": "two full builds, each with a byte-identical rebuild of 19 files, the same target.zip",
   "figures_check": "exit 0, 37 figures",
   "precut": "52 checks, 0 FAIL, 0 WARN",
   "screens": "dispersion, variance-only, common-exposure subset (1 decided renewal since the rule at the forward exposure) and truncation direction pass (stumping 1.2)",
@@ -54,12 +54,12 @@
   "mirror_leakage": 0.0,
   "target_zip": {
    "members": 14,
-   "bytes": 5864813,
-   "sha256": "af7bc4eff351ec944f5b55ffd6c1cf763eafbadf438dd2708577bbf24b6f3ab3"
+   "bytes": 5864840,
+   "sha256": "f20b583ecb417adf8339442b253b446bb819320a6bbd8d3b73aa0489cb40751b"
   },
   "house_fixes": "H25 asserted in checks.py: the standard opens in pypdf (lenient and strict), pdfminer.six, pdfplumber and pdftotext with every paragraph, and the strict text equals the lenient",
-  "freeze": "freeze.py check --mode rubric PASS (the main call, the stump and every frozen figure unchanged; WARN that no ask figure moved, since the goldens are the same world and only where its evidence lives changed)",
+  "freeze": "freeze.py check --mode rubric PASS (the main call, the stump and every frozen figure unchanged; WARN that no ask figure moved, since the goldens are the same world)",
   "call_side": "byte-identical to the round 3 commit: every renewal row, component, route, the margin family and the quarter's mix (674 and 562) recomputed equal (sha256 26cd0f92); counsel's notices, the dispatch log, the dependants, the tracker and the standard byte-identical files; the case log's expedite and stop rows and the register's receipted renewals identical",
-  "cracker": "the round 4 reader's path keeps 0 of 20 ask cells; with one device found at most 4 (the rejected counts, once the other filings' rejections are found)"
+  "cracker": "the round 4 reader's path keeps 0 of 20 ask cells on the shipped cut; with one device found at most 4 (the rejected counts); the round 5 reader's path 0 of 14"
  }
 }

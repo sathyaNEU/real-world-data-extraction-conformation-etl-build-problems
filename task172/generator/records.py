@@ -340,6 +340,55 @@ def write_all(W):
     own_case = {}
     pending = []
 
+    # the date on each notice counsel logged, by case and notice type (the earliest of a type)
+    counsel_on = defaultdict(dict)
+    for n in notes:
+        got = counsel_on[n["cs"].id]
+        if n["ntype"] not in got or n["ndate"] < got[n["ntype"]]:
+            got[n["ntype"]] = n["ndate"]
+    r_cp = C.stream("notice copies")
+    r_of = C.stream("other filing dates")
+
+    def held_copy(cs, which):
+        """the notice an applicant holds and forwards and the date on it: counsel's date where counsel logged the same
+        notice, otherwise the date drawn as USCIS issues that notice"""
+        got = counsel_on.get(cs.id, {})
+        rcpt = got.get("Receipt notice") or C.next_busday(cs.received + D_(days=max(1.0, Wm.gam(r_cp, 3.0, 1.5))))
+        if which == "Receipt notice":
+            return "Receipt notice", rcpt
+        if which == "Approval notice":
+            if cs.withdrawn:
+                return "Withdrawal acknowledgement", got.get("Withdrawal acknowledgement", cs.withdraw_ack)
+            kind = "Denial notice" if cs.denied else "Approval notice"
+            return kind, got.get(kind, cs.decided)
+        if cs.route == "appointment":
+            d = got.get("Biometrics appointment notice")
+            if d is None:
+                d = C.next_busday(cs.received + D_(days=max(5.0, Wm.gam(r_cp, 12.0, 4.0))))
+                d = min(d, C.prev_busday(cs.appt_first - D_(days=5)))
+            return "Biometrics appointment notice", d
+        d = got.get("Biometrics reuse notice")
+        if d is None:
+            d = C.next_busday(cs.received + D_(days=max(6.0, Wm.gam(r_cp, 20.0, 6.0))))
+            if cs.decided and d >= cs.decided:
+                return "Receipt notice", rcpt         # USCIS decided before a reuse notice went out
+        return "Biometrics reuse notice", d
+
+    def other_rejection(cs, before_packet):
+        """the lockbox's rejection of the applicant's own other filing, dated from that filing's own trip: sent before
+        the renewal's first packet (she forwards it with her receipt notice) or after USCIS received the renewal"""
+        first = cs.sends[0]["sent"]
+        for _ in range(60):
+            if before_packet:
+                sent = first - D_(days=int(r_of.integers(8, 26)))
+            else:
+                sent = cs.received + D_(days=int(r_of.integers(0, 50)))
+            arrive = C.next_busday(sent + D_(days=int(r_of.integers(1, 4))))
+            notice = C.next_busday(arrive + D_(days=max(3.0, Wm.gam(r_of, 12.0, 4.0))))
+            if (notice < first) if before_packet else (notice > cs.received):
+                return notice
+        return None
+
     def act(cs, when, action, detail="", ref="", outcome="", out_date=None, notice_date=None, by=None):
         if when is None or when > exp:
             return
@@ -385,19 +434,23 @@ def write_all(W):
             # applicants forward copies of notices they receive
             if rng.random() < 0.06:
                 which = str(rng.choice(["Receipt notice", "Biometrics appointment notice", "Approval notice"]))
-                nd = {"Receipt notice": cs.received, "Biometrics appointment notice": cs.received + D_(days=12),
-                      "Approval notice": cs.decided}[which]
-                what, on = which, nd
+                nd0 = {"Receipt notice": cs.received, "Biometrics appointment notice": cs.received + D_(days=12),
+                       "Approval notice": cs.decided}[which]        # the shared stream's draws turn on this date
+                what, on = held_copy(cs, which)
                 if which != "Approval notice" and r_oth.random() < Wm.P_OTHER_REJECT:
                     # a lockbox rejection of the applicant's own other filing (an I-539 or I-131 she sent herself),
                     # which the coordinator logs on the case she is in the team's care for: the one she forwards with
                     # the receipt notice is older than the renewal's packet, the one with the appointment letter newer
-                    what = "Rejection notice"
                     if which == "Receipt notice":
-                        on = C.prev_busday(cs.sends[0]["sent"] - D_(days=int(r_oth.integers(3, 21))))
-                if nd and nd <= exp:
-                    act(cs, C.next_busday(nd + D_(days=int(rng.integers(4, 30)))), "Notice forwarded by applicant",
-                        what, notice_date=on)
+                        r_oth.integers(3, 21)
+                    what, on = "Rejection notice", other_rejection(cs, which == "Receipt notice")
+                if nd0 and nd0 <= exp:
+                    lag = int(rng.integers(4, 30))
+                    by = str(rng.choice(STAFF)) if C.next_busday(nd0 + D_(days=lag)) <= exp else None
+                    when = C.next_busday(on + D_(days=lag)) if on else None
+                    if when and when <= exp:
+                        act(cs, when, "Notice forwarded by applicant", what, notice_date=on,
+                            by=by or str(r_cp.choice(STAFF)))
             if cs.decided and not cs.denied and not cs.withdrawn and rng.random() < 0.02:
                 act(cs, C.next_busday(cs.decided + D_(days=int(rng.integers(25, 60)))), "Card not received inquiry")
         for s in cs.sends:

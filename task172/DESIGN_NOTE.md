@@ -221,7 +221,7 @@ week after the expedite request the team files around the day the card expires, 
 | SF27 | ask A, a (c)(9) card no approval notice or register approval holds | the card the tracker's approval records, in (c)(9) | an older card, or the roster's (c)(26) label | pinned | GM-07 1.4 (the card USCIS approved most recently, in its approval's category; the tracker records the approval); every adjustment-package case in the register closed with no decision (asserted) |
 | SF28 | ask A, a household employee under two employee IDs | one employee, current under the ID HR's program roster shows as Active | not current (the ID the team knew has ended) | pinned | GM-07 1.3 (current while HR's program roster shows the employee as Active); 352 benefits enrollments under two IDs, one ending the day before the other began, same work state, job family and basis (asserted) |
 | SF29 | ask B, a renewal the applicant filed herself, registered as a case of its own | filed again: USCIS received the renewal, the card it renews for the person | not refiled (the team's case is closed Rejected - not refiled) | pinned | GM-07 2.4 (filed again when USCIS receives it, the rejected renewal, not the team's case); 16 renewals under two current cases, each the team's closed case and the applicant's (asserted) |
-| SF30 | ask B, a forwarded rejection dated outside its renewal's packets | not a lockbox rejection of a renewal packet | counted with the renewal's rejections | pinned | GM-07 2.3 and 2.4 (a packet the lockbox rejects is not filed: before the renewal's first packet left the mailroom, or once USCIS has the renewal, no packet of it is rejected); 95 forwarded rejections so dated, none of counsel's (asserted) |
+| SF30 | ask B, a forwarded rejection dated outside its renewal's packets | not a lockbox rejection of a renewal packet | counted with the renewal's rejections | pinned | GM-07 2.3 and 2.4 (a packet the lockbox rejects is not filed: before the renewal's first packet left the mailroom, or once USCIS has the renewal, no packet of it is rejected); 93 forwarded rejections so dated, none of counsel's (asserted) |
 
 ## Ladder
 
@@ -344,10 +344,11 @@ quarter's mix, 674 and 562, recomputed and compared).
   closed not refiled with no other case), so receipts keyed by the case miss a refile in every quarter.
   B4 (D5, re-sited into the case log's scope): applicants forward the lockbox's rejections of their own other filings
   too (an I-539 or I-131 they sent themselves), and the coordinator logs them on the case they are in the team's care
-  for: the ones that came with a receipt notice predate the renewal's first packet, the ones with an appointment
-  letter postdate USCIS's receipt of it; 95 forwarded rejections fall outside their renewal's packets and none of
-  counsel's does, so counting every forwarded rejection puts 8, 8, 15 and 4 too many in the quarters and, through
-  the earlier ones, too many refiles as well.
+  for, each dated from that filing's own trip to the lockbox: sent a week to a month before the renewal's first
+  packet (she forwards it with her receipt notice) or after USCIS received the renewal (with her biometrics letter);
+  93 forwarded rejections fall outside their renewal's packets and none of counsel's does, so counting every
+  forwarded rejection puts 9, 7, 13 and 7 too many in the quarters and, through the earlier ones, too many refiles
+  as well.
   The careful path (counsel's and the forwarded rejections, one per case and notice date, receipts by case) misses all
   eight cells; with the applicant's own case found it still misses all eight, with the other filings found it lands
   the four rejected cells only. Hazards: applicant-only rejections reach the team only as a forwarded notice (the
@@ -436,7 +437,7 @@ What stays open after the rework, and why each is accepted:
   roster under an employee ID and a spouse ID, the same validity, no other repeat), an employee's two IDs (352
   enrollments under two employee IDs, one ending the day before the other began), the applicant's own case (16
   renewals under two current cases, each the team's case closed Rejected - not refiled and the applicant's filing),
-  the other filings' rejections (95 forwarded rejections outside their renewal's packets, none of counsel's). No
+  the other filings' rejections (93 forwarded rejections outside their renewal's packets, none of counsel's). No
   shipped sentence adjudicates any of them: each turns on GM-07 1.3, 1.4, 2.3 or 2.4 as filed and a join the records
   force. The goldens did not move (the world is the same; only where its evidence lives and how it must be joined
   changed), and the call side is byte-identical to the round 3 commit. No subset of the careful path's mishandlings
@@ -473,6 +474,36 @@ the paperwork tail and the request timing, which the round 1 audit asked for, so
 0.005, not to 0.09. The coincidental mix route cannot be closed cheaply (moving the (c)(9) appointment share far
 enough breaks the domain or the low-edge margin), so it is flagged and asserted. P(both) stays at the 0.1 line, not
 clearly under it, and the asks carry the bar (pair ceiling 33.1, both on the call with no device cracked 44.0).
+
+## Leak sweep
+
+`leak.py --asof 2026-12-04` on the shipped cut (target.zip f20b583e): REVIEW, no LEAK; one line per REVIEW:
+- Sweep 3, `mobility_renewal_standard.pdf` carries 7 of 10 distinctive words of the call: the portal-quote vocabulary
+  the prompt itself uses; the standard files the estimand (4.1 to 4.3) and states no figure, no pick and no method.
+- Sweep 4, the standard carries 9 of 25 stump-paragraph terms (standard, mobility, receipt, global, counsel, review):
+  the company's name and the filing vocabulary of a renewal standard; no sentence names the expiry cut, the expedite
+  or the appointment queue.
+- Sweep 9, dates after 4 December 2026 in the tracker, the H-1B calendar, counsel's notices, the register and the
+  roster: card expiries, scheduled appointments and the 2027 H-1B calendar, forward by nature; every event a system
+  logs stops at the export.
+- Sweep 10, container metadata: no writer signature (the producer scrub is clean on the pack and the goldens).
+
+**The round 5 judge's regularity** (Files/Hygiene, low severity): the 16 forwarded rejections of one family sat exactly
+12 days after the renewal's receipt. The generator dated every forwarded copy of a biometrics letter at receipt plus
+12 days, while counsel's copy of the same letter was drawn around 12 days, so a case holding both carried two dates for
+one notice, and the other filing's rejection forwarded with the letter took that date. Fixed at the source: a forwarded
+copy of a notice counsel logged carries counsel's date for it (523 copies, none with another date), a copy counsel never
+logged is dated as USCIS issues that notice (a biometrics reuse notice for a renewal that reused fingerprints, the
+notice that exists for a denied or a withdrawn renewal), and the other filing's rejection is dated from its own
+trip (40 after the renewal's receipt over 27 different day gaps, 53 before the first packet over 15), every new draw
+from its own named stream; checks.py asserts the spread. The call side is byte-identical and no golden moved.
+
+**Readers.** Round 4, scored, on the round 3 pack: the call missed (6.5), 14 of 14 ask figures kept, `score_reader.py`
+exit 1, so the ask layer was re-sited (`## Ask sheet`). Round 5, a fresh blind scored reader on the re-sited pack: the
+call missed (4.0, the censored Kaplan-Meier route) and 0 of 14 ask figures (it found the tracker's approvals, an
+employee's two HR IDs and the applicant's own case, and missed the card under two IDs and the other filings'
+rejections), exit 0. The round 5 judge: DETERMINISTIC, APPROVE, Q1 2026 refiled settled at 26 on GM-07 2.4's receipt
+reading.
 
 ## Tried and rejected
 
@@ -565,3 +596,7 @@ clearly under it, and the asks carry the bar (pair ceiling 33.1, both on the cal
   own refilings by the register's receipts, every one on the path a careful reader takes once the pins are read;
   re-sited (the tracker's approvals, an employee's I-9 card under a spouse's, an employee's two HR IDs, the
   applicant's own case, the other filings' rejections), the asks, roundings and pins unchanged.
+- v1 forwarded copies dated at a fixed offset (round 5 judge, Files/Hygiene, a regularity isolating device rows under
+  law 7): every forwarded copy of a biometrics letter was dated receipt plus 12 days, counsel's copy of the same letter
+  was not, and the other filing's rejection inherited the fixed date (16 of them exactly 12 days after receipt); now a
+  copy carries counsel's date for the notice, or the date USCIS issues it, and the other filing's rejection its own trip.

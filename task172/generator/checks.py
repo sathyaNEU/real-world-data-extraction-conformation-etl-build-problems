@@ -718,6 +718,33 @@ def main(target):
     check("ask B: applicant-only rejection notices fall in every quarter", all(appl[k] >= 1 for k in tb), str(dict(appl)))
     check("ask B: every quarter's refiled count turns on a filing counsel never logged", all(selfref[k] >= 1 for k in tb),
           str(dict(selfref)))
+    # realism (law 7, the round 5 judge's regularity): a forwarded copy of a notice counsel logged carries counsel's
+    # date for it, and the rejections of applicants' other filings are dated from those filings' own trips
+    cdates = defaultdict(set)
+    for n in T["notices"]:
+        cdates[(ref.get(n["client_ref"]), n["notice_type"])].add(K._d(n["notice_date"]))
+    copies = [(a, (ref.get(a["case_id"]), a["detail"])) for a in T["actions"]
+              if a["action"] == "Notice forwarded by applicant" and a["detail"] != "Rejection notice"]
+    held = [(a, k) for a, k in copies if k in cdates]
+    off_date = [a["action_id"] for a, k in held if K._d(a["notice_date"]) not in cdates[k]]
+    gap_after, gap_before = Counter(), Counter()
+    for a in T["actions"]:
+        if a["action"] == "Notice forwarded by applicant" and a["detail"] == "Rejection notice":
+            r = ren.get(ref.get(a["case_id"]))
+            nd = K._d(a["notice_date"])
+            got = [x for x in rcpt.get(r, ()) if x < nd]
+            if got:
+                gap_after[(nd - min(got)).days] += 1
+            elif r in sent0 and nd < sent0[r]:
+                gap_before[(sent0[r] - nd).days] += 1
+    spread = all(g and max(g.values()) <= max(3, 0.15 * sum(g.values())) for g in (gap_after, gap_before))
+    check("realism: every forwarded copy of a notice counsel logged carries counsel's date, and the other filings' "
+          "rejections spread over their own dates (no day offset from the renewal holds more than a seventh)",
+          len(held) > 300 and not off_date and spread,
+          "%d copies, %d with another date; after the receipt %d over %d gaps (most %d), before the packet %d over %d "
+          "gaps (most %d)" % (len(held), len(off_date), sum(gap_after.values()), len(gap_after),
+                              max(gap_after.values()), sum(gap_before.values()), len(gap_before),
+                              max(gap_before.values())))
     S = CR.sheets(target)
     check("cracker misses every ask cell", S["base"] == 0, "%d of %d" % (S["base"], CR.N_ASK))
     check("pair ceiling at or under 40 with the most obvious device cracked", S["pair"] <= 40.0, "%.1f" % S["pair"])
