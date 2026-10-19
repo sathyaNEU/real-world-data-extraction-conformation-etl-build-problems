@@ -1,0 +1,167 @@
+{
+ "task": "task113_ext",
+ "kind": "input dataset only: no question, draw, ladder, stump, golden or fingerprint card",
+ "domain": "Quantitative Finance",
+ "subdomain_intended": "strategy-backtesting-evaluation (the bundle also carries what event-study, factor-return-attribution, market-microstructure-execution-cost and portfolio-construction-risk work needs)",
+ "objective": "not fixed; the draw picks it",
+ "as_of": "2026-10-09",
+ "input_gates": {
+  "files": 19,
+  "formats": [
+   "csv",
+   "json",
+   "jsonl",
+   "md",
+   "parquet",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "merriden_eod_us_equity_2018_2023.csv",
+  "largest_file_rows": 186430
+ },
+ "distractor_files": "named at the draw, against the question it files",
+ "files": [
+  {
+   "file": "merriden_eod_us_equity_2018_2023.csv",
+   "format": "csv",
+   "rows": 186430,
+   "as_of": "2024-01-10",
+   "layout": "an end-of-day equity pricing vendor's legacy history file"
+  },
+  {
+   "file": "merriden_eod_us_equity_2023q4_2026q3.parquet",
+   "format": "parquet",
+   "rows": 91128,
+   "as_of": "2026-10-06",
+   "layout": "the same vendor's current-platform Parquet delivery"
+  },
+  {
+   "file": "merriden_security_master_history.csv",
+   "format": "csv",
+   "rows": 176,
+   "as_of": "2026-10-06",
+   "layout": "the vendor's security master history"
+  },
+  {
+   "file": "merriden_corporate_actions_2018_2026.json",
+   "format": "json",
+   "rows": 2039,
+   "as_of": "2026-10-06",
+   "layout": "the vendor's corporate actions feed"
+  },
+  {
+   "file": "merriden_delisting_final_values.xlsx",
+   "format": "xlsx",
+   "rows": 21,
+   "as_of": "2026-10-07",
+   "layout": "the vendor's delisting workbook"
+  },
+  {
+   "file": "ledgerpoint_quarterly_pit_2017_2026.csv",
+   "format": "csv",
+   "rows": 9514,
+   "as_of": "2026-10-08",
+   "layout": "a point-in-time fundamentals vendor's file"
+  },
+  {
+   "file": "ledgerpoint_earnings_calendar.jsonl",
+   "format": "jsonl",
+   "rows": 8083,
+   "as_of": "2026-10-08",
+   "layout": "the fundamentals vendor's earnings calendar log"
+  },
+  {
+   "file": "northcote_us_smallcap_select_reconstitutions.xlsx",
+   "format": "xlsx",
+   "rows": 800,
+   "as_of": "2026-07-10",
+   "layout": "an index provider's reconstitution workbook"
+  },
+  {
+   "file": "northcote_us_smallcap_select_levels.csv",
+   "format": "csv",
+   "rows": 2198,
+   "as_of": "2026-10-02",
+   "layout": "the index provider's daily levels"
+  },
+  {
+   "file": "short_interest_semimonthly_2018_2026.txt",
+   "format": "txt",
+   "rows": 25801,
+   "as_of": "2026-10-08",
+   "layout": "exchange semi-monthly short interest files"
+  },
+  {
+   "file": "harrowgate_sweep_rate_daily.csv",
+   "format": "csv",
+   "rows": 3202,
+   "as_of": "2026-10-07",
+   "layout": "a custodian's daily sweep rate"
+  },
+  {
+   "file": "pellbrook_oms_orders_2023_2026.csv",
+   "format": "csv",
+   "rows": 2223,
+   "as_of": "2026-10-05",
+   "layout": "an asset manager's order management system export"
+  },
+  {
+   "file": "kelloway_executions_2023_2026.csv",
+   "format": "csv",
+   "rows": 32596,
+   "as_of": "2026-10-05",
+   "layout": "a broker's execution report"
+  },
+  {
+   "file": "merriden_eod_data_dictionary_v4.pdf",
+   "format": "pdf",
+   "rows": null,
+   "as_of": "2024-01-08",
+   "layout": "the pricing vendor's data dictionary"
+  },
+  {
+   "file": "merriden_corporate_actions_feed_spec.pdf",
+   "format": "pdf",
+   "rows": null,
+   "as_of": "2023-06-12",
+   "layout": "the corporate actions feed specification"
+  },
+  {
+   "file": "ledgerpoint_pit_fundamentals_guide.pdf",
+   "format": "pdf",
+   "rows": null,
+   "as_of": "2025-03-17",
+   "layout": "the fundamentals vendor's user guide"
+  },
+  {
+   "file": "northcote_us_smallcap_select_methodology.pdf",
+   "format": "pdf",
+   "rows": null,
+   "as_of": "2025-02-14",
+   "layout": "the index methodology summary"
+  },
+  {
+   "file": "kelloway_commission_schedule_2025.pdf",
+   "format": "pdf",
+   "rows": null,
+   "as_of": "2025-02-10",
+   "layout": "the broker's commission schedule"
+  },
+  {
+   "file": "README_research_store_extracts.md",
+   "format": "md",
+   "rows": null,
+   "as_of": "2026-10-09",
+   "layout": "the research data team's extract notes"
+  }
+ ],
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this bundle by task113_ext/generator/build_pack.py (seeded, deterministic) in the layouts of US equity data vendors, an index provider, exchange short interest files, a custodian, an order management system and a broker; the companies, vendors, index, broker, custodian and asset manager are fictional; the exchange calendar (holidays, the 2018 and 2025 closures, early closes) is the real one",
+   "date": "2026-10-09",
+   "license": "original work for this bundle; no third-party data"
+  }
+ ]
+}
