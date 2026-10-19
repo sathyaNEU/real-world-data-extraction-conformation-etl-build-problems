@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "15 stations: the 2027 total mark's reliability 0.804 at 15 stations, 0.793 at 14, against the 0.80 standard",
+  "answer_source": "submission.md (block 1) and generator/figures.json",
   "gap": [
     "time",
     "objective"
@@ -38,17 +38,17 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:examiner-stringency-shared-in-the-measured-sitting-turns-to-error-in-the-next-arrangement",
   "layer1": [
-    "the examination system's item-level export in two day files whose column names and mark labels changed with a software update between the days",
-    "examiner identifiers in the export against the faculty roster's staff numbers, and candidate examination numbers against student numbers",
+    "the examination system's item-level export over both days in one file, its coding changed by the overnight update between the days: day 1 station numbers, examiner badges and mark labels, day 2 case codes, staff numbers and mark digits, linked through the station sheet and the examiner allocation",
+    "the global grades in their own export beside the checklist marks",
     "a checklist item withdrawn by the board of examiners after day 1, recorded in its minutes, and items marked not applicable when the simulated patient did not give the cue",
-    "station marks scaled differently by station (checklists of 14 to 22 items) and global grades as text labels"
+    "station marks scaled to 20 from checklists of 14 to 22 items"
   ],
   "stakeholder_role": "the medical school's head of assessment, who files the 2027 final OSCE blueprint with the accreditation board",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "osce2026_item_marks.csv",
-    "rows": 0,
+    "file": "osce2026_marks_export.csv",
+    "rows": 35040,
     "entity": "one checklist item's mark given by one examiner to one candidate at one station of the 2026 final OSCE",
     "grain": "candidate x station x examiner x checklist item",
     "source": "synthetic",
@@ -94,6 +94,7 @@
     "task257": "task257 counts the latent dimensions of categorical items by correlating them as cuts of continuous views; task269 decomposes one clinical examination's mark variance across candidates, stations and examiners"
   },
   "lineage": [],
-  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19): the seed's stumps are banned as decisive steps (identity resolution across break chains, a reading of the average roll, a certified replay of the FY2025 release) and the attrition world's remaining levers are survival, composition and population selection, each spent or banned in this window.",
-  "registered": "2026-10-19T03:43:22Z"
+  "notes": "World re-drawn from the seed DA19 at the draw (2026-10-19): the seed's stumps are banned as decisive steps (identity resolution across break chains, a reading of the average roll, a certified replay of the FY2025 release) and the attrition world's remaining levers are survival, composition and population selection, each spent or banned in this window. Architecture v1 spent at stage 4 on 2026-10-19 (Gate F): the cold reader fitted the candidates by examiners-within-stations decomposition and counted stringency as error for single examining, landing the call and every ask figure.",
+  "registered": "2026-10-19T03:43:22Z",
+  "architecture_spent": true
 }

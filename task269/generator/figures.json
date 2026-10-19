@@ -1,0 +1,102 @@
+{
+ "ask_a": {
+  "Communication": [
+   19,
+   19
+  ],
+  "History taking": [
+   18,
+   18
+  ],
+  "Physical examination": [
+   24,
+   18
+  ],
+  "Procedural skills": [
+   18,
+   7
+  ]
+ },
+ "ask_b": {
+  "CSC d1_am": 24,
+  "CSC d1_pm": 27,
+  "CSC d2_am": 28,
+  "CSC d2_pm": 25,
+  "CUH d1_am": 28,
+  "CUH d1_pm": 22,
+  "CUH d2_am": 34,
+  "CUH d2_pm": 28,
+  "FCS d1_am": 34,
+  "FCS d1_pm": 30,
+  "FCS d2_am": 26,
+  "FCS d2_pm": 30
+ },
+ "call": {
+  "below": 14,
+  "reliability_below": "0.793",
+  "reliability_committed": "0.804",
+  "stations": 15,
+  "unrounded_need": 14.637
+ },
+ "candidates_2026": 84,
+ "components": {
+  "e": 1.033,
+  "p": 1.01,
+  "ps": 1.704,
+  "rs": 0.96,
+  "s": 1.364
+ },
+ "ladder": {
+  "R0_alpha12": "0.845",
+  "R0_stations": 9,
+  "R1_alpha_lead12": "0.820",
+  "R1_alpha_second12": "0.810",
+  "R1_crossed12": "0.816",
+  "R1_stations": 12,
+  "R2_alpha12": "0.786",
+  "R2_half_stations": 13,
+  "R3_stations": 21
+ },
+ "policy_sections": [
+  1.1,
+  2.1,
+  2.2,
+  3.1,
+  3.2,
+  3.3,
+  3.4,
+  3.5,
+  4.1,
+  4.2,
+  4.3,
+  4.4,
+  5.1,
+  5.2,
+  5.3,
+  5.4,
+  6.1
+ ],
+ "reliability": {
+  "12": "0.766",
+  "13": "0.780",
+  "14": "0.793",
+  "15": "0.804",
+  "16": "0.814",
+  "17": "0.823",
+  "18": "0.831"
+ },
+ "results_2026": {
+  "not_passed": 9,
+  "passed": 75
+ },
+ "rooms": 18,
+ "shares": {
+  "e": 17.0,
+  "p": 16.6,
+  "ps": 28.1,
+  "rs": 15.8,
+  "s": 22.5
+ },
+ "standard": "0.80",
+ "total_variance": 6.072
+}

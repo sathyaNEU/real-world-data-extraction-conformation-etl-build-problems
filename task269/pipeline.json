@@ -1,21 +1,35 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "education-learning-sciences",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "re-root",
   "updated": "2026-10-19",
   "stump": "The default path keeps 12 stations, because it reads the reliability of single-examiner marks off the 2026 sitting, where the same two examiners marked every candidate at each station, so each examiner's leniency shifted every candidate alike and never moved one candidate against another; in 2027's three parallel circuits each candidate meets one examiner per station drawn from the faculty pool, so the leniency spread between examiners becomes error in every candidate's total, and only the 2026 marks' variance components recombined for that arrangement put the 2027 examination at 15 stations.",
   "architecture": 1,
-  "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task104 0.07 (draw)", "surface": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "loops": 1,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-19"
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-19 (asof 2026-12-02), every line harmless",
+    "reader": "round 1 (2026-10-19): landed the call and every graded figure, score_reader 100 per cent, Gate F failed"
+  },
+  "duplicate_check": {
+    "heart": "WARN (repeat.question_form against task468 v2, answered at the draw)",
+    "nearest": "task104 0.07 (driver)",
+    "surface": "task152 and task232 promoted on card keys, differentiated on the card"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (wording only)",
+    "report": "determinism_check_report.md"
+  },
   "returned": [],
-  "resume": "stage 2: readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet (supplemental-stumping), prompt.txt, then precut.py task269",
+  "resume": "re-root architecture 2 (architecture 1 spent at stage 4 on Gate F): fingerprint (v1 into lineage, its card marked architecture_spent), guide-to-prompt pairing, stumping; read the design note's Tried and rejected first; the decision study for a new examining design is spent, so a re-root in the OSCE world needs a decisive step the textbook decision study itself gets wrong, else a new world; the v1 generator stays as reference until the re-root replaces it",
   "approved": null,
   "delivered": null,
   "portal": null,
