@@ -1,0 +1,97 @@
+{
+  "task": "task177",
+  "architecture": "v1",
+  "drawn": "2026-10-19",
+  "slot_note": "Redraw in a new world: the seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card; its screens are in task177/DESIGN_NOTE.md Tried and rejected.",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "decision-making-computational-behavioral-modeling",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "a provincial employment service's forecast of the share of jobseekers' own contacts its upgraded digital assistant takes in the eight weeks after an assistant-first period, from each claimant's contact-by-contact channel choices and the outcomes they met",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G7",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "other",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches each claimant's call legs and assistant conversations into contacts, reads the seven-day resolution rule and the routing codes correctly, fits a reinforcement-learning model of channel choice with one learning rate to every contact, checks it on held-out contacts and simulates the eight assistant-first weeks files an assistant share of about 33 per cent of claimants' own contacts for March and April, where the share is about 22 per cent.",
+  "domain_test": "The deciding quantity is how far a contact the jobseeker did not choose moves their later channel choices against one they chose, estimated the way computational behavioural modelling estimates learning (a reinforcement-learning model of each claimant's contact-by-contact choices fitted by likelihood, compared out of sample and simulated forward); with machines' routing tables or another field's tallies in place of jobseekers the agency term has nothing to act on and the task stops making sense.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "psychology-behavioral-science/decision-making-computational-behavioral-modeling/3",
+  "layer1": [
+    "the contact-centre platform's interaction-leg export: one row per leg (IVR entry, queue, transfer, adviser answer, callback), several legs to one call, timestamps in UTC",
+    "the digital assistant's conversation export in local time, a conversation that times out and is reopened split into several sessions, the entry route (app, web, IVR transfer) on each",
+    "the telephony platform replaced mid-2026: leg codes and column names change, a crosswalk issued",
+    "claimants keyed by case number in the case system, by phone number in telephony and by account ID in the assistant, joined through a contact-details crosswalk with changed numbers and shared household phones",
+    "resolution never recorded: derived from no repeat contact on the same topic within seven days, topics recoded when the topic list was revised",
+    "queue overflow episodes logged by the workforce team per queue and interval, separately from the legs",
+    "staff and test accounts in the assistant export, advisers using the assistant on a claimant's behalf",
+    "claims opened and closed through the year (people finding work), the planning population defined on the register date"
+  ],
+  "stakeholder_role": "behavioural insights adviser in the service's digital channels team",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "contact_legs_2026.csv",
+    "rows": 500000,
+    "entity": "one leg of a jobseeker's call through the contact-centre platform (IVR entry, queue, transfer to the assistant, adviser answer, callback)",
+    "grain": "call leg",
+    "source": "synthetic (constructed in the layout of a contact-centre platform's interaction-leg export)"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "Manitoba, Canada",
+    "currency": "CAD",
+    "org_type": "provincial employment and income assistance service (fictional)",
+    "invented_names": [
+      "Prairie Works Manitoba",
+      "Ask Prairie Works"
+    ],
+    "people": [
+      "Loretta Rodgers",
+      "Sabrina Ward"
+    ]
+  },
+  "deliverables": [
+    "assistant_share_forecast_mar_apr_2027.xlsx",
+    "assistant_first_aftermath_note.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "Experiences a unit did not choose move its later choices far less than experiences it chose, so a period that sends every unit to one option converts few of them; the record holds those imposed experiences only as scattered single episodes, so a learner fitted to the whole record with one rate over-predicts the conversion, and only a separate rate for the imposed experiences, read from those episodes, carries to the period.",
+  "driver_concrete": "Jobseekers sent to the digital assistant when the phone queue overflows learn about a fifth as much from it as those who open it themselves, so the eight assistant-first weeks, which send every call to the assistant, lift claimants' own use of it in March and April far less than a reinforcement-learning model with one learning rate predicts.",
+  "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files about 33 per cent of claimants' own contacts in the assistant for March and April; the overflow-redirected contacts in the record teach about a fifth as much as chosen ones, so the share is about 22 per cent.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task70": "task70 rebuilds a per-record date with a class-conditional cut from an event log under a filed clause; here no record date or filed clause decides: a learning rate for contacts the claimant did not choose is estimated inside a reinforcement-learning model and simulated through a window of such contacts.",
+    "task104": "task104 replays a self-adapting scorer at a setting it never ran, masked by its own reference window; here the units are people learning from outcomes, and the decisive quantity is how far an experience they did not choose updates them, read from scattered overflow redirects.",
+    "task134": "task134's yield is a rebuild chance gated by an option's value against a cost step; here nothing is gated or stepped: the forecast is a learning process whose update from imposed contacts is about a fifth of the update from chosen ones.",
+    "task168": "task168 completes capped units' demand from a same-month build; here no unit is capped or censored: imposed experiences move choice values less than chosen ones, and a window made of them converts few units.",
+    "task463": "task463 weights price comparisons around cut periods in a chained index; here the decisive step is a learning model's update rate for experiences the unit did not choose, simulated forward through eight weeks of them.",
+    "task501": "task501 rebuilds a static who-passes-to-whom matrix from the days of the season's own regime; here the regime-only static rebuild (next-contact transitions after redirected contacts alone) misses by about a fifth, because imposed experiences accumulate through learning, so the forecast needs the imposed-contact learning rate inside a jointly fitted reinforcement-learning model."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-19T07:01:02Z"
+}

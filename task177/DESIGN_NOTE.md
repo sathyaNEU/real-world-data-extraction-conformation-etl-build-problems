@@ -1,6 +1,75 @@
 # task177 design note
 
-**Status: PAUSED at stage 1, no card ever registered, nothing cut.** Wave 8, new, Forecasting, seed FC48:
+**Status: stage 1, drawn 2026-10-19, architecture 1 in a new world.** The seed FC48 world (drop-off recycling
+bins) died at stage 1 on measurement before any card was filed (its record is kept below under `## Seed world`
+and in `## Tried and rejected`). The redraw was handed the cell psychology-behavioral-science /
+decision-making-computational-behavioral-modeling and searched it by prototype on 2026-10-19: goals as
+reference points (A) and drift-diffusion speed-accuracy adaptation (E) died on measurement and on the library
+test, a dozen more on paper, and the imposed-contact learning discount (F) held. The prototypes are in the
+session scratchpad (r177/proto).
+
+## Draw
+
+| Item | The draw |
+|---|---|
+| Card | `cards/task177.json`, registered at the DRAWN commit through the round's serial lock |
+| Pairing | `psychology-behavioral-science` (client domain), task type `decision-making-computational-behavioral-modeling` (serves Forecasting), objective Forecasting |
+| World | Prairie Works Manitoba (fictional), a provincial employment and income assistance service; jobseekers contact it by phone or through its digital assistant, Ask Prairie Works, in the app and on the web |
+| Decision | the March and April 2027 usage tier for Ask Prairie Works, ordered from the assistant's vendor by 12 February 2027 (`purchase_order_or_contract`); the head of contact services signs it (`line_manager_or_team`); the forecast comes from the behavioural insights adviser in the digital channels team (`policy_adviser`) |
+| Call | the share of the contacts jobseekers start themselves in the eight weeks from 1 March 2027 that they start in the assistant, after the assistant-first weeks of 4 January to 28 February in which the upgraded assistant answers every call first |
+| Shape | `02`, a forecast across the eight weeks (the headline share with each week's figures); the 25-criterion arithmetic is written at stage 2 |
+| Decision type / unit | `quantity_figure` / `rate_or_share` |
+| Mechanism | gap population then time; pattern none, decisive G16 (the learning model the record selects), G7 (the assistant-first window) and G17 (its profile interval) supporting; Gate G `method_or_model_selection`; strategy `forecast_method_backtest`; Layer 2 `forecast_uncertainty`, pattern `psychology-behavioral-science/decision-making-computational-behavioral-modeling/3` |
+| Calibration / context artifact | none / other (the vendor's usage-tier order form for March and April; the assistant-first rollout plan is the governing document that files the dates and the routing) |
+| Deliverables | `assistant_share_forecast_mar_apr_2027.xlsx`, `assistant_first_aftermath_note.docx` |
+| People | Loretta Rodgers (head of contact services), Sabrina Ward (digital channels), drawn with `guard.py names --geo "Manitoba, Canada" --seed 177` |
+
+**Data-native sentence.** Queue overflow sends phone-minded claimants to the assistant only in scattered
+peak-hour episodes, so the record holds thousands of contacts a claimant did not choose but almost never a
+run of them, and a learner fitted to the whole record, where they are about one assistant experience in ten,
+back-tests well while weighing them like chosen ones.
+
+**The library test.** The cell's cards are the textbook route: a reinforcement-learning model of each
+claimant's contact-by-contact channel choices, compared on held-out choices (card 1), its parameters
+recoverable (card 2), simulated to check it reproduces the behaviour (card 3). Applied as the cards state it,
+with one learning rate, that route misses the share by about +49 per cent. The judgment beyond the cards,
+which the data settle, is which experiences teach: a contact the claimant was sent to by overflow moves their
+later choices about a fifth as much as one they chose (the record's split model beats one learning rate by
+about 1,460 log-likelihood units and beats "redirected contacts teach nothing" by about 100; the outcome of a
+redirected contact moves the next choice 0.112 against 0.075, a chosen one 0.631 against 0.263), and the
+assistant-first weeks redirect every call. The judgment alone, without the learning model (next-contact
+transitions after redirected contacts), misses by about -22 per cent; the two together give the golden.
+
+**Measured on the prototype** (`f_forced5.py`, 20,000 claimants, twelve months, two contacts a month, overflow
+on 2 per cent of calls, imposed contacts at a fifth of chosen ones, assistant resolution 0.50 now and 0.85 on
+the acceptance test, the phone 0.88; seeds 1 to 4): truth 22.3, 22.3, 22.3 and 22.4 per cent (sigma of the
+window's own draw 0.19 to 0.25 points); one learning rate +48.6, +49.5, +50.0, +48.5 per cent; redirected
+contacts treated as chosen +54; as teaching nothing -30 to -31; no learning -42 to -44; a waiting cost on
+redirected contacts +51 to +52 (and 1,224 to 1,882 log-likelihood units worse); a pooled last-four logistic
++10.4 to +12.4; a pooled first-order Markov chain +23 to +26; the same two split by route -32 and -22; the
+split model (with or without perseveration) -0.8 to +2.0. Profile of the imposed learning rate: one standard
+error moves the share about 0.37 points, the two-unit interval about 0.8. Individual heterogeneity in learning
+rates or in channel preference (sd 0.25 to 0.5) moves the pooled split fit under 1 per cent. Claimants who
+already met three or more redirects inside one eight-week span: 24 of 20,000.
+
+**Guard (2026-10-19).** WARN only. `overuse.org_family`: a public employment service is honestly a
+government agency, and no government-agency build on file turns on a learning model of its clients' choices.
+`repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, task269 among the last two): the decisive step
+is honestly the selection of a learning model the record settles; task269's is a reliability decision study,
+another pairing, gap and generator. `test.same_puzzle_older` and `test.same_driver_older` are answered by the
+card's differentiation lines (task70, task104, task134, task168, task463, task501). The window's bans this
+draw clears: shape 04 and 05, G6, G2 and G13, population_selection, decomposition_attribution and
+composition_mix, research_desk, programme_officer and operations_director, and the round's own list.
+
+**Sources, one line each.** Cards 1 to 3 of the task type give the family and the default path's route, never
+the stump (stumping 1.3). task501's current driver pools two regimes and rebuilds a static matrix from the
+season's own days; here that static rebuild is a wrong rung, and the imposed rate has to sit inside a jointly
+fitted learning model. task148 censors a latent patience; no latent limit is censored here. task137 is a
+contact-centre world on a repricing share; the decision, organisation, country and driver here differ.
+
+## Seed world (FC48), set aside on 2026-10-18
+
+**The seed world, as it stood.** Wave 8, new, Forecasting, seed FC48:
 thirty unstaffed recycling drop-off points opened in December and January with 15 bins of 1,100 litres each
 (ten on the coast, twenty in town, five of them in the Larchmere enclave round the lake), a July standard
 (a point gets enough bins that its forecast July average weekly fill is at most 80 per cent of its bins),
@@ -48,6 +117,7 @@ second homes, lets, owners, occupancy, cold start, like demand, comparable sites
 summer uplift and drop-off bins, found no slot that spent a peer-seasonality or holiday-response mechanism;
 the hits were words in unrelated notes. The closest card by mechanism is task124 (a unit's kind read from
 its group's surviving records), the same family by its label.
+
 
 ## Tried and rejected
 
@@ -160,3 +230,46 @@ its group's surviving records), the same family by its label.
     out of sample.
   - The total July weekly fill in place of bins to add: a flat uplift lands, because the sum runs over the
     residential points too.
+
+- **Redraw screen, 2026-10-19, candidate A: goals as reference points.** An activity-rewards programme raises
+  its daily step goal (7,500 to 10,000) and pays a weekly reward for three goal-days (prototype `a_goal.py`,
+  seeds 1 to 3, 3,000 members, 26 weeks, 13 forecast weeks). Killed on the library test and the round's G14
+  ban. Truth 15,409, 15,150 and 15,762 weekly rewards (sigma 0.33 to 0.35 per cent); the share of weeks with
+  three days at the new goal (default) -36.2, -36.3, -35.4 per cent; the current reward rate carried +78, +82,
+  +76; the pile at the old goal read over every day (the card-literate route) -12.5, -12.3, -11.3 (stretch 0.44
+  to 0.45 against 0.63 to 0.65 on days the reward was still in play, 32 per cent of days dead); the pile read on
+  live days -2.4, -1.4, -0.8. The live-day rule leaves the forecast itself unchanged and fixes only the estimate
+  of the stretch, an absolute split no column names (pattern E, G14); the band's carriage between two goal
+  levels moves about 9 per cent on paper; the pile itself is what a card-literate reader looks for.
+- **Candidate E: drift-diffusion speed-accuracy adaptation.** A selection test tightens its per-item limit
+  from 10 to 6 seconds, an older 6-second version on another item bank in the record (prototype `e_ddm.py`,
+  seeds 1 to 3, 2,000 candidates by 40 items, the 6-second boundary 0.75 of the unhurried one). Killed: at a
+  70 per cent cut the truth passes 94.8, 95.4 and 93.8 per cent and truncating the current response times at
+  6 seconds lands within 1.3, 0.8 and 1.4 per cent (mean accuracy 0.817 against 0.822: the slow responses
+  truncation drops are the low-drift ones, so the totals coincide); only at a cut near the top does truncation
+  miss (+26 to +29 per cent at a 0.75 boundary, +105 to +112 at 0.60), and there the lever is the DDM transport
+  itself, the field's textbook route, on a tail share carrying 5 per cent relative noise; the old version timed
+  out 1.9 to 2.2 per cent, so the censoring a careful fit adds is a negligible lever that card 3 catches.
+- **Killed on paper the same day.** Hot-stove learning after an improvement (the card's learning model already
+  updates only the chosen option, so the card lands; a lag-1 outcome logit sits near the golden over one
+  quarter). Pooling titration answers whose offers followed the respondent's own earlier answers (the field
+  scores each respondent's indifference point, which is the golden). Reference-dependent income targeting
+  across a gig day (labour economics by taxonomy, as task157 found; a reduced form on own earnings lands;
+  under 20 per cent on hours). A screener's criterion moving with prevalence (needs a gold-standard subsample;
+  in range a regression on prevalence lands, out of range a fork). Every rate-by-state design carried to a new
+  state mix (reference prices, the disposition effect, forgetting by gap, returns after a deferral, projection
+  bias, streak breaks: honestly G14 or composition_mix). Notification habituation (task83's driver, rejected in
+  task122's note). Peak-end follow-up (recognisable; lever about 24 per cent). Goal-gradient loyalty cards
+  (lever about 4 per cent). Compromise and decoy menus (famous; past introductions land). The magnitude effect
+  (amount as a covariate lands). Partition dependence in fund menus (the default fund dilutes it;
+  identification only across employers). The description-experience gap in fare enforcement (past changes
+  land). Bold against timid play under a stake cap (the pile at break-even plus a session simulation is the
+  card-literate route, and players' time budgets reopen task148's censored-patience driver). A delivery promise
+  as the reference point of learning (under 10 per cent on totals, a product-analytics home). A learner-share
+  recruitment forecast (the analysis file's selection is a WHAT; a fatigue bend is G13).
+- **F's own dead settings** (`f_forced.py`, `f_forced3.py`). With 1.4 imposed contacts per customer (six weeks
+  at a contact a month) no learning lands within 1.4 per cent. With overflow on 6 per cent of contacts,
+  redirects are 30 per cent of assistant experiences and the pooled reduced forms (a last-four logistic and a
+  first-order Markov chain) cross the truth for imposed-to-chosen ratios of 0.25 to 0.40 (seed 1: -3 and -3 per
+  cent at 0.35, -7 and -7 at 0.40); the draw keeps overflow at 2 per cent of calls (redirects about a tenth of
+  assistant experiences) and the ratio near a fifth, where every pooled route misses by 10 per cent or more.
