@@ -57,13 +57,13 @@ def write(fig_path, out_path):
          "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
          "6. Priced each operating hour's HEAT_INPUT_MMBTU at the %s price for the gas day it falls in, the hour "
          "moved from standard time to Central clock time and then back 9 hours (%s, Section 1; rule %s); a gas day "
-         "with no invoice line at a delivery point priced at the price that day at the delivery point whose price "
-         "differs from it by the same amount on every day both are invoiced, plus that difference: $%s in all." % (
-             F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
+         "with no invoice line of its own at the delivery point takes the price on the point's next line, whose "
+         "quantity is the burn of every gas day since the point's previous line (weekend and holiday gas, traded "
+         "together): $%s in all." % (F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
          "7. Counted the hours from 1 May to 30 September 2026 in which %s shows the unit in a U1, U2 or U3 event "
          "(rule %s), the later-filed report standing where two reports are the same outage: two full outages "
-         "overlapping on one unit, or two of the same length and cause at the same hours a day apart: %s hours in "
-         "all." % (F["events"], sec["outages"], fmt(f["asks"]["forced_total"])),
+         "overlapping on one unit, or two of the same length and cause starting on the same day of consecutive months "
+         "at the same hour: %s hours in all." % (F["events"], sec["outages"], fmt(f["asks"]["forced_total"])),
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",

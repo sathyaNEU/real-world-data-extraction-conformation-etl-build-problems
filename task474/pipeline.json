@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "round 1 (readers 1 and 2) running"
+  "reader": "round 1: both readers missed the call (five units) and kept 17 of 18 ask figures; asks re-sited (strip billing, month-early entries); round 2 next"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -29,7 +29,7 @@
   "note": "architecture 3 judge running"
  },
  "returned": [],
- "resume": "stage 4 in flight: score the two round-1 readers (scratchpad leak-task474c-r1, r2) with score_reader.py, read the judge's report, fix every finding in one generator pass, then ship",
+ "resume": "stage 4: finish the fuel-cost bin tuning (TRANSPORT in world.py), full build, then round-2 readers on the new zip and read the judge's verdict",
  "approved": null,
  "delivered": null,
  "portal": null,

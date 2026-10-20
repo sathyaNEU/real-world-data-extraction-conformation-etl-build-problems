@@ -17,8 +17,6 @@ FACILITY = {"Cutler Bend": "Cutler Bend Energy Center", "Ashfork": "Ashfork Gene
 DAHS_COLS = ["FACILITY_NAME", "UNIT_ID", "OP_DATE", "OP_HOUR", "OP_TIME", "GLOAD_MW", "HEAT_INPUT_MMBTU",
              "NOX_RATE_LB_MMBTU", "NOX_MASS_LB", "NOX_STATUS"]
 EXPORT_END = dt.date(2026, 10, 18)
-# invoices accounts payable had not approved when the file was pulled, one month for each delivery point
-HELD = {("Cutler Bend", 6), ("Dunmore Flats", 7), ("Ashfork", 8), ("Sable Ridge", 9)}
 TICKET_COLS = ["ticket", "unit", "opened_local", "closed_local", "component", "description"]
 INV_COLS = ["invoice_no", "delivery_point", "gas_day", "quantity_dth", "price_usd_per_dth", "amount_usd"]
 EVENT_COLS = ["unit", "event_no", "event_type", "start_local", "end_local", "cause_code", "derate_mw", "date_reported"]
@@ -120,7 +118,7 @@ def ticket_rows(x):
 def invoice_rows(x):
     return [[i["invoice"], FACILITY[i["plant"]], i["gas_day"].strftime("%Y-%m-%d"), "%.1f" % i["dth"],
              "%.4f" % i["price"], "%.2f" % i["amount"]] for i in x["asks"]["invoices"]
-            if i["gas_day"] <= dt.date(2026, 9, 30) and (i["plant"], i["gas_day"].month) not in HELD]
+            if i["gas_day"] <= dt.date(2026, 9, 30)]
 
 
 def event_rows(x):

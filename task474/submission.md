@@ -20,23 +20,23 @@ Each emitted 0.170 lb of NOx per gross MWh or more over the 2026 ozone season on
 3. Filled each air-loss hour with its HEAT_INPUT_MMBTU times the unit's mean NOX_MASS_LB over HEAT_INPUT_MMBTU in the first operating hour after each run of air-loss hours, where that hour was measured (a unit with none measured takes the same mean over its plant's units).
 4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's measured hours at the same hour after a start; later, from the unit's quadratic fit of NOX_MASS_LB on GLOAD_MW over its measured hours more than 3 hours after a start.
 5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated every unit at or above 0.170 (rule 2.3): AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.
-6. Priced each operating hour's HEAT_INPUT_MMBTU at the gas_supply_daily_invoices_2026.csv price for the gas day it falls in, the hour moved from standard time to Central clock time and then back 9 hours (gas_supply_agreement_excerpt.pdf, Section 1; rule 3.1); a gas day with no invoice line at a delivery point priced at the price that day at the delivery point whose price differs from it by the same amount on every day both are invoiced, plus that difference: $35,774,900 in all.
-7. Counted the hours from 1 May to 30 September 2026 in which gads_event_report_2026.csv shows the unit in a U1, U2 or U3 event (rule 3.2), the later-filed report standing where two reports are the same outage: two full outages overlapping on one unit, or two of the same length and cause at the same hours a day apart: 2,271 hours in all.
+6. Priced each operating hour's HEAT_INPUT_MMBTU at the gas_supply_daily_invoices_2026.csv price for the gas day it falls in, the hour moved from standard time to Central clock time and then back 9 hours (gas_supply_agreement_excerpt.pdf, Section 1; rule 3.1); a gas day with no invoice line of its own at the delivery point takes the price on the point's next line, whose quantity is the burn of every gas day since the point's previous line (weekend and holiday gas, traded together): $35,182,600 in all.
+7. Counted the hours from 1 May to 30 September 2026 in which gads_event_report_2026.csv shows the unit in a U1, U2 or U3 event (rule 3.2), the later-filed report standing where two reports are the same outage: two full outages overlapping on one unit, or two of the same length and cause starting on the same day of consecutive months at the same hour: 2,096 hours in all.
 
 ## 4. Deliverable Answers
 
 ### cc_unit_nox_inventory_2026.xlsx
 
 1. Every combined-cycle unit: designated or not, 2026 ozone-season fuel cost (nearest hundred dollars), forced outage hours:
-   - AF-1: designated; $3,921,800; 259 forced outage hours
-   - AF-2: designated; $3,329,400; 178 forced outage hours
-   - CB-1: designated; $2,926,200; 164 forced outage hours
-   - CB-2: designated; $4,758,300; 497 forced outage hours
-   - DF-1: designated; $4,719,000; 454 forced outage hours
-   - DF-2: not designated; $3,993,300; 159 forced outage hours
-   - DF-3: designated; $3,730,400; 167 forced outage hours
-   - SR-1: designated; $4,238,100; 135 forced outage hours
-   - SR-2: not designated; $4,158,400; 258 forced outage hours
+   - AF-1: designated; $3,843,100; 349 forced outage hours
+   - AF-2: designated; $3,278,500; 221 forced outage hours
+   - CB-1: designated; $2,892,000; 117 forced outage hours
+   - CB-2: designated; $4,679,000; 100 forced outage hours
+   - DF-1: designated; $4,659,300; 198 forced outage hours
+   - DF-2: not designated; $3,937,100; 522 forced outage hours
+   - DF-3: designated; $3,651,900; 265 forced outage hours
+   - SR-1: designated; $4,158,700; 100 forced outage hours
+   - SR-2: not designated; $4,083,000; 224 forced outage hours
 
 ### scr_upgrade_designations_2027.pdf
 

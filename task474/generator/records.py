@@ -23,14 +23,30 @@ def gas_day_of(t):
 
 
 def build(rng, fleet):
-    # the Daily Index ($/MMBtu): a walk with a weekly pattern that climbs through the July and August heat; each
-    # delivery point's price is the index plus the transporter's fuel retention on it plus its transportation rate
-    days = [dt.date(2026, 1, 1) + dt.timedelta(d) for d in range(366)]
-    p, price = 2.95, {}
+    # the Daily Index ($/MMBtu), published for each trading day, a walk that climbs through the July and August heat;
+    # gas traded on a trading day flows on every gas day up to and including the next trading day, so a weekend's or
+    # a holiday's gas days take one price, traded the business day before; each delivery point's price is the index
+    # plus the transporter's fuel retention on it plus its transportation rate
+    days = [dt.date(2026, 1, 1) + dt.timedelta(d) for d in range(368)]
+    holidays = {dt.date(2026, 1, 1), dt.date(2026, 1, 19), dt.date(2026, 2, 16), dt.date(2026, 4, 3),
+                dt.date(2026, 5, 25), dt.date(2026, 7, 3), dt.date(2026, 9, 7), dt.date(2026, 11, 26),
+                dt.date(2026, 12, 25)}
+    trading = [d for d in days if d.weekday() < 5 and d not in holidays]
+    p, walk = 2.95, {}
     for d in days:
         drift = .022 if d.month in (6, 7) or (d.month == 8 and d.day < 20) else (-.02 if d.month in (8, 9) else -.004)
         p = max(1.6, p + rng.normal(0, .06) + drift)
-        price[d] = round(p + (.15 if d.weekday() == 0 else 0), 4)
+        walk[d] = p
+    trade_of, price, k = {}, {}, 0
+    prev = dt.date(2025, 12, 31)
+    for d in days:
+        while k < len(trading) and trading[k] < d:
+            prev = trading[k]
+            k += 1
+        trade_of[d] = prev
+        # a strip spanning a weekend or holiday trades at a discount to the weekday market
+        span = (trading[k] - prev).days if k < len(trading) else 1
+        price[d] = round(walk.get(prev, 2.95) - (.06 if span > 1 else 0), 4)
     fuel = lambda plant, d: W.FUEL_RETENTION[W.PIPELINE[plant]].get(d.month, W.FUEL_RETENTION[W.PIPELINE[plant]][5])
     adder = W.TRANSPORT
     inv = []
@@ -47,13 +63,17 @@ def build(rng, fleet):
             for h in np.where(x["on"])[0]:
                 gd = gas_day_of(S.HOURS[h])
                 vol[gd] = vol.get(gd, 0.0) + float(x["heat"][h])
+        # the supplier bills a strip as one line, dated on the strip's last gas day, for the strip's whole quantity
+        strips = {}
         for d in sorted(vol):
-            if not (dt.date(2026, 1, 1) <= d <= dt.date(2026, 12, 30)):
-                continue
-            dth = round(vol[d], 1)
-            pr = round(price[d] * (1 + fuel(plant, d)) + adder[plant], 4)
-            inv.append(dict(plant=plant, gas_day=d, dth=dth, price=pr, amount=round(dth * pr, 2),
-                            invoice="%s-%s" % (W.PLANTS.get(plant, ("HC",))[0], d.strftime("%Y%m"))))
+            if dt.date(2026, 1, 1) <= d <= dt.date(2026, 12, 30):
+                strips.setdefault(trade_of[d], []).append(d)
+        for t, ds in sorted(strips.items()):
+            last = max(dd for dd in days if trade_of[dd] == t and dd <= dt.date(2026, 12, 30))
+            dth = round(sum(vol[dd] for dd in ds), 1)
+            pr = round(price[ds[0]] * (1 + fuel(plant, ds[0])) + adder[plant], 4)
+            inv.append(dict(plant=plant, gas_day=last, dth=dth, price=pr, amount=round(dth * pr, 2),
+                            invoice="%s-%s" % (W.PLANTS.get(plant, ("HC",))[0], last.strftime("%Y%m")), days=ds))
     # forced outage events: full outages (U1 immediate, U2 delayed, U3 postponed) and derates (D1, D2), each with a
     # start and an end; some full outages corrected later were re-reported under a new event number
     ev = []
@@ -98,21 +118,31 @@ def build(rng, fleet):
             s1 = int(rng.choice([-5, -3, -2, 2, 3, 4, 7]))
             ev.append(dict(e, event=num, cause=int(rng.choice([4010, 4260, 7310])), rev=0, dup=True,
                            start=e["start"] + dt.timedelta(hours=s0), end=e["end"] + dt.timedelta(hours=s1)))
-    # dated a day late: an outage first entered under the date its shift report was written, a day after it happened,
-    # then reported again under a new event number with its true date once the quarter was checked against the logs
+    # dated a month early: an outage first entered with the month of the form left at the previous month (same day,
+    # same hours), then reported again under a new event number with its true dates once the quarter was checked
+    # against the plant logs
     for u in W.CC:
         x = fleet[u]
-        cands = [e for e in full if e["unit"] == u and not e.get("dup") and (e["end"] - e["start"]).total_seconds() < 24 * 3600
-                 and W.SEASON[0] <= e["start"].date() and e["end"] < dt.datetime(2026, 8, 20)]
-        for e in cands:
-            ws, we = e["start"] + dt.timedelta(days=1), e["end"] + dt.timedelta(days=1)
-            h0 = int((ws - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
-            h1 = int((we - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
-            if any(f["unit"] == u and f is not e and f["start"] < we and ws < f["end"] for f in ev):
-                continue
+        cands = [e for e in full if e["unit"] == u and not e.get("dup") and e["start"].month >= 6
+                 and e["end"] < dt.datetime(2026, 8, 20)]
+        pick = None
+        for need in (1, 0):
+            for e in sorted(cands, key=lambda e: e["start"]):
+                ws = e["start"].replace(month=e["start"].month - 1)
+                we = ws + (e["end"] - e["start"])
+                h0 = int((ws - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
+                h1 = int((we - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
+                if ws.date() < W.SEASON[0] or x["on"][h0:h1].sum() < need or \
+                        any(f["unit"] == u and f is not e and f["start"] < we and ws < f["end"] for f in ev):
+                    continue
+                pick = (e, ws, we)
+                break
+            if pick:
+                break
+        if pick:
+            e, ws, we = pick
             ev.append(dict(e, start=ws, end=we, swapped=True))
             e["dup"] = True
-            break
     # event numbers run in the order the reports were filed: a few days after an event ends, a correction weeks later
     for e in ev:
         lag = int(rng.integers(30, 55)) if e.get("dup") else int(rng.integers(1, 10))

@@ -179,30 +179,29 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 - **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** H18 home: rule 3.1, the
   capital budget weighs the upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices,
-  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after the architecture 2
-  readers rebuilt the missing month by a constant difference): D3, a per-row quote convention. Each delivery point's
-  price is the common Daily Index plus its transporter's charges, which include a fuel retention on the index that the
-  transporter resets monthly, so two points' prices differ by the same amount every day only when one transporter
-  serves both; a missing invoice month rebuilt from another point's price that day is exact only from a point on the
-  same transporter, found from the days both are invoiced, and the first or alphabetical point, the average
-  difference, a straight-line fit or the last invoiced price each misses every unit by $100 or more. The coal
-  station's auxiliary boiler meter is Ashfork's only sister. Hazards: the gas day on Central clock time against the
-  DAHS's standard time, invoices by facility (peakers share the meter), gas days with no burn.
+  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after round 1, whose readers
+  rebuilt the missing invoice month exactly from the meters on one transporter): D6, an event's quantity on one line.
+  Gas traded on a business day flows until the next business day's gas, so a weekend's or a holiday's gas days take
+  one price, and the supplier bills each such strip as one line dated on its last gas day, its quantity the strip's
+  whole burn; the earlier gas days of a strip have no line. Pricing them at the point's previous line (the natural
+  carry-forward), interpolating, or leaving them out each misses every unit by $100 or more; only the next line,
+  which the quantities tie to, is right. Hazards: the gas day on Central clock time against the DAHS's standard time,
+  invoices by facility (peakers share the meter), gas days with no burn.
 - **Ask B, each unit's 2026 ozone-season forced outage hours: 9 figures.** H18 home: rule 3.2 (a later report of the
-  same outage stands). Path: the event report, the rules: two files, six columns. Primary device: D8, an anchor on the
-  wrong date. One short outage on each unit was first entered under the date its shift report was written, a day late
-  at the same hours, and reported again weeks later under a new event number with its true date; the two never
-  overlap, so the overlap that finds the other re-reports does not find these, and only the matching length, cause and
-  hours a day apart (with the DAHS showing the unit running at some of the late-dated hours) pair them. Secondary: the
-  architecture 2 re-reports with a corrected start and end, found by the overlap of two full outages. Hazards: derate
-  events overlapping outages legitimately, events crossing the season's ends.
+  same outage stands). Path: the event report, the rules: two files, six columns. Primary device (re-sited after round
+  1, whose readers paired reports starting within 30 hours): D8, an anchor on the wrong month. One outage on each unit
+  was first entered with the form's month left at the previous month (same day, same hours, same length and cause)
+  and reported again weeks later under a new event number with its true dates; a month apart, no proximity or overlap
+  pairs them, and only the matching day, hour, length and cause, with the DAHS showing the unit running at the
+  earlier entry's hours on most units, finds them. Secondary: re-reports with a corrected start and end, found by
+  their overlap. Hazards: derate events overlapping outages legitimately, events crossing the season's ends.
 - **The construction layer:** each unit's verdict and the set.
 - **Main population zero-counts (asserted):** the call reads no invoice, agreement or event row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, the missing invoice month rebuilt from the first other point invoiced that day plus the pair's most common difference; no point's first other point is on its transporter, so every unit's cost falls outside its bin | miss |
-| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, the later report kept where two full outages overlap; the day-late entries never overlap their true reports, so both count and every unit's hours fall outside its bin | miss |
+| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, a gas day without its own line at the point's previous line; every unit burns on strip days, so every unit's cost falls outside its bin | miss |
+| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, the later report kept where two full outages on a unit start close together; the month-early entries pair with nothing, so both count and every unit's hours fall outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
 - Pair ceiling: 39.3 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
@@ -295,3 +294,10 @@ data and no reported total ships; the allowance holdings are by facility and ton
   point's price on another's rebuilds a missing month exactly, the agreement's formula pointing at it); the retention
   now resets monthly, so only a point on the same transporter rebuilds it. Ask B's first device, a month and day
   exchanged, found a qualifying outage on one unit only; replaced by an entry dated a day late.
+- 2026-10-20, stage 4 round 1 on architecture 3: both readers missed the call (the start-state fill, five units:
+  the architecture holds) but kept 17 of 18 ask figures each (score_reader exit 1 on the asks): the meters on one
+  transporter differ by exactly the same amount every day, so the missing invoice month was rebuilt exactly, and the
+  day-late outage entries started 24 hours from their true reports, inside the readers' 30-hour pairing window. Ask A
+  re-sited to strip billing (weekend and holiday gas on one line dated on the strip's last gas day, no missing month);
+  ask B to entries a month early. The round-1 briefs quoted the leak sweep's line carrying the committed call; later
+  briefs paraphrase it.

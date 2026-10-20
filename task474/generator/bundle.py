@@ -114,54 +114,26 @@ def _local(t):
     return t + dt.timedelta(hours=1) if a <= t < b else t
 
 
-def prices(target, route="sister"):
-    """{(delivery point, gas day): $/Dth}; a gas day with no invoice line is rebuilt, when asked, from another delivery
-    point's price that day plus the two points' price difference. "sister" takes the point whose difference from this
-    one is the same on every day both are invoiced (the points on one transporter, whose charges move together);
-    "first" the first other point invoiced that day with the pair's most common difference; "mean" the average
-    difference over the days both are invoiced; "linear" a straight-line fit of one point's price on the other's;
-    "prev" carries the point's last invoiced price forward."""
-    price = {}
+def prices(target, route="next"):
+    """{(delivery point, gas day): $/Dth}. A gas day with no invoice line at a delivery point is priced, by route:
+    "next" at the point's next invoice line (a line covers the gas days since the point's previous line, its quantity
+    their total burn); "prev" at the point's previous line; "interp" between the two; "skip" left unpriced."""
+    rows = {}
     for r in _rows(find(target, "gas_supply_daily_invoices")):
-        price[(r["delivery_point"], r["gas_day"])] = float(r["price_usd_per_dth"])
-    pts = sorted({k[0] for k in price})
-    days = sorted({k[1] for k in price})
-    out = dict(price)
-    if route == "prev":
-        for p in pts:
-            last = None
-            for d in days:
-                if (p, d) in price:
-                    last = price[(p, d)]
-                elif last is not None:
-                    out[(p, d)] = last
-        return out
-    fit, spread = {}, {}
-    for a_ in pts:
-        for b_ in pts:
-            both = [d for d in days if (a_, d) in price and (b_, d) in price]
-            if a_ == b_ or len(both) < 10:
-                continue
-            x = np.array([price[(b_, d)] for d in both])
-            y = np.array([price[(a_, d)] for d in both])
-            ds = [round(v, 4) for v in y - x]
-            spread[(a_, b_)] = float(np.percentile(ds, 95) - np.percentile(ds, 5))
-            if route == "linear":
-                fit[(a_, b_)] = tuple(np.polyfit(x, y, 1)[::-1])
-            elif route == "mean":
-                fit[(a_, b_)] = (float(np.mean(ds)), 1.0)
-            else:
-                fit[(a_, b_)] = (max(set(ds), key=ds.count), 1.0)
-    for p in pts:
-        order = sorted((q for q in pts if (p, q) in fit), key=lambda q: spread[(p, q)]) if route == "sister" else \
-            [q for q in pts if (p, q) in fit]
-        for d in days:
-            if (p, d) not in out:
-                for q in order:
-                    if (q, d) in price:
-                        c0, c1 = fit[(p, q)]
-                        out[(p, d)] = round(c0 + c1 * price[(q, d)], 4)
-                        break
+        rows.setdefault(r["delivery_point"], []).append((r["gas_day"], float(r["price_usd_per_dth"])))
+    out = {}
+    for p, ls in rows.items():
+        ls.sort()
+        for (d, v) in ls:
+            out[(p, d)] = v
+        if route == "skip":
+            continue
+        for (d0, v0), (d1, v1) in zip(ls, ls[1:]):
+            a_, b_ = dt.date.fromisoformat(d0), dt.date.fromisoformat(d1)
+            n = (b_ - a_).days
+            for k in range(1, n):
+                d = (a_ + dt.timedelta(days=k)).isoformat()
+                out[(p, d)] = {"next": v1, "prev": v0}.get(route, round(v0 + (v1 - v0) * k / n, 4))
     return out
 
 
@@ -170,23 +142,20 @@ def ask_a(target, route="gasday"):
     fac = {}
     for r in _rows(find(target, "dahs_hourly_export")):
         fac[r["UNIT_ID"]] = r["FACILITY_NAME"]
-    price = prices(target, route if route in ("prev", "first", "mean", "linear") else "sister")
+    price = prices(target, route if route in ("prev", "interp", "skip") else "next")
     rec = record(target)
     out = {}
     for u, o in rec.items():
         tot = 0.0
         for t, q in zip(o["stamps"], o["heat"]):
-            if route in ("gasday", "prev", "first", "mean", "linear"):
+            if route in ("gasday", "prev", "interp", "skip"):
                 gd = (_local(t) - dt.timedelta(hours=9)).date()
             elif route == "standard9":
                 gd = (t - dt.timedelta(hours=9)).date()
             else:
                 gd = t.date()
             k = (fac[u], gd.isoformat())
-            while k not in price:
-                gd -= dt.timedelta(days=1)
-                k = (fac[u], gd.isoformat())
-            tot += q * price[k]
+            tot += q * price.get(k, 0.0)
         out[u] = tot
     return out
 
@@ -205,10 +174,11 @@ def ask_b(target, route="golden"):
     out = {}
     for u, es in evs.items():
         if route == "golden":
-            # a full outage reported again a day earlier, at the same hours, with the same length and cause, in a later
-            # filing is the same outage dated right; the earlier filing gives way to it
+            # a full outage reported again a month later, on the same day of the month at the same hours, with the same
+            # length and cause, in a later filing is the same outage dated right; the earlier filing gives way to it
             es = [e for e in es if not any(f[3] != e[3] and f[2] > e[2] and f[4] == e[4] and f[1] - f[0] == e[1] - e[0]
-                                           and e[0] - f[0] == dt.timedelta(days=1) for f in es)]
+                                           and f[0].month == e[0].month + 1 and f[0].day == e[0].day
+                                           and f[0].hour == e[0].hour for f in es)]
         keep = []
         if route in ("latest", "golden"):
             for e in sorted(es, key=lambda e: (e[2], e[3]), reverse=True):

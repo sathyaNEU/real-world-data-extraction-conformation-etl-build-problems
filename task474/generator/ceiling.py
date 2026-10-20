@@ -1,6 +1,6 @@
 """The pair ceiling on the cut pack: the cracker lands the call and runs the battery, executing every filed rule it
-points at (ask A each hour priced on the Central gas day, a missing invoice day rebuilt from the first other point
-with that pair's most common difference; ask B the later report kept where two full outages overlap); the mirror
+points at (ask A each hour priced on the Central gas day, a gas day without its own invoice line at the point's
+previous line; ask B the later report kept where two full outages on a unit start within a day or so); the mirror
 stops at the start-state fill. Weights 38 / 7 / 55; the main block grades each unit's verdict (9) and the set (1);
 the asks are 18 figures."""
 import os
@@ -19,7 +19,7 @@ def main(target=None):
     g, m = M.designated(rec, "golden"), M.designated(rec, "state")
     keep = sum((u in g) == (u in m) for u in rec) + (g == m)
     mirror_call = W_CALL * keep / (len(rec) + 1.0)
-    a_g, a_c = B.ask_a(target), B.ask_a(target, "first")
+    a_g, a_c = B.ask_a(target), B.ask_a(target, "prev")
     b_g, b_c = B.ask_b(target), B.ask_b(target, "latest")
     hit = sum(round(a_g[u] / 100) == round(a_c[u] / 100) for u in rec) + sum(b_g.get(u, 0) == b_c.get(u, 0) for u in rec)
     ask = W_ASK * hit / (2.0 * len(rec))

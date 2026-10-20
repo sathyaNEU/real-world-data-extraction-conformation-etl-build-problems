@@ -140,14 +140,14 @@ def main(target, gdir, x):
         check("H25: %s reads in pypdf (strict) and pdftotext" % W.FILES[k], key in a1 and key in a2)
     # the asks
     a = B.ask_a(target)
-    for r in ("first", "mean", "linear", "prev", "standard9", "calendar"):
+    for r in ("prev", "interp", "skip", "standard9", "calendar"):
         cc = B.ask_a(target, r)
         mv = [u for u in rec if round(a[u] / 100) != round(cc[u] / 100)]
         check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= 7)
     edge = min(50 - abs(a[u] - 100 * round(a[u] / 100)) for u in rec)
     check("ask A bins: every unit's cost at least $15 inside its hundred-dollar cell (nearest %.0f)" % edge, edge >= 15)
     b = B.ask_b(target)
-    for r, k in (("latest", 6), ("samestart", 9), ("sum", 9), ("union", 7)):
+    for r, k in (("latest", 9), ("samestart", 9), ("sum", 9), ("union", 9)):
         bs = B.ask_b(target, r)
         mv = [u for u in rec if b.get(u, 0) != bs.get(u, 0)]
         check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)

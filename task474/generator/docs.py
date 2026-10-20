@@ -91,7 +91,7 @@ def write_terms(path):
          Paragraph("6.2 Quantities are the metered deliveries at each Delivery Point for the Gas Day, in dekatherms.",
                    BODY),
          Paragraph("Section 9. Billing", HEAD),
-         Paragraph("9.1 Seller invoices monthly by Delivery Point, one line for each Gas Day in the month.", BODY)]
+         Paragraph("9.1 Seller invoices monthly by Delivery Point.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
