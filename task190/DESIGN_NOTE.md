@@ -2083,6 +2083,62 @@ three builds earlier, so both honest keys for a statutory statistics institute a
 author's `--force` or a different deciding organisation clears it. Paused rather than retired, per the
 author file's standing no-retirement rule.
 
+- **Architecture 8, the ground reassigned to `accounting-audit-forensic` x `anomaly-detection`, three
+  linear-algebra mechanisms measured dead before any file was cut (2026-10-20).** The cell was picked
+  because it carries zero registered anomaly-detection cards, and the pass inherited task198 architecture
+  7's three-clause filter for this same cell, which leaves **linear algebra** as the only construction
+  shape still open on it (a design weight is spent twice here by architecture 3, an exact identity is
+  revelation, and a fitted component is task182's spent family). All three linear-algebra shapes this
+  ground offers are now measured out. **M2, the latent collection kernel of a balance-forward receivables
+  ledger recovered by deconvolving receipts against the branch's own billing series:** dead on the reflex
+  sweep, because splitting each month's receipts across the prior billing months pro rata to those
+  billings, which solves no system at all, names the genuinely slowing branch **30 of 30** seeds, and dead
+  a second time on determinacy at **1.33 distinct branches named by the golden's own family** (exact
+  square solve, OLS, NNLS, ridge; the square solve names a different branch in 10 of 30). The artifact
+  separation worked and is worth recording: the DSO change, the balance-over-billings change and the
+  billing-concentration change land on the billing-profile branch 16, 16 and 30 of 30. **M1, reciprocal
+  (fixed-point) service-centre allocation, the full cost of each centre solved from the usage matrix:**
+  dead on the ceiling in one computation, move available **0.01742** of the mean graded cost against a move
+  needed of **0.88488**, ratio **0.0676**, and dead again on the method never moving the call, where the
+  reciprocal solve and the direct method name the same unit **30 of 30** and the plainest column, each
+  unit's own direct cost per unit of output with no allocation at all, agrees **29 of 30** at corr
+  **+0.9985**; pushing the mutual service share to an implausible 0.40 to 0.60 changes none of those three
+  numbers. **M3, circular-flow tracing, each entity's receipts traced to external origination through the
+  ring's own payment matrix:** dead on the one-group-by route, where the disclosed internal share read
+  straight off the ledger, one divide, names the round-tripper **30 of 30** against the traced figure's 25,
+  25, 22 and 25 of 30, with distinct answers across the four tracing rules at **1.20** (max 2). The tracing
+  rule is the pincer in its clearest form: pro rata, first in first out and the lowest intermediate balance
+  are filed legal rules, so filing one is rule application and leaving them open forks the figure.
+- **`binding_constraint` as the decisive step on this ground, refused on its own measurement rather than
+  banked on the open label.** The strategy is genuinely unspent on this objective across all 34
+  anomaly-detection cards and `ban.strategy` did not fire, and it still cannot be drawn honestly here. Its
+  structural signature does fire: `guard.py check` on the axis probe returns BLOCK
+  `test.same_driver_older` with gap `objective`, pattern `C` and Gate G `binding_constraint` repeating
+  **10 earlier builds** (task128 twice, task28 v2, task32 v5, task37, task51 v4, task53 v1, task69 v3 and
+  v4, task87 v5, task92 v3 and v4, task94 v1 to v3), and the nearest driver is task106 at **0.10**, whose
+  sentence is the shared-finite-pool move itself, with task38 v3 at 0.06 on the reachable-share move. The
+  reason behind the measurements, and the general form worth keeping: **a capacity, budget, eligibility or
+  service limit does not measure itself**, so by 1.2b's own distinction it is either filed or published,
+  which makes applying it rule application and a one-join route, or it is unrecorded, which leaves the call
+  unforced. The one escape the record holds is task106's, where the limit's level is published and **which
+  candidates share it** is the analysis, and that escape is identity or grain, which rule 3 bars from
+  deciding a call. So the family is unspent on this objective because its object is structurally a filed
+  quantity, not because nobody drew it.
+- **The allocated cell's three serving task types, read before drawing rather than after.**
+  `accounting-audit-forensic` is a house domain and inherits its task types from
+  `banking-credit-financial-risk`, `actuarial-science-insurance` and `general-statistics-data-science`,
+  where exactly three serve anomaly-detection: `fraud-aml-detection`,
+  `exploratory-data-analysis-distribution-assessment` and `multiple-testing-selective-inference`. All three
+  are encumbered for this slot. `fraud-aml-detection` is architecture 1's and architecture 2's own ground
+  (the bank's financial crime register, then the cash deposit band), so `test.own_lineage` reaches it, and
+  task198 architecture 7 then spent three further mechanisms on it with measurements.
+  `multiple-testing-selective-inference` is closed by `stumping` Part 3 screen 4, which measures all three
+  ways a false-discovery quantity reaches a decision as dead, and by task191's shipped
+  selection-on-the-maximum build. `exploratory-data-analysis-distribution-assessment` has all three of its
+  client rigor cards pinned by a stated anomaly rule, a named grouping or a named decision criterion, which
+  architecture 6's pin pincer rules out as a decisive step. Recorded so the next pass on this cell starts
+  from the task-type read.
+
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 
 Architecture 4 is abandoned, and not because the design failed. Two builder sessions were terminated by an
@@ -2435,3 +2491,127 @@ strategies `population_selection` and `decomposition_attribution`, roles `resear
 `statutory_or_regulatory_filing`; none of the card's remaining values is among them. The standing lesson,
 recorded because it cost two redraws: a ban table is not authority, `guard.py check` is, and a spent card
 fences off no axis while its driver stays as dead as any.
+
+## Architecture 8, no draw: the cell's one open shape measured out, 2026-10-20
+
+Wave 8. The number was moved off `healthcare-delivery-health-economics` deliberately, since architecture 7
+closed that cell with three exhaustive classes, and onto `accounting-audit-forensic` x `anomaly-detection`,
+a pairing with zero registered cards. The pass returns a negative with measurements and no card registered.
+
+**What this pass started from, which is the cheapest thing on the record and was nearly missed.** The cell
+is not virgin. `guard.py slots` on the setting nouns returned task190's own architecture 3 (internal audit,
+misstatement) and task110 (journals, trial balance), and reading task198's `pipeline.json` showed that its
+**architecture 7 had already been reassigned to this exact cell**, with three mechanisms measured dead and a
+three-clause filter left behind: the latent quantity must be not collinear with the easy statistic, large
+against the nuisance's own sampling noise, and recoverable by a construction forced **without a
+distributional family choice**. The shapes satisfying the third clause are linear algebra, a design weight
+or an exact identity; design weights are spent twice on this ground by architecture 3, an exact identity is
+revelation, and a fitted component is task182's spent family. **So linear algebra was the one open shape,
+and this pass screened the three linear-algebra constructions accounting data admits.** Reading one
+neighbouring slot's `pipeline.json` was worth more than the first hour of search, and `guard.py mechanisms`,
+`recent`, `coverage` and `nearest` cannot see any of it.
+
+**The inverted draw, files first.** The files a group finance function keeps, and what each pins that no
+other file pins: the general ledger and trial balance (balances by account, entity and period, and nothing
+finer); the accounts payable open-items file (one row per invoice, and the only statement of what is still
+owed); the receipts or cash book (money in by date, and in a balance-forward system the only record of
+collection, with no link to the invoice it paid); the invoice or billing register (one row per invoice,
+finer than any period total); the service usage log behind the recharges (provider by receiver, the only
+record of who consumed whose service); the inter-entity payment matrix (counterparty pairs, the only record
+of circulation); the aged debt report (buckets, coarser than the register). The three quantities those files
+force and nothing publishes are the three mechanisms below. **The screens were run as code on the clean
+truth, each twice with byte-identical output, in
+`scratchpad/w8_190/` (`screen_M2.py`, `screen_M1_M3.py`, `screen_M1b.py`).**
+
+| Screen | M2 collection kernel | M1 reciprocal allocation | M3 flow tracing |
+|---|---|---|---|
+| 1 one number or one per unit | one per unit per lag, passes | one per service centre, passes | one per entity, passes |
+| 2 the forcing file's own column | the billing register publishes no kernel, passes | own direct cost per output agrees **29/30**, corr **+0.9985**, FIRES | disclosed internal share names it **30/30**, FIRES |
+| 3 the attaining subset | no subset is at a common billing profile, passes | every unit takes recharges, passes | no entity sits outside the ring, passes |
+| 10 partial coverage | unaffected share 0, passes | unaffected share 0, passes | unaffected share 0, passes |
+| 11 the benchmark scalar | the benchmark is the branch's own first half, per unit, passes | each unit's own prior cost, passes | each entity's own share, passes |
+| 12 mandated indicator | the deciding organisation is the group, not a regulator, and no file is its own process log, passes | same, passes | same, passes |
+| determinacy | **1.33** distinct, max 2, FIRES | 1 (unique solve), passes | **1.20** distinct across tracing rules, max 2, FIRES |
+| reflex sweep | pro rata attribution names it **30/30**, FIRES | the plain column, FIRES | the plain column, FIRES |
+| ceiling, available over needed | not reached | **0.0676** mean, FIRES | not reached |
+
+**The one-group-by route to each call, stated in one line before the first harness, as the contract
+requires.** M2: receipts over billings in the window, one divide (measured, 14 of 30, the only route that
+did not land). M1: own direct cost per unit of output, one divide (measured, 29 of 30). M3: the disclosed
+internal share, one divide (measured, 30 of 30). Two of the three were right on the second measurement,
+which is where the record said they would be.
+
+**The three rules, answered for the strongest of the three (M2) with the failures said plainly rather than
+written to pass.** `Task type:` FAILS. The only anomaly-detection task type this house domain reaches that
+a receivables ledger fits at all is `fraud-aml-detection`, whose client page is transaction monitoring; the
+honest task type for M2 is `collections-recovery`, which serves opportunity sizing and not this objective.
+`Domain test:` passes, the collection curve of a balance-forward ledger is the field's own object.
+`Swap:` FAILS. Put a utility's metered customers or a mobile operator's subscribers in and the sentence
+reads the same, because deconvolving receipts against billings carries no accounting content beyond the
+balance-forward fact. `Layer 1:` passes, balance-forward application, aged-bucket reports and fiscal
+against calendar years are all real. `Layer 2:` passes, `estimation_fit`. `Decisive step:` judge
+deterioration on the recovered curve rather than on the aged balance. `Not semantics:` passes, no field
+read gives the kernel. `Not rule application:` passes, no filed rule performs the deconvolution.
+`Analyst test:` **FAILS on measurement**, 30 of 30: the pro rata attribution reflex solves no system and
+names the golden branch every time. `Estimand:` borderline, filing the collection curve names the deciding
+quantity. `No decoy:` passes. `No certified replay:` passes. `Lesson:` FAILS as new, since
+"complete before you rank" is task181 v2's shipped lesson in another clock.
+
+**The axis map, run at the moment of the draw and not copied from a table.** Probe 1 (gap `objective`,
+pattern `C`, role `compliance_or_audit`, artifact `filed_standard`) returns BLOCK exit 1 on `ban.role` and
+`ban.artifact`, both against **task474, registered today**, plus `test.same_puzzle_older` against task37
+and `test.same_driver_older` against ten earlier builds. Probe 2, with the gap, pattern, role and artifact
+redrawn, leaves **one** BLOCK, `test.same_driver_older` against task97 v4, which one differentiation line
+clears. **No `ban.pairing`, `ban.subdomain`, `ban.shape`, `ban.strategy`, `ban.calibration`, `ban.spine`,
+`ban.org_family` or `ban.forum` fired on either probe.** So the finding is architecture 7's again and
+stronger: **the cell is open on every axis ban and the mechanism is what is missing.** Personas were drawn,
+never typed: `guard.py names --geo ireland --seed 190` gave Conchur Frances, Ashton Halloran, Marc
+O'Reardon, Carly Corcoran, Harry Creed, Sara Soolaghan, Charles Sugrue, Colm Shaffrey, Tanya McCrea and
+Rhianna MacDermott, and the guard WARNed on the first names Marc (task245) and Carly (task457), so both are
+struck. Probes are `probe_card.json` and `probe_card2.json` in the pass's scratch directory; neither was
+registered, per the wave contract.
+
+**What this leaves for the next pass on this cell.** Linear algebra is now spent alongside the design
+weight and the exact identity, so task198 architecture 7's filter has no construction shape left and the
+next pass should not start from it. The one condition no measured kill here touches is a construction whose
+graded object is **not a monotone summary** of the recovered vector: all three deaths above grade a
+monotone functional (a mean collection age, a cost level, an external share), and a monotone functional of
+a linear solve is reachable by any attribution reflex, which is exactly what the 30 of 30 measured. A
+graded object that is a position inside the recovered vector, rather than its mean, is the only opening
+left on this ground, and it is one computation to price.
+
+**A correction to how this cell's occupancy was read, measured rather than taken on trust.** The pass was
+told the pairing carries zero anomaly-detection cards, which is true of the **house** label and false of
+the **ground**: counting the card corpus by `subdomain` over the three client task types the house domain
+inherits returns **four** anomaly-detection cards, task182 (spent), task185, task191 and task196, against
+the **zero** `guard.py coverage` prints for `accounting-audit-forensic`. task196 is live and is where this
+slot's own architecture 7 died. **What the measurement adds is that the guard does not close that gap.**
+Three probe cards were filed, one naming each inherited client task type as `domain` and `subdomain` the
+way task182, task185, task191 and task196 are filed, and all three returned an **identical** verdict: one
+BLOCK, `test.same_driver_older` against task97 v4, the same WARN and the same nearest-driver list, with
+**no `ban.subdomain`, no `ban.pairing` and no `test.own_lineage` on any of them**. The verdict is invariant
+to the task type, because `ban.subdomain` reaches only the last three live cards by filing time and none of
+the four is in that window, while `test.own_lineage` runs on the slot's own lineage drivers and not on the
+subdomain at all. So the three structural tests cannot detect inherited-task-type occupancy, and reading
+them for it returns a false clear. **The law, worth filing because one command's output invites the
+mistake:** for a house domain, `coverage`'s objective column counts the house label and understates the
+ground by every card on the client task types it inherits, and no `guard.py` subcommand prints the
+inherited count, so it is read directly off the card corpus (one pass over `cards/*.json` filtered on
+`subdomain`). Measured here at 0 against 4, and on task198's cell at 0 against 6.
+
+**The amended one-per-case clause, checked against all three mechanisms.** The clause now holds only where
+the second file's quantity enters the construction linearly and by identity, as a count, a duration or a
+currency amount, and fails where it enters through a response function whose exponent is a free choice.
+None of M1, M2 or M3 is exposed: the second file contributes a currency amount in M1 (service cost pools)
+and M3 (inter-entity payments) and a currency amount per month in M2 (billings), each entering a linear
+system with unit coefficients, so no exponent exists to spread. The three deaths are therefore not
+instances of the amended clause and stand on their own measurements.
+
+**Screen 2 read in its structural form, which is what separated the three.** The question is not whether
+the forcing file happens to publish the correction but whether publishing it is the file's purpose. The
+general ledger exists to publish cost by unit and the open-items ledger exists to publish counterparty
+balances, so screen 2 fired structurally on M1 (**+0.9985**) and M3 (**30 of 30**). A balance-forward cash
+book exists to record money in and is specifically **not** a record of what any invoice's collection
+looked like, so screen 2 passed structurally on M2 and the measurement agreed, corr **+0.1889** with the
+one-divide route landing only **14 of 30**. M2 then died on the reflex and on determinacy instead, which is
+the pattern to expect: clearing screen 2 moves the kill rather than removing it.

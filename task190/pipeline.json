@@ -1,6 +1,6 @@
 {
   "approved": null,
-  "architecture": 7,
+  "architecture": 8,
   "build_gates": {
     "archive": "target.zip cut from the final rebuild, 17 members, md5 bbf01fae98537ad271c72b80206f113c, sha256 1d1d797e1e62b9052d92e900bb9ace344ddd31ef131e188dc6397e8e73ce21c9, every member byte-equal to the tree",
     "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 46.2 if both top responses resolve A3's association returns, measured and recorded in the design note's ask sheet",
@@ -87,7 +87,7 @@
     ],
     "trigger": "stage 4 judge: NOT_DETERMINISTIC, FIX_NOW, both failures on the ask side"
   },
-  "resume": "architecture 7 (healthcare-delivery/provider-quality-risk-adjustment) lands no draw: three candidate decisive steps screened as code, all three dead. C1, the case-mix joint raked from two-way statutory returns, passed screens 1 and 2 well (corr -0.0646, -0.0578, +0.0104; plain-column routes 1 to 10 of 30) and died on determinacy at 1.23 distinct designated sets with the easy route right 24 of 30. C2, the change-point date, 1.57 distinct months with the alarm 0.7 months off. C3, coding intensity off shared patients, beaten by filter-and-difference at corr +0.9947 to +0.9972. Three closed classes on this cell, exhaustive. Recommends moving the number to never-built AD ground (accounting-audit-forensic, business-operations-analytics).",
+  "resume": "architecture 8 drawing on accounting-audit-forensic x anomaly-detection with binding_constraint, the one strategy unspent across all 34 AD cards and carrying no semantics-risk flag. Warned mid-pass that the pairing is virgin on its label and occupied on its ground: accounting-audit-forensic is a house domain, coverage prints 0 for it, and its three inherited client AD task types already carry four cards (task182, task185, task191, task196), with fraud-aml-detection also this slot architecture 7 own death. Also warned that the step-three shape clause now requires the second file quantity to enter linearly and by identity, since a physical intensity reopens the estimator family through its exponent.",
   "returned": [],
   "rubric_pass": {
     "asks_resited": [
@@ -125,7 +125,7 @@
   },
   "stage": 1,
   "stage_name": "draw",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
   "task": "task190",
   "updated": "2026-10-20",
