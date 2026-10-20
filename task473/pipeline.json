@@ -1,0 +1,40 @@
+{
+ "task": "task473",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "The default path gives every unarrested surviving driver of the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and certifies Corwin, Hatchell, Ossian and Pruett, dropping Tanager and certifying Pruett, because one probability for every county ignores how each county's impaired drivers are spread across the BAC bands officers catch.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "guard_check": "WARN 2026-10-20 on the registered card (shape 01 overuse, Gate G method_or_model_selection repeat and overuse); BLOCKs cleared at the draw by redrawing the decisive generator, decision type, strategy and organisation family, and at registration the pairing and forcing event against task474",
+  "heart": "",
+  "nearest": "task458 at 0.06"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet with the cracker script, prompt.txt; then precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "source_note": "seed ET30 (FARS alcohol-impaired-driving fatality rates, untested drivers, ten imputations): the world (a highway safety office targeting impaired-driving help on alcohol-impaired-driving fatality rates per 100 million VMT), the decision (which jurisdictions get the help) and the quantity kept; the units moved from states to one state's counties; the pitfall re-found in how surviving drivers come to be tested"
+}
