@@ -231,7 +231,7 @@ values, or wards and bed-days, so the generating process has dropped out and the
 screen's answer into the note, naming the estimand's five parts and the sentence that files each, before
 the default path is written.
 
-**Surviving this screen is necessary and not sufficient**, and three further screens kill what it passes.
+**Surviving this screen is necessary and not sufficient**, and the screens below kill what it passes.
 Each is cheap, each is run as code before any separation is measured, and each closed a cell in one sitting.
 
 - **The dispersion screen.** A decisive quantity that is a spread rather than a level passes the estimand
@@ -263,6 +263,28 @@ Each is cheap, each is run as code before any separation is measured, and each c
   and a divide with no model, and it reached the truth **14 of 20**, while the file's own published receipt
   date, one group-by and one divide, reached **20 of 20**, the same as the designed completion route.
 
+- **The partial-coverage screen, which decides the two screens above before a world is drawn.** Where the
+  decisive step corrects a suppression, selection or inflation acting on *part* of the record, ask what
+  share of the record the correction leaves alone. That share is a filter and a divide estimating the same
+  quantity with no model, so it is the common-exposure subset under another name; drive the share to zero
+  and the correction becomes a near-uniform rescaling, which is the one-number screen. One dial, both ends,
+  nothing between them: a patrol-deterrence draw measured the designed route at corr **+0.9920** with the
+  raw count at an unaffected share of 0.850 and **+0.9995** at 0.007, while the unaffected subset named the
+  truth **20 of 20** at the first and **0 of 20** at the second, and over a 480-cell sweep only 5 cells had
+  the crude route, the subset and the designed route all where a ladder needs them. **This is one line to
+  ask of a candidate and it is asked before any harness is written.** A correction that leaves no part of
+  the record alone is the shape the screen does not reach.
+- **The benchmark screen, which sits beside the one-number screen and is not cleared by it.** Where the
+  decisive construction is a **benchmark a statistic is read against**, ask whether the benchmark is a
+  single number once the second file is read. It usually is, however elaborately it was built, and then the
+  one-group-by route competes on the benchmark rather than on the statistic and wins: an outbreak draw
+  whose designed route convolved a per-run dispensing profile over 24 runs reached its verdict **20 of 20**,
+  and so did taking the single longest-dispensing run and convolving once, because both end in one spread
+  compared against one spread, and the designed likelihood had no discrimination at all (right **0 of 20**
+  in the arm it was built to separate). The one-number screen asks whether the *correcting input* is
+  scalar, and a per-unit input passes it; this asks whether the *benchmark* is scalar, and a per-unit input
+  that collapses into one comparison fails. A verdict candidate states what its one-group-by route would be
+  before any world is drawn.
 - **`population_selection` needs the data to force the selection.** The WHAT screen kills any decisive step
   that settles which rows are the population, because filing that settlement is rule application and
   leaving it unfiled leaves the graded order unforced, which is a fork. So the strategy is only drawable
@@ -770,6 +792,23 @@ barriers-in-place tally the record already prints, with the one-line route reach
 20**. So the file passed step one and the construction failed step two, and an orchestrator that named the
 file also named the worst construction in its family. **Name the file, then screen every construction it
 forces, and expect the obvious one to be the proxied one.**
+
+**Step three, which five closed cells wrote in the same words without conferring.** The file that does
+the forcing is not enough either, because the construction it forces still has to escape every screen
+above, and the screens between them leave exactly one shape standing. Three independent passes on three
+unrelated cells (a transit constabulary's patrol record, a public health unit's outbreak line list, a
+provider network's statutory returns) each ended by naming where a later pass should start, and the three
+notes describe one thing: **the correcting quantity is one per case, forced arithmetically by a second file
+at a finer grain than anything the main file carries, and no part of the record escapes it.** Each clause
+is a screen answered. One per case, not one per unit, clears the one-number screen and the benchmark screen
+at once, because a per-case correction cannot collapse into a single comparison. Nothing escaping it clears
+the partial-coverage screen and with it the attaining-subset screen, since there is no unaffected part to
+filter to. Forced arithmetically, rather than by a fit, clears the determinacy screen, because an estimator
+family is what returns more than one answer. Finer than any attribute the main file carries is what stops a
+cross-sectional control, a stratification or a reweighting from reaching it. A candidate failing any one
+clause has a named route to the golden before a world is drawn, and the five closures are five instances of
+exactly that. **State the one-group-by route to the call, in one line, before the first harness**: the five
+passes that measured it found it on the second measurement, never the tenth.
 
 **One role rule the same sitting earned twice.** An orchestrator allocates the cell, the axes and the
 constraints; it does not name the mechanism or the construction. Two prescriptions from outside the

@@ -187,6 +187,24 @@ LOCALE_FOR_GEO = [
 ]
 
 
+# ISO 3166-1 alpha-2 codes for the geographies the map above covers. A card's `world.geography` is
+# usually a country name, but a build whose world is filed by code ("PH", "IE") fell through to the
+# en_US pool, so the code is resolved as well as the word.
+ISO2_FOR_GEO = {
+    "GB": "en_GB", "UK": "en_GB", "IE": "en_IE", "AU": "en_AU", "NZ": "en_NZ", "CA": "en_CA",
+    "IN": "en_IN", "DE": "de_DE", "AT": "de_AT", "CH": "de_CH", "FR": "fr_FR", "ES": "es_ES",
+    "MX": "es_MX", "IT": "it_IT", "BR": "pt_BR", "PT": "pt_PT", "NL": "nl_NL", "BE": "nl_BE",
+    "SE": "sv_SE", "NO": "no_NO", "DK": "da_DK", "FI": "fi_FI", "PL": "pl_PL", "CZ": "cs_CZ",
+    "PH": "en_PH", "US": "en_US", "ZA": "en_US", "CL": "es_CL", "AR": "es_AR", "CO": "es_CO",
+    "KE": "en_KE", "NG": "en_NG", "GE": "ka_GE", "AM": "hy_AM", "AZ": "az_AZ", "TR": "tr_TR",
+    "GR": "el_GR", "RO": "ro_RO", "HU": "hu_HU", "BG": "bg_BG", "HR": "hr_HR", "SK": "sk_SK",
+    "SI": "sl_SI", "EE": "et_EE", "LV": "lv_LV", "LT": "lt_LT", "UA": "uk_UA", "IS": "is_IS",
+    "AL": "sq_AL", "MK": "mk_MK", "BA": "bs_BA", "ID": "id_ID", "TH": "th_TH", "VN": "vi_VN",
+    "JP": "ja_JP", "KR": "ko_KR", "TW": "zh_TW", "CN": "zh_CN", "IL": "he_IL", "IR": "fa_IR",
+    "EG": "ar_EG", "SA": "ar_SA", "NP": "ne_NP", "BD": "bn_BD",
+}
+
+
 def locale_for(geography, strict=False):
     """The Faker locale for a geography. With strict, say whether the map actually matched.
 
@@ -195,10 +213,17 @@ def locale_for(geography, strict=False):
     people.* bans then block the second for a collision this function created. Callers that draw
     personas pass strict=True and report the fallback.
     """
-    g = (geography or "").lower()
+    raw = (geography or "").strip()
+    g = raw.lower()
     for pat, loc in LOCALE_FOR_GEO:
         if re.search(pat, g):
             return ("en_US", True) if strict and loc == "en_US" else ((loc, True) if strict else loc)
+    # A geography filed as a bare ISO alpha-2 code, which the word patterns above cannot see.
+    code = re.fullmatch(r"[A-Za-z]{2}", raw)
+    if code:
+        loc = ISO2_FOR_GEO.get(raw.upper())
+        if loc:
+            return (loc, True) if strict else loc
     return ("en_US", False) if strict else "en_US"
 
 

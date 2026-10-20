@@ -82,7 +82,15 @@ It searches every number's design note and `pipeline.json` for the candidate's o
 matching lines with the heading they sit under. A screen recorded in a slot note is as dead as one recorded
 on a card, and `recent`, `mechanisms`, `nearest` and `heart` cannot see it: an overdispersion-adjusted funnel
 was rejected with measurements in two slots (task183's note and task194's, which names it outright) while
-every card screen passed it, and a pass was spent on it anyway. A hit is not a repeat; read the line. Everything here is mechanical and free; the people index and the clone screen keep working caches
+every card screen passed it, and a pass was spent on it anyway. A hit is not a repeat; read the line.
+
+**Run `slots` twice, once on the mechanism's nouns and once on the physical setting's**, because they are
+different screens and the setting run is the cheaper kill. A draw whose mechanism words returned nothing had
+its setting words (the pathogen, the notification route, the laboratory, the epidemic curve) return two
+earlier builds on its own cell, one of them the candidate exactly once the nouns were stripped, while
+`check` scored it at 0.06 with neither build among the five nearest drivers: the driver score is lexical, so
+the same insight told in the setting's words is invisible to it. On any cell the lane has drawn on before,
+the setting run comes before the first harness, not after it. Everything here is mechanical and free; the people index and the clone screen keep working caches
 under `.cache/` (never committed), seeded from the tracked baselines in `corpus/` and
 `../clone-check/corpus/`.
 
