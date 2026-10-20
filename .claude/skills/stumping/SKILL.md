@@ -263,6 +263,14 @@ Each is cheap, each is run as code before any separation is measured, and each c
   and a divide with no model, and it reached the truth **14 of 20**, while the file's own published receipt
   date, one group-by and one divide, reached **20 of 20**, the same as the designed completion route.
 
+- **The null-region screen: a baseline the record already publishes by omission.** Any construction that
+  separates a response from a baseline has that baseline published by the periods in which the response is
+  absent, and an operations record always has those periods. A quiet-period route is therefore the
+  attaining-subset screen on the time axis, available with no model. Measured with no middle at all: a
+  failure-demand candidate whose designed lag-1 regression reached the truth 20 of 20 was matched by one
+  group-by over the days whose previous day dispatched nothing, at **19 or 20 of 20 at every quiet share
+  from 0.02 to 0.70**, corr +0.9761 rising to +0.9998. Ask what the record looks like where the thing being
+  measured did not happen.
 - **The partial-coverage screen, which decides the two screens above before a world is drawn.** Where the
   decisive step corrects a suppression, selection or inflation acting on *part* of the record, ask what
   share of the record the correction leaves alone. That share is a filter and a divide estimating the same
@@ -799,7 +807,8 @@ above, and the screens between them leave exactly one shape standing. Three inde
 unrelated cells (a transit constabulary's patrol record, a public health unit's outbreak line list, a
 provider network's statutory returns) each ended by naming where a later pass should start, and the three
 notes describe one thing: **the correcting quantity is one per case, forced arithmetically by a second file
-at a finer grain than anything the main file carries, and no part of the record escapes it.** Each clause
+at a finer grain than anything the main file carries, no part of the record escapes it, and the second
+file's quantity enters the construction linearly and by identity.** Each clause
 is a screen answered. One per case, not one per unit, clears the one-number screen and the benchmark screen
 at once, because a per-case correction cannot collapse into a single comparison. Nothing escaping it clears
 the partial-coverage screen and with it the attaining-subset screen, since there is no unaffected part to
@@ -809,6 +818,16 @@ cross-sectional control, a stratification or a reweighting from reaching it. A c
 clause has a named route to the golden before a world is drawn, and the five closures are five instances of
 exactly that. **State the one-group-by route to the call, in one line, before the first harness**: the five
 passes that measured it found it on the second measurement, never the tenth.
+
+**The last clause was added by a measured death, and it is the one a draw will argue with.** "Forced
+arithmetically" means the second file's quantity enters as a count, a duration or a currency amount, so the
+construction is an identity. A physical intensity does not qualify however fine the file's grain: where the
+quantity enters through a response function (load to damage, stress to life, concentration to dose,
+intensity to wear) the exponent is a free method choice and the determinacy screen fires. A fleet wear-life
+candidate passed screens 1, 2, 3, 10, 11 and 12 and the ceiling at a ratio of 17, and died because across
+the five exponents a competent analyst would use the designated unit took **2.55 distinct values of 5**, up
+to 4 on one draw, with the graded rate spreading **107.9 per cent of its own level**, 255 times its printed
+precision. The discretising rescue cannot reach that, because what forks is the designation itself.
 
 **Run step two as algebra before you run it as a correlation, and it answers with certainty.** Write the
 construction as a function of the forcing file's own column and ask whether it is affine in it. If it is,
@@ -840,6 +859,24 @@ the designed construction's own lever was 3.028 per cent. The escapes the invers
 condition, a completeness condition, an incentive) do not help here, because on that ground the
 completeness condition **is** the published rate. So on regulated ground, force the quantity from a file
 that is not a process log of the deciding organisation, or accept a shipped proxy and draw something else.
+
+**A screen coming back clear is information, and the proxy screen has a structural form to ask first.** The
+forcing file's own column is the wall on most ground, and it is not automatic: one candidate measured corr
+**+0.7302** with the published column and the one-divide route at **9 of 20**, the first clear result on
+file, while every naive route was genuinely wrong (6, 8 and 9 of 20 against the designed route's 20). It
+died anyway, because the screen fires in its **structural** form: that file is commercially sold to publish
+that very column, and with the column present corr is **+1.0000** and the one-divide route 20 of 20. So ask
+not only whether the forcing file happens to publish your correction, but whether publishing it is what the
+file is for.
+
+**Operations ground is adverse to a silent rung, as the mandated-indicator law's mirror rather than an
+instance of it.** No statutory quality framework applies there, so that law does not fire, and the
+organisation documents its own metrics anyway: the files realism requires in the pack (a metric or KPI
+dictionary, a costing policy, a service standard, an equipment maker's maintenance schedule) are precisely
+the ones naming the operational quantities the field decides on. Rule 1 pushes the deciding quantity toward
+what the field estimates and readability test 1 pushes it away from anything a filed sentence names, and
+there the two pull in opposite directions. Three candidates running, the quantities with no entry in
+anybody's dictionary were the ones that were not operations quantities at all.
 
 **One role rule the same sitting earned twice, and a second the same wave earned three times.** An
 orchestrator allocates the cell, the axes and the constraints; it does not name the mechanism or the

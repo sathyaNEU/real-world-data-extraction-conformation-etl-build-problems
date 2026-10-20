@@ -237,6 +237,15 @@ back; the better outcome is never to face it.
   that is the same insight in the same domain, under the 0.12 WARN floor, and two task500 re-roots passed
   `check` at 0.05 and 0.08 while repeating their neighbours' drivers. The abstraction test and `slots` are
   the complements; the number is never the answer on its own.
+- **A house domain's occupancy read off its own label.** `coverage` counts the pairing by the house label,
+  while `guard.py`'s `three_rules.task_type` rule and `precut.py`'s `Task type:` line route the draw
+  through the **client** task types the house domain inherits. Those are different populations, so a house
+  pairing can print zero and be thoroughly occupied: measured, `business-operations-analytics` prints 0 on
+  anomaly-detection and its five inherited AD task types carry six cards, `accounting-audit-forensic`
+  prints 0 and its three carry four. Three other house domains inherit no AD task type at all and are
+  simply undrawable there. **Allocate on the inherited task types, never on the pairing count**, and read
+  the `test.own_lineage`, `test.same_puzzle` and `test.same_driver` BLOCKs rather than the driver score: one
+  dead candidate scored 0.05 while `own_lineage` correctly caught it as its own slot's earlier architecture.
 - **A spent cell read as a spent objective.** `ban.subdomain` reaches the last three builds, so a cell
   whose mechanism search came up empty is drawable again next sitting: what binds a redraw there is
   `driver.text`, `test.same_puzzle` and `test.same_driver`, all of which are about the mechanism. A lane
