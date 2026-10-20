@@ -387,6 +387,293 @@ labelled lines, not eleven.
   sizing a replication, and on the graded object here that correction is worth 0.3 per cent of the total
   and changes no ordering, so there is no lesson the split can carry.
 
+## The fifth ground: general-statistics-data-science x exploratory-data-analysis-distribution-assessment (2026-10-20, architecture 2)
+
+Assigned ground for architecture 2: card `domain` `general-statistics-data-science`, client task type
+`exploratory-data-analysis-distribution-assessment` (the taxonomy tags it DD and AD, so the pairing is
+legal), objective Anomaly Detection and Diagnostics. Two spent anomaly-detection drivers sit on this cell
+and the pass drew away from both: **task185**, the conversion between an old and a new measuring device
+sized at the value being converted, and **task182 architecture 1**, shipped and then solved, where every
+unit's level follows a shared external driver through its own lagged response. The cell's settled
+constraint governed every candidate: General Statistics borrows its setting, so the swap test runs on the
+**method**, and the deciding quantity has to be a property of a distribution (a shape, a tail, a mixture, a
+quantile's behaviour) rather than a rate or a level in statistics vocabulary.
+
+**Three candidates died and nothing was registered.** One was killed on card text before a world existed,
+one on a readability pincer, and the third was screened as code and measured dead. The harness is
+`scratchpad/w7_200/screen_mix.py`, run with `python3 -I screen_mix.py`; two consecutive runs are
+byte-identical at 872 bytes.
+
+### The inverted draw: the file that does the forcing
+
+Starting from the estimator closed four cells on this number already, so the draw started from the file.
+The files a plant-scale measuring operation actually keeps are the gauge or instrument archive (one row per
+item or per interval, the only file with values), the configuration or recipe register (what the instrument
+was set to), the operations or production log (what ran, how much and in what mix), the asset register
+(what the machine is), the sampling or inspection plan (what was looked at), the customer specification
+(what the limit is) and the maintenance system (when the machine was not itself).
+
+**The file taken, and what it pins that nothing else pins: the shift production log.** It is the only file
+in the set that states how much of the measured output each of two sources produced, and it states it per
+shift. The gauge archive cannot pin it, because the gauge sits after the merge and no reading carries a
+source; the asset register pins only that there are two sources; the specification pins only the limit. The
+quantity that file forces is therefore **one source's own distribution inside a blend no row attributes**,
+and the field's method for it is to solve the blend identity across periods whose mix differs.
+
+### The architecture screened, and its default path
+
+Niche: a mineral-wool plant whose two melting lines discharge onto one forming belt, so the in-line
+thickness gauge after the curing oven measures both lines' boards with no line marking on any reading,
+while the shift production log states each line's tonnage. The forcing event is next year's contract, whose
+draft moves the thickness clause from a consignment average to **each board**, and the call is a structural
+verdict: whether the works can sign the per-board clause as drafted. The filed estimand would have been the
+share of boards from the covered line falling below the per-board limit over the contract's first year, at
+one board as the unit.
+
+Default path, as a competent analyst builds it from the files' grain:
+
+1. Read the gauge archive and keep the readings in the contract's reference year.
+2. Read the shift production logs, supersede the three revised shifts, fix the line crosswalk.
+3. Put the published summary's tenths of a millimetre into millimetres and align the production week to the
+   contract month.
+4. Count the readings below the per-board limit and divide by the readings kept.
+5. Compare that share with the clause's bar and file the verdict.
+
+**Ends on:** 7.3 per cent of boards below the limit, so the works can sign the per-board clause.
+**Golden:** 14.3 per cent on the covered line, so the works cannot sign it as drafted.
+
+Stump sentence: a competent solver files that 7.3 per cent of the covered line's boards fall below the
+per-board limit and signs the clause, because the gauge archive is a census of boards and its own share
+below the limit looks like the answer, where the covered line's own share is 14.3 per cent once the blend
+identity is solved across the shift log's varying split.
+
+### Why it is dead: the measurements
+
+Twenty world draws, 36 shifts, 900 gauge readings a shift (32,400 readings), the covered line's published
+share running 0.25 to 0.75, the graded figure printed to 0.1 percentage point, the verdict boundary placed
+inside the gap the easy route leaves.
+
+| route | mean | mean abs error | max abs error | golden verdict |
+|---|---|---|---|---|
+| the blend's own share below the limit (rung 0) | 0.0727 | 0.0702 | 0.0779 | 0 of 20 |
+| the shift closest to pure covered-line running, read straight (screen 3) | 0.1059 | 0.0370 | 0.0600 | 15 of 20 |
+| **one regression on the log's own share column, read at 1.0 (screen 2)** | **0.1429** | **0.0026** | **0.0083** | **20 of 20** |
+| the designed construction, weighted blend solve | 0.1419 | 0.0028 | 0.0098 | 20 of 20 |
+| truth | 0.1429 | 0 | 0 | 20 of 20 |
+
+**1. Screen 2 fires, and it fires with certainty rather than with a magnitude, because the construction is
+linear in the forcing file's own column.** The mixture identity is
+`G_t(x) = w_t F_A(x) + (1 - w_t) F_B(x)`, exactly affine in the published share `w_t`, so an ordinary
+regression of the shift's below-limit share on that column, read at `w = 1`, **is** the designed estimator
+written another way. Measured: the one-line route's mean absolute error is **0.0026 against the designed
+construction's 0.0028** and its worst error **0.0083 against 0.0098**, so the one-liner is not merely
+competitive but marginally better; `corr(one-line, designed) = +0.9582`, the two agree on the verdict in
+**20 of 20** redraws and their largest disagreement is **3.29 printed units of 0.001**. The forcing file
+publishes a one-column precis of the construction in the strongest possible sense: the column and one
+regression are the construction.
+
+**2. The estimator family does not close.** Five defensible forms of the same unmixing (no-intercept
+ordinary least squares, binomial-weighted least squares, count-weighted least squares, the intercept form,
+and a two-bucket exact solve) spread the graded figure by **0.00308 on average and 0.00791 at worst against
+0.00040 permitted** at a printed precision of 0.1 percentage point, over by 7.7 and 19.8 times. `stumping`
+1.2 requires the family inside 0.4 of the printed unit.
+
+**3. Screens 1 and 8 pass, which is worth recording because they are the two that killed most of the
+wave.** Screen 1: the correcting input is one published share per shift, 36 of 36 periods identified, not a
+scalar, so the construction is not a monotone rescaling of the column it is applied to. Screen 8: the graded
+object is a population tail share of one named component, not a level at a unit selected by comparison, so
+it is not a shrinkage target and shrinkage is not the better estimator. Screen 3 does not kill it either:
+the attaining subset (the shift closest to pure covered-line running) lands the golden verdict in 15 of 20,
+which is a weak rung rather than a kill. **So the architecture died on the one screen that is decidable by
+algebra, with three of the wave's screens passing.**
+
+**4. The coordinator's two new screens do not reach it, and saying so is the point.** Screen 10, partial
+coverage: the correction leaves no part of the record alone, since every reading is a blend member, which is
+the shape that screen does not reach. Screen 11, the benchmark: the construction produces the graded
+statistic rather than a reference shape a statistic is read against, so it does not fire; the one-group-by
+route it asks for, stated before the world was drawn, is the screen-2 regression, and that is what killed
+the draw.
+
+### The general law this pass earns, and it strengthens contract screen 2
+
+**A construction that is affine in the forcing file's own published column is reached with certainty by one
+regression on that column, before any world exists.** Screen 1 kills a scalar correcting input by
+arithmetic; this kills a per-unit correcting input whose relation to the graded quantity is linear, also by
+arithmetic. So the inverted draw's step two should be run as **algebra first and a correlation second**:
+write the construction as a function of the forcing column and ask whether it is affine in it. If it is, the
+plainest column plus one regression is the decisive step, and no amount of mess, grain or Layer 1 between
+the two files changes that, because the mess delays the join rather than breaking the identity. The
+corollary for drawing: a surviving construction has to be **non-linear in the forcing quantity** (a power, a
+reciprocal, an order statistic, a decay, a modulo), which is a one-line test to run on a candidate before it
+is screened.
+
+### The second death: why a record of extremes cannot carry a silent rung
+
+The candidate: a high-rate gauge or historian stores one value per window and that value is the window's
+**maximum** (a peak-hold instrument, a max-aggregating tag), with the window's underlying opportunity count
+in an operations file at another grain, so the item-level distribution is recovered by inverting
+`G(x) = F(x)^k` with `k` varying across lines and periods. Forced by arithmetic, varied inputs, no
+attaining subset, and a genuine distributional object, so it passes the screens the wave was built around.
+
+**It is dead on a pincer worth stating generally, because it closes a whole family.** Nothing in a record of
+maxima measures that it is a record of maxima: a column of values carries no evidence of its own
+extremisation, unlike two vintages measuring a coding lag or shared specimens measuring a dependence. So
+either the pack documents the transformation, and the documenting sentence ("the logger holds the peak since
+reset", "tag aggregation max over the interval") is a clause the solver cannot avoid reading, which sends it
+looking and makes the decisive rung readable on `stumping` 2.1 test 1; or the pack does not, and the
+construction is unavailable, which is `stumping` 1.2b case three. There is no third position. **This is the
+1.2b pincer transposed from a break in the records to a transformation of them, and it closes every design
+whose decisive step inverts a documented transformation of the recorded values.** It is the reason the
+decimating-median candidate below would also have failed even had it been original.
+
+### The third death: the abstraction test, which was the cheapest kill of the pass
+
+The candidate: the same inversion from **medians** rather than maxima. A high-rate gauge stores the median
+of each group of `k` consecutive items, which is an authentic data-rate practice and genuinely discards the
+rest, with `k` varying by line and period from the configuration register, so the item-level distribution is
+recovered non-parametrically by solving the monotone mixture-of-order-statistics equation at the limit, one
+unknown per value of x, with no corpus and no shape assumption.
+
+It is dead on the abstraction test against **task202**, whose card reads: "the decision cuts a distribution
+over items, and the only item-level figure the record states is each unit's own average over its items, so
+the distribution of unit averages carries the spread between units and none of the spread within them and
+every upper cut comes out far too low". Stripped of nouns the first clause of mine is that clause: a
+per-group summary stands in for the item distribution and the item cut comes out far too low. The two
+corrections differ materially (task202 transports a measured within-group shape from a reporting minority
+and turns on its scale-free structure; this inverts an order statistic with no corpus at all), so two of the
+abstraction test's three clauses map rather than three, and the line that actually fails is `Lesson:`: a
+model that learns this has already learned task202's lesson. Killed on card text before a world was fixed,
+which cost one read rather than a screen.
+
+### The three rules, answered honestly for the screened architecture
+
+Two of the thirteen lines fail, which is why nothing was registered.
+
+- `Task type:` exploratory-data-analysis-distribution-assessment, which the client taxonomy tags DD and AD,
+  so it serves Anomaly Detection and Diagnostics. HOLDS.
+- `Domain test:` the deciding quantity is one component's own lower-tail share inside an observed blend,
+  which distribution assessment estimates from the published mixing proportions' variation across periods,
+  and it is a property of a distribution rather than a rate in statistics vocabulary. HOLDS.
+- `Swap:` run on the method, as this cell requires, since the setting is borrowed: replacing the component's
+  lower tail with a generic summary, the blend's own share below the limit, moves the figure from 14.3 to
+  7.3 per cent and flips the verdict. HOLDS.
+- `Layer 1:` the gauge archive's column block renamed at a firmware upgrade mid-window, shift production
+  logs as tables inside scanned PDF shift reports for eleven months, line identifiers differing between the
+  production log and the maintenance system joined on an imperfect crosswalk, the production week against
+  the contract month, millimetres against tenths of a millimetre, a preliminary and a revised shift log
+  overlapping for three shifts. Produced by the plant's own systems, none of it planted. HOLDS.
+- `Layer 2:` `estimation_fit`, own pattern `component-lower-tail-from-a-varying-known-blend`. HOLDS as a
+  family.
+- `Decisive step:` solve the blend identity across the shift log's varying split rather than reading the
+  blend's own tail. **FAILS twice:** the step is affine in the forcing column, so one regression on that
+  column reaches the graded figure at a smaller error than the designed construction (0.0026 against
+  0.0028, same verdict 20 of 20), and the construction's own estimator family spreads the graded figure 7.7
+  times the permitted width.
+- `Not semantics:` holds. Every column is read correctly on the easy route, the crosswalk and the units are
+  fixed, and the easy route still files 7.3 per cent.
+- `Not rule application:` holds. No shipped sentence performs the unmixing and no level or criterion is
+  filed anywhere in the decision.
+- `Analyst test:` the natural route reads the blended archive's own share below the limit, 7.3 per cent,
+  against a golden of 14.3 per cent. Written, executed, and the separation is real (0 of 20 on the golden
+  verdict); **it is not what kills the architecture, which is the one-line route reaching the golden
+  instead.**
+- `Estimand:` the share of boards from the covered line below the per-board limit over the contract's first
+  year, unit one board, comparison that line against the clause's bar. Would have sat in the contract
+  assessment. HOLDS as a sentence.
+- `No decoy:` holds. Nothing is planted to be caught.
+- `No certified replay:` holds. No certified figure recovers the method.
+- `Lesson:` **FAILS.** What a model would learn is to regress a period-level rate on a published mixing
+  share and read the fit at 100 per cent, which is one line of code off two joined files, so there is no
+  lesson the verdict can carry.
+
+### The axes, the personas and the guard's verdict from outside the design
+
+Axes chosen, each with its reason, and each read against the live window rather than the contract's copy:
+`shape` 07, a grid of source-by-period cells, because the asks are the per-line and per-period cuts of the
+same distribution and shape 01 was blocked; `decision_type` `structural_verdict`, unspent on this objective
+and the honest shape for a clause the works either can or cannot sign, with one decision boundary that can
+be placed far from the lever's noise; `stump_strategy` `composition_mix`, the honest label because the
+construction turns on the mixing proportions' variation rather than on splitting a total between causes;
+`gate_g` `method_or_model_selection`; `gap` `population`, since the record's rows are the blend and the
+decision's population is one line's boards; `generators` G14 then G6; `org_family` `manufacturer`, `forum`
+`executive_team`, `forcing_event` `purchase_order_or_contract`, `context_artifact` `operations_log` and
+`role_family` `operations_director`, all four chosen against the window's blocked values rather than for
+convenience; `calibration_form` `none`, because nothing in the design needs a calibration organ.
+
+**The honest label that is blocked, recorded rather than relabelled.** A reviewer reading the construction
+as a decomposition of an observed distribution into two parts would file `stump_strategy`
+`decomposition_attribution`, which task475 blocks as an axis ban that differentiation cannot clear. That is
+a second and independent reason this architecture was not registrable today, and it is recorded in the
+card's `notes` rather than papered over by the `composition_mix` label.
+
+Personas drawn with `guard.py names --geo Portugal --seed 200`, never typed: Salome Teixeira, Benjamim
+Campos, Lorena Fonseca (the pool also offered Carlota Esteves, Jose Rodrigues, Frederico Gomes, Nuria
+Tavares, Xavier Leite, Mara Barbosa, Carminho Matias).
+
+`guard.py check` on `scratchpad/w7_200/task200_card.json` (filed for the record, **not** registered)
+returns BLOCK four times, and three of the four come from cards that did not exist when this pass began:
+
+```
+BLOCK  task200  general-statistics-data-science/anomaly-detection  shape 07  gap population  pattern G14  gate_g method_or_model_selection  decision structural_verdict  strategy composition_mix
+  BLOCK ban.shape                prompt shape 07 repeats one of the last two builds against task474 (v3)
+        fix: pick a different shape, the shape is visible in the prompt and the deliverables
+  BLOCK ban.strategy             stump strategy composition_mix repeats a recent build against task471 (v4)
+        fix: pick the stump this dataset's own analytic structure produces, see stumping Part 1
+  BLOCK test.same_driver         decisive gap, decisive pattern and Gate G mechanism all repeat inside the batch (population, G14, method_or_model_selection) against task473
+        fix: redraw the gap or the pattern, a new world does not fix this
+  BLOCK test.same_driver_older   decisive gap, decisive pattern and Gate G mechanism all repeat an older build, and the card carries no differentiation for it against task233 (v1 (architecture 1, built 2026-10-16, follow-up in the five middle and deprived districts), lineage), task233 (v2), task256 (v1), task262, task267 (v1), task465 (v2), task54
+        fix: this signature is spent in 7 earlier builds, so redrawing the gap or the pattern is cheaper than 7 differentiation lines
+  WARN  overuse.strategy         stump strategy composition_mix used in 3 of the last 12 builds
+        fix: prefer a strategy the coverage view shows under-used
+  WARN  repeat.gate_g            Gate G mechanism method_or_model_selection repeats one of the last two builds against task474 (v3), task471 (v4)
+        fix: vary the FINE-numbers mechanism across the batch
+  WARN  overuse.gate_g           Gate G mechanism used in 8 of the last 12 builds
+  nearest drivers:
+    0.07  task239                        The decisive quantity is how strongly each component's group-level part goes with the factor the components sh
+    0.06  task21 (iteration 14)          A certified serving-layer measure is an undocumented sum of raw components and one load release dropped a comp
+    0.05  task467                        The decisive quantity is the effect of a temporary change on one series that began the same day as a permanent
+    0.05  task194 (v2, lineage)          The decisive quantity is each candidate's excess over the standard its own composition implies, and the only s
+    0.05  task125 (v1 (Wealdmoor County Council digit filter: the 2027/28 call-off of routed payments for post-payment examination), lineage) The forward count of items a fixed band rule selects includes units outside the band today: each unit's position
+```
+
+Two readings of that output matter beyond this draw. The window moved **twice more** while the pass ran:
+shape 07 and `composition_mix` were both open in the mid-wave update (task474 was spent and task471 carried
+`population_selection`) and both now BLOCK against re-registered architectures, so a ban table written an
+hour earlier blocked ground that was open and opened ground that is now blocked. And `test.same_driver`
+fires **inside the batch** against task473, a card no listing available to this pass contained. The
+lexical screen was blind as usual, with the nearest driver at 0.07 against a candidate the abstraction test
+had already killed on another card entirely.
+
+### What the fifth ground leaves, stated from the cell's own side
+
+A record can differ from the distribution a decision needs in a closed list of ways, and the pass's worth is
+that the list is now priced on this objective.
+
+| how the record departs from the decision's distribution | status on anomaly-detection ground |
+|---|---|
+| a per-group summary stands in for the items (average, median, any order statistic) | task202 holds it; candidate 1 of this pass dies on the abstraction test against it, and task187 holds the curved-response form |
+| the record states a per-window extreme | dead on the readability pincer measured above, this pass: the transformation cannot be both usable and silent |
+| convolution with measurement noise | task246 and task237 hold it as a nuisance variance out of an observed dispersion, and this number's first ground measured the graded figure seed-hostage at thirteen times the permitted family spread |
+| censoring or truncation at a limit | task189 (per-instrument limits), task180 (a noise floor with a daily cycle), task184 (a window rather than a time), with the truncation-direction screen closing the bottom-hiding half |
+| length or size bias in what enters the record | task182's live driver, and task190 architecture 3 |
+| a known mixture whose weights the record publishes | candidate 3 of this pass, dead by algebra on screen 2 |
+| selection on the value being measured | `population_selection` is both an axis ban and the WHAT screen's standing kill unless the records force the selection |
+| a latent grouping no column names, rebuilt by arithmetic (a rotation, a phase, a modulo) | the rebuild is Layer 1, so cleaning the data makes the call easy and `CLAUDE.md`'s own check moves the stump out of the analysis |
+| a conversion between two measuring bases | task185, this cell's named neighbour |
+| dependence or clustering inflating an interval | the variance-only screen: the correction widens without moving the point, so the conservative reflex lands the hold, and `uncertainty_hold` is withdrawn on this objective |
+
+**So the next pass on this cell should not look for another distortion of the record.** Ten of the eleven
+ways are spent, blocked or closed by a screen, and the eleventh puts the stump in Layer 1. What the three
+deaths jointly specify, and it is tighter than anything the fourth ground left, is the shape a surviving
+candidate must have: a distributional object whose construction is **non-linear in the forcing file's own
+quantity** (death 3), **needs no sentence documenting a transformation of the recorded values** (death 2),
+and **is not a per-group summary of the decision's items** (death 1). The one direction left unpriced that
+meets all three on paper is a construction over **orderings** rather than over values, where the forcing file
+pins the order in which the record's rows were produced and the decisive quantity is a property of the
+distribution that only the ordering identifies; the corpus names a construction over orderings as a shipped
+coarse-ground shape, and nothing in this pass or the four before it has priced one here. It is one
+computation to price, not a design.
+
 ## Tried and rejected
 
 - The exposed or ambient population denominator, a crime rate per ambient person or per opportunity
@@ -580,6 +867,43 @@ stderr included (6,913 bytes).
   returning 0.0 against central matching's 27.6, a spread of seventy times the printed unit, and nothing
   in a records pack closes the family.
 
+### Fourth pass, general-statistics-data-science x exploratory-data-analysis-distribution-assessment (2026-10-20, architecture 2: three candidates dead, one measured, nothing cut)
+
+- The share of one melting line's boards below a per-board thickness limit, recovered by solving the blend
+  identity across the shift production log's varying tonnage split, where the in-line gauge sits after the
+  two lines merge and no reading carries a line (2026-10-20, stage 1, measured): dead on contract screen 2,
+  and dead by algebra rather than by a magnitude. The mixture identity is affine in the forcing file's own
+  published share column, so one regression of the shift's below-limit share on that column, read at a share
+  of 1.0, **is** the designed estimator: measured over 20 world draws its mean absolute error is **0.0026
+  against the designed construction's 0.0028**, its worst **0.0083 against 0.0098**,
+  `corr(one-line, designed) = +0.9582`, the two agree on the verdict **20 of 20** and differ by at most
+  **3.29 printed units of 0.001**. The designed route's own estimator family fails closure besides, five
+  defensible forms spreading the graded figure **0.00308 mean and 0.00791 max against 0.00040 permitted**,
+  over by 7.7 and 19.8 times. Screens 1, 3, 8, 10 and 11 all passed, which is why the algebra is the finding:
+  screen 1 passes because the correcting input is one share per shift identified in 36 of 36 periods, screen
+  3 because the attaining subset (the shift closest to pure covered-line running) lands the golden verdict
+  only 15 of 20 at a mean absolute error of 0.0370, screen 8 because the graded object is a population tail
+  share rather than a level at a selected unit, screen 10 because the correction leaves no part of the record
+  alone, screen 11 because the construction produces the graded statistic rather than a benchmark.
+- A record of per-window **maxima** (a peak-hold instrument or a max-aggregating historian tag) inverted
+  through `G(x) = F(x)^k` with the window's opportunity count from an operations file at another grain
+  (2026-10-20, stage 1, paper): dead on a pincer that closes the family. Nothing in a record of maxima
+  measures that it is a record of maxima, so either the pack documents the transformation and the
+  documenting sentence is a clause the solver cannot avoid reading, which makes the decisive rung readable
+  on `stumping` 2.1 test 1, or it does not and the construction is unavailable, which is 1.2b case three. No
+  third position. **The general form: a decisive step that inverts a documented transformation of the
+  recorded values cannot be silent, because the document that makes it available is the signpost.**
+- A record of per-group **medians** (a gauge storing the median of each group of k consecutive items, k
+  varying by line and period from the configuration register) inverted non-parametrically by solving the
+  mixture-of-order-statistics equation at the limit (2026-10-20, stage 1, killed on card text before a world
+  existed): this is **task202's driver** in other nouns. Stripped of nouns, task202 reads "the only
+  item-level figure the record states is each unit's own average over its items, so every upper cut comes out
+  far too low", which is the first clause of this candidate exactly. The corrections differ (task202
+  transports a measured within-group shape from a reporting minority; this inverts an order statistic with no
+  corpus), so two of the abstraction test's three clauses map rather than three, and the line that fails is
+  `Lesson:`, since a model that learns this has already learned task202's. The second death above would have
+  killed it independently.
+
 ## Resume
 
 Do not re-screen anything above: twenty-six mechanisms across four grounds are now measured or structurally
@@ -636,3 +960,42 @@ ground; it was filed as `none`.
 `scratchpad/w6_200/task200_card.json` records the screened and dead architecture with
 `architecture_spent: true` so the next pass can read its axes and the guard's verdict on them; it carries
 no world and no personas, `guard.py check` returns BLOCK on it, and **it must not be registered**.
+
+## Resume addendum (2026-10-20, after architecture 2's pass on the fifth ground)
+
+Everything in `## Resume` above still stands and nothing in it is withdrawn. Architecture 2 added a fifth
+closed ground and three more dead mechanisms, so **twenty-nine mechanisms across five grounds are now
+measured or structurally dead**, and `architecture` stays at 2 because no architecture landed and nothing
+was cut. The card at `scratchpad/w7_200/task200_card.json` records architecture 2 with
+`architecture_spent: true`, carries no registration, and **must not be registered**: `guard.py check`
+returns four BLOCKs on it, quoted in `## The fifth ground`.
+
+**Do not re-screen anything in `## The fifth ground`.** Its closing table prices the whole list of ways a
+record can depart from the distribution a decision needs, and ten of the eleven are spent, blocked or closed
+by a screen while the eleventh puts the stump in Layer 1.
+
+**The three findings a sixth pass should carry, in the order they are cheapest to apply.**
+
+1. **Run the inverted draw's step two as algebra before running it as a correlation.** Write the
+   construction as a function of the forcing file's own column and ask whether it is affine in it. If it is,
+   the plainest column plus one regression is the decisive step with certainty, and no amount of Layer 1
+   between the two files changes that, because mess delays the join rather than breaking the identity. This
+   is the scalar screen's sibling: screen 1 kills a scalar correcting input by arithmetic, and this kills a
+   per-unit input whose relation to the graded quantity is linear, also by arithmetic.
+2. **A decisive step that inverts a documented transformation of the recorded values cannot be silent.**
+   The document that makes the inversion available is the signpost that makes the rung readable, and without
+   the document the step is unidentifiable. So the forcing file must pin a **structure** (an order, a count
+   of opportunities, a condition) rather than a **transformation of the values**.
+3. **The three deaths jointly specify the shape of a surviving candidate here**: non-linear in the forcing
+   quantity, needing no documenting sentence, and not a per-group summary of the decision's items. The one
+   direction meeting all three on paper and never priced on this number is a construction over **orderings**
+   rather than over values, with the forcing file pinning the order in which the record's rows were produced.
+   One computation prices it.
+
+**Two axis facts, free and measured from outside the design.** The live window moved twice during this one
+pass: shape 07 and `stump_strategy composition_mix` were both open in the mid-wave update and both BLOCK
+now, against task474 (v3) and task471 (v4). And the triple gap `population` plus decisive generator G14 plus
+Gate G `method_or_model_selection` BLOCKs on `test.same_driver` against task473 inside the batch and on
+`test.same_driver_older` against seven earlier builds, so that signature needs redrawing rather than
+differentiating wherever it is taken next. Read the window from `guard.py check` at the end of a pass as well
+as the start; a table written an hour earlier is wrong in both directions.
