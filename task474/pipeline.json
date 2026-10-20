@@ -1,38 +1,27 @@
 {
  "task": "task474",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "The default path splits each former county's 2020-2022 poverty estimate by its towns' shares in the 2020-2024 five-year release, which already holds the 2023-2024 Bellmont Courts and Marlridge Commons relocations, and files Greater Ormsby $1,700,000 and Mill River Valley $2,170,000 against the golden's $1,730,000 and $2,140,000 (six of nine amounts off); the golden scales each town's SNAP recipients that year to its own five-year level.",
+ "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high; the analyzers drop out mostly in the hours after a start, when the cold catalyst lets NOx run several times the steady rate, so only a fill by hours since start designates the hard-cycling units.",
  "architecture": 2,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-20 (no LEAK)",
-  "reader": "FAILED 2026-10-20: reader 1 landed the call (score_reader exit 1); reader 2 missed the call but kept 27 of 27 asks (exit 1)"
- },
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 (strategy risk time_semantics answered by the analyst test; repeat.gate_g against task271 v2 and task468 v4, different mechanisms); test.same_driver_older cleared by redrawing the decisive generator to G2 (the town windows' five-year grain against the single years the estimand needs), the honest label",
-  "heart": "WARN 2026-10-20 (strategy_risk, repeat.gate_g, overuse.gate_g; nearest task459 at 0.06); surface: 9 pairs promoted by percentile only (similarity 0.100-0.101), no hard tell",
-  "nearest": "task58 v15 at 0.07"
+  "guard_check": "WARN 2026-10-20 after differentiation lines for task243 and task450 v2",
+  "nearest": "task249 v2 at 0.07"
  },
- "judge": {
-  "verdict": "DETERMINISTIC (architecture 1)",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (the thread's verdict; architecture spent on Gate F before reconciliation)"
- },
+ "judge": null,
  "returned": [],
- "resume": "re-root at stage 1, architecture 2 not yet drawn: six screens dead (movers' take-up, campus students, test equating spent, register coverage saturated, methane re-survey, employment benchmark bias); task477 is built first, then task474 returns with a fresh world",
+ "resume": "stage 2: prototype on the clean truth, ladder, fork and closure tables, the asks, prompt.txt, precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET31 (Connecticut's planning regions replace its counties; a fixed $12,000,000 anti-poverty grant split on a five-vintage poverty average; history rebuilt from towns): world, decision and quantity kept in an unnamed New England state; the seed's area-crosswalk stump dropped (a careful analyst rebuilds from towns); the pitfall re-found in how the towns' five-year survey windows describe time",
+ "source_note": "seed ET31's number; architecture 2 in a fresh world (a generation cooperative's combined-cycle NOx inventory with start-state monitor gaps)",
  "nearest": null
 }

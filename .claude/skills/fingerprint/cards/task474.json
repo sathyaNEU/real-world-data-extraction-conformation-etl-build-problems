@@ -1,96 +1,111 @@
 {
   "task": "task474",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-20",
-  "slot_note": "seed ET31 (Connecticut's planning regions replacing its counties; a fixed anti-poverty grant split on a five-vintage poverty average; history rebuilt from towns): world, decision and quantity kept, the pitfall re-found in how the town data describe time",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "rebuilding a state's annual model-based poverty series on new county-equivalents for a formula grant, the former counties' 2020-2022 years split by town with SNAP counts benchmarked to the survey's five-year town level",
+  "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (planning-region poverty split by temporal disaggregation) spent at stage 4; architecture 2 drawn in emissions-inventory with a fresh world",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records whose analyzers drop out mostly in the hours after a start, the plant control systems' hourly load logs and the monitor outage log, for its 2027 start-up NOx upgrade program",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
-  "answer": "Greater Ormsby $1,650,000; Mill River Valley $2,250,000; Tarrow Uplands $330,000; Southern Shore $720,000; Wexport Harbor $2,140,000; Two Rivers $1,860,000; Northern Hills $330,000; Quinnet Valley $1,380,000; Eastern Bays $1,340,000",
-  "answer_source": "submission.md block 1 (generator/figures.json amounts)",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
-    "G13",
-    "G14"
+    "G4",
+    "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly splits each former county's 2020, 2021 and 2022 poverty estimate among its towns by their shares in the Bureau's 2020-2024 five-year release and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 (six of nine amounts off); splitting by the year's SNAP recipients instead files Greater Ormsby $1,750,000 and Southern Shore $660,000 (all nine off); reading the release as 2022 and moving it by SNAP files Greater Ormsby $1,680,000; only each town's SNAP recipients that year scaled to its own five-year survey level files the golden.",
-  "domain_test": "The deciding quantity is each planning region's residents in poverty in 2020 to 2022, years the State Data Center estimated only for the former counties, built the way official statisticians produce annual small-area figures across a break: temporal disaggregation with an indicator benchmarked to the low-frequency level (monthly SNAP recipients by town carry the year's timing, the survey's five-year town count carries the level); with another field's nouns the task loses the model totals, the period-average survey windows and the administrative indicator whose take-up differs by town.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:benchmarked-indicator-temporal-disaggregation",
+  "analyst_test": "A strong analyst who conforms the monitor records, load logs and outage log, reads every field and rule correctly and fills each unmonitored operating hour from the unit's own NOx-on-load regression designates the wrong units, because the analyzers drop out mostly in the first hours after a start, when a cold catalyst lets NOx run several times the steady rate at the same load, so a load-based fill puts steady-state NOx into start-up hours and understates the units that cycle hardest.",
+  "domain_test": "The decisive quantity is each combined-cycle unit's 2026 ozone-season NOx per MWh, an emissions inventory whose missing monitor hours are estimated the way emission inventories handle monitor data gaps, by the operating condition the unit was in, here the hours since the unit's start from the control system's load log, because selective catalytic reduction does not work until the catalyst is hot; swapping in another field's nouns breaks it because the cold-catalyst start-up spike and the analyzers' purge and calibration after shutdown are what make the gaps fall in the high-emission hours.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:missing monitor hours filled by start state, not by load",
   "layer1": [
-    "county-equivalent change mid-series (former counties to planning regions)",
-    "estimates as PDF tables for the county years and a workbook for the region years",
-    "preliminary and revised estimates for every year in consecutive releases",
-    "town codes re-keyed under the new county-equivalent codes",
-    "names against codes across the town, county and region files",
-    "margins of error and age-sex cells beside the survey's totals",
-    "fiscal against calendar years",
-    "thousands against units"
+    "monitor hours flagged by status code with values blank",
+    "load logs in local time against monitor records in standard time",
+    "two plants' control systems with different tag names and intervals",
+    "a monitor recertification that renumbers the monitoring system",
+    "the outage log's free-text reasons",
+    "units renamed in the 2025 dispatch system"
   ],
-  "stakeholder_role": "Director, State Data Center",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per covered member",
+  "stakeholder_role": "the cooperative's environmental compliance engineer preparing the 2027 upgrade program",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
   "spine": {
-    "file": "rof_client_services_extract_20260930.csv",
-    "rows": 89023,
-    "entity": "one service delivered to one person by a former county agency",
-    "grain": "person x service x date",
+    "file": "",
+    "rows": 0,
+    "entity": "one unit's monitor record for one hour",
+    "grain": "unit x hour",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
+  "forum": "board_of_directors",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "research_or_statistics_office",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States, an unnamed New England state",
+    "geography": "United States, a fictional inland region (unnamed state)",
     "currency": "USD",
-    "org_type": "the State Data Center, which prepares the Regional Opportunity Fund's allocation for the Office of Policy and Management",
-    "invented_names": [
-      "Regional Opportunity Fund"
-    ],
+    "org_type": "a generation and transmission cooperative",
+    "invented_names": [],
     "people": [
-      "Wendy Taylor",
-      "Martin Estrada",
-      "Paige Hodges"
+      "Tamara Gill",
+      "Kevin Cohen"
     ]
   },
   "deliverables": [
-    "rof_fy2027_region_poverty.csv",
-    "rof_fy2027_allocation_memo.docx"
+    "cc_unit_nox_inventory_2026.xlsx",
+    "startup_nox_upgrade_designations_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
-  "driver_concrete": "Each former county's 2020-2022 poverty estimate is split into the planning regions by its towns' SNAP recipients that year scaled to each town's own 2020-2024 five-year survey count over its mean recipients, rather than by the five-year release's town shares (which hold the 2021 Bellmont Courts and Marlridge Commons relocations for most of their span) or by SNAP shares (recipients per resident in poverty run from 0.32 to 1.15 across the towns).",
-  "stump": "The default path splits the former counties' 2020-2022 estimates by the towns' shares in the 2020-2024 five-year release, which holds the 2021 Bellmont Courts and Marlridge Commons relocations for most of its span, and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 against the golden's $1,650,000 and $2,250,000, six of the nine amounts off.",
+  "question_form": "which",
+  "driver": "A unit's period total is measured hourly by an instrument that is out mostly in the hours after the unit starts, when the quantity runs several times its steady level at the same operating point, so the missing hours are filled by the hour's start state, read from an every-hour operating log, rather than by a fit on the operating point that the steady hours dominate.",
+  "driver_concrete": "Each combined-cycle unit's NOx in the hours its analyzers were down is estimated from the unit's own monitored hours at the same number of hours since its start, found in the control system's hourly load log, not from its NOx-on-load fit or its monitored-hour average, before each unit's 2026 ozone-season NOx per MWh is compared with the cooperative's 0.170 target.",
+  "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high, because the analyzers drop out mostly right after a start, when the cold catalyst lets NOx run at several times the steady rate; filling the missing hours by hours since start designates the hard-cycling units the program should fund.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task243": "task243 recovers a register's exit-recording share from changes between two counts; here nothing is counted twice: each unit's unmonitored hours are filled from its own monitored hours in the same start state read from an every-hour operating log.",
+    "task450": "task450 removes an instrument change through a shared anchor subset; here no instrument changes: the instrument is missing in a state-dependent pattern and the fill conditions on that state.",
+    "task476": "task476 dates each found item's unseen start from a seasonal profile in a second record; here no start is unseen: every start is in the load log, and what is missing is the measured quantity in the hours just after it.",
+    "task459": "task459 commits a unit to a stated operating level against a level-dependent ratio; here no level is chosen: the missing hours are imputed by start state, which a fit on level misses."
+  },
   "lineage": [
     {
       "architecture": "v1",
       "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
       "fate": "spent 2026-10-20 at stage 4: reader 1 landed the call by benchmarking SNAP to the survey level; reader 2 kept 27 of 27 ask figures"
+    },
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 4 on 2026-10-20: reader 1 landed the call by benchmarking SNAP to the survey level unprompted; reader 2 missed the call and kept 27 of 27 asks",
+      "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
+      "stump": "The default path splits the former counties' 2020-2022 estimates by the towns' shares in the 2020-2024 five-year release, which holds the 2021 Bellmont Courts and Marlridge Commons relocations for most of its span, and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 against the golden's $1,650,000 and $2,250,000, six of the nine amounts off.",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "generators": [
+        "G2",
+        "G13",
+        "G14"
+      ]
     }
   ],
-  "notes": "Strategy grain_or_unit answered: the survey release's five-year grain and SNAP's unit (recipients, whose take-up differs by town) are both read correctly; the step is temporal disaggregation with a benchmarked indicator, which no field or rule performs. Redrawn at stage 2 from the first decisive step (midpoint anchoring of two five-year releases), whose forcing evidence the survey's sampling noise swamped; the relocations moved to 2021 at stage 3 so no published estimate displays them (Tried and rejected).",
-  "registered": "2026-10-20T06:30:26Z",
-  "architecture_spent": true
+  "notes": "architecture 2 drawn 2026-10-20 after six screens on the old world died; registered with --force over the slot's spent v1 card",
+  "client_domain": "physical-environmental-sciences",
+  "registered": "2026-10-20T12:46:43Z"
 }
