@@ -1182,6 +1182,16 @@ Finland to fi_FI, so the earlier en_US fallback finding does not apply to this g
   measurement shows the lesson is reachable by stratifying on the recorded key-quality attribute, which
   is the opponent's first reflex, and because task471 now holds record linkage as its own task type.
 
+
+**Architecture 11, wave 8 allocation (`education-learning-sciences` x `anomaly-detection`, `causal_design`):
+rejected at the pairing, before any mechanism search.** The allocated client domain carries no task type
+that serves anomaly detection. Its seven task types serve descriptive-distribution, experiment-causal, etl,
+forecasting and root-cause only, so `guard.py check` returns `BLOCK three_rules.task_type ... serves
+forecasting, not anomaly-detection: the domain would be a backdrop`, with the fix line naming the two
+escapes and closing both: "draw a task type of education-learning-sciences that serves anomaly-detection
+(none in this domain), or another domain". `precut.py`'s `Task type:` line refuses it on the same rule, so
+the `## Three rules` block cannot be written to pass. No screen, harness or world could have changed this,
+and the education ground is closed for this objective by the taxonomy rather than by a measurement.
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus
@@ -1222,3 +1232,82 @@ outages. That sentence adjudicates ask A1's own device, which is exactly the gra
 mismatch (`ceiling.py` A1), so the dictionary documents the `odcinkow` column factually and the provenance
 states the job count alone, with the 440 section outages asserted in `checks.py` (`doc.planned_grain`)
 rather than printed in a shipped document.
+
+
+## Architecture 11, wave 8: the allocated pairing is undrawable, and the wave's premise is inverted
+
+Stage 1 under `scratchpad/wave8/CONTRACT.md`. Allocation: domain `education-learning-sciences`, objective
+`anomaly-detection`, strategy `causal_design` reserved. No card registered, nothing cut, no git write.
+Harness in `scratchpad/w8_201/` (`map_ad.py`, `spend.py`), each run twice with byte-identical output.
+
+**Death 1, structural, at the pairing.** `education-learning-sciences` has seven task types
+(`student-growth-value-added-modeling` DD/EC, `randomized-quasi-experimental-program-evaluation` EC,
+`item-response-theory-test-equating` ETL/DD, `learning-analytics-early-warning-models` F,
+`multilevel-classroom-school-research` RC, `psychometrics` DD, `text-analysis` DD) and **none serves
+anomaly detection**. `guard.py check` on the allocated card:
+
+```
+BLOCK three_rules.task_type    task type learning-analytics-early-warning-models serves forecasting,
+                               not anomaly-detection: the domain would be a backdrop
+        fix: draw a task type of education-learning-sciences that serves anomaly-detection
+             (none in this domain), or another domain
+```
+
+The guard's own fix line enumerates the only two escapes and closes the first. The second, another domain,
+is the orchestrator's axis, not this draw's. The single `## Three rules` line that fails is `Task type:`,
+and it fails absolutely: no wording of it can name a task type that both belongs to this domain and serves
+this objective. The other twelve lines were never reached, because a build whose domain is a backdrop by
+construction fails rule 1 whatever they say.
+
+**The route through the house domain is closed too.** `policy-education` is the only house domain touching
+education, mapping to `political-science-public-policy` and `education-learning-sciences`. Its one
+AD-serving task type is `political-science-public-policy/conflict-protest-event-data-analysis`, which is
+protest event data and not education, so drawing it under an education wrapper is the rule 1 backdrop
+failure in a second form; and `policy-education` x AD already carries two cards (4 architectures). Education
+subject matter is reachable on this objective only as a *setting* under
+`general-statistics-data-science`, where the taxonomy makes the setting another field's by design and the
+deciding quantity must be the task type's own statistical object.
+
+**The wave's premise is inverted, measured.** The contract reads the `.` cells of `coverage`'s domain x
+objective grid as new ground. For this objective they are the opposite: a `.` in the ANOM column means the
+domain has no AD-serving task type, so the cell is empty *because* it is undrawable.
+
+- AD-serving ground, corpus-wide: **12 client domains, 14 task types**, against 45 for forecasting.
+- Virgin AD task types: **0 of 14.** Every one is drawn (least spent one card, most spent four).
+- Client domains with zero AD cards **and** an AD task type, that is, genuinely new AD ground: **0 of 21.**
+- 34 AD cards hold **74 architectures** across 25 cells, so the mean cell has 3 dead or live architectures
+  behind it.
+
+Of the six wave-8 allocations, four name client domains with no AD task type and are undrawable as written:
+task182 `urban-regional-science`, task194 `actuarial-science-insurance`, task201
+`education-learning-sciences`, task202 `quantitative-finance`. The two that are legal, task190
+`accounting-audit-forensic` and task198 `business-operations-analytics`, are legal only as *house* domains
+inheriting AD task types from `banking-credit-financial-risk`, `general-statistics-data-science`,
+`human-factors-ergonomics` and `healthcare-delivery-health-economics`, all of which already carry AD cards,
+so neither is new ground either. `fingerprint` Part 4 names this failure and gives
+`actuarial-science-insurance` as its worked example; the taxonomy line that settles it is the objective tags
+beside each subdomain in `guide-to-prompt/references/domains/README.md`.
+
+**What actually binds a redraw here, measured at the moment of the draw.** The three live cards in the ban
+window are task475, task474 and task471, all `etl`. So **no AD subdomain sits inside the 3-build window at
+all**: `ban.pairing` and `ban.subdomain` cannot fire for any AD cell right now, and the window strategies
+are `composition_mix`, `decomposition_attribution` and `other`, leaving `causal_design` free of
+`ban.strategy` and at 0 uses in the last 12 for `overuse.strategy`. Occupancy was never the constraint.
+Wave 7 did not fail because its numbers sat on cells carrying AD cards; cells carrying AD cards are not
+banned. It failed on **drivers**, which is the only thing that binds on this objective, and the remedy it
+recommended, moving to virgin cells, was never available because there are none.
+
+**The reserved strategy is in better shape than the contract states.** `causal_design` has 14 corpus uses
+and 2 on this objective, task197 and task199, and **both are SHIPPED at stage 5**, neither failed; task197
+is the shape `stumping` 1.6a names as the corpus's one positively-stated Gate-F-strong survivor. Neither
+carries a portal result yet, so the honest claim is that `causal_design` is unconfirmed on AD, not that it
+has never held. It is also already spent once on the allocated domain, at task450
+(`education-learning-sciences/item-response-theory-test-equating`, objective `etl`).
+
+**No candidate was screened.** Screens 1, 2, 3, 10, 11 and 12 take a candidate construction forced by a
+named file, and with the pairing refused there is no legal task type to force a quantity for: screening a
+construction whose domain cannot hold the objective would have measured nothing. The ground this slot
+burned on its own earlier passes is wider than its card shows and is recorded above: architecture 10
+candidates 1 and 1b spent GWAS ground (`biomedical-clinical-research/genomics-gwas-high-dimensional-association`,
+one card) and candidate 15 spent the survey-office key-quality route, so the single-card appearance of those
+two cells understates them for this number specifically.
