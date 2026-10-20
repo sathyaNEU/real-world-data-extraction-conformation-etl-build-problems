@@ -452,4 +452,9 @@ declared distractor).
 - 2026-10-20, stage 4 judge on architecture 1: DETERMINISTIC, APPROVE, Gate H analytical; it named two pins worth
   carrying into the re-root (an effective date is the first day the new value applies; a household payment repeats on
   each member's row), and that the release-shares route is defensible enough that a miss there can read interpretive.
+- 2026-10-20, re-root screen: keep the world and add a second correction to the benchmark (relocated households keep
+  the origin city's SNAP take-up, so a constant town ratio misplaces the move): every route, the benchmark included,
+  misses a split on the true poor by six or more amounts through the survey's sampling error, and a movers-aware
+  estimator (backing the moves out of the conserved recipients) has no form the data close to one; dead as a decisive
+  step.
 
