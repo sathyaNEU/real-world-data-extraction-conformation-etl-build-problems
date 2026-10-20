@@ -810,8 +810,28 @@ clause has a named route to the golden before a world is drawn, and the five clo
 exactly that. **State the one-group-by route to the call, in one line, before the first harness**: the five
 passes that measured it found it on the second measurement, never the tenth.
 
-**One role rule the same sitting earned twice.** An orchestrator allocates the cell, the axes and the
-constraints; it does not name the mechanism or the construction. Two prescriptions from outside the
+**The mandated-indicator law, which tells you where the proxy screen fires before you look.** Step two's
+one-column precis is usually an accident of a file, and on some ground it is required output. Where the
+deciding organisation is obliged to publish a quality indicator for the very process whose record you are
+forcing the quantity from, the proxy is mandated and the screen fires structurally rather than by luck: a
+statistics office's quality framework makes it publish the response rate, the link rate, the edit rate and
+the imputation rate, so a quantity forced from any of those production logs has its correction published
+beside it, measured at corr **+1.0000** with the one-divide route and the truth reached **20 of 20**, where
+the designed construction's own lever was 3.028 per cent. The escapes the inversion names (a timing
+condition, a completeness condition, an incentive) do not help here, because on that ground the
+completeness condition **is** the published rate. So on regulated ground, force the quantity from a file
+that is not a process log of the deciding organisation, or accept a shipped proxy and draw something else.
+
+**One role rule the same sitting earned twice, and a second the same wave earned three times.** An
+orchestrator allocates the cell, the axes and the constraints; it does not name the mechanism or the
+construction. **And it allocates the bans by naming the command, never by copying its output:** cards
+register while a pass runs, so a written ban table is stale within the hour and is wrong in both
+directions. One wave's table cost four BLOCKs on one pass, two on a second and two on a third, every one
+from a card that did not exist when the table was written, while the same table also fenced off a shape, an
+organisation family, a strategy, a role, a forum, an artifact and a forcing event that were open, because
+`guard.py` runs the axis bans on live cards only and the table had copied a spent card's axes. A draw
+protects itself against neither by checking early; hand it `guard.py recent` and `guard.py check` and let it
+read what they say at the moment it draws. Two prescriptions from outside the
 screening thread died this session: a binding-constraint direction taken from a judge's own list, which
 screened out on three measured kills, and the construction above at +0.9960. The threads that found
 genuinely novel candidates were the ones handed a cell and a set of bans and left to search. Where a
@@ -951,8 +971,16 @@ the ladder.
   control can remove it, which is the property to engineer for.
 - **Wrong now:** the default construction is wrong on the data in hand; a record blessing the naive method
   until the window breaks it (27 of 30 builds) is blocked.
-- **Under-used ground first:** `uncertainty_hold` was never drawn, `causal_design` and
-  `identity_resolution` never held, the emerging habits beat the top four. Pick the strategy, then data.
+- **Under-used ground first, and read the unspent list for why it is unspent.** Pick the strategy, then
+  the data. Count the strategies never drawn on the objective in hand, then strike the four the guard flags
+  for semantics risk (`time_semantics`, `grain_or_unit`, `identity_resolution`,
+  `stated_rule_hard_construction`, with `withheld_rule_corpus_fit`), because rule 3 bars them from deciding
+  a call and a list made of them is unspent precisely because it is undrawable. **What survives that strike
+  is the draw, and it is easy to miss:** six consecutive passes on one objective each redrew
+  `stump_strategy` off a live ban and each landed on a spent family, while `binding_constraint` sat unspent
+  on that objective across 34 cards with 12 uses elsewhere and no semantics-risk flag. Its condition is in
+  1.4 gap 3: legal only where the metric is correct and an unchecked constraint removes the pick while
+  re-placing nobody, never "their metric misleads".
 
 **Test it against the cards and the record.**
 - **Read the mechanisms on file first:** `guard.py mechanisms --objective <o>` (and `--gate-g <g>`) prints
