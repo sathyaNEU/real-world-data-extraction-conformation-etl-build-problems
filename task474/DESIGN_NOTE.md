@@ -174,7 +174,7 @@ the gate reports daily trucks, and no link's annual volume ships.
   twice; D3, two columns one word apart: model_year is the truck's, and glider kits carry a 2014 to 2018 chassis on a
   2004 to 2009 engine whose year only the engine family's certification shows. No sentence describes either.
 - **Ask B, the same two numbers for each motor carrier at 30 September 2026: 16 figures.** Same path; a truck counts
-  once, under its latest registration's carrier (rule 3.1).
+  once, under the carrier of its latest registration in force that day (rule 3.1).
 - **The construction layer:** the designated links and their count.
 
 | Ask | Cracker (one truck per VIN as written, model_year with the list for blanks) | Mirror (class factors) |

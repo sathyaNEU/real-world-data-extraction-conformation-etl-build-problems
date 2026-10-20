@@ -22,7 +22,7 @@ def main(target, golden):
             fails.append(label)
     g = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(target, "air_corridor")).pages))
     ok("pdf read back: rules 2.2, 2.3, 3.1", "times the class's NOx emission rate in the 2026 emission rate table" in g
-       and "5.00 tonnes or more" in g and "under the motor carrier of its latest registration" in g)
+       and "5.00 tonnes or more" in g and "under the motor carrier of its latest registration in force" in g)
     rate = B.nox(target)
     call = M.designated(rate)
     ok("the call: %s" % ", ".join(call), call == ["L03", "L05", "L14"])

@@ -1,27 +1,37 @@
 {
  "task": "task474",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
  "stump": "The default path expands every link class by class with the classifying stations' factors; the terminal access roads' trucks follow vessel calls the stations never see, and only the terminal's own gate record expands their count days to the year.",
  "architecture": 6,
  "loops": 2,
  "precut": "PASS 2026-10-20 (51 checks)",
- "leak": "leak.py REVIEW (program words in the rules and notes, carriers in the registry)",
+ "leak": "leak.py REVIEW (program words in the rules and notes, carriers in the registry); three isolated readers question 1: none or rule 2.2's 'in those twelve months', no sentence names the step",
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 (architecture 5, emissions inventory)",
-  "nearest": "task452 v1 at 0.06"
+  "guard_check": "WARN 2026-10-20 (architecture 6)",
+  "heart": "WARN, nearest task452 v1 at 0.06",
+  "surface": "WARN (first names)"
  },
- "judge": "pass 1 DETERMINISTIC, FIX_NOW (registered_to pin, applied)",
+ "judge": "pass 1 DETERMINISTIC FIX_NOW (registered_to pinned); pass 2 DETERMINISTIC APPROVE, Gate G method_or_model_selection analytical_non_defect, Gate H analytical",
  "returned": [],
- "resume": "stage 4 round 2: asks re-sited (VIN O/I keying, gliders) and the registered_to pin applied; target.zip sha256 40335d5414269e1c; score reader leak-task474f-r3, re-judge once; both round-1 readers missed the call",
+ "resume": "shipped; the portal result goes into the ledger the day the author reports it",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
  "source_note": "seed ET31's number; architecture 4 in a fresh world (a Medicaid managed care plan's provider group cost per member-month)",
- "nearest": null
+ "nearest": null,
+ "readers": {
+  "round1": [
+   "r1 missed the call (L03, L04, L06, L07, L11, L12)",
+   "r2 missed the call (L01, L03, L05, L06), asks 20 of 24 before the re-site"
+  ],
+  "round2": [
+   "r3 missed the call (L01, L03, L05, L06), asks 4 of 24, score_reader exit 0"
+  ]
+ }
 }

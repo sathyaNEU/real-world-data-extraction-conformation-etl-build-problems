@@ -60,7 +60,7 @@ def write_rules(path):
                    "of drayage trucks registered with the port on the last day of each quarter of the program year (31 "
                    "December 2025, 31 March, 30 June and 30 September 2026) and how many of them have engines of model "
                    "year 2009 or older; and, on 30 September 2026, the same two numbers for each motor carrier. A "
-                   "truck counts once, under the motor carrier of its latest registration.", BODY),
+                   "truck counts once, under the motor carrier of its latest registration in force on that day.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Planning presents the designations with the 2027 capital budget.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
