@@ -22,22 +22,19 @@ def main(target, golden):
             fails.append(label)
     g = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(target, "air_corridor")).pages))
     ok("pdf read back: rules 2.2, 2.3, 3.1", "times the class's NOx emission rate in the 2026 emission rate table" in g
-       and "5.00 tonnes or more" in g and "from passing its in-gate to passing its out-gate" in g)
+       and "5.00 tonnes or more" in g and "under the motor carrier of its latest registration" in g)
     rate = B.nox(target)
     call = M.designated(rate)
-    ok("the call: %s" % ", ".join(call), call == ["L01", "L03", "L05", "L14"])
+    ok("the call: %s" % ", ".join(call), call == ["L03", "L05", "L14"])
     wb = load_workbook(B.find(golden, "air_corridor_links"), read_only=True)
-    rows = {r[0]: r for r in wb["Links"].iter_rows(values_only=True) if r and str(r[0]).startswith("L")}
-    for k in sorted(rate):
-        ok("%s: %.2f t per mile, %s" % (k, rate[k], rows[k][2]), (rows[k][2] == "Yes") == (k in call))
-    ga = B.gate_asks(target)
-    got = [r for r in wb["Terminal gates"].iter_rows(min_row=4, values_only=True) if r and r[1] and "20" in str(r[1])]
-    ok("terminal rows: 12", len(got) == 12)
-    vals = sorted((r[2], r[3]) for r in got)
-    want = sorted((ga[k][0], round(ga[k][1], 1)) for k in ga)
-    ok("terminal figures match the recomputation", vals == want)
+    rows = {r[0]: r for r in wb["Links"].iter_rows(values_only=True) if r and str(r[0])[:1] == "L" and str(r[0])[1:].isdigit()}
+    ok("the workbook lists the designated links: %s" % ", ".join(sorted(rows)), sorted(rows) == call)
+    fq, fc = B.fleet_asks(target)
+    rows = [r for r in wb["Drayage fleet"].iter_rows(min_row=4, values_only=True) if r and r[0] and r[1] is not None]
+    want = [(a, b) for a, b in fq.values()] + [fc[c] for c in sorted(fc)]
+    ok("fleet rows: %d" % len(rows), [(r[1], r[2]) for r in rows if isinstance(r[1], int)] == want)
     m = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(golden, "air_corridor_designations")).pages))
-    ok("the memo designates the four", "L01, L03, L05 and L14" in m)
+    ok("the memo designates the three", "L03, L05 and L14" in m)
     print("verify: %d failures" % len(fails))
     return not fails
 

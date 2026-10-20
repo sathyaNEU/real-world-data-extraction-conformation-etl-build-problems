@@ -51,32 +51,32 @@ STATIONS = {
 # the roadway links: id, name, road type, AADT, single-unit and combination truck shares, count program, count start
 # (the first of two count days)
 LINKS = {
-    "L01": ("Terminal Way, Gate 1 to SR-61", "arterial", 15120, .061, .243),
-    "L02": ("Harbor Boulevard, 7th to 12th Street", "arterial", 21490, .046, .121),
-    "L03": ("I-880 northbound ramps at Port Avenue", "freeway", 19790, .052, .178),
-    "L04": ("Port Avenue, I-880 to Terminal Way", "arterial", 13510, .058, .214),
-    "L05": ("SR-61, Mill Street to Harbor Boulevard", "arterial", 34420, .041, .083),
-    "L06": ("Cargo Drive, Berths 20 to 30", "arterial", 9250, .071, .332),
-    "L07": ("7th Street, Harbor Boulevard to Cole Creek", "arterial", 21010, .039, .061),
-    "L08": ("I-880 southbound ramps at Port Avenue", "freeway", 15160, .050, .169),
-    "L09": ("Delmar Road, I-580 to Cargo Drive", "arterial", 21320, .048, .129),
-    "L10": ("Ridley Avenue, I-880 to rail yard", "arterial", 13320, .066, .224),
-    "L11": ("Quarry Road truck route", "arterial", 12570, .063, .254),
-    "L12": ("Harbor Boulevard, 12th to 20th Street", "arterial", 27910, .035, .052),
-    "L13": ("Selby Street, rail yard to Terminal Way", "arterial", 11410, .068, .287),
-    "L14": ("Pell Road, I-580 to Berth 40", "arterial", 18210, .055, .196),
+    "L01": ("Terminal Way, Gate 1 to SR-61", "arterial", 14920, .061, .243),
+    "L02": ("Harbor Boulevard, 7th to 12th Street", "arterial", 18250, .046, .121),
+    "L03": ("I-880 northbound ramps at Port Avenue", "freeway", 21680, .052, .178),
+    "L04": ("Port Avenue, I-880 to Terminal Way", "arterial", 13520, .058, .214),
+    "L05": ("SR-61, Mill Street to Harbor Boulevard", "arterial", 37170, .041, .083),
+    "L06": ("Cargo Drive, Berths 30 to 34", "arterial", 18010, .071, .332),
+    "L07": ("7th Street, Harbor Boulevard to Cole Creek", "arterial", 20650, .039, .061),
+    "L08": ("I-880 southbound ramps at Port Avenue", "freeway", 14100, .050, .169),
+    "L09": ("Delmar Road, I-580 to Cargo Drive", "arterial", 21940, .048, .129),
+    "L10": ("Ridley Avenue, I-880 to rail yard", "arterial", 12190, .066, .224),
+    "L11": ("Quarry Road truck route", "arterial", 12310, .063, .254),
+    "L12": ("Harbor Boulevard, 12th to 20th Street", "arterial", 28280, .035, .052),
+    "L13": ("Selby Street, rail yard to Terminal Way", "arterial", 11100, .068, .287),
+    "L14": ("Pell Road, I-580 to Berth 40", "arterial", 32850, .055, .196),
 }
 # the golden's NOx per mile each link is tuned to (tune.py scales each link's AADT)
-DESIRED = {"L01": 5.71, "L02": 3.92, "L03": 6.18, "L04": 4.38, "L05": 5.46, "L06": 4.12, "L07": 2.61, "L08": 4.12,
-           "L09": 4.57, "L10": 4.21, "L11": 4.26, "L12": 3.27, "L13": 4.44, "L14": 5.48}
+DESIRED = {"L01": 4.55, "L02": 3.92, "L03": 6.18, "L04": 4.38, "L05": 5.46, "L06": 4.45, "L07": 2.61, "L08": 4.12,
+           "L09": 4.57, "L10": 4.21, "L11": 4.26, "L12": 3.27, "L13": 4.44, "L14": 5.40}
 PROGRAM = {"L01": "county", "L02": "dot", "L03": "dot", "L04": "consultant", "L05": "dot", "L06": "consultant",
            "L07": "county", "L08": "dot", "L09": "county", "L10": "consultant", "L11": "county", "L12": "dot",
            "L13": "consultant", "L14": "county"}
-COUNT_DAY = {"L01": dt.date(2025, 10, 14), "L02": dt.date(2026, 7, 21), "L03": dt.date(2026, 4, 14),
-             "L04": dt.date(2026, 3, 10), "L05": dt.date(2026, 6, 16), "L06": dt.date(2026, 1, 13),
+COUNT_DAY = {"L01": dt.date(2025, 12, 2), "L02": dt.date(2026, 7, 21), "L03": dt.date(2026, 4, 14),
+             "L04": dt.date(2026, 3, 10), "L05": dt.date(2026, 6, 16), "L06": dt.date(2026, 4, 14),
              "L07": dt.date(2025, 11, 18), "L08": dt.date(2026, 8, 18), "L09": dt.date(2026, 5, 12),
              "L10": dt.date(2025, 12, 9), "L11": dt.date(2026, 2, 10), "L12": dt.date(2025, 10, 21),
-             "L13": dt.date(2026, 9, 15), "L14": dt.date(2026, 6, 23)}
+             "L13": dt.date(2026, 9, 15), "L14": dt.date(2026, 2, 10)}
 
 FILES = {
     "stations": "ccs_hourly_volumes_oct2025_sep2026.csv",
@@ -88,17 +88,27 @@ FILES = {
     "rates": "onroad_nox_emission_rates_2026.csv",
     "rules": "air_corridor_program_rules_2027.pdf",
     "notes": "data_notes.txt",
-    "gates": "terminal_gate_transactions_oct2025_sep2026.csv",
+    "gates": "terminal_daily_gate_report_fy2026.csv",
+    "certs": "heavy_duty_engine_certifications.xlsx",
     "fleet": "drayage_truck_registry_2026.csv",
     "no2": "no2_monitor_hourly_2026.csv",
     "complaints": "truck_complaints_311_2025_2026.csv",
 }
 GOLDEN = {"workbook": "air_corridor_links_2027.xlsx", "memo": "air_corridor_designations_2027.pdf"}
 
-# the asks: the three container terminals' truck gates. Terminal, name, trucks' share of visits, median turn minutes
-TERMINALS = {"B20": ("Berth 20 Container Terminal", .42, 58.0),
-             "B30": ("Pacific Gateway Terminal (Berths 30 to 34)", .35, 71.0),
-             "B40": ("Berth 40 Intermodal Terminal", .23, 49.0)}
-N_TRUCKS = 640
+# the three container terminals: name, average truck visits on a weekday, the days between vessel calls on each of
+# its two services, and how far a call lifts the gate (the day of the call and the two after)
+TERMINALS = {"B20": ("Berth 20 Container Terminal", 2050, (9, 11), .34),
+             "B30": ("Pacific Gateway Terminal (Berths 30 to 34)", 1780, (8, 13), .38),
+             "B40": ("Berth 40 Intermodal Terminal", 1900, (10, 12), .31)}
+# the port's season: the import peak from August to October, the lull after the Lunar New Year sailings
+PORT_MONTH = {1: .97, 2: .84, 3: .91, 4: .98, 5: 1.0, 6: 1.02, 7: 1.04, 8: 1.09, 9: 1.11, 10: 1.10, 11: 1.0, 12: .94}
+# the terminal access roads: every truck visit to the terminal passes twice; a share of the terminal's drays use
+# another road, and a few non-terminal trucks use the access road
+ACCESS = {"L01": ("B20", .91, 140), "L06": ("B30", .94, 90), "L14": ("B40", .89, 160)}
 QUARTERS = {1: ("2025-10-01", "2025-12-31"), 2: ("2026-01-01", "2026-03-31"), 3: ("2026-04-01", "2026-06-30"),
             4: ("2026-07-01", "2026-09-30")}
+# the asks: the port's drayage truck registry
+N_TRUCKS = 2600
+CARRIERS = ["Harborline Drayage", "Tri-County Cartage", "Seaboard Intermodal", "Coastal Haul LLC", "Bay Freight Co",
+            "Northpoint Logistics", "Rivera Trucking", "Atlantic Port Services"]

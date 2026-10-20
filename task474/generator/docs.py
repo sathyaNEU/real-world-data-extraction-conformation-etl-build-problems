@@ -13,7 +13,7 @@ from openpyxl.styles import Font                                    # noqa: E402
 import pack as P    # noqa: E402
 import world as W   # noqa: E402
 
-SECTIONS = {"links": "2.1", "nox": "2.2", "line": "2.3", "gates": "3.1"}
+SECTIONS = {"links": "2.1", "nox": "2.2", "line": "2.3", "fleet": "3.1"}
 BODY = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.5, spaceAfter=6)
 HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, leading=14, spaceBefore=8, spaceAfter=4)
 TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4)
@@ -55,13 +55,12 @@ def write_rules(path):
                    "single-unit trucks (4 to 7) and combination trucks (8 to 13).", BODY),
          Paragraph("2.3 <b>Designation.</b> A link whose NOx per mile is %.2f tonnes or more is designated for the "
                    "program." % W.LINE, BODY),
-         Paragraph("3. The terminal operations review", HEAD),
-         Paragraph("3.1 For the Board's review of terminal gate operations beside the designations: for each container "
-                   "terminal and each quarter of the program year (October to December 2025, January to March, April "
-                   "to June and July to September 2026), the number of truck visits and their average turn time in "
-                   "minutes. A truck visit is a truck's stay at the terminal from passing its in-gate to passing its "
-                   "out-gate, and belongs to the quarter in which it passed the in-gate; its turn time is the length "
-                   "of that stay.", BODY),
+         Paragraph("3. The drayage fleet", HEAD),
+         Paragraph("3.1 For the Board's sizing of the 2027 truck replacement grants beside the designations: the number "
+                   "of drayage trucks registered with the port on the last day of each quarter of the program year (31 "
+                   "December 2025, 31 March, 30 June and 30 September 2026) and how many of them have engines of model "
+                   "year 2009 or older; and, on 30 September 2026, the same two numbers for each motor carrier. A "
+                   "truck counts once, under the motor carrier of its latest registration.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Planning presents the designations with the 2027 capital budget.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -99,12 +98,15 @@ def write_notes(path, n):
              "  average over all road types and speeds).",
              "",
              "%s (%d rows)" % (F["gates"], n["gates"]),
-             "  The three container terminals' gate transaction exports: one row per container transaction,",
-             "  with the truck's tag, the lanes and its gate_in and gate_out times as each terminal's gate system",
-             "  records them.",
+             "  The three container terminals' daily gate reports: trucks through the in-gate and the out-gate",
+             "  and container moves, by terminal and day.",
              "",
              "%s (%d rows)" % (F["fleet"], n["fleet"]),
-             "  The port's drayage truck registry: each truck's tag assignments and engine model year.",
+             "  The port's drayage truck registry: one row per registration, with the truck's VIN, motor carrier,",
+             "  registration dates (registered_to blank while in force) and engine.",
+             "",
+             "%s" % F["certs"],
+             "  The Clean Truck Program's reference list of heavy-duty engine families and their certification.",
              "",
              "%s (%d rows)" % (F["complaints"], n["complaints"]),
              "  City 311 service requests about trucks on port-area streets.",
@@ -139,14 +141,15 @@ def write_links(path):
     ws.title = "Links"
     ws.append(["Port roadway link register, program year October 2025 to September 2026"])
     ws.append([])
-    ws.append(["Link ID", "Link", "Road type", "Length (mi)", "Count programme", "Count site"])
+    ws.append(["Link ID", "Link", "Road type", "Length (mi)", "Count programme", "Count site", "Terminal access"])
     for c in ws[3]:
         c.font = Font(bold=True)
     rng = __import__("numpy").random.default_rng(W.SEED + 21)
     prog = {"dot": "State DOT", "county": "Harbor County", "consultant": W.CONSULTANT}
     for k, (name, rt, *_r) in W.LINKS.items():
-        ws.append([k, name, rt.capitalize(), round(float(rng.uniform(.35, 2.4)), 2), prog[W.PROGRAM[k]], P.SITE[k]])
-    for col, w in zip("ABCDEF", (8, 40, 10, 11, 22, 13)):
+        ws.append([k, name, rt.capitalize(), round(float(rng.uniform(.35, 2.4)), 2), prog[W.PROGRAM[k]], P.SITE[k],
+                   W.TERMINALS[W.ACCESS[k][0]][0] if k in W.ACCESS else None])
+    for col, w in zip("ABCDEFG", (8, 40, 10, 11, 22, 13, 40)):
         ws.column_dimensions[col].width = w
     wb.save(path)
 
@@ -172,3 +175,18 @@ def write_county(path, tables):
 
 
 COUNTY_TITLE = "Harbor County Public Works, Traffic Engineering"
+
+
+def write_certs(path, rows):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Engine families"
+    ws.append(["Engine family", "Manufacturer", "Model year", "Displacement (L)", "NOx standard (g/bhp-hr)",
+               "Certified by"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for r in rows:
+        ws.append(r)
+    for col, w in zip("ABCDEF", (14, 24, 11, 15, 22, 12)):
+        ws.column_dimensions[col].width = w
+    wb.save(path)

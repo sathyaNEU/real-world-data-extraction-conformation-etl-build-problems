@@ -51,7 +51,14 @@
    "source": "Bayline Port Authority (fictional), synthetic records",
    "date": "2026-10-20",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 713
+   "rows": 2813
+  },
+  {
+   "file": "heavy_duty_engine_certifications.xlsx",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-05-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
   },
   {
    "file": "no2_monitor_hourly_2026.csv",
@@ -82,11 +89,11 @@
    "rows": 2304
   },
   {
-   "file": "terminal_gate_transactions_oct2025_sep2026.csv",
+   "file": "terminal_daily_gate_report_fy2026.csv",
    "source": "Bayline Port Authority (fictional), synthetic records",
    "date": "2026-10-23",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 118501
+   "rows": 1095
   },
   {
    "file": "truck_complaints_311_2025_2026.csv",
@@ -104,10 +111,6 @@
   {
    "file": "truck_complaints_311_2025_2026.csv",
    "why": "311 truck complaints by street: where residents notice trucks, not the NOx a link's traffic emits"
-  },
-  {
-   "file": "drayage_truck_registry_2026.csv",
-   "why": "the drayage registry's engine model years: the rules price NOx at the emission rate table's class rates, and visits are counted by tag"
   }
  ],
  "deliverables": [

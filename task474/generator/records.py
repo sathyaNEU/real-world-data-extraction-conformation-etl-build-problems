@@ -74,45 +74,17 @@ def counts(rng, x):
     return out
 
 
-MOVES = ("DROP EXPORT", "PICK IMPORT", "DROP EMPTY", "PICK EMPTY")
-LANES = {"B20": (6, 4), "B30": (8, 5), "B40": (5, 3)}
-
-
-def gates(rng, g):
-    """Gate transaction rows, one per container transaction, as each terminal's gate system writes them: Berth 20's
-    in-gate kiosks on standard time all year; Pacific Gateway keeping a transaction keyed to the wrong truck and voided
-    beside the re-keyed one; Berth 40 writing a truck's run to the on-dock rail ramp as two legs through the ramp
-    gate."""
-    tags = sorted({v["tag"] for v in g["visits"]})
+def gate_report(rng, g):
+    """The terminals' daily gate reports: trucks in and out each day (a truck in the yard at midnight goes out the next
+    day), and the container moves."""
     rows = []
-    tid = 4400000
-    for v in sorted(g["visits"], key=lambda v: (v["tin"], v["tag"])):
-        ni, no = LANES[v["term"]]
-        il, ol = "IG%02d" % int(rng.integers(1, ni + 1)), "OG%02d" % int(rng.integers(1, no + 1))
-        tin, out = v["tin"], v["tout"]
-        if v["term"] == "B20" and us_eastern_dst(tin.date()):
-            tin = tin - dt.timedelta(hours=1)
-        cont = lambda: "%s%07d" % (("MSKU", "TGHU", "CMAU", "OOLU", "HLXU", "MEDU", "TCNU", "BEAU")[int(rng.integers(0, 8))],
-                                   int(rng.integers(0, 9999999)))
-        if v["ramp"]:
-            a, b = v["ramp"]
-            tid += int(rng.integers(1, 9))
-            rows.append((tid, v["term"], v["tag"], il, tin, "RG1", a, "PICK IMPORT", cont()))
-            tid += int(rng.integers(1, 9))
-            rows.append((tid, v["term"], v["tag"], "RG1", b, ol, out, "DROP EMPTY", cont()))
-            continue
-        n = 2 if v["dual"] else 1
-        for j in range(n):
-            mv = MOVES[int(rng.choice(4, p=[.33, .37, .14, .16]))] if n == 1 else \
-                (("DROP EXPORT", "PICK IMPORT")[j] if rng.random() < .7 else MOVES[int(rng.integers(0, 4))])
-            c = cont()
-            if v["term"] == "B30" and j == 0 and rng.random() < .032:
-                # keyed first to another truck's tag and voided a few minutes later
-                tid += int(rng.integers(1, 5))
-                wrong = tags[int(rng.integers(0, len(tags)))]
-                rows.append((tid, v["term"], wrong, il, tin, ol, tin + dt.timedelta(seconds=int(rng.integers(90, 560))),
-                             mv, c))
-            tid += int(rng.integers(1, 9))
-            rows.append((tid, v["term"], v["tag"], il, tin, ol, out, mv, c))
-            tin = tin + dt.timedelta(seconds=int(rng.integers(20, 95)))
+    for t in W.TERMINALS:
+        carry = 0
+        for i, d in enumerate(W.DAYS):
+            v = int(g[t][i])
+            late = int(rng.binomial(v, .006))
+            out = v - late + carry
+            carry = late
+            moves = int(round(v * float(rng.uniform(1.22, 1.34))))
+            rows.append((d, t, v, out, moves))
     return rows

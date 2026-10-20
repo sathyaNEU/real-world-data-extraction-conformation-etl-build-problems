@@ -1,7 +1,7 @@
 """The pair ceiling on the cut pack: the cracker lands the call and runs the battery on the gate exports, merging
 each truck's overlapping transactions into stays as recorded; the mirror
-stops at the all-vehicle factors. Weights 38 / 7 / 55; the main block grades each link's verdict (14) and the set
-(1); the asks are 24 figures (visits and turn time for 3 terminals in 4 quarters)."""
+stops at the all-vehicle factors. Weights 38 / 7 / 55; the main block grades each designated link listed,
+no other link listed and the count; the asks are 24 figures (trucks and old engines for 4 quarters and 8 carriers)."""
 import os
 import sys
 
@@ -14,18 +14,21 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 def main(target=None):
     target = target or os.path.join(os.path.dirname(HERE), "target")
-    g, m = M.designated(B.nox(target)), M.designated(B.nox(target, "textbook"))
-    links = sorted(B.links(target))
-    keep = sum((k in g) == (k in m) for k in links) + (g == m)
-    mirror_call = W_CALL * keep / (len(links) + 1.0)
-    ga, gc = B.gate_asks(target), B.gate_asks(target, "merged")
-    hit = sum(ga[k][0] == gc[k][0] for k in ga) + sum(round(ga[k][1], 1) == round(gc[k][1], 1) for k in ga)
-    ask = W_ASK * hit / 24.0
+    g, m = M.designated(B.nox(target)), M.designated(B.nox(target, "classes"))
+    # the main block grades each designated link listed (len(g)), no other link listed (1) and the count (1)
+    keep = sum(k in m for k in g) + (not set(m) - set(g)) + (len(m) == len(g))
+    mirror_call = W_CALL * keep / (len(g) + 2.0)
+    gq, gcar = B.fleet_asks(target)
+    cq, ccar = B.fleet_asks(target, "ids")
+    n = 8 + 2 * len(gcar)
+    hit = sum(gq[q][i] == cq[q][i] for q in gq for i in (0, 1)) + \
+        sum(ccar.get(k, (None, None))[i] == gcar[k][i] for k in gcar for i in (0, 1))
+    ask = W_ASK * hit / n
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask
     print("golden %s; mirror %s" % (g, m))
-    print("mirror keeps %d of %d main figures; the asks' careful path keeps %d of 24" % (keep, len(links) + 1, hit))
+    print("mirror keeps %d of %d main figures; the asks' careful path keeps %d of %d" % (keep, len(g) + 2, hit, n))
     print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
-        cracker, mirror, (cracker + mirror) / 2, 100.0 * hit / 24))
+        cracker, mirror, (cracker + mirror) / 2, 100.0 * hit / n))
     return (cracker + mirror) / 2
 
 

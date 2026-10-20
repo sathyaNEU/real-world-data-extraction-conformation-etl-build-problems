@@ -31,14 +31,13 @@ def figures(target):
     rate = B.nox(target)
     links = sorted(rate)
     des = M.designated(rate)
-    ga = B.gate_asks(target)
-    key = lambda k: "%s Q%d" % k
+    fq, fc = B.fleet_asks(target)
     return dict(call=des, n_call=len(des), n_links=len(links), links=links, names={k: W.LINKS[k][0] for k in links},
                 rate={k: round(rate[k], 2) for k in links}, line="%.2f" % W.LINE, days=len(W.DAYS),
-                textbook_route=M.designated(B.nox(target, "textbook")), sections=DC.SECTIONS,
-                terminals={t: W.TERMINALS[t][0] for t in W.TERMINALS}, quarters=QNAME,
-                asks=dict(visits={key(k): v[0] for k, v in ga.items()},
-                          turn={key(k): round(v[1], 1) for k, v in ga.items()}))
+                textbook_route=M.designated(B.nox(target, "classes")), access=B.access_roads(target),
+                sections=DC.SECTIONS, terminals={t: W.TERMINALS[t][0] for t in W.TERMINALS}, quarters=QNAME,
+                asks=dict(trucks={"Q%d" % q: v[0] for q, v in fq.items()}, old={"Q%d" % q: v[1] for q, v in fq.items()},
+                          carrier_trucks={c: v[0] for c, v in fc.items()}, carrier_old={c: v[1] for c, v in fc.items()}))
 
 
 def write_workbook(path, f):
@@ -50,24 +49,29 @@ def write_workbook(path, f):
     ws.append(["Link ID", "Link", "Designated"])
     for c in ws[3]:
         c.font = Font(bold=True)
-    for k in f["links"]:
-        ws.append([k, f["names"][k], "Yes" if k in f["call"] else "No"])
+    for k in f["call"]:
+        ws.append([k, f["names"][k], "Yes"])
     ws.append([])
     ws.append(["Designated: %d of %d links." % (f["n_call"], f["n_links"])])
     ws.column_dimensions["A"].width = 9
     ws.column_dimensions["B"].width = 44
     ws.column_dimensions["C"].width = 12
-    tg = wb.create_sheet("Terminal gates")
-    tg.append(["Truck visits by terminal and quarter, program year October 2025 to September 2026"])
+    tg = wb.create_sheet("Drayage fleet")
+    tg.append(["Drayage trucks registered with the port, program year October 2025 to September 2026"])
     tg.append([])
-    tg.append(["Terminal", "Quarter", "Truck visits", "Average turn time (min)"])
+    tg.append(["Quarter end", "Trucks registered", "Engines model year 2009 or older"])
     for c in tg[3]:
         c.font = Font(bold=True)
-    for t in sorted(f["terminals"]):
-        for q in range(1, 5):
-            k = "%s Q%d" % (t, q)
-            tg.append([f["terminals"][t], f["quarters"][q], f["asks"]["visits"][k], f["asks"]["turn"][k]])
-    for col, w in zip("ABCD", (40, 14, 13, 22)):
+    ends = {1: "31 Dec 2025", 2: "31 Mar 2026", 3: "30 Jun 2026", 4: "30 Sep 2026"}
+    for q in range(1, 5):
+        tg.append([ends[q], f["asks"]["trucks"]["Q%d" % q], f["asks"]["old"]["Q%d" % q]])
+    tg.append([])
+    tg.append(["Motor carrier (30 Sep 2026)", "Trucks registered", "Engines model year 2009 or older"])
+    for c in tg[tg.max_row]:
+        c.font = Font(bold=True)
+    for c in sorted(f["asks"]["carrier_trucks"]):
+        tg.append([c, f["asks"]["carrier_trucks"][c], f["asks"]["carrier_old"][c]])
+    for col, w in zip("ABC", (30, 18, 32)):
         tg.column_dimensions[col].width = w
     tg.append([])
     tg.append(["Prepared by %s, %s." % (W.PEOPLE["analyst"][0], W.MEMO_DATE)])
@@ -115,12 +119,13 @@ def write_memo(path, f):
                    "Each carried %s tonnes of NOx per mile or more from on-road vehicles between October 2025 and "
                    "September 2026." % (WORDS[len(des)], WORDS[f["n_links"]], names, f["line"]), body),
          Paragraph("Each link was counted for two weekdays, and the year's traffic is built from those counts with the "
-                   "state's continuous count stations. Trucks, which carry most of the NOx, run well above their "
-                   "annual average on weekdays and fall away at weekends, while cars do much less of either, so the "
-                   "trucks are expanded with the patterns the classifying stations measure for trucks and the cars "
-                   "with the patterns for cars. Expanded with one pattern for all vehicles, every weekday count "
-                   "carries too many trucks into the year, and the links where trucks are most of the traffic cross "
-                   "the line without carrying the NOx to do so.", body),
+                   "state's classifying count stations, class by class. That holds for the roads carrying general "
+                   "traffic. The trucks on the three terminal access roads are the terminals' own drays, and they come "
+                   "and go with the vessel calls: Terminal Way and Cargo Drive were counted in busy weeks at Berth 20 "
+                   "and Pacific Gateway, Pell Road in a quiet one at Berth 40. Their trucks are carried to the year by "
+                   "each terminal's own gate record, its average day over the year against its count days; expanded "
+                   "with the state stations' factors, Terminal Way and Cargo Drive cross the line and Pell Road misses "
+                   "it.", body),
          chart(f), Spacer(1, 6)]
     t = [["Link", "Name", "Designated"]]
     for k in f["links"]:

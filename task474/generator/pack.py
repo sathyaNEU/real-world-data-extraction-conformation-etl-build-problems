@@ -12,9 +12,9 @@ import world as W
 STATION_COLS = ["station_id", "date", "hour_ending", "direction", "vehicle_class", "volume"]
 DOT_COLS = ["site_id", "count_date", "hour", "direction", "class_1_3", "class_4_7", "class_8_13"]
 CONS_COLS = ["site_code", "interval_start", "lane", "class_code", "volume"]
-GATE_COLS = ["transaction_id", "terminal", "truck_tag", "in_lane", "gate_in", "out_lane", "gate_out", "move_type",
-             "container_no"]
-FLEET_COLS = ["truck_id", "tag_number", "tag_effective", "tag_expires", "engine_model_year", "motor_carrier"]
+GATE_COLS = ["report_date", "terminal", "trucks_in", "trucks_out", "container_moves"]
+FLEET_COLS = ["registration_id", "truck_id", "vin", "motor_carrier", "registered_from", "registered_to",
+              "engine_family", "engine_model_year"]
 COMPLAINT_COLS = ["request_id", "received", "street", "cross_street", "category", "status"]
 NO2_COLS = ["aqs_site_id", "date_local", "hour_local", "no2_ppb", "qualifier"]
 
@@ -27,11 +27,11 @@ DIRS = {"freeway": ("NB", "SB"), "arterial": ("EB", "WB")}
 
 @functools.lru_cache(None)
 def everything():
-    x = S.world(np.random.default_rng(W.SEED))
-    g = S.gate_world(np.random.default_rng(W.GATE_SEED))
-    return dict(x=x, g=g, st=R.stations(np.random.default_rng(W.SEED + 1), x),
+    x = S.world(np.random.default_rng(W.SEED), np.random.default_rng(W.GATE_SEED))
+    reg = S.registry(np.random.default_rng(W.SEED + 60))
+    return dict(x=x, reg=reg, st=R.stations(np.random.default_rng(W.SEED + 1), x),
                 cnt=R.counts(np.random.default_rng(W.SEED + 2), x),
-                gates=R.gates(np.random.default_rng(W.SEED + 3), g))
+                gates=R.gate_report(np.random.default_rng(W.SEED + 3), x["gates"]))
 
 
 def station_rows(e):
@@ -95,20 +95,29 @@ def county_tables(e):
 
 
 def gate_rows(e):
-    f = "%Y-%m-%d %H:%M:%S"
-    return [[t, term, tag, il, a.strftime(f), ol, b.strftime(f), mv, cn] for t, term, tag, il, a, ol, b, mv, cn in e["gates"]]
+    return [[d.isoformat(), t, a, b, m] for d, t, a, b, m in sorted(e["gates"], key=lambda r: (r[0], r[1]))]
 
 
 def fleet_rows(e):
     rng = np.random.default_rng(W.SEED + 8)
-    carriers = ["Harborline Drayage", "Tri-County Cartage", "Seaboard Intermodal", "Coastal Haul LLC", "Bay Freight Co",
-                "Northpoint Logistics", "Rivera Trucking", "Atlantic Port Services"]
-    my = {t["truck"]: t["model_year"] for t in e["g"]["trucks"]}
-    car = {t: carriers[int(rng.integers(0, len(carriers)))] for t in sorted(my)}
     rows = []
-    for tag, truck, a, b in e["g"]["tags"]:
-        rows.append([truck, tag, a.isoformat(), "" if b == W.DAYS[-1] else b.isoformat(), my[truck], car[truck]])
-    rows.sort(key=lambda r: (r[0], r[2]))
+    n = 5100
+    for g in sorted(e["reg"]["regs"], key=lambda g: (g["start"], g["truck"])):
+        n += int(rng.integers(1, 6))
+        rows.append(["R%06d" % n, "DT%06d" % g["truck"], g["vin"], g["car"], g["start"].isoformat(),
+                     g["end"].isoformat() if g["end"] else "", g["fam"], "" if g["legacy"] else g["my"]])
+    return rows
+
+
+def cert_rows(e):
+    rng = np.random.default_rng(W.SEED + 13)
+    makers = {"A": "Allison-Cummins", "B": "Brightline Diesel", "C": "Cummins Inc.", "D": "Detroit Diesel Corp.",
+              "H": "Hino Motors", "M": "Mack Trucks", "N": "Navistar Inc.", "P": "PACCAR Inc.", "V": "Volvo Powertrain",
+              "W": "Westport Fuel Systems"}
+    rows = []
+    for code, my in sorted(e["reg"]["fams"].items()):
+        std = 0.20 if my >= 2010 else (1.2 if my >= 2007 else 2.0)
+        rows.append([code, makers[code[1]], my, float(code[5:9]), std, "EPA" if rng.random() < .7 else "EPA, CARB"])
     return rows
 
 

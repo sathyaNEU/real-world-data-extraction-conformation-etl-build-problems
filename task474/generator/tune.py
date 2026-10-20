@@ -11,6 +11,18 @@ import sources as S
 import world as W
 
 
+def clean_gates(x):
+    return {t: {d: (int(v[i]), int(v[i])) for i, d in enumerate(W.DAYS)} for t, v in x["gates"].items()}
+
+
+ROADS = {k: v[0] for k, v in W.ACCESS.items()}
+
+
+def golden(x, **kw):
+    st, reg, cnt = clean_inputs(x)
+    return M.access(M.estimate(st, reg, cnt, "golden", **kw), cnt, clean_gates(x), ROADS)
+
+
 def clean_inputs(x):
     """The estimators' inputs from the clean truth: stations' daily totals (every class at the classifying ones) and
     each link's two count days."""
@@ -31,20 +43,24 @@ def clean_inputs(x):
 
 def main(it):
     for _ in range(it):
-        x = S.world(np.random.default_rng(W.SEED))
-        g = M.nox(M.estimate(*clean_inputs(x)))
+        x = S.world(np.random.default_rng(W.SEED), np.random.default_rng(W.GATE_SEED))
+        g = M.nox(golden(x))
+        cun = {k: x["links"][k]["CU"].mean() * len(W.DAYS) * W.EF["CU"] / 1e6 for k in W.ACCESS}
         src = open(W.__file__).read()
         links = {}
         for k, (name, rt, a, su, cu) in W.LINKS.items():
-            na = int(round(a * W.DESIRED[k] / g[k], -1))
+            if k in W.ACCESS:
+                na = int(round(a * (W.DESIRED[k] - cun[k]) / (g[k] - cun[k]), -1))
+            else:
+                na = int(round(a * W.DESIRED[k] / g[k], -1))
             links[k] = (name, rt, na, su, cu)
             src = re.sub(r'("%s": \("[^"]+", "%s", )\d+' % (k, rt), r"\g<1>%d" % na, src)
         open(W.__file__, "w").write(src)
         W.LINKS.clear()
         W.LINKS.update(links)
-    x = S.world(np.random.default_rng(W.SEED))
+    x = S.world(np.random.default_rng(W.SEED), np.random.default_rng(W.GATE_SEED))
     inp = clean_inputs(x)
-    r = {"truth": S.truth(x)}
+    r = {"truth": S.truth(x), "gold": M.nox(golden(x))}
     for route in ("golden", "textbook", "raw", "month"):
         r[route] = M.nox(M.estimate(*inp, route=route))
     for how in ("cell", "sep"):
@@ -53,8 +69,8 @@ def main(it):
                 r["g-%s-%s-%s" % (how, a, cf)] = M.nox(M.estimate(*inp, "golden", how, a, cf))
         r["t-" + how] = M.nox(M.estimate(*inp, "textbook", how))
     for k in W.LINKS:
-        print(k, " ".join("%s %.2f" % (n[:10], r[n][k]) for n in ("truth", "golden", "textbook", "g-sep-mean-classifying",
-                                                                    "g-sep-aashto-all", "t-sep")))
+        print(k, " ".join("%s %.2f" % (n[:10], r[n][k]) for n in ("truth", "gold", "golden", "textbook",
+                                                                    "g-sep-aashto-all")))
     for n in r:
         print("%-26s %s" % (n, M.designated(r[n])))
 

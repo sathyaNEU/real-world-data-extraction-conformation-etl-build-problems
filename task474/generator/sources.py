@@ -1,5 +1,7 @@
-"""The clean truth: every station's and every link's daily traffic by vehicle class over the program year. Nothing
-here knows about files, layouts or mess."""
+"""The clean truth: every station's and every link's daily traffic by vehicle class over the program year, each
+terminal's daily truck visits, and the drayage truck registry. Nothing here knows about files, layouts or mess."""
+import datetime as dt
+
 import numpy as np
 
 import world as W
@@ -7,6 +9,7 @@ import world as W
 ND = len(W.DAYS)
 DOWS = np.array([d.weekday() for d in W.DAYS])
 MONTHS = np.array([d.month for d in W.DAYS])
+GATE_DOW = np.array([1.04, 1.03, 1.02, 1.01, .99, .38, 0.0])       # gates closed on Sundays
 
 
 def daily(rng, aadt, su, cu, noise=(.045, .07, .075)):
@@ -24,10 +27,40 @@ def daily(rng, aadt, su, cu, noise=(.045, .07, .075)):
     return out
 
 
-def world(rng):
+def gates(rng):
+    """{terminal: daily truck visits over the program year}: the weekday pattern, holidays, and the lift each vessel
+    call gives the gate on its day and the two after, two services per terminal on their own rotations."""
+    out = {}
+    for t, (name, base, cycles, lift) in W.TERMINALS.items():
+        v = GATE_DOW[DOWS] * np.array([W.PORT_MONTH[m] for m in MONTHS])
+        for cyc in cycles:
+            phase = int(rng.integers(0, cyc))
+            bump = np.zeros(ND)
+            for k in range(phase, ND, cyc):
+                for j, w in enumerate((1.0, .75, .35)):
+                    if k + j < ND:
+                        bump[k + j] += lift * w * float(rng.uniform(.75, 1.25))
+            v = v * (1 + bump - bump.mean())
+        for k, d in enumerate(W.DAYS):
+            if d in W.HOLIDAYS:
+                v[k] *= .25
+        v = v * rng.lognormal(0, .05, ND)
+        out[t] = np.round(v * base).astype(int)
+    return out
+
+
+def world(rng, grng):
     st = {s: daily(rng, a, su, cu) for s, (_, _, a, su, cu, _) in W.STATIONS.items()}
-    ln = {k: daily(rng, a, su, cu) for k, (_, _, a, su, cu) in W.LINKS.items()}
-    return dict(stations=st, links=ln)
+    g = gates(grng)
+    ln = {}
+    for k, (_, _, a, su, cu) in W.LINKS.items():
+        ln[k] = daily(rng, a, su, cu)
+        if k in W.ACCESS:
+            term, share, other = W.ACCESS[k]
+            # combination trucks on an access road: the terminal's drays in and out, plus a few others
+            extra = daily(rng, other / .1, 0, .1)["CU"]
+            ln[k]["CU"] = 2 * share * g[term] + extra
+    return dict(stations=st, links=ln, gates=g)
 
 
 def nox_per_mile(byclass):
@@ -39,88 +72,71 @@ def truth(x):
     return {k: nox_per_mile({c: v[c].mean() for c in W.CLASSES}) for k, v in x["links"].items()}
 
 
-def gate_world(rng):
-    """The drayage trucks, their tags over the year, and every truck visit to a terminal: truck, terminal, local time
-    in and out, and the container transactions it carried out (one, or two for a dual transaction)."""
-    import datetime as dt
+def registry(rng):
+    """The drayage trucks registered with the port over the program year: one record per registration, each truck
+    with its VIN, carrier, engine family and model year. Some trucks move to another carrier (a new registration
+    under a new truck id; the old one closed, or for a few left open), some trucks leave, new ones join."""
+    fams = {}
+    for my in range(2004, 2026):
+        for _ in range(int(rng.integers(3, 7))):
+            maker = "ABCDHMNPVW"[int(rng.integers(0, 10))]
+            code = "%s%s%s%s%04.1f%s" % ("456789ABCDEFGHJKLMNPRS"[my - 2004], maker, "XEC"[int(rng.integers(0, 3))],
+                                        "HD", float(rng.uniform(10.8, 15.0)), "XAPBGC"[int(rng.integers(0, 6))])
+            fams[code] = my
+    by_year = {}
+    for code, my in fams.items():
+        by_year.setdefault(my, []).append(code)
+    regs = []
     trucks = []
-    tag_pool = rng.choice(np.arange(3000000, 3999999), size=3 * W.N_TRUCKS, replace=False)
-    nxt = 0
+    tid = 100200
     for i in range(W.N_TRUCKS):
-        my = int(rng.choice(np.arange(2008, 2025), p=np.linspace(.4, 1.6, 17) / np.linspace(.4, 1.6, 17).sum()))
-        trucks.append(dict(truck="DT%05d" % (10000 + i * 7 + int(rng.integers(0, 7))), model_year=my,
-                           rate=float(rng.gamma(2.0, .25)), pref=rng.dirichlet([.9, .75, .5]),
-                           active=(W.DAYS[0], W.DAYS[-1])))
-    # some trucks retire during the year and their tags go to a new truck; some get a replacement tag
-    tags = []                       # (tag, truck, start, end)
-    for t in trucks:
-        tags.append([int(tag_pool[nxt]), t["truck"], W.DAYS[0], W.DAYS[-1]])
-        t["tag_rows"] = [len(tags) - 1]
-        nxt += 1
-    extra = []
-    for t in trucks:
-        u = rng.random()
-        if u < .05:                 # retires; its tag is reissued to a newly registered truck
-            d = W.DAYS[int(rng.integers(60, 300))]
-            t["active"] = (W.DAYS[0], d)
-            row = tags[t["tag_rows"][0]]
-            row[3] = d
-            nt = dict(truck="DT%05d" % (16000 + len(extra) * 11), model_year=int(rng.integers(2019, 2026)),
-                      rate=float(rng.gamma(2.0, .25)), pref=rng.dirichlet([.9, .75, .5]),
-                      active=(d + dt.timedelta(int(rng.integers(3, 20))), W.DAYS[-1]))
-            tags.append([row[0], nt["truck"], nt["active"][0], W.DAYS[-1]])
-            nt["tag_rows"] = [len(tags) - 1]
-            extra.append(nt)
-        elif u < .11:               # damaged tag replaced
-            d = W.DAYS[int(rng.integers(30, 330))]
-            tags[t["tag_rows"][0]][3] = d - dt.timedelta(1)
-            tags.append([int(tag_pool[nxt]), t["truck"], d, W.DAYS[-1]])
-            t["tag_rows"].append(len(tags) - 1)
-            nxt += 1
-    trucks += extra
-    terms = list(W.TERMINALS)
-    visits = []
-    for t in trucks:
-        for d in W.DAYS:
-            if not (t["active"][0] <= d <= t["active"][1]) or d.weekday() == 6:
+        my = int(rng.choice(np.arange(2004, 2026), p=np.r_[np.full(6, .022), np.full(16, (1 - .132) / 16)]))
+        vin = ("%s%09d" % ("1XKYDP4X" if rng.random() < .5 else "3AKJHHDR", int(rng.integers(0, 10 ** 9))))[:17]
+        car = W.CARRIERS[int(rng.choice(len(W.CARRIERS), p=np.array([18, 15, 14, 12, 11, 11, 10, 9]) / 100))]
+        start = W.DAYS[0] if i < int(W.N_TRUCKS * .86) else W.DAYS[int(rng.integers(1, ND))]
+        end = None
+        if rng.random() < .07:
+            end = W.DAYS[int(rng.integers(30, ND))]
+            if end <= start:
+                end = None
+        fam = by_year[my][int(rng.integers(0, len(by_year[my])))]
+        trucks.append(dict(vin=vin, my=my, fam=fam))
+        tid += int(rng.integers(1, 4))
+        legacy = rng.random() < (.62 if my < 2014 else .18)          # registered before the 2024 form change
+        regs.append(dict(truck=tid, vin=vin, car=car, start=start, end=end, my=my, fam=fam, legacy=legacy, open_dup=False))
+        # a move to another carrier mid-year: a new registration under a new truck id
+        if end is None and rng.random() < .09:
+            d = W.DAYS[int(rng.integers(20, ND - 10))]
+            new = W.CARRIERS[int(rng.integers(0, len(W.CARRIERS)))]
+            if new == car:
                 continue
-            lam = t["rate"] * (.35 if d.weekday() == 5 else 1.0)
-            n = int(rng.poisson(lam))
-            clock = dt.datetime.combine(d, dt.time(5, 30)) + dt.timedelta(minutes=int(rng.integers(0, 240)))
-            for _ in range(n):
-                term = terms[int(rng.choice(3, p=t["pref"]))]
-                q = (d.month - 10) % 12 // 3
-                med = W.TERMINALS[term][2] * (1.0 + .08 * q if term == "B30" else 1.0 - .03 * q)
-                turn = float(rng.lognormal(np.log(med), .42))
-                dual = rng.random() < .27
-                if dual:
-                    turn *= 1.35
-                tin = clock + dt.timedelta(seconds=int(rng.integers(0, 3600)))
-                tout = tin + dt.timedelta(seconds=int(turn * 60))
-                ramp = None
-                if term == "B40" and not dual and rng.random() < .26:
-                    # the truck runs to the on-dock rail ramp and back inside its stay
-                    a = tin + dt.timedelta(seconds=int((tout - tin).total_seconds() * float(rng.uniform(.25, .55))))
-                    b = a + dt.timedelta(minutes=int(rng.integers(8, 26)))
-                    tout = tout + (b - a)
-                    ramp = (a, b)
-                tag = next(tags[r][0] for r in t["tag_rows"] if tags[r][2] <= d <= tags[r][3])
-                visits.append(dict(truck=t["truck"], tag=tag, term=term, tin=tin, tout=tout, dual=dual, ramp=ramp))
-                clock = tout + dt.timedelta(minutes=int(rng.integers(35, 160)))
-                if clock.hour >= 20 or clock.date() != d:
-                    break
-    return dict(trucks=trucks, tags=tags, visits=visits)
+            left_open = rng.random() < .45
+            if not left_open:
+                regs[-1]["end"] = d - dt.timedelta(1)
+            regs[-1]["open_dup"] = left_open
+            tid += int(rng.integers(1, 4))
+            regs.append(dict(truck=tid + 50000, vin=vin, car=new, start=d, end=None, my=my, fam=fam, legacy=False,
+                             open_dup=False))
+    return dict(regs=regs, fams=fams)
 
 
-def gate_truth(g):
-    """{(terminal, quarter): (visits, distinct trucks, mean turn minutes)}, a visit in the quarter of its local gate-in
-    date."""
+def registry_truth(r):
+    """{quarter: (trucks registered on the quarter's last day, those of model year 2009 or older)} and
+    {carrier: (trucks at 30 September 2026, of which 2009 or older)}: a truck counted once, under its latest
+    registration."""
+    q_end = {q: dt.date.fromisoformat(b) for q, (a, b) in W.QUARTERS.items()}
     out = {}
-    for v in g["visits"]:
-        q = (v["tin"].month - 10) % 12 // 3 + 1
-        k = (v["term"], q)
-        o = out.setdefault(k, [0, set(), 0.0])
-        o[0] += 1
-        o[1].add(v["truck"])
-        o[2] += (v["tout"] - v["tin"]).total_seconds() / 60
-    return {k: (o[0], len(o[1]), o[2] / o[0]) for k, o in out.items()}
+    for q, d in q_end.items():
+        live = {}
+        for g in r["regs"]:
+            if g["start"] <= d and (g["end"] is None or d <= g["end"]):
+                if g["vin"] not in live or g["start"] > live[g["vin"]]["start"]:
+                    live[g["vin"]] = g
+        out[q] = live
+    quarters = {q: (len(v), sum(1 for g in v.values() if g["my"] <= 2009)) for q, v in out.items()}
+    carriers = {}
+    for g in out[4].values():
+        c = carriers.setdefault(g["car"], [0, 0])
+        c[0] += 1
+        c[1] += g["my"] <= 2009
+    return quarters, {k: tuple(v) for k, v in carriers.items()}

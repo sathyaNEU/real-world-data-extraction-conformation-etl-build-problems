@@ -1,36 +1,44 @@
 {
+ "access": {
+  "L01": "B20",
+  "L06": "B30",
+  "L14": "B40"
+ },
  "asks": {
-  "turn": {
-   "B20 Q1": 69.1,
-   "B20 Q2": 67.4,
-   "B20 Q3": 65.4,
-   "B20 Q4": 62.8,
-   "B30 Q1": 84.8,
-   "B30 Q2": 91.9,
-   "B30 Q3": 99.1,
-   "B30 Q4": 104.5,
-   "B40 Q1": 61.5,
-   "B40 Q2": 59.8,
-   "B40 Q3": 58.2,
-   "B40 Q4": 56.1
+  "carrier_old": {
+   "Atlantic Port Services": 26,
+   "Bay Freight Co": 36,
+   "Coastal Haul LLC": 37,
+   "Harborline Drayage": 53,
+   "Northpoint Logistics": 36,
+   "Rivera Trucking": 28,
+   "Seaboard Intermodal": 40,
+   "Tri-County Cartage": 55
   },
-  "visits": {
-   "B20 Q1": 9790,
-   "B20 Q2": 9687,
-   "B20 Q3": 9601,
-   "B20 Q4": 9998,
-   "B30 Q1": 7799,
-   "B30 Q2": 7382,
-   "B30 Q3": 7509,
-   "B30 Q4": 7553,
-   "B40 Q1": 5186,
-   "B40 Q2": 4906,
-   "B40 Q3": 5012,
-   "B40 Q4": 5117
+  "carrier_trucks": {
+   "Atlantic Port Services": 228,
+   "Bay Freight Co": 258,
+   "Coastal Haul LLC": 277,
+   "Harborline Drayage": 378,
+   "Northpoint Logistics": 287,
+   "Rivera Trucking": 252,
+   "Seaboard Intermodal": 373,
+   "Tri-County Cartage": 372
+  },
+  "old": {
+   "Q1": 297,
+   "Q2": 303,
+   "Q3": 307,
+   "Q4": 311
+  },
+  "trucks": {
+   "Q1": 2313,
+   "Q2": 2348,
+   "Q3": 2387,
+   "Q4": 2425
   }
  },
  "call": [
-  "L01",
   "L03",
   "L05",
   "L14"
@@ -53,7 +61,7 @@
   "L13",
   "L14"
  ],
- "n_call": 4,
+ "n_call": 3,
  "n_links": 14,
  "names": {
   "L01": "Terminal Way, Gate 1 to SR-61",
@@ -61,7 +69,7 @@
   "L03": "I-880 northbound ramps at Port Avenue",
   "L04": "Port Avenue, I-880 to Terminal Way",
   "L05": "SR-61, Mill Street to Harbor Boulevard",
-  "L06": "Cargo Drive, Berths 20 to 30",
+  "L06": "Cargo Drive, Berths 30 to 34",
   "L07": "7th Street, Harbor Boulevard to Cole Creek",
   "L08": "I-880 southbound ramps at Port Avenue",
   "L09": "Delmar Road, I-580 to Cargo Drive",
@@ -78,12 +86,12 @@
   "4": "Jul-Sep 2026"
  },
  "rate": {
-  "L01": 5.71,
+  "L01": 4.55,
   "L02": 3.92,
   "L03": 6.18,
   "L04": 4.38,
   "L05": 5.46,
-  "L06": 4.12,
+  "L06": 4.45,
   "L07": 2.61,
   "L08": 4.12,
   "L09": 4.56,
@@ -91,10 +99,10 @@
   "L11": 4.26,
   "L12": 3.27,
   "L13": 4.44,
-  "L14": 5.48
+  "L14": 5.4
  },
  "sections": {
-  "gates": "3.1",
+  "fleet": "3.1",
   "line": "2.3",
   "links": "2.1",
   "nox": "2.2"
@@ -107,13 +115,7 @@
  "textbook_route": [
   "L01",
   "L03",
-  "L04",
   "L05",
-  "L06",
-  "L09",
-  "L10",
-  "L11",
-  "L13",
-  "L14"
+  "L06"
  ]
 }

@@ -14,8 +14,9 @@ import sources as S
 import tune
 import world as W
 
-GOLD = ["L01", "L03", "L05", "L14"]
-TEXTBOOK = ["L01", "L03", "L04", "L05", "L06", "L09", "L10", "L11", "L13", "L14"]
+GOLD = ["L03", "L05", "L14"]
+CLASSES = ["L01", "L03", "L05", "L06"]
+ALLVEH = ["L01", "L03", "L04", "L05", "L06", "L09", "L10", "L11", "L13", "L14"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -45,33 +46,45 @@ def main(target, gdir, e):
           len(meta["distractors"]) >= 2 and not any("distract" in f for f in files))
 
     st, reg, cnt, ef = B.stations(target), B.register(target), B.counts(target), B.rates(target)
+    gt, roads = B.gates(target), B.access_roads(target)
     nx = lambda est: {k: sum(v[c] * len(W.DAYS) * ef[c] for c in W.CLASSES) / 1e6 for k, v in est.items()}
     check("population: the register's fourteen links, each with two count days in every class",
           sorted(cnt) == sorted(W.LINKS) and all(len(cnt[k][c]) == 2 for k in cnt for c in W.CLASSES))
-    rate = nx(M.estimate(st, reg, cnt))
+    check("population: the register names three terminal access roads", roads == {k: v[0] for k, v in W.ACCESS.items()})
+    rate = B.nox(target)
     check("call: the golden designates %s" % ", ".join(M.designated(rate)), M.designated(rate) == GOLD)
     lt = {k: W.LINKS[k][1] for k in W.LINKS}
     fam = {}
     for how in ("cell", "sep"):
         for a in ("mean", "aashto"):
             for cf in ("classifying", "all"):
-                fam["%s/%s/%s" % (how, a, cf)] = nx(M.estimate(st, reg, cnt, "golden", how, a, cf))
-    fam["by road type"] = nx(M.estimate(st, reg, cnt, "golden", links_type=lt))
-    fam["class weekday factors, all-vehicle monthly"] = nx(M.estimate(st, reg, cnt, "classdow"))
-    for k, r in fam.items():
-        check("family: %s designates the golden set" % k, M.designated(r) == GOLD)
+                for gh in ("mean_ratio", "ratio_sum"):
+                    for gc in ("in", "out", "both"):
+                        est = M.access(M.estimate(st, reg, cnt, "golden", how, a, cf), cnt, gt, roads, gh, gc)
+                        fam["%s/%s/%s/%s/%s" % (how, a, cf, gh, gc)] = nx(est)
+    fam["by road type"] = nx(M.access(M.estimate(st, reg, cnt, "golden", links_type=lt), cnt, gt, roads))
+    fam["class weekday factors, all-vehicle monthly"] = nx(M.access(M.estimate(st, reg, cnt, "classdow"), cnt, gt, roads))
+    bad = [k for k, r in fam.items() if M.designated(r) != GOLD]
+    check("family: all %d variants designate the golden set" % len(fam), not bad, bad[:3])
     gap = min(abs(r[k] - W.LINE) for r in list(fam.values()) + [rate] for k in r)
     check("margin: every family member's every link at least 0.25 t from the line (nearest %.2f)" % gap, gap >= .25)
-    tb = {"textbook": nx(M.estimate(st, reg, cnt, "textbook")),
-          "textbook, separate factors": nx(M.estimate(st, reg, cnt, "textbook", "sep")),
-          "textbook by road type": nx(M.estimate(st, reg, cnt, "textbook", links_type=lt)),
+    tb = {"class factors on every link (the textbook)": nx(M.estimate(st, reg, cnt, "golden")),
+          "class factors, separate monthly and weekday": nx(M.estimate(st, reg, cnt, "golden", "sep")),
+          "class factors by road type": nx(M.estimate(st, reg, cnt, "golden", links_type=lt)),
+          "all-vehicle factors": nx(M.estimate(st, reg, cnt, "textbook")),
           "class monthly factors, all-vehicle weekday": nx(M.estimate(st, reg, cnt, "classmonth"))}
     for k, r in tb.items():
         check("ladder: %s designates %s" % (k, ", ".join(M.designated(r))), M.designated(r) != GOLD)
-    check("ladder: the textbook route designates the ten", M.designated(tb["textbook"]) == TEXTBOOK)
-    flip = [k for k in TEXTBOOK if k not in GOLD]
-    check("margin: every link the textbook route flips is 0.30 t or more over the line under it",
-          all(tb["textbook"][k] >= W.LINE + .30 for k in flip))
+    check("ladder: the class-factor textbook designates %s" % ", ".join(CLASSES),
+          M.designated(tb["class factors on every link (the textbook)"]) == CLASSES)
+    check("ladder: the all-vehicle factors designate the ten", M.designated(tb["all-vehicle factors"]) == ALLVEH)
+    t0 = tb["class factors on every link (the textbook)"]
+    check("margin: every access road the textbook flips crosses the line by 0.30 t or more under it",
+          all(abs(t0[k] - W.LINE) >= .30 for k in roads if (t0[k] >= W.LINE) != (rate[k] >= W.LINE)))
+    one_road = {k: nx(M.access(M.estimate(st, reg, cnt, "golden"), cnt, gt, {k: roads[k]})) for k in roads}
+    for k, r in one_road.items():
+        check("ladder: the gate record on %s alone stays wrong (%s)" % (k, ", ".join(M.designated(r))),
+              M.designated(r) != GOLD)
     for r in ("raw", "month"):
         got = M.designated(nx(M.estimate(st, reg, cnt, r)))
         check("ladder: the %s route designates %d links, not the golden" % (r, len(got)), got != GOLD)
@@ -79,8 +92,9 @@ def main(target, gdir, e):
     # R1: the raw material ships at the field's grain, and no column holds the deciding quantity
     heads = {f: open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",") for f in files
              if f.endswith(".csv")}
-    check("R1: the golden reads hourly station volumes by class and each link's hourly counts",
-          "hour_ending" in heads[W.FILES["stations"]] and "class_8_13" in heads[W.FILES["dot"]])
+    check("R1: the golden reads hourly station volumes by class, each link's hourly counts and the daily gate reports",
+          "hour_ending" in heads[W.FILES["stations"]] and "class_8_13" in heads[W.FILES["dot"]] and
+          "trucks_in" in heads[W.FILES["gates"]])
     check("R1: no shipped column carries an AADT, a factor, vehicle-miles or NOx per link",
           not any(any(w in c.lower() for w in ("aadt", "factor", "vmt", "tonnes", "nox_t")) for h in heads.values()
                   for c in h))
@@ -88,12 +102,12 @@ def main(target, gdir, e):
     # R3 on the generator's clean truth
     x = e["x"]
     inp = tune.clean_inputs(x)
-    clean = {r: M.designated(M.nox(M.estimate(*inp, route=r))) for r in ("golden", "textbook", "classmonth")}
-    check("R3a: the easy route (all-vehicle factors, every filed rule applied) on the clean truth files %s" %
-          ", ".join(clean["textbook"]), clean["textbook"] == TEXTBOOK)
-    check("R3b: the decisive step alone (each class with its own factors) on the clean truth files the golden",
-          clean["golden"] == GOLD)
-    check("R3b: class monthly factors alone on the clean truth stay wrong", clean["classmonth"] != GOLD)
+    clean = {r: M.designated(M.nox(M.estimate(*inp, route=r))) for r in ("golden", "textbook")}
+    check("R3a: the easy route (class factors on every link, every filed rule applied) on the clean truth files %s" %
+          ", ".join(clean["golden"]), clean["golden"] == CLASSES)
+    check("R3b: the decisive step alone (the access roads by their terminal's gate record) on the clean truth files "
+          "the golden", M.designated(M.nox(tune.golden(x))) == GOLD)
+    check("R3b: the all-vehicle factors on the clean truth stay wrong", clean["textbook"] != GOLD)
     check("R3b: the true program-year NOx (every day known, generator only) designates the golden set",
           M.designated(S.truth(x)) == GOLD)
 
@@ -113,10 +127,13 @@ def main(target, gdir, e):
             hours.setdefault(r["station_id"], {}).setdefault(kk, {})
             hours[r["station_id"]][kk][d] = hours[r["station_id"]][kk].get(d, 0) + int(r["volume"])
     check("R2 (stations on standard time, counts on local time): moving the stations to daylight time leaves the call",
-          M.designated(nx(M.estimate(hours, reg, cnt))) == GOLD)
+          M.designated(nx(M.access(M.estimate(hours, reg, cnt), cnt, gt, roads))) == GOLD)
     one = {k: {c: {d: v for d, v in sorted(cnt[k][c].items())[:1]} for c in W.CLASSES} for k in cnt}
     check("R2 (48-hour counts): expanding the first count day alone leaves the call",
-          M.designated(nx(M.estimate(st, reg, one))) == GOLD)
+          M.designated(nx(M.access(M.estimate(st, reg, one), one, gt, roads))) == GOLD)
+    carry = sum(1 for t in gt for d in gt[t] if gt[t][d][0] != gt[t][d][1])
+    check("R2 (trucks in the yard at midnight, %d terminal-days in and out differ): trucks_out gives the same call "
+          "(family)" % carry, carry > 0)
     out_days = sum(len(W.DAYS) - len(st[s]["ALL"]) for s in st)
     check("R2 (detector outages, %d station-days): AASHTO and plain averages give the same call (family)" % out_days,
           out_days > 0)
@@ -133,30 +150,32 @@ def main(target, gdir, e):
     check("SF5 per mile: program-year NOx over length (VMT = volume x length) is the volume form",
           M.designated({k: rate[k] * lens[k] / lens[k] for k in rate}) == GOLD)
     check("SF6 both directions: every count and station day carries both", True)
-    check("SF7 factor groups: one urban group or groups by road type give the same call (family)", True)
+    check("SF7 a terminal's gate trucks on a day: trucks_in, trucks_out or their mean give the same call (family)", True)
     check("SF8 the 311 complaints, NO2 monitors and drayage registry: the call reads none", True)
 
-    # the asks
-    tr = S.gate_truth(e["g"])
-    ga = B.gate_asks(target)
-    check("asks: the golden reproduces every terminal-quarter's visits and turn time",
-          all(ga[k][0] == tr[k][0] and abs(ga[k][1] - tr[k][2]) < 1e-6 for k in tr))
-    for route in ("rows", "intime", "merged") + B.PARTIAL:
-        g2 = B.gate_asks(target, route)
-        mv = [k for k in tr if g2[k][0] != tr[k][0]]
-        mt = [k for k in tr if round(g2[k][1], 1) != round(tr[k][2], 1)]
-        need = 12 if route in ("rows", "intime", "merged") else 4
-        check("asks: the %s route misses %d of 12 visits and %d of 12 turn times" % (route, len(mv), len(mt)),
-              len(mv) >= need and len(mt) >= need)
-    edge = min(.05 - abs(v[1] - round(v[1], 1)) for v in ga.values())
-    check("asks: every turn time at least 0.005 min from a rounding edge (nearest %.4f)" % edge, edge >= .005)
-    check("asks: the call reads no gate, registry, complaint or monitor row", True)
+    # the asks: the drayage fleet
+    fq, fc = S.registry_truth(e["reg"])
+    gq, gc = B.fleet_asks(target)
+    check("asks: the golden reproduces every quarter's and carrier's trucks and old engines", gq == fq and gc == fc)
+    for route in ("ids", "dropblank"):
+        rq, rc = B.fleet_asks(target, route)
+        miss = sum(rq[q][i] != gq[q][i] for q in gq for i in (0, 1)) + \
+            sum(rc.get(k, (None, None))[i] != gc[k][i] for k in gc for i in (0, 1))
+        check("asks: the %s route misses %d of %d figures" % (route, miss, 8 + 2 * len(gc)),
+              miss >= (8 + 2 * len(gc)) // 2)
+    regs = B.registry(target)
+    dup = {}
+    for r in regs:
+        dup.setdefault(r["vin"], []).append(r)
+    two = sum(1 for v in dup.values() if sum(1 for r in v if not r["registered_to"]) > 1)
+    check("asks: %d VINs carry two registrations in force (a carrier move left open)" % two, two > 0)
+    check("asks: the call reads no registry, certification, complaint or monitor row", True)
 
     # realism sweep
     sv = [v for s in st for v in st[s]["ALL"].values()]
     check("realism: no station daily total repeats more than four times", max(np.unique(sv, return_counts=True)[1]) <= 4)
-    gr = B.gate_rows(target)
-    check("realism: no gate row passes the out-gate before the in-gate", all(b > a for t, tag, a, b in gr))
+    gv = [gt[t][d][0] for t in gt for d in gt[t] if gt[t][d][0]]
+    check("realism: no terminal's daily trucks_in repeats more than five times", max(np.unique(gv, return_counts=True)[1]) <= 5)
     tot = sum(v for s in st for v in st[s]["ALL"].values())
     check("realism: station volumes total is not round (%d)" % tot, tot % 1000 != 0)
     print("checks: %d run, %d failed" % (n[0], len(fails)))

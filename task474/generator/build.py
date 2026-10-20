@@ -34,7 +34,7 @@ def build_pack(out, e):
     n["stations"] = P.write_csv(f("stations"), P.STATION_COLS, P.station_rows(e))
     n["dot"] = P.write_csv(f("dot"), P.DOT_COLS, P.dot_rows(e), crlf=True)
     n["consultant"] = P.write_csv(f("consultant"), P.CONS_COLS, P.consultant_rows(e))
-    n["gates"] = P.write_csv(f("gates"), P.GATE_COLS, P.gate_rows(e))
+    n["gates"] = P.write_csv(f("gates"), P.GATE_COLS, P.gate_rows(e), crlf=True)
     n["fleet"] = P.write_csv(f("fleet"), P.FLEET_COLS, P.fleet_rows(e))
     n["no2"] = P.write_csv(f("no2"), P.NO2_COLS, P.no2_rows(e))
     n["complaints"] = P.write_csv(f("complaints"), P.COMPLAINT_COLS, P.complaint_rows(e), crlf=True)
@@ -47,10 +47,12 @@ def build_pack(out, e):
     DC.write_register(f("register"))
     DC.write_links(f("links"))
     DC.write_county(f("county"), P.county_tables(e))
+    DC.write_certs(f("certs"), P.cert_rows(e))
     PP.normalize_pdf(f("rules"), b"D:20260114101533-05'00'", b"D:20260114101533-05'00'")
     for k, who, a, b in (("register", "Traffic Monitoring Section", "2026-07-01T14:02:00Z", "2026-07-01T14:31:12Z"),
                          ("links", "Environmental Planning", "2026-10-22T15:20:00Z", "2026-10-22T15:41:50Z"),
-                         ("county", "Traffic Engineering", "2026-09-29T13:05:00Z", "2026-09-29T13:48:27Z")):
+                         ("county", "Traffic Engineering", "2026-09-29T13:05:00Z", "2026-09-29T13:48:27Z"),
+                         ("certs", "Clean Truck Program", "2026-05-12T16:10:00Z", "2026-05-12T16:22:41Z")):
         PP.normalize_ooxml(f(k), who, who, a, b, excel=True, company=W.PORT)
     return n
 

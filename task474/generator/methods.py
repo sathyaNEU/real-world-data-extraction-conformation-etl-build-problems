@@ -116,3 +116,20 @@ def nox(est):
 
 def designated(rate):
     return sorted(k for k, v in rate.items() if v >= W.LINE)
+
+
+def access(est, counts, gates, roads, how="mean_ratio", col="in"):
+    """Replaces the combination trucks' AADT on the terminal access roads ({link: terminal}) with the count expanded
+    by the terminal's own gate activity: each count day's combination trucks times the terminal's average daily
+    visits over the year over its visits that day. gates is {terminal: {date: (in, out)}}."""
+    out = {k: dict(v) for k, v in est.items()}
+    pick = {"in": lambda p: p[0], "out": lambda p: p[1], "both": lambda p: (p[0] + p[1]) / 2}[col]
+    for k, t in roads.items():
+        g = {d: pick(p) for d, p in gates[t].items()}
+        mean = float(np.mean(list(g.values())))
+        days = sorted(counts[k]["CU"])
+        if how == "mean_ratio":
+            out[k]["CU"] = float(np.mean([counts[k]["CU"][d] * mean / g[d] for d in days]))
+        else:
+            out[k]["CU"] = sum(counts[k]["CU"][d] for d in days) * mean / sum(g[d] for d in days)
+    return out

@@ -90,90 +90,80 @@ def nox(target, route="golden", **kw):
     return {k: sum(v[c] * len(W.DAYS) * ef[c] for c in W.CLASSES) / 1e6 for k, v in est.items()}
 
 
-# the asks: terminal visits
+def gates(target):
+    """{terminal: {date: (trucks in, trucks out)}}."""
+    out = {}
+    for r in _rows(find(target, "terminal_daily_gate_report")):
+        out.setdefault(r["terminal"], {})[_date(r["report_date"])] = (int(r["trucks_in"]), int(r["trucks_out"]))
+    return out
+
+
+def access_roads(target):
+    ws = load_workbook(find(target, "port_roadway_links"), read_only=True).active
+    names = {v[0]: k for k, v in W.TERMINALS.items()}
+    return {r[0]: names[r[6]] for r in ws.iter_rows(min_row=4, values_only=True) if r and r[0] and r[6]}
+
+
+def estimate(target, route="golden", **kw):
+    """{link: {class: AADT}}. golden: the classifying stations' class factors, the access roads' combination trucks by
+    their terminal's gate activity; classes: class factors on every link (the textbook); every other route as
+    methods.estimate."""
+    gk = {k: kw.pop(k) for k in ("gate_how", "gate_col") if k in kw}
+    base = "golden" if route in ("golden", "classes") else route
+    est = M.estimate(stations(target), register(target), counts(target), base, **kw)
+    if route == "golden":
+        est = M.access(est, counts(target), gates(target), access_roads(target), gk.get("gate_how", "mean_ratio"),
+                       gk.get("gate_col", "in"))
+    return est
+
+
+def nox(target, route="golden", **kw):
+    est = estimate(target, route, **kw)
+    ef = rates(target)
+    return {k: sum(v[c] * len(W.DAYS) * ef[c] for c in W.CLASSES) / 1e6 for k, v in est.items()}
+
+
+# the asks: the drayage truck registry
+def registry(target):
+    return _rows(find(target, "drayage_truck_registry"))
+
+
+def certs(target):
+    ws = load_workbook(find(target, "heavy_duty_engine_certifications"), read_only=True).active
+    return {r[0]: int(r[2]) for r in ws.iter_rows(min_row=2, values_only=True) if r and r[0]}
+
+
+def fleet_asks(target, route="golden"):
+    """({quarter: (trucks, of which model year 2009 or older)}, {carrier: (trucks, of which 2009 or older)} at
+    30 September 2026). golden: a truck is its VIN, counted once under its latest registration, a blank model year
+    read from its engine family in the certification list; ids: trucks by truck_id; dropblank: blanks not old."""
+    regs = registry(target)
+    fam = certs(target)
+    out = {}
+    for q, (a, b) in W.QUARTERS.items():
+        d = _date(b)
+        live = {}
+        for r in regs:
+            if _date(r["registered_from"]) <= d and (not r["registered_to"] or d <= _date(r["registered_to"])):
+                key = r["truck_id"] if route == "ids" else r["vin"]
+                if key not in live or r["registered_from"] > live[key]["registered_from"]:
+                    live[key] = r
+        out[q] = live
+
+    def year(r):
+        if r["engine_model_year"]:
+            return int(r["engine_model_year"])
+        return None if route == "dropblank" else fam[r["engine_family"]]
+    old = lambda r: (year(r) or 9999) <= 2009
+    quarters = {q: (len(v), sum(1 for r in v.values() if old(r))) for q, v in out.items()}
+    carriers = {}
+    for r in out[4].values():
+        c = carriers.setdefault(r["motor_carrier"], [0, 0])
+        c[0] += 1
+        c[1] += old(r)
+    return quarters, {k: tuple(v) for k, v in sorted(carriers.items())}
+
+
 def _dst(d):
     import records as R
     return R.us_eastern_dst(d)
-
-
-def gate_rows(target, full=False):
-    f = "%Y-%m-%d %H:%M:%S"
-    out = []
-    for r in _rows(find(target, "terminal_gate_transactions")):
-        row = (r["terminal"], r["truck_tag"], dt.datetime.strptime(r["gate_in"], f), dt.datetime.strptime(r["gate_out"], f))
-        out.append(row + ((int(r["transaction_id"]), r["in_lane"], r["out_lane"], r["container_no"]) if full else ()))
-    return out
-
-
-def _merge(rows):
-    out = []
-    by = {}
-    for t, tag, a, b in rows:
-        by.setdefault((t, tag), []).append((a, b))
-    for (t, tag), iv in sorted(by.items()):
-        iv.sort()
-        ca, cb = iv[0]
-        for a, b in iv[1:]:
-            if a <= cb:
-                cb = max(cb, b)
-            else:
-                out.append((t, ca, cb))
-                ca, cb = a, b
-        out.append((t, ca, cb))
-    return out
-
-
-def visits(target, route="golden"):
-    """[(terminal, gate-in, gate-out)]. golden: Berth 20's in-gate brought from standard to local time in the daylight
-    months, Pacific Gateway's voided transactions (a container and gate-in shared with a later transaction under
-    another tag) dropped, Berth 40's legs through the rail ramp gate joined into one stay, then each truck's
-    overlapping transactions at a terminal merged into one stay; merged: the stays merged as recorded; rows: every
-    transaction a visit; intime: transactions sharing a truck and gate-in time merged."""
-    full = gate_rows(target, True)
-    if route == "rows":
-        return [(t, a, b) for t, tag, a, b, *_ in full]
-    if route == "intime":
-        seen = {}
-        for t, tag, a, b, *_ in full:
-            seen.setdefault((t, tag, a), (t, a, b))
-        return list(seen.values())
-    if route == "merged":
-        return _merge([(t, tag, a, b) for t, tag, a, b, *_ in full])
-    later = {}
-    for t, tag, a, b, tid, il, ol, cn in full:
-        later.setdefault((t, cn, a), []).append(tid)
-    rows = []
-    legs = {}
-    for t, tag, a, b, tid, il, ol, cn in full:
-        if t == "B30" and tid < max(later[(t, cn, a)]) and route != "keep-voids":
-            continue
-        if t == "B20" and _dst(a.date()) and route != "b20-as-recorded":
-            a = a + dt.timedelta(hours=1)
-        if route == "ramp-legs":
-            rows.append((t, tag, a, b))
-            continue
-        if ol == "RG1":
-            legs[(t, tag)] = a
-            continue
-        if il == "RG1":
-            a = legs.pop((t, tag))
-        rows.append((t, tag, a, b))
-    return _merge(rows)
-
-
-PARTIAL = ("b20-as-recorded", "keep-voids", "ramp-legs")
-
-
-def quarter(d):
-    return (d.month - 10) % 12 // 3 + 1
-
-
-def gate_asks(target, route="golden"):
-    """{(terminal, quarter): (visits, mean turn minutes)}."""
-    acc = {}
-    for t, a, b in visits(target, route):
-        k = (t, quarter(a.date()))
-        o = acc.setdefault(k, [0, 0.0])
-        o[0] += 1
-        o[1] += (b - a).total_seconds() / 60
-    return {k: (o[0], o[1] / o[0]) for k, o in sorted(acc.items())}
