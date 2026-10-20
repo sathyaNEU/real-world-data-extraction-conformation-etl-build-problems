@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two call centres' logs, links the interviews to the sample and weights each region's respondents to its sampled members' age and sex (the adjustment-cell method), or carries the share in work among the members reached at the last attempts to the members never reached, names more regions below one half than the golden, because within every age and sex cell the share in work rises with the attempt that reached the member and with the share of evening and Saturday calls, so answering depends on work itself and only a model of each work class's chance of answering in each calling window, fitted to every sampled member's history, recovers the share among the members never reached.",
+  "analyst_test": "A strong analyst who conforms the two call centres' records, links the interviews and the key answers to the sample and weights each region's respondents to its sampled members' age and sex (the adjustment-cell method), or carries the share in work among the members reached late to the members never reached, names Pierce, North Sound, King and Spokane, because within every age and sex cell the share in work rises with the call that reached the member and with the share of evening and Saturday calls, so answering depends on work itself; only a model of each work class's chance of answering in each calling window, fitted to every sampled member's calls, names Thurston-Mason in North Sound's place.",
   "domain_test": "The deciding quantity is a population share from a survey whose nonresponse depends on the answer itself, which survey methodology estimates with a callback model of the contact histories (each class's per-call chance of being reached, by calling window); with hospitals and readmissions in, no record of attempts to reach each case exists and nothing about whether a case is observed depends on the hour it was sought, so the task stops making sense.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:callback-model-on-contact-histories",
@@ -63,8 +63,8 @@
     "currency": "USD",
     "org_type": "nonprofit Medicaid managed care plan",
     "invented_names": [
-      "Pellmont Community Health Plan",
-      "Larchfield Survey Research",
+      "Trevanna Community Health Plan",
+      "Kestrelby Survey Research",
       "Member Work and Income Survey",
       "Community Engagement Support track"
     ],
@@ -81,7 +81,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
   "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
-  "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the last-reached respondents' share in work to the members never reached, and names regions below one half that are not; only the callback model on the two call logs, each work class's answer rate by calling window, recovers the unreached members' share in work and names the golden set.",
+  "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task471": "task471 restores long trips that a collection cut-off kept out of the replies by weighting each reply on the handout days that could have returned it; task271 has no cut-off on the answer: members are missed because the hours they were called are hours they are at work, and their share in work comes from a callback model of each work class's answer rate by calling window",

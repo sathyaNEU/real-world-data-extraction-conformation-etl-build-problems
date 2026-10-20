@@ -1,71 +1,24 @@
-"""The clean truth of the decision: the eight eligible hospitals' pancreatic resections in 2023 to 2025, each
-patient's condition before surgery, the earlier operation on the pancreas or bile ducts that sends a patient on to a
-referral centre, harmless earlier procedures on the same organs, complications after the operation and the deaths
-within 90 days. Each hospital-year draws from its own stream, so the details written later never move it.
-
-The conditions that differ between patients but not between hospitals (heart failure, kidney disease and the rest,
-the conditions that carry no added risk, an earlier gallbladder removal, a stent before a Whipple) are drawn at the
-same rate in every hospital-year, so a risk model's choice among them moves no hospital's ratio. What does differ
-between hospitals is the operation mix and the earlier operations referral brings."""
+"""The world's fixed parameters: each class's chance that a call in each window reaches the member, the chance a
+member reached declines, the age and sex structure of work, and the design and seed the search chose (each region's
+level, the member services centre's share of first calls, the share of its unreached cases passed to the vendor, the
+vendor calls a passed case received and the share of the region's sample in the last two releases)."""
 import numpy as np
-import pandas as pd
 
-H = ["A", "B", "C", "D", "E", "F", "G", "H"]
-VOL = dict(A=150, B=125, C=95, D=78, E=66, F=60, G=54, H=48)          # operations a year, 2023 to 2025
-REDO = dict(A=.18, B=.15, C=.05, D=.04, E=.04, F=.03, G=.03, H=.03)
-TOTAL = dict(A=.14, B=.13, C=.07, D=.06, E=.06, F=.05, G=.05, H=.05)
-CHOLE = .03            # an earlier gallbladder removal, every hospital alike, no added risk
-STENT = .30            # endoscopic stenting of the bile duct before a Whipple, every hospital alike, no added risk
-B0 = -3.45
-BETA = dict(age=.40, male=.15, chf=.65, ckd=.45, copd=.35, liver=.70, wtloss=.45, dm=.10, af=.30, total=.50,
-            whip=.30, mal=.25, urg=.85, redo=1.20)
-PREV = dict(chf=.06, ckd=.09, copd=.10, liver=.04, dm=.30, af=.07)
-BACKGROUND = ["htn", "lipid", "gerd", "obese", "smoke", "osa", "thyroid", "depress"]
-BG_RATE = .16
-EFF = dict(A=-.45, B=.00, C=-.35, D=.12, E=-.25, F=.20, G=.05, H=.30)     # each hospital's own care
-COMP = dict(A=-.35, B=-.10, C=.00, D=.10, E=.05, F=.25, G=.65, H=.45)     # complications it lets happen
-SEED = 4172
+P0 = np.array([0.38, 0.36, 0.32])      # not working 80 hours: weekday day, weekday evening, Saturday
+P1 = np.array([0.06, 0.27, 0.24])      # worked 80 hours or more in March
+RHO = 0.10                              # a member reached declines, either class
+KEYQ = 0.80                             # a declining member answers the key question (worked 80 hours in March)
+AGE = [(0.34, -0.20), (0.36, 0.25), (0.30, -0.05)]   # share and log-odds shift: 19-29, 30-44, 45-64
+SEX = [(0.53, -0.18), (0.47, 0.20)]                   # female, male
 
-
-def _exact(r, n, p, among=None):
-    """round(p * m) of the m eligible patients, chosen at random."""
-    idx = np.arange(n) if among is None else np.flatnonzero(among)
-    k = int(round(p * len(idx)))
-    out = np.zeros(n, bool)
-    if k:
-        out[r.choice(idx, size=k, replace=False)] = True
-    return out
-
-
-def core(seed=SEED, eff=None, comp=None):
-    eff, comp = eff or EFF, comp or COMP
-    rows = []
-    for hi, h in enumerate(H):
-        for yr in (2023, 2024, 2025):
-            r = np.random.default_rng([seed, hi, yr])
-            n = int(r.poisson(VOL[h]))
-            age = np.clip(r.normal(67, 9.5, n), 25, 92)
-            male = r.random(n) < .52
-            mal = r.random(n) < .72
-            tot = r.random(n) < TOTAL[h]
-            whip = (~tot) & (r.random(n) < .66)
-            redo = r.random(n) < REDO[h]
-            tot = tot | (redo & (r.random(n) < .25))
-            whip = whip & ~tot
-            urg = r.random(n) < .07
-            com = {k: _exact(r, n, p) for k, p in PREV.items()}
-            wtloss = _exact(r, n, .20, mal) | _exact(r, n, .06, ~mal)
-            chole = _exact(r, n, CHOLE)
-            stent = _exact(r, n, STENT, whip)
-            x = (BETA["age"] * (age - 67) / 10 + BETA["male"] * male + sum(BETA[k] * com[k] for k in PREV)
-                 + BETA["wtloss"] * wtloss + BETA["total"] * tot + BETA["whip"] * whip + BETA["mal"] * mal
-                 + BETA["urg"] * urg + BETA["redo"] * redo)
-            p = 1 / (1 + np.exp(-(B0 + x + eff[h])))
-            dead = r.random(n) < p
-            pc = 1 / (1 + np.exp(-(-1.35 + .6 * x + comp[h])))
-            cmp_ = np.where(dead, r.random(n) < .85, r.random(n) < pc)
-            bg = {k: _exact(r, n, BG_RATE) for k in BACKGROUND}
-            rows.append(pd.DataFrame(dict(h=h, year=yr, k=np.arange(n), age=age, male=male, mal=mal, tot=tot,
-                                          whip=whip, urg=urg, redo=redo, wtloss=wtloss, chole=chole, stent=stent,
-                                          comp=cmp_, dead=dead, p=p, **com, **bg)))
-    return pd.concat(rows, ignore_index=True)
+# Region order follows common.REGIONS: Great Rivers, Greater Columbia, King, North Central, North Sound, Pierce, Salish,
+# Southwest, Spokane, Thurston-Mason. Design 3331 of the search, world seed 5342319.
+DESIGN = {
+    "pi": [0.5887120860827806, 0.4851698907173701, 0.4668197607375446, 0.5352545938256597, 0.5148384097917245, 0.4518555382995249, 0.611480425508045, 0.6128493715551904, 0.45587539247536146, 0.45922603946419494],
+    "msc": [0.843025729228498, 0.38747853523602993, 0.44412904374199247, 0.10797230628680365, 0.5849148763162461, 0.3451150695474544, 0.7412514519456921, 0.432403611133906, 0.14021266008817712, 0.5598650479522623],
+    "transfer": [0.24673618010845272, 0.388880812662202, 0.9428012638277632, 0.9310851640691864, 0.31404813274060006, 0.507679344986683, 0.3709780649719785, 0.3542939359760281, 0.37579953999425925, 0.7944453676596994],
+    "vcalls": [3, 3, 1, 1, 2, 3, 4, 2, 3, 4],
+    "late": [0.25395552995694576, 0.1796147784187512, 0.582407802180416, 0.3917682135701069, 0.312081374312788, 0.20034696424752685, 0.1301286749060147, 0.5406817030628183, 0.07241196004605795, 0.1634827821963424],
+}
+SEED = 5342319
+ASK_SEED = 271003                       # the enrollment files' own stream, apart from the survey's world

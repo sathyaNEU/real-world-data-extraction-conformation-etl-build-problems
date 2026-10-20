@@ -15,8 +15,11 @@ import json          # noqa: E402
 import shutil        # noqa: E402
 import sys           # noqa: E402
 
+import numpy as np   # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import asks as AK          # noqa: E402
 import common as K         # noqa: E402
 import core as C           # noqa: E402
 import docs as DC          # noqa: E402
@@ -27,22 +30,48 @@ TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
 CONTENTS = [
-    ("criteria", "Corrisbrook Health Cooperative: Pancreatic Surgery Centres, 2027 programme criteria, version 2."),
-    ("guide", "Upper Lakes Hospital Data Consortium: hepatobiliary and pancreatic research files, file guide 2026."),
-    ("d2016", "ULHDC hepatobiliary and pancreatic discharges, 2016 (fixed width)."),
-    ("d2017", "ULHDC hepatobiliary and pancreatic discharges, 2017 (fixed width)."),
-    ("d2018", "ULHDC hepatobiliary and pancreatic discharges, 2018 (fixed width)."),
-    ("d2019_2022", "ULHDC hepatobiliary and pancreatic discharges, 2019 to 2022."),
-    ("d2023_2025", "ULHDC hepatobiliary and pancreatic discharges, 2023 to 2025."),
-    ("prelim", "ULHDC 2026 first quarter, preliminary release (15 May 2026)."),
-    ("revised", "ULHDC 2026 first and second quarters, revised release (18 September 2026)."),
-    ("deaths", "ULHDC death linkage, 2026 run (deaths to 31 August 2026)."),
-    ("hospitals", "ULHDC hospital directory, with the numbering and ownership changes."),
-    ("codes", "ULHDC procedure classes for the ICD-10-PCS codes in the files."),
-    ("claims", "Corrisbrook facility claims for members' pancreatic resection stays, received through 30 September 2026."),
-    ("stars", "Public overall hospital star ratings, 2026 release (Wisconsin hospitals in the directory)."),
-    ("costs", "Corrisbrook Finance: travel benefit estimates for 2027 budgeting (draft, 12 August 2026)."),
+    ("criteria", "Community Engagement Support track 2027: criteria for the regions (Programs and Quality Committee, "
+                 "16 September 2026)."),
+    ("guide", "Analytics and Reporting: data guide for the 2027 Community Engagement Support figures."),
+    ("methods", "Kestrelby Survey Research: 2026 Member Work and Income Survey, methods report (30 June 2026)."),
+    ("sample", "MWIS 2026 sample file (Kestrelby sample management system)."),
+    ("dialer", "Kestrelby dialer export, MWIS project, all calls to 29 May 2026."),
+    ("crm", "Member Services Center CRM export: activity on the MWIS sample, 13 April to 29 May 2026."),
+    ("interviews", "MWIS 2026 interview file (Kestrelby)."),
+    ("regions", "Apple Health regions and their counties."),
+    ("roster", "Expansion adult roster, active members, exported 19 October 2026."),
+    ("changes", "Enrollment change log, 1 to 19 October 2026."),
+    ("cases", "HCA household composition extract, 15 October 2026."),
+    ("pilot", "Kestrelby: MWIS pilot memo (27 February 2026)."),
+    ("cahps", "CAHPS 2025 adult Medicaid results by region (Quality Improvement)."),
 ]
+
+
+def frame_counts(A, seed):
+    """Each region's members on 1 March 2026: the October files' members enrolled then, aged 19 to 64, and the
+    members who left the plan between March and October (about one in seven)."""
+    r = np.random.default_rng(seed + 111)
+    n = {c: 0 for c in K.CODES}
+    for m in A["members"] + A["retro"]:
+        if m["begin"] <= K.FRAME_DATE and 19 <= AK.age_on(m["born"], K.FRAME_DATE) <= 64:
+            n[AK.REGION_OF[m["county1"]]] += 1
+    return {c: int(round(n[c] / r.uniform(0.85, 0.87))) for c in K.CODES}
+
+
+def fieldwork(w):
+    out = {c: dict(msc=0, passed=0, complete=0, declined=0, noncontact=0) for c in K.CODES}
+    centres = {}
+    for row in w["calls"]:
+        centres.setdefault(int(row[0]), set()).add(int(row[2]))
+    for c in w["cases"]:
+        f = out[K.CODES[int(c[1])]]
+        cid = int(c[0])
+        if int(c[8]):
+            f["msc"] += 1
+            if 1 in centres[cid]:
+                f["passed"] += 1
+        f[{1: "complete", 2: "declined", 0: "noncontact"}[int(c[5])]] += 1
+    return out
 
 
 def build(out, seed=C.SEED, keep=False):
@@ -51,38 +80,41 @@ def build(out, seed=C.SEED, keep=False):
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
     w = W.world(seed)
-    R.assign_ids(w)
-    by = R.discharges(w)
+    A = AK.build(C.ASK_SEED)
+    H = AK.households(A, C.ASK_SEED)
+    linked = AK.link_sample(w, A, C.ASK_SEED)
+    rows = R.call_rows(w)
     n = {}
-    for y in (2016, 2017, 2018):
-        n["d%d" % y] = R.write_fixed(p("d%d" % y), by.get(y, []), w, y)
-    n["d2019_2022"] = R.write_csv(p("d2019_2022"), sum((by.get(y, []) for y in range(2019, 2023)), []), w, 2)
-    n["d2023_2025"] = R.write_csv(p("d2023_2025"), sum((by.get(y, []) for y in range(2023, 2026)), []), w, 3)
-    pr, rv = R.releases_2026(w)
-    n["prelim"] = R.write_release(p("prelim"), pr, w, "p_no")
-    n["revised"] = R.write_release(p("revised"), rv, w, "r_no")
-    n["deaths"] = R.write_deaths(p("deaths"), w)
-    n["hospitals"] = R.write_hospitals(p("hospitals"))
-    n["codes"] = R.write_classes(p("codes"))
-    R.plan_claims(w)
-    n["claims"] = R.write_claims(p("claims"), w)
-    n["stars"] = R.write_stars(p("stars"), w)
-    n["costs"] = R.write_travel(p("costs"), w)
+    n["sample"] = R.write_sample(p("sample"), w)
+    n["dialer"] = R.write_dialer(p("dialer"), w, rows, seed)
+    n["crm"] = R.write_crm(p("crm"), w, rows, seed)
+    n["interviews"] = R.write_interviews(p("interviews"), w, rows)
+    n["regions"] = R.write_regions(p("regions"))
+    n["cahps"] = R.write_cahps(p("cahps"), seed)
+    n["roster"] = AK.write_roster(p("roster"), A)
+    n["changes"] = AK.write_changes(p("changes"), A, C.ASK_SEED)
+    n["cases"] = AK.write_households(p("cases"), H)
     DC.write_criteria(p("criteria"))
+    DC.write_methods(p("methods"), fieldwork(w), frame_counts(A, seed))
+    DC.write_pilot(p("pilot"))
     DC.write_guide(p("guide"))
     DC.write_contents(p("contents"), [(K.FILES[k], d) for k, d in CONTENTS])
-    return dict(w=w if keep else None, counts=n)
+    return dict(w=w if keep else None, A=A if keep else None, H=H if keep else None, counts=n, linked=linked)
 
 
 DOC_DATES = {
-    "criteria": ("D:20260929162000-05'00'", "D:20260930091500-05'00'"),
-    "guide": ("D:20260921110500-05'00'", "D:20260922143000-05'00'"),
+    "criteria": ("D:20260916171500-07'00'", "D:20260917090500-07'00'"),
+    "guide": ("D:20261020101000-07'00'", "D:20261020143000-07'00'"),
+    "methods": ("D:20260629161000-05'00'", "D:20260630112000-05'00'"),
+    "pilot": ("D:20260226153000-05'00'", "D:20260227094500-05'00'"),
 }
 OOXML = {
-    "hospitals": ("ULHDC Data Services", "ULHDC Data Services", "2023-01-09T15:12:00Z", "2026-09-01T13:41:00Z",
-                  "ULHDC hospital directory"),
-    "costs": ("Corrisbrook Finance", "Corrisbrook Finance", "2026-08-11T19:05:00Z", "2026-08-12T16:20:00Z",
-              "Travel benefit estimates 2027"),
+    "crm": ("Trevanna CRM Reporting", "Trevanna CRM Reporting", "2026-10-20T16:02:00Z", "2026-10-20T16:02:00Z",
+            "MWIS activity export", K.PLAN),
+    "regions": ("Trevanna Analytics", "Trevanna Analytics", "2024-02-05T18:20:00Z", "2026-01-12T22:41:00Z",
+                "Apple Health regions", K.PLAN),
+    "cahps": ("Trevanna Quality Improvement", "Trevanna Quality Improvement", "2025-08-11T20:15:00Z",
+              "2025-08-14T15:52:00Z", "CAHPS 2025 regions", K.PLAN),
 }
 
 
@@ -91,8 +123,8 @@ def finish(out):
     import postprocess as PP
     for k, (c, m) in DOC_DATES.items():
         PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
-    for k, (cr, lb, c, m, title) in OOXML.items():
-        PP.COMPANY = K.CONSORTIUM if k == "hospitals" else K.PLAN
+    for k, (cr, lb, c, m, title, company) in OOXML.items():
+        PP.COMPANY = company
         PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=True)
     PP.COMPANY = K.PLAN
     for f in os.listdir(out):
@@ -102,9 +134,9 @@ def finish(out):
 def finish_golden(golden):
     import postprocess as PP
     PP.COMPANY = K.PLAN
-    PP.normalize_ooxml(os.path.join(golden, "pancreatic_centres_2027.xlsx"), K.PEOPLE["requester"],
-                       K.PEOPLE["requester"], "2026-10-09T15:02:00Z", "2026-10-12T21:47:00Z",
-                       title="Pancreatic Surgery Centres 2027", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, K.DELIVERABLES[0]), K.PEOPLE["requester"], K.PEOPLE["requester"],
+                       "2026-10-21T16:02:00Z", "2026-10-23T22:47:00Z", title="Community Engagement Support regions 2027",
+                       excel=True)
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
@@ -112,17 +144,17 @@ def finish_golden(golden):
 def metadata(fig, counts):
     return {
         "task": "task271",
-        "title": "%s: the three 2027 %s" % (K.PLAN, K.PROGRAMME),
-        "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
+        "title": "%s: the four regions for the 2027 %s" % (K.PLAN, K.TRACK),
+        "domain": "Survey Research & Official Statistics (nonresponse, calibration and measurement error adjustment)",
         "objective": "Descriptive & Distribution Analysis",
-        "distractors": [K.FILES["stars"], K.FILES["costs"]],
-        "provenance": {name: {"source": "constructed by the task generator (seeded); %s, the %s, every hospital and "
-                                        "every person are fictional; the NPIs are invented and fail the NPI check digit, "
-                                        "so none is a real provider's number" % (K.PLAN, K.CONSORTIUM),
-                              "date": "2026-10-09", "licence": "CC0 1.0 (constructed for this task)"}
+        "distractors": [K.FILES["pilot"], K.FILES["cahps"]],
+        "provenance": {name: {"source": "constructed by the task generator (seeded); %s, %s, every member, case and "
+                                        "person are fictional; the Apple Health regions and their counties are "
+                                        "Washington's" % (K.PLAN, K.VENDOR),
+                              "date": "2026-10-20", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in counts.items()},
-        "answer": "Centres for 2027: %s" % ", ".join(fig["call"]["centres"]),
+        "answer": "Regions for 2027: %s" % ", ".join(fig["call"]["regions"]),
     }
 
 

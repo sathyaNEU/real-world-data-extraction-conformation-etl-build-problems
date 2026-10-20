@@ -1,195 +1,163 @@
-"""The independent verifier: every graded figure recomputed from target/ alone, with pandas, numpy and statsmodels
-(none of the generator's modules), and compared with figures.json and the golden workbook."""
+"""The independent verifier: every graded figure recomputed from the shipped files with pandas and its own EM, sharing
+no code with the generator, the pack reader or the analysis. Exit 0 when every figure in figures.json reproduces."""
+import datetime as dt
 import json
 import os
 import sys
-from decimal import ROUND_HALF_UP, Decimal
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-RES = {"0FBG0ZZ", "0FBG4ZZ", "0FTG0ZZ", "0FTG4ZZ"}
+FILES = dict(sample="mwis_2026_sample.csv", dialer="kestrelby_mwis_dialer_export.csv",
+             crm="trevanna_msc_mwis_activity.xlsx", interviews="mwis_2026_interviews.csv",
+             regions="apple_health_regions.xlsx", roster="trevanna_expansion_roster_20261019.csv",
+             changes="trevanna_enrollment_changes_20261001_20261019.txt", cases="hca_household_composition_20261015.csv")
+DAY = pd.Timestamp("2026-10-01")
 
 
-def hu(x, nd):
-    return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
+def histories(t):
+    s = pd.read_csv(os.path.join(t, FILES["sample"]), dtype=str)
+    d = pd.read_csv(os.path.join(t, FILES["dialer"]), dtype=str)
+    d = d[d.case_id.isin(s.case_id)].copy()
+    ts = pd.to_datetime(d.call_start, utc=True).dt.tz_convert("America/Los_Angeles").dt.tz_localize(None)
+    d["when"] = ts
+    d["kind"] = np.where(ts.dt.dayofweek == 5, 3, np.where(ts.dt.hour * 60 + ts.dt.minute >= 17 * 60 + 30, 2, 1))
+    d["res"] = d.disposition.map({"1100": 1, "2110": 2}).fillna(0).astype(int)
+    c = pd.read_excel(os.path.join(t, FILES["crm"]), sheet_name="Activity", dtype={"Member ID": str})
+    c = c[c["Activity Type"] == "MWIS outbound call"].copy()
+    c["when"] = pd.to_datetime(c["Activity Date"].astype(str).str[:10] + " " + c["Activity Time"], format="%Y-%m-%d %I:%M %p")
+    c["case_id"] = c["Member ID"].map(dict(zip(s.member_id, s.case_id)))
+    c["kind"] = 0
+    c["res"] = c.Result.map({"Spoke to member - survey completed": 1, "Spoke to member - declined survey": 2}).fillna(0)
+    calls = pd.concat([d[["case_id", "when", "kind", "res"]], c[["case_id", "when", "kind", "res"]]])
+    calls["res"] = calls.res.astype(int)
+    calls = calls.sort_values(["case_id", "when", "kind"])
+    calls["first_hit"] = calls.groupby("case_id").res.transform(lambda r: (r > 0).cumsum().shift(fill_value=0))
+    calls = calls[calls.first_hit == 0]
+    i = pd.read_csv(os.path.join(t, FILES["interviews"]), dtype=str)
+    i = i[i.case_id.isin(s.case_id)]
+    y = pd.Series(np.where(i.status == "Complete", pd.to_numeric(i.total_hours_march, errors="coerce") >= 80,
+                           i.key_80_hours_march == "Yes").astype(int), index=i.case_id)
+    return s, calls, y
 
 
-def dot(c):
-    c = c.strip()
-    return c if (not c or "." in c or len(c) <= 3) else c[:3] + "." + c[3:]
+def em(s, calls, y, tol=1e-12):
+    cases = s.case_id.tolist()
+    ix = {c: k for k, c in enumerate(cases)}
+    n = len(cases)
+    win = {0: 0, 1: 0, 2: 1, 3: 2}
+    fails = np.zeros((n, 3))
+    hitw = np.full(n, -1)
+    out = np.zeros(n, int)
+    for row in calls.itertuples(index=False):
+        k = ix[row.case_id]
+        if row.res:
+            hitw[k] = win[row.kind]
+            out[k] = row.res
+        else:
+            fails[k, win[row.kind]] += 1
+    reg = pd.Categorical(s.region).codes
+    regs = list(pd.Categorical(s.region).categories)
+    cls = np.array([y.get(c, -1) for c in cases])
+    known = cls >= 0
+    pi = np.full(len(regs), 0.5)
+    pr = np.array([[0.3, 0.3, 0.3], [0.2, 0.2, 0.2]])
+    for _ in range(50000):
+        lik = []
+        for k in (0, 1):
+            l = (fails * np.log(1 - pr[k])).sum(1)
+            l = l + np.where(hitw >= 0, np.log(pr[k][np.maximum(hitw, 0)]), 0)
+            lik.append(l)
+        a1 = np.log(pi[reg]) + lik[1]
+        a0 = np.log(1 - pi[reg]) + lik[0]
+        w = np.where(known, cls, 1 / (1 + np.exp(a0 - a1)))
+        pi2 = np.array([w[reg == r].mean() for r in range(len(regs))])
+        pr2 = np.zeros_like(pr)
+        for k, wk in ((1, w), (0, 1 - w)):
+            for j in range(3):
+                h = (wk * (hitw == j)).sum()
+                pr2[k, j] = h / (h + (wk * fails[:, j]).sum())
+        done = max(abs(pi2 - pi).max(), abs(pr2 - pr).max()) < tol
+        pi, pr = pi2, pr2
+        if done:
+            break
+    return {r: float(w[reg == k].mean()) for k, r in enumerate(regs)}
 
 
-def fixed(path, shift):
-    rows = []
-    for line in open(path, encoding="ascii"):
-        line = line.rstrip("\r\n")
-        p = 56 + shift
-        dx = []
-        for _ in range(9):
-            c, poa = line[p - 1:p + 6].strip(), line[p + 6:p + 7].strip()
-            p += 8
-            if c:
-                dx.append((dot(c), poa))
-        px = []
-        for _ in range(6):
-            c = line[p - 1:p + 6].strip()
-            p += 7
-            if c:
-                px.append(c)
-        d0 = line[p - 1:p + 7].strip()
-        rows.append(dict(hosp=line[10:14], key=line[14:30].strip(), admit=pd.Timestamp(line[34:42]),
-                         discharge=pd.Timestamp(line[42:50]), px=px,
-                         pxd=[pd.Timestamp(d0) if (i == 0 and d0) else pd.NaT for i in range(len(px))], dx=dx))
-    return rows
+def age(born, on=DAY):
+    return on.year - born.dt.year - ((born.dt.month > on.month) | ((born.dt.month == on.month) & (born.dt.day > on.day)))
 
 
-def wide(path, era):
-    t = pd.read_csv(path, dtype=str, keep_default_na=False)
-    if era == 2:
-        f, h, k, a, d, ty, pfx = "%m/%d/%Y", "hospital_no", "person_key", "admit_date", "discharge_date", "admit_type", \
-            ("dx%02d", "poa%02d", "px%02d", "pxdate%02d")
-        age = "age"
-    else:
-        f, h, k, a, d, ty, pfx = "%Y-%m-%d", "hosp_id", "link_key", "admission_date", "discharge_date", "adm_type", \
-            ("diag_%d", "poa_%d", "proc_%d", "proc_date_%d")
-        age = "age_years"
-    rows = []
-    recs = t.to_dict("records")
-    for r in recs:
-        dx = [(dot(r[pfx[0] % i]), r[pfx[1] % i]) for i in range(1, 26) if r[pfx[0] % i]]
-        px = [r[pfx[2] % i] for i in range(1, 26) if r[pfx[2] % i]]
-        pxd = [pd.to_datetime(r[pfx[3] % i], format=f) for i in range(1, 26) if r[pfx[2] % i]]
-        rows.append(dict(rec=r[t.columns[0]], hosp=r[h], key=r[k], admit=pd.to_datetime(r[a], format=f),
-                         discharge=pd.to_datetime(r[d], format=f), px=px, pxd=pxd, dx=dx, atype=r[ty],
-                         age=int(r[age]), sex=r["sex"]))
-    return rows
+def planning(t):
+    reg = pd.read_excel(os.path.join(t, FILES["regions"]), sheet_name="Counties")
+    region_of = dict(zip(reg.County, reg["Region code"]))
+    ro = pd.read_csv(os.path.join(t, FILES["roster"]), dtype=str)
+    lg = pd.read_csv(os.path.join(t, FILES["changes"]), sep="|", dtype=str, keep_default_na=False)
+    hh = pd.read_csv(os.path.join(t, FILES["cases"]), dtype=str, keep_default_na=False)
+    ro["born"] = pd.to_datetime(ro.birth_date, format="%m/%d/%Y")
+    ro["begin"] = pd.to_datetime(ro.enrollment_begin)
+    ro["end"] = pd.to_datetime(ro.scheduled_end)
+    lg["eff"] = pd.to_datetime(lg.effective_date, format="%Y%m%d")
+    lg["at"] = pd.to_datetime(lg.logged_at)
+    lg["born"] = pd.to_datetime(lg.birth_date, format="%Y%m%d")
+    # spans: a member covered on the day is on the roster with an enrollment begun by it and not ended before it (a
+    # termination before it reinstated), or was terminated with a last day on or after it before any October add
+    first_add = lg[lg.change == "ADD"].groupby("member_id").at.min()
+    late_term = lg[(lg.change == "TERM") & (lg.eff >= DAY)]
+    first_term = late_term.groupby("member_id").at.min()
+    reinst = set(lg[lg.change == "REINSTATE"].member_id)
+    early = set(lg[(lg.change == "TERM") & (lg.eff < DAY)].member_id)
+    ro_ok = (ro.begin <= DAY) & (ro.end.isna() | (ro.end >= DAY)) & (~ro.member_id.isin(early) | ro.member_id.isin(reinst))
+    churn = ro.member_id.map(first_term).notna() & ro.member_id.map(first_add).notna() & \
+        (ro.member_id.map(first_term) < ro.member_id.map(first_add))
+    a = ro[ro_ok | churn][["member_id", "p1_client_id", "born", "county"]].copy()
+    mv = lg[(lg.change == "ADDRESS") & (lg.eff > DAY)].sort_values("eff").groupby("member_id").county_before.first()
+    a["county"] = a.member_id.map(mv).fillna(a.county)
+    gone = late_term[~late_term.member_id.isin(ro.member_id) & ~late_term.member_id.isin(first_add.index)]
+    gone = gone.sort_values("at").groupby("member_id").first().reset_index()
+    a = pd.concat([a, gone.rename(columns={"county_before": "county"})[["member_id", "p1_client_id", "born", "county"]]])
+    a = a[(age(a.born) >= 19) & (age(a.born) <= 64)].copy()
+    a["region"] = a.county.map(region_of)
+    hh["born"] = pd.to_datetime(hh.birth_date, format="%m/%d/%Y")
+    hh["b"] = pd.to_datetime(hh.member_begin)
+    hh["e"] = pd.to_datetime(hh.member_end.replace("", None))
+    on = (hh.b <= DAY) & (hh.e.isna() | (hh.e >= DAY))
+    kids = hh[on & (hh.case_role == "CHILD") & (hh.born <= DAY) & (age(hh.born) < 14)]
+    with_kid = set(kids.case_id)
+    par = hh[on & hh.case_role.isin(["HOH", "SPOUSE", "CARETAKER_RELATIVE"]) & hh.case_id.isin(with_kid)]
+    a["parent"] = a.p1_client_id.isin(set(par.p1_client_id))
+    return a.groupby("region").size().to_dict(), a[a.parent].groupby("region").size().to_dict()
 
 
 def run(task):
     t = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
+    names = dict(pd.read_excel(os.path.join(t, FILES["regions"]), sheet_name="Regions")[["Code", "Apple Health region"]]
+                 .itertuples(index=False))
+    s, calls, y = histories(t)
+    sh = em(s, calls, y)
     bad = []
-
-    def ok(label, cond, detail=""):
-        print("%s  verify: %s %s" % ("PASS" if cond else "FAIL", label, detail))
-        if not cond:
-            bad.append(label)
-    hd = pd.read_excel(os.path.join(t, "ulhdc_hospital_directory.xlsx"), sheet_name="Hospitals", header=2, dtype=str)
-    name = {}
-    for _, r in hd.iterrows():
-        name[str(r["Hospital no. (to 2022)"]).zfill(4)] = r["Hospital"]
-        name[str(r["Hospital ID (from 2023)"])] = r["Hospital"]
-    npi = dict(zip(hd["NPI (facility)"].astype(str), hd["Hospital"]))
-    eight = list(fig["ratio"])
-    allr = []
-    for y, sh in ((2016, 0), (2017, 0), (2018, 2)):
-        allr += fixed(os.path.join(t, "ulhdc_hbp_discharges_%d.txt" % y), sh)
-    allr += wide(os.path.join(t, "ulhdc_hbp_discharges_2019_2022.csv"), 2)
-    main = wide(os.path.join(t, "ulhdc_hbp_discharges_2023_2025.csv"), 3)
-    allr += main
-    # each person's earlier operations on the pancreas or bile ducts, from the procedure classes
-    cls = pd.read_csv(os.path.join(t, "ulhdc_procedure_classes.csv"), dtype=str)
-    op_cls = set(cls.icd10pcs[cls.ulhdc_procedure_class.str.match(r"^(Pancreas: (excision|total|duct|debridement)|"
-                                                                   r"Bile duct:)")])
-    earlier = {}
-    for r in allr:
-        if not r["key"]:
-            continue
-        for c, dd in zip(r["px"], r["pxd"]):
-            if c in op_cls:
-                earlier.setdefault(r["key"], []).append(dd if not pd.isna(dd) else r["admit"])
-    dl = pd.read_csv(os.path.join(t, "ulhdc_death_linkage_2016_2026.csv"), dtype=str, keep_default_na=False)
-    dl = dl[dl.death_record_found == "Y"]
-    death = dict(zip(dl.link_key, pd.to_datetime(dl.date_of_death)))
-    rows = []
-    for r in main:
-        hn = name[r["hosp"]]
-        dates = [d for c, d in zip(r["px"], r["pxd"]) if c in RES]
-        if not dates or hn not in eight or r["age"] < 18:
-            continue
-        op = dates[0]
-        if not (pd.Timestamp("2023-01-01") <= op <= pd.Timestamp("2025-12-31")):
-            continue
-        y = [c for c, p in r["dx"] if p == "Y"]
-        has = lambda *pre: float(any(c.startswith(p) for c in y for p in pre))
-        codes = set(r["px"])
-        dd = death.get(r["key"])
-        rows.append(dict(h=hn, age10=(r["age"] - 67) / 10, male=float(r["sex"] == "M"),
-                         mal=float(r["dx"][0][0].startswith("C")), tot=float(bool(codes & {"0FTG0ZZ", "0FTG4ZZ"})),
-                         whip=float("0DT90ZZ" in codes and not codes & {"0FTG0ZZ", "0FTG4ZZ"}),
-                         urg=float(r["atype"] in ("1", "2")), wtloss=has("R63.4", "E43", "E44"), chf=has("I50"),
-                         ckd=has("N18"), copd=has("J44"), liver=has("K70", "K74", "K76"), dm=has("E10", "E11"),
-                         af=has("I48"), redo=float(any(e < r["admit"] for e in earlier.get(r["key"], []))),
-                         dead=float(dd is not None and 0 <= (dd - op).days <= 90)))
-    d = pd.DataFrame(rows)
-    cols = ["age10", "male", "mal", "tot", "whip", "urg", "wtloss", "chf", "ckd", "copd", "liver", "dm", "af", "redo"]
-    X = sm.add_constant(d[cols])
-    mdl = sm.GLM(d.dead, X, family=sm.families.Binomial()).fit()
-    d["e"] = mdl.predict(X)
-    g = d.groupby("h")
-    ratio = (g.dead.sum() / g.e.sum())
-    ok("2,022 operations and 175 deaths", len(d) == fig["totals"]["operations"] and int(d.dead.sum()) ==
-       fig["totals"]["deaths"], (len(d), int(d.dead.sum())))
-    for hn in eight:
-        ok("%s ratio %.1f" % (hn, fig["ratio"][hn]), hu(ratio[hn], 1) == fig["ratio"][hn], round(ratio[hn], 4))
-        ok("%s operations and deaths" % hn, int(g.size()[hn]) == fig["operations"][hn] and
-           int(g.dead.sum()[hn]) == fig["deaths"][hn])
-        ok("%s expected deaths %.1f" % (hn, fig["expected"][hn]), hu(g.e.sum()[hn], 1) == fig["expected"][hn],
-           round(g.e.sum()[hn], 3))
-    centres = list(ratio.sort_values().index[:3])
-    ok("the three centres", sorted(centres) == sorted(fig["call"]["centres"]), centres)
-    ok("the first hospital below", ratio.sort_values().index[3] == fig["call"]["first_below"])
-    # Ask A: the revised release, a stay sent twice (overlapping stays of one person at one hospital) once
-    rv = wide(os.path.join(t, "ulhdc_hbp_2026q1q2_revised.csv"), 3)
-    spans = {}
-    for r in rv:
-        hn = name[r["hosp"]]
-        if hn in eight and set(r["px"]) & RES and pd.Timestamp("2026-01-01") <= r["discharge"] <= pd.Timestamp("2026-06-30"):
-            spans.setdefault((r["key"], hn), []).append((r["admit"], r["discharge"]))
-    cnt = {hn: 0 for hn in eight}
-    for (k, hn), sp in spans.items():
-        end = None
-        for a, b in sorted(sp):
-            if end is None or a > end:
-                cnt[hn] += 1
-                end = b
-            else:
-                end = max(end, b)
-    for hn in eight:
-        ok("Ask A %s: %d" % (hn, fig["ask_a"][hn]), cnt[hn] == fig["ask_a"][hn], cnt[hn])
-    # Ask B: each claim's chain followed to the claim first received, its latest version; a stay's chains summed
-    cl = pd.read_csv(os.path.join(t, "corrisbrook_facility_claims_pancreas_2023_2025.csv"), dtype=str,
-                     keep_default_na=False)
-    parent = dict(zip(cl.claim_id, cl.original_claim_id))
-
-    def root(c):
-        while parent.get(c):
-            c = parent[c]
-        return c
-    cl["root"] = cl.claim_id.map(root)
-    cl["amt"] = cl.allowed_amount.astype(float)
-    cl["hn"] = cl.billing_npi.map(npi)
-    dead_roots = set(cl.root[cl.bill_type == "0118"])
-    live = cl[~cl.root.isin(dead_roots)].sort_values(["received_date", "claim_id"])
-    cur = live.groupby("root").tail(1)
-    stays = cur.groupby(["hn", "member_id", "admit_date"]).amt.sum()
-    for hn in eight:
-        v = stays.loc[hn]
-        ok("Ask B %s: %d" % (hn, fig["ask_b"][hn]), int(hu(v.mean(), 0)) == fig["ask_b"][hn], round(v.mean(), 2))
-    # the golden workbook carries the same figures
-    wb = os.path.join(task, "golden", "pancreatic_centres_2027.xlsx")
-    c1 = pd.read_excel(wb, sheet_name="Centres", header=3)
-    c1 = c1[c1.Hospital.isin(eight)].set_index("Hospital")
-    ok("workbook ratios", all(abs(c1.loc[hn, "Ratio (observed to expected)"] - fig["ratio"][hn]) < 1e-9 for hn in eight))
-    ok("workbook centres", sorted(c1.index[c1["2027 centre"].eq("Yes")]) == sorted(fig["call"]["centres"]))
-    a2 = pd.read_excel(wb, sheet_name="2026 so far", header=3).set_index("Hospital")
-    ok("workbook Ask A", all(int(a2.loc[hn, "Resections"]) == fig["ask_a"][hn] for hn in eight))
-    b2 = pd.read_excel(wb, sheet_name="Members", header=3).set_index("Hospital")
-    ok("workbook Ask B", all(int(b2.loc[hn, "Average allowed per stay ($)"]) == fig["ask_b"][hn] for hn in eight))
-    print("verify: %d failed" % len(bad))
+    for code, v in sh.items():
+        n = names[code]
+        if abs(v - fig["share_unrounded"][n]) > 5e-6:
+            bad.append(("share", n, v, fig["share_unrounded"][n]))
+        if int(np.floor(v * 100 + 0.5)) != fig["share"][n]:
+            bad.append(("share pct", n, v))
+    four = sorted(sorted(sh, key=sh.get)[:4], key=sh.get)
+    if [names[c] for c in four] != fig["call"]["regions"]:
+        bad.append(("four", four))
+    if names[sorted(sh, key=sh.get)[4]] != fig["call"]["first_below"]:
+        bad.append(("first below",))
+    a, b = planning(t)
+    for code in a:
+        if a[code] != fig["ask_a"][names[code]]:
+            bad.append(("ask a", code, a[code], fig["ask_a"][names[code]]))
+        if b.get(code, 0) != fig["ask_b"][names[code]]:
+            bad.append(("ask b", code, b.get(code, 0), fig["ask_b"][names[code]]))
+    print("VERIFY %s: shares, the four, the first below, %d planning figures" % ("PASS" if not bad else "FAIL", 2 * len(a)))
+    for x in bad:
+        print("  ", x)
     return 0 if not bad else 1
 
 

@@ -1,114 +1,128 @@
-"""The cut pack read back as the golden reads it: the three layouts of the consortium's discharge files and the two
-2026 releases on one footing, the death linkage, the hospital directory and the plan's claims."""
+"""Read the pack as a solver would: the survey's sample, the two centres' call records and the interview file conformed
+into one call history per sampled member; the roster, the change log and the household extract for the planning
+figures. Everything here reads the shipped files only."""
 import csv
 import datetime as dt
 import os
 
-import pandas as pd
+from openpyxl import load_workbook
 
 import common as K
 
-
-def _d(s, fmt):
-    s = s.strip()
-    return dt.datetime.strptime(s, fmt).date() if s else None
-
-
-def _dot(c):
-    c = c.strip()
-    return c if (not c or "." in c or len(c) <= 3) else c[:3] + "." + c[3:]
+DAY_END = dt.time(16, 30)
+EVE_START = dt.time(17, 30)
+REACHED_CRM = {"Spoke to member - survey completed": 1, "Spoke to member - declined survey": 2}
+REACHED_DIALER = {"1100": 1, "2110": 2}
 
 
-def directory(target):
-    x = pd.read_excel(os.path.join(target, K.FILES["hospitals"]), sheet_name="Hospitals", header=2, dtype=str)
-    by_name = {v: k for k, v in K.NAME.items()}
-    m = {}
-    for _, r in x.iterrows():
-        code = by_name[r["Hospital"]]
-        m[str(r["Hospital no. (to 2022)"]).zfill(4)] = code
-        m[str(r["Hospital ID (from 2023)"])] = code
-    npi = {str(r["NPI (facility)"]): by_name[r["Hospital"]] for _, r in x.iterrows()}
-    return m, npi
+def _csv(path, delimiter=","):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f, delimiter=delimiter))
 
 
-def _fixed(path, year, hmap):
-    out = []
-    shift = 2 if year == 2018 else 0
-    with open(path, encoding="ascii") as f:
-        for line in f:
-            line = line.rstrip("\r\n")
-            g = lambda a, b: line[a - 1:b]
-            rec = dict(rec_id=g(1, 10).strip(), hosp=hmap[g(11, 14)], key=g(15, 30).strip(), sex=g(31, 31),
-                       age=int(g(32, 34)), admit=_d(g(35, 42), "%Y%m%d"), discharge=_d(g(43, 50), "%Y%m%d"),
-                       atype=g(51, 51), asrc=g(52, 52), disp=g(53, 54).strip(), pcat=g(55, 55), file=str(year))
-            p = 56 + shift
-            dx = []
-            for i in range(9):
-                c, poa = line[p - 1:p + 6].strip(), line[p + 6:p + 7].strip()
-                p += 8
-                if c:
-                    dx.append((_dot(c), poa))
-            px = []
-            for i in range(6):
-                c = line[p - 1:p + 6].strip()
-                p += 7
-                if c:
-                    px.append(c)
-            d0 = _d(line[p - 1:p + 7], "%Y%m%d")
-            rec["dx"] = dx
-            rec["px"] = [(c, d0 if i == 0 else None) for i, c in enumerate(px)]
-            out.append(rec)
+def regions(target):
+    wb = load_workbook(os.path.join(target, K.FILES["regions"]), read_only=True)
+    county = {}
+    for row in list(wb["Counties"].iter_rows(values_only=True))[1:]:
+        county[row[0]] = row[1]
+    return county
+
+
+def window(when):
+    """0 weekday day, 1 weekday evening, 2 Saturday, from the local (Pacific) time of the call."""
+    if when.weekday() == 5:
+        return 2
+    return 1 if when.time() >= EVE_START else 0
+
+
+def _local(stamp):
+    """An ISO time with its offset from UTC, as Pacific local time (daylight time through the field period)."""
+    t = dt.datetime.fromisoformat(stamp)
+    return (t.astimezone(dt.timezone(dt.timedelta(hours=-7)))).replace(tzinfo=None)
+
+
+def _ampm(d, s):
+    t = dt.datetime.strptime(s, "%I:%M %p").time()
+    return dt.datetime.combine(d, t)
+
+
+def survey(target):
+    """Per sampled case: region, age, sex, release, the calls in order (time, centre, window, outcome code 0, 1 or 2)
+    and the class where the interview file gives it (1 worked 80 hours or more in March, 0 not)."""
+    sample = {r["case_id"]: r for r in _csv(os.path.join(target, K.FILES["sample"]))}
+    by_member = {r["member_id"]: cid for cid, r in sample.items()}
+    calls = {cid: [] for cid in sample}
+    for r in _csv(os.path.join(target, K.FILES["dialer"])):
+        if r["case_id"] not in sample:
+            continue                                   # the February pilot and the test calls of 10 April
+        when = _local(r["call_start"])
+        calls[r["case_id"]].append((when, 1, window(when), REACHED_DIALER.get(r["disposition"], 0)))
+    wb = load_workbook(os.path.join(target, K.FILES["crm"]), read_only=True)
+    rows = list(wb["Activity"].iter_rows(values_only=True))
+    head = rows[0]
+    for row in rows[1:]:
+        rec = dict(zip(head, row))
+        if rec["Activity Type"] != "MWIS outbound call":
+            continue
+        d = rec["Activity Date"]
+        d = d.date() if isinstance(d, dt.datetime) else d
+        when = _ampm(d, rec["Activity Time"])
+        calls[by_member[rec["Member ID"]]].append((when, 0, 0, REACHED_CRM.get(rec["Result"], 0)))
+    cls = {}
+    for r in _csv(os.path.join(target, K.FILES["interviews"])):
+        if r["case_id"] not in sample:
+            continue                                   # the test interviews
+        if r["status"] == "Complete":
+            cls[r["case_id"]] = int(int(r["total_hours_march"]) >= 80)
+        else:
+            cls[r["case_id"]] = int(r["key_80_hours_march"] == "Yes")
+    out = {}
+    for cid, s in sample.items():
+        cl = sorted(calls[cid], key=lambda c: (c[0], c[1]))
+        out[cid] = dict(region=s["region"], age=int(s["age"]), sex=s["sex"], release=s["release"],
+                        first=s["first_contact_by"], calls=cl, cls=cls.get(cid, -1))
     return out
 
 
-def _csv(path, era, hmap, fname):
-    out = []
-    with open(path, encoding="utf-8", newline="") as f:
-        rd = csv.reader(f)
-        head = next(rd)
-        ix = {h: i for i, h in enumerate(head)}
-        fmt = "%m/%d/%Y" if era == 2 else "%Y-%m-%d"
-        pre = ("dx%02d", "poa%02d", "px%02d", "pxdate%02d") if era == 2 else ("diag_%d", "poa_%d", "proc_%d", "proc_date_%d")
-        base = (["record_id", "hospital_no", "person_key", "sex", "age", "admit_date", "discharge_date", "admit_type",
-                 "admit_source", "discharge_status", "payer_cat", "payer_name"] if era == 2 else
-                ["rec_no", "hosp_id", "link_key", "sex", "age_years", "admission_date", "discharge_date", "adm_type",
-                 "adm_source", "dsch_disposition", "payer_group", "payer"])
-        for row in rd:
-            v = lambda k: row[ix[k]]
-            rec = dict(rec_id=v(base[0]), hosp=hmap[v(base[1])], key=v(base[2]), sex=v(base[3]), age=int(v(base[4])),
-                       admit=_d(v(base[5]), fmt), discharge=_d(v(base[6]), fmt), atype=v(base[7]), asrc=v(base[8]),
-                       disp=v(base[9]), pcat=v(base[10]), payer=v(base[11]), file=fname)
-            dx, px = [], []
-            for i in range(1, 26):
-                c = v(pre[0] % i)
-                if c:
-                    dx.append((_dot(c), v(pre[1] % i)))
-                c = v(pre[2] % i)
-                if c:
-                    px.append((c, _d(v(pre[3] % i), fmt)))
-            rec["dx"], rec["px"] = dx, px
-            out.append(rec)
-    return out
+def band(age):
+    return 0 if age <= 29 else (1 if age <= 44 else 2)
 
 
-def load(target):
-    f = lambda k: os.path.join(target, K.FILES[k])
-    hmap, npimap = directory(target)
-    P = {"hmap": hmap, "npimap": npimap}
-    recs = []
-    for y in (2016, 2017, 2018):
-        recs += _fixed(f("d%d" % y), y, hmap)
-    recs += _csv(f("d2019_2022"), 2, hmap, "2019-2022")
-    recs += _csv(f("d2023_2025"), 3, hmap, "2023-2025")
-    P["discharges"] = recs
-    P["prelim"] = _csv(f("prelim"), 3, hmap, "2026p")
-    P["revised"] = _csv(f("revised"), 3, hmap, "2026r")
-    deaths = pd.read_csv(f("deaths"), dtype=str, keep_default_na=False)
-    deaths = deaths[deaths.death_record_found == "Y"]
-    P["deaths"] = {k: dt.date.fromisoformat(d) for k, d in zip(deaths.link_key, deaths.date_of_death)}
-    P["deaths_imputed"] = set(deaths.link_key[deaths.dod_day_imputed == "Y"])
-    cl = pd.read_csv(f("claims"), dtype=str, keep_default_na=False)
-    cl["allowed"] = cl.allowed_amount.astype(float)
-    cl["hosp"] = cl.billing_npi.map(npimap)
-    P["claims"] = cl
-    return P
+def histories(S):
+    """The model's input: per case (region index, age band, sex, class or -1, outcome, [(combo, attempt), ...]) with
+    combo 0 a member services call, 1 to 3 a vendor call by day, evening or Saturday, up to the reaching call."""
+    hist = []
+    for cid in sorted(S):
+        s = S[cid]
+        seq, out = [], 0
+        for k, (when, ctr, win, res) in enumerate(s["calls"], 1):
+            seq.append((0 if ctr == 0 else 1 + win, k))
+            if res:
+                out = res
+                break
+        hist.append((K.CODES.index(s["region"]), band(s["age"]), 0 if s["sex"] == "F" else 1, s["cls"], out, seq))
+    return hist
+
+
+def _date(s, fmt):
+    return dt.datetime.strptime(s, fmt).date()
+
+
+def enrollment(target):
+    """The roster (19 October), the change log (1 to 19 October) and the household extract (15 October)."""
+    roster = _csv(os.path.join(target, K.FILES["roster"]))
+    log = _csv(os.path.join(target, K.FILES["changes"]), delimiter="|")
+    cases = _csv(os.path.join(target, K.FILES["cases"]))
+    for r in roster:
+        r["born"] = _date(r["birth_date"], "%m/%d/%Y")
+        r["begin"] = _date(r["enrollment_begin"], "%Y-%m-%d")
+        r["end"] = _date(r["scheduled_end"], "%Y-%m-%d") if r["scheduled_end"] else None
+    for r in log:
+        r["born"] = _date(r["birth_date"], "%Y%m%d")
+        r["eff"] = _date(r["effective_date"], "%Y%m%d")
+        r["at"] = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M:%S")
+    for r in cases:
+        r["born"] = _date(r["birth_date"], "%m/%d/%Y")
+        r["begin"] = _date(r["member_begin"], "%Y-%m-%d")
+        r["end"] = _date(r["member_end"], "%Y-%m-%d") if r["member_end"] else None
+    return roster, log, cases

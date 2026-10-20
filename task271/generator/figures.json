@@ -1,121 +1,153 @@
 {
  "call": {
-  "centres": [
-   "Netherfold Medical Center",
-   "Ferncastle Health",
-   "Aldermoor University Hospital"
+  "regions": [
+   "Pierce",
+   "Spokane",
+   "King",
+   "Thurston-Mason"
   ],
-  "first_below": "Farrowmere Regional Medical Center"
- },
- "ratio": {
-  "Aldermoor University Hospital": 0.9,
-  "Brackwell Medical Center": 1.1,
-  "Farrowmere Regional Medical Center": 0.9,
-  "Kestwick Memorial Hospital": 1.4,
-  "Netherfold Medical Center": 0.6,
-  "Yarrowdale Regional Hospital": 1.4,
-  "Ferncastle Health": 0.8,
-  "Elmhaven Memorial Hospital": 1.0
- },
- "ratio_unrounded": {
-  "Aldermoor University Hospital": 0.867,
-  "Brackwell Medical Center": 1.0767,
-  "Farrowmere Regional Medical Center": 0.9212,
-  "Kestwick Memorial Hospital": 1.3863,
-  "Netherfold Medical Center": 0.6239,
-  "Yarrowdale Regional Hospital": 1.4006,
-  "Ferncastle Health": 0.8139,
-  "Elmhaven Memorial Hospital": 0.9759
- },
- "operations": {
-  "Aldermoor University Hospital": 430,
-  "Brackwell Medical Center": 369,
-  "Farrowmere Regional Medical Center": 299,
-  "Kestwick Memorial Hospital": 247,
-  "Netherfold Medical Center": 181,
-  "Yarrowdale Regional Hospital": 185,
-  "Ferncastle Health": 153,
-  "Elmhaven Memorial Hospital": 158
- },
- "deaths": {
-  "Aldermoor University Hospital": 38,
-  "Brackwell Medical Center": 41,
-  "Farrowmere Regional Medical Center": 21,
-  "Kestwick Memorial Hospital": 25,
-  "Netherfold Medical Center": 9,
-  "Yarrowdale Regional Hospital": 20,
-  "Ferncastle Health": 10,
-  "Elmhaven Memorial Hospital": 11
- },
- "expected": {
-  "Aldermoor University Hospital": 43.8,
-  "Brackwell Medical Center": 38.1,
-  "Farrowmere Regional Medical Center": 22.8,
-  "Kestwick Memorial Hospital": 18.0,
-  "Netherfold Medical Center": 14.4,
-  "Yarrowdale Regional Hospital": 14.3,
-  "Ferncastle Health": 12.3,
-  "Elmhaven Memorial Hospital": 11.3
- },
- "totals": {
-  "operations": 2022,
-  "deaths": 175
- },
- "earlier_share": {
-  "Aldermoor University Hospital": 17.9,
-  "Brackwell Medical Center": 17.1,
-  "Farrowmere Regional Medical Center": 4.0,
-  "Kestwick Memorial Hospital": 2.4,
-  "Netherfold Medical Center": 5.0,
-  "Yarrowdale Regional Hospital": 3.8,
-  "Ferncastle Health": 4.6,
-  "Elmhaven Memorial Hospital": 3.2
- },
- "earlier_coefficient": 1.21,
- "filed": {
-  "follow_up_days": 90,
-  "clauses": {
-   "population": "3.2",
-   "deaths": "3.3",
-   "expected": "3.4",
-   "comparison": "3.5"
-  }
- },
- "rival": {
-  "own_record_ratio": {
-   "Aldermoor University Hospital": 0.95,
-   "Brackwell Medical Center": 1.18,
-   "Farrowmere Regional Medical Center": 0.87,
-   "Kestwick Memorial Hospital": 1.25,
-   "Netherfold Medical Center": 0.58,
-   "Yarrowdale Regional Hospital": 1.32,
-   "Ferncastle Health": 0.77,
-   "Elmhaven Memorial Hospital": 0.89
-  },
-  "own_record_centres": [
-   "Netherfold Medical Center",
-   "Ferncastle Health",
-   "Farrowmere Regional Medical Center"
+  "first_below": "Greater Columbia",
+  "order": [
+   "Pierce",
+   "Spokane",
+   "King",
+   "Thurston-Mason",
+   "Greater Columbia",
+   "North Sound",
+   "North Central",
+   "Great Rivers",
+   "Salish",
+   "Southwest"
   ]
  },
+ "share": {
+  "Great Rivers": 58,
+  "Greater Columbia": 49,
+  "King": 46,
+  "North Central": 56,
+  "North Sound": 49,
+  "Pierce": 42,
+  "Salish": 60,
+  "Southwest": 61,
+  "Spokane": 44,
+  "Thurston-Mason": 47
+ },
+ "share_unrounded": {
+  "Great Rivers": 0.576424,
+  "Greater Columbia": 0.489397,
+  "King": 0.459634,
+  "North Central": 0.562063,
+  "North Sound": 0.493018,
+  "Pierce": 0.421004,
+  "Salish": 0.599102,
+  "Southwest": 0.614834,
+  "Spokane": 0.438239,
+  "Thurston-Mason": 0.473043
+ },
+ "sampled": {
+  "Great Rivers": 1500,
+  "Greater Columbia": 1500,
+  "King": 1500,
+  "North Central": 1500,
+  "North Sound": 1500,
+  "Pierce": 1500,
+  "Salish": 1500,
+  "Southwest": 1500,
+  "Spokane": 1500,
+  "Thurston-Mason": 1500
+ },
+ "outcomes": {
+  "completed": 10635,
+  "declined": 1161,
+  "declined_key_answered": 909,
+  "not_reached": 3204,
+  "known": 11544,
+  "sampled": 15000
+ },
+ "filed": {
+  "hours": 80,
+  "ages": [
+   19,
+   64
+  ],
+  "per_region": 1500,
+  "reached_codes": [
+   1100,
+   2110
+  ],
+  "clauses": [
+   "2.1",
+   "2.4",
+   "3.1",
+   "3.2",
+   "3.3"
+  ]
+ },
+ "known_share": {
+  "Great Rivers": 39,
+  "Greater Columbia": 39,
+  "King": 36,
+  "North Central": 51,
+  "North Sound": 36,
+  "Pierce": 35,
+  "Salish": 46,
+  "Southwest": 49,
+  "Spokane": 37,
+  "Thurston-Mason": 41
+ },
+ "overall": {
+  "estimated": 51,
+  "interviewed": 41
+ },
+ "answer_rate": {
+  "worked_80": {
+   "day": 0.06,
+   "evening": 0.275,
+   "saturday": 0.241
+  },
+  "not_80": {
+   "day": 0.387,
+   "evening": 0.364,
+   "saturday": 0.316
+  }
+ },
  "ask_a": {
-  "Aldermoor University Hospital": 84,
-  "Brackwell Medical Center": 66,
-  "Farrowmere Regional Medical Center": 47,
-  "Kestwick Memorial Hospital": 36,
-  "Netherfold Medical Center": 35,
-  "Yarrowdale Regional Hospital": 29,
-  "Ferncastle Health": 16,
-  "Elmhaven Memorial Hospital": 25
+  "Great Rivers": 4286,
+  "Greater Columbia": 8730,
+  "King": 21346,
+  "North Central": 3316,
+  "North Sound": 11560,
+  "Pierce": 12836,
+  "Salish": 4120,
+  "Southwest": 7866,
+  "Spokane": 9922,
+  "Thurston-Mason": 4615
  },
  "ask_b": {
-  "Aldermoor University Hospital": 36722,
-  "Brackwell Medical Center": 36265,
-  "Farrowmere Regional Medical Center": 31668,
-  "Kestwick Memorial Hospital": 30394,
-  "Netherfold Medical Center": 31410,
-  "Yarrowdale Regional Hospital": 30007,
-  "Ferncastle Health": 34135,
-  "Elmhaven Memorial Hospital": 25329
+  "Great Rivers": 994,
+  "Greater Columbia": 1989,
+  "King": 5036,
+  "North Central": 773,
+  "North Sound": 2632,
+  "Pierce": 2835,
+  "Salish": 981,
+  "Southwest": 1839,
+  "Spokane": 2306,
+  "Thurston-Mason": 1044
+ },
+ "totals": {
+  "ask_a": 88597,
+  "ask_b": 20429
+ },
+ "rivals": {
+  "respondents_not_golden": [
+   "North Sound"
+  ],
+  "cells_not_golden": [
+   "North Sound"
+  ],
+  "late_not_golden": [
+   "North Sound"
+  ]
  }
 }

@@ -1,149 +1,97 @@
-"""Every graded figure from the shipped pack, read the way the golden reads it: the eight hospitals' 2023 to 2025
-resections, each patient's condition before surgery with the earlier operation rebuilt from their earlier admissions,
-the risk model on the eight hospitals together, each hospital's ratio and the three centres; then the two asks."""
+"""The golden from the pack: each region's share of sampled members who worked 80 hours or more in March 2026 from the
+callback model fitted to every sampled member's call history (answer rates by work class and calling window, pooled
+across regions; class shares by region), the four lowest regions, and the two planning figures for 1 October 2026."""
 import datetime as dt
-
-import numpy as np
-import pandas as pd
 
 import common as K
 import models as M
+import pack as P
 
-COMORB = {"chf": ("I50",), "ckd": ("N18",), "copd": ("J44",), "liver": ("K70", "K74", "K76"),
-          "dm": ("E10", "E11"), "af": ("I48",), "wtloss": ("R63.4", "E43", "E44")}
-BACKGROUND = {"htn": ("I10",), "lipid": ("E78.5",), "gerd": ("K21.9",), "obese": ("E66.9",), "smoke": ("Z87.891",),
-              "osa": ("G47.33",), "thyroid": ("E03.9",), "depress": ("F32.A",)}
-EARLIER = set(K.EARLIER_OPS)
+D1 = K.ROSTER_DATE
+PARENT_ROLES = ("HOH", "SPOUSE", "CARETAKER_RELATIVE")
 
 
-def _res_date(rec):
-    for c, d in rec["px"]:
-        if c in K.RESECTION:
-            return d
-    return None
+def age_on(born, on):
+    return on.year - born.year - ((on.month, on.day) < (born.month, born.day))
 
 
-def operations(P):
-    """The programme's population: every resection at the eight hospitals on an adult, 2023 to 2025."""
-    rows = []
-    for rec in P["discharges"]:
-        d = _res_date(rec)
-        if d is None or not (K.WINDOW[0] <= d <= K.WINDOW[1]) or rec["hosp"] not in K.ELIGIBLE or rec["age"] < 18:
+def call(target):
+    S = P.survey(target)
+    hist = P.histories(S)
+    SS = M.summarise(hist)
+    share, p, it = M.em(SS)
+    order = sorted(range(10), key=lambda i: share[i])
+    return dict(S=S, hist=hist, SS=SS, share=share, p=p, iterations=it, four=sorted(order[:4]), fifth=order[4],
+                order=order)
+
+
+def covered_oct1(target):
+    """Each member covered on 1 October 2026 and aged 19 to 64 that day, with the county lived in that day. A member
+    is covered if the roster's enrollment began by 1 October and has not ended before it, or if a termination in the
+    log ended coverage on or after 1 October without an October enrollment before it; the county that day is the
+    roster's, or the county before the first move logged after 1 October, or the county on the termination."""
+    roster, log, cases = P.enrollment(target)
+    ev = {}
+    for r in sorted(log, key=lambda r: (r["at"], r["member_id"], r["change"])):
+        ev.setdefault(r["member_id"], []).append(r)
+    people = {}
+    on_roster = {r["member_id"]: r for r in roster}
+    for mid, r in on_roster.items():
+        evs = ev.get(mid, [])
+        adds = [e for e in evs if e["change"] == "ADD"]
+        terms = [e for e in evs if e["change"] == "TERM" and e["eff"] >= D1]
+        reinstated = any(e["change"] == "REINSTATE" for e in evs)
+        early_term = [e for e in evs if e["change"] == "TERM" and e["eff"] < D1]
+        cov = (r["begin"] <= D1 and (r["end"] is None or r["end"] >= D1)
+               and (not early_term or reinstated))
+        if not cov and adds and terms and min(terms, key=lambda e: e["at"])["at"] < min(adds, key=lambda e: e["at"])["at"]:
+            cov = True                         # covered on 1 October, ended in October, enrolled again since
+        if not cov:
             continue
-        rows.append(rec)
-    return rows
-
-
-def history(P):
-    """Each person's earlier operations on the pancreas or bile ducts, from every file, at any hospital."""
-    h = {}
-    for rec in P["discharges"]:
-        if not rec["key"]:
+        moves = sorted((e for e in evs if e["change"] == "ADDRESS" and e["eff"] > D1), key=lambda e: e["eff"])
+        county = moves[0]["county_before"] if moves else r["county"]
+        people[mid] = dict(p1=r["p1_client_id"], born=r["born"], county=county)
+    for mid, evs in ev.items():
+        if mid in on_roster:
             continue
-        for c, d in rec["px"]:
-            if c in EARLIER:
-                h.setdefault(rec["key"], []).append(d or rec["admit"])
-    return h
+        terms = [e for e in evs if e["change"] == "TERM" and e["eff"] >= D1]
+        adds = [e for e in evs if e["change"] == "ADD"]
+        if not terms or adds:
+            continue                           # ended before 1 October, or joined in October
+        e = terms[0]
+        people[mid] = dict(p1=e["p1_client_id"], born=e["born"], county=e["county_before"])
+    return {mid: v for mid, v in people.items() if 19 <= age_on(v["born"], D1) <= 64}
 
 
-def frame(P):
-    ops = operations(P)
-    hist = history(P)
-    rows = []
-    for rec in ops:
-        d = _res_date(rec)
-        codes = {c for c, _ in rec["px"]}
-        poa_y = [c for c, p in rec["dx"] if p == "Y"]
-        x = dict(h=rec["hosp"], rec_id=rec["rec_id"], key=rec["key"], op=d, age=rec["age"], male=rec["sex"] == "M",
-                 mal=rec["dx"][0][0].startswith("C"), tot=bool(codes & {"0FTG0ZZ", "0FTG4ZZ"}),
-                 whip=("0DT90ZZ" in codes) and not (codes & {"0FTG0ZZ", "0FTG4ZZ"}), urg=rec["atype"] in ("1", "2"))
-        for k, prefs in COMORB.items():
-            x[k] = any(c.startswith(p) for c in poa_y for p in prefs)
-        for k, prefs in BACKGROUND.items():
-            x[k] = any(c == p or c.startswith(p) for c, _ in rec["dx"] for p in prefs)
-        x["pdx"] = rec["dx"][0][0]
-        x["redo"] = any(e < rec["admit"] for e in hist.get(rec["key"], []))
-        x["comp"] = any(p == "N" for _, p in rec["dx"])
-        dd = P["deaths"].get(rec["key"])
-        x["dead"] = dd is not None and 0 <= (dd - d).days <= K.FOLLOW
-        x["chole"] = False
-        x["stent"] = False
-        rows.append(x)
-    df = pd.DataFrame(rows)
-    # the harmless earlier procedures, for the family's wider forms
-    ch, st = {}, {}
-    for rec in P["discharges"]:
-        for c, dd in rec["px"]:
-            if c in K.CHOLE:
-                ch.setdefault(rec["key"], []).append(dd or rec["admit"])
-            if c == "0F798DZ":
-                st.setdefault(rec["key"], []).append(dd or rec["admit"])
-    adm = {rec["rec_id"]: rec["admit"] for rec in operations(P)}
-    df["chole"] = [any(e < adm[r] for e in ch.get(k, [])) for k, r in zip(df.key, df.rec_id)]
-    df["stent"] = [w and any(e < adm[r] for e in st.get(k, [])) for k, r, w in zip(df.key, df.rec_id, df.whip)]
-    return df
+def planning(target, people=None):
+    """Ask A: members covered by region of the county they lived in on 1 October. Ask B: of them, case heads, spouses
+    and caretaker relatives in a case with a child under 14 in it on 1 October."""
+    region_of = P.regions(target)
+    people = covered_oct1(target) if people is None else people
+    roster, log, cases = P.enrollment(target)
+    by_case = {}
+    for r in cases:
+        by_case.setdefault(r["case_id"], []).append(r)
+    parent_cases = {}
+    for r in cases:
+        if r["case_role"] in PARENT_ROLES and r["begin"] <= D1 and (r["end"] is None or r["end"] >= D1):
+            parent_cases.setdefault(r["p1_client_id"], set()).add(r["case_id"])
+
+    def child_under_14(case):
+        return any(k["case_role"] == "CHILD" and k["begin"] <= D1 and (k["end"] is None or k["end"] >= D1)
+                   and k["born"] <= D1 and age_on(k["born"], D1) < 14 for k in by_case[case])
+
+    a = {c: 0 for c in K.CODES}
+    b = {c: 0 for c in K.CODES}
+    for mid, v in people.items():
+        code = region_of[v["county"]]
+        a[code] += 1
+        if any(child_under_14(c) for c in parent_cases.get(v["p1"], ())):
+            b[code] += 1
+    return a, b
 
 
-def main_call(P):
-    df = frame(P)
-    d = M.prep(df)
-    g, model = M.ratio(d, M.GOLDEN)
-    o = d.groupby("h").dead.sum().reindex(M.H)
-    n = d.groupby("h").size().reindex(M.H)
-    e = o / g
-    centres = sorted(g.sort_values().index[:3], key=lambda h: g[h])
-    return dict(df=df, ratio=g, observed=o, operations=n, expected=e, centres=centres, model=model,
-                redo_share=d.groupby("h").redo.mean().reindex(M.H))
-
-
-def ask_a(P):
-    """Each eligible hospital's resections discharged January to June 2026, from the revised release. Two records of the
-    same person at the same hospital whose stays overlap are one stay sent twice, so one operation."""
-    stays = {}
-    for rec in P["revised"]:
-        if rec["hosp"] not in K.ELIGIBLE or _res_date(rec) is None:
-            continue
-        if not (K.H1_2026[0] <= rec["discharge"] <= K.H1_2026[1]):
-            continue
-        stays.setdefault((rec["key"], rec["hosp"]), []).append((rec["admit"], rec["discharge"]))
-    cnt = {h: 0 for h in K.ELIGIBLE}
-    for (key, h), spans in stays.items():
-        spans.sort()
-        end = None
-        for a, d in spans:
-            if end is None or a > end:
-                cnt[h] += 1
-                end = d
-            else:
-                end = max(end, d)
-    return cnt
-
-
-def claim_chains(cl):
-    """Each claim's chain, followed through original_claim_id to the claim first received, and each chain's current
-    version (the one received last); a voided claim's chain and the void drop out."""
-    orig = dict(zip(cl.claim_id, cl.original_claim_id))
-
-    def root(c):
-        while orig.get(c):
-            c = orig[c]
-        return c
-    cl = cl.copy()
-    cl["root"] = cl.claim_id.map(root)
-    void_roots = set(cl.root[cl.bill_type == "0118"])
-    live = cl[~cl.root.isin(void_roots)]
-    return live.sort_values(["received_date", "claim_id"]).groupby("root").tail(1)
-
-
-def ask_b(P):
-    """The average allowed amount per stay of the cooperative's members' resection stays at each eligible hospital,
-    discharged 2023 to 2025: each claim at its current version, a stay's claims (its interim claims) added together."""
-    cur = claim_chains(P["claims"])
-    stays = cur.groupby(["hosp", "member_id", "admit_date"]).agg(allowed=("allowed", "sum"),
-                                                                 through=("statement_through", "max")).reset_index()
-    stays = stays[stays.through.str[:4].isin(["2023", "2024", "2025"])]
-    out = {}
-    for h in K.ELIGIBLE:
-        s_ = stays[stays.hosp == h]
-        out[h] = (int(len(s_)), float(s_.allowed.sum() / len(s_)))
-    return out
+def run(target):
+    c = call(target)
+    a, b = planning(target)
+    return dict(call=c, a=a, b=b)

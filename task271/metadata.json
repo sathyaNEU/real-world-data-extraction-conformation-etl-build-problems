@@ -1,108 +1,94 @@
 {
- "answer": "Centres for 2027: Netherfold Medical Center, Ferncastle Health, Aldermoor University Hospital",
+ "answer": "Regions for 2027: Pierce, Spokane, King, Thurston-Mason",
  "distractors": [
-  "hospital_overall_star_ratings_2026.csv",
-  "corrisbrook_travel_benefit_estimates_2026.xlsx"
+  "mwis_pilot_memo_2026.pdf",
+  "trevanna_cahps_2025_regions.xlsx"
  ],
- "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
+ "domain": "Survey Research & Official Statistics (nonresponse, calibration and measurement error adjustment)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
+  "apple_health_regions.xlsx": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
   "contents.txt": {
-   "date": "2026-10-09",
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "corrisbrook_facility_claims_pancreas_2023_2025.csv": {
-   "date": "2026-10-09",
+  "hca_household_composition_20261015.csv": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "corrisbrook_pancreatic_centres_criteria_v2.pdf": {
-   "date": "2026-10-09",
+  "kestrelby_mwis_dialer_export.csv": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "corrisbrook_travel_benefit_estimates_2026.xlsx": {
-   "date": "2026-10-09",
+  "mwis_2026_interviews.csv": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "hospital_overall_star_ratings_2026.csv": {
-   "date": "2026-10-09",
+  "mwis_2026_methods_report.pdf": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_death_linkage_2016_2026.csv": {
-   "date": "2026-10-09",
+  "mwis_2026_sample.csv": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_2026q1_preliminary.csv": {
-   "date": "2026-10-09",
+  "mwis_pilot_memo_2026.pdf": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_2026q1q2_revised.csv": {
-   "date": "2026-10-09",
+  "trevanna_cahps_2025_regions.xlsx": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_discharges_2016.txt": {
-   "date": "2026-10-09",
+  "trevanna_ce_support_data_guide.pdf": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_discharges_2017.txt": {
-   "date": "2026-10-09",
+  "trevanna_ce_support_track_criteria_2027.pdf": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_discharges_2018.txt": {
-   "date": "2026-10-09",
+  "trevanna_enrollment_changes_20261001_20261019.txt": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_discharges_2019_2022.csv": {
-   "date": "2026-10-09",
+  "trevanna_expansion_roster_20261019.csv": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   },
-  "ulhdc_hbp_discharges_2023_2025.csv": {
-   "date": "2026-10-09",
+  "trevanna_msc_mwis_activity.xlsx": {
+   "date": "2026-10-20",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
-  },
-  "ulhdc_hospital_directory.xlsx": {
-   "date": "2026-10-09",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
-  },
-  "ulhdc_procedure_classes.csv": {
-   "date": "2026-10-09",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
-  },
-  "ulhdc_research_file_guide_2026.pdf": {
-   "date": "2026-10-09",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Corrisbrook Health Cooperative, the Upper Lakes Hospital Data Consortium, every hospital and every person are fictional; the NPIs are invented and fail the NPI check digit, so none is a real provider's number"
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
   }
  },
  "rows": {
-  "corrisbrook_facility_claims_pancreas_2023_2025.csv": 310,
-  "corrisbrook_travel_benefit_estimates_2026.xlsx": 8,
-  "hospital_overall_star_ratings_2026.csv": 22,
-  "ulhdc_death_linkage_2016_2026.csv": 33829,
-  "ulhdc_hbp_2026q1_preliminary.csv": 845,
-  "ulhdc_hbp_2026q1q2_revised.csv": 1796,
-  "ulhdc_hbp_discharges_2016.txt": 3123,
-  "ulhdc_hbp_discharges_2017.txt": 3228,
-  "ulhdc_hbp_discharges_2018.txt": 3073,
-  "ulhdc_hbp_discharges_2019_2022.csv": 12911,
-  "ulhdc_hbp_discharges_2023_2025.csv": 10383,
-  "ulhdc_hospital_directory.xlsx": 23,
-  "ulhdc_procedure_classes.csv": 29
+  "apple_health_regions.xlsx": 10,
+  "hca_household_composition_20261015.csv": 131194,
+  "kestrelby_mwis_dialer_export.csv": 30595,
+  "mwis_2026_interviews.csv": 11550,
+  "mwis_2026_sample.csv": 15000,
+  "trevanna_cahps_2025_regions.xlsx": 10,
+  "trevanna_enrollment_changes_20261001_20261019.txt": 2752,
+  "trevanna_expansion_roster_20261019.csv": 88424,
+  "trevanna_msc_mwis_activity.xlsx": 27405
  },
  "task": "task271",
- "title": "Corrisbrook Health Cooperative: the three 2027 Pancreatic Surgery Centres"
+ "title": "Trevanna Community Health Plan: the four regions for the 2027 Community Engagement Support track"
 }

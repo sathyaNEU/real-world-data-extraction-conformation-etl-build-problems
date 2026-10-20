@@ -1,32 +1,33 @@
 """Assertions on the build: the input gates, the golden reproduced from the cut pack and from the generator's clean
-truth (R1 the raw material ships, R2 each Layer 1 item neutral, R3a the analyst test, R3b the decisive step alone,
-R3c nothing planted), the ladder, every shortcut a reader might take, the golden's model family and its one-decimal
-bins, the semantic fork table, the two ask devices against every stop, the separation of the asks from the call,
-the documents, the containers and the realism sweep."""
+truth (R1 the raw material ships, R2 each Layer 1 item neutral, R3a the analyst test, R3b the decisive step alone),
+the ladder, every shortcut a reader might take, the callback model's family on the four and the five graded percents,
+the semantic forks (SFn), the two ask devices on the careful path and the mirror's, the separation of the asks from
+the call, the documents, the containers and the realism sweep."""
 import datetime as dt
 import json
 import os
 import re
 import shutil
 import sys
-import tempfile
-import warnings
 
 import numpy as np
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as A      # noqa: E402
+import analysis as AN     # noqa: E402
+import asks as AK         # noqa: E402
 import common as K        # noqa: E402
-import core as C          # noqa: E402
+import cracker as CR      # noqa: E402
 import models as M        # noqa: E402
-import pack as PK         # noqa: E402
+import pack as P          # noqa: E402
 import routes as RT       # noqa: E402
-from deliver import dollars, r1   # noqa: E402
+import world as W         # noqa: E402
 
 FAILS = []
 COUNT = [0]
+GOLD_NAMES = ("Pierce", "Spokane", "King", "Thurston-Mason")
+BELOW = "Greater Columbia"
+NAIVE_NAMES = ("Pierce", "North Sound", "King", "Spokane")
 
 
 def check(label, ok, detail=""):
@@ -36,28 +37,30 @@ def check(label, ok, detail=""):
     print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [%s]" % (detail,)) if detail != "" else ""))
 
 
-def edge1(x):
-    """Distance of x from the nearest one-decimal rounding edge."""
-    return 0.05 - abs(float(x) - round(float(x), 1))
+def pct(x):
+    return int(np.floor(100 * float(x) + 0.5))
 
 
-def trio(s):
-    return frozenset(s.sort_values().index[:3])
+def four(v):
+    return RT.four(v)
 
 
-def names(s):
-    return "+".join(K.NAME[h].split()[0] for h in s.sort_values().index[:3])
+def names(ix):
+    return tuple(sorted(K.NAME[K.CODES[i]] for i in ix))
+
+
+def edge(x):
+    """Distance of a share (in points) from the nearest half-point rounding boundary."""
+    v = 100 * float(x)
+    return abs(v - np.floor(v) - 0.5)
 
 
 def run(task, b, fig, res):
     target = os.path.join(task, "target")
-    w = b["w"]
-    P = res["P"]
-    m = res["m"]
-    code = {v: k for k, v in K.NAME.items()}
-    GOLD = frozenset(code[n] for n in fig["call"]["centres"])
-    NAIVE = frozenset(["C", "E", "G"])
-    below = code[fig["call"]["first_below"]]
+    w, A, H = b["w"], b["A"], b["H"]
+    c = res["c"]
+    GOLD = four(c["share"])
+    graded = list(c["order"][:4])
     # ---------------------------------------------------------------- input gates
     files = sorted(os.listdir(target))
     check("GATE ten or more files", len(files) >= 10, len(files))
@@ -72,388 +75,325 @@ def run(task, b, fig, res):
     contents = open(os.path.join(target, K.FILES["contents"])).read()
     check("GATE contents lists every other file", all(f in contents for f in files if f != K.FILES["contents"]))
     check("GATE no file named after the stump",
-          not any(re.search(r"redo|reoper|earlier|history|prior|previous|risk|expected", f) for f in files))
-    # ---------------------------------------------------------------- the golden from the pack and the clean truth
-    ix = w["ix"].set_index(["h", "year", "k"])
-    bykey = {rec["key"]: rec for rec in w["index"]}
-    df = m["df"]
-    flags = ["male", "mal", "tot", "whip", "urg", "redo", "dead", "chf", "ckd", "copd", "liver", "dm", "af", "wtloss",
-             "chole", "stent", "htn", "lipid", "gerd", "obese", "smoke", "osa", "thyroid", "depress"]
-    bad = 0
-    for _, r in df.iterrows():
-        t = ix.loc[bykey[r.key]["core"]]
-        if any(bool(r[f]) != bool(t[f]) for f in flags):
-            bad += 1
-    check("GOLDEN every operation in the pack carries the clean truth's pre-operative factors, earlier operation and "
-          "death within 90 days (2,022 operations)", bad == 0 and len(df) == len(w["ix"]), (bad, len(df)))
-    check("GOLDEN the pack's operations by hospital equal the clean truth's",
-          all(int(m["operations"][h]) == int((w["ix"].h == h).sum()) for h in K.ELIGIBLE), m["operations"].to_dict())
-    check("GOLDEN the three centres are Netherfold, Ferncastle and Aldermoor", GOLD == frozenset(["A", "E", "G"]),
-          fig["call"]["centres"])
-    check("GOLDEN Farrowmere is the first hospital below", below == "C", below)
-    g = m["ratio"].sort_values()
-    check("GOLDEN the third centre leads the first hospital below by 0.05 or more unrounded",
-          g.iloc[3] - g.iloc[2] >= 0.05, round(g.iloc[3] - g.iloc[2], 4))
-    for h in K.ELIGIBLE:
-        check("GOLDEN %s's ratio sits 0.005 or more inside its one-decimal bin" % K.NAME[h],
-              edge1(m["ratio"][h]) >= 0.005, round(edge1(m["ratio"][h]), 4))
-        check("GOLDEN %s's figures agree (ratio = deaths / expected, rounded half up)" % K.NAME[h],
-              r1(m["observed"][h] / m["expected"][h]) == fig["ratio"][K.NAME[h]])
+          not any(re.search(r"callback|attempt|nonresp|window|contact|propens|weight|evening", f) for f in files))
+    check("GATE the shipped file set is the generator's", set(files) == set(K.FILES.values()), sorted(files))
+    # ---------------------------------------------------------------- the golden from the pack and from the truth
+    th = W.histories(w)
+    order = {cno: i for i, cno in enumerate(w["det"]["case_no"])}
+    cids = sorted(c["S"])
+    hp = {order[x]: h for x, h in zip(cids, c["hist"])}
+    mism = [i for i in range(len(th)) if tuple(th[i][:5]) != tuple(hp[i][:5]) or
+            [cc for cc, _ in th[i][5]] != [cc for cc, _ in hp[i][5]]]
+    check("GOLDEN the pack's call histories equal the clean truth's for every sampled member", not mism, len(mism))
+    tS = M.summarise(th)
+    tshare = M.em(tS)[0]
+    tsh = np.zeros(10)
+    for r in range(10):
+        tsh[r] = tshare[r]
+    check("GOLDEN the pack's shares equal the clean truth's model in every region",
+          float(np.abs(np.sort(tsh) - np.sort(c["share"])).max()) < 1e-9 and four(tshare) == GOLD,
+          float(np.abs(np.sort(tsh) - np.sort(c["share"])).max()))
+    check("GOLDEN the four are Pierce, Spokane, King and Thurston-Mason", names(GOLD) == tuple(sorted(GOLD_NAMES)),
+          fig["call"]["regions"])
+    check("GOLDEN the first region below is Greater Columbia", fig["call"]["first_below"] == BELOW,
+          fig["call"]["first_below"])
+    srt = np.sort(c["share"])
+    check("LADDER golden: the fifth region sits 1.2 points or more above the fourth", srt[4] - srt[3] >= 0.012,
+          round(100 * (srt[4] - srt[3]), 2))
+    for i in graded:
+        check("LADDER golden: %s's share sits 0.15 point or more inside its whole-percent bin" % K.NAME[K.CODES[i]],
+              edge(c["share"][i]) >= 0.15, round(100 * c["share"][i], 3))
     # ---------------------------------------------------------------- R1 the raw material ships
-    keyed = sum(1 for rec in P["discharges"] if rec["key"])
-    check("R1 the person key ships on 99 per cent or more of the discharge records", keyed / len(P["discharges"]) >= .99,
-          round(keyed / len(P["discharges"]), 4))
-    redo_keys = set(df.key[df.redo == 1])
-    found = {k for rec in P["discharges"] if rec["key"] in redo_keys and rec["discharge"].year <= 2022
-             for k in [rec["key"]] if any(c in A.EARLIER for c, _ in rec["px"])}
-    check("R1 every patient with an earlier operation has it in a shipped file before 2023", found == redo_keys,
-          (len(found), len(redo_keys)))
+    calls_per = [len(c["S"][x]["calls"]) for x in cids]
+    check("R1 every sampled member's calls ship with their times, centre and outcome (every case called)",
+          min(calls_per) >= 1, min(calls_per))
+    check("R1 the decisive computation reads all 15,000 sampled members' histories, reached or not",
+          len(c["hist"]) == 15000 and int((c["SS"]["out"] == 0).sum()) > 2000, int((c["SS"]["out"] == 0).sum()))
     for f in files:
-        if f.endswith(".csv"):
-            cols = re.split(r"[,_ ]", open(os.path.join(target, f)).readline().strip().lower())
-            for wd in ("redo", "prior", "previous", "earlier", "history", "risk", "expected", "ratio", "reoperation"):
-                check("R1 no shipped column names the deciding quantity (%s, %s)" % (f, wd), wd not in cols)
-    # ---------------------------------------------------------------- R3 the analyst test on the clean truth
-    truth = M.prep(w["ix"])
-    tn = M.ratio(truth, M.INDEX)[0]
-    tg = M.ratio(truth, M.GOLDEN)[0]
-    check("R3a the analyst test: on the clean truth the model on the operation's own record files Netherfold, "
-          "Ferncastle and Farrowmere", trio(tn) == NAIVE, names(tn))
-    check("R3a Aldermoor is fifth or lower on the clean truth's index-record model",
-          list(tn.sort_values().index).index("A") >= 4, list(tn.sort_values().index).index("A") + 1)
-    check("R3b the decisive step alone (the earlier operation in the model) files the golden on the clean truth",
-          trio(tg) == GOLD, names(tg))
-    # ---------------------------------------------------------------- the ladder and the shortcuts
-    L = RT.ladder(P)
-    for k in ("raw", "index", "index_probit", "index_many", "index_comp", "index_min", "index_eb", "any_earlier",
-              "history_from_2023", "volume"):
-        check("SHORTCUT %s does not name the golden three" % k, trio(L[k]) != GOLD, names(L[k]))
-    for k in ("index", "index_probit", "index_many", "index_min", "any_earlier", "history_from_2023"):
-        check("LADDER %s names Netherfold, Ferncastle and Farrowmere" % k, trio(L[k]) == NAIVE, names(L[k]))
-    ri = L["index"].sort_values()
-    check("LADDER the default path: Aldermoor fifth, 0.05 or more above the third", list(ri.index).index("A") == 4 and
-          ri["A"] - ri.iloc[2] >= 0.05, round(ri["A"] - ri.iloc[2], 4))
-    d = RT.frame(P)
-    g2 = d.assign(cp=d.pdx.str.startswith("K86.1").astype(float),
-                  benign=(~d.pdx.str.startswith("C") & ~d.pdx.str.startswith("K86.1")).astype(float))
-    sr = M.ratio(g2, M.INDEX + ["cp", "benign"])[0]
-    check("SHORTCUT the diagnosis in groups on the operation's own record does not name the golden three",
-          trio(sr) != GOLD, names(sr))
-    for k in ("first_only", "history_from_2019"):
-        print("INFO  WITH THE INSIGHT %s: %s (Aldermoor %.3f)" % (k, names(L[k]), L[k]["A"]))
-        check("LADDER %s (the earlier operation found) names the golden three" % k, trio(L[k]) == GOLD, names(L[k]))
-    # ---------------------------------------------------------------- the golden's family and its bins
-    F = RT.family(d)
+        if f.endswith(".csv") or f.endswith(".txt"):
+            head = open(os.path.join(target, f)).readline().strip().lower()
+            for wd in ("window", "class", "weight", "propensity", "contact_rate", "posterior", "imputed"):
+                check("R1 no shipped column names the deciding quantity (%s, %s)" % (f, wd), wd not in head)
+    # ---------------------------------------------------------------- R3 on the clean truth
+    cases = w["cases"]
+    true_share = np.array([cases[cases[:, 1] == r, 4].mean() for r in range(10)])
+    check("R3 the sampled members' true shares name the golden four", four(true_share) == GOLD,
+          [round(100 * x, 1) for x in true_share])
+    known = tS["y"] >= 0
+    cells = np.zeros(10)
+    for r in range(10):
+        m = tS["reg"] == r
+        tot = 0.0
+        for a in range(3):
+            for s in range(2):
+                cell = m & (tS["age"] == a) & (tS["sex"] == s)
+                tot += cell.sum() * tS["y"][cell & known].mean()
+        cells[r] = tot / m.sum()
+    check("R3a the analyst test: age and sex adjustment cells on the clean truth (every field read correctly, every "
+          "filed rule applied) file Pierce, North Sound, King and Spokane", names(four(cells)) == tuple(sorted(NAIVE_NAMES)),
+          names(four(cells)))
+    check("R3b the decisive step alone (the callback model on the same truth) files the golden four", four(tshare) == GOLD)
+    # ---------------------------------------------------------------- the ladder's routes on the pack
+    R = RT.run(c)
+    for k, v in R.items():
+        if k == "callback model, one answer rate per class":
+            check("ROUTE %s names the golden four (recorded: the expert route without windows lands)" % k,
+                  four(v) == GOLD, names(four(v)))
+            continue
+        check("SHORTCUT %s does not name the golden four" % k, four(v) != GOLD, names(four(v)))
+    check("SHORTCUT the respondents' four is the default path's", names(four(R["respondents (interviews)"])) ==
+          tuple(sorted(NAIVE_NAMES)), names(four(R["respondents (interviews)"])))
+    # ---------------------------------------------------------------- the family
+    F = RT.family(c)
     for k, v in F.items():
-        check("FAMILY %s names the golden three and Farrowmere first below" % k,
-              trio(v) == GOLD and v.sort_values().index[3] == below, names(v))
-    bn = RT.bins(F)
-    for h in K.ELIGIBLE:
-        check("FAMILY %s: every member lands on the golden's %.1f, 0.005 or more inside the bin"
-              % (K.NAME[h], fig["ratio"][K.NAME[h]]),
-              r1(bn["lo"][h]) == r1(bn["hi"][h]) == fig["ratio"][K.NAME[h]] and bn["edge"][h] >= 0.005,
-              (round(bn["lo"][h], 4), round(bn["hi"][h], 4), bn["edge"][h]))
-    for k, v in RT.shortcuts(d).items():
-        print("INFO  OFF THE ESTIMAND %s: %s (Aldermoor %.3f)" % (k, names(v), v["A"]))
-    # ---------------------------------------------------------------- R2 each Layer 1 item, mishandled
-    for nm, sr in layer1_mishandled(P).items():
-        check("R2 neutral: %s keeps the call" % nm, trio(sr) == GOLD, names(sr))
-    # ---------------------------------------------------------------- the semantic fork table
-    sf_checks(P, fig, m, GOLD, NAIVE)
-    # ---------------------------------------------------------------- the asks
-    asks(P, fig, w)
+        bad = [K.NAME[K.CODES[i]] for i in graded if pct(v[i]) != pct(c["share"][i])]
+        check("FAMILY %s names the golden four and prints the four graded whole percents" % k,
+              four(v) == GOLD and not bad, bad)
+        other = [K.NAME[K.CODES[i]] for i in range(10) if pct(v[i]) != pct(c["share"][i])]
+        print("      (%s: ungraded regions whose whole percent differs: %s)" % (k, ", ".join(other) or "none"))
+    # ---------------------------------------------------------------- semantic forks
+    sf(target, c, fig)
+    # ---------------------------------------------------------------- Layer 1 neutral
+    layer1(target, c, GOLD)
+    # ---------------------------------------------------------------- asks
+    asks_checks(target, b, fig, res)
     # ---------------------------------------------------------------- separation
-    sep_ok, sep_detail = separation(target, m)
-    check("SEPARATION the call computes identically with the 2026 releases and the claims emptied", sep_ok, sep_detail)
-    idx_keys = {rec["key"] for rec in w["index"]}
-    check("SEPARATION no correction pair or re-operation is an operation of the main population",
-          not any(x["key"] in idx_keys and x["discharge"] <= K.WINDOW[1] for x in w["first_sent"].values()))
-    # ---------------------------------------------------------------- documents and realism
+    tmp = os.path.join(task, "_sep_check")
+    if os.path.exists(tmp):
+        shutil.rmtree(tmp)
+    shutil.copytree(target, tmp)
+    for k in ("roster", "changes", "cases", "regions", "cahps", "pilot"):
+        os.remove(os.path.join(tmp, K.FILES[k]))
+    c2 = AN.call(tmp)
+    shutil.rmtree(tmp)
+    check("SEPARATION the call is identical with the enrollment files, the extract, the regions, CAHPS and the pilot "
+          "memo removed", float(np.abs(c2["share"] - c["share"]).max()) == 0.0)
     documents(target)
-    realism(target, P, w)
     containers(task)
-    import cracker
-    cr = cracker.run(task, quiet=True)
-    check("CRACKER the battery finds nothing in the revised release or the claims",
-          cr["battery"]["revised exact duplicates (all but the record number)"] == 0 and
-          cr["battery"]["claims exact duplicates (all but the claim id)"] == 0 and
-          cr["battery"]["claims naming a claim not in the extract"] == 0 and cr["battery"]["claims NPIs unmatched"] == 0,
-          cr["battery"])
-    check("CRACKER keeps none of the 16 ask figures", cr["cracker_hits"] == 0, cr["cracker_hits"])
-    check("CRACKER the mirror keeps under 35 per cent of the ask figures", cr["mirror_hits"] < 0.35 * cr["total"],
-          cr["mirror_hits"])
-    check("CRACKER the pair ceiling is 40 or under", cr["pair"] <= 40.0, round(cr["pair"], 1))
-    print("checks: %d, failed: %d" % (COUNT[0], len(FAILS)))
+    realism(target, b, c)
+    print("\n%d checks, %d failed" % (COUNT[0], len(FAILS)))
     for f in FAILS:
-        print("  failed:", f)
+        print("  FAILED:", f)
     return 0 if not FAILS else 1
 
 
-def golden_on(P, ops=None, hist_filter=None):
-    """The golden's model on an altered reading of the pack."""
-    saved_ops, saved_hist = A.operations, A.history
-    try:
-        if ops is not None:
-            A.operations = lambda P_: ops
-        if hist_filter is not None:
-            def hist(P_):
-                h = {}
-                for rec in P_["discharges"]:
-                    if not rec["key"] or not hist_filter(rec):
-                        continue
-                    for c, dd in rec["px"]:
-                        if c in A.EARLIER:
-                            h.setdefault(rec["key"], []).append(dd or rec["admit"])
-                return h
-            A.history = hist
-        d = M.prep(A.frame(P))
-        return M.ratio(d, M.GOLDEN)[0]
-    finally:
-        A.operations, A.history = saved_ops, saved_hist
+def _variant(target, c, mutate):
+    """The call re-fitted after a change to the conformed histories."""
+    S = {k: dict(v) for k, v in c["S"].items()}
+    mutate(S)
+    hist = P.histories(S)
+    SS = M.summarise(hist)
+    return M.em(SS)[0]
 
 
-def layer1_mishandled(P):
-    """The golden method with one Layer 1 item mishandled at a time."""
-    out = {}
-    # the 2018 file read with the 2016-2017 layout: its procedure codes come out garbled, so nothing from 2018 links
-    out["the 2018 file's county column missed (2018 lost to the history)"] = golden_on(
-        P, hist_filter=lambda rec: rec["file"] != "2018")
-    out["the fixed-width files skipped altogether (history from 2019)"] = golden_on(
-        P, hist_filter=lambda rec: rec["file"] not in ("2016", "2017", "2018"))
-    # the 2019-2022 file's procedure dates set aside (the admission date in their place)
-    def no_dates(rec):
-        if rec["file"] == "2019-2022":
-            rec = dict(rec, px=[(c, None) for c, _ in rec["px"]])
-        return rec
-    Q = dict(P, discharges=[no_dates(r) for r in P["discharges"]])
-    out["the 2019-2022 procedure dates set aside for the admission date"] = golden_on(Q)
-    return out
+def sf(target, c, fig):
+    graded = list(c["order"][:4])
+    GOLD = four(c["share"])
+    import csv
+
+    def same(v):
+        return four(v) == GOLD and all(pct(v[i]) == pct(c["share"][i]) for i in graded)
+
+    # SF1: 80 hours or more against more than 80
+    rows = list(csv.DictReader(open(os.path.join(target, K.FILES["interviews"]), encoding="utf-8")))
+    at80 = {r["case_id"] for r in rows if r["status"] == "Complete" and r["total_hours_march"] == "80"}
+
+    def gt80(S):
+        for cid in at80:
+            if cid in S:
+                S[cid]["cls"] = 0
+    v = _variant(target, c, gt80)
+    check("SF1 'more than 80 hours' in place of 80 or more (%d members at exactly 80) keeps the call and the graded "
+          "percents" % len(at80), len(at80) > 0 and same(v), [pct(v[i]) for i in graded])
+    # SF2: the respondents' share is the default path (not a reading of the criteria)
+    check("SF2 the respondents' share (criteria 2.2 read as the respondents) names the default path's four",
+          names(four(RT.run(c)["respondents (interviews)"])) == tuple(sorted(NAIVE_NAMES)))
+
+    # SF3: a household member answering counted as reaching the member
+    import openpyxl
+    hh = set()
+    for r in csv.DictReader(open(os.path.join(target, K.FILES["dialer"]), encoding="utf-8")):
+        if r["disposition"] == "2320":
+            hh.add((r["case_id"], P._local(r["call_start"])))
+
+    def household_reached(S):
+        for cid, s in S.items():
+            new = []
+            for (when, ctr, win, res) in s["calls"]:
+                if res == 0 and (cid, when) in hh:
+                    res = 2                      # read as a contact that did not give an interview
+                new.append((when, ctr, win, res))
+            s["calls"] = new
+    v = _variant(target, c, household_reached)
+    check("SF3 a household member answering (2320) read as reaching the member keeps the four",
+          four(v) == GOLD, names(four(v)))
+    # SF4: the key question's answers ignored
+    SK = dict(c["SS"])
+    SK["y"] = np.where(c["SS"]["out"] == 1, c["SS"]["y"], -1)
+    v = M.em(SK)[0]
+    check("SF4 the key question's answers ignored (declines as nonrespondents) keeps the call and the graded percents",
+          same(v), [pct(v[i]) for i in graded])
+    # SF6: no call between the day and evening shifts, none outside the shifts
+    times = [cl[0] for s in c["S"].values() for cl in s["calls"]]
+    gap = [t for t in times if t.weekday() < 5 and dt.time(16, 30) < t.time() < dt.time(17, 30)]
+    out = [t for t in times if (t.weekday() == 5 and not dt.time(10) <= t.time() <= dt.time(14))
+           or (t.weekday() < 5 and not (dt.time(9) <= t.time() <= dt.time(20, 30))) or t.weekday() == 6]
+    check("SF6 no survey call falls between 4:30 and 5:30 p.m. or outside the filed shifts, so any split of the day "
+          "from the evening classes the calls alike", not gap and not out, (len(gap), len(out)))
+    # SF7: the dialer's clock read as UTC fails loudly
+    eve = 0
+    after_midnight = 0
+    for r in csv.DictReader(open(os.path.join(target, K.FILES["dialer"]), encoding="utf-8")):
+        if not r["case_id"].startswith("MW26-"):
+            continue
+        t = dt.datetime.fromisoformat(r["call_start"])
+        if t.weekday() < 5 and t.time() >= dt.time(17, 30):
+            eve += 1
+            u = t.astimezone(dt.timezone.utc)
+            after_midnight += u.time() < dt.time(4)
+    check("SF7 read as UTC, every weekday evening call lands between midnight and 4 a.m. (a loud misreading)",
+          eve > 0 and after_midnight == eve, (eve, after_midnight))
+    # SF8: no tie on the unrounded shares
+    s = np.sort(c["share"])
+    check("SF8 the ten shares have no tie unrounded (0.1 point apart or more)", float(np.diff(s).min()) >= 0.001,
+          round(100 * float(np.diff(s).min()), 3))
+    # SF9: the region on the October roster for the members found there
+    roster = {r["member_id"]: r["region"] for r in csv.DictReader(open(os.path.join(target, K.FILES["roster"]),
+                                                                        encoding="utf-8"))}
+    sample = {r["case_id"]: r["member_id"] for r in csv.DictReader(open(os.path.join(target, K.FILES["sample"]),
+                                                                        encoding="utf-8"))}
+
+    def october_region(S):
+        for cid, s in S.items():
+            m = sample[cid]
+            if m in roster:
+                s["region"] = roster[m]
+    v = _variant(target, c, october_region)
+    moved = sum(1 for cid, m in sample.items() if m in roster and roster[m] != c["S"][cid]["region"])
+    check("SF9 each member found on the October roster placed in its October region (%d members move) keeps the four "
+          "(closed by criteria 2.2, the region on 1 March 2026)" % moved, four(v) == GOLD,
+          "the four's percents under it: %s" % [pct(v[i]) for i in graded])
 
 
-def sf_checks(P, fig, m, GOLD, NAIVE):
-    ops = A.operations(P)
-    # SF1 the Appendix A code as the first procedure only
-    first = [r for r in ops if r["px"] and r["px"][0][0] in K.RESECTION]
-    sr = golden_on(P, ops=first)
-    check("SF1 the code as the first procedure only keeps the call", trio(sr) == GOLD, names(sr))
-    # SF2 the population by discharge date
-    sr = golden_on(P, ops=RT.by_discharge(P))
-    check("SF2 the population by discharge date keeps the call (the same operations)",
-          trio(sr) == GOLD and len(RT.by_discharge(P)) == len(ops), (names(sr), len(RT.by_discharge(P)), len(ops)))
-    # SF3 89 or 91 days
-    fr = A.frame(P)
-    d = M.prep(fr)
-    for lim in (89, 91):
-        dd = d.copy()
-        dd["dead"] = [float(P["deaths"].get(k) is not None and 0 <= (P["deaths"][k] - o).days <= lim)
-                      for k, o in zip(fr.key, fr.op)]
-        sr = M.ratio(dd, M.GOLDEN)[0]
-        check("SF3 deaths within %d days keep the call" % lim, trio(sr) == GOLD, names(sr))
-    # SF4 a death after a transfer: the death follows the person, so the operating hospital keeps it
-    tr = [r for r in ops if r["disp"] == "02"]
-    check("SF4 deaths are linked to the operation's record (transfers out counted at the operating hospital)",
-          all(r["hosp"] in K.ELIGIBLE for r in tr), len(tr))
-    # SF5 a model per hospital gives each hospital a ratio of 1
-    one = []
-    for h in K.ELIGIBLE:
-        sub = d[d.h == h]
-        r_ = M.ratio(sub.assign(h=h), M.INDEX)[0][h]
-        one.append(abs(r_ - 1) < 1e-6)
-    check("SF5 a model fitted per hospital gives every hospital a ratio of 1 (not a comparison)", all(one))
-    # SF6 the index admission's record only
-    sr = M.ratio(d, M.INDEX)[0]
-    check("SF6 the operation's own record names Netherfold, Ferncastle and Farrowmere; the golden the golden three "
-          "(the decisive step, not a reading)", trio(sr) == NAIVE and trio(m["ratio"]) == GOLD, names(sr))
-    import statsmodels.api as sm
-    X0 = sm.add_constant(d[M.INDEX].astype(float), has_constant="add")
-    X1 = sm.add_constant(d[M.GOLDEN].astype(float), has_constant="add")
-    fam = sm.families.Binomial()
-    dv0 = sm.GLM(d.dead.astype(float), X0, family=fam).fit().deviance
-    m1 = sm.GLM(d.dead.astype(float), X1, family=fam).fit()
-    check("SF6 the earlier operation lowers the deviance by 20 or more on one term and carries a coefficient near "
-          "1.2 (1.0 to 1.4)", dv0 - m1.deviance >= 20 and 1.0 <= m1.params["redo"] <= 1.4,
-          (round(dv0 - m1.deviance, 1), round(m1.params["redo"], 3)))
-    # SF7 lumped against separate terms
-    e = d.assign(any_earlier=((d.redo + d.chole + d.stent) > 0).astype(float))
-    lump = M.ratio(e, M.INDEX + ["any_earlier"])
-    sep = M.ratio(d, M.GOLDEN + ["chole", "stent"])
-    check("SF7 lumped with the stent and the gallbladder removal: Netherfold, Ferncastle and Farrowmere; separate "
-          "terms: the golden", trio(lump[0]) == NAIVE and trio(sep[0]) == GOLD, (names(lump[0]), names(sep[0])))
-    check("SF7 the stent's own term is near zero (|z| under 1) and the lumped flag fits worse than separate terms",
-          abs(sep[1].params["stent"] / sep[1].bse["stent"]) < 1 and lump[1].deviance - sep[1].deviance >= 5,
-          (round(sep[1].params["stent"], 3), round(lump[1].deviance - sep[1].deviance, 1)))
-    # SF8 the rounded tie
-    check("SF8 Aldermoor and Farrowmere share 0.9 rounded; unrounded Aldermoor is lower by 0.05 or more",
-          fig["ratio"][K.NAME["A"]] == fig["ratio"][K.NAME["C"]] == 0.9 and
-          m["ratio"]["C"] - m["ratio"]["A"] >= 0.05, round(m["ratio"]["C"] - m["ratio"]["A"], 4))
-    # SF9 adults
-    check("SF9 every patient in the population is 18 or over at admission (25 or over)",
-          min(r["age"] for r in ops) >= 25, min(r["age"] for r in ops))
-    # SF10 Maplewick
-    mw = [r for r in P["discharges"] if r["hosp"] == "G2" and A._res_date(r) and A._res_date(r).year >= 2023]
-    check("SF10 Maplewick performed no resection from 2023", len(mw) == 0, len(mw))
-    # SF11 a patient operated twice
-    keys = [r["key"] for r in ops]
-    check("SF11 no patient has two operations in the window", len(keys) == len(set(keys)))
+def layer1(target, c, GOLD):
+    import csv
+    sample = {r["case_id"] for r in csv.DictReader(open(os.path.join(target, K.FILES["sample"]), encoding="utf-8"))}
+    pilot = {r["case_id"] for r in csv.DictReader(open(os.path.join(target, K.FILES["dialer"]), encoding="utf-8"))
+             if not r["case_id"].startswith("MW26-")}
+    check("R2 the pilot's and the test calls' cases are not in the sample (they cannot enter a sampled member's "
+          "history)", not (pilot & sample) and len(pilot) > 0, len(pilot))
+    tests = {r["case_id"] for r in csv.DictReader(open(os.path.join(target, K.FILES["interviews"]), encoding="utf-8"))
+             if r["case_id"].startswith("TEST")}
+    check("R2 the test interviews are not sampled cases", tests and not (tests & sample), len(tests))
+    # the member services centre's other outreach counted as failed survey calls
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, K.FILES["crm"]), read_only=True)
+    rows = list(wb["Activity"].iter_rows(values_only=True))
+    other = {}
+    for row in rows[1:]:
+        if row[3] not in ("MWIS outbound call", "MWIS case transfer"):
+            other.setdefault(row[0], []).append(row)
+    by_member = {s["member"]: cid for cid, s in []}
+    import pack as PK
+    S0 = PK.survey(target)
+    mem = {}
+    for r in csv.DictReader(open(os.path.join(target, K.FILES["sample"]), encoding="utf-8")):
+        mem[r["member_id"]] = r["case_id"]
 
-
-def asks(P, fig, w):
-    a = A.ask_a(P)
-    b = A.ask_b(P)
-    # Ask A: the clean truth from the world: distinct H1 resection stays at each hospital, recoded ones out
-    truth = {h: 0 for h in K.ELIGIBLE}
-    for rec in w["all"]:
-        if rec["hosp"] in truth and K.H1_2026[0] <= rec["discharge"] <= K.H1_2026[1] and \
-                any(c in K.RESECTION for c, _ in rec["px"]) and rec["rec_id"] not in w["recoded"]:
-            truth[rec["hosp"]] += 1
-    for h in K.ELIGIBLE:
-        check("ASK A the golden equals the clean truth (%s)" % K.NAME[h], a[h] == truth[h] == fig["ask_a"][K.NAME[h]],
-              (a[h], truth[h]))
-    import records as R
-    kind = w["first_kind"]
-    for h in K.ELIGIBLE:
-        ks = {kind[rid] for rid, x in w["first_sent"].items() if x["hosp"] == h and R._is_res(x)}
-        check("ASK A device at %s: a corrected discharge date and a rebooked case stand twice" % K.NAME[h],
-              {"dis", "adm_op"} <= ks, sorted(ks))
-        n_re = sum(1 for x in w["background"] if x["kind"] == "reop" and x["hosp"] == h)
-        check("ASK A over-cleaning half at %s: a completion pancreatectomy on the same patient" % K.NAME[h], n_re >= 1)
-    for nm, got in ask_a_stops(P).items():
-        hits = [h for h in K.ELIGIBLE if got[h] == fig["ask_a"][K.NAME[h]]]
-        check("ASK A stop misses every hospital: %s" % nm, not hits, " ".join("%s:%d" % (h, got[h]) for h in K.ELIGIBLE))
-    # Ask B: the clean truth from the world
-    for h in K.ELIGIBLE:
-        st = [s for s in w["plan_stays"] if s["hosp"] == h]
-        tv = dollars(sum(s["allowed"] for s in st) / len(st))
-        check("ASK B the golden equals the clean truth (%s)" % K.NAME[h],
-              dollars(b[h][1]) == tv == fig["ask_b"][K.NAME[h]] and b[h][0] == len(st), (dollars(b[h][1]), tv))
-        check("ASK B %s's average sits off its rounding edge (0.01 or more)" % K.NAME[h],
-              abs(b[h][1] - round(b[h][1]) ) <= 0.49, round(b[h][1], 3))
-    ch = w["plan_chains"]
-    for h in K.ELIGIBLE:
-        mine = [c for c in ch if c["stay"]["hosp"] == h]
-        check("ASK B device at %s: a Medicare Advantage claim with two later versions naming it" % K.NAME[h],
-              any(c["lob"] == "MA" and len(c["versions"]) >= 3 for c in mine))
-        check("ASK B device at %s: a claim on the plan's own platform replaced twice in a chain" % K.NAME[h],
-              any(c["lob"] != "MA" and len(c["versions"]) >= 3 for c in mine))
-        check("ASK B hazard at %s: a replacement correcting the discharge date" % K.NAME[h],
-              any(any(v["statement_through"] != c["root"]["statement_through"] for v in c["versions"]) for c in mine))
-    for nm, got in ask_b_stops(P).items():
-        hits = [h for h in K.ELIGIBLE if got[h] == fig["ask_b"][K.NAME[h]]]
-        check("ASK B stop misses every hospital: %s" % nm, not hits, " ".join("%s:%d" % (h, got[h]) for h in K.ELIGIBLE))
-    vals = list(fig["ask_a"].values())
-    check("ASK A no two hospitals share a figure", len(set(vals)) == len(vals))
-    check("ASK A every hospital's figure is 11 or more (the consortium's publication floor)", min(vals) >= 11, min(vals))
-
-
-def _h1(recs):
-    return [r for r in recs if r["hosp"] in K.ELIGIBLE and A._res_date(r) is not None and
-            K.H1_2026[0] <= r["discharge"] <= K.H1_2026[1]]
-
-
-def _count(rows, key=None):
-    c = {h: 0 for h in K.ELIGIBLE}
-    seen = set()
-    for r in rows:
-        if key is not None:
-            k = key(r)
-            if k in seen:
+    def outreach(S):
+        for m, rr in other.items():
+            cid = mem.get(m)
+            if cid is None:
                 continue
-            seen.add(k)
-        c[r["hosp"]] += 1
-    return c
+            reached = [cl for cl in S[cid]["calls"] if cl[3]]
+            cut = reached[0][0] if reached else None
+            extra = []
+            for row in rr:
+                d = row[1].date() if isinstance(row[1], dt.datetime) else row[1]
+                when = PK._ampm(d, row[2])
+                if cut is None or when < cut:
+                    extra.append((when, 0, 0, 0))
+            S[cid]["calls"] = sorted(S[cid]["calls"] + extra, key=lambda x: (x[0], x[1]))
+    v = _variant(target, c, outreach)
+    check("R2 the member services centre's other outreach counted as failed survey calls keeps the four",
+          four(v) == GOLD, names(four(v)))
+    # transferred cases' vendor calls in the transfer queue: read through the call's own time, as every other
+    xfer = sum(1 for r in csv.DictReader(open(os.path.join(target, K.FILES["dialer"]), encoding="utf-8"))
+               if r["queue"] == "MWIS-XFER")
+    check("R2 the transfer queue's calls carry their own times (the window comes from the time, not the queue)",
+          xfer > 0, xfer)
 
 
-def ask_a_stops(P):
-    rv = _h1(P["revised"])
-    q1 = dt.date(2026, 3, 31)
-    return {
-        "the revised release's records (the cracker)": _count(rv),
-        "a stay keyed on person, hospital, admission and discharge": _count(
-            rv, lambda r: (r["key"], r["hosp"], r["admit"], r["discharge"])),
-        "keyed on person, hospital and admission": _count(rv, lambda r: (r["key"], r["hosp"], r["admit"])),
-        "keyed on person, hospital and discharge": _count(rv, lambda r: (r["key"], r["hosp"], r["discharge"])),
-        "keyed on person, hospital and operation date": _count(rv, lambda r: (r["key"], r["hosp"], A._res_date(r))),
-        "one resection per person at a hospital": _count(rv, lambda r: (r["key"], r["hosp"])),
-        "the preliminary's first quarter with the revision's second": _count(
-            [r for r in _h1(P["prelim"]) if r["discharge"] <= q1] + [r for r in rv if r["discharge"] > q1]),
-        "both releases together": _count(_h1(P["prelim"]) + rv),
-    }
+def asks_checks(target, b, fig, res):
+    A, H = b["A"], b["H"]
+    ta, tb = AK.truth(A, H)
+    for code in K.CODES:
+        n = K.NAME[code]
+        check("ASK A the golden equals the clean truth (%s)" % n, fig["ask_a"][n] == ta[code], (fig["ask_a"][n], ta[code]))
+        check("ASK B the golden equals the clean truth (%s)" % n, fig["ask_b"][n] == tb[code], (fig["ask_b"][n], tb[code]))
+    cr = CR.run(target, fig)
+    for code in K.CODES:
+        n = K.NAME[code]
+        check("ASK A device: the careful path (roster begun by 1 October, leavers restored) misses %s" % n,
+              cr["cracker"]["a"][code] != fig["ask_a"][n], (cr["cracker"]["a"][code], fig["ask_a"][n]))
+        check("ASK B device: the extract's own count of children under 14 misses %s" % n,
+              cr["cracker"]["b"][code] != fig["ask_b"][n], (cr["cracker"]["b"][code], fig["ask_b"][n]))
+        check("ASK B device: the careful population with the children's own dates misses %s" % n,
+              cr["cracker"]["b_dates"][code] != fig["ask_b"][n], (cr["cracker"]["b_dates"][code], fig["ask_b"][n]))
+        check("ASK the mirror (the roster as it stands, the extract's count) misses %s's two figures" % n,
+              cr["mirror"]["a"][code] != fig["ask_a"][n] and cr["mirror"]["b"][code] != fig["ask_b"][n])
+    # the golden population with the extract's count: the column's own device
+    people = AN.covered_oct1(target)
+    colb = CR.column_parents(target, people)
+    for code in K.CODES:
+        n = K.NAME[code]
+        check("ASK B device: the golden population with the extract's count misses %s" % n, colb[code] != fig["ask_b"][n],
+              (colb[code], fig["ask_b"][n]))
+    churn = {}
+    for m in A["members"]:
+        if m["kind"] == "churn":
+            churn[AK.REGION_OF[m["county1"]]] = churn.get(AK.REGION_OF[m["county1"]], 0) + 1
+    check("ASK A device mass: every region holds members covered on 1 October who ended and enrolled again in October",
+          all(churn.get(cc, 0) >= 5 for cc in K.CODES), churn)
+    check("CRACKER keeps none of the 20 ask figures", cr["cracker_hits"] == 0, cr["cracker_hits"])
+    check("CRACKER the mirror keeps under 35 per cent of the ask figures", cr["mirror_hits"] < 0.35 * cr["total"],
+          cr["mirror_hits"])
+    check("CRACKER the pair ceiling is 40 or under", cr["pair"] <= 40.0, round(cr["pair"], 1))
+    vals = [fig["ask_a"][K.NAME[cc]] for cc in K.CODES]
+    check("ASK A no two regions share a figure", len(set(vals)) == len(vals))
+    vals = [fig["ask_b"][K.NAME[cc]] for cc in K.CODES]
+    check("ASK B no two regions share a figure", len(set(vals)) == len(vals))
 
 
-def ask_b_stops(P):
-    cl = P["claims"]
-
-    def avg(stays):
-        return {h: dollars(stays[stays.hosp == h].allowed.sum() / len(stays[stays.hosp == h])) for h in K.ELIGIBLE}
-    voided = set(cl.original_claim_id[cl.bill_type == "0118"])
-    named = set(cl.original_claim_id[cl.bill_type == "0117"])
-    out = {}
-    out["every claim summed"] = avg(cl.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index())
-    k = cl[(cl.bill_type != "0118") & ~cl.claim_id.isin(voided) & ~cl.claim_id.isin(named)]
-    out["voids out, every named claim dropped, a stay's claims summed (the cracker)"] = avg(
-        k.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index())
-    k2 = cl[(cl.bill_type != "0118") & ~cl.claim_id.isin(voided)].copy()
-    k2["fam"] = [o if o else c for c, o in zip(k2.claim_id, k2.original_claim_id)]
-    cur = k2.sort_values(["received_date", "claim_id"]).groupby("fam").tail(1)
-    out["the latest claim per family keyed on original_claim_id"] = avg(
-        cur.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index())
-    cur = k2.sort_values(["received_date", "claim_id"]).groupby(
-        ["hosp", "member_id", "admit_date", "statement_from", "statement_through"]).tail(1)
-    out["the latest version per stay and statement period"] = avg(
-        cur.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index())
-    cur = k2.sort_values(["received_date", "claim_id"]).groupby(["hosp", "member_id", "admit_date"]).tail(1)
-    out["the latest claim per stay"] = avg(cur)
-    k3 = cl[~cl.bill_type.isin(["0117", "0118"]) & ~cl.claim_id.isin(voided)]
-    out["every replacement dropped"] = avg(k3.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index())
-    return out
-
-
-def separation(target, m):
-    """The call recomputed with the 2026 releases and the plan's claims replaced by their header rows."""
-    tmp = tempfile.mkdtemp()
-    try:
-        for f in os.listdir(target):
-            shutil.copy(os.path.join(target, f), os.path.join(tmp, f))
-        for k in ("prelim", "revised", "claims"):
-            with open(os.path.join(target, K.FILES[k])) as fh:
-                head = fh.readline()
-            open(os.path.join(tmp, K.FILES[k]), "w").write(head)
-        Q = PK.load(tmp)
-        r = A.main_call(Q)
-        same = r["centres"] == m["centres"] and all(abs(r["ratio"][h] - m["ratio"][h]) < 1e-12 for h in K.ELIGIBLE)
-        return same, "+".join(r["centres"])
-    finally:
-        shutil.rmtree(tmp)
-
-
-LEAK = ["re-operation", "reoperation", "redo", "earlier operation", "previous operation", "prior operation",
-        "earlier admission", "previous admission", "prior admission", "surgical history", "history of",
-        "referred on", "previous surgery", "prior surgery", "risk model", "logistic"]
+LEAK = ["callback", "call-back", "nonresponse", "non-response", "not at random", "propensity", "weighting",
+        "weighted", "adjust", "bias", "hard to reach", "hard-to-reach", "evening calls", "level of effort", "paradata",
+        "latent", "imput", "people in work are", "members in work are", "less likely to answer", "harder to reach"]
 
 
 def documents(target):
     from pypdf import PdfReader
-    for k in ("criteria", "guide"):
+    for k in ("criteria", "methods", "guide", "pilot"):
         txt = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, K.FILES[k])).pages).lower()
         txt = re.sub(r"\s+", " ", txt)
         for wd in LEAK:
             check("DOC %s does not say '%s'" % (k, wd), wd not in txt)
-        check("DOC %s states no ratio or expected death count" % k, not re.search(r"\b[01]\.\d{1,3}\b ratio", txt))
+        check("DOC %s states no region's share in work (no per cent figure)" % k, not re.search(r"\d+(\.\d+)? ?%", txt)
+              and not re.search(r"\d+(\.\d+)? per ?cent", txt))
     txt = open(os.path.join(target, K.FILES["contents"])).read().lower()
     for wd in LEAK:
         check("DOC contents does not say '%s'" % wd, wd not in txt)
 
 
 def containers(task):
-    """H1 and H16: no writer's name in any shipped container, and no stamp outside the fiction's dates."""
+    """H1 and H16: no writer's name in any shipped container, and no stamp outside the fiction's band."""
     import importlib.util
     path = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".claude", "skills", "reduce-house-fixes", "scripts",
                         "scrub_producer_metadata.py")
     spec = importlib.util.spec_from_file_location("scrub_producer_metadata", path)
     sm = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sm)
-    for folder, floor, ceiling in (("target", "2023-01-01", K.ASSEMBLED.date().isoformat()),
-                                   ("golden", "2026-10-09", "2026-10-31")):
+    for folder, floor, ceiling in (("target", "2024-01-01", K.ASSEMBLED.date().isoformat()),
+                                   ("golden", "2026-10-20", "2026-10-31")):
         d = os.path.join(task, folder)
         if not os.path.isdir(d):
             continue
@@ -463,44 +403,63 @@ def containers(task):
                   r is None or not (r[0] or r[1]), r)
 
 
-def realism(target, P, w):
-    # dates: no discharge after the release's half-year, no claim received after the extract
-    last = max(r["discharge"] for r in P["discharges"])
-    check("REALISM the discharge files end by 31 December 2025", last <= dt.date(2025, 12, 31), last)
-    check("REALISM the revised release ends by 30 June 2026", max(r["discharge"] for r in P["revised"]) <= K.H1_2026[1])
-    check("REALISM the preliminary release ends by 31 March 2026",
-          max(r["discharge"] for r in P["prelim"]) <= dt.date(2026, 3, 31))
-    check("REALISM no claim received after 30 September 2026",
-          P["claims"].received_date.max() <= K.PLAN_CLAIMS_THROUGH.isoformat(), P["claims"].received_date.max())
-    check("REALISM no death after the linkage run", max(P["deaths"].values()) <= K.DEATHS_LINKED)
-    # no stay discharged before it was admitted, no procedure outside its stay
-    badd = sum(1 for r in P["discharges"] if r["discharge"] < r["admit"])
-    check("REALISM every stay is discharged on or after its admission", badd == 0, badd)
-    out_of = sum(1 for r in P["discharges"] if r["file"] not in ("2016", "2017", "2018")
-                 for c, dd in r["px"] if dd and not (r["admit"] <= dd <= r["discharge"]))
-    check("REALISM every dated procedure falls inside its stay", out_of == 0, out_of)
-    # no copied block: no person key on two records with the same admission, discharge and hospital in the history
-    seen, dup = set(), 0
-    for r in P["discharges"]:
-        if not r["key"]:
-            continue
-        k = (r["key"], r["hosp"], r["admit"], r["discharge"])
-        dup += k in seen
-        seen.add(k)
-    check("R3c no stay stands twice in the 2016 to 2025 files (nothing copied)", dup == 0, dup)
-    # containers
-    for f in os.listdir(target):
-        bts = open(os.path.join(target, f), "rb").read()
-        check("REALISM no writer's name in %s" % f, b"ReportLab" not in bts and b"openpyxl" not in bts.lower()
-              and b"matplotlib" not in bts.lower())
+def realism(target, b, c):
+    import csv
+    w = b["w"]
+    S = c["S"]
+    times = [cl for s in S.values() for cl in s["calls"]]
+    first, last = min(t[0] for t in times), max(t[0] for t in times)
+    check("REALISM every survey call falls between the first release (13 April) and field close (29 May)",
+          first.date() >= K.WAVES[0] and last.date() <= K.FIELD_CLOSE, (first, last))
+    check("REALISM no call on Memorial Day or a Sunday", not any(t[0].date() in K.HOLIDAYS or t[0].weekday() == 6
+                                                                   for t in times))
+    check("REALISM the member services centre calls only on weekdays by day",
+          all(t[0].weekday() < 5 and t[2] == 0 for t in times if t[1] == 0))
+    rel = {}
+    for cid, s in S.items():
+        rel.setdefault(s["release"], []).append(min(cl[0] for cl in s["calls"]).date())
+    check("REALISM no case is called before its release", all(min(v) >= K.WAVES[int(k[1]) - 1] for k, v in rel.items()),
+          {k: str(min(v)) for k, v in rel.items()})
+    reached_twice = sum(1 for s in S.values() if sum(1 for cl in s["calls"] if cl[3]) > 1)
+    check("REALISM no member is called again after the call that reached them",
+          all(not any(cl[3] for cl in s["calls"][:-1]) for s in S.values()), reached_twice)
+    plan = {}
+    for s in S.values():
+        k = (s["first"], s["release"] in ("R3", "R4"))
+        plan[k] = max(plan.get(k, 0), len(s["calls"]))
+    check("REALISM no case exceeds the methods report's calls (6 or 4 by the centre plus up to 4 by the vendor; 8 or 6 "
+          "by the vendor)", plan.get(("Trevanna MSC", False), 0) <= 10 and plan.get(("Trevanna MSC", True), 0) <= 8 and
+          plan.get(("Kestrelby", False), 0) <= 8 and plan.get(("Kestrelby", True), 0) <= 6, plan)
+    ages = [s["age"] for s in S.values()]
+    check("REALISM every sampled member is 19 to 64 on 1 March 2026", min(ages) >= 19 and max(ages) <= 64)
+    log = list(csv.DictReader(open(os.path.join(target, K.FILES["changes"]), encoding="utf-8"), delimiter="|"))
+    at = [r["logged_at"][:10] for r in log]
+    check("REALISM the change log runs 1 to 19 October 2026", min(at) >= "2026-10-01" and max(at) <= "2026-10-19")
+    hh = list(csv.DictReader(open(os.path.join(target, K.FILES["cases"]), encoding="utf-8")))
+    check("REALISM no person joins a case after the extract (15 October)", max(r["member_begin"] for r in hh) <= "2026-10-15")
+    ro = list(csv.DictReader(open(os.path.join(target, K.FILES["roster"]), encoding="utf-8")))
+    check("REALISM no roster enrollment begins after the export (19 October)",
+          max(r["enrollment_begin"] for r in ro) <= "2026-10-19")
+    check("REALISM one roster row per member", len({r["member_id"] for r in ro}) == len(ro))
+    sample = list(csv.DictReader(open(os.path.join(target, K.FILES["sample"]), encoding="utf-8")))
+    on = {r["member_id"] for r in ro}
+    found = sum(1 for r in sample if r["member_id"] in on)
+    check("REALISM most sampled members are on the October roster (80 to 92 per cent)", 0.80 <= found / 15000 <= 0.92,
+          found)
     # H21: invented names away from real places
     places = [x.strip().lower() for x in open(os.path.join(HERE, "h21_reference_places.txt")) if x.strip()]
-    invented = [n.split()[0] for n in K.NAME.values()] + ["Corrisbrook"]
-    for nm in invented:
+    for nm in ("Trevanna", "Kestrelby"):
         n = nm.lower()
         near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
         check("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
-    check("REALISM the personas are the ones drawn", set(K.PEOPLE.values()) == {"Katrina Newman", "Luis Thomas"})
+    check("REALISM the personas are the ones drawn", {K.PEOPLE["requester"], K.PEOPLE["vendor"]} ==
+          {"Robin Fields", "Dillon Evans"})
+    for f in os.listdir(target):
+        bb = open(os.path.join(target, f), "rb").read()
+        check("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower()
+              and b"matplotlib" not in bb.lower())
+        if f.endswith((".csv", ".txt")):
+            check("REALISM no em dash in %s" % f, "—".encode() not in bb)
 
 
 def edit(a, b):

@@ -1,5 +1,5 @@
-"""The pack's documents: the plan's programme criteria for its 2027 Pancreatic Surgery Centres, the consortium's guide
-to its hepatobiliary and pancreatic research files, and the pack's contents."""
+"""The pack's documents: the plan's criteria for the 2027 Community Engagement Support track, the survey vendor's
+methods report, the vendor's pilot memo, the plan's analytics data guide, and the pack's contents."""
 from __future__ import annotations
 
 from reportlab import rl_config
@@ -23,8 +23,8 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
 INK, GREY, RULE = colors.HexColor("#1f2428"), colors.HexColor("#5d646a"), colors.HexColor("#b8bfc4")
-PLUM = colors.HexColor("#5b2a6e")
-LAKE = colors.HexColor("#1d4f73")
+TEAL = colors.HexColor("#14606b")
+SLATE = colors.HexColor("#3b4a6b")
 
 
 def styles(font, accent):
@@ -74,134 +74,181 @@ def _clause(S, num, text):
     return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S["clause"])
 
 
-CITY = {"A": "Madison", "B": "Milwaukee", "C": "Green Bay", "D": "La Crosse", "E": "Wausau", "F": "Eau Claire",
-        "G": "Appleton", "H": "Kenosha"}
-
-
-# ---------------------------------------------------------------------------------------------- the criteria
+# ---------------------------------------------------------------------------------------------- the track's criteria
 def write_criteria(path):
-    S = styles("Sans", PLUM)
-    doc = _doc(path, "%s: 2027 programme criteria" % K.PROGRAMME, K.PLAN)
-    hosp = [["Hospital", "City", "ULHDC hospital ID"]]
-    for c in K.ELIGIBLE:
-        hosp.append([K.NAME[c], CITY[c], K.NEW_NO[c]])
-    appx = [["ICD-10-PCS", "Description"]] + [[c, d] for c, d in K.RESECTION.items()]
-    s = [Paragraph("%s: 2027 programme criteria" % K.PROGRAMME, S["h1"]),
-         Paragraph("%s, Network Strategy. Version 2, 30 September 2026, for the Board of Directors' meeting of "
-                   "17 November 2026. Prepared by %s, Director of Network Strategy." % (K.PLAN, K.PEOPLE["requester"]),
+    S = styles("Sans", TEAL)
+    doc = _doc(path, "Community Engagement Support track 2027: criteria for the regions", K.PLAN)
+    s = [Paragraph("Community Engagement Support track 2027: criteria for the regions", S["h1"]),
+         Paragraph("%s, Community Health Programs. %s, %s. Approved by the Programs and Quality Committee of the Board "
+                   "on 16 September 2026; the Board adopts the four regions at its meeting of 10 December 2026."
+                   % (K.PLAN, K.PEOPLE["requester"], K.PEOPLE["requester_title"]), S["meta"]),
+         Paragraph("1. The track", S["h2"]),
+         Paragraph("From 1 January 2027 Washington's Apple Health coverage for adults in the expansion group asks each "
+                   "member aged 19 to 64 to show 80 hours a month of work, community service, a work program or school, "
+                   "unless the member is exempt. The plan's Community Engagement Support track places community "
+                   "engagement navigators in a region to help members find hours, report them and claim the exemptions "
+                   "they have. The 2027 budget funds navigator teams in four regions.", S["body"]),
+         Paragraph("2. Which regions", S["h2"]),
+         _clause(S, "2.1", "The track goes to the four of the plan's ten Apple Health regions where the smallest share "
+                           "of the plan's expansion members worked for pay 80 hours or more in March 2026."),
+         _clause(S, "2.2", "A region's share is for the plan's expansion members aged 19 to 64 enrolled in the region on "
+                           "1 March 2026, every one of them: the members the 2026 Member Work and Income Survey reached "
+                           "and the members it did not. It is estimated from the survey, which drew 1,500 of those "
+                           "members in each region."),
+         _clause(S, "2.3", "Worked for pay 80 hours or more in March 2026 means the member's hours of paid work in "
+                           "March 2026, all jobs together, self-employment and app-based work included, came to 80 or "
+                           "more."),
+         _clause(S, "2.4", "The shares are compared unrounded and reported to the nearest whole percent."),
+         Paragraph("3. Planning figures for each region", S["h2"]),
+         _clause(S, "3.1", "A member's region is the Apple Health region of the county the member lives in on the day "
+                           "a figure is taken."),
+         _clause(S, "3.2", "Members covered: the plan's expansion members who are aged 19 to 64 and whose coverage with "
+                           "the plan includes 1 October 2026."),
+         _clause(S, "3.3", "Parents and caretakers: the members covered (3.2) who on 1 October 2026 are the case head, "
+                           "the spouse or a caretaker relative in an Apple Health case with a child under 14 in it on "
+                           "that day. The state exempts parents and caretaker relatives of a child aged 13 or under."),
+         Paragraph("4. Timetable", S["h2"]),
+         Paragraph("Community Health Programs brings the regions and the planning figures to the Board on 10 December "
+                   "2026. Navigator teams start in January 2027 and the Board reviews the track in its first year.",
+                   S["body"])]
+    doc.build(s, onFirstPage=_frame(K.PLAN, "Community Engagement Support track 2027", "Sans"),
+              onLaterPages=_frame(K.PLAN, "Community Engagement Support track 2027", "Sans"))
+
+
+# ---------------------------------------------------------------------------------------------- the methods report
+def write_methods(path, fieldwork, frame_n):
+    S = styles("Serif", SLATE)
+    doc = _doc(path, "2026 Member Work and Income Survey: methods report", K.VENDOR)
+    t1 = [["Region", "Members on 1 March 2026", "Sampled"]]
+    for code in K.CODES:
+        t1.append([K.NAME[code], "{:,}".format(frame_n[code]), "1,500"])
+    t1.append(["All regions", "{:,}".format(sum(frame_n.values())), "15,000"])
+    t2 = [["Region", "First called by the Member Services Center", "Passed to Kestrelby", "Completed", "Declined",
+           "Not reached"]]
+    for code in K.CODES:
+        f = fieldwork[code]
+        t2.append([K.NAME[code], "{:,}".format(f["msc"]), "{:,}".format(f["passed"]), "{:,}".format(f["complete"]),
+                   "{:,}".format(f["declined"]), "{:,}".format(f["noncontact"])])
+    codes = [["Code", "Outcome of a call"]] + [[str(c), d] for c, d in K.DISPO.items()]
+    s = [Paragraph("2026 Member Work and Income Survey: methods report", S["h1"]),
+         Paragraph("%s for %s. %s, %s. 30 June 2026." % (K.VENDOR, K.PLAN, K.PEOPLE["vendor"], K.PEOPLE["vendor_title"]),
                    S["meta"]),
-         Paragraph("1. The programme", S["h2"]),
-         Paragraph("From 1 January 2027, a member who has a pancreatic resection at one of the cooperative's "
-                   "Pancreatic Surgery Centres pays no deductible, copayment or coinsurance for the stay, and the "
-                   "cooperative pays travel and lodging for the operation and the follow-up visits. The benefit applies "
-                   "in every line of business. The board names three centres for 2027 and reviews the choice each "
-                   "year.", S["body"]),
-         Paragraph("2. Eligible hospitals", S["h2"]),
-         Paragraph("A hospital is eligible if it performed 20 or more pancreatic resections in each of 2023, 2024 and "
-                   "2025 by the %s's research files. Eight Wisconsin hospitals are eligible:" % K.CONSORTIUM,
+         Paragraph("1. Population and sample", S["h2"]),
+         Paragraph("The survey covers the plan's members in the Apple Health expansion group aged 19 to 64 and enrolled "
+                   "on 1 March 2026. Kestrelby drew a simple random sample of 1,500 members in each of the ten Apple "
+                   "Health regions from the plan's enrollment file of that day, the region being the region of the "
+                   "member's county on the file. Each region's sample was split at random into four releases of 13, 20 "
+                   "and 27 April and 4 May 2026.", S["body"]),
+         _table(S, t1, [2.0, 2.0, 1.0], right=(1, 2)),
+         Paragraph("2. Questionnaire", S["h2"]),
+         Paragraph("The interview asks for each job the member held in March 2026, up to three, what kind of work it "
+                   "was and how many hours in total the member worked at it in March. The total of the hours is "
+                   "computed by the interviewing system. It also asks whether a member with fewer than 80 hours was "
+                   "looking for work, whether a health condition limits the work the member can do, and whether the "
+                   "member would like help from the plan. The interview takes about nine minutes.", S["body"]),
+         Paragraph("3. Calls", S["h2"]),
+         Paragraph("Every call showed the plan's caller ID. A call either reached the member, who then did the "
+                   "interview or declined on that call, or did not. The plan's Member Services Center in Tacoma made "
+                   "the first calls to the cases the sample management system assigned to it, on weekdays from 9:00 "
+                   "a.m. to 4:30 p.m., up to six calls (four for cases in the third and fourth releases). Cases it had "
+                   "not reached by then were passed to Kestrelby as Kestrelby's capacity allowed, for up to four "
+                   "further calls. Kestrelby called its own cases on weekdays from 9:00 a.m. to 4:30 p.m. and from "
+                   "5:30 to 8:30 p.m., and on Saturdays from 10:00 a.m. to 2:00 p.m., up to eight calls (six for the "
+                   "third and fourth releases). Calls stopped on 29 May 2026; no calls were made on Memorial Day. A "
+                   "member who declined the interview was asked one question before the call ended: whether the "
+                   "member's paid work in March 2026, all jobs together, came to 80 hours or more.",
                    S["body"]),
-         _table(S, hosp, [3.1, 1.4, 1.5]),
-         Spacer(1, 4),
-         Paragraph("3. How the board compares the eligible hospitals", S["h2"]),
-         _clause(S, "3.1", "The board compares the eight hospitals on how often patients died after a pancreatic "
-                           "resection there, against how often those same patients would have died given their "
-                           "condition before surgery."),
-         _clause(S, K.CLAUSE["population"], "Operations: every pancreatic resection (Appendix A) performed at the hospital on a "
-                           "patient aged 18 or over, with an operation date from 1 January 2023 to 31 December 2025, "
-                           "in the consortium's hepatobiliary and pancreatic research files. Each operation counts, so "
-                           "a patient operated on twice in the period counts twice."),
-         _clause(S, K.CLAUSE["deaths"], "Deaths: a death from any cause within 90 days of the operation date, in or out of "
-                           "hospital, from the consortium's death linkage. A death after a transfer counts for the "
-                           "hospital that operated."),
-         _clause(S, K.CLAUSE["expected"], "Expected deaths: the deaths the same patients' condition before surgery would have "
-                           "produced at the eight hospitals together, over the same three years. A hospital's ratio is "
-                           "its deaths divided by its expected deaths."),
-         _clause(S, K.CLAUSE["comparison"], "The three hospitals with the lowest ratios become the 2027 centres. The board compares "
-                           "the ratios unrounded and reports them to one decimal."),
-         Paragraph("4. Contracting", S["h2"]),
-         Paragraph("Network Strategy contracts the three centres for 2027 at case rates. For each eligible hospital the "
-                   "board also sees its record of pancreatic resections since 2016, its resections in 2026 so far and what "
-                   "the cooperative allowed for its own members' resection stays there.", S["body"]),
-         Paragraph("Appendix A. Pancreatic resection", S["h2"]),
-         Paragraph("A discharge record carrying any of these procedure codes is a pancreatic resection; the operation "
-                   "date is the date recorded for that code.", S["body"]),
-         _table(S, appx, [1.3, 4.6])]
-    doc.build(s, onFirstPage=_frame(K.PLAN, "Pancreatic Surgery Centres 2027, v2", "Sans"),
-              onLaterPages=_frame(K.PLAN, "Pancreatic Surgery Centres 2027, v2", "Sans"))
+         _table(S, t2, [1.35, 1.45, 0.95, 0.8, 0.7, 0.75], right=(1, 2, 3, 4, 5)),
+         Paragraph("4. Call outcomes", S["h2"]),
+         Paragraph("Kestrelby's dialer records every call with one of these outcomes; the Member Services Center's "
+                   "CRM records the same outcomes in words.", S["body"]),
+         _table(S, codes, [0.7, 4.0]),
+         Paragraph("5. Files", S["h2"]),
+         Paragraph("The sample file lists every sampled member with the case number, the plan's member ID, region, "
+                   "age on 1 March 2026, sex, preferred language, release and the center assigned the first calls. "
+                   "The dialer export lists every call Kestrelby made, including its February pilot and its test "
+                   "calls of 10 April; times carry their offset from UTC. The interview file has one row for each "
+                   "completed interview, including six test interviews, and one for each member who declined and "
+                   "answered the key question (status Declined - key question). The Member Services Center's calls "
+                   "are in "
+                   "the plan's CRM export. Kestrelby delivered the data without weights: each region's sample is an "
+                   "equal-probability sample of the region's members.", S["body"])]
+    doc.build(s, onFirstPage=_frame(K.VENDOR, "MWIS 2026 methods report", "Serif"),
+              onLaterPages=_frame(K.VENDOR, "MWIS 2026 methods report", "Serif"))
 
 
-# ---------------------------------------------------------------------------------------------- the file guide
-FW_A = [("1-10", "Record number"), ("11-14", "Hospital number"), ("15-30", "Person key"), ("31", "Sex"),
-        ("32-34", "Age (years)"), ("35-42", "Admission date (YYYYMMDD)"), ("43-50", "Discharge date (YYYYMMDD)"),
-        ("51", "Admission type"), ("52", "Admission source"), ("53-54", "Discharge status"), ("55", "Payer category"),
-        ("56-127", "Diagnoses 1 to 9: code (7, no decimal point) then present-on-admission indicator (1)"),
-        ("128-169", "Procedures 1 to 6 (7 each)"), ("170-177", "Date of procedure 1 (YYYYMMDD)")]
+# ---------------------------------------------------------------------------------------------- the pilot memo
+def write_pilot(path):
+    S = styles("Serif", SLATE)
+    doc = _doc(path, "MWIS pilot, February 2026", K.VENDOR)
+    t = [["Item", "Pilot wording", "Change for the main survey"],
+         ["Hours", "Hours worked in a usual week", "Hours worked in March, in total, for each job"],
+         ["Jobs", "Main job only", "Up to three jobs, with the kind of work for each"],
+         ["App-based work", "Not asked separately", "Counted as a job when paid"],
+         ["Help from the plan", "Yes or no", "Unchanged"]]
+    s = [Paragraph("Member Work and Income Survey: pilot memo", S["h1"]),
+         Paragraph("%s to %s, Community Health Programs. 27 February 2026." % (K.VENDOR, K.PLAN), S["meta"]),
+         Paragraph("Kestrelby piloted the questionnaire with 300 expansion members from 2 to 20 February 2026. The "
+                   "pilot tested the wording and the length of the interview, not the sample or the estimates, and its "
+                   "answers are not used in the survey's results.", S["body"]),
+         Paragraph("Members found a usual week hard to describe when their hours changed from week to week, and app-"
+                   "based drivers did not count their trips as a job. The main survey asks for the hours of each job "
+                   "in March in total and counts paid app-based work as a job. The interview ran 11 minutes on average "
+                   "in the pilot and about nine with the shorter wording.", S["body"]),
+         _table(S, t, [1.3, 2.1, 2.5])]
+    doc.build(s, onFirstPage=_frame(K.VENDOR, "MWIS pilot memo", "Serif"),
+              onLaterPages=_frame(K.VENDOR, "MWIS pilot memo", "Serif"))
 
 
+# ---------------------------------------------------------------------------------------------- the data guide
 def write_guide(path):
-    S = styles("Serif", LAKE)
-    doc = _doc(path, "Hepatobiliary and pancreatic research files: file guide", K.CONSORTIUM)
-    fw = [["Columns", "Field"]] + [[a, b] for a, b in FW_A]
-    codes = [["Field", "Values"],
-             ["Admission type", "1 emergency, 2 urgent, 3 elective, 9 unknown"],
-             ["Admission source", "1 non-health care point of origin, 2 clinic or physician referral, 4 transfer from a "
-                                  "hospital, 5 transfer from a skilled nursing facility, 7 emergency department"],
-             ["Discharge status", "01 home or self-care, 02 short-term general hospital, 03 skilled nursing facility, "
-                                  "06 home health care, 07 left against medical advice, 20 expired, 30 still a "
-                                  "patient, 50 hospice (home), 51 hospice (facility), 62 inpatient rehabilitation"],
-             ["Payer category", "1 Medicare, 2 Medicare Advantage, 3 Medicaid or BadgerCare, 5 commercial, 9 self-pay"],
-             ["Present on admission", "Y present at the time of the inpatient admission, N not present, U documentation "
-                                      "insufficient, W clinically undetermined, 1 or blank exempt from reporting"]]
-    s = [Paragraph("Hepatobiliary and pancreatic research files: file guide", S["h1"]),
-         Paragraph("%s, Data Services. 2026 edition, 22 September 2026. Contact: %s." % (K.CONSORTIUM, K.PEOPLE["analyst"]),
-                   S["meta"]),
-         Paragraph("1. What the files hold", S["h2"]),
-         Paragraph("One record for each inpatient discharge from a member hospital that carries at least one ICD-10-PCS "
-                   "procedure in body system F (hepatobiliary system and pancreas). Records are filed by discharge "
-                   "date: the 2016 file holds the discharges from 1 January to 31 December 2016, and so on. The "
-                   "diagnoses and procedures are as the hospital coded and submitted them.", S["body"]),
-         Paragraph("2. Files and layouts", S["h2"]),
-         _clause(S, "2016-2018", "One fixed-width text file a year, one record a line. The 2018 file inserts the "
-                                 "patient's county code (2 characters) after the payer category, so every later field "
-                                 "moves two columns to the right. The 2016 and 2017 layout:"),
-         _table(S, fw, [1.0, 4.9]),
+    S = styles("Sans", TEAL)
+    doc = _doc(path, "Data guide: 2027 Community Engagement Support figures", K.PLAN)
+    crm = [["Column", "Meaning"], ["Member ID", "The plan's member ID"], ["Activity Date, Activity Time", "When the activity "
+           "was logged, Pacific time"], ["Activity Type", "MWIS outbound call, MWIS case transfer, or the center's other "
+           "outreach (welcome calls, care coordination, pharmacy reminders)"], ["Result", "The outcome the agent recorded"]]
+    roster = [["Column", "Meaning"], ["member_id, p1_client_id", "The plan's member ID and the state's ProviderOne client "
+              "ID"], ["birth_date", "Date of birth (MM/DD/YYYY)"], ["county, region", "The member's county of residence "
+              "and its Apple Health region"], ["coverage_group", "N05, the Apple Health expansion adult group"],
+              ["enrollment_begin, scheduled_end", "The begin date of the member's enrollment with the plan and, where the "
+               "state has sent one, the last covered day"]]
+    chg = [["Change", "effective_date"], ["ADD", "First covered day"], ["TERM", "Last covered day"],
+           ["REINSTATE", "Coverage restored from this day"], ["ADDRESS", "The move; county_before and county_after"]]
+    hh = [["Column", "Meaning"], ["case_id, p1_client_id", "The Apple Health case and the person"],
+          ["case_role", "HOH case head, SPOUSE, CARETAKER_RELATIVE, OTHER_ADULT, CHILD"],
+          ["member_begin, member_end", "The person's days in the case under that role"],
+          ["children_under_14_in_case", "Children under 14 in the case"]]
+    s = [Paragraph("Data guide: 2027 Community Engagement Support figures", S["h1"]),
+         Paragraph("%s, Analytics and Reporting, for Community Health Programs. 20 October 2026." % K.PLAN, S["meta"]),
+         Paragraph("1. Survey files", S["h2"]),
+         Paragraph("%s, %s and %s are Kestrelby's, described in its methods report. %s is the plan's CRM export of "
+                   "every Member Services Center activity on the sampled members from 13 April to 29 May 2026."
+                   % (K.FILES["sample"], K.FILES["dialer"], K.FILES["interviews"], K.FILES["crm"]), S["body"]),
+         _table(S, crm, [1.7, 4.2]),
+         Paragraph("2. Enrollment files", S["h2"]),
+         Paragraph("%s is the plan's active expansion roster as exported on 19 October 2026, one row per member."
+                   % K.FILES["roster"], S["body"]),
+         _table(S, roster, [1.9, 4.0]),
          Spacer(1, 4),
-         _clause(S, "2019-2022", "One comma-separated file for the four years. Twenty-five diagnosis slots, each with "
-                                 "its present-on-admission indicator, and twenty-five procedure slots, each with the date "
-                                 "the procedure was performed. Codes are written without the decimal point; dates as "
-                                 "MM/DD/YYYY."),
-         _clause(S, "2023-2025", "One comma-separated file for the three years, with the six-digit hospital IDs "
-                                 "introduced on 1 January 2023, renamed columns, codes written with the decimal point "
-                                 "and ISO dates."),
-         _clause(S, "2026", "A preliminary release of the first quarter's discharges (15 May 2026) and a revised "
-                            "release of the first and second quarters' (18 September 2026), which takes the place of the "
-                            "preliminary release, both in the 2023-2025 layout. Record numbers are assigned when a "
-                            "release is cut."),
-         Paragraph("3. Fields and codes", S["h2"]),
-         Paragraph("The person key is the consortium's encrypted linkage key, built from the name, date of birth and "
-                   "sex the hospital submits. It is the same on every discharge of the same person at any member "
-                   "hospital in any year. It is blank where a hospital did not submit the identifiers, which happened "
-                   "for about one record in a hundred before 2019. Age is in completed years at admission.", S["body"]),
-         _table(S, codes, [1.4, 4.5]),
+         Paragraph("%s is the enrollment system's change log from 1 to 19 October 2026, pipe-delimited, one line per "
+                   "change the system applied, with the time it was logged, both member IDs, the member's birth date "
+                   "(YYYYMMDD), the change and its effective date (YYYYMMDD), and the county before and after:"
+                   % K.FILES["changes"], S["body"]),
+         _table(S, chg, [1.3, 4.6]),
          Spacer(1, 4),
-         Paragraph("Before 2019 only the first procedure carries a date. Procedure classes for every procedure code "
-                   "that appears in the files are in ulhdc_procedure_classes.csv, and hospital numbers and IDs, with "
-                   "the changes to them, in ulhdc_hospital_directory.xlsx.", S["body"]),
-         Paragraph("4. Death linkage", S["h2"]),
-         Paragraph("Each year the consortium links every person key in the research files to the state death index. "
-                   "The 2026 run (31 August 2026) covers deaths in Wisconsin from 1 January 2016 to 31 August 2026; "
-                   "deaths outside Wisconsin are not captured. Where a death record gives the month but not the day, "
-                   "the day is set to the 15th and the record flagged.", S["body"]),
-         Paragraph("5. Using the files", S["h2"]),
-         Paragraph("Research files are released to member hospitals and to payers that hold a data use agreement with "
-                   "the consortium. Counts under 11 may not be published.", S["body"])]
-    doc.build(s, onFirstPage=_frame(K.CONSORTIUM, "Research file guide 2026", "Serif"),
-              onLaterPages=_frame(K.CONSORTIUM, "Research file guide 2026", "Serif"))
+         Paragraph("%s is the Health Care Authority's household composition extract of 15 October 2026 for the "
+                   "Apple Health cases that held a plan expansion member at any time from 1 September 2026, one row per "
+                   "person per role in a case." % K.FILES["cases"], S["body"]),
+         _table(S, hh, [1.9, 4.0]),
+         Paragraph("3. Regions", S["h2"]),
+         Paragraph("%s lists the ten Apple Health regions and their counties." % K.FILES["regions"], S["body"])]
+    doc.build(s, onFirstPage=_frame(K.PLAN, "Analytics and Reporting", "Sans"),
+              onLaterPages=_frame(K.PLAN, "Analytics and Reporting", "Sans"))
 
 
 def write_contents(path, items):
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write("Pancreatic Surgery Centres 2027: board pack evidence files\n")
-        f.write("Corrisbrook Health Cooperative, Network Strategy, assembled 9 October 2026\n\n")
+        f.write("Community Engagement Support track 2027: board pack evidence files\n")
+        f.write("%s, Community Health Programs, assembled 20 October 2026\n\n" % K.PLAN)
         for name, desc in items:
             f.write("%s\n    %s\n" % (name, desc))

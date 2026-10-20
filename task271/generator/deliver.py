@@ -1,6 +1,9 @@
-"""The goldens: the board's workbook (the eight hospitals' ratios and the three centres, the 2026 resections so far and
-the allowed amount per stay of the cooperative's own members) and the chart of the eight ratios, plus figures.json."""
+"""The goldens: the board's workbook (each region's estimated share of expansion members who worked 80 hours or more in
+March 2026, the four regions for the track, and the members covered and the parents and caretakers of a child under 14
+on 1 October 2026) and the chart of the ten shares, plus figures.json."""
+import decimal
 import json
+import os
 
 import matplotlib
 matplotlib.use("Agg")
@@ -11,39 +14,43 @@ from openpyxl.utils import get_column_letter          # noqa: E402
 
 import common as K                                    # noqa: E402
 
-PLUM = "5B2A6E"
+TEAL = "14606B"
 THIN = Side(style="thin", color="B8BFC4")
 
 
-def r1(x):
-    """Round half up to one decimal, on the unrounded ratio."""
-    import decimal
-    return float(decimal.Decimal(repr(float(x))).quantize(decimal.Decimal("0.1"), rounding=decimal.ROUND_HALF_UP))
+def pct(x):
+    """A share as a whole percent, half up, from the unrounded share."""
+    return int(decimal.Decimal(repr(float(x) * 100)).quantize(decimal.Decimal("1"), rounding=decimal.ROUND_HALF_UP))
 
 
-def dollars(x):
-    """Round half up to the whole dollar."""
-    import decimal
-    return int(decimal.Decimal(repr(float(x))).quantize(decimal.Decimal("1"), rounding=decimal.ROUND_HALF_UP))
-
-
-def figures(m, a, b):
-    order = list(m["ratio"].sort_values().index)
+def figures(c, a, b):
+    order = c["order"]
+    names = [K.NAME[K.CODES[i]] for i in order]
+    four = [K.NAME[K.CODES[i]] for i in order[:4]]
+    S = c["SS"]
+    out = S["out"]
+    reg = S["reg"]
+    known = S["y"] >= 0
+    p = c["p"][0]
     return {
-        "call": {"centres": [K.NAME[h] for h in m["centres"]], "first_below": K.NAME[order[3]]},
-        "ratio": {K.NAME[h]: r1(m["ratio"][h]) for h in K.ELIGIBLE},
-        "ratio_unrounded": {K.NAME[h]: round(float(m["ratio"][h]), 4) for h in K.ELIGIBLE},
-        "operations": {K.NAME[h]: int(m["operations"][h]) for h in K.ELIGIBLE},
-        "deaths": {K.NAME[h]: int(m["observed"][h]) for h in K.ELIGIBLE},
-        "expected": {K.NAME[h]: round(float(m["expected"][h]), 1) for h in K.ELIGIBLE},
-        "totals": {"operations": int(m["operations"].sum()), "deaths": int(m["observed"].sum())},
-        "earlier_share": {K.NAME[h]: round(100 * float(m["redo_share"][h]), 1) for h in K.ELIGIBLE},
-        "earlier_coefficient": round(float(m["model"].params["redo"]), 2),
-        "filed": {"follow_up_days": K.FOLLOW, "clauses": dict(K.CLAUSE)},
-        "rival": {"own_record_ratio": {K.NAME[h]: round(float(m["own_record"][h]), 2) for h in K.ELIGIBLE},
-                  "own_record_centres": [K.NAME[h] for h in m["own_record"].sort_values().index[:3]]},
-        "ask_a": {K.NAME[h]: int(a[h]) for h in K.ELIGIBLE},
-        "ask_b": {K.NAME[h]: dollars(b[h][1]) for h in K.ELIGIBLE},
+        "call": {"regions": four, "first_below": names[4], "order": names},
+        "share": {K.NAME[K.CODES[i]]: pct(c["share"][i]) for i in range(10)},
+        "share_unrounded": {K.NAME[K.CODES[i]]: round(float(c["share"][i]), 6) for i in range(10)},
+        "sampled": {K.NAME[K.CODES[i]]: int((reg == i).sum()) for i in range(10)},
+        "outcomes": {"completed": int((out == 1).sum()), "declined": int((out == 2).sum()),
+                     "declined_key_answered": int(((out == 2) & known).sum()), "not_reached": int((out == 0).sum()),
+                     "known": int(known.sum()), "sampled": int(len(out))},
+        "filed": {"hours": 80, "ages": [19, 64], "per_region": 1500, "reached_codes": [1100, 2110],
+                  "clauses": ["2.1", "2.4", "3.1", "3.2", "3.3"]},
+        "known_share": {K.NAME[K.CODES[i]]: pct(S["y"][known & (reg == i)].mean()) for i in range(10)},
+        "overall": {"estimated": pct(float(c["share"].mean())), "interviewed": pct(S["y"][out == 1].mean())},
+        "answer_rate": {"worked_80": {"day": round(float(p[1, 0]), 3), "evening": round(float(p[1, 1]), 3),
+                                      "saturday": round(float(p[1, 2]), 3)},
+                        "not_80": {"day": round(float(p[0, 0]), 3), "evening": round(float(p[0, 1]), 3),
+                                   "saturday": round(float(p[0, 2]), 3)}},
+        "ask_a": {K.NAME[k]: int(v) for k, v in a.items()},
+        "ask_b": {K.NAME[k]: int(v) for k, v in b.items()},
+        "totals": {"ask_a": int(sum(a.values())), "ask_b": int(sum(b.values()))},
     }
 
 
@@ -51,96 +58,110 @@ def _head(ws, row, cols):
     for j, h in enumerate(cols, 1):
         cell = ws.cell(row, j, h)
         cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=PLUM)
+        cell.fill = PatternFill("solid", fgColor=TEAL)
         cell.alignment = Alignment(wrap_text=True, vertical="center")
 
 
 def workbook(path, fig):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Centres"
-    ws["A1"] = "Pancreatic Surgery Centres 2027: deaths within 90 days of resection against expected, 2023 to 2025"
+    ws.title = "Regions"
+    ws["A1"] = "Community Engagement Support track 2027: the four regions"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Centres for 2027: %s. Observed deaths over the deaths the same patients' condition before surgery "
-                "would have produced at the eight hospitals together." % ", ".join(fig["call"]["centres"]))
+    ws["A2"] = ("Track regions: %s. Each region's share is estimated for all 1,500 members the survey sampled there, "
+                "reached or not." % ", ".join(fig["call"]["regions"]))
     ws["A2"].font = Font(italic=True, size=9)
-    cols = ["Hospital", "Operations", "Deaths within 90 days", "Expected deaths", "Ratio (observed to expected)",
-            "2027 centre"]
+    cols = ["Apple Health region", "Members sampled", "Estimated share who worked 80 hours or more, March 2026",
+            "Rank (smallest share first)", "2027 track", "Members covered on 1 October 2026",
+            "Parents and caretakers of a child under 14"]
     _head(ws, 4, cols)
-    names = sorted(fig["ratio"], key=lambda n: fig["ratio_unrounded"][n])
-    for i, n in enumerate(names, 5):
-        vals = [n, fig["operations"][n], fig["deaths"][n], fig["expected"][n], fig["ratio"][n],
-                "Yes" if n in fig["call"]["centres"] else None]
+    ws.row_dimensions[4].height = 44
+    for i, n in enumerate(fig["call"]["order"], 5):
+        on = n in fig["call"]["regions"]
+        vals = [n, fig["sampled"][n], fig["share"][n] / 100, i - 4, "Yes" if on else None, fig["ask_a"][n],
+                fig["ask_b"][n]]
         for j, v in enumerate(vals, 1):
             cell = ws.cell(i, j, v)
             cell.border = Border(bottom=THIN)
-            if j == 4:
-                cell.number_format = "0.0"
-            if j == 5:
-                cell.number_format = "0.0"
-            if n in fig["call"]["centres"]:
+            if j == 3:
+                cell.number_format = "0%"
+            if j in (2, 6, 7):
+                cell.number_format = "#,##0"
+            if on:
                 cell.font = Font(bold=True)
-    t = 5 + len(names)
-    ws.cell(t, 1, "Eight hospitals").font = Font(bold=True)
-    ws.cell(t, 2, fig["totals"]["operations"]).font = Font(bold=True)
-    ws.cell(t, 3, fig["totals"]["deaths"]).font = Font(bold=True)
-    ws.cell(t + 2, 1, "Expected deaths come from a logistic model of death within 90 days fitted to the eight "
-                      "hospitals' 2023 to 2025 resections, on the patient's age, sex, diagnosis, operation, urgency, "
-                      "conditions present on admission and any earlier operation on the pancreas or bile ducts in the "
-                      "consortium's files since 2016. Ratios compared unrounded, shown to one decimal.").font = Font(size=9)
-    for j, wdt in enumerate([36, 12, 14, 14, 16, 12], 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-    ws.freeze_panes = "A5"
-    # the two asks
-    wc = wb.create_sheet("2026 so far")
-    wc["A1"] = "Pancreatic resections discharged January to June 2026"
-    wc["A1"].font = Font(bold=True, size=12)
-    wc["A2"] = "ULHDC revised release of 18 September 2026; a stay the release holds twice is counted once."
-    wc["A2"].font = Font(italic=True, size=9)
-    _head(wc, 4, ["Hospital", "Resections"])
-    for i, h in enumerate(K.ELIGIBLE, 5):
-        wc.cell(i, 1, K.NAME[h])
-        wc.cell(i, 2, fig["ask_a"][K.NAME[h]])
-    wc.column_dimensions["A"].width, wc.column_dimensions["B"].width = 36, 12
-    wm = wb.create_sheet("Members")
-    wm["A1"] = "Corrisbrook members' pancreatic resection stays discharged 2023 to 2025: allowed per stay"
-    wm["A1"].font = Font(bold=True, size=12)
-    wm["A2"] = ("Facility claims received through 30 September 2026, each claim at its latest version; a stay's interim "
-                "claims added together; a voided claim and its void left out.")
-    wm["A2"].font = Font(italic=True, size=9)
-    _head(wm, 4, ["Hospital", "Average allowed per stay ($)"])
-    for i, h in enumerate(K.ELIGIBLE, 5):
-        wm.cell(i, 1, K.NAME[h])
-        c = wm.cell(i, 2, fig["ask_b"][K.NAME[h]])
+    t = 5 + len(fig["call"]["order"])
+    ws.cell(t, 1, "Ten regions").font = Font(bold=True)
+    for j, key in ((6, "ask_a"), (7, "ask_b")):
+        c = ws.cell(t, j, fig["totals"][key])
+        c.font = Font(bold=True)
         c.number_format = "#,##0"
-    wm.column_dimensions["A"].width, wm.column_dimensions["B"].width = 36, 26
+    c = ws.cell(t, 2, sum(fig["sampled"].values()))
+    c.font = Font(bold=True)
+    c.number_format = "#,##0"
+    for j, wdt in enumerate([22, 11, 20, 13, 9, 15, 17], 1):
+        ws.column_dimensions[get_column_letter(j)].width = wdt
+    ws.freeze_panes = "B5"
+    wn = wb.create_sheet("Notes")
+    notes = [
+        "How the shares were estimated",
+        "The survey's 1,500 sampled members in each region, from the sample file, with every call to each of them from "
+        "the Kestrelby dialer export and the Member Services Center CRM export (survey calls only; pilot and test "
+        "calls left out) and the outcome of each from the interview file (completed interviews and the key question "
+        "answered by members who declined).",
+        "A member's class (worked for pay 80 hours or more in March 2026, or not) is known for the members interviewed "
+        "and for those who answered the key question. For the rest it is estimated from the member's own calls: a "
+        "latent class model in which each class has its own chance that a call reaches the member in each calling "
+        "window (weekday day, weekday evening, Saturday), the same in every region, and a member reached declines with "
+        "the same chance in either class. Fitted by maximum likelihood (EM) to every sampled member's calls.",
+        "Shares compared unrounded and shown to the whole percent (criteria 2.4).",
+        "",
+        "Planning figures",
+        "Members covered on 1 October 2026: expansion members aged 19 to 64 that day whose coverage included it, by the "
+        "region of the county lived in that day (criteria 3.1 and 3.2), rebuilt from the roster of 19 October and the "
+        "change log for 1 to 19 October.",
+        "Parents and caretakers: of those members, case heads, spouses and caretaker relatives in an Apple Health case "
+        "with a child under 14 in it on 1 October 2026 (criteria 3.3), from the household composition extract of 15 "
+        "October, a child's age and days in the case taken on 1 October.",
+    ]
+    for line in notes:
+        wn.append([line] if line else [None])
+    wn["A1"].font = Font(bold=True)
+    wn["A6"].font = Font(bold=True)
+    for row in wn.iter_rows(min_row=1, max_row=len(notes)):
+        row[0].alignment = Alignment(wrap_text=True, vertical="top")
+    wn.column_dimensions["A"].width = 120
     wb.save(path)
 
 
 def chart(path, fig):
-    names = sorted(fig["ratio"], key=lambda n: fig["ratio_unrounded"][n])
-    vals = [fig["ratio_unrounded"][n] for n in names]
-    cols = ["#5b2a6e" if n in fig["call"]["centres"] else "#9aa3aa" for n in names]
-    fig_, ax = plt.subplots(figsize=(8.2, 4.6), dpi=150)
+    names = fig["call"]["order"]
+    vals = [100 * fig["share_unrounded"][n] for n in names]
+    on = [n in fig["call"]["regions"] for n in names]
+    fig_, ax = plt.subplots(figsize=(8.2, 4.9), dpi=150)
     y = list(range(len(names)))[::-1]
-    ax.scatter(vals, y, s=70, c=cols, zorder=3)
-    for yy, v, n in zip(y, vals, names):
-        ax.text(v + .03, yy, "%.1f" % fig["ratio"][n], va="center", fontsize=9)
-    ax.axvline(1.0, color="#1f2428", lw=.8, ls="--")
-    ax.text(1.008, -.55, "as expected (1.0)", fontsize=8, color="#5d646a", va="center")
+    ax.barh(y, vals, height=0.62, color=["#14606b" if o else "#b4bcc2" for o in on], zorder=3)
+    for yy, n, v in zip(y, names, vals):
+        ax.text(v + 0.6, yy, "%d%%" % fig["share"][n], va="center", fontsize=9, color="#1f2428")
+    cut = (y[3] + y[4]) / 2
+    ax.axhline(cut, color="#1f2428", lw=0.8, ls="--", zorder=4)
+    ax.text(69.5, cut + 0.12, "four navigator teams", fontsize=8, color="#5d646a", ha="right", va="bottom")
     ax.set_yticks(y)
     ax.set_yticklabels(names, fontsize=9)
-    ax.set_xlabel("Deaths within 90 days, observed to expected (2023 to 2025 resections)")
-    fig_.text(0.01, 0.965, "%s, %s and %s have the three lowest ratios: the 2027 centres"
-              % tuple(n.split()[0] for n in fig["call"]["centres"]), fontsize=11, ha="left", va="top")
-    fig_.text(0.01, 0.01, "Source: ULHDC discharge files 2016 to 2025 and death linkage of 31 August 2026. Expected "
-              "deaths from one model of the eight hospitals' patients, earlier operations included.", fontsize=7,
-              color="#5d646a")
-    ax.set_xlim(0.4, max(vals) + .25)
-    ax.set_ylim(-.9, len(names) - .4)
+    ax.set_xlim(0, 70)
+    ax.set_xticks(range(0, 71, 10))
+    ax.set_xticklabels(["%d%%" % t for t in range(0, 71, 10)], fontsize=8)
+    ax.set_xlabel("Estimated share of expansion members aged 19 to 64 who worked 80 hours or more, March 2026",
+                  fontsize=8.5)
+    ax.grid(axis="x", color="#e3e7ea", lw=0.6, zorder=0)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig_.tight_layout(rect=(0, 0.03, 1, 0.93))
+    four = fig["call"]["regions"]
+    fig_.text(0.01, 0.975, "%s, %s, %s and %s have the smallest shares already working 80 hours a month"
+              % tuple(four), fontsize=10.5, ha="left", va="top")
+    fig_.text(0.01, 0.012, "Source: 2026 Member Work and Income Survey, 1,500 sampled members per region. Shares for every "
+              "sampled member, reached or not,\nestimated from a callback model of the Member Services Center's and "
+              "Kestrelby's call records.", fontsize=7, color="#5d646a", linespacing=1.35)
+    fig_.tight_layout(rect=(0, 0.055, 1, 0.94))
     fig_.savefig(path, metadata={"Software": None})
     plt.close(fig_)
 
@@ -153,21 +174,26 @@ def write_figures(path, fig):
 
 def write(target, golden):
     """Read the cut pack as the golden reads it, then write the workbook, the chart and figures.json."""
-    import os
     import warnings
     warnings.filterwarnings("ignore")
     import analysis as A
-    import pack
-    P = pack.load(target)
-    m = A.main_call(P)
-    import models as M
-    m["own_record"] = M.ratio(M.prep(m["df"]), M.INDEX)[0]
-    a, b = A.ask_a(P), A.ask_b(P)
-    fig = figures(m, a, b)
+    import routes as RT
+    c = A.call(target)
+    a, b = A.planning(target)
+    fig = figures(c, a, b)
+    R = RT.run(c)
+    gold = set(fig["call"]["regions"])
+
+    def off(route):
+        return [K.NAME[K.CODES[i]] for i in sorted(RT.four(R[route]), key=lambda i: R[route][i])
+                if K.NAME[K.CODES[i]] not in gold]
+    fig["rivals"] = {"respondents_not_golden": off("respondents (interviews)"),
+                     "cells_not_golden": off("age and sex cells"),
+                     "late_not_golden": off("reached at call 4 or later, carried")}
     if os.path.exists(golden):
         import shutil
         shutil.rmtree(golden)
     os.makedirs(golden)
-    workbook(os.path.join(golden, "pancreatic_centres_2027.xlsx"), fig)
-    chart(os.path.join(golden, "pancreatic_centres_2027.png"), fig)
-    return fig, dict(P=P, m=m, a=a, b=b)
+    workbook(os.path.join(golden, K.DELIVERABLES[0]), fig)
+    chart(os.path.join(golden, K.DELIVERABLES[1]), fig)
+    return fig, dict(c=c, a=a, b=b)

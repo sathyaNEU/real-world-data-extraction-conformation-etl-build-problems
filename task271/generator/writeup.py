@@ -8,86 +8,85 @@ sys.path.insert(0, HERE)
 import common as K   # noqa: E402
 
 
-def money(x):
-    return "{:,}".format(x)
+def n(x):
+    return format(x, ",")
 
 
 def write(task):
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    names = [K.NAME[h] for h in K.ELIGIBLE]
-    order = sorted(names, key=lambda n: f["ratio_unrounded"][n])
-    ald, bra, far = K.NAME["A"], K.NAME["B"], K.NAME["C"]
-    net, fer, elm = K.NAME["E"], K.NAME["G"], K.NAME["H"]
-    centres = f["call"]["centres"]
-    first = lambda n: n.split()[0]
-    others = [v for k, v in f["earlier_share"].items() if k not in (ald, bra)]
-    cl = f["filed"]["clauses"]
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    four = fig["call"]["regions"]
+    below = fig["call"]["first_below"]
+    sh = fig["share"]
+    ar = fig["answer_rate"]
+    oc = fig["outcomes"]
+    rv = fig["rivals"]
+    a, b = fig["ask_a"], fig["ask_b"]
     L = []
     L.append("## Tags\n")
-    L.append("**Domain:** Healthcare Delivery & Health Economics (provider quality and risk adjustment).  ")
+    L.append("**Domain:** Survey Research & Official Statistics (nonresponse, calibration and measurement error "
+             "adjustment).")
     L.append("**Analytical objective:** Descriptive & Distribution Analysis.\n")
     L.append("## 1. Final Recommendation\n")
-    L.append("**Name %s, %s and %s as the 2027 Pancreatic Surgery Centres.**" % tuple(centres))
-    L.append("Their ratios of observed to expected deaths within %d days are %.1f, %.1f and %.1f, the three lowest of the "
-             "eight, Aldermoor at %.3f unrounded. Not %s (%.1f, %.3f unrounded), which reaches the three only when the "
-             "expected deaths leave out the earlier operation on the pancreas or bile ducts that %.1f per cent of "
-             "Aldermoor's patients bring (Aldermoor %.2f on the operation's own record). Not %s (%.1f) or %s (%.1f), above "
-             "the line on either model.\n"
-             % (f["filed"]["follow_up_days"], f["ratio"][centres[0]], f["ratio"][centres[1]], f["ratio"][centres[2]],
-                f["ratio_unrounded"][ald], far, f["ratio"][far], f["ratio_unrounded"][far], f["earlier_share"][ald],
-                f["rival"]["own_record_ratio"][ald], elm, f["ratio"][elm], bra, f["ratio"][bra]))
-    L.append("## 2. Critical Components\n")
-    L.append("1. Operations: **%s** pancreatic resections at the eight hospitals in 2023 to 2025, **%d** deaths within %d "
-             "days." % (money(f["totals"]["operations"]), f["totals"]["deaths"], f["filed"]["follow_up_days"]))
-    L.append("2. An earlier operation on the pancreas or bile ducts, from the patients' earlier admissions since 2016: "
-             "**%.1f** per cent of Aldermoor's patients and **%.1f** per cent of Brackwell's, **%.1f** to **%.1f** per "
-             "cent elsewhere; coefficient **%.2f** in the pooled model."
-             % (f["earlier_share"][ald], f["earlier_share"][bra], min(others), max(others), f["earlier_coefficient"]))
-    L.append("3. Expected deaths: " + ", ".join("%s **%.1f**" % (first(n), f["expected"][n]) for n in order) + ".")
-    L.append("4. Ratios: " + ", ".join("%s **%.1f**" % (first(n), f["ratio"][n]) for n in order) + ".\n")
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Took every Appendix A resection on an adult at the eight hospitals with an operation date in 2023 to 2025 "
-             "from %s, hospital IDs through %s: %s operations." % (K.FILES["d2023_2025"], K.FILES["hospitals"],
-                                                                   money(f["totals"]["operations"])))
-    L.append("2. Linked each patient's death through the person key in %s: %d deaths within %d days of the operation "
-             "date (criteria %s)." % (K.FILES["deaths"], f["totals"]["deaths"], f["filed"]["follow_up_days"],
-                                      cl["deaths"]))
-    L.append("3. Read each patient's earlier admissions in every discharge file from 2016 through the person key and "
-             "flagged an earlier operation on the pancreas or bile ducts (the pancreas and bile duct operations in %s): "
-             "%.1f per cent of Aldermoor's patients." % (K.FILES["codes"], f["earlier_share"][ald]))
-    L.append("4. Fitted one logistic model of death within %d days on the eight hospitals' operations together, on age, "
-             "sex, a malignant diagnosis, the operation, the urgency, the seven conditions present on admission and the "
-             "earlier operation (%.2f), and summed each hospital's predicted risks: Aldermoor %.1f expected deaths."
-             % (f["filed"]["follow_up_days"], f["earlier_coefficient"], f["expected"][ald]))
-    L.append("5. Divided each hospital's deaths by its expected deaths (criteria %s) and compared the ratios unrounded "
-             "(%s): Aldermoor %.3f against Farrowmere %.3f." % (cl["expected"], cl["comparison"],
-                                                              f["ratio_unrounded"][ald], f["ratio_unrounded"][far]))
-    L.append("6. Counted each hospital's resections discharged January to June 2026 in %s, two records of one person at "
-             "one hospital whose stays overlap counted as one operation: Aldermoor %d." % (K.FILES["revised"],
-                                                                                         f["ask_a"][ald]))
-    L.append("7. Followed each claim in %s through original_claim_id to the claim first received, took each chain's "
-             "latest version, left out voided claims and their voids, added a stay's interim claims and averaged per "
-             "stay: Aldermoor %s dollars." % (K.FILES["claims"], money(f["ask_b"][ald])))
-    L.append("8. Named the three lowest ratios as the 2027 centres: %s, %s and %s.\n" % tuple(centres))
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### pancreatic_centres_2027.xlsx\n")
-    L.append("1. Ratio of observed to expected deaths within %d days, 2023 to 2025 resections, one decimal:"
-             % f["filed"]["follow_up_days"])
-    for n in order:
-        L.append("   - %s: %.1f" % (n, f["ratio"][n]))
-    L.append("2. The 2027 centres: %s, %s and %s." % tuple(centres))
-    L.append("3. Pancreatic resections discharged January to June 2026:")
-    for n in names:
-        L.append("   - %s: %d" % (n, f["ask_a"][n]))
-    L.append("4. Average amount allowed per stay for the cooperative's members' pancreatic resection stays discharged "
-             "2023 to 2025, whole dollars:")
-    for n in names:
-        L.append("   - %s: $%s" % (n, money(f["ask_b"][n])))
-    L.append("\n### pancreatic_centres_2027.png\n")
-    L.append("1. Dot chart of the eight ratios from lowest to highest, the three centres in plum and the other five in "
-             "grey, each dot labelled with its ratio, a dashed line at 1.0.")
-    with open(os.path.join(task, "submission.md"), "w", encoding="utf-8") as fh:
-        fh.write("\n".join(L) + "\n")
+    L.append("**Trevanna should put the 2027 Community Engagement Support navigator teams in %s, %s, %s and %s.**\n"
+             % tuple(four))
+    L.append("Estimated over every member the survey sampled, reached or not, these four have the smallest shares of "
+             "expansion members who worked 80 hours or more in March 2026 (%s, %s, %s and %s per cent). Not %s, which "
+             "the interviewed members' own answers put among the four: members in work rarely answer a weekday daytime "
+             "call, so the members never reached are mostly members in work, and %s's calls went out mostly by day "
+             "from the Member Services Center. Not those answers reweighted to each region's age and sex, or the "
+             "members reached late carried to the members never reached, which leave that gap in place and name %s "
+             "again."
+             % (sh[four[0]], sh[four[1]], sh[four[2]], sh[four[3]], " and ".join(rv["respondents_not_golden"]),
+                " and ".join(rv["respondents_not_golden"]), " and ".join(rv["cells_not_golden"])))
+    L.append("\n## 2. Critical Components\n")
+    L.append("1. **%s** of the 15,000 sampled members were never reached, and the survey's answer is known for **%s** "
+             "(%s completed interviews and %s members who declined but answered the key question)."
+             % (n(oc["not_reached"]), n(oc["completed"] + oc["declined_key_answered"]), n(oc["completed"]),
+                n(oc["declined_key_answered"])))
+    L.append("2. Across all 15,000 sampled members the estimated share who worked 80 hours or more is **%s per cent**, "
+             "against **%s per cent** of the members interviewed." % (fig["overall"]["estimated"],
+                                                                   fig["overall"]["interviewed"]))
+    L.append("\n## 3. Step-by-Step Solution\n")
+    L.append("1. Took the 15,000 sampled cases in %s and their survey calls: Kestrelby's from %s (the February pilot's "
+             "MW26P cases and the TEST calls left out) and the Member Services Center's MWIS outbound calls from %s, "
+             "joined on member ID, each call placed in its window by Pacific time (weekday day, weekday evening, "
+             "Saturday)." % (K.FILES["sample"], K.FILES["dialer"], K.FILES["crm"]))
+    L.append("2. Read each case's calls in time order to the first that reached the member (dialer 1100 or 2110, CRM "
+             "Spoke to member): %s completed, %s declined, %s never reached."
+             % (n(oc["completed"]), n(oc["declined"]), n(oc["not_reached"])))
+    L.append("3. Took the class from %s, total March hours of 80 or more for a completed interview and the key "
+             "question's answer for a member who declined (TEST rows left out), known for %s members."
+             % (K.FILES["interviews"], n(oc["completed"] + oc["declined_key_answered"])))
+    L.append("4. Fitted a latent class callback model by EM to every sampled member's calls: each class's chance that "
+             "a call in each window reaches the member, the same in every region; a reached member's chance of "
+             "declining the same in either class; each region's share of the class; members of unknown class "
+             "weighted by their posterior.")
+    L.append("5. Averaged each region's 1,500 members (known class or posterior) and ranked the regions unrounded "
+             "(criteria 2.1 to 2.4): %s." % ", ".join("%s %s" % (r, sh[r]) for r in fig["call"]["order"][:4]))
+    L.append("6. Members covered on 1 October 2026 (criteria 3.1 and 3.2): the roster's members whose enrollment began "
+             "by 1 October and had not ended, with members the change log terminated on or after 1 October restored "
+             "(including those enrolled again later in October) and each member at the county before any move logged "
+             "after 1 October, aged 19 to 64 on that day, by the county's region in %s." % K.FILES["regions"])
+    L.append("7. Parents and caretakers (criteria 3.3): of those members, case heads, spouses and caretaker relatives "
+             "in %s whose case had a child under 14 on 1 October 2026, from the children's birth dates and days in "
+             "the case, each person counted once." % K.FILES["cases"])
+    L.append("8. Named %s, %s, %s and %s for the track." % tuple(four))
+    L.append("\n## 4. Deliverable Answers\n")
+    L.append("### %s\n" % K.DELIVERABLES[0])
+    L.append("1. Track regions, with each one's estimated share of expansion members aged 19 to 64 who worked 80 hours "
+             "or more in March 2026, to the whole percent:")
+    for r in four:
+        L.append("   - %s: %s per cent" % (r, sh[r]))
+    L.append("2. Members covered on 1 October 2026, aged 19 to 64, by region:")
+    for c in K.CODES:
+        L.append("   - %s: %s" % (K.NAME[c], n(a[K.NAME[c]])))
+    L.append("3. Parents and caretaker relatives of a child under 14 on 1 October 2026, by region:")
+    for c in K.CODES:
+        L.append("   - %s: %s" % (K.NAME[c], n(b[K.NAME[c]])))
+    L.append("\n### %s\n" % K.DELIVERABLES[1])
+    L.append("1. Bar chart of the ten regions' estimated shares, smallest at the top, %s, %s, %s and %s highlighted "
+             "above a line marking the four navigator teams, each region's whole percent beside its bar." % tuple(four))
+    open(os.path.join(task, "submission.md"), "w").write("\n".join(L) + "\n")
 
 
 if __name__ == "__main__":

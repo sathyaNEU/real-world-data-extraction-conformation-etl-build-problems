@@ -1,16 +1,15 @@
-"""The cracker and the mirror on the cut pack, scored against figures.json.
+"""The cracker and the mirror on the cut pack's planning figures, scored against figures.json.
 
-The cracker lands the call and runs the hygiene battery (record numbers unique in each file, exact duplicates, every
-hospital ID and NPI found in the directory, every void and replacement naming a claim in the extract), executes every
-filed handling (the revised release in place of the preliminary, Appendix A's codes in any procedure slot, a voided
-claim and its void left out, a replaced claim giving way to the claim that names it, a stay's interim claims added
-together) and takes each ask from the file that carries it: Ask A counts the revised release's resections at each
-hospital, Ask B averages the members' stays' allowed amounts. The mirror stops off the call (the risk model on the
-operation's own record) and takes the same reads on the asks: the asks consume nothing the call's construction
-produces, so the two rows agree by construction (the separation is asserted in checks.py).
+The cracker lands the call and runs the hygiene battery on the enrollment files (one roster row per member, the change
+log's lines by member, the extract's rows by person), then rebuilds 1 October the careful way: the roster's members
+whose enrollment began by 1 October and has not ended, each at the county before any move logged after 1 October, aged
+on 1 October, plus the members the log terminated on or after 1 October who are no longer on the roster; for the
+parents and caretakers it reads the extract's count of children under 14 for each case head, spouse and caretaker
+relative. The mirror stops off the call and reads the roster as it stands (its county and region, the roster's members
+whose enrollment began by 1 October) and the extract's count.
 
 Weights are the skill's: 38 for the call and its components, 7 for instruction-following, 55 for the asks, a figure a
-hit at its stated rounding (Ask A whole operations, Ask B whole dollars)."""
+hit at its stated rounding."""
 import json
 import os
 import sys
@@ -19,76 +18,87 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import analysis as A    # noqa: E402
 import common as K      # noqa: E402
-import pack as PK       # noqa: E402
-from deliver import dollars   # noqa: E402
+import pack as P        # noqa: E402
+
+D1 = K.ROSTER_DATE
 
 
-def battery(P):
-    """The hygiene battery on the ask files: what it finds is a work order, and on this pack it finds nothing."""
+def careful_people(target):
+    roster, log, cases = P.enrollment(target)
+    ev = {}
+    for r in sorted(log, key=lambda r: (r["at"], r["member_id"])):
+        ev.setdefault(r["member_id"], []).append(r)
+    people = {}
+    on = {r["member_id"]: r for r in roster}
+    for mid, r in on.items():
+        if not (r["begin"] <= D1 and (r["end"] is None or r["end"] >= D1)):
+            continue
+        moves = sorted((e for e in ev.get(mid, []) if e["change"] == "ADDRESS" and e["eff"] > D1), key=lambda e: e["eff"])
+        people[mid] = dict(p1=r["p1_client_id"], born=r["born"], county=moves[0]["county_before"] if moves else r["county"])
+    for mid, evs in ev.items():
+        if mid in on:
+            continue
+        terms = [e for e in evs if e["change"] == "TERM" and e["eff"] >= D1]
+        if terms and not any(e["change"] == "ADD" for e in evs):
+            people[mid] = dict(p1=terms[0]["p1_client_id"], born=terms[0]["born"], county=terms[0]["county_before"])
+    return {m: v for m, v in people.items() if 19 <= A.age_on(v["born"], D1) <= 64}
+
+
+def roster_people(target):
+    roster, log, cases = P.enrollment(target)
     out = {}
-    for k in ("prelim", "revised"):
-        ids = [r["rec_id"] for r in P[k]]
-        out[k + " record numbers unique"] = len(ids) == len(set(ids))
-        rows = [tuple(sorted((kk, str(v)) for kk, v in r.items() if kk != "rec_id")) for r in P[k]]
-        out[k + " exact duplicates (all but the record number)"] = len(rows) - len(set(rows))
-        out[k + " hospital IDs unmatched"] = sum(1 for r in P[k] if r["hosp"] is None)
-    cl = P["claims"]
-    out["claim ids unique"] = cl.claim_id.is_unique
-    out["claims exact duplicates (all but the claim id)"] = int(cl.drop(columns=["claim_id"]).duplicated().sum())
-    out["claims NPIs unmatched"] = int(cl.hosp.isna().sum())
-    refs = set(cl.original_claim_id[cl.original_claim_id != ""])
-    out["claims naming a claim not in the extract"] = len(refs - set(cl.claim_id))
+    for r in roster:
+        if r["begin"] <= D1 and 19 <= A.age_on(r["born"], D1) <= 64:
+            out[r["member_id"]] = dict(p1=r["p1_client_id"], born=r["born"], county=r["county"])
     return out
 
 
-def ask_a(P):
-    cnt = {h: 0 for h in K.ELIGIBLE}
-    for rec in P["revised"]:
-        if rec["hosp"] in cnt and A._res_date(rec) is not None and K.H1_2026[0] <= rec["discharge"] <= K.H1_2026[1]:
-            cnt[rec["hosp"]] += 1
-    return cnt
+def column_parents(target, people):
+    """Parents and caretakers by the extract's own count of children under 14 in the case."""
+    region_of = P.regions(target)
+    roster, log, cases = P.enrollment(target)
+    has = {}
+    for r in cases:
+        if r["case_role"] in A.PARENT_ROLES and int(r["children_under_14_in_case"]) > 0:
+            has[r["p1_client_id"]] = True
+    b = {c: 0 for c in K.CODES}
+    for v in people.values():
+        if has.get(v["p1"]):
+            b[region_of[v["county"]]] += 1
+    return b
 
 
-def ask_b(P):
-    cl = P["claims"]
-    voided = set(cl.original_claim_id[cl.bill_type == "0118"])
-    replaced = set(cl.original_claim_id[cl.bill_type == "0117"])
-    keep = cl[(cl.bill_type != "0118") & ~cl.claim_id.isin(voided) & ~cl.claim_id.isin(replaced)]
-    stays = keep.groupby(["hosp", "member_id", "admit_date"]).allowed.sum().reset_index()
-    return {h: dollars(stays[stays.hosp == h].allowed.mean()) for h in K.ELIGIBLE}
+def count_a(target, people):
+    region_of = P.regions(target)
+    a = {c: 0 for c in K.CODES}
+    for v in people.values():
+        a[region_of[v["county"]]] += 1
+    return a
 
 
 def score(fig, a, b):
-    rows, hits = [], 0
-    for h in K.ELIGIBLE:
-        n = K.NAME[h]
-        x = [a[h] == fig["ask_a"][n], b[h] == fig["ask_b"][n]]
-        hits += sum(x)
-        rows.append((n, a[h], fig["ask_a"][n], b[h], fig["ask_b"][n], "".join("x" if v else "." for v in x)))
-    return hits, rows
+    hits = sum(int(a[c] == fig["ask_a"][K.NAME[c]]) for c in K.CODES) + \
+        sum(int(b[c] == fig["ask_b"][K.NAME[c]]) for c in K.CODES)
+    return hits
 
 
-def run(task, quiet=False):
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    P = PK.load(os.path.join(task, "target"))
-    bat = battery(P)
-    total = 2 * len(K.ELIGIBLE)
-    ca, rows = score(fig, ask_a(P), ask_b(P))
-    ma = ca      # the mirror takes the same reads on the asks
-    cracker = 38 + 7 + 55.0 * ca / total
-    mirror = 5 + 7 + 55.0 * ma / total
-    pair = (cracker + mirror) / 2
-    if not quiet:
-        print("battery:", bat)
-        print("cracker (hospital, A got/golden, B got/golden, hits)")
-        for r in rows:
-            print("   %-36s A %3d/%3d  B %6d/%6d  %s" % r)
-        print("cracker keeps %d of %d ask figures; the mirror, on the same reads, %d of %d" % (ca, total, ma, total))
-        print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of the ask weight"
-              % (cracker, mirror, pair, 100.0 * ma / total))
-    return dict(cracker_hits=ca, mirror_hits=ma, total=total, pair=pair, cracker=cracker, mirror=mirror, battery=bat)
+def run(target, fig):
+    cp = careful_people(target)
+    ca, cb = count_a(target, cp), column_parents(target, cp)
+    _, cb2 = A.planning(target, cp)                       # the careful population, the children's own dates
+    rp = roster_people(target)
+    ma, mb = count_a(target, rp), column_parents(target, rp)
+    total = 20
+    cr, mi = score(fig, ca, cb), score(fig, ma, mb)
+    # the pair: the cracker lands the call (38 + 7 + 55 x its ask share), the mirror misses it (about 5 + 7 + ...)
+    pair = ((38 + 7 + 55 * cr / total) + (5 + 7 + 55 * mi / total)) / 2
+    return dict(cracker=dict(a=ca, b=cb, b_dates=cb2), mirror=dict(a=ma, b=mb), cracker_hits=cr, mirror_hits=mi,
+                total=total, pair=pair, b_dates_hits=sum(int(cb2[c] == fig["ask_b"][K.NAME[c]]) for c in K.CODES))
 
 
 if __name__ == "__main__":
-    r = run(os.path.dirname(HERE))
-    sys.exit(0 if r["cracker_hits"] == 0 else 1)
+    task = os.path.dirname(HERE)
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    out = run(os.path.join(task, "target"), fig)
+    print(json.dumps({k: v for k, v in out.items() if k in ("cracker_hits", "mirror_hits", "total", "pair",
+                                                            "b_dates_hits")}, indent=1))

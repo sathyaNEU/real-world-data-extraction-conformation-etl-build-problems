@@ -1,104 +1,89 @@
-"""Every route a solver might take to the three centres, computed from the cut pack the way the golden reads it: the
-ladder's rungs, the golden's model family and the shortcuts. Each returns each hospital's ratio of observed to
-expected deaths (or, for the crude and volume routes, the figure the route ranks on)."""
-import datetime as dt
-
+"""The easy routes, each run from the pack on the conformed call histories: the respondents' share, weighting-class
+adjustments, the late-reached and evening-reached respondents carried to the members not known, an extrapolation along
+the attempt that reached the member, the subsets called by the vendor from the start or called in the evening, and the
+textbook callback model with one answer rate per class. Each gives every region's share and its four lowest."""
 import numpy as np
-import pandas as pd
+import statsmodels.api as sm
 
-import analysis as A
-import common as K
 import models as M
 
-H = M.H
+
+def four(v):
+    return tuple(sorted(np.argsort(v)[:4].tolist()))
 
 
-def frame(P):
-    return M.prep(A.frame(P))
+def _carry(y, known, reg, donor, n_regions=10):
+    """Known members keep their class; every member not known takes the donor group's share in the region."""
+    out = np.zeros(n_regions)
+    for r in range(n_regions):
+        m = reg == r
+        d = known & donor & m
+        out[r] = (y[known & m].sum() + (m & ~known).sum() * y[d].mean()) / m.sum()
+    return out
 
 
-def family(d):
-    """The golden's family: every form a competent analyst would fit to the patient's condition before surgery with
-    the earlier operation on the pancreas or bile ducts in it (logit or probit, an age curve, the harmless earlier
-    procedures as their own terms, the conditions as a count, the conditions with no added risk, the diagnosis in
-    groups, the earlier operation and a gallbladder removal as one flag)."""
-    F = {k: M.ratio(d, cols, link)[0] for k, (cols, link) in M.FAMILY.items()}
-    e = d.assign(earlier_op=((d.redo + d.chole) > 0).astype(float))
-    F["earlier_op"] = M.ratio(e, M.INDEX + ["earlier_op"])[0]
-    g = d.assign(cp=d.pdx.str.startswith("K86.1").astype(float),
-                 benign=(~d.pdx.str.startswith("C") & ~d.pdx.str.startswith("K86.1")).astype(float))
-    F["dx_groups"] = M.ratio(g, M.GOLDEN + ["cp", "benign"])[0]
-    return F
-
-
-def shortcuts(d):
-    """Two forms that keep the earlier operation but leave the filed estimand: comorbidities dropped, and the ratios
-    shrunk toward the eight hospitals' mean."""
-    return {"golden_min": M.ratio(d, ["age10", "male", "tot", "whip", "urg", "redo"])[0],
-            "golden_eb": M.eb(d, M.ratio(d, M.GOLDEN)[0])}
-
-
-def history_from(P, start):
-    """The earlier operations rebuilt only from the files from a given year on."""
-    hist = {}
-    for rec in P["discharges"]:
-        if not rec["key"] or rec["discharge"].year < start:
-            continue
-        for c, dd in rec["px"]:
-            if c in A.EARLIER:
-                hist.setdefault(rec["key"], []).append(dd or rec["admit"])
-    return hist
-
-
-def ladder(P):
-    d = frame(P)
+def run(c):
+    """c: analysis.call output. Returns {route: shares by region}."""
+    S, SS = c["S"], c["SS"]
+    hist = c["hist"]
+    y, out, reg = SS["y"], SS["out"], SS["reg"]
+    age, sex = SS["age"], SS["sex"]
+    known = y >= 0
+    comp = out == 1
+    cids = sorted(S)
+    first_vendor = np.array([S[cid]["first"] == "Kestrelby" for cid in cids])
+    attempt = np.array([len(h[5]) for h in hist])           # calls made up to and including the reaching call
+    reach_combo = SS["hit"]
+    any_eve = np.array([any(cmb in (2, 3) for cmb, _ in h[5]) for h in hist])
     R = {}
-    R["raw"] = d.groupby("h").dead.mean().reindex(H)
-    R["index"] = M.ratio(d, M.INDEX)[0]
-    R["index_probit"] = M.ratio(d, M.INDEX, "probit")[0]
-    R["index_many"] = M.ratio(d, M.INDEX + ["htn", "lipid", "gerd", "obese", "smoke", "osa", "thyroid", "depress",
-                                            "age2"])[0]
-    R["index_comp"] = M.ratio(d, M.INDEX + ["comp"])[0]
-    R["index_min"] = M.ratio(d, ["age10", "male", "tot", "whip", "urg"])[0]
-    R["index_eb"] = M.eb(d, R["index"])
-    e = d.assign(any_earlier=((d.redo + d.chole + d.stent) > 0).astype(float))
-    R["any_earlier"] = M.ratio(e, M.INDEX + ["any_earlier"])[0]
-    R["golden"] = M.ratio(d, M.GOLDEN)[0]
-    # the referral centres compared on first operations only
-    first = d[d.redo == 0]
-    R["first_only"] = M.ratio(first, M.INDEX)[0]
-    # the earlier operation rebuilt from the files of 2019 on, or of 2023 on only
-    for start in (2019, 2023):
-        hist = history_from(P, start)
-        adm = {rec["rec_id"]: rec["admit"] for rec in A.operations(P)}
-        dd = d.copy()
-        dd["redo"] = [float(any(x < adm[r] for x in hist.get(k, []))) for k, r in zip(dd.key, dd.rec_id)]
-        R["history_from_%d" % start] = M.ratio(dd, M.GOLDEN)[0]
-    # the operation's own record, by discharge date in place of operation date
-    R["volume"] = -d.groupby("h").size().reindex(H).astype(float)
+    R["respondents (interviews)"] = np.array([y[comp & (reg == r)].mean() for r in range(10)])
+    R["respondents (interviews and key answers)"] = np.array([y[known & (reg == r)].mean() for r in range(10)])
+    for name, extra in (("age and sex cells", None), ("age, sex and first-call centre cells", first_vendor)):
+        v = np.zeros(10)
+        for r in range(10):
+            m = reg == r
+            tot = 0.0
+            for a in range(3):
+                for s in range(2):
+                    for e in ((False, True) if extra is not None else (None,)):
+                        cell = m & (age == a) & (sex == s)
+                        if e is not None:
+                            cell = cell & (extra == e)
+                        resp = cell & known
+                        tot += cell.sum() * (y[resp].mean() if resp.sum() else y[known & m].mean())
+            v[r] = tot / m.sum()
+        R[name] = v
+    R["reached at call 3 or later, carried"] = _carry(y, known, reg, attempt >= 3)
+    R["reached at call 4 or later, carried"] = _carry(y, known, reg, attempt >= 4)
+    R["reached in the evening or on Saturday, carried"] = _carry(y, known, reg, np.isin(reach_combo, (2, 3)))
+    v = np.zeros(10)
+    for r in range(10):
+        m = reg == r
+        X = sm.add_constant(attempt[known & m].astype(float))
+        fit = sm.Logit(y[known & m].astype(float), X).fit(disp=0)
+        k = attempt[m & ~known].astype(float) + 1
+        v[r] = (y[known & m].sum() + fit.predict(sm.add_constant(k, has_constant="add")).sum()) / m.sum()
+    R["logistic on the reaching call, extrapolated"] = v
+    R["vendor-first members only"] = np.array([y[known & first_vendor & (reg == r)].mean() for r in range(10)])
+    R["members ever called in the evening or on Saturday"] = np.array([y[known & any_eve & (reg == r)].mean()
+                                                                       for r in range(10)])
+    # a response-propensity weight: the chance a member's answer is known, on the member's evening and Saturday share
+    # of calls, the number of calls, age band, sex and region; each known member weighted by its inverse
+    eve_share = np.array([np.mean([cmb in (2, 3) for cmb, _ in h[5]]) for h in hist])
+    X = np.column_stack([eve_share, attempt, (age == 1), (age == 2), sex] + [(reg == r) for r in range(1, 10)]).astype(float)
+    fit = sm.Logit(known.astype(float), sm.add_constant(X)).fit(disp=0)
+    pk = fit.predict(sm.add_constant(X))
+    R["response propensity on the calls' evening share, inverse weights"] = np.array(
+        [np.sum(y[known & (reg == r)] / pk[known & (reg == r)]) / np.sum(1 / pk[known & (reg == r)]) for r in range(10)])
+    R["reached at the first call only"] = np.array([y[known & (attempt == 1) & (reg == r)].mean() for r in range(10)])
+    R["callback model, one answer rate per class"] = M.em(SS, contact="none")[0]
     return R
 
 
-def by_discharge(P):
-    """The population read by discharge date (operations of December 2022 discharged in January 2023 in, those of late
-    December 2025 discharged in 2026 out): the golden's model."""
-    ops = []
-    for rec in P["discharges"]:
-        if A._res_date(rec) is None or rec["hosp"] not in K.ELIGIBLE or rec["age"] < 18:
-            continue
-        if K.WINDOW[0] <= rec["discharge"] <= K.WINDOW[1]:
-            ops.append(rec)
-    return ops
-
-
-def top3(s):
-    return M.top3(s)
-
-
-def bins(F):
-    """Each hospital's range over the family, and whether every member lands in one one-decimal bin."""
-    vals = np.array([v.values for v in F.values()])
-    lo, hi = vals.min(axis=0), vals.max(axis=0)
-    blo, bhi = np.floor(lo / .1 + .5), np.floor(hi / .1 + .5)
-    edge = {h: round(float(min(lo[i] - (blo[i] - .5) * .1, (bhi[i] + .5) * .1 - hi[i])), 4) for i, h in enumerate(H)}
-    return dict(lo=dict(zip(H, lo)), hi=dict(zip(H, hi)), same=bool((blo == bhi).all()), edge=edge)
+def family(c):
+    """The callback model's licensed variants, each to agree with the golden on the four and the graded percents."""
+    SS = c["SS"]
+    F = {nm: M.em(SS, **kw)[0] for nm, kw in M.FAMILY.items()}
+    F["window, pooled, declining flat"] = M.em(SS, refusal="flat")[0]
+    F["window, pooled, attempt effect"] = M.em_attempt(SS)[0]
+    return F
