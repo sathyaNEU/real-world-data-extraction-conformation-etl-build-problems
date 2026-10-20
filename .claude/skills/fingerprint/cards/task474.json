@@ -1,0 +1,88 @@
+{
+  "task": "task474",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET31 (Connecticut's planning regions replacing its counties; a fixed anti-poverty grant split on a five-vintage poverty average; history rebuilt from towns): world, decision and quantity kept, the pitfall re-found in how the town data describe time",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "niche": "rebuilding a state's annual model-based poverty series on new county-equivalents for a formula grant, the former counties' years apportioned to the planning regions with the survey's five-year town windows",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly splits each former county's 2020, 2021 and 2022 poverty estimate among its towns by their shares in the 2020-2024 five-year release that covers those years and files an allocation that over-funds the suburban regions the poor were moving into and short-funds the city regions they were leaving; only the towns' poor interpolated between the 2015-2019 and 2020-2024 releases at 2017 and 2022, the middle years each release averages over, files the golden.",
+  "domain_test": "The deciding quantity is each planning region's residents in poverty in 2020 to 2022, years the State Data Center estimated only for the former counties, built the way official statisticians rebuild a series on new county-equivalents (single-year model estimates apportioned by the survey's five-year town windows, each window a period average placed at the middle of its span and interpolated to the year); with another field's nouns the task loses the period-average survey windows, the annual model totals and the change of county-equivalents that make the anchoring decide.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:period-average-windows-interpolated-at-midpoints",
+  "layer1": [
+    "county-equivalent change mid-series (former counties to planning regions)",
+    "town codes re-keyed under the new county-equivalent codes",
+    "estimates as PDF tables for the county years and a workbook for the region years",
+    "two five-year releases in different layouts with margins of error",
+    "preliminary and revised estimates for one year",
+    "names against codes across the town, county and region files",
+    "thousands against units"
+  ],
+  "stakeholder_role": "Director, State Data Center",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "acs5_town_poverty_2020_2024.csv",
+    "rows": 26000,
+    "entity": "one estimate line of one five-year detailed table for one town",
+    "grain": "town x table line",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States, an unnamed New England state",
+    "currency": "USD",
+    "org_type": "the State Data Center, which prepares the Regional Opportunity Fund's allocation for the Office of Policy and Management",
+    "invented_names": [
+      "Regional Opportunity Fund"
+    ],
+    "people": [
+      "Wendy Taylor",
+      "Mitchell Clark",
+      "Paige Hodges"
+    ]
+  },
+  "deliverables": [
+    "rof_fy2027_region_poverty_2020_2024.csv",
+    "rof_fy2027_allocation_memo.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "Totals published for one partition in some periods have to be split across a crossing partition by a share that drifts every period, and the only fine-grained evidence is two period averages, so each period's share is interpolated between the averages at the middle of the spans they average over rather than read off the span that holds the period.",
+  "driver_concrete": "The former counties' 2020 to 2022 poverty estimates are split into the planning regions by each county's towns' poor population interpolated between the 2015-2019 and 2020-2024 five-year town releases at 2017 and 2022, the years each release centres on, rather than by the 2020-2024 release that holds those years.",
+  "stump": "The default path apportions the former counties' 2020 to 2022 estimates by the towns' shares in the 2020-2024 five-year release, which leads each year's distribution by up to two years of the city-to-suburb drift of the poor, and files an allocation that pays the suburban regions too much and the city regions too little.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Strategy time_semantics answered: the windows are read correctly (each a five-year period); the step is estimating a single year's town distribution from two period averages (temporal disaggregation), and the easy route reads every field right.",
+  "registered": "2026-10-20T06:30:26Z"
+}

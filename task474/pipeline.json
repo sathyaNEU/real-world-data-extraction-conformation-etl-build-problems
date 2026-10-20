@@ -1,0 +1,23 @@
+{
+ "task": "task474",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "The default path apportions the former counties' 2020 to 2022 poverty estimates by the towns' shares in the 2020-2024 five-year release, which leads each year's distribution by up to two years of the city-to-suburb drift of the poor, and files an allocation that pays the suburban regions too much and the city regions too little.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"guard_check": "WARN 2026-10-20 (strategy risk time_semantics answered by the analyst test; repeat.gate_g against task271 v2 and task468 v4, different mechanisms); test.same_driver_older cleared by redrawing the decisive generator to G2 (the town windows' five-year grain against the single years the estimand needs), the honest label", "heart": "", "nearest": "task58 v15 at 0.07"},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: write the world model and the numbers on paper (default path, ladder, fork table, closure, asks), precut.py, then cut the pack",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET31 (Connecticut's planning regions replace its counties; a fixed $12,000,000 anti-poverty grant split on a five-vintage poverty average; history rebuilt from towns): world, decision and quantity kept in an unnamed New England state; the seed's area-crosswalk stump dropped (a careful analyst rebuilds from towns); the pitfall re-found in how the towns' five-year survey windows describe time"
+}
