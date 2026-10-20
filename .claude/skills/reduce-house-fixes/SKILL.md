@@ -312,6 +312,26 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
 
 ---
 
+## H26. A gate whose "nothing found" and whose "nothing to look at" print the same
+
+**The defect.** A check reports a clean result for a build it could not actually examine, and the clean
+result is indistinguishable from a real pass. The measured instance: the scored-reader gate identifies the
+committed answer by a `call.` key prefix, so on a build that files its call at the top level under its own
+name (`plants_over_amber`, `sectors_over_tolerance`, `referred_count`) it found no call figure, printed
+`call figures 0 of 0 hit`, and exited 0 with `PASS the call missed`. Three of the six builds in one audit
+batch key the call that way, so a third of that audit would have recorded a pass for a call nobody scored,
+on exactly the builds an audit exists to catch.
+
+**What it costs.** More than a missed finding, because a false pass is banked as evidence and argued from
+later. The four builds measured before this was found were scored correctly only because they happened to
+nest their call under `call.`; nothing in the output said which of the two situations it was reporting.
+
+**The check.** A gate that can be inapplicable says so and exits non-zero. Give every such gate a third
+outcome beside pass and fail: it found the thing and the thing was clean, or it could not find the thing to
+check, and the second is an error with the fix in its own message. The scored reader now takes `--call-key`
+and refuses to run when no call key is present or named, printing the build's own candidate keys. Read any
+gate whose quiet output is a zero count and ask whether a zero means clean or means absent.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design

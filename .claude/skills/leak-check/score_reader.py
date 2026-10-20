@@ -8,12 +8,19 @@ reported 43 of 43 graded figures. This script is how that is found before a buil
 after three stage 4 rounds.
 
 Usage
-    python3 score_reader.py taskNN <reader.json> [--tol-pct 0.0] [--quiet]
+    python3 score_reader.py taskNN <reader.json> [--call-key K]... [--tol-pct 0.0] [--quiet]
 
 <reader.json> is a flat object the reader hands back, keyed exactly as <task>/generator/figures.json
 is keyed, holding only the figures the reader actually committed to. A nested golden value is
 addressed with a dot: "a1_Norte.contacts": 1965. Keys the reader did not answer are left out; a key
 that is not in figures.json is reported as unknown and scored as nothing.
+
+Only builds that nest the committed answer under `call.` are read as such without help. Many file it
+at the top level under its own name ("plants_over_amber", "sectors_over_tolerance",
+"referred_count"), and on those the scorer saw no call at all and reported "0 of 0 hit", which reads
+as a pass and is the one output an audit must never produce silently. So name the call's keys with
+--call-key, once per key; a key named this way is the committed answer whatever it is called, and
+the scorer refuses to run when it can find no call key at all.
 
 A hit is an exact match at the golden's own precision: a float is compared rounded to the golden's
 decimal places, a list elementwise, a string case-insensitively on the golden's first words. Pass
@@ -104,6 +111,7 @@ def main(argv):
     quiet = "--quiet" in argv
     if "--tol-pct" in argv:
         tol_pct = float(argv[argv.index("--tol-pct") + 1])
+    call_keys = {argv[i + 1] for i, a in enumerate(argv) if a == "--call-key" and i + 1 < len(argv)}
 
     root = Path(__file__).resolve().parents[3]
     figures = root / task / "generator" / "figures.json"
@@ -127,12 +135,23 @@ def main(argv):
             continue
         hit = same(g, got[key], tol_pct)
         head = key.split(".")[0]
-        if head.startswith(CALL_PREFIX):
+        if key in call_keys or head in call_keys:
+            kind = CALL_PREFIX
+        elif head.startswith(CALL_PREFIX):
             tail = key[len(head):].lstrip(".").lower()
             kind = "input" if any(w in tail for w in CALL_INPUT_WORDS) else CALL_PREFIX
         else:
             kind = "ask"
         rows.append((kind, key, g, got[key], hit))
+
+    if not any(r[0] == CALL_PREFIX for r in rows):
+        print("no call figure among the %d scored keys, and none named with --call-key." % len(rows))
+        print("This build does not nest its committed answer under %r, so the call cannot be scored"
+              % CALL_PREFIX)
+        print("and a silent '0 of 0' would read as a pass. Name it, for example:")
+        for key in sorted(gold)[:8]:
+            print("    --call-key %s" % key)
+        return 3
 
     call = [r for r in rows if r[0] == CALL_PREFIX]
     inputs = [r for r in rows if r[0] == "input"]
