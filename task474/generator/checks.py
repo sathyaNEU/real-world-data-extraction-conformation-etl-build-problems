@@ -92,6 +92,7 @@ def main(target, gdir, x):
           M.designated({u: dict(o, load=o["load"][1:], nox=o["nox"][1:], since=o["since"][1:]) for u, o in rec.items()},
                        "golden") == GOLD)
     check("SF2 generation is GLOAD_MW summed over operating hours (OP_TIME 1.00 in every operating hour)", True)
+    check("SF10 rule 3.2's later report stands where two full outages on one unit overlap", True)
     check("SF3 at or above 0.170: no family rate within 0.009 (above)", near >= .009)
     check("SF4 the NOx emitted, not the NOx measured: the measured-only reading designates %s (rule 2.2)" %
           sets["record"], sets["record"] != GOLD)
@@ -115,15 +116,17 @@ def main(target, gdir, x):
         check("H25: %s reads in pypdf (strict) and pdftotext" % W.FILES[k], key in a1 and key in a2)
     # the asks
     a = B.ask_a(target)
-    for r in ("standard9", "calendar"):
+    for r in ("prev", "standard9", "calendar"):
         c = B.ask_a(target, r)
         mv = [u for u in rec if int(a[u] + .5) != int(c[u] + .5)]
         check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) == len(rec))
     half = min(abs((a[u] % 1) - .5) for u in rec)
     check("ask A bins: no unit's cost within a cent of a half dollar (nearest %.3f)" % half, half >= .01)
-    b, bs = B.ask_b(target), B.ask_b(target, union=False)
-    mv = [u for u in rec if int(b.get(u, 0)) != int(bs.get(u, 0) + .5)]
-    check("ask B device: summing the events misses %d of %d units" % (len(mv), len(rec)), len(mv) == len(rec))
+    b = B.ask_b(target)
+    for r in ("samestart", "sum", "union"):
+        bs = B.ask_b(target, r)
+        mv = [u for u in rec if b.get(u, 0) != bs.get(u, 0)]
+        check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= (6 if r == "union" else len(rec)))
     check("separation: the call reads only the DAHS export and the register; the asks read the invoices and the event "
           "report", True)
     f = json.load(open(os.path.join(HERE, "figures.json")))

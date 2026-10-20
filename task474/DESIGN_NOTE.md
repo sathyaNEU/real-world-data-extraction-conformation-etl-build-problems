@@ -180,26 +180,29 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 ## Ask sheet
 
-- **Ask A, each unit's 2026 ozone-season fuel cost: 9 figures.** H18 home: rule 3.2, the capital budget weighs the
+- **Ask A, each unit's 2026 ozone-season fuel cost: 9 figures.** H18 home: rule 3.1, the capital budget weighs the
   upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices, the supply agreement, the
-  rules: four files, eight columns. Primary device: D8, a clock against a filed cutoff. The invoice prices each gas
-  day, 9:00 a.m. to 9:00 a.m. Central clock time, while the DAHS hour is on standard time all year; pricing each hour
-  by its calendar date, or by the gas day read on the DAHS clock without the daylight hour, misprices the hours around
-  each morning's cutoff, so every unit's cost falls outside its bin. Hazards: invoices by facility (peakers share the
-  meter), gas days with no burn.
-- **Ask B, each unit's 2026 ozone-season forced outage hours: 9 figures.** H18 home: rule 3.3. Path: the event
-  report, the rules: two files, six columns. Primary device: D1, a resubmission that opens no second case: an outage
-  whose cause was corrected weeks later was reported again in full under a new event number, with a corrected end,
-  and the original stayed; summing event durations counts those hours twice, and only the overlap of two full outages
-  on one unit (impossible for one outage) finds the pair. Hazards: derate events (D1, D2) overlapping outages
-  legitimately, events crossing the season's ends.
-- **The construction layer:** each unit's verdict and the set; generation and operating hours (records-fixed).
+  rules: four files, eight columns. Primary device (re-sited after stage 4 readers 1 and 2, who executed the gas day
+  and the daylight hour and kept all nine): D4, absence repaired through another file's structure. One month of
+  invoices is missing at each delivery point (not yet approved when the file was pulled), and the agreement prices
+  every point at a common Daily Index plus its own adder, so a missing day's price is another point's price that day
+  plus the constant difference between the two points; carrying the last invoiced price forward, averaging, or
+  dropping the hours each misses every unit. Hazards: the gas day on Central clock time against the DAHS's standard
+  time, invoices by facility (peakers share the meter), gas days with no burn.
+- **Ask B, each unit's 2026 ozone-season forced outage hours: 9 figures.** H18 home: rule 3.2 (a later report of the
+  same outage stands). Path: the event report, the rules: two files, six columns. Primary device (re-sited after
+  readers 1 and 2, who kept the later of each same-start pair and took three units): D1, a resubmission that opens no
+  second case. A corrected outage was reported again under a new event number with a corrected start and end, so no
+  key or start time pairs it with the original; only the overlap of two full outages on one unit, which one outage
+  cannot make, finds the pair. Hazards: derate events (D1, D2) overlapping outages legitimately, events crossing the
+  season's ends.
+- **The construction layer:** each unit's verdict and the set.
 - **Main population zero-counts (asserted):** the call reads no invoice, agreement or event row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, fuel cost by unit | each operating hour priced at the gas day read off the DAHS hour minus 9 hours; the DAHS hour is standard time and the gas day starts at 9:00 Central clock time, so every unit's cost falls outside its bin | miss |
-| B, forced outage hours by unit | U1 to U3 event hours in the season summed per unit; the re-reported outages count twice, so every unit's hours fall outside its bin | miss |
+| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, the missing invoice month carried from the last invoiced price; every unit burns in a missing month, so every unit's cost falls outside its bin | miss |
+| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, a later report kept where two share a unit and start; the corrected re-reports start at another hour, so both count and every unit's hours fall outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
 - Pair ceiling: 35.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
@@ -271,3 +274,10 @@ data and no reported total ships; the allowance holdings are by facility and ton
 - Architecture 1 (the planning-region poverty split, each town's SNAP recipients benchmarked to its five-year survey
   level) as a whole: spent at stage 4 on 2026-10-20 (reader 1 landed the call, reader 2 kept every ask); re-rooted to
   architecture 2 in a fresh world after six screens on the old one died.
+- Asks of the first cut (fuel priced on the gas day across the clock change; outages re-reported with a corrected end
+  only; generation and operating hours graded): stage 4 readers 1 and 2 both missed the call (two and four units) and
+  both kept all nine fuel costs, three forced-outage figures and every generation and hours figure; the judge read the
+  re-report as a fork (union against the later report). Generation and hours left the deliverables, rule 3.2 files
+  that the later report stands, re-reports correct the start as well, and one invoice month per delivery point is
+  missing; a generation total that sat on a half MWh is gone with the two-decimal load.
+

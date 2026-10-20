@@ -13,7 +13,7 @@ from openpyxl.styles import Font                                    # noqa: E402
 
 import world as W   # noqa: E402
 
-SECTIONS = {"units": "2.1", "rate": "2.2", "designation": "2.3", "generation": "3.1", "fuel": "3.2", "outages": "3.3"}
+SECTIONS = {"units": "2.1", "rate": "2.2", "designation": "2.3", "fuel": "3.1", "outages": "3.2"}
 BODY = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.5, spaceAfter=6)
 HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, leading=14, spaceBefore=8, spaceAfter=4)
 TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4)
@@ -55,14 +55,13 @@ def write_guidelines(path):
          Paragraph("2.3 <b>Target.</b> A unit whose 2026 ozone-season NOx rate is 0.170 lb per MWh or more is "
                    "designated for the program.", BODY),
          Paragraph("3. The budget memo", HEAD),
-         Paragraph("3.1 For every combined-cycle unit, its gross generation (MWh) and operating hours in the 2026 "
-                   "ozone season, as defined in 2.2.", BODY),
-         Paragraph("3.2 For every combined-cycle unit, the cost of the gas it burned in its 2026 ozone-season "
+         Paragraph("3.1 For every combined-cycle unit, the cost of the gas it burned in its 2026 ozone-season "
                    "operating hours, each hour's gas priced at the price on the supplier's invoice for the gas day the "
                    "hour falls in. A unit's gas is its heat input; one dekatherm is one MMBtu.", BODY),
-         Paragraph("3.3 For every combined-cycle unit, its forced outage hours in the 2026 ozone season: the hours "
+         Paragraph("3.2 For every combined-cycle unit, its forced outage hours in the 2026 ozone season: the hours "
                    "from 1 May to 30 September 2026, local time, in which the outage event report shows the unit in a "
-                   "full forced outage (event types U1, U2 and U3).", BODY),
+                   "full forced outage (event types U1, U2 and U3). Where the report holds a later report of the same outage, the "
+                   "later report stands.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
                    "%s." % W.BOARD_DATE, BODY)]

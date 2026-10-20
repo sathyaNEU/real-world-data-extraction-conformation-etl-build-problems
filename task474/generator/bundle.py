@@ -62,20 +62,46 @@ def _local(t):
     return t + dt.timedelta(hours=1) if a <= t < b else t
 
 
+def prices(target, rebuild=True):
+    """{(delivery point, gas day): $/Dth}; a gas day with no invoice line is rebuilt, when asked, from another delivery
+    point's price that day plus the constant difference between the two points' prices (the Daily Index is common to
+    every point and each point carries its own adder)."""
+    price = {}
+    for r in _rows(find(target, "gas_supply_daily_invoices")):
+        price[(r["delivery_point"], r["gas_day"])] = float(r["price_usd_per_dth"])
+    if not rebuild:
+        return price
+    pts = sorted({k[0] for k in price})
+    diff = {}
+    for a_ in pts:
+        for b_ in pts:
+            ds = [round(price[(a_, d)] - price[(b_, d)], 4) for (p, d) in price if p == a_ and (b_, d) in price]
+            if ds:
+                diff[(a_, b_)] = max(set(ds), key=ds.count)
+    days = sorted({k[1] for k in price})
+    out = dict(price)
+    for p in pts:
+        for d in days:
+            if (p, d) not in out:
+                for q in pts:
+                    if (q, d) in price and (p, q) in diff:
+                        out[(p, d)] = round(price[(q, d)] + diff[(p, q)], 4)
+                        break
+    return out
+
+
 def ask_a(target, route="gasday"):
     """Each unit's ozone-season fuel cost: each operating hour's heat input at the invoice price of its gas day."""
     fac = {}
     for r in _rows(find(target, "dahs_hourly_export")):
         fac[r["UNIT_ID"]] = r["FACILITY_NAME"]
-    price = {}
-    for r in _rows(find(target, "gas_supply_daily_invoices")):
-        price[(r["delivery_point"], r["gas_day"])] = float(r["price_usd_per_dth"])
+    price = prices(target, rebuild=route != "prev")
     rec = record(target)
     out = {}
     for u, o in rec.items():
         tot = 0.0
         for t, q in zip(o["stamps"], o["heat"]):
-            if route == "gasday":
+            if route in ("gasday", "prev"):
                 gd = (_local(t) - dt.timedelta(hours=9)).date()
             elif route == "standard9":
                 gd = (t - dt.timedelta(hours=9)).date()
@@ -90,30 +116,42 @@ def ask_a(target, route="gasday"):
     return out
 
 
-def ask_b(target, union=True):
-    """Each unit's ozone-season forced outage hours: hours inside any U1, U2 or U3 event, local time, each once."""
+def ask_b(target, route="latest"):
+    """Each unit's ozone-season forced outage hours: hours inside a U1, U2 or U3 event, local time, where a later report
+    of the same outage (overlapping it on the same unit) replaces the earlier one."""
     a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
-    out = {}
-    hrs = {}
+    evs = {}
     for r in _rows(find(target, "gads_event_report")):
         if r["event_type"] not in ("U1", "U2", "U3"):
             continue
-        s = max(a, dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M"))
-        e = min(b, dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M"))
-        if e <= s:
-            out.setdefault(r["unit"], 0)
-            continue
-        if union:
-            st = hrs.setdefault(r["unit"], set())
-            t = s
-            while t < e:
-                st.add(t)
-                t += dt.timedelta(hours=1)
+        evs.setdefault(r["unit"], []).append((dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M"),
+                                              dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M"), r["date_reported"],
+                                              int(r["event_no"])))
+    out = {}
+    for u, es in evs.items():
+        keep = []
+        if route == "latest":
+            for e in sorted(es, key=lambda e: (e[2], e[3]), reverse=True):
+                if not any(e[0] < k[1] and k[0] < e[1] for k in keep):
+                    keep.append(e)
+        elif route == "samestart":
+            best = {}
+            for e in es:
+                if e[0] not in best or (e[2], e[3]) > (best[e[0]][2], best[e[0]][3]):
+                    best[e[0]] = e
+            keep = list(best.values())
         else:
-            out[r["unit"]] = out.get(r["unit"], 0) + (e - s).total_seconds() / 3600
-    if union:
-        for u, st in hrs.items():
+            keep = es
+        if route == "union":
+            st = set()
+            for s, e, *_ in keep:
+                t = max(a, s)
+                while t < min(b, e):
+                    st.add(t)
+                    t += dt.timedelta(hours=1)
             out[u] = len(st)
+        else:
+            out[u] = int(sum(max(0, (min(b, e) - max(a, s)).total_seconds()) / 3600 for s, e, *_ in keep))
     return out
 
 

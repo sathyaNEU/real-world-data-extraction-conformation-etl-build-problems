@@ -77,19 +77,22 @@ def build(rng, fleet):
             ev.append(dict(unit=u, event=num, type=str(rng.choice(["D1", "D2"])), start=local_of(S.HOURS[h0]),
                            end=local_of(S.HOURS[h0]) + dt.timedelta(hours=dur), cause=int(rng.choice([3410, 4600, 4810])),
                            rev=0, derate=int(rng.integers(20, 90))))
-    # re-reports: a full outage whose cause was corrected after the quarter closed is reported again in full under a
-    # new event number; the original stays in the report
+    # re-reports: an outage whose times and cause were corrected after the quarter closed is reported again under a
+    # new event number with the corrected start and end; the original stays in the report
     full = [e for e in ev if e["type"] in ("U1", "U2", "U3")]
     for u in W.CC:
-        mine = [e for e in full if e["unit"] == u and e["end"] < dt.datetime(2026, 8, 20)]
-        for e in [mine[int(i)] for i in rng.choice(len(mine), size=min(2, len(mine)), replace=False)][:1 + (u < "D")]:
+        mine = sorted([e for e in full if e["unit"] == u and e["end"] < dt.datetime(2026, 8, 20)
+                       and (e["end"] - e["start"]).total_seconds() >= 8 * 3600], key=lambda e: e["start"])
+        k = 1 + int(rng.random() < .5)
+        for e in [mine[int(i)] for i in rng.choice(len(mine), size=min(k, len(mine)), replace=False)]:
             num += int(rng.integers(1, 40))
-            shift = int(rng.choice([-5, -3, -2, 2, 3, 4, 7]))
+            s0 = int(rng.choice([-3, -2, -1, 1, 2]))
+            s1 = int(rng.choice([-5, -3, -2, 2, 3, 4, 7]))
             ev.append(dict(e, event=num, cause=int(rng.choice([4010, 4260, 7310])), rev=0, dup=True,
-                           end=e["end"] + dt.timedelta(hours=shift)))
+                           start=e["start"] + dt.timedelta(hours=s0), end=e["end"] + dt.timedelta(hours=s1)))
     # event numbers run in the order the reports were filed: a few days after an event ends, a correction weeks later
     for e in ev:
-        lag = int(rng.integers(35, 80)) if e.get("dup") else int(rng.integers(1, 10))
+        lag = int(rng.integers(30, 55)) if e.get("dup") else int(rng.integers(1, 10))
         e["filed"] = (e["end"] + dt.timedelta(days=lag)).date()
     num = 260100
     for e in sorted(ev, key=lambda e: (e["filed"], e["start"], e["unit"])):

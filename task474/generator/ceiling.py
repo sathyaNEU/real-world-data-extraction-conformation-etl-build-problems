@@ -18,10 +18,9 @@ def main(target=None):
     g, m = M.designated(rec, "golden"), M.designated(rec, "load")
     keep = sum((u in g) == (u in m) for u in rec) + (g == m)
     mirror_call = W_CALL * keep / (len(rec) + 1.0)
-    a_g, a_c = B.ask_a(target), B.ask_a(target, "standard9")
-    b_g, b_c = B.ask_b(target), B.ask_b(target, union=False)
-    hit = sum(int(a_g[u] + .5) == int(a_c[u] + .5) for u in rec) + sum(int(b_g.get(u, 0)) == int(b_c.get(u, 0) + .5)
-                                                                       for u in rec)
+    a_g, a_c = B.ask_a(target), B.ask_a(target, "prev")
+    b_g, b_c = B.ask_b(target), B.ask_b(target, "samestart")
+    hit = sum(int(a_g[u] + .5) == int(a_c[u] + .5) for u in rec) + sum(b_g.get(u, 0) == b_c.get(u, 0) for u in rec)
     ask = W_ASK * hit / (2.0 * len(rec))
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask
     print("golden %s; mirror %s" % (g, m))

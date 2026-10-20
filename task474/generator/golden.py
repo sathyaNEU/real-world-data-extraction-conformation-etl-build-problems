@@ -39,7 +39,9 @@ def figures(target):
     a, b = B.ask_a(target), B.ask_b(target)
     rows = {u: dict(mwh=half_up(sum(rec[u]["load"])), hours=len(rec[u]["load"]), designated=u in des,
                     fuel=half_up(a[u]), forced=int(b.get(u, 0)), plant=W.CC[u][0]) for u in units}
-    return dict(call=des, n_call=len(des), n_units=len(units), units=units, rows=rows,
+    gaps = dict(all=sum(v is None for u in units for v in rec[u]["nox"]),
+                start=sum(v is None and 1 <= s <= 3 for u in units for v, s in zip(rec[u]["nox"], rec[u]["since"])))
+    return dict(call=des, gaps=gaps, n_call=len(des), n_units=len(units), units=units, rows=rows,
                 rate={u: round(rate[u], 4) for u in units}, load_route=sorted(u for u in units if load_rate[u] >= W.TARGET),
                 target="%.3f" % W.TARGET, sections=DC.SECTIONS,
                 asks=dict(fuel={u: rows[u]["fuel"] for u in units}, forced={u: rows[u]["forced"] for u in units},
@@ -53,18 +55,17 @@ def write_workbook(path, f):
     ws.title = "Units"
     ws.append(["Combined-cycle units: 2026 ozone season (1 May to 30 September)"])
     ws.append([])
-    hdr = ["Unit", "Facility", "Gross generation (MWh)", "Operating hours", "Designated for SCR upgrade",
-           "Fuel cost ($)", "Forced outage hours"]
+    hdr = ["Unit", "Facility", "Designated for SCR upgrade", "Fuel cost ($)", "Forced outage hours"]
     ws.append(hdr)
     for c in ws[3]:
         c.font = Font(bold=True)
     for u in f["units"]:
         r = f["rows"][u]
-        ws.append([u, r["plant"], r["mwh"], r["hours"], "Yes" if r["designated"] else "No", r["fuel"], r["forced"]])
+        ws.append([u, r["plant"], "Yes" if r["designated"] else "No", r["fuel"], r["forced"]])
     ws.append([])
     ws.append(["Designated: %s (%d of %d)." % (", ".join(f["call"]), f["n_call"], f["n_units"])])
     ws.append(["Prepared by %s, %s." % (W.PEOPLE["engineer"][0], W.MEMO_DATE)])
-    for col, w in zip("ABCDEFG", (8, 16, 22, 16, 26, 14, 20)):
+    for col, w in zip("ABCDE", (8, 16, 26, 14, 20)):
         ws.column_dimensions[col].width = w
     wb.save(path)
 
@@ -103,8 +104,6 @@ def write_memo(path, f):
                             creator=W.COOP, producer=W.COOP, subject="SCR Upgrade Program")
     des = f["call"]
     names = ", ".join(des[:-1]) + " and " + des[-1]
-    lr = f["load_route"]
-    extra = [u for u in des if u not in lr]
     s = [Paragraph("SCR Upgrade Program: 2027 designations", hd),
          Paragraph("To: Board of Directors &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
              W.PEOPLE["engineer"][0], W.PEOPLE["engineer"][1], W.MEMO_DATE), small), Spacer(1, 8),
@@ -114,15 +113,15 @@ def write_memo(path, f):
          Paragraph("The analyzers were out for part of every unit's operating hours, and the outages are not spread "
                    "evenly: most fall in the first hours after a unit starts, when the catalyst is still cold and NOx "
                    "runs several times its steady level. I filled each hour without a measurement from the same unit's "
-                   "measured hours at the same point after a start. A fill from each unit's NOx at the same load would "
-                   "have left %s under the target." % (", ".join(extra[:-1]) + " and " + extra[-1]), body),
+                   "measured hours at the same point after a start. A fill from each unit's NOx at the same load puts "
+                   "steady-state NOx into those hours and would have left the units that cycle hardest under the "
+                   "target.", body),
          chart(f), Spacer(1, 6)]
-    t = [["Unit", "Facility", "MWh", "Hours", "Designated", "Fuel cost", "Forced outage hours"]]
+    t = [["Unit", "Facility", "Designated", "Fuel cost", "Forced outage hours"]]
     for u in f["units"]:
         r = f["rows"][u]
-        t.append([u, r["plant"], "{:,}".format(r["mwh"]), "{:,}".format(r["hours"]), "Yes" if r["designated"] else "No",
-                  "${:,}".format(r["fuel"]), str(r["forced"])])
-    tb = Table(t, colWidths=[.6 * inch, 1.2 * inch, .8 * inch, .6 * inch, .8 * inch, 1.0 * inch, 1.2 * inch])
+        t.append([u, r["plant"], "Yes" if r["designated"] else "No", "${:,}".format(r["fuel"]), str(r["forced"])])
+    tb = Table(t, colWidths=[.7 * inch, 1.6 * inch, 1.0 * inch, 1.2 * inch, 1.4 * inch])
     tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
                             ("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("ALIGN", (2, 0), (-1, -1), "RIGHT")]))
     s.append(tb)

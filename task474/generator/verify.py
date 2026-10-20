@@ -21,8 +21,8 @@ def main(target, golden):
         if not cond:
             fails.append(label)
     g = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(target, "scr_upgrade_program")).pages))
-    ok("pdf read back: rules 2.2, 2.3, 3.2, 3.3", "the NOx the unit emitted while operating" in g and "0.170 lb per MWh"
-       in g and "gas day the hour falls in" in g and "U1, U2 and U3" in g)
+    ok("pdf read back: rules 2.2, 2.3, 3.1, 3.2", "the NOx the unit emitted while operating" in g and "0.170 lb per MWh"
+       in g and "gas day the hour falls in" in g and "later report stands" in g)
     rec = B.record(target)
     call = M.designated(rec, "golden")
     ok("the call: %s" % ", ".join(call), call == ["AF-1", "AF-2", "CB-1", "DF-1", "DF-3", "SR-1", "SR-2"])
@@ -31,10 +31,8 @@ def main(target, golden):
     rows = {r[0]: r for i, r in enumerate(ws.iter_rows(values_only=True)) if i >= 3 and r and r[0] in rec}
     for u in sorted(rec):
         w = rows[u]
-        mwh = int(sum(rec[u]["load"]) + .5)
-        ok("%s: %d MWh, %d hours, %s, $%d, %d hours" % (u, mwh, len(rec[u]["load"]), w[4], int(a[u] + .5), b.get(u, 0)),
-           w[2] == mwh and w[3] == len(rec[u]["load"]) and (w[4] == "Yes") == (u in call) and w[5] == int(a[u] + .5)
-           and w[6] == b.get(u, 0))
+        ok("%s: %s, $%d, %d hours" % (u, w[2], int(a[u] + .5), b.get(u, 0)),
+           (w[2] == "Yes") == (u in call) and w[3] == int(a[u] + .5) and w[4] == b.get(u, 0))
     m = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(golden, "scr_upgrade_designations")).pages))
     ok("the memo designates the seven", "AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2" in m)
     print("verify: %d failures" % len(fails))

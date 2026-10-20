@@ -1,29 +1,29 @@
 {
  "asks": {
   "forced": {
-   "AF-1": 63,
-   "AF-2": 192,
-   "CB-1": 91,
-   "CB-2": 178,
-   "DF-1": 64,
-   "DF-2": 263,
-   "DF-3": 166,
+   "AF-1": 61,
+   "AF-2": 179,
+   "CB-1": 89,
+   "CB-2": 192,
+   "DF-1": 65,
+   "DF-2": 258,
+   "DF-3": 164,
    "SR-1": 164,
-   "SR-2": 102
+   "SR-2": 104
   },
-  "forced_total": 1283,
+  "forced_total": 1276,
   "fuel": {
-   "AF-1": 3584030,
-   "AF-2": 3151158,
-   "CB-1": 2643686,
-   "CB-2": 4459089,
-   "DF-1": 4313384,
-   "DF-2": 3686807,
-   "DF-3": 3324120,
-   "SR-1": 3782559,
-   "SR-2": 3798499
+   "AF-1": 3584023,
+   "AF-2": 3151161,
+   "CB-1": 2643651,
+   "CB-2": 4459104,
+   "DF-1": 4313387,
+   "DF-2": 3686805,
+   "DF-3": 3324141,
+   "SR-1": 3782581,
+   "SR-2": 3798463
   },
-  "fuel_total": 32743332
+  "fuel_total": 32743316
  },
  "call": [
   "AF-1",
@@ -34,6 +34,10 @@
   "SR-1",
   "SR-2"
  ],
+ "gaps": {
+  "all": 542,
+  "start": 405
+ },
  "load_route": [
   "AF-2",
   "CB-1",
@@ -55,56 +59,56 @@
  "rows": {
   "AF-1": {
    "designated": true,
-   "forced": 63,
-   "fuel": 3584030,
+   "forced": 61,
+   "fuel": 3584023,
    "hours": 1027,
-   "mwh": 162546,
+   "mwh": 162545,
    "plant": "Ashfork"
   },
   "AF-2": {
    "designated": true,
-   "forced": 192,
-   "fuel": 3151158,
+   "forced": 179,
+   "fuel": 3151161,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"
   },
   "CB-1": {
    "designated": true,
-   "forced": 91,
-   "fuel": 2643686,
+   "forced": 89,
+   "fuel": 2643651,
    "hours": 732,
-   "mwh": 116713,
+   "mwh": 116711,
    "plant": "Cutler Bend"
   },
   "CB-2": {
    "designated": false,
-   "forced": 178,
-   "fuel": 4459089,
+   "forced": 192,
+   "fuel": 4459104,
    "hours": 1164,
-   "mwh": 199640,
+   "mwh": 199641,
    "plant": "Cutler Bend"
   },
   "DF-1": {
    "designated": true,
-   "forced": 64,
-   "fuel": 4313384,
+   "forced": 65,
+   "fuel": 4313387,
    "hours": 1076,
-   "mwh": 198574,
+   "mwh": 198573,
    "plant": "Dunmore Flats"
   },
   "DF-2": {
    "designated": false,
-   "forced": 263,
-   "fuel": 3686807,
+   "forced": 258,
+   "fuel": 3686805,
    "hours": 935,
    "mwh": 175633,
    "plant": "Dunmore Flats"
   },
   "DF-3": {
    "designated": true,
-   "forced": 166,
-   "fuel": 3324120,
+   "forced": 164,
+   "fuel": 3324141,
    "hours": 908,
    "mwh": 157196,
    "plant": "Dunmore Flats"
@@ -112,25 +116,24 @@
   "SR-1": {
    "designated": true,
    "forced": 164,
-   "fuel": 3782559,
+   "fuel": 3782581,
    "hours": 1007,
-   "mwh": 175419,
+   "mwh": 175420,
    "plant": "Sable Ridge"
   },
   "SR-2": {
    "designated": true,
-   "forced": 102,
-   "fuel": 3798499,
+   "forced": 104,
+   "fuel": 3798463,
    "hours": 1015,
-   "mwh": 178221,
+   "mwh": 178218,
    "plant": "Sable Ridge"
   }
  },
  "sections": {
   "designation": "2.3",
-  "fuel": "3.2",
-  "generation": "3.1",
-  "outages": "3.3",
+  "fuel": "3.1",
+  "outages": "3.2",
   "rate": "2.2",
   "units": "2.1"
  },

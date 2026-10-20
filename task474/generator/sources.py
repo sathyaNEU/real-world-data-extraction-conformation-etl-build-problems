@@ -46,7 +46,7 @@ def cc_unit(rng, key):
     lvl = np.clip(rng.normal(.74, .14, NH), .42, 1.0)
     load = np.where(on, cap * lvl, 0.0)
     load = np.where((s >= 1) & (s <= 3), load * RAMP[np.minimum(s, 3)], load)
-    load = np.round(load, 1)
+    load = np.round(load, 2)
     low = np.clip((cap * .72 - load) / cap, 0, 1)
     lb = np.where(on, base * load * (1 + .7 * low) * np.exp(rng.normal(0, .09, NH)), 0.0)
     st = (s >= 1) & (s <= 3)
