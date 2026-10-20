@@ -105,7 +105,8 @@
       ]
     }
   ],
-  "notes": "architecture 2 drawn 2026-10-20 after six screens on the old world died; registered with --force over the slot's spent v1 card",
+  "notes": "architecture 2 spent at stage 4 on 2026-10-20: a round-2 reader landed the call with the start-state fill (score_reader exit 1); re-root next",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-20T12:46:43Z"
+  "registered": "2026-10-20T12:46:43Z",
+  "architecture_spent": true
 }

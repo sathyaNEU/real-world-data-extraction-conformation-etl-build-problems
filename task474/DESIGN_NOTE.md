@@ -280,4 +280,10 @@ data and no reported total ships; the allowance holdings are by facility and ton
   re-report as a fork (union against the later report). Generation and hours left the deliverables, rule 3.2 files
   that the later report stands, re-reports correct the start as well, and one invoice month per delivery point is
   missing; a generation total that sat on a half MWh is gone with the two-decimal load.
+- Architecture 2 (combined-cycle NOx with monitor gaps filled by hours since start): spent at stage 4 on 2026-10-20.
+  The judge returned DETERMINISTIC and APPROVE and readers 1 and 2 missed the call (two and four units), but round-2
+  reader 3 filled the start hours by position after a start unprompted, designated the golden seven and kept all 18
+  ask figures (score_reader exit 1); the judge had already named the start-state fill the field's standard handling of
+  missing monitor hours. A gap filled by the condition that causes it is a repair a careful analyst reaches; the next
+  architecture needs a decisive step no standard repair performs.
 
