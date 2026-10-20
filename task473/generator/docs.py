@@ -125,11 +125,13 @@ def write_guidelines(path):
         ("3. Applications", [
             "%s Each application states its county's 2025 baselines, which the Center certifies with the list:" %
             SECTIONS["baselines"],
-            "(a) the impaired-driving arrests made in the county in 2025 for which the %s received a blood specimen, "
-            "and the per cent of those arrests in which the laboratory's whole-blood ethanol result for the first "
-            "specimen collected was .15 g/dL or more; and" % W.LAB,
+            "(a) the impaired-driving arrests made in the county in 2025 for which the %s received a blood specimen "
+            "(an arrest's date is the date in Central time its first specimen was collected), and the per cent of "
+            "all those arrests, a specimen tested only for drugs included, in which the laboratory's whole-blood "
+            "ethanol result for the first specimen collected was .15 g/dL or more; and" % W.LAB,
             "(b) the injury crashes on public roads in the county in 2025 in which no one died within 30 days and the "
-            "investigating officer reported that a driver had been drinking.",
+            "investigating officer reported that a driver had been drinking; an injury crash is one in which someone "
+            "was injured, a possible injury included.",
             "3.2 An application names the county's lead agency, the participating agencies and the prosecutor's "
             "office, and states the task force's FY2028 targets against the 2025 baselines. Applications are due "
             "15 June 2027."]),

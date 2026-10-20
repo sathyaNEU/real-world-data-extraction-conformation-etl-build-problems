@@ -19,7 +19,7 @@ CORONER_ID = {c["fips"]: "CO%s00" % c["fips"] for c in W.COUNTIES}
 ME_ID = "ME00000"
 ME_COUNTIES = ("013", "011", "023")          # the medical examiner takes these counties' deaths
 # impaired-driving arrests with a blood specimen to the laboratory, per 100 million vehicle miles a year
-ARREST_RATE = {"001": 7.4, "003": 9.6, "005": 8.1, "007": 6.9, "009": 6.2, "011": 8.8, "013": 7.14, "015": 7.9,
+ARREST_RATE = {"001": 7.36, "003": 9.6, "005": 8.1, "007": 6.9, "009": 6.2, "011": 8.8, "013": 7.14, "015": 7.9,
                "017": 8.3, "019": 7.6, "021": 6.6, "023": 6.4, "025": 7.0, "027": 12.9}
 
 

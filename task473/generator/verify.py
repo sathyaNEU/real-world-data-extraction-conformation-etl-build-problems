@@ -53,6 +53,9 @@ def main(target, golden):
     ok("pdf read back: the crash records notes (latest accepted version)",
        "A report as it stands is its latest accepted version." in crs_notes)
     ok("the call: %s" % ", ".join(call), call == ["Corwin", "Hatchell", "Ossian", "Tanager"])
+    bt, e_ipw, e_pool = B.backtest(B.observed(cr, comp))
+    ok("the State Patrol back-test, each post held out: the catch rates miss by %.2f, the one unarrested share by "
+       "%.2f" % (e_ipw, e_pool), len(bt) == 14 and e_pool > 2.5 * e_ipw)
     with open(B.find(golden, "county_impaired_driving_rates"), encoding="utf-8") as fh:
         rows = {r["county_fips"]: r for r in csv.DictReader(fh)}
     a = B.ask_a(B.lab(target), dr)

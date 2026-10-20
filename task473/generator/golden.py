@@ -14,6 +14,7 @@ from reportlab.lib.styles import ParagraphStyle                     # noqa: E402
 from reportlab.lib.units import inch                                # noqa: E402
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
+import bundle as B    # noqa: E402
 import docs as DC     # noqa: E402
 import lab as L       # noqa: E402
 import methods as M   # noqa: E402
@@ -56,6 +57,7 @@ def figures(x):
            and d["bac"] >= M.LO]
     one_catch = 100.0 * sum(1 for d in imp if d["arrested"]) / len(imp)
     tan = next(r for r in fig["rows"] if r["fips"] == "027")
+    _, bt_ipw, bt_pool = B.backtest(obs)
     found = {}
     for cr in obs:
         if cr["fips"] != "027":
@@ -75,7 +77,8 @@ def figures(x):
                 catch_lo="%.1f" % (100 * catch[0]), catch_hi="%.1f" % (100 * catch[1]),
                 weight_lo="%.1f" % (1 / catch[0]), weight_hi="%.3f" % (1 / catch[1]),
                 rival_share=rival["R6"], share_pct="%.1f" % share, rival_one=rival["R8"],
-                one_catch_pct="%.1f" % one_catch, tanager_found_lo=found.get(0, 0),
+                one_catch_pct="%.1f" % one_catch, bt_ipw="%.1f" % bt_ipw, bt_pool="%.1f" % bt_pool,
+                tanager_found_lo=found.get(0, 0),
                 tanager_found_hi=found.get(1, 0), tanager_missed="%.1f" % missed_t,
                 tanager_rate=_r2(tan["rate"]), threshold="%.2f" % W.THRESHOLD, sections=DC.SECTIONS,
                 window_days=DC.WINDOW_DAYS, leap_days=366, serum="%.2f" % L.SERUM)
@@ -174,7 +177,7 @@ def write_letter(path, f):
              Paragraph("%s<br/>%s<br/>%s" % (ghso_name, ghso_title, W.GHSO), body),
              Paragraph("<b>Re: Four counties certified high-range for the FY2028 County Impaired Driving Task Force "
                        "grants</b>", body),
-             Paragraph("Dear Ms. Brooks,", body),
+             Paragraph("Dear %s," % ghso_name, body),
              Paragraph("Under section 2.1 of the FY2028 program guidelines, the Center certifies %s (%s alcohol-"
                        "impaired-driving fatalities per 100 million vehicle miles, 2023 to 2025), %s (%s), %s (%s) "
                        "and %s (%s) as high-range for FY2028. The other ten counties are below 0.60; the nearest is "
@@ -185,8 +188,10 @@ def write_letter(path, f):
                        "and city agencies draw it only after an arrest at the scene. Where every driver is tested, "
                        "officers arrested %s per cent of the drivers between .08 and .149 and %s per cent of those "
                        "at .15 or more, so each arrested driver found at .08 or more elsewhere stands for %s drivers "
-                       "in the lower band and %s in the higher. Tanager's arrests are mostly in the lower band." % (
-                           f["catch_lo"], f["catch_hi"], f["weight_lo"], f["weight_hi"]), body),
+                       "in the lower band and %s in the higher. Tanager's county and city agencies arrested %d such "
+                       "drivers in the lower band and %d in the higher, which puts %s impaired surviving drivers "
+                       "there untested." % (f["catch_lo"], f["catch_hi"], f["weight_lo"], f["weight_hi"],
+                                            f["tanager_found_lo"], f["tanager_found_hi"], f["tanager_missed"]), body),
              Spacer(1, 4), chart(f),
              Paragraph("Figure 1. Each county's 2023 to 2025 rate against the 0.60 line (guidelines %s); Table 1 "
                        "gives every county's figures." % sec["rate"], cap),

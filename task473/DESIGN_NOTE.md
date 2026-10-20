@@ -108,7 +108,7 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
    in the crash records manual: the State Patrol and the Corwin and Ossian sheriffs draw blood from every surviving
    driver, other county and city agencies only from a driver arrested at the scene.
 3. Measured, at the agencies that draw every surviving driver, the share of drivers not arrested at the scene who
-   were at .08 or more (7.5 per cent), and gave that probability to every untested, unarrested surviving driver of
+   were at .08 or more (7.2 per cent), and gave that probability to every untested, unarrested surviving driver of
    the other agencies; every killed driver and every arrested driver has a result.
 4. Gave each crash the probability that at least one of its drivers was at .08 or more, summed its deaths, divided the
    three years' deaths by the three years' vehicle miles and compared with 0.60.
@@ -176,9 +176,9 @@ impaired, taken where every driver is tested, certifies the default path's list.
 Analyst test: a strong analyst who reads every file and rule correctly gives every unarrested surviving driver of
 the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and
 certifies Corwin, Hatchell, Ossian and Pruett (the default path's Ends on); a model of impairment on arrest and
-county fitted to the tested drivers, or one arrest share pooled over the testing agencies, certifies Brisbin, Corwin,
-Hatchell and Ossian; only the catch rate at each positive's own BAC band certifies Corwin, Hatchell, Ossian and
-Tanager.
+county fitted to the tested drivers certifies Corwin, Hatchell and Ossian alone, and one arrest share pooled over the
+testing agencies certifies Brisbin, Corwin, Hatchell and Ossian; only the catch rate at each positive's own BAC band
+certifies Corwin, Hatchell, Ossian and Tanager.
 
 Estimand: the GHSO's FY2028 County Impaired Driving Task Force guidelines (section 2, in the pack): a county is
 high-range when its 2023 to 2025 alcohol-impaired-driving fatalities, every death within 30 days of a crash in the
@@ -240,35 +240,38 @@ Built figures, read from the cut pack by `generator/checks.py` (rates per 100 mi
 - **R1, each untested driver at the county's tested share (seven counties).** The arrest-only agencies' tested
   drivers are their arrested drivers, so their share at .08 or more is no guide to the drivers they let go. Dies to
   the manual's specimen sentence (4.2).
-- **R6, the default path: one unarrested share for every county (Corwin, Hatchell, Ossian, Pruett).** 7.5 per cent of
+- **R6, the default path: one unarrested share for every county (Corwin, Hatchell, Ossian, Pruett).** 7.2 per cent of
   the complete agencies' unarrested surviving drivers were at .08 or more; given to every unarrested driver of the
-  arrest-only agencies, it drops Tanager (0.51) and adds Pruett (0.63). Dies to the complete agencies themselves:
-  their unarrested share differs between the State Patrol and the two sheriffs with their drivers' BAC mix, while the
-  catch rate within each BAC band does not.
-- **R2, a logistic model on arrest and county (Brisbin, Corwin, Hatchell, Ossian).** One arrest effect for every
-  county; dies to the arrested positives' bands: Tanager's sit mostly below .15 and Brisbin's at .15 or more, and the
+  arrest-only agencies, it drops Tanager (0.51) and adds Pruett (0.62). Dies to the State Patrol's own record: each
+  post tests every surviving driver, so it can be held out and completed from its arrests alone as if it were an
+  arrest-only agency; with the rates taken from every other complete agency, one unarrested share misses the post's
+  unarrested drivers at .08 or more by 3.4 (root mean square over the 14 posts) and the band catch rates by 1.1, the
+  share missing worse at 9 posts, because a post's unarrested impaired drivers follow its mix of bands, not its
+  count of unarrested drivers.
+- **R2, a logistic model on arrest and county (Corwin, Hatchell, Ossian).** One arrest effect for every county; dies
+  to the arrested positives' bands: half of Tanager's sit below .15 and all of Brisbin's at .15 or more, and the
   complete agencies show an arrest catches 28.6 per cent of the first and 88.9 per cent of the second, so one arrest
-  effect fits neither. Brisbin 0.63, Tanager 0.57.
-- **R8, one catch rate for every BAC (Brisbin, Corwin, Hatchell, Ossian).** The complete agencies arrest 58.2 per cent
+  effect fits neither. Brisbin 0.56, Tanager 0.54.
+- **R8, one catch rate for every BAC (Brisbin, Corwin, Hatchell, Ossian).** The complete agencies arrest 60.9 per cent
   of their impaired surviving drivers; dividing each county's arrested positives by it misprices every county whose
   positives sit at another mix of bands. Dies to the catch rate by band: 28.6 per cent at .08 to .149 and 88.9 per
-  cent at .15 or more, the same at the State Patrol, at the two sheriffs and in every sub-band. Brisbin 0.72,
-  Tanager 0.54.
+  cent at .15 or more, the same at the State Patrol, at the two sheriffs and in every sub-band. Brisbin 0.68,
+  Tanager 0.55.
 - **R5 (Corwin, Hatchell, Ossian, Pruett), R4 (Corwin, Hatchell, Ossian, Pruett), R3 (seven counties).** Transports
   of a completely tested group's prevalence or tested share; each dies to the complete agencies' prevalence differing
   between them and from the killed drivers'.
 - **G, the decisive move (Corwin, Hatchell, Ossian, Tanager).** Each county's missed impaired survivors are its
   arrested positives at .08 to .149 times five halves plus those at .15 or more times one eighth (one over 28.6 and
-  88.9 per cent, less the positive itself); in Tanager 9 and 5 positives give 23.1 missed drivers over 89 untested
+  88.9 per cent, less the positive itself); in Tanager 8 and 8 positives give 21.0 missed drivers over 87 untested
   ones.
-- **Margins (cut pack):** the golden's nearest county is Kittredge, 5.4 per cent below the line, and Tanager sits 11
-  per cent above it; R6 keeps Pruett 4.7 per cent above the line and every county at least 3 per cent from it, R2 and
-  R8 likewise for Brisbin, and every one of R0, R6, R6c, R2, R8 and R5 leaves Tanager at least 2 points below the
+- **Margins (cut pack):** the golden's nearest county is Kittredge, 5.0 per cent below the line, and Tanager sits 10
+  per cent above it; R6 keeps Pruett 3.6 per cent above the line and every county at least 3 per cent from it, R8
+  likewise for Brisbin (13 per cent above), R2 every county at least 6 per cent from it, and every one of R0, R6, R6c, R2, R8 and R5 leaves Tanager at least 2 points below the
   line.
 - **Position, separation and dominance:** a designation, not a ranking: every rung names a set that differs from the
   golden in Tanager or adds Brisbin or Pruett; only the band-by-band completion brings Tanager in and keeps Brisbin
   and Pruett out together. The true deaths (every driver's BAC known, generator only) certify the same four.
-- **Worth:** the call and the 14 rates; R6 keeps 2 of 14 rates and 1 of 14 deaths in their cells, so the asks carry
+- **Worth:** the call and the 14 rates; R6 keeps 5 of 14 rates and 2 of 14 deaths in their cells, so the asks carry
   the pair (Ask sheet).
 
 ## Closure table
@@ -308,9 +311,10 @@ the scene. One thing is left open: how the untested surviving drivers' BAC is co
 tested share (R1), one unarrested share (R6), a model on arrest (R2), one catch rate (R8), a complete subset's
 prevalence or share (R5, R4, R3) and the catch rate at each positive's band (G). The data separate them: at the
 agencies that test every driver the catch rate is 28.6 per cent in every sub-band from .08 to .149 and 88.9 per cent
-in every sub-band from .15, the same at the State Patrol and at the two sheriffs, while their unarrested share (7.1
-against 12.0 per cent) and their prevalence differ with their drivers' mix, and the arrest-only counties' positives
-sit at different bands (Tanager's 36 per cent at .15 or more, Brisbin's all); only the band rates are invariant, and
+in every sub-band from .15, the same at the State Patrol and at the two sheriffs; held out post by post, the State
+Patrol's own drivers reject one unarrested share (root mean square miss 3.4 against 1.1 for the band rates, the share
+worse at 9 of 14 posts); and the arrest-only counties' positives sit at different bands (Tanager's half at .15 or
+more, Brisbin's all), so one catch rate or one arrest effect misprices both; only the band rates are invariant, and
 every member of G's family (pooled, the State Patrol alone or the sheriffs alone, two bands, four or six sub-bands,
 missed drivers spread evenly, over the crashes not otherwise counted or at the found drivers' crash deaths, a crash's
 chances combined or summed) gives the same four counties, every county's deaths in the same whole number and every
@@ -378,8 +382,8 @@ designation's basis.
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
   them as the cracker does).
-- Pair ceiling: 28.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
-  and none of the 42 ask figures; the mirror, R6, keeps 2 of 14 rates and 1 of 14 deaths in their cells, 12.0).
+- Pair ceiling: 30.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
+  and none of the 42 ask figures; the mirror, R6, keeps 5 of 14 rates and 2 of 14 deaths in their cells, 16.0).
 - Measured by: generator/ceiling.py.
 
 ## Pre-ship check
@@ -393,8 +397,8 @@ designation's basis.
   laboratory or crash records row. Three rules: no decoy or withheld rule ships (R3c), no field reading decides
   (every SF row converges or is ruled out by a filed sentence), and executing every filed rule with one share of
   unarrested drivers impaired certifies Corwin, Hatchell, Ossian and Pruett (R3a).
-- **Free gates (2026-10-20):** checks.py 98 of 98, verify.py clean, two builds byte-identical, target.zip cut from
-  the final build (18 files), figures_check.py 103 of 103, precut.py 51 checks clean, voice-check clean, guard.py
+- **Free gates (2026-10-20):** checks.py 102 of 102, verify.py clean, two builds byte-identical, target.zip cut from
+  the final build (18 files), figures_check.py 105 of 105, precut.py 51 checks clean, voice-check clean, guard.py
   surface clean and heart WARN after a pull (shape and Gate G overuse, answered at the draw), containers clean.
 - **leak.py REVIEW lines, each harmless:** the guidelines carry the program's own name (high-range, FY2028, County
   Impaired Driving Task Force grants), which the call repeats; the manual, the guidelines and the laboratory's and
@@ -447,3 +451,9 @@ designation's basis.
   misses coming from dropping cancelled requests, a reading rather than a device. Both kept as hazards; cancelled
   requests kept out of 2025; primaries re-sited to the jail's second submissions (Ask A) and the census's death
   investigation numbers (Ask B).
+- 2026-10-20, judge pass 1: the completion left open with the data not forcing it; a county-level back-test on the
+  State Patrol's own drivers favoured one unarrested share over the band catch rates (Gate C,
+  competing_defensible_answer). Filing the completion was refused (it turns the decisive step into rule application);
+  the knobs were recut instead (per-county mix of bands, more impaired survivors at the posts, per-post protocol
+  rows) until the held-out back-test rejects the share (3.4 against 1.1), asserted in checks.py and verify.py. The
+  three ask forks it named (Central time, the per cent's base, possible injuries) are pinned in guidelines 3.1.

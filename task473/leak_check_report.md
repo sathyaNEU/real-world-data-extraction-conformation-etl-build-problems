@@ -1,6 +1,6 @@
 # leak check, task473
 
-**Verdict: REVIEW.** 18 files read, 49 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 48 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -14,6 +14,9 @@ Stump terms swept: drivers, tested, agencies, arrest, guidelines, untested, corw
 - **REVIEW** `fcc_reference_manual_2024_ed.pdf`: 14 of 25 stump-paragraph terms appear (drivers, tested, arrest, corwin, ossian, surviving); read whether the document names the move
 - **REVIEW** `ghso_fy2028_county_task_force_guidelines.pdf`: 10 of 25 stump-paragraph terms appear (drivers, tested, agencies, arrest, guidelines, records); read whether the document names the move
 - **REVIEW** `stl_extract_notes.txt`: 6 of 25 stump-paragraph terms appear (arrest, records, agency, center, patrol, result); read whether the document names the move
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -29,7 +32,5 @@ Stump terms swept: drivers, tested, agencies, arrest, guidelines, untested, corw
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)

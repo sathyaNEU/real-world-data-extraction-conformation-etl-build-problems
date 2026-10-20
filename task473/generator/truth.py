@@ -13,7 +13,7 @@ AGENCY_GROUPS = ("SP", "SO", "PD")
 # vehicles, one driver killed; MVS two vehicles, both drivers survived, an occupant killed; PED a pedestrian or
 # pedalcyclist killed by a vehicle whose driver survived; MCK motorcycle rider killed (single vehicle)
 TYPES = ("SVK", "SVS", "MVK", "MVS", "PED", "MCK")
-TYPE_MIX = {"SP": (0.34, 0.10, 0.30, 0.12, 0.08, 0.06),
+TYPE_MIX = {"SP": (0.22, 0.10, 0.38, 0.18, 0.07, 0.05),
             "SO": (0.47, 0.13, 0.07, 0.03, 0.13, 0.17),
             "PD": (0.25, 0.13, 0.07, 0.03, 0.41, 0.11)}
 YEAR_SHARE = (0.331, 0.333, 0.336)
@@ -324,6 +324,68 @@ def _agency_key(cr):
     return "SP" if cr.group == "SP" else cr.agency.aid
 
 
+def _table(rows, cols, row_t, col_t, cap, rate):
+    """Whole arrests in each row-by-column cell, every row and column total exact, each cell at most its drivers:
+    a maximum flow from proportional starting values (rows and columns in a fixed order)."""
+    alloc = {(a, i): min(cap[(a, i)], int(rate * cap[(a, i)])) for a in rows for i in cols}
+    for _ in range(10000):
+        rgap = {a: row_t[a] - sum(alloc[(a, i)] for i in cols) for a in rows}
+        cgap = {i: col_t[i] - sum(alloc[(a, i)] for a in rows) for i in cols}
+        if not any(rgap.values()) and not any(cgap.values()):
+            return alloc
+        moved = False
+        # a row short and a column short: add where the cell has room
+        for a in rows:
+            for i in cols:
+                if rgap[a] > 0 and cgap[i] > 0 and alloc[(a, i)] < cap[(a, i)]:
+                    alloc[(a, i)] += 1
+                    rgap[a] -= 1
+                    cgap[i] -= 1
+                    moved = True
+                elif rgap[a] < 0 and cgap[i] < 0 and alloc[(a, i)] > 0:
+                    alloc[(a, i)] -= 1
+                    rgap[a] += 1
+                    cgap[i] += 1
+                    moved = True
+        if moved:
+            continue
+        # otherwise shift one arrest along a two-cell path: row a short in column i full, column j over in row a
+        for a in rows:
+            if rgap[a] == 0:
+                continue
+            s = 1 if rgap[a] > 0 else -1
+            for i in cols:
+                if s * cgap[i] <= 0:
+                    continue
+                for c2 in rows:
+                    if c2 == a:
+                        continue
+                    for j in cols:
+                        if j == i:
+                            continue
+                        ok = (alloc[(a, j)] < cap[(a, j)] and alloc[(c2, j)] > 0 and alloc[(c2, i)] < cap[(c2, i)]) \
+                            if s > 0 else (alloc[(a, j)] > 0 and alloc[(c2, j)] < cap[(c2, j)] and alloc[(c2, i)] > 0)
+                        if ok and s * (row_t[c2] - sum(alloc[(c2, k)] for k in cols)) >= 0:
+                            alloc[(a, j)] += s
+                            alloc[(c2, j)] -= s
+                            alloc[(c2, i)] += s
+                            moved = True
+                            break
+                    if moved:
+                        break
+                if moved:
+                    break
+            if moved:
+                break
+        assert moved, (rgap, cgap)
+    raise AssertionError("no table")
+
+
+def _post_key(cr):
+    """A State Patrol post (one county each) or the two sheriffs together."""
+    return "SP" + cr.fips if cr.group == "SP" else "SO"
+
+
 def _protocol_group(cr):
     """The State Patrol, or the two sheriffs that follow its procedure, taken together."""
     return "SP" if cr.group == "SP" else "SO"
@@ -377,37 +439,30 @@ def _exact_catch(crashes):
                 p.bac = avoid_edges(round(float(rng_for("mvb", cr.cid, p.unit).uniform(lo, hi - 0.0005)), 3))
         for i in sbs:
             assert sum(1 for _, p in rows if subband(p.bac) == i) == target[i], (b, i)
-    # 3. arrests: an integer table agency x sub-band with each agency band and each pooled sub-band exact
+    # 3. arrests: an integer table post x sub-band with each group's band and each pooled sub-band exact
+    groups_ = list(agencies_)
     for b in (0, 1):
         rate = W.CATCH[b]
         sbs = [i for i, (lo, hi) in enumerate(W.SUBBANDS) if (lo < 0.150) == (b == 0)]
-        cells = {(a, i): [(cr, p) for cr, p in prot if p.band == b and _protocol_group(cr) == a and subband(p.bac) == i]
-                 for a in agencies_ for i in sbs}
-        row_t = {a: int(round(rate * sum(len(cells[(a, i)]) for i in sbs))) for a in agencies_}
+        posts = sorted({_post_key(cr) for cr, p in prot})
+        cells = {(a, i): [(cr, p) for cr, p in prot if p.band == b and _post_key(cr) == a and subband(p.bac) == i]
+                 for a in posts for i in sbs}
+        group_t = {g: int(round(rate * sum(1 for cr, p in prot if p.band == b and _protocol_group(cr) == g)))
+                   for g in groups_}
+        # each post's arrests are the nearest whole numbers to the band rate that add to its group's exact total
+        row_t = {}
+        for g in groups_:
+            mine = [a for a in posts if a.startswith(g)]
+            ideal = {a: rate * sum(len(cells[(a, i)]) for i in sbs) for a in mine}
+            row = {a: int(ideal[a]) for a in mine}
+            rest = group_t[g] - sum(row.values())
+            for a in sorted(mine, key=lambda a: (-(ideal[a] - int(ideal[a])), a))[:rest]:
+                row[a] += 1
+            row_t.update(row)
+        agencies_ = posts
         col_t = {i: int(round(rate * sum(len(cells[(a, i)]) for a in agencies_))) for i in sbs}
         assert sum(row_t.values()) == sum(col_t.values())
-        alloc = {k: 0 for k in cells}
-        # greedy by cell size, proportional first, then fix the margins
-        for (a, i), v in cells.items():
-            alloc[(a, i)] = min(len(v), int(math.floor(rate * len(v))))
-        for _ in range(1000):
-            ok = True
-            for a in agencies_:
-                d = row_t[a] - sum(alloc[(a, i)] for i in sbs)
-                for i in sorted(sbs, key=lambda i: -(col_t[i] - sum(alloc[(x, i)] for x in agencies_))):
-                    if d == 0:
-                        break
-                    col_gap = col_t[i] - sum(alloc[(x, i)] for x in agencies_)
-                    if d > 0 and alloc[(a, i)] < len(cells[(a, i)]) and col_gap > 0:
-                        alloc[(a, i)] += 1
-                        d -= 1
-                        ok = False
-                    elif d < 0 and alloc[(a, i)] > 0 and col_gap < 0:
-                        alloc[(a, i)] -= 1
-                        d += 1
-                        ok = False
-            if ok:
-                break
+        alloc = _table(agencies_, sbs, row_t, col_t, {k: len(v) for k, v in cells.items()}, rate)
         for a in agencies_:
             assert sum(alloc[(a, i)] for i in sbs) == row_t[a], ("row", b, a)
         for i in sbs:
@@ -471,7 +526,7 @@ def set_levels(crashes, vmt):
         f = c["fips"]
         tgt = knobs(f)["target"] * vmt[f] / 1e8
         mine = [cr for cr in crashes if cr.fips == f]
-        cand = [cr for cr in mine if cr.type in ("SVK", "MCK")]
+        cand = [cr for cr in mine if cr.type in ("SVK", "MCK") and not any(p.late_death for p in cr.persons)]
         cand.sort(key=lambda cr: rng_for("lvl", cr.cid).random())
         for _ in range(400):
             g = M.route(observe(mine), "G", catch=catch).get(f, 0.0)

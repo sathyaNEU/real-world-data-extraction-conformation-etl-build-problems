@@ -11,7 +11,7 @@
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Corwin, Hatchell, Ossian and Tanager are high-range for the FY2028 County Impaired Driving Task Force grants (2023 to 2025 rates 0.74, 0.67, 0.69 and 0.67 per 100 million vehicle miles; the nearest below, Kittredge, at 0.57).",
+  "answer": "Corwin, Hatchell, Ossian and Tanager are high-range for the FY2028 County Impaired Driving Task Force grants (2023 to 2025 rates 0.71, 0.68, 0.68 and 0.66 per 100 million vehicle miles; the nearest below, Kittredge, at 0.57).",
   "answer_source": "task473/submission.md block 1, from generator/figures.json; the bundle reader (generator/bundle.py) and the independent verifier (generator/verify.py) recompute it from target/",
   "gap": [
     "population"
@@ -49,7 +49,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "stl_specimen_extract_2023_2025.csv",
-    "rows": 31082,
+    "rows": 31781,
     "entity": "one analysis of one tube of a specimen kit the State Toxicology Laboratory received",
     "grain": "analysis",
     "source": "synthetic"

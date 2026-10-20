@@ -53,7 +53,9 @@ def write(fig_path, out_path):
         "numbers and former codes: the State Patrol posts and the Corwin and Ossian sheriffs." % (
             f["sections"]["testing"], W.FILES["agencies"]),
         "3. At those agencies, divided the arrested surviving drivers by all surviving drivers in each band, .08 to "
-        ".149 and .15 or more: %s%% and %s%%." % (f["catch_lo"], f["catch_hi"]),
+        ".149 and .15 or more: %s%% and %s%%; holding out each State Patrol post in turn, these rates recover its "
+        "unarrested drivers at .08 or more from its arrests with a root mean square miss of %s drivers, against %s "
+        "for one unarrested share." % (f["catch_lo"], f["catch_hi"], f["bt_ipw"], f["bt_pool"]),
         "4. At every other agency, counted each arrested driver found at .08 or more as one over its band's catch "
         "rate (%s and %s), the excess being that county's untested impaired surviving drivers (%s in Tanager), "
         "and gave each of the county's untested surviving drivers the excess divided by their number." % (

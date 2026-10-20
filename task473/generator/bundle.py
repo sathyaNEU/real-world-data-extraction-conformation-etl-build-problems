@@ -189,6 +189,31 @@ def golden_g(obs, miles):
     return dict(catch=catch, missed=missed, untested=untested, deaths=deaths, rates=rates)
 
 
+def backtest(obs):
+    """The State Patrol posts test every surviving driver, so each post's arrests can be completed as if it were an
+    arrest-only agency and checked against its own unarrested drivers at .08 or more. Each post is held out: the
+    catch rates (and the one unarrested share) come from every other complete agency. Returns each post's actual
+    count, the catch-rate completion and the pooled share's, and the two root mean squared errors."""
+    rows = [(cr["fips"], d) for cr in obs for d in cr["drivers"]
+            if d["complete"] and d["tested"] and not d["killed"]]
+    out = {}
+    for f in sorted({f for f, d in rows if d["agency"] == "SP"}):
+        mine = [d for g, d in rows if g == f and d["agency"] == "SP"]
+        rest = [d for g, d in rows if not (g == f and d["agency"] == "SP")]
+        catch = {}
+        for b, lo, hi in ((0, 0.080, 0.150), (1, 0.150, 9.9)):
+            r = [d for d in rest if lo <= d["bac"] < hi]
+            catch[b] = sum(1 for d in r if d["arrested"]) / float(len(r))
+        un = [d for d in rest if not d["arrested"]]
+        share = sum(1 for d in un if d["bac"] >= 0.080) / float(len(un))
+        actual = sum(1 for d in mine if not d["arrested"] and d["bac"] >= 0.080)
+        ipw = sum(1.0 / catch[0 if d["bac"] < 0.150 else 1] - 1.0 for d in mine if d["arrested"] and d["bac"] >= 0.080)
+        pooled = share * sum(1 for d in mine if not d["arrested"])
+        out[f] = (actual, ipw, pooled)
+    rmse = lambda k: (sum((v[k] - v[0]) ** 2 for v in out.values()) / len(out)) ** 0.5
+    return out, rmse(1), rmse(2)
+
+
 # ------------------------------------------------------------------------------------------------- the laboratory
 def lab(target):
     return read_csv(find(target, "stl_specimen_extract"))

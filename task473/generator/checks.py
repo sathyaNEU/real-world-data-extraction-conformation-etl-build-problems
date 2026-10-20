@@ -20,7 +20,7 @@ import world as W
 RESULTS = []
 GOLD = ["Corwin", "Hatchell", "Ossian", "Tanager"]
 LADDER = {"R0": ["Corwin", "Hatchell", "Ossian"], "R6": ["Corwin", "Hatchell", "Ossian", "Pruett"],
-          "R2": ["Brisbin", "Corwin", "Hatchell", "Ossian"], "R8": ["Brisbin", "Corwin", "Hatchell", "Ossian"],
+          "R2": ["Corwin", "Hatchell", "Ossian"], "R8": ["Brisbin", "Corwin", "Hatchell", "Ossian"],
           "R5": ["Corwin", "Hatchell", "Ossian", "Pruett"], "G": GOLD}
 
 
@@ -160,7 +160,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     if F:
         check("ladder the default path's share of unarrested drivers at .08 or more is %s per cent and one catch "
               "rate for every BAC %s per cent" % (F["share_pct"], F["one_catch_pct"]),
-              6.0 < float(F["share_pct"]) < 8.0 and 50.0 < float(F["one_catch_pct"]) < 60.0)
+              6.0 < float(F["share_pct"]) < 8.0 and 50.0 < float(F["one_catch_pct"]) < 65.0)
     # the complete agencies separate the candidates: the catch rate is the same in every sub-band of a band, at the
     # State Patrol and at the two sheriffs, while one rate for every BAC is not
     sb6 = M.catch_rates(obs, subbands=M.G_FAMILY["six_subbands"]["subbands"])
@@ -179,16 +179,15 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
                 found.setdefault(c["fips"], [0, 0])[0 if d["bac"] < 0.15 else 1] += 1
     hi_share = {f: v[1] / float(sum(v)) for f, v in found.items() if sum(v) >= 8}
     check("ladder the arrest-only counties' positives sit at different bands (share at .15 or more %.2f to %.2f): "
-          "Tanager's mostly below .15, Brisbin's above" % (min(hi_share.values()), max(hi_share.values())),
-          hi_share["027"] < 0.4 and hi_share["003"] > 0.9)
+          "Tanager's half below .15, Brisbin's all above" % (min(hi_share.values()), max(hi_share.values())),
+          hi_share["027"] <= 0.5 and hi_share["003"] > 0.9)
 
-    unarr = {}
-    for grp, ags in (("SP", {"SP"}), ("SO", {"SO00500", "SO01900"})):
-        rows_ = [d for o in obs for d in o["drivers"] if d["complete"] and d["tested"] and not d["arrested"] and
-                 d["agency"] in ags]
-        unarr[grp] = sum(1 for d in rows_ if d["bac"] >= 0.08) / float(len(rows_))
-    check("ladder R6 dies to the complete agencies: their unarrested share differs (State Patrol %.3f, sheriffs %.3f) "
-          "while the catch rates are the same" % (unarr["SP"], unarr["SO"]), abs(unarr["SP"] - unarr["SO"]) > 0.02)
+    bt, e_ipw, e_pool = B.backtest(obs)
+    check("ladder R6 dies to the State Patrol's own record: each post held out and completed from its arrests, the "
+          "catch rates miss its unarrested drivers at .08 or more by %.2f (root mean square over %d posts), the one "
+          "unarrested share by %.2f" % (e_ipw, len(bt), e_pool), len(bt) == 14 and e_pool > 2.5 * e_ipw)
+    worse = sum(1 for v in bt.values() if abs(v[2] - v[0]) > abs(v[1] - v[0]))
+    check("ladder the pooled share misses worse at %d of 14 posts" % worse, worse >= 9)
 
     # ------------------------------------------------------------------ the golden family and the fork table
     fam = M.g_family(obs)

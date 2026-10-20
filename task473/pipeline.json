@@ -24,12 +24,12 @@
   "nearest": "task458 at 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC (pass 1)",
+  "disposition": "SEND_BACK",
+  "report": "task473/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: readers 1 and 2 both missed the call (default path); reader 1 kept 24.3 per cent of ask figures, so Ask A and Ask B primaries were re-sited (jail second submissions; census death investigation numbers), checks 101 of 101. Waiting on the judge thread's verdict at /tmp/determinism-check-task473-r1/verdict.md (on the first cut); then fix its findings, full rebuild, two fresh scored readers on the re-sited pack, ship",
+ "resume": "stage 4: judge pass 1 SEND_BACK (completion not forced; three ask forks). Fixed in one generator pass: knobs recut so the held-out State Patrol back-test rejects one unarrested share (3.4 against 1.1, checks.py and verify.py), the ask forks pinned in guidelines 3.1, R2 now Corwin, Hatchell and Ossian; checks 102 of 102. Re-judge (r2) and two fresh scored readers running on target.zip 7a2922cf; then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
