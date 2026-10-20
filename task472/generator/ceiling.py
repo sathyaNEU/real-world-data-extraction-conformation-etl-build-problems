@@ -26,18 +26,20 @@ def main(target=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     ga, gb = fig["a_breakdown_hours"], fig["b_labor_hours"]
-    a_routes = {r: B.breakdown_hours(target, r) for r in ("current", "order_spans", "code", "both_counted")}
-    b_routes = {r: B.labor_hours(target, r) for r in ("all_timesheets", "ledger_only", "current", "both_counted",
-                                                      "with_yard")}
+    a_routes = {r: B.breakdown_hours(target, r) for r in ("per_order", "state", "current", "order_spans", "code",
+                                                          "both_counted")}
+    b_routes = {r: B.labor_hours(target, r) for r in ("exact_match", "override", "all_timesheets", "ledger_only",
+                                                      "current", "both_counted", "with_yard")}
     print("Ask A, breakdown hours out of service (whole hours); golden", ga)
     for k, v in a_routes.items():
         print("  %-15s keeps %d of 6  %s" % (k, kept(ga, v), {B.NAME[t]: round(v[t], 1) for t in B.TERMS}))
     print("Ask B, maintenance labor hours (whole hours); golden", gb)
     for k, v in b_routes.items():
         print("  %-15s keeps %d of 6  %s" % (k, kept(gb, v), {B.NAME[t]: round(v[t], 1) for t in B.TERMS}))
-    # the cracker: the register's terminal for every crane, February's copies once, BD at the pull, the status
-    # history's periods; every timesheet day added to the ledger
-    ca, cb = kept(ga, a_routes["current"]), kept(gb, b_routes["all_timesheets"])
+    # the cracker, as the stage 4 reader who kept every ask figure on the pack before this one worked: each crane at
+    # the terminal of its working hours, February's copies once, BD at the pull, the status history paired order by
+    # order and added up; a timesheet day dropped where a CONTRACT line on its order has its day and hours
+    ca, cb = kept(ga, a_routes["per_order"]), kept(gb, b_routes["exact_match"])
     C = 38 + 7 + ASK_W * (ca + cb)
     # the mirror: the best response off the call, the asks handled the cracker's way
     best, best_main, best_route = None, -1.0, None
@@ -52,13 +54,15 @@ def main(target=None):
         main_ += 6 * (int(round(t[rk[0]])) - int(round(t[rk[1]])) == fig["components"]["gap_hours"])
         if main_ > best_main:
             best, best_main, best_route = rk, main_, route
-    S = max(best_main, 5.0) + 7 + ASK_W * (ca + cb)
+    # the mirror's asks as the other reader handled them: the register's terminal, the timesheets over the ledger
+    sa, sb = kept(ga, a_routes["current"]), kept(gb, b_routes["override"])
+    S = max(best_main, 5.0) + 7 + ASK_W * (sa + sb)
     print()
     print("cracker: call landed (38), instructions (7), ask figures kept %d of 12 (A %d, B %d): %.1f" % (
         ca + cb, ca, cb, C))
     print("mirror (%s, names %s): main block %.1f, ask figures kept %d of 12: %.1f" % (
-        best_route, B.NAME[best[0]], max(best_main, 5.0), ca + cb, S))
-    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * (ca + cb) / 12))
+        best_route, B.NAME[best[0]], max(best_main, 5.0), sa + sb, S))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * (sa + sb) / 12))
     print("Pair ceiling: %.1f" % ((C + S) / 2))
     return (C + S) / 2
 

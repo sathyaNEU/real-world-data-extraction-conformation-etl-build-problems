@@ -796,15 +796,29 @@ def floor_min(t):
 
 def ask_a_truth(w):
     """Hours cranes stood out of service for breakdowns at each terminal over fiscal year 2026, at the minute the
-    systems record: every breakdown period (damage left out), each at the terminal where its crane stood."""
+    systems record: each crane's time out of service on any breakdown order (damage left out), a stop held on two
+    orders at once counted once, each at the terminal where its crane stood."""
     tot = {code: 0.0 for code in CODES}
+    per = {}
     for e in w["maint"]:
         if e["kind"] != "BD" or e.get("damage"):
             continue
         for a, b in e["periods"]:
-            a, b = floor_min(a), floor_min(b)
-            tot[term_at(e["crane"], a)] += max(0, min(b, FY1) - max(a, FY0)) / H
+            per.setdefault(e["crane"], []).append((floor_min(a), floor_min(b)))
+    for cr, ps in per.items():
+        for a, b in union(ps):
+            tot[term_at(cr, a)] += max(0, min(b, FY1) - max(a, FY0)) / H
     return tot
+
+
+def union(ps):
+    out = []
+    for a, b in sorted(ps):
+        if out and a <= out[-1][1]:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
 
 
 def ask_b_truth(w):
@@ -1050,6 +1064,41 @@ def maintenance(w, seed):
         cands.sort(key=lambda x: -(x["periods"][0][1] - x["periods"][0][0]))
         for x in cands[:n]:
             x["damage"] = True
+    # a second fault found while the crane stood down for the first, raised as its own breakdown order and taking the
+    # crane out of service on that order too: inside the first stop, or running on after it
+    second = dict(ORD=3, PNC=3, GNP=3, HLY=3, SLT=3, MRW=3)
+    for code, n in second.items():
+        river = TERM[code]["water"] != "harbor"
+        cands = [x for x in ev if x["kind"] == "BD" and x["src"] in ("idle", "major") and not x.get("damage")
+                 and not x.get("reopened") and len(x["periods"]) == 1 and x["crane"] not in MOVES
+                 and term_at(x["crane"], x["periods"][0][0]) == code
+                 and FY0 + 8 * DAY < x["periods"][0][0] < FY1 - 12 * DAY
+                 and x["periods"][0][1] - x["periods"][0][0] >= 3 * H
+                 and (not river or x["periods"][0][1] < CUTOVER[0] - 3 * DAY or x["periods"][0][0] > CUTOVER[1] + DAY)]
+        cands.sort(key=lambda x: (x["periods"][0][0], x["crane"]))
+        rng.shuffle(cands)
+        done = 0
+        for x in cands:
+            if done >= n:
+                break
+            a, b = x["periods"][0]
+            cr = x["crane"]
+            s2 = floor_min(a + rng.uniform(0.2, 0.55) * (b - a))
+            if done % 2 == 0:
+                e2 = floor_min(b - rng.uniform(0.15, 0.4) * (b - s2))
+            else:
+                e2 = floor_min(b + rng.uniform(0.6, 3.2) * H)
+                if any(p < e2 + H and q > b for p, q in occupied[cr] if (p, q) != (a, b)):
+                    continue
+                if any(b - 30 * MIN < z < e2 + 30 * MIN for z in DST):
+                    continue
+                occupied[cr].append((b, e2))
+            if e2 - s2 < H:
+                continue
+            ev.append(dict(crane=cr, kind="BD", periods=[(s2, e2)], src="second", large=False, inside=e2 <= b))
+            x["has_second"] = True
+            done += 1
+        assert done == n, (code, done)
     for x in ev:
         s0 = x["periods"][0][0]
         x["term"] = term_at(x["crane"], s0)
@@ -1101,6 +1150,19 @@ def labour(w, seed):
     Authority's crew the planner also keyed the engineer's hours into the ledger."""
     rng = np.random.default_rng(seed + 91)
     lab, oem = [], []
+    # the planner keys a maker's visit from its service report, one line per report on the visit's first day; at
+    # each terminal the first maker's visit of two days or more in the Authority's system is one the planner keyed
+    first_long = {}
+    for x in w["maint"]:
+        mk = CR[x["crane"]]["make"]
+        long_ = (x["kind"] == "BD" and x["src"] == "major") or (
+            x["kind"] == "INSP" and x["src"] == "annual" and mk in ("ZPMC", "Liebherr", "Konecranes", "Kalmar"))
+        s0 = x["periods"][0][0]
+        term = term_at(x["crane"], s0)
+        river = TERM[term]["water"] != "harbor"
+        if long_ and x["crane"] not in MOVES and FY0 + 20 * DAY < s0 < FY1 - 20 * DAY and (not river or s0 > CUTOVER[1]):
+            first_long.setdefault(term, x)
+    forced = {id(x) for x in first_long.values()}
     for x in w["maint"]:
         if x["kind"] == "MOVE":
             continue
@@ -1145,10 +1207,10 @@ def labour(w, seed):
                                      hours=round(rng.uniform(3.0, 10.0) * 4) / 4, ot="", kind="contractor"))
         visits = []
         mk = CR[x["crane"]]["make"]
-        if x["kind"] == "BD" and x["src"] == "major" and rng.random() < 0.85:
-            visits.append(int(rng.integers(1, 4)))
+        if x["kind"] == "BD" and x["src"] == "major" and (rng.random() < 0.85 or id(x) in forced):
+            visits.append(int(rng.integers(2 if id(x) in forced else 1, 4)))
         elif x["kind"] == "INSP" and x["src"] == "annual" and mk in ("ZPMC", "Liebherr", "Konecranes", "Kalmar"):
-            visits.append(1)
+            visits.append(2 if (rng.random() < 0.5 or id(x) in forced) else 1)
         elif x["kind"] == "BD" and mk in ("ZPMC", "Liebherr", "Konecranes") and rng.random() < 0.10:
             visits.append(1)
         mv = MOVES.get(x["crane"])
@@ -1158,19 +1220,29 @@ def labour(w, seed):
         if visits and x["system"] != "both":
             maker, engineers = OEM[mk]
             eng = engineers[int(rng.integers(len(engineers)))]
-            keyed = x["system"] == "authority" and (rng.random() < 0.45 or x["term"] == "MRW" and x["kind"] == "INSP")
+            keyed = x["system"] == "authority" and (rng.random() < 0.45 or id(x) in forced)
             day0 = local(per[0][0]).date()
+            last = day0 + dt.timedelta(days=visits[0] - 1)
+            if any(day0 < edge <= last for edge in (local(FY0).date(), local(FY1).date())):
+                keyed = False
+            days = []
             for k in range(visits[0]):
                 d = day0 + dt.timedelta(days=k)
                 h = round(rng.uniform(5.5, 11.5) * 4) / 4
                 oem.append(dict(ev=x, maker=maker, engineer=eng, date=d, hours=h, keyed=keyed))
-                if keyed:
-                    rows.append(dict(date=d, code="CONTRACT", craft="CONTRACT", hours=h, ot="", kind="oem"))
-            if keyed and rng.random() < 0.5:
+                days.append(h)
+            if keyed:
+                rows.append(dict(date=day0, code="CONTRACT", craft="CONTRACT", hours=sum(days), ot="", kind="oem"))
+            if keyed and rng.random() < 0.6:
                 contract.append(dict(date=day0, code="CONTRACT", craft="CONTRACT",
                                      hours=round(rng.uniform(2.0, 6.0) * 4) / 4, ot="", kind="contractor"))
         mine = {(o["date"], o["hours"]) for o in oem if o["ev"] is x}
+        mine |= {(r["date"], r["hours"]) for r in rows if r["kind"] == "oem"}
+        visit_days = {o["date"] for o in oem if o["ev"] is x}
         for r in contract:
+            # resident contractors attend on the days the maker's engineer is not on site
+            while r["date"] in visit_days:
+                r["date"] += dt.timedelta(days=1)
             while (r["date"], r["hours"]) in mine:
                 r["hours"] += 0.25
             rows.append(r)

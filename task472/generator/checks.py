@@ -223,7 +223,8 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
     aw, ab = W.ask_a_truth(x), B.breakdown_hours(target)
     ok("A1", all(abs(aw[t] - ab[t]) < 1e-6 for t in B.TERMS), "ask A from the pack equals the clean truth")
     for cid, route, want in (("A2", "current", B.TERMS), ("A3", "order_spans", B.TERMS), ("A4", "code", B.TERMS),
-                             ("A5", "both_counted", ["SLT", "MRW"])):
+                             ("A5", "both_counted", ["SLT", "MRW"]), ("A8", "per_order", B.TERMS),
+                             ("A9", "state", B.TERMS)):
         v = B.breakdown_hours(target, route)
         miss = [t for t in B.TERMS if round(v[t]) != round(ab[t])]
         ok(cid, all(t in miss for t in want), "%s misses %s" % (route, miss))
@@ -235,12 +236,18 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
     pre = {k: sum(1 for e in x["maint"] if e["crane"] == k and e["kind"] == "BD" and not e.get("damage")
                   and W.FY0 <= e["periods"][0][0] < W.MOVES[k][1]) for k in W.MOVES}
     ok("A7", all(v >= 2 for v in pre.values()), "stops before each move inside the year: %s" % pre)
+    sec = Counter(e["term"] for e in x["maint"] if e["src"] == "second")
+    nested = Counter(e["term"] for e in x["maint"] if e["src"] == "second" and e["inside"])
+    ok("A10", all(sec[t] >= 2 and 1 <= nested[t] < sec[t] for t in B.TERMS),
+       "second orders on a crane already down at every terminal, inside the first stop and running on: %s, %s" % (
+           dict(sec), dict(nested)))
     # ------------------------------------------------------------------ ask B
     bw, bb = W.ask_b_truth(x), B.labor_hours(target)
     ok("B1", all(abs(bw[t] - bb[t]) < 1e-6 for t in B.TERMS), "ask B from the pack equals the clean truth")
     for cid, route, want in (("B2", "all_timesheets", B.TERMS), ("B3", "ledger_only", B.TERMS),
                              ("B4", "current", B.TERMS), ("B5", "with_yard", B.TERMS),
-                             ("B6", "both_counted", ["SLT", "MRW"])):
+                             ("B6", "both_counted", ["SLT", "MRW"]), ("B10", "exact_match", B.TERMS),
+                             ("B11", "override", B.TERMS)):
         v = B.labor_hours(target, route)
         miss = [t for t in B.TERMS if round(v[t]) != round(bb[t])]
         ok(cid, all(t in miss for t in want), "%s misses %s" % (route, miss))
@@ -256,9 +263,14 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
         if not o["keyed"] and "wonum" in o["ev"]:
             clash += cset[(o["ev"]["wonum"], o["date"].isoformat(), o["hours"])] > 0
     ok("B8", clash == 0, "no contractor day matches a timesheet day that was not keyed")
-    twins = sum(1 for o in x["oem"] if o["keyed"] and sum(v for (w, d, h), v in cset.items()
-                                                          if w == o["ev"].get("wonum") and d == o["date"].isoformat()) > 1)
-    ok("B9", twins > 0, "keyed days share their order and day with another contractor row on %d days" % twins)
+    sheet_days = {(o["ev"].get("wonum"), o["date"].isoformat()) for o in x["oem"]}
+    shared = sum(1 for r in x["labour"] if r["kind"] == "contractor" and "wonum" in r["ev"]
+                 and (r["ev"]["wonum"], r["date"].isoformat()) in sheet_days)
+    ok("B9", shared == 0, "no resident contractor line shares an order and day with a maker's timesheet day (%d)" % shared)
+    long_keyed = Counter(o["ev"]["term"] for o in x["oem"] if o["keyed"] and o["ev"]["oem_days"] >= 2
+                         and d0 <= o["date"] <= d1)
+    ok("B12", all(long_keyed[t] >= 2 for t in B.TERMS),
+       "a maker's visit of two days or more keyed as one line at every terminal: %s" % dict(long_keyed))
 
     # ------------------------------------------------------------------ figures and goldens
     fig = json.load(open(fig_path)) if fig_path else {}

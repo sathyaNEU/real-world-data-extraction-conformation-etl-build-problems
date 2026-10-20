@@ -318,11 +318,16 @@ def overlap(a, b, s, e):
 # ---------------------------------------------------------------------------------------------- ask A
 def breakdown_hours(target, route="truth"):
     """Each terminal's hours of ship-to-shore crane breakdown out of service over fiscal year 2026.
-    truth: the status history's out-of-service periods on orders whose type at the pull is BD, and SRT's BRKDN
-    jobs, a stop held in both systems once, each at the terminal where its crane stood;
-    current: placed at the crane register's terminal (the cracker's handling);
-    both_counted: February's stops held in both systems counted twice;
-    order_spans: the orders' OUT_OF_SERVICE to RETURNED_TO_SERVICE instead of the status history;
+    truth: each crane's time out of service on the status history's changes of orders whose type at the pull is BD
+    and on SRT's BRKDN jobs, a stop held on two orders or in both systems counted once, each at the terminal where
+    its crane stood;
+    per_order: every order's and job's periods added up, February's copies dropped where both systems hold the
+    same minutes (a stop held on two orders at once counted on each);
+    state: the status history read as each crane's running state (out at a change to 0, back at the next change
+    to 1), SRT's jobs as per_order;
+    current: placed at the crane register's terminal;
+    both_counted: every period added up, February's copies included;
+    order_spans: the orders' OUT_OF_SERVICE to RETURNED_TO_SERVICE instead of the status history, added up;
     code: the status history's BRKDWN code instead of the order type (damage kept)."""
     asset, tag = crane_keys(target)
     wtype = {r["WONUM"]: r["WORKTYPE"] for r in rows_csv(p(target, "wo"))}
@@ -331,21 +336,34 @@ def breakdown_hours(target, route="truth"):
         for r in rows_csv(p(target, "wo")):
             if r["WORKTYPE"] == "BD" and r["OUT_OF_SERVICE"]:
                 per.append((asset[r["ASSETNUM"]], et_ts(r["OUT_OF_SERVICE"]), et_ts(r["RETURNED_TO_SERVICE"]), "a"))
-    else:
+    elif route == "state":
         open_ = {}
         for r in rows_csv(p(target, "status")):
             t = et_ts(r["CHANGEDATE"])
             if r["ISRUNNING"] == "0":
-                open_[r["ASSETNUM"]] = (t, r)
+                open_.setdefault(r["ASSETNUM"], (t, r))
+                continue
+            if r["ASSETNUM"] not in open_:
                 continue
             a, r0 = open_.pop(r["ASSETNUM"])
+            if wtype.get(r0["WONUM"]) == "BD":
+                per.append((asset[r["ASSETNUM"]], a, t, "a"))
+    else:
+        open_ = {}
+        for r in rows_csv(p(target, "status")):
+            t = et_ts(r["CHANGEDATE"])
+            k = (r["ASSETNUM"], r["WONUM"])
+            if r["ISRUNNING"] == "0":
+                open_[k] = (t, r)
+                continue
+            a, r0 = open_.pop(k)
             keep = (r0["CODE"] == "BRKDWN") if route == "code" else (wtype.get(r0["WONUM"]) == "BD")
             if keep:
                 per.append((asset[r["ASSETNUM"]], a, t, "a"))
     for j in jobs(target):
         if j["JOB_CLASS"] == "BRKDN":
             per.append((tag[j["EQUIP_TAG"]], utc_ts(j["DOWN_UTC"]), utc_ts(j["UP_UTC"]), "r"))
-    if route != "both_counted":
+    if route in ("per_order", "state", "order_spans"):
         keep, seen = [], set()
         for x in sorted(per, key=lambda z: (z[1], z[0], z[3])):
             k = (x[0], int(x[1]), int(x[2]))
@@ -354,6 +372,17 @@ def breakdown_hours(target, route="truth"):
             seen.add(k)
             keep.append(x)
         per = keep
+    elif route != "both_counted":
+        by = defaultdict(list)
+        for cr, a, b, _ in per:
+            by[cr].append((a, b))
+        per = []
+        for cr, ps in by.items():
+            for a, b in sorted(ps):
+                if per and per[-1][0] == cr and a <= per[-1][2]:
+                    per[-1] = (cr, per[-1][1], max(per[-1][2], b), "u")
+                else:
+                    per.append((cr, a, b, "u"))
     where = located(target, "current" if route == "current" else "truth")
     tot = {x: 0.0 for x in TERMS}
     for cr, a, b, src in per:
@@ -374,9 +403,12 @@ def oem_sheet(target):
 def labor_hours(target, route="truth"):
     """Each terminal's maintenance labor hours on ship-to-shore cranes over fiscal year 2026 (work days in the year).
     truth: the labor ledger on crane orders, SRT's job hours for jobs not also in the Authority's system, and
-    the makers' timesheet days not already keyed into the ledger (same order, day and hours), each at the terminal
-    where the crane stood that day;
-    all_timesheets: every timesheet day added to the ledger (the cracker's handling, with the register's terminal);
+    the makers' timesheet days not already keyed into the ledger (the planner keys a service report as one CONTRACT
+    line on the order, dated the visit's first day, for the report's hours), each at the terminal where the crane
+    stood that day;
+    exact_match: a timesheet day taken as keyed only where a CONTRACT line on its order has its day and hours;
+    override: the timesheets taken for every order they cover, the ledger's CONTRACT lines on those orders dropped;
+    all_timesheets: every timesheet day added to the ledger (with the register's terminal);
     ledger_only: no timesheet day added; both_counted: February's jobs in both systems counted twice;
     current: the crane register's terminal; with_yard: the ledger's yard equipment orders kept."""
     asset, tag = crane_keys(target)
@@ -385,6 +417,12 @@ def labor_hours(target, route="truth"):
     noon = lambda d: dt.datetime(d.year, d.month, d.day, 12, tzinfo=ET).timestamp()
     tot = {x: 0.0 for x in TERMS}
     keyed = defaultdict(list)
+    sheet_wo = set()
+    if route == "override":
+        for s in oem_sheet(target):
+            m = re.search(r"(\d{7})", str(s["CUSTOMER_REF"]))
+            if m:
+                sheet_wo.add(m.group(1))
     for r in rows_csv(p(target, "labor")):
         d = dt.date.fromisoformat(r["TRANSDATE"])
         o = wo.get(r["WONUM"])
@@ -394,6 +432,8 @@ def labor_hours(target, route="truth"):
             continue
         h = float(r["REGULARHRS"])
         if r["LABORCODE"] == "CONTRACT":
+            if r["WONUM"] in sheet_wo:
+                continue
             keyed[(r["WONUM"], d)].append(h)
         if D0 <= d <= D1:
             tot[where(asset[o["ASSETNUM"]], noon(d))] += h
@@ -419,6 +459,22 @@ def labor_hours(target, route="truth"):
     if route == "ledger_only":
         return tot
     jobcrane = {j["JOB_NO"]: tag[j["EQUIP_TAG"]] for j in jobs(target)}
+    covered = set()
+    if route not in ("all_timesheets", "exact_match", "override"):
+        reports = defaultdict(list)
+        for s in oem_sheet(target):
+            m = re.search(r"(\d{7})", str(s["CUSTOMER_REF"]))
+            if m and m.group(1) in wo:
+                reports[(m.group(1), s["SERVICE_REPORT"])].append(
+                    (dt.date.fromisoformat(str(s["WORK_DATE"])[:10]), float(s["HOURS"])))
+        for (wn, rep), days in sorted(reports.items()):
+            if len(days) < 2:
+                continue
+            first, total = min(days)[0], sum(h for _, h in days)
+            hit = [h for h in keyed.get((wn, first), []) if abs(h - total) < 0.001]
+            if hit:
+                keyed[(wn, first)].remove(hit[0])
+                covered.add((wn, rep))
     for s in oem_sheet(target):
         d = dt.date.fromisoformat(str(s["WORK_DATE"])[:10])
         if not (D0 <= d <= D1):
@@ -428,7 +484,9 @@ def labor_hours(target, route="truth"):
         m = re.search(r"(\d{7})", ref)
         if m and m.group(1) in wo:
             wn = m.group(1)
-            if route != "all_timesheets" and h in keyed.get((wn, d), []):
+            if (wn, s["SERVICE_REPORT"]) in covered:
+                continue
+            if route not in ("all_timesheets", "override") and h in keyed.get((wn, d), []):
                 keyed[(wn, d)].remove(h)
                 continue
             cr = asset[wo[wn]["ASSETNUM"]]

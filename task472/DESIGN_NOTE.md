@@ -226,19 +226,24 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   (EQUIP_TAG, JOB_CLASS, DOWN_UTC, UP_UTC), sts_crane_register.csv (CRANE_ID, ASSETNUM, SRT_TAG, TERMINAL),
   tos_crane_activity_2026.csv and SRT's QC Hours sheet (crane, terminal, hour), the data dictionary: seven files,
   sixteen columns.
-  Primary device: D2, a label stored before a silent switch. Three cranes travelled along the common rail to the
-  neighbouring terminal during the year (one from Ore Dock to Pine Neck in November 2025, one from Halyard to Gannet
-  Point in February 2026, one from Saltworks to Millrace in April 2026); the register gives each crane's terminal at
-  the extract and no history, the cranes keep their numbers, and no document mentions a move, which shows only in the
-  terminal whose calls each crane works before and after it. Placing every stop at the register's terminal moves all
-  six figures.
-  Hazards: February 2026's parallel run (river crane breakdowns in the CMMS from 1 February while SRT kept logging
-  them to 28 February); reopened orders (two stops on one order); orders re-typed DMG by the pull (damage by a ship or
-  a vehicle, which the CMMS dictionary keeps apart from breakdowns); the report and finish times against the status
-  history's out-of-service periods; the year cut in Eastern time against SRT's UTC.
-  Stops (asserted, checks.py and generator/ceiling.py): the register's terminal, the cracker's handling, misses all six;
-  February's copies counted twice misses Saltworks and Millrace; the orders' report and finish times miss all six;
-  DMG kept as breakdowns misses the terminals that had one; the golden gives all six.
+  Primary device: D6, an event's quantity on every line it covers. A second fault found while a crane stood down for
+  the first is raised as its own breakdown order and the crew books the crane out of service on that order too, inside
+  the first stop or running on after it (three such pairs at every terminal, in both systems); the status history then
+  holds a change to out of service on a crane already out, and only the crane's own sequence shows it. Pairing each
+  order's changes and adding them up counts the shared hours twice; reading the history as the crane's running state
+  (out at a 0, back at the next 1) cuts the stop short where the second order runs on; the crane's time out on any
+  breakdown order, counted once, gives the golden.
+  Hazards: the relocations (D2: three cranes travelled along the common rail to the neighbouring terminal during the
+  year, Ore Dock to Pine Neck in November 2025, Halyard to Gannet Point in February 2026, Saltworks to Millrace in April
+  2026; the register gives each crane's terminal at the extract and no history, which shows only in the calls each
+  crane works); February 2026's parallel run (river breakdowns in the CMMS from 1 February while SRT kept logging them
+  to 28 February); reopened orders; orders re-typed DMG by the pull (the dictionary keeps damage apart from the
+  cranes' breakdowns); the orders' first-out and last-back times against the status history; the year cut in Eastern
+  time against SRT's UTC.
+  Stops (asserted, checks.py A2 to A10 and generator/ceiling.py): each order's periods added up, the stage 4 round 1
+  reader's handling, misses all six; the running-state read misses all six; the register's terminal misses all six;
+  the orders' first-out and last-back times miss all six; DMG kept misses all six; February's copies counted twice
+  misses Saltworks and Millrace; the golden gives all six.
 - **Ask B, the maintenance labour hours spent on ship-to-shore cranes at each terminal over fiscal 2026, the
   Authority's own staff and contractors alike (six figures, whole hours).** H18 home: the maintenance burden of the
   cranes the order replaces, the board paper's second condition figure. Path: cmms_labor_transactions_fy2026.csv
@@ -246,15 +251,20 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   crane_maker_service_timesheets_fy2026.xlsx (work order, engineer, date, hours), srt_maintenance_jobs_2025-26.xlsx
   (EQUIP_TAG, LABOUR_HRS, DOWN_UTC), sts_crane_register.csv, the TOS crane activity (where each crane stood), the data
   dictionary: seven files, fifteen columns.
-  Primary device: D1, the same hours in two sources. The crane makers' field-service engineers sign a timesheet for
-  every visit, which the makers send monthly; where an engineer worked beside the Authority's crew the planners also
-  keyed the engineer's hours into the labour ledger under the contractor code, and elsewhere they did not; nothing
-  marks which. Adding the timesheets to the ledger counts the keyed hours twice; the ledger alone misses the hours never
-  keyed; the records show which (a keyed entry carries the timesheet's order, day and hours).
+  Primary device: D6, a ledger at another grain than its name. The crane makers' field-service engineers sign a
+  timesheet for every day of a visit; where the planner keyed a visit into the labour ledger it went in as one CONTRACT
+  line on the order, dated the visit's first day, for the service report's hours, although the ledger is otherwise
+  one row per person, order and work day; a one-day visit therefore matches its timesheet day on order, day and hours
+  and a visit of two days or more matches only on its total (at least two such visits at every terminal); resident
+  contractors' own lines fall on days the maker's engineer is not on site. Matching on order, day and hours leaves
+  every longer visit counted twice; taking the timesheets over the ledger on every order they cover drops the
+  resident contractors' lines; the report's total on its first day gives the golden.
   Hazards: the relocations (shared with ask A), February's parallel run (the river jobs' labour in both systems), the
   yard equipment's orders and labour in the same CMMS, the year cut.
-  Stops: the ledger and SRT alone misses all six; the ledger plus every timesheet, the cracker's handling, misses
-  all six; the register's terminal misses all six; the golden gives all six.
+  Stops (asserted, checks.py B2 to B12): matching on order, day and hours, the round 1 reader's handling, misses all
+  six; the timesheets over the ledger, the other round 1 reader's handling, misses all six; the ledger and SRT alone
+  misses all six; every timesheet day added misses all six; the register's terminal misses all six; the golden gives
+  all six.
 - **The construction layer:** the call, the six terminal figures, the runner-up, the lead and the chart; the cracker
   has them.
 - **Main population zero-counts (asserted):** the call reads no maintenance, labour or timesheet file; with each of them
@@ -265,11 +275,11 @@ golden. The easy answer comes from the easy method on the same literal estimand,
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, breakdown hours by terminal | places each stop at the crane's terminal in the register, counts February's river copies once, keeps BD at the pull, two stops on a reopened order, the status history's periods | miss |
-| B, maintenance labour hours by terminal | adds the makers' timesheets to the labour ledger and SRT's hours, leaves yard equipment out, places each order at the register's terminal | miss |
+| A, breakdown hours by terminal | places each stop at the terminal of its crane's working hours, counts February's river copies once, keeps BD at the pull, pairs the status history order by order and adds the periods up (the round 1 reader who kept all twelve) | miss |
+| B, maintenance labour hours by terminal | drops a timesheet day where a CONTRACT line on its order has its day and hours, adds SRT's hours not in the CMMS, leaves yard equipment out | miss |
 
-- Mirror leakage: 0.0 per cent of ask weight (every rung builds both asks the cracker's way and misses all twelve:
-  generator/ceiling.py).
+- Mirror leakage: 0.0 per cent of ask weight (the mirror builds the asks the round 1 reader 2 way, the register's
+  terminal and the timesheets over the ledger, and misses all twelve: generator/ceiling.py).
 - Pair ceiling: 28.5 (weights 38 / 7 / 55: the cracker keeps the main block and instructions, 45.0; the best mirror off
   the call keeps the chart and file criteria, about 12.0; average 28.5), rerun from the generated rubric at ship.
 - Measured by: generator/ceiling.py on the cut pack.
@@ -294,3 +304,10 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   the filed outcome names outright is computed by asking the question; the next decisive step must be one a
   careful analyst who asks the right question still estimates wrongly, and no graded figure is tuned to a bin
   centre.
+- The asks' first devices (2026-10-20, stage 4 round 1): ask A's silent relocations and ask B's makers' timesheets
+  keyed day by day into the ledger. Reader 1 missed the call (Saltworks 991) but kept all twelve ask figures
+  (score_reader exit 1, 13 of 21): it placed the stops by each crane's working hours, read the parallel run once and
+  matched timesheet days on order, day and hours, so both devices sat on its path. Re-sited the same day, the
+  relocations kept as a hazard: ask A onto a second breakdown order on a crane already down, ask B onto a visit keyed
+  as one line for its total; the judge's two ask forks (damage under the BRKDWN code, contractor lines sharing a
+  timesheet day) closed in the dictionary and the data.

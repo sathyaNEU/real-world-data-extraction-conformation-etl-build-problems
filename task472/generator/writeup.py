@@ -56,14 +56,17 @@ def write(fig_path, path):
         "hours saved (rule %s); summed by terminal (rule %s): %s."
         % (i["rules"][2], i["rules"][6], "; ".join("%s %d" % (k, saved[k]) for k in by)),
         "Ask A: took the out-of-service periods in cmms_asset_status_history_fy2026.csv on orders whose type at the "
-        "pull is BD (each period of a reopened order) and the BRKDN jobs in srt_maintenance_jobs_2025-26.xlsx, "
-        "counted February 2026's river stops held in both systems once, placed each stop at the terminal whose calls "
-        "its crane was working at the time in the TOS crane hours (three cranes moved along the common rail during "
-        "the year, which the crane register does not show), and summed fiscal year hours: %s." % fmt(a),
+        "pull is BD, pairing each order's own changes (each period of a reopened order), and the BRKDN jobs in "
+        "srt_maintenance_jobs_2025-26.xlsx; counted each crane's time out once where two of its breakdown orders held "
+        "it out together (a second fault raised while it stood down) and where February 2026's river stops are in "
+        "both systems; placed each stop at the terminal whose calls its crane was working at the time in the TOS crane "
+        "hours (three cranes moved along the common rail during the year, which the crane register does not show), and "
+        "summed fiscal year hours: %s." % fmt(a),
         "Ask B: summed cmms_labor_transactions_fy2026.csv on crane orders, the SRT job hours not also in the "
         "Authority's system, and the days in crane_maker_service_timesheets_fy2026.xlsx not already keyed into the "
-        "ledger as CONTRACT on the same order, day and hours, each at the terminal where the crane was working that "
-        "day, yard equipment left out: %s." % fmt(b),
+        "ledger (the planner keys a service report as one CONTRACT line on its order, dated the visit's first day for "
+        "the report's hours, so a visit of several days matches on its total), each at the terminal where the crane "
+        "was working that day, yard equipment left out: %s." % fmt(b),
         "Placed the cranes at the terminal with the most berth hours saved: %s, %d hours ahead of %s." % (call, gap, ru),
     ]
     for k, s in enumerate(steps, 1):

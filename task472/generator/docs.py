@@ -314,7 +314,8 @@ Authority maintenance system, work orders on ship-to-shore cranes reported 1 Jun
   ASSETNUM        asset number (see sts_crane_register.csv)
   SITEID          TMH
   WORKTYPE        BD breakdown, DMG damage (struck by a ship's gear, a vehicle or another crane; the
-                  repair is charged to the party responsible), CM corrective (crane kept in service),
+                  repair is charged to the party responsible, and damage is reported apart from the
+                  cranes' breakdowns), CM corrective (crane kept in service),
                   PM planned maintenance, INSP inspection. An order's type can be changed after it is
                   raised; the extract shows the type at the pull.
   WOPRIORITY      1 to 3
@@ -344,7 +345,8 @@ Authority maintenance system, labor booked to work orders, work days 1 June 2025
 asset class. One row per person, work order and work day.
   LABTRANSID      transaction number
   WONUM           work order
-  LABORCODE       employee number; CONTRACT for contractors' hours
+  LABORCODE       employee number; CONTRACT for contractors' hours, keyed by the planner from the
+                  contractor's service report
   CRAFT           MECH, ELEC, RIG rigger, WELD welder, CONTRACT
   TRANSDATE       the work day
   REGULARHRS      hours worked that day

@@ -372,9 +372,13 @@ def order_book(x):
         for p0, p1 in per:
             status.append([asset, 0, lstr(p0, False), stat_code, wonum, by, p0])
             status.append([asset, 1, lstr(p1, False), stat_code, wonum, by, p1])
+    # the move crew books the crane out when it is made safe for the move and back once it is load tested on its new rail
+    prng = np.random.default_rng(W.SEED + 413)
     for e in x["maint"]:
         if e["kind"] == "MOVE":
             a, b = e["periods"][0]
+            a -= int(prng.uniform(25, 95)) * MIN
+            b += int(prng.uniform(70, 330)) * MIN
             asset = W.CR[e["crane"]]["asset"]
             if W.CR[e["crane"]]["tag"] and a < W.CUTOVER[0]:
                 continue

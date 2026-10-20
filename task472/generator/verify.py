@@ -130,26 +130,34 @@ def main(target, golden):
                 break
             last = term
         return last
-    # ask A
+    # ask A: each crane's time out on any breakdown order or SRT breakdown job, overlaps once
     types = {r["WONUM"]: r for r in read(f("cmms_sts_work_orders_fy2026.csv"))}
     down = {}
-    stops = set()
+    stops = defaultdict(list)
     for r in read(f("cmms_asset_status_history_fy2026.csv")):
         t = eastern(r["CHANGEDATE"])
+        k = (r["ASSETNUM"], r["WONUM"])
         if r["ISRUNNING"] == "0":
-            down[r["ASSETNUM"]] = (t, r["WONUM"])
+            down[k] = t
         else:
-            a, w = down.pop(r["ASSETNUM"])
-            if w and types[w]["WORKTYPE"] == "BD":
-                stops.add((by_asset[r["ASSETNUM"]], a, t))
+            a = down.pop(k)
+            if r["WONUM"] and types[r["WONUM"]]["WORKTYPE"] == "BD":
+                stops[by_asset[r["ASSETNUM"]]].append((a, t))
     jobs = sheet(f("srt_maintenance_jobs_2025-26.xlsx"), "Jobs")
     for j in jobs:
         if j["JOB_CLASS"] == "BRKDN":
-            stops.add((by_tag[j["EQUIP_TAG"]], j["DOWN_UTC"].replace(tzinfo=UTC).timestamp(),
-                       j["UP_UTC"].replace(tzinfo=UTC).timestamp()))
+            stops[by_tag[j["EQUIP_TAG"]]].append((j["DOWN_UTC"].replace(tzinfo=UTC).timestamp(),
+                                                  j["UP_UTC"].replace(tzinfo=UTC).timestamp()))
     ask_a = {t: 0.0 for t in TERMS}
-    for crane, a, b in stops:
-        ask_a[place(crane, a)] += max(0.0, min(b, fy1) - max(a, fy0)) / 3600
+    for crane, ps in stops.items():
+        merged = []
+        for a, b in sorted(ps):
+            if merged and a <= merged[-1][1]:
+                merged[-1][1] = max(merged[-1][1], b)
+            else:
+                merged.append([a, b])
+        for a, b in merged:
+            ask_a[place(crane, a)] += max(0.0, min(b, fy1) - max(a, fy0)) / 3600
     # ask B
     noon = lambda d: dt.datetime(d.year, d.month, d.day, 12, tzinfo=ET).timestamp()
     d0, d1 = dt.date(2025, 7, 1), dt.date(2026, 6, 30)
@@ -177,13 +185,30 @@ def main(target, golden):
         d = dt.datetime.fromtimestamp(t, ET).date()
         if d0 <= d <= d1:
             ask_b[place(crane, t)] += float(j["LABOUR_HRS"])
-    for s in sheet(f("crane_maker_service_timesheets_fy2026.xlsx"), "Timesheets"):
+    sheet_rows = sheet(f("crane_maker_service_timesheets_fy2026.xlsx"), "Timesheets")
+    # a CONTRACT line keyed from a service report of several days carries the report's hours on its first day
+    report = defaultdict(list)
+    for s in sheet_rows:
+        m = re.search(r"\d{7}", str(s["CUSTOMER_REF"]))
+        if m and m.group(0) in types:
+            report[(m.group(0), s["SERVICE_REPORT"])].append((dt.date.fromisoformat(str(s["WORK_DATE"])[:10]),
+                                                             float(s["HOURS"])))
+    whole = set()
+    for (wn, rep), days in report.items():
+        if len(days) > 1:
+            first, total = min(days)[0], sum(h for _, h in days)
+            if total in contract[(wn, first)]:
+                contract[(wn, first)].remove(total)
+                whole.add((wn, rep))
+    for s in sheet_rows:
         d = dt.date.fromisoformat(str(s["WORK_DATE"])[:10])
         if not (d0 <= d <= d1):
             continue
         h = float(s["HOURS"])
         m = re.search(r"\d{7}", str(s["CUSTOMER_REF"]))
         if m and m.group(0) in types:
+            if (m.group(0), s["SERVICE_REPORT"]) in whole:
+                continue
             if h in contract[(m.group(0), d)]:
                 contract[(m.group(0), d)].remove(h)
                 continue

@@ -232,12 +232,14 @@ def write_workbook(g, f, path):
                               "more in the harbor (8.1). Tide predictions are standard time; an hour added in daylight "
                               "saving time."),
         ("Out of service", "Breakdown periods (order type BD at the pull) from the asset status history and the "
-                           "SRT log; a reopened order's periods each; February 2026's river stops held in both "
-                           "systems counted once; each stop at the terminal where its crane was working at the time "
-                           "(three cranes moved along the common rail during the year)."),
+                           "SRT log; a reopened order's periods each; a crane held out on two breakdown orders at once "
+                           "counted once, as are February 2026's river stops held in both systems; each stop at the "
+                           "terminal where its crane was working at the time (three cranes moved along the common rail "
+                           "during the year)."),
         ("Labor", "Labor ledger hours on crane orders, SRT job hours not also in the Authority's system, and the "
-                  "makers' timesheet days not already keyed into the ledger (same order, day and hours); each at the "
-                  "terminal where the crane was working that day; yard equipment left out."),
+                  "makers' timesheet days not already keyed into the ledger (one CONTRACT line per service report, "
+                  "dated the visit's first day); each at the terminal where the crane was working that day; yard "
+                  "equipment left out."),
         ("Let go", "A call ends at the sailing time in the pilot station's record. The AIS berth stretches close a "
                    "few minutes later, when the ship's reports leave the berth polygon, and were not used."),
         ("Clock change", "On 2 November 2025 the Authority TOS writes the 01:00 hour twice; its rows were read in "
