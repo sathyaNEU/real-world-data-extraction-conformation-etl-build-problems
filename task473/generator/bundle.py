@@ -294,8 +294,11 @@ def crs(target):
     return reps, u
 
 
-def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True, late_k=True):
+def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True, late_k=True,
+          by_place=True, dr=None):
     reps, units = crs(target)
+    dr = dr or directory(target)
+    towns = {a["city"]: a["county_fips"] for a in dr["agencies"].values() if a["city"]}
     by = {}
     for r in reps:
         by.setdefault(r["report_id"], []).append(r)
@@ -359,7 +362,12 @@ def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, li
                  any(x["unit_type"] == "MOTOR VEHICLE" and x["driver_condition"] == "HAD BEEN DRINKING"
                      for x in v["units"]) for v in g)
         if ok:
+            # a crash is in the county where it happened: a town's county from the directory's police departments
+            # (the State Patrol files a report under its post's county)
             f = g[0]["county_fips"]
+            town = next((v["municipality"] for v in g if v["municipality"]), "")
+            if by_place and town:
+                f = towns[town]
             out[f] = out.get(f, 0) + 1
     return out, groups
 

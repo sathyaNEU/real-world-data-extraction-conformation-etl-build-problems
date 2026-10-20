@@ -74,7 +74,8 @@ def write(fig_path, out_path):
         "a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within "
         "minutes and drivers), and dropped those in the census, by agency and report number or, where the census "
         "cites a death investigation number, by date, road and time, keeping a crash outside the census whose "
-        "supplement records a death more than 30 days after it: the injury crashes below." % (
+        "supplement records a death more than 30 days after it, and placed each crash in a town in the town's "
+        "county from the directory's police departments: the injury crashes below." % (
             W.FILES["reports"], W.FILES["units"]),
         "8. Certified %s as high-range (guidelines %s: %s or more)." % (_join(f["call"]), f["sections"]["rate"],
                                                                            f["threshold"]),

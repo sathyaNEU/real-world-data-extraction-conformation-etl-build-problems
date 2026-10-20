@@ -38,7 +38,7 @@ def main(target=None):
     gold_a = B.ask_a(rows, dr)
     crk_a = B.ask_a(rows, dr, merge_jail=False)
     gold_b, _ = B.ask_b(target, cr)
-    crk_b, _ = B.ask_b(target, cr, link_near=False, late_k=False)
+    crk_b, _ = B.ask_b(target, cr, by_place=False)
     hit = sum(crk_a.get(f, (0, 0))[0] == gold_a[f][0] for f in miles) + \
         sum("%.1f" % crk_a.get(f, (0, 0))[1] == "%.1f" % gold_a[f][1] for f in miles) + \
         sum(crk_b.get(f, 0) == gold_b.get(f, 0) for f in miles)

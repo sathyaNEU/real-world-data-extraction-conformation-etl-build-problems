@@ -339,6 +339,16 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     miss_b = [W.NAMES[f] for f in miles if bynum.get(f, 0) == reps_b.get(f, 0)]
     check("ask B cracker (latest accepted version, two agencies' reports merged, the census linked by agency and "
           "report number, severity A to C) misses every county", not miss_b, miss_b)
+    filed, _ = B.ask_b(target, cr, by_place=False)
+    miss_p = [W.NAMES[f] for f in miles if filed.get(f, 0) == reps_b.get(f, 0)]
+    check("ask B device: every handling right but the county the report is filed under misses every county (the "
+          "readers' path after two re-sitings)", not miss_p, miss_p)
+    towns = {a_["city"]: a_["county_fips"] for a_ in dr["agencies"].values() if a_["city"]}
+    across = [r_ for r_ in B.crs(target)[0] if r_["municipality"] and towns[r_["municipality"]] != r_["county_fips"]]
+    check("ask B fair: the %d reports whose town lies in another county are all the State Patrol's, filed under its "
+          "post's county (the directory's posts)" % len({r_["report_id"] for r_ in across}),
+          across and all(r_["agency_id"].startswith("SP") and dr["agencies"][r_["agency_id"]]["county_fips"] ==
+                         r_["county_fips"] for r_ in across))
     linked, _ = B.ask_b(target, cr, late_k=False)
     miss_k = [W.NAMES[f] for f in miles if linked.get(f, 0) == reps_b.get(f, 0)]
     check("ask B device: the census linked in full, a report whose supplement records a death after 30 days dropped "

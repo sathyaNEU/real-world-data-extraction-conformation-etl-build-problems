@@ -58,20 +58,20 @@
   }
  },
  "ask_b": {
-  "Aldous": 26,
-  "Brisbin": 78,
-  "Corwin": 56,
-  "Delmont": 77,
-  "Fairlee": 79,
-  "Hatchell": 79,
-  "Keswick": 122,
-  "Kittredge": 27,
-  "Lanier": 31,
-  "Ossian": 45,
-  "Pruett": 118,
-  "Renwick": 92,
-  "Stroud": 65,
-  "Tanager": 106
+  "Aldous": 27,
+  "Brisbin": 79,
+  "Corwin": 58,
+  "Delmont": 76,
+  "Fairlee": 77,
+  "Hatchell": 78,
+  "Keswick": 123,
+  "Kittredge": 29,
+  "Lanier": 29,
+  "Ossian": 43,
+  "Pruett": 119,
+  "Renwick": 90,
+  "Stroud": 68,
+  "Tanager": 105
  },
  "below_top": [
   "Kittredge"
@@ -161,7 +161,7 @@
   {
    "arrests": 171,
    "county": "Aldous",
-   "crashes": 26,
+   "crashes": 27,
    "deaths": 32,
    "fips": "001",
    "high": false,
@@ -172,7 +172,7 @@
   {
    "arrests": 377,
    "county": "Brisbin",
-   "crashes": 78,
+   "crashes": 79,
    "deaths": 59,
    "fips": "003",
    "high": false,
@@ -183,7 +183,7 @@
   {
    "arrests": 246,
    "county": "Corwin",
-   "crashes": 56,
+   "crashes": 58,
    "deaths": 60,
    "fips": "005",
    "high": true,
@@ -194,7 +194,7 @@
   {
    "arrests": 385,
    "county": "Delmont",
-   "crashes": 77,
+   "crashes": 76,
    "deaths": 79,
    "fips": "007",
    "high": false,
@@ -205,7 +205,7 @@
   {
    "arrests": 429,
    "county": "Fairlee",
-   "crashes": 79,
+   "crashes": 77,
    "deaths": 90,
    "fips": "009",
    "high": false,
@@ -216,7 +216,7 @@
   {
    "arrests": 371,
    "county": "Hatchell",
-   "crashes": 79,
+   "crashes": 78,
    "deaths": 85,
    "fips": "011",
    "high": true,
@@ -227,7 +227,7 @@
   {
    "arrests": 574,
    "county": "Keswick",
-   "crashes": 122,
+   "crashes": 123,
    "deaths": 78,
    "fips": "013",
    "high": false,
@@ -238,7 +238,7 @@
   {
    "arrests": 206,
    "county": "Kittredge",
-   "crashes": 27,
+   "crashes": 29,
    "deaths": 43,
    "fips": "015",
    "high": false,
@@ -249,7 +249,7 @@
   {
    "arrests": 275,
    "county": "Lanier",
-   "crashes": 31,
+   "crashes": 29,
    "deaths": 51,
    "fips": "017",
    "high": false,
@@ -260,7 +260,7 @@
   {
    "arrests": 224,
    "county": "Ossian",
-   "crashes": 45,
+   "crashes": 43,
    "deaths": 54,
    "fips": "019",
    "high": true,
@@ -271,7 +271,7 @@
   {
    "arrests": 415,
    "county": "Pruett",
-   "crashes": 118,
+   "crashes": 119,
    "deaths": 102,
    "fips": "021",
    "high": false,
@@ -282,7 +282,7 @@
   {
    "arrests": 409,
    "county": "Renwick",
-   "crashes": 92,
+   "crashes": 90,
    "deaths": 67,
    "fips": "023",
    "high": false,
@@ -293,7 +293,7 @@
   {
    "arrests": 341,
    "county": "Stroud",
-   "crashes": 65,
+   "crashes": 68,
    "deaths": 57,
    "fips": "025",
    "high": false,
@@ -304,7 +304,7 @@
   {
    "arrests": 454,
    "county": "Tanager",
-   "crashes": 106,
+   "crashes": 105,
    "deaths": 66,
    "fips": "027",
    "high": true,

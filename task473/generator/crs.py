@@ -25,7 +25,7 @@ HBD_SHARE = {"001": 0.052, "003": 0.061, "005": 0.066, "007": 0.047, "009": 0.04
 
 class Crash:
     __slots__ = ("fips", "date", "hour", "minute", "group", "agency", "road_name", "road_class", "lat", "lon",
-                 "public", "severity", "units", "census", "dup", "versions", "key", "municipality")
+                 "public", "severity", "units", "census", "dup", "versions", "key", "municipality", "rep_fips")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -135,10 +135,59 @@ def universe(order):
             x = sorted(late, key=lambda x: T.rng_for("latehbd", x.census.cid).random())[0]
             u = next(u for u in x.units if u["type"] == "MOTOR VEHICLE" and u["age"] is not None)
             u["cond"] = HBD
+    _post_county(out)
     out.sort(key=lambda x: (x.date, x.hour, x.minute, x.fips, x.agency.aid))
     for i, x in enumerate(out):
         x.key = i
     return out
+
+
+def _post_county(out):
+    """The State Patrol's records system fills a report's county from the post: a post's crash on a highway it shares
+    with a neighbour, inside one of the neighbour's towns, is located there (its municipality and coordinates) and
+    filed under the post's county. Some of each post's crashes inside its own towns carry the town too."""
+    for x in out:
+        x.rep_fips = x.fips
+    cities = {c["fips"]: c["cities"] for c in W.COUNTIES}
+    for x in out:
+        if x.group == "SP" and x.census is None and x.road_class in ("US ROUTE", "STATE ROUTE") and \
+                T.rng_for("sptown", x.fips, x.date.toordinal(), x.hour, x.minute).random() < 0.12:
+            x.municipality = cities[x.fips][int(T.rng_for("sptownc", x.date.toordinal(), x.minute).integers(
+                0, len(cities[x.fips])))]
+    # how many of each post's crashes lie across the line: unequal along each pair so every county's count moves
+    moves = {}
+    for c in W.COUNTIES:
+        f = c["fips"]
+        nb = [n for n in G.neighbours(f) if set(G.state_highways(f)) & set(G.state_highways(n))] or G.neighbours(f)
+        moves[f] = (nb[int(T.rng_for("mvnb", f).integers(0, len(nb)))], 1 + int(T.rng_for("mvk", f).integers(0, 2)))
+    for _ in range(50):
+        net = {c["fips"]: 0 for c in W.COUNTIES}
+        for f, (n, k) in moves.items():
+            net[f] -= k
+            net[n] += k
+        zero = sorted(f for f, v in net.items() if v == 0)
+        if not zero:
+            break
+        f = zero[0]
+        moves[f] = (moves[f][0], 3 - moves[f][1] if moves[f][1] < 3 else 1)
+    assert not zero, net
+    for f, (n, k) in sorted(moves.items()):
+        shared = (set(G.state_highways(f)) & set(G.state_highways(n))) or set(G.US_ROUTES[n])
+        cand = [x for x in out if x.fips == f and x.rep_fips == f and x.group == "SP" and x.census is None and
+                x.public and x.road_class in ("US ROUTE", "INTERSTATE", "STATE ROUTE") and any(u["type"] == "MOTOR VEHICLE" and u["cond"] == HBD for u in x.units)
+                and x.severity in ("A", "B", "C")]
+        cand.sort(key=lambda x: T.rng_for("mvpick", f, x.date.toordinal(), x.hour, x.minute).random())
+        assert len(cand) >= k, (f, n, len(cand))
+        s_, nn, w, e = G.box(n)
+        for x in cand[:k]:
+            rng = T.rng_for("mvloc", f, x.date.toordinal(), x.hour, x.minute)
+            x.fips, x.rep_fips = n, f
+            if x.road_name not in shared:
+                x.road_name = sorted(shared)[int(rng.integers(0, len(shared)))]
+                x.road_class = "INTERSTATE" if x.road_name.startswith("I-") else "US ROUTE"
+            x.municipality = cities[n][int(rng.integers(0, len(cities[n])))]
+            x.lat = round(float(rng.uniform(s_ + 0.02, nn - 0.02)), 5)
+            x.lon = round(float(rng.uniform(w + 0.02, e - 0.02)), 5)
 
 
 def reports(crashes, numbers):
@@ -151,7 +200,8 @@ def reports(crashes, numbers):
         by_county.setdefault(x.fips, []).append(x)
     for f, xs in by_county.items():
         rng = T.rng_for("dup", f)
-        cands = [x for x in xs if x.group == "SP" and x.road_class in ("US ROUTE", "STATE ROUTE", "INTERSTATE")]
+        cands = [x for x in xs if x.group == "SP" and x.road_class in ("US ROUTE", "STATE ROUTE", "INTERSTATE")
+                 and x.rep_fips == x.fips]
         hbd_inj = [x for x in cands if x.census is None and x.public and any(u["type"] == "MOTOR VEHICLE" and
                                                                               u["cond"] == HBD for u in x.units)]
         rng.shuffle(hbd_inj)
@@ -235,7 +285,7 @@ def reports(crashes, numbers):
             for ver, status, when, sv, us in versions:
                 nveh = sum(1 for u in us if u["type"] == "MOTOR VEHICLE")
                 rep_rows.append([report_id, ver, status, when.isoformat(), a.aid, number, x.date.isoformat(),
-                                 "%02d:%02d" % (hh, mm), x.fips, x.municipality, x.road_class, x.road_name,
+                                 "%02d:%02d" % (hh, mm), x.rep_fips, x.municipality, x.road_class, x.road_name,
                                  "%.5f" % lat, "%.5f" % lon, "Y" if x.public else "N", sv, nveh, len(us) - nveh])
                 for j, u in enumerate(us):
                     is_mv = u["type"] == "MOTOR VEHICLE"

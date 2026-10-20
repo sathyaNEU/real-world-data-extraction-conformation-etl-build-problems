@@ -22,7 +22,7 @@ Their 2023 to 2025 rates are Corwin 0.71, Hatchell 0.68, Ossian 0.68 and Tanager
 4. At every other agency, counted each arrested driver found at .08 or more as one over its band's catch rate (3.5 and 1.125), the excess being that county's untested impaired surviving drivers (21.0 in Tanager), and gave each of the county's untested surviving drivers the excess divided by their number.
 5. Gave each crash its deaths times the chance that at least one driver was at .08 or more (guidelines 2.2), summed by county, and divided by the 2023 to 2025 vehicle miles of dot_county_dvmt_2023_2025.xlsx, each year's DVMT times its days (366 in 2024), per 100 million: Tanager 0.66.
 6. From stl_specimen_extract_2023_2025.csv, kept the 2025 DUI arrests by local collection date, one per agency case number and one where a county jail's kit under the sheriff's number shares a department's collection site and minute, placed each in its agency's county from fcc_agency_directory.xlsx and each State Patrol arrest (submitted under SPHQ000) in its post's county from the post in its case number, and took the first specimen's whole-blood ethanol (serum divided by 1.16, the amended report over the superseded): the arrests and the per cent at .15 or more below.
-7. From crs_reports_2025.csv and crs_units_2025.csv, took each report's latest accepted version, kept public-road crashes with an injury and a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within minutes and drivers), and dropped those in the census, by agency and report number or, where the census cites a death investigation number, by date, road and time, keeping a crash outside the census whose supplement records a death more than 30 days after it: the injury crashes below.
+7. From crs_reports_2025.csv and crs_units_2025.csv, took each report's latest accepted version, kept public-road crashes with an injury and a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within minutes and drivers), and dropped those in the census, by agency and report number or, where the census cites a death investigation number, by date, road and time, keeping a crash outside the census whose supplement records a death more than 30 days after it, and placed each crash in a town in the town's county from the directory's police departments: the injury crashes below.
 8. Certified Corwin, Hatchell, Ossian and Tanager as high-range (guidelines 2.4: 0.60 or more).
 
 ## 4. Deliverable Answers
@@ -60,20 +60,20 @@ Their 2023 to 2025 rates are Corwin 0.71, Hatchell 0.68, Ossian 0.68 and Tanager
    - Stroud: 341 arrests, 51.0%
    - Tanager: 454 arrests, 32.4%
 3. Each county's 2025 injury crashes in which no one died within 30 days and an officer reported a driver had been drinking:
-   - Aldous: 26
-   - Brisbin: 78
-   - Corwin: 56
-   - Delmont: 77
-   - Fairlee: 79
-   - Hatchell: 79
-   - Keswick: 122
-   - Kittredge: 27
-   - Lanier: 31
-   - Ossian: 45
-   - Pruett: 118
-   - Renwick: 92
-   - Stroud: 65
-   - Tanager: 106
+   - Aldous: 27
+   - Brisbin: 79
+   - Corwin: 58
+   - Delmont: 76
+   - Fairlee: 77
+   - Hatchell: 78
+   - Keswick: 123
+   - Kittredge: 29
+   - Lanier: 29
+   - Ossian: 43
+   - Pruett: 119
+   - Renwick: 90
+   - Stroud: 68
+   - Tanager: 105
 
 ### fy2028_high_range_certification.pdf
 

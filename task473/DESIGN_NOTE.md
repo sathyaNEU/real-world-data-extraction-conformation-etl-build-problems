@@ -371,7 +371,13 @@ designation's basis.
   than 30 days after the crash (severity K, submitted 34 to 80 days on), on one or two drinking-driver injury
   crashes per county that the census, counting deaths within 30 days, leaves out; the crash had no death within 30
   days and stays an injury crash, and a reader who drops K reports as fatal misses every county (asserted). The
-  death investigation numbers stay as a hazard. Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
+  death investigation numbers stay as a hazard. Re-sited a third time after reader 5 (pack 0a92575f), which read
+  an unbacked K as a death after 30 days and took all 14: the primary is now D7, the true key in another field. The
+  State Patrol's records system files a report under its post's county, so a post's crash inside a neighbouring
+  county's town carries that town and the post's county; 21 such reports, unequal along each pair of counties so
+  every county's count moves, beside 442 State Patrol reports in their own counties' towns (no marker). Only the
+  town, read against the directory's police departments, places the crash; the K supplements stay as a hazard.
+  Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
   whose injured person died within 30 days stays an injury crash there and is a fatal crash only in the census).
   Hazards: supplements under the same report number (the latest accepted stands, a rejected one never), a
   non-driver unit coded as drinking, crashes on private property, a supplement that lowers the severity to no
@@ -383,7 +389,7 @@ designation's basis.
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
 | A, each county's 2025 arrests with a blood specimen and the per cent at .15 or more | one arrest per agency case number, the State Patrol's placed by the post in its case number, every documented hazard repaired (UTC, the amended report, drug-only requests, two tubes, second specimens, serum); the jail's second submissions counted as arrests, so every county's arrests and share fall outside their bins | miss |
-| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked in full, severity A to C; the crashes whose supplement records a death after 30 days are dropped as fatal, so every county's count falls outside its bin | miss |
+| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked in full, a K outside the census kept; each crash counted in the county its report is filed under, so the State Patrol's crashes in a neighbour's towns sit in the post's county and every county's count falls outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
   them as the cracker does).
@@ -402,7 +408,7 @@ designation's basis.
   laboratory or crash records row. Three rules: no decoy or withheld rule ships (R3c), no field reading decides
   (every SF row converges or is ruled out by a filed sentence), and executing every filed rule with one share of
   unarrested drivers impaired certifies Corwin, Hatchell, Ossian and Pruett (R3a).
-- **Free gates (2026-10-20):** checks.py 104 of 104, verify.py clean, two builds byte-identical, target.zip cut from
+- **Free gates (2026-10-20):** checks.py 106 of 106, verify.py clean, two builds byte-identical, target.zip cut from
   the final build (18 files), figures_check.py 106 of 106, precut.py 51 checks clean, voice-check clean, guard.py
   surface clean and heart WARN after a pull (shape and Gate G overuse, answered at the draw), containers clean.
 - **leak.py REVIEW lines, each harmless:** the guidelines carry the program's own name (high-range, FY2028, County
@@ -466,3 +472,6 @@ designation's basis.
   took all 14 Ask B figures by linking the census on date and coordinates, which bypassed the death investigation
   numbers (30.0 per cent of ask figures each). That device kept as a hazard; Ask B's primary re-sited to the
   supplements recording a death after 30 days.
+- 2026-10-20, stage 4 reader 5 (pack 0a92575f): missed the call and Ask A, took all 14 Ask B figures (30.0 per cent)
+  by reading a K report the census does not back as a death after 30 days. The K supplements kept as a hazard; Ask
+  B's primary re-sited to the State Patrol reports filed under the post's county.
