@@ -16,7 +16,7 @@ import docs as D           # noqa: E402
 import world as W          # noqa: E402
 
 PAPER = "le_repair_campaign_2027.pdf"
-WORKBOOK = "lost_production_2025_26.xlsx"
+WORKBOOK = "metered_generation_2025_26.xlsx"
 DOWN_C, CURT_C = "#2a6f97", "#e0a23b"
 INK, INK2, GRID, BG = "#1d2a24", "#56606a", "#e3e6e4", "#ffffff"
 
@@ -41,7 +41,7 @@ def figures(target):
     am, (cp, vci) = AN.matched_annex_m(F)
     tb = AN.matched_bins(F, dv=0.5, dti=0.02, ref="median", minn=10)
     call = AN.pick(am)
-    Dg, Cg = AN.asks_bundle(B, "golden")
+    Ag, Bg = AN.asks_bundle(B, "golden")
     energy = {t: float(F[t]["p"][F[t]["normal"] & AN.blade_set_mask(F[t]["k"], t)].sum() / 6000.0) for t in W.TURBINES}
     region2 = {t: AN.default_shortfall(F, lo=3.0, hi=10.0)[t] for t in W.TURBINES}
     low = AN.default_shortfall(F, lo=4.0, hi=8.0)
@@ -70,17 +70,18 @@ def figures(target):
         "ch09_whole_year_blade_loss_mwh": round(am_year["CH09"], 1),
         "default_lead_ratio": round(sorted(r0.values())[-1] / sorted(r0.values())[-2], 2),
         "default_pick": AN.pick(r0),
-        "downtime_mwh": {t: int(round(Dg[t])) for t in W.TURBINES},
-        "curtailment_mwh": {t: int(round(Cg[t])) for t in W.TURBINES},
-        "downtime_mwh_exact": {t: round(Dg[t], 2) for t in W.TURBINES},
-        "curtailment_mwh_exact": {t: round(Cg[t], 2) for t in W.TURBINES},
-        "farm_downtime_mwh": int(round(sum(Dg.values()))),
-        "farm_curtailment_mwh": int(round(sum(Cg.values()))),
+        "metered_generation_mwh": {t: int(round(Ag[t])) for t in W.TURBINES},
+        "metered_generation_mwh_exact": {t: round(Ag[t], 2) for t in W.TURBINES},
+        "metered_export_mwh": {k: int(round(Bg[k])) for k in AN.ASK_MONTHS},
+        "metered_export_mwh_exact": {k: round(Bg[k], 2) for k in AN.ASK_MONTHS},
+        "farm_metered_generation_mwh": int(round(sum(Ag.values()))),
+        "farm_metered_export_mwh": int(round(sum(Bg.values()))),
         "normal_energy_mwh": {t: round(energy[t], 1) for t in W.TURBINES},
         "ch09_rotor_back": W.CH09_BACK.astimezone(W.LONDON).strftime("%d %B %Y"),
         "standard_clauses": [num for _, items in D.STANDARD_CLAUSES for num, _ in items],
         "parameters": {"rounding_step_mwh": 50, "standard_density_kg_m3": 1.225, "rated_kw": 2300,
                        "power_performance_standard": "IEC 61400-12-1", "state_codes_downtime": [30, 40, 41],
+                       "ask_window_local": ["2025-10-01", "2026-09-01"],
                        "state_codes_normal": [10, 20], "bands_ms": [3, 4, 8, 8.5, 9.5, 10, 12],
                        "rotor_diameters_ch02_to_ch04": 3.5},
     }
@@ -95,23 +96,19 @@ def chart_png(fig):
     f.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
     xs = np.arange(len(W.TURBINES))
-    dn = [fig["downtime_mwh"][t] for t in W.TURBINES]
-    cu = [fig["curtailment_mwh"][t] for t in W.TURBINES]
-    ax.bar(xs, dn, width=0.62, color=DOWN_C, label="Downtime", zorder=3, linewidth=0)
-    ax.bar(xs, cu, width=0.62, bottom=dn, color=CURT_C, label="Grid curtailment", zorder=3, linewidth=0,
-           edgecolor=BG)
-    for x, a, b in zip(xs, dn, cu):
-        ax.text(x, a + b + 8, "%d" % (a + b), ha="center", va="bottom", fontsize=7.4, color=INK)
+    gen = [fig["metered_generation_mwh"][t] for t in W.TURBINES]
+    ax.bar(xs, gen, width=0.62, color=DOWN_C, label="Metered generation", zorder=3, linewidth=0)
+    for x, a in zip(xs, gen):
+        ax.text(x, a + 55, "{:,}".format(a), ha="center", va="bottom", fontsize=7.4, color=INK)
     ax.set_xticks(xs)
     ax.set_xticklabels(W.TURBINES)
-    ax.set_ylabel("Lost production, MWh")
-    ax.set_ylim(0, max(a + b for a, b in zip(dn, cu)) * 1.13)
+    ax.set_ylabel("Metered generation, MWh")
+    ax.set_ylim(0, max(gen) * 1.13)
     ax.yaxis.grid(True, color=GRID, linewidth=0.7, zorder=0)
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
     ax.tick_params(axis="both", length=0)
-    ax.legend(ncol=2, frameon=False, fontsize=8, loc="upper right")
-    ax.set_title("Curtailment cost each turbine about 300 MWh in 2025-26", loc="left", fontsize=9.6,
+    ax.set_title("Metered generation by turbine, ten months to 31 August 2026", loc="left", fontsize=9.6,
                  fontweight="bold", color=INK, pad=10)
     f.tight_layout()
     buf = io.BytesIO()
@@ -174,28 +171,28 @@ def write_paper(path, fig, png):
         "%s, whose blades are sound." % (fig["ch09_whole_year_blade_loss_mwh"], fig["ch09_rotor_back"]), body))
     rows = [[Paragraph(x, D.CELLB) for x in ("Turbine", "Shortfall against the warranted curve at the same mean wind "
                                                         "(MWh)", "Blade loss at the same turbulence (MWh)",
-                                             "Downtime (MWh)", "Grid curtailment (MWh)")]]
+                                             "Metered generation, ten months to 31 August (MWh)")]]
     for t in W.TURBINES:
         rows.append([Paragraph(("<b>%s</b>" % t) if t == call else t, D.CELL)] +
                     [Paragraph(whole(v), D.CELLR) for v in (r0[t], am[t])] +
-                    [Paragraph("%d" % fig[k][t], D.CELLR) for k in ("downtime_mwh", "curtailment_mwh")])
+                    [Paragraph("{:,}".format(fig["metered_generation_mwh"][t]), D.CELLR)])
     rows.append([Paragraph("<b>Farm</b>", D.CELL), Paragraph("", D.CELL), Paragraph("", D.CELL),
-                 Paragraph("<b>{:,}</b>".format(fig["farm_downtime_mwh"]), D.CELLR),
-                 Paragraph("<b>{:,}</b>".format(fig["farm_curtailment_mwh"]), D.CELLR)])
-    tab = Table(rows, colWidths=[20 * mm, 44 * mm, 40 * mm, 28 * mm, 32 * mm], hAlign="LEFT", repeatRows=1)
+                 Paragraph("<b>{:,}</b>".format(fig["farm_metered_generation_mwh"]), D.CELLR)])
+    tab = Table(rows, colWidths=[20 * mm, 44 * mm, 40 * mm, 50 * mm], hAlign="LEFT", repeatRows=1)
     tab.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.7, D.INK), ("LINEABOVE", (0, -1), (-1, -1), 0.5, D.GREY),
                              ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2.2),
                              ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)]))
     s += [Spacer(1, 4), KeepTogether([tab, Paragraph(
         "Normal operation (states 10 and 20), October 2025 to September 2026; CH09 from %s. Sources: SCADA, met mast M1, "
-        "ANM log, work orders, Schedule 3." % fig["ch09_rotor_back"], small)])]
-    s.append(Paragraph("Lost production, 2025-26", D.H2))
+        "the monthly round's counter reads, work orders, Schedule 3." % fig["ch09_rotor_back"], small)])]
+    s.append(Paragraph("What the meters recorded, 2025-26", D.H2))
     s.append(Paragraph(
-        "The farm lost %s MWh to downtime and %s MWh to grid curtailment over the twelve months, by OM-07 section 4. "
-        "CH06's gearbox exchange in July and CH09's main-bearing exchange in April account for more than half of the "
-        "downtime. "
-        "The workbook lost_production_2025_26.xlsx gives each turbine's figures." % (
-            "{:,}".format(fig["farm_downtime_mwh"]), "{:,}".format(fig["farm_curtailment_mwh"])), body))
+        "The ten turbines generated %s MWh over the ten months to 31 August 2026 as their own revenue counters "
+        "record it, and the connection meter exported %s MWh over the same months. The counters are read on the "
+        "monthly round rather than at the month end, so each turbine's figure is taken to the window's own ends from "
+        "the ten-minute record. The workbook %s gives each turbine's generation and the export month by month." % (
+            "{:,}".format(fig["farm_metered_generation_mwh"]), "{:,}".format(fig["farm_metered_export_mwh"]),
+            WORKBOOK), body))
     s.append(Image(io.BytesIO(png), width=165 * mm, height=165 * mm * 3.6 / 7.0))
     s.append(Paragraph("Notes", D.H2))
     for n in (
@@ -226,24 +223,41 @@ def write_workbook(path, fig):
     bold = Font(bold=True)
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Lost production 2025-26"
-    ws.append(["Turbine", "Downtime (MWh)", "Grid curtailment (MWh)", "Total (MWh)"])
+    ws.title = "Metered generation"
+    ws.append(["Turbine", "Metered generation (MWh)"])
     for c in ws[1]:
         c.font = bold
         c.alignment = Alignment(wrap_text=True, vertical="top")
     for t in W.TURBINES:
-        a, b = fig["downtime_mwh"][t], fig["curtailment_mwh"][t]
-        ws.append([t, a, b, a + b])
+        ws.append([t, fig["metered_generation_mwh"][t]])
     n = len(W.TURBINES) + 1
-    ws.append(["Farm", "=SUM(B2:B%d)" % n, "=SUM(C2:C%d)" % n, "=SUM(D2:D%d)" % n])
+    ws.append(["Farm", "=SUM(B2:B%d)" % n])
     for c in ws[n + 1]:
         c.font = bold
-    for row in ws.iter_rows(min_row=2, min_col=2, max_col=4):
+    for row in ws.iter_rows(min_row=2, min_col=2, max_col=2):
         for c in row:
             c.number_format = "#,##0"
-    for col, wd in zip("ABCD", (10, 16, 22, 13)):
+    for col, wd in zip("AB", (10, 24)):
         ws.column_dimensions[col].width = wd
     ws.freeze_panes = "A2"
+    ex = wb.create_sheet("Metered export")
+    ex.append(["Month", "Metered export (MWh)"])
+    for c in ex[1]:
+        c.font = bold
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    import analysis as _AN
+    for k in _AN.ASK_MONTHS:
+        ex.append([k, fig["metered_export_mwh"][k]])
+    m = len(_AN.ASK_MONTHS) + 1
+    ex.append(["Ten months", "=SUM(B2:B%d)" % m])
+    for c in ex[m + 1]:
+        c.font = bold
+    for row in ex.iter_rows(min_row=2, min_col=2, max_col=2):
+        for c in row:
+            c.number_format = "#,##0"
+    for col, wd in zip("AB", (14, 24)):
+        ex.column_dimensions[col].width = wd
+    ex.freeze_panes = "A2"
     c2 = wb.create_sheet("Campaign 2027")
     c2.append(["Turbine", "Shortfall against warranted curve, same mean wind (MWh)",
                "Blade loss at the same turbulence (MWh)", "Normal-operation energy (MWh)"])

@@ -242,29 +242,77 @@ comes only from the easy comparison on the same estimand.
 
 ## Ask sheet
 
+**Revision, 2026-10-20, rubric repair after the wave 8 audit.** The shipped ask layer was taken whole: the
+blind reader filed all twenty per-turbine loss figures exactly and said why in its own words, that "the loss
+tables are rule application with Layer 1 mess", having executed OM-07's clauses 4.4 to 4.6 literally. The
+diagnosis is not that the devices were weak. **It is that the two ask quantities were the ones clause 4.1 of
+the farm's own operating standard obliges the asset manager to report to the board each November, and
+clauses 4.2 to 4.7 specify completely how to compute them:** 4.2 and 4.3 classify, 4.4 fixes the precedence
+between downtime, curtailment and the excluded causes, 4.5 gives the loss formula, 4.6 gives the potential
+power with its density correction, 4.7 the unit, and 5.1 names the exact five records to work from. That is
+`supplemental-stumping` 1.2 ban 1 at its most complete, and it is the mandated-indicator law one level down:
+the organisation is obliged to publish how it computes the figure the ask asks for. No device can hold those
+asks as worded, because 4.2's naming of planned service plus 5.1's naming of the work orders sends a careful
+reader to the isolation times that were ask D's primary, and 4.3 with 4.4 makes ask G's ANM join mandatory.
+The asks are therefore re-cut (Part 6 licenses the wording change where no device can hold the ask), and
+OM-07 is untouched: a filed rule may exist, it may not adjudicate a device on an ask's path, and section 4
+adjudicates nothing on the new paths. The main recommendation side is frozen.
+
+**Second defect the audit exposed, independent of the first.** The shipped curtailment block was ten
+criteria for one number: ANM instructions are farm-wide, so `curtailment_mwh` ran 291 to 304 MWh across all
+ten turbines, a spread of 13 MWh on a level of 300. A response that reached the method banked all ten at
+once. The replacement puts the two blocks on different files, different systems, different grains and
+different device families, so no single handling carries both.
+
+**H18 home.** The call commits energy the repaired blades will recover. That energy is only worth what
+reaches a revenue meter, so the board paper's own exhibit is the year's generation-to-export bridge and the
+asset manager's workbook gives its two sides. Ask A is the trail from an input the call consumes (the
+turbines' ten-minute power) to another system's control total (the turbines' own revenue counters); ask B
+reconciles that to a third system's total (the connection's settlement meter). Both are `supplemental-stumping`
+1.3's second and third homes, and neither is a second decision: with the call unmade the bridge is a
+reconciliation nobody acts on.
+
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| D, each turbine's energy lost to downtime, October 2025 to September 2026 | 10, nearest MWh | the case's accounting of every candidate's year: what each turbine lost besides its blades | the board reads each turbine's year by cause beside the campaign | D4, a controller isolated for its annual service writes nothing: each service isolates the turbine twice, at the start straight from running (the record silent between a running row and a service row) and at the end before a restart to waiting for wind (silent between a service row and a waiting row); only the service work orders (isolation times) and the counters (no energy in those hours) show the turbine stopped | the site communications outage of 18 and 19 November 2025 (every turbine silent while running, the counters' energy shows it); the grid loss of 24 January 2026 (every turbine silent, stopped by the grid, neither downtime nor curtailment); the SCADA clock (the mast's wind joined an hour off) | SCADA states and power, mast wind, temperature and pressure, warranted curve, OM-07, work orders, production report, state code table, extract notes (8 files, 14 columns) | the states as recorded, silent intervals dropped (every turbine low, 4.6 to 66 MWh); states filled forward (every turbine low by its start isolation, 2.1 to 38 MWh); filled backward (every turbine low by its end isolation, 1.4 to 5.6 MWh); every silent interval counted (every turbine high by 40.5 MWh, the outage and the grid loss); the answer | a controller isolated for service records nothing, and a site switch failure silences every turbine while its counters run |
-| G, each turbine's energy lost to grid curtailment over the same months | 10, nearest MWh | the same accounting | the same | D8, the SCADA platform moved on 3 February 2026 from the site server (UK local time) to the hosted platform (UTC), and the export joins both in one unlabelled timestamp column, while the network operator's ANM log is in UTC: read as local throughout, every instruction from 29 March 2026 sits an hour late (its first hour lost, an unlimited hour after it gained); read as UTC throughout, the October 2025 instructions sit an hour early; only the repeated hour at the October 2025 clock change, the missing nothing at the March 2026 change and the platform date in the extract notes place the switch | noise mode writes the same power-limited state as an ANM limit; ANM trips (export limit zero) write the external-stop state; the grid loss writes the grid state | SCADA timestamps, states and power, ANM log, mast, warranted curve, OM-07, state code table, extract notes (7 files, 13 columns) | the power-limited state read as curtailment (the six turbines without noise mode low by about 75 MWh, the trips; the four with it high by 78 to 182 MWh); the ANM log on the SCADA read as local throughout (every turbine low by 15.8 to 20.3 MWh); read as UTC throughout (every turbine low by 2.3 to 4.0 MWh, the October instructions); the answer | a SCADA migration to a hosted platform changes the clock, and noise mode and grid limits share a controller state |
-| Chart, both losses by turbine | 4 named parts | the paper's exhibit of D and G | the board reads the year at a glance | inherits D's and G's devices | inherits their hazards | D's and G's paths | D's and G's stops on every bar | a board paper's standard exhibit |
+| A, each turbine's metered generation over the eleven months 1 October 2025 to 31 August 2026 | 10, nearest MWh | the trail from the power the call reads to the counters the society is paid on | the board reads each candidate's year as the revenue meter saw it | D6 grain, the counters are read on the asset manager's site visit and not at the month end: each month's reads walk the pads in layout order over a working day and the visit day itself drifts, so every monthly figure is the energy between two reads rather than the calendar month's, and the year's end-minus-start is the energy between the first and last read; the per-turbine correction is the part-intervals at each end, which only the read stamps plus the ten-minute record supply | the read stamps' own zone (taken as UTC rather than site local, every turbine moves 1 to 2 MWh: 0 of 10 survive); the SCADA migration of 3 February 2026 (the closing part-window sits after it, so reading the ten-minute clock as UTC throughout moves 9 of 10 and as local throughout moves 2 of 10, both by 1 to 2 MWh) | monthly production report (month, turbine, read stamps, registers, energy), SCADA states and power, work orders, site layout pads, extract notes (5 files, 11 columns) | the energy column summed over the twelve rows (every turbine out by its own read drift, 2 to 31 MWh); end register less start register (every turbine out by the first and last part-windows); the calendar month assumed and SCADA filled at UTC throughout (every turbine out by the post-migration boundaries); filled without the outage (every turbine short in November); the answer | an asset manager reads ten revenue counters on a site visit, walking the pads in order, and the visit slips a day or two |
+| B, the farm's metered export in each of those eleven months | 11, nearest MWh | the same bridge's far side, the total the society is actually paid on | the board sees what the year delivered at the connection | D4 absence, the settlement meter's export register writes zero in the half-hours the farm was net importing, so the months in which the farm consumed are overstated by exactly the import those half-hours carried, and the import register is the only record of it | the meter's own window (the file runs 2025-09-30 23:00 to 2026-09-30 22:30 in UTC stamps, which is the local year, so UTC calendar months are wrong for every month in British Summer Time); the half-hour against ten-minute grain at every month boundary; the grid loss of 24 January 2026 (export zero, import real) | settlement meter (settlement date, period, export and import registers), extract notes, SCADA power for the boundary half-hours, state codes (4 files, 7 columns) | the export register summed by UTC calendar month (eight months out by their boundary hour); summed by the file's own date field with no timezone read (the same); export taken as net (every month with a net-import half-hour overstated); the answer | a connection meter has separate import and export registers and a settlement series is stamped in UTC |
+| Chart, the year's generation against export by month, four named parts | 4 named parts | the paper's exhibit of A and B | the board reads the bridge at a glance | inherits A's and B's devices | inherits their hazards | A's and B's paths | A's and B's stops move every bar | a board paper's standard bridge exhibit |
 
-- **Main population zero-counts:** the main call reads normal-operation rows (states 10 and 20) and the mast; no
-  silent interval has a row; no ANM instruction, work order or counter is read by the main call; the clock moves only
-  the mast join for density, asserted neutral (SF10); asserted by count in `checks.py`.
-- **Hazard table:** the communications outage and the grid loss move D under "every silent interval counted" (every
-  turbine, 40.5 MWh together); noise mode (CH06, CH08, CH09, CH10) and the 15 trips move G on the state path (every
-  turbine); the clock moves D through the mast join in the months it misplaces (0.0 to 5.7 MWh, none relied on).
-- **Referee:** the monthly production report arbitrates which silent intervals were running (D) and ties no ask figure.
+- **Main population zero-counts:** the main call reads normal-operation rows (states 10 and 20) and the mast only.
+  No read stamp, counter register, settlement period or import register is read by the main call; no ask figure reads
+  the warranted curve or OM-07 section 2. Asserted by count in `checks.py`.
+- **Hazard table, measured on the rebuilt pack rather than argued.** Ask A's primary, the read offsets, moves all ten
+  figures by **+22.4 to +65.1 MWh** (spread 42.7) against a 0.5 MWh bin, and the lazy route of summing the monthly
+  energy column reaches **0 of 10**. Ask B's two stops are independent and each reaches **4 of 11**: summing the
+  export register on the file's own UTC settlement date misses the seven British Summer Time months by up to 17.7
+  MWh, and netting the import register off the export register misses the seven months the farm drew by up to 4.2
+  MWh. **Two months, November and December 2025, no ask B device moves past the bin**, because they are GMT months
+  in which the farm never drew: that is recorded rather than patched, and it is why the cracker keeps about 2 of 25
+  criteria rather than none. **The clock hazards on ask A are weak and are not relied on:** the read stamps taken as
+  UTC move every turbine by 1 to 2 MWh (0 of 10 survive), while the ten-minute clock read as local throughout still
+  leaves 8 of 10 right, because only the closing part-window sits after the migration. The communications outage and
+  CH09's rotor change sit inside the counter window and so move neither ask; an earlier draft of this sheet claimed
+  the outage moved all ten A figures and the measurement refuted it.
+- **Referee:** the asset register arbitrates which counter serial sat on which turbine and ties no ask figure.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| D downtime by turbine | fault, repair and service states as recorded, silent intervals dropped or filled forward | every turbine low by its isolation hours | miss |
-| G curtailment by turbine | the ANM log joined to the SCADA read as UK local time throughout | every turbine low by the first hours of the April to September instructions | miss |
-| Chart values | D's and G's cracker paths | every bar off | miss |
+| A, metered generation by turbine | the energy column summed over the twelve monthly rows | every turbine out by its own read drift | miss |
+| B, metered export by month | the export register summed on the file's own settlement date | the eight British Summer Time months out by their boundary hour | miss |
+| Chart values | A's and B's cracker paths | every bar off | miss |
 
-Mirror leakage: about 6 per cent of the ask weight (the chart's title and axis parts; every loss figure misses on the
-default path, which shares the cracker's ask paths).
-Pair ceiling: about 35 (the cracker at about 52 with the call and the chart's presence parts, the mirror at about 18).
+| A, metered generation by turbine | the ten-minute clock read as local throughout, part-windows filled | 8 of 10 right | miss, thin |
+| A, metered generation by turbine | the read stamps taken as UTC | every turbine 1 to 2 MWh out | miss |
+| B, metered export by month | the export register netted of import, by local month | 4 of 11 right | miss |
+
+Mirror leakage: about 8 per cent of the ask weight (the two GMT months of ask B and the chart's presence parts).
+Pair ceiling: about 36 (the cracker at about 52 with the call and the two uncovered months, the mirror at about 20).
+Measured by: `generator/checks.py`, whose ask block runs `analysis.asks_bundle` on the cut pack once per stop
+(`energysum`, `utcfill`, `localfill`, `readsutc`, `utcmonths`, `netexport`) and asserts each one's distance from
+the golden, the read drift's band on every turbine, the count of months a stop moves past the bin, and that no
+graded ask figure sits within 50 kWh of a rounding edge. The numbers above are those assertions' own, not prose:
+the cracker's route on ask A (`energysum`) reaches 0 of 10, and neither of ask B's two stops reaches more than 4
+of 10.
 
 ## Build record
 
@@ -331,6 +379,18 @@ Pair ceiling: about 35 (the cracker at about 52 with the call and the chart's pr
   Its realism findings, fixed in the generator: CH08 and CH09 shared a hub serial; CH09's register blades sat outside
   the farm's serial series; the serials ran too evenly; every corrective work order carried one summary; the crane log
   recorded the pool rotor's blade condition; the OM-07 revision entry named clause 2.5.
+- **leak.py after the rubric repair (as-of 2026-10-09): REVIEW, and the same four lines as the shipped build.**
+  All four sit on documents the repair never touched (OM-07, Schedule 3, the extract notes), and all four were
+  already answered above. The repair added no document: the two files it changed are the monthly production report,
+  which gained the read stamps its own system records, and the connection meter, which gained the import register a
+  connection meter has. Neither carries a sentence about either ask, and `leak.py` found no new figure, term or date.
+- **`guard.py heart` returns BLOCK, and it is an artifact of the gate rather than a finding about this build.** The
+  three BLOCKs are `ban.strategy` against task232 and the two structural tests against task228 (v5) and task263,
+  which were drawn on 13, 15 and 16 October against this build's 13 October, two of them two and three days after it.
+  The repair touched no card, which `git status` on `cards/` shows, so the verdict is identical before and after:
+  `heart` runs the full draw-time check, and the full check compares a filed build against every card including the
+  ones filed later, so a shipped build accumulates BLOCKs as its successors register. Recorded here and filed as a
+  house fix rather than cleared, because clearing it would mean editing the card, which the rubric repair freezes.
 - **Reader, pass 2 (the changed files):** no decisive-step sentence, no pointer to a turbine, no repeated serial, no
   text written by someone who knows the answer; one shared commissioning date kept (one project, one handover).
 
@@ -367,3 +427,18 @@ Pair ceiling: about 35 (the cracker at about 52 with the call and the chart's pr
 - Annual services on any weekday pair: calm days left some turbines' isolations worth under 0.5 MWh, inside the
   rounding; the contractor now climbs in moderate wind (6 to 11 m/s over each isolation), as rope and climb rules
   require anyway.
+
+- 2026-10-20, rubric repair. **Ask D's primary (D4, the service isolation writing no state) replaced.** The
+  wave 8 blind reader took all ten downtime figures by executing OM-07 4.2, which names planned service as
+  downtime, and 5.1, which names the work orders, so the isolation times the device hid were handed to it by
+  two filed clauses. A device a filed rule adjudicates is ban 1, and no re-siting saves it while section 4
+  stands and the ask asks for section 4's quantity.
+- 2026-10-20, rubric repair. **Ask G's primary (D8, the SCADA platform migration against the ANM log)
+  replaced as a primary and kept as a shared hazard on the new ask A.** The reader took all ten curtailment
+  figures: 4.3 and 4.4 make the ANM join mandatory, so the clock discrepancy became an internal
+  inconsistency it reconciled rather than a trap it missed. The migration is still in the pack and still
+  moves figures; it no longer carries an ask alone.
+- 2026-10-20, rubric repair. **The curtailment block's structure rejected as well as its device.** Ten
+  criteria stood on one number, 291 to 304 MWh across the farm, because ANM instructions are farm-wide; a
+  response reaching the method banked all ten. A per-unit block whose spread is 4 per cent of its level is
+  one figure wearing ten criteria, and the replacement puts the two blocks on different systems and grains.

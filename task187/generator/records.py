@@ -235,33 +235,68 @@ def write_register(path):
     wb.save(path)
 
 
-def counters(ops):
-    """Each turbine's energy meter, read at local midnight at each month's start (kWh)."""
+def read_schedule():
+    """When each turbine's revenue counter is actually read.
+
+    The asset manager does not read ten counters at local midnight. A technician walks the site on the
+    monthly round, taking the pads in the construction order they are numbered in, and the round itself
+    slips with the weather and the working week. So each month's reads are spread over the round, the
+    turbines at the far pads are read later than those by the access road, and the twelve-month window the
+    registers span is not the twelve months the board asks about. Returns, per turbine, the interval index
+    of each of the thirteen reads; indices are interval boundaries, so a register is the cumulative energy
+    at one of them exactly and the part-windows are recoverable from the ten-minute record.
+    """
     months = []
     d = dt.date(2025, 10, 1)
     while d <= dt.date(2026, 10, 1):
         months.append(d)
         d = (d.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
-    bounds = [W.interval_index(dt.datetime(x.year, x.month, 1, tzinfo=W.LONDON).astimezone(W.UTC)) for x in months]
+    # The round goes out on the month's first working day, which is where it falls in the calendar and not a
+    # matter of chance, and runs for two days: the first six pads on day one, the rest on day two. So the
+    # offset between a month's start and its read is two days after a weekend and none after a Tuesday, and
+    # the window the registers span differs from the calendar month by whatever the calendar gives.
+    order = sorted(W.TURBINES, key=lambda t: W.PAD[t])
+    reads = {t: [] for t in W.TURBINES}
+    for x in months:
+        day0 = dt.datetime(x.year, x.month, 1, tzinfo=W.LONDON)
+        while day0.weekday() >= 5:                        # Saturday or Sunday waits for the Monday
+            day0 += dt.timedelta(days=1)
+        begin = day0 + dt.timedelta(hours=8, minutes=20)
+        for j, t in enumerate(order):
+            day = 0 if j < 6 else 1
+            at = begin + dt.timedelta(days=day, minutes=40 * (j if j < 6 else j - 6))
+            k = W.interval_index(at.astimezone(W.UTC))
+            reads[t].append((x, at, int(min(max(k, 0), W.N))))
+    return months, reads
+
+
+def counters(ops):
+    """Each turbine's revenue counter as the monthly round reads it (kWh), with the read stamp it carries."""
+    months, reads = read_schedule()
     out = {}
     start = {t: 4.0e7 + 3.1e6 * j + 1234.0 * (j * j) for j, t in enumerate(W.TURBINES)}
     for t in W.TURBINES:
-        e = np.cumsum(ops["power"][t]) / 6.0
+        e = np.cumsum(np.maximum(ops["power"][t], 0.0)) / 6.0
         e = np.concatenate([[0.0], e])
-        out[t] = [(months[i], start[t] + e[bounds[i]], start[t] + e[bounds[i + 1]]) for i in range(len(months) - 1)]
+        seq = reads[t]
+        out[t] = [(seq[i][0], seq[i][1], seq[i + 1][1], start[t] + e[seq[i][2]], start[t] + e[seq[i + 1][2]])
+                  for i in range(len(seq) - 1)]
     return out
 
 
 def write_counters(path, cnt):
+    """One row per turbine per month: the read that opened the month's window and the read that closed it."""
     rows = 0
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["month", "turbine", "meter_start_kwh", "meter_end_kwh", "energy_kwh"])
+        w.writerow(["month", "turbine", "read_from_local", "read_to_local", "meter_start_kwh", "meter_end_kwh",
+                    "energy_kwh"])
         for i in range(len(cnt[W.TURBINES[0]])):
             for t in W.TURBINES:
-                mth, a, b = cnt[t][i]
+                mth, ra, rb, a, b = cnt[t][i]
                 a_, b_ = int(np.floor(a)), int(np.floor(b))
-                w.writerow([mth.strftime("%Y-%m"), t, a_, b_, b_ - a_])
+                w.writerow([mth.strftime("%Y-%m"), t, ra.strftime("%Y-%m-%d %H:%M"), rb.strftime("%Y-%m-%d %H:%M"),
+                            a_, b_, b_ - a_])
                 rows += 1
     return rows
 
@@ -338,22 +373,36 @@ def write_work_orders(path, rows):
 
 
 def meter_rows(ops):
-    """The connection's export meter, half-hourly in UTC settlement periods, after the farm's transformer and cable
-    losses."""
+    """The connection meter, half-hourly in UTC settlement periods, after the farm's transformer and cable losses.
+
+    A connection meter has two registers and keeps them apart: it records what the farm sent out and what it
+    drew in, and neither is the net. In the half-hours when the turbines are stopped the farm still draws
+    its auxiliaries, the transformer is still energised and the site supplies still run, so the export
+    register writes nothing at all and the import register carries the whole of it. Writing the net into an
+    export column would make the import unrecoverable, so both registers ship.
+    """
     tot = np.sum([ops["power"][t] for t in W.TURBINES], axis=0) / 6.0
     hh = tot.reshape(-1, 3).sum(1)
-    loss = 0.0165 + 0.000004 * hh
+    # Site demand: the transformer's no-load loss plus the turbines' own auxiliaries, which run whether or
+    # not the rotors do, plus the mast and the site supplies.
+    # The transformer's no-load loss, the met mast, the switchroom and the site supplies run continuously;
+    # each stopped turbine adds its own yaw, pitch, lighting and heating standby draw on top.
+    stopped = np.sum([(ops["power"][t] <= 0.0).astype(float) for t in W.TURBINES], axis=0)
+    aux_hh = (36.0 + 6.0 * stopped).reshape(-1, 3).sum(1) / 6.0
+    loss = 0.0165 + 0.000004 * np.maximum(hh, 0.0)
     out = []
     for j, e in enumerate(hh):
         t = W.START + dt.timedelta(minutes=30 * j)
-        out.append((t.strftime("%Y-%m-%d"), "%02d:%02d" % (t.hour, t.minute), "%.1f" % max(e * (1 - loss[j]), 0.0)))
+        net = e * (1 - loss[j]) - aux_hh[j]
+        exp_, imp_ = (net, 0.0) if net >= 0 else (0.0, -net)
+        out.append((t.strftime("%Y-%m-%d"), "%02d:%02d" % (t.hour, t.minute), "%.1f" % exp_, "%.1f" % imp_))
     return out
 
 
 def write_meter(path, rows):
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["settlement_date_utc", "period_start_utc", "export_kwh"])
+        w.writerow(["settlement_date_utc", "period_start_utc", "export_kwh", "import_kwh"])
         w.writerows(rows)
     return len(rows)
 

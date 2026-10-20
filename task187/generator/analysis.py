@@ -259,16 +259,43 @@ def lost(potential, p):
     return np.maximum(potential - p, 0.0) / 6000.0
 
 
-def asks_truth(G):
-    """D and G by OM-07 section 4 on the generator's truth: G holds per turbine the true downtime and ANM masks, the
-    power (zero while silent and stopped) and the mast potential."""
-    D, C = {}, {}
+# The asks run over the ten months 1 November 2025 to 31 August 2026, which is not the call's window. Both
+# ends sit inside the record: the opening read is the November round and the closing read the September one,
+# so each part-window is recoverable from the ten-minute series, and no graded figure sits near a rounding
+# edge (the closest is 99 kWh clear of one, against about 1 kWh of numerical noise).
+ASK_FROM = dt.datetime(2025, 11, 1, tzinfo=W.LONDON)
+ASK_TO = dt.datetime(2026, 9, 1, tzinfo=W.LONDON)
+ASK_MONTHS = ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03",
+              "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"]
+
+
+def ask_window():
+    """The interval bounds of the eleven months 1 October 2025 to 31 August 2026, site local time."""
+    return (W.interval_index(ASK_FROM.astimezone(W.UTC)), W.interval_index(ASK_TO.astimezone(W.UTC)))
+
+
+def asks_truth(ops):
+    """The two ask quantities on the generator's truth.
+
+    A, each turbine's metered generation over the eleven months: the energy its revenue counter would record
+    had it been read exactly at the window's two ends, which is the integral of its exported power there. The
+    counter is export only, so negative power contributes nothing.
+    B, the farm's metered export in each of those months: the connection meter's export register summed by
+    the month the half-hour falls in locally, after the transformer and cable loss and the site's own demand.
+    """
+    import records as R
+    k_a, k_b = ask_window()
+    A = {}
     for t in W.TURBINES:
-        x = G[t]
-        lp = lost(G["_potential"], x["p"])
-        D[t] = float(lp[x["down"]].sum())
-        C[t] = float(lp[x["curt"]].sum())
-    return D, C
+        e = np.concatenate([[0.0], np.cumsum(np.maximum(ops["power"][t], 0.0)) / 6.0])
+        A[t] = float((e[k_b] - e[k_a]) / 1000.0)
+    Bm = {k: 0.0 for k in ASK_MONTHS}
+    for j, r in enumerate(R.meter_rows(ops)):
+        st = W.START + dt.timedelta(minutes=30 * j)
+        key = st.astimezone(W.LONDON).strftime("%Y-%m")
+        if key in Bm:
+            Bm[key] += float(r[2])
+    return A, {k: v / 1000.0 for k, v in Bm.items()}
 
 
 # ------------------------------------------------------------------ frames
@@ -333,7 +360,11 @@ def read_bundle(target):
     with open(os.path.join(target, R.WORKORDERS)) as fh:
         wos = list(csv.DictReader(fh))
     curve = read_curve(os.path.join(target, D.SCHEDULE))
-    return dict(scada=tab, mast=mast, anm=anm, wos=wos, curve=curve)
+    with open(os.path.join(target, R.COUNTERS)) as fh:
+        cnt = list(csv.DictReader(fh))
+    with open(os.path.join(target, R.METER)) as fh:
+        mtr = list(csv.DictReader(fh))
+    return dict(scada=tab, mast=mast, anm=anm, wos=wos, curve=curve, counters=cnt, meter=mtr)
 
 
 def read_curve(path):
@@ -421,62 +452,76 @@ def wo_windows(wos):
 
 
 def asks_bundle(B, variant="golden"):
-    """D and G by OM-07 section 4 from the shipped files.
+    """The two ask quantities from the shipped files, in the golden handling and at each stop.
 
-    golden: the clock as scada_k's golden; silent intervals are downtime inside a work order's stopped window, and
-    nothing otherwise (the communications outage and the grid loss). Stops: states (silent intervals dropped),
-    ffill/bfill (silent intervals take the neighbouring row's state), allsilent (every silent interval downtime),
-    state11 (curtailment read from the power-limited state), local and utc (the SCADA's clock read one way)."""
-    clock = variant if variant in ("local", "utc") else "golden"
-    mast = B["mast"]
-    pot = curve_at(B["curve"], mast[:, 0] * (density(mast[:, 3], mast[:, 4]) / 1.225) ** (1.0 / 3.0))
-    inforce = np.zeros(W.N, bool)
+    Ask A, each turbine's metered generation over the eleven months to 31 August 2026. The counters are not
+    read at the window's ends: a technician walks the pads on the monthly round and the round slips, so the
+    registers span the round's own window and the two part-windows at each end come from the ten-minute
+    record. Stops: `energysum` sums the monthly energy column, which is the round's window and nothing else;
+    `utcfill` and `localfill` integrate the part-windows with the SCADA clock read one way throughout;
+    `readsutc` takes the read stamps as UTC rather than site local.
+
+    Ask B, the farm's metered export in each of those months. The connection meter is stamped in UTC and its
+    export register is export only. Stops: `utcmonths` sums the register on the file's own settlement date,
+    so the British Summer Time months carry the wrong boundary hour; `netexport` nets the import register
+    off the export register, which is not what the farm was paid for exporting.
+    """
     import pandas as pd
-    start = pd.Timestamp(W.START.replace(tzinfo=None))
-    for r in B["anm"]:
-        a = int(round((pd.Timestamp(r["start_utc"][:19]) - start) / pd.Timedelta(minutes=10)))
-        b = int(round((pd.Timestamp(r["end_utc"][:19]) - start) / pd.Timedelta(minutes=10)))
-        inforce[max(a, 0):min(b, W.N)] = True
-    win = wo_windows(B["wos"])
+    import records as R
+    k_a, k_b = ask_window()
+    clock = {"localfill": "local", "utcfill": "utc"}.get(variant, "golden")
+
+    # --- the ten-minute record as a per-turbine exported-power series on the UTC index
     sc = B["scada"]
-    D, C = {}, {}
+    P = {}
     for t in W.TURBINES:
         x = sc[sc.turbine == t]
         k = scada_k(x.timestamp.reset_index(drop=True), clock)
         ok = (k >= 0) & (k < W.N)
-        st = np.full(W.N, -1)
         p = np.zeros(W.N)
-        st[k[ok]] = x.state.to_numpy()[ok]
-        p[k[ok]] = x.active_power_mean.to_numpy()[ok]
-        silent = st < 0
-        down = np.isin(st, (30, 40, 41))
-        if variant in ("golden", "local", "utc", "state11"):
-            for a, b in win[t]:
-                ka = int(round((a - W.START).total_seconds() / 600))
-                kb = int(round((b - W.START).total_seconds() / 600))
-                sel = np.zeros(W.N, bool)
-                sel[max(ka, 0):min(kb, W.N)] = True
-                down |= sel & silent
-        elif variant in ("ffill", "bfill"):
-            idx = np.where(~silent, np.arange(W.N), -1 if variant == "ffill" else W.N)
-            if variant == "ffill":
-                idx = np.maximum.accumulate(idx)
-                fill = np.where(idx >= 0, st[np.maximum(idx, 0)], 10)
-            else:
-                idx = np.minimum.accumulate(idx[::-1])[::-1]
-                fill = np.where(idx < W.N, st[np.minimum(idx, W.N - 1)], 10)
-            down = np.isin(np.where(silent, fill, st), (30, 40, 41))
-        elif variant == "allsilent":
-            down = down | silent
-        neither = np.isin(st, (21, 22, 61))
-        if variant in ("golden", "local", "utc", "state11", "ffill", "bfill", "allsilent", "states"):
-            # silent intervals of the grid loss are neither (the grid state brackets them)
-            gl = silent & (np.arange(W.N) >= W.interval_index(W.GRID_LOSS[0])) & (np.arange(W.N) < W.interval_index(W.GRID_LOSS[1]))
-            neither = neither | (gl if variant != "allsilent" else np.zeros(W.N, bool))
-        lp = np.maximum(pot - p, 0.0) / 6000.0
-        D[t] = float(lp[down].sum())
-        if variant == "state11":
-            C[t] = float(lp[np.isin(st, (11,))].sum())
-        else:
-            C[t] = float(lp[inforce & ~down & ~neither].sum())
-    return D, C
+        p[k[ok]] = np.maximum(x.active_power_mean.to_numpy()[ok], 0.0)
+        P[t] = np.concatenate([[0.0], np.cumsum(p) / 6.0])
+
+    # --- ask A
+    rows = B["counters"]
+    tz = "UTC" if variant == "readsutc" else "Europe/London"
+    A = {}
+    for t in W.TURBINES:
+        mine = [r for r in rows if r["turbine"] == t]
+        by = {r["month"]: r for r in mine}
+        first, last = by[ASK_MONTHS[0]], by[ASK_MONTHS[-1]]
+        span = int(last["meter_end_kwh"]) - int(first["meter_start_kwh"])
+        if variant == "energysum":
+            A[t] = float(sum(int(by[m]["energy_kwh"]) for m in ASK_MONTHS) / 1000.0)
+            continue
+        r0 = int(round((pd.Timestamp(first["read_from_local"]).tz_localize(tz, ambiguous=True,
+                                                                          nonexistent="shift_forward")
+                        - pd.Timestamp(W.START)) / pd.Timedelta(minutes=10)))
+        r1 = int(round((pd.Timestamp(last["read_to_local"]).tz_localize(tz, ambiguous=True,
+                                                                       nonexistent="shift_forward")
+                        - pd.Timestamp(W.START)) / pd.Timedelta(minutes=10)))
+        r0, r1 = min(max(r0, 0), W.N), min(max(r1, 0), W.N)
+        # The registers span [r0, r1]; the board asks about [k_a, k_b]. Each read sits inside the record,
+        # so both part-windows come from the ten-minute series: the energy between the window's start and
+        # the opening read belongs to the answer and is not in the registers, and the energy between the
+        # window's end and the closing read is in the registers and does not belong to the answer.
+        head = (P[t][max(r0, k_a)] - P[t][min(r0, k_a)]) / 1000.0
+        tail = (P[t][max(r1, k_b)] - P[t][min(r1, k_b)]) / 1000.0
+        head = head if r0 >= k_a else -head
+        tail = tail if r1 >= k_b else -tail
+        A[t] = float(span / 1000.0 + head - tail)
+
+    # --- ask B
+    Bm = {k: 0.0 for k in ASK_MONTHS}
+    for r in B["meter"]:
+        st = dt.datetime.strptime(r["settlement_date_utc"] + " " + r["period_start_utc"],
+                                  "%Y-%m-%d %H:%M").replace(tzinfo=W.UTC)
+        key = (st.strftime("%Y-%m") if variant == "utcmonths"
+               else st.astimezone(W.LONDON).strftime("%Y-%m"))
+        if key not in Bm:
+            continue
+        v = float(r["export_kwh"])
+        if variant == "netexport":
+            v -= float(r["import_kwh"])
+        Bm[key] += v
+    return A, {k: v / 1000.0 for k, v in Bm.items()}

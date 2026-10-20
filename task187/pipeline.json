@@ -15,10 +15,10 @@
     "verdict": "pass 1 DETERMINISTIC (APPROVE; optional turbulence pin declined as a readability leak)"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK)",
+    "leak_py": "REVIEW, the same four lines as the shipped build, all on untouched main-call documents",
     "reader": "two reads: no decisive-step sentence, no ranking file, question 6 analytical; realism findings fixed"
   },
-  "loops": 0,
+  "loops": 1,
   "objective": "anomaly-detection",
   "owner": "oviya13ya",
   "portal": null,
@@ -26,7 +26,7 @@
     "date": "2026-10-13",
     "exit": 0
   },
-  "resume": "RETURNED on measurement, not on a portal result, and the call HELD: the reader filed CH07 against a golden of CH04 at about 35 per cent confidence and named the lure itself unprompted, so the ladder holds. It then took all 20 ask figures exactly, and its own account is the finding: the loss tables are rule application with Layer 1 mess, executed literally off the standard's clauses 4.4 to 4.6. The asks hold nothing. /fix-rubric with the main recommendation side frozen: re-site the primary devices onto paths the standard's clauses do not resolve.",
+  "resume": "",
   "returned": [
     {
       "commit": "",
@@ -38,13 +38,13 @@
       "date": "2026-10-20",
       "portal": "wave 8 audit, measured in house",
       "repair": "rubric",
-      "commit": ""
+      "commit": "RESHIPPED (task187)"
     }
   ],
   "seed": "analytical_tasks/02_anomaly_detection/AD10_blade-campaign-rotor-lift-log-chain.md",
   "stage": 5,
   "stage_name": "ship",
-  "status": "RETURNED",
+  "status": "SHIPPED",
   "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at each turbine's own turbulence leaves it sound and names CH04, whose blades lose about two per cent of their power below rated, a loss its neighbour's wake hides at low wind.",
   "task": "task187",
   "updated": "2026-10-20"

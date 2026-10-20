@@ -49,15 +49,16 @@ def write(target, out_path):
         "task": "task187",
         "title": "Which of a community wind farm's ten turbines gets the summer 2027 leading-edge repair campaign, and "
                  "the energy the repaired blades recover over the twelve months after the work, with each turbine's "
-                 "energy lost to downtime and to grid curtailment over October 2025 to September 2026",
+                 "each turbine's metered generation and the farm's metered export over the eleven months to 31 August 2026",
         "domain": "Energy Systems & Utilities",
-        "subdomain": "grid reliability and outage analysis (a wind farm's lost-production accounting: downtime, grid "
-                     "curtailment and performance, with the performance shortfall split into blade loss and inflow)",
+        "subdomain": "grid reliability and outage analysis (a wind farm's production accounting: the performance "
+                     "shortfall split into blade loss and inflow, reconciled to the revenue counters and the "
+                     "connection meter)",
         "objective": "Anomaly Detection & Diagnostics",
         "prompt_shape": "14 (cuts of a distribution by segment): the campaign's turbine and recovered energy; each "
-                        "turbine's energy lost to downtime and to grid curtailment; the chart of both by turbine",
+                        "turbine's metered generation and the farm's metered export by month; the chart of generation by turbine",
         "as_of": "2026-10-09",
-        "deliverables": ["le_repair_campaign_2027.pdf", "lost_production_2025_26.xlsx"],
+        "deliverables": ["le_repair_campaign_2027.pdf", "metered_generation_2025_26.xlsx"],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},

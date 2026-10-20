@@ -332,6 +332,26 @@ check, and the second is an error with the fix in its own message. The scored re
 and refuses to run when no call key is present or named, printing the build's own candidate keys. Read any
 gate whose quiet output is a zero count and ask whether a zero means clean or means absent.
 
+## H27. A draw-time gate run on an already-drawn build, reporting its successors as collisions
+
+**The defect.** A gate that screens a *proposed* draw against the cards a reviewer would read beside it is run
+again later on the finished build, and by then the cards filed after it are in the comparison set. It reports
+axis bans and structural repeats against builds that did not exist when the draw was made, so a shipped build
+accumulates BLOCKs as its neighbours register, and none of them is a finding about it.
+
+**The measured instance.** `guard.py heart` on a build drawn 13 October returned three BLOCKs: an axis ban
+against a card registered later the same day and the two structural tests against cards drawn on the 15th and
+the 16th. The build's own card had not been touched, so the verdict was identical before and after the work
+being gated. `cmd_check` filters the comparison set by draw order for a filed card; `heart` runs the full check
+and that filter did not reach these rules.
+
+**What it costs.** It makes a mandatory gate unpassable for any older build, so a repair that must run it either
+stops on a false finding or learns to ignore the gate, and the second is worse: the next real BLOCK is ignored too.
+
+**The check.** Before acting on a BLOCK from a draw-time gate on a build that is already drawn, read the
+colliding cards' `drawn` dates against the build's own. A collision with a later card is an artifact: record it
+with the dates and carry on. A gate meant to run at two different times says which comparison set it used.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design

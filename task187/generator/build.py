@@ -30,7 +30,9 @@ FILES = {
     "register": R.REGISTER, "counters": R.COUNTERS, "orders": R.WORKORDERS, "standard": D.STANDARD,
     "schedule": D.SCHEDULE, "notes": D.NOTES, "meter": R.METER, "prior": R.PRIOR,
 }
-DISTRACTORS = ("meter", "prior")
+# The connection meter now carries ask B. Nothing reads the ANM log once the curtailment ask is gone:
+# the call works on normal-operation intervals and neither ask joins an instruction.
+DISTRACTORS = ("anm", "prior")
 
 
 def world():

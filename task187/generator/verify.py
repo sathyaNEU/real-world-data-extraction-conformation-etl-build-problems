@@ -1,7 +1,8 @@
 """The independent verifier: reads only the shipped bundle under target/ and the goldens, on its own code path, and
 recomputes the call (the shortfall at each record's own turbulence by an Annex M normalisation fitted to Schedule 3,
 and by turbulence bins against the fleet), the recovered energy's bin, the default path's answer, and every turbine's
-energy lost to downtime and to grid curtailment by OM-07 section 4; then checks the goldens state them."""
+each turbine's metered generation over the ten months and the farm's metered export by month; then checks the
+goldens state them."""
 import csv
 import datetime as dt
 import os
@@ -152,32 +153,50 @@ def main(target, golden):
         hh, mm = s[-5:].split(":")
         u = dt.datetime(d.year, d.month, d.day, int(hh), int(mm), tzinfo=LON).astimezone(dt.timezone.utc)
         return int(round((pd.Timestamp(u.replace(tzinfo=None)) - T0) / pd.Timedelta(minutes=10)))
-    D, C = {}, {}
+    # ---- ask A: each turbine's metered generation over the ten months to 31 August 2026, recomputed here
+    # from the counter reads and the ten-minute record, with no help from the generator's analysis module.
+    ASK_MONTHS = ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03",
+                  "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"]
+    k_a = int(round((pd.Timestamp(dt.datetime(2025, 11, 1, tzinfo=LON).astimezone(dt.timezone.utc)
+                                  .replace(tzinfo=None)) - T0) / pd.Timedelta(minutes=10)))
+    k_b = int(round((pd.Timestamp(dt.datetime(2026, 9, 1, tzinfo=LON).astimezone(dt.timezone.utc)
+                                  .replace(tzinfo=None)) - T0) / pd.Timedelta(minutes=10)))
+    cnt = pd.read_csv(find(target, r"^monthly_production_.*\.csv$"))
+    A = {}
     for t in TURB:
-        st = np.full(NI, -1)
         p = np.zeros(NI)
-        st[tur[t]["k"]] = tur[t]["s"]
-        p[tur[t]["k"]] = tur[t]["p"]
-        silent = st < 0
-        down = np.isin(st, (30, 40, 41))
-        for _, r in wo[wo.turbine == t].iterrows():
-            a, b = ((when(r.date, r.isolated_from), when(r.date, r.isolated_to)) if r.type == "Annual service"
-                    else (when(r.date, r.turbine_stopped), when(r.date, r.returned_to_service)))
-            down[a:b] |= silent[a:b]
-        # a silent stretch with the grid state on both sides is the grid loss
-        neither = np.isin(st, (21, 22, 61))
-        runs = np.flatnonzero(np.diff(np.concatenate([[0], silent.astype(int), [0]])))
-        for a, b in zip(runs[::2], runs[1::2]):
-            if a > 0 and b < NI and st[a - 1] == 61 and st[b] == 61:
-                neither[a:b] = True
-        lp = np.maximum(pot - p, 0) / 6000
-        D[t] = float(lp[down].sum())
-        C[t] = float(lp[force & ~down & ~neither].sum())
+        p[tur[t]["k"]] = np.maximum(tur[t]["p"], 0.0)
+        cum = np.concatenate([[0.0], np.cumsum(p) / 6.0])
+        mine = cnt[cnt.turbine == t].set_index("month")
+        first, last = mine.loc[ASK_MONTHS[0]], mine.loc[ASK_MONTHS[-1]]
+        span = int(last.meter_end_kwh) - int(first.meter_start_kwh)
+
+        def idx(stamp):
+            u = pd.Timestamp(stamp).tz_localize(LON, ambiguous=True, nonexistent="shift_forward")
+            k = int(round((u.tz_convert("UTC").tz_localize(None) - T0) / pd.Timedelta(minutes=10)))
+            return min(max(k, 0), NI)
+        r0, r1 = idx(first.read_from_local), idx(last.read_to_local)
+        head = (cum[max(r0, k_a)] - cum[min(r0, k_a)]) * (1 if r0 >= k_a else -1)
+        tail = (cum[max(r1, k_b)] - cum[min(r1, k_b)]) * (1 if r1 >= k_b else -1)
+        A[t] = (span + head - tail) / 1000.0
+
+    # ---- ask B: the farm's metered export in each of those months, by the month the half-hour falls in locally
+    mt = pd.read_csv(find(target, r"^export_meter_halfhourly_.*\.csv$"))
+    Bx = {k: 0.0 for k in ASK_MONTHS}
+    for d, hm, ex in zip(mt.settlement_date_utc, mt.period_start_utc, mt.export_kwh):
+        u = dt.datetime.strptime("%s %s" % (d, hm), "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc)
+        key = u.astimezone(LON).strftime("%Y-%m")
+        if key in Bx:
+            Bx[key] += float(ex)
+    Bx = {k: v / 1000.0 for k, v in Bx.items()}
+
     # the goldens
     import openpyxl
     from pypdf import PdfReader
-    wb = openpyxl.load_workbook(os.path.join(golden, "lost_production_2025_26.xlsx"), read_only=True)
-    rows = {r[0]: r for r in wb["Lost production 2025-26"].iter_rows(min_row=2, values_only=True) if r[0] in TURB}
+    wb = openpyxl.load_workbook(os.path.join(golden, "metered_generation_2025_26.xlsx"), read_only=True)
+    rows = {r[0]: r for r in wb["Metered generation"].iter_rows(min_row=2, values_only=True) if r[0] in TURB}
+    exrows = {r[0]: r for r in wb["Metered export"].iter_rows(min_row=2, values_only=True)
+              if r[0] in ASK_MONTHS}
     text = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(golden, "le_repair_campaign_2027.pdf")).pages))
     errs = []
     if call != "CH04" or max(binned, key=binned.get) != "CH04":
@@ -189,14 +208,18 @@ def main(target, golden):
     if "campaign on %s" % call not in text or "recover %d MWh to the nearest 50 MWh" % bin50 not in text:
         errs.append("paper does not state the call and its bin")
     for t in TURB:
-        if rows[t][1] != int(round(D[t])) or rows[t][2] != int(round(C[t])):
-            errs.append("%s: workbook %s/%s, verifier %.1f/%.1f" % (t, rows[t][1], rows[t][2], D[t], C[t]))
+        if rows[t][1] != int(round(A[t])):
+            errs.append("%s: workbook %s, verifier %.1f" % (t, rows[t][1], A[t]))
+    for k in ASK_MONTHS:
+        if exrows[k][1] != int(round(Bx[k])):
+            errs.append("%s: workbook %s, verifier %.1f" % (k, exrows[k][1], Bx[k]))
     if errs:
         raise SystemExit("verify FAILED: " + "; ".join(errs))
     print("verify: call %s (%.1f MWh at matched turbulence, bins %.1f; %d to the nearest 50), default %s, runner-up %s; "
-          "downtime %d and curtailment %d MWh over the farm, every turbine's figures as the workbook states" % (
+          "metered generation %d MWh over the farm and export %d MWh over the ten months, every turbine's and "
+          "every month's figure as the workbook states" % (
               call, rec, binned["CH04"], bin50, max(default, key=default.get),
-              sorted(matched, key=lambda x: -matched[x])[1], round(sum(D.values())), round(sum(C.values()))))
+              sorted(matched, key=lambda x: -matched[x])[1], round(sum(A.values())), round(sum(Bx.values()))))
 
 
 if __name__ == "__main__":
