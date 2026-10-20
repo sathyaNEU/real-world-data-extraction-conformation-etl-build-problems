@@ -315,7 +315,8 @@ Authority maintenance system, work orders on ship-to-shore cranes reported 1 Jun
   SITEID          TMH
   WORKTYPE        BD breakdown, DMG damage (struck by a ship's gear, a vehicle or another crane; the
                   repair is charged to the party responsible, and damage is reported apart from the
-                  cranes' breakdowns), CM corrective (crane kept in service),
+                  cranes' breakdowns though its repair is crane maintenance like any other order's),
+                  CM corrective (crane kept in service),
                   PM planned maintenance, INSP inspection. An order's type can be changed after it is
                   raised; the extract shows the type at the pull.
   WOPRIORITY      1 to 3
@@ -377,7 +378,8 @@ the log was closed. One row per job.
   RAISED_UTC      when the job was raised
   DOWN_UTC        when the crane was taken out of service (blank on DEFECT jobs)
   UP_UTC          when the crane was released to operations
-  LABOUR_HRS      labor hours booked to the job
+  LABOUR_HRS      labor hours SRT's crews and resident contractors booked to the job; the crane makers'
+                  engineers were never booked in the log
   STATUS, RAISED_BY
 
 ais_berth_segments_fy2026.csv

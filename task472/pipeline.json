@@ -23,12 +23,12 @@
   "nearest": "task472 v1 at 0.16 (own lineage, differentiated); task160 at 0.04"
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC",
-  "disposition": "FIX_NOW (two ask conventions, closed in the fix pass)",
-  "report": "task472/determinism_check_report.md"
+  "verdict": "pass 2 DETERMINISTIC",
+  "disposition": "FIX_NOW (three ask B pins, applied)",
+  "report": "task472/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4: judge pass 2 thread in flight on the round 2 pack; a data-only realism pass since (target.zip sha256 e4d4d5be53505ab8, 72 of 72 checks, call unchanged); on its verdict finish determinism_check_report_pass2.md, write the pre-ship check and ship",
+ "resume": "stage 4 close: judge pass 2 FIX_NOW applied (SRT labor scope and damage-repair labor pinned in the dictionary, ledger repeats removed); final pack target.zip sha256 1c91700c41064994, 72 of 72 checks; round 3 readers in flight on it; on two misses of the call with exit 0, ship",
  "approved": null,
  "delivered": null,
  "portal": null,

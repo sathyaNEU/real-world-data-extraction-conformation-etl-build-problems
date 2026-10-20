@@ -228,7 +228,7 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   sixteen columns.
   Primary device: D6, an event's quantity on every line it covers. A second fault found while a crane stood down for
   the first is raised as its own breakdown order and the crew books the crane out of service on that order too, inside
-  the first stop or running on after it (three such pairs at every terminal, in both systems); the status history then
+  the first stop or running on after it (two to four such pairs at every terminal, in both systems); the status history then
   holds a change to out of service on a crane already out, and only the crane's own sequence shows it. Pairing each
   order's changes and adding them up counts the shared hours twice; reading the history as the crane's running state
   (out at a 0, back at the next 1) cuts the stop short where the second order runs on; the crane's time out on any
