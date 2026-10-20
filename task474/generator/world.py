@@ -1,72 +1,56 @@
-"""The fixed world: Ridgeline Power Cooperative, a generation and transmission cooperative in an unnamed inland U.S.
-state, its combined-cycle units (each a gas turbine with a heat-recovery steam generator and selective catalytic
-reduction), its simple-cycle peakers and its one coal unit, the 2026 ozone season, the continuous emissions monitors
-whose analyzers drop out mostly in the hours after a start, and the plants' control-system load logs. Every other
-module reads its parameters from here."""
+"""The fixed world: Prairie Hills Health Plan, a Medicaid managed care plan in an unnamed state, its primary care
+provider groups, the first half of 2026, the members each group is assigned, the annual renewal that some members
+lose and regain retroactively, and the state's capitation. Every other module reads its parameters from here."""
 import datetime as dt
 
-COOP = "Ridgeline Power Cooperative"
-DEPT = "Environmental Services"
-PEOPLE = {"engineer": ("Tamara Gill", "Senior Environmental Compliance Engineer"),
-          "manager": ("Martin Estrada", "Manager, Generation Engineering")}
-SEED = 474
+PLAN = "Prairie Hills Health Plan"
+STATE_AGENCY = "State Department of Health Services, Medicaid Managed Care Unit"
+DEPT = "Provider Performance"
+PEOPLE = {"analyst": ("Paula Watts", "Senior Provider Performance Analyst"),
+          "director": ("Derrick Warren", "Director, Network Contracting")}
+SEED = 4740
+RX_SEED = SEED + 21                                       # the pharmacy draw
 YEAR = 2026
-SEASON = (dt.date(2026, 5, 1), dt.date(2026, 9, 30))       # the ozone season, both days included
-TARGET = 0.170                 # lb of NOx per gross MWh over the ozone season; at or above designates
-GUIDELINE_DATE = "12 January 2026"
-MEMO_DATE = "9 November 2026"
-BOARD_DATE = "17 December 2026"
+MONTHS = [dt.date(2026, m, 1) for m in range(1, 7)]        # the period: January to June 2026
+PAID_BY = dt.date(2026, 10, 31)                            # claims paid by this date count
+BENCHMARK = 412.00                                         # paid medical cost per member-month; at or above designates
+RULES_DATE = "2 March 2026"
+MEMO_DATE = "18 November 2026"
 
-PLANTS = {"Cutler Bend": ("CB", "America/Chicago"), "Ashfork": ("AF", "America/Chicago"),
-          "Dunmore Flats": ("DF", "America/Chicago"), "Sable Ridge": ("SR", "America/Chicago")}
-
-# combined-cycle units: plant, unit, capacity MW, starts a week in season, steady NOx lb per MWh at full load, NOx in
-# the first hours after a start (lb, spread over hours 1 to 3), chance the analyzer is out in hours 1 to 3 after a
-# start, chance it is out in any other operating hour, typical run length (hours)
-CC = {
-    "CB-1": ("Cutler Bend", 1, 238, 5.6, .031, 520, .66, .020, 16),
-    "CB-2": ("Cutler Bend", 2, 241, 2.1, .034, 505, .09, .024, 40),
-    "AF-1": ("Ashfork", 1, 226, 4.4, .038, 560, .62, .018, 20),
-    "AF-2": ("Ashfork", 2, 229, 4.9, .033, 470, .08, .022, 18),
-    "DF-1": ("Dunmore Flats", 1, 262, 3.1, .029, 610, .68, .019, 28),
-    "DF-2": ("Dunmore Flats", 2, 258, 1.4, .036, 540, .12, .026, 70),
-    "DF-3": ("Dunmore Flats", 3, 255, 5.2, .032, 495, .67, .021, 17),
-    "SR-1": ("Sable Ridge", 1, 247, 3.6, .035, 530, .06, .020, 24),
-    "SR-2": ("Sable Ridge", 2, 251, 4.0, .030, 575, .64, .023, 22),
+# provider groups: id, name, county, members assigned at January, base cost per member-month, share of a renewal
+# cohort that lapses and is reinstated back to the lapse, share of members who die in the half year (aged, blind and
+# disabled panels), share of renewers who leave for good
+GROUPS = {
+    "PG01": ("Cedar Valley Family Medicine", "Harlan", 2100, 391.07, .05, .004, .02),
+    "PG02": ("Millbrook Community Clinics", "Ross", 2550, 413.23, .32, .003, .03),
+    "PG03": ("North Fork Pediatrics", "Harlan", 1900, 309.79, .08, .000, .02),
+    "PG04": ("Bluestem Internal Medicine", "Dade", 1300, 423.34, .06, .032, .02),
+    "PG05": ("Sandhill Health Partners", "Ross", 2300, 405.51, .30, .004, .03),
+    "PG06": ("Two Rivers Medical Group", "Lyon", 1750, 415.26, .10, .006, .02),
+    "PG07": ("Prairie Gate Primary Care", "Dade", 1450, 404.41, .07, .040, .02),
+    "PG08": ("Oak Hollow Physicians", "Lyon", 2050, 485.13, .28, .005, .03),
+    "PG09": ("Westfield Family Health", "Morton", 1650, 409.81, .06, .004, .02),
+    "PG10": ("Riverside Geriatric Associates", "Morton", 1200, 418.81, .05, .045, .01),
+    "PG11": ("Summit Community Health Center", "Ross", 2400, 409.75, .27, .004, .03),
+    "PG12": ("Lakeshore Medical Associates", "Harlan", 1600, 406.86, .06, .005, .02),
 }
-# each unit's uncontrolled NOx (lb per MMBtu, SCR out of service), set by its combustors
-UNC = {"CB-1": .118, "CB-2": .121, "AF-1": .112, "AF-2": .109, "DF-1": .036, "DF-2": .035, "DF-3": .034, "SR-1": .037,
-       "SR-2": .036}
-# plant instrument air losses in the 2026 ozone season: (number, typical hours)
-AIR = {"Cutler Bend": (12, 9.0), "Ashfork": (16, 10.0), "Dunmore Flats": (2, 4.0), "Sable Ridge": (1, 4.0)}
-# each delivery point's transporter, whose fuel retention (a share of the Daily Index, reset monthly by its tariff)
-# every point on it pays, and the point's transportation rate ($/Dth)
-PIPELINE = {"Cutler Bend": "A", "Dunmore Flats": "A", "Sable Ridge": "A", "Ashfork": "B", "Holt Creek": "B"}
-FUEL_RETENTION = {"A": {5: .011, 6: .013, 7: .016, 8: .018, 9: .014},
-                  "B": {5: .024, 6: .028, 7: .032, 8: .035, 9: .029}}
-TRANSPORT = {"Cutler Bend": .2186, "Ashfork": .1539, "Dunmore Flats": .2248, "Sable Ridge": .1929, "Holt Creek": .1386}
-# forced derates drawn at their size times this (set so every unit's outage rate clears its rounding edge)
-DERATE_SCALE = 0.9
-# other monitored units, outside the program: simple-cycle peakers and the coal unit
-OTHER = {
-    "AF-CT3": ("Ashfork", "simple cycle", 88), "AF-CT4": ("Ashfork", "simple cycle", 86),
-    "SR-CT3": ("Sable Ridge", "simple cycle", 92), "HC-4": ("Holt Creek", "coal steam", 412),
-}
-# the golden's 2026 ozone-season NOx per MWh (tune.py scales each unit's start NOx until the cut pack lands here)
-DESIRED = {"CB-1": .268, "CB-2": .186, "AF-1": .187, "AF-2": .251, "DF-1": .186, "DF-2": .099, "DF-3": .189,
-           "SR-1": .187, "SR-2": .151}
-ADJ = {'AF-1': 0.4159, 'AF-2': 0.91654, 'CB-1': 0.87151, 'CB-2': 1.17682, 'DF-1': 1.33082, 'DF-2': 0.96373, 'DF-3': 0.80154, 'SR-1': 1.0687, 'SR-2': 0.8009}
+# the golden's cost per member-month each group is tuned to (tune.py scales each group's base cost)
+DESIRED = {"PG01": 371.37, "PG02": 403.62, "PG03": 290.81, "PG04": 467.94, "PG05": 381.26, "PG06": 394.71,
+           "PG07": 417.83, "PG08": 431.18, "PG09": 385.42, "PG10": 418.29, "PG11": 405.13, "PG12": 392.07}
+# months a death stays on the roster after the month of death, by group (death reports reach the state late for
+# members in long-term care)
+LAG = {"PG07": (2, 3, 4), "PG10": (2, 3, 4), "PG04": (1, 2, 3)}
 
 FILES = {
-    "dahs": "dahs_hourly_export_2026.csv",
-    "notes": "dahs_export_field_notes.txt",
-    "units": "generating_unit_register_2026.xlsx",
-    "tickets": "cems_maintenance_tickets_2026.csv",
-    "guidelines": "scr_upgrade_program_rules_2027.pdf",
-    "invoices": "gas_supply_daily_invoices_2026.csv",
-    "terms": "gas_supply_agreement_excerpt.pdf",
-    "events": "gads_event_report_2026.csv",
-    "ozone": "ambient_ozone_daily_2026.csv",
-    "allowances": "nox_allowance_holdings_2026.xlsx",
+    "claims": "medical_claims_paid_2026h1.csv",
+    "roster": "enrollment_roster_2026h1.csv",
+    "remit": "capitation_remittance_2026.csv",
+    "notes": "data_extract_notes.txt",
+    "groups": "provider_group_register_2026.xlsx",
+    "rules": "cost_performance_program_rules_2027.pdf",
+    "rx": "pharmacy_claims_2026h1.csv",
+    "classes": "drug_class_crosswalk.xlsx",
+    "quality": "hedis_quality_scores_2025.xlsx",
+    "survey": "member_experience_survey_2025.csv",
 }
-GOLDEN = {"workbook": "cc_unit_nox_inventory_2026.xlsx", "memo": "scr_upgrade_designations_2027.pdf"}
+GOLDEN = {"workbook": "provider_group_pmpm_2026h1.xlsx", "memo": "provider_group_designations_2027.pdf"}

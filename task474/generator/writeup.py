@@ -3,10 +3,11 @@ import json
 
 import world as W
 
-TAGS = ("**Domain:** Physical & Environmental Sciences (emissions inventory: an ozone-season NOx inventory from "
-        "continuous emissions monitor records whose gaps include hours without NOx control).\n"
+TAGS = ("**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid "
+        "managed care plan's paid medical cost per member-month by primary care group).\n"
         "**Analytical objective:** Data Extraction & Conformation (ETL).")
-WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
+         10: "ten", 11: "eleven", 12: "twelve"}
 
 
 def fmt(n):
@@ -20,64 +21,53 @@ def _join(xs):
 def write(fig_path, out_path):
     f = json.load(open(fig_path, encoding="utf-8"))
     F = W.FILES
-    des, rows, sec = f["call"], f["rows"], f["sections"]
+    des, sec, mm, a = f["call"], f["sections"], f["member_months"], f["asks"]
     L = ["## Tags", "", TAGS, "",
          "## 1. Final Recommendation", "",
-         "**Designate %s of the %s combined-cycle units for the 2027 SCR Upgrade Program: %s.**" % (
-             WORDS[f["n_call"]], WORDS[f["n_units"]], _join(des)),
-         "Each emitted %s lb of NOx per gross MWh or more over the 2026 ozone season once the hours its analyzers "
-         "were out are filled by the emission state the unit was in. In the hours a plant lost its instrument air "
-         "(most of them at Cutler Bend and Ashfork), the first measured hour after each loss reads about twenty times "
-         "the unit's usual NOx per MMBtu and falls back over the next hour or two, so the SCR was not removing NOx "
-         "while the air was out; those hours are filled at that first-hour NOx per MMBtu, times the hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the "
-         "same hour after a start or, later in a run, at the same load. Not a fill of every gap from the unit's "
-         "measured hours in the same start state and load, nor the average of the hours either side of each air-loss gap with "
-         "the other gaps filled the same way: both put controlled NOx into uncontrolled hours and designate %s, leaving CB-2 and AF-1 under the target." %
-         (f["target"], _join(f["state_route"])),
+         "**Designate %s of the %s primary care groups for the 2027 Cost Performance Program: %s.**" % (
+             WORDS[f["n_call"]], WORDS[f["n_groups"]], _join(des)),
+         "Each group's paid medical cost per member-month for January to June 2026 is $%s or more once the "
+         "member-months are the months its members were covered rather than the months the roster lists. The roster "
+         "is the state's enrollment as processed by the 5th of each month: members who lost coverage at renewal and "
+         "were reinstated back to the lapse are missing from the months they were later covered for, and members who "
+         "died stay on it for months the state later took its capitation back for. The member-level lines of the "
+         "state's capitation remittance record both. Counted on the roster alone, the groups with the most renewal "
+         "churn look costlier and the groups with the most deaths look cheaper, and the designation would be %s." % (
+             f["benchmark"], _join(f["roster_route"])),
          "",
          "## 2. Critical Components", "",
-         "1. Units at or above %s lb per MWh: **%d** of %d." % (f["target"], f["n_call"], f["n_units"]),
-         "2. Season operating hours without a NOx measurement: **%s**, of which **%s** inside an instrument air "
-         "ticket." % (fmt(f["gaps"]["all"]), fmt(f["gaps"]["air"])),
+         "1. Groups at or above $%s per member-month: **%d** of %d." % (f["benchmark"], f["n_call"], f["n_groups"]),
+         "2. Member-months: **%s** covered, against **%s** on the roster; **%s** member-months added from the "
+         "remittance's reinstatement lines and **%s** roster member-months removed for recoupments." % (
+             fmt(mm["golden"]), fmt(mm["roster"]), fmt(mm["added"]), fmt(mm["removed"])),
          "",
          "## 3. Step-by-Step Solution", "",
-         "1. Took the combined-cycle units from %s (rule %s) and their operating hours (OP_TIME above zero) from 1 May "
-         "to 30 September 2026 in %s, standard time (rule %s), counting each unit's hours since its start along the "
-         "whole year's record." % (F["units"], sec["units"], F["dahs"], sec["rate"]),
-         "2. Marked as air-loss hours the operating hours with a blank NOX_MASS_LB inside a %s ticket whose "
-         "description names the plant instrument air or its compressor, the ticket's local times moved back an hour "
-         "to standard time." % F["tickets"],
-         "3. Filled every air-loss hour, its own run measured on its return or not, with its HEAT_INPUT_MMBTU times "
-         "the unit's mean NOX_MASS_LB over HEAT_INPUT_MMBTU across the clock hours right after its runs of air-loss "
-         "hours in which the unit was still operating and measured (a unit with none takes the same mean over its "
-         "plant's units).",
-         "4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's own "
-         "measured hours at the same hour after a start (the units' start-up levels differ well beyond chance); later, from the unit's quadratic fit of NOX_MASS_LB on "
-         "GLOAD_MW over its measured hours more than 3 hours after a start.",
-         "5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated "
-         "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
-         "6. Took each unit's ozone-season terms on local time from 1 May to 30 September 2026 (rule %s), the DAHS "
-         "hours moved forward an hour, each event number in %s taken as one event at its latest-reported line: FOH, "
-         "the hours inside a U1, U2 or U3 event, a later-filed full forced outage replacing an earlier one it "
-         "overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, "
-         "the hours outside a full or planned outage less their OP_TIME; the starts, the operating hours that follow a hour "
-         "without operation; EFDH, each D1 or D2 hour outside a full or planned outage at derate_mw over the register's "
-         "nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME)." % (
-             sec["outages"], F["events"]),
-         "7. Equivalent forced outage rate, in per cent: (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate, in per "
-         "cent: (f FOH + fp EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH per forced outage, T = RSH per "
-         "attempted start, D = SH per actual start (every start attempted succeeded), fp = SH / (SH + RSH).",
+         "1. Took every group in %s (rule %s) and each member's group from pcp_group_id in %s, roster_month 2026-01 "
+         "to 2026-06." % (F["groups"], sec["groups"], F["roster"]),
+         "2. Took the lines of %s with a medicaid_id and a coverage_month from 2026-01 to 2026-06, mapped each "
+         "medicaid_id to its member_id through the roster, and summed member_count per member and coverage month "
+         "(a rate cell correction's two lines net to zero)." % F["remit"],
+         "3. Covered member-months: the roster's member-months, plus each member and month netting above zero that "
+         "the roster does not list, less each roster member-month netting below zero (rule %s)." % sec["rate"],
+         "4. Summed paid_amount in %s over claims with service_from from 2026-01-01 to 2026-06-30 and paid_date by "
+         "2026-10-31, by the member's group." % F["claims"],
+         "5. Divided each group's paid cost by its covered member-months and designated every group at $%s or more "
+         "(rule %s): %s." % (f["benchmark"], sec["designation"], _join(des)),
+         "6. For the pharmacy summary (rule %s), took each claim_number in %s at its line with the latest "
+         "processed_at, kept those whose fill_date falls from 2026-01-01 to 2026-06-30, classed each by its ndc in "
+         "%s, summed paid_amount by class and counted the claims whose latest line paid more than zero as fills." % (
+             sec["pharmacy"], F["rx"], F["classes"]),
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",
-         "1. Every combined-cycle unit: designated or not, 2026 ozone-season equivalent forced outage rate and demand "
-         "equivalent forced outage rate (per cent, one decimal):"]
-    for u in f["units"]:
-        r = rows[u]
-        L.append("   - %s: %s; equivalent forced outage rate %.1f%%; demand equivalent forced outage rate %.1f%%" % (
-            u, "designated" if r["designated"] else "not designated", r["efor"], r["eford"]))
+         "1. Every primary care group, designated or not:"]
+    for g in f["groups"]:
+        L.append("   - %s: %s" % (g, "designated" if g in des else "not designated"))
+    L.append("2. Every drug class, paid pharmacy cost (dollars, nearest dollar) and fills, January to June 2026:")
+    for c in sorted(a["paid"]):
+        L.append("   - %s: $%s; %s fills" % (c, fmt(a["paid"][c]), fmt(a["fills"][c])))
     L += ["", "### %s" % W.GOLDEN["memo"], "",
-          "1. The designated units for the Board: %s." % _join(des),
-          "2. Bar chart of every combined-cycle unit's 2026 ozone-season NOx rate (lb per gross MWh) against the %s "
-          "target line, the designated units' bars in orange." % f["target"]]
+          "1. The designated groups: %s." % _join(des),
+          "2. Bar chart of every group's paid medical cost per member-month, January to June 2026, against the "
+          "$%s benchmark line, the designated groups' bars in orange." % f["benchmark"]]
     open(out_path, "w", encoding="utf-8").write("\n".join(L) + "\n")

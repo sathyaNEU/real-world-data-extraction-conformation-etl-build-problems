@@ -30,22 +30,21 @@ def build_pack(out, x):
     os.makedirs(out)
     f = lambda k: os.path.join(out, W.FILES[k])
     n = {}
-    n["dahs"] = P.write_csv(f("dahs"), P.DAHS_COLS, P.dahs_rows(x))
-    n["tickets"] = P.write_csv(f("tickets"), P.TICKET_COLS, P.ticket_rows(x), crlf=True)
-    n["invoices"] = P.write_csv(f("invoices"), P.INV_COLS, P.invoice_rows(x))
-    n["events"] = P.write_csv(f("events"), P.EVENT_COLS, P.event_rows(x))
-    n["ozone"] = P.write_csv(f("ozone"), P.OZONE_COLS, P.ozone_rows(x))
-    DC.write_guidelines(f("guidelines"))
-    DC.write_terms(f("terms"))
-    DC.write_notes(f("notes"), n["dahs"])
-    DC.write_units(f("units"))
-    DC.write_allowances(f("allowances"), x)
-    PP.normalize_pdf(f("guidelines"), b"D:20260112101533-06'00'", b"D:20260112101533-06'00'")
-    PP.normalize_pdf(f("terms"), b"D:20241028143011-05'00'", b"D:20241028143011-05'00'")
-    PP.normalize_ooxml(f("units"), "Generation Engineering", "Generation Engineering", "2026-06-30T15:02:00Z",
-                       "2026-06-30T15:44:31Z", excel=True, company=W.COOP)
-    PP.normalize_ooxml(f("allowances"), "Environmental Services", "Environmental Services", "2026-10-01T13:20:00Z",
-                       "2026-10-01T13:52:10Z", excel=True, company=W.COOP)
+    n["claims"] = P.write_csv(f("claims"), P.CLAIM_COLS, P.claim_rows(x))
+    n["roster"] = P.write_csv(f("roster"), P.ROSTER_COLS, P.roster_rows(x))
+    n["remit"] = P.write_csv(f("remit"), P.REMIT_COLS, P.remit_rows(x), crlf=True)
+    n["rx"] = P.write_csv(f("rx"), P.RX_COLS, P.rx_rows(x))
+    n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows(x))
+    DC.write_rules(f("rules"))
+    DC.write_notes(f("notes"), n)
+    DC.write_groups(f("groups"))
+    DC.write_classes(f("classes"), x["ndc"])
+    DC.write_quality(f("quality"))
+    PP.normalize_pdf(f("rules"), b"D:20260302101533-06'00'", b"D:20260302101533-06'00'")
+    for k, who, a, b in (("groups", "Network Contracting", "2026-07-01T14:02:00Z", "2026-07-01T14:31:12Z"),
+                         ("classes", "Pharmacy Services", "2026-09-14T15:20:00Z", "2026-09-14T15:41:50Z"),
+                         ("quality", "Quality Improvement", "2026-06-19T13:05:00Z", "2026-06-19T13:48:27Z")):
+        PP.normalize_ooxml(f(k), who, who, a, b, excel=True, company=W.PLAN)
     return n
 
 

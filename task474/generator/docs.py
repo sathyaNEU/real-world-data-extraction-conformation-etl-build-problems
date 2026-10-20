@@ -1,6 +1,5 @@
-"""The pack's documents: the program rules (PDF), the gas supply agreement excerpt (PDF), the data acquisition
-system's export notes (txt), the generating unit register (xlsx) and the NOx allowance holdings (xlsx, a
-distractor)."""
+"""The pack's documents: the program rules (PDF), the data extract notes (txt), the provider group register (xlsx), the
+drug class crosswalk (xlsx) and the 2025 quality scores (xlsx, a distractor)."""
 from reportlab import rl_config
 rl_config.invariant = 1
 from reportlab.lib import colors                                    # noqa: E402
@@ -13,7 +12,7 @@ from openpyxl.styles import Font                                    # noqa: E402
 
 import world as W   # noqa: E402
 
-SECTIONS = {"units": "2.1", "rate": "2.2", "designation": "2.3", "rates": "3.1", "outages": "3.2"}
+SECTIONS = {"groups": "2.1", "rate": "2.2", "designation": "2.3", "pharmacy": "3.1"}
 BODY = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.5, spaceAfter=6)
 HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, leading=14, spaceBefore=8, spaceAfter=4)
 TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4)
@@ -36,128 +35,105 @@ def _doc(path, title, org):
     return d, frame
 
 
-def write_guidelines(path):
-    title = "SCR Upgrade Program 2027: Program Rules"
-    d, frame = _doc(path, title, W.COOP)
-    s = [Paragraph("Clean Air Commitment<br/>SCR Upgrade Program, 2027 Capital Budget: Program Rules", TITLE),
-         Paragraph("%s, %s. Adopted by the Board of Directors %s." % (W.COOP, W.DEPT, W.GUIDELINE_DATE), SUB),
+def write_rules(path):
+    title = "Cost Performance Program 2027: Program Rules"
+    d, frame = _doc(path, title, W.PLAN)
+    s = [Paragraph("Cost Performance Program, 2027 Contract Year: Program Rules", TITLE),
+         Paragraph("%s, %s. Approved by the Network Contracting Committee %s." % (W.PLAN, W.DEPT, W.RULES_DATE), SUB),
          Paragraph("1. Purpose", HEAD),
-         Paragraph("Under its Clean Air Commitment the Cooperative holds each combined-cycle unit to an ozone-season "
-                   "NOx rate target. The SCR Upgrade Program funds, in the 2027 capital budget, catalyst, reagent "
-                   "injection and control upgrades on the units whose 2026 ozone-season rate did not meet it.", BODY),
+         Paragraph("The Cost Performance Program places primary care provider groups whose members' medical cost runs "
+                   "at or above the plan's benchmark under a joint care-management plan for the 2027 contract year, "
+                   "with the plan's case managers embedded in the group's clinics.", BODY),
          Paragraph("2. Designation", HEAD),
-         Paragraph("2.1 <b>Units.</b> Every unit the generating unit register lists as a combined-cycle unit.", BODY),
-         Paragraph("2.2 <b>Ozone-season NOx rate.</b> A unit's 2026 ozone-season NOx rate is the NOx the unit "
-                   "emitted while operating from 1 May to 30 September 2026, in pounds, divided by its gross "
-                   "generation in the same hours, in MWh. The hours are the operating hours of the data acquisition "
-                   "system's hourly record, which is kept in standard time; hours of start-up and shutdown are "
-                   "operating hours, and the NOx emitted counts in every operating hour, measured or not.", BODY),
-         Paragraph("2.3 <b>Target.</b> A unit whose 2026 ozone-season NOx rate is 0.170 lb per MWh or more is "
-                   "designated for the program.", BODY),
-         Paragraph("3. The budget memo", HEAD),
-         Paragraph("3.1 For every combined-cycle unit, its equivalent forced outage rate and its demand "
-                   "equivalent forced outage rate over the 2026 ozone season, as IEEE Std 762 defines them, in per "
-                   "cent, on the hours from 1 May to 30 September 2026, local time.", BODY),
-         Paragraph("3.2 The outages are the outage event report's: full forced outages are its events of types U1, U2 "
-                   "and U3, and where a later report of a full forced outage overlaps an earlier one on the same unit, "
-                   "the later report stands and the earlier one counts for none of its hours; forced derates are its events of types D1 and D2, each reducing the unit by "
-                   "its derate_mw against its nameplate MW in the generating unit register. The unit's operating time "
-                   "is the data acquisition system's hourly record. Every start a unit attempted in the season "
-                   "succeeded.", BODY),
+         Paragraph("2.1 <b>Groups and members.</b> Every group in the provider group register. A group's members are the "
+                   "members the plan's enrollment roster assigns to it; a member stays with one group through the "
+                   "period.", BODY),
+         Paragraph("2.2 <b>Cost per member-month.</b> A group's 2026 cost per member-month is the paid medical cost of "
+                   "the services its members received from 1 January to 30 June 2026, as paid by 31 October 2026, "
+                   "divided by the member-months in which its members were covered by the plan in the same six "
+                   "months.", BODY),
+         Paragraph("2.3 <b>Benchmark.</b> A group whose 2026 cost per member-month is $%.2f or more is designated for "
+                   "the program." % W.BENCHMARK, BODY),
+         Paragraph("3. The pharmacy summary", HEAD),
+         Paragraph("3.1 For the committee's formulary review, for every drug class in the drug class crosswalk: the "
+                   "plan's paid pharmacy cost of the fills dated from 1 January to 30 June 2026, and the number of those "
+                   "fills, as the pharmacy claims stand on 31 October 2026.", BODY),
          Paragraph("4. Timetable", HEAD),
-         Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
-                   "%s." % W.BOARD_DATE, BODY)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-def write_terms(path):
-    org = "Prairie Basin Gas Marketing LLC"
-    title = "Firm Gas Supply Agreement: Excerpt"
-    d, frame = _doc(path, title, org)
-    s = [Paragraph("Firm Gas Supply Agreement between Prairie Basin Gas Marketing LLC and %s (excerpt)" % W.COOP,
-                   TITLE),
-         Paragraph("Effective 1 November 2024. Sections 1, 6 and 9.", SUB),
-         Paragraph("Section 1. Definitions", HEAD),
-         Paragraph("\"Day\" or \"Gas Day\" means a period of twenty-four consecutive hours beginning at 9:00 a.m. "
-                   "Central Clock Time on a calendar day and ending at 9:00 a.m. Central Clock Time on the following "
-                   "calendar day, and is identified by the calendar day on which it begins.", BODY),
-         Paragraph("\"Central Clock Time\" means the prevailing time in the Central time zone, adjusted for daylight "
-                   "saving time.", BODY),
-         Paragraph("\"Transporter\" means the interstate pipeline that delivers Gas to a Delivery Point.", BODY),
-         Paragraph("\"Delivery Point\" means the meter station serving each of Buyer's generating facilities listed "
-                   "in Exhibit A.", BODY),
-         Paragraph("Section 6. Price", HEAD),
-         Paragraph("6.1 The price for Gas delivered on a Gas Day is the Daily Index for that Gas Day plus the charges of "
-                   "the Transporter serving the Delivery Point, as set out for each Delivery Point in Exhibit A, in "
-                   "dollars per dekatherm.", BODY),
-         Paragraph("6.2 Quantities are the deliveries metered at each Delivery Point, in dekatherms; the meter "
-                   "stations read from midnight to midnight Central Standard Time.", BODY),
-         Paragraph("Section 9. Billing", HEAD),
-         Paragraph("9.1 Seller invoices monthly by Delivery Point. Each line carries the price of the Gas Days it "
-                   "bills: Gas traded together for consecutive Gas Days is billed on one line, dated on the last of "
-                   "them.", BODY)]
+         Paragraph("Provider Performance presents the designations to the Network Contracting Committee at the "
+                   "year-end close, with the 2027 contract amendments.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
 def write_notes(path, n):
-    lines = ["DAHS hourly export, calendar year 2026",
-             "Exported 2026-10-19 from the plant data acquisition systems (DAHS) for every monitored unit.",
+    lines = ["Prairie Hills Health Plan: data extract notes",
+             "Extracts pulled 2026-11-02 by Provider Performance from the enterprise data warehouse.",
              "",
-             "Rows: one per unit per clock hour of 2026, %d rows." % n,
-             "OP_DATE, OP_HOUR: the hour beginning, in Central Standard Time all year (the DAHS clock does not",
-             "  change for daylight saving time).",
-             "OP_TIME: fraction of the hour the unit operated (0.00 when offline).",
-             "GLOAD_MW: gross load, average over the part of the hour the unit operated; the hour's gross",
-             "  generation is GLOAD_MW times OP_TIME MWh.",
-             "HEAT_INPUT_MMBTU: from the fuel flow meter and the gas heating value.",
-             "NOX_RATE_LB_MMBTU, NOX_MASS_LB: from the NOx and diluent analyzers; blank when the analyzers did not",
-             "  produce a quality-assured hour.",
-             "NOX_STATUS: OK quality-assured; OOC out of control (failed calibration or drift check); MAINT",
-             "  maintenance; CALFAIL calibration in progress or failed; COMM communication loss; blank offline.",
-             "This export is the raw DAHS record. It carries no substitute data; the quarterly reports to the",
-             "  regulator are prepared from it separately.",
+             "%s (%d rows)" % (W.FILES["claims"], n["claims"]),
+             "  One row per paid medical claim with a first date of service from 2026-01-01 to 2026-06-30, paid",
+             "  through 2026-10-31. paid_amount is the plan's paid amount in dollars. claim_type is the claim form.",
              "",
-             "Contact: Environmental Services, DAHS administrator."]
+             "%s (%d rows)" % (W.FILES["roster"], n["roster"]),
+             "  The plan's monthly enrollment roster, January to June 2026: one row per member per roster month,",
+             "  built from the state's enrollment file as processed by the as_of date (the 5th of the month).",
+             "  pcp_group_id is the primary care group the plan assigns the member to; medicaid_id is the state's",
+             "  recipient id.",
+             "",
+             "%s (%d rows)" % (W.FILES["remit"], n["remit"]),
+             "  The state's capitation remittance advices paid to the plan in 2026 for coverage months January to",
+             "  June 2026: one row per remittance line, keyed on the state's medicaid_id. A line with no medicaid_id",
+             "  pays a rate cell's month for the members counted in it. member_count and amount are signed.",
+             "",
+             "%s (%d rows)" % (W.FILES["rx"], n["rx"]),
+             "  Pharmacy claim lines from the pharmacy benefit manager, processed through 2026-10-31. ndc is the",
+             "  dispensed product; see %s for its class." % W.FILES["classes"],
+             "",
+             "%s (%d rows)" % (W.FILES["survey"], n["survey"]),
+             "  Member experience survey responses, fall 2025 wave, by assigned group.",
+             "",
+             "Contact: Provider Performance, data warehouse team."]
     open(path, "w", encoding="utf-8", newline="\r\n").write("\n".join(lines) + "\n")
 
 
-def write_units(path):
+def write_groups(path):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Units"
-    ws.append(["Generating unit register, 2026"])
-    ws.append(["%s, Generation Engineering. As of 30 June 2026." % W.COOP])
+    ws.title = "Groups"
+    ws.append(["Primary care provider group register, 2026"])
+    ws.append(["%s, Network Contracting. As of 1 July 2026." % W.PLAN])
     ws.append([])
-    ws.append(["Unit ID", "Facility", "Unit type", "Nameplate MW", "NOx control", "Commercial operation",
-               "Dispatch name (before 2025)"])
+    ws.append(["Group ID", "Group name", "County", "Contracted PCPs", "Panel open", "Contract effective"])
     ws["A4"].font = Font(bold=True)
-    old = {"CB-1": "CUTLER CC1", "CB-2": "CUTLER CC2", "AF-1": "ASHF GT1/ST1", "AF-2": "ASHF GT2/ST2",
-           "DF-1": "DUNM 1", "DF-2": "DUNM 2", "DF-3": "DUNM 3", "SR-1": "SABLE CC1", "SR-2": "SABLE CC2",
-           "AF-CT3": "ASHF CT3", "AF-CT4": "ASHF CT4", "SR-CT3": "SABLE CT3", "HC-4": "HOLT 4"}
-    cod = {"CB-1": "2003-06-01", "CB-2": "2003-08-15", "AF-1": "2008-05-20", "AF-2": "2008-06-30", "DF-1": "2011-04-01",
-           "DF-2": "2011-05-12", "DF-3": "2016-07-01", "SR-1": "2013-05-01", "SR-2": "2013-06-10",
-           "AF-CT3": "1999-06-01", "AF-CT4": "1999-06-01", "SR-CT3": "2002-05-15", "HC-4": "1984-11-01"}
-    for u, (plant, n, cap, *_r) in W.CC.items():
-        ws.append([u, plant, "Combined cycle (1x1)", cap, "SCR, aqueous ammonia (air-to-open flow control valves)", cod[u], old[u]])
-    for u, (plant, kind, cap) in W.OTHER.items():
-        ws.append([u, plant, kind.capitalize(), cap, "Water injection" if kind == "simple cycle" else "SNCR",
-                   cod[u], old[u]])
-    for col, w in zip("ABCDEFG", (9, 16, 22, 13, 16, 20, 26)):
+    rng = __import__("numpy").random.default_rng(W.SEED + 21)
+    for g, (name, county, n0, *_r) in W.GROUPS.items():
+        ws.append([g, name, county, int(n0 / 260 + rng.integers(1, 4)), "Yes" if rng.random() < .8 else "No",
+                   "20%02d-01-01" % int(rng.integers(14, 24))])
+    for col, w in zip("ABCDEF", (9, 34, 10, 16, 11, 18)):
         ws.column_dimensions[col].width = w
     wb.save(path)
 
 
-def write_allowances(path, x):
+def write_classes(path, ndc):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Holdings"
-    ws.append(["Cross-State Air Pollution Rule ozone-season NOx allowances: holdings by facility account"])
-    ws.append(["Compliance year 2026. Allowances in tons. Reconciled to the allowance tracking system 1 October 2026."])
+    ws.title = "Crosswalk"
+    ws.append(["NDC", "Drug class"])
+    ws["A1"].font = Font(bold=True)
+    for code, c in sorted(ndc.items()):
+        ws.append([code, c])
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 26
+    wb.save(path)
+
+
+def write_quality(path):
+    rng = __import__("numpy").random.default_rng(W.SEED + 23)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "HEDIS 2025"
+    ws.append(["HEDIS measurement year 2025: selected measures by primary care group (rates, per cent)"])
     ws.append([])
-    ws.append(["Facility", "Allocated", "Purchased", "Transferred in", "Transferred out", "Held 1 Oct 2026"])
-    rows = [("Cutler Bend Energy Center", 88, 0, 12, 0), ("Ashfork Generating Station", 104, 15, 0, 12),
-            ("Dunmore Flats Power Plant", 131, 22, 0, 0), ("Sable Ridge Energy Center", 92, 0, 0, 0),
-            ("Holt Creek Station", 512, 40, 0, 0)]
-    for f, a, p, ti, to in rows:
-        ws.append([f, a, p, ti, to, a + p + ti - to])
+    ws.append(["Group ID", "Well-child visits (W30)", "Childhood immunization (CIS-10)", "Diabetes HbA1c control (<8)",
+               "Controlling blood pressure", "Follow-up after ED visit for mental illness (7-day)"])
+    for g in W.GROUPS:
+        ws.append([g] + [round(float(rng.uniform(38, 82)), 1) for _ in range(5)])
     wb.save(path)

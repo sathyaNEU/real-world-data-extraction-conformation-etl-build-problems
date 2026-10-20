@@ -1,166 +1,104 @@
 {
- "after": {
-  "AF-1": 0.1125,
-  "AF-2": 0.1074,
-  "CB-1": 0.1201,
-  "CB-2": 0.122,
-  "DF-3": 0.0341,
-  "SR-1": 0.0355,
-  "SR-2": 0.0352
- },
  "asks": {
-  "efor": {
-   "AF-1": 27.0,
-   "AF-2": 24.1,
-   "CB-1": 14.7,
-   "CB-2": 12.7,
-   "DF-1": 24.0,
-   "DF-2": 32.7,
-   "DF-3": 18.6,
-   "SR-1": 14.5,
-   "SR-2": 16.5
+  "fills": {
+   "ACE inhibitors": 4966,
+   "Anticonvulsants": 4508,
+   "Atypical antipsychotics": 2868,
+   "Beta blockers": 4504,
+   "Inhaled corticosteroids": 4576,
+   "Insulins": 2742,
+   "Metformin": 5580,
+   "Opioid analgesics": 4104,
+   "Proton pump inhibitors": 5012,
+   "SSRIs": 6787,
+   "Statins": 7276,
+   "Thyroid hormones": 3415
   },
-  "eford": {
-   "AF-1": 14.5,
-   "AF-2": 11.6,
-   "CB-1": 7.4,
-   "CB-2": 9.2,
-   "DF-1": 14.0,
-   "DF-2": 19.3,
-   "DF-3": 8.5,
-   "SR-1": 8.0,
-   "SR-2": 9.2
-  }
+  "fills_total": 56338,
+  "paid": {
+   "ACE inhibitors": 48665,
+   "Anticonvulsants": 275874,
+   "Atypical antipsychotics": 659407,
+   "Beta blockers": 38676,
+   "Inhaled corticosteroids": 854903,
+   "Insulins": 1121414,
+   "Metformin": 41339,
+   "Opioid analgesics": 87004,
+   "Proton pump inhibitors": 65412,
+   "SSRIs": 96219,
+   "Statins": 85249,
+   "Thyroid hormones": 44548
+  },
+  "paid_total": 3418710
  },
+ "benchmark": "412.00",
  "call": [
-  "AF-1",
-  "AF-2",
-  "CB-1",
-  "CB-2",
-  "DF-1",
-  "DF-3",
-  "SR-1"
+  "PG04",
+  "PG07",
+  "PG08",
+  "PG10"
  ],
- "gaps": {
-  "air": 300,
-  "all": 817
+ "groups": [
+  "PG01",
+  "PG02",
+  "PG03",
+  "PG04",
+  "PG05",
+  "PG06",
+  "PG07",
+  "PG08",
+  "PG09",
+  "PG10",
+  "PG11",
+  "PG12"
+ ],
+ "member_months": {
+  "added": 3009,
+  "golden": 135979,
+  "removed": 923,
+  "roster": 133893
  },
- "load_route": [
-  "AF-2",
-  "CB-1",
-  "SR-1"
- ],
- "n_call": 7,
- "n_units": 9,
+ "n_call": 4,
+ "n_groups": 12,
+ "names": {
+  "PG01": "Cedar Valley Family Medicine",
+  "PG02": "Millbrook Community Clinics",
+  "PG03": "North Fork Pediatrics",
+  "PG04": "Bluestem Internal Medicine",
+  "PG05": "Sandhill Health Partners",
+  "PG06": "Two Rivers Medical Group",
+  "PG07": "Prairie Gate Primary Care",
+  "PG08": "Oak Hollow Physicians",
+  "PG09": "Westfield Family Health",
+  "PG10": "Riverside Geriatric Associates",
+  "PG11": "Summit Community Health Center",
+  "PG12": "Lakeshore Medical Associates"
+ },
  "rate": {
-  "AF-1": 0.1872,
-  "AF-2": 0.251,
-  "CB-1": 0.268,
-  "CB-2": 0.186,
-  "DF-1": 0.186,
-  "DF-2": 0.099,
-  "DF-3": 0.189,
-  "SR-1": 0.187,
-  "SR-2": 0.151
+  "PG01": 371.37,
+  "PG02": 403.62,
+  "PG03": 290.81,
+  "PG04": 467.94,
+  "PG05": 381.26,
+  "PG06": 394.71,
+  "PG07": 417.83,
+  "PG08": 431.18,
+  "PG09": 385.42,
+  "PG10": 418.29,
+  "PG11": 405.13,
+  "PG12": 392.07
  },
- "rows": {
-  "AF-1": {
-   "designated": true,
-   "efor": 27.0,
-   "eford": 14.5,
-   "hours": 1027,
-   "mwh": 162545,
-   "plant": "Ashfork"
-  },
-  "AF-2": {
-   "designated": true,
-   "efor": 24.1,
-   "eford": 11.6,
-   "hours": 866,
-   "mwh": 134720,
-   "plant": "Ashfork"
-  },
-  "CB-1": {
-   "designated": true,
-   "efor": 14.7,
-   "eford": 7.4,
-   "hours": 732,
-   "mwh": 116711,
-   "plant": "Cutler Bend"
-  },
-  "CB-2": {
-   "designated": true,
-   "efor": 12.7,
-   "eford": 9.2,
-   "hours": 1164,
-   "mwh": 199641,
-   "plant": "Cutler Bend"
-  },
-  "DF-1": {
-   "designated": true,
-   "efor": 24.0,
-   "eford": 14.0,
-   "hours": 1076,
-   "mwh": 198573,
-   "plant": "Dunmore Flats"
-  },
-  "DF-2": {
-   "designated": false,
-   "efor": 32.7,
-   "eford": 19.3,
-   "hours": 935,
-   "mwh": 175633,
-   "plant": "Dunmore Flats"
-  },
-  "DF-3": {
-   "designated": true,
-   "efor": 18.6,
-   "eford": 8.5,
-   "hours": 908,
-   "mwh": 157196,
-   "plant": "Dunmore Flats"
-  },
-  "SR-1": {
-   "designated": true,
-   "efor": 14.5,
-   "eford": 8.0,
-   "hours": 1007,
-   "mwh": 175420,
-   "plant": "Sable Ridge"
-  },
-  "SR-2": {
-   "designated": false,
-   "efor": 16.5,
-   "eford": 9.2,
-   "hours": 1015,
-   "mwh": 178218,
-   "plant": "Sable Ridge"
-  }
- },
+ "roster_route": [
+  "PG02",
+  "PG04",
+  "PG08",
+  "PG11"
+ ],
  "sections": {
   "designation": "2.3",
-  "outages": "3.2",
-  "rate": "2.2",
-  "rates": "3.1",
-  "units": "2.1"
+  "groups": "2.1",
+  "pharmacy": "3.1",
+  "rate": "2.2"
  },
- "state_route": [
-  "AF-2",
-  "CB-1",
-  "DF-1",
-  "DF-3",
-  "SR-1"
- ],
- "target": "0.170",
- "units": [
-  "AF-1",
-  "AF-2",
-  "CB-1",
-  "CB-2",
-  "DF-1",
-  "DF-2",
-  "DF-3",
-  "SR-1",
-  "SR-2"
- ]
+ "year": 2026
 }

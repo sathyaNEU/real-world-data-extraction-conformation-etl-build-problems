@@ -1,34 +1,35 @@
-"""The pair ceiling on the cut pack: the cracker lands the call and runs the battery, executing every filed rule it
-points at (ask A the demand rate with its derate term unweighted by the service share; ask B service hours as the
-operating rows counted); the mirror
-stops at the start-state fill. Weights 38 / 7 / 55; the main block grades each unit's verdict (9) and the set (1);
-the asks are 18 figures."""
+"""The pair ceiling on the cut pack: the cracker lands the call and runs the battery, executing the reflex on the
+pharmacy lines (filter to the period and class, then each claim number at its latest line); the mirror stops at the
+roster's member-months. Weights 38 / 7 / 55; the main block grades each group's verdict (12) and the set (1); the
+asks are 24 figures (paid and fills for each of 12 classes)."""
 import os
 import sys
 
 import bundle as B
-import methods as M
 
 W_CALL, W_INSTR, W_ASK = 38.0, 7.0, 55.0
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+def sets(target, route):
+    return sorted(k for k, v in B.pmpm(target, route).items() if v >= 412.0)
+
+
 def main(target=None):
     target = target or os.path.join(os.path.dirname(HERE), "target")
-    rec = B.record(target)
-    g, m = M.designated(rec, "golden"), M.designated(rec, "state")
-    keep = sum((u in g) == (u in m) for u in rec) + (g == m)
-    mirror_call = W_CALL * keep / (len(rec) + 1.0)
-    a_g, a_c = B.ask_a(target), B.ask_a(target, "nofp")
-    b_g, b_c = B.ask_b(target), B.ask_b(target, "rows")
-    hit = sum(round(a_g[u], 1) == round(a_c[u], 1) for u in rec) + sum(round(b_g[u], 1) == round(b_c[u], 1) for u in rec)
-    ask = W_ASK * hit / (2.0 * len(rec))
+    gs = B.groups(target)
+    g, m = sets(target, "golden"), sets(target, "roster")
+    keep = sum((k in g) == (k in m) for k in gs) + (g == m)
+    mirror_call = W_CALL * keep / (len(gs) + 1.0)
+    a_g, a_c = B.pharmacy(target), B.pharmacy(target, "filterfirst")
+    d = lambda v: int(v + .5)
+    hit = sum(d(a_g[c][0]) == d(a_c[c][0]) for c in a_g) + sum(a_g[c][1] == a_c[c][1] for c in a_g)
+    ask = W_ASK * hit / (2.0 * len(a_g))
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask
     print("golden %s; mirror %s" % (g, m))
-    print("mirror keeps %d of %d main figures; the asks' cracker path keeps %d of %d" % (keep, len(rec) + 1, hit,
-                                                                                        2 * len(rec)))
-    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage 0.0 per cent of ask weight" % (
-        cracker, mirror, (cracker + mirror) / 2))
+    print("mirror keeps %d of %d main figures; the asks' cracker path keeps %d of %d" % (keep, len(gs) + 1, hit,
+                                                                                        2 * len(a_g)))
+    print("cracker %.1f, mirror %.1f, pair ceiling %.1f" % (cracker, mirror, (cracker + mirror) / 2))
     return (cracker + mirror) / 2
 
 

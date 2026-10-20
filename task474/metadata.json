@@ -1,103 +1,95 @@
 {
  "task": "task474",
- "title": "Ridgeline Power Cooperative SCR Upgrade Program 2027 designations",
- "setting": "A fictional generation and transmission cooperative in an unnamed U.S. state; every record is synthetic.",
+ "title": "Prairie Hills Health Plan Cost Performance Program 2027 designations",
+ "setting": "A fictional Medicaid managed care plan in an unnamed U.S. state; every record is synthetic.",
  "as_of": "2026-11-09",
  "files": [
   {
-   "file": "ambient_ozone_daily_2026.csv",
-   "source": "State Department of Environmental Quality (fictional), synthetic records",
-   "date": "2026-10-05",
+   "file": "capitation_remittance_2026.csv",
+   "source": "State Department of Health Services, Medicaid Managed Care Unit (fictional), synthetic records",
+   "date": "2026-11-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 456
+   "rows": 4540
   },
   {
-   "file": "cems_maintenance_tickets_2026.csv",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-10-19",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 298
-  },
-  {
-   "file": "dahs_export_field_notes.txt",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-10-19",
+   "file": "cost_performance_program_rules_2027.pdf",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-03-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "dahs_hourly_export_2026.csv",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-10-19",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 90792
-  },
-  {
-   "file": "gads_event_report_2026.csv",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 124
-  },
-  {
-   "file": "gas_supply_agreement_excerpt.pdf",
-   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
-   "date": "2024-10-28",
+   "file": "data_extract_notes.txt",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-11-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "gas_supply_daily_invoices_2026.csv",
-   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
-   "date": "2026-10-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 836
-  },
-  {
-   "file": "generating_unit_register_2026.xlsx",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-06-30",
+   "file": "drug_class_crosswalk.xlsx",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-09-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "nox_allowance_holdings_2026.xlsx",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-10-01",
+   "file": "enrollment_roster_2026h1.csv",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 133893
+  },
+  {
+   "file": "hedis_quality_scores_2025.xlsx",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-06-19",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "scr_upgrade_program_rules_2027.pdf",
-   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
-   "date": "2026-01-12",
+   "file": "medical_claims_paid_2026h1.csv",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 103557
+  },
+  {
+   "file": "member_experience_survey_2025.csv",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-01-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1895
+  },
+  {
+   "file": "pharmacy_claims_2026h1.csv",
+   "source": "Prairie Hills Health Plan, pharmacy benefit manager feed (fictional), synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 67299
+  },
+  {
+   "file": "provider_group_register_2026.xlsx",
+   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "date": "2026-07-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   }
  ],
  "distractors": [
   {
-   "file": "ambient_ozone_daily_2026.csv",
-   "why": "ambient ozone at the region's monitors: air quality, not any unit's emissions"
+   "file": "hedis_quality_scores_2025.xlsx",
+   "why": "2025 HEDIS quality rates by group: quality, not cost, and a different year"
   },
   {
-   "file": "nox_allowance_holdings_2026.xlsx",
-   "why": "allowance holdings by facility: a compliance position, not a unit's emission rate"
-  },
-  {
-   "file": "gas_supply_daily_invoices_2026.csv",
-   "why": "the gas supplier's invoices: what the plants paid for gas, neither emissions nor outages"
-  },
-  {
-   "file": "gas_supply_agreement_excerpt.pdf",
-   "why": "the gas supply agreement: the gas day and the price basis, which no answer uses"
+   "file": "member_experience_survey_2025.csv",
+   "why": "2025 member experience survey by group: satisfaction, not cost or enrollment"
   }
  ],
  "deliverables": [
-  "cc_unit_nox_inventory_2026.xlsx",
-  "scr_upgrade_designations_2027.pdf"
+  "provider_group_pmpm_2026h1.xlsx",
+  "provider_group_designations_2027.pdf"
  ],
  "stated_inputs": [
-  "0.170"
+  "412.00"
  ]
 }

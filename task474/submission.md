@@ -1,44 +1,59 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (emissions inventory: an ozone-season NOx inventory from continuous emissions monitor records whose gaps include hours without NOx control).
+**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid managed care plan's paid medical cost per member-month by primary care group).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.**
-Each emitted 0.170 lb of NOx per gross MWh or more over the 2026 ozone season once the hours its analyzers were out are filled by the emission state the unit was in. In the hours a plant lost its instrument air (most of them at Cutler Bend and Ashfork), the first measured hour after each loss reads about twenty times the unit's usual NOx per MMBtu and falls back over the next hour or two, so the SCR was not removing NOx while the air was out; those hours are filled at that first-hour NOx per MMBtu, times the hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the same hour after a start or, later in a run, at the same load. Not a fill of every gap from the unit's measured hours in the same start state and load, nor the average of the hours either side of each air-loss gap with the other gaps filled the same way: both put controlled NOx into uncontrolled hours and designate AF-2, CB-1, DF-1, DF-3 and SR-1, leaving CB-2 and AF-1 under the target.
+**Designate four of the twelve primary care groups for the 2027 Cost Performance Program: PG04, PG07, PG08 and PG10.**
+Each group's paid medical cost per member-month for January to June 2026 is $412.00 or more once the member-months are the months its members were covered rather than the months the roster lists. The roster is the state's enrollment as processed by the 5th of each month: members who lost coverage at renewal and were reinstated back to the lapse are missing from the months they were later covered for, and members who died stay on it for months the state later took its capitation back for. The member-level lines of the state's capitation remittance record both. Counted on the roster alone, the groups with the most renewal churn look costlier and the groups with the most deaths look cheaper, and the designation would be PG02, PG04, PG08 and PG11.
 
 ## 2. Critical Components
 
-1. Units at or above 0.170 lb per MWh: **7** of 9.
-2. Season operating hours without a NOx measurement: **817**, of which **300** inside an instrument air ticket.
+1. Groups at or above $412.00 per member-month: **4** of 12.
+2. Member-months: **135,979** covered, against **133,893** on the roster; **3,009** member-months added from the remittance's reinstatement lines and **923** roster member-months removed for recoupments.
 
 ## 3. Step-by-Step Solution
 
-1. Took the combined-cycle units from generating_unit_register_2026.xlsx (rule 2.1) and their operating hours (OP_TIME above zero) from 1 May to 30 September 2026 in dahs_hourly_export_2026.csv, standard time (rule 2.2), counting each unit's hours since its start along the whole year's record.
-2. Marked as air-loss hours the operating hours with a blank NOX_MASS_LB inside a cems_maintenance_tickets_2026.csv ticket whose description names the plant instrument air or its compressor, the ticket's local times moved back an hour to standard time.
-3. Filled every air-loss hour, its own run measured on its return or not, with its HEAT_INPUT_MMBTU times the unit's mean NOX_MASS_LB over HEAT_INPUT_MMBTU across the clock hours right after its runs of air-loss hours in which the unit was still operating and measured (a unit with none takes the same mean over its plant's units).
-4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's own measured hours at the same hour after a start (the units' start-up levels differ well beyond chance); later, from the unit's quadratic fit of NOX_MASS_LB on GLOAD_MW over its measured hours more than 3 hours after a start.
-5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated every unit at or above 0.170 (rule 2.3): AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.
-6. Took each unit's ozone-season terms on local time from 1 May to 30 September 2026 (rule 3.2), the DAHS hours moved forward an hour, each event number in gads_event_report_2026.csv taken as one event at its latest-reported line: FOH, the hours inside a U1, U2 or U3 event, a later-filed full forced outage replacing an earlier one it overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, the hours outside a full or planned outage less their OP_TIME; the starts, the operating hours that follow a hour without operation; EFDH, each D1 or D2 hour outside a full or planned outage at derate_mw over the register's nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME).
-7. Equivalent forced outage rate, in per cent: (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate, in per cent: (f FOH + fp EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH per forced outage, T = RSH per attempted start, D = SH per actual start (every start attempted succeeded), fp = SH / (SH + RSH).
+1. Took every group in provider_group_register_2026.xlsx (rule 2.1) and each member's group from pcp_group_id in enrollment_roster_2026h1.csv, roster_month 2026-01 to 2026-06.
+2. Took the lines of capitation_remittance_2026.csv with a medicaid_id and a coverage_month from 2026-01 to 2026-06, mapped each medicaid_id to its member_id through the roster, and summed member_count per member and coverage month (a rate cell correction's two lines net to zero).
+3. Covered member-months: the roster's member-months, plus each member and month netting above zero that the roster does not list, less each roster member-month netting below zero (rule 2.2).
+4. Summed paid_amount in medical_claims_paid_2026h1.csv over claims with service_from from 2026-01-01 to 2026-06-30 and paid_date by 2026-10-31, by the member's group.
+5. Divided each group's paid cost by its covered member-months and designated every group at $412.00 or more (rule 2.3): PG04, PG07, PG08 and PG10.
+6. For the pharmacy summary (rule 3.1), took each claim_number in pharmacy_claims_2026h1.csv at its line with the latest processed_at, kept those whose fill_date falls from 2026-01-01 to 2026-06-30, classed each by its ndc in drug_class_crosswalk.xlsx, summed paid_amount by class and counted the claims whose latest line paid more than zero as fills.
 
 ## 4. Deliverable Answers
 
-### cc_unit_nox_inventory_2026.xlsx
+### provider_group_pmpm_2026h1.xlsx
 
-1. Every combined-cycle unit: designated or not, 2026 ozone-season equivalent forced outage rate and demand equivalent forced outage rate (per cent, one decimal):
-   - AF-1: designated; equivalent forced outage rate 27.0%; demand equivalent forced outage rate 14.5%
-   - AF-2: designated; equivalent forced outage rate 24.1%; demand equivalent forced outage rate 11.6%
-   - CB-1: designated; equivalent forced outage rate 14.7%; demand equivalent forced outage rate 7.4%
-   - CB-2: designated; equivalent forced outage rate 12.7%; demand equivalent forced outage rate 9.2%
-   - DF-1: designated; equivalent forced outage rate 24.0%; demand equivalent forced outage rate 14.0%
-   - DF-2: not designated; equivalent forced outage rate 32.7%; demand equivalent forced outage rate 19.3%
-   - DF-3: designated; equivalent forced outage rate 18.6%; demand equivalent forced outage rate 8.5%
-   - SR-1: designated; equivalent forced outage rate 14.5%; demand equivalent forced outage rate 8.0%
-   - SR-2: not designated; equivalent forced outage rate 16.5%; demand equivalent forced outage rate 9.2%
+1. Every primary care group, designated or not:
+   - PG01: not designated
+   - PG02: not designated
+   - PG03: not designated
+   - PG04: designated
+   - PG05: not designated
+   - PG06: not designated
+   - PG07: designated
+   - PG08: designated
+   - PG09: not designated
+   - PG10: designated
+   - PG11: not designated
+   - PG12: not designated
+2. Every drug class, paid pharmacy cost (dollars, nearest dollar) and fills, January to June 2026:
+   - ACE inhibitors: $48,665; 4,966 fills
+   - Anticonvulsants: $275,874; 4,508 fills
+   - Atypical antipsychotics: $659,407; 2,868 fills
+   - Beta blockers: $38,676; 4,504 fills
+   - Inhaled corticosteroids: $854,903; 4,576 fills
+   - Insulins: $1,121,414; 2,742 fills
+   - Metformin: $41,339; 5,580 fills
+   - Opioid analgesics: $87,004; 4,104 fills
+   - Proton pump inhibitors: $65,412; 5,012 fills
+   - SSRIs: $96,219; 6,787 fills
+   - Statins: $85,249; 7,276 fills
+   - Thyroid hormones: $44,548; 3,415 fills
 
-### scr_upgrade_designations_2027.pdf
+### provider_group_designations_2027.pdf
 
-1. The designated units for the Board: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.
-2. Bar chart of every combined-cycle unit's 2026 ozone-season NOx rate (lb per gross MWh) against the 0.170 target line, the designated units' bars in orange.
+1. The designated groups: PG04, PG07, PG08 and PG10.
+2. Bar chart of every group's paid medical cost per member-month, January to June 2026, against the $412.00 benchmark line, the designated groups' bars in orange.

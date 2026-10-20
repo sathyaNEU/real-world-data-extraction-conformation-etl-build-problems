@@ -1,10 +1,9 @@
-"""Reads the cut pack back: the combined-cycle units from the register, their ozone-season operating hours from the
-DAHS export as the routes in methods.py take them, and the two asks."""
+"""Reads the cut pack back: each group's paid medical cost and member-months under each route, and the pharmacy
+summary by drug class."""
 import csv
 import datetime as dt
 import os
 
-import numpy as np
 from openpyxl import load_workbook
 
 import world as W
@@ -22,244 +21,116 @@ def _rows(path):
         return list(csv.DictReader(fh))
 
 
-def cc_units(target):
-    ws = load_workbook(find(target, "generating_unit_register"), read_only=True).active
+def groups(target):
+    ws = load_workbook(find(target, "provider_group_register"), read_only=True).active
+    return sorted(r[0] for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0])
+
+
+MONTHS = {m.strftime("%Y-%m") for m in W.MONTHS}
+
+
+def roster(target):
+    """{(member, month)}: the roster's member-months, and {member: group}."""
+    on, grp = set(), {}
+    for r in _rows(find(target, "enrollment_roster")):
+        if r["roster_month"] in MONTHS:
+            on.add((r["member_id"], r["roster_month"]))
+            grp[r["member_id"]] = r["pcp_group_id"]
+    return on, grp
+
+
+def crosswalk(target):
+    """{state Medicaid id: plan member id}, from the roster."""
+    return {r["medicaid_id"]: r["member_id"] for r in _rows(find(target, "enrollment_roster"))}
+
+
+def member_lines(target):
+    """{(member, coverage month): signed member count} over the remittance's member-level lines."""
+    net, cw = {}, crosswalk(target)
+    for r in _rows(find(target, "capitation_remittance")):
+        if r["medicaid_id"] and r["coverage_month"] in MONTHS:
+            k = (cw[r["medicaid_id"]], r["coverage_month"])
+            net[k] = net.get(k, 0) + int(r["member_count"])
+    return net
+
+
+def claims(target):
+    """[(member, service month, paid)] over the paid medical claims in the period, paid by the cut-off."""
     out = []
-    for r in ws.iter_rows(min_row=5, values_only=True):
-        if r and r[0] and str(r[2]).lower().startswith("combined cycle"):
-            out.append(r[0])
-    return sorted(out)
+    for r in _rows(find(target, "medical_claims_paid")):
+        if r["service_from"][:7] in MONTHS and r["paid_date"] <= W.PAID_BY.isoformat():
+            out.append((r["member_id"], r["service_from"][:7], float(r["paid_amount"])))
+    return out
 
 
-def season_hour(d, h):
-    return W.SEASON[0] <= d <= W.SEASON[1]
-
-
-def air_windows(target):
-    """{unit: [(start, end)]}: each maintenance ticket for the dilution probes' air supply that the plant's instrument
-    air took down, opened and closed in local time and returned here in the DAHS's standard time."""
+def exposure(target, route="golden"):
+    """{group: member-months}. golden: the months each member was covered, the roster's months less those the state
+    recouped and plus those it paid capitation for off the roster; roster: the roster's months; retro: plus the
+    months paid off the roster only; recoup: less the recouped months only; orphan: the roster's months plus
+    off-roster months with a paid claim."""
+    on, grp = roster(target)
+    net = member_lines(target)
+    months = set(on)
+    if route in ("golden", "retro"):
+        months |= {k for k, v in net.items() if v > 0 and k not in on}
+    if route in ("golden", "recoup"):
+        months -= {k for k, v in net.items() if v < 0 and k in on}
+    if route == "orphan":
+        months |= {(m, s) for m, s, _ in claims(target)}
     out = {}
-    for r in _rows(find(target, "cems_maintenance_tickets")):
-        desc = r["description"].lower()
-        if "instrument air" not in desc and "air compressor" not in desc:
-            continue
-        a = _standard(dt.datetime.strptime(r["opened_local"], "%m/%d/%Y %H:%M"))
-        b = _standard(dt.datetime.strptime(r["closed_local"], "%m/%d/%Y %H:%M")) if r["closed_local"] else None
-        out.setdefault(r["unit"], []).append((a, b))
+    for m, s in months:
+        if m in grp:
+            out[grp[m]] = out.get(grp[m], 0) + 1
     return out
 
 
-def record(target, shift=0, optime=True):
-    """{unit: dict(load, nox, since, heat, stamps, air, blocks)} over each combined-cycle unit's operating hours in the
-    season; hours since start counted along the whole year's record. air marks an unmeasured hour inside an instrument
-    air ticket; blocks lists each run of such hours with the NOx per MMBtu in the operating hour before and after it.
-    shift moves the tickets' clock by that many hours (a check that the clock is read right)."""
-    cc = set(cc_units(target))
-    win = air_windows(target)
-    out = {u: dict(load=[], nox=[], since=[], heat=[], stamps=[], air=[], blocks=[]) for u in cc}
-    seq = {u: [] for u in cc}
-    run = {u: 0 for u in cc}
-    for r in _rows(find(target, "dahs_hourly_export")):
-        u = r["UNIT_ID"]
-        if u not in cc:
-            continue
-        on = float(r["OP_TIME"] or 0) > 0
-        run[u] = run[u] + 1 if on else 0
-        d = dt.date.fromisoformat(r["OP_DATE"])
-        t = dt.datetime.combine(d, dt.time(int(r["OP_HOUR"])))
-        nox = float(r["NOX_MASS_LB"]) if on and r["NOX_MASS_LB"] else None
-        heat = float(r["HEAT_INPUT_MMBTU"]) if on else 0.0
-        a = on and nox is None and any(s + dt.timedelta(hours=shift) < t + dt.timedelta(hours=1) and
-                                       (e is None or t < e + dt.timedelta(hours=shift)) for s, e in win.get(u, []))
-        seq[u].append((t, on, nox, heat, a))
-        if on and season_hour(d, int(r["OP_HOUR"])):
-            o = out[u]
-            o["load"].append(round(float(r["GLOAD_MW"]) * (float(r["OP_TIME"]) if optime else 1.0), 4))
-            o["heat"].append(heat)
-            o["nox"].append(nox)
-            o["since"].append(run[u])
-            o["stamps"].append(t)
-            o["air"].append(a)
-    for u, rows in seq.items():
-        pos = {t: i for i, t in enumerate(out[u]["stamps"])}
-        rt = lambda i: None if i < 0 or i >= len(rows) or not rows[i][1] or rows[i][2] is None or not rows[i][3] \
-            else rows[i][2] / rows[i][3]
-        i = 0
-        while i < len(rows):
-            if rows[i][4] and rows[i][0] in pos:
-                k = i
-                while k + 1 < len(rows) and rows[k + 1][4]:
-                    k += 1
-                out[u]["blocks"].append((pos[rows[i][0]], pos[rows[k][0]], rt(i - 1), rt(k + 1)))
-                i = k
-            i += 1
-    return _plant_after(out)
-
-
-def _plant_after(out):
-    """Each unit's plant's NOx per MMBtu in the first measured hour after an air loss, pooled over the plant's units;
-    and the fleet's mean measured NOx in hours 1 to 3 after a start, pooled over every unit (rec["pooled"])."""
-    pooled = {}
-    for k in (1, 2, 3):
-        v = [n for w in out for n, s in zip(out[w]["nox"], out[w]["since"]) if s == k and n is not None]
-        pooled[k] = float(np.mean(v)) if v else 0.0
-    for u in out:
-        out[u]["pooled"] = pooled
-        v = [b_[3] for w in out if w.split("-")[0] == u.split("-")[0] for b_ in out[w]["blocks"] if b_[3] is not None]
-        out[u]["plant_after"] = float(np.mean(v)) if v else None
-    return out
-
-
-def _standard(t):
-    a, b = dt.datetime(2026, 3, 8, 3), dt.datetime(2026, 11, 1, 2)
-    return t - dt.timedelta(hours=1) if a <= t < b else t
-
-
-def _local(t):
-    a, b = dt.datetime(2026, 3, 8, 2), dt.datetime(2026, 11, 1, 1)
-    return t + dt.timedelta(hours=1) if a <= t < b else t
-
-
-def prices(target, route="next"):
-    """{(delivery point, gas day): $/Dth}. A gas day with no invoice line at a delivery point is priced, by route:
-    "next" at the point's next invoice line (a line covers the gas days since the point's previous line, its quantity
-    their total burn); "prev" at the point's previous line; "interp" between the two; "skip" left unpriced."""
-    rows = {}
-    for r in _rows(find(target, "gas_supply_daily_invoices")):
-        rows.setdefault(r["delivery_point"], []).append((r["gas_day"], float(r["price_usd_per_dth"])))
+def cost(target):
+    _, grp = roster(target)
     out = {}
-    for p, ls in rows.items():
-        ls.sort()
-        for (d, v) in ls:
-            out[(p, d)] = v
-        if route == "skip":
-            continue
-        for (d0, v0), (d1, v1) in zip(ls, ls[1:]):
-            a_, b_ = dt.date.fromisoformat(d0), dt.date.fromisoformat(d1)
-            n = (b_ - a_).days
-            for k in range(1, n):
-                d = (a_ + dt.timedelta(days=k)).isoformat()
-                out[(p, d)] = {"next": v1, "prev": v0}.get(route, round(v0 + (v1 - v0) * k / n, 4))
+    for m, s, p in claims(target):
+        if m in grp:
+            out[grp[m]] = out.get(grp[m], 0.0) + p
     return out
 
 
-def _outage_terms(target, route="golden"):
-    """Each combined-cycle unit's IEEE 762 terms over the ozone season, every hour local time from 1 May to
-    30 September: FOH (hours in a full forced outage, U1 to U3, a later report replacing an earlier full outage it
-    overlaps on the unit), the number of forced outages, SH (operating time), RSH (hours neither operating nor in a
-    full outage, the part of a part hour not operating included), the actual starts, EFDH (each D1 or D2 hour outside
-    a full outage at derate_mw over nameplate MW) and EFDHRS (the part of EFDH falling in reserve shutdown).
-    Each event number is one event, its latest revision standing. Routes for the checks: "filterfirst" takes every
-    line of the U and D types as filed, revisions ignored; "rows" counts operating rows for SH; "noresolve" keeps every full outage report;
-    "standard" reads the events on the DAHS clock; "service" counts derates in service only."""
-    a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
-    cap = {}
-    ws = load_workbook(find(target, "generating_unit_register"), read_only=True).active
-    for r in ws.iter_rows(min_row=5, values_only=True):
-        if r and r[0]:
-            cap[r[0]] = float(r[3])
-    op, prev_on, starts = {}, {}, {}
-    for r in _rows(find(target, "dahs_hourly_export")):
-        u = r["UNIT_ID"]
-        t = dt.datetime.combine(dt.date.fromisoformat(r["OP_DATE"]), dt.time(int(r["OP_HOUR"])))
-        loc = t if route == "standard" else _local(t)
-        f = float(r["OP_TIME"] or 0)
-        if a <= loc < b:
-            op[(u, loc)] = f
-            if f > 0 and not prev_on.get(u, False):
-                starts[u] = starts.get(u, 0) + 1
-        prev_on[u] = f > 0
-    evs, der, planned = {}, {}, {}
-    rows = _rows(find(target, "gads_event_report"))
-    if route != "filterfirst":
-        # an event number is one event: its latest revision is the event
-        latest = {}
-        for r in rows:
-            k = (r["unit"], r["event_no"])
-            if k not in latest or r["date_reported"] > latest[k]["date_reported"]:
-                latest[k] = r
-        rows = list(latest.values())
-    for r in rows:
-        s0 = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
-        e0 = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
-        if r["event_type"] in ("U1", "U2", "U3"):
-            evs.setdefault(r["unit"], []).append((s0, e0, r["date_reported"], int(r["event_no"])))
-        elif r["event_type"] in ("MO", "PO", "ME", "PE"):
-            planned.setdefault(r["unit"], []).append((s0, e0))
-        elif r["event_type"] in ("D1", "D2"):
-            der.setdefault(r["unit"], []).append((s0, e0, float(r["derate_mw"])))
-    out = {}
-    hours = {}
-    for (w, t) in op:
-        hours.setdefault(w, []).append(t)
-    for u in cc_units(target):
-        keep = []
-        if route == "noresolve":
-            keep = evs.get(u, [])
-        else:
-            for e in sorted(evs.get(u, []), key=lambda e: (e[2], e[3]), reverse=True):
-                if not any(e[0] < k[1] and k[0] < e[1] for k in keep):
-                    keep.append(e)
-        keep = [e for e in keep if e[0] < b and a < e[1]]
-        fo = set()
-        foh = 0
-        for s0, e0, *_ in keep:
-            t = max(a, s0)
-            while t < min(b, e0):
-                foh += 1 if route == "noresolve" or t not in fo else 0
-                fo.add(t)
-                t += dt.timedelta(hours=1)
-        # hours in a planned or maintenance outage are neither service nor reserve shutdown
-        po = set()
-        for s0, e0 in planned.get(u, []):
-            t = max(a, s0)
-            while t < min(b, e0):
-                if t not in fo:
-                    po.add(t)
-                t += dt.timedelta(hours=1)
-        hs = hours.get(u, [])
-        sh = sum(1 for t in hs if op[(u, t)] > 0) if route == "rows" else sum(op[(u, t)] for t in hs)
-        rsh = sum(1 - op[(u, t)] for t in hs if t not in fo and t not in po)
-        efdh = efdhrs = 0.0
-        for s0, e0, mw in der.get(u, []):
-            t = max(a, s0)
-            while t < min(b, e0):
-                if t not in fo and t not in po:
-                    f = op.get((u, t), 0.0)
-                    efdh += mw / cap[u] * (f if route == "service" else 1.0)
-                    efdhrs += mw / cap[u] * (1 - f)
-                t += dt.timedelta(hours=1)
-        out[u] = dict(foh=foh, n_fo=len(keep), sh=sh, rsh=rsh, starts=starts.get(u, 0), efdh=efdh, efdhrs=efdhrs)
-    return out
+def pmpm(target, route="golden"):
+    c, e = cost(target), exposure(target, route)
+    return {g: c.get(g, 0.0) / e[g] for g in groups(target)}
 
 
-def ask_b(target, route="golden"):
-    """Each unit's ozone-season equivalent forced outage rate (IEEE 762), per cent: 100 (FOH + EFDH) / (FOH + SH +
-    EFDHRS). "nors" leaves EFDHRS out of the denominator; other routes as _outage_terms."""
-    out = {}
-    for u, x in _outage_terms(target, route).items():
-        rs = 0.0 if route == "nors" else x["efdhrs"]
-        out[u] = 100.0 * (x["foh"] + x["efdh"]) / (x["foh"] + x["sh"] + rs)
-    return out
+def classes(target):
+    ws = load_workbook(find(target, "drug_class_crosswalk"), read_only=True).active
+    return {r[0]: r[1] for r in ws.iter_rows(min_row=2, values_only=True) if r and r[0]}
 
 
-def ask_a(target, route="golden"):
-    """Each unit's ozone-season demand equivalent forced outage rate (IEEE 762, EFORd), per cent:
-    100 (f FOH + fp EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH over the number of forced
-    outages, T = RSH over the attempted starts, D = SH over the actual starts, fp = SH / AH and AH = SH + RSH.
-    "plain" is the plain rate with f and fp at one; "nofp" leaves fp at one; other routes as _outage_terms."""
-    out = {}
-    for u, x in _outage_terms(target, route).items():
-        r = x["foh"] / x["n_fo"] if x["n_fo"] else float("inf")
-        T = x["rsh"] / x["starts"] if x["starts"] else float("inf")
-        D = x["sh"] / x["starts"] if x["starts"] else float("inf")
-        inv = lambda v: 0.0 if v == float("inf") or v == 0 else 1.0 / v
-        f = (inv(r) + inv(T)) / (inv(r) + inv(T) + inv(D)) if route != "plain" else 1.0
-        fp = x["sh"] / (x["sh"] + x["rsh"]) if route not in ("plain", "nofp") else 1.0
-        out[u] = 100.0 * (f * x["foh"] + fp * x["efdh"]) / (x["sh"] + f * x["foh"])
-    return out
-
-
-def season_totals(target):
-    rec = record(target)
-    return {u: (sum(o["load"]), len(o["load"])) for u, o in rec.items()}
+def pharmacy(target, route="golden"):
+    """{class: (paid dollars, fills)}. golden: each claim number at its latest line, fills dated in the period, a
+    fill being a claim whose latest line paid something; all: every line counted; filterfirst: lines filtered to the
+    period and class first, then each claim number at its latest line among them; first: each claim number at its
+    first line."""
+    ndc = classes(target)
+    lines = _rows(find(target, "pharmacy_claims"))
+    a, b = W.MONTHS[0].isoformat(), "2026-06-30"
+    out = {c: [0.0, 0] for c in sorted(set(ndc.values()))}
+    if route == "all":
+        for r in lines:
+            if a <= r["fill_date"] <= b:
+                out[ndc[r["ndc"]]][0] += float(r["paid_amount"])
+                out[ndc[r["ndc"]]][1] += 1
+        return {c: (round(v[0], 2), v[1]) for c, v in out.items()}
+    if route == "filterfirst":
+        lines = [r for r in lines if a <= r["fill_date"] <= b]
+        key = lambda r: (r["claim_number"], ndc[r["ndc"]])
+    else:
+        key = lambda r: r["claim_number"]
+    pick = {}
+    for r in lines:
+        k = key(r)
+        if k not in pick or (r["processed_at"] > pick[k]["processed_at"]) == (route != "first"):
+            pick[k] = r
+    for r in pick.values():
+        if a <= r["fill_date"] <= b:
+            p = float(r["paid_amount"])
+            out[ndc[r["ndc"]]][0] += p
+            out[ndc[r["ndc"]]][1] += 1 if p > 0 else 0
+    return {c: (round(v[0], 2), v[1]) for c, v in out.items()}

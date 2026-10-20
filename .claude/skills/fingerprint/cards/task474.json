@@ -10,7 +10,7 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "(to be built)",
+  "answer": "Designate four of the twelve primary care groups: PG04, PG07, PG08 and PG10 (the roster's member-months designate PG02, PG04, PG08 and PG11).",
   "answer_source": "task474/submission.md",
   "gap": [
     "population",
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the claims, the roster and the remittance, reads every field and rule correctly and divides each group's paid claims by the member-months its monthly roster shows designates the wrong groups, because members who lapse at their annual renewal are reinstated retroactively, their lapse months never reach the roster though their claims in those months are paid, so the groups whose members churn most carry the most cost on the fewest roster months.",
+  "analyst_test": "A strong analyst who conforms the claims, the roster and the remittance, reads every field and rule correctly and divides each group's paid claims by its roster member-months designates PG02, PG04, PG08 and PG11; adding only the reinstated months gives PG04 and PG08, removing only the recouped months six groups, adding claim months the same four as the roster; only both adjustments give PG04, PG07, PG08 and PG10.",
   "domain_test": "The decisive quantity is each provider group's cost per member-month, a health plan's per-member-per-month rate whose denominator is the exposure at risk; under Medicaid renewal churn with retroactive reinstatement the covered months are rebuilt from the capitation the state paid and the claims the plan paid, not from the roster snapshot; swapping in another field's nouns breaks it because the annual redetermination cycle and the state's retroactive coverage rule are what put covered months outside the roster.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:exposure at risk rebuilt from the payer's own retroactive capitation and paid claims under renewal churn",
@@ -66,14 +66,14 @@
     ]
   },
   "deliverables": [
-    "provider_group_pmpm_2026.xlsx",
+    "provider_group_pmpm_2026h1.xlsx",
     "provider_group_designations_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A rate's denominator is the time each member was covered, and members who lose coverage at a fixed yearly review and are restored back to the date they lost it never appear in the monthly snapshot of who is covered, though the payer's own later payments for them and the services it paid in those months record the coverage; the denominator is rebuilt from those payments rather than read off the snapshot.",
+  "driver": "A rate's denominator is the time each member was covered, and the monthly snapshot of who is covered is short where members lose coverage at a yearly review and are restored back to the lapse, and long where members die and are removed late; the payer's own later payments and take-backs at member level record both, and the denominator is rebuilt from the snapshot corrected by them in both directions.",
   "driver_concrete": "Each provider group's 2026 cost per member-month divides its attributed members' paid claims by member-months rebuilt from the plan's roster plus the months the state later paid capitation for after a renewal lapse, not by the roster's member-months alone, before groups above the plan's cost benchmark are designated.",
-  "stump": "(to be written at stage 2)",
+  "stump": "The default path counts each group's member-months as its members' rows in the plan's monthly roster and designates PG02, PG04, PG08 and PG11; the roster, the state's file as processed by the 5th, misses months members were reinstated back to after a renewal lapse and keeps members for months after death, and only coverage rebuilt from the roster with the state's later member-level capitation lines (paid months added, recouped months removed) designates PG04, PG07, PG08 and PG10.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task468": "task468 measures a linker's error on control groups to correct an outcome count; here nothing is linked: the denominator's missing months are rebuilt from the payer's own retroactive capitation and paid claims.",
