@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: two scored leak readers and the determinism judge's isolated thread were spawned 2026-10-20 on target.zip sha256 2c016b81fa5ecb4a (rebuild with generator/build.py, byte-identical); collect their reports (readers' reader_figures.json scored with leak-check/score_reader.py; the judge's verdict.md into task473/determinism_check_report.md), fix every finding in the generator in one pass, re-run the free gates, then ship",
+ "resume": "stage 4: readers 1 and 2 both missed the call (default path); reader 1 kept 24.3 per cent of ask figures, so Ask A and Ask B primaries were re-sited (jail second submissions; census death investigation numbers), checks 101 of 101. Waiting on the judge thread's verdict at /tmp/determinism-check-task473-r1/verdict.md (on the first cut); then fix its findings, full rebuild, two fresh scored readers on the re-sited pack, ship",
  "approved": null,
  "delivered": null,
  "portal": null,

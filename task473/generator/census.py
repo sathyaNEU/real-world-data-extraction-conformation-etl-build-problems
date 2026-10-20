@@ -57,6 +57,13 @@ def assign(crashes):
     for cr in order:
         rng = T.rng_for("ids", cr.cid)
         cr.report = numbers.next(cr.agency, cr.date, int(rng.integers(1, 6)))
+        # a county or city agency opens a death investigation when a person dies after the crash report, and
+        # the census cites that number; the State Patrol keeps its crash number
+        first = min((p.death_days for p in cr.persons if p.killed), default=0)
+        if cr.group != "SP" and first > 0:
+            cr.census_report = numbers.next(cr.agency, cr.date + dt.timedelta(days=first), 1)
+        else:
+            cr.census_report = cr.report
         # the road
         if cr.group == "SP":
             roads = G.state_highways(cr.fips)
@@ -172,7 +179,7 @@ def rows_2023(order):
         nveh = len({p.unit for p in cr.persons if p.body != "NON-MOTORIST"})
         crash.append([cr.case, cr.date.strftime("%m/%d/%Y"),
                       "%02d%02d" % (cr.hour, cr.minute) if cr.time_known else "9999", cr.fips, cr.municipality,
-                      cr.agency.old, cr.report, ROAD_OLD[cr.road_class], cr.road_name, LIGHT_OLD[cr.light],
+                      cr.agency.old, cr.census_report, ROAD_OLD[cr.road_class], cr.road_name, LIGHT_OLD[cr.light],
                       WEATHER_OLD[cr.weather], COLL_OLD[cr.manner], nveh, T.deaths(cr), "%.5f" % cr.lat,
                       "%.5f" % cr.lon])
         for vn, pn, p in sorted(_old_units(cr), key=lambda t: (t[0] == 0, t[0], t[1])):
@@ -202,7 +209,7 @@ def rows_2425(order):
             continue
         nveh = len({p.unit for p in cr.persons if p.body != "NON-MOTORIST"})
         crash.append([cr.case, cr.date.isoformat(), "%02d:%02d" % (cr.hour, cr.minute) if cr.time_known else "",
-                      cr.fips, cr.municipality, cr.agency.aid, cr.report, cr.road_class, cr.road_name, cr.light,
+                      cr.fips, cr.municipality, cr.agency.aid, cr.census_report, cr.road_class, cr.road_name, cr.light,
                       cr.weather, cr.manner, nveh, T.deaths(cr), "%.5f" % cr.lat, "%.5f" % cr.lon])
         for un, pn, p in sorted(_new_units(cr), key=lambda t: (t[0], t[1])):
             ptype = p.role.upper()

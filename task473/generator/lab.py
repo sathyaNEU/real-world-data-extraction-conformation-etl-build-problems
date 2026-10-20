@@ -169,7 +169,7 @@ def _one(rng, f, k, when):
     return Arrest(agency=a, fips=f, when=when, case=None, bac=bac, drug_only=drug_only,
                   screen=drug_only or rng.random() < 0.28, second=(not drug_only) and rng.random() < 0.036,
                   site=site, serum=serum, tube2=(not drug_only) and rng.random() < 0.05, reanalysis=re,
-                  cancel=rng.random() < 0.007, crash=None, kind="DUI")
+                  cancel=rng.random() < 0.007 and when.year != 2025, crash=None, kind="DUI")
 
 
 def _number_cases(arrests_, numbers):
@@ -208,6 +208,26 @@ def specimens(order, arrests_, numbers):
                 kits.append(dict(arrest=a, case_type=a.kind, agency=agency, case=a.case, coll=coll2, site=a.site,
                                  specimen="SER" if a.serum else "WB", bac=_trunc3(max(0.0, a.bac - drop)),
                                  drug_only=False, screen=False, tube2=False, re=None, cancel=False, first=False))
+    # two arrests are never drawn at one site in the same minute
+    seen = set()
+    for k in sorted(kits, key=lambda k: (k["coll"], k["agency"], k["case"] or "")):
+        while (k["site"].code, k["coll"]) in seen:
+            k["coll"] = k["coll"] - dt.timedelta(minutes=1)
+        seen.add((k["site"].code, k["coll"]))
+    # a county jail's booking nurse draws a city police arrest and the jail submits its own kit under the sheriff's
+    # agency number and booking number, beside the arresting department's
+    for f in [c["fips"] for c in W.COUNTIES]:
+        jail = [k for k in kits if k["arrest"] is not None and k["first"] and k["arrest"].fips == f and
+                k["arrest"].agency.kind == "Police Department" and k["site"].kind == "Jail" and
+                not k["drug_only"] and not k["cancel"]]
+        jail.sort(key=lambda k: (k["bac"] < 0.150, T.rng_for("jaildup", k["case"]).random()))
+        for yr in (2023, 2024, 2025):
+            mine = [k for k in jail if k["arrest"].when.year == yr]
+            for k in mine[:max(2, int(round(0.08 * len(mine))))]:
+                sh = AG.sheriff(f)
+                kits.append(dict(arrest=None, case_type="DUI", agency=sh.aid, case=numbers.next(sh, k["coll"].date(), 2),
+                                 coll=k["coll"], site=k["site"], specimen="WB", bac=k["bac"], drug_only=False,
+                                 screen=False, tube2=False, re=None, cancel=False, first=True))
     # the fatal crash procedure's draws from surviving drivers not arrested, and the death investigations
     for cr in order:
         for p in cr.persons:

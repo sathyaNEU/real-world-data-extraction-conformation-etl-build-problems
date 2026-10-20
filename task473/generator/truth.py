@@ -84,7 +84,7 @@ def band_of(b):
 class Crash:
     __slots__ = ("cid", "fips", "year", "date", "hour", "minute", "group", "agency", "type", "persons", "hit_run",
                  "night", "seq", "report", "route", "light", "weather", "manner", "lat", "lon", "road_name",
-                 "road_class", "municipality", "time_known", "case")
+                 "road_class", "municipality", "time_known", "case", "census_report")
 
     def __init__(self, **kw):
         for k in self.__slots__:

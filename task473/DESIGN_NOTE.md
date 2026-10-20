@@ -338,7 +338,11 @@ designation's basis.
   collection site, collection time in UTC, specimen type, analyte, result, report status), the agency directory (old
   and new agency numbers, county, State Patrol posts), the facilities list, the guidelines (3.1(a), the county where
   the arrest was made) and the laboratory's extract notes: five files, twelve columns.
-  Primary device: D7, the true key elsewhere. The State Patrol submits under one agency number for the whole state,
+  Primary device (re-sited after stage 4 reader 1): D1, the same records under two key schemes. A county jail's booking
+  nurse draws some city police arrests and the jail submits its own kit under the sheriff's agency number and booking
+  number beside the department's, so one draw sits in the extract twice, same collection site and minute, same
+  result, under two agencies; one arrest per agency case number counts it twice. No sweep sees it (different lab
+  numbers, agencies and case numbers). Kept as a hazard from the first cut: D7, the true key elsewhere. The State Patrol submits under one agency number for the whole state,
   and its arrests reach the county only through the post in its case number ("P07-25-01234") and the directory's
   post list; the laboratory's collection site is where the blood was drawn, and a rural arrest's blood is often
   drawn at the nearest hospital across the county line. Read by the agency's county or by the collection site, every
@@ -355,7 +359,10 @@ designation's basis.
   records system's 2025 report and unit extracts, the fatal crash census, the dictionary, the guidelines: four
   files, eleven columns. Primary devices: D1, the same crash under two agencies' reports (the State Patrol and a
   sheriff both report a crash on a state highway, two report numbers, the same vehicles and time, nothing linking
-  them), and D9, a control true only in its scope (the crash extract keeps the severity the officer coded, so a crash
+  them), and D9, a control true only in its scope. Re-sited after stage 4 reader 1, which merged the two agencies'
+  reports and linked the census by report number: the census cites a county or city agency's death investigation
+  number where a person died after the crash report, so a report-number link keeps those crashes as injury crashes;
+  only date, road and time link them. Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
   whose injured person died within 30 days stays an injury crash there and is a fatal crash only in the census).
   Hazards: supplements under the same report number (the latest accepted stands, a rejected one never), a
   non-driver unit coded as drinking, crashes on private property, a supplement that lowers the severity to no
@@ -366,8 +373,8 @@ designation's basis.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, each county's 2025 arrests with a blood specimen and the per cent at .15 or more | attributes each arrest to its agency's county from the directory (the State Patrol to the county of its headquarters) and repairs every documented hazard (UTC, the later report, drug-only requests, two tubes); every county's arrests and share fall outside their bins | miss |
-| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | takes the latest accepted supplement under each report number and the officer's alcohol code on driver units, on the crash extract's own severity; every county's count falls outside its bin | miss |
+| A, each county's 2025 arrests with a blood specimen and the per cent at .15 or more | one arrest per agency case number, the State Patrol's placed by the post in its case number, every documented hazard repaired (UTC, the amended report, drug-only requests, two tubes, second specimens, serum); the jail's second submissions counted as arrests, so every county's arrests and share fall outside their bins | miss |
+| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked by agency and report number; the crashes the census holds under a death investigation number stay in, so every county's count falls outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
   them as the cracker does).
@@ -435,3 +442,8 @@ designation's basis.
   years drawn from a multinomial instead.
 - 2026-10-20, at the build: the manual stated the 2024 and 2025 files' closing dates although issued in March 2024;
   the dates cut, the rule kept.
+- 2026-10-20, at stage 4: Ask A's State Patrol attribution and Ask B's two-agency duplicates as primaries; reader 1
+  found both (the post in the case number, a time-and-place merge) and kept 17 of 70 ask figures, its only Ask A
+  misses coming from dropping cancelled requests, a reading rather than a device. Both kept as hazards; cancelled
+  requests kept out of 2025; primaries re-sited to the jail's second submissions (Ask A) and the census's death
+  investigation numbers (Ask B).

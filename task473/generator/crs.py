@@ -127,6 +127,14 @@ def universe(order):
                              lon=round(float(rng.uniform(w + 0.02, e - 0.02)), 5),
                              public=rng.random() > (0.035 if grp == "PD" else 0.008), severity=sev, units=units,
                              census=None, municipality=a.city if grp == "PD" else ""))
+    # each county's officers noted drinking at one or more of its county and city crashes whose victim died later
+    for c in W.COUNTIES:
+        late = [x for x in out if x.census is not None and x.fips == c["fips"] and x.group != "SP" and
+                x.severity == "A" and any(u["type"] == "MOTOR VEHICLE" and u["age"] is not None for u in x.units)]
+        if late and not any(u["cond"] == HBD for x in late for u in x.units):
+            x = sorted(late, key=lambda x: T.rng_for("latehbd", x.census.cid).random())[0]
+            u = next(u for u in x.units if u["type"] == "MOTOR VEHICLE" and u["age"] is not None)
+            u["cond"] = HBD
     out.sort(key=lambda x: (x.date, x.hour, x.minute, x.fips, x.agency.aid))
     for i, x in enumerate(out):
         x.key = i

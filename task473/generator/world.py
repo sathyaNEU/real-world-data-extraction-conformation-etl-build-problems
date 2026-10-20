@@ -67,7 +67,8 @@ NAMES = {c["fips"]: c["name"] for c in COUNTIES}
 FIPS = {c["name"]: c["fips"] for c in COUNTIES}
 PROTOCOL_SHERIFFS = ("005", "019")           # Corwin and Ossian follow the State Patrol's fatal crash procedure
 PATROL_HQ = "013"                             # Keswick
-POST_OF = {c["fips"]: i + 1 for i, c in enumerate(COUNTIES)}   # one State Patrol post per county
+# one State Patrol post per county, numbered in the order the posts opened
+POST_OF = dict(zip([c["fips"] for c in COUNTIES], (6, 11, 3, 9, 1, 12, 2, 8, 13, 4, 7, 14, 5, 10)))
 
 # the knobs (tuned by generator/tune.py against the design note's ladder; the generator reads only these)
 KNOBS = {

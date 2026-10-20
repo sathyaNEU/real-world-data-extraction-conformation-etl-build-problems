@@ -21,8 +21,8 @@ Their 2023 to 2025 rates are Corwin 0.74, Ossian 0.69, Hatchell 0.67 and Tanager
 3. At those agencies, divided the arrested surviving drivers by all surviving drivers in each band, .08 to .149 and .15 or more: 28.6% and 88.9%.
 4. At every other agency, counted each arrested driver found at .08 or more as one over its band's catch rate (3.5 and 1.125), the excess being that county's untested impaired surviving drivers (23.1 in Tanager), and gave each of the county's untested surviving drivers the excess divided by their number.
 5. Gave each crash its deaths times the chance that at least one driver was at .08 or more (guidelines 2.2), summed by county, and divided by the 2023 to 2025 vehicle miles of dot_county_dvmt_2023_2025.xlsx, each year's DVMT times its days (366 in 2024), per 100 million: Tanager 0.67.
-6. From stl_specimen_extract_2023_2025.csv, kept the 2025 DUI arrests by local collection date, one per agency case number, placed each in its agency's county from fcc_agency_directory.xlsx and each State Patrol arrest (submitted under SPHQ000) in its post's county from the post in its case number, and took the first specimen's whole-blood ethanol (serum divided by 1.16, the amended report over the superseded): the arrests and the per cent at .15 or more below.
-7. From crs_reports_2025.csv and crs_units_2025.csv, took each report's latest accepted version, kept public-road crashes with an injury and a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within minutes and drivers), and dropped those in the census: the injury crashes below.
+6. From stl_specimen_extract_2023_2025.csv, kept the 2025 DUI arrests by local collection date, one per agency case number and one where a county jail's kit under the sheriff's number shares a department's collection site and minute, placed each in its agency's county from fcc_agency_directory.xlsx and each State Patrol arrest (submitted under SPHQ000) in its post's county from the post in its case number, and took the first specimen's whole-blood ethanol (serum divided by 1.16, the amended report over the superseded): the arrests and the per cent at .15 or more below.
+7. From crs_reports_2025.csv and crs_units_2025.csv, took each report's latest accepted version, kept public-road crashes with an injury and a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within minutes and drivers), and dropped those in the census, by agency and report number or, where the census cites a death investigation number, by date, road and time: the injury crashes below.
 8. Certified Corwin, Hatchell, Ossian and Tanager as high-range (guidelines 2.4: 0.60 or more).
 
 ## 4. Deliverable Answers
@@ -46,17 +46,17 @@ Their 2023 to 2025 rates are Corwin 0.74, Ossian 0.69, Hatchell 0.67 and Tanager
    - Tanager: 67 deaths, 0.67
 2. Each county's 2025 impaired-driving arrests with a blood specimen at the State Toxicology Laboratory and the per cent of them at .15 or more (one decimal):
    - Aldous: 168 arrests, 41.7%
-   - Brisbin: 363 arrests, 65.0%
+   - Brisbin: 363 arrests, 65.3%
    - Corwin: 252 arrests, 45.6%
-   - Delmont: 380 arrests, 50.0%
+   - Delmont: 380 arrests, 50.8%
    - Fairlee: 429 arrests, 45.7%
-   - Hatchell: 372 arrests, 49.7%
-   - Keswick: 571 arrests, 46.2%
-   - Kittredge: 205 arrests, 43.9%
+   - Hatchell: 372 arrests, 50.0%
+   - Keswick: 571 arrests, 46.9%
+   - Kittredge: 205 arrests, 44.4%
    - Lanier: 277 arrests, 57.4%
-   - Ossian: 227 arrests, 46.7%
-   - Pruett: 416 arrests, 60.6%
-   - Renwick: 401 arrests, 47.6%
+   - Ossian: 227 arrests, 47.6%
+   - Pruett: 416 arrests, 61.8%
+   - Renwick: 401 arrests, 48.4%
    - Stroud: 339 arrests, 51.3%
    - Tanager: 454 arrests, 32.4%
 3. Each county's 2025 injury crashes in which no one died within 30 days and an officer reported a driver had been drinking:

@@ -6,7 +6,7 @@
   },
   "Brisbin": {
    "arrests": 363,
-   "pct15": 65.0
+   "pct15": 65.3
   },
   "Corwin": {
    "arrests": 252,
@@ -14,7 +14,7 @@
   },
   "Delmont": {
    "arrests": 380,
-   "pct15": 50.0
+   "pct15": 50.8
   },
   "Fairlee": {
    "arrests": 429,
@@ -22,15 +22,15 @@
   },
   "Hatchell": {
    "arrests": 372,
-   "pct15": 49.7
+   "pct15": 50.0
   },
   "Keswick": {
    "arrests": 571,
-   "pct15": 46.2
+   "pct15": 46.9
   },
   "Kittredge": {
    "arrests": 205,
-   "pct15": 43.9
+   "pct15": 44.4
   },
   "Lanier": {
    "arrests": 277,
@@ -38,15 +38,15 @@
   },
   "Ossian": {
    "arrests": 227,
-   "pct15": 46.7
+   "pct15": 47.6
   },
   "Pruett": {
    "arrests": 416,
-   "pct15": 60.6
+   "pct15": 61.8
   },
   "Renwick": {
    "arrests": 401,
-   "pct15": 47.6
+   "pct15": 48.4
   },
   "Stroud": {
    "arrests": 339,
@@ -174,7 +174,7 @@
    "deaths": 59,
    "fips": "003",
    "high": false,
-   "pct15": "65.0",
+   "pct15": "65.3",
    "rate": "0.56",
    "vmt": "105.38"
   },
@@ -196,7 +196,7 @@
    "deaths": 79,
    "fips": "007",
    "high": false,
-   "pct15": "50.0",
+   "pct15": "50.8",
    "rate": "0.51",
    "vmt": "154.94"
   },
@@ -218,7 +218,7 @@
    "deaths": 84,
    "fips": "011",
    "high": true,
-   "pct15": "49.7",
+   "pct15": "50.0",
    "rate": "0.67",
    "vmt": "125.42"
   },
@@ -229,7 +229,7 @@
    "deaths": 78,
    "fips": "013",
    "high": false,
-   "pct15": "46.2",
+   "pct15": "46.9",
    "rate": "0.34",
    "vmt": "229.79"
   },
@@ -240,7 +240,7 @@
    "deaths": 43,
    "fips": "015",
    "high": false,
-   "pct15": "43.9",
+   "pct15": "44.4",
    "rate": "0.57",
    "vmt": "75.60"
   },
@@ -262,7 +262,7 @@
    "deaths": 55,
    "fips": "019",
    "high": true,
-   "pct15": "46.7",
+   "pct15": "47.6",
    "rate": "0.69",
    "vmt": "79.75"
   },
@@ -273,7 +273,7 @@
    "deaths": 102,
    "fips": "021",
    "high": false,
-   "pct15": "60.6",
+   "pct15": "61.8",
    "rate": "0.55",
    "vmt": "185.73"
   },
@@ -284,7 +284,7 @@
    "deaths": 66,
    "fips": "023",
    "high": false,
-   "pct15": "47.6",
+   "pct15": "48.4",
    "rate": "0.38",
    "vmt": "173.76"
   },

@@ -291,14 +291,27 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     # ------------------------------------------------------------------ the asks
     rows = B.lab(target)
     a = B.ask_a(rows, dr)
-    crk = B.ask_a(rows, dr, county_of=lambda ag, case, k: str(dr["agencies"][ag]["county_fips"]))
+    crk = B.ask_a(rows, dr, merge_jail=False)
+    hq = B.ask_a(rows, dr, county_of=lambda ag, case, k: str(dr["agencies"][ag]["county_fips"]))
+    miss_h = [W.NAMES[f] for f in miles if hq.get(f, (0, 0))[0] == a[f][0]]
+    check("ask A stop: the State Patrol's arrests at headquarters misses every county's arrests", not miss_h, miss_h)
     site = B.sites(target)
     sit = B.ask_a(rows, dr, county_of=lambda ag, case, k: site[k["site"]]["county_fips"])
     utc = B.ask_a(rows, dr, year_of=lambda k: int(k["utc"][:4]))
     miss_c = [W.NAMES[f] for f in miles if crk.get(f, (0, 0))[0] == a[f][0] or "%.1f" % crk.get(f, (0, 0))[1] ==
               "%.1f" % a[f][1]]
-    check("ask A cracker (each arrest in its submitting agency's county, the State Patrol's at headquarters, every "
-          "hazard repaired) misses every county's arrests and per cent", not miss_c, miss_c)
+    check("ask A cracker (one arrest per agency case number, the State Patrol's by its post, every documented hazard "
+          "repaired, the jail's second submissions kept) misses every county's arrests and per cent", not miss_c, miss_c)
+    pairs = {}
+    for r in rows:
+        if r["case_type"] == "DUI":
+            pairs.setdefault((r["collection_site"], r["collected_utc"]), set()).add((r["submitting_agency"],
+                                                                                     r["agency_case_number"]))
+    multi = [v for v in pairs.values() if len(v) > 1]
+    check("ask A device: %d draws submitted twice, each a police department's and the sheriff's of one county jail, "
+          "and no two arrests drawn at one site in one minute otherwise" % len(multi),
+          len(multi) >= 28 and all(len(v) == 2 and sum(1 for ag, cs in v if ag.startswith("SO")) == 1 and
+                                   sum(1 for ag, cs in v if ag.startswith("PD")) == 1 for v in multi))
     miss_s = [W.NAMES[f] for f in miles if sit.get(f, (0, 0))[0] == a[f][0] and
               "%.1f" % sit.get(f, (0, 0))[1] == "%.1f" % a[f][1]]
     same_n = [W.NAMES[f] for f in miles if sit.get(f, (0, 0))[0] == a[f][0]]
@@ -321,9 +334,12 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
           not any(r["submitting_agency"].startswith("SP0") or r["submitting_agency"].startswith("SP1") for r in rows))
     reps_b, groups = B.ask_b(target, cr)
     nodup, _ = B.ask_b(target, cr, dedupe=False, link_census=False)
-    miss_b = [W.NAMES[f] for f in miles if nodup.get(f, 0) == reps_b.get(f, 0)]
-    check("ask B cracker (latest accepted version, drinking drivers, the report's own severity, every report "
-          "counted) misses every county", not miss_b, miss_b)
+    miss_n = [W.NAMES[f] for f in miles if nodup.get(f, 0) == reps_b.get(f, 0)]
+    check("ask B stop: every report counted on its own severity misses every county", not miss_n, miss_n)
+    bynum, _ = B.ask_b(target, cr, link_near=False)
+    miss_b = [W.NAMES[f] for f in miles if bynum.get(f, 0) == reps_b.get(f, 0)]
+    check("ask B cracker (latest accepted version, two agencies' reports merged, the census linked by agency and "
+          "report number) misses every county", not miss_b, miss_b)
     dups = {}
     for gr_ in groups:
         if len(gr_) > 1:
@@ -433,9 +449,12 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     reps, units = B.crs(target)
     check("realism: every crash report is a 2025 crash submitted after it and before the 8 March 2027 extract",
           all(r["crash_date"].startswith("2025") and r["crash_date"] <= r["submitted"] <= "2027-03-08" for r in reps))
-    check("realism: the census's 2025 crashes are in the crash records extract under their agency and report number",
-          {(c["agency"], c["report"]) for c in cr if c["year"] == 2025} <= {(r["agency_id"], r["report_number"])
-                                                                            for r in reps})
+    linked = {(r["agency_id"], r["report_number"]) for r in reps}
+    c25 = [c for c in cr if c["year"] == 2025]
+    by_num = sum(1 for c in c25 if (c["agency"], c["report"]) in linked)
+    check("realism: %d of the census's %d 2025 crashes carry their crash report's number, the rest the agency's "
+          "death investigation number (a county or city crash whose victim died after the report)" % (by_num, len(c25)),
+          0.3 * len(c25) < by_num < len(c25))
     yearly = {}
     for c in cr:
         yearly.setdefault(c["fips"], []).append(c["year"])

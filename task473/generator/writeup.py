@@ -62,14 +62,16 @@ def write(fig_path, out_path):
         "summed by county, and divided by the 2023 to 2025 vehicle miles of %s, each year's DVMT times its days "
         "(%d in 2024), per 100 million: Tanager %s." % (f["sections"]["estimand"], W.FILES["vmt"], f["leap_days"],
                                                          f["tanager_rate"]),
-        "6. From %s, kept the 2025 DUI arrests by local collection date, one per agency case number, placed each in "
+        "6. From %s, kept the 2025 DUI arrests by local collection date, one per agency case number and one where a "
+        "county jail's kit under the sheriff's number shares a department's collection site and minute, placed each in "
         "its agency's county from %s and each State Patrol arrest (submitted under SPHQ000) in its post's county "
         "from the post in its case number, and took the first specimen's whole-blood ethanol (serum divided by "
         "%s, the amended report over the superseded): the arrests and the per cent at .15 or more below." % (
             W.FILES["lab"], W.FILES["agencies"], f["serum"]),
         "7. From %s and %s, took each report's latest accepted version, kept public-road crashes with an injury and "
         "a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within "
-        "minutes and drivers), and dropped those in the census: the injury crashes below." % (
+        "minutes and drivers), and dropped those in the census, by agency and report number or, where the census "
+        "cites a death investigation number, by date, road and time: the injury crashes below." % (
             W.FILES["reports"], W.FILES["units"]),
         "8. Certified %s as high-range (guidelines %s: %s or more)." % (_join(f["call"]), f["sections"]["rate"],
                                                                            f["threshold"]),

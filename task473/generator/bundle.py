@@ -111,7 +111,7 @@ def census(target, dr=None):
                            arrested=q["arrested_at_scene"] == "Y", body=q["unit_type"]))
         out.append(dict(case=r["crash_id"], year=date.year, date=date, fips=r["county_fips"], agency=r["agency_id"],
                         report=r["report_number"], deaths=sum(1 for p in ps if p["killed"]), persons=ps,
-                        time=r["crash_time"]))
+                        time=r["crash_time"], road=r["road_name"]))
     return out
 
 
@@ -203,7 +203,7 @@ def _local(utc):
     return t.astimezone(CENTRAL).replace(tzinfo=None)
 
 
-def arrests_2025(rows, dr, county_of=None, year_of=None):
+def arrests_2025(rows, dr, county_of=None, year_of=None, merge_jail=True):
     """Each 2025 impaired-driving arrest with a blood specimen: one per submitting agency and case number, its county,
     and whether its first specimen's whole-blood ethanol was .15 or more."""
     kits = {}
@@ -220,6 +220,19 @@ def arrests_2025(rows, dr, county_of=None, year_of=None):
     by_case = {}
     for ln, k in kits.items():
         by_case.setdefault((k["agency"], k["case"]), []).append(k)
+    if merge_jail:
+        # one draw submitted twice, by the arresting department and by the county jail under the sheriff's booking
+        # number: the same collection site and minute under two agencies is one arrest, the department's
+        first_at = {}
+        for key, ks in by_case.items():
+            k0 = min(ks, key=lambda k: k["utc"])
+            first_at.setdefault((k0["site"], k0["utc"]), []).append(key)
+        for spot, keys in first_at.items():
+            if len(keys) > 1:
+                keep = [key for key in keys if not key[0].startswith("SO")] or keys[:1]
+                for key in keys:
+                    if key not in keep[:1]:
+                        del by_case[key]
     out = []
     for (agency, case), ks in by_case.items():
         ks.sort(key=lambda k: k["utc"])
@@ -256,7 +269,7 @@ def crs(target):
     return reps, u
 
 
-def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True):
+def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True):
     reps, units = crs(target)
     by = {}
     for r in reps:
@@ -271,6 +284,26 @@ def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True):
         v["drivers"] = tuple(sorted((x["driver_age"], x["driver_sex"]) for x in us if x["unit_type"] == "MOTOR VEHICLE"))
         stand.append(v)
     fatal = {(c["agency"], c["report"]) for c in census_crashes if c["year"] == 2025}
+    # the census cites a death investigation number where a person died after the report: a crash is also the
+    # census's when its date, county and road agree and its time is within 15 minutes
+    near = {}
+    for c in census_crashes:
+        if c["year"] == 2025:
+            near.setdefault((c["date"].isoformat(), c["fips"], c.get("road", "")), []).append(c["time"])
+
+    def in_census(v):
+        if (v["agency_id"], v["report_number"]) in fatal:
+            return True
+        if not link_near:
+            return False
+        for t in near.get((v["crash_date"], v["county_fips"], v["road_name"]), []):
+            if not t:
+                return True
+            t0 = dt.datetime.strptime(t, "%H:%M")
+            t1 = dt.datetime.strptime(v["crash_time"], "%H:%M")
+            if abs((t1 - t0).total_seconds()) <= 15 * 60:
+                return True
+        return False
     # one crash, two agencies' reports: same date, county, road and drivers, times within 15 minutes
     groups = []
     if dedupe:
@@ -293,7 +326,7 @@ def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True):
         groups = [[v] for v in stand]
     out = {}
     for g in groups:
-        if link_census and any((v["agency_id"], v["report_number"]) in fatal for v in g):
+        if link_census and any(in_census(v) for v in g):
             continue
         ok = any(v["public_road"] == "Y" and v["severity"] in ("A", "B", "C") and
                  any(x["unit_type"] == "MOTOR VEHICLE" and x["driver_condition"] == "HAD BEEN DRINKING"
