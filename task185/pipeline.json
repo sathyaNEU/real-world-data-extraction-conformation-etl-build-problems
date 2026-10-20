@@ -1,12 +1,12 @@
 {
   "task": "task185",
   "owner": "oviya13ya",
-  "status": "SHIPPED",
+  "status": "FAILED_TO_STUMP",
   "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
   "objective": "anomaly-detection",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-12",
+  "updated": "2026-10-20",
   "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (+0.13 C), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it ends on $567 a hectare, the raw record's premium; one hot-day offset ends on $542 or $506; the conversion at each reading files $525.",
   "architecture": 1,
   "loops": 0,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, every line harmless (reader rulings in the report)",
-    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical"
+    "reader": "wave 8 audit: 3 of 3 call figures, 44 of 45 ask figures, Gate F failed"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, answered in the note)",
@@ -28,7 +28,7 @@
     "report": "task185/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "",
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result, and the most complete solve on the lane: 3 of 3 call figures and 44 of 45 ask figures. The reader quoted the pricing manual's own clause, that each day's maximum is taken as the station's present instrument would have recorded it, as what sent it to the conversion, and reported five estimator forms giving identical counts. So the decisive step is the pack's filed procedure, which rule 3 counts as rule application rather than analysis. Re-root at stage 1: the clause goes, and the reason to convert has to come from the data's structure.",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,

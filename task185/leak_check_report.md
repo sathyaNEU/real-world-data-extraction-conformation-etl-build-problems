@@ -65,3 +65,49 @@ Realism notes and rulings:
 - Variety lines repeating a block's insured hectares, and duplicate lodgements repeating an assessed amount: the asks' devices (D6, D1), kept.
 - Block register at two decimals against the schedule's one: planted areas by variety against the insured area, kept.
 - Member names and numbers, claim and payment numbering, the tidy manual and term sheets: kept; the documents are the two to four pages of operational content the pack allows.
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure names (not values)
+from `generator/figures.json`, and was scored by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, and this is the most complete solve measured on the lane
+
+| block | hit |
+|---|---|
+| main call | **3 of 3** |
+| ask figures | **44 of 45** (97.8 per cent) |
+
+Every call figure exactly: the premium a hectare and both day counts. The ask layer went with it, one
+figure short of whole. It also filed the default path's own answer, the premium without the conversion,
+which is to say it computed rung 0 and then climbed off it deliberately.
+
+**The decisive step was quoted out of the pack.** Asked what sent it there, it gave the pricing manual's
+own clause, that each day's maximum is taken "as the station's present instrument would have recorded it",
+and then the station history's instrument-change date and the parallel archive. That is readability screen
+test 1 in its plainest form: a filed sentence names the decisive quantity, and the pack then supplies the
+parallel archive that makes the conversion computable. The reader fitted a hinge-power curve, tested a
+logistic, a polynomial, a lowess and a binned interpolation, and reported the seasonal counts identical
+under all five, so the estimator family converges and the construction is forced once the clause is read.
+
+It also named the shortcut the design presumably intended as a rung, a flat mean offset, and said why it
+is wrong, that the offset is nearly nil below 31 C. So the rung was visible as a rung from inside the pack.
+
+Layer 1 was cleared wholesale: the repeated block hectares that would double count, the five cancelled
+rows, the 17 blocks where the schedule and the register disagree, the 24 duplicate claim numbers lodged
+through two channels, the financial-year general ledger against cover seasons, the duplicated July 2012
+days, and two distractors named as such.
+
+```
+call figures   3 of 3 hit
+ask figures    44 of 45 hit (97.8 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+The repair is a re-root rather than a re-siting. The decisive step here is the pack's own filed procedure,
+which under the client's rule 3 is rule application rather than analysis, and a reader that executes the
+clause lands the call by construction. Filing the conversion requirement is what spends the stump, so the
+clause has to go and the reason to convert has to come from the data's structure instead.
