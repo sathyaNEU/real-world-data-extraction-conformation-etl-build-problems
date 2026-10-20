@@ -1,0 +1,66 @@
+{
+ "task": "task472",
+ "domain": "Supply Chain & Logistics (ports and container terminals)",
+ "client_domain": "General Statistics & Data Science",
+ "task_type": "data-integration-record-linkage-entity-resolution",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "ais_berth_segments_fy2026.csv",
+  "cmms_yard_equipment_work_orders_fy2026.csv",
+  "berth_windows_fy2027.csv"
+ ],
+ "distractor_reasons": {
+  "ais_berth_segments_fy2026.csv": "the AIS berth stretches measure time alongside, which the program's saving and both asks never read; the pilot station's sailings fix when each call ended",
+  "cmms_yard_equipment_work_orders_fy2026.csv": "yard equipment orders share the maintenance system and the labor ledger but are not ship-to-shore cranes",
+  "berth_windows_fy2027.csv": "the 2027 berth windows are next year's commercial agreements, not the fiscal 2026 record the program is placed on"
+ },
+ "deliverables": [
+  "ternmouth_2027_crane_placement.xlsx",
+  "ternmouth_fy2026_large_vessel_calls.csv"
+ ],
+ "as_of": "2026-10-06",
+ "files": [
+  "ais_berth_segments_fy2026.csv",
+  "berth_windows_fy2027.csv",
+  "cmms_asset_status_history_fy2026.csv",
+  "cmms_labor_transactions_fy2026.csv",
+  "cmms_sts_work_orders_fy2026.csv",
+  "cmms_yard_equipment_work_orders_fy2026.csv",
+  "crane_maker_service_timesheets_fy2026.xlsx",
+  "crane_replacement_program_rules.pdf",
+  "data_dictionary.txt",
+  "export_manifest.csv",
+  "harbor_masters_general_directions_2025.pdf",
+  "pilot_station_sailings_fy2026.csv",
+  "salt_point_tide_predictions_2025_2026.txt",
+  "srt_maintenance_jobs_2025-26.xlsx",
+  "srt_tos_export_fy2026.xlsx",
+  "sts_crane_register.csv",
+  "tos_crane_activity_2026.csv",
+  "tos_vessel_visits_2026.csv",
+  "vessel_register_extract_2026-10-05.json"
+ ],
+ "rows": {
+  "ais_berth_segments_fy2026.csv": 4517,
+  "srt_maintenance_jobs_2025-26.xlsx": 1035,
+  "cmms_labor_transactions_fy2026.csv": 9681,
+  "export_manifest.csv": 18,
+  "crane_maker_service_timesheets_fy2026.xlsx": 132,
+  "pilot_station_sailings_fy2026.csv": 1689,
+  "sts_crane_register.csv": 38,
+  "srt_tos_export_fy2026.xlsx": 38781,
+  "cmms_asset_status_history_fy2026.csv": 6112,
+  "salt_point_tide_predictions_2025_2026.txt": 1600,
+  "tos_crane_activity_2026.csv": 80059,
+  "vessel_register_extract_2026-10-05.json": 392,
+  "tos_vessel_visits_2026.csv": 1179,
+  "berth_windows_fy2027.csv": 27,
+  "cmms_sts_work_orders_fy2026.csv": 3134,
+  "cmms_yard_equipment_work_orders_fy2026.csv": 3143
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task472/generator); the port, terminals, cranes, ships, tides, people and records are fictional",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-10-06"
+ }
+}

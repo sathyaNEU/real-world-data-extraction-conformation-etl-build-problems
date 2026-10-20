@@ -1,268 +1,390 @@
-"""task249's generator checks: the call, its ladder, the fork table, Layer 1's neutrality, the three rules on the
-generator's clean truth, and the asks' devices.  Run after make.py:  python3 checks.py [target]"""
+"""task249 generator checks: the input gates, the three rules on the clean truth, the ladder, the forcing of the
+method by the samples, every semantic fork row, the separation line, the asks' devices and margins, the realism sweep
+and the document dates.   C.run(target, world, fig, golden) -> number of assertions passed"""
+import json
 import os
-import sys
+import re
+
 import numpy as np
 import pandas as pd
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import build as B
+from pypdf import PdfReader
+
 import params as P
+import records as R
+import routes as RT
+import sim
 import solve as S
 
-GOLD = ["GRH", "HOL", "KBR", "LDN", "MST", "RHS", "SOW", "WBR"]
-METER = ["GRH", "LDN", "SOW", "WBR"]
-PRINT = ["HOL", "KBR", "MST"]
-FAILS = []
+N_OK = [0]
 
 
-def ok(label, cond, info=""):
-    print("%s  %s %s" % ("PASS" if cond else "FAIL", label, info))
-    if not cond:
-        FAILS.append(label)
+def ok(cond, msg):
+    assert cond, msg
+    N_OK[0] += 1
 
 
-def routes_for(L, **kw):
-    X = S.clean(L, **{k: v for k, v in kw.items() if k in ("webkit", "months_tz", "dedupe", "drop_internal", "drop_bots")})
-    A = S.strata(L, X, per_edition_replay=kw.get("per_edition_replay", False))
-    return S.routes(A)
+def _pdf_text(path):
+    return "\n".join(p.extract_text() for p in PdfReader(path).pages)
 
 
-def main(tgt):
-    L = S.load(tgt, B.FILES)
-    res = S.main_call(L)
-    A = L["A"]
-    gold = S.golden_set(res)
-    ok("C1 golden set", gold == GOLD, str(gold))
-    FAM = ["golden", "g_q", "g_nodev", "g_vis", "g_vis2", "g_pv"]
-    lo = res.loc[GOLD, FAM].min().min()
-    hi = res.drop(GOLD)[FAM].max().max()
-    ok("C2 golden family agrees (the replay by device, pooled over the quarter, devices pooled; visits and page-view ratios)",
-       all(S.golden_set(res, k) == GOLD for k in FAM) and lo > 26.5 and hi < 23.5, "noted min %.2f, others max %.2f" % (lo, hi))
-    # the reported figure: the export reproduces the platform's report exactly
-    rep = S.report_average(L)
-    ok("C3 reported figure = platform report", np.allclose(rep[res.index].values, res["reported"].values), "")
-    # the ladder: each competent route files its named wrong set
-    named = {"r3a": METER, "r4": METER, "r4p": METER, "r2d": PRINT, "r2": PRINT, "r1a": METER + ["RHS"], "r1c": METER + ["RHS"]}
-    for k, drops in named.items():
-        s = S.golden_set(res, k)
-        ok("L-%s drops %s" % (k, ",".join(sorted(drops))), sorted(set(GOLD) - set(s)) == sorted(drops) and not set(s) - set(GOLD), str(s))
-    r6 = S.golden_set(res, "r6")
-    ok("L-r6 browser-share route misses the call (drops print editions, adds Bergstetten)", r6 != GOLD and "BST" in r6
-       and {"HOL", "KBR"} <= set(GOLD) - set(r6), str(r6))
-    ok("L-r1b pooled ratio misses the call", S.golden_set(res, "r1b") != GOLD, str(S.golden_set(res, "r1b")))
-    ok("L-r0 no correction files no note", True, "")
-    m3 = res.loc[METER, "r3a"].max(); m4 = res.loc[METER, ["r4", "r4p"]].max().max()
-    ok("L margins: sign-in routes under the line on the meter editions", m3 < 24.0 and m4 < 24.2, "r3a max %.1f, r4 max %.1f" % (m3, m4))
-    ok("L margins: device-only routes under the line on the print editions", res.loc[PRINT, ["r2d", "r2"]].max().max() < 22.0, "")
-    # the fork table: every reading of the filed terms files the same set
-    forks = {
-        "SF1 months in UTC": dict(months_tz=None),
-        "SF2 replay within each edition": dict(per_edition_replay=True),
-        "SF3 re-sent rows kept": dict(dedupe=False),
-        "SF4 newsroom kept": dict(drop_internal=False),
-    }
-    for label, kw in forks.items():
-        r_ = routes_for(L, **kw)
-        ok(label + " files the same set", S.golden_set(r_) == GOLD, "%s; min noted %.1f" % (S.golden_set(r_), r_.loc[GOLD, "golden"].min()))
-    # SF5: the quarter as the mean of monthly overstatements, not the ratio of averages
-    M = monthly(A)
-    ok("SF5 mean of monthly ratios files the same set", sorted(M.index[M > 25.0]) == GOLD, "")
-    # SF6: a browser that read two editions counts in both (policy 2); counted once, in its first edition
-    A2 = A.sort_values(["client_id", "month"]).copy()
-    first = A2.drop_duplicates(["client_id", "month"])[["client_id", "month", "edition"]].rename(columns={"edition": "e1"})
-    A2 = A2.merge(first, on=["client_id", "month"]); A2 = A2[A2["edition"] == A2["e1"]].drop(columns="e1")
-    ok("SF6 a two-edition browser counted once files the same set", S.golden_set(S.routes(A2)) == GOLD, str(S.golden_set(S.routes(A2))))
-    # SF7: the engine read from the parsed browser alone is a misread the tag notes rule out
-    r_s = routes_for(L, webkit="safari")
-    tag = pdf_text(os.path.join(tgt, B.FILES["tag"]))
-    ok("SF7 Safari-only files another set; the tag notes name every iOS browser WebKit", S.golden_set(r_s) != GOLD and
-       "on iPhone and iPad, the engine of every browser" in tag, str(S.golden_set(r_s)))
-    ok("SF8 the reported figure: the platform's report and the export agree", np.allclose(rep[res.index].values, res["reported"].values), "")
-    ok("SF9 devices pooled files the same set", S.golden_set(res, "g_nodev") == GOLD, "")
-    ok("SF10 visits per browser files the same set", S.golden_set(res, "g_vis") == GOLD, "")
-    ok("SF23 the replay pooled over the quarter files the same set", S.golden_set(res, "g_q") == GOLD,
-       "min noted %.1f, others max %.1f" % (res.loc[GOLD, "g_q"].min(), res.drop(GOLD)["g_q"].max()))
-    raw = L["raw"]
-    loc = raw["session_start"].dt.tz_localize("UTC").dt.tz_convert(P.TZ)
-    hkr = raw["content_group"] == "HKR"; hol = raw["content_group"] == "HOL"
-    ok("SF11 HKR only before 1 November, HOL only from it; editions.csv maps it", (loc[hkr].dt.date < P.RECODE_DAY).all() and
-       (loc[hol].dt.date >= P.RECODE_DAY).all() and (L["editions"].set_index("edition").loc["HOL", "former_content_group"] == "HKR"), "")
-    fam = res[FAM]
-    ok("SF12 no edition within 1.5 points of 25 under the golden family", ((fam - 25.0).abs() > 1.5).all().all(), "closest %.2f" % (fam - 25.0).abs().min().min())
-    A3 = A.copy(); A3["device_id"] = np.where(A3["printed"] & A3["wk"], A3["client_id"], A3["device_id"])
-    ok("SF13 a print WebKit browser per identifier is another reading, ruled out by policy 2", S.golden_set(S.routes(A3)) != GOLD or True,
-       str(S.golden_set(S.routes(A3))))
-    pol = pdf_text(os.path.join(tgt, B.FILES["policy"]))
-    for label, phrase in (("SF1 Berlin months", "calendar month (Europe/Berlin)"), ("SF6 two editions", "counts in both"),
-                          ("SF12 tolerance", "by more than 25 per cent"), ("SF14 Berlin time", "(Berlin time)"),
-                          ("SF15 two groups", "A contact in two groups counts in both"), ("SF16 confirmed", "confirmed and active"),
-                          ("SF17 publication days", "Monday to Saturday, except on public holidays"),
-                          ("SF18 forwards sold", "donated to a school by the subscriber, is delivered"),
-                          ("SF20 one subscription once", "one for each paid subscription that day, whatever it is delivered as"),
-                          ("SF21 trials", "Trial and free copies are not paid"), ("SF22 single copies", "(delivered less returned)")):
-        ok(label + " filed in the policy", phrase in pol, phrase)
-    # the three rules on the generator's clean truth (dataset-generation 7.1)
-    truth = true_set(L)
-    ok("T1 the world's true browsers file the golden set", truth == GOLD, str(truth))
-    ok("T2 the analyst test: sign-in held files the named wrong answer", S.golden_set(res, "r3a") == sorted(set(GOLD) - set(METER)), "")
-    ok("T3 changing the decisive step alone (pool over sign-in, print apart) gives the golden", S.golden_set(res) == GOLD and S.golden_set(res, "r4p") != GOLD, "")
-    # the evidence the design note quotes: the print stratum agrees across engines, the signed-in stratum does not
-    nw = A[~A["wk"] & ~A["printed"]]
-    wkn = A[A["wk"] & ~A["printed"] & A["signed"]]
-    per_dev = wkn.groupby(["edition", "month", "device_id"])["client_id"].nunique().mean()
-    pr = A[A["printed"]]
-    pr_wk = pr[pr["wk"]].groupby(["edition", "month", "device_id"])["client_id"].nunique().mean()
-    q = A.drop_duplicates("client_id")
-    s_wk = q[q["wk"] & ~q["printed"]]["signed"].mean(); s_nw = q[~q["wk"] & ~q["printed"]]["signed"].mean()
-    dv = A[A["signed"]].drop_duplicates("device_id")
-    ok("E1 print stratum: replayed identifiers per other-browser month against counted per WebKit device month",
-       abs(pr.loc[~pr["wk"], "runs"].mean() - pr_wk) < 0.1, "%.3f against %.3f" % (pr.loc[~pr["wk"], "runs"].mean(), pr_wk))
-    ok("E2 signed-in non-print stratum differs by engine", nw.loc[nw["signed"], "runs"].mean() - per_dev > 0.2,
-       "replayed %.3f against counted %.3f" % (nw.loc[nw["signed"], "runs"].mean(), per_dev))
-    ok("E3 signed-in share of non-print identifiers by engine", s_nw - s_wk > 0.25, "WebKit %.3f, others %.3f" % (s_wk, s_nw))
-    ok("E4 WebKit share of signed-in devices, print against others", True, "%.3f against %.3f" % (dv.loc[dv["printed"], "wk"].mean(), dv.loc[~dv["printed"], "wk"].mean()))
-    # H25: the documents read the same through a strict extractor
-    from pdfminer.high_level import extract_text
-    for key, phrase in (("policy", "by more than 25 per cent"), ("policy", "one for each paid subscription that day"),
-                        ("tag", "on iPhone and iPad, the engine of every browser"), ("paynotes", "in the browser storage our paywall script writes")):
-        t = " ".join(extract_text(os.path.join(tgt, B.FILES[key])).split())
-        ok("H25 %s reads through pdfminer: %s" % (key, phrase), phrase in t, "")
-    # H9: the dictionary names every shipped file
-    dic = open(os.path.join(tgt, B.FILES["dictionary"]), encoding="utf-8").read()
-    shipped = set(os.listdir(tgt)) - {B.FILES["dictionary"]}
-    ok("H9 the dictionary names every shipped file", all(f in dic for f in shipped), str(sorted(f for f in shipped if f not in dic)))
-    # asks
-    R = B.records()
-    nl = S.newsletter(tgt, B.FILES)
-    truth = newsletter_truth(R)
-    ok("A0 newsletter: the golden is the platform's own state at the cutoff, replayed forward from each sign-up",
-       all(int(nl.get(c, 0)) == truth[c] for c in P.CODES), str({c: int(nl.get(c, 0)) - truth[c] for c in P.CODES}))
-    nl_k = S.newsletter(tgt, B.FILES, link_adds=None)
-    nl_a = S.newsletter(tgt, B.FILES, link_adds="all")
-    ok("A1 device: status and the preference centre undone, the link additions kept, every edition high",
-       all(nl_k[c] > nl[c] for c in P.CODES), str({c: int(nl_k[c] - nl[c]) for c in P.CODES}))
-    ok("A1 over-cleaning half: every link addition undone, every edition low", all(nl_a[c] < nl[c] for c in P.CODES),
-       str({c: int(nl_a[c] - nl[c]) for c in P.CODES}))
-    Ex = pd.read_csv(os.path.join(tgt, B.FILES["nl_log"]), parse_dates=["at_utc"], keep_default_na=False)
-    Gx = pd.read_csv(os.path.join(tgt, B.FILES["nl_groups"]), parse_dates=["changed_utc"])
-    adds = Ex[Ex["link"].str.contains(S.ADD_PATH, regex=False)]
-    both = adds.merge(Gx, left_on=["contact_id", "at_utc"], right_on=["contact_id", "changed_utc"])
-    ok("A1 silent: the preference centre's log holds none of the link additions, and no column marks them", len(both) == 0
-       and set(Ex["event"]) == {"subscribed", "confirmed", "unsubscribed", "cleaned", "resubscribed", "clicked"},
-       "%d link additions, %d clicks in all" % (len(adds), (Ex["event"] == "clicked").sum()))
-    nl_c = S.newsletter(tgt, B.FILES, groups_as_of=False)
-    nl_m = S.newsletter(tgt, B.FILES, groups_as_of=False, status_as_of=False)
-    nl_u = S.newsletter(tgt, B.FILES, cutoff=pd.Timestamp("2029-01-01 00:00:00"))
-    ok("A1 hazard: the export's groups miss every edition", all(nl[c] != nl_c[c] for c in P.CODES), str({c: int(nl_c[c] - nl[c]) for c in P.CODES}))
-    ok("A1 hazard: the export's status and groups miss every edition", all(nl[c] != nl_m[c] for c in P.CODES), "")
-    ok("SF14 newsletter at UTC midnight: the editions it moves", True, str({c: int(nl_u[c] - nl[c]) for c in P.CODES if nl_u[c] != nl[c]}))
-    Cx = pd.read_csv(os.path.join(tgt, B.FILES["nl_contacts"]))
-    ok("SF15 contacts in two groups exist", Cx["groups"].fillna("").str.contains("|", regex=False).sum() > 0, "")
-    ok("SF16 pending contacts exist and are left out", (Cx["status"] == "pending").sum() > 0, "")
-    sc = S.sold_copies(tgt, B.FILES).round()
-    sc_n = S.sold_copies(tgt, B.FILES, restore=None).round()
-    sc_w = S.sold_copies(tgt, B.FILES, restore="window").round()
-    ok("B1 device: the start dates as shown, every edition low", all(sc_n[c] < sc[c] for c in P.CODES), str({c: int(sc_n[c] - sc[c]) for c in P.CODES}))
-    ok("B1 over-cleaning half: every start in the release's weeks taken as before the quarter, every edition high",
-       all(sc_w[c] > sc[c] for c in P.CODES), str({c: int(sc_w[c] - sc[c]) for c in P.CODES}))
-    R.circulation()
-    T = R.circ_truth
-    aff = T[T["start_date"] != T["true_start"]]
-    Sx = pd.read_csv(os.path.join(tgt, B.FILES["subs"]), parse_dates=["start_date", "end_date"])
-    Sr, n_moved = S.restore_starts(Sx)
-    moved = set(Sx.sort_values("sub_no")["sub_no"].values[(Sr["start_date"] != Sx.sort_values("sub_no")["start_date"]).values])
-    ok("B1 fair and exact: the subscriptions the number order moves are the release's, each delivered before the quarter",
-       moved == set(aff["sub_no"]) and (pd.to_datetime(aff["true_start"]) < pd.Timestamp("2028-10-01")).all(),
-       "%d moved, %d by the release" % (n_moved, len(aff)))
-    genuine = T[(pd.to_datetime(T["start_date"]) >= S.RELEASE[0]) & (pd.to_datetime(T["start_date"]) < S.RELEASE[1])
-                & (T["start_date"] == T["true_start"])]
-    ok("B1 every edition holds subscriptions the release moved and genuine starts in its weeks",
-       set(aff["edition"]) == set(P.CODES) and set(genuine["edition"]) == set(P.CODES),
-       "moved %s; genuine %s" % (aff.groupby("edition").size().to_dict(), genuine.groupby("edition").size().to_dict()))
-    sc_c = S.sold_copies(tgt, B.FILES, combi_addon=True).round()
-    ok("SF20 hazard: the COMBI's e-paper counted again moves every edition", all(sc[c] != sc_c[c] for c in P.CODES), str({c: int(sc_c[c] - sc[c]) for c in P.CODES}))
-    Ax = pd.read_csv(os.path.join(tgt, B.FILES["epaper"]), parse_dates=["start_date"])
-    dp = Ax[Ax["plan"] == "Digital Plus"]
-    combi = Sx[Sx["product"] == "COMBI"].set_index("sub_no")
-    refs = dp["order_ref"].str.extract(r"^Kombi (\d+)$")[0].astype(int)
-    tstart = pd.to_datetime(T.set_index("sub_no")["true_start"])
-    ok("SF20 every Digital Plus access names a COMBI subscription of its edition from its first day, and every COMBI has one",
-       refs.isin(combi.index).all() and (combi.loc[refs, "edition"].values == dp["edition"].values).all()
-       and len(set(refs)) == len(combi) and (dp["start_date"].values == tstart.loc[refs].values).all(), "")
-    ok("R1 realism: no e-paper access before its plan's launch, every order reference once",
-       all((Ax.loc[Ax["plan"] == k, "start_date"] >= pd.Timestamp(v)).all() for k, v in R.LAUNCH.items() if k in set(Ax["plan"]))
-       and Ax.loc[~Ax["order_ref"].str.startswith("Kombi "), "order_ref"].is_unique, "")
-    Xs = pd.read_csv(os.path.join(tgt, B.FILES["single"]))
-    ok("R2 realism: no subscription ends before it starts, customer numbers unique, retail points not on every issue",
-       not (Sx["end_date"].notna() & (Sx["end_date"] < Sx["start_date"])).any() and Sx["customer_no"].is_unique
-       and Xs.groupby("issue_date").size().nunique() > 1, "")
-    for label, kw in (("B hazard pauses ignored", dict(pauses=False)), ("SF19 Saturday every day", dict(saturday=False)),
-                      ("SF21 trials counted", dict(trials=True)), ("SF17 no holidays", dict(holidays=False)),
-                      ("SF18 every suspension unsold", dict(forward_sold=False))):
-        v = S.sold_copies(tgt, B.FILES, **kw).round()
-        ok(label + " moves every edition", all(v[c] != sc[c] for c in P.CODES), str({c: int(v[c] - sc[c]) for c in P.CODES}))
-    X1 = pd.read_csv(os.path.join(tgt, B.FILES["single"]))
-    ok("SF22 returns recorded by issue", (X1["returned"] > 0).mean() > 0.5, "")
-    print("%d FAIL" % len(FAILS))
-    return FAILS
+GOLDEN_SET = ["ESK", "FND", "JVB", "SKB"]
+LADDER = {"refit": [], "with_discharge": [], "flow_class": [], "season": ["JVB"], "discharge_and_season": ["JVB"],
+          "hour_of_day": ["JVB"], "trip_type": ["ESK", "FND", "SKB", "TVE"],
+          "trip_type_and_more": ["ESK", "FND", "JVB", "SKB", "TVE"], "routine_only": ["ESK", "GRV", "TVE"],
+          "only_2027": ["JVB", "SKB"]}
 
 
-def pdf_text(path):
-    import pypdf
-    return " ".join((p.extract_text() or "") for p in pypdf.PdfReader(path).pages).replace("\n", " ")
+def _ols_t(X, y):
+    b = np.linalg.lstsq(X, y, rcond=None)[0]
+    r = y - X @ b
+    s2 = r @ r / (len(y) - X.shape[1])
+    cov = s2 * np.linalg.pinv(X.T @ X)
+    return b, b / np.sqrt(np.maximum(np.diag(cov), 1e-30)), float(np.sqrt(s2))
 
 
-def monthly(A):
-    """the quarter's overstatement as the mean of the three monthly overstatements"""
-    out = {}
-    for m in S.MONTHS:
-        r = S.routes(A[A["month"] == m])
-        for e in r.index:
-            out.setdefault(e, []).append(r.loc[e, "golden"])
-    return pd.Series({e: float(np.mean(v)) for e, v in out.items()})
+def run(target, world, fig, golden):
+    N_OK[0] = 0
+    F = world["F"]
+    W, H, Sm, pub = world["W"], world["H"], world["S"], world["pub"]
+    files = sorted(os.listdir(target))
+    meta = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "metadata.json")))
 
+    # ---------------------------------------------------------------- input gates
+    ok(len(files) >= 10, "ten or more files")
+    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
+    rec = S.record(target)
+    ok(len(pd.read_parquet(os.path.join(target, F["record"]))) >= 25000, "a file of 25,000 rows or more")
+    ok(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]), "two distractors shipped")
+    ok(not any("distract" in f.lower() for f in files), "no distractor named as one")
 
-def newsletter_truth(R):
-    """subscribers in each edition's group at midnight in Berlin on 31 December 2028, replayed forward from each contact's
-    sign-up through its own history (status events, preference-centre changes, groups added by a link)"""
-    import records as RC
-    R.newsletter_tables()
-    out = {c: 0 for c in P.CODES}
-    after = {"subscribed": "pending", "confirmed": "subscribed", "unsubscribed": "unsubscribed", "cleaned": "cleaned",
-             "resubscribed": "subscribed"}
-    for cid, t0, status, groups, ev, gl, src, cl, reads, g0 in R.nl_contacts:
-        if t0 >= RC.YEAR_END_UTC:
-            continue
-        st = None
-        for e, t in sorted(ev, key=lambda x: x[1]):
-            if t < RC.YEAR_END_UTC:
-                st = after[e]
-        g = set(g0)
-        for t, kind, x in sorted([(t, 0, a) for t, b, a in gl] + [(t, 1, x) for t, x in cl]):
-            if t >= RC.YEAR_END_UTC:
-                break
-            g = set(x.split("|")) if kind == 0 else g | {x}
-        if st == "subscribed":
-            for c in g:
-                out[c] += 1
-    return out
+    # ---------------------------------------------------------------- the call
+    smp = S.samples(target)
+    call = S.the_call(target, rec, smp)
+    over = sorted(c for c, v in call.items() if v["verdict"] == "over")
+    under = sorted(c for c, v in call.items() if v["verdict"] == "under")
+    ok(over == GOLDEN_SET and under == [], "the golden: %s over, none under" % over)
+    ok(fig["call"]["over"] == over and fig["call"]["under"] == under, "figures.json carries the call")
+    tab = RT.all_routes(target, rec, smp)
+    for r in RT.GOLDEN_FAMILY:
+        ok(RT.flagged(tab, r) == GOLDEN_SET, "golden family member %s files the golden" % r)
+        ok(min(tab[c][r] for c in GOLDEN_SET) > 18.0, "%s: every flagged station 3 points clear of 15" % r)
+        ok(max(abs(tab[c][r]) for c in tab if c not in GOLDEN_SET) < 8.0, "%s: every other station 7 clear" % r)
+    # the step's corridor: every threshold from 0 to 3 per cent an hour, in steps of 0.1, files the golden
+    lo, hi = fig["steps"]["rising_corridor_pct_per_h"]
+    ths = [round(x / 1000, 4) for x in range(10 * lo, 10 * hi + 1)]
+    sweep = RT.threshold_sweep(target, rec, smp, ths)
+    bad = [th for th in ths if sorted(c for c, v in sweep[th].items() if abs(v) > 15) != GOLDEN_SET]
+    ok(not bad, "every threshold from %d to %d per cent an hour (%d) files the golden%s" % (lo, hi, len(ths),
+       "" if not bad else ": not at %s" % bad))
+    ok(min(min(sweep[th][c] for c in GOLDEN_SET) for th in ths) > 18.0
+       and max(max(abs(v) for c, v in sweep[th].items() if c not in GOLDEN_SET) for th in ths) < 8.0,
+       "the corridor's margins: flagged above 18, the others under 8")
+    ok(fig["steps"]["rising_threshold_pct_per_h"] == round(100 * S.RISE, 1), "the step's threshold is the one solve.py uses")
+    ok(max(abs(tab[c]["refit"]) for c in tab) < fig["components"]["refit_reproduces_published_within_pct"],
+       "the refit reproduces every load within the stated %s per cent" % fig["components"]["refit_reproduces_published_within_pct"])
+    # the ladder: each reflex files its own wrong set
+    for r, want in LADDER.items():
+        ok(RT.flagged(tab, r) == want, "rung %s files %s (got %s)" % (r, want, RT.flagged(tab, r)))
+        ok(RT.flagged(tab, r) != GOLDEN_SET, "rung %s is not the golden" % r)
+    # the default path reproduces the published loads
+    for c in tab:
+        ok(abs(tab[c]["refit"]) < 0.1, "the refit reproduces %s's published load" % c)
 
+    # ---------------------------------------------------------------- the samples force the method
+    for code in sorted(smp["station"].unique()):
+        d = RT.station_arrays(rec, smp, code)
+        q, T, k, y = d["q"], d["T"], d["k"], d["y"]
+        rs = np.convolve(np.gradient(q) / 0.25 / q, np.ones(4) / 4, "same")
+        rise = (rs[k] > S.RISE).astype(float)
+        x = np.log10(T[k])
+        one = np.ones(len(k))
+        _, _, se_slr = _ols_t(np.c_[one, x], y)
+        _, _, se_limb = _ols_t(np.c_[one, x, rise], y)
+        b, t, _ = _ols_t(np.c_[one, x, rise, d["callout"].astype(float)], y)
+        ok(abs(t[3]) < 2.5, "%s: with rising water in the model the trip type explains nothing (t %.1f)" % (code, t[3]))
+        lq = np.log10(q[k])
+        c1, s1 = np.cos(2 * np.pi * d["doy"][k] / 365), np.sin(2 * np.pi * d["doy"][k] / 365)
+        b2, t2, _ = _ols_t(np.c_[one, x, rise, lq, c1, s1], y)
+        if code in GOLDEN_SET:
+            ok(t[2] > 10 and se_limb < 0.3 * se_slr, "%s: rising water separates the samples (t %.0f, se %.3f against %.3f)"
+               % (code, t[2], se_limb, se_slr))
+            ok(t2[2] > 10 and abs(b2[2] - b[2]) < 0.05, "%s: rising water survives discharge and season" % code)
+        ok(se_limb < 0.035, "%s: the rising-water relation leaves only the sampling scatter (%.3f)" % (code, se_limb))
 
-def true_set(L):
-    """the World's own browsers per edition and month against the reported figure"""
-    R = B.records()
-    S_ = R.S
-    loc = pd.Series(S_["start_utc"].values).dt.tz_localize("UTC").dt.tz_convert(P.TZ)
-    df = pd.DataFrame({"e": S_["edition"].values, "m": loc.dt.month.values, "g": S_["gid"].values})
-    df = df[df["m"].isin([10, 11, 12])]
-    tb = df.drop_duplicates().groupby(["e", "m"]).size().groupby("e").mean()
-    rep = S.report_average(L)
-    over = 100 * (rep / tb - 1)
-    return sorted(over.index[over > 25.0])
+    # ---------------------------------------------------------------- R1, R2, R3 on the clean truth
+    ok(not any(re.search(r"rising|limb|hysteres|rate_of", c, re.I) for c in rec.columns), "R1: no column holds rising water")
+    ok(all(np.isfinite(rec.loc[rec["time_utc"] >= "2027-01-01", "discharge_m3s"])), "R1: the 15-minute discharge ships for 2027")
+    truth = {}
+    for key in P.KEYS:
+        d = W[key]
+        q27, tr = d["q"][sim.Y27], d["ssc"][sim.Y27]
+        truth[P.CODE[key]] = 100 * (pub[key]["load_exact"] / (np.sum(tr * q27) * 900 / 1e6) - 1)
+    ok(sorted(c for c, v in truth.items() if v > 15) == GOLDEN_SET and all(abs(v) < 8 for c, v in truth.items()
+       if c not in GOLDEN_SET), "R3: the true sediment that passed puts the same four over: %s" % truth)
+    # R3a: the easy route on the clean truth (true turbidity, true sample concentrations, every filed rule applied)
+    easy, fixed = {}, {}
+    for key in P.KEYS:
+        d = W[key]
+        idx = d["idx"]
+        y = np.log10(d["ssc"][idx])
+        x = np.log10(d["T"][idx])
+        b = np.linalg.lstsq(np.c_[np.ones(len(x)), x], y, rcond=None)[0]
+        bcf = np.mean(10 ** (y - np.c_[np.ones(len(x)), x] @ b))
+        est = np.sum(10 ** b[0] * d["T"][sim.Y27] ** b[1] * bcf * d["q"][sim.Y27]) * 900 / 1e6
+        true = np.sum(d["ssc"][sim.Y27] * d["q"][sim.Y27]) * 900 / 1e6
+        easy[P.CODE[key]] = 100 * (est / true - 1)
+        ind = d["rising"][idx].astype(float)
+        X = np.c_[np.ones(len(x)), x, ind]
+        b = np.linalg.lstsq(X, y, rcond=None)[0]
+        bcf = np.mean(10 ** (y - X @ b))
+        est2 = np.sum(10 ** (b[0] + b[1] * np.log10(d["T"][sim.Y27]) + b[2] * d["rising"][sim.Y27]) * bcf
+                      * d["q"][sim.Y27]) * 900 / 1e6
+        fixed[P.CODE[key]] = 100 * (est / est2 - 1)
+    ok(sorted(c for c, v in easy.items() if v > 15) == GOLDEN_SET, "R3a: on the clean truth the published method itself overstates the four")
+    ok(all(abs(tab[c]["refit"]) < 0.1 for c in tab), "R3a: the easy route (refit, every filed rule) files no station")
+    ok(sorted(c for c, v in fixed.items() if abs(v) > 15) == GOLDEN_SET, "R3b: the easy route with only the rising-water term files the golden")
+    for r in ("with_discharge", "season", "trip_type", "routine_only", "only_2027"):
+        ok(RT.flagged(tab, r) != GOLDEN_SET, "R3b: the single correction %s leaves a wrong answer" % r)
+    # R2: each mess item mishandled leaves the call
+    lims_new = pd.read_excel(os.path.join(target, F["lims"]), sheet_name="2026-2027")
+    alt = smp.copy()
+    rep = lims_new[lims_new["status"] == "replaced"]
+    ok(len(rep) >= 5, "R2: the laboratory's replaced results ship")
+    m = {(int(s[:4]), int(s[5:])): v for s, v in zip(rep["sample_id"], rep["ssc_mg_l"])}
+    alt["ssc"] = [m.get((y, b), v) for y, b, v in zip(alt["year"], alt["bottle_no"], alt["ssc"])]
+    c2 = S.the_call(target, rec, alt)
+    ok(sorted(c for c, v in c2.items() if v["verdict"] == "over") == GOLDEN_SET, "R2 SF6: the replaced results kept: same call")
+    c3 = S.the_call(target, rec, smp[smp["year"] > 2025])
+    ok(sorted(c for c, v in c3.items() if v["verdict"] == "over") == GOLDEN_SET, "R2 SF7: the 2025 sheet left out: same call")
+    dup = pd.read_parquet(os.path.join(target, F["record"]))
+    ok(dup.duplicated().sum() > 0 and not dup[dup.duplicated(["station", "time_utc"], keep=False)]["time_utc"]
+       .ge(pd.Timestamp("2027-01-01", tz="UTC")).any(), "R2 SF10: the re-sent rows ship, none in 2027")
+    # the pairing: the nearest reading against interpolation between readings
+    tab_i = {}
+    for code in sorted(smp["station"].unique()):
+        d = RT.station_arrays(rec, smp, code)
+        s_ = smp[smp["station"] == code]
+        frac = ((s_["utc"] - pd.Timestamp("2025-01-01", tz="UTC")) / pd.Timedelta("15min")).to_numpy()
+        lo = np.floor(frac).astype(int)
+        w = frac - lo
+        Ti = d["T"][lo] * (1 - w) + d["T"][np.minimum(lo + 1, len(d["T"]) - 1)] * w
+        rs = np.convolve(np.gradient(d["q"]) / 0.25 / d["q"], np.ones(4) / 4, "same")
+        X = np.c_[np.ones(len(lo)), np.log10(Ti), rs[np.rint(frac).astype(int)] > S.RISE]
+        b = np.linalg.lstsq(X, d["y"], rcond=None)[0]
+        bcf = np.mean(10 ** (d["y"] - X @ b))
+        mm = d["y27"]
+        est = np.sum(10 ** (b[0] + b[1] * np.log10(d["T"][mm]) + b[2] * (rs[mm] > S.RISE)) * bcf * d["q"][mm]) * 900 / 1e6
+        tab_i[code] = 100 * (S.read_report(target)[code]["load_t"] / est - 1)
+    ok(sorted(c for c, v in tab_i.items() if v > 15) == GOLDEN_SET, "R2 SF8: interpolated pairing, same call")
+    # R3c: no copied block in the turbidity record (a day's 96 readings never repeat elsewhere)
+    seen = set()
+    rep_blocks = 0
+    for code, g in rec.groupby("station"):
+        v = g["turbidity_fnu"].to_numpy()
+        for i in range(0, len(v) - 96, 96):
+            blk = v[i:i + 96]
+            if np.all(blk == blk[0]):
+                continue
+            h = hash(blk.tobytes())
+            rep_blocks += h in seen
+            seen.add(h)
+    ok(rep_blocks == 0, "R3c: no day of turbidity readings repeats")
 
+    # ---------------------------------------------------------------- semantic fork rows
+    rp = S.read_report(target)
+    ok(all(abs(rp[P.CODE[k]]["load_t"] - pub[k]["load_exact"]) < 0.51 for k in P.KEYS), "SF2: the report's loads are the procedure's")
+    rel_pub = {c: 100 * (1 - v["estimate_t"] / v["published_t"]) for c, v in call.items()}
+    ok(sorted(c for c, v in rel_pub.items() if abs(v) > 15) == GOLDEN_SET, "SF3: misstatement against the published load, same call")
+    ok(all(v["misstatement_pct"] > 0 for c, v in call.items() if c in GOLDEN_SET), "SF4: all four over")
+    proc_t = _pdf_text(os.path.join(target, F["procedure"])).replace("\n", " ")
+    ok("2025 to 2027 for the 2027 loads" in proc_t, "SF5: the calibration years are filed (procedure section 6)")
+    ok(sorted(c for c, v in call.items() if abs(v["misstatement_pct"]) > 15) == GOLDEN_SET, "SF1: calendar 2027 UTC")
+    cc = S.the_call(target, rec, smp, window_shift_steps=-4)   # SF1: the year in Norwegian time starts an hour early
+    ok(sorted(c for c, v in cc.items() if v["verdict"] == "over") == GOLDEN_SET
+       and all(abs(cc[c]["misstatement_pct"] - call[c]["misstatement_pct"]) < 0.5 for c in call), "SF1: Norwegian calendar year, same call")
+    ok(set(rec["station"].unique()) == set(P.CODE.values()) and len(call) == 14, "SF15: the 14 stations")
+    # SF12: retransformation (Duan's smearing against none)
+    no_bcf = {c: 100 * (v["published_t"] / (v["estimate_t"] / v["bcf"]) - 1) for c, v in call.items()}
+    ok(sorted(c for c, v in no_bcf.items() if abs(v) > 15) == GOLDEN_SET, "SF12: without smearing, same call")
+    ok(all(1.0 <= v["bcf"] < 1.01 for v in call.values()), "SF12: the rising-water relation's smearing is within one per cent")
 
-if __name__ == "__main__":
-    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
-    f = main(t)
-    sys.exit(1 if f else 0)
+    # SF9: the wall clock read as UTC does not reproduce the report, so the offset every value carries rules it out
+    wc = smp.copy()
+    wc["utc"] = pd.to_datetime(wc["sampled"].str[:16]).dt.tz_localize("UTC")
+    tab_wc = RT.all_routes(target, rec, wc)
+    ok(max(abs(v["refit"]) for v in tab_wc.values()) > 0.5, "SF9: the wall clock as UTC misses the published loads")
+    # SF13: log base is algebra; SF14: one discharge column, three significant figures
+    ok(set(rec.columns) == {"station", "time_utc", "discharge_m3s", "turbidity_fnu", "water_temp_c", "flag"},
+       "SF14: one discharge series in the record")
+    ok(all(len(("%.3g" % x).replace(".", "").lstrip("0")) <= 3 for x in rec["discharge_m3s"].sample(2000, random_state=1)),
+       "SF14: discharge at three significant figures")
+    lc = np.log(10.0)
+    ok(abs(np.log10(123.4) * lc - np.log(123.4)) < 1e-12, "SF13: log base is a constant factor")
+
+    # ---------------------------------------------------------------- the separation line
+    for key in P.KEYS:
+        h = H[key]
+        bad = np.zeros(sim.N, bool)
+        for a, b_ in h["outages"] + [h["swap_gap"]] + [(v["a"], v["b"]) for v in h["visits"]] + h["fouled"]:
+            bad[a:b_] = True
+        for k in h["late_checks"]:
+            bad[k] = True
+        ceil = np.zeros(sim.N, bool)
+        ceil[:h["swap_k"]] = W[key]["T"][:h["swap_k"]] >= P.OLD_LIMIT
+        idx = Sm.loc[Sm["key"] == key, "k"].to_numpy()
+        ok(sorted(idx) == list(R.sample_steps(key, W[key])), "separation: %s's guard used the bottles that ship" % key)
+        near = sum(bad[max(0, i - 12):i + 13].any() for i in idx)
+        ok(near == 0, "separation: no flag, gap or check within three hours of a %s calibration sample" % key)
+        near = sum(ceil[max(0, i - 4):i + 5].any() for i in idx)
+        ok(near == 0, "separation: no reading at the TS-10 limit within an hour of a %s calibration sample" % key)
+        ok(not bad[sim.Y27].any() and not ceil[sim.Y27].any(), "separation: no ask device in %s's 2027 record" % key)
+    r27 = rec[rec["time_utc"] >= "2027-01-01"]
+    ok(r27.groupby("station").size().eq(35040).all() and (r27["flag"] == "").all(), "separation: 2027 complete and unflagged")
+
+    # ---------------------------------------------------------------- Ask A
+    A = S.ask_a(target, rec)
+    for c, v in A.items():
+        frac = v["hours"] - np.floor(v["hours"])
+        ok(abs(frac - 0.5) > 0.2, "Ask A %s SF17: hours not on a half (%.2f)" % (c, v["hours"]))
+        ok(fig["asks"]["hours_without_usable_reading"][c] == int(round(v["hours"])), "Ask A %s in figures.json" % c)
+    log = pd.read_csv(os.path.join(target, F["log"]), keep_default_na=False)
+    # the old letters mark the same events as the new ones: O exactly the logged out-of-water times before 14 April 2026
+    for code in sorted(rec["station"].unique()):
+        r = S.station_series(rec, code)
+        lg = log[(log["station"] == code) & (log["visit"] == "cleaning")]
+        marked = np.zeros(len(r), bool)
+        for d_, a, b_ in zip(lg["date"], lg["sonde_out"], lg["sonde_in"]):
+            t0 = pd.Timestamp("%s %s" % (pd.to_datetime(d_, format="%d.%m.%Y").date(), a)).tz_localize("Europe/Oslo").tz_convert("UTC")
+            t1 = pd.Timestamp("%s %s" % (pd.to_datetime(d_, format="%d.%m.%Y").date(), b_)).tz_localize("Europe/Oslo").tz_convert("UTC")
+            i0 = int(np.ceil((t0 - r.index[0]) / pd.Timedelta("15min")))
+            i1 = int(np.ceil((t1 - r.index[0]) / pd.Timedelta("15min")))
+            marked[i0:i1] = True
+        ok(np.array_equal(marked, r["flag"].isin(["O", "M"]).to_numpy()), "Ask A %s: the O and M rows are the logged sonde-out times" % code)
+        n_old = r["flag"].isin(["G", "O"]).sum()
+        ok(n_old >= 8, "Ask A %s: old letters carry at least two hours (%d)" % (code, n_old))
+        ok(not r.loc[r.index >= pd.Timestamp("2026-04-14 06:00", tz="UTC"), "flag"].isin(["G", "O", "K"]).any()
+           and not r.loc[r.index < pd.Timestamp("2026-04-14 06:00", tz="UTC"), "flag"].isin(["F", "M", "C"]).any(),
+           "Ask A %s: one letter set before the migration, the other after" % code)
+    # SF16: nothing unusable within two hours of either edge of 2025 and 2026, so the Norwegian calendar counts the same
+    for code in sorted(rec["station"].unique()):
+        r = S.station_series(rec, code)
+        edge = r[(r.index < pd.Timestamp("2025-01-01 02:00", tz="UTC")) |
+                 ((r.index >= pd.Timestamp("2026-12-31 22:00", tz="UTC")) & (r.index < pd.Timestamp("2027-01-01 02:00", tz="UTC")))]
+        ok(edge["turbidity_fnu"].notna().all() and (edge["flag"].fillna("") == "").all(), "SF16: %s clean at the year edges" % code)
+    # SF18: duplicate rows are exact repeats of one interval
+    rr = pd.read_parquet(os.path.join(target, F["record"]))
+    ok(rr.duplicated(["station", "time_utc"]).sum() == rr.duplicated().sum(), "SF18: every repeated interval is an exact repeat")
+    # SF19: a TS-10 reading at its limit is exactly 1,000.0; nothing reads above it before the sonde changed
+    for code in sorted(rec["station"].unique()):
+        lgs = log[(log["station"] == code) & (log["visit"] == "sensor replaced")].iloc[0]
+        sw_ = pd.to_datetime("%s %s" % (lgs["date"], lgs["sonde_out"]), format="%d.%m.%Y %H:%M").tz_localize("Europe/Oslo").tz_convert("UTC")
+        r = S.station_series(rec, code)
+        ok((r.loc[r.index < sw_, "turbidity_fnu"].dropna() <= 1000.0).all(), "SF19: %s's TS-10 never reads above 1,000 FNU" % code)
+    # SF21: K sits on the reading before a logged handheld check, C on a logged handheld check
+    for code in sorted(rec["station"].unique()):
+        r = S.station_series(rec, code)
+        nk = int(r["flag"].isin(["K"]).sum())
+        lgk = log[(log["station"] == code) & log["remarks"].str.startswith("handheld turbidimeter before removal")]
+        lgk = lgk[pd.to_datetime(lgk["date"], format="%d.%m.%Y") < pd.Timestamp("2026-04-14")]
+        ok(nk == len(lgk), "SF21: %s's K rows are its logged handheld checks (%d)" % (code, nk))
+    lit = {}
+    anyflag = {}
+    for code in sorted(rec["station"].unique()):
+        r = S.station_series(rec, code)
+        r = r[r.index < pd.Timestamp("2027-01-01", tz="UTC")]
+        miss = r["turbidity_fnu"].isna()
+        lgs = log[(log["station"] == code) & (log["visit"] == "sensor replaced")].iloc[0]
+        swap = pd.to_datetime("%s %s" % (lgs["date"], lgs["sonde_out"]), format="%d.%m.%Y %H:%M").tz_localize("Europe/Oslo").tz_convert("UTC")
+        ceil = (r.index < swap) & (r["turbidity_fnu"] >= 1000.0)
+        lit[code] = int(round((miss | r["flag"].isin(["F", "M"]) | ceil).sum() / 4))
+        anyflag[code] = int(round((miss | (r["flag"] != "") & r["flag"].notna() | ceil).sum() / 4))
+    ok(sum(lit[c] != fig["asks"]["hours_without_usable_reading"][c] for c in lit) == 14, "Ask A device SF20: the letters F and M alone miss every station")
+    ok(sum(anyflag[c] != fig["asks"]["hours_without_usable_reading"][c] for c in anyflag) == 14, "Ask A device: every flag counted misses every station")
+    ok(sum(v["ceiling"] > 0 for v in A.values()) >= 3, "Ask A device: the TS-10 limit moves three stations or more")
+    ok(sum(v["missing"] > 0 for v in A.values()) == 14, "Ask A device: every station has intervals with no row")
+
+    # ---------------------------------------------------------------- Ask B
+    B, failed, qc = S.ask_b(target)
+    for c, v in B.items():
+        ok(fig["asks"]["samples_in_failed_batches"][c] == v, "Ask B %s in figures.json" % c)
+    for bt, (c1, c2, ref, blank) in qc.items():
+        # each check as a signed margin: positive passes, negative fails, in units of its own limit
+        rpd = abs(c1 - c2) / ((c1 + c2) / 2)
+        margins = [0.5 - abs(blank), c1 / ref - 0.9, 1.1 - c1 / ref, c2 / ref - 0.9, 1.1 - c2 / ref, 0.10 - rpd]
+        tol = [0.03, 0.004, 0.004, 0.004, 0.004, 0.004]
+        fails = [m < 0 for m in margins]
+        if any(fails):
+            ok(any(m < -t for m, t in zip(margins, tol)), "Ask B %s fails a check by a clear margin" % bt)
+        else:
+            ok(all(m > t for m, t in zip(margins, tol)), "Ask B %s passes every check by a clear margin" % bt)
+        alt = abs(c1 - c2) / max(c1, c2) > 0.10
+        ok((bt in failed) == (any(fails[:5]) or alt) or abs(abs(c1 - c2) / max(c1, c2) - 0.10) > 0.004,
+           "Ask B %s SF25: against the larger aliquot, same verdict" % bt)
+    bx = pd.read_csv(os.path.join(target, F["batches"]))
+    fx = pd.read_csv(os.path.join(target, F["field"]), keep_default_na=False)
+    ok(sorted(bx["sample_id"]) == sorted("2027-%04d" % n for n, d in zip(fx["bottle_no"], fx["sampled"]) if d.startswith("2027")),
+       "SF22 SF26: the batch export holds each 2027 bottle once")
+    bt_ = bx.drop_duplicates("batch")
+    ok((bt_["blank_change_mg"] < -0.5).any(), "SF24: a blank below -0.5 mg ships, so the absolute reading is the procedure's")
+    ok(set(fx["trip"]) == {"routine round", "flood callout"}, "SF11: every bottle in the sheet is a river sample")
+    nominal = S.ask_b(target, lots={"KS-26-11": 50.0, "KS-27-06": 50.0})[0]
+    ok(sum(nominal[c] != B[c] for c in B) >= 10, "Ask B device: the export's nominal moves ten stations or more (%d)" % sum(nominal[c] != B[c] for c in B))
+    ok(len(failed) >= 8 and len({pd.Timestamp(pd.to_datetime(qc_m, format="%d.%m.%Y")).month for qc_m in
+       pd.read_csv(os.path.join(target, F["batches"])).drop_duplicates("batch").set_index("batch").loc[failed, "weighed"]}) >= 6,
+       "Ask B: the failures spread over the year")
+
+    # ---------------------------------------------------------------- documents read back, positive controls first
+    proc = _pdf_text(os.path.join(target, F["procedure"]))
+    ok("re-issued when it misstates the suspended sediment that passed the station" in proc.replace("\n", " "), "procedure: section 8 reads back")
+    ok("upper end of the sonde" in proc.replace("\n", " "), "procedure: section 5 reads back")
+    for word in ("rising", "limb", "hysteresis", "sand", "falling"):
+        ok(word not in proc.lower(), "procedure: no %r" % word)
+    rep_t = _pdf_text(os.path.join(target, F["report"]))
+    ok("Suspended sediment loads 2027" in rep_t and len(rp) == 14, "report: reads back, 14 rows")
+    stmt = _pdf_text(os.path.join(target, F["statement"]))
+    ok(S.read_lots(target) == {"KS-26-11": 50.0, "KS-27-06": 54.0}, "SF23: the statement's lots read back")
+    for f in files:
+        if f.endswith((".csv", ".md", ".eml")):
+            txt = open(os.path.join(target, f), encoding="utf-8").read().lower()
+            for word in ("rising", "limb", "hysteres", "sand "):
+                ok(word not in txt, "%s: no %r" % (f, word))
+
+    # ---------------------------------------------------------------- realism sweep and dates
+    ok(len(set(v["n"] for v in pub.values())) >= 10, "realism: sample counts vary across stations")
+    ok(all(v["load_t"] % 100 for v in pub.values()), "realism: no round loads")
+    b_export = pd.read_csv(os.path.join(target, F["batches"]))
+    last_weighed = pd.to_datetime(b_export["weighed"], format="%d.%m.%Y").max()
+    ok(last_weighed < pd.Timestamp("2028-01-18"), "dates: the quality statement follows the last batch (%s)" % last_weighed.date())
+    lims_an = pd.to_datetime(lims_new["analysed"]).max()
+    ok(lims_an < pd.Timestamp("2028-02-15"), "dates: the report follows the last result (%s)" % lims_an.date())
+    reg = pd.read_excel(os.path.join(target, F["register"]))
+    ok(pd.to_datetime(reg["sensor_installed"]).max() < pd.Timestamp("2026-11-20"), "dates: the register follows the last sonde")
+    ok(pd.to_datetime(reg["sensor_installed"]).min() > pd.Timestamp("2026-09-01"), "dates: the procedure (January 2027) follows every sonde")
+    # H25: every shipped PDF reads the same under a strict parser and an independent extractor
+    import subprocess
+    for k in [k for k in F if F[k].endswith(".pdf")]:
+        path = os.path.join(target, F[k])
+        strict = "\n".join(p.extract_text() for p in PdfReader(path, strict=True).pages)
+        ok(" ".join(strict.split()) == " ".join(_pdf_text(path).split()), "H25: %s reads the same under the strict parser" % F[k])
+        ext = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
+        ok(len(ext.split()) > 0.9 * len(strict.split()), "H25: %s opens in pdftotext" % F[k])
+    proc_x = " ".join(subprocess.run(["pdftotext", os.path.join(target, F["procedure"]), "-"], capture_output=True,
+                                     text=True).stdout.split())
+    ok("more than 15 per cent, over or under" in proc_x and "upper end of the sonde's range" in proc_x,
+       "H25: the procedure's tolerance and usable-reading sentences read back in pdftotext")
+    # H21: no invented name within two letters of a real instrument line or company used here
+    def _ed(a, b):
+        d = list(range(len(b) + 1))
+        for i, x in enumerate(a, 1):
+            prev, d[0] = d[0], i
+            for j, y in enumerate(b, 1):
+                prev, d[j] = d[j], min(d[j] + 1, d[j - 1] + 1, prev + (x != y))
+        return d[-1]
+    real = ["turbitech", "turbimax", "solitax", "optisens", "hydrolab", "hydrovision", "aquatroll", "seapoint",
+            "analite", "observator", "fjellkraft", "sognekraft", "eurofins"]
+    ours = [P.OLD_SENSOR.split()[0], P.ORG.split()[0], P.CLIENT.split()[0], P.LAB.split()[0]]
+    ok(all(_ed(o.lower(), r) > 2 and r not in o.lower() for o in ours for r in real),
+       "H21: invented names clear of real instrument lines and companies by more than two letters")
+    persona = open(os.path.join(target, F["request"]), encoding="utf-8").read()
+    ok(P.DATA_MANAGER[0] in persona and P.FIELD_LEAD[0] in persona, "personas from guard.py names")
+    return N_OK[0]

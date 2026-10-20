@@ -1,0 +1,36 @@
+{
+ "task": "task472",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "supply-chain-logistics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-20",
+ "stump": "The default path credits every large-vessel call with a fifth of its cargo work and places the cranes at Saltworks, because it never asks whether a ship leaving a river berth could have sailed any earlier than its tide allowed; the saving is the change in the window the ship makes, nothing at Saltworks and a whole tide at Millrace.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW (9 lines, each answered in the design note)",
+  "reader": "six readers in three rounds, all missed the call (Saltworks 991); round 1 reader 1 kept the asks (exit 1, re-sited); rounds 2 and 3 exit 0 four times, 1 of 21 each"
+ },
+ "duplicate_check": {
+  "heart": "PASS",
+  "nearest": "task160 at 0.04; own lineage differentiated"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC FIX_NOW, pass 2 DETERMINISTIC FIX_NOW, both fixed",
+  "disposition": "FIX_NOW applied",
+  "report": "task472/determinism_check_report.md, task472/determinism_check_report_pass2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-20",
+ "portal": null,
+ "source_note": "seed ET29 (AIS port-call dwell and vessel identity): world and decision kept; architecture 1 spent at stage 4 on 2026-10-20 (both scored readers landed the slowest-crane counterfactual); architecture 2 gates the berth time a faster cargo finish saves by the tidal window at the river bar"
+}

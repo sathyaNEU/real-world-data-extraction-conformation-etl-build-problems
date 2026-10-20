@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "State Department of Transportation, Bureau of Aviation"
+COMPANY = "Board of Educator Standards and Licensure"
 
 
 def _x(s):
@@ -13,8 +13,7 @@ def _x(s):
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
 XML_DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
-INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t(?: xml:space="preserve")?>'
-                    rb'(.*?)</t></is></c>')
+INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t>(.*?)</t></is></c>')
 # the part order Excel writes when it saves a workbook
 EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "xl/worksheets/",
                "xl/theme/", "xl/styles.xml", "xl/sharedStrings.xml", "docProps/core.xml", "docProps/app.xml")

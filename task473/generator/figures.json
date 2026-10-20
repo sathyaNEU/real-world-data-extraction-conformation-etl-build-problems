@@ -1,0 +1,333 @@
+{
+ "ask_a": {
+  "Aldous": {
+   "arrests": 171,
+   "pct15": 45.6
+  },
+  "Brisbin": {
+   "arrests": 377,
+   "pct15": 64.7
+  },
+  "Corwin": {
+   "arrests": 246,
+   "pct15": 45.1
+  },
+  "Delmont": {
+   "arrests": 385,
+   "pct15": 50.1
+  },
+  "Fairlee": {
+   "arrests": 429,
+   "pct15": 46.4
+  },
+  "Hatchell": {
+   "arrests": 371,
+   "pct15": 49.9
+  },
+  "Keswick": {
+   "arrests": 574,
+   "pct15": 47.4
+  },
+  "Kittredge": {
+   "arrests": 206,
+   "pct15": 43.7
+  },
+  "Lanier": {
+   "arrests": 275,
+   "pct15": 56.0
+  },
+  "Ossian": {
+   "arrests": 224,
+   "pct15": 47.3
+  },
+  "Pruett": {
+   "arrests": 415,
+   "pct15": 61.7
+  },
+  "Renwick": {
+   "arrests": 409,
+   "pct15": 47.9
+  },
+  "Stroud": {
+   "arrests": 341,
+   "pct15": 51.0
+  },
+  "Tanager": {
+   "arrests": 454,
+   "pct15": 32.4
+  }
+ },
+ "ask_b": {
+  "Aldous": 27,
+  "Brisbin": 79,
+  "Corwin": 58,
+  "Delmont": 76,
+  "Fairlee": 77,
+  "Hatchell": 78,
+  "Keswick": 123,
+  "Kittredge": 29,
+  "Lanier": 29,
+  "Ossian": 43,
+  "Pruett": 119,
+  "Renwick": 90,
+  "Stroud": 68,
+  "Tanager": 105
+ },
+ "below_top": [
+  "Kittredge"
+ ],
+ "below_top_rate": "0.57",
+ "bt_ipw": "1.1",
+ "bt_pool": "3.4",
+ "call": [
+  "Corwin",
+  "Hatchell",
+  "Ossian",
+  "Tanager"
+ ],
+ "catch_hi": "88.9",
+ "catch_lo": "28.6",
+ "deaths": {
+  "Aldous": 32,
+  "Brisbin": 59,
+  "Corwin": 60,
+  "Delmont": 79,
+  "Fairlee": 90,
+  "Hatchell": 85,
+  "Keswick": 78,
+  "Kittredge": 43,
+  "Lanier": 51,
+  "Ossian": 54,
+  "Pruett": 102,
+  "Renwick": 67,
+  "Stroud": 57,
+  "Tanager": 66
+ },
+ "high": [
+  "Corwin",
+  "Hatchell",
+  "Ossian",
+  "Tanager"
+ ],
+ "high_rates": [
+  [
+   "Corwin",
+   "0.71"
+  ],
+  [
+   "Hatchell",
+   "0.68"
+  ],
+  [
+   "Ossian",
+   "0.68"
+  ],
+  [
+   "Tanager",
+   "0.66"
+  ]
+ ],
+ "leap_days": 366,
+ "one_catch_pct": "60.9",
+ "rates": {
+  "Aldous": 0.52,
+  "Brisbin": 0.54,
+  "Corwin": 0.71,
+  "Delmont": 0.51,
+  "Fairlee": 0.45,
+  "Hatchell": 0.68,
+  "Keswick": 0.34,
+  "Kittredge": 0.57,
+  "Lanier": 0.54,
+  "Ossian": 0.68,
+  "Pruett": 0.55,
+  "Renwick": 0.38,
+  "Stroud": 0.41,
+  "Tanager": 0.66
+ },
+ "rival_one": [
+  "Brisbin",
+  "Corwin",
+  "Hatchell",
+  "Ossian"
+ ],
+ "rival_share": [
+  "Corwin",
+  "Hatchell",
+  "Ossian",
+  "Pruett"
+ ],
+ "rows": [
+  {
+   "arrests": 171,
+   "county": "Aldous",
+   "crashes": 27,
+   "deaths": 32,
+   "fips": "001",
+   "high": false,
+   "pct15": "45.6",
+   "rate": "0.52",
+   "vmt": "61.57"
+  },
+  {
+   "arrests": 377,
+   "county": "Brisbin",
+   "crashes": 79,
+   "deaths": 59,
+   "fips": "003",
+   "high": false,
+   "pct15": "64.7",
+   "rate": "0.54",
+   "vmt": "109.27"
+  },
+  {
+   "arrests": 246,
+   "county": "Corwin",
+   "crashes": 58,
+   "deaths": 60,
+   "fips": "005",
+   "high": true,
+   "pct15": "45.1",
+   "rate": "0.71",
+   "vmt": "84.55"
+  },
+  {
+   "arrests": 385,
+   "county": "Delmont",
+   "crashes": 76,
+   "deaths": 79,
+   "fips": "007",
+   "high": false,
+   "pct15": "50.1",
+   "rate": "0.51",
+   "vmt": "154.94"
+  },
+  {
+   "arrests": 429,
+   "county": "Fairlee",
+   "crashes": 77,
+   "deaths": 90,
+   "fips": "009",
+   "high": false,
+   "pct15": "46.4",
+   "rate": "0.45",
+   "vmt": "200.37"
+  },
+  {
+   "arrests": 371,
+   "county": "Hatchell",
+   "crashes": 78,
+   "deaths": 85,
+   "fips": "011",
+   "high": true,
+   "pct15": "49.9",
+   "rate": "0.68",
+   "vmt": "124.82"
+  },
+  {
+   "arrests": 574,
+   "county": "Keswick",
+   "crashes": 123,
+   "deaths": 78,
+   "fips": "013",
+   "high": false,
+   "pct15": "47.4",
+   "rate": "0.34",
+   "vmt": "229.80"
+  },
+  {
+   "arrests": 206,
+   "county": "Kittredge",
+   "crashes": 29,
+   "deaths": 43,
+   "fips": "015",
+   "high": false,
+   "pct15": "43.7",
+   "rate": "0.57",
+   "vmt": "75.69"
+  },
+  {
+   "arrests": 275,
+   "county": "Lanier",
+   "crashes": 29,
+   "deaths": 51,
+   "fips": "017",
+   "high": false,
+   "pct15": "56.0",
+   "rate": "0.54",
+   "vmt": "94.92"
+  },
+  {
+   "arrests": 224,
+   "county": "Ossian",
+   "crashes": 43,
+   "deaths": 54,
+   "fips": "019",
+   "high": true,
+   "pct15": "47.3",
+   "rate": "0.68",
+   "vmt": "79.63"
+  },
+  {
+   "arrests": 415,
+   "county": "Pruett",
+   "crashes": 119,
+   "deaths": 102,
+   "fips": "021",
+   "high": false,
+   "pct15": "61.7",
+   "rate": "0.55",
+   "vmt": "185.31"
+  },
+  {
+   "arrests": 409,
+   "county": "Renwick",
+   "crashes": 90,
+   "deaths": 67,
+   "fips": "023",
+   "high": false,
+   "pct15": "47.9",
+   "rate": "0.38",
+   "vmt": "175.73"
+  },
+  {
+   "arrests": 341,
+   "county": "Stroud",
+   "crashes": 68,
+   "deaths": 57,
+   "fips": "025",
+   "high": false,
+   "pct15": "51.0",
+   "rate": "0.41",
+   "vmt": "139.69"
+  },
+  {
+   "arrests": 454,
+   "county": "Tanager",
+   "crashes": 105,
+   "deaths": 66,
+   "fips": "027",
+   "high": true,
+   "pct15": "32.4",
+   "rate": "0.66",
+   "vmt": "99.91"
+  }
+ ],
+ "sections": {
+  "baselines": "3.1",
+  "drivers": "2.3",
+  "estimand": "2.2",
+  "rate": "2.4",
+  "testing": "4.2"
+ },
+ "serum": "1.16",
+ "share_pct": "7.2",
+ "tanager_found_hi": 8,
+ "tanager_found_lo": 8,
+ "tanager_missed": "21.0",
+ "tanager_rate": "0.66",
+ "threshold": "0.60",
+ "weight_hi": "1.125",
+ "weight_lo": "3.5",
+ "window_days": 30
+}

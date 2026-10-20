@@ -1,229 +1,216 @@
-"""The golden deliverables, computed from the shipped files only: kvr_2027_pitch_markets.csv (each candidate market's
-2026 trips and passengers) and kvr_2027_route_pitch_brief.docx (the three markets, the first left out and the gap, the
-chart of every candidate's trips); and figures.json, every figure the write-up states."""
-import csv
-import io
+"""The golden deliverables, computed from the shipped pack alone: nitrate_assistance_counties_2027.xlsx (the sixteen
+counties, the six qualifying, the retests and the notes), nitrate_assistance_counties_2027.png, and
+generator/figures.json with every figure the write-up states."""
 import json
 import os
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt          # noqa: E402
+import numpy as np                       # noqa: E402
+import openpyxl                          # noqa: E402
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side  # noqa: E402
 
-import bundle as B      # noqa: E402
-import methods as M     # noqa: E402
-import world as W       # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-BLUE = "#1f4e79"
-GREY = "#b7bec6"
-AMBER = "#b8742a"
+import bundle as B   # noqa: E402
+import world as W    # noqa: E402
+
+GOLDEN = {"workbook": "nitrate_assistance_counties_2027.xlsx", "chart": "nitrate_assistance_counties_2027.png"}
+W.GOLDEN = GOLDEN
+TEAL = "1D4F5C"
+FILL_H = PatternFill("solid", fgColor="DDE7EC")
+FILL_Q = PatternFill("solid", fgColor="E3EFE6")
+THIN = Side(style="thin", color="9AA0A6")
+WORDS = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten"}
 
 
-def fmt(n):
-    return "{:,}".format(int(n))
+def pct(a, b):
+    return float(np.floor(1000.0 * a / b + 0.5) / 10.0)
 
 
 def compute(target):
-    P = B.Pack(target)
-    trips = M.estimate(P)
-    pax = M.estimate(P, unit="passengers")
-    rungs = {name: M.estimate(P, **kw) for name, _, kw in M.RUNGS}
-    return dict(P=P, trips=trips, pax=pax, rungs=rungs)
+    pk = B.Pack(target)
+    ret = pk.retests()
+    rows = []
+    for k in pk.codes:
+        L, s = pk.link[k], pk.sample[k]
+        est = pk.estimate(k)
+        alt = [pk.estimate(k, r, **kw) for r, kw in B.GOLD_ROUTES]
+        cnt = pk.counts(k)
+        both = sum(1 for w in s["wells"].values() if w["onP"] and w["onQ"])
+        rows.append(dict(code=k, name=pk.name[k], union=L["union"], NP=L["NP"], NQ=L["NQ"], NB=L["NB"],
+                         nP=s["nP"], nQ=s["nQ"], fP=round(100 * s["fP"], 1), fQ=round(100 * s["fQ"], 1),
+                         tested=cnt["tested"], tested_above=cnt["above"], tested_both=both,
+                         estimate=int(np.floor(est + 0.5)), estimate_exact=est,
+                         estimate_low=int(np.floor(min(alt) + 0.5)), estimate_high=int(np.floor(max(alt) + 0.5)),
+                         qualifies=est >= W.QUALIFY, retested=ret[k][0], still_above=ret[k][1],
+                         routes={r: int(np.floor(pk.estimate(k, r) + 0.5)) for r in B.WRONG_ROUTES}))
+    q = [r for r in rows if r["qualifies"]]
+    nq = [r for r in rows if not r["qualifies"]]
+    lowest = min(q, key=lambda r: r["estimate_exact"])
+    highest = max(nq, key=lambda r: r["estimate_exact"])
+    tested = sum(r["tested"] for r in rows)
+    nP, nQ = sum(r["nP"] for r in rows), sum(r["nQ"] for r in rows)
+    NP, NQ = sum(r["NP"] for r in rows), sum(r["NQ"] for r in rows)
+    rungs = {r: [pk.name[k] for k in pk.qualifying(r)] for r in B.WRONG_ROUTES}
+    qo = [w for k in pk.codes for w in pk.sample[k]["wells"].values() if w["onQ"] and not w["onP"]]
+    rest = [w for k in pk.codes for w in pk.sample[k]["wells"].values() if w["onP"]]
+    out = dict(
+        call=[r["name"] for r in q], call_codes=[r["code"] for r in q], qualifying_count=len(q), counties=rows,
+        lowest_qualifier=dict(name=lowest["name"], estimate=lowest["estimate"], low=lowest["estimate_low"]),
+        highest_short=dict(name=highest["name"], estimate=highest["estimate"], high=highest["estimate_high"]),
+        union_total=sum(r["union"] for r in rows), tested_total=tested,
+        tested_above_total=sum(r["tested_above"] for r in rows),
+        tested_both_total=sum(r["tested_both"] for r in rows),
+        parcel_only_tested=len(qo), parcel_only_above=sum(1 for w in qo if w["y"]),
+        parcel_only_share=pct(sum(1 for w in qo if w["y"]), len(qo)),
+        others_tested=len(rest), others_above=sum(1 for w in rest if w["y"]),
+        others_share=pct(sum(1 for w in rest if w["y"]), len(rest)),
+        permit_rate=pct(nP, NP), parcel_rate=pct(nQ, NQ), nP_total=nP, nQ_total=nQ, NP_total=NP, NQ_total=NQ,
+        retested_total=sum(r["retested"] for r in rows), still_above_total=sum(r["still_above"] for r in rows),
+        rungs=rungs, rung_counts={k: len(v) for k, v in rungs.items()},
+        union={r["code"]: r["union"] for r in rows},
+        ask={r["code"]: dict(retested=r["retested"], still_above=r["still_above"]) for r in rows},
+        standard=W.STANDARD_N, line=W.QUALIFY, no3_factor=W.NO3_PER_N, retests_close="June 30, 2026")
+    return out
 
 
-def figures(X):
-    P = X["P"]
-    cand = P.candidates
-    order = [m for m, _ in M.ranking(X["trips"], cand)]
-    three, fourth = order[:3], order[3]
-    name = lambda m: P.market_name[m]
-    t, p = X["trips"], X["pax"]
-    E = P.quarter_entries()
-    r0 = M.top3(X["rungs"]["R0"], cand)
-    return dict(
-        three=[dict(code=m, name=name(m), trips=fmt(B.r100(t[m])), passengers=fmt(B.r100(p[m]))) for m in three],
-        first_left_out=dict(code=fourth, name=name(fourth), trips=fmt(B.r100(t[fourth])),
-                            passengers=fmt(B.r100(p[fourth]))),
-        gap=fmt(B.r100(t[three[2]] - t[fourth])),
-        markets=[dict(code=m, name=name(m), trips=fmt(B.r100(t[m])), passengers=fmt(B.r100(p[m])),
-                      pitched=m in three) for m in order],
-        candidates=len(cand),
-        served=[name(m) for m in P.served],
-        served_shortlisted=[name(m) for m in P.served if m in P.shortlist],
-        served_other=[name(m) for m in P.served if m not in P.shortlist],
-        entries={"Q%d" % q: fmt(E[q]) for q in (1, 2, 3, 4)},
-        default_three=[name(m) for m in r0],
-        dup_rows=str(P.dup_rows),
-        dup_batch=P.dup_batch,
-        stated=dict(clauses=["standard 2.1", "standard 2.4", "standard 3.1", "standard 4.1"]),
-        close_day=str(sorted(set(P.close_day.values()))[0]),
-    )
+def write_workbook(path, fig):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Counties 2027"
+    ws["A1"] = "%s of sixteen counties qualify for the 2027 Well Water Assistance allocation" % WORDS[
+        fig["qualifying_count"]]
+    ws["A1"].font = Font(bold=True, size=13, color=TEAL)
+    ws["A2"] = ("2025-26 Private Well Nitrate Survey, WWA-2027-01 section 3.1: an estimated 250 or more wells in the "
+                "county's survey population above 10 mg/L nitrate as nitrogen. Private Well Program, August 2026.")
+    ws["A2"].font = Font(italic=True, size=9, color="5B6067")
+    head = ["Code", "County", "Private domestic wells on the survey's lists", "Qualifies for 2027",
+            "Wells first tested above the standard and retested by June 30, 2026", "Of those, still above on retest"]
+    ws.append([])
+    ws.append(head)
+    for c in ws[4]:
+        c.font = Font(bold=True)
+        c.fill = FILL_H
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        c.border = Border(bottom=THIN)
+    for r in fig["counties"]:
+        ws.append([r["code"], r["name"], r["union"], "Yes" if r["qualifies"] else "No", r["retested"],
+                   r["still_above"]])
+        if r["qualifies"]:
+            for c in ws[ws.max_row]:
+                c.fill = FILL_Q
+    ws.append([])
+    ws.append([None, "All sixteen counties", fig["union_total"], "%d qualify" % fig["qualifying_count"],
+               fig["retested_total"], fig["still_above_total"]])
+    for c in ws[ws.max_row]:
+        c.font = Font(bold=True)
+    for row in ws.iter_rows(min_row=5, min_col=3, max_col=6):
+        for c in row:
+            if isinstance(c.value, int):
+                c.number_format = "#,##0"
+    for row in ws.iter_rows(min_row=5, min_col=4, max_col=4):
+        for c in row:
+            c.alignment = Alignment(horizontal="center")
+    for col, wdt in zip("ABCDEF", (7, 17, 15, 11, 19, 13)):
+        ws.column_dimensions[col].width = wdt
+    ws.row_dimensions[4].height = 58
+    ws.freeze_panes = "C5"
+    ws.print_title_rows = "4:4"
+    nt = wb.create_sheet("Notes")
+    rows = fig["counties"]
+    lines = [
+        ("How these figures were made", True),
+        ("Survey population: each county's private domestic wells on the permit list (active domestic wells drilled "
+         "under permit from January 1, 1986, as the permit database stood on August 31, 2025) or the parcel list "
+         "(residential parcels the 2025 roll records as served by a private well). A permit and a parcel are one well "
+         "when the permit's parcel number is the parcel's or, on a permit without one, when its site address is the "
+         "parcel's situs address. %s wells in all, %s on the permit list and %s on the parcel list." % (
+             "{:,}".format(fig["union_total"]), "{:,}".format(fig["NP_total"]), "{:,}".format(fig["NQ_total"])),
+         False),
+        ("First tests: the final result for each kit in the draw manifest's TESTED rows, nitrate as nitrogen "
+         "(Kinsale's NO3 results divided by 4.427), the later report standing where a sample was reanalysed. "
+         "%s wells were tested, %s of them above 10 mg/L." % ("{:,}".format(fig["tested_total"]),
+                                                             "{:,}".format(fig["tested_above_total"])), False),
+        ("Estimate: each list was sampled at its own rate (%.1f per cent of the permit list and %.1f per cent of the "
+         "parcel list across the state), and %s of the tested wells are on both lists, so each tested well counts for "
+         "the wells it stands for: one over its chance of selection from either list, 1 - (1 - f permit)(1 - f "
+         "parcel) for a well on both. The county's estimate is the sum over its tested wells above the standard. "
+         "Hartley's dual-frame estimator at any split of the wells on both lists, and post-stratifying by which lists "
+         "a well is on, put the same %s counties at or above 250." % (
+             fig["permit_rate"], fig["parcel_rate"], "{:,}".format(fig["tested_both_total"]),
+             WORDS[fig["qualifying_count"]].lower()), False),
+        ("Retests: a request is matched to its well through the first kit it names or, for a phone request, the "
+         "address it ships to. Each well counts in the county the survey tested it in, whatever county the kit "
+         "vendor routed the request to; a retest counts when its sample was collected on or before June 30, 2026 "
+         "(WWA-2027-01 section 4.2). Requests from households outside the survey, and retests of wells first tested "
+         "at or below the standard, are not counted.", False),
+        ("Counts are whole wells.", False)]
+    for i, (t, b) in enumerate(lines, 1):
+        c = nt.cell(row=i, column=1, value=t)
+        c.font = Font(bold=b, size=12 if b else 10)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    nt.column_dimensions["A"].width = 118
+    est = wb.create_sheet("Estimates")
+    est.append(["Code", "County", "Tested wells", "Tested wells above the standard", "Estimated wells above the "
+                "standard", "Permit list sampled (%)", "Parcel list sampled (%)"])
+    for c in est[1]:
+        c.font = Font(bold=True)
+        c.fill = FILL_H
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for r in rows:
+        est.append([r["code"], r["name"], r["tested"], r["tested_above"], r["estimate"], r["fP"], r["fQ"]])
+    for row in est.iter_rows(min_row=2, min_col=6, max_col=7):
+        for c in row:
+            c.number_format = "0.0"
+    for col, wdt in zip("ABCDEFG", (7, 17, 10, 14, 14, 12, 12)):
+        est.column_dimensions[col].width = wdt
+    est.row_dimensions[1].height = 44
+    est.freeze_panes = "C2"
+    wb.save(path)
 
 
-def write_csv(F, path):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.writer(fh, lineterminator="\n")
-        wr.writerow(["market_code", "city_market", "trips_2026", "passengers_2026", "in_2027_pitch"])
-        for r in F["markets"]:
-            wr.writerow([r["code"], r["name"], r["trips"].replace(",", ""), r["passengers"].replace(",", ""),
-                         "Y" if r["pitched"] else "N"])
+def write_chart(path, fig):
+    rows = sorted(fig["counties"], key=lambda r: r["estimate_exact"])
+    names = [r["name"] for r in rows]
+    vals = [r["estimate_exact"] for r in rows]
+    colors = ["#1d6b5c" if r["qualifies"] else "#a7b1b8" for r in rows]
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
+    f, ax = plt.subplots(figsize=(8.6, 6.6), dpi=120)
+    y = np.arange(len(rows))
+    ax.barh(y, vals, color=colors, height=0.66)
+    ax.axvline(W.QUALIFY, color="#1b1d1f", lw=1.2, ls="--")
+    ax.text(W.QUALIFY + 8, 0.2, "250 wells: qualifies at or above the line", fontsize=8.5, va="center")
+    ax.set_yticks(y)
+    ax.set_yticklabels(names)
+    ax.set_xlim(0, max(vals) * 1.08)
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _p: "{:,.0f}".format(v)))
+    ax.set_xlabel("Estimated private domestic wells above 10 mg/L nitrate as nitrogen (2025-26 survey population)")
+    ax.set_title("%s counties qualify for 2027 Well Water Assistance" % WORDS[fig["qualifying_count"]], loc="left",
+                 fontsize=11, fontweight="bold", color="#1D4F5C")
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    ax.text(0, -0.1, "Each tested well counts for one over its chance of selection from either list. Private Well "
+            "Program, August 2026.", transform=ax.transAxes, fontsize=7.5, color="#5b6067")
+    f.tight_layout()
+    f.savefig(path, metadata={"Software": None})
+    plt.close(f)
 
 
-def chart_png(X, F):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    rows = F["markets"][::-1]
-    vals = [B.r100(X["trips"][r["code"]]) for r in rows]
-    cols = [BLUE if r["pitched"] else (AMBER if r["code"] == F["first_left_out"]["code"] else GREY) for r in rows]
-    fig, ax = plt.subplots(figsize=(6.6, 4.3), dpi=150)
-    ax.barh(range(len(rows)), vals, color=cols, height=0.66)
-    for i, (r, v) in enumerate(zip(rows, vals)):
-        ax.text(v + 60, i, fmt(v), va="center", ha="left", fontsize=7.2, color="#2b2b2b")
-    ax.set_yticks(range(len(rows)))
-    ax.set_yticklabels([r["name"] for r in rows], fontsize=7.8)
-    ax.set_xlabel("Trips parked at Brennick International from the Kessick Valley service area, 2026", fontsize=7.6)
-    ax.set_xlim(0, max(vals) * 1.13)
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: fmt(v)))
-    ax.tick_params(axis="x", labelsize=7.2)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    from matplotlib.patches import Patch
-    ax.legend(handles=[Patch(color=BLUE, label="In the 2027 pitch"), Patch(color=AMBER, label="First market left out"),
-                       Patch(color=GREY, label="Other candidates")], fontsize=7, frameon=False, loc="lower right")
-    ax.set_title("%s, %s and %s lead the %d candidate markets" % (
-        F["three"][0]["name"], F["three"][1]["name"], F["three"][2]["name"], F["candidates"]), fontsize=9,
-        loc="left")
-    fig.tight_layout()
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
-    plt.close(fig)
-    return buf.getvalue()
-
-
-def _page_field(paragraph):
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
-    run = paragraph.add_run()
-    for kind, text in (("begin", None), (None, "PAGE"), ("end", None)):
-        if kind:
-            el = OxmlElement("w:fldChar")
-            el.set(qn("w:fldCharType"), kind)
-        else:
-            el = OxmlElement("w:instrText")
-            el.set(qn("xml:space"), "preserve")
-            el.text = text
-        run._r.append(el)
-
-
-def _join(xs):
-    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
-
-
-def write_docx(X, F, path):
-    from docx import Document
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Inches, Pt, RGBColor
-    doc = Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    for sec in doc.sections:
-        sec.left_margin = sec.right_margin = Inches(0.9)
-        sec.top_margin = sec.bottom_margin = Inches(0.8)
-    h = doc.add_paragraph()
-    run = h.add_run("%s, %s  |  Air Service Development" % (W.STATE_AGENCY, W.BUREAU))
-    run.font.size = Pt(9)
-    run.font.color.rgb = RGBColor(0x5C, 0x5C, 0x5C)
-    foot = doc.sections[0].footer.paragraphs[0]
-    fr = foot.add_run("Kessick Valley Regional 2027 route pitch  |  Page ")
-    fr.font.size = Pt(8)
-    fr.font.color.rgb = RGBColor(0x5C, 0x5C, 0x5C)
-    _page_field(foot)
-    three = F["three"]
-    fo = F["first_left_out"]
-    t = doc.add_paragraph()
-    rt = t.add_run("%s, %s and %s go in Kessick Valley's 2027 nonstop pitch" % (three[0]["name"], three[1]["name"],
-                                                                                 three[2]["name"]))
-    rt.bold = True
-    rt.font.size = Pt(14)
-    rt.font.color.rgb = RGBColor(0x1F, 0x4E, 0x79)
-    meta = doc.add_paragraph()
-    meta.add_run("To: Director, %s\nFrom: %s, Air Service Development Manager\nDate: 29 January 2027\n"
-                 "Subject: Markets for the 2027 pitch for new nonstop service from %s (spring route development "
-                 "conference, March 2027)" % (W.BUREAU, W.PEOPLE["asd"], W.REGIONAL)).font.size = Pt(9.5)
-    p = doc.add_paragraph()
-    r1 = p.add_run("The 2027 pitch carries %s, %s and %s. " % (three[0]["name"], three[1]["name"], three[2]["name"]))
-    r1.bold = True
-    p.add_run("In 2026 the Kessick Valley service area drove to Brennick International and parked in the long-stay lots "
-              "to fly to %s on %s trips, to %s on %s and to %s on %s, the three largest of the %d candidate markets "
-              "under the pitch standard (section 4.1). %s is the first market left out, at %s trips, %s below %s." % (
-                  three[0]["name"], three[0]["trips"], three[1]["name"], three[1]["trips"], three[2]["name"],
-                  three[2]["trips"], F["candidates"], fo["name"], fo["trips"], F["gap"], three[2]["name"]))
-    doc.add_paragraph(
-        "The trips are Brennick's long-stay transient entries for each quarter of 2026, split by the parking card "
-        "survey's four waves. A card comes back only when its car leaves, and each wave's drop boxes were taken in two "
-        "days after its last handout day, so a card handed in a wave's last week could come back only from a short "
-        "stay, and a card from a three-week stay only if it was handed in the first nine days. Each returned card "
-        "is therefore weighted by the wave's cards handed over the cards handed on the days that left room for its "
-        "stay to end before the boxes came in. Counted card for card, the replies would have put %s in the pitch: "
-        "they lose most of the two- to four-week winter stays that make up much of the Phoenix and Tampa trips, "
-        "while the valley's two- and three-night business trips come back from nearly every handout day."
-        % _join(F["default_three"]))
-    doc.add_picture(io.BytesIO(chart_png(X, F)), width=Inches(6.3))
-    cap = doc.add_paragraph()
-    rc = cap.add_run("Trips parked by the Kessick Valley service area at Brennick International, 2026, by candidate "
-                     "market, nearest hundred. Every candidate's trips and passengers are in %s." % W.GOLDEN["csv"])
-    rc.italic = True
-    rc.font.size = Pt(8)
-    tbl = doc.add_table(rows=1, cols=3)
-    tbl.style = "Light List Accent 1"
-    for c, txt in zip(tbl.rows[0].cells, ("Market", "Trips, 2026", "Passengers, 2026")):
-        c.text = txt
-    for r in three + [fo]:
-        row = tbl.add_row().cells
-        row[0].text = r["name"] + ("" if r is not fo else " (first left out)")
-        row[1].text, row[2].text = r["trips"], r["passengers"]
-    for rw in tbl.rows:
-        for c in rw.cells[1:]:
-            c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    doc.add_paragraph()
-    doc.add_paragraph(
-        "The candidates are the market review's shortlist less %s, which Sunstream Air serves at Sanford from 11 "
-        "February to 25 April 2027 (standard section 3.1). Kessick Valley's year-round flights go to %s, none of them "
-        "on the shortlist." % (_join(F["served_shortlisted"]), _join(F["served_other"])))
-    src = doc.add_paragraph()
-    rs = src.add_run("Sources: Brennick parking revenue control system, daily entries by lot, 2026 (extracts of 6 "
-                     "January 2027); %s, long-stay parking survey 2026, cards, verbatims and handout log (delivered 15 "
-                     "December 2026); Kessick Valley Regional nonstop schedule 2027 (20 January 2027); Air Service "
-                     "Pitch Standard, 2027 pitch." % W.CONTRACTOR)
-    rs.italic = True
-    rs.font.size = Pt(8)
-    notes = doc.add_paragraph()
-    rn = notes.add_run(
-        "Notes. A trip is one car's stay in Economy C, Economy D or Long-Term, counted once whatever its party; "
-        "passengers count the party in full as the traveller wrote it on the card (a card reading 2 adults 2 kids is "
-        "four). The garage and permit entries are outside the basis. Each wave stands for its quarter. Figures are "
-        "rounded to the nearest hundred from unrounded totals; the gap is taken before rounding.")
-    rn.font.size = Pt(8.5)
-    rn.font.color.rgb = RGBColor(0x40, 0x40, 0x40)
-    doc.save(path)
-
-
-def main(target, golden, figures_path):
+def main(target, gdir, fig_path):
+    os.makedirs(gdir, exist_ok=True)
+    fig = compute(target)
+    write_workbook(os.path.join(gdir, GOLDEN["workbook"]), fig)
+    write_chart(os.path.join(gdir, GOLDEN["chart"]), fig)
     import postprocess as PP
-    os.makedirs(golden, exist_ok=True)
-    X = compute(target)
-    F = figures(X)
-    write_csv(F, os.path.join(golden, W.GOLDEN["csv"]))
-    write_docx(X, F, os.path.join(golden, W.GOLDEN["brief"]))
-    PP.normalize_ooxml(os.path.join(golden, W.GOLDEN["brief"]), W.PEOPLE["asd"], W.PEOPLE["asd"],
-                       "2027-01-27T15:12:00Z", "2027-01-29T21:41:00Z",
-                       company="%s, %s" % (W.STATE_AGENCY, W.BUREAU))
-    stamp = 1801429260.0
-    for f in os.listdir(golden):
-        os.utime(os.path.join(golden, f), (stamp, stamp))
-    with open(figures_path, "w") as fh:
-        json.dump(F, fh, indent=1, ensure_ascii=False)
+    PP.normalize_ooxml(os.path.join(gdir, GOLDEN["workbook"]), W.PROGRAM, W.PROGRAM, "2026-08-12T14:02:00Z",
+                       "2026-08-14T16:47:31Z", excel=True, company="%s, %s" % (W.DEPT, W.OFFICE))
+    fig = {k: v for k, v in fig.items()}
+    for r in fig["counties"]:
+        r["estimate_exact"] = round(r["estimate_exact"], 2)
+    with open(fig_path, "w", encoding="utf-8") as fh:
+        json.dump(fig, fh, indent=1)
         fh.write("\n")
-    return X
+    return fig

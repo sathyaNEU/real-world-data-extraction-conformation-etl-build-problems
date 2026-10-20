@@ -2,52 +2,141 @@
  "task": "task471",
  "owner": "oviya1301",
  "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-19",
- "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
- "architecture": 1,
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-20",
+ "stump": "",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 1,
-  "date": "2026-10-18",
-  "note": "two FAIL, both the ask layer: the pair ceiling 55.5 against 40 and the reconciling cracker keeping ask A"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 on target.zip c9e9c2fd35a4d875: the standard names the shortlist and the call's words; the methods report, handout log and standard use the survey's own words; no LEAK",
-  "reader": "three rounds, sonnet at medium on fresh unzips: no decisive-step sentence, no helping file, the quoted sentences execute to the golden, question 6 analytical every round; every round landed the call; round 1 missed all fourteen passengers figures on the coded party, rounds 2 and 3 recoded the party from the verbatims and kept them (round 3's brief asked for example write-ins)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN only 2026-10-18 after naming the decisive generator G7 (with G12 first the signature repeated task196 v2, task255, task456 and task462); WARNs answered in the design note",
-  "heart": "WARN 2026-10-18 (org family, Gate G window, question form; answered in the note); nearest driver task157 at 0.10; surface screen 0 promoted"
+  "guard_check": "WARN only at the v3 draw (differentiated against task264 v2 and task131 v1)",
+  "heart": ""
  },
  "judge": {
-  "pass_1": "DETERMINISTIC, FIX_NOW on the write-up's step 2 (only Orlando is cut from the shortlist), fixed",
-  "pass_2": "DETERMINISTIC, APPROVE on the fix-pass build; Gate G statistical_rigor and analytical_non_defect, Gate H pass, stump power moderate",
-  "reports": [
-   "determinism_check_report.md",
-   "determinism_check_report_pass2.md"
-  ]
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "re-root pending: architecture 1 spent (every reader landed the call; the ask device a mirror device). A clustered-design re-root (the third pick held unless its lead clears twice the design-based standard error) was measured on the v1 pack and dropped: 73,909 returned cards put every lead over the fourth market at z 3.5 (card-level weighted) and 2.3 to 3.4 (clustered by handout day), and binding it would need a tenfold smaller sample and same-day group travel. Next: a fresh architecture 2 in a new world, with a decisive step the record does not display (lesson of task468 v2 and v3, see its ## Retired)",
+ "resume": "re-root at stage 1 to architecture 4 (the author's no-retirement rule): a fresh draw whose decisive step is not a design-based estimator the documents must describe; the card's lineage and the note's Tried and rejected carry architecture 3's fate",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back",
- "ceiling": {
-  "pair": 28.0,
-  "pair_reconciling": 55.5,
-  "pair_alt": 40.7,
-  "cracker": 45.0,
-  "cracker_path": "collection-window weights with the coded party, 0 of 14 passengers",
-  "reconciling": 100.0,
-  "reconciling_path": "collection-window weights with each party recoded from Q4 as written, 14 of 14",
-  "best_mirror": "10.9 on R0 with the coded party",
-  "mirror_leakage": 7.1,
-  "script": "generator/ceiling.py"
+ "source_note": "re-rooted from seed ET28's airport world (architecture 1, spent at Gate F); architecture 2 is a fresh world in item-response-theory-test-equating",
+ "architecture_1": {
+  "fate": "spent at stage 4 (Gate F: three readers landed the call; the ask device a mirror device, pair ceiling 55.5); a clustered-design hold measured and dropped",
+  "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
+  "precut": {
+   "exit": 1,
+   "date": "2026-10-18",
+   "note": "two FAIL, both the ask layer: the pair ceiling 55.5 against 40 and the reconciling cracker keeping ask A"
+  },
+  "leak": {
+   "leak_py": "REVIEW 2026-10-18 on target.zip c9e9c2fd35a4d875: the standard names the shortlist and the call's words; the methods report, handout log and standard use the survey's own words; no LEAK",
+   "reader": "three rounds, sonnet at medium on fresh unzips: no decisive-step sentence, no helping file, the quoted sentences execute to the golden, question 6 analytical every round; every round landed the call; round 1 missed all fourteen passengers figures on the coded party, rounds 2 and 3 recoded the party from the verbatims and kept them (round 3's brief asked for example write-ins)"
+  },
+  "duplicate_check": {
+   "guard_check": "WARN only 2026-10-18 after naming the decisive generator G7 (with G12 first the signature repeated task196 v2, task255, task456 and task462); WARNs answered in the design note",
+   "heart": "WARN 2026-10-18 (org family, Gate G window, question form; answered in the note); nearest driver task157 at 0.10; surface screen 0 promoted"
+  },
+  "judge": {
+   "pass_1": "DETERMINISTIC, FIX_NOW on the write-up's step 2 (only Orlando is cut from the shortlist), fixed",
+   "pass_2": "DETERMINISTIC, APPROVE on the fix-pass build; Gate G statistical_rigor and analytical_non_defect, Gate H pass, stump power moderate",
+   "reports": [
+    "determinism_check_report.md",
+    "determinism_check_report_pass2.md"
+   ]
+  },
+  "ceiling": {
+   "pair": 28.0,
+   "pair_reconciling": 55.5,
+   "pair_alt": 40.7,
+   "cracker": 45.0,
+   "cracker_path": "collection-window weights with the coded party, 0 of 14 passengers",
+   "reconciling": 100.0,
+   "reconciling_path": "collection-window weights with each party recoded from Q4 as written, 14 of 14",
+   "best_mirror": "10.9 on R0 with the coded party",
+   "mirror_leakage": 7.1,
+   "script": "generator/ceiling.py"
+  },
+  "target_zip_sha256_16": "c9e9c2fd35a4d875",
+  "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
  },
- "target_zip_sha256_16": "c9e9c2fd35a4d875"
+ "build": {},
+ "architecture_2": {
+  "fate": "spent at stage 4: judge v2r1 DETERMINISTIC on the main call, disposition SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes; Gate H decisive step analytical, borderline planted)",
+  "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-20",
+   "checks": "51 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW (no LEAK) on target.zip 14b337c337f9190b; REVIEW lines: conversion and agreement table figures, shared vocabulary, the completer lists naming programs",
+   "reader": "round 1: two scored readers, both missed the call (drop-WA2 rung, raws 47 and 46) and 0 of 32 ask figures"
+  },
+  "duplicate_check": {
+   "guard_check": "WARN only after the stage-3 redraw (calibration organ parallel_run_overlap, context artifact filed_model); WARNs answered in the design note",
+   "heart": "WARN (BLOCK on ban.calibration and ban.artifact against task473 cleared by redrawing the organ, not relabelling)",
+   "nearest": "task450 v2 at 0.10"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "SEND_BACK",
+   "report": "determinism_check_report.md (run v2r1)"
+  },
+  "build": {
+   "checks": "47 of 47",
+   "verify": "pass",
+   "byte_identical": true,
+   "target_zip_sha256_16": "14b337c337f9190b",
+   "figures_check": "142 figures, 0 absent",
+   "ceiling": "pair 28.8, mirror leakage 0.0, cracker misses 32 of 32"
+  },
+  "target_zip_sha256_16": "14b337c337f9190b",
+  "commit": "3e886f4b"
+ },
+ "architecture_3": {
+  "fate": "spent at stage 4 on Gate F: both scored readers (round 1, target.zip ce15c2a04a1d152f) landed the call and all 32 ask figures, reader A by one over each well's chance of selection from either list, reader B by the post-stratified estimator; the judge (run v3r1) DETERMINISTIC and APPROVE, Gate G method_or_model_selection and analytical_non_defect, Gate H analytical",
+  "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-20",
+   "checks": "51 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW (no LEAK) on target.zip ce15c2a04a1d152f",
+   "reader": "round 1: both readers landed the call and 32 of 32 ask figures (score_reader exit 1)"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md (run v3r1)"
+  },
+  "build": {
+   "checks": "175 of 175",
+   "verify": "pass",
+   "byte_identical": true,
+   "target_zip_sha256_16": "ce15c2a04a1d152f",
+   "figures_check": "51 figures, 0 absent",
+   "ceiling": "pair 38.9, mirror leakage 0.0, cracker misses 32 of 32",
+   "precut": "51 checks clean"
+  },
+  "duplicate_check": {
+   "heart": "WARN only",
+   "surface": "five pairs promoted for adjudication, none blocking"
+  },
+  "target_zip_sha256_16": "ce15c2a04a1d152f",
+  "lesson": "an estimator the design report must describe for the estimate to be determinate is executed as a work order: every design-based correction (dual frames, multiplicity, stratification) is readable once its design is filed; and a device a request-row consistency check finds is not silent"
+ }
 }

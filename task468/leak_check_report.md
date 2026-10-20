@@ -1,21 +1,27 @@
 # leak check, task468
 
-**Verdict: REVIEW.** 11 files read, 9 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 20 golden figures and 19 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: member, months, members, caseload, development, episode, therapy, decisive, record, charter, silent, device, current, reader, schedule, review, twelve, step-therapy, window, architecture, stopped, starters, golden, timetable, service
+Stump terms swept: deaths, members, architecture, reader, record, decisive, device, admissions, linkage, window, control, office, varden, review, silent, linked, estimator, service, surnames, closed, sentence, member, records, two-part, reflex
 
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: golden figure 614 appears: ...s (biologic and targeted therapy) $22,612,071 $23,614,753 +4.4% 583 Multiple sclerosis $10,624,034 $10,...
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: carries 23 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
-- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: carries 30 of 31 distinctive words of the committed call: 'Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory cond'
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `HCHP_Hospital_Quality_Bonus_2027_Measure_Specification.pdf`: carries 22 of 26 distinctive words of the committed call: "Five of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: Brannock Medical Center, Calloway Memorial"
+- **REVIEW** `HCHP_Network_Hospital_Profiles_2026.pdf`: carries 19 of 26 distinctive words of the committed call: "Five of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: Brannock Medical Center, Calloway Memorial"
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `formulary_bulletin_january_2026.pdf`: 4 of 25 stump-paragraph terms appear (member, members, therapy, service); read whether the document names the move
-- **REVIEW** `orrin_rx_specialty_trend_report_2025.pdf`: 3 of 25 stump-paragraph terms appear (member, members, therapy); read whether the document names the move
-- **REVIEW** `pbm_transition_file_notes.pdf`: 4 of 25 stump-paragraph terms appear (member, members, schedule, service); read whether the document names the move
-- **REVIEW** `specialty_clinical_pharmacy_program_charter_2026.pdf`: 7 of 25 stump-paragraph terms appear (member, members, caseload, therapy, charter, schedule); read whether the document names the move
+- **REVIEW** `CMG_Inpatient_Encounter_File_Layout_v4.pdf`: 4 of 25 stump-paragraph terms appear (members, record, member, records); read whether the document names the move
+- **REVIEW** `HCHP_Hospital_Quality_Bonus_2027_Measure_Specification.pdf`: 9 of 25 stump-paragraph terms appear (deaths, members, record, admissions, office, varden); read whether the document names the move
+- **REVIEW** `OVR_Linkage_Methods_HCHP_FY2026.pdf`: 9 of 25 stump-paragraph terms appear (deaths, members, record, admissions, linkage, office); read whether the document names the move
+- **REVIEW** `hchp_ip_claims_extract_notes.pdf`: 3 of 25 stump-paragraph terms appear (members, record, member); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 3, INFO 2)
+- **REVIEW** `HCHP_Hospital_Quality_Bonus_2027_Measure_Specification.pdf`: names 17 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx`: names 15 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `HCHP_Quality_Dashboard_Readmissions_FY2026.xlsx`: names 15 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `HCHP_Network_Hospital_Profiles_2026.pdf`: names 10 of 19 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `hchp_network_hospitals_2026.csv`: names 15 of 19 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -25,8 +31,6 @@ Stump terms swept: member, months, members, caseload, development, episode, ther
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
-
-## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
@@ -93,3 +97,49 @@ Architecture 2's round is in git history (commit 26e34e23): it landed the call a
   apart), so the careful reader's persistence model found it unprompted. Architecture 3 spent (Gate F). The rebate
   device held, and the reader's banding moved AST's spend across a million edge, a determinism finding the retirement
   makes moot.
+
+## Solver's-eye read
+
+### Architecture 4, round 2, the shipping pack (target.zip f511b179e6742bf8)
+
+Two isolated readers (general-purpose, Sonnet, medium effort), each on its own fresh unzip of target.zip (sha256
+f511b179e6742bf8) with prompt.txt only, each scored with score_reader.py before its verdict was read. Round 1 (one
+reader on the earlier pack, b1bc148c) had missed the call and kept all 15 bonus figures by reading the then-unfiled
+replacement conventions off the amounts; that ask device was re-sited before this pack was cut.
+
+**Reader 2a.** Four lose (Calloway, Northgate, Varden, Westover): every status 20 death plus the Office's links, with 53
+name-pass links dropped because a later service line, admission or live discharge contradicts them; no missed deaths
+added ("Deaths the OVR missed and that left no status-20 record cannot be identified"). Payments: the filed conventions
+applied, Carrisford left out, and every paid dispute award on fiscal 2026 stays added ($1,171,148), total $7,086,700.
+score_reader: call 0 of 1, ask 0 of 15, exit 0.
+1. Decisive step: none announced; quotes specification 3.3 and the Office's sentence that "some deaths of plan members
+   are not found and some members are linked to a death that is not theirs".
+2. No file ranks the hospitals on mortality.
+3. The service-line extract, which "lets false links be exposed".
+4. Nothing reads as the answer.
+5. Specification 5.1, 5.2 and 3.1 read literally: its own four losers.
+6. An analytical choice: judging the linkage with its uncertainty.
+REVIEW lines: all nine harmless (the OVR note "harmless, but borderline": it says the linkage errs, not how to detect
+or correct it).
+
+**Reader 2b.** Four lose (Calloway, Northgate, Varden, Westover): the same reflex repair (47 name-pass links dropped
+on service lines dated after the death); "I did not try to add deaths that Vital Records missed". Payments: the filed
+conventions and every paid dispute award added, total $7,086,700. score_reader: call 0 of 1, ask 0 of 15, exit 0.
+1. Decisive step: none stated.
+2. None for mortality; the readmissions dashboard ranks another measure.
+3. The OVR methods note.
+4. None.
+5. The links as filed give four losers (Varden 1.95); with the contradicted links removed, the same four.
+6. An analytical choice, combining two imperfect death sources; no planted decoy found.
+REVIEW lines: all nine harmless.
+
+**Rulings.** Neither reader quotes a sentence that names the decisive step, and both stop on the default path's set, so
+the class-by-class correction stays silent (Gate F). Question 3: the service-line extract is the plan's own member
+claims activity, the standard source for whether a member was later seen, and both readers used it only for the
+reflex repair (the default path); the OVR methods note is the Office's own note to its return, whose one sentence on
+error is the incompleteness the determinism spec requires a completed source to state (determinism-check section 1),
+with no size, class or method. Question 5's literal reading (the links as filed, four losers) is the default path's
+answer by another route; specification 3.1 and 3.2 make a hospital's deaths the admissions whose member died, and the
+note says some links are not deaths and some deaths are not linked. Every REVIEW line is harmless as both readers
+found. Ask layer: both readers added every paid award, so each reprocessed award counted twice: the device held
+against both.

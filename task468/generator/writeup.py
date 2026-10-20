@@ -3,86 +3,104 @@ import json
 
 import world as W
 
+WORD = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 9: "nine"}
+CLS = {"ssn": "Social Security number on file", "simple": "no number, single surname",
+       "compound": "no number, two-part surname"}
 
-def lst(items):
-    items = list(items)
-    return ", ".join(items[:-1]) + " and " + items[-1] if len(items) > 1 else items[0]
+
+def _join(xs):
+    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
+
+
+def money(v):
+    return "${:,}".format(v)
 
 
 def write(fig_path, out_path):
     f = json.load(open(fig_path, encoding="utf-8"))
-    ph, sp, cl, rb, rv = f["call"]["pharmacists"], f["spend_m"], f["caseload"], f["rebates_k"], f["rivals"]
-    name = {c: W.CLASSES[c]["name"] for c in W.CANDIDATES}
-    staffing = "; ".join("%s %d" % (name[c], ph[c]) for c in W.CANDIDATES)
+    hs = {r["short"]: r for r in f["hospitals"]}
+    lose = [hs[s] for s in f["lose"]]
+    keep = [r for r in f["hospitals"] if r["verdict"] == "keeps"]
+    top_keep = max(keep, key=lambda r: r["ratio"])
+    rt = f["rates"]
+    reflex_extra = [s for s in f["reflex"]["lose"] if s not in f["lose"]]
+    reflex_miss = [s for s in f["lose"] if s not in f["reflex"]["lose"]]
     lines = [
         "## Tags",
         "",
-        "**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: two pharmacy "
-        "benefit managers' specialty claim files conformed into one repriced record of fills, from which each class's "
-        "program-year spend for the members now on therapy is projected).",
+        "**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid "
+        "plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the "
+        "state's death record linkage, the linked deaths corrected for the linkage's own errors).",
         "**Analytical objective:** Data Extraction & Conformation (ETL).",
         "",
         "## 1. Final Recommendation",
         "",
-        "**Staff the Specialty Clinical Pharmacy Program with %d clinical pharmacists for July 2026 to June 2027: %s.**"
-        % (f["call"]["total"], staffing),
-        "Each class's managed spend is its members on therapy on June 30, 2026 carried forward by the class's own spend "
-        "and continuation at each month of an episode of therapy, starting each member at the months their current "
-        "episode has run; a member back on a drug after a lapse of more than %d days starts a new episode. Not the same "
-        "projection counted from each member's first fill in the class, which gives weight management %d, severe asthma "
-        "%d and migraine prevention %d (%d in all), because the members who came back to those drugs in 2026 after the "
-        "step therapy change would be projected like the long-standing members who never stopped; not last year's "
-        "on-therapy members' following-year spend applied to this June's members, which gives weight management %d; not "
-        "the trailing year, which gives hepatitis C %d (its courses end within twelve weeks)." % (
-            f["episode_gap_days"], rv["first_fill"]["GLP"], rv["first_fill"]["AST"], rv["first_fill"]["CGR"],
-            sum(rv["first_fill"].values()), rv["analog"]["GLP"], rv["trailing"]["HCV"]),
+        "**%s of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: %s. The other %s keep it.**" % (
+            WORD[f["count_lose"]].capitalize(), _join([r["name"] for r in lose]), WORD[14 - f["count_lose"]]),
+        "Their fiscal 2026 mortality ratios run from %.2f to %.2f against the 1.15 line; the highest ratio among the "
+        "hospitals that keep it is %s's %.2f. Not the %s hospitals that the deaths on the bills and the Office of Vital "
+        "Records' links give, even with every link a later claim contradicts dropped and every death a later bill "
+        "records added (%s), because for members enrolled without a Social Security number the linkage links living "
+        "members with common names to other people's deaths and misses the deaths of members with two-part surnames, "
+        "and those repairs reach only the members whose later claims happen to show it: corrected at the error rates "
+        "the record's recorded deaths and living members measure, %s keeps the bonus and %s lose it." % (
+            min(r["ratio"] for r in lose), max(r["ratio"] for r in lose), top_keep["name"], top_keep["ratio"],
+            WORD[f["reflex"]["count"]], _join(f["reflex"]["lose"]), _join(reflex_extra), _join(reflex_miss)),
         "",
         "## 2. Critical Components",
         "",
-        "1. Members on therapy on June 30, 2026 (the caseloads): %s." % "; ".join(
-            "%s {:,}".format(cl[c]) % c for c in W.CANDIDATES),
-        "2. Projected managed spend for the program year, $ million at the 2026 schedule: %s; total %d." % (
-            "; ".join("%s %d" % (c, sp[c]) for c in W.CANDIDATES), f["spend_total_m"]),
-        "3. Pharmacists at one per $1.5 million of managed spend or part: %s; total %d." % (
-            "; ".join("%s %d" % (c, ph[c]) for c in W.CANDIDATES), f["call"]["total"]),
+        "1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills "
+        "record and on the members seen alive after day 30: %s." % "; ".join(
+            "%s, **%d of %d** recorded deaths linked and **%d of %s** living members linked" % (
+                CLS[k], rt[k]["pos_linked"], rt[k]["pos"], rt[k]["neg_linked"], "{:,}".format(rt[k]["neg"]))
+            for k in ("ssn", "simple", "compound")),
+        "2. The hospitals that lose the bonus, deaths over expected deaths: %s." % "; ".join(
+            "%s **%.1f** over **%.1f**, ratio **%.2f**" % (r["name"], r["deaths"], r["expected"], r["ratio"])
+            for r in lose),
+        "3. %s, which the uncorrected links put over the line: **%.1f** deaths over **%.1f** expected, ratio "
+        "**%.2f**." % (_join([hs[s]["name"] for s in reflex_extra]), hs[reflex_extra[0]]["deaths"],
+                       hs[reflex_extra[0]]["expected"], hs[reflex_extra[0]]["ratio"]),
         "",
         "## 3. Step-by-Step Solution",
         "",
-        "1. Conformed %s and %s into one record of fills: reversed claims removed with the claims they reverse "
-        "(Orrin's REVERSAL lines, Tallis's R status), members linked to plan IDs through %s, Orrin's 10-digit NDCs "
-        "padded to 11 digits, each NDC's class from %s." % (W.FILES["orrin"], W.FILES["tallis"], W.FILES["crosswalk"],
-                                                           W.FILES["drugs"]),
-        "2. Priced every fill at %s: units times the unit price plus the dispensing fee (charter 2.2)." % W.FILES["prices"],
-        "3. Took each class's caseload: members with a fill whose days' supply reaches June 30, 2026 (charter 2.1).",
-        "4. Split each member's fills in a class into episodes of therapy, a new episode starting at a fill more than "
-        "%d days after every earlier supply had run out, and dated each member's months on therapy from the start of "
-        "the episode; a member already filling in the first quarter of 2019 has an unseen start and sits in the "
-        "longest-duration cell." % f["episode_gap_days"],
-        "5. For each class and each month of an episode, averaged the spend over the following twelve months of the "
-        "members on therapy at a month end at that month, over every month end from January 2019 whose twelve months "
-        "are in the record (months from 36 on pooled).",
-        "6. Projected each caseload member at the month of the episode they had reached on June 30, 2026, summed by "
-        "class, and staffed one pharmacist per $1.5 million or part (charter 3.1).",
-        "7. For the rebates, took %s's contract quarters 2025-Q1 to 2025-Q4 (a contract year runs February to "
-        "January, the only calendar on which its units tie to the claims), each product's quarterly rebate once "
-        "although the statement repeats it on each channel line, plus January 2025's units at contract quarter "
-        "2024-Q4's rebate per unit." % W.FILES["rebates"],
+        "1. Conformed %s and %s into stays, each as last corrected with voided and deleted bills dropped, Carrisford "
+        "member numbers mapped through %s and both of Mercy Valley's NPIs through %s." % (
+            W.FILES["claims"], W.FILES["encounters"], W.FILES["enrollment"], W.FILES["roster"]),
+        "2. Kept the index admissions of specification 2.1 to 2.4 (%s in all): adults, no delivery DRGs, no patient "
+        "status 07, each member's first, a transfer joined to the first hospital's stay." % "{:,}".format(
+            f["index_total"]),
+        "3. Summed each hospital's HIMM 3.2 scores from %s, keyed by member, admission date and NPI." % W.FILES["scores"],
+        "4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending "
+        "within the 30 days) and joined %s on member and admission date." % W.FILES["linkage"],
+        "5. Classed each member by %s (Social Security number on file; otherwise single or two-part surname) and "
+        "measured each class's share of recorded deaths linked and share of members with a service line in %s, an "
+        "admission or a live discharge after day 30 linked." % (W.FILES["enrollment"], W.FILES["activity"]),
+        "6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive "
+        "after day 30 as (links less the false-link share times the admissions) over (the share linked less the "
+        "false-link share), and added the recorded deaths.",
+        "7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification "
+        "5.2).",
+        "8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): "
+        "each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill "
+        "nothing, plus each additional payment in %s made by September 30 on those stays, except one the disputed "
+        "claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS "
+        "replacement's amount, or a platform replacement's amount less the original's) equals the additional payment."
+        % W.FILES["disputes"],
         "",
         "## 4. Deliverable Answers",
         "",
         "### %s" % W.GOLDEN["workbook"],
         "",
-        "1. Clinical pharmacists by class:",
+        "1. Hospitals that lose the 2027 bonus: **%d**: %s." % (f["count_lose"], _join([r["name"] for r in lose])),
+        "2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):",
     ]
-    for c in W.CANDIDATES:
-        lines.append("   - %s: %d" % (name[c], ph[c]))
-    lines.append("2. Total: %d pharmacists." % f["call"]["total"])
-    lines.append("3. Managed spend for July 2026 to June 2027, $ million:")
-    for c in W.CANDIDATES:
-        lines.append("   - %s: %d" % (name[c], sp[c]))
-    lines.append("4. Manufacturer rebates on fills dispensed in 2025, $ thousand:")
-    for c in W.CANDIDATES:
-        lines.append("   - %s: {:,}".format(rb[c]) % name[c])
-    lines.append("5. Bar chart of the pharmacists by class, on the Staffing sheet.")
-    lines.append("")
-    open(out_path, "w", encoding="utf-8").write("\n".join(lines))
+    for r in f["hospitals"]:
+        lines.append("   - %s: %s, %s" % (r["name"], r["verdict"], money(r["bonus"])))
+    lines += [
+        "3. Total bonus at stake across the network: %s." % money(f["total_bonus"]),
+        "4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the "
+        "bonus highlighted.",
+        "",
+    ]
+    with open(out_path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines))

@@ -1,0 +1,112 @@
+{
+  "task": "task474",
+  "architecture": "v2",
+  "drawn": "2026-10-20",
+  "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (planning-region poverty split by temporal disaggregation) spent at stage 4; architecture 2 drawn in emissions-inventory with a fresh world",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records whose analyzers drop out mostly in the hours after a start, the plant control systems' hourly load logs and the monitor outage log, for its 2027 SCR upgrade program",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2.",
+  "answer_source": "task474/submission.md",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the monitor records, load logs and outage log, reads every field and rule correctly and fills each unmonitored operating hour from the unit's own NOx-on-load regression designates the wrong units, because the analyzers drop out mostly in the first hours after a start, when a cold catalyst lets NOx run several times the steady rate at the same load, so a load-based fill puts steady-state NOx into start-up hours and understates the units that cycle hardest.",
+  "domain_test": "The decisive quantity is each combined-cycle unit's 2026 ozone-season NOx per MWh, an emissions inventory whose missing monitor hours are estimated the way emission inventories handle monitor data gaps, by the operating condition the unit was in, here the hours since the unit's start from the control system's load log, because selective catalytic reduction does not work until the catalyst is hot; swapping in another field's nouns breaks it because the cold-catalyst start-up spike and the analyzers' purge and calibration after shutdown are what make the gaps fall in the high-emission hours.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:missing monitor hours filled by start state, not by load",
+  "layer1": [
+    "a whole-year export carrying every monitored unit, the peakers and the coal unit outside the program",
+    "status codes on hours whose NOx values are blank",
+    "the DAHS on standard time against the event report and maintenance tickets in local time",
+    "maintenance tickets covering only some gaps and including checks while offline",
+    "units renamed in the 2025 dispatch system",
+    "gas invoices by facility meter, not by unit"
+  ],
+  "stakeholder_role": "the cooperative's senior environmental compliance engineer preparing the 2027 SCR upgrade designations",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "dahs_hourly_export_2026.csv",
+    "rows": 113880,
+    "entity": "one unit's monitor record for one hour",
+    "grain": "unit x hour",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, a fictional inland region (unnamed state)",
+    "currency": "USD",
+    "org_type": "a generation and transmission cooperative",
+    "invented_names": [],
+    "people": [
+      "Tamara Gill",
+      "Kevin Cohen"
+    ]
+  },
+  "deliverables": [
+    "cc_unit_nox_inventory_2026.xlsx",
+    "startup_nox_upgrade_designations_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A unit's period total is measured hourly by an instrument that is out mostly in the hours after the unit starts, when the quantity runs several times its steady level at the same operating point, so the missing hours are filled by the hour's start state, read from an every-hour operating log, rather than by a fit on the operating point that the steady hours dominate.",
+  "driver_concrete": "Each combined-cycle unit's NOx in the hours its analyzers were down is estimated from the unit's own monitored hours at the same number of hours since its start, found in the control system's hourly load log, not from its NOx-on-load fit or its monitored-hour average, before each unit's 2026 ozone-season NOx per MWh is compared with the cooperative's 0.170 target.",
+  "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high, because the analyzers drop out mostly right after a start, when the cold catalyst lets NOx run at several times the steady rate; filling the missing hours by hours since start designates the hard-cycling units the program should fund.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task243": "task243 recovers a register's exit-recording share from changes between two counts; here nothing is counted twice: each unit's unmonitored hours are filled from its own monitored hours in the same start state read from an every-hour operating log.",
+    "task450": "task450 removes an instrument change through a shared anchor subset; here no instrument changes: the instrument is missing in a state-dependent pattern and the fill conditions on that state.",
+    "task476": "task476 dates each found item's unseen start from a seasonal profile in a second record; here no start is unseen: every start is in the load log, and what is missing is the measured quantity in the hours just after it.",
+    "task459": "task459 commits a unit to a stated operating level against a level-dependent ratio; here no level is chosen: the missing hours are imputed by start state, which a fit on level misses."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
+      "fate": "spent 2026-10-20 at stage 4: reader 1 landed the call by benchmarking SNAP to the survey level; reader 2 kept 27 of 27 ask figures"
+    },
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 4 on 2026-10-20: reader 1 landed the call by benchmarking SNAP to the survey level unprompted; reader 2 missed the call and kept 27 of 27 asks",
+      "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
+      "stump": "The default path splits the former counties' 2020-2022 estimates by the towns' shares in the 2020-2024 five-year release, which holds the 2021 Bellmont Courts and Marlridge Commons relocations for most of its span, and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 against the golden's $1,650,000 and $2,250,000, six of the nine amounts off.",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "generators": [
+        "G2",
+        "G13",
+        "G14"
+      ]
+    }
+  ],
+  "notes": "architecture 2 spent at stage 4 on 2026-10-20: a round-2 reader landed the call with the start-state fill (score_reader exit 1); re-root next",
+  "client_domain": "physical-environmental-sciences",
+  "registered": "2026-10-20T12:46:43Z",
+  "architecture_spent": true
+}

@@ -1,0 +1,37 @@
+{
+ "task": "task474",
+ "owner": "oviya1301",
+ "status": "PAUSED",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-20",
+ "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high; the analyzers drop out mostly in the hours after a start, when the cold catalyst lets NOx run several times the steady rate, so only a fill by hours since start designates the hard-cycling units.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-20 (the filed target declared a stated input; dates clipped to the export)",
+  "reader": "round 1: readers 1 and 2 missed the call (two and four units) but kept every fuel cost and generation figure; asks re-sited; round 2 (readers 3, 4) running; round 2: reader 3 landed the call and kept 18 of 18 asks (exit 1): architecture spent"
+ },
+ "duplicate_check": {
+  "guard_check": "WARN 2026-10-20 after differentiation lines for task243 and task450 v2",
+  "nearest": "task249 v2 at 0.07"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "note": "forced-outage overlap fork and an overstated component fixed in the re-site pass"
+ },
+ "returned": [],
+ "resume": "re-root at stage 1, architecture 3 not yet drawn: architecture 2 spent at stage 4 (round-2 reader 3 landed the call with the start-state fill and kept every ask)",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET31's number; architecture 2 in a fresh world (a generation cooperative's combined-cycle NOx inventory with start-state monitor gaps)",
+ "nearest": null
+}

@@ -1,0 +1,103 @@
+{
+  "task": "task476",
+  "architecture": "v2",
+  "drawn": "2026-10-20",
+  "slot_note": "re-root of seed ET33's number in the ETL lane: architecture 1 (ACS tract poverty change across a redrawn geography) spent at stage 4; architecture 2 drawn in emissions-inventory",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a city-owned gas utility's leak-based methane inventory by district for its accelerated cast-iron and bare-steel main replacement program, leaks found at once-a-year district surveys in each district's own month",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Designate five of the 12 districts for the 2027 to 2029 Accelerated Main Replacement Program: Brennan Hill, Elmwood, Fenwick, Harlow and Ivers.",
+  "answer_source": "task476/submission.md",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the 2026 leak survey finds, repair orders and district survey schedule and gives each leak found at a survey the textbook start halfway between the district's previous survey and the find, emitting until repair, designates the wrong districts, because leaks start mostly in the frost months, so a district surveyed in late autumn finds leaks that have emitted since winter while one surveyed in spring finds leaks only weeks old.",
+  "domain_test": "The decisive quantity is each district's 2026 leak methane per mile of main, an inventory of leak emission rates times leak durations in which each surveyed leak's unobserved start is estimated from the season in which leaks begin, measured in the public odor reports whose leaks are found within days of starting; swapping in another field's nouns breaks it because frost-driven cracking of cast-iron and bare-steel mains, the regulator-set survey calendar and the public's odor reports are what fix when leaks begin and how long they emit unseen.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:leak start before a periodic survey, from the season leaks begin in",
+  "layer1": [
+    "repair orders with a leak's several visits under one leak number",
+    "survey finds keyed by address against main segments keyed by GIS id",
+    "leak grades recoded in 2025",
+    "work orders in local time against the odor-call system in UTC",
+    "main miles by material from a GIS snapshot with abandoned segments",
+    "a regrade that keeps the leak number"
+  ],
+  "stakeholder_role": "the utility's distribution integrity engineer preparing the replacement program's district designations",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "leak_survey_schedule_2015_2026.csv",
+    "rows": 100932,
+    "entity": "one main segment's leak survey in one year",
+    "grain": "segment x survey year",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, a fictional northern city (unnamed state)",
+    "currency": "USD",
+    "org_type": "a city-owned gas utility",
+    "invented_names": [],
+    "people": [
+      "Marissa Harmon",
+      "Nicholas Wolf"
+    ]
+  },
+  "deliverables": [
+    "leak_methane_inventory_2026.xlsx",
+    "main_replacement_designations_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Each item is found only at a periodic inspection made at a fixed point in the year for each unit, after having begun at an unrecorded time since the previous inspection, and items begin mostly in one season, so the time each was active before it was found depends on when in the year its unit is inspected; the even-spread assumption misprices units inspected long after the season, and the seasonal profile comes from a second record whose items are reported as soon as they begin.",
+  "driver_concrete": "Each leak found at a district's yearly survey began at an unrecorded time since the previous survey, mostly in the frost months, so its emitting time before discovery is estimated from the monthly profile of leak starts in the public odor reports (found within days of starting), not from the midpoint between surveys, before each district's 2026 methane per mile is compared with the program line.",
+  "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task229": "task229 v2 reads a state share through checks that reset the unit at the check; here nothing is reset and no share is estimated: each found item's active time before the find is estimated from when in the year items begin, against when in the year its unit is inspected.",
+    "task242": "task242 averages a detector's fading sensitivity over each unit's event times up to its reading date; here detection at the inspection is complete and the quantity is the duration before it, set by the seasonal start profile measured in a second record of items reported as they begin.",
+    "task461": "task461 carries a quantile to a long period through a correlated auxiliary series; here no distribution tail is carried: the duration each found item was active is the expectation of its start under the seasonal profile between two inspections.",
+    "task501": "task501 v2 chooses a pacing basis by walk-forward test; here no forecast is made: the start profile is read from the reports made at start, and the inventory sums each item's active time in the year."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 4, 2026-10-20: judge SEND_BACK (Gate H rule_application) and both scored readers landed the call; the block-group rebuild was exact arithmetic once the area was filed",
+      "driver": "A rate for an earlier period is needed for units drawn only later, and the units they were split from published it only as a whole, while finer units that tile the later units published it too; spreading the parent's rate to its parts makes the part holding the parent's high-rate pieces look like it rose and hides a rise in the other, so the earlier rate is rebuilt from the finer units and its error combined from theirs before the change is tested.",
+      "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
+      "subdomain": "census-register-administrative-data-quality",
+      "gap": [
+        "population"
+      ],
+      "generators": [
+        "G4",
+        "G17"
+      ]
+    }
+  ],
+  "notes": "Registered 2026-10-20 with --force over the slot's spent v1 card; check showed no BLOCK on the draft or the filed card (WARNs only), so the flag overrode nothing.",
+  "registered": "2026-10-20T10:37:21Z"
+}

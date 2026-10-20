@@ -1,269 +1,546 @@
-"""The pack's tables: the survey's keyed cards, the revenue control system's quarterly extracts, the service area's ZIP
-list, the bureau's city-market table, Kessick Valley's 10% ticket sample and its T-100 segments."""
+"""The pack's records: every county's wells with their addresses and parcels, the permit database (the active domestic
+wells and the permits that are not), the assessors' residential parcels (private well or public water), the survey's
+draw manifest, the three laboratories' results, the retest requests and the reference files; written as the systems
+that hold them write them."""
 import csv
 import datetime as dt
-import io
-import math
 
 import numpy as np
 
-import sim
+import sim as S
 import world as W
 
+FILES = {
+    "permits": "DOH_well_construction_permits_extract_2026-08-03.csv",
+    "parcels": "county_assessor_residential_parcels_2025_roll.xlsx",
+    "manifest": "PWNS_2025-26_draw_manifest.csv",
+    "hal": "Halvorsen_PWNS_results_2025-26.csv",
+    "ced": "Cedarline_PWNS_results_2025-26.xlsx",
+    "kin": "Kinsale_PWNS_results_2025-26.csv",
+    "retests": "PWNS_retest_kit_requests_2026.csv",
+    "counties": "PWP_county_codes.csv",
+    "design": "PWNS_2025-26_survey_design_report.pdf",
+    "standard": "WWA_2027_county_allocation_standard.pdf",
+    "factsheet": "PWP_nitrate_and_your_well_fact_sheet.pdf",
+    "labs": "certified_drinking_water_labs_2025.csv",
+}
+DISTRACTORS = ("factsheet", "labs")
 
-def everything():
-    import calibrate
-    x = sim.build()
-    x["dup_batch"] = calibrate.dup_batch(x, keyed_cards(x))
+STREETS = ["Oak Ridge", "Mill Pond", "Cedar Hollow", "Fox Run", "Quarry", "Old Farm", "Birch Hill", "Stony Brook",
+           "Maple Grove", "Pine Knob", "Hidden Valley", "Orchard", "Spring Creek", "Sawmill", "Ridgeview", "Elm Bend",
+           "Cranberry", "Beaver Dam", "Turkey Hill", "Chestnut", "Long Meadow", "Pheasant", "Shady", "Granite",
+           "Willow Brook", "Hemlock", "Bluebird", "Red Barn", "Clover Hill", "Deer Path", "Sugarbush", "Indian Creek",
+           "Tamarack", "Lost Lake", "Prairie View", "Windmill", "Hickory", "Kettle Pond", "Saddleback", "Thornapple",
+           "Wolf Creek", "Gravel Pit", "Schoolhouse", "Church", "Creamery", "Depot", "Ferry", "Grange", "Hayfield",
+           "Juniper", "Larkspur", "Meadowlark", "Nettle", "Plum Creek", "Quail Run", "Ravine", "Silo", "Timber",
+           "Upper Valley", "Vista", "Wheatfield", "Yarrow", "Alder Creek", "Bramble", "Cobble Hill", "Dogwood",
+           "Evergreen", "Fieldstone", "Goose Pond", "Heron", "Ironwood", "Juneberry", "Kingfisher", "Lilac",
+           "Mossy Rock", "Northfield", "Owl Hollow", "Partridge", "Rabbit Run", "Sandhill", "Tanager", "Valley View"]
+SUFFIX = [("Road", "RD"), ("Lane", "LN"), ("Drive", "DR"), ("Trail", "TRL"), ("Highway", "HWY"), ("Court", "CT"),
+          ("Avenue", "AVE"), ("Street", "ST")]
+SUFFIX_P = [0.46, 0.18, 0.12, 0.08, 0.05, 0.04, 0.04, 0.03]
+DIRS = [("North", "N"), ("South", "S"), ("East", "E"), ("West", "W")]
+TOWNS = ["Ashby", "Bellmont", "Carrick", "Dalton", "Easton", "Fairhope", "Garland", "Hilton", "Iona", "Jasper",
+         "Kirkby", "Linton", "Milford", "Norland", "Orrin", "Pelham", "Rowan", "Selby", "Tilden", "Upton", "Vernon",
+         "Weldon", "Yardley", "Alston", "Briar", "Colby", "Dover", "Elgin", "Fenton", "Gilman", "Hadley", "Ingram",
+         "Kendall", "Larue", "Mapleton", "Newcomb", "Oxbow", "Prescott", "Quincy", "Redfield", "Stanwood", "Thayer",
+         "Ulster", "Vail", "Whitby", "Arden", "Bixby", "Cullen", "Darrow", "Ellery", "Fulton", "Grafton"]
+TOWN_SHARE = [0.52, 0.33, 0.15]       # the third town of each county is the smallest, on its border
+WATER_CODES = {"A": ("W", "P"), "B": ("WELL", "PUBLIC"), "C": ("2", "1")}   # private well code, public water code
+LAYOUT_OF = {"C01": "A", "C02": "B", "C03": "C", "C04": "A", "C05": "B", "C06": "A", "C07": "C", "C08": "B",
+             "C09": "A", "C10": "C", "C11": "B", "C12": "A", "C13": "C", "C14": "B", "C15": "A", "C16": "C"}
+ASSESSOR_STYLE = {"A": "dash", "B": "plain", "C": "space"}
+# the sixteen counties sit four by four, C01 to C04 across the north; a county's neighbours share an edge
+GRID = {"C%02d" % (i + 1): (i // 4, i % 4) for i in range(16)}
+FRAME_DATE = dt.date(2025, 8, 31)
+
+
+def rng(seed, *parts):
+    return np.random.default_rng([seed, *parts])
+
+
+def neighbours(code):
+    r0, c0 = GRID[code]
+    return [k for k, (r1, c1) in GRID.items() if abs(r0 - r1) + abs(c0 - c1) == 1]
+
+
+def fmt_parcel(cc, book, lot, style):
+    if style == "dash":
+        return "%02d-%03d-%04d" % (cc, book, lot)
+    if style == "plain":
+        return "%02d%03d%04d" % (cc, book, lot)
+    if style == "space":
+        return "%02d %03d %04d" % (cc, book, lot)
+    if style == "short":
+        return "%02d%03d-%04d" % (cc, book, lot)
+    raise ValueError(style)
+
+
+def everything(seed=W.SEED):
+    x = dict(seed=seed, counties=[])
+    order = list(rng(seed, 19).permutation(len(TOWNS)))
+    for k, ((name, code), p) in enumerate(zip(W.COUNTIES, W.PLACED)):
+        c = S.county(seed, k, p)
+        c.update(name=name, code=code, cc=k + 1, lab=W.LAB_OF[code], layout=LAYOUT_OF[code])
+        c["towns"] = [TOWNS[int(i)] for i in order[3 * k:3 * k + 3]]
+        c["zips"] = ["%05d" % (58100 + 37 * k + 11 * j + (k * 7 + j * 3) % 9) for j in range(3)]
+        attributes(seed, c)
+        x["counties"].append(c)
+    kits(seed, x)
+    route(seed, x)
     return x
 
 
-def write_csv(path, cols, rows, crlf=False):
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
-    w.writerow(cols)
-    for r in rows:
-        w.writerow(r)
-    open(path, "w", encoding="utf-8", newline="").write(buf.getvalue())
-    return len(rows)
+def attributes(seed, c):
+    """addresses, parcels, permits and the extra parcels and permits the files hold beside the frames"""
+    r = rng(seed, 20, c["k"])
+    N = c["N"]
+    extra_pub = int(N * r.uniform(0.55, 0.9))           # residential parcels on public water
+    n_new = int(c["NP"] * r.uniform(0.012, 0.022))      # domestic wells drilled after the frame date
+    total = N + extra_pub + n_new
+    used, addr = set(), []
+    while len(addr) < total:
+        num = int(r.integers(10, 9990)) if r.random() < 0.7 else int(r.integers(10000, 29999))
+        st = STREETS[int(r.integers(len(STREETS)))]
+        if (num, st) in used:
+            continue
+        used.add((num, st))
+        sf = int(r.choice(len(SUFFIX), p=SUFFIX_P))
+        d = int(r.integers(4)) if r.random() < 0.28 else -1
+        addr.append(dict(num=num, street=st, suf=sf, dir=d, town=int(r.choice(3, p=TOWN_SHARE))))
+    lots, parcels = set(), []
+    while len(parcels) < N + extra_pub:
+        b, l = int(r.integers(1, 420)), int(r.integers(1, 9999))
+        if (b, l) in lots:
+            continue
+        lots.add((b, l))
+        parcels.append((b, l))
+    c["addr"] = addr[:N]
+    c["parcel"] = parcels[:N]
+    c["pub_addr"] = addr[N:N + extra_pub]
+    c["pub_parcel"] = parcels[N:]
+    c["new_addr"] = addr[N + extra_pub:]
+    c["year_built"] = np.where(c["grp"] == 1, r.integers(1890, 1986, N), r.integers(1950, 2025, N))
+    # the assessor codes a permit-only well's parcel as public water or leaves the field blank
+    c["po_code"] = np.where(r.random(N) < 0.7, "PUBLIC", "BLANK")
+    onP = c["onP"]
+    d0 = np.datetime64("1986-01-02")
+    span = (np.datetime64(FRAME_DATE.isoformat()) - d0).astype(int)
+    drilled = np.full(N, np.datetime64("NaT"), dtype="datetime64[D]")
+    drilled[onP] = d0 + r.integers(0, span, int(onP.sum())).astype("timedelta64[D]")
+    c["drilled"] = drilled
+    c["permit_no"], c["permit_parcel_style"] = {}, {}
+    seen = set()
+
+    def permit_no(yr):
+        while True:
+            v = "W-%d-%05d" % (yr, int(r.integers(10000, 99999)))
+            if v not in seen:
+                seen.add(v)
+                return v
+    for i in np.flatnonzero(onP):
+        yr = int(str(drilled[i])[:4])
+        c["permit_no"][int(i)] = permit_no(yr)
+        # a permit carries the parcel number more often the newer it is
+        has = r.random() < (0.45 if yr < 2000 else 0.75 if yr < 2012 else 0.93)
+        c["permit_parcel_style"][int(i)] = (["dash", "short", "plain"][int(r.choice(3, p=[0.7, 0.2, 0.1]))]
+                                            if has else None)
+    c["depth"] = np.where(c["grp"] == 1, r.integers(18, 140, N), r.integers(80, 640, N))
+    c["casing"] = (c["depth"] * r.uniform(0.3, 0.8, N)).astype(int)
+    # permits outside the frame: wells for irrigation, livestock or monitoring, the earlier permits of replaced wells,
+    # abandoned domestic wells on parcels now on public water, and domestic wells drilled after the frame date
+    noise = []
+    for _ in range(int(onP.sum() * r.uniform(0.10, 0.16))):
+        use = ["IRRIGATION", "LIVESTOCK", "MONITORING", "INDUSTRIAL"][int(r.choice(4, p=[0.45, 0.3, 0.2, 0.05]))]
+        a = dict(num=int(r.integers(30000, 49999)), street=STREETS[int(r.integers(len(STREETS)))],
+                 suf=int(r.choice(len(SUFFIX), p=SUFFIX_P)), dir=-1, town=int(r.choice(3, p=TOWN_SHARE)))
+        yr = int(r.integers(1986, 2026))
+        noise.append(dict(permit=permit_no(yr), addr=a, use=use, status="ACTIVE",
+                          drilled=dt.date(yr, int(r.integers(1, 13)), int(r.integers(1, 28))), parcel=None,
+                          depth=int(r.integers(40, 900))))
+    for i in r.choice(np.flatnonzero(onP), int(onP.sum() * r.uniform(0.04, 0.07)), replace=False):
+        yr = int(str(drilled[i])[:4])
+        old = max(1986, yr - int(r.integers(6, 25)))
+        noise.append(dict(permit=permit_no(old), addr=c["addr"][i], use="DOMESTIC", status="REPLACED",
+                          drilled=dt.date(old, int(r.integers(1, 13)), int(r.integers(1, 28))), parcel=None,
+                          depth=int(r.integers(40, 300))))
+    for j in range(int(onP.sum() * r.uniform(0.03, 0.06))):
+        yr = int(r.integers(1986, 2010))
+        noise.append(dict(permit=permit_no(yr), addr=c["pub_addr"][j], use="DOMESTIC", status="ABANDONED",
+                          drilled=dt.date(yr, int(r.integers(1, 13)), int(r.integers(1, 28))),
+                          parcel=c["pub_parcel"][j], depth=int(r.integers(40, 300))))
+    for a in c["new_addr"]:
+        d = FRAME_DATE + dt.timedelta(days=int(r.integers(2, 330)))
+        noise.append(dict(permit=permit_no(d.year), addr=a, use="DOMESTIC", status="ACTIVE", drilled=d, parcel=None,
+                          depth=int(r.integers(80, 640))))
+    c["noise_permits"] = noise
 
 
-def card_no(wave, n):
-    return "%d%06d" % (wave, n)
+def kits(seed, x):
+    """kit numbers, collection dates, reruns, and the retest kits households asked for"""
+    r = rng(seed, 30)
+    kit_used = set()
+
+    def new_kit(prefix):
+        while True:
+            v = "%s%06d" % (prefix, int(r.integers(100000, 999999)))
+            if v not in kit_used:
+                kit_used.add(v)
+                return v
+    start = np.datetime64(W.SURVEY_START.isoformat())
+    for c in x["counties"]:
+        c["kit"], c["collected"], c["rerun"] = {}, {}, {}
+        for i in np.flatnonzero(c["tested"]):
+            i = int(i)
+            c["kit"][i] = new_kit("PW25-")
+            c["collected"][i] = start + np.timedelta64(int(r.integers(6, 225)), "D")
+            if r.random() < 0.035:
+                c["rerun"][i] = float(c["measured"][i] * np.exp(r.normal(0, 0.06)))
+        # requests: every household whose first test was above the standard and that asked for a retest, a few
+        # households below it that asked anyway, and households outside the survey whose own test was high
+        req = []
+        for i in np.flatnonzero(c["retested"]):
+            i = int(i)
+            first = c["collected"][i]
+            d = max(np.datetime64("2026-01-12"),
+                    min(np.datetime64("2026-06-28"), first + np.timedelta64(int(r.integers(35, 170)), "D")))
+            req.append(dict(well=i, via="PHONE" if c["phone"][i] else "PORTAL", collected=d,
+                            value=float(c["remeasured"][i]), kind="above"))
+        above = np.flatnonzero(c["tested"] & (c["measured"] > W.STANDARD_N) & ~c["retested"])
+        for i in (r.choice(above, min(len(above), int(r.integers(1, 4))), replace=False) if len(above) else []):
+            req.append(dict(well=int(i), via="PORTAL" if r.random() < 0.6 else "PHONE",
+                            collected=np.datetime64("2026-07-01") + np.timedelta64(int(r.integers(0, 24)), "D"),
+                            value=float(c["nitrate"][i] * r.uniform(0.82, 1.02)), kind="late"))
+        below = np.flatnonzero(c["tested"] & (c["measured"] > 6.5) & (c["measured"] < 9.6))
+        for i in (r.choice(below, min(len(below), int(r.integers(1, 4))), replace=False) if len(below) else []):
+            req.append(dict(well=int(i), via="PORTAL" if r.random() < 0.5 else "PHONE",
+                            collected=np.datetime64("2026-02-02") + np.timedelta64(int(r.integers(0, 140)), "D"),
+                            value=float(c["nitrate"][i] * np.exp(r.normal(0, 0.05))), kind="below"))
+        untested = np.flatnonzero(~c["tested"] & (c["nitrate"] > 9.0))
+        for i in r.choice(untested, min(len(untested), int(r.integers(1, 4))), replace=False):
+            req.append(dict(well=int(i), via="PHONE",
+                            collected=np.datetime64("2026-02-01") + np.timedelta64(int(r.integers(0, 140)), "D"),
+                            value=float(c["nitrate"][i] * np.exp(r.normal(0, 0.04))), kind="outside"))
+        for q in req:
+            q["kit"] = new_kit("PW26-R")
+            q["requested"] = q["collected"] - np.timedelta64(int(r.integers(9, 32)), "D")
+            q["mailed"] = q["requested"] + np.timedelta64(int(r.integers(1, 4)), "D")
+            q["rerun"] = float(q["value"] * np.exp(r.normal(0, 0.05))) if r.random() < 0.03 else None
+        c["requests"] = req
+    # keep every printed result clear of the standard, so that no rounding and no conversion factor (4.427, or the
+    # fact sheet's 4.4 against its 44 mg/L) puts a result on the other side of it
+    def clear(v):
+        if 9.90 < v <= W.STANDARD_N:
+            return float(r.uniform(9.55, 9.90))
+        if W.STANDARD_N < v < 10.05:
+            return float(r.uniform(10.05, 10.40))
+        return v
+    for c in x["counties"]:
+        for i in list(c["kit"]):
+            c["measured"][i] = clear(c["measured"][i])
+        for q in c["requests"]:
+            q["value"] = clear(q["value"])
 
 
-def wave_index(name):
-    return int(name[1])
+def route(seed, x):
+    """The kit vendor routes a portal request to a county by the ZIP code the household types. In most counties one
+    of the two smaller towns has a ZIP code whose post office sits over the county line, so its portal requests go to
+    that neighbour, whose laboratory analyses the retest. Phone requests are routed by the county the caller gives."""
+    r = rng(seed, 31)
+    codes = [c["code"] for c in x["counties"]]
+    by = {c["code"]: c for c in x["counties"]}
+    close = np.datetime64(W.RETESTS_CLOSE.isoformat())
+    flows, gold, portal = {}, {}, {}
+    for k in codes:
+        c = by[k]
+        counted = [q for q in c["requests"] if q["kind"] == "above" and q["collected"] <= close]
+        gold[k] = (len(counted), sum(1 for q in counted if q["value"] > W.STANDARD_N))
+        port = [q for q in counted if q["via"] == "PORTAL"]
+        portal[k] = (len(port), sum(1 for q in port if q["value"] > W.STANDARD_N))
+        for town in (1, 2):
+            qs = [q for q in port if c["addr"][q["well"]]["town"] == town]
+            flows[(k, town)] = (len(qs), sum(1 for q in qs if q["value"] > W.STANDARD_N))
+    for _ in range(400000):
+        pick = {k: (int(r.integers(1, 3)), neighbours(k)[int(r.integers(len(neighbours(k))))]) for k in codes}
+        net = {k: [0, 0] for k in codes}
+        for k, (town, nb) in pick.items():
+            for j in (0, 1):
+                net[k][j] -= flows[(k, town)][j]
+                net[nb][j] += flows[(k, town)][j]
+        # every county's two figures move when requests are counted in the county on the request, and again when
+        # only the portal's requests are
+        if all(net[k][j] != 0 and portal[k][j] + net[k][j] != gold[k][j] for k in codes for j in (0, 1)):
+            break
+    else:
+        raise SystemExit("no routing moves every county's retest figures")
+    x["border"] = pick
+    for c in x["counties"]:
+        town, nb = pick[c["code"]]
+        for q in c["requests"]:
+            q["route"] = nb if (q["via"] == "PORTAL" and c["addr"][q["well"]]["town"] == town) else c["code"]
 
 
-# ---------------------------------------------------------------------------------------------- the cards
-CARD_COLS = ["card_no", "wave", "keying_batch", "box_collected", "home_zip", "destination_code", "nights", "party",
-             "purpose"]
-VERBATIM_COLS = ["card_no", "question", "as_written"]
+# ----------------------------------------------------------------------------------------------------- formatting
+def addr_permit(a, r):
+    st = a["street"]
+    suf_long, suf_short = SUFFIX[a["suf"]]
+    style = r.random()
+    if a["dir"] >= 0:
+        dl, ds = DIRS[a["dir"]]
+    if style < 0.6:
+        return "%d %s%s %s" % (a["num"], (ds + " ") if a["dir"] >= 0 else "", st, suf_short.title())
+    if style < 0.85:
+        return "%d %s%s %s" % (a["num"], (dl + " ") if a["dir"] >= 0 else "", st, suf_long)
+    return "%d %s%s %s." % (a["num"], (ds + ". ") if a["dir"] >= 0 else "", st, suf_short.title())
 
 
-def keyed_cards(x):
-    """The cards in the order the contractor keyed them: each wave's nights of box collection in turn, each night's
-    cards in batches of up to 450 in the order they came out of the box."""
+def addr_parcel(a, layout):
+    st = a["street"].upper()
+    suf_long, suf_short = SUFFIX[a["suf"]]
+    if layout == "A":
+        return "%d %s%s %s" % (a["num"], (DIRS[a["dir"]][1] + " ") if a["dir"] >= 0 else "", st, suf_short)
+    if layout == "C":
+        return "%d %s%s %s" % (a["num"], (DIRS[a["dir"]][1] + " ") if a["dir"] >= 0 else "", st, suf_long.upper())
+    raise ValueError(layout)
+
+
+def addr_request(a, r):
+    st = a["street"]
+    suf_long, suf_short = SUFFIX[a["suf"]]
+    d = ""
+    if a["dir"] >= 0:
+        d = (DIRS[a["dir"]][0] if r.random() < 0.5 else DIRS[a["dir"]][1]) + " "
+    s = "%d %s%s %s" % (a["num"], d, st, suf_long if r.random() < 0.5 else suf_short.title())
+    return s.upper() if r.random() < 0.3 else s
+
+
+# --------------------------------------------------------------------------------------------------- the writers
+PERMIT_COLS = ["PERMIT_NO", "COUNTY", "SITE_ADDRESS", "SITE_CITY", "PARCEL_NO", "DATE_DRILLED", "WELL_USE",
+               "WELL_STATUS", "TOTAL_DEPTH_FT", "CASING_DEPTH_FT"]
+
+
+def permit_rows(x):
+    r = rng(x["seed"], 40)
     out = []
-    for name, q, start in W.WAVES:
-        wc = sorted((c for c in x["cards"] if c["wave"] == name), key=lambda c: (c["collected"], c["serial"]))
-        batch, count, last = 0, 0, None
-        for c in wc:
-            if c["collected"] != last or count >= 450:
-                batch += 1
-                count = 0
-                last = c["collected"]
-            count += 1
-            out.append((c, "%d-%02d" % (wave_index(name), batch), c["zip_keyed"]))
+    for c in x["counties"]:
+        for i, pno in c["permit_no"].items():
+            a = c["addr"][i]
+            style = c["permit_parcel_style"][i]
+            b, l = c["parcel"][i]
+            out.append([pno, c["name"].upper(), addr_permit(a, r), c["towns"][a["town"]],
+                        fmt_parcel(c["cc"], b, l, style) if style else "", str(c["drilled"][i]), "DOMESTIC", "ACTIVE",
+                        int(c["depth"][i]), int(c["casing"][i])])
+        for n in c["noise_permits"]:
+            par = fmt_parcel(c["cc"], *n["parcel"], "dash") if n["parcel"] else ""
+            out.append([n["permit"], c["name"].upper(), addr_permit(n["addr"], r), c["towns"][n["addr"]["town"]], par,
+                        n["drilled"].isoformat(), n["use"], n["status"], n["depth"], int(n["depth"] * 0.5)])
+    out.sort(key=lambda v: (v[0][2:6], v[0]))
     return out
 
 
-def card_rows(x):
-    """One row per card in keying order; the export carried one keying batch twice, its second copy straight after
-    the first."""
-    rows = []
-    for name, q, start in W.WAVES:
-        wave_rows = [[card_no(wave_index(name), c["serial"]), wave_index(name), b, c["collected"].isoformat(), z,
-                      c["dest_code"], c["nights"], c["party_keyed"], c["purpose"]]
-                     for c, b, z in keyed_cards(x) if c["wave"] == name]
-        for i, r in enumerate(wave_rows):
-            rows.append(r)
-            if r[2] == x["dup_batch"] and (i + 1 == len(wave_rows) or wave_rows[i + 1][2] != r[2]):
-                rows += [list(q_) for q_ in wave_rows if q_[2] == x["dup_batch"]]
-    return rows
+PARCEL_LAYOUTS = {
+    "A": ["PARCEL_ID", "SITUS_ADDRESS", "SITUS_CITY", "USE_CODE", "YEAR_BUILT", "WATER"],
+    "B": ["PIN", "HOUSE_NO", "DIR", "STREET", "SUFFIX", "CITY", "CLASS", "YR_BLT", "WATER_SOURCE"],
+    "C": ["Parcel Number", "Property Address", "Municipality", "Property Type", "Year Built", "Water Service"],
+}
 
 
-STATE = {"TPA": "FL", "PIE": "FL", "RSW": "FL", "MCO": "FL", "SFB": "FL", "FLL": "FL", "MIA": "FL", "SRQ": "FL",
-         "PBI": "FL", "JAX": "FL", "PHX": "AZ", "AZA": "AZ", "LAS": "NV", "RNO": "NV", "MYR": "SC", "SAV": "GA",
-         "SAN": "CA", "LAX": "CA", "SFO": "CA", "SNA": "CA", "DEN": "CO", "BNA": "TN", "BOS": "MA", "DFW": "TX",
-         "DAL": "TX", "IAH": "TX", "HOU": "TX", "AUS": "TX", "SAT": "TX", "ATL": "GA", "MSP": "MN", "SEA": "WA",
-         "PDX": "OR", "SLC": "UT", "MSY": "LA", "RDU": "NC", "PHL": "PA"}
-
-
-def as_written(card, s):
-    """How a destination reads once keyed from a hand-written card: mostly as the traveller wrote it, sometimes in
-    capitals or lower case, with the state added, a full stop, or a letter dropped or doubled."""
-    rng = np.random.default_rng([W.SEED, 13, wave_index(card["wave"]), card["serial"]])
-    u = rng.random(4)
-    out = s
-    if u[0] < 0.07:
-        out = out.upper()
-    elif u[0] < 0.15:
-        out = out.lower()
-    if u[1] < 0.06 and card["airport"] in STATE and len(out) > 3 and "," not in out:
-        out = out + (", " if u[2] < 0.5 else " ") + STATE[card["airport"]]
-    elif u[1] < 0.08:
-        out = out + "."
-    if u[3] < 0.025 and len(out) > 5 and out.isalpha():
-        i = 1 + int(u[2] * (len(out) - 2))
-        out = out[:i] + out[i + 1:] if u[3] < 0.0125 else out[:i] + out[i] + out[i:]
-    return out
-
-
-def verbatim_rows(x):
-    rows = []
-    for c, b, z in keyed_cards(x):
-        no = card_no(wave_index(c["wave"]), c["serial"])
-        rows.append([no, "Q2", as_written(c, c["dest_written"])])
-        rows.append([no, "Q4", c["party_written"]])
-    return rows
-
-
-# ---------------------------------------------------------------------------------------------- the register
-def garage_counts():
-    rng = np.random.default_rng(W.SEED + 4000)
-    out = {}
-    for i in range(365):
-        d = dt.date(W.YEAR, 1, 1) + dt.timedelta(days=i)
-        out[d] = int(rng.poisson(W.GARAGE_PER_DAY * W.GARAGE_SEASON[(d.month - 1) // 3 + 1] * sim.dow_factor(d)))
-    return out
-
-
-def permit_counts():
-    rng = np.random.default_rng(W.SEED + 5000)
-    out = {}
-    for i in range(365):
-        d = dt.date(W.YEAR, 1, 1) + dt.timedelta(days=i)
-        wk = d.weekday() < 5
-        out[d] = {"Economy C": int(rng.poisson(74 if wk else 31)), "Economy D": int(rng.poisson(58 if wk else 24)),
-                  "Long-Term": int(rng.poisson(9)), "Garage": int(rng.poisson(118 if wk else 52))}
-    return out
-
-
-def register_rows(x, q):
-    ent = {(d, l): n for d, l, n in x["entries"]}
-    gar = garage_counts()
-    per = permit_counts()
-    days = sorted({d for d, l, n in x["entries"] if (d.month - 1) // 3 + 1 == q})
-    rows = []
-    for d in days:
-        for lot in ["Economy C", "Economy D", "Long-Term", "Garage"]:
-            n = gar[d] if lot == "Garage" else ent[(d, lot)]
-            if d < W.UPGRADE:
-                rows.append([d.strftime("%m/%d/%Y"), W.LOT_OLD[lot], n])
+def parcel_sheets(x):
+    """each county assessor's residential parcels, in that assessor's layout"""
+    r = rng(x["seed"], 41)
+    sheets = {}
+    for c in x["counties"]:
+        lay = c["layout"]
+        pw, pub = WATER_CODES[lay]
+        rows = []
+        for i in range(c["N"]):
+            b, l = c["parcel"][i]
+            code = (pub if c["po_code"][i] == "PUBLIC" else "") if c["grp"][i] == 0 else pw
+            rows.append((b, l, c["addr"][i], int(c["year_built"][i]), code))
+        for j, a in enumerate(c["pub_addr"]):
+            b, l = c["pub_parcel"][j]
+            rows.append((b, l, a, int(r.integers(1900, 2025)), pub))
+        out = []
+        for o in r.permutation(len(rows)):
+            b, l, a, yb, code = rows[o]
+            town = c["towns"][a["town"]]
+            if lay == "A":
+                out.append([fmt_parcel(c["cc"], b, l, "dash"), addr_parcel(a, "A"), town.upper(), "R1", yb, code])
+            elif lay == "B":
+                out.append([fmt_parcel(c["cc"], b, l, "plain"), a["num"], (DIRS[a["dir"]][1] if a["dir"] >= 0 else ""),
+                            a["street"].upper(), SUFFIX[a["suf"]][1], town.upper(), "RES", yb, code])
             else:
-                rows.append([d.isoformat(), W.LOT_NEW[lot], n, per[d][lot]])
-    cols = ["Date", "Lot", "Transient Entries"] if days[0] < W.UPGRADE else ["business_date", "facility", "transient_entries",
-                                                                    "permit_entries"]
-    return cols, rows
+                out.append([fmt_parcel(c["cc"], b, l, "space"), addr_parcel(a, "C"), town, "Single family", yb, code])
+        sheets[c["code"]] = (lay, out)
+    return sheets
 
 
-# ---------------------------------------------------------------------------------------------- reference tables
-ZIP_COLS = ["county", "zip_code", "post_office"]
+MANIFEST_COLS = ["DRAW_ID", "COUNTY_CODE", "FRAME", "FRAME_RECORD", "DRAW_SEQ", "MAILED", "OUTCOME", "KIT_ID"]
 
 
-def zip_rows():
-    rows = []
-    for county, (zips, _) in W.COUNTIES.items():
-        for z in zips:
-            rows.append([county, z, W.PLACES[z]])
-    return rows
+def manifest_rows(x):
+    out = []
+    n = 0
+    for c in x["counties"]:
+        seq = {"P": 0, "Q": 0}
+        day = np.datetime64(W.SURVEY_START.isoformat())
+        for lst, i, outcome in c["draws"]:
+            i = int(i)
+            seq[lst] += 1
+            n += 1
+            b, l = c["parcel"][i]
+            rec = c["permit_no"][i] if lst == "P" else fmt_parcel(c["cc"], b, l, ASSESSOR_STYLE[c["layout"]])
+            mailed = day + np.timedelta64(int(seq[lst] // 9), "D")
+            kit = c["kit"].get(i, "") if outcome in ("TESTED", "TESTED_EARLIER") else ""
+            out.append(["D%06d" % (100000 + n), c["code"], "PERMIT" if lst == "P" else "PARCEL", rec, seq[lst],
+                        str(mailed), outcome, kit])
+    return out
 
 
-MARKET_COLS = ["code", "code_type", "name", "city_market", "market_code"]
+def lab_records(x):
+    """every result row the three laboratories report, before formatting; a retest goes to the laboratory of the
+    county the request was routed to"""
+    r = rng(x["seed"], 43)
+    by = {c["code"]: c for c in x["counties"]}
+    items = []
+    for c in x["counties"]:
+        for i, kit in c["kit"].items():
+            items.append((c["code"], "FIRST", kit, c["collected"][i], float(c["measured"][i]), c["rerun"].get(i)))
+        for q in c["requests"]:
+            items.append((q["route"], "RETEST", q["kit"], q["collected"], q["value"], q["rerun"]))
+    items.sort(key=lambda v: (str(v[3]), v[2]))
+    recs = {"HAL": [], "CED": [], "KIN": []}
+    sid = {"HAL": 30000, "CED": 50000, "KIN": 700000}
+    for code, typ, kit, d, v, rerun in items:
+        lab = by[code]["lab"]
+        sid[lab] += int(r.integers(1, 7))
+        arsenic = float(np.exp(r.normal(0.6, 1.0)))
+        tc = r.random() < 0.18
+        ec = tc and r.random() < 0.12
+        recs[lab].append(dict(county=code, kit=kit, sample=sid[lab], collected=d, nitrate=v, rerun=rerun,
+                              arsenic=arsenic, tc=tc, ec=ec, type=typ,
+                              received=d + np.timedelta64(int(r.integers(1, 4)), "D"),
+                              reported=d + np.timedelta64(int(r.integers(6, 15)), "D")))
+    return recs
 
 
-def market_rows():
-    rows = []
-    for mcode, (mname, airports) in W.CITY_MARKETS.items():
-        for ap, _ in airports:
-            rows.append([ap, "airport", W.AIRPORT_NAMES[ap], mname, mcode])
-        if mcode in W.METRO:
-            rows.append([W.METRO[mcode], "metro", "%s, all airports" % mname, mname, mcode])
-    for code, city, name, _ in W.OTHER_AIRPORTS:
-        rows.append([code, "airport", name, city, code])
-    rows.sort(key=lambda r: (r[3], r[1] != "metro", r[0]))
-    return rows
+def nitrate_text(v, lab):
+    if v < 0.4:
+        return "<0.4" if lab == "HAL" else "0.4" if lab == "CED" else "1.8"
+    return "%.2f" % v if lab != "KIN" else "%.1f" % (v * W.NO3_PER_N)
 
 
-# ---------------------------------------------------------------------------------------------- Kessick Valley's ticket sample
-COORD = {"KVR": (41.21, -85.62), "ORD": (41.98, -87.90), "CLT": (35.21, -80.94), "DTW": (42.21, -83.35),
-         "TPA": (27.98, -82.53), "PIE": (27.91, -82.69), "PHX": (33.43, -112.01), "AZA": (33.31, -111.66),
-         "RSW": (26.54, -81.76), "MCO": (28.43, -81.31), "SFB": (28.78, -81.24), "FLL": (26.07, -80.15),
-         "LAS": (36.08, -115.15), "MYR": (33.68, -78.93), "SAN": (32.73, -117.19), "DEN": (39.86, -104.67),
-         "BNA": (36.12, -86.68), "DCA": (38.85, -77.04), "IAD": (38.95, -77.46), "BWI": (39.18, -76.67),
-         "LGA": (40.78, -73.87), "EWR": (40.69, -74.17), "JFK": (40.64, -73.78), "BOS": (42.36, -71.01),
-         "DFW": (32.90, -97.04), "DAL": (32.85, -96.85), "IAH": (29.98, -95.34), "HOU": (29.65, -95.28),
-         "ATL": (33.64, -84.43), "MSP": (44.88, -93.22), "LAX": (33.94, -118.41), "SEA": (47.45, -122.31),
-         "MIA": (25.79, -80.29), "MSY": (29.99, -90.26)}
-MARKET_ID = {"KVR": 34921, "CHI": 30977, "CLT": 31057, "DTT": 31295, "TPA": 33195, "PHX": 30466, "RSW": 31714,
-             "ORL": 31454, "FLL": 32467, "LAS": 32211, "MYR": 33284, "SAN": 33570, "DEN": 30325, "BNA": 30693,
-             "WAS": 30852, "NYC": 31703, "BOS": 30721, "DFW": 30194, "HOU": 31453, "ATL": 30397, "MSP": 31650,
-             "LAX": 32575, "SEA": 30559, "MIA": 32467, "MSY": 33495}
-TICKET_COLS = ["ItinID", "MktID", "MktCoupons", "Year", "Quarter", "Origin", "OriginCityMarketID", "Dest",
-               "DestCityMarketID", "AirportGroup", "TkCarrier", "OpCarrierGroup", "BulkFare", "Passengers", "MktFare",
-               "MktDistance", "NonStopMiles"]
-HUB_CARRIER = {"ORD": "7L", "CLT": "4B", "DTW": "9R"}
+HAL_COLS = ["SAMPLE_ID", "KIT_ID", "COUNTY_CODE", "COLLECTED", "RECEIVED", "REPORTED", "SAMPLE_TYPE", "NO3N_MG_L",
+            "AS_UG_L", "TOTAL_COLIFORM", "E_COLI", "RESULT_STATUS"]
 
 
-def miles(a, b):
-    (la1, lo1), (la2, lo2) = COORD[a], COORD[b]
-    p1, p2 = math.radians(la1), math.radians(la2)
-    dl = math.radians(lo2 - lo1)
-    c = math.sin(p1) * math.sin(p2) + math.cos(p1) * math.cos(p2) * math.cos(dl)
-    return int(round(3958.8 * math.acos(max(-1.0, min(1.0, c)))))
+def hal_rows(recs):
+    out = []
+    for q in recs:
+        base = ["H25-%05d" % q["sample"], q["kit"], q["county"], str(q["collected"]), str(q["received"])]
+        typ = "ROUTINE" if q["type"] == "FIRST" else "CONFIRMATION"
+        if q["rerun"] is not None:
+            out.append(base + [str(q["reported"] - np.timedelta64(3, "D")), typ, nitrate_text(q["rerun"], "HAL"),
+                               "%.1f" % q["arsenic"], "A", "A", "SUPERSEDED"])
+        out.append(base + [str(q["reported"]), typ, nitrate_text(q["nitrate"], "HAL"), "%.1f" % q["arsenic"],
+                           "P" if q["tc"] else "A", "P" if q["ec"] else "A", "FINAL"])
+    return out
 
 
-def market_of(ap):
-    for m, (n, aps) in W.CITY_MARKETS.items():
-        if any(a == ap for a, _ in aps):
-            return m
-    return ap
+CED_COLS = ["Lab Sample", "Client Kit", "County", "Date Sampled", "Analyte", "Result", "Unit", "Qualifier", "Method",
+            "Report Date", "Comment"]
 
 
-def ticket_rows():
-    rng = np.random.default_rng(W.SEED + 6000)
-    dests = {"TPA": 150, "PHX": 120, "RSW": 70, "MCO": 260, "FLL": 90, "LAS": 230, "MYR": 60, "SAN": 110, "DEN": 300,
-             "BNA": 120, "DCA": 140, "IAD": 60, "BWI": 40, "LGA": 210, "EWR": 160, "JFK": 90, "BOS": 270, "DFW": 200,
-             "DAL": 30, "IAH": 120, "HOU": 50, "ATL": 330, "MSP": 160, "LAX": 210, "SEA": 150, "MIA": 120,
-             "MSY": 90, "ORD": 610, "CLT": 380, "DTW": 400}
-    season = {"TPA": (1.8, 1.0, 0.6), "PHX": (1.7, 1.0, 0.5), "RSW": (2.0, 0.9, 0.4), "MCO": (1.4, 1.1, 1.0),
-              "FLL": (1.6, 0.9, 0.6), "MYR": (0.4, 1.1, 1.9)}
-    rows, itin = [], 2026100000
-    for q in (1, 2, 3):
-        for ap, n in dests.items():
-            k = int(rng.poisson(n * season.get(ap, (1.0, 1.0, 1.0))[q - 1]))
-            for _ in range(k):
-                itin += int(rng.integers(3, 40))
-                hub = ap if ap in HUB_CARRIER else ["ORD", "CLT", "DTW"][rng.choice(3, p=(0.42, 0.31, 0.27))]
-                car = HUB_CARRIER[hub]
-                rt = rng.random() < 0.72
-                pax = 1 + int(rng.poisson(0.35))
-                d = miles("KVR", ap)
-                flown = d if hub == ap else miles("KVR", hub) + miles(hub, ap)
-                fare1 = round(float(95 + 0.135 * d * rng.lognormal(0.0, 0.35)), 2)
-                bulk = 1 if rng.random() < 0.01 else 0
-                group = "KVR:%s" % ap if hub == ap else "KVR:%s:%s" % (hub, ap)
-                mk = market_of(ap)
-                out = [itin, itin * 10 + 1, 1 if hub == ap else 2, 2026, q, "KVR", MARKET_ID["KVR"], ap,
-                       MARKET_ID.get(mk, 30000 + sum(map(ord, ap))), group, car, car, bulk, pax,
-                       "%.2f" % fare1, flown, d]
-                rows.append(out)
-                if rt:
-                    fare2 = round(fare1 * float(rng.uniform(0.85, 1.2)), 2)
-                    back = ":".join(reversed(group.split(":")))
-                    rows.append([itin, itin * 10 + 2, out[2], 2026, q, ap, out[8], "KVR", MARKET_ID["KVR"], back, car,
-                                 car, bulk, pax, "%.2f" % fare2, flown, d])
-    return rows
+def _d(v):
+    return dt.date.fromisoformat(str(v))
 
 
-T100_COLS = ["YEAR", "MONTH", "UNIQUE_CARRIER", "ORIGIN", "DEST", "AIRCRAFT_TYPE", "DEPARTURES_SCHEDULED",
-             "DEPARTURES_PERFORMED", "SEATS", "PASSENGERS", "DISTANCE"]
+def ced_rows(recs):
+    out = []
+    for q in recs:
+        base = ["CED-25-%05d" % q["sample"], q["kit"], q["county"], _d(q["collected"])]
+        rep = _d(q["reported"])
+        com = "Confirmation sample" if q["type"] == "RETEST" else ""
+        if q["rerun"] is not None:
+            out.append(base + ["Nitrate as N", nitrate_text(q["rerun"], "CED"), "mg/L", "", "EPA 300.0",
+                               _d(q["reported"] - np.timedelta64(4, "D")), com])
+            com2 = "Reanalysis; replaces earlier result" + ("; " + com if com else "")
+        else:
+            com2 = com
+        out.append(base + ["Nitrate as N", nitrate_text(q["nitrate"], "CED"), "mg/L", "U" if q["nitrate"] < 0.4 else "",
+                           "EPA 300.0", rep, com2])
+        out.append(base + ["Arsenic", "%.1f" % q["arsenic"], "ug/L", "U" if q["arsenic"] < 1 else "", "EPA 200.8", rep,
+                           com])
+        out.append(base + ["Total Coliform", "Present" if q["tc"] else "Absent", "", "", "SM 9223B", rep, com])
+        out.append(base + ["E. coli", "Present" if q["ec"] else "Absent", "", "", "SM 9223B", rep, com])
+    return out
 
 
-def t100_rows():
-    rng = np.random.default_rng(W.SEED + 7000)
-    spec = [("7L", "ORD", "E175", 76, 3, 1), ("4B", "CLT", "CRJ-900", 76, 2, 0), ("9R", "DTW", "CRJ-700", 65, 2, 1)]
-    rows = []
-    for m in range(1, 13):
-        first = dt.date(2026, m, 1)
-        ndays = (dt.date(2026 + (m == 12), m % 12 + 1, 1) - first).days
-        sats = sum(1 for i in range(ndays) if (first + dt.timedelta(days=i)).weekday() == 5)
-        for car, hub, ac, seats, freq, ex_sat in spec:
-            for o, d in (("KVR", hub), (hub, "KVR")):
-                sched = freq * ndays - ex_sat * sats
-                perf = sched - int(rng.poisson(sched * 0.012))
-                lf = float(rng.uniform(0.71, 0.86))
-                rows.append([2026, m, car, o, d, ac, sched, perf, perf * seats, int(perf * seats * lf), miles("KVR", hub)])
-    return rows
+KIN_COLS = ["SAMPLEID", "CLIENTID", "CNTY", "SAMPLED", "PARAMETER", "VALUE", "UNITS", "FLAG", "VERSION", "REPORTED"]
+
+
+def kin_rows(recs):
+    out = []
+    for q in recs:
+        base = ["K%06d" % q["sample"], q["kit"], q["county"], str(q["collected"]).replace("-", "")]
+        rep = str(q["reported"]).replace("-", "")
+        ver = 1
+        if q["rerun"] is not None:
+            out.append(base + ["NITRATE", nitrate_text(q["rerun"], "KIN"), "mg/L NO3", "", 1,
+                               str(q["reported"] - np.timedelta64(3, "D")).replace("-", "")])
+            ver = 2
+        out.append(base + ["NITRATE", nitrate_text(q["nitrate"], "KIN"), "mg/L NO3", "<" if q["nitrate"] < 0.4 else "",
+                           ver, rep])
+        out.append(base + ["ARSENIC", "%.1f" % q["arsenic"], "ug/L", "<" if q["arsenic"] < 1 else "", ver, rep])
+        out.append(base + ["TC", "POS" if q["tc"] else "NEG", "", "", ver, rep])
+        out.append(base + ["EC", "POS" if q["ec"] else "NEG", "", "", ver, rep])
+    return out
+
+
+REQUEST_COLS = ["REQUEST_ID", "COUNTY_CODE", "REQUESTED", "CHANNEL", "ORIGINAL_KIT", "SHIP_TO_ADDRESS", "SHIP_TO_CITY",
+                "SHIP_TO_ZIP", "RETEST_KIT", "KIT_MAILED"]
+
+
+def request_rows(x):
+    r = rng(x["seed"], 44)
+    out = []
+    for c in x["counties"]:
+        for q in c["requests"]:
+            a = c["addr"][q["well"]]
+            orig = c["kit"].get(q["well"], "") if q["via"] == "PORTAL" else ""
+            out.append([None, q["route"], str(q["requested"]), q["via"], orig, addr_request(a, r),
+                        c["towns"][a["town"]].upper() if q["via"] == "PHONE" else c["towns"][a["town"]],
+                        c["zips"][a["town"]], q["kit"], str(q["mailed"])])
+    out.sort(key=lambda v: (v[2], v[8]))
+    for n, v in enumerate(out):
+        v[0] = "RQ%05d" % (20001 + n)
+    return out
+
+
+COUNTY_COLS = ["COUNTY_CODE", "COUNTY", "PERMIT_DB_COUNTY", "ASSESSOR_SHEET", "SURVEY_LAB"]
+
+
+def county_rows(x):
+    return [[c["code"], c["name"], c["name"].upper(), c["code"] + " " + c["name"], W.LABS[c["lab"]]]
+            for c in x["counties"]]
+
+
+LAB_ROSTER_COLS = ["LAB_ID", "LABORATORY", "CITY", "CERTIFIED_FOR", "CERT_EXPIRES"]
+
+
+def lab_roster_rows():
+    return [["NE0112", "Halvorsen Analytical", "Garland", "Nitrate, Nitrite, Arsenic, Coliform/E. coli", "2026-12-31"],
+            ["NE0187", "Cedarline Environmental Laboratories", "Pelham", "Inorganics, Metals, Microbiology", "2027-06-30"],
+            ["NE0203", "Kinsale Water Testing", "Selby", "Nitrate, Arsenic, Coliform/E. coli", "2026-09-30"],
+            ["NE0215", "Upton Municipal Water Laboratory", "Upton", "Microbiology", "2026-03-31"],
+            ["NE0221", "Briar Valley Labs", "Briar", "Inorganics, Microbiology, Radionuclides", "2027-01-31"],
+            ["NE0230", "Fenton Regional Health Laboratory", "Fenton", "Microbiology", "2025-12-31"],
+            ["NE0238", "Tri-County Analytical Services", "Colby", "Nitrate, Nitrite, Fluoride", "2026-11-30"]]
+
+
+def write_csv(path, cols, rows, crlf=False):
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
+        w.writerow(cols)
+        w.writerows(rows)
+    return len(rows)

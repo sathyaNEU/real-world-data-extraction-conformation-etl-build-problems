@@ -10,7 +10,7 @@ import zipfile
 OFFICE_ENTRY_TIME = (1980, 1, 1, 0, 0, 0)
 DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 NS_REL = b"http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-FLOOR, CEILING = "2018-01-01", "2029-06-30"
+FLOOR, CEILING = "2018-01-01", "2028-06-30"
 
 
 def _scrubber():
@@ -24,22 +24,12 @@ def _scrubber():
 
 
 def scrub(path, producer, stamp):
-    """remove the writing library's name and out-of-band stamps from a binary, right after it is saved (H1); the
-    scrubber takes the in-fiction day, and a PDF's info dates then take the in-fiction time of day as well (same byte
-    length, so the cross-reference table stays valid)"""
+    """remove the writing library's name and out-of-band stamps from a binary, right after it is saved (H1)"""
     s = _scrubber()
-    day, _, clock = stamp.partition("T")
     if path.endswith(".pdf"):
-        s.scrub_pdf(path, producer, day, FLOOR, CEILING)
-        if clock:
-            with open(path, "rb") as fh:
-                b = fh.read()
-            old = b"D:" + day.replace("-", "").encode() + b"000000"
-            new = b"D:" + day.replace("-", "").encode() + clock.replace(":", "")[:6].ljust(6, "0").encode()
-            with open(path, "wb") as fh:
-                fh.write(b.replace(old, new))
+        s.scrub_pdf(path, producer, stamp, FLOOR, CEILING)
     else:
-        s.scrub_ooxml(path, producer, day, FLOOR, CEILING)
+        s.scrub_ooxml(path, producer, stamp, FLOOR, CEILING)
     names, bad = s.audit(path, FLOOR, CEILING)
     assert not names and not bad, (path, names, bad)
 

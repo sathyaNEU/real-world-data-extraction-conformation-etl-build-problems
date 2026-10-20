@@ -1,89 +1,162 @@
 {
-  "task": "task471",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips); the world (an air service development team pitching three routes a year to airlines), the decision (which three city-pair markets) and the quantity (how many of the region's travellers fly each market) kept; fares dropped; the pitfall re-found in how the hub's parking card survey gets its replies back",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
-  "objective": "etl",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Phoenix, Tampa and Washington",
-  "answer_source": "submission.md block 1; golden/kvr_2027_pitch_markets.csv (in_2027_pitch Y)",
-  "gap": [
+ "task": "task471",
+ "architecture": "v3",
+ "drawn": "2026-10-20",
+ "slot_note": "re-rooted from v1 (seed ET28's airport world spent at Gate F); a fresh world in the least-drawn ETL task type, the decisive step one the record does not display",
+ "domain": "general-statistics-data-science",
+ "subdomain": "data-integration-record-linkage-entity-resolution",
+ "client_domain": "general-statistics-data-science",
+ "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)",
+ "objective": "etl",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G17",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stakeholder_role": "environmental epidemiologist preparing the county estimates for the Private Well Program manager",
+ "role_family": "research_desk",
+ "scoring_unit": "per certified output",
+ "spine": {
+  "file": "DOH_well_construction_permits_extract_2026-08-03.csv",
+  "rows": 41116,
+  "entity": "one well construction permit",
+  "grain": "permit",
+  "source": "synthetic (constructed in the layout of a state well construction permit database extract)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "other",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "United States, an unnamed state (the department, counties, towns, laboratories, households and people are fictional)",
+  "currency": "USD",
+  "org_type": "a state health department's private well program",
+  "invented_names": [
+   "Private Well Nitrate Survey",
+   "Well Water Assistance",
+   "Halvorsen Analytical",
+   "Cedarline Environmental Laboratories",
+   "Kinsale Water Testing"
+  ],
+  "people": [
+   "Tina Hurley",
+   "Steven Nguyen",
+   "Carlos Phillips"
+  ]
+ },
+ "deliverables": [
+  "nitrate_assistance_counties_2027.xlsx",
+  "nitrate_assistance_counties_2027.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
+ "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
+ "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who links the permit list to the parcels by parcel number and address, conforms the three laboratories' results to nitrate as nitrogen and estimates each county's wells above the standard by scaling the tested wells' share above to the wells on the two lists files three counties (Alderwick, Glenmoor, Netherby); weighting each tested well by its drawn list's rate files ten; only each well's chance of selection from either list gives the six.",
+ "domain_test": "The deciding quantity is each county's total of wells above the standard over the union of two overlapping frames, estimated by dual-frame weighting of samples drawn separately from each frame after the frames are linked, which is the integration of two incomplete lists into one estimate; replaced by a generic summary (the tested wells' share, or one list's estimate) the call changes, so the integration's own overlap carries the decision.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:dual-frame-weights-for-wells-on-both-lists",
+ "layer1": [
+  "a permit database extract with irrigation, livestock, monitoring and industrial wells, replaced and abandoned permits, and domestic wells drilled after the frame date",
+  "sixteen assessors' parcel rolls in three layouts, parcel numbers formatted four ways and water-source codes per layout, situs and site addresses written differently",
+  "three laboratories' exports (wide and long, CSV and workbook), one reporting nitrate as NO3, with reanalysed samples reported twice under status, report date or version",
+  "a draw manifest recording replacement draws and wells already tested from the other list",
+  "retest kit requests by portal (first kit number) and phone (ship-to address only), routed by ZIP code"
+ ],
+ "mechanism_source": "card",
+ "differentiation": {
+  "task264": "task264 v2 weights each member drawn through one sample of events by its own event count; here two separate samples are drawn from two overlapping lists, a well on both lists could enter either sample, and the estimate weights each tested well by its chance of entering either one, so the wrong routes are pooling two differently sampled lists and adding two lists' estimates, not reading members as events.",
+  "task131": "task131 v1 reads an at-scale treatment effect on parent units whose sub-units all drew one arm, because budget moves between siblings; here nothing is randomised and no outcome moves between units: two overlapping lists are each sampled for a test, and the total over their union counts each tested unit once, by its chance of selection across both."
+ },
+ "lineage": [
+  {
+   "gap": [
     "population",
     "time"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
     "G7",
     "G12",
     "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the bureau's air service development manager",
-  "role_family": "programme_officer",
-  "scoring_unit": "units served",
-  "spine": {
-    "file": "Brennick parking card survey returns, 2026 waves",
-    "rows": 74019,
-    "entity": "one returned survey card: one car's parked trip at the hub, with the travel party's home ZIP, final destination, nights away and party size",
-    "grain": "returned card (parked trip)",
-    "source": "synthetic (constructed in the layout of an airport parking customer card survey keyed from paper)"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "ranked_slate_under_cap",
+   "stump_strategy": "maturity_censoring",
+   "layer2_pattern": "own:replies-censored-by-collection-close",
+   "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
+   "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
+   "subdomain": "census-register-administrative-data-quality",
+   "domain": "survey-research-official-statistics",
+   "architecture": "v1",
+   "drawn": "2026-10-18",
+   "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
+   "fate": "spent at stage 4 on 2026-10-19: three isolated readers landed the call by weighting each returned card for when its stay could come back (Gate F), and the ask device was a mirror device (pair ceiling 55.5); a clustered-design hold measured on the v1 pack was dropped (73,909 returned cards put every lead over the fourth market at z 2.3 to 3.5); re-rooted fresh by the author's rule (no retirement)"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "United States, an unnamed state (the bureau, its two airports, the survey contractor and the people are fictional; the destination airports and the ticket sample's record layout are real)",
-    "currency": "USD",
-    "org_type": "state aviation bureau that owns and operates a hub airport and a regional airport",
-    "invented_names": [
-      "Brennick International",
-      "Kessick Valley Regional"
-    ],
-    "people": [
-      "Tina Hurley",
-      "Carlos Phillips",
-      "Donald Lara"
-    ]
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-20",
+   "domain": "education-learning-sciences",
+   "subdomain": "item-response-theory-test-equating",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G17",
+    "G6",
+    "G1"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "other",
+   "layer2_pattern": "own:rater-severity-drift-on-a-constructed-response-anchor",
+   "niche": "a state educator licensing board's 2027 formal reviews of its educator preparation programs, decided on their 2025-26 completers' first-attempt pass rates on the state's elementary literacy licensure test, whose 2026 form the board's assessment office equates itself for the first time, to the 2025 form through an anchor of twenty multiple-choice items and one rater-scored written assignment",
+   "driver": "The decisive quantity is the second administration's score at the first administration's standard, estimated through a shared subset of which one part is judged by people, and the second administration's judges applied a harsher standard than the first, measured only on a random set of the first administration's responses, each carrying the score its first-administration judges agreed on, that the second judges re-judged unknowingly; the judged part has to be put back on the first standard before it carries the link, because used as judged it makes the second group look weaker and the cut too high, and dropped from the subset it leaves a link blind to the second group's real decline on what only the judged part measures, which sets the cut too low.",
+   "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+   "fate": "spent at stage 4 on 2026-10-20: the judge (v2r1) found the main call DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes): the rater shift on the anchor's written assignment is a bias in recorded values that the solver must catch, so on consistent scoring the task collapses; two scored readers missed the call on the drop-WA2 rung and all 32 ask figures; re-rooted fresh by the author's rule (no retirement)"
   },
-  "deliverables": [
-    "kvr_2027_pitch_markets.csv",
-    "kvr_2027_route_pitch_brief.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
-  "driver_concrete": "Each candidate market's 2026 service-area trips parked at Brennick are each wave's quarter of transient entries times the market's share of the wave's returned cards, each card weighted by the inverse of the share of the wave's handed cards whose handout day left room for a stay of its nights to end by the last box collection, not raw card shares, nor each handout day's return rate, nor one over nights.",
-  "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keys every destination to its city market, keeps the service-area ZIPs, drops the served market and expands each wave's returned cards to its quarter's entries pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips); reweighting the cards to each handout day's cards handed, by one over the nights, pooling the waves or post-stratifying to each lot's entries lands the same three; only weighting each card by the inverse of the share of handout days from which a stay of its length could have been collected pitches Phoenix, Tampa and Washington.",
-  "domain_test": "The deciding quantity is a register-based total completed by a supplement survey: the hub's parking entry register counts each quarter's parked trips and the card survey supplies destination, home and party, and survey research's design-based estimator weights each returned card by the inverse of its chance of having been collected, which the fieldwork design sets from the card's handout day and the stay's length; swapped for a share of the replies, the generic estimator of another field, the long stays drop out and the call changes, and without a register, a card that exists only once the stay ends and a collection close the task has nothing to estimate.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:replies-censored-by-collection-close",
-  "layer1": [
-    "paper cards keyed and coded by the contractor: destinations coded to an airport or a metro code, the answers as written in a separate verbatims file, a few home ZIPs keyed with a plus-four or a space, one keying batch carried twice by the export",
-    "handout log by wave, day and plaza giving the card number ranges and counts handed, apart from the cards, in a PDF",
-    "parking revenue system daily entry counts by lot in quarterly extracts whose lot codes, date format and columns change at a mid-year upgrade, the garage in every file",
-    "service-area ZIP list built from county lists, one ZIP straddling two counties",
-    "airport and metro codes rolled up to city markets (Washington, New York, Chicago and others spanning several airports)",
-    "the regional airport's 2027 schedule naming the markets already served nonstop, one by a seasonal flight"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "",
-  "registered": "2026-10-18T04:10:07Z"
+  {
+   "architecture": "v3",
+   "fate": "spent at stage 4 on Gate F: both scored readers landed the call and all 32 ask figures (the textbook dual-frame estimator, executed as a work order once the design report describes the two lists' separate draws); judge v3r1 DETERMINISTIC APPROVE",
+   "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
+   "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
+   "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "population_selection",
+   "subdomain": "data-integration-record-linkage-entity-resolution",
+   "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
+  }
+ ],
+ "notes": "v3 drawn 2026-10-20 after architecture 2 was spent at stage 4 on Gate G; honest data by construction (both frames accurate, samples random, tests accurate); a first v3 draw on a joint registry's back-loaded survivors was dropped before registering because task265 already spends delayed entry; card brought to the built world on 2026-10-20 (nitrate, the Well Water Assistance allocation, the permit and parcel lists, three laboratories)",
+ "registered": "2026-10-20T11:59:37Z"
 }

@@ -1,181 +1,110 @@
-"""The projections, on a conformed record of fills (member, cls, date, days, paid at the 2026 schedule): the golden
-development by months on therapy at each member's own duration, and the routes a solver takes instead."""
-import datetime as dt
-
+"""The estimators, on the conformed index frame (one row per index stay: hospital, member, admission date, identifier
+class, expected mortality, the death the claims record (in the stay, in the transferred stay or in a later stay inside
+the window), the linkage's date of death if it returned one, whether a claim follows that date, and whether a claim
+follows day 30): each hospital's 30-day deaths by every route of the ladder, and the golden, the linked deaths
+corrected class by class for the linkage's false links and missed links at the rates the record's two control groups
+measure."""
 import numpy as np
 import pandas as pd
 
 import world as W
 
-CAP = 36          # durations from three years on share one cell
-EARLY = dt.date(2019, 3, 31)   # a member first seen by here may have started before the files began
-GAP = 60          # a fill more than this many days after the last supply ran out begins a new episode of therapy
+CLASSES = ("ssn", "simple", "compound")
 
 
-def prepare(f, gap=GAP):
-    """Add month index, first fill (per member and class, in the record), whether the start is seen, and each fill's
-    episode of therapy: a fill begins a new episode when it comes more than `gap` days after every earlier fill's
-    supply in the class ran out."""
-    f = f.sort_values(["member", "cls", "date"], kind="stable").copy()
-    f["mi"] = [W.month_index(d) for d in f["date"]]
-    first = f.groupby(["member", "cls"])["date"].transform("min")
-    f["first"] = first
-    f["fmi"] = [W.month_index(d) for d in first]
-    f["seen_start"] = first > EARLY
-    run_out = pd.to_datetime(f["date"]) + pd.to_timedelta(f["days"], unit="D")
-    prev = run_out.groupby([f["member"], f["cls"]]).transform(lambda s: s.cummax().shift(1))
-    new_ep = prev.isna() | ((pd.to_datetime(f["date"]) - prev).dt.days > gap)
-    epno = new_ep.astype(int).groupby([f["member"], f["cls"]]).cumsum()
-    eps = pd.Series(np.where(new_ep, pd.to_datetime(f["date"]), pd.NaT), index=f.index)
-    eps = eps.groupby([f["member"], f["cls"], epno]).transform("first")
-    f["eps"] = pd.to_datetime(eps).dt.date
-    f["emi"] = [W.month_index(d) for d in f["eps"]]
-    f["eseen"] = (epno > 1) | f["seen_start"]
-    return f.sort_values(["date", "member", "ndc11"], kind="stable")
-
-
-def on_therapy(f, day):
-    """The members on therapy in a class on the day (a fill on or before it whose days' supply reaches it), with the
-    covering fill's episode start and the member's first fill."""
-    d = pd.Timestamp(day)
-    fd = pd.to_datetime(f["date"])
-    cov = (fd <= d) & (fd + pd.to_timedelta(f["days"] - 1, unit="D") >= d)
-    cols = [c for c in ("member", "cls", "emi", "eseen", "fmi", "seen_start") if c in f]
-    return f[cov][cols].sort_values(cols[:3]).drop_duplicates(["member", "cls"], keep="last")
-
-
-def duration(co, i, cap, band, clock):
-    """Months on therapy at month index i: since the episode began (the golden) or since the first fill in the class."""
-    if clock == "episode":
-        t = np.where(co["eseen"], np.minimum(i - co["emi"], cap), cap)
-    else:
-        t = np.where(co["seen_start"], np.minimum(i - co["fmi"], cap), cap)
-    return (t // band) * band
-
-
-def month_end(i):
-    s = W.month_start(i + 1)
-    return s - dt.timedelta(days=1)
-
-
-def spend_after(f, members, i, months=W.HORIZON):
-    """Each listed (member, cls)'s paid amount over the months after month index i."""
-    sub = f[(f["mi"] > i) & (f["mi"] <= i + months)]
-    sub = sub.merge(members, on=["member", "cls"])
-    return sub.groupby(["member", "cls"])["paid26"].sum()
-
-
-def development(f, cap=CAP, band=1, clock="episode"):
-    """For each class and duration T (months on therapy, banded, capped), the mean paid amount over the next twelve
-    months of the members on therapy at a month end at that duration, over every month end whose twelve months are in
-    the record. Members whose start is not seen sit in the capped cell."""
+def rates(f, by="cls", ctrl="all"):
+    """The linkage's recall and false-link rate by class: recall on the deaths the claims record (positive controls:
+    'all', or 'stay' for deaths in the index stay only), the false-link rate on the members with a claim after day 30
+    (negative controls)."""
     out = {}
-    last = W.N_MONTHS - 1
-    for i in range(0, last - W.HORIZON + 1):
-        co = on_therapy(f, month_end(i))
-        if co.empty:
+    for k, g in f.groupby(by):
+        pos = g[g["known_death"] & ((g["known_place"] == "stay") if ctrl == "stay" else True)]
+        neg = g[g["alive_after"]]
+        r = pos["linked"].mean() if len(pos) else np.nan
+        fp = neg["linked"].mean() if len(neg) else 0.0
+        out[k] = (float(r), float(fp), len(pos), len(neg))
+    return out
+
+
+def deaths(f, how="golden", by="cls", ctrl="all", hosp_rates=False, denom="r_minus_f"):
+    """Each hospital's 30-day deaths by route."""
+    out = {}
+    R = rates(f, by, ctrl)
+    for h, g in f.groupby("hosp"):
+        known = int(g["known_death"].sum())
+        if how == "naive":                      # deaths in the stay and the linked deaths
+            out[h] = float((g["in_stay"] | g["linked"]).sum())
             continue
-        sp = spend_after(f, co[["member", "cls"]], i)
-        co = co.set_index(["member", "cls"])
-        co["next"] = sp.reindex(co.index, fill_value=0.0)
-        co = co.reset_index()
-        co["T"] = duration(co, i, cap, band, clock)
-        for (c, t), g in co.groupby(["cls", "T"]):
-            s, n = out.get((c, t), (0.0, 0))
-            out[(c, t)] = (s + g["next"].sum(), n + len(g))
-    return {k: s / n for k, (s, n) in out.items()}
-
-
-def golden(f, cap=CAP, band=1, clock="episode"):
-    """Each class's projected paid amount over the program year for its members on therapy on 30 June 2026."""
-    f = prepare(f) if "mi" not in f else f
-    dev = development(f, cap, band, clock)
-    co = on_therapy(f, W.LAST_DAY)
-    last = W.N_MONTHS - 1
-    co["T"] = duration(co, last, cap, band, clock)
-    out = {}
-    for c in W.CANDIDATES:
-        tot = 0.0
-        for t in co[co["cls"] == c]["T"]:
-            key = (c, int(t))
-            while key not in dev and key[1] > 0:
-                key = (c, key[1] - 1)
-            tot += dev.get(key, 0.0)
-        out[c] = tot
+        dead_or_linked = g["known_death"] | g["linked"]
+        if how == "union":                      # plus the deaths a later claim records
+            out[h] = float(dead_or_linked.sum())
+            continue
+        if how == "reflex":                     # and less the links a later claim contradicts
+            out[h] = float((g["known_death"] | (g["linked"] & ~g["contradicted"])).sum())
+            continue
+        if how == "refl_u":                     # the golden, with the contradicted links dropped inside U first
+            g = g.assign(linked=g["linked"] & ~(g["contradicted"] & ~g["known_death"] & ~g["alive_after"]))
+        Rh = rates(g, by, ctrl) if hosp_rates else R
+        tot = float(known)
+        U = g[~g["known_death"] & ~g["alive_after"]]
+        for k, u in U.groupby(by):
+            r, fp, npos, nneg = Rh.get(k, R[k])
+            if np.isnan(r) or npos < 10:          # a hospital's own control groups too small: the class's pooled rates
+                r = R[k][0]
+            if nneg < 50:
+                fp = R[k][1]
+            L, N = float(u["linked"].sum()), float(len(u))
+            if how == "fp_only":
+                est = L - fp * N
+            elif how == "recall_only":
+                est = L / r
+            else:
+                est = (L - fp * N) / ((r - fp) if denom == "r_minus_f" else r)
+            tot += max(est, 0.0)
+        out[h] = tot
     return out
 
 
-def first_fill(f):
-    """The development by months since the member's first fill in the class (the careful analyst's clock)."""
-    return golden(f, clock="first")
+def ratios(f, d):
+    E = f.groupby("hosp")["p"].sum()
+    return {h: d[h] / E[h] for h in d}
 
 
-def from_start(f):
-    """Each current member projected by the class's development from first fill (duration zero)."""
-    f = prepare(f) if "mi" not in f else f
-    dev = development(f)
-    co = on_therapy(f, W.LAST_DAY)
-    n = co.groupby("cls").size()
-    return {c: float(n.get(c, 0)) * dev.get((c, 0), 0.0) for c in W.CANDIDATES}
+ROUTES = ("naive", "union", "reflex", "fp_only", "recall_only", "golden")
 
 
-def trailing(f):
-    f = prepare(f) if "mi" not in f else f
-    last = W.N_MONTHS - 1
-    s = f[(f["mi"] > last - 12) & (f["mi"] <= last)].groupby("cls")["paid26"].sum()
-    return {c: float(s.get(c, 0.0)) for c in W.CANDIDATES}
+def losers(rat):
+    return sorted(h for h, v in rat.items() if v > W.THRESHOLD)
 
 
-def run_rate(f):
-    f = prepare(f) if "mi" not in f else f
-    s = f[f["mi"] == W.N_MONTHS - 1].groupby("cls")["paid26"].sum()
-    return {c: 12 * float(s.get(c, 0.0)) for c in W.CANDIDATES}
-
-
-def analog(f):
-    """This June's members times last June's members' following-year paid amount per member."""
-    f = prepare(f) if "mi" not in f else f
-    i = W.N_MONTHS - 13
-    prev = on_therapy(f, month_end(i))
-    sp = spend_after(f, prev, i).groupby(level="cls").sum()
-    n_prev = prev.groupby("cls").size()
-    n_now = on_therapy(f, W.LAST_DAY).groupby("cls").size()
-    return {c: float(n_now.get(c, 0)) * float(sp.get(c, 0.0)) / max(int(n_prev.get(c, 0)), 1) for c in W.CANDIDATES}
-
-
-def pharmacists(spend):
-    return {c: int(np.ceil(spend[c] / W.PER_PHARMACIST)) for c in W.CANDIDATES}
-
-
-def chain(f, cap=CAP, clock="episode"):
-    """The same development built month to month: the share of the members on therapy at a month end who are still on
-    therapy at the next, and their paid amount in that month, by duration, chained over the twelve months."""
-    f = prepare(f) if "mi" not in f else f
-    last = W.N_MONTHS - 1
-    paid = f.groupby(["member", "cls", "mi"])["paid26"].sum()
-    on = {}
-    for i in range(0, last + 1):
-        co = on_therapy(f, month_end(i))
-        co["T"] = duration(co, i, cap, 1, clock)
-        on[i] = co.set_index(["member", "cls"])
-    cell = {}
-    for i in range(0, last):
-        a, b = on[i], on[i + 1]
-        still = a.index.isin(b.index)
-        nxt = paid.reindex([(m_, c_, i + 1) for m_, c_ in a.index], fill_value=0.0).to_numpy()
-        for (c, t), idx in a.groupby(["cls", "T"]).indices.items():
-            s = cell.setdefault((c, int(t)), [0.0, 0, 0.0])
-            s[0] += still[idx].sum()
-            s[1] += len(idx)
-            s[2] += nxt[idx].sum()
-    out = {}
-    for c in W.CANDIDATES:
-        tot = 0.0
-        for t in on[last][on[last].index.get_level_values("cls") == c]["T"]:
-            surv = 1.0
-            for k in range(W.HORIZON):
-                s = cell.get((c, min(int(t) + k, cap))) or cell.get((c, cap)) or [1.0, 1, 0.0]
-                tot += surv * s[2] / s[1]
-                surv *= s[0] / s[1]
-        out[c] = tot
-    return out
+def frame_from_truth(x):
+    """The index frame built straight from the simulation (the clean truth), for calibration and the analyst test."""
+    links = {(l["member"], l["adm"]): l for l in x["links"]}
+    act = {}
+    for m, d in x["activity"]:
+        act.setdefault(m, []).append(d)
+    known_extra, alive_dates = {}, {}
+    for e in x["extra"]:
+        if e["status"] == "20":
+            known_extra[e["member"]] = e["disch"]
+            alive_dates.setdefault(e["member"], []).append(e["adm"])   # admitted alive
+        else:                                   # a later stay the member left alive
+            alive_dates.setdefault(e["member"], []).extend([e["adm"], e["disch"]])
+    rows = []
+    for s in x["stays"]:
+        m = s["member"]
+        lk = links.get((m, s["adm"]))
+        in_stay = bool(s["dies"] and s["place"] == "stay")
+        kd = None
+        if in_stay:
+            kd = s["death"]
+        elif m in known_extra and known_extra[m] <= s["adm"] + pd.Timedelta(days=W.WINDOW):
+            kd = known_extra[m]
+        ad = act.get(m, []) + alive_dates.get(m, []) + ([] if s["dies"] and s["place"] == "stay" else [s["disch"]])
+        w_end = s["adm"] + pd.Timedelta(days=W.WINDOW)
+        rows.append(dict(hosp=s["hosp"], member=m, adm=s["adm"], cls=s["cls"], p=s["p"], in_stay=in_stay,
+                         known_death=kd is not None, known_place="stay" if in_stay else ("later" if kd else None),
+                         linked=lk is not None, link_date=lk["death"] if lk else None,
+                         contradicted=bool(lk is not None and any(d > lk["death"] for d in ad)),
+                         alive_after=any(d > w_end for d in ad)))
+    return pd.DataFrame(rows)

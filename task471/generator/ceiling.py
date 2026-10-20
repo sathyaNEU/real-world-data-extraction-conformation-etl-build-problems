@@ -1,59 +1,40 @@
-"""The pair ceiling and mirror leakage, scored on the cut pack with the house weights 38 / 7 / 55.
+"""The pair ceiling on the cut pack: the cracker lands the call and runs the battery; the mirror stops at the default
+path (the pooled share scaled to each county's wells). Weights 38 / 7 / 55; the ask is 32 figures.
 
-Main block (38): the call, its runner-up and gap (8) and each candidate's 2026 trips (30 over the 14). Asks (55): each
-candidate's passengers (14 figures). Instructions (7). The cracker lands the call, runs the battery and executes every
-filed rule it points at (the collection-window weighting, the coded party); the reconciling cracker does the same and
-reads Q4 in the verbatims against the coded party, as reader rounds 2 and 3 did, recoding every party from the answer
-as written; the mirror stops at the default path (each wave's returned cards expanded to its quarter, the coded
-party). A figure scores when it rounds to the golden's hundred. The weights where the trips count as asks are printed
-beside it; the gate reads the house weights and the reconciling cracker.
-
-    python3 task471/generator/ceiling.py [target]
+    python3 task471/generator/ceiling.py     exit 0 at 40 or under
 """
 import os
 import sys
 
+import bundle as B
+
+W_CALL, W_INSTR, W_ASK = 38.0, 7.0, 55.0
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
-import bundle as B     # noqa: E402
-import methods as M    # noqa: E402
 
 
-def score(P):
-    cand = P.candidates
-    gold_t = M.estimate(P)
-    gold_p = M.estimate(P, unit="passengers")
-    rows = {
-        "cracker": (gold_t, M.estimate(P, unit="passengers", party="coded")),
-        "reconciling": (gold_t, gold_p),
-        "mirror": (M.estimate(P, how="raw"), M.estimate(P, how="raw", unit="passengers", party="coded")),
-    }
-    gold_call = M.top3(gold_t, cand)
-    out = {}
-    for who, (t, p) in rows.items():
-        call = M.top3(t, cand) == gold_call
-        kt = sum(1 for m in cand if B.r100(t[m]) == B.r100(gold_t[m]))
-        kp = sum(1 for m in cand if B.r100(p[m]) == B.r100(gold_p[m]))
-        house = (8 if call else 0) + 30.0 * kt / len(cand) + 7 + 55.0 * kp / len(cand)
-        alt = (38 if call else 0) + 7 + 55.0 * (kt + kp) / (2 * len(cand))
-        out[who] = dict(call=call, trips_kept=kt, pax_kept=kp, house=house, alt=alt)
-    out["pair_house"] = (out["cracker"]["house"] + out["mirror"]["house"]) / 2
-    out["pair_alt"] = (out["cracker"]["alt"] + out["mirror"]["alt"]) / 2
-    out["pair_reconciling"] = (out["reconciling"]["house"] + out["mirror"]["house"]) / 2
-    out["mirror_leakage"] = 100.0 * out["mirror"]["pax_kept"] / len(cand)
-    return out
+def main(target=None):
+    target = target or os.path.join(os.path.dirname(HERE), "target")
+    pk = B.Pack(target)
+    gold = set(pk.qualifying())
+    mirror = set(pk.qualifying("pooled"))
+    # the graded grid: each county's wells on the lists (16) and its verdict (16); the call's set lives in the verdicts
+    keep = len(pk.codes) + sum(1 for k in pk.codes if (k in gold) == (k in mirror))
+    mirror_call = W_CALL * 0.75 * keep / 32.0
+    g = pk.retests()
+    # the cracker's ask path: every request matched to its well (first kit, or the phone request's address), the
+    # window and the first test applied, each well counted in the county on its request
+    c = pk.retests(by="request")
+    hit = sum(c[k][j] == g[k][j] for k in pk.codes for j in (0, 1))
+    m = pk.retests(by="request", channel="portal")
+    mhit = sum(m[k][j] == g[k][j] for k in pk.codes for j in (0, 1))
+    ask, mask = W_ASK * hit / 32.0, W_ASK * mhit / 32.0
+    cracker, mirror_score = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + mask
+    print("golden %s; mirror %s" % (sorted(gold), sorted(mirror)))
+    print("mirror keeps %d of 32 grid figures; the cracker's ask path keeps %d of 32, the mirror's %d" % (keep, hit, mhit))
+    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
+        cracker, mirror_score, (cracker + mirror_score) / 2, 100.0 * mhit / 32))
+    return (cracker + mirror_score) / 2
 
 
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
-    P = B.Pack(target)
-    o = score(P)
-    n = len(P.candidates)
-    for who in ("cracker", "reconciling", "mirror"):
-        r = o[who]
-        print("%-11s call %-5s trips kept %2d/%d  passengers kept %2d/%d  house %.1f  alt %.1f" % (
-            who, r["call"], r["trips_kept"], n, r["pax_kept"], n, r["house"], r["alt"]))
-    print("pair ceiling %.1f (house weights 38/7/55) with the cracker on the coded party, %.1f with the reconciling "
-          "cracker; %.1f if the trips count as asks; mirror leakage %.1f per cent"
-          % (o["pair_house"], o["pair_reconciling"], o["pair_alt"], o["mirror_leakage"]))
+    sys.exit(0 if main() <= 40.0 else 1)

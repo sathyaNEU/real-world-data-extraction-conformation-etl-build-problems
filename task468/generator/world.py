@@ -1,108 +1,179 @@
-"""The world of task468 (architecture 2): Merrow Health Plan's specialty pharmacy benefit, its two pharmacy benefit
-managers (Orrin Rx to December 2025, Tallis Pharmacy Services from January 2026), the specialty classes its Specialty
-Clinical Pharmacy Program manages, and the program's staffing standard for the year from 1 July 2026."""
+"""The world of task468 (architecture 4): Halbrook Community Health Plan, a nonprofit Medicaid managed care plan in a
+state that covers adults whatever their immigration status, so members can be enrolled without a Social Security
+number; its 14 network hospitals; the 2027 Hospital Quality Bonus, withheld from a hospital whose risk-adjusted 30-day
+mortality ratio for fiscal 2026 index admissions exceeds 1.15; and the state Office of Vital Records' linkage of plan
+members to the state death file, keyed on the Social Security number when the enrollment file has one and on name,
+date of birth and sex when it does not."""
 import datetime as dt
 
 SEED = 468
-FIRST_MONTH = dt.date(2019, 1, 1)          # the claim files begin
-LAST_DAY = dt.date(2026, 6, 30)            # the claims run to here; the program year begins the next day
-SWITCH = dt.date(2026, 1, 1)               # Tallis takes the benefit
-N_MONTHS = 90                              # January 2019 to June 2026
-HORIZON = 12                               # the program year, July 2026 to June 2027
-PRE_MONTHS = 84                            # members' therapy simulated from seven years before the files begin
-PER_PHARMACIST = 1_500_000                 # the charter: one clinical pharmacist per $1.5 million of managed spend, or part
-AS_OF = "2026-08-03"
-EXEC_MEETING = dt.date(2026, 8, 4)
 
+FY_START = dt.date(2025, 7, 1)            # fiscal 2026 admissions
+FY_END = dt.date(2026, 6, 30)
+WINDOW = 30                               # deaths within 30 days of the admission date
+DEATHS_THROUGH = dt.date(2026, 7, 30)     # the last index admission's window closes
+LINKAGE_RUN = dt.date(2026, 10, 7)        # Vital Records returned the linkage
+CLAIMS_THROUGH = dt.date(2026, 9, 30)     # claims and encounters received through here
+AS_OF = "2026-10-09"
+FILING_DUE = dt.date(2026, 11, 1)
+THRESHOLD = 1.15
+BONUS_RATE = 0.02
 
-def month_index(d):
-    return (d.year - FIRST_MONTH.year) * 12 + d.month - FIRST_MONTH.month
-
-
-def month_start(i):
-    y, m = divmod(FIRST_MONTH.month - 1 + i, 12)
-    return dt.date(FIRST_MONTH.year + y, m + 1, 1)
-
-
-# ---------------------------------------------------------------- the classes the program manages
-# code: name, the starts a month (month index -> mean), the monthly chance a member stops (by months on therapy),
-# fixed course (fills), loading (extra units on the first fill), days' supply options and their shares
-CLASSES = {
-    "IMM": dict(name="Inflammatory conditions (biologic and targeted therapy)", starts=lambda m: 9.0,
-                stop=lambda t: 0.035 if t < 12 else 0.012, load=2.0, supply=((28, 0.85), (84, 0.15))),
-    "MS": dict(name="Multiple sclerosis", starts=lambda m: 2.4, stop=lambda t: 0.02 if t < 12 else 0.008, load=1.0,
-               supply=((30, 0.7), (90, 0.3))),
-    "ONC": dict(name="Oral oncology", starts=lambda m: 7.0, stop=lambda t: 0.16 if t < 6 else 0.03, load=1.0,
-                supply=((30, 1.0),)),
-    "HCV": dict(name="Hepatitis C", starts=lambda m: 30.0 if 76 <= m < 90 else 6.0, stop=lambda t: 0.02, load=1.0,
-                course=(2, 3), supply=((28, 1.0),)),
-    "GLP": dict(name="Weight management (GLP-1 receptor agonists)",
-                starts=lambda m: 380.0 if m >= 84 else (30.0 if m >= 48 else 0.0),
-                stop=lambda t: 0.18 if t < 6 else 0.025, load=1.0, supply=((28, 0.9), (84, 0.1))),
-    "HIV": dict(name="HIV", starts=lambda m: 3.4, stop=lambda t: 0.006, load=1.0, supply=((30, 0.6), (90, 0.4))),
-    "AST": dict(name="Severe asthma (biologics)", starts=lambda m: 40.0 if m >= 84 else 5.0,
-                stop=lambda t: 0.15 if t < 9 else 0.015, load=2.0, supply=((28, 1.0),)),
-    "CF": dict(name="Cystic fibrosis", starts=lambda m: 0.25, stop=lambda t: 0.003, load=1.0, supply=((28, 1.0),)),
-    "CGR": dict(name="Migraine prevention (CGRP)", starts=lambda m: 150.0 if m >= 84 else 18.0,
-                stop=lambda t: 0.2 if t < 6 else 0.03, load=1.0, supply=((30, 0.85), (90, 0.15))),
+# identifier classes: the linkage's chance of finding a death that happened (recall) and of returning a death for a
+# member who is alive (a false link inside the 30-day search window), by what the enrollment file holds
+CLASS_RATES = {
+    "ssn": (0.985, 0.0004),               # Social Security number on file: the deterministic pass
+    "simple": (0.93, 0.022),              # no number, single surname: name, date of birth and sex; common names collide
+    "compound": (0.52, 0.004),            # no number, compound surname: written one way or two, often missed
 }
-CANDIDATES = list(CLASSES)
-STEP_THERAPY_REMOVED = ("GLP", "AST", "CGR")   # the January 2026 formulary change
-OUTREACH_START = dt.date(2025, 5, 1)           # the hepatitis C outreach drive
-RESTART = {"IMM": 0.12, "MS": 0.10, "ONC": 0.05, "HCV": 0.0, "GLP": 0.12, "HIV": 0.15, "AST": 0.10, "CF": 0.10,
-           "CGR": 0.10}                       # a stopped member's chance of a later episode in the class
-RETURN_FROM = 48                               # members of the step-therapy classes who stopped from January 2023
-RETURN_WAVE = {"GLP": 0.60, "AST": 0.60, "CGR": 0.60}   # ... and came back January to June 2026
-REBATE_2024 = 0.91                             # the 2024 contract year's rebate per unit against 2025's
+LATER = {"ssn": 0.82, "simple": 0.25, "compound": 0.40}   # an alive member has a claim after day 30
+IN_STAY = 0.45                            # share of deaths in the index stay (by hospital below where it differs)
+LATER_STAY = 0.30                         # share of deaths after discharge that happen in a later inpatient stay
 
-# products: class, product name, labeler, product code, package, units per 28 or 30 days, 2026 price per unit, share,
-# the package code a long (84- or 90-day) supply is dispensed in, and the manufacturer's rebate per unit dispensed in 2025
-PRODUCTS = [
-    ("IMM", "Ravelta 40 mg/0.4 mL pen", "71842", "0215", "02", 2, 1675.69, 0.45, "06", 431.70),
-    ("IMM", "Ostinza 150 mg/mL pen", "71842", "0331", "01", 1, 3361.60, 0.30, "03", 812.40),
-    ("IMM", "Cordafin 15 mg tablet", "60371", "0712", "30", 28, 121.19, 0.25, "90", 22.65),
-    ("MS", "Velmira 20 mg/mL syringe", "60371", "0920", "28", 12, 355.52, 0.55, "36", 61.10),
-    ("MS", "Antrelle 0.25 mg capsule", "68594", "0104", "30", 30, 149.19, 0.45, "90", 24.85),
-    ("ONC", "Tessarib 100 mg tablet", "68594", "0451", "30", 30, 257.23, 0.5, None, 9.40),
-    ("ONC", "Lonquivir 40 mg tablet", "70135", "0218", "60", 60, 141.32, 0.5, None, 5.15),
-    ("HCV", "Sofivela 400/100 mg tablet", "70135", "0607", "28", 28, 228.60, 1.0, None, 71.90),
-    ("GLP", "Semavex 2.4 mg/0.75 mL pen", "73299", "0124", "04", 4, 192.56, 0.6, "12", 58.35),
-    ("GLP", "Tirzelor 10 mg/0.5 mL pen", "73299", "0287", "04", 4, 202.48, 0.4, "12", 49.80),
-    ("HIV", "Bictavir 50/200/25 mg tablet", "61958", "0901", "30", 30, 62.12, 0.7, "90", 6.05),
-    ("HIV", "Dovarine 50/300 mg tablet", "61958", "0802", "30", 30, 52.84, 0.3, "90", 3.90),
-    ("AST", "Mepozum 100 mg/mL pen", "66415", "0310", "01", 1, 1854.67, 0.6, None, 512.20),
-    ("AST", "Dupelta 300 mg/2 mL pen", "66415", "0440", "02", 2, 1784.11, 0.4, None, 447.65),
-    ("CF", "Elexavor 100/50/75 mg tablet", "51167", "0331", "84", 84, 102.84, 1.0, None, 4.10),
-    ("CGR", "Erelmab 70 mg/mL pen", "55513", "0841", "01", 1, 1244.11, 0.55, "03", 243.15),
-    ("CGR", "Fremavo 225 mg/1.5 mL syringe", "55513", "0902", "01", 1, 1222.27, 0.45, "03", 231.70),
+# network hospitals: name, billing NPI, a second NPI if the hospital changed billing NPI on 1 January 2026, index
+# admissions, share of index members enrolled without a number and a single surname, share without a number and a
+# compound surname, mean expected mortality, true mortality relative to expected, share of deaths in the index stay,
+# share of post-discharge deaths in a later stay, whether the delegated medical group's members use it
+HOSPITALS = [
+    ("Saint Brendan Medical Center", "1427061185", None, 4200, 0.03, 0.03, 0.050, 0.9035, 0.45, 0.30, True),
+    ("Westover Regional Hospital", "1891704462", None, 3300, 0.03, 0.04, 0.055, 1.4522, 0.45, 0.30, False),
+    ("Calloway Memorial Hospital", "1306957713", None, 3000, 0.02, 0.03, 0.048, 1.5476, 0.45, 0.30, True),
+    ("Varden Surgical Hospital", "1679528840", None, 3000, 0.48, 0.02, 0.012, 0.5760, 0.45, 0.30, False),
+    ("Mercy Valley Medical Center", "1548263907", "1952407316", 3600, 0.02, 0.48, 0.090, 1.3111, 0.24, 0.10, True),
+    ("Northgate Community Hospital", "1063517249", None, 2400, 0.04, 0.05, 0.050, 1.3117, 0.45, 0.30, False),
+    ("Tamsin General Hospital", "1225098471", None, 2200, 0.03, 0.03, 0.046, 0.8588, 0.45, 0.30, True),
+    ("Pinecrest Hospital", "1780653192", None, 1900, 0.10, 0.08, 0.050, 0.8753, 0.45, 0.30, False),
+    ("Brannock Medical Center", "1134870556", None, 2300, 0.03, 0.40, 0.030, 1.1349, 0.25, 0.10, True),
+    ("Lakeshore Hospital", "1598342017", None, 1700, 0.04, 0.04, 0.050, 0.7362, 0.45, 0.30, False),
+    ("Corbel Falls Hospital", "1316079425", None, 1500, 0.02, 0.02, 0.055, 0.6369, 0.45, 0.30, False),
+    ("Quayside Hospital", "1871209634", None, 3000, 0.38, 0.03, 0.035, 0.9000, 0.45, 0.30, True),
+    ("Marlow Ridge Medical Center", "1447736290", None, 1300, 0.03, 0.03, 0.060, 0.9249, 0.45, 0.30, False),
+    ("Fairhaven Community Hospital", "1659047823", None, 1100, 0.04, 0.04, 0.050, 1.0488, 0.45, 0.30, False),
 ]
-DISPENSING_FEE = 5.00                      # the 2026 schedule, per fill
-ORRIN_PRICE_FACTOR = {2019: 0.86, 2020: 0.89, 2021: 0.91, 2022: 0.94, 2023: 0.97, 2024: 1.00, 2025: 1.03}   # Orrin's paid unit cost against Tallis 2026
+CANDIDATES = [h[0] for h in HOSPITALS]
+# the golden ratio each hospital is calibrated to (mid-bin at one decimal)
+TARGET = {"Saint Brendan Medical Center": 0.95, "Westover Regional Hospital": 1.45, "Calloway Memorial Hospital": 1.32,
+          "Varden Surgical Hospital": 0.95, "Mercy Valley Medical Center": 1.30, "Northgate Community Hospital": 1.55,
+          "Tamsin General Hospital": 0.93, "Pinecrest Hospital": 0.75, "Brannock Medical Center": 1.25,
+          "Lakeshore Hospital": 0.75, "Corbel Falls Hospital": 0.65, "Quayside Hospital": 0.95,
+          "Marlow Ridge Medical Center": 0.85, "Fairhaven Community Hospital": 1.05}
+SHORT = {h[0]: h[0].replace(" Medical Center", "").replace(" Community Hospital", "").replace(" Regional Hospital", "")
+         .replace(" Memorial Hospital", "").replace(" Surgical Hospital", "").replace(" Hospital", "") for h in HOSPITALS}
 
-MEMBERS = 482_000                          # the plan's members, June 2026
+PLAN = "Halbrook Community Health Plan"
+GROUP = "Carrisford Medical Group"         # the delegated medical group; its members' stays come as encounters
+VITAL = "Office of Vital Records"
+PROGRAM = "Hospital Quality Bonus"
+PEOPLE = {"vp": "Wendy James", "analyst": "Nathan Hawkins", "linkage": "Eric Thomas"}
+TITLES = {"vp": "Vice President, Provider Contracting and Payment, Halbrook Community Health Plan",
+          "analyst": "Quality Measurement Analyst, Halbrook Community Health Plan",
+          "linkage": "Manager, Linkage Unit, State Office of Vital Records"}
 
-# ---------------------------------------------------------------- organisations, people, files
-PLAN = "Merrow Health Plan"
-OLD_PBM = "Orrin Rx"
-NEW_PBM = "Tallis Pharmacy Services"
-PROGRAM = "Specialty Clinical Pharmacy Program"
-PEOPLE = {"director": "Erik Marks", "analyst": "John Henry", "account": "Caleb Fischer"}
-TITLES = {"director": "Director of Pharmacy, Merrow Health Plan",
-          "analyst": "Pharmacy Data Analyst, Merrow Health Plan",
-          "account": "Account Manager, Tallis Pharmacy Services"}
+# ------------------------------------------------------------------------------------------------ the pack's world
+AS_OF_DATE = dt.date(2026, 10, 9)
+SYSTEM_CHANGE = dt.date(2026, 1, 1)        # claims adjudicated from this day on the plan's new claims platform
+NPI_CHANGE = dt.date(2026, 1, 1)           # Mercy Valley bills under its second NPI for stays discharged from here
+CARRISFORD_SHARE = 0.32                    # members at the delegated hospitals assigned to Carrisford Medical Group
+
+# the plan's 2026 DRG base rate in each hospital's services agreement (dollars per relative weight)
+BASE_RATE = {"Saint Brendan Medical Center": 7450.85, "Westover Regional Hospital": 7120.24,
+             "Calloway Memorial Hospital": 6881.17, "Varden Surgical Hospital": 7900.52,
+             "Mercy Valley Medical Center": 7259.39, "Northgate Community Hospital": 6641.02,
+             "Tamsin General Hospital": 6951.03, "Pinecrest Hospital": 6521.88, "Brannock Medical Center": 7041.42,
+             "Lakeshore Hospital": 6410.51, "Corbel Falls Hospital": 6301.01, "Quayside Hospital": 7329.92,
+             "Marlow Ridge Medical Center": 6700.77, "Fairhaven Community Hospital": 6260.39}
+# non-index volumes relative to each hospital's index admissions: deliveries, pediatric stays
+DELIVERIES = {"Saint Brendan Medical Center": 0.40, "Westover Regional Hospital": 0.33, "Calloway Memorial Hospital": 0.30,
+              "Varden Surgical Hospital": 0.0, "Mercy Valley Medical Center": 0.18,
+              "Northgate Community Hospital": 0.35, "Tamsin General Hospital": 0.42, "Pinecrest Hospital": 0.30,
+              "Brannock Medical Center": 0.38, "Lakeshore Hospital": 0.28, "Corbel Falls Hospital": 0.25,
+              "Quayside Hospital": 0.55, "Marlow Ridge Medical Center": 0.22, "Fairhaven Community Hospital": 0.30}
+PEDIATRIC = {"Saint Brendan Medical Center": 0.08, "Westover Regional Hospital": 0.06, "Calloway Memorial Hospital": 0.05,
+             "Varden Surgical Hospital": 0.0, "Mercy Valley Medical Center": 0.03,
+             "Northgate Community Hospital": 0.05, "Tamsin General Hospital": 0.07, "Pinecrest Hospital": 0.05,
+             "Brannock Medical Center": 0.06, "Lakeshore Hospital": 0.04, "Corbel Falls Hospital": 0.04,
+             "Quayside Hospital": 0.10, "Marlow Ridge Medical Center": 0.03, "Fairhaven Community Hospital": 0.05}
+AMA = 0.016                                # adult admissions ending against medical advice, per index admission
+
+# MS-DRG: the plan's 2026 relative weight, a typical principal diagnosis (ICD-10-CM) and the title
+DRG = {
+    "871": (1.8727, "A419", "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC"),
+    "870": (4.4012, "A4189", "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS"),
+    "291": (1.3315, "I5023", "HEART FAILURE AND SHOCK WITH MCC"),
+    "190": (1.1508, "J441", "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC"),
+    "193": (1.3032, "J189", "SIMPLE PNEUMONIA AND PLEURISY WITH MCC"),
+    "064": (1.8016, "I639", "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC"),
+    "682": (1.4818, "N186", "RENAL FAILURE WITH MCC"),
+    "853": (4.8461, "A4151", "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC"),
+    "207": (5.6224, "J9601", "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS"),
+    "314": (1.8233, "I5043", "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC"),
+    "872": (1.0291, "A419", "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC"),
+    "292": (0.9024, "I5033", "HEART FAILURE AND SHOCK WITH CC"),
+    "194": (0.9188, "J189", "SIMPLE PNEUMONIA AND PLEURISY WITH CC"),
+    "065": (1.0322, "I634", "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HRS"),
+    "683": (0.8838, "N179", "RENAL FAILURE WITH CC"),
+    "378": (0.9811, "K922", "G.I. HEMORRHAGE WITH CC"),
+    "189": (1.2117, "J9600", "PULMONARY EDEMA AND RESPIRATORY FAILURE"),
+    "308": (1.1702, "I4891", "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC"),
+    "280": (1.6627, "I214", "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC"),
+    "470": (1.8915, "M1711", "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC"),
+    "392": (0.7504, "K529", "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC"),
+    "603": (0.8517, "L03115", "CELLULITIS WITHOUT MCC"),
+    "638": (0.8402, "E1165", "DIABETES WITH CC"),
+    "313": (0.6203, "R079", "CHEST PAIN"),
+    "312": (0.7918, "R55", "SYNCOPE AND COLLAPSE"),
+    "641": (0.7889, "E860", "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC"),
+    "690": (0.7891, "N390", "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC"),
+    "247": (2.1733, "I2510", "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH DRUG-ELUTING STENT WITHOUT MCC"),
+    "343": (1.0461, "K3580", "APPENDECTOMY WITHOUT COMPLICATED PRINCIPAL DIAGNOSIS WITHOUT CC/MCC"),
+    "419": (1.5603, "K8020", "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITHOUT CC/MCC"),
+    "481": (1.9916, "S72001A", "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC"),
+    "493": (1.8222, "S82201A", "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT, FEMUR WITH CC"),
+    "460": (4.1037, "M48061", "SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC"),
+    "885": (1.0322, "F209", "PSYCHOSES"),
+    "807": (0.5806, "O80", "VAGINAL DELIVERY WITHOUT STERILIZATION OR D&C WITHOUT CC/MCC"),
+    "806": (0.6611, "O9989", "VAGINAL DELIVERY WITHOUT STERILIZATION OR D&C WITH CC"),
+    "805": (1.0613, "O1414", "VAGINAL DELIVERY WITHOUT STERILIZATION OR D&C WITH MCC"),
+    "788": (0.8452, "O82", "CESAREAN SECTION WITHOUT STERILIZATION WITHOUT CC/MCC"),
+    "787": (1.0019, "O3421", "CESAREAN SECTION WITHOUT STERILIZATION WITH CC"),
+    "786": (1.5167, "O1414", "CESAREAN SECTION WITHOUT STERILIZATION WITH MCC"),
+    "798": (0.7488, "O80", "VAGINAL DELIVERY WITH STERILIZATION OR D&C WITHOUT CC/MCC"),
+    "797": (0.8421, "O9989", "VAGINAL DELIVERY WITH STERILIZATION OR D&C WITH CC"),
+    "768": (1.0507, "O7022", "VAGINAL DELIVERY WITH O.R. PROCEDURES EXCEPT STERILIZATION AND/OR D&C"),
+    "795": (0.1712, "Z3800", "NORMAL NEWBORN"),
+    "794": (1.3920, "P599", "NEONATE WITH OTHER SIGNIFICANT PROBLEMS"),
+    "793": (3.8916, "P221", "FULL TERM NEONATE WITH MAJOR PROBLEMS"),
+    "792": (2.0105, "P0735", "PREMATURITY WITHOUT MAJOR PROBLEMS"),
+    "791": (3.6084, "P0733", "PREMATURITY WITH MAJOR PROBLEMS"),
+    "790": (5.3317, "P220", "EXTREME IMMATURITY OR RESPIRATORY DISTRESS SYNDROME, NEONATE"),
+    "203": (0.6215, "J4541", "BRONCHITIS AND ASTHMA WITHOUT CC/MCC"),
+    "195": (0.6732, "J189", "SIMPLE PNEUMONIA AND PLEURISY WITHOUT CC/MCC"),
+}
+DELIVERY_DRGS = ("768", "783", "784", "785", "786", "787", "788", "796", "797", "798", "805", "806", "807")
 
 FILES = {
-    "orrin": "orrin_rx_specialty_claims_2019_2025.csv",
-    "tallis": "tallis_specialty_claims_2026h1.csv",
-    "crosswalk": "member_id_crosswalk_2026.csv",
-    "drugs": "tallis_specialty_drug_list_2026.csv",
-    "prices": "tallis_specialty_price_schedule_2026.xlsx",
-    "charter": "specialty_clinical_pharmacy_program_charter_2026.pdf",
-    "bulletin": "formulary_bulletin_january_2026.pdf",
-    "transition": "pbm_transition_file_notes.pdf",
-    "rebates": "orrin_rx_rebate_statement_2025.xlsx",
-    "trend": "orrin_rx_specialty_trend_report_2025.pdf",
-    "infusions": "medical_benefit_specialty_drugs_2025.xlsx",
+    "claims": "hchp_ip_claims_extract_2026-10-05.csv",
+    "encounters": "CMG_HCHP_IP_ENC_20261006.txt",
+    "enrollment": "hchp_member_enrollment_extract_2026-10-05.csv",
+    "activity": "hchp_member_service_lines_2025-01_2026-09.csv",
+    "linkage": "OVR_HCHP_FY2026_DEATH_LINKAGE_RETURN.csv",
+    "scores": "HIMM_3.2_scores_FY2026_admissions.xlsx",
+    "roster": "hchp_network_hospitals_2026.csv",
+    "spec": "HCHP_Hospital_Quality_Bonus_2027_Measure_Specification.pdf",
+    "linknote": "OVR_Linkage_Methods_HCHP_FY2026.pdf",
+    "claimnotes": "hchp_ip_claims_extract_notes.pdf",
+    "layout": "CMG_Inpatient_Encounter_File_Layout_v4.pdf",
+    "readmissions": "HCHP_Quality_Dashboard_Readmissions_FY2026.xlsx",
+    "profiles": "HCHP_Network_Hospital_Profiles_2026.pdf",
+    "disputes": "HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx",
 }
-GOLDEN = {"workbook": "merrow_specialty_pharmacist_staffing_2026_27.xlsx"}
-DISTRACTORS = ["trend", "infusions"]
+DISTRACTORS = ["readmissions", "profiles"]
+DISPUTE_RUN = dt.date(2026, 10, 1)         # Provider Disputes ran its log
+DISPUTE_SHARE = {"reprocessed": 0.18, "finance": 0.008, "denied": 0.006}
+DISPUTE_FLOOR = 15000.0                    # Finance's awards on fiscal 2026 stays at each hospital reach at least this
+DISPUTE_OLD = {"Saint Brendan Medical Center": 9, "Westover Regional Hospital": 7, "Calloway Memorial Hospital": 6,
+               "Varden Surgical Hospital": 2, "Mercy Valley Medical Center": 7, "Northgate Community Hospital": 5,
+               "Tamsin General Hospital": 4, "Pinecrest Hospital": 4, "Brannock Medical Center": 4,
+               "Lakeshore Hospital": 3, "Corbel Falls Hospital": 3, "Quayside Hospital": 6,
+               "Marlow Ridge Medical Center": 3, "Fairhaven Community Hospital": 2}
+GOLDEN = {"workbook": "halbrook_2027_hospital_quality_bonus.xlsx"}

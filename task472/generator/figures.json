@@ -1,0 +1,67 @@
+{
+ "call": {
+  "terminal": "Millrace"
+ },
+ "components": {
+  "berth_hours_saved": {
+   "Ore Dock": 423,
+   "Pine Neck": 449,
+   "Gannet Point": 395,
+   "Halyard": 556,
+   "Saltworks": 257,
+   "Millrace": 887
+  },
+  "runner_up": "Halyard",
+  "gap_hours": 331,
+  "large_vessel_calls": {
+   "Ore Dock": 141,
+   "Pine Neck": 176,
+   "Gannet Point": 91,
+   "Halyard": 117,
+   "Saltworks": 156,
+   "Millrace": 103
+  },
+  "total_large_vessel_calls": 784
+ },
+ "a_breakdown_hours": {
+  "Ore Dock": 1273,
+  "Pine Neck": 972,
+  "Gannet Point": 501,
+  "Halyard": 1121,
+  "Saltworks": 704,
+  "Millrace": 1718
+ },
+ "b_labor_hours": {
+  "Ore Dock": 2981,
+  "Pine Neck": 3191,
+  "Gannet Point": 1753,
+  "Halyard": 3061,
+  "Saltworks": 2268,
+  "Millrace": 3595
+ },
+ "inputs": {
+  "teu_line": 10000,
+  "fiscal_year": "1 July 2025 to 30 June 2026",
+  "deep_draft_ft": 41,
+  "window_before": "1 h 30 min",
+  "window_after": "30 min",
+  "long_ft": 1250,
+  "daylight": [
+   "0600",
+   "2000"
+  ],
+  "passage_minutes": {
+   "Saltworks": 110,
+   "Millrace": 160
+  },
+  "rules": [
+   "3.2",
+   "3.3",
+   "3.6",
+   "8.1",
+   "9.2",
+   "9.3",
+   "3.7"
+  ]
+ }
+}

@@ -1,153 +1,185 @@
-"""The golden deliverables: the media kit's edition figures workbook and the measurement note for advertisers."""
-import io
-import numpy as np
+"""The two goldens: the spring review workbook and the chart of each station's published 2027 load against the
+review's estimate.   GD.write(golden_dir, content)"""
+import os
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import Image, Paragraph, Spacer
-import docs as D
+
 import params as P
 import postprocess
 
-NAMES = {e["code"]: e["name"] for e in P.EDITIONS}
-HFILL = PatternFill("solid", fgColor="DDE3EA")
-NOTEFILL = PatternFill("solid", fgColor="FBE3D6")
+XLSX = "sediment_load_review_2027.xlsx"
+PNG = "station_loads_2027.png"
+AUTHOR = "Monitoring analytics, %s" % P.ORG
+BLUE, ORANGE, INK, INK2, GRID, SURF = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e", "#d9d8d4", "#fcfcfb"
+THIN = Side(style="thin", color="B7B6B1")
+
+
+def _rounded_estimate(t):
+    return int(round(t, -2)) if t >= 10000 else int(round(t, -1))
+
+
+def _sheet(ws, title, sub, head, rows, widths, fmts, start=4):
+    ws["A1"] = title
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = sub
+    ws["A2"].font = Font(italic=True, size=9, color="52514E")
+    for j, h in enumerate(head, 1):
+        c = ws.cell(row=start, column=j, value=h)
+        c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="E8E7E3")
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
+        c.border = Border(bottom=THIN)
+    for i, r in enumerate(rows, start + 1):
+        for j, (x, f) in enumerate(zip(r, fmts), 1):
+            c = ws.cell(row=i, column=j, value=x)
+            if f:
+                c.number_format = f
+            if isinstance(x, str):
+                c.alignment = Alignment(horizontal="left")
+    for k, w in enumerate(widths, 1):
+        ws.column_dimensions[get_column_letter(k)].width = w
+    ws.freeze_panes = ws.cell(row=start + 1, column=2)
+    return start + len(rows)
 
 
 def workbook(path, G):
-    res = G["res"]
     wb = Workbook()
     ws = wb.active
-    ws.title = "Digital audience"
-    ws.append(["2029 media kit: digital audience by edition, October to December 2028"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Reported users: the analytics platform's distinct identifiers, average of the three months. Browsers: "
-               "estimated unique browsers (audience policy, section 2). Note: reported above browsers by more than 25 per cent."])
-    ws.append([])
-    ws.append(["Edition", "Name", "Reported users", "Estimated browsers", "Reported above browsers", "Measurement note"])
-    for c in ws[4]:
-        c.font = Font(bold=True); c.fill = HFILL; c.alignment = Alignment(wrap_text=True, vertical="top")
-    for code in P.CODES:
-        r = res.loc[code]
-        ws.append([code, NAMES[code], G["reported"][code], int(round(r["browsers"], -1)), round(float(r["golden"]) / 100, 3),
-                   "Yes" if r["note"] else "No"])
-        if r["note"]:
-            for c in ws[ws.max_row]:
-                c.fill = NOTEFILL
-    for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
-        row[2].number_format = "#,##0"; row[3].number_format = "#,##0"; row[4].number_format = "0%"
-        row[5].alignment = Alignment(horizontal="center")
-    ws.append([])
-    ws.append(["Editions with the note", G["n_noted"]])
-    ws.cell(ws.max_row, 1).font = Font(bold=True)
-    for i, w in enumerate([9, 18, 15, 18, 15, 12], 1):
-        ws.column_dimensions[get_column_letter(i)].width = w
-    ws.row_dimensions[4].height = 30
-    ws.freeze_panes = "C5"
+    ws.title = "Review 2027"
+    rows = []
+    for code in G["order"]:
+        v = G["call"][code]
+        rows.append([code, G["name"][code], G["regime"][code], v["published_t"], _rounded_estimate(v["estimate_t"]),
+                     v["misstatement_pct"] / 100, "Over: re-issue" if v["verdict"] == "over" else
+                     ("Under: re-issue" if v["verdict"] == "under" else "Within tolerance"),
+                     v["samples"], v["rising_samples"]])
+    last = _sheet(ws, "Four stations' published 2027 loads overstate what passed by more than 15 per cent: SKB, JVB, FND, ESK",
+                  "Spring review under SMP-03 v3 section 8 (tolerance 15 per cent either way). Review estimate: "
+                  "log10 concentration on log10 turbidity and whether the river was rising at the sample, Duan's smearing.",
+                  ["Station", "Name", "Regime", "Published 2027 (t)", "Review estimate 2027 (t)",
+                   "Published against estimate", "Verdict", "Calibration samples 2025-27", "of which on rising water"],
+                  rows, [9, 27, 13, 14, 15, 13, 17, 13, 12],
+                  [None, None, None, "#,##0", "#,##0", "+0%;-0%;0%", None, "0", "0"])
+    for i in range(5, last + 1):
+        if ws.cell(row=i, column=7).value.startswith("Over"):
+            for j in range(1, 10):
+                ws.cell(row=i, column=j).font = Font(bold=True)
+    ws.cell(row=last + 2, column=1, value="Estimates rounded to 100 t above 10,000 t and to 10 t below. Rising water: the "
+            "15-minute discharge rose by more than 1.5 per cent an hour, averaged over the hour around the reading.").font = \
+        Font(size=9, color="52514E")
+    ws.print_title_rows = "4:4"
 
-    w2 = wb.create_sheet("Sold copies")
-    w2.append(["Sold copies per publication day, fourth quarter 2028 (IVW basis; audience policy, section 5)"])
-    w2["A1"].font = Font(bold=True, size=12)
-    w2.append([])
-    w2.append(["Edition", "Name", "Sold copies per publication day"])
-    for c in w2[3]:
-        c.font = Font(bold=True); c.fill = HFILL
-    for code in P.CODES:
-        w2.append([code, NAMES[code], G["copies"][code]])
-        w2.cell(w2.max_row, 3).number_format = "#,##0"
-    w2.column_dimensions["A"].width = 9; w2.column_dimensions["B"].width = 18; w2.column_dimensions["C"].width = 30
-    w2.freeze_panes = "C4"
+    ws2 = wb.create_sheet("Turbidity record 2025-26")
+    rows = [[c, G["name"][c], G["ask_a"][c]["hours_whole"], G["ask_a"][c]["missing"], G["ask_a"][c]["flagged"],
+             G["ask_a"][c]["ceiling"]] for c in G["order"]]
+    last = _sheet(ws2, "Hours without a usable turbidity reading, 1 January 2025 to 31 December 2026",
+                  "SMP-03 v3 section 5. Intervals are 15 minutes (UTC); four make an hour.",
+                  ["Station", "Name", "Hours without a usable reading", "Intervals with no row",
+                   "Intervals flagged fouled or sonde out (F, M; G, O before 14 April 2026)",
+                   "Intervals at the TS-10's 1,000 FNU limit"],
+                  rows, [9, 27, 15, 14, 24, 16], [None, None, "#,##0", "#,##0", "#,##0", "#,##0"])
+    ws2.cell(row=last + 2, column=1, value="Letters G (fouled) and O (sonde out) were the data team's flags before the "
+             "database migration of 14 April 2026, K the former C (checked, usable); they coincide with the maintenance "
+             "log's cleaning visits. Re-sent rows counted once.").font = Font(size=9, color="52514E")
 
-    w3 = wb.create_sheet("Newsletter")
-    w3.append(["Newsletter subscribers at the end of 31 December 2028 (Berlin time; audience policy, section 6)"])
-    w3["A1"].font = Font(bold=True, size=12)
-    w3.append([])
-    w3.append(["Edition", "Name", "Subscribers"])
-    for c in w3[3]:
-        c.font = Font(bold=True); c.fill = HFILL
-    for code in P.CODES:
-        w3.append([code, NAMES[code], G["newsletter"][code]])
-        w3.cell(w3.max_row, 3).number_format = "#,##0"
-    w3.append(["", "Contacts in two groups count in both.", None])
-    w3.column_dimensions["A"].width = 9; w3.column_dimensions["B"].width = 34; w3.column_dimensions["C"].width = 14
-    w3.freeze_panes = "C4"
+    ws3 = wb.create_sheet("Laboratory QC 2027")
+    rows = [[c, G["name"][c], G["n27"][c], G["ask_b"][c]] for c in G["order"]]
+    last = _sheet(ws3, "2027 samples weighed in a batch that failed its quality control",
+                  "SMP-03 v3 section 4: blank within 0.5 mg, each control aliquot 90 to 110 per cent of the lot's "
+                  "concentration (quality statement), aliquots within 10 per cent of their mean.",
+                  ["Station", "Name", "2027 samples", "In a failed batch"], rows, [9, 27, 12, 14],
+                  [None, None, "0", "0"])
+    r0 = last + 3
+    ws3.cell(row=r0, column=1, value="Failed batches").font = Font(bold=True)
+    for j, h in enumerate(["Batch", "Weighed", "Check failed", "Samples"], 1):
+        c = ws3.cell(row=r0 + 1, column=j, value=h)
+        c.font = Font(bold=True)
+        c.border = Border(bottom=THIN)
+    for i, b in enumerate(G["failed_rows"], r0 + 2):
+        for j, x in enumerate(b, 1):
+            ws3.cell(row=i, column=j, value=x)
 
-    w4 = wb.create_sheet("Notes")
-    for line in [
-        "Prepared by audience data for the 2029 media kit, 15 January 2029; figures certified before the kit goes to advertisers on 1 February.",
-        "Digital: sessions of October to December 2028 (Berlin months) without automated traffic, the newsroom's addresses and the export's re-sent rows; Hollerfeld's HKR and HOL joined.",
-        "Browsers on WebKit (every iPhone and iPad browser, Safari on the Mac) are estimated: the seven-day rule replayed on other browsers' histories within edition, month and device class gives the identifiers a browser carries; print subscribers' browsers are counted from the sign-in register.",
-        "Sold copies: subscriptions (print and e-paper, once each) and single copies sold, over each edition's publication days; Rhineland-Palatinate's editions did not appear on 1 November. "
-        "%s subscriptions show a start between November and mid-December though their numbers were issued long before, so those dates are not their first days of delivery; they are counted from 1 October." % "{:,}".format(G["moved_subs"]),
-        "Newsletter: confirmed subscribers in each edition's group at midnight on 31 December, from the platform's export taken back through its activity log and the preference centre's log; "
-        "the editions added through the new year's mailing's one-click links (%s) are taken off, those added through the links before the year's end stay." % "{:,}".format(G["link_adds_after"]),
-    ]:
-        w4.append([line])
-        w4.cell(w4.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
-    w4.column_dimensions["A"].width = 120
+    ws4 = wb.create_sheet("Notes")
+    notes = [
+        ("As of", "13 March 2028, for the flushing plan fixed on 20 March 2028."),
+        ("Population", "The 14 stations in the station register; loads for 1 January 00:00 to 31 December 23:45 UTC, 2027."),
+        ("Published loads", "Suspended sediment loads 2027 (issued 15 February 2028); the procedure's regression "
+                            "refitted on the same samples reproduces every load to within 0.1 per cent."),
+        ("Review estimate", "Each station's samples of 2025 to 2027 (final laboratory results), each paired with the "
+                            "15-minute reading nearest its time; log10 concentration on log10 turbidity and an indicator "
+                            "of rising water at the sample; applied to every 15-minute interval of 2027 with that "
+                            "interval's own indicator; Duan's smearing."),
+        ("Why", "At SKB, JVB, FND and ESK most calibration samples were taken while the river was rising (the melt "
+                "season's working-hours rounds and early flood callouts), when a unit of turbidity carries two to three "
+                "times the concentration; the published regression carries that into every hour of the year."),
+        ("Tolerance", "Re-issue when the published load misstates what passed by more than 15 per cent, over or under "
+                      "(section 8)."),
+    ]
+    for i, (k, v) in enumerate(notes, 1):
+        ws4.cell(row=i, column=1, value=k).font = Font(bold=True)
+        c = ws4.cell(row=i, column=2, value=v)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws4.column_dimensions["A"].width = 16
+    ws4.column_dimensions["B"].width = 110
     wb.save(path)
-    postprocess.scrub(path, P.ORG, "2029-01-16T17:45:00")
-    postprocess.finish_office(path, "2029-01-15T09:10:00Z", "2029-01-16T17:45:00Z", P.ORG)
+    postprocess.scrub(path, P.ORG, "2028-03-13")
+    postprocess.finish_office(path, "2028-03-08T07:55:00Z", "2028-03-13T15:10:00Z", P.ORG)
 
 
-def _chart(G):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    matplotlib.rcParams["svg.hashsalt"] = "task249"
-    res = G["res"]
-    order = sorted(P.CODES, key=lambda c: -res.loc[c, "golden"])
-    fig, ax = plt.subplots(figsize=(7.2, 3.9), dpi=150)
-    x = np.arange(len(order))
-    rep = np.array([G["reported"][c] for c in order]) / 1000
-    est = np.array([res.loc[c, "browsers"] for c in order]) / 1000
-    ax.bar(x - 0.2, rep, 0.4, color="#9AA7B8", label="Reported users")
-    ax.bar(x + 0.2, est, 0.4, color=["#C0504D" if res.loc[c, "note"] else "#4F81BD" for c in order], label="Estimated browsers")
-    ax.scatter(x - 0.2, est * 1.25, marker="_", s=260, linewidths=2.2, color="#222222", zorder=3,
-               label="Estimated browsers plus 25 per cent")
-    ax.set_xticks(x)
-    ax.set_xticklabels(["%s%s" % (c, " *" if res.loc[c, "note"] else "") for c in order], fontsize=8)
-    ax.set_ylabel("Thousands, monthly average Oct to Dec 2028", fontsize=8)
-    ax.tick_params(axis="y", labelsize=8)
-    ax.set_title("Reported users above the 25 per cent mark carry the note (*)", fontsize=9.5)
-    ax.legend(fontsize=7.5, frameon=False, loc="upper right")
-    ax.spines["top"].set_visible(False); ax.spines["right"].set_visible(False)
-    fig.tight_layout()
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
+def chart(path, G):
+    order = list(reversed(G["order"]))
+    fig, ax = plt.subplots(figsize=(9.2, 6.4), dpi=150)
+    fig.patch.set_facecolor(SURF)
+    ax.set_facecolor(SURF)
+    for i, code in enumerate(order):
+        v = G["call"][code]
+        flag = v["verdict"] != "within"
+        ax.plot([v["estimate_t"], v["published_t"]], [i, i], color=INK if flag else GRID, lw=2 if flag else 1.4,
+                zorder=1, solid_capstyle="round")
+        ax.scatter(v["estimate_t"], i, s=46, color=BLUE, zorder=3, edgecolor=SURF, linewidth=1.5)
+        ax.scatter(v["published_t"], i, s=46, color=ORANGE, zorder=3, edgecolor=SURF, linewidth=1.5)
+        if flag:
+            ax.text(max(v["published_t"], v["estimate_t"]) * 1.12, i, "%+.0f%%" % v["misstatement_pct"],
+                    va="center", ha="left", fontsize=9, color=INK, fontweight="bold")
+    ax.set_xscale("log")
+    ax.set_xlim(1200, 450000)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels(["%s  %s" % (c, G["name"][c]) for c in order], fontsize=8.6, color=INK2)
+    for lab, code in zip(ax.get_yticklabels(), order):
+        if G["call"][code]["verdict"] != "within":
+            lab.set_color(INK)
+            lab.set_fontweight("bold")
+    ax.set_xticks([2000, 5000, 10000, 20000, 50000, 100000, 200000])
+    ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: "{:,.0f}".format(x)))
+    ax.set_xlabel("Suspended sediment, 2027 (tonnes, log scale)", fontsize=9, color=INK2)
+    ax.grid(axis="x", color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    for s in ("top", "right", "left"):
+        ax.spines[s].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+    ax.tick_params(axis="both", length=0, colors=INK2, labelsize=8.6)
+    ax.scatter([], [], s=46, color=ORANGE, label="Published (report of 15 February 2028)")
+    ax.scatter([], [], s=46, color=BLUE, label="Review estimate (what passed)")
+    ax.legend(loc="lower right", frameon=False, fontsize=8.6)
+    fig.suptitle("Four stations' published 2027 loads overstate what passed by more than 15 per cent",
+                 x=0.02, y=0.985, ha="left", fontsize=11.5, fontweight="bold", color=INK)
+    ax.set_title("Bold: outside the 15 per cent review tolerance, to be re-issued before the flushing plan",
+                 loc="left", fontsize=9, color=INK2)
+    fig.text(0.02, 0.01, "Source: %s, %s; 15-minute record and field samples 2025-27; review of 13 March 2028."
+             % (P.ORG, P.PROGRAMME), fontsize=7.5, color=INK2)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.985))
+    fig.savefig(path, facecolor=SURF, metadata={"Software": None})
     plt.close(fig)
-    buf.seek(0)
-    return buf
 
 
-def note(path, G):
-    body, h1, h2, small, cell = D._styles()
-    doc = D._doc(path, "Measurement note, 2029 media kit", P.PEOPLE["head"], "Which editions carry the note")
-    noted = [c for c in P.CODES if G["res"].loc[c, "note"]]
-    s = [Paragraph("Measurement note in the 2029 media kit: %d of 12 editions" % len(noted), h1),
-         Paragraph("%s, audience data, for advertisers and the sales team. 16 January 2029." % P.PEOPLE["head"], small),
-         Spacer(1, 4),
-         Paragraph("The editions %s carry the note <i>Reported users include browsers counted more than once; see the "
-                   "methods page</i> beside their digital figure for October to December 2028. Their reported users "
-                   "exceed the browsers that read them by more than a quarter. %s print their figures without it."
-                   % (", ".join(NAMES[c] for c in noted[:-1]) + " and " + NAMES[noted[-1]],
-                      ", ".join(NAMES[c] for c in G["kept"][:-1]) + " and " + NAMES[G["kept"][-1]]), body),
-         Image(_chart(G), width=170 * mm, height=92 * mm),
-         Paragraph("Why reported users run above browsers", h2),
-         Paragraph("Our analytics tag recognises a browser by an identifier stored in a cookie. Safari on the Mac and "
-                   "every browser on an iPhone or iPad delete that cookie after seven days without a visit, so a reader "
-                   "who comes back after a week away is counted again. The overcount is largest where many readers use "
-                   "Apple devices and come by every week or two.", body),
-         Paragraph("Methods", h2),
-         Paragraph("For each edition, month and device class we replayed the seven-day rule on the visit histories of "
-                   "readers whose browsers keep the cookie, and divided the Apple browsers' identifiers by the number of "
-                   "identifiers a browser would carry. Print subscribers, who sign in with their subscriber number and "
-                   "read us mostly on Apple devices, are counted directly from our sign-in records. Registered readers "
-                   "are not set apart: on Apple devices the free-article meter is deleted with the cookie, so fewer of "
-                   "those readers meet the registration wall, and the signed-in group there is not like the signed-in "
-                   "group elsewhere.", body)]
-    doc.build(s, onFirstPage=D._footer("%s, audience data." % P.ORG), onLaterPages=D._footer("%s, audience data." % P.ORG))
-    postprocess.scrub(path, P.ORG, "2029-01-16T17:50:00")
+def write(golden, G):
+    os.makedirs(golden, exist_ok=True)
+    workbook(os.path.join(golden, XLSX), G)
+    chart(os.path.join(golden, PNG), G)

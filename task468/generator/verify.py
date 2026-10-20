@@ -1,164 +1,151 @@
-"""An independent verifier for task468: reads only the shipped bundle (target/) and the golden workbook, with its own
-readers and arithmetic (no generator module), and recomputes the caseloads, each class's projected managed spend, the
-staffing and the rebates.
-
-    python3 task468/generator/verify.py
-"""
+"""The independent verifier: reads only the shipped pack, the golden workbook and figures.json, and recomputes the
+determination and the bonus figures with its own code (no generator module but the file names and the threshold)."""
 import csv
 import datetime as dt
-import math
+import json
 import os
-from collections import defaultdict
+import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-N = {"orrin": "orrin_rx_specialty_claims_2019_2025.csv", "tallis": "tallis_specialty_claims_2026h1.csv",
-     "xw": "member_id_crosswalk_2026.csv", "drugs": "tallis_specialty_drug_list_2026.csv",
-     "prices": "tallis_specialty_price_schedule_2026.xlsx", "rebates": "orrin_rx_rebate_statement_2025.xlsx"}
-GOLD = "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
-CLASSES = ["IMM", "MS", "ONC", "HCV", "GLP", "HIV", "AST", "CF", "CGR"]
+import openpyxl
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import world as W   # noqa: E402  (file names, the 1.15 line and the 2 per cent only)
 
-def rows(p):
-    with open(p, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+DELIVERY = {"768", "783", "784", "785", "786", "787", "788", "796", "797", "798", "805", "806", "807"}
 
 
-def mi(d):
-    return (d.year - 2019) * 12 + d.month - 1
+def iso(s):
+    return dt.date.fromisoformat(s)
 
 
-def month_end(i):
-    y, m = divmod(i + 1, 12)
-    return dt.date(2019 + y, m + 1, 1) - dt.timedelta(days=1)
-
-
-def main(target, golden):
-    from openpyxl import load_workbook
-    p = lambda k: os.path.join(target, N[k])
-    xo, xt = {}, {}
-    for r in rows(p("xw")):
-        if r["orrin_member_key"]:
-            xo[r["orrin_member_key"]] = r["plan_member_id"]
-        if r["tallis_member_no"]:
-            xt[r["tallis_member_no"]] = r["plan_member_id"]
-    cls = {r["ndc11"]: r["class_code"] for r in rows(p("drugs"))}
-    price = {}
-    for r in load_workbook(p("prices"), data_only=True).active.iter_rows(min_row=4, values_only=True):
-        if r and r[0]:
-            price[str(r[0])] = (float(r[2]), float(r[3]))
-    fills = []    # (member, class, date, days, spend)
-    o = rows(p("orrin"))
-    rev = {r["claim_no"] for r in o if r["line_type"] == "REVERSAL"}
-    for r in o:
-        if r["claim_no"] in rev:
+def main(target, golden_dir):
+    p = lambda k: os.path.join(target, W.FILES[k])
+    npi = {r["npi"]: r["hospital_name"] for r in csv.DictReader(open(p("roster"), encoding="utf-8"))}
+    mem, cmg = {}, {}
+    for r in csv.DictReader(open(p("enrollment"), encoding="utf-8")):
+        m, d, y = r["birth_date"].split("/")
+        last = r["last_name"]
+        mem[r["member_id"]] = (dt.date(int(y), int(m), int(d)),
+                               "N" if r["ssn_last4"] else ("C" if (" " in last or "-" in last) else "S"))
+        if r["cmg_member_no"]:
+            cmg[r["cmg_member_no"]] = r["member_id"]
+    # stays, as last corrected
+    claims = list(csv.DictReader(open(p("claims"), encoding="utf-8")))
+    gone = {r["original_claim_number"] for r in claims if r["type_of_bill"] == "0118"}
+    repl = {r["original_claim_number"]: r for r in claims if r["type_of_bill"] == "0117"}
+    stays, pay = [], {h: 0.0 for h in W.CANDIDATES}
+    carried = {}                                   # claim: (the day its replacement paid, the change it made)
+    for r in claims:
+        if r["type_of_bill"] != "0111" or r["claim_number"] in gone:
             continue
-        a, b, c = r["ndc"].split("-")
-        n = a.zfill(5) + b.zfill(4) + c.zfill(2)
-        fills.append((xo[r["member_key"]], cls[n], dt.date.fromisoformat(r["fill_date"]), int(r["days_supply"]),
-                      round(float(r["qty"]) * price[n][0], 2) + price[n][1]))
-    t = rows(p("tallis"))
-    rev = {r["ClaimID"] for r in t if r["Status"] == "R"}
-    for r in t:
-        if r["ClaimID"] in rev:
+        fin = repl.get(r["claim_number"], r)
+        stays.append((r["member_id"], npi.get(r["billing_npi"]), r["billing_npi"], iso(r["admission_date"]),
+                      iso(r["statement_thru_date"]), r["patient_status"], fin["drg"]))
+        if fin is not r:
+            ch = float(fin["paid_amount"]) - float(r["paid_amount"]) if fin["claim_number"].startswith("HC") else \
+                float(fin["paid_amount"])
+            carried[r["claim_number"]] = (iso(fin["paid_date"]), ch)
+        if npi.get(r["billing_npi"]) and dt.date(2025, 7, 1) <= iso(r["statement_thru_date"]) <= dt.date(2026, 6, 30):
+            a = float(r["paid_amount"])
+            if fin is not r:
+                a = float(fin["paid_amount"]) if fin["claim_number"].startswith("HC") else a + float(fin["paid_amount"])
+            pay[npi[r["billing_npi"]]] += a
+    # Provider Disputes' awards paid on fiscal 2026 stays, those a replacement bill already paid left out
+    lg = openpyxl.load_workbook(p("disputes"), read_only=True)["Log"].iter_rows(values_only=True)
+    hd = list(next(lg))
+    for row in lg:
+        d = dict(zip(hd, row))
+        if d["PDR No."] is None or d["Determination"] not in ("Overturned", "Partially overturned"):
             continue
-        d = dt.datetime.strptime(r["DateOfService"], "%m/%d/%Y").date()
-        fills.append((xt[r["MemberNo"]], cls[r["NDC11"]], d, int(r["DaysSupply"]),
-                      round(float(r["Quantity"]) * price[r["NDC11"]][0], 2) + price[r["NDC11"]][1]))
-    first = {}
-    spend = defaultdict(float)
-    cover = defaultdict(list)
-    for m, c, d, ds, s in fills:
-        k = (m, c)
-        first[k] = min(first.get(k, d), d)
-        spend[(m, c, mi(d))] += s
-        cover[k].append((d, d + dt.timedelta(days=ds - 1)))
-
-    def on(day):
-        return {k for k, iv in cover.items() if any(a <= day <= b for a, b in iv)}
-
-    last = mi(dt.date(2026, 6, 30))
-    cap = 36
-    early = dt.date(2019, 3, 31)
-
-    # each member's episodes of therapy in a class: a fill more than 60 days after every earlier supply ran out
-    # begins a new one
-    eps = {}
-    for k, iv in cover.items():
-        starts, run_out = [], None
-        for a, b in sorted(iv):
-            if run_out is None or (a - run_out).days > 60:
-                starts.append(a)
-            end = b + dt.timedelta(days=1)
-            run_out = end if run_out is None else max(run_out, end)
-        eps[k] = starts
-
-    def dur(k, i):
-        day = month_end(i)
-        st = [s_ for s_ in eps[k] if s_ <= day]
-        if len(st) == 1 and first[k] <= early:
-            return cap
-        return min(i - mi(st[-1]), cap)
-
-    cell = defaultdict(lambda: [0.0, 0])
-    for i in range(0, last - 12 + 1):
-        for k in on(month_end(i)):
-            nxt = sum(spend.get((k[0], k[1], j), 0.0) for j in range(i + 1, i + 13))
-            s = cell[(k[1], dur(k, i))]
-            s[0] += nxt
-            s[1] += 1
-    case = on(dt.date(2026, 6, 30))
-    proj = defaultdict(float)
-    n_case = defaultdict(int)
-    for k in case:
-        t_ = dur(k, last)
-        while (k[1], t_) not in cell and t_ > 0:
-            t_ -= 1
-        s = cell[(k[1], t_)]
-        proj[k[1]] += s[0] / s[1]
-        n_case[k[1]] += 1
-    pharm = {c: int(math.ceil(proj[c] / 1_500_000)) for c in CLASSES}
-    # rebates on the fills dispensed in 2025: the statement's contract year runs February to January, so contract
-    # quarters 2025-Q1 to 2025-Q4 once each (each product-quarter's rebate stands on every channel line) and
-    # January 2025's units at contract quarter 2024-Q4's rebate per unit
-    names = {r["ndc11"]: r["product_name"] for r in rows(p("drugs"))}
-    jan = defaultdict(float)
-    o_rev = {r["claim_no"] for r in o if r["line_type"] == "REVERSAL"}
-    for r in o:
-        if r["claim_no"] in o_rev:
+        h, paid, dis = npi.get(str(d["Provider NPI"])), d["Payment Date"], d["Discharge Date"].date()
+        if h is None or paid is None or not (dt.date(2025, 7, 1) <= dis <= dt.date(2026, 6, 30)):
             continue
-        d = dt.date.fromisoformat(r["fill_date"])
-        if d.year == 2025 and d.month == 1:
-            a_, b_, c_ = r["ndc"].split("-")
-            jan[names[a_.zfill(5) + b_.zfill(4) + c_.zfill(2)]] += float(r["qty"])
-    seen, reb = set(), defaultdict(float)
-    q4 = {}
-    for r in load_workbook(p("rebates"), data_only=True).active.iter_rows(min_row=5, values_only=True):
-        if not (r and r[0]):
+        c = carried.get(str(d["Claim No."]))
+        if c and c[0] == paid.date() and abs(c[1] - float(d["Additional Payment"])) < 0.005:
             continue
-        if str(r[1]).startswith("2025") and (r[2], r[1]) not in seen:
-            seen.add((r[2], r[1]))
-            reb[r[3]] += float(r[6])
-        if r[1] == "2024-Q4":
-            u, a_, c_ = q4.get(r[2], (0.0, float(r[6]), r[3]))
-            q4[r[2]] = (u + float(r[5]), a_, c_)
-    for prod, (u, a_, c_) in q4.items():
-        reb[c_] += a_ / u * jan.get(prod, 0.0)
-    ws = load_workbook(os.path.join(golden, GOLD), data_only=True)["Staffing"]
-    gw = {r[0]: r for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0] in CLASSES}
-    checks = {
-        "caseloads": all(gw[c][2] == n_case[c] for c in CLASSES),
-        "pharmacists": all(gw[c][4] == pharm[c] for c in CLASSES),
-        "managed spend": all(gw[c][3] == int(proj[c] / 1e6 + 0.5) for c in CLASSES),
-        "rebates": all(gw[c][5] == int(reb[c] / 1000 + 0.5) for c in CLASSES),
-    }
-    for k, v in checks.items():
-        print("%s  verify: %s" % ("PASS" if v else "FAIL", k))
-    print("verify: %d fills, caseload %d, pharmacists %s (total %d)" % (len(fills), len(case), pharm,
-                                                                      sum(pharm.values())))
-    if not all(checks.values()):
+        pay[h] += float(d["Additional Payment"])
+    enc = [l.split("|") for l in open(p("encounters"), encoding="utf-8").read().splitlines() if l.startswith("D|")]
+    edel = {e[3] for e in enc if e[2] == "8"}
+    erep = {e[3]: e for e in enc if e[2] == "7"}
+    us = lambda s: dt.date(2000 + int(s[6:8]), int(s[0:2]), int(s[3:5]))
+    for e in enc:
+        if e[2] != "1" or e[1] in edel:
+            continue
+        fin = erep.get(e[1], e)
+        stays.append((cmg[e[4]], npi.get(e[5]), e[5], us(e[6]), us(e[7]), e[8], fin[9]))
+    by_m = {}
+    for s in stays:
+        if s[1]:
+            by_m.setdefault(s[0], []).append(s)
+    wb = openpyxl.load_workbook(p("scores"), read_only=True)
+    score = {(str(r[0]), r[1].date().isoformat() if hasattr(r[1], "date") else str(r[1])[:10], str(r[2])): r[4]
+             for r in wb["Scores"].iter_rows(min_row=2, values_only=True)}
+    link = {}
+    for r in csv.DictReader(open(p("linkage"), encoding="utf-8")):
+        a, d = r["ADMIT_DATE"], r["DATE_OF_DEATH"]
+        link[(r["HCHP_MEMBER_ID"], dt.date(int(a[:4]), int(a[4:6]), int(a[6:])))] = dt.date(int(d[:4]), int(d[4:6]),
+                                                                                         int(d[6:]))
+    seen = {}
+    with open(p("activity"), encoding="utf-8") as fh:
+        rd = csv.reader(fh)
+        next(rd)
+        for m, d, _c, _s in rd:
+            if d > seen.get(m, ""):
+                seen[m] = d
+    rows = []
+    for m, v in by_m.items():
+        v.sort(key=lambda s: (s[3], s[4]))
+        for s in v:
+            if not (dt.date(2025, 7, 1) <= s[3] <= dt.date(2026, 6, 30)):
+                continue
+            if (s[3] - mem[m][0]).days < 18 * 365.25 or s[6] in DELIVERY or s[5] == "07":
+                continue
+            end = s[3] + dt.timedelta(days=30)
+            chain = [s]
+            while chain[-1][5] == "02":
+                nxt = [t for t in v if t[1] != chain[-1][1] and 0 <= (t[3] - chain[-1][4]).days <= 1]
+                if not nxt:
+                    break
+                chain.append(nxt[0])
+            dead = any(t[5] == "20" for t in chain) or any(
+                t[5] == "20" and t not in chain and t[3] >= s[3] and t[4] <= end for t in v)
+            last_alive = max([seen.get(m, "0000")] + [t[3].isoformat() for t in v] +
+                             [t[4].isoformat() for t in v if t[5] != "20"])
+            rows.append((s[1], mem[m][1], score[(m, s[3].isoformat(), s[2])], dead, (m, s[3]) in link,
+                         last_alive > end.isoformat()))
+            break
+    rate = {}
+    for c in "NSC":
+        pos = [r for r in rows if r[1] == c and r[3]]
+        neg = [r for r in rows if r[1] == c and r[5]]
+        rate[c] = (sum(r[4] for r in pos) / len(pos), sum(r[4] for r in neg) / len(neg))
+    ratio = {}
+    for h in W.CANDIDATES:
+        hr = [r for r in rows if r[0] == h]
+        d = float(sum(r[3] for r in hr))
+        for c in "NSC":
+            u = [r for r in hr if r[1] == c and not r[3] and not r[5]]
+            rr, ff = rate[c]
+            d += max((sum(r[4] for r in u) - ff * len(u)) / (rr - ff), 0.0)
+        ratio[h] = d / sum(r[2] for r in hr)
+    lose = sorted(h for h in W.CANDIDATES if ratio[h] > W.THRESHOLD)
+    fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json"), encoding="utf-8"))
+    ok = lose == fig["lose_full"]
+    bonus = {h: int(round(W.BONUS_RATE * pay[h] / 100.0)) * 100 for h in W.CANDIDATES}
+    ok &= all(bonus[r["name"]] == r["bonus"] and abs(ratio[r["name"]] - r["ratio"]) < 0.005 for r in fig["hospitals"])
+    ok &= int(round(W.BONUS_RATE * sum(pay.values()) / 100.0)) * 100 == fig["total_bonus"]
+    g = openpyxl.load_workbook(os.path.join(golden_dir, W.GOLDEN["workbook"]), data_only=True)["Determination"]
+    ok &= all((g.cell(row=i, column=8).value == "Loses") == (g.cell(row=i, column=1).value in lose) and
+              g.cell(row=i, column=10).value == bonus[g.cell(row=i, column=1).value] for i in range(5, 19))
+    print("verify: %s; %d lose the bonus (%s); %d index admissions; bonus figures and total %s" % (
+        "PASS" if ok else "FAIL", len(lose), ", ".join(W.SHORT[h] for h in lose), len(rows),
+        "match" if ok else "differ"))
+    if not ok:
         raise SystemExit("verify failed")
+    return ok
 
 
 if __name__ == "__main__":
-    main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(base, "target"),
+         sys.argv[2] if len(sys.argv) > 2 else os.path.join(base, "golden"))

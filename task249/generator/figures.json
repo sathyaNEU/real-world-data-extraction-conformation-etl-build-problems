@@ -1,126 +1,123 @@
 {
- "filed": {
-  "tolerance_pct": 25,
-  "cap_days": 7,
-  "free_metered_articles": 5,
-  "months": [
-   "2028-10",
-   "2028-11",
-   "2028-12"
-  ],
-  "public_holidays_day_of_month": [
-   3,
-   25,
-   26,
-   1
-  ],
-  "newsletter_cutoff_utc_hour": 23
- },
  "call": {
-  "noted": [
-   "RHS",
-   "KBR",
-   "WBR",
-   "HOL",
-   "SOW",
-   "MST",
-   "GRH",
-   "LDN"
+  "over": [
+   "ESK",
+   "FND",
+   "JVB",
+   "SKB"
   ],
-  "n_noted": 8,
-  "not_noted": [
-   "ALH",
-   "EIT",
-   "BST",
-   "FKR"
+  "under": [],
+  "within": [
+   "BLU",
+   "GRV",
+   "HGE",
+   "HSD",
+   "KVF",
+   "LLU",
+   "MKE",
+   "SLU",
+   "SVK",
+   "TVE"
   ],
-  "n_not_noted": 4,
-  "noted_names": [
-   "Rhenhagen Stadt",
-   "Kirchbrunn",
-   "Wiesbrück",
-   "Hollerfeld",
-   "Sonnweiler",
-   "Mühlenstedt",
-   "Grauheim",
-   "Lindenau"
-  ],
-  "not_noted_names": [
-   "Altenhorst",
-   "Eichtal",
-   "Bergstetten",
-   "Falkenried"
-  ]
+  "verdict": {
+   "SKB": "over",
+   "KVF": "within",
+   "MKE": "within",
+   "JVB": "over",
+   "HGE": "within",
+   "FND": "over",
+   "ESK": "over",
+   "TVE": "within",
+   "GRV": "within",
+   "SVK": "within",
+   "HSD": "within",
+   "BLU": "within",
+   "SLU": "within",
+   "LLU": "within"
+  },
+  "tolerance_pct": 15.0,
+  "n_reissue": 4,
+  "n_stations": 14
  },
  "components": {
-  "noted_floor_pct": 26,
-  "kept_ceiling_pct": 23,
-  "print_devices_webkit_pct": 61,
-  "other_signed_devices_webkit_pct": 27,
-  "sign_in_split_drops": [
-   "GRH",
-   "LDN",
-   "SOW",
-   "WBR"
-  ],
-  "device_only_drops": [
-   "HOL",
-   "KBR",
-   "MST"
-  ],
-  "signed_in_ratio_drops": [
-   "GRH",
-   "LDN",
-   "RHS",
-   "SOW",
-   "WBR"
-  ],
-  "link_additions_after_midnight": 906,
-  "link_additions_before_midnight": 458,
-  "subscriptions_started_before_quarter": 451
+  "refit_reproduces_published_within_pct": 0.1,
+  "refit_gap_max_pct": 0.019,
+  "published_t": {
+   "SKB": 111752,
+   "KVF": 26066,
+   "MKE": 40838,
+   "JVB": 129037,
+   "HGE": 30433,
+   "FND": 181012,
+   "ESK": 24526,
+   "TVE": 5544,
+   "GRV": 7208,
+   "SVK": 4542,
+   "HSD": 14869,
+   "BLU": 2426,
+   "SLU": 2331,
+   "LLU": 1853
+  }
  },
- "reported": {
-  "RHS": 15558,
-  "KBR": 13464,
-  "ALH": 7220,
-  "WBR": 12838,
-  "HOL": 6898,
-  "SOW": 11195,
-  "MST": 8286,
-  "GRH": 7106,
-  "EIT": 5114,
-  "BST": 6724,
-  "LDN": 9539,
-  "FKR": 5056
+ "steps": {
+  "rising_threshold_pct_per_h": 1.5,
+  "rising_corridor_pct_per_h": [
+   0,
+   3
+  ],
+  "interval_seconds": 900,
+  "old_sonde_limit_fnu": 1000,
+  "lot_concentration_mg_l": {
+   "KS-26-11": 50.0,
+   "KS-27-06": 54.0
+  }
  },
  "asks": {
-  "newsletter_subscribers_2028_12_31": {
-   "RHS": 3434,
-   "KBR": 2330,
-   "WBR": 2137,
-   "SOW": 1793,
-   "MST": 1625,
-   "LDN": 1582,
-   "HOL": 1467,
-   "ALH": 1233,
-   "GRH": 1220,
-   "BST": 1039,
-   "EIT": 1016,
-   "FKR": 984
+  "hours_without_usable_reading": {
+   "SKB": 702,
+   "KVF": 459,
+   "MKE": 647,
+   "JVB": 238,
+   "HGE": 460,
+   "FND": 757,
+   "ESK": 507,
+   "TVE": 400,
+   "GRV": 450,
+   "SVK": 433,
+   "HSD": 696,
+   "BLU": 543,
+   "SLU": 340,
+   "LLU": 673
   },
-  "sold_copies_per_publication_day_q4": {
-   "RHS": 7288,
-   "KBR": 9225,
-   "ALH": 3154,
-   "WBR": 4073,
-   "HOL": 5044,
-   "SOW": 3038,
-   "MST": 5428,
-   "GRH": 2328,
-   "EIT": 4020,
-   "BST": 2119,
-   "LDN": 2616,
-   "FKR": 3667
-  }
+  "samples_in_failed_batches": {
+   "SKB": 5,
+   "KVF": 0,
+   "MKE": 6,
+   "JVB": 5,
+   "HGE": 12,
+   "FND": 9,
+   "ESK": 10,
+   "TVE": 12,
+   "GRV": 9,
+   "SVK": 6,
+   "HSD": 12,
+   "BLU": 5,
+   "SLU": 10,
+   "LLU": 8
+  },
+  "failed_batches": [
+   "SS-27-001",
+   "SS-27-003",
+   "SS-27-005",
+   "SS-27-009",
+   "SS-27-013",
+   "SS-27-015",
+   "SS-27-018",
+   "SS-27-019",
+   "SS-27-021",
+   "SS-27-023",
+   "SS-27-029",
+   "SS-27-031"
+  ]
  }
 }

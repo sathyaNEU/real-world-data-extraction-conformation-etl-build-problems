@@ -1,413 +1,290 @@
-# task471 design note: Kessick Valley's 2027 route pitch
+# task471 design note: the 2027 Well Water Assistance counties on the private-well nitrate survey
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task471.json` (architecture v1), registered 2026-10-18 after a pull, so
-  every card filed before it was in the check. One structural block cleared at the draw by naming the decisive
-  generator honestly: with G12 first (a missing card is not a trip that did not happen) the signature (gap population,
-  G12, Gate G method_or_model_selection) repeated task196 v2 in the batch and task255, task456 and task462 before it;
-  the decisive generator is G7, the operating window (a reply can physically exist only between the car leaving and the
-  boxes going in), with G12 and G16 behind it. Guard check then WARN only: government_agency is the organisation in 34
-  builds (answered: the bureau is a state agency that owns both airports, the fact the pitch turns on); Gate G
-  method_or_model_selection in 5 of the last 12 (answered: the decisive move is an estimator the fieldwork design
-  forces, not a filed method, and no other Gate G fits); question form "which" repeats task245 (answered: the decision
-  is a pick of three markets, and a pick asks which). Nearest driver task157 at 0.08. Personas from `guard.py names
-  --geo us --seed 471`; Lisa Mccall replaced (her first name in task118).
-- **Seed:** ET28 (an airport's air-service development team pitches three routes a year to airlines, choosing city
-  pairs where local travellers pay most against a distance benchmark, from the 10% airline ticket sample; round trips
-  looked twice as expensive and a market split across three New York airports never surfaced). Kept: the world (an air
-  service development office pitching new nonstop routes from a regional airport to airlines, the 10% ticket sample and
-  its market and ticket files), the decision (which three city-pair markets go in the year's pitch) and the quantity
-  (how many of the region's travellers fly each market, and what they pay). Dropped as the decisive step: the seed's two
-  moves, a round-trip fare read as a one-way fare and airports not rolled up to city markets, both data semantics or
-  a market definition; they survive as Layer 1 on the main path (city markets) and as ask devices (fares).
-- **Pairing:** Survey Research & Official Statistics / census-register-administrative-data-quality / ETL. The bureau's
-  evidence is a conformed market file built from sources never designed to join: Brennick International's parking
-  revenue system (daily entries by lot, the register of every parked trip), a card survey of Brennick's parkers in four
-  four-week waves (home ZIP, final destination, nights away, party size), the survey's handout log, the service-area
-  ZIP list, the regional airport's 2027 schedule and the ticket sample's market and ticket files. The deciding quantity
-  is a register-based total completed by a supplement survey: each quarter's parked trips come from the register and
-  the survey supplies who and where; survey research estimates it with each returned card weighted by the inverse of
-  its chance of having been collected, which the fieldwork design sets.
-- **Shape:** 01, a ranked list under a cap: each of the 14 candidate markets' 2026 service-area trips parked at Brennick
-  and the passengers those trips carried (28 figures), the three pitched, the first market left out and the gap (4),
-  the chart with the three marked (3) and the two files (2): about 37 criteria.
-- **Strategy:** maturity_censoring (a card comes back only when its car leaves, so at the collection close the cards
-  from each wave's last weeks are developed only for short stays), decisive generator G7 (the operating window of the
-  reply process), with G12 and G16. Gate G method_or_model_selection: the right estimator is forced by the fieldwork
-  design (handout days, the last box collection, the lots' 30-day limit), the easy ones are expansions of the replies.
-- **World:** United States, an unnamed state. The state Department of Transportation's Bureau of Aviation owns and
-  operates Brennick International (the state's hub, about 80 miles from the valley) and Kessick Valley Regional (a
-  regional airport with nonstop service to three airline hubs). Brennick's public lots run full on peak weeks, and the
-  bureau's two-airport strategy is to move the valley's own travellers back to Kessick Valley: each year the air
-  service development office pitches three new nonstop markets from Kessick Valley to airlines, chosen as the markets
-  where the most service-area trips drove to Brennick and parked to fly. In 2026 a survey contractor ran
-  Brennick's parking card survey in four waves (February, May, August, November): a card handed to every car at the
-  entry plazas for 28 days, completed cards collected from drop boxes at the exit plazas until two days after the
-  last handout.
-- **Forcing fact:** the pitch is taken to the airlines' network planners at the spring route development conference
-  (March 2027); the office's market file and pitch brief are fixed on 29 January 2027. The call faces forward (the 2027
-  pitch for service from 2028); its quantity is the closed 2026 year, which the bureau's pitch standard names as the
-  basis (retrospective, with its reason: airlines judge a pitch on the latest full year).
-- **Forum and forcing event:** customer_or_counterparty (the airlines receive the pitch), vote_or_meeting (the
-  conference's airline meetings). Organisation government_agency; role programme_officer. Personas: Tina Hurley (Air
-  Service Development Manager, who owns the pitch), Carlos Phillips (the survey contractor's project manager) and Donald
-  Lara (Brennick's parking operations manager).
-- **Data-native sentence:** a card handed out at the entry plaza can only come back when its car leaves, and the drop
-  boxes came in two days after each wave's last handout, so from a wave's last weeks only the short trips' cards came
-  back; the markets the valley's travellers stay at for two to four weeks (the Gulf Coast and the desert in winter) are
-  the ones thinned out of the replies, and the business markets are not.
-- **The WHAT screen.** Population: every trip parked in Brennick's public lots that entered in 2026 by a party whose home
-  ZIP is in the Kessick Valley service area, whether or not its card came back (filed in the pitch standard and the
-  survey's design, each wave standing for its quarter). Outcome: trips (one car's stay, counted once whatever its
-  party), by final destination city market; passengers ride beside them as the ask. Window: entries in calendar 2026.
-  Unit: trips. Comparison: the shortlisted markets without nonstop service from Kessick Valley in its 2027 schedule
-  (seasonal included), ranked; three pitched. The decisive step settles none of them: it is how the returned cards are
-  weighted to stand for the trips.
-- **Deliverables:** `kvr_2027_pitch_markets.csv` (the conformed market file, one row per candidate market, its trips and
-  passengers and the three marked) and `kvr_2027_route_pitch_brief.docx` (the bureau's internal brief: the three, the
-  first market left out and the gap, the chart of every candidate's trips).
-- **Sources, one line each:**
-  - `stumping/references/client/layer2-rigor-patterns.md`: the task type's patterns (dual-system estimates within
-    post-strata; net against gross classification error) are spent here or do not reach a destination; this build's
-    pattern is its own (`own:replies-censored-by-collection-close`), from the estimation_fit family (censoring and
-    truncation, weighting).
-  - `stumping/references/strategies.md` maturity_censoring: open periods are not fully developed and arrival speed
-    differs by unit, so the arrived count understates exactly the units that report slowly; here the unit is a
-    destination and its arrival speed is the length of the stay.
-  - `dataset-generation/references/layer1-messiness.md`: paper cards keyed and coded with the answers as written in a
-    separate verbatims file, a handout log apart from the cards, quarterly register extracts whose layout changes, ZIP
-    lists built from counties, airports rolled up to city markets; each asserted neutral on the call and on every
-    trips figure (checks.py SF2, SF10, SF13, R2).
-  - The lane's spent drivers (`guard.py mechanisms --objective etl`, 49 builds), one line each for the 2026-10 builds:
-    445 a holder class keeps a fixed fraction, not a fixed amount; 447 an owner change redirects only flow whose payer
-    terms allow it; 123 interval totals split onto calendar periods by a daily sample's rates; 448 a register completed
-    from a second list whose capture depends on the filing route; 449 a linked value right only one time in k; 450 an
-    instrument change estimated through shared items; 451 a period completed from arrival history with a delay that
-    collapsed mid-period; 454 cost seen only where a price survey covered, least for one presentation; 459 a ratio that
-    depends on the operating level; 453 a rotating panel's change read from the newest rotation group; 452 an area from
-    strata of a revised classification; 456 one state seen through three imperfect records; 457 a report covering only
-    events by its own date; 458 a lasting trait seen only while units are observed; 455 new identifiers continuing old
-    units; 460 the marginal units a zero-rate source displaces; 461 a low quantile carried from a correlated long
-    record; 462 intermittent sources seen by snapshot surveys whose detection rises with size; 463 a price index whose
-    quantities jump in sale weeks; 465 two traits no large source records together; 464 a new scale's cut reached by
-    regression that shrinks; 466 historical years known only as above or below a level; 467 a temporary change beside a
-    permanent one acting on components; 468 a matcher failing for late-running records; 469 a duration seen only when it
-    overruns its allowance; 470 a sensor that never records some units. The builds before 445 spend withheld rules,
-    corpus fits and grain readings. None weights replies by when they could physically come back; the nearest are 451
-    and 457 (amounts not yet arrived at a cut), where the delay is a property of the reporting route, not of the
-    quantity being estimated, and 469, where a duration is censored by an allowance, not a reply by a collection close.
+- **Card:** `.claude/skills/fingerprint/cards/task471.json`, architecture v3, registered 2026-10-20 after a pull, brought
+  to the built world the same day (nitrate, the permit and parcel lists, three laboratories).
+  - Lineage: architecture 1 (Kessick Valley's route pitch, spent at Gate F) and architecture 2 (the program reviews on
+    the 2026 licensure test form, spent at Gate G).
+  - Guard: WARN only.
+    - government_agency is the organisation in 36 builds: the state health department runs the private well program.
+    - ETL in 6 of the last 12: the lane's objective.
+    - Gate G method_or_model_selection repeats task477 and runs in 9 of 12: how two separately sampled, overlapping
+      lists combine into one estimate is an estimator chosen on honest data.
+    - Deliverable formats png and xlsx repeat task250, and question form "which" repeats: the decision picks counties,
+      and a workbook with a chart is what the program's analyst sends.
+  - Differentiation lines against task264 v2 (members weighted by event count within one sample of events) and task131
+    v1 (interference between sibling sub-units).
+  - Personas from `guard.py names --geo us --seed 471`: Tina Hurley (program manager), Steven Nguyen (environmental
+    epidemiologist), Carlos Phillips (assistance coordinator). Donald Lara (v1) and Wanda Reed (v2) are not reused.
+- **Pairing:** General Statistics & Data Science / data-integration-record-linkage-entity-resolution / ETL.
+  - The integration: the program links two incomplete, overlapping lists of private wells into one survey population,
+    conforms three laboratories' results and combines two separately drawn testing samples into one county estimate.
+  - The deciding quantity: each county's total of wells above the nitrate standard over the union of the lists, a
+    dual-frame estimate, the task type's own statistical object (data integration of overlapping sources).
+- **World:** an unnamed U.S. state's Department of Health, its Office of Environmental Public Health and the Private
+  Well Program, sixteen counties in three assessor layouts, three contract laboratories (Halvorsen Analytical,
+  Cedarline Environmental Laboratories, Kinsale Water Testing).
+  - The two lists: the well construction permit database (active domestic wells drilled under permit since 1986) and
+    the county assessors' 2025 rolls (residential parcels recorded as served by a private well). They overlap: a
+    permitted well on a parcel the roll records as on a private well is on both.
+  - The survey: each list sampled separately per county with its own target of completed first tests (about 8 per
+    cent of the permit list, about 4 per cent of the parcel list), declines replaced from the same list, a household
+    drawn from the parcel list after its test from the permit list counted toward both targets.
+- **Decision:** which counties qualify for the 2027 Well Water Assistance allocation: an estimated 250 or more wells
+  in the county's survey population above 10 mg/L nitrate as nitrogen (WWA-2027-01 section 3.1).
+- **Shape:** 10, a scorecard: each of 16 counties against the 250-well line, with each county's wells on the lists and
+  its retests. Criteria: the call and its count (2), 16 verdicts, 16 wells-on-the-lists counts, 32 retest figures, the
+  chart's parts (about 4) and the two files: about 72.
+- **Strategy:** population_selection (`own:dual-frame-weights-for-wells-on-both-lists`), Gate G
+  method_or_model_selection, calibration form none, context artifact register.
+- **Sources:** the client's survey-design cards (unequal inclusion under a stated design) teach that the weights come
+  from the design, not the sample; this build differs in that the design has two overlapping frames, so the weight of
+  a well depends on a list it was not drawn from, which only the linkage shows. task452 (design weights after
+  reclassification) and task264 (weights by event count) spend single-frame weighting; none spends overlapping frames.
+- **Data-native sentence:** the permit list and the parcel list were each sampled at their own rate, a well on both
+  could have been drawn from either, and the parcel-only wells (older and shallower, mostly pre-1986) run higher in
+  nitrate than permitted wells, so the tested wells are not a sample of the union: pooling them understates the
+  parcel-only wells, and weighting each by the list it came from counts the shared wells twice.
 
 ## Default path
 
-1. Read `brennick_parking_survey_2026_cards.csv`, drop the 110 rows that repeat a card number (keying batch 3-55, which
-   the export carries twice, its second copy straight after the first), take each home ZIP's first five digits and keep
-   the cards whose ZIP is on `kvr_service_area_zip_codes.csv`.
-2. Give each card the city market of its destination code (an airport or a metro code) through
-   `bureau_city_markets.csv`; the candidates are Appendix A's shortlist in the pitch standard less Orlando, which
-   Sunstream Air serves seasonally at Sanford in `kvr_nonstop_schedule_2027.pdf` (Kessick Valley's year-round flights
-   go to Chicago, Charlotte and Detroit, none of them on the shortlist).
-3. For each wave, take each candidate market's share of the wave's returned cards (every card in the denominator).
-4. Expand each wave's shares to its quarter's transient entries in Economy C, Economy D and Long-Term from the revenue
-   control system's four quarterly extracts (garage and permit lanes out), as the methods report has each wave stand
-   for its quarter, and add the four quarters.
-5. Rank the candidates and pitch the top three.
+1. Build each county's permit list (active domestic permits drilled 1986 to August 31, 2025) and parcel list (parcels
+   coded private well), link them by parcel number or address, and count the wells on either list (42,598).
+2. Conform the three laboratories' first tests to nitrate as nitrogen (Kinsale's NO3 divided by 4.427, the later
+   report of a reanalysed sample standing) and join them to the draw manifest's tested kits (3,996 wells, 313 above).
+3. Take each county's share of tested wells above 10 mg/L and multiply it by the county's wells on the lists.
+4. Keep the counties at 250 or more.
 
-Ends on: Washington, New York and Dallas (Washington 6,513 trips, New York 5,121, Dallas 4,829; Phoenix fourth at 4,087
-and Tampa fifth at 4,042).
-Golden: Phoenix, Tampa and Washington (Phoenix 6,392 trips, Tampa 6,330, Washington 5,921; New York fourth at 4,702,
-1,219 below Washington, and Dallas fifth at 4,399).
+- **Ends on:** three counties (Alderwick, Glenmoor and Netherby)
+- **Golden:** six counties (Alderwick, Brannock, Farrowdale, Glenmoor, Lindmark and Netherby)
 
 ## Stump sentence
 
-The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and
-Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes
-were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short
-stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies.
+Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties
+(Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate (4.0
+against 8.3 per cent) and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock,
+Farrowdale and Lindmark; the analyst who notices the two rates and weights each tested well by the rate of the list it
+was drawn from files ten, counting the 3,002 tested wells on both lists about twice.
 
 ## Three rules
 
-- Task type: census-register-administrative-data-quality (Survey Research & Official Statistics, serving ETL): an
-  administrative register, the parking revenue control system's count of every car entering the long-stay lots, is
-  completed by a supplement survey that carries what the register lacks (home, destination, party), and the pitch file
-  conforms the two with the city-market table and the service area's ZIP list.
-- Domain test: the deciding quantity is each candidate market's 2026 service-area trips, a register total split by a
-  supplement survey; survey research estimates it design-based, each returned card weighted by the inverse of its
-  probability of being collected, which the fieldwork design (28 handout days, the last box collection on the night of
-  day 30, the lots' 28-day limit) fixes from the card's handout day and its stay.
-- Swap: the setting is another field's, so the swap is of the method: with the design-based estimate replaced by the
-  share of the replies, the generic summary any field would take, the call moves from Phoenix, Tampa and Washington to
-  Washington, New York and Dallas; with a clinic's or a retailer's nouns there is no register of entries, no card that
-  can exist only once a stay ends and no collection close, and nothing is left to estimate.
-- Layer 1: the contractor's paper cards keyed and coded (the destination coded to an airport or a metro code, the
-  answers to Q2 and Q4 as written in a separate verbatims file with the hand-written spellings and slips a keyer
-  copies, 229 home ZIPs keyed with a plus-four or a space, one keying batch carried twice by the export); the
-  attendants' handout log (card ranges and counts by plaza and day, a PDF, the share of cars reached moving plaza by
-  plaza and day by day); the revenue control system's quarterly extracts (the July upgrade renamed the lot codes,
-  changed the date format and added a permit column; the garage in every file); the bureau's ZIP list built from
-  county lists (47058 under both Tilden and Corvel); the city-market table's multi-airport and metro codes; Kessick
-  Valley's 2027 schedule with a seasonal service and local times across two time zones. Each is what the system that
-  wrote it produces; none is placed to be caught, and each mishandled leaves the call and every trips figure in its
-  hundred (checks.py SF2, SF10, SF13, R2).
-- Layer 2: estimation_fit (censoring and truncation, weighting): the replies are right-truncated by the collection
-  close, and the truncation is undone by inverse-probability weights the fieldwork design supplies.
-- Decisive step: weight each returned card by the inverse of the share of its wave's handed cards whose handout day
-  left room for a stay of its nights to end by the last box collection, instead of letting each card stand for an equal
-  share of the wave.
-- Not semantics: every field read correctly (the home ZIP, the destination code, the nights, the box date, the card
-  number's handout day, the register's transient entries, the standard's trips and candidates) still leaves the
-  expansion of the replies on Washington, New York and Dallas.
-- Not rule application: no filed rule weights the cards; the standard files what to count, the methods report files
-  the fieldwork, the collection schedule and the coding, and executing every filed rule with each card as an equal
-  share of its wave files Washington, New York and Dallas; the weighting is an inference about which trips could have
-  replied.
-- Analyst test: a strong analyst who keys every destination to its city market, keeps the service-area ZIPs, drops
-  the served market and expands each wave's returned cards to its quarter's entries pitches Washington, New York and
-  Dallas (6,513, 5,121 and 4,829 trips); reweighting the cards to each handout day's cards handed, by one over the
-  nights, pooling the waves or post-stratifying to each lot's entries lands the same three; only the collection-window
-  weighting pitches Phoenix, Tampa and Washington (checks.py R3a and R3b on the clean truth).
-- Estimand: the bureau's Air Service Pitch Standard (`bureau_air_service_pitch_standard_2027.pdf`) section 2 counts the
-  trips that entered Brennick's long-stay lots in 2026 by parties whose home ZIP is on the service-area list, by the
-  city market of the final destination, every such trip and not only those a survey reached; section 3 the candidates
-  (the shortlist's markets without Kessick Valley nonstop service in its 2027 schedule, seasonal included); section 4
-  the three with the most trips; the methods report has each wave's 28 days of entries stand for its quarter.
-- No decoy: nothing is planted to be caught: no memo, draft, topline or recommended weighting; the contractor's report
-  describes the fieldwork, the collection and the coding and leaves expansion to the bureau, and no file ranks the
-  candidates on the pitch's basis (the DB1B market file, a declared wrong-basis distractor, ranks New York, Denver and
-  Boston on Kessick Valley's own passengers).
-- No certified replay: the method is not recovered by reproducing certified or published figures; the register's
-  entries are the expansion base and tie under every method, and Table 1's counts are the cards handed and keyed.
-- Lesson: a reply that can exist only after the event ends is truncated by the collection close, so the replies
-  under-represent long events in proportion to the share of handout days that left room for them, and the fieldwork log
-  supplies the weights; no build on file teaches reply truncation by a fieldwork close (the nearest, task451 and
-  task457, complete amounts not yet arrived by the reporting route, and task469 censors a duration at an allowance).
+- **Task type:** data-integration-record-linkage-entity-resolution in General Statistics & Data Science, which serves
+  Data Extraction & Conformation: two incomplete, overlapping lists linked into one population and two samples
+  combined into one estimate.
+- **Domain test:** each county's total of wells above the standard over the union of two overlapping frames, estimated
+  the way the field estimates a total from a dual-frame survey (Hartley 1962; Kalton and Anderson 1986), each tested
+  unit weighted by one over its probability of selection from either frame, which the linkage supplies.
+- **Swap:** "which clinics qualify on an estimated 250 patients above the line" read with one sample still reads, but
+  the swap of the method is what breaks: replacing the dual-frame estimate with a generic summary (the tested share
+  times the population, or one frame's estimate) moves the six to three or ten, so the statistical object decides.
+- **Layer 1:** the permit database's other wells and dates (non-domestic, replaced, abandoned, drilled after the frame
+  date), three assessor layouts with four parcel-number formats and their own water codes, addresses written
+  differently on permits and rolls, three laboratories' layouts with Kinsale in NO3 and reanalyses under status,
+  report date or version, replacement draws in the manifest, all produced by the systems that hold them; nothing
+  placed to be caught.
+- **Layer 2:** estimation_fit: the inclusion probability of a well on two separately sampled, overlapping lists,
+  1 - (1 - f permit)(1 - f parcel), against the pooled share or the drawn list's rate.
+- **Decisive step:** weight each tested well by one over its chance of selection from either list, which needs each
+  tested well's membership in the list it was not drawn from (the linkage) and both lists' sampling fractions.
+- **Not semantics:** every field, code, unit and definition read correctly (the lists, the linkage, the TESTED_EARLIER
+  rows, nitrate as nitrogen, the standard) still leaves the pooled share at three counties and the drawn list's rate at
+  ten: nothing in the records means anything other than what it says.
+- **Not rule application:** no filed rule or procedure says how the survey's estimate is computed; the design report
+  describes the draws and WWA-2027-01 files the estimand (the whole survey population, tested or not), so executing
+  every stated rule still leaves the estimator to choose, and the easy choices file three or ten.
+- **Analyst test:** a strong analyst who links the lists, conforms the laboratories and reads every rule correctly, then
+  scales each county's tested share above the standard to its wells on the lists, files three counties (Alderwick,
+  Glenmoor and Netherby); asserted in `checks.py` on the generator's clean truth, where the same route also files the
+  three and the decisive step alone gives the six.
+- **Estimand:** WWA-2027-01 3.1 and 2.2 with the design report section 2: the number of private domestic wells in
+  each county on the permit list or the parcel list as they stood on August 31, 2025 (the whole survey population,
+  tested or not) above 10 mg/L nitrate as nitrogen at a first test, against 250, the unit a well.
+- **No decoy:** no memo, draft, briefing, published share or stakeholder figure states a county estimate, a pooled
+  share or a weighting; the design report gives the lists' sizes, the targets and the letters' outcomes, all true,
+  and nothing in the pack argues for any estimator.
+- **No certified replay:** no certified or published county figure exists to reproduce; the method is the field's
+  standard dual-frame estimator, recovered from the design, not from replaying a figure.
+- **Lesson:** a sample drawn from two overlapping lists is not a sample of their union: each unit's weight comes from
+  every list it is on, so the linkage that builds the population also builds the weights; no build on file teaches
+  overlapping frames (task452 and task264 weight within one frame).
 
 ## Readability screen
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 each wave's returned cards expanded to its quarter (default) | the methods report has each wave stand for its quarter (the WHAT, filed) | no | the survey expansion reflex | no | no | yes | readable |
-| R1 R0 with each card reweighted to the cards handed on its handout day | no | the handout log's counts by day | the nonresponse-adjustment reflex | no | no | no | readable |
-| R2 R0 with each card weighted by one over its nights | no | no | the length-bias reflex of windshield surveys | no | no | no | readable |
-| R3 (decisive) each card weighted by the inverse of the share of its wave's handed cards whose handout day left room for its stay | no: the report gives the collection as an operation and no sentence names its effect | no column marks a card or a stay as cut short | not a default move | no stay data in the register, no published stay distribution | the battery finds nothing: card numbers unique once the repeated batch is dropped, every join matches | no | silent |
+| R0 (default path), the tested share above times the wells on the lists (Alderwick, Glenmoor, Netherby) | none: 3.1 files the estimand, not a pooled share | the manifest and the results: fires | the natural expansion of a sample share: fires | none | none | one ratio: fires | readable |
+| R1, each tested well at the rate of the list it was drawn from, or the two lists' estimates added (ten counties) | Table 2's targets and list sizes give two rates: fires | the manifest's FRAME column: fires | reweighting to the design: fires | none | none | one division per list: fires | readable |
+| S, one list alone (permit list: Alderwick, Glenmoor, Netherby; parcel list: five) | 2.2 files either list: rules it out | the FRAME column: fires | none | none | none | one division: fires | readable |
+| G (decisive), each tested well over its chance of selection from either list (six) | no clause names a weight, a probability or an estimator; the design report says only how the draws ran | membership in the other list is in no column: it comes from linking the drawn record to the other list | the reweighting reflex stops at the drawn list's rate | none | none | none: a probability over two independent draws for the wells on both | silent |
 
 ## Semantic fork table
 
-| Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
-|---|---|---|---|---|
-| SF1 | trips | one car's stay, counted once whatever its party | passengers: Phoenix, Tampa and Myrtle Beach | standard 4.1 (the three with the most trips) and 2.2 |
-| SF2 | the service area | home ZIP on the bureau's list, each ZIP once | the list joined row for row (47058 under Tilden and Corvel) counts its cards twice: same call, every trips figure in its hundred | asserted |
-| SF3 | candidate market | a city market with no Kessick Valley nonstop to any of its airports in the 2027 schedule, seasonal included | Chicago (Midway unserved) and Orlando (seasonal only) as candidates: same three, Chicago fourth at 4,755 | standard 3.1 |
-| SF4 | the year and the wave's quarter | each wave's cards expanded to its own quarter's entries | the waves pooled and expanded to the year: same call, figures off (Phoenix 6,815); each wave's own 28 days of entries scaled by the quarter's days: same call, every figure in its hundred | methods report 1.2; asserted |
-| SF5 | the long-stay lots | Economy C, Economy D and Long-Term | the garage added to the base: same call, every figure larger | standard 2.1 |
-| SF6 | entries | the register's transient entries | the permit lanes added (third and fourth quarters): same call, figures off | standard 2.4 |
-| SF7 | final destination | the coded Q2 | a connection point: no such field | the card's wording (methods report, Appendix A) |
-| SF8 | handout day | the handout log's range holding the card's number | the box date less the nights: identical on every card | asserted |
-| SF9 | nights | Q3 as written | none: every card's handout day plus nights falls by day 30, no stay over 28 | asserted |
-| SF10 | repeated rows | one row per card number | the repeated batch kept: same call, every trips figure in its hundred | Table 1 counts each card once; asserted |
-| SF11 | the wave's denominator | every returned card of the wave | the service area's cards alone: same call, figures inflated more than tenfold | standard 2.4 (the entries are every car's) |
-| SF12 | rounding | the year's figure rounded once | each quarter rounded first: no reading of 4.3; moves 8 figures, same call | standard 4.3 |
-| SF13 | the ZIP as keyed | its first five digits | matched as keyed (229 cards lost): same call, every trips figure in its hundred | asserted |
-| SF14 | city-market roll-up | airports and metro codes through the table | airport codes alone: Washington and New York split, Phoenix, Tampa and Dallas | standard 2.5 |
-| SF15 | the gap | the third's trips less the first left out's, in trips | from the rounded figures: the same hundred | asserted |
-| SF16 | the weight's day counts | the log's cards handed by day, pooled over the plazas | each plaza's own counts, post-stratified to each lot's entries, or both: same call, same first market left out, every trips and passengers figure in its hundred; every handout day counted once: same call, every trips figure in its hundred | asserted |
-| SF17 | the last collection | the night of day 30 (Table 1), a card dropped that day collected | the night before or after: same call, figures off | methods report 3.1, 3.2 and Table 1 |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "above the standard" | more than 10 mg/L nitrate as nitrogen | 10 or more | same call (no result printed at 10.00 or 44.27 NO3) | same call; WWA-2027-01 2.1 "more than 10 mg/L nitrate as nitrogen" |
+| SF2 | the survey population's date | the lists as they stood on August 31, 2025 | the extract as delivered (permits drilled to July 2026) | same call | same call; design report 2 "as they stood on August 31, 2025" |
+| SF3 | a reanalysed sample | the later report | the earlier report | same call | same call; design report 4 "its later report replaces the earlier one" |
+| SF4 | Kinsale's nitrate | NO3 divided by 4.427 | read as nitrogen | Dunmere, Kestrel Plains and Rushbrook join | design report 4 "10 mg/L nitrate as nitrogen is 44.27 mg/L nitrate as NO3" and Kinsale's UNITS column |
+| SF5 | "250 or more" | the estimate at or above 250 | above 250 | same call (no estimate within a well of 250) | same call |
+| SF6 | the linkage | parcel number, else site address to situs address | parcel number alone; address alone | address alone: same call; parcel number alone: Dunmere joins | design report 2, "when the permit's parcel number is the parcel's or, on a permit that carries no parcel number, when the permit's site address is the parcel's situs address" |
+| SF7 | the estimate's population | the whole survey population, tested or not | the tested wells above, counted | no county qualifies | WWA-2027-01 3.1 "the wells the Survey did not test as well as those it did" |
+| SF8 | a well tested earlier from the permit list | counts toward the parcel list's target as well | the permit list's only | same call | same call; design report 3 "counts toward the parcel list's target as well" |
+| SF9 | a blank water code | not on the parcel list | on it | not a reading: the Codes sheet says not recorded | the parcel compilation's Codes sheet, "Blank: not recorded"; design report 2, "records as served by a private well" |
+| SF10 | the estimate's rounding | the verdict on the unrounded estimate | rounded to whole wells first | same call (no estimate within half a well of 250) | same call |
+| SF11 | a well's county | the county of its permit, parcel and draw | the county on a retest request | the call reads no request | same call (main call); the ask's own reading is in the Ask sheet |
+| SF12 | Kinsale's conversion factor | the design report's 4.427 (44.27 mg/L as NO3) | the fact sheet's 4.4 (44 mg/L) | same call (no Kinsale result between 43.9 and 44.4 mg/L NO3) | same call; design report 4 gives 4.427 for the survey |
 
 ## Ladder
 
-| Rung | What it does | Its three | Third against fourth |
-|---|---|---|---|
-| R0 (default) | each wave's returned cards expanded to its quarter's entries | Washington 6,513, New York 5,121, Dallas 4,829 | 1.182 |
-| R1 | R0 with each card reweighted to the cards handed on its handout day | Washington 7,027, New York 5,513, Dallas 5,216 | 1.401 |
-| R2 | R0 with each card weighted by one over its nights | Washington 11,149, Dallas 7,587, New York 7,376 | 1.470 |
-| R3 (decisive) | each card weighted by the inverse of the share of its wave's handed cards whose handout day left room for its stay | Phoenix 6,392, Tampa 6,330, Washington 5,921 | 1.259 |
+Built figures, read from the cut pack by `generator/checks.py` (estimated wells above 10 mg/L nitrate as nitrogen in
+each county's survey population, against 250).
 
-- Position: on R0 Phoenix is fourth and Tampa fifth; on R1 fourth and fifth; on R2 tenth and eleventh. Every correction
-  short of R3 walks the same way or further (R1 lifts the late days' short stays, R2 the short stays everywhere), and
-  only R3 reverses.
-- First market left out: New York at 4,702 against Dallas at 4,399 (1.069), the same fourth under every reading in
-  SF16 and SF4 and every Layer 1 mishandling.
-- Dominance: the decisive step swings Tampa against New York by 1.71 (Tampa 1.35 times New York on R3, New York 1.27
-  times Tampa on R0), above 1.2 times the default path's carried advantage (1.52).
-- Two separations, one quantity: the truncation's lift pays for both R0's margin and R3's; Phoenix rises 56 per cent
-  and Tampa 57 from R0 to R3 while the business markets fall 8 to 9, spent 1.182 on R0 and 1.259 on R3 (product 1.49);
-  a 1.5 final margin is outside the budget without dropping R0 under 1.15.
-- Other routes: the waves pooled (Washington, New York, Dallas, 1.171), post-stratified to each lot's entries (the
-  same, 1.182), the garage in the base (the same, 1.174). Ranking on passengers lands no shortcut: on R0's weights the
-  written parties rank Myrtle Beach, Washington and New York, the coded parties Washington, Myrtle Beach and New York.
-- Partial fix: keeping only each wave's first 14 handout days (the truncation seen, the late days dropped) pitches
-  Washington, Tampa and Phoenix, the golden's three, with 3 of the 14 trips figures in their hundreds; it is the
-  decisive insight applied crudely, and it holds the call while it loses the figures.
-- Grid: two seed searches (60 and 120 worlds); the second, after the plaza-by-plaza coverage and the fourth-against-
-  fifth condition (1.07) were added, passed one world of 120 on every rung condition (golden three, R0 three with the
-  golden's members fourth and fifth, R1 and R2 wrong with margins, no passengers shortcut, the year's actual trips
-  topping the same three, New York clear of Dallas); the build runs seed 512 and settles 20 single replies
-  (calibrate.py) so every figure sits inside its hundred under every reading the fork table names.
-- Worth: R3 moves Phoenix's trips 56 per cent, Tampa's 57 and Fort Myers' 82 above R0 and every business market's 8 to
-  9 below, so a response off it misses the call and every candidate's figure (the mirror keeps none of the 14).
+- **R0, the default path: the tested share above times the wells on the lists (Alderwick 367, Glenmoor 567, Netherby
+  542).** Brannock 205, Farrowdale 187 and Lindmark 193 fall short. Dies to Table 2 and the manifest: the parcel list
+  was sampled at 4.0 per cent against 8.3, and the tested parcel-drawn wells run higher in nitrate.
+- **R1, each tested well at the rate of the list it was drawn from (ten: the six and Dunmere 355, Ivyridge 361, Kestrel
+  Plains 315, Rushbrook 319); the two lists' estimates added gives the same ten.** Dies to the linkage: 3,002 of the
+  3,996 tested wells are on both lists and could have been drawn from either, and the TESTED_EARLIER rows show it.
+- **S, one list alone (permit list: Alderwick, Glenmoor, Netherby; parcel list: Brannock, Farrowdale, Glenmoor,
+  Lindmark, Netherby).** Dies to WWA-2027-01 2.2: the population is either list. Alderwick's permit-only wells run high
+  (its parcel list alone gives 79), so neither single list lands the six.
+- **G, the decisive move: one over each tested well's chance of selection from either list (Alderwick 408, Brannock
+  304, Farrowdale 311, Glenmoor 720, Lindmark 317, Netherby 588).** Hartley's estimator at every split of the wells on
+  both lists (0, 0.25, 0.5, 0.75, 1), the sum-of-rates approximation and the estimate post-stratified by list
+  membership name the same six (C1, asserted); the generator's truth (every well's nitrate) gives the same six.
+- **Margins (cut pack):** every qualifier at 1.17 times the line or more on every design-based estimator (Brannock at
+  293 lowest), every other county at 0.87 or less (Ivyridge at 218 highest); R0 drops three counties at 0.75 to 0.82 of
+  the line, R1 adds four at 1.26 to 1.44.
+- **Position, separation and dominance:** a designation, not a ranking: R0 names three, R1 ten, the single lists three
+  and five, the golden six; no wrong route names the six (asserted), and the call's two directions of error come from
+  different rungs (pooling drops three, the drawn list's rate adds four).
+- **Grid:** the Layer 1 slips each land elsewhere: Kinsale read as nitrogen adds Dunmere, Kestrel Plains and
+  Rushbrook; linkage by parcel number alone adds Dunmere; the earlier reports, the extract's later permits and the
+  TESTED_EARLIER reading leave the six (SF rows).
+- **Worth:** the call and the grid of 16 verdicts and 16 wells-on-the-lists counts; R0 keeps every count and 13 of 16
+  verdicts, so the ask carries the pair (Ask sheet).
 
 ## Closure table
 
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | every trip that entered the three long-stay lots in 2026 by a service-area party, not only those a survey reached (standard 2.2, 2.6); the candidates (standard 3.1) |
-| 2 | Unit of account | the trip, one car's stay (SF1); passengers the ask's unit, the party counted in full (standard 2.7) |
-| 3 | Attribution window | entry date in 2026; each wave stands for its quarter (methods report 1.2, SF4) |
-| 4 | As-of dating | the extracts of 6 January 2027, the cards and verbatims of 15 December 2026, the 2027 schedule of 20 January 2027 |
-| 5 | Version basis | one version of every file |
-| 6 | Denominator | the wave's returned cards, every residence and destination (SF11) |
-| 7 | Weighting | the decisive step (HOW): the collection-window weights; the R3 family agrees (SF16) |
-| 8 | Window length | each wave's 28 handout days and its collection to the night of day 30 |
-| 9 | Boundary inclusivity | a card dropped on day 30 counts; nothing later was collected (SF17) |
-| 10 | Rounding path | figures summed unrounded, reported to the nearest hundred (SF12) |
-| 11 | Tie-break | none needed: third and fourth 1.26 apart, fourth and fifth 1.07 |
-| 12 | Maturity and censoring | the replies are right-truncated by the collection close; completing them is the decisive step |
-| 13 | Order of operations | repeated rows, ZIPs, markets, served markets out, weights, wave shares, quarter expansion, sum, rank |
-| 14 | Row order | no dependence |
-| 15 | Duplicate resolution | the batch exported twice dropped by card number (SF10) |
-| 16 | Identity normalisation | ZIPs to five digits (SF13), airports and metro codes to city markets (SF14), card numbers to handout days (SF8) |
-| 17 | Netting | none: transient entries only (SF6) |
-| 18 | Dimensional units | trips and passengers; nights are days between entry and exit |
-| 19 | Code and status semantics | the register's lot codes before and after July (on the rate card); purpose codes unused; never the stump |
-| 20 | Integerisation | nearest hundred |
-| 21 | Clause scope | standard 2 to 4; the methods report's design, returns and coding sections |
-| 22 | Forward window contents | the 2027 pitch on the closed 2026 year (a retrospective quantity with its reason, Draw) |
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | wells on either list on August 31, 2025, tested or not | filed: design report 2, WWA-2027-01 2.2 and 3.1; SF2, SF7 |
+| 2 | Unit of account | the well (a well on both lists once) | filed: "wells"; the linkage rule makes a permit and a parcel one well |
+| 3 | Attribution window | first tests closed April 30, 2026 | every first test in the manifest is inside it (C1) |
+| 4 | As-of dating | the lists at August 31, 2025; results as reported | filed; SF2 same call |
+| 5 | Version basis | the later report of a reanalysed sample | filed: design report 4; SF3 same call |
+| 6 | Denominator | each list's sampling fraction, target over list size | Table 2 gives both; the manifest's counts equal the targets (asserted) |
+| 7 | Weighting | one over the chance of selection from either list | forced by the design (C1 across Kalton-Anderson, Hartley at five splits, post-stratified) |
+| 8 | Window length | not applicable: one survey, one first test per well | C1 |
+| 9 | Boundary inclusivity | more than 10 mg/L; 250 or more | filed (2.1, 3.1); nothing on either edge (SF1, SF5) |
+| 10 | Rounding path | the verdict on the unrounded estimate; counts whole | no estimate within half a well of 250 (SF10); counts are integers |
+| 11 | Tie-break | not applicable: no county within 30 wells of the line | C1 |
+| 12 | Maturity and censoring | every first test reported before the as-of date | C1: every tested kit has a final result |
+| 13 | Order of operations | link, then weight, then sum | one order; asserted in checks |
+| 14 | Row order | file order changes nothing | C1: results keyed by kit, latest report by date or version |
+| 15 | Duplicate resolution | a reanalysis replaced by its later report; a well drawn twice tested once | filed (design report 3 and 4) |
+| 16 | Identity normalisation | parcel numbers to nine digits; addresses to house number and street name | C1: address alone links the same wells (SF6); each county's (number, street) is unique |
+| 17 | Netting against gross | not applicable | none |
+| 18 | Dimensional units | nitrate as nitrogen; Kinsale's NO3 divided by 4.427 | filed (design report 4); SF4 |
+| 19 | Code and status semantics | WELL_USE, WELL_STATUS, water codes, OUTCOME, RESULT_STATUS | dictionary: the design report and the Codes sheet; never the stump |
+| 20 | Integerisation | counts are whole wells; the estimate is not rounded before the verdict | C1 |
+| 21 | Clause scope | 3.1 for the county call, 4.2 for the retests | filed scope |
+| 22 | Forward window contents | the 2027 allocation reads the survey's estimate; nothing forward to forecast | filed (3.1): the call is the standard's designation for 2027 on the survey closed in 2026 |
 
 ## Literal reader
 
-Executing the standard (every 2026 trip in the long-stay lots by a service-area party, by destination city market,
-not only the trips a survey reached; candidates the shortlist's unserved markets, seasonal service counting as
-service; the three with the most trips) and the methods report (cards handed at entry on 28 days, collected at the exit
-plazas each night until the night of day 30, each wave standing for its quarter) with the rate card's 28-day limit word
-for word, a returned card stands for the trips of its nights whose cards could have come back, which is the share of
-the wave's handed cards whose handout day left room for that stay; the share of the replies is an easier method on the
-same estimand, not another reading, and every term (SF1 to SF17) closes to one reading or to the same call.
+Executed word for word, WWA-2027-01 3.1 asks for the survey's estimate of wells above the standard over the whole
+survey population, which the design report defines as the two lists on August 31, 2025 and the linkage as one well;
+nothing names an estimator, so every literal reader must choose one, and every design-based estimator that uses the
+two lists' fractions and each tested well's membership (Kalton-Anderson, Hartley at any split, post-stratified) gives
+the six (C1, asserted); the pooled share and the drawn list's rate are easy methods on the same literal estimand, not
+other readings; every SF row is same call or ruled out by a quoted sentence.
 
 ## Oracles
 
-None. The register's quarterly entries are the expansion base and tie under every method; Table 1's cards handed and
-keyed tie under every method; Kessick Valley's DB1B market file and T-100 segments are a different population
-(travellers who flew from Kessick Valley) and rank nothing on the pitch's basis; no file gives a stay distribution, an
-average stay or a topline of destinations.
+None. No control, published figure, reconciliation column or corpus ranks the counties or states an estimate: Table
+2 gives the lists, targets and letters (true under every method), Table 3 the letters' outcomes, and the fact sheet
+and the laboratory roster carry no county figure.
 
 ## Ask sheet
 
-- **Ask A, each candidate market's 2026 passengers on those trips (nearest hundred): fourteen figures.** H18 home: a
-  measure every candidate carries that the call does not turn on, the airline-facing size of each market the pitch
-  file lists. Use: airlines plan seats on passengers, and the pitch file gives them beside the trips. Path: the cards
-  (card_no, wave, box_collected, home_zip, destination_code, nights, party), the verbatims (card_no, question,
-  as_written), the handout log, the register, the ZIP list, the city-market table, the 2027 schedule, the standard
-  (2.7: the party counted in full) and the methods report's coding section: nine files, fourteen columns.
-  Primary device: D3 with split evidence, two columns one word apart in two files, cut both ways. The card asks how
-  many people flew in the party, including the traveller; the contractor's coding put a number in the cards file's
-  `party`, and the verbatims file keeps the answer as written. Where the traveller wrote a sum ("2+2", "1 + 1", "2
-  adults 2 kids", "me + 1"), the coding took the first number, so `party` holds 2 for a party of four: 7,588 cards, in
-  every candidate market (Fort Lauderdale fewest, 13 from the service area). Where the traveller wrote the number with
-  a word on who it covers ("1 (me)", "2 (me and my wife)", "3 incl. me", "4 (2 adults 2 kids)"), the coding is right
-  and a parser adding every number written counts the party twice: 7,509 cards, in every candidate market (Fort
-  Lauderdale fewest, 8). The methods report says only that Q4 is coded as a number. One handling (the number written,
-  a sum added, "me" one) reproduces every party exactly. Every key passes, every coded value is a plausible party,
-  nothing flags the rows, and no filed rule sends the analyst to the verbatims: only joining them to the cards and
-  reading each Q4 answer against `party` finds both halves.
-  Hazards: the collection-window weighting (the construction), the repeated batch, the ZIP forms, parties of one.
-  Stops (asserted in checks.py and generator/ceiling.py): the coded party with the collection weighting (the cracker)
-  misses all 14, the closest 130 outside the golden's hundred; every number written added, "me" one, with the
-  collection weighting (the over-cleaner) misses all 14, the closest 140 outside; the coded party with each wave's
-  replies (the mirror) misses 13; the written party with each wave's replies misses 14; the golden reads the written
-  party with the collection weighting.
-  Realism: a contractor coding paper cards keeps the keyed text for audit; taking the first number of a sum is the
-  commonest coding slip on a count field, and a count written with who it covers is the commonest write-in on a party
-  question.
-- **The construction layer:** the three markets, the first left out, the gap, each candidate's trips and the chart; the
+- **Ask A, each county's wells first tested above the standard and retested by June 30, 2026, and how many of those
+  retests were still above it: 32 figures.** H18 home: WWA-2027-01 4.1 and 4.2, the households a qualifying county's
+  assistance reaches (above on a first test and on a retest collected by June 30), a measure every county carries
+  that the call does not turn on. Path: the retest kit requests (CHANNEL, ORIGINAL_KIT, SHIP_TO_ADDRESS, SHIP_TO_CITY,
+  COUNTY_CODE, RETEST_KIT), the draw manifest (KIT_ID, FRAME, FRAME_RECORD), the permit extract (PERMIT_NO,
+  SITE_ADDRESS), the parcel compilation (situs addresses), the three laboratories' results (kit, collection date,
+  nitrate, status, report date, version, units), the standard (4.2): eight files, fourteen columns.
+  Primary device: D7 with D9, the true key elsewhere and a control true only in its scope. The kit vendor routes a
+  portal request to a county by the ZIP code the household types, and in most counties one of the two smaller towns
+  has a ZIP code whose post office sits over the line, so that town's portal requests carry the neighbour's
+  COUNTY_CODE and their retests go to the neighbour's laboratory under the neighbour's code. Counted in the county on
+  the request, which both the request and the laboratory row agree on, every county's two figures move (asserted, 32
+  of 32); counted in the county the survey tested the well in, through the first kit the request names, they are the
+  golden. No sweep sees it: every request has a county, every first kit resolves, nothing repeats, and the statewide
+  totals are the same under both.
+  Hazards: phone requests carry no first kit and link only by ship-to address in the request's county (dropping them
+  moves every county); retests collected after June 30 (requested before it); requests from households outside the
+  survey and retests of wells first tested at or below the standard; Kinsale's NO3; reanalysed retests.
+  Stops (asserted, `checks.py` and `generator/ceiling.py`): the request's county misses all 32; portal requests only
+  misses all 32; no window keeps 2; no first-test filter keeps 16 (it moves the counties with below-standard
+  requests); the golden reproduces the generator's truth exactly.
+- **The construction layer:** the six counties, the 16 verdicts, the 16 counts of wells on the lists and the chart; the
   cracker has them.
-- **Main population zero-counts (asserted):** the call reads no party column (trips with every party set to one are the
-  golden's); the coded and written parties move no trip figure and no member of the three.
-- **Hazard table (asserted):** the device moves all 14 passengers figures; the Layer 1 items move none of them out of
-  the call and no trips figure out of its hundred.
-- **Referee:** none; nothing in the pack ties passengers under one handling only.
+- **Main population zero-counts (asserted):** the call reads no request and no retest result; no retest kit is a
+  first-test kit; the routing touches no first test.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, each candidate's 2026 passengers | weights each card by the collection window, counts each trip's party from the cards file's `party` (Q4 coded as a number, as the methods report files it); the verbatims, which no rule or sweep sends it to, stay unread | miss |
-| A, over-cleaned | weights each card by the collection window, finds the sums by reading the verbatims against `party` and adds every number written, "me" one: the parties written with who they cover ("2 (me and my wife)", "4 (2 adults 2 kids)") count twice | miss |
-| A, reconciled | weights each card by the collection window and reads Q4 in the verbatims against `party`, as reader rounds 2 and 3 did, recoding each party from the answer as written ("2+2" 4, "4 (2 adults 2 kids)" 4, "me + 2" 3) | lands all 14 |
+| A, each county's retested wells and retests still above | every request matched to its well (first kit, or the phone request's address), the window and the first-test filter applied, counted in the county the request and the laboratory both give; every county's two figures fall outside their bins | miss |
 
-- Mirror leakage: 7.1 per cent of ask weight (the mirror, on R0 with the coded party, keeps one of the 14:
-  generator/ceiling.py).
-- Pair ceiling: 55.5, over the gate (weights 38 / 7 / 55: the call 8 and each candidate's trips 30 over 14 in the main
-  block, each candidate's passengers 55 over 14 in the asks). The cracker that reads Q4 in the verbatims against the
-  coded party, as reader rounds 2 and 3 did, keeps everything, 100.0; the mirror keeps instructions and one passengers
-  figure, 10.9. On the coded party the cracker keeps 45.0 and the pair 28.0, but the verbatims sit documented beside
-  the coded column (methods report 4.2), so the device is a mirror device the cracker reconciles: the ask layer has no
-  silent primary, and the build is paused on it (`pipeline.json`, resume).
-- Measured by: generator/ceiling.py (on the cut pack).
+- Pair ceiling: 38.9 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
+  and none of the 32 ask figures; the mirror, R0, keeps every county's wells on the lists and 13 of 16 verdicts, and
+  none of the ask figures on its own path, 32.8).
+- Mirror leakage: 0.0 per cent of ask weight.
+- Measured by: generator/ceiling.py
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each county's wells above the
+  nitrate standard over the union of two overlapping lists, a dual-frame survey estimate; `checks.py` executes the
+  analyst test on the clean truth (the pooled share files Alderwick, Glenmoor and Netherby, the drawn list's rate ten,
+  one over each well's chance of selection from either list the six). Layers: the mess (the permit extract's other
+  wells and later permits, three assessor layouts and parcel-number formats, addresses written four ways, three
+  laboratory layouts with Kinsale in NO3 and reanalyses, the manifest's replacement draws, the border-ZIP routing of
+  portal requests) is the systems' own and neutral on the call. Three rules: no decoy, memo or published share ships;
+  no field reading decides (SF1 to SF12 same call or ruled out by a quoted sentence); executing every filed rule leaves
+  the estimator to choose.
+- **Judge:** run v3r1 DETERMINISTIC and APPROVE; Gate G method_or_model_selection, analytical_non_defect,
+  surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; every
+  graded figure reproduced (the union 42,598, the six with Brannock lowest at 304 and Ivyridge highest below at 199,
+  the 32 retest figures), Hartley at five splits and the post-stratified estimate on the same six. Its non-blocking
+  findings: its own drawn-list variant counted 11 or 12 counties against the write-up's ten (every variant the
+  generator computes, the earlier wells at either list's rate, the parcel target with or without them, the rows
+  added, gives the same ten, and the write-up now defines the rate as Table 2's target over the list's wells); the
+  retest window rests on WWA-2027-01 4.2 alone (the literal estimand of the ask); the laboratory roster is the weaker
+  distractor; the permit numbers that repeat across counties (214, each county office numbering its own permits)
+  are closed by the county on every permit and every draw.
+- **Free gates (2026-10-20):** checks.py 175 of 175, verify.py clean, two builds byte-identical, target.zip
+  ce15c2a04a1d152f cut from the final build (12 files), figures_check.py 51 of 51, precut.py 51 checks clean,
+  voice-check clean, guard.py heart WARN only, surface: the three planned personas only and five pairs promoted for
+  the author's adjudication (task473, task469 and task470 on the lane's shared pairing and gap, task265 on surface
+  similarity, task264 on the same-driver signature, differentiated on the card), containers normalised.
 
 ## Leak check
 
-`leak.py --asof 2027-01-29`: REVIEW, no LEAK (the first sweep's one LEAK, the DB1B file named with the word sample,
-fixed by renaming it `kvr_db1b_market_2026q1_q3.csv`). Each REVIEW line answered: the standard carries the call's
-words because it is the pitch standard (Kessick Valley Regional, the pitch, nonstop service) and names the fourteen
-candidates only in its shortlist, unranked; the methods report, the handout log and the standard share the survey's
-own words (handout, collection, returned cards, entries) and none names a weighting, a response adjustment, a stay
-cut short or which cards came back (R3c asserts the absence); the verbatims, the city-market table and the standard
-name candidates beside codes and answers, never beside a ranking. Harmless.
-
-Reader, round 1 (answers appended to `leak_check_report.md`): nothing quoted for question 1 beyond the methods report's
-3.1 and 3.2 and standard 2.6, which name no correction; no file ranks the candidates; question 6 an analytical choice.
-It landed the call and all fourteen trips figures (each card weighted by one over its chance of being observable,
-rescaled to each lot's quarter of entries) and missed all fourteen passengers figures on the coded party, noting "me +
-1" coded 1 as an inconsistency without acting on it. Its findings, fixed in the generator in one pass with the judge's:
-New York only 2 per cent ahead of Dallas as the first market left out (a seed search with the fourth against the fifth
-at 1.07 or more, and a calibration guard at 1.05 under every reading); handout coverage identical plaza to plaza (the
-share of cars reached now moves plaza by plaza and day by day, with lot choice independent of the stay so the pooled
-and post-stratified estimates agree); a return rate the same everywhere (now by lot as well as by wave); destination
-write-ins too tidy (a keyed tail of capitals, lower case, a state added, a full stop, a letter dropped or doubled); the
-repeated batch at the end of the file (now straight after its first copy); Chicago arrivals on Eastern time (now Central,
-the schedule saying so). Harmless as the systems' own: the 2027 schedule published after the standard that cites it
-(a standard cites the pitch year's schedule by its role), DTT and ORL as metropolitan codes (the industry's own), an
-A320 on a seasonal leisure route.
-
-Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW on the write-up's step 2 only (it named Chicago,
-Charlotte and Detroit as cut from the shortlist; only Orlando is on it), fixed in writeup.py and in the brief. Every
-figure reproduced; expanding by lot, per-plaza weights, weights by day count and the cutoff a day either way all keep
-the three and the first market left out. Gate G statistical_rigor (the card files method_or_model_selection; both name
-the censoring-aware expansion), analytical_non_defect; Gate H pass, decisive step analytical. Stump power moderate.
-
-Reader, round 2 (on the fix-pass pack): nothing quoted for question 1 beyond the methods report's 3.1 and 3.2 and
-standard 2.6; no file ranks the candidates; question 6 an analytical choice. It landed the call (its trips from a
-product-limit estimate of each market's stay lengths with the chance of collection floored at 0.1, Phoenix 6,800,
-figures it calls noisy by 300; the design gives each card's chance of collection exactly from the log's counts by day
-and the last collection, which both judge passes reproduce) and recoded every party from Q4 as written, the sums
-added, so the first-number coding cost it nothing. Realism fixed in the generator with the device: the coding slip on
-every sum form alike, the garage's flat year (now seasonal), a post office named apart from its town. Harmless: the
-log's 1,027 (its one count over a thousand, printed with the comma), serials contiguous within each plaza and day (cards
-issued from numbered pads), file dates listed without a year.
-
-Judge, pass 2 (`determinism_check_report_pass2.md`, on the fix-pass pack): DETERMINISTIC, APPROVE. Every figure
-reproduced (Phoenix 6,392, Tampa 6,310, Washington 5,921, New York 4,702, the gap 1,219); expanding by lot or plaza,
-the last collection a day either way and a uniform-handout weight keep the three and New York fourth; its one residual,
-the coded party against Q4 as written, moves passengers only and is forced to the written answers by standard 2.7.
-Gate G statistical_rigor and analytical_non_defect, Gate H pass, stump power moderate.
-
-The passengers device was then cut both ways on the ask path with every figure in `generator/figures.json` unchanged:
-the parties written with who they cover coded right, so a parser adding every number written counts them twice.
-
-Reader, round 3 (target.zip c9e9c2fd35a4d875): nothing quoted for question 1 beyond 3.1, 3.2 and 2.6; no file ranks the
-candidates; question 5's literal reading fixes the population and leaves the estimator to the design; question 6 an
-analytical choice. It landed the call and all fourteen trips figures (each card weighted by the register's entries on
-the days that left room for its stay against the wave's) and all fourteen passengers figures, recoding each party from
-Q4 as written ("3 (2 adults 1 kid)" 3, "2 (me and my wife)" 2, "me + 2" 3). Its brief asked for example write-ins in
-the closing summary, which points at the verbatims, so the round overstates the exposure; round 2's brief did not, and
-it reconciled the coding all the same. Realism notes left at the pause: the Q4 write-ins drawn from 62 forms, the
-destination typos mechanical, every card complete, the ZIPs contiguous; wave 3's longest stay of 19 nights is the
-summer draw's thin tail, not a cap.
-
-Stage 4 outcome: the call deterministic and analytical (judge twice, readers three times), its stump power moderate
-(every reader landed it, round 3 citing the returns per card handed falling from 0.35 to 0.09 over each wave's last
-eight handout days, a rate rung 1's weighting by handout day computes on the way); the ask layer has no silent
-primary. PAUSED, not shipped.
+- `leak.py --asof 2026-08-14` on target.zip ce15c2a04a1d152f: REVIEW, no LEAK. Each REVIEW line, harmless:
+  - Sweep 3, the design report carries the call's words: its Tables 1 to 3 list all sixteen counties by name with
+    their lists, targets and letters, and name the allocation it serves; no table ranks or estimates a county.
+  - Sweep 4, the design report and the standard use the survey's own vocabulary (report, design, estimate, sample,
+    parcel, population); neither names an estimator, a weight or a probability of selection.
+  - Sweep 8, Kinsale's FLAG column: a laboratory export's qualifier flag ("<" below the reporting limit), the name
+    its electronic data deliverable uses.
+  - Sweep 9, the certified laboratory roster's dates after the setting: certification expiry dates, forward-looking
+    by nature (the H16 allow-list); the roster is a distractor.
 
 ## Tried and rejected
 
@@ -463,3 +340,56 @@ primary. PAUSED, not shipped.
   standard errors clear of New York on the weighted card-level variance and 2.3 to 3.4 clustered by day; binding it
   would need a tenfold smaller sample and same-day group travel, a planted structure, and the clustering unit itself
   is arguable when the waves are consecutive days. Dropped before any data was cut.
+- 2026-10-20, re-root: architecture 1 (the parking card survey, replies censored by the collection close) spent at
+  Gate F, every reader landing the call, with its ask device a mirror device; by the author's rule (no retirement)
+  architecture 2 is a fresh world in the least-drawn ETL task type, its decisive step one the record does not display.
+- 2026-10-20, at the draw: repeat candidates who saw the anchor items on an earlier attempt, left in the equating
+  sample: an anchor-contamination screen beside task450's, and the sample definition has to be filed anyway (a
+  convention), which files the step; kept only as the filed sample (first attempts), with no exposure in the data.
+- 2026-10-20, at the draw: Tucker against Levine under a large cohort difference (the anchor's reliability): the two
+  differ by less than their sampling error at the cut and nothing a pack can carry forces one, a fork.
+- 2026-10-20, at the draw: 2025 responses re-scored as a labelled trend sample: the label names the drift check, so
+  the organ announces the step; replaced by the contractor's validity papers, which its QC summary reports only as
+  agreement rates.
+- 2026-10-20, at the draw (prototype 1): an anchor of 15 multiple-choice items and two of the three written
+  assignments, heavier in written work than the test: the golden's methods split (Tucker 56 against chained
+  equipercentile 57) and missed the generating truth; the anchor made proportional (20 items and one assignment, 44
+  per cent written by points, as the test is).
+- 2026-10-20, at the draw: filing the program's equating method (Tucker) in the 2025 technical report to close the
+  equipercentile spread: its literal execution on the anchor as scored is the default path's cut, an official decoy;
+  the method stays unfiled and the world is tuned so that Tucker, Levine and chained linear (each at three synthetic
+  weights) and chained equipercentile agree on one cut with margin.
+- 2026-10-20, stage 3: WA2's validity papers scored by the 2025 leaders' consensus (an audit set): `heart` blocked
+  ban.calibration and ban.artifact against task473 once task249 was marked spent; redrawn as June 2025 responses
+  carrying the score both of their 2025 reads gave, the two scoring regimes' overlap on the same responses and the
+  operational metric the 2025 anchor scores are on (validity sample drawn on its own stream so the shift sits mid-bin:
+  0.98 anchor points, raw 49 with 0.38 and 0.37 of margin, every rung and set unchanged).
+- 2026-10-20, stage 4: architecture 2 itself, the rater-severity shift on the anchor's written assignment measured on
+  the validity papers and taken out before the link. The judge (v2r1) found it DETERMINISTIC on the main call, but its
+  Gate G disposition was SEND_BACK (planted_defect_flip, surface_read_rejection, sole_data_defect yes): on consistent
+  scoring the anchor as scored is right and the task collapses, so the stump is catching that the as-scored anchor
+  misleads. Gate H passed only as analytical (borderline planted). Both scored readers missed the call on the drop-WA2
+  rung and all 32 ask figures, but a measurement bias in recorded values is a defect to catch, not an analysis on
+  honest numbers. Spent; architecture 3 is a fresh draw on honest data.
+- 2026-10-20, at the architecture 3 draw: a joint replacement registry whose earlier hips were back-loaded on each
+  hospital's joining only if still in place, read by delayed entry. task265 already spends exactly that insight, so it
+  was dropped before registering.
+- 2026-10-20, at the v3 build: the parcel list alone (and the parcel-drawn share scaled to the wells on the lists)
+  named the golden six by coincidence, because the parcel-only wells carried nearly every exceedance; Alderwick placed
+  as a county whose permit-only wells run high (its parcel list alone gives 79), so no single list lands the six.
+- 2026-10-20, at the v3 build: each county's estimate as a graded figure: the design-based estimators that all name
+  the six differ by up to 59 wells in one county (Dunmere 164 to 223), so no figure is determinate; the estimate is
+  charted and the graded grid is each county's verdict and its wells on the lists.
+- 2026-10-20, at the v3 build: the retest ask's routing on one border town per county could not move every county's
+  figures (several counties had no border retests); each county's border town drawn from its two smaller towns, and the
+  search also kept the portal-only path off every figure, so the mirror keeps none of the 32.
+- 2026-10-20, at the v3 build: results printed at 10.00, or Kinsale results between 44.0 and 44.27 mg/L NO3, would
+  split the standard's "more than 10" from "10 or more" and the design report's factor from the fact sheet's; every
+  result within 0.1 of the standard moved clear of it on its own side (SF1, SF12).
+- 2026-10-20, stage 4: architecture 3 itself, the county estimate over two overlapping lists sampled separately,
+  each tested well counted at one over its chance of selection from either list. The judge (run v3r1) found it
+  DETERMINISTIC and APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H analytical), but both
+  scored readers landed the call and all 32 ask figures: reader A by the inclusion probabilities, reader B by the
+  post-stratified estimator. The design report must describe the two lists and their separate draws for the estimate
+  to be determinate, and once described the dual-frame estimator is executed as a work order; the routing county on
+  the retest requests fell to a consistency check of the request's county against the first kit's. Spent on Gate F.

@@ -1,0 +1,44 @@
+{
+ "task": "task250",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "A competent solver re-runs the filed quality control on the 2025 to 2027 export (with or without the 2028 network) and files 3.5, inside the field plan's visits; every drift in the record was repaired within days of the 3.0 alert that found it, so at 3.5 those drifts would have kept growing until they crossed the wider limit, one alert each, which with the network re-run puts 3.5 over the visits and files 4.0.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task250 v1 (this slot, lineage) 0.13; task189 0.07"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Architecture 2 drawn and registered (two keys: the 2028 network re-run, then one alert for every drift the record's 3.0 alerts cut short that the re-run never alerted before its repair). Generator record, field records, register history, documents, solve and routes rewritten and test-built on seed 1; a seed scan (scratch scan.py, seeds 1 to 400) picks the seed with all four golden three-year counts divisible by three and the widest margin. Next: choose the seed and the budget, then checks, verify, pair, writeup, golden, the design note's stage 2 sections, prompt and precut.",
+ "approved": null,
+ "delivered": "",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": [
+  {
+   "date": "2026-10-20",
+   "event": "architecture 1 spent at stage 4 (reader 1 landed the network re-run, 4.0 at 9 a year; judge DETERMINISTIC APPROVE); re-rooted to architecture 2 (two keys) and redrawn"
+  }
+ ]
+}

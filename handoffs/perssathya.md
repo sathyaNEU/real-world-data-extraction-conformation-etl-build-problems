@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-20 (wave 4 fully shipped, task243 to task248; wave 5: task249 RETIRED 2026-10-20 at the author's choice after its fourth architecture was spent at stage 4; task250 to task252 not started, at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-20 (wave 4 fully shipped, task243 to task248; wave 5: task249's fresh rebuild, architecture 5, spent at stage 4 and PAUSED for the author's call on a sixth; task250 in draw, then task251 and task252). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,22 +18,27 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task249: RETIRED 2026-10-20 at the author's choice; four architectures spent, never shipped.**
-- Architecture 4 (Product Analytics, metric definition and measurement science x Data Quality Monitoring). A German
-  regional newspaper group's 2029 media kit: which of twelve local editions' average monthly unique browsers for
-  October to December 2028 carry the measurement note, while WebKit keeps the analytics cookie only seven days after
-  the last visit and the paywall meter sits in the same capped storage. Golden: eight editions; the default path
-  (sign-in held fixed) files four.
-- Spent at stage 4 round 3. One of five clean readers landed the call by a calibration on signed-in WebKit browsers,
-  stratified by edition, cookie age and sessions per identifier; under the two-reader rule a call any reader lands is
-  spent. Every free gate was green on target.zip 31ad0d1e, the judge returned DETERMINISTIC, APPROVE on three packs,
-  and both round 3 readers kept 0 of 24 ask figures.
-- Architectures 1 to 3 died the same way, a reader landing the call at stage 4. The design note's `## Retired` and
-  `## Tried and rejected` carry every death. Every card is kept, and architecture 4's carries `architecture_spent`.
-- Undrawn candidates, for a later number if the author wants them: 2 (survey interviewer effects from randomly
-  assigned PSU pairs), 3 (immunization coverage through the survey's first-dose coverage times the administrative
-  third-to-first ratio), 4 (a register's oldest-old counts rebuilt from deaths by cohort).
-- Next: task250 to task252 wait for the author's go.
+**task250: DRAWN 2026-10-20, architecture 1; in stage 2.**
+- Physical & Environmental Sciences, sensor calibration and measurement x DQ. The Consorcio Agroclimático del Ebro
+  Medio's 148 agro-climatic stations: which drift-alert setting the daily quality control runs from January 2028 to
+  keep drift-alert visits within 2.5 a month, and the alerts a month it raises, when 34 programme stations close.
+- Stump: the quality control reads each station against its three nearest reporting neighbours; with the closures
+  many continuing stations are read against farther neighbours while their limits stay at the old spread. The replay
+  of the record as it ran files 3.5; the re-run without the closing stations files 4.0 (prototype).
+- Next: stage 2 (simulator tuned to the ladder, asks and devices, fork and closure tables, prompt, precut).
+
+**task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; a sixth architecture is the author's call.**
+- Architecture 5 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Vasslia Miljørådgiving's
+  sediment programme for a Western Norwegian hydropower company; golden SKB, JVB, FND and ESK over by the relation
+  conditioned on rising water. Every free gate green (470 checks, verifier, byte-identical, target.zip 9dd86516).
+- Both scored readers landed the call and all 28 ask figures (score_reader.py exit 1 twice): each tested sediment
+  hysteresis by reflex, and the simulated relation's scatter (0.025 in log10) made the residuals two-valued. Judge
+  DETERMINISTIC, FIX_NOW on the ask pins (old flag letters, the export's nominal), Gate H analytical.
+- Lesson carried to task250 to task252: a decisive step that is the domain's named reflex is no stump against a
+  reader who knows the domain; put the reflex on a rung and the decisive move on a second, data-native step.
+- Waiting on the author: re-root on one of four candidates (design note, `## Candidates for architecture 6`:
+  interviewer effects from the interpenetrated pairs, register over-coverage netted by care-home inactivity, anchor
+  drift from an exposed block, experiment assignment health on the counterfactual trigger) or retire the number.
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

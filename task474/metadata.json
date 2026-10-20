@@ -1,0 +1,95 @@
+{
+ "task": "task474",
+ "title": "Ridgeline Power Cooperative SCR Upgrade Program 2027 designations",
+ "setting": "A fictional generation and transmission cooperative in an unnamed U.S. state; every record is synthetic.",
+ "as_of": "2026-11-09",
+ "files": [
+  {
+   "file": "ambient_ozone_daily_2026.csv",
+   "source": "State Department of Environmental Quality (fictional), synthetic records",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 456
+  },
+  {
+   "file": "cems_maintenance_tickets_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 255
+  },
+  {
+   "file": "dahs_export_field_notes.txt",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "dahs_hourly_export_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 90792
+  },
+  {
+   "file": "gads_event_report_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 85
+  },
+  {
+   "file": "gas_supply_agreement_excerpt.pdf",
+   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
+   "date": "2024-10-28",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "gas_supply_daily_invoices_2026.csv",
+   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 742
+  },
+  {
+   "file": "generating_unit_register_2026.xlsx",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "nox_allowance_holdings_2026.xlsx",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scr_upgrade_program_rules_2027.pdf",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  }
+ ],
+ "distractors": [
+  {
+   "file": "ambient_ozone_daily_2026.csv",
+   "why": "ambient ozone at the region's monitors: air quality, not any unit's emissions"
+  },
+  {
+   "file": "nox_allowance_holdings_2026.xlsx",
+   "why": "allowance holdings by facility: a compliance position, not a unit's emission rate"
+  }
+ ],
+ "deliverables": [
+  "cc_unit_nox_inventory_2026.xlsx",
+  "scr_upgrade_designations_2027.pdf"
+ ],
+ "stated_inputs": [
+  "0.170"
+ ]
+}

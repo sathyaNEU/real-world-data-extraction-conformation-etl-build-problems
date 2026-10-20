@@ -1,0 +1,42 @@
+{
+ "task": "task473",
+ "architecture": 1,
+ "title": "Which of the 14 counties are high-range for the GHSO's FY2028 impaired driving task force grants on their 2023 to 2025 alcohol-impaired-driving fatality rate, with each county's rate and deaths, a chart against the 0.60 line, and each county's 2025 arrest and injury crash baselines",
+ "domain": "General Statistics & Data Science",
+ "subdomain": "data-integration-record-linkage-entity-resolution (a fatal crash census whose surviving drivers are tested completely at three agencies and only after an arrest at the rest, integrated with the toxicology laboratory's specimens, the crash records system's reports and the DOT's miles)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "01 with a threshold for a cap: each of the 14 counties' 2023 to 2025 rate and deaths against the 0.60 line, the high-range list, the chart, and each county's three 2025 baselines",
+ "as_of": "2027-03-22",
+ "deliverables": [
+  "county_impaired_driving_rates_2023_2025.csv",
+  "fy2028_high_range_certification.pdf"
+ ],
+ "distractor_files": [
+  "dmv_licensed_drivers_by_county_2025.xlsx",
+  "fcc_2026_preliminary_crash.csv"
+ ],
+ "stated_inputs": [
+  "2023",
+  "2025",
+  "FY2028"
+ ],
+ "input_gates": {
+  "files": 18,
+  "formats": [
+   "csv",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "crs_units_2025.csv",
+  "largest_file_rows": 45679
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task473/generator/build.py (seeded, deterministic) in the layouts of a state fatal crash census (FARS-style crash and person files under a 2011 and a 2024 crash report form), a state toxicology laboratory's LIMS specimen export, a state crash records system's injury crash report extract, a state DOT's HPMS county DVMT summaries, an agency directory, a motor vehicle division's licensed driver counts, and a highway safety office's grant guidelines; the state is unnamed and its counties, agencies, facilities and people are fictional",
+   "date": "2027-03-22",
+   "license": "original work for this task; no third-party data"
+  }
+ ]
+}

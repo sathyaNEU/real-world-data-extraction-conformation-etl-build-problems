@@ -1,68 +1,53 @@
-# determinism-check report, task471, 2026-10-18
+# determinism-check report, task471, 2026-10-20 (run v3r1, architecture 3, first judge pass)
 
 ## Verdict
-DETERMINISTIC (SOLUTION_WRONG on wording only)
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One judge thread (sonnet, medium, run r1) saw only a fresh unzip of target.zip (sha256 8851287dbed0691d) and the five
-blocks. Read literally, the standard (2.2, 2.6, 4.1) counts every trip, so the survey is expanded to the lots' entries,
-and the methods report (3.1, 3.2, Table 1) says a card comes back only when the car leaves and the boxes closed on the
-night of day 30; long stays handed late in a wave cannot be among the returns, and weighting by the handed cards on
-the days that left room for each stay gives the golden: Tampa, Phoenix and Washington. The card-share expansion gives
-Washington, New York and Dallas. Every load-bearing figure reproduced. The one defect is in the write-up: step 2 said
-the shortlist was cut by Chicago, Charlotte, Detroit and Orlando, but only Orlando is on Appendix A.
+The judge thread (sonnet, medium, scratch path only) reproduced the six qualifying counties from the shipped files. The call holds under every valid dual-frame estimator it ran: inclusion-probability weights, Hartley at theta 0 to 1, and post-stratified by list membership. Lowest qualifier is Brannock (304; range 293 to 308). Highest non-qualifier is Ivyridge (199; Dunmere 223 under Hartley theta 0). All 16 per-county rows of ask 2 and the chart in ask 3 reproduce. The retest date basis is closed by WWA-2027-01 4.2 and the design report. Border-ZIP attribution is closed by "its wells the survey first tested".
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Transient entries, three long-stay lots, by quarter | 204,574 / 239,891 / 261,189 / 228,402 | the same, both layouts | yes |
-| Cards after the repeated batch | 74,377 (70 rows of batch 3-07 dropped) | 74,377, matching Table 1 | yes |
-| Handout log | 336 rows | 242,701 cards handed, matching Table 1; every card number in a range; handout day plus nights equals the box date on every card | yes |
-| Service-area cards | 5,347 | 5,347 | yes |
-| Candidates | 14 | the shortlist's 15 less Orlando (seasonal Sanford) | yes |
-| Trips, 14 candidates | Tampa 6,600 ... Fort Lauderdale 1,300 | 6,588 ... 1,278, every one in its hundred | yes |
-| Passengers, 14 candidates | Tampa 10,900 ... | 10,912 ..., every one in its hundred (Q4 as written) | yes |
-| Gap, Washington less New York | 1,200 | 1,197 | yes |
+| Permit list | 32,933 | 32,933, all 16 counties match Table 2 | yes |
+| Parcel list | 35,440 | 35,440, all 16 match | yes |
+| Rates | 8.3% (2,740), 4.0% (1,407) | same | yes |
+| Tested / on both lists | 3,996 / 3,002 | same | yes |
+| Survey population | 42,598 | 42,598, 16 county counts identical | yes |
+| Tested wells above 10 mg/L | 313 | 313 | yes |
+| Counties at or above 250 | 6 | 6 (Brannock 304 lowest, Ivyridge 199 highest below) | yes |
+| Retests | 232 retested, 195 still above | same, 16 rows match | yes |
 
 ## Competing answers that survived
-None on the call. Expanding by lot, per-plaza weights, weights by day count and the box cutoff a day either way all
-keep the three and the first market left out; the gap stays in its hundred except the cutoff a day late (1,240), which
-the methods report's night of day 30 rules out. The coded `party` against Q4 as written changes the passengers ask
-only; the judge reads Q4 as written as the traveller's answer to "including you" (standard 2.7, counted in full).
+None. Closed forks: retest date basis (4.2), county attribution of border-ZIP requests, superseded lab results, duplicate permit numbers across counties. Residual risk is only a solver who ignores 4.2.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 16 | yes |
-| Formats | 3 or more | csv, pdf, xlsx | yes |
-| Large file | 25,000 rows or more | 74,447 (cards), 148,754 (verbatims) | yes |
-| Distractors named, none labelled in a file name | 2 or more | metadata.json names the DB1B market file (declared wrong-basis), the T-100 segments and the 2025 ground access workbook; no file name labels one | yes |
-| Distractors unused yet weighable | yes | the DB1B file ranks New York, Denver and Boston on Kessick Valley's own passengers, ruled out by standard 2.1; the T-100 and the access survey rank nothing | yes |
-| Deliverables | 1 to 3, all in the golden | 2 (csv, docx) | yes |
-| Asks | multi-dimensional, unit and rounding stated | 14 markets' trips and passengers, nearest hundred | yes |
-| Prompt shape and rubric | shape identifiable; 25 or more criteria | shape 01; 28 figures, the call, the first left out, the gap and the chart | yes |
-| Not LLM generated | yes | no authoring leakage, coherent dates | yes |
+| Files, formats, large file | 10+, 3+, 25,000+ rows | 12 files; csv, pdf, xlsx; permits csv 41,116 rows, assessor xlsx 74,518 rows | yes |
+| Distractors in metadata.json, none labelled by file name | 2+ | fact sheet pdf and certified labs csv named in metadata.json (a "distractor" is not in either file name). | yes |
+| Distractors unused, relevant, one that answers a graded quantity ruled out by a shipped fact | | Neither answers a graded quantity. The fact sheet's 4.4 factor does not change the classification (no Kinsale value between 44.0 and 44.27). The labs roster is the weaker one: weighable but thin. | yes (weak, non-blocking) |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
+| Asks multi-dimensional with unit and rounding | | 16-row table of 4 figures each, whole numbers stated | yes |
+| Prompt shape and rubric | shape identified, 25+ criteria | shape 10 scorecard; design note lists the call and count, 16 verdicts, 16 counts, 32 retest figures, so over 25 | yes |
+| Reads as real, no LLM tell | | the judge saw no authoring leakage or benchmark language; no em dashes found in prompt.txt or submission.md | yes |
 
 ## Gate G reconciliation
-Thread: statistical_rigor, analytical_non_defect, no surface read, no sole data defect. The card files Gate G as
-method_or_model_selection (the estimator the fieldwork design forces); both name the same decisive step, a
-censoring-aware expansion of the replies, and both rule out a surface read. The thread's wrong answer (Washington, New
-York and Dallas from the card shares) is the default path's Ends on. The declared distractor carries nothing. No
-finding.
+Thread: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card and design note: Gate G method_or_model_selection, `stump_class: analytical`. They match. The declared distractors are not the surface read carrying the task. The card has no separate stumping_family, surface or defect fields to compare (all None), so the match rests on the design note's text.
 
-Gate H: domain pass, layers pass, decisive_step analytical, matching the note's Three rules and the card's
-stump_class analytical.
+Gate H: domain pass, layers pass, decisive_step analytical. This matches the card's `analyst_test` and `domain_test` and the note's `## Three rules`.
+
+One count differs. The judge's rate-of-drawing-list route gave 11 or 12 counties, while the note and submission say ten. The route is under-specified across variants; the pooled route (three) and the wrong direction match. This does not affect the verdict, but the 10 in submission.md and the card is one variant of several.
 
 ## Stump power (Gate F)
-Moderate: the methods report states the box timing plainly and the handout log gives the exact counts, so a careful
-model that asks when a card can come back finds the step; one that expands card shares does not. The judge puts any
-further difficulty in the asks, not the call.
+The decisive step is choosing the dual-frame estimator, with the filed estimand but no filed method. The easy routes file 3 (pooled share) or 10 to 12 (drawing-list rate). Hartley and inclusion-probability are the field's textbook methods, so a strong solver who knows survey design lands the call. The design note and the judge both say partial failure on the asks is likely from the linkage and retest matching. The main thread should weigh this with the scored readers' result.
 
 ## Findings, ranked
-1. FIX_NOW, solution: step 2 named Chicago, Charlotte and Detroit as cut from the shortlist; only Orlando is on it.
-   Fixed in writeup.py and in the brief (golden.py), both now from figures.json's served_shortlisted.
+1. Non-blocking: the "ten" wrong answer is one of several variants (the judge got 11 or 12). Consider wording that does not depend on the exact count.
+2. Non-blocking: the certified labs roster is a thin distractor.
+3. Optional: the date basis for "retested by June 30" rests on WWA-2027-01 4.2 alone.
 
 ## Next action for the author
-Rebuild with the wording fix and re-judge once.
+Proceed to ship stage 5; no generator change is required. Optionally reword the "ten" count in submission.md to "about ten" or match it to the judge's variant.

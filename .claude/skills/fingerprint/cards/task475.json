@@ -1,0 +1,86 @@
+{
+  "task": "task475",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET32 (ZIP-level EITC tables to county allocations of a capped weatherization fund): world, decision and quantity kept, the deciding body moved from a state energy office to a regional council of governments (government_agency is banned in the current window); the pitfall re-found from the tax tables' own structure",
+  "domain": "demographic-social-science",
+  "subdomain": "income-poverty-inequality",
+  "niche": "a regional council of governments splitting its 2027 weatherization fund across fourteen member counties by the number of working families with children claiming the earned income credit, a count the IRS ZIP-code tables do not publish and that has to be recovered within each income class from the claims' count and credit amount, then capped at 12 per cent",
+  "objective": "etl",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G2",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the IRS ZIP-code tables to counties through the residential crosswalk, reads the allocation policy's 'returns claiming the credit with at least one qualifying child' correctly and applies the Department of Revenue's statewide share of such claimants in each AGI class to every county's credit claims files the seat county at the 12 per cent cap and spreads its excess over the rest; recovering each county's own mix in the lowest AGI class from its claims' count and credit amount, where a childless worker's credit averages a few hundred dollars and a family's several thousand, leaves the seat county below the cap and moves every other county's allocation.",
+  "domain_test": "Tax-policy and income statistics read who claimed the earned income credit from the credit's own schedule: a childless worker's credit is capped near six hundred dollars and phases out by about twenty-five thousand of income, a family's runs to several thousand, so in the one income class where both claim, an area's count and credit amount together fix its number of families; with another field's nouns there is no credit schedule and an area's amount says nothing about who claimed.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:mixture recovered from a count and its paired amount by known per-kind averages",
+  "layer1": [
+    "IRS ZIP-code tables in two tax years with a changed column layout, amounts in thousands of dollars, AGI classes coded 1 to 6, a state total line and an other-ZIP-codes line",
+    "the ZIP-to-county relationship file's residential, business, other and total ratios, a county-to-ZIP file in the opposite direction beside it, P.O. Box ZIP codes with no residential addresses",
+    "the Department of Revenue's statewide credit statistics as tables inside its annual report PDF",
+    "ZIP codes created and retired between the relationship file's quarter and the tax year"
+  ],
+  "stakeholder_role": "weatherization program director at a regional council of governments, who brings the 2027 allocation to the council's board",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "irs_soi_zip_returns_ty2023_ty2024.csv",
+    "rows": 0,
+    "entity": "one ZIP code's returns in one AGI class in one tax year",
+    "grain": "ZIP code x AGI class x tax year",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States (a fictional fourteen-county region in an unnamed state)",
+    "currency": "USD",
+    "org_type": "regional council of governments administering weatherization for its member counties",
+    "invented_names": [
+      "Corran Valley Council of Governments",
+      "Tallis County"
+    ],
+    "people": [
+      "Brianna Wallace",
+      "Mitchell Gonzalez"
+    ]
+  },
+  "deliverables": [
+    "corran_valley_2027_weatherization_allocation.xlsx",
+    "corran_valley_ty2024_county_credit_families.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A subtotal of one kind of member inside each area's published total is never published, but each area's total comes with a paired amount and the kinds carry known and very different average amounts, so an area's own count and amount fix its mix; applying the region-wide share of the kind to every area misplaces the subtotal wherever an area's mix departs from the region's, and a cap that binds only on the overstated area moves every other share.",
+  "driver_concrete": "The council allocates by earned income credit returns with qualifying children, which the IRS ZIP-code tables do not split; in the lowest AGI class, the only one where childless workers claim, each county's claims count and credit amount together fix how many are families, because a childless worker's credit averages a few hundred dollars against several thousand for a family; the statewide share overstates the seat county, whose many young childless workers pull its average credit down, and caps it at 12 per cent instead of leaving it below the cap.",
+  "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "House domain demographic-social-science (income and poverty statistics from tax returns) in client domain survey-research-official-statistics; task type census-register-administrative-data-quality (ETL). stump_strategy decomposition_attribution: the decisive move splits each county's credit claims into childless and family components by their paired amounts; composition_mix would name the shortcut's failure rather than the move and is banned in the current window.",
+  "client_domain": "survey-research-official-statistics",
+  "registered": "2026-10-20T12:58:04Z"
+}

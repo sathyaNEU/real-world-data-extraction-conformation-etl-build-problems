@@ -1,0 +1,114 @@
+{
+  "task": "task473",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET30 (FARS alcohol-impaired-driving fatality rates, untested drivers): world, decision and quantity kept; the pitfall re-found in how survivors come to be tested",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a university crash records center's county alcohol-impaired-driving fatality rates for the governor's highway safety office's high-range designation, integrating the fatal crash census's two testing regimes (every surviving driver tested by the State Patrol and two sheriffs, only arrested drivers elsewhere) into one completed count",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Corwin, Hatchell, Ossian and Tanager are high-range for the FY2028 County Impaired Driving Task Force grants (2023 to 2025 rates 0.71, 0.68, 0.68 and 0.66 per 100 million vehicle miles; the nearest below, Kittredge, at 0.57).",
+  "answer_source": "task473/submission.md block 1, from generator/figures.json; the bundle reader (generator/bundle.py) and the independent verifier (generator/verify.py) recompute it from target/",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G12"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly gives every unarrested surviving driver of the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and certifies Corwin, Hatchell, Ossian and Pruett, because one probability for every county ignores that officers catch heavily impaired drivers far more often than near-limit ones, so a county's unarrested drivers hide as many impaired drivers as its BAC mix leaves uncaught.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each county's impaired drivers combined from two observation mechanisms of the same item (every surviving driver tested at the State Patrol and two sheriffs, only drivers arrested at the scene tested elsewhere), each arrest-triggered positive weighted by the inverse of the arrest's catch rate at its own BAC band, measured where both are observed; replacing it with a generic summary (the tested share, one unarrested share, a model with one arrest effect) certifies other counties.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:arrest-triggered-blood-tests-completed-by-the-catch-rate-at-each-bac-band",
+  "layer1": [
+    "crash and person files on the 2011 and the 2024 report forms with different codes, person types and agency numbers",
+    "toxicology laboratory specimens keyed by agency case number, medical examiner and coroner case formats, resubmitted specimens and second draws",
+    "whole-blood and serum ethanol results and truncation to hundredths",
+    "crash times in local time against the laboratory's UTC timestamps",
+    "county DVMT in thousands of daily miles by road class with a leap year",
+    "deaths within 30 days recorded after the crash year"
+  ],
+  "stakeholder_role": "the Center's impaired driving program coordinator",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "stl_specimen_extract_2023_2025.csv",
+    "rows": 31781,
+    "entity": "one analysis of one tube of a specimen kit the State Toxicology Laboratory received",
+    "grain": "analysis",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United States, an unnamed state (the university center, the counties, the agencies and the people are fictional)",
+    "currency": "USD",
+    "org_type": "a state university's transportation safety center that keeps the state's crash records system for the governor's highway safety office",
+    "invented_names": [
+      "Merrivale State University",
+      "Tanager",
+      "Brisbin",
+      "Corwin",
+      "Hatchell",
+      "Pruett",
+      "Ossian",
+      "Delmont",
+      "Fairlee",
+      "Kittredge",
+      "Stroud",
+      "Lanier",
+      "Renwick",
+      "Aldous",
+      "Keswick"
+    ],
+    "people": [
+      "Mary Mitchell",
+      "Eduardo Chapman",
+      "Janet Brooks"
+    ]
+  },
+  "deliverables": [
+    "county_impaired_driving_rates_2023_2025.csv",
+    "fy2028_high_range_certification.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A count seen only through tests given where an observer notices the trait is completed by counting each positive found as one over the share of cases at its own level of the trait that the observer notices, measured where every unit is tested whatever the observer notices; because the observer catches strong cases far more often than marginal ones, neither the tested units' rate, one catch share nor a model with one effect of being noticed fits a place whose cases sit at different levels.",
+  "driver_concrete": "Each county's impaired surviving drivers in crashes worked by county and city agencies, which draw blood only after an arrest at the scene, are the arrested drivers found at .08 or more each counted as one over the share of drivers at that BAC band officers arrest where every surviving driver is tested (28.6 per cent from .08 to .149 and 88.9 per cent at .15 or more), which certifies Tanager, whose impaired drivers sit near the limit, and drops Brisbin, whose arrested positives are almost all heavily impaired.",
+  "stump": "The default path gives every unarrested surviving driver of the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and certifies Corwin, Hatchell, Ossian and Pruett, dropping Tanager and certifying Pruett, because one probability for every county ignores how each county's impaired drivers are spread across the BAC bands officers catch.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task230": "task230 v1 reads a staggered switch against the not-yet-switched within usage bands, a counterfactual built inside a band; here nothing switches and no counterfactual is built: each positive a selective test found is counted at the catch rate of its own BAC band, measured where every driver is tested.",
+    "task465": "task465 v1 fixes withheld collapse years from published group totals; here nothing is withheld by a publisher and no total is subtracted: untested drivers are completed from an arrest catch rate that depends on the BAC itself.",
+    "task253": "task253 v1 adjusts nonresponse within classes of a frame attribute that predicts the outcome; here the test depends on the outcome's own level, which no recorded attribute carries, so no adjustment within recorded classes completes it.",
+    "task265": "task265 v0 spreads a classifier's predictions for the unrecorded part by error counts measured on the recorded part; here no classifier labels the untested drivers, and the completion weights each positive found by the catch rate at its BAC band.",
+    "task455": "task455 v1 measures a register's misfiling by class with a full review of one period; here the trait is unobserved for the drivers officers did not arrest and is completed from the catch rate by BAC band where every driver is tested.",
+    "task68": "task68 rebuilds a like-for-like change on a matched panel through identity successions recovered from a corpus; here no panel, succession or corpus: a selectively tested item completed by a catch rate measured on the all-drivers agencies.",
+    "task233": "task233 corrects a destination model's allocation of nonrespondents from a follow-up sample drawn in chosen districts; here no one is followed up and nothing is allocated: each positive an arrest found is counted at one over the catch rate of its own BAC band, measured at the agencies that test every survivor.",
+    "task458": "task458 completes a trait seen only through billed services by the share of fully observed members, a coverage gap of enrolment; here the observation depends on the trait's own level (an officer arrests a driver more surely the more impaired), so the completion conditions the catch rate on the BAC band.",
+    "task256": "task256 integrates a joint fit distribution over an envelope from a survey's tables; here no distribution is modelled or integrated: found positives are weighted by an empirical catch rate by band from a complete subpopulation.",
+    "task262": "task262 corrects an elasticity for a filer-only income history with a one-year census measure's transitory variance; here no regression is corrected: a count is completed by inverse catch rates by band.",
+    "task267": "task267 weights each verified participant by the inverse of a completion rate set by the design within known referral groups; here the selection rate is not set by any design and depends on the unobserved BAC itself, so it is estimated by band at other agencies that test everyone and transported to the arrest-only agencies, the band read from the found positive's own result.",
+    "task54": "task54 scales a write-off by pack-legs under a new routing plan; here nothing is routed or scaled by exposure change: untested drivers are completed by band catch rates."
+  },
+  "lineage": [],
+  "notes": "stump_strategy composition_mix: the decisive refinement is that the arrest catch rate depends on each county's mix of impaired drivers by BAC band, so the pooled rate and a one-effect model misfit; the selection on the outcome (population_selection) sits under it. Redrawn at registration because task474 (SROS/ETL, budget_or_appropriation) blocked ban.pairing and ban.forcing_event: domain survey-research-official-statistics/census-register-administrative-data-quality became general-statistics-data-science/data-integration-record-linkage-entity-resolution (the estimate integrates two observation mechanisms of one item, data integration's own object), and the forcing event budget_or_appropriation became launch_or_rollout (the FY2028 task forces start 1 October 2027 and the list must be certified for their applications).",
+  "registered": "2026-10-20T06:36:45Z"
+}

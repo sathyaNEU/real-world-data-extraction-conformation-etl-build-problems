@@ -1,0 +1,37 @@
+{
+ "task": "task477",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-20",
+ "stump": "The default path ranks industries by 2021 to 2025 growth in covered wages per job as recorded, and the reflex correction scales 2021 down by one assumed pay-schedule mix for every industry; both file the same wrong slate, because the extra 2021 pay dates inflate each industry's base by its own unrecorded schedule mix; estimating each industry's pay-date exposure from its quarterly record files the slate.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-20 (no LEAK; two golden figures matched across CSV column boundaries, generic design vocabulary in three documents)",
+  "reader": "round 1 (readers 1, 2): call missed, asks 30 of 30 kept; round 2 (readers 3, 4): call missed by both, reader 3 PASS (11.1 per cent), reader 4 exit 1 (42.2 per cent: the reissued program IDs found through first-approval dates after the payments); marker removed, half-dollar totals removed; round 3 (readers 5, 6) running; round 3: reader 5 exit 1 (77.8 per cent: duplicate IDs in one numbered block, reissued IDs under another provider), reader 6 PASS (11.1 per cent); markers removed and the reissue made non-cyclic; round 4 (readers 7, 8) running; the call missed by all six; round 4: readers 7 and 8 PASS at 11.1 per cent each, call missed (eight of eight)"
+ },
+ "duplicate_check": {
+  "guard_check": "WARN 2026-10-20 (overuse.objective, overuse.shape, repeat.gate_g, overuse.gate_g, repeat.question_form); the first draft's G13 and csv+xlsx were redrawn to G3 and csv+docx",
+  "nearest": "task102 at 0.07",
+  "heart": "WARN 2026-10-20 (overuse.gate_g, repeat.question_form); nearest task102 at 0.09"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (next-in-line margin widened from 0.3 to 1.0 after it)"
+ },
+ "returned": [],
+ "resume": "shipped; the portal result goes in the ledger the day the author reports it",
+ "approved": null,
+ "delivered": "2026-10-20",
+ "portal": null,
+ "source_note": "seed ET34 (QCEW county wage jump: hierarchy levels, ownership codes and suppressed children): world, decision and quantity kept (a county's private pay per job and which industries' pay really grew); the seed's mechanism dropped; the pitfall re-found in the record's own pay-date calendar"
+}

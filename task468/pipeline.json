@@ -1,47 +1,49 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
- "stump": "The default path develops each class's caseload by months since each member's first fill and files 57 pharmacists with GLP 8, AST 5 and CGR 6; developed by months since the current episode of therapy began (members back after a lapse restart the curve), the classes take GLP 7, AST 4 and CGR 5, 54 in all.",
- "architecture": 3,
+ "stump": "The default path counts each hospital's recorded deaths and the Office's links, adds the deaths later bills record and drops the links later claims contradict, and files four losers with Varden at 1.33 while Mercy Valley (1.05) and Brannock (1.03) keep the bonus; corrected class by class at the rates the recorded deaths and the living members measure, Varden keeps it and Mercy Valley and Brannock lose it, five in all.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-19"
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-19 on target.zip 383f5fa8c9f39c33 (no LEAK)",
-  "reader": "architecture 3 round 1: landed the call (10 of 10; episodes by a 100-day break read off the bimodal refill gaps), asks 17 of 28, rebates 0 of 9 (score_reader exit 1, Gate F)"
+  "leak_py": "REVIEW 2026-10-20 on target.zip f511b179e6742bf8, no LEAK; every REVIEW line answered in the design note",
+  "reader": "architecture 4: round 1 (b1bc148c) missed the call, kept 15 of 15 ask figures on the unfiled conventions (device re-sited); round 2, two scored readers on the shipping pack, both missed the call (the reflex repair, four losers) and kept 0 of 15 ask figures, score_reader exit 0 twice, question 6 analytical"
  },
  "duplicate_check": {
-  "guard_check": "WARN only 2026-10-19 (repeat.gate_g against task249; driver.near against this slot's v2, differentiated)",
-  "heart": "PASS 2026-10-19, nearest driver task157 at 0.08",
-  "surface": "promotes task464 (surface 0.102, corpus top 1 per cent, same decisive gap) for the author; not adjudicated"
+  "heart": "WARN 2026-10-20 (Gate G overuse, a first name in an older build)",
+  "surface": "six card-axis pairs promoted, the same as at the draw, each answered by the card's differentiation lines; the adjudicated clone check is the author's to call"
  },
  "judge": {
-  "verdict": "not run to completion",
-  "disposition": "",
-  "report": "",
-  "note": "architecture 3's judge thread stopped once Gate F had spent the architecture; architecture 2's pass was DETERMINISTIC/APPROVE"
+  "pass_1": "DETERMINISTIC, FIX_NOW (file the replacement convention; three figures floored per class; the encounter file's late copy; near-round payment totals), fixed in one generator pass",
+  "pass_2": "DETERMINISTIC on target.zip f511b179e6742bf8, every graded figure reproduced; two write-up wording items fixed with the pack unchanged; Gate G statistical_rigor and analytical_non_defect, Gate H pass",
+  "reports": [
+   "determinism_check_report.md",
+   "determinism_check_report_pass2.md"
+  ]
  },
  "returned": [],
- "resume": "fresh rebuild (the author's rule: no retirement): architecture 3 spent at Gate F; draw architecture 4 in a new world with a decisive step the record does not display, then design, build, stage 4 and ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
- "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall",
+ "source_note": "fresh architecture 4 (no seed): a Medicaid plan's hospital quality bonus on linkage-corrected 30-day mortality",
  "ceiling": {
-  "pair": 39.3,
-  "cracker": 44.5,
-  "mirror": 34.1,
-  "mirror_leakage": 11.1
+  "pair": 39.0,
+  "cracker": 45.0,
+  "best_mirror": 33.0,
+  "mirror_leakage": 0.0,
+  "script": "generator/ceiling.py"
  },
- "target_zip": null,
+ "target_zip": "f511b179e6742bf8",
  "history": [
   {
    "architecture": 1,

@@ -1,8 +1,10 @@
-"""The pack's documents: the survey contractor's methods report and handout log, the bureau's pitch standard, Kessick
-Valley Regional's 2027 nonstop schedule, Brennick's public parking rates and the bureau's 2025 ground access survey."""
+"""The pack's documents and workbooks: the survey's design and fieldwork report, the 2027 allocation standard, the
+Program's fact sheet, the assessors' parcel compilation and Cedarline's results workbook."""
 import datetime as dt
-from collections import defaultdict
 
+import numpy as np
+import openpyxl
+from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -12,10 +14,10 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import inch                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import pack as P      # noqa: E402
-import world as W     # noqa: E402
+import pack as P     # noqa: E402
+import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
 for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), ("LiberationSerif-Italic", "Italic"),
@@ -24,376 +26,305 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.getFont(nm)
     except KeyError:
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
-INK = colors.HexColor("#1c1e21")
-GREY = colors.HexColor("#5a5f66")
-NAVY = colors.HexColor("#1f3b5c")
-TEAL = colors.HexColor("#22545a")
-MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-          "November", "December"]
+INK = colors.HexColor("#1b1d1f")
+GREY = colors.HexColor("#5b6067")
+TEAL = colors.HexColor("#1d4f5c")
+GREEN = colors.HexColor("#2f5a2e")
+BLUE = colors.HexColor("#21456e")
+SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.6, leading=13.2, textColor=INK, spaceAfter=6)
+SERIF = ParagraphStyle("serif", fontName="LiberationSerif", fontSize=10.5, leading=14.2, textColor=INK, spaceAfter=6)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.2, leading=10.2, textColor=INK)
+CELLB = ParagraphStyle("cellb", parent=CELL, fontName="LiberationSans-Bold")
+SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8.0, leading=10.4, textColor=GREY)
+HEAD_FILL = PatternFill("solid", fgColor="DDE7EC")
 
 
-def styles(font="LiberationSans", accent=NAVY, size=9.8):
-    bold = font + "-Bold"
-    return dict(
-        BODY=ParagraphStyle("body", fontName=font, fontSize=size, leading=size * 1.37, textColor=INK, spaceAfter=6),
-        CELL=ParagraphStyle("cell", fontName=font, fontSize=8.2, leading=10.2, textColor=INK),
-        CELLB=ParagraphStyle("cellb", fontName=bold, fontSize=8.2, leading=10.2, textColor=INK),
-        SMALL=ParagraphStyle("small", fontName=font, fontSize=8.0, leading=10.4, textColor=GREY, spaceAfter=4),
-        H1=ParagraphStyle("h1", fontName=bold, fontSize=14, leading=18, textColor=accent, spaceAfter=2),
-        H1S=ParagraphStyle("h1s", fontName=font, fontSize=9, leading=12, textColor=GREY, spaceAfter=10),
-        H2=ParagraphStyle("h2", fontName=bold, fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3))
+def styles(accent, serif=False):
+    face = "LiberationSerif" if serif else "LiberationSans"
+    h1 = ParagraphStyle("h1", fontName=face + "-Bold", fontSize=14, leading=18, textColor=accent, spaceAfter=2)
+    h1s = ParagraphStyle("h1s", fontName=face, fontSize=9.3, leading=12.5, textColor=GREY, spaceAfter=10)
+    h2 = ParagraphStyle("h2", fontName=face + "-Bold", fontSize=10.5, leading=14, textColor=INK, spaceBefore=7,
+                        spaceAfter=3, keepWithNext=1)
+    return h1, h1s, h2
 
 
-S = styles()
-
-
-def _doc(path, title, footer, author, size=letter):
+def _doc(path, title, author, footer, layout="left"):
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont("LiberationSans", 7.5)
-        canvas.drawString(0.9 * inch, 0.6 * inch, footer)
-        canvas.drawRightString(size[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
+        if layout == "left":
+            canvas.setFont("LiberationSans", 7.5)
+            canvas.drawString(0.9 * inch, 0.6 * inch, footer)
+            canvas.drawRightString(letter[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
+        elif layout == "centre":
+            canvas.setFont("LiberationSerif", 8.5)
+            canvas.drawCentredString(letter[0] / 2, 0.6 * inch, "%s, page %d" % (footer, doc.page))
+        else:
+            canvas.setFont("LiberationSans", 8)
+            canvas.drawString(0.9 * inch, letter[1] - 0.55 * inch, footer)
+            canvas.setStrokeColor(GREY)
+            canvas.setLineWidth(0.5)
+            canvas.line(0.9 * inch, letter[1] - 0.6 * inch, letter[0] - 0.9 * inch, letter[1] - 0.6 * inch)
+            canvas.drawCentredString(letter[0] / 2, 0.55 * inch, str(doc.page))
         canvas.restoreState()
-    d = SimpleDocTemplate(path, pagesize=size, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.8 * inch,
+    d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.8 * inch,
                           bottomMargin=0.9 * inch, title=title, author=author, subject="", creator="", producer="")
     return d, frame
 
 
-def _table(rows, widths, st=S, head="#e3e9f1", right=()):
-    data = [[Paragraph(str(v), st["CELLB"] if i == 0 else st["CELL"]) for v in r] for i, r in enumerate(rows)]
+def _table(rows, widths, head="#e3ecef", right=()):
+    data = []
+    for i, r in enumerate(rows):
+        line = []
+        for j, v in enumerate(r):
+            st = CELLB if i == 0 else CELL
+            if i > 0 and j in right:
+                st = ParagraphStyle("r", parent=st, alignment=2)
+            line.append(Paragraph(str(v), st))
+        data.append(line)
     t = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
-    style = [("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa0a6")),
-             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(head)),
-             ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 4),
-             ("RIGHTPADDING", (0, 0), (-1, -1), 4)]
-    t.setStyle(TableStyle(style))
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa0a6")),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(head)),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                           ("RIGHTPADDING", (0, 0), (-1, -1), 4)]))
     return t
 
 
-def _story(title, sub, sections, st=S):
-    story = [Paragraph(title, st["H1"]), Paragraph(sub, st["H1S"])]
-    for head, paras in sections:
-        if head:
-            story.append(Paragraph(head, st["H2"]))
-        for p in paras:
-            story.append(p if not isinstance(p, str) else Paragraph(p, st["BODY"]))
-    return story
+def _n(v):
+    return "{:,}".format(int(v))
 
 
-def _fmt(n):
-    return "{:,}".format(int(n))
-
-
-def _day(d):
-    return "%d %s" % (d.day, MONTHS[d.month - 1])
-
-
-def _wdate(d):
-    return "%s %d/%d/%d" % (["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][d.weekday()], d.month, d.day, d.year)
-
-
-def wave_dates():
+# ------------------------------------------------------------------------------------- the survey's own statistics
+def fieldwork(x):
+    """per county: the two lists' sizes on August 31, 2025, the targets, letters mailed and outcomes by list"""
     out = []
-    for name, q, start in W.WAVES:
-        last = start + dt.timedelta(days=W.HAND_DAYS - 1)
-        close = start + dt.timedelta(days=W.LAST_COLLECT - 1)
-        out.append((name, q, start, last, close))
+    for c in x["counties"]:
+        row = dict(code=c["code"], name=c["name"], NP=c["NP"], NQ=c["NQ"], nP=c["nP"], nQ=c["nQ"], lab=c["lab"])
+        for lst in ("P", "Q"):
+            d = [o for l, _i, o in c["draws"] if l == lst]
+            row["mailed" + lst] = len(d)
+            row["tested" + lst] = sum(1 for o in d if o == "TESTED")
+            row["earlier" + lst] = sum(1 for o in d if o == "TESTED_EARLIER")
+            row["declined" + lst] = sum(1 for o in d if o == "DECLINED")
+            row["noresp" + lst] = sum(1 for o in d if o == "NO_RESPONSE")
+        out.append(row)
     return out
 
 
-# ---------------------------------------------------------------------------------------------- the methods report
-def write_methods(path, x):
-    st = styles("LiberationSerif", TEAL, 10.0)
-    d, frame = _doc(path, "Brennick International long-stay parking survey 2026: methods and delivery",
-                    "%s  |  Brennick International long-stay parking survey 2026" % W.CONTRACTOR, W.CONTRACTOR)
-    handed = defaultdict(int)
-    for w, day, l, a, b, n in x["handout"]:
-        handed[w] += n
-    keyed = defaultdict(int)
-    for c in x["cards"]:
-        keyed[c["wave"]] += 1
-    t1 = [["Wave", "Handout days", "Last box collection", "Cards handed", "Cards returned and keyed"]]
-    for name, q, start, last, close in wave_dates():
-        t1.append([name[1], "%s to %s 2026" % (_day(start), _day(last)), "Night of %s 2026" % _day(close),
-                   _fmt(handed[name]), _fmt(keyed[name])])
-    t1.append(["2026", "", "", _fmt(sum(handed.values())), _fmt(sum(keyed.values()))])
-    dict_cards = [["Column", "Contents"],
-                  ["card_no", "The number printed on the card: the wave's digit followed by a six-digit serial."],
-                  ["wave", "1 to 4."],
-                  ["keying_batch", "The wave and the batch the card was keyed in."],
-                  ["box_collected", "The date stamped on the night's box run when the card came out of the box, "
-                                    "yyyy-mm-dd."],
-                  ["home_zip", "Q1 as written."],
-                  ["destination_code", "Q2 coded: the airport's three-letter code where the card names an airport, "
-                                       "or a city's main airport where it names only the city; CHI, NYC or WAS where "
-                                       "it names only Chicago, New York or Washington."],
-                  ["nights", "Q3 as written."],
-                  ["party", "Q4 coded as a number."],
-                  ["purpose", "Q5 coded B (business), L (leisure), V (visiting friends or relatives) or O (other)."]]
-    dict_verb = [["Column", "Contents"],
-                 ["card_no", "As in the cards file."],
-                 ["question", "Q2 or Q4."],
-                 ["as_written", "The answer keyed as the traveller wrote it."]]
-    secs = [
-        ("1. The survey", [
-            "1.1 The State %s's %s commissioned %s to survey the cars parked in the three long-stay lots at "
-            "%s (Economy C, Economy D and Long-Term) through 2026: where their travellers live, where they flew, "
-            "how long they were away and how many of them flew. The short-term garage was not surveyed."
-            % (W.STATE_AGENCY, W.BUREAU, W.CONTRACTOR, W.HUB),
-            "1.2 The survey ran in four waves, one in each quarter of 2026. Each wave's 28 days of entries stand for "
-            "its quarter."]),
-        ("2. Handout", [
-            "2.1 Each wave ran for 28 consecutive days from a Monday: %s." % ", ".join(
-                "%s to %s" % (_day(s), _day(l)) for _, _, s, l, _ in wave_dates()),
-            "2.2 At the entry plaza of each lot (Plaza C for Economy C, Plaza D for Economy D and Plaza L for "
-            "Long-Term) attendants handed a card to the driver of each car taking a ticket. Cars entering while an "
-            "attendant was away from the lane were missed, more of them in the August wave, when the contractor was "
-            "short of attendants. The permit lanes were not covered.",
-            "2.3 Each card carries a printed seven-digit number, the wave's digit followed by a serial. The "
-            "attendants recorded the first and last number handed at each plaza each day; the handout log lists "
-            "them with the number of cards handed."]),
-        ("3. Returns", [
-            "3.1 The card asks the traveller to answer when they get back to the car and to drop the card in the box "
-            "at the lot's exit plaza on the way out (Appendix A). The boxes were emptied every night after the last "
-            "exits of the day, and each night's cards were stamped with that day's date.",
-            "3.2 Each wave's boxes were emptied for the last time on the night of the second day after its last "
-            "handout day, and then taken in until the next wave.",
-            _table(t1, [0.5 * inch, 1.9 * inch, 1.6 * inch, 1.0 * inch, 1.5 * inch], st, head="#dfecea"),
-            Spacer(1, 4),
-            Paragraph("Table 1. Cards by wave. Cards returned and keyed are counted once each.", st["SMALL"])]),
-        ("4. Keying and coding", [
-            "4.1 The cards were keyed in batches as they came out of each night's box, up to 450 a batch, and "
-            "delivered in two files. The cards file has one row for each card:",
-            _table(dict_cards, [1.3 * inch, 5.2 * inch], st, head="#dfecea"), Spacer(1, 6),
-            "4.2 The verbatims file has the answers to Q2 and Q4 as keyed from the card, one row for each card and "
-            "question:",
-            _table(dict_verb, [1.3 * inch, 5.2 * inch], st, head="#dfecea"), Spacer(1, 6),
-            "4.3 The files are the cards as keyed and coded; expansion to the lots' entries is the Bureau's."]),
-        ("Appendix A. The card", [
-            _table([["%s PARKING SURVEY" % W.HUB_SHORT.upper()],
-                    ["Please answer when you get back to your car and drop this card in the box at the exit booth "
-                     "as you leave. Thank you for helping us plan air service for the region."],
-                    ["Q1  Your home ZIP code"],
-                    ["Q2  The final destination of your trip (city or airport)"],
-                    ["Q3  How many nights were you away?"],
-                    ["Q4  How many people flew in your travel party, including you?"],
-                    ["Q5  The main purpose of your trip: business, leisure, visiting friends or relatives, other"]],
-                   [6.5 * inch], st, head="#f2f2f2")]),
-    ]
-    story = _story("Brennick International long-stay parking survey 2026: methods and delivery",
-                   "%s for the %s, %s. %s, Project Manager. 15 December 2026." % (
-                       W.CONTRACTOR, W.BUREAU, W.STATE_AGENCY, W.PEOPLE["contractor"]), secs, st)
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------------------------------------- the handout log
-def write_handout(path, x):
-    st = styles("LiberationSans", TEAL, 9.4)
-    d, frame = _doc(path, "Brennick International parking survey 2026: handout log",
-                    "%s  |  Parking survey 2026, handout log" % W.CONTRACTOR, W.CONTRACTOR)
-    story = [Paragraph("Brennick International long-stay parking survey 2026: handout log", st["H1"]),
-             Paragraph("%s. Compiled from the plaza attendants' sheets; the first and last card number handed at "
-                       "each plaza each day and the cards handed." % W.CONTRACTOR, st["H1S"])]
-    for i, (name, q, start, last, close) in enumerate(wave_dates()):
-        if i:
-            story.append(PageBreak())
-        story.append(Paragraph("Wave %s: %s to %s 2026" % (name[1], _day(start), _day(last)), st["H2"]))
-        rows = [["Date", "Plaza", "First card", "Last card", "Cards handed"]]
-        tot = 0
-        for w, day, lot, a, b, n in x["handout"]:
-            if w != name:
-                continue
-            rows.append([_wdate(day), W.PLAZA[lot], P.card_no(int(name[1]), a), P.card_no(int(name[1]), b),
-                         _fmt(n)])
-            tot += n
-        rows.append(["Wave %s" % name[1], "", "", "", _fmt(tot)])
-        story.append(_table(rows, [1.2 * inch, 0.9 * inch, 1.1 * inch, 1.1 * inch, 1.1 * inch], st,
-                            head="#dfecea"))
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------------------------------------- the pitch standard
-def shortlist_rows():
-    rows = [["Market", "Code", "Airports"]]
-    for m in W.SHORTLIST:
-        name, aps = W.CITY_MARKETS[m]
-        rows.append([name, m, ", ".join(a for a, _ in aps)])
-    return rows
+# --------------------------------------------------------------------------------------------------- the report
+def write_design(path, x):
+    acc = TEAL
+    h1, h1s, h2 = styles(acc)
+    d, frame = _doc(path, "2025-26 Private Well Nitrate Survey: design and fieldwork", W.PEOPLE["epi"],
+                    "%s, %s  |  PWNS 2025-26 design and fieldwork  |  May 2026" % (W.DEPT, W.OFFICE))
+    fw = fieldwork(x)
+    s = [Paragraph("2025-26 Private Well Nitrate Survey", h1),
+         Paragraph("Design and fieldwork report. %s, %s, %s. Prepared by %s, environmental epidemiologist, "
+                   "for %s, %s manager. Issued May 22, 2026." % (W.DEPT, W.OFFICE, W.PROGRAM, W.PEOPLE["epi"],
+                                                               W.PEOPLE["manager"], W.PROGRAM), h1s),
+         Paragraph("1. Purpose", h2),
+         Paragraph("The survey measures nitrate in private domestic wells in each of the state's sixteen counties so "
+                   "that the Department can estimate, county by county, how many private domestic wells are above "
+                   "the nitrate standard of 10 mg/L nitrate as nitrogen. The 2027 Well Water Assistance allocation "
+                   "rests on those estimates. This report sets out how the survey was designed and how its fieldwork "
+                   "ran; it does not report nitrate results, which go to the Program with the county estimates "
+                   "after the retest period closes on June 30, 2026.", SANS),
+         Paragraph("2. The survey population and its two lists", h2),
+         Paragraph("No single record lists every private well in the state. The survey's population in a county is "
+                   "every private domestic well on either of two lists as they stood on August 31, 2025:", SANS),
+         Paragraph("<b>The permit list:</b> every well the Department's well construction permit database recorded "
+                   "on August 31, 2025 as an active domestic well drilled under permit on or after January 1, 1986, "
+                   "when permits became mandatory. Irrigation, livestock, monitoring and industrial wells, abandoned "
+                   "wells, and the earlier permits of wells since replaced are not on it.", SANS),
+         Paragraph("<b>The parcel list:</b> every residential parcel that the county assessor's 2025 roll records as "
+                   "served by a private well. The assessors' water-source codes are listed in the Codes sheet of the "
+                   "parcel compilation the Program assembled from the sixteen rolls.", SANS),
+         Paragraph("Each list misses wells the other holds. Wells drilled before 1986 that were never re-permitted "
+                   "are not on the permit list, and an assessor's water-source field is not updated when a well is "
+                   "drilled, so a parcel can carry a permitted domestic well while the roll records public water or "
+                   "nothing. A well drilled under permit on a parcel the roll records as served by a private well is "
+                   "on both lists. The Program treats a permit and a parcel as the same well when the permit's "
+                   "parcel number is the parcel's or, on a permit that carries no parcel number, when the permit's "
+                   "site address is the parcel's situs address.", SANS),
+         Paragraph("3. Sampling", h2),
+         Paragraph("In each county the survey drew households at random from each list separately. Each list had its "
+                   "own target of completed first tests in each county (Table 2), set from the laboratory budget, "
+                   "with the permit list sampled more heavily because its permits record each well's depth and "
+                   "construction, which the Program's well construction work also uses. Letters went to the drawn "
+                   "households in the order drawn; a household that declined or did not return its kit within six "
+                   "weeks was replaced by the next household drawn from the same list, until the list's target was "
+                   "met. The permit list was drawn first. A household drawn from the parcel list whose well had "
+                   "already been tested from the permit list was not sent a second kit: its first test counts "
+                   "toward the parcel list's target as well, and the draw manifest records it as TESTED_EARLIER "
+                   "with the earlier kit.", SANS),
+         Paragraph("4. Kits and laboratories", h2),
+         Paragraph("Each tested household collected one sample from a cold-water tap ahead of any treatment, in the "
+                   "kit mailed to it, and returned it to the county's survey laboratory (Table 1). First tests closed "
+                   "on April 30, 2026. The laboratories report nitrate as nitrogen, except Kinsale Water Testing, "
+                   "which reports nitrate as NO3; 10 mg/L nitrate as nitrogen is 44.27 mg/L nitrate as NO3 (a factor "
+                   "of 4.427). Where a laboratory reanalysed a sample, its later report replaces the earlier one. "
+                   "Each laboratory also reports arsenic and total coliform and E. coli on every sample; those results "
+                   "go to households with their nitrate result.", SANS),
+         Paragraph("Households whose first test was above the nitrate standard were offered a free retest kit, "
+                   "ordered from the kit vendor through its web portal or by phone, and analysed by a survey "
+                   "laboratory.", SANS)]
+    t1 = [["County", "Code", "Survey laboratory"]] + [[r["name"], r["code"], W.LABS[r["lab"]]] for r in fw]
+    s += [Paragraph("Table 1. Survey laboratories", h2), _table(t1, [1.6 * inch, 0.7 * inch, 3.0 * inch])]
+    t2 = [["County", "Permit list wells, Aug 31, 2025", "Parcel list wells, Aug 31, 2025", "Target, permit list",
+           "Target, parcel list", "Letters, permit list", "Letters, parcel list"]]
+    for r in fw:
+        t2.append([r["name"], _n(r["NP"]), _n(r["NQ"]), _n(r["nP"]), _n(r["nQ"]), _n(r["mailedP"]), _n(r["mailedQ"])])
+    t2.append(["All counties", _n(sum(r["NP"] for r in fw)), _n(sum(r["NQ"] for r in fw)),
+               _n(sum(r["nP"] for r in fw)), _n(sum(r["nQ"] for r in fw)), _n(sum(r["mailedP"] for r in fw)),
+               _n(sum(r["mailedQ"] for r in fw))])
+    s += [Paragraph("Table 2. The lists, the targets and the letters", h2),
+          _table(t2, [1.2 * inch, 0.95 * inch, 0.95 * inch, 0.8 * inch, 0.8 * inch, 0.75 * inch, 0.75 * inch],
+                 right=(1, 2, 3, 4, 5, 6))]
+    t3 = [["County", "Tested, permit list", "Declined, permit list", "No response, permit list",
+           "Tested, parcel list", "Tested earlier, parcel list", "Declined, parcel list", "No response, parcel list"]]
+    for r in fw:
+        t3.append([r["name"], r["testedP"], r["declinedP"], r["noresp" + "P"], r["testedQ"], r["earlierQ"],
+                   r["declinedQ"], r["noresp" + "Q"]])
+    s += [Paragraph("Table 3. Outcomes of the letters", h2),
+          _table(t3, [1.2 * inch] + [0.74 * inch] * 7, right=(1, 2, 3, 4, 5, 6, 7)),
+          Spacer(1, 4),
+          Paragraph("Tested earlier: drawn from the parcel list after the well had been tested from the permit list. "
+                    "A household that declined or did not respond was replaced by the next draw from the same list. "
+                    "Source: PWNS draw manifest, closed April 30, 2026.", SMALL)]
+    d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
 def write_standard(path):
-    st = styles("LiberationSans", NAVY, 9.8)
-    d, frame = _doc(path, "Air Service Pitch Standard, 2027 pitch",
-                    "%s, %s  |  Air Service Pitch Standard, 2027 pitch" % (W.STATE_AGENCY, W.BUREAU), W.BUREAU)
-    secs = [
-        ("1. Purpose", [
-            "1.1 Each year the Bureau's air service development office pitches three markets for new nonstop service "
-            "from %s to the network planners of the airlines. This standard sets the basis on which the three are "
-            "chosen, so that each year's pitch is made the same way." % W.REGIONAL]),
-        ("2. The basis", [
-            "2.1 The basis is the trips that the Kessick Valley service area makes by car to %s and parks in its "
-            "long-stay lots (Economy C, Economy D and Long-Term) to fly. The short-term garage is not part of the "
-            "basis." % W.HUB,
-            "2.2 A trip is one car's stay in the long-stay lots, from entry to exit, counted once whatever the size "
-            "of its party, in the year the car entered. A pitch uses the latest full calendar year: the 2027 pitch "
-            "uses the trips that entered in 2026.",
-            "2.3 A trip is the service area's when its party's home ZIP code is on the Bureau's Kessick Valley "
-            "service area ZIP list.",
-            "2.4 The lots' entries are the transient entries counted by Brennick's parking revenue control system. "
-            "Permit holders' entries (employees and tenants) are not trips.",
-            "2.5 A trip's market is the city market of its final destination under the Bureau's city-market table, "
-            "which groups each city's airports and the metropolitan codes used for them.",
-            "2.6 Every such trip counts, not only the trips a survey reached.",
-            "2.7 The passengers a trip carried are the people in its party who flew, counted in full."]),
-        ("3. Candidates", [
-            "3.1 The candidates for a pitch are the markets on the shortlist drawn up by the office's market review "
-            "(Appendix A) that have no nonstop service from %s in its published schedule for the pitch year. A "
-            "market with nonstop service to any of its airports, seasonal service included, is not a candidate."
-            % W.REGIONAL_SHORT]),
-        ("4. The pitch", [
-            "4.1 The office pitches the three candidates with the most trips.",
-            "4.2 The pitch file lists every candidate's trips and passengers in the basis year. The pitch brief "
-            "names the three, the first candidate left out and the trips that separate it from the third.",
-            "4.3 Trips and passengers are reported to the nearest hundred."]),
-        ("Appendix A. Shortlist, 2027 pitch", [
-            "From the office's market review of July 2026.",
-            _table(shortlist_rows(), [1.6 * inch, 0.7 * inch, 2.4 * inch], st)]),
-    ]
-    story = _story("Air Service Pitch Standard: 2027 pitch",
-                   "%s, %s, Air Service Development. Approved by %s, Air Service Development Manager, "
-                   "14 September 2026." % (W.STATE_AGENCY, W.BUREAU, W.PEOPLE["asd"]), secs, st)
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
+    acc = GREEN
+    h1, h1s, h2 = styles(acc, serif=True)
+    d, frame = _doc(path, "Well Water Assistance: 2027 county allocation standard", W.DEPT,
+                    "WWA-2027-01, adopted March 10, 2026", layout="centre")
+    s = [Paragraph("Well Water Assistance", h1),
+         Paragraph("2027 county allocation standard, WWA-2027-01. %s, %s. Adopted March 10, 2026; "
+                   "coordinator %s." % (W.DEPT, W.OFFICE, W.PEOPLE["assist"]), h1s),
+         Paragraph("1. Scope", h2),
+         Paragraph("This standard decides which counties receive the 2027 Well Water Assistance allocation and which "
+                   "households within them may receive assistance. It applies the results of the 2025-26 Private Well "
+                   "Nitrate Survey (the Survey).", SERIF),
+         Paragraph("2. Definitions", h2),
+         Paragraph("2.1 The nitrate standard is 10 mg/L nitrate as nitrogen. A result is above the standard when it "
+                   "is more than 10 mg/L nitrate as nitrogen.", SERIF),
+         Paragraph("2.2 A county's survey population is the private domestic wells in the county on either of the "
+                   "Survey's two lists, the permit list and the parcel list, as the Survey's design report defines "
+                   "them.", SERIF),
+         Paragraph("2.3 A well's first test is the Survey's first test of it. A retest is a sample from a retest kit "
+                   "the household ordered after a first test.", SERIF),
+         Paragraph("3. Qualifying counties", h2),
+         Paragraph("3.1 A county qualifies for the 2027 allocation when the Survey estimates that 250 or more wells in "
+                   "its survey population are above the standard, a well being above the standard when its first "
+                   "test is. The estimate covers the whole survey population, the wells the Survey did not test as "
+                   "well as those it did.", SERIF),
+         Paragraph("3.2 Each qualifying county receives a base award of $140,000 for treatment systems and $25,000 "
+                   "for outreach. Awards are made for calendar year 2027 and do not carry over.", SERIF),
+         Paragraph("4. Households", h2),
+         Paragraph("4.1 Within a qualifying county, a household may receive a point-of-use treatment system and its "
+                   "first year of filters when its well was above the standard on its first test and again on a "
+                   "retest.", SERIF),
+         Paragraph("4.2 A retest counts for the 2027 cycle when its sample was collected on or before June 30, 2026. "
+                   "Later retests are taken up in the 2028 cycle.", SERIF),
+         Paragraph("5. Review", h2),
+         Paragraph("The Program reviews this standard after the 2027 cycle and before the next survey.", SERIF)]
+    d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- KVR's schedule
-def write_schedule(path):
-    from reportlab.lib.pagesizes import landscape
-    st = styles("LiberationSans", colors.HexColor("#3c4f1e"), 9.6)
-    d, frame = _doc(path, "Kessick Valley Regional Airport nonstop schedule, 2027",
-                    "%s (%s)  |  Nonstop schedule 2027" % (W.REGIONAL, W.REGIONAL_CODE), W.REGIONAL,
-                    size=landscape(letter))
-    rows = [["Airline", "Flight", "To", "Days", "Dep.", "Arr.", "Aircraft", "From", "Until"]]
-    for car, fl, ap, days, dep, arr, eq, eff, dis in W.KVR_2027:
-        rows.append([car, fl, "%s (%s)" % (W.AIRPORT_NAMES[ap], ap), days, dep, arr, eq,
-                     dt.date.fromisoformat(eff).strftime("%d %b %Y") if eff else "",
-                     dt.date.fromisoformat(dis).strftime("%d %b %Y") if dis else ""])
-    secs = [
-        (None, ["Nonstop departures from %s for 2027 as filed by the airlines on 20 January 2027. Times are local "
-                "(Chicago is on Central time). "
-                "Flights without dates operate all year; seasonal flights show their first and last day. Return "
-                "flights operate on the same days." % W.REGIONAL_SHORT]),
-        (None, [_table(rows, [1.75 * inch, 1.0 * inch, 2.3 * inch, 0.9 * inch, 0.5 * inch, 0.5 * inch,
-                              0.7 * inch, 0.8 * inch, 0.8 * inch], st, head="#e6eddc")]),
-        (None, [Spacer(1, 6), Paragraph("Kessick Valley Regional Airport is owned and operated by the %s, %s. "
-                                        "Schedules change; check with the airline." % (W.BUREAU, W.STATE_AGENCY),
-                                        st["SMALL"])]),
-    ]
-    story = _story("Kessick Valley Regional Airport (KVR): nonstop schedule, 2027", "Published 20 January 2027.",
-                   secs, st)
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
+def write_factsheet(path):
+    acc = BLUE
+    h1, h1s, h2 = styles(acc)
+    d, frame = _doc(path, "Nitrate and your well", W.PROGRAM, "%s  |  %s  |  Revised January 2025" % (W.DEPT, W.PROGRAM),
+                    layout="top")
+    s = [Paragraph("Nitrate and your well", h1),
+         Paragraph("A fact sheet for households on private wells. %s." % W.PROGRAM, h1s),
+         Paragraph("What is nitrate?", h2),
+         Paragraph("Nitrate is a form of nitrogen that dissolves in water. It reaches groundwater from fertilizer, "
+                   "manure, septic systems and decaying plants. Shallow wells, dug wells and wells in sandy soils are "
+                   "more likely to have high nitrate, and levels can rise in spring after snowmelt and heavy rain.",
+                   SANS),
+         Paragraph("Why does it matter?", h2),
+         Paragraph("Water above the nitrate standard should not be used to mix infant formula or for anyone who is "
+                   "pregnant. Boiling water does not remove nitrate; it concentrates it.", SANS),
+         Paragraph("Reading your result", h2),
+         Paragraph("Laboratories report nitrate in two ways. Most report nitrate as nitrogen (nitrate-N); the "
+                   "drinking water standard is 10 mg/L nitrate-N. Some report nitrate itself (NO3), where the same "
+                   "standard is 44 mg/L. To compare an NO3 result with the standard, divide it by 4.4.", SANS),
+         _table([["Result (nitrate-N)", "What it means", "What to do"],
+                 ["Under 3 mg/L", "Typical of wells little affected by land use", "Test every two to three years"],
+                 ["3 to 10 mg/L", "Affected by land use; below the standard", "Test every year"],
+                 ["Over 10 mg/L", "Above the standard", "Use another source for infants; retest; consider treatment"]],
+                [1.4 * inch, 2.6 * inch, 2.6 * inch]),
+         Spacer(1, 6),
+         Paragraph("Treatment", h2),
+         Paragraph("Reverse osmosis, distillation and anion exchange remove nitrate. A point-of-use reverse osmosis "
+                   "unit under the kitchen sink treats water for drinking and cooking. Water softeners and carbon "
+                   "filters do not remove nitrate.", SANS),
+         Paragraph("Testing", h2),
+         Paragraph("Use a laboratory certified for nitrate. Collect the sample from a cold-water tap that does not "
+                   "pass through a softener or filter, and get it to the laboratory within two days.", SANS)]
+    d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- the parking rates
-def write_rates(path):
-    st = styles("LiberationSans", colors.HexColor("#5c2d1f"), 9.8)
-    d, frame = _doc(path, "Brennick International public parking rates 2026",
-                    "%s, Parking Operations  |  Public parking rates 2026" % W.HUB, W.HUB)
-    rows = [["Facility", "Code", "Entry", "Rate", "Daily maximum", "Getting to the terminal"],
-            ["Garage (short-term)", "GR", "Garage plaza", "$4 each 30 minutes", "$34", "Walk"],
-            ["Long-Term", "LT", "Plaza L", "$5 an hour", "$18", "Walk or covered walkway"],
-            ["Economy C", "EC", "Plaza C", "$4 an hour", "$13", "Shuttle every 10 minutes"],
-            ["Economy D", "ED", "Plaza D", "$4 an hour", "$12", "Shuttle every 12 minutes"]]
-    secs = [
-        ("Rates", [_table(rows, [1.35 * inch, 0.5 * inch, 0.9 * inch, 1.25 * inch, 0.9 * inch, 1.6 * inch], st,
-                          head="#f2e4dc"),
-                   Spacer(1, 6),
-                   "Take a ticket at the entry plaza and pay at the exit plaza by card, cash or the Brennick Parking "
-                   "app. Receipts show the facility code. Rates effective 1 January 2026."]),
-        ("Long-stay parking", [
-            "Economy C, Economy D and Long-Term are for stays of one night or more as well as the day. Parking in "
-            "the public lots is limited to 28 consecutive days; a vehicle parked longer is towed at the owner's "
-            "expense (Airport Rules and Regulations, section 7.4).",
-            "During peak travel weeks the economy lots can fill; the message signs on the airport parkway show which "
-            "lots are open."]),
-        ("Permits", [
-            "Employees and tenants with an Brennick parking permit use the permit lanes at each plaza. Permits are "
-            "issued by Parking Operations."]),
-        ("Questions", [
-            "%s, Parking Operations Manager, %s." % (W.PEOPLE["parking"], W.HUB)]),
-    ]
-    story = _story("Public parking at %s: rates and rules, 2026" % W.HUB_SHORT,
-                   "%s, Parking Operations. Effective 1 January 2026." % W.HUB, secs, st)
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------------------------------------- the 2025 access survey
-ACCESS_MODES = ["Drove and parked at Brennick", "Parked off airport", "Dropped off", "Taxi or ride-hailing",
-                "Rental car", "Hotel shuttle", "Bus or rail"]
-ACCESS = {   # home area: interviews, shares by mode (per cent)
-    "Brennick County": (2104, (31.8, 6.2, 34.9, 18.4, 2.3, 2.6, 3.8)),
-    "Rest of the Brennick metro": (1196, (44.6, 9.1, 28.7, 9.8, 1.9, 3.2, 2.7)),
-    "Kessick Valley service area": (612, (63.1, 7.4, 21.7, 3.1, 1.8, 2.4, 0.5)),
-    "Elsewhere in the state": (517, (52.4, 5.8, 23.6, 4.9, 5.1, 7.3, 0.9)),
-    "Out of state": (383, (8.1, 0.6, 21.2, 30.3, 26.4, 12.9, 0.5)),
-}
-ACCESS_PARTY = {"Drove and parked at Brennick": 1.71, "Parked off airport": 1.84, "Dropped off": 1.62,
-                "Taxi or ride-hailing": 1.27, "Rental car": 1.58, "Hotel shuttle": 1.66, "Bus or rail": 1.09}
-
-
-def write_access(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Mode by home area"
-    ws.append(["How departing passengers reached %s, October 2025 (per cent of passengers)" % W.HUB_SHORT])
-    ws.append([])
-    ws.append(["Home area", "Interviews"] + ACCESS_MODES)
-    for c in ws[3]:
-        c.font = Font(name="Calibri", bold=True)
-        c.fill = PatternFill("solid", fgColor="DDEBF7")
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for area, (n, shares) in ACCESS.items():
-        ws.append([area, n] + list(shares))
-    ws.append(["All passengers", sum(v[0] for v in ACCESS.values())] + [
-        round(sum(v[0] * v[1][i] for v in ACCESS.values()) / sum(v[0] for v in ACCESS.values()), 1)
-        for i in range(len(ACCESS_MODES))])
+# ------------------------------------------------------------------------------------------------- the workbooks
+def _head(ws, cols, widths):
+    ws.append(cols)
     for c in ws[ws.max_row]:
-        c.font = Font(name="Calibri", bold=True)
-    for row in ws.iter_rows(min_row=4, min_col=3):
-        for c in row:
-            c.number_format = "0.0"
-    for row in ws.iter_rows(min_row=4, min_col=2, max_col=2):
-        for c in row:
-            c.number_format = "#,##0"
-    ws.column_dimensions["A"].width = 30
-    ws.column_dimensions["B"].width = 11
-    for col in "CDEFGHI":
-        ws.column_dimensions[col].width = 14
-    ws.row_dimensions[3].height = 32
-    ws.freeze_panes = "B4"
-    ws2 = wb.create_sheet("Party size")
-    ws2.append(["Mode", "Mean party flying (interviewed passenger and those with them)"])
-    for c in ws2[1]:
-        c.font = Font(name="Calibri", bold=True)
-        c.fill = PatternFill("solid", fgColor="DDEBF7")
-    for m, v in ACCESS_PARTY.items():
-        ws2.append([m, v])
-    for row in ws2.iter_rows(min_row=2, min_col=2):
-        for c in row:
-            c.number_format = "0.00"
-    ws2.column_dimensions["A"].width = 30
-    ws2.column_dimensions["B"].width = 58
-    ws3 = wb.create_sheet("About")
-    for line in ["%s, %s: departing passenger ground access survey, 2025" % (W.STATE_AGENCY, W.BUREAU),
-                 "Interviews with departing passengers past the security checkpoint at %s, 6 to 26 October 2025, "
-                 "at all hours the checkpoint was open; 4,812 interviews." % W.HUB_SHORT,
-                 "Home areas from the passenger's home ZIP code. Shares are of passengers, weighted to the "
-                 "checkpoint's hourly throughput.",
-                 "Parked off airport: the private lots on the airport parkway.",
-                 "Released 9 January 2026."]:
-        ws3.append([line])
-    ws3["A1"].font = Font(name="Calibri", bold=True)
-    ws3.column_dimensions["A"].width = 110
+        c.font = Font(bold=True)
+        c.fill = HEAD_FILL
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for i, w in enumerate(widths):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
+    ws.freeze_panes = "A2"
+
+
+def write_parcels(path, x, sheets):
+    wb = openpyxl.Workbook()
+    rd = wb.active
+    rd.title = "Codes"
+    lines = [("Residential parcels, 2025 assessment rolls: compilation for the Private Well Program", True),
+             ("Each county sheet is the residential parcel extract its assessor sent in January 2026 from the 2025 "
+              "roll, kept in the assessor's own layout.", False),
+             ("", False),
+             ("Water-source codes by layout", True)]
+    for i, (t, b) in enumerate(lines, 1):
+        rd.cell(row=i, column=1, value=t or None).font = Font(bold=b, size=12 if (b and i == 1) else 10)
+    rd.append(["Layout", "Counties", "Column", "Private well", "Public water", "Blank"])
+    for c in rd[rd.max_row]:
+        c.font = Font(bold=True)
+    for lay in ("A", "B", "C"):
+        cols = P.PARCEL_LAYOUTS[lay]
+        pw, pub = P.WATER_CODES[lay]
+        names = ", ".join(c["name"] for c in x["counties"] if c["layout"] == lay)
+        rd.append([lay, names, cols[-1], pw, pub, "not recorded"])
+    for col, w in zip("ABCDEF", (8, 62, 16, 12, 12, 14)):
+        rd.column_dimensions[col].width = w
+    for c in x["counties"]:
+        lay, rows = sheets[c["code"]]
+        ws = wb.create_sheet(c["code"] + " " + c["name"])
+        widths = {"A": (14, 30, 14, 9, 11, 9), "B": (12, 9, 5, 18, 8, 14, 7, 8, 13),
+                  "C": (15, 32, 14, 14, 10, 13)}[lay]
+        _head(ws, P.PARCEL_LAYOUTS[lay], widths)
+        for r in rows:
+            ws.append([None if v == "" else v for v in r])
+    wb.save(path)
+
+
+def write_ced(path, rows):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Results"
+    _head(ws, P.CED_COLS, (14, 15, 8, 12, 15, 9, 7, 9, 10, 12, 40))
+    for r in rows:
+        ws.append([None if v == "" else v for v in r])
+        ws.cell(row=ws.max_row, column=4).number_format = "mm/dd/yyyy"
+        ws.cell(row=ws.max_row, column=10).number_format = "mm/dd/yyyy"
+    nt = wb.create_sheet("Report notes")
+    for i, t in enumerate(["Cedarline Environmental Laboratories: Private Well Nitrate Survey results, 2025-26",
+                           "Client: %s, %s" % (W.DEPT, W.PROGRAM),
+                           "Qualifier U: not detected at the reporting limit shown in Result.",
+                           "A reanalysis is reported on its own row with a later report date."], 1):
+        nt.cell(row=i, column=1, value=t).font = Font(bold=(i == 1))
+    nt.column_dimensions["A"].width = 90
     wb.save(path)
