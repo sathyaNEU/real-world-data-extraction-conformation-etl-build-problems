@@ -1,58 +1,58 @@
 {
- "task": "task192",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-17",
- "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
- "architecture": 3,
- "loops": 4,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-17",
-  "checks": 49,
-  "fail": 0,
-  "warn": 0
- },
- "leak": {
-  "leak_py": "REVIEW, no LEAK",
-  "reader": "loop 4: missed the call, filed 550 at 50 per cent with the golden's 450 at 6"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-17, no BLOCK: nearest driver 0.09 task189 and task58",
-  "nearest": "surface 0.101 task191 promoted for adjudication, 0 BLOCK lines"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "loop 4 on the re-drawn record: nothing failed to reproduce, Gate G and H pass, stump power moderate, blind enumeration of 14 candidates over 6 cells"
- },
- "returned": [],
- "resume": "SHIPPED. Held realism items are in the design note's Tried and rejected: the partner and line codes agreeing on 205 of 205 overlaps, the audit's 54 per cent coverage answered by framing, the classifier reading as a relabeller, gap-free identifiers, the tension index contradicting its own trend labels, the coverage file expanding the monitor's config weights, and lags with no long tail. The reader's claim that the exception file reuses identifiers is wrong: 308 distinct across 308 rows, checked.",
- "approved": null,
- "delivered": "2026-10-17",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "build": {
-  "generator_assertions": 310,
-  "independent_checks": 138,
-  "figures_check": "111 figures in blocks 1 to 4, 0 absent",
-  "rebuilds": "two byte-identical over target/ and golden/ (6967fdeeed32d8cab624e17eea1e22b07bc22e1afb70417322c61daba4c65d29)",
-  "zip": "target.zip, 18 members at the archive root, 060f895956fa86a025eec2d9aac7c93a988ae685667de4c6f050e301711706d1",
-  "call": "450 confrontational actions to the nearest fifty (raw 454.911), default path 600, other routes 250, 300, 400, 600 and 700",
-  "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 53.5 actions and the granularity is 0.93 of it",
-  "forcing": "the audit covers months 5 to 8 of 5 to 10 and 8 of the 10 dispute themes; every stratified route that refuses to patch has no rate for the rest, and every route that patches, plus either round alone, lands in the call's cell at least 7.7 actions from its edge; the gap between the two families of correction is 159.62 actions against a sampling standard deviation of 47.1, 3.39 sigma, positive on 99.88 per cent of 20,000 resamples",
-  "audit": "1,064 hand-coded reports in two rounds, 25.2 per cent of the period's 4,228 press-reported actions, 1,056 of them coded and 8 the desk could not code, cells 77/84/18/877, recall 0.4783, false-mark rate 0.0201",
-  "design_point": "action seed 10461 and desk seed 4, chosen by a two-stage measured search: 12,000 action seeds screened on the pooled call, the two round anchors, the stratified family's anchors, the seven wrong routes' cells, the dispersion in both regimes, the three medians and the fortnight ties, then the desk's own stream searched on the best candidates",
-  "realism_pass": "the six held items are built: the desk's own stream, calendar, capacity, rota, notes and failures to code; each round opening when the previous closes; the reposted load stamped on the day it arrived; a clock profile per route; a quarter-hour mode instead of a lattice; and a geography that moves with the surge (82 to 117 municipalities a month, 13 of them first touched after 5 September). The protocol's theme list went from fourteen to ten so a theme-stratified correction has strata worth computing, and the monitor's intake hours keep every receipt stamp an hour clear of the period's edges.",
-  "pre_ship_pass": "the four design targets are measured on the cut pack and asserted: the committed count at 454.91 is 20.09 from its cell edge; every route in the sensitivity and false-mark family is in the 450 cell at least 7.7 actions from an edge, the theme-coded variant at 466.75 and the second round alone at 464.98 where they were 474.2 and 479.0; the family gap is 3.39 sigma and positive on 99.88 per cent of 20,000 resamples; daily action counts run at 0.97 and 1.34 chi-square per degree of freedom in the two regimes; and all 70 graded figures sit at least 0.300 of their rounding unit from the edge of the value they print.",
-  "freeze": "freeze.py check --mode determinism with all 121 moved figures.json keys allowed reports five frozen items that an allow list cannot cover and the pass required: the Final Recommendation's and Critical Components' numbers, the design note's ladder and default-path sections, and the workbook's Deliverable Answers. The prompt's call sentence, the stump sentence and the card are unchanged.",
-  "cracker": "generator/cracker.py, 11 rows measured on the cut pack, 0 kept by the cracker, exit 0; the sheet in the design note is its printed output"
- },
- "held": "nothing: the six items of the loop-2 and loop-3 reads are built and each is recorded in the design note's ## Tried and rejected with what it cost."
+  "task": "task192",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
+  "architecture": 3,
+  "loops": 4,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-17",
+    "checks": 49,
+    "fail": 0,
+    "warn": 0
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "wave 8 audit: 1 of 1, asks 98 of 106"
+  },
+  "duplicate_check": {
+    "heart": "WARN 2026-10-17, no BLOCK: nearest driver 0.09 task189 and task58",
+    "nearest": "surface 0.101 task191 promoted for adjudication, 0 BLOCK lines"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "loop 4 on the re-drawn record: nothing failed to reproduce, Gate G and H pass, stump power moderate, blind enumeration of 14 candidates over 6 cells"
+  },
+  "returned": [],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result, and a magnitude failure rather than a leak: the reader said nothing in the files states the correction and it inferred the Rogan-Gladen form from the data, giving the right reason for it (the audit sample covers part of the window and prevalence moved). The ask layer went with it at 98 of 106. Widen the separation at stage 2.",
+  "approved": null,
+  "delivered": "2026-10-17",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "build": {
+    "generator_assertions": 310,
+    "independent_checks": 138,
+    "figures_check": "111 figures in blocks 1 to 4, 0 absent",
+    "rebuilds": "two byte-identical over target/ and golden/ (6967fdeeed32d8cab624e17eea1e22b07bc22e1afb70417322c61daba4c65d29)",
+    "zip": "target.zip, 18 members at the archive root, 060f895956fa86a025eec2d9aac7c93a988ae685667de4c6f050e301711706d1",
+    "call": "450 confrontational actions to the nearest fifty (raw 454.911), default path 600, other routes 250, 300, 400, 600 and 700",
+    "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 53.5 actions and the granularity is 0.93 of it",
+    "forcing": "the audit covers months 5 to 8 of 5 to 10 and 8 of the 10 dispute themes; every stratified route that refuses to patch has no rate for the rest, and every route that patches, plus either round alone, lands in the call's cell at least 7.7 actions from its edge; the gap between the two families of correction is 159.62 actions against a sampling standard deviation of 47.1, 3.39 sigma, positive on 99.88 per cent of 20,000 resamples",
+    "audit": "1,064 hand-coded reports in two rounds, 25.2 per cent of the period's 4,228 press-reported actions, 1,056 of them coded and 8 the desk could not code, cells 77/84/18/877, recall 0.4783, false-mark rate 0.0201",
+    "design_point": "action seed 10461 and desk seed 4, chosen by a two-stage measured search: 12,000 action seeds screened on the pooled call, the two round anchors, the stratified family's anchors, the seven wrong routes' cells, the dispersion in both regimes, the three medians and the fortnight ties, then the desk's own stream searched on the best candidates",
+    "realism_pass": "the six held items are built: the desk's own stream, calendar, capacity, rota, notes and failures to code; each round opening when the previous closes; the reposted load stamped on the day it arrived; a clock profile per route; a quarter-hour mode instead of a lattice; and a geography that moves with the surge (82 to 117 municipalities a month, 13 of them first touched after 5 September). The protocol's theme list went from fourteen to ten so a theme-stratified correction has strata worth computing, and the monitor's intake hours keep every receipt stamp an hour clear of the period's edges.",
+    "pre_ship_pass": "the four design targets are measured on the cut pack and asserted: the committed count at 454.91 is 20.09 from its cell edge; every route in the sensitivity and false-mark family is in the 450 cell at least 7.7 actions from an edge, the theme-coded variant at 466.75 and the second round alone at 464.98 where they were 474.2 and 479.0; the family gap is 3.39 sigma and positive on 99.88 per cent of 20,000 resamples; daily action counts run at 0.97 and 1.34 chi-square per degree of freedom in the two regimes; and all 70 graded figures sit at least 0.300 of their rounding unit from the edge of the value they print.",
+    "freeze": "freeze.py check --mode determinism with all 121 moved figures.json keys allowed reports five frozen items that an allow list cannot cover and the pass required: the Final Recommendation's and Critical Components' numbers, the design note's ladder and default-path sections, and the workbook's Deliverable Answers. The prompt's call sentence, the stump sentence and the card are unchanged.",
+    "cracker": "generator/cracker.py, 11 rows measured on the cut pack, 0 kept by the cracker, exit 0; the sheet in the design note is its printed output"
+  },
+  "held": "nothing: the six items of the loop-2 and loop-3 reads are built and each is recorded in the design note's ## Tried and rejected with what it cost."
 }

@@ -92,3 +92,25 @@ FAIL  the ask layer leaks 63.8 per cent, at or over the 35 bar. Re-site the devi
 The repair re-sites the ladder, not the wording. The specific finding is that the quiet-window reasoning
 was reachable from the catalogue's own day-and-night profile, so the separation between the published
 count and the window rate has to be widened or the profile has to stop being legible at a glance.
+
+
+### A second independent reader, run on the same pack, and the stronger evidence of the two
+
+A second reader at the same effort, holding the same pack and knowing nothing of the first, also filed the
+plant and both quarters, and took **54 of 80** ask figures. It reached the construction by a different
+route: it measured that the small events appear only inside a sharp local-time window while about 67 per
+cent of the graded-magnitude events fall in that window against about 22 per cent at the other plants, and
+that the share falls as magnitude rises and is gone by about ML 1.8. It gave the rate on the window, the
+all-hours rate and their ratio, and it checked its own answer by recomputing on one year alone and
+reporting the call unchanged.
+
+**It corrects the first reader's account of why, and in the build's favour.** Asked what told it to take
+the step, it said **no sentence in the files names it** and that it inferred the step from the hour-of-day
+pattern in the catalogue, listing the ordinance and scheme sections only as supplying the setting. So this
+build's readability screen holds, as task181's and task186's do, and the failure is magnitude: the
+day-and-night profile is legible enough that two independent readers crossed the gap unaided. The line
+above about the profile being reachable at a glance stands; the implication that the pack signposted the
+step does not.
+
+Two readers landing the same call independently is the strongest Gate F evidence on the lane, and it also
+makes the repair clear: the profile has to stop being the thing a reader notices first.

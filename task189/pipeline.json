@@ -1,41 +1,41 @@
 {
- "task": "task189",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-16",
- "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
- "architecture": 1,
- "loops": 1,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-16"
- },
- "leak": {
-  "leak_py": "REVIEW (six benign lines, answered in the report)",
-  "reader": "two passes, nothing quoted for question 1, question 6 analytical"
- },
- "duplicate_check": {
-  "heart": "WARN (government_agency overuse; G16 and field_unit_lead given up to task148 v2)",
-  "nearest": "0.08 task62 (lineage)"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task189/determinism_check_report.md",
-  "passes": 3,
-  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
- },
- "returned": [],
- "resume": "",
- "approved": null,
- "delivered": "2026-10-16",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": ""
+  "task": "task189",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
+  "architecture": 1,
+  "loops": 1,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16"
+  },
+  "leak": {
+    "leak_py": "REVIEW (six benign lines, answered in the report)",
+    "reader": "wave 8 audit: landed in prose (the key was left unanswered), asks see below"
+  },
+  "duplicate_check": {
+    "heart": "WARN (government_agency overuse; G16 and field_unit_lead given up to task148 v2)",
+    "nearest": "0.08 task62 (lineage)"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task189/determinism_check_report.md",
+    "passes": 3,
+    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
+  },
+  "returned": [],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the reader filed the four non-compliant water bodies in its prose and quoted clause 7.2 as what ruled out the limit, half the limit, zero and a fitted distribution, leaving the data to pick the survivor. A clause that eliminates every alternative is a signpost. Re-root at stage 2 so the elimination comes from the data's structure.",
+  "approved": null,
+  "delivered": "2026-10-16",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
 }
