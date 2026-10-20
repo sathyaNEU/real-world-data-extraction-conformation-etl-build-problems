@@ -1,337 +1,185 @@
-"""task249's solver: everything is read from the target folder.  The call (which editions' quarter figure carries the
-measurement note), the routes a competent analyst might take instead, and the two asks (newsletter subscribers at the
-year's end, sold copies per publication day)."""
-import datetime as dt
+"""The golden, from the shipped files only: each station's 2027 load rebuilt from a turbidity relation conditioned on
+whether the river was rising, against the published load; the hours of 2025 and 2026 without a usable turbidity
+reading; the 2027 samples weighed in a batch that failed its quality control.   S.solve(target) -> dict"""
+import io
 import os
+import re
+
 import numpy as np
 import pandas as pd
+from pypdf import PdfReader
 
-MONTHS = (10, 11, 12)
-DEVS = ("mobile", "tablet", "desktop")
-CAP = 7 * 86400
-NEWSROOM = "85.214.110.0"
-YEAR_END_UTC = pd.Timestamp("2028-12-31 23:00:00")
-TOL = 25.0
-
-
-# ------------------------------------------------------------------------------------------- loading
-def load(target, files):
-    L = {"target": target, "files": files}
-    X = pd.read_parquet(os.path.join(target, files["sessions"]))
-    X["session_start"] = X["session_start"].dt.tz_convert("UTC").dt.tz_localize(None)
-    X["session_end"] = X["session_end"].dt.tz_convert("UTC").dt.tz_localize(None)
-    L["raw"] = X
-    L["register"] = pd.read_csv(os.path.join(target, files["register"]), dtype={"client_id": str, "device_id": str})
-    L["accounts"] = pd.read_csv(os.path.join(target, files["accounts"]))
-    L["editions"] = pd.read_csv(os.path.join(target, files["editions"]))
-    rep = pd.read_excel(os.path.join(target, files["report"]), header=2)
-    L["report"] = rep
-    return L
+RISE = 0.015          # per hour: the rate of rise, smoothed over an hour, that separates the samples best
+TOL = 15.0
+FILES = dict(
+    record="sediment_stations_15min_2025-2027.parquet",
+    field="field_samples_2025-2027.csv",
+    lims="lims_ssc_results_2025-2027.xlsx",
+    report="suspended_sediment_loads_2027.pdf",
+    register="station_register.xlsx",
+    log="station_maintenance_log_2025-2027.csv",
+    batches="lab_batch_export_2027.csv",
+    statement="SMA_quality_statement_2027.pdf",
+)
+LOT_CONC = {"KS-26-11": 50.0, "KS-27-06": 54.0}     # the quality statement's table, read in read_lots()
 
 
-def clean(L, webkit="engine", months_tz="Europe/Berlin", dedupe=True, drop_internal=True, drop_bots=True):
-    """the quarter's reader sessions: bots and the newsroom out, the re-sent rows out, Hollerfeld's old code mapped,
-    Berlin months, the engine read from os and browser"""
-    X = L["raw"]
-    if drop_bots:
-        X = X[~X["is_bot"]]
-    if drop_internal:
-        X = X[X["ip_prefix"] != NEWSROOM]
-    if dedupe:
-        X = X.drop_duplicates()
-    X = X.copy()
-    old = L["editions"].dropna(subset=["former_content_group"])
-    X["edition"] = X["content_group"].replace(dict(zip(old["former_content_group"], old["edition"])))
-    loc = X["session_start"].dt.tz_localize("UTC").dt.tz_convert(months_tz) if months_tz else X["session_start"]
-    X["month"] = loc.dt.month.values
-    X = X[X["month"].isin(MONTHS) & (loc.dt.year.values == 2028)]
-    if webkit == "engine":
-        X["wk"] = (X["os"] == "iOS") | ((X["os"] == "Macintosh") & (X["browser"] == "Safari"))
-    elif webkit == "safari":
-        X["wk"] = X["browser"].isin(["Safari", "Safari (in-app)"])
-    elif webkit == "safari_only":
-        X["wk"] = X["browser"] == "Safari"
-    X["dev"] = X["device_category"]
-    return X.sort_values(["client_id", "session_start"], kind="mergesort").reset_index(drop=True)
+def _p(target, k):
+    return os.path.join(target, FILES[k])
 
 
-def sign_in(L):
-    """client_id -> (device_id, origin) from the sign-in register and the accounts"""
-    G = L["register"].merge(L["accounts"][["account_no", "origin"]], on="account_no", how="left")
-    cmap = G.drop_duplicates("client_id").set_index("client_id")
-    return cmap["device_id"], cmap["origin"]
-
-
-# ------------------------------------------------------------------------------------------- the replay
-def replay_runs(X, per_edition=False):
-    """the seven-day rule replayed on each identifier's own sessions (site-wide, or within each edition): for every
-    identifier, edition and month, the number of replayed identifiers it would have had"""
-    key = ["client_id", "edition"] if per_edition else ["client_id"]
-    Y = X.sort_values(key + ["session_start"], kind="mergesort")
-    st = Y["session_start"].values.astype("datetime64[s]").astype(np.int64)
-    en = Y["session_end"].values.astype("datetime64[s]").astype(np.int64)
-    same = np.ones(len(Y), bool)
-    for k in key:
-        v = Y[k].values
-        same[1:] &= v[1:] == v[:-1]
-    same[0] = False
-    prev_end = np.r_[0, en[:-1]]
-    new = ~same | ((st - prev_end) > CAP)
-    run = np.cumsum(new)
-    Z = pd.DataFrame({"client_id": Y["client_id"].values, "edition": Y["edition"].values, "month": Y["month"].values, "run": run})
-    return Z.drop_duplicates().groupby(["client_id", "edition", "month"]).size().rename("runs")
-
-
-# ------------------------------------------------------------------------------------------- the call
-def strata(L, X=None, per_edition_replay=False):
-    """per edition, month and device: the counts every route is built from"""
-    X = clean(L) if X is None else X
-    dev_of, origin_of = sign_in(L)
-    A = X[["client_id", "edition", "month", "dev", "wk"]].drop_duplicates()
-    A["device_id"] = A["client_id"].map(dev_of)
-    A["origin"] = A["client_id"].map(origin_of)
-    A["signed"] = A["device_id"].notna()
-    A["printed"] = A["origin"] == "print subscription"
-    runs = replay_runs(X, per_edition=per_edition_replay)
-    A = A.join(runs, on=["client_id", "edition", "month"])
-    ses = X.groupby(["client_id", "edition", "month"]).size().rename("sessions")
-    A = A.join(ses, on=["client_id", "edition", "month"])
-    pv = X.groupby(["client_id", "edition", "month"])["page_views"].sum().rename("pv")
-    A = A.join(pv, on=["client_id", "edition", "month"])
-    return A
-
-
-def routes(A):
-    """every route's estimate of each edition's browsers per month, averaged over the quarter, against the reported
-    average: returns a frame of overstatements in per cent"""
+def read_report(target):
+    """each station's row of the report's table: code, name, regime, samples, a, b, smearing, R-squared, load"""
+    text = "\n".join(p.extract_text() for p in PdfReader(_p(target, "report")).pages)
+    toks = [t.strip() for t in re.split(r"\s*\n\s*", text) if t.strip()]
     out = {}
-    reported = A.groupby(["edition", "month"])["client_id"].nunique()
-
-    def ratio(df):
-        return df["runs"].sum() / len(df) if len(df) else np.nan
-    rows = []
-    # the replayed identifiers per browser pooled over the quarter's three months, by edition and device class
-    q = A[~A["wk"] & ~A["printed"]]
-    eq = (q.groupby(["edition", "dev"])["runs"].sum() / q.groupby(["edition", "dev"]).size()).to_dict()
-    for (e, m), g in A.groupby(["edition", "month"]):
-        est = {k: 0.0 for k in ("golden", "g_q", "g_nodev", "g_vis", "g_vis2", "g_pv", "r2d", "r2", "r3a", "r4", "r4p", "r1a", "r1c", "r6")}
-        nwk = g[~g["wk"]]
-        wkg = g[g["wk"]]
-        # pooled-device quantities
-        np_all = nwk[~nwk["printed"]]
-        e_np_all = ratio(np_all)
-        est["g_nodev"] = nwk["client_id"].nunique() + wkg.loc[wkg["printed"], "device_id"].nunique() + \
-            wkg.loc[~wkg["printed"], "client_id"].nunique() / e_np_all
-        cnp_all = wkg[~wkg["printed"]]
-        est["g_vis2"] = nwk["client_id"].nunique() + wkg.loc[wkg["printed"], "device_id"].nunique() + \
-            cnp_all["sessions"].sum() / (np_all["sessions"].sum() / len(np_all))
-        e_all = ratio(nwk)
-        est["r2"] = nwk["client_id"].nunique() + wkg["client_id"].nunique() / e_all
-        s_wk = wkg[wkg["signed"]]
-        r1 = s_wk["client_id"].nunique() / max(s_wk["device_id"].nunique(), 1)
-        est["r1a"] = nwk["client_id"].nunique() + wkg["client_id"].nunique() / r1
-        sg_dev = g[g["signed"]].drop_duplicates("device_id")
-        share = sg_dev["wk"].mean()
-        est["r6"] = nwk["client_id"].nunique() / (1 - share)
-        for d in DEVS:
-            gd = g[g["dev"] == d]
-            u = gd[~gd["wk"]]; c = gd[gd["wk"]]
-            U = u["client_id"].nunique()
-            unp = u[~u["printed"]]
-            e_np = ratio(unp)
-            est["golden"] += U + c.loc[c["printed"], "device_id"].nunique() + c.loc[~c["printed"], "client_id"].nunique() / e_np
-            est["g_q"] += U + c.loc[c["printed"], "device_id"].nunique() + c.loc[~c["printed"], "client_id"].nunique() / eq[(e, d)]
-            v_np = unp["sessions"].sum() / len(unp)
-            cnp = c[~c["printed"]]
-            est["g_vis"] += U + c.loc[c["printed"], "device_id"].nunique() + cnp["sessions"].sum() / v_np
-            est["g_pv"] += U + c.loc[c["printed"], "device_id"].nunique() + cnp["pv"].sum() / (unp["pv"].sum() / len(unp))
-            e_d = ratio(u)
-            est["r2d"] += U + c["client_id"].nunique() / e_d
-            ua = u[~u["signed"]]
-            e_an = ratio(ua)
-            cs = c[c["signed"]]; ca = c[~c["signed"]]
-            est["r3a"] += U + cs["device_id"].nunique() + ca["client_id"].nunique() / e_an
-            est["r4"] += U + cs["device_id"].nunique() + ca["client_id"].nunique() / e_d
-            est["r4p"] += U + cs["device_id"].nunique() + ca["client_id"].nunique() / e_np
-            r1d = cs["client_id"].nunique() / max(cs["device_id"].nunique(), 1)
-            est["r1c"] += U + c["client_id"].nunique() / r1d
-        est["reported"] = reported[(e, m)]
-        est["edition"], est["month"] = e, m
-        rows.append(est)
-    M = pd.DataFrame(rows)
-    # the pooled-across-editions identifiers per signed-in WebKit device, month by month
-    r1b = {}
-    for m, g in A[A["wk"] & A["signed"]].groupby("month"):
-        r1b[m] = g.drop_duplicates(["edition", "client_id"]).shape[0] / g.drop_duplicates(["edition", "device_id"]).shape[0]
-    wk_ids = A[A["wk"]].groupby(["edition", "month"])["client_id"].nunique()
-    nwk_ids = A[~A["wk"]].groupby(["edition", "month"])["client_id"].nunique()
-    M["r1b"] = [nwk_ids[(e, m)] + wk_ids[(e, m)] / r1b[m] for e, m in zip(M["edition"], M["month"])]
-    Q = M.groupby("edition").mean(numeric_only=True)
-    res = pd.DataFrame({k: 100 * (Q["reported"] / Q[k] - 1) for k in Q.columns if k not in ("reported", "month")})
-    res["reported"] = Q["reported"]
-    res["browsers"] = Q["golden"]
-    res["r0"] = 0.0
-    return res
+    num = re.compile(r"^-?[\d,]+(\.\d+)?$")
+    for i, t in enumerate(toks):
+        if re.fullmatch(r"[A-Z]{3}", t) and i + 8 < len(toks):
+            vals = [x for x in toks[i + 1:i + 12] if num.match(x)]
+            if len(vals) >= 6:
+                n, a, b, bcf, r2, load = vals[:6]
+                out[t] = {"n": int(n), "a": float(a), "b": float(b), "bcf": float(bcf), "r2": float(r2),
+                          "load_t": int(load.replace(",", ""))}
+    return out
 
 
-def main_call(L):
-    A = strata(L)
-    res = routes(A)
-    res["note"] = res["golden"] > TOL
-    L["A"] = A
-    return res
+def read_lots(target):
+    text = "\n".join(p.extract_text() for p in PdfReader(_p(target, "statement")).pages)
+    return {m.group(1): float(m.group(2)) for m in re.finditer(r"(KS-\d\d-\d\d)\s+kaolin in deionised water\s+(\d+\.\d)", text)}
 
 
-def golden_set(res, col="golden"):
-    return sorted(res.index[res[col] > TOL])
+def record(target):
+    r = pd.read_parquet(_p(target, "record"))
+    return r.drop_duplicates(["station", "time_utc"]).sort_values(["station", "time_utc"]).reset_index(drop=True)
 
 
-def report_average(L):
-    """the platform's reported figure: each edition's users averaged over October, November and December"""
-    rep = L["report"].copy()
-    rep.columns = ["content_group"] + list(range(1, 13))
-    old = L["editions"].dropna(subset=["former_content_group"])
-    rep["edition"] = rep["content_group"].replace(dict(zip(old["former_content_group"], old["edition"])))
-    q = rep.groupby("edition")[[10, 11, 12]].sum(min_count=1)
-    return q.mean(axis=1)
+def samples(target):
+    f = pd.read_csv(_p(target, "field"), dtype={"callout_ref": str}, keep_default_na=False)
+    f["utc"] = pd.to_datetime(f["sampled"], utc=True)
+    f["year"] = f["sampled"].str[:4].astype(int)
+    old = pd.read_excel(_p(target, "lims"), sheet_name="2025")
+    new = pd.read_excel(_p(target, "lims"), sheet_name="2026-2027")
+    new = new[new["status"] == "final"]
+    res = pd.concat([
+        pd.DataFrame({"year": 2000 + old["Prøvenr"].str[:2].astype(int), "bottle_no": old["Prøvenr"].str[3:].astype(int),
+                      "ssc": old["SS mg/l"].astype(float)}),
+        pd.DataFrame({"year": new["sample_id"].str[:4].astype(int), "bottle_no": new["sample_id"].str[5:].astype(int),
+                      "ssc": new["ssc_mg_l"].astype(float)})])
+    f = f.merge(res, on=["year", "bottle_no"], how="left", validate="one_to_one")
+    assert f["ssc"].notna().all()
+    return f
 
 
-# ------------------------------------------------------------------------------------------- ask: newsletter
-def slug(name):
-    s = name.lower()
-    for a, b in (("ä", "ae"), ("ö", "oe"), ("ü", "ue"), ("ß", "ss"), (" ", "-")):
-        s = s.replace(a, b)
-    return s
+def station_series(rec, code):
+    r = rec[rec["station"] == code].set_index("time_utc")
+    full = pd.date_range("2025-01-01", "2027-12-31 23:45", freq="15min", tz="UTC")
+    r = r.reindex(full)
+    return r
 
 
-ADD_PATH = "/newsletter/ausgabe-hinzufuegen?ausgabe="
+def rising(q, rise=RISE):
+    """the river's relative rate of rise per hour from the 15-minute discharge, smoothed over an hour"""
+    q = pd.Series(q).interpolate(limit_direction="both").to_numpy()
+    rate = np.gradient(q) / 0.25 / q
+    return np.convolve(rate, np.ones(4) / 4, "same") > rise
 
 
-def newsletter(target, files, groups_as_of=True, status_as_of=True, cutoff=YEAR_END_UTC, link_adds="after"):
-    """confirmed subscribers in each edition's group at the cutoff: the export's status and groups taken back through
-    the activity log and the preference centre's changes; link_adds: the groups the newsletters' one-click links added,
-    undone after the cutoff ("after"), not at all (None) or every one ever ("all")"""
-    C = pd.read_csv(os.path.join(target, files["nl_contacts"]), parse_dates=["first_optin_utc", "last_changed_utc"])
-    E = pd.read_csv(os.path.join(target, files["nl_log"]), parse_dates=["at_utc"], keep_default_na=False)
-    G = pd.read_csv(os.path.join(target, files["nl_groups"]), parse_dates=["changed_utc"])
-    ED = pd.read_csv(os.path.join(target, files["editions"]))
-    code_of = {slug(n): c for c, n in zip(ED["edition"], ED["name"])}
-    status = C.set_index("contact_id")["status"].copy()
-    groups = C.set_index("contact_id")["groups"].copy()
-    if status_as_of:
-        before = {"subscribed": "none", "confirmed": "pending", "unsubscribed": "subscribed", "cleaned": "subscribed",
-                  "resubscribed": "unsubscribed"}
-        st = E[(E["at_utc"] >= cutoff) & (E["event"] != "clicked")]
-        after = st.sort_values(["contact_id", "at_utc"]).drop_duplicates("contact_id")
-        status.loc[after["contact_id"].values] = after["event"].map(before).values
-    if groups_as_of:
-        ch = G[G["changed_utc"] >= cutoff].rename(columns={"changed_utc": "t"})[["contact_id", "t", "groups_before"]]
-        ch = ch.assign(added=None)
-        adds = E[(E["event"] == "clicked") & E["link"].str.contains(ADD_PATH, regex=False)]
-        adds = adds.assign(added=adds["link"].str.split("ausgabe=").str[1].map(code_of))
-        if link_adds == "after":
-            late = adds[adds["at_utc"] >= cutoff].rename(columns={"at_utc": "t"})[["contact_id", "t", "added"]]
-            ch = pd.concat([ch, late.assign(groups_before=None)], ignore_index=True)
-        ch = ch.sort_values(["contact_id", "t"], ascending=[True, False], kind="mergesort")
-        for cid, rows in ch.groupby("contact_id", sort=False):
-            g = set(groups.get(cid, "").split("|")) - {""}
-            for gb, ad in zip(rows["groups_before"].values, rows["added"].values):
-                if ad is not None and isinstance(ad, str):
-                    g.discard(ad)
-                else:
-                    g = set(gb.split("|"))
-            groups.loc[cid] = "|".join(sorted(g))
-        if link_adds == "all":
-            for cid, ad in zip(adds["contact_id"].values, adds["added"].values):
-                g = set(groups.get(cid, "").split("|")) - {""}
-                g.discard(ad)
-                groups.loc[cid] = "|".join(sorted(g))
-    sub = groups[status == "subscribed"].dropna()
-    sub = sub[sub != ""]
-    counts = sub.str.split("|").explode().value_counts()
-    return counts
+def fit_limb(x, y, ind):
+    X = np.c_[np.ones(len(x)), x, ind.astype(float)]
+    b = np.linalg.lstsq(X, y, rcond=None)[0]
+    bcf = float(np.mean(10 ** (y - X @ b)))
+    return b, bcf
 
 
-# ------------------------------------------------------------------------------------------- ask: sold copies
-HOLIDAYS = {"HE": ["2028-10-03", "2028-12-25", "2028-12-26"], "RP": ["2028-10-03", "2028-11-01", "2028-12-25", "2028-12-26"]}
-
-
-def pub_days(state, holidays=True):
-    d = pd.date_range("2028-10-01", "2028-12-31")
-    d = d[d.weekday < 6]
-    if holidays:
-        d = d[~d.isin(pd.to_datetime(HOLIDAYS[state]))]
-    return d
-
-
-RELEASE = (pd.Timestamp("2028-11-06"), pd.Timestamp("2028-12-14"))
-
-
-def restore_starts(S, how="sequence"):
-    """subscription numbers are issued in order of entry, so a start date later than that of a subscription numbered
-    after it cannot be the first day of delivery: such a subscription was delivered before the quarter.  how="window"
-    takes every start inside the circulation release's weeks as before the quarter instead"""
-    S = S.sort_values("sub_no").copy()
-    if how == "sequence":
-        later_min = S["start_date"].values[::-1]
-        later_min = np.minimum.accumulate(later_min)[::-1]
-        later_min = np.r_[later_min[1:], np.datetime64("2099-12-31")]
-        moved = S["start_date"].values > later_min
-    elif how == "window":
-        moved = ((S["start_date"] >= RELEASE[0]) & (S["start_date"] < RELEASE[1])).values
-    else:
-        moved = np.zeros(len(S), bool)
-    S.loc[moved, "start_date"] = pd.Timestamp("2028-09-30")
-    return S, int(moved.sum())
-
-
-def sold_copies(target, files, combi_addon=False, pauses=True, saturday=True, trials=False, holidays=True,
-                forward_sold=True, restore="sequence"):
-    S = pd.read_csv(os.path.join(target, files["subs"]), parse_dates=["start_date", "end_date"])
-    S, _ = restore_starts(S, restore)
-    U = pd.read_csv(os.path.join(target, files["susp"]), parse_dates=["from_date", "to_date"])
-    A = pd.read_csv(os.path.join(target, files["epaper"]), parse_dates=["start_date", "end_date"])
-    X = pd.read_csv(os.path.join(target, files["single"]), parse_dates=["issue_date"])
-    T = pd.read_csv(os.path.join(target, files["points"]))
-    ED = pd.read_csv(os.path.join(target, files["editions"]))
+def the_call(target, rec=None, S=None, rise=RISE, window_shift_steps=0):
+    rec = record(target) if rec is None else rec
+    S = samples(target) if S is None else S
+    pub = read_report(target)
     out = {}
-    X = X.merge(T[["retail_point", "edition"]], on="retail_point", how="left")
-    X["sold"] = X["delivered"] - X["returned"]
-    for _, e in ED.iterrows():
-        code = e["edition"]
-        days = pub_days(e["state"], holidays)
-        far = pd.Timestamp("2099-12-31")
-        s = S[S["edition"] == code].copy()
-        if not trials:
-            s = s[s["product"] != "TRIAL"]
-        s["end"] = s["end_date"].fillna(far)
-        total = 0.0
-        stop = U[U["kind"] == "pause"] if forward_sold else U
-        stop = stop[stop["sub_no"].isin(s["sub_no"])]
-        a = A[A["edition"] == code].copy()
-        if not combi_addon:
-            a = a[a["plan"] != "Digital Plus"]
-        a = a[a["plan"] != "Trial 14 days"] if not trials else a
-        a["end"] = a["end_date"].fillna(far)
-        sv, sc, sp = s["start_date"].values, s["end"].values, s["product"].values
-        cp = s["copies"].values
-        paused = {}
-        for sn, f, t in zip(stop["sub_no"], stop["from_date"], stop["to_date"]):
-            paused.setdefault(sn, []).append((f, t))
-        pidx = np.isin(s["sub_no"].values, list(paused))
-        for d in days:
-            act = (sv <= np.datetime64(d)) & (sc >= np.datetime64(d))
-            if saturday:
-                act &= (sp != "SATURDAY") | (d.weekday() == 5)
-            n = cp[act].sum()
-            if pauses and pidx.any():
-                for sn, c in zip(s["sub_no"].values[act & pidx], cp[act & pidx]):
-                    if any(f <= d <= t for f, t in paused[sn]):
-                        n -= c
-            n += ((a["start_date"] <= d) & (a["end"] >= d)).sum()
-            total += n
-        xs = X[(X["edition"] == code)]
-        total += xs["sold"].sum()
-        nd = len(days) if holidays else len(pub_days(e["state"], False))
-        out[code] = total / nd
-    return pd.Series(out)
+    for code in sorted(S["station"].unique()):
+        r = station_series(rec, code)
+        q, T = r["discharge_m3s"].to_numpy(), r["turbidity_fnu"].to_numpy()
+        up = rising(q, rise)
+        s = S[S["station"] == code]
+        k = ((s["utc"].dt.round("15min") - pd.Timestamp("2025-01-01", tz="UTC")) / pd.Timedelta("15min")).astype(int)
+        x, y, ind = np.log10(T[k]), np.log10(s["ssc"].to_numpy()), up[k]
+        b, bcf = fit_limb(x, y, ind)
+        start = pd.Timestamp("2027-01-01", tz="UTC") + pd.Timedelta(minutes=15 * window_shift_steps)
+        y27 = (r.index >= start) & (r.index < start + pd.Timedelta(days=365))
+        conc = 10 ** (b[0] + b[1] * np.log10(T[y27]) + b[2] * up[y27]) * bcf
+        load = float(np.sum(conc * q[y27]) * 900 / 1e6)
+        mis = 100 * (pub[code]["load_t"] / load - 1)
+        out[code] = {"published_t": pub[code]["load_t"], "estimate_t": load, "misstatement_pct": mis,
+                     "verdict": "over" if mis > TOL else ("under" if mis < -TOL else "within"),
+                     "rising_samples": int(ind.sum()), "samples": int(len(s)), "coef": [float(v) for v in b],
+                     "bcf": bcf}
+    return out
+
+
+def ask_a(target, rec=None):
+    """hours in 2025 and 2026 without a usable turbidity reading: no row, fouled or out of the water (the flag letters
+    F and M, G and O before the data team's migration), or a reading at the upper end of the sonde's range (1,000 FNU
+    on the TS-10 sondes the stations ran until their TS-40W was installed)"""
+    rec = record(target) if rec is None else rec
+    reg = pd.read_excel(_p(target, "register"))
+    swap = {c: pd.Timestamp(d) for c, d in zip(reg["station"], reg["sensor_installed"])}
+    log = pd.read_csv(_p(target, "log"), keep_default_na=False)
+    sw = log[log["visit"] == "sensor replaced"]
+    swap_t = {c: pd.Timestamp("%s %s" % (pd.to_datetime(d, format="%d.%m.%Y").date(), t)).tz_localize("Europe/Oslo").tz_convert("UTC")
+              for c, d, t in zip(sw["station"], sw["date"], sw["sonde_out"])}
+    out = {}
+    end = pd.Timestamp("2027-01-01", tz="UTC")
+    for code in sorted(rec["station"].unique()):
+        r = station_series(rec, code)
+        r = r[r.index < end]
+        assert swap[code].date() == swap_t[code].tz_convert("Europe/Oslo").date()
+        missing = r["turbidity_fnu"].isna()
+        flagged = r["flag"].isin(["F", "M", "G", "O"])
+        ceiling = (r.index < swap_t[code]) & (r["turbidity_fnu"] >= 1000.0)
+        n = int((missing | flagged | ceiling).sum())
+        out[code] = {"intervals": n, "hours": n / 4, "missing": int(missing.sum()), "flagged": int(flagged.sum()),
+                     "ceiling": int((ceiling & ~missing & ~flagged).sum())}
+    return out
+
+
+def ask_b(target, lots=None):
+    """each station's 2027 samples weighed in a batch that failed a check: blank over 0.5 mg, a control aliquot outside
+    90 to 110 per cent of its lot's concentration, the two aliquots more than 10 per cent of their mean apart"""
+    lots = read_lots(target) if lots is None else lots
+    b = pd.read_csv(_p(target, "batches"))
+    f = pd.read_csv(_p(target, "field"), keep_default_na=False)
+    f["year"] = f["sampled"].str[:4].astype(int)
+    f27 = f[f["year"] == 2027].copy()
+    f27["sample_id"] = ["2027-%04d" % n for n in f27["bottle_no"]]
+    bt = b.drop_duplicates("batch").set_index("batch")
+    conc = lambda m, v: m / v * 1000.0
+    c1 = conc(bt["control_1_mass_mg"], bt["control_1_volume_ml"])
+    c2 = conc(bt["control_2_mass_mg"], bt["control_2_volume_ml"])
+    ref = bt["control_lot"].map(lots)
+    fail = ((bt["blank_change_mg"].abs() > 0.5) | ((c1 / ref) < 0.9) | ((c1 / ref) > 1.1) | ((c2 / ref) < 0.9)
+            | ((c2 / ref) > 1.1) | ((c1 - c2).abs() / ((c1 + c2) / 2) > 0.10))
+    failed = set(bt.index[fail])
+    lines = b.merge(f27[["sample_id", "station"]], on="sample_id", how="left", validate="one_to_one")
+    assert lines["station"].notna().all()
+    lines["failed"] = lines["batch"].isin(failed)
+    out = {c: int(lines.loc[lines["station"] == c, "failed"].sum()) for c in sorted(f27["station"].unique())}
+    return out, sorted(failed), {k: (float(c1[k]), float(c2[k]), float(ref[k]), float(bt.loc[k, "blank_change_mg"])) for k in bt.index}
+
+
+def solve(target):
+    rec = record(target)
+    S = samples(target)
+    call = the_call(target, rec, S)
+    a = ask_a(target, rec)
+    b, failed, qc = ask_b(target)
+    return {"call": call, "ask_a": a, "ask_b": b, "failed_batches": failed, "qc": qc}
+
+
+if __name__ == "__main__":
+    import sys
+    g = solve(sys.argv[1])
+    for c, v in g["call"].items():
+        print(c, v["verdict"], "%+.1f" % v["misstatement_pct"], v["published_t"], round(v["estimate_t"]), v["rising_samples"], v["samples"],
+              "| A %.2f h" % g["ask_a"][c]["hours"], g["ask_a"][c], "| B", g["ask_b"][c])
+    print("failed batches", g["failed_batches"])

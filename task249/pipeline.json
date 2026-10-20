@@ -1,34 +1,34 @@
 {
  "task": "task249",
  "owner": "perssathya",
- "status": "RETIRED",
- "domain": "product-analytics",
+ "status": "BUILD",
+ "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-20",
- "stump": "A competent solver counts each signed-in WebKit browser once from the device register and replays the seven-day cookie expiry on the signed-out visitors of other browsers in the same edition and device class, understating every WebKit overcount and dropping editions from the measurement note, because the paywall meter in the same capped storage keeps WebKit's weekly and occasional readers signed out while their counterparts elsewhere registered.",
- "architecture": 4,
- "loops": 3,
+ "stump": "A competent analyst refits each station's turbidity regression (discharge or season added where significant), reproduces the published loads and re-issues no station, treating the calibration samples as a fair draw of the year when sand moves only on rising water and at four stations most samples were taken on rising water; conditioning the relation on rising water, read from the 15-minute discharge, puts SKB, JVB, FND and ESK over.",
+ "architecture": 5,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-19"
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), as-of 2029-01-15",
-  "reader": "three rounds of two scored readers: round 1 one landed through a fingerprint (repaired), both kept the asks (re-sited); round 2 both missed the call, one kept the sold copies through impossible records (repaired); round 3 one landed the call by a calibration on signed-in browsers stratified by activity (0 of 24 asks), one missed (0 of 24)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, answered under Draw)",
-  "nearest": "0.04"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md (final pack 31ad0d1e; earlier passes on 6aaf417a and d00ed7b6 also APPROVE)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "RETIRED 2026-10-20 at the author's choice, architecture 4 spent at stage 4 round 3 under the two-reader rule (reader 5 landed the call by an activity-stratified calibration on the signed-in WebKit browsers; every free gate green, the judge DETERMINISTIC APPROVE, both readers 0 of 24 asks). Four architectures spent; never shipped; the design note's ## Retired and ## Tried and rejected carry every death.",
+ "resume": "Architecture 5 (sediment surrogate loads conditioned on rising water), drawn and registered 2026-10-20 after the author asked for a fresh rebuild of the retired number. Generator green (458 checks, verifier 0 FAIL, two byte-identical builds, target.zip cut), precut exit 0. Next: the rest of stage 3's free gates (figures_check, leak.py, guard surface and heart, house fixes, golden realism), then stage 4: two scored readers and the judge.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -45,6 +45,11 @@
    "architecture": 4,
    "status": "spent at stage 4 round 3 on 2026-10-19; number retired 2026-10-20 at the author's choice",
    "commit": "47ddb45f"
+  },
+  {
+   "architecture": 4,
+   "status": "retired 2026-10-20 at the author's choice; un-retired the same day for a fresh rebuild",
+   "commit": "e0e8160a"
   }
  ]
 }

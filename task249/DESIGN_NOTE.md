@@ -1,360 +1,319 @@
-# task249 design note
+# task249 design note (architecture 5)
 
 ## Draw
 
-Card `cards/task249.json`, architecture 4 (v1 to v3 in lineage), re-rooted 2026-10-19 at the author's request: after
-architecture 3 was spent at stage 4, four candidates were written (handoffs/perssathya.md) and the author chose the
-first, Product Analytics on a browser's cookie cap. Verdict: WARN, no BLOCK. Each WARN, answered: repeat.gate_g and
-overuse.gate_g (method_or_model_selection, after task269 v2 and in 7 of the last 12): it is the honest label, the
-decisive step chooses the comparison pool a replayed rule is applied to; statistical_rigor alone is not legal and no
-other mechanism is true of this step. The structural tests are differentiated in the card against task233 (v1, v2),
-task458, task256, task262, task267, task465 and task54, each a transported or conditioned rate with another
-mechanism. The axis bans were redrawn once before filing, and each replacement is the truer label rather than merely
-the passing one: the forcing event from launch_or_rollout (task268) to period_close, because what forces the call now
-is the fourth quarter's close (the kit quotes the quarter just closed), not the kit's printing; the decisive pattern
-from E to none with G14 first, because G14 (does the pooled rate apply to this pool) is the move itself and pattern E
-is G14's own form. Nearest driver 0.04.
+Card `cards/task249.json`, architecture 5, a fresh draw on the retired number at the author's request ("whatever was
+retired do a fresh rebuild from scratch"), registered 2026-10-20. Architectures 1 to 4 are in the card's lineage with
+their fates and in `## Tried and rejected`. Guard verdict WARN, no BLOCK; test.same_puzzle_older and
+test.same_driver_older are NOTEs, differentiated on the card against task230, task134, task149 and task452. Each WARN,
+answered: repeat.gate_g and overuse.gate_g (method_or_model_selection after task473): the mechanism that carries the
+stump is the choice of the calibration model, a relation conditioned on the hydraulic regime against one on turbidity
+alone, and no other key is true of it; repeat.question_form (which, after task473): the decision is a designation of
+stations to re-issue, so it is asked as which. Two axes were redrawn at registration, each to the honester label and
+not merely the passing one: stump_strategy from composition_mix (task473 in the window) to population_selection, which
+names the cause, the samples selected by when the field team can reach the river, where composition_mix named its
+arithmetic, and which is how this lane files non-random observation timing (task245); org_family from
+utility_or_infrastructure (task472) to professional_services, with the world redrawn to match: the programme is run
+under contract by an environmental consultancy, whose data manager decides, for the hydropower company that owns the
+stations.
 
-- **Pairing.** Product Analytics / metric-definition-measurement-science, a task type serving Data Quality
-  Monitoring, the lane's least used cell (two builds). The object is the health of a published audience metric, each
-  local edition's monthly unique browsers counted by the analytics tag's cookie; the call is a monitoring decision:
-  which editions' figures go into the 2029 media kit with the measurement note the group's audience policy requires
-  when a figure overstates the edition's browsers by more than a quarter.
-- **The seed.** DQ22 gave only the objective (which monitored units fail a quality tolerance); its world and its
-  pitfall are not carried.
-- **Niche.** A German regional newspaper group publishes twelve local editions on one website with a metered
-  paywall: five metered articles a calendar month free, then a registration wall for a free reader account; print
-  subscribers activate digital access with their subscriber number. The analytics tag keeps its identifier in a
-  first-party cookie written from the page's script and refreshed on every page view. WebKit browsers (Safari on a
-  Mac, and every browser on an iPhone or iPad) shorten a script-written cookie to seven days from its last write, so a
-  reader who comes back after more than seven days arrives with a new identifier and is counted again that month. The
-  paywall keeps its meter in the same kind of storage.
-- **The call.** Which editions' average monthly unique browsers for October to December 2028 carry the measurement
-  note in the 2029 media kit (the policy's tolerance: the reported figure above the edition's browsers by more than
-  25 per cent).
-- **Shape.** 10, a scorecard: the twelve editions against the tolerance (the list of eight, the four without, the
-  count), and two figures the kit quotes for every edition from systems the call never reads (24 ask figures): 38
-  criteria or more. Only the set and the count are graded on the call: the licensed estimators of each edition's
-  browsers spread about a point, so no per-edition overstatement is a graded figure. Decision designation_set, answer
+- **Pairing.** Physical & Environmental Sciences / sensor-calibration-measurement, a task type serving Data Quality
+  Monitoring & Alerting only. Not banned against the last three live builds at the draw (task474 survey-research ETL,
+  task473 general statistics ETL, task472 supply-chain ETL). The object is the health of a published data product,
+  each station's 2027 suspended-sediment load computed from a turbidity surrogate, and the call is the spring review's
+  monitoring decision: which stations' loads fall outside the 15 per cent tolerance and are re-issued before the
+  reservoir flushing plan uses them.
+- **The seed, re-found.** DQ22 gave the world (a sensor network's published series), the decision (which units'
+  published data are pulled or re-issued) and the quantity (each unit's error against a tolerance). The low-cost air
+  sensors and their drift are left (spent twice on this number); the pitfall is re-found in surrogate calibration.
+- **Niche.** Vasslia Miljørådgiving AS, an environmental consultancy, runs the Fjellbrekke sediment monitoring
+  programme under contract for Fjellbrekke Kraft AS, a Western Norwegian hydropower company in inner Sogn: 14
+  suspended-sediment stations on the rivers feeding Breiavatn, Kvitstølvatn and Djupevatn, six glacier-fed, five
+  rain-fed, three lake outlets. Each logs discharge and turbidity every 15 minutes; the consultancy's field team takes
+  depth-integrated samples on routine rounds and on flood callouts; a contract laboratory weighs them. Each station's
+  annual load is published to the company from a log-log regression of concentration on turbidity (procedure SMP-03
+  v3) and feeds the company's sediment budgets and its flushing plan, fixed on 20 March 2028.
+- **The call.** Which stations' published 2027 loads misstate the sediment that passed by more than the review
+  tolerance (15 per cent, section 8), and whether over or under. Golden: SKB, JVB, FND and ESK over; the ten others
+  within.
+- **Shape.** 10, a scorecard of 14 stations checked against one tolerance (verdict and direction), beside two
+  per-station audit lines of the loads' inputs (14 hours, 14 counts) and a chart of every station's published load
+  against the estimate: 14 + 4 + 28 + 5 = 51 criteria before instruction-following. Decision designation_set, answer
   set_of_items, question form which.
-- **Strategy.** causal_design: the conditioning set of a transport, attributes the cap cannot change in, the cap's
-  own consequence out. G14 decisive (does the replayed reset rate of browsers whose cookies persist apply to the
-  capped pool), G6 supporting (print subscribers, who read online weekly and skew to Apple devices, shift the pools'
-  composition), G16 supporting (which comparison pool the replay runs on); gap population (which browsers stand in for
-  the capped ones); Gate G method_or_model_selection; calibration gold_standard_subsample (the reader-account service's
-  device register, exact browser identity for signed-in readers); context artifact monitoring_export (the analytics
-  platform's monthly report); Layer 2 family estimand_identification, pattern
-  own:transporting-revisit-behaviour-across-a-cookie-cap-conditioned-only-on-what-the-cap-cannot-change.
-- **Forum, event, organisation.** customer_or_counterparty (advertisers buy on the kit's figures), period_close (the
-  quarter just closed), media_or_publishing. Role compliance_or_audit (the head of audience data certifies the kit's
-  figures).
-- **People** (`guard.py names --geo Germany --seed 249`, locale de_DE): Nadin Schleich, head of audience data, who
-  asks; Karl-Hans Schenk, web analytics engineer; Eugenia Oderwald, paywall and reader accounts; Almut Ladeck, ad
-  sales. None appears in the prompt.
-- **Data-native sentence.** The tag counts identifiers, not browsers, and on WebKit an identifier lasts only until
-  the reader stays away for more than seven days, so the overcount is set by how readers space their visits, which the
-  capped browsers cannot show and the other browsers record in full; but the paywall's meter sits in the same
-  capped storage, so on WebKit it resets with the cookie and spares the weekly and occasional readers the
-  registration wall their counterparts on other browsers meet, and sign-in, the status that looks like the obvious
-  thing to hold fixed, is itself a product of the cap.
-- **As-of.** Monday 15 January 2029, after the quarter's close and before the kit goes to advertisers on
-  1 February 2029.
-- **Sources.** The client's Layer 2 patterns for metric definition (a metric validated against its own measurement
-  process; mix shift masquerading as behaviour change); WebKit's tracking prevention (script-written cookies capped at
-  seven days since 2019), the measurement practice of replaying an identifier rule on persistent histories, and the
-  causal rule against conditioning on a consequence of the exposure. No build on file carries an identifier cap or
-  conditions a transport on what the cap leaves untouched (nearest drivers 0.04); task127's unshipped second layer
-  and a task194 rejection condition a hospital cohort on an outcome, another construction.
+- **Strategy.** population_selection: the calibration samples are selected by when the field team can reach the river,
+  a selection correlated with the regime that sets the concentration per unit of turbidity, and the relation fitted on
+  the selected samples is applied to the whole year. G14 decisive (the relation conditioned on the regime), G7, G6; gap time then population; Gate G method_or_model_selection; calibration
+  physical_verification (the depth-integrated samples); context artifact monitoring_export (the published load report);
+  Layer 2 family field_method, pattern own:surrogate-calibration-conditioned-on-hydrograph-limb.
+- **Forum, event, organisation.** operations_desk (the programme's data desk signs off the loads), season_or_peak (the
+  company's spring flushing window before the melt), professional_services (an environmental consultancy running the
+  programme under contract). Role compliance_or_audit (the programme's data manager, who reviews the published loads
+  against the procedure's tolerance).
+- **People** (`guard.py names --geo Norway --seed 249`): Marianne Lunde, the programme's data manager, who asks; Lise
+  Pettersen, the field team lead; Laila Pedersen, the laboratory's quality manager. None appears in the prompt.
+- **Data-native sentence.** Sand moves only while a river rises and turbidity barely sees sand, so a unit of turbidity
+  carries more sediment on rising water; the field team's working-hours rounds on the glacier rivers land on the melt's
+  daily rise and its early flood callouts reach the rivers on the rising limb, so at four stations most calibration
+  samples were taken on rising water, and a regression on turbidity alone carries their sand into every steady and
+  falling hour of the year.
+- **As-of.** Monday 6 March 2028 (the request); the review is dated 13 March, the plan fixed on 20 March. The call is
+  retrospective by design: the monitored product is the published 2027 load, and the decision it drives (re-issue
+  before the plan reads it) faces forward.
+- **Sources.** The client's two-layer standard (field_method); published sediment-monitoring practice: turbidity as a
+  surrogate for suspended-sediment concentration calibrated on depth-integrated samples with a log-log regression and
+  Duan's smearing, loads summed over 15-minute records, and hysteresis between rising and falling limbs from sand
+  entrained on the rising limb. task229 (hydrometry, a daily mean through a convex conversion) and task241 (profiling
+  float salinity against ship references) are the nearest builds in the subdomain; neither conditions a surrogate on a
+  regime.
 
 ## Default path
 
-The careful reflex, measured on the cut pack (`generator/solve.py`, route r3a; asserted in `checks.py` T2).
+1. Join the field sheet to the laboratory's results on year and bottle number (final results, both sheets of the
+   workbook) and pair each sample, at its UTC time, with the station's nearest 15-minute turbidity reading.
+2. Refit the procedure's regression (section 6: log10 concentration on log10 turbidity, Duan's smearing) and apply it
+   to 2027's intervals (section 7): every published load reproduces to within 0.1 per cent.
+3. Review the regression the way a surrogate rating is reviewed: residuals against discharge and season, discharge
+   added as a second variable where it tests significant (no station moves past 15 per cent), seasonal terms (JVB
+   alone), the trip type of each bottle (TVE in, JVB out).
+4. Compare each published load with the refitted estimate under the review tolerance.
 
-1. Read the audience policy (unique browsers per edition and Berlin month, the quarter as the average of its months,
-   the note above 25 per cent), the tag's notes (WebKit's seven days) and the paywall notes.
-2. Clean the export: automated traffic, the newsroom's addresses and the re-sent rows out, HKR read as HOL, Berlin
-   months, WebKit as every iOS browser and Safari on the Mac.
-3. Count each signed-in WebKit browser once from the sign-in register (its device_id).
-4. Replay the seven-day rule on the signed-out identifiers of other browsers in the same edition, month and device
-   class, and divide the signed-out WebKit identifiers by the identifiers per browser it gives.
-5. Add the other browsers, average the three months, compare with the platform's reported average.
+Ends on: no station re-issued, all 14 within 15 per cent
 
-Ends on: 4 editions carry the note (Rhenhagen Stadt, Kirchbrunn, Hollerfeld, Mühlenstedt); Wiesbrück, Sonnweiler,
-Grauheim and Lindenau fall under the line at 22.0 to 22.8 per cent.
-Golden: 8 editions carry the note (Rhenhagen Stadt, Kirchbrunn, Wiesbrück, Hollerfeld, Sonnweiler, Mühlenstedt,
-Grauheim, Lindenau), each at 26.9 per cent or more under every estimator of the family; the other four at 22.7 or less.
+Golden: SKB, JVB, FND and ESK over by more than 15 per cent, re-issued; the ten others within
 
 ## Stump sentence
 
-A competent solver counts the signed-in WebKit browsers once from the sign-in register and divides the signed-out
-WebKit identifiers by the seven-day replay of signed-out readers on other browsers, filing 4 editions (Rhenhagen Stadt,
-Kirchbrunn, Hollerfeld, Mühlenstedt) and leaving Wiesbrück, Sonnweiler, Grauheim and Lindenau under the 25 per cent
-line, because the paywall meter sits in the same capped storage: on WebKit it restarts with the identifier, so weekly
-and occasional readers there seldom meet the registration wall and stay signed out while their counterparts on other
-browsers met it and registered, which makes sign-in a consequence of the cap that cannot be held fixed; the golden
-replays the rule within edition, month and device class on every non-print reader of other browsers whether signed in
-or not, holds only print subscribers apart (their access never depended on the meter) and files 8.
+A competent analyst refits each station's turbidity regression on all its samples, with discharge or season added
+where they test significant, reproduces the published loads and ends on no station re-issued, all 14 within 15 per cent
+(or JVB alone); the step that lands it there is treating the calibration samples as a fair draw of the year, when sand
+moves only while the river rises and at four stations most samples were taken on rising water (the melt season's
+working-hours rounds at JVB, SKB and FND, the early flood callouts at ESK, SKB and FND). Conditioning each station's
+relation on whether the river was rising at the sample, read from the 15-minute discharge, and applying it to every
+interval of 2027 with that interval's own state puts SKB (+39 per cent), JVB (+105), FND (+42) and ESK (+78) over, and
+every other station within 7 per cent.
 
 ## Three rules
 
-Task type: metric-definition-measurement-science (Product Analytics), which serves Data Quality Monitoring.
-Domain test: the deciding quantity is how many distinct browsers an analytics identifier count stands for when one browser family deletes the identifier after seven idle days, estimated the way audience measurement estimates it: the identifier rule replayed on the visit histories of browsers whose identifiers persist, matched on what the limit cannot change and pooled over what it changes.
-Swap: "which of our twelve hospitals' monthly patient counts overstate their patients by more than a quarter" stops making sense: no wristband expires after seven days away while a visit quota kept in the same wristband decides who registers, so there is no capped identifier, no persistent comparison family and no status the cap produces.
-Layer 1: the export's UTC times against Berlin months across the clock change of 29 October 2028; raw user agents beside the platform's parsed browser (Chrome on an iPhone parsed as Chrome though it runs on WebKit); the export job's re-sent rows of 21 November; the platform's bot flag and the newsroom's address range; Hollerfeld's content group re-coded on 1 November; account references hashed in the export and in clear in the register; the platform's report for the whole year beside the quarter's export; the paywall console's dates typed as German text; addresses that change as household lines reconnect and phones move between networks, and user agents that change with each browser release, so neither marks a browser. Each is written by the system named and each is neutral to the call (SF1 to SF4, SF6, SF8, SF11, asserted).
-Layer 2: estimand_identification: browsers behind a capped identifier are recovered by replaying the cap on persistent histories, and the replay's comparison has to be matched on what the cap cannot change (edition, month, device class, a print subscription activated independently of the meter) and pooled over what it changes (sign-in, produced by the meter kept in the same capped storage).
-Decisive step: transporting the replayed identifiers per browser within edition, month and device class from every non-print reader of other browsers to every non-print WebKit identifier, signed in or not, with print subscribers counted apart, rather than conditioning on sign-in (or taking the signed-in readers' own identifiers per device, or pooling print subscribers).
-Not semantics: every field, browser string, clock and rule read correctly (the seven days, the meter, the tolerance, which browsers are WebKit, where the meter is kept) still leaves the choice of comparison; the step is that a status the cap itself produces cannot be held fixed, which no field, code or definition states.
-Not rule application: the policy files the estimand (distinct browsers per edition and Berlin month, averaged over the quarter) and the tolerance, the tag's notes file the seven days; nothing files how the capped browsers are estimated, and executing every stated rule leaves the comparison open.
-Analyst test: a strong analyst who reads everything correctly counts the signed-in WebKit browsers from the register and transports the replay of signed-out readers of other browsers to the signed-out WebKit identifiers, filing 4 editions and dropping Wiesbrück, Sonnweiler, Grauheim and Lindenau (22.0 to 22.8 per cent); checks.py T2 runs it on the pack and T1 confirms the World's own browsers file the golden 8.
-Estimand: the audience policy, sections 2 to 4: for each edition and calendar month (Europe/Berlin) the browsers that loaded at least one of the edition's pages, a browser counted once however many identifiers it carried and in both editions when it read two, automated traffic and the newsroom out, averaged over October to December 2028, against the platform's users averaged the same way, the note above 25 per cent.
-No decoy: nothing is planted; the platform's report is a correct count of identifiers and says so; no memo, draft or figure argues for a comparison; the paywall notes describe the meter as the paywall team would, for the data team.
-No certified replay: no estimate of browsers per edition ships and the note is new in the 2029 policy, so no earlier kit carries one to reproduce.
-Lesson: when a measurement cap also changes who ends up in a status, holding that status fixed compares unlike pools; condition the transport only on what the cap cannot touch. No build on file teaches it (task233 transports a nonresponse departure as odds, task458 corrects a trait-selected observation window, task262 a level-selected reliability).
+- **Task type:** physical-environmental-sciences / sensor-calibration-measurement, which serves Data Quality Monitoring
+  & Alerting: the published loads are the monitored data product and the call is the review's monitoring decision, which
+  station series fall outside the tolerance and are re-issued.
+- **Domain test:** the quantity that decides is each station's 2027 suspended-sediment load, which sediment monitoring
+  estimates through a turbidity surrogate calibrated on depth-integrated samples (log-log regression, Duan's smearing,
+  summed over the 15-minute record), here conditioned on the hydrograph limb because sand is entrained on rising water
+  and turbidity barely registers sand.
+- **Swap:** "which of our 14 hospitals' published 2027 admissions misstate what happened by more than our tolerance"
+  keeps the sentence and loses the task: there is no turbidity sensor blind to one size of particle, no hydrograph whose
+  rising limb moves sand, no melt cycle or flood callout setting when samples are taken, so a relation conditioned on
+  rising water has nothing to act on.
+- **Layer 1:** the laboratory's former system's 2025 sheet in Norwegian headers beside the current system's 2026 and
+  2027 sheet (the LIMS migration); corrected results kept beside the replaced ones (the laboratory's re-weighing); bottle
+  numbers restarting every year (the field labels); sample times in local time with their UTC offset against loggers
+  in UTC (the field app); rows re-sent after logger outages (the telemetry); the load table inside the report's PDF
+  (the annual report); discharge to three significant figures (the hydrometry system). None is placed to be caught, and
+  the call is the same under every handling (R2 and SF6 to SF10 in checks.py).
+- **Layer 2:** field_method: the surrogate relation conditioned on the hydrograph limb, the method a sediment
+  hydrologist uses when the samples' timing is not representative of the record, where the easy routes refit the
+  published relation or add the reflex covariates (discharge, season, trip type).
+- **Decisive step:** adding an indicator of rising water at each sample, from the rate of rise of the 15-minute
+  discharge, to each station's log-log relation and applying it to every 15-minute interval of 2027 with that
+  interval's own indicator, rather than refitting on turbidity alone or with discharge, season or trip type.
+- **Not semantics:** reading every field, code, unit and definition right (final results, both LIMS layouts, the
+  offset on each sample time, the procedure's method, the tolerance) leaves the refit on no station re-issued: no file
+  names rising water, a limb or sand, and the samples' excess shows only when their residuals are read against the
+  discharge's rate of change.
+- **Not rule application:** the procedure files the estimand (the sediment that passed, the year, the tolerance) and
+  the published method; executing every filed rule reproduces the published loads to 0.1 per cent and re-issues none,
+  and no filed rule mentions the hydrograph.
+- **Analyst test:** a strong analyst who reads every file right refits each station's regression, adds discharge and
+  season where they test significant, and ends on no station re-issued, all 14 within 15 per cent (JVB alone with
+  season); on the generator's clean truth the published method overstates the same four and the rising-water term
+  alone files the golden (R3a, R3b in checks.py).
+- **Estimand:** procedure SMP-03 v3 sections 7 and 8 with the prompt: for each of the 14 stations in the register,
+  the published 2027 load (1 January 00:00 to 31 December 23:45 UTC, tonnes) against the suspended sediment that passed
+  the station in that year, re-issued when it misstates it by more than 15 per cent, over or under.
+- **No decoy:** nothing is planted: the report's loads are right on their own method and are the comparison the call
+  needs; no memo, draft or voice argues a set; the request names no station; the two distractors (precipitation,
+  reservoir levels) rank nothing.
+- **No certified replay:** no certified or validated load exists for a method to reproduce; the conditioning is found
+  in the samples' own residuals against the discharge record, and the published loads tie under the easy route.
+- **Lesson:** a surrogate relation calibrated on samples whose timing over-represents one hydraulic regime carries
+  that regime into the whole record, and conditioning the relation on the regime, read from a second continuous
+  variable, is the field's correction. No build on file teaches it (task229 converts a daily mean through a convex
+  rating, task241 calibrates float salinity against ship casts, task247 reads near-real-time against reprocessed SST).
 
 ## Readability screen
 
 Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
 column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control or
-corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or half of
-a reported figure.
+corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or half of a
+reported figure.
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 the reported users as browsers: 0 editions | the platform's report | the report's users | yes, the published figure | none | no | read off | readable |
-| 1 signed-in identifiers per device (register): 3 | the paywall notes' register | the register's device_id beside client_id | yes, the field's logged-in ratio | none | no | one ratio | readable |
-| 2 the replay on every other browser, print pooled: 5 | the tag's notes | client_id and the parsed engine | yes, replay the rule where it is absent | none | no | one ratio per stratum | readable |
-| 3 (default) sign-in held, signed-out by signed-out other browsers: 4 | the register and the tag's notes | user_ref empty or not | yes, like for like on every visible status | none | no | one ratio per stratum | readable |
-| 4 signed-in from the register, signed-out by every other browser: 4 | the register | user_ref | yes, exact where known | none | no | one ratio per stratum | readable |
-| 5 the WebKit share of signed-in devices as the browsers' share: 6 | the register | device_id and the engine | partly, a share from the gold standard | none | no | one share | readable |
-| 6 (decisive) every non-print reader pooled over sign-in within edition, month and device class, print subscribers apart: 8 | no sentence says sign-in depends on the browser or names the comparison; the paywall notes say where the meter is kept and the tag's notes what WebKit does to script-written storage | origin sits in one column for print and registration alike; nothing marks a registration the cap produced | no, the reflex holds every visible status fixed | none ships; the print stratum's agreement (1.95 replayed against 1.99 counted) and the signed-in mismatch (1.57 against 1.24) exist only once computed | no | no | silent |
+| 0 the published loads: none | the report | the report's table | yes | none | no | read off | readable |
+| 1 (default) the procedure refitted: none | procedure section 6 | the field sheet, LIMS, record | yes, reproduce the published figure | the report ties to 0.1 per cent | no | one regression | readable |
+| 2 discharge added (the field's two-variable surrogate): none | none | discharge_m3s | yes | the report | no | one regression | readable |
+| 3 season or hour of day: JVB | none | the timestamps | partly | none | no | one regression | readable |
+| 4 the bottle's trip type: ESK, FND, SKB, TVE | none | the field sheet's trip column | yes, every visible attribute held | none | no | one regression | readable |
+| 5 routine bottles only: ESK, GRV, TVE | none | the trip column | partly, storm samples set aside | none | no | a filter | readable |
+| 6 2027 bottles only: JVB and SKB under | none | the sample dates | partly, the latest calibration | none | no | a filter | readable |
+| 7 (decisive) the relation conditioned on rising water, read from the 15-minute discharge's rate of rise, applied per interval: SKB, JVB, FND, ESK | no sentence names rising water, a limb or sand; the procedure names only turbidity | the rate of rise is in no column; it is computed from the discharge series at another grain | no: the reflexes are discharge, season and the trip type | the samples refute the turbidity-only relation only when their residuals are read against the discharge's rate of change (t from 18 to 44 at the four, the trip type then near nought) | no | not linear: a state per sample and per interval, a fit per station, a sum over 35,040 intervals | silent |
 
 ## Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | a calendar month | Berlin (policy 2) | UTC | same call | asserted |
-| SF2 | the replay's history | the browser's sessions across the site (the cookie is the domain's, tag notes) | within each edition | same call | asserted |
-| SF3 | the re-sent rows of 21 November | dropped (tag notes) | kept | same call | asserted |
-| SF4 | the newsroom's addresses | dropped (policy 2) | kept | same call | asserted |
-| SF5 | the quarter's overstatement | the three-month averages compared (policy 2 and 3) | the mean of the monthly overstatements | same call | asserted |
-| SF6 | a browser that read two editions | counted in both (policy 2) | counted once | same call | asserted |
-| SF7 | WebKit | every iOS browser and Safari on the Mac (tag notes) | the parsed browser Safari only | no edition noted, ruled out | the tag notes: "on iPhone and iPad, the engine of every browser" |
-| SF8 | the reported figure | the platform's report, HKR and HOL joined | recomputed from the export | converge | identical in every edition and month (checks C3) |
-| SF9 | the comparison's strata | edition, month and device class | devices pooled | same call | asserted (C2) |
-| SF10 | the estimator of identifiers per browser | the replayed runs | visits per browser | same call | asserted (C2) |
-| SF11 | Hollerfeld's HKR rows | Hollerfeld's (tag notes, editions.csv) | a thirteenth group | ruled out | the tag notes and former_content_group |
-| SF12 | the tolerance | more than 25 per cent (policy 4) | at or above | converge | no edition within 1.5 points of 25 under any estimator of the family (Grauheim 1.9 above under the visits ratio) |
-| SF13 | a print subscriber's WebKit browser | one device (policy 2: a browser once) | each identifier | ruled out | policy 2 |
-| SF14 | Ask A's moment | the end of 31 December in Berlin, 23:00 UTC (policy 6) | UTC midnight | BST +1, ruled out | policy 6 "Berlin time" |
-| SF15 | Ask A's contact in two groups | counted in both (policy 6) | once | ruled out | policy 6 |
-| SF16 | Ask A's pending contact | not a subscriber (policy 6: confirmed) | counted | ruled out | policy 6 |
-| SF17 | Ask B's publication days | Monday to Saturday less the state's holidays (policy 5) | every weekday | ruled out | policy 5 and editions.csv's state |
-| SF18 | Ask B's suspensions | a pause unsold, a forward or donation sold (policy 5) | every suspension unsold | ruled out | policy 5 |
-| SF19 | Ask B's SATURDAY | Saturdays only (dictionary) | every day | ruled out | the dictionary |
-| SF20 | Ask B's COMBI | one copy a day, the e-paper its own (policy 5, the dictionary) | its Digital Plus access counted again | ruled out | policy 5 "one for each paid subscription", the dictionary's COMBI, order_ref |
-| SF21 | Ask B's trials | unpaid (policy 5) | counted | ruled out | policy 5 |
-| SF22 | Ask B's single copies | delivered less returned by issue (policy 5) | delivered | ruled out | policy 5 |
-| SF23 | the replay's span | identifiers per browser month by month | pooled over the quarter's three months | same call | asserted |
+| SF1 | the 2027 load's year | 1 January 00:00 to 31 December 23:45 UTC | the Norwegian calendar year | same call | asserted (procedure section 7 names UTC) |
+| SF2 | the published load | the report's tonnes | recomputed from the report's coefficients | same call | asserted: the report's loads are the procedure's |
+| SF3 | misstates by more than 15 per cent | against what passed | against the published load | same call | asserted |
+| SF4 | over or under | published above what passed is over | none differs | converge | all four over (asserted) |
+| SF5 | the calibration samples | every accepted sample of 2025 to 2027 | 2027's alone | JVB and SKB under | procedure section 6 "2025 to 2027 for the 2027 loads" (asserted read back) |
+| SF6 | a bottle's result | the final result | the replaced result kept | same call | asserted |
+| SF7 | the 2025 results | the former system's sheet read with the current one | 2025 left out | same call | asserted |
+| SF8 | pairing a sample with turbidity | the nearest 15-minute reading | interpolated between readings | same call | asserted |
+| SF9 | a sample's time | the field app's time with its offset | the wall clock read as UTC | the refit misses the report | the offset on every value; the wall clock does not reproduce the published loads (asserted) |
+| SF10 | re-sent record rows | each interval once | duplicates kept | same call | none in 2027 or near a sample (asserted) |
+| SF11 | which bottles calibrate | every river sample in the sheet | none differs | converge | every bottle is a river sample (asserted) |
+| SF12 | retransformation | Duan's smearing (procedure section 6) | none | same call | asserted |
+| SF13 | logarithm base | log10 (procedure) | natural logs | converge | a constant factor (asserted) |
+| SF14 | discharge | the record's one series, three significant figures | none differs | converge | asserted |
+| SF15 | the stations | the register's 14 | none differs | converge | asserted |
+| SF16 | Ask A's years | 2025 and 2026 in UTC | in Norwegian time | same figures | nothing unusable within two hours of either edge (asserted) |
+| SF17 | Ask A's hours | intervals over four, whole hours | none differs | converge | no station on a half hour (asserted) |
+| SF18 | Ask A's repeated rows | an interval once (procedure section 5 counts intervals) | rows | same figures | every repeat is exact (asserted) |
+| SF19 | Ask A's upper end of the range | 1,000 FNU on a TS-10 until the station's TS-40W (procedure section 2, register, maintenance log) | 4,000 FNU throughout | moves four stations | procedure section 2 gives each sonde's range; no TS-10 reading above 1,000 (asserted) |
+| SF20 | Ask A's fouled or sonde-out rows | F and M, and G and O before 14 April 2026 | F and M alone | moves every station | the maintenance log: the O and M rows are exactly its logged sonde-out times, the G spans end at its "flagged back to last clean" visits (asserted) |
+| SF21 | Ask A's checked readings | K and C usable | counted unusable | moves every station | procedure section 5 (C is usable); K sits on each logged handheld check before the migration (asserted) |
+| SF22 | Ask B's 2027 samples | every bottle sampled in 2027 | none differs | converge | the batch export holds each once (asserted) |
+| SF23 | Ask B's control concentration | the lot's concentration in the quality statement | the export's nominal 50.0 for every lot | moves 13 stations | procedure section 4 "the control suspension's concentration"; the statement's table gives KS-27-06 at 54.0 (asserted read back) |
+| SF24 | Ask B's blank | a change of more than 0.5 mg either way | gains only | moves stations | section 4 "changes by no more than 0.5 mg"; a blank below -0.5 mg ships (asserted) |
+| SF25 | Ask B's aliquot agreement | against their mean (section 4) | against the larger aliquot | same figures | asserted |
+| SF26 | Ask B's samples per station | one line per sample | none differs | converge | asserted |
 
 ## Ladder
 
-Six wrong rungs and the golden, each a defensible way to estimate the browsers behind the identifiers, each dying to one
-fact the pack holds (per-edition overstatements on the cut pack from `generator/solve.py`, asserted in `checks.py`).
+Seven wrong rungs and the golden, each a complete defensible analysis, each dying to one fact of the samples (sets on
+the cut pack, printed by `generator/pair.py --ladder`, asserted in `checks.py`).
 
 | Rung | Construction | Answer | Dies to |
 |---|---|---|---|
-| 0 | the reported users taken as browsers | 0 editions | the tag's notes: WebKit renews the identifier after seven idle days |
-| 1 | identifiers per signed-in WebKit device from the register, applied to every WebKit identifier | 3 (Kirchbrunn, Hollerfeld, Mühlenstedt) | signed-in WebKit readers are the frequent ones: 1.24 identifiers per device a month against 1.57 replayed on signed-in readers of other browsers |
-| 2 | the replay on every other browser within edition, month and device class, print subscribers pooled | 5 (drops Kirchbrunn, Hollerfeld, Mühlenstedt) | print subscribers read weekly on Apple devices: 61 per cent of their signed-in devices are WebKit against 27 per cent of the others |
-| 3 (default) | signed-in WebKit browsers from the register, signed-out identifiers by signed-out other browsers | 4 (drops Wiesbrück, Sonnweiler, Grauheim, Lindenau) | sign-in is selected differently by engine: the meter restarts with the identifier on WebKit, so 27 per cent of WebKit's non-print identifiers are signed in against 63 per cent elsewhere, and the signed-in mismatch above |
-| 4 | signed-in from the register, signed-out by every other browser | 4 (the same four dropped) | the signed-out WebKit pool lacks the frequent readers the comparison keeps |
-| 5 | the WebKit share of signed-in devices taken as the browsers' share | 7 (drops Kirchbrunn and Hollerfeld, adds Bergstetten) | the same selection, read as a share |
-| 6 (golden) | every non-print reader of other browsers pooled over sign-in within edition, month and device class, print subscribers counted from the register | 8 | |
+| 0 | the published loads | none | the review exists to test them |
+| 1 (default) | the procedure refitted on every sample | none | the residuals split by whether the river was rising at the sample |
+| 2 | discharge added | none | turbidity already carries discharge; the residual split stays |
+| 3 | season or hour of day | JVB | the split appears at every season at SKB, FND, ESK and inside JVB's own summers |
+| 4 | the trip type | ESK, FND, SKB, TVE | with rising water in the model the trip type adds nothing at any station (absolute t under 2.5); TVE's callouts fell mostly on falling water |
+| 5 | routine bottles only | ESK, GRV, TVE | routine rounds land on the melt's rise as surely as callouts land on a flood's |
+| 6 | 2027 bottles only | JVB, SKB under | 44 to 101 bottles become 14 to 34; the procedure calibrates on three years |
+| 7 (golden) | the relation conditioned on rising water, applied per interval | SKB, JVB, FND, ESK over | |
 
-- **Margins.** Under the golden, the quarter-pooled replay, devices pooled, and the visits and page-view ratios (by device
-  class or pooled), the eight sit at 26.9 per cent or more (Grauheim, under the visits and page-view ratios) and the other
-  four at 22.7 or less (Bergstetten, visits with devices pooled). The sign-in rungs leave the four meter editions at 22.0 to 22.8 (rung 3) and 23.1 to 23.7
-  (rung 4); the print-pooled rung leaves the print editions at 18.0 to 20.1.
-- **Position.** No wrong rung files the eight; rungs 3 and 4 file Rhenhagen Stadt and the print editions, rung 2
-  Rhenhagen Stadt and the meter editions.
-- **Dominance.** The decisive step raises the meter editions' overstatement by 5.5 to 6.6 points against rung 3; the
-  print step raises the print editions' by 9.7 to 10.1 against rung 2.
-- **Grid.** UTC or Berlin months, the replay site-wide or by edition, the re-sent rows and the newsroom in or out, the
-  quarter as averages or as monthly ratios, a two-edition browser once or twice: the eight every time (SF1 to SF6).
-- **Worth.** Four editions' notes on the call; the World's own browsers file the same eight (T1).
+- **Margins.** Every rising-water specification on file (thresholds 0 to 3 per cent an hour, unsmoothed, the past hour
+  or two, separate fits, discharge and season added, a linear or positive rate of rise, rising turbidity smoothed over
+  one to six hours) files the four: the smallest flagged misstatement 18.5 per cent (rising turbidity over an hour), the
+  largest other station 6.9 per cent (asserted).
+- **Position.** No wrong rung reaches the four; rungs 4 and 6 reach two or three of them with a wrong station or a
+  wrong direction.
+- **Dominance.** On rising water a unit of turbidity carries 2.2 to 2.8 times the concentration at the four (10 to the
+  0.34 to 0.45), and 48 to 75 per cent of their samples were taken on rising water against 1 to 16 per cent of 2027's
+  intervals.
+- **Worth.** Four re-issues of 14; the clean truth's sediment puts the same four over (R3 in checks.py).
 
 ## Closure table
 
 | # | Axis | Reading and closure |
 |---|---|---|
-| 1 | Population | the browsers that loaded an edition's pages in the month, automated traffic and the newsroom out (policy 2) |
-| 2 | Unit of account | a browser, once however many identifiers (policy 2); a print subscriber's browser by its device (SF13) |
-| 3 | Attribution window | October, November and December 2028, Berlin months (policy 2, SF1) |
-| 4 | As-of dating | Monday 15 January 2029; the export of the quarter, the register and accounts as of that day |
-| 5 | Version basis | the policy of 4 December 2028 (section 4 new); the tag's notes of 9 January 2029 |
-| 6 | Denominator | the estimated browsers (policy 4: reported above browsers) |
-| 7 | Weighting | the quarter as the average of its three months for both figures (policy 2 and 3, SF5) |
-| 8 | Window length | three months |
-| 9 | Boundary inclusivity | more than 25 per cent (SF12) |
-| 10 | Rounding path | the comparison before rounding (policy 7) |
+| 1 | Population | the register's 14 stations (SF15) |
+| 2 | Unit of account | one station's annual load, in tonnes (section 7) |
+| 3 | Attribution window | calendar 2027 UTC (section 7, SF1) |
+| 4 | As-of dating | the review of March 2028 on the report of 15 February 2028; 2027's records complete |
+| 5 | Version basis | procedure v3; the report as issued; LIMS final results (SF6) |
+| 6 | Denominator | the misstatement against what passed (SF3) |
+| 7 | Weighting | each 15-minute interval's concentration times its discharge (section 7) |
+| 8 | Window length | the three calibration years (SF5) |
+| 9 | Boundary inclusivity | more than 15 per cent re-issues; nothing within 3 points of it on any specification |
+| 10 | Rounding path | none before the comparison; asks in whole hours and whole samples (SF17) |
 | 11 | Tie-break | none needed |
-| 12 | Maturity and censoring | the quarter is closed; the export holds every session to 31 December |
-| 13 | Order of operations | clean, classify the engine, link the register, replay, estimate by stratum, average, compare |
+| 12 | Maturity and censoring | every 2027 interval and every bottle reported |
+| 13 | Order of operations | results, pairing, fit, prediction per interval, sum, comparison |
 | 14 | Row order | no step depends on file order |
-| 15 | Duplicate resolution | the re-sent rows dropped (SF3) |
-| 16 | Identity normalisation | HKR to HOL (SF11); client_id across the export, register and paywall log; user_ref hashed |
+| 15 | Duplicate resolution | final over replaced results (SF6); re-sent rows once (SF10, SF18) |
+| 16 | Identity normalisation | year and bottle number across the sheet and both LIMS layouts; station codes |
 | 17 | Netting against gross | none |
-| 18 | Dimensional units | seconds and days (seven days of 86,400 seconds) |
-| 19 | Code and status semantics | origin's three values; outcome's three; the engine from os and browser (SF7) |
-| 20 | Integerisation | a set and a count; the asks whole numbers (policy 7) |
-| 21 | Clause scope | the note applies to the digital figure only (policy 4); sections 5 and 6 to the asks |
-| 22 | Forward window contents | the 2029 kit quotes the fourth quarter of 2028 (policy 1) |
+| 18 | Dimensional units | mg/L equals g per cubic metre; cubic metres per second times 900 seconds; tonnes |
+| 19 | Code and status semantics | trip types; LIMS status; the record's flags (SF20, SF21) |
+| 20 | Integerisation | whole hours, whole samples |
+| 21 | Clause scope | section 8 applies to every station, both directions |
+| 22 | Forward window contents | the plan reads 2027's loads as published or re-issued; nothing forecast |
 
 ## Literal reader
 
-Executing the prompt and the policy word for word: for each edition and Berlin month of the quarter, the browsers that
-loaded its pages, once each however many identifiers, against the platform's users, averaged over the three months,
-noted above 25 per cent. The browsers behind WebKit's identifiers are unobserved, which no sentence estimates; every
-estimator that replays the seven-day rule on other browsers' histories within edition and month, transports it to
-every non-print WebKit identifier whatever its sign-in, and counts print subscribers from the register files the eight
-(by device class or devices pooled, runs replayed or visits per browser), and every convention row of the fork table
-files the eight. The easy answers (4, 5, 3, 6 or none) come from an easy comparison on the same literal estimand, never
-from another reading.
+Executing the prompt and the procedure word for word: for each of the 14 stations, the published 2027 load against
+the suspended sediment that passed the station in calendar 2027 UTC, re-issued when it misstates it by more than 15 per
+cent either way. What passed is not observed; it is estimated from the shipped samples and the 15-minute record, and
+the procedure gives the published method, not the truth. Every estimate whose relation is conditioned on rising water
+(any of the sixteen specifications under Margins) files the four, and every fork row files the same call; the easy
+answer, none, comes from the easy method on the same literal estimand, never from another reading.
 
 ## Oracles
 
-None for the call: no estimate of any edition's browsers, no earlier note and no ranking on overstatement ships. The
-platform's report ties the reported figure under every handling. The print stratum's agreement (replayed 1.95
-identifiers per browser a month against 1.99 counted on print subscribers' WebKit devices) and the signed-in mismatch
-(1.57 against 1.24) are facts of the data that confirm the golden's comparison only once computed; no file states
-either. For the asks, nothing referees either device: Ask A's link additions show only as clicked links and as
-last changes no status event or preference-centre change explains, and Ask B's moved starts show only through the
-numbers' entry order and the Digital Plus accesses' own starts; no file names a total.
+None for the call: no validated load, sediment survey or earlier review ships. The report ties under the easy route by
+construction, which is the stump's own identity. For the asks, the maintenance log (sonde-out times, the fouling
+remarks, the handheld checks, the sonde change) and the quality statement (each control lot's concentration) referee
+the devices; neither names a station's figure.
 
 ## Ask sheet
 
-**Ask A, each edition's newsletter subscribers at the end of 31 December 2028 (12 figures, exact).** H18: a measure
-every edition carries in the kit beside the digital figure; the call reads no newsletter row. Use: the kit's newsletter
-line, which ad sales quotes for sponsorships. Primary device: D5 (a silently partial log). The contact export is taken
-on 15 January 2029 with its groups as they stand. The preference centre's log holds every change contacts made there,
-with the groups before. The newsletters' one-click links, though, add a group without a preference-centre entry; they
-come from the box under each newsletter from 7 November and from the new year's mailing of 3 to 14 January, each
-offering a neighbouring edition. Each is recorded only as a clicked link in the activity log, among about 64,000
-article clicks. The 906 links clicked after midnight add 35 to 139 subscribers to every edition that a reversal of the
-status events and the preference centre's log keeps. Its over-cleaning half: the 458 links clicked before midnight
-stand, and undoing every link addition takes 16 to 71 off every edition. Found only by inconsistencies the records
-hold: a contact's last change in the export with no status event or preference-centre change at that moment, and
-export groups that the preference centre's last change does not show. A clicked link at that moment explains both. The
-golden equals the platform's own state at midnight, replayed forward from each sign-up (checks A0). Hazards:
-- statuses changed after the cut-off (the activity log's first later status event implies the earlier status, and a
-  click is not a status event);
-- pending contacts and cleaned addresses;
-- Berlin against UTC midnight (SF14);
-- the preference centre's changes after midnight (the export's groups as they stand: +38 to +142).
+**Ask A, each station's hours in 2025 and 2026 without a usable turbidity reading (14 figures, whole hours).** H18: the
+turbidity record of the calibration years is the input the regression pairs every sample with, so its health is the
+audit trail of the call's input; the call reads the record only at the samples' own intervals and in 2027, which no
+device reaches (asserted). Use: the review sheet's record line, as every spring. Primary devices: D2, a label stored
+before a silent switch, twice over. The data team's database migration of 14 April 2026 changed the flag letters (G
+fouled and O sonde out before it, F and M after; K and C for a handheld check), and procedure section 5 and the
+dictionary give the current letters only, so executing the filed letters misses every older fouled or sonde-out
+interval (-15 to -350 hours at all 14), while counting every flag counts the checks (+1 to +4 at all 14); the old
+letters are found only through the maintenance log, whose sonde-out times the O rows match exactly and whose "flagged
+back to last clean" visits end each G span. The register gives each station's current sonde (TS-40W, 4,000 FNU) and its
+installation in autumn 2026; the TS-10's limit of 1,000 FNU before it holds the readings at the upper end of the range,
+unflagged (-2 to -16 at four stations on the register's sonde). D4: an interval the logger never sent has no row (-51 to
+-300 at all 14 counting rows only). Hazards: rows re-sent after outages, exact repeats. Path: the record, the
+register, the maintenance log, the procedure, the dictionary (5 files, 7 columns). Realism: logger and database
+migrations change flag letters and leave old rows as they were; sondes saturate at full scale.
 
-Path: the contact export, the activity log, the preference centre's log, editions.csv (the link's edition name), the
-policy, the dictionary (6 files; contact_id, status, groups, last_changed_utc, event, at_utc, link, changed_utc,
-groups_before, name). Realism: newsletter platforms export current state, keep six months of activity and log a click
-with its destination. One-click cross-subscription links are an ordinary newsletter feature, and a preference centre's
-history holds only the preference centre's own changes.
+**Ask B, each station's 2027 samples weighed in a batch that failed its quality control (14 figures, whole samples).**
+H18: the 2027 bottles are a third of the regression's samples, and the batch quality control is the audit trail of
+their concentrations; the call reads the laboratory's results and never the batch export. Primary device: D2, the
+export's control column is the LIMS template's nominal 50.0 mg/L on every line, while lot KS-27-06, in use from 1 July
+2027, is 54.0 mg/L in the quality statement; recovery against the nominal fails good batches through the second half
+of the year (13 of 14 stations moved, by up to 4). D3: each aliquot's concentration is its net mass over its own volume
+(200 or 250 mL). Hazards: the batch's results repeated on every sample line (a batch counts once in deciding failure,
+its samples each once per station); a blank below -0.5 mg. Path: the batch export, the quality statement, the field
+sheet, the procedure (4 files, 9 columns). Realism: a LIMS template keeps its default nominal when a control lot
+changes; certified lots differ from the nominal they were prepared to.
 
-**Ask B, each edition's average sold copies per publication day in the fourth quarter of 2028 (12 figures, whole
-copies).** H18: a measure every edition carries in the kit; the call reads no circulation row. Use: the kit's print
-line, on which local print packages are priced. Primary device: D8 (an anchor on a later record). From the circulation
-system's release of 6 November 2028 until the fix of 14 December, its customer screen wrote the date a change of
-address, bank details or payment was saved into the subscription's start date. So 451 subscriptions delivered for
-years show a start between 6 November and 13 December, and counting from the start shown drops 9 to 59 copies a day
-from every edition. Found only by inconsistencies the records hold, with nothing narrating the release and no column
-marking the rows:
-- subscription numbers are issued in order as subscriptions are entered (the dictionary), and these numbers sit among
-  subscriptions started years before;
-- the COMBI ones sit beside Digital Plus accesses that started years before.
+Main population zero-counts: the call reads the field sheet, both LIMS sheets' results, the record's discharge and
+turbidity in 2027 and at each sample's interval, and the report; no flag, gap, check, sonde limit or re-sent row sits
+within three hours of a calibration sample or anywhere in 2027 (asserted per station), and the call never opens the
+batch export, the quality statement or the maintenance log.
 
-Its over-cleaning half: subscriptions genuinely started in those weeks (December's gift subscriptions among them), taken
-as before the quarter, add 19 to 71 to every edition. Fair: every moved subscription was delivered from before
-1 October 2028, and the number order moves exactly the release's 451 (checks B1, against the generator's own starts).
-The release re-dated only subscriptions still being delivered when the change was saved, so no record ends before it
-starts; its evidence is cross-file only (16 suspensions before a shown start, 49 Digital Plus accesses before their
-COMBI's).
-Hazards:
-- the COMBI's e-paper counted again (its Digital Plus access, order_ref Kombi and the sub_no; both round 1 readers met it);
-- pauses against forwards and donations;
-- SATURDAY on Saturdays;
-- trials;
-- the state's holidays (1 November in Rhineland-Palatinate);
-- single copies by issue.
-
-Path: subscriptions, suspensions, e-paper accesses, single copies, retail points, editions, the policy, the dictionary
-(8 files; sub_no, product, copies, start_date, end_date, kind, from_date, to_date, plan, order_ref, price_eur,
-delivered, returned, edition, state). Realism: a release that writes a change's date into a neighbouring field is an
-ordinary circulation-system fault, and number order is how a circulation clerk dates a contract.
-
-Main population zero-counts: the call reads the session export, the sign-in register and the accounts. No newsletter,
-circulation, e-paper or single-copy row exists in them, and no ask file is read by the call (separation by file,
-asserted by the solver's inputs).
-
-| Hazard | Asks moved | Per-ask deltas |
+| Hazard | Asks moved | Per-ask deltas (largest) |
 |---|---|---|
-| the link additions after midnight kept (D5, primary) | A | +35 to +139 |
-| every link addition undone (its over-cleaning half) | A | -16 to -71 |
-| the export's groups as they stand | A | +38 to +142 |
-| UTC midnight | A | +1 at Bergstetten |
-| the start dates as shown (D8, primary) | B | -9 to -59 |
-| every start in the release's weeks before the quarter (its over-cleaning half) | B | +19 to +71 |
-| the COMBI's e-paper counted again | B | +155 to +712 |
-| SATURDAY every day | B | +195 to +726 |
-| pauses ignored | B | +11 to +58 |
-| no holidays | B | -14 to -51 |
-| every suspension unsold | B | -6 to -30 |
-| trials counted | B | +3 to +12 |
+| the migration's old letters G and O (D2, primary) | A | -350 hours |
+| the checks K and C counted as flags | A | +4 hours |
+| the TS-10's 1,000 FNU limit read off the register's TS-40W (D2, primary) | A | -16 hours |
+| intervals with no row (D4) | A | -300 hours |
+| the export's nominal 50.0 for lot KS-27-06 (D2, primary) | B | +4 samples |
 
-| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed, both round 1 readers' repairs) | Verdict |
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed on the fields it names) | Verdict |
 |---|---|---|
-| Ask A, subscribers, all 12 editions | statuses and the preference centre's changes taken back from the logs, the link additions kept: every edition high | miss |
-| Ask B, sold copies, all 12 editions | every filed rule executed, the Digital Plus accesses left out, the start dates as shown: every edition low | miss |
+| Ask A, hours, all 14 stations | a full 15-minute grid, re-sent rows once, the procedure's letters F and M, the TS-10's limit before each station's TS-40W | miss |
+| Ask B, samples, all 14 stations | each batch once, concentrations from mass and volume, recovery against the export's control column | miss |
 
-Measured by: generator/pair.py on the cut pack. The cracker keeps 0 of the 24 ask figures, and so do the mirror (the
-same asks, off the call), the over-cleaner and the lazy path (the exports as they stand); a response meeting every
-device keeps 24. The round 1 readers kept 23 and 24 of the earlier devices, and both devices above sit on paths
-those two left unread (supplemental-stumping 1.1c).
+Measured by: generator/pair.py on the cut pack: the cracker keeps 1 of the 28 ask figures (KVF's nought under both
+controls), the mirror (off the call, the same ask paths) 1; a response that decodes the old letters through the
+maintenance log and reads each lot's concentration keeps all 28.
 
-Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
+Pair ceiling: 30.5 ((38 + 7 + 55 x 1/28) and (5 + 7 + 55 x 1/28), averaged)
 
-Mirror leakage: 0.0 per cent of ask weight
-
-## Leak check
-
-leak.py (as-of 2029-01-15): REVIEW, no LEAK; file names, author vocabulary, answer figures, announcements, ranking
-artifacts, hidden content and the prompt gate clean. Each REVIEW line, answered:
-
-- The dictionary, the tag's notes, the policy and the paywall notes carry the stump paragraph's nouns (browser, reader,
-  device, register, identifier, sign-in): the fiction's own vocabulary; no sentence says sign-in depends on the
-  browser, names a comparison pool or estimates browsers; the paywall notes' print line no longer says activation is
-  independent of the meter (cut before stage 4: it pointed at the decisive step); harmless.
-- `device` in the ad server's file and `device_id` in the sign-in register: the systems' own dimension and the account
-  service's login-cookie id; harmless.
-- Sixty-three suspension end dates after 15 January 2029: holiday pauses booked ahead to run into January, as a circulation
-  system records them; none reaches the quarter's figures beyond 31 December; harmless.
-
-## Retired
-
-Retired on 2026-10-20 at the author's choice. Architecture 4 was spent at stage 4 round 3 under the two-reader rule:
-reader 5 landed the call through an activity-stratified calibration on the signed-in WebKit browsers. Four
-architectures are now spent on the number:
-
-| Architecture | World | Spent |
-|---|---|---|
-| 1 and 2 | PES, a low-cost sensor network's drift pull list | each landed by the stage 4 reader |
-| 3 | psychology, a verification check's genuine referral rate | landed by the reader with every ask figure |
-| 4 | Product Analytics, WebKit's seven-day cookie cap and the media kit's measurement note | landed by one of five clean readers |
-
-Architecture 4 passed every free gate. The judge returned DETERMINISTIC, APPROVE on all three packs, and both round 3
-readers kept 0 of 24 ask figures. It was never shipped: `target.zip` 31ad0d1e and the goldens stay untracked, and the
-generator rebuilds them. Every card is kept, and the architecture 4 card carries `architecture_spent`.
-
-The lesson the number paid for: the cap selects through visit spacing, and an identifier's own session count records
-most of that spacing. So any calibration stratified on activity recovers the conditioning set the easy route misses.
-A transport stump is spent when the unit's own trace can reconstruct the selection that decides it.
+Mirror leakage: 3.6 per cent of ask weight
 
 ## Tried and rejected
 
@@ -497,3 +456,35 @@ A transport stump is spent when the unit's own trace can reconstruct the selecti
   edition, month and device class): spent at stage 4 round 3 when reader 5 landed the call. The cap selects through
   visit spacing, which an identifier's own session count records, so a calibration stratified on activity recovers the
   selection. The number was retired on 2026-10-20 at the author's choice.
+- Retired on 2026-10-20 at the author's choice when architecture 4 was spent (four architectures: 1 and 2 a PES
+  low-cost sensor network's drift pull list, 3 a psychology verification check's genuine referral rate, 4 Product
+  Analytics' WebKit cookie cap), and un-retired the same day at the author's request for a fresh rebuild. The lesson
+  the four paid for: a transport or selection a unit's own trace can reconstruct is spent; architecture 5 puts the
+  regime in a second continuous record and the selection in when the field team could reach the river.
+- Architecture 5 draw, candidates set aside before the card was filed: a stage-discharge rating's hysteresis on the
+  rising limb (task229's hydrometry world, the subdomain's spent neighbour); a seismic network's station leverage (the
+  golden's and the easy route's ranges overlapped, 72 to 89 against 84 to 93 per cent); a solar array's soiling
+  (task152's ground); a fixed sampling clock aliasing the tide; light traps under the lunar cycle; sensor warm-up after
+  restarts. The turbidity surrogate conditioned on the hydrograph limb was the one whose decisive step the samples
+  themselves force and no file names.
+- The prototype's routine rounds drew fractional days, so rounds fell at any hour and the glacier stations' summer
+  rounds missed the melt's rise; fixed before any tuning was trusted.
+- MKE as a sand-rich glacier station sampled on evening rounds with early callouts (a trap for the trip type): the
+  linear and positive rate-of-rise relations read it at +12 to +20 against the rising indicator's near nought, a fork
+  on the main call; MKE is now a silty station below a proglacial lake, inside 8 per cent on every specification.
+- JVB with one round a month: some rising-water specifications fell to +5 to +9 (rising turbidity, positive rate of
+  rise), too close to the tolerance; two rounds a month in the melt season and a sandier bed put every specification
+  above +18.
+- Stations drawn on shared random seeds had identical discharge histories (four glacier rivers, three rain rivers,
+  three lake outlets); every river now runs its own hydrology under one regional storm calendar.
+- The field app's wall-clock time without its offset: in the prototype, read as UTC, it moved several stations inside
+  the tolerance past 15 per cent on the golden method, so Layer 1 carried the call (R2); every sample time now carries
+  its offset, and the wall clock read as UTC fails to reproduce the report (SF9).
+- Every station's bottle count a multiple of six (no round ever missed, every callout two bottles): rounds are now
+  missed at a realistic rate and callouts bring back one to three bottles (44 to 101 per station).
+- A field remark "rising, brown water" on callout bottles named the decisive regime; the remarks say "high water" and
+  "brown water" only.
+- Ask B per month (12 figures of nought to three): the template's nominal moves only the second half's months, so the
+  cracker kept the first half's; per station, the stale lot moves 13 of 14 figures.
+- A laboratory re-run of a failed batch as an Ask B device: suspended sediment by whole-sample filtration cannot be
+  re-run; dropped as unrealistic.
