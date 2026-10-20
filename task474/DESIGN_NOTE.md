@@ -442,4 +442,11 @@ declared distractor).
   8.1), so the record displayed the step; both relocations now run from April 2021 to February 2022, inside a former
   county each, where no published estimate shows them (the planning region estimates begin in 2023, and every region
   moves under 1.3 per cent from 2023 to 2024).
+- 2026-10-20, at stage 4 (architecture 1 spent): two isolated scored readers. Reader 1 benchmarked each town's SNAP
+  recipients to its own five-year survey count unprompted ("SNAP levels are not proportional to poverty across towns,
+  but SNAP's year-to-year movement is usable") and landed all nine amounts (score_reader.py exit 1); reader 2 took SNAP
+  shares (missed the call) but, like reader 1, rebuilt the town at service date from the audit trail, mapped Corbin's
+  numbers and counted one energy payment per household, keeping 27 of 27 ask figures. Rule 2.2's "in that year" beside
+  a single five-year release and a monthly town series displays the decisive step, and the ask devices are work orders
+  a careful reader executes; the architecture is spent and the draw is re-rooted at stage 1.
 

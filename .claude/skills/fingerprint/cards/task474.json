@@ -83,7 +83,13 @@
   "stump": "The default path splits the former counties' 2020-2022 estimates by the towns' shares in the 2020-2024 five-year release, which holds the 2021 Bellmont Courts and Marlridge Commons relocations for most of its span, and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 against the golden's $1,650,000 and $2,250,000, six of the nine amounts off.",
   "mechanism_source": "design_note",
   "differentiation": {},
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
+      "fate": "spent 2026-10-20 at stage 4: reader 1 landed the call by benchmarking SNAP to the survey level; reader 2 kept 27 of 27 ask figures"
+    }
+  ],
   "notes": "Strategy grain_or_unit answered: the survey release's five-year grain and SNAP's unit (recipients, whose take-up differs by town) are both read correctly; the step is temporal disaggregation with a benchmarked indicator, which no field or rule performs. Redrawn at stage 2 from the first decisive step (midpoint anchoring of two five-year releases), whose forcing evidence the survey's sampling noise swamped; the relocations moved to 2021 at stage 3 so no published estimate displays them (Tried and rejected).",
   "registered": "2026-10-20T06:30:26Z"
 }

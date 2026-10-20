@@ -4,19 +4,19 @@
  "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-20",
  "stump": "The default path splits each former county's 2020-2022 poverty estimate by its towns' shares in the 2020-2024 five-year release, which already holds the 2023-2024 Bellmont Courts and Marlridge Commons relocations, and files Greater Ormsby $1,700,000 and Mill River Valley $2,170,000 against the golden's $1,730,000 and $2,140,000 (six of nine amounts off); the golden scales each town's SNAP recipients that year to its own five-year level.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20 (no LEAK; author vocabulary 'the model' is the SDC's area-level model; golden figures 100/802/920 coincide with data counts; field vocabulary; the region estimates are the estimand's inputs)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-20 (no LEAK)",
+  "reader": "FAILED 2026-10-20: reader 1 landed the call (score_reader exit 1); reader 2 missed the call but kept 27 of 27 asks (exit 1)"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (strategy risk time_semantics answered by the analyst test; repeat.gate_g against task271 v2 and task468 v4, different mechanisms); test.same_driver_older cleared by redrawing the decisive generator to G2 (the town windows' five-year grain against the single years the estimand needs), the honest label",
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4, resumed in this session: two isolated readers (sonnet, medium) and the determinism judge thread (brief at /tmp/determinism-check-task474-r1/judge_brief.md) are running; on return run score_reader.py on each reader's JSON, hand verdict.md to the determinism-judge agent for the spec gates and the Gate G and Gate H reconciliation, fix every finding in one generator pass, rebuild (build.py), then ship",
+ "resume": "re-root at stage 1: architecture 1 (SNAP benchmarked to the five-year release) spent on two scored readers; draw a new decisive step and a new ask layer for the same task number (fingerprint re-root: move the old identity into lineage), then design to precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
