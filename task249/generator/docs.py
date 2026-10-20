@@ -317,7 +317,7 @@ The field team's maintenance log, Norwegian local time: date (dd.mm.yyyy), stati
 - {F["report"]}: the published 2027 loads and each station's regression.
 - {F["procedure"]}: the surrogate load procedure.
 - {F["statement"]}: the laboratory's quality statement for 2027.
-- {F["precip"]}: daily precipitation and air temperature at two weather stations.
+- {F["precip"]}: daily precipitation and mean air temperature at Fjellbrekke Kraft's two weather stations, as their export writes it (semicolons, decimal commas).
 - {F["reservoirs"]}: daily water level and stored volume of the three reservoirs.
 - {F["request"]}: the request for the spring review.
 """

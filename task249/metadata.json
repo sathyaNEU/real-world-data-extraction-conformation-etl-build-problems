@@ -127,7 +127,7 @@
     {
       "path": "station_maintenance_log_2025-2027.csv",
       "format": "csv",
-      "bytes": 30675,
+      "bytes": 30647,
       "rows": 371,
       "source": "Constructed (seeded generator)",
       "date": "2028-03-06",
@@ -136,7 +136,7 @@
     {
       "path": "data_dictionary.md",
       "format": "md",
-      "bytes": 2923,
+      "bytes": 3004,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-03-06",
@@ -145,7 +145,7 @@
     {
       "path": "precipitation_daily_2025-2027.csv",
       "format": "csv",
-      "bytes": 80596,
+      "bytes": 80611,
       "rows": 2190,
       "source": "Constructed (seeded generator)",
       "date": "2028-03-06",

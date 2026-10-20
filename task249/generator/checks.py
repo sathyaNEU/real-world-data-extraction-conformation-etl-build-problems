@@ -69,6 +69,19 @@ def run(target, world, fig, golden):
         ok(RT.flagged(tab, r) == GOLDEN_SET, "golden family member %s files the golden" % r)
         ok(min(tab[c][r] for c in GOLDEN_SET) > 18.0, "%s: every flagged station 3 points clear of 15" % r)
         ok(max(abs(tab[c][r]) for c in tab if c not in GOLDEN_SET) < 8.0, "%s: every other station 7 clear" % r)
+    # the step's corridor: every threshold from 0 to 3 per cent an hour, in steps of 0.1, files the golden
+    lo, hi = fig["steps"]["rising_corridor_pct_per_h"]
+    ths = [round(x / 1000, 4) for x in range(10 * lo, 10 * hi + 1)]
+    sweep = RT.threshold_sweep(target, rec, smp, ths)
+    bad = [th for th in ths if sorted(c for c, v in sweep[th].items() if abs(v) > 15) != GOLDEN_SET]
+    ok(not bad, "every threshold from %d to %d per cent an hour (%d) files the golden%s" % (lo, hi, len(ths),
+       "" if not bad else ": not at %s" % bad))
+    ok(min(min(sweep[th][c] for c in GOLDEN_SET) for th in ths) > 18.0
+       and max(max(abs(v) for c, v in sweep[th].items() if c not in GOLDEN_SET) for th in ths) < 8.0,
+       "the corridor's margins: flagged above 18, the others under 8")
+    ok(fig["steps"]["rising_threshold_pct_per_h"] == round(100 * S.RISE, 1), "the step's threshold is the one solve.py uses")
+    ok(max(abs(tab[c]["refit"]) for c in tab) < fig["components"]["refit_reproduces_published_within_pct"],
+       "the refit reproduces every load within the stated %s per cent" % fig["components"]["refit_reproduces_published_within_pct"])
     # the ladder: each reflex files its own wrong set
     for r, want in LADDER.items():
         ok(RT.flagged(tab, r) == want, "rung %s files %s (got %s)" % (r, want, RT.flagged(tab, r)))
@@ -347,6 +360,31 @@ def run(target, world, fig, golden):
     reg = pd.read_excel(os.path.join(target, F["register"]))
     ok(pd.to_datetime(reg["sensor_installed"]).max() < pd.Timestamp("2026-11-20"), "dates: the register follows the last sonde")
     ok(pd.to_datetime(reg["sensor_installed"]).min() > pd.Timestamp("2026-09-01"), "dates: the procedure (January 2027) follows every sonde")
+    # H25: every shipped PDF reads the same under a strict parser and an independent extractor
+    import subprocess
+    for k in [k for k in F if F[k].endswith(".pdf")]:
+        path = os.path.join(target, F[k])
+        strict = "\n".join(p.extract_text() for p in PdfReader(path, strict=True).pages)
+        ok(" ".join(strict.split()) == " ".join(_pdf_text(path).split()), "H25: %s reads the same under the strict parser" % F[k])
+        ext = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
+        ok(len(ext.split()) > 0.9 * len(strict.split()), "H25: %s opens in pdftotext" % F[k])
+    proc_x = " ".join(subprocess.run(["pdftotext", os.path.join(target, F["procedure"]), "-"], capture_output=True,
+                                     text=True).stdout.split())
+    ok("more than 15 per cent, over or under" in proc_x and "upper end of the sonde's range" in proc_x,
+       "H25: the procedure's tolerance and usable-reading sentences read back in pdftotext")
+    # H21: no invented name within two letters of a real instrument line or company used here
+    def _ed(a, b):
+        d = list(range(len(b) + 1))
+        for i, x in enumerate(a, 1):
+            prev, d[0] = d[0], i
+            for j, y in enumerate(b, 1):
+                prev, d[j] = d[j], min(d[j] + 1, d[j - 1] + 1, prev + (x != y))
+        return d[-1]
+    real = ["turbitech", "turbimax", "solitax", "optisens", "hydrolab", "hydrovision", "aquatroll", "seapoint",
+            "analite", "observator", "fjellkraft", "sognekraft", "eurofins"]
+    ours = [P.OLD_SENSOR.split()[0], P.ORG.split()[0], P.CLIENT.split()[0], P.LAB.split()[0]]
+    ok(all(_ed(o.lower(), r) > 2 and r not in o.lower() for o in ours for r in real),
+       "H21: invented names clear of real instrument lines and companies by more than two letters")
     persona = open(os.path.join(target, F["request"]), encoding="utf-8").read()
     ok(P.DATA_MANAGER[0] in persona and P.FIELD_LEAD[0] in persona, "personas from guard.py names")
     return N_OK[0]

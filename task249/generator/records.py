@@ -424,8 +424,8 @@ def precipitation(cal, rng):
                 mm += rng.uniform(25, 70) * scale
             doy = d.dayofyear
             tair = -3.5 + 15.5 * np.sin(np.pi * (doy - 95) / 230) * (doy > 95) * (doy < 325) + rng.normal(0, 2.2)
-            rows.append({"station": name, "date": d.date().isoformat(), "precip_mm": round(float(mm), 1),
-                         "air_temp_c": round(float(tair), 1)})
+            rows.append({"Stasjon": name, "Dato": d.strftime("%d.%m.%Y"), "Nedbør (mm)": round(float(mm), 1),
+                         "Middeltemperatur (°C)": round(float(tair), 1)})
     return pd.DataFrame(rows)
 
 

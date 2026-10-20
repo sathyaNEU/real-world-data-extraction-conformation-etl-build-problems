@@ -26,12 +26,12 @@
     "G6"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "physical_verification",
+  "calibration_form": "none",
   "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
   "analyst_test": "Refitting each station's turbidity-to-concentration regression on all its 2025 to 2027 samples (log-log, Duan's smearing), with discharge or season added where they test significant, reproduces the published loads and ends on no station re-issued, all 14 within 15 per cent (JVB alone with season), because the regression carries the rising-water samples' sand into every steady and falling hour; on the clean truth the same route files none and the rising-water term alone files SKB, JVB, FND and ESK (R3a, R3b in checks.py).",
   "domain_test": "The deciding quantity is each station's true 2027 suspended-sediment load, estimated the way sediment monitoring estimates it, a turbidity surrogate calibrated on depth-integrated samples, but with the relation conditioned on whether the river was rising at each sample and at each 15-minute step, because sand is entrained only on rising water; with hospitals or megawatt-hours in place of rivers there is no hydrograph limb, no glacier melt cycle and no material that moves only while the water rises, so the task stops making sense.",
@@ -66,7 +66,8 @@
     "invented_names": [
       "Vasslia Miljørådgiving AS",
       "Fjellbrekke Kraft AS",
-      "Sogn Miljøanalyse AS"
+      "Sogn Miljøanalyse AS",
+      "Ternvik (sonde maker)"
     ],
     "people": [
       "Marianne Lunde",
@@ -112,6 +113,7 @@
     "task452": "there the load comes from relating a sparsely sampled factor to a recorded one instead of averaging the samples; here that relation is already the network's method (the turbidity surrogate), and the decisive step is that the relation differs between rising and falling water, so the calibration samples' share of rising water must be conditioned out before the relation is applied to every step"
   },
   "mechanism_source": "design_note",
-  "notes": "Architecture 5, a fresh rebuild on the retired number at the author's request (2026-10-20). Physical & Environmental Sciences / sensor-calibration-measurement for Data Quality Monitoring & Alerting. stump_strategy population_selection: the calibration samples are selected by when the field team can reach the river (working-hours rounds on the melt's daily rise, early flood callouts), a selection correlated with the regime that sets concentration per unit of turbidity, corrected by conditioning on that regime; the lane files non-random observation timing this way (task245). The draw first carried composition_mix (the samples' regime mix against the year's), which task473 held in the window; population_selection names the cause rather than its arithmetic. org_family professional_services: the programme is run under contract by an environmental consultancy for the hydropower company, the decision-maker being the consultancy's data manager; the first draft placed it in the company's own hydrology section (utility_or_infrastructure), which task472 held.",
-  "registered": "2026-10-20T08:10:22Z"
+  "notes": "Architecture 5, a fresh rebuild on the retired number at the author's request (2026-10-20). Physical & Environmental Sciences / sensor-calibration-measurement for Data Quality Monitoring & Alerting. stump_strategy population_selection: the calibration samples are selected by when the field team can reach the river (working-hours rounds on the melt's daily rise, early flood callouts), a selection correlated with the regime that sets concentration per unit of turbidity, corrected by conditioning on that regime; the lane files non-random observation timing this way (task245). The draw first carried composition_mix (the samples' regime mix against the year's), which task473 held in the window; population_selection names the cause rather than its arithmetic. org_family professional_services: the programme is run under contract by an environmental consultancy for the hydropower company, the decision-maker being the consultancy's data manager; the first draft placed it in the company's own hydrology section (utility_or_infrastructure), which task472 held. Stage 3 (2026-10-20): calibration_form set to none (the depth-integrated samples are the regression's own raw material, not a separate organ confirming a filed criterion) and context_artifact to close_out_summary (the annual sediment report, the year's period-end loads), both read honestly after the surface screen paired the earlier labels with task248's. Spent 2026-10-20 at stage 4: both scored readers landed the call (rising-limb conditioning, the field's hysteresis reflex) and all 28 ask figures; paused for the author's call on a sixth architecture.",
+  "registered": "2026-10-20T08:10:22Z",
+  "architecture_spent": true
 }

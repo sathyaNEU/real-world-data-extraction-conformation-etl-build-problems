@@ -315,6 +315,101 @@ Pair ceiling: 30.5 ((38 + 7 + 55 x 1/28) and (5 + 7 + 55 x 1/28), averaged)
 
 Mirror leakage: 3.6 per cent of ask weight
 
+## Pre-ship check
+
+1. Domain: the call stands on each station's 2027 suspended-sediment load, estimated the way sediment monitoring
+   estimates it (a turbidity surrogate calibrated on depth-integrated samples, log-log with Duan's smearing, summed over
+   the 15-minute record), conditioned on the hydrograph limb because sand is entrained on rising water and turbidity
+   barely registers sand; with a hospital's or a utility's nouns there is no sonde blind to one particle size, no rising
+   limb and no melt cycle setting when samples are taken, so the task stops making sense.
+2. Two layers: Layer 1 (the two LIMS layouts, replaced results, bottle numbers restarting, local sample times with
+   their offset against UTC loggers, re-sent rows, the load table inside the report's PDF, discharge to three
+   significant figures) is neutral on the call (R2, SF6 to SF10). Layer 2 is the relation conditioned on rising water,
+   asserted alone to move the easy route (none re-issued) to the golden (SKB, JVB, FND, ESK) on the generator's clean
+   truth (R3a, R3b).
+3. No banned stump decides: nothing is planted (the report's loads are right on their own method and reproduce to 0.1
+   per cent); not semantics (every field read right, the refit still re-issues none); not rule application (the
+   procedure files the estimand and the published method, and no filed rule mentions the hydrograph).
+4. Gate G: no shipped artifact ranks the stations against what passed; the annual report is the context artifact
+   (correct on its own basis, declared in metadata.json); the two distractors (Fjellbrekke Kraft's weather stations,
+   the reservoirs' levels) give no station a load.
+5. Determinism: sixteen rising-water routes (thresholds, smoothing, lagged and unsmoothed rates, separate fits,
+   discharge and season beside the indicator, continuous rate terms, turbidity's own rise) file the golden, the four
+   at 18.5 per cent or more and the ten at 6.9 or less; every threshold from 0 to 3 per cent an hour in steps of 0.1
+   files it (the step's corridor, asserted); 26 fork rows asserted; the verifier recomputes every graded figure by its
+   own code; 470 checks; two builds byte-identical (target.zip 9dd86516).
+6. Fingerprint: heart WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered in the Draw; nearest driver
+   task452 v1 at 0.07). The surface screen promoted three pairs for adjudication: task248 (back to back, the same
+   calibration form and context artifact on the cards; both labels were read again and set honestly, calibration form
+   none because the samples are the regression's own raw material, context artifact close_out_summary for the annual
+   report, and the card re-checked WARN only), and task230 and task149 (same gap and pattern, differentiated on the
+   card). It read the three card personas and "Lot Material", the quality statement's table header read as a name.
+7. Judge (the determinism-judge agent with one isolated thread, Sonnet, medium, the bundle and the graded blocks
+   only, on target.zip 9dd86516): DETERMINISTIC, FIX_NOW. The main call reproduced: the refit returns all 14 published
+   loads to 0.1 per cent, and the rising-water term puts SKB, JVB, FND and ESK over at every threshold from 0 to 3 per
+   cent an hour, the other ten within 7. Gate G clean (the report is the procedure's own output); Gate H domain,
+   layers and decisive step pass, analytical. FIX_NOW on the two ask devices, read as unpinned: the flag letters G, O
+   and K appear in no dictionary or procedure (F and M alone give SKB 472 hours against 702), and the export's 50.0
+   against the statement's 54.0 (16 failed batches against 12). Not repaired: the architecture was spent at Gate F.
+
+## Leak check
+
+leak.py (as-of 2028-03-13): REVIEW, no LEAK; file names, author vocabulary, announcements, ranking artifacts, hidden
+content, column names, dates and the prompt gate clean. Each REVIEW line, answered:
+
+- The figure 433 inside the report's "30,433" (another station's load): a coincidence of digits; harmless.
+- The procedure carries words of the call (re-issue, published, loads, per cent): section 8's tolerance, the filed
+  estimand; harmless.
+- Design-note vocabulary in the documents (discharge, regression, calibration, surrogate, report, regime, rounds,
+  procedure, record): the procedure's and the report's own subject; "rounds" is the sampling rounds and the
+  proficiency rounds; no document says rising, limb, hysteresis or sand; harmless.
+- Earlier run: the precipitation export's column names (air_temp_c) read as a generator's; rewritten as the power
+  company's export writes them (Norwegian headers, semicolons, decimal commas).
+
+Readers (two isolated, Sonnet, medium, the prompt and a fresh pack each, on target.zip 9dd86516), both scored with
+score_reader.py: each landed the call (2 of 2) and all 28 ask figures, exit 1. Reader A conditioned each station's
+relation on discharge up more than 1 per cent over the previous 30 minutes; reader B on Q(t+30 min)/Q(t-30 min) above
+1.015; both named sediment hysteresis as the field's known effect before fitting (question 1: "nothing mentions
+hysteresis or rising limbs"). Both decoded the old flag letters (G as F, O as M, K as C) and took 54.0 from the quality
+statement. Question 6 analytical in both. Realism tells both quoted: the residuals two-valued with a scatter of about
+0.025 in log10 (real surrogate relations scatter 0.1 to 0.2), the same noise structure at all 14 stations, discharge
+to three significant figures on smooth hydrographs, fouled spans of round lengths, maintenance visits at near-identical
+hours, the export's nominal left at 50.0.
+
+## Candidates for architecture 6 (the author's call)
+
+Architecture 5 is spent, and a sixth is past the author file's cap, so it waits on the author. Each candidate keeps
+the objective, puts a field reflex on the first rung and the decisive step on a second, data-native move a reflex
+does not reach.
+
+1. Survey interviewer effects (survey research, nonresponse and measurement error x DQ). Which of a health survey's
+   16 regional prevalence estimates carry the release's precision warning. Default path: the design-based variance
+   (strata, PSUs, weights) warns none. Reflex rung: an interviewer random effect over all assignments warns most
+   regions, because interviewers and areas are nested and the area's own variation is read as the interviewer's.
+   Decisive: the interviewer variance from the random-pair subsample the field office interpenetrates in each region,
+   carried to each region's workload. Screen: a cross-classified model needs interviewers working several areas, which
+   the field design rarely gives; the interpenetrated pairs are a column in the sample file, named nowhere as the
+   identifying design.
+2. Register over-coverage of the oldest residents (census, register and administrative data quality x DQ). Which of
+   20 municipalities' register counts of residents 80 and over overstate those living there by more than the
+   standard. Default: the register as counted warns none. Reflex rung: residents with no sign of life in a year
+   (no health, pension or tax contact) treated as gone warns most municipalities. Decisive: the chance that a real
+   resident shows no sign of life rises steeply in care homes (contacts run through the home's own records), measured
+   on the address-check subsample, so the no-contact count is netted by each municipality's care-home share. Screen:
+   distinct from task243 (deaths against two counts) and task230 (late-channel classification).
+3. Anchor drift in an exam's scale (psychometric measurement x DQ). Which of 14 test forms' 2028 scale scores go to
+   re-equating. Default: mean-sigma linking on all anchor items files none. Reflex rung: a robust-z screen of the
+   anchors drops the few with large displacement and files a different set. Decisive: anchors exposed in a
+   preparation book drift together by a modest amount each, below any single-item screen, and only a linking on the
+   unexposed anchors (the exposure is in the item bank's release history) moves the forms. Screen: the exposure
+   history is an ordinary bank record; a reader must ask why a block of anchors moves together.
+4. Experiment assignment health (product analytics, metric definition x DQ). Which of 40 experiments' readouts carry
+   the platform's sample-ratio warning. Default: a chi-square on assigned users flags none. Reflex rung: the same test
+   on the triggered analysis population flags a dozen, because a trigger fired after assignment lets the treatment's
+   own change move who is counted. Decisive: the ratio read on the counterfactual trigger logged for both arms, which
+   flags the few with a real assignment fault. Screen: the counterfactual-trigger log is a standard platform table;
+   the reflex test is the dashboard's own.
+
 ## Tried and rejected
 
 - Drift forecast from the cumulative particle load through an optical PM sensor (drift accrues with dose, not calendar
@@ -488,3 +583,9 @@ Mirror leakage: 3.6 per cent of ask weight
   cracker kept the first half's; per station, the stale lot moves 13 of 14 figures.
 - A laboratory re-run of a failed batch as an Ask B device: suspended sediment by whole-sample filtration cannot be
   re-run; dropped as unrealistic.
+- Architecture 5 (turbidity surrogate conditioned on rising water), spent 2026-10-20 at stage 4: both scored readers
+  landed the call and all 28 ask figures. Sediment hysteresis is the field's textbook effect, so a reader who knows the
+  field tests the rising limb first, and the simulated relation's scatter (0.025 in log10) made the residuals
+  two-valued at a glance; the ask devices (old flag letters decodable from the maintenance log, the lot's concentration
+  in the quality statement) were found by both. A decisive step that is the domain's named reflex is no stump against
+  a reader who knows the domain.

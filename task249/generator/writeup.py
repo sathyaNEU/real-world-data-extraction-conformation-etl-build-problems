@@ -5,9 +5,13 @@ import os
 import pandas as pd
 
 import params as P
+import records as R
+import sim
 import solve as S
 
 ORDER = [P.CODE[k] for k in P.KEYS]
+REFIT_WITHIN = 0.1        # per cent: the claim the refit is graded against (asserted in checks.py)
+CORRIDOR = (0, 3)         # per cent an hour: every threshold in it files the golden (asserted in checks.py)
 CHECK_NAMES = {"blank": "blank filter", "recovery": "control recovery", "agreement": "aliquot agreement"}
 
 
@@ -37,8 +41,12 @@ def figures(target, F):
         "call": {"over": over, "under": under, "within": sorted(set(ORDER) - set(over) - set(under)),
                  "verdict": {c: call[c]["verdict"] for c in ORDER}, "tolerance_pct": P.REVIEW_TOLERANCE,
                  "n_reissue": len(over) + len(under), "n_stations": len(ORDER)},
-        "components": {"refit_reproduces_published_within_pct": 0.1, "refit_gap_max_pct": round(refit_gap, 3),
+        "components": {"refit_reproduces_published_within_pct": REFIT_WITHIN, "refit_gap_max_pct": round(refit_gap, 3),
                        "published_t": {c: call[c]["published_t"] for c in ORDER}},
+        "steps": {"rising_threshold_pct_per_h": round(100 * sim.RISE, 1),
+                  "rising_corridor_pct_per_h": list(CORRIDOR), "interval_seconds": int(round(sim.DT * 3600)),
+                  "old_sonde_limit_fnu": int(P.OLD_LIMIT),
+                  "lot_concentration_mg_l": {lot: conc for lot, conc, _, _ in R.LOTS}},
         "asks": {"hours_without_usable_reading": {c: int(round(g["ask_a"][c]["hours"])) for c in ORDER},
                  "samples_in_failed_batches": {c: g["ask_b"][c] for c in ORDER},
                  "failed_batches": g["failed_batches"]},
@@ -91,7 +99,7 @@ def submission(fig):
                  % (words[c["n_reissue"]], over, words[c["n_stations"] - c["n_reissue"]]))
     lines.append("## 2. Critical Components\n")
     lines.append("1. The procedure's regression refitted on the same samples reproduces all 14 published loads to within "
-                 "**0.1 per cent**.")
+                 "**%s per cent**." % fig["components"]["refit_reproduces_published_within_pct"])
     lines.append("2. With an indicator of rising water at each sample, the relation of concentration to turbidity is "
                  "higher on rising water at SKB, JVB, FND and ESK, and the trip type then adds nothing at any station.")
     lines.append("3. Over by more than 15 per cent: **%s**; under: none; within: the other **%s**.\n"
@@ -101,23 +109,25 @@ def submission(fig):
                  "(final results; both sheets) and paired each sample, at its UTC time, with the station's nearest "
                  "15-minute turbidity reading in sediment_stations_15min_2025-2027.parquet.")
     lines.append("2. Refitted SMP-03 section 6 (log10 concentration on log10 turbidity, Duan's smearing) and applied "
-                 "it to 2027's intervals (section 7): every load in suspended_sediment_loads_2027.pdf to within 0.1 per "
-                 "cent.")
+                 "it to 2027's intervals (section 7): every load in suspended_sediment_loads_2027.pdf to within %s per "
+                 "cent." % fig["components"]["refit_reproduces_published_within_pct"])
     lines.append("3. Marked each sample and each 2027 interval as on rising water when the 15-minute discharge's rate of "
-                 "rise, averaged over the hour, exceeded 1.5 per cent an hour (any threshold from 0 to 3 per cent an "
+                 "rise, averaged over the hour, exceeded %s per cent an hour (any threshold from %d to %d per cent an "
                  "hour gives the same four), and added that indicator to each station's regression with Duan's "
-                 "smearing.")
+                 "smearing." % (fig["steps"]["rising_threshold_pct_per_h"], *fig["steps"]["rising_corridor_pct_per_h"]))
     lines.append("4. Applied each station's relation to every 15-minute interval of 2027 with that interval's own "
-                 "indicator, summed concentration times discharge times 900 seconds, and compared the published load "
-                 "with it (section 8, 15 per cent either way): %s over, none under." % over)
+                 "indicator, summed concentration times discharge times %d seconds, and compared the published load "
+                 "with it (section 8, 15 per cent either way): %s over, none under." % (fig["steps"]["interval_seconds"], over))
     lines.append("5. Counted, per station, the 15-minute intervals of 2025 and 2026 with no row, flagged fouled or sonde "
                  "out (F and M, and G and O before the data team's migration of 14 April 2026, which the maintenance "
-                 "log's cleaning visits match; K and C are checks and usable), or at 1,000 FNU before the station's "
-                 "TS-40W was installed (station register, maintenance log), re-sent rows once, and divided by four.")
+                 "log's cleaning visits match; K and C are checks and usable), or at %s FNU before the station's "
+                 "TS-40W was installed (station register, maintenance log), re-sent rows once, and divided by four."
+                 % "{:,}".format(fig["steps"]["old_sonde_limit_fnu"]))
     lines.append("6. Took each 2027 batch in lab_batch_export_2027.csv once, computed each control aliquot as net mass "
-                 "over volume against its lot's concentration in SMA_quality_statement_2027.pdf (KS-26-11 50.0, "
-                 "KS-27-06 54.0 mg/L), applied section 4's three checks, and counted each station's sample lines in "
-                 "the %d failed batches." % len(fig["asks"]["failed_batches"]))
+                 "over volume against its lot's concentration in SMA_quality_statement_2027.pdf (%s mg/L), applied "
+                 "section 4's three checks, and counted each station's sample lines in the %d failed batches."
+                 % (", ".join("%s %.1f" % kv for kv in fig["steps"]["lot_concentration_mg_l"].items()),
+                    len(fig["asks"]["failed_batches"])))
     lines.append("7. Re-issue the 2027 loads of %s.\n" % over)
     lines.append("## 4. Deliverable Answers\n")
     lines.append("### sediment_load_review_2027.xlsx\n")

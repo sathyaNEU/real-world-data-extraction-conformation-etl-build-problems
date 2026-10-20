@@ -92,6 +92,23 @@ REFLEXES = ["refit", "with_discharge", "discharge_and_season", "season", "hour_o
             "trip_type_and_more", "routine_only", "only_2027", "flow_class"]
 
 
+def threshold_sweep(target, rec, smp, ths):
+    """the golden relation at each threshold of the smoothed rate of rise -> {threshold: {station: published against it, %}}"""
+    pub = S.read_report(target)
+    out = {th: {} for th in ths}
+    for code in sorted(smp["station"].unique()):
+        d = station_arrays(rec, smp, code)
+        q, k, y, m = d["q"], d["k"], d["y"], d["y27"]
+        lT = np.log10(d["T"])
+        rs = np.convolve(np.gradient(q) / 0.25 / q, np.ones(4) / 4, "same")
+        for th in ths:
+            ind = (rs > th).astype(float)
+            b, bcf = _ols(np.c_[np.ones(len(k)), lT[k], ind[k]], y)
+            L = float(np.sum(10 ** (b[0] + b[1] * lT[m] + b[2] * ind[m]) * bcf * q[m]) * 900 / 1e6)
+            out[th][code] = 100 * (pub[code]["load_t"] / L - 1)
+    return out
+
+
 def all_routes(target, rec=None, smp=None, shift_steps=0):
     rec = S.record(target) if rec is None else rec
     smp = S.samples(target) if smp is None else smp

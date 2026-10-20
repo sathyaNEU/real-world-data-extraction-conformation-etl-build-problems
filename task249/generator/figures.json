@@ -59,6 +59,19 @@
    "LLU": 1853
   }
  },
+ "steps": {
+  "rising_threshold_pct_per_h": 1.5,
+  "rising_corridor_pct_per_h": [
+   0,
+   3
+  ],
+  "interval_seconds": 900,
+  "old_sonde_limit_fnu": 1000,
+  "lot_concentration_mg_l": {
+   "KS-26-11": 50.0,
+   "KS-27-06": 54.0
+  }
+ },
  "asks": {
   "hours_without_usable_reading": {
    "SKB": 702,

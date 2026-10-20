@@ -21,9 +21,9 @@ PLAN_DATE = dt.date(2028, 3, 20)       # the flushing plan is fixed
 YEARS = (2025, 2026, 2027)
 T0 = dt.datetime(2025, 1, 1, tzinfo=dt.timezone.utc)
 
-OLD_SENSOR = "Turbitek TS-10"
+OLD_SENSOR = "Ternvik TS-10"
 OLD_LIMIT = 1000.0
-NEW_SENSOR = "Turbitek TS-40W"
+NEW_SENSOR = "Ternvik TS-40W"
 NEW_LIMIT = 4000.0
 
 REVIEW_TOLERANCE = 15.0   # per cent, either way

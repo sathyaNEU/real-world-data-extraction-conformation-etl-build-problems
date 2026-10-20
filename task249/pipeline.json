@@ -1,11 +1,11 @@
 {
  "task": "task249",
  "owner": "perssathya",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "A competent analyst refits each station's turbidity regression (discharge or season added where significant), reproduces the published loads and re-issues no station, treating the calibration samples as a fair draw of the year when sand moves only on rising water and at four stations most samples were taken on rising water; conditioning the relation on rising water, read from the 15-minute discharge, puts SKB, JVB, FND and ESK over.",
  "architecture": 5,
@@ -15,20 +15,20 @@
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (as-of 2028-03-13), no LEAK",
+  "reader": "two scored readers, both exit 1: call 2 of 2, asks 28 of 28"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
+  "nearest": "task452 v1 at 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW (ask pins: old flag letters, the export's nominal)",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Architecture 5 (sediment surrogate loads conditioned on rising water), drawn and registered 2026-10-20 after the author asked for a fresh rebuild of the retired number. Generator green (458 checks, verifier 0 FAIL, two byte-identical builds, target.zip cut), precut exit 0. Next: the rest of stage 3's free gates (figures_check, leak.py, guard surface and heart, house fixes, golden realism), then stage 4: two scored readers and the judge.",
+ "resume": "Architecture 5 spent at stage 4 on 2026-10-20: both scored readers landed the call (rising-limb conditioning, the field's hysteresis reflex) and all 28 ask figures. A sixth architecture is past the author file's cap, so it is the author's call: re-root on one of the four candidates in the design note's '## Candidates for architecture 6', or retire the number.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -50,6 +50,10 @@
    "architecture": 4,
    "status": "retired 2026-10-20 at the author's choice; un-retired the same day for a fresh rebuild",
    "commit": "e0e8160a"
+  },
+  {
+   "architecture": 5,
+   "status": "spent 2026-10-20 at stage 4: both scored readers landed the call and every ask"
   }
  ]
 }

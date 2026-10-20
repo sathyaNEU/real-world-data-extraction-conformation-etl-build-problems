@@ -86,7 +86,8 @@ def run(target):
     reg = R.register(H)
     D.register_xlsx(os.path.join(target, F["register"]), reg)
     R.maintenance_log(H, rng).to_csv(os.path.join(target, F["log"]), index=False, encoding="utf-8")
-    R.precipitation(sim.storms(), rng).to_csv(os.path.join(target, F["precip"]), index=False, encoding="utf-8")
+    R.precipitation(sim.storms(), rng).to_csv(os.path.join(target, F["precip"]), index=False, encoding="utf-8",
+                                             sep=";", decimal=",")
     R.reservoir_levels(rng).to_csv(os.path.join(target, F["reservoirs"]), index=False, encoding="utf-8")
     pub = publish(rec, S)
     D.request(os.path.join(target, F["request"]), F)
