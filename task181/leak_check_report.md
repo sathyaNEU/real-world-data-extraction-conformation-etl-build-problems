@@ -104,3 +104,38 @@ Realism tells (minor): Table 1's coinciding 28.6 rates (checked correct); flight
 traffic-volume rows (plausible for a multi-volume join); the planning CSV's terse column names and single issue
 number; tidy PDFs without logos or stamps; the manual's revision 8 against the register's revision 14 valid from
 19 March 2026. No strong machine tells. Nothing to repair.
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+Run because this build shipped with no scored reader evidence. The reader held only a fresh unzip of
+`target.zip` and `prompt.txt`, with the figure names (not values) from `generator/figures.json`, and was
+scored key by key by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **1 of 1** |
+| ask figures | **86 of 141** (61.0 per cent) |
+
+It filed the right sector as the only one over tolerance and reconstructed the decisive step whole: that
+the occurrences are a climbing or descending flight crossing a level flight's cruise level, so the
+exposure is level crossings rather than flight hours, and that this sector's crossings jump about
+fourfold on a flight-hour rise of a tenth, which a flight-hour projection hides. It also reported the
+sector's flight-hour record rate as the lowest of the eight, which is the trap stated from the inside.
+
+**The one encouraging detail, and it is not enough.** Asked what told it to take the step, it said
+plainly that **nothing in the files states crossings as a method and that it inferred it from the data**.
+So this build's readability screen holds where four of the others' do not: the pack does not teach the
+construction. It was landed anyway, which says the gap between the easy route and the decisive one was
+too small to stop a careful reader rather than that the route was signposted. That is a magnitude
+failure, not a leak, and it is repaired by widening the separation at stage 2.
+
+```
+call figures   1 of 1 hit
+ask figures    86 of 141 hit (61.0 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```

@@ -1,52 +1,52 @@
 {
- "task": "task181",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "human-factors-ergonomics",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-13",
- "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
- "architecture": 4,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-12"
- },
- "leak": {
-  "leak_py": "REVIEW (2026-10-12), every line harmless",
-  "reader": "pass 1 and pass 2 (Sonnet, 2026-10-12): nothing for questions 1 to 4, question 5 sentences execute to the golden; pass 1 realism tells fixed, pass 2 minor"
- },
- "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task183 0.06 (driver); surface task183 0.100"
- },
- "judge": {
-  "verdict": "DETERMINISTIC (pass 2)",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md (pass 1 FIX_NOW: delay population, pooled-rate grading, bandbox remark; fixed)"
- },
- "returned": [
-  {
-   "date": "2026-10-11",
-   "portal": "architecture 2: determinism QC failed (PR-07 4.2 fork); re-rooted",
-   "repair": "design",
-   "commit": ""
+  "task": "task181",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "human-factors-ergonomics",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
+  "architecture": 4,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-12"
   },
-  {
-   "date": "2026-10-13",
-   "portal": "author audit: 10/10 alignment",
-   "repair": "alignment",
-   "commit": ""
-  }
- ],
- "resume": "",
- "approved": null,
- "delivered": "2026-10-12",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "alignment_pass": "design note and card: the domain test names the traffic-complexity count, not controller workload"
+  "leak": {
+    "leak_py": "REVIEW (2026-10-12), every line harmless",
+    "reader": "wave 8 audit: call landed, 86 of 141 ask figures, Gate F failed"
+  },
+  "duplicate_check": {
+    "heart": "WARN",
+    "nearest": "task183 0.06 (driver); surface task183 0.100"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC (pass 2)",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md (pass 1 FIX_NOW: delay population, pooled-rate grading, bandbox remark; fixed)"
+  },
+  "returned": [
+    {
+      "date": "2026-10-11",
+      "portal": "architecture 2: determinism QC failed (PR-07 4.2 fork); re-rooted",
+      "repair": "design",
+      "commit": ""
+    },
+    {
+      "date": "2026-10-13",
+      "portal": "author audit: 10/10 alignment",
+      "repair": "alignment",
+      "commit": ""
+    }
+  ],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. Unlike the other four audited builds the reader said nothing in the pack states the method and it inferred the crossings exposure from the data, so the readability screen holds here and the failure is magnitude: the easy route sat close enough that a careful reader crossed the gap. Widen the separation between the flight-hour route and the crossings route at stage 2 rather than re-siting the signposts.",
+  "approved": null,
+  "delivered": "2026-10-12",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "alignment_pass": "design note and card: the domain test names the traffic-complexity count, not controller workload"
 }
