@@ -22,7 +22,11 @@ def write(path, x, n):
                 distractors=[dict(file=W.FILES["ozone"], why="ambient ozone at the region's monitors: air quality, "
                                   "not any unit's emissions"),
                              dict(file=W.FILES["allowances"], why="allowance holdings by facility: a compliance "
-                                  "position, not a unit's emission rate")],
+                                  "position, not a unit's emission rate"),
+                             dict(file=W.FILES["invoices"], why="the gas supplier's invoices: what the plants paid "
+                                  "for gas, neither emissions nor outages"),
+                             dict(file=W.FILES["terms"], why="the gas supply agreement: the gas day and the price "
+                                  "basis, which no answer uses")],
                 deliverables=[W.GOLDEN["workbook"], W.GOLDEN["memo"]],
                 stated_inputs=["%.3f" % W.TARGET])
     json.dump(meta, open(path, "w", encoding="utf-8"), indent=1)

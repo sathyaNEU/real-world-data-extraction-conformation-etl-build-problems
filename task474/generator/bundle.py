@@ -143,50 +143,31 @@ def prices(target, route="next"):
     return out
 
 
-def ask_a(target, route="gasday"):
-    """Each unit's ozone-season fuel cost: each operating hour's heat input at the invoice price of its gas day."""
-    fac = {}
-    for r in _rows(find(target, "dahs_hourly_export")):
-        fac[r["UNIT_ID"]] = r["FACILITY_NAME"]
-    price = prices(target, route if route in ("prev", "interp", "skip") else "next")
-    rec = record(target)
-    out = {}
-    for u, o in rec.items():
-        tot = 0.0
-        for t, q in zip(o["stamps"], o["heat"]):
-            if route in ("gasday", "prev", "interp", "skip"):
-                gd = (_local(t) - dt.timedelta(hours=9)).date()
-            elif route == "standard9":
-                gd = (t - dt.timedelta(hours=9)).date()
-            else:
-                gd = t.date()
-            k = (fac[u], gd.isoformat())
-            tot += q * price.get(k, 0.0)
-        out[u] = tot
-    return out
-
-
-def ask_b(target, route="golden"):
-    """Each unit's ozone-season equivalent forced outage rate (IEEE 762), per cent:
-    100 (FOH + EFDH) / (FOH + SH + EFDHRS), every hour local time from 1 May to 30 September. FOH: hours in a full
-    forced outage (U1, U2, U3), a later report replacing an earlier one it overlaps on the same unit. SH: OP_TIME
-    summed. EFDH: each D1 or D2 hour, derate_mw over nameplate MW times the hour's OP_TIME. EFDHRS: each D1 or D2 hour
-    outside a full outage, derate_mw over nameplate MW times the part of the hour the unit was not operating. Routes for the checks:
-    "rows" counts operating rows for SH; "nors" leaves out EFDHRS; "allder" counts every derate hour, in an outage or
-    not, at its full derate; "noresolve" counts every full outage report; "standard" reads the events on the DAHS
-    clock."""
+def _outage_terms(target, route="golden"):
+    """Each combined-cycle unit's IEEE 762 terms over the ozone season, every hour local time from 1 May to
+    30 September: FOH (hours in a full forced outage, U1 to U3, a later report replacing an earlier full outage it
+    overlaps on the unit), the number of forced outages, SH (operating time), RSH (hours neither operating nor in a
+    full outage, the part of a part hour not operating included), the actual starts, EFDH (each D1 or D2 hour outside
+    a full outage at derate_mw over nameplate MW) and EFDHRS (the part of EFDH falling in reserve shutdown).
+    Routes for the checks: "rows" counts operating rows for SH; "noresolve" keeps every full outage report;
+    "standard" reads the events on the DAHS clock; "service" counts derates in service only."""
     a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
     cap = {}
     ws = load_workbook(find(target, "generating_unit_register"), read_only=True).active
     for r in ws.iter_rows(min_row=5, values_only=True):
         if r and r[0]:
             cap[r[0]] = float(r[3])
-    op = {}
+    op, prev_on, starts = {}, {}, {}
     for r in _rows(find(target, "dahs_hourly_export")):
+        u = r["UNIT_ID"]
         t = dt.datetime.combine(dt.date.fromisoformat(r["OP_DATE"]), dt.time(int(r["OP_HOUR"])))
         loc = t if route == "standard" else _local(t)
+        f = float(r["OP_TIME"] or 0)
         if a <= loc < b:
-            op[(r["UNIT_ID"], loc)] = float(r["OP_TIME"] or 0)
+            op[(u, loc)] = f
+            if f > 0 and not prev_on.get(u, False):
+                starts[u] = starts.get(u, 0) + 1
+        prev_on[u] = f > 0
     evs, der = {}, {}
     for r in _rows(find(target, "gads_event_report")):
         s0 = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
@@ -196,6 +177,9 @@ def ask_b(target, route="golden"):
         elif r["event_type"] in ("D1", "D2"):
             der.setdefault(r["unit"], []).append((s0, e0, float(r["derate_mw"])))
     out = {}
+    hours = {}
+    for (w, t) in op:
+        hours.setdefault(w, []).append(t)
     for u in cc_units(target):
         keep = []
         if route == "noresolve":
@@ -204,6 +188,7 @@ def ask_b(target, route="golden"):
             for e in sorted(evs.get(u, []), key=lambda e: (e[2], e[3]), reverse=True):
                 if not any(e[0] < k[1] and k[0] < e[1] for k in keep):
                     keep.append(e)
+        keep = [e for e in keep if e[0] < b and a < e[1]]
         fo = set()
         foh = 0
         for s0, e0, *_ in keep:
@@ -212,21 +197,46 @@ def ask_b(target, route="golden"):
                 foh += 1 if route == "noresolve" or t not in fo else 0
                 fo.add(t)
                 t += dt.timedelta(hours=1)
-        hours = [t for (w, t) in op if w == u]
-        sh = sum(1 for t in hours if op[(u, t)] > 0) if route == "rows" else sum(op[(u, t)] for t in hours)
+        hs = hours.get(u, [])
+        sh = sum(1 for t in hs if op[(u, t)] > 0) if route == "rows" else sum(op[(u, t)] for t in hs)
+        rsh = sum(1 - op[(u, t)] for t in hs if t not in fo)
         efdh = efdhrs = 0.0
         for s0, e0, mw in der.get(u, []):
             t = max(a, s0)
             while t < min(b, e0):
-                f = op.get((u, t), 0.0)
-                if route == "allder":
-                    efdh += mw / cap[u]
-                elif t not in fo:
-                    efdh += mw / cap[u] * f
-                    if route != "nors":
-                        efdhrs += mw / cap[u] * (1 - f)
+                if t not in fo:
+                    f = op.get((u, t), 0.0)
+                    efdh += mw / cap[u] * (f if route == "service" else 1.0)
+                    efdhrs += mw / cap[u] * (1 - f)
                 t += dt.timedelta(hours=1)
-        out[u] = 100.0 * (foh + efdh) / (foh + sh + efdhrs)
+        out[u] = dict(foh=foh, n_fo=len(keep), sh=sh, rsh=rsh, starts=starts.get(u, 0), efdh=efdh, efdhrs=efdhrs)
+    return out
+
+
+def ask_b(target, route="golden"):
+    """Each unit's ozone-season equivalent forced outage rate (IEEE 762), per cent: 100 (FOH + EFDH) / (FOH + SH +
+    EFDHRS). "nors" leaves EFDHRS out of the denominator; other routes as _outage_terms."""
+    out = {}
+    for u, x in _outage_terms(target, route).items():
+        rs = 0.0 if route == "nors" else x["efdhrs"]
+        out[u] = 100.0 * (x["foh"] + x["efdh"]) / (x["foh"] + x["sh"] + rs)
+    return out
+
+
+def ask_a(target, route="golden"):
+    """Each unit's ozone-season demand equivalent forced outage rate (IEEE 762, EFORd), per cent:
+    100 (f FOH + fp EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH over the number of forced
+    outages, T = RSH over the attempted starts, D = SH over the actual starts, fp = SH / AH and AH = SH + RSH.
+    "plain" is the plain rate with f and fp at one; "nofp" leaves fp at one; other routes as _outage_terms."""
+    out = {}
+    for u, x in _outage_terms(target, route).items():
+        r = x["foh"] / x["n_fo"] if x["n_fo"] else float("inf")
+        T = x["rsh"] / x["starts"] if x["starts"] else float("inf")
+        D = x["sh"] / x["starts"] if x["starts"] else float("inf")
+        inv = lambda v: 0.0 if v == float("inf") or v == 0 else 1.0 / v
+        f = (inv(r) + inv(T)) / (inv(r) + inv(T) + inv(D)) if route != "plain" else 1.0
+        fp = x["sh"] / (x["sh"] + x["rsh"]) if route not in ("plain", "nofp") else 1.0
+        out[u] = 100.0 * (f * x["foh"] + fp * x["efdh"]) / (x["sh"] + f * x["foh"])
     return out
 
 

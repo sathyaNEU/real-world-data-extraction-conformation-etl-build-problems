@@ -155,37 +155,14 @@ def main(target, gdir, x):
         check("H25: %s reads in pypdf (strict) and pdftotext" % W.FILES[k], key in a1 and key in a2)
     # the asks
     a = B.ask_a(target)
-    for r in ("prev", "interp", "skip", "standard9", "calendar"):
+    for r, k in (("plain", 9), ("nofp", 9), ("rows", 9), ("service", 5), ("noresolve", 9)):
         cc = B.ask_a(target, r)
-        mv = [u for u in rec if round(a[u] / 100) != round(cc[u] / 100)]
-        check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= 7)
-    # every invoice line's quantity ties to its plant's burn over the gas days since the point's previous line
-    import datetime as dt_
-    burn = {}
-    for r in csv.DictReader(open(os.path.join(target, W.FILES["dahs"]), encoding="utf-8")):
-        if r["HEAT_INPUT_MMBTU"]:
-            t = dt_.datetime(*map(int, r["OP_DATE"].split("-")), int(r["OP_HOUR"]))
-            k = (r["FACILITY_NAME"], t.date())
-            burn[k] = burn.get(k, 0.0) + float(r["HEAT_INPUT_MMBTU"])
-    lines = {}
-    for r in csv.DictReader(open(os.path.join(target, W.FILES["invoices"]), encoding="utf-8")):
-        lines.setdefault(r["delivery_point"], []).append((dt_.date.fromisoformat(r["gas_day"]), float(r["quantity_dth"])))
-    bad, n_strip = 0, 0
-    for p, ls in lines.items():
-        if p == "Holt Creek Station":
-            continue
-        ls.sort()
-        for (d0, _q0), (d1, q1) in zip(ls, ls[1:]):
-            tot = sum(burn.get((p, d0 + dt_.timedelta(days=k)), 0.0) for k in range(1, (d1 - d0).days + 1))
-            n_strip += (d1 - d0).days > 1
-            bad += abs(tot - q1) > .2
-    check("ask A fair: every invoice line's quantity is its plant's metered burn (midnight to midnight, standard time) "
-          "since the point's previous line (%d lines off, "
-          "%d lines covering more than one gas day)" % (bad, n_strip), bad == 0)
-    edge = min(50 - abs(a[u] - 100 * round(a[u] / 100)) for u in rec)
-    check("ask A bins: every unit's cost at least $15 inside its hundred-dollar cell (nearest %.0f)" % edge, edge >= 15)
+        mv = [u for u in rec if round(a[u], 1) != round(cc[u], 1)]
+        check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
+    ea = min(.05 - abs(a[u] - round(a[u], 1)) for u in rec)
+    check("ask A bins: every unit's demand rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % ea, ea >= .01)
     b = B.ask_b(target)
-    for r, k in (("rows", 9), ("nors", 4), ("allder", 6), ("noresolve", 9)):
+    for r, k in (("rows", 9), ("nors", 5), ("service", 7), ("noresolve", 9)):
         bs = B.ask_b(target, r)
         mv = [u for u in rec if round(b[u], 1) != round(bs[u], 1)]
         check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
@@ -194,8 +171,8 @@ def main(target, gdir, x):
                                                                            for u in rec), True)
     eb = min(.05 - abs(b[u] - round(b[u], 1)) for u in rec)
     check("ask B bins: every unit's rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % eb, eb >= .01)
-    check("separation: the call reads only the DAHS export and the register; the asks read the invoices and the event "
-          "report", True)
+    check("separation: the call reads the DAHS NOx and the tickets; the asks read the event report, the register's "
+          "nameplates and the DAHS operating time, never a NOx value", True)
     f = json.load(open(os.path.join(HERE, "figures.json")))
     check("figures.json carries the call", f["call"] == GOLD)
     print("checks: %d run, %d failed" % (n[0], len(fails)))

@@ -42,15 +42,13 @@ def figures(target):
     des = sorted(u for u in units if rate[u] >= W.TARGET)
     a, b = B.ask_a(target), B.ask_b(target)
     rows = {u: dict(mwh=half_up(sum(rec[u]["load"])), hours=len(rec[u]["load"]), designated=u in des,
-                    fuel=hundred(a[u]), efor=round(b[u], 1), plant=W.CC[u][0]) for u in units}
+                    eford=round(a[u], 1), efor=round(b[u], 1), plant=W.CC[u][0]) for u in units}
     gaps = dict(all=sum(v is None for u in units for v in rec[u]["nox"]), air=sum(sum(rec[u]["air"]) for u in units))
     after = {u: round(M.after_rate(rec[u]), 4) for u in units if M.after_rate(rec[u]) is not None}
     return dict(call=des, gaps=gaps, after=after, state_route=sorted(u for u in units if M.rate(rec[u], "state") >= W.TARGET), n_call=len(des), n_units=len(units), units=units, rows=rows,
                 rate={u: round(rate[u], 4) for u in units}, load_route=sorted(u for u in units if load_rate[u] >= W.TARGET),
                 target="%.3f" % W.TARGET, sections=DC.SECTIONS,
-                asks=dict(fuel={u: rows[u]["fuel"] for u in units}, efor={u: rows[u]["efor"] for u in units},
-                          fuel_total=sum(r["fuel"] for r in rows.values()),
-                          ))
+                asks=dict(efor={u: rows[u]["efor"] for u in units}, eford={u: rows[u]["eford"] for u in units}))
 
 
 def write_workbook(path, f):
@@ -59,13 +57,13 @@ def write_workbook(path, f):
     ws.title = "Units"
     ws.append(["Combined-cycle units: 2026 ozone season (1 May to 30 September)"])
     ws.append([])
-    hdr = ["Unit", "Facility", "Designated for SCR upgrade", "Fuel cost ($)", "Equivalent forced outage rate (%)"]
+    hdr = ["Unit", "Facility", "Designated for SCR upgrade", "EFOR (%)", "EFORd (%)"]
     ws.append(hdr)
     for c in ws[3]:
         c.font = Font(bold=True)
     for u in f["units"]:
         r = f["rows"][u]
-        ws.append([u, r["plant"], "Yes" if r["designated"] else "No", r["fuel"], r["efor"]])
+        ws.append([u, r["plant"], "Yes" if r["designated"] else "No", r["efor"], r["eford"]])
     ws.append([])
     ws.append(["Designated: %s (%d of %d)." % (", ".join(f["call"]), f["n_call"], f["n_units"])])
     ws.append(["Prepared by %s, %s." % (W.PEOPLE["engineer"][0], W.MEMO_DATE)])
@@ -123,10 +121,10 @@ def write_memo(path, f):
                    "each hour's metered heat input. Filled the ordinary way, CB-2 and AF-1 would have stayed under "
                    "the target.", body),
          chart(f), Spacer(1, 6)]
-    t = [["Unit", "Facility", "Designated", "Fuel cost", "EFOR (%)"]]
+    t = [["Unit", "Facility", "Designated", "EFOR (%)", "EFORd (%)"]]
     for u in f["units"]:
         r = f["rows"][u]
-        t.append([u, r["plant"], "Yes" if r["designated"] else "No", "${:,}".format(r["fuel"]), "%.1f" % r["efor"]])
+        t.append([u, r["plant"], "Yes" if r["designated"] else "No", "%.1f" % r["efor"], "%.1f" % r["eford"]])
     tb = Table(t, colWidths=[.7 * inch, 1.6 * inch, 1.0 * inch, 1.2 * inch, 1.4 * inch])
     tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
                             ("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("ALIGN", (2, 0), (-1, -1), "RIGHT")]))

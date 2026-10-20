@@ -13,7 +13,7 @@ from openpyxl.styles import Font                                    # noqa: E402
 
 import world as W   # noqa: E402
 
-SECTIONS = {"units": "2.1", "rate": "2.2", "designation": "2.3", "fuel": "3.1", "outages": "3.2"}
+SECTIONS = {"units": "2.1", "rate": "2.2", "designation": "2.3", "rates": "3.1", "outages": "3.2"}
 BODY = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.5, spaceAfter=6)
 HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, leading=14, spaceBefore=8, spaceAfter=4)
 TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4)
@@ -55,19 +55,15 @@ def write_guidelines(path):
          Paragraph("2.3 <b>Target.</b> A unit whose 2026 ozone-season NOx rate is 0.170 lb per MWh or more is "
                    "designated for the program.", BODY),
          Paragraph("3. The budget memo", HEAD),
-         Paragraph("3.1 For every combined-cycle unit, the cost of the gas it burned in its 2026 ozone-season "
-                   "operating hours, each hour's gas priced at the price on the supplier's invoice for the gas day the "
-                   "hour falls in. A unit's gas is its heat input; one dekatherm is one MMBtu.", BODY),
-         Paragraph("3.2 For every combined-cycle unit, its equivalent forced outage rate over the 2026 ozone "
-                   "season, as IEEE Std 762 defines it, in per cent: 100 times (FOH + EFDH) over (FOH + SH + EFDHRS), "
-                   "on the hours from 1 May to 30 September 2026, local time. FOH are the hours in a full forced "
-                   "outage, the outage event report's events of types U1, U2 and U3; where a later report of a full "
-                   "outage overlaps an earlier one on the same unit, the later report stands. SH is the unit's "
-                   "operating time in the data acquisition system's hourly record. A forced derate (types D1 and D2) "
-                   "reduces the unit by its derate_mw against its nameplate MW in the generating unit register; EFDH "
-                   "counts each derate hour at that share times the unit's operating time in the hour, and EFDHRS at "
-                   "that share times the rest of the hour, the unit in reserve shutdown; a derate's hours inside a "
-                   "full forced outage count in neither.", BODY),
+         Paragraph("3.1 For every combined-cycle unit, its equivalent forced outage rate and its demand "
+                   "equivalent forced outage rate over the 2026 ozone season, as IEEE Std 762 defines them, in per "
+                   "cent, on the hours from 1 May to 30 September 2026, local time.", BODY),
+         Paragraph("3.2 The outages are the outage event report's: full forced outages are its events of types U1, U2 "
+                   "and U3, and where a later report of a full outage overlaps an earlier one on the same unit, the "
+                   "later report stands and the earlier one counts for none of its hours; forced derates are its events of types D1 and D2, each reducing the unit by "
+                   "its derate_mw against its nameplate MW in the generating unit register. The unit's operating time "
+                   "is the data acquisition system's hourly record. Every start a unit attempted in the season "
+                   "succeeded.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
                    "%s." % W.BOARD_DATE, BODY)]

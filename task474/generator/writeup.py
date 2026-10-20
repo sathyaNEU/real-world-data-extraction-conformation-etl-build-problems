@@ -56,26 +56,25 @@ def write(fig_path, out_path):
          "GLOAD_MW over its measured hours more than 3 hours after a start.",
          "5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated "
          "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
-         "6. Priced each operating hour's HEAT_INPUT_MMBTU at the %s price for the gas day it falls in, the hour "
-         "moved from standard time to Central clock time and then back 9 hours (%s, Section 1; rule %s); a gas day "
-         "with no invoice line of its own at the delivery point takes the price on the point's next line, which "
-         "bills the gas days since the point's previous line together (weekend and holiday gas, traded the business "
-         "day before), its quantity the plant's metered burn over those days: $%s in all." % (
-             F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
-         "7. Took each unit's equivalent forced outage rate as rule %s files it, on local time from 1 May to 30 "
-         "September 2026, from %s (FOH from the U1, U2 and U3 events, a later-filed full outage replacing an earlier "
-         "one it overlaps on the same unit; EFDH and EFDHRS from the D1 and D2 events, each hour's derate_mw over "
-         "the register's nameplate MW split by the hour's OP_TIME, nothing inside a full outage) and SH from OP_TIME "
-         "summed, the DAHS hours moved forward an hour to local time." % (sec["outages"], F["events"]),
+         "6. Took each unit's ozone-season terms on local time from 1 May to 30 September 2026 (rule %s), the DAHS "
+         "hours moved forward an hour: FOH, the hours inside a U1, U2 or U3 event in %s, a later-filed full outage "
+         "replacing an earlier one it overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, "
+         "the hours outside a full outage less their OP_TIME; the starts, the operating hours that follow a hour "
+         "without operation; EFDH, each D1 or D2 hour outside a full outage at derate_mw over the register's "
+         "nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME)." % (
+             sec["outages"], F["events"]),
+         "7. Equivalent forced outage rate: 100 (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate: 100 (f FOH + fp "
+         "EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH per forced outage, T = RSH per "
+         "attempted start, D = SH per actual start (every start attempted succeeded), fp = SH / (SH + RSH).",
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",
-         "1. Every combined-cycle unit: designated or not, 2026 ozone-season fuel cost (nearest hundred dollars), "
+         "1. Every combined-cycle unit: designated or not, 2026 ozone-season equivalent forced outage rate and demand "
          "equivalent forced outage rate (per cent, one decimal):"]
     for u in f["units"]:
         r = rows[u]
-        L.append("   - %s: %s; $%s; equivalent forced outage rate %.1f%%" % (
-            u, "designated" if r["designated"] else "not designated", fmt(r["fuel"]), r["efor"]))
+        L.append("   - %s: %s; equivalent forced outage rate %.1f%%; demand equivalent forced outage rate %.1f%%" % (
+            u, "designated" if r["designated"] else "not designated", r["efor"], r["eford"]))
     L += ["", "### %s" % W.GOLDEN["memo"], "",
           "1. The designated units for the Board: %s." % _join(des),
           "2. Bar chart of every combined-cycle unit's 2026 ozone-season NOx rate (lb per gross MWh) against the %s "

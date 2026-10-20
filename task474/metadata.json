@@ -83,6 +83,14 @@
   {
    "file": "nox_allowance_holdings_2026.xlsx",
    "why": "allowance holdings by facility: a compliance position, not a unit's emission rate"
+  },
+  {
+   "file": "gas_supply_daily_invoices_2026.csv",
+   "why": "the gas supplier's invoices: what the plants paid for gas, neither emissions nor outages"
+  },
+  {
+   "file": "gas_supply_agreement_excerpt.pdf",
+   "why": "the gas supply agreement: the gas day and the price basis, which no answer uses"
   }
  ],
  "deliverables": [

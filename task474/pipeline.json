@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "rounds 1-3: six of six readers missed the call (five units); round 3 asks kept 10 and 1 of 18; round 4 (readers 7, 8) running on the pack with the judge's filings"
+  "reader": "rounds 1-4: eight of eight readers missed the call; asks kept 17-18 (r1-2), 10 and 1 (r3), 12 and 18 (r4) of 18: filed conventions are executed; asks rebuilt on IEEE 762 (EFOR and EFORd by the standard's definitions); round 5 next"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -24,12 +24,12 @@
   "nearest": "task474 v2 at 0.28 (this slot)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "note": "round 3: SCR-to-air link unfiled, pooled start profile, ask conventions unfiled; all filed or ruled out by the record in the generator; round-4 pass running"
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "note": "round 4: call reproduced (DF-1 at or above 0.170 in 99.5 per cent of bootstrap draws); 'later report stands' pinned in rule 3.2"
  },
  "returned": [],
- "resume": "stage 4 round 4 in flight: score readers 7 and 8 (scratchpad leak-task474c-r7, r8), read the round-4 judge, then ship or repair",
+ "resume": "stage 4: finish the derate-scale bin search (DERATE_SCALE in world.py), full build, round-5 readers (keys asks.efor.*, asks.eford.*) and one judge pass",
  "approved": null,
  "delivered": null,
  "portal": null,

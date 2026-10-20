@@ -22,7 +22,7 @@ def main(target, golden):
             fails.append(label)
     g = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(target, "scr_upgrade_program")).pages))
     ok("pdf read back: rules 2.2, 2.3, 3.1, 3.2", "the NOx the unit emitted while operating" in g and "0.170 lb per MWh"
-       in g and "gas day the hour falls in" in g and "IEEE Std 762" in g)
+       in g and "IEEE Std 762" in g)
     rec = B.record(target)
     call = M.designated(rec, "golden")
     ok("the call: %s" % ", ".join(call), call == ["AF-1", "AF-2", "CB-1", "CB-2", "DF-1", "DF-3", "SR-1"])
@@ -31,9 +31,8 @@ def main(target, golden):
     rows = {r[0]: r for i, r in enumerate(ws.iter_rows(values_only=True)) if i >= 3 and r and r[0] in rec}
     for u in sorted(rec):
         w = rows[u]
-        c = 100 * int(a[u] / 100.0 + .5)
-        ok("%s: %s, $%d, EFOR %.1f" % (u, w[2], c, b[u]),
-           (w[2] == "Yes") == (u in call) and w[3] == c and abs(w[4] - round(b[u], 1)) < 1e-9)
+        ok("%s: %s, EFOR %.1f, EFORd %.1f" % (u, w[2], b[u], a[u]),
+           (w[2] == "Yes") == (u in call) and abs(w[3] - round(b[u], 1)) < 1e-9 and abs(w[4] - round(a[u], 1)) < 1e-9)
     m = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(golden, "scr_upgrade_designations")).pages))
     ok("the memo designates the seven", "AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1" in m)
     print("verify: %d failures" % len(fails))
