@@ -20,8 +20,8 @@
     "none"
   ],
   "generators": [
-    "G7",
-    "G14"
+    "G14",
+    "G7"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -125,5 +125,5 @@
   ],
   "notes": "architecture 3 drawn 2026-10-20 after architecture 2 was spent at stage 4",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-20T13:56:06Z"
+  "registered": "2026-10-20T14:25:32Z"
 }

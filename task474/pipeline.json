@@ -19,7 +19,8 @@
   "reader": "round 1 (readers 1 and 2) running"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 (differentiation lines for task193 and task254)",
+  "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
+  "heart": "WARN 2026-10-20",
   "nearest": "task474 v2 at 0.28 (this slot)"
  },
  "judge": {
