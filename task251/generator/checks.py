@@ -1,6 +1,6 @@
 """The generator's assertions on the world and on the cut pack: the golden is the world's truth and every estimator
 of a single factor agrees on it, every named wrong route files another list, the easy route fails on the clean truth
-(dataset-generation 7.1), every semantic fork of the call is closed (SF1 to SF11), the asks' figures are the world's
+(dataset-generation 7.1), every semantic fork of the call is closed (SF1 to SF11, SF17), the asks' figures are the world's
 and do not move with any convention the pack leaves open, and the pack gates hold.
 
     python3 checks.py [target]      exit 0 when every check passes"""
@@ -151,6 +151,8 @@ def main(T=None):
     ok(E.duplicated(["matricola", "n_memoria"]).sum() > 1000, "SF12 re-sent copies present")
     moved = [m for m in set(D["hist"]["matricola"]) if (D["hist"]["matricola"] == m).sum() > 1]
     ok(len(moved) == 7, "SF14 seven meters moved")
+    # SF17: a listed meter's ward and hospital, the register's current assignment or where it stood when paired
+    ok(not set(moved) & set(G), "SF17 no listed meter moved, so its ward and hospital read alike")
     summer = [(dt.datetime.strptime(b, "%d/%m/%Y %H:%M") - dt.datetime.strptime(a[:16], "%d/%m/%Y %H:%M")
                ).total_seconds() / 60 for a, b, s, d in zip(pr["data_ora_test"], pr["data_ora_prelievo"], Pf["sched"],
                                                             Pf["dd"]) if s and dt.date(2027, 4, 1) <= d <= dt.date(2027, 9, 30)]

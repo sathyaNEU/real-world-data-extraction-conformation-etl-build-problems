@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-20 (wave 4 fully shipped, task243 to task248; wave 5: task249's fresh rebuild, architecture 5, spent at stage 4 and PAUSED for the author's call on a sixth; task250 in draw, then task251 and task252). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-20 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task249's architecture 5 and task251's architecture 3 spent at stage 4, both PAUSED for the author's call; task252 waits, since two paused builds fill the author's two slots). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,14 +18,17 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task250: DRAWN 2026-10-20, architecture 1; in stage 2.**
-- Physical & Environmental Sciences, sensor calibration and measurement x DQ. The Consorcio Agroclimático del Ebro
-  Medio's 148 agro-climatic stations: which drift-alert setting the daily quality control runs from January 2028 to
-  keep drift-alert visits within 2.5 a month, and the alerts a month it raises, when 34 programme stations close.
-- Stump: the quality control reads each station against its three nearest reporting neighbours; with the closures
-  many continuing stations are read against farther neighbours while their limits stay at the old spread. The replay
-  of the record as it ran files 3.5; the re-run without the closing stations files 4.0 (prototype).
-- Next: stage 2 (simulator tuned to the ladder, asks and devices, fork and closure tables, prompt, precut).
+**task251: PAUSED 2026-10-20; architecture 3 spent at stage 4; a fourth architecture or retirement is the author's call.**
+- General Statistics, missing data, censoring and measurement error x DQ: which of an Italian hospital trust's 52 bedside
+  glucose meters go to the manufacturer's January 2028 recalibration, each meter's systematic error read on the pairings
+  the plan drew, the critical-value confirmations (drawn because the meter's own reading was under 50 or over 400) left
+  out. Built green (checks 56, verify 0, byte-identical, figures 62 of 62); judge DETERMINISTIC APPROVE, Gate H analytical.
+- Stage 4: reader A landed the call (planned pairings only); reader B filed the default path; both took all 25 ask
+  figures (dedup, clock and location-history devices are battery work). Architectures 1 and 2 were spent the same day.
+- Next, if the author chooses a fourth: re-root at stage 1 with two keys (task250's shape) and an ask layer on silent
+  grain or self-validation devices; else retire the number.
+
+**task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
 **task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; a sixth architecture is the author's call.**
 - Architecture 5 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Vasslia Miljørådgiving's

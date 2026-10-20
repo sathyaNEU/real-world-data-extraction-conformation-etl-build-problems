@@ -64,7 +64,7 @@ role was redrawn with it.
 
 1. Read POCT-GLU-02: a meter beyond 5 per cent is withdrawn; its systematic error is the factor e of section 7, on the
    current calibration, against the laboratory's method in use.
-2. Read GlyLink's pairing report (14,133 pairings from July 2026), keep those after each meter's ultima_taratura in the
+2. Read GlyLink's pairing report (13,938 pairings from July 2026), keep those after each meter's ultima_taratura in the
    register, numeric meter values only.
 3. Divide the C600's values drawn before 13 September 2027 by 1.035 (the laboratory's note).
 4. Take each meter's mean of meter over laboratory ratios less one and withdraw the meters beyond 5 per cent.
@@ -125,6 +125,7 @@ Lesson: a paired comparison is only as sound as the reason each pair was drawn, 
 | SF14 | the ward and hospital (asks) | where the meter stood on the day | the export's presidio and reparto | the asks only | section 8 (eseguiti nel reparto), the dictionary (assegnato), the register's history |
 | SF15 | a test's date (asks) | Italian civil date | UTC or the meter's date | same figures | asserted |
 | SF16 | more than two hours (asks) | over 7,200 seconds | 7,200 or more | same figures | asserted |
+| SF17 | a listed meter's ward and hospital | the register's current assignment | where it stood when paired | same figures | none of the eight moved (asserted) |
 
 ## Ladder
 
@@ -224,6 +225,33 @@ Mirror leakage: 0 per cent of ask weight.
 Measured by: generator/pair.py on the cut pack. A reader who finds the location history keeps 13 of 25 (73.6 with the
 call); the stage 4 readers are the measurement.
 
+## Pre-ship check
+
+- Free gates (stage 3): generator checks 56 passed (the golden is the world's truth, five single-factor estimators
+  agree on the list at least 1 point clear of the line, every named wrong route files another list, the easy route
+  fails on the clean truth and the scheduled pairings alone recover it, SF1 to SF17, the asks against the world, the
+  devices present, the pack gates, the documents read back); verify.py 0 failures on its own csv and openpyxl path;
+  two builds byte-identical (target.zip dfd2d32a); figures_check 62 of 62; precut 51 of 51; voice-check PASS.
+- leak.py REVIEW, no LEAK, both lines harmless: 400 mg/dL is section 6's critical value, which the procedure files
+  because the ward needs it, and the write-up names it to say why the confirmations are drawn; the prompt's ask
+  sentence carries the deliverable's own column words (ward, hospital, systematic error), which the decision needs.
+- guard heart WARN (repeat.decision, repeat.deliverables, repeat.question_form, answered under Draw); surface: the
+  pack's personas are the card's three; six pairs promoted for the author's optional adjudication, none on a hard tell
+  (task243, task244, task246, task247 on the lane's shared xlsx and png deliverables and formats; task245 and task265
+  on gap, pattern and decision family, differentiated on the card).
+- Containers clean (no producer signature, no out-of-band timestamp) in target/ and golden/.
+- Golden realism: the workbook opens on the finding (8 of 52) with the procedure and the office's date under it, the
+  list by hospital and ward with the plan pairings each error rests on, every meter's sheet with its last calibration
+  and outcome, the section 8 indicators by hospital and quarter and by ward, and a notes sheet citing the procedure,
+  the note and the data's cut-off; the chart is a lollipop of every meter by hospital and ward against the band, the
+  listed eight marked and labelled, a source line under it.
+- The 10/10 rules re-read against the built pack: the decisive step is still which pairings estimate a meter's
+  bias, and no filed sentence makes it (section 7 defines the factor and its estimator, not the pairings); the solar
+  clocks, re-sent copies, current ward fields, LO and HI, the analyzer change and the plan's holidays are each the
+  systems' own and none moves the list.
+- Open risk, stated: a reader who asks why a nursery meter has three times the pairings of a ward meter, and reads
+  section 6 as a selection on the meter's own value, lands the call. The stage 4 readers are the measurement.
+
 ## Tried and rejected
 
 - The seed's own pitfall (the errors-in-variables slope between two noisy instruments): spent by task249 v1, landed
@@ -276,3 +304,12 @@ call); the stage 4 readers are the measurement.
   estimators.
 - The analyzer parallel run as a pack file (calibration parallel_run_overlap): BLOCKed by ban.calibration against task481
   at registration; the run's relation is a lower rung, so the laboratory's note files the factor and no corpus ships.
+- Architecture 3 (52 bedside glucose meters, each meter's systematic error read on the plan's pairings, the critical-value
+  confirmations being selected on the meter's own reading): spent 2026-10-20 at stage 4 on target.zip dfd2d32a. Scored
+  reader A landed the call by keeping only the planned morning-round pairings (it quoted section 5's "almeno nei giorni
+  del piano" and read every confirmation's meter value beyond 50 or 400 as selection on the meter result); reader B filed
+  the default path (every pairing since the calibration: GX2-M707F in, GX2-K532W out). Both kept 25 of 25 ask figures:
+  the re-sent copies (a duplicate check on matricola and n_memoria), the solar clocks (the planned pairings' summer gap)
+  and the register's location history are battery work, the measured-as-executed list. Judge DETERMINISTIC APPROVE, Gate H
+  analytical. Selection on the measured value is a textbook reflex once the data shows it in one column; a fourth
+  architecture is the author's call.
