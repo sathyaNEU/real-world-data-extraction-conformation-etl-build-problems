@@ -183,7 +183,7 @@ main, 2026, against 3.30).
   shows that leaks do not all start the day after a walk.
 - **R2, the default path: the midpoint between surveys (Ashby 3.38, Elmwood 4.58, Ivers 3.46).** The textbook start
   for an event known only to lie in an interval; it ignores the season, so every district's surveyed leaks get half a
-  year before the find. Dies to the odor log: 62.3 per cent of called leaks started in December to March.
+  year before the find. Dies to the odor log: 62.6 per cent of called leaks started in December to March.
 - **G, the decisive move (Brennan Hill 3.78, Elmwood 3.76, Fenwick 3.75, Harlow 3.68, Ivers 3.74).** Each surveyed
   leak's expected start under the monthly profile: an October or November walk finds leaks most of a year old, a
   March or April walk leaks a few weeks old; Ashby falls to 2.74 and the late-walked districts rise over the line.
@@ -231,7 +231,7 @@ began at the call, the unit (per mile of in-service cast-iron and bare-steel mai
 open: when a leak found by the survey began, which no file records. The candidates are the find, the previous survey,
 the midpoint and the expected start under the season leaks begin in. The data separate them: the called leaks, which
 2.2 dates at the call, are leaks the public smelled within days of their start, and they show the season directly
-(62.3 per cent in December to March); the survey schedule puts each segment's previous walk a year before the find;
+(62.6 per cent in December to March); the survey schedule puts each segment's previous walk a year before the find;
 only the expected start under that season estimates the filed quantity, the methane from when the leak began, without
 assuming leaks start evenly or at a walk. Every variant of it (the profile's years, the weighting by day or month, the
 calls read in UTC) names the same five districts (checks.py). Every write-up step names the file and rule it executes.

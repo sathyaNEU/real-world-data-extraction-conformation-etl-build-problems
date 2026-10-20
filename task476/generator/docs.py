@@ -67,7 +67,8 @@ def write_guidelines(path):
             "%s The designation memo gives, for every district, its leaks found in 2026, its 2026 leak methane and its "
             "methane per mile; and, for the Council's budget hearing, its 2026 leak repair cost (the cost posted to its "
             "leaks' work orders in calendar 2026) and its 2026 customer interruptions from leak repairs (each "
-            "customer's service shut off for a leak repair in 2026, counted once for each shut-off). A district's "
+            "customer's service shut off for a leak repair in 2026, counted once for each shut-off; a customer is a "
+            "meter). A district's "
             "leaks are those on its own mains." % SECTIONS["reporting"]]),
     ]
     for h, ps in secs:

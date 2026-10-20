@@ -44,7 +44,7 @@ def miles(x):
 
 def figures(x):
     rows = inventory_rows(x)
-    prof = M.profile([L.found for L in x["leaks"] if L.how == "ODOR"])
+    prof = M.profile([L.found for L in x["leaks"] if L.how == "ODOR" and L.found.year >= W.FIRST_YEAR])
     mi = miles(x)
     t = M.methane(rows, "golden", prof, W.RATE, W.END)
     out = []
@@ -95,7 +95,7 @@ FIND_COLS = ["leak_no", "found_local", "segment_id", "address", "grade", "readin
 def find_rows(x):
     out = []
     for L in x["leaks"]:
-        if L.how != "SURVEY":
+        if L.how != "SURVEY" or L.found.year < W.FIRST_YEAR:
             continue
         r = T.rng_for("find", L.lid)
         out.append([L.lid, fmt(L.found), L.seg.sid, R.address(L).upper(), R.grade_code(L.grade, L.found),
@@ -112,7 +112,7 @@ def odor_rows(x):
     out = []
     n = 0
     for L in x["leaks"]:
-        if L.how != "ODOR":
+        if L.how != "ODOR" or L.found.year < W.FIRST_YEAR:
             continue
         n += 1
         out.append([n, L.found, R.address(L).upper(), "LEAK CONFIRMED", L.lid, L.seg.sid,
@@ -139,6 +139,8 @@ REP_COLS = ["order_no", "leak_no", "visit_local", "action", "grade", "crew"]
 def repair_rows(x):
     out = []
     for L in x["leaks"]:
+        if L.found.year < W.FIRST_YEAR:
+            continue
         r = T.rng_for("rep", L.lid)
         for k, (t, act, g) in enumerate(R.visits(L)):
             out.append(["RO-%s-%d" % (L.lid[1:], k + 1), L.lid, fmt(t), act, R.grade_code(g, t),

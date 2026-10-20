@@ -6,18 +6,18 @@
 ## 1. Final Recommendation
 
 **Designate five of the 12 districts for the 2027 to 2029 Accelerated Main Replacement Program: Brennan Hill, Elmwood, Fenwick, Harlow and Ivers.**
-Each emitted 3.30 tonnes or more of 2026 leak methane per mile of cast-iron and bare-steel main once each surveyed leak is dated from the season leaks begin in. Not Ashby, which the midpoint start between surveys puts over the line: leaks begin mostly in December to March (62.3 per cent of odor-reported starts), so a district walked in spring finds young leaks, while Brennan Hill, Fenwick, Harlow and Ivers, walked late in the year, found leaks that had emitted since the winter.
+Each emitted 3.30 tonnes or more of 2026 leak methane per mile of cast-iron and bare-steel main once each surveyed leak is dated from the season leaks begin in. Not Ashby, which the midpoint start between surveys puts over the line: leaks begin mostly in December to March (62.6 per cent of odor-reported starts), so a district walked in spring finds young leaks, while Brennan Hill, Fenwick, Harlow and Ivers, walked late in the year, found leaks that had emitted since the winter.
 
 ## 2. Critical Components
 
-1. Odor-reported leak starts in December to March: **62.3%** of the 2016 to 2026 starts.
+1. Odor-reported leak starts in December to March: **62.6%** of the 2016 to 2026 starts.
 2. Districts at or above the line: **5** of 12.
 
 ## 3. Step-by-Step Solution
 
 1. Read the guidelines (amr_program_guidelines_2027.pdf): leaks found in 2026 on cast-iron and bare-steel mains, each from its start to its repair or 31 December 2026 at its Table 1 rate for the grade when found, per mile of in-service cast-iron and bare-steel main, designated at 3.30 or more.
 2. Took the 2026 leaks from leak_survey_finds_2016_2026.csv (survey finds) and odor_call_log_2016_2026.csv (confirmed calls, UTC converted to local time), each leak's segment and district from gis_main_segments_2026-12-31.csv, and its repair from the REPAIRED visit in leak_repair_orders_2016_2027.csv.
-3. Took the monthly profile of leak starts from the confirmed odor calls of 2016 to 2026 (a called leak starts at the call, guidelines 2.2): 62.3 per cent in December to March.
+3. Took the monthly profile of leak starts from the confirmed odor calls of 2016 to 2026 (a called leak starts at the call, guidelines 2.2): 62.6 per cent in December to March.
 4. Dated each surveyed leak's start as its expected start between its segment's 2025 survey (leak_survey_schedule_2015_2026.csv) and the find, each day weighted by its month's share of the profile.
 5. Summed each leak's rate times its hours from start to repair or year end by district, and divided by the district's cast-iron and bare-steel miles in gis_main_segments_2026-12-31.csv: Brennan Hill, Elmwood, Fenwick, Harlow, Ivers at or above the line.
 6. From work_order_cost_lines_2025_2026.csv, took each work order's cost of each type at the end of 2026 less at the end of 2025 (each line is the cost to date, as the closing totals in work_order_closeouts_2025_2026.csv confirm), by the leak's own district: the repair costs below.

@@ -24,12 +24,12 @@
   "nearest": "task468 v2 at 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (arch 2 pass 1, minor SOLUTION_WRONG on a label)",
+  "disposition": "FIX_NOW",
+  "report": "task476/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4 of architecture 2: waiting on judge r2 (/tmp/determinism-check-task476-r2/verdict.md); ask B re-sited and Central time pinned (checks 27 of 27); after the verdict fix in one pass, rebuild, one fresh reader on the new pack, ship",
+ "resume": "stage 4 of architecture 2: FIX_NOW applied (pack from 2016, a customer is a meter, Central time); re-judge r3 and fresh reader r3a running on target.zip 5a46ee5a; then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

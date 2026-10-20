@@ -39,49 +39,49 @@
    "designated": false,
    "leaks": 72,
    "per_mile": 2.74,
-   "tonnes": 137.9
+   "tonnes": 137.6
   },
   "Brennan Hill": {
    "designated": true,
    "leaks": 78,
    "per_mile": 3.78,
-   "tonnes": 190.0
+   "tonnes": 190.3
   },
   "Calder": {
    "designated": false,
    "leaks": 68,
-   "per_mile": 2.85,
-   "tonnes": 153.9
+   "per_mile": 2.84,
+   "tonnes": 153.5
   },
   "Dorrance": {
    "designated": false,
    "leaks": 49,
    "per_mile": 2.89,
-   "tonnes": 123.6
+   "tonnes": 123.7
   },
   "Elmwood": {
    "designated": true,
    "leaks": 114,
-   "per_mile": 3.76,
-   "tonnes": 199.8
+   "per_mile": 3.75,
+   "tonnes": 199.3
   },
   "Fenwick": {
    "designated": true,
    "leaks": 89,
-   "per_mile": 3.75,
-   "tonnes": 188.4
+   "per_mile": 3.76,
+   "tonnes": 189.0
   },
   "Glenmora": {
    "designated": false,
    "leaks": 68,
-   "per_mile": 2.34,
-   "tonnes": 131.7
+   "per_mile": 2.33,
+   "tonnes": 131.4
   },
   "Harlow": {
    "designated": true,
    "leaks": 88,
-   "per_mile": 3.68,
-   "tonnes": 157.5
+   "per_mile": 3.69,
+   "tonnes": 157.9
   },
   "Ivers": {
    "designated": true,
@@ -93,41 +93,41 @@
    "designated": false,
    "leaks": 70,
    "per_mile": 2.95,
-   "tonnes": 153.9
+   "tonnes": 153.7
   },
   "Kessel": {
    "designated": false,
    "leaks": 52,
    "per_mile": 2.5,
-   "tonnes": 107.7
+   "tonnes": 107.6
   },
   "Lockwood": {
    "designated": false,
    "leaks": 64,
    "per_mile": 2.74,
-   "tonnes": 141.1
+   "tonnes": 141.2
   }
  },
- "frost_share": "62.3",
+ "frost_share": "62.6",
  "line": "3.30",
  "lowest_above": "Harlow",
- "lowest_above_rate": "3.68",
+ "lowest_above_rate": "3.69",
  "n_call": 5,
  "nearest_below": "Juniper",
  "nearest_below_rate": "2.95",
  "profile": [
-  "17.8",
-  "15.9",
-  "12.2",
-  "6.5",
+  "17.9",
+  "16.1",
+  "12.1",
+  "6.6",
   "3.6",
   "2.7",
-  "2.6",
+  "2.5",
   "3.1",
-  "3.6",
-  "5.8",
-  "9.8",
-  "16.3"
+  "3.5",
+  "5.7",
+  "9.7",
+  "16.4"
  ],
  "rates": {
   "1": "1.62",
@@ -142,7 +142,7 @@
    "miles": "50.3",
    "month": "April",
    "per_mile": "2.74",
-   "tonnes": "137.9"
+   "tonnes": "137.6"
   },
   {
    "designated": true,
@@ -151,7 +151,7 @@
    "miles": "50.3",
    "month": "October",
    "per_mile": "3.78",
-   "tonnes": "190.0"
+   "tonnes": "190.3"
   },
   {
    "designated": false,
@@ -159,8 +159,8 @@
    "leaks": 68,
    "miles": "54.0",
    "month": "June",
-   "per_mile": "2.85",
-   "tonnes": "153.9"
+   "per_mile": "2.84",
+   "tonnes": "153.5"
   },
   {
    "designated": false,
@@ -169,7 +169,7 @@
    "miles": "42.8",
    "month": "September",
    "per_mile": "2.89",
-   "tonnes": "123.6"
+   "tonnes": "123.7"
   },
   {
    "designated": true,
@@ -177,8 +177,8 @@
    "leaks": 114,
    "miles": "53.1",
    "month": "March",
-   "per_mile": "3.76",
-   "tonnes": "199.8"
+   "per_mile": "3.75",
+   "tonnes": "199.3"
   },
   {
    "designated": true,
@@ -186,8 +186,8 @@
    "leaks": 89,
    "miles": "50.3",
    "month": "November",
-   "per_mile": "3.75",
-   "tonnes": "188.4"
+   "per_mile": "3.76",
+   "tonnes": "189.0"
   },
   {
    "designated": false,
@@ -195,8 +195,8 @@
    "leaks": 68,
    "miles": "56.4",
    "month": "May",
-   "per_mile": "2.34",
-   "tonnes": "131.7"
+   "per_mile": "2.33",
+   "tonnes": "131.4"
   },
   {
    "designated": true,
@@ -204,8 +204,8 @@
    "leaks": 88,
    "miles": "42.8",
    "month": "December",
-   "per_mile": "3.68",
-   "tonnes": "157.5"
+   "per_mile": "3.69",
+   "tonnes": "157.9"
   },
   {
    "designated": true,
@@ -223,7 +223,7 @@
    "miles": "52.1",
    "month": "February",
    "per_mile": "2.95",
-   "tonnes": "153.9"
+   "tonnes": "153.7"
   },
   {
    "designated": false,
@@ -232,7 +232,7 @@
    "miles": "43.0",
    "month": "July",
    "per_mile": "2.50",
-   "tonnes": "107.7"
+   "tonnes": "107.6"
   },
   {
    "designated": false,
@@ -241,7 +241,7 @@
    "miles": "51.5",
    "month": "January",
    "per_mile": "2.74",
-   "tonnes": "141.1"
+   "tonnes": "141.2"
   }
  ],
  "sections": {

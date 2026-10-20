@@ -44,14 +44,14 @@
    "source": "Hollister Gas (fictional), synthetic records",
    "date": "2027-03-15",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 25484
+   "rows": 23967
   },
   {
    "file": "leak_survey_finds_2016_2026.csv",
    "source": "Hollister Gas (fictional), synthetic records",
    "date": "2027-03-15",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 7234
+   "rows": 6865
   },
   {
    "file": "leak_survey_schedule_2015_2026.csv",
@@ -72,7 +72,7 @@
    "source": "Hollister Gas (fictional), synthetic records",
    "date": "2027-03-15",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 8607
+   "rows": 7948
   },
   {
    "file": "service_interruption_tickets_2026.csv",
