@@ -51,7 +51,7 @@ def write_guidelines(path):
                    "emitted while operating from 1 May to 30 September 2026, in pounds, divided by its gross "
                    "generation in the same hours, in MWh. The hours are the operating hours of the data acquisition "
                    "system's hourly record, which is kept in standard time; hours of start-up and shutdown are "
-                   "operating hours.", BODY),
+                   "operating hours, and the NOx emitted counts in every operating hour, measured or not.", BODY),
          Paragraph("2.3 <b>Target.</b> A unit whose 2026 ozone-season NOx rate is 0.170 lb per MWh or more is "
                    "designated for the program.", BODY),
          Paragraph("3. The budget memo", HEAD),
@@ -59,12 +59,15 @@ def write_guidelines(path):
                    "operating hours, each hour's gas priced at the price on the supplier's invoice for the gas day the "
                    "hour falls in. A unit's gas is its heat input; one dekatherm is one MMBtu.", BODY),
          Paragraph("3.2 For every combined-cycle unit, its equivalent forced outage rate over the 2026 ozone "
-                   "season, as IEEE Std 762 defines it, in per cent, on the hours from 1 May to 30 September 2026, "
-                   "local time. Full forced outages are the outage event report's events of types U1, U2 and U3, and "
-                   "forced derates its events of types D1 and D2, each reducing the unit by its derate_mw against its "
-                   "nameplate MW in the generating unit register. Service hours are the unit's operating time in the "
-                   "data acquisition system's hourly record. Where the report holds a later report of the same "
-                   "outage, the later report stands.", BODY),
+                   "season, as IEEE Std 762 defines it, in per cent: 100 times (FOH + EFDH) over (FOH + SH + EFDHRS), "
+                   "on the hours from 1 May to 30 September 2026, local time. FOH are the hours in a full forced "
+                   "outage, the outage event report's events of types U1, U2 and U3; where a later report of a full "
+                   "outage overlaps an earlier one on the same unit, the later report stands. SH is the unit's "
+                   "operating time in the data acquisition system's hourly record. A forced derate (types D1 and D2) "
+                   "reduces the unit by its derate_mw against its nameplate MW in the generating unit register; EFDH "
+                   "counts each derate hour at that share times the unit's operating time in the hour, and EFDHRS at "
+                   "that share times the rest of the hour, the unit in reserve shutdown; a derate's hours inside a "
+                   "full forced outage count in neither.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
                    "%s." % W.BOARD_DATE, BODY)]
@@ -91,9 +94,12 @@ def write_terms(path):
          Paragraph("6.1 The price for Gas delivered on a Gas Day is the Daily Index for that Gas Day plus the charges of "
                    "the Transporter serving the Delivery Point, as set out for each Delivery Point in Exhibit A, in "
                    "dollars per dekatherm.", BODY),
-         Paragraph("6.2 Quantities are the deliveries metered at each Delivery Point, in dekatherms.", BODY),
+         Paragraph("6.2 Quantities are the deliveries metered at each Delivery Point, in dekatherms; the meter "
+                   "stations read from midnight to midnight Central Standard Time.", BODY),
          Paragraph("Section 9. Billing", HEAD),
-         Paragraph("9.1 Seller invoices monthly by Delivery Point.", BODY)]
+         Paragraph("9.1 Seller invoices monthly by Delivery Point. Each line carries the price of the Gas Days it "
+                   "bills: Gas traded together for consecutive Gas Days is billed on one line, dated on the last of "
+                   "them.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
@@ -136,7 +142,7 @@ def write_units(path):
            "DF-2": "2011-05-12", "DF-3": "2016-07-01", "SR-1": "2013-05-01", "SR-2": "2013-06-10",
            "AF-CT3": "1999-06-01", "AF-CT4": "1999-06-01", "SR-CT3": "2002-05-15", "HC-4": "1984-11-01"}
     for u, (plant, n, cap, *_r) in W.CC.items():
-        ws.append([u, plant, "Combined cycle (1x1)", cap, "SCR (aqueous ammonia)", cod[u], old[u]])
+        ws.append([u, plant, "Combined cycle (1x1)", cap, "SCR, aqueous ammonia (air-to-open flow control valves)", cod[u], old[u]])
     for u, (plant, kind, cap) in W.OTHER.items():
         ws.append([u, plant, kind.capitalize(), cap, "Water injection" if kind == "simple cycle" else "SNCR",
                    cod[u], old[u]])

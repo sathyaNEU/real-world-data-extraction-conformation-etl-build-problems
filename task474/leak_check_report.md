@@ -10,7 +10,7 @@ Stump terms swept: architecture, measured, reader, readers, decisive, standard, 
 - **REVIEW** `scr_upgrade_program_rules_2027.pdf`: carries 5 of 8 distinctive words of the committed call: 'Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 an'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `scr_upgrade_program_rules_2027.pdf`: 3 of 25 stump-paragraph terms appear (standard, season, generation); read whether the document names the move
+- **REVIEW** `scr_upgrade_program_rules_2027.pdf`: 5 of 25 stump-paragraph terms appear (measured, standard, season, generation, inside); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

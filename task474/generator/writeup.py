@@ -51,8 +51,8 @@ def write(fig_path, out_path):
          "the unit's mean NOX_MASS_LB over HEAT_INPUT_MMBTU across the clock hours right after its runs of air-loss "
          "hours in which the unit was still operating and measured (a unit with none takes the same mean over its "
          "plant's units).",
-         "4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's "
-         "measured hours at the same hour after a start; later, from the unit's quadratic fit of NOX_MASS_LB on "
+         "4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's own "
+         "measured hours at the same hour after a start (the units' start-up levels differ well beyond chance); later, from the unit's quadratic fit of NOX_MASS_LB on "
          "GLOAD_MW over its measured hours more than 3 hours after a start.",
          "5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated "
          "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
@@ -62,13 +62,11 @@ def write(fig_path, out_path):
          "bills the gas days since the point's previous line together (weekend and holiday gas, traded the business "
          "day before), its quantity the plant's metered burn over those days: $%s in all." % (
              F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
-         "7. For each unit's equivalent forced outage rate (rule %s), on local time from 1 May to 30 September 2026: "
-         "forced outage hours, the hours inside a U1, U2 or U3 event in %s, a later-filed report replacing an earlier "
-         "one it overlaps on the same unit; service hours, OP_TIME summed; equivalent forced derated hours, each D1 or "
-         "D2 hour at derate_mw over the register's nameplate MW times OP_TIME; the reserve shutdown derated hours, "
-         "each D1 or D2 hour outside a full outage at derate_mw over nameplate times one less OP_TIME; the rate, in per cent, is "
-         "forced outage hours plus equivalent forced derated hours, over forced outage hours plus service hours plus "
-         "the reserve shutdown derated hours." % (sec["outages"], F["events"]),
+         "7. Took each unit's equivalent forced outage rate as rule %s files it, on local time from 1 May to 30 "
+         "September 2026, from %s (FOH from the U1, U2 and U3 events, a later-filed full outage replacing an earlier "
+         "one it overlaps on the same unit; EFDH and EFDHRS from the D1 and D2 events, each hour's derate_mw over "
+         "the register's nameplate MW split by the hour's OP_TIME, nothing inside a full outage) and SH from OP_TIME "
+         "summed, the DAHS hours moved forward an hour to local time." % (sec["outages"], F["events"]),
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",

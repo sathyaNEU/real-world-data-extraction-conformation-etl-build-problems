@@ -107,6 +107,7 @@ Lesson: a monitor gap with a common cause that also disables the control device 
 | SF9 | the comparison | unrounded rates | rounded | same call (asserted) | rule 2.3 |
 | SF10 | the tickets' clock | local time moved to standard | read as standard | same call (asserted) | the tickets' column names |
 | SF11 | whose uncontrolled level | the unit's own, the plant's where none | the plant's pooled for every unit | same call (asserted) | the data |
+| SF13 | whose start-up levels fill the start gaps | each unit's own measured start hours | the fleet's pooled start-up means | files six (DF-1 out) | the data: equal start-up means across units rejected at hours 1 to 3 (F above 20, asserted) |
 | SF12 | which gaps are air losses | blank hours inside an instrument air ticket | blank runs whose first hour back reads five times the unit's median or more | same call (the two coincide, asserted) | the data |
 
 ## Ladder
@@ -177,7 +178,10 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 ## Ask sheet
 
-- **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** H18 home: rule 3.1, the
+- **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** (After the round-3 judge the
+  agreement files the meter stations' standard-time day (6.2) and that one line bills gas traded together for
+  consecutive gas days, dated on the last of them (9.1); both devices are now filed conventions a careful reader
+  executes, held only by execution.) H18 home: rule 3.1, the
   capital budget weighs the upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices,
   the supply agreement, the rules: four files, eight columns. Primary device (re-sited after rounds 1 and 2): D8, two
   clocks on one line, with every tie passing on the wrong one. The meter stations read midnight to midnight on
@@ -188,7 +192,8 @@ data and no reported total ships; the allowance holdings are by facility and ton
   dated on its last gas day), so a gas day with no line takes the point's next line; the previous line, an
   interpolation or leaving the day out each misses every unit. Hazards: invoices by facility (peakers share the
   meter), gas days with no burn.
-- **Ask B, each unit's 2026 ozone-season equivalent forced outage rate, per cent to one decimal: 9 figures.** H18
+- **Ask B, each unit's 2026 ozone-season equivalent forced outage rate, per cent to one decimal: 9 figures.** (After
+  the round-3 judge rule 3.2 files the formula, the overlap rule and the treatment of derates inside full outages.) H18
   home: rule 3.2, IEEE Std 762's EFOR on local time, the register's nameplate as the capacity. Path: the event report,
   the DAHS operating time, the register, the rules: four files, eight columns. Primary device: D6 grain, an event's
   hours split across states. A forced derate found in a run often stays on the unit past the shutdown and into the
@@ -313,3 +318,13 @@ data and no reported total ships; the allowance holdings are by facility and ton
   hours; each unit has its own start shape and each start its own size. The round-2 re-judge returned DETERMINISTIC,
   FIX_NOW on wording (the write-up now states the air-loss fill by what the record shows, the fill of air-loss hours
   without a measured hour after them, and the strip rule with its quantity tie).
+- 2026-10-20, stage 4 round 3 on architecture 3: readers 5 and 6 missed the call (six of six now) and kept 10 and 1
+  of 18 ask figures: reader 5 priced the strip days at the next line from the quantity tie and kept the contract's
+  gas day despite the calendar-day tie; both left IEEE 762's reserve-shutdown term out of the outage rate. The
+  round-3 judge returned NOT_DETERMINISTIC: no file tied the SCR to instrument air (the first hour back fitted a
+  restart transient as well as an uncontrolled loss), the pooled start-up profile moved DF-1, and the asks' strip
+  pricing, meter clock and EFOR terms were unfiled. The register now describes the SCR's ammonia flow control
+  valves as air-to-open, rule 2.2 files that the NOx emitted counts in every operating hour, the pooled profile is
+  ruled out by the record (asserted), and the asks' conventions are filed. Lowering DF-1's start-up outage share to
+  cut its pooled sensitivity reshuffled every unit's draws and pulled CB-2 and AF-1 to within 0.005 of the target
+  under interpolation; reverted.

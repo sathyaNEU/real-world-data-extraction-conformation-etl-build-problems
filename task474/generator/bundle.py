@@ -97,8 +97,14 @@ def record(target, shift=0, optime=True):
 
 
 def _plant_after(out):
-    """Each unit's plant's NOx per MMBtu in the first measured hour after an air loss, pooled over the plant's units."""
+    """Each unit's plant's NOx per MMBtu in the first measured hour after an air loss, pooled over the plant's units;
+    and the fleet's mean measured NOx in hours 1 to 3 after a start, pooled over every unit (rec["pooled"])."""
+    pooled = {}
+    for k in (1, 2, 3):
+        v = [n for w in out for n, s in zip(out[w]["nox"], out[w]["since"]) if s == k and n is not None]
+        pooled[k] = float(np.mean(v)) if v else 0.0
     for u in out:
+        out[u]["pooled"] = pooled
         v = [b_[3] for w in out if w.split("-")[0] == u.split("-")[0] for b_ in out[w]["blocks"] if b_[3] is not None]
         out[u]["plant_after"] = float(np.mean(v)) if v else None
     return out
@@ -215,9 +221,9 @@ def ask_b(target, route="golden"):
                 f = op.get((u, t), 0.0)
                 if route == "allder":
                     efdh += mw / cap[u]
-                else:
+                elif t not in fo:
                     efdh += mw / cap[u] * f
-                    if t not in fo and route != "nors":
+                    if route != "nors":
                         efdhrs += mw / cap[u] * (1 - f)
                 t += dt.timedelta(hours=1)
         out[u] = 100.0 * (foh + efdh) / (foh + sh + efdhrs)

@@ -37,6 +37,14 @@ def fill(r, route):
         return tot + (nox[m].sum() / load[m].sum()) * load[miss].sum()
     if route == "state":
         route = "golden"
+    if route == "pooled":
+        add = 0.0
+        for k in (1, 2, 3):
+            mi = miss & (s == k)
+            add += mi.sum() * r["pooled"][k]
+        ms, mis = m & (s > 3), miss & (s > 3)
+        b = _fit(None, nox[ms], [np.ones(ms.sum()), load[ms], load[ms] ** 2])
+        return tot + add + (b[0] + b[1] * load[mis] + b[2] * load[mis] ** 2).sum()
     if route in ("golden", "state_rate", "state4"):
         top = 4 if route == "state4" else 3
         add = 0.0
@@ -74,8 +82,8 @@ def after_rate(r):
 def fill_air(r, route):
     """The state fill on every other gap, and the hours of each air loss filled by the route."""
     base = {"golden": "golden", "g_event": "golden", "g_state4": "state4", "g_reg": "state_reg", "interp": "golden",
-            "air_load": "golden"}[route]
-    tot = fill(_without_air(r), base)
+            "air_load": "golden", "g_pooled": "pooled"}[route]
+    tot = fill(dict(_without_air(r), pooled=r.get("pooled")), base)
     heat = np.array(r["heat"], float)
     if route == "air_load":
         load, nox = np.array(r["load"], float), np.array([np.nan if v is None else v for v in r["nox"]], float)
@@ -102,7 +110,7 @@ def rate(r, route):
     return fill(r, route) / np.array(r["load"], float).sum()
 
 
-AIR_ROUTES = ["golden", "g_event", "g_state4", "g_reg", "interp", "air_load"]
+AIR_ROUTES = ["golden", "g_event", "g_state4", "g_reg", "g_pooled", "interp", "air_load"]
 FAMILY = ["golden", "g_event", "g_state4", "g_reg"]
 WRONG = ["state", "interp", "air_load", "load", "record", "share", "rate"]
 

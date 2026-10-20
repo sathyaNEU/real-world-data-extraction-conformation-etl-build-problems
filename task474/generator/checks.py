@@ -130,6 +130,20 @@ def main(target, gdir, x):
     check("SF6 start hours filled through hour 3 or hour 4: same call (g_state4 above)", sets["g_state4"] == GOLD)
     check("SF7 each air-loss run at its own first hour back or at the unit's mean: same call (g_event above)",
           sets["g_event"] == GOLD)
+    # SF13: the fleet's pooled start-up means against each unit's own: the units' measured start hours differ by more
+    # than chance, so the pooled profile is rejected by the record (one-way analysis of variance at each hour)
+    fs = []
+    for k in (1, 2, 3):
+        groups = [np.array([n for n, s in zip(rec[u]["nox"], rec[u]["since"]) if s == k and n is not None])
+                  for u in sorted(rec)]
+        allv = np.concatenate(groups)
+        between = sum(len(g) * (g.mean() - allv.mean()) ** 2 for g in groups) / (len(groups) - 1)
+        within = sum(((g - g.mean()) ** 2).sum() for g in groups) / (len(allv) - len(groups))
+        fs.append(between / within)
+    # the F statistic's 0.01 per cent point on 8 and some hundreds of degrees of freedom is about 4.5
+    check("SF13 each unit's own start-up hours, not the fleet's pooled: equal means rejected at hours 1 to 3 (F %s); "
+          "the pooled profile designates %s" % (", ".join("%.1f" % f for f in fs), M.designated(rec, "g_pooled")),
+          min(fs) > 6)
     check("SF8 the units are the register's combined-cycle units; peakers and the coal unit are outside", True)
     check("SF9 rates compared unrounded", True)
     # H25: the PDFs read through two extractors
