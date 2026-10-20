@@ -263,6 +263,25 @@ Each is cheap, each is run as code before any separation is measured, and each c
   and a divide with no model, and it reached the truth **14 of 20**, while the file's own published receipt
   date, one group-by and one divide, reached **20 of 20**, the same as the designed completion route.
 
+- **A limit does not measure itself, so `binding_constraint` is structurally either rule application or a
+  fork.** A capacity, budget, eligibility or service limit is not an estimated quantity: by 1.2b's
+  distinction it is either filed or published, in which case applying it is rule application and a one-join
+  route, or it is unrecorded, in which case the call is unforced. The record's one escape is that the
+  limit's *level* is published while **which candidates share it** is the analysis, and that escape is
+  identity or grain, which rule 3 bars from deciding a call. This is why the family sits unspent across all
+  34 cards on one objective: not because nobody drew it, but because its object is structurally a filed
+  quantity. A draw that reaches for it on the strength of the vacancy will find the structural signature
+  spent instead, measured at 10 earlier builds on one gap-and-pattern triple with the nearest driver at 0.10.
+- **A monotone functional of a linear solve is reachable by any attribution reflex.** Where the decisive
+  construction recovers a vector (a collection curve, a cost allocation, a flow decomposition) and the
+  graded object is a monotone summary of it, a one-pass attribution or a plain column reaches the same
+  answer. Measured across three candidates on one cell: reciprocal allocation named the same unit as the
+  plain own-cost column **29 of 30** at corr **+0.9985** and as both direct and step-down **30 of 30**, with
+  the result unchanged when the mutual-service share was pushed to an implausible 0.40 to 0.60, so the whole
+  allocation layer was decoration; flow tracing was matched by the disclosed internal share **30 of 30**;
+  and the collection kernel, which alone cleared the proxy screen, fell to the pro-rata attribution reflex
+  **30 of 30**. **The opening this leaves is a graded object that is a position inside the recovered vector
+  rather than a summary of it**, and that is one computation to price before a world is drawn.
 - **The null-region screen: a baseline the record already publishes by omission.** Any construction that
   separates a response from a baseline has that baseline published by the periods in which the response is
   absent, and an operations record always has those periods. A quiet-period route is therefore the

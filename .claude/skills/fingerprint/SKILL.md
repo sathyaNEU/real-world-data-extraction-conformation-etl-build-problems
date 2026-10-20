@@ -84,6 +84,14 @@ on a card, and `recent`, `mechanisms`, `nearest` and `heart` cannot see it: an o
 was rejected with measurements in two slots (task183's note and task194's, which names it outright) while
 every card screen passed it, and a pass was spent on it anyway. A hit is not a repeat; read the line.
 
+**`slots` greps design notes, so also read the neighbouring slots' `pipeline.json`.** A slot's `resume`
+line carries the measurements of a dead architecture, including architectures that were reassigned to
+another slot's cell, and no `guard.py` subcommand surfaces it: `recent`, `coverage`, `mechanisms`, `nearest`
+and `slots` all miss it. One draw found that a sibling slot's architecture had already screened its exact
+allocated cell with three measured mechanism deaths and had left behind a three-clause filter on what could
+survive there, which then organised its whole pass. That one JSON read beat its first hour of search. Read
+the `resume` of every slot whose cell, objective or client domain touches yours.
+
 **Run `slots` twice, once on the mechanism's nouns and once on the physical setting's**, because they are
 different screens and the setting run is the cheaper kill. A draw whose mechanism words returned nothing had
 its setting words (the pathogen, the notification route, the laboratory, the epidemic curve) return two
@@ -243,9 +251,17 @@ back; the better outcome is never to face it.
   pairing can print zero and be thoroughly occupied: measured, `business-operations-analytics` prints 0 on
   anomaly-detection and its five inherited AD task types carry six cards, `accounting-audit-forensic`
   prints 0 and its three carry four. Three other house domains inherit no AD task type at all and are
-  simply undrawable there. **Allocate on the inherited task types, never on the pairing count**, and read
-  the `test.own_lineage`, `test.same_puzzle` and `test.same_driver` BLOCKs rather than the driver score: one
-  dead candidate scored 0.05 while `own_lineage` correctly caught it as its own slot's earlier architecture.
+  simply undrawable there. **Allocate on the inherited task types, never on the pairing count.**
+
+  **No `guard.py` subcommand prints the inherited count, and the structural tests return a false clear on
+  it.** Filing a probe card per inherited task type and reading the BLOCKs does not work, measured: three
+  such probes returned an identical verdict, the same single BLOCK, the same WARN and the same nearest
+  drivers, with no `ban.subdomain`, no `ban.pairing` and no `test.own_lineage` on any of them. The reason is
+  in the rules themselves. `ban.subdomain` runs on `recent`, the last three **live** cards by filing time,
+  so a card outside that window is invisible to it however exactly it matches; and `test.same_puzzle`,
+  `test.same_driver` and `test.own_lineage` key on gap, decisive pattern, decision type and Gate G, none of
+  which is the subdomain. So the occupancy is read straight off the card corpus, by filtering `cards/*.json`
+  on `objective` and on `subdomain` over the inherited task types, and nowhere else.
 - **A spent cell read as a spent objective.** `ban.subdomain` reaches the last three builds, so a cell
   whose mechanism search came up empty is drawable again next sitting: what binds a redraw there is
   `driver.text`, `test.same_puzzle` and `test.same_driver`, all of which are about the mechanism. A lane
