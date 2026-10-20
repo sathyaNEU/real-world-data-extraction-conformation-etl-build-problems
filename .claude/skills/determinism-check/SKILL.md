@@ -84,7 +84,16 @@ Nothing forcing it: two methods survive (`underspecified_objective`). The method
 is rule application and the stump is gone.
 
 **Never file a procedure, basis or formula whose literal application gives another answer**: an official
-decoy and a fork at once. **The stump lives in HOW, never in WHAT.** If a literal estimand makes the call
+decoy and a fork at once. **And a pin added to close one fork can open a larger one**, so read every
+new pin's literal execution against the graded quantity and not only against the fork it was written for.
+A build added a clause pinning the grain ("a partner's household-size band has one award level for those
+twelve months ... an award level is not taken claim month by claim month") to close a month-by-month
+reading, and the clause also said the scheme's awards are taken **at** those levels. Read literally that
+collapses the within-cell distribution the committed method depends on, so a whole cell refers or none of
+it does, and the literal answer moved two candidates away from the golden. Both of the next isolated
+threads, a reader and a judge working separately, filed that literal answer. The pin was endorsed in
+writing as fixing the unit a level is taken at while leaving open how the distribution is recovered; it
+did not leave that open, it determined it. **The stump lives in HOW, never in WHAT.** If a literal estimand makes the call
 easy, the stump was a fork; redesign the decisive step (`stumping`), never keep the estimand vague.
 
 **What is left open after the WHAT is filed must be a method, not a knob.** Filing the five parts is
