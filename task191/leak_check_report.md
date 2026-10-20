@@ -36,3 +36,32 @@ Stump terms swept: asserted, clause, register, nothing, rollup, decisive, maximu
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+Run because this build shipped with no scored reader evidence, and because every shipped build measured
+so far has failed. The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure
+names (not values) from `generator/figures.json`, and was scored key by key by
+`.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **1 of 1** |
+| ask figures | **111 of 119** (93.3 per cent) |
+
+It landed the hold and the figure (fund no augment, HVT-01 at 318 kbps) and took 111 of 119 ask figures, which is the worst ask-layer result measured on this lane. It named the decisive step as comparing each port's worst shortfall against that port's own non-congested noise level with maintenance evenings removed, and quoted framework 4.2 and 4.4 as what sent it there, including the 569 kbps STR-01 reading that the naive ranking would fund. It also joined HAV-01 to HVT-01 through the register's current_port_code unprompted. Its only divergence was the baseline percentile, where it read 330 kbps against the shipped 398 to 489, and the call and the graded figure matched anyway.
+
+```
+call figures   1 of 1 hit
+ask figures    111 of 119 hit (93.3 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+The repair re-sites the ladder, not the wording: a call a blind reader lands at medium effort is a ladder
+whose decisive rung is readable, and `supplemental-stumping` 1.1c puts the reader above the author's own
+cracker sheet wherever the two disagree.

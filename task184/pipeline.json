@@ -1,43 +1,43 @@
 {
- "task": "task184",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "criminology-justice",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-15",
- "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-15"
- },
- "leak": {
-  "leak_py": "REVIEW (sweeps 4 and 6, both answered in the design note)",
-  "reader": "two passes, nothing quoted for question 1, no ranking file, question 6 analytical at both"
- },
- "duplicate_check": {
-  "heart": "PASS (WARNs answered in the note)",
-  "nearest": "0.08 task121 v3, task180 v4"
- },
- "judge": {
-  "verdict": "DETERMINISTIC (pass 2; pass 1 NOT_DETERMINISTIC on four unpinned conventions)",
-  "disposition": "APPROVE",
-  "report": "task184/determinism_check_report.md"
- },
- "returned": [
-  {
-   "date": "2026-10-14",
-   "portal": "judge SEND_BACK at the hardening (not a portal return)",
-   "repair": "re-root",
-   "commit": "3329b92"
-  }
- ],
- "resume": "",
- "approved": null,
- "delivered": "2026-10-15",
- "portal": null,
- "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
+  "task": "task184",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "criminology-justice",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-15"
+  },
+  "leak": {
+    "leak_py": "REVIEW (sweeps 4 and 6, both answered in the design note)",
+    "reader": "wave 8 audit: call landed, Gate F failed, scored by score_reader.py"
+  },
+  "duplicate_check": {
+    "heart": "PASS (WARNs answered in the note)",
+    "nearest": "0.08 task121 v3, task180 v4"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC (pass 2; pass 1 NOT_DETERMINISTIC on four unpinned conventions)",
+    "disposition": "APPROVE",
+    "report": "task184/determinism_check_report.md"
+  },
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "judge SEND_BACK at the hardening (not a portal return)",
+      "repair": "re-root",
+      "commit": "3329b92"
+    }
+  ],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
+  "approved": null,
+  "delivered": "2026-10-15",
+  "portal": null,
+  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
 }

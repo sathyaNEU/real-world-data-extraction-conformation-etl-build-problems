@@ -1,38 +1,38 @@
 {
- "task": "task191",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "general-statistics-data-science/multiple-testing-selective-inference",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-17",
- "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
- "architecture": 1,
- "loops": 1,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
- },
- "leak": {
-  "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
-  "reader": "r1 nothing quoted for the decisive step, question 6 analytical, but the comparison baseline soft; r2 nothing quoted for the decisive step, question 6 analytical choice, and its own enumeration of every reading of the record concluded fund none"
- },
- "duplicate_check": {
-  "heart": "PASS after the forum was redrawn",
-  "nearest": "0.05 task130 v3"
- },
- "judge": {
-  "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
-  "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
-  "report": "/tmp/determinism-check-task191-r2/verdict.md"
- },
- "returned": [],
- "resume": "",
- "approved": null,
- "delivered": "2026-10-17",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": ""
+  "task": "task191",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
+  "architecture": 1,
+  "loops": 1,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-17"
+  },
+  "leak": {
+    "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
+    "reader": "wave 8 audit: call landed, Gate F failed, scored by score_reader.py"
+  },
+  "duplicate_check": {
+    "heart": "PASS after the forum was redrawn",
+    "nearest": "0.05 task130 v3"
+  },
+  "judge": {
+    "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
+    "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
+    "report": "/tmp/determinism-check-task191-r2/verdict.md"
+  },
+  "returned": [],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
+  "approved": null,
+  "delivered": "2026-10-17",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
 }

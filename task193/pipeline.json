@@ -1,132 +1,132 @@
 {
- "task": "task193",
- "owner": "oviya13ya",
- "status": "SHIPPED",
- "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
- "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-17",
- "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
- "architecture": 2,
- "loops": 6,
- "precut": {
-  "exit": 0,
-  "checks": 50,
-  "fail": 0,
-  "warn": 0,
-  "date": "2026-10-17"
- },
- "build": {
-  "generator_assertions": 183,
-  "verifier_checks": 267,
-  "figures_check": "205 of 205",
-  "voice_check": "exit 0 at 997 characters",
-  "rebuilds": "two byte-identical over 24 files; target.zip md5 aa084e2f3354fce6ab82c4f09db87a61, 21 entries",
-  "input_gates": "21 files, 4 formats, two distractors and one neutral rule input in metadata.json",
-  "ladder": "rung0 9, crude 10, rung2 11, answer 7; all four window-aware arithmetics refer the same 7",
-  "call": "the seven referred pairs at 1.365, 1.366, 1.398, 1.451, 1.477, 1.490 and 1.499, nearest unreferred 1.033, crude set 10",
-  "mid_bin": "payer doses exact at one decimal; tightest fee 0.447 krone from the half krone that decides its rounding; tightest region and age share 0.00902 of a point from a tenth; closest two chart bars 0.1 of a point apart",
-  "freeze": "freeze.py check --mode rubric exit 0"
- },
- "leak": {
-  "leak_py": "REVIEW, no LEAK",
-  "reader": "landed the call at 80 per cent; its ask bases were right and its ask figures were not"
- },
- "duplicate_check": {
-  "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form), all answered in the design note's ## Draw; two differentiated NOTEs against task254 and task50",
-  "surface": "no file name and no persona promoted"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "loops 6: nothing failed to reproduce, Gate G and H pass, stump power moderate, and it expects a substantial share of strong runs to file the crude expectation"
- },
- "returned": [],
- "resume": "SHIPPED. Carry-forward for any repair: verify.py reads no PDFs, so the standard's own clause is asserted present only by checks.py, which built it. The independent verifier should read the authority documents too. Held realism items and the s3.2(b) forced-and-findable trade are in the design note.",
- "approved": null,
- "delivered": "2026-10-17",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "fix_pass_2": [
-  "the known_handling block is gone from register_release_notes.json; each convention now stands in the organisation's own voice: the re-sent line and the package validity in register_variable_documentation.csv, the quarter of dispensing in standard 2.1 beside the window definition, the extract's adult scope in the manifest's scope statement",
-  "register_variable_documentation.csv now documents every variable of the five files it covers (25 rows), so the dictionary is not a list of the four things a solver must get right",
-  "the standard carries section 3.5 in its own voice: the construction of the expected number in 3.2(b) is the division's own epidemiological work and is recorded with each run. It names no method; sections 3.4 and 3.5 are now in order and the annexes start on their own page",
-  "four dated contradictions closed: the tracker's two open entries open after their products were marketed, the spontaneous-report quarters start at the product's launch, Annex A's caption reads during the screen window, and the standard's body names no run-specific year",
-  "two new assertions: defect4.no_row_outside_its_product_lifecycle over every dated row in the pack, and defect4.no_date_after_the_pull over seven files",
-  "realism: a pharmacy week drawn from its own open-day shape with Sundays closed, a per-chain validation rate lifted by quarter with one chain's month of missing price records, 121 distinct pharmacy names, package strengths that belong to the preparation, person keys that are not an arithmetic run, exception references numbered in submission order, per-product reporting propensities tied to dispensing volume, a literature log of 20 titles drawn irregularly and linked to the tracker, and a region tilt on marker incidence so the region-by-age cells are not flat",
-  "the register sample is redrawn (17,000 patients, seed 193176) and the five referred-pair effects re-tuned, because the age and region tilts and the prevalent-user layer moved every pair count: the tightest separation is now 8.5 per cent of the multiple against the 6 per cent house floor"
- ],
- "fix_pass_3": [
-  "the doses now run in tenths as integers and the fee in exact decimals with an explicit half-up, in the golden and the verifier alike; every screened product's strengths are whole or half doses per unit so a payer's window total is exact at one decimal and the tie family is gone by construction, not by a pinned convention",
-  "the statutory rates were re-struck against the realised totals: the tightest of the seven fees is 0.38 krone from the half krone and half-up and half-even agree for all seven, asserted with the distance and the flip condition",
-  "the reporting age bands moved to 18-34, 35-44, 45-64 and 65 and over, searched against the realised cells: the tightest of the 24 shares is 0.00638 of a point from a tenth, up from 0.00011, with no cell on an exact half and every cell at least 32 patients",
-  "the fee ask's unit is named in the asking sentence as the holder that pays the fee for a dispensing, so the transfer and the merger stay to be noticed and nothing is pinned in a document (SF18)",
-  "the chart asks for all 23 bars and drops the threshold marker from the graded criteria, because the marker's position depends on the construction the standard leaves open; the bar order is now graded bar by bar and the closest two bars are 0.1 of a point apart (SF19, SF20)",
-  "the dictionary's person_register entry and the manifest note now say the file holds one row per current pseudonym, which is what it holds",
-  "the data dictionary covers every variable of the nine files it documents plus five codelists, 44 rows, so it documents the register rather than the four things a solver must get right",
-  "metadata.json declares signal_tracker_export.csv as a neutral rule input with the reason, and the two unused person-register fields, so no shipped file is unaccounted for",
-  "the submission side was reworked: the chains' log no longer reconciles to the extract line for line, the retransmissions are two batches on two chains, the chains transmit on working days, the lag reaches 48 days, the chain means are no longer a ladder, and the rejection reasons are only available to lines the registers support (pharmacy_register.csv now carries closed_on). All on its own random stream, so the screen is bit-identical",
-  "GATE F, my judgement: the spontaneous-report counts were an oracle. Ranking the nine products by reports put Ternivast and Oxelumab first by a factor of two to five, and those two are the whole difference between the seven and the ten. The rates now follow how visible a reaction is rather than how new the product is, and eight assertions hold all four products the two constructions disagree about strictly inside the range the other five span on each of four readings, with no cut of the ordering isolating them",
-  "34 person-register rows now carry no dispensing in either extract: the patients whose every line fell in the clearance period and was turned back at validation. They have no receipt of anything inside the screen window, so the screen cannot see them, asserted both ways"
- ],
- "cracker": {
-  "code": "generator/cracker.py, run on the cut pack by checks.py at every build",
-  "measured": {
-   "ask_figures": 110,
-   "cracker_keeps": "10.0 per cent",
-   "pair_ceiling": 34.0,
-   "mirror_leakage": 10.0,
-   "bar": "ceiling 40, leakage under 35"
+  "task": "task193",
+  "owner": "oviya13ya",
+  "status": "FAILED_TO_STUMP",
+  "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
+  "objective": "anomaly-detection",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-20",
+  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
+  "architecture": 2,
+  "loops": 6,
+  "precut": {
+    "exit": 0,
+    "checks": 50,
+    "fail": 0,
+    "warn": 0,
+    "date": "2026-10-17"
   },
-  "per_ask": {
-   "A1 chain and quarter": "48 figures, keeps 3, MISS",
-   "A2 payer doses and fee": "14 figures, keeps 8, MISS (weakest ask)",
-   "A3 region and age band": "48 figures, keeps 0, MISS"
+  "build": {
+    "generator_assertions": 183,
+    "verifier_checks": 267,
+    "figures_check": "205 of 205",
+    "voice_check": "exit 0 at 997 characters",
+    "rebuilds": "two byte-identical over 24 files; target.zip md5 aa084e2f3354fce6ab82c4f09db87a61, 21 entries",
+    "input_gates": "21 files, 4 formats, two distractors and one neutral rule input in metadata.json",
+    "ladder": "rung0 9, crude 10, rung2 11, answer 7; all four window-aware arithmetics refer the same 7",
+    "call": "the seven referred pairs at 1.365, 1.366, 1.398, 1.451, 1.477, 1.490 and 1.499, nearest unreferred 1.033, crude set 10",
+    "mid_bin": "payer doses exact at one decimal; tightest fee 0.447 krone from the half krone that decides its rounding; tightest region and age share 0.00902 of a point from a tenth; closest two chart bars 0.1 of a point apart",
+    "freeze": "freeze.py check --mode rubric exit 0"
   },
-  "history": "83.5 declared 39.4 -> 50.0 -> 41.5 -> 40.0 -> 36.5, measured after each change",
-  "primaries": {
-   "A1 the chain that owned the pharmacy on the day": "D7 as-of join in pharmacy_register.csv; found by the chains' own monthly log; worth 49.1 points of ask weight",
-   "A2 the dose the edition in force assigns": "D2 version in atc_text.csv against package_index.ddd_per_pack; found by recomputing a derived column from its own inputs; worth 80.9 points",
-   "A3 the region the October 2025 delivery holds": "D2 version in person_register_2025Q4.csv; found by setting two deliveries side by side; worth 42.7 points",
-   "fairness": "all three found: the cracker keeps 100 per cent, so one handling reproduces the golden and only one"
-  }
- },
- "chart_criteria": {
-  "question": "are the 23 graded bar positions distinct criteria or a second grading?",
-  "answer": "a second grading: all 23 bar shares are the workbook's own after-count over its patient count, to the decimal, and both are already graded, asserted by mid.chart_shares_are_not_graded_twice",
-  "with_the_23": "221 graded figures in the submission, 31 of them in the chart block",
-  "without_the_23": "200 graded figures, 10 of them in the chart block",
-  "kept": "the chart's named parts: 23 bars, the 7 and 16 of the two fills, the order with its two end anchors, and the title's claim. The determinism the 23 positions bought is kept in the generator, which refuses a share tie, holds the order strictly descending and asserts the two named anchors are its true ends"
- },
- "fix_pass_4": [
-  "freeze.py snapshot taken before the first edit; freeze.py check --mode rubric exit 0 at the end",
-  "all five determinism pins kept; three silent primaries built under them, each in a file the main call never opens",
-  "the fee_distance metric was inverted (it measured the gap to the whole krone, not to the half krone that decides the rounding), so last pass's 0.38 was really 0.12 and the rates then chosen put four of seven fees exactly on the boundary; metric corrected, rates re-struck, tightest now 0.425, and the verifier recomputes the distance rather than trusting it",
-  "a turned-back line could be a prevalent user's earliest observed receipt, because the rejection device read the generator's is_first flag; the protection is now computed over every line and asserted on the shipped pack",
-  "the chart's 23 bar positions were a second grading of the workbook's own after and patients columns; the block is back to its named parts, 197 graded figures against 221",
-  "atc_text.csv is no longer declared a distractor: the fee is struck on the dose it carries",
-  "the reporting bands moved to 18-24, 25-44, 45-74 and 75 and over, chosen on two criteria at once: every cell mid bin (tightest 0.0146 of a point) and the cracker's natural reading missing every cell"
- ],
- "fix_pass_5": [
-  "the variable dictionary no longer assigns the basis for a quantity an ask grades: the n_packages entry says what the column holds and nothing about defined daily doses, and the pharmacy register entry names the chain without dating it. Neither source is pinned in the prompt, because pinning the source kills the device",
-  "the standard's own definition of ddd_per_pack stands, which is what makes the three stale package rows an internal inconsistency rather than a contradiction",
-  "the region device is forced by the data: the register's documentation of previous_region and region_recorded_from states that it began keeping a previous region on 1 April 2026 and holds none for a change recorded earlier, which is a fact about the column and not a handling rule",
-  "the nearest unreferred pair is out of the graded blocks: the prompt asks for no such figure, and a graded figure with no asking sentence has nothing to fix its basis or its population",
-  "6,590 accepted lines dispensed after their pharmacy's recorded closing date are gone: a closed pharmacy now dispenses nothing after that day, its customers' prescriptions are filled at the next branch of the same chain, and the few still transmitted under its identifier are turned back",
-  "the register's dates are recorded rather than clipped: no death or emigration lands on the window's last day, and the seven referred pairs were re-measured afterwards and are unchanged",
-  "the reader's realism list worked: the screening log runs in numbered weekly batches and stops where the desk had got to, the crosswalk's reasons are drawn unevenly, the chains' log omits a month a chain filed nothing in, packs reach 4 and 6, the four authorisation transfers take effect per pharmacy within days of each transaction, exception references are numbered in the year the register wrote them, and the spontaneous-report series are no longer six monotone ladders out of nine",
-  "the reporting bands moved to 18-24, 25-44, 45-54 and 55 and over and the statutory rates were re-struck, both chosen against the realised data"
- ],
- "fix_pass_6": [
-  "the dose is forced, not merely unpinned: ddd_per_pack's own column description gives its formula and names atc_text.csv as the index, so nine package rows across three codes demonstrably contradict it by a factor while the other 49 satisfy it to the rounding they are stated at",
-  "the vintage reading is closed: atc_text.csv carries the date the register's statistics took up the edition it ships, 1 July 2025, which is before the fee period opens, so no day of that period is under two editions",
-  "ask 3's basis is forced by the data: the chains' own log of what the register accepted ties to the extract in all 148 chain-months under the at-date reading and fails in 144 of them, by 56,626 lines, under the current-chain reading, asserted in both the generator and the verifier. The log's accepted count is now one line per dispensing, which is what made the tie exact",
-  "three impossible register rows are gone: a pharmacy whose authorisation has ended no longer changes hands",
-  "the transfer history is no longer staged: four transactions spread over January, March, August and September 2026, with 25 older transfers back to 2017, so the inside-window ones are a minority of the column",
-  "the Final Recommendation no longer names the two hidden pairs as dropped from the equal-chance ten; reworded twice so the frozen figure set in that block is unchanged, after freeze.py caught the first rewrite dropping a repeated 10",
-  "A3 audited against the same shape and its gap closed: every recorded region change now falls on or after the day the register began keeping a previous region, which its documentation states, so a blank is demonstrably uninformative rather than a no"
- ]
+  "leak": {
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "wave 8 audit: call landed, Gate F failed, scored by score_reader.py"
+  },
+  "duplicate_check": {
+    "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form), all answered in the design note's ## Draw; two differentiated NOTEs against task254 and task50",
+    "surface": "no file name and no persona promoted"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "loops 6: nothing failed to reproduce, Gate G and H pass, stump power moderate, and it expects a substantial share of strong runs to file the crude expectation"
+  },
+  "returned": [],
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
+  "approved": null,
+  "delivered": "2026-10-17",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "fix_pass_2": [
+    "the known_handling block is gone from register_release_notes.json; each convention now stands in the organisation's own voice: the re-sent line and the package validity in register_variable_documentation.csv, the quarter of dispensing in standard 2.1 beside the window definition, the extract's adult scope in the manifest's scope statement",
+    "register_variable_documentation.csv now documents every variable of the five files it covers (25 rows), so the dictionary is not a list of the four things a solver must get right",
+    "the standard carries section 3.5 in its own voice: the construction of the expected number in 3.2(b) is the division's own epidemiological work and is recorded with each run. It names no method; sections 3.4 and 3.5 are now in order and the annexes start on their own page",
+    "four dated contradictions closed: the tracker's two open entries open after their products were marketed, the spontaneous-report quarters start at the product's launch, Annex A's caption reads during the screen window, and the standard's body names no run-specific year",
+    "two new assertions: defect4.no_row_outside_its_product_lifecycle over every dated row in the pack, and defect4.no_date_after_the_pull over seven files",
+    "realism: a pharmacy week drawn from its own open-day shape with Sundays closed, a per-chain validation rate lifted by quarter with one chain's month of missing price records, 121 distinct pharmacy names, package strengths that belong to the preparation, person keys that are not an arithmetic run, exception references numbered in submission order, per-product reporting propensities tied to dispensing volume, a literature log of 20 titles drawn irregularly and linked to the tracker, and a region tilt on marker incidence so the region-by-age cells are not flat",
+    "the register sample is redrawn (17,000 patients, seed 193176) and the five referred-pair effects re-tuned, because the age and region tilts and the prevalent-user layer moved every pair count: the tightest separation is now 8.5 per cent of the multiple against the 6 per cent house floor"
+  ],
+  "fix_pass_3": [
+    "the doses now run in tenths as integers and the fee in exact decimals with an explicit half-up, in the golden and the verifier alike; every screened product's strengths are whole or half doses per unit so a payer's window total is exact at one decimal and the tie family is gone by construction, not by a pinned convention",
+    "the statutory rates were re-struck against the realised totals: the tightest of the seven fees is 0.38 krone from the half krone and half-up and half-even agree for all seven, asserted with the distance and the flip condition",
+    "the reporting age bands moved to 18-34, 35-44, 45-64 and 65 and over, searched against the realised cells: the tightest of the 24 shares is 0.00638 of a point from a tenth, up from 0.00011, with no cell on an exact half and every cell at least 32 patients",
+    "the fee ask's unit is named in the asking sentence as the holder that pays the fee for a dispensing, so the transfer and the merger stay to be noticed and nothing is pinned in a document (SF18)",
+    "the chart asks for all 23 bars and drops the threshold marker from the graded criteria, because the marker's position depends on the construction the standard leaves open; the bar order is now graded bar by bar and the closest two bars are 0.1 of a point apart (SF19, SF20)",
+    "the dictionary's person_register entry and the manifest note now say the file holds one row per current pseudonym, which is what it holds",
+    "the data dictionary covers every variable of the nine files it documents plus five codelists, 44 rows, so it documents the register rather than the four things a solver must get right",
+    "metadata.json declares signal_tracker_export.csv as a neutral rule input with the reason, and the two unused person-register fields, so no shipped file is unaccounted for",
+    "the submission side was reworked: the chains' log no longer reconciles to the extract line for line, the retransmissions are two batches on two chains, the chains transmit on working days, the lag reaches 48 days, the chain means are no longer a ladder, and the rejection reasons are only available to lines the registers support (pharmacy_register.csv now carries closed_on). All on its own random stream, so the screen is bit-identical",
+    "GATE F, my judgement: the spontaneous-report counts were an oracle. Ranking the nine products by reports put Ternivast and Oxelumab first by a factor of two to five, and those two are the whole difference between the seven and the ten. The rates now follow how visible a reaction is rather than how new the product is, and eight assertions hold all four products the two constructions disagree about strictly inside the range the other five span on each of four readings, with no cut of the ordering isolating them",
+    "34 person-register rows now carry no dispensing in either extract: the patients whose every line fell in the clearance period and was turned back at validation. They have no receipt of anything inside the screen window, so the screen cannot see them, asserted both ways"
+  ],
+  "cracker": {
+    "code": "generator/cracker.py, run on the cut pack by checks.py at every build",
+    "measured": {
+      "ask_figures": 110,
+      "cracker_keeps": "10.0 per cent",
+      "pair_ceiling": 34.0,
+      "mirror_leakage": 10.0,
+      "bar": "ceiling 40, leakage under 35"
+    },
+    "per_ask": {
+      "A1 chain and quarter": "48 figures, keeps 3, MISS",
+      "A2 payer doses and fee": "14 figures, keeps 8, MISS (weakest ask)",
+      "A3 region and age band": "48 figures, keeps 0, MISS"
+    },
+    "history": "83.5 declared 39.4 -> 50.0 -> 41.5 -> 40.0 -> 36.5, measured after each change",
+    "primaries": {
+      "A1 the chain that owned the pharmacy on the day": "D7 as-of join in pharmacy_register.csv; found by the chains' own monthly log; worth 49.1 points of ask weight",
+      "A2 the dose the edition in force assigns": "D2 version in atc_text.csv against package_index.ddd_per_pack; found by recomputing a derived column from its own inputs; worth 80.9 points",
+      "A3 the region the October 2025 delivery holds": "D2 version in person_register_2025Q4.csv; found by setting two deliveries side by side; worth 42.7 points",
+      "fairness": "all three found: the cracker keeps 100 per cent, so one handling reproduces the golden and only one"
+    }
+  },
+  "chart_criteria": {
+    "question": "are the 23 graded bar positions distinct criteria or a second grading?",
+    "answer": "a second grading: all 23 bar shares are the workbook's own after-count over its patient count, to the decimal, and both are already graded, asserted by mid.chart_shares_are_not_graded_twice",
+    "with_the_23": "221 graded figures in the submission, 31 of them in the chart block",
+    "without_the_23": "200 graded figures, 10 of them in the chart block",
+    "kept": "the chart's named parts: 23 bars, the 7 and 16 of the two fills, the order with its two end anchors, and the title's claim. The determinism the 23 positions bought is kept in the generator, which refuses a share tie, holds the order strictly descending and asserts the two named anchors are its true ends"
+  },
+  "fix_pass_4": [
+    "freeze.py snapshot taken before the first edit; freeze.py check --mode rubric exit 0 at the end",
+    "all five determinism pins kept; three silent primaries built under them, each in a file the main call never opens",
+    "the fee_distance metric was inverted (it measured the gap to the whole krone, not to the half krone that decides the rounding), so last pass's 0.38 was really 0.12 and the rates then chosen put four of seven fees exactly on the boundary; metric corrected, rates re-struck, tightest now 0.425, and the verifier recomputes the distance rather than trusting it",
+    "a turned-back line could be a prevalent user's earliest observed receipt, because the rejection device read the generator's is_first flag; the protection is now computed over every line and asserted on the shipped pack",
+    "the chart's 23 bar positions were a second grading of the workbook's own after and patients columns; the block is back to its named parts, 197 graded figures against 221",
+    "atc_text.csv is no longer declared a distractor: the fee is struck on the dose it carries",
+    "the reporting bands moved to 18-24, 25-44, 45-74 and 75 and over, chosen on two criteria at once: every cell mid bin (tightest 0.0146 of a point) and the cracker's natural reading missing every cell"
+  ],
+  "fix_pass_5": [
+    "the variable dictionary no longer assigns the basis for a quantity an ask grades: the n_packages entry says what the column holds and nothing about defined daily doses, and the pharmacy register entry names the chain without dating it. Neither source is pinned in the prompt, because pinning the source kills the device",
+    "the standard's own definition of ddd_per_pack stands, which is what makes the three stale package rows an internal inconsistency rather than a contradiction",
+    "the region device is forced by the data: the register's documentation of previous_region and region_recorded_from states that it began keeping a previous region on 1 April 2026 and holds none for a change recorded earlier, which is a fact about the column and not a handling rule",
+    "the nearest unreferred pair is out of the graded blocks: the prompt asks for no such figure, and a graded figure with no asking sentence has nothing to fix its basis or its population",
+    "6,590 accepted lines dispensed after their pharmacy's recorded closing date are gone: a closed pharmacy now dispenses nothing after that day, its customers' prescriptions are filled at the next branch of the same chain, and the few still transmitted under its identifier are turned back",
+    "the register's dates are recorded rather than clipped: no death or emigration lands on the window's last day, and the seven referred pairs were re-measured afterwards and are unchanged",
+    "the reader's realism list worked: the screening log runs in numbered weekly batches and stops where the desk had got to, the crosswalk's reasons are drawn unevenly, the chains' log omits a month a chain filed nothing in, packs reach 4 and 6, the four authorisation transfers take effect per pharmacy within days of each transaction, exception references are numbered in the year the register wrote them, and the spontaneous-report series are no longer six monotone ladders out of nine",
+    "the reporting bands moved to 18-24, 25-44, 45-54 and 55 and over and the statutory rates were re-struck, both chosen against the realised data"
+  ],
+  "fix_pass_6": [
+    "the dose is forced, not merely unpinned: ddd_per_pack's own column description gives its formula and names atc_text.csv as the index, so nine package rows across three codes demonstrably contradict it by a factor while the other 49 satisfy it to the rounding they are stated at",
+    "the vintage reading is closed: atc_text.csv carries the date the register's statistics took up the edition it ships, 1 July 2025, which is before the fee period opens, so no day of that period is under two editions",
+    "ask 3's basis is forced by the data: the chains' own log of what the register accepted ties to the extract in all 148 chain-months under the at-date reading and fails in 144 of them, by 56,626 lines, under the current-chain reading, asserted in both the generator and the verifier. The log's accepted count is now one line per dispensing, which is what made the tie exact",
+    "three impossible register rows are gone: a pharmacy whose authorisation has ended no longer changes hands",
+    "the transfer history is no longer staged: four transactions spread over January, March, August and September 2026, with 25 older transfers back to 2017, so the inside-window ones are a minority of the column",
+    "the Final Recommendation no longer names the two hidden pairs as dropped from the equal-chance ten; reworded twice so the frozen figure set in that block is unchanged, after freeze.py caught the first rewrite dropping a repeated 10",
+    "A3 audited against the same shape and its gap closed: every recorded region change now falls on or after the day the register began keeping a previous region, which its documentation states, so a blank is demonstrably uninformative rather than a no"
+  ]
 }

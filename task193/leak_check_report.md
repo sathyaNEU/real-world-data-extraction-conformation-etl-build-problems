@@ -31,3 +31,32 @@ Stump terms swept: asserted, expected, section, nothing, standard, sentence, dec
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+Run because this build shipped with no scored reader evidence, and because every shipped build measured
+so far has failed. The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure
+names (not values) from `generator/figures.json`, and was scored key by key by
+`.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **1 of 2** |
+| ask figures | **7 of 15** (46.7 per cent) |
+
+It landed the referral count (7 pairs) and named the decisive step as using a trend-adjusted expected number rather than a crude after-against-before ratio, reporting that crude refers 11 and giving the two products whose starts cluster at the front of the window as the reason. It quoted section 3.2(b), the number expected if receiving the product had no bearing on when the marker treatment is first received, and noted 3.5 leaves the construction to the division. So the fork was signposted and the reader took the right branch. It did not reach the three supplemental asks at all, which is why the ask share is the lowest of the three and is not evidence the ask layer holds.
+
+```
+call figures   1 of 2 hit
+ask figures    7 of 15 hit (46.7 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+The repair re-sites the ladder, not the wording: a call a blind reader lands at medium effort is a ladder
+whose decisive rung is readable, and `supplemental-stumping` 1.1c puts the reader above the author's own
+cracker sheet wherever the two disagree.

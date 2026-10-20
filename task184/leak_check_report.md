@@ -70,3 +70,33 @@ and the widened window shapes, the second after them. It saw only a fresh unzip 
 Nothing was quoted for question 1 at either pass, no file was named for question 2, and question 6 came back
 analytical at both. The findings from pass 1 (the footfall weighting, the window regularity, the stub workbook) are
 fixed in the generator and recorded in the design note's `## Tried and rejected`.
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+Run because this build shipped with no scored reader evidence, and because every shipped build measured
+so far has failed. The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure
+names (not values) from `generator/figures.json`, and was scored key by key by
+`.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **11 of 13** |
+| ask figures | **75 of 97** (77.3 per cent) |
+
+It landed the slate and the season total (about 4,050 contracted offences, 4,047.64 unrounded) and named the decisive step in its own words, spreading each offence uniformly over the slots its window overlaps and weighting by overlap time, then scoring the window-start, window-end and midpoint variants against it. It said a filed clause sent it there: clause 4.4, that where the record gives the earliest and latest time no other source may be used to place the offence within that period, read together with the recording standard's 3.3. That is readability screen test 1, a filed sentence naming the decisive quantity, and the reader quoted it.
+
+```
+call figures   11 of 13 hit
+call inputs    2 of 2 hit (shared route figures, not the verdict)
+ask figures    75 of 97 hit (77.3 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+The repair re-sites the ladder, not the wording: a call a blind reader lands at medium effort is a ladder
+whose decisive rung is readable, and `supplemental-stumping` 1.1c puts the reader above the author's own
+cracker sheet wherever the two disagree.
