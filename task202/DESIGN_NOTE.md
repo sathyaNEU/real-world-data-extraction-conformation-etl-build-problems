@@ -1294,3 +1294,202 @@ is a frontier of the architecture and the measurements are below.
   hazard H4 (imputing the absent months) for nothing. Reverted to the shipped behaviour; the reading the
   asking sentence does close, attributing an instruction to the quarter of its run date rather than of its
   claim month, is kept as stop A4 and reproduces no graded figure.
+
+### Architecture 3, the re-root pass inside the built world: three candidates, three measured deaths (2026-10-20)
+
+The brief for this pass was to keep the 17-file world and re-root the decisive step inside it, because
+architecture 2 is spent on two independent measured failures (the judge's NOT_DETERMINISTIC on clause 9.2's
+literal reading, which files PHP 6,000 against the committed PHP 8,000, and the reader's 18 of 30 ask
+figures for a pair of 61.5) and because the within-cell award distribution, where both of architecture 2's
+forks live, may not be the decisive quantity again. **The world was kept and nothing in it was changed.**
+Three candidates were screened as code on the pack's own files, the harness reran byte-identically
+(`md5 b8ad9fd311ff44fe2023c42ff6f7f7dd` over the five screen scripts, two runs), and all three died. The
+ground-level finding below is worth more than a fourth candidate and is the real product of the pass.
+
+**The enumeration the pass actually bought: this world holds ten candidate unobserved quantities and the
+hub is nine of the ten.** The inverted draw was run file by file, asking of each what it pins that no
+other file pins, and the result is that the pack is a closed accounting world. The returns, the check
+register and the Treasury archive tie to each other exactly (1,211 of 1,527 partner-claim-months have the
+Treasury's gross equal to the check's passed increment to the centavo), so every quantity those three
+files carry is observed and any step over it is exact arithmetic, which is rule application. The only
+genuine unobservedness in the pack comes from the portal covering 22 of 88 partners, and that is the hub.
+
+| # | candidate unobserved quantity | verdict, measured |
+|---|---|---|
+| 1 | the within-cell award amount distribution | the hub; forbidden for this pass, two measured forks |
+| 2 | the component mix outside the portal | C2 below: routes back into the hub, corr 1.0000 with a printed column |
+| 3 | the exact household size inside a band outside the portal | rule application: B.2 fixes the factor on the band's lower bound, so no decision reads the within-band size mix |
+| 4 | the fate of a held amount, released or lost | unidentifiable: 38 re-checks against 278 holds, and 0 of 2,835 partner-claim-months carry a third Treasury run, so no file observes a release |
+| 5 | the counterfactual of the withdrawn control over 2026-01 to 2027-03 | a total over the population and window under a counterfactual design, which the crude route owns (stumping Part 3, screen 1); and ungradable, since no file observes it |
+| 6 | ultimate recoveries on the recent claim months | `maturity_censoring` is blocked by task471, and there is no triangle to develop: 6 Treasury rows carry a recovery, PHP 15,359.21 in all, against 5 negative return lines at PHP 14,149.44 |
+| 7 | the distinct households behind the awards | no household key in any of the 17 files, and the survey's `repeat_application` is the one-column precis; capture-recapture is task196's spent driver |
+| 8 | checker sensitivity, so the true defect rate | all six checkers checked all 87 partners (264 to 269 checks each, recorded hold rates 0.1061 to 0.1859), so checker and partner are fully crossed: relative sensitivity is identified and the opponent's checker-fixed-effect reflex is correct, while absolute sensitivity needs a gold standard, which is a spent escape on this objective |
+| 9 | the equivalence scale implied by the scheme's own awards | C3 below: open estimator family at 35x to 99x the printed precision |
+| 10 | the defective value the withdrawn control could not reach | C1 below: no censoring exists as built, and the dial that creates it fails at both ends |
+
+**C1, the strongest of the three: the recorded hold is truncated by the moment the check landed, so the
+defective value is the hold grossed up by the share of the claim month still unreleased at the check.**
+This is the only candidate that cleared screen 1, and it is the only one whose construction was forced by
+arithmetic across two files at two grains: the register's hold increment per partner claim month, divided
+by the unreleased share that only the Treasury archive's two dated run lines for that cell supply. It
+dies four ways, each measured.
+
+- **It corrects a bias the world does not contain.** The Treasury honours the check whenever it lands:
+  206 of the 272 held cells whose check fell after the first run still had the amount withheld in full,
+  and the Treasury's gross equals the check's passed increment on 1,211 of 1,527 cells. So the recorded
+  hold already is the defective value, the construction's x1.9398 gross-up recovers nothing, and the step
+  is an invention rather than a correction.
+- **Under the only world change that would create the censoring, the dial fails at both ends.** Shifting
+  every check date by k days and recounting the cells whose claim month was still wholly unreleased at the
+  check: 240 of 271 at -14 days, 172 at -7, **25 at 0**, **0 at +7 and +14**, and at +21 the construction
+  is wholly undefined because no held cell has any unreleased remainder to gross up. Early enough to
+  identify the construction is early enough that a filter and a divide over the revealing cells is the
+  answer with no model at all; late enough to bite is late enough that nothing identifies the within-month
+  uniformity the gross-up assumes. This is stumping Part 3's censoring-is-revelation kill with both horns
+  measured on one dial.
+- **Screen 2 fires across the whole range.** The construction correlates with the register's own
+  `amount_held_php` column at **0.8820, 0.7956, 0.9186, 0.9423 and 0.9269** at the five shifts, it names
+  the same leading partner at every shift, and the correlation *rises* exactly as the censoring that
+  motivates the construction deepens. The forcing file's own precis beats the construction on the same
+  dial that buys the lever.
+- **The driver is a spent, portal-solved driver on file, and the lexical screen cannot see it.**
+  `guard.py check` returned `nearest drivers 0.04 task107 (v1, lineage)`, whose driver is "the share of
+  past failures a new check could have stopped, and whether a check can see a failure depends on how each
+  source delivers, a property no field records", fate "solved on the portal (author's report
+  2026-10-04)". That is C1's insight in other nouns, at a score well under the 0.12 WARN floor, which is
+  the blind spot `fingerprint` Part 4 names. Four BLOCKs fired besides, verbatim below.
+
+**C2, the capital-component share recovered from the cell mean. Dead on screen 1, by arithmetic, before
+any separation was measured.** The mechanism: a partner-band cell's mean award is a two-point mixture of
+the standard components (LIV, MED, TRN) and the capital items (SHL, EQP, eligible from 1 July 2025 by
+board resolution 2025-14), so the capital share of a cell follows from its mean and the two component
+means the portal measures. Measured on the 528 window cells and the 11,788 window portal awards:
+
+- The correcting input is **two scalars**, so the recovered share is an affine, strictly increasing
+  transform of a figure the returns already print. `corr(recovered capital share, the cell mean) =
+  1.0000`. It cannot reorder anything, which is screen 1's arithmetic horn.
+- Its one-per-unit form fails the other horn: the component means are identified in **2 of 8 provinces**,
+  and **396 of the 528 cells** sit outside them, so the input is identified nowhere for three quarters of
+  the population.
+- The graded figure forks by a factor of 2.04 across five licensed variants of the same construction:
+  the scheme's capital-item award count comes out 14,352.6 on the pooled window portal, 11,728.3 on Albay
+  alone, 19,104.8 on Negros Occidental alone, 14,483.9 on the whole portal and 9,373.7 on band B4's own
+  awards. That is architecture 2's second fork, which awards supply the within-cell figure, in new nouns.
+
+**C3, the equivalence scale estimated from the scheme's own awards, as a verdict on Schedule B. Dead on an
+open estimator family.** The mechanism is attractive because an equivalence scale is a real named object
+in relief and welfare economics with its own literature, and the policy files the square-root scale
+(B.2) without ever testing it. Seven forms a competent analyst would use, on the 528 window cells and on
+the portal's awards, give these factors against the filed 0.500 / 0.707 / 0.866 / 1.000 / 1.118 / 1.225:
+
+| form | B1 | B2 | B3 | B4 | B5 | B6 |
+|---|---|---|---|---|---|---|
+| ratio of count-weighted band means | 0.510 | 0.704 | 0.843 | 1.000 | 1.127 | 1.177 |
+| ratio of median partner-band means | 0.541 | 0.703 | 0.885 | 1.000 | 1.113 | 1.116 |
+| ratio of mean partner-band means | 0.534 | 0.727 | 0.851 | 1.000 | 1.113 | 1.144 |
+| log-log OLS, count weighted (e 0.4806) | 0.514 | 0.717 | 0.871 | 1.000 | 1.113 | 1.215 |
+| log-log OLS, unweighted (e 0.4404) | 0.543 | 0.737 | 0.881 | 1.000 | 1.103 | 1.195 |
+| portal award-level ratio of means | 0.508 | 0.704 | 0.851 | 1.000 | 1.066 | 1.137 |
+| portal award-level ratio of medians | 0.520 | 0.715 | 0.864 | 1.000 | 1.077 | 1.166 |
+
+The factor spread across the seven forms is **0.0347 at B1, 0.0341 at B2, 0.0426 at B3 and 0.0993 at B6**,
+against a printed precision of 0.001, so **35x to 99x over**. Carried through to band ceilings generated
+from a PHP 8,000 reference and rounded up to PHP 100, the seven forms print B1 at 4,100 / 4,400 / 4,300 /
+4,200 / 4,400 / 4,100 / 4,200 and B6 at 9,500 / 9,000 / 9,200 / 9,800 / 9,600 / 9,100 / 9,400, a fork of
+PHP 300 to PHP 800 on a PHP 100 grid. Closing the family would file the method. Screen 2 fires as well:
+the returns' own total and count per band are the plainest columns of the forcing file and their quotient
+*is* the first form in the table, so the one-line route is one of the seven.
+
+**Screen 7, the WHAT screen, on all three.** C1 settles none of the five parts and passes it, which is why
+it was the candidate taken furthest. C2 settles the outcome: whether the graded count is of awards or of
+capital-item awards is a definition, and filing it makes the mixture arithmetic a procedure. C3 settles
+the comparison: which band ratio is "the scale" is the estimand's unit, and the pincer's both-ends applies,
+since filing the form is rule application and leaving it open forks every band ceiling.
+
+**C1's draw as far as it got, so the next pass does not rebuild it.** Default path: (1) normalise the
+register's two partner reference formats, HRG-ALB-001 and HRG/ALB/001, to the ledger code; (2) take the
+later check where a partner claim month was checked twice; (3) difference the register's cumulative
+`amount_held_php` at the falls that mark its restarts, which gives **278** hold partner-months;
+(4) sum the increments; (5) file the recorded hold. **Ends on:** PHP 1,290,711.65 of value the withdrawn
+control held back. **Golden:** PHP 2,163,063.55 against PHP 1,115,104.12 naive over the same cells
+(x1.9398), the defective value the control would have reached had it landed before the Treasury released
+any of the claim month. The gap between the two naive totals is the rest of the kill: the construction is
+defined on only 240 of the 278 held cells, because 38 of them had no unreleased remainder at all at the
+check, so on those the quantity the candidate exists to recover cannot be formed. **Stump sentence:** a competent solver
+normalises the two reference formats, supersedes the re-checked months, differences the cumulative column
+at its restarts and files PHP 1,290,711.65, because the register prints the amount held and no shipped
+sentence says a hold landing after the first of the month's two Treasury runs could reach only the
+unreleased remainder. **The three rules, with the two that do not pass said plainly:**
+`Task type:` general-statistics-data-science/exploratory-data-analysis-distribution-assessment, and this
+line **does not pass**: the candidate is a truncation correction on a control's record and the only two
+task types this domain offers on anomaly-detection are distribution assessment and multiple-testing
+selective inference, neither of which is the home of this quantity, so the task type would have been worn
+rather than served. `Domain test:` the defective claim value a pre-payment control would reach, which an
+assurance office estimates when it asks a board to reinstate one. `Swap:` the quantity survives any noun
+swap in which a periodic claim is released in instalments and checked after the first, so the domain is a
+backdrop and this line **does not pass** either. `Layer 1:` the two reference formats, the cumulative
+columns with irregular restarts, dd/mm/yyyy run dates against ISO dates, the July 2026 layout change, the
+PRELIM and REVISED overlap, one partner accredited and one withdrawn mid-window. `Layer 2:`
+`estimand_identification`; the choice that flips the call is whether the recorded hold is the defective
+value or a truncated view of it. `Decisive step:` gross each hold up by the share of its claim month still
+unreleased at the check. `Not semantics:` every field reads correctly on the default path and the
+increments are right. `Not rule application:` no clause says a hold is bounded by the unreleased
+remainder. `Analyst test:` files PHP 1,290,711.65. `Estimand:` would have had to be filed in the policy as
+the defective value a pre-payment control reaches, which is a sentence that names the decisive step, so
+this line **does not pass** without spending the stump. `No decoy:` nothing planted. `No certified
+replay:` the Treasury archive ties on every basis. `Lesson:` none that survives, because the world
+contains no censoring for the lesson to be about.
+
+**`guard.py check` on C1's card, verbatim** (card at
+`/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/w7_202/task202_card.json`,
+unregistered):
+
+```
+BLOCK  task202  nonprofit-grant-making/anomaly-detection  shape single-figure  gap objective  pattern G17  gate_g method_or_model_selection  decision quantity_figure  strategy maturity_censoring
+  BLOCK ban.artifact             context-artifact type register repeats a recent build against task471 (v3)
+        fix: redraw the context-artifact type
+  BLOCK ban.strategy             stump strategy maturity_censoring repeats a recent build against task250 (v2 ...) [unknown]
+        fix: pick the stump this dataset's own analytic structure produces, see stumping Part 1
+  BLOCK test.same_puzzle_older   decisive gap, decisive pattern and decision type all repeat an older build, and the card carries no differentiation for it against task135 (v1, lineage)
+        fix: add differentiation {taskNN: one line naming how the driver differs} or redraw
+  BLOCK ban.forum                the deciding forum (committee_or_panel) repeats a recent build against task471 (v3)
+        fix: put the call in front of a different forum, or with no formal forum at all
+  WARN  repeat.gate_g            Gate G mechanism method_or_model_selection repeats one of the last two builds against task474 (v2)
+  WARN  overuse.gate_g           Gate G mechanism used in 8 of the last 12 builds
+  WARN  repeat.question_form     question form how-much repeats one of the last two prompts against task475
+  nearest drivers:
+    0.05  task229 (v2, lineage)   The decisive quantity is the share of units in a correct state at one moment, seen only through checks that re
+    0.05  task98 (v5, lineage)    A count of units by class is scored on the class each unit had at the moment it entered the population, but th
+    0.05  task60 (v2, lineage)    Forward exposure is netted of outcomes the units already hold, a filed clause the solver executed on the fit w
+    0.04  task107 (v1, lineage)   The decisive quantity is the share of past failures a new check could have stopped, and whether a check can se
+    0.04  task130 (v3, lineage)   A group chosen for an extreme value of a noisy outcome in one period is forecast for the next period by carryi
+```
+
+**Two housekeeping findings for whoever registers next in this slot.** The v1/v2 card for task202 does not
+carry `architecture_spent`, so it is still a live card and its own axes (`foundation_or_funder`,
+`trustees_or_governors`, `cutover_or_migration`, `grant-award-portfolios`) fence off the ground its
+successor needs; `fingerprint` Part 4 names that as the stale-card failure and it should be set the same
+day architecture 2 is declared spent. And `guard.py names --geo PH --seed 202` warns that no locale is
+mapped for PH, so it returns the en_US pool: this world's Filipino personas cannot be drawn from the
+guard as it stands and the geography wants adding to `business.LOCALE_FOR_GEO`.
+
+**The judge's recoverable defect, recorded with its replacement wording and deliberately not applied in
+this pass**, because the brief rules out cutting data or rebuilding the pack and the dictionary is
+generated by `generator/docs.py`, so editing it without a rebuild would leave the generator and
+`target/` out of step. `DATA_DICTIONARY.md` describes `amount_passed_php` as "the amount passed for
+payment, in pesos" and `amount_held_php` as "the amount held back, in pesos" when both are running
+positions that restart, which costs a solver who trusts the authority document 975 hold partner-months
+and PHP 498,731 against the correct 278 and the quarter figures in the ask sheet. The replacement, for
+the rebuild: `amount_passed_php` "the amount passed for payment, as a running total that restarts" and
+`amount_held_php` "the amount held back, as a running total that restarts", with one further line under
+the table reading "Both currency columns carry a running position rather than the month's own figure, and
+the position restarts; a month's own figure is the movement between consecutive checks for the partner."
+The restart rule was confirmed empirically in this pass: differencing at the falls in the cumulative
+column reproduces the build's asserted **278** hold partner-months exactly, where a plain scheme-year
+restart rule gives 310.
+
+**What this pass recommends.** Architecture 3 cannot be drawn inside this world as it stands. The world is
+a closed accounting world whose only unobservedness is the portal's partial coverage, and that is the hub
+architecture 2 spent, so a re-root here has to change the world rather than the step. The cheapest honest
+options, in order, are to retire the number, or to redraw the cell with a world whose records are
+genuinely partial in a second place, and neither is this pass's call to make.
