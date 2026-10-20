@@ -282,9 +282,20 @@ sentence (fork table). Re-run on the finished pack at stage 3.
   Department's tables inside a PDF) is the publishers' own and keeps the call when mishandled (R2a to R2f). Three
   rules: no decoy, memo, ranking or county figure ships (R3c); no field reading decides (every field read correctly,
   the statewide share still caps Tallis, R3a); no filed rule says how to count a county's returns with children.
+- **Readers (four, sonnet at medium, each on a fresh copy, scored before reading):** every one missed the call on
+  the default path (the statewide share of first-class returns with children, Tallis 15.46 per cent, capped). Round 1
+  (target.zip sha256 1f991494fb7dfd99): reader 1 kept ask A only (14 of 71, exit 0), reader 2 kept both asks (28 of
+  71, exit 1), so both asks were re-sited. Round 2 on the shipped pack (sha256 5d16182359536da0): both readers missed
+  every ask A figure on the funding codes (1 to 22 dwellings short per county) and kept ask B by reading the old
+  numbers by invoice month, 14 of 71 each, exit 0 twice. Ask B is the softer ask; the pair stays under the bar
+  while the call holds.
+- **Judge:** pass 1 DETERMINISTIC, APPROVE (one low note: the family average pooled over every class moves the counts
+  and keeps the call; the first-class average is the only one consistent with Table 2). Pass 2 on the shipped pack
+  DETERMINISTIC, APPROVE, every figure reproduced, fix none. Gate G etl_conformance with method selection,
+  analytical_non_defect, no surface read, no sole defect; Gate H domain, layers and decisive step pass, analytical.
 - **Free gates (2026-10-20):** checks.py 0 failed (input gates, dates, pins, SF1 to SF14, L1 to L8, O1 to O3, R1 to
   R3c, S1 and S2, A1 to A12, B1 to B10, E1 to E4, F1 to F6), verify.py 71 of 71 independently, two builds
-  byte-identical, target.zip cut from the final build (14 files), figures_check.py 130 of 130, precut.py 51 checks
+  byte-identical, target.zip cut from the final build (14 files, sha256 5d16182359536da0), figures_check.py 130 of 130, precut.py 51 checks
   clean, voice-check PASS, guard.py heart WARN on objective overuse only (nearest driver 0.06), surface no personas,
   containers clean, generator/ceiling.py pair ceiling 31.0 with mirror leakage 0.0.
 - **leak.py REVIEW lines, each harmless:** 131, 114, 129, 135 and 200 appear only inside larger numbers (dollar

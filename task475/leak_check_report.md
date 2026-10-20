@@ -41,3 +41,30 @@ Stump terms swept: claims, amount, statewide, objective, window, decisive, child
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Four isolated readers (general-purpose, sonnet, medium), each on a fresh copy of prompt.txt and target.zip, in two
+rounds; each scored with score_reader.py before its verdict was read.
+
+| Round | Reader | Call | Figures kept | score_reader |
+|---|---|---|---|---|
+| 1 | 1 | Tallis capped at 15.46 per cent (the default path) | 14 of 71: ask A | exit 0 |
+| 1 | 2 | Tallis capped at 15.46 per cent | 28 of 71: asks A and B | exit 1 (asks re-sited) |
+| 2 | 3 | Tallis capped at 15.46 per cent | 14 of 71: ask B | exit 0 |
+| 2 | 4 | Tallis capped at 15.46 per cent | 14 of 71: ask B | exit 0 |
+
+1. Decisive step announced: none, all four; each quoted policy 3.1 and Table 2 and chose the statewide share itself.
+2. A file ranking the counties: none, all four.
+3. Files only for the analyst: the data dictionary and the export manifest (registers the office keeps).
+4. A figure or name reading as the answer: none.
+5. Literal sentence: policy 3.1 with 4.1, 4.2 and 5.1 to 5.3, executed with the statewide share, giving Tallis capped;
+   that is the easy route on the filed estimand, not another reading (the judge recomputed the golden from the same
+   sentences twice).
+6. What decided the main answer: an analytical choice, all four (estimating the returns with children); none used
+   each county's own credit amount.
+7. Realism: the conversion timestamps at about 05:00 on the move date and regular conversion notes, read as system
+   artifacts; nothing fixed.
+REVIEW lines: harmless in all four reads (digits inside larger numbers, the policy and dictionary defining the
+allocation and its files, plain words in their own sense).
+

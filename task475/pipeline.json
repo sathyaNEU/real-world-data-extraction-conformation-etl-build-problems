@@ -1,11 +1,11 @@
 {
  "task": "task475",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "demographic-social-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
  "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
  "architecture": 1,
@@ -15,22 +15,22 @@
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "round 1: both readers missed the call (Tallis 15.46 per cent, capped); reader 1 exit 0 (14 of 71, ask A), reader 2 exit 1 (28 of 71, asks A and B); asks re-sited"
+  "leak_py": "REVIEW (answered in the design note)",
+  "reader": "four readers in two rounds, all missed the call (Tallis 15.46 per cent, capped); round 1 reader 2 exit 1, asks re-sited; round 2 exit 0 twice at 14 of 71 (ask B)"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective only)",
   "nearest": "task268 v1 at 0.06 (heart), 0.10 (guard)"
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC",
+  "verdict": "pass 1 DETERMINISTIC, pass 2 DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "task475/determinism_check_report.md"
+  "report": "task475/determinism_check_report.md, task475/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4 round 2: two fresh scored readers and judge pass 2 in flight on target.zip sha256 5d16182359536da0 (asks re-sited: funding-code vintage on A, invoice-month numbering behind the July 2025 move on B); score each with score_reader.py; on two misses of the call with exit 0 and the judge's pass, write the pre-ship check and ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
  "source_note": "seed ET32 (ZIP-level EITC counts to county allocations of a capped weatherization fund): world, decision and quantity kept; the pitfall re-found from the data"
 }
