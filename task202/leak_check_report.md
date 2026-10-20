@@ -73,3 +73,53 @@ guesses at the opponent's routes, and its three modelled stops here (sum the run
 column, count blanks as a reason) were all shallower than what one reader at medium effort actually did.
 A reader that beats the cracker has proved the cracker too shallow, so the reader's score is the
 measurement and the cracker is only the model that gets the build to the reader.
+
+## Solver's-eye read, wave 6 (the re-sited grid and ask layer, target.zip 9311e9d6)
+
+The reader held only a fresh unzip of the pack and `prompt.txt`. Scored key by key against
+`generator/figures.json` by `.claude/skills/leak-check/score_reader.py`.
+
+### The call held. The ask layer did not.
+
+| block | figures it answered | hit | miss |
+|---|---|---|---|
+| main call | 1 | **0** | 1 |
+| ask A, the pesos the Treasury settled, by quarter | 6 | **6** | 0 |
+| ask B, the pesos the checks passed and held, by quarter | 6 | **6** | 0 |
+| ask C, the claim-months a hold was recorded in, by reason | 6 | **6** | 0 |
+| ask A's instruction-repeat count | 1 | **1** | 0 |
+| **total ask figures** | **19** | **19** | **0** |
+
+The reader filed **PHP 6,000** against a golden of PHP 8,000, which is rung 1 of the ladder, the
+default path. So the call is still carrying its ladder. Every ask figure it attempted it got exactly,
+to the peso on the six Treasury quarters and to the unit on every count.
+
+**Measured keep: 18 of 30 graded ask figures, which is `pair 61.5` by the cracker's own printed
+table, against a bar of 50.** The cracker names that scenario in its own output: "a reader which
+cracked A or B as well would keep 18 of 30 for 61.5". It cracked both.
+
+### Why the predicted 39.5 was wrong
+
+`cracker.py`'s reader-calibrated row carried `A 0 of 12  MEASURED by the stage 4 reader` and
+`B 0 of 12  MEASURED by the stage 4 reader`. Those labels were true of a different pack. That
+measurement was taken on the architecture 1 pack; both devices were then re-sited (ask A's filed
+convention removed, ask B re-devised onto the accreditation-year reset) and the row was carried
+forward rather than re-measured. A row labelled measured is only measured against the pack it was
+measured on, and re-siting a device voids it.
+
+### What the reader found on the way, which the judge is testing
+
+Its answer to question 5 is that clauses 9.1 and 9.2 read literally give **PHP 6,000**, not the
+golden. It read clause 9.2's "an award level is not taken claim month by claim month" as fixing the
+award level at the partner-band average over the window, which is the default path's own
+construction. It also flagged that sentence as reading like an instruction to a solver rather than
+as policy wording, and clause 9.6 as running off the page with the clause numbers jumping 1, 4, 7, 9.
+
+### Realism findings it volunteered
+
+The briefing email's "the returns for November and February were reopened for the reconciliation
+exercise, so take care with those two" points straight at the preliminary-against-revised handling.
+The check register's `hold_reason` spelling variants read as seeded. The 138 Treasury lines that
+repeat an identical amount in both runs read as generated rather than as a Treasury practice. The
+data dictionary documents the recovery lines but says nothing about the register's running totals,
+which is the one gap an organisation's own dictionary would normally fill.

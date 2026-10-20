@@ -56,8 +56,8 @@
   "verdict": "NOT_DETERMINISTIC"
  },
  "leak": {
-  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
-  "reader": "running"
+  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean (target.zip 9311e9d6)",
+  "reader": "wave 6: missed the call (filed PHP 6,000, rung 1) and hit 19 of 19 ask figures it attempted, so 18 of 30 graded ask figures kept, pair 61.5 against a bar of 50. Scored by score_reader.py. The ask layer fails, measured, for the second time."
  },
  "loops": 0,
  "nonprofit_ground_screen": {
@@ -91,9 +91,9 @@
   "repair": "the 24 schedule figures scored in the recommendation block where they belong; the ask band re-sited onto three closed-period asks with one silent primary each (D6 an instruction standing on the run lines it covers, D3 a stock read as a flow, D4 a blank that means two things), 18 figures"
  },
  "stage": 4,
- "stage4_owed": "Architecture 2 is built and every free gate is green, verified by the orchestrator on target.zip 9311e9d6: zip equals the tree member for member, figures_check 88 of 88 present, verify 2,208 independent checks from the bundle alone reporting the call as PHP 8,000, checks 338, precut 51/0/0, voice-check PASS at 987 characters, leak REVIEW with sweep 11 clean, guard surface exit 0, MARGIN_FLOOR and CLEARANCE_FLOOR now 0.30 and 0.30, and the cracker's reader-calibrated row 6 of 30 ask figures for a pair of 39.5 against a bar of 50. freeze.py reports 63 frozen items moved, which is expected and correct for a re-site of the graded quantity: the call moved from PHP 7,800 to PHP 8,000 and the default path from 5,800 to 6,000. What stage 4 owes, and why it cannot be skipped: both the prompt and the shipped documents changed, so the leak reader must run again rather than leak.py alone, and the main call moved, so a re-judge is owed. Both reports in the folder are stale and are stage 4's to replace: determinism_check_report.md is the previous judge's and still reads PHP 7,800 throughout, and leak_check_report.md carries the previous reader's section verbatim including the 12-of-18 scoring this pass answers. One weakness is known and priced rather than hidden: ask C's primary was not replaced and a reader keeps 6 of 6 on it, which is what puts the pair at 39.5 rather than 28.5. The fix that exists is to split the check register into a payment-control register carrying the amounts and a hold case log carrying the reasons, which decouples ask C from ask B and lets C take a device of its own; that is a new file, a dictionary entry, a manifest row and a verifier path.",
+ "stage4_owed": "The reader has run and the ask layer failed on measurement: the call held at rung 1 but the reader took all six of ask A, all six of ask B and all six of ask C, so the keep is 18 of 30 and the pair is 61.5 against a bar of 50. cracker.py's reader-calibrated row predicted 39.5 because it carried A and B as 0 of 12 each labelled MEASURED, and that measurement was taken on the architecture 1 pack before both devices were re-sited; it was never re-measured. The judge is still running and is testing the reader's question 5, which says clauses 9.1 and 9.2 read literally give PHP 6,000 rather than the golden, because clause 9.2 fixes the award level at the partner-band average over the window, which is the default path's own construction. If that holds it is a Gate C finding on top of the rubric one. The repair that the previous pass already named and priced is to split the check register into a payment-control register carrying the amounts and a hold case log carrying the reasons, which decouples ask C from ask B; ask A needs a silent primary rather than a basis stated in the asking sentence.",
  "stage_name": "check",
  "status": "BUILD",
  "task": "task202",
- "updated": "2026-10-19"
+ "updated": "2026-10-20"
 }
