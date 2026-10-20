@@ -1,0 +1,128 @@
+{
+ "task": "task481",
+ "architecture": 1,
+ "title": "By how much Ellsmere's aggravated assaults changed from 2024 to 2025 once 2024 is counted the way NIBRS counts it, with the restated 2024 total and the 2025 count, and the non-fatal shooting victims and the shootings they were hurt in for each quarter from 2023 to 2025",
+ "domain": "Survey Research & Official Statistics",
+ "subdomain": "seasonal-adjustment-official-time-series-production (a university public safety lab restates a city's police-recorded aggravated assault series across the department's move from summary to incident-based reporting, from the three months both returns were produced)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "07: a grid of cells, two counts for each of twelve quarters, beside a single restated figure and its change",
+ "as_of": "2026-10-06",
+ "deliverables": [
+  "ellsmere_aggravated_assault.xlsx"
+ ],
+ "distractor_files": [
+  "census_population_estimates_ellsmere.csv",
+  "epd_cad_assault_calls_2024_2025.csv",
+  "state_repository_download_ellsmere_13A_2025.csv"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "epd_nibrs_offense_extract_2024-10_to_2026-09.csv",
+  "largest_file_rows": 119713
+ },
+ "files": [
+  {
+   "file": "epd_nibrs_offense_extract_2024-10_to_2026-09.csv",
+   "source": "Ellsmere Police Department, Records Division: NIBRS offense extract",
+   "date": "2026-10-05",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "epd_nibrs_extract_dictionary.pdf",
+   "source": "Ellsmere Police Department, Records Division: extract data dictionary",
+   "date": "2026-10-05",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "return_a_2021.xlsx",
+   "source": "Ellsmere Police Department: Return A workbook, 2021",
+   "date": "2022-01-21",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "return_a_2022.xlsx",
+   "source": "Ellsmere Police Department: Return A workbook, 2022",
+   "date": "2023-01-19",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "return_a_2023.xlsx",
+   "source": "Ellsmere Police Department: Return A workbook, 2023",
+   "date": "2024-01-23",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "return_a_2024.xlsx",
+   "source": "Ellsmere Police Department: Return A workbook, 2024",
+   "date": "2025-01-28",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dvu_case_log_2021_2026.csv",
+   "source": "Ellsmere Police Department, Domestic Violence Unit: case log",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dvu_case_log_fields.txt",
+   "source": "Ellsmere Police Department, Domestic Violence Unit: case log field notes",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "scorecard_crime_chapter_methods_2026.docx",
+   "source": "University of Ellsmere Public Safety Lab: scorecard crime chapter methods (draft)",
+   "date": "2026-09-29",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "state_ucr_nibrs_certification_letter.pdf",
+   "source": "State UCR Program: NIBRS certification letter",
+   "date": "2025-01-22",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "crime_in_the_state_2025_table8.pdf",
+   "source": "State UCR Program: Crime in the State 2025, table 8",
+   "date": "2026-09-15",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "state_repository_download_ellsmere_13A_2025.csv",
+   "source": "State UCR Program: repository download for Ellsmere, assault offenses, incident year 2025, at the 2025 data freeze",
+   "date": "2026-09-18",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "gvr_shooting_log_2023_2026.csv",
+   "source": "Ellsmere Police Department, Gun Violence Reduction Unit: shooting log",
+   "date": "2026-10-01",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "medical_examiner_homicide_list_2023_2026.csv",
+   "source": "County Medical Examiner: homicide list",
+   "date": "2026-10-06",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "census_population_estimates_ellsmere.csv",
+   "source": "US Census Bureau-format population estimates for Ellsmere (vintages 2024 and 2025)",
+   "date": "2026-06-26",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "epd_cad_assault_calls_2024_2025.csv",
+   "source": "Ellsmere Police Department: computer-aided dispatch extract, assault-related calls",
+   "date": "2026-01-12",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  }
+ ]
+}

@@ -6,13 +6,13 @@
   "domain": "survey-research-official-statistics",
   "subdomain": "seasonal-adjustment-official-time-series-production",
   "client_domain": "survey-research-official-statistics",
-  "niche": "restating a city's police-recorded aggravated assault series onto the incident-based (NIBRS) basis from the two dual-coded months of the records system cutover",
+  "niche": "restating a city's police-recorded aggravated assault series onto the incident-based (NIBRS) basis from the three dual-coded months of the records system cutover",
   "objective": "etl",
-  "shape": "03",
+  "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "On the NIBRS basis Ellsmere's aggravated assaults rose 1 per cent from 2024 to 2025: 5,254 victims in 2025 against about 5,200 in 2024 restated.",
+  "answer_source": "submission.md block 1; generator/figures.json call.change_pct, restated_2024, nibrs_2025",
   "gap": [
     "time",
     "population"
@@ -32,24 +32,24 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "With the data cleaned and every rule read correctly, the analyst builds the conversion per Return A line from the November and December 2024 dual-coded months, applies it month by month to January to October 2024 and files a fall of about 3 per cent from 2024 to 2025 on the NIBRS basis, where converting the simple-assault line separately for domestic and other assaults, each month at its own domestic share from the Domestic Violence Unit's case log, gives a rise of about 2.4 per cent.",
+  "analyst_test": "With the data cleaned and every rule read correctly, the analyst builds the conversion per Return A line from the October to December 2024 dual-coded months, applies it month by month to January to September 2024 and files a fall of 3 per cent from 2024 to 2025 on the NIBRS basis (2024 restated at about 5,400), where converting the other-assaults line separately for domestic and other victims, each month at its own domestic count from the Domestic Violence Unit's case log, gives about 5,200 and a rise of 1 per cent.",
   "domain_test": "The deciding quantity is an official series restated across a classification change through conversion rates estimated on a dual-coded overlap and applied where they are stable, each period weighted by its own composition, which is how statistical producers back-cast a series over a coding break; replacing the conversion with a before-and-after comparison or a single link factor changes the call.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:conversion-rates-applied-where-stable-with-each-period-composition",
   "layer1": [
-    "summary-based monthly returns (one workbook per year, layout changed in 2022) against an incident-level extract at offense-by-victim grain",
-    "two offense classifications (legacy summary codes with the hierarchy rule, NIBRS offense codes) on one dual-coded quarter",
-    "legacy and new records-system incident numbers in different formats",
-    "report date against incident date, and the records system's UTC timestamps against local time",
-    "a preliminary and a revised 2024 annual return overlapping",
-    "calendar figures against the city's July-to-June fiscal year"
+    "summary-based monthly returns (one workbook per year, the department's layout in 2021 and the state program's template from 2022) against an incident-level extract at offense-by-victim grain",
+    "two offense classifications (Return A lines under the hierarchy rule, NIBRS offense codes) on one dual-coded quarter, the summary class filled only there and marked NS and P2 where Return A scored nothing",
+    "legacy, interim and renumbered records-system incident numbers across the Domestic Violence Unit's log and the shooting log",
+    "the records system's UTC timestamps against local time, and the unit's case-opened date against the report date",
+    "a shooting log carried across the records move, whose inside-city flag and outcome were filled one way before it and another after it, with open cases entered twice and some multi-victim shootings under one report per victim",
+    "the state program's repository counted by incident date at its data freeze against the department's extract counted by month reported"
   ],
   "stakeholder_role": "director of the city partnership at the University of Ellsmere's Public Safety Lab, which writes the crime chapter of the city's Public Safety Scorecard under a data-sharing agreement with the police department",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "nibrs_offense_extract.csv",
-    "rows": 0,
+    "file": "epd_nibrs_offense_extract_2024-10_to_2026-09.csv",
+    "rows": 119713,
     "entity": "one offense against one victim in one incident",
     "grain": "offense x victim",
     "source": "synthetic (constructed in the layout of a NIBRS offense and victim segment extract)"
@@ -71,14 +71,13 @@
     ]
   },
   "deliverables": [
-    "ellsmere_aggravated_assault_restated.xlsx",
-    "aggravated_assault_series.png"
+    "ellsmere_aggravated_assault.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "A count is restated onto a new classification by conversion rates measured on a short window in which every record carries both classifications; within one source class the rate differs sharply between two kinds of record that no column of the source counts separates, and that kind's share of the class is higher in the measured window than in the months being restated, so applying the window's rate per source class carries the window's mix into those months, while the kind is rebuilt from a separate operational log and each month is restated at its own mix.",
-  "driver_concrete": "Ellsmere's January to October 2024 aggravated assaults are restated onto the NIBRS basis from the November and December 2024 dual-coded months; legacy simple assaults convert to NIBRS aggravated assault at about a fifth when domestic and about one in a hundred otherwise, domestic assaults are their largest share of simple assaults in the holiday weeks and far smaller in the spring and summer, and only the Domestic Violence Unit's case log gives each month's domestic share, so the per-line conversion overstates the restated 2024 base and turns a real rise into a fall.",
-  "stump": "Restating January to October 2024 at the dual-coded months' conversion rate per Return A line carries the holiday weeks' domestic share of simple assaults into the spring and summer, overstates the restated 2024 count, and files a fall of about 3 per cent in aggravated assaults from 2024 to 2025 on the NIBRS basis where the series rose about 2.4 per cent.",
+  "driver_concrete": "Ellsmere's January to September 2024 aggravated assaults are restated onto the NIBRS basis from the October to December 2024 dual-coded months; Return A's other assaults convert to NIBRS aggravated assault at about a fifth when domestic and about three in a thousand otherwise, domestic victims are a larger share of other assaults in the autumn and holiday weeks (35.8 per cent) than in January to September (29.1 per cent), and only the Domestic Violence Unit's case log gives each month's domestic count, so the per-line conversion overstates the restated 2024 base and turns a real rise into a fall.",
+  "stump": "Restating January to September 2024 at the dual-coded months' conversion rate per Return A line carries October to December's domestic share of other assaults into the rest of the year, overstates the restated 2024 count (about 5,400 against about 5,200), and files a fall of 3 per cent in aggravated assaults from 2024 to 2025 on the NIBRS basis where the series rose 1 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task117": "task117 forecasts a summed peak through per-unit caps reached by a dated join; task481 restates a closed year of an official count across a classification change, and its stump is a conversion rate whose within-class mix moves between the dual-coded quarter and the months restated.",

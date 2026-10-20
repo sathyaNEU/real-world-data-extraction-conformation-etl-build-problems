@@ -12,32 +12,36 @@ department's own figures moving less), taking the world, the decision and the qu
 - **Pairing.** Survey Research & Official Statistics / seasonal-adjustment-official-time-series-production (client
   domain survey-research-official-statistics), objective Data Extraction & Conformation (ETL): the University of
   Ellsmere's Public Safety Lab, which writes the crime chapter of the city's Public Safety Scorecard under a
-  data-sharing agreement with the police department, conforms the department's summary returns (SRS Return A, January to December
-  2024), its incident-based extract (NIBRS, from November 2024), the two months in which every victim carries both
-  classifications, and the Domestic Violence Unit's case log into one aggravated assault series on the NIBRS basis for
-  the 2026 edition of the scorecard. Official time-series production is the task type: a published series restated
-  across a classification break so that its 2024 and 2025 values measure the same thing.
-- **Shape 03, bridge between two totals.** The 2024 published (SRS) figure walked to the 2025 NIBRS figure: one line
-  per kind of change in counting (assaults hidden behind a robbery or homicide under the hierarchy rule, simple assaults
-  NIBRS counts as aggravated, aggravated assaults NIBRS counts as simple), the restated 2024 total, the real change; the
-  restated series by month (twelve 2024 months, twelve 2025 months); the chart's named parts; the asks.
-- **Decision.** quantity_figure, answer unit rate_or_share (the 2024-to-2025 change on the NIBRS basis, and the share of
-  the published rise that is counting), question form how-much; forum the city's executive team, which signs off the
-  scorecard before it goes to council (executive_team), forcing event the scorecard's annual edition closing calendar
-  2025 (period_close), org family university_or_school, stakeholder the lab's director of the city partnership
-  (policy_adviser), context artifact the department's published Return A series (published_series). The call is
-  retrospective because the scorecard reports a closed year: the restatement is what the published history needs
-  before the 2026 edition goes to council, and no window is open that a forecast would serve.
+  data-sharing agreement with the police department, conforms the department's summary returns (Return A, to December
+  2024), its incident-based extract (NIBRS, incidents reported from 1 October 2024), the three months in which every
+  victim carries both classifications, and the Domestic Violence Unit's case log into one aggravated assault series on
+  the NIBRS basis for the 2026 edition of the scorecard, and conforms the Gun Violence Reduction Unit's shooting log
+  with the Medical Examiner's homicide list for the chapter's shootings. Official time-series production is the task
+  type: a published series restated across a classification break so that its 2024 and 2025 values measure the same
+  thing.
+- **Shape 07, a grid of cells.** The criteria come from the shootings grid: non-fatal shooting victims and the
+  shootings they were hurt in for each of twelve quarters, 2023 to 2025 (24 cells), beside the call (the change from
+  2024 restated to 2025, to the whole per cent), the restated 2024 total (to the nearest hundred) and the 2025 count,
+  and the one workbook: 29 graded items. The walk
+  from the published 2024 total to the restated one rides in the workbook as working and is not asked for, because
+  every line of it but one is the same on the default path (Tried and rejected).
+- **Decision.** quantity_figure, answer unit rate_or_share (the 2024-to-2025 change on the NIBRS basis), question form
+  how-much; forum the city's executive team, which signs off the scorecard before it goes to council
+  (executive_team), forcing event the scorecard's annual edition closing calendar 2025 (period_close), org family
+  university_or_school, stakeholder the lab's director of the city partnership (policy_adviser), context artifact the
+  State UCR Program's published series (published_series). The call is retrospective because the scorecard reports a
+  closed year: the restatement is what the published history needs before the 2026 edition goes to council, and no
+  window is open that a forecast would serve.
 - **Strategy.** composition_mix (pattern E, generators G14 conditioned yield and G6 composition): a conversion rate
-  measured on two dual-coded months does not fit the ten months it is applied to, because within the simple-assault
-  line the rate is a mixture of a domestic rate near a fifth and a street rate near one in a hundred, and the mixture's
-  weights move with the season. Gate G etl_conformance; Layer 2 family estimation_fit, pattern
+  measured on three dual-coded months does not fit the nine months it is applied to, because within the other-assaults
+  line (4e) the rate is a mixture of a domestic rate near a fifth and a street rate near three in a thousand, and the
+  mixture's weights move through the year. Gate G etl_conformance; Layer 2 family estimation_fit, pattern
   own:conversion-rates-applied-where-stable-with-each-period-composition.
-- **Data-native sentence.** The new records system went live on 1 November, so the only months in which every victim
-  carries both its summary line and its NIBRS offense are the holiday weeks, when domestic assaults (almost all of the
-  simple assaults NIBRS counts as aggravated, through strangulation and household objects used as weapons) are their
-  largest share of simple assaults; the January to October months the restatement has to reach are full of street
-  assaults that almost never convert, so a rate per summary line carries November and December's mix into the summer.
+- **Data-native sentence.** The new records system went live on 1 October, so the only months in which every victim
+  carries both its Return A line and its NIBRS offense are October to December, when domestic victims (almost all of
+  the other assaults NIBRS counts as aggravated, through strangulation and household objects used as weapons) are a
+  larger share of other assaults than in the spring and summer, when street assaults that almost never convert fill
+  the line; a rate per Return A line carries October to December's mix into January to September.
 - **Sources.**
   - Client card seasonal-adjustment/1 (model level shifts before seasonal filtering) and the official practice for
     conversion matrices across a classification change (dual-coded samples, rates applied at the detailed level where
@@ -45,53 +49,52 @@ department's own figures moving less), taking the world, the decision and the qu
     and this build's decisive step is the judgment it takes for granted (that the line's rate is stable across the
     year), which the data settle.
   - Client card census-register/2 (net and gross classification error differ): the published rise nets two gross flows
-    in opposite directions, assaults gained from the simple line and assaults lost to it, each with its own driver.
+    in opposite directions, assaults gained from the other-assaults line and assaults lost to simple assault, each with
+    its own driver.
   - `measured-drivers.md`, held group: "the forward population differs from the validated one on an axis the pack
-    shows only in the case log" and "the back-test passes by construction". Any rate set from the two dual-coded months
-    reproduces those months exactly; the axis that separates them from January to October (each month's domestic
-    share of simple assaults) sits only in the Domestic Violence Unit's case log.
+    shows only in the case log" and "the back-test passes by construction". Any rate set from the dual-coded months
+    reproduces those months exactly; the axis that separates them from January to September (each month's domestic
+    share of other assaults) sits only in the Domestic Violence Unit's case log.
   - `strategies.md` F5 (composition): held when the property is rebuilt from a history, not read off a column. Here
     the summary returns carry no domestic split; it is rebuilt by month from the unit's case log.
   - Differentiation lines on the card against task117, task137, task37, task44 and task97 (older builds sharing gap
     time, pattern E and quantity_figure): none restates a closed year of a recorded count across a coding break.
-- **WARNs answered.** overuse.objective: the ETL lane is this author's lane. repeat.gate_g against task479: the
-  honest key for a stump that lives in how the history is conformed; task479's driver (flood claims replayed on
-  elevated buildings) shares nothing else. repeat.deliverables (png and xlsx against
-  task271): a workbook and a chart are what a scorecard office sends; the formats are revisited when the prompt is
-  written.
+- **WARNs answered.** overuse.objective: the ETL lane is this author's lane. repeat.gate_g against task479: the honest
+  key for a stump that lives in how the history is conformed; task479's driver (flood claims replayed on elevated
+  buildings) shares nothing else.
 - **Personas** (`guard.py names --geo "United States" --seed 481`): Darlene Ford (the lab's director of the city
   partnership), Steven Barnett (NIBRS coordinator, the police department's Records Division).
 
 ## Default path
 
-1. Read the scorecard methodology note: from the 2026 edition the scorecard reports aggravated assault as NIBRS
-   offense 13A, one offense per victim, in the month the offense was reported, and shows 2024 restated as NIBRS would
-   have counted it had the department reported to NIBRS all year.
-2. Read the 2024 Return A workbook (one row per month, the assault lines 4a to 4e by weapon and the robbery and homicide
-   lines) and the NIBRS offense extract (one row per offense against each victim, incidents reported from 1 November
-   2024); the extract's summary-class column is filled for the victims reported in November and December 2024, the
-   months the department produced both returns.
-3. Tabulated the dual-coded months' victims by summary line against NIBRS offense: for each Return A line (4a firearm,
-   4b knife, 4c other weapon, 4d hands and feet, 4e simple assault, and the robbery and homicide lines for the 13A
-   victims the hierarchy rule left unscored) the number of NIBRS 13A offenses per victim the line counted.
-4. Applied each line's rate to the same line's January to October 2024 counts month by month, added November and
-   December's NIBRS 13A count, and summed: the 2024 restated total.
-5. Took 2025's NIBRS 13A offenses by month reported from the extract and compared: the change from 2024 to 2025 on the
-   NIBRS basis.
+1. Read the scorecard's crime chapter methods: from the 2026 edition the chapter reports aggravated assault as NIBRS
+   offense 13A, one offense per victim, in the month the offense was reported in Ellsmere local time, from the
+   department's extract, and shows 2024 restated as NIBRS would have recorded it had the department reported to NIBRS
+   all year.
+2. Read the 2024 Return A workbook (a sheet per month, lines 4a to 4e by weapon and the robbery and homicide lines,
+   actual offenses in column 4) and the NIBRS offense extract (one row per offense against each victim, incidents
+   reported from 1 October 2024); the extract's ucr_summary_class is filled for the victims reported in October to
+   December 2024, the months the department produced both returns.
+3. Tabulated the dual-coded months' victims by Return A line against NIBRS offense: for each line (4a firearm, 4b
+   knife, 4c other weapon, 4d hands and feet, 4e other assaults) the share its victims NIBRS coded 13A, and for robbery
+   and homicide the 13A victims the hierarchy rule left unscored per Return A incident or victim.
+4. Applied each line's rate to the same line's January to September 2024 counts month by month, added October to
+   December's 13A count, and summed: 2024 restated, 5,419 (about 5,400).
+5. Took 2025's 13A offenses by month reported from the extract (5,254) and compared: the change from 2024 to 2025 on
+   the NIBRS basis.
 
-Ends on: a fall of about 3.3 per cent from 2024 to 2025 on the NIBRS basis (calibrated on the generator's expected
-values; the built pack's figure replaces it), the whole published rise of about 9 per cent put down to the change in
-counting.
-Golden: a rise of about 2.4 per cent on the NIBRS basis, about a quarter of the published rise real.
+Ends on: a fall of 3 per cent from 2024 to 2025 on the NIBRS basis (2024 restated at about 5,400), the whole
+published rise put down to the change in counting.
+Golden: a rise of 1 per cent on the NIBRS basis (2024 restated at about 5,200).
 
 ## Stump sentence
 
-Restating January to October 2024 at the dual-coded months' rate per Return A line files a fall of about 3.3 per cent
-from 2024 to 2025 (the default path's `Ends on:` figure), because the simple-assault line's rate is set in November and
-December, when domestic assaults, which convert to aggravated at about a fifth, are the largest share of simple
-assaults they are all year, and the street assaults that dominate the spring and summer convert at about one in a
-hundred; converting the line separately for domestic and other assaults, each month at its own domestic share from the
-Domestic Violence Unit's case log, gives a rise of about 2.4 per cent.
+Restating January to September 2024 at the dual-coded months' rate per Return A line files a fall of 3 per cent from
+2024 to 2025 (2024 restated at about 5,400, the default path's `Ends on:` figure), because the other-assaults line's rate is
+set in October to December, when domestic victims, who convert to aggravated at about a fifth, are 35.8 per cent of
+the line against 29.1 per cent in January to September, and the street assaults that fill the rest of the year convert
+at about three in a thousand; converting the line separately for domestic and other victims, each month at its own
+domestic count from the Domestic Violence Unit's case log, gives about 5,200 and a rise of 1 per cent.
 
 ## Three rules
 
@@ -104,37 +107,40 @@ Domestic Violence Unit's case log, gives a rise of about 2.4 per cent.
 - Swap: "By how much did aggravated assaults change once 2024 is counted the way NIBRS counts them" read with hospital
   nouns ("by how much did sepsis admissions change once 2024 is coded the way the new grouper codes them") keeps the
   official-statistics method, which is the domain here, but loses everything that decides this call: the hierarchy
-  rule's unscored victims, strangulation and household objects counted as weapons, the holiday weeks of the dual-coded
-  months and the Domestic Violence Unit's log; and replacing the conversion with a generic summary (the published
-  rise, a link factor, a quarter-on-quarter comparison) changes the answer.
+  rule's unscored victims, strangulation and household objects counted as weapons, the autumn and holiday weeks of the
+  dual-coded months and the Domestic Violence Unit's log; and replacing the conversion with a generic summary (the
+  published rise, a link factor, a quarter-on-quarter comparison) changes the answer.
 - Layer 1: Return A workbooks whose layout changed in 2022 (the department's own template, then the state program's),
-  a summary-class column filled only in the two dual-coded months, legacy and new records-system incident numbers in
-  the Domestic Violence Unit's log, the log's case-opened date against the report date, the extract's UTC timestamps
-  against local time, a preliminary and a final 2024 Return A overlapping, and the city's July-to-June fiscal year
-  against the calendar year the scorecard reports; each is produced by the department's and the state program's own
-  systems and none is placed to be caught.
+  a summary-class column filled only in the three dual-coded months, legacy, interim and renumbered incident numbers
+  in the Domestic Violence Unit's log and the shooting log, the log's case-opened date against the report date, the
+  extract's UTC timestamps against local time, the state program's repository counted by incident date at its freeze
+  against the department's count by month reported, and a shooting log carried across the records move; each is
+  produced by the department's, the unit's and the state program's own systems and none is placed to be caught.
 - Layer 2: estimation_fit; the methodological choice that flips the call is the level at which the dual-coded
   conversion rates are applied, and with which period's composition.
-- Decisive step: converting the simple-assault line separately for domestic and other assaults, each January to
-  October month at its own domestic share, because the line's pooled rate in the dual-coded months is a mixture whose
-  weights are the holiday weeks'.
+- Decisive step: converting the other-assaults line separately for domestic and other victims, each January to
+  September month at its own domestic count, because the line's pooled rate in the dual-coded months is a mixture whose
+  weights are October to December's.
 - Not semantics: every field read correctly (the summary class, the NIBRS offense, the weapon and force codes, the
-  relationship codes, the methodology note's definition of the restated year) still leaves the per-line conversion,
-  which is the standard practice, on a fall of about 3 per cent; no field, code or definition says that the
-  simple-assault line's rate moves with its domestic share or which months to weight it by.
-- Not rule application: no filed rule says how to restate January to October; executing the NIBRS definitions, the
-  hierarchy rule's end and the methodology note word for word fixes the target and the dual-coded months' rates, and
-  still files the per-line conversion's fall; which rates to apply to which months' counts is an estimation choice.
+  relationship codes, the methods' definition of the restated year) still leaves the per-line conversion, which is the
+  standard practice, on a fall of 3 per cent; no field, code or definition says that the other-assaults line's rate
+  moves with its domestic share or which months to weight it by.
+- Not rule application: no filed rule says how to restate January to September; executing the NIBRS definitions, the
+  hierarchy rule's end and the methods word for word fixes the target and the dual-coded months' rates, and still files
+  the per-line conversion's fall; which rates to apply to which months' counts is an estimation choice.
 - Analyst test: with the data cleaned and every rule read correctly, a strong analyst builds the conversion per Return
-  A line from the dual-coded months, applies it month by month to January to October 2024 and files a fall of about
-  3.3 per cent (the `Ends on:` figure), where converting the simple-assault line by domestic and other assaults at
-  each month's own mix gives a rise of about 2.4 per cent.
-- Estimand: the scorecard methodology note files the population (offenses against victims reported to the Ellsmere
-  Police Department), the outcome (NIBRS offense 13A, one per victim), the window (calendar 2024 and 2025 by month
-  reported), the unit (offenses) and the comparison (2025 against 2024 as NIBRS would have counted it had the
-  department reported to NIBRS all year).
+  A line from the dual-coded months, applies it month by month to January to September 2024 and files a fall of 3 per
+  cent (the `Ends on:` figure, 2024 restated at about 5,400), where converting the other-assaults line by domestic and
+  other victims at each month's own count gives about 5,200 and a rise of 1 per cent; on the generator's clean truth
+  (expected counts, no sampling noise) the same two routes give a fall of 2.1 and a rise of 2.1 per cent (checks.py).
+- Estimand: the chapter methods (`scorecard_crime_chapter_methods_2026.docx`, section 2) file the population (offenses
+  against victims reported to the Ellsmere Police Department, from the department's extract), the outcome (NIBRS
+  offense 13A, one per victim), the window (calendar 2024 and 2025 by month reported, Ellsmere local time), the unit
+  (offenses) and the comparison (2025 against 2024 as NIBRS would have recorded it had the department reported to NIBRS
+  all year); section 5 gives the restated figure to the nearest hundred and the change to the whole per cent.
 - No decoy: nothing is planted; the state program's certification letter reports its own comparison of the two
-  November and December returns and recommends no restatement; no memo, draft or stakeholder figure argues a method.
+  October to December returns by category and recommends no restatement; the published series is the program's own
+  table; no memo, draft or stakeholder figure argues a method.
 - No certified replay: the method is not hidden and recovered by reproducing certified figures; every rate set from the
   dual-coded months reproduces those months by construction, the golden included, so nothing certified arbitrates.
 - Lesson: a conversion rate measured on a short window where both codings exist holds only at the level where it is
@@ -142,5 +148,178 @@ Domestic Violence Unit's case log, gives a rise of about 2.4 per cent.
   the record that carries it; the composition builds on file (task68, task83, task473, task477) price a pooled rate on a
   population or a forecast, and none restates an official series across a coding break.
 
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, the published rise taken as real (+10.2 per cent in the state's table, +8.8 against the department's own 2025 count) | the methods' restated-2024 sentence sends the solver past it: fires | the state's table: fires | none | the certification letter warns against comparing the two: fires | none | one ratio: fires | readable |
+| R1, one link factor (October to December's 13A count over its Return A aggravated count) on January to September (-2.8 per cent) | the methods' "had the department reported to NIBRS all year" invites a conversion: fires | the summary class beside the offense: fires | the first bridge to hand: fires | none | none | one ratio: fires | readable |
+| R2, a rate per Return A line on January to September (-3 per cent, the default path) | the methods file the target; the dual-coded months make the lines' rates the obvious tool: fires | ucr_summary_class against offense_code: fires | the textbook conversion matrix: fires | none | none | five ratios and a sum: fires | readable |
+| R3 (decisive), the other-assaults line split by domestic and other victims, each month at its own domestic count from the unit's log (+1 per cent) | no clause names a domestic split, a seasonal mix or the unit's log as a weight: silent | no column of Return A splits 4e; the domestic count is in another unit's case log: silent | the reflex stops at the line's rate: silent | no control ties under either route; every rate reproduces the dual-coded months: silent | every record valid; the battery finds nothing: silent | a split rate and nine months of counts from a second file: silent | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | month reported | the report stamp in Ellsmere local time | the stamp as stored (UTC) | another figure (asserted) | methods 2: "in Ellsmere local time"; dictionary: report_datetime_utc "in UTC" with the offsets |
+| SF2 | domestic victim of line 4e | relationship_1 a family or intimate partner code; in January to September the unit's log | another split | same call (asserted: the codes give the log's count in every dual-coded month, and the log's monthly 4e counts equal the records) | the unit's field notes: the log takes every domestic victim the department receives |
+| SF3 | the log's cases counted | case_status not UNFOUNDED | every case | another figure (asserted) | Return A's column 4 counts actual offenses, unfounded excluded; the field notes' status codes |
+| SF4 | the log's month | report_date | case_opened | another figure or the same (asserted) | methods 2: "the month the offense was reported" |
+| SF5 | victim | individual victims; every 13A row is one | officers and businesses | same call (asserted) | NIBRS: 13A has individual victims only |
+| SF6 | 2024 as published | Return A column 4, actual offenses, lines 4a to 4d | column 2, offenses reported | another published figure (asserted) | the state table's 2024 figure, 4,829, is column 4's |
+| SF7 | 2025 count | the department's extract, 5,254 | the state's published 5,320 | another change (asserted) | methods 2: "from the department's extract" |
+| SF8 | October to December 2024 | counted from the extract | converted like January to September | same call within the bin, but not the golden's figures (asserted counted) | methods 2: 2024 restated is what NIBRS "would have recorded"; for October to December NIBRS did record it |
+| SF9 | non-fatal | did not die of the shooting, whenever the death | alive when the log's outcome was entered | the careful path (asserted) | the word; the Medical Examiner's list carries the deaths |
+| SF10 | in the City of Ellsmere | within the city's limits | the department's patrol area, the contract township included | the careful path (asserted) | methods 3: "in the City of Ellsmere"; the township is its own municipality (the log and the Medical Examiner name it) |
+| SF11 | the quarter they were shot | shot_datetime's quarter | the quarter entered | another grid (asserted) | methods 3: "by the quarter they were shot" |
+| SF12 | a shooting | the people struck at one block and minute | one report number | another grid (asserted) | methods 3: "the people struck at the same place and time, however many there were" |
+| SF13 | each person | once, however often the log lists them | each row | another grid (asserted) | "people": a person entered twice is one person |
+| SF14 | the grain of the conversion | 4e by domestic and other victims | every line by domestic and other; domestic split again by intimate partner and other family, by assault and threat, or by sex; hidden robbery victims per robbery line | same call (asserted: every grain gives a rise of 1 per cent and about 5,200; the spread is 5,190 to 5,200 and 1.0 to 1.2 per cent) | methods 5: the restated figure "to the nearest hundred", the change "to the nearest whole per cent" |
+
+## Ladder
+
+The graded quantity is the change from 2024 restated to 2025, to the whole per cent (golden 1.175, printed +1, 0.325
+from the nearest bin edge), with the restated total to the nearest hundred (5,192.98, printed 5,200, 43 from the edge);
+2025 is 5,254 on every route, so each rung's worth is its 2024 restated total.
+
+| Rung | Route | 2024 restated | Change | Distance from the golden |
+|---|---|---|---|---|
+| R0 | the published rise taken as real | 4,829 (Return A as published) | +9 (department), +10 (state table) | 7.6 points |
+| R1 | one link factor | 5,403 (5,400) | -3 | 3.9 points |
+| R2 | a rate per Return A line (default path) | 5,419 (5,400) | -3 | 4.2 points |
+| R2b | one pooled rate for 4a to 4d and one for 4e | 5,392 (5,400) | -3 | 3.7 points |
+| R3 | 4e split by domestic and other, each month at its own count (golden) | 5,193 (5,200) | +1 | |
+| side | 4e split, 4a to 4d pooled | 5,166 (5,200) | +2 | 0.5 points (another whole per cent) |
+| side | October to December 2025 against 2024 | | -3 | 3.8 points |
+| side | R3 with the report stamps read as stored (UTC) | | +2 | 0.6 points |
+
+- **Position and dominance.** Every route but the decisive one files a fall; the decisive split alone reverses the sign
+  (clean truth: per line -2.1, split +2.1, asserted). Each correction below R3 walks the same way (a lower or higher
+  link, pooled or per line); only the domestic split reverses.
+- **Margin.** The decisive step moves 2024 restated by 226 victims (5,419 to 5,193), 4.2 points of the change; the
+  nearest wrong route (4a to 4d pooled with the split) rounds to another whole per cent, 0.5 points off, and needs the
+  split already taken. Every finer grain of the decisive step (SF14) stays inside the golden's bins.
+- **Grid.** Split or not (2) by 4a to 4d per line or pooled (2) by local or UTC months (2): every cell files a figure
+  outside the golden's bin but the golden's own (asserted on the four main cells; UTC is filed).
+- **Worth.** The split is worth 226 restated victims and the sign of the call; the per-line rates for 4a to 4d are
+  worth 27 (pooled 5,392 against 5,419).
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | offenses against victims reported to the department, from its extract (methods 2, SF5, SF7); shootings: people struck in an assault in the city (methods 3, SF10) |
+| 2 | Unit of account | the offense (one per victim, 13A); the person and the shooting for the grid (SF12, SF13) |
+| 3 | Attribution window | calendar 2024 and 2025 by month reported (methods 2); the grid by quarter shot, 2023 to 2025 (SF11) |
+| 4 | As-of dating | the extract run 5 October 2026; the unit's log of 2 October 2026; the shooting log of 1 October 2026; the Medical Examiner's list of 6 October 2026 |
+| 5 | Version basis | one extract, one Return A workbook a year, one log of each; nothing superseded ships |
+| 6 | Denominator | each dual-coded line's victims (the rates); the domestic and other victims of 4e separately |
+| 7 | Weighting | each January to September month at its own line counts and its own domestic count (the decisive step, an estimation choice no filed rule makes) |
+| 8 | Window length | twelve months a year; the dual-coded quarter October to December 2024 (dictionary, certification letter) |
+| 9 | Boundary inclusivity | local calendar months and quarters (SF1) |
+| 10 | Rounding path | 2024 restated summed unrounded and rounded once, to the nearest hundred; the change from the unrounded total to the whole per cent (methods 5) |
+| 11 | Tie-break | none: the golden sits 0.325 from its bin's edge and the restated total 43 from its hundred's |
+| 12 | Maturity and censoring | 2025 closed nine months before the extract; deaths to October 2026 in the Medical Examiner's list |
+| 13 | Order of operations | count the dual-coded months, take the rates, convert each month, sum, compare |
+| 14 | Row order | none matters |
+| 15 | Duplicate resolution | one extract row per offense per victim; a person the shooting log lists twice counted once (SF13) |
+| 16 | Identity normalisation | not needed for the call; the grid's person key is the report number, time, age and sex |
+| 17 | Netting | unfounded offenses out of Return A's column 4 and out of the unit's log (SF3, SF6) |
+| 18 | Dimensional units | victims and offenses; UTC stamps against local time (SF1) |
+| 19 | Code and status semantics | 13A, 13B, 13C; ucr_summary_class with NS and P2; relationship codes (SF2); the log's circumstance, outcome and inside_city |
+| 20 | Integerisation | whole victims; the restated total rounded once to the hundred |
+| 21 | Clause scope | methods 2 for the call, methods 3 for the grid |
+| 22 | Forward window contents | none: the scorecard reports closed years (retrospective call, reason in Draw) |
+
+## Literal reader
+
+Executing the prompt, the chapter methods and the dictionary word for word fixes the target, the window, the unit and
+the dual-coded months, and leaves one place open, how January to September 2024 are converted; every conversion that
+uses all the shipped evidence (the unit's log for the domestic count) files the golden, every conversion that does not
+files a fall (asserted), every finer grain of the conversion the log supports lands in the same hundred and the same
+whole per cent (SF14, asserted), and no literal reading of a filed sentence gives another answer; for the grid, the methods'
+definitions of the people and the shootings, executed on every row with the Medical Examiner's list for the deaths and
+the log's own later rows for the township's blocks, give the golden's 24 cells (asserted against the simulation's
+truth).
+
+## Oracles
+
+- The certification letter's October to December comparison (Return A against the NIBRS test submissions by category):
+  true under every route, because every route counts those months the same way; it ranks nothing.
+- The state table's 2024 and 2025 figures (4,829 and 5,320): the published series; 2025 is the repository's count by
+  incident date at the freeze, not the department's (SF7); it confirms no route.
+- The state repository download, the population estimates and the dispatch calls: declared distractors in
+  `metadata.json`; none ties to any route.
+- No restated figure, link factor or conversion rate ships; none.
+
+## Ask sheet
+
+- **Ask A, non-fatal shooting victims and the shootings they were hurt in, each quarter of 2023 to 2025 (24 figures,
+  whole numbers).** H18 home: the chapter's shootings section (methods 3), the measure the executive team reads beside
+  the restated series because it was counted the same way before and after the move to NIBRS. Path:
+  `gvr_shooting_log_2023_2026.csv` (gvr_id, rms_number, shot_datetime, block, inside_city, victim_age, victim_sex,
+  circumstance, outcome, entered), `medical_examiner_homicide_list_2023_2026.csv` (date_of_injury, injury_location,
+  age, sex, cause), the chapter methods: three files, fifteen columns. No row of it is in the call's population.
+  Primary device 1: D2, a label stored before a silent switch. The old shooting database marked a shooting inside the
+  city by the patrol beat, and the department's beats take in North Ellsmere Township, which it patrols under contract;
+  the records system it moved into on 1 October 2024 marks it from the address and names the municipality. So seven
+  township blocks are Y before October 2024 and N, "(NORTH ELLSMERE TWP)", after it: 30 rows, a township shooting in
+  every quarter before the move. Only a cut by block across the move shows it; trusting the flag keeps them in every
+  quarter from 2023 to the third quarter of 2024.
+  Primary device 2: D4, absence evidenced in a file no habitual join reaches. The old database's analyst marked a death
+  as the Medical Examiner reported it while the shooting was on the unit's 30-day review, up to the move; the records
+  system keeps the outcome entered with the shooting. So a victim who died more than 30 days later, or after the move,
+  or of any shooting from October 2024, stays WOUNDED; only the Medical Examiner's list, joined on date of injury,
+  block, age and sex, shows the death. Trusting the outcome moves every quarter's victims and ten quarters' shootings.
+  Hazards: the summer 2024 shootings entered again at the move under the same report number (25 people in 2024 Q3);
+  multi-victim shootings with a later victim under its own report number (a shooting by report number moves 11
+  quarters); one row a report number merges real pairs (every quarter's victims); self-inflicted, unintentional and
+  police shootings; shootings in other towns, named in the block and flagged N.
+  Each device alone is not enough: the Medical Examiner's deaths found with the township kept leave the seven quarters
+  before the move wrong; the township found with the outcomes trusted leaves every quarter but two figures wrong.
+
+| Ask figure | The cracker's reading (the careful path) | Golden | Cracker |
+|---|---|---|---|
+| 2023 Q1 victims, shootings | 122, 111 | 110, 105 | misses |
+| 2023 Q2 victims, shootings | 165, 152 | 160, 148 | misses |
+| 2023 Q3 victims, shootings | 158, 142 | 153, 140 | misses |
+| 2023 Q4 victims, shootings | 139, 127 | 129, 120 | misses |
+| 2024 Q1 victims, shootings | 123, 111 | 121, 110 | misses |
+| 2024 Q2 victims, shootings | 171, 156 | 164, 151 | misses |
+| 2024 Q3 victims, shootings | 173, 156 | 169, 153 | misses |
+| 2024 Q4 victims, shootings | 104, 97 | 100, 96 | misses |
+| 2025 Q1 victims, shootings | 113, 106 | 109, 103 | misses |
+| 2025 Q2 victims, shootings | 163, 147 | 157, 144 | misses |
+| 2025 Q3 victims, shootings | 164, 155 | 159, 150 | misses |
+| 2025 Q4 victims, shootings | 127, 116 | 126, 115 | misses |
+
+- **Mirror.** The best response off the call (R2, the per-line conversion) keeps the 2025 count (8 of the 38 call-side
+  points) and reads the grid the careful way: 0 of 24.
+- Pair ceiling: 30.0 (cracker 45.0, mirror 15.0, weights 38 / 7 / 55 with the change 20, the restated total 10, the
+  2025 count 8 and each grid figure 55/24).
+- Mirror leakage: 0.0 per cent of the ask weight.
+- Measured by: generator/ceiling.py on the cut pack.
+- **Sensitivity.** A cracker that also finds the Medical Examiner's later deaths keeps 10 of 24 (pair 41.5; 52.9 if
+  the mirror finds them too); one that finds the township blocks keeps 2 (pair 32.3); both keeps 24 (pair 57.5). The
+  stage 4 readers measure which.
+
 ## Tried and rejected
 
+- A go-live of 1 November with November and December the only dual-coded months (the draw's first sketch): replaced by
+  1 October, so that the rates rest on three months of victims; the stump is the same.
+- The State UCR Program's reconciliation (the department's 2025 count walked to the state's published 5,320) as a
+  graded ask: every line of it falls to a careful incident-level match against the repository download, so it carries
+  no silent device; the download ships as a distractor.
+- The walk from the published 2024 total to the restated one (one line per change in counting) and a chart of the
+  published and restated series as graded asks: three of the walk's five lines (published, hidden, lost) and the
+  chart's published series are the same on the default path, and a cracker on the call banks all of them, so the pair
+  measured 44 or more before any shooting figure; the walk rides in the workbook as working and the chart is dropped.
+- The shooting grid for 2024 and 2025 only, with later deaths the one device in every quarter: a single cross-check of
+  the Medical Examiner's list cracked all sixteen figures; the grid now runs from 2023 with the township's beat flag
+  before the move and the outcomes after it, and the 30-day review leaves deaths unmarked on both sides of it.
+- The change graded to one decimal place and the restated total to the unit: finer grains the pack supports (every line
+  by domestic and other, the domestic victims split by intimate partner and other family, by assault and threat, or by
+  sex) spread the restated total over 9 victims and the change over 0.2 points, more than a tenth's bin, and with
+  strangulation drawn mostly from intimate partners the relationship split alone moved the change by 0.35 points; the
+  domestic kinds now share one relationship mix, and the figures are given at the precision the data carries (the
+  restated total to the nearest hundred, the change to the whole per cent), where every grain agrees.
