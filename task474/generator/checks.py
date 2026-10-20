@@ -169,6 +169,8 @@ def main(target, gdir, e):
         dup.setdefault(r["vin"], []).append(r)
     two = sum(1 for v in dup.values() if sum(1 for r in v if not r["registered_to"]) > 1)
     check("asks: %d VINs carry two registrations in force (a carrier move left open)" % two, two > 0)
+    check("realism: no registration ends before it begins",
+          all(not r["registered_to"] or r["registered_to"] >= r["registered_from"] for r in regs))
     check("asks: the call reads no registry, certification, complaint or monitor row", True)
 
     # realism sweep

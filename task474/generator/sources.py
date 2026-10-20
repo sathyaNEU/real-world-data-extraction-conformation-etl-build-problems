@@ -107,6 +107,8 @@ def registry(rng):
         # a move to another carrier mid-year: a new registration under a new truck id
         if end is None and rng.random() < .09:
             d = W.DAYS[int(rng.integers(20, ND - 10))]
+            if d <= start + dt.timedelta(20):
+                continue
             new = W.CARRIERS[int(rng.integers(0, len(W.CARRIERS)))]
             if new == car:
                 continue

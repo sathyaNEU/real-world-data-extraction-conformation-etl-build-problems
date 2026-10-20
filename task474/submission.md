@@ -27,19 +27,19 @@ Each carried 5.00 tonnes or more of on-road NOx per mile from October 2025 to Se
 
 1. The designated links: L03, L05 and L14 (three of fourteen).
 2. Drayage trucks registered on each quarter's last day, and those with engines of model year 2009 or older:
-   - 31 December 2025: 2,313 trucks; 297 of model year 2009 or older
-   - 31 March 2026: 2,348 trucks; 303 of model year 2009 or older
-   - 30 June 2026: 2,387 trucks; 307 of model year 2009 or older
-   - 30 September 2026: 2,425 trucks; 311 of model year 2009 or older
+   - 31 December 2025: 2,296 trucks; 291 of model year 2009 or older
+   - 31 March 2026: 2,350 trucks; 293 of model year 2009 or older
+   - 30 June 2026: 2,386 trucks; 298 of model year 2009 or older
+   - 30 September 2026: 2,431 trucks; 306 of model year 2009 or older
 3. On 30 September 2026, by motor carrier:
-   - Atlantic Port Services: 228 trucks; 26 of model year 2009 or older
-   - Bay Freight Co: 258 trucks; 36 of model year 2009 or older
-   - Coastal Haul LLC: 277 trucks; 37 of model year 2009 or older
-   - Harborline Drayage: 378 trucks; 53 of model year 2009 or older
-   - Northpoint Logistics: 287 trucks; 36 of model year 2009 or older
-   - Rivera Trucking: 252 trucks; 28 of model year 2009 or older
-   - Seaboard Intermodal: 373 trucks; 40 of model year 2009 or older
-   - Tri-County Cartage: 372 trucks; 55 of model year 2009 or older
+   - Atlantic Port Services: 225 trucks; 22 of model year 2009 or older
+   - Bay Freight Co: 261 trucks; 36 of model year 2009 or older
+   - Coastal Haul LLC: 279 trucks; 34 of model year 2009 or older
+   - Harborline Drayage: 393 trucks; 59 of model year 2009 or older
+   - Northpoint Logistics: 287 trucks; 35 of model year 2009 or older
+   - Rivera Trucking: 256 trucks; 34 of model year 2009 or older
+   - Seaboard Intermodal: 365 trucks; 36 of model year 2009 or older
+   - Tri-County Cartage: 365 trucks; 50 of model year 2009 or older
 
 ### air_corridor_designations_2027.pdf
 
