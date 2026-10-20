@@ -134,27 +134,30 @@ def certs(target):
 
 
 def fleet_asks(target, route="golden"):
-    """({quarter: (trucks, of which model year 2009 or older)}, {carrier: (trucks, of which 2009 or older)} at
-    30 September 2026). golden: a truck is its VIN, counted once under its latest registration, a blank model year
-    read from its engine family in the certification list; ids: trucks by truck_id; dropblank: blanks not old."""
+    """({quarter: (trucks, of which engine model year 2009 or older)}, {carrier: (trucks, of which 2009 or older)} at
+    30 September 2026). golden: a truck is its VIN (O and I, which a VIN never holds, read as 0 and 1), counted once
+    under its latest registration, its engine's model year read from its engine family in the certification list;
+    ids: trucks by truck_id; vin: trucks by the VIN as written; modelyear: the registry's model_year for the engine,
+    the certification list only where it is blank."""
     regs = registry(target)
     fam = certs(target)
+    norm = lambda v: v.replace("O", "0").replace("I", "1")
     out = {}
     for q, (a, b) in W.QUARTERS.items():
         d = _date(b)
         live = {}
         for r in regs:
             if _date(r["registered_from"]) <= d and (not r["registered_to"] or d <= _date(r["registered_to"])):
-                key = r["truck_id"] if route == "ids" else r["vin"]
+                key = r["truck_id"] if route == "ids" else (r["vin"] if route == "vin" else norm(r["vin"]))
                 if key not in live or r["registered_from"] > live[key]["registered_from"]:
                     live[key] = r
         out[q] = live
 
     def year(r):
-        if r["engine_model_year"]:
-            return int(r["engine_model_year"])
-        return None if route == "dropblank" else fam[r["engine_family"]]
-    old = lambda r: (year(r) or 9999) <= 2009
+        if route in ("modelyear", "ids", "vin") and r["model_year"]:
+            return int(r["model_year"])
+        return fam[r["engine_family"]]
+    old = lambda r: year(r) <= 2009
     quarters = {q: (len(v), sum(1 for r in v.values() if old(r))) for q, v in out.items()}
     carriers = {}
     for r in out[4].values():

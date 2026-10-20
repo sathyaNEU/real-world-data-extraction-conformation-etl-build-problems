@@ -57,9 +57,10 @@ def write(fig_path, out_path):
          "over the groups, in tonnes (rule %s); designated every link at %s or more (rule %s): %s." % (
              F["rates"], sec["nox"], f["line"], sec["line"], _join(des)),
          "6. For the fleet sizing (rule %s), from %s: on each quarter's last day, the registrations in force "
-         "(registered_from on or before the day, registered_to blank or on or after it), one truck per vin at its "
-         "latest registration; a blank engine_model_year read from the engine_family's model year in %s; counted, "
-         "with those of model year 2009 or older, by quarter and, on 30 September 2026, by motor carrier." % (
+         "(registered_from on or before the day, registered_to blank or on or after it), one truck per vin (an O or "
+         "I, which a VIN never holds, read as 0 or 1) at its latest registration; each truck's engine model year "
+         "read from its engine_family in %s (model_year is the truck's own); counted, with those whose engines are "
+         "of model year 2009 or older, by quarter and, on 30 September 2026, by motor carrier." % (
              sec["fleet"], F["fleet"], F["certs"]),
          "",
          "## 4. Deliverable Answers", "",

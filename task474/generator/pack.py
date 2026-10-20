@@ -14,7 +14,7 @@ DOT_COLS = ["site_id", "count_date", "hour", "direction", "class_1_3", "class_4_
 CONS_COLS = ["site_code", "interval_start", "lane", "class_code", "volume"]
 GATE_COLS = ["report_date", "terminal", "trucks_in", "trucks_out", "container_moves"]
 FLEET_COLS = ["registration_id", "truck_id", "vin", "motor_carrier", "registered_from", "registered_to",
-              "engine_family", "engine_model_year"]
+              "engine_family", "model_year"]
 COMPLAINT_COLS = ["request_id", "received", "street", "cross_street", "category", "status"]
 NO2_COLS = ["aqs_site_id", "date_local", "hour_local", "no2_ppb", "qualifier"]
 
@@ -105,7 +105,7 @@ def fleet_rows(e):
     for g in sorted(e["reg"]["regs"], key=lambda g: (g["start"], g["truck"])):
         n += int(rng.integers(1, 6))
         rows.append(["R%06d" % n, "DT%06d" % g["truck"], g["vin"], g["car"], g["start"].isoformat(),
-                     g["end"].isoformat() if g["end"] else "", g["fam"], "" if g["legacy"] else g["my"]])
+                     g["end"].isoformat() if g["end"] else "", g["fam"], "" if g["legacy"] else g["vy"]])
     return rows
 
 

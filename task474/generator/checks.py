@@ -157,7 +157,7 @@ def main(target, gdir, e):
     fq, fc = S.registry_truth(e["reg"])
     gq, gc = B.fleet_asks(target)
     check("asks: the golden reproduces every quarter's and carrier's trucks and old engines", gq == fq and gc == fc)
-    for route in ("ids", "dropblank"):
+    for route in ("ids", "vin", "modelyear"):
         rq, rc = B.fleet_asks(target, route)
         miss = sum(rq[q][i] != gq[q][i] for q in gq for i in (0, 1)) + \
             sum(rc.get(k, (None, None))[i] != gc[k][i] for k in gc for i in (0, 1))
@@ -168,7 +168,10 @@ def main(target, gdir, e):
     for r in regs:
         dup.setdefault(r["vin"], []).append(r)
     two = sum(1 for v in dup.values() if sum(1 for r in v if not r["registered_to"]) > 1)
-    check("asks: %d VINs carry two registrations in force (a carrier move left open)" % two, two > 0)
+    check("asks: at most three VINs as written carry two registrations in force (%d; the open moves are keyed with O "
+          "or I where the VIN holds a 0 or 1)" % two, two <= 3)
+    gl = sum(1 for r in regs if r["model_year"] and int(r["model_year"]) >= 2014 and B.certs(target)[r["engine_family"]] <= 2009)
+    check("asks: %d gliders (a model year of 2014 or later on a 2009-or-older engine family)" % gl, gl > 0)
     check("realism: no registration ends before it begins",
           all(not r["registered_to"] or r["registered_to"] >= r["registered_from"] for r in regs))
     check("asks: the call reads no registry, certification, complaint or monitor row", True)

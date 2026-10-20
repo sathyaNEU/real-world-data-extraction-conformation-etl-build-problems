@@ -91,6 +91,10 @@ def registry(rng):
     tid = 100200
     for i in range(W.N_TRUCKS):
         my = int(rng.choice(np.arange(2004, 2026), p=np.r_[np.full(6, .022), np.full(16, (1 - .132) / 16)]))
+        vy = my
+        if rng.random() < .045:
+            # a glider: a new chassis on a remanufactured pre-2010 engine
+            my, vy = int(rng.integers(2004, 2010)), int(rng.integers(2014, 2019))
         vin = ("%s%09d" % ("1XKYDP4X" if rng.random() < .5 else "3AKJHHDR", int(rng.integers(0, 10 ** 9))))[:17]
         car = W.CARRIERS[int(rng.choice(len(W.CARRIERS), p=np.array([18, 15, 14, 12, 11, 11, 10, 9]) / 100))]
         start = W.DAYS[0] if i < int(W.N_TRUCKS * .86) else W.DAYS[int(rng.integers(1, ND))]
@@ -103,7 +107,8 @@ def registry(rng):
         trucks.append(dict(vin=vin, my=my, fam=fam))
         tid += int(rng.integers(1, 4))
         legacy = rng.random() < (.62 if my < 2014 else .18)          # registered before the 2024 form change
-        regs.append(dict(truck=tid, vin=vin, car=car, start=start, end=end, my=my, fam=fam, legacy=legacy, open_dup=False))
+        regs.append(dict(truck=tid, vin=vin, car=car, start=start, end=end, my=my, vy=vy, fam=fam, legacy=legacy,
+                         open_dup=False))
         # a move to another carrier mid-year: a new registration under a new truck id
         if end is None and rng.random() < .09:
             d = W.DAYS[int(rng.integers(20, ND - 10))]
@@ -112,13 +117,19 @@ def registry(rng):
             new = W.CARRIERS[int(rng.integers(0, len(W.CARRIERS)))]
             if new == car:
                 continue
-            left_open = rng.random() < .45
+            left_open = rng.random() < .45 and any(ch in "01" for ch in vin)
             if not left_open:
                 regs[-1]["end"] = d - dt.timedelta(1)
             regs[-1]["open_dup"] = left_open
             tid += int(rng.integers(1, 4))
-            regs.append(dict(truck=tid + 50000, vin=vin, car=new, start=d, end=None, my=my, fam=fam, legacy=False,
-                             open_dup=False))
+            # keyed by hand at the new carrier's registration: a 0 or 1 in the VIN typed as O or I when the old
+            # registration was left open
+            v2 = vin
+            pos = [i for i, ch in enumerate(vin) if ch in "01"]
+            if left_open and pos:
+                v2 = vin[:pos[-1]] + {"0": "O", "1": "I"}[vin[pos[-1]]] + vin[pos[-1] + 1:]
+            regs.append(dict(truck=tid + 50000, vin=v2, car=new, start=d, end=None, my=my, vy=vy, fam=fam,
+                             legacy=False, open_dup=False))
     return dict(regs=regs, fams=fams)
 
 
@@ -132,8 +143,9 @@ def registry_truth(r):
         live = {}
         for g in r["regs"]:
             if g["start"] <= d and (g["end"] is None or d <= g["end"]):
-                if g["vin"] not in live or g["start"] > live[g["vin"]]["start"]:
-                    live[g["vin"]] = g
+                v = g["vin"].replace("O", "0").replace("I", "1")
+                if v not in live or g["start"] > live[v]["start"]:
+                    live[v] = g
         out[q] = live
     quarters = {q: (len(v), sum(1 for g in v.values() if g["my"] <= 2009)) for q, v in out.items()}
     carriers = {}

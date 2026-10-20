@@ -6,36 +6,36 @@
  },
  "asks": {
   "carrier_old": {
-   "Atlantic Port Services": 22,
-   "Bay Freight Co": 36,
-   "Coastal Haul LLC": 34,
-   "Harborline Drayage": 59,
-   "Northpoint Logistics": 35,
-   "Rivera Trucking": 34,
-   "Seaboard Intermodal": 36,
-   "Tri-County Cartage": 50
+   "Atlantic Port Services": 39,
+   "Bay Freight Co": 49,
+   "Coastal Haul LLC": 42,
+   "Harborline Drayage": 74,
+   "Northpoint Logistics": 48,
+   "Rivera Trucking": 45,
+   "Seaboard Intermodal": 54,
+   "Tri-County Cartage": 54
   },
   "carrier_trucks": {
-   "Atlantic Port Services": 225,
-   "Bay Freight Co": 261,
-   "Coastal Haul LLC": 279,
-   "Harborline Drayage": 393,
-   "Northpoint Logistics": 287,
-   "Rivera Trucking": 256,
-   "Seaboard Intermodal": 365,
-   "Tri-County Cartage": 365
+   "Atlantic Port Services": 229,
+   "Bay Freight Co": 259,
+   "Coastal Haul LLC": 304,
+   "Harborline Drayage": 413,
+   "Northpoint Logistics": 275,
+   "Rivera Trucking": 237,
+   "Seaboard Intermodal": 323,
+   "Tri-County Cartage": 383
   },
   "old": {
-   "Q1": 291,
-   "Q2": 293,
-   "Q3": 298,
-   "Q4": 306
+   "Q1": 379,
+   "Q2": 385,
+   "Q3": 392,
+   "Q4": 405
   },
   "trucks": {
-   "Q1": 2296,
-   "Q2": 2350,
-   "Q3": 2386,
-   "Q4": 2431
+   "Q1": 2290,
+   "Q2": 2333,
+   "Q3": 2369,
+   "Q4": 2423
   }
  },
  "call": [

@@ -4,10 +4,9 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: reader, architecture, readers, decisive, missed, round-, standard, factors, window, counts, screen, re-root, outage, terminal, record, region, five-year, releases, survey, deterministic, device, reflex, readable, register, population
+Stump terms swept: reader, architecture, readers, missed, decisive, round-, standard, factors, window, counts, screen, re-root, outage, device, terminal, record, region, five-year, releases, survey, deterministic, reflex, readable, register, population
 
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `data_notes.txt`: golden figure 311 appears: ...milies and their certification. truck_complaints_311_2025_2026.csv (1134 rows) City 311 service requ...
+## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `air_corridor_program_rules_2027.pdf`: carries 5 of 7 distinctive words of the committed call: 'Designate three of the fourteen port roadway links for the 2027 Air Corridor Program: L03, L05 and L14.'
 - **REVIEW** `data_notes.txt`: carries 4 of 7 distinctive words of the committed call: 'Designate three of the fourteen port roadway links for the 2027 Air Corridor Program: L03, L05 and L14.'
 

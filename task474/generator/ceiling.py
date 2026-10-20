@@ -19,7 +19,7 @@ def main(target=None):
     keep = sum(k in m for k in g) + (not set(m) - set(g)) + (len(m) == len(g))
     mirror_call = W_CALL * keep / (len(g) + 2.0)
     gq, gcar = B.fleet_asks(target)
-    cq, ccar = B.fleet_asks(target, "ids")
+    cq, ccar = B.fleet_asks(target, "vin")
     n = 8 + 2 * len(gcar)
     hit = sum(gq[q][i] == cq[q][i] for q in gq for i in (0, 1)) + \
         sum(ccar.get(k, (None, None))[i] == gcar[k][i] for k in gcar for i in (0, 1))

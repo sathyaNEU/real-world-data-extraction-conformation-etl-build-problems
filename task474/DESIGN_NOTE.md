@@ -168,24 +168,23 @@ the gate reports daily trucks, and no link's annual volume ships.
 
 - **Ask A, drayage trucks registered with the port on each quarter's last day, and those with engines of model year
   2009 or older: 8 figures.** H18 home: rule 3.1, the Board's sizing of the 2027 truck replacement grants beside the
-  designations. Path: the registry, the engine certification list, the rules. Devices: D7, the true key elsewhere:
-  a truck that moved to another carrier was re-registered under a new truck_id, and for some the old registration
-  was never closed, so two registrations in force share one VIN and the data dictionary names truck_id as the truck;
-  D2, an attribute at an older vintage: registrations taken before the 2024 form change carry no
-  engine_model_year, only the engine family, whose model year sits in the certification list, a file with its own
-  purpose. No sentence describes either.
+  designations. Path: the registry, the engine certification list, the rules. Devices: D7, dirty keys: a truck that
+  moved to another carrier was re-registered under a new truck_id by hand, and where the old registration was left
+  open the new one's VIN carries an O or I for a 0 or 1 (letters a VIN never holds), so no VIN as written appears
+  twice; D3, two columns one word apart: model_year is the truck's, and glider kits carry a 2014 to 2018 chassis on a
+  2004 to 2009 engine whose year only the engine family's certification shows. No sentence describes either.
 - **Ask B, the same two numbers for each motor carrier at 30 September 2026: 16 figures.** Same path; a truck counts
-  once, under its latest registration's carrier (rule 3.1), so an unclosed move counts under the new carrier only.
+  once, under its latest registration's carrier (rule 3.1).
 - **The construction layer:** the designated links and their count.
 
-| Ask | Cracker (registrations in force by truck_id, model years from the list) | Mirror (class factors) |
+| Ask | Cracker (one truck per VIN as written, model_year with the list for blanks) | Mirror (class factors) |
 |---|---|---|
 | A, by quarter (8) | miss | miss |
 | B, by carrier (16) | miss | miss |
 
-Pair ceiling: 35.9 (cracker 47.3 with the call and one ask figure; mirror 24.5, two of five main figures)
+Pair ceiling: 33.6 (cracker 45.0 with the call and no ask figure; mirror 22.2, two of five main figures)
 
-Mirror leakage: 4.2 per cent of ask weight
+Mirror leakage: 0.0 per cent of ask weight
 
 Measured by: generator/ceiling.py
 
@@ -342,3 +341,7 @@ Measured by: generator/ceiling.py
   legs by their RG1 lanes; it missed only the Berth 20 turn times and Pacific Gateway's voided keyings. Lessons: a
   decisive step the field's own guidance names is a reflex for a model that knows the guidance; a shared gate_out is
   a key the reader will find; a lane code that names a gate is read. Reader 2 and the judge were stopped.
+- 2026-10-20, at stage 4 (architecture 6, round 1): both isolated readers missed the call (reader 1 L03, L04, L06,
+  L07, L11, L12; reader 2 the class-factor default L01, L03, L05, L06), but reader 2 kept 20 of 24 ask figures: it
+  deduplicated trucks by VIN and read blank model years from the certification list, so neither device sat on its
+  path. Re-sited: the open carrier moves' VINs keyed with O or I, and gliders whose model_year is the chassis's.

@@ -16,9 +16,9 @@
   "guard_check": "WARN 2026-10-20 (architecture 5, emissions inventory)",
   "nearest": "task452 v1 at 0.06"
  },
- "judge": null,
+ "judge": "pass 1 DETERMINISTIC, FIX_NOW (registered_to pin, applied)",
  "returned": [],
- "resume": "stage 4: rebuild with python3 task474/generator/build.py (byte-identical, target.zip sha256 e12fdbe651f29448); score readers leak-task474f-r1, r2 with score_reader.py --call-key call; spawn the isolated judge from /tmp/determinism-check-task474-f-brief.md and re-invoke determinism-judge with its verdict; both readers must miss the call; fix findings, then ship",
+ "resume": "stage 4 round 2: asks re-sited (VIN O/I keying, gliders) and the registered_to pin applied; target.zip sha256 40335d5414269e1c; score reader leak-task474f-r3, re-judge once; both round-1 readers missed the call",
  "approved": null,
  "delivered": null,
  "portal": null,
