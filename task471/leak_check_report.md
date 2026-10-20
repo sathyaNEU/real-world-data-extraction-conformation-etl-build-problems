@@ -48,3 +48,32 @@ Stump terms swept: anchor, scored, standard, equating, assignment, validity, pap
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+### Architecture 2, round 1 (target.zip 14b337c337f9190b)
+
+Two isolated readers (general-purpose, Sonnet, medium effort), each on its own fresh unzip with prompt.txt only, each
+scored with score_reader.py before its verdict was read.
+
+**Reader 1a.** Four programs to review (Harrowgate, Linden Valley, Statewide, Tarrance), raw 47.
+- It measured the WA2 validity shift (about 0.25 per read), dropped WA2 from the anchor and equated by Tucker on the 20
+  shared items.
+- It built the 2024-25 sheet on the register's educator IDs.
+- score_reader: call 0 of 1, ask 0 of 32, exit 0.
+- Answers: 1 none as one sentence (nearest: the memo's equating sentence, the technical report's design, the QC notes);
+  2 none; 3 the conversion CSV; 4 none; 5 Rule 8.4.3 to 8.4.5, which fix the population, window and pass line but not the
+  equating; 6 an analytical choice.
+- REVIEW lines: all harmless.
+
+**Reader 1b.** Three programs to review (Harrowgate, Linden Valley, Statewide), raw 46.
+- It took the same drop-WA2 route, choosing 46 because Levine, frequency-estimation and chained equipercentile agreed.
+- It used the same ID join for the 2024-25 sheet.
+- score_reader: call 0 of 1, ask 0 of 32, exit 0.
+- Answers: 1 none; 2 none; 3 the conversion, item map and crosswalk files, and the QC validity sheet and notes line;
+  4 none; 5 the rules and the technical report's section 4; 6 an analytical choice, "partly a planted-looking signal".
+- REVIEW lines: all harmless.
+
+**Verdict on this pack.** The readers held: both missed the call on the drop-WA2 rung, and both missed every ask figure.
+The judge (run v2r1) returned DETERMINISTIC on the main call with disposition SEND_BACK on Gate G (planted_defect_flip,
+sole_data_defect yes), so architecture 2 is spent and this pack does not ship.

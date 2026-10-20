@@ -1,36 +1,34 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "BUILD",
- "domain": "education-learning-sciences",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
- "architecture": 2,
+ "stump": "The default path pools every tested well, takes the share above the arsenic standard and multiplies it by the county's wells on either list, or adds the two lists' separate estimates; but the permit list was sampled at a higher rate than the parcel list, the parcel-only wells (older, unpermitted, shallower) exceed the standard far more often, and the wells on both lists could have been drawn from either, so pooling undercounts the parcel-only wells and summing counts the shared wells twice; weighted by each well's chance of selection across both lists, only the golden counties qualify.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20",
-  "checks": "51 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on target.zip 14b337c337f9190b; REVIEW lines: conversion and agreement table figures, shared vocabulary, the completer lists naming programs",
-  "reader": "round 1: two isolated sonnet readers on fresh unzips, running"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN only after the stage-3 redraw (calibration organ parallel_run_overlap, context artifact filed_model); WARNs answered in the design note",
-  "heart": "WARN (BLOCK on ban.calibration and ban.artifact against task473 cleared by redrawing the organ, not relabelling)",
-  "nearest": "task450 v2 at 0.10"
+  "guard_check": "WARN only at the v3 draw (differentiated against task264 v2 and task131 v1)",
+  "heart": ""
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": "pass 1 running (run id v2r1)"
+  "report": ""
  },
  "returned": [],
- "resume": "stage 4: collect the two scored readers (score_reader.py on each) and the judge's verdict (spawn the thread from /tmp/determinism-check-task471-v2r1/judge_brief.md if the judge agent returns a brief), fix every finding in the generator in one pass, then ship",
+ "resume": "architecture 3 design: prototype the frames, samples and county estimates (dual-frame against pooled, summed and single-list routes), place the threshold with margins, design the asks and their devices, then the design note sections and prompt.txt to precut exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -74,12 +72,38 @@
   "target_zip_sha256_16": "c9e9c2fd35a4d875",
   "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
  },
- "build": {
-  "checks": "47 of 47",
-  "verify": "pass",
-  "byte_identical": true,
+ "build": {},
+ "architecture_2": {
+  "fate": "spent at stage 4: judge v2r1 DETERMINISTIC on the main call, disposition SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes; Gate H decisive step analytical, borderline planted)",
+  "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-20",
+   "checks": "51 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW (no LEAK) on target.zip 14b337c337f9190b; REVIEW lines: conversion and agreement table figures, shared vocabulary, the completer lists naming programs",
+   "reader": "round 1: two scored readers, both missed the call (drop-WA2 rung, raws 47 and 46) and 0 of 32 ask figures"
+  },
+  "duplicate_check": {
+   "guard_check": "WARN only after the stage-3 redraw (calibration organ parallel_run_overlap, context artifact filed_model); WARNs answered in the design note",
+   "heart": "WARN (BLOCK on ban.calibration and ban.artifact against task473 cleared by redrawing the organ, not relabelling)",
+   "nearest": "task450 v2 at 0.10"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "SEND_BACK",
+   "report": "determinism_check_report.md (run v2r1)"
+  },
+  "build": {
+   "checks": "47 of 47",
+   "verify": "pass",
+   "byte_identical": true,
+   "target_zip_sha256_16": "14b337c337f9190b",
+   "figures_check": "142 figures, 0 absent",
+   "ceiling": "pair 28.8, mirror leakage 0.0, cracker misses 32 of 32"
+  },
   "target_zip_sha256_16": "14b337c337f9190b",
-  "figures_check": "142 figures, 0 absent",
-  "ceiling": "pair 28.8, mirror leakage 0.0, cracker misses 32 of 32"
+  "commit": "3e886f4b"
  }
 }
