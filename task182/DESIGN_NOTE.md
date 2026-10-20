@@ -778,6 +778,202 @@ printed unit. The alternative, filing the fee schedule, makes the valuation rule
 - **`org_family`.** `cooperative_or_member_body` was taken rather than the reserved `financial_institution`, because the world drawn is a member-owned Medicaid plan and the vocabulary holds no insurer value, which is the previous pass's own reading.
 - **Personas**, drawn with `guard.py names --geo "United States" --seed 182` and never typed: Eileen Pratt (the controller), Katherine Young (the inspection's lead), Noah Carrillo (delegated oversight). `Justin Mueller` came up first in the draw and was skipped, because this slot's own architecture 4 guard record already shows `people.first` firing on Justin against task105.
 
+## ARCHITECTURE 8 RESIDUAL-DETERRENCE SCREEN (run before a card was registered, and it fails)
+
+Drawn on the wave-7 assigned cell, which is new ground for this number: `criminology-justice` /
+`crime-incidence-hotspot-analysis`, objective `anomaly-detection`. The seven earlier architectures sat on
+general statistics, human factors and claims ground, so nothing here re-walks them. Work in
+`scratchpad/w7_182/screen.py` (pass 1, non-diagnostic), `screen2.py`, `sweep.py` and `credible.py`; each
+was run twice with byte-identical output, and `sweep.py` reproduces `screen2.py`'s realistic cell before
+extending it, which is how the sweep was trusted.
+
+### 1. The file that forces, enumerated before any estimator was chosen
+
+The draw was inverted as the wave contract requires: not the field's characteristic estimator (a crime
+rate per exposure, which is what this cell spends first) but the files a service actually keeps, and what
+each pins that no other file pins.
+
+| file | what it pins that nothing else pins | verdict |
+|---|---|---|
+| the occurrence extract | one row per recorded offence, with its current classification and assigned point | closed: its plainest column is the count, so every construction off it is proxied by its own count |
+| the dispatch and command log | every call that reached the service, with the caller's own location, including the calls that became no occurrence | closed: the conversion from call to occurrence executes the counting rules, and the filing-volume read is task199's |
+| the address gazetteer, with each address's own start and end dates | the stock of addressable targets, to the day | closed by the denominator law: address-days are exact arithmetic, so a decisive step selecting among them is rule application |
+| the precinct boundary file with its revision history | that the areal unit itself changed inside the window | Layer 1: re-aggregating the points to the new geography is exact arithmetic |
+| the licensed premises register with trading hours and variations | when and how large each risk-generating facility was, with its mid-window changes | closed: an exposure in premises-hours is the denominator law again, and the sub-period since the last change is a filter and a divide |
+| the custody, remand and court-order file | which known nominals were at liberty on which nights, exactly | closed by screen 3's time-axis form, below |
+| **the vehicle-tracking archive, at the ping** | **where a patrol unit actually was, second by second, which the tasking log states only as planned hours** | **the candidate taken: it is the only file that pins the structure of the presence rather than its total, and a ping is not a precis of any construction** |
+| the tasking log | which precincts are designated, and the planned hours | in the pack for the decision's own sake, since a renew or stand down call needs to know what stands |
+
+The tracking archive was taken because it is the one file whose plainest column (a position report) is not
+a one-column summary of anything, which is the fourth clause of `stumping` 1.6a and the screen that closed
+three candidates on the claims cell.
+
+### 2. The draw, as screened
+
+**The world.** A regional transit authority's special constabulary, Canada, reviewing the standing
+hotspot-patrol designations across its eighteen station precincts as the quarter's tasking cycle closes.
+Six precincts are designated at any time and the review renews, replaces or stands down each.
+
+**The deciding quantity.** Each precinct's offence level absent the suppression its own delivered patrol
+produced. It is unobserved: the record states the occurrences that happened under the patrol the precinct
+received, not the ones it would have carried without it.
+
+**The mechanism.** Residual deterrence. A patrol visit suppresses offending while the unit is present and
+for a period after it leaves, so the suppressed share of a precinct's quarter is set by the number and
+spacing of its visits and not by its total hours: at equal total presence, a precinct worked in many short
+visits carries far more deterred quarter-hours than one worked in a few long ones. Deterred slots are
+`T + (T / L) * H` in a precinct's own presence hours `T`, mean visit length `L` and decay horizon `H`, so
+the correcting input is one per precinct, is identified for all eighteen, and is not a monotone function of
+the plainest patrol column. Both drivers are residualised against the truth at draw time, so no measured
+result below is an artifact of a planted association.
+
+### 3. Default path (as screened)
+
+1. Load `occurrences.csv`, keep the current classification of each occurrence, drop the unfounded and the transferred-out.
+2. Reconcile the dispatch log to the occurrence file and keep the occurrence grain, since one call can carry several occurrences and most calls carry none.
+3. Assign each occurrence to a station precinct from the polygon file, using the revised geography for the whole window.
+4. Build each precinct's exposure as its own quarter-hours, and convert the tracking archive from UTC to local time across the autumn clock change.
+5. Divide each precinct's occurrences by its quarter-hours, times one thousand, and rank the eighteen.
+6. Renew the six precincts with the highest recorded level and stand down the rest.
+
+**Ends on:** the six precincts with the highest recorded occurrences per thousand precinct-hours, which
+stands down the designations that are working and renews the precincts that have been receiving least
+patrol.
+**Golden (as designed):** the six precincts whose level is elevated once each precinct's own residual
+deterrence is netted out of its whole record using the visit structure in the tracking archive.
+
+### 4. Stump sentence (as screened)
+
+A solver who keeps the current classification of every occurrence, reconciles the dispatch log to the
+occurrence grain, re-aggregates the points to the revised precinct polygons and ranks the eighteen on
+occurrences per thousand precinct-hours renews the six precincts with the highest recorded level, because
+a precinct's recorded level is held down by the patrol the constabulary itself put there.
+
+### 5. Three rules (as screened), thirteen lines
+
+- **Task type:** `crime-incidence-hotspot-analysis`, which the client taxonomy serves for Anomaly Detection and for nothing else, so the objective is legal on the cell and is the only one drawable here.
+- **Domain test:** the deciding quantity is each precinct's offence level absent the suppression its own patrol produced, and the field's own estimator of that is residual deterrence from police presence, the Koper-curve object: the decay after the unit leaves is what makes the suppressed share depend on the number and spacing of visits rather than on the hours.
+- **Swap:** put a hospital's infection-control rounds in for the patrol and a ward in for a precinct, and the call reads the same, because any setting where a presence suppresses an outcome after it ends has this property. **This line does not pass.** The constabulary's apparatus carries the quantity and not the insight, which is the third time a draw in this slot has failed the swap on a mechanism that is a property of records systems in general rather than of the field.
+- **Layer 1:** occurrences reclassified or made unfounded weeks after the report, with the extract holding only the current classification; the dispatch log and the occurrence file at different grains, one call sometimes several occurrences and most calls none; precinct polygons revised at the boundary review, so the published counts for the earlier half sit on the old geography; local time against UTC in the tracking archive, with the autumn clock change inside the window; planned hours in the tasking log against delivered pings in the archive, the two disagreeing because units are abstracted to calls; dashboard exports in thousands and in units. Each is produced by the authority's own records, dispatch and rostering systems and nothing is placed to be caught.
+- **Layer 2:** `estimation_fit`, `own:residual-deterrence-netting`: a level measured under a suppression that the measuring organisation itself delivered, with the suppressed share of the record set by the structure of the delivery and not by its total.
+- **Decisive step:** net each precinct's residual-deterrence hours out of its whole record, the hours taken from the visit structure in the tracking archive rather than from the tasking log's planned total.
+- **Not semantics:** every field can be read correctly, every reclassification honoured, every polygon revision applied and every timestamp converted, and the recorded level still files the wrong set; the error is in which hours the level was measured under, not in what any column means. This line passes.
+- **Not rule application:** **this line does not pass**, and section 7 measures why. The construction has exactly two forms and no third: filter the record to the un-deterred hours and divide, which is exact arithmetic on the archive and so rule application (and a filter and a divide besides), or net the suppression out of the whole record, which needs the suppression depth as well as the horizon and so reopens the estimator family. The dichotomy is architecture 7's section 9 finding reached on new ground.
+- **Analyst test:** as section 3, ending on the six precincts with the highest recorded occurrences per thousand precinct-hours.
+- **Estimand:** each station precinct's recordable occurrences per thousand precinct-hours over the quarter under review, absent any patrol presence, and the renew, replace or stand down verdict each standing designation takes under the six-precinct capacity.
+- **No decoy:** nothing is copied, withheld or written to carry the wrong answer; the recorded level is attractive because it is how the service reports, not because it was planted.
+- **No certified replay:** there is no corpus and none was wanted, because a closed record of past hotspot trials would bless the method rather than confirm an outcome.
+- **Lesson:** that a level measured under a suppression the measuring organisation delivered is not comparable across units, and that what makes it incomparable is the structure of the delivery rather than its total. **The screen shows the lesson is not teachable here**, because at any credible setting of the field's own parameters the suppression moves the level by a twentieth and the recorded count names the truth anyway.
+
+### 6. What was measured, twenty world draws a pass, each run twice with identical output
+
+Eighteen precincts, thirteen weeks on a fifteen-minute slot grid (8,736 slots a precinct), five precincts
+carrying a real effect of 1.60x, the graded object the elevated five.
+
+**Pass 1 was non-diagnostic and is recorded because it cost a pass.** At a baseline spread of 0.30 in log
+the five real effects sat inside the baseline's own range, so no route recovered the slate at all (every
+route 0 to 2 of 20) and no screen could be read. `stumping` Part 6 already carries the rule this breaks
+("a slate needs as many real effects as it has places"); what it does not yet say is that the baseline
+spread has to leave those effects outside the noise, which is a second condition on the same sentence.
+
+**Pass 2, the realistic quarter** (H = 2 hours, suppression depth 0.55, delivered presence 5 to 9 hours a
+week, un-deterred share 0.849):
+
+| route | names the elevated five |
+|---|---|
+| **R0, the recorded count, which is rung 0** | **20 of 20** |
+| the designed residual-deterrence netting | 20 of 20 |
+| the attaining subset, filter the un-deterred slots and divide | 20 of 20 |
+| count per presence-free slot | 20 of 20 |
+| count over one minus the presence share | 20 of 20 |
+| the residual of count on patrol hours | 20 of 20 |
+| empirical Bayes shrinkage | 20 of 20 |
+| one divide on patrol hours, the forcing file's plainest column | 6 of 20 |
+| count per visit | 0 of 20 |
+| the visit-free weeks, screen 3's time-axis form | 0 of 20 |
+
+- **Screen 1 passes.** The correcting input is one per precinct, not one scalar, and it is identified for 18 of 18 precincts, with corr(deterred slots, patrol hours) **+0.3939** (-0.0665 to +0.5986), so the construction is not a monotone rescaling of the plainest patrol column.
+- **Screen 2 passes outright.** corr(designed output, patrol hours) is **-0.0169** (-0.1137 to +0.0992) and the one-divide route on that column reaches the truth **6 of 20**. This is the first candidate in four architectures on this slot to clear the proxy screen cleanly, and it did not save the draw.
+- **The designation determinacy screen passes.** Over the licensed decay horizons H in 0.5, 1, 2, 3 and 4 hours the designed construction returns a mean of **1.05** distinct slates (minimum 1, maximum 2), one slate in **19 of 20** draws, so the open horizon does not fork the designation.
+- **Screen 3 fires and is the kill.** corr(designed output, filter and divide) is **+0.9989** (+0.9981 to +0.9994), and the subset route names the elevated five 20 of 20 with no model. And rung 0 names them 20 of 20 too, so there is no ladder at this setting at all.
+
+**The coverage dial, which is the one parameter and fails at both ends.**
+
+| H (hours) | un-deterred share | designed | filter and divide | rung 0 |
+|---|---|---|---|---|
+| 0.5 | 0.930 | 20 of 20 | 20 of 20 | 20 of 20 |
+| 2 | 0.849 | 20 of 20 | 20 of 20 | 20 of 20 |
+| 4 | 0.757 | 20 of 20 | 19 of 20 | 19 of 20 |
+| 8 | 0.448 | 20 of 20 | 18 of 20 | 10 of 20 |
+| 16 | 0.106 | 20 of 20 | 7 of 20 | 15 of 20 |
+| 36 | 0.007 | 19 of 20 | 0 of 20 | 19 of 20 |
+
+Read it in one line: where the un-deterred subset is plentiful it is a filter and a divide that reaches the
+answer with no model, and where it empties the suppression becomes near-uniform, so the correction cannot
+reorder and rung 0 recovers. Measured directly at both ends, corr(designed output, the raw count) is
+**+0.9920** at an un-deterred share of 0.850 and **+0.9995** at 0.007. Screens 1 and 3 are the two ends of
+one dial here, which is a sharper statement than either screen makes separately.
+
+**The sweep.** 480 cells over the decay horizon (2 to 36 hours), the delivered presence (5 to 48 hours a
+week), the suppression depth (0.35, 0.55, 0.75), the visit-length spread and the size of the real effect,
+each cell 20 world draws. Three conditions have to hold at once (rung 0 fails at 5 of 20 or worse, the
+attaining subset fails at 5 of 20 or worse, the designed route reaches the truth 17 of 20 or better) and
+**5 of 480 cells pass.**
+
+**The credibility screen on those five, which is architecture 5's own death shape.** The passing band
+demands a residual-deterrence horizon of **8 to 36 hours** against a literature value of under about two
+hours, a suppression depth of **0.75** against the 0.08 to 0.20 crime reduction hotspot trials measure, a
+delivered presence of **8 to 48 hours a week in one micro-precinct** against a scarce team's single
+figures, and a precinct under residual deterrence for **87 to 94 per cent** of the quarter, which
+contradicts the premise that the resource is scarce. Inside the band the field licenses (H of 0.5, 1 and 2
+hours against depths of 0.08, 0.15 and 0.20), the largest distortion the mechanism can apply across
+precincts is **1.054x against a real plant effect of 1.600x**, and rung 0 names the elevated five **20 of
+20 in all nine cells**. The correction is a five per cent nudge on a sixty per cent effect.
+
+### 7. Why it is dead, in the skill's own terms
+
+- **The common-exposure subset screen, in both of its forms.** The un-deterred hours are the subset already at the common exposure; filtering to them and dividing estimates the same quantity with no model and reached the truth 20 of 20 at the realistic setting, at corr +0.9989 with the designed construction. Of the three escapes the screen allows, the one this candidate genuinely has is new and still insufficient: the subset is not unrepresentative by a plant and no unit fails to attain it, but it can be made thin by raising the horizon, which is the variance escape, and raising the horizon is the same move that makes the suppression uniform.
+- **The magnitude screen, priced before any design rather than after.** The move available is 1.054x and the move needed is more than 1.600x, so one computation on the clean truth kills the mechanism at every credible parameter. This is `stumping` Part 3's "price the move against the ceiling" and it should have been run before the dial sweep, not after it; it is one line and it would have saved the 480-cell pass.
+- **The rule-application horn.** The construction has two forms and no third. Filtering to the un-deterred hours is exact arithmetic on the archive, so filing it is rule application; netting the suppression out of the whole record needs the depth as well as the horizon, so it reopens the estimator family. That is the same dichotomy architecture 7 recorded on the claims cell, now reproduced in another domain with another mechanism, which makes it a general finding rather than a property of that file pair.
+- **The swap test** (section 5) does not pass on its own terms, and that is the third time in this slot.
+- **The guard is again not the thing to argue with.** `guard.py check` on the architecture 8 probe card returns **PASS**, nearest driver **0.06** (task266), no BLOCK and no WARN, after two axis redraws and two persona redraws recorded in the card's notes. Architecture 6 reported PASS at 0.06, architecture 7 PASS at 0.06 on a different axis set, and architecture 8 PASS at 0.06 on a third: four consecutive architectures where the window is open and the mechanism is missing.
+- **One live-window subtlety worth recording, because a sibling pass paid four BLOCKs for it today.** The window moved twice while this pass ran and now holds task471, task474 and task475. Two of this card's values, shape `07` and `org_family` `utility_or_infrastructure`, are exactly task474's, and they clear only because task474 carries `architecture_spent`, which `guard.py` skips for the axis bans while the similarity rules still see it. Both are the honest labels here (the answer is literally a grid of precinct-by-figure cells, and a transit authority is infrastructure), and the alternatives are worse rather than merely blocked: `shape 10`, the scorecard, is blocked by task471, which is live, and the only other honest org families, `government_agency` and `local_government`, are blocked by task471 and task475, which are live. So the values stand with the reason on the record rather than being relabelled to something that passes, and anyone resuming this slot should re-run the check rather than trust this line, since clearing task474's spent flag would block both.
+
+### 8. The sixteen candidates screened on paper before the code, and the rule each died to
+
+Every other decisive step this cell affords was screened on paper first, which the wave contract requires
+because the early screens are nearly free. The headline is that **all five of the client's own rigor
+patterns for this task type are closed by a standing screen**, so the card library cannot supply the
+decisive step here and the stump would have to be the judgment beyond the card.
+
+| candidate | the rule it dies to |
+|---|---|
+| crimes per resident, per ambient population or per target (client card 1) | the denominator law: exact arithmetic on a shipped aggregate is rule application, estimated per unit reopens the weighting family; and which exposure is the population is the WHAT screen |
+| persistence, the top tier in k of m periods (client card 2) | needs a threshold, which architecture 5's paper screen already named on this slot |
+| recorded crime read through reporting rates, or citizen against officer-initiated (client card 3) | spent three times over: task199's filing volume, task180's detection threshold, task200's dark figure with its flat profile |
+| clusters against a spatial null, Gi* with a multiplicity correction (client card 4) | task191's extremum against a null extremum is a shipped build's whole mechanism, and a false-discovery quantity reaches a decision in exactly three closed ways |
+| empirical Bayes smoothing of small-exposure rates (client card 5) | screen 8: a level at a selected unit is a shrinkage target, and shrinkage is both the reflex and the better estimator |
+| crime concentration over street segments, the law of crime concentration | the dispersion screen: the estimator family for a spread is open and shrinkage reaches the same ranking without estimating it |
+| each occurrence distributed over the gazetteer's candidate addresses, since the record gives a street rather than a point | task184's own driver in the other dimension, and task184 is this cell's one spent anomaly-detection driver; the abstraction test maps them exactly |
+| near-repeat and self-exciting burst structure | closed twice on this ground, task181's architecture 3 at design and task190's architecture 5 on measurement |
+| re-aggregating to the revised precinct geography | exact arithmetic on the point coordinates, so rule application; it is Layer 1 here |
+| the anonymised snap-point catalogue of an open-data extract | once the snapping is known, re-aggregation is arithmetic, and which unit is the population is the WHAT screen |
+| the hour-of-week profile in darkness-relative rather than clock time | exact arithmetic on a shipped sunset table, and it settles which clock the profile is measured on, the estimand's unit |
+| counting events rather than offences, where the counting rules fan one event into one crime per victim | task192's unit, which that slot died on, and task103's fan-out; the WHAT screen on the unit |
+| each precinct's level net of the excess coinciding with its known nominals' periods at liberty | screen 3's time-axis form by construction: the custody nights are a clean subset, so a filter and a divide estimates the same quantity with no model; and the swap reads identically with super-spreaders in for nominals |
+| choosing the slate for marginal coverage rather than individual level, since the candidate zones overlap | the swap test: a set cover over overlapping candidates reads the same with advertising placements, so the domain is a backdrop |
+| a staggered non-police condition rolling street by street, a lighting retrofit or scaffolding permits | staggered rollout is `causal_design` and task163's; screen 4 bars grading a total over the population and window; and the difference-in-differences family forks the graded figure |
+| each precinct's expected count given its resident offender population under a journey-to-crime decay | the decay is a fit over cleared offences only, so the family is open and the subset is selected, and the caseload file's plainest column proxies the construction |
+
+### 9. What is settled for the next draw, so it is not paid for twice
+
+- **The decisive-step space on this cell is now enumerated and closed.** Every construction available here needs one of four things and each is independently shut: a denominator (rule application or an open weighting), a selection (the WHAT screen), a coefficient (an open estimator family), or a clean subset (a filter and a divide). The four are exhaustive on this ground, which is architecture 7's general finding reproduced in a second domain, and the honest reading is that it is a property of the screens rather than of either cell.
+- **The partial-coverage dichotomy is a general screen worth carrying off this cell, and it unifies screens 1 and 3.** Where a decisive step corrects a suppression, a selection or an inflation that acts on part of the record, the un-affected part is a filter and a divide that estimates the same quantity with no model; drive its share to zero and the correction becomes a near-uniform rescaling that cannot reorder. Measured here at corr +0.9920 with the raw count at an un-deterred share of 0.850 and +0.9995 at 0.007, with the attaining subset at 20 of 20 and 0 of 20 at the same two points. One dial, both ends, no cell between them, and it is decidable before a world is drawn by asking what share of the record the correction leaves alone.
+- **Price the move against the ceiling before the dial sweep, not after it.** The credible band's largest distortion was 1.054x against a 1.600x effect, which is one computation on the clean truth and would have closed this candidate before the 480-cell sweep was written. The skill already carries the rule; this pass is the evidence that it belongs ahead of the coverage sweep and not beside it.
+- **A slate's real effects have to sit outside the baseline's own spread, not merely exist.** Pass 1 drew five real effects of 1.60x against a baseline spread of 0.30 in log and every route scored 0 to 2 of 20, so the screens were unreadable and the pass was wasted. The existing rule ("a slate needs as many real effects as it has places") is necessary and not sufficient.
+- **Not registered, deliberately.** The probe card sits at `scratchpad/w7_182/task182_card.json` as evidence, for the reason architectures 5, 6 and 7 give: registering a mechanism measured dead would pollute the axis bans every other draw in this wave reads, and `cards/task182.json` stands at architecture 4.
+- **The recommendation, which is the fourth time this slot has made it.** The guard has passed four consecutive architectures on three different grounds at a nearest driver of 0.06, and each died on measurement. What is spent is not any one ground: it is the shape of decisive step this objective leaves open. A ninth draw on anomaly detection should start from a quantity whose construction is forced by arithmetic from a file at another grain **and whose correction leaves no part of the record alone**, because that last clause is the one every candidate in this slot's last four architectures has failed. On this cell nothing of that shape remains.
+
 ## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
@@ -1899,6 +2095,45 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- **Architecture 8, drawn on the wave-7 criminology cell from the vehicle-tracking archive outward, and
+  killed on measurement before a card was registered.** The draw is a transit constabulary's quarterly
+  review of its station hotspot designations, each precinct's level netted of the residual deterrence its
+  own delivered patrol produced, the suppressed share set by the visit structure in the tracking archive
+  rather than by the tasking log's planned hours. It clears the screens that killed architectures 6 and 7:
+  the correcting input is one per precinct and identified for 18 of 18 (corr with patrol hours +0.3939),
+  the proxy screen passes outright (corr(designed, patrol hours) -0.0169 and the one-divide route on that
+  column 6 of 20), and the designation determinacy screen passes at a mean of 1.05 distinct slates over the
+  five licensed decay horizons, one slate in 19 of 20. It dies on magnitude and on the attaining subset.
+  At the realistic setting rung 0 names the elevated five **20 of 20**, so there is no ladder at all, and
+  the filter-and-divide subset also names them 20 of 20 at corr +0.9989 with the designed route. The sweep
+  over 480 cells found 5 that hold all three conditions and every one demands a residual-deterrence horizon
+  of 8 to 36 hours against a literature value under two, a suppression depth of 0.75 against the 0.08 to
+  0.20 hotspot trials measure, and a precinct deterred for 87 to 94 per cent of the quarter. Inside the band
+  the field licenses, the largest distortion is **1.054x against a real effect of 1.600x**, with rung 0 at
+  20 of 20 in all nine cells. Numbers in `## ARCHITECTURE 8 RESIDUAL-DETERRENCE SCREEN` sections 6 and 7.
+- **The partial-coverage dichotomy, which is worth more than the candidate and unifies two screens.** Where
+  a decisive step corrects a suppression, selection or inflation acting on part of the record, the
+  unaffected part is a filter and a divide estimating the same quantity with no model; drive its share to
+  zero and the correction becomes a near-uniform rescaling that cannot reorder. Measured at corr +0.9920
+  with the raw count at an un-deterred share of 0.850 and +0.9995 at 0.007, with the attaining subset at 20
+  of 20 and 0 of 20 at those same two points. One dial, both ends, nothing between them, and it is
+  decidable before a world is drawn by asking what share of the record the correction leaves alone.
+- **All five of the client's rigor patterns for `crime-incidence-hotspot-analysis` are closed by a standing
+  screen, so the card library cannot supply a decisive step on this cell.** The exposure denominator is the
+  denominator law, persistence needs a threshold, reporting-rate adjustment is spent by task199, task180 and
+  task200, the spatial null is task191's extremum against a null extremum plus the three closed
+  false-discovery routes, and smoothing small-exposure rates is the shrinkage reflex. Sixteen candidates
+  were screened on paper in all; the table is in section 8 of the architecture 8 screen.
+- **The spatial twin of task184 is task184.** Distributing each occurrence over the gazetteer's candidate
+  addresses, because the record gives a street rather than a point, is the same driver as the event-hour an
+  occurrence could have happened in, told in the other dimension; the abstraction test maps them exactly,
+  so the aoristic family is closed on this cell in both dimensions by the one driver already spent there.
+- **The guard passed a fourth consecutive dead architecture on a third ground.** `guard.py check` on the
+  architecture 8 probe card returns PASS, nearest driver 0.06 against task266, no BLOCK and no WARN, after
+  two axis redraws (generators G12 to G6 to G7 on `ban.pattern` against task250 and task475, org_family
+  `government_agency` to `utility_or_infrastructure` on `ban.org_family` against task471) and two persona
+  redraws. Architectures 6, 7 and 8 all report PASS at 0.06 on three different axis sets, so what is spent
+  is the shape of decisive step the objective leaves open, not any one cell.
 - **Architecture 7, drawn from the capitation encounter file outward as architecture 6's section 8
   instructed, and killed on three measured screens before a card was registered.** Candidate 1, the
   volumetric construction: filed encounter volume corrected for each group's own feed completeness,
