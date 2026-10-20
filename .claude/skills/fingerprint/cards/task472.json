@@ -1,0 +1,99 @@
+{
+  "task": "task472",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET29 (AIS port-call dwell and vessel identity): world, decision and quantity kept, the seed's mechanism (midnight cuts, a shared MMSI) carried as Layer 1 only",
+  "domain": "supply-chain-logistics",
+  "client_domain": "general-statistics-data-science",
+  "subdomain": "transportation-network",
+  "niche": "a state port authority's container-crane replacement, judged on the berth time quay-crane breakdowns cost large vessels, built from AIS berth segments, two terminal operating systems' crane logs and two maintenance systems' work orders",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G3",
+    "G10"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "With every log linked and every rule read, the easy route charges each breakdown's downtime on a crane working a large vessel to that vessel's stay (or a share of it spread over the cranes working the vessel) and picks the terminal with the most such downtime, while a vessel worked by several cranes, each keeping its own run of bays, sails when its slowest run is done, so a stop costs the stay only what it pushes that crane's finish past the others and the most berth time was lost at another terminal.",
+  "domain_test": "Container-terminal berth planning: a vessel worked by several quay cranes on one rail is finished when its longest crane section is (the long crane), so the berth time a breakdown costs is the change in the vessel's slowest section finish, which depends on how evenly the terminal splits its large ships; replacing that counterfactual with crane downtime or a pooled share of crane-hours changes the pick.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:slowest-section counterfactual for a stoppage on one of several parallel crane sections",
+  "layer1": [
+    "AIS berth segments cut at midnight UTC by a daily job and split again at reception gaps",
+    "two vessels broadcasting one MMSI, told apart only by their static reports",
+    "maintenance work orders in local time, one system with daylight saving and one in local standard time all year, against UTC terminal logs",
+    "a maintenance system's asset numbers against the terminal operating systems' crane names, with cranes relocated between terminals in 2026",
+    "two terminal operating system export layouts after the 2024 acquisition of two terminals",
+    "a vessel register keyed by IMO number with renamed vessels and MMSI changes after reflagging",
+    "corrective work orders mixed with preventive, wind-stop and operator-stop records"
+  ],
+  "stakeholder_role": "director of terminal equipment at a state port authority that owns and operates its container terminals, who recommends where the 2027 crane replacement goes",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "tos_crane_activity_2026.csv",
+    "rows": 100000,
+    "entity": "one quay crane's container moves on one vessel visit in one clock hour",
+    "grain": "crane x vessel visit x hour",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States (a fictional East Coast port, Thornbay)",
+    "currency": "USD",
+    "org_type": "state port authority owning and operating six container terminals",
+    "invented_names": [
+      "Thornbay Port Authority",
+      "Ordway Terminal",
+      "Pinecastle Terminal",
+      "Gannet Point Terminal",
+      "Halyard Terminal",
+      "Saltcote Terminal",
+      "Merriwether Terminal"
+    ],
+    "people": [
+      "Nicole Bautista",
+      "Dennis Johns",
+      "Tanya Abbott"
+    ]
+  },
+  "deliverables": [
+    "thornbay_2027_crane_replacement.xlsx",
+    "thornbay_2026_large_vessel_calls.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "A job worked by several parallel streams that each keep their own share of the work is finished only when its slowest stream is, so a stoppage on one stream costs the job only what it pushes that stream past the others' finish; summing the stopped time, or charging each stoppage a share of the pooled capacity, picks the wrong place.",
+  "driver_concrete": "A large vessel at a Thornbay terminal sails when the last of its quay cranes finishes its own run of bays, so a crane breakdown lengthens the vessel's stay only by how far it pushes that crane's finish past the vessel's other cranes; summing the breakdown hours that fell on cranes working large vessels, or a share of them per crane working, names the wrong terminal for the 2027 replacement cranes.",
+  "stump": "The default path charges every hour a crane working a large vessel spent broken down to that vessel's stay and recommends the terminal with the most such hours, because it never asks whether the stopped crane's run of bays was the one the vessel was waiting on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task198": "task198 v4 recovers an entitlement that a lesser-of payment rule hides in each record; here no rule hides anything in a record: a vessel's lost berth time is a counterfactual over its parallel crane sections, the change in the latest of their finishes when one section's stop is taken out.",
+    "task184": "task184 v1 splits a site's shortfall between a shared resource and the site's own filed plan; here there is no plan and no shared resource, and a stoppage's cost is read off the parallel structure of one vessel's crane sections.",
+    "task253": "task253's lineage v2 re-solved a congestible network after losing one link; here nothing is re-routed or re-loaded: each crane keeps its own run of bays and the vessel waits on the slowest run, so the cost of a stop is the change in a maximum, not a re-solved equilibrium."
+  },
+  "lineage": [],
+  "notes": "Subdomain transportation-network under the house domain; the ETL task type is general-statistics-data-science/data-integration-record-linkage-entity-resolution (named in the design note's Task type line).",
+  "registered": "2026-10-20T07:03:28Z"
+}
