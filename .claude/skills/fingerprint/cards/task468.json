@@ -1,140 +1,172 @@
 {
- "task": "task468",
- "architecture": "v3",
- "drawn": "2026-10-19",
- "slot_note": "wave 5, third of six, re-rooted from architecture 1 (the transit nominations); the seed's world (ET25) dropped, the objective kept",
- "domain": "healthcare-delivery-health-economics",
- "subdomain": "payment-claims-health-plan-analytics",
- "client_domain": "healthcare-delivery-health-economics",
- "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files, where members returning to therapy after a lapse sit among the long-standing members by their first fill",
- "objective": "etl",
- "shape": "05",
- "decision_type": "allocation_to_total",
- "answer_unit": "count",
- "answer": "",
- "answer_source": "submission.md block 1; the staffing workbook",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G13",
-  "G6",
-  "G14"
- ],
- "gate_g": "forecasting",
- "calibration_form": "none",
- "stump_strategy": "composition_mix",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stakeholder_role": "Director of Pharmacy, the plan's clinical pharmacy program",
- "role_family": "operations_director",
- "scoring_unit": "per covered member",
- "spine": {
-  "file": "orrin_rx_specialty_claims_2019_2025.csv",
-  "rows": 122245,
-  "entity": "one pharmacy claim line (a fill, a reversal or a rebill) for a specialty drug",
-  "grain": "claim line",
-  "source": "synthetic (constructed in the layout of a PBM's paid claims extract)",
-  "row_meaning": "a specialty fill, reversal or rebill as the outgoing PBM paid it",
-  "source_dataset": "constructed (seeded generator)"
- },
- "forum": "executive_team",
- "forcing_event": "budget_or_appropriation",
- "org_family": "other",
- "world": {
-  "geography": "United States, an unnamed state (the health plan, its PBMs, the drugs' product names and the people are fictional)",
-  "currency": "USD",
-  "org_type": "a nonprofit regional health plan",
-  "invented_names": [],
-  "people": [
-   "Erik Marks",
-   "John Henry",
-   "Caleb Fischer"
-  ]
- },
- "deliverables": [
-  "merrow_specialty_pharmacist_staffing_2026_27.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active depend on how long the current spell of activity has run, not on how long ago the unit was first active; units returning after a lapse look long-standing by their first activity but behave like new ones, and one group's returning units surged just before the reference date, so a development by time since first activity, applying last year's active units' following year, or carrying the trailing year forward each overstates exactly the groups the returners filled.",
- "driver_concrete": "Each specialty class's spend over July 2026 to June 2027 on the members whose fill covers 30 June 2026 is the class's development by months since the member's current episode of therapy began (a fill more than a lapse after the last supply ran out starts one), read from every member who has passed each month of an episode across both PBMs' files and applied at each member's own months; after the January 2026 bulletin removed step therapy, members who had stopped the GLP-1, severe-asthma and CGRP drugs came back, so a development by months since first fill counts them with the persistent long-standing members and over-staffs those three classes.",
- "stump": "The default path develops each class's caseload by months since each member's first fill in the class and files 57 pharmacists with GLP 8, AST 5 and CGR 6, because the members who came back to those drugs in 2026 after a lapse are counted at their first fill's months with the persistent long-standing members; developed by months since the current episode began, the classes take GLP 7, AST 4 and CGR 5, 54 in all.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both PBMs' files (reversals out, members linked through the crosswalk, NDCs padded, the 2026 schedule applied), reads every charter rule and projects the caseload by the class's development by months on therapy from each member's first fill files 57 pharmacists (GLP 8, AST 5, CGR 6); counting months from the start of the member's current episode files 54 (GLP 7, AST 4, CGR 5).",
- "domain_test": "The deciding quantity is each specialty class's program-year spend for the members on therapy today, projected the way pharmacy persistence work projects it: a development of continuation and paid amount by months in the current therapy episode (new-user and re-initiation episodes separated by a permissible gap), applied at each member's own months; with hospital wards in place of drug classes there is no fill, no days' supply, no lapse between episodes and no re-initiation, so the task does not survive the swap.",
- "layer2_family": "forecast_uncertainty",
- "layer2_pattern": "own:specialty-spend-developed-by-months-in-the-current-episode-of-therapy",
- "layer1": [
-  "two PBMs' claim files in different layouts (the outgoing PBM's reversals as negative lines, the incoming PBM's as a status column)",
-  "member identifiers re-keyed at the PBM change through a crosswalk",
-  "NDC in 10-digit and 11-digit forms",
-  "the incoming PBM's 2026 contract prices against the outgoing PBM's paid amounts",
-  "transition-of-care fills at the January 2026 PBM change",
-  "days' supply of 28, 30, 84 and 90 days"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task98": "task98 v6 counts units under a score threshold whose closed periods were scored on a classifier the improvement programme could not move; here no classifier changes: the forward quantity is each group spend developed by how long its active units have been active, read from every unit that has passed each duration.",
-  "task468": "v2 (spent) developed spend by months since each member's first fill in the class; v3's decisive step is the clock itself: months since the current episode began, because members re-initiating after a lapse behave like new users, and v2's construction is now the analyst test's wrong answer."
- },
- "lineage": [
-  {
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "C"
-   ],
-   "generators": [
-    "G6",
-    "G12",
-    "G3"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "identity_resolution",
-   "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
-   "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
-   "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
-   "subdomain": "data-integration-record-linkage-entity-resolution",
-   "domain": "general-statistics-data-science",
-   "architecture": "v1",
-   "drawn": "2026-10-17",
-   "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
-  },
-  {
-   "gap": [
+  "task": "task468",
+  "architecture": "v4",
+  "drawn": "2026-10-20",
+  "slot_note": "wave 5, third of six, re-rooted from architecture 1 (the transit nominations); the seed's world (ET25) dropped, the objective kept",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a nonprofit Medicaid managed care plan's 2027 hospital quality bonus, decided on each network hospital's risk-adjusted 30-day mortality for fiscal 2026 index admissions, where post-discharge deaths are found by the state vital records office's probabilistic linkage of members to the state death file, and members enrolled without a Social Security number (the state-funded coverage for undocumented adults) link worst",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "submission.md block 1; the add-on workbook",
+  "gap": [
     "population",
     "time"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G13",
-    "G6",
+  ],
+  "generators": [
+    "G3",
+    "G12",
     "G14"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "allocation_to_total",
-   "stump_strategy": "composition_mix",
-   "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
-   "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
-   "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
-   "subdomain": "payment-claims-health-plan-analytics",
-   "domain": "healthcare-delivery-health-economics",
-   "architecture": "v2",
-   "drawn": "2026-10-19",
-   "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
-  }
- ],
- "notes": "Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE. Architecture 3 spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break from the bimodal refill gaps and landed the call (Gate F). Re-rooted by the author's rule (no retirement): architecture 4 to be drawn fresh.",
- "registered": "2026-10-19T05:07:57Z"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "other",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "Vice President, Provider Contracting and Payment, a nonprofit Medicaid health plan",
+  "role_family": "finance_controller",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "halbrook_medicaid_claims_fy2026.csv",
+    "rows": 0,
+    "entity": "one claim or encounter line",
+    "grain": "claim line",
+    "source": "synthetic (constructed in the layout of a state Medicaid claims extract)",
+    "row_meaning": "an inpatient or outpatient claim or managed care encounter line",
+    "source_dataset": "constructed (seeded generator)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "other",
+  "world": {
+    "geography": "United States, an unnamed state (the agency, hospitals, plans and people are fictional)",
+    "currency": "USD",
+    "org_type": "nonprofit Medicaid managed care plan",
+    "invented_nouns": [
+      "Halbrook Community Health Plan",
+      "Hospital Quality Bonus",
+      "Office of Vital Records Linkage Unit"
+    ],
+    "people": [
+      "Wendy James",
+      "Nathan Hawkins",
+      "Eric Thomas"
+    ]
+  },
+  "deliverables": [
+    "halbrook_2027_hospital_quality_add_on.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is each unit's count of an outcome found only by linking its records to an outside register, where the linker misses true outcomes for records with weak identifiers and invents false ones for records with common identifiers, at rates measurable only on two internal control groups (outcomes the units' own later records show, and records shown still active after a linked outcome); a unit whose weak-identifier records are low-risk is inflated by false links and one whose weak-identifier records are high-risk is deflated by missed links, so counting the links, adding the outcomes known from the records, or dropping the links the records contradict each leaves one of them on the wrong side of the threshold.",
+  "driver_concrete": "Each hospital's 30-day deaths for its fiscal 2026 Medicaid index admissions are the deaths in hospital plus the post-discharge deaths the linkage found, corrected class by class (Social Security number on file or not, compound surname or not) for the false links measured on members with claims after their linked death and for the missed links measured on members whose death a later inpatient claim records; an obstetrics hospital whose emergency-Medicaid mothers carry common surnames loses its add-on on false links, and a dialysis hospital whose emergency-dialysis patients carry compound surnames keeps it on missed ones, until both are corrected.",
+  "stump": "The default path counts each hospital's in-hospital deaths and linked post-discharge deaths, adds the deaths later inpatient claims record and drops the links later claims contradict, and takes the add-on from the obstetrics hospital while the dialysis hospital keeps it; corrected for the linkage's false links and missed links class by class, the obstetrics hospital keeps it and the dialysis hospital loses it.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the fee-for-service claims and both plans' encounters into index admissions, applies the measure's index and exclusion rules and counts deaths from the hospital disposition and the death linkage (adding the deaths later claims record, dropping the links later claims contradict) files the obstetrics hospital as losing the add-on and the dialysis hospital as keeping it; corrected for the linkage's error rates measured on the two control groups, the sets reverse.",
+  "domain_test": "The deciding quantity is each hospital's risk-adjusted 30-day mortality ratio, observed over expected, with deaths after discharge ascertained by probabilistic linkage to vital records, as health services research measures it, and the field corrects linked outcomes for linkage error; with schools in place of hospitals there is no risk-adjusted mortality, no emergency Medicaid without a Social Security number and no death file, so the task does not survive the swap.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:linkage-error-corrected-outcome-counts-by-identifier-class",
+  "layer1": [
+    "two managed care plans' encounter layouts beside fee-for-service claims",
+    "encounter resubmissions and voids",
+    "transfers between hospitals forming one stay",
+    "member identifier crosswalk across plans",
+    "provider identifiers changed by a hospital merger",
+    "dates in three formats"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v6 counts units under a score threshold whose closed periods were scored on a classifier the improvement programme could not move; here no classifier changes: the forward quantity is each group spend developed by how long its active units have been active, read from every unit that has passed each duration.",
+    "task468": "v1 weighted a clustered review of unmatched transit events to allocate them; v2 and v3 projected pharmacy spend by a duration clock; v4 corrects an outcome count found through a probabilistic linkage for the linkage's own false and missed links, measured on two control groups inside the record, a different quantity, source and correction.",
+    "task126": "task126 v1 splits units a succession link wrongly joins, read off a separate credit ledger; here no unit is split or joined: an outcome count is corrected for a probabilistic linkage's false and missed links, at rates measured on two control groups inside the claims.",
+    "task450": "task450 v1 weights a scheduled visit's sightings by whether the visit ended the event it saw; here nothing is sampled by visits: every member is linked, and the correction removes false links and restores missed ones by identifier class.",
+    "task469": "task469 reads a share observed only where an allowance was already short, a censoring correction; here the outcome is fully observable in principle and the error is the linker's, false links inflating low-risk weak-identifier members and missed links deflating high-risk ones."
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G6",
+        "G12",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "identity_resolution",
+      "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
+      "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
+      "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "domain": "general-statistics-data-science",
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
+      "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
+      "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v2",
+      "drawn": "2026-10-19",
+      "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "own:specialty-spend-developed-by-months-in-the-current-episode-of-therapy",
+      "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active depend on how long the current spell of activity has run, not on how long ago the unit was first active; units returning after a lapse look long-standing by their first activity but behave like new ones, and one group's returning units surged just before the reference date, so a development by time since first activity, applying last year's active units' following year, or carrying the trailing year forward each overstates exactly the groups the returners filled.",
+      "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files, where members returning to therapy after a lapse sit among the long-standing members by their first fill",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v3",
+      "drawn": "2026-10-19",
+      "fate": "spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break read off the bimodal refill gaps and landed the call (score_reader exit 1, Gate F); re-rooted fresh by the author's rule (no retirement)"
+    }
+  ],
+  "notes": "Architecture 4 drawn fresh 2026-10-20 under the author's rule (no retirement). Re-root of the transit nominations (architecture 1, spent). Shape 01 is banned by the last two builds, so the call is an allocation of the program's clinical pharmacists by projected spend shares (shape 05). Architecture 2 spent at stage 4 on 2026-10-19: the isolated reader landed the call (10 of 10) and 27 of 28 ask figures by a tenure-conditioned projection from history (Gate F); judge DETERMINISTIC/APPROVE. Architecture 3 spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break from the bimodal refill gaps and landed the call (Gate F). Re-rooted by the author's rule (no retirement): architecture 4 to be drawn fresh.",
+  "registered": "2026-10-20T05:54:15Z"
 }

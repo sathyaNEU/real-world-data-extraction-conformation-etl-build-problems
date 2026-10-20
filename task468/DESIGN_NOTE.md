@@ -1,7 +1,89 @@
-# task468 design note: the specialty clinical pharmacists, by the spend the members on therapy will run
+# task468 design note: the 2027 hospital quality bonus, on deaths the linkage found and the deaths it missed
 
-Status lives in `pipeline.json`; this note holds the design of architecture 3 (spent); architecture 4 is drawn fresh. Read
-`## Tried and rejected` first. Architecture 1 (the Larkhaven transit nominations) and architecture 2 (the same pharmacy
+Status lives in `pipeline.json`; this note holds the design of architecture 4, drawn fresh on 2026-10-20 under the
+author's rule (no task is retired; a spent architecture is re-rooted until one ships). Read `## Tried and rejected`
+first: architectures 1 (transit nominations), 2 and 3 (specialty pharmacy staffing) are spent, each to an isolated reader
+who took the careful construction the record displayed.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task468.json` (architecture v4), registered 2026-10-20 after a pull. Guard
+  check WARN only after redrawing four blocked axes: the organisation family (government_agency, against task248 and
+  task177: the decision moved from the state Medicaid agency to a nonprofit Medicaid health plan), the role family
+  (policy_adviser, against task177: finance_controller), the forcing event (purchase_order_or_contract, against task177:
+  the plan's statutory filing of its 2027 value-based arrangements) and the decisive generator (G12 with population and
+  method selection is spent in task268 v2 and five older builds: G3, a link record is not a death, ahead of G12 and
+  G14), with differentiation lines against task126 v1, task450 v1 and task469. WARNs answered: method_or_model_selection
+  repeats task271 and is the Gate G of 9 of the last 12 builds (the decisive move is an estimator the record's two
+  control groups force, and no other Gate G is honest); the persona first name Nathan appears in task181.
+- **Pairing:** Healthcare Delivery & Health Economics / payment-claims-health-plan-analytics / Data Extraction &
+  Conformation (ETL). The plan's measure dataset is conformed from sources never designed to join: its own inpatient
+  claims, a delegated medical group's encounter submissions (another layout, with voids and replacements), the member
+  enrollment file, the claims activity file, the state Office of Vital Records' death linkage for plan members, the
+  plan's mortality risk scores and the network roster; the call turns on what that dataset says each hospital's 30-day
+  deaths were.
+- **Shape:** 10, a scorecard: each of 14 network hospitals' fiscal 2026 risk-adjusted 30-day mortality ratio (observed
+  over expected) against the bonus line of 1.15, with whether it keeps its 2027 Hospital Quality Bonus; criteria from
+  each hospital's ratio and verdict (28), the count losing it (1), the asks and the chart.
+- **Strategy:** other (a linked outcome count corrected for the linkage's own false links and missed links, each
+  measured on a control group inside the record), decisive generator G3 (a link record is not a death), with G12 (no link
+  is not survival) and G14 (the error rates are conditional on the member's identifier class).
+- **World:** the United States, an unnamed state that covers adults regardless of immigration status through Medicaid
+  managed care, so members can be enrolled without a Social Security number. Halbrook Community Health Plan, a nonprofit
+  Medicaid plan (about 310,000 members), pays each of its 14 network hospitals a Hospital Quality Bonus of 2 per cent of
+  inpatient payments in contract year 2027 unless the hospital's ratio for fiscal 2026 index admissions (July 2025 to
+  June 2026) exceeds 1.15. Deaths after discharge reach the plan only through the state Office of Vital Records'
+  probabilistic linkage of plan members to the state death file. Personas from `guard.py names --geo "United States"
+  --seed 468`: Wendy James (Vice President, Provider Contracting and Payment, who owns the call), Nathan Hawkins (the
+  plan's quality measurement analyst) and Eric Thomas (manager of the Office of Vital Records Linkage Unit).
+- **Forcing fact:** the plan files its 2027 value-based payment arrangements with the state by 1 November 2026; the
+  bonus decision is set on the fiscal 2026 index admissions with deaths through 30 July 2026. The call faces forward
+  (who is paid the 2027 bonus); its quantity is the closed fiscal 2026 year, which the bonus terms name as the basis
+  (retrospective, with its reason: a pay-for-performance bonus is earned on a closed measurement year).
+- **Forum and forcing event:** executive_team (the plan's executive team approves the filing),
+  statutory_or_regulatory_filing; organisation other (a nonprofit Medicaid health plan); role finance_controller.
+- **Data-native sentence:** the linkage keys a member to the death file by Social Security number when the enrollment
+  file has one and by name, date of birth and sex when it does not, so for the members enrolled without one it invents
+  deaths for those whose names are common and misses deaths for those whose surnames are written two ways; the
+  obstetrics hospital's young mothers without a number carry the commonest surnames in the state, and the dialysis
+  hospital's patients without a number carry compound surnames and die often, so one hospital's ratio is inflated by
+  deaths that did not happen and the other's deflated by deaths the linkage never found.
+- **The WHAT screen.** Population: the measure's index admissions at each hospital (the specification's index, transfer
+  and exclusion rules); outcome: death from any cause within 30 days of the admission date, in hospital or after
+  discharge (the specification defines the event, not a source); window: fiscal 2026 admissions, deaths to day 30;
+  unit: the ratio of observed to expected deaths, expected from the plan's risk scores; comparison: each hospital against
+  1.15. The decisive step settles none of them: it is how the deaths after discharge are estimated from a linkage whose
+  errors the record measures (HOW, forced by the data's structure: links on members whom later claims show alive, and
+  deaths recorded on later inpatient claims that the linkage did not find).
+
+## Default path
+
+1. Conform the plan's inpatient claims and the medical group's encounter submissions into fiscal 2026 index admissions
+   under the specification (voided encounters out, replacements kept, a transfer joined into one stay, the listed
+   exclusions applied).
+2. Count each index admission's death within 30 days of admission: the discharge status "expired" for deaths in the
+   stay, and the Vital Records linkage for deaths after discharge.
+3. The careful analyst's reflexes: add the deaths that a later inpatient claim records (discharge status expired) which
+   the linkage did not return, and drop the links on members who have claims after their linked date of death.
+4. Divide each hospital's deaths by its expected deaths from the risk scores and withhold the bonus above 1.15.
+
+Ends on: the obstetrics hospital loses the bonus on deaths the linkage invented and the dialysis hospital keeps it on
+deaths the linkage missed (the ratios are fixed at calibration and written into `## Ladder`).
+Golden: each hospital's deaths after discharge corrected class by class (Social Security number on file or not,
+compound surname or not): the uncontradicted links less the false links expected at the rate measured on members whose
+later claims show them alive, divided by the share of deaths the linkage finds, measured on the deaths later inpatient
+claims record; the obstetrics hospital keeps the bonus and the dialysis hospital loses it.
+
+## Stump sentence
+
+The default path counts each hospital's in-stay deaths and linked deaths, adds the deaths later claims record and drops
+the links later claims contradict, and withholds the bonus from the obstetrics hospital while the dialysis hospital
+keeps it, because for members enrolled without a Social Security number the linkage invents deaths among common names
+and misses deaths among compound surnames, and the reflex repairs reach only the members whose later claims happen to
+show it; corrected at the error rates the two control groups measure, the obstetrics hospital keeps the bonus and the
+dialysis hospital loses it.
+
+## Tried and rejected` first. Architecture 1 (the Larkhaven transit nominations) and architecture 2 (the same pharmacy
 world, developed by months since first fill) are spent; their records are in the card's lineage and the lines below.
 
 ## Draw
