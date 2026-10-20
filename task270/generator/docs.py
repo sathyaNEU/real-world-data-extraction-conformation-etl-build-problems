@@ -100,7 +100,9 @@ def write_paper(path):
          Paragraph("3. How the committee will compare the clinics", S["h2"]),
          _clause(S, "3.1", "Each clinic's figure is the average, over its patients, of the rate at which each "
                            "patient's cognition declined between 1 January 2022 and 30 September 2026, in ACE-III "
-                           "points a year, each patient's own rate counting once."),
+                           "points a year, each patient's own rate counting once. The rate is the decline the "
+                           "patient's disease produced: a change in a patient's scores that the test itself produces "
+                           "is not part of it."),
          _clause(S, "3.2", "A clinic's patients are those whose latest diagnosis on the record on or before 30 "
                            "September 2026 is Alzheimer's disease (ICD-10 F00 or G30, mixed Alzheimer's and vascular "
                            "dementia included) or mild cognitive impairment (F06.7), and who completed two or more "
@@ -202,8 +204,12 @@ def write_guide(path):
                                                                        "blank for appointments still to come."],
             [F["tracker"], "a referral accepted by a memory clinic", "Kept by the information team for the six-week "
                                                                     "referral to diagnosis standard; one row per "
-                                                                    "referral, with the first assessment and the "
-                                                                    "diagnosis."],
+                                                                    "referral. Referral date is the day the clinic "
+                                                                    "received the referral; Diagnosis date is the "
+                                                                    "day the diagnosis was entered on the EPR "
+                                                                    "problem list; Pathway status is awaiting "
+                                                                    "assessment, assessed and awaiting a diagnosis, "
+                                                                    "diagnosed, or discharged."],
             [F["clinics"], "a clinic, and a postcode district", "The districts sheet gives the clinic each district "
                                                                "was referred to, with the dates."],
             [F["audit"], "a clinic's figures for 2024-25", "The service's annual audit for the commissioners, "

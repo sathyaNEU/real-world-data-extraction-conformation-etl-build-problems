@@ -30,15 +30,19 @@ def write(task):
              "slope through every assessment ranks second because nearly half of its patients sat their first ACE-III "
              "before 2022 and carry the gain through the whole period, where most of %s's are new to the test. Not "
              "%s's last place on that slope, which is the gain flattening the slopes drawn through a patient's first "
-             "two or three assessments at the clinic whose patients are nearly all new to the test."
-             % (f1(fig["gain"]), s1, f1(d[s1]), s2, f1(d[s2]), below, below, s1))
+             "two or three assessments at the clinic whose patients are nearly all new to the test. Not that gain "
+             "estimated from the period's assessments alone, which takes each patient's first assessment in the "
+             "period for their first, misses the gain the patients seen before 2022 carry throughout, and names %s "
+             "and %s again."
+             % ((f1(fig["gain"]), s1, f1(d[s1]), s2, f1(d[s2]), below, below, s1)
+                + tuple(fig["rivals"]["period_only"])))
     L.append("\n## 2. Critical Components\n")
     L.append("1. The second completed ACE-III carries a one-time gain of **%s** points over the patient's own trend, "
              "estimated within patients." % f1(fig["gain"]))
     L.append("2. %s's patients decline **%s** ACE-III points a year net of the gain, the fastest of the eight." %
              (s1, f1(d[s1])))
-    L.append("3. %s's patients decline **%s** points a year; %s, the first clinic below, rounds to **%s** but trails "
-             "it unrounded." % (s2, f1(d[s2]), below, f1(d[below])))
+    L.append("3. %s's patients decline **%s** points a year, ahead of every clinic outside the pair on the "
+             "unrounded figures." % (s2, f1(d[s2])))
     L.append("\n## 3. Step-by-Step Solution\n")
     L.append("1. Joined the CIS forms to the EPR sets through the master patient index (merged hospital numbers "
              "included, sets entered in error left out) and numbered each patient's completed assessments over their "
@@ -47,23 +51,26 @@ def write(task):
              "or mild cognitive impairment, with two or more completed assessments from 1 January 2022 to 30 "
              "September 2026, at the clinic of the last (paper RC/26/11, section 3): %s patients."
              % format(fig["counts"]["patients_compared"], ","))
-    L.append("3. Estimated the gain at the second completed assessment within patients, each patient with three or "
-             "more assessments given their own intercept and slope and one shared step from their second completed "
-             "assessment on: %s points." % f1(fig["gain"]))
+    L.append("3. Estimated the change the test itself produces, which the paper's figure excludes, as a step at "
+             "each patient's second completed assessment of their whole record, CIS assessments before 2022 counted, "
+             "within patients: each "
+             "patient with three or more assessments in the period given their own intercept and slope and one "
+             "shared step: %s points." % f1(fig["gain"]))
     L.append("4. Took each patient's decline as the least-squares slope of their totals net of the gain and averaged "
-             "each clinic's patients, ranked unrounded: %s %s and %s %s points a year lead, %s first below."
-             % (s1, f1(d[s1]), s2, f1(d[s2]), below))
+             "each clinic's patients, ranked unrounded: %s %s and %s %s points a year lead."
+             % (s1, f1(d[s1]), s2, f1(d[s2])))
     L.append("5. Questionnaire B1 and B2: episodes open on 30 September 2026 in the EPR episodes extract, less "
              "the patients the appointments show discharged at a review, or handed to the care home liaison team, "
              "between the episode's start and that day, less deaths on the Spine, by the latest "
              "recorded diagnosis and by age on 1 January 2027.")
-    L.append("6. Questionnaire C1 and C2: for diagnoses given from 1 October 2025 to 30 September 2026, the "
-             "tracker's referral date to the appointment whose outcome records the diagnosis given, not the "
-             "tracker's diagnosis date, which is the day it reached the problem list.")
+    L.append("6. Questionnaire C1 and C2: for each referral's first diagnosis given from 1 October 2025 to 30 "
+             "September 2026, the tracker's referral date to the appointment that gave it: the one whose outcome "
+             "records the diagnosis given or, for a finding of no dementia or of depression, the one that discharged "
+             "the patient, not the tracker's diagnosis date, the day it reached the problem list.")
     L.append("7. Named %s and %s as the recruiting sites." % (s1, s2))
     L.append("\n## 4. Deliverable Answers\n")
     L.append("### arv1102_site_selection.xlsx\n")
-    L.append("1. Recruiting sites: %s and %s; first clinic below: %s." % (s1, s2, below))
+    L.append("1. Recruiting sites: %s and %s." % (s1, s2))
     L.append("2. Decline in ACE-III points a year, to the nearest half point, fastest first:")
     for c in fig["call"]["order"]:
         L.append("   - %s: %s" % (c, f1(d[c])))

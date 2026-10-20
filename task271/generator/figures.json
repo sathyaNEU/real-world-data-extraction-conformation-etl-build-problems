@@ -1,0 +1,153 @@
+{
+ "call": {
+  "regions": [
+   "Pierce",
+   "Spokane",
+   "King",
+   "Thurston-Mason"
+  ],
+  "first_below": "Greater Columbia",
+  "order": [
+   "Pierce",
+   "Spokane",
+   "King",
+   "Thurston-Mason",
+   "Greater Columbia",
+   "North Sound",
+   "North Central",
+   "Great Rivers",
+   "Salish",
+   "Southwest"
+  ]
+ },
+ "share": {
+  "Great Rivers": 58,
+  "Greater Columbia": 49,
+  "King": 46,
+  "North Central": 56,
+  "North Sound": 49,
+  "Pierce": 42,
+  "Salish": 60,
+  "Southwest": 61,
+  "Spokane": 44,
+  "Thurston-Mason": 47
+ },
+ "share_unrounded": {
+  "Great Rivers": 0.576424,
+  "Greater Columbia": 0.489397,
+  "King": 0.459634,
+  "North Central": 0.562063,
+  "North Sound": 0.493018,
+  "Pierce": 0.421004,
+  "Salish": 0.599102,
+  "Southwest": 0.614834,
+  "Spokane": 0.438239,
+  "Thurston-Mason": 0.473043
+ },
+ "sampled": {
+  "Great Rivers": 1500,
+  "Greater Columbia": 1500,
+  "King": 1500,
+  "North Central": 1500,
+  "North Sound": 1500,
+  "Pierce": 1500,
+  "Salish": 1500,
+  "Southwest": 1500,
+  "Spokane": 1500,
+  "Thurston-Mason": 1500
+ },
+ "outcomes": {
+  "completed": 10635,
+  "declined": 1161,
+  "declined_key_answered": 909,
+  "not_reached": 3204,
+  "known": 11544,
+  "sampled": 15000
+ },
+ "filed": {
+  "hours": 80,
+  "ages": [
+   19,
+   64
+  ],
+  "per_region": 1500,
+  "reached_codes": [
+   1100,
+   2110
+  ],
+  "clauses": [
+   "2.1",
+   "2.4",
+   "3.1",
+   "3.2",
+   "3.3"
+  ]
+ },
+ "known_share": {
+  "Great Rivers": 39,
+  "Greater Columbia": 39,
+  "King": 36,
+  "North Central": 51,
+  "North Sound": 36,
+  "Pierce": 35,
+  "Salish": 46,
+  "Southwest": 49,
+  "Spokane": 37,
+  "Thurston-Mason": 41
+ },
+ "overall": {
+  "estimated": 51,
+  "interviewed": 41
+ },
+ "answer_rate": {
+  "worked_80": {
+   "day": 0.06,
+   "evening": 0.275,
+   "saturday": 0.241
+  },
+  "not_80": {
+   "day": 0.387,
+   "evening": 0.364,
+   "saturday": 0.316
+  }
+ },
+ "ask_a": {
+  "Great Rivers": 4286,
+  "Greater Columbia": 8730,
+  "King": 21346,
+  "North Central": 3316,
+  "North Sound": 11560,
+  "Pierce": 12836,
+  "Salish": 4120,
+  "Southwest": 7866,
+  "Spokane": 9922,
+  "Thurston-Mason": 4615
+ },
+ "ask_b": {
+  "Great Rivers": 994,
+  "Greater Columbia": 1989,
+  "King": 5036,
+  "North Central": 773,
+  "North Sound": 2632,
+  "Pierce": 2835,
+  "Salish": 981,
+  "Southwest": 1839,
+  "Spokane": 2306,
+  "Thurston-Mason": 1044
+ },
+ "totals": {
+  "ask_a": 88597,
+  "ask_b": 20429
+ },
+ "rivals": {
+  "respondents_not_golden": [
+   "North Sound"
+  ],
+  "cells_not_golden": [
+   "North Sound"
+  ],
+  "late_not_golden": [
+   "North Sound"
+  ]
+ }
+}

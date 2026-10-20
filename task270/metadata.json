@@ -1,5 +1,5 @@
 {
- "answer": "Recruiting sites: Quarndale and Thurlwick; first clinic below: Mosswick",
+ "answer": "Recruiting sites: Quarndale and Thurlwick",
  "distractors": [
   "mas_service_audit_2024_25.xlsx",
   "catchment_population_65plus_2025.csv"
@@ -86,11 +86,11 @@
  "rows": {
   "catchment_population_65plus_2025.csv": 27,
   "cis_ace3_forms_2014_2023.csv": 23647,
-  "cis_diagnoses_2014_2023.csv": 9445,
+  "cis_diagnoses_2014_2023.csv": 9450,
   "epr_cognitive_observations_2024_2026.csv": 91287,
-  "epr_mas_episodes_2024_2026.csv": 8430,
-  "epr_outpatient_appointments_2024_2026.csv": 26381,
-  "epr_problem_list_2024_2026.csv": 8917,
+  "epr_mas_episodes_2024_2026.csv": 8424,
+  "epr_outpatient_appointments_2024_2026.csv": 26072,
+  "epr_problem_list_2024_2026.csv": 8922,
   "mas_clinic_register.xlsx": 39,
   "mas_pathway_tracker_2024_2026.xlsx": 4020,
   "mas_service_audit_2024_25.xlsx": 8,

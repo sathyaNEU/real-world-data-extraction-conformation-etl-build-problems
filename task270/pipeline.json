@@ -1,23 +1,23 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "RETIRED",
   "domain": "psychology-behavioral-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": "retired",
+  "stage_name": "retired: architecture 3, the slot's last, spent at stage 4 round 2 (Gate F: both scored readers landed the call once 3.1 filed the exclusion of the test's own change)",
   "updated": "2026-10-19",
-  "stump": "The default path fits each memory clinic's decline as the slope of its patients' ACE-III scores on time, per patient or in a random-slopes mixed model, and names Thurlwick and Penwardine as ARV-1102's two recruiting sites, because every patient's second completed sitting carries a one-time gain from having sat the test before that flattens a slope most where patients have sat it only two or three times; Quarndale, opened in April 2024, declines fastest and reads as the slowest. Only separating the second sitting's gain from each patient's trend puts Quarndale with Thurlwick, Mosswick first below.",
+  "stump": "The default path reads the paper's 3.1, sizes the change the test itself produces on the period's sittings (each patient's first sitting from 2022 as their first, 1.24 points) and names Thurlwick and Penwardine as ARV-1102's recruiting sites, because the gain of a second completed sitting belongs to each patient's whole record and the patients first assessed before 2022 carry it through the period; only the whole-record estimate within patients (2.63) puts Quarndale with Thurlwick.",
   "architecture": 3,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-19",
     "checks": 51
   },
   "leak": {
-    "leak_py": "REVIEW (asof 2026-10-09): the paper's register table names all eight clinics, and the flagged terms are the documents' own vocabulary; every line harmless",
-    "reader": ""
+    "leak_py": "REVIEW (asof 2026-10-09), every line harmless",
+    "reader": "round 1: both readers missed the call and Ask A, took Ask B 16 of 16; round 2 (repaired pack, target.zip d6f415d7): both readers landed the call (Quarndale and Thurlwick, the second-sitting gain estimated within patients over each whole record at about 2.5), reader 3 Ask B 16 of 16 and Ask A 0 of 16 (50 per cent), reader 4 every ask figure (32 of 32); score_reader.py FAIL on both"
   },
   "duplicate_check": {
     "heart": "WARN (people.first, overuse.shape, repeat.question_form), no BLOCK",
@@ -25,12 +25,12 @@
     "surface": "3 promoted (task268, task269, task194), each answered by a differentiation line on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1 (run r5) NOT_DETERMINISTIC, repaired; round 2 re-judge (run r6) stopped unfinished once both readers had spent the architecture",
+    "disposition": "SEND_BACK (round 1), repaired as FIX_NOW; round 2 none",
+    "report": "/tmp/determinism-check-task270-r5/verdict.md (round 1); task270/DESIGN_NOTE.md, Build record"
   },
   "returned": [],
-  "resume": "stage 4 on the build of 2026-10-19 (365 checks, verify clean, byte-identical, target.zip md5 e137a4a32c99f037c114eda954d6ebef): two isolated scored readers (score_reader.py, reader folders t270c3_reader_r1 and r2 in the session scratchpad) and the determinism judge (run id r5); a call any reader lands spends architecture 3, the slot's last, and the build retires; a judge finding confined to an ask is an ask-layer repair; then SHIPPED with target.zip, golden/, the ledger row and the card",
+  "resume": "none: task270 retired (three architectures spent); the number is not reused",
   "architectures": [
     {
       "architecture": 1,
@@ -39,6 +39,10 @@
     {
       "architecture": 2,
       "fate": "spent 2026-10-19 at stage 4 (Gate F): reader 6 of six isolated scored readers landed the call and the first region below by taking the claims above 2,500 pounds as fully reported and scaling them by the protected policies' share above that size, with Ask A's sixteen figures; reader 5 missed the call and took all 32 ask figures; judge pass 3 DETERMINISTIC, FIX_NOW on Ask A; recorded in the PAUSED commit of 2026-10-19"
+    },
+    {
+      "architecture": 3,
+      "fate": "spent 2026-10-19 at stage 4 round 2 (Gate F): both isolated scored readers landed the call after the round 1 repair filed 3.1's exclusion of the change the test itself produces; each estimated the one-time gain of a second completed sitting within patients over the whole CIS and EPR record (about 2.5) and named Quarndale and Thurlwick; reader 4 took every ask figure, reader 3 Ask B whole; round 1's readers had missed the call with the outcome unfiled; task270 retired"
     }
   ],
   "approved": null,

@@ -1,0 +1,131 @@
+{
+  "task": "task271",
+  "architecture": "v2",
+  "drawn": "2026-10-20",
+  "slot_note": "the slot's seed DA21 (a nonprofit health plan's 2027 intensive track) lends its world and decision shape only; architecture 2 keeps a health plan deciding which parts of its book get a 2027 support track and moves the deciding quantity to a member survey's share in work",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a nonprofit Medicaid plan's spring member work survey, phoned from two call centres, deciding which four of its ten Washington regions get the 2027 Community Engagement Support track, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G12",
+    "G14",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "retry_or_revision_log",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the two call centres' records, links the interviews and the key answers to the sample and weights each region's respondents to its sampled members' age and sex (the adjustment-cell method), or carries the share in work among the members reached late to the members never reached, names Pierce, North Sound, King and Spokane, because within every age and sex cell the share in work rises with the call that reached the member and with the share of evening and Saturday calls, so answering depends on work itself; only a model of each work class's chance of answering in each calling window, fitted to every sampled member's calls, names Thurston-Mason in North Sound's place.",
+  "domain_test": "The deciding quantity is a population share from a survey whose nonresponse depends on the answer itself, which survey methodology estimates with a callback model of the contact histories (each class's per-call chance of being reached, by calling window); with hospitals and readmissions in, no record of attempts to reach each case exists and nothing about whether a case is observed depends on the hour it was sought, so the task stops making sense.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:callback-model-on-contact-histories",
+  "layer1": [
+    "two call logs from two systems: the survey vendor's dialer export (ISO timestamps with offset, numeric disposition codes) and the plan's member services workbook (a date column, a 12-hour time column, text dispositions), members handed from one centre to the other mid-field",
+    "member IDs carried with a vendor prefix and zero padding in the dialer export",
+    "the sample released in four waves, the later waves closed with fewer attempts",
+    "callback appointments and transfers logged as rows that are not calls",
+    "an interview file keyed to the vendor's case number, the sample keyed to the plan's member ID",
+    "monthly enrollment snapshots with retroactive terminations"
+  ],
+  "stakeholder_role": "Director of Community Health Programs",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "survey_dialer_export_2026.csv with member_services_call_log_2026.xlsx",
+    "rows": 0,
+    "entity": "one row is one call attempt to a sampled member",
+    "grain": "call attempt",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United States (Washington)",
+    "currency": "USD",
+    "org_type": "nonprofit Medicaid managed care plan",
+    "invented_names": [
+      "Trevanna Community Health Plan",
+      "Kestrelby Survey Research",
+      "Member Work and Income Survey",
+      "Community Engagement Support track"
+    ],
+    "people": [
+      "Robin Fields",
+      "Dillon Evans"
+    ]
+  },
+  "deliverables": [
+    "ce_support_regions_2027.xlsx",
+    "ce_support_regions_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
+  "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
+  "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task471": "task471 restores long trips that a collection cut-off kept out of the replies by weighting each reply on the handout days that could have returned it; task271 has no cut-off on the answer: members are missed because the hours they were called are hours they are at work, and their share in work comes from a callback model of each work class's answer rate by calling window",
+    "task233": "task233 carries a departure from missing at random measured on a gold-standard follow-up as one odds ratio; task271 has no follow-up of the unreached: the departure is identified from every sampled member's call history, each class's chance of answering by calling window",
+    "task231": "task231 takes the exited share of this round's silent units from earlier rounds whose exit record has caught up; task271 has no later record of any unreached member and no earlier round: the share comes from the attempt histories of reached and unreached members together",
+    "task456": "task456 estimates three feeds' error rates from their agreement on the same hospital-days; task271 has one measurement, the interview, on the members reached, and estimates who was never reached from how often each class answers a call in each window",
+    "task268": "task268 corrects survival for patients lost after their state worsened; task271 estimates a share at one moment from a survey whose contact depends on the answer, with no follow-up time and no loss",
+    "task264": "task264 counts distinct members from interviews drawn in proportion to visits; task271's sample is a simple draw from the roster, and the selection is in who answers the phone at the hours it rang",
+    "task267": "task267 weights verified members by a verification design that is filed; task271's selection into the answers is unplanned and has to be modelled from the contact histories",
+    "task253": "task253's first architecture adjusted nonresponse within classes of a frame attribute; in task271 that adjustment-cell route is the wrong rung, because answering depends on work within every cell"
+  },
+  "lineage": [
+    {
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "provider-quality-risk-adjustment",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "role_family": "procurement_lead",
+      "forum": "board_of_directors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "driver": "The decisive quantity is each unit's outcome rate against what its cases' prior state would produce, where a strong risk property of some cases is recorded only in their earlier episodes at other units and concentrates at the units that receive referrals, so a risk model built from the current episode alone charges those units for their cases' history.",
+      "architecture": "v1 (Corrisbrook Health Cooperative's 2027 Pancreatic Surgery Centres, three of eight Wisconsin hospitals by 90-day deaths after pancreatic resection against a pooled risk model, an earlier pancreas or bile duct operation rebuilt from the patients' earlier admissions)",
+      "drawn": "2026-10-19",
+      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers built a prior hepatobiliary or pancreatic operation from the patients' earlier admissions through the documented person key and committed the golden call (Netherfold, Ferncastle, Aldermoor); a history look-back is the field's comorbidity reflex; the judge returned SEND_BACK on the earlier-operation flag's unfiled definition",
+      "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
+      "stump": "A competent solver risk-adjusts on the index admission's own record, finds Aldermoor's ratio at 0.95 and names Netherfold, Ferncastle and Farrowmere; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide since 2016, brings Aldermoor's ratio to 0.87 and names Netherfold, Ferncastle and Aldermoor."
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-20T00:26:31Z",
+  "architecture_spent": true
+}

@@ -3,8 +3,15 @@
 Account email: not yet recorded; until it is, the author names the handle at the start of the session. A
 session for anyone else ignores this file.
 
-- **Lane:** Data Extraction & Conformation (ETL), task445 to task493. Two builds in flight; when one ships,
-  start the next open number at once (`status.py next oviya1301`).
+- **Lane:** Data Extraction & Conformation (ETL), task445 to task493. When a build ships, its session starts its
+  next assigned number at once.
+- **No retirement (the author's rule, 2026-10-20).** No task number is ever retired: a spent architecture is re-rooted
+  with a fresh design, however many architectures it takes, until one ships. This replaces the build-pipeline cap for
+  this lane.
+- **Parallel builds (the author's rule, 2026-10-20).** Several sessions build at once, each on the numbers assigned to
+  it here and no other: the orchestrating session rebuilds task468 and task471; three sibling sessions build wave 6 in
+  pairs (task472 then task475; task473 then task476; task474 then task477). A session pulls before every guard check
+  and registers its card the moment its draw is fixed, so concurrent draws guard each other.
 - **Status board:** https://claude.ai/artifact/U4syUnRUycHUsWwhonBYoQ (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **Resume:** `handoffs/oviya1301.md` (task445, task447).
 
@@ -22,4 +29,5 @@ architecture), new. A task from an objective no developer owns says so.
 | 2 | task448 (new) · task449 (new) · task450 (new) · task451 (new) · task452 (new) · task453 (new) |
 | 3 | task454 (new) · task455 (new) · task456 (new) · task457 (new) · task458 (new) · task459 (new) |
 | 4 | task460 (new) · task461 (new) · task462 (new) · task463 (new) · task464 (new) · task465 (new) |
-| 5 | task466 (new) · task467 (new) · task468 (new) · task469 (new) · task470 (new) · task471 (new) |
+| 5 | task466 (new) · task467 (new) · task468 (re-root: fresh architecture 4) · task469 (new) · task470 (new) · task471 (re-root: fresh architecture 2) |
+| 6 | task472 (new) · task473 (new) · task474 (new) · task475 (new) · task476 (new) · task477 (new) |

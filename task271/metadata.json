@@ -1,0 +1,94 @@
+{
+ "answer": "Regions for 2027: Pierce, Spokane, King, Thurston-Mason",
+ "distractors": [
+  "mwis_pilot_memo_2026.pdf",
+  "trevanna_cahps_2025_regions.xlsx"
+ ],
+ "domain": "Survey Research & Official Statistics (nonresponse, calibration and measurement error adjustment)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "apple_health_regions.xlsx": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "contents.txt": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "hca_household_composition_20261015.csv": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "kestrelby_mwis_dialer_export.csv": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "mwis_2026_interviews.csv": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "mwis_2026_methods_report.pdf": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "mwis_2026_sample.csv": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "mwis_pilot_memo_2026.pdf": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_cahps_2025_regions.xlsx": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_ce_support_data_guide.pdf": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_ce_support_track_criteria_2027.pdf": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_enrollment_changes_20261001_20261019.txt": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_expansion_roster_20261019.csv": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  },
+  "trevanna_msc_mwis_activity.xlsx": {
+   "date": "2026-10-20",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Trevanna Community Health Plan, Kestrelby Survey Research, every member, case and person are fictional; the Apple Health regions and their counties are Washington's"
+  }
+ },
+ "rows": {
+  "apple_health_regions.xlsx": 10,
+  "hca_household_composition_20261015.csv": 131194,
+  "kestrelby_mwis_dialer_export.csv": 30595,
+  "mwis_2026_interviews.csv": 11550,
+  "mwis_2026_sample.csv": 15000,
+  "trevanna_cahps_2025_regions.xlsx": 10,
+  "trevanna_enrollment_changes_20261001_20261019.txt": 2752,
+  "trevanna_expansion_roster_20261019.csv": 88424,
+  "trevanna_msc_mwis_activity.xlsx": 27405
+ },
+ "task": "task271",
+ "title": "Trevanna Community Health Plan: the four regions for the 2027 Community Engagement Support track"
+}
