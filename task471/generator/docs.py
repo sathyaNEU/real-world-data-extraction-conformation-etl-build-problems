@@ -161,14 +161,14 @@ def write_series_notes(path):
          "from 1925. Registration of births has been compulsory since 1912 and is complete. File: "
          "live_births_by_sex_1925_2025.csv."),
         ("Deaths", "Deaths registered in the country, by sex, the year of death and the year of birth on the death "
-         "registration. Deaths from 1925 to 1990 are in the historical workbook deaths_by_year_of_birth_1925_1990.xlsx "
-         "(a sheet for each sex, one row a year of death and one column a year of birth); deaths from 1991 are in "
-         "deaths_by_year_of_birth_1991_2025.csv."),
+         "registration. Deaths from 1925 to 1944 are in the historical workbook deaths_by_year_of_birth_1925_1944.xlsx "
+         "(a sheet for each sex, one row a year of death and one column a year of birth); deaths from 1945 are in "
+         "deaths_by_year_of_birth_1945_2025.csv."),
         ("Long-term movements", "Arrivals of people coming to live in the country for 12 months or more, and departures "
-         "of residents leaving it for 12 months or more, by sex, period and year of birth, from 1950. Every traveller "
+         "of residents leaving it for 12 months or more, by sex, period and year of birth, from 1925. Every traveller "
          "is recorded at the border: the country's only ports of entry are its four international airports and two "
          "seaports, and arrival and departure records are kept for every passenger and crew member. File: "
-         "long_term_movements_by_year_of_birth_1950_2025.csv."),
+         "long_term_movements_by_year_of_birth_1925_2025.csv."),
         ("The 2025 period", "Each series carries a provisional period for 2025, written 2025-01-01/2025-03-03: 1 January "
          "to 3 March 2025, the day before the 2025 census. Births in that period are registrations by 14 April 2025; "
          "a few late registrations will be added."),
@@ -298,18 +298,20 @@ def write_dictionary(path):
     _head(ws, ["Column", "Description"], [16, 100], row=4)
     cols = [
         ("TXN_ID", "The transaction's identifier"),
-        ("PROCESSED", "When the platform processed the transaction (date and time)"),
+        ("PROCESSED", "When the platform processed the transaction (date and time): the old platform's in the country's "
+                      "time, the new platform's in UTC. The country's time is 12 hours ahead of UTC, and 13 hours ahead "
+                      "in daylight saving time, from the last Sunday in September to the first Sunday in April"),
         ("TXN_TYPE", "NEW an enrolment; DEL a removal from the roll; REI the reinstatement of a removed elector"),
         ("REASON", "A removal's reason (Codes)"),
         ("SOURCE", "An enrolment's channel (Codes)"),
         ("STATUS", "A accepted; R rejected (an application that did not result in an enrolment)"),
         ("ELECTOR_NO", "The elector number; blank on a rejected application"),
         ("PERSON_REF", "The Commission's reference for the person"),
-        ("ELECTORATE", "The electorate of the address enrolled at or removed from (electorate code)"),
+        ("ELECTORATE", "The electorate of the address enrolled at or removed from (electorate number)"),
         ("ADDRESS_TYPE", "R residential address; O overseas address"),
         ("SEX", "M or F"),
         ("BIRTH_YEAR", "Year of birth"),
-        ("REF_TXN", "On a reinstatement, the TXN_ID of the removal it reverses"),
+        ("REF_TXN", "The TXN_ID of the earlier transaction this one completes or reverses"),
     ]
     for i, (k, v) in enumerate(cols):
         ws.cell(row=5 + i, column=1, value=k)
@@ -395,15 +397,15 @@ def write_deaths_history(path, cells):
         ws = wb.active if first else wb.create_sheet()
         first = False
         ws.title = title
-        ws["A1"] = "Deaths registered, 1925 to 1990, by year of death and year of birth: %s" % title.lower()
+        ws["A1"] = "Deaths registered, 1925 to 1944, by year of death and year of birth: %s" % title.lower()
         ws["A1"].font = Font(bold=True)
         ws["A2"] = "%s, vital statistics (historical series)" % W.OFFICE
         ws.cell(row=4, column=1, value="Year of death").font = Font(bold=True)
-        for j, c in enumerate(range(1925, 1991)):
+        for j, c in enumerate(range(1925, 1945)):
             ws.cell(row=4, column=2 + j, value=c).font = Font(bold=True)
-        for i, y in enumerate(range(1925, 1991)):
+        for i, y in enumerate(range(1925, 1945)):
             ws.cell(row=5 + i, column=1, value=y)
-            for j, c in enumerate(range(1925, 1991)):
+            for j, c in enumerate(range(1925, 1945)):
                 v = cells.get((y, sex, c))
                 if v:
                     ws.cell(row=5 + i, column=2 + j, value=int(v))
@@ -426,7 +428,7 @@ def write_migration(path):
          "registration match runs weekly rather than monthly."),
         ("Identifiers", "Transactions processed by the old platform carry its running numbers (R25- followed by seven "
          "digits); those processed by the new platform carry its 16-character keys. Person references and elector "
-         "numbers were carried over unchanged, and electorate codes are those of the 2024 boundary review."),
+         "numbers were carried over unchanged."),
         ("Removal reasons before 4 August 2025", "Removals processed by the old platform carry its reason codes: 01 "
          "deceased; 02 overseas for more than three years; 03 duplicate record; 04 objection upheld; 05 moved out of "
          "the electorate. The new platform's codes are in the data dictionary."),

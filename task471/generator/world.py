@@ -117,13 +117,26 @@ ELECTORATES = [
     ("1501", "Kilraven", "15"), ("1502", "Kilraven Coast", "15"),
     ("1601", "Nethermoor", "16"),
 ]
-RENAMED = {"203": "Merriton Harbour", "902": "Corran South"}       # the names the electorates carried until 2024
+# the names eight electorates carried until the 2024 boundary review
+RENAMED = {"203": "Merriton Harbour", "902": "Corran South", "107": "Ardenmere East", "205": "Merriton South",
+           "602": "Hawksridge North", "1302": "Strathmuir South", "1102": "Orrinvale Coast", "304": "Westerby Lakes"}
 ELECTORATE_REGION = {e[0]: e[2] for e in ELECTORATES}
+ELECTORATE_NAME = {e[0]: e[1] for e in ELECTORATES}
+NAME_2020 = {e[0]: RENAMED.get(e[0], e[1]) for e in ELECTORATES}
+# electorates are numbered in alphabetical order of their names whenever their boundaries are set; the old roll
+# platform kept the numbers of the 2020 review until it was switched off, the census-day roll counts and the new
+# platform use those of the 2024 review
+NUMBER = {c: "%02d" % (i + 1) for i, c in enumerate(sorted(ELECTORATE_NAME, key=lambda c: ELECTORATE_NAME[c]))}
+NUMBER_2020 = {c: "%02d" % (i + 1) for i, c in enumerate(sorted(NAME_2020, key=lambda c: NAME_2020[c]))}
 
-# The roll platform. The old platform ran to 3 August 2025 and logged in the country's time; it handled a move to
-# another electorate as a removal (reason 05) and an enrolment at the new address under a new elector number. The new
-# platform, live from 4 August 2025, records a move as a change of address and stamps every transaction in UTC; it
-# reused reason code 01 for a removal at the elector's own request, where the old platform's 01 was a death.
+# The roll platform. The old platform ran to 3 August 2025 and logged in the country's time; it kept no person master,
+# so every enrolment it took opened a new person reference with its new elector number, and it tied the transactions of
+# one person together only through REF_TXN: a move to another electorate was an enrolment at the new address and then a
+# removal (reason 05) of the old record pointing back at it, and a death removal made in error was put right by enrolling
+# the person again under a new number, pointing at the removal. Its electorates carried the 2020 numbers. The new
+# platform, live from 4 August 2025, keeps one reference per person, records a move as a change of address, reverses a
+# removal with a reinstatement (REI) and stamps every transaction in UTC; it reused reason code 01 for a removal at the
+# elector's own request, where the old platform's 01 was a death.
 PLATFORM_SWITCH = dt.date(2025, 8, 4)
 LOG_END = dt.date(2026, 6, 30)       # the asks' window closes at the end of 30 June 2026 in the country's time
 DST_2025 = (dt.datetime(2025, 9, 28, 2), dt.datetime(2026, 4, 5, 3))   # local daylight time, UTC+13 between these

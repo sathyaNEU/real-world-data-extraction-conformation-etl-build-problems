@@ -182,40 +182,66 @@ def in_window(t, start_on_census_day=False):
     return first <= t.date() <= W.LOG_END
 
 
-def new_electors(rows, utc=True, first_row=True, census_day=False, overseas=False, rejected=False):
-    """people added to the roll in the window who were not on it on census day, by the region of the address they
-    enrolled at: each person's first accepted transaction in the window is an enrolment"""
+def new_electors(rows, region, utc=True, link=True, prior="record", census_day=False, overseas=False, rejected=False):
+    """people added to the roll in the window who were not on it on census day, each once, in the region of the
+    residential address of their first enrolment in the window. A person is every person reference the transactions'
+    REF_TXN ties together (link); a person was on the roll on census day if one of their removals in the window took off
+    a record no enrolment in the window had created (prior "record"), or, as a reader may take it, if their first
+    transaction in the window is a removal (prior "first")"""
+    ok = lambda r: r["STATUS"] == "A" or rejected
+    win = sorted(((local_time(r, utc), i, r) for i, r in enumerate(rows)), key=lambda x: (x[0], x[1]))
+    win = [(t, r) for t, i, r in win if in_window(t, census_day) and ok(r)]
+    parent = {}
+
+    def find(a):
+        parent.setdefault(a, a)
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+    if link:
+        by_id = {r["TXN_ID"]: r for r in rows}
+        for r in rows:
+            if r["REF_TXN"] in by_id:
+                a, b = find(r["PERSON_REF"]), find(by_id[r["REF_TXN"]]["PERSON_REF"])
+                if a != b:
+                    parent[a] = b
+    created = {r["ELECTOR_NO"] for t, r in win if r["TXN_TYPE"] == "NEW"}
+    on_roll, first, seen = set(), {}, set()
+    for t, r in win:
+        p = find(r["PERSON_REF"])
+        if prior == "record" and r["TXN_TYPE"] == "DEL" and r["ELECTOR_NO"] not in created:
+            on_roll.add(p)
+        if prior == "first" and p not in seen and r["TXN_TYPE"] == "DEL":
+            on_roll.add(p)
+        seen.add(p)
+        if r["TXN_TYPE"] == "NEW" and p not in first:
+            first[p] = r
     out = {c: 0 for c in W.CODES}
-    seen = set()
-    ordered = sorted(((local_time(r, utc), i, r) for i, r in enumerate(rows)), key=lambda x: (x[0], x[1]))
-    for t, i, r in ordered:
-        if not in_window(t, census_day) or (r["STATUS"] != "A" and not rejected):
+    for p, r in first.items():
+        if p in on_roll or (r["ADDRESS_TYPE"] != "R" and not overseas):
             continue
-        ref = r["PERSON_REF"]
-        if first_row:
-            if ref in seen:
-                continue
-            seen.add(ref)
-        if r["TXN_TYPE"] != "NEW":
-            continue
-        if r["ADDRESS_TYPE"] != "R" and not overseas:
-            continue
-        out[W.ELECTORATE_REGION[r["ELECTORATE"]]] += 1
+        out[region(r)] += 1
     return out
 
 
 DEATH_CODES = {"old": ("01",), "new": ("11", "12")}
 
 
-def removed_dead(rows, utc=True, codes="platform", reversals=True, census_day=False):
-    """electors removed in the window because they had died, by the region of the address they were removed from"""
+def removed_dead(rows, region, utc=True, codes="platform", reversals="all", census_day=False):
+    """electors removed in the window because they had died, in the region of the address they were removed from; a
+    removal reversed (by a reinstatement, or on the old platform by an enrolment pointing at it) was not a removal"""
+    if reversals == "all":
+        back = {r["REF_TXN"] for r in rows if r["STATUS"] == "A" and r["REF_TXN"] and r["TXN_TYPE"] in ("REI", "NEW")}
+    elif reversals == "rei":
+        back = {r["REF_TXN"] for r in rows if r["STATUS"] == "A" and r["REF_TXN"] and r["TXN_TYPE"] == "REI"}
+    else:
+        back = set()
     out = {c: 0 for c in W.CODES}
-    reversed_ = {r["REF_TXN"] for r in rows if r["TXN_TYPE"] == "REI" and r["STATUS"] == "A"} if reversals else set()
     for r in rows:
-        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A" or r["TXN_ID"] in reversed_:
+        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A" or r["TXN_ID"] in back:
             continue
-        t = local_time(r, utc)
-        if not in_window(t, census_day):
+        if not in_window(local_time(r, utc), census_day):
             continue
         if codes == "platform":
             ok = r["REASON"] in DEATH_CODES["old" if old_platform(r) else "new"]
@@ -224,5 +250,5 @@ def removed_dead(rows, utc=True, codes="platform", reversals=True, census_day=Fa
         else:
             ok = r["REASON"] in ("01", "11", "12")
         if ok:
-            out[W.ELECTORATE_REGION[r["ELECTORATE"]]] += 1
+            out[region(r)] += 1
     return out

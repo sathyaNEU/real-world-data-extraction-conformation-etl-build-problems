@@ -1,42 +1,42 @@
 {
  "asks": {
-  "died_total": 33225,
+  "died_total": 32758,
   "new_electors": {
-   "Ardenmere": 23597,
-   "Corran Valley": 8901,
-   "Drumlea": 8457,
-   "Eastwold": 9670,
-   "Fairholme": 9486,
-   "Glenwhite": 10914,
-   "Hawksridge": 11186,
-   "Inchgarry": 6839,
-   "Kilraven": 5715,
-   "Larchfield": 12952,
-   "Merriton": 18823,
-   "Nethermoor": 4984,
-   "Orrinvale": 8433,
-   "Rowanlea": 6371,
-   "Strathmuir": 6014,
-   "Westerby": 14943
+   "Ardenmere": 23515,
+   "Corran Valley": 8774,
+   "Drumlea": 8686,
+   "Eastwold": 9663,
+   "Fairholme": 9442,
+   "Glenwhite": 10769,
+   "Hawksridge": 11069,
+   "Inchgarry": 6806,
+   "Kilraven": 5749,
+   "Larchfield": 12827,
+   "Merriton": 18704,
+   "Nethermoor": 4796,
+   "Orrinvale": 8391,
+   "Rowanlea": 6271,
+   "Strathmuir": 6066,
+   "Westerby": 15116
   },
-  "new_total": 167285,
+  "new_total": 166644,
   "removed_died": {
-   "Ardenmere": 4706,
-   "Corran Valley": 1763,
-   "Drumlea": 1703,
-   "Eastwold": 1901,
-   "Fairholme": 1789,
-   "Glenwhite": 2212,
-   "Hawksridge": 2246,
-   "Inchgarry": 1335,
-   "Kilraven": 1191,
-   "Larchfield": 2591,
-   "Merriton": 3653,
-   "Nethermoor": 934,
-   "Orrinvale": 1692,
-   "Rowanlea": 1203,
-   "Strathmuir": 1248,
-   "Westerby": 3058
+   "Ardenmere": 4605,
+   "Corran Valley": 1741,
+   "Drumlea": 1736,
+   "Eastwold": 1839,
+   "Fairholme": 1862,
+   "Glenwhite": 2114,
+   "Hawksridge": 2112,
+   "Inchgarry": 1386,
+   "Kilraven": 1164,
+   "Larchfield": 2459,
+   "Merriton": 3751,
+   "Nethermoor": 931,
+   "Orrinvale": 1635,
+   "Rowanlea": 1227,
+   "Strathmuir": 1233,
+   "Westerby": 2963
   }
  },
  "call": {
@@ -138,11 +138,11 @@
   },
   "65+": {
    "factor": null,
-   "men_da": 328233,
+   "men_da": 333575,
    "men_dse": 333777,
-   "ratio_da": 0.78,
+   "ratio_da": 0.79,
    "ratio_dse": 0.79,
-   "women_da": 418371,
+   "women_da": 423608,
    "women_dse": 424285
   }
  },
@@ -160,129 +160,129 @@
    "code": "01",
    "default_organisers": 26,
    "name": "Ardenmere",
-   "new_electors": 23597,
+   "new_electors": 23515,
    "organisers": 27,
-   "removed_died": 4706
+   "removed_died": 4605
   },
   {
    "code": "02",
    "default_organisers": 20,
    "name": "Merriton",
-   "new_electors": 18823,
+   "new_electors": 18704,
    "organisers": 20,
-   "removed_died": 3653
+   "removed_died": 3751
   },
   {
    "code": "03",
    "default_organisers": 26,
    "name": "Westerby",
-   "new_electors": 14943,
+   "new_electors": 15116,
    "organisers": 25,
-   "removed_died": 3058
+   "removed_died": 2963
   },
   {
    "code": "04",
    "default_organisers": 28,
    "name": "Larchfield",
-   "new_electors": 12952,
+   "new_electors": 12827,
    "organisers": 26,
-   "removed_died": 2591
+   "removed_died": 2459
   },
   {
    "code": "05",
    "default_organisers": 31,
    "name": "Glenwhite",
-   "new_electors": 10914,
+   "new_electors": 10769,
    "organisers": 29,
-   "removed_died": 2212
+   "removed_died": 2114
   },
   {
    "code": "06",
    "default_organisers": 4,
    "name": "Hawksridge",
-   "new_electors": 11186,
+   "new_electors": 11069,
    "organisers": 5,
-   "removed_died": 2246
+   "removed_died": 2112
   },
   {
    "code": "07",
    "default_organisers": 11,
    "name": "Fairholme",
-   "new_electors": 9486,
+   "new_electors": 9442,
    "organisers": 11,
-   "removed_died": 1789
+   "removed_died": 1862
   },
   {
    "code": "08",
    "default_organisers": 12,
    "name": "Eastwold",
-   "new_electors": 9670,
+   "new_electors": 9663,
    "organisers": 12,
-   "removed_died": 1901
+   "removed_died": 1839
   },
   {
    "code": "09",
    "default_organisers": 6,
    "name": "Corran Valley",
-   "new_electors": 8901,
+   "new_electors": 8774,
    "organisers": 7,
-   "removed_died": 1763
+   "removed_died": 1741
   },
   {
    "code": "10",
    "default_organisers": 4,
    "name": "Drumlea",
-   "new_electors": 8457,
+   "new_electors": 8686,
    "organisers": 5,
-   "removed_died": 1703
+   "removed_died": 1736
   },
   {
    "code": "11",
    "default_organisers": 4,
    "name": "Orrinvale",
-   "new_electors": 8433,
+   "new_electors": 8391,
    "organisers": 4,
-   "removed_died": 1692
+   "removed_died": 1635
   },
   {
    "code": "12",
    "default_organisers": 8,
    "name": "Inchgarry",
-   "new_electors": 6839,
+   "new_electors": 6806,
    "organisers": 8,
-   "removed_died": 1335
+   "removed_died": 1386
   },
   {
    "code": "13",
    "default_organisers": 6,
    "name": "Strathmuir",
-   "new_electors": 6014,
+   "new_electors": 6066,
    "organisers": 6,
-   "removed_died": 1248
+   "removed_died": 1233
   },
   {
    "code": "14",
    "default_organisers": 3,
    "name": "Rowanlea",
-   "new_electors": 6371,
+   "new_electors": 6271,
    "organisers": 3,
-   "removed_died": 1203
+   "removed_died": 1227
   },
   {
    "code": "15",
    "default_organisers": 8,
    "name": "Kilraven",
-   "new_electors": 5715,
+   "new_electors": 5749,
    "organisers": 8,
-   "removed_died": 1191
+   "removed_died": 1164
   },
   {
    "code": "16",
    "default_organisers": 3,
    "name": "Nethermoor",
-   "new_electors": 4984,
+   "new_electors": 4796,
    "organisers": 4,
-   "removed_died": 934
+   "removed_died": 931
   }
  ],
  "stated": {

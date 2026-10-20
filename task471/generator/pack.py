@@ -19,9 +19,9 @@ FILES = {
     "roll": "roll_at_close_of_census_day_2025.csv",
     "electorates": "electorates_and_regions.csv",
     "births": "live_births_by_sex_1925_2025.csv",
-    "deaths_hist": "deaths_by_year_of_birth_1925_1990.xlsx",
-    "deaths": "deaths_by_year_of_birth_1991_2025.csv",
-    "movements": "long_term_movements_by_year_of_birth_1950_2025.csv",
+    "deaths_hist": "deaths_by_year_of_birth_1925_1944.xlsx",
+    "deaths": "deaths_by_year_of_birth_1945_2025.csv",
+    "movements": "long_term_movements_by_year_of_birth_1925_2025.csv",
     "series_notes": "vital_and_border_series_notes.pdf",
     "plan": "enrolment_campaign_plan_2027.docx",
     "spec": "enrolment_gap_file_specification.xlsx",
@@ -155,24 +155,28 @@ def snapshot_rows(x):
                 n = sum(x["roll_counts"][(c, s, a)] for a in range(b[0], min(b[1], 100) + 1))
                 draw = r.multinomial(n, w)
                 for e, k in zip(es, draw):
-                    rows.append([e[0], e[1], "R", s, band_label(b), int(k)])
+                    rows.append([W.NUMBER[e[0]], e[1], "R", s, band_label(b), int(k)])
         for e in es:
             for s in ("M", "F"):
                 for b in AGE_BANDS:
                     share = 0.0045 if b[0] < 30 else 0.0035 if b[0] < 50 else 0.0015
                     k = int(r.poisson(x["electors"][e[0]] * share / len(AGE_BANDS) * 6))
                     if k:
-                        rows.append([e[0], e[1], "O", s, band_label(b), k])
+                        rows.append([W.NUMBER[e[0]], e[1], "O", s, band_label(b), k])
     rows.sort(key=lambda q: (int(q[0]), q[2], q[3], AGE_BANDS.index(next(b for b in AGE_BANDS if band_label(b) == q[4]))))
     return rows
 
 
 ROLL_COLS = ["ELECTORATE", "ELECTORATE_NAME", "ADDRESS_TYPE", "SEX", "AGE_GROUP", "ELECTORS"]
-ELECTORATE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "NAME_BEFORE_2024_REVIEW", "REGION", "REGION_NAME"]
+ELECTORATE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "NUMBER_BEFORE_2024_REVIEW", "NAME_BEFORE_2024_REVIEW", "REGION",
+                   "REGION_NAME"]
 
 
 def electorate_rows():
-    return [(e[0], e[1], W.RENAMED.get(e[0], ""), e[2], W.NAME[e[2]]) for e in W.ELECTORATES]
+    """the electorates of the 2024 boundary review in number order, each with the number and, where it changed, the name
+    it carried under the 2020 review"""
+    rows = [(W.NUMBER[e[0]], e[1], W.NUMBER_2020[e[0]], W.RENAMED.get(e[0], ""), e[2], W.NAME[e[2]]) for e in W.ELECTORATES]
+    return sorted(rows)
 
 
 # ------------------------------------------------------------------ vital and border series
@@ -197,7 +201,7 @@ def _yk(y):
     return 2025.5 if y == "2025Q" else y
 
 
-def death_rows(x, lo=1991):
+def death_rows(x, lo=1945):
     rows = []
     for (y, s, c), n in sorted(x["nat"]["deaths"].items(), key=lambda kv: (_yk(kv[0][0]), kv[0][1], kv[0][2])):
         if _yk(y) >= lo:
@@ -205,8 +209,8 @@ def death_rows(x, lo=1991):
     return rows
 
 
-def death_wide(x, hi=1990):
-    """1925 to 1990: one row a year of death and sex, one column a year of birth"""
+def death_wide(x, hi=1944):
+    """1925 to 1944: one row a year of death and sex, one column a year of birth"""
     cells = {}
     for (y, s, c), n in x["nat"]["deaths"].items():
         if y != "2025Q" and y <= hi:
@@ -214,7 +218,7 @@ def death_wide(x, hi=1990):
     return cells
 
 
-def movement_rows(x, lo=1950):
+def movement_rows(x, lo=1925):
     keys = set(k for k in x["nat"]["arrivals"]) | set(k for k in x["nat"]["departures"])
     rows = []
     for (y, s, c) in sorted(keys, key=lambda k: (_yk(k[0]), k[1], k[2])):

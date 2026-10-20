@@ -85,7 +85,7 @@ Domain test: the deciding quantity is each region's census-day adult population 
 
 Swap: "how many of 200 nurses does each region get on its patients not registered with a doctor, from a register audit" keeps the subtraction and loses the structure: there is no independent recount whose capture can depend on the first count's, no birth cohort and no sex ratio fixed by births, deaths and migration to measure the shortfall against.
 
-Layer 1: each item written by the system that holds it and none moving the call when mishandled (asserted, R2): the census outputs' workbook (a sheet a region under header blocks, a contents sheet and notes, ages 100 and over in one row; the row dropped leaves the call); the vital statistics' deaths in two layouts (1925 to 1990 wide by year of birth in a workbook, 1991 to 2025 long in a CSV; the workbook missed leaves the call); the series' provisional period for the first weeks of 2025 (ignored, the call stands); two electorates renamed at the 2024 boundary review (the roll and the concordance carry the current names); and, on the asks' path only, the roll log's two platforms (local time and running numbers to 3 August 2025, UTC stamps and hex keys after, the old platform's own reason codes). The imputed records, the survey's match and enumeration codes and the overseas electors are the estimator's and the plan's own inputs, filed in the methods report and the plan, not mess.
+Layer 1: each item written by the system that holds it and none moving the call when mishandled (asserted, R2): the census outputs' workbook (a sheet a region under header blocks, a contents sheet and notes, ages 100 and over in one row; the row dropped leaves the call); the vital statistics' deaths in two layouts (1925 to 1944 wide by year of birth in a workbook, 1945 to 2025 long in a CSV; the workbook missed leaves the call under every age range and mode of the correction); the series' provisional period for the first weeks of 2025 (ignored, the call stands); eight electorates renamed at the 2024 boundary review and every electorate renumbered in alphabetical order (the roll at census day and the concordance carry the current numbers and names); and, on the asks' path only, the roll log's two platforms (the old one's running numbers, the country's time, its own reason codes, the 2020 review's electorate numbers and a person reference for each enrolment tied together only through REF_TXN; the new one's hex keys, UTC, one reference a person and reinstatements). The imputed records, the survey's match and enumeration codes and the overseas electors are the estimator's and the plan's own inputs, filed in the methods report and the plan, not mess.
 
 Layer 2: the field's own method done right (field_method): the dual-system estimator's independence assumption fails for one group, and the bias it leaves is measured by demographic analysis's sex ratio, the method census coverage evaluation uses for correlation bias, then carried to every region's men of the age.
 
@@ -131,11 +131,12 @@ Lesson: a dual-system estimate is only as good as the independence of its two co
 | SF11 | the correction's carry-down | each age group's factor on every region's men alike | the extra men shared on each region's census misses | same call (asserted) | demographic analysis is national (no regional flows ship) |
 | SF12 | demographic analysis's date | census day, the 2025 provisional weeks included | the end of 2024 | same call (asserted) | the notes: provisional period to 3 March 2025 |
 | SF13 | the target | the men's estimate at demographic analysis's sex ratio against the women's | demographic analysis's male total | same call (asserted) | the women's estimates agree with demographic analysis within 0.2 per cent |
-| SF14 | the ages corrected | 18 to 49, where the two disagree | every adult age | same call (asserted) | the 50 to 64 and 65 and over ratios agree |
+| SF14 | the ages corrected | 18 to 49, where the two disagree | 18 to 64, or every adult age, by ratio, by total or with both sexes raked | same call (asserted, also with the deaths workbook missed) | the 50 to 64 and 65 and over ratios agree within 0.2 per cent |
 | SF15 | birth timing | the share born before 4 March in each year of birth (62 of 365) | none of them | same call (asserted) | the notes: births by calendar year |
-| SF16 | the asks' window | after the close of census day to the end of 30 June 2026, the country's time | the stamps as stored | another count | specification 2: "dates and times are the country's time" |
-| SF17 | new electors | people whose first accepted transaction in the window is an enrolment, counted once, at the residential address enrolled at | every enrolment row | another count | specification 3.2: "not on the roll at the close of census day", "counted once each" |
-| SF18 | removed because they had died | deaths under each platform's code, less removals reversed | 01 read one way throughout | another count | the dictionary (11, 12, REI) and the migration notes (legacy 01) |
+| SF16 | the asks' window | after the close of census day to the end of 30 June 2026, the country's time | the stamps as stored | another count | specification 2: "Dates and times are the country's time."; the dictionary's PROCESSED: "the old platform's in the country's time, the new platform's in UTC" with the offset and the daylight saving period |
+| SF17 | new electors | each person once (every PERSON_REF REF_TXN ties together), at the residential address of their first enrolment in the window, unless a removal in the window takes off a record no enrolment in the window made | every enrolment row; one person a reference; a first transaction that is a removal | another count | specification 3: "not on the roll at the close of census day", "each person once"; the dictionary's REF_TXN: "The TXN_ID of the earlier transaction this one completes or reverses" |
+| SF18 | removed because they had died | deaths under each platform's code, less removals a later accepted transaction reverses through REF_TXN | 01 read one way throughout; only reinstatements reversing | another count | the dictionary (11, 12, REF_TXN), the migration notes (legacy 01), specification 4: "A removal later reversed was not a removal." |
+| SF19 | the region of a transaction | the electorate number on the old platform's transactions is the 2020 review's (NUMBER_BEFORE_2024_REVIEW), on the new platform's the 2024 review's | every number read as the current one | another count | the records: the 70 reinstatements of old-platform removals restore the same region only under the 2020 numbers, against 31 of 70 under the current ones |
 
 ## Ladder
 
@@ -172,11 +173,11 @@ Lesson: a dual-system estimate is only as good as the independence of its two co
 | 11 | Tie-break | none: the cut clears by 0.217 |
 | 12 | Maturity and censoring | the survey's matching complete, no unresolved cases (methods report 3.2) |
 | 13 | Order of operations | estimate, correct, subtract, share (plan 3) |
-| 14 | Row order | the asks take each person's first transaction by the country's time (SF17) |
-| 15 | Duplicate resolution | the census's duplicates are its D records (SF8); the asks count people once (SF17) |
-| 16 | Identity normalisation | electorate codes unchanged across the 2024 renaming (concordance) |
-| 17 | Netting | reversed removals netted (SF18) |
-| 18 | Dimensional units | people; the old platform's local time and the new platform's UTC (SF16) |
+| 14 | Row order | the asks take each person's first enrolment by the country's time (SF17) |
+| 15 | Duplicate resolution | the census's duplicates are its D records (SF8); the asks count people once, a person being every reference REF_TXN ties together (SF17) |
+| 16 | Identity normalisation | the roll at census day and the new platform carry the 2024 electorate numbers, the old platform the 2020 ones (SF19) |
+| 17 | Netting | removals a later transaction reverses netted, by reinstatement or by an old-platform enrolment pointing at them (SF18) |
+| 18 | Dimensional units | people; the old platform's local time and the new platform's UTC, filed in the dictionary (SF16) |
 | 19 | Code and status semantics | M and N, C, D, V, O, W (SF8, SF9); removal codes by platform (SF18) |
 | 20 | Integerisation | whole organisers, whole people in the asks |
 | 21 | Clause scope | the plan for the allocation; the specification for the asks |
@@ -202,28 +203,38 @@ answer.
 - **Ask A, the people added to the roll in each region between census day and 30 June 2026 who had not been on it on
   census day (16 figures, whole people).** H18 home: the campaign's baseline, set beside each region's organisers in
   the Commission's plan (section 5). Path: `roll_transactions_2025_2026.csv` (TXN_ID, PROCESSED, TXN_TYPE, STATUS,
-  PERSON_REF, ELECTORATE, ADDRESS_TYPE), the data dictionary, the migration notes, the concordance, the specification.
-  Primary device: D1, the same person under two key schemes. Until 3 August 2025 the old platform took a move to
-  another electorate as a removal (05) in the old electorate and an enrolment under a new elector number in the new
-  one, the same person reference on both; every row is valid, and only the person's sequence shows the enrolment is a
-  move. Second device: D8, a clock against the filed cutoff: the new platform stamps UTC, so its 1 July morning
-  transactions carry 30 June and sit inside the extract; nothing states it.
-  Hazards: census-day transactions (before the window), rejected applications, overseas addresses, re-enrolments of
-  electors removed in the window.
+  ELECTOR_NO, PERSON_REF, ELECTORATE, ADDRESS_TYPE, REF_TXN), the data dictionary, the migration notes, the
+  concordance (NUMBER_BEFORE_2024_REVIEW), the specification: five files, ten columns.
+  Primary device (re-sited after stage 4 round 1, where both readers kept all 32 figures through the shared person
+  reference and the elector-number range): D7, the true key elsewhere. The old platform kept no person master, so each
+  enrolment opened its own person reference; a move to another electorate is an enrolment at the new address under a
+  new reference and number and, seconds later, the removal (05) of the old record pointing back at it through REF_TXN.
+  One person a reference counts every mover (51,692) as a new elector, and so does a first transaction that is a
+  removal; only REF_TXN ties the two references, and every row is valid.
+  Second device, shared with ask B: D2, a label stored before a silent switch. Electorates are numbered in
+  alphabetical order of name at each boundary review; the old platform kept the 2020 review's numbers to the end, and
+  both reviews number 01 to 47, so every old number joins to a current electorate and nothing fails (44 of 47 numbers
+  moved, 29 into another region). Only NUMBER_BEFORE_2024_REVIEW places the old platform's five months; the records
+  force it, since the 70 reinstatements of old-platform removals restore the same region only under the 2020 numbers.
+  Hazards: each platform's time basis (filed in the dictionary since the judge's first pass), census-day
+  transactions, rejected applications, overseas addresses, re-enrolments of electors removed in the window, the
+  enrolments that put right a death removal made in error (ask B's device, which ask A also leaves out).
 - **Ask B, the electors removed from the roll in each region in that time because they had died (16 figures, whole
-  people).** H18 home: the roll's cleaning baseline beside Ask A. Path: the same log, the dictionary's codes, the
-  migration notes' legacy codes, the concordance. Primary device: D8, the new platform's UTC stamps: the weekly death
-  match runs at 07:30 on Wednesdays, so the match of Wednesday 1 July 2026 is stamped 30 June and sits inside the
-  extract, moving every region; nothing states the zone. Hazards: the code reissue (the old platform's 01 was a death,
-  the new platform's 01 is a removal at the elector's own request; filed in the migration notes, so a hazard rather than
-  a primary), removals reversed (REI, filed in specification 4), census-day removals.
+  people).** H18 home: the roll's cleaning baseline beside Ask A. Path: the same log, the dictionary's codes and
+  REF_TXN, the migration notes' legacy codes, the concordance, specification 4: four files, eight columns.
+  Primary device: D2, the record is the latest accepted. The old platform had no reinstatement; a death removal made
+  in error (its monthly match, 2 per cent) was put right by enrolling the person again under a new reference and number
+  with REF_TXN pointing at the removal, while the new platform reinstates (REI). Netting only reinstatements counts the
+  old platform's corrected removals as deaths. Second device: the shared 2020 electorate numbers.
+  Hazards: the code reissue (old 01 deceased, new 01 a request; filed in the migration notes), reinstatements (filed),
+  the time basis (filed), census-day removals.
 - **The construction layer:** the call and the sixteen organisers; the cracker has them.
 - **Main population zero-counts (asserted):** the call reads no transaction-log row, dictionary or migration note.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, new electors | accepted enrolments at residential addresses in the window, each person once, by the stamps as written: the old platform's movers counted and the 1 July morning kept, all sixteen outside their counts | miss |
-| B, removed for death | each platform's death codes (the dictionary and the migration notes), reversals netted, by the stamps as written: the Wednesday 1 July match kept, all sixteen outside their counts | miss |
+| A, new electors | accepted enrolments at residential addresses in the window in each platform's time, each person reference once, anyone whose reference shows a removal of a record held on census day left out, the regions by the current electorate numbers: the old platform's movers counted under their new references and its five months placed by the wrong numbers, all sixteen outside their counts | miss |
+| B, removed for death | each platform's death codes in the window, reinstatements netted, the regions by the current numbers: the old platform's corrected removals kept and its five months misplaced, all sixteen outside their counts | miss |
 
 - Pair ceiling: 33.5 (weights 38 / 7 / 55: the cracker 45.0 on the main block and the instructions, none of the 32 ask figures; the mirror, R2, 22.0 on 8 of the 16 organisers and the instructions)
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction)
@@ -408,3 +419,17 @@ answer.
 - 2026-10-20, stage 2: each region's adults not on the roll as graded figures: the golden's readings (SF11 to SF15,
   the men's total, one band) spread them by 68 to 304 people a region while the organisers stay fixed, so the gap is
   not graded and the organisers are.
+- 2026-10-20, stage 4 round 1 on target.zip 7b7e6acddefeb6b8: both readers missed the call on the default path (8
+  regions off), each reading the vital and border series as an alternative it did not need, question 6 analytical;
+  both kept all 32 ask figures (score_reader exit 1 on the asks). They found the new platform's UTC through its first
+  stamp (3 August 12:32 against the notes' Monday 4 August) and the provisional transfers' hours, the movers through
+  the shared person reference (an earlier removal) or the elector-number range (below 40,000,000, a boundary the
+  generator had drawn round), and executed the filed codes and reinstatements. The asks were re-sited: the old platform
+  given a person reference per enrolment tied only through REF_TXN (moves, and corrections by re-enrolment), its
+  electorates the 2020 review's numbers, and the number counter run on from census day.
+- 2026-10-20, judge v5r1: NOT_DETERMINISTIC and FIX_NOW on the asks: the new platform's UTC was inferred, never filed,
+  and its literal reading moves both columns; the time basis is now filed in the dictionary's PROCESSED (the WHAT, not
+  the conversion), so the clock is a hazard. The thread's residual age-range note came from demographic analysis built
+  without the 1925 to 1990 deaths workbook (men 50 to 64 then 1.8 per cent short); the deaths were re-split at 1944/1945
+  and the movements given from 1925, so the workbook missed leaves every age range and mode of the correction on the
+  golden (asserted).

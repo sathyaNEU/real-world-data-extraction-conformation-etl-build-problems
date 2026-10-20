@@ -1,7 +1,7 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
  "stage": 4,
@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4, architecture 5: two scored readers (leak-task471-v5-r1a, r1b) and the judge on target.zip 7b7e6acddefeb6b8; fix every finding in one generator pass, then ship",
+ "resume": "stage 4 round 2, architecture 5: the fix pass is in the generator (time basis filed, deaths split 1944/1945, movements from 1925, asks re-sited on the old platform's 2020 electorate numbers and per-enrolment references tied by REF_TXN, the prompt's rounding sentence reworded); finish the full build (checks, verify, two identical builds, zip), rerun precut, figures_check, leak.py, ceiling, heart; then two fresh scored readers and the one re-judge on the new zip; ship if both readers miss the call and keep under a fifth of the asks",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -161,7 +161,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 on target.zip 7b7e6acddefeb6b8 (region names in the field operations summary; generic survey words in the methods report and series notes); no LEAK",
-  "reader": "stage 4 running"
+  "reader": "round 1 on 7b7e6acddefeb6b8: both readers missed the call on R2 (score_reader call 0 of 1), both kept 32 of 32 ask figures (UTC from the first new-platform stamp, movers through the shared reference or the 40,000,000 number boundary, codes and reinstatements filed); asks re-sited"
  },
  "duplicate_check": {
   "guard_check": "WARN only at the v5 draw",
@@ -169,9 +169,9 @@
   "nearest": "task188 0.05"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC (v5r1)",
+  "disposition": "FIX_NOW: the new platform's UTC unfiled; fixed in the dictionary's PROCESSED",
+  "report": "determinism_check_report_v5r1.md"
  },
  "ceiling": {
   "pair": 33.5,

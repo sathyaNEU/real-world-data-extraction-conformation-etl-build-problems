@@ -23,8 +23,8 @@ Each region's share is its adults usually resident on census day less its electo
 3. Rebuilt the population on census day by sex and single year of age, cohort by cohort, from live_births_by_sex_1925_2025.csv less deaths (deaths_by_year_of_birth_1925_1990.xlsx and deaths_by_year_of_birth_1991_2025.csv) and departures plus arrivals (long_term_movements_by_year_of_birth_1950_2025.csv), the period 2025-01-01/2025-03-03 included: men per woman of 1.04, 1.03 and 1.02 at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' 1.01, 0.99 and 0.97, the women's estimates agreeing with it.
 4. Multiplied every region's dual-system estimates of men in each of those age groups by demographic analysis's men per woman over the dual-system estimates' (about 4, 4 and 5 per cent more men), the women and the other ages as estimated: about 3.63 million adults.
 5. Subtracted each region's electors and shared the 200 organisers on the differences by largest remainders (plan 3.1; no share falls under two): the organisers above.
-6. New electors: read PROCESSED in roll_transactions_2025_2026.csv as the country's time on the old platform (R25- identifiers) and as UTC on the new one from 4 August 2025 (its daily 06:00 transfers of provisional enrolments are stamped 18:00 the day before, 17:00 in daylight saving time), kept the accepted transactions from 5 March 2025 to 30 June 2026 in the country's time, and counted each PERSON_REF whose first such transaction is a NEW at a residential address, so a move on the old platform (a DEL with reason 05 and a NEW the same day) and a re-enrolment after a removal are not new electors: 167,285.
-7. Removed because they had died: the accepted DEL rows in the same window with reason 01 on the old platform (deceased, roll_platform_migration_notes.pdf) or 11 or 12 on the new (roll_extract_data_dictionary.xlsx), less those an accepted REI reverses through REF_TXN, by the region of ELECTORATE: 33,225.
+6. New electors: in roll_transactions_2025_2026.csv read PROCESSED in each platform's time basis (roll_extract_data_dictionary.xlsx) and the old platform's (R25-) electorate numbers as the 2020 review's, placed through NUMBER_BEFORE_2024_REVIEW in electorates_and_regions.csv (a reinstatement of an old-platform removal restores the same region only under those numbers); took a person as every PERSON_REF that REF_TXN ties together (an old-platform move is an enrolment at the new address and a removal of the old record pointing back at it, under two references); kept the accepted transactions from 5 March 2025 to 30 June 2026 in the country's time and counted each person once at the residential address of their first enrolment, leaving out anyone a removal in the window shows on the roll on census day (it takes off a record no enrolment in the window made): 166,644.
+7. Removed because they had died: the accepted DEL rows in the same window with reason 01 on the old platform (deceased, roll_platform_migration_notes.pdf) or 11 or 12 on the new (roll_extract_data_dictionary.xlsx), in the region of their electorate read the same way, less those a later accepted transaction reverses through REF_TXN (a reinstatement, or on the old platform an enrolment putting right a removal made in error): 32,758.
 8. Wrote enrolment_gap_allocation_2027.csv in the layout of enrolment_gap_file_specification.xlsx and enrolment_gap_allocation_2027.png, a bar chart of each region's organisers.
 
 ## 4. Deliverable Answers
@@ -32,22 +32,22 @@ Each region's share is its adults usually resident on census day less its electo
 ### enrolment_gap_allocation_2027.csv
 
 1. Each region's organisers and, between census day and 30 June 2026, the people added to the roll there who had not been on it on census day and the electors removed from it there because they had died, whole numbers:
-   - Ardenmere (01): 27 organisers, 23,597 added, 4,706 removed because they had died
-   - Merriton (02): 20 organisers, 18,823 added, 3,653 removed because they had died
-   - Westerby (03): 25 organisers, 14,943 added, 3,058 removed because they had died
-   - Larchfield (04): 26 organisers, 12,952 added, 2,591 removed because they had died
-   - Glenwhite (05): 29 organisers, 10,914 added, 2,212 removed because they had died
-   - Hawksridge (06): 5 organisers, 11,186 added, 2,246 removed because they had died
-   - Fairholme (07): 11 organisers, 9,486 added, 1,789 removed because they had died
-   - Eastwold (08): 12 organisers, 9,670 added, 1,901 removed because they had died
-   - Corran Valley (09): 7 organisers, 8,901 added, 1,763 removed because they had died
-   - Drumlea (10): 5 organisers, 8,457 added, 1,703 removed because they had died
-   - Orrinvale (11): 4 organisers, 8,433 added, 1,692 removed because they had died
-   - Inchgarry (12): 8 organisers, 6,839 added, 1,335 removed because they had died
-   - Strathmuir (13): 6 organisers, 6,014 added, 1,248 removed because they had died
-   - Rowanlea (14): 3 organisers, 6,371 added, 1,203 removed because they had died
-   - Kilraven (15): 8 organisers, 5,715 added, 1,191 removed because they had died
-   - Nethermoor (16): 4 organisers, 4,984 added, 934 removed because they had died
+   - Ardenmere (01): 27 organisers, 23,515 added, 4,605 removed because they had died
+   - Merriton (02): 20 organisers, 18,704 added, 3,751 removed because they had died
+   - Westerby (03): 25 organisers, 15,116 added, 2,963 removed because they had died
+   - Larchfield (04): 26 organisers, 12,827 added, 2,459 removed because they had died
+   - Glenwhite (05): 29 organisers, 10,769 added, 2,114 removed because they had died
+   - Hawksridge (06): 5 organisers, 11,069 added, 2,112 removed because they had died
+   - Fairholme (07): 11 organisers, 9,442 added, 1,862 removed because they had died
+   - Eastwold (08): 12 organisers, 9,663 added, 1,839 removed because they had died
+   - Corran Valley (09): 7 organisers, 8,774 added, 1,741 removed because they had died
+   - Drumlea (10): 5 organisers, 8,686 added, 1,736 removed because they had died
+   - Orrinvale (11): 4 organisers, 8,391 added, 1,635 removed because they had died
+   - Inchgarry (12): 8 organisers, 6,806 added, 1,386 removed because they had died
+   - Strathmuir (13): 6 organisers, 6,066 added, 1,233 removed because they had died
+   - Rowanlea (14): 3 organisers, 6,271 added, 1,227 removed because they had died
+   - Kilraven (15): 8 organisers, 5,749 added, 1,164 removed because they had died
+   - Nethermoor (16): 4 organisers, 4,796 added, 931 removed because they had died
 
 ### enrolment_gap_allocation_2027.png
 

@@ -82,24 +82,36 @@ def xlsx_text(path):
 
 
 def truth_asks(x):
-    """the generator's truth for the two asks, from the simulated transactions at their simulated local times: a new
-    elector is an accepted residential enrolment of a person the simulation never gave a census-day elector number
-    (movers and re-enrolments carry a removal of their own); a death is a removal the death loop wrote (the old
-    platform's 01, the new platform's 11 and 12), less the removals reinstated"""
+    """the generator's truth for the two asks, from the simulated transactions by what the simulation made them, at
+    their simulated local times and in the region of their electorate as simulated: a new elector is an accepted
+    residential enrolment of a person the simulation created in the window (not a move, a re-enrolment or an enrolment
+    that put right a removal made in error); a death is a removal the death loop wrote, less those put right"""
     rows = x["log"]
-    on_roll = {r[7] for r in rows if r[2] == "DEL"}
-    back = {r[12] for r in rows if r[2] == "REI" and r[5] == "A"}
+    back = {r[12] for r in rows if r[15] == "death_rev" and r[5] == "A"}
     first = W.CENSUS_DAY + dt.timedelta(days=1)
     new, died = collections.Counter(), collections.Counter()
     for r in rows:
         if not first <= r[13].date() <= W.LOG_END or r[5] != "A":
             continue
-        reg = W.ELECTORATE_REGION[r[8]]
-        if r[2] == "NEW" and r[9] == "R" and r[7] not in on_roll:
+        reg = W.ELECTORATE_REGION[r[16]]
+        if r[15] == "new" and r[9] == "R":
             new[reg] += 1
-        elif r[2] == "DEL" and r[0] not in back and ((r[14] == "old" and r[3] == "01") or r[3] in ("11", "12")):
+        elif r[15] == "death" and r[0] not in back:
             died[reg] += 1
     return new, died
+
+
+def raked(d, est, groups):
+    """men and women of each group raked to demographic analysis's totals"""
+    da = M.demographic(d)
+    ad = M.adults(est)
+    for g in groups:
+        for s in ("M", "F"):
+            e = sum(v for (c, ss, gg), v in est.items() if ss == s and gg == g)
+            t = sum(da.get((s, a), 0) for a in range(g[0], min(g[1], 100) + 1))
+            for c in W.CODES:
+                ad[c] += est[(c, s, g)] * (t / e - 1)
+    return ad
 
 
 def estimate_alloc(target, pk):
@@ -161,8 +173,8 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(d["births"] == {k: int(v) for k, v in d0["births"].items()}, "the births read back")
     ck(d["deaths"] == {k: int(v) for k, v in d0["deaths"].items() if v}, "the deaths read back from both layouts")
     for key in ("departures", "arrivals"):
-        want = {k: int(v) for k, v in d0[key].items() if v and (k[0] == "2025Q" or k[0] >= 1950)}
-        ck(d[key] == want, "the %s read back from 1950" % key)
+        want = {k: int(v) for k, v in d0[key].items() if v}
+        ck(d[key] == want, "the %s read back from 1925" % key)
     people = B.rows(f("pes_people"))
     records = B.rows(f("pes_records"))
     rec_status = {r["CENSUS_RECORD"]: r["STATUS"] for r in records}
@@ -255,9 +267,16 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
             d1["census"][k] = (0, 0)
     ck(alloc_of(d1, C.rungs(d1)["R3 golden"]) == GOLD, "R2 the census row for 100 and over dropped: the call unchanged")
     d2 = copy.deepcopy(d)
-    d2["deaths"] = {k: v for k, v in d["deaths"].items() if k[0] == "2025Q" or k[0] >= 1991}
-    ck(alloc_of(d2, C.rungs(d2)["R3 golden"]) == GOLD,
-       "R2 the deaths read from the 1991 to 2025 file alone (the wide workbook missed): the call unchanged")
+    d2["deaths"] = {k: v for k, v in d["deaths"].items() if k[0] == "2025Q" or k[0] >= 1945}
+    for nm, groups in (("18 to 49", W.YOUNG_GROUPS), ("18 to 64", W.ADULT_GROUPS[:-1]), ("every adult age", W.ADULT_GROUPS)):
+        for mode in ("ratio", "total"):
+            ck(alloc_of(d, M.adults(est, M.factors(d2, est, groups=groups, mode=mode))) == GOLD,
+               "R2 the deaths read from the 1945 to 2025 file alone (the workbook missed), %s by %s: the call unchanged" % (
+                   nm, mode))
+        ck(alloc_of(d, raked(d2, est, groups)) == GOLD,
+           "R2 the workbook missed, both sexes raked to demographic analysis at %s: the call unchanged" % nm)
+    for nm, groups in (("18 to 64", W.ADULT_GROUPS[:-1]), ("every adult age", W.ADULT_GROUPS)):
+        ck(alloc_of(d, raked(d, est, groups)) == GOLD, "SF13 both sexes raked to demographic analysis at %s: the golden" % nm)
     d3 = copy.deepcopy(d)
     for key in ("births", "deaths", "departures", "arrivals"):
         d3[key] = {k: v for k, v in d[key].items() if k[0] != "2025Q"}
@@ -266,7 +285,10 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(all(concord[r["ELECTORATE"]]["ELECTORATE_NAME"] == r["ELECTORATE_NAME"] for r in pk.snapshot),
        "R2 the renamed electorates: the roll and the concordance carry the same current names, so a join by name or "
        "code gives the same regions")
-    ck(sum(1 for r in concord.values() if r["NAME_BEFORE_2024_REVIEW"]) == 2, "two electorates renamed in 2024")
+    ck(sum(1 for r in concord.values() if r["NAME_BEFORE_2024_REVIEW"]) == 8, "eight electorates renamed in 2024")
+    ck(sorted(r["NUMBER_BEFORE_2024_REVIEW"] for r in concord.values()) == sorted(concord) == ["%02d" % i for i in
+                                                                                              range(1, 48)],
+       "both reviews number the 47 electorates 01 to 47, so every 2020 number is also a current number")
     # ------------------------------------------------------- R3: the analyst test on the clean truth, and no plant
     r0 = C.rungs(d0)
     ck(alloc_of(d0, r0["R2 dual-system cells"]) == DEFAULT,
@@ -332,8 +354,12 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
         ck(alloc_of(d, C.wrong_paths(d)[nm]) != GOLD, "SF10 %s: off the golden" % nm)
     ck("2025-01-01/2025-03-03" in notes and "the day before the 2025 census" in notes,
        "SF12 the series notes file the provisional period to the day before census day")
-    ck("Dates and times are the country's time." in spec and "to the end of 30 June 2026" in spec,
-       "SF16 specification 2 files the window and the country's time")
+    ck("Dates and times are the country's time." in spec and "to the end of 30 June 2026" in spec
+       and "the old platform's in the country's time, the new platform's in UTC" in dictionary,
+       "SF16 specification 2 files the window and the country's time; the dictionary files each platform's time basis")
+    ck("The TXN_ID of the earlier transaction this one completes or reverses" in dictionary
+       and "electorate codes are those of the 2024 boundary review" not in migration,
+       "SF17 SF18 the dictionary files REF_TXN; nothing files which review numbered the old platform's electorates")
     ck("each person once" in spec and "not on the roll at the close of census day" in spec,
        "SF17 specification 3 files new electors")
     ck("A removal later reversed was not a removal." in spec and "11 Deceased" in dictionary.replace(":", "")
@@ -344,38 +370,66 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(all(ga[c] == tn[c] for c in W.CODES), "ask A equals the generator's truth in every region")
     ck(all(gb[c] == td[c] for c in W.CODES), "ask B equals the generator's truth in every region")
     ck(all(ga[c] > 0 and gb[c] > 0 for c in W.CODES), "every region has new electors and deaths")
-    stops_a = {"SF16 the stamps as written": pk.new_electors(utc=False),
-               "SF17 every enrolment row": pk.new_electors(first_row=False),
-               "the stamps as written and every enrolment row": pk.new_electors(utc=False, first_row=False),
+    stops_a = {"SF19 every electorate number read as the 2024 review's": pk.new_electors(vintage=False),
+               "SF17 each person reference once, REF_TXN not followed": pk.new_electors(link=False),
+               "SF17 a person whose first transaction is a removal was on the roll": pk.new_electors(prior="first"),
+               "SF17 both, as the round-1 readers took it": pk.new_electors(link=False, prior="first"),
+               "SF16 the stamps as written": pk.new_electors(utc=False),
                "census day included": pk.new_electors(census_day=True),
                "overseas addresses included": pk.new_electors(overseas=True),
                "rejected applications included": pk.new_electors(rejected=True)}
     for k, v in stops_a.items():
-        ck(hits(v, ga) == 0, "ask A stop misses all 16: %s (%d kept)" % (k, hits(v, ga)))
-    ck(hits(pk.new_electors(utc="all"), ga) <= 3, "ask A: every stamp read as UTC keeps 3 or fewer")
-    stops_b = {"SF16 the stamps as written": pk.removed_dead(utc=False),
+        ck(hits(v, ga) <= 1, "ask A stop misses 15 or 16: %s (%d kept)" % (k, hits(v, ga)))
+    stops_b = {"SF19 every electorate number read as the 2024 review's": pk.removed_dead(vintage=False),
+               "SF18 only reinstatements reverse a removal": pk.removed_dead(reversals="rei"),
+               "SF18 no reversal netted": pk.removed_dead(reversals=None),
+               "SF16 the stamps as written": pk.removed_dead(utc=False),
                "SF18 the current codes only": pk.removed_dead(codes="current"),
-               "SF18 01 as a death throughout": pk.removed_dead(codes="all"),
-               "removals reinstated kept": pk.removed_dead(reversals=False)}
+               "SF18 01 as a death throughout": pk.removed_dead(codes="all")}
     for k, v in stops_b.items():
-        ck(hits(v, gb) == 0, "ask B stop misses all 16: %s (%d kept)" % (k, hits(v, gb)))
-    ck(hits(pk.removed_dead(census_day=True), gb) <= 9, "ask B: census day included keeps 9 or fewer")
-    ck(hits(pk.removed_dead(utc="all"), gb) <= 10, "ask B: every stamp read as UTC keeps 10 or fewer")
-    best_a = max(hits(pk.new_electors(utc=u, first_row=fr, census_day=cd), ga)
-                 for u, fr, cd in itertools.product((True, False, "all"), (True, False), (False, True))
-                 if (u, fr, cd) != (True, True, False))
-    best_b = max(hits(pk.removed_dead(utc=u, codes=co, reversals=rv, census_day=cd), gb)
-                 for u, co, rv, cd in itertools.product((True, False, "all"), ("platform", "current", "all"),
-                                                        (True, False), (False, True))
-                 if (u, co, rv, cd) != (True, "platform", True, False))
-    ck(best_a <= 3 and best_b <= 10, "the strongest mishandled reading keeps %d of ask A and %d of ask B" % (best_a, best_b))
-    ck(hits(pk.new_electors(utc=False), ga) == 0 and hits(pk.removed_dead(utc=False), gb) == 0,
-       "the cracker's reading (every filed rule, the stamps as written) misses all 32")
+        ck(hits(v, gb) <= 3, "ask B stop misses 13 or more: %s (%d kept)" % (k, hits(v, gb)))
+    ck(hits(pk.removed_dead(census_day=True), gb) <= 10, "ask B: census day included keeps 10 or fewer")
+    best_a = max(hits(pk.new_electors(vintage=v, link=lk, prior=pr, utc=u), ga)
+                 for v, lk, pr, u in itertools.product((True, False), (True, False), ("record", "first"), (True, False))
+                 if (v, lk, pr, u) != (True, True, "record", True))
+    best_b = max(hits(pk.removed_dead(vintage=v, reversals=rv, utc=u, codes=co), gb)
+                 for v, rv, u, co in itertools.product((True, False), ("all", "rei", None), (True, False),
+                                                       ("platform", "current", "all"))
+                 if (v, rv, u, co) != (True, "all", True, "platform"))
+    ck(best_a <= 1 and best_b <= 3, "the strongest mishandled reading keeps %d of ask A and %d of ask B" % (best_a, best_b))
+    ck(hits(pk.new_electors(vintage=False, link=False), ga) == 0 and hits(pk.removed_dead(vintage=False, reversals="rei"),
+                                                                         gb) <= 1,
+       "the cracker's reading (every filed rule, the current numbers, reinstatements, one person a reference) misses")
+    # the evidence a grader verifies: the links and the numbering, record by record
+    by_id = {r["TXN_ID"]: r for r in pk.log}
+    moves = [(r, by_id.get(r["REF_TXN"])) for r in pk.log if r["TXN_TYPE"] == "DEL" and r["REASON"] == "05"]
+    ck(moves and all(n is not None and n["TXN_TYPE"] == "NEW" and n["SEX"] == r["SEX"] and n["BIRTH_YEAR"] ==
+                     r["BIRTH_YEAR"] and n["PERSON_REF"] != r["PERSON_REF"] and n["ELECTORATE"] != r["ELECTORATE"]
+                     and 0 < (M.local_time(r) - M.local_time(n)).total_seconds() <= 90 for r, n in moves),
+       "SF17 every old-platform removal for a move points at the enrolment at the new address seconds before it, another "
+       "person reference, the same sex and year of birth (%d)" % len(moves))
+    revs = [(r, by_id.get(r["REF_TXN"])) for r in pk.log if r["TXN_TYPE"] == "NEW" and r["REF_TXN"]]
+    ck(revs and all(d_ is not None and d_["TXN_TYPE"] == "DEL" and d_["REASON"] == "01" and M.old_platform(d_)
+                    and M.old_platform(r) and d_["ELECTORATE"] == r["ELECTORATE"] for r, d_ in revs),
+       "SF18 every enrolment pointing at a removal puts right an old-platform death removal in the same electorate (%d)"
+       % len(revs))
+    cross = [(r, by_id[r["REF_TXN"]]) for r in pk.log if r["TXN_TYPE"] == "REI" and M.old_platform(by_id[r["REF_TXN"]])]
+    same_now = sum(1 for a, b in cross if pk.region_of[a["ELECTORATE"]] == pk.region_of[b["ELECTORATE"]])
+    same_then = sum(1 for a, b in cross if pk.region_2020[b["ELECTORATE"]] == pk.region_of[a["ELECTORATE"]])
+    ck(len(cross) >= 40 and same_then == len(cross) and same_now < 0.6 * len(cross),
+       "SF19 the %d reinstatements of old-platform removals restore the same region under the 2020 numbers (%d) and not "
+       "under the current ones (%d)" % (len(cross), same_then, same_now))
+    olds = {r["ELECTORATE"] for r in pk.log if M.old_platform(r)}
+    ck(olds <= set(pk.region_of), "SF19 every old-platform electorate number is also a current one: nothing fails to join")
     stamps = [r["PROCESSED"] for r in pk.log]
     ck(min(stamps) >= "2025-03-04 00:00:00" and max(stamps) <= "2026-06-30 23:59:59",
        "the log's stamps lie between census day and the extract's close (%s to %s)" % (min(stamps), max(stamps)))
     late = sum(1 for r in pk.log if not M.old_platform(r) and M.local_time(r).date() > W.LOG_END)
     ck(late > 500, "the extract's close in UTC carries %d transactions of the country's 1 July" % late)
+    first_new = min(int(r["ELECTOR_NO"]) for r in pk.log if r["TXN_TYPE"] == "NEW" and r["STATUS"] == "A")
+    ck(first_new % 1000 and first_new > max(int(r["ELECTOR_NO"]) for r in pk.log if r["TXN_TYPE"] == "DEL" and
+                                            r["ELECTOR_NO"] and int(r["ELECTOR_NO"]) < first_new),
+       "elector numbers run on from the census-day counter, not from a round number (%d)" % first_new)
     # --------------------------------------------------------------------------- separation and distractors
     pk2 = copy.copy(pk)
     pk2.log = []

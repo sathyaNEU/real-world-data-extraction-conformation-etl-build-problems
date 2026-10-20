@@ -38,10 +38,10 @@
  "layer2_pattern": "own:dual-system-correlation-bias-corrected-by-demographic-analysis-sex-ratios",
  "layer1": [
   "census tables in a multi-sheet workbook with a contents sheet, notes, header blocks and a 100-and-over row, one sheet per region",
-  "deaths by year of birth in two layouts: a wide historical workbook to 1990 and a long CSV from 1991",
+  "deaths by year of birth in two layouts: a wide historical workbook to 1944 and a long CSV from 1945",
   "a provisional period for the first weeks of 2025 in each vital and border series",
-  "an electoral roll snapshot coded to electorates, overseas electors in the same table, joined to regions through a concordance that keeps two pre-review names",
-  "a roll transaction log across a platform migration: local-time stamps and running numbers before, UTC stamps and hex keys after, and the old platform's own removal codes"
+  "an electoral roll snapshot coded to electorate numbers, overseas electors in the same table, joined to regions through a concordance that keeps each electorate's number and name before the 2024 review",
+  "a roll transaction log across a platform migration: the old platform's local time, running numbers, own removal codes, 2020 electorate numbers and a person reference per enrolment tied only through REF_TXN; the new platform's UTC, hex keys, one reference a person and reinstatements"
  ],
  "stakeholder_role": "manager of population estimates at the national statistics office, delivering the census-based enrolment-gap file the Electoral Commission shares its 2027 campaign organisers on",
  "role_family": "statistical_office_head",

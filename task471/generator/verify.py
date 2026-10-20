@@ -82,7 +82,7 @@ def population(target):
             q_births[r["SEX"]] = int(r["LIVE_BIRTHS"])
         else:
             coh[(r["SEX"], int(r["PERIOD"]))] = coh.get((r["SEX"], int(r["PERIOD"])), 0) + int(r["LIVE_BIRTHS"])
-    wb = openpyxl.load_workbook(find(target, r"^deaths_by_year_of_birth_1925_1990\.xlsx$"), read_only=True)
+    wb = openpyxl.load_workbook(find(target, r"^deaths_by_year_of_birth_\d+_\d+\.xlsx$"), read_only=True)
     for sex, title in (("M", "Males"), ("F", "Females")):
         head = None
         for r in wb[title].iter_rows(values_only=True):
@@ -95,7 +95,7 @@ def population(target):
             for c, v in zip(head[1:], r[1:]):
                 if v:
                     coh[(sex, int(c))] = coh.get((sex, int(c)), 0) - v
-    for r in rows(find(target, r"^deaths_by_year_of_birth_1991_2025\.csv$")):
+    for r in rows(find(target, r"^deaths_by_year_of_birth_\d+_\d+\.csv$")):
         k = (r["SEX"], int(r["YEAR_OF_BIRTH"]))
         coh[k] = coh.get(k, 0) - int(r["DEATHS"])
     for r in rows(find(target, r"^long_term_movements_by_year_of_birth_\d+_\d+\.csv$")):
@@ -136,25 +136,42 @@ def country_date(row):
     return t.date(), t.replace(tzinfo=None)
 
 
-def asks(target, region_of):
+def asks(target, region_now, region_then):
+    """the old platform's electorate numbers are those of the 2020 review; a person is every reference REF_TXN ties
+    together; a person was on the roll on census day if a removal in the window took off a record no enrolment in the
+    window made; a removal a later accepted transaction reverses (REF_TXN) was not a removal"""
     log = rows(find(target, r"^roll_transactions_\d+_\d+\.csv$"))
-    seen, new = set(), {}
-    for t, i, r in sorted((country_date(r)[1], i, r) for i, r in enumerate(log)):
-        if not FIRST <= t.date() <= LAST or r["STATUS"] != "A" or r["PERSON_REF"] in seen:
-            continue
-        seen.add(r["PERSON_REF"])
-        if r["TXN_TYPE"] == "NEW" and r["ADDRESS_TYPE"] == "R":
-            reg = region_of[r["ELECTORATE"]]
-            new[reg] = new.get(reg, 0) + 1
-    back = {r["REF_TXN"] for r in log if r["TXN_TYPE"] == "REI" and r["STATUS"] == "A"}
-    died = {}
+    region = lambda r: (region_then if r["TXN_ID"].startswith("R25-") else region_now)[r["ELECTORATE"]]
+    by_id = {r["TXN_ID"]: r for r in log}
+    group = {}
+
+    def root(p):
+        while group.get(p, p) != p:
+            p = group[p]
+        return p
     for r in log:
-        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A" or r["TXN_ID"] in back:
+        if r["REF_TXN"] in by_id:
+            a, b = root(r["PERSON_REF"]), root(by_id[r["REF_TXN"]]["PERSON_REF"])
+            if a != b:
+                group[a] = b
+    window = [r for t, i, r in sorted((country_date(r)[1], i, r) for i, r in enumerate(log))
+              if FIRST <= t.date() <= LAST and r["STATUS"] == "A"]
+    made = {r["ELECTOR_NO"] for r in window if r["TXN_TYPE"] == "NEW"}
+    before = {root(r["PERSON_REF"]) for r in window if r["TXN_TYPE"] == "DEL" and r["ELECTOR_NO"] not in made}
+    new, done = {}, set()
+    for r in window:
+        p = root(r["PERSON_REF"])
+        if r["TXN_TYPE"] != "NEW" or p in done:
             continue
+        done.add(p)
+        if p not in before and r["ADDRESS_TYPE"] == "R":
+            new[region(r)] = new.get(region(r), 0) + 1
+    back = {r["REF_TXN"] for r in log if r["STATUS"] == "A" and r["TXN_TYPE"] in ("REI", "NEW") and r["REF_TXN"]}
+    died = {}
+    for r in window:
         codes = ("01",) if r["TXN_ID"].startswith("R25-") else ("11", "12")
-        if r["REASON"] in codes and FIRST <= country_date(r)[0] <= LAST:
-            reg = region_of[r["ELECTORATE"]]
-            died[reg] = died.get(reg, 0) + 1
+        if r["TXN_TYPE"] == "DEL" and r["REASON"] in codes and r["TXN_ID"] not in back:
+            died[region(r)] = died.get(region(r), 0) + 1
     return new, died
 
 
@@ -178,6 +195,7 @@ def main(target, gdir, quiet=False):
         fac[g] = (m_da / f_da) / (m / f)
     conc = {r["ELECTORATE"]: r for r in rows(find(target, r"^electorates_and_regions\.csv$"))}
     region_of = {k: r["REGION"] for k, r in conc.items()}
+    region_then = {r["NUMBER_BEFORE_2024_REVIEW"]: r["REGION"] for r in conc.values()}
     names = {r["REGION"]: r["REGION_NAME"] for r in conc.values()}
     roll = {c: 0 for c in names}
     for r in rows(find(target, r"^roll_at_close_of_census_day_2025\.csv$")):
@@ -192,7 +210,7 @@ def main(target, gdir, quiet=False):
     org = shares({c: adults[c] - roll[c] for c in names})
     dse_org = shares({c: dse_adults[c] - roll[c] for c in names})
     census_org = shares({c: counted[c] - roll[c] for c in names})
-    new, died = asks(target, region_of)
+    new, died = asks(target, region_of, region_then)
     # the documents the call and the asks lean on, read back
     plan = " ".join(" ".join(p.text for p in docx.Document(find(target, r"^enrolment_campaign_plan_2027\.docx$")).paragraphs).split())
     check("whether or not the census counted them" in plan and "Overseas electors are not counted in any region." in plan
@@ -204,6 +222,10 @@ def main(target, gdir, quiet=False):
     mig = " ".join(subprocess.run(["pdftotext", "-raw", find(target, r"^roll_platform_migration_notes\.pdf$"), "-"],
                                   capture_output=True, text=True, check=True).stdout.split())
     check("01 deceased" in mig, "the migration notes file the old platform's death code")
+    wb = openpyxl.load_workbook(find(target, r"^roll_extract_data_dictionary\.xlsx$"), read_only=True)
+    dic = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
+    check("the new platform's in UTC" in dic and "completes or reverses" in dic,
+          "the dictionary files the time basis and REF_TXN")
     wb = openpyxl.load_workbook(find(target, r"^enrolment_gap_file_specification\.xlsx$"), read_only=True)
     spec = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
     check("Dates and times are the country's time." in spec and "each person once" in spec,

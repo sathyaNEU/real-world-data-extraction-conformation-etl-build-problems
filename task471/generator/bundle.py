@@ -24,7 +24,9 @@ class Pack:
     def __init__(self, target):
         self.target = target
         f = lambda k: os.path.join(target, P.FILES[k])
-        self.region_of = {r["ELECTORATE"]: r["REGION"] for r in rows(f("electorates"))}
+        conc = rows(f("electorates"))
+        self.region_of = {r["ELECTORATE"]: r["REGION"] for r in conc}
+        self.region_2020 = {r["NUMBER_BEFORE_2024_REVIEW"]: r["REGION"] for r in conc}
         d = {"census": {}, "e": {}, "p": {}, "roll": {c: 0 for c in W.CODES}, "births": {}, "deaths": {},
              "departures": {}, "arrivals": {}}
         wb = openpyxl.load_workbook(f("census"), read_only=True)
@@ -93,8 +95,17 @@ class Pack:
         return M.allocate(self.gap(adults))
 
     # ------------------------------------------------------------------ the asks
-    def new_electors(self, **kw):
-        return M.new_electors(self.log, **kw)
+    def region(self, vintage=True):
+        """a transaction's region: the old platform's electorate numbers are the 2020 review's (vintage), or every number
+        read as the 2024 review's"""
+        def f(r):
+            if vintage and M.old_platform(r):
+                return self.region_2020[r["ELECTORATE"]]
+            return self.region_of[r["ELECTORATE"]]
+        return f
 
-    def removed_dead(self, **kw):
-        return M.removed_dead(self.log, **kw)
+    def new_electors(self, vintage=True, **kw):
+        return M.new_electors(self.log, self.region(vintage), **kw)
+
+    def removed_dead(self, vintage=True, **kw):
+        return M.removed_dead(self.log, self.region(vintage), **kw)
