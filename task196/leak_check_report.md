@@ -49,3 +49,40 @@ Stump terms swept: clause, payment, register, decisive, scheme, asserted, truste
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read, wave 6 audit (the shipped pack, target.zip 9c54b440)
+
+Run because `leak.py` overwrote this build's original reader section before that bug was fixed. Pack
+and `prompt.txt` only, scored by `score_reader.py`.
+
+### The call held. The ask layer did not.
+
+| block | answered | hit |
+|---|---|---|
+| committed index and indexed cases | 2 | **0** |
+| call inputs (recorded cases, payments sent) | 2 | 2 |
+| ask figures | 29 | **29** |
+
+It filed **25 cases per million** against a golden of **31**, on 560 indexed cases against 688, at
+about 35 per cent confidence. It reached the right shape of the estimator and the wrong constant: it
+grossed the register-matched unrecorded cases up by the member's own register coverage (282/400 =
+0.705), where the golden takes the two-source estimate off the sightings no fund-return request of
+the member's own preceded. It listed 23, 25 and 26 as the range it considered, so the decisive step
+is doing its work.
+
+Then it took all 29 ask figures exactly: the indemnity by tier and quarter to the penny, all twelve
+members' Q1 notification counts and values, and the recovery shares by route.
+
+### Three findings it volunteered that belong to whoever repairs this
+
+1. **`register_feed_notes.txt` hands over a step.** Its sentence "pad the account number back to
+   eight digits before matching anything against the register, or the match loses every account
+   whose number starts with a zero" is not something an organisation writes down.
+2. **`member_payment_matches.csv` is a pre-done join** that carries `case_reference`, so the match a
+   solver would build is supplied.
+3. **A possible data defect worth checking:** 213 cases in `notifications_2027_28_q1.csv` carry
+   2026/27 payment dates and share no key with the 417 late-notified rows in the case register. The
+   reader read it as generator noise and treated the register alone as the recorded set, noting that
+   adding the 213 would move the recorded count by about 21 and the index by about 1.
+4. Realism tell: Castlegate's unrecorded count rising 52, 71, 92, 113 over four years reads as too
+   regular for an organisation's record.

@@ -31,6 +31,11 @@ import sys
 from pathlib import Path
 
 CALL_PREFIX = "call"
+# Keys under `call.` that are shared inputs rather than the committed answer. A build that nests its
+# population, denominator and recorded counts under `call.` would otherwise trip the call verdict on
+# figures every competent solver computes on the way, whatever answer it then files.
+CALL_INPUT_WORDS = ("recorded", "payments", "population", "denominator", "window", "sent",
+                    "baseline", "rows", "count_in", "exposure", "total_", "_total")
 
 
 def decimals(x):
@@ -121,20 +126,28 @@ def main(argv):
             unknown.append(key)
             continue
         hit = same(g, got[key], tol_pct)
-        rows.append((CALL_PREFIX if key.split(".")[0].startswith(CALL_PREFIX) else "ask", key, g, got[key], hit))
+        head = key.split(".")[0]
+        if head.startswith(CALL_PREFIX):
+            tail = key[len(head):].lstrip(".").lower()
+            kind = "input" if any(w in tail for w in CALL_INPUT_WORDS) else CALL_PREFIX
+        else:
+            kind = "ask"
+        rows.append((kind, key, g, got[key], hit))
 
     call = [r for r in rows if r[0] == CALL_PREFIX]
+    inputs = [r for r in rows if r[0] == "input"]
     asks = [r for r in rows if r[0] == "ask"]
     call_hit = sum(1 for r in call if r[4])
     ask_hit = sum(1 for r in asks if r[4])
     share = 100.0 * ask_hit / len(asks) if asks else 0.0
 
     if not quiet:
-        for kind in (CALL_PREFIX, "ask"):
+        for kind in (CALL_PREFIX, "input", "ask"):
             block = [r for r in rows if r[0] == kind]
             if not block:
                 continue
-            print("== %s figures ==" % ("call" if kind == CALL_PREFIX else "ask"))
+            print("== %s figures ==" % {CALL_PREFIX: "call", "input": "call input (not the committed answer)",
+                                        "ask": "ask"}[kind])
             for _, key, g, r, hit in sorted(block, key=lambda r: r[1]):
                 print("%-4s %-34s golden %-26s reader %s" % ("HIT" if hit else "miss", key,
                                                              json.dumps(g)[:26], json.dumps(r)[:26]))
@@ -144,6 +157,9 @@ def main(argv):
         print()
 
     print("call figures   %d of %d hit" % (call_hit, len(call)))
+    if inputs:
+        print("call inputs    %d of %d hit (shared route figures, not the verdict)"
+              % (sum(1 for r in inputs if r[4]), len(inputs)))
     print("ask figures    %d of %d hit (%.1f per cent)" % (ask_hit, len(asks), share))
 
     if call_hit:
