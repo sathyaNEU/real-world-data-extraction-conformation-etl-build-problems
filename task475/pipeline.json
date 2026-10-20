@@ -1,0 +1,36 @@
+{
+ "task": "task475",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "demographic-social-science",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2 design: ladder from a simulation of the claims and credit amounts, fork table, closure, asks over the 2026 close-out, prompt.txt, precut.py exit 0",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET32 (ZIP-level EITC counts to county allocations of a capped weatherization fund): world, decision and quantity kept; the pitfall re-found from the data"
+}
