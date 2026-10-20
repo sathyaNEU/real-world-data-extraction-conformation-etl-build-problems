@@ -47,6 +47,7 @@ class Bundle:
         self.others = S.other_offenses(seed)
         self.inc = {i["iid"]: i for i in self.incidents}
         self.township = self._township(np.random.default_rng(seed * 17 + 9))
+        self.notes = self._notes(np.random.default_rng(seed * 19 + 3))
         r = np.random.default_rng(seed * 11 + 5)
         self._number_incidents(r)
         self._dvu(np.random.default_rng(seed * 13 + 7))
@@ -73,6 +74,20 @@ class Bundle:
             t["iid"] = ("T", k)
         return out
 
+    @staticmethod
+    def _notes(r):
+        """Reports the records system numbers that carry no offense (hospital notifications, found property, welfare
+        checks), so they are not in the extract: a couple of hours apart through every day."""
+        out = []
+        t = dt.datetime(2021, 1, 1, 0, 0)
+        end = dt.datetime(2026, 9, 30, 23, 59)
+        while True:
+            t = t + dt.timedelta(minutes=int(r.integers(20, 200)))
+            if t > end:
+                break
+            out.append({"reported": t})
+        return out
+
     def _number_incidents(self, r):
         """Legacy numbers YY-NNNNNN in report order each year; the new system's EPyy-NNNNN until its March 2025 upgrade
         and yyyy-NNNNNN after it, every incident it held renumbered to the new form."""
@@ -80,6 +95,7 @@ class Bundle:
         items = [(i["reported"], "A", i["iid"]) for i in self.incidents]
         items += [(o["reported"], "O", n) for n, o in enumerate(self.others)]
         items += [(t["reported"], "T", k) for k, t in enumerate(self.township)]
+        items += [(t["reported"], "N", k) for k, t in enumerate(self.notes)]
         items.sort()
         seq_legacy, seq_new = collections.Counter(), collections.Counter()
         for rep, typ, key in items:
@@ -91,7 +107,7 @@ class Bundle:
                 seq_new[rep.year] += 1
                 num = "%d-%06d" % (rep.year, seq_new[rep.year])
                 old = ("EP%02d-%05d" % (rep.year % 100, seq_new[rep.year])) if rep < REFORMAT else None
-            target = self.inc[key] if typ == "A" else (self.others[key] if typ == "O" else self.township[key])
+            target = {"A": self.inc, "O": self.others, "T": self.township, "N": self.notes}[typ][key]
             target["number"], target["old_number"] = num, old
 
     # ------------------------------------------------------------------ views

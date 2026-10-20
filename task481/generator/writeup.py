@@ -76,11 +76,15 @@ def write(fig_path, out_path):
     out.append("5. Restated January to September at those rates, line by line and month by month, and added October to "
                "December as counted: %s, about %s to the nearest hundred; to 2025, %s%d per cent." % (
                    _n(fig["restated_2024_units"]), _n(fig["restated_2024"]), "+" if ch > 0 else "-", abs(ch)))
-    out.append("6. Shootings: kept the rows of %s struck in an ASSAULT with outcome WOUNDED; left out every block the "
-               "log marks N in any row (the North Ellsmere Township blocks, which it marks Y before October 2024), and "
-               "dropped the people the Medical Examiner's list shows died of the wound (same date of injury, block, "
-               "age and sex, place in Ellsmere); counted each person once (report number, time, age and sex) by the "
-               "quarter shot, and a shooting as the people struck at one block and minute." % P.FILES["gvr"])
+    out.append("6. Shootings: kept the rows of %s with circumstance ASSAULT and outcome WOUNDED; read shot_datetime in "
+               "Ellsmere local time, converting from UTC the rows the records system entered (entered from 1 October "
+               "2024), as that system stores every time; placed each row by its block, read without the municipality "
+               "the log adds in brackets, and left out every block the log puts outside the city in any row (a block "
+               "is in the city or out of it whichever system recorded it: the North Ellsmere Township blocks are "
+               "marked Y before October 2024 and N with the township named after it); dropped the people the Medical "
+               "Examiner's list shows died of the wound (same local date of injury, block, age and sex, place in "
+               "Ellsmere); counted each person once (report number, local time, age and sex) by the quarter shot, and "
+               "a shooting as the people struck at one block and minute." % P.FILES["gvr"])
     out.append("7. Wrote ellsmere_aggravated_assault.xlsx.\n")
     out.append("## 4. Deliverable Answers\n")
     out.append("### ellsmere_aggravated_assault.xlsx\n")

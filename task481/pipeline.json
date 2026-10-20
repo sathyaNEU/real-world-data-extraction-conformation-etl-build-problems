@@ -23,12 +23,12 @@
     "nearest": "task265 lineage 0.07"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1 on a17767bf7704a407: DETERMINISTIC, SOLUTION_WRONG minor (step 6 township wording)",
+    "disposition": "FIX_NOW",
+    "report": "task481/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4 fix pass: re-site the post-move shootings device onto the records system's clock (shot times of rows entered from 1 October 2024 stored in UTC, as the system stores every time), rebuild, stage-3 gates, two fresh scored readers; the judge's verdict on a17767bf7704a407 is pending at /tmp/determinism-check-task481-1792539377/verdict.md and goes back to the determinism-judge agent for the report",
+  "resume": "stage 4 round 2 on ee83d775b423fed3: score reader3 and reader4 (scratch t481/stage4, score_reader.py --call-key call.change_pct --call-key restated_2024) before reading them; the re-judge verdict lands at /tmp/determinism-check-task481-1792540294r2/verdict.md and goes to the determinism-judge agent for determinism_check_report_pass2.md; ship if both readers miss the call, neither exits 1 and the judge approves",
   "approved": null,
   "delivered": null,
   "portal": null,

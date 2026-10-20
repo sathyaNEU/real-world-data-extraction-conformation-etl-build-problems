@@ -247,11 +247,22 @@ def base_block(block):
     return block.split(" (")[0]
 
 
-def shootings(gvr, me, deaths=True, township=True, dedup="person", events="place_time"):
+def shot_local(g, clock=True):
+    """The shot time in Ellsmere local time: the rows the records system entered (from 1 October 2024) hold it in UTC,
+    as that system stores every time; clock=False reads every row as stored."""
+    s = g[G["shot_datetime"]]
+    if clock and g[G["entered"]] >= "2024-10-01":
+        t = dt.datetime.strptime(s, "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc).astimezone(W.TZ)
+        return t.strftime("%Y-%m-%d %H:%M")
+    return s
+
+
+def shootings(gvr, me, deaths=True, township=True, dedup="person", events="place_time", clock=True):
     """Non-fatal shooting victims and the shootings they were hurt in, by quarter shot. deaths: drop the people the
     Medical Examiner's list shows died of the wound; township: leave out the blocks the log places outside the city
     (the township blocks the old database marked inside by the patrol beat); dedup: 'person' (same report number, time,
-    age and sex), 'number' (one row a report number), None; events: 'place_time' (same block and minute) or 'number'."""
+    age and sex), 'number' (one row a report number), None; events: 'place_time' (same block and minute) or 'number';
+    clock: the records system's UTC shot times put in local time first."""
     died = set()
     if deaths:
         for d in me:
@@ -265,7 +276,7 @@ def shootings(gvr, me, deaths=True, township=True, dedup="person", events="place
             continue
         if g[G["block"]] in outside:
             continue
-        when = g[G["shot_datetime"]]
+        when = shot_local(g, clock)
         if (when[:10], g[G["block"]], str(g[G["victim_age"]]), g[G["victim_sex"]]) in died:
             continue
         if dedup == "person":

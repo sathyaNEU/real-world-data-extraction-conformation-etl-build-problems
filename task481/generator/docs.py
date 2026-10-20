@@ -331,10 +331,11 @@ def write_methods(path):
          "in 2024, had the department reported to NIBRS all year. The 2024 figure the department published from "
          "Return A is shown beside it.")
     para("3. Shootings", bold=True, size=11)
-    para("The chapter counts the people struck by gunfire in an assault in the City of Ellsmere, by the quarter they "
-         "were shot, and the shootings they were struck in. A shooting is one event: the people struck at the same "
-         "place and time, however many there were. Self-inflicted and unintentional shootings and shootings by police "
-         "officers are reported in the chapter's notes, not in these counts.")
+    para("The chapter counts the people struck by gunfire in an assault within the City of Ellsmere's limits, by the "
+         "quarter they were shot in Ellsmere local time, and the shootings they were struck in. A shooting is one "
+         "event: the people struck at the same place and time, however many there were. Self-inflicted and "
+         "unintentional shootings and shootings by police officers are reported in the chapter's notes, not in these "
+         "counts.")
     para("4. The State UCR Program's figures", bold=True, size=11)
     para("The State UCR Program publishes each agency's annual counts from its repository at its data freeze. Where "
          "the program's figure for Ellsmere differs from the department's own count, the chapter sets out why.")

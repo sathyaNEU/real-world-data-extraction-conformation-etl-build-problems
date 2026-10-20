@@ -185,10 +185,13 @@ def gvr_rows(sh, seed):
         if row["entered"].date() > dt.date(2026, 10, 1):      # entered after the export
             continue
         # the old database marked a shooting inside the city by the patrol beat, and the beats take in the township the
-        # department patrols under contract; the new system marks it from the address and names the municipality
-        beat = p["township"] and p["at"] < A.MIGRATION
+        # department patrols under contract; the records system the log moved into on 1 October 2024 marks it from the
+        # address, names the municipality, and stores every time in UTC
+        new = row["entered"] >= A.MIGRATION
+        beat = p["township"] and not new
         inside = p["inside"] or beat
-        out.append([row["gvr"], row["number"], p["at"].strftime("%Y-%m-%d %H:%M"),
+        shot = B.to_utc(p["at"]) if new else p["at"]
+        out.append([row["gvr"], row["number"], shot.strftime("%Y-%m-%d %H:%M"),
                     p["block"] if inside else "%s (%s)" % (p["block"], p["town"]),
                     "Y" if inside else "N", p["age"], p["sex"], p["circ"], row["outcome"],
                     row["entered"].strftime("%Y-%m-%d"), analysts[int(r.integers(0, len(analysts)))]])

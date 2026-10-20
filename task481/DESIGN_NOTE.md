@@ -170,10 +170,11 @@ domestic count from the Domestic Violence Unit's case log, gives about 5,200 and
 | SF7 | 2025 count | the department's extract, 5,254 | the state's published 5,320 | another change (asserted) | methods 2: "from the department's extract" |
 | SF8 | October to December 2024 | counted from the extract | converted like January to September | same call within the bin, but not the golden's figures (asserted counted) | methods 2: 2024 restated is what NIBRS "would have recorded"; for October to December NIBRS did record it |
 | SF9 | non-fatal | did not die of the shooting, whenever the death | alive when the log's outcome was entered | the careful path (asserted) | the word; the Medical Examiner's list carries the deaths |
-| SF10 | in the City of Ellsmere | within the city's limits | the department's patrol area, the contract township included | the careful path (asserted) | methods 3: "in the City of Ellsmere"; the township is its own municipality (the log and the Medical Examiner name it) |
+| SF10 | in the City of Ellsmere | within the city's limits, each block placed by where it is whichever system recorded it | the log's flag row by row, the contract township's blocks kept where the old database flagged them Y | the careful path (asserted) | methods 3: "within the City of Ellsmere's limits"; the log names the township on the same blocks from October 2024 and the Medical Examiner places its deaths there |
 | SF11 | the quarter they were shot | shot_datetime's quarter | the quarter entered | another grid (asserted) | methods 3: "by the quarter they were shot" |
 | SF12 | a shooting | the people struck at one block and minute | one report number | another grid (asserted) | methods 3: "the people struck at the same place and time, however many there were" |
 | SF13 | each person | once, however often the log lists them | each row | another grid (asserted) | "people": a person entered twice is one person |
+| SF15 | the quarter shot | the shot time in Ellsmere local time, the records system's rows (entered from October 2024) converted from UTC, as the system stores every time | every row read as stored | the careful path (asserted) | methods 3: "in Ellsmere local time"; a person entered in both systems sits exactly 5 or 6 hours apart as stored, and the records system's times put in local time fall on the extract's incident dates (asserted) |
 | SF14 | the grain of the conversion | 4e by domestic and other victims | every line by domestic and other; domestic split again by intimate partner and other family, by assault and threat, or by sex; hidden robbery victims per robbery line | same call (asserted: every grain gives a rise of 1 per cent and about 5,200; the spread is 5,190 to 5,200 and 1.0 to 1.2 per cent) | methods 5: the restated figure "to the nearest hundred", the change "to the nearest whole per cent" |
 
 ## Ladder
@@ -216,7 +217,7 @@ from the nearest bin edge), with the restated total to the nearest hundred (5,19
 | 6 | Denominator | each dual-coded line's victims (the rates); the domestic and other victims of 4e separately |
 | 7 | Weighting | each January to September month at its own line counts and its own domestic count (the decisive step, an estimation choice no filed rule makes) |
 | 8 | Window length | twelve months a year; the dual-coded quarter October to December 2024 (dictionary, certification letter) |
-| 9 | Boundary inclusivity | local calendar months and quarters (SF1) |
+| 9 | Boundary inclusivity | local calendar months and quarters, the shooting log's records-system rows converted from UTC (SF1, SF15) |
 | 10 | Rounding path | 2024 restated summed unrounded and rounded once, to the nearest hundred; the change from the unrounded total to the whole per cent (methods 5) |
 | 11 | Tie-break | none: the golden sits 0.325 from its bin's edge and the restated total 43 from its hundred's |
 | 12 | Maturity and censoring | 2025 closed nine months before the extract; deaths to October 2026 in the Medical Examiner's list |
@@ -225,7 +226,7 @@ from the nearest bin edge), with the restated total to the nearest hundred (5,19
 | 15 | Duplicate resolution | one extract row per offense per victim; a person the shooting log lists twice counted once (SF13) |
 | 16 | Identity normalisation | not needed for the call; the grid's person key is the report number, time, age and sex |
 | 17 | Netting | unfounded offenses out of Return A's column 4 and out of the unit's log (SF3, SF6) |
-| 18 | Dimensional units | victims and offenses; UTC stamps against local time (SF1) |
+| 18 | Dimensional units | victims and offenses; UTC stamps against local time in the extract (SF1) and in the shooting log's records-system rows (SF15) |
 | 19 | Code and status semantics | 13A, 13B, 13C; ucr_summary_class with NS and P2; relationship codes (SF2); the log's circumstance, outcome and inside_city |
 | 20 | Integerisation | whole victims; the restated total rounded once to the hundred |
 | 21 | Clause scope | methods 2 for the call, methods 3 for the grid |
@@ -238,9 +239,9 @@ the dual-coded months, and leaves one place open, how January to September 2024 
 uses all the shipped evidence (the unit's log for the domestic count) files the golden, every conversion that does not
 files a fall (asserted), every finer grain of the conversion the log supports lands in the same hundred and the same
 whole per cent (SF14, asserted), and no literal reading of a filed sentence gives another answer; for the grid, the methods'
-definitions of the people and the shootings, executed on every row with the Medical Examiner's list for the deaths and
-the log's own later rows for the township's blocks, give the golden's 24 cells (asserted against the simulation's
-truth).
+definitions of the people and the shootings (within the city's limits, by the quarter shot in local time), executed on
+every row with the Medical Examiner's list for the deaths, the log's own later rows for the township's blocks and the
+records system's UTC times put in local time, give the golden's 24 cells (asserted against the simulation's truth).
 
 ## Oracles
 
@@ -266,32 +267,38 @@ truth).
   township blocks are Y before October 2024 and N, "(NORTH ELLSMERE TWP)", after it: 30 rows, a township shooting in
   every quarter before the move. Only a cut by block across the move shows it; trusting the flag keeps them in every
   quarter from 2023 to the third quarter of 2024.
-  Primary device 2: D4, absence evidenced in a file no habitual join reaches. The old database's analyst marked a death
-  as the Medical Examiner reported it while the shooting was on the unit's 30-day review, up to the move; the records
-  system keeps the outcome entered with the shooting. So a victim who died more than 30 days later, or after the move,
-  or of any shooting from October 2024, stays WOUNDED; only the Medical Examiner's list, joined on date of injury,
-  block, age and sex, shows the death. Trusting the outcome moves every quarter's victims and ten quarters' shootings.
-  Hazards: the summer 2024 shootings entered again at the move under the same report number (25 people in 2024 Q3);
-  multi-victim shootings with a later victim under its own report number (a shooting by report number moves 11
-  quarters); one row a report number merges real pairs (every quarter's victims); self-inflicted, unintentional and
-  police shootings; shootings in other towns, named in the block and flagged N.
-  Each device alone is not enough: the Medical Examiner's deaths found with the township kept leave the seven quarters
-  before the move wrong; the township found with the outcomes trusted leaves every quarter but two figures wrong.
+  Primary device 2: D8, a clock on the rows the records system wrote. The log moved into the records system on 1
+  October 2024, and that system stores every time in UTC (the extract's dictionary says so of its own stamps); the rows
+  it entered carry shot_datetime in UTC, the old database's rows local time. The records system also keeps the outcome
+  entered with the shooting, so a victim who died days later stays WOUNDED and only the Medical Examiner's list, which
+  dates the injury in local time, shows the death. A join of the list on the date as stored misses every victim shot
+  after 7 p.m. (6 p.m. in winter), and every quarter after the move has such deaths (a few evening shootings a quarter
+  whose victim died days later); the summer 2024 shootings entered again at the move sit five hours from their first
+  rows, so a person key with the time in it counts them twice; and a shooting on a quarter's last evening falls into the
+  next quarter. Both round-1 readers joined the list on the stored date: this is the device their path misses. The
+  old database marked a death within its 30-day review, so the quarters before the move need the list too.
+  Hazards: the summer 2024 shootings entered again at the move under the same report number; multi-victim shootings with
+  a later victim under the hospital notification's own report number (a shooting by report number moves 11 quarters);
+  one row a report number merges real pairs (every quarter's victims); self-inflicted, unintentional and police
+  shootings; shootings in other towns, named in the block and flagged N.
+  Each device alone is not enough: the clock found with the township kept leaves the seven quarters before the move
+  wrong (keeps 10 of 24); the township found with the stored times kept leaves every quarter after the move wrong
+  (keeps 12 of 24).
 
-| Ask figure | The cracker's reading (the careful path) | Golden | Cracker |
+| Ask figure | The cracker's reading (the round-1 readers' path: the list joined on the stored date, the flag trusted) | Golden | Cracker |
 |---|---|---|---|
-| 2023 Q1 victims, shootings | 122, 111 | 110, 105 | misses |
-| 2023 Q2 victims, shootings | 165, 152 | 160, 148 | misses |
-| 2023 Q3 victims, shootings | 158, 142 | 153, 140 | misses |
-| 2023 Q4 victims, shootings | 139, 127 | 129, 120 | misses |
-| 2024 Q1 victims, shootings | 123, 111 | 121, 110 | misses |
-| 2024 Q2 victims, shootings | 171, 156 | 164, 151 | misses |
-| 2024 Q3 victims, shootings | 173, 156 | 169, 153 | misses |
-| 2024 Q4 victims, shootings | 104, 97 | 100, 96 | misses |
-| 2025 Q1 victims, shootings | 113, 106 | 109, 103 | misses |
-| 2025 Q2 victims, shootings | 163, 147 | 157, 144 | misses |
+| 2023 Q1 victims, shootings | 118, 108 | 110, 105 | misses |
+| 2023 Q2 victims, shootings | 163, 150 | 160, 148 | misses |
+| 2023 Q3 victims, shootings | 157, 142 | 153, 140 | misses |
+| 2023 Q4 victims, shootings | 134, 123 | 129, 120 | misses |
+| 2024 Q1 victims, shootings | 122, 111 | 121, 110 | misses |
+| 2024 Q2 victims, shootings | 170, 155 | 164, 151 | misses |
+| 2024 Q3 victims, shootings | 191, 173 | 169, 153 | misses |
+| 2024 Q4 victims, shootings | 102, 97 | 100, 96 | misses |
+| 2025 Q1 victims, shootings | 115, 107 | 109, 103 | misses |
+| 2025 Q2 victims, shootings | 159, 145 | 157, 144 | misses |
 | 2025 Q3 victims, shootings | 164, 155 | 159, 150 | misses |
-| 2025 Q4 victims, shootings | 127, 116 | 126, 115 | misses |
+| 2025 Q4 victims, shootings | 129, 118 | 126, 115 | misses |
 
 - **Mirror.** The best response off the call (R2, the per-line conversion) keeps the 2025 count (8 of the 38 call-side
   points) and reads the grid the careful way: 0 of 24.
@@ -299,9 +306,9 @@ truth).
   2025 count 8 and each grid figure 55/24).
 - Mirror leakage: 0.0 per cent of the ask weight.
 - Measured by: generator/ceiling.py on the cut pack.
-- **Sensitivity.** A cracker that also finds the Medical Examiner's later deaths keeps 10 of 24 (pair 41.5; 52.9 if
-  the mirror finds them too); one that finds the township blocks keeps 2 (pair 32.3); both keeps 24 (pair 57.5). The
-  stage 4 readers measure which.
+- **Sensitivity.** A cracker that also converts the records system's times keeps 10 of 24 (pair 41.5; 52.9 if the
+  mirror does too); one that finds the township blocks keeps 12 (pair 43.8); both keeps 24 (pair 57.5). Round 1 measured
+  the readers' path on the earlier device (both kept 11 of 25); round 2 measures this one.
 
 ## Tried and rejected
 
@@ -323,3 +330,10 @@ truth).
   strangulation drawn mostly from intimate partners the relationship split alone moved the change by 0.35 points; the
   domestic kinds now share one relationship mix, and the figures are given at the precision the data carries (the
   restated total to the nearest hundred, the change to the whole per cent), where every grain agrees.
+- Later deaths visible only in the Medical Examiner's list as the device on the quarters after the move (stage 4 round
+  1): both readers joined the list on date, block, age and sex and kept 11 of 25 ask figures (score_reader exit 1 on
+  each); re-sited onto the records system's clock, under which the same join on the stored date misses the evening
+  shootings.
+- Split reports numbered as the original report plus a few: in the records system those numbers belonged to unrelated
+  incidents in the extract; a split victim now carries the number of the hospital notification report, which the
+  system numbers in the same sequence and which holds no offense.

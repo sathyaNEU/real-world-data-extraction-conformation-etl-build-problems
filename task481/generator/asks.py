@@ -16,6 +16,7 @@ B. The State UCR Program's repository as it stood at its 2025 data freeze (13 Ma
    month reported, from its October 2026 extract. Between them: report and occurrence years, acceptance after the
    freeze, deletions after it, offenses changed after it, and incidents the state holds twice because the March 2025
    renumbering re-sent open incidents under their new numbers without deleting the old."""
+import bisect
 import collections
 import datetime as dt
 
@@ -113,6 +114,17 @@ class Shootings:
                 blocks[key] = (block, inside)
             p["block"], p["inside"] = blocks[key]
             p["town"] = TOWNSHIP if p["township"] else OUT_TOWNS[sum(map(ord, p["block"])) % 3]
+        # after the move, a few victims in every quarter who were shot in the evening died days later
+        fr = np.random.default_rng(b.seed * 53 + 31)
+        size = collections.Counter(p["inc"]["iid"] for p in people if p["inc"] is not None)
+        for q in ("2024Q4", "2025Q1", "2025Q2", "2025Q3", "2025Q4"):
+            cand = [p for p in people if p["circ"] == "ASSAULT" and p["inside"] and p["dead"] and p["inc"] is not None
+                    and quarter(p["at"]) == q and p["at"] >= MIGRATION and 19 <= p["at"].hour <= 23
+                    and size[p["inc"]["iid"]] == 1]
+            need = max(0, 3 - sum(1 for c in cand if c["later"]))
+            for p in [c for c in cand if not c["later"]][:need]:
+                p["later"] = True
+                p["death"] = p["at"] + dt.timedelta(days=int(fr.integers(2, 40)), hours=int(fr.integers(0, 20)))
         self.people = people
         self._log(b)
         self._me()
@@ -142,11 +154,19 @@ class Shootings:
         for row in rows:
             if row["p"]["inc"] is not None:
                 by_inc[row["p"]["inc"]["iid"]].append(row)
+        # the later victim's own report is the hospital notification the records system numbered when it came in
+        note_at = [n_["reported"] for n_ in b.notes]
+        used = set()
         for iid, grp in by_inc.items():
             if len(grp) > 1 and r.random() < 0.35:
                 row = grp[-1]
-                head, tail = row["number"].rsplit("-", 1)
-                row["number"] = "%s-%0*d" % (head, len(tail), int(tail) + int(r.integers(1, 5)))
+                rep = row["p"]["inc"]["reported"] + dt.timedelta(minutes=15)
+                k = bisect.bisect_left(note_at, rep)
+                while k in used:
+                    k += 1
+                used.add(k)
+                note = b.notes[k]
+                row["number"] = note["old_number"] if (note.get("old_number") and rep < REFORMAT) else note["number"]
                 row["kind"] = "split"
         # the summer 2024 shootings still under investigation entered again when the case moved to the new system,
         # under the same report number

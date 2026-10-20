@@ -1,9 +1,10 @@
-"""The pair ceiling on the cut pack. The cracker lands the call and reads the shootings the careful way: the rows struck
-in an assault and marked inside the city, the outcome the log records, each person once by report number, time, age
+"""The pair ceiling on the cut pack. The cracker lands the call and reads the shootings the way both round-1 readers did:
+the rows struck in an assault and marked inside the city, the people the Medical Examiner's list shows died of the
+wound taken out on the date, block, age and sex as the log holds them, each person once by report number, time, age
 and sex, a shooting as the people struck at one block and minute; the mirror stops at the per-line conversion (each
 Return A line at its own October to December rate) and reads the shootings the same way. Weights 38 / 7 / 55: the
 change 20, the restated 2024 total 10, the 2025 count 8; each of the 24 shooting figures 55/24. The sensitivity lines
-add one find at a time: the Medical Examiner's later deaths, the township blocks, both.
+add one find at a time: the records system's clock, the township blocks, both.
 
     python3 task481/generator/ceiling.py     exit 0 at 40 or under
 """
@@ -15,9 +16,9 @@ import pack as P
 
 W_CHANGE, W_RESTATED, W_2025, W_INSTR, W_ASK = 20.0, 10.0, 8.0, 7.0, 55.0 / 24
 HERE = os.path.dirname(os.path.abspath(__file__))
-CAREFUL = {"deaths": False, "township": False}
-LADDER = [("+ the Medical Examiner's later deaths", {"township": False}),
-          ("+ the township blocks", {"deaths": False}),
+CAREFUL = {"township": False, "clock": False}
+LADDER = [("+ the records system's UTC shot times", {"township": False}),
+          ("+ the township blocks", {"clock": False}),
           ("+ both (the golden)", {})]
 
 

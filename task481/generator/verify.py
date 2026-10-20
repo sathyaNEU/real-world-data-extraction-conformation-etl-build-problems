@@ -113,6 +113,13 @@ def main(target, gdir):
     me = rows(os.path.join(target, "medical_examiner_homicide_list_2023_2026.csv"))
     died = {(d["date_of_injury"], d["injury_location"].rsplit(", ", 1)[0], d["age"], d["sex"]) for d in me
             if d["injury_location"].endswith(", ELLSMERE")}
+    def shot_local(g):
+        # the records system stores every time in UTC; its rows begin on 1 October 2024
+        if g["entered"] >= "2024-10-01":
+            t = dt.datetime.strptime(g["shot_datetime"], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc)
+            return t.astimezone(CENTRAL).strftime("%Y-%m-%d %H:%M")
+        return g["shot_datetime"]
+
     # a block the log puts outside the city in any row is outside it in every row
     out_blocks = {g["block"].split(" (")[0] for g in gvr if g["inside_city"] == "N"}
     seen, vic, sho = set(), {}, {}
@@ -121,15 +128,16 @@ def main(target, gdir):
             continue
         if g["block"] in out_blocks:
             continue
-        if (g["shot_datetime"][:10], g["block"], g["victim_age"], g["victim_sex"]) in died:
+        when = shot_local(g)
+        if (when[:10], g["block"], g["victim_age"], g["victim_sex"]) in died:
             continue
-        person = (g["rms_number"], g["shot_datetime"], g["victim_age"], g["victim_sex"])
+        person = (g["rms_number"], when, g["victim_age"], g["victim_sex"])
         if person in seen:
             continue
         seen.add(person)
-        q = "%s Q%d" % (g["shot_datetime"][:4], (int(g["shot_datetime"][5:7]) - 1) // 3 + 1)
+        q = "%s Q%d" % (when[:4], (int(when[5:7]) - 1) // 3 + 1)
         vic[q] = vic.get(q, 0) + 1
-        sho.setdefault(q, set()).add((g["shot_datetime"], g["block"]))
+        sho.setdefault(q, set()).add((when, g["block"]))
     ws3 = wb["Shootings"]
     good_s = True
     quarters = ["%d Q%d" % (y, q) for y in (2023, 2024, 2025) for q in (1, 2, 3, 4)]

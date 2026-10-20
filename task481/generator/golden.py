@@ -171,10 +171,11 @@ def write_xlsx(path, fig):
         "4e taken from the Domestic Violence Unit's log (cases not unfounded). Domestic victims were %.1f%% of 4e in "
         "October to December and %.1f%% in January to September." % (fig["printed"]["dv_share_q4_pct"],
                                                                       fig["printed"]["dv_share_jan_sep_pct"]),
-        "Shootings: people struck in an assault in the city who survived, each once, by the quarter shot; a shooting "
-        "is the people struck at one place and time. Deaths after the shooting log's outcome was entered are taken "
-        "from the Medical Examiner's list. The North Ellsmere Township blocks, which the log marked inside the city "
-        "until September 2024, are left out.",
+        "Shootings: people struck in an assault within the city's limits who survived, each once, by the quarter shot "
+        "in local time; a shooting is the people struck at one place and time. The shooting log's times are UTC on "
+        "the rows the records system entered from October 2024 and are put in local time first. Deaths after the "
+        "log's outcome was entered are taken from the Medical Examiner's list. The North Ellsmere Township blocks, "
+        "which the log marked inside the city until September 2024, are left out.",
     ]
     for i, t in enumerate(notes):
         c = ws4.cell(row=1 + i, column=1, value=t)

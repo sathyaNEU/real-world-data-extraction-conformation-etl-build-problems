@@ -1,6 +1,7 @@
 """task481 checks on the built pack, the golden and the simulation's truth. Every fork in the design note's table has
 an assertion here (SF ids), and the three-rules block executes the analyst test on the clean truth."""
 import collections
+import datetime as dt
 import json
 import os
 import re
@@ -157,8 +158,9 @@ def run(target, gdir, x, meta_path, fig_path):
     ok("shootings: golden equals the records' truth (shootings)", gs == ts)
     for name, kw, need_v, need_s in (("SF9: outcomes as the log holds them", {"deaths": False}, 11, 9),
                                      ("SF10: the inside-city flag as the log holds it", {"township": False}, 7, 7),
-                                     ("both as the log holds them (the careful path)",
-                                      {"deaths": False, "township": False}, 12, 12),
+                                     ("SF15: the shot times as stored", {"clock": False}, 4, 3),
+                                     ("the careful path (the Medical Examiner joined on the times as stored, the flag "
+                                      "trusted)", {"township": False, "clock": False}, 11, 10),
                                      ("one row a report number", {"dedup": "number"}, 10, 0),
                                      ("SF12: shootings by report number", {"events": "number"}, 0, 8),
                                      ("SF13: rows as entered", {"dedup": None}, 1, 0)):
@@ -174,22 +176,45 @@ def run(target, gdir, x, meta_path, fig_path):
                 and gg[M.G["outcome"]] == "WOUNDED"):
             ent[M.quarter_of(gg[M.G["entered"]])] += 1
     ok("SF11: the quarter entered files another grid", any(ent[q] != gv[q] for q in M.QUARTERS))
-    # the Medical Examiner's later deaths match one shooting-log row each
+    # the Medical Examiner's later deaths match one shooting-log row each, on the local date
     amb = 0
     for d in me:
         loc = d[M.MEC["injury_location"]]
         if loc.endswith(", ELLSMERE"):
             k = (d[M.MEC["date_of_injury"]], loc[: -len(", ELLSMERE")], d[M.MEC["age"]], d[M.MEC["sex"]])
-            people = {(gg[M.G["rms_number"]], gg[M.G["shot_datetime"]]) for gg in gvr
-                      if (gg[M.G["shot_datetime"]][:10], gg[M.G["block"]], gg[M.G["victim_age"]],
+            people = {(gg[M.G["rms_number"]], M.shot_local(gg)) for gg in gvr
+                      if (M.shot_local(gg)[:10], gg[M.G["block"]], gg[M.G["victim_age"]],
                           gg[M.G["victim_sex"]]) == k}
             amb += len(people) > 1
     ok("device fair: every later death matches one person", amb == 0, "%d ambiguous" % amb)
+    # the clock is the records' own: a person entered in both systems sits exactly the UTC offset apart, and the
+    # records system's shot times put in local time fall on the extract's incident date for the same incident
+    pairs, off = collections.defaultdict(list), []
+    for gg in gvr:
+        pairs[(gg[M.G["rms_number"]], gg[M.G["block"]], gg[M.G["victim_age"]], gg[M.G["victim_sex"]])].append(gg)
+    for grp in pairs.values():
+        old_rows = [gg for gg in grp if gg[M.G["entered"]] < "2024-10-01"]
+        new_rows = [gg for gg in grp if gg[M.G["entered"]] >= "2024-10-01"]
+        for a_ in old_rows:
+            for b_ in new_rows:
+                ta = dt.datetime.strptime(a_[M.G["shot_datetime"]], "%Y-%m-%d %H:%M")
+                tb = dt.datetime.strptime(b_[M.G["shot_datetime"]], "%Y-%m-%d %H:%M")
+                off.append(((tb - ta).total_seconds() / 3600, M.shot_local(a_) == M.shot_local(b_)))
+    ok("device fair: every person entered in both systems sits 5 or 6 hours apart as stored and at one local time",
+       off and all(h in (5.0, 6.0) and same for h, same in off), "%d pairs" % len(off))
+    norm = lambda n: ("20%s-0%s" % (n[2:4], n[5:]) if n.startswith("EP") else n)
+    inc_date = {r[M.E["incident_number"]]: r[M.E["incident_date"]] for r in rows}
+    hits = [(M.shot_local(gg)[:10] == inc_date[norm(gg[M.G["rms_number"]])],
+             gg[M.G["shot_datetime"]][:10] == inc_date[norm(gg[M.G["rms_number"]])])
+            for gg in gvr if gg[M.G["entered"]] >= "2024-10-01" and norm(gg[M.G["rms_number"]]) in inc_date]
+    ok("device fair: the records system's shot times in local time match the extract's incident dates; as stored they "
+       "miss the evening shootings", hits and all(a_ for a_, _ in hits) and sum(1 for _, b_ in hits if not b_) > 50,
+       "%d rows, %d off a day as stored" % (len(hits), sum(1 for _, b_ in hits if not b_)))
     # the township: every block the log marks inside before October 2024 and outside after it is marked outside in a
     # row from October 2024; no block the city's own shootings use is ever marked outside
     flags = collections.defaultdict(set)
     for gg in gvr:
-        flags[M.base_block(gg[M.G["block"]])].add((gg[M.G["inside_city"]], gg[M.G["shot_datetime"]] >= "2024-10-01"))
+        flags[M.base_block(gg[M.G["block"]])].add((gg[M.G["inside_city"]], gg[M.G["entered"]] >= "2024-10-01"))
     both = {k for k, v in flags.items() if any(f == "Y" for f, _ in v) and any(f == "N" for f, _ in v)}
     ok("device fair: every block marked both ways is marked outside from October 2024 and inside only before it",
        all(("N", True) in flags[k] and ("Y", True) not in flags[k] for k in both), "%d blocks" % len(both))
@@ -257,12 +282,12 @@ def run(target, gdir, x, meta_path, fig_path):
     for n in files:
         if n.endswith((".csv", ".txt")):
             t = open(os.path.join(target, n), encoding="utf-8").read()
-            ok("no long dashes in %s" % n, "—" not in t and "–" not in t)
+            ok("no long dashes in %s" % n, "\u2014" not in t and "\u2013" not in t)
     for n in ("method", "dictionary", "cert", "state_table"):
         t = _text(f(n))
-        ok("no long dashes in %s" % P.FILES[n], "—" not in t and "–" not in t)
+        ok("no long dashes in %s" % P.FILES[n], "\u2014" not in t and "\u2013" not in t)
     sub = open(os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()
-    ok("no long dashes in submission.md", "—" not in sub and "–" not in sub)
+    ok("no long dashes in submission.md", "\u2014" not in sub and "\u2013" not in sub)
 
     good = all(c for _, c, _ in RESULTS)
     bad = [(n, d) for n, c, d in RESULTS if not c]
