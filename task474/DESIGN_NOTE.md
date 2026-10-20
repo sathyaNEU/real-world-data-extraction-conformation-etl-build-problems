@@ -187,7 +187,14 @@ data and no reported total ships; the allowance holdings are by facility and ton
   succeeded. Primary device: D6, an event's hours split across states. Derates found in a run often run on into the
   reserve shutdown that follows, so EFDH counts hours the unit stood in reserve, and the start and shutdown hours are
   part hours, so SH and RSH split them by OP_TIME. The plain rate, the derate term unweighted by fp, operating rows
-  for SH, derates in service only, or every overlapping report kept each misses most units.
+  for SH, derates in service only, or every overlapping report kept each misses most units. Shared primary for both
+  asks (after round 5, whose readers reconstructed the standard exactly): D2, the record is the latest revision. One
+  forced outage on every unit, and a forced derate on some, was reviewed after the quarter and found to be deferred
+  planned work, and the report carries the revision as a second line under the same event number, typed MO or D4,
+  with a later report date; the event number identifies one event, so only its latest line stands. Filtering to the
+  forced types first and resolving overlaps among them (the careful path) keeps the stale forced line and misses
+  every unit on both asks; no sentence in the pack describes the revision, and rule 3.2's overlap rule covers full
+  forced outages only.
 - **Ask B, each unit's 2026 ozone-season equivalent forced outage rate (IEEE 762's EFOR), per cent to one decimal:
   9 figures.** Same files and filings. The standard's EFDH counts forced derates in service and in reserve shutdown
   alike, and EFDHRS, the part in reserve shutdown, joins the denominator. Operating rows for SH, EFDHRS left out,
@@ -325,3 +332,9 @@ data and no reported total ships; the allowance holdings are by facility and ton
   formulas left to the standard and only the events, overlap rule, capacity basis and operating time filed; the
   golden EFOR now counts reserve-shutdown derates in EFDH as the standard does. Round-4 judge: DETERMINISTIC,
   FIX_NOW on the later-report rule (now: the earlier report counts for none of its hours).
+- 2026-10-20, stage 4 round 5 on architecture 3: readers 9 and 10 missed the call (ten of ten) and kept 18 and 16 of
+  18 IEEE 762 figures by reconstructing the standard; judge DETERMINISTIC, APPROVE. A failed-start device for EFORd
+  (fuel burned with no operation) died on paper: Part 75 makes any hour with fuel combusted an operating hour, which
+  would put device rows in the call's population. Taken instead, on the coordinator's measured list: revisions under
+  the same event number (D2, latest revision, not latest delivered). An event spanning a month written once per month
+  (D6) was screened and dropped: rule 3.2's overlap rule already resolves it.

@@ -59,8 +59,8 @@ def write_guidelines(path):
                    "equivalent forced outage rate over the 2026 ozone season, as IEEE Std 762 defines them, in per "
                    "cent, on the hours from 1 May to 30 September 2026, local time.", BODY),
          Paragraph("3.2 The outages are the outage event report's: full forced outages are its events of types U1, U2 "
-                   "and U3, and where a later report of a full outage overlaps an earlier one on the same unit, the "
-                   "later report stands and the earlier one counts for none of its hours; forced derates are its events of types D1 and D2, each reducing the unit by "
+                   "and U3, and where a later report of a full forced outage overlaps an earlier one on the same unit, "
+                   "the later report stands and the earlier one counts for none of its hours; forced derates are its events of types D1 and D2, each reducing the unit by "
                    "its derate_mw against its nameplate MW in the generating unit register. The unit's operating time "
                    "is the data acquisition system's hourly record. Every start a unit attempted in the season "
                    "succeeded.", BODY),

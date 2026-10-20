@@ -57,8 +57,9 @@ def write(fig_path, out_path):
          "5. Divided each unit's measured and filled NOx by its GLOAD_MW summed over the same hours and designated "
          "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
          "6. Took each unit's ozone-season terms on local time from 1 May to 30 September 2026 (rule %s), the DAHS "
-         "hours moved forward an hour: FOH, the hours inside a U1, U2 or U3 event in %s, a later-filed full outage "
-         "replacing an earlier one it overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, "
+         "hours moved forward an hour, each event number in %s taken as one event at its latest-reported line: FOH, "
+         "the hours inside a U1, U2 or U3 event, a later-filed full forced outage replacing an earlier one it "
+         "overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, "
          "the hours outside a full outage less their OP_TIME; the starts, the operating hours that follow a hour "
          "without operation; EFDH, each D1 or D2 hour outside a full outage at derate_mw over the register's "
          "nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME)." % (

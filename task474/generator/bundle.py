@@ -149,7 +149,8 @@ def _outage_terms(target, route="golden"):
     overlaps on the unit), the number of forced outages, SH (operating time), RSH (hours neither operating nor in a
     full outage, the part of a part hour not operating included), the actual starts, EFDH (each D1 or D2 hour outside
     a full outage at derate_mw over nameplate MW) and EFDHRS (the part of EFDH falling in reserve shutdown).
-    Routes for the checks: "rows" counts operating rows for SH; "noresolve" keeps every full outage report;
+    Each event number is one event, its latest revision standing. Routes for the checks: "filterfirst" takes every
+    line of the U and D types as filed, revisions ignored; "rows" counts operating rows for SH; "noresolve" keeps every full outage report;
     "standard" reads the events on the DAHS clock; "service" counts derates in service only."""
     a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
     cap = {}
@@ -169,7 +170,16 @@ def _outage_terms(target, route="golden"):
                 starts[u] = starts.get(u, 0) + 1
         prev_on[u] = f > 0
     evs, der = {}, {}
-    for r in _rows(find(target, "gads_event_report")):
+    rows = _rows(find(target, "gads_event_report"))
+    if route != "filterfirst":
+        # an event number is one event: its latest revision is the event
+        latest = {}
+        for r in rows:
+            k = (r["unit"], r["event_no"])
+            if k not in latest or r["date_reported"] > latest[k]["date_reported"]:
+                latest[k] = r
+        rows = list(latest.values())
+    for r in rows:
         s0 = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
         e0 = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
         if r["event_type"] in ("U1", "U2", "U3"):

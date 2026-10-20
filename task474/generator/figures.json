@@ -10,26 +10,26 @@
  },
  "asks": {
   "efor": {
-   "AF-1": 30.1,
-   "AF-2": 26.5,
-   "CB-1": 16.1,
-   "CB-2": 14.2,
-   "DF-1": 27.2,
-   "DF-2": 34.2,
-   "DF-3": 20.9,
-   "SR-1": 16.3,
-   "SR-2": 18.4
+   "AF-1": 27.4,
+   "AF-2": 24.8,
+   "CB-1": 15.0,
+   "CB-2": 12.9,
+   "DF-1": 24.8,
+   "DF-2": 33.2,
+   "DF-3": 19.6,
+   "SR-1": 15.1,
+   "SR-2": 16.8
   },
   "eford": {
-   "AF-1": 16.3,
-   "AF-2": 12.9,
-   "CB-1": 8.3,
-   "CB-2": 10.3,
-   "DF-1": 15.9,
-   "DF-2": 20.7,
-   "DF-3": 9.6,
-   "SR-1": 9.1,
-   "SR-2": 10.4
+   "AF-1": 14.5,
+   "AF-2": 11.8,
+   "CB-1": 7.5,
+   "CB-2": 9.3,
+   "DF-1": 14.2,
+   "DF-2": 19.4,
+   "DF-3": 8.7,
+   "SR-1": 8.2,
+   "SR-2": 9.3
   }
  },
  "call": [
@@ -66,72 +66,72 @@
  "rows": {
   "AF-1": {
    "designated": true,
-   "efor": 30.1,
-   "eford": 16.3,
+   "efor": 27.4,
+   "eford": 14.5,
    "hours": 1027,
    "mwh": 162545,
    "plant": "Ashfork"
   },
   "AF-2": {
    "designated": true,
-   "efor": 26.5,
-   "eford": 12.9,
+   "efor": 24.8,
+   "eford": 11.8,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"
   },
   "CB-1": {
    "designated": true,
-   "efor": 16.1,
-   "eford": 8.3,
+   "efor": 15.0,
+   "eford": 7.5,
    "hours": 732,
    "mwh": 116711,
    "plant": "Cutler Bend"
   },
   "CB-2": {
    "designated": true,
-   "efor": 14.2,
-   "eford": 10.3,
+   "efor": 12.9,
+   "eford": 9.3,
    "hours": 1164,
    "mwh": 199641,
    "plant": "Cutler Bend"
   },
   "DF-1": {
    "designated": true,
-   "efor": 27.2,
-   "eford": 15.9,
+   "efor": 24.8,
+   "eford": 14.2,
    "hours": 1076,
    "mwh": 198573,
    "plant": "Dunmore Flats"
   },
   "DF-2": {
    "designated": false,
-   "efor": 34.2,
-   "eford": 20.7,
+   "efor": 33.2,
+   "eford": 19.4,
    "hours": 935,
    "mwh": 175633,
    "plant": "Dunmore Flats"
   },
   "DF-3": {
    "designated": true,
-   "efor": 20.9,
-   "eford": 9.6,
+   "efor": 19.6,
+   "eford": 8.7,
    "hours": 908,
    "mwh": 157196,
    "plant": "Dunmore Flats"
   },
   "SR-1": {
    "designated": true,
-   "efor": 16.3,
-   "eford": 9.1,
+   "efor": 15.1,
+   "eford": 8.2,
    "hours": 1007,
    "mwh": 175420,
    "plant": "Sable Ridge"
   },
   "SR-2": {
    "designated": false,
-   "efor": 18.4,
-   "eford": 10.4,
+   "efor": 16.8,
+   "eford": 9.3,
    "hours": 1015,
    "mwh": 178218,
    "plant": "Sable Ridge"

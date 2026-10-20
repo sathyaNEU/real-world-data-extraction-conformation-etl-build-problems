@@ -155,14 +155,14 @@ def main(target, gdir, x):
         check("H25: %s reads in pypdf (strict) and pdftotext" % W.FILES[k], key in a1 and key in a2)
     # the asks
     a = B.ask_a(target)
-    for r, k in (("plain", 9), ("nofp", 9), ("rows", 9), ("service", 5), ("noresolve", 9)):
+    for r, k in (("plain", 9), ("nofp", 9), ("rows", 9), ("service", 5), ("noresolve", 9), ("filterfirst", 9)):
         cc = B.ask_a(target, r)
         mv = [u for u in rec if round(a[u], 1) != round(cc[u], 1)]
         check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
     ea = min(.05 - abs(a[u] - round(a[u], 1)) for u in rec)
     check("ask A bins: every unit's demand rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % ea, ea >= .01)
     b = B.ask_b(target)
-    for r, k in (("rows", 9), ("nors", 5), ("service", 7), ("noresolve", 9)):
+    for r, k in (("rows", 9), ("nors", 5), ("service", 7), ("noresolve", 9), ("filterfirst", 9)):
         bs = B.ask_b(target, r)
         mv = [u for u in rec if round(b[u], 1) != round(bs[u], 1)]
         check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)

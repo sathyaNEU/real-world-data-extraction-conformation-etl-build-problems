@@ -135,5 +135,24 @@ def build(rng, fleet):
     for e in sorted(ev, key=lambda e: (e["filed"], e["start"], e["unit"])):
         num += int(rng.integers(1, 9))
         e["event"] = num
-    ev.sort(key=lambda e: (e["start"], e["unit"]))
+    # revisions: an event reviewed after the quarter closed and found to have been planned work deferred, not a
+    # failure, is reported again under its own event number as a maintenance outage (MO) or derate (D4); the event
+    # report keeps every revision it was sent
+    rv = np.random.default_rng(W.SEED + 2000)
+    for u in W.CC:
+        mine = [e for e in ev if e["unit"] == u and e["type"] in ("U1", "U2", "U3") and not e.get("dup")
+                and W.SEASON[0] <= e["start"].date() and e["end"] < dt.datetime(2026, 8, 25)
+                and not any(f is not e and f["unit"] == u and f["start"] < e["end"] and e["start"] < f["end"]
+                            for f in ev if f["type"] in ("U1", "U2", "U3"))]
+        if mine:
+            e = mine[int(rv.integers(0, len(mine)))]
+            ev.append(dict(e, type="MO", filed=e["filed"] + dt.timedelta(days=int(rv.integers(20, 46))),
+                           revision=True))
+        ders = [e for e in ev if e["unit"] == u and e["type"] in ("D1", "D2") and not e.get("revision")
+                and e["end"] < dt.datetime(2026, 8, 25)]
+        if ders and rv.random() < .6:
+            e = ders[int(rv.integers(0, len(ders)))]
+            ev.append(dict(e, type="D4", filed=e["filed"] + dt.timedelta(days=int(rv.integers(20, 46))),
+                           revision=True))
+    ev.sort(key=lambda e: (e["start"], e["unit"], e["filed"]))
     return dict(price=price, invoices=inv, events=ev)
