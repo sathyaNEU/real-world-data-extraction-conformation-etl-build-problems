@@ -1,26 +1,26 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-20",
-  "stump": "The default path treats every pass over a segment as an independent chance at the 95 per cent find rate of repeat passes and designates only Carrow Point and Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct cameras that drove a segment are independent chances; the rural and suburban sections one or two cameras drove hide close to half their potholes.",
+  "stump": "The default path treats every pass over a segment as an independent chance and designates only Carrow Point and Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct units that drove a segment are independent chances, each finding 54 per cent of what another found; Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle clear the line at 7.08 to 8.29.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-20"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (design-note vocabulary in the scope of work, the program and the data notes; no LEAK)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (no BLOCK); nearest task49 at 0.07",
+    "nearest": "task49"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, asks and prompt to precut exit 0; prototype in scratch t478/proto2b.py (q 0.56 per distinct camera, r 0.95 per repeat pass)",
+  "resume": "stage 4 in flight: two isolated readers (fresh unzips in the scratchpad) and the judge thread (brief /tmp/determinism-check-task478-r1/judge_brief.md) running on target.zip c4afbea3a5c2273ad7ff0158716c68d5; on their reports score each reader with score_reader.py before reading its verdict, send the thread's verdict.md to the determinism-judge agent for determinism_check_report.md, fix every finding in the generator in one pass (python3 task478/generator/build.py), re-run leak.py --asof 2027-04-09, then ship (target.zip and golden/ force-added)",
   "approved": null,
   "delivered": null,
   "portal": null,

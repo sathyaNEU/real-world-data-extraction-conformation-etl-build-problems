@@ -1,0 +1,142 @@
+{
+ "task": "task478",
+ "title": "Tamsett District Spring Patching Program 2027 designations",
+ "setting": "A fictional district of an unnamed U.S. state's department of transportation; every record is synthetic.",
+ "as_of": "2027-04-09",
+ "files": [
+  {
+   "file": "export_manifest.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-04-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 15
+  },
+  {
+   "file": "fleet_camera_traversals_2027-03.csv",
+   "source": "fleet telematics provider for the district (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 65867
+  },
+  {
+   "file": "kerbline_detections_2027-03.csv",
+   "source": "Kerbline Vision platform (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 37995
+  },
+  {
+   "file": "kerbline_pilot_scope_of_work.pdf",
+   "source": "Kerbline Vision, Inc. (fictional), synthetic records",
+   "date": "2027-01-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "kerbline_qa_review_2027-03.xlsx",
+   "source": "Kerbline Vision platform, review module (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1203
+  },
+  {
+   "file": "kerbline_unit_register.xlsx",
+   "source": "Kerbline Vision install log (fictional), synthetic records",
+   "date": "2027-04-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 34
+  },
+  {
+   "file": "kerbline_unit_sessions_2027-03.json",
+   "source": "Kerbline Vision device API (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1197
+  },
+  {
+   "file": "maintenance_sections.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 14
+  },
+  {
+   "file": "mms_cold_patch_orders_2027-03.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 398
+  },
+  {
+   "file": "pavement_condition_2026.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2026-11-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 889
+  },
+  {
+   "file": "road_inventory_2026.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 889
+  },
+  {
+   "file": "road_inventory_crosswalk_2025_2026.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 38
+  },
+  {
+   "file": "route_turnback_notice_2027-03.pdf",
+   "source": "City of Tamsett, Department of Public Works (fictional), synthetic records",
+   "date": "2027-03-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "spring_patching_program_2027.pdf",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-04-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "tamsett_pilot_data_dictionary.pdf",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-04-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "winter_operations_2027-03.csv",
+   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
+   "date": "2027-04-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 28
+  }
+ ],
+ "distractor_files": [
+  "pavement_condition_2026.csv",
+  "winter_operations_2027-03.csv"
+ ],
+ "distractors": [
+  {
+   "file": "pavement_condition_2026.csv",
+   "why": "the 2026 summer condition survey: roughness and cracking before the winter, not the March potholes the program counts"
+  },
+  {
+   "file": "winter_operations_2027-03.csv",
+   "why": "the March storms' plow hours, salt and freeze-thaw cycles by section: what made potholes, not a count of them"
+  }
+ ],
+ "deliverables": [
+  "tamsett_spring_patching_sections_2027.csv",
+  "tamsett_spring_patching_task_orders_2027.pdf"
+ ],
+ "stated_inputs": [
+  "6.0",
+  "10.85"
+ ]
+}

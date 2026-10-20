@@ -1,0 +1,264 @@
+{
+ "_family": {
+  "fleet": {
+   "Carrow Point": 7.9193,
+   "Elmscourt": 9.1763,
+   "Fenwick Gap": 6.8383,
+   "Grisholt": 3.9894,
+   "Halverton": 3.11,
+   "Holloway Run": 7.7587,
+   "Kestrelton": 6.8763,
+   "Marlpit": 3.8835,
+   "Norvelle": 7.9547,
+   "Oxbrae": 3.7643,
+   "Pyke Hill": 2.166,
+   "Rushmead": 4.9818,
+   "Stonebeck": 3.1681,
+   "Thistlebank": 7.8021
+  },
+  "kind": {
+   "Carrow Point": 7.9826,
+   "Elmscourt": 9.2662,
+   "Fenwick Gap": 6.8552,
+   "Grisholt": 3.9454,
+   "Halverton": 3.0757,
+   "Holloway Run": 7.6726,
+   "Kestrelton": 6.7981,
+   "Marlpit": 3.8816,
+   "Norvelle": 7.8663,
+   "Oxbrae": 3.7239,
+   "Pyke Hill": 2.1774,
+   "Rushmead": 5.0365,
+   "Stonebeck": 3.1773,
+   "Thistlebank": 7.8357
+  },
+  "mle": {
+   "Carrow Point": 7.9223,
+   "Elmscourt": 9.2068,
+   "Fenwick Gap": 7.0261,
+   "Grisholt": 4.1202,
+   "Halverton": 3.214,
+   "Holloway Run": 8.0082,
+   "Kestrelton": 7.1023,
+   "Marlpit": 3.9554,
+   "Norvelle": 8.2151,
+   "Oxbrae": 3.9067,
+   "Pyke Hill": 2.2399,
+   "Rushmead": 5.0065,
+   "Stonebeck": 3.2499,
+   "Thistlebank": 8.0451
+  },
+  "pairs": {
+   "Carrow Point": 7.9527,
+   "Elmscourt": 9.2367,
+   "Fenwick Gap": 7.0846,
+   "Grisholt": 4.1582,
+   "Halverton": 3.2441,
+   "Holloway Run": 8.0814,
+   "Kestrelton": 7.1686,
+   "Marlpit": 3.9808,
+   "Norvelle": 8.291,
+   "Oxbrae": 3.9465,
+   "Pyke Hill": 2.2613,
+   "Rushmead": 5.0216,
+   "Stonebeck": 3.2748,
+   "Thistlebank": 8.1168
+  }
+ },
+ "_rates": {
+  "mle": 0.54807,
+  "pairs": 0.54248
+ },
+ "_unrounded": {
+  "Carrow Point": 7.9527,
+  "Elmscourt": 9.2367,
+  "Fenwick Gap": 7.0846,
+  "Grisholt": 4.1582,
+  "Halverton": 3.2441,
+  "Holloway Run": 8.0814,
+  "Kestrelton": 7.1686,
+  "Marlpit": 3.9808,
+  "Norvelle": 8.291,
+  "Oxbrae": 3.9465,
+  "Pyke Hill": 2.2613,
+  "Rushmead": 5.0216,
+  "Stonebeck": 3.2748,
+  "Thistlebank": 8.1168
+ },
+ "call": {
+  "count": 7,
+  "designated": [
+   "Elmscourt",
+   "Norvelle",
+   "Thistlebank",
+   "Holloway Run",
+   "Carrow Point",
+   "Kestrelton",
+   "Fenwick Gap"
+  ],
+  "of": 14
+ },
+ "components": {
+  "confirmed": 1080,
+  "find_rate_pct": 54.2,
+  "highest_below": {
+   "name": "Rushmead",
+   "rate": 5
+  },
+  "lane_miles": 2428.9,
+  "lowest_in": {
+   "name": "Fenwick Gap",
+   "rate": 7
+  },
+  "miss_rate": 0.458,
+  "repeat_pct": 99.5,
+  "turned_back": 5
+ },
+ "default": {
+  "designated": [
+   "Carrow Point",
+   "Elmscourt"
+  ],
+  "pass_rate_pct": 64
+ },
+ "kerbline": {
+  "charge": 8832,
+  "days": {
+   "District crew": 164,
+   "Freeway service patrol": 150,
+   "Section patrol": 350,
+   "Street sweeper": 150
+  },
+  "rate": 10.85,
+  "total_days": 814
+ },
+ "line": 6.0,
+ "sections": {
+  "Carrow Point": {
+   "camera_miles": 7732,
+   "cold_mix_lb": 3770,
+   "cold_patched": 70,
+   "crew": "Yes",
+   "lane_miles": 258.7,
+   "rate": 8,
+   "section": 403
+  },
+  "Elmscourt": {
+   "camera_miles": 6741,
+   "cold_mix_lb": 4840,
+   "cold_patched": 85,
+   "crew": "Yes",
+   "lane_miles": 254.1,
+   "rate": 9,
+   "section": 407
+  },
+  "Fenwick Gap": {
+   "camera_miles": 1787,
+   "cold_mix_lb": 1540,
+   "cold_patched": 27,
+   "crew": "Yes",
+   "lane_miles": 165.3,
+   "rate": 7,
+   "section": 402
+  },
+  "Grisholt": {
+   "camera_miles": 1771,
+   "cold_mix_lb": 360,
+   "cold_patched": 8,
+   "crew": "No",
+   "lane_miles": 126.8,
+   "rate": 4,
+   "section": 404
+  },
+  "Halverton": {
+   "camera_miles": 1820,
+   "cold_mix_lb": 85,
+   "cold_patched": 2,
+   "crew": "No",
+   "lane_miles": 128.6,
+   "rate": 3,
+   "section": 408
+  },
+  "Holloway Run": {
+   "camera_miles": 2084,
+   "cold_mix_lb": 1255,
+   "cold_patched": 20,
+   "crew": "Yes",
+   "lane_miles": 129.1,
+   "rate": 8,
+   "section": 401
+  },
+  "Kestrelton": {
+   "camera_miles": 1656,
+   "cold_mix_lb": 1085,
+   "cold_patched": 13,
+   "crew": "Yes",
+   "lane_miles": 126.9,
+   "rate": 7,
+   "section": 406
+  },
+  "Marlpit": {
+   "camera_miles": 2510,
+   "cold_mix_lb": 775,
+   "cold_patched": 13,
+   "crew": "No",
+   "lane_miles": 182.3,
+   "rate": 4,
+   "section": 405
+  },
+  "Norvelle": {
+   "camera_miles": 1789,
+   "cold_mix_lb": 805,
+   "cold_patched": 9,
+   "crew": "Yes",
+   "lane_miles": 131.1,
+   "rate": 8,
+   "section": 413
+  },
+  "Oxbrae": {
+   "camera_miles": 2049,
+   "cold_mix_lb": 130,
+   "cold_patched": 3,
+   "crew": "No",
+   "lane_miles": 138.3,
+   "rate": 4,
+   "section": 410
+  },
+  "Pyke Hill": {
+   "camera_miles": 1774,
+   "cold_mix_lb": 350,
+   "cold_patched": 5,
+   "crew": "No",
+   "lane_miles": 172.1,
+   "rate": 2,
+   "section": 414
+  },
+  "Rushmead": {
+   "camera_miles": 13257,
+   "cold_mix_lb": 2735,
+   "cold_patched": 47,
+   "crew": "No",
+   "lane_miles": 264.5,
+   "rate": 5,
+   "section": 411
+  },
+  "Stonebeck": {
+   "camera_miles": 2254,
+   "cold_mix_lb": 700,
+   "cold_patched": 12,
+   "crew": "No",
+   "lane_miles": 181.7,
+   "rate": 3,
+   "section": 412
+  },
+  "Thistlebank": {
+   "camera_miles": 1868,
+   "cold_mix_lb": 1090,
+   "cold_patched": 21,
+   "crew": "Yes",
+   "lane_miles": 169.4,
+   "rate": 8,
+   "section": 409
+  }
+ }
+}
