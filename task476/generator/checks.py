@@ -150,7 +150,11 @@ def main(target, gdir, x):
     b_g, b_t, b_d = B.ask_b(target), B.ask_b(target, meters=False), B.ask_b(target, dedupe=False)
     check("ask B golden equals the generator's", b_g == g["ask_b"])
     miss = [d for d in W.DISTRICTS if b_t.get(d) == b_g.get(d)]
-    check("ask B device: tickets counted as customers miss every district", not miss, miss)
+    check("ask B hazard: tickets counted as customers miss every district", not miss, miss)
+    b_a = B.ask_b(target, by_line=False)
+    miss = [d for d in W.DISTRICTS if b_a.get(d) == b_g.get(d)]
+    check("ask B device: the meters at each ticket's address, without the other premises on its service line, miss "
+          "every district (the measured readers' path)", not miss, miss)
     check("asks free of the call: the call reads no cost line, closeout, ticket or premise", True)
     print("checks: %d of %d pass" % (n[0] - len(fails), n[0]))
     return not fails

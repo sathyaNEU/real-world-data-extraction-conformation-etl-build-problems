@@ -49,9 +49,9 @@ def write(path, x):
          "6. From %s, took each work order's cost of each type at the end of 2026 less at the end of 2025 (each line is "
          "the cost to date, as the closing totals in %s confirm), by the leak's own district: the repair costs below." % (
              F["costs"], F["closeouts"]),
-         "7. From %s, counted each service address shut off for a leak repair once per leak (dispatch and the field "
-         "crew sometimes both opened a ticket) and the meters behind it in %s: the customer interruptions below." % (
-             F["tickets"], F["meters"]),
+         "7. From %s, took each service line shut off for a leak repair once per leak (dispatch and the field crew "
+         "sometimes both opened a ticket), and counted the meters of every premise that line feeds in %s (a shared "
+         "service line feeds two to four premises): the customer interruptions below." % (F["tickets"], F["meters"]),
          "8. Designated the districts at or above the line: %s." % ", ".join(rec),
          "",
          "## 4. Deliverable Answers", "",

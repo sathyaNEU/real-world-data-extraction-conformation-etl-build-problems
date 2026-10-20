@@ -162,11 +162,11 @@ def ticket_rows(x):
             for t in x["tickets"]]
 
 
-PREM_COLS = ["premise_id", "service_address", "district", "meters", "segment_id"]
+PREM_COLS = ["premise_id", "service_address", "district", "meters", "segment_id", "service_line_id"]
 
 
 def prem_rows(x):
-    return [[p["premise"], p["addr"].upper(), p["district"], p["meters"], p["seg"]] for p in x["prem"]]
+    return [[p["premise"], p["addr"].upper(), p["district"], p["meters"], p["seg"], p["service"]] for p in x["prem"]]
 
 
 CLOSE_COLS = ["wo_no", "leak_no", "closed", "total_cost"]

@@ -21,7 +21,7 @@ Each emitted 3.30 tonnes or more of 2026 leak methane per mile of cast-iron and 
 4. Dated each surveyed leak's start as its expected start between its segment's 2025 survey (leak_survey_schedule_2015_2026.csv) and the find, each day weighted by its month's share of the profile.
 5. Summed each leak's rate times its hours from start to repair or year end by district, and divided by the district's cast-iron and bare-steel miles in gis_main_segments_2026-12-31.csv: Brennan Hill, Elmwood, Fenwick, Harlow, Ivers at or above the line.
 6. From work_order_cost_lines_2025_2026.csv, took each work order's cost of each type at the end of 2026 less at the end of 2025 (each line is the cost to date, as the closing totals in work_order_closeouts_2025_2026.csv confirm), by the leak's own district: the repair costs below.
-7. From service_interruption_tickets_2026.csv, counted each service address shut off for a leak repair once per leak (dispatch and the field crew sometimes both opened a ticket) and the meters behind it in meter_premises_2027-03.csv: the customer interruptions below.
+7. From service_interruption_tickets_2026.csv, took each service line shut off for a leak repair once per leak (dispatch and the field crew sometimes both opened a ticket), and counted the meters of every premise that line feeds in meter_premises_2027-03.csv (a shared service line feeds two to four premises): the customer interruptions below.
 8. Designated the districts at or above the line: Brennan Hill, Elmwood, Fenwick, Harlow, Ivers.
 
 ## 4. Deliverable Answers
@@ -29,18 +29,18 @@ Each emitted 3.30 tonnes or more of 2026 leak methane per mile of cast-iron and 
 ### leak_methane_inventory_2026.xlsx
 
 1. Each district: leaks found in 2026, designated, 2026 leak repair cost, 2026 customer interruptions:
-   - Ashby: 72; no; $391,294; 94
-   - Brennan Hill: 78; yes; $392,367; 108
-   - Calder: 68; no; $372,257; 144
-   - Dorrance: 49; no; $246,769; 75
-   - Elmwood: 114; yes; $617,746; 184
-   - Fenwick: 89; yes; $350,452; 40
-   - Glenmora: 68; no; $365,620; 79
-   - Harlow: 88; yes; $370,241; 94
-   - Ivers: 79; yes; $437,290; 127
-   - Juniper: 70; no; $414,327; 120
-   - Kessel: 52; no; $266,418; 85
-   - Lockwood: 64; no; $352,142; 106
+   - Ashby: 72; no; $391,294; 134
+   - Brennan Hill: 78; yes; $392,367; 177
+   - Calder: 68; no; $372,257; 182
+   - Dorrance: 49; no; $246,769; 116
+   - Elmwood: 114; yes; $617,746; 248
+   - Fenwick: 89; yes; $350,452; 122
+   - Glenmora: 68; no; $365,620; 112
+   - Harlow: 88; yes; $370,241; 142
+   - Ivers: 79; yes; $437,290; 160
+   - Juniper: 70; no; $414,327; 186
+   - Kessel: 52; no; $266,418; 133
+   - Lockwood: 64; no; $352,142; 195
 
 ### main_replacement_designations_2027.pdf
 

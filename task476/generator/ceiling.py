@@ -16,7 +16,7 @@ def main(target=None):
     keep = sum(1 for d in g if g[d][0] == m[d][0]) + sum(1 for d in g if (g[d][3] >= B.LINE) == (m[d][3] >= B.LINE))
     mirror_call = W_CALL * 0.75 * keep / 24.0
     a_g, a_c = B.ask_a(target), B.ask_a(target, cumulative=False)
-    b_g, b_c = B.ask_b(target), B.ask_b(target, meters=False)
+    b_g, b_c = B.ask_b(target), B.ask_b(target, by_line=False)
     hit = sum(round(a_c[d]) == round(a_g[d]) for d in a_g) + sum(b_c.get(d) == b_g.get(d) for d in b_g)
     ask = W_ASK * hit / 24.0
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask

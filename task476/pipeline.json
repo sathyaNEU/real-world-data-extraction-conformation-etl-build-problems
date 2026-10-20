@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20: the program line in the guidelines and its domain vocabulary; no LEAK",
-  "reader": ""
+  "reader": "arch 2 readers 1 and 2 (543b59b9): both missed the call (midpoint: Ashby, Elmwood, Ivers), ask A 0 of 12, ask B 12 of 12; ask B re-sited to shared service lines"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 on the registered v2 card (time_semantics strategy risk, ETL and Gate G overuse, decision type and question form after task471); BLOCKs cleared at the draw: org family, forcing event and context artifact redrawn, structural matches differentiated",
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 of architecture 2: free gates green (checks 26 of 26, verify, byte-identical, figures_check 45, precut 51, leak REVIEW, pair ceiling 37.9). Judge r2 and two scored readers running on target.zip 543b59b9 (/tmp/determinism-check-task476-r2, /tmp/reader-task476-r2a and r2b); fix their findings in one pass, then ship",
+ "resume": "stage 4 of architecture 2: waiting on judge r2 (/tmp/determinism-check-task476-r2/verdict.md); ask B re-sited and Central time pinned (checks 27 of 27); after the verdict fix in one pass, rebuild, one fresh reader on the new pack, ship",
  "approved": null,
  "delivered": null,
  "portal": null,

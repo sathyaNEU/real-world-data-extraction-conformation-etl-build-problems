@@ -136,22 +136,29 @@ def ask_a(target, cumulative=True, by_leak=True):
     return {d: round(v, 2) for d, v in out.items()}
 
 
-def ask_b(target, meters=True, dedupe=True):
+def ask_b(target, meters=True, dedupe=True, by_line=True):
     """Each district's 2026 customer interruptions from leak repairs: each service address shut off for a leak
     repair, its meters counted (meters=False counts the tickets), once per leak (dedupe=False keeps both tickets
     where dispatch and the field crew each opened one)."""
-    prem = {}
+    prem, on = {}, {}
     for r in rows(target, "meter_premises"):
-        prem[r["service_address"]] = (int(r["meters"]), r["district"])
+        prem[r["service_address"]] = (int(r["meters"]), r["district"], r["service_line_id"])
+        on.setdefault(r["service_line_id"], []).append((int(r["meters"]), r["district"]))
     seen = set()
     out = {}
     for r in rows(target, "service_interruption_tickets"):
         if not r["opened_local"].startswith("2026"):
             continue
-        k = (r["service_address"], r["leak_no"])
+        m, d, line = prem[r["service_address"]]
+        k = (line if by_line else r["service_address"], r["leak_no"])
         if dedupe and k in seen:
             continue
         seen.add(k)
-        m, d = prem[r["service_address"]]
-        out[d] = out.get(d, 0) + (m if meters else 1)
+        if not meters:
+            out[d] = out.get(d, 0) + 1
+        elif by_line:
+            for m2, d2 in on[line]:
+                out[d2] = out.get(d2, 0) + m2
+        else:
+            out[d] = out.get(d, 0) + m
     return out

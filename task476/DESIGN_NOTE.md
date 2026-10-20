@@ -253,16 +253,19 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   the crew's district, and about one work order in eleven was worked by a neighbouring district's crew.
 - **Ask B, each district's 2026 customer interruptions from leak repairs: 12 figures.** H18 home: guidelines 3.1, the
   disruption the program would add or avoid. Path: the interruption tickets, the meter premises, the guidelines:
-  three files, six columns. Primary device: D6, a log read as a roster: a ticket is a service address shut off, and an
-  address can carry several meters (apartment buildings up to 24), so tickets counted as customers undercount every
-  district. Hazard: dispatch and the field crew sometimes both opened a ticket for the same address and leak.
+  three files, seven columns. Primary device (re-sited after stage 4 readers 1 and 2, which joined each ticket's
+  address to its meters and took all 12): D7, the true key elsewhere. A ticket names the premise where the crew shut
+  off the service line, and on older streets one service line feeds two to four neighbouring premises, so every
+  premise on the line was interrupted; only the premises file's service-line id finds the others. Hazards: an address
+  can carry several meters (apartment buildings up to 24), and dispatch and the field crew sometimes both opened a
+  ticket for the same address and leak.
 - **The construction layer:** the designated set, each district's leaks and verdict, the chart; the cracker has them.
 - **Main population zero-counts (asserted):** the call reads no cost line, closeout, ticket or premise.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
 | A, 2026 leak repair cost | the 2026 cost lines summed by the leak's district, every hazard repaired; the lines are costs to date, so every district's cost falls outside its bin | miss |
-| B, 2026 customer interruptions | tickets for 2026 deduplicated by address and leak, counted; the meters behind each address are left out, so every district's count falls outside its bin | miss |
+| B, 2026 customer interruptions | tickets for 2026 deduplicated by address and leak, the meters at each ticket's address counted; the other premises on each shared service line are left out, so every district's count falls outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
 - Pair ceiling: 37.9 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
@@ -283,3 +286,7 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   leave only execution; without the sentence the unit is unfiled. No position holds both gates (the WHAT screen's
   own case), so the number re-roots. Ask A's reopened cases were also read straight off the event history, and the
   prompt's "median" contradicted guidelines 4.2's average.
+- 2026-10-20, architecture 2 stage 4 readers 1 and 2 (pack 543b59b9): both missed the call on the default path
+  (the midpoint start: Ashby, Elmwood and Ivers) and every repair-cost figure, and both took all 12 interruption
+  figures by joining each ticket's address to its meters. That device kept as a hazard; Ask B's primary re-sited to
+  the shared service lines. Reader 1 also read "local" as Eastern time: guidelines 2.2 now names Central time.

@@ -79,7 +79,23 @@ def premises(segs):
             meters = int(r.choice([1, 1, 1, 1, 2, 2, 3, 4, 6, 8, 12, 24], p=[.3, .2, .15, .1, .07, .05, .04, .03, .02,
                                                                              .02, .01, .01]))
             out.append(dict(premise="P%07d" % (2000000 + n), addr="%d %s" % (num, R.street(s)), district=s.district,
-                            meters=meters, seg=s.sid))
+                            meters=meters, seg=s.sid, service=None))
+    # service lines: most premises have their own; on older streets one service line feeds two to four neighbouring
+    # premises (a shared service), and shutting it off interrupts every premise on it
+    by_seg = {}
+    for p in out:
+        by_seg.setdefault(p["seg"], []).append(p)
+    k = 0
+    for sid in sorted(by_seg):
+        ps = sorted(by_seg[sid], key=lambda p: p["addr"])
+        r = T.rng_for("svc", sid)
+        i = 0
+        while i < len(ps):
+            size = int(r.choice([1, 2, 3, 4], p=[0.62, 0.22, 0.11, 0.05])) if r.random() < 0.55 else 1
+            k += 1
+            for p in ps[i:i + size]:
+                p["service"] = "S%07d" % (5000000 + k)
+            i += size
     return out
 
 
@@ -102,6 +118,10 @@ def tickets(lk, prem):
             if not ps:
                 continue
             hit = [ps[int(i)] for i in sorted(set(int(x) for x in r.integers(0, len(ps), size=int(r.integers(1, 4)))))]
+            one = {}
+            for p in hit:
+                one.setdefault(p["service"], p)
+            hit = list(one.values())
             for p in hit:
                 n += 1
                 t0 = t + dt.timedelta(minutes=int(r.integers(-40, 30)))
@@ -118,16 +138,19 @@ def tickets(lk, prem):
 
 
 def ask_b(tix, prem):
-    """Each district's customers (meters) whose service was interrupted in 2026: each interrupted service address
-    once per event, its meters counted."""
-    meters = {p["premise"]: (p["meters"], p["district"]) for p in prem}
+    """Each district's 2026 customer interruptions from leak repairs: each service line shut off, once per leak, every
+    meter on every premise the line feeds."""
+    on = {}
+    for p in prem:
+        on.setdefault(p["service"], []).append(p)
+    svc = {p["premise"]: p["service"] for p in prem}
     seen = set()
     out = {d: 0 for d in W.DISTRICTS}
     for t in tix:
-        k = (t["premise"], t["leak"])
+        k = (svc[t["premise"]], t["leak"])
         if k in seen:
             continue
         seen.add(k)
-        m, d = meters[t["premise"]]
-        out[d] += m
+        for p in on[svc[t["premise"]]]:
+            out[p["district"]] += p["meters"]
     return out

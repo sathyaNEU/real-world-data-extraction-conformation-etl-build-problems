@@ -59,7 +59,7 @@ def write_guidelines(path):
             "cast-iron and bare-steel mains and their services, whether found at the district's leak survey or after "
             "an odor call, each from when the leak began until it was repaired, or until 31 December 2026 if it had "
             "not been repaired by then, at the rate in Table 1 for the grade the leak was given when it was found. A "
-            "leak found after an odor call began when the call was received. Dates and times are local." %
+            "leak found after an odor call began when the call was received. Dates and times are local (Central time)." %
             SECTIONS["methane"],
             "%s A district's miles of cast-iron and bare-steel main are its in-service cast-iron and bare-steel "
             "segments in the GIS on 31 December 2026." % SECTIONS["miles"]]),
@@ -120,7 +120,7 @@ def write_notes(path, n):
         "  Service interruption tickets opened in 2026, one per service address shut off.",
         "",
         "%s  (%d rows)" % (F["meters"], n["meters"]),
-        "  Meter premises: service address, district, the number of meters at the premise.",
+        "  Meter premises: service address, district, the number of meters at the premise, its service line.",
     ]
     with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
         fh.write("\n".join(lines) + "\n")
