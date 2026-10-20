@@ -320,6 +320,8 @@ def order_book(x):
     items += [(y["start"] + 3 * MIN, 1, y) for y in yard if WO_FROM <= y["start"] < WO_TO]
     items.sort(key=lambda z: (z[0], z[1], z[2]["seq"]))
     num = 1584217
+    trng = np.random.default_rng(W.SEED + 414)
+    pick = lambda xs: xs[int(trng.integers(len(xs)))]
     sts, status, yrows = [], [], []
     for rep, kind, e in items:
         num += int(rng.integers(1, 4))
@@ -346,7 +348,7 @@ def order_book(x):
             fin = a + int(rng.uniform(0.5, 4) * H)
             closed = fin + e["closed_lag"]
             sts.append([wonum, asset, "TMH", "CM", 3, "CLOSE" if closed < PULL else "COMP", "GENERAL",
-                        CM_TEXT[e["seq"] % len(CM_TEXT)], lstr(s, False), "", "", lstr(a, False),
+                        pick(CM_TEXT), lstr(s, False), "", "", lstr(a, False),
                         lstr(fin, False), (lstr(closed, False) if closed < PULL else ""), by])
             continue
         last = per[-1][1]
@@ -356,15 +358,15 @@ def order_book(x):
         closed = last + e["closed_lag"]
         if e["kind"] == "BD" and e.get("damage"):
             wt, pri, code = "DMG", 1, "DAMAGE"
-            text = DMG_TEXT[e["seq"] % len(DMG_TEXT)]
+            text = pick(DMG_TEXT)
         elif e["kind"] == "BD":
             wt, pri, code = "BD", 1, e["fault"]
-            text = e["text"] + SUFFIX[e["seq"] % len(SUFFIX)]
+            text = e["text"] + pick(SUFFIX)
         elif e["kind"] == "PM":
-            wt, pri, code, text = "PM", 3, "PM-MONTHLY", PM_TEXT[e["seq"] % len(PM_TEXT)]
+            wt, pri, code, text = "PM", 3, "PM-MONTHLY", pick(PM_TEXT)
         else:
             wt, pri, code = "INSP", 2, "INSPECT"
-            text = INSP_TEXT[0] if e["src"] == "annual" else INSP_TEXT[1 + e["seq"] % 2]
+            text = INSP_TEXT[0] if e["src"] == "annual" else INSP_TEXT[1 + int(trng.integers(2))]
         sts.append([wonum, asset, "TMH", wt, pri, "CLOSE" if closed < PULL else "COMP", code, text,
                     lstr(rep, False), lstr(s, False), lstr(last, False), lstr(a, False), lstr(fin, False),
                     (lstr(closed, False) if closed < PULL else ""), by])
@@ -408,9 +410,10 @@ def labor_rows(x, yard):
             continue
         d = W.local(y["start"]).date()
         techs = W.TECHS[y["term"]]
-        for k in range(1 if y["kind"] == "PM" else int(rng.integers(1, 3))):
+        crew = rng.permutation(len(techs))[:1 if y["kind"] == "PM" else int(rng.integers(1, 3))]
+        for k in crew:
             h = max(0.5, round(y["dur"] / H * rng.uniform(0.7, 1.0) * 4) / 4)
-            code, craft = techs[int(rng.integers(len(techs)))]
+            code, craft = techs[int(k)]
             rows.append((d, y["wonum"], code, craft, h, "", y["term"]))
     rows.sort(key=lambda z: (z[0], int(z[1]), z[2]))
     out = []
@@ -460,6 +463,8 @@ LEGACY_FAULT = {"SPRDR": "Spreader", "HOIST": "Hoist", "TROL": "Trolley", "GANT"
 
 def job_rows(x):
     rng = np.random.default_rng(W.SEED + 406)
+    trng = np.random.default_rng(W.SEED + 415)
+    pick = lambda xs: xs[int(trng.integers(len(xs)))]
     hours = {}
     for r in x["labour"]:
         if r["kind"] in ("own", "contractor"):
@@ -476,7 +481,7 @@ def job_rows(x):
         lab = round(hours.get(id(e), 0.0), 2)
         raised = unaive(((s + e["reported_lag"]) // MIN) * MIN)
         if e["kind"] == "CM":
-            out.append([e["job_no"], tag, "DEFECT", "P3", CM_TEXT[e["seq"] % len(CM_TEXT)], raised, None, None, lab,
+            out.append([e["job_no"], tag, "DEFECT", "P3", pick(CM_TEXT), raised, None, None, lab,
                         "CLOSED", "MRW-PLANNER" if e["term"] == "MRW" else "SLT-PLANNER"])
             continue
         last = e["periods"][-1][1]

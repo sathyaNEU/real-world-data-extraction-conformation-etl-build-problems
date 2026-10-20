@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (9 lines, none a leak; answered in the design note)",
-  "reader": "round 1: both missed the call (Saltworks 991); reader 1 kept 12 of 12 ask figures (exit 1), reader 2 1 of 21 (exit 0); asks re-sited"
+  "reader": "round 1: both missed the call (Saltworks 991); reader 1 kept 12 of 12 ask figures (exit 1), asks re-sited; round 2: both missed the call, 1 of 21 each (exit 0 twice)"
  },
  "duplicate_check": {
   "heart": "PASS",
@@ -28,7 +28,7 @@
   "report": "task472/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 round 2, in flight in this session: the asks re-sited (second breakdown orders on a crane already down; multi-day maker visits keyed as one ledger line) and the judge forks closed, rebuilt (target.zip sha256 ee689cc240fdef88, 72 of 72 checks); two fresh scored readers and the judge pass 2 running; on return score both, finish judge pass 2, then ship; if the session was lost, re-spawn them on fresh copies of this pack",
+ "resume": "stage 4: judge pass 2 thread in flight on the round 2 pack; a data-only realism pass since (target.zip sha256 e4d4d5be53505ab8, 72 of 72 checks, call unchanged); on its verdict finish determinism_check_report_pass2.md, write the pre-ship check and ship",
  "approved": null,
  "delivered": null,
  "portal": null,

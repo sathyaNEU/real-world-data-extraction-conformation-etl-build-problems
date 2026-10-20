@@ -29,15 +29,15 @@
   "Gannet Point": 501,
   "Halyard": 1121,
   "Saltworks": 704,
-  "Millrace": 1715
+  "Millrace": 1718
  },
  "b_labor_hours": {
-  "Ore Dock": 2963,
-  "Pine Neck": 3042,
-  "Gannet Point": 1711,
-  "Halyard": 2931,
-  "Saltworks": 2278,
-  "Millrace": 3571
+  "Ore Dock": 2981,
+  "Pine Neck": 3191,
+  "Gannet Point": 1753,
+  "Halyard": 3061,
+  "Saltworks": 2268,
+  "Millrace": 3595
  },
  "inputs": {
   "teu_line": 10000,

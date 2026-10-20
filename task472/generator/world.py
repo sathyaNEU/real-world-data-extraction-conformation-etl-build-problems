@@ -1066,7 +1066,7 @@ def maintenance(w, seed):
             x["damage"] = True
     # a second fault found while the crane stood down for the first, raised as its own breakdown order and taking the
     # crane out of service on that order too: inside the first stop, or running on after it
-    second = dict(ORD=3, PNC=3, GNP=3, HLY=3, SLT=3, MRW=3)
+    second = dict(ORD=4, PNC=3, GNP=2, HLY=3, SLT=2, MRW=4)
     for code, n in second.items():
         river = TERM[code]["water"] != "harbor"
         cands = [x for x in ev if x["kind"] == "BD" and x["src"] in ("idle", "major") and not x.get("damage")
@@ -1194,8 +1194,15 @@ def labour(w, seed):
         techs = TECHS[x["term"]]
         rows = []
         for i, (d, h) in enumerate(crew):
-            code, craft = techs[(x["seq"] + i * 3) % len(techs)]
             ot = "OT15" if (rng.random() < 0.12) else ""
+            used = {r["code"] for r in rows if r["date"] == d}
+            free = [k for k in range(len(techs)) if techs[k][0] not in used]
+            if not free:
+                # the whole crew is already on the order that day: the hours go to one of them
+                r = [r for r in rows if r["date"] == d][i % len(used)]
+                r["hours"] = min(12.0, r["hours"] + h)
+                continue
+            code, craft = techs[free[(x["seq"] + i * 3) % len(free)]]
             rows.append(dict(date=d, code=code, craft=craft, hours=h, ot=ot, kind="own"))
         # resident contractors (electrical, structural, testing), always keyed
         contract = []

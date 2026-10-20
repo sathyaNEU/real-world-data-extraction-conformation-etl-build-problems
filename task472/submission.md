@@ -20,8 +20,8 @@ Its fiscal year 2026 large-vessel calls would have been 887 berth hours shorter 
 2. Took each call's cargo work, first container move to last, from tos_crane_activity_2026.csv and the QC Hours sheet (UTC, converted), and matched each call to its sailing in pilot_station_sailings_fy2026.csv by the ship's name at the time (current or former) or call sign, at the call's berth after its last move.
 3. Read when a ship may sail from harbor_masters_general_directions_2025.pdf: a draft of 41 feet or more passes Salt Point from 1 h 30 min before to 30 min after high water (9.2), on the passage times in 9.3, with high waters from salt_point_tide_predictions_2025_2026.txt (standard time, an hour added in daylight saving time); a ship of 1,250 feet or more unberths in the harbor only from 0600 to 2000 (8.1); every sailing in the record is the first such time an hour or more after its notice.
 4. For each call, brought its ready-to-sail notice forward by a fifth of its cargo work, gave it the first permitted sailing an hour or more after that, and took the difference from its actual sailing as its berth hours saved (rule 3.6); summed by terminal (rule 3.7): Millrace 887; Halyard 556; Pine Neck 449; Ore Dock 423; Gannet Point 395; Saltworks 257.
-5. Ask A: took the out-of-service periods in cmms_asset_status_history_fy2026.csv on orders whose type at the pull is BD, pairing each order's own changes (each period of a reopened order), and the BRKDN jobs in srt_maintenance_jobs_2025-26.xlsx; counted each crane's time out once where two of its breakdown orders held it out together (a second fault raised while it stood down) and where February 2026's river stops are in both systems; placed each stop at the terminal whose calls its crane was working at the time in the TOS crane hours (three cranes moved along the common rail during the year, which the crane register does not show), and summed fiscal year hours: Ore Dock 1,273; Pine Neck 972; Gannet Point 501; Halyard 1,121; Saltworks 704; Millrace 1,715.
-6. Ask B: summed cmms_labor_transactions_fy2026.csv on crane orders, the SRT job hours not also in the Authority's system, and the days in crane_maker_service_timesheets_fy2026.xlsx not already keyed into the ledger (the planner keys a service report as one CONTRACT line on its order, dated the visit's first day for the report's hours, so a visit of several days matches on its total), each at the terminal where the crane was working that day, yard equipment left out: Ore Dock 2,963; Pine Neck 3,042; Gannet Point 1,711; Halyard 2,931; Saltworks 2,278; Millrace 3,571.
+5. Ask A: took the out-of-service periods in cmms_asset_status_history_fy2026.csv on orders whose type at the pull is BD, pairing each order's own changes (each period of a reopened order), and the BRKDN jobs in srt_maintenance_jobs_2025-26.xlsx; counted each crane's time out once where two of its breakdown orders held it out together (a second fault raised while it stood down) and where February 2026's river stops are in both systems; placed each stop at the terminal whose calls its crane was working at the time in the TOS crane hours (three cranes moved along the common rail during the year, which the crane register does not show), and summed fiscal year hours: Ore Dock 1,273; Pine Neck 972; Gannet Point 501; Halyard 1,121; Saltworks 704; Millrace 1,718.
+6. Ask B: summed cmms_labor_transactions_fy2026.csv on crane orders, the SRT job hours not also in the Authority's system, and the days in crane_maker_service_timesheets_fy2026.xlsx not already keyed into the ledger (the planner keys a service report as one CONTRACT line on its order, dated the visit's first day for the report's hours, so a visit of several days matches on its total), each at the terminal where the crane was working that day, yard equipment left out: Ore Dock 2,981; Pine Neck 3,191; Gannet Point 1,753; Halyard 3,061; Saltworks 2,268; Millrace 3,595.
 7. Placed the cranes at the terminal with the most berth hours saved: Millrace, 331 hours ahead of Halyard.
 
 ## 4. Deliverable Answers
@@ -44,14 +44,14 @@ Its fiscal year 2026 large-vessel calls would have been 887 berth hours shorter 
    - Gannet Point: 501
    - Halyard: 1,121
    - Saltworks: 704
-   - Millrace: 1,715
+   - Millrace: 1,718
 6. Maintenance labor hours spent on ship-to-shore cranes at each terminal over fiscal year 2026, the Authority's own staff and contractors alike, whole hours:
-   - Ore Dock: 2,963
-   - Pine Neck: 3,042
-   - Gannet Point: 1,711
-   - Halyard: 2,931
-   - Saltworks: 2,278
-   - Millrace: 3,571
+   - Ore Dock: 2,981
+   - Pine Neck: 3,191
+   - Gannet Point: 1,753
+   - Halyard: 3,061
+   - Saltworks: 2,268
+   - Millrace: 3,595
 
 ### ternmouth_fy2026_large_vessel_calls.csv
 
