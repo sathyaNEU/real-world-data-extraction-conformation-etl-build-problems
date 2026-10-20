@@ -1,232 +1,210 @@
-"""The generator's assertions on the built pack: the input gates, the ladder (every route's cut and set, the golden
-family's agreement and margins), the clean-truth analyst test, the adjustment's convergence (C1) and the forms ruled
-out (C4), every semantic fork row (SF1 to SF12), the separation of the ask from the call (S1 to S5), the ask's stops,
-the figures in the golden workbook, and the program margins."""
-import csv
+"""The generator's assertions on the built pack: input gates, the frames and linkage against the simulation, the call and
+its convergence (C1) across the design-based estimators, every rung of the ladder, the three-rules block (the analyst
+test on the clean truth), every row of the semantic fork table, the ask's stops and the separation line, and
+figures.json against the golden files."""
 import json
 import os
-import sys
+import re
 
 import numpy as np
 import openpyxl
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bundle as B
+import pack as P
+import sim as S
+import world as W
 
-import bundle as B      # noqa: E402
-import calibrate as C   # noqa: E402
-import docs as DC       # noqa: E402
-import golden as G      # noqa: E402
-import methods as M     # noqa: E402
-import pack as P        # noqa: E402
-import sim as S         # noqa: E402
-import world as W       # noqa: E402
-
-RESULTS = []
-
-
-def check(name, ok, detail=""):
-    RESULTS.append((name, bool(ok), detail))
+GOLD_SET = ["C01", "C02", "C06", "C07", "C11", "C13"]
+RUNG_SETS = {"pooled": ["C01", "C07", "C13"],
+             "drawn list": ["C01", "C02", "C04", "C06", "C07", "C09", "C10", "C11", "C13", "C16"],
+             "lists added": ["C01", "C02", "C04", "C06", "C07", "C09", "C10", "C11", "C13", "C16"],
+             "permit list": ["C01", "C07", "C13"],
+             "parcel list": ["C02", "C06", "C07", "C11", "C13"]}
 
 
-def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
-    del RESULTS[:]
-    fig = json.load(open(fig_path, encoding="utf-8"))
+class Checker:
+    def __init__(self):
+        self.ok = True
+        self.n = 0
+
+    def __call__(self, cond, msg):
+        self.n += 1
+        if not cond:
+            self.ok = False
+            print("FAIL:", msg)
+
+
+def _pdf_text(path):
+    import subprocess
+    return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
+
+
+def run(target, gdir, x=None, meta_path=None, fig_path=None):
+    ck = Checker()
+    x = x or P.everything()
     pk = B.Pack(target)
-    comp = pk.completers()
+    sim = {c["code"]: c for c in x["counties"]}
+    # ------------------------------------------------------------------------------------------- input gates
     files = sorted(os.listdir(target))
-    meta = json.load(open(meta_path, encoding="utf-8"))
+    ck(len(files) >= 10, "ten or more files")
+    ck(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
+    with open(os.path.join(target, P.FILES["permits"]), encoding="utf-8") as fh:
+        ck(sum(1 for _ in fh) - 1 >= 25000, "a file of 25,000 or more rows")
+    if meta_path:
+        meta = json.load(open(meta_path, encoding="utf-8"))
+        ck(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]),
+           "two or more distractors named in metadata.json")
+    # ------------------------------------------------------------------------- frames, linkage, the sample
+    for k in pk.codes:
+        c, L, s = sim[k], pk.link[k], pk.sample[k]
+        ck(L["NP"] == c["NP"] and L["NQ"] == c["NQ"], "%s frame sizes" % k)
+        ck(L["NB"] == int((c["grp"] == 2).sum()) and L["union"] == c["N"], "%s linkage: wells on both, union" % k)
+        ck(s["nP"] == c["nP"] and s["nQ"] == c["nQ"], "%s targets met from the manifest" % k)
+        truth = {c["kit"][i]: i for i in c["kit"]}
+        bad = 0
+        for kit, w in s["wells"].items():
+            i = truth[kit]
+            bad += (w["onP"] != bool(c["onP"][i])) + (w["onQ"] != bool(c["onQ"][i]))
+            bad += (w["y"] != bool(c["measured"][i] > W.STANDARD_N))
+        ck(bad == 0, "%s each tested well's lists and first test as simulated" % k)
+    # ------------------------------------------------------------------------------- the call and C1
+    gold = pk.qualifying()
+    ck(gold == GOLD_SET, "the six counties: %s" % gold)
+    for r, kw in B.GOLD_ROUTES:
+        ck(pk.qualifying(r, **kw) == GOLD_SET, "C1: %s %s gives the same six" % (r, kw))
+    for k in pk.codes:
+        vals = [pk.estimate(k, r, **kw) for r, kw in B.GOLD_ROUTES]
+        if k in GOLD_SET:
+            ck(min(vals) >= 1.15 * W.QUALIFY, "%s qualifies by 15 per cent on every estimator (%.0f)" % (k, min(vals)))
+        else:
+            ck(max(vals) <= 0.90 * W.QUALIFY, "%s short by 10 per cent on every estimator (%.0f)" % (k, max(vals)))
+    # ------------------------------------------------------------------------------------------ the ladder
+    for r, want in RUNG_SETS.items():
+        got = pk.qualifying(r)
+        ck(got == want, "rung %s: %s" % (r, got))
+        ck(got != GOLD_SET, "rung %s names its own set" % r)
+    # ---------------------------------------------- the three rules: the analyst test on the clean truth
+    clean = {k: S.estimates(sim[k]) for k in pk.codes}
+    easy = [k for k in pk.codes if clean[k]["pooled"] >= W.QUALIFY]
+    right = [k for k in pk.codes if clean[k]["KA"] >= W.QUALIFY]
+    ck(easy == RUNG_SETS["pooled"], "analyst test: the pooled share on the clean truth files the three (%s)" % easy)
+    ck(right == GOLD_SET, "analyst test: the decisive step alone on the clean truth gives the six (%s)" % right)
+    ck([k for k in pk.codes if clean[k]["drawn list's rate"] >= W.QUALIFY] == RUNG_SETS["drawn list"],
+       "analyst test: the drawn list's rate on the clean truth files the ten")
+    # ------------------------------------------------------------------------------- semantic fork table
+    design = _pdf_text(os.path.join(target, P.FILES["design"]))
+    standard = _pdf_text(os.path.join(target, P.FILES["standard"]))
+    flat_d, flat_s = " ".join(design.split()), " ".join(standard.split())
+    # SF1 "above the standard": more than 10 against 10 or more; no result sits on 10
+    on = [res for res in pk.results.values() if abs(res["n"] - W.STANDARD_N) < 1e-9]
+    ck(not on, "SF1: no result is exactly 10 mg/L, so above and at-or-above select the same wells")
+    ck("more than 10 mg/L nitrate as nitrogen" in flat_s, "SF1: the standard defines above")
+    # SF2 the survey population as it stood on August 31, 2025, against the extract's own date
+    alt = B.Pack(target, frame_date="2026-12-31")
+    ck(alt.qualifying() == GOLD_SET, "SF2: domestic wells permitted after the frame date included: same call")
+    ck("as they stood on August 31, 2025" in flat_d, "SF2: the design report files the frame date")
+    # SF3 a reanalysed sample: the later report against the earlier one
+    alt = B.Pack(target, results="earliest")
+    ck(alt.qualifying() == GOLD_SET, "SF3: the earlier reports of reanalysed samples: same call")
+    ck("its later report replaces the earlier one" in flat_d, "SF3: the design report files the later report")
+    # SF4 Kinsale's NO3: the design report gives the factor; read as nitrogen the call moves
+    ck("44.27 mg/L nitrate as NO3" in flat_d, "SF4: the design report converts Kinsale's NO3")
+    # SF12 Kinsale's factor: the design report's 4.427 against the fact sheet's 4.4 (and its 44 mg/L): no Kinsale
+    # nitrate sits between 44.0 and 44.3 mg/L NO3, so both put every result on the same side
+    import csv as _csv
+    with open(os.path.join(target, P.FILES["kin"]), encoding="utf-8", newline="") as fh:
+        kin = [float(r["VALUE"]) for r in _csv.DictReader(fh) if r["PARAMETER"] == "NITRATE" and r["FLAG"] != "<"]
+    ck(not [v for v in kin if 43.9 <= v <= 44.4], "SF12: no Kinsale result between 43.9 and 44.4 mg/L NO3")
+    # SF5 250 or more against more than 250
+    ests = [pk.estimate(k, r, **kw) for k in pk.codes for r, kw in B.GOLD_ROUTES]
+    ck(min(abs(e - W.QUALIFY) for e in ests) > 1, "SF5: no estimate within a well of 250")
+    # SF6 the linkage: parcel number or address; by address alone the same wells link (C1), by parcel number alone a
+    # permit without one links nothing, which the filed sentence rules out
+    alt = B.Pack(target, link="address only")
+    ck(alt.qualifying() == GOLD_SET and all(alt.link[k]["NB"] == pk.link[k]["NB"] for k in pk.codes),
+       "SF6: linkage by address alone: the same wells on both lists, same call")
+    alt = B.Pack(target, link="parcel only")
+    ck(alt.qualifying() != GOLD_SET, "SF6: linkage by parcel number alone moves the call (%s), so the sentence "
+       "carries it" % alt.qualifying())
+    ck("when the permit's parcel number is the parcel's or, on a permit that carries no parcel number, when the "
+       "permit's site address is the parcel's situs address" in flat_d, "SF6: the design report files the linkage")
+    # SF7 the estimate covers the whole survey population, not the tested wells counted
+    ck(max(pk.counts(k)["above"] for k in pk.codes) < W.QUALIFY, "SF7: no county has 250 tested wells above")
+    ck("the wells the Survey did not test as well as those it did" in flat_s, "SF7: the standard files the population")
+    # SF8 a well tested earlier counts toward the parcel list's target as well
+    alt = B.Pack(target, earlier="permit list only")
+    ck(alt.qualifying() == GOLD_SET, "SF8: TESTED_EARLIER left off the parcel list's sample: same call (%s)" %
+       alt.qualifying())
+    ck("counts toward the parcel list's target as well" in flat_d, "SF8: the design report files it")
+    # SF9 a blank water code is not a private well
+    ck(all(p["code"] not in B.PRIVATE for k in pk.codes for p in pk.parcel_all[k] if p["code"] == ""),
+       "SF9: blanks are off the parcel list")
+    # SF10 the estimate's rounding: the verdict is on the unrounded estimate and no estimate sits within half a well
+    ck(min(abs(e - W.QUALIFY) for e in ests) > 0.5, "SF10: rounding the estimate cannot move a county")
+    # SF11 county: a well's county is the county of its permit or parcel; the manifest's county agrees
+    ck(all(r["COUNTY_CODE"] == k for k in pk.codes for r in pk.draws[k]), "SF11: manifest counties")
+    # ------------------------------------------------------------------------------------------- the ask
+    gold_ret = pk.retests()
+    truth = {}
+    close = np.datetime64(W.RETESTS_CLOSE.isoformat())
+    for c in x["counties"]:
+        qs = [q for q in c["requests"] if q["kind"] == "above" and q["collected"] <= close]
+        truth[c["code"]] = [len(qs), sum(1 for q in qs if q["value"] > W.STANDARD_N)]
+    ck(gold_ret == truth, "ask: the golden handling reproduces the truth exactly")
+    stops = {"by request": pk.retests(by="request"), "portal only": pk.retests(channel="portal"),
+             "no window": pk.retests(window=False), "no first-above": pk.retests(first_above=False)}
+    moved = stops["by request"]
+    ck(all(moved[k][0] != gold_ret[k][0] and moved[k][1] != gold_ret[k][1] for k in pk.codes),
+       "ask primary: the request's county moves all 32 figures")
+    for name, st in stops.items():
+        hits = sum(st[k][j] == gold_ret[k][j] for k in pk.codes for j in (0, 1))
+        print("ask stop %-15s keeps %2d of 32" % (name, hits))
+    ck(sum(stops["portal only"][k][0] == gold_ret[k][0] for k in pk.codes) == 0, "ask hazard: phone requests move every county")
+    # separation: the call reads no request and no retest result
+    kits = {r["RETEST_KIT"] for r in pk.requests}
+    first_kits = {w for k in pk.codes for w in pk.sample[k]["wells"]}
+    ck(not (kits & first_kits), "separation: no retest kit is a first-test kit")
+    # ------------------------------------------------------------------------------------ figures and golden
+    if fig_path:
+        fig = json.load(open(fig_path, encoding="utf-8"))
+        ck(fig["call_codes"] == GOLD_SET and fig["qualifying_count"] == 6, "figures.json call")
+        wb = openpyxl.load_workbook(os.path.join(gdir, "nitrate_assistance_counties_2027.xlsx"), read_only=True)
+        rows = [r for r in wb["Counties 2027"].iter_rows(min_row=5, values_only=True) if r[0]]
+        got = {r[0]: r for r in rows}
+        for r in fig["counties"]:
+            g = got[r["code"]]
+            ck(g[2] == r["union"] and (g[3] == "Yes") == r["qualifies"] and g[4] == r["retested"]
+               and g[5] == r["still_above"], "golden workbook row %s" % r["code"])
+            ck(r["union"] == pk.link[r["code"]]["union"], "figures union %s" % r["code"])
+    # ---------------------------------------------------------------------------------------- house rules
+    for f in files:
+        if f.endswith(".pdf"):
+            ck(not re.search("[\u2013\u2014]", _pdf_text(os.path.join(target, f))), "no dashes in %s" % f)
+    # H25: every PDF reads the same through a strict parser as through pdftotext
+    import csv as csvm
+    import pypdf
+    for f in files:
+        if f.endswith(".pdf"):
+            strict = " ".join(" ".join(p.extract_text() for p in pypdf.PdfReader(os.path.join(target, f),
+                                                                                   strict=True).pages).split())
+            loose = " ".join(_pdf_text(os.path.join(target, f)).split())
+            words = re.findall(r"[A-Za-z]{6,}", loose)[:400]
+            ck(sum(1 for w in words if w in strict) >= 0.97 * len(words), "H25: %s reads under a strict parser" % f)
+            if f == P.FILES["design"]:
+                ck("as they stood on August 31, 2025" in strict, "H25: the frame date reads strictly")
+    # H16: no file's records run past the date the file carries
+    import build as BD
 
-    # ---------------------------------------------------------------------------------------------- input gates
-    rows = {f: sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv")}
-    check("G1 ten or more files", len(files) >= 10, "%d files" % len(files))
-    check("G2 three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3, str(sorted({f.rsplit(".", 1)[1] for f in files})))
-    check("G3 a file of 25,000 rows or more", max(rows.values()) >= 25000, "%d rows" % max(rows.values()))
-    check("G4 two or more distractors named in metadata.json, none named so",
-          len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"])
-          and not any("distract" in f.lower() for f in files), str(meta["distractor_files"]))
-
-    # ------------------------------------------------------------------------------------------------ the ladder
-    fam = pk.cut("golden", "all")
-    g = fig["raw_cut"]
-    check("L1 the golden family agrees on one cut", {v[0] for v in fam.values()} == {g}, str({k: v[0] for k, v in fam.items()}))
-    lo = min(v[1] - (W.PASS_RAW_25A - 0.5) for v in fam.values())
-    hi = min((W.PASS_RAW_25A - 0.5) - v[2] for v in fam.values())
-    check("L2 every method crosses 55.5 with 0.25 or more on both sides", min(lo, hi) >= 0.25, "%.2f / %.2f" % (lo, hi))
-    gset = {k for k, (n, p) in pk.rates(g, comp).items() if p / n < W.REVIEW_LINE}
-    routes = {"no equating": [pk.cut("no equating")[0]], "raters adjusted, no equating": [pk.cut("raters adjusted, no equating")[0]]}
-    for r in ("as scored", "every assignment's papers", "multiple-choice anchor"):
-        routes[r] = sorted({v[0] for v in pk.cut(r, "all").values()})
-    expect = {"no equating": [56], "raters adjusted, no equating": [53], "as scored": [52],
-              "every assignment's papers": [51], "multiple-choice anchor": [46, 47]}
-    check("L3 every rung's cut as the ladder states it", routes == expect, str(routes))
-    for r, cuts in routes.items():
-        for c in cuts:
-            st = {k for k, (n, p) in pk.rates(c, comp).items() if p / n < W.REVIEW_LINE}
-            check("L4 %s at raw %d names its own set" % (r, c), st != gset, "%d programs" % len(st))
-    as_scored = {W.PROGRAMS[k][0] for k, (n, p) in pk.rates(52, comp).items() if p / n < W.REVIEW_LINE}
-    check("L5 the default path's set is the five plus Delacourt, Marisford and Riverbend",
-          as_scored == {W.PROGRAMS[k][0] for k in gset} | {"Delacourt University", "Marisford State University",
-                                                          "Riverbend Teaching Fellows"}, str(sorted(as_scored)))
-    for c in (46, 47):
-        st = {W.PROGRAMS[k][0] for k, (n, p) in pk.rates(c, comp).items() if p / n < W.REVIEW_LINE}
-        check("L6 the multiple-choice anchor at raw %d takes Eastridge off" % c, "Eastridge State University" not in st,
-              str(sorted(st)))
-    rt = pk.rates(g, comp)
-    near = min(abs(p - W.REVIEW_LINE * n) for n, p in rt.values())
-    check("L7 no program within 1.5 completers of the line", near >= 1.5, "%.1f" % near)
-
-    # -------------------------------------------------------------------- the clean truth and the generating truth
-    w = x["sim"] if x and "sim" in x else S.world()
-    X, VX, VXm, Y, VY, VYm = C.arrays(w)
-    Xp, VXp, VXmp, Yp, VYp, VYmp = pk.arrays()
-    check("T1 the pack's anchor and totals are the simulation's", np.array_equal(np.sort(X), np.sort(Xp)) and
-          np.array_equal(np.sort(VX), np.sort(VXp)) and np.array_equal(np.sort(Y), np.sort(Yp)) and
-          np.array_equal(np.sort(VY), np.sort(VYp)))
-    b = M.validity_shift(w["papers"], w["vreads"], "WA2")
-    easy = {M.cut(e)[0] for e in M.family(X, VX, Y, VY).values()}
-    right = {M.cut(e)[0] for e in M.family(X, VX, Y, VY, -4 * b).values()}
-    check("T2 analyst test on the clean truth: the anchor as scored files raw 52 and its set", easy == {52}, str(easy))
-    check("T3 changing only the anchor's written assignment files the golden", right == {g}, str(right))
-    tr = C.truth(w)[0]
-    check("T4 the generating truth within one raw point of the golden", abs(tr - g) <= 1, "truth %d" % tr)
-
-    # ---------------------------------------------------------------------------------------- C1 and C4, the adjustment
-    bp = pk.validity_bias(per_paper=True)
-    c_pp = {M.cut(e)[0] for e in M.family(Xp, VXp, Yp, VYp, -4 * bp).values()}
-    check("C1a the per-paper mean gives the golden", c_pp == {g}, str(c_pp))
-    sx = -4 * pk.validity_bias() * W.N_WA
-    c_all = {M.cut(lambda v, e=e: e(v + sx))[0] for e in M.family(Xp + sx, VXp - 4 * pk.validity_bias(), Yp, VYp).values()}
-    check("C1b every 2026 assignment moved, the cut read on the scores as Arcwright reported them", c_all == {g}, str(c_all))
-    c_y = {M.cut(e)[0] for e in M.family(Xp, VXp, Yp, VYp + 4 * pk.validity_bias()).values()}
-    check("C1c the 2025 anchor moved to the 2026 standard gives the golden", c_y == {g}, str(c_y))
-    pairs = np.array([(v, pk.papers[p]["consensus"]) for p, a, v in pk.vreads if a == "WA2"])
-    emap = {v: (pairs[pairs[:, 0] == v, 1].mean() if (pairs[:, 0] == v).any() else float(v)) for v in range(1, 5)}
-    s26 = w["scored"][2026]
-    f = s26["first"]
-    r1, r2, res = s26["r1"][f][:, 1], s26["r2"][f][:, 1], s26["res"][f][:, 1]
-    mp = np.vectorize(lambda v: emap[int(v)])
-    wa2 = np.where(res > 0, 2 * mp(np.where(res > 0, res, 1)), mp(r1) + mp(r2))
-    VXc = s26["mc"][f][:, :W.N_SHARED].sum(1) + 2 * wa2
-    c_map = {M.cut(e)[0] for e in M.family(X, VXc.astype(float), Y, VY).values()}
-    check("C4 a regression map onto the 2025 scores (expected score on file given a read) shrinks the 2026 reads "
-          "only: raw %s" % sorted(c_map), c_map != {g} and c_map <= {46, 47, 48}, str(c_map))
-    Fr = np.array([(pairs[:, 0] <= v).mean() for v in range(1, 5)])
-    Fc = np.array([(pairs[:, 1] <= v).mean() for v in range(1, 5)])
-
-    def eqmap(v):
-        pr_ = ((Fr[v - 2] if v >= 2 else 0.0) + Fr[v - 1]) / 2
-        return float(np.interp(pr_, np.concatenate([[0.0], Fc]), np.concatenate([[0.5], np.arange(1, 5) + 0.5])))
-    mq = np.vectorize(lambda v: eqmap(int(v)))
-    wa2q = np.where(res > 0, 2 * mq(np.where(res > 0, res, 1)), mq(r1) + mq(r2))
-    VXq = s26["mc"][f][:, :W.N_SHARED].sum(1) + 2 * wa2q
-    c_q = {M.cut(e)[0] for e in M.family(X, VXq.astype(float), Y, VY).values()}
-    check("C1d an equipercentile map of the reads onto the scores on file gives the golden", c_q == {g}, str(c_q))
-
-    # ------------------------------------------------------------------------------------------- semantic forks
-    std = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs.py"), encoding="utf-8").read()
-    early = sum(1 for ids in comp.values() for e in ids if pk.first.get(e, "9999") < W.PROGRAM_YEAR[0].isoformat())
-    check("SF1 Rule 8.4.3 counts a first attempt made before completion, and such completers exist",
-          "including an attempt before the program was completed" in std and early > 0, "%d completers" % early)
-    lists = openpyxl.load_workbook(os.path.join(target, P.FILES["completers"]), read_only=True)
-    raw_rows = out_year = other = dupes = dual = 0
-    for k, pr in enumerate(W.PROGRAMS):
-        rows_ = list(lists[pr[1]].iter_rows(values_only=True))
-        head = rows_[4]
-        seen = set()
-        for r in rows_[5:]:
-            if not r or r[0] is None:
-                continue
-            raw_rows += 1
-            eid, area, done = B.parse_row(dict(zip(head, r)))
-            out_year += int(not (W.PROGRAM_YEAR[0] <= done <= W.PROGRAM_YEAR[1]))
-            other += int(not B.is_elementary(area))
-            dual += int(B.is_elementary(area) and any(t in str(area).upper() for t in ("SPED", "SPECIAL")))
-            dupes += int((eid, done) in seen)
-            seen.add((eid, done))
-    check("SF2 the lists carry rows outside the program year that Rule 8.4.2 leaves out", out_year > 0, "%d rows" % out_year)
-    check("SF3 the lists carry dual-pathway completers, whom Rule 8.4.2 counts, and other pathways, which it does not",
-          dual > 0 and other > 0 and "(Elementary, or Elementary and Special Education)" in std,
-          "%d dual, %d other-pathway rows" % (dual, other))
-    exact = {k for k, (n, p) in rt.items() if p / n < 0.70}
-    rounded = {k for k, (n, p) in rt.items() if G.r1(p, n) < 70.0}
-    check("SF4 below 70 per cent on the exact fraction and on the rounded rate give the same set", exact == rounded == gset)
-    voids = sum(1 for r in csv.DictReader(open(os.path.join(target, P.FILES["history"]), encoding="utf-8"))
-                if r["RESULT"] == "VOID" and r["TEST_DATE"] >= "2025-01-01")
-    check("SF5 no voided attempt in 2025 or 2026, so counting voids changes nothing", voids == 0, "%d" % voids)
-    unr_all = {min(v for v in range(W.MAX_RAW + 1) if e(v) >= W.PASS_RAW_25A)
-               for e in M.family(Xp, VXp, Yp, VYp, -4 * pk.validity_bias()).values()}
-    unr_sets = {c_: frozenset(k for k, (n, p) in pk.rates(c_, comp).items() if p / n < W.REVIEW_LINE) for c_ in unr_all}
-    check("SF6 the unrounded reading files raw %s, the same programs; report section 4 rounds each equated score"
-          % sorted(unr_all), unr_all != {g} and all(s_ == frozenset(gset) for s_ in unr_sets.values())
-          and "each equated raw score is rounded to a whole number" in std)
-    Xall = np.array([s["raw"] for s in pk.s26], float)
-    VXall = np.array([s["mc_anchor"] + 2 * s["wa"][pk.shared_wa] for s in pk.s26], float)
-    Yall = np.array([s["raw"] for s in pk.s25], float)
-    VYall = np.array([s["mc_anchor"] + 2 * s["wa"][pk.shared_wa] for s in pk.s25], float)
-    c_allc = {M.cut(e)[0] for e in M.family(Xall, VXall, Yall, VYall, -4 * pk.validity_bias()).values()}
-    check("SF7 every candidate who sat files raw %s, the same call; report section 4 names the first-attempt "
-          "candidates" % sorted(c_allc), c_allc == {g} and "equating samples are each form's first-attempt candidates" in std)
-    check("SF8 the cut on the adjusted scale less the shift is the golden", c_all == {g})
-    listed = sum(len(v) for v in comp.values())
-    check("SF9 Rule 8.4.4 drops the untested: completers counted are fewer than completers listed",
-          sum(n for n, p in rt.values()) < listed, "%d of %d" % (sum(n for n, p in rt.values()), listed))
-    tie = all((s["raw"] >= W.PASS_RAW_25A) == (pk.first_result.get(s["eid"]) == "PASS") for s in pk.s25 if s["first"])
-    check("SF10 the history's June 2025 results tie to Form 25A raw 56", tie)
-    check("SF11 pasted duplicate rows exist and each educator counts once", dupes > 0, "%d" % dupes)
-    reg24 = [r for r in csv.DictReader(open(os.path.join(target, P.FILES["register"]), encoding="utf-8"))
-             if r["PROGRAM_YEAR"] == "2024-25" and B.is_elementary(r["PATHWAY"])]
-    by_nm = {}
-    for e_, nm in pk.names.items():
-        by_nm.setdefault(nm, []).append(e_)
-    firsts = []
-    for r in reg24:
-        e_ = r["EDUCATOR_ID"]
-        if e_ not in pk.hist:
-            c_ = by_nm.get((B.norm(r["LAST_NAME"]), B.norm(r["FIRST_NAME"]), B._date(r["BIRTH_DATE"])), [])
-            e_ = c_[0] if len(c_) == 1 else e_
-        firsts.append(pk.first.get(e_))
-    n24 = sum(1 for f_ in firsts if f_ and f_ < "2025-06-14")
-    nun = sum(1 for f_ in firsts if f_ is None)
-    late = sum(1 for f_ in firsts if f_ and f_ > "2025-06-14")
-    check("SF12 the ask's completers: %d first tested before June 2025 (counted), %d untested (not counted), %d first "
-          "tested later" % (n24, nun, late), n24 > 0 and nun > 0 and late == 0)
-
-    # ---------------------------------------------------------------------------- separation and the ask's stops
-    py, pid = pk.prior_year(), pk.prior_year(match="id")
-    miss = sum(int(py[k][0] != pid[k][0]) + int(G.r1(py[k][1], py[k][0]) != G.r1(pid[k][1], pid[k][0])) for k in py)
-    check("S1 the register's educator ID (the cracker) misses all 32 ask figures", miss == 32, "%d of 32 differ" % miss)
-    ndup = sum(py[k][0] - pid[k][0] for k in py)
-    check("S2 every program has at least two completers under a second record", min(py[k][0] - pid[k][0] for k in py) >= 2,
-          "%d in all" % ndup)
-    reg = list(csv.DictReader(open(os.path.join(target, P.FILES["register"]), encoding="utf-8")))
-    reg_ids = {r["EDUCATOR_ID"] for r in reg}
-    check("S3 no register-only record is in any 2026 or 2025 equating sample", not ({s["eid"] for s in pk.s26 if s["first"]}
-                                                                                   | {s["eid"] for s in pk.s25 if s["first"]})
-          & (reg_ids - set(pk.hist)))
-    check("S4 the call reads no register row (no 2025-26 completer is a register row)",
-          not ({e for ids in comp.values() for e in ids} & {r["EDUCATOR_ID"] for r in reg if r["PROGRAM_YEAR"] == "2025-26"}))
-    dup_people = [p for p in (x["rows"] if x else []) + (x["extra"] if x else []) if p.get("dup")]
-    check("S5 the second records' attempts are first attempts in June 2025 or June 2024 under the original record",
-          all(pk.first.get(p["eid"]) in ("2025-06-14", "2024-06-08") for p in dup_people), "%d people" % len(dup_people))
-
-    # ---------------------------------------------------------------------------------- the golden's own figures
-    wb = openpyxl.load_workbook(os.path.join(gdir, G.GOLDEN["workbook"]), data_only=True)
-    sh = wb["Reviews 2027"]
-    got = {r[0]: r for r in sh.iter_rows(min_row=5, values_only=True) if r[0]}
-    okw = all(got[q["code"]][2] == q["counted"] and got[q["code"]][3] == q["passed"] and got[q["code"]][4] == q["rate"]
-              and (got[q["code"]][5] == "Yes") == q["review"] for q in fig["programs"])
-    check("W1 the workbook's review sheet is figures.json", okw)
-    pr = {r[0]: r for r in wb["2024-25 completers"].iter_rows(min_row=2, values_only=True)}
-    check("W2 the workbook's 2024-25 sheet is figures.json", all(pr[q["code"]][2] == q["prior_tested"] and
-                                                                 pr[q["code"]][4] == q["prior_rate"] for q in fig["programs"]))
-    check("W3 figures.json's set is the pack's", {W.PROGRAMS[k][0] for k in gset} == set(fig["review"]))
-    # reads in reverse order give the same shift (row order)
-    rev = [d for _, _, d in sorted(((p, a, v - pk.papers[p]["consensus"]) for p, a, v in reversed(pk.vreads) if a == "WA2"),
-                                   reverse=True)]
-    check("O1 row order: the shift is the same over a reversed read file", abs(np.mean(rev) - pk.validity_bias()) < 1e-12)
-    good = all(ok for _, ok, _ in RESULTS)
-    if not quiet:
-        for name, ok, detail in RESULTS:
-            print("%s  %s%s" % ("PASS" if ok else "FAIL", name, ("  (%s)" % detail) if detail else ""))
-        print("checks: %d of %d pass" % (sum(ok for _, ok, _ in RESULTS), len(RESULTS)))
-    return good
+    def latest(key, cols):
+        with open(os.path.join(target, P.FILES[key]), encoding="utf-8") as fh:
+            v = max(max(r[c] for c in cols) for r in csvm.DictReader(fh))
+        return "%s-%s-%s" % (v[:4], v[4:6], v[6:8]) if v.isdigit() else v
+    wbc = openpyxl.load_workbook(os.path.join(target, P.FILES["ced"]), read_only=True)
+    ced = max(r[9] for r in wbc["Results"].iter_rows(min_row=2, values_only=True)).strftime("%Y-%m-%d")
+    for k, v in (("hal", latest("hal", ["COLLECTED", "RECEIVED", "REPORTED"])),
+                 ("kin", latest("kin", ["SAMPLED", "REPORTED"])), ("ced", ced),
+                 ("retests", latest("retests", ["REQUESTED", "KIT_MAILED"])),
+                 ("permits", latest("permits", ["DATE_DRILLED"])), ("manifest", latest("manifest", ["MAILED"]))):
+        ck(v <= BD.AS_OF[k], "H16: %s runs to %s, on or before its date %s" % (k, v, BD.AS_OF[k]))
+    print("checks: %d assertions, %s" % (ck.n, "all pass" if ck.ok else "FAILURES"))
+    return ck.ok

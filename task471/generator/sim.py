@@ -1,183 +1,96 @@
-"""The simulation behind task471: candidates and their attempt history, the two forms, the June 2025 and June 2026
-administrations scored read by read, and the 2026 validity papers. Everything is drawn from one seeded generator per
-part, so a parameter change in one part leaves the others' draws where they were."""
-import datetime as dt
-
+"""The simulation: each county's private domestic wells (on the permit list, the parcel list or both), their nitrate,
+the survey's draws from each list (a household that declines or cannot be reached is replaced by the next draw, a
+household drawn from both lists is tested once), the first tests and the confirmation retests."""
 import numpy as np
 
 import world as W
 
-THR = np.array(W.THRESHOLDS)
+
+def rng(seed, *parts):
+    return np.random.default_rng([seed, *parts])
 
 
-def rng(seed, part):
-    return np.random.default_rng([seed, part])
+def exceed_share(median, sigma):
+    """share of wells above the standard for a lognormal nitrate with this median and log-spread"""
+    from math import erf, log, sqrt
+    z = (log(W.STANDARD_N) - log(median)) / sigma
+    return 0.5 * (1 - erf(z / sqrt(2)))
 
 
-def rating(lat):
-    return 1 + (np.asarray(lat)[..., None] > THR).sum(-1)
+def county(seed, k, p):
+    """p: dict(N, po, qo, mPo, mQo, mB, sigma, nP, nQ, accept, retest, phone, tries)"""
+    r = rng(seed, 10, k, p.get("tries", 0))
+    N = p["N"]
+    grp = r.choice(3, N, p=[p["po"], p["qo"], 1 - p["po"] - p["qo"]])      # 0 permit-only, 1 parcel-only, 2 both
+    med = np.array([p["mPo"], p["mQo"], p["mB"]])[grp]
+    nitrate = med * np.exp(p["sigma"] * r.normal(0, 1, N))
+    accept = r.random(N) < p["accept"]
+    onP, onQ = grp != 1, grp != 0
+    iP, iQ = np.flatnonzero(onP), np.flatnonzero(onQ)
+    orderP, orderQ = r.permutation(iP), r.permutation(iQ)
+    tested = np.zeros(N, bool)
+    from_list = {}                       # well -> set of lists it was drawn from and counted for
+    draws = []                           # (list, well, outcome)
+    for lst, order, n in (("P", orderP, p["nP"]), ("Q", orderQ, p["nQ"])):
+        got = 0
+        for i in order:
+            if got >= n:
+                break
+            if tested[i]:
+                draws.append((lst, i, "TESTED_EARLIER"))
+                from_list.setdefault(i, set()).add(lst)
+                got += 1
+            elif accept[i]:
+                tested[i] = True
+                draws.append((lst, i, "TESTED"))
+                from_list.setdefault(i, set()).add(lst)
+                got += 1
+            else:
+                draws.append((lst, i, "DECLINED" if r.random() < 0.7 else "NO_RESPONSE"))
+    # first test: lab measurement around the well's nitrate
+    measured = np.where(tested, nitrate * np.exp(r.normal(0, 0.04, N)), np.nan)
+    # confirmation retests of first tests above the standard
+    above = tested & (measured > W.STANDARD_N)
+    ret = above & (r.random(N) < p["retest"])
+    phone = ret & (r.random(N) < p["phone"])
+    remeas = np.where(ret, nitrate * r.uniform(0.82, 1.02, N) * np.exp(r.normal(0, 0.04, N)), np.nan)
+    return dict(k=k, N=N, grp=grp, nitrate=nitrate, accept=accept, onP=onP, onQ=onQ, tested=tested,
+                from_list=from_list, draws=draws, measured=measured, retested=ret, phone=phone, remeasured=remeas,
+                nP=p["nP"], nQ=p["nQ"], NP=int(onP.sum()), NQ=int(onQ.sum()))
 
 
-# ------------------------------------------------------------------------------------------------------------ forms
-def forms(seed, p):
-    r = rng(seed, 1)
-
-    def mc(n, shift=0.0):
-        return dict(a=r.uniform(0.7, 1.5, n), b=r.normal(W.MC_B_MEAN, W.MC_B_SD, n) + shift, c=r.uniform(0.15, 0.25, n))
-    shared = mc(W.N_SHARED)
-    own25 = mc(W.N_MC - W.N_SHARED)
-    own26 = mc(W.N_MC - W.N_SHARED, p["dmc"])
-    wa_shared = r.normal(-0.15, 0.25)
-    wa25 = r.normal(-0.15, 0.25, 2)
-    wa26 = r.normal(-0.15, 0.25, 2) + p["dwa"]
-    # positions: the shared items sit at different positions on the two forms
-    pos25 = r.permutation(W.N_MC)
-    pos26 = r.permutation(W.N_MC)
-    f25 = {"mc": {k: np.concatenate([shared[k], own25[k]]) for k in shared}, "wa": np.array([wa25[0], wa_shared, wa25[1]]),
-           "pos": pos25}
-    f26 = {"mc": {k: np.concatenate([shared[k], own26[k]]) for k in shared}, "wa": np.array([wa26[0], wa_shared, wa26[1]]),
-           "pos": pos26}
-    return f25, f26
-
-
-def mc_scores(theta1, items, r=None, U=None):
-    a, b, c = items["a"], items["b"], items["c"]
-    pr = c + (1 - c) / (1 + np.exp(-1.7 * a * (theta1[:, None] - b)))
-    U = r.random(pr.shape) if U is None else U
-    return (U < pr).astype(np.int8)
-
-
-def wa_reads(theta2, d, sev, r=None, Z=None):
-    """two operational reads per response, a scoring leader's resolution read where they differ by more than one
-    point; the assignment score is the sum of the two reads, or twice the resolution read"""
-    base = theta2[:, None] - d[None, :]
-    if Z is None:
-        Z = (r.normal(0, 1, base.shape), r.normal(0, 1, base.shape), r.normal(0, 1, base.shape))
-    r1 = rating(base + sev + W.RATER_SD * Z[0])
-    r2 = rating(base + sev + W.RATER_SD * Z[1])
-    res = rating(base + sev + W.LEADER_SD * Z[2])
-    need = np.abs(r1 - r2) > 1
-    score = np.where(need, 2 * res, r1 + r2)
-    return r1, r2, np.where(need, res, 0), score
-
-
-def raw_of(form, yr, t1, t2, U, Z, sev=None):
-    mc = mc_scores(t1, form["mc"], U=U)
-    sev = W.SEVERITY[yr] if sev is None else sev
-    return mc.sum(1) + W.WA_WEIGHT * wa_reads(t2, form["wa"], sev, Z=Z)[3].sum(1)
-
-
-# ------------------------------------------------------------------------------------------------------- candidates
-def people(seed, p):
-    """every candidate who makes a first attempt in June 2025 or June 2026, plus the 2025-26 completers who have not
-    yet tested, plus the repeat candidates of both Junes with their earlier attempts"""
-    r = rng(seed, 2)
-    rows = []
-
-    def ability(n, s1, s2, cohort):
-        c1, c2 = p["cohort"][cohort]
-        t1 = r.normal(c1 + s1, 0.95, n)
-        t2 = W.RHO * (t1 - c1 - s1) + np.sqrt(1 - W.RHO ** 2) * r.normal(0, 0.95, n) + c2 + s2
-        return t1, t2
-    # 2025-26 completers of the sixteen programs
-    for k, (name, code, kind, n, s1, s2, early, untested) in enumerate(W.PROGRAMS):
-        t1, t2 = ability(n, s1, s2, "new")
-        u = r.random(n)
-        for i in range(n):
-            first = None if u[i] < untested else (2025 if u[i] < untested + early else 2026)
-            rows.append(dict(group="completer", program=k, cohort="new", t1=t1[i], t2=t2[i], first=first))
-    # 2024-25 completers testing first in June 2025, by program in proportion to size
-    sizes = np.array([pp[3] for pp in W.PROGRAMS], float)
-    ks = r.choice(len(W.PROGRAMS), W.EARLIER_COMPLETERS_2025, p=sizes / sizes.sum())
-    for k in ks:
-        t1, t2 = ability(1, W.PROGRAMS[k][4], W.PROGRAMS[k][5], "pre")
-        rows.append(dict(group="earlier", program=int(k), cohort="pre", t1=t1[0], t2=t2[0], first=2025))
-    # other first attempts: out-of-state completers, experience-route permit holders, earlier completers testing late
-    for yr, n in ((2025, W.OTHERS_2025), (2026, W.OTHERS_2026)):
-        t1, t2 = ability(n, -0.05, -0.05, "pre" if yr == 2025 else "other26")
-        for i in range(n):
-            rows.append(dict(group="other", program=None, cohort="pre" if yr == 2025 else "other26", t1=t1[i],
-                             t2=t2[i], first=yr))
-    # repeat candidates: earlier failures who test again (their first attempt between 2019 and 2024)
-    for yr, n in ((2025, p["rep25"]), (2026, p["rep26_old"])):
-        t1, t2 = ability(n, -0.75, -0.65, "pre")
-        fy = r.choice([2019, 2020, 2021, 2022, 2023, 2024], n, p=[0.05, 0.07, 0.10, 0.16, 0.25, 0.37])
-        for i in range(n):
-            hist = [int(fy[i])] + [y for y in range(int(fy[i]) + 1, 2025) if r.random() < 0.45]
-            rows.append(dict(group="repeat", program=None, cohort="pre", t1=t1[i], t2=t2[i], first=int(fy[i]),
-                             history=hist))
-            rows[-1]["sits"] = [yr]
-    for x in rows:
-        x.setdefault("history", [])
-        if "sits" not in x:
-            x["sits"] = [] if x["first"] is None else [x["first"]]
-    return rows
-
-
-def administer(seed, p, rows, f25, f26):
-    """score both Junes; a June 2025 candidate who fails tests again in June 2026 at the repeat rate"""
+def estimates(c):
+    """every route the ladder names, from the simulated county (no files involved)"""
+    fP, fQ = c["nP"] / c["NP"], c["nQ"] / c["NQ"]
+    t = c["tested"]
+    y = np.where(t, c["measured"] > W.STANDARD_N, False)
+    onP, onQ = c["onP"], c["onQ"]
+    inP = np.zeros(c["N"], bool)
+    inQ = np.zeros(c["N"], bool)
+    for i, s in c["from_list"].items():
+        inP[i] = "P" in s
+        inQ[i] = "Q" in s
+    pi = 1 - (1 - fP * onP) * (1 - fQ * onQ)
     out = {}
-    for yr, form, part in ((2025, f25, 3), (2026, f26, 4)):
-        r = rng(seed, part)
-        idx = [i for i, x in enumerate(rows) if yr in x["sits"]]
-        t1 = np.array([rows[i]["t1"] for i in idx])
-        t2 = np.array([rows[i]["t2"] for i in idx])
-        U = r.random((len(idx), W.N_MC))
-        Z = (r.normal(0, 1, (len(idx), W.N_WA)), r.normal(0, 1, (len(idx), W.N_WA)), r.normal(0, 1, (len(idx), W.N_WA)))
-        mc = mc_scores(t1, form["mc"], U=U)
-        r1, r2, res, score = wa_reads(t2, form["wa"], p["sev"][yr], Z=Z)
-        out[yr] = dict(idx=np.array(idx), mc=mc, r1=r1, r2=r2, res=res, wa=score, U=U, Z=Z,
-                       raw=mc.sum(1) + W.WA_WEIGHT * score.sum(1),
-                       anchor=mc[:, :W.N_SHARED].sum(1) + W.WA_WEIGHT * score[:, 1],
-                       first=np.array([rows[i]["first"] == yr for i in idx]))
-        if yr == 2025:
-            failed = out[2025]["raw"] < W.PASS_RAW_25A
-            back = r.random(len(idx)) < W.REPEAT_RATE
-            for j, i in enumerate(idx):
-                if failed[j] and back[j]:
-                    rows[i]["sits"].append(2026)
+    out["KA"] = float((y[t] / pi[t]).sum())
+    m = onP.astype(int) + onQ.astype(int)
+    out["multiplicity"] = float((y[inP] / (fP * m[inP])).sum() + (y[inQ] / (fQ * m[inQ])).sum())
+    dom = c["grp"]
+    est = 0.0
+    for g in (0, 1, 2):
+        sel = t & (dom == g)
+        est += (dom == g).sum() * (y[sel].mean() if sel.any() else 0.0)
+    out["domain means"] = float(est)
+    out["pooled"] = float(y[t].mean() * c["N"])
+    out["lists added"] = float((y[inP] / fP).sum() + (y[inQ] / fQ).sum())
+    w = np.where(inP, 1 / fP, 1 / fQ)
+    out["drawn list's rate"] = float((y[t] * w[t]).sum())
+    out["permit list alone"] = float((y[inP] / fP).sum())
+    out["parcel list alone"] = float((y[inQ] / fQ).sum())
+    out["parcel share x wells"] = float(y[inQ].mean() * c["N"])
+    for th in (0.0, 1.0):
+        g = c["grp"]
+        out["hartley %g" % th] = float((y[inP & (g == 0)] / fP).sum() + (y[inQ & (g == 1)] / fQ).sum()
+                                       + th * (y[inP & (g == 2)] / fP).sum() + (1 - th) * (y[inQ & (g == 2)] / fQ).sum())
+    out["tested above"] = int(y.sum())
     return out
-
-
-def validity(seed, p, rows, f25, scored):
-    """the 2026 validity papers: for WA2, 2025 responses drawn at random from the June 2025 responses whose two reads
-    agreed, each with the score both 2025 reads gave it; for WA1 and WA3, responses from the 2026 rangefinding with
-    the 2026 leaders' consensus scores; each paper read by several 2026 raters"""
-    r = rng(seed, 51)
-    s25 = scored[2025]
-    papers, reads = [], []
-    t2_25 = np.array([rows[i]["t2"] for i in s25["idx"]])
-    sev = p["sev"][2026]
-    for wa, n in W.N_VALIDITY.items():
-        if wa == "WA2":
-            agreed = np.flatnonzero(s25["r1"][:, 1] == s25["r2"][:, 1])
-            pick = r.choice(agreed, n, replace=False)
-            base = t2_25[pick] - f25["wa"][1]
-            cons = s25["r1"][pick, 1]                   # the score both June 2025 reads gave (the 2025 raters)
-            src = "2025"
-        else:
-            # rangefinding responses: 2026 candidates' responses, consensus at the 2026 standard
-            j = 0 if wa == "WA1" else 2
-            t2_26 = r.normal(-0.10, 1.0, n)
-            base = t2_26 - p["wa26"][j]
-            cons = rating(base + sev)
-            src = "2026"
-        k = r.integers(W.VALIDITY_READS[0], W.VALIDITY_READS[1] + 1, n)
-        for i in range(n):
-            lat = base[i] + sev + r.normal(0, W.RATER_SD, k[i])
-            papers.append(dict(wa=wa, src=src, consensus=int(cons[i]), n=int(k[i])))
-            for v in rating(lat):
-                reads.append((len(papers) - 1, int(v)))
-    return papers, reads
-
-
-def world(seed=W.SEED, **kw):
-    p = dict(dmc=W.DMC_26A, dwa=W.DWA_26A, cohort=dict(W.COHORT_SHIFT), rep25=720, rep26_old=420,
-             sev=dict(W.SEVERITY))
-    p.update(kw)
-    f25, f26 = forms(seed, p)
-    p["wa26"] = f26["wa"]
-    rows = people(seed, p)
-    scored = administer(seed, p, rows, f25, f26)
-    papers, vreads = validity(seed, p, rows, f25, scored)
-    return dict(seed=seed, p=p, f25=f25, f26=f26, rows=rows, scored=scored, papers=papers, vreads=vreads)

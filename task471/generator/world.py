@@ -1,86 +1,61 @@
-"""The world of task471 (architecture 2): the Board of Educator Standards and Licensure of an unnamed state, its
-Elementary Literacy Instruction test (one administration a year, in June), and the sixteen educator preparation
-programs whose 2025-26 completers' first-attempt pass rate decides the 2027 formal program reviews. The 2025 form
-(25A) was scored and equated by the previous contractor; the 2026 form (26A) is scored by a new contractor and equated
-to 25A by the Board's Office of Assessment Research through twenty shared multiple-choice items and one written
-assignment carried over from 25A (WA2). The 2026 raters score every written assignment to a harsher standard than the
-2025 raters did; the 2025 validity papers for WA2, scored by the 2026 raters, are the only place that shows it."""
+"""task471 world: an unnamed state's Department of Health, its Private Well Program and the 2025-26 Private Well
+Nitrate Survey, sampled separately from two overlapping lists of private domestic wells in each of sixteen counties;
+the 2027 Well Water Assistance allocation goes to the counties with an estimated 250 or more such wells above the
+nitrate standard."""
 import datetime as dt
 
-SEED = 1491
+SEED = 471
+DEPT = "Department of Health"
+OFFICE = "Office of Environmental Public Health"
+PROGRAM = "Private Well Program"
+SURVEY = "2025-26 Private Well Nitrate Survey"
+ALLOCATION = "Well Water Assistance"
+PEOPLE = {"manager": "Tina Hurley",            # Private Well Program manager
+          "epi": "Steven Nguyen",              # environmental epidemiologist who designed the survey
+          "assist": "Carlos Phillips"}         # Well Water Assistance coordinator
 
-BOARD = "Board of Educator Standards and Licensure"
-OFFICE = "Office of Assessment Research"
-TEST = "Elementary Literacy Instruction"
-TEST_CODE = "ELI 104"
-OLD_CO = "Pellmore Testing"               # scored and equated Form 25A (contract ended 31 December 2025)
-NEW_CO = "Arcwright Assessment"           # scores Form 26A from 2026; the Board equates
-PEOPLE = {"director": "Carolyn Jacobs",   # Director, Office of Assessment Research
-          "scoring": "Wanda Reed",        # Arcwright's scoring director for the program
-          "approval": "Renee Compton"}    # the Board's program approval coordinator
+STANDARD_N = 10.0          # mg/L nitrate as nitrogen
+NO3_PER_N = 4.427          # mg/L nitrate (as NO3) per mg/L nitrate as nitrogen
+QUALIFY = 250              # estimated wells above the standard for a county to qualify
+PERMITS_SINCE = 1986       # domestic wells drilled under permit since
+SURVEY_START = dt.date(2025, 9, 8)
+TESTS_CLOSE = dt.date(2026, 4, 30)
+RETESTS_CLOSE = dt.date(2026, 6, 30)
+AS_OF = dt.date(2026, 8, 14)
 
-ADMIN = {2019: dt.date(2019, 6, 8), 2020: dt.date(2020, 6, 13), 2021: dt.date(2021, 6, 12),
-         2022: dt.date(2022, 6, 11), 2023: dt.date(2023, 6, 10), 2024: dt.date(2024, 6, 8),
-         2025: dt.date(2025, 6, 14), 2026: dt.date(2026, 6, 13)}
-FORMS = {2019: "19A", 2020: "20A", 2021: "21A", 2022: "22A", 2023: "23A", 2024: "24A", 2025: "25A", 2026: "26A"}
-PROGRAM_YEAR = (dt.date(2025, 7, 1), dt.date(2026, 6, 30))   # completers counted for the 2027 reviews
-AS_OF = dt.date(2026, 8, 21)              # the office's working date; scores release 15 September 2026
-RELEASE = dt.date(2026, 9, 15)
-REVIEW_LINE = 0.70                        # a program under 70 per cent first-attempt pass goes to formal review
+LABS = {"HAL": "Halvorsen Analytical", "CED": "Cedarline Environmental Laboratories", "KIN": "Kinsale Water Testing"}
 
-# the test: 60 multiple-choice items (one point) and three written assignments, each read twice on a 1 to 4 scoring guide,
-# the two reads summed (2 to 8) and the sum counted twice; raw 0 to 108; reported 100 to 300, 240 passing
-N_MC, N_WA, WA_WEIGHT = 60, 3, 2
-MAX_RAW = N_MC + WA_WEIGHT * 8 * N_WA
-N_SHARED = 20                             # multiple-choice items 26A carries from 25A
-SHARED_WA = "WA2"                         # the written assignment 26A carries from 25A
-PASS_SCALE = 240
-PASS_RAW_25A = 56                         # Form 25A raw score at the passing standard (2025 technical report)
-
-# the latent model: theta1 drives the multiple-choice items, theta2 the written assignments
-RHO = 0.62
-THRESHOLDS = (-0.95, 0.05, 1.05)          # scores 1 | 2 | 3 | 4 on (theta2 - assignment difficulty + rater severity)
-RATER_SD = 0.50
-LEADER_SD = 0.30                          # a scoring leader's resolution read
-SEVERITY = {2025: 0.0, 2026: -0.34}       # the year's scoring standard on the latent scale
-COHORT_SHIFT = {"pre": (0.0, 0.0), "new": (0.04, -0.30), "other26": (0.0, 0.0)}   # 2025-26 completers write less well
-
-# the forms (difficulty shifts of the items each form does not share)
-MC_B_MEAN, MC_B_SD = -0.55, 0.85
-DMC_26A = 0.45                            # 26A's own multiple-choice items run harder than 25A's
-DWA_26A = 0.10
-
-N_VALIDITY = {"WA2": 120, "WA1": 160, "WA3": 160}   # validity papers seeded in 2026
-VALIDITY_READS = (6, 10)                  # reads per paper (uniform)
-BACKREAD_RATE = 0.05
-
-# the sixteen programs: name, code, kind, 2025-26 completers, theta1 shift, theta2 shift, share testing before
-# completing (a June 2025 first attempt), share not yet tested
-PROGRAMS = [
-    ('Ostrander State University', 'EPP-0112', 'university', 318, 0.2338, 0.1838, 0.10, 0.06),
-    ('Whitcombe College', 'EPP-0147', 'university', 96, 0.6573, 0.6073, 0.12, 0.05),
-    ('Delacourt University', 'EPP-0153', 'university', 224, -0.0852, -0.0852, 0.10, 0.07),
-    ('Penhallow College', 'EPP-0168', 'university', 88, 0.1548, 0.1048, 0.08, 0.08),
-    ('Marisford State University', 'EPP-0171', 'university', 276, -0.1523, -0.2023, 0.11, 0.06),
-    ('Quillan College', 'EPP-0189', 'university', 64, 0.3117, 0.2617, 0.14, 0.05),
-    ('Tarrance University', 'EPP-0204', 'university', 182, -0.4012, -0.3012, 0.09, 0.09),
-    ('Hollis Creek College', 'EPP-0216', 'university', 71, -0.1320, -0.1820, 0.10, 0.07),
-    ('Eastridge State University', 'EPP-0233', 'university', 249, -0.2821, -0.3321, 0.10, 0.06),
-    ('Saint Aldric University', 'EPP-0241', 'university', 118, -0.0337, 0.0663, 0.13, 0.05),
-    ('Corriden University', 'EPP-0258', 'university', 132, -0.0387, 0.0113, 0.10, 0.08),
-    ('Linden Valley College', 'EPP-0262', 'university', 57, -0.6833, -0.7333, 0.07, 0.09),
-    ('Statewide Teacher Residency', 'EPP-0307', 'alternative', 205, -0.2753, -0.2753, 0.03, 0.10),
-    ('Riverbend Teaching Fellows', 'EPP-0315', 'alternative', 143, -0.1358, -0.2858, 0.04, 0.09),
-    ('Harrowgate Teacher Academy', 'EPP-0322', 'alternative', 92, -0.5928, -0.4428, 0.03, 0.11),
-    ('Brightwater College', 'EPP-0339', 'university', 77, 0.0690, 0.1690, 0.12, 0.06),
+# county: name, code, wells on either list, share permit-only, share parcel-only, share both, nitrate median (mg/L N)
+# for permit-only, parcel-only and both, log-spread, tested from the permit list, tested from the parcel list, lab.
+# The numbers are placed by calibrate.py (see the design note's Ladder); geology and land use set the medians.
+COUNTIES = [
+    ("Alderwick", "C01"), ("Brannock", "C02"), ("Corwell", "C03"), ("Dunmere", "C04"),
+    ("Eskvale", "C05"), ("Farrowdale", "C06"), ("Glenmoor", "C07"), ("Hallowcroft", "C08"),
+    ("Ivyridge", "C09"), ("Kestrel Plains", "C10"), ("Lindmark", "C11"), ("Morrowfield", "C12"),
+    ("Netherby", "C13"), ("Oakmere", "C14"), ("Quarrington", "C15"), ("Rushbrook", "C16"),
 ]
-CANDIDATES = [p[0] for p in PROGRAMS]
+LAB_OF = {"C01": "HAL", "C02": "HAL", "C03": "CED", "C04": "KIN", "C05": "HAL", "C06": "CED", "C07": "CED",
+          "C08": "KIN", "C09": "HAL", "C10": "KIN", "C11": "CED", "C12": "HAL", "C13": "KIN", "C14": "CED",
+          "C15": "HAL", "C16": "KIN"}
 
-# first-attempt candidates who are not 2025-26 completers of the sixteen programs: earlier completers testing late,
-# out-of-state program completers, permit holders on the experience route
-OTHERS_2025 = 1180
-OTHERS_2026 = 1190
-EARLIER_COMPLETERS_2025 = 1650            # 2024-25 completers testing first in June 2025
-REPEAT_RATE = 0.55                        # a failed candidate tests again the next June
-
-FILES = {}                                # filled by pack.py
+# placed by calibrate.py (pattern GBECEBAECCBEAEEC: A qualifies on every route; G qualifies on every route but the
+# parcel list's, its permit-only wells running high; B qualifies but pooling drops it; C falls short but adding the two
+# lists' estimates lifts it over; E falls short on every route)
+PLACED = [
+    {'N': 2977, 'po': 0.432, 'qo': 0.161, 'mPo': 4.97, 'mQo': 2.03, 'mB': 1.38, 'sigma': 0.99, 'nP': 211, 'nQ': 66, 'accept': 0.69, 'retest': 0.71, 'phone': 0.31, 'tries': 0},
+    {'N': 1438, 'po': 0.082, 'qo': 0.495, 'mPo': 1.61, 'mQo': 6.53, 'mB': 2.41, 'sigma': 1.01, 'nP': 60, 'nQ': 58, 'accept': 0.56, 'retest': 0.77, 'phone': 0.3, 'tries': 14},
+    {'N': 1073, 'po': 0.181, 'qo': 0.255, 'mPo': 1.93, 'mQo': 5.56, 'mB': 2.9, 'sigma': 0.92, 'nP': 77, 'nQ': 34, 'accept': 0.6, 'retest': 0.74, 'phone': 0.3, 'tries': 2},
+    {'N': 2703, 'po': 0.068, 'qo': 0.134, 'mPo': 1.62, 'mQo': 3.04, 'mB': 2.43, 'sigma': 0.94, 'nP': 188, 'nQ': 79, 'accept': 0.6, 'retest': 0.65, 'phone': 0.18, 'tries': 0},
+    {'N': 1683, 'po': 0.187, 'qo': 0.194, 'mPo': 1.45, 'mQo': 4.17, 'mB': 2.18, 'sigma': 1.0, 'nP': 112, 'nQ': 43, 'accept': 0.66, 'retest': 0.79, 'phone': 0.3, 'tries': 17},
+    {'N': 2306, 'po': 0.121, 'qo': 0.418, 'mPo': 1.28, 'mQo': 5.18, 'mB': 1.91, 'sigma': 1.01, 'nP': 121, 'nQ': 83, 'accept': 0.65, 'retest': 0.63, 'phone': 0.21, 'tries': 5},
+    {'N': 10833, 'po': 0.204, 'qo': 0.233, 'mPo': 1.26, 'mQo': 3.61, 'mB': 1.88, 'sigma': 0.94, 'nP': 689, 'nQ': 378, 'accept': 0.6, 'retest': 0.77, 'phone': 0.25, 'tries': 0},
+    {'N': 1380, 'po': 0.173, 'qo': 0.27, 'mPo': 1.77, 'mQo': 5.1, 'mB': 2.66, 'sigma': 0.86, 'nP': 78, 'nQ': 44, 'accept': 0.62, 'retest': 0.77, 'phone': 0.2, 'tries': 16},
+    {'N': 3469, 'po': 0.063, 'qo': 0.155, 'mPo': 1.41, 'mQo': 2.64, 'mB': 2.11, 'sigma': 0.93, 'nP': 227, 'nQ': 111, 'accept': 0.62, 'retest': 0.8, 'phone': 0.28, 'tries': 9},
+    {'N': 3435, 'po': 0.09, 'qo': 0.094, 'mPo': 1.26, 'mQo': 2.36, 'mB': 1.89, 'sigma': 1.02, 'nP': 309, 'nQ': 140, 'accept': 0.68, 'retest': 0.72, 'phone': 0.19, 'tries': 4},
+    {'N': 2631, 'po': 0.146, 'qo': 0.405, 'mPo': 1.21, 'mQo': 4.92, 'mB': 1.81, 'sigma': 0.96, 'nP': 111, 'nQ': 82, 'accept': 0.59, 'retest': 0.73, 'phone': 0.21, 'tries': 1},
+    {'N': 839, 'po': 0.102, 'qo': 0.224, 'mPo': 1.51, 'mQo': 4.35, 'mB': 2.27, 'sigma': 0.92, 'nP': 60, 'nQ': 31, 'accept': 0.61, 'retest': 0.76, 'phone': 0.19, 'tries': 14},
+    {'N': 4573, 'po': 0.208, 'qo': 0.221, 'mPo': 2.13, 'mQo': 6.11, 'mB': 3.19, 'sigma': 0.87, 'nP': 250, 'nQ': 154, 'accept': 0.71, 'retest': 0.62, 'phone': 0.26, 'tries': 0},
+    {'N': 866, 'po': 0.192, 'qo': 0.185, 'mPo': 1.68, 'mQo': 4.83, 'mB': 2.52, 'sigma': 0.96, 'nP': 70, 'nQ': 26, 'accept': 0.6, 'retest': 0.79, 'phone': 0.27, 'tries': 2},
+    {'N': 981, 'po': 0.169, 'qo': 0.28, 'mPo': 1.71, 'mQo': 4.92, 'mB': 2.57, 'sigma': 1.01, 'nP': 58, 'nQ': 30, 'accept': 0.67, 'retest': 0.8, 'phone': 0.18, 'tries': 1},
+    {'N': 1411, 'po': 0.095, 'qo': 0.086, 'mPo': 2.14, 'mQo': 4.01, 'mB': 3.21, 'sigma': 0.98, 'nP': 119, 'nQ': 48, 'accept': 0.7, 'retest': 0.68, 'phone': 0.23, 'tries': 0},
+]

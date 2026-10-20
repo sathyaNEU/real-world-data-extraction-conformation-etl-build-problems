@@ -23,28 +23,22 @@ import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
 CENTRAL = dt.timezone(dt.timedelta(hours=-5))
+COMPANY = "%s, %s" % (W.DEPT, W.OFFICE)
 
 PDF_STAMPS = {
-    "tr2025": (b"D:20250912101544-05'00'", b"D:20250912101544-05'00'"),
-    "memo": (b"D:20260209083012-06'00'", b"D:20260209083012-06'00'"),
-    "standard": (b"D:20240318141107-05'00'", b"D:20240318141107-05'00'"),
-    "framework": (b"D:20240611094521-05'00'", b"D:20240611094521-05'00'"),
-    "adminsum": (b"D:20260731161830-05'00'", b"D:20260731161830-05'00'"),
+    "design": (b"D:20260522103514-05'00'", b"D:20260522103514-05'00'"),
+    "standard": (b"D:20260310140207-05'00'", b"D:20260310140207-05'00'"),
+    "factsheet": (b"D:20250114091840-06'00'", b"D:20250114091840-06'00'"),
 }
 OOXML = {   # creator, last modified by, created, modified, company
-    "qc26": ("Arcwright Scoring Operations", "Arcwright Scoring Operations", "2026-07-30T14:12:00Z",
-             "2026-07-31T19:40:51Z", W.NEW_CO),
-    "maps": ("Office of Assessment Research", "Office of Assessment Research", "2026-02-04T15:30:00Z",
-             "2026-02-09T13:58:12Z", W.BOARD),
-    "completers": ("Educator Preparation and Licensure", "Educator Preparation and Licensure", "2026-07-14T13:05:00Z",
-                   "2026-08-04T20:22:37Z", W.BOARD),
+    "parcels": (W.PROGRAM, W.PROGRAM, "2026-01-27T15:02:00Z", "2026-02-03T21:44:19Z", COMPANY),
+    "ced": ("Cedarline LIMS", "Cedarline LIMS", "2026-08-06T13:10:00Z", "2026-08-06T13:10:41Z",
+            W.LABS["CED"]),
 }
 AS_OF = {   # each file's date as its source dated it
-    "tr2025": "2025-09-12", "memo": "2026-02-09", "standard": "2024-03-18", "framework": "2024-06-11",
-    "adminsum": "2026-07-31", "maps": "2026-02-09", "conv": "2025-09-12", "scores25": "2025-07-25",
-    "scores26": "2026-07-24", "items26": "2026-07-27", "reads26": "2026-07-29", "qc26": "2026-07-31",
-    "history": "2026-08-18", "crosswalk": "2026-08-14", "completers": "2026-08-04", "register": "2026-08-18",
-    "directory": "2026-01-12",
+    "permits": "2026-08-03", "parcels": "2026-02-03", "manifest": "2026-05-01", "hal": "2026-08-10",
+    "ced": "2026-08-06", "kin": "2026-08-05", "retests": "2026-08-04", "counties": "2025-07-15",
+    "design": "2026-05-22", "standard": "2026-03-10", "factsheet": "2025-01-14", "labs": "2025-12-01",
 }
 
 
@@ -57,26 +51,23 @@ def build(out, x=None, quiet=False):
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or P.everything()
     n = {}
-    n["conv"] = P.write_csv(f("conv"), ["RAW_SCORE", "SCALE_SCORE"], P.conversion_rows())
-    n["history"] = P.write_csv(f("history"), P.HISTORY_COLS, P.history_rows(x))
-    n["register"] = P.write_csv(f("register"), P.REGISTER_COLS, P.register_rows(x))
-    n["scores25"] = P.write_csv(f("scores25"), P.SCORES25_COLS, P.scores25_rows(x), crlf=True)
-    n["scores26"] = P.write_csv(f("scores26"), P.SCORES26_COLS, P.scores26_rows(x))
-    n["items26"] = P.write_csv(f("items26"), P.ITEMS26_COLS, P.items26_rows(x))
-    reads = P.reads_rows(x)
-    n["reads26"] = P.write_csv(f("reads26"), P.READ_COLS, reads)
-    n["crosswalk"] = P.write_csv(f("crosswalk"), P.CROSSWALK_COLS, P.crosswalk_rows(x))
-    n["directory"] = P.write_csv(f("directory"), P.DIRECTORY_COLS, P.directory_rows())
-    st = DC.stats(x)
-    summary, readers = DC.qc_tables(x, reads)
-    DC.write_qc(f("qc26"), x, summary, readers)
-    DC.write_maps(f("maps"), x)
-    DC.write_completers(f("completers"), P.submission_sheets(x))
-    DC.write_tr2025(f("tr2025"), x, st)
-    DC.write_memo(f("memo"), x)
+    n["permits"] = P.write_csv(f("permits"), P.PERMIT_COLS, P.permit_rows(x), crlf=True)
+    n["manifest"] = P.write_csv(f("manifest"), P.MANIFEST_COLS, P.manifest_rows(x))
+    recs = P.lab_records(x)
+    n["hal"] = P.write_csv(f("hal"), P.HAL_COLS, P.hal_rows(recs["HAL"]))
+    n["kin"] = P.write_csv(f("kin"), P.KIN_COLS, P.kin_rows(recs["KIN"]), crlf=True)
+    n["retests"] = P.write_csv(f("retests"), P.REQUEST_COLS, P.request_rows(x))
+    n["counties"] = P.write_csv(f("counties"), P.COUNTY_COLS, P.county_rows(x))
+    n["labs"] = P.write_csv(f("labs"), P.LAB_ROSTER_COLS, P.lab_roster_rows())
+    sheets = P.parcel_sheets(x)
+    n["parcels"] = sum(len(v[1]) for v in sheets.values())
+    DC.write_parcels(f("parcels"), x, sheets)
+    ced = P.ced_rows(recs["CED"])
+    n["ced"] = len(ced)
+    DC.write_ced(f("ced"), ced)
+    DC.write_design(f("design"), x)
     DC.write_standard(f("standard"))
-    DC.write_framework(f("framework"))
-    DC.write_adminsum(f("adminsum"), x, summary)
+    DC.write_factsheet(f("factsheet"))
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
     for k, (cr, lb, c0, m0, co) in OOXML.items():
@@ -85,7 +76,6 @@ def build(out, x=None, quiet=False):
         y, m, d = (int(v) for v in AS_OF[k].split("-"))
         ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=CENTRAL).timestamp()
         os.utime(f(k), (ts, ts))
-    x["qc_summary"] = summary
     if not quiet:
         big = max(n, key=lambda k: n[k])
         print("pack: %d files, largest %s (%d rows)" % (len(P.FILES), P.FILES[big], n[big]))
@@ -120,7 +110,7 @@ def everything(root, x=None, quiet=False):
         shutil.rmtree(gdir)
     fig = os.path.join(root, "generator", "figures.json")
     GO.main(os.path.join(root, "target"), gdir, fig)
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), sorted(os.listdir(gdir)))
+    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), sorted(os.listdir(gdir)), n)
     WU.write(fig, os.path.join(root, "submission.md"))
     if not quiet:
         print("built %s: %d pack files, %d golden files" % (root, len(os.listdir(os.path.join(root, "target"))),

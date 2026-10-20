@@ -1,24 +1,26 @@
-"""Independent verifier: reads only the shipped bundle with its own readers (the csv module and openpyxl), rebuilds the
-anchor, the WA2 validity shift, Tucker, chained linear and chained equipercentile equating with its own code, the
-Form 26A passing score, every program's completers counted, passers and rate, and the 2024-25 ask, and checks the
-golden workbook, figures.json and submission.md against them, each figure at the precision the prompt asks for."""
+"""The independent verifier: reads only the shipped pack (target/) and the golden files, recomputes the survey
+population, the six counties and the retest figures by its own code, and compares them with the golden workbook and
+submission.md. It imports nothing from the generator.
+
+    python3 task471/generator/verify.py
+"""
 import csv
 import datetime as dt
-import json
 import os
 import re
+import sys
 
-import numpy as np
+import openpyxl
 
-FILES = dict(maps="ELI_item_maps_25A_26A.xlsx", conv="ELI_Form25A_raw_to_scale.csv",
-             s25="pellmore_ELI_June2025_scores.csv", s26="arcwright_ELI_June2026_scores.csv",
-             items26="arcwright_ELI_June2026_item_responses.csv", reads26="arcwright_ELI_June2026_written_assignment_reads.csv",
-             qc26="arcwright_ELI_June2026_scoring_QC.xlsx", history="BESL_ELI_attempt_history_2019-2026.csv",
-             crosswalk="BESL_arcwright_registration_crosswalk_2026.csv", completers="EPP_Title_II_completers_2025-26.xlsx",
-             register="BESL_completer_register_2019-20_to_2024-25.csv", directory="BESL_EPP_directory_2026.csv")
-WORKBOOK = "eli_2027_program_review.xlsx"
-JUNE25, JUNE26 = "2025-06-14", "2026-06-13"
-YEAR = (dt.date(2025, 7, 1), dt.date(2026, 6, 30))
+LINE, STD, NO3 = 250, 10.0, 4.427
+TOKENS = set("N S E W NORTH SOUTH EAST WEST RD ROAD LN LANE DR DRIVE TRL TRAIL HWY HIGHWAY CT COURT AVE AVENUE ST "
+             "STREET".split())
+
+
+def find(target, pattern):
+    hits = [f for f in os.listdir(target) if re.search(pattern, f)]
+    assert len(hits) == 1, (pattern, hits)
+    return os.path.join(target, hits[0])
 
 
 def rows(path):
@@ -26,238 +28,163 @@ def rows(path):
         return list(csv.DictReader(fh))
 
 
-def key(s):
-    return "".join(ch for ch in str(s or "").upper() if "A" <= ch <= "Z")
+def akey(num, text):
+    words = [w for w in re.split(r"[\s.,]+", str(text).upper()) if w and w not in TOKENS]
+    return "%d|%s" % (int(num), " ".join(words))
 
 
-def day(s):
-    s = str(s).strip()
-    for f in ("%Y-%m-%d", "%m/%d/%Y", "%B %d, %Y"):
-        try:
-            return dt.datetime.strptime(s, f).date()
-        except ValueError:
+def akey_line(text):
+    head, _, rest = str(text).strip().partition(" ")
+    return akey(head, rest)
+
+
+def digits(v):
+    d = "".join(ch for ch in str(v) if ch.isdigit())
+    return d if len(d) == 9 else None
+
+
+def day(v):
+    if isinstance(v, (dt.date, dt.datetime)):
+        return v.strftime("%Y-%m-%d")
+    v = str(v)
+    return v[:4] + "-" + v[4:6] + "-" + v[6:8] if v.isdigit() else v[:10]
+
+
+def compute(target):
+    codes = rows(find(target, r"county_codes"))
+    by_name = {r["PERMIT_DB_COUNTY"]: r["COUNTY_CODE"] for r in codes}
+    by_sheet = {r["ASSESSOR_SHEET"]: r["COUNTY_CODE"] for r in codes}
+    names = {r["COUNTY_CODE"]: r["COUNTY"] for r in codes}
+    P = {k: {} for k in names}
+    for r in rows(find(target, r"permits_extract")):
+        if r["WELL_USE"] == "DOMESTIC" and r["WELL_STATUS"] == "ACTIVE" and "1986-01-01" <= r["DATE_DRILLED"] <= "2025-08-31":
+            P[by_name[r["COUNTY"]]][r["PERMIT_NO"]] = (digits(r["PARCEL_NO"]) if r["PARCEL_NO"] else None,
+                                                       akey_line(r["SITE_ADDRESS"]))
+    wb = openpyxl.load_workbook(find(target, r"parcels"), read_only=True)
+    Q = {k: {} for k in names}          # parcel digits -> (address key, private?)
+    for ws in wb.worksheets:
+        if ws.title not in by_sheet:
             continue
-    raise ValueError(s)
-
-
-def half_up(v):
-    return int(np.floor(v + 0.5))
-
-
-def rate(p, n):
-    return float(np.floor(1000.0 * p / n + 0.5) / 10.0)
-
-
-# ------------------------------------------------------------------------------------------------ equating, own code
-def tucker(X, VX, Y, VY):
-    w1 = len(X) / (len(X) + len(Y))
-    w2 = 1 - w1
-    g1 = np.cov(X, VX, bias=True)[0, 1] / np.var(VX)
-    g2 = np.cov(Y, VY, bias=True)[0, 1] / np.var(VY)
-    dm, dv = VX.mean() - VY.mean(), np.var(VX) - np.var(VY)
-    mx = X.mean() - w2 * g1 * dm
-    my = Y.mean() + w1 * g2 * dm
-    vx = np.var(X) - w2 * g1 ** 2 * dv + w1 * w2 * g1 ** 2 * dm ** 2
-    vy = np.var(Y) + w1 * g2 ** 2 * dv + w1 * w2 * g2 ** 2 * dm ** 2
-    return lambda x: my + np.sqrt(vy / vx) * (x - mx)
-
-
-def chained_linear(X, VX, Y, VY):
-    return lambda x: Y.mean() + Y.std() / VY.std() * (VX.mean() + VX.std() / X.std() * (x - X.mean()) - VY.mean())
-
-
-def _pr(vals, top):
-    f = np.bincount(vals.astype(int), minlength=top + 1)[:top + 1] / len(vals)
-    F = np.cumsum(f)
-
-    def P(x):
-        s = int(np.clip(np.floor(x + 0.5), 0, top))
-        return (F[s - 1] if s > 0 else 0.0) + (x - s + 0.5) * f[s]
-
-    def Pinv(p):
-        s = int(np.searchsorted(F, p, side="right"))
-        s = min(s, top)
-        return (p - (F[s - 1] if s > 0 else 0.0)) / f[s] + s - 0.5
-    return P, Pinv
-
-
-def chained_equipercentile(X, VX, Y, VY, shift):
-    Px, _ = _pr(X, 108)
-    _, Qv1 = _pr(VX, 36)
-    Pv2, _ = _pr(VY, 36)
-    _, Qy = _pr(Y, 108)
-    return lambda x: Qy(Pv2(Qv1(Px(x)) + shift))
-
-
-def lowest_passing(e, target):
-    return min(x for x in range(109) if half_up(e(x)) >= target)
-
-
-# ------------------------------------------------------------------------------------------------------- the check
-def main(target, golden):
-    import openpyxl
-    t = lambda k: os.path.join(target, FILES[k])
-    ok = True
-
-    def say(label, cond, extra=""):
-        nonlocal ok
-        ok &= bool(cond)
-        print("verify %s  %s%s" % ("ok  " if cond else "FAIL", label, ("  [%s]" % extra) if extra else ""))
-
-    task = os.path.dirname(os.path.abspath(target))
-    fig = json.load(open(os.path.join(task, "generator", "figures.json"), encoding="utf-8"))
-
-    # the forms: shared items by identifier, the shared written assignment
-    wb = openpyxl.load_workbook(t("maps"), read_only=True)
-    mc, wa = {}, {}
-    for form in ("25A", "26A"):
-        body = list(wb["Form %s" % form].iter_rows(min_row=2, values_only=True))
-        mc[form] = {r[1]: int(r[0]) for r in body if r[2] == "Multiple choice"}
-        wa[form] = [r[1] for r in body if r[2] == "Written assignment"]
-    shared = set(mc["25A"]) & set(mc["26A"])
-    swa = [wa["26A"].index(w) for w in wa["26A"] if w in wa["25A"]]
-    say("20 shared items and one shared assignment", len(shared) == 20 and len(swa) == 1, "WA%d" % (swa[0] + 1))
-    k = swa[0] + 1
-    pos25 = sorted(mc["25A"][i] for i in shared)
-
-    # first attempts from the history, voided attempts left out
-    hist, who = {}, {}
-    for r in rows(t("history")):
-        if r["RESULT"] == "VOID":
-            continue
-        hist.setdefault(r["EDUCATOR_ID"], []).append((r["TEST_DATE"], r["RESULT"]))
-        who[r["EDUCATOR_ID"]] = (key(r["LAST_NAME"]), key(r["FIRST_NAME"]), day(r["BIRTH_DATE"]))
-    first = {e: min(v) for e, v in hist.items()}
-
-    Y, VY = [], []
-    for r in rows(t("s25")):
-        if first.get(r["CAND_ID"], ("",))[0] != JUNE25:
-            continue
-        w2 = 2 * int(r["WA%d_R3" % k]) if r["WA%d_R3" % k] else int(r["WA%d_R1" % k]) + int(r["WA%d_R2" % k])
-        Y.append(int(r["TOTAL_RAW"]))
-        VY.append(sum(int(r["ITEM_SCORES"][p - 1]) for p in pos25) + 2 * w2)
-    cw = {r["REG_ID"]: r["EDUCATOR_ID"] for r in rows(t("crosswalk"))}
-    anchor = {}
-    for r in rows(t("items26")):
-        if r["ITEM_ID"] in shared:
-            anchor[r["REG_ID"]] = anchor.get(r["REG_ID"], 0) + int(r["ITEM_SCORE"])
-    X, VX, raw26 = [], [], {}
-    for r in rows(t("s26")):
-        e = cw[r["REG_ID"]]
-        raw26[e] = int(r["RAW_TOTAL"])
-        if first.get(e, ("",))[0] != JUNE26:
-            continue
-        X.append(int(r["RAW_TOTAL"]))
-        VX.append(anchor[r["REG_ID"]] + 2 * int(r["WA%d_SCORE" % k]))
-    X, VX, Y, VY = (np.array(a, float) for a in (X, VX, Y, VY))
-    say("first-attempt samples", (len(Y), len(X)) == (fig["n_first_2025"], fig["n_first_2026"]), "%d and %d" % (len(Y), len(X)))
-
-    # WA2 on the 2025 standard: the validity papers from the 2025 scoring
-    qc = openpyxl.load_workbook(t("qc26"), read_only=True)
-    papers = {r[0]: int(r[3]) for r in qc["Validity papers"].iter_rows(min_row=2, values_only=True)
-              if r[1] == "WA%d" % k and "2025" in str(r[2])}
-    d = [int(r["SCORE"]) - papers[r["RESPONSE_ID"]] for r in rows(t("reads26"))
-         if r["READ_TYPE"] == "VALIDITY" and r["RESPONSE_ID"] in papers]
-    bias = float(np.mean(d))
-    shift = -2 * 2 * bias
-    say("WA2 validity shift", abs(bias - fig["validity_bias"]) < 5e-5 and abs(shift - fig["anchor_shift"]) < 0.005
-        and len(papers) == fig["wa2_papers"] and len(d) == fig["wa2_validity_reads"], "%.4f per read, %.2f" % (bias, shift))
-
-    conv = {int(r["RAW_SCORE"]): int(r["SCALE_SCORE"]) for r in rows(t("conv"))}
-    pass25 = min(v for v, s in conv.items() if s >= 240)
-    cuts = {"Tucker": lowest_passing(tucker(X, VX + shift, Y, VY), pass25),
-            "chained linear": lowest_passing(chained_linear(X, VX + shift, Y, VY), pass25),
-            "chained equipercentile": lowest_passing(chained_equipercentile(X, VX, Y, VY, shift), pass25)}
-    say("Form 26A raw passing score", set(cuts.values()) == {fig["raw_cut"]}, str(cuts))
-    naive = {"Tucker": lowest_passing(tucker(X, VX, Y, VY), pass25),
-             "chained equipercentile": lowest_passing(chained_equipercentile(X, VX, Y, VY, 0.0), pass25)}
-    say("the anchor as scored files another score", fig["raw_cut"] not in naive.values(), str(naive))
-    cut = fig["raw_cut"]
-
-    # completers counted, passers and rates
-    lists = openpyxl.load_workbook(t("completers"), read_only=True)
-    names = {r["PROGRAM_CODE"]: r["PROGRAM_NAME"] for r in rows(t("directory"))}
-    mine = {}
-    for code in lists.sheetnames:
-        body = list(lists[code].iter_rows(values_only=True))
-        head = list(body[4])
-        ids = []
-        for r in body[5:]:
-            if not r or r[0] is None:
+        k = by_sheet[ws.title]
+        it = ws.iter_rows(values_only=True)
+        h = list(next(it))
+        for v in it:
+            if v[0] is None:
                 continue
-            d_ = dict(zip(head, r))
-            if "Educator ID" in d_:
-                e, area, done = d_["Educator ID"], d_["Pathway"], d_["Completion Date"]
-            elif "STATE ID" in d_:
-                e, area, done = "E" + str(d_["STATE ID"]).zfill(7), d_["PROGRAM AREA"], d_["DATE COMPLETED"]
+            d = dict(zip(h, v))
+            if "PIN" in d:
+                pid, ak, code = d["PIN"], akey(d["HOUSE_NO"], d["STREET"]), d["WATER_SOURCE"]
+            elif "PARCEL_ID" in d:
+                pid, ak, code = d["PARCEL_ID"], akey_line(d["SITUS_ADDRESS"]), d["WATER"]
             else:
-                e, area, done = "E" + re.sub(r"\D", "", str(d_["Educator #"])).zfill(7), d_["Licensure Area"], d_["Residency Exit"]
-            if not str(area).upper().startswith("ELEM") or not YEAR[0] <= day(done) <= YEAR[1] or e in ids:
-                continue
-            ids.append(e)
-        mine[code] = ids
-    got = {}
-    for code, ids in mine.items():
-        n = p = 0
-        for e in ids:
-            if e not in first or first[e][0] > JUNE26:
-                continue
-            n += 1
-            p += int(raw26[e] >= cut) if first[e][0] == JUNE26 else int(first[e][1] == "PASS")
-        got[code] = (n, p)
-    figp = {q["code"]: q for q in fig["programs"]}
-    say("sixteen programs", set(got) == set(figp) and all(names[c] == figp[c]["name"] for c in got))
-    say("completers counted and passers", all(got[c] == (figp[c]["counted"], figp[c]["passed"]) for c in got),
-        str({c: got[c] for c in got if got[c] != (figp[c]["counted"], figp[c]["passed"])}))
-    say("rates", all(rate(got[c][1], got[c][0]) == figp[c]["rate"] for c in got))
-    review = sorted(names[c] for c, (n, p) in got.items() if p / n < 0.70)
-    say("programs on review", review == sorted(fig["review"]), "; ".join(review))
-    edge = min(abs(p - 0.7 * n) for n, p in got.values())
-    say("no program within one completer of the line", edge >= 1.0, "%.1f" % edge)
-
-    # the ask: the 2024-25 completers in the register, by educator ID, else by name and birth date
-    by_name = {}
-    for e, nm in who.items():
-        by_name.setdefault(nm, []).append(e)
-    prior = {c: [0, 0] for c in got}
-    for r in rows(t("register")):
-        if r["PROGRAM_YEAR"] != "2024-25" or not r["PATHWAY"].upper().startswith("ELEM") or r["PROGRAM_CODE"] not in prior:
+                pid, ak, code = d["Parcel Number"], akey_line(d["Property Address"]), d["Water Service"]
+            Q[k][digits(pid)] = (ak, str(code).strip() in ("W", "WELL", "2") if code is not None else False)
+    out = {}
+    for k in names:
+        addr_to_pid = {ak: pid for pid, (ak, _p) in Q[k].items()}
+        on_q = {}
+        for no, (pid, ak) in P[k].items():
+            pid = pid if pid else addr_to_pid.get(ak)
+            on_q[no] = bool(pid and Q[k].get(pid, (None, False))[1])
+        priv = {pid for pid, (_a, p) in Q[k].items() if p}
+        q_on_p = set()
+        for no, (pid, ak) in P[k].items():
+            pid = pid if pid else addr_to_pid.get(ak)
+            if pid in priv:
+                q_on_p.add(pid)
+        both = sum(on_q.values())
+        out[k] = dict(name=names[k], NP=len(P[k]), NQ=len(priv), union=len(P[k]) + len(priv) - both, on_q=on_q,
+                      q_on_p=q_on_p, wells={}, nP=0, nQ=0)
+    for r in rows(find(target, r"draw_manifest")):
+        if r["OUTCOME"] not in ("TESTED", "TESTED_EARLIER"):
             continue
-        e = r["EDUCATOR_ID"]
-        if e not in hist:
-            c_ = by_name.get((key(r["LAST_NAME"]), key(r["FIRST_NAME"]), day(r["BIRTH_DATE"])), [])
-            e = c_[0] if len(c_) == 1 else e
-        if e not in first or first[e][0] > JUNE25:
+        o = out[r["COUNTY_CODE"]]
+        w = o["wells"].setdefault(r["KIT_ID"], dict(p=False, q=False, addr=None))
+        if r["FRAME"] == "PERMIT":
+            o["nP"] += 1
+            w["p"] = True
+            w["q"] = w["q"] or o["on_q"][r["FRAME_RECORD"]]
+            w["addr"] = P[r["COUNTY_CODE"]][r["FRAME_RECORD"]][1]
+        else:
+            o["nQ"] += 1
+            pid = digits(r["FRAME_RECORD"])
+            w["q"] = True
+            w["p"] = w["p"] or pid in o["q_on_p"]
+            w["addr"] = w["addr"] or Q[r["COUNTY_CODE"]][pid][0]
+    res = {}
+    for r in rows(find(target, r"Halvorsen")):
+        if r["RESULT_STATUS"] == "FINAL":
+            v = r["NO3N_MG_L"]
+            res[r["KIT_ID"]] = (r["COLLECTED"], 0.0 if v.startswith("<") else float(v))
+    wb = openpyxl.load_workbook(find(target, r"Cedarline"), read_only=True)
+    it = wb["Results"].iter_rows(values_only=True)
+    h = list(next(it))
+    best = {}
+    for v in it:
+        d = dict(zip(h, v))
+        if d["Analyte"] == "Nitrate as N" and (d["Client Kit"] not in best or day(d["Report Date"]) > best[d["Client Kit"]][0]):
+            best[d["Client Kit"]] = (day(d["Report Date"]), day(d["Date Sampled"]),
+                                     0.0 if d["Qualifier"] == "U" else float(d["Result"]))
+    for kit, (_r, c, n) in best.items():
+        res[kit] = (c, n)
+    ver = {}
+    for r in rows(find(target, r"Kinsale")):
+        if r["PARAMETER"] == "NITRATE" and int(r["VERSION"]) >= ver.get(r["CLIENTID"], 0):
+            ver[r["CLIENTID"]] = int(r["VERSION"])
+            res[r["CLIENTID"]] = (day(r["SAMPLED"]), 0.0 if r["FLAG"] == "<" else float(r["VALUE"]) / NO3)
+    for k, o in out.items():
+        fP, fQ = o["nP"] / o["NP"], o["nQ"] / o["NQ"]
+        est = 0.0
+        for kit, w in o["wells"].items():
+            if res[kit][1] > STD:
+                est += 1.0 / (1 - (1 - (fP if w["p"] else 0)) * (1 - (fQ if w["q"] else 0)))
+        o["estimate"], o["qualifies"] = est, est >= LINE
+    # retests: each request to its well (first kit, or ship-to address in the request's county), counted where tested
+    kit_county = {kit: k for k, o in out.items() for kit in o["wells"]}
+    addr_kit = {(k, w["addr"]): kit for k, o in out.items() for kit, w in o["wells"].items()}
+    first = {kit: res[kit][1] for kit in kit_county}
+    for o in out.values():
+        o["retested"], o["still"] = 0, 0
+    done = set()
+    for r in rows(find(target, r"retest_kit_requests")):
+        kit = r["ORIGINAL_KIT"] or addr_kit.get((r["COUNTY_CODE"], akey_line(r["SHIP_TO_ADDRESS"])))
+        if not kit or kit not in kit_county or kit in done or r["RETEST_KIT"] not in res:
             continue
-        prior[r["PROGRAM_CODE"]][0] += 1
-        prior[r["PROGRAM_CODE"]][1] += int(first[e][1] == "PASS")
-    say("2024-25 completers tested and their rate", all(prior[c][0] == figp[c]["prior_tested"] and
-                                                         rate(prior[c][1], prior[c][0]) == figp[c]["prior_rate"]
-                                                         for c in prior))
+        coll, n = res[r["RETEST_KIT"]]
+        if coll > "2026-06-30" or first[kit] <= STD:
+            continue
+        done.add(kit)
+        o = out[kit_county[kit]]
+        o["retested"] += 1
+        o["still"] += 1 if n > STD else 0
+    return out
 
-    # the golden workbook and the write-up
-    gw = openpyxl.load_workbook(os.path.join(golden, WORKBOOK), data_only=True)
-    rv = {r[0]: r for r in gw["Reviews 2027"].iter_rows(min_row=5, values_only=True) if r[0] in got}
-    say("workbook review sheet", all(rv[c][2:6] == (got[c][0], got[c][1], rate(got[c][1], got[c][0]),
-                                                    "Yes" if names[c] in review else "No") for c in got))
-    say("workbook passing score", str(cut) in str(gw["Reviews 2027"]["A2"].value))
-    pr = {r[0]: r for r in gw["2024-25 completers"].iter_rows(min_row=2, values_only=True)}
-    say("workbook 2024-25 sheet", all(pr[c][2] == prior[c][0] and pr[c][4] == rate(prior[c][1], prior[c][0])
-                                      for c in prior))
-    sub = open(os.path.join(task, "submission.md"), encoding="utf-8").read()
-    blk = sub[sub.index("## 4. Deliverable Answers"):]
-    lines_ok = True
-    for c in got:
-        n, p = got[c]
-        lines_ok &= ("   - %s: %d completers, %d passed, %.1f\n" % (names[c], n, p, rate(p, n))) in blk
-        lines_ok &= ("   - %s: %d completers, %.1f\n" % (names[c], prior[c][0], rate(prior[c][1], prior[c][0]))) in blk
-    say("write-up block 4: counts whole, rates to one decimal", lines_ok)
-    say("write-up passing score", "Form 26A raw passing score: **%d**." % cut in blk)
-    print("verify: %s" % ("all checks pass" if ok else "FAILED"))
+
+def main(target, gdir, sub=None):
+    out = compute(target)
+    ok = True
+    wb = openpyxl.load_workbook(os.path.join(gdir, "nitrate_assistance_counties_2027.xlsx"), read_only=True)
+    golden = {r[0]: r for r in wb["Counties 2027"].iter_rows(min_row=5, values_only=True) if r[0]}
+    for k, o in sorted(out.items()):
+        g = golden[k]
+        want = (o["union"], "Yes" if o["qualifies"] else "No", o["retested"], o["still"])
+        if tuple(g[2:6]) != want:
+            ok = False
+            print("VERIFY MISMATCH %s: golden %s, recomputed %s" % (k, g[2:6], want))
+    sub = sub or os.path.join(os.path.dirname(gdir), "submission.md")
+    text = open(sub, encoding="utf-8").read()
+    for k, o in out.items():
+        line = "   - %s: %s; %s; %d; %d" % (o["name"], "{:,}".format(o["union"]), "yes" if o["qualifies"] else "no",
+                                           o["retested"], o["still"])
+        if line not in text:
+            ok = False
+            print("VERIFY MISMATCH submission.md: %s" % line)
+    q = sorted(o["name"] for o in out.values() if o["qualifies"])
+    print("verify: %d counties qualify (%s); %s" % (len(q), ", ".join(q), "golden and submission agree" if ok
+                                                      else "MISMATCHES"))
     return ok
 
 
 if __name__ == "__main__":
-    import sys
     here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    raise SystemExit(0 if main(os.path.join(here, "target"), os.path.join(here, "golden")) else 1)
+    sys.exit(0 if main(os.path.join(here, "target"), os.path.join(here, "golden")) else 1)

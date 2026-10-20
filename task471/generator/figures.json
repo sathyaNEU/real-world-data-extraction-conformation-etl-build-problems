@@ -1,1108 +1,651 @@
 {
- "review": [
-  "Tarrance University",
-  "Eastridge State University",
-  "Linden Valley College",
-  "Statewide Teacher Residency",
-  "Harrowgate Teacher Academy"
- ],
- "review_count": 5,
- "raw_cut": 49,
- "programs": [
-  {
-   "code": "EPP-0112",
-   "name": "Ostrander State University",
-   "counted": 309,
-   "passed": 249,
-   "rate": 80.6,
-   "rate_exact": 0.8058252427184466,
-   "review": false,
-   "prior_tested": 243,
-   "prior_passed": 213,
-   "prior_rate": 87.7
-  },
-  {
-   "code": "EPP-0147",
-   "name": "Whitcombe College",
-   "counted": 90,
-   "passed": 79,
-   "rate": 87.8,
-   "rate_exact": 0.8777777777777778,
-   "review": false,
-   "prior_tested": 89,
-   "prior_passed": 86,
-   "prior_rate": 96.6
-  },
-  {
-   "code": "EPP-0153",
-   "name": "Delacourt University",
-   "counted": 207,
-   "passed": 149,
-   "rate": 72.0,
-   "rate_exact": 0.7198067632850241,
-   "review": false,
-   "prior_tested": 143,
-   "prior_passed": 109,
-   "prior_rate": 76.2
-  },
-  {
-   "code": "EPP-0168",
-   "name": "Penhallow College",
-   "counted": 80,
-   "passed": 62,
-   "rate": 77.5,
-   "rate_exact": 0.775,
-   "review": false,
-   "prior_tested": 60,
-   "prior_passed": 51,
-   "prior_rate": 85.0
-  },
-  {
-   "code": "EPP-0171",
-   "name": "Marisford State University",
-   "counted": 260,
-   "passed": 189,
-   "rate": 72.7,
-   "rate_exact": 0.7269230769230769,
-   "review": false,
-   "prior_tested": 202,
-   "prior_passed": 161,
-   "prior_rate": 79.7
-  },
-  {
-   "code": "EPP-0189",
-   "name": "Quillan College",
-   "counted": 61,
-   "passed": 54,
-   "rate": 88.5,
-   "rate_exact": 0.8852459016393442,
-   "review": false,
-   "prior_tested": 40,
-   "prior_passed": 32,
-   "prior_rate": 80.0
-  },
-  {
-   "code": "EPP-0204",
-   "name": "Tarrance University",
-   "counted": 166,
-   "passed": 107,
-   "rate": 64.5,
-   "rate_exact": 0.6445783132530121,
-   "review": true,
-   "prior_tested": 148,
-   "prior_passed": 103,
-   "prior_rate": 69.6
-  },
-  {
-   "code": "EPP-0216",
-   "name": "Hollis Creek College",
-   "counted": 67,
-   "passed": 53,
-   "rate": 79.1,
-   "rate_exact": 0.7910447761194029,
-   "review": false,
-   "prior_tested": 52,
-   "prior_passed": 36,
-   "prior_rate": 69.2
-  },
-  {
-   "code": "EPP-0233",
-   "name": "Eastridge State University",
-   "counted": 232,
-   "passed": 160,
-   "rate": 69.0,
-   "rate_exact": 0.6896551724137931,
-   "review": true,
-   "prior_tested": 188,
-   "prior_passed": 132,
-   "prior_rate": 70.2
-  },
-  {
-   "code": "EPP-0241",
-   "name": "Saint Aldric University",
-   "counted": 111,
-   "passed": 97,
-   "rate": 87.4,
-   "rate_exact": 0.8738738738738738,
-   "review": false,
-   "prior_tested": 115,
-   "prior_passed": 90,
-   "prior_rate": 78.3
-  },
-  {
-   "code": "EPP-0258",
-   "name": "Corriden University",
-   "counted": 122,
-   "passed": 89,
-   "rate": 73.0,
-   "rate_exact": 0.7295081967213115,
-   "review": false,
-   "prior_tested": 117,
-   "prior_passed": 101,
-   "prior_rate": 86.3
-  },
-  {
-   "code": "EPP-0262",
-   "name": "Linden Valley College",
-   "counted": 53,
-   "passed": 31,
-   "rate": 58.5,
-   "rate_exact": 0.5849056603773585,
-   "review": true,
-   "prior_tested": 41,
-   "prior_passed": 23,
-   "prior_rate": 56.1
-  },
-  {
-   "code": "EPP-0307",
-   "name": "Statewide Teacher Residency",
-   "counted": 185,
-   "passed": 114,
-   "rate": 61.6,
-   "rate_exact": 0.6162162162162163,
-   "review": true,
-   "prior_tested": 153,
-   "prior_passed": 116,
-   "prior_rate": 75.8
-  },
-  {
-   "code": "EPP-0315",
-   "name": "Riverbend Teaching Fellows",
-   "counted": 129,
-   "passed": 98,
-   "rate": 76.0,
-   "rate_exact": 0.7596899224806202,
-   "review": false,
-   "prior_tested": 113,
-   "prior_passed": 82,
-   "prior_rate": 72.6
-  },
-  {
-   "code": "EPP-0322",
-   "name": "Harrowgate Teacher Academy",
-   "counted": 86,
-   "passed": 50,
-   "rate": 58.1,
-   "rate_exact": 0.5813953488372093,
-   "review": true,
-   "prior_tested": 65,
-   "prior_passed": 35,
-   "prior_rate": 53.8
-  },
-  {
-   "code": "EPP-0339",
-   "name": "Brightwater College",
-   "counted": 72,
-   "passed": 60,
-   "rate": 83.3,
-   "rate_exact": 0.8333333333333334,
-   "review": false,
-   "prior_tested": 61,
-   "prior_passed": 53,
-   "prior_rate": 86.9
-  }
- ],
- "rungs": {
-  "as scored": 52,
-  "multiple-choice anchor": [
-   46,
-   47
-  ],
-  "every assignment's papers": 51,
-  "no equating": 56,
-  "raters adjusted, no equating": 53
- },
- "rung_sets": {
-  "as scored": [
-   "Delacourt University",
-   "Marisford State University",
-   "Tarrance University",
-   "Eastridge State University",
-   "Linden Valley College",
-   "Statewide Teacher Residency",
-   "Riverbend Teaching Fellows",
-   "Harrowgate Teacher Academy"
-  ]
- },
- "nearest_above": {
-  "name": "Delacourt University",
-  "rate": 72.0
- },
- "nearest_below": {
-  "name": "Eastridge State University",
-  "rate": 69.0
- },
- "validity_bias": -0.2453,
- "anchor_shift": 0.98,
- "validity_bias_below_2025": 0.2453,
- "wa2_score_shift": 0.4906,
- "rule": "Rule 8.4",
- "wa2_papers": 120,
- "wa2_validity_reads": 958,
- "n_first_2025": 3035,
- "n_first_2026": 3215,
- "equated_at_cut": {
-  "chained linear": 55.92,
-  "chained equipercentile": 56.02,
-  "Tucker (sample weights)": 55.96,
-  "Levine (sample weights)": 55.88,
-  "Tucker (equal weights)": 55.96,
-  "Levine (equal weights)": 55.88,
-  "Tucker (new form weights)": 55.96,
-  "Levine (new form weights)": 55.88
- },
- "equated_below_cut": {
-  "chained linear": 54.93,
-  "chained equipercentile": 55.13,
-  "Tucker (sample weights)": 54.97,
-  "Levine (sample weights)": 54.9,
-  "Tucker (equal weights)": 54.97,
-  "Levine (equal weights)": 54.9,
-  "Tucker (new form weights)": 54.97,
-  "Levine (new form weights)": 54.9
- },
- "counted_total": 2230,
- "passed_total": 1641,
- "prior_tested_total": 1830,
- "prior_passed_total": 1423,
- "conversion": [
-  [
-   0,
-   7.57,
-   8,
-   114,
-   null
-  ],
-  [
-   1,
-   8.56,
-   9,
-   115,
-   null
-  ],
-  [
-   2,
-   9.55,
-   10,
-   116,
-   null
-  ],
-  [
-   3,
-   10.54,
-   11,
-   117,
-   null
-  ],
-  [
-   4,
-   11.52,
-   12,
-   118,
-   null
-  ],
-  [
-   5,
-   12.51,
-   13,
-   120,
-   null
-  ],
-  [
-   6,
-   13.5,
-   13,
-   120,
-   null
-  ],
-  [
-   7,
-   14.49,
-   14,
-   121,
-   null
-  ],
-  [
-   8,
-   15.47,
-   15,
-   122,
-   null
-  ],
-  [
-   9,
-   16.46,
-   16,
-   124,
-   null
-  ],
-  [
-   10,
-   17.45,
-   17,
-   125,
-   null
-  ],
-  [
-   11,
-   18.44,
-   18,
-   127,
-   null
-  ],
-  [
-   12,
-   19.42,
-   19,
-   128,
-   null
-  ],
-  [
-   13,
-   20.41,
-   20,
-   130,
-   null
-  ],
-  [
-   14,
-   21.4,
-   21,
-   132,
-   null
-  ],
-  [
-   15,
-   22.38,
-   22,
-   134,
-   null
-  ],
-  [
-   16,
-   23.37,
-   23,
-   136,
-   null
-  ],
-  [
-   17,
-   24.36,
-   24,
-   138,
-   null
-  ],
-  [
-   18,
-   25.35,
-   25,
-   141,
-   null
-  ],
-  [
-   19,
-   26.33,
-   26,
-   143,
-   null
-  ],
-  [
-   20,
-   27.32,
-   27,
-   145,
-   null
-  ],
-  [
-   21,
-   28.31,
-   28,
-   148,
-   null
-  ],
-  [
-   22,
-   29.3,
-   29,
-   151,
-   null
-  ],
-  [
-   23,
-   30.28,
-   30,
-   153,
-   null
-  ],
-  [
-   24,
-   31.27,
-   31,
-   156,
-   null
-  ],
-  [
-   25,
-   32.26,
-   32,
-   159,
-   null
-  ],
-  [
-   26,
-   33.25,
-   33,
-   162,
-   null
-  ],
-  [
-   27,
-   34.23,
-   34,
-   165,
-   null
-  ],
-  [
-   28,
-   35.22,
-   35,
-   168,
-   null
-  ],
-  [
-   29,
-   36.21,
-   36,
-   172,
-   null
-  ],
-  [
-   30,
-   37.2,
-   37,
-   175,
-   null
-  ],
-  [
-   31,
-   38.18,
-   38,
-   178,
-   null
-  ],
-  [
-   32,
-   39.17,
-   39,
-   182,
-   null
-  ],
-  [
-   33,
-   40.16,
-   40,
-   185,
-   null
-  ],
-  [
-   34,
-   41.15,
-   41,
-   189,
-   null
-  ],
-  [
-   35,
-   42.13,
-   42,
-   192,
-   null
-  ],
-  [
-   36,
-   43.12,
-   43,
-   196,
-   null
-  ],
-  [
-   37,
-   44.11,
-   44,
-   200,
-   null
-  ],
-  [
-   38,
-   45.1,
-   45,
-   203,
-   null
-  ],
-  [
-   39,
-   46.08,
-   46,
-   207,
-   null
-  ],
-  [
-   40,
-   47.07,
-   47,
-   210,
-   null
-  ],
-  [
-   41,
-   48.06,
-   48,
-   214,
-   null
-  ],
-  [
-   42,
-   49.05,
-   49,
-   217,
-   null
-  ],
-  [
-   43,
-   50.03,
-   50,
-   221,
-   null
-  ],
-  [
-   44,
-   51.02,
-   51,
-   224,
-   null
-  ],
-  [
-   45,
-   52.01,
-   52,
-   227,
-   null
-  ],
-  [
-   46,
-   53.0,
-   53,
-   231,
-   null
-  ],
-  [
-   47,
-   53.98,
-   54,
-   234,
-   null
-  ],
-  [
-   48,
-   54.97,
-   55,
-   237,
-   null
-  ],
-  [
-   49,
-   55.96,
-   56,
-   240,
-   "Pass"
-  ],
-  [
-   50,
-   56.95,
-   57,
-   243,
-   "Pass"
-  ],
-  [
-   51,
-   57.93,
-   58,
-   246,
-   "Pass"
-  ],
-  [
-   52,
-   58.92,
-   59,
-   249,
-   "Pass"
-  ],
-  [
-   53,
-   59.91,
-   60,
-   251,
-   "Pass"
-  ],
-  [
-   54,
-   60.9,
-   61,
-   254,
-   "Pass"
-  ],
-  [
-   55,
-   61.88,
-   62,
-   256,
-   "Pass"
-  ],
-  [
-   56,
-   62.87,
-   63,
-   259,
-   "Pass"
-  ],
-  [
-   57,
-   63.86,
-   64,
-   261,
-   "Pass"
-  ],
-  [
-   58,
-   64.84,
-   65,
-   263,
-   "Pass"
-  ],
-  [
-   59,
-   65.83,
-   66,
-   265,
-   "Pass"
-  ],
-  [
-   60,
-   66.82,
-   67,
-   267,
-   "Pass"
-  ],
-  [
-   61,
-   67.81,
-   68,
-   269,
-   "Pass"
-  ],
-  [
-   62,
-   68.79,
-   69,
-   271,
-   "Pass"
-  ],
-  [
-   63,
-   69.78,
-   70,
-   273,
-   "Pass"
-  ],
-  [
-   64,
-   70.77,
-   71,
-   274,
-   "Pass"
-  ],
-  [
-   65,
-   71.76,
-   72,
-   276,
-   "Pass"
-  ],
-  [
-   66,
-   72.74,
-   73,
-   277,
-   "Pass"
-  ],
-  [
-   67,
-   73.73,
-   74,
-   279,
-   "Pass"
-  ],
-  [
-   68,
-   74.72,
-   75,
-   280,
-   "Pass"
-  ],
-  [
-   69,
-   75.71,
-   76,
-   281,
-   "Pass"
-  ],
-  [
-   70,
-   76.69,
-   77,
-   283,
-   "Pass"
-  ],
-  [
-   71,
-   77.68,
-   78,
-   284,
-   "Pass"
-  ],
-  [
-   72,
-   78.67,
-   79,
-   285,
-   "Pass"
-  ],
-  [
-   73,
-   79.66,
-   80,
-   286,
-   "Pass"
-  ],
-  [
-   74,
-   80.64,
-   81,
-   287,
-   "Pass"
-  ],
-  [
-   75,
-   81.63,
-   82,
-   287,
-   "Pass"
-  ],
-  [
-   76,
-   82.62,
-   83,
-   288,
-   "Pass"
-  ],
-  [
-   77,
-   83.61,
-   84,
-   289,
-   "Pass"
-  ],
-  [
-   78,
-   84.59,
-   85,
-   290,
-   "Pass"
-  ],
-  [
-   79,
-   85.58,
-   86,
-   290,
-   "Pass"
-  ],
-  [
-   80,
-   86.57,
-   87,
-   291,
-   "Pass"
-  ],
-  [
-   81,
-   87.56,
-   88,
-   292,
-   "Pass"
-  ],
-  [
-   82,
-   88.54,
-   89,
-   292,
-   "Pass"
-  ],
-  [
-   83,
-   89.53,
-   90,
-   293,
-   "Pass"
-  ],
-  [
-   84,
-   90.52,
-   91,
-   293,
-   "Pass"
-  ],
-  [
-   85,
-   91.51,
-   92,
-   294,
-   "Pass"
-  ],
-  [
-   86,
-   92.49,
-   92,
-   294,
-   "Pass"
-  ],
-  [
-   87,
-   93.48,
-   93,
-   294,
-   "Pass"
-  ],
-  [
-   88,
-   94.47,
-   94,
-   294,
-   "Pass"
-  ],
-  [
-   89,
-   95.46,
-   95,
-   295,
-   "Pass"
-  ],
-  [
-   90,
-   96.44,
-   96,
-   295,
-   "Pass"
-  ],
-  [
-   91,
-   97.43,
-   97,
-   296,
-   "Pass"
-  ],
-  [
-   92,
-   98.42,
-   98,
-   296,
-   "Pass"
-  ],
-  [
-   93,
-   99.41,
-   99,
-   296,
-   "Pass"
-  ],
-  [
-   94,
-   100.39,
-   100,
-   296,
-   "Pass"
-  ],
-  [
-   95,
-   101.38,
-   101,
-   297,
-   "Pass"
-  ],
-  [
-   96,
-   102.37,
-   102,
-   297,
-   "Pass"
-  ],
-  [
-   97,
-   103.36,
-   103,
-   297,
-   "Pass"
-  ],
-  [
-   98,
-   104.34,
-   104,
-   297,
-   "Pass"
-  ],
-  [
-   99,
-   105.33,
-   105,
-   297,
-   "Pass"
-  ],
-  [
-   100,
-   106.32,
-   106,
-   298,
-   "Pass"
-  ],
-  [
-   101,
-   107.3,
-   107,
-   298,
-   "Pass"
-  ],
-  [
-   102,
-   108.29,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   103,
-   109.28,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   104,
-   110.27,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   105,
-   111.25,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   106,
-   112.24,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   107,
-   113.23,
-   108,
-   298,
-   "Pass"
-  ],
-  [
-   108,
-   114.22,
-   108,
-   298,
-   "Pass"
-  ]
- ],
- "pass_raw_25a": 56,
- "pass_scale": 240,
  "call": [
-  "Eastridge State University",
-  "Harrowgate Teacher Academy",
-  "Linden Valley College",
-  "Statewide Teacher Residency",
-  "Tarrance University"
+  "Alderwick",
+  "Brannock",
+  "Farrowdale",
+  "Glenmoor",
+  "Lindmark",
+  "Netherby"
  ],
- "ask": {
-  "EPP-0112": {
-   "tested": 243,
-   "rate": 87.7
+ "call_codes": [
+  "C01",
+  "C02",
+  "C06",
+  "C07",
+  "C11",
+  "C13"
+ ],
+ "qualifying_count": 6,
+ "counties": [
+  {
+   "code": "C01",
+   "name": "Alderwick",
+   "union": 2977,
+   "NP": 2464,
+   "NQ": 1733,
+   "NB": 1220,
+   "nP": 211,
+   "nQ": 66,
+   "fP": 8.6,
+   "fQ": 3.8,
+   "tested": 268,
+   "tested_above": 33,
+   "tested_both": 137,
+   "estimate": 408,
+   "estimate_exact": 407.77,
+   "estimate_low": 395,
+   "estimate_high": 417,
+   "qualifies": true,
+   "retested": 25,
+   "still_above": 20,
+   "routes": {
+    "pooled": 367,
+    "drawn list": 415,
+    "lists added": 441,
+    "permit list": 362,
+    "parcel list": 79
+   }
   },
-  "EPP-0147": {
-   "tested": 89,
-   "rate": 96.6
+  {
+   "code": "C02",
+   "name": "Brannock",
+   "union": 1438,
+   "NP": 754,
+   "NQ": 1308,
+   "NB": 624,
+   "nP": 60,
+   "nQ": 58,
+   "fP": 8.0,
+   "fQ": 4.4,
+   "tested": 112,
+   "tested_above": 16,
+   "tested_both": 64,
+   "estimate": 304,
+   "estimate_exact": 303.85,
+   "estimate_low": 293,
+   "estimate_high": 308,
+   "qualifies": true,
+   "retested": 11,
+   "still_above": 11,
+   "routes": {
+    "pooled": 205,
+    "drawn list": 331,
+    "lists added": 331,
+    "permit list": 38,
+    "parcel list": 293
+   }
   },
-  "EPP-0153": {
-   "tested": 143,
-   "rate": 76.2
+  {
+   "code": "C03",
+   "name": "Corwell",
+   "union": 1073,
+   "NP": 809,
+   "NQ": 880,
+   "NB": 616,
+   "nP": 77,
+   "nQ": 34,
+   "fP": 9.5,
+   "fQ": 3.9,
+   "tested": 107,
+   "tested_above": 9,
+   "tested_both": 69,
+   "estimate": 142,
+   "estimate_exact": 141.95,
+   "estimate_low": 100,
+   "estimate_high": 146,
+   "qualifies": false,
+   "retested": 5,
+   "still_above": 5,
+   "routes": {
+    "pooled": 90,
+    "drawn list": 171,
+    "lists added": 171,
+    "permit list": 42,
+    "parcel list": 129
+   }
   },
-  "EPP-0168": {
-   "tested": 60,
-   "rate": 85.0
+  {
+   "code": "C04",
+   "name": "Dunmere",
+   "union": 2703,
+   "NP": 2375,
+   "NQ": 2516,
+   "NB": 2188,
+   "nP": 188,
+   "nQ": 79,
+   "fP": 7.9,
+   "fQ": 3.1,
+   "tested": 252,
+   "tested_above": 19,
+   "tested_both": 225,
+   "estimate": 176,
+   "estimate_exact": 175.81,
+   "estimate_low": 164,
+   "estimate_high": 223,
+   "qualifies": false,
+   "retested": 14,
+   "still_above": 13,
+   "routes": {
+    "pooled": 204,
+    "drawn list": 355,
+    "lists added": 387,
+    "permit list": 164,
+    "parcel list": 223
+   }
   },
-  "EPP-0171": {
-   "tested": 202,
-   "rate": 79.7
+  {
+   "code": "C05",
+   "name": "Eskvale",
+   "union": 1683,
+   "NP": 1349,
+   "NQ": 1377,
+   "NB": 1043,
+   "nP": 112,
+   "nQ": 43,
+   "fP": 8.3,
+   "fQ": 3.1,
+   "tested": 152,
+   "tested_above": 11,
+   "tested_both": 126,
+   "estimate": 145,
+   "estimate_exact": 144.65,
+   "estimate_low": 128,
+   "estimate_high": 149,
+   "qualifies": false,
+   "retested": 9,
+   "still_above": 6,
+   "routes": {
+    "pooled": 122,
+    "drawn list": 212,
+    "lists added": 212,
+    "permit list": 84,
+    "parcel list": 128
+   }
   },
-  "EPP-0189": {
-   "tested": 40,
-   "rate": 80.0
+  {
+   "code": "C06",
+   "name": "Farrowdale",
+   "union": 2306,
+   "NP": 1339,
+   "NQ": 2029,
+   "NB": 1062,
+   "nP": 121,
+   "nQ": 83,
+   "fP": 9.0,
+   "fQ": 4.1,
+   "tested": 197,
+   "tested_above": 16,
+   "tested_both": 131,
+   "estimate": 311,
+   "estimate_exact": 311.32,
+   "estimate_low": 303,
+   "estimate_high": 313,
+   "qualifies": true,
+   "retested": 10,
+   "still_above": 9,
+   "routes": {
+    "pooled": 187,
+    "drawn list": 338,
+    "lists added": 338,
+    "permit list": 44,
+    "parcel list": 293
+   }
   },
-  "EPP-0204": {
-   "tested": 148,
-   "rate": 69.6
+  {
+   "code": "C07",
+   "name": "Glenmoor",
+   "union": 10833,
+   "NP": 8268,
+   "NQ": 8619,
+   "NB": 6054,
+   "nP": 689,
+   "nQ": 378,
+   "fP": 8.3,
+   "fQ": 4.4,
+   "tested": 1031,
+   "tested_above": 54,
+   "tested_both": 741,
+   "estimate": 720,
+   "estimate_exact": 720.46,
+   "estimate_low": 709,
+   "estimate_high": 742,
+   "qualifies": true,
+   "retested": 43,
+   "still_above": 32,
+   "routes": {
+    "pooled": 567,
+    "drawn list": 983,
+    "lists added": 1006,
+    "permit list": 276,
+    "parcel list": 730
+   }
   },
-  "EPP-0216": {
-   "tested": 52,
-   "rate": 69.2
+  {
+   "code": "C08",
+   "name": "Hallowcroft",
+   "union": 1380,
+   "NP": 1020,
+   "NQ": 1144,
+   "NB": 784,
+   "nP": 78,
+   "nQ": 44,
+   "fP": 7.6,
+   "fQ": 3.8,
+   "tested": 116,
+   "tested_above": 8,
+   "tested_both": 84,
+   "estimate": 106,
+   "estimate_exact": 105.58,
+   "estimate_low": 98,
+   "estimate_high": 106,
+   "qualifies": false,
+   "retested": 7,
+   "still_above": 5,
+   "routes": {
+    "pooled": 95,
+    "drawn list": 156,
+    "lists added": 156,
+    "permit list": 52,
+    "parcel list": 104
+   }
   },
-  "EPP-0233": {
-   "tested": 188,
-   "rate": 70.2
+  {
+   "code": "C09",
+   "name": "Ivyridge",
+   "union": 3469,
+   "NP": 2951,
+   "NQ": 3244,
+   "NB": 2726,
+   "nP": 227,
+   "nQ": 111,
+   "fP": 7.7,
+   "fQ": 3.4,
+   "tested": 328,
+   "tested_above": 19,
+   "tested_both": 285,
+   "estimate": 199,
+   "estimate_exact": 198.9,
+   "estimate_low": 185,
+   "estimate_high": 218,
+   "qualifies": false,
+   "retested": 15,
+   "still_above": 14,
+   "routes": {
+    "pooled": 201,
+    "drawn list": 361,
+    "lists added": 361,
+    "permit list": 156,
+    "parcel list": 205
+   }
   },
-  "EPP-0241": {
-   "tested": 115,
-   "rate": 78.3
+  {
+   "code": "C10",
+   "name": "Kestrel Plains",
+   "union": 3435,
+   "NP": 3127,
+   "NQ": 3103,
+   "NB": 2795,
+   "nP": 309,
+   "nQ": 140,
+   "fP": 9.9,
+   "fQ": 4.5,
+   "tested": 431,
+   "tested_above": 24,
+   "tested_both": 381,
+   "estimate": 190,
+   "estimate_exact": 190.02,
+   "estimate_low": 165,
+   "estimate_high": 204,
+   "qualifies": false,
+   "retested": 22,
+   "still_above": 17,
+   "routes": {
+    "pooled": 191,
+    "drawn list": 315,
+    "lists added": 337,
+    "permit list": 182,
+    "parcel list": 155
+   }
   },
-  "EPP-0258": {
-   "tested": 117,
-   "rate": 86.3
+  {
+   "code": "C11",
+   "name": "Lindmark",
+   "union": 2631,
+   "NP": 1561,
+   "NQ": 2246,
+   "NB": 1176,
+   "nP": 111,
+   "nQ": 82,
+   "fP": 7.1,
+   "fQ": 3.7,
+   "tested": 191,
+   "tested_above": 14,
+   "tested_both": 124,
+   "estimate": 317,
+   "estimate_exact": 316.53,
+   "estimate_low": 315,
+   "estimate_high": 317,
+   "qualifies": true,
+   "retested": 9,
+   "still_above": 9,
+   "routes": {
+    "pooled": 193,
+    "drawn list": 343,
+    "lists added": 343,
+    "permit list": 42,
+    "parcel list": 301
+   }
   },
-  "EPP-0262": {
-   "tested": 41,
-   "rate": 56.1
+  {
+   "code": "C12",
+   "name": "Morrowfield",
+   "union": 839,
+   "NP": 678,
+   "NQ": 740,
+   "NB": 579,
+   "nP": 60,
+   "nQ": 31,
+   "fP": 8.8,
+   "fQ": 4.2,
+   "tested": 86,
+   "tested_above": 6,
+   "tested_both": 65,
+   "estimate": 79,
+   "estimate_exact": 79.32,
+   "estimate_low": 65,
+   "estimate_high": 95,
+   "qualifies": false,
+   "retested": 5,
+   "still_above": 4,
+   "routes": {
+    "pooled": 59,
+    "drawn list": 106,
+    "lists added": 129,
+    "permit list": 34,
+    "parcel list": 95
+   }
   },
-  "EPP-0307": {
-   "tested": 153,
-   "rate": 75.8
+  {
+   "code": "C13",
+   "name": "Netherby",
+   "union": 4573,
+   "NP": 3568,
+   "NQ": 3668,
+   "NB": 2663,
+   "nP": 250,
+   "nQ": 154,
+   "fP": 7.0,
+   "fQ": 4.2,
+   "tested": 388,
+   "tested_above": 46,
+   "tested_both": 297,
+   "estimate": 588,
+   "estimate_exact": 587.88,
+   "estimate_low": 580,
+   "estimate_high": 610,
+   "qualifies": true,
+   "retested": 29,
+   "still_above": 27,
+   "routes": {
+    "pooled": 542,
+    "drawn list": 867,
+    "lists added": 938,
+    "permit list": 343,
+    "parcel list": 595
+   }
   },
-  "EPP-0315": {
-   "tested": 113,
-   "rate": 72.6
+  {
+   "code": "C14",
+   "name": "Oakmere",
+   "union": 866,
+   "NP": 680,
+   "NQ": 721,
+   "NB": 535,
+   "nP": 70,
+   "nQ": 26,
+   "fP": 10.3,
+   "fQ": 3.6,
+   "tested": 93,
+   "tested_above": 11,
+   "tested_both": 73,
+   "estimate": 124,
+   "estimate_exact": 124.31,
+   "estimate_low": 93,
+   "estimate_high": 143,
+   "qualifies": false,
+   "retested": 9,
+   "still_above": 8,
+   "routes": {
+    "pooled": 102,
+    "drawn list": 143,
+    "lists added": 171,
+    "permit list": 87,
+    "parcel list": 83
+   }
   },
-  "EPP-0322": {
-   "tested": 65,
-   "rate": 53.8
+  {
+   "code": "C15",
+   "name": "Quarrington",
+   "union": 981,
+   "NP": 698,
+   "NQ": 816,
+   "NB": 533,
+   "nP": 58,
+   "nQ": 30,
+   "fP": 8.3,
+   "fQ": 3.7,
+   "tested": 84,
+   "tested_above": 8,
+   "tested_both": 57,
+   "estimate": 113,
+   "estimate_exact": 112.71,
+   "estimate_low": 78,
+   "estimate_high": 127,
+   "qualifies": false,
+   "retested": 8,
+   "still_above": 6,
+   "routes": {
+    "pooled": 93,
+    "drawn list": 127,
+    "lists added": 127,
+    "permit list": 72,
+    "parcel list": 54
+   }
   },
-  "EPP-0339": {
-   "tested": 61,
-   "rate": 86.9
+  {
+   "code": "C16",
+   "name": "Rushbrook",
+   "union": 1411,
+   "NP": 1292,
+   "NQ": 1296,
+   "NB": 1177,
+   "nP": 119,
+   "nQ": 48,
+   "fP": 9.2,
+   "fQ": 3.7,
+   "tested": 160,
+   "tested_above": 19,
+   "tested_both": 143,
+   "estimate": 189,
+   "estimate_exact": 189.21,
+   "estimate_low": 180,
+   "estimate_high": 189,
+   "qualifies": false,
+   "retested": 11,
+   "still_above": 9,
+   "routes": {
+    "pooled": 168,
+    "drawn list": 319,
+    "lists added": 319,
+    "permit list": 130,
+    "parcel list": 189
+   }
   }
- }
+ ],
+ "lowest_qualifier": {
+  "name": "Brannock",
+  "estimate": 304,
+  "low": 293
+ },
+ "highest_short": {
+  "name": "Ivyridge",
+  "estimate": 199,
+  "high": 218
+ },
+ "union_total": 42598,
+ "tested_total": 3996,
+ "tested_above_total": 313,
+ "tested_both_total": 3002,
+ "parcel_only_tested": 407,
+ "parcel_only_above": 83,
+ "parcel_only_share": 20.4,
+ "others_tested": 3589,
+ "others_above": 230,
+ "others_share": 6.4,
+ "permit_rate": 8.3,
+ "parcel_rate": 4.0,
+ "nP_total": 2740,
+ "nQ_total": 1407,
+ "NP_total": 32933,
+ "NQ_total": 35440,
+ "retested_total": 232,
+ "still_above_total": 195,
+ "rungs": {
+  "pooled": [
+   "Alderwick",
+   "Glenmoor",
+   "Netherby"
+  ],
+  "drawn list": [
+   "Alderwick",
+   "Brannock",
+   "Dunmere",
+   "Farrowdale",
+   "Glenmoor",
+   "Ivyridge",
+   "Kestrel Plains",
+   "Lindmark",
+   "Netherby",
+   "Rushbrook"
+  ],
+  "lists added": [
+   "Alderwick",
+   "Brannock",
+   "Dunmere",
+   "Farrowdale",
+   "Glenmoor",
+   "Ivyridge",
+   "Kestrel Plains",
+   "Lindmark",
+   "Netherby",
+   "Rushbrook"
+  ],
+  "permit list": [
+   "Alderwick",
+   "Glenmoor",
+   "Netherby"
+  ],
+  "parcel list": [
+   "Brannock",
+   "Farrowdale",
+   "Glenmoor",
+   "Lindmark",
+   "Netherby"
+  ]
+ },
+ "rung_counts": {
+  "pooled": 3,
+  "drawn list": 10,
+  "lists added": 10,
+  "permit list": 3,
+  "parcel list": 5
+ },
+ "union": {
+  "C01": 2977,
+  "C02": 1438,
+  "C03": 1073,
+  "C04": 2703,
+  "C05": 1683,
+  "C06": 2306,
+  "C07": 10833,
+  "C08": 1380,
+  "C09": 3469,
+  "C10": 3435,
+  "C11": 2631,
+  "C12": 839,
+  "C13": 4573,
+  "C14": 866,
+  "C15": 981,
+  "C16": 1411
+ },
+ "ask": {
+  "C01": {
+   "retested": 25,
+   "still_above": 20
+  },
+  "C02": {
+   "retested": 11,
+   "still_above": 11
+  },
+  "C03": {
+   "retested": 5,
+   "still_above": 5
+  },
+  "C04": {
+   "retested": 14,
+   "still_above": 13
+  },
+  "C05": {
+   "retested": 9,
+   "still_above": 6
+  },
+  "C06": {
+   "retested": 10,
+   "still_above": 9
+  },
+  "C07": {
+   "retested": 43,
+   "still_above": 32
+  },
+  "C08": {
+   "retested": 7,
+   "still_above": 5
+  },
+  "C09": {
+   "retested": 15,
+   "still_above": 14
+  },
+  "C10": {
+   "retested": 22,
+   "still_above": 17
+  },
+  "C11": {
+   "retested": 9,
+   "still_above": 9
+  },
+  "C12": {
+   "retested": 5,
+   "still_above": 4
+  },
+  "C13": {
+   "retested": 29,
+   "still_above": 27
+  },
+  "C14": {
+   "retested": 9,
+   "still_above": 8
+  },
+  "C15": {
+   "retested": 8,
+   "still_above": 6
+  },
+  "C16": {
+   "retested": 11,
+   "still_above": 9
+  }
+ },
+ "standard": 10.0,
+ "line": 250,
+ "no3_factor": 4.427,
+ "retests_close": "June 30, 2026"
 }

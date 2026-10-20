@@ -1,6 +1,5 @@
-"""The pack's documents and workbooks: Pellmore's June 2025 technical report, the Office's Form 26A memo, the program
-review rule, Arcwright's scoring QC workbook and administration summary, the item maps, the programs' Title II
-completer lists, and the test framework."""
+"""The pack's documents and workbooks: the survey's design and fieldwork report, the 2027 allocation standard, the
+Program's fact sheet, the assessors' parcel compilation and Cedarline's results workbook."""
 import datetime as dt
 
 import numpy as np
@@ -15,10 +14,9 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import inch                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
 import pack as P     # noqa: E402
-import sim as S      # noqa: E402
 import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
@@ -30,16 +28,15 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
 INK = colors.HexColor("#1b1d1f")
 GREY = colors.HexColor("#5b6067")
-PLUM = colors.HexColor("#4a2f5c")
-NAVY = colors.HexColor("#1f3a5f")
-FOREST = colors.HexColor("#24513a")
-RUST = colors.HexColor("#7a3b1d")
+TEAL = colors.HexColor("#1d4f5c")
+GREEN = colors.HexColor("#2f5a2e")
+BLUE = colors.HexColor("#21456e")
 SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.6, leading=13.2, textColor=INK, spaceAfter=6)
 SERIF = ParagraphStyle("serif", fontName="LiberationSerif", fontSize=10.5, leading=14.2, textColor=INK, spaceAfter=6)
-CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.4, leading=10.4, textColor=INK)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.2, leading=10.2, textColor=INK)
 CELLB = ParagraphStyle("cellb", parent=CELL, fontName="LiberationSans-Bold")
-SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8.3, leading=10.8, textColor=GREY)
-HEAD_FILL = PatternFill("solid", fgColor="DCE6F0")
+SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8.0, leading=10.4, textColor=GREY)
+HEAD_FILL = PatternFill("solid", fgColor="DDE7EC")
 
 
 def styles(accent, serif=False):
@@ -75,8 +72,16 @@ def _doc(path, title, author, footer, layout="left"):
     return d, frame
 
 
-def _table(rows, widths, head="#e6eef0", font=None, align_right=()):
-    data = [[Paragraph(str(v), CELLB if i == 0 else (font or CELL)) for v in r] for i, r in enumerate(rows)]
+def _table(rows, widths, head="#e3ecef", right=()):
+    data = []
+    for i, r in enumerate(rows):
+        line = []
+        for j, v in enumerate(r):
+            st = CELLB if i == 0 else CELL
+            if i > 0 and j in right:
+                st = ParagraphStyle("r", parent=st, alignment=2)
+            line.append(Paragraph(str(v), st))
+        data.append(line)
     t = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
     t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa0a6")),
                            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(head)),
@@ -85,251 +90,187 @@ def _table(rows, widths, head="#e6eef0", font=None, align_right=()):
     return t
 
 
-def pct(a, b):
-    return "%.1f" % (100.0 * a / b) if b else "-"
+def _n(v):
+    return "{:,}".format(int(v))
 
 
-# ----------------------------------------------------------------------------------- statistics the documents quote
-def stats(x):
-    """the figures the 2025 report and Arcwright's documents state, computed from the records they describe"""
-    out = {}
-    s25 = x["scored"][2025]
-    agree25 = []
-    r = S.rng(x["seed"], 21)
-    for a in range(W.N_WA):
-        d = np.abs(s25["r1"][:, a] - s25["r2"][:, a])
-        # Pellmore's 2025 validity papers, read by the 2025 raters against their own consensus
-        base = r.normal(0.1, 1.0, 900) - x["f25"]["wa"][a]
-        cons = S.rating(base)
-        reads = S.rating(base + r.normal(0, W.RATER_SD, 900))
-        agree25.append((100 * (d == 0).mean(), 100 * (d <= 1).mean(), 100 * (d > 1).mean(),
-                        100 * (reads == cons).mean(), 100 * (np.abs(reads - cons) <= 1).mean()))
-    out["agree25"] = agree25
-    f = s25["first"]
-    out["n25"], out["n25_first"] = len(s25["idx"]), int(f.sum())
-    out["pass25_first"] = 100 * (s25["raw"][f] >= W.PASS_RAW_25A).mean()
-    out["pass25_all"] = 100 * (s25["raw"] >= W.PASS_RAW_25A).mean()
+# ------------------------------------------------------------------------------------- the survey's own statistics
+def fieldwork(x):
+    """per county: the two lists' sizes on August 31, 2025, the targets, letters mailed and outcomes by list"""
+    out = []
+    for c in x["counties"]:
+        row = dict(code=c["code"], name=c["name"], NP=c["NP"], NQ=c["NQ"], nP=c["nP"], nQ=c["nQ"], lab=c["lab"])
+        for lst in ("P", "Q"):
+            d = [o for l, _i, o in c["draws"] if l == lst]
+            row["mailed" + lst] = len(d)
+            row["tested" + lst] = sum(1 for o in d if o == "TESTED")
+            row["earlier" + lst] = sum(1 for o in d if o == "TESTED_EARLIER")
+            row["declined" + lst] = sum(1 for o in d if o == "DECLINED")
+            row["noresp" + lst] = sum(1 for o in d if o == "NO_RESPONSE")
+        out.append(row)
     return out
 
 
-def qc_tables(x, reads):
-    """Arcwright's scoring statistics by assignment, from its read records"""
-    by = {}
-    for _rid, resp, wa, typ, reader, score, _t in reads:
-        by.setdefault((resp, wa), {}).setdefault(typ, []).append(score)
-    papers = {p["id"]: p for p in x["papers"]}
-    summary = []
-    for wa in ("WA1", "WA2", "WA3"):
-        pairs = [(v["FIRST"][0], v["SECOND"][0], v.get("RESOLUTION"), v.get("BACKREAD")) for (resp, w), v in by.items()
-                 if w == wa and "FIRST" in v]
-        n = len(pairs)
-        exact = sum(1 for a, b, _, _ in pairs if a == b)
-        adj = sum(1 for a, b, _, _ in pairs if abs(a - b) <= 1)
-        res = sum(1 for _, _, c, _ in pairs if c)
-        br = [(a, b, c[0] if c else None, d[0]) for a, b, c, d in pairs if d]
-        br_ok = sum(1 for a, b, c, d in br if abs(d - (c if c else (a + b) / 2.0)) <= 0.5)
-        val = [(score, papers[resp]["consensus"]) for (resp, w), v in by.items() if w == wa and "VALIDITY" in v
-               for score in v["VALIDITY"]]
-        npap = len({resp for (resp, w), v in by.items() if w == wa and "VALIDITY" in v})
-        summary.append([wa, n, 2 * n + res, round(100.0 * exact / n, 1), round(100.0 * adj / n, 1),
-                        round(100.0 * res / n, 1), len(br), round(100.0 * br_ok / len(br), 1), npap, len(val),
-                        round(100.0 * sum(1 for a, c in val if a == c) / len(val), 1),
-                        round(100.0 * sum(1 for a, c in val if abs(a - c) <= 1) / len(val), 1)])
-    readers = {}
-    for _rid, resp, wa, typ, reader, score, _t in reads:
-        d = readers.setdefault(reader, dict(op=0, val=0, val_exact=0, first=None))
-        if typ in ("FIRST", "SECOND", "RESOLUTION", "BACKREAD"):
-            d["op"] += 1
-        if typ == "VALIDITY":
-            d["val"] += 1
-            d["val_exact"] += int(score == papers[resp]["consensus"])
-        d["first"] = min(d["first"], _t[:10]) if d["first"] else _t[:10]
-    rrows = [[k, "Scoring leader" if k.startswith("SL") else "Rater", v["first"], v["op"], v["val"],
-              round(100.0 * v["val_exact"] / v["val"], 1) if v["val"] else None] for k, v in sorted(readers.items())]
-    return summary, rrows
-
-
-# ------------------------------------------------------------------------------------ Pellmore's 2025 technical report
-def write_tr2025(path, x, st):
-    h1, h1s, h2 = styles(NAVY, serif=True)
-    d, frame = _doc(path, "Elementary Literacy Instruction (ELI 104): June 2025 administration, Form 25A, technical "
-                    "report", W.OLD_CO, "Pellmore Testing  |  ELI 104 Technical Report, June 2025 administration",
-                    layout="centre")
-    a = st["agree25"]
-    qc = [["Assignment", "Exact agreement, two reads (%)", "Adjacent or exact (%)", "Resolved by a scoring leader (%)",
-           "Validity papers, exact (%)", "Validity papers, adjacent or exact (%)"]]
-    for i, wa in enumerate(("WA1", "WA2", "WA3")):
-        qc.append([wa, "%.1f" % a[i][0], "%.1f" % a[i][1], "%.1f" % a[i][2], "%.1f" % a[i][3], "%.1f" % a[i][4]])
-    conv = P.conversion_rows()
-    half = (len(conv) + 1) // 2
-    ctab = [["Raw", "Scale", "Raw", "Scale"]] + [[conv[i][0], conv[i][1]] + (conv[i + half] if i + half < len(conv)
-                                                                            else ["", ""]) for i in range(half)]
-    s = [Paragraph("Elementary Literacy Instruction (ELI 104)", h1),
-         Paragraph("June 2025 administration, Form 25A: technical report. Prepared for the %s by %s, September 12, "
-                   "2025." % (W.BOARD, W.OLD_CO), h1s),
-         Paragraph("1. The administration", h2),
-         Paragraph("The test was given once in 2025, on Saturday, June 14, at the six test centres the Board "
-                   "approves. %s candidates sat Form 25A, %s of them for the first time. This report covers the "
-                   "scoring of the written assignments, the equating of Form 25A to the reporting scale and the "
-                   "results. Candidate-level results went to the Board in the June 2025 score file." % (
-                       "{:,}".format(st["n25"]), "{:,}".format(st["n25_first"])), SERIF),
-         Paragraph("2. The test", h2),
-         Paragraph("Each form has 60 multiple-choice items in four subareas and three written assignments: WA1, an "
-                   "analysis of a student's foundational reading assessment; WA2, a comprehension instruction plan; "
-                   "and WA3, written feedback on a student's draft. A multiple-choice item scores one point. Each "
-                   "assignment is read by two raters working independently on the four-point scoring guide, and its score is "
-                   "the sum of the two reads (2 to 8). When the two reads differ by more than one point a scoring "
-                   "leader reads the response, and the assignment's score is twice the leader's read. Each assignment "
-                   "score counts twice, so a form's raw score is the multiple-choice score plus twice the three "
-                   "assignment scores, 0 to 108.", SERIF),
-         Paragraph("3. Scoring the written assignments", h2),
-         Paragraph("Raters are trained and qualified on each assignment's scoring guide and benchmark papers before they read "
-                   "operational responses. Validity papers (responses with consensus scores set by the scoring "
-                   "leaders) are seeded into raters' queues throughout scoring. Table 1 gives the 2025 agreement "
-                   "rates.", SERIF),
-         Paragraph("Table 1. Written-assignment agreement, June 2025", SMALL),
-         _table(qc, [0.85 * inch, 1.05 * inch, 0.95 * inch, 1.1 * inch, 1.0 * inch, 1.15 * inch]),
-         Spacer(1, 6),
-         Paragraph("4. Equating", h2),
-         Paragraph("Form 25A was equated to Form 24A under the common-item nonequivalent groups design, through an "
-                   "internal anchor of 20 multiple-choice items and one written assignment that Form 25A carries from "
-                   "Form 24A. The anchor is assembled to represent the test's content and its two item formats in "
-                   "proportion: one in three of the multiple-choice items and one of the three assignments. The "
-                   "equating samples are each form's first-attempt candidates. A new form's raw scores are equated to "
-                   "the raw scores of the form before it; each equated raw score is rounded to a whole number and "
-                   "converted to the reporting scale with that form's raw-to-scale table. Form 25A's table is in "
-                   "Appendix A.", SERIF),
-         Paragraph("5. The passing standard", h2),
-         Paragraph("The Board set the passing standard at a scale score of 240 in 2021. On Form 25A it falls at a raw "
-                   "score of %d." % W.PASS_RAW_25A, SERIF),
-         Paragraph("6. Results", h2),
-         Paragraph("Of the first-attempt candidates, %.1f per cent passed; of all candidates, %.1f per cent." % (
-             st["pass25_first"], st["pass25_all"]), SERIF),
-         Paragraph("Item positions and identifiers for Form 25A are in the Board's item map workbook.", SMALL),
-         PageBreak(),
-         Paragraph("Appendix A. Form 25A raw-to-scale conversion", h2),
-         _table(ctab, [0.8 * inch, 0.8 * inch, 0.8 * inch, 0.8 * inch])]
+# --------------------------------------------------------------------------------------------------- the report
+def write_design(path, x):
+    acc = TEAL
+    h1, h1s, h2 = styles(acc)
+    d, frame = _doc(path, "2025-26 Private Well Nitrate Survey: design and fieldwork", W.PEOPLE["epi"],
+                    "%s, %s  |  PWNS 2025-26 design and fieldwork  |  May 2026" % (W.DEPT, W.OFFICE))
+    fw = fieldwork(x)
+    s = [Paragraph("2025-26 Private Well Nitrate Survey", h1),
+         Paragraph("Design and fieldwork report. %s, %s, %s. Prepared by %s, environmental epidemiologist, "
+                   "for %s, %s manager. Issued May 22, 2026." % (W.DEPT, W.OFFICE, W.PROGRAM, W.PEOPLE["epi"],
+                                                               W.PEOPLE["manager"], W.PROGRAM), h1s),
+         Paragraph("1. Purpose", h2),
+         Paragraph("The survey measures nitrate in private domestic wells in each of the state's sixteen counties so "
+                   "that the Department can estimate, county by county, how many private domestic wells are above "
+                   "the nitrate standard of 10 mg/L nitrate as nitrogen. The 2027 Well Water Assistance allocation "
+                   "rests on those estimates. This report sets out how the survey was designed and how its fieldwork "
+                   "ran; it does not report nitrate results, which go to the Program with the county estimates "
+                   "after the retest period closes on June 30, 2026.", SANS),
+         Paragraph("2. The survey population and its two lists", h2),
+         Paragraph("No single record lists every private well in the state. The survey's population in a county is "
+                   "every private domestic well on either of two lists as they stood on August 31, 2025:", SANS),
+         Paragraph("<b>The permit list:</b> every well the Department's well construction permit database recorded "
+                   "on August 31, 2025 as an active domestic well drilled under permit on or after January 1, 1986, "
+                   "when permits became mandatory. Irrigation, livestock, monitoring and industrial wells, abandoned "
+                   "wells, and the earlier permits of wells since replaced are not on it.", SANS),
+         Paragraph("<b>The parcel list:</b> every residential parcel that the county assessor's 2025 roll records as "
+                   "served by a private well. The assessors' water-source codes are listed in the Codes sheet of the "
+                   "parcel compilation the Program assembled from the sixteen rolls.", SANS),
+         Paragraph("Each list misses wells the other holds. Wells drilled before 1986 that were never re-permitted "
+                   "are not on the permit list, and an assessor's water-source field is not updated when a well is "
+                   "drilled, so a parcel can carry a permitted domestic well while the roll records public water or "
+                   "nothing. A well drilled under permit on a parcel the roll records as served by a private well is "
+                   "on both lists. The Program treats a permit and a parcel as the same well when the permit's "
+                   "parcel number is the parcel's or, on a permit that carries no parcel number, when the permit's "
+                   "site address is the parcel's situs address.", SANS),
+         Paragraph("3. Sampling", h2),
+         Paragraph("In each county the survey drew households at random from each list separately. Each list had its "
+                   "own target of completed first tests in each county (Table 2), set from the laboratory budget, "
+                   "with the permit list sampled more heavily because its permits record each well's depth and "
+                   "construction, which the Program's well construction work also uses. Letters went to the drawn "
+                   "households in the order drawn; a household that declined or did not return its kit within six "
+                   "weeks was replaced by the next household drawn from the same list, until the list's target was "
+                   "met. The permit list was drawn first. A household drawn from the parcel list whose well had "
+                   "already been tested from the permit list was not sent a second kit: its first test counts "
+                   "toward the parcel list's target as well, and the draw manifest records it as TESTED_EARLIER "
+                   "with the earlier kit.", SANS),
+         Paragraph("4. Kits and laboratories", h2),
+         Paragraph("Each tested household collected one sample from a cold-water tap ahead of any treatment, in the "
+                   "kit mailed to it, and returned it to the county's survey laboratory (Table 1). First tests closed "
+                   "on April 30, 2026. The laboratories report nitrate as nitrogen, except Kinsale Water Testing, "
+                   "which reports nitrate as NO3; 10 mg/L nitrate as nitrogen is 44.27 mg/L nitrate as NO3 (a factor "
+                   "of 4.427). Where a laboratory reanalysed a sample, its later report replaces the earlier one. "
+                   "Each laboratory also reports arsenic and total coliform and E. coli on every sample; those results "
+                   "go to households with their nitrate result.", SANS),
+         Paragraph("Households whose first test was above the nitrate standard were offered a free retest kit, "
+                   "ordered from the kit vendor through its web portal or by phone, and analysed by a survey "
+                   "laboratory.", SANS)]
+    t1 = [["County", "Code", "Survey laboratory"]] + [[r["name"], r["code"], W.LABS[r["lab"]]] for r in fw]
+    s += [Paragraph("Table 1. Survey laboratories", h2), _table(t1, [1.6 * inch, 0.7 * inch, 3.0 * inch])]
+    t2 = [["County", "Permit list wells, Aug 31, 2025", "Parcel list wells, Aug 31, 2025", "Target, permit list",
+           "Target, parcel list", "Letters, permit list", "Letters, parcel list"]]
+    for r in fw:
+        t2.append([r["name"], _n(r["NP"]), _n(r["NQ"]), _n(r["nP"]), _n(r["nQ"]), _n(r["mailedP"]), _n(r["mailedQ"])])
+    t2.append(["All counties", _n(sum(r["NP"] for r in fw)), _n(sum(r["NQ"] for r in fw)),
+               _n(sum(r["nP"] for r in fw)), _n(sum(r["nQ"] for r in fw)), _n(sum(r["mailedP"] for r in fw)),
+               _n(sum(r["mailedQ"] for r in fw))])
+    s += [Paragraph("Table 2. The lists, the targets and the letters", h2),
+          _table(t2, [1.2 * inch, 0.95 * inch, 0.95 * inch, 0.8 * inch, 0.8 * inch, 0.75 * inch, 0.75 * inch],
+                 right=(1, 2, 3, 4, 5, 6))]
+    t3 = [["County", "Tested, permit list", "Declined, permit list", "No response, permit list",
+           "Tested, parcel list", "Tested earlier, parcel list", "Declined, parcel list", "No response, parcel list"]]
+    for r in fw:
+        t3.append([r["name"], r["testedP"], r["declinedP"], r["noresp" + "P"], r["testedQ"], r["earlierQ"],
+                   r["declinedQ"], r["noresp" + "Q"]])
+    s += [Paragraph("Table 3. Outcomes of the letters", h2),
+          _table(t3, [1.2 * inch] + [0.74 * inch] * 7, right=(1, 2, 3, 4, 5, 6, 7)),
+          Spacer(1, 4),
+          Paragraph("Tested earlier: drawn from the parcel list after the well had been tested from the permit list. "
+                    "A household that declined or did not respond was replaced by the next draw from the same list. "
+                    "Source: PWNS draw manifest, closed April 30, 2026.", SMALL)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-# --------------------------------------------------------------------------------------- the Office's Form 26A memo
-def write_memo(path, x):
-    h1, h1s, h2 = styles(PLUM)
-    d, frame = _doc(path, "Form 26A: assembly and the 2026 conversion", W.OFFICE,
-                    W.BOARD + "  |  " + W.OFFICE, layout="top")
-    s = [Paragraph("Memorandum", h1),
-         Paragraph("To: Educator Preparation and Licensure staff; %s<br/>From: %s, Director, %s<br/>Date: February 9, "
-                   "2026<br/>Re: ELI 104 Form 26A, assembly and the 2026 conversion" % (
-                       W.NEW_CO, W.PEOPLE["director"], W.OFFICE), h1s),
-         Paragraph("1. Form 26A is assembled from the item bank to the test specifications: 60 multiple-choice items "
-                   "and three written assignments, given at the June 13, 2026 administration. It carries 20 "
-                   "multiple-choice items and one assignment, WA2 (the comprehension instruction plan), from Form 25A. "
-                   "Like the anchor before it, these items are one in three of the multiple-choice items and one of the "
-                   "three assignments, 36 of the 108 raw points with 16 of them written, the same mix as the test. The "
-                   "carried items sit at different positions on the two forms; the item map workbook gives both forms' "
-                   "positions and identifiers.", SANS),
-         Paragraph("2. From 2026 the Board's scoring contract is with %s. Arcwright scores the multiple-choice "
-                   "items and the written assignments, two independent reads with resolution by a scoring leader as "
-                   "before, and delivers the score file, the item response file, its read records and its scoring "
-                   "statistics. %s transferred WA2's scoring guide and benchmark papers to Arcwright in January, with a "
-                   "set of June 2025 WA2 responses and their scores for Arcwright's validity papers." % (
-                       W.NEW_CO, W.OLD_CO), SANS),
-         Paragraph("3. This Office equates Form 26A to Form 25A once scoring closes, and the Board releases 2026 scores "
-                   "on September 15, 2026, on the reporting scale through Form 25A's conversion. Program pass rates for "
-                   "the 2027 reviews follow from the same results.", SANS),
-         Paragraph("4. Arcwright registers candidates in its own system. The licensing system matches each registration "
-                   "to the candidate's educator record and keeps the match in the registration crosswalk.", SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-# ------------------------------------------------------------------------------------------------ the review rule
 def write_standard(path):
-    h1, h1s, h2 = styles(FOREST)
-    d, frame = _doc(path, "Rule 8.4: licensure test performance of educator preparation programs", W.BOARD,
-                    W.BOARD + "  |  Educator Preparation Program Approval  |  Rule 8.4")
-    s = [Paragraph("Rule 8.4. Licensure test performance of elementary preparation programs", h1),
-         Paragraph("Adopted by the %s, effective for program years beginning July 1, 2024 and the reviews that follow "
-                   "them." % W.BOARD, h1s),
-         Paragraph("8.4.1 A program whose completers' first-attempt pass rate on the Elementary Literacy Instruction "
-                   "test (ELI 104) is below 70 per cent for a program year is placed on formal program review in the "
-                   "calendar year after the program year ends. For the 2025-26 program year the reviews begin in "
-                   "2027.", SANS),
-         Paragraph("8.4.2 A program year runs from July 1 to June 30. A completer is a candidate the program reports, in "
-                   "its Title II completer list for the program year, as having completed its elementary pathway "
-                   "(Elementary, or Elementary and Special Education) on a date in the program year. Completers of the "
-                   "program's other pathways take other licensure tests and are not counted.", SANS),
-         Paragraph("8.4.3 A completer's first attempt is the completer's first attempt at the test, whenever it was "
-                   "taken, including an attempt before the program was completed. An attempt the Board voided is not an "
-                   "attempt.", SANS),
-         Paragraph("8.4.4 The rate counts the completers whose first attempt was at or before the program year's June "
-                   "administration (June 13, 2026 for the 2025-26 program year). A completer who had not attempted the "
-                   "test by then is not counted.", SANS),
-         Paragraph("8.4.5 A first attempt passes when its reported scale score is 240 or more.", SANS),
-         Paragraph("8.4.6 The Office of Assessment Research computes the rates from the Board's licensing records and "
-                   "the scoring contractor's results, and reports them with the number of completers each rate "
-                   "counts.", SANS)]
+    acc = GREEN
+    h1, h1s, h2 = styles(acc, serif=True)
+    d, frame = _doc(path, "Well Water Assistance: 2027 county allocation standard", W.DEPT,
+                    "WWA-2027-01, adopted March 10, 2026", layout="centre")
+    s = [Paragraph("Well Water Assistance", h1),
+         Paragraph("2027 county allocation standard, WWA-2027-01. %s, %s. Adopted March 10, 2026; "
+                   "coordinator %s." % (W.DEPT, W.OFFICE, W.PEOPLE["assist"]), h1s),
+         Paragraph("1. Scope", h2),
+         Paragraph("This standard decides which counties receive the 2027 Well Water Assistance allocation and which "
+                   "households within them may receive assistance. It applies the results of the 2025-26 Private Well "
+                   "Nitrate Survey (the Survey).", SERIF),
+         Paragraph("2. Definitions", h2),
+         Paragraph("2.1 The nitrate standard is 10 mg/L nitrate as nitrogen. A result is above the standard when it "
+                   "is more than 10 mg/L nitrate as nitrogen.", SERIF),
+         Paragraph("2.2 A county's survey population is the private domestic wells in the county on either of the "
+                   "Survey's two lists, the permit list and the parcel list, as the Survey's design report defines "
+                   "them.", SERIF),
+         Paragraph("2.3 A well's first test is the Survey's first test of it. A retest is a sample from a retest kit "
+                   "the household ordered after a first test.", SERIF),
+         Paragraph("3. Qualifying counties", h2),
+         Paragraph("3.1 A county qualifies for the 2027 allocation when the Survey estimates that 250 or more wells in "
+                   "its survey population are above the standard, a well being above the standard when its first "
+                   "test is. The estimate covers the whole survey population, the wells the Survey did not test as "
+                   "well as those it did.", SERIF),
+         Paragraph("3.2 Each qualifying county receives a base award of $140,000 for treatment systems and $25,000 "
+                   "for outreach. Awards are made for calendar year 2027 and do not carry over.", SERIF),
+         Paragraph("4. Households", h2),
+         Paragraph("4.1 Within a qualifying county, a household may receive a point-of-use treatment system and its "
+                   "first year of filters when its well was above the standard on its first test and again on a "
+                   "retest.", SERIF),
+         Paragraph("4.2 A retest counts for the 2027 cycle when its sample was collected on or before June 30, 2026. "
+                   "Later retests are taken up in the 2028 cycle.", SERIF),
+         Paragraph("5. Review", h2),
+         Paragraph("The Program reviews this standard after the 2027 cycle and before the next survey.", SERIF)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-# --------------------------------------------------------------------------------------------- the test framework
-def write_framework(path):
-    h1, h1s, h2 = styles(RUST)
-    d, frame = _doc(path, "ELI 104 test framework", W.BOARD, W.BOARD + "  |  ELI 104 Test Framework (2024)")
-    sub = [["Subarea", "Approximate share of the multiple-choice items", "What it covers"],
-           ["I. Foundational Reading Skills", "30%", "phonological awareness, phonics and word recognition, fluency"],
-           ["II. Comprehension and Vocabulary", "30%", "vocabulary development, literary and informational texts"],
-           ["III. Assessment and Instruction", "20%", "screening, diagnostic and progress-monitoring assessment; "
-                                                      "planning differentiated instruction"],
-           ["IV. Writing and Language", "20%", "the writing process, conventions, feedback on student writing"]]
-    s = [Paragraph("Elementary Literacy Instruction (ELI 104): test framework", h1),
-         Paragraph("Approved by the Board in 2024 for forms given from June 2025.", h1s),
-         Paragraph("The test measures the knowledge an entry-level elementary teacher needs to teach reading and "
-                   "writing in kindergarten through grade 6. It has 60 multiple-choice items and three written "
-                   "assignments, and candidates have four hours.", SANS),
-         _table(sub, [1.9 * inch, 1.4 * inch, 3.3 * inch]),
-         Spacer(1, 8),
-         Paragraph("The written assignments", h2),
-         Paragraph("WA1 asks the candidate to analyse one student's foundational reading assessment results and "
-                   "identify the student's needs. WA2 asks for a plan of comprehension instruction for a described "
-                   "group, with its rationale. WA3 asks for written feedback on a student's draft and the next "
-                   "instructional step. Each is scored on a four-point scoring guide: 4, a thorough and accurate response; 3, "
-                   "an adequate response; 2, a limited response; 1, a weak response.", SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-# --------------------------------------------------------------------------------- Arcwright's administration summary
-def write_adminsum(path, x, summary):
-    h1, h1s, h2 = styles(NAVY)
-    d, frame = _doc(path, "ELI 104 June 13, 2026 administration summary", W.NEW_CO,
-                    W.NEW_CO + "  |  ELI 104 administration summary  |  July 31, 2026")
-    by = {}
-    for g in x["regs"]:
-        by[g["centre"]] = by.get(g["centre"], 0) + 1
-    absent = {c: int(round(v * (0.035 + 0.01 * (int(c[-1]) % 3)))) for c, v in by.items()}
-    rows = [["Centre", "Location", "Registered", "Absent", "Tested"]]
-    for c, city, _addr in P.CENTRES:
-        rows.append([c, city, by.get(c, 0) + absent.get(c, 0), absent.get(c, 0), by.get(c, 0)])
-    rows.append(["All", "", sum(by.values()) + sum(absent.values()), sum(absent.values()), sum(by.values())])
-    s = [Paragraph("ELI 104: June 13, 2026 administration", h1),
-         Paragraph("Administration summary for the %s. %s, July 31, 2026." % (W.BOARD, W.NEW_CO), h1s),
-         Paragraph("The June 13 administration ran at all six centres with no centre-wide incident. Every candidate "
-                   "who tested was scored; no attempt was withheld or voided.", SANS),
-         _table(rows, [0.7 * inch, 1.3 * inch, 1.0 * inch, 0.8 * inch, 0.8 * inch]),
-         Spacer(1, 8),
-         Paragraph("Scoring", h2),
-         Paragraph("Multiple-choice scoring was completed on June 19. Written-assignment scoring ran from June 22 to "
-                   "July 16 at Arcwright's scoring centre, with %d raters and %d scoring leaders. The score file, item "
-                   "response file, read records and scoring statistics were delivered to the Board on July 24, 27, 29 "
-                   "and 31." % (len(P.RATERS), len(P.LEADERS)), SANS),
-         Paragraph("Assignment scores are the sum of the two independent reads, or twice a scoring leader's resolution "
-                   "read where the two reads differ by more than one point.", SANS)]
+def write_factsheet(path):
+    acc = BLUE
+    h1, h1s, h2 = styles(acc)
+    d, frame = _doc(path, "Nitrate and your well", W.PROGRAM, "%s  |  %s  |  Revised January 2025" % (W.DEPT, W.PROGRAM),
+                    layout="top")
+    s = [Paragraph("Nitrate and your well", h1),
+         Paragraph("A fact sheet for households on private wells. %s." % W.PROGRAM, h1s),
+         Paragraph("What is nitrate?", h2),
+         Paragraph("Nitrate is a form of nitrogen that dissolves in water. It reaches groundwater from fertilizer, "
+                   "manure, septic systems and decaying plants. Shallow wells, dug wells and wells in sandy soils are "
+                   "more likely to have high nitrate, and levels can rise in spring after snowmelt and heavy rain.",
+                   SANS),
+         Paragraph("Why does it matter?", h2),
+         Paragraph("Water above the nitrate standard should not be used to mix infant formula or for anyone who is "
+                   "pregnant. Boiling water does not remove nitrate; it concentrates it.", SANS),
+         Paragraph("Reading your result", h2),
+         Paragraph("Laboratories report nitrate in two ways. Most report nitrate as nitrogen (nitrate-N); the "
+                   "drinking water standard is 10 mg/L nitrate-N. Some report nitrate itself (NO3), where the same "
+                   "standard is 44 mg/L. To compare an NO3 result with the standard, divide it by 4.4.", SANS),
+         _table([["Result (nitrate-N)", "What it means", "What to do"],
+                 ["Under 3 mg/L", "Typical of wells little affected by land use", "Test every two to three years"],
+                 ["3 to 10 mg/L", "Affected by land use; below the standard", "Test every year"],
+                 ["Over 10 mg/L", "Above the standard", "Use another source for infants; retest; consider treatment"]],
+                [1.4 * inch, 2.6 * inch, 2.6 * inch]),
+         Spacer(1, 6),
+         Paragraph("Treatment", h2),
+         Paragraph("Reverse osmosis, distillation and anion exchange remove nitrate. A point-of-use reverse osmosis "
+                   "unit under the kitchen sink treats water for drinking and cooking. Water softeners and carbon "
+                   "filters do not remove nitrate.", SANS),
+         Paragraph("Testing", h2),
+         Paragraph("Use a laboratory certified for nitrate. Collect the sample from a cold-water tap that does not "
+                   "pass through a softener or filter, and get it to the laboratory within two days.", SANS)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
 # ------------------------------------------------------------------------------------------------- the workbooks
 def _head(ws, cols, widths):
     ws.append(cols)
-    for c in ws[1]:
+    for c in ws[ws.max_row]:
         c.font = Font(bold=True)
         c.fill = HEAD_FILL
         c.alignment = Alignment(wrap_text=True, vertical="top")
@@ -338,92 +279,52 @@ def _head(ws, cols, widths):
     ws.freeze_panes = "A2"
 
 
-def write_qc(path, x, summary, readers):
+def write_parcels(path, x, sheets):
+    wb = openpyxl.Workbook()
+    rd = wb.active
+    rd.title = "Codes"
+    lines = [("Residential parcels, 2025 assessment rolls: compilation for the Private Well Program", True),
+             ("Each county sheet is the residential parcel extract its assessor sent in January 2026 from the 2025 "
+              "roll, kept in the assessor's own layout.", False),
+             ("", False),
+             ("Water-source codes by layout", True)]
+    for i, (t, b) in enumerate(lines, 1):
+        rd.cell(row=i, column=1, value=t or None).font = Font(bold=b, size=12 if (b and i == 1) else 10)
+    rd.append(["Layout", "Counties", "Column", "Private well", "Public water", "Blank"])
+    for c in rd[rd.max_row]:
+        c.font = Font(bold=True)
+    for lay in ("A", "B", "C"):
+        cols = P.PARCEL_LAYOUTS[lay]
+        pw, pub = P.WATER_CODES[lay]
+        names = ", ".join(c["name"] for c in x["counties"] if c["layout"] == lay)
+        rd.append([lay, names, cols[-1], pw, pub, "not recorded"])
+    for col, w in zip("ABCDEF", (8, 62, 16, 12, 12, 14)):
+        rd.column_dimensions[col].width = w
+    for c in x["counties"]:
+        lay, rows = sheets[c["code"]]
+        ws = wb.create_sheet(c["code"] + " " + c["name"])
+        widths = {"A": (14, 30, 14, 9, 11, 9), "B": (12, 9, 5, 18, 8, 14, 7, 8, 13),
+                  "C": (15, 32, 14, 14, 10, 13)}[lay]
+        _head(ws, P.PARCEL_LAYOUTS[lay], widths)
+        for r in rows:
+            ws.append([None if v == "" else v for v in r])
+    wb.save(path)
+
+
+def write_ced(path, rows):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Summary"
-    _head(ws, ["Assignment", "Responses scored", "Operational reads", "Exact agreement, first and second read (%)",
-               "Adjacent or exact (%)", "Resolved by a scoring leader (%)", "Back-reads", "Back-read agreement (%)",
-               "Validity papers", "Validity reads", "Validity exact (%)", "Validity adjacent or exact (%)"],
-          [11, 10, 11, 15, 11, 13, 10, 11, 9, 9, 10, 12])
-    for r in summary:
-        ws.append(r)
-    vp = wb.create_sheet("Validity papers")
-    _head(vp, ["Paper", "Assignment", "Source", "Score on file"], [18, 11, 66, 10])
-    for p in x["papers"]:
-        src = ("Form 25A operational response, June 2025 (%s); both June 2025 reads gave this score" % W.OLD_CO
-               if p["src"] == "2025" else
-               "Form 26A rangefinding response, June 2026; consensus score set by Arcwright's scoring leaders")
-        vp.append([p["id"], p["wa"], src, p["consensus"]])
-    rd = wb.create_sheet("Readers")
-    _head(rd, ["Reader", "Role", "First read", "Operational reads", "Validity reads", "Validity exact (%)"],
-          [10, 15, 12, 11, 10, 11])
-    for r in readers:
-        rd.append(r)
-    nt = wb.create_sheet("Notes")
-    lines = [("ELI 104, June 13, 2026: written-assignment scoring statistics", True),
-             ("%s, delivered to the %s on July 31, 2026." % (W.NEW_CO, W.BOARD), False),
-             ("", False),
-             ("Exact and adjacent agreement compare the first and second operational reads of each response.", False),
-             ("A back-read is a scoring leader's read of a response already scored, for monitoring; it does not change "
-              "the score. Back-read agreement counts back-reads within half a point of the response's final score "
-              "per read.", False),
-             ("Validity papers are responses with a score on file, seeded into raters' queues; a validity read does "
-              "not score a candidate. WA2's validity papers are June 2025 responses %s transferred with their scores, "
-              "each one whose two June 2025 reads agreed; WA1 and WA3 are new assignments whose papers come from "
-              "Arcwright's 2026 rangefinding, scored by consensus of Arcwright's scoring leaders." % W.OLD_CO, False),
-             ("Contract targets: exact agreement 60 per cent or more and adjacent or exact 95 per cent or more on "
-              "operational reads and on validity reads, for each assignment.", False)]
-    for i, (t, b) in enumerate(lines, 1):
-        c = nt.cell(row=i, column=1, value=t or None)
-        c.font = Font(bold=b, size=12 if b else 10)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    nt.column_dimensions["A"].width = 110
-    wb.save(path)
-
-
-def write_maps(path, x):
-    wb = openpyxl.Workbook()
-    first = True
-    for yr in (2025, 2026):
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = "Form %s" % W.FORMS[yr]
-        _head(ws, ["Position", "Item ID", "Item type", "Subarea"], [9, 12, 16, 32])
-        for pos, iid, sub in x["maps"][yr]:
-            ws.append([pos, iid, "Multiple choice", sub])
-        for k, wid in enumerate(x["wa_ids"][yr]):
-            ws.append([W.N_MC + k + 1, wid, "Written assignment", "WA%d" % (k + 1)])
-    nt = wb.create_sheet("Notes")
-    for i, t in enumerate(["ELI 104 item maps, Forms 25A and 26A (Office of Assessment Research, February 2026)",
-                           "Position is the item's place on the form as delivered; an item keeps its identifier on "
-                           "every form that uses it.",
-                           "Written assignments follow the multiple-choice items and are listed by position."], 1):
+    ws.title = "Results"
+    _head(ws, P.CED_COLS, (14, 15, 8, 12, 15, 9, 7, 9, 10, 12, 40))
+    for r in rows:
+        ws.append([None if v == "" else v for v in r])
+        ws.cell(row=ws.max_row, column=4).number_format = "mm/dd/yyyy"
+        ws.cell(row=ws.max_row, column=10).number_format = "mm/dd/yyyy"
+    nt = wb.create_sheet("Report notes")
+    for i, t in enumerate(["Cedarline Environmental Laboratories: Private Well Nitrate Survey results, 2025-26",
+                           "Client: %s, %s" % (W.DEPT, W.PROGRAM),
+                           "Qualifier U: not detected at the reporting limit shown in Result.",
+                           "A reanalysis is reported on its own row with a later report date."], 1):
         nt.cell(row=i, column=1, value=t).font = Font(bold=(i == 1))
-    nt.column_dimensions["A"].width = 100
-    wb.save(path)
-
-
-def write_completers(path, sheets):
-    wb = openpyxl.Workbook()
-    first = True
-    for k, (lay, rows) in sorted(sheets.items()):
-        name, code, kind = W.PROGRAMS[k][0], W.PROGRAMS[k][1], W.PROGRAMS[k][2]
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = code
-        ws.append([name])
-        ws.append(["Title II program completers, program year 2025-26 (July 1, 2025 to June 30, 2026)"])
-        ws.append(["Submitted %s" % (dt.date(2026, 7, 14) + dt.timedelta(days=(k * 5) % 19)).strftime("%B %d, %Y")
-                   .replace(" 0", " ")])
-        ws.append([])
-        cols = P.LAYOUTS[lay]
-        ws.append(cols)
-        for c in ws[5]:
-            c.font = Font(bold=True)
-        ws["A1"].font = Font(bold=True, size=12)
-        for r in rows:
-            ws.append(r)
-        for i, w in enumerate((22, 22, 20, 30, 18, 18)[:len(cols)]):
-            ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
+    nt.column_dimensions["A"].width = 90
     wb.save(path)

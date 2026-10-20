@@ -1,18 +1,19 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-20",
- "stump": "The default path pools every tested well, takes the share above the arsenic standard and multiplies it by the county's wells on either list, or adds the two lists' separate estimates; but the permit list was sampled at a higher rate than the parcel list, the parcel-only wells (older, unpermitted, shallower) exceed the standard far more often, and the wells on both lists could have been drawn from either, so pooling undercounts the parcel-only wells and summing counts the shared wells twice; weighted by each well's chance of selection across both lists, only the golden counties qualify.",
+ "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20",
+  "checks": "51 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
   "leak_py": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "architecture 3 design: prototype the frames, samples and county estimates (dual-frame against pooled, summed and single-list routes), place the threshold with margins, design the asks and their devices, then the design note sections and prompt.txt to precut exit 0",
+ "resume": "architecture 3 built: checks 175 of 175 and the verifier green on the final build; next the byte-identical rebuild and target.zip (build.py), figures_check, leak.py --asof 2026-08-14, guard surface (heart WARN only), then stage 4: two scored readers on fresh unzips (scratchpad reader_brief.md) and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

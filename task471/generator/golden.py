@@ -1,6 +1,6 @@
-"""The golden deliverables, computed from the shipped pack alone: eli_2027_program_review.xlsx (the 2027 reviews, the
-Form 26A conversion, the 2024-25 completers and the notes), eli_2026_program_pass_rates.png, and generator/figures.json
-with every figure the write-up states."""
+"""The golden deliverables, computed from the shipped pack alone: nitrate_assistance_counties_2027.xlsx (the sixteen
+counties, the six qualifying, the retests and the notes), nitrate_assistance_counties_2027.png, and
+generator/figures.json with every figure the write-up states."""
 import json
 import os
 import sys
@@ -17,82 +17,78 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bundle as B   # noqa: E402
 import world as W    # noqa: E402
 
-GOLDEN = {"workbook": "eli_2027_program_review.xlsx", "chart": "eli_2026_program_pass_rates.png"}
+GOLDEN = {"workbook": "nitrate_assistance_counties_2027.xlsx", "chart": "nitrate_assistance_counties_2027.png"}
 W.GOLDEN = GOLDEN
-PLUM = "4A2F5C"
-FILL_H = PatternFill("solid", fgColor="E4DDEB")
-FILL_R = PatternFill("solid", fgColor="F6E3E3")
-THIN = Side(style="thin", color="A9A3B0")
+TEAL = "1D4F5C"
+FILL_H = PatternFill("solid", fgColor="DDE7EC")
+FILL_Q = PatternFill("solid", fgColor="E3EFE6")
+THIN = Side(style="thin", color="9AA0A6")
+WORDS = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten"}
 
 
-def r1(a, n):
-    """a rate in per cent to one decimal, half away from zero on the exact fraction"""
-    return float(np.floor(1000.0 * a / n + 0.5) / 10.0)
+def pct(a, b):
+    return float(np.floor(1000.0 * a / b + 0.5) / 10.0)
 
 
 def compute(target):
     pk = B.Pack(target)
-    g, e = pk.cut("golden")
-    fam = pk.cut("golden", "all")
-    comp = pk.completers()
-    rates = pk.rates(g, comp)
-    prior = pk.prior_year()
-    progs = []
-    for k, pr in enumerate(W.PROGRAMS):
-        n, p = rates[k]
-        n0, p0 = prior[k]
-        progs.append(dict(code=pr[1], name=pr[0], counted=n, passed=p, rate=r1(p, n), rate_exact=p / n,
-                          review=(p / n < W.REVIEW_LINE), prior_tested=n0, prior_passed=p0, prior_rate=r1(p0, n0)))
-    review = [q["name"] for q in progs if q["review"]]
-    above = min((q for q in progs if not q["review"]), key=lambda q: q["rate_exact"])
-    below = max((q for q in progs if q["review"]), key=lambda q: q["rate_exact"])
-    X, VX, VXm, Y, VY, VYm = pk.arrays()
-    bias = pk.validity_bias()
-    conv = []
-    for raw in range(W.MAX_RAW + 1):
-        eq = float(e(raw))
-        rr = int(np.clip(np.floor(eq + 0.5), 0, W.MAX_RAW))
-        conv.append([raw, round(eq, 2), rr, pk.conv[rr], "Pass" if pk.conv[rr] >= W.PASS_SCALE else None])
-    rungs = {}
-    for route in ("as scored", "multiple-choice anchor", "every assignment's papers"):
-        rungs[route] = sorted({v[0] for v in pk.cut(route, "all").values()})
-    rungs = {k: (v[0] if len(v) == 1 else v) for k, v in rungs.items()}
-    rungs["no equating"] = pk.cut("no equating")[0]
-    rungs["raters adjusted, no equating"] = pk.cut("raters adjusted, no equating")[0]
-    as_scored = pk.rates(rungs["as scored"], comp)
-    rung_sets = {"as scored": [W.PROGRAMS[k][0] for k, (n, p) in as_scored.items() if p / n < W.REVIEW_LINE]}
+    ret = pk.retests()
+    rows = []
+    for k in pk.codes:
+        L, s = pk.link[k], pk.sample[k]
+        est = pk.estimate(k)
+        alt = [pk.estimate(k, r, **kw) for r, kw in B.GOLD_ROUTES]
+        cnt = pk.counts(k)
+        both = sum(1 for w in s["wells"].values() if w["onP"] and w["onQ"])
+        rows.append(dict(code=k, name=pk.name[k], union=L["union"], NP=L["NP"], NQ=L["NQ"], NB=L["NB"],
+                         nP=s["nP"], nQ=s["nQ"], fP=round(100 * s["fP"], 1), fQ=round(100 * s["fQ"], 1),
+                         tested=cnt["tested"], tested_above=cnt["above"], tested_both=both,
+                         estimate=int(np.floor(est + 0.5)), estimate_exact=est,
+                         estimate_low=int(np.floor(min(alt) + 0.5)), estimate_high=int(np.floor(max(alt) + 0.5)),
+                         qualifies=est >= W.QUALIFY, retested=ret[k][0], still_above=ret[k][1],
+                         routes={r: int(np.floor(pk.estimate(k, r) + 0.5)) for r in B.WRONG_ROUTES}))
+    q = [r for r in rows if r["qualifies"]]
+    nq = [r for r in rows if not r["qualifies"]]
+    lowest = min(q, key=lambda r: r["estimate_exact"])
+    highest = max(nq, key=lambda r: r["estimate_exact"])
+    tested = sum(r["tested"] for r in rows)
+    nP, nQ = sum(r["nP"] for r in rows), sum(r["nQ"] for r in rows)
+    NP, NQ = sum(r["NP"] for r in rows), sum(r["NQ"] for r in rows)
+    rungs = {r: [pk.name[k] for k in pk.qualifying(r)] for r in B.WRONG_ROUTES}
+    qo = [w for k in pk.codes for w in pk.sample[k]["wells"].values() if w["onQ"] and not w["onP"]]
+    rest = [w for k in pk.codes for w in pk.sample[k]["wells"].values() if w["onP"]]
     out = dict(
-        review=review, review_count=len(review), raw_cut=g, programs=progs, rungs=rungs, rung_sets=rung_sets,
-        nearest_above=dict(name=above["name"], rate=above["rate"]), nearest_below=dict(name=below["name"], rate=below["rate"]),
-        validity_bias=round(bias, 4), anchor_shift=round(-2 * bias * W.WA_WEIGHT, 2),
-        validity_bias_below_2025=round(-bias, 4), wa2_score_shift=round(-2 * bias, 4), rule="Rule 8.4",
-        wa2_papers=sum(1 for p in pk.papers.values() if p["wa"] == "WA2"),
-        wa2_validity_reads=sum(1 for p, a, v in pk.vreads if a == "WA2"),
-        n_first_2025=int(len(Y)), n_first_2026=int(len(X)),
-        equated_at_cut={k: round(v[1], 2) for k, v in fam.items()},
-        equated_below_cut={k: round(v[2], 2) for k, v in fam.items()},
-        counted_total=sum(q["counted"] for q in progs), passed_total=sum(q["passed"] for q in progs),
-        prior_tested_total=sum(q["prior_tested"] for q in progs), prior_passed_total=sum(q["prior_passed"] for q in progs),
-        conversion=conv, pass_raw_25a=W.PASS_RAW_25A, pass_scale=W.PASS_SCALE,
-        call=sorted(review),
-        ask={q["code"]: dict(tested=q["prior_tested"], rate=q["prior_rate"]) for q in progs})
+        call=[r["name"] for r in q], call_codes=[r["code"] for r in q], qualifying_count=len(q), counties=rows,
+        lowest_qualifier=dict(name=lowest["name"], estimate=lowest["estimate"], low=lowest["estimate_low"]),
+        highest_short=dict(name=highest["name"], estimate=highest["estimate"], high=highest["estimate_high"]),
+        union_total=sum(r["union"] for r in rows), tested_total=tested,
+        tested_above_total=sum(r["tested_above"] for r in rows),
+        tested_both_total=sum(r["tested_both"] for r in rows),
+        parcel_only_tested=len(qo), parcel_only_above=sum(1 for w in qo if w["y"]),
+        parcel_only_share=pct(sum(1 for w in qo if w["y"]), len(qo)),
+        others_tested=len(rest), others_above=sum(1 for w in rest if w["y"]),
+        others_share=pct(sum(1 for w in rest if w["y"]), len(rest)),
+        permit_rate=pct(nP, NP), parcel_rate=pct(nQ, NQ), nP_total=nP, nQ_total=nQ, NP_total=NP, NQ_total=NQ,
+        retested_total=sum(r["retested"] for r in rows), still_above_total=sum(r["still_above"] for r in rows),
+        rungs=rungs, rung_counts={k: len(v) for k, v in rungs.items()},
+        union={r["code"]: r["union"] for r in rows},
+        ask={r["code"]: dict(retested=r["retested"], still_above=r["still_above"]) for r in rows},
+        standard=W.STANDARD_N, line=W.QUALIFY, no3_factor=W.NO3_PER_N, retests_close="June 30, 2026")
     return out
 
 
 def write_workbook(path, fig):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Reviews 2027"
-    words = {3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}
-    ws["A1"] = "%s of sixteen elementary programs fall below 70 per cent and go to formal review in 2027" % (
-        words.get(fig["review_count"], str(fig["review_count"])))
-    ws["A1"].font = Font(bold=True, size=13, color=PLUM)
-    ws["A2"] = ("First-attempt pass rates of 2025-26 completers, ELI 104, Rule 8.4. Office of Assessment Research, "
-                "August 21, 2026. Form 26A raw passing score: %d (equated to Form 25A's raw %d, scale 240)." % (
-                    fig["raw_cut"], fig["pass_raw_25a"]))
+    ws.title = "Counties 2027"
+    ws["A1"] = "%s of sixteen counties qualify for the 2027 Well Water Assistance allocation" % WORDS[
+        fig["qualifying_count"]]
+    ws["A1"].font = Font(bold=True, size=13, color=TEAL)
+    ws["A2"] = ("2025-26 Private Well Nitrate Survey, WWA-2027-01 section 3.1: an estimated 250 or more wells in the "
+                "county's survey population above 10 mg/L nitrate as nitrogen. Private Well Program, August 2026.")
     ws["A2"].font = Font(italic=True, size=9, color="5B6067")
-    head = ["Program code", "Program", "Completers counted", "Passed on first attempt", "First-attempt pass rate (%)",
-            "Formal review in 2027"]
+    head = ["Code", "County", "Private domestic wells on the survey's lists", "Qualifies for 2027",
+            "Wells first tested above the standard and retested by June 30, 2026", "Of those, still above on retest"]
     ws.append([])
     ws.append(head)
     for c in ws[4]:
@@ -100,113 +96,107 @@ def write_workbook(path, fig):
         c.fill = FILL_H
         c.alignment = Alignment(wrap_text=True, vertical="top")
         c.border = Border(bottom=THIN)
-    for q in fig["programs"]:
-        ws.append([q["code"], q["name"], q["counted"], q["passed"], q["rate"], "Yes" if q["review"] else "No"])
-        if q["review"]:
+    for r in fig["counties"]:
+        ws.append([r["code"], r["name"], r["union"], "Yes" if r["qualifies"] else "No", r["retested"],
+                   r["still_above"]])
+        if r["qualifies"]:
             for c in ws[ws.max_row]:
-                c.fill = FILL_R
+                c.fill = FILL_Q
     ws.append([])
-    ws.append([None, "All sixteen programs", fig["counted_total"], fig["passed_total"],
-               float(np.floor(1000.0 * fig["passed_total"] / fig["counted_total"] + 0.5) / 10.0), None])
+    ws.append([None, "All sixteen counties", fig["union_total"], "%d qualify" % fig["qualifying_count"],
+               fig["retested_total"], fig["still_above_total"]])
     for c in ws[ws.max_row]:
         c.font = Font(bold=True)
-    for row in ws.iter_rows(min_row=5, min_col=5, max_col=5):
+    for row in ws.iter_rows(min_row=5, min_col=3, max_col=6):
         for c in row:
-            c.number_format = "0.0"
-    for col, wdt in zip("ABCDEF", (13, 32, 12, 13, 14, 12)):
+            if isinstance(c.value, int):
+                c.number_format = "#,##0"
+    for row in ws.iter_rows(min_row=5, min_col=4, max_col=4):
+        for c in row:
+            c.alignment = Alignment(horizontal="center")
+    for col, wdt in zip("ABCDEF", (7, 17, 15, 11, 19, 13)):
         ws.column_dimensions[col].width = wdt
+    ws.row_dimensions[4].height = 58
     ws.freeze_panes = "C5"
-    cv = wb.create_sheet("Form 26A conversion")
-    cv.append(["Form 26A raw score", "Equated Form 25A raw score", "Rounded", "Scale score", "Result"])
-    for c in cv[1]:
-        c.font = Font(bold=True)
-        c.fill = FILL_H
-        c.alignment = Alignment(wrap_text=True)
-    for row in fig["conversion"]:
-        cv.append(row)
-    for rr in cv.iter_rows(min_row=2, min_col=2, max_col=2):
-        for c in rr:
-            c.number_format = "0.00"
-    for col, wdt in zip("ABCDE", (12, 14, 10, 10, 9)):
-        cv.column_dimensions[col].width = wdt
-    cv.freeze_panes = "A2"
-    pr = wb.create_sheet("2024-25 completers")
-    pr.append(["Program code", "Program", "2024-25 completers with a first attempt by June 14, 2025",
-               "Passed on first attempt", "First-attempt pass rate (%)"])
-    for c in pr[1]:
-        c.font = Font(bold=True)
-        c.fill = FILL_H
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for q in fig["programs"]:
-        pr.append([q["code"], q["name"], q["prior_tested"], q["prior_passed"], q["prior_rate"]])
-    for rr in pr.iter_rows(min_row=2, min_col=5, max_col=5):
-        for c in rr:
-            c.number_format = "0.0"
-    for col, wdt in zip("ABCDE", (13, 32, 16, 13, 14)):
-        pr.column_dimensions[col].width = wdt
-    pr.freeze_panes = "C2"
+    ws.print_title_rows = "4:4"
     nt = wb.create_sheet("Notes")
+    rows = fig["counties"]
     lines = [
         ("How these figures were made", True),
-        ("Completers: each program's Title II list for 2025-26, elementary pathway only (Elementary, or Elementary and "
-         "Special Education), completion dates July 1, 2025 to June 30, 2026, each educator once (Rule 8.4.2).", False),
-        ("First attempt: the educator's earliest attempt in the licensing system's history, voided attempts excluded, "
-         "at or before June 13, 2026 (8.4.3, 8.4.4). A June 2025 or earlier first attempt keeps its reported result.", False),
-        ("June 2026 attempts are placed on the reporting scale through Form 25A: Form 26A is equated to Form 25A under the "
-         "common-item nonequivalent groups design through its 20 shared items and WA2, on each form's first-attempt "
-         "candidates (%s for 25A, %s for 26A)." % ("{:,}".format(fig["n_first_2025"]), "{:,}".format(fig["n_first_2026"])),
+        ("Survey population: each county's private domestic wells on the permit list (active domestic wells drilled "
+         "under permit from January 1, 1986, as the permit database stood on August 31, 2025) or the parcel list "
+         "(residential parcels the 2025 roll records as served by a private well). A permit and a parcel are one well "
+         "when the permit's parcel number is the parcel's or, on a permit without one, when its site address is the "
+         "parcel's situs address. %s wells in all, %s on the permit list and %s on the parcel list." % (
+             "{:,}".format(fig["union_total"]), "{:,}".format(fig["NP_total"]), "{:,}".format(fig["NQ_total"])),
          False),
-        ("WA2 is read by a different scoring team each year. Arcwright's raters read the %d WA2 validity papers, June "
-         "2025 responses, %.2f points per read below the scores their two June 2025 reads agreed on (%d reads), so each "
-         "2026 WA2 score is moved up by twice that before it enters the anchor (%.2f anchor points, the assignment "
-         "counting twice)." % (
-             fig["wa2_papers"], -fig["validity_bias"], fig["wa2_validity_reads"], fig["anchor_shift"]), False),
-        ("Equated scores are rounded to whole numbers and converted with Form 25A's table; a scale score of 240 passes "
-         "(8.4.5). Tucker, Levine and chained linear equating at each synthetic weight and chained equipercentile "
-         "equating all put the Form 26A passing raw score at %d." % fig["raw_cut"], False),
-        ("2024-25 completers: the Board's completer register, elementary pathway, program year 2024-25, with a first "
-         "attempt at or before June 14, 2025. Where a completer's register record has no attempts, the attempt is found "
-         "under the educator record with the same name and birth date.", False),
-        ("Rates are rounded to one decimal; a rate below 70.0 per cent on the exact fraction goes to review.", False)]
+        ("First tests: the final result for each kit in the draw manifest's TESTED rows, nitrate as nitrogen "
+         "(Kinsale's NO3 results divided by 4.427), the later report standing where a sample was reanalysed. "
+         "%s wells were tested, %s of them above 10 mg/L." % ("{:,}".format(fig["tested_total"]),
+                                                             "{:,}".format(fig["tested_above_total"])), False),
+        ("Estimate: each list was sampled at its own rate (%.1f per cent of the permit list and %.1f per cent of the "
+         "parcel list across the state), and %s of the tested wells are on both lists, so each tested well counts for "
+         "the wells it stands for: one over its chance of selection from either list, 1 - (1 - f permit)(1 - f "
+         "parcel) for a well on both. The county's estimate is the sum over its tested wells above the standard. "
+         "Hartley's dual-frame estimator at any split of the wells on both lists, and post-stratifying by which lists "
+         "a well is on, put the same %s counties at or above 250." % (
+             fig["permit_rate"], fig["parcel_rate"], "{:,}".format(fig["tested_both_total"]),
+             WORDS[fig["qualifying_count"]].lower()), False),
+        ("Retests: a request is matched to its well through the first kit it names or, for a phone request, the "
+         "address it ships to. Each well counts in the county the survey tested it in, whatever county the kit "
+         "vendor routed the request to; a retest counts when its sample was collected on or before June 30, 2026 "
+         "(WWA-2027-01 section 4.2). Requests from households outside the survey, and retests of wells first tested "
+         "at or below the standard, are not counted.", False),
+        ("Counts are whole wells.", False)]
     for i, (t, b) in enumerate(lines, 1):
         c = nt.cell(row=i, column=1, value=t)
         c.font = Font(bold=b, size=12 if b else 10)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-    nt.column_dimensions["A"].width = 115
+    nt.column_dimensions["A"].width = 118
+    est = wb.create_sheet("Estimates")
+    est.append(["Code", "County", "Tested wells", "Tested wells above the standard", "Estimated wells above the "
+                "standard", "Permit list sampled (%)", "Parcel list sampled (%)"])
+    for c in est[1]:
+        c.font = Font(bold=True)
+        c.fill = FILL_H
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for r in rows:
+        est.append([r["code"], r["name"], r["tested"], r["tested_above"], r["estimate"], r["fP"], r["fQ"]])
+    for row in est.iter_rows(min_row=2, min_col=6, max_col=7):
+        for c in row:
+            c.number_format = "0.0"
+    for col, wdt in zip("ABCDEFG", (7, 17, 10, 14, 14, 12, 12)):
+        est.column_dimensions[col].width = wdt
+    est.row_dimensions[1].height = 44
+    est.freeze_panes = "C2"
     wb.save(path)
 
 
 def write_chart(path, fig):
-    progs = sorted(fig["programs"], key=lambda q: q["rate_exact"])
-    names = [q["name"] for q in progs]
-    vals = [q["rate"] for q in progs]
-    colors = ["#9b2d3c" if q["review"] else "#7d8a96" for q in progs]
+    rows = sorted(fig["counties"], key=lambda r: r["estimate_exact"])
+    names = [r["name"] for r in rows]
+    vals = [r["estimate_exact"] for r in rows]
+    colors = ["#1d6b5c" if r["qualifies"] else "#a7b1b8" for r in rows]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
-    fig_, ax = plt.subplots(figsize=(8.6, 6.4), dpi=120)
-    y = np.arange(len(progs))
+    f, ax = plt.subplots(figsize=(8.6, 6.6), dpi=120)
+    y = np.arange(len(rows))
     ax.barh(y, vals, color=colors, height=0.66)
-    ax.axvline(70, color="#1b1d1f", lw=1.2, ls="--")
-    ax.text(70.4, len(progs) - 0.45, "70 per cent: formal review below the line", fontsize=8.5, va="bottom")
-    for i, (v, q) in enumerate(zip(vals, progs)):
-        if q["review"]:
-            ax.text(v - 0.5, i, "%.1f" % v, va="center", ha="right", fontsize=8, color="white", fontweight="bold")
-        else:
-            ax.text(v + 0.4, i, "%.1f" % v, va="center", fontsize=8)
+    ax.axvline(W.QUALIFY, color="#1b1d1f", lw=1.2, ls="--")
+    ax.text(W.QUALIFY + 8, 0.2, "250 wells: qualifies at or above the line", fontsize=8.5, va="center")
     ax.set_yticks(y)
     ax.set_yticklabels(names)
-    ax.set_xlim(40, 100)
-    ax.set_xlabel("First-attempt pass rate of 2025-26 completers, ELI 104 (per cent)")
-    words = {3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}
-    ax.set_title("%s programs fall below 70 per cent on the June 2026 test" % words.get(fig["review_count"],
-                                                                                      str(fig["review_count"])), loc="left",
-                 fontsize=11, fontweight="bold", color="#4A2F5C")
+    ax.set_xlim(0, max(vals) * 1.08)
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _p: "{:,.0f}".format(v)))
+    ax.set_xlabel("Estimated private domestic wells above 10 mg/L nitrate as nitrogen (2025-26 survey population)")
+    ax.set_title("%s counties qualify for 2027 Well Water Assistance" % WORDS[fig["qualifying_count"]], loc="left",
+                 fontsize=11, fontweight="bold", color="#1D4F5C")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.text(0, -0.09, "Form 26A equated to Form 25A (raw passing score %d). Office of Assessment Research, August 21, "
-            "2026." % fig["raw_cut"], transform=ax.transAxes, fontsize=7.5, color="#5b6067")
-    fig_.tight_layout()
-    fig_.savefig(path, metadata={"Software": None})
-    plt.close(fig_)
+    ax.text(0, -0.1, "Each tested well counts for one over its chance of selection from either list. Private Well "
+            "Program, August 2026.", transform=ax.transAxes, fontsize=7.5, color="#5b6067")
+    f.tight_layout()
+    f.savefig(path, metadata={"Software": None})
+    plt.close(f)
 
 
 def main(target, gdir, fig_path):
@@ -215,9 +205,11 @@ def main(target, gdir, fig_path):
     write_workbook(os.path.join(gdir, GOLDEN["workbook"]), fig)
     write_chart(os.path.join(gdir, GOLDEN["chart"]), fig)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, GOLDEN["workbook"]), "Office of Assessment Research",
-                       "Office of Assessment Research", "2026-08-20T14:02:00Z", "2026-08-21T16:47:31Z", excel=True,
-                       company=W.BOARD)
+    PP.normalize_ooxml(os.path.join(gdir, GOLDEN["workbook"]), W.PROGRAM, W.PROGRAM, "2026-08-12T14:02:00Z",
+                       "2026-08-14T16:47:31Z", excel=True, company="%s, %s" % (W.DEPT, W.OFFICE))
+    fig = {k: v for k, v in fig.items()}
+    for r in fig["counties"]:
+        r["estimate_exact"] = round(r["estimate_exact"], 2)
     with open(fig_path, "w", encoding="utf-8") as fh:
         json.dump(fig, fh, indent=1)
         fh.write("\n")
