@@ -1,49 +1,95 @@
 {
  "task": "task474",
- "architecture": 1,
- "title": "How the Regional Opportunity Fund's $12,000,000 for FY2027 is split among the nine planning regions' councils of governments when the State Data Center's 2020 to 2022 poverty estimates exist only for the former counties; with each region's 2020, 2021 and 2022 residents in poverty and 2020-2024 average, a chart of the nine amounts, and each council's share of the former county agencies' unexpended FY2026 balances, the people it is counted on and the FY2026 energy assistance paid in its towns",
- "domain": "Survey Research & Official Statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production (an annual model-based poverty series rebuilt on new county-equivalents, the years the new geography lacks produced by temporal disaggregation with a benchmarked administrative indicator)",
- "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "05: an allocation to a fixed total: each of the nine councils' FY2027 amounts from $12,000,000, on the conformed region series (27 region-years and nine averages), beside 27 transition figures",
- "as_of": "2026-10-16",
- "deliverables": [
-  "rof_fy2027_region_poverty.csv",
-  "rof_fy2027_allocation_memo.docx"
- ],
- "distractor_files": [
-  "rof_fy2026_allocation_table.xlsx",
-  "county_to_planning_region_factors_2020.csv"
- ],
- "wrong_basis_distractor": {
-  "file": "county_to_planning_region_factors_2020.csv",
-  "basis": "each former county's 2020 census population and housing units split among the planning regions, not its residents in poverty in each year",
-  "ruled_out_by": "the allocation rule (1.1 and 2.2), which divides each former county's estimate by its towns' residents in poverty in that year"
- },
- "stated_inputs": [
-  "2020",
-  "2022",
-  "2024",
-  "FY2026",
-  "FY2027"
- ],
- "input_gates": {
-  "files": 18,
-  "formats": [
-   "csv",
-   "pdf",
-   "txt",
-   "xlsx"
-  ],
-  "largest_file": "rof_client_services_extract_20260930.csv",
-  "largest_file_rows": 89023
- },
- "sources": [
+ "title": "Ridgeline Power Cooperative SCR Upgrade Program 2027 designations",
+ "setting": "A fictional generation and transmission cooperative in an unnamed U.S. state; every record is synthetic.",
+ "as_of": "2026-11-09",
+ "files": [
   {
-   "files": "all files under target/",
-   "origin": "constructed for this task by task474/generator/build.py (seeded, deterministic) in the layouts of a state data center's annual model-based poverty estimate releases and methods note, an American Community Survey B17001 five-year extract with the Census Bureau's standard table notes, a state social services department's monthly SNAP participation file by town, a town to county to planning region code file, county-to-region allocation factors, a budget office's fund allocation rule, allocation table and grant closeout, and a grants data system's client services extract, profile audit trail, client number conversion and export layout; the state is unnamed and its counties, regions, towns, agencies and people are fictional",
+   "file": "ambient_ozone_daily_2026.csv",
+   "source": "State Department of Environmental Quality (fictional), synthetic records",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 456
+  },
+  {
+   "file": "cems_maintenance_tickets_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 255
+  },
+  {
+   "file": "dahs_export_field_notes.txt",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "dahs_hourly_export_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 90792
+  },
+  {
+   "file": "gads_event_report_2026.csv",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
    "date": "2026-10-16",
-   "license": "original work for this task; no third-party data"
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 82
+  },
+  {
+   "file": "gas_supply_agreement_excerpt.pdf",
+   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
+   "date": "2024-10-28",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "gas_supply_daily_invoices_2026.csv",
+   "source": "Prairie Basin Gas Marketing LLC (fictional), synthetic records",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 842
+  },
+  {
+   "file": "generating_unit_register_2026.xlsx",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "nox_allowance_holdings_2026.xlsx",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scr_upgrade_program_rules_2027.pdf",
+   "source": "Ridgeline Power Cooperative (fictional), synthetic records",
+   "date": "2026-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
   }
+ ],
+ "distractors": [
+  {
+   "file": "ambient_ozone_daily_2026.csv",
+   "why": "ambient ozone at the region's monitors: air quality, not any unit's emissions"
+  },
+  {
+   "file": "nox_allowance_holdings_2026.xlsx",
+   "why": "allowance holdings by facility: a compliance position, not a unit's emission rate"
+  }
+ ],
+ "deliverables": [
+  "cc_unit_nox_inventory_2026.xlsx",
+  "scr_upgrade_designations_2027.pdf"
+ ],
+ "stated_inputs": [
+  "0.170"
  ]
 }

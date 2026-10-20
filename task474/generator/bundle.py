@@ -1,131 +1,122 @@
-"""The pack read back from its files the way an analyst reads it: the State Data Center's releases (PDF tables and the
-2024 workbook), the Bureau's B17001 extract, DSS's monthly SNAP counts (its town names matched to the codes file), the
-codes file, the allocation rule's total, and the grants data system's exports with the closeout. The golden is computed
-from this, never from the generator's copies."""
+"""Reads the cut pack back: the combined-cycle units from the register, their ozone-season operating hours from the
+DAHS export as the routes in methods.py take them, and the two asks."""
 import csv
+import datetime as dt
 import os
-import re
-import subprocess
 
-import openpyxl
+from openpyxl import load_workbook
 
 import world as W
 
 
-def pdf_lines(path):
-    out = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True, check=True).stdout
-    return out.splitlines()
+def find(folder, stem):
+    for fn in sorted(os.listdir(folder)):
+        if fn.startswith(stem):
+            return os.path.join(folder, fn)
+    raise FileNotFoundError(stem)
 
 
-ROW = re.compile(r"^\s*(52\d{0,3})\s+([A-Z][A-Za-z .']*?)\s{2,}([\d,]+)\s+(?:([\d,]+)\s+([\d,]+)\s+)?(\S+)"
-                 r"(?:\s+([+-]\d+))?\s*$")
+def _rows(path):
+    with open(path, encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
 
 
-def release_tables(path):
-    """Table 1 (first estimates) and Table 2 (revised estimates) of one PDF release: {area: value}."""
-    t, cur, year = {1: {}, 2: {}}, None, {}
-    for line in pdf_lines(path):
-        m = re.match(r"^\s*Table ([12])\. Residents in poverty, (\d{4})", line)
-        if m:
-            cur = int(m.group(1))
-            year[cur] = int(m.group(2))
+def cc_units(target):
+    ws = load_workbook(find(target, "generating_unit_register"), read_only=True).active
+    out = []
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if r and r[0] and str(r[2]).lower().startswith("combined cycle"):
+            out.append(r[0])
+    return sorted(out)
+
+
+def season_hour(d, h):
+    return W.SEASON[0] <= d <= W.SEASON[1]
+
+
+def record(target):
+    """{unit: dict(load, nox, since, heat, stamps)} over each combined-cycle unit's operating hours in the season;
+    hours since start counted along the whole year's record."""
+    cc = set(cc_units(target))
+    out = {u: dict(load=[], nox=[], since=[], heat=[], stamps=[]) for u in cc}
+    run = {u: 0 for u in cc}
+    for r in _rows(find(target, "dahs_hourly_export")):
+        u = r["UNIT_ID"]
+        if u not in cc:
             continue
-        m = ROW.match(line)
-        if cur and m and m.group(2).strip() != "State":
-            t[cur][m.group(2).strip()] = int(m.group(3).replace(",", ""))
-    return t, year
+        on = float(r["OP_TIME"] or 0) > 0
+        run[u] = run[u] + 1 if on else 0
+        d = dt.date.fromisoformat(r["OP_DATE"])
+        if on and season_hour(d, int(r["OP_HOUR"])):
+            o = out[u]
+            o["load"].append(float(r["GLOAD_MW"]))
+            o["heat"].append(float(r["HEAT_INPUT_MMBTU"]))
+            o["nox"].append(float(r["NOX_MASS_LB"]) if r["NOX_MASS_LB"] else None)
+            o["since"].append(run[u])
+            o["stamps"].append(dt.datetime.combine(d, dt.time(int(r["OP_HOUR"]))))
+    return out
 
 
-class Pack:
-    def __init__(self, target):
-        self.target = target
-        self.path = lambda k: os.path.join(target, W.FILES[k])
-        self._read_codes()
-        self._read_sdc()
-        self._read_acs()
-        self._read_snap()
+def _local(t):
+    a, b = dt.datetime(2026, 3, 8, 2), dt.datetime(2026, 11, 1, 1)
+    return t + dt.timedelta(hours=1) if a <= t < b else t
 
-    # ----------------------------------------------------------------------------------- the main path's files
-    def _read_codes(self):
-        with open(self.path("codes"), encoding="utf-8") as f:
-            self.codes = list(csv.DictReader(f))
-        self.towns = [r["town"] for r in self.codes]
-        self.county_of = {r["town"]: r["former_county"] for r in self.codes}
-        self.region_of = {r["town"]: r["planning_region"] for r in self.codes}
-        self.council_of = {r["planning_region"]: r["council_of_governments"] for r in self.codes}
-        self.geoid = {r["town_geoid_region_basis"]: r["town"] for r in self.codes}
-        self.regions = []
-        for r in sorted(self.codes, key=lambda r: r["region_fips"]):
-            if r["planning_region"] not in self.regions:
-                self.regions.append(r["planning_region"])
-        self.counties = []
-        for r in sorted(self.codes, key=lambda r: r["county_fips"]):
-            if r["former_county"] not in self.counties:
-                self.counties.append(r["former_county"])
 
-    def _read_sdc(self):
-        """Each year's estimate as last published: the latest release that carries the year."""
-        est, first = {}, {}
-        for k in ("rel2021", "rel2022", "rel2023", "rel2024"):
-            t, year = release_tables(self.path(k))
-            for area, v in t[1].items():
-                first[(area, year[1])] = v
-                est[(area, year[1])] = v
-            for area, v in t[2].items():
-                est[(area, year[2])] = v
-        wb = openpyxl.load_workbook(self.path("rel2025"), data_only=True)
-        for row in wb["Table 1"].iter_rows(min_row=5, values_only=True):
-            if row[1] and row[1] != "State":
-                first[(row[1], 2024)] = int(row[2])
-                est[(row[1], 2024)] = int(row[2])
-        for row in wb["Table 2"].iter_rows(min_row=5, values_only=True):
-            if row[1] and row[1] != "State":
-                est[(row[1], 2023)] = int(row[2])
-                first[(row[1], 2023)] = int(row[5])
-        self.sdc, self.sdc_first = est, first
+def ask_a(target, route="gasday"):
+    """Each unit's ozone-season fuel cost: each operating hour's heat input at the invoice price of its gas day."""
+    fac = {}
+    for r in _rows(find(target, "dahs_hourly_export")):
+        fac[r["UNIT_ID"]] = r["FACILITY_NAME"]
+    price = {}
+    for r in _rows(find(target, "gas_supply_daily_invoices")):
+        price[(r["delivery_point"], r["gas_day"])] = float(r["price_usd_per_dth"])
+    rec = record(target)
+    out = {}
+    for u, o in rec.items():
+        tot = 0.0
+        for t, q in zip(o["stamps"], o["heat"]):
+            if route == "gasday":
+                gd = (_local(t) - dt.timedelta(hours=9)).date()
+            elif route == "standard9":
+                gd = (t - dt.timedelta(hours=9)).date()
+            else:
+                gd = t.date()
+            k = (fac[u], gd.isoformat())
+            while k not in price:
+                gd -= dt.timedelta(days=1)
+                k = (fac[u], gd.isoformat())
+            tot += q * price[k]
+        out[u] = tot
+    return out
 
-    def _read_acs(self):
-        self.below = {}
-        with open(self.path("acs"), encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                if r["summary_level"] == "060" and r["table_line"] == "B17001_002":
-                    self.below[self.geoid[r["geo_id"].replace("0600000US", "")]] = int(r["estimate"])
 
-    @staticmethod
-    def dss_key(name):
-        s = name.upper()
-        for a, b in (("EAST ", "E "), ("NORTH ", "N "), ("WEST ", "W "), ("LOWER ", "LWR "), ("UPPER ", "UPR "),
-                     (" CENTER", " CTR"), (" HILL", "-HILL")):
-            s = s.replace(a, b)
-        return s
+def ask_b(target, union=True):
+    """Each unit's ozone-season forced outage hours: hours inside any U1, U2 or U3 event, local time, each once."""
+    a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
+    out = {}
+    hrs = {}
+    for r in _rows(find(target, "gads_event_report")):
+        if r["event_type"] not in ("U1", "U2", "U3"):
+            continue
+        s = max(a, dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M"))
+        e = min(b, dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M"))
+        if e <= s:
+            out.setdefault(r["unit"], 0)
+            continue
+        if union:
+            st = hrs.setdefault(r["unit"], set())
+            t = s
+            while t < e:
+                st.add(t)
+                t += dt.timedelta(hours=1)
+        else:
+            out[r["unit"]] = out.get(r["unit"], 0) + (e - s).total_seconds() / 3600
+    if union:
+        for u, st in hrs.items():
+            out[u] = len(st)
+    return out
 
-    def _read_snap(self):
-        key = {self.dss_key(t): t for t in self.towns}
-        self.snap = {}
-        with open(self.path("snap"), encoding="utf-8") as f:
-            for r in csv.DictReader(f, delimiter="|"):
-                t = key.get(r["TOWN"])
-                if t is None:
-                    continue
-                y, m = int(r["BENEFIT_MONTH"][:4]), int(r["BENEFIT_MONTH"][4:])
-                self.snap[(t, y, m)] = (int(r["HOUSEHOLDS"]), int(r["RECIPIENTS"]))
-        self.snap_unmatched = sorted(set(self.towns) - {k[0] for k in self.snap})
 
-    def snap_year(self, town, y, field=1):
-        return sum(self.snap[(town, y, m)][field] for m in range(1, 13)) / 12.0
-
-    # ----------------------------------------------------------------------------------- the asks' files
-    def asks_inputs(self):
-        def rows(k):
-            with open(self.path(k), encoding="utf-8", newline="") as f:
-                rd = csv.reader(f)
-                next(rd)
-                return [r for r in rd]
-        ext, aud, conv = rows("extract"), rows("audit"), rows("conversion")
-        wb = openpyxl.load_workbook(self.path("closeout"), data_only=True)
-        bal = {}
-        for row in wb["FY2026 closeout"].iter_rows(min_row=5, values_only=True):
-            if row[2]:
-                award = int(round(row[3] * 1000))
-                bal[row[2]] = dict(award=award, spent=int(row[4]), unspent=int(row[5]))
-        return ext, aud, conv, bal
+def season_totals(target):
+    rec = record(target)
+    return {u: (sum(o["load"]), len(o["load"])) for u, o in rec.items()}

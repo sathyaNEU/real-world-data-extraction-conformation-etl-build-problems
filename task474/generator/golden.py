@@ -1,323 +1,144 @@
-"""The golden deliverables, computed from the shipped files only: rof_fy2027_region_poverty.csv (each planning region's
-residents in poverty, 2020 to 2024, and its 2020-2024 average) and rof_fy2027_allocation_memo.docx (the State Data
-Center's memo to the Office of Budget and Policy: the nine FY2027 allocations with a bar chart, and the transition
-figures); and figures.json, every figure the write-up states."""
-import csv
+"""The golden deliverables: the combined-cycle NOx inventory workbook and the designation memo to the Board (PDF with a
+bar chart of every unit's 2026 ozone-season NOx rate against the target), and generator/figures.json."""
 import io
 import json
+import math
 import os
-import sys
 
-import numpy as np
+from reportlab import rl_config
+rl_config.invariant = 1
+from reportlab.graphics.shapes import Drawing, Line, Rect, String                       # noqa: E402
+from reportlab.lib import colors                                                        # noqa: E402
+from reportlab.lib.pagesizes import letter                                              # noqa: E402
+from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
+from reportlab.lib.units import inch                                                    # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from openpyxl import Workbook                                                           # noqa: E402
+from openpyxl.styles import Font                                                        # noqa: E402
+
+import bundle as B   # noqa: E402
+import docs as DC    # noqa: E402
+import methods as M  # noqa: E402
+import world as W    # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
-import askpaths as AP   # noqa: E402
-import bundle as B      # noqa: E402
-import world as W       # noqa: E402
-
-LEGACY = (2020, 2021, 2022)
-YEARS = (2020, 2021, 2022, 2023, 2024)
-FUND = 12_000_000
-BLUE = "#2a78d6"
+ORANGE, BLUE, INK = colors.HexColor("#c8553d"), colors.HexColor("#4f7ca8"), colors.HexColor("#222222")
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
 
 
-def r100(v):
-    return int(round(v / 100.0)) * 100
+def half_up(v):
+    return int(math.floor(v + .5))
 
 
-def r10k(v):
-    return int(round(v / 10000.0)) * 10000
+def figures(target):
+    rec = B.record(target)
+    units = sorted(rec)
+    rate = {u: M.rate(rec[u], "golden") for u in units}
+    load_rate = {u: M.rate(rec[u], "load") for u in units}
+    des = sorted(u for u in units if rate[u] >= W.TARGET)
+    a, b = B.ask_a(target), B.ask_b(target)
+    rows = {u: dict(mwh=half_up(sum(rec[u]["load"])), hours=len(rec[u]["load"]), designated=u in des,
+                    fuel=half_up(a[u]), forced=int(b.get(u, 0)), plant=W.CC[u][0]) for u in units}
+    return dict(call=des, n_call=len(des), n_units=len(units), units=units, rows=rows,
+                rate={u: round(rate[u], 4) for u in units}, load_route=sorted(u for u in units if load_rate[u] >= W.TARGET),
+                target="%.3f" % W.TARGET, sections=DC.SECTIONS,
+                asks=dict(fuel={u: rows[u]["fuel"] for u in units}, forced={u: rows[u]["forced"] for u in units},
+                          fuel_total=sum(r["fuel"] for r in rows.values()),
+                          forced_total=sum(r["forced"] for r in rows.values())))
 
 
-def fmt(n):
-    return "{:,}".format(int(n))
+def write_workbook(path, f):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Units"
+    ws.append(["Combined-cycle units: 2026 ozone season (1 May to 30 September)"])
+    ws.append([])
+    hdr = ["Unit", "Facility", "Gross generation (MWh)", "Operating hours", "Designated for SCR upgrade",
+           "Fuel cost ($)", "Forced outage hours"]
+    ws.append(hdr)
+    for c in ws[3]:
+        c.font = Font(bold=True)
+    for u in f["units"]:
+        r = f["rows"][u]
+        ws.append([u, r["plant"], r["mwh"], r["hours"], "Yes" if r["designated"] else "No", r["fuel"], r["forced"]])
+    ws.append([])
+    ws.append(["Designated: %s (%d of %d)." % (", ".join(f["call"]), f["n_call"], f["n_units"])])
+    ws.append(["Prepared by %s, %s." % (W.PEOPLE["engineer"][0], W.MEMO_DATE)])
+    for col, w in zip("ABCDEFG", (8, 16, 22, 16, 26, 14, 20)):
+        ws.column_dimensions[col].width = w
+    wb.save(path)
 
 
-def series(P, est):
-    """Each region's residents in poverty, 2020 to 2024: the former counties' estimates divided among their towns by
-    `est(town, year)` for 2020 to 2022 (rule 2.2), the regions' own estimates for 2023 and 2024 (rule 2.1)."""
-    out = {g: {} for g in P.regions}
-    for y in LEGACY:
-        for g in P.regions:
-            out[g][y] = 0.0
-        for c in P.counties:
-            ts = [t for t in P.towns if P.county_of[t] == c]
-            v = {t: est(t, y) for t in ts}
-            den = sum(v.values())
-            for t in ts:
-                out[P.region_of[t]][y] += P.sdc[(c, y)] * v[t] / den
-    for y in (2023, 2024):
-        for g in P.regions:
-            out[g][y] = float(P.sdc[(g, y)])
-    return out
+def chart(f):
+    units = sorted(f["units"], key=lambda u: -f["rate"][u])
+    w, h = 6.6 * inch, 3.2 * inch
+    d = Drawing(w, h)
+    left, bottom, top = .55 * inch, .5 * inch, .3 * inch
+    hi = .30
+    sy = lambda v: bottom + v / hi * (h - bottom - top)
+    bw = (w - left - 10) / len(units)
+    for v in (0, .05, .10, .15, .20, .25, .30):
+        d.add(Line(left, sy(v), w - 6, sy(v), strokeColor=colors.HexColor("#e2e5e8"), strokeWidth=.5))
+        d.add(String(left - 6, sy(v) - 3, "%.2f" % v, fontName="Helvetica", fontSize=7, textAnchor="end", fillColor=INK))
+    for i, u in enumerate(units):
+        v = f["rate"][u]
+        x0 = left + i * bw + 4
+        d.add(Rect(x0, bottom, bw - 8, sy(v) - bottom, fillColor=ORANGE if u in f["call"] else BLUE, strokeColor=None))
+        d.add(String(x0 + (bw - 8) / 2, bottom - 11, u, fontName="Helvetica", fontSize=7, textAnchor="middle",
+                     fillColor=INK))
+    d.add(Line(left, sy(W.TARGET), w - 6, sy(W.TARGET), strokeColor=INK, strokeWidth=1, strokeDashArray=[3, 2]))
+    d.add(String(w - 8, sy(W.TARGET) + 3, "Target, %.3f lb/MWh" % W.TARGET, fontName="Helvetica-Bold", fontSize=7,
+                 textAnchor="end", fillColor=INK))
+    d.add(String(left, h - 12, "2026 ozone-season NOx rate by unit (lb per gross MWh); designated units in orange",
+                 fontName="Helvetica", fontSize=7.5, fillColor=INK))
+    return d
 
 
-def allocate(ser, regions):
-    avg = {g: float(np.mean([ser[g][y] for y in YEARS])) for g in regions}
-    tot = sum(avg.values())
-    return avg, {g: FUND * avg[g] / tot for g in regions}, tot
+def write_memo(path, f):
+    body = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.6, spaceAfter=7)
+    hd = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=13, leading=16, textColor=BLUE)
+    small = ParagraphStyle("s", fontName="Helvetica", fontSize=8, leading=10)
+    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=.9 * inch, rightMargin=.9 * inch, topMargin=.8 * inch,
+                            bottomMargin=.8 * inch, title="SCR Upgrade Program 2027 designations", author=W.COOP,
+                            creator=W.COOP, producer=W.COOP, subject="SCR Upgrade Program")
+    des = f["call"]
+    names = ", ".join(des[:-1]) + " and " + des[-1]
+    lr = f["load_route"]
+    extra = [u for u in des if u not in lr]
+    s = [Paragraph("SCR Upgrade Program: 2027 designations", hd),
+         Paragraph("To: Board of Directors &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
+             W.PEOPLE["engineer"][0], W.PEOPLE["engineer"][1], W.MEMO_DATE), small), Spacer(1, 8),
+         Paragraph("I recommend designating %s of our %s combined-cycle units for the 2027 SCR Upgrade Program: %s. "
+                   "Each emitted %s lb of NOx per gross MWh or more over the 2026 ozone season." % (
+                       WORDS[len(des)], WORDS[f["n_units"]], names, f["target"]), body),
+         Paragraph("The analyzers were out for part of every unit's operating hours, and the outages are not spread "
+                   "evenly: most fall in the first hours after a unit starts, when the catalyst is still cold and NOx "
+                   "runs several times its steady level. I filled each hour without a measurement from the same unit's "
+                   "measured hours at the same point after a start. A fill from each unit's NOx at the same load would "
+                   "have left %s under the target." % (", ".join(extra[:-1]) + " and " + extra[-1]), body),
+         chart(f), Spacer(1, 6)]
+    t = [["Unit", "Facility", "MWh", "Hours", "Designated", "Fuel cost", "Forced outage hours"]]
+    for u in f["units"]:
+        r = f["rows"][u]
+        t.append([u, r["plant"], "{:,}".format(r["mwh"]), "{:,}".format(r["hours"]), "Yes" if r["designated"] else "No",
+                  "${:,}".format(r["fuel"]), str(r["forced"])])
+    tb = Table(t, colWidths=[.6 * inch, 1.2 * inch, .8 * inch, .6 * inch, .8 * inch, 1.0 * inch, 1.2 * inch])
+    tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
+                            ("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("ALIGN", (2, 0), (-1, -1), "RIGHT")]))
+    s.append(tb)
+    doc.build(s)
 
 
-def compute(target):
-    P = B.Pack(target)
-    sy = {(t, y): P.snap_year(t, y) for t in P.towns for y in YEARS}
-    mean5 = {t: float(np.mean([sy[(t, y)] for y in YEARS])) for t in P.towns}
-    ratio = {t: P.below[t] / mean5[t] for t in P.towns}
-    routes = {
-        "golden": lambda t, y: sy[(t, y)] * ratio[t],
-        "release_shares": lambda t, y: float(P.below[t]),
-        "snap_shares": lambda t, y: sy[(t, y)],
-        "middle_year": lambda t, y: P.below[t] * sy[(t, y)] / sy[(t, 2022)],
-    }
-    out = {}
-    for k, est in routes.items():
-        ser = series(P, est)
-        avg, amt, tot = allocate(ser, P.regions)
-        out[k] = dict(series=ser, avg=avg, amount=amt, total=tot)
-    ext, aud, conv, bal = P.asks_inputs()
-    asks = AP.figures(ext, aud, conv, bal)
-    return dict(P=P, routes=out, ratio=ratio, asks=asks, balances=bal, ext_rows=len(ext))
-
-
-def figures(X):
-    P, G = X["P"], X["routes"]["golden"]
-    regs = P.regions
-    a = X["asks"]
-    f = {
-        # the committed call for score_reader.py: the nine allocations as one list in region-code order; the
-        # per-region amounts and the conformed series are the call's inputs (keys carrying "rows" and "population")
-        "call": {
-            "allocation": [r10k(G["amount"][g]) for g in regs],
-            "allocation_rows": {g: r10k(G["amount"][g]) for g in regs},
-            "population_by_year": {g: {str(y): r100(G["series"][g][y]) for y in LEGACY} for g in regs},
-            "population_average": {g: r100(G["avg"][g]) for g in regs},
-        },
-        "regions": [{"region": g, "code": [r["region_fips"] for r in P.codes if r["planning_region"] == g][0],
-                     "council": P.council_of[g]} for g in regs],
-        "amounts": {g: r10k(G["amount"][g]) for g in regs},
-        "amounts_total_rounded": sum(r10k(G["amount"][g]) for g in regs),
-        "fund": FUND,
-        "average": {g: r100(G["avg"][g]) for g in regs},
-        "average_sum": r100(G["total"]),
-        "cells": {g: {str(y): r100(G["series"][g][y]) for y in LEGACY} for g in regs},
-        "published": {g: {str(y): r100(G["series"][g][y]) for y in (2023, 2024)} for g in regs},
-        "share_pct": {g: round(100.0 * G["avg"][g] / G["total"], 1) for g in regs},
-        "rivals": {k: {g: r10k(X["routes"][k]["amount"][g]) for g in regs}
-                   for k in ("release_shares", "snap_shares", "middle_year")},
-        "rivals_off": {k: sum(r10k(X["routes"][k]["amount"][g]) != r10k(G["amount"][g]) for g in regs)
-                       for k in ("release_shares", "snap_shares", "middle_year")},
-        "ratio_range": [round(min(X["ratio"].values()), 2), round(max(X["ratio"].values()), 2)],
-        "county_totals": {str(y): sum(P.sdc[(c, y)] for c in P.counties) for y in LEGACY},
-        "release_months": 60,
-        "rounding": {"amounts": 10000, "residents": 100, "dollars": 100},
-        "rule_sections": {"fund": "1.1", "latest": "2.1", "division": "2.2", "average": "2.3", "allocation": "2.4",
-                          "balances": "3.1", "energy": "3.2"},
-        "asks": {
-            "carry": {g: int(round(a["carry"][g] / 100.0)) * 100 for g in regs},
-            "people": {g: int(a["people"][g]) for g in regs},
-            "energy": {g: int(round(a["energy"][g] / 100.0)) * 100 for g in regs},
-            "unexpended": {c: X["balances"][c]["unspent"] for c in P.counties},
-            "unexpended_total": sum(X["balances"][c]["unspent"] for c in P.counties),
-        },
-    }
-    return f
-
-
-CSV_COLS = ["region_code", "planning_region", "council_of_governments", "residents_in_poverty_2020",
-            "residents_in_poverty_2021", "residents_in_poverty_2022", "residents_in_poverty_2023",
-            "residents_in_poverty_2024", "average_2020_2024"]
-
-
-def write_csv(F, path):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(CSV_COLS)
-        for r in F["regions"]:
-            g = r["region"]
-            c, p = F["cells"][g], F["published"][g]
-            w.writerow([r["code"], g, r["council"], c["2020"], c["2021"], c["2022"], p["2023"], p["2024"],
-                        F["average"][g]])
-
-
-def chart_png(F):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    plt.rcParams.update({"font.family": "DejaVu Sans", "svg.hashsalt": "task474", "font.size": 9})
-    names = [r["council"].replace(" Council of Governments", "") for r in F["regions"]]
-    vals = [F["amounts"][r["region"]] / 1e6 for r in F["regions"]]
-    fig, ax = plt.subplots(figsize=(6.4, 3.6), dpi=200)
-    y = np.arange(len(names))[::-1]
-    ax.barh(y, vals, height=0.56, color=BLUE, zorder=2)
-    for yi, v in zip(y, vals):
-        ax.text(v + 0.03, yi, "$%s" % fmt(v * 1e6), va="center", ha="left", fontsize=8, color="#1b1d20")
-    ax.set_yticks(y)
-    ax.set_yticklabels(names, fontsize=8.5, color="#1b1d20")
-    ax.set_xlim(0, max(vals) * 1.22)
-    ax.set_xlabel("FY2027 allocation ($ millions)", fontsize=8.5, color="#52514e")
-    ax.xaxis.grid(True, color="#e3e2de", linewidth=0.8, zorder=0)
-    ax.tick_params(axis="x", colors="#52514e", labelsize=8)
-    ax.tick_params(axis="y", length=0)
-    for s in ("top", "right", "left"):
-        ax.spines[s].set_visible(False)
-    ax.spines["bottom"].set_color("#b9b8b2")
-    top = sorted(F["regions"], key=lambda r: -F["amounts"][r["region"]])[:2]
-    ax.set_title("%s and %s receive the largest FY2027 allocations" % (top[0]["region"], top[1]["region"]),
-                 fontsize=10, loc="left", color="#1b1d20")
-    fig.tight_layout()
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
-    plt.close(fig)
-    return buf.getvalue()
-
-
-def write_docx(F, path):
-    from docx import Document
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Inches, Pt, RGBColor
-    doc = Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    for s in doc.sections:
-        s.left_margin = s.right_margin = Inches(1.0)
-        s.top_margin = s.bottom_margin = Inches(0.9)
-
-    def para(text, bold=False, size=None, space=6, italic=False, color=None):
-        p = doc.add_paragraph()
-        run = p.add_run(text)
-        run.bold = bold
-        run.italic = italic
-        if size:
-            run.font.size = Pt(size)
-        if color:
-            run.font.color.rgb = RGBColor.from_string(color)
-        p.paragraph_format.space_after = Pt(space)
-        return p
-
-    def table(rows, widths, right_from=1):
-        t = doc.add_table(rows=len(rows), cols=len(rows[0]))
-        t.style = "Table Grid"
-        t.autofit = False
-        for j, wd in enumerate(widths):
-            t.columns[j].width = Inches(wd)
-        for i, row in enumerate(rows):
-            for j, v in enumerate(row):
-                c = t.cell(i, j)
-                c.width = Inches(widths[j])
-                c.text = ""
-                run = c.paragraphs[0].add_run(str(v))
-                run.font.size = Pt(9)
-                run.bold = (i == 0) or (i == len(rows) - 1 and str(row[0]).startswith("Total"))
-                if j >= right_from and i > 0:
-                    c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        doc.add_paragraph().paragraph_format.space_after = Pt(2)
-        return t
-
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
-    foot = doc.sections[0].footer.paragraphs[0]
-    fr = foot.add_run("%s  |  Regional Opportunity Fund, FY2027 allocation  |  Page " % W.SDC)
-    fr.font.size = Pt(8)
-    run = foot.add_run()
-    run.font.size = Pt(8)
-    for tag, attr in (("w:fldChar", "begin"), ("w:instrText", None), ("w:fldChar", "end")):
-        el = OxmlElement(tag)
-        if attr:
-            el.set(qn("w:fldCharType"), attr)
-        else:
-            el.set(qn("xml:space"), "preserve")
-            el.text = "PAGE"
-        run._r.append(el)
-    para("STATE DATA CENTER", bold=True, size=9, space=0, color="1F4E79")
-    para("Memorandum", bold=True, size=15, space=8)
-    for k, v in (("To", "%s, Grants Manager, %s" % (W.PEOPLE["grants"], W.OBP)),
-                 ("From", "%s, Director, and %s, Demographer, %s" % (W.PEOPLE["director"], W.PEOPLE["demographer"],
-                                                                     W.SDC)),
-                 ("Date", "October 16, 2026"),
-                 ("Ref", "SDC 26-114"),
-                 ("Subject", "Regional Opportunity Fund: FY2027 allocations to the nine councils and the FY2026 "
-                             "transition figures")):
-        p = doc.add_paragraph()
-        r1 = p.add_run("%s: " % k)
-        r1.bold = True
-        p.add_run(v)
-        p.paragraph_format.space_after = Pt(0)
-    doc.add_paragraph().paragraph_format.space_after = Pt(2)
-    regs = [r["region"] for r in F["regions"]]
-    para("FY2027 allocation", bold=True, size=11.5, space=4)
-    para("Under the allocation rule (sections 1 and 2), the $12,000,000 is split in proportion to each planning "
-         "region's average residents in poverty over 2020 to 2024. The allocations are:")
-    rows = [["Council of governments", "Average residents in poverty, 2020-2024", "Share", "FY2027 allocation"]]
-    for r in F["regions"]:
-        g = r["region"]
-        rows.append([r["council"], fmt(F["average"][g]), "%.1f%%" % F["share_pct"][g], "$" + fmt(F["amounts"][g])])
-    rows.append(["Total", fmt(F["average_sum"]), "100.0%", "$" + fmt(F["amounts_total_rounded"])])
-    table(rows, [2.9, 1.5, 0.7, 1.3])
-    para("Each allocation is computed from the unrounded averages and rounded to the nearest $10,000 (rule 2.4), so "
-         "the nine rounded amounts total $%s; the unrounded allocations total $%s. Averages are rounded to the "
-         "nearest hundred. Sources: %s estimates as last published (December 2022 to December 2025 releases); U.S. "
-         "Census Bureau, 2020-2024 American Community Survey, table B17001; Department of Social Services, SNAP "
-         "participation by town." % (fmt(F["amounts_total_rounded"]), fmt(F["fund"]), W.SDC), size=9, italic=True)
-    doc.add_picture(io.BytesIO(chart_png(F)), width=Inches(6.2))
-    para("How the 2020 to 2022 figures were built", bold=True, size=11.5, space=4)
-    para("Our estimates for 2020, 2021 and 2022 exist only for the eight former counties, so each former county's "
-         "estimate (as last published) was divided among its towns by each town's residents in poverty in that "
-         "year, as rule 2.2 requires. The Bureau's 2020-2024 five-year table is the only count of the poor by town, "
-         "but it is an average over all five years and already reflects the 2021 moves out of Ormsby and Wexport "
-         "for most of them, so its shares are not where the poor lived in 2020 and 2021. Each town's figure for a year is "
-         "therefore its average monthly SNAP recipients that year, scaled by the town's own ratio of the five-year "
-         "survey count to its average recipients over 2020 to 2024. The ratio runs from %.2f to %.2f across the "
-         "towns, because SNAP participation among the poor differs from town to town. The 2023 and 2024 figures are "
-         "our planning region estimates (2023 revised, 2024 first)." % tuple(F["ratio_range"]))
-    rows = [["Planning region", "2020", "2021", "2022", "2023", "2024"]]
-    for g in regs:
-        c, p = F["cells"][g], F["published"][g]
-        rows.append([g, fmt(c["2020"]), fmt(c["2021"]), fmt(c["2022"]), fmt(p["2023"]), fmt(p["2024"])])
-    table(rows, [1.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-    para("Residents in poverty, nearest hundred. The full series is in rof_fy2027_region_poverty.csv. The 2024 "
-         "figures are first estimates; under our methods note they are revised once, in December 2026, after this "
-         "allocation, and the rule takes them as last published.", size=9, italic=True)
-    para("Transition from the former county agencies", bold=True, size=11.5, space=4)
-    para("Under rule 3.1 the agencies' unexpended FY2026 balances ($%s in all) pass to the councils in proportion to "
-         "the people each agency served in FY2026 while they lived in each council's region; under rule 3.2 each "
-         "council's FY2027 energy assistance plan starts from the energy assistance paid in FY2026 to households in "
-         "its towns." % fmt(F["asks"]["unexpended_total"]))
-    rows = [["Council of governments", "Share of unexpended FY2026 balances", "People counted",
-             "Energy assistance paid, FY2026"]]
-    for r in F["regions"]:
-        g = r["region"]
-        rows.append([r["council"], "$" + fmt(F["asks"]["carry"][g]), fmt(F["asks"]["people"][g]),
-                     "$" + fmt(F["asks"]["energy"][g])])
-    table(rows, [2.9, 1.3, 1.0, 1.2])
-    para("Balances and energy assistance to the nearest $100. The people counts come from the grants data system's "
-         "extract of September 30, 2026: Wexmoor's April 2026 upload, received twice, is counted once; services are "
-         "kept by service date (July 1, 2025 to June 30, 2026); Corbin's earlier client numbers are matched to the "
-         "numbers it issued on January 1, 2026; and each client is placed in the town the profile audit trail gives "
-         "for the service date, since the extract shows each record's current town. A person served in two regions "
-         "counts in each. An energy assistance payment appears on the row of every member of the household and is "
-         "counted once. Sources: grants data system extract and profile audit trail, September 30, 2026; Corbin "
-         "Community Action client number conversion, January 1, 2026; FY2026 closeout, October 2, 2026.", size=9,
-         italic=True)
-    doc.save(path)
-
-
-def main(target, golden, figures_path):
+def build(gdir, x, target=None, figs=None):
     import postprocess as PP
-    os.makedirs(golden, exist_ok=True)
-    X = compute(target)
-    F = figures(X)
-    write_csv(F, os.path.join(golden, W.DELIVERABLES[0]))
-    write_docx(F, os.path.join(golden, W.DELIVERABLES[1]))
-    PP.normalize_ooxml(os.path.join(golden, W.DELIVERABLES[1]), W.PEOPLE["demographer"], W.PEOPLE["director"],
-                       "2026-10-13T14:05:00Z", "2026-10-16T19:42:18Z", company=W.SDC)
-    json.dump(F, open(figures_path, "w", encoding="utf-8"), indent=1, sort_keys=False)
-    open(figures_path, "a").write("\n")
-    return X, F
-
-
-if __name__ == "__main__":
-    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
-    main(t, os.path.join(os.path.dirname(t), "golden"), os.path.join(HERE, "figures.json"))
+    target = target or os.path.join(os.path.dirname(gdir), "target")
+    figs = figs or os.path.join(HERE, "figures.json")
+    os.makedirs(gdir, exist_ok=True)
+    f = figures(target)
+    json.dump(f, open(figs, "w", encoding="utf-8"), indent=1, sort_keys=True)
+    write_workbook(os.path.join(gdir, W.GOLDEN["workbook"]), f)
+    write_memo(os.path.join(gdir, W.GOLDEN["memo"]), f)
+    PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["engineer"][0], W.PEOPLE["engineer"][0],
+                       "2026-11-06T15:12:00Z", "2026-11-09T14:02:00Z", excel=True, company=W.COOP)
+    PP.normalize_pdf(os.path.join(gdir, W.GOLDEN["memo"]), b"D:20261109091415-06'00'", b"D:20261109091415-06'00'")
+    return f

@@ -5,13 +5,13 @@
   "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (planning-region poverty split by temporal disaggregation) spent at stage 4; architecture 2 drawn in emissions-inventory with a fresh world",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
-  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records whose analyzers drop out mostly in the hours after a start, the plant control systems' hourly load logs and the monitor outage log, for its 2027 start-up NOx upgrade program",
+  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records whose analyzers drop out mostly in the hours after a start, the plant control systems' hourly load logs and the monitor outage log, for its 2027 SCR upgrade program",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2.",
+  "answer_source": "task474/submission.md",
   "gap": [
     "population",
     "time"
@@ -36,19 +36,19 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:missing monitor hours filled by start state, not by load",
   "layer1": [
-    "monitor hours flagged by status code with values blank",
-    "load logs in local time against monitor records in standard time",
-    "two plants' control systems with different tag names and intervals",
-    "a monitor recertification that renumbers the monitoring system",
-    "the outage log's free-text reasons",
-    "units renamed in the 2025 dispatch system"
+    "a whole-year export carrying every monitored unit, the peakers and the coal unit outside the program",
+    "status codes on hours whose NOx values are blank",
+    "the DAHS on standard time against the event report and maintenance tickets in local time",
+    "maintenance tickets covering only some gaps and including checks while offline",
+    "units renamed in the 2025 dispatch system",
+    "gas invoices by facility meter, not by unit"
   ],
-  "stakeholder_role": "the cooperative's environmental compliance engineer preparing the 2027 upgrade program",
+  "stakeholder_role": "the cooperative's senior environmental compliance engineer preparing the 2027 SCR upgrade designations",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "dahs_hourly_export_2026.csv",
+    "rows": 113880,
     "entity": "one unit's monitor record for one hour",
     "grain": "unit x hour",
     "source": "synthetic"

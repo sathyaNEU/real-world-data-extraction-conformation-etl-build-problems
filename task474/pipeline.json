@@ -1,24 +1,32 @@
 {
  "task": "task474",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high; the analyzers drop out mostly in the hours after a start, when the cold catalyst lets NOx run several times the steady rate, so only a fill by hours since start designates the hard-cycling units.",
  "architecture": 2,
  "loops": 0,
- "precut": null,
- "leak": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-20 (the filed target declared a stated input; dates clipped to the export)",
+  "reader": "running: two scored readers (sonnet, medium)"
+ },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 after differentiation lines for task243 and task450 v2",
   "nearest": "task249 v2 at 0.07"
  },
- "judge": null,
+ "judge": {
+  "verdict": "running: brief being prepared by the determinism-judge agent"
+ },
  "returned": [],
- "resume": "stage 2: prototype on the clean truth, ladder, fork and closure tables, the asks, prompt.txt, precut.py",
+ "resume": "stage 4: score both readers (score_reader.py), spawn the judge thread on the brief, fix findings in one pass, ship",
  "approved": null,
  "delivered": null,
  "portal": null,
