@@ -87,6 +87,7 @@
     "task450": "task450 places two groups on one scale through a shared item subset whose drifted members are removed; here no instrument changes and nothing is linked through common items: the geography changed, and the earlier period is re-estimated on the new units from the finer published units nested inside them."
   },
   "lineage": [],
-  "notes": "",
-  "registered": "2026-10-20T09:16:29Z"
+  "notes": " Architecture v1 spent 2026-10-20 at stage 4: judge SEND_BACK (Gate H rule_application), a reader landed the call.",
+  "registered": "2026-10-20T09:16:29Z",
+  "architecture_spent": true
 }

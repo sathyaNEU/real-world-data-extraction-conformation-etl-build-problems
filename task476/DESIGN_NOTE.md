@@ -332,3 +332,10 @@ sums of their block groups under every route, and no designation list, earlier r
   each is a filed fact or a reading here and sits on a lower rung. A period-specific population weight for split
   tracts' children was screened and set aside: it is task474's driver (a coarse total split by a period-specific
   indicator), and for a pure split any common weight leaves the child's rate equal to the parent's.
+- 2026-10-20, architecture 1 spent at stage 4 (judge pass 1 SEND_BACK, Gate H rule_application; reader B landed the
+  call and all 140 tract figures in about two minutes): a split 2020 tract's 2014 to 2018 rate rebuilt from the 2010
+  block groups that tile it. The rebuild is exact arithmetic on published estimates, so once guidelines 3.2 files the
+  estimand as the rate for the area the 2020 tract covers, the block-group table and the block relationship file
+  leave only execution; without the sentence the unit is unfiled. No position holds both gates (the WHAT screen's
+  own case), so the number re-roots. Ask A's reopened cases were also read straight off the event history, and the
+  prompt's "median" contradicted guidelines 4.2's average.

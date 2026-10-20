@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20: section numbers matching two margins, domain nouns in the guidelines, the candidate list naming candidates beside tract codes; tract names declared as stated inputs; no LEAK",
-  "reader": ""
+  "reader": "reader B (r1b) landed the call, all 140 tract figures and Ask A 10 of 10, Ask B 0 of 10"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 on the registered card (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); BLOCKs cleared at the draw: role redrawn to policy_adviser, decisive pattern G4 (attribution at a geography transition) with differentiation against task243 and task450",
@@ -24,12 +24,12 @@
   "nearest": "task19 at 0.05"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC, SOLUTION_WRONG (pass 1)",
+  "disposition": "SEND_BACK",
+  "report": "task476/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: free gates green (checks 25 of 25, verify, byte-identical, figures_check 195, precut 51, leak REVIEW, heart WARN, pair ceiling 36.5). Judge r1 and two scored readers running on target.zip 3f16a329 (/tmp/determinism-check-task476-r1, /tmp/reader-task476-r1a and r1b); fix findings in one pass, then ship",
+ "resume": "re-root at stage 1: architecture 1 spent (judge SEND_BACK, Gate H rule_application; reader B landed the call). Draw architecture 2 in the same number and objective, the old identity into the card's lineage",
  "approved": null,
  "delivered": null,
  "portal": null,
