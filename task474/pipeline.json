@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "rounds 1-4: eight of eight readers missed the call; asks kept 17-18 (r1-2), 10 and 1 (r3), 12 and 18 (r4) of 18: filed conventions are executed; asks rebuilt on IEEE 762 (EFOR and EFORd by the standard's definitions); round 5 next"
+  "reader": "rounds 1-5: ten of ten readers missed the call; round 5 readers kept 18 and 16 of 18 IEEE 762 ask figures (score_reader exit 1 on the asks)"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -25,11 +25,11 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "note": "round 4: call reproduced (DF-1 at or above 0.170 in 99.5 per cent of bootstrap draws); 'later report stands' pinned in rule 3.2"
+  "disposition": "APPROVE",
+  "note": "round 5 (v3e): every graded figure reproduced; the air-loss fill judged forced by the data; DF-1 the thinnest call; Gate H analytical"
  },
  "returned": [],
- "resume": "stage 4: finish the derate-scale bin search (DERATE_SCALE in world.py), full build, round-5 readers (keys asks.efor.*, asks.eford.*) and one judge pass",
+ "resume": "stage 4: the call and determinism hold; the ask layer leaks (every filed or standard convention executed). Re-design the asks (an analytical inference on rows outside the call's population), then a round-6 reader pair; coordinator asked for an ask construction",
  "approved": null,
  "delivered": null,
  "portal": null,
