@@ -87,6 +87,21 @@
   },
   "lineage": [
     {
+      "architecture": "v3",
+      "driver": "A unit's period total is measured hourly by an instrument that shares a utility with the unit's control device, so when the utility fails the instrument goes dark while the control is off; the dark hours are filled at the uncontrolled level the instrument reads in its first hours back, times the hour's metered input, rather than from the unit's measured hours in the same operating state or from the hours either side, which the controlled hours dominate.",
+      "stump": "The default path fills every unmonitored hour from the unit's own measured hours in the same start state and load, and designates AF-2, CB-1, DF-1, DF-3 and SR-1; the gaps that came with the plants' instrument air trips are hours when the SCR's air-operated ammonia valves had closed as well, which the first measured hour after each trip shows at about twenty times the controlled rate, so filling those hours at that uncontrolled level adds CB-2 and AF-1.",
+      "subdomain": "emissions-inventory",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "generators": [
+        "G14",
+        "G7"
+      ],
+      "fate": "spent at stage 4 on 2026-10-20: reader 12 landed the call after the register's air-to-open grounding (1 of 6 readers since it went in; 11 of 12 overall missed); the asks' revision device held at 0 of 18 for both round-6 readers"
+    },
+    {
       "driver": "A unit's period total is measured hourly by an instrument that is out mostly in the hours after the unit starts, when the quantity runs several times its steady level at the same operating point, so the missing hours are filled by the hour's start state, read from an every-hour operating log, rather than by a fit on the operating point that the steady hours dominate.",
       "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high, because the analyzers drop out mostly right after a start, when the cold catalyst lets NOx run at several times the steady rate; filling the missing hours by hours since start designates the hard-cycling units the program should fund.",
       "subdomain": "emissions-inventory",
@@ -123,7 +138,8 @@
       ]
     }
   ],
-  "notes": "architecture 3 drawn 2026-10-20 after architecture 2 was spent at stage 4",
+  "notes": "architecture 3 spent at stage 4 on 2026-10-20 (reader 12 landed the call after the air-to-open grounding); re-root to architecture 4 next, carrying the event-revision ask device",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-20T14:25:32Z"
+  "registered": "2026-10-20T14:25:32Z",
+  "architecture_spent": true
 }

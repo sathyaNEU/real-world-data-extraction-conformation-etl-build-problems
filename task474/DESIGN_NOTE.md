@@ -338,3 +338,13 @@ data and no reported total ships; the allowance holdings are by facility and ton
   would put device rows in the call's population. Taken instead, on the coordinator's measured list: revisions under
   the same event number (D2, latest revision, not latest delivered). An event spanning a month written once per month
   (D6) was screened and dropped: rule 3.2's overlap rule already resolves it.
+- Architecture 3 (combined-cycle NOx with instrument-air gaps filled at the uncontrolled level) as a whole: spent at
+  stage 4 on 2026-10-20 by the coordinator's ruling under the author's rule that both scored readers must miss the
+  call. Eleven of twelve readers missed it, but reader 12 in round 6 landed it from the register's "air-to-open flow
+  control valves", the grounding the round-3 judge required (1 of 6 readers since that line went in). A premise the
+  judge needs filed becomes readable once filed, so the next decisive step must rest on a structure only a
+  cross-record or cross-period cut shows, which no filed line describes. Carried forward: the event-revision ask
+  device (a forced outage revised to MO or D4 under one event number with a later report date, no adjudicating
+  sentence), which held at 0 of 18 for both round-6 readers; the realism fixes (part-hour loads under nameplate,
+  start profiles that differ by unit). Dropping "air-to-open" was ruled out: it reopens the round-3 judge's finding.
+
