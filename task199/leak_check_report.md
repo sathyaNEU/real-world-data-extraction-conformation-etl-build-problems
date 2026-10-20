@@ -37,3 +37,30 @@ Stump terms swept: action, clause, sentence, protocol, window, decisive, golden,
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read, wave 6 audit (the shipped pack, target.zip 97dd76fb)
+
+Run because `leak.py` overwrote this build's original reader section before that bug was fixed, so
+no reader evidence survived. Pack and `prompt.txt` only, scored by `score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+The reader filed **Tibu at 92.2 actions per 100,000 on 137 action-days**, which is the shipped call,
+its rate and its window count. Confidence about 75 per cent. Every call figure scored hit.
+
+It reached the decisive step unaided and described it in the build's own terms: whether the recorded
+rise is activity or extra coverage. It then found the evidence, that delivered items rose six to
+seven times from 1 April 2026 in three cities that each gained two new sources while Tibu's feed was
+unchanged at 1.00 times against a 2.4 times rise in recorded actions. It named Sardinata as the
+alternative and the coverage trap, and rejected it.
+
+So the coverage correction, which is this build's whole mechanism, was found by a medium-effort
+reader in a single pass from the data alone. The protocol sentence it quoted, "Los registros del
+Observatorio son la evidencia de esa actividad y no su medida", points at the question without
+answering it, which is the shape that is meant to hold; it did not hold here.
+
+### Where it was unsure
+
+Its answer to question 5 notes that the protocol never defines the measure of the rise, and that a
+literal raw-count reading gives Sardinata. So the determinacy of the ranking measure is open on the
+shipped text, which is a separate finding from Gate F and belongs to whoever repairs this.

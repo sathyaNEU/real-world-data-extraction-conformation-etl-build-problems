@@ -32,3 +32,31 @@ Stump terms swept: turbulence, shortfall, warranted, record, ten-minute, decisiv
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read, wave 6 audit (the shipped pack, target.zip 6f6e1174)
+
+Run because `leak.py` overwrote this build's original reader section before that bug was fixed, so
+no reader evidence survived. Pack and `prompt.txt` only, scored by `score_reader.py`.
+
+### The call held. The ask layer did not.
+
+| block | answered | hit |
+|---|---|---|
+| main call | 1 | **0** |
+| the twenty per-turbine loss figures | 20 | **20** |
+
+It filed **CH07** against a golden of **CH04**, at about 35 per cent confidence, so the ladder is
+carrying the call. It also named the lure itself without being asked: CH09 "looks like the answer"
+and is not, because its blades went up in April.
+
+Then it took all twenty loss figures exactly, downtime and curtailment for all ten turbines. Its own
+account of why is the finding: "the loss tables are rule application with Layer 1 mess", and it
+executed the standard's clauses 4.4 to 4.6 literally to get them. So those figures are not holding
+anything, and a response that files CH07 still banks the whole ask block.
+
+### What it said about the decisive step
+
+It quoted the campaign-valuation clauses and then said what they do not fix: "Section 2.4 fixes the
+campaign estimand but not the 'as new' reference." That is the open method, and it is why its
+confidence was 35 per cent: it built an as-new reference from CH09's own post-swap months and was
+not sure that was intended.
