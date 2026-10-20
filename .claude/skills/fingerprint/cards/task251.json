@@ -1,0 +1,89 @@
+{
+  "task": "task251",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "the January recalibration round of a copper smelter's SO2 monitoring network on the Atacama coast, whose analyzers are spanned every night and adjusted at each visit against span-gas cylinders from two suppliers that lose SO2 as they age, each cylinder change read on the outgoing and the incoming cylinder minutes apart",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who has read every rule takes each analyzer's December span checks against its cylinder's certified concentration as its gain, finds the visits' adjustments have kept nearly every analyzer inside the 5 per cent tolerance and sends the few whose spans read low to the round; the span gas loses SO2 as its cylinder ages, so every adjustment tuned the analyzer to gas weaker than its label, the cylinder changes (the incoming cylinder reading higher than the outgoing one by the outgoing one's loss) fix each supplier's loss rate, and the analyzers' true gains (span ratio over the gas's remaining fraction) send the analyzers on old cylinders of the faster-losing supplier instead.",
+  "domain_test": "The deciding quantity is a gas analyzer's gain against true SO2, which a monitoring network reads through span checks against certified reference gas; that a low-concentration reactive gas standard loses SO2 in its cylinder and that adjusting an analyzer to it writes the loss into every later reading are metrology facts of gas analysis, and the duplicate analyzers' disagreement is the field's own parallel-run evidence. With a hospital's or a call centre's nouns there is no span gas, no cylinder ageing and no adjustment that copies a reference's error, so the task does not survive the swap.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:span-gas-loss-written-into-the-analyzer-by-adjustment",
+  "layer1": [
+    "the hourly export in local time across Chile's April and September clock changes, with a re-sent block",
+    "span-check hours left unflagged at the analyzers on the old logger firmware",
+    "the duplicate analyzers reporting in ppb where the rest report micrograms per cubic metre",
+    "the cylinder register carrying the supplier's certification date beside the install date",
+    "the field visits' log in Spanish, as-found and as-left span readings, adjustments not made at every visit"
+  ],
+  "stakeholder_role": "the head of the smelter's SO2 monitoring network, who sends the list of analyzers to the accredited laboratory's January recalibration round",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "so2_horario_2025-2027.csv",
+    "rows": 0,
+    "entity": "one analyzer-hour of SO2 with its status flag",
+    "grain": "analyzer x hour",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "Chile, Atacama Region (a coastal smelter town)",
+    "currency": "CLP",
+    "org_type": "a copper smelter's environmental department running the SO2 network its decontamination plan requires",
+    "invented_names": [
+      "Fundición Caleta Lobos",
+      "Red de Monitoreo Bahía Lobos"
+    ],
+    "people": [
+      "Daniela Ferrada",
+      "Vicente Toloza",
+      "Néstor Fuentes"
+    ]
+  },
+  "deliverables": [
+    "so2_recalibration_round_2028.xlsx",
+    "analyzer_gains_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose own strength falls with its age since it was certified, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks afterwards cannot see it; the loss rate, which differs between the references' two sources, is fixed where a unit is read against an outgoing and an incoming reference minutes apart, and each unit's gain is its check ratio over its reference's remaining strength.",
+  "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its December span ratio against its cylinder's certified concentration divided by the fraction of SO2 the cylinder still holds at its age since certification, at its supplier's loss rate, which the cylinder changes fix: the span read on the outgoing and the incoming cylinder minutes apart differ by the gas the older one has lost.",
+  "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends the few whose spans read low to the round; the span gas loses SO2 as it ages, at a rate that differs by supplier, so the analyzers adjusted to older cylinders read high and the analyzers on old cylinders of the faster-losing supplier go to the round instead; a solver who finds the loss but pools the suppliers flags another set.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task249": "v2's units stood apart from references that shared the truth only in mixed hours (a representativeness problem); here the reference stands with the unit and loses strength with its own age, so every check agrees and the error is the reference's"
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: reference ageing, a check whose reference loses strength with its age since certification, so the routine check cannot see the error it writes into the unit; none of the listed strategies names it (decomposition_attribution is the nearest and is banned against task475; the honest Gate G is decomposition_attribution, the analyzer's apparent agreement split into its own gain and its gas's loss). Gap objective: the span ratio is reported correctly and the decision is scored on the gain against true SO2. G13: the certified concentration holds at its certification date, not at the night of use.",
+  "registered": "2026-10-20T16:13:30Z"
+}

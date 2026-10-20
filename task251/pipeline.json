@@ -1,0 +1,31 @@
+{
+ "task": "task251",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends the few whose spans read low to the round; the span gas loses SO2 as it ages, at a rate that differs by supplier, so the analyzers adjusted to older cylinders read high and the analyzers on old cylinders of the faster-losing supplier go to the round instead.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
+ "duplicate_check": null,
+ "judge": null,
+ "returned": [],
+ "resume": "Stage 2: prototype the world (twelve stations, fifteen analyzers, two suppliers' cylinders, nightly spans, monthly visits with the 2 per cent adjustment, cylinder changes read on both cylinders) and tune it to the ladder: the span route, the as-left route, the pooled loss rate and the oldest-cylinder proxy each file another set, the golden stable under exponential and linear loss and either regression, margins from the 5 per cent line; then the asks, the fork table, the closure, the prompt and precut.",
+ "approved": null,
+ "delivered": "",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": [
+  {
+   "date": "2026-10-20",
+   "event": "drawn (architecture 1), card registered"
+  }
+ ]
+}
