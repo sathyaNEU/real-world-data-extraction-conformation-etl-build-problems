@@ -1,0 +1,88 @@
+{
+ "asks": {
+  "multi": {
+   "Ashford": 319,
+   "Bellmont": 823,
+   "Carver Springs": 0,
+   "Dunmore": 579,
+   "Eastlake": 305,
+   "Fairhaven": 196,
+   "Glenridge": 340,
+   "Harlow": 392,
+   "Ironwood": 288,
+   "Juniper Falls": 227,
+   "Kestrel Bay": 0,
+   "Linden": 859
+  },
+  "single": {
+   "Ashford": 85,
+   "Bellmont": 66,
+   "Carver Springs": 106,
+   "Dunmore": 57,
+   "Eastlake": 91,
+   "Fairhaven": 58,
+   "Glenridge": 75,
+   "Harlow": 93,
+   "Ironwood": 49,
+   "Juniper Falls": 91,
+   "Kestrel Bay": 46,
+   "Linden": 80
+  }
+ },
+ "call": [
+  "Fairhaven",
+  "Linden"
+ ],
+ "cities": [
+  "Ashford",
+  "Bellmont",
+  "Carver Springs",
+  "Dunmore",
+  "Eastlake",
+  "Fairhaven",
+  "Glenridge",
+  "Harlow",
+  "Ironwood",
+  "Juniper Falls",
+  "Kestrel Bay",
+  "Linden"
+ ],
+ "dates": {
+  "census_year": 2020,
+  "est_day": 1,
+  "est_year": 2026
+ },
+ "line": "50,000",
+ "line_n": 50000,
+ "n_call": 2,
+ "n_cities": 12,
+ "pop": {
+  "Ashford": 49270,
+  "Bellmont": 48911,
+  "Carver Springs": 48830,
+  "Dunmore": 49180,
+  "Eastlake": 48621,
+  "Fairhaven": 52309,
+  "Glenridge": 48691,
+  "Harlow": 49030,
+  "Ironwood": 48470,
+  "Juniper Falls": 48739,
+  "Kestrel Bay": 48390,
+  "Linden": 51629
+ },
+ "sections": {
+  "cities": "2.1",
+  "permits": "3.1",
+  "population": "2.2",
+  "tier": "2.3"
+ },
+ "textbook_route": [
+  "Ashford",
+  "Carver Springs",
+  "Eastlake",
+  "Fairhaven",
+  "Harlow",
+  "Juniper Falls",
+  "Linden"
+ ]
+}

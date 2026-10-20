@@ -1,0 +1,116 @@
+{
+ "task": "task484",
+ "title": "2027 municipal revenue-sharing tiers",
+ "setting": "A fictional state's population estimates unit and twelve fictional cities; every record is synthetic.",
+ "as_of": "2026-10-14",
+ "files": [
+  {
+   "file": "acs_2020_2024_city_occupancy.xlsx",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2025-12-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "building_type_code_table.xlsx",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2025-01-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "census_2020_city_housing_base.xlsx",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2023-05-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "civic_permit_records.csv",
+   "source": "Civic permit system (fictional), synthetic records",
+   "date": "2026-10-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2211
+  },
+  {
+   "file": "county_building_permits.xlsx",
+   "source": "County Building Department (fictional), synthetic records",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "data_notes.txt",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "demolition_permits_2020_2026.csv",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2026-10-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 225
+  },
+  {
+   "file": "group_quarters_survey_2026.csv",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 52
+  },
+  {
+   "file": "metro_permits_export.csv",
+   "source": "Metro permit system (fictional cities) (fictional), synthetic records",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2984
+  },
+  {
+   "file": "nvp_residential_accounts_monthly.csv",
+   "source": "Northern Valley Power (fictional), synthetic records",
+   "date": "2026-04-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 30413
+  },
+  {
+   "file": "revenue_sharing_tier_rules_2027.pdf",
+   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "date": "2026-02-17",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "school_enrollment_oct2025.csv",
+   "source": "State Department of Education (fictional), synthetic records",
+   "date": "2025-11-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 36
+  },
+  {
+   "file": "voter_registration_by_city_2026.csv",
+   "source": "Secretary of State, Elections Division (fictional), synthetic records",
+   "date": "2026-09-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12
+  }
+ ],
+ "distractors": [
+  {
+   "file": "school_enrollment_oct2025.csv",
+   "why": "school enrollment by city: children enrolled, not residents, and a different date"
+  },
+  {
+   "file": "voter_registration_by_city_2026.csv",
+   "why": "voter registration by city: registered adults, including inactive registrations, not residents"
+  }
+ ],
+ "deliverables": [
+  "city_population_estimates_2026.xlsx",
+  "revenue_sharing_tiers_2027.pdf"
+ ],
+ "stated_inputs": [
+  "50,000"
+ ]
+}

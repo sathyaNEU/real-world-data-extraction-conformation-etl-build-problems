@@ -10,7 +10,7 @@
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "(to be built)",
+  "answer": "Put two of the twelve cities in the 2027 upper tier: Fairhaven and Linden (the ACS occupancy on every unit puts seven).",
   "answer_source": "task474/submission.md",
   "gap": [
     "time"
@@ -30,7 +30,7 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the census base, the cities' certificate-of-occupancy exports, the demolitions and the group quarters survey, reads every field and rule correctly and runs the housing unit method with each city's ACS occupancy rate on every housing unit puts the wrong cities over 50,000, because the apartment buildings finished in the last two years are still leasing up and hold far fewer households than the stock's occupancy rate gives them; the utility's account history, which covers only some cities, measures how buildings fill after they open.",
+  "analyst_test": "A strong analyst who conforms the census base, the three permit systems, the demolitions, the ACS and the group quarters survey and runs the housing unit method with each city's ACS occupancy on every unit puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; only counting new apartment buildings at the occupancy their age reached in the utility's account history puts Fairhaven and Linden.",
   "domain_test": "The decisive quantity is each city's household population on 1 April 2026 by the housing unit method (occupied units times persons per household plus group quarters); the field's step is recognising that newly completed multifamily units are not occupied at the stock's rate and estimating their occupancy by months since completion from the lease-up the utility's account history records.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:occupancy of newly completed units estimated by months since completion from a partial account history, the stock occupancy rate invalid for that group",
@@ -45,7 +45,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "utility_residential_accounts_monthly.csv",
-    "rows": null,
+    "rows": 30413,
     "entity": "one building-month",
     "grain": "building, month",
     "source": "synthetic"
@@ -71,7 +71,7 @@
   "question_form": "how-many",
   "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
   "driver_concrete": "Each city's 1 April 2026 household population is housing units times occupancy times persons per household; the occupancy of units completed since 2024 comes from a lease-up curve by months since the certificate of occupancy, fitted on the buildings the utility's account history covers, not from the city's ACS occupancy rate.",
-  "stump": "(to be written at stage 2)",
+  "stump": "The default path applies each city's ACS occupancy to every housing unit and puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; apartment buildings opened since 2024 are still filling, about half occupied at six months in the utility's account history, and only counting each new building at the occupancy of its age puts Fairhaven and Linden alone over the line.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task474v6": "task474 expands short counts on single-generator roads by the generator's own record; here the stock's occupancy share is replaced for new units by a fill curve fitted on a partial history and carried by months since opening",
