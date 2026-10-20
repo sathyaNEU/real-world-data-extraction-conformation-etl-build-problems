@@ -1,0 +1,38 @@
+{
+  "task": "task481",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-20",
+  "stump": "Restating January to October 2024 at the dual-coded months' rate per Return A line carries the holiday weeks' domestic share of simple assaults into the spring and summer and files a fall in aggravated assaults from 2024 to 2025 on the NIBRS basis where the series rose.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, asks and prompt to precut exit 0; generator prototype in scratch t481/proto2.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}

@@ -1,0 +1,93 @@
+{
+  "task": "task481",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "wave 7, oviya1301 ETL lane, seed ET38 (world, decision and quantity only)",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "restating a city's police-recorded aggravated assault series onto the incident-based (NIBRS) basis from the two dual-coded months of the records system cutover",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "With the data cleaned and every rule read correctly, the analyst builds the conversion per Return A line from the November and December 2024 dual-coded months, applies it month by month to January to October 2024 and files a fall of about 3 per cent from 2024 to 2025 on the NIBRS basis, where converting the simple-assault line separately for domestic and other assaults, each month at its own domestic share from the Domestic Violence Unit's case log, gives a rise of about 2.4 per cent.",
+  "domain_test": "The deciding quantity is an official series restated across a classification change through conversion rates estimated on a dual-coded overlap and applied where they are stable, each period weighted by its own composition, which is how statistical producers back-cast a series over a coding break; replacing the conversion with a before-and-after comparison or a single link factor changes the call.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:conversion-rates-applied-where-stable-with-each-period-composition",
+  "layer1": [
+    "summary-based monthly returns (one workbook per year, layout changed in 2022) against an incident-level extract at offense-by-victim grain",
+    "two offense classifications (legacy summary codes with the hierarchy rule, NIBRS offense codes) on one dual-coded quarter",
+    "legacy and new records-system incident numbers in different formats",
+    "report date against incident date, and the records system's UTC timestamps against local time",
+    "a preliminary and a revised 2024 annual return overlapping",
+    "calendar figures against the city's July-to-June fiscal year"
+  ],
+  "stakeholder_role": "director of the city partnership at the University of Ellsmere's Public Safety Lab, which writes the crime chapter of the city's Public Safety Scorecard under a data-sharing agreement with the police department",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "nibrs_offense_extract.csv",
+    "rows": 0,
+    "entity": "one offense against one victim in one incident",
+    "grain": "offense x victim",
+    "source": "synthetic (constructed in the layout of a NIBRS offense and victim segment extract)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "period_close",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United States, an unnamed state (the city of Ellsmere, its police department, the university's lab and the people are fictional)",
+    "currency": "USD",
+    "org_type": "university public safety research lab writing a city's scorecard crime chapter",
+    "invented_names": [
+      "Ellsmere",
+      "University of Ellsmere Public Safety Lab"
+    ],
+    "people": [
+      "Darlene Ford",
+      "Steven Barnett"
+    ]
+  },
+  "deliverables": [
+    "ellsmere_aggravated_assault_restated.xlsx",
+    "aggravated_assault_series.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A count is restated onto a new classification by conversion rates measured on a short window in which every record carries both classifications; within one source class the rate differs sharply between two kinds of record that no column of the source counts separates, and that kind's share of the class is higher in the measured window than in the months being restated, so applying the window's rate per source class carries the window's mix into those months, while the kind is rebuilt from a separate operational log and each month is restated at its own mix.",
+  "driver_concrete": "Ellsmere's January to October 2024 aggravated assaults are restated onto the NIBRS basis from the November and December 2024 dual-coded months; legacy simple assaults convert to NIBRS aggravated assault at about a fifth when domestic and about one in a hundred otherwise, domestic assaults are their largest share of simple assaults in the holiday weeks and far smaller in the spring and summer, and only the Domestic Violence Unit's case log gives each month's domestic share, so the per-line conversion overstates the restated 2024 base and turns a real rise into a fall.",
+  "stump": "Restating January to October 2024 at the dual-coded months' conversion rate per Return A line carries the holiday weeks' domestic share of simple assaults into the spring and summer, overstates the restated 2024 count, and files a fall of about 3 per cent in aggravated assaults from 2024 to 2025 on the NIBRS basis where the series rose about 2.4 per cent.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task117": "task117 forecasts a summed peak through per-unit caps reached by a dated join; task481 restates a closed year of an official count across a classification change, and its stump is a conversion rate whose within-class mix moves between the dual-coded quarter and the months restated.",
+    "task137": "task137 forecasts a behavioural share at a repricing as a mixture of acquired and long-standing units read off a treatment history; task481 is a backward restatement of a recorded count onto a new coding basis, with no behaviour and no forecast, and the mixture weights are each month's domestic share of simple assaults taken from a separate unit's case log.",
+    "task37": "task37 conditions a forward count on a linked entity's authorisation recovered from a closed roll; task481 has no linked entity and no recovered rule, only conversion rates measured on a dual-coded quarter and applied to earlier months at their own composition.",
+    "task44": "task44 splits a pilot's pooled treatment effect by a behavioural moderator measured over a prior instance of the future window; task481 has no treatment or pilot: the rates are classification conversions from a records-system cutover, the window mismatch is the dual-coded winter quarter against the spring and summer months being restated, and the call is a year-on-year change on the new basis.",
+    "task97": "task97 forecasts repeat need from the cumulative history of a place reached through an account conversion; task481 restates a closed year of crime counts across a coding break by conversion rates per kind of assault."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-20T21:53:36Z"
+}
