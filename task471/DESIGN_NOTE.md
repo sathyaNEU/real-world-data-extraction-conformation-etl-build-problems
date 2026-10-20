@@ -247,6 +247,18 @@ and the laboratory roster carry no county figure.
 - Mirror leakage: 0.0 per cent of ask weight.
 - Measured by: generator/ceiling.py
 
+## Leak check
+
+- `leak.py --asof 2026-08-14` on target.zip ce15c2a04a1d152f: REVIEW, no LEAK. Each REVIEW line, harmless:
+  - Sweep 3, the design report carries the call's words: its Tables 1 to 3 list all sixteen counties by name with
+    their lists, targets and letters, and name the allocation it serves; no table ranks or estimates a county.
+  - Sweep 4, the design report and the standard use the survey's own vocabulary (report, design, estimate, sample,
+    parcel, population); neither names an estimator, a weight or a probability of selection.
+  - Sweep 8, Kinsale's FLAG column: a laboratory export's qualifier flag ("<" below the reporting limit), the name
+    its electronic data deliverable uses.
+  - Sweep 9, the certified laboratory roster's dates after the setting: certification expiry dates, forward-looking
+    by nature (the H16 allow-list); the roster is a distractor.
+
 ## Tried and rejected
 
 - 2026-10-18, at the draw: the seed's own moves, a round-trip itinerary fare read as a one-way fare and the New York

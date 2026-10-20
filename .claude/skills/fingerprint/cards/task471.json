@@ -36,7 +36,7 @@
  "scoring_unit": "per certified output",
  "spine": {
   "file": "DOH_well_construction_permits_extract_2026-08-03.csv",
-  "rows": 39202,
+  "rows": 41116,
   "entity": "one well construction permit",
   "grain": "permit",
   "source": "synthetic (constructed in the layout of a state well construction permit database extract)"
