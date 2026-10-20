@@ -1,200 +1,29 @@
-# task474 design note: a port authority's 2027 air-corridor designations (architecture 5)
+# task474 design note: a port authority's 2027 air-corridor designations (architecture 6)
 
-Architecture 5, drawn 2026-10-20 in a fresh world after architecture 4 (Medicaid exposure rebuilt from the
-capitation remittance) was spent at stage 4. Earlier architectures' sections are retired; their lessons stand in
-Tried and rejected.
+Architecture 6, drawn 2026-10-20 in the architecture 5 world after architecture 5 (class-specific expansion factors)
+was spent at stage 4. Earlier architectures' sections are retired; their lessons stand in Tried and rejected.
 
 ## Draw
 
 - **Pairing.** Client domain physical-environmental-sciences, task type emissions-inventory, objective Data
-  Extraction & Conformation (ETL): three count programs' short-duration classification counts (the state DOT's, the
-  county's and the port's consultant's, each in its own layout and class scheme), the state's continuous count
-  stations (hourly volumes, a few classifying), the link register and an emission rate table are conformed into one
-  link-level on-road NOx inventory for the program year.
-- **Decision.** How many, and which, of the roadway links around the port's terminals the port authority designates
-  for its 2027 air-corridor program (zero-emission truck charging, idle enforcement, roadside barriers): a link whose
-  program-year (October 2025 to September 2026) on-road NOx per mile is at or above the program's line. Forward
-  facing: the designations fund 2027 work from the year just closed.
-- **The quantity.** Each link's program-year vehicle-miles by class (passenger vehicles, trucks) times the class's
-  NOx emission rate, per mile of link.
-- **Data-native sentence.** Each link is counted for 48 hours on weekdays at one time of year, and the year's miles
-  come from expanding that count with calendar factors measured at the state's always-on stations; trucks fall away at
-  weekends and barely move by season while cars do the opposite, so factors computed for all vehicles and applied to
-  a weekday count overstate the year's trucks at every link, most where trucks are most of the traffic, and the
-  stations that classify measure the trucks' own factors.
-- **Default path.** The traffic monitoring guide's textbook expansion: the count times the stations' all-vehicle
-  monthly and day-of-week factors, split by the counted truck share.
-- **Golden.** Cars and trucks expanded separately, each with factors computed for that class at the classifying
-  stations.
-- **Shape.** 07, a grid: fourteen links' verdicts, three terminals by four quarters by two figures, plus the count,
-  the set and the memo's chart.
-- **Guard.** WARN (objective and Gate G overuse); nearest task452 v1 at 0.06; personas Paige Hodges and Martin
-  Estrada from guard.py names; forum, forcing event and org family clear of the last three builds.
-
-## Default path
-
-1. Read the rules: every link in the register; a link's program-year NOx is the vehicle-miles each class traveled
-   on it from 1 October 2025 to 30 September 2026 times the class's rate in the 2026 table, per mile; designate at
-   5.00 tonnes per mile or more.
-2. Conform the three count programmes' files to one table of each link's two count days by class, and the stations'
-   hourly records to daily totals.
-3. Expand each link's count to an annual average daily volume the way the traffic monitoring guide does it: the
-   count times the stations' monthly and day-of-week factors for all vehicles; split it into classes by the counted
-   class shares; multiply by 365 and the class rates.
-
-Ends on: L01, L03, L04, L05, L06, L09, L10, L11, L13 and L14 designated
-
-Golden: L01, L03, L05 and L14 designated
-
-## Stump sentence
-
-The default path expands each link's two-weekday count with the stations' all-vehicle monthly and day-of-week factors
-and splits the year by the counted truck share, designating L01, L03, L04, L05, L06, L09, L10, L11, L13 and L14; the
-classifying stations show trucks running about a quarter above their annual average on weekdays and falling away at
-weekends while cars barely move, so one set of factors for all vehicles carries every weekday count's trucks into
-the year at weekday strength, and only expanding each class with its own factors from the classifying stations
-designates L01, L03, L05 and L14.
-
-## Three rules
-
-Task type: Physical & Environmental Sciences, emissions-inventory, which the taxonomy tags for ETL: conforming three count programmes' short-duration classification counts, the state's continuous count station records and the link register into a link-level on-road NOx inventory the program designates on.
-
-Domain test: the quantity that decides the call is each link's program-year NOx per mile, worked as an on-road emissions inventory works vehicle-miles: each class's annual average daily traffic expanded from short counts by temporal factors from continuous count stations (the traffic monitoring guide's method) and multiplied by the class emission rate; the field's own step here is choosing factors by vehicle class.
-
-Swap: "which of our clinics' annual patient-visits per room exceed the line, expanding a two-day sample with the network's weekly and seasonal factors" keeps the words and loses the step: nothing in a clinic splits its visits into classes with opposite weekly patterns and twenty-fold different weights, while here trucks carry almost all of the NOx and the classifying stations measure their own weekly pattern.
-
-Layer 1: three count programmes' exports in different layouts (DOT hourly wide, county 15-minute sheets, consultant hourly by lane with UTC offsets); station records in local standard time beside counts in local time; detector outage days at the stations; volume-only stations beside classifying ones; link lengths that cancel in a per-mile figure; each the agency's own export, each asserted neutral on the call (checks.py R2).
-
-Layer 2: estimation_fit. The methodological choice is which temporal factors expand a class's short count to the year: the all-vehicle factors of every station split by the counted shares, monthly factors only, or each class's own factors from the stations that classify.
-
-Decisive step: expanding passenger vehicles and trucks separately, each with the monthly and day-of-week factors the classifying stations measure for that class, instead of applying all-vehicle factors to the whole count and splitting by the weekday truck share.
-
-Not semantics: every field read correctly (class groups, hour ending, standard time, lanes, directions) still leaves the all-vehicle expansion on the wrong set; no field says the weekly pattern differs by class, the stations' own records show it.
-
-Not rule application: rule 2.2 files the outcome (vehicle-miles by class times the class rates), the window, the classes and the unit; no rule or note says how a short count is expanded or which factors apply, and executing every stated rule with the textbook all-vehicle factors files L01, L03, L04, L05, L06, L09, L10, L11, L13 and L14.
-
-Analyst test: a strong analyst who reads every field and rule correctly and expands each count with the stations' all-vehicle factors, splitting by the counted class shares, designates L01, L03, L04, L05, L06, L09, L10, L11, L13 and L14 designated (the default path's Ends on); only class-specific factors designate L01, L03, L05 and L14.
-
-Estimand: rules 2.1 to 2.3 (air_corridor_program_rules_2027.pdf) file the population (every link in the register), the outcome (NOx from on-road vehicles, vehicle-miles by class times the 2026 table's class rate), the window (1 October 2025 to 30 September 2026), the unit (metric tonnes per mile of link) and the comparison (5.00 or more).
-
-No decoy: nothing is planted to be caught; every count and station record is the traffic the generator drove, no factor table, AADT estimate, memo or earlier list ships, and no document mentions factors or truck patterns.
-
-No certified replay: no certified or published figure is reproduced to recover the method; the class factors are computed from the classifying stations' own hourly records.
-
-Lesson: an on-road inventory's short counts are expanded class by class, because the heaviest-emitting class has its own weekly and seasonal pattern; a weekday count expanded with all-vehicle factors overstates trucks, and with them NOx, most where trucks are most of the traffic. No build on file expands a sample by factors that differ by class of contributor.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, the count times 365 (eleven links) | rule 2.2 "in those twelve months": fires | count dates: fires | none | none | none | one product | readable |
-| R1, all-vehicle monthly factors only (ten links) | none | station dates: fires | seasonal expansion: fires | none | none | a ratio | readable |
-| R2, the textbook all-vehicle month and weekday factors, the default path (ten links) | none | station hours: fires | the traffic monitoring guide's expansion: fires | none | none | a ratio | readable |
-| R2b, class monthly factors with all-vehicle weekday factors (eleven links) | none | class groups: fires | none | none | none | a ratio | readable |
-| G (decisive), each class with its own month and weekday factors (four links) | no clause names factors or classes' patterns | no column holds a factor | the textbook reflex applies one set | none | none | none | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | program year | 1 October 2025 to 30 September 2026, 365 days | a calendar year | not the rule's window | rule 2.2 |
-| SF2 | vehicle classes | FHWA 1-3, 4-7, 8-13 | two classes (cars, trucks) | same call: the rates table's three groups are the rules' three (asserted) | rule 2.2 |
-| SF3 | the 2026 emission rate table | the one calendar year in the file | none | same call (asserted) | the table |
-| SF4 | 5.00 tonnes or more | at or above, unrounded | rounded to the tenth | same call (nearest family value 0.29 t away, asserted) | rule 2.3 |
-| SF5 | per mile | NOx over length, which reduces to daily volume times 365 times the rate | VMT summed then divided | same call (asserted) | rule 2.2 |
-| SF6 | directions | both summed | one direction | not the link's traffic | the counts carry both |
-| SF7 | factor groups | the stations as one urban group | groups by road type | same call (asserted) | the register's one factor group |
-| SF8 | the files the call reads | counts, stations, register, rates | the NO2 monitors, the 311 complaints, the drayage registry | same call (asserted) | rule 2 |
-
-## Ladder
-
-Built figures, read from the cut pack by `generator/checks.py` (tonnes of on-road NOx per mile, program year, against
-5.00).
-
-- **R0, the count times 365 (eleven links).** No expansion; weekday counts stand for the year.
-- **R1, all-vehicle monthly factors only (ten links).** The weekly pattern left in.
-- **R2, the textbook, the default path (L01, L03, L04, L05, L06, L09, L10, L11, L13, L14).** L06 5.39, L10 5.39,
-  L11 5.59, L04 5.37, L13 5.33, L09 5.32 over the line. Dies to the classifying stations: their trucks run at
-  about 1.2 times their annual average on Tuesdays to Thursdays and at under half on Sundays, their cars near 1.
-- **R2b, class monthly with all-vehicle weekday factors (eleven links).** The seasonal half alone.
-- **G (L01 5.71, L03 6.18, L05 5.46, L14 5.48; L13 4.44, L09 4.56 the nearest below).** The true program-year NOx
-  (every day known, generator only) designates the same four.
-- **Margins:** every family member's every link at least 0.25 t from the line (cell or separate factors, plain or
-  AASHTO station averages, car factors from the classifying stations or from all, groups by road type, class
-  weekday factors with all-vehicle monthly ones); every link the textbook flips 0.30 t or more over it.
-- **Worth:** R2 keeps eight of fourteen verdicts and not the set; the asks carry the pair (Ask sheet).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the register's fourteen links (rule 2.1) |
-| 2 | Unit of account | the link; metric tonnes of NOx per mile |
-| 3 | Attribution window | 1 October 2025 to 30 September 2026 (SF1) |
-| 4 | As-of dating | the exports compiled by 26 October 2026 |
-| 5 | Version basis | the station records as the DOT publishes them; one count per link |
-| 6 | Denominator | link length, cancelling (SF5) |
-| 7 | Weighting | none: each link's own count |
-| 8 | Window length | 365 days |
-| 9 | Boundary inclusivity | 5.00 or more (SF4) |
-| 10 | Rounding path | rates unrounded; turn minutes to one decimal |
-| 11 | Tie-break | none: each link against the line |
-| 12 | Maturity and censoring | the year closed and published |
-| 13 | Order of operations | conform, daily totals, factors, expansion, rates, comparison |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | one count per link; gate transactions merged into stays |
-| 16 | Identity normalisation | count site ids to links through the register |
-| 17 | Netting | none |
-| 18 | Dimensional units | vehicles per day, grams per mile, tonnes |
-| 19 | Code and status semantics | FHWA class groups and direction codes; never the stump |
-| 20 | Integerisation | none before the comparison |
-| 21 | Clause scope | rule 2 the designation, rule 3 the terminal review |
-| 22 | Forward window contents | the 2027 program funded on the closed program year (Draw) |
-
-## Literal reader
-
-Executed word for word, the rules fix the population (the register's links), the outcome (vehicle-miles by class
-times the class rates), the window, the unit and the line. The links are counted on two days, so each class's
-vehicle-miles over the year have to be estimated from the count. The candidates are the count times the year, the
-all-vehicle monthly factors, the all-vehicle month and weekday factors split by the counted shares, and factors by
-class from the classifying stations. The data separate them: the classifying stations' trucks run near 1.2 times
-their annual average on midweek days and their cars near 1, so the all-vehicle route files ten links, while every
-class-factor variant (cell or separate factors, plain or AASHTO averages, all or road-type groups) files the same
-four (checks.py). Every write-up step names the file and rule it executes.
-
-WHAT screen (stumping 1.2): population, rule 2.1; outcome, rule 2.2 (vehicle-miles by class times the class rates);
-window, rule 2.2; unit, rule 2.2 (tonnes per mile); comparison, rule 2.3. The decisive step settles none of them: it
-is how the filed vehicle-miles are estimated from a two-day count.
-
-## Oracles
-
-None. No control, published AADT or reconciliation ties only under the golden: the stations publish hourly volumes,
-not AADTs or factors, and no link's annual volume ships.
-
-## Ask sheet
-
-- **Ask A, each terminal's truck visits in each quarter of the program year: 12 figures.** H18 home: rule 3.1, the
-  Board's terminal operations review beside the designations. Path: the gate transactions and the rules. Devices:
-  D6, dual transactions (two rows, seconds apart at the in-gate, for one stay) at every terminal; D8 at Berth 20,
-  whose in-gate kiosks keep standard time all year while its out-gate keeps local time, so in the daylight-time
-  months each stay reads an hour long and a truck's consecutive stays overlap; D2 at Pacific Gateway, where a
-  transaction keyed to the wrong truck's tag and voided minutes later stays in the export beside the re-keyed one
-  (the same container and gate-in under a later transaction id); D6 at Berth 40, whose runs to the on-dock rail
-  ramp leave through the ramp gate and come back through it (out_lane and in_lane RG1), one stay written as two legs.
-  No sentence in the pack describes any of them.
-- **Ask B, each terminal's average turn time per quarter, minutes to one decimal: 12 figures.** Same path and devices.
-- **The construction layer:** each link's verdict and the set.
-
-| Ask | Cracker (stays merged as recorded) | Mirror (textbook factors) |
-|---|---|---|
-| A, visits (12) | miss | miss |
-| B, turn time (12) | miss | miss |
-
-Pair ceiling: 36.1 (cracker 45.0 with the call and no ask figure; mirror 27.3, eight of fifteen main figures)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-Measured by: generator/ceiling.py
+  Extraction & Conformation (ETL): three count programmes' short classification counts, the state's continuous count
+  stations, the link register, the emission rate table and the terminals' gate transaction exports are conformed into
+  one link-level on-road NOx inventory for the program year.
+- **Decision.** How many, and which, of the fourteen roadway links around the terminals the port authority designates
+  for its 2027 Air Corridor Program: a link whose program-year (October 2025 to September 2026) on-road NOx per mile is
+  at or above the line. Forward facing: the designations fund 2027 work from the year just closed.
+- **The quantity.** Each link's program-year vehicle-miles by class times the class's NOx rate, per mile.
+- **Data-native sentence.** Each link is counted for two weekdays and the year's miles come from expanding the count
+  with factors measured at the state's classifying stations, which is right for roads carrying general traffic; the
+  trucks on the three terminal access roads are the terminal's own drays, coming and going with its vessel calls,
+  which no state station sees, so an access road counted in a busy week or a quiet one is carried into the year at
+  that week's level, and only the terminal's own gate record measures its count days against its year.
+- **Default path.** The traffic monitoring guide's expansion, class by class with the classifying stations' monthly
+  and day-of-week factors, on every link.
+- **Golden.** The same on every road carrying general traffic; on the three access roads, the combination trucks
+  expanded by the ratio of the terminal's average daily gate visits over the year to its visits on the count days.
+- **Shape.** 07, a grid: fourteen links' verdicts, plus the asks' figures, the count, the set and the memo's chart.
+- **Guard.** WARN (domain, objective and Gate G overuse); nearest task452 v1 at 0.06.
 
 ## Tried and rejected
 
