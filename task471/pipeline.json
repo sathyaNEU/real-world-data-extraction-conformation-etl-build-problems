@@ -1,37 +1,16 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-20",
- "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo (Molenrade and Nijdorp in at 4,967 and 4,968; Eekhorst, Haverstede and Koudenbeek out at 5,075, 5,069 and 5,067); taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine.",
- "architecture": 4,
+ "architecture": 5,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-20",
-  "checks": "51 checks, 0 FAIL, 0 WARN"
- },
- "leak": {
-  "leak_py": "REVIEW (no LEAK) on target.zip b6990395f2efabc2: design-note vocabulary in four documents",
-  "reader": "round 1 running: two scored readers"
- },
- "duplicate_check": {
-  "guard_check": "WARN only at the v4 draw",
-  "heart": "WARN only (objective and Gate G overuse, Gate G and decision repeat against task474 v3; nearest driver 0.08, the slot's own v3)",
-  "surface": "7 pairs promoted for adjudication on card-axis collisions (surface 0.092), none blocking"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "",
-  "run": "v4r1 running"
- },
  "returned": [],
- "resume": "stage 4: score the two readers (score_reader.py on readerA/readerB reader.json in the scratchpad), spawn the judge thread on /tmp/determinism-check-task471-v4r1/judge_brief.md and have the judge agent write the report; fix every finding in the generator in one pass; then ship",
+ "resume": "stage 1, architecture 5 draw: guard.py recent, coverage and mechanisms --objective etl; a fresh world and a decisive step from the measured drivers' held group (a compound unit or grain choice outside the hypothesis space, or a back-test that passes by construction while the forward population differs), never a textbook covariate; the card's lineage carries v1 to v4",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -74,14 +53,6 @@
   },
   "target_zip_sha256_16": "c9e9c2fd35a4d875",
   "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
- },
- "build": {
-  "checks": "201 of 201",
-  "verify": "pass",
-  "byte_identical": true,
-  "target_zip_sha256_16": "b6990395f2efabc2",
-  "figures_check": "86 figures, 0 absent",
-  "ceiling": "pair 39.1, mirror leakage 0.0, cracker misses 48 of 48"
  },
  "architecture_2": {
   "fate": "spent at stage 4: judge v2r1 DETERMINISTIC on the main call, disposition SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes; Gate H decisive step analytical, borderline planted)",
@@ -148,5 +119,57 @@
   },
   "target_zip_sha256_16": "ce15c2a04a1d152f",
   "lesson": "an estimator the design report must describe for the estimate to be determinate is executed as a work order: every design-based correction (dual frames, multiplicity, stratification) is readable once its design is filed; and a device a request-row consistency check finds is not silent"
+ },
+ "architecture_4": {
+  "fate": "spent at stage 4 on Gate F: both scored readers (round 1, target.zip b6990395f2efabc2) landed the call (score_reader exit 1 each) by post-stratifying the audit on the time since the latest immigration and an earlier emigration rebuilt from the event history, the field's textbook covariates; the judge (run v4r1) DETERMINISTIC and APPROVE, Gate G decomposition_attribution / method_or_model_selection and analytical_non_defect, Gate H analytical",
+  "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo (Molenrade and Nijdorp in at 4,967 and 4,968; Eekhorst, Haverstede and Koudenbeek out at 5,075, 5,069 and 5,067); taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-20",
+   "checks": "51 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW (no LEAK) on target.zip b6990395f2efabc2: design-note vocabulary in four documents",
+   "reader": "round 1: both readers landed the call (nine) and kept 0 of 48 ask figures, each through the any-event-year reading of the 2025 counts; both detected the annulments, converted UTC to the country's time and joined the non-resident records"
+  },
+  "duplicate_check": {
+   "guard_check": "WARN only at the v4 draw",
+   "heart": "WARN only (objective and Gate G overuse, Gate G and decision repeat against task474 v3; nearest driver 0.08, the slot's own v3)",
+   "surface": "7 pairs promoted for adjudication on card-axis collisions (surface 0.092), none blocking"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report_v4r1.md (run v4r1)",
+   "note": "one thin competing partition (stay merged short and long, eight) ruled out by the stay gradient; the optional pin on the departures-in-2025 reading not applied, the architecture being spent"
+  },
+  "build": {
+   "checks": "201 of 201",
+   "verify": "pass",
+   "byte_identical": true,
+   "target_zip_sha256_16": "b6990395f2efabc2",
+   "figures_check": "86 figures, 0 absent",
+   "ceiling": "pair 39.1, mirror leakage 0.0, cracker misses 48 of 48"
+  },
+  "target_zip_sha256_16": "b6990395f2efabc2",
+  "lesson": "a covariate the field's textbook names for the quantity (time since immigration and return migration for register over-coverage) is fitted by reflex once the audit report says the share is taken within the respects that bear on it; rebuilding the covariate from an event history is cleaning, not a stump"
+ },
+ "stump": "",
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  }
 }

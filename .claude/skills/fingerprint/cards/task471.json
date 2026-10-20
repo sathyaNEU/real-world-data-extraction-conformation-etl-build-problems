@@ -163,6 +163,32 @@
    "stump_strategy": "population_selection",
    "subdomain": "data-integration-record-linkage-entity-resolution",
    "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
+  },
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-20",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "census-register-administrative-data-quality",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G6",
+    "G19"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "own:erroneous-enumerations-post-stratified-by-the-migration-career",
+   "niche": "a national statistics bureau's register-based adjusted resident population for the 2027 small-municipality supplement: each in-play municipality's 1 January 2026 register count less the registered persons estimated, from a national field audit of register records, not to have been living there (silent emigrants), in an unnamed EU country with a municipal population register",
+   "fate": "spent at stage 4 on Gate F: both scored readers (target.zip b6990395f2efabc2) landed the call, one by a logistic model with a returnee flag and years since the last IMM, one by cells of birth country by years since the last arrival by an earlier emigration; time since immigration and return migration are the field's textbook over-coverage covariates, so report 5's 'respects that bear on it' was executed as a reflex; both readers also executed the asks' annulment and UTC devices",
+   "driver": "The decisive quantity is each area's count of registered units actually present, the register's count less the units estimated absent at rates measured on a random field audit of records; a unit's chance of being absent is set by how long its current stay has lasted since its latest arrival together with whether it has left before, both rebuilt from its event history, so one audit rate, a rate by origin, a rate by time at the current record (reset by moves inside the system), and a rate by the stay or the earlier departure alone each misplace the absent units between areas whose units arrived at different times or come and go.",
+   "driver_concrete": "Each in-play municipality's adjusted resident population on 1 January 2026 is its register count less the registered persons estimated, from the 2026 Register Coverage Audit, not to have been living there, each person given the audit's absence rate for persons alike in years since their latest settlement from abroad and in having left the country before; the register's date at the current address (reset by every internal move), country of birth or nationality, the stay alone and the earlier departure alone each misplace the silent emigrants between the seasonal-work towns, the university town, the older immigrant towns and the commuter suburb.",
+   "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo: the older immigrant towns Molenrade and Nijdorp come in at 4,967 and 4,968 because their long-settled residents moved house recently, and the seasonal-work towns Eekhorst, Haverstede and Koudenbeek stay out at 5,075, 5,069 and 5,067 because nothing in the register record says that four in ten of their migrants had left the country before; taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine."
   }
  ],
  "notes": "v4 drawn 2026-10-20 after architecture 3 was spent at stage 4 on Gate F (the dual-frame estimator executed as a work order once the design report described the two lists); honest data by construction (the register records registrations, the audit measures presence in the field, no figure is wrong); the decisive clock and the earlier departures live only in the event history, and no shipped document names either.",

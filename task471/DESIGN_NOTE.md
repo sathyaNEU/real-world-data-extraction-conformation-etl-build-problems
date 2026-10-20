@@ -427,3 +427,14 @@ asks.
 - 2026-10-20, at the v4 build: the national circular migrants' gaps of one to six years: the seasonal-work towns'
   long-gap migrants then sat in a seven-person cell of stay by earlier departure by first settlement, and that cross
   filed six with a municipality 0.1 from the line; national gaps widened to 1 to 14 years, every cross now files nine.
+- 2026-10-20, stage 4: architecture 4 itself, the register's erroneous enumerations post-stratified by the migration
+  career rebuilt from the event history. Both scored readers on target.zip b6990395f2efabc2 landed the call
+  (score_reader exit 1 on each, 2 of 2 call figures). Reader A fitted a logistic model with a returnee flag and years
+  since the last IMM; reader B built cells of country of birth by years since the last arrival by an earlier
+  emigration. Report 5's "the respects that bear on it" plus 12,000 audited persons with histories invites testing
+  which characteristics predict absence, and time since immigration and return migration are the field's textbook
+  covariates, so the step was the reflex rather than the analysis a solver skips. Both readers also executed both
+  asks' devices: the annulled departures and deaths came from a check of the hub's log against the register's ANN
+  events, and the year-end batch from converting UTC to CET. They missed the 48 ask figures only by counting messages
+  sent in 2025 whatever the event date, a reading the v4 spec's "departures abroad in 2025 ... from the messages ...
+  sent in 2025" left open once "with a departure date in 2025" was dropped (a fork, not a device). Spent on Gate F.
