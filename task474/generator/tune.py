@@ -14,15 +14,30 @@ import sources as S
 import world as W
 
 
+def truth_record(x):
+    """The routes' record built from the clean truth, as bundle.record builds it from the cut pack."""
+    m = x["on"] & S.IN_SEASON
+    idx = np.where(m)[0]
+    pos = {h: i for i, h in enumerate(idx)}
+    nox = np.where(x["out"], np.nan, x["lb"])
+    rt = lambda h: None if h < 0 or h >= S.NH or not x["on"][h] or np.isnan(nox[h]) else float(nox[h] / x["heat"][h])
+    blocks, h = [], 0
+    a = x["air"] & m
+    while h < S.NH:
+        if a[h]:
+            k = h
+            while k + 1 < S.NH and a[k + 1]:
+                k += 1
+            blocks.append((pos[h], pos[k], rt(h - 1), rt(k + 1)))
+            h = k
+        h += 1
+    return dict(load=list(x["load"][m]), nox=[None if np.isnan(v) else float(v) for v in nox[m]],
+                since=list(x["since"][m]), heat=list(x["heat"][m]), air=list(a[m]), blocks=blocks)
+
+
 def record():
     f = S.fleet(np.random.default_rng(W.SEED))
-    rec = {}
-    for u in W.CC:
-        x = f[u]
-        m = x["on"] & S.IN_SEASON
-        rec[u] = dict(load=list(x["load"][m]), nox=[None if o else float(v) for o, v in zip(x["out"][m], x["lb"][m])],
-                      since=list(x["since"][m]))
-    return rec, f
+    return {u: truth_record(f[u]) for u in W.CC}, f
 
 
 def main(it):
@@ -31,7 +46,6 @@ def main(it):
         adj = dict(W.ADJ)
         for u, d in W.DESIRED.items():
             g = M.rate(rec[u], "golden")
-            base = M.rate(dict(rec[u], nox=[v for v in rec[u]["nox"]]), "golden")
             a = adj.get(u, 1.0)
             # the start NOx carries roughly the part of the rate above the steady rate (about 0.04)
             adj[u] = round(float(max(.2, a * (d - .04) / max(1e-6, g - .04))), 5)

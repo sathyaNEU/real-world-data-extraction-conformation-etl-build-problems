@@ -1,47 +1,47 @@
 {
   "task": "task474",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-20",
-  "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (planning-region poverty split by temporal disaggregation) spent at stage 4; architecture 2 drawn in emissions-inventory with a fresh world",
+  "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (temporal disaggregation) and architecture 2 (start-state monitor gaps) spent at stage 4; architecture 3 keeps the cooperative's world and roots the call in a shared-utility outage that takes the monitors and the SCR down together",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
-  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records whose analyzers drop out mostly in the hours after a start, the plant control systems' hourly load logs and the monitor outage log, for its 2027 SCR upgrade program",
+  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records with analyzer gaps, the monitor maintenance tickets in local time and the plants' load logs, where two plants' instrument air headers tripped through the summer and took the analyzers' dilution probes and the SCRs' air-operated ammonia valves down together, for its 2027 SCR upgrade program",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2.",
+  "answer": "Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.",
   "answer_source": "task474/submission.md",
   "gap": [
-    "population",
-    "time"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G4",
-    "G17"
+    "G7",
+    "G14"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "time_semantics",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the monitor records, load logs and outage log, reads every field and rule correctly and fills each unmonitored operating hour from the unit's own NOx-on-load regression designates the wrong units, because the analyzers drop out mostly in the first hours after a start, when a cold catalyst lets NOx run several times the steady rate at the same load, so a load-based fill puts steady-state NOx into start-up hours and understates the units that cycle hardest.",
-  "domain_test": "The decisive quantity is each combined-cycle unit's 2026 ozone-season NOx per MWh, an emissions inventory whose missing monitor hours are estimated the way emission inventories handle monitor data gaps, by the operating condition the unit was in, here the hours since the unit's start from the control system's load log, because selective catalytic reduction does not work until the catalyst is hot; swapping in another field's nouns breaks it because the cold-catalyst start-up spike and the analyzers' purge and calibration after shutdown are what make the gaps fall in the high-emission hours.",
+  "analyst_test": "A strong analyst who conforms the monitor records, the tickets and the load logs, reads every field and rule correctly and fills every unmonitored operating hour from the unit's own measured hours in the same operating state (hours since start and load), or by averaging the hours either side of each gap, designates five units and leaves CB-2 and AF-1 under the target, because the gaps that came with the plants' instrument air trips are hours in which the SCR's ammonia valves had closed too, so those hours ran uncontrolled at about twenty times the controlled NOx per MMBtu that every state-based or neighbouring-hour fill puts into them.",
+  "domain_test": "The decisive quantity is each combined-cycle unit's 2026 ozone-season NOx per MWh, an emissions inventory whose missing monitor hours are estimated by the emission control state the unit was in while unmonitored; an instrument air loss is a common cause that blinds the dilution probe and shuts the SCR's air-operated ammonia flow at once, and the first measured hour after each loss shows the uncontrolled level, so the fill uses that level times the hour's metered heat input; swapping in another field's nouns breaks it because what ties the missing hours to the high ones is the plant's compressed-air system feeding both the monitor and the control device.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:missing monitor hours filled by start state, not by load",
+  "layer2_pattern": "own:monitor gaps with a common cause that also disables the control device, filled at the uncontrolled level the monitor shows on its return",
   "layer1": [
     "a whole-year export carrying every monitored unit, the peakers and the coal unit outside the program",
     "status codes on hours whose NOx values are blank",
-    "the DAHS on standard time against the event report and maintenance tickets in local time",
+    "the DAHS on standard time against the maintenance tickets and the event report in local time",
     "maintenance tickets covering only some gaps and including checks while offline",
-    "units renamed in the 2025 dispatch system",
-    "gas invoices by facility meter, not by unit"
+    "start-up hours whose analyzers are out more often than the run's",
+    "gas invoices by facility meter, not by unit, with one month per meter not yet approved"
   ],
   "stakeholder_role": "the cooperative's senior environmental compliance engineer preparing the 2027 SCR upgrade designations",
   "role_family": "compliance_or_audit",
@@ -63,26 +63,44 @@
     "invented_names": [],
     "people": [
       "Tamara Gill",
-      "Kevin Cohen"
+      "Martin Estrada"
     ]
   },
   "deliverables": [
     "cc_unit_nox_inventory_2026.xlsx",
-    "startup_nox_upgrade_designations_2027.pdf"
+    "scr_upgrade_designations_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A unit's period total is measured hourly by an instrument that is out mostly in the hours after the unit starts, when the quantity runs several times its steady level at the same operating point, so the missing hours are filled by the hour's start state, read from an every-hour operating log, rather than by a fit on the operating point that the steady hours dominate.",
-  "driver_concrete": "Each combined-cycle unit's NOx in the hours its analyzers were down is estimated from the unit's own monitored hours at the same number of hours since its start, found in the control system's hourly load log, not from its NOx-on-load fit or its monitored-hour average, before each unit's 2026 ozone-season NOx per MWh is compared with the cooperative's 0.170 target.",
-  "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high, because the analyzers drop out mostly right after a start, when the cold catalyst lets NOx run at several times the steady rate; filling the missing hours by hours since start designates the hard-cycling units the program should fund.",
+  "question_form": "how-many",
+  "driver": "A unit's period total is measured hourly by an instrument that shares a utility with the unit's control device, so when the utility fails the instrument goes dark while the control is off; the dark hours are filled at the uncontrolled level the instrument reads in its first hours back, times the hour's metered input, rather than from the unit's measured hours in the same operating state or from the hours either side, which the controlled hours dominate.",
+  "driver_concrete": "Each Cutler Bend and Ashfork unit's NOx in the hours its analyzers were down with the plant's instrument air is estimated at the NOx per MMBtu its analyzer measured in the first hour after each air loss, times that hour's heat input, while every other gap takes the unit's own measured hours at the same hours since start, before each unit's 2026 ozone-season NOx per MWh is compared with the cooperative's 0.170 target.",
+  "stump": "The default path fills every unmonitored hour from the unit's own measured hours in the same start state and load, and designates AF-2, CB-1, DF-1, DF-3 and SR-1; the gaps that came with the plants' instrument air trips are hours when the SCR's air-operated ammonia valves had closed as well, which the first measured hour after each trip shows at about twenty times the controlled rate, so filling those hours at that uncontrolled level adds CB-2 and AF-1.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task243": "task243 recovers a register's exit-recording share from changes between two counts; here nothing is counted twice: each unit's unmonitored hours are filled from its own monitored hours in the same start state read from an every-hour operating log.",
     "task450": "task450 removes an instrument change through a shared anchor subset; here no instrument changes: the instrument is missing in a state-dependent pattern and the fill conditions on that state.",
     "task476": "task476 dates each found item's unseen start from a seasonal profile in a second record; here no start is unseen: every start is in the load log, and what is missing is the measured quantity in the hours just after it.",
-    "task459": "task459 commits a unit to a stated operating level against a level-dependent ratio; here no level is chosen: the missing hours are imputed by start state, which a fit on level misses."
+    "task459": "task459 commits a unit to a stated operating level against a level-dependent ratio; here no level is chosen: the missing hours are imputed by start state, which a fit on level misses.",
+    "task474v2": "architecture 2 filled gaps by start state; here the start-state fill is the default path, and the decisive step is the control state during a shared-utility outage, which no operating-state covariate in the record carries.",
+    "task193": "Shares the structural triple (objective gap, G7, method_or_model_selection) and nothing else: task193 computes a null expectation for an ordering from where each unit's exposure falls in an observation window; here nothing is ordered or windowed, the missing hours of a measured total are filled at the control state a shared utility outage put the unit in.",
+    "task254": "Shares the structural triple and nothing else: task254 reads each stage of a passage at the period the unit reaches it; here no passage is timed, the unmeasured hours of an emissions total are estimated at the uncontrolled level the monitor shows on its return from a common-cause outage."
   },
   "lineage": [
+    {
+      "driver": "A unit's period total is measured hourly by an instrument that is out mostly in the hours after the unit starts, when the quantity runs several times its steady level at the same operating point, so the missing hours are filled by the hour's start state, read from an every-hour operating log, rather than by a fit on the operating point that the steady hours dominate.",
+      "stump": "The default path fills each unmonitored hour from the unit's NOx-on-load regression and designates the units that run steadily high, because the analyzers drop out mostly right after a start, when the cold catalyst lets NOx run at several times the steady rate; filling the missing hours by hours since start designates the hard-cycling units the program should fund.",
+      "subdomain": "emissions-inventory",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "generators": [
+        "G4",
+        "G17"
+      ],
+      "architecture": "v2",
+      "fate": "spent at stage 4 on 2026-10-20: a round-2 reader landed the call with the start-state fill and kept every ask (score_reader exit 1)"
+    },
     {
       "architecture": "v1",
       "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
@@ -105,8 +123,7 @@
       ]
     }
   ],
-  "notes": "architecture 2 spent at stage 4 on 2026-10-20: a round-2 reader landed the call with the start-state fill (score_reader exit 1); re-root next",
+  "notes": "architecture 3 drawn 2026-10-20 after architecture 2 was spent at stage 4",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-20T12:46:43Z",
-  "architecture_spent": true
+  "registered": "2026-10-20T13:56:06Z"
 }

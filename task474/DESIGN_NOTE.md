@@ -1,6 +1,37 @@
-# task474 design note: Ridgeline Power Cooperative's 2027 start-up NOx upgrade program
+# task474 design note: Ridgeline Power Cooperative's 2027 SCR upgrade designations (architecture 3)
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first. Architecture 2, a
+Architecture 3, drawn 2026-10-20 after architecture 2 (monitor gaps filled by hours since start) was spent at stage 4.
+The world, the decision and the program rules carry over; the decisive step is new and the architecture 2 fill is
+now the default path.
+
+## Draw
+
+- **Pairing.** Client domain physical-environmental-sciences, task type emissions inventory (hourly continuous
+  emissions monitoring conformed into a seasonal unit inventory), objective Data Extraction & Conformation (ETL): the
+  DAHS export, the monitor maintenance tickets (local time), the generating unit register, the gas invoices and the
+  outage event report are conformed into one unit-season inventory that the program's rate rule runs on.
+- **Decision.** How many, and which, of the nine combined-cycle units the 2027 SCR Upgrade Program designates: a unit
+  whose 2026 ozone-season NOx per gross MWh is 0.170 or more. Retrospective by necessity: the program's rule reads the
+  closed 2026 season, and the call funds the 2027 capital budget.
+- **The quantity.** Each unit's NOx emitted over its season operating hours, divided by its gross MWh. The NOx in the
+  hours the analyzers were out is unobserved and estimated; that estimate is the field's work.
+- **Pitfall, data-native.** Two plants' instrument air headers tripped through the summer; instrument air feeds both
+  the analyzers' dilution probes and the SCR's air-operated ammonia flow valves, so in those gap hours the unit ran
+  uncontrolled at about twenty times its controlled NOx per MMBtu, and the first measured hour after each trip, before
+  the ammonia vaporizer is back to temperature, shows that level.
+- **Default path's answer.** Fill every gap from the unit's own measured hours in the same start state and load (the
+  architecture 2 golden, the field's standard handling): AF-2, CB-1, DF-1, DF-3, SR-1 (five).
+- **Golden.** Fill the instrument-air gaps at the unit's NOx per MMBtu in the first measured hour after its air losses,
+  times each hour's heat input, and every other gap as the default path does: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3, SR-1
+  (seven).
+- **Shape.** 07, a grid: nine units by three figures (designated, fuel cost, forced outage hours) in the workbook,
+  plus the count, the designated set and the memo's chart with its named parts.
+- **Deliverables.** cc_unit_nox_inventory_2026.xlsx and scr_upgrade_designations_2027.pdf (a bar chart of every unit's
+  rate against the target).
+- **Guard.** WARN (driver 0.28 against this slot's architecture 2; differentiation lines for task193 and task254);
+  personas Tamara Gill and Martin Estrada from guard.py names.
+
+## Tried and rejected` first. Architecture 2, a
 re-root drawn 2026-10-20 after architecture 1 (the planning-region poverty split) was spent at stage 4; its identity
 is in the card's lineage.
 

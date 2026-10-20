@@ -8,7 +8,7 @@ import datetime as dt
 COOP = "Ridgeline Power Cooperative"
 DEPT = "Environmental Services"
 PEOPLE = {"engineer": ("Tamara Gill", "Senior Environmental Compliance Engineer"),
-          "manager": ("Kevin Cohen", "Manager, Generation Engineering")}
+          "manager": ("Martin Estrada", "Manager, Generation Engineering")}
 SEED = 474
 YEAR = 2026
 SEASON = (dt.date(2026, 5, 1), dt.date(2026, 9, 30))       # the ozone season, both days included
@@ -34,15 +34,20 @@ CC = {
     "SR-1": ("Sable Ridge", 1, 247, 3.6, .035, 530, .06, .020, 24),
     "SR-2": ("Sable Ridge", 2, 251, 4.0, .030, 575, .64, .023, 22),
 }
+# each unit's uncontrolled NOx (lb per MMBtu, SCR out of service), set by its combustors
+UNC = {"CB-1": .118, "CB-2": .121, "AF-1": .112, "AF-2": .109, "DF-1": .036, "DF-2": .035, "DF-3": .034, "SR-1": .037,
+       "SR-2": .036}
+# plant instrument air losses in the 2026 ozone season: (number, typical hours)
+AIR = {"Cutler Bend": (12, 9.0), "Ashfork": (16, 10.0), "Dunmore Flats": (2, 4.0), "Sable Ridge": (1, 4.0)}
 # other monitored units, outside the program: simple-cycle peakers and the coal unit
 OTHER = {
     "AF-CT3": ("Ashfork", "simple cycle", 88), "AF-CT4": ("Ashfork", "simple cycle", 86),
     "SR-CT3": ("Sable Ridge", "simple cycle", 92), "HC-4": ("Holt Creek", "coal steam", 412),
 }
 # the golden's 2026 ozone-season NOx per MWh (tune.py scales each unit's start NOx until the cut pack lands here)
-DESIRED = {"CB-1": .262, "CB-2": .101, "AF-1": .188, "AF-2": .228, "DF-1": .186, "DF-2": .099, "DF-3": .189,
-           "SR-1": .187, "SR-2": .186}
-ADJ = {'AF-1': 0.9014, 'AF-2': 0.9968, 'CB-1': 0.9012, 'CB-2': 0.96658, 'DF-1': 1.36992, 'DF-2': 0.98047, 'DF-3': 0.85833, 'SR-1': 1.05076, 'SR-2': 1.04728}
+DESIRED = {"CB-1": .268, "CB-2": .186, "AF-1": .187, "AF-2": .251, "DF-1": .186, "DF-2": .099, "DF-3": .189,
+           "SR-1": .187, "SR-2": .151}
+ADJ = {'AF-1': 0.47015, 'AF-2': 0.87903, 'CB-1': 0.7154, 'CB-2': 1.21965, 'DF-1': 1.37014, 'DF-2': 0.98317, 'DF-3': 0.85185, 'SR-1': 1.04345, 'SR-2': 0.80133}
 
 FILES = {
     "dahs": "dahs_hourly_export_2026.csv",

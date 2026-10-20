@@ -1,6 +1,8 @@
 """The routes from the conformed hourly record to each combined-cycle unit's ozone-season NOx per gross MWh.
 
-rec: {unit: dict(load, nox, since)} over the season's operating hours, nox None where the analyzers were out.
+rec: {unit: dict(load, nox, since, heat, air, blocks)} over the season's operating hours, nox None where the analyzers
+were out; air marks the hours inside a plant instrument air loss and blocks lists each such run of hours with the NOx
+per MMBtu measured in the operating hour before it and the one after it (None where that hour was not measured).
 Every route takes the same record; they differ only in how an hour without a measurement is filled."""
 import numpy as np
 
@@ -33,6 +35,8 @@ def fill(r, route):
         return tot + (b[0] + b[1] * load[miss] + b[2] * load[miss] ** 2).sum()
     if route == "rate":
         return tot + (nox[m].sum() / load[m].sum()) * load[miss].sum()
+    if route == "state":
+        route = "golden"
     if route in ("golden", "state_rate", "state4"):
         top = 4 if route == "state4" else 3
         add = 0.0
@@ -54,12 +58,51 @@ def fill(r, route):
     raise KeyError(route)
 
 
+def _without_air(r):
+    keep = [not a for a in r["air"]]
+    return dict(load=[v for v, k in zip(r["load"], keep) if k], nox=[v for v, k in zip(r["nox"], keep) if k],
+                since=[v for v, k in zip(r["since"], keep) if k])
+
+
+def after_rate(r):
+    """The unit's NOx per MMBtu in the first measured hour after its air losses, averaged over them."""
+    v = [b[3] for b in r["blocks"] if b[3] is not None]
+    return float(np.mean(v)) if v else None
+
+
+def fill_air(r, route):
+    """The state fill on every other gap, and the hours of each air loss filled by the route."""
+    base = {"golden": "golden", "g_event": "golden", "g_state4": "state4", "g_reg": "state_reg", "interp": "golden",
+            "air_load": "golden"}[route]
+    tot = fill(_without_air(r), base)
+    heat = np.array(r["heat"], float)
+    if route == "air_load":
+        load, nox = np.array(r["load"], float), np.array([np.nan if v is None else v for v in r["nox"]], float)
+        m, a = ~np.isnan(nox), np.array(r["air"], bool)
+        b = _fit(None, nox[m], [np.ones(m.sum()), load[m], load[m] ** 2])
+        return tot + (b[0] + b[1] * load[a] + b[2] * load[a] ** 2).sum()
+    u = after_rate(r)
+    for i0, i1, before, after in r["blocks"]:
+        q = heat[i0:i1 + 1].sum()
+        if route == "interp":
+            v = [x for x in (before, after) if x is not None]
+            tot += float(np.mean(v)) * q if v else 0.0
+        elif route == "g_event" and after is not None:
+            tot += after * q
+        else:
+            tot += (u or 0.0) * q
+    return tot
+
+
 def rate(r, route):
+    if route in AIR_ROUTES:
+        return fill_air(r, route) / np.array(r["load"], float).sum()
     return fill(r, route) / np.array(r["load"], float).sum()
 
 
-FAMILY = ["golden", "state_rate", "state4", "state_reg"]
-WRONG = ["record", "share", "load", "rate"]
+AIR_ROUTES = ["golden", "g_event", "g_state4", "g_reg", "interp", "air_load"]
+FAMILY = ["golden", "g_event", "g_state4", "g_reg"]
+WRONG = ["state", "interp", "air_load", "load", "record", "share", "rate"]
 
 
 def designated(rec, route):

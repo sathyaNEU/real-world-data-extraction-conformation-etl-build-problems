@@ -86,7 +86,55 @@ def other_unit(rng, key):
     return dict(on=on, since=s, load=load, heat=heat, lb=lb, out=out, status=status, plant=plant, cap=cap)
 
 
+def air_events(rng, units):
+    """Plant instrument air losses: the header trips on hot afternoons (the compressor's discharge temperature), mostly
+    while the plant's units run, and is back after a few hours. {plant: [(first hour, hours)]}."""
+    ev = {}
+    for plant, (n, mean) in W.AIR.items():
+        us = [u for u in units if units[u]["plant"] == plant]
+        on = np.array([units[u]["on"] for u in us])
+        steady = np.array([units[u]["since"] >= 4 for u in us])
+        run = np.where(on.any(axis=0) & (steady | ~on).all(axis=0) & IN_SEASON)[0]
+        hs = []
+        while len(hs) < n:
+            h0 = int(rng.choice(run))
+            if not 11 <= HOURS[h0].hour <= 17 or any(abs(h0 - a) < 30 for a, _ in hs):
+                continue
+            hs.append((h0, int(max(2, round(rng.gamma(4.0, mean / 4.0))))))
+        ev[plant] = sorted(hs)
+    return ev
+
+
+def apply_air(rng, x, events, unc):
+    """While the header is down the analyzers' dilution probes have no air and the SCR's ammonia flow valves close, so
+    the unit runs uncontrolled and unmeasured; the probes come back with the air, and ammonia injection resumes once
+    the vaporizer is back to temperature, an hour or two later, so the first measured hours are still uncontrolled."""
+    on, heat = x["on"], x["heat"]
+    air = np.zeros(NH, bool)
+    tail = np.zeros(NH, float)
+    for h0, d in events:
+        air[h0:h0 + d] = True
+        k = h0 + d
+        if k < NH:
+            tail[k] = 1.0
+        if k + 1 < NH and rng.random() < .5:
+            tail[k + 1] = rng.uniform(.25, .7)
+    air &= on
+    tail = np.where(on & ~air, tail, 0.0)
+    free = unc * heat * np.exp(rng.normal(0, .045, NH))
+    x["lb"] = np.where(air, free, np.where(tail > 0, tail * free + (1 - tail) * x["lb"], x["lb"]))
+    x["out"] = np.where(tail > 0, False, x["out"]) | air
+    x["status"] = np.where(air, rng.choice(["OOC", "MAINT", "CALFAIL", "COMM"], NH, p=[.55, .15, .2, .1]),
+                           np.where(tail > 0, "OK", x["status"]))
+    x["air"], x["tail"] = air, tail
+    return x
+
+
 def fleet(rng):
     units = {k: cc_unit(rng, k) for k in W.CC}
     units.update({k: other_unit(rng, k) for k in W.OTHER})
+    ev = air_events(rng, {k: v for k, v in units.items() if k in W.CC})
+    for k in W.CC:
+        units[k] = apply_air(rng, units[k], ev[units[k]["plant"]], W.UNC[k])
+        units[k]["air_events"] = ev[units[k]["plant"]]
     return units
