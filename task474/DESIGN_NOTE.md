@@ -325,3 +325,12 @@ Measured by: generator/ceiling.py
   sentence), which held at 0 of 18 for both round-6 readers; the realism fixes (part-hour loads under nameplate,
   start profiles that differ by unit). Dropping "air-to-open" was ruled out: it reopens the round-3 judge's finding.
 
+- 2026-10-20, at stage 4 (architecture 4 spent): isolated reader 1 (sonnet, medium, fresh unzip) landed the call and
+  all 24 ask figures (score_reader.py exit 1). It saw that the remittance's bulk lines tie to the roster's counts each
+  month, read the member-level lines as retroactive adjustments, netted them per member and month (3,009 added, 923
+  removed, rate cell pairs to zero) and noted the result equals the remittance total: the 820 is self-describing, an
+  adjustment layer over a tied roster, and reconciling a roster to capitation is the reflex of any health plan ETL
+  analyst, so the exposure rebuild is a work order, not a stump. The pharmacy latest-line device fell to the same
+  reflex (5,646 claim numbers with two lines, each taken at its later line). Lesson for the re-root: a decisive step
+  whose evidence is a second source that ties to the first and carries signed corrections is found by the first
+  reconciliation; and the latest-line-per-key device is spent in this lane. Reader 2 and the judge were stopped.
