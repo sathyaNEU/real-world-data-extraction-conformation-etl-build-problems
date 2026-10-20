@@ -28,7 +28,7 @@
   "2027"
  ],
  "input_gates": {
-  "files": 19,
+  "files": 20,
   "formats": [
    "csv",
    "docx",
@@ -36,12 +36,12 @@
    "xlsx"
   ],
   "largest_file": "roll_transactions_2025_2026.csv",
-  "largest_file_rows": 319994
+  "largest_file_rows": 362786
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task471/generator/build.py (seeded, deterministic) in the layouts of a national statistics office's census outputs (a workbook of usual residents by region, sex and single year of age), its post-enumeration survey's person files, sampled meshblocks and methods report, the vital and border series by year of birth with their notes, an electoral commission's roll at census day by electorate, its electorate concordance, its roll transaction log with a data dictionary and platform migration notes, its campaign field plan, the office's file specification, earlier population estimates and a census field operations summary; the country is unnamed and the office, commission, regions, electorates and people named are fictional",
+   "origin": "constructed for this task by task471/generator/build.py (seeded, deterministic) in the layouts of a national statistics office's census outputs (a workbook of usual residents by region, sex and single year of age), its post-enumeration survey's person files, sampled meshblocks and methods report, the vital and border series by year of birth with their notes, an electoral commission's roll at census day by electorate, its electorate concordance, its roll at the 2023 general election by electorate, its roll transaction log with a data dictionary and platform migration notes, its campaign field plan, the office's file specification, earlier population estimates and a census field operations summary; the country is unnamed and the office, commission, regions, electorates and people named are fictional",
    "date": "2026-10-14",
    "license": "original work for this task; no third-party data"
   }

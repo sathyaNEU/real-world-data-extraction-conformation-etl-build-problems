@@ -286,10 +286,17 @@ import datetime as _dt
 
 
 def local_to_utc(t):
-    """the country's time to UTC: UTC+13 in daylight time (28 September 2025 to 5 April 2026), UTC+12 otherwise"""
-    lo, hi = W.DST_2025
-    off = 13 if lo <= t < hi else 12
-    return t - _dt.timedelta(hours=off)
+    """the country's time to UTC: UTC+13 in daylight time (the last Sunday in September to the first Sunday in April),
+    UTC+12 otherwise"""
+    return t - _dt.timedelta(hours=13 if W.daylight(t) else 12)
+
+
+def utc_to_local(u):
+    for off in (13, 12):
+        t = u + _dt.timedelta(hours=off)
+        if W.daylight(t) == (off == 13):
+            return t
+    return u + _dt.timedelta(hours=12)
 
 
 def _workday(d):
@@ -297,13 +304,13 @@ def _workday(d):
 
 
 def roll_log(reg, roll_counts, seed):
-    """enrolments, removals and reinstatements processed from census day to the extract's close: one row a transaction,
-    (txn_id, stamp as stored, type, reason, source, status, elector_no, person_ref, electorate number, address_type, sex,
-    birth_year, ref_txn, local_time, platform, kind, electorate code); the electorate number is the 2020 review's on the
-    old platform and the 2024 review's on the new"""
+    """enrolments, removals and reinstatements processed from census day to the extract's close (23:59:59 UTC on 30
+    September 2026): one row a transaction, [txn_id, stamp as stored, type, reason, source, status, elector_no,
+    person_ref, electorate number, address_type, sex, birth_year, ref_txn, local_time, platform, kind, electorate code,
+    the removal it puts right]; the two platforms are described in world.py"""
     rng = rng_for(seed, 6)
     start = _dt.datetime.combine(W.CENSUS_DAY, _dt.time(0, 0))
-    end_local = _dt.datetime(2026, 7, 1, 11, 59, 59)         # the extract closes at 23:59:59 UTC on 30 June 2026
+    end_local = utc_to_local(W.EXTRACT_CLOSE_UTC)
     switch = _dt.datetime.combine(W.PLATFORM_SWITCH, _dt.time(0, 0))
     days = [(W.CENSUS_DAY + _dt.timedelta(days=i)) for i in range((end_local.date() - W.CENSUS_DAY).days + 1)]
     elec_by_region = {c: [e for e in W.ELECTORATES if e[2] == c] for c in W.CODES}
@@ -317,9 +324,7 @@ def roll_log(reg, roll_counts, seed):
         for e, k in zip(es, draw):
             electors[e[0]] = int(k)
     rows = []
-    next_no = [41873205]          # the next elector number at census day
-    old_seq = [1]
-
+    next_no = [W.CENSUS_DAY_FIRST_NO]          # the next elector number at census day
     used_refs = set()
 
     def new_ref():
@@ -336,8 +341,9 @@ def roll_log(reg, roll_counts, seed):
     used_nos = set()
 
     def existing():
+        """an elector enrolled before census day: their record and their number"""
         while True:
-            no = "%08d" % int(rng.integers(10000000, 41873205))
+            no = "%08d" % int(rng.integers(10000000, W.CENSUS_DAY_FIRST_NO))
             if no not in used_nos:
                 used_nos.add(no)
                 return new_ref(), no
@@ -354,45 +360,63 @@ def roll_log(reg, roll_counts, seed):
     def business(d):
         return _dt.datetime.combine(d, _dt.time(8, 0)) + _dt.timedelta(seconds=int(rng.integers(0, 9 * 3600 + 1800)))
 
-    def add(local, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn="", kind=""):
+    def overnight(d):
+        """the old platform's duplicate check, run from 02:00 the night after"""
+        return _dt.datetime.combine(d + _dt.timedelta(days=1), _dt.time(2, 0)) + _dt.timedelta(
+            seconds=int(rng.integers(0, 5400)))
+
+    def add(local, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn="", kind="", fixes=""):
         if local < start or local > end_local:
             return None
         tid, st, plat = stamp(local)
-        rows.append([tid, st, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn, local, plat, kind, elec])
+        rows.append([tid, st, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn, local, plat, kind, elec,
+                     fixes])
         return tid
+
+    def put_right(bt, removal, removal_old, eno, ref, e, sex, by, addr="R", kind=""):
+        """a removal made in error put right: on the old platform by enrolling the person again under a new record,
+        pointing at the removal; on the new by reinstating the record, pointing at the removal by the new platform's
+        key, which for a removal the old platform made is the key the migration gave it"""
+        if bt < switch:
+            return add(bt, "NEW", "", "PAP", "A", eno, new_ref(), e, addr, sex, by, ref_txn=removal, kind=kind,
+                       fixes=removal)
+        return add(bt, "REI", "", "", "A", eno, ref, e, addr, sex, by, ref_txn="ORPHAN_NEW" if removal_old else removal,
+                   kind=kind, fixes=removal)
 
     all_elec = [e[0] for e in W.ELECTORATES]
     size = np.array([electors[e] for e in all_elec], float)
+    # moves to another electorate on the old platform: an enrolment at the new address under a new record and the
+    # elector's own number, then overnight the removal of the older record as a duplicate
     for d in days:
-        wd = _workday(d)
+        if not (_workday(d) and d < W.PLATFORM_SWITCH):
+            continue
         for e in all_elec:
             c = W.ELECTORATE_REGION[e]
-            n = electors[e]
-            # moves to another electorate: on the old platform an enrolment there under a new person reference and
-            # elector number, then the removal of the old record here pointing back at it
-            if wd and d < W.PLATFORM_SWITCH:
-                k = rng.poisson(n * 0.036 / 250.0)
-                for _ in range(k):
-                    ref, old_no = existing()
-                    same = [x[0] for x in elec_by_region[c] if x[0] != e]
-                    if same and rng.random() < 0.55:
-                        dest = same[int(rng.integers(0, len(same)))]
-                    else:
-                        dest = all_elec[int(rng.choice(len(all_elec), p=size / size.sum()))]
-                        if dest == e:
-                            continue
-                    t = business(d)
-                    sex = "M" if rng.random() < 0.49 else "F"
-                    by = int(rng.integers(1940, 2006))
-                    src = "ONL" if rng.random() < 0.7 else "PAP"
-                    tid_new = add(t, "NEW", "", src, "A", "NEW_NO", new_ref(), dest, "R", sex, by, kind="move_new")
-                    add(t + _dt.timedelta(seconds=int(rng.integers(5, 90))), "DEL", "05", "", "A", old_no, ref, e, "R",
-                        sex, by, ref_txn=tid_new or "", kind="move_del")
-            # deaths: removals from the death register match (old platform: monthly on the first working day; new:
-            # weekly, Wednesdays at 07:30) or a family's notification during the day
-            pass
-    # deaths, by electorate, spread over the window and removed later
+            k = rng.poisson(electors[e] * 0.036 / 250.0)
+            for _ in range(k):
+                ref, eno = existing()
+                same = [x[0] for x in elec_by_region[c] if x[0] != e]
+                if same and rng.random() < 0.55:
+                    dest = same[int(rng.integers(0, len(same)))]
+                else:
+                    dest = all_elec[int(rng.choice(len(all_elec), p=size / size.sum()))]
+                    if dest == e:
+                        continue
+                sex = "M" if rng.random() < 0.49 else "F"
+                by = int(rng.integers(1940, 2006))
+                src = "ONL" if rng.random() < 0.7 else "PAP"
+                add(business(d), "NEW", "", src, "A", eno, new_ref(), dest, "R", sex, by, kind="move_new")
+                add(overnight(d), "DEL", "03", "", "A", eno, ref, e, "R", sex, by, kind="move_del")
+    # deaths, by electorate, spread over the extract and removed later: by the death registration match (old platform:
+    # monthly on the first working day; new: weekly, Wednesdays at 07:30) or on a family's notification during the day;
+    # a match made in error is put right when the elector or the family comes forward
     death_rate = 0.0078
+
+    def first_working(y, m):
+        dd = _dt.date(y, m, 1)
+        while not _workday(dd):
+            dd += _dt.timedelta(days=1)
+        return dd
     for e in all_elec:
         n = electors[e]
         k = rng.poisson(n * death_rate * (len(days) / 365.0) * 1.05)
@@ -410,27 +434,55 @@ def roll_log(reg, roll_counts, seed):
             else:
                 reg_day = (died + _dt.timedelta(days=int(rng.integers(5, 25)))).date()
                 if reg_day < W.PLATFORM_SWITCH:
-                    nxt = _dt.date(reg_day.year + (reg_day.month == 12), reg_day.month % 12 + 1, 1)
-                    while not _workday(nxt):
-                        nxt += _dt.timedelta(days=1)
-                    t = _dt.datetime.combine(nxt, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
+                    nxt = first_working(reg_day.year + (reg_day.month == 12), reg_day.month % 12 + 1)
                 else:
                     nxt = reg_day + _dt.timedelta(days=(2 - reg_day.weekday()) % 7 or 7)
-                    t = _dt.datetime.combine(nxt, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
+                t = _dt.datetime.combine(nxt, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
             reason = "01" if t < switch else ("12" if notified else "11")
             tid = add(t, "DEL", reason, "", "A", eno, ref, e, "R", sex, by, kind="death")
-            # a removal made in error is put right: on the old platform by enrolling the person again under a new
-            # reference and number pointing at the removal, on the new by reinstating the record
             old = t < switch
-            if tid and not notified and rng.random() < (0.02 if old else 0.007):
-                back = t + _dt.timedelta(days=int(rng.integers(20, 120) if old else rng.integers(6, 30)))
-                if _workday(back.date()):
-                    bt = business(back.date())
-                    if bt < switch:
-                        add(bt, "NEW", "", "PAP", "A", "NEW_NO", new_ref(), e, "R", sex, by, ref_txn=tid,
-                            kind="death_rev")
-                    else:
-                        add(bt, "REI", "", "", "A", eno, ref, e, "R", sex, by, ref_txn=tid, kind="death_rev")
+            if tid and not notified and rng.random() < (0.024 if old else 0.010):
+                back = (t + _dt.timedelta(days=int(rng.integers(20, 150) if old else rng.integers(6, 150)))).date()
+                if _workday(back):
+                    put_right(business(back), tid, old, eno, ref, e, sex, by, kind="death_rev")
+    # removals made before census day in error and put right after it: matches of the old platform's December to March
+    # runs, and removals from the December 2024 overseas batch (overseas electors, put back at their overseas address)
+    pre_runs = [first_working(2024, 12), first_working(2025, 1), first_working(2025, 2), first_working(2025, 3)]
+    for e in all_elec:
+        n = electors[e]
+        for run in pre_runs:
+            k = rng.poisson(n * death_rate / 12.0 * 1.05 * 0.82 * 0.024)
+            for _ in range(k):
+                ref, eno = existing()
+                sex = "M" if rng.random() < 0.5 else "F"
+                by = int(rng.integers(1925, 1990))
+                t0 = _dt.datetime.combine(run, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
+                back = (t0 + _dt.timedelta(days=int(rng.integers(20, 150)))).date()
+                if _workday(back):
+                    put_right(business(back), ("ORPHAN_OLD", t0), True, eno, ref, e, sex, by, kind="pre_rev")
+        k = rng.poisson(n * 0.0012 * 0.04)
+        for _ in range(k):
+            ref, eno = existing()
+            sex = "M" if rng.random() < 0.5 else "F"
+            by = int(rng.integers(1950, 2003))
+            t0 = _dt.datetime(2024, 12, 3, 21, 15) + _dt.timedelta(seconds=int(rng.integers(0, 2400)))
+            back = (t0 + _dt.timedelta(days=int(rng.integers(30, 540)))).date()
+            if _workday(back):
+                put_right(business(back), ("ORPHAN_OLD", t0), True, eno, ref, e, sex, by, addr="O", kind="pre_rev_o")
+        # the roll canvass of January and February 2025: electors found not living at their address were removed under
+        # objection, and those removed in error are put back when they come forward
+        k = rng.poisson(n * 0.006 * 0.015)
+        for _ in range(k):
+            ref, eno = existing()
+            sex = "M" if rng.random() < 0.5 else "F"
+            by = int(rng.integers(1940, 2006))
+            d0 = _dt.date(2025, 1, 13) + _dt.timedelta(days=int(rng.integers(0, 40)))
+            while not _workday(d0):
+                d0 += _dt.timedelta(days=1)
+            t0 = business(d0)
+            back = (t0 + _dt.timedelta(days=int(rng.integers(30, 540)))).date()
+            if _workday(back):
+                put_right(business(back), ("ORPHAN_OLD", t0), True, eno, ref, e, sex, by, kind="pre_rev")
     # other removals: overseas for three years (a December batch), duplicates, objections, and on the new platform
     # removals at the elector's own request under the reused code 01
     for e in all_elec:
@@ -450,10 +502,21 @@ def roll_log(reg, roll_counts, seed):
             ref, eno = existing()
             add(batch + _dt.timedelta(seconds=int(rng.integers(0, 2400))), "DEL", "02", "", "A", eno, ref, e, "O",
                 "M" if rng.random() < 0.5 else "F", int(rng.integers(1950, 2003)), kind="other_del")
+
+    def second_form(tid, ref1, d, e, sex, by):
+        """an elector enrolled on the old platform sends a second form: a new record under their number, and overnight
+        the first record removed as a duplicate"""
+        d2 = d + _dt.timedelta(days=int(rng.integers(3, 45)))
+        while not _workday(d2):
+            d2 += _dt.timedelta(days=1)
+        if d2 + _dt.timedelta(days=1) >= W.PLATFORM_SWITCH:
+            return
+        add(business(d2), "NEW", "", "CAM" if rng.random() < 0.6 else "PAP", "A", ("SAME", tid), new_ref(), e, "R", sex,
+            by, kind="dup_new")
+        add(overnight(d2), "DEL", "03", "", "A", ("SAME", tid), ref1, e, "R", sex, by, kind="dup_del")
     # new enrolments: provisional enrolments transferred at 18 (old platform: the first of the month at 06:00 for the
-    # month's birthdays; new: every day at 06:00 for that day's), direct enrolments, data-match enrolments
+    # month's birthdays; new: every day at 06:00 for that day's), direct enrolments, campaign enrolments
     for e in all_elec:
-        c = W.ELECTORATE_REGION[e]
         n = electors[e]
         turning = n * 0.0185                     # electors' worth of 18th birthdays a year in the electorate
         for d in days:
@@ -475,41 +538,72 @@ def roll_log(reg, roll_counts, seed):
                 t = _dt.datetime.combine(d, _dt.time(0, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 4 * 3600)))
                 status = "R" if rng.random() < 0.045 else "A"
                 addr = "O" if rng.random() < 0.02 else "R"
-                add(t, "NEW", "", "ONL", status, "NEW_NO" if status == "A" else "", new_ref(), e, addr,
-                    "M" if rng.random() < 0.5 else "F", int(rng.integers(1950, 2007)), kind="new")
+                sex, by, ref1 = "M" if rng.random() < 0.5 else "F", int(rng.integers(1950, 2007)), new_ref()
+                tid = add(t, "NEW", "", "ONL", status, "NEW_NO" if status == "A" else "", ref1, e, addr, sex, by,
+                          kind="new")
+                if tid and status == "A" and addr == "R" and d < W.PLATFORM_SWITCH and rng.random() < 0.022:
+                    second_form(tid, ref1, d, e, sex, by)
             if _workday(d):
                 k_p = rng.poisson(n * 0.0075 / 250.0)
                 for _ in range(k_p):
                     status = "R" if rng.random() < 0.06 else "A"
-                    add(business(d), "NEW", "", "PAP" if rng.random() < 0.8 else "CAM", status,
-                        "NEW_NO" if status == "A" else "", new_ref(), e, "R", "M" if rng.random() < 0.5 else "F",
-                        int(rng.integers(1945, 2007)), kind="new")
+                    src = "PAP" if rng.random() < 0.8 else "CAM"
+                    sex, by, ref1 = "M" if rng.random() < 0.5 else "F", int(rng.integers(1945, 2007)), new_ref()
+                    tid = add(business(d), "NEW", "", src, status, "NEW_NO" if status == "A" else "", ref1, e, "R", sex,
+                              by, kind="new")
+                    if tid and status == "A" and d < W.PLATFORM_SWITCH and rng.random() < 0.022:
+                        second_form(tid, ref1, d, e, sex, by)
     # re-enrolments of electors removed in the window (overseas removals who came back, objections followed by a new
-    # application), all on the new platform: a new elector number, the same person
+    # application), all on the new platform: the same record and number
     removed = [r for r in rows if r[2] == "DEL" and r[3] in ("02", "04")]
     for r in removed:
         if rng.random() < 0.06:
             back = r[13] + _dt.timedelta(days=int(rng.integers(20, 200)))
-            if back.date() <= end_local.date() and _workday(back.date()) and back.date() >= W.PLATFORM_SWITCH:
-                add(business(back.date()), "NEW", "", "ONL", "A", "NEW_NO", r[7], r[8], "R", r[10], r[11],
-                    kind="reenrol")
+            if _workday(back.date()) and back.date() >= W.PLATFORM_SWITCH:
+                add(business(back.date()), "NEW", "", "ONL", "A", r[6], r[7], r[16], "R", r[10], r[11], kind="reenrol")
     rows.sort(key=lambda r: (r[13], r[0]))
     # transaction ids in processing order: the old platform's running numbers, the new platform's random hex keys;
-    # elector numbers for accepted enrolments issued in the same order
-    ids = {}
+    # elector numbers for new electors issued in the same order
+    by_tmp = {r[0]: r for r in rows}
+    ids, used_hex = {}, set()
+
+    def hexkey():
+        while True:
+            k = "%016x" % int(rng.integers(1 << 60, (1 << 63) - 1))
+            if k not in used_hex:
+                used_hex.add(k)
+                return k
     seq = 132001
     for r in rows:
         if r[14] == "old":
             nid = "R25-%07d" % seq
             seq += int(rng.integers(1, 4))
         else:
-            nid = "%016x" % int(rng.integers(1 << 60, (1 << 63) - 1))
+            nid = hexkey()
         ids[r[0]] = nid
         r[0] = nid
         if r[2] == "NEW" and r[5] == "A" and r[6] == "NEW_NO":
             r[6] = new_no()
+    per_day = (seq - 132001) / float((switch - start).days)
+    old_used = set()
+
+    def old_key(t0):
+        """the old platform's running number of a transaction before the extract, at its daily pace"""
+        k = 132001 - int((start - t0).total_seconds() / 86400.0 * per_day) - int(rng.integers(1, 40))
+        while k in old_used:
+            k -= 1
+        old_used.add(k)
+        return "R25-%07d" % k
     for r in rows:
-        if r[12]:
-            r[12] = ids[r[12]]
+        if isinstance(r[6], tuple):
+            r[6] = by_tmp[r[6][1]][6]
+        x = r[12]
+        if isinstance(x, tuple):
+            r[12] = old_key(x[1])
+        elif x == "ORPHAN_NEW":
+            r[12] = hexkey()
+        elif x:
+            r[12] = ids[x]
+        r[17] = ids[r[17]] if isinstance(r[17], str) and r[17] else ""
         r[8] = (W.NUMBER_2020 if r[14] == "old" else W.NUMBER)[r[16]]
     return rows, electors

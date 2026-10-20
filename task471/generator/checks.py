@@ -84,17 +84,18 @@ def xlsx_text(path):
 def truth_asks(x):
     """the generator's truth for the two asks, from the simulated transactions by what the simulation made them, at
     their simulated local times and in the region of their electorate as simulated: a new elector is an accepted
-    residential enrolment of a person the simulation created in the window (not a move, a re-enrolment or an enrolment
-    that put right a removal made in error); a death is a removal the death loop wrote, less those put right"""
+    residential enrolment of a person the simulation created in the window, or the putting right of a removal made
+    before census day (not a move, a second form, a re-enrolment or the putting right of a removal in the window); a
+    death is a removal the death loop wrote, less those put right in the extract"""
     rows = x["log"]
-    back = {r[12] for r in rows if r[15] == "death_rev" and r[5] == "A"}
+    back = {r[17] for r in rows if r[15] == "death_rev" and r[5] == "A" and r[17]}
     first = W.CENSUS_DAY + dt.timedelta(days=1)
     new, died = collections.Counter(), collections.Counter()
     for r in rows:
         if not first <= r[13].date() <= W.LOG_END or r[5] != "A":
             continue
         reg = W.ELECTORATE_REGION[r[16]]
-        if r[15] == "new" and r[9] == "R":
+        if r[15] in ("new", "pre_rev") and r[9] == "R":
             new[reg] += 1
         elif r[15] == "death" and r[0] not in back:
             died[reg] += 1
@@ -285,10 +286,17 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(all(concord[r["ELECTORATE"]]["ELECTORATE_NAME"] == r["ELECTORATE_NAME"] for r in pk.snapshot),
        "R2 the renamed electorates: the roll and the concordance carry the same current names, so a join by name or "
        "code gives the same regions")
-    ck(sum(1 for r in concord.values() if r["NAME_BEFORE_2024_REVIEW"]) == 8, "eight electorates renamed in 2024")
-    ck(sorted(r["NUMBER_BEFORE_2024_REVIEW"] for r in concord.values()) == sorted(concord) == ["%02d" % i for i in
-                                                                                              range(1, 48)],
-       "both reviews number the 47 electorates 01 to 47, so every 2020 number is also a current number")
+    ge = {r["ELECTORATE"]: r for r in B.rows(f("roll_2023"))}
+    ck(len({r["ELECTORATE_NAME"] for r in ge.values()} - {r["ELECTORATE_NAME"] for r in concord.values()}) == 8,
+       "eight electorates carry another name on the 2023 general election's roll")
+    ck(sorted(ge) == sorted(concord) == ["%02d" % i for i in range(1, 48)] and list(concord.values())[0].keys() == {
+        "ELECTORATE", "ELECTORATE_NAME", "REGION", "REGION_NAME"},
+       "both rolls number the 47 electorates 01 to 47, so every 2020 number is also a current one; the concordance "
+       "carries the current electorates only")
+    shifted = sum(1 for k in ge if ge[k]["ELECTORATE_NAME"] != concord[k]["ELECTORATE_NAME"])
+    moved = sum(1 for k in ge if ge[k]["REGION"] != concord[k]["REGION"])
+    ck(shifted >= 15 and moved >= 10, "%d numbers name another electorate on the 2023 roll, %d of them in another region" % (
+        shifted, moved))
     # ------------------------------------------------------- R3: the analyst test on the clean truth, and no plant
     r0 = C.rungs(d0)
     ck(alloc_of(d0, r0["R2 dual-system cells"]) == DEFAULT,
@@ -312,8 +320,12 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
         win[hash(tuple(tuple(pk.log[i + j][k] for k in keyf) for j in range(5)))] += 1
     ck(max(win.values()) == 1, "R3c no block of five transactions repeats in the log")
     ck(len({r["TXN_ID"] for r in pk.log}) == len(pk.log), "R3c every transaction id once")
-    nos = collections.Counter(r["ELECTOR_NO"] for r in pk.log if r["TXN_TYPE"] == "NEW" and r["STATUS"] == "A")
-    ck(max(nos.values()) == 1, "R3c every accepted enrolment a new elector number")
+    nos = collections.defaultdict(set)
+    for r in pk.log:
+        if r["STATUS"] == "A":
+            nos[r["ELECTOR_NO"]].add((r["SEX"], r["BIRTH_YEAR"]))
+    ck("" not in nos and all(len(v) == 1 for v in nos.values()),
+       "R3c an elector number is one person: one sex and year of birth on every accepted row that carries it")
     # ----------------------------------------------------------------------------- the semantic fork table
     ck("aged 18 or over usually resident in the region on census day, 4 March 2025, whether or not the census counted "
        "them" in plan, "SF1 SF2 SF3 plan 2.1 files the population, the day and the people the census missed")
@@ -357,79 +369,137 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck("Dates and times are the country's time." in spec and "to the end of 30 June 2026" in spec
        and "the old platform's in the country's time, the new platform's in UTC" in dictionary,
        "SF16 specification 2 files the window and the country's time; the dictionary files each platform's time basis")
-    ck("The TXN_ID of the earlier transaction this one completes or reverses" in dictionary
-       and "electorate codes are those of the 2024 boundary review" not in migration,
-       "SF17 SF18 the dictionary files REF_TXN; nothing files which review numbered the old platform's electorates")
+    ck("For a transaction that puts right an earlier removal, the identifier of that removal" in dictionary
+       and "The platform's reference for the person's record" in dictionary and "The elector number" in dictionary
+       and "review" not in migration and "electorate" not in migration and "moved out" not in migration,
+       "SF17 SF18 the dictionary files REF_TXN, the record's reference and the elector number; the migration notes say "
+       "nothing of the electorates or of moves")
     ck("each person once" in spec and "not on the roll at the close of census day" in spec,
        "SF17 specification 3 files new electors")
     ck("A removal later reversed was not a removal." in spec and "11 Deceased" in dictionary.replace(":", "")
        and "01 deceased" in migration, "SF18 the death codes: the dictionary's 11 and 12, the migration notes' legacy 01")
+    ck("REI the reinstatement of a removed elector" in dictionary and "people added to the roll in the reporting period "
+       "who were not on the roll at the close of census day" in spec,
+       "SF20 a reinstatement puts a removed elector back on the roll; specification 3 counts the people added")
     # ----------------------------------------------------------------------------------------------- the asks
     tn, td = truth_asks(x)
     ga, gb = pk.new_electors(), pk.removed_dead()
     ck(all(ga[c] == tn[c] for c in W.CODES), "ask A equals the generator's truth in every region")
     ck(all(gb[c] == td[c] for c in W.CODES), "ask B equals the generator's truth in every region")
     ck(all(ga[c] > 0 and gb[c] > 0 for c in W.CODES), "every region has new electors and deaths")
+    round2 = dict(person="reftxn", prior="any", reinstated=False, reversal_new="drop")
     stops_a = {"SF19 every electorate number read as the 2024 review's": pk.new_electors(vintage=False),
-               "SF17 each person reference once, REF_TXN not followed": pk.new_electors(link=False),
-               "SF17 a person whose first transaction is a removal was on the roll": pk.new_electors(prior="first"),
-               "SF17 both, as the round-1 readers took it": pk.new_electors(link=False, prior="first"),
+               "SF17 a person a person reference": pk.new_electors(person="ref"),
+               "SF17 a person every reference REF_TXN ties together": pk.new_electors(person="reftxn"),
+               "SF17 on the roll if the first transaction in the window is a removal": pk.new_electors(prior="first"),
+               "SF17 on the roll if any transaction in the window is a removal": pk.new_electors(prior="any"),
+               "SF17 on the roll if the elector number was issued before census day": pk.new_electors(prior="number"),
+               "SF20 a reinstatement no addition": pk.new_electors(reinstated=False),
+               "SF20 an enrolment that puts a removal right no addition": pk.new_electors(reversal_new="drop"),
                "SF16 the stamps as written": pk.new_electors(utc=False),
                "census day included": pk.new_electors(census_day=True),
                "overseas addresses included": pk.new_electors(overseas=True),
-               "rejected applications included": pk.new_electors(rejected=True)}
+               "rejected applications included": pk.new_electors(rejected=True),
+               "the round-2 readers' reading": pk.new_electors(vintage=False, **round2),
+               "the round-2 readers' reading with the 2020 numbers": pk.new_electors(**round2)}
     for k, v in stops_a.items():
         ck(hits(v, ga) <= 1, "ask A stop misses 15 or 16: %s (%d kept)" % (k, hits(v, ga)))
     stops_b = {"SF19 every electorate number read as the 2024 review's": pk.removed_dead(vintage=False),
-               "SF18 only reinstatements reverse a removal": pk.removed_dead(reversals="rei"),
+               "SF18 a removal reversed only where REF_TXN names it": pk.removed_dead(reversals="reftxn"),
+               "SF18 the same, the reversal inside the window": pk.removed_dead(reversals="reftxn_window"),
                "SF18 no reversal netted": pk.removed_dead(reversals=None),
                "SF16 the stamps as written": pk.removed_dead(utc=False),
                "SF18 the current codes only": pk.removed_dead(codes="current"),
-               "SF18 01 as a death throughout": pk.removed_dead(codes="all")}
+               "SF18 01 as a death throughout": pk.removed_dead(codes="all"),
+               "the round-2 readers' reading": pk.removed_dead(vintage=False, reversals="reftxn")}
     for k, v in stops_b.items():
         ck(hits(v, gb) <= 3, "ask B stop misses 13 or more: %s (%d kept)" % (k, hits(v, gb)))
+    ck(hits(pk.removed_dead(reversals="record_window"), gb) <= 4,
+       "ask B: reversals tied by the record but only inside the window keep 4 or fewer (%d)" % hits(
+           pk.removed_dead(reversals="record_window"), gb))
     ck(hits(pk.removed_dead(census_day=True), gb) <= 10, "ask B: census day included keeps 10 or fewer")
-    best_a = max(hits(pk.new_electors(vintage=v, link=lk, prior=pr, utc=u), ga)
-                 for v, lk, pr, u in itertools.product((True, False), (True, False), ("record", "first"), (True, False))
-                 if (v, lk, pr, u) != (True, True, "record", True))
+    best_a = max(hits(pk.new_electors(vintage=v, person=pe, prior=pr, reinstated=ri), ga)
+                 for v, pe, pr, ri in itertools.product((True, False), ("elector", "ref", "reftxn"),
+                                                        ("record", "first", "any", "number"), (True, False))
+                 if (v, pe, pr, ri) != (True, "elector", "record", True))
     best_b = max(hits(pk.removed_dead(vintage=v, reversals=rv, utc=u, codes=co), gb)
-                 for v, rv, u, co in itertools.product((True, False), ("all", "rei", None), (True, False),
-                                                       ("platform", "current", "all"))
-                 if (v, rv, u, co) != (True, "all", True, "platform"))
-    ck(best_a <= 1 and best_b <= 3, "the strongest mishandled reading keeps %d of ask A and %d of ask B" % (best_a, best_b))
-    ck(hits(pk.new_electors(vintage=False, link=False), ga) == 0 and hits(pk.removed_dead(vintage=False, reversals="rei"),
-                                                                         gb) <= 1,
-       "the cracker's reading (every filed rule, the current numbers, reinstatements, one person a reference) misses")
-    # the evidence a grader verifies: the links and the numbering, record by record
-    by_id = {r["TXN_ID"]: r for r in pk.log}
-    moves = [(r, by_id.get(r["REF_TXN"])) for r in pk.log if r["TXN_TYPE"] == "DEL" and r["REASON"] == "05"]
-    ck(moves and all(n is not None and n["TXN_TYPE"] == "NEW" and n["SEX"] == r["SEX"] and n["BIRTH_YEAR"] ==
-                     r["BIRTH_YEAR"] and n["PERSON_REF"] != r["PERSON_REF"] and n["ELECTORATE"] != r["ELECTORATE"]
-                     and 0 < (M.local_time(r) - M.local_time(n)).total_seconds() <= 90 for r, n in moves),
-       "SF17 every old-platform removal for a move points at the enrolment at the new address seconds before it, another "
-       "person reference, the same sex and year of birth (%d)" % len(moves))
-    revs = [(r, by_id.get(r["REF_TXN"])) for r in pk.log if r["TXN_TYPE"] == "NEW" and r["REF_TXN"]]
-    ck(revs and all(d_ is not None and d_["TXN_TYPE"] == "DEL" and d_["REASON"] == "01" and M.old_platform(d_)
-                    and M.old_platform(r) and d_["ELECTORATE"] == r["ELECTORATE"] for r, d_ in revs),
-       "SF18 every enrolment pointing at a removal puts right an old-platform death removal in the same electorate (%d)"
-       % len(revs))
-    cross = [(r, by_id[r["REF_TXN"]]) for r in pk.log if r["TXN_TYPE"] == "REI" and M.old_platform(by_id[r["REF_TXN"]])]
+                 for v, rv, u, co in itertools.product((True, False), ("record", "record_window", "reftxn",
+                                                                       "reftxn_window", None),
+                                                       (True, False), ("platform", "current", "all"))
+                 if (v, rv, u, co) != (True, "record", True, "platform"))
+    ck(best_a <= 1 and best_b <= 4, "the strongest mishandled reading keeps %d of ask A and %d of ask B" % (best_a, best_b))
+    # the evidence a grader verifies, record by record
+    acc = [r for r in pk.log if r["STATUS"] == "A"]
+    in_log = {r["TXN_ID"] for r in pk.log}
+    cut = M.first_new_number(pk.log)
+    by_no = collections.defaultdict(list)
+    for r in acc:
+        by_no[r["ELECTOR_NO"]].append(r)
+    olds = [r for r in acc if M.old_platform(r) and r["TXN_TYPE"] == "NEW" and int(r["ELECTOR_NO"]) < cut]
+
+    def accounted(n):
+        if n["REF_TXN"]:
+            return True
+        return any(o["TXN_TYPE"] == "DEL" and o["REASON"] == "03" and o["PERSON_REF"] != n["PERSON_REF"]
+                   and 0 < (M.local_time(o) - M.local_time(n)).total_seconds() < 86400 for o in by_no[n["ELECTOR_NO"]])
+    ck(olds and all(accounted(n) for n in olds),
+       "SF17 every old-platform enrolment under a number issued before census day either names a removal it puts right "
+       "or is followed overnight by the removal of the elector's other record as a duplicate (%d)" % len(olds))
+    seconds = [r for r in acc if r["TXN_TYPE"] == "NEW" and int(r["ELECTOR_NO"]) >= cut and sum(
+        1 for o in by_no[r["ELECTOR_NO"]] if o["TXN_TYPE"] == "NEW") == 2]
+    ck(seconds and all(any(o["TXN_TYPE"] == "DEL" and o["REASON"] == "03" for o in by_no[r["ELECTOR_NO"]])
+                       for r in seconds),
+       "SF17 every number issued in the extract that two enrolments carry is a second form, the first record removed as "
+       "a duplicate (%d enrolments)" % len(seconds))
+    reis = [r for r in acc if r["TXN_TYPE"] == "REI"]
+    removed_before = {r["PERSON_REF"]: M.local_time(r) for r in acc if r["TXN_TYPE"] == "DEL"}
+    pre = [r for r in reis if r["PERSON_REF"] not in removed_before or removed_before[r["PERSON_REF"]] > M.local_time(r)]
+    ck(pre and all(r["REF_TXN"] and r["REF_TXN"] not in in_log for r in pre),
+       "SF20 every reinstatement of a record the extract never removed names a removal outside the extract (%d)" % len(pre))
+    ck(sum(1 for r in pre if r["ADDRESS_TYPE"] == "R" and M.in_window(M.local_time(r))) >= 50,
+       "SF20 reinstatements of removals made before census day put people on the roll in the window")
+    pre_new = [r for r in acc if r["TXN_TYPE"] == "NEW" and r["REF_TXN"] and r["REF_TXN"] not in in_log]
+    ck(pre_new and all(r["REF_TXN"].startswith("R25-") and r["REF_TXN"] < min(t for t in in_log if t.startswith("R25-"))
+                       for r in pre_new),
+       "SF20 every enrolment naming a removal outside the extract names an old-platform number before its first (%d)" % len(
+           pre_new))
+    old_dels = {r["PERSON_REF"]: r for r in acc if r["TXN_TYPE"] == "DEL" and M.old_platform(r)}
+    cross = [(r, old_dels[r["PERSON_REF"]]) for r in reis if not M.old_platform(r) and r["PERSON_REF"] in old_dels]
+    ck(len(cross) >= 40 and all(r["REF_TXN"] not in in_log and r["ELECTOR_NO"] == o["ELECTOR_NO"] for r, o in cross),
+       "SF18 the %d reinstatements of old-platform removals name keys the extract does not carry; the record and the "
+       "elector number tie each to its removal" % len(cross))
     same_now = sum(1 for a, b in cross if pk.region_of[a["ELECTORATE"]] == pk.region_of[b["ELECTORATE"]])
     same_then = sum(1 for a, b in cross if pk.region_2020[b["ELECTORATE"]] == pk.region_of[a["ELECTORATE"]])
-    ck(len(cross) >= 40 and same_then == len(cross) and same_now < 0.6 * len(cross),
-       "SF19 the %d reinstatements of old-platform removals restore the same region under the 2020 numbers (%d) and not "
-       "under the current ones (%d)" % (len(cross), same_then, same_now))
-    olds = {r["ELECTORATE"] for r in pk.log if M.old_platform(r)}
-    ck(olds <= set(pk.region_of), "SF19 every old-platform electorate number is also a current one: nothing fails to join")
+    ck(same_then == len(cross) and same_now < 0.6 * len(cross),
+       "SF19 those reinstatements restore the same region under the 2023 roll's numbers (%d of %d) and not under the "
+       "current ones (%d)" % (same_then, len(cross), same_now))
+    vol = collections.Counter(r["ELECTORATE"] for r in acc if M.old_platform(r))
+    ge_n = {k: int(r["ELECTORS"]) for k, r in ge.items()}
+    now_n = collections.Counter()
+    for r in pk.snapshot:
+        now_n[r["ELECTORATE"]] += int(r["ELECTORS"])
+
+    def corr(a, b):
+        ks = sorted(a)
+        xa = [a[k] for k in ks]
+        xb = [b[k] for k in ks]
+        ma, mb = sum(xa) / len(xa), sum(xb) / len(xb)
+        num = sum((p - ma) * (q - mb) for p, q in zip(xa, xb))
+        return num / (sum((p - ma) ** 2 for p in xa) * sum((q - mb) ** 2 for q in xb)) ** 0.5
+    c_then, c_now = corr(vol, ge_n), corr(vol, now_n)
+    ck(c_then > 0.8 and c_now < 0.5, "SF19 the old platform's transactions by electorate number follow the 2023 roll "
+                                     "(correlation %.2f), not the census-day roll (%.2f)" % (c_then, c_now))
+    ck(set(vol) <= set(pk.region_of), "SF19 every old-platform electorate number is also a current one: nothing fails to join")
     stamps = [r["PROCESSED"] for r in pk.log]
-    ck(min(stamps) >= "2025-03-04 00:00:00" and max(stamps) <= "2026-06-30 23:59:59",
+    ck(min(stamps) >= "2025-03-04 00:00:00" and max(stamps) <= "2026-09-30 23:59:59",
        "the log's stamps lie between census day and the extract's close (%s to %s)" % (min(stamps), max(stamps)))
-    late = sum(1 for r in pk.log if not M.old_platform(r) and M.local_time(r).date() > W.LOG_END)
-    ck(late > 500, "the extract's close in UTC carries %d transactions of the country's 1 July" % late)
-    first_new = min(int(r["ELECTOR_NO"]) for r in pk.log if r["TXN_TYPE"] == "NEW" and r["STATUS"] == "A")
-    ck(first_new % 1000 and first_new > max(int(r["ELECTOR_NO"]) for r in pk.log if r["TXN_TYPE"] == "DEL" and
-                                            r["ELECTOR_NO"] and int(r["ELECTOR_NO"]) < first_new),
-       "elector numbers run on from the census-day counter, not from a round number (%d)" % first_new)
+    edge = sum(1 for r in pk.log if not M.old_platform(r) and r["PROCESSED"][:10] == "2026-06-30"
+               and M.local_time(r).date() > W.LOG_END)
+    ck(edge > 300, "the window's close: %d new-platform transactions stamped 30 June in UTC are the country's 1 July" % edge)
+    late = [r for r in acc if r["TXN_TYPE"] == "REI" and M.local_time(r).date() > W.LOG_END]
+    ck(len(late) >= 15, "%d reinstatements after the window, some putting right removals inside it" % len(late))
+    ck(cut % 1000 and cut > max(int(r["ELECTOR_NO"]) for r in acc if int(r["ELECTOR_NO"]) < cut),
+       "elector numbers run on from the census-day counter, not from a round number (%d)" % cut)
     # --------------------------------------------------------------------------- separation and distractors
     pk2 = copy.copy(pk)
     pk2.log = []

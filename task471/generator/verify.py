@@ -137,41 +137,42 @@ def country_date(row):
 
 
 def asks(target, region_now, region_then):
-    """the old platform's electorate numbers are those of the 2020 review; a person is every reference REF_TXN ties
-    together; a person was on the roll on census day if a removal in the window took off a record no enrolment in the
-    window made; a removal a later accepted transaction reverses (REF_TXN) was not a removal"""
+    """the old platform's (R25-) electorate numbers are those of the 2023 general election's roll; a person is an elector
+    number and a record a person reference; a person was on the roll at the close of census day if a removal in the
+    window took off a record nothing in the window had put on the roll; each person not on it whom an accepted enrolment
+    or reinstatement put on the roll in the window counts once, at the address of the first; a removal was reversed by a
+    later accepted reinstatement of its record or a later accepted enrolment naming it, anywhere in the extract"""
     log = rows(find(target, r"^roll_transactions_\d+_\d+\.csv$"))
     region = lambda r: (region_then if r["TXN_ID"].startswith("R25-") else region_now)[r["ELECTORATE"]]
-    by_id = {r["TXN_ID"]: r for r in log}
-    group = {}
-
-    def root(p):
-        while group.get(p, p) != p:
-            p = group[p]
-        return p
-    for r in log:
-        if r["REF_TXN"] in by_id:
-            a, b = root(r["PERSON_REF"]), root(by_id[r["REF_TXN"]]["PERSON_REF"])
-            if a != b:
-                group[a] = b
-    window = [r for t, i, r in sorted((country_date(r)[1], i, r) for i, r in enumerate(log))
-              if FIRST <= t.date() <= LAST and r["STATUS"] == "A"]
-    made = {r["ELECTOR_NO"] for r in window if r["TXN_TYPE"] == "NEW"}
-    before = {root(r["PERSON_REF"]) for r in window if r["TXN_TYPE"] == "DEL" and r["ELECTOR_NO"] not in made}
-    new, done = {}, set()
-    for r in window:
-        p = root(r["PERSON_REF"])
-        if r["TXN_TYPE"] != "NEW" or p in done:
-            continue
-        done.add(p)
-        if p not in before and r["ADDRESS_TYPE"] == "R":
+    timed = sorted((country_date(r)[1], i, r) for i, r in enumerate(log))
+    window = [(t, r) for t, i, r in timed if FIRST <= t.date() <= LAST and r["STATUS"] == "A"]
+    put_on, before, first = set(), set(), {}
+    for t, r in window:
+        if r["TXN_TYPE"] == "DEL" and r["PERSON_REF"] not in put_on:
+            before.add(r["ELECTOR_NO"])
+        if r["TXN_TYPE"] in ("NEW", "REI"):
+            put_on.add(r["PERSON_REF"])
+            first.setdefault(r["ELECTOR_NO"], r)
+    new = {}
+    for who, r in first.items():
+        if who not in before and r["ADDRESS_TYPE"] == "R":
             new[region(r)] = new.get(region(r), 0) + 1
-    back = {r["REF_TXN"] for r in log if r["STATUS"] == "A" and r["TXN_TYPE"] in ("REI", "NEW") and r["REF_TXN"]}
+    later = {}
+    for t, i, r in timed:
+        if r["STATUS"] != "A":
+            continue
+        if r["TXN_TYPE"] == "REI":
+            later.setdefault(("record", r["PERSON_REF"]), []).append(t)
+        if r["TXN_TYPE"] in ("REI", "NEW") and r["REF_TXN"]:
+            later.setdefault(("named", r["REF_TXN"]), []).append(t)
     died = {}
-    for r in window:
+    for t, r in window:
         codes = ("01",) if r["TXN_ID"].startswith("R25-") else ("11", "12")
-        if r["TXN_TYPE"] == "DEL" and r["REASON"] in codes and r["TXN_ID"] not in back:
-            died[region(r)] = died.get(region(r), 0) + 1
+        if r["TXN_TYPE"] != "DEL" or r["REASON"] not in codes:
+            continue
+        if any(u > t for u in later.get(("record", r["PERSON_REF"]), []) + later.get(("named", r["TXN_ID"]), [])):
+            continue
+        died[region(r)] = died.get(region(r), 0) + 1
     return new, died
 
 
@@ -195,7 +196,8 @@ def main(target, gdir, quiet=False):
         fac[g] = (m_da / f_da) / (m / f)
     conc = {r["ELECTORATE"]: r for r in rows(find(target, r"^electorates_and_regions\.csv$"))}
     region_of = {k: r["REGION"] for k, r in conc.items()}
-    region_then = {r["NUMBER_BEFORE_2024_REVIEW"]: r["REGION"] for r in conc.values()}
+    region_then = {r["ELECTORATE"]: r["REGION"]
+                   for r in rows(find(target, r"^roll_at_2023_general_election_by_electorate\.csv$"))}
     names = {r["REGION"]: r["REGION_NAME"] for r in conc.values()}
     roll = {c: 0 for c in names}
     for r in rows(find(target, r"^roll_at_close_of_census_day_2025\.csv$")):
@@ -224,7 +226,7 @@ def main(target, gdir, quiet=False):
     check("01 deceased" in mig, "the migration notes file the old platform's death code")
     wb = openpyxl.load_workbook(find(target, r"^roll_extract_data_dictionary\.xlsx$"), read_only=True)
     dic = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
-    check("the new platform's in UTC" in dic and "completes or reverses" in dic,
+    check("the new platform's in UTC" in dic and "puts right an earlier removal" in dic,
           "the dictionary files the time basis and REF_TXN")
     wb = openpyxl.load_workbook(find(target, r"^enrolment_gap_file_specification\.xlsx$"), read_only=True)
     spec = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)

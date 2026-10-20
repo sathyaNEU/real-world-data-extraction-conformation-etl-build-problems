@@ -294,7 +294,8 @@ def write_dictionary(path):
     ws["A1"] = "Roll transactions extract: data dictionary"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("Electoral Commission, Data Services. The extract holds the enrolments, removals and reinstatements "
-                "processed from census day (4 March 2025) to 30 June 2026. Changes of name or address are not included.")
+                "processed from census day (4 March 2025) to 30 September 2026. Changes of name or address are not "
+                "included.")
     _head(ws, ["Column", "Description"], [16, 100], row=4)
     cols = [
         ("TXN_ID", "The transaction's identifier"),
@@ -306,12 +307,12 @@ def write_dictionary(path):
         ("SOURCE", "An enrolment's channel (Codes)"),
         ("STATUS", "A accepted; R rejected (an application that did not result in an enrolment)"),
         ("ELECTOR_NO", "The elector number; blank on a rejected application"),
-        ("PERSON_REF", "The Commission's reference for the person"),
+        ("PERSON_REF", "The platform's reference for the person's record"),
         ("ELECTORATE", "The electorate of the address enrolled at or removed from (electorate number)"),
         ("ADDRESS_TYPE", "R residential address; O overseas address"),
         ("SEX", "M or F"),
         ("BIRTH_YEAR", "Year of birth"),
-        ("REF_TXN", "The TXN_ID of the earlier transaction this one completes or reverses"),
+        ("REF_TXN", "For a transaction that puts right an earlier removal, the identifier of that removal"),
     ]
     for i, (k, v) in enumerate(cols):
         ws.cell(row=5 + i, column=1, value=k)
@@ -430,8 +431,8 @@ def write_migration(path):
          "digits); those processed by the new platform carry its 16-character keys. Person references and elector "
          "numbers were carried over unchanged."),
         ("Removal reasons before 4 August 2025", "Removals processed by the old platform carry its reason codes: 01 "
-         "deceased; 02 overseas for more than three years; 03 duplicate record; 04 objection upheld; 05 moved out of "
-         "the electorate. The new platform's codes are in the data dictionary."),
+         "deceased; 02 overseas for more than three years; 03 duplicate record; 04 objection upheld. The new platform's "
+         "codes are in the data dictionary."),
         ("Extracts", "Extracts are produced by Data Services on request, as comma-separated files with a header row, in "
          "the order the platforms processed the transactions."),
     ):

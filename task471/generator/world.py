@@ -129,14 +129,24 @@ NAME_2020 = {e[0]: RENAMED.get(e[0], e[1]) for e in ELECTORATES}
 NUMBER = {c: "%02d" % (i + 1) for i, c in enumerate(sorted(ELECTORATE_NAME, key=lambda c: ELECTORATE_NAME[c]))}
 NUMBER_2020 = {c: "%02d" % (i + 1) for i, c in enumerate(sorted(NAME_2020, key=lambda c: NAME_2020[c]))}
 
-# The roll platform. The old platform ran to 3 August 2025 and logged in the country's time; it kept no person master,
-# so every enrolment it took opened a new person reference with its new elector number, and it tied the transactions of
-# one person together only through REF_TXN: a move to another electorate was an enrolment at the new address and then a
-# removal (reason 05) of the old record pointing back at it, and a death removal made in error was put right by enrolling
-# the person again under a new number, pointing at the removal. Its electorates carried the 2020 numbers. The new
-# platform, live from 4 August 2025, keeps one reference per person, records a move as a change of address, reverses a
-# removal with a reinstatement (REI) and stamps every transaction in UTC; it reused reason code 01 for a removal at the
-# elector's own request, where the old platform's 01 was a death.
+# The roll platform. An elector keeps one elector number for life. The old platform ran to 3 August 2025 and logged in
+# the country's time; it opened a new record (person reference) for every enrolment it took, an enrolment by an elector
+# already on the roll included (a move to another electorate, or a second form), and its overnight duplicate check then
+# removed the elector's older record (reason 03); it put a death removal made in error right by enrolling the person
+# again, pointing at the removal. Its electorates carried the 2020 review's numbers. The new platform, live from 4 August
+# 2025, keeps one record per person, records a move as a change of address (outside the extract), puts a removal right by
+# reinstating the record (REI) and stamps every transaction in UTC; its references to transactions the old platform
+# processed are the keys it gave them at the migration, which the extract does not carry. It reused reason code 01 for a
+# removal at the elector's own request, where the old platform's 01 was a death.
 PLATFORM_SWITCH = dt.date(2025, 8, 4)
 LOG_END = dt.date(2026, 6, 30)       # the asks' window closes at the end of 30 June 2026 in the country's time
-DST_2025 = (dt.datetime(2025, 9, 28, 2), dt.datetime(2026, 4, 5, 3))   # local daylight time, UTC+13 between these
+EXTRACT_CLOSE_UTC = dt.datetime(2026, 9, 30, 23, 59, 59)    # the extract runs to the end of September 2026 in UTC
+# local daylight time, UTC+13 between these (the last Sunday in September to the first Sunday in April)
+DST = [(dt.datetime(2024, 9, 29, 2), dt.datetime(2025, 4, 6, 3)), (dt.datetime(2025, 9, 28, 2), dt.datetime(2026, 4, 5, 3)),
+       (dt.datetime(2026, 9, 27, 2), dt.datetime(2027, 4, 4, 3))]
+GE_2023 = dt.date(2023, 10, 14)      # the 2023 general election; its roll, by the 2020 review's electorates
+CENSUS_DAY_FIRST_NO = 41873205      # the elector-number counter at census day
+
+
+def daylight(local):
+    return any(lo <= local < hi for lo, hi in DST)

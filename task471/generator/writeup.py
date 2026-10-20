@@ -75,20 +75,20 @@ def write(fig_path, out_path):
         "estimated: about %s million adults." % (_names(str(p) for p in pct), _r2(nat["golden_adults_million"])),
         "Subtracted each region's electors and shared the %d organisers on the differences by largest remainders "
         "(plan 3.1; no share falls under two): the organisers above." % fig["call"]["total"],
-        "New electors: in roll_transactions_2025_2026.csv read PROCESSED in each platform's time basis "
-        "(roll_extract_data_dictionary.xlsx) and the old platform's (R25-) electorate numbers as the 2020 review's, "
-        "placed through NUMBER_BEFORE_2024_REVIEW in electorates_and_regions.csv (a reinstatement of an old-platform "
-        "removal restores the same region only under those numbers); took a person as every PERSON_REF that REF_TXN ties "
-        "together (an old-platform move is an enrolment at the new address and a removal of the old record pointing back "
-        "at it, under two references); kept the accepted transactions from 5 March 2025 to 30 June 2026 in the country's "
-        "time and counted each person once at the residential address of their first enrolment, leaving out anyone a "
-        "removal in the window shows on the roll on census day (it takes off a record no enrolment in the window made): "
-        "%s." % _n(asks["new_total"]),
-        "Removed because they had died: the accepted DEL rows in the same window with reason 01 on the old platform "
-        "(deceased, roll_platform_migration_notes.pdf) or 11 or 12 on the new (roll_extract_data_dictionary.xlsx), in "
-        "the region of their electorate read the same way, less those a later accepted transaction reverses through "
-        "REF_TXN (a reinstatement, or on the old platform an enrolment putting right a removal made in error): %s."
-        % _n(asks["died_total"]),
+        "New electors: in %s read PROCESSED in each platform's time basis (%s) and the old platform's (R25-) electorate "
+        "numbers as those of %s, the 2020 review's (a record the old platform removed and the new platform reinstated "
+        "keeps its region only under them); took a person as an elector number and a record as a PERSON_REF (the old "
+        "platform opened a new record at every enrolment, an elector's move or second form included, and removed the "
+        "older record overnight as a duplicate); a person was on the roll at the close of census day if a removal from 5 "
+        "March 2025 to 30 June 2026 in the country's time took off a record nothing in that period had put on it; counted "
+        "each person not on it whom an accepted enrolment or reinstatement with a residential address put on the roll in "
+        "that period (a removal made before census day and put right in it included), once, at the address of the first: "
+        "%s." % (P.FILES["log"], P.FILES["dictionary"], P.FILES["roll_2023"], _n(asks["new_total"])),
+        "Removed because they had died: the accepted DEL rows in the same period with reason 01 on the old platform "
+        "(deceased, %s) or 11 or 12 on the new (%s), in the region of their electorate read the same way, less those a "
+        "later accepted transaction anywhere in the extract reverses: a reinstatement of the same record (the new "
+        "platform names an old-platform removal by a key the extract does not carry) or an enrolment naming the removal "
+        "in REF_TXN: %s." % (P.FILES["migration"], P.FILES["dictionary"], _n(asks["died_total"])),
         "Wrote enrolment_gap_allocation_2027.csv in the layout of enrolment_gap_file_specification.xlsx and "
         "enrolment_gap_allocation_2027.png, a bar chart of each region's organisers.",
     ]

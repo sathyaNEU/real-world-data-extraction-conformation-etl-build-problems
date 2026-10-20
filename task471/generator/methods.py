@@ -164,17 +164,24 @@ def old_platform(row):
 def local_time(row, utc=True):
     """the country's time of a transaction: the old platform stamped local time, the new one UTC (utc="all" reads every
     stamp as UTC, utc=False every stamp as written)"""
+    key = "_l%s" % utc
+    v = row.get(key)
+    if v is not None:
+        return v
     t = row.get("_t")
     if t is None:
         t = row["_t"] = _dt.datetime.strptime(row["PROCESSED"], "%Y-%m-%d %H:%M:%S")
     if not utc or (old_platform(row) and utc != "all"):
-        return t
-    lo, hi = W.DST_2025
-    for off in (13, 12):
-        loc = t + _dt.timedelta(hours=off)
-        if (lo <= loc < hi) == (off == 13):
-            return loc
-    return t + _dt.timedelta(hours=12)
+        v = t
+    else:
+        v = t + _dt.timedelta(hours=12)
+        for off in (13, 12):
+            loc = t + _dt.timedelta(hours=off)
+            if W.daylight(loc) == (off == 13):
+                v = loc
+                break
+    row[key] = v
+    return v
 
 
 def in_window(t, start_on_census_day=False):
@@ -182,15 +189,13 @@ def in_window(t, start_on_census_day=False):
     return first <= t.date() <= W.LOG_END
 
 
-def new_electors(rows, region, utc=True, link=True, prior="record", census_day=False, overseas=False, rejected=False):
-    """people added to the roll in the window who were not on it on census day, each once, in the region of the
-    residential address of their first enrolment in the window. A person is every person reference the transactions'
-    REF_TXN ties together (link); a person was on the roll on census day if one of their removals in the window took off
-    a record no enrolment in the window had created (prior "record"), or, as a reader may take it, if their first
-    transaction in the window is a removal (prior "first")"""
-    ok = lambda r: r["STATUS"] == "A" or rejected
-    win = sorted(((local_time(r, utc), i, r) for i, r in enumerate(rows)), key=lambda x: (x[0], x[1]))
-    win = [(t, r) for t, i, r in win if in_window(t, census_day) and ok(r)]
+def _person(rows, mode):
+    """who a transaction belongs to: an elector number (a rejected application, which has none, its own record), a
+    person reference, or person references tied together through a REF_TXN found in the extract"""
+    if mode == "elector":
+        return lambda r: r["ELECTOR_NO"] or "ref:" + r["PERSON_REF"]
+    if mode == "ref":
+        return lambda r: r["PERSON_REF"]
     parent = {}
 
     def find(a):
@@ -199,24 +204,63 @@ def new_electors(rows, region, utc=True, link=True, prior="record", census_day=F
             parent[a] = parent[parent[a]]
             a = parent[a]
         return a
-    if link:
-        by_id = {r["TXN_ID"]: r for r in rows}
-        for r in rows:
-            if r["REF_TXN"] in by_id:
-                a, b = find(r["PERSON_REF"]), find(by_id[r["REF_TXN"]]["PERSON_REF"])
-                if a != b:
-                    parent[a] = b
-    created = {r["ELECTOR_NO"] for t, r in win if r["TXN_TYPE"] == "NEW"}
-    on_roll, first, seen = set(), {}, set()
+    by_id = {r["TXN_ID"]: r for r in rows}
+    for r in rows:
+        if r["REF_TXN"] in by_id:
+            a, b = find(r["PERSON_REF"]), find(by_id[r["REF_TXN"]]["PERSON_REF"])
+            if a != b:
+                parent[a] = b
+    return lambda r: find(r["PERSON_REF"])
+
+
+def first_new_number(rows):
+    """the elector-number counter at census day as the extract shows it: the number of the first accepted enrolment that
+    puts nothing right and whose number no other row carries; the numbers the extract issues run on from it"""
+    seen = {}
+    for r in rows:
+        if r["ELECTOR_NO"]:
+            seen[r["ELECTOR_NO"]] = seen.get(r["ELECTOR_NO"], 0) + 1
+    for r in rows:
+        if r["TXN_TYPE"] == "NEW" and r["STATUS"] == "A" and not r["REF_TXN"] and seen[r["ELECTOR_NO"]] == 1:
+            return int(r["ELECTOR_NO"])
+
+
+def new_electors(rows, region, utc=True, person="elector", prior="record", reinstated=True, reversal_new="keep",
+                 census_day=False, overseas=False, rejected=False):
+    """people added to the roll in the window who were not on it at the close of census day, each once, in the region
+    of the residential address that first put them on it in the window.
+
+    person        "elector": a person is an elector number (the golden); "ref": a person reference; "reftxn": person
+                  references tied together through a REF_TXN found in the extract
+    prior         "record": a person was on the roll at census day if a removal in the window took off a record (a person
+                  reference) that nothing in the window had put on the roll (the golden); "first": if their first
+                  transaction in the window is a removal; "any": if they have any removal in the window; "number": if the
+                  elector number that first put them on the roll was issued before census day
+    reinstated    a reinstatement puts a person on the roll (the golden), or is no addition
+    reversal_new  "keep": an enrolment pointing at a removal is an enrolment like any other (the golden); "drop": none"""
+    ok = lambda r: r["STATUS"] == "A" or rejected
+    order = sorted(((local_time(r, utc), i, r) for i, r in enumerate(rows)), key=lambda x: (x[0], x[1]))
+    win = [(t, r) for t, i, r in order if in_window(t, census_day) and ok(r)]
+    key = _person(rows, person)
+    put_on, on_roll, first, seen = set(), set(), {}, set()
     for t, r in win:
-        p = find(r["PERSON_REF"])
-        if prior == "record" and r["TXN_TYPE"] == "DEL" and r["ELECTOR_NO"] not in created:
-            on_roll.add(p)
-        if prior == "first" and p not in seen and r["TXN_TYPE"] == "DEL":
-            on_roll.add(p)
+        p = key(r)
+        typ = r["TXN_TYPE"]
+        if typ == "DEL":
+            if (prior == "record" and r["PERSON_REF"] not in put_on) or (prior == "first" and p not in seen) \
+                    or prior == "any":
+                on_roll.add(p)
         seen.add(p)
-        if r["TXN_TYPE"] == "NEW" and p not in first:
-            first[p] = r
+        if typ in ("NEW", "REI"):
+            put_on.add(r["PERSON_REF"])
+            adds = typ == "NEW" or reinstated
+            if typ == "NEW" and reversal_new == "drop" and r["REF_TXN"]:
+                adds = False
+            if adds and p not in first:
+                first[p] = r
+    if prior == "number":
+        cut = first_new_number(rows)
+        on_roll |= {p for p, r in first.items() if r["ELECTOR_NO"] and int(r["ELECTOR_NO"]) < cut}
     out = {c: 0 for c in W.CODES}
     for p, r in first.items():
         if p in on_roll or (r["ADDRESS_TYPE"] != "R" and not overseas):
@@ -228,20 +272,28 @@ def new_electors(rows, region, utc=True, link=True, prior="record", census_day=F
 DEATH_CODES = {"old": ("01",), "new": ("11", "12")}
 
 
-def removed_dead(rows, region, utc=True, codes="platform", reversals="all", census_day=False):
+def removed_dead(rows, region, utc=True, codes="platform", reversals="record", census_day=False):
     """electors removed in the window because they had died, in the region of the address they were removed from; a
-    removal reversed (by a reinstatement, or on the old platform by an enrolment pointing at it) was not a removal"""
-    if reversals == "all":
-        back = {r["REF_TXN"] for r in rows if r["STATUS"] == "A" and r["REF_TXN"] and r["TXN_TYPE"] in ("REI", "NEW")}
-    elif reversals == "rei":
-        back = {r["REF_TXN"] for r in rows if r["STATUS"] == "A" and r["REF_TXN"] and r["TXN_TYPE"] == "REI"}
-    else:
-        back = set()
+    removal later reversed was not a removal.
+
+    reversals  "record": a later accepted reinstatement of the same record, or a later accepted enrolment naming the
+               removal in REF_TXN, anywhere in the extract (the golden); "record_window": the same, the reversal inside
+               the window; "reftxn": a later accepted reinstatement or enrolment naming the removal in REF_TXN, anywhere
+               in the extract; "reftxn_window"; None: no removal reversed"""
+    rei_by_ref, named = {}, {}
+    for r in rows:
+        if r["STATUS"] != "A":
+            continue
+        if r["TXN_TYPE"] == "REI":
+            rei_by_ref.setdefault(r["PERSON_REF"], []).append(local_time(r, utc))
+        if r["TXN_TYPE"] in ("REI", "NEW") and r["REF_TXN"]:
+            named.setdefault(r["REF_TXN"], []).append(local_time(r, utc))
     out = {c: 0 for c in W.CODES}
     for r in rows:
-        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A" or r["TXN_ID"] in back:
+        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A":
             continue
-        if not in_window(local_time(r, utc), census_day):
+        t = local_time(r, utc)
+        if not in_window(t, census_day):
             continue
         if codes == "platform":
             ok = r["REASON"] in DEATH_CODES["old" if old_platform(r) else "new"]
@@ -249,6 +301,14 @@ def removed_dead(rows, region, utc=True, codes="platform", reversals="all", cens
             ok = r["REASON"] in ("11", "12")
         else:
             ok = r["REASON"] in ("01", "11", "12")
-        if ok:
-            out[region(r)] += 1
+        if not ok:
+            continue
+        if reversals:
+            later = list(named.get(r["TXN_ID"], []))
+            if reversals.startswith("record"):
+                later += rei_by_ref.get(r["PERSON_REF"], [])
+            later = [u for u in later if u > t and (not reversals.endswith("window") or in_window(u, census_day))]
+            if later:
+                continue
+        out[region(r)] += 1
     return out

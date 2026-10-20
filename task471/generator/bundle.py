@@ -1,6 +1,6 @@
 """The shipped pack read back into the estimators' data structure (methods.py), from the files alone: the census
 workbook, the survey's two person files, the roll on census day and its electorates, the vital and border series and
-the roll's transaction log."""
+the roll's transaction log with the electorates of the 2023 general election's roll."""
 import csv
 import os
 
@@ -26,7 +26,7 @@ class Pack:
         f = lambda k: os.path.join(target, P.FILES[k])
         conc = rows(f("electorates"))
         self.region_of = {r["ELECTORATE"]: r["REGION"] for r in conc}
-        self.region_2020 = {r["NUMBER_BEFORE_2024_REVIEW"]: r["REGION"] for r in conc}
+        self.region_2020 = {r["ELECTORATE"]: r["REGION"] for r in rows(f("roll_2023"))}
         d = {"census": {}, "e": {}, "p": {}, "roll": {c: 0 for c in W.CODES}, "births": {}, "deaths": {},
              "departures": {}, "arrivals": {}}
         wb = openpyxl.load_workbook(f("census"), read_only=True)
@@ -96,8 +96,8 @@ class Pack:
 
     # ------------------------------------------------------------------ the asks
     def region(self, vintage=True):
-        """a transaction's region: the old platform's electorate numbers are the 2020 review's (vintage), or every number
-        read as the 2024 review's"""
+        """a transaction's region: the old platform's electorate numbers are the 2020 review's, as on the 2023 general
+        election's roll (vintage), or every number read as the 2024 review's"""
         def f(r):
             if vintage and M.old_platform(r):
                 return self.region_2020[r["ELECTORATE"]]

@@ -1,17 +1,20 @@
 # leak check, task471
 
-**Verdict: REVIEW.** 19 files read, 33 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 20 files read, 32 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, golden, anchor, reader, county, decisive, architecture, method, missed, deaths, border, population, readers, correction, reading, national, selection, coverage, dual-system, record, analysis, report, silent, sample, written
+Stump terms swept: survey, reader, golden, anchor, county, decisive, missed, architecture, method, deaths, readers, border, population, record, correction, reading, national, selection, coverage, dual-system, default, analysis, report, silent, sample
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `census_2025_field_operations_summary.pdf`: carries 17 of 18 distinctive words of the committed call: 'Ardenmere 27, Merriton 20, Westerby 25, Larchfield 26, Glenwhite 29, Hawksridge 5, Fairholme 11, Eastwold 12, Corran Val'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, method, missed, population, national, selection); read whether the document names the move
-- **REVIEW** `vital_and_border_series_notes.pdf`: 6 of 25 stump-paragraph terms appear (deaths, border, population, national, record, written); read whether the document names the move
+- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, missed, method, population, record, national); read whether the document names the move
+- **REVIEW** `vital_and_border_series_notes.pdf`: 5 of 25 stump-paragraph terms appear (deaths, border, population, record, national); read whether the document names the move
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -28,9 +31,8 @@ Stump terms swept: survey, golden, anchor, reader, county, decisive, architectur
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -49,3 +51,16 @@ brief), each scored with `score_reader.py` before its verdict was read.
   platform's 2020 electorate numbers, its person reference per enrolment tied only through REF_TXN, its corrections by
   re-enrolment; the time basis filed after the judge; the number counter run on from census day). Round 2 runs on
   target.zip 5402dd6ec2786aea.
+
+Architecture 5, round 2 (target.zip 5402dd6ec2786aea), two isolated readers on fresh unzips, the same brief.
+
+- **Reader A:** missed the call (call 0 of 1) on the default path's allocation exactly; kept 32 of 32 ask figures: the
+  old platform's numbers "remapped" to the 2020 review's, UTC converted as filed, moves tied through REF_TXN to their
+  reason 05 removals, the corrections by re-enrolment and reinstatement netted. Question 6: an analytical choice for
+  the call; the asks "turned on data reading".
+- **Reader B:** missed the call (call 0 of 1) on the same allocation; kept 32 of 32: the old platform placed through the
+  concordance's NUMBER_BEFORE_2024_REVIEW, the rest as reader A. Question 6: an analytical choice (coverage
+  adjustment by cell) for the call; the asks decided by reading codes and units.
+- **Ruling:** the decisive step held again (four readers of four); every ask device was on the readers' documented
+  path (the concordance's earlier numbers, the dictionary's REF_TXN) and is re-sited for round 3.
+

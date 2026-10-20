@@ -30,6 +30,7 @@ FILES = {
     "migration": "roll_platform_migration_notes.pdf",
     "estimates_2024": "subnational_population_estimates_jun2024.csv",
     "field_ops": "census_2025_field_operations_summary.pdf",
+    "roll_2023": "roll_at_2023_general_election_by_electorate.csv",
 }
 DISTRACTORS = ["estimates_2024", "field_ops"]
 PERIOD_2025 = "2025-01-01/2025-03-03"
@@ -168,15 +169,24 @@ def snapshot_rows(x):
 
 
 ROLL_COLS = ["ELECTORATE", "ELECTORATE_NAME", "ADDRESS_TYPE", "SEX", "AGE_GROUP", "ELECTORS"]
-ELECTORATE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "NUMBER_BEFORE_2024_REVIEW", "NAME_BEFORE_2024_REVIEW", "REGION",
-                   "REGION_NAME"]
+ELECTORATE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "REGION", "REGION_NAME"]
+GE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "REGION", "REGION_NAME", "ELECTORS"]
 
 
 def electorate_rows():
-    """the electorates of the 2024 boundary review in number order, each with the number and, where it changed, the name
-    it carried under the 2020 review"""
-    rows = [(W.NUMBER[e[0]], e[1], W.NUMBER_2020[e[0]], W.RENAMED.get(e[0], ""), e[2], W.NAME[e[2]]) for e in W.ELECTORATES]
-    return sorted(rows)
+    """the electorates of the 2024 boundary review in number order, each with its region"""
+    return sorted((W.NUMBER[e[0]], e[1], e[2], W.NAME[e[2]]) for e in W.ELECTORATES)
+
+
+def ge_rows(x):
+    """the roll at the close of the 2023 general election, by the electorates of the 2020 boundary review in their
+    numbers, each with its region: the census-day electors less the growth of the seventeen months between"""
+    r = rng(x["seed"], 16)
+    out = []
+    for e in W.ELECTORATES:
+        k = x["electors"][e[0]] * 1.012 * r.uniform(0.952, 0.986)
+        out.append((W.NUMBER_2020[e[0]], W.NAME_2020[e[0]], e[2], W.NAME[e[2]], int(round(k))))
+    return sorted(out)
 
 
 # ------------------------------------------------------------------ vital and border series

@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4 round 2 on target.zip 5402dd6ec2786aea: two scored readers (leak-task471-v5-r2a, r2b) running and the one re-judge thread on /tmp/determinism-check-task471-v5r2/judge_brief.md (write-up's file names fixed in writeup.py; checks.py now asserts every cited file ships); then the determinism-judge agent writes determinism_check_report_v5r2.md; ship if both readers miss the call and the asks hold",
+ "resume": "stage 4 round 3: the asks re-sited after round 2 (both readers kept 32 of 32; judge v5r2 APPROVE): the 2020 numbering only on the 2023 general election's roll, lifetime elector numbers with a new record per old-platform enrolment removed overnight as a duplicate, corrections of pre-census-day removals as additions, reinstatement keys outside the extract, the extract run to 30 September 2026. Next: confirm build.py green (checks, verify, byte-identical, zip), spawn two fresh scored readers (leak-task471-v5-r3a, r3b) and one re-judge (v5r3, a fresh determinism-judge agent prepares the brief), then ship if both readers miss the call and keep the asks near a fifth",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -160,8 +160,8 @@
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20 on target.zip 5402dd6ec2786aea (region names in the field operations summary; generic survey words in two documents); no LEAK",
-  "reader": "round 1 on 7b7e6acddefeb6b8: both readers missed the call on R2 (score_reader call 0 of 1), both kept 32 of 32 ask figures (UTC from the first new-platform stamp, movers through the shared reference or the 40,000,000 number boundary, codes and reinstatements filed); asks re-sited"
+  "leak_py": "REVIEW 2026-10-20 on the round-3 pack (region names in the field operations summary; generic survey words in two documents); no LEAK",
+  "reader": "round 1 on 7b7e6acddefeb6b8 and round 2 on 5402dd6ec2786aea: all four readers missed the call on R2 (score_reader call 0 of 1) and kept 32 of 32 ask figures (round 2 through the concordance's earlier numbers and REF_TXN); round 3 pending"
  },
  "duplicate_check": {
   "guard_check": "WARN only at the v5 draw",
@@ -169,16 +169,18 @@
   "nearest": "task188 0.05"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (v5r1)",
-  "disposition": "FIX_NOW: the new platform's UTC unfiled; fixed in the dictionary's PROCESSED",
-  "report": "determinism_check_report_v5r1.md"
+  "verdict": "DETERMINISTIC (v5r2)",
+  "disposition": "APPROVE (v5r1 FIX_NOW on the unfiled UTC fixed)",
+  "report": "determinism_check_report_v5r2.md",
+  "earlier": "determinism_check_report_v5r1.md"
  },
  "ceiling": {
-  "pair": 33.5,
-  "cracker": 45.0,
-  "mirror": 22.0,
+  "pair": 35.2,
+  "cracker": 46.72,
+  "mirror": 23.72,
   "mirror_rung": "R2 dual-system cells, 8 of 16",
-  "sensitivity": "the 2020 numbers alone keep 2 of 32 (35.2), REF_TXN alone 1 of 32 (34.4), both 32 (61.0)",
+  "base_ask_keep": "1 of 32 on the round-2 readers' reading",
+  "sensitivity": "2020 numbers 0 (34.4); + elector number and record test 0 (34.4); + corrections of earlier removals as additions 16 (48.1); + record-tied reversals in the window 18 (49.8); + late reversals 32 (61.9)",
   "script": "generator/ceiling.py"
  },
  "target_zip_sha256_16": "5402dd6ec2786aea"
