@@ -50,7 +50,15 @@ def cc_unit(rng, key):
     low = np.clip((cap * .72 - load) / cap, 0, 1)
     lb = np.where(on, base * load * (1 + .7 * low) * np.exp(rng.normal(0, .09, NH)), 0.0)
     st = (s >= 1) & (s <= 3)
-    lb = np.where(st, lb + adj * slb * START_W[np.minimum(s, 3)] * np.exp(rng.normal(0, .22, NH)), lb)
+    # each unit's own start-up shape, and each start its own size (how long the unit was down, how the operators
+    # brought it up)
+    vr = np.random.default_rng([W.SEED, 31, n, cap])
+    shape = START_W * np.exp(vr.normal(0, .25, 4))
+    shape = shape / shape[1:].sum()
+    size = np.ones(NH)
+    for h0 in np.where(s == 1)[0]:
+        size[h0:h0 + 3] = np.exp(vr.normal(-.06, .35))
+    lb = np.where(st, lb + adj * slb * shape[np.minimum(s, 3)] * size * np.exp(rng.normal(0, .22, NH)), lb)
     hr = np.where(on, 6.85 * (1 + .45 * low + np.where(st, .25, 0)) * np.exp(rng.normal(0, .02, NH)), 0)
     heat = np.round(load * hr, 1)
     # the analyzers: out for the first one to three hours after a start with chance pms (purge and calibration after

@@ -58,11 +58,13 @@ def write_guidelines(path):
          Paragraph("3.1 For every combined-cycle unit, the cost of the gas it burned in its 2026 ozone-season "
                    "operating hours, each hour's gas priced at the price on the supplier's invoice for the gas day the "
                    "hour falls in. A unit's gas is its heat input; one dekatherm is one MMBtu.", BODY),
-         Paragraph("3.2 For every combined-cycle unit, its forced outage hours in the 2026 ozone season: the hours "
-                   "from 1 May to 30 September 2026, local time, in which the outage event report shows the unit in a "
-                   "full forced outage (event types U1, U2 and U3). Where the report holds a later report of the same outage, the "
-                   "later report stands; a later report of an outage is one on the same unit that overlaps it, or that "
-                   "repeats its event type, cause, length and clock hours under other dates.", BODY),
+         Paragraph("3.2 For every combined-cycle unit, its equivalent forced outage rate over the 2026 ozone "
+                   "season, as IEEE Std 762 defines it, in per cent, on the hours from 1 May to 30 September 2026, "
+                   "local time. Full forced outages are the outage event report's events of types U1, U2 and U3, and "
+                   "forced derates its events of types D1 and D2, each reducing the unit by its derate_mw against its "
+                   "nameplate MW in the generating unit register. Service hours are the unit's operating time in the "
+                   "data acquisition system's hourly record. Where the report holds a later report of the same "
+                   "outage, the later report stands.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
                    "%s." % W.BOARD_DATE, BODY)]
@@ -89,8 +91,7 @@ def write_terms(path):
          Paragraph("6.1 The price for Gas delivered on a Gas Day is the Daily Index for that Gas Day plus the charges of "
                    "the Transporter serving the Delivery Point, as set out for each Delivery Point in Exhibit A, in "
                    "dollars per dekatherm.", BODY),
-         Paragraph("6.2 Quantities are the metered deliveries at each Delivery Point for the Gas Day, in dekatherms.",
-                   BODY),
+         Paragraph("6.2 Quantities are the deliveries metered at each Delivery Point, in dekatherms.", BODY),
          Paragraph("Section 9. Billing", HEAD),
          Paragraph("9.1 Seller invoices monthly by Delivery Point.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -104,7 +105,8 @@ def write_notes(path, n):
              "OP_DATE, OP_HOUR: the hour beginning, in Central Standard Time all year (the DAHS clock does not",
              "  change for daylight saving time).",
              "OP_TIME: fraction of the hour the unit operated (0.00 when offline).",
-             "GLOAD_MW: gross load, hourly average while operating. One operating hour at GLOAD_MW is GLOAD_MW MWh.",
+             "GLOAD_MW: gross load, average over the part of the hour the unit operated; the hour's gross",
+             "  generation is GLOAD_MW times OP_TIME MWh.",
              "HEAT_INPUT_MMBTU: from the fuel flow meter and the gas heating value.",
              "NOX_RATE_LB_MMBTU, NOX_MASS_LB: from the NOx and diluent analyzers; blank when the analyzers did not",
              "  produce a quality-assured hour.",

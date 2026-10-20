@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "round 1: both readers missed the call (five units) and kept 17 of 18 ask figures; asks re-sited; round 2 (readers 3, 4) running"
+  "reader": "rounds 1-2: four of four readers missed the call (five units) and kept 17-18 of 18 ask figures; asks rebuilt (meter calendar-day quantities with strip billing; IEEE 762 EFOR); round 3 (readers 5, 6) running"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -24,12 +24,12 @@
   "nearest": "task474 v2 at 0.28 (this slot)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "note": "round-1 pack: fuel price donor missing on two days (gone with the re-site) and 'same outage' undefined in rule 3.2 (now defined); call reproduced, Gate H analytical"
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "note": "round-2 re-judge: wording fixes applied; round-3 pass on the rebuilt asks running"
  },
  "returned": [],
- "resume": "stage 4 round 2 in flight: score readers 3 and 4 (scratchpad leak-task474c-r3, r4), read the re-judge, then ship or re-site",
+ "resume": "stage 4 round 3 in flight: score readers 5 and 6 (scratchpad leak-task474c-r5, r6; keys asks.fuel.*, asks.efor.*), read the round-3 judge, then ship or re-site",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -38,6 +38,13 @@ def dahs_rows(x):
     for u in order:
         v = f[u]
         fac = FACILITY[v["plant"]]
+        # the first hour of a start and the last before a shutdown are part hours: the unit runs from the breaker
+        # closing, or until it opens
+        pr = np.random.default_rng([W.SEED, 41, sum(map(ord, u))])
+        frac = np.ones(S.NH)
+        for h in range(S.NH):
+            if v["on"][h] and (v["since"][h] == 1 or (h + 1 < S.NH and not v["on"][h + 1])):
+                frac[h] = round(float(pr.uniform(.25, .95)), 2)
         for h, t in enumerate(S.HOURS):
             if t.date() > EXPORT_END:
                 break
@@ -45,12 +52,13 @@ def dahs_rows(x):
                 out.append([fac, u, t.strftime("%Y-%m-%d"), t.hour, "0.00", "", "", "", "", ""])
                 continue
             heat = float(v["heat"][h])
+            op, gl = "%.2f" % frac[h], "%.2f" % (v["load"][h] / frac[h])
             if v["out"][h]:
-                out.append([fac, u, t.strftime("%Y-%m-%d"), t.hour, "1.00", "%.2f" % v["load"][h], "%.1f" % heat, "", "",
+                out.append([fac, u, t.strftime("%Y-%m-%d"), t.hour, op, gl, "%.1f" % heat, "", "",
                             str(v["status"][h])])
             else:
                 lb = float(v["lb"][h])
-                out.append([fac, u, t.strftime("%Y-%m-%d"), t.hour, "1.00", "%.2f" % v["load"][h], "%.1f" % heat,
+                out.append([fac, u, t.strftime("%Y-%m-%d"), t.hour, op, gl, "%.1f" % heat,
                             "%.4f" % (lb / heat if heat else 0), "%.1f" % lb, "OK"])
     return out
 

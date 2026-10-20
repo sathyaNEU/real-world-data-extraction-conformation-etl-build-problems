@@ -97,7 +97,7 @@ Lesson: a monitor gap with a common cause that also disables the control device 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | the season's hours | standard-time dates 1 May to 30 September | local-time dates | same call (asserted) | rule 2.2 "kept in standard time" |
-| SF2 | gross generation | GLOAD_MW over operating hours (OP_TIME 1.00) | GLOAD_MW times OP_TIME | same call (every operating hour 1.00, asserted) | the export notes |
+| SF2 | gross generation | GLOAD_MW times OP_TIME over operating hours | GLOAD_MW over operating rows | same call (asserted) | the export notes |
 | SF3 | 0.170 or more | at or above, unrounded | above | same call (no family rate within 0.009, asserted) | rule 2.3 |
 | SF4 | the NOx emitted | measured and estimated NOx in every operating hour | the measured hours only | not the rule's quantity: files AF-2, SR-1 | rule 2.2 "the NOx the unit emitted while operating" |
 | SF5 | hours since start | counted along the whole year's record | counted from 1 May | same call (asserted) | the record |
@@ -179,29 +179,32 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 - **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** H18 home: rule 3.1, the
   capital budget weighs the upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices,
-  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after round 1, whose readers
-  rebuilt the missing invoice month exactly from the meters on one transporter): D6, an event's quantity on one line.
-  Gas traded on a business day flows until the next business day's gas, so a weekend's or a holiday's gas days take
-  one price, and the supplier bills each such strip as one line dated on its last gas day, its quantity the strip's
-  whole burn; the earlier gas days of a strip have no line. Pricing them at the point's previous line (the natural
-  carry-forward), interpolating, or leaving them out each misses every unit by $100 or more; only the next line,
-  which the quantities tie to, is right. Hazards: the gas day on Central clock time against the DAHS's standard time,
-  invoices by facility (peakers share the meter), gas days with no burn.
-- **Ask B, each unit's 2026 ozone-season forced outage hours: 9 figures.** H18 home: rule 3.2 (a later report of the
-  same outage stands). Path: the event report, the rules: two files, six columns. Primary device (re-sited after round
-  1, whose readers paired reports starting within 30 hours): D8, an anchor on the wrong month. One outage on each unit
-  was first entered with the form's month left at the previous month (same day, same hours, same length and cause)
-  and reported again weeks later under a new event number with its true dates; a month apart, no proximity or overlap
-  pairs them, and only the matching day, hour, length and cause, with the DAHS showing the unit running at the
-  earlier entry's hours on most units, finds them. Secondary: re-reports with a corrected start and end, found by
-  their overlap. Hazards: derate events overlapping outages legitimately, events crossing the season's ends.
+  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after rounds 1 and 2): D8, two
+  clocks on one line, with every tie passing on the wrong one. The meter stations read midnight to midnight on
+  standard time, so each line's quantity reconciles exactly to the plant's DAHS burn by calendar day, while the line's
+  price is the price for the gas day the agreement defines (9:00 a.m. Central clock time): a reader who lets the
+  quantity tie fix the day prices an hour by its calendar date and misses every unit. Secondary: strip billing (gas
+  traded on a business day flows until the next business day's gas, and a weekend's or holiday's strip is one line
+  dated on its last gas day), so a gas day with no line takes the point's next line; the previous line, an
+  interpolation or leaving the day out each misses every unit. Hazards: invoices by facility (peakers share the
+  meter), gas days with no burn.
+- **Ask B, each unit's 2026 ozone-season equivalent forced outage rate, per cent to one decimal: 9 figures.** H18
+  home: rule 3.2, IEEE Std 762's EFOR on local time, the register's nameplate as the capacity. Path: the event report,
+  the DAHS operating time, the register, the rules: four files, eight columns. Primary device: D6 grain, an event's
+  hours split across states. A forced derate found in a run often stays on the unit past the shutdown and into the
+  reserve shutdown hours that follow, where IEEE 762 counts it in the denominator's reserve-shutdown derated hours
+  and not in the numerator, and a derate's hours inside a full outage count in neither; the start and shutdown hours
+  are part hours (OP_TIME below 1), so service hours are operating time, not operating rows. Counting rows, leaving
+  out the reserve-shutdown term, or counting every derate hour at full each misses most units. Secondary: re-reports
+  with a corrected start and end, a later report replacing an earlier one it overlaps. Hazards: the DAHS on standard
+  time against the report's local time, events crossing the season's ends.
 - **The construction layer:** each unit's verdict and the set.
 - **Main population zero-counts (asserted):** the call reads no invoice, agreement or event row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
 | A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, a gas day without its own line at the point's previous line; every unit burns on strip days, so every unit's cost falls outside its bin | miss |
-| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, the later report kept where two full outages on a unit start close together; the month-early entries pair with nothing, so both count and every unit's hours fall outside its bin | miss |
+| B, outage rate by unit | IEEE 762's EFOR executed with service hours as the unit's operating rows; the part hours at every start and shutdown move every unit's rate outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
 - Pair ceiling: 39.3 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
@@ -301,3 +304,12 @@ data and no reported total ships; the allowance holdings are by facility and ton
   re-sited to strip billing (weekend and holiday gas on one line dated on the strip's last gas day, no missing month);
   ask B to entries a month early. The round-1 briefs quoted the leak sweep's line carrying the committed call; later
   briefs paraphrase it.
+- 2026-10-20, stage 4 round 2 on architecture 3: readers 3 and 4 missed the call again (five units; four of four
+  readers now) and kept 18 of 18 ask figures each: the strip lines reconciled exactly on the gas day, and rule 3.2's
+  definition of a later report (overlapping, or repeating type, cause, length and hours under other dates) was a
+  procedure they executed. Both flagged the regular start-up shape, OP_TIME 1.00 in every operating hour and the
+  repeated outage pairs as looking generated. The month-early entries and the definition are gone; ask B is now
+  IEEE 762's EFOR; the meter quantities run midnight to midnight on standard time; start and shutdown hours are part
+  hours; each unit has its own start shape and each start its own size. The round-2 re-judge returned DETERMINISTIC,
+  FIX_NOW on wording (the write-up now states the air-loss fill by what the record shows, the fill of air-loss hours
+  without a measured hour after them, and the strip rule with its quantity tie).

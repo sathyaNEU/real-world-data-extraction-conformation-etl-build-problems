@@ -26,10 +26,10 @@ def write(fig_path, out_path):
          "**Designate %s of the %s combined-cycle units for the 2027 SCR Upgrade Program: %s.**" % (
              WORDS[f["n_call"]], WORDS[f["n_units"]], _join(des)),
          "Each emitted %s lb of NOx per gross MWh or more over the 2026 ozone season once the hours its analyzers "
-         "were out are filled by the control state the unit was in. In the hours a plant lost its instrument air "
-         "(most of them at Cutler Bend and Ashfork), the SCR's air-operated ammonia flow was down with the analyzers' dilution probes, so those "
-         "hours are filled at the NOx per MMBtu the analyzer measured in the first hour after each loss, times the "
-         "hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the "
+         "were out are filled by the emission state the unit was in. In the hours a plant lost its instrument air "
+         "(most of them at Cutler Bend and Ashfork), the first measured hour after each loss reads about twenty times "
+         "the unit's usual NOx per MMBtu and falls back over the next hour or two, so the SCR was not removing NOx "
+         "while the air was out; those hours are filled at that first-hour NOx per MMBtu, times the hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the "
          "same hour after a start or, later in a run, at the same load. Not a fill of every gap from the unit's "
          "measured hours in the same start state and load, nor the average of the hours either side of each gap: "
          "both put controlled NOx into uncontrolled hours and designate %s, leaving CB-2 and AF-1 under the target." %
@@ -47,9 +47,10 @@ def write(fig_path, out_path):
          "2. Marked as air-loss hours the operating hours with a blank NOX_MASS_LB inside a %s ticket whose "
          "description names the plant instrument air or its compressor, the ticket's local times moved back an hour "
          "to standard time." % F["tickets"],
-         "3. Filled each air-loss hour with its HEAT_INPUT_MMBTU times the unit's mean NOX_MASS_LB over "
-         "HEAT_INPUT_MMBTU in the clock hour right after each run of air-loss hours, where the unit was still operating "
-         "and that hour was measured (a unit with none takes the same mean over its plant's units).",
+         "3. Filled every air-loss hour, its own run measured on its return or not, with its HEAT_INPUT_MMBTU times "
+         "the unit's mean NOX_MASS_LB over HEAT_INPUT_MMBTU across the clock hours right after its runs of air-loss "
+         "hours in which the unit was still operating and measured (a unit with none takes the same mean over its "
+         "plant's units).",
          "4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's "
          "measured hours at the same hour after a start; later, from the unit's quadratic fit of NOX_MASS_LB on "
          "GLOAD_MW over its measured hours more than 3 hours after a start.",
@@ -57,22 +58,26 @@ def write(fig_path, out_path):
          "every unit at or above %s (rule %s): %s." % (f["target"], sec["designation"], _join(des)),
          "6. Priced each operating hour's HEAT_INPUT_MMBTU at the %s price for the gas day it falls in, the hour "
          "moved from standard time to Central clock time and then back 9 hours (%s, Section 1; rule %s); a gas day "
-         "with no invoice line of its own at the delivery point takes the price on the point's next line, whose "
-         "quantity is the burn of every gas day since the point's previous line (weekend and holiday gas, traded "
-         "together): $%s in all." % (F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
-         "7. Counted the hours from 1 May to 30 September 2026 in which %s shows the unit in a U1, U2 or U3 event "
-         "(rule %s), the later-filed report standing where two reports are the same outage: two full outages "
-         "overlapping on one unit, or one repeating another's event type, cause, length and clock hours under other dates "
-         "(rule %s): %s hours in all." % (F["events"], sec["outages"], sec["outages"], fmt(f["asks"]["forced_total"])),
+         "with no invoice line of its own at the delivery point takes the price on the point's next line, which "
+         "bills the gas days since the point's previous line together (weekend and holiday gas, traded the business "
+         "day before), its quantity the plant's metered burn over those days: $%s in all." % (
+             F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
+         "7. For each unit's equivalent forced outage rate (rule %s), on local time from 1 May to 30 September 2026: "
+         "forced outage hours, the hours inside a U1, U2 or U3 event in %s, a later-filed report replacing an earlier "
+         "one it overlaps on the same unit; service hours, OP_TIME summed; equivalent forced derated hours, each D1 or "
+         "D2 hour at derate_mw over the register's nameplate MW times OP_TIME; the reserve shutdown derated hours, "
+         "each D1 or D2 hour outside a full outage at derate_mw over nameplate times one less OP_TIME; the rate, in per cent, is "
+         "forced outage hours plus equivalent forced derated hours, over forced outage hours plus service hours plus "
+         "the reserve shutdown derated hours." % (sec["outages"], F["events"]),
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",
-         "1. Every combined-cycle unit: designated or not, 2026 ozone-season fuel cost (nearest hundred dollars), forced "
-         "outage hours:"]
+         "1. Every combined-cycle unit: designated or not, 2026 ozone-season fuel cost (nearest hundred dollars), "
+         "equivalent forced outage rate (per cent, one decimal):"]
     for u in f["units"]:
         r = rows[u]
-        L.append("   - %s: %s; $%s; %s forced outage hours" % (
-            u, "designated" if r["designated"] else "not designated", fmt(r["fuel"]), fmt(r["forced"])))
+        L.append("   - %s: %s; $%s; equivalent forced outage rate %.1f%%" % (
+            u, "designated" if r["designated"] else "not designated", fmt(r["fuel"]), r["efor"]))
     L += ["", "### %s" % W.GOLDEN["memo"], "",
           "1. The designated units for the Board: %s." % _join(des),
           "2. Bar chart of every combined-cycle unit's 2026 ozone-season NOx rate (lb per gross MWh) against the %s "

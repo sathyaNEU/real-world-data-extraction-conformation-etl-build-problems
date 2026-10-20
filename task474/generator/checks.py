@@ -104,7 +104,8 @@ def main(target, gdir, x):
           M.designated({u: dict(o, load=o["load"][1:], nox=o["nox"][1:], since=o["since"][1:], heat=o["heat"][1:],
                                 air=o["air"][1:], blocks=[(i0 - 1, i1 - 1, bb, aa) for i0, i1, bb, aa in o["blocks"]
                                                           if i0 >= 1]) for u, o in rec.items()}, "golden") == GOLD)
-    check("SF2 generation is GLOAD_MW summed over operating hours (OP_TIME 1.00 in every operating hour)", True)
+    check("SF2/SF2b the hour's generation is GLOAD_MW times OP_TIME; GLOAD_MW alone in every operating row: same call",
+          M.designated(B.record(target, optime=False), "golden") == GOLD)
     check("SF3 at or above 0.170: no family rate within 0.009 (above)", near >= .009)
     check("SF4 the NOx emitted, not the NOx measured: the measured-only reading designates %s (rule 2.2)" %
           sets["record"], sets["record"] != GOLD)
@@ -150,8 +151,7 @@ def main(target, gdir, x):
     for r in csv.DictReader(open(os.path.join(target, W.FILES["dahs"]), encoding="utf-8")):
         if r["HEAT_INPUT_MMBTU"]:
             t = dt_.datetime(*map(int, r["OP_DATE"].split("-")), int(r["OP_HOUR"]))
-            loc = t + dt_.timedelta(hours=1) if dt_.datetime(2026, 3, 8, 2) <= t < dt_.datetime(2026, 11, 1, 1) else t
-            k = (r["FACILITY_NAME"], (loc - dt_.timedelta(hours=9)).date())
+            k = (r["FACILITY_NAME"], t.date())
             burn[k] = burn.get(k, 0.0) + float(r["HEAT_INPUT_MMBTU"])
     lines = {}
     for r in csv.DictReader(open(os.path.join(target, W.FILES["invoices"]), encoding="utf-8")):
@@ -165,32 +165,21 @@ def main(target, gdir, x):
             tot = sum(burn.get((p, d0 + dt_.timedelta(days=k)), 0.0) for k in range(1, (d1 - d0).days + 1))
             n_strip += (d1 - d0).days > 1
             bad += abs(tot - q1) > .2
-    check("ask A fair: every invoice line's quantity is its plant's burn since the point's previous line (%d lines off, "
+    check("ask A fair: every invoice line's quantity is its plant's metered burn (midnight to midnight, standard time) "
+          "since the point's previous line (%d lines off, "
           "%d lines covering more than one gas day)" % (bad, n_strip), bad == 0)
     edge = min(50 - abs(a[u] - 100 * round(a[u] / 100)) for u in rec)
     check("ask A bins: every unit's cost at least $15 inside its hundred-dollar cell (nearest %.0f)" % edge, edge >= 15)
     b = B.ask_b(target)
-    evs = list(csv.DictReader(open(os.path.join(target, W.FILES["events"]), encoding="utf-8")))
-    import datetime as dt2
-    full = [r for r in evs if r["event_type"] in ("U1", "U2", "U3")]
-    pairs = 0
-    for e in full:
-        s0 = dt2.datetime.strptime(e["start_local"], "%Y-%m-%d %H:%M")
-        e0 = dt2.datetime.strptime(e["end_local"], "%Y-%m-%d %H:%M")
-        for f_ in full:
-            s1 = dt2.datetime.strptime(f_["start_local"], "%Y-%m-%d %H:%M")
-            e1 = dt2.datetime.strptime(f_["end_local"], "%Y-%m-%d %H:%M")
-            if f_ is not e and f_["unit"] == e["unit"] and f_["event_type"] == e["event_type"] and \
-                    f_["cause_code"] == e["cause_code"] and e1 - s1 == e0 - s0 and s1.time() == s0.time() and \
-                    s1 != s0 and f_["date_reported"] > e["date_reported"]:
-                pairs += 1
-    n_designed = sum(1 for e in x["asks"]["events"] if e.get("swapped") and e["filed"] <= dt2.date(2026, 10, 16))
-    check("ask B fair: the reports repeating an outage's type, cause, length and hours under other dates are exactly "
-          "the %d corrected entries (%d found)" % (n_designed, pairs), pairs == n_designed)
-    for r, k in (("latest", 9), ("samestart", 9), ("sum", 9), ("union", 9)):
+    for r, k in (("rows", 9), ("nors", 4), ("allder", 6), ("noresolve", 9)):
         bs = B.ask_b(target, r)
-        mv = [u for u in rec if b.get(u, 0) != bs.get(u, 0)]
+        mv = [u for u in rec if round(b[u], 1) != round(bs[u], 1)]
         check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
+    bs = B.ask_b(target, "standard")
+    check("ask B hazard: the events read on the DAHS clock move %d units" % sum(round(b[u], 1) != round(bs[u], 1)
+                                                                           for u in rec), True)
+    eb = min(.05 - abs(b[u] - round(b[u], 1)) for u in rec)
+    check("ask B bins: every unit's rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % eb, eb >= .01)
     check("separation: the call reads only the DAHS export and the register; the asks read the invoices and the event "
           "report", True)
     f = json.load(open(os.path.join(HERE, "figures.json")))

@@ -58,19 +58,23 @@ def build(rng, fleet):
             for d in days:
                 vol[d] = float(rng.gamma(9.0, 70.0)) * (1.0 if d.month in (5, 6, 7, 8, 9) else 1.6)
             units = []
+        # the meter station reads midnight to midnight on its own clock, standard time all year, while the gas is
+        # priced by the gas day it flows in
+        gas = set(vol) if plant == "Holt Creek" else set()
         for u in units:
             x = fleet[u]
             for h in np.where(x["on"])[0]:
-                gd = gas_day_of(S.HOURS[h])
-                vol[gd] = vol.get(gd, 0.0) + float(x["heat"][h])
+                gas.add(gas_day_of(S.HOURS[h]))
+                d = S.HOURS[h].date()
+                vol[d] = vol.get(d, 0.0) + float(x["heat"][h])
         # the supplier bills a strip as one line, dated on the strip's last gas day, for the strip's whole quantity
         strips = {}
-        for d in sorted(vol):
+        for d in sorted(gas | set(vol)):
             if dt.date(2026, 1, 1) <= d <= dt.date(2026, 12, 30):
                 strips.setdefault(trade_of[d], []).append(d)
         for t, ds in sorted(strips.items()):
             last = max(dd for dd in days if trade_of[dd] == t and dd <= dt.date(2026, 12, 30))
-            dth = round(sum(vol[dd] for dd in ds), 1)
+            dth = round(sum(vol.get(dd, 0.0) for dd in ds), 1)
             pr = round(price[ds[0]] * (1 + fuel(plant, ds[0])) + adder[plant], 4)
             inv.append(dict(plant=plant, gas_day=last, dth=dth, price=pr, amount=round(dth * pr, 2),
                             invoice="%s-%s" % (W.PLANTS.get(plant, ("HC",))[0], last.strftime("%Y%m")), days=ds))
@@ -100,11 +104,13 @@ def build(rng, fleet):
         runs = [r for r in runs if r[1] >= 6]
         for i in rng.choice(len(runs), size=min(int(rng.integers(2, 6)), len(runs)), replace=False):
             h0, span = runs[int(i)]
-            dur = int(rng.integers(3, span + 1))
+            # a derate found in a run (a burner, a feedwater pump) stays on the unit until it is repaired, often past
+            # the shutdown and into the hours the unit then stands in reserve
+            dur = int(rng.integers(3, span + 1)) + (int(rng.integers(6, 60)) if rng.random() < .55 else 0)
             num += int(rng.integers(1, 40))
             ev.append(dict(unit=u, event=num, type=str(rng.choice(["D1", "D2"])), start=local_of(S.HOURS[h0]),
                            end=local_of(S.HOURS[h0]) + dt.timedelta(hours=dur), cause=int(rng.choice([3410, 4600, 4810])),
-                           rev=0, derate=int(rng.integers(20, 90))))
+                           rev=0, derate=int(round(int(rng.integers(20, 90)) * W.DERATE_SCALE))))
     # re-reports: an outage whose times and cause were corrected after the quarter closed is reported again under a
     # new event number with the corrected start and end; the original stays in the report
     full = [e for e in ev if e["type"] in ("U1", "U2", "U3")]
@@ -118,31 +124,6 @@ def build(rng, fleet):
             s1 = int(rng.choice([-5, -3, -2, 2, 3, 4, 7]))
             ev.append(dict(e, event=num, cause=int(rng.choice([4010, 4260, 7310])), rev=0, dup=True,
                            start=e["start"] + dt.timedelta(hours=s0), end=e["end"] + dt.timedelta(hours=s1)))
-    # dated a month early: an outage first entered with the month of the form left at the previous month (same day,
-    # same hours), then reported again under a new event number with its true dates once the quarter was checked
-    # against the plant logs
-    for u in W.CC:
-        x = fleet[u]
-        cands = [e for e in full if e["unit"] == u and not e.get("dup") and e["start"].month >= 6
-                 and e["end"] < dt.datetime(2026, 8, 20)]
-        pick = None
-        for need in (1, 0):
-            for e in sorted(cands, key=lambda e: e["start"]):
-                ws = e["start"].replace(month=e["start"].month - 1)
-                we = ws + (e["end"] - e["start"])
-                h0 = int((ws - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
-                h1 = int((we - dt.timedelta(hours=1) - S.T0).total_seconds() // 3600)
-                if ws.date() < W.SEASON[0] or x["on"][h0:h1].sum() < need or \
-                        any(f["unit"] == u and f is not e and f["start"] < we and ws < f["end"] for f in ev):
-                    continue
-                pick = (e, ws, we)
-                break
-            if pick:
-                break
-        if pick:
-            e, ws, we = pick
-            ev.append(dict(e, start=ws, end=we, swapped=True))
-            e["dup"] = True
     # event numbers run in the order the reports were filed: a few days after an event ends, a correction weeks later
     for e in ev:
         lag = int(rng.integers(30, 55)) if e.get("dup") else int(rng.integers(1, 10))

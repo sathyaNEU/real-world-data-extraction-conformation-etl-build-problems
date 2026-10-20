@@ -49,7 +49,7 @@ def air_windows(target):
     return out
 
 
-def record(target, shift=0):
+def record(target, shift=0, optime=True):
     """{unit: dict(load, nox, since, heat, stamps, air, blocks)} over each combined-cycle unit's operating hours in the
     season; hours since start counted along the whole year's record. air marks an unmeasured hour inside an instrument
     air ticket; blocks lists each run of such hours with the NOx per MMBtu in the operating hour before and after it.
@@ -74,7 +74,7 @@ def record(target, shift=0):
         seq[u].append((t, on, nox, heat, a))
         if on and season_hour(d, int(r["OP_HOUR"])):
             o = out[u]
-            o["load"].append(float(r["GLOAD_MW"]))
+            o["load"].append(round(float(r["GLOAD_MW"]) * (float(r["OP_TIME"]) if optime else 1.0), 4))
             o["heat"].append(heat)
             o["nox"].append(nox)
             o["since"].append(run[u])
@@ -161,47 +161,66 @@ def ask_a(target, route="gasday"):
 
 
 def ask_b(target, route="golden"):
-    """Each unit's ozone-season forced outage hours: hours inside a U1, U2 or U3 event, local time, where a later report
-    of the same outage (overlapping it on the same unit) replaces the earlier one."""
+    """Each unit's ozone-season equivalent forced outage rate (IEEE 762), per cent:
+    100 (FOH + EFDH) / (FOH + SH + EFDHRS), every hour local time from 1 May to 30 September. FOH: hours in a full
+    forced outage (U1, U2, U3), a later report replacing an earlier one it overlaps on the same unit. SH: OP_TIME
+    summed. EFDH: each D1 or D2 hour, derate_mw over nameplate MW times the hour's OP_TIME. EFDHRS: each D1 or D2 hour
+    outside a full outage, derate_mw over nameplate MW times the part of the hour the unit was not operating. Routes for the checks:
+    "rows" counts operating rows for SH; "nors" leaves out EFDHRS; "allder" counts every derate hour, in an outage or
+    not, at its full derate; "noresolve" counts every full outage report; "standard" reads the events on the DAHS
+    clock."""
     a, b = dt.datetime(2026, 5, 1), dt.datetime(2026, 10, 1)
-    evs = {}
+    cap = {}
+    ws = load_workbook(find(target, "generating_unit_register"), read_only=True).active
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if r and r[0]:
+            cap[r[0]] = float(r[3])
+    op = {}
+    for r in _rows(find(target, "dahs_hourly_export")):
+        t = dt.datetime.combine(dt.date.fromisoformat(r["OP_DATE"]), dt.time(int(r["OP_HOUR"])))
+        loc = t if route == "standard" else _local(t)
+        if a <= loc < b:
+            op[(r["UNIT_ID"], loc)] = float(r["OP_TIME"] or 0)
+    evs, der = {}, {}
     for r in _rows(find(target, "gads_event_report")):
-        if r["event_type"] not in ("U1", "U2", "U3"):
-            continue
-        evs.setdefault(r["unit"], []).append((dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M"),
-                                              dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M"), r["date_reported"],
-                                              int(r["event_no"]), r["cause_code"], r["event_type"]))
+        s0 = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
+        e0 = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
+        if r["event_type"] in ("U1", "U2", "U3"):
+            evs.setdefault(r["unit"], []).append((s0, e0, r["date_reported"], int(r["event_no"])))
+        elif r["event_type"] in ("D1", "D2"):
+            der.setdefault(r["unit"], []).append((s0, e0, float(r["derate_mw"])))
     out = {}
-    for u, es in evs.items():
-        if route == "golden":
-            # a full outage reported again a month later, on the same day of the month at the same hours, with the same
-            # length and cause, in a later filing is the same outage dated right; the earlier filing gives way to it
-            es = [e for e in es if not any(f[3] != e[3] and f[2] > e[2] and f[4] == e[4] and f[5] == e[5]
-                                           and f[1] - f[0] == e[1] - e[0] and f[0].time() == e[0].time()
-                                           and f[0] != e[0] for f in es)]
+    for u in cc_units(target):
         keep = []
-        if route in ("latest", "golden"):
-            for e in sorted(es, key=lambda e: (e[2], e[3]), reverse=True):
+        if route == "noresolve":
+            keep = evs.get(u, [])
+        else:
+            for e in sorted(evs.get(u, []), key=lambda e: (e[2], e[3]), reverse=True):
                 if not any(e[0] < k[1] and k[0] < e[1] for k in keep):
                     keep.append(e)
-        elif route == "samestart":
-            best = {}
-            for e in es:
-                if e[0] not in best or (e[2], e[3]) > (best[e[0]][2], best[e[0]][3]):
-                    best[e[0]] = e
-            keep = list(best.values())
-        else:
-            keep = es
-        if route == "union":
-            st = set()
-            for s, e, *_ in keep:
-                t = max(a, s)
-                while t < min(b, e):
-                    st.add(t)
-                    t += dt.timedelta(hours=1)
-            out[u] = len(st)
-        else:
-            out[u] = int(sum(max(0, (min(b, e) - max(a, s)).total_seconds()) / 3600 for s, e, *_ in keep))
+        fo = set()
+        foh = 0
+        for s0, e0, *_ in keep:
+            t = max(a, s0)
+            while t < min(b, e0):
+                foh += 1 if route == "noresolve" or t not in fo else 0
+                fo.add(t)
+                t += dt.timedelta(hours=1)
+        hours = [t for (w, t) in op if w == u]
+        sh = sum(1 for t in hours if op[(u, t)] > 0) if route == "rows" else sum(op[(u, t)] for t in hours)
+        efdh = efdhrs = 0.0
+        for s0, e0, mw in der.get(u, []):
+            t = max(a, s0)
+            while t < min(b, e0):
+                f = op.get((u, t), 0.0)
+                if route == "allder":
+                    efdh += mw / cap[u]
+                else:
+                    efdh += mw / cap[u] * f
+                    if t not in fo and route != "nors":
+                        efdhrs += mw / cap[u] * (1 - f)
+                t += dt.timedelta(hours=1)
+        out[u] = 100.0 * (foh + efdh) / (foh + sh + efdhrs)
     return out
 
 
