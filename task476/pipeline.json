@@ -1,40 +1,40 @@
 {
  "task": "task476",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
- "architecture": 1,
+ "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20: section numbers matching two margins, domain nouns in the guidelines, the candidate list naming candidates beside tract codes; tract names declared as stated inputs; no LEAK",
-  "reader": "reader B (r1b) landed the call, all 140 tract figures and Ask A 10 of 10, Ask B 0 of 10"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 on the registered card (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); BLOCKs cleared at the draw: role redrawn to policy_adviser, decisive pattern G4 (attribution at a geography transition) with differentiation against task243 and task450",
-  "heart": "WARN 2026-10-20 (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); surface clean",
-  "nearest": "task19 at 0.05"
+  "guard_check": "WARN 2026-10-20 on the registered v2 card (time_semantics strategy risk, ETL and Gate G overuse, decision type and question form after task471); BLOCKs cleared at the draw: org family, forcing event and context artifact redrawn, structural matches differentiated",
+  "heart": "",
+  "nearest": "task468 v2 at 0.07"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, SOLUTION_WRONG (pass 1)",
-  "disposition": "SEND_BACK",
-  "report": "task476/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "re-root at stage 1: architecture 1 spent (judge SEND_BACK, Gate H rule_application; reader B landed the call). Draw architecture 2 in the same number and objective, the old identity into the card's lineage",
+ "resume": "stage 2 of architecture 2: generator prototype for the separations, then ladder, fork table, closure, asks, prompt.txt, precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "seed ET33 (ACS tract poverty change, non-overlapping periods, margins of error, moved tract lines): the world (a city fund designating neighbourhoods on tracts' significant poverty increases), the decision and the quantity kept; the pitfall re-found in how the 2020 tracts were split from the 2010 ones"
+ "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent at stage 4; architecture 2 drawn in emissions-inventory (a city gas utility's leak methane inventory)"
 }
