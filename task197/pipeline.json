@@ -1,7 +1,7 @@
 {
   "task": "task197",
   "owner": "oviya13ya",
-  "status": "SHIPPED",
+  "status": "RETURNED",
   "stage": 5,
   "architecture": "v1",
   "objective": "anomaly-detection",
@@ -9,7 +9,7 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "SHIPPED. Four findings from the confirming reader were weighed and declined, with the reasoning here so they are not reopened as oversights. Two are authentic mess rather than defects, on the same ground that carried task199: the performance standard and the technical conditions disagree on whether remaining out-of-tolerance sites are carried at contracted capacity or at zero, which is what real governing documents do and which the reader itself noted does not change which site is withdrawn; and the prequalification note cites clause 3 for a declaration route that clause does not provide, which is how people really cite clauses. Two are cosmetic patterns inside declared distractors: the availability statement's percentage column steps 0.26, 0.26, 0.59, 0.26, 0.26, a near-linear ramp, and the imbalance price file has its mid outside the band in 11.5 per cent of periods. None moves a graded figure and none is worth a sixth judge pass. The carried realism question is unchanged and is the first thing to look at if the portal returns this build: 511 of 515 qualifying episodes put their deepest second 67 to 90 seconds after a period boundary, flagged by both readers as generated-looking, with the physics argument in the note and no shipped document stating the cause. The candidate fix is one sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline, at the risk of pointing attention where the traverse lives.",
+  "resume": "RETURNED on measurement, not on a portal result, and the call HELD: the reader filed the wrong site at 57 per cent on 152 episodes against 72 per cent on 134, confidently, so the ladder works. The ask layer leaked 24 of 49, which fails Gate F by itself. /fix-rubric with the main recommendation side frozen: re-site the primary devices.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "84 checks, 0 failed (floor 40)",
@@ -27,7 +27,7 @@
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
   "stage_name": "ship",
-  "updated": "2026-10-18",
+  "updated": "2026-10-20",
   "ask_layer": {
     "figures": 50,
     "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
@@ -37,7 +37,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, 0 LEAK",
-    "reader": "three passes. The two on the repaired pack each filed the rung 1 answer, Reiderland at 57 per cent, at about 85 per cent confidence, which is Gate F evidence rather than a finding. Note that the second called the decisive step rule application: that is what a solver concludes after executing the stated rules and getting an answer, and it is the stump working rather than a Gate H problem, since the judge that did find the traverse ruled it analytical."
+    "reader": "wave 8 audit: 0 of 4, the call MISSED, asks 24 of 49"
   },
   "judge": {
     "verdict": "DETERMINISTIC",
@@ -79,5 +79,13 @@
     "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
     "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
   },
-  "delivered": "2026-10-18"
+  "delivered": "2026-10-18",
+  "returned": [
+    {
+      "date": "2026-10-20",
+      "portal": "wave 8 audit, measured in house",
+      "repair": "rubric",
+      "commit": ""
+    }
+  ]
 }
