@@ -130,3 +130,80 @@ new sentences on the Kessler Avenue loop's second feed (report 6.3, extract note
 Sutter Park 5's 2024 to 2026 failures and Harrow Road 14's 2021 to 2024 run and when they ended, rungs' causes; neither names a section's failure order,
 and the readability regex in `generator/checks.py` (recurrence, second failure, failed twice, failure count and the
 rest) still finds nothing in the pack.
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure names (not values)
+from `generator/figures.json`, and was scored by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **2 of 2** |
+| ask figures | **42 of 44** (95.5 per cent) |
+
+It filed the feeder and its id, and reconstructed the decisive step whole: forecast from the sections still in service and remove the causes that are gone, rather than extrapolating each feeder's raw failure history. It then walked the other feeders one by one and said why each falls away, the retired paper-insulated cable, the finished elbow run, the relieved loop overload, the decaying humps, and gave the positive case for the winner, seventeen in-service 1986 sections with repeat failures and crew notes naming standing water in a duct bank. It noted no other feeder has an in-service section with two cable failures.
+
+Asked what sent it there, it listed four filed sources, the 2025 filing on the cable replacement, the same filing on the elbow change-out, the extract notes on the relieved loop, and the prompt's own phrase about sections in service at the end of September. So the pack supplies the retirement of every rival cause in writing. It added that nothing told it to use a recurrent-failure model and it inferred that from the repeat-failure pattern, which is the one part it had to find.
+
+```
+== call figures ==
+HIT  recommended_feeder                 golden "Quarry Hill 21"           reader "Quarry Hill 21"
+HIT  recommended_feeder_id              golden "QH21"                     reader "QH21"
+
+== ask figures ==
+HIT  customers_4plus_ry2026.HR12        golden 108                        reader 108
+HIT  customers_4plus_ry2026.HR14        golden 1163                       reader 1163
+HIT  customers_4plus_ry2026.ML03        golden 445                        reader 445
+HIT  customers_4plus_ry2026.ML07        golden 485                        reader 485
+HIT  customers_4plus_ry2026.QH21        golden 262                        reader 262
+HIT  customers_4plus_ry2026.QH22        golden 44                         reader 44
+HIT  customers_4plus_ry2026.SP05        golden 1812                       reader 1812
+HIT  customers_4plus_ry2026.SP09        golden 65                         reader 65
+HIT  customers_served_2026_09_30.HR12   golden 3878                       reader 3878
+HIT  customers_served_2026_09_30.HR14   golden 3105                       reader 3105
+HIT  customers_served_2026_09_30.ML03   golden 4168                       reader 4168
+HIT  customers_served_2026_09_30.ML07   golden 3971                       reader 3971
+HIT  customers_served_2026_09_30.QH21   golden 2781                       reader 2781
+HIT  customers_served_2026_09_30.QH22   golden 3306                       reader 3306
+HIT  customers_served_2026_09_30.SP05   golden 3650                       reader 3650
+HIT  customers_served_2026_09_30.SP09   golden 3362                       reader 3362
+miss feeder_names                       golden ["Harrow Road 12", "Harrow reader {"HR12": "Harrow Road 12",
+miss major_event_day_method             golden "2.5 beta (TVE-RS-04)"     reader "IEEE 1366 2.5 beta per TV
+HIT  major_event_days_ry2026            golden ["2026-01-25", "2026-07-28 reader ["2026-01-25", "2026-07-28
+HIT  saidi_ry2026_min.HR12              golden "71.3"                     reader 71.3
+HIT  saidi_ry2026_min.HR14              golden "131.4"                    reader 131.4
+HIT  saidi_ry2026_min.ML03              golden "88.2"                     reader 88.2
+HIT  saidi_ry2026_min.ML07              golden "85.7"                     reader 85.7
+HIT  saidi_ry2026_min.QH21              golden "92.4"                     reader 92.4
+HIT  saidi_ry2026_min.QH22              golden "73.5"                     reader 73.5
+HIT  saidi_ry2026_min.SP05              golden "139.7"                    reader 139.7
+HIT  saidi_ry2026_min.SP09              golden "125.5"                    reader 125.5
+HIT  saifi_ry2026.HR12                  golden "1.40"                     reader 1.4
+HIT  saifi_ry2026.HR14                  golden "1.97"                     reader 1.97
+HIT  saifi_ry2026.ML03                  golden "1.73"                     reader 1.73
+HIT  saifi_ry2026.ML07                  golden "1.31"                     reader 1.31
+HIT  saifi_ry2026.QH21                  golden "1.58"                     reader 1.58
+HIT  saifi_ry2026.QH22                  golden "1.52"                     reader 1.52
+HIT  saifi_ry2026.SP05                  golden "2.23"                     reader 2.23
+HIT  saifi_ry2026.SP09                  golden "1.53"                     reader 1.53
+HIT  sections_twice_failed_in_service.HR12 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.HR14 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.ML03 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.ML07 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.QH21 golden 17                         reader 17
+HIT  sections_twice_failed_in_service.QH22 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.SP05 golden 0                          reader 0
+HIT  sections_twice_failed_in_service.SP09 golden 0                          reader 0
+HIT  twice_failed_sections_location     golden "State Route 443"          reader "State Route 443 crossing 
+
+call figures   2 of 2 hit
+ask figures    42 of 44 hit (95.5 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+**The repair:** the pack files the retirement of every rival cause in writing, so the elimination is reading rather than analysis. Re-root at stage 2: the causes that are gone must be inferable from the data's own structure rather than announced in a filing.

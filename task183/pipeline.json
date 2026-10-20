@@ -4,7 +4,7 @@
   "objective": "anomaly-detection",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-12",
+  "updated": "2026-10-20",
   "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
   "architecture": 1,
   "loops": 0,
@@ -14,7 +14,7 @@
   },
   "leak": {
     "leak_py": "REVIEW on the final build (13 lines, the same kinds, answered in the design note)",
-    "reader": "pass 1: five realism tells, repaired; pass 2: Q1 to Q5 none, every REVIEW line harmless, two realism notes repaired in data (no third read)"
+    "reader": "wave 8 audit: call landed (2 of 2), asks 42 of 44, Gate F failed"
   },
   "duplicate_check": {
     "heart": "PASS (after task181's architecture 4 replaced the spent v3 card)",
@@ -54,9 +54,9 @@
     "figures_moved": "none",
     "target_zip_sha256": "5d1d5870cc165847"
   },
-  "status": "SHIPPED",
+  "status": "FAILED_TO_STUMP",
   "owner": "oviya13ya",
-  "resume": "",
+  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. the pack files the retirement of every rival cause in writing, so the elimination is reading rather than analysis. Re-root at stage 2: the causes that are gone must be inferable from the data's own structure rather than announced in a filing.",
   "returned": [
     {
       "date": "2026-10-12",
