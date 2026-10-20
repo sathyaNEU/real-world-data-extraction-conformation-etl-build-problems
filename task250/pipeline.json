@@ -1,0 +1,39 @@
+{
+ "task": "task250",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "A competent solver replays the filed drift-alert rule over the 2025 to 2027 quality-control export as recorded, counts the continuing stations' alerts at each setting and files 3.5; the continuing stations' 2028 residuals come from farther neighbours once the 34 programme stations close, while their limits stay at the spread measured with the old neighbours, so re-running the estimate without the closing stations files 4.0.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Drawn 2026-10-20 (card registered, WARN only). Next: stage 2, the simulator tuned to the ladder, the asks and their devices, the fork and closure tables, the prompt, precut.",
+ "approved": null,
+ "delivered": "",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": []
+}

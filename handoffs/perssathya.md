@@ -18,6 +18,15 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
+**task250: DRAWN 2026-10-20, architecture 1; in stage 2.**
+- Physical & Environmental Sciences, sensor calibration and measurement x DQ. The Consorcio Agroclimático del Ebro
+  Medio's 148 agro-climatic stations: which drift-alert setting the daily quality control runs from January 2028 to
+  keep drift-alert visits within 2.5 a month, and the alerts a month it raises, when 34 programme stations close.
+- Stump: the quality control reads each station against its three nearest reporting neighbours; with the closures
+  many continuing stations are read against farther neighbours while their limits stay at the old spread. The replay
+  of the record as it ran files 3.5; the re-run without the closing stations files 4.0 (prototype).
+- Next: stage 2 (simulator tuned to the ladder, asks and devices, fork and closure tables, prompt, precut).
+
 **task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; a sixth architecture is the author's call.**
 - Architecture 5 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Vasslia Miljørådgiving's
   sediment programme for a Western Norwegian hydropower company; golden SKB, JVB, FND and ESK over by the relation

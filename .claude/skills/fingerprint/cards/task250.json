@@ -1,0 +1,91 @@
+{
+  "task": "task250",
+  "architecture": "v1 (an irrigation consortium's agro-climatic stations: the 2028 drift-alert setting read on each continuing station's spatial-consistency residual once 34 co-funded stations close and leave its neighbour pool)",
+  "drawn": "2026-10-20",
+  "slot_note": "",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "the drift-alert setting of a Spanish irrigation consortium's 148 automatic weather stations in the middle Ebro valley, whose daily quality control reads each station's air-temperature anomaly against the inverse-distance estimate of its three nearest reporting stations, set for 2028 when 34 stations funded by the rural development programme close",
+  "objective": "data-quality-monitoring",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "task250/submission.md, block 1",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G13",
+    "G17"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst replays the filed drift-alert rule over the 2025 to 2027 quality-control export at each setting, counts the continuing stations' alerts (or scales the network's count to the stations that stay) and files the 3.5 setting, because it reads the recorded residuals as what the continuing stations will show in 2028, when the 34 closures will have taken many of their nearest neighbours.",
+  "domain_test": "The deciding quantity is the spread of each continuing station's 2028 spatial-consistency residual, the departure of its daily air-temperature anomaly from the inverse-distance estimate of its three nearest reporting stations, which widens as those neighbours move farther away because the mesoscale anomaly field decorrelates over tens of kilometres; with a hospital network's or a call centre's nouns there is no interpolated field, no neighbour distance and no estimate whose error grows as the network thins, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:spatial-consistency-residual-under-network-thinning",
+  "layer1": [
+    "the stations' daily export in Spanish headers with decimal commas",
+    "the quality-control export reprocessed in March 2027 and re-sent, with the reprocessed days repeated",
+    "the maintenance contractor changed in July 2027 and the work orders' outcome vocabulary with it",
+    "station codes re-issued when two stations were moved in 2026",
+    "missing days written as a sentinel by the older loggers and left blank by the newer ones",
+    "a work order covering two stations' alerts on one trip"
+  ],
+  "stakeholder_role": "the consortium's network quality coordinator, who sets the drift-alert setting against the field team's visit capacity",
+  "role_family": "capacity_planner",
+  "spine": {
+    "file": "estaciones_diario_2025-2027.csv",
+    "rows": 0,
+    "entity": "one station-day of air temperature (daily mean, maximum, minimum) and the logger's count of valid ten-minute records",
+    "grain": "station x day",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Spain, Aragón (the middle Ebro valley)",
+    "currency": "EUR",
+    "org_type": "a consortium of irrigation communities running an agro-climatic station network for irrigation advice",
+    "invented_names": [
+      "Consorcio Agroclimático del Ebro Medio"
+    ],
+    "people": [
+      "Celia Hernando",
+      "Teodoro Falcó",
+      "Inés Dávila"
+    ]
+  },
+  "deliverables": [
+    "drift_alert_setting_2028.xlsx",
+    "alerts_by_setting_2028.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a count of alerts each unit raises when its departure from an estimate built from its nearest other units passes a limit set from that departure's past spread; when some units leave, the remaining units' estimates come from farther units and their departures spread wider while their limits stay at the spread measured with the old neighbours, so the alerts rise even as the units fall.",
+  "driver_concrete": "Each continuing station's 2028 drift statistic is re-run on the 2025 to 2027 record with the 34 closing stations taken out of the quality control's neighbour pool and read against the limit the January configuration sets from the recorded statistic, because the inverse-distance estimate's error grows as the nearest neighbours move farther away.",
+  "stump": "A competent solver replays the alert rule over the quality-control export as recorded at each setting, counts the continuing stations' alerts and files the 3.5 setting, treating the recorded residuals as what those stations will show in 2028; re-running the estimate without the 34 closing stations, against the limits configured from the recorded statistic, files 4.0.",
+  "lineage": [],
+  "differentiation": {
+    "task101": "there a payout threshold cut from a distribution the decision's own earlier payments have entered; here an alert count read from residuals whose spread depends on which neighbouring units the estimate can draw on",
+    "task469": "there the share of future tasks overrunning a shorter allowance, observed only through censored past tasks; here alerts re-counted on a record re-run with the neighbour pool the network will have, nothing censored",
+    "task138": "there a forward requirement replayed from each unit's rebuilt store; here a forward alert count where the record's own residuals were measured against neighbours some of which will be gone"
+  },
+  "mechanism_source": "design_note",
+  "notes": "Drawn 2026-10-20 from the DQ23 seed (the per-station drift-alert threshold that meets the network's false-alert budget): the world, the decision and the quantity kept, the pitfall re-found. task249 v5's lesson applied: the field's reflex (replaying the rule over the record) is the first rung, and the decisive step is a second, data-native move (the neighbour pool the record was measured with is not the 2028 pool). validated_decoy false: the record itself refutes the easy route's premise, because six stations added in April 2026 narrowed their neighbours' residuals and cut those stations' alerts, which a replay of 2025 would have missed.",
+  "registered": "2026-10-20T08:55:00Z"
+}
