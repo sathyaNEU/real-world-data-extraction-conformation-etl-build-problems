@@ -44,3 +44,44 @@ Stump terms swept: likelihood, westbrook, infected, positive, protocol, minimum,
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+Run because this build shipped with no scored reader evidence. The reader held only a fresh unzip of
+`target.zip` and `prompt.txt`, with the figure names (not values) from `generator/figures.json`, and was
+scored key by key by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured, and this is the worst call result on the lane
+
+| block | hit |
+|---|---|
+| main call | **18 of 18** |
+| ask figures | **60 of 82** (73.2 per cent) |
+
+Every call figure. It filed the zone, the flight date, the rate to four decimals and the flip point, and
+it reconstructed the whole decisive route unprompted: infected females per CO2 trap-night, species by
+species, with the maximum-likelihood rate for pools of unequal size. It then scored the two rungs against
+it in its own words, reporting that adding gravid pools puts two other zones ahead and drops this one to
+third, and that the minimum infection rate puts the runner-up first because its high-abundance pools of
+up to 50 understate the rate. That is the ladder, read off the pack.
+
+It named five protocol clauses as what sent it there, 3.1, 3.2, 3.6 and 4.1 among them, which is
+readability screen test 1 four times over: the pack files the trap biology, the females-per-trap-night
+definition and the pool ceilings, and the decisive construction follows from them by arithmetic. It also
+found and keyed the week-32 county PDF, matched all 1,155 pools by accession with no mismatches, caught
+the 206-row re-import, applied the failed-trap-night clause and re-derived every case zone from the 2026
+sections. The Layer 1 mess was all handled; it was never what made this hard.
+
+```
+call figures   18 of 18 hit
+ask figures    60 of 82 hit (73.2 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
+
+The repair re-sites the ladder, not the wording: a call a blind reader lands at medium effort is a ladder
+whose decisive rung is readable, and `supplemental-stumping` 1.1c puts the reader above the author's own
+cracker sheet wherever the two disagree. The specific finding here is that the protocol's own clauses
+compose into the method, so the pack teaches the construction it is meant to withhold.
