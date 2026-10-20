@@ -1,0 +1,92 @@
+{
+  "task": "task476",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET33 (ACS tract poverty change across non-overlapping periods with moved tract lines): the world (a city fund designating neighbourhoods on tracts' significant poverty increases), the decision and the quantity kept; the pitfall re-found in how the 2020 tracts were split from the 2010 ones",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "conforming a 2010-geography five-year ACS period onto 2020 census tracts for a significance test of tract poverty change, where growing tracts were split along 2010 block-group lines",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the 2014 to 2018 tract estimates to 2020 tracts through the Census relationship file, giving each split tract's children their parent's poverty rate with the parent's margin of error, and tests each 2020 tract's change at 90 per cent, designates the wrong set of neighbourhoods, because a child that holds its parent's poor block groups shows a rise that is only the split and a child that holds its better-off block groups hides a real one.",
+  "domain_test": "The decisive quantity is each 2020 tract's 2014 to 2018 poverty rate on its own territory, a survey estimate rebuilt from the five-year block-group estimates that tile the child with its margin of error combined from theirs, then the change tested against both periods' sampling errors; swapping in another field's nouns breaks it because the nesting of block groups in tracts, the redrawing of tracts at the decennial census and the published margins of error are what make the earlier rate estimable at all.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:earlier-period estimate for a redrawn unit from the finer units that tile it",
+  "layer1": [
+    "two ACS table layouts across releases",
+    "GEOIDs with and without the summary-level prefix",
+    "tract codes reused for different territory in 2020",
+    "controlled estimates with no margin of error",
+    "the relationship file's land and water parts",
+    "a fund guideline PDF",
+    "a block-group table with jam values"
+  ],
+  "stakeholder_role": "the city's community development analyst preparing the Neighborhood Stabilization Fund designations",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "tab2010_tab2020_st00_cty_blocks.csv",
+    "rows": 0,
+    "entity": "one row is a 2010 block's part in a 2020 block",
+    "grain": "block part",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, a fictional mid-sized city in an unnamed Midwestern state",
+    "currency": "USD",
+    "org_type": "a city's community development department",
+    "invented_names": [
+      "Calloway Flats",
+      "Dunmore Heights",
+      "Kestrel Park",
+      "Linden Row",
+      "Sorrel Bend"
+    ],
+    "people": [
+      "Tamara Larson",
+      "Brandon Freeman"
+    ]
+  },
+  "deliverables": [
+    "nsf_2027_tract_poverty_change.xlsx",
+    "nsf_2027_designation_memo.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A rate for an earlier period is needed for units drawn only later, and the units they were split from published it only as a whole, while finer units that tile the later units published it too; spreading the parent's rate to its parts makes the part holding the parent's high-rate pieces look like it rose and hides a rise in the other, so the earlier rate is rebuilt from the finer units and its error combined from theirs before the change is tested.",
+  "driver_concrete": "Each 2020 tract split from a 2010 tract gets its 2014 to 2018 poverty rate from the 2010 block groups that make it up (summed counts, margins combined), not from its parent tract's rate, before its change to 2019 to 2023 is tested at 90 per cent.",
+  "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task243": "task243 recovers a register's exit share from two complete counts and the migration that rises with the exit chance; here nothing is a register or a balance: a survey rate for a redrawn tract's earlier territory is rebuilt from the block-group estimates that tile it before its change is tested.",
+    "task450": "task450 places two groups on one scale through a shared item subset whose drifted members are removed; here no instrument changes and nothing is linked through common items: the geography changed, and the earlier period is re-estimated on the new units from the finer published units nested inside them."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-20T09:16:29Z"
+}
