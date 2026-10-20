@@ -53,6 +53,18 @@ cell) and the all-nil response. More than about a quarter of the cells recoverab
 component measures the data's shape rather than the solver's analysis, and the ask's shape has to change,
 not its wording.
 
+**1.1d A measured row is only measured against the pack it was measured on, and re-siting a device voids
+it.** The cracker's reader-calibrated row may carry a real reader's result, which is the point of 1.1c, but
+that result dies the moment the device under it moves. A build measured its ask A and ask B at 0 of 12 each
+from a live reader, re-sited both devices in the next pass (one had its filed convention removed, the other
+was re-devised onto a different reset), carried the two rows forward still labelled measured, and reported
+a pair of 39.5. The fresh reader on the re-sited pack took **all six of ask A, all six of ask B and all six
+of ask C, 19 of 19 figures it attempted**, for a keep of 18 of 30 and a measured pair of **61.5**. The same
+output had already named the scenario: "a reader which cracked A or B as well would keep 18 of 30 for 61.5".
+So stamp each row with the pack digest it was measured on, treat any row whose device has since moved as a
+model again, and re-measure before the row is read as a gate. The cheapest form of this rule: a pass that
+re-sites a device owes a reader on the pack it cut, not the pair arithmetic of the pack before it.
+
 **1.1c The cracker table is a model, the isolated reader is the measurement, and the reader wins.** Score
 every figure the stage 4 reader reports against `generator/figures.json`, key by key, before reading its
 verdict: that scoring is the only number on the ask layer that was not written by the author. A reader hit

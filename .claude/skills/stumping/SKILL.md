@@ -503,12 +503,18 @@ Each rung runs six tests on paper; any that fires makes it readable, and a reada
 definition or formula names the decisive quantity, or only makes the solver ask the question: a clause it
 cannot avoid reading sends it looking, and a join forced by a key it already holds is one line of code; a
 template asking for each candidate's affected population is that clause for every candidate (500 v2). **A
-filed confidence level, significance level or test threshold is a filed method whenever the decisive step is
-an inference**, not a convention a pin may close: "established below target at the 95 per cent level" leaves
-only a textbook variance formula to choose, so the step is rule application and the rung is readable.
-task190 architecture 6 filed that level in its authority memo, screened its decisive rung `silent`, and its
-isolated reader landed the call and all 38 ask figures. Where the inference itself is the stump, the level
-stays unfiled and the records force it. **2 Schema:** a column, key or marker makes it a row
+filed confidence level, significance level or test threshold is a filed method when, once it is filed, only
+a textbook variance remains.** The test is what is left, not that a level appears. task190 architecture 6
+filed "established below target at the 95 per cent level" in its authority memo over a ratio of a complete
+administrative numerator to a survey denominator, which left nothing but the standard formula: it screened
+its decisive rung `silent` and its isolated reader landed the call and all 38 ask figures. **The
+counter-example matters as much**, because the first draft of this rule condemned it wrongly: a shipped
+build files the level, the direction, the graded quantity and the tie-break in one protocol clause and
+still holds, because the clause never says whose interval, and the decisive step is that the two screens
+run on the same specimens so the variance is the paired difference's and not the sum of two. The level is
+part of the WHAT, which `determinism-check` §1 requires to be filed literally; the variance structure is
+the HOW, and the shared-unit design forces it. So file the level when the estimand needs it, and ask
+separately whether a reader who has it still has a method to choose. **2 Schema:** a column, key or marker makes it a row
 predicate or a header-found join. **3 Reflex:** an opponent default. **4 Control bench:** a control or
 corpus scores the rules or refutes the naive read. **5 Hygiene:** the battery finds it (73 v2, 117). **6
 Linear:** one subtraction, ratio or half of a reported figure. The note gives a row per rung, verdict
