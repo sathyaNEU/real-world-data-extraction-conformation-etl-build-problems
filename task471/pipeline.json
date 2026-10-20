@@ -1,16 +1,16 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 1, architecture 5 draw: guard.py recent, coverage and mechanisms --objective etl; a fresh world and a decisive step from the measured drivers' held group (a compound unit or grain choice outside the hypothesis space, or a back-test that passes by construction while the forward population differs), never a textbook covariate; the card's lineage carries v1 to v4",
+ "resume": "stage 2, architecture 5: the design note's sections from Default path to Ask sheet, the generator prototype calibrated so the dual-system and golden allocations differ in several regions with margins, prompt.txt, precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -154,7 +154,7 @@
   "target_zip_sha256_16": "b6990395f2efabc2",
   "lesson": "a covariate the field's textbook names for the quantity (time since immigration and return migration for register over-coverage) is fitted by reflex once the audit report says the share is taken within the respects that bear on it; rebuilding the covariate from an event history is cleaning, not a stump"
  },
- "stump": "",
+ "stump": "The default path takes each region's adults from the post-enumeration survey's dual-system estimates within post-strata, subtracts the roll and shares the 150 organisers on that gap; the men aged 18 to 49 whom the census and the survey both missed stay out, and because they are a large part of a gap that is a small difference of two large counts, the organisers land in the wrong regions; raised to the sex ratio demographic analysis gives, which the female estimates match, they move the allocation.",
  "precut": {
   "exit": null,
   "date": ""
@@ -164,8 +164,9 @@
   "reader": ""
  },
  "duplicate_check": {
+  "guard_check": "WARN only at the v5 draw (objective and Gate G overuse, Gate G and question form repeat against task474 v4)",
   "heart": "",
-  "nearest": ""
+  "nearest": "0.05 (task188, task264)"
  },
  "judge": {
   "verdict": "",

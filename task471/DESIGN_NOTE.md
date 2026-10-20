@@ -1,293 +1,47 @@
-# task471 design note: the 2027 small-municipality supplement on the register's adjusted resident population
+# task471 design note: the 2027 enrolment campaign's organisers on the census-day adults not on the roll
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task471.json`, architecture v4, registered 2026-10-20T14:00:47Z after a
-  pull. Lineage: v1 (the route pitch, Gate F), v2 (the licensure form, Gate G), v3 (the dual-frame well survey, Gate F).
-  - Guard: WARN only.
-    - ETL in 7 of the last 12: the lane's objective.
-    - Gate G method_or_model_selection repeats task474 v3 and runs in 8 of 12: which post-strata carry a register's
-      absence process is a model chosen on honest data, not a planted figure.
-    - designation_set repeats task474 v3: the decision designates the municipalities that qualify.
-  - Differentiation lines against task470, task167, task268, task30, task31, task448, task500, task53, task57, task69
-    and task76 (the signature population, E, method_or_model_selection is spent in older builds; each line names how
-    this driver differs: an over-count removed at audit rates set by a clock and a migration history).
-  - Personas from `guard.py names --geo netherlands --seed 471`: Ilse Spreeuw (head of population statistics at the
-    Bureau), Luka Bosman (the audit's methodologist), Kay Wolfswinkel (analyst at the ministry's municipal finance
-    directorate). Nobody from v1 to v3 is reused.
-- **Pairing:** Survey Research & Official Statistics / census-register-administrative-data-quality / ETL.
-  - The integration: a municipal population register extract, its event history, the national Register Coverage Audit
-    with its working extract of the audited persons' register records and histories, the merger crosswalk and the
-    ministry's delivery specification, conformed into one adjusted-population file.
-  - The deciding quantity: each in-play municipality's adjusted resident population on 1 January 2026, its register
-    count less the registered persons estimated, from the audit, not to have been living there; a register's erroneous
-    enumerations estimated within post-strata, the task type's own statistical object.
-- **World:** an unnamed EU country modelled on the Netherlands. The National Bureau of Statistics (population
-  statistics division) delivers adjusted populations to the Ministry of the Interior's municipal finance directorate.
-  - Municipal Fund Regulation 2027: the small-municipality supplement goes to municipalities whose adjusted resident
-    population on 1 January 2026 is below 5,000.
-  - Register Coverage Audit 2026: a simple random sample of persons registered nationally on 1 January 2026, each
-    verified in the field (visit and records check) as living, or not, in the registered municipality on that date.
-  - The in-play municipalities: every municipality whose register count on 1 January 2026 lies between 4,500 and 6,000
-    (two former municipalities merged on 1 January 2026, so the history carries their old codes).
-  - Internal moves are registered when a person registers in the new municipality; a departure abroad must be
-    reported, and many are not, so the register's over-count is persons who emigrated (or died abroad) unreported.
-- **Decision:** which in-play municipalities qualify for the 2027 supplement, and how many. Faces forward: the 2027
-  allocation, decided in December 2026 on the adjusted 1 January 2026 population.
-- **Shape:** 10, a scorecard: each in-play municipality against the 5,000 line, with the asks per municipality.
-- **Strategy:** composition_mix (`own:erroneous-enumerations-post-stratified-by-the-migration-career`), Gate G
-  method_or_model_selection, generators G14, G6, G19, calibration form gold_standard_subsample, context artifact
-  register.
-- **Data-native sentence:** in a population register an internal move is always recorded (the new municipality
-  registers the person) and a departure abroad often is not, so the records left behind belong to people early in a
-  stay in the country and to people who have come and gone before; the register's own date at the current address is
-  reset by every internal move and stops measuring the stay, and only the event history dates the latest arrival.
-- **Sources** (one line each; what it teaches, how this build differs):
-  - Client pattern census-register 1 (dual-system estimates within post-strata, after erroneous enumerations): the
-    erroneous-enumeration rate must be measured within post-strata; here it is the whole estimate and the post-strata
-    are the analysis.
-  - Register-based population statistics (over-coverage concentrated among recent immigrants, by duration of
-    residence and earlier migration): the field's model of silent emigration; here the clock must be rebuilt from the
-    event history because the register's address date is reset by internal moves.
-  - task473 and task470 in this lane (a rate taken at each unit's own level): here the over-count is removed, not
-    completed, and the conditioning properties are a clock and a history, never a recorded level.
+Architecture 5, drawn 2026-10-20 after architecture 4 (the register over-coverage audit) was spent at Gate F. Card
+`.claude/skills/fingerprint/cards/task471.json` (v5), registered 2026-10-20T17:17:37Z; guard check WARN only.
 
-## Default path
-
-1. Read `population_register_extract_20260101.txt` (pipe-delimited, its trailer's 126,655 matching the rows): the
-   persons registered in the 24 municipalities in play at the start of 1 January 2026, Ravenmeer one municipality with
-   its two former municipalities' addresses (Article 14(4)).
-2. Took each sampled person's final result from `register_coverage_audit_2026_visits.csv` (the case's last record; 91
-   is no contact) and counted results 20, 30 and 40 as not living there (report 3 and 4): 206 of the 12,000 in
-   `register_coverage_audit_2026_sample.csv`.
-3. Applied report 5 on the respects the sample and the extract both record: each registered person gets the share of
-   sampled persons alike in country of birth (born abroad or in the country) and completed years at the current address
-   (`ADDRESS_SINCE`: under 1, 1 to 4, 5 to 9, 10 or more), eight cells (born abroad 5.0, 10.1, 5.9 and 1.1 per cent,
-   born in the country 0.3 to 0.5).
-4. Summed the shares in each municipality, took them from its register count, rounded to the whole person and compared
-   with 5,000 (Article 14(1) to (3)): the older immigrant towns Molenrade and Nijdorp come in at 4,967 and 4,968, the
-   seasonal-work towns Eekhorst, Haverstede and Koudenbeek stay out at 5,075, 5,069 and 5,067.
-
-Ends on: eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo.
-
-Golden: nine municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Eekhorst, Haverstede, Hilderloo, Koudenbeek
-and Zandloo.
-
-## Stump sentence
-
-The default path gives each registered person the audit's absence share by the respects the register extract and the
-sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde,
-Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo: the older immigrant towns Molenrade and
-Nijdorp come in because their long-settled residents moved house recently, and the seasonal-work towns Eekhorst,
-Haverstede and Koudenbeek stay out because their residents' address dates are their arrival dates and nothing in the
-register record says that four in ten of their migrants had left the country before; taken by the current stay since
-the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event
-history, the shares qualify the nine.
-
-## Three rules
-
-Task type: census register administrative data quality (the register's over-coverage, its erroneous enumerations measured by a coverage audit and applied to each municipality's register count, conformed into the ministry's adjusted-population delivery), a task type serving Data Extraction & Conformation (ETL).
-
-Domain test: the deciding quantity is each municipality's erroneous enumerations on the population register (registered persons not living there on the reference date), estimated the way register-based statistics estimate over-coverage, a coverage audit's absence rates applied within post-strata (synthetic estimation), where the post-strata are the characteristics that carry a register's absence process, the migration career: the length of the current stay since the latest immigration and an earlier emigration.
-
-Swap: "which of 24 general practices whose patient list held 4,500 to 6,000 patients qualify for a small-practice grant on the list less the patients an audit estimates have left" keeps the arithmetic and loses the structure: here the over-count exists because a departure abroad has to be reported while an internal move is registered by the next municipality, so the records left behind belong to people early in a stay in the country and people who have come and gone before, and the register's address date stops measuring the stay because every internal move resets it; a patient list has no settlement history, no event register and no address clock reset by a move the next practice records.
-
-Layer 1: the register's extract layout (pipe-delimited, CRLF, a trailer with the record count), birth dates with an unknown day or month written 00, annulled events (a settlement entered twice, a departure entered in error), the merger of Ravensloot (0731) and Meerdijk (0744) into Ravenmeer (1987) on 1 January 2026 with every earlier event and address code under the old codes, moves into a municipality recorded only by the receiving municipality, the audit's no-contact attempts (91) before the final result and result 50 (living there on 1 January, left afterwards); each asserted neutral on the call (checks.py L1 and the SF rows).
-
-Layer 2: estimation within post-strata (composition_mix): the audit's absence rate must be applied within the strata that carry the absence process; the fields both record layouts share stand in for the migration career and move the over-count between towns whose migrants differ in their current stay and in earlier departures.
-
-Decisive step: post-stratifying the audit by each person's current stay since the latest settlement from abroad (completed years under 1, 1 to 4, 5 to 9, 10 or more) and whether the person left the country before it, both rebuilt from the register's event history, which brings Eekhorst, Haverstede and Koudenbeek under the line (4,947, 4,946 and 4,947) and keeps Molenrade and Nijdorp over it (5,042 each).
-
-Not semantics: every field, code and definition read correctly (ADDRESS_SINCE the date at the current address, IMM a settlement from abroad, EMI a departure abroad, ANN an event that did not take place, 50 living there) still leaves the easy route post-stratifying on the fields both record layouts carry; no field marks a person's career, and the step is choosing which characteristics carry the absence, tested on the audit itself (log-likelihood -774.4 for the golden's nine cells against -834.4 for the default path's eight).
-
-Not rule application: Article 14 files the population, the reference date, the subtraction, the rounding and the 5,000 line; report 5 files only that each person gets the share found among sampled persons like that person in the respects that bear on it; no filed sentence names a characteristic, so executing every filed rule on the register's own fields files the default eight.
-
-Analyst test: a strong analyst who reads every file and rule correctly and post-stratifies the audit on the characteristics both record layouts carry (country of birth by years at the current address) files eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo (the default path's Ends on); a logistic fit on every register field files the same eight; only the stay rebuilt from the event history together with an earlier departure files the nine.
-
-Estimand: Article 14(1) to (4) (municipal_fund_regulation_2027_article_14.pdf): the persons registered as residents at the start of 1 January 2026, less those estimated from the Register Coverage Audit 2026 not to have been living there on that date, rounded to the whole person and compared with 5,000, municipalities as constituted on 1 January 2026; report 2 and 5 (register_coverage_audit_2026_report.pdf): the comparison is the audit's sampled persons like each registered person in the respects that bear on living there, every registered person with the same chance of being sampled.
-
-No decoy: nothing is planted to be caught: the register, its history, the audit and the hub's records are what each system writes; no memo, briefing, draft or stakeholder figure argues a method or a list; the 2024 pilot (two other municipalities, another reference date, a sample of addresses) and the waste-levy households (billing, not the register) are declared distractors that rank nothing on the decision.
-
-No certified replay: no published municipal figure, earlier adjusted population or certified list ships to back a method out of; the report's national table (206 of 12,000 by final result) is the audit's own count and ties under every method.
-
-Lesson: in a population register the over-count follows the migration career, a short current stay and an earlier departure, which only the event history dates because the register's own address date resets with every internal move; no build on file post-stratifies a register's erroneous enumerations by a career rebuilt from its event history.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, born abroad by years at the address (eight) | report 5's "respects" sends the solver to the fields both record layouts share: fires | BIRTH_COUNTRY and ADDRESS_SINCE in the sample and the extract: fires | post-stratifying on shared demographics is the reflex: fires | none | none | an eight-cell table: fires | readable |
-| R1, one audit rate (six) | report 4 publishes it: fires | none | the national share is the first number to hand: fires | none | none | one ratio: fires | readable |
-| R2a, born abroad or foreign nationality (seven) | none | BIRTH_COUNTRY, NATIONALITY: fires | the reflex: fires | none | none | two ratios: fires | readable |
-| R2c, the current stay alone (six) | none | the IMM events: fires | duration of residence is a standard covariate: fires | none | none | a five-cell table: fires | readable |
-| R2e, an earlier departure alone (seven) | none | the EMI events: fires | none | none | none | a three-cell table: fires | readable |
-| R2f, years at the address by an earlier departure (ten) | none | ADDRESS_SINCE and the EMI events: fires | the address clock is the register's own: fires | none | none | a twelve-cell table: fires | readable |
-| R2g, age and sex (six) | none | BIRTH_DATE, SEX: fires | age-sex cells are the demographer's reflex: fires | none | none | an eighteen-cell table: fires | readable |
-| G (decisive), the current stay since the latest settlement by an earlier departure (nine) | no clause names a characteristic; report 5 says only "the respects that bear on it": silent | no column holds a stay or an earlier departure; both are built from each person's history (the latest IMM, an EMI before it): silent | the reflexes are the shared fields and the published rate; building a migration career is no battery step: silent | the audit scores the candidates only by a fit nobody asks for: silent | every file reconciles; nothing is anomalous: silent | a history walk per person and a nine-cell table: silent | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | qualifies | the rounded adjusted population below 5,000 | the unrounded figure; 5,000 or less | same call: nearest municipality 38.3 from the line (asserted) | Article 14(1) and (3) |
-| SF2 | registered at the start of 1 January 2026 | the extract's 126,655 persons | the levy's households; the sample's in-play persons | not a register count | Article 14(2); the extract's trailer |
-| SF3 | municipalities in play | the 24 with register counts 4,500 to 6,000 | the bounds exclusive | same 24 (counts 4,561 to 5,944, asserted) | spec 2 |
-| SF4 | Ravenmeer | one municipality, its events under 0731 and 0744 included | Ravensloot and Meerdijk separately | not candidates | Article 14(4); spec 2 |
-| SF5 | not living there | final results 20, 30 and 40 | result 50 counted as absent | same call (asserted) | report 3, "they count as living there" |
-| SF6 | the final result | the case's last record | its first record that is not 91 | same call (asserted) | report 3, "91 ... is not a final result" |
-| SF7 | annulled events | removed with their annulment | kept | same call and every adjusted figure (asserted) | layouts, ANN "the annulled event did not take place" |
-| SF8 | the sampled persons the shares come from | all 12,000, a simple random sample of the national register | the 186 sampled in the municipalities in play | eight municipalities, Hilderloo out | report 5, "too few in any one municipality"; report 2 |
-| SF9 | completed years of the current stay | completed years from the latest settlement to 1 January 2026 | calendar-year difference | same call (asserted) | the bands carry the call; every banding with the earlier departure keeps it |
-| SF10 | a settlement from abroad | IMM | VER, a move from another municipality | not a settlement from abroad | layouts, the event codes |
-| SF11 | the adjusted population | the golden's whole-person estimate, charted and delivered, not graded | another estimator of the golden's family | same call: cell variants within 4.5 persons, logistic variants within 44 (asserted) | report 5; the prompt grades the call and each municipality's qualification |
-| SF12 | birth dates with 00 | day or month unknown | read as invalid | same call: age is no stratum of the golden | layouts, BIRTH_DATE |
-| SF13 | departures abroad in 2025 | departure date in 2025, sent in 2025 the country's time, accepted, not annulled; a person who left twice counts twice | the hub's UTC year; every message; annulled kept; persons | other counts (ask A) | spec 3 and DEPARTURES_ABROAD_2025; layouts (SENT_AT, the acknowledgements, ANN) |
-| SF14 | deaths in 2025 | date of death in 2025, sent in 2025 the country's time, accepted, not annulled, registered there when they died | the hub's UTC year; every message; former residents; annulled kept | other counts (ask B) | spec 3 and DEATHS_2025; layouts; the non-resident records' DEPARTURE_DATE |
-| SF15 | a removal after an address investigation | VOW, not a departure | counted with the departures | other counts (ask A) | spec, DEPARTURES_ABROAD_2025 |
-
-## Ladder
-
-- **R0, the default path: born abroad by years at the address (eight).** Aldewolde, Borgermeer, Bremvoort, Dornhaghe,
-  Hilderloo, Molenrade, Nijdorp and Zandloo; Molenrade 4,966.9 and Nijdorp 4,967.9 in, Eekhorst 5,074.7, Haverstede
-  5,069.1 and Koudenbeek 5,066.5 out. A logistic fit on every register field (country of birth, nationality, address
-  band, age, sex, with or without interactions) files the same eight. Dies to the audit: log-likelihood -834.4 against
-  -774.4 for the golden's cells, and within the sampled persons born abroad with one to four years at the address those
-  who left the country before are absent at 26.9 per cent against 11.0 for the rest.
-- **R1, one audit rate (six).** 1.72 per cent for everyone; Dalmeer in at 4,981.0, all four decisive towns out. Dies
-  to the audit's own spread (0.28 per cent for those never settled from abroad, 26.9 for a 1-to-4-year stay after an
-  earlier departure).
-- **R2a, born abroad or foreign nationality (seven).** Molenrade and Nijdorp in, Eekhorst, Haverstede, Hilderloo and
-  Koudenbeek out.
-- **R2c, the current stay alone (six).** Hilderloo in at 4,928.3; the seasonal-work towns out at 5,014 to 5,021. Dies
-  to the audit: within every stay band an earlier departure doubles or more the absence (log-likelihood -787.6).
-- **R2e, an earlier departure alone (seven).** Molenrade and Nijdorp in, the seasonal-work towns and Hilderloo out
-  (-826.7).
-- **R2f, years at the address by an earlier departure (ten).** Builds the departure from the history but keeps the
-  register's clock: Molenrade and Nijdorp in at 4,979 and 4,982, Hilderloo out at 5,003.5 (-792.0).
-- **R2g, age and sex (six).** Dalmeer in, all four decisive towns out (-1,004.2).
-- **G, the decisive move (nine).** The current stay since the latest settlement by an earlier departure, nine cells:
-  Eekhorst 4,946.5, Haverstede 4,946.5, Koudenbeek 4,946.6 and Hilderloo 4,958.6 in; Dalmeer 5,038.3, Molenrade 5,041.6
-  and Nijdorp 5,042.0 out.
-- **The golden's family converges (asserted).** Single years, the bands crossed with country of birth, sex, address,
-  nationality, age or the first settlement, the first settlement by an earlier departure, and every additive or
-  saturated logit with the stay and the earlier departure (log-likelihood -772.6 to -780.8) file the nine; of the 1,024
-  contiguous partitions of the stay with the earlier departure, 1,013 file the nine, and the 11 others (ten lumping five
-  to nine years with ten or more, one the coarse 0-1, 2-9, 10+) all fit 15 or more below the golden's cells.
-- **Margins:** the nearest qualifying municipality is Hilderloo, 41.4 under the line, the nearest left out Dalmeer, 38.3
-  over; every wrong rung's set differs from the nine in two or more municipalities.
-- **Position, separation and dominance:** every rung names its own set (eight, six, seven, six, seven, ten, six against
-  nine); the corrections move towns both ways (the stay alone brings Hilderloo in and the older immigrant towns out,
-  the earlier departure alone brings the older immigrant towns in), and only the stay with the earlier departure brings
-  the three seasonal-work towns in while keeping Molenrade, Nijdorp and Dalmeer out.
-- **Worth on the graded quantities:** the call (8) and the 24 qualifications (1.25 each): R0 keeps 19, R1 20, R2a 19,
-  R2c 21, R2e 19, R2f 21 and R2g 20 of the 24; none lands the call (generator/ceiling.py).
-- **Grid:** the Layer 1 items mishandled one at a time (annulments kept, the first result, result 50 as absent, the
-  former codes left unmapped for the call's features, partial birth dates) leave the call in place (checks.py).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the persons registered in the 24 municipalities in play at the start of 1 January 2026 (Article 14(2), the extract); the audit's sample is drawn from the national register (report 2) |
-| 2 | Unit of account | the municipality as constituted on 1 January 2026 (Article 14(4)); persons |
-| 3 | Attribution window | the reference date 1 January 2026; the audit's results say where each person lived that day (report 3) |
-| 4 | As-of dating | the extract as the register stood at the start of 1 January 2026 (extracted 5 January); the sample as it stood that day |
-| 5 | Version basis | one version of each file; annulled events removed (SF7) |
-| 6 | Denominator | each person's stratum share from the whole national sample (report 5, SF8); the decisive step (HOW), the golden's family agreeing |
-| 7 | Weighting | none: a simple random sample with equal chances (report 2); each registered person counts once |
-| 8 | Window length | one reference date |
-| 9 | Boundary inclusivity | below 5,000 on the rounded figure (SF1); nothing within 38 persons of the line |
-| 10 | Rounding path | shares summed unrounded, the adjusted population rounded to the whole person, then compared (Article 14(3)) |
-| 11 | Tie-break | none: each municipality on its own figure |
-| 12 | Maturity and censoring | the fieldwork closed on 29 May 2026 with every case resolved (report 3); the asks' year is closed in the hub's 2025 log |
-| 13 | Order of operations | register count, each person's stay and earlier departure from the history, the strata's rates, expected persons not living there, subtraction, rounding, comparison |
-| 14 | Row order | no dependence |
-| 15 | Duplicate resolution | no repeated person key in the extract, the sample or the history (asserted); a settlement entered twice is annulled (Layer 1) |
-| 16 | Identity normalisation | the person key is the same in every extract (layouts); Ravenmeer's former codes mapped to 1987 (SF4) |
-| 17 | Netting | the estimate of persons not living there is taken from the register count (Article 14(2)); result 50 counts as living there (SF5) |
-| 18 | Dimensional units | persons; completed years to 1 January 2026 (SF9); the hub's UTC stamps read in the country's time for the asks (SF13, SF14) |
-| 19 | Code and status semantics | IMM a settlement from abroad, EMI a departure abroad, ANN an event that did not take place, OVL a death, 20/30/40 not living there, 91 no final result; never the stump |
-| 20 | Integerisation | whole persons (Article 14(3)); every ask count a whole number |
-| 21 | Clause scope | Article 14 for the 2027 supplement; report 5 for municipal figures; spec 3 for the delivery file and the asks' columns |
-| 22 | Forward window contents | the 2027 supplement decided in December 2026 on the adjusted population of 1 January 2026: a closed reference date for a forward allocation |
-
-## Literal reader
-
-Executed word for word, Article 14 and the report fix the population (persons registered at the start of 1 January
-2026 in each municipality as constituted that day), the outcome (not living there on that date: results 20, 30 and 40;
-50 living there), the comparison pool (the audit's 12,000 sampled persons, a simple random sample of the national
-register), the subtraction, the rounding and the line, and leave one thing open: which respects "bear on" living there
-(report 5). The candidates are the fields both record layouts share (R0, R2a, R2g), a settlement clock alone (R2c), an
-earlier departure alone (R2e), the address clock with the earlier departure (R2f), and a settlement clock with the
-earlier departure (G). The audit separates them on its own records: the golden's cells fit at -774.4 against -787.6 to
--1,041.6 for the rungs, and once the stay and the earlier departure are in, no other field adds anything (every cross
-or logit with country of birth, nationality, address, age, sex or the first settlement keeps the nine). Every member of
-the golden's family files the nine; every write-up step names the file and the rule it executes.
-
-## Oracles
-
-None that ties only under the golden. The report's national table (206 of 12,000 by final result) ties under every
-method; the 2024 pilot (two municipalities not in play, 1 January 2024, a sample of addresses) ranks nothing in play;
-the waste-levy households are billing counts, not the register, and rank nothing on the decision. Both are declared
-distractors in metadata.json. The hub's acknowledgements tie each message to its answer under every reading of the
-asks.
-
-## Ask sheet
-
-- **Ask A, each municipality's departures abroad in 2025 (24 figures).** H18 home: the register's 2025 population
-  account the ministry reviews beside the supplement (spec 1), a measure every municipality carries that the call does
-  not turn on, on rows outside the main population (the hub's 2025 log). Path: `deregistration_messages_2025.csv`
-  (SENT_AT, SENDER_MUN, PERSON_KEY, MESSAGE_TYPE, EVENT_DATE), `hub_acknowledgements_2025.csv` (MESSAGE_ID, RESULT),
-  `population_register_events_extract.csv` (EVENT, EVENT_DATE, ANNULS_SEQ), the spec (3, DEPARTURES_ABROAD_2025), the
-  record layouts (SENT_AT in UTC, the acknowledgements, ANN) and the codes workbook (the merger): six files, thirteen
-  columns. Primary device: D2 with D9, the record is the register's current state. In every municipality one or two
-  departures (33 in all) were recorded from an accepted message and annulled 18 to 60 days later as entered in error;
-  the hub's log and acknowledgement show an ordinary accepted departure, and only the person's history (an EMI and an
-  ANN voiding it, the person still on the 1 January 2026 register) shows it did not take place. Two-sided: in every
-  municipality a resident left in 2025 and settled again within the year (an EMI then an IMM), a departure that
-  stands, so dropping every departure of a person on the 1 January 2026 register is wrong the other way. No sweep sees
-  it: every message is valid, accepted, unique and in scope. Hazards: the hub's log runs in UTC and each night's
-  messages leave shortly after midnight in the country's time, so the New Year's night batch (two to four departures
-  per municipality) is logged on 31 December and sent in 2026 (spec 3); rejected messages corrected and sent again;
-  departures of persons already removed or dead, rejected and never sent again; December 2024 departures sent in
-  January 2025; persons who left twice (counted twice); removals after an address investigation (not departures);
-  Ravenmeer's messages under 0731 and 0744. Stops (asserted, generator/ceiling.py and checks.py): the annulled
-  departures counted misses all 24; every departure of a registered person dropped misses all 24; the UTC year misses
-  all 24; the golden equals the generator's truth.
-- **Ask B, each municipality's deaths in 2025 (24 figures).** Same home and use. Path: the hub's log (OVL), the
-  acknowledgements, the events extract (OVL, ANN), `non_resident_records_extract.csv` (PERSON_KEY, DEPARTURE_DATE), the
-  spec (DEATHS_2025) and the layouts: five files, eleven columns. Primary device: D2 with D9 on another record, a death
-  recorded for the wrong person (a namesake at the same address, a hospital's notice matched to the wrong record) and
-  annulled within weeks: one or two in every municipality (29 in all), accepted in the hub's log, the person alive on
-  the 1 January 2026 register with an OVL and an ANN voiding it. Hazards: the New Year's night batch (one or two of the
-  holiday deaths per municipality, logged on 31 December, sent in 2026); former residents abroad whose death the
-  municipality recorded (3 to 14 per municipality; their registration ended before the death); December 2024 deaths
-  registered in January 2025; rejected and resent deaths; residents who died abroad (counted); Ravenmeer's codes.
-  Stops (asserted): the annulled deaths counted misses all 24; the UTC year misses all 24; former residents counted
-  misses all 24.
-- **The construction layer:** the nine, the 24 qualifications and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** every ask device sits in the hub's log, its acknowledgements and the
-  non-resident records, or (the annulled departures and deaths) after each person's latest settlement in the history,
-  so the stay and the earlier departure of every registered and sampled person, the call and every adjusted figure are
-  the same with and without them.
-- **Hazard table (asserted):** the annulled departures move all 24 departures; the returners all 24; the year-end batch
-  all 24 departures and all 24 deaths; the annulled deaths all 24 deaths; the former residents' deaths all 24; none moves
-  the call.
-- **Referee:** none; no total in the asks' files ties under one handling only.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, each municipality's departures abroad in 2025 | accepted EMI messages with a 2025 departure date sent in 2025 in the country's time, Ravenmeer's codes mapped, persons who left twice counted twice, removals out; the annulled departures counted, since no rule or sweep sends it to the history | miss |
-| B, each municipality's deaths in 2025 | accepted OVL messages with a 2025 date sent in 2025 in the country's time, former residents whose registration ended before the death out; the annulled deaths counted | miss |
-
-- Mirror leakage: 0.0 per cent of ask weight (every rung reads the asks the cracker's way and misses all 48:
-  generator/ceiling.py).
-- Pair ceiling: 39.1 (weights 38 / 7 / 55: the call 8, each of the 24 qualifications 1.25, each of the 48 ask figures
-  55/48; the cracker keeps the main block and instructions, 45.0; the best mirror, R2c or R2f, keeps 21 of the 24
-  qualifications, 33.25; average 39.1), rerun from the generated rubric at ship.
-- Measured by: generator/ceiling.py on the cut pack.
+- **Pairing.** Survey Research & Official Statistics / census-register-administrative-data-quality (client domain
+  survey-research-official-statistics), objective Data Extraction & Conformation (ETL): the National Statistics Office
+  conforms the 2025 Census, its Post-Enumeration Survey, the vital and border statistics and the Electoral Commission's
+  roll at census day into the enrolment-gap file the Commission shares its 2027 campaign organisers on.
+- **Shape 05, allocation to a fixed total.** 150 organisers shared among the 16 regions in proportion to each
+  region's adults not on the roll (estimated adults usually resident on census day less electors on the roll that
+  day), largest remainders, at least two each. Criteria: each region's organisers and adults not on the roll (32),
+  the call, the chart's named parts, the asks.
+- **Decision.** allocation_to_total, answer unit count, question form how-many; forum the Commission
+  (committee_or_panel), forcing event the 2027 general election (vote_or_meeting), org family
+  research_or_statistics_office, stakeholder the office's manager of population estimates (statistical_office_head).
+- **Strategy.** population_selection, decisive generator G8 (reachability against magnitude): the people both counts
+  reach are not the people there are; Gate G method_or_model_selection; Layer 2 family field_method, pattern
+  own:dual-system-correlation-bias-corrected-by-demographic-analysis-sex-ratios.
+- **Data-native sentence.** In a census the people a count misses are not missed at random: men aged 18 to 49 with no
+  settled household are missed by the census and by its coverage survey alike, so the survey's recount, which the
+  dual-system estimate treats as an independent second count, cannot see them, and only the population that births,
+  deaths and border movements fix can; and because the gap the Commission allocates on is a small difference of two
+  large counts, the men left out move the organisers between regions.
+- **Sources.**
+  - Client card census-register/1 (dual-system estimates within post-strata, after erroneous enumerations) is the
+    textbook route and this build's default path; the decisive step is the judgment that route takes for granted (the
+    census and the survey miss people independently) and the data settle (`stumping` 1.3; the Layer 2 library header).
+  - `measured-drivers.md`, held group: the construction a solver never considers is outside its hypothesis space; a
+    coverage survey's reader looks inside the survey, and the benchmark that settles the dependence sits in the vital
+    and border statistics.
+  - This lane's record: readers missed every call that turned on a structure of the process no document names
+    (task472, task473, task475, task476, task477) and landed every call that turned on a textbook design correction a
+    document made readable (this slot's v1, v3 and v4).
+  - task448 and task473 (capture measured on an overlap; a catch rate by the trait's level): differentiation lines on the
+    card. Here no capture rate is measured for the people both counts miss; their number comes from a sex ratio.
+- **WARNs answered.** overuse.objective: the ETL lane is this author's lane. repeat.gate_g and overuse.gate_g against
+  task474 v4: the honest key for a call pinned by the data's internal consistency; task474's driver (renewal churn in
+  payment claims) shares nothing else. repeat.question_form against task474 v4: the call is a count per region.
+- **Personas** (`guard.py names --geo "New Zealand" --seed 471`): Chelsea Buckley, Bryan Tapp.
 
 ## Tried and rejected
 
@@ -438,3 +192,21 @@ asks.
   events, and the year-end batch from converting UTC to CET. They missed the 48 ask figures only by counting messages
   sent in 2025 whatever the event date, a reading the v4 spec's "departures abroad in 2025 ... from the messages ...
   sent in 2025" left open once "with a departure date in 2025" was dropped (a fork, not a device). Spent on Gate F.
+- 2026-10-20, re-root: architecture 4 (the register over-coverage audit) spent at Gate F when both readers
+  post-stratified the audit on the field's textbook covariates; architecture 5 is a fresh world (a census and its
+  post-enumeration survey) whose decisive step is a judgment the textbook estimator takes for granted.
+- 2026-10-20, at the v5 draw: council membership set by population bands on the census-day population, a threshold
+  scorecard over the districts near a band edge: shape 10 banned against task251, and the same call shape as v4.
+- 2026-10-20, at the v5 draw: one representation quota for every district, set as the lowest that keeps the councils'
+  total within a statutory cap: a near-uniform correction is absorbed by the quota itself (it rises with the
+  populations), so most districts' councillors do not move and only the setting discriminates.
+- 2026-10-20, at the v5 draw: seats apportioned among districts by a divisor method: a relative allocation that a
+  correction proportional to each district's men aged 18 to 49 barely moves (0.05 of a seat for a six-seat district).
+- 2026-10-20, at the v5 draw: an anchor block moved to the end of a speeded new form, not-reached responses scored
+  wrong: item response equating again in this slot (architecture 2's family, anchor contamination), and a not-reached
+  code read as missing is data semantics.
+- 2026-10-20, at the v5 draw: a scheduled-date field the office re-aligns once a case starts, which back-tests
+  perfectly on closed cases: the re-alignment is a field reading, and the guard's validated-decoy shape.
+- 2026-10-20, at the v5 draw: decisive generator G16 (method selection) and G12 (absence of record against record of
+  absence): the population/G16 signature is spent in six builds and G12 is banned against task250; G8 (reachability
+  against magnitude) states this step honestly and is unspent with this gap.
