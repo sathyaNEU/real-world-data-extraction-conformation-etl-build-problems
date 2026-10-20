@@ -1,0 +1,94 @@
+{
+  "task": "task480",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET37 (EU cohesion region category): the world (an EU member state's cohesion-funded eligibility, a territorial unit at a time) and the decision (which units are eligible) kept; the seed's quantity (GDP per head in PPS, a ratio of published aggregates that leaves nothing to estimate) replaced by each metering zone's infrastructure leakage index, the quantity a cohesion water call actually turns on",
+  "domain": "business-operations-analytics",
+  "subdomain": "field-service-maintenance",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Portuguese intermunicipal water utility's 2025 water balance by metering zone, with the old customer meters' under-registration measured in service from its own smart-meter rollout, deciding which zones' infrastructure leakage index qualifies them for a cohesion-funded network renewal application",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G3",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the bulk meters, the billing reads, the rollout's work orders and the network register and reads the IWA balance and the call's rule correctly measures each replaced meter's under-registration as its consumption after replacement against the same quarters a year earlier, and so carries 2025's rise in demand into the meters' error, over-corrects the zones still on old meters and drops leaky zones from the eligible set; only the step net of the change shown by customers of the same kind whose meters were not yet replaced, read by meter age, files the golden set.",
+  "domain_test": "The deciding quantity is each zone's current annual real losses, the water balance residual once apparent losses are taken out, and water loss management measures the customer-meter part of apparent losses from meters in service; with another field's nouns (hospital visits, megawatt-hours of contracted capacity) there is no metered balance whose residual absorbs an ageing instrument's error and no rollout that reveals it, so the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:old-meter under-registration read against meters not yet replaced in a staggered rollout, by meter age and customer class",
+  "layer1": [
+    "quarterly manual reads with estimated reads trued up at the next actual read",
+    "the old meter's final read and the new meter's start read on the replacement work order, splitting a billing period",
+    "bulk zone-inlet meters with SCADA gaps and inter-zone transfer meters",
+    "unbilled authorised use from firefighting and flushing logs",
+    "pressure loggers at each zone's average-pressure point reporting in bar for some and metres for others",
+    "customer and meter registers keyed by different identifiers"
+  ],
+  "stakeholder_role": "the utility's head of non-revenue water, preparing the zone list for the 2027 network renewal application",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "billing_reads_2023_2025.csv",
+    "rows": 0,
+    "entity": "one billing read of one customer meter",
+    "grain": "meter x read date",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Portugal, a fictional intermunicipal water utility in the Centro region",
+    "currency": "EUR",
+    "org_type": "intermunicipal water distribution utility",
+    "invented_names": [],
+    "people": [
+      "Adriana Paiva",
+      "Leandro Vieira"
+    ]
+  },
+  "deliverables": [
+    "zone_water_balance_2025.csv",
+    "network_renewal_zones_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Each old instrument under-records by an amount that grows with its age and shows only when it is replaced, and the replacements were made through a year in which demand rose for every unit, by more for one kind of unit than another; a unit's own change across its replacement carries that rise, so the instrument's error is read against units of the same kind not yet replaced over the same periods, age by age, and only the corrected records put each area's balance residual on the right side of the line.",
+  "driver_concrete": "Each zone's 2025 real losses are the water balance residual once billed consumption and apparent losses are taken out, and the mechanical meters still in service under-register by an amount that grows with their age; the error is measured on the meters the 2024 to 2025 smart-meter rollout replaced, against houses or flats whose old meters were not yet replaced in the same quarters (2025's hot dry summer raised houses' use far more than flats'), and applying it by age moves which zones' infrastructure leakage index reaches 4.0.",
+  "stump": "The default path measures each replaced meter's under-registration as its own step from the same quarters a year earlier, which carries 2025's rise in demand into the meters' error, over-corrects every zone still read on old meters and files too few zones eligible; taking billed consumption as delivered files too many.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task236": "task236 reads a source's capture rate against an independent fixed-protocol sample; here an instrument's age-dependent error is read against same-class units not yet replaced in a staggered rollout and taken out of a balance residual",
+    "task453": "task453's architectures turn on seasonal factors or rotation groups around a questionnaire change; here the step is the comparison group for each replaced meter's change, by meter age and customer class, inside a water balance",
+    "task463": "task463 is a price index's chain drift under stockpiling; nothing here is an index, a link or a purchase-timing response",
+    "task104": "task104 re-runs a self-adapting scorer at a setting it never ran; here no threshold is swept, an instrument's error is measured from a replacement programme",
+    "task134": "task134's architectures estimate hazards with competing exits or conversion clocks; here no duration or hazard is estimated",
+    "task177": "task177 separates imposed from chosen experiences in a learner; here the measured quantity is a meter's under-registration and its comparison group",
+    "task501": "task501 is a chain process's dominant eigenvalue over pooled regimes; it shares no step with an instrument error read against unreplaced instruments",
+    "task70": "task70 builds a per-record date under a class-conditional cut; it shares no step with a rollout-based instrument error in a residual"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-20T22:18:10Z"
+}
