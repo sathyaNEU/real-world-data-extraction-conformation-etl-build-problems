@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-20",
   "stump": "The default path weights each region's respondents to its sampled members' age and sex (or carries the last-reached respondents' share in work to the members never reached) and names four regions that include ones called mostly by weekday day, where members in work rarely answer; only a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two call centres' logs, recovers the unreached members' share and names the golden four.",
   "architecture": 2,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-20: region names beside fieldwork counts in the methods report and beside experience scores in CAHPS (neither ranks on the question), generic methods vocabulary, the roster's scheduled 31 October ends (a forward record); all harmless",
-    "reader": ""
+    "reader": "architecture 2, 2026-10-20: both isolated scored readers landed the call (r271d 30 of 30, r271c 21 of 30), Q6 analytical, Q1 criteria 2.2 with the methods report's calling hours"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-20 (deliverable pairs; no BLOCK)",
@@ -25,18 +25,24 @@
     "surface": "clean 2026-10-20 (personas Dillon Evans, Robin Fields)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "architecture 2: the isolated thread's verdict recorded in the design note (level-of-effort logit names North Sound fourth)"
   },
   "returned": [],
-  "resume": "Architecture 2 built 2026-10-20 on world 5342319 (design 3331) and enrollment seed 271003: 342 checks, the independent verifier, two byte-identical builds, precut exit 0 (51), figures_check 60 of 60, leak.py REVIEW (harmless), guard heart WARN. Golden: Pierce, Spokane, King and Thurston-Mason (42, 44, 46, 47); default path Pierce, North Sound, King and Spokane. Stage 4 running: two isolated scored readers (r271c, r271d) and the judge thread on the brief in scratch t271_judge; resume by scoring each reader.json with score_reader.py, handing verdict.md to the determinism judge for its report, then ship or record architecture 2 spent (a call either reader lands spends it; architecture 3 would be the slot's last).",
+  "resume": "Architecture 2 spent 2026-10-20 at stage 4 (both readers landed the call; judge SEND_BACK on the effort-model family). Next: architecture 3, the slot's last: re-root draw (fingerprint recent, coverage, mechanisms, slots; a compound or out-of-hypothesis decisive step whose evidence sits in files with their own purpose, the estimand filed without naming the dimension that decides), card with architecture 2 moved to lineage, design note rewritten, DRAWN commit.",
   "architectures": [
     {
       "architecture": 1,
       "drawn": "2026-10-19",
       "paused": "dc454b68",
       "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the earlier-operation flag rebuilt from earlier admissions); judge SEND_BACK on the flag's unfiled definition"
+    },
+    {
+      "architecture": 2,
+      "drawn": "2026-10-20",
+      "paused": "6dfa888c",
+      "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model and landed the call; judge SEND_BACK on a level-of-effort logit that names North Sound fourth"
     }
   ],
   "approved": null,
