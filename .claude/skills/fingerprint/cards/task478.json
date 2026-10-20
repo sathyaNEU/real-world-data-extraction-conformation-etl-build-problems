@@ -3,9 +3,9 @@
   "architecture": "v1",
   "drawn": "2026-10-20",
   "slot_note": "seed ET35 (repeat-disaster counties across a FEMA region): the world screened at the draw and set aside (every unobserved quantity it offers is a spent lane mechanism and the declaration count itself is records-fixed, its levers 'Statewide' rows, amendments and spellings data semantics); the decision kept in form (which administrative areas a programme serves, on a count per area) in a fresh world: a state DOT district's spring patching crews placed by the potholes its camera-equipped maintenance fleet found and did not find in a March detection campaign",
-  "domain": "business-operations-analytics",
+  "domain": "supply-chain-logistics",
   "client_domain": "general-statistics-data-science",
-  "subdomain": "field-service-maintenance",
+  "subdomain": "transportation-network",
   "niche": "a state DOT district's estimate of the potholes on the state roadway its camera-equipped maintenance fleet drove in a March detection campaign, found or not, placing its spring patching crews; built from a detection vendor's defect inventory, the fleet's telematics segment traversals, the camera register and device log, the road inventory and the maintenance management system",
   "objective": "etl",
   "shape": "other",
@@ -20,9 +20,9 @@
     "none"
   ],
   "generators": [
+    "G2",
     "G16",
     "G12",
-    "G2",
     "G10"
   ],
   "gate_g": "method_or_model_selection",
@@ -49,7 +49,7 @@
     "lane-miles built from segment length and lane count in the road inventory"
   ],
   "stakeholder_role": "the district maintenance engineer of a state DOT district, who issues the spring patching crews' task orders",
-  "role_family": "operations_director",
+  "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
     "file": "fleet_camera_traversals_2027-03.csv",
@@ -70,8 +70,8 @@
       "Kerbline Vision"
     ],
     "people": [
-      "Tamara Copeland",
-      "Darin Smith"
+      "Nancy Hansen",
+      "Andrew Greene"
     ]
   },
   "deliverables": [
@@ -97,9 +97,13 @@
     "task470": "task470's transponder network never records some aircraft at all, so the missing activity is rebuilt from a register of units; here every pothole is visible to some cameras and not to others, independently, and the unseen are completed from the cameras' own cross-recaptures.",
     "task462": "task462 weights each plume by one over a size-dependent detection probability fitted on blind releases; here detection does not depend on the defect and no trials exist: the per-camera find rate is read from cross-camera recaptures, and the decisive move is that repeat passes by one camera add no chance.",
     "task473": "task473 completes untested drivers by the arrest catch rate at each positive's own BAC band, measured where everyone is tested; here there is no complete-observation subset and no band: the unseen are completed by the number of distinct cameras each segment had.",
-    "task264": "task264 weights sampled persons by the inverse of their visit multiplicity across sites; here the repeated looks are one camera's passes over one segment, and the estimand is the members no look found, not the distinct members among those seen."
+    "task264": "task264 weights sampled persons by the inverse of their visit multiplicity across sites; here the repeated looks are one camera's passes over one segment, and the estimand is the members no look found, not the distinct members among those seen.",
+    "task239": "task239 estimates how strongly each component's group-level part goes with a shared factor from the few members who answered; here the decisive unit is the capture occasion, a camera rather than a pass, in completing a count of unseen defects.",
+    "task48": "task48's re-root recovers a population invisible at a monitor's grain by aggregating transactions to a two-sided pair grain; here nothing is regrouped to find a population: passes are regrouped by camera to count the independent chances a segment's defects had.",
+    "task120": "task120's first architecture builds a unit from two links no file stores, for percentile cuts; here the unit is the detection occasion, and it completes a count of unseen defects.",
+    "task269": "task269 works each rider's wait over only the departures serving the rider's destination; here nothing waits: the occasions that could find a defect are the distinct cameras, not the passes, and they complete a count."
   },
   "lineage": [],
-  "notes": "Pairing honest label: the decision-maker is a state DOT district's maintenance operation (business-operations-analytics, field-service-maintenance), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the only ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Drawn after task479 registered the client pairing general-statistics-data-science x etl and its subdomain, so the client label could not be used on the card.",
-  "registered": "2026-10-20T22:19:46Z"
+  "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second.",
+  "registered": "2026-10-20T22:25:31Z"
 }

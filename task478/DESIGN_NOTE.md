@@ -4,32 +4,39 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v1), registered 2026-10-20 after a pull;
+- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v1), registered 2026-10-20 22:25 after a pull;
   `check` re-run on the registered card: WARN only, answered here. `three_rules.strategy_risk` (grain_or_unit): the
   analyst test below shows the easy route that still fails with every field and rule read correctly; the unit at issue
   is the capture occasion (a camera, not a pass), which the record's own recaptures force, never a field's reading.
   `overuse.org_family` (government_agency in 37 builds): a state DOT district is a government agency and no honester
-  family exists. `overuse.objective` (ETL in 8 of 12): the lane is ETL by assignment. `overuse.gate_g`
-  (method_or_model_selection in 7 of 12): the decisive step is the choice among defensible completions, pinned by the
-  recaptures; no other Gate G mechanism carries it. `test.same_puzzle_older` and `test.same_driver_older` (population,
-  G16) against task236, task453 v1, task463, task104, task134 v1, task177, task501 v4 and task70 v2: unrelated drivers,
-  differentiated on the card. Nearest driver on file task49 at 0.07.
-- **Redrawn at the draw, and why the replacements are the honester labels.** The pairing was first drawn on the client
-  label, General Statistics & Data Science / data-integration-record-linkage-entity-resolution, and task479's
-  registration (21:50, the same client pairing and subdomain) put both inside the window; the card carries the house
-  domain business-operations-analytics with subdomain field-service-maintenance, which names the decision-maker (a DOT
-  district's road maintenance operation) and maps to the same client task type. The city public works department first
-  sketched (local_government, task479's family) became a state DOT district (government_agency), the honest owner of
-  state highways and their patching contract. Shape `other` (01 is task479's, 03 task481's): the criteria are each
-  section's estimate and verdict against one line, 01's arithmetic without a cap.
+  family exists. `overuse.objective` (ETL in 9 of 12): the lane is ETL by assignment. `overuse.gate_g` and
+  `repeat.gate_g` (method_or_model_selection in 7 of 12, and task480's): the decisive step is the choice among
+  defensible completions, pinned by the recaptures; no other Gate G mechanism carries it. `repeat.decision` and
+  `repeat.question_form` (designation_set and which, task480's): the program designates sections against one line, so
+  the pick asks which; task480's designation turns on a causal design over field-service work, this one on a count's
+  completion. `test.same_puzzle_older` and `test.same_driver_older` (population, G2) against task239, task264 v1,
+  task48 v2, task120 v1 and task269 v3: unrelated drivers, differentiated on the card. Nearest driver on file task49 at
+  0.07.
+- **Redrawn twice at the draw, and why the replacements are the honester labels.** The pairing was first drawn on the
+  client label, General Statistics & Data Science / data-integration-record-linkage-entity-resolution, and task479's
+  registration (21:50, the same client pairing and subdomain) put both inside the window. The second card took the house
+  domain business-operations-analytics (field-service-maintenance), and task480 registered that pairing, subdomain,
+  decisive pattern G16 and role family a minute and a half earlier (22:18 against 22:19), so it BLOCKed after the
+  commit. The card now carries supply-chain-logistics with subdomain transportation-network, which names what the
+  decision-maker runs (a state highway network, its pavement kept passable) and maps to the same client task type; the
+  role family is field_unit_lead, since the district maintenance engineer runs the district's field crews and issues
+  their task orders rather than directing an operation's strategy; the decisive pattern is G2 (the pass against the
+  camera as the unit of an independent chance), which is the move itself, with G16 second. The city public works
+  department first sketched (local_government, task479's family) became a state DOT district (government_agency), the
+  honest owner of state highways and their patching contract. Shape `other` (01 is task479's, 03 task481's, 07
+  task480's): the criteria are each section's estimate and verdict against one line, 01's arithmetic without a cap.
 - **Seed:** ET35 (a FEMA regional office's repeat-impact mitigation initiative for the counties with the most PA major
   disaster declarations over 2004 to 2023). Screened at the draw and set aside (Tried and rejected): the declaration count
   is records-fixed, its levers are data semantics, and every unobserved quantity the world offers is a spent lane
   mechanism. Kept in form: a programme serving every area whose count per area clears a line, built by conforming an
   agency's own records.
-- **Pairing:** Business Operations Analytics (house domain; field service and maintenance) sitting in General Statistics
-  & Data Science, task type `data-integration-record-linkage-entity-resolution`, the ETL task type the house domain maps
-  to. The ETL work is linkage: a detection vendor's defect inventory (each detection linked by the vendor into a defect
+- **Pairing:** Supply Chain & Logistics (house domain; transportation network) sitting in General Statistics & Data
+  Science, task type `data-integration-record-linkage-entity-resolution`, the ETL task type the house domain maps to. The ETL work is linkage: a detection vendor's defect inventory (each detection linked by the vendor into a defect
   across passes and cameras, keyed to the 2025 road inventory, re-keyed at a mid-month platform migration), the fleet's
   telematics segment traversals (UTC, the 2026 road inventory's segments), the camera register (units moved between
   vehicles by date) and device health log, the road inventory with its 2025 to 2026 crosswalk and jurisdiction
@@ -51,10 +58,10 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   built by grouping the traversal log's passes by camera unit; the passes are the file's rows and are not the chances.
   Gate G `method_or_model_selection`: several defensible completions (none; every pass an independent chance; every day
   one; the first half of March recaptured by the second; the distinct cameras), the right one pinned by the record's own
-  recaptures. Gap population (potholes no camera recorded are in the population), pattern none, generators G16 (which
-  completion the recaptures entitle), G12 (a segment driven twenty times by one camera with no find is a non-answer for
-  the potholes that camera cannot see), G2 (the pass against the camera as the unit of chance), G10 (one pothole recorded
-  many times). Layer 2 family `estimation_fit` (dependent capture occasions), pattern `own:capture occasions are the
+  recaptures. Gap population (potholes no camera recorded are in the population), pattern none, generators G2 (the pass
+  against the camera as the unit of chance, decisive), G16 (which completion the recaptures entitle), G12 (a segment
+  driven twenty times by one camera with no find is a non-answer for the potholes that camera cannot see), G10 (one
+  pothole recorded many times). Layer 2 family `estimation_fit` (dependent capture occasions), pattern `own:capture occasions are the
   distinct instruments, not the repeat looks`.
 - **World:** United States, an unnamed state's Department of Transportation and its fictional Tamsett District (metro
   Tamsett and its hinterland), about 2,300 lane-miles of state highway in fourteen maintenance sections, each run from its
@@ -62,13 +69,13 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   units on 38 district vehicles (the fourteen section patrol pickups, ten freeway service patrol trucks and six sweepers in
   the three metro sections, and eight plow trucks dispatched district-wide in the two March snow events), each unit
   uploading its detections to Kerbline's platform, which links repeat detections of one defect into one defect ID.
-  Personas from `guard.py names --geo "United States" --seed 478`: Tamara Copeland (district maintenance engineer),
-  Darin Smith (maintenance management systems analyst).
+  Personas from `guard.py names --geo "United States" --seed 478`, the first pair that clears the people rules after the
+  redraw: Nancy Hansen (district maintenance engineer), Andrew Greene (maintenance management systems analyst).
 - **Forcing fact:** the task orders issue 19 April 2027 under the on-call patching contract; crews start 3 May; as-of
   9 April 2027.
 - **Forum and forcing event:** operations_desk (the district maintenance engineer issues the task orders),
   purchase_order_or_contract (the on-call contract's task orders). Organisation government_agency; role
-  operations_director.
+  field_unit_lead.
 - **Data-native sentence:** each Kerbline unit sees a pothole or does not by how its phone sits on its vehicle, so a unit
   that missed a pothole on one pass misses it on every pass while a second unit finds it at the same rate as the first; a
   rural section's state roads are driven daily by its own patrol pickup and little else, so its potholes have had one
@@ -90,9 +97,9 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
     repeats carry no chance.
   - task165 (a city roads division's salt by telematics segment passes) is the nearest setting on file and shares no
     mechanism.
-- **Same-puzzle and same-driver tests:** (population, G16, designation_set) and (population, G16,
-  method_or_model_selection) against the last twelve builds, lineage included: no match; older matches differentiated
-  on the card.
+- **Same-puzzle and same-driver tests:** (population, G2, designation_set) and (population, G2,
+  method_or_model_selection) against the last twelve builds, lineage included: no match; older matches (task239,
+  task264 v1, task48 v2, task120 v1, task269 v3) differentiated on the card.
 - **Abstraction test:** the nearest drivers stripped of nouns (task49, an unpaid amount floored per instrument; task192
   v3, units labelled by an instrument validated on an early batch; task143, the weakest of a few members of a new group)
   carry no repeated looks whose dependence decides the completion. task471 (a census and its survey missing the same
@@ -131,7 +138,7 @@ potholes, and Fenwick Gap, Lorimer, Holloway Run, Kellerton and Norvelle clear t
 Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science), integrating a defect
 inventory whose detections are linked across passes and cameras with the effort record of every camera's traversals to
 complete a population no record lists in full, a task type serving Data Extraction & Conformation (ETL); the house
-domain business-operations-analytics (field service and maintenance) maps to it.
+domain supply-chain-logistics (transportation network) maps to it.
 
 Domain test: general statistics, so the swap is of the method: the deciding quantity is each section's potholes per ten
 lane-miles on 31 March 2027 with the unrecorded potholes completed, each recorded pothole counted as one over its
@@ -223,3 +230,7 @@ taking the distinct instruments as the capture occasions while each instrument's
   record is right is cleaning, Layer 1.
 - 2026-10-20, at the draw: the first card on the client pairing general-statistics-data-science x etl, BLOCKed after
   task479 registered that pairing and subdomain; redrawn to the house domain whose maintenance operation decides.
+- 2026-10-20, at the draw: the second card on business-operations-analytics x etl (field-service-maintenance, G16,
+  operations_director), BLOCKed after the DRAWN commit by task480's registration 90 seconds earlier on the same
+  pairing, subdomain, decisive pattern and role family; redrawn to supply-chain-logistics (transportation-network), G2
+  decisive, field_unit_lead, personas redrawn.

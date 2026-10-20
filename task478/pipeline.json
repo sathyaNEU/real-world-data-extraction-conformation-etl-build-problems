@@ -2,7 +2,7 @@
   "task": "task478",
   "owner": "oviya1301",
   "status": "DESIGN",
-  "domain": "business-operations-analytics/field-service-maintenance (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
+  "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
   "stage": 2,
   "stage_name": "design",
@@ -10,10 +10,23 @@
   "stump": "The default path treats every pass over a segment as an independent chance at the 95 per cent find rate of repeat passes and designates only Carrow Point and Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct cameras that drove a segment are independent chances; the rural and suburban sections one or two cameras drove hide close to half their potholes.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
   "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, asks and prompt to precut exit 0; prototype in scratch t478/proto2b.py (q 0.56 per distinct camera, r 0.95 per repeat pass)",
   "approved": null,
