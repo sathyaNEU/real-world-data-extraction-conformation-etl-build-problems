@@ -44,7 +44,8 @@ def dahs_rows(x):
         frac = np.ones(S.NH)
         for h in range(S.NH):
             if v["on"][h] and (v["since"][h] == 1 or (h + 1 < S.NH and not v["on"][h + 1])):
-                frac[h] = round(float(pr.uniform(.25, .95)), 2)
+                # never so short a part hour that the average load while operating would pass the nameplate
+                frac[h] = round(min(1.0, max(float(pr.uniform(.25, .95)), v["load"][h] / (.9 * v["cap"]))), 2)
         for h, t in enumerate(S.HOURS):
             if t.date() > EXPORT_END:
                 break

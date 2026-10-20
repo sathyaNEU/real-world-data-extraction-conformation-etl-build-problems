@@ -55,7 +55,7 @@ OTHER = {
 # the golden's 2026 ozone-season NOx per MWh (tune.py scales each unit's start NOx until the cut pack lands here)
 DESIRED = {"CB-1": .268, "CB-2": .186, "AF-1": .187, "AF-2": .251, "DF-1": .186, "DF-2": .099, "DF-3": .189,
            "SR-1": .187, "SR-2": .151}
-ADJ = {'AF-1': 0.42357, 'AF-2': 0.91647, 'CB-1': 0.85547, 'CB-2': 1.18013, 'DF-1': 1.33777, 'DF-2': 0.96784, 'DF-3': 0.80197, 'SR-1': 1.07997, 'SR-2': 0.80338}
+ADJ = {'AF-1': 0.4159, 'AF-2': 0.91654, 'CB-1': 0.87151, 'CB-2': 1.17682, 'DF-1': 1.33082, 'DF-2': 0.96373, 'DF-3': 0.80154, 'SR-1': 1.0687, 'SR-2': 0.8009}
 
 FILES = {
     "dahs": "dahs_hourly_export_2026.csv",

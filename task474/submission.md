@@ -28,15 +28,15 @@ Each emitted 0.170 lb of NOx per gross MWh or more over the 2026 ozone season on
 ### cc_unit_nox_inventory_2026.xlsx
 
 1. Every combined-cycle unit: designated or not, 2026 ozone-season equivalent forced outage rate and demand equivalent forced outage rate (per cent, one decimal):
-   - AF-1: designated; equivalent forced outage rate 27.3%; demand equivalent forced outage rate 14.5%
-   - AF-2: designated; equivalent forced outage rate 24.6%; demand equivalent forced outage rate 11.7%
-   - CB-1: designated; equivalent forced outage rate 14.9%; demand equivalent forced outage rate 7.5%
+   - AF-1: designated; equivalent forced outage rate 27.0%; demand equivalent forced outage rate 14.4%
+   - AF-2: designated; equivalent forced outage rate 24.3%; demand equivalent forced outage rate 11.7%
+   - CB-1: designated; equivalent forced outage rate 14.7%; demand equivalent forced outage rate 7.4%
    - CB-2: designated; equivalent forced outage rate 12.8%; demand equivalent forced outage rate 9.2%
-   - DF-1: designated; equivalent forced outage rate 24.5%; demand equivalent forced outage rate 14.1%
-   - DF-2: not designated; equivalent forced outage rate 33.0%; demand equivalent forced outage rate 19.4%
-   - DF-3: designated; equivalent forced outage rate 19.2%; demand equivalent forced outage rate 8.6%
-   - SR-1: designated; equivalent forced outage rate 14.9%; demand equivalent forced outage rate 8.1%
-   - SR-2: not designated; equivalent forced outage rate 16.7%; demand equivalent forced outage rate 9.3%
+   - DF-1: designated; equivalent forced outage rate 24.3%; demand equivalent forced outage rate 14.1%
+   - DF-2: not designated; equivalent forced outage rate 32.8%; demand equivalent forced outage rate 19.3%
+   - DF-3: designated; equivalent forced outage rate 19.0%; demand equivalent forced outage rate 8.6%
+   - SR-1: designated; equivalent forced outage rate 14.7%; demand equivalent forced outage rate 8.1%
+   - SR-2: not designated; equivalent forced outage rate 16.6%; demand equivalent forced outage rate 9.2%
 
 ### scr_upgrade_designations_2027.pdf
 

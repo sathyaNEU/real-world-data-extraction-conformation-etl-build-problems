@@ -53,7 +53,7 @@ def cc_unit(rng, key):
     # each unit's own start-up shape, and each start its own size (how long the unit was down, how the operators
     # brought it up)
     vr = np.random.default_rng([W.SEED, 31, n, cap])
-    shape = START_W * np.exp(vr.normal(0, .25, 4))
+    shape = START_W * np.exp(vr.normal(0, .5, 4))
     shape = shape / shape[1:].sum()
     size = np.ones(NH)
     for h0 in np.where(s == 1)[0]:
@@ -88,7 +88,9 @@ def other_unit(rng, key):
     load = np.round(np.where(on, cap * np.clip(rng.normal(.8, .12, NH), .45, 1), 0.0), 1)
     lb = np.where(on, base * load * np.exp(rng.normal(0, .1, NH)), 0.0)
     lb = np.where((s >= 1) & (s <= 2), lb + slb * .5, lb)
-    heat = np.round(load * np.where(on, 10.4 if kind == "simple cycle" else 10.1, 0), 1)
+    hrng = np.random.default_rng([W.SEED, 51, cap])
+    heat = np.round(load * np.where(on, (10.4 if kind == "simple cycle" else 10.1) *
+                                    np.exp(hrng.normal(0, .025, NH)), 0), 1)
     out = on & (rng.random(NH) < .03)
     status = np.where(~on, "OFF", np.where(out, "OOC", "OK"))
     return dict(on=on, since=s, load=load, heat=heat, lb=lb, out=out, status=status, plant=plant, cap=cap)

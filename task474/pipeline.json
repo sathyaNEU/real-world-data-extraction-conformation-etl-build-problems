@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "rounds 1-5: ten of ten readers missed the call; round 5 readers kept 18 and 16 of 18 IEEE 762 ask figures (score_reader exit 1 on the asks)"
+  "reader": "round 6: reader 11 missed the call, kept 0 of 18 asks; reader 12 landed the call (first of 12, via the register's air-to-open grounding), kept 0 of 18; measured pair about 28.5; score_reader exit 1 (call hit); ruling asked of the coordinator"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -29,7 +29,7 @@
   "note": "round 5 (v3e): every graded figure reproduced; the air-loss fill judged forced by the data; DF-1 the thinnest call; Gate H analytical"
  },
  "returned": [],
- "resume": "stage 4: revision device (MO/D4 lines under the same event number) built; finish the DERATE_SCALE bin search, full build, then readers 11 and 12 and one judge pass",
+ "resume": "stage 4: await the coordinator's ruling on the call hit; realism fixes in (part-hour load cap, start-shape spread, peaker heat-rate noise); finish the DERATE_SCALE bin search and rebuild",
  "approved": null,
  "delivered": null,
  "portal": null,

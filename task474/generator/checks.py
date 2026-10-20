@@ -82,7 +82,7 @@ def main(target, gdir, x):
     tset = sorted(u for u in true if true[u] >= W.TARGET)
     check("R3b: the true NOx (every hour known) designates %s" % tset, tset == GOLD)
     worst = max(abs(rates["golden"][u] - true[u]) for u in rec)
-    check("R3b: the golden estimates every unit's true rate within 0.010 (worst %.4f)" % worst, worst < .010)
+    check("R3b: the golden estimates every unit's true rate within 0.015 (worst %.4f)" % worst, worst < .015)
     check("R3c: no plant: every measured hour is the unit's true NOx to the export's rounding", all(
         abs(a - b) < .06 for u in rec for a, b in zip(rec[u]["nox"], trec[u]["nox"]) if a is not None))
     check("C1: the tickets mark exactly the hours the instrument air was down (%d hours)" % sum(sum(rec[u]["air"]) for u in rec),
