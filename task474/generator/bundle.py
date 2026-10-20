@@ -169,7 +169,7 @@ def _outage_terms(target, route="golden"):
             if f > 0 and not prev_on.get(u, False):
                 starts[u] = starts.get(u, 0) + 1
         prev_on[u] = f > 0
-    evs, der = {}, {}
+    evs, der, planned = {}, {}, {}
     rows = _rows(find(target, "gads_event_report"))
     if route != "filterfirst":
         # an event number is one event: its latest revision is the event
@@ -184,6 +184,8 @@ def _outage_terms(target, route="golden"):
         e0 = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
         if r["event_type"] in ("U1", "U2", "U3"):
             evs.setdefault(r["unit"], []).append((s0, e0, r["date_reported"], int(r["event_no"])))
+        elif r["event_type"] in ("MO", "PO", "ME", "PE"):
+            planned.setdefault(r["unit"], []).append((s0, e0))
         elif r["event_type"] in ("D1", "D2"):
             der.setdefault(r["unit"], []).append((s0, e0, float(r["derate_mw"])))
     out = {}
@@ -207,14 +209,22 @@ def _outage_terms(target, route="golden"):
                 foh += 1 if route == "noresolve" or t not in fo else 0
                 fo.add(t)
                 t += dt.timedelta(hours=1)
+        # hours in a planned or maintenance outage are neither service nor reserve shutdown
+        po = set()
+        for s0, e0 in planned.get(u, []):
+            t = max(a, s0)
+            while t < min(b, e0):
+                if t not in fo:
+                    po.add(t)
+                t += dt.timedelta(hours=1)
         hs = hours.get(u, [])
         sh = sum(1 for t in hs if op[(u, t)] > 0) if route == "rows" else sum(op[(u, t)] for t in hs)
-        rsh = sum(1 - op[(u, t)] for t in hs if t not in fo)
+        rsh = sum(1 - op[(u, t)] for t in hs if t not in fo and t not in po)
         efdh = efdhrs = 0.0
         for s0, e0, mw in der.get(u, []):
             t = max(a, s0)
             while t < min(b, e0):
-                if t not in fo:
+                if t not in fo and t not in po:
                     f = op.get((u, t), 0.0)
                     efdh += mw / cap[u] * (f if route == "service" else 1.0)
                     efdhrs += mw / cap[u] * (1 - f)

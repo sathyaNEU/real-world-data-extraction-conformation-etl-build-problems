@@ -21,8 +21,8 @@
    "SR-2": 16.5
   },
   "eford": {
-   "AF-1": 14.4,
-   "AF-2": 11.6,
+   "AF-1": 14.5,
+   "AF-2": 11.7,
    "CB-1": 7.4,
    "CB-2": 9.2,
    "DF-1": 14.0,
@@ -67,7 +67,7 @@
   "AF-1": {
    "designated": true,
    "efor": 27.0,
-   "eford": 14.4,
+   "eford": 14.5,
    "hours": 1027,
    "mwh": 162545,
    "plant": "Ashfork"
@@ -75,7 +75,7 @@
   "AF-2": {
    "designated": true,
    "efor": 24.2,
-   "eford": 11.6,
+   "eford": 11.7,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"

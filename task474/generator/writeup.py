@@ -31,8 +31,8 @@ def write(fig_path, out_path):
          "the unit's usual NOx per MMBtu and falls back over the next hour or two, so the SCR was not removing NOx "
          "while the air was out; those hours are filled at that first-hour NOx per MMBtu, times the hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the "
          "same hour after a start or, later in a run, at the same load. Not a fill of every gap from the unit's "
-         "measured hours in the same start state and load, nor the average of the hours either side of each gap: "
-         "both put controlled NOx into uncontrolled hours and designate %s, leaving CB-2 and AF-1 under the target." %
+         "measured hours in the same start state and load, nor the average of the hours either side of each air-loss gap with "
+         "the other gaps filled the same way: both put controlled NOx into uncontrolled hours and designate %s, leaving CB-2 and AF-1 under the target." %
          (f["target"], _join(f["state_route"])),
          "",
          "## 2. Critical Components", "",
@@ -60,8 +60,8 @@ def write(fig_path, out_path):
          "hours moved forward an hour, each event number in %s taken as one event at its latest-reported line: FOH, "
          "the hours inside a U1, U2 or U3 event, a later-filed full forced outage replacing an earlier one it "
          "overlaps on the unit, and the number of those outages; SH, OP_TIME summed; RSH, "
-         "the hours outside a full outage less their OP_TIME; the starts, the operating hours that follow a hour "
-         "without operation; EFDH, each D1 or D2 hour outside a full outage at derate_mw over the register's "
+         "the hours outside a full or planned outage less their OP_TIME; the starts, the operating hours that follow a hour "
+         "without operation; EFDH, each D1 or D2 hour outside a full or planned outage at derate_mw over the register's "
          "nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME)." % (
              sec["outages"], F["events"]),
          "7. Equivalent forced outage rate, in per cent: (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate, in per "

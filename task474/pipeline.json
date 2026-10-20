@@ -25,11 +25,11 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "note": "round 5 (v3e): every graded figure reproduced; the air-loss fill judged forced by the data; DF-1 the thinnest call; Gate H analytical"
+  "disposition": "FIX_NOW",
+  "note": "round 6 (v3f): call forced (84 of 96 fill variants give the seven; the rest use a median); fixed: maintenance-outage hours out of reserve shutdown, the neighbour-average sentence; revision lines left unfiled (latest line the dominant reading)"
  },
  "returned": [],
- "resume": "stage 4: await the coordinator's ruling on the call hit; realism fixes in (part-hour load cap, start-shape spread, peaker heat-rate noise); finish the DERATE_SCALE bin search and rebuild",
+ "resume": "stage 4: finish the DERATE_SCALE bin search, full build, await the coordinator's ruling on the round-6 call hit, then a fresh reader pair and one judge pass",
  "approved": null,
  "delivered": null,
  "portal": null,
