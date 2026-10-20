@@ -1,194 +1,34 @@
-# task474 design note: a Medicaid managed care plan's 2027 provider group designations (architecture 4)
+# task474 design note: a port authority's 2027 clean-corridor designations (architecture 5)
 
-Architecture 4, drawn 2026-10-20 in a fresh world after architecture 3 (combined-cycle NOx with instrument-air gaps)
-was spent at stage 4. Earlier architectures' sections are retired; their lessons stand in Tried and rejected.
+Architecture 5, drawn 2026-10-20 in a fresh world after architecture 4 (Medicaid exposure rebuilt from the
+capitation remittance) was spent at stage 4. Earlier architectures' sections are retired; their lessons stand in
+Tried and rejected.
 
 ## Draw
 
-- **Pairing.** Client domain healthcare-delivery-health-economics, task type payment-claims-health-plan-analytics,
-  objective Data Extraction & Conformation (ETL): the paid medical claims, the plan's monthly enrollment roster, the
-  state's capitation remittance (keyed on the state's recipient id, crosswalked through the roster) and the pharmacy
-  claims are conformed into one provider-group dataset of paid cost per member-month.
-- **Decision.** How many, and which, of the twelve primary care groups the plan designates for its 2027 Cost
-  Performance Program: a group whose members' paid medical cost per member-month for services January to June 2026,
-  paid by 31 October 2026, is $412.00 or more. Retrospective by necessity: the program reads the closed half year at
-  the year-end close, for the contract year that has not begun.
-- **The quantity.** Paid medical cost over the member-months in which the group's members were covered.
-- **Data-native sentence.** Members renew once a year in their enrollment anniversary month and some lose coverage at
-  renewal and are reinstated back to the lapse, while members who die stay on the state's file for a month or more,
-  so the plan's roster, built from the state's file as processed by the 5th, is short of covered months in the
-  high-churn groups and long in the frail groups, and only the state's member-level capitation lines, paid and
-  recouped months later, record the difference.
-- **Default path.** Member-months from the roster, cost from paid claims: PG02, PG04, PG08 and PG11.
-- **Golden.** Member-months rebuilt as the roster's months plus the months the state later paid capitation for and
-  less the roster months it recouped: PG04, PG07, PG08 and PG10.
-- **Asks (carried device).** From the pharmacy claims, which the call never reads: later lines under the same claim
-  number (a reversal at zero, a rebill moving the fill date or the product), the latest line standing.
-- **Shape.** 07, a grid: twelve groups' verdicts, twelve classes by two figures, plus the count, the set and the
-  memo's chart.
-- **Guard.** WARN (nearest task100 v1 at 0.07); personas Paula Watts and Derrick Warren from guard.py names;
-  coordinator reservations respected (shape 05 and census-register avoided).
-
-## Default path
-
-1. Read the rules: every group in the register; a group's members as the roster assigns them; paid medical cost of
-   services January to June 2026 paid by 31 October 2026, over the member-months in which its members were covered by
-   the plan; designate at $412.00 or more.
-2. Take the paid claims in the window by the member's group, and count each group's member-months as its members'
-   rows in the monthly enrollment roster (one row per member per month, January to June).
-3. Divide, compare with $412.00.
-
-Ends on: PG02, PG04, PG08 and PG11 designated
-
-Golden: PG04, PG07, PG08 and PG10 designated
-
-## Stump sentence
-
-The default path counts each group's member-months as its members' rows in the plan's monthly roster and designates
-PG02, PG04, PG08 and PG11; the roster is the state's enrollment as processed by the 5th of each month, so it never
-shows the months members were reinstated back to after a renewal lapse and still lists members for months after they
-died, and only rebuilding coverage from the roster together with the state's later member-level capitation lines (the
-months paid off the roster added, the months recouped taken away) designates PG04, PG07, PG08 and PG10.
-
-## Three rules
-
-Task type: Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics, which the taxonomy tags for ETL: conforming paid claims, the monthly roster and the state's capitation remittance (on its own recipient id) into a group-level cost per member-month the program designates on.
-
-Domain test: the quantity that decides the call is each group's paid medical cost per member-month, worked as health plan analytics works an exposure base: member-months of eligibility rebuilt from enrollment and the state's eligibility adjustments (retroactive reinstatements paid on the 820, recoupments after death), not from a point-in-time roster.
-
-Swap: "which of our twelve gyms' cost per member-month is over target, counting members from the monthly membership list" keeps the words and loses the step: a gym's list is its own record of who paid, while here the payer of record is the state, whose eligibility decisions arrive months after the roster is cut and reach the plan only as capitation paid and taken back.
-
-Layer 1: the remittance keyed on the state's recipient id rather than the plan's member id (crosswalk on the roster); bulk capitation lines by rate cell with no member beside member-level lines; rate cell corrections as a +1 and -1 pair; institutional stays running past 30 June; a whole year of remittance advices with payment dates months after coverage; each the plan's or the state's own record, each asserted neutral on the call (checks.py R2).
-
-Layer 2: estimand_identification by exposure construction. The methodological choice is what counts as a member-month of coverage: the roster's rows, the rows plus the months with a claim, the rows plus reinstated months, the rows less recouped months, or the covered months rebuilt from both sources.
-
-Decisive step: rebuilding each group's member-months of coverage from the roster and the state's member-level capitation adjustments, adding the reinstated lapse months the roster never caught and removing the post-death months the state recouped, rather than taking the point-in-time roster as the exposure base.
-
-Not semantics: every field read correctly (the roster's as_of, the remittance's signed member_count, the recipient id) still leaves the easy route on the roster's rows; no field or definition says the roster is short or long, and the roster is exactly what the notes say it is.
-
-Not rule application: rule 2.2 files the outcome, the window and "the member-months in which its members were covered by the plan"; no rule or note says where coverage is recorded or that the roster misses any of it, and executing every stated rule on the roster files PG02, PG04, PG08 and PG11.
-
-Analyst test: a strong analyst who reads every field and rule correctly and counts member-months from the roster designates PG02, PG04, PG08 and PG11 designated (the default path's Ends on); only the coverage rebuilt from the roster and the remittance's member lines designates PG04, PG07, PG08 and PG10.
-
-Estimand: rules 2.1 to 2.3 (cost_performance_program_rules_2027.pdf) file the population (the register's groups and the members the roster assigns them), the outcome (paid medical cost of services 1 January to 30 June 2026, paid by 31 October 2026), the unit (per member-month of coverage by the plan), the window and the comparison ($412.00 or more).
-
-No decoy: nothing is planted to be caught; the roster is the plan's ordinary monthly file, the remittance the state's ordinary 820 advices, no memo, earlier list or reported rate ships, and no document mentions lapses, reinstatement or deaths.
-
-No certified replay: no certified or published figure is reproduced to recover the method; coverage is rebuilt from member-level records directly.
-
-Lesson: in Medicaid managed care the exposure base is eligibility as the state finally adjudicates it, which the capitation adjustments record months after the roster is cut; a point-in-time roster understates exposure where renewal churn is high and overstates it where members die, and a cost per member-month on it ranks groups by their churn and frailty. No build on file rebuilds an exposure base from a payer's later adjustments.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, the roster's member-months, the default path (PG02, PG04, PG08, PG11) | rule 2.2 "member-months": fires | one row per member per month: fires | none | none | none | a count | readable |
-| R1, roster plus months with a claim (PG02, PG04, PG08, PG11) | none | claims for members off the month's roster: fires | the orphan-claim reflex: fires | none | an unmatched join: fires | a union | readable |
-| R2, roster plus reinstated months (PG04, PG08) | none | member-level remittance lines: fires | none | none | none | a union | readable |
-| R3, roster less recouped months (six groups) | none | negative member lines: fires | none | none | none | a difference | readable |
-| G (decisive), coverage rebuilt from both adjustments (PG04, PG07, PG08, PG10) | no clause says the roster misses coverage | no column holds coverage | no reflex reconciles a roster to capitation both ways | none | none | none | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | member-month | a calendar month of coverage | a day-weighted month | same call (both files monthly, asserted) | the roster and remittance grain |
-| SF2 | paid by 31 October | paid_date on or before 2026-10-31 | none in the extract later | same call (asserted) | the extract |
-| SF3 | services received January to June | service_from in the window | service_to in the window | same call (asserted) | rule 2.2 |
-| SF4 | $412.00 or more | at or above, unrounded | rounded to the cent or dollar | same call (nearest group $5.83 away, asserted) | rule 2.3 |
-| SF5 | a group's members | pcp_group_id on the roster, one group per member | none: every claim's member is on the roster | same call (asserted) | rule 2.1 |
-| SF6 | the month of death | covered (the state recoups only later months) | dropped | same call (asserted) | the remittance |
-| SF7 | covered by the plan | roster plus paid, less recouped | roster only | not the rule's quantity: files PG02, PG04, PG08, PG11 | rule 2.2 "covered by the plan" |
-| SF8 | the files the call reads | claims, roster, remittance, register | the pharmacy or quality files | same call (asserted) | rule 2 |
-
-## Ladder
-
-Built figures, read from the cut pack by `generator/checks.py` (paid medical cost per member-month, against $412.00).
-
-- **R0, the roster, the default path (PG02, PG04, PG08, PG11).** PG02 $421.29, PG11 $420.26 over; PG07 $406.52 and
-  PG10 $402.41 under. Dies to the remittance's member lines: 3,009 member-months paid off the roster and the roster
-  months recouped.
-- **R1, roster plus claim months (the same four).** PG11 $415.60: a lapse month with no claim stays out.
-- **R2, reinstatements only (PG04, PG08).** PG07 $402.69, PG10 $399.67: the post-death months stay in.
-- **R3, recoupments only (six: PG02, PG04, PG07, PG08, PG10, PG11).** The lapse months stay out.
-- **G (PG04 $467.94, PG07 $417.83, PG08 $431.18, PG10 $418.29).** The truth (coverage known, generator only) gives
-  the same rates to the cent.
-- **Margins:** every golden rate at least $5.00 from $412.00; every group a rung flips crosses by $3.00 or more; of
-  the sixteen combinations of the construction's steps (reinstatements, recoupments, claim months, rate cell pairs
-  netted or not), only those with both adjustments land the golden (checks.py).
-- **Worth:** R0 keeps eight of twelve verdicts and not the set, so the asks carry the pair (Ask sheet).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the register's twelve groups and the members the roster assigns (rule 2.1) |
-| 2 | Unit of account | the group; dollars per member-month |
-| 3 | Attribution window | services 1 January to 30 June 2026 (SF3) |
-| 4 | As-of dating | claims paid by 31 October 2026 (SF2); extracts of 2 November |
-| 5 | Version basis | the remittance as paid through the extract |
-| 6 | Denominator | member-months of coverage (SF7) |
-| 7 | Weighting | none: each group's totals |
-| 8 | Window length | six months |
-| 9 | Boundary inclusivity | $412.00 or more (SF4) |
-| 10 | Rounding path | rates unrounded; pharmacy dollars summed then rounded to the dollar |
-| 11 | Tie-break | none: each group against the benchmark |
-| 12 | Maturity and censoring | four months of claims run-out, filed |
-| 13 | Order of operations | crosswalk, net the member lines, coverage, cost, rate, comparison |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | the remittance's lines netted per member and month; pharmacy lines at the latest per claim number |
-| 16 | Identity normalisation | the state's recipient id to the plan's member id through the roster |
-| 17 | Netting | rate cell pairs net to zero (SF7) |
-| 18 | Dimensional units | dollars, member counts |
-| 19 | Code and status semantics | signed member_count; never the stump |
-| 20 | Integerisation | none before the comparison |
-| 21 | Clause scope | rule 2 the designation, rule 3 the pharmacy summary |
-| 22 | Forward window contents | the 2027 program designated on the closed 2026 half year (Draw) |
-
-## Literal reader
-
-Executed word for word, the rules fix the population (the register's groups and the roster's assignment), the
-outcome (paid medical cost of the window's services paid by 31 October), the unit (the member-months in which the
-members were covered by the plan), the window and the benchmark. Where coverage is recorded is not filed: the
-candidates are the roster's rows, the roster with claim months, and the roster corrected by the state's member-level
-capitation lines (one or both directions). The data separate them: the remittance pays 3,009 member-months for months
-the roster does not list and recoups months it does, and every combination short of both adjustments files another
-set (checks.py). Every write-up step names the file and rule it executes.
-
-WHAT screen (stumping 1.2): population, rule 2.1 ("the members the plan's enrollment roster assigns to it", every
-group in the register); outcome, rule 2.2 (paid medical cost of services 1 January to 30 June 2026, paid by 31 October
-2026); window, rule 2.2; unit, rule 2.2 ("the member-months in which its members were covered by the plan"); comparison,
-rule 2.3 ($412.00 or more). The decisive step settles none of them: covered member-months are filed plainly, and the
-step is how that filed quantity is measured where the roster under-records it (reinstatements) and over-records it
-(deaths), the remittance's member lines and the paid claims separating the candidates and no file naming the move.
-
-## Oracles
-
-None. No control, published figure or reconciliation ties only under the golden: the bulk capitation lines pay the
-roster's counts, so the remittance's own totals tie to the roster under every route.
-
-## Ask sheet
-
-- **Ask A, every drug class's paid pharmacy cost, January to June 2026 fills, dollars to the nearest dollar: 12
-  figures.** H18 home: rule 3.1, the committee's formulary review beside the designations. Path: the pharmacy claims,
-  the drug class crosswalk, the rules. Primary device: D2, the record is the latest line under a claim number; later
-  lines under the same number reverse a fill at zero, move its fill date by a few days, or change the product to
-  another class, with no sentence describing them. Filtering to the window and class first and then keeping the
-  latest line per claim number (the careful path) keeps the superseded line of every class change and every fill moved
-  out of the window; summing every line counts each rebill twice.
-- **Ask B, every drug class's number of fills: 12 figures.** Same path; a reversed fill is not a fill.
-- **The construction layer:** each group's verdict and the set.
-
-| Ask | Cracker (filter first, then latest) | Mirror (roster) |
-|---|---|---|
-| A, paid by class (12) | miss | miss |
-| B, fills by class (12) | miss | miss |
-
-Pair ceiling: 37.7 (cracker 45.0 with the call and no ask figure; mirror 30.4, eight of thirteen main figures)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-Measured by: generator/ceiling.py
+- **Pairing.** Client domain physical-environmental-sciences, task type emissions-inventory, objective Data
+  Extraction & Conformation (ETL): three count programs' short-duration classification counts (the state DOT's, the
+  county's and the port's consultant's, each in its own layout and class scheme), the state's continuous count
+  stations (hourly volumes, a few classifying), the link register and an emission rate table are conformed into one
+  link-level on-road NOx inventory for the program year.
+- **Decision.** How many, and which, of the roadway links around the port's terminals the port authority designates
+  for its 2027 clean-corridor program (zero-emission truck charging, idle enforcement, roadside barriers): a link whose
+  program-year (October 2025 to September 2026) on-road NOx per mile is at or above the program's line. Forward
+  facing: the designations fund 2027 work from the year just closed.
+- **The quantity.** Each link's program-year vehicle-miles by class (passenger vehicles, trucks) times the class's
+  NOx emission rate, per mile of link.
+- **Data-native sentence.** Each link is counted for 48 hours on weekdays at one time of year, and the year's miles
+  come from expanding that count with calendar factors measured at the state's always-on stations; trucks fall away at
+  weekends and barely move by season while cars do the opposite, so factors computed for all vehicles and applied to
+  a weekday count overstate the year's trucks at every link, most where trucks are most of the traffic, and the
+  stations that classify measure the trucks' own factors.
+- **Default path.** The traffic monitoring guide's textbook expansion: the count times the stations' all-vehicle
+  monthly and day-of-week factors, split by the counted truck share.
+- **Golden.** Cars and trucks expanded separately, each with factors computed for that class at the classifying
+  stations.
+- **Shape.** 07, a grid: every link's verdict, plus the asks' figures, the count, the set and the memo's chart.
+- **Guard.** WARN (objective and Gate G overuse); nearest task452 v1 at 0.06; personas Paige Hodges and Martin
+  Estrada from guard.py names; forum, forcing event and org family clear of the last three builds.
 
 ## Tried and rejected
 

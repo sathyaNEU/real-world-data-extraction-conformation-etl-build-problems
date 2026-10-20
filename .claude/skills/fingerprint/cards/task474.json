@@ -1,26 +1,25 @@
 {
   "task": "task474",
-  "architecture": "v4",
+  "architecture": "v5",
   "drawn": "2026-10-20",
   "slot_note": "re-root of seed ET31's number in the ETL lane: architectures 1 (temporal disaggregation), 2 (start-state monitor gaps) and 3 (instrument-air gaps) spent at stage 4; architecture 4 draws a fresh world in payment claims by the coordinator's ruling",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a Medicaid managed care plan's 2026 cost per member-month for each primary care provider group, conformed from paid medical claims, the plan's monthly enrollment roster snapshots and the state's capitation remittance, where members who lapse at their annual renewal are reinstated retroactively and their lapse months never reach the roster",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a port authority's on-road NOx inventory for the roadway links around its terminals, each link's program-year vehicle-miles by class expanded from short-duration classification counts with the state's continuous count stations, to designate links for its 2027 clean-corridor program",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Designate four of the twelve primary care groups: PG04, PG07, PG08 and PG10 (the roster's member-months designate PG02, PG04, PG08 and PG11).",
+  "answer": "(to be built)",
   "answer_source": "task474/submission.md",
   "gap": [
-    "population",
     "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G5",
+    "G2",
     "G13"
   ],
   "gate_g": "method_or_model_selection",
@@ -29,56 +28,56 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the claims, the roster and the remittance, reads every field and rule correctly and divides each group's paid claims by its roster member-months designates PG02, PG04, PG08 and PG11; adding only the reinstated months gives PG04 and PG08, removing only the recouped months six groups, adding claim months the same four as the roster; only both adjustments give PG04, PG07, PG08 and PG10.",
-  "domain_test": "The decisive quantity is each provider group's cost per member-month, a health plan's per-member-per-month rate whose denominator is the exposure at risk; under Medicaid renewal churn with retroactive reinstatement the covered months are rebuilt from the capitation the state paid and the claims the plan paid, not from the roster snapshot; swapping in another field's nouns breaks it because the annual redetermination cycle and the state's retroactive coverage rule are what put covered months outside the roster.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:exposure at risk rebuilt from the payer's own retroactive capitation and paid claims under renewal churn",
+  "analyst_test": "A strong analyst who conforms the three count programs' short counts, reads every field and rule correctly and expands each link's counts to the year with the stations' monthly and day-of-week factors for all vehicles, then splits the year's traffic by the counted truck share, designates the wrong links, because trucks fall away at weekends and vary less by season than cars, so a weekday count expanded with all-vehicle factors overstates every link's truck miles, and trucks carry most of the NOx.",
+  "domain_test": "The decisive quantity is each link's program-year NOx per mile, an on-road inventory's vehicle-miles by class times class emission rates, where annual vehicle-miles come from short counts expanded by temporal factors from continuous count stations (the traffic monitoring guide's method); the textbook applies one set of factors to all vehicles, which the classification stations show fails for trucks.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:class-specific temporal expansion of short counts, the all-vehicle factor assumption broken for trucks and measured by the classification stations",
   "layer1": [
-    "claims paid after the month of service, with claim lines and member IDs as the claims system writes them",
-    "the roster as a snapshot taken early each month",
-    "a remittance file paid by the state in a later month than the coverage month it pays",
-    "provider group attribution changes during the year",
-    "pharmacy claims reversed and rebilled under one claim number"
+    "three count programs' exports in different layouts and class schemes",
+    "station hourly files with detector outage days",
+    "link register with lengths in miles and kilometres by source",
+    "count start times in local time against stations in standard time"
   ],
-  "stakeholder_role": "the plan's provider performance analyst preparing the 2027 provider group designations",
-  "role_family": "finance_controller",
+  "stakeholder_role": "the port authority's environmental planning analyst preparing the 2027 clean-corridor designations",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "medical_claims_paid_2026.csv",
+    "file": "continuous_count_station_hourly_2025_2026.csv",
     "rows": null,
-    "entity": "one paid claim line",
-    "grain": "claim line",
+    "entity": "one station-hour by class",
+    "grain": "station, hour, direction, class",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "period_close",
-  "org_family": "hospital_or_health_provider",
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States, a fictional state's Medicaid program",
+    "geography": "United States, a fictional coastal metropolitan area",
     "currency": "USD",
-    "org_type": "a Medicaid managed care plan",
+    "org_type": "a port authority",
     "invented_names": [],
     "people": [
-      "Paula Watts",
-      "Derrick Warren"
+      "Paige Hodges",
+      "Martin Estrada"
     ]
   },
   "deliverables": [
-    "provider_group_pmpm_2026h1.xlsx",
-    "provider_group_designations_2027.pdf"
+    "clean_corridor_links_2027.xlsx",
+    "clean_corridor_designations_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A rate's denominator is the time each member was covered, and the monthly snapshot of who is covered is short where members lose coverage at a yearly review and are restored back to the lapse, and long where members die and are removed late; the payer's own later payments and take-backs at member level record both, and the denominator is rebuilt from the snapshot corrected by them in both directions.",
-  "driver_concrete": "Each provider group's 2026 cost per member-month divides its attributed members' paid claims by member-months rebuilt from the plan's roster plus the months the state later paid capitation for after a renewal lapse, not by the roster's member-months alone, before groups above the plan's cost benchmark are designated.",
-  "stump": "The default path counts each group's member-months as its members' rows in the plan's monthly roster and designates PG02, PG04, PG08 and PG11; the roster, the state's file as processed by the 5th, misses months members were reinstated back to after a renewal lapse and keeps members for months after death, and only coverage rebuilt from the roster with the state's later member-level capitation lines (paid months added, recouped months removed) designates PG04, PG07, PG08 and PG10.",
+  "driver": "A period total at each site is estimated from a two-day sample expanded by calendar factors measured at always-on reference sites, and the factors differ by class of contributor: the heaviest-emitting class falls away at weekends and barely moves by season, so expanding a weekday sample with factors for all contributors and splitting by the sampled class share overstates that class at every site; the classes are expanded separately with factors from the reference sites that classify.",
+  "driver_concrete": "Each roadway link's NOx per mile for October 2025 to September 2026 is passenger-vehicle and truck miles times their emission rates, the miles expanded from the link's 48-hour classification count with monthly and day-of-week factors computed separately for cars and trucks at the state's classification stations, not with the all-vehicle factors of every station.",
+  "stump": "(to be written at stage 2)",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task468": "task468 measures a linker's error on control groups to correct an outcome count; here nothing is linked: the denominator's missing months are rebuilt from the payer's own retroactive capitation and paid claims.",
-    "task127": "task127 projects cost by tenure; here nothing is projected: a closed year's exposure is rebuilt from retroactive coverage the roster snapshot never shows.",
-    "task474v3": "architecture 3 filled unmeasured emission hours; here no value is missing from a record: whole member-months are missing from the snapshot and come back from payment records."
+    "task476": "task476 dates items found at periodic inspections back by their start season; here a sample day is expanded to a year by factors that differ by class",
+    "task123": "task123 splits interval totals onto calendar periods by a daily-measured sample's rate; here a two-day count is expanded to the year, the class composition of the factor being the step",
+    "task474v4": "architecture 4 rebuilt an exposure denominator from a tied adjustment file; here nothing ties, the correction is an estimator choice measured on reference stations",
+    "task244": "task244 removes spurious moves read with an error measured against re-readings; here nothing is misread: a two-day count is expanded to the year by factors that differ by vehicle class"
   },
   "lineage": [
     {
@@ -137,7 +136,7 @@
       "fate": "spent at stage 4, 2026-10-20: an isolated reader netted the capitation remittance's member-level adjustment lines against the roster and landed the call and every ask"
     }
   ],
-  "notes": "architecture 4 drawn 2026-10-20 in a fresh world (payment claims) after architecture 3 was spent",
-  "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-20T17:17:02Z"
+  "notes": "architecture 5 drawn 2026-10-20 in a fresh world (on-road emissions inventory) after architecture 4 was spent",
+  "client_domain": "physical-environmental-sciences",
+  "registered": "2026-10-20T20:24:50Z"
 }
