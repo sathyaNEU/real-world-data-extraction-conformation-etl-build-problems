@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4 round 2, architecture 5: the fix pass is in the generator (time basis filed, deaths split 1944/1945, movements from 1925, asks re-sited on the old platform's 2020 electorate numbers and per-enrolment references tied by REF_TXN, the prompt's rounding sentence reworded); finish the full build (checks, verify, two identical builds, zip), rerun precut, figures_check, leak.py, ceiling, heart; then two fresh scored readers and the one re-judge on the new zip; ship if both readers miss the call and keep under a fifth of the asks",
+ "resume": "stage 4 round 2 on target.zip 5402dd6ec2786aea: two scored readers (leak-task471-v5-r2a, r2b) and the one re-judge (determinism_check_report_v5r2.md); ship if both readers miss the call and the asks hold",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -160,7 +160,7 @@
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20 on target.zip 7b7e6acddefeb6b8 (region names in the field operations summary; generic survey words in the methods report and series notes); no LEAK",
+  "leak_py": "REVIEW 2026-10-20 on target.zip 5402dd6ec2786aea (region names in the field operations summary; generic survey words in two documents); no LEAK",
   "reader": "round 1 on 7b7e6acddefeb6b8: both readers missed the call on R2 (score_reader call 0 of 1), both kept 32 of 32 ask figures (UTC from the first new-platform stamp, movers through the shared reference or the 40,000,000 number boundary, codes and reinstatements filed); asks re-sited"
  },
  "duplicate_check": {
@@ -178,8 +178,8 @@
   "cracker": 45.0,
   "mirror": 22.0,
   "mirror_rung": "R2 dual-system cells, 8 of 16",
-  "sensitivity": "a cracker reading the new platform's stamps as UTC keeps 16 of 32 (pair 47.2); one also finding the old platform's moves keeps 32 (pair 61.0)",
+  "sensitivity": "the 2020 numbers alone keep 2 of 32 (35.2), REF_TXN alone 1 of 32 (34.4), both 32 (61.0)",
   "script": "generator/ceiling.py"
  },
- "target_zip_sha256_16": "7b7e6acddefeb6b8"
+ "target_zip_sha256_16": "5402dd6ec2786aea"
 }
