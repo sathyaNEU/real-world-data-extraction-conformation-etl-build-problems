@@ -1,21 +1,35 @@
 {
  "task": "task476",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"guard_check": "WARN 2026-10-20 on the registered card (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); BLOCKs cleared at the draw: role redrawn to policy_adviser, decisive pattern G4 (attribution at a geography transition) with differentiation against task243 and task450", "heart": "", "nearest": "task19 at 0.08"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-20: section numbers matching two margins, domain nouns in the guidelines, the candidate list naming candidates beside tract codes; tract names declared as stated inputs; no LEAK",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "guard_check": "WARN 2026-10-20 on the registered card (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); BLOCKs cleared at the draw: role redrawn to policy_adviser, decisive pattern G4 (attribution at a geography transition) with differentiation against task243 and task450",
+  "heart": "WARN 2026-10-20 (grain_or_unit strategy risk, objective and Gate G overuse, Gate G repeat); surface clean",
+  "nearest": "task19 at 0.05"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: default path, ladder, fork table, closure, asks, prompt.txt, precut.py; names provisional (neighbourhood set to be tuned on the generator)",
+ "resume": "stage 4: free gates green (checks 25 of 25, verify, byte-identical, figures_check 195, precut 51, leak REVIEW, heart WARN, pair ceiling 36.5). Judge r1 and two scored readers running on target.zip 3f16a329 (/tmp/determinism-check-task476-r1, /tmp/reader-task476-r1a and r1b); fix findings in one pass, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -47,10 +47,10 @@
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "tab2010_tab2020_st00_cty_blocks.csv",
-    "rows": 0,
-    "entity": "one row is a 2010 block's part in a 2020 block",
-    "grain": "block part",
+    "file": "carrow_code_case_events_2019_2027.csv",
+    "rows": 53312,
+    "entity": "one recorded step on a city housing or nuisance code case",
+    "grain": "case event",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
@@ -74,7 +74,7 @@
   },
   "deliverables": [
     "nsf_2027_tract_poverty_change.xlsx",
-    "nsf_2027_designation_memo.docx"
+    "nsf_2027_designation_memo.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",

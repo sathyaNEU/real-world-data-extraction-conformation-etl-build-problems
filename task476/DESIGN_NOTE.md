@@ -167,6 +167,165 @@ published units tile the new unit, they estimate its own ground, and a split mad
 exactly where the parent's average misleads. No build on file teaches carrying a survey estimate across a redrawn
 geography from nested published units.
 
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, point estimates only: a tract qualifies when its 2019 to 2023 rate is 20 per cent or more and above its 2014 to 2018 rate (Dunmore Heights, Kestrel Park, Linden Row) | guidelines 3.1(b) asks a rise significant at 90 per cent: fires | the margin columns beside each estimate: fires | none | none | none | one comparison: fires | readable |
+| R1, tracts matched by code: a 2020 tract with no 2014 to 2018 row (every split child) left out (Dunmore Heights) | guidelines 3.2, the 2014 to 2018 rate for the area each 2020 tract covers: fires | the relationship file: fires | none | none | an unmatched join: fires | none | readable |
+| R1b, the parent tested whole: the children summed for 2019 to 2023 and the parent's change given to each child (Dunmore Heights) | guidelines 3.1, each 2020 tract tested: fires | none | aggregating to a stable geography: fires | none | none | one sum: fires | readable |
+| R2 (default path), each child given its parent's 2014 to 2018 rate through the relationship file, by area or 2010 population (Dunmore Heights, Linden Row) | none | the relationship file's parts: fires | the standard crosswalk conformance: fires | none | none | none | readable |
+| G (decisive), each split child's 2014 to 2018 count and universe rebuilt from the 2010 block groups whose blocks make it up, margins combined (Dunmore Heights, Kestrel Park) | no clause names a block group, a rebuild or a parent's spread; 3.2 files only the area | the block groups sit in a separate table no tract step reads; the block relationship file joins 2010 blocks to 2020 blocks, not block groups to tracts | none of the conformance reflexes (crosswalk, area or population weight, stable geography) uses the finer published units | none | none | none | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | poverty rate | persons below poverty over persons for whom poverty status is determined (B17001_002 over B17001_001; B17021 at block groups, the same universe) | a published percentage | same call: no percentage table ships | guidelines 3.2 |
+| SF2 | 20 per cent or more | the 2019 to 2023 rate unrounded against 0.200 | the rate rounded to one decimal | same call (asserted: no candidate tract within 0.002 of 0.200) | guidelines 3.1(a) |
+| SF3 | a significant rise | the difference over the root sum of the two standard errors (margin over 1.645) above 1.645 | one-sided at 90 per cent (1.282); intervals that do not overlap | same call (asserted: no golden z between 1.0 and 2.2, and the overlap reading names the same tracts) | guidelines 3.1(b), the Bureau's test as written there |
+| SF4 | a derived proportion's margin | the Bureau's proportion formula, the ratio formula where the radicand is negative | the ratio formula throughout | same call (asserted) | guidelines 3.2 |
+| SF5 | a sum's margin | the root sum of squares of the parts' margins | none other filed | same call | guidelines 3.2 |
+| SF6 | the two periods | ACS 2014 to 2018 and 2019 to 2023 five-year estimates | 2018 to 2022 against 2019 to 2023 (overlapping) | not shipped; ruled out | guidelines 3.1(b) "shares no year" |
+| SF7 | the neighbourhood's tracts | the 2020 tracts on the candidate list | every tract touching the neighbourhood | same call (the list is the population) | the candidate list; guidelines 3.1 |
+| SF8 | a 2020 tract's 2014 to 2018 rate | the rate for the area the 2020 tract covers | the parent tract's rate | the decisive step, an estimate of the filed quantity, not a reading: both estimate the area's rate and the data separate them | guidelines 3.2 (the WHAT); the method is open |
+| SF9 | three tracts | at least three tracts meeting both tests | more than three | same call (asserted: no neighbourhood at four under the golden) | guidelines 3.1 |
+| SF10 | an unchanged tract with a boundary touch-up | its own 2010 tract's estimate | an area-weighted mix of the two 2010 tracts it touches | same call and every figure (asserted: the touched blocks hold no population) | the relationship file; guidelines 3.2 |
+
+## Ladder
+
+Built figures, read from the cut pack by `generator/checks.py` (the rates are persons below poverty over persons for
+whom poverty status is determined, the z the change over the root sum of the two standard errors).
+
+- **R0, point estimates only (Dunmore Heights, Kestrel Park, Linden Row).** Four tracts each in Dunmore Heights,
+  Kestrel Park and Linden Row are above 20 per cent and above their earlier rate. Dies to guidelines 3.1(b).
+- **R1, tracts matched by code (Dunmore Heights).** Every split child lacks a 2014 to 2018 row and drops out. Dies
+  to guidelines 3.2 (each 2020 tract's earlier rate is the rate for its area).
+- **R1b, the parent tested whole (Dunmore Heights).** Kestrel Park's parent 0403 rose little as a whole (its poor
+  child fell, its better-off child rose), so neither child qualifies. Dies to guidelines 3.1 (each 2020 tract).
+- **R2, the default path: each child at its parent's rate (Dunmore Heights, Linden Row).** Linden Row's 0303.01,
+  holding its parent's two poor block groups, rises from the parent's 17.8 to 31.6 per cent (z 3.64) and makes
+  Linden Row's third tract; Kestrel Park's 0403.02, holding the better-off block groups, rises from the parent's 19.1
+  only to 21.4 (z 0.90) and leaves Kestrel Park at two. Dies to the block groups: 0303.01's own ground was at 28.9
+  per cent in 2014 to 2018 (z 0.56) and 0403.02's at 9.5 (z 4.29).
+- **G, the decisive move (Dunmore Heights, Kestrel Park).** Each split child's 2014 to 2018 count and universe are
+  the sums of the 2010 block groups whose blocks make it up (the block relationship file puts every block of a
+  child inside whole 2010 block groups), margins as the root sum of squares, the rate's margin by the proportion
+  formula; the ratio formula, and both periods from the block groups, give the same verdicts.
+- **Margins (cut pack, checks.py):** every golden z sits at least 0.67 from 1.645 (nearest Dunmore Heights 0203.00
+  at 0.75 and Sorrel Bend 0602.02 at 2.61); the default path's decisive tracts sit at 3.64 and 0.90; every candidate
+  tract's 2019 to 2023 rate at least 0.005 from 0.200; every rate and margin at least 0.004 points from a
+  one-decimal edge.
+- **Position, separation and dominance:** a designation, not a ranking: the five routes name four different sets;
+  only the block-group rebuild puts Kestrel Park in and keeps Linden Row out together.
+- **Worth:** the call and the grid of 28 tracts; R2 keeps every unsplit tract's figures and verdicts, so the asks
+  carry the pair (Ask sheet).
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | the 2020 tracts on the candidate list, five neighbourhoods (guidelines 3.1; the list) |
+| 2 | Unit of account | the 2020 census tract; a neighbourhood by its count of qualifying tracts |
+| 3 | Attribution window | the ACS five-year periods 2014 to 2018 and 2019 to 2023 (guidelines 3.1(b)) |
+| 4 | As-of dating | the Bureau's releases as published (2014 to 2018 in December 2019, 2019 to 2023 in December 2024); the city's extracts of 15 March 2027 for the asks |
+| 5 | Version basis | the published five-year tables; no revision is issued for ACS five-year estimates |
+| 6 | Denominator | persons for whom poverty status is determined (SF1) |
+| 7 | Weighting | none: survey estimates as published, summed where needed |
+| 8 | Window length | five years each, sharing no year |
+| 9 | Boundary inclusivity | 20.0 per cent or more; z above 1.645 (SF2, SF3) |
+| 10 | Rounding path | rates and z unrounded for the tests, reported to one decimal in per cent |
+| 11 | Tie-break | none: each tract against the tests, each neighbourhood against three |
+| 12 | Maturity and censoring | none: both periods closed and published |
+| 13 | Order of operations | counts and universes summed, then the rate and its margin, then the test |
+| 14 | Row order | no dependence |
+| 15 | Duplicate resolution | none in the Bureau's tables; the asks' cases and payments are the asks' |
+| 16 | Identity normalisation | GEOIDs with and without the summary-level prefix; tract codes with and without the decimal point |
+| 17 | Netting | none on the call |
+| 18 | Dimensional units | persons; rates as shares, reported in per cent |
+| 19 | Code and status semantics | the tables' variable codes and the relationship file's columns; never the stump |
+| 20 | Integerisation | estimates are whole persons as published; nothing rounded before the test |
+| 21 | Clause scope | guidelines 3: the 2027 round |
+| 22 | Forward window contents | the 2027 to 2029 round designated on two closed periods (a retrospective quantity, Draw) |
+
+## Literal reader
+
+Executed word for word, the guidelines fix the population (the listed 2020 tracts), the outcome (persons below
+poverty over persons whose poverty status is determined), the two periods, the 20 per cent line, the test (the change
+over the root sum of the two standard errors, above 1.645), the margins of derived and summed estimates, and the
+three-tract rule; 3.2 says a 2020 tract's 2014 to 2018 rate is the rate for the area it covers. One thing is left
+open: how that rate is estimated for a tract the 2014 to 2018 tables do not publish. The candidates are the parent
+tract's rate carried through the relationship file (by area or by 2010 population, the same rate for a split), the
+parent tested whole, the tract left out, and the sum of the 2010 block groups that tile the child. The data separate
+them: the block relationship file puts every block of each split child inside whole 2010 block groups, whose 2014 to
+2018 estimates are published, so the block-group sum is the survey's own estimate for exactly the area 3.2 names,
+while the parent's rate is the estimate for a larger area; the parent tested whole and the left-out tract leave 3.1's
+"each 2020 tract" unexecuted. Every variant of the block-group estimate (the proportion or the ratio formula, the
+2019 to 2023 side from the tract table or from its own block groups) gives the same verdicts (checks.py). Every
+write-up step names the file and rule it executes.
+
+## Oracles
+
+None. No control, published figure or reconciliation column ties only under the golden: the tract tables equal the
+sums of their block groups under every route, and no designation list, earlier round or memo ships.
+
+## Ask sheet
+
+- **Ask A, each candidate neighbourhood's residential properties with a housing code case open on 31 December 2026
+  and the median days those cases had then been open: 10 figures.** H18 home: guidelines 4.2 has the designation
+  memo show each candidate's open code workload, which the fund's code enforcement support is sized on; a measure
+  every candidate carries that the call does not turn on. Path: the code case export (case, parcel, type, status,
+  opened, closed), the case event history, the parcel file (parcel, land use, 2020 block), the candidate list, the
+  guidelines: five files, eleven columns. Primary device: D2, a field overwritten later. The case export is the
+  system's current record: a case closed during 2026 and reopened in 2027 shows open with its closed date cleared,
+  and a case open on 31 December and closed in 2027 shows its 2027 closed date; only the event history gives the
+  status on 31 December. Second device: D8, an anchor on the current record. Cases carried into the 2021 system keep
+  the migration date as opened, the first complaint only in the history, so days open read from the export are
+  short for every migrated case. Hazards: two cases on one property (count properties), non-residential land uses,
+  parcel numbers re-keyed in 2025 (the parcel file's prior number), cases outside the candidate tracts.
+- **Ask B, each candidate neighbourhood's rehabilitation grant dollars the fund paid in calendar 2026 and the
+  properties paid: 10 figures.** H18 home: guidelines 4.2, the fund's current activity in each candidate, which the
+  council weighs beside the designation; a measure every candidate carries. Path: the payment register (two fiscal
+  year sheets, entry, date, grant, parcel, amount, reference), the parcel file, the candidate list: three files,
+  eight columns. Primary device: D8, amendments by period, not filing. The register is an append-only journal: a
+  check voided in 2027 is reversed by a negative entry dated on the void date that references the original entry,
+  so a 2026 check voided and reissued in 2027 was never paid in 2026, and a date filter keeps it. Hazards: the city's
+  July to June fiscal years (calendar 2026 spans two sheets), retainage released as its own entry, a void and
+  reissue inside 2026 (nets out under every handling), a grant's payments to two parcels after a lot split.
+- **The construction layer:** the designated set, the 28 tracts' rates and verdicts and the chart; the cracker has
+  them.
+- **Main population zero-counts (asserted):** the call reads no code case, event, parcel or payment row, so neither
+  ask's device moves a call figure.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, open residential code properties on 31 December 2026 and median days open | the export's status and dates read as of 31 December (opened on or before, closed after or blank), properties counted once, residential land uses, parcels re-keyed, days from the export's opened date; the reopened cases counted open and the migrated cases' days short, so every neighbourhood's count and median fall outside their bins | miss |
+| B, grant dollars paid in 2026 and properties paid | both fiscal sheets, entries dated in 2026 netted within the year, retainage kept, properties counted once; the 2026 checks reversed in 2027 kept, so every neighbourhood's dollars fall outside their bins | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
+  them as the cracker does).
+- Pair ceiling: 36.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
+  and none of the 20 ask figures; the mirror, R2, keeps 62 of the grid's 84 figures, every unsplit tract's, 28.0).
+- Measured by: generator/ceiling.py
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each 2020 tract's 2014 to
+  2018 poverty rate on its own ground and the significance of its change, a small-area survey estimate carried
+  across the decennial redrawing; checks.py executes the analyst test on the generator's clean truth (the parent's
+  rate files Dunmore Heights and Linden Row, the child's own ground Dunmore Heights and Kestrel Park). Layers: the mess
+  (two table layouts, GEOID prefixes, the relationship files' parts, the touch-up blocks, re-keyed parcels, fiscal
+  sheets) is the Bureau's and the city's own and is neutral on the call (SF1 to SF10); the call reads no city row.
+  Three rules: no decoy, memo or earlier list ships; no field reading decides (every SF row converges or is closed by
+  a filed sentence); executing every filed rule on the standard conformance designates Dunmore Heights and Linden Row.
+- **Free gates (2026-10-20):** checks.py 25 of 25, verify.py clean, two builds byte-identical, target.zip cut from
+  the final build (14 files), figures_check.py 195 of 195, precut.py 51 checks clean, voice-check clean, guard.py
+  surface clean and heart WARN (strategy risk, objective and Gate G overuse), containers normalised.
+- **leak.py REVIEW lines, each harmless:** section numbers 4.1 and 4.2 match two margins; the guidelines carry the
+  domain's nouns (estimates, Bureau, five-year, significant) and name no block group, rebuild or parent's spread;
+  the candidate list names the five candidates beside their tract codes and ranks nothing. The tract names are
+  declared in metadata.json as stated inputs.
+
 ## Tried and rejected
 
 - 2026-10-20, at the draw: the seed's moves (overlapping periods, a GEOID match, point estimates) as the decisive step;
