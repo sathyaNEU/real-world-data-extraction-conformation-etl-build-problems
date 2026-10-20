@@ -215,10 +215,23 @@ def build(rng):
     first_prog = {}
     for e in exits:
         first_prog.setdefault(e["pid"], e["program"])
+    used_p = {p["pid"] for p in persons}
+    used_e = {e["enroll"] for e in exits}
+    top_p = max(int(p["pid"][2:]) for p in persons)
+    top_e = max(int(e["enroll"][1:]) for e in exits)
     for i, p in enumerate(dups):
-        pid2 = "TV%07d" % (3192000 + i * 13 + int(r2.integers(0, 13)))
+        while True:
+            pid2 = "TV%07d" % int(r2.integers(3100000, top_p))
+            if pid2 not in used_p:
+                used_p.add(pid2)
+                break
+        while True:
+            en2 = "E%06d" % int(r2.integers(17, top_e))
+            if en2 not in used_e:
+                used_e.add(en2)
+                break
         p["dup"] = pid2
-        exits.append(dict(enroll="E%06d" % (len(exits) * 3 + 17 + int(r2.integers(0, 3))), pid=pid2,
+        exits.append(dict(enroll=en2, pid=pid2,
                           program=first_prog[p["pid"]], exit_date=p["last"], dob=p["dob"], zip=p["zip"]))
         for r in [r for r in wage_rows if r["pid"] == p["pid"]]:
             wage_rows.append(dict(r, pid=pid2))
@@ -300,8 +313,13 @@ def build(rng):
             paid25[l["prog"]] = paid25.get(l["prog"], 0) + l["part"]
     arch = 9100
     new_programs = []
+    order = list(ELIG)
+    while True:
+        perm = [ELIG[int(k)] for k in r3.permutation(len(ELIG))]
+        if all(a != b for a, b in zip(order, perm)):
+            break
     for i, sec in enumerate(ELIG):
-        nxt = ELIG[(i + 1) % len(ELIG)]
+        nxt = perm[i]
         cands = sorted([p for p in programs if p["sec"] == sec and p["program_id"] in paid25],
                        key=lambda p: paid25[p["program_id"]])
         old = cands[0]
@@ -311,7 +329,7 @@ def build(rng):
         old["status"], old["withdrawn"] = "Withdrawn", dt.date(2025, 12, 1) + dt.timedelta(int(r3.integers(5, 60)))
         cat = CATALOG[nxt][(len(CATALOG[nxt]) - 1 + i) % len(CATALOG[nxt])]
         new_programs.append(dict(program_id=old_id, sec=nxt, j=9, name=cat[0], cip=cat[1],
-                                 provider=PROVIDERS[nxt][i % len(PROVIDERS[nxt])],
+                                 provider=old["provider"],
                                  approved=old["withdrawn"] + dt.timedelta(int(r3.integers(20, 90))),
                                  status="Active", withdrawn=None))
     programs += new_programs

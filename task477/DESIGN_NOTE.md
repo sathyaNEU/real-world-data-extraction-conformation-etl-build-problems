@@ -237,3 +237,7 @@ wage is on the paid basis and ranks nothing the Fund uses, and no earlier slate,
   stage 4 reader 4 found it through approval dates after the payments (97 per cent of mismatched lines) and kept 14 of
   15 ITA figures; the list now carries each program's latest annual re-approval and the smallest paid program is
   reissued, and three totals that sat exactly on a half dollar were moved off it.
+- Duplicate participant IDs drawn from their own number block and reissued program IDs moved to another provider in
+  a cycle of industries: stage 4 reader 5 found both through those markers (77.8 per cent); the duplicate IDs and
+  enrollment numbers are now drawn from the originals' own ranges, a reissued ID stays with its provider and the
+  industries it moves between are a random derangement.
