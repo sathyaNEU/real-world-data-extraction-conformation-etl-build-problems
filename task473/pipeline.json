@@ -1,26 +1,26 @@
 {
  "task": "task473",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "The default path gives every unarrested surviving driver of the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and certifies Corwin, Hatchell, Ossian and Pruett, dropping Tanager and certifying Pruett, because one probability for every county ignores how each county's impaired drivers are spread across the BAC bands officers catch.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-20: answer-call words in the guidelines (the program's own name), design-note vocabulary in the manual, guidelines, lab and crash records notes (domain nouns); no LEAK",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 on the registered card (shape 01 overuse, Gate G method_or_model_selection repeat and overuse); BLOCKs cleared at the draw by redrawing the decisive generator, decision type, strategy and organisation family, and at registration the pairing and forcing event against task474",
-  "heart": "",
+  "heart": "WARN 2026-10-20 after a pull (shape 01 overuse, Gate G method_or_model_selection repeat and overuse); surface clean, personas as drawn",
   "nearest": "task458 at 0.06"
  },
  "judge": {
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet with the cracker script, prompt.txt; then precut.py",
+ "resume": "stage 4: two scored leak readers and the determinism judge's isolated thread were spawned 2026-10-20 on target.zip sha256 2c016b81fa5ecb4a (rebuild with generator/build.py, byte-identical); collect their reports (readers' reader_figures.json scored with leak-check/score_reader.py; the judge's verdict.md into task473/determinism_check_report.md), fix every finding in the generator in one pass, re-run the free gates, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
