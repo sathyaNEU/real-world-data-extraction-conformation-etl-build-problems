@@ -2609,3 +2609,81 @@ the check pass: the move is reported and accepted on that basis.
   snapshot interval does bound the shortest observable duration, closing the estimators that need
   sub-interval durations, but reciprocal-appearance weighting is the estimator the snapshot grain itself
   licenses and the parametric fit is closed by nothing, and at eight weeks those two file different sets.
+
+## ARCHITECTURE 9 ALLOCATION SCREEN (wave 8, no mechanism drawn: the allocated cell does not exist)
+
+Wave 8 allocated this slot the cell `urban-regional-science` x `anomaly-detection` with
+`composition_mix` reserved, on the stated ground that the domain carries zero anomaly-detection cards
+so the ground is new. No mechanism was searched, because the cell cannot be drawn at all and the
+reserved strategy is blocked. Both facts are read off the guard and the taxonomy, not argued.
+
+**The cell is empty by construction, not unexplored.** Urban & Regional Science has seven task types in
+`fingerprint/vocab.json` and not one of them serves anomaly-detection: land-use-spatial-development-modeling
+(forecasting), accessibility-agglomeration-location-analysis (opportunity sizing),
+municipal-service-demand-resource-allocation (opportunity sizing, forecasting),
+regional-input-output-economic-impact (opportunity sizing), optimization (opportunity sizing), forecasting
+(forecasting), network-analysis (descriptive). `guard.py check` was run on a probe card for each of the
+seven in turn and returns the same BLOCK every time, naming the absence itself:
+
+```
+BLOCK three_rules.task_type  task type <X> serves <Y>, not anomaly-detection: the domain would be a backdrop
+      fix: draw a task type of urban-regional-science that serves anomaly-detection (none in this
+           domain), or another domain
+```
+
+`guard.py coverage` prints the pairing under "never-built pairings no task type serves, so not drawable",
+and `precut.py`'s `Task type:` line (its `task_type_serves`) is the second gate on the same fact. This is
+the hazard `fingerprint` Part 4 names outright under "A never-built pairing read as a menu", with
+actuarial-science-insurance as its worked example; the allocation reasoned from zero cards to new ground,
+and the implication runs the other way.
+
+**No house-domain route reaches it either.** `supply-chain-logistics` is the one house domain mapping to
+urban-regional-science, and the guard's house branch BLOCKs with
+`house domain supply-chain-logistics sits in urban-regional-science, where no task type serves
+anomaly-detection` whenever `client_domain` names urban-regional-science. Leaving `client_domain` unset
+makes the draw legal only through the other mapping, general-statistics-data-science, which is a different
+and already crowded domain (6 AD cards) and drops urban-regional-science from the build entirely.
+
+**The reserved strategy is independently blocked.** `composition_mix` sits on task471, registered
+2026-10-20T14:00:47Z, inside the three-live-card `ban.strategy` window, so the probe also returns
+`BLOCK ban.strategy  stump strategy composition_mix repeats a recent build against task471 (v4)`
+plus `WARN overuse.strategy  used in 3 of the last 12 builds`. An axis ban is not clearable by
+differentiation or by redrawing any other axis. The reservation was made to stop six concurrent draws
+colliding with each other and did not screen the strategy against the cards already on file.
+
+**The objective has no virgin cell at all, which this slot had already recorded.** All 14 task types the
+taxonomy lets anomaly-detection be drawn from carry at least one card (least spent at one card each:
+fraud-aml-detection, genomics-gwas-high-dimensional-association, crime-incidence-hotspot-analysis,
+disease-surveillance-outbreak-anomaly-detection, multiple-testing-selective-inference,
+provider-quality-risk-adjustment, payment-claims-health-plan-analytics, safety-incident-error-analysis,
+safety-signal-detection; most spent: grid-reliability-outage-analysis at four). Of the 21 client domains,
+four carry zero AD cards and all four are undrawable on it, so not one client domain is both unspent and
+drawable. `pipeline.json`'s `wave6_note` states the same thing from 2026-10-18: no AD cell is virgin and
+none is closed, and what binds a redraw there is the driver, not the cell.
+
+**Decision owed, and it is the author's.** The slot's constraint set is inconsistent as allocated: the
+lane is anomaly-detection, the allocated domain cannot carry it, and every domain that can is already
+carded. Either keep the lane and take a spent AD cell with a fresh driver, which is what `fingerprint`
+Part 4 says a spent cell permits and what the remaining wave-8 numbers are doing, or keep
+urban-regional-science and change the objective, where `urban-regional-science x
+opportunity-sizing-decision` is drawable, carries no card, and holds three never-drawn task types
+(accessibility-agglomeration-location-analysis, regional-input-output-economic-impact, optimization).
+The second is genuinely new ground and is a different lane, so it is not this draw's to take.
+
+Work in `scratchpad/w8_182/`: `mk.py` (the seven probe cards and their verbatim verdicts), `audit.py`
+(the six wave-8 allocations against the taxonomy), `premise.py` (the zero-card claim over all 21 client
+domains), `realloc.py` (the 14 legal cells by spend and the live strategy window). Every screen was run
+twice with byte-identical output.
+
+## Tried and rejected (appended)
+
+- **Wave 8's allocated cell, `urban-regional-science` x `anomaly-detection`.** Not screened and not
+  screenable: no task type in that domain serves the objective, so `guard.py check` BLOCKs on
+  `three_rules.task_type` for all seven of them and `precut.py` gates the same fact. Zero AD cards there
+  is structural, not evidence of open ground. No house-domain route reaches it.
+- **`composition_mix` as this slot's reserved strategy.** Blocked by `ban.strategy` against task471,
+  registered 2026-10-20T14:00:47Z and inside the live three-card window, independently of the domain.
+- **Reading "zero cards on this objective" as "new ground" anywhere on anomaly-detection.** Measured over
+  all 21 client domains: four carry zero AD cards, all four are undrawable on it, and no client domain is
+  both unspent and drawable. All 14 legal AD task types are spent, so on this objective the only fresh
+  thing available is the driver.
