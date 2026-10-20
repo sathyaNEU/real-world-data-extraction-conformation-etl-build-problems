@@ -1,0 +1,103 @@
+{
+  "task": "task479",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET36 (NFIP loss ratios from public policy and claim records, written against earned, rows against insured units): the world (NFIP policy terms and claims, outreach for private-market flood products) and the decision (which areas the outreach targets on their flood loss experience) kept; the seed's mechanisms (earning, policy counts against units) kept only as Layer 1; the pitfall re-found in the record's own mitigation history: buildings elevated after the floods that filled the record",
+  "domain": "general-statistics-data-science",
+  "client_domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "niche": "a regional flood authority's 2027 private flood placement pilot, set on each member county's expected paid building claims per 1,000 insured buildings for the buildings insured today as they now stand, built from the NFIP claims history, the policy terms and the authority's own elevation and acquisition projects, where the 2016 flood rose above the floors the post-flood elevations were built to",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G13",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "With every file conformed and every rule read, the easy route rates each building insured on 30 September 2026 on the paid building claims it filed while insured from 2001 to 2025 and, taking each building as it now stands, drops every claim filed before the building was elevated, which brings the two riverine counties whose 2016 claims were then elevated out of into the pilot's five; but the 2016 water stood above the floors those elevations were built to across much of both counties, so a repeat would still enter those buildings, and the pilot belongs elsewhere.",
+  "domain_test": "Flood loss avoidance under elevation, worked the way floodplain management and flood insurance work a mitigated building's exposure: a raised building is spared exactly the past floods whose water stayed below its new lowest floor, the water level fixed by each claim's recorded depth above the floor of the day; with another field's nouns there is no water surface, no floor height and no regulatory flood level the record flood exceeded, so the counterfactual the call turns on does not exist.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a past flood recurs on an elevated building only where its water stood above the new lowest floor",
+  "layer1": [
+    "the NFIP claims extract in two layouts (field names changed with FEMA's 2023 data release) with UTC timestamps",
+    "water depths in inches above the lowest floor against floor and flood elevations in feet",
+    "older elevation certificates on NGVD 1929 and newer on NAVD 1988, with the county conversion offsets",
+    "policy terms with renewals, mid-term cancellations, reinstatements and condominium master policies carrying unit counts",
+    "contents-only and building policies in one extract",
+    "the authority's grants system export of mitigation projects keyed to its own property numbers, joined to FEMA property identifiers through a crosswalk, multi-property projects and withdrawn projects",
+    "claims closed without payment beside paid claims"
+  ],
+  "stakeholder_role": "flood insurance program manager at a regional flood authority that runs its member counties' floodplain management and flood insurance outreach",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "nfip_policy_terms_extract.csv",
+    "rows": 0,
+    "entity": "one NFIP policy term on one insured building",
+    "grain": "building x policy term",
+    "source": "synthetic (constructed in the layout of FEMA's NFIP policy data shared with floodplain managers)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States (a fictional Gulf Coast region, the Tarrow Sound coast and its rivers)",
+    "currency": "USD",
+    "org_type": "regional flood authority, a special district of fourteen member counties",
+    "invented_names": [
+      "Tarrow Sound Regional Flood Authority",
+      "Calverly County",
+      "Dunholme County",
+      "Eastmarsh County",
+      "Gorran County",
+      "Hollins Point County",
+      "Ivesby County",
+      "Kettlemoor County",
+      "Larkspur Bay County",
+      "Pellham County",
+      "Quillan County",
+      "Ravensholt County",
+      "Saltreach County",
+      "Varlow County",
+      "Wickmere County"
+    ],
+    "people": [
+      "Christina Drake",
+      "Debbie Brady"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "A record of past events on units is carried to the units as they now stand, and some units were raised after their events, so a past event counts again on a raised unit only where the event's recorded level stood above the unit's new threshold; dropping a raised unit's earlier events, keeping them all, or giving it the later rate of units in its present class each misstates the expected rate.",
+  "driver_concrete": "A flood the record shows inside a building that has since been elevated recurs in a repeat only where its water stood above the building's new lowest floor, which the claim's depth above the old floor and the building's floor elevations fix; the 2016 flood rose well above the regulatory flood level the 2017 to 2021 elevations were built to in two riverine counties, so dropping every pre-elevation claim puts those counties in the pilot, and keeping them all leaves out the coastal counties whose elevations cleared every past flood.",
+  "stump": "The default path drops every claim a building filed before it was elevated and puts the two riverine counties elevated after 2016 in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task472": "task472 replays a shortened job to the next release window an outside schedule fixes, a time saving quantised by windows; here nothing is shortened or released: each past event's own recorded level is compared with the protection a unit now has, and the saving is the events the protection now stops.",
+    "task464": "task464 v1 fits each unit's response to a driver as the unit now operates and has to find changes no file dates; here every change is a dated project in the authority's register and nothing is fitted: each recorded flood's own water level is compared with the floor the building now has, so a flood counts again only where it stood above the raised floor.",
+    "task450": "task450 links two administrations of an instrument through a shared subset screened for members that drifted; here no instrument, scale or link is estimated: a claims history is carried flood by flood to buildings whose floors were raised on recorded dates."
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: a counterfactual replay of each past loss on the building as it now stands (the as-if of flood loss avoidance), none of the listed families; population_selection would be the nearest label and is banned in the current window, and it misdescribes the move, which changes no unit's membership. The ETL task type is general-statistics-data-science/data-integration-record-linkage-entity-resolution: the claims history, the policy terms and the authority's mitigation projects integrated at the building grain into one conformed table of insured buildings with their claims as they now stand.",
+  "registered": "2026-10-20T21:50:32Z"
+}
