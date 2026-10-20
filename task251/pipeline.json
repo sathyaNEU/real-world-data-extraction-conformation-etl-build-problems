@@ -1,18 +1,18 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "DESIGN",
- "domain": "general-statistics-data-science",
+ "status": "PAUSED",
+ "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-20",
- "stump": "A competent solver who reads the cylinder changes' jumps as the old gas's loss fits the loss rate per supplier and sends six analyzers (none on the December spans alone); the loss is set by the cylinder's interior, which only the certificates record, so four go: UVF-2207, UVF-1964, UVF-1987 and UVF-2075.",
+ "stump": "A competent solver pools every converter's titrations against its age since the service log's change and books BP08 alone (every other converter reaches its 2028 service about a year old and above 95 per cent); the converters wear with the NO2 they reduce along a curve that steepens near exhaustion, and carried on each station's own load seven go: BP01, BP02, BP03, BP04, BP05, BP08 and BP13.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
   "leak_py": "",
@@ -25,7 +25,7 @@
  },
  "judge": null,
  "returned": [],
- "resume": "Architecture 2 drawn (card registered, WARN only): the NO2 channel of a lower Po valley network's chemiluminescence analyzers, whose molybdenum converters lose efficiency with the NO2 they reduce along a curve that steepens near exhaustion; which analyzers' converters go to the regional laboratory's January 2028 bench ahead of their scheduled service (EN 14211's 95 per cent). Next: stage 2, the simulator tuned to the ladder, the asks and devices, the note's sections, prompt, precut.",
+ "resume": "Architecture 2 spent at stage 4 (both scored readers landed the call through the converter's accumulated NO2; asks held at 4 of 48 each). Next: re-root to architecture 3 at stage 1 (the third and last architecture this slot may take without the author): move v2 into the card's lineage with its fate, draw a decisive step from the held family (compound, or outside the hypothesis space a strong reader brings), not a known instrument-wear model and not task250's policy-censoring driver; the database ask device (titration hours coded valid) held and is a candidate to keep.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -48,6 +48,28 @@
   {
    "date": "2026-10-20",
    "event": "architecture 2 drawn: PES sensor calibration, converter efficiency clocked in NO2 reduced (card registered WARN only)"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "stage 2 closed: precut exit 0 (51 checks); the ask devices re-sited so no filed sentence points at them (section 5 files only the 45 minutes of station air; the spare's hours under MAG; six loggers at 0 degrees C); database at one decimal, archive at two; ASK_SEED 32"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "stage 3 closed: checks 342 passed, verify 0 failures, two byte-identical builds (target.zip 7a32469d), figures_check 72 of 72, precut 51 of 51, leak.py REVIEW (four lines harmless), guard heart WARN, surface clean but for a station name read as a persona; stage 4 started"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "architecture 2 spent at stage 4: readers A and B both landed the seven (score_reader exit 1, asks 4 of 48 each); judge thread refused Bash by the auto-mode classifier"
   }
- ]
+ ],
+ "readers": {
+  "A": {
+   "call": "landed",
+   "asks": "4 of 48"
+  },
+  "B": {
+   "call": "landed",
+   "asks": "4 of 48"
+  }
+ }
 }

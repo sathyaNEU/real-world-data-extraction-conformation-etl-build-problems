@@ -6,13 +6,13 @@
   "domain": "physical-environmental-sciences",
   "subdomain": "sensor-calibration-measurement",
   "client_domain": "physical-environmental-sciences",
-  "niche": "the January 2028 converter round of a Po valley provincial air quality network's chemiluminescence NOx analyzers: which analyzers' molybdenum converters are changed at the regional laboratory's bench ahead of their scheduled 2028 service, the converters losing efficiency with the NO2 they reduce along a curve that steepens near exhaustion, with the valley's winter load still to come",
+  "niche": "the January 2028 converter bench of a lower Po valley air quality agency's chemiluminescence NOx analyzers: which station analyzers' molybdenum converters are changed at the regional laboratory's bench ahead of their scheduled 2028 service, the converters losing efficiency with the NO2 they reduce along a curve that steepens near exhaustion",
   "objective": "data-quality-monitoring",
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Book 7 of the 16 station analyzers on the 17 to 21 January 2028 converter bench: BP01, BP02, BP03, BP04, BP05, BP08, BP13; the other 9 stay to their scheduled service.",
+  "answer_source": "submission.md block 1",
   "gap": [
     "time",
     "population"
@@ -33,34 +33,36 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every titration check, the service log and the plan's 95 per cent rule fits each converter's efficiency against its time since installation, on its own checks or pooled across the network, carries it to the analyzer's scheduled 2028 service and books the analyzers that cross 95 per cent before then; the converters wear with the NO2 they reduce and steepen near exhaustion, and the months still to run carry the valley's winter load, so the list it books is the wrong one.",
+  "analyst_test": "A strong analyst who reads every titration, the service log, the plan and section 7's 95 per cent rule pools every converter's checks against its age since the change and carries each converter to its 2028 service on that curve, booking BP08 alone (or extrapolates each converter's own checks in time and books BP02 and BP04); the converters wear with the NO2 they reduce along a curve that steepens near exhaustion, and the months still to run carry each station's own load, so seven go: BP01, BP02, BP03, BP04, BP05, BP08, BP13.",
   "domain_test": "A chemiluminescence analyzer sees NO2 only through its molybdenum converter, whose efficiency the field checks by gas-phase titration and whose life is spent in the NO2 it reduces, so the deciding quantity is each converter's efficiency at its service date read on the NO2 it will have converted by then; with a hospital's or a call centre's nouns there is no converter, no titration and no pollutant load for the wear to run on.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:converter-life-in-no2-converted",
   "layer1": [
-    "the network's hourly NO, NO2 and NOx export 2025 to 2027, semicolon separated with decimal commas and Italian headers, stamped in solar time all year by the data system, with re-sent days repeated",
-    "NO2 in the export in micrograms per cubic metre at 20 degrees, the titration checks in ppb",
-    "the titration checks kept by two calibration contractors in two layouts, the efficiency as a percentage in one and a fraction in the other",
-    "the service log mixing converter changes with ozone generator, pump, filter and lamp work, and analyzers swapped for store spares during repairs",
-    "data-system status codes on invalid hours"
+    "the analyzers' own hourly archive in UTC, downloaded at each quarterly round and at the year's close, the days before each download repeated",
+    "two calibration contractors' titration sheets in two formats (a workbook with station names and percentages, a CSV with codes, raw NO and NOx readings and a fraction), both in Italian civil time",
+    "the service log mixing converter changes, repairs, analyzer swaps with the store spare and logger work",
+    "the 2028 maintenance plan with one station's 2027 service put back to February",
+    "the network's validated NO2 database in solar time, semicolon separated with decimal commas, validation codes and re-sent days",
+    "the store spare's hours filed in the database under the store's code",
+    "six new data loggers left at their factory reference conditions until a December visit"
   ],
   "stakeholder_role": "the head of the network's instrumentation, who books the analyzers whose converters go to the regional laboratory's January bench",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "nox_orari_2025-2027.csv",
-    "rows": 0,
-    "entity": "one station-hour of NO, NO2 and NOx from the network's analyzer with its status code",
-    "grain": "station x hour",
+    "file": "archivio_analizzatori_NOx_2024-2027.csv",
+    "rows": 442295,
+    "entity": "one analyzer-hour of NO, NO2 and NOx from the analyzer's own memory with its status, as downloaded at each round",
+    "grain": "analyzer x hour",
     "source": "synthetic"
   },
   "forum": "operations_desk",
   "forcing_event": "purchase_order_or_contract",
   "org_family": "government_agency",
   "world": {
-    "geography": "Italy, the lower Po valley (a fictional province)",
+    "geography": "Italy, the lower Po valley (a fictional agency's area)",
     "currency": "EUR",
-    "org_type": "a provincial environment agency running the province's air quality network",
+    "org_type": "a lower Po valley air quality agency running the area's monitoring network",
     "invented_names": [],
     "people": [
       "Livia Saracino",
@@ -69,14 +71,14 @@
     ]
   },
   "deliverables": [
-    "turno_convertitori_gennaio_2028.xlsx",
-    "efficienza_convertitori_2028.png"
+    "turno_banco_convertitori_2028.xlsx",
+    "rendimento_convertitori_2028.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
   "driver_concrete": "Each analyzer's molybdenum converter efficiency on its scheduled 2028 service date, read on the network-wide curve of titration efficiency against the NO2 the converter has reduced since installation (the hourly record summed from the service log's installation hour), which steepens near exhaustion, at the NO2 reduced so far plus the station's 2025 to 2027 mean over the days to that date; the converters below 95 per cent on that date go to the January round.",
-  "stump": "A competent solver fits each converter's titration efficiency against its time since installation, on its own checks or pooled across the network, and books the analyzers that cross 95 per cent before their scheduled 2028 service; the converters wear with the NO2 they reduce, steepening near exhaustion, and the months still to run carry the valley's winter load, so it books converters the summer will spare and misses those the winter will finish.",
+  "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service.",
   "lineage": [
     {
       "architecture": "v1",
@@ -97,14 +99,14 @@
       "fate": "spent 2026-10-20 at stage 4: both scored readers landed the four analyzers (an exponential loss from the certificate date fitted on the 31 cylinder changes, split on the certificates' passivation once the per-supplier fit left a 4.5 per cent residual); reader B kept 32 of 33 ask figures; judge pass 1 DETERMINISTIC FIX_NOW (a visit edge). The estimand's words sent both readers to the reference's truth and the change readings measured it in one division."
     }
   ],
-  "architecture_spent": null,
+  "architecture_spent": true,
   "differentiation": {
     "task148": "queue units leave when the wait outlasts their patience, censored waits estimated over every unit; here nothing is censored by leaving: a converter's titration efficiency wears with the NO2 it reduces and is read at a service date the record has not reached",
     "task241": "a sensor's error read against a reference the medium's displacement moves; here there is no outside reference: the converter's own titrated efficiency, clocked in the NO2 it reduces, decides",
     "task254": "lineage v2 cut a time-to-event distribution under lock-date truncation; here a wear curve in a constructed load is projected over the load still to come",
     "task501": "lineage v2 struck the pace from a filed walk-forward test; here no test is filed: the converters' own checks collapse on NO2 reduced and not on time, which forces the clock"
   },
-  "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, see lineage). stump_strategy forecast_method_backtest: the rate is stationary only in a constructed exposure (NO2 reduced) and the natural fit in time fails forward (strategies F6). gate_g method_or_model_selection: the decisive mechanism is the choice of the clock and curve the converters' wear runs on (forecasting with gap time and G16 is a signature spent in five builds).",
+  "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, see lineage). stump_strategy forecast_method_backtest: the rate is stationary only in a constructed exposure (NO2 reduced) and the natural fit in time fails forward (strategies F6). gate_g method_or_model_selection: the decisive mechanism is the choice of the clock and curve the converters' wear runs on (forecasting with gap time and G16 is a signature spent in five builds). Architecture 2 spent 10-20 at stage 4: both scored readers landed the call through the converter's accumulated NO2 (the field's own wear model).",
   "mechanism_source": "design_note",
   "registered": "2026-10-20T19:23:07Z"
 }

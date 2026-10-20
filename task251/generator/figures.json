@@ -1,0 +1,157 @@
+{
+ "call": {
+  "bench": [
+   "BP01",
+   "BP02",
+   "BP03",
+   "BP04",
+   "BP05",
+   "BP08",
+   "BP13"
+  ],
+  "count": 7,
+  "stays": 9,
+  "verdict": {
+   "BP01": "book",
+   "BP02": "book",
+   "BP03": "book",
+   "BP04": "book",
+   "BP05": "book",
+   "BP06": "stays",
+   "BP07": "stays",
+   "BP08": "book",
+   "BP09": "stays",
+   "BP10": "stays",
+   "BP11": "stays",
+   "BP12": "stays",
+   "BP13": "book",
+   "BP14": "stays",
+   "BP15": "stays",
+   "BP16": "stays"
+  },
+  "serial": {
+   "BP01": "NX4210-1187",
+   "BP02": "NX4210-1203",
+   "BP03": "NX4210-1166",
+   "BP04": "NX4210-1219",
+   "BP05": "NX4210-1174",
+   "BP06": "NX4210-1191",
+   "BP07": "CL62-0418",
+   "BP08": "CL62-0433",
+   "BP09": "NX4210-1228",
+   "BP10": "CL62-0402",
+   "BP11": "CL62-0441",
+   "BP12": "CL62-0427",
+   "BP13": "NX4210-1235",
+   "BP14": "CL62-0450",
+   "BP15": "CL62-0395",
+   "BP16": "CL62-0459"
+  }
+ },
+ "components": {
+  "latest_check_lowest_pct": 95.2,
+  "latest_check_lowest_station": "BP01",
+  "latest_check_lowest_date": "2027-10-11",
+  "latest_checks_below_95": 0,
+  "checks_below_97": 35,
+  "separation_ppm_h": 140.0,
+  "checks_below_97_age_months": [
+   5,
+   12
+  ],
+  "bp08_service": "2028-02-15",
+  "bp08_converter_since": "2026-10-13",
+  "thresholds_pct": [
+   96.5,
+   97.5
+  ],
+  "date_days": {
+   "latest_check": 11,
+   "bp08_service": 15,
+   "bp08_since": 13
+  }
+ },
+ "steps": {
+  "titrations": 303,
+  "titrations_tecnoaria": 151,
+  "titrations_delta": 152,
+  "analyzers_titrated": 17,
+  "age_route_books": [
+   "BP08"
+  ],
+  "own_trend_books": [
+   "BP02",
+   "BP04"
+  ],
+  "threshold_pct": 95,
+  "bench_ceiling": 10,
+  "minutes_rule": 45,
+  "logger_factor": [
+   1.91,
+   2.05
+  ],
+  "standard": "UNI EN 14211",
+  "standard_number": 14211,
+  "minutes_taken": 15,
+  "spare_stint": [
+   "2027-02-08",
+   "2027-03-01"
+  ]
+ },
+ "asks": {
+  "valid_hours_2027": {
+   "BP01": 8654,
+   "BP02": 8704,
+   "BP03": 8674,
+   "BP04": 8678,
+   "BP05": 8667,
+   "BP06": 8693,
+   "BP07": 8681,
+   "BP08": 8702,
+   "BP09": 8673,
+   "BP10": 8694,
+   "BP11": 8696,
+   "BP12": 8712,
+   "BP13": 8632,
+   "BP14": 8665,
+   "BP15": 8650,
+   "BP16": 8698
+  },
+  "mean_2027_ugm3": {
+   "BP01": 55.4,
+   "BP02": 42.2,
+   "BP03": 38.7,
+   "BP04": 39.7,
+   "BP05": 39.1,
+   "BP06": 29.2,
+   "BP07": 27.7,
+   "BP08": 26.3,
+   "BP09": 26.3,
+   "BP10": 23.9,
+   "BP11": 21.9,
+   "BP12": 19.7,
+   "BP13": 37.9,
+   "BP14": 28.1,
+   "BP15": 15.7,
+   "BP16": 12.6
+  },
+  "p19_2027_ugm3": {
+   "BP01": 316,
+   "BP02": 208,
+   "BP03": 199,
+   "BP04": 221,
+   "BP05": 174,
+   "BP06": 164,
+   "BP07": 137,
+   "BP08": 143,
+   "BP09": 138,
+   "BP10": 106,
+   "BP11": 90,
+   "BP12": 79,
+   "BP13": 159,
+   "BP14": 129,
+   "BP15": 69,
+   "BP16": 49
+  }
+ }
+}
