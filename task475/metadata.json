@@ -1,0 +1,54 @@
+{
+ "task": "task475",
+ "domain": "Demographic & Social Science (income and poverty statistics from tax returns)",
+ "client_domain": "Survey Research & Official Statistics",
+ "task_type": "census-register-administrative-data-quality",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "irs_soi_zip_code_data_ty2022_extract.csv",
+  "county_zip_relationship_2023q4.xlsx"
+ ],
+ "distractor_reasons": {
+  "irs_soi_zip_code_data_ty2022_extract.csv": "the tax year 2022 statistics, kept from the 2026 allocation; the policy counts the latest year the IRS has published at the plan date, tax year 2023",
+  "county_zip_relationship_2023q4.xlsx": "the same address counts from county to ZIP code; the policy shares each ZIP code's returns among counties, which only the ZIP code to county file gives"
+ },
+ "deliverables": [
+  "corran_valley_2027_weatherization_allocation.xlsx",
+  "corran_valley_ty2023_county_credit_families.csv"
+ ],
+ "as_of": "2026-10-02",
+ "files": [
+  "county_zip_relationship_2023q4.xlsx",
+  "cvcog_grants_ledger_2024-07_2026-09.csv",
+  "cvcog_member_counties.csv",
+  "cvcog_wap_py2025_closeout_summary.pdf",
+  "cvcog_weatherization_allocation_policy_rev4.pdf",
+  "data_dictionary.txt",
+  "dor_individual_income_tax_statistics_ty2023.pdf",
+  "export_manifest.csv",
+  "irs_soi_zip_code_data_ty2022_extract.csv",
+  "irs_soi_zip_code_data_ty2023_extract.csv",
+  "wx_job_export_2026-09-30.csv",
+  "wx_job_status_history_2026-09-30.csv",
+  "wx_subgrantee_agencies.csv",
+  "zip_county_relationship_2023q4.xlsx"
+ ],
+ "rows": {
+  "wx_subgrantee_agencies.csv": 5,
+  "wx_job_status_history_2026-09-30.csv": 29231,
+  "irs_soi_zip_code_data_ty2022_extract.csv": 3756,
+  "irs_soi_zip_code_data_ty2023_extract.csv": 3756,
+  "wx_job_export_2026-09-30.csv": 3866,
+  "cvcog_grants_ledger_2024-07_2026-09.csv": 16543,
+  "export_manifest.csv": 13,
+  "cvcog_member_counties.csv": 14,
+  "zip_county_relationship_2023q4.xlsx": 707,
+  "county_zip_relationship_2023q4.xlsx": 707
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task475/generator); the council, its counties, agencies, people, ZIP codes and records are fictional",
+  "public_specifications": "the IRS Statistics of Income individual ZIP code data layout and field names (N1, A00100, N59660, A59660, AGI_STUB) and the earned income credit parameters for tax years 2022 and 2023 (Rev. Proc. 2021-45 and 2022-38), U.S. government works in the public domain",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-10-02"
+ }
+}

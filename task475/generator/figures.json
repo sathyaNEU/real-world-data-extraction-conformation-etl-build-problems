@@ -1,0 +1,141 @@
+{
+ "call": {
+  "capped": "none",
+  "largest_share_pct": 11.46,
+  "largest_allocation": 2292000
+ },
+ "components": {
+  "largest_county": "Tallis",
+  "allocations": {
+   "Tallis": 2292000,
+   "Hesketh": 1350600,
+   "Brenmoor": 1916400,
+   "Quarrow": 1006100,
+   "Varden": 1537700,
+   "Fennick": 1934200,
+   "Kerrow": 995800,
+   "Stanwick": 1414400,
+   "Wexley": 1748100,
+   "Hollin": 1169400,
+   "Esker": 843400,
+   "Ardley": 1777700,
+   "Silbury": 1082500,
+   "Ravell": 931600
+  },
+  "shares_pct": {
+   "Tallis": 11.46,
+   "Hesketh": 6.75,
+   "Brenmoor": 9.58,
+   "Quarrow": 5.03,
+   "Varden": 7.69,
+   "Fennick": 9.67,
+   "Kerrow": 4.98,
+   "Stanwick": 7.07,
+   "Wexley": 8.74,
+   "Hollin": 5.85,
+   "Esker": 4.22,
+   "Ardley": 8.89,
+   "Silbury": 5.41,
+   "Ravell": 4.66
+  },
+  "families": {
+   "Tallis": 6270.1,
+   "Hesketh": 3694.8,
+   "Brenmoor": 5242.6,
+   "Quarrow": 2752.4,
+   "Varden": 4206.5,
+   "Fennick": 5291.3,
+   "Kerrow": 2724.1,
+   "Stanwick": 3869.3,
+   "Wexley": 4782.2,
+   "Hollin": 3199.1,
+   "Esker": 2307.2,
+   "Ardley": 4863.2,
+   "Silbury": 2961.3,
+   "Ravell": 2548.6
+  },
+  "credit_returns_all": {
+   "Tallis": 14352.1,
+   "Hesketh": 5483.0,
+   "Brenmoor": 7900.4,
+   "Quarrow": 4193.5,
+   "Varden": 6135.4,
+   "Fennick": 8244.4,
+   "Kerrow": 3646.2,
+   "Stanwick": 5953.0,
+   "Wexley": 6836.3,
+   "Hollin": 4995.2,
+   "Esker": 3235.2,
+   "Ardley": 7367.5,
+   "Silbury": 4610.6,
+   "Ravell": 3823.7
+  },
+  "total_families": 54712.6,
+  "allocations_total": 19999900,
+  "fund": 20000000
+ },
+ "a_dwellings": {
+  "Tallis": 352,
+  "Hesketh": 113,
+  "Brenmoor": 135,
+  "Quarrow": 81,
+  "Varden": 200,
+  "Fennick": 212,
+  "Kerrow": 57,
+  "Stanwick": 114,
+  "Wexley": 129,
+  "Hollin": 131,
+  "Esker": 78,
+  "Ardley": 176,
+  "Silbury": 180,
+  "Ravell": 51
+ },
+ "b_spending": {
+  "Tallis": 1653025,
+  "Hesketh": 591270,
+  "Brenmoor": 915332,
+  "Quarrow": 590212,
+  "Varden": 1036943,
+  "Fennick": 1061199,
+  "Kerrow": 377202,
+  "Stanwick": 672024,
+  "Wexley": 686082,
+  "Hollin": 745436,
+  "Esker": 448447,
+  "Ardley": 1021267,
+  "Silbury": 785088,
+  "Ravell": 308925
+ },
+ "ask_totals": {
+  "dwellings": 2009,
+  "spending": 10892453
+ },
+ "averages": {
+  "childless": 394.88,
+  "with_children": 4723.49
+ },
+ "rivals": {
+  "statewide_share_largest_pct": 15.46,
+  "every_credit_return_largest_pct": 16.54
+ },
+ "inputs": {
+  "tax_year": 2023,
+  "cap_pct": 12,
+  "cap_dollars": 2400000,
+  "program_year": 2025,
+  "relationship_quarter": "2023 Q4",
+  "lines_for_no_county": [
+   "00000",
+   "99999"
+  ],
+  "policy": [
+   "3.1",
+   "4.1",
+   "4.2",
+   "5.1",
+   "5.2",
+   "5.3",
+   "6.1"
+  ]
+ }
+}
