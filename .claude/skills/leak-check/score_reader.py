@@ -174,6 +174,20 @@ def main(argv):
     if unknown:
         print("not in figures.json, scored as nothing: %s" % ", ".join(sorted(unknown)))
         print()
+    # A key named for a set ("plants_over_amber") reads equally as that set or as its size, and a reader
+    # that answers the size scores a clean miss on a call it may have landed. One build's reader filed 1
+    # and 2 against goldens of one plant and two quarters and named all three in its prose, so the scorer
+    # reported the call missed on a build where it held. Flag the shape; the reader's own words decide it.
+    counted = [(key, g, r) for kind, key, g, r, hit in rows
+               if not hit and isinstance(g, (list, tuple)) and isinstance(r, (int, float))
+               and not isinstance(r, bool) and float(r) == len(g)]
+    if counted:
+        print("READ AS A COUNT, so these misses are not sound: the reader answered the size of a set where")
+        print("the golden holds its members, and the size is right. Read the reader's prose before scoring")
+        print("the call, and rename the key or ask for the members next time.")
+        for key, g, r in counted:
+            print("     %-34s golden %-30s reader %s" % (key, json.dumps(g)[:30], json.dumps(r)))
+        print()
 
     print("call figures   %d of %d hit" % (call_hit, len(call)))
     if inputs:

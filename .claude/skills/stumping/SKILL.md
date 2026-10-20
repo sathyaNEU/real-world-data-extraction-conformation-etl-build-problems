@@ -810,6 +810,25 @@ clause has a named route to the golden before a world is drawn, and the five clo
 exactly that. **State the one-group-by route to the call, in one line, before the first harness**: the five
 passes that measured it found it on the second measurement, never the tenth.
 
+**Run step two as algebra before you run it as a correlation, and it answers with certainty.** Write the
+construction as a function of the forcing file's own column and ask whether it is affine in it. If it is,
+that column plus one regression **is** the decisive step, and no amount of Layer 1 between the files
+changes it, because mess delays a join and does not break an identity. Measured on a blend-unmixing draw
+whose graded quantity was a mixture by construction, so affine in the published mixing share: one
+regression on that column reached mean absolute error **0.0026** against the designed estimator's
+**0.0028**, which is to say the one-liner was marginally the better estimator, at corr **+0.9582** with an
+identical verdict in **20 of 20** worlds. This is the one-number screen's sibling for a per-unit input: the
+input being per unit clears screen 1, and being affine in it kills the draw anyway. One computation, before
+any world is drawn.
+
+**A documented transformation of the recorded values cannot carry a silent rung.** Where the decisive step
+inverts a transformation the record has already applied (a per-window maximum, a per-group median, a
+decimating filter, a rounded or banded publication), the draw is caught in a pincer with no third side:
+either the pack documents the transformation, and that sentence is readability test 1 sending the solver
+straight to the inversion, or the pack does not, and the step is unidentifiable because nothing in a
+record of maxima measures that it is a record of maxima. So **the forcing file must pin a structure, an
+order, an opportunity count, a condition, never a transformation of the values**.
+
 **The mandated-indicator law, which tells you where the proxy screen fires before you look.** Step two's
 one-column precis is usually an accident of a file, and on some ground it is required output. Where the
 deciding organisation is obliged to publish a quality indicator for the very process whose record you are
