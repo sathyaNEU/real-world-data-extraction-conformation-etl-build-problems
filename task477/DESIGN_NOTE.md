@@ -119,8 +119,8 @@ Lesson: a series booked when money moves rather than when value is created carri
 
 Built figures, read from the cut pack by `generator/checks.py` (growth in pay per job, 2021 to 2025, per cent).
 
-- **R0, wages per job as recorded (51, 52, 48-49, 62; next 54).** Transportation and warehousing 20.3 and Health care
-  19.7 pass Professional services 19.2 and Construction 18.8. Dies to guidelines 2.2 with the layout's definition:
+- **R0, wages per job as recorded (51, 52, 48-49, 62; next 54).** Transportation and warehousing 19.8 and Health care
+  19.7 pass Professional services 19.2 and Construction 18.9. Dies to guidelines 2.2 with the layout's definition:
   wages are counted when paid.
 - **R1, one assumed mix (51, 52, 48-49, 62).** A uniform correction moves every industry alike and leaves the order.
   Dies to the record: the industries' 2025 fourth quarters jump by different amounts.
@@ -128,10 +128,11 @@ Built figures, read from the cut pack by `generator/checks.py` (growth in pay pe
   both years; the county total spreads the Thursday payrolls over every industry. Dies to the record's fit.
 - **R3, exposures fitted without the holiday rule (51, 52, 23, 48-49).** Counting 1 January 2026 in 2026 leaves 2025
   normal and misfits every 27-date year. Dies to the fit (SF5).
-- **G, the decisive move (51 21.9, 52 21.1, 54 19.2, 23 18.9; next 31-33 18.2).** Each industry's exposure fitted
-  on its own 52 quarters; Health care falls to 17.7 and Transportation and warehousing to 17.9. The truth (pay for
+- **G, the decisive move (51 21.9, 52 21.1, 54 19.2, 23 19.0; next 31-33 18.3).** Each industry's exposure fitted
+  on its own 52 quarters; Health care falls to 17.3 and Transportation and warehousing to 17.2. The truth (pay for
   the work done, generator only) names the same four and the same fifth.
-- **Margins (cut pack):** the golden's fourth over fifth by 0.70 points; the paid route's fourth over fifth by 0.52;
+- **Margins (cut pack):** the golden's fourth over fifth by 0.70 points and fifth over sixth by 1.00 (widened after the
+  judge found the next in line 0.3 clear and flipped by a shrunk estimator); the paid route's fourth over fifth by 0.47;
   the golden family (year or trend effects, logs or levels, wages or wages per job, 2016 on, without 2020) names one
   slate and prints every growth at the same whole percent, the nearest edge 0.14 against a largest spread of 0.26.
 - **Position, separation and dominance:** a top-four pick; R0, R1 and R2 name one wrong slate, R3 another, G the
@@ -153,7 +154,7 @@ Built figures, read from the cut pack by `generator/checks.py` (growth in pay pe
 | 8 | Window length | two calendar years |
 | 9 | Boundary inclusivity | 1,000 jobs or more (SF3) |
 | 10 | Rounding path | the ranking on unrounded growth; growth printed whole (SF6) |
-| 11 | Tie-break | none needed: the fourth over the fifth by 0.70 points |
+| 11 | Tie-break | none needed: the fourth over the fifth by 0.70 points, the fifth over the sixth by 1.00 |
 | 12 | Maturity and censoring | 2025 complete in the annual release |
 | 13 | Order of operations | exposures, the paid-to-earned ratio, pay per job, growth, the ranking |
 | 14 | Row order | no dependence |
@@ -189,27 +190,30 @@ wage is on the paid basis and ranks nothing the Fund uses, and no earlier slate,
 - **Ask A, each eligible industry's 2025 exiters employed in the second quarter after exit: 15 figures.** H18 home:
   guidelines 3.2, the application reports it for every eligible industry; a measure every industry carries that the
   slate does not turn on. Path: the exits, the wage-record match return, the employer accounts, the PEO client
-  registrations, the manual: five files, eleven columns. Primary device: D7, the true key elsewhere. A business that
-  leases its staff through a professional employer organization is reported under the PEO's account, which the
-  employer file codes to NAICS 561330, so the exiter lands in Administrative and support; only the return's
-  rptg_unit against the registrations' client_seq finds the client business and its industry. Hazards (filed, the
-  battery executes them): co-enrolled exits, repeat exits (the last counts), two employers in the quarter (the most
-  pay), zero-wage rows.
+  registrations, the manual: five files, twelve columns. Primary device (re-sited after stage 4 readers 1 and 2, which
+  mapped the PEO rows and kept all 15): D1, the same records under two key schemes. A returning customer registered
+  again carries two participant IDs, both with 2025 exits, and the match return answers each ID with the same wage
+  records, so counting participant IDs counts the person twice; only the exits' birth date and home ZIP code with
+  identical wage histories find the pairs, and five pairs of different people share a birth date and ZIP code, so
+  merging on those two alone over-merges. Hazards (filed, the battery executes them): PEO-reported rows mapped to the
+  client, co-enrolled exits, repeat exits (the last counts), two employers in the quarter (the most pay).
 - **Ask B, each eligible industry's 2025 ITA payments: 15 figures.** H18 home: guidelines 3.3. Path: the check
-  register, the voucher ledger, the training provider list, the guidelines: four files, nine columns. Primary device:
-  D6, a ledger at another grain than its name: the fiscal agent pays each provider one check per run covering every
-  installment due since the last run, and the ledger carries the voucher's whole amount on each installment line, so
-  summing the lines, taking each voucher once or splitting a check in proportion to the voucher amounts all miss;
-  only voucher_amount over of_installments per line (the last taking the cents left) ties each check exactly.
-  Hazards: voided and reissued checks, 2024 checks absent from the register.
+  register, the voucher ledger, the training provider list, the guidelines: four files, ten columns. Primary device
+  (re-sited after readers 1 and 2, which split each check by installment and kept all 15): D7, codes reissued to
+  other entities. When a program is withdrawn the state reissues its program ID to the next program it approves, in
+  another industry, and lists the withdrawn program under an archive ID; joining the ledger's program_id to the
+  provider list puts the withdrawn program's 2025 payments in the new program's industry, and dropping withdrawn
+  programs loses them; only the ledger's description (the program's title) matched to the list's record of that
+  program, active or withdrawn, places them. Hazards: batch checks covering several installments (voucher_amount over
+  of_installments ties each check), voided and reissued checks, 2024 checks absent from the register.
 - **The construction layer:** the slate, the next in line, every industry's growth; the cracker has them.
 - **Main population zero-counts (asserted):** the call reads no exit, wage-record, employer, PEO, ledger, check or
   provider row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, exiters employed by industry | each exiter once at the last exit, the second quarter after it, the business paying most, its NAICS from the employer file; PEO-reported rows land in sector 56 and leave their client industries short, so every industry's count falls outside its bin | miss |
-| B, ITA payments by industry | the 2025 checks net of voids, each split over its ledger lines in proportion to their voucher amounts; installment counts differ within a check, so every industry's total falls outside its bin | miss |
+| A, exiters employed by industry | each participant ID once at its last exit, PEO rows mapped to the client, the business paying most; the duplicate registrations count twice, so every industry's count falls outside its bin | miss |
+| B, ITA payments by industry | the 2025 checks net of voids, each line at voucher_amount over of_installments, the industry by program_id; the reissued IDs put the withdrawn programs' payments in the wrong industries, so every industry's total falls outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
 - Pair ceiling: 32.6 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
@@ -225,3 +229,7 @@ wage is on the paid basis and ranks nothing the Fund uses, and no earlier slate,
   the levels by up to $245, so the deliverable became one row per industry with growth at a whole percent.
 - Ask B as checks paid one per installment: dropped before the pack was cut, guidelines 3.3 points straight at the
   register and the check amount answers it; the fiscal agent's batch runs moved the device onto the ledger's grain.
+- Ask devices of the first cut (PEO-reported wages, batch checks over installment lines): measured at stage 4 by two
+  isolated readers who both kept 30 of 30 ask figures (score_reader exit 1 on asks, the call missed by both); each was
+  a visible crosswalk or a column pair that invites the split, so both became hazards and the primaries moved to the
+  duplicate registrations and the reissued program IDs.

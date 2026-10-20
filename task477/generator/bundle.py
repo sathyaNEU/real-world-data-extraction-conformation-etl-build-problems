@@ -54,20 +54,40 @@ def _qafter(d, n):
     return y, q
 
 
-def ask_a(target, peo=True, last_exit=True, most_pay=True):
+def ask_a(target, peo=True, last_exit=True, most_pay=True, merge=True):
     """Each industry's 2025 exiters working in it in the second quarter after exit."""
     emp = {r["ui_acct"]: r for r in _rows(find(target, "ui_employer_accounts"))}
     client = {}
     for r in _rows(find(target, "peo_client_registrations")):
         client[(r["peo_acct"], r["client_seq"])] = r["client_ui_acct"]
-    last = {}
+    last, who = {}, {}
     for r in _rows(find(target, "wioa_exits")):
         d = dt.datetime.strptime(r["exit_date"], "%m/%d/%Y").date()
         p = r["participant_id"]
         last[p] = max(last.get(p, d), d) if last_exit else min(last.get(p, d), d)
+        who[p] = (r["birth_date"], r["home_zip"])
+    # one person under two participant IDs: the same birth date and ZIP code and the same wage records
+    sig = {}
+    for r in _rows(find(target, "ui_wage_match_return")):
+        sig.setdefault(r["participant_id"], []).append((r["ui_acct"], r["rptg_unit"], r["wage_yr"], r["wage_qtr"],
+                                                         r["wages"]))
+    alias = {}
+    if merge:
+        seen = {}
+        for p in sorted(last):
+            k = (who[p], tuple(sorted(sig.get(p, []))))
+            if not k[1]:
+                continue
+            if k in seen:
+                alias[p] = seen[k]
+                last[seen[k]] = max(last[seen[k]], last[p])
+            else:
+                seen[k] = p
     pay = {}
     for r in _rows(find(target, "ui_wage_match_return")):
         p = r["participant_id"]
+        if p in alias:
+            continue
         if p not in last or (int(r["wage_yr"]), int(r["wage_qtr"])) != _qafter(last[p], 2):
             continue
         w = float(r["wages"])
@@ -90,54 +110,48 @@ def ask_a(target, peo=True, last_exit=True, most_pay=True):
 
 
 def ask_b(target, route="checks"):
-    """Each industry's 2025 individual training account payments: the checks issued in 2025 and not voided."""
+    """Each industry's 2025 individual training account payments: the checks issued in 2025 and not voided, each
+    line's installment assigned to the industry of the program the line paid for (its title in the ledger, matched
+    to the provider list's record of that program, active or withdrawn)."""
     from openpyxl import load_workbook
     wb = load_workbook(find(target, "etpl_programs"), read_only=True)
     ws = wb[wb.sheetnames[0]]
-    hdr, sec = None, {}
+    hdr, sec, title = None, {}, {}
     for row in ws.iter_rows(values_only=True):
         if hdr is None:
             if row and row[0] == "Program ID":
                 hdr = list(row)
             continue
         if row[0]:
-            sec[row[0]] = str(row[hdr.index("Target Industry (NAICS)")]).split()[0]
+            s_ = str(row[hdr.index("Target Industry (NAICS)")]).split()[0]
+            sec[row[0]] = s_
+            title[row[hdr.index("Program")]] = s_
     led = _rows(find(target, "ita_voucher_ledger"))
     reg = {r["check_no"]: r for r in _rows(find(target, "fiscal_agent_check_register"))}
     paid = {c for c, r in reg.items() if r["status"] != "VOID" and r["issue_date"].startswith("2025")}
-    out = {}
     lines = [l for l in led if l["check_no"] in paid]
-    if route == "checks":
-        # each line's installment: the voucher amount over its installments, the last taking the cents left over
+
+    def ind(l):
+        if route in ("checks",):
+            return title[l["description"].split(" - ", 1)[1]]
+        return sec[l["program_id"]]
+
+    def part(l):
+        amt, n, i = float(l["voucher_amount"]), int(l["of_installments"]), int(l["installment"])
+        return round(amt / n, 2) if i < n else round(amt - (n - 1) * round(amt / n, 2), 2)
+    out = {}
+    if route in ("checks", "id"):
         for l in lines:
-            amt, n, i = float(l["voucher_amount"]), int(l["of_installments"]), int(l["installment"])
-            part = round(amt / n, 2) if i < n else round(amt - (n - 1) * round(amt / n, 2), 2)
-            s_ = sec[l["program_id"]]
-            out[s_] = out.get(s_, 0) + part
+            out[ind(l)] = out.get(ind(l), 0) + part(l)
     elif route == "lines":
         for l in lines:
-            out[sec[l["program_id"]]] = out.get(sec[l["program_id"]], 0) + float(l["voucher_amount"])
-    elif route == "vouchers":
-        seen = set()
-        for l in lines:
-            if l["voucher_no"] not in seen:
-                seen.add(l["voucher_no"])
-                out[sec[l["program_id"]]] = out.get(sec[l["program_id"]], 0) + float(l["voucher_amount"])
+            out[ind(l)] = out.get(ind(l), 0) + float(l["voucher_amount"])
     elif route == "share":
-        # each check split over its lines in proportion to their voucher amounts
         by = {}
         for l in lines:
             by.setdefault(l["check_no"], []).append(l)
         for c, ls in by.items():
             tot = sum(float(l["voucher_amount"]) for l in ls)
             for l in ls:
-                v = float(reg[c]["amount"]) * float(l["voucher_amount"]) / tot
-                out[sec[l["program_id"]]] = out.get(sec[l["program_id"]], 0) + v
-    elif route == "first":
-        by = {}
-        for l in lines:
-            by.setdefault(l["check_no"], []).append(l)
-        for c, ls in by.items():
-            s_ = sec[ls[0]["program_id"]]
-            out[s_] = out.get(s_, 0) + float(reg[c]["amount"])
+                out[ind(l)] = out.get(ind(l), 0) + float(reg[c]["amount"]) * float(l["voucher_amount"]) / tot
     return out

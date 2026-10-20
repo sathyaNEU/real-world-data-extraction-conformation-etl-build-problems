@@ -193,8 +193,45 @@ def build(rng):
                 else:
                     acct, u = e["acct"], "000"
                 wage_rows.append(dict(pid=p["pid"], acct=acct, unit=u, y=y, q=q, wages=round(w, 2)))
-            if p["employer"] is not None and rng.random() < .015:
-                wage_rows.append(dict(pid=p["pid"], acct=p["employer"]["acct"], unit="000", y=y, q=q, wages=0.0))
+
+    # duplicate registrations: a returning customer registered again under a new participant ID; both IDs carry
+    # enrollments and the state's match return answers each ID it was sent with the same wage records
+    r2 = np.random.default_rng(W.SEED + 2000)
+    for p in persons:
+        p["dob"] = dt.date(1958, 1, 1) + dt.timedelta(int(r2.integers(0, 16000)))
+        p["zip"] = "%05d" % int(r2.choice([52101, 52103, 52104, 52107, 52110, 52112, 52115, 52118, 52120]))
+    by = {}
+    for p in persons:
+        if p["employer"] is not None and p["employer"]["sec"] in ELIG:
+            by.setdefault(p["employer"]["sec"], []).append(p)
+    dups = []
+    for sec in ELIG:
+        ps = by.get(sec, [])
+        for k in r2.choice(len(ps), size=min(2, len(ps)), replace=False):
+            dups.append(ps[int(k)])
+    rest = [p for p in persons if p not in dups]
+    for k in r2.choice(len(rest), size=14, replace=False):
+        dups.append(rest[int(k)])
+    first_prog = {}
+    for e in exits:
+        first_prog.setdefault(e["pid"], e["program"])
+    for i, p in enumerate(dups):
+        pid2 = "TV%07d" % (3192000 + i * 13 + int(r2.integers(0, 13)))
+        p["dup"] = pid2
+        exits.append(dict(enroll="E%06d" % (len(exits) * 3 + 17 + int(r2.integers(0, 3))), pid=pid2,
+                          program=first_prog[p["pid"]], exit_date=p["last"], dob=p["dob"], zip=p["zip"]))
+        for r in [r for r in wage_rows if r["pid"] == p["pid"]]:
+            wage_rows.append(dict(r, pid=pid2))
+    # different people who share a birth date and home ZIP code
+    emp_p = [p for p in persons if p["employer"] is not None and "dup" not in p]
+    for k in range(5):
+        a_, b_ = emp_p[int(r2.integers(0, len(emp_p)))], emp_p[int(r2.integers(0, len(emp_p)))]
+        if a_ is not b_:
+            b_["dob"], b_["zip"] = a_["dob"], a_["zip"]
+    for e in exits:
+        if "dob" not in e:
+            pp = next(p for p in persons if p["pid"] == e["pid"])
+            e["dob"], e["zip"] = pp["dob"], pp["zip"]
 
     # training: the provider list and the individual training accounts
     programs = []
@@ -248,5 +285,35 @@ def build(rng):
             register.append(dict(check=str(chk), payee=prov, issue=issue, amount=amount, status="ISSUED", void=None))
             for l in lines:
                 l["check"] = str(chk)
+    # program IDs reissued: a withdrawn program's ID goes to the next program the state approves; the withdrawn
+    # record keeps its listing under a new archive ID, and the ledger line carries the program's title
+    r3 = np.random.default_rng(W.SEED + 3000)
+    for p in programs:
+        p["status"], p["withdrawn"] = "Active", None
+    for l in ledger:
+        l["desc"] = "ITA tuition - " + next(p["name"] for p in programs if p["program_id"] == l["prog"])
+    paid25 = {}
+    for l in ledger:
+        if l["check"] and any(r["check"] == l["check"] and r["issue"].year == 2025 and r["status"] != "VOID"
+                              for r in register):
+            paid25[l["prog"]] = paid25.get(l["prog"], 0) + l["part"]
+    arch = 9100
+    new_programs = []
+    for i, sec in enumerate(ELIG):
+        nxt = ELIG[(i + 1) % len(ELIG)]
+        cands = sorted([p for p in programs if p["sec"] == sec and p["program_id"] in paid25],
+                       key=lambda p: -paid25[p["program_id"]])
+        old = cands[0]
+        old_id = old["program_id"]
+        arch += int(r3.integers(3, 30))
+        old["program_id"] = "P%05d" % arch
+        old["status"], old["withdrawn"] = "Withdrawn", dt.date(2025, 12, 1) + dt.timedelta(int(r3.integers(5, 60)))
+        cat = CATALOG[nxt][(len(CATALOG[nxt]) - 1 + i) % len(CATALOG[nxt])]
+        new_programs.append(dict(program_id=old_id, sec=nxt, j=9, name=cat[0], cip=cat[1],
+                                 provider=PROVIDERS[nxt][i % len(PROVIDERS[nxt])],
+                                 approved=old["withdrawn"] + dt.timedelta(int(r3.integers(20, 90))),
+                                 status="Active", withdrawn=None))
+    programs += new_programs
+
     return dict(emps=emps, byacct=byacct, peo_regs=peo_regs, exits=exits, persons=persons, wage_rows=wage_rows,
                 programs=programs, vouchers=vouchers, ledger=ledger, register=register)

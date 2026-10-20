@@ -87,6 +87,8 @@ def main(target, gdir, x):
     o = sorted(g, key=lambda s: -g[s])
     gap = 100 * (g[o[3]] - g[o[4]])
     check("margin: the golden's fourth over fifth by %.2f points (0.5 or more)" % gap, gap >= .5)
+    gap56 = 100 * (g[o[4]] - g[o[5]])
+    check("margin: the golden's fifth (next in line) over sixth by %.2f points (0.5 or more)" % gap56, gap56 >= .5)
     p = R["paid"]
     po = sorted(p, key=lambda s: -p[s])
     check("margin: the paid route's fourth over fifth by %.2f points (0.4 or more)" % (100 * (p[po[3]] - p[po[4]])),
@@ -193,10 +195,13 @@ def main(target, gdir, x):
     a, a_nopeo = B.ask_a(target), B.ask_a(target, peo=False)
     el = M.eligible(rec)
     miss_a = [s for s in el if a.get(s, 0) != a_nopeo.get(s, 0)]
-    check("ask A device (PEO rows to the client's industry) moves %d of %d industries" % (len(miss_a), len(el)),
-          len(miss_a) == len(el))
+    check("ask A hazard (PEO rows to the client's industry) moves %d of %d industries" % (len(miss_a), len(el)),
+          len(miss_a) >= 10)
     b = B.ask_b(target)
-    for r in ("lines", "vouchers", "share", "first"):
+    a_nm = B.ask_a(target, merge=False)
+    mv = [s for s in el if a.get(s, 0) != a_nm.get(s, 0)]
+    check("ask A device (one person under two IDs) moves %d of %d industries" % (len(mv), len(el)), len(mv) == len(el))
+    for r in ("id", "lines", "share"):
         bb = B.ask_b(target, r)
         mv = [s for s in el if round(bb.get(s, 0)) != round(b.get(s, 0))]
         check("ask B device: the %s route misses %d of %d industries" % (r, len(mv), len(el)), len(mv) == len(el))

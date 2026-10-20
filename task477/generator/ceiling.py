@@ -20,14 +20,14 @@ def main(target=None):
     keep = len(set(gs) & set(ms)) + (gn == mn) + sum(round(100 * g[s]) == round(100 * m[s]) for s in g)
     mirror_call = W_CALL * keep / 20.0
     el = M.eligible(rec)
-    a_g, a_c = B.ask_a(target), B.ask_a(target, peo=False)
+    a_g, a_c = B.ask_a(target), B.ask_a(target, merge=False)
     b_g = B.ask_b(target)
     hit = sum(a_c.get(s, 0) == a_g.get(s, 0) for s in el)
-    for route in ("share", "lines", "vouchers"):
+    for route in ("id", "share", "lines"):
         b_c = B.ask_b(target, route)
         hit_b = sum(round(b_c.get(s, 0)) == round(b_g.get(s, 0)) for s in el)
         print("ask B under the %s route keeps %d of %d" % (route, hit_b, len(el)))
-    b_c = B.ask_b(target, "share")
+    b_c = B.ask_b(target, "id")
     hit += sum(round(b_c.get(s, 0)) == round(b_g.get(s, 0)) for s in el)
     ask = W_ASK * hit / (2.0 * len(el))
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask

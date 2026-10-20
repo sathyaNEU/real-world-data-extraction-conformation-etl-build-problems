@@ -131,8 +131,8 @@ def series(rng, fips, scale, profile):
                 continue
             w0 = wage * rel * float(np.exp(rng.normal(0, .03)))
             gg = np.log1p(g + W.ADJ.get(sec, 0.0) if fips == W.COUNTY_FIPS else g) / 4 + rng.normal(0, .0025)
-            eseas = rng.normal(0, .025, 12)
-            pseas = rng.normal(0, .012, 4)
+            eseas = rng.normal(0, .045, 12)
+            pseas = rng.normal(0, .03, 4)
             covid = {(2020, 4): -.14, (2020, 5): -.11, (2020, 6): -.07, (2020, 7): -.05, (2020, 8): -.04,
                      (2020, 9): -.03, (2020, 10): -.025, (2020, 11): -.02, (2020, 12): -.02}
             hit = abs(rng.normal(1.0, .35)) * (1.8 if sec in ("72", "71", "81", "44-45", "56") else .7)

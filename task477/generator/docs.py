@@ -214,14 +214,16 @@ def write_etpl(path, x):
     ws = wb.active
     ws.title = "Programs"
     ws.append(["Eligible Training Provider List: programs approved for Tallis Valley ITAs"])
-    ws.append(["Extract of 30 June 2026. Target industry is the industry the provider's application names."])
+    ws.append(["Extract of 30 June 2026, active and withdrawn programs. Target industry is the industry the provider's "
+               "application names."])
     ws.append([])
-    ws.append(["Program ID", "Provider", "Program", "CIP", "Target Industry (NAICS)", "Approved", "Status"])
+    ws.append(["Program ID", "Provider", "Program", "CIP", "Target Industry (NAICS)", "Approved", "Status", "Withdrawn"])
     ws["A4"].font = Font(bold=True)
     for p in sorted(x["asks"]["programs"], key=lambda p: p["program_id"]):
         ws.append([p["program_id"], p["provider"], p["name"], p["cip"], "%s %s" % (p["sec"], W.SECTORS[p["sec"]][0]),
-                   p["approved"].strftime("%Y-%m-%d"), "Active"])
-    for col, w in zip("ABCDEFG", (11, 34, 44, 9, 62, 12, 8)):
+                   p["approved"].strftime("%Y-%m-%d"), p["status"],
+                   p["withdrawn"].strftime("%Y-%m-%d") if p["withdrawn"] else None])
+    for col, w in zip("ABCDEFGH", (11, 34, 44, 9, 62, 12, 10, 12)):
         ws.column_dimensions[col].width = w
     wb.save(path)
 

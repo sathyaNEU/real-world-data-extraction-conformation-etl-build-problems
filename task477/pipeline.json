@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (no LEAK; two golden figures matched across CSV column boundaries, generic design vocabulary in three documents)",
-  "reader": "running: two scored readers (sonnet, medium) on fresh unzips"
+  "reader": "round 1 FAILED on asks: readers 1 and 2 missed the call (wages-as-paid slate) but kept 30 of 30 ask figures; devices re-sited; round 2 (readers 3 and 4) running"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (overuse.objective, overuse.shape, repeat.gate_g, overuse.gate_g, repeat.question_form); the first draft's G13 and csv+xlsx were redrawn to G3 and csv+docx",
@@ -24,10 +24,12 @@
   "heart": "WARN 2026-10-20 (overuse.gate_g, repeat.question_form); nearest task102 at 0.09"
  },
  "judge": {
-  "verdict": "running: isolated judge thread on /tmp/determinism-check-task477-1792497263 (brief from the determinism-judge agent)"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (next-in-line margin widened from 0.3 to 1.0 after it)"
  },
  "returned": [],
- "resume": "stage 4: score both readers with score_reader.py, read the judge's report, fix every finding in one generator pass, then ship",
+ "resume": "stage 4: score readers 3 and 4 (score_reader.py), then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

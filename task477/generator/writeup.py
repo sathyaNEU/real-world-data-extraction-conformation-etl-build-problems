@@ -58,15 +58,17 @@ def write(fig_path, out_path):
          "year times %d over %d, less 1), then by annual average jobs, and took 2025 over 2021 less 1 (guidelines "
          "%s): %s." % (f["base"], f["latest"], k["step"], k["days"], f["sections"]["measure"],
                        _join(["%s %s%%" % (nm[s], gr[s]) for s in f["order"]])),
-         "5. Counted each 2025 exiter in %s once, at the last exit; took wages above zero in the second quarter after "
-         "that exit from %s; mapped a row reported under a professional employer organization's account to the client "
-         "business through ui_acct and rptg_unit against %s (peo_acct, client_seq); kept the business paying the most "
-         "and its NAICS sector in %s (manual %s): %s exiters in eligible industries." % (
+         "5. Counted each 2025 exiter in %s once, at the last exit, treating two participant IDs with the same "
+         "birth_date and home_zip and identical wage records in %s as one person; took wages above zero in the second "
+         "quarter after that exit; mapped a row reported under a professional employer organization's account to the "
+         "client business through ui_acct and rptg_unit against %s (peo_acct, client_seq); kept the business paying "
+         "the most and its NAICS sector in %s (manual %s): %s exiters in eligible industries." % (
              F["exits"], F["wages"], F["peo"], F["employers"], f["sections"]["industry"],
              fmt(f["asks"]["exiters_total"])),
          "6. Took the checks in %s issued in 2025 and not voided, joined each to its lines in %s by check_no, valued "
          "each line at voucher_amount over of_installments (the last installment taking the cents left over, so a "
-         "check's lines sum to its amount), and summed by the program's target industry in %s (guidelines %s): $%s." % (
+         "check's lines sum to its amount), and assigned it to the target industry %s gives the program named in the "
+         "line's description, active or withdrawn, since a withdrawn program's ID is reissued (guidelines %s): $%s." % (
              F["register"], F["ita"], F["etpl"], f["sections"]["ita"], fmt(f["asks"]["ita_total"])),
          "7. Named the four eligible industries with the highest growth (guidelines %s) and the fifth as next in "
          "line: %s; next %s." % (f["sections"]["slate"], _join([nm[s] for s in sl]), nm[nxt]),

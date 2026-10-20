@@ -127,7 +127,7 @@ def write_memo(path, f, png):
         r[3].text = "{:,}".format(f["asks"]["exiters"][sec])
         r[4].text = "${:,}".format(f["asks"]["ita"][sec])
     doc.add_paragraph(
-        "Exiters are counted once, at their last 2025 exit, in the industry of the business that paid them most in the "
+        "Exiters are counted once, at their last 2025 exit (a customer registered twice is one exiter), in the industry of the business that paid them most in the "
         "second quarter after exit; workers leased through a professional employer organization are counted in the "
         "client business's industry. ITA payments are the fiscal agent's 2025 checks net of voids, each check's "
         "installments assigned to the industry of the program they paid for.")

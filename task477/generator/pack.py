@@ -165,13 +165,13 @@ def write_csv(path, cols, rows, crlf=False):
 
 
 # the board's and the state's records behind the asks
-EXIT_COLS = ["enrollment_id", "participant_id", "program", "exit_date", "exit_reason"]
+EXIT_COLS = ["enrollment_id", "participant_id", "program", "exit_date", "exit_reason", "birth_date", "home_zip"]
 WAGE_COLS = ["participant_id", "ui_acct", "rptg_unit", "wage_yr", "wage_qtr", "wages"]
 EMP_COLS = ["ui_acct", "legal_name", "naics", "county_fips", "status", "liability_date"]
 PEO_COLS = ["peo_acct", "peo_name", "client_seq", "client_legal_name", "client_fein", "client_ui_acct",
             "agreement_start", "agreement_end"]
-LEDGER_COLS = ["voucher_no", "participant_id", "program_id", "installment", "of_installments", "voucher_amount",
-               "due_date", "check_no"]
+LEDGER_COLS = ["voucher_no", "participant_id", "program_id", "description", "installment", "of_installments",
+               "voucher_amount", "due_date", "check_no"]
 REG_COLS = ["check_no", "payee", "issue_date", "amount", "status", "void_date"]
 
 
@@ -184,7 +184,8 @@ def exit_rows(x):
     out = []
     for i, e in enumerate(sorted(a["exits"], key=lambda e: (e["exit_date"], e["enroll"]))):
         reason = "" if i % 23 else "Entered employment"
-        out.append([e["enroll"], e["pid"], e["program"], _d(e["exit_date"], "%m/%d/%Y"), reason])
+        out.append([e["enroll"], e["pid"], e["program"], _d(e["exit_date"], "%m/%d/%Y"), reason,
+                    _d(e["dob"], "%m/%d/%Y"), e["zip"]])
     return out
 
 
@@ -214,7 +215,8 @@ def peo_rows(x):
 
 def ledger_rows(x):
     a = x["asks"]
-    return [[l["vid"], l["pid"], l["prog"], l["inst"], l["n"], "%.2f" % l["amount"], _d(l["due"]), l["check"] or ""]
+    return [[l["vid"], l["pid"], l["prog"], l["desc"], l["inst"], l["n"], "%.2f" % l["amount"], _d(l["due"]),
+             l["check"] or ""]
             for l in sorted(a["ledger"], key=lambda l: (l["vid"], l["inst"]))]
 
 
