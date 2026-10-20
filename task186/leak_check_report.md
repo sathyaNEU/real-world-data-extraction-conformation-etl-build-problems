@@ -110,3 +110,44 @@ Reader 5 (isolated, Sonnet at medium effort, on prompt.txt only), after "the cha
 4. "Stations it prices itself" stays undefined in the prompt (the ask's device, closed by the submissions' push times).
 
 Main-thread rulings: harmless throughout; nothing to fix.
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure names (not values)
+from `generator/figures.json`, and was scored by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, measured
+
+| block | hit |
+|---|---|
+| main call | **1 of 1** |
+| ask figures | **48 of 60** (80.0 per cent) |
+
+It filed the brand and the found share. It built the decisive construction itself: each station's margin
+change measured against the margin change of its own town's other stations, branded and unbranded, on a
+one-sided Welch test over the daily series with Benjamini-Hochberg at 5 per cent. It reported the naive
+reading, a margin change above zero, as flagging 195 of 369 stations and handing the call to the wrong
+brand, which is the default path stated from the inside, and it gave the per-town drifts that make the
+pooled reading wrong.
+
+**The readability screen holds on this build, as it does on one other in this batch.** Asked what sent it
+there, it said plainly that **nothing in the files states it**, that a clause's phrase "by more than it
+would have had the levy not changed" suggested a counterfactual, and that it inferred the town benchmark
+from the data, from the town-level pattern and the unbranded stations tracking their own town. So the pack
+does not teach the method. It was landed anyway, which makes this a magnitude failure: the gap between the
+pooled reading and the town benchmark was crossable by a careful reader at medium effort. The repair widens
+the separation at stage 2 rather than removing a signpost.
+
+It also found the eight reissued survey references pointing litres at unrelated stations, took the latest
+return revision, handled three mid-window brand changes and a March closure, and named three distractors.
+Its own caution is worth keeping: it flagged two of its found stations at about +0.3 cents as likely false
+discoveries under its own 5 per cent rate, and noted the share survives dropping them.
+
+```
+call figures   1 of 1 hit
+ask figures    48 of 60 hit (80.0 per cent)
+
+FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
+      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
+```
