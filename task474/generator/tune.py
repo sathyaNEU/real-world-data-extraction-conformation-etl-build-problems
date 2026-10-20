@@ -37,7 +37,8 @@ def truth_record(x):
 
 def record():
     f = S.fleet(np.random.default_rng(W.SEED))
-    return {u: truth_record(f[u]) for u in W.CC}, f
+    import bundle as B
+    return B._plant_after({u: truth_record(f[u]) for u in W.CC}), f
 
 
 def main(it):

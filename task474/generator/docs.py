@@ -81,11 +81,13 @@ def write_terms(path):
                    "calendar day, and is identified by the calendar day on which it begins.", BODY),
          Paragraph("\"Central Clock Time\" means the prevailing time in the Central time zone, adjusted for daylight "
                    "saving time.", BODY),
+         Paragraph("\"Transporter\" means the interstate pipeline that delivers Gas to a Delivery Point.", BODY),
          Paragraph("\"Delivery Point\" means the meter station serving each of Buyer's generating facilities listed "
                    "in Exhibit A.", BODY),
          Paragraph("Section 6. Price", HEAD),
-         Paragraph("6.1 The price for Gas delivered on a Gas Day is the Daily Index for that Gas Day plus the Delivery "
-                   "Point adder in Exhibit A, in dollars per dekatherm.", BODY),
+         Paragraph("6.1 The price for Gas delivered on a Gas Day is the Daily Index for that Gas Day plus the charges of "
+                   "the Transporter serving the Delivery Point, as set out for each Delivery Point in Exhibit A, in "
+                   "dollars per dekatherm.", BODY),
          Paragraph("6.2 Quantities are the metered deliveries at each Delivery Point for the Gas Day, in dekatherms.",
                    BODY),
          Paragraph("Section 9. Billing", HEAD),
@@ -131,7 +133,7 @@ def write_units(path):
            "DF-2": "2011-05-12", "DF-3": "2016-07-01", "SR-1": "2013-05-01", "SR-2": "2013-06-10",
            "AF-CT3": "1999-06-01", "AF-CT4": "1999-06-01", "SR-CT3": "2002-05-15", "HC-4": "1984-11-01"}
     for u, (plant, n, cap, *_r) in W.CC.items():
-        ws.append([u, plant, "Combined cycle (1x1)", cap, "SCR", cod[u], old[u]])
+        ws.append([u, plant, "Combined cycle (1x1)", cap, "SCR (aqueous ammonia)", cod[u], old[u]])
     for u, (plant, kind, cap) in W.OTHER.items():
         ws.append([u, plant, kind.capitalize(), cap, "Water injection" if kind == "simple cycle" else "SNCR",
                    cod[u], old[u]])

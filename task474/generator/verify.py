@@ -25,16 +25,17 @@ def main(target, golden):
        in g and "gas day the hour falls in" in g and "later report stands" in g)
     rec = B.record(target)
     call = M.designated(rec, "golden")
-    ok("the call: %s" % ", ".join(call), call == ["AF-1", "AF-2", "CB-1", "DF-1", "DF-3", "SR-1", "SR-2"])
+    ok("the call: %s" % ", ".join(call), call == ["AF-1", "AF-2", "CB-1", "CB-2", "DF-1", "DF-3", "SR-1"])
     a, b = B.ask_a(target), B.ask_b(target)
     ws = load_workbook(B.find(golden, "cc_unit_nox_inventory"), read_only=True).active
     rows = {r[0]: r for i, r in enumerate(ws.iter_rows(values_only=True)) if i >= 3 and r and r[0] in rec}
     for u in sorted(rec):
         w = rows[u]
-        ok("%s: %s, $%d, %d hours" % (u, w[2], int(a[u] + .5), b.get(u, 0)),
-           (w[2] == "Yes") == (u in call) and w[3] == int(a[u] + .5) and w[4] == b.get(u, 0))
+        c = 100 * int(a[u] / 100.0 + .5)
+        ok("%s: %s, $%d, %d hours" % (u, w[2], c, b.get(u, 0)),
+           (w[2] == "Yes") == (u in call) and w[3] == c and w[4] == b.get(u, 0))
     m = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(B.find(golden, "scr_upgrade_designations")).pages))
-    ok("the memo designates the seven", "AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2" in m)
+    ok("the memo designates the seven", "AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1" in m)
     print("verify: %d failures" % len(fails))
     return not fails
 

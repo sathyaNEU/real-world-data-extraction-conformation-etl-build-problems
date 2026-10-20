@@ -12,21 +12,22 @@ import methods as M
 import sources as S
 import world as W
 
-GOLD = ["AF-1", "AF-2", "CB-1", "DF-1", "DF-3", "SR-1", "SR-2"]
+GOLD = ["AF-1", "AF-2", "CB-1", "CB-2", "DF-1", "DF-3", "SR-1"]
+STATE = ["AF-2", "CB-1", "DF-1", "DF-3", "SR-1"]
 LOAD = ["AF-2", "CB-1", "SR-1"]
 RECORD = ["AF-2", "SR-1"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def truth_record(x):
+    import tune
     rec, true = {}, {}
     for u in W.CC:
         v = x["fleet"][u]
         m = v["on"] & S.IN_SEASON
-        rec[u] = dict(load=list(v["load"][m]), nox=[None if o else float(a) for o, a in zip(v["out"][m], v["lb"][m])],
-                      since=list(v["since"][m]))
+        rec[u] = tune.truth_record(v)
         true[u] = float(v["lb"][m].sum() / v["load"][m].sum())
-    return rec, true
+    return B._plant_after(rec), true
 
 
 def main(target, gdir, x):
@@ -54,57 +55,80 @@ def main(target, gdir, x):
     check("call: the golden designates %s" % ", ".join(sets["golden"]), sets["golden"] == GOLD)
     for r in M.FAMILY:
         check("family: %s designates the golden set" % r, sets[r] == GOLD)
-    check("ladder: the load fill (the default path) designates %s" % sets["load"], sets["load"] == LOAD)
+    for r in ("state", "interp", "air_load"):
+        check("ladder: %s designates %s" % (r, sets[r]), sets[r] == STATE)
+    check("ladder: the load fill designates %s" % sets["load"], sets["load"] == LOAD)
     for r in ("record", "share", "rate"):
         check("ladder: %s designates %s" % (r, sets[r]), sets[r] == RECORD)
-    rates = {r: {u: M.rate(rec[u], r) for u in rec} for r in M.FAMILY + ["load"]}
+    rates = {r: {u: M.rate(rec[u], r) for u in rec} for r in M.FAMILY + M.WRONG}
     near = min(abs(rates[r][u] - W.TARGET) for r in M.FAMILY for u in rec)
     check("margin: every family member's rate at least 0.009 from the target (nearest %.4f)" % near, near >= .009)
-    nl = min(abs(rates["load"][u] - W.TARGET) for u in rec)
-    check("margin: every load-fill rate at least 0.0075 from the target (nearest %.4f)" % nl, nl >= .0075)
-    # R1: the field's raw material ships, and no column holds a filled value or a start state
-    cols = set()
-    cols |= set(next(csv.reader(open(os.path.join(target, W.FILES["dahs"]), encoding="utf-8"))))
-    check("R1: no shipped column holds a fill, an estimate or a start state (%d columns)" % len(cols),
-          not any(k in c.lower() for c in cols for k in ("fill", "subst", "estimat", "since", "start", "impute")))
+    for r in ("state", "interp", "load"):
+        nl = min(abs(rates[r][u] - W.TARGET) for u in rec)
+        check("margin: every %s rate at least 0.0075 from the target (nearest %.4f)" % (r, nl), nl >= .0075)
+    # R1: the field's raw material ships, and no column holds a filled value or a control state
+    cols = set(next(csv.reader(open(os.path.join(target, W.FILES["dahs"]), encoding="utf-8"))))
+    check("R1: no shipped column holds a fill, an estimate, a start or a control state (%d columns)" % len(cols),
+          not any(k in c.lower() for c in cols for k in ("fill", "subst", "estimat", "since", "start", "impute", "scr",
+                                                           "ammonia", "air", "control")))
     # R3 on the clean truth
     trec, true = truth_record(x)
-    check("R3a: the analyst test on the clean truth (the load fill) designates %s" % M.designated(trec, "load"),
-          M.designated(trec, "load") == LOAD)
+    check("R3a: the analyst test on the clean truth (the start-state fill) designates %s" % M.designated(trec, "state"),
+          M.designated(trec, "state") == STATE)
+    check("R3a: the before-and-after average on the clean truth designates %s" % M.designated(trec, "interp"),
+          M.designated(trec, "interp") == STATE)
+    check("R3b: the decisive step alone (the air-loss hours at the uncontrolled level) on the clean truth designates "
+          "the golden", M.designated(trec, "golden") == GOLD)
     tset = sorted(u for u in true if true[u] >= W.TARGET)
     check("R3b: the true NOx (every hour known) designates %s" % tset, tset == GOLD)
     worst = max(abs(rates["golden"][u] - true[u]) for u in rec)
     check("R3b: the golden estimates every unit's true rate within 0.010 (worst %.4f)" % worst, worst < .010)
     check("R3c: no plant: every measured hour is the unit's true NOx to the export's rounding", all(
         abs(a - b) < .06 for u in rec for a, b in zip(rec[u]["nox"], trec[u]["nox"]) if a is not None))
+    check("C1: the tickets mark exactly the hours the instrument air was down (%d hours)" % sum(sum(rec[u]["air"]) for u in rec),
+          all(rec[u]["air"] == trec[u]["air"] for u in rec))
     # R2: each Layer 1 item mishandled leaves the call where it was
+    check("SF10 the tickets' local clock read as standard time (an hour late): same call",
+          M.designated(B.record(target, shift=1), "golden") == GOLD)
     rec_season_only = {}
     for u, o in rec.items():
-        s, c, prev = [], 0, None
+        s, c_, prev = [], 0, None
         for t, k in zip(o["stamps"], o["since"]):
-            c = c + 1 if prev is not None and (t - prev).total_seconds() == 3600 else 1
-            s.append(min(k, c) if c < k else k)
+            c_ = c_ + 1 if prev is not None and (t - prev).total_seconds() == 3600 else 1
+            s.append(min(k, c_))
             prev = t
         rec_season_only[u] = dict(o, since=s)
     check("SF5 hours since start counted along the year; counted from 1 May only: same call",
           M.designated(rec_season_only, "golden") == GOLD)
     check("SF1 the season in standard time (rule 2.2); a local-time season moves no designation",
-          M.designated({u: dict(o, load=o["load"][1:], nox=o["nox"][1:], since=o["since"][1:]) for u, o in rec.items()},
-                       "golden") == GOLD)
+          M.designated({u: dict(o, load=o["load"][1:], nox=o["nox"][1:], since=o["since"][1:], heat=o["heat"][1:],
+                                air=o["air"][1:], blocks=[(i0 - 1, i1 - 1, bb, aa) for i0, i1, bb, aa in o["blocks"]
+                                                          if i0 >= 1]) for u, o in rec.items()}, "golden") == GOLD)
     check("SF2 generation is GLOAD_MW summed over operating hours (OP_TIME 1.00 in every operating hour)", True)
-    check("SF10 rule 3.2's later report stands where two full outages on one unit overlap", True)
     check("SF3 at or above 0.170: no family rate within 0.009 (above)", near >= .009)
     check("SF4 the NOx emitted, not the NOx measured: the measured-only reading designates %s (rule 2.2)" %
           sets["record"], sets["record"] != GOLD)
-    check("SF6 start hours filled through hour 3 or hour 4: same call (state4 above)", sets["state4"] == GOLD)
     pooled = {}
-    for k in (1, 2, 3):
-        vals = [v for u in rec for v, s in zip(rec[u]["nox"], rec[u]["since"]) if s == k and v is not None]
-        pooled[k] = float(np.mean(vals))
-    check("SF7 each unit's own start-hour means, not the fleet's pooled ones: the pooled fill designates %s" %
-          M.designated({u: dict(rec[u], nox=[v if v is not None or not (1 <= s <= 3) else pooled[s]
-                                             for v, s in zip(rec[u]["nox"], rec[u]["since"])]) for u in rec}, "golden"),
-          True)
+    for p in W.PLANTS:
+        v = [b_[3] for u in rec if W.CC[u][0] == p for b_ in rec[u]["blocks"] if b_[3] is not None]
+        pooled[p] = float(np.mean(v)) if v else None
+    plant_set = sorted(u for u in rec if (M.fill_air(dict(rec[u], blocks=[(i0, i1, bb, pooled[W.CC[u][0]])
+                                                                         for i0, i1, bb, aa in rec[u]["blocks"]]), "golden")
+                                         / sum(rec[u]["load"])) >= W.TARGET)
+    check("SF11 the uncontrolled level from each unit's own first hours back or the plant's pooled: same call (%s)" %
+          ", ".join(plant_set), plant_set == GOLD)
+    # the air-loss hours found from the record alone: a blank run followed by a measured hour at five or more times
+    # the unit's median NOx per MMBtu
+    spike = {}
+    for u, o in rec.items():
+        med = float(np.median([n / h for n, h in zip(o["nox"], o["heat"]) if n is not None and h]))
+        spike[u] = sum(1 for b_ in o["blocks"] if b_[3] is not None and b_[3] > 5 * med) == \
+            sum(1 for b_ in o["blocks"] if b_[3] is not None)
+    check("SF12 every air-loss run measured on its return shows the uncontrolled level, and the tickets name no other "
+          "run", all(spike.values()))
+    check("SF6 start hours filled through hour 3 or hour 4: same call (g_state4 above)", sets["g_state4"] == GOLD)
+    check("SF7 each air-loss run at its own first hour back or at the unit's mean: same call (g_event above)",
+          sets["g_event"] == GOLD)
     check("SF8 the units are the register's combined-cycle units; peakers and the coal unit are outside", True)
     check("SF9 rates compared unrounded", True)
     # H25: the PDFs read through two extractors
@@ -116,17 +140,17 @@ def main(target, gdir, x):
         check("H25: %s reads in pypdf (strict) and pdftotext" % W.FILES[k], key in a1 and key in a2)
     # the asks
     a = B.ask_a(target)
-    for r in ("prev", "standard9", "calendar"):
-        c = B.ask_a(target, r)
-        mv = [u for u in rec if int(a[u] + .5) != int(c[u] + .5)]
-        check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) == len(rec))
-    half = min(abs((a[u] % 1) - .5) for u in rec)
-    check("ask A bins: no unit's cost within a cent of a half dollar (nearest %.3f)" % half, half >= .01)
+    for r in ("first", "mean", "linear", "prev", "standard9", "calendar"):
+        cc = B.ask_a(target, r)
+        mv = [u for u in rec if round(a[u] / 100) != round(cc[u] / 100)]
+        check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= 7)
+    edge = min(50 - abs(a[u] - 100 * round(a[u] / 100)) for u in rec)
+    check("ask A bins: every unit's cost at least $15 inside its hundred-dollar cell (nearest %.0f)" % edge, edge >= 15)
     b = B.ask_b(target)
-    for r in ("samestart", "sum", "union"):
+    for r, k in (("latest", 6), ("samestart", 9), ("sum", 9), ("union", 7)):
         bs = B.ask_b(target, r)
         mv = [u for u in rec if b.get(u, 0) != bs.get(u, 0)]
-        check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= (6 if r == "union" else len(rec)))
+        check("ask B device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
     check("separation: the call reads only the DAHS export and the register; the asks read the invoices and the event "
           "report", True)
     f = json.load(open(os.path.join(HERE, "figures.json")))

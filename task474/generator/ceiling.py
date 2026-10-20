@@ -1,6 +1,7 @@
 """The pair ceiling on the cut pack: the cracker lands the call and runs the battery, executing every filed rule it
-points at (ask A each hour priced at the gas day read on the DAHS clock; ask B the event hours summed); the mirror
-stops at the load-based fill. Weights 38 / 7 / 55; the main block grades each unit's verdict (9) and the set (1);
+points at (ask A each hour priced on the Central gas day, a missing invoice day rebuilt from the first other point
+with that pair's most common difference; ask B the later report kept where two full outages overlap); the mirror
+stops at the start-state fill. Weights 38 / 7 / 55; the main block grades each unit's verdict (9) and the set (1);
 the asks are 18 figures."""
 import os
 import sys
@@ -15,12 +16,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 def main(target=None):
     target = target or os.path.join(os.path.dirname(HERE), "target")
     rec = B.record(target)
-    g, m = M.designated(rec, "golden"), M.designated(rec, "load")
+    g, m = M.designated(rec, "golden"), M.designated(rec, "state")
     keep = sum((u in g) == (u in m) for u in rec) + (g == m)
     mirror_call = W_CALL * keep / (len(rec) + 1.0)
-    a_g, a_c = B.ask_a(target), B.ask_a(target, "prev")
-    b_g, b_c = B.ask_b(target), B.ask_b(target, "samestart")
-    hit = sum(int(a_g[u] + .5) == int(a_c[u] + .5) for u in rec) + sum(b_g.get(u, 0) == b_c.get(u, 0) for u in rec)
+    a_g, a_c = B.ask_a(target), B.ask_a(target, "first")
+    b_g, b_c = B.ask_b(target), B.ask_b(target, "latest")
+    hit = sum(round(a_g[u] / 100) == round(a_c[u] / 100) for u in rec) + sum(b_g.get(u, 0) == b_c.get(u, 0) for u in rec)
     ask = W_ASK * hit / (2.0 * len(rec))
     cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask
     print("golden %s; mirror %s" % (g, m))

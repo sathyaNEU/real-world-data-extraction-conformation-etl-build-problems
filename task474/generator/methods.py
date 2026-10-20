@@ -65,7 +65,8 @@ def _without_air(r):
 
 
 def after_rate(r):
-    """The unit's NOx per MMBtu in the first measured hour after its air losses, averaged over them."""
+    """The unit's NOx per MMBtu in the first measured hour after its air losses, averaged over them (a unit with none
+    measured takes its plant's, rec["plant_after"])."""
     v = [b[3] for b in r["blocks"] if b[3] is not None]
     return float(np.mean(v)) if v else None
 
@@ -82,6 +83,7 @@ def fill_air(r, route):
         b = _fit(None, nox[m], [np.ones(m.sum()), load[m], load[m] ** 2])
         return tot + (b[0] + b[1] * load[a] + b[2] * load[a] ** 2).sum()
     u = after_rate(r)
+    u = u if u is not None else r.get("plant_after")
     for i0, i1, before, after in r["blocks"]:
         q = heat[i0:i1 + 1].sum()
         if route == "interp":

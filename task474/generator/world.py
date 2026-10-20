@@ -39,6 +39,12 @@ UNC = {"CB-1": .118, "CB-2": .121, "AF-1": .112, "AF-2": .109, "DF-1": .036, "DF
        "SR-2": .036}
 # plant instrument air losses in the 2026 ozone season: (number, typical hours)
 AIR = {"Cutler Bend": (12, 9.0), "Ashfork": (16, 10.0), "Dunmore Flats": (2, 4.0), "Sable Ridge": (1, 4.0)}
+# each delivery point's transporter, whose fuel retention (a share of the Daily Index, reset monthly by its tariff)
+# every point on it pays, and the point's transportation rate ($/Dth)
+PIPELINE = {"Cutler Bend": "A", "Dunmore Flats": "A", "Sable Ridge": "A", "Ashfork": "B", "Holt Creek": "B"}
+FUEL_RETENTION = {"A": {5: .011, 6: .013, 7: .016, 8: .018, 9: .014},
+                  "B": {5: .024, 6: .028, 7: .032, 8: .035, 9: .029}}
+TRANSPORT = {"Cutler Bend": .2192, "Ashfork": .1538, "Dunmore Flats": .2255, "Sable Ridge": .1922, "Holt Creek": .1386}
 # other monitored units, outside the program: simple-cycle peakers and the coal unit
 OTHER = {
     "AF-CT3": ("Ashfork", "simple cycle", 88), "AF-CT4": ("Ashfork", "simple cycle", 86),

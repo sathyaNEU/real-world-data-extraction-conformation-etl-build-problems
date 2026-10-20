@@ -137,4 +137,20 @@ def fleet(rng):
     for k in W.CC:
         units[k] = apply_air(rng, units[k], ev[units[k]["plant"]], W.UNC[k])
         units[k]["air_events"] = ev[units[k]["plant"]]
+    # one status for the whole of each outage: the DAHS flags an outage by its cause, not hour by hour
+    srng = np.random.default_rng(W.SEED + 5)
+    for k in units:
+        x = units[k]
+        st = np.array(x["status"], dtype=object)
+        h = 0
+        while h < NH:
+            if x["on"][h] and x["out"][h]:
+                j = h
+                while j + 1 < NH and x["on"][j + 1] and x["out"][j + 1]:
+                    j += 1
+                p = [.7, .1, .1, .1] if x.get("air", np.zeros(NH, bool))[h] else [.55, .15, .2, .1]
+                st[h:j + 1] = str(srng.choice(["OOC", "MAINT", "CALFAIL", "COMM"], p=p))
+                h = j
+            h += 1
+        x["status"] = st
     return units

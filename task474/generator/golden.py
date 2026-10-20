@@ -30,6 +30,10 @@ def half_up(v):
     return int(math.floor(v + .5))
 
 
+def hundred(v):
+    return 100 * half_up(v / 100.0)
+
+
 def figures(target):
     rec = B.record(target)
     units = sorted(rec)
@@ -38,10 +42,10 @@ def figures(target):
     des = sorted(u for u in units if rate[u] >= W.TARGET)
     a, b = B.ask_a(target), B.ask_b(target)
     rows = {u: dict(mwh=half_up(sum(rec[u]["load"])), hours=len(rec[u]["load"]), designated=u in des,
-                    fuel=half_up(a[u]), forced=int(b.get(u, 0)), plant=W.CC[u][0]) for u in units}
-    gaps = dict(all=sum(v is None for u in units for v in rec[u]["nox"]),
-                start=sum(v is None and 1 <= s <= 3 for u in units for v, s in zip(rec[u]["nox"], rec[u]["since"])))
-    return dict(call=des, gaps=gaps, n_call=len(des), n_units=len(units), units=units, rows=rows,
+                    fuel=hundred(a[u]), forced=int(b.get(u, 0)), plant=W.CC[u][0]) for u in units}
+    gaps = dict(all=sum(v is None for u in units for v in rec[u]["nox"]), air=sum(sum(rec[u]["air"]) for u in units))
+    after = {u: round(M.after_rate(rec[u]), 4) for u in units if M.after_rate(rec[u]) is not None}
+    return dict(call=des, gaps=gaps, after=after, state_route=sorted(u for u in units if M.rate(rec[u], "state") >= W.TARGET), n_call=len(des), n_units=len(units), units=units, rows=rows,
                 rate={u: round(rate[u], 4) for u in units}, load_route=sorted(u for u in units if load_rate[u] >= W.TARGET),
                 target="%.3f" % W.TARGET, sections=DC.SECTIONS,
                 asks=dict(fuel={u: rows[u]["fuel"] for u in units}, forced={u: rows[u]["forced"] for u in units},
@@ -110,12 +114,14 @@ def write_memo(path, f):
          Paragraph("I recommend designating %s of our %s combined-cycle units for the 2027 SCR Upgrade Program: %s. "
                    "Each emitted %s lb of NOx per gross MWh or more over the 2026 ozone season." % (
                        WORDS[len(des)], WORDS[f["n_units"]], names, f["target"]), body),
-         Paragraph("The analyzers were out for part of every unit's operating hours, and the outages are not spread "
-                   "evenly: most fall in the first hours after a unit starts, when the catalyst is still cold and NOx "
-                   "runs several times its steady level. I filled each hour without a measurement from the same unit's "
-                   "measured hours at the same point after a start. A fill from each unit's NOx at the same load puts "
-                   "steady-state NOx into those hours and would have left the units that cycle hardest under the "
-                   "target.", body),
+         Paragraph("The analyzers were out for part of every unit's operating hours. Most of those hours I filled from "
+                   "the same unit's measured hours at the same point after a start and at the same load. The "
+                   "exception is the hours Cutler Bend and Ashfork lost their instrument air this summer. The air "
+                   "header feeds the analyzers' dilution probes and the SCR's ammonia flow valves alike, so in those "
+                   "hours the units ran without NOx control as well as without a monitor. The first measured hour "
+                   "after each loss, before the ammonia came back, shows the uncontrolled level, about twenty times "
+                   "the controlled one. I filled those hours at that level times each hour's metered heat input. "
+                   "Filled the ordinary way, CB-2 and AF-1 would have stayed under the target.", body),
          chart(f), Spacer(1, 6)]
     t = [["Unit", "Facility", "Designated", "Fuel cost", "Forced outage hours"]]
     for u in f["units"]:

@@ -67,13 +67,26 @@ def ticket_rows(x):
             "DAHS": ["Communication loss to DAHS", "DAHS server restart"],
             "O2 analyzer": ["O2 cell replaced", "O2 span gas changed"]}
     f = x["fleet"]
+    air = ["Probe dilution air pressure low; plant instrument air header down",
+           "Loss of dilution air to probe (plant instrument air trip)",
+           "Dilution air supply lost, plant air compressor tripped"]
     for u in sorted(W.CC):
         v = f[u]
+        for h0, d in v["air_events"]:
+            hs = [h for h in range(h0, min(S.NH, h0 + d)) if v["air"][h]]
+            if not hs:
+                continue
+            n += int(rng.integers(1, 4))
+            op = R.local_of(S.HOURS[hs[0]]) + dt.timedelta(minutes=int(rng.integers(2, 41)))
+            cl = R.local_of(S.HOURS[hs[-1] + 1]) - dt.timedelta(minutes=int(rng.integers(1, 13)))
+            out.append(["MT-%d" % n, u, op.strftime("%m/%d/%Y %H:%M"), cl.strftime("%m/%d/%Y %H:%M"), "Sample system",
+                        str(rng.choice(air))])
         h = 0
+        normal = v["out"] & ~v["air"]
         while h < S.NH:
-            if v["out"][h]:
+            if normal[h]:
                 k = h
-                while k < S.NH and v["out"][k]:
+                while k < S.NH and normal[k]:
                     k += 1
                 if rng.random() < .72:
                     comp = str(rng.choice(list(desc), p=[.55, .2, .15, .1]))
@@ -96,6 +109,11 @@ def ticket_rows(x):
     out = [r[:3] + ([""] if dt.datetime.strptime(r[3], "%m/%d/%Y %H:%M").date() > EXPORT_END else [r[3]]) + r[4:]
            for r in out]
     out.sort(key=lambda r: dt.datetime.strptime(r[2], "%m/%d/%Y %H:%M"))
+    # ticket numbers run in the order the tickets were opened
+    num, step = 5100, np.random.default_rng(W.SEED + 78)
+    for r in out:
+        num += int(step.integers(1, 4))
+        r[0] = "MT-%d" % num
     return out
 
 

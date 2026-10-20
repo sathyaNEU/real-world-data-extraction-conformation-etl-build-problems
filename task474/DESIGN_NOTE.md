@@ -31,104 +31,66 @@ now the default path.
 - **Guard.** WARN (driver 0.28 against this slot's architecture 2; differentiation lines for task193 and task254);
   personas Tamara Gill and Martin Estrada from guard.py names.
 
-## Tried and rejected` first. Architecture 2, a
-re-root drawn 2026-10-20 after architecture 1 (the planning-region poverty split) was spent at stage 4; its identity
-is in the card's lineage.
-
-## Draw
-
-- **Card:** `.claude/skills/fingerprint/cards/task474.json` (architecture v2), registered 2026-10-20 with --force over
-  the slot's spent v1 card; the check showed WARNs only after the test.same_puzzle_older BLOCK against task243 and
-  task450 v2 was answered with differentiation lines (and task476, task459 differentiated besides). Redrawn at the
-  draw: the organisation family (cooperative_or_member_body is task250's; a generation and transmission cooperative
-  files as utility_or_infrastructure), the strategy (population_selection is task471's), the decisive generator (G12
-  is task250's, G10 task471's, G3 task477's; G4, attribution at the start transition). WARNs answered: ETL in 6 of 12
-  (the lane); Gate G method_or_model_selection after task471 (the decisive step is which fill a missing monitor hour
-  gets, among defensible estimators, forced by the monitored hours' own start-state profile); designation_set and
-  "which" after task471 (the program funds every unit over its target); time_semantics' strategy risk (the analyst
-  test runs on the clean truth with every field and rule read correctly and still files the wrong set).
-- **Seed:** ET31's number, re-rooted; nothing of ET31's world is kept. The lane's objective stays.
-- **Pairing:** Physical & Environmental Sciences / emissions-inventory / Data Extraction & Conformation (ETL). The
-  cooperative conforms its continuous-emissions-monitor hourly records, the plants' control-system load logs and the
-  monitor outage log into a unit-level ozone-season NOx inventory for its upgrade program.
-- **Shape:** 07, a grid: each of the combined-cycle units' 2026 ozone-season NOx, MWh, NOx per MWh and verdict against
-  the target, the designated units, the chart, the files.
-- **Strategy:** time_semantics. A unit's analyzers drop out mostly in the first hours after a start (purge and
-  calibration after a shutdown), the hours in which the selective catalytic reduction catalyst is still cold and NOx
-  runs several times the steady rate at the same load; every start is in the load log, so each missing hour's start
-  state is known and the fill conditions on it. Decisive generator G4 (attribution at the start transition), with G17.
-- **Data-native sentence:** the analyzers' purge and calibration after a shutdown put most monitor gaps in the first
-  hours after a start, and those are the hours a cold catalyst lets NOx run several times its steady rate, so the
-  hours the record leaves blank are not like the hours it fills, while the load log records every start.
-- **World:** United States, a fictional inland region (unnamed state). Ridgeline Power Cooperative, a generation and
-  transmission cooperative, runs nine 1x1 combined-cycle units with SCR at four plants, three simple-cycle peakers
-  and one coal unit. Its Clean Air Commitment holds each combined-cycle unit to 0.170 lb of NOx per gross MWh over
-  the ozone season; the 2027 capital budget's SCR Upgrade Program funds every unit that did not meet it in 2026.
-  Personas from `guard.py names --geo "United States" --seed 4742`: Tamara Gill (senior environmental compliance
-  engineer), Kevin Cohen (manager, generation engineering).
-- **Forcing fact:** the Board adopts the 2027 capital budget on 17 December 2026; the call faces forward (the 2027
-  upgrades) on the closed 2026 ozone season the rules name.
-- **Forum and forcing event:** board_of_directors (the cooperative's Board), budget_or_appropriation (the 2027 capital
-  budget). Organisation family utility_or_infrastructure.
-
 ## Default path
 
 1. Read the rules: every combined-cycle unit in the register; its 2026 ozone-season NOx rate is the NOx it emitted
    while operating from 1 May to 30 September 2026 over its gross generation in the same hours; designate at 0.170
    lb per MWh or more.
 2. Take the combined-cycle units' operating hours in the season from the DAHS export; some hours carry no NOx value
-   (status OOC, MAINT, CALFAIL, COMM).
-3. Fill each blank hour from the unit's own NOx-on-load fit over its measured hours (the careful repair; dropping
-   the blanks or scaling by the measured share is the cruder one), sum, divide by generation, compare.
+   (status OOC, MAINT, CALFAIL, COMM), and the outages fall more often in the first hours after a start.
+3. Fill each blank hour from the unit's own measured hours in the same operating state: hours 1 to 3 after a start
+   from the measured hours at the same position, later hours from the unit's NOx-on-load fit (the field's standard
+   handling, the architecture 2 golden); sum, divide by generation, compare.
 
-Ends on: AF-2, CB-1 and SR-1 designated
+Ends on: AF-2, CB-1, DF-1, DF-3 and SR-1 designated
 
-Golden: AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2 designated
+Golden: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1 designated
 
 ## Stump sentence
 
-The default path fills each hour without a NOx measurement from the unit's NOx at the same load and designates AF-2,
-CB-1 and SR-1 designated, three units; the analyzers were out mostly in the first hours after a start, when the cold
-catalyst lets NOx run several times its steady level at the same load, so the fill puts steady-state NOx into
-start-up hours and understates the units that cycle hardest, and only a fill by the hours since the unit's start
-designates the seven the program should fund.
+The default path fills every hour without a NOx measurement from the unit's own measured hours in the same start
+state and load and designates AF-2, CB-1, DF-1, DF-3 and SR-1, five units; the gaps that came with Cutler Bend's and
+Ashfork's instrument air trips are hours in which the air-operated ammonia flow valves of the SCR had closed as well,
+so the unit ran uncontrolled at about twenty times its controlled NOx per MMBtu, as the first measured hour after each
+trip shows, and only filling those hours at that uncontrolled level designates the seven the program should fund.
 
 ## Three rules
 
-Task type: Physical & Environmental Sciences, emissions-inventory, which the taxonomy tags for ETL: conforming the data acquisition system's hourly export, the unit register and the monitors' gaps into a unit-level ozone-season NOx inventory the program designates on.
+Task type: Physical & Environmental Sciences, emissions-inventory, which the taxonomy tags for ETL: conforming the data acquisition system's hourly export, the monitor maintenance tickets in local time and the unit register into a unit-level ozone-season NOx inventory the program designates on.
 
-Domain test: the quantity that decides the call is each combined-cycle unit's 2026 ozone-season NOx per gross MWh, worked as an emissions inventory works monitor data gaps: each missing hour estimated from the unit's own measured hours in the same operating condition, here the hours since start that decide whether the SCR catalyst is hot.
+Domain test: the quantity that decides the call is each combined-cycle unit's 2026 ozone-season NOx per gross MWh, worked as an emissions inventory works monitor data gaps: each missing hour estimated at the emission control state the unit was in, here an instrument air loss that blinds the dilution probe and closes the SCR's air-operated ammonia valves together, so the hour is filled at the uncontrolled NOx per MMBtu measured on the analyzer's return times the hour's metered heat input.
 
-Swap: "which of our nine hospitals' infection rates per patient-day exceed the target, filling the days a ward did not report" keeps the words but loses the step: nothing about a hospital's missing days is tied to a cold catalyst, and the SCR's temperature window, the analyzers' purge and calibration after a shutdown and the start sequence in the load log are what make the gaps fall in the high-emission hours and what identify the fill.
+Swap: "which of our nine hospitals' infection rates per patient-day exceed the target, filling the days a ward did not report" keeps the words but loses the step: nothing ties a ward's missing days to a lapse in its infection control, while here one compressed-air header feeds both the monitor and the control device, and the uncontrolled level on the monitor's return is what identifies the fill.
 
-Layer 1: a whole-year export with every monitored unit (peakers and the coal unit outside the program); status codes on blank hours; the DAHS on standard time against the event report and maintenance tickets in local time; tickets that cover only some gaps and include checks while the unit was offline; units renamed in the 2025 dispatch system; invoices by facility, not unit; each the cooperative's or its supplier's own record, each asserted neutral on the call.
+Layer 1: a whole-year export with every monitored unit (peakers and the coal unit outside the program); status codes on blank hours; the DAHS on standard time against the tickets and the event report in local time; tickets covering only some ordinary gaps and including checks while the unit was offline; start-up hours whose analyzers are out more often than the run's; invoices by delivery point, not unit, one month per point not yet approved; each the cooperative's or its supplier's own record, each asserted neutral on the call.
 
-Layer 2: estimation_fit. The methodological choice is how an hour without a NOx measurement is filled: left out, scaled by the measured share, filled from the unit's NOx at the same load, or filled from the unit's measured hours at the same number of hours after its start.
+Layer 2: estimation_fit. The methodological choice is how an hour without a NOx measurement is filled: left out, scaled by the measured share, from the unit's NOx at the same load, from its measured hours in the same start state and load, from the average of the hours either side, or at the control state the unit was in while unmonitored.
 
-Decisive step: filling each unmeasured hour from the same unit's measured hours at the same number of hours since its start, found from the load record's run of operating hours, rather than from a fit on load that the steady hours dominate.
+Decisive step: recognising that the gaps a plant instrument air loss caused are hours without NOx control, because the same air works the SCR's ammonia flow valves, and filling them at the uncontrolled NOx per MMBtu the analyzer measured in its first hour back, times each hour's heat input, rather than from the controlled hours that every state, load or neighbouring-hour fill draws on.
 
-Not semantics: every field, status code, clock and unit read correctly still leaves the blanks to fill, and no field says which fill; the load fill is the careful analyst's repair and files the wrong set.
+Not semantics: every field, status code, clock and ticket read correctly still leaves the blanks to fill, and nothing in any file says what NOx the unit emitted in them; a reader who reads the instrument air tickets correctly and fills those hours from the unit's state and load files the wrong set.
 
-Not rule application: rule 2.2 files the population (the operating hours), the outcome (the NOx the unit emitted), the window and the unit; no rule says how a missing hour is estimated, and executing every stated rule with the load fill designates three units.
+Not rule application: rule 2.2 files the population (the operating hours), the outcome (the NOx the unit emitted), the window and the unit; no rule says how a missing hour is estimated or that an air loss disables the SCR, and executing every stated rule with the standard fill designates five units.
 
-Analyst test: a strong analyst who reads every field and rule correctly and fills each blank hour from the unit's NOx-on-load fit designates AF-2, CB-1 and SR-1 designated (the default path's Ends on); only the fill by hours since start designates AF-1, AF-2, CB-1, DF-1, DF-3, SR-1 and SR-2.
+Analyst test: a strong analyst who reads every field and rule correctly and fills each blank hour from the unit's own measured hours in the same start state and load designates AF-2, CB-1, DF-1, DF-3 and SR-1 designated (the default path's Ends on); only filling the instrument-air gaps at the uncontrolled level designates AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.
 
 Estimand: rules 2.1 to 2.3 (scr_upgrade_program_rules_2027.pdf) file the population (the register's combined-cycle units and their operating hours in the DAHS record, start-up and shutdown included), the outcome (the NOx the unit emitted, in pounds), the window (1 May to 30 September 2026, standard time), the unit (pounds per gross MWh) and the comparison (0.170 or more).
 
-No decoy: nothing is planted to be caught; every measured hour is the unit's true NOx, the gaps are the analyzers' ordinary outages, and no memo, earlier list or reported figure ships.
+No decoy: nothing is planted to be caught; every measured hour is the unit's true NOx, the gaps are the analyzers' ordinary outages and the plants' real air trips, the tickets describe each trip as a maintenance ticket would, and no memo, earlier list or reported figure ships.
 
-No certified replay: no certified or published figure is reproduced to recover the method; the start-hour levels are measured directly in each unit's own monitored start hours.
+No certified replay: no certified or published figure is reproduced to recover the method; the uncontrolled level is measured directly by each unit's own analyzer in its first hour back after each air loss.
 
-Lesson: when a record's gaps fall in a particular operating state, the missing values are estimated within that state, which the record's own operating log identifies; a fit on the variable the steady hours dominate carries the steady state into the gaps. No build on file fills monitor gaps by the state that causes them.
+Lesson: a monitor gap with a common cause that also disables the control device is an uncontrolled hour, and is estimated at the uncontrolled level the monitor itself shows on its return; filling it from the unit's controlled hours in the same operating state, the standard repair, carries controlled NOx into it. No build on file fills a monitor gap by the control state a shared utility failure put the unit in.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
 | R0, the measured hours only (AF-2, SR-1) | rule 2.2 "the NOx the unit emitted": fires | blank NOX_MASS_LB: fires | none | none | blanks dropped: fires | one sum: fires | readable |
-| R1, scaled by the measured share of generation (AF-2, SR-1) | none | blanks: fires | ratio estimate: fires | none | none | one ratio: fires | readable |
-| R2, the load fill, the default path (AF-2, CB-1, SR-1) | none | GLOAD_MW in every hour: fires | regression imputation on the always-recorded covariate: fires | none | none | a regression | readable |
-| G (decisive), the fill by hours since start (AF-1, AF-2, CB-1, DF-1, DF-3, SR-1, SR-2) | no clause names a start, a catalyst or a fill | no column holds a start state: it is the run of OP_TIME above zero | no reflex fill conditions on the start | none | none | none | silent |
+| R1, the load fill (AF-2, CB-1, SR-1) | none | GLOAD_MW in every hour: fires | regression imputation on the always-recorded covariate: fires | none | none | a regression | readable |
+| R2, the start-state fill, the default path (AF-2, CB-1, DF-1, DF-3, SR-1) | none | the run of OP_TIME: fires | the gap rate by hours since start: fires | none | none | a grouped mean | readable |
+| R2b, the before-and-after average (AF-2, CB-1, DF-1, DF-3, SR-1) | none | none | the regulator's short-gap substitution for some pollutants: fires | none | none | an average | readable |
+| G (decisive), the air-loss hours at the uncontrolled level (seven) | no clause names an air system, an SCR state or a fill | no column holds a control state | no reflex fill conditions on a utility outage | none | none | none | silent |
 
 ## Semantic fork table
 
@@ -138,32 +100,36 @@ Lesson: when a record's gaps fall in a particular operating state, the missing v
 | SF2 | gross generation | GLOAD_MW over operating hours (OP_TIME 1.00) | GLOAD_MW times OP_TIME | same call (every operating hour 1.00, asserted) | the export notes |
 | SF3 | 0.170 or more | at or above, unrounded | above | same call (no family rate within 0.009, asserted) | rule 2.3 |
 | SF4 | the NOx emitted | measured and estimated NOx in every operating hour | the measured hours only | not the rule's quantity: files AF-2, SR-1 | rule 2.2 "the NOx the unit emitted while operating" |
-| SF5 | hours since start | counted along the whole year's record | counted from 1 May | same call (asserted) | the record: a run continuing on 1 May started before it |
+| SF5 | hours since start | counted along the whole year's record | counted from 1 May | same call (asserted) | the record |
 | SF6 | the start hours filled by state | hours 1 to 3 | hours 1 to 4 | same call (asserted) | the data |
-| SF7 | whose start hours | each unit's own | the fleet's pooled | same call (asserted) | the data |
+| SF7 | the uncontrolled level per run | the unit's mean over its runs | each run's own first hour back | same call (asserted) | the data |
 | SF8 | units | the register's combined-cycle units | every monitored unit | not the program's population | rule 2.1 |
 | SF9 | the comparison | unrounded rates | rounded | same call (asserted) | rule 2.3 |
+| SF10 | the tickets' clock | local time moved to standard | read as standard | same call (asserted) | the tickets' column names |
+| SF11 | whose uncontrolled level | the unit's own, the plant's where none | the plant's pooled for every unit | same call (asserted) | the data |
+| SF12 | which gaps are air losses | blank hours inside an instrument air ticket | blank runs whose first hour back reads five times the unit's median or more | same call (the two coincide, asserted) | the data |
 
 ## Ladder
 
 Built figures, read from the cut pack by `generator/checks.py` (lb of NOx per gross MWh, 2026 ozone season, against
 0.170).
 
-- **R0, the measured hours only (AF-2, SR-1).** Drops every blank: DF-1 at 0.095, SR-2 at 0.095. Dies to rule 2.2.
-- **R1, scaled by the measured share (AF-2, SR-1).** Assumes the blank hours emit at the measured average: CB-1 at
-  0.126. Dies to the record: the blanks fall at starts.
-- **R2, the load fill, the default path (AF-2, CB-1, SR-1).** Fills each blank from the unit's NOx at that load: AF-1
-  0.162, DF-1 0.150, DF-3 0.161, SR-2 0.152. Dies to the record's start hours: measured hour-1 NOx runs several times
-  the load fit's value at the same load.
-- **G, the decisive move (AF-1 0.188, AF-2 0.228, CB-1 0.262, DF-1 0.186, DF-3 0.189, SR-1 0.187, SR-2 0.186).** Each
-  blank start hour from the unit's measured hours at the same hour after a start; the truth (every hour known,
-  generator only) designates the same seven.
-- **Margins (cut pack):** every family member (per-hour means, start-hour rate times load, hours 1 to 4, a regression
-  with start dummies) at least 0.009 from the target; every load-fill rate at least 0.0075 from it.
-- **Position, separation and dominance:** a designation, not a ranking; R0 and R1 name two units, R2 three, G seven;
-  only the start-state fill brings AF-1, DF-1, DF-3 and SR-2 over together.
-- **Worth:** the call and each unit's verdict; R2 keeps five of nine verdicts and none of the set, so the asks carry
-  the pair (Ask sheet).
+- **R0, the measured hours only (AF-2, SR-1).** Drops every blank: DF-1 at 0.095, SR-2 at 0.080. Dies to rule 2.2.
+- **R1, the load fill (AF-2, CB-1, SR-1).** Fills each blank from the unit's NOx at that load: DF-1 0.150, DF-3 0.161.
+  Dies to the record's start hours: the gaps fall more often there and measured hour-1 NOx runs several times the
+  load fit.
+- **R2, the start-state fill, the default path (AF-2, CB-1, DF-1, DF-3, SR-1).** CB-2 0.125, AF-1 0.124. Dies to the
+  first measured hour after each instrument air ticket: about twenty times the unit's controlled NOx per MMBtu.
+- **R2b, the before-and-after average (the same five).** CB-2 0.153, AF-1 0.149: half the hours either side is
+  controlled.
+- **G, the decisive move (AF-1 0.190, AF-2 0.251, CB-1 0.268, CB-2 0.187, DF-1 0.186, DF-3 0.189, SR-1 0.187).** The
+  truth (every hour known, generator only) designates the same seven, every rate within 0.010 of it.
+- **Margins (cut pack):** every family member (unit mean or per-run level, hours 1 to 4, a regression with start
+  dummies, the plant's pooled level) at least 0.009 from the target; every R1, R2 and R2b rate at least 0.0075 from it.
+- **Position, separation and dominance:** a designation, not a ranking; R0 names two units, R1 three, R2 and R2b
+  five, G seven; only the air-loss fill brings CB-2 and AF-1 over.
+- **Worth:** the call and each unit's verdict; R2 keeps seven of nine verdicts and not the set, so the asks carry the
+  pair (Ask sheet).
 
 ## Closure table
 
@@ -178,10 +144,10 @@ Built figures, read from the cut pack by `generator/checks.py` (lb of NOx per gr
 | 7 | Weighting | none: each unit's own hours |
 | 8 | Window length | the season, 153 days |
 | 9 | Boundary inclusivity | 0.170 or more (SF3) |
-| 10 | Rounding path | rates unrounded (SF9); MWh, hours and costs whole |
+| 10 | Rounding path | rates unrounded (SF9); costs to the hundred dollars, hours whole |
 | 11 | Tie-break | none: each unit against the target |
 | 12 | Maturity and censoring | the season closed and exported |
-| 13 | Order of operations | hours since start, the fill, the sum, the rate, the comparison |
+| 13 | Order of operations | air-loss hours, the fills, the sum, the rate, the comparison |
 | 14 | Row order | the export's order per unit; hours since start along it |
 | 15 | Duplicate resolution | one row per unit and hour |
 | 16 | Identity normalisation | unit IDs as the register gives them; the pre-2025 dispatch names not used by the call |
@@ -197,12 +163,12 @@ Built figures, read from the cut pack by `generator/checks.py` (lb of NOx per gr
 Executed word for word, the rules fix the population (the register's combined-cycle units and their operating hours
 in the DAHS record), the outcome (the NOx each emitted, start-up and shutdown hours included), the window, the unit and
 the target. The record leaves some operating hours without a NOx value, so the filed outcome has to be estimated in
-those hours. The candidates are leaving them out, scaling by the measured share, a fill from the unit's NOx at the same
-load and a fill from the unit's measured hours in the same start state. The data separate them: each unit's measured
-hours one to three after a start sit several times above the load fit at the same load, and the blank hours fall
-mostly there; every start-state estimator (per-hour means, a start-hour rate times load, hours 1 to 4, a regression
-with start dummies, start counted along the year or from 1 May) designates the same seven (checks.py). Every write-up
-step names the file and rule it executes.
+those hours. The candidates are leaving them out, a fill from the unit's NOx at the same load, a fill from its measured
+hours in the same start state and load, the average of the hours either side, and a fill at the control state the
+unit was in. The data separate them: every blank run inside an instrument air ticket that is measured on its return
+reads at five or more times the unit's median NOx per MMBtu in its first hour back and no other blank run does, and
+every estimator of the uncontrolled level (the unit's mean, each run's own, the plant's pooled) with any start-state
+fill of the other gaps designates the same seven (checks.py). Every write-up step names the file and rule it executes.
 
 ## Oracles
 
@@ -211,33 +177,36 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 ## Ask sheet
 
-- **Ask A, each unit's 2026 ozone-season fuel cost: 9 figures.** H18 home: rule 3.1, the capital budget weighs the
-  upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices, the supply agreement, the
-  rules: four files, eight columns. Primary device (re-sited after stage 4 readers 1 and 2, who executed the gas day
-  and the daylight hour and kept all nine): D4, absence repaired through another file's structure. One month of
-  invoices is missing at each delivery point (not yet approved when the file was pulled), and the agreement prices
-  every point at a common Daily Index plus its own adder, so a missing day's price is another point's price that day
-  plus the constant difference between the two points; carrying the last invoiced price forward, averaging, or
-  dropping the hours each misses every unit. Hazards: the gas day on Central clock time against the DAHS's standard
-  time, invoices by facility (peakers share the meter), gas days with no burn.
+- **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** H18 home: rule 3.1, the
+  capital budget weighs the upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices,
+  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after the architecture 2
+  readers rebuilt the missing month by a constant difference): D3, a per-row quote convention. Each delivery point's
+  price is the common Daily Index plus its transporter's charges, which include a fuel retention on the index that the
+  transporter resets monthly, so two points' prices differ by the same amount every day only when one transporter
+  serves both; a missing invoice month rebuilt from another point's price that day is exact only from a point on the
+  same transporter, found from the days both are invoiced, and the first or alphabetical point, the average
+  difference, a straight-line fit or the last invoiced price each misses every unit by $100 or more. The coal
+  station's auxiliary boiler meter is Ashfork's only sister. Hazards: the gas day on Central clock time against the
+  DAHS's standard time, invoices by facility (peakers share the meter), gas days with no burn.
 - **Ask B, each unit's 2026 ozone-season forced outage hours: 9 figures.** H18 home: rule 3.2 (a later report of the
-  same outage stands). Path: the event report, the rules: two files, six columns. Primary device (re-sited after
-  readers 1 and 2, who kept the later of each same-start pair and took three units): D1, a resubmission that opens no
-  second case. A corrected outage was reported again under a new event number with a corrected start and end, so no
-  key or start time pairs it with the original; only the overlap of two full outages on one unit, which one outage
-  cannot make, finds the pair. Hazards: derate events (D1, D2) overlapping outages legitimately, events crossing the
-  season's ends.
+  same outage stands). Path: the event report, the rules: two files, six columns. Primary device: D8, an anchor on the
+  wrong date. One short outage on each unit was first entered under the date its shift report was written, a day late
+  at the same hours, and reported again weeks later under a new event number with its true date; the two never
+  overlap, so the overlap that finds the other re-reports does not find these, and only the matching length, cause and
+  hours a day apart (with the DAHS showing the unit running at some of the late-dated hours) pair them. Secondary: the
+  architecture 2 re-reports with a corrected start and end, found by the overlap of two full outages. Hazards: derate
+  events overlapping outages legitimately, events crossing the season's ends.
 - **The construction layer:** each unit's verdict and the set.
 - **Main population zero-counts (asserted):** the call reads no invoice, agreement or event row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, the missing invoice month carried from the last invoiced price; every unit burns in a missing month, so every unit's cost falls outside its bin | miss |
-| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, a later report kept where two share a unit and start; the corrected re-reports start at another hour, so both count and every unit's hours fall outside its bin | miss |
+| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, the missing invoice month rebuilt from the first other point invoiced that day plus the pair's most common difference; no point's first other point is on its transporter, so every unit's cost falls outside its bin | miss |
+| B, forced outage hours by unit | U1 to U3 event hours in the season per unit, the later report kept where two full outages overlap; the day-late entries never overlap their true reports, so both count and every unit's hours fall outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
-- Pair ceiling: 35.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
-  and none of the 18 ask figures; the mirror, R2, keeps 5 of 10 main figures, 26.0).
+- Pair ceiling: 39.3 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
+  and none of the 18 ask figures; the mirror, R2, keeps 7 of 10 main figures, 33.6).
 - Measured by: generator/ceiling.py
 
 ## Tried and rejected
@@ -317,4 +286,12 @@ data and no reported total ships; the allowance holdings are by facility and ton
   ask figures (score_reader exit 1); the judge had already named the start-state fill the field's standard handling of
   missing monitor hours. A gap filled by the condition that causes it is a repair a careful analyst reaches; the next
   architecture needs a decisive step no standard repair performs.
-
+- Architecture 3 screens at the draw (2026-10-20): hot-afternoon duct firing behind shelter-overheat outages (the heat
+  input in every gap carries it, so a fill on load and heat input is a standard repair that lands it); start class
+  (cold, warm, hot starts) behind longer start-up outages (hardens the spent start-state design and its thresholds are
+  a knob); an analyzer over-range censoring (the tail above the span is unidentified without a second measurement).
+  Kept: the shared instrument air outage, whose uncontrolled level shows only in the first hour back.
+- Architecture 3, ask A first cut: the transporters' fuel retention as a fixed share (a straight-line fit of one
+  point's price on another's rebuilds a missing month exactly, the agreement's formula pointing at it); the retention
+  now resets monthly, so only a point on the same transporter rebuilds it. Ask B's first device, a month and day
+  exchanged, found a qualifying outage on one unit only; replaced by an entry dated a day late.
