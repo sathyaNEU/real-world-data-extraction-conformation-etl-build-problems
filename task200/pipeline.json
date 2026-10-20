@@ -1,5 +1,5 @@
 {
- "architecture": 1,
+ "architecture": 2,
  "architecture_note": "architecture 1 was drawn far enough to be screened as code and is dead; nothing was cut, no card was registered, and the card recording it carries architecture_spent true at scratchpad/w6_200/task200_card.json. The next pass starts architecture 2.",
  "grounds_closed": [
   "physical-environmental-sciences/environmental-monitoring-exceedance",
@@ -26,9 +26,11 @@
  },
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "DRAWING",
  "task": "task200",
- "updated": "2026-10-18",
+ "updated": "2026-10-20",
  "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association (fourth ground, closed on measurement)",
- "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race."
+ "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+ "wave7_cell": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

@@ -1,5 +1,5 @@
 {
- "architecture": 2,
+ "architecture": 3,
  "architecture_note": "v2 re-roots the graded quantity on clause 9.1's candidate grid: the ceiling is the lowest whole multiple of one thousand pesos, the call moves PHP 7,800 -> PHP 8,000 and the default path PHP 5,800 -> PHP 6,000, the preceding candidate fails by 0.8471 points against 0.0432 and the committed one clears by 0.4122 against 0.0571, and 7 of 7 licensed readings of the measured shape file PHP 8,000 where 3 of 7 filed PHP 7,800. BASE reset 3311.5 -> 3253.4 so every graded share prints clear of its rounding boundary. Ask A's filed convention replaced by the asking sentence, Ask B widened to the passed side, Ask C's primary not replaced; reader-calibrated pair 39.5.",
  "card_registered": true,
  "dependence_ground_screen": {
@@ -90,7 +90,9 @@
  },
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "DRAWING",
  "task": "task202",
- "updated": "2026-10-20"
+ "updated": "2026-10-20",
+ "wave7_cell": "nonprofit-grant-making/grant-award-portfolios (world kept, decisive step re-rooted)",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

@@ -1,6 +1,6 @@
 {
  "approved": false,
- "architecture": 7,
+ "architecture": 8,
  "blocked": {
   "card_not_registered": "deliberate. guard.py check was not run on an architecture 5 card and nothing was registered, because registering a mechanism measured dead would pollute the bans every other session in this wave reads. cards/task182.json stands registered at architecture 4 and architecture 4 was NOT moved into lineage, because moving it with nothing to put in its place would leave the card describing no draw",
   "decision_owed": "the author's, and it is a choice of which constraint moves rather than a tuning: keep the records-fixed design and find a correction whose driver is invisible by its position in time rather than merely orthogonal in the cross-section, a driver no single group-by can reconstruct, which is the property stumping Part 6 names and which rotation breadth, a per-operative attribute, is not; or keep this ground and accept a printed estimate, which stumping 1.2a forbids; or move the ground",
@@ -100,7 +100,7 @@
  ],
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "DRAWING",
  "stump": "Architecture 5 as screened: the wrong committed slate is the three plants with the highest recorded operator-error events per 100,000 rostered duty-hours, the correction being each plant's own count against what the group's experience of the duties that plant actually worked implies. The reflex sweep falsifies it: see the blocked record",
  "task": "task182",
  "three_rules": {
@@ -111,7 +111,9 @@
   "layers": "pass at the draw: Layer 1 is the roster and register mess, Layer 2 is the conditioned rate",
   "screen_result": "FAIL on the stump. The crude route reaches the golden slate 20 of 20 in both credible models, and the one model with a ladder needs a positional error-rate spread of 9 to 16 where the shift-work literature gives 2 to 3. PASS on the determinacy: every graded figure is records-fixed, the estimator family closes on the data's structure, and the slate is invariant to all six bandings and all eight licensed forms, 20/20."
  },
- "updated": "2026-10-18",
+ "updated": "2026-10-20",
  "wave6_cell": "healthcare-delivery-health-economics/payment-claims-health-plan-analytics",
- "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race."
+ "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+ "wave7_cell": "criminology-justice/crime-incidence-hotspot-analysis",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

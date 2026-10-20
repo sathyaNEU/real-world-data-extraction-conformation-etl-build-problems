@@ -1,6 +1,6 @@
 {
  "approved": null,
- "architecture": 6,
+ "architecture": 7,
  "build_gates": {
   "archive": "target.zip cut from the final rebuild, 17 members, md5 bbf01fae98537ad271c72b80206f113c, sha256 1d1d797e1e62b9052d92e900bb9ace344ddd31ef131e188dc6397e8e73ce21c9, every member byte-equal to the tree",
   "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 46.2 if both top responses resolve A3's association returns, measured and recorded in the design note's ask sheet",
@@ -125,8 +125,10 @@
  },
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "DRAWING",
  "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
  "task": "task190",
- "updated": "2026-10-18"
+ "updated": "2026-10-20",
+ "wave7_cell": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

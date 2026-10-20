@@ -1,6 +1,6 @@
 {
  "approved": null,
- "architecture": 13,
+ "architecture": 14,
  "architecture_3_bound": {
   "bar_correction": "The two-standard-error bar is not filed anywhere in the skills. The filed floors are a 1.15x rung margin and a 1.2x final margin with a 1.5 to 2x target (dataset-generation 6.2) and C4's 6 per cent. Against those the measured point clears with room: rung 0 at 1.50x, the intermediate rung at 1.23x, the decisive rung at 2.008x. Architecture 1's lesson was about a fitted counterfactual with collinear forms, not about sampling noise; nothing is fitted here and the golden is determinate from the shipped bytes. One real 6.2 deviation stands: the golden sits 2nd of 12 on rung 0 where 4th or 5th is asked for, which is the bound's doing.",
   "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here.",
@@ -220,10 +220,12 @@
  "returned": [],
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "DRAWING",
  "stump": "A competent solver ranks the twelve eligible units on the complications each records above the expectation the published stratum table gives its own patients over the ten closed quarters specification 3.3 names, and places the improvement team with Alderbrook General Surgery (41220) at 26.1 avoidable complications. The record's four most recent closed quarters are still filling: a complication is coded from what the clinician wrote, and the cost centres whose wards still write in the notes settle up to four closes late. Developed on each cost centre's own vintages in the coding close-out register, 41210 carries 44.6 and 41220 carries 27.8. 41210 sits 5th on the record and 12th on the most recent year, because its rate rose through exactly the quarters the pull date cuts short.",
  "task": "task194",
- "updated": "2026-10-18",
+ "updated": "2026-10-20",
  "wave6_cell": "banking-credit-financial-risk/fraud-aml-detection (fifth ground; pharmacology closed on measurement)",
- "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race."
+ "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+ "wave7_cell": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }
