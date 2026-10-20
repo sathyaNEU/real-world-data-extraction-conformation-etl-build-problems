@@ -26,8 +26,8 @@ def write(fig_path, out_path):
          "**Designate %s of the %s combined-cycle units for the 2027 SCR Upgrade Program: %s.**" % (
              WORDS[f["n_call"]], WORDS[f["n_units"]], _join(des)),
          "Each emitted %s lb of NOx per gross MWh or more over the 2026 ozone season once the hours its analyzers "
-         "were out are filled by the control state the unit was in. In the hours Cutler Bend and Ashfork lost their "
-         "instrument air, the SCR's air-operated ammonia flow was down with the analyzers' dilution probes, so those "
+         "were out are filled by the control state the unit was in. In the hours a plant lost its instrument air "
+         "(most of them at Cutler Bend and Ashfork), the SCR's air-operated ammonia flow was down with the analyzers' dilution probes, so those "
          "hours are filled at the NOx per MMBtu the analyzer measured in the first hour after each loss, times the "
          "hour's heat input; every other hour without a measurement is filled from the unit's measured hours at the "
          "same hour after a start or, later in a run, at the same load. Not a fill of every gap from the unit's "
@@ -48,8 +48,8 @@ def write(fig_path, out_path):
          "description names the plant instrument air or its compressor, the ticket's local times moved back an hour "
          "to standard time." % F["tickets"],
          "3. Filled each air-loss hour with its HEAT_INPUT_MMBTU times the unit's mean NOX_MASS_LB over "
-         "HEAT_INPUT_MMBTU in the first operating hour after each run of air-loss hours, where that hour was measured "
-         "(a unit with none measured takes the same mean over its plant's units).",
+         "HEAT_INPUT_MMBTU in the clock hour right after each run of air-loss hours, where the unit was still operating "
+         "and that hour was measured (a unit with none takes the same mean over its plant's units).",
          "4. Filled every other blank hour: in hours 1 to 3 after a start with the mean NOX_MASS_LB of the unit's "
          "measured hours at the same hour after a start; later, from the unit's quadratic fit of NOX_MASS_LB on "
          "GLOAD_MW over its measured hours more than 3 hours after a start.",
@@ -62,8 +62,8 @@ def write(fig_path, out_path):
          "together): $%s in all." % (F["invoices"], F["terms"], sec["fuel"], fmt(f["asks"]["fuel_total"])),
          "7. Counted the hours from 1 May to 30 September 2026 in which %s shows the unit in a U1, U2 or U3 event "
          "(rule %s), the later-filed report standing where two reports are the same outage: two full outages "
-         "overlapping on one unit, or two of the same length and cause starting on the same day of consecutive months "
-         "at the same hour: %s hours in all." % (F["events"], sec["outages"], fmt(f["asks"]["forced_total"])),
+         "overlapping on one unit, or one repeating another's event type, cause, length and clock hours under other dates "
+         "(rule %s): %s hours in all." % (F["events"], sec["outages"], sec["outages"], fmt(f["asks"]["forced_total"])),
          "",
          "## 4. Deliverable Answers", "",
          "### %s" % W.GOLDEN["workbook"], "",

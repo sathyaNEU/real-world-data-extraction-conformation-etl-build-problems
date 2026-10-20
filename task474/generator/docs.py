@@ -61,7 +61,8 @@ def write_guidelines(path):
          Paragraph("3.2 For every combined-cycle unit, its forced outage hours in the 2026 ozone season: the hours "
                    "from 1 May to 30 September 2026, local time, in which the outage event report shows the unit in a "
                    "full forced outage (event types U1, U2 and U3). Where the report holds a later report of the same outage, the "
-                   "later report stands.", BODY),
+                   "later report stands; a later report of an outage is one on the same unit that overlaps it, or that "
+                   "repeats its event type, cause, length and clock hours under other dates.", BODY),
          Paragraph("4. Timetable", HEAD),
          Paragraph("Environmental Services presents the designations to the Board with the 2027 capital budget on "
                    "%s." % W.BOARD_DATE, BODY)]

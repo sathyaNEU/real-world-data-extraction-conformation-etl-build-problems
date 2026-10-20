@@ -170,15 +170,15 @@ def ask_b(target, route="golden"):
             continue
         evs.setdefault(r["unit"], []).append((dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M"),
                                               dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M"), r["date_reported"],
-                                              int(r["event_no"]), r["cause_code"]))
+                                              int(r["event_no"]), r["cause_code"], r["event_type"]))
     out = {}
     for u, es in evs.items():
         if route == "golden":
             # a full outage reported again a month later, on the same day of the month at the same hours, with the same
             # length and cause, in a later filing is the same outage dated right; the earlier filing gives way to it
-            es = [e for e in es if not any(f[3] != e[3] and f[2] > e[2] and f[4] == e[4] and f[1] - f[0] == e[1] - e[0]
-                                           and f[0].month == e[0].month + 1 and f[0].day == e[0].day
-                                           and f[0].hour == e[0].hour for f in es)]
+            es = [e for e in es if not any(f[3] != e[3] and f[2] > e[2] and f[4] == e[4] and f[5] == e[5]
+                                           and f[1] - f[0] == e[1] - e[0] and f[0].time() == e[0].time()
+                                           and f[0] != e[0] for f in es)]
         keep = []
         if route in ("latest", "golden"):
             for e in sorted(es, key=lambda e: (e[2], e[3]), reverse=True):

@@ -144,9 +144,49 @@ def main(target, gdir, x):
         cc = B.ask_a(target, r)
         mv = [u for u in rec if round(a[u] / 100) != round(cc[u] / 100)]
         check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= 7)
+    # every invoice line's quantity ties to its plant's burn over the gas days since the point's previous line
+    import datetime as dt_
+    burn = {}
+    for r in csv.DictReader(open(os.path.join(target, W.FILES["dahs"]), encoding="utf-8")):
+        if r["HEAT_INPUT_MMBTU"]:
+            t = dt_.datetime(*map(int, r["OP_DATE"].split("-")), int(r["OP_HOUR"]))
+            loc = t + dt_.timedelta(hours=1) if dt_.datetime(2026, 3, 8, 2) <= t < dt_.datetime(2026, 11, 1, 1) else t
+            k = (r["FACILITY_NAME"], (loc - dt_.timedelta(hours=9)).date())
+            burn[k] = burn.get(k, 0.0) + float(r["HEAT_INPUT_MMBTU"])
+    lines = {}
+    for r in csv.DictReader(open(os.path.join(target, W.FILES["invoices"]), encoding="utf-8")):
+        lines.setdefault(r["delivery_point"], []).append((dt_.date.fromisoformat(r["gas_day"]), float(r["quantity_dth"])))
+    bad, n_strip = 0, 0
+    for p, ls in lines.items():
+        if p == "Holt Creek Station":
+            continue
+        ls.sort()
+        for (d0, _q0), (d1, q1) in zip(ls, ls[1:]):
+            tot = sum(burn.get((p, d0 + dt_.timedelta(days=k)), 0.0) for k in range(1, (d1 - d0).days + 1))
+            n_strip += (d1 - d0).days > 1
+            bad += abs(tot - q1) > .2
+    check("ask A fair: every invoice line's quantity is its plant's burn since the point's previous line (%d lines off, "
+          "%d lines covering more than one gas day)" % (bad, n_strip), bad == 0)
     edge = min(50 - abs(a[u] - 100 * round(a[u] / 100)) for u in rec)
     check("ask A bins: every unit's cost at least $15 inside its hundred-dollar cell (nearest %.0f)" % edge, edge >= 15)
     b = B.ask_b(target)
+    evs = list(csv.DictReader(open(os.path.join(target, W.FILES["events"]), encoding="utf-8")))
+    import datetime as dt2
+    full = [r for r in evs if r["event_type"] in ("U1", "U2", "U3")]
+    pairs = 0
+    for e in full:
+        s0 = dt2.datetime.strptime(e["start_local"], "%Y-%m-%d %H:%M")
+        e0 = dt2.datetime.strptime(e["end_local"], "%Y-%m-%d %H:%M")
+        for f_ in full:
+            s1 = dt2.datetime.strptime(f_["start_local"], "%Y-%m-%d %H:%M")
+            e1 = dt2.datetime.strptime(f_["end_local"], "%Y-%m-%d %H:%M")
+            if f_ is not e and f_["unit"] == e["unit"] and f_["event_type"] == e["event_type"] and \
+                    f_["cause_code"] == e["cause_code"] and e1 - s1 == e0 - s0 and s1.time() == s0.time() and \
+                    s1 != s0 and f_["date_reported"] > e["date_reported"]:
+                pairs += 1
+    n_designed = sum(1 for e in x["asks"]["events"] if e.get("swapped") and e["filed"] <= dt2.date(2026, 10, 16))
+    check("ask B fair: the reports repeating an outage's type, cause, length and hours under other dates are exactly "
+          "the %d corrected entries (%d found)" % (n_designed, pairs), pairs == n_designed)
     for r, k in (("latest", 9), ("samestart", 9), ("sum", 9), ("union", 9)):
         bs = B.ask_b(target, r)
         mv = [u for u in rec if b.get(u, 0) != bs.get(u, 0)]
