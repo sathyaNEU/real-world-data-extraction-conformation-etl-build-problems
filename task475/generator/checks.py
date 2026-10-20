@@ -97,7 +97,7 @@ def run(target, gdir=None, x=None, meta_path=None, fig_path=None, quiet=False):
     ok("P1", all(p_ in pol for p_ in pins), "the policy carries %d pins" % len(pins))
     co = re.sub(r"\s+", " ", texts[P.FILES["closeout"]])
     ok("P2", "posts the line, at the amount posted" in co and "charged to jobs" in co
-       and "not counted here" in co, "the close-out carries the spending and program-job conventions")
+       and "pays for" in co, "the close-out carries the spending and program-job conventions")
     vocab = ["childless", "decompos", "average credit", "per return", "renumber", "legacy", "mix of"]
     hits = {v: [f for f, t in texts.items() if v in t.lower()] for v in vocab}
     ok("P3", not any(hits.values()), "no shipped text uses the decisive or device vocabulary: %s" % {
@@ -327,7 +327,8 @@ def run(target, gdir=None, x=None, meta_path=None, fig_path=None, quiet=False):
     at = W.a_truth(x["jobs"])
     ok("A1", at == ga, "ask A from the pack equals the clean truth: %s" % {nm[f]: ga[f] for f in fips})
     for cid, route, want in (("A2", "as_exported", 14), ("A3", "as_exported_cf", 14), ("A4", "current", 14),
-                             ("A5", "jobs", 14), ("A6", "with_util", 13), ("A7", "any_completion", 8)):
+                             ("A5", "jobs", 14), ("A6", "with_util", 13), ("A7", "any_completion", 8),
+                             ("A15", "label", 14)):
         v = B.dwellings(target, route)
         m = [nm[f] for f in fips if v[f] != ga[f]]
         ok(cid, len(m) >= want, "%s misses %d: %s" % (route, len(m), {nm[f]: v[f] - ga[f] for f in fips}))
@@ -357,12 +358,30 @@ def run(target, gdir=None, x=None, meta_path=None, fig_path=None, quiet=False):
        "dwelling's county" % thca_h)
     mf = sum(1 for r in js.values() if int(r["UNITS"]) > 1)
     ok("A12", mf >= 300, "%d multifamily jobs, units over jobs" % mf)
+    paid = B.paid_jobs(target)
+    true_fund = {j["no"]: j["funding"] for j in x["jobs"]}
+    hidden = Counter(B.tract_county(r) for no, r in js.items() if r["FUNDING"] == "UTIL-LIW" and no in paid
+                     and no in fc and B.PY0 <= fc[no] <= B.PY1)
+    ok("A13", all(hidden[f] >= 1 for f in fips), "dwellings the program paid for whose old record shows only the "
+                                                 "utility's code, first completed in 2025, in every county: %s" % {
+                                                     nm[f]: hidden[f] for f in fips})
+    util_label = [no for no, r in js.items() if r["FUNDING"] == "UTIL-LIW"]
+    util25 = [no for no in util_label if no in fc and B.PY0 <= fc[no] <= B.PY1]
+    ok("A14", all((no in paid) == ("DOE-WAP" in true_fund[no]) for no in util25)
+       and all(no in paid for no, r in js.items() if B.program(r) and no in fc and B.PY0 <= fc[no] <= B.PY1),
+       "among jobs first completed in 2025 the ledger charges program money to every job the program paid for and to "
+       "none of the utility's own %d" % sum(1 for no in util25 if no not in paid))
+    on_util = sum(1 for ln in gl if ln["JOB_NO"] and B.job_of_line(target, ln) in set(util_label))
+    combo_new = sum(1 for r in js.values() if r["FUNDING"] == "DOE-WAP;UTIL-LIW")
+    ok("A16", on_util >= 50 and combo_new >= 10, "the grader's check: %d ledger lines of program money on jobs whose "
+                                                 "record shows only UTIL-LIW; %d WX jobs list both codes" % (
+                                                     on_util, combo_new))
 
     # ------------------------------------------------------------------ ask B: spending
     bt = W.b_truth(x["ledger"])
     ok("B1", all(abs(bt[f] - gb[f]) < 1e-6 for f in fips), "ask B from the pack equals the clean truth")
     for cid, route, want in (("B2", "raw_join", 14), ("B3", "raw_join_cf", 14), ("B4", "service_year", 13),
-                             ("B5", "completed_only", 14)):
+                             ("B5", "completed_only", 14), ("B11", "posted_cutoff", 14), ("B12", "service_cutoff", 14)):
         v = B.spending(target, route)
         m = [nm[f] for f in fips if round(v[f]) != round(gb[f])]
         ok(cid, len(m) >= want, "%s misses %d: %s" % (route, len(m), {nm[f]: round(v[f] - gb[f]) for f in fips}))
@@ -371,17 +390,24 @@ def run(target, gdir=None, x=None, meta_path=None, fig_path=None, quiet=False):
        "the county the agency entered moves Tallis and Hesketh")
     prev = B.previous_numbers(target)
     l25 = [r for r in gl if r["JOB_NO"] and B.PY0 <= B.day(r["POSTED_DATE"]) <= B.PY1]
+
+    def consistent(how):
+        bad = 0
+        for r in l25:
+            no = B.job_of_line(target, r, how)
+            if no is None or js[no]["AGENCY"] != r["AGENCY"] or r["SERVICE_DATE"] < js[no]["OPENED"]:
+                bad += 1
+        return bad
+    early = sum(1 for r in l25 if B.invoice_month(r) < dt.date(2025, 7, 1))
+    late_old = sum(1 for r in l25 if B.invoice_month(r) < dt.date(2025, 7, 1) and B.day(r["POSTED_DATE"]) >= B.MOVE)
+    bads = {h: consistent(h) for h in ("gold", "posted_cutoff", "service_cutoff", "raw")}
     raw_unmatched = sum(1 for r in l25 if int(r["JOB_NO"]) not in js)
-    raw_bad = sum(1 for r in l25 if int(r["JOB_NO"]) in js and js[int(r["JOB_NO"])]["AGENCY"] != r["AGENCY"])
-    gold_bad = 0
-    for r in l25:
-        no = B.job_of_line(target, r)
-        jr = js[no]
-        gold_bad += jr["AGENCY"] != r["AGENCY"] or r["SERVICE_DATE"] < jr["OPENED"]
-    ok("B7", all(int(r["JOB_NO"]) in prev for r in l25) and raw_unmatched == 0 and gold_bad == 0
-       and raw_bad >= 0.5 * len(l25),
-       "every 2025 line carries an old number, all %d match a job as written (none unmatched); read through the "
-       "conversion notes every line's agency and dates agree, as written %d disagree" % (len(l25), raw_bad))
+    ok("B7", bads["gold"] == 0 and all(v > 0 for k, v in bads.items() if k != "gold") and raw_unmatched == 0
+       and late_old >= 100 and all(int(r["JOB_NO"]) in prev for r in l25 if B.invoice_month(r) < dt.date(2025, 7, 1)),
+       "%d of %d 2025 lines are on invoices for service months to June, each with an old number (%d of them posted "
+       "after the move); read by the invoice month every line's agency and dates agree; lines that disagree under the "
+       "posting-date cutoff %d, the service-date cutoff %d, as written %d; none unmatched as written" % (
+           early, len(l25), late_old, bads["posted_cutoff"], bads["service_cutoff"], bads["raw"]))
     moved = sum(1 for evs in hist.values() for e in evs if e["STATUS"] == "MOVED")
     noted = sum(1 for evs in hist.values() for e in evs if e["NOTE"] and e["STATUS"] != "MOVED")
     ok("B8", moved == len(prev) and noted >= moved, "%d conversion notes among %d other notes" % (moved, noted))

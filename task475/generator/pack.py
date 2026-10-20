@@ -88,7 +88,7 @@ def job_rows(x):
     for j in sorted(x["jobs"], key=lambda j: j["no"]):
         st, last = W.status_now(j)
         county = "Tallis" if j["agency"] == "THCA" else W.NAME[j["tract"][:5]]
-        out.append([j["no"], j["agency"], county, j["tract"], j["btype"], j["units"], j["funding"],
+        out.append([j["no"], j["agency"], county, j["tract"], j["btype"], j["units"], j["label"],
                     j["fuel"], st, j["created"].isoformat(), j["audit"].isoformat() if j["audit"] else "",
                     j["start"].isoformat() if j["start"] else "", last.isoformat() if last else ""])
     return out

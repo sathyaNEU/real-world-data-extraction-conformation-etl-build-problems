@@ -16,19 +16,19 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": ""
+  "reader": "round 1: both readers missed the call (Tallis 15.46 per cent, capped); reader 1 exit 0 (14 of 71, ask A), reader 2 exit 1 (28 of 71, asks A and B); asks re-sited"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective only)",
   "nearest": "task268 v1 at 0.06 (heart), 0.10 (guard)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 1 DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task475/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: two scored readers and the isolated judge thread in flight on target.zip sha256 1f991494fb7dfd99 (judge brief /tmp/determinism-check-task475-6066/judge_brief.md); score each reader with score_reader.py, re-invoke the determinism-judge agent with the thread's verdict.md, fix every finding in one generator pass, re-judge once on FIX_NOW, then the pre-ship check and ship",
+ "resume": "stage 4 round 2: two fresh scored readers and judge pass 2 in flight on target.zip sha256 5d16182359536da0 (asks re-sited: funding-code vintage on A, invoice-month numbering behind the July 2025 move on B); score each with score_reader.py; on two misses of the call with exit 0 and the judge's pass, write the pre-ship check and ship",
  "approved": null,
  "delivered": null,
  "portal": null,

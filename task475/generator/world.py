@@ -482,7 +482,7 @@ AGENCIES = {
 AGENCY_OF = {f: a for a, (_, fs) in AGENCIES.items() for f in fs}
 START = dt.date(2023, 7, 1)
 PULL = dt.date(2026, 9, 30)
-MOVE = dt.date(2026, 1, 12)          # the agencies' move to the new job system
+MOVE = dt.date(2025, 7, 14)          # the agencies' move to the WX job system
 PY = {y: (dt.date(y, 1, 1), dt.date(y, 12, 31)) for y in (2024, 2025, 2026, 2027)}   # calendar program years
 ASK_YEAR = 2025
 LEGACY_FIRST, NEW_FIRST = 18640, 18001
@@ -700,7 +700,8 @@ def ledger(rng, js):
         ln["posted"] = posted[key]
         ln["invoice"] = "%s-%s" % (ln["agency"], mon.strftime("%y%m"))
         if dt.date(2024, 7, 1) <= ln["posted"] <= PULL:
-            prepared = day(ln["posted"], -3)
+            # the agency prepares the month's invoice on the second of the next month, from the system it is on
+            prepared = day((mon.replace(day=28) + dt.timedelta(days=5)).replace(day=1), 1)
             j = ln["job"]
             ln["job_no"] = (j["legacy"] if prepared < MOVE else j["no"]) if j.get("no") else None
             out.append(ln)
@@ -768,6 +769,36 @@ def tune_dwellings(js):
     raise AssertionError("dwelling ties not cleared")
 
 
+def labels(rng, js):
+    """The funding code each job record shows. The old system held one code per job: a job the grant shared with the
+    State fund shows the grant, and a job the grant shared with the utility's program shows whichever code the
+    intake worker entered, often the utility's, which had referred the household. The WX job system lists every
+    source of the jobs opened in it."""
+    for j in sorted(js, key=lambda j: j["no"]):
+        f = j["funding"]
+        if j["legacy"] and f == "DOE-WAP;UTIL-LIW":
+            j["label"] = "UTIL-LIW" if rng.random() < 0.6 else "DOE-WAP"
+        elif j["legacy"] and f == "DOE-WAP;STATE-WX":
+            j["label"] = "DOE-WAP"
+        else:
+            j["label"] = f
+
+
+def hidden_program_jobs(js):
+    """Every member county has at least one dwelling the program paid for, first completed in the year, whose old
+    record shows only the utility's code."""
+    p0, p1 = PY[ASK_YEAR]
+    for f in FIPS:
+        def mine(j):
+            return (j["tract"][:5] == f and j["legacy"] and j["completions"] and p0 <= j["completions"][0] <= p1)
+        if any(mine(j) and program_job(j) and j["label"] == "UTIL-LIW" for j in js):
+            continue
+        cand = sorted((j for j in js if mine(j) and j["funding"] == "DOE-WAP" and j["units"] == 1
+                       and not j["reopens"]), key=lambda j: j["no"])
+        j = cand[len(cand) // 2]
+        j["funding"], j["label"] = "DOE-WAP;UTIL-LIW", "UTIL-LIW"
+
+
 # ---------------------------------------------------------------------------------------------- the whole world
 def build(seed=SEED):
     rng = np.random.default_rng(seed)
@@ -808,6 +839,8 @@ def build(seed=SEED):
     js, tr = jobs(orng)
     crossing_callbacks(orng, js)
     tune_dwellings(js)
+    labels(np.random.default_rng(seed + 905), js)
+    hidden_program_jobs(js)
     gl = ledger(np.random.default_rng(seed + 901), js)
     tune_spending(np.random.default_rng(seed + 902), gl)
     return dict(cty=cty, zips=zips, parts=parts, ty=ty, ty22=ty22, rel=rel, sh=sh, pub=pub, dor=dor, pub22=pub22,

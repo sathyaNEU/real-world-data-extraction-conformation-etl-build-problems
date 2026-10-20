@@ -241,25 +241,15 @@ def closeout_tables(x):
         t1.append([lab, "{:,.2f}".format(doe), "{:,.2f}".format(st), "{:,.2f}".format(doe + st)])
         tot = [tot[0] + doe, tot[1] + st]
     t1.append(["All spending", "{:,.2f}".format(tot[0]), "{:,.2f}".format(tot[1]), "{:,.2f}".format(sum(tot))])
-    t2 = [["Agency", "Jobs opened", "Energy audits"]]
-    s = [0, 0]
-    for a, (nm, fs) in W.AGENCIES.items():
-        mine = [j for j in x["jobs"] if j["agency"] == a and W.program_job(j)]
-        op = sum(1 for j in mine if p0 <= j["created"] <= p1)
-        au = sum(1 for j in mine if j["audit"] and p0 <= j["audit"] <= p1)
-        t2.append([nm, fmt(op), fmt(au)])
-        s = [s[0] + op, s[1] + au]
-    t2.append(["All agencies", fmt(s[0]), fmt(s[1])])
-    return t1, t2, tot
+    return t1, tot
 
 
 CLOSE_NOTES = [
     "Spending is counted in the program year in which the Council's grants ledger posts the line, at the amount "
     "posted. Spending on dwellings is the lines charged to jobs; administration, vehicles, training and insurance are "
     "the agencies' own lines.",
-    "The program's jobs are those the Department of Energy grant or the State Weatherization Fund pays for. The "
-    "agencies also keep the jobs of the utility's low-income weatherization program in the WX job system; those jobs "
-    "are not counted here.",
+    "The program's jobs are those the Department of Energy grant or the State Weatherization Fund pays for; the "
+    "agencies also keep the jobs of the utility's low-income weatherization program in the WX job system.",
 ]
 
 
@@ -267,7 +257,7 @@ def write_closeout(path, x):
     d, frame = _doc(path, "Weatherization Assistance Program, Program Year 2025 Close-out Summary",
                     "Corran Valley Council of Governments  |  Community Energy Programs  |  Program Year 2025 "
                     "Close-out", "Corran Valley Council of Governments")
-    t1, t2, tot = closeout_tables(x)
+    t1, tot = closeout_tables(x)
     story = [Paragraph("Weatherization Assistance Program: Program Year 2025 Close-out Summary", H1),
              Paragraph("Corran Valley Council of Governments, Community Energy Programs. Prepared for the Council "
                        "Board, 24 February 2026.", H1S),
@@ -275,11 +265,9 @@ def write_closeout(path, x):
                        "the program in the fourteen member counties with the Department of Energy's Weatherization "
                        "Assistance Program grant and the State Weatherization Fund, and the year's financial "
                        "close-out was filed with the State Energy Office on 13 February 2026. This summary reports "
-                       "the year's spending by fund and category and the jobs the agencies opened and audited.", BODY),
+                       "the year's spending by fund and category.", BODY),
              Paragraph("Table 1. Spending in program year 2025, by category and fund (dollars)", H2),
              _table(t1, [2.2 * inch, 1.4 * inch, 1.4 * inch, 1.4 * inch], right=(1, 2, 3)),
-             Paragraph("Table 2. Program jobs opened and energy audits in program year 2025, by agency", H2),
-             _table(t2, [2.9 * inch, 1.2 * inch, 1.2 * inch], right=(1, 2)),
              Paragraph("Notes", H2)]
     for n in CLOSE_NOTES:
         story.append(Paragraph(n, BODY))
@@ -343,9 +331,9 @@ WX job system export of 30 September 2026: one row per job, every job the agenci
   TRACT           the dwelling's 2020 census tract (eleven-digit GEOID)
   BUILDING_TYPE   SF single family; MH manufactured home; MF2-4 two to four units; MF5+ five or more units
   UNITS           dwelling units the job covers
-  FUNDING         DOE-WAP (Department of Energy Weatherization Assistance Program), STATE-WX (State
-                  Weatherization Fund), UTIL-LIW (the utility's low-income weatherization program); a job with
-                  more than one source lists them separated by semicolons
+  FUNDING         the job record's funding codes, separated by semicolons where more than one is recorded:
+                  DOE-WAP (Department of Energy Weatherization Assistance Program), STATE-WX (State
+                  Weatherization Fund), UTIL-LIW (the utility's low-income weatherization program)
   HEATING_FUEL    main heating fuel
   STATUS          the job's status on 30 September 2026: AUDIT SCHEDULED, AUDITED, IN PROGRESS, COMPLETED,
                   REOPENED, DEFERRED, CANCELLED
@@ -356,7 +344,7 @@ WX job system export of 30 September 2026: one row per job, every job the agenci
 
 wx_job_status_history_2026-09-30.csv
 Every status change the WX job system holds, with the history of the jobs moved from the agencies' previous system
-on 12 January 2026. One row per change.
+on 14 July 2025. One row per change.
   JOB_NO          the job's number in the WX job system
   STATUS          OPENED, AUDIT SCHEDULED, AUDITED, APPROVED, SCHEDULED, IN PROGRESS, COMPLETED, REOPENED,
                   DEFERRED, CANCELLED, MOVED

@@ -81,21 +81,26 @@ def asks(target):
     members = pd.read_csv(os.path.join(target, "cvcog_member_counties.csv"), dtype={"COUNTY_FIPS": str})
     name = dict(zip(members["COUNTY_FIPS"], members["COUNTY"]))
     jobs["CTY"] = jobs["TRACT"].str[:5].map(name)
-    prog = jobs["FUNDING"].str.contains("DOE-WAP|STATE-WX")
+    moved = hist[hist["STATUS"] == "MOVED"].copy()
+    moved["OLD"] = moved["NOTE"].str.extract(r"previous job no\. (\d+)")[0].astype(int)
+    old_to_new = dict(zip(moved["OLD"], moved["JOB_NO"]))
+    lj = led[led["JOB_NO"] != ""].copy()
+    lj["NO"] = lj["JOB_NO"].astype(int)
+    # invoices for service months to June 2025 were prepared before the July 2025 move, under the old numbers
+    lj["OLD_INVOICE"] = lj["INVOICE_NO"].str[-4:] < "2507"
+    lj["JOB"] = np.where(lj["OLD_INVOICE"], lj["NO"].map(old_to_new), lj["NO"])
+    assert lj["JOB"].notna().all()
+    lj["JOB"] = lj["JOB"].astype(int)
+    paid = set(lj["JOB"])
+    prog = jobs["FUNDING"].str.contains("DOE-WAP|STATE-WX") | jobs["JOB_NO"].isin(paid)
     first = hist[hist["STATUS"] == "COMPLETED"].groupby("JOB_NO")["CHANGED_AT"].min().str[:10]
     j = jobs[prog].copy()
     j["FIRST"] = j["JOB_NO"].map(first)
     done = j[(j["FIRST"] >= "2025-01-01") & (j["FIRST"] <= "2025-12-31")]
     a = done.groupby("CTY")["UNITS"].sum()
-    moved = hist[hist["STATUS"] == "MOVED"].copy()
-    moved["OLD"] = moved["NOTE"].str.extract(r"previous job no\. (\d+)")[0].astype(int)
-    old_to_new = dict(zip(moved["OLD"], moved["JOB_NO"]))
-    l25 = led[(led["POSTED_DATE"] >= "2025-01-01") & (led["POSTED_DATE"] <= "2025-12-31") & (led["JOB_NO"] != "")]
-    assert (l25["POSTED_DATE"] < "2026-01-12").all()
-    l25 = l25.copy()
-    l25["JOB"] = l25["JOB_NO"].astype(int).map(old_to_new)
-    assert l25["JOB"].notna().all()
+    l25 = lj[(lj["POSTED_DATE"] >= "2025-01-01") & (lj["POSTED_DATE"] <= "2025-12-31")].copy()
     l25["CTY"] = l25["JOB"].map(dict(zip(jobs["JOB_NO"], jobs["CTY"])))
+    assert (l25["AGENCY"].values == l25["JOB"].map(dict(zip(jobs["JOB_NO"], jobs["AGENCY"]))).values).all()
     b = l25.groupby("CTY")["AMOUNT"].sum()
     return {k: int(a.get(k, 0)) for k in name.values()}, {k: float(b.get(k, 0.0)) for k in name.values()}
 

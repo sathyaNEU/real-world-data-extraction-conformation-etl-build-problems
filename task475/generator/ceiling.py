@@ -35,9 +35,10 @@ def main(target=None):
     print("Ask B, spending on dwellings in program year 2025; golden", gb)
     for k, v in b_routes.items():
         print("  %-16s keeps %2d of 14" % (k, kept(gb, v, nm)))
-    # the cracker: completion dates as exported, deferred, cancelled and utility-only jobs dropped, units summed, the
-    # contract county; ledger lines posted in the year joined on the job number as written
-    ca, cb = kept(ga, a_routes["as_exported"], nm), kept(gb, b_routes["raw_join"], nm)
+    # the cracker, on the stage 4 readers' measured paths: first completions from the history, the job records'
+    # funding codes, units, the dwelling's tract; old numbers read through the conversion notes on lines posted
+    # before the move
+    ca, cb = kept(ga, a_routes["label"], nm), kept(gb, b_routes["posted_cutoff"], nm)
     C = 38 + 7 + ASK_W * (ca + cb)
     # the mirror: the best response off the call (the statewide share), its asks handled the cracker's way
     best_main = 0.0

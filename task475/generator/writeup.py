@@ -61,15 +61,17 @@ def write(fig_path, path):
         "Shared the fund in proportion to the counts (policy 5.1): the largest share, %s's %.2f per cent, is under "
         "the 12 per cent cap (5.2), so nothing is redistributed; allocations rounded to the nearest hundred dollars "
         "(5.3), %s %s." % (top, sh[top], top, money(al[top])),
-        "Ask A: took the units of the jobs in wx_job_export_2026-09-30.csv funded by DOE-WAP or STATE-WX whose first "
-        "COMPLETED change in wx_job_status_history_2026-09-30.csv falls in 2025 (policy 6.1; the export's "
-        "COMPLETED_DATE is the latest completion, after any callback), each placed by its dwelling's tract county "
-        "(Tallis-Hesketh Community Action enters Tallis on its Hesketh jobs): %s."
+        "Ask A: took the units of the jobs the grant or the State fund paid for (DOE-WAP or STATE-WX in "
+        "wx_job_export_2026-09-30.csv, or program money the grants ledger charges to the job: the previous system "
+        "kept one funding code per job, so some jobs the grant paid for show only UTIL-LIW) whose first COMPLETED "
+        "change in wx_job_status_history_2026-09-30.csv falls in 2025 (policy 6.1; the export's COMPLETED_DATE is "
+        "the latest completion, after any callback), each placed by its dwelling's tract county (Tallis-Hesketh "
+        "Community Action enters Tallis on its Hesketh jobs): %s."
         % "; ".join("%s %s" % (k, "{:,}".format(a[k])) for k in ORDER),
         "Ask B: summed the lines of cvcog_grants_ledger_2024-07_2026-09.csv posted in 2025 that carry a job number, "
-        "at the amount posted (the close-out's convention), each read as the previous system's job number through "
-        "the MOVED conversion notes in the status history (the agencies invoiced 2025 under their old numbers) and "
-        "placed by the job's tract county: %s." % "; ".join("%s %s" % (k, "{:,}".format(b[k])) for k in ORDER),
+        "at the amount posted (the close-out's convention), reading the numbers on invoices for service months to "
+        "June 2025, prepared before the July 2025 move, as the previous system's through the MOVED conversion notes "
+        "in the status history, and placed each by the job's tract county: %s." % "; ".join("%s %s" % (k, "{:,}".format(b[k])) for k in ORDER),
         "Recommended the proportional split with no county capped, %s the largest at %s." % (top, money(al[top])),
     ]
     for k, s in enumerate(steps, 1):

@@ -22,7 +22,7 @@ FILES = dict(irs23="irs_soi_zip_code_data_ty2023_extract.csv", irs22="irs_soi_zi
 FUND = 20_000_000
 CAP = 0.12
 PY0, PY1 = dt.date(2025, 1, 1), dt.date(2025, 12, 31)
-MOVE = dt.date(2026, 1, 12)
+MOVE = dt.date(2025, 7, 14)
 PROGRAM = ("DOE-WAP", "STATE-WX")
 DOR_LABELS = ["Under $10,000", "$10,000 under $20,000", "$20,000 under $25,000", "$25,000 under $50,000",
               "$50,000 under $75,000", "$75,000 or more"]
@@ -296,13 +296,27 @@ def field_county(target, r):
 
 
 def program(r):
+    """The job record's own funding codes name the grant or the State fund."""
     return any(x in r["FUNDING"].split(";") for x in PROGRAM)
+
+
+def paid_jobs(target):
+    """Jobs the grants ledger charges program money to, each line read under the number its invoice carried."""
+    def build():
+        out = set()
+        for ln in ledger(target):
+            no = job_of_line(target, ln)
+            if no is not None:
+                out.add(no)
+        return out
+    return cached(("paid", target), build)
 
 
 def dwellings(target, route="gold"):
     """Dwellings the program weatherized in each member county in program year 2025.
-    gold            units of DOE or state funded jobs first completed in the year (the status history), by the
-                    dwelling's tract
+    gold            units of the jobs the grant or the State fund paid for (the job's codes, or program money the
+                    ledger charges to it), first completed in the year (the status history), by the dwelling's tract
+    label           the job record's funding codes alone (the old system kept one code per job)
     as_exported     the export's completion date (the latest) in place of the first
     as_exported_cf  the export's completion date and the county the agency entered
     county_field    the first completion, the county the agency entered
@@ -313,9 +327,13 @@ def dwellings(target, route="gold"):
     js = jobs(target)
     fc = first_completed(target)
     comps = completions(target)
+    paid = paid_jobs(target)
     out = {f: 0 for f in member_fips(target)}
     for no, r in js.items():
-        if route != "with_util" and not program(r):
+        if route == "label":
+            if not program(r):
+                continue
+        elif route != "with_util" and not program(r) and no not in paid:
             continue
         if route in ("as_exported", "as_exported_cf"):
             ok = bool(r["COMPLETED_DATE"]) and PY0 <= day(r["COMPLETED_DATE"]) <= PY1
@@ -324,7 +342,7 @@ def dwellings(target, route="gold"):
         elif route == "any_completion":
             ok = any(PY0 <= c <= PY1 for c in comps.get(no, []))
         else:
-            ok = no in fc and PY0 <= fc[no] <= PY1
+            ok = no in fc and PY0 <= fc[no] <= PY1   # gold, label, jobs, county_field, with_util
         if not ok:
             continue
         f = field_county(target, r) if route in ("as_exported_cf", "county_field") else tract_county(r)
@@ -333,22 +351,34 @@ def dwellings(target, route="gold"):
 
 
 # ---------------------------------------------------------------------------------------------- ask B: spending
+def invoice_month(ln):
+    """The service month of the line's invoice, from its number (agency and yymm)."""
+    yymm = ln["INVOICE_NO"].rsplit("-", 1)[1]
+    return dt.date(2000 + int(yymm[:2]), int(yymm[2:]), 1)
+
+
 def job_of_line(target, ln, how="gold"):
-    """The job a ledger line is charged to. The invoices gave the old system's number until the move and the WX
-    number after it; the conversion notes carry the old numbers. raw: the line's number joined as written."""
+    """The job a ledger line is charged to. Each invoice gives the numbers of the system the agency was on when it
+    prepared the invoice, early in the next month: the old system's for service months to June 2025, the WX job
+    system's after the July 2025 move; the old numbers are in the history's conversion notes.
+    raw             the number joined as written
+    posted_cutoff   old numbers read on lines posted before the move
+    service_cutoff  old numbers read on lines whose service date is before the move"""
     if not ln["JOB_NO"]:
         return None
     no = int(ln["JOB_NO"])
-    if how == "raw":
-        return no if no in jobs(target) else None
-    prev = previous_numbers(target)
     js = jobs(target)
-    if day(ln["POSTED_DATE"]) < MOVE:
-        return prev.get(no)
-    # after the move: the WX number, except an invoice prepared before it; the agency and the service date decide
-    cands = [c for c in (no, prev.get(no)) if c in js]
-    good = [c for c in cands if js[c]["AGENCY"] == ln["AGENCY"] and js[c]["AUDIT_DATE"] <= ln["SERVICE_DATE"]]
-    return good[0] if len(good) == 1 else (cands[0] if cands else None)
+    if how == "raw":
+        return no if no in js else None
+    if how == "posted_cutoff":
+        old = day(ln["POSTED_DATE"]) < MOVE
+    elif how == "service_cutoff":
+        old = day(ln["SERVICE_DATE"]) < MOVE
+    else:
+        old = invoice_month(ln) < dt.date(MOVE.year, MOVE.month, 1)
+    if old:
+        return previous_numbers(target).get(no)
+    return no if no in js else None
 
 
 def spending(target, route="gold"):
@@ -357,6 +387,8 @@ def spending(target, route="gold"):
                     dwelling tract, each line's job read through the old number it was invoiced under
     raw_join        the line's job number joined to the export as written
     raw_join_cf     as written, placed by the county the agency entered
+    posted_cutoff   old numbers read through the notes on lines posted before the move
+    service_cutoff  old numbers read through the notes on lines whose service date is before the move
     county_field    the right job, the county the agency entered
     service_year    lines whose service date falls in the year in place of the posting date
     completed_only  only lines on jobs completed (weatherized) by the pull"""
@@ -368,7 +400,9 @@ def spending(target, route="gold"):
         d = day(ln["SERVICE_DATE"] if route == "service_year" else ln["POSTED_DATE"])
         if not (PY0 <= d <= PY1):
             continue
-        no = job_of_line(target, ln, "raw" if route.startswith("raw_join") else "gold")
+        how = {"raw_join": "raw", "raw_join_cf": "raw", "posted_cutoff": "posted_cutoff",
+               "service_cutoff": "service_cutoff"}.get(route, "gold")
+        no = job_of_line(target, ln, how)
         if no is None:
             continue
         r = js[no]
@@ -379,6 +413,7 @@ def spending(target, route="gold"):
     return out
 
 
-A_ROUTES = ["as_exported", "as_exported_cf", "county_field", "jobs", "with_util", "any_completion", "current"]
-B_ROUTES = ["raw_join", "raw_join_cf", "county_field", "service_year", "completed_only"]
+A_ROUTES = ["label", "as_exported", "as_exported_cf", "county_field", "jobs", "with_util", "any_completion", "current"]
+B_ROUTES = ["posted_cutoff", "service_cutoff", "raw_join", "raw_join_cf", "county_field", "service_year",
+            "completed_only"]
 MAIN_ROUTES = ["R0", "R1", "R1all", "R1b", "R1c"]

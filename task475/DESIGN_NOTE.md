@@ -225,26 +225,32 @@ sentence (fork table). Re-run on the finished pack at stage 3.
   each allocation in the board paper (policy 6.1). Path: the job export (job, agency, county entered, dwelling tract,
   building type, units, funding, status, completion), the job status history (job, status, changed, user, note), the
   member and agency lists, the policy, the close-out, the dictionary.
-  Primary device: D8, an anchor on the current record, not the first. Policy 6.1 counts each dwelling in the year its
-  job was first completed; a job reopened for a callback is marked complete again when the callback closes, the
-  export's COMPLETED_DATE is the latest, and the first completion is only in the status history (275 jobs completed
-  twice or more; every county has jobs whose first and latest completions straddle the year, A9). Nothing in the
-  export marks a re-completed job.
-  Hazards: H1 the county entered (Tallis-Hesketh Community Action enters Tallis on its 253 Hesketh jobs, while the
-  tract places the dwelling); H2 utility-only jobs kept in the same system (counted, all 14 move); multifamily units
-  (jobs counted, all 14 move); deferred and cancelled jobs.
+  Primary device: D2, a label stored before a silent switch. The previous system kept one funding code per job, and a
+  job the grant shared with the utility's program carries whichever code the intake worker entered, often UTIL-LIW;
+  the WX system lists every source of the jobs opened in it. So jobs the grant paid for show only the utility's code
+  (every county has at least one first completed in 2025, A13), every row valid; only the grants ledger, read under
+  the right job numbers, shows program money on them (322 lines, A16), and the close-out files the program's jobs as
+  those the grant or the State fund pays for.
+  Hazards: D8, policy 6.1's first completion against the export's COMPLETED_DATE, which is the latest after a callback
+  (275 jobs completed twice; every county straddles the year, A9); H1 the county entered (Tallis-Hesketh Community
+  Action enters Tallis on its 253 Hesketh jobs, while the tract places the dwelling); H2 the utility's own jobs in the
+  same system (counted, all 14 move); multifamily units (jobs counted, all 14 move); deferred and cancelled jobs.
 - **Ask B, the program's spending on dwellings in each county in program year 2025 (fourteen figures, whole
   dollars).** H18 home: the money each county's dwellings absorbed, the board's second figure beside each allocation.
   Path: the grants ledger (line, posted, agency, invoice, job number, account, fund, service date, amount), the job
   export, the status history's conversion notes, the close-out's convention (posted in the year, at the amount
   posted, lines charged to jobs), the dictionary.
-  Primary device: D7, the true key elsewhere. The agencies invoiced 2025 under their previous system's job numbers;
-  the January 2026 conversion loaded the old jobs in their old order under the WX system's numbers, so every 2025 line
-  matches some job as written (none unmatched), the county totals stay plausible (0.71 to 1.66 times the true, B9),
-  and only the line's agency and dates disagree with the job it lands on (5,729 of 7,302 lines); the old numbers live
-  only in the history's MOVED conversion notes.
+  Primary device: D7 with a D8 clock, the true key elsewhere behind a cutoff no date column carries. The agencies
+  moved to the WX job system on 14 July 2025 and prepare each month's invoice early in the next month from the system
+  they are on, so invoices for service months to June carry the previous system's job numbers and later ones the WX
+  numbers; 469 lines of June invoices were posted after the move. The conversion loaded the old jobs in their old
+  order under the WX numbers, so every old number is also a valid WX number (none unmatched as written, county totals
+  0.80 to 1.59 times the true, B9); the old numbers live only in the history's MOVED conversion notes. Read by the
+  invoice month every line's agency and dates agree; a posting-date cutoff leaves 468 lines disagreeing and a
+  service-date cutoff 191 (B7), and each misses all 14 counties (B11, B12).
   Hazards: H1 (the county entered); the service date in place of the posting date (all 14 move); only lines on
-  completed jobs (all 14 move); administration lines with no job.
+  completed jobs (all 14 move); administration lines with no job; the funding-code vintage for a response that keeps
+  only lines on jobs whose codes name the program.
 - **The construction layer:** the call, the fourteen counts, shares and allocations, and the chart; the cracker has
   them.
 - **Main population zero-counts (asserted):** the call reads no job, history, ledger or close-out file; with each of
@@ -255,14 +261,15 @@ sentence (fork table). Re-run on the finished pack at stage 3.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, dwellings weatherized by county | counts units of program jobs whose export completion date falls in the year, by the dwelling's tract; keeps 0 of 14 | miss |
-| B, spending on dwellings by county | sums ledger lines posted in the year with a job number, joins the number to the export as written, by the job's tract; keeps 0 of 14 | miss |
+| A, dwellings weatherized by county | the round 1 readers' path: units of jobs whose funding codes name the program, first completed in the year from the history, by the dwelling's tract; keeps 0 of 14 | miss |
+| B, spending on dwellings by county | the round 1 reader 2 path: lines posted in the year with a job number, old numbers read through the conversion notes on lines posted before the move, by the job's tract; keeps 0 of 14 | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight on the cut pack (generator/ceiling.py: the mirror builds both asks the
   cracker's way and keeps none of 28).
 - Pair ceiling: 31.0 on the cut pack (weights 38 / 7 / 55: the cracker keeps the main block and instructions, 45.0;
-  the best mirror off the call keeps the cap decision through the pooled average and instructions, 17.0); re-measured
-  by the stage 4 readers and from the generated rubric at ship.
+  the best mirror off the call keeps the cap decision through the pooled average and instructions, 17.0), with the
+  cracker on the round 1 readers' measured paths; re-measured by the round 2 readers and from the generated rubric at
+  ship.
 - Measured by: generator/ceiling.py on the cut pack.
 
 ## Pre-ship check
@@ -310,3 +317,8 @@ sentence (fork table). Re-run on the finished pack at stage 3.
   conversion now loads the old jobs in their old order.
 - Program years from July to June (2026-10-20, stage 3): the asked year had not closed at the pull; program years are
   calendar years and the asks read the last closed one, 2025.
+- The first ask devices (2026-10-20, stage 4 round 1, measured): D8 alone as ask A's primary, where policy 6.1's
+  "first completed" sent both readers to the status history and both kept all fourteen dwellings; and D7 with the move
+  after the year, where reader 2 read the conversion notes, validated the mapping by agency and kept all fourteen
+  spending figures (score_reader exit 1, 28 of 71). Re-sited: ask A on the funding-code vintage, ask B on the invoice
+  month behind a move inside the year; both readers had missed the call.

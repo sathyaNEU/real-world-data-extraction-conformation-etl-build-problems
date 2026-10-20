@@ -215,11 +215,13 @@ def write_workbook(g, f, path):
     for col, wd in zip("ABC", (18, 22, 24)):
         ws2.column_dimensions[col].width = wd
     ws2.freeze_panes = "A2"
-    src = ("Dwellings: units of the jobs the Department of Energy grant or the State Weatherization Fund paid for, in "
-           "the year each job was first completed (WX job status history), placed by the dwelling's census tract. "
-           "Spending: grants ledger lines posted in 2025 and charged to jobs, at the amount posted, each placed by its "
-           "job's tract; the agencies invoiced 2025 under their previous system's job numbers, read through the "
-           "conversion notes. Whole dollars from the unrounded county sums.")
+    src = ("Dwellings: units of the jobs the Department of Energy grant or the State Weatherization Fund paid for (the "
+           "job's funding codes, or program money the grants ledger charges to it, since the previous system kept one "
+           "code per job), in the year each job was first completed (WX job status history), placed by the dwelling's "
+           "census tract. Spending: grants ledger lines posted in 2025 and charged to jobs, at the amount posted, each "
+           "placed by its job's tract; invoices for service months to June 2025 were prepared before the July move "
+           "and carry the previous system's job numbers, read through the conversion notes. Whole dollars from the "
+           "unrounded county sums.")
     ws2.cell(row=lr + 2, column=1, value=src).font = Font(name="Calibri", italic=True, size=9, color="555555")
     ws2.cell(row=lr + 2, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     ws2.merge_cells(start_row=lr + 2, start_column=1, end_row=lr + 2, end_column=3)
