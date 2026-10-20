@@ -1,0 +1,26 @@
+{
+ "task": "task477",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "stump": "The default path ranks industries by 2021 to 2025 growth in covered wages per job as recorded, and the reflex correction scales 2021 down by one assumed pay-schedule mix for every industry; both file the same wrong slate, because the extra 2021 pay dates inflate each industry's base by its own unrecorded schedule mix; estimating each industry's pay-date exposure from its quarterly record files the slate.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "guard_check": "WARN 2026-10-20 (overuse.objective, overuse.shape, repeat.gate_g, overuse.gate_g, repeat.question_form); the first draft's G13 and csv+xlsx were redrawn to G3 and csv+docx",
+  "nearest": "task102 at 0.07"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: default path, stump sentence, ladder (a numeric prototype on the generator's clean truth first), fork and closure tables, the asks, prompt.txt, precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET34 (QCEW county wage jump: hierarchy levels, ownership codes and suppressed children): world, decision and quantity kept (a county's private pay per job and which industries' pay really grew); the seed's mechanism dropped; the pitfall re-found in the record's own pay-date calendar"
+}

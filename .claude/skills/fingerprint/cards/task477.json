@@ -1,0 +1,85 @@
+{
+  "task": "task477",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET34 (QCEW county wage jump): the world, the decision and the quantity kept (a county's private pay per job and which industries' pay really grew); the pitfall re-found from the record's own calendar structure",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a regional workforce board conforming its county's quarterly covered-wage record (wages counted in the quarter they are paid) to pay for the work done in each calendar year, to rank industries' 2021 to 2025 pay growth per job for its 2027 sector-partnership slate",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G6",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the county's quarterly covered-wage files, reads that wages are counted in the quarter they are paid and corrects 2021 for its extra pay dates with one assumed pay-schedule mix applied to every industry ranks the wrong four industries, because how much of an industry's payroll goes out weekly or every other Friday differs by industry and is recorded nowhere, so the 2021 base each industry's growth is measured from is inflated by its own unseen schedule mix.",
+  "domain_test": "The decisive quantity is each industry's growth in pay per job for the work done in 2021 and 2025, which needs each industry's calendar (pay-date) effect estimated the way official time-series production estimates calendar regressors: from how its quarterly wages move with the number of weekly and biweekly pay dates each quarter holds across thirteen years; swapping in another field's nouns breaks it because the pay-date calendar, the quarter-of-payment rule of unemployment-insurance wage reporting and the mix of payroll frequencies are what create and identify the effect.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:pay-date calendar exposure estimated from quarterly pay-date counts",
+  "layer1": [
+    "preliminary and revised quarters overlapping across the quarterly releases",
+    "suppressed industry cells flagged in the disclosure code",
+    "file layout change across years",
+    "ownership and aggregation-level codes in one long file",
+    "monthly employment on the twelfth against quarterly wages",
+    "industry codes on two NAICS vintages"
+  ],
+  "stakeholder_role": "the workforce board's labor-market analyst preparing the 2027 sector-partnership slate",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one county, ownership and industry code in one quarter",
+    "grain": "area x ownership x industry x quarter",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United States, a fictional multi-county labor market region (unnamed state)",
+    "currency": "USD",
+    "org_type": "a regional workforce development board",
+    "invented_names": [],
+    "people": [
+      "Beverly Ray",
+      "Dalton Harding"
+    ]
+  },
+  "deliverables": [
+    "earned_wage_series_2013_2025.csv",
+    "sector_partnership_slate_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A periodic total is recorded in the period each payment is made, and payments recur on several fixed-interval schedules whose count per period varies with the calendar, so a period holding an extra payment date on a schedule is inflated by that schedule's share of the total, a share each unit carries in its own unrecorded mix; the share is estimated for each unit from how its recorded totals move with the count of payment dates each schedule places in each sub-period, before growth is measured from an inflated base period.",
+  "driver_concrete": "Each industry's 2021 covered wages hold a 53rd Friday and a 27th alternate-Friday pay date for whatever share of its payroll goes out on those schedules, recorded nowhere, so each industry's pay-date exposure is estimated from how its quarterly wages since 2013 move with the weekly and biweekly pay dates each quarter holds, and its 2021 and 2025 wages put on the work done in each year, before its pay growth per job is ranked.",
+  "stump": "The default path ranks industries by 2021 to 2025 growth in covered wages per job as recorded, and the reflex correction scales 2021 down by one assumed pay-schedule mix for every industry; both file the same wrong slate, because the extra 2021 pay dates inflate each industry's base by its own schedule mix, so the weekly and alternate-Friday payrolls' growth is understated; estimating each industry's pay-date exposure from its quarterly record files the slate the board should fund.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-20T11:20:22Z"
+}
