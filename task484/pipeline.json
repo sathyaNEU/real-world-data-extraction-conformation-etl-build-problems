@@ -4,11 +4,11 @@
  "status": "PAUSED",
  "domain": "demographic-social-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-20",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "stump": "The default path applies each city's ACS occupancy to every housing unit; units completed in the last two years are still leasing up, and only their occupancy by months since completion, from the utility's account history, puts the right cities over 50,000.",
  "precut": "PASS 2026-10-20 (51 checks)",
  "leak": "leak.py REVIEW (program words in the rules and notes, the cities named in the census, ACS and school files)",
@@ -18,6 +18,6 @@
  },
  "judge": null,
  "returned": [],
- "resume": "stage 4: rebuild with python3 task484/generator/build.py (byte-identical, target.zip sha256 16badade827fffeb); score two isolated readers (leak-task484-r1, r2) with score_reader.py --call-key call; judge thread from its brief; fix findings, then ship",
+ "resume": "stage 1: architecture 1 spent at stage 4 (reader 2 landed the call and 24 of 24 asks); re-root to architecture 2 with a fresh draw, read Tried and rejected first",
  "source_note": "seed ET41's number, re-worlded at the draw (housing unit method population estimates)"
 }

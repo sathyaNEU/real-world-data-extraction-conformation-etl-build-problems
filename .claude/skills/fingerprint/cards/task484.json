@@ -78,7 +78,12 @@
     "task471": "task471 corrects a dual-system count for dependence in one group; here nothing is counted twice: new units are in the stock but not yet occupied",
     "task172": "task172 forecasts waits cut short by a deadline that moved; here no wait is forecast: the occupancy of units already completed is estimated from how earlier buildings filled"
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "version": "v1",
+      "fate": "spent at stage 4, 2026-10-20: an isolated reader built the lease-up curve from the utility's new premises and landed the call and 24 of 24 asks"
+    }
+  ],
   "notes": "task484 drawn 2026-10-20 in a fresh world (housing unit method population estimates) after ET41's broadband world was rejected at the draw",
   "client_domain": "survey-research-official-statistics",
   "registered": "2026-10-20T23:40:06Z"

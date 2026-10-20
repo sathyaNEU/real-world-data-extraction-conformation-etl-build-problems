@@ -189,3 +189,11 @@ Measured by: generator/ceiling.py
   reliable technology, enforceable commitments and the location fabric are filed BEAD definitions and the base is a
   recorded count, so every lever was a filed definition, a fabric clean-up (Layer 1) or maturity of pending
   challenges; re-worlded.
+- 2026-10-20, at stage 4 (architecture 1 spent): isolated reader 2 (sonnet, medium, fresh unzip) landed the call
+  (Fairhaven and Linden) and all 24 ask figures. It read rule 2.2's "occupied housing units on 1 April 2026" as units
+  occupied, not units existing, saw in the utility file that premises first billed after January 2021 start near
+  empty while the older ones sit flat at 0.947, built the lease-up curve and applied it to every city; and it keyed
+  the permits on city and parcel, which exposed every expired-and-reissued permit. Lessons: a fill record whose new
+  premises begin at zero beside a flat stock is a ready-made curve one step from use, so it is the reflex, not a
+  skipped step; the word "occupied" in the estimand points at it; a parcel key exposes re-issues to any hygiene
+  pass. Reader 1 and the judge were stopped.
