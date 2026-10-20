@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 (the rules name the program; the notes and rules share ordinary words)",
-  "reader": "round 1: both readers missed the call (five units) and kept 17 of 18 ask figures; asks re-sited (strip billing, month-early entries); round 2 next"
+  "reader": "round 1: both readers missed the call (five units) and kept 17 of 18 ask figures; asks re-sited; round 2 (readers 3, 4) running"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 (pattern G14 after surface flagged G7 against task472)",
@@ -29,7 +29,7 @@
   "note": "round-1 pack: fuel price donor missing on two days (gone with the re-site) and 'same outage' undefined in rule 3.2 (now defined); call reproduced, Gate H analytical"
  },
  "returned": [],
- "resume": "stage 4: finish the fuel-cost bin tuning (TRANSPORT in world.py), full build, round-2 readers on the new zip, re-judge once",
+ "resume": "stage 4 round 2 in flight: score readers 3 and 4 (scratchpad leak-task474c-r3, r4), read the re-judge, then ship or re-site",
  "approved": null,
  "delivered": null,
  "portal": null,

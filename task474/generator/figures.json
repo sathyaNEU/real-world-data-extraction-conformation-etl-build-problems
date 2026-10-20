@@ -22,17 +22,17 @@
   },
   "forced_total": 2096,
   "fuel": {
-   "AF-1": 3843100,
-   "AF-2": 3278500,
-   "CB-1": 2892000,
-   "CB-2": 4679000,
-   "DF-1": 4659300,
-   "DF-2": 3937100,
-   "DF-3": 3651900,
-   "SR-1": 4158700,
-   "SR-2": 4083000
+   "AF-1": 3843200,
+   "AF-2": 3278600,
+   "CB-1": 2891500,
+   "CB-2": 4678200,
+   "DF-1": 4658300,
+   "DF-2": 3936200,
+   "DF-3": 3651100,
+   "SR-1": 4159600,
+   "SR-2": 4083900
   },
-  "fuel_total": 35182600
+  "fuel_total": 35180600
  },
  "call": [
   "AF-1",
@@ -69,7 +69,7 @@
   "AF-1": {
    "designated": true,
    "forced": 349,
-   "fuel": 3843100,
+   "fuel": 3843200,
    "hours": 1027,
    "mwh": 162545,
    "plant": "Ashfork"
@@ -77,7 +77,7 @@
   "AF-2": {
    "designated": true,
    "forced": 221,
-   "fuel": 3278500,
+   "fuel": 3278600,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"
@@ -85,7 +85,7 @@
   "CB-1": {
    "designated": true,
    "forced": 117,
-   "fuel": 2892000,
+   "fuel": 2891500,
    "hours": 732,
    "mwh": 116711,
    "plant": "Cutler Bend"
@@ -93,7 +93,7 @@
   "CB-2": {
    "designated": true,
    "forced": 100,
-   "fuel": 4679000,
+   "fuel": 4678200,
    "hours": 1164,
    "mwh": 199641,
    "plant": "Cutler Bend"
@@ -101,7 +101,7 @@
   "DF-1": {
    "designated": true,
    "forced": 198,
-   "fuel": 4659300,
+   "fuel": 4658300,
    "hours": 1076,
    "mwh": 198573,
    "plant": "Dunmore Flats"
@@ -109,7 +109,7 @@
   "DF-2": {
    "designated": false,
    "forced": 522,
-   "fuel": 3937100,
+   "fuel": 3936200,
    "hours": 935,
    "mwh": 175633,
    "plant": "Dunmore Flats"
@@ -117,7 +117,7 @@
   "DF-3": {
    "designated": true,
    "forced": 265,
-   "fuel": 3651900,
+   "fuel": 3651100,
    "hours": 908,
    "mwh": 157196,
    "plant": "Dunmore Flats"
@@ -125,7 +125,7 @@
   "SR-1": {
    "designated": true,
    "forced": 100,
-   "fuel": 4158700,
+   "fuel": 4159600,
    "hours": 1007,
    "mwh": 175420,
    "plant": "Sable Ridge"
@@ -133,7 +133,7 @@
   "SR-2": {
    "designated": false,
    "forced": 224,
-   "fuel": 4083000,
+   "fuel": 4083900,
    "hours": 1015,
    "mwh": 178218,
    "plant": "Sable Ridge"
