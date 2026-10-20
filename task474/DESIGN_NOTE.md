@@ -340,3 +340,12 @@ Measured by: generator/ceiling.py
   reflex (5,646 claim numbers with two lines, each taken at its later line). Lesson for the re-root: a decisive step
   whose evidence is a second source that ties to the first and carries signed corrections is found by the first
   reconciliation; and the latest-line-per-key device is spent in this lane. Reader 2 and the judge were stopped.
+- 2026-10-20, at stage 4 (architecture 5 spent): isolated reader 1 (sonnet, medium, fresh unzip) landed the call
+  (L01, L03, L05, L14) and 12 of 24 ask figures (score_reader.py exit 1). It scaled each count to the year class by
+  class with the four classifying stations unprompted: the traffic monitoring guide itself recommends class-specific
+  factors where classifying stations exist, so with classifying stations in the pack the decisive step is the field's
+  reflex, not a skipped step (readability test 3 misjudged as silent). On the asks it keyed visits on terminal, tag
+  and gate_out, which defeats Berth 20's standard-time in-gate for visit counts, and stitched Berth 40's rail ramp
+  legs by their RG1 lanes; it missed only the Berth 20 turn times and Pacific Gateway's voided keyings. Lessons: a
+  decisive step the field's own guidance names is a reflex for a model that knows the guidance; a shared gate_out is
+  a key the reader will find; a lane code that names a gate is read. Reader 2 and the judge were stopped.
