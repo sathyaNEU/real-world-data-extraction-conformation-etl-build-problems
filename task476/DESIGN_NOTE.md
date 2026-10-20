@@ -69,15 +69,17 @@ stage 4; its identity is in the card's lineage.
 ## Default path
 
 1. Read the program guidelines: designate every district whose 2026 leak methane per mile of cast-iron and
-   bare-steel main is at or above the line; a leak emits at its grade's rate from when it began to its repair.
-2. Take the leaks found in 2026 from the survey finds and the odor reports, join each to its repair orders for the
-   repair date (open leaks to 31 December 2026), and to its district.
-3. Count each leak's emitting time from its find to its repair, at its grade's rate; sum by district; divide by the
-   district's cast-iron and bare-steel miles from the GIS inventory; compare with the line.
+   bare-steel main is at or above the line; a leak emits at its grade's rate from when it began to its repair, and a
+   called leak began at the call.
+2. Take the leaks found in 2026 from the survey finds and the confirmed odor calls, join each to its repair orders for
+   the repair date (open leaks to 31 December 2026), and to its segment's district.
+3. Start each surveyed leak halfway between its segment's 2025 survey and the find (the leak is known only to have
+   begun since the last walk), each called leak at the call; sum each leak's rate times its hours by district; divide
+   by the district's cast-iron and bare-steel miles; compare with the line.
 
-Ends on: designates the wrong set (provisional; fixed on the generator at stage 3).
+Ends on: three districts designated, Ashby, Elmwood and Ivers.
 
-Golden: designates the set where each surveyed leak's start is estimated from the odor reports' monthly profile.
+Golden: five districts designated, Brennan Hill, Elmwood, Fenwick, Harlow and Ivers.
 
 ## Stump sentence
 
@@ -125,8 +127,9 @@ procedure says how a surveyed leak's start is estimated, and executing every sta
 designates the wrong set.
 
 Analyst test: a strong analyst who reads every file and rule correctly counts each surveyed leak from the midpoint
-between the district's previous survey and the find (the default path's correction, Ends on) and designates the wrong
-set; only starts estimated from the odor reports' monthly profile designate the golden set.
+between its segment's previous survey and the find and files three districts designated, Ashby, Elmwood and Ivers (the
+default path's Ends on); only starts estimated from the odor reports' monthly profile designate Brennan Hill, Elmwood,
+Fenwick, Harlow and Ivers.
 
 Estimand: the program guidelines (section 2) file the population (leaks found in calendar 2026 on the district's mains
 and services, by survey or by odor report), the outcome (methane from the leak's start to its repair or 31 December
@@ -143,6 +146,129 @@ Lesson: an inspection finds a defect long after it began, and how long depends o
 falls against the season defects begin in; a convention for the unseen time that ignores the season misprices every
 unit inspected far from it. No build on file teaches the start of an unseen interval estimated from a second record of
 starts.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, each leak from its find (none designated) | guidelines 2.2, "from when the leak began": fires | none | none | none | none | one subtraction: fires | readable |
+| R1, each surveyed leak from the previous survey (all 12) | none | the survey schedule: fires | the regulatory leaker convention: fires | none | none | one lookup: fires | readable |
+| R2 (default path), each surveyed leak from the midpoint between surveys (Ashby, Elmwood, Ivers) | none | the survey schedule: fires | the textbook start for an interval-censored event: fires | none | none | one average: fires | readable |
+| G (decisive), each surveyed leak's expected start between its segment's surveys under the monthly profile of called-leak starts (Brennan Hill, Elmwood, Fenwick, Harlow, Ivers) | no clause names a season, a profile or a weighting; 2.2 files only that a called leak began at the call | the profile is in no column: it is the odor log's call months counted, a file the inventory reads for other leaks | none of the duration conventions uses the season | none | none | none | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | at or above the line | 3.30 tonnes per mile or more, unrounded | more than 3.30; the rounded figure | same call: no district within 0.10 of the line (asserted) | guidelines 2.1 |
+| SF2 | found in 2026 | the find in local time; a called leak's call converted from UTC | the call's UTC date | same call (asserted) | guidelines 2.2 "Dates and times are local" |
+| SF3 | the grade | the grade when found | a later regrade | same call (asserted by the guidelines' own wording) | guidelines 2.2 "the grade the leak was given when it was found" |
+| SF4 | a called leak's start | the call | the call less a reporting delay | same call (the calls are within days of the start) | guidelines 2.2 "began when the call was received" |
+| SF5 | the season's profile | the confirmed odor calls of 2016 to 2026 | 2026's calls only; 2016 to 2025 | same call; no per-mile figure is graded (asserted: the largest move, 0.130 for 2026 only, is under the nearest district's 0.346 from the line) | the call's discretisation; the prompt grades the set |
+| SF6 | until repaired | the REPAIRED visit; an open leak to 31 December 2026 | the last visit | same call | guidelines 2.2 |
+| SF7 | the previous survey | the segment's own 2025 survey date | the district's first survey day | same call (segments are walked within days of each other) | the survey schedule |
+| SF8 | miles | in-service cast-iron and bare-steel segments on 31 December 2026, feet over 5,280 | all mains | not the program's denominator | guidelines 2.3 |
+| SF9 | the weighting within the interval | day by day | month by month | same call (asserted) | the call's discretisation |
+| SF10 | a leak's district | its segment's district in the GIS | the crew's district | same call (the inventory reads no cost line) | guidelines 3.1 "a district's leaks are those on its own mains" |
+
+## Ladder
+
+Built figures, read from the cut pack by `generator/checks.py` (tonnes of methane per mile of cast-iron and bare-steel
+main, 2026, against 3.30).
+
+- **R0, each leak from its find (none designated).** The record's own interval leaves out most of a surveyed leak's
+  life: no district reaches 1.5. Dies to guidelines 2.2 (from when the leak began).
+- **R1, each surveyed leak from its segment's previous survey (all 12).** The regulatory convention charges a whole
+  year to every surveyed leak: 4.29 to 7.67. Dies to the called leaks themselves: a leak found within days of starting
+  shows that leaks do not all start the day after a walk.
+- **R2, the default path: the midpoint between surveys (Ashby 3.38, Elmwood 4.58, Ivers 3.46).** The textbook start
+  for an event known only to lie in an interval; it ignores the season, so every district's surveyed leaks get half a
+  year before the find. Dies to the odor log: 62.3 per cent of called leaks started in December to March.
+- **G, the decisive move (Brennan Hill 3.78, Elmwood 3.76, Fenwick 3.75, Harlow 3.68, Ivers 3.74).** Each surveyed
+  leak's expected start under the monthly profile: an October or November walk finds leaks most of a year old, a
+  March or April walk leaks a few weeks old; Ashby falls to 2.74 and the late-walked districts rise over the line.
+  The truth (every start known, generator only) designates the same five.
+- **Margins (cut pack):** the golden's nearest district is Juniper at 2.95, 0.35 below the line, and its lowest above
+  is Harlow at 3.68; the golden family (the profile from 2026 only or 2016 to 2025, the weighting by month, the calls
+  in UTC) moves no district more than 0.13 and names the same five.
+- **Position, separation and dominance:** a designation, not a ranking: the four routes name four different sets;
+  only the seasonal start brings Brennan Hill, Fenwick and Harlow in and keeps Ashby out together.
+- **Worth:** the call and the grid of 12 districts' leaks and verdicts; R2 keeps every district's leaks and 8 of 12
+  verdicts, so the asks carry the pair (Ask sheet).
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | leaks found in calendar 2026 on cast-iron and bare-steel mains and their services, by survey or after an odor call (guidelines 2.2) |
+| 2 | Unit of account | the district; tonnes of methane per mile of cast-iron and bare-steel main |
+| 3 | Attribution window | the find date in 2026, local time (SF2) |
+| 4 | As-of dating | the integrity extract of 15 March 2027; the GIS at 31 December 2026 |
+| 5 | Version basis | repairs as recorded by 15 March 2027; open leaks to 31 December 2026 |
+| 6 | Denominator | in-service cast-iron and bare-steel miles (SF8) |
+| 7 | Weighting | each leak's rate times its hours; no weighting across districts |
+| 8 | Window length | each leak's own life to 31 December 2026 |
+| 9 | Boundary inclusivity | at or above 3.30 (SF1) |
+| 10 | Rounding path | per mile compared unrounded; leaks and costs and interruptions whole |
+| 11 | Tie-break | none: each district against the line |
+| 12 | Maturity and censoring | a leak open at the year's end is counted to 31 December 2026 (guidelines 2.2) |
+| 13 | Order of operations | each leak's start, its hours, its methane, the district's sum, the per-mile |
+| 14 | Row order | no dependence |
+| 15 | Duplicate resolution | one leak per leak number; a leak's several visits are its visits |
+| 16 | Identity normalisation | grades A to C before 2025 and 1 to 3 after |
+| 17 | Netting | none |
+| 18 | Dimensional units | kilograms per hour, hours, tonnes; feet over 5,280 |
+| 19 | Code and status semantics | REPAIRED against CHECKED and MONITORED; never the stump |
+| 20 | Integerisation | none before the comparison |
+| 21 | Clause scope | guidelines 2: the 2027 to 2029 program |
+| 22 | Forward window contents | the 2027 to 2029 program designated on the closed 2026 inventory (a retrospective quantity, Draw) |
+
+## Literal reader
+
+Executed word for word, the guidelines fix the population (leaks found in 2026 on cast-iron and bare-steel mains), the
+outcome (methane from each leak's start to its repair or 31 December 2026 at its grade's rate), that a called leak
+began at the call, the unit (per mile of in-service cast-iron and bare-steel main) and the line. One thing is left
+open: when a leak found by the survey began, which no file records. The candidates are the find, the previous survey,
+the midpoint and the expected start under the season leaks begin in. The data separate them: the called leaks, which
+2.2 dates at the call, are leaks the public smelled within days of their start, and they show the season directly
+(62.3 per cent in December to March); the survey schedule puts each segment's previous walk a year before the find;
+only the expected start under that season estimates the filed quantity, the methane from when the leak began, without
+assuming leaks start evenly or at a walk. Every variant of it (the profile's years, the weighting by day or month, the
+calls read in UTC) names the same five districts (checks.py). Every write-up step names the file and rule it executes.
+
+## Oracles
+
+None. No control, published figure or reconciliation ties only under the golden: the LAUF report is system-wide and
+not allocated to districts, and no earlier designation, memo or ranking ships.
+
+## Ask sheet
+
+- **Ask A, each district's 2026 leak repair cost: 12 figures.** H18 home: guidelines 3.1, the Council's budget hearing
+  weighs the program against what leaks already cost each district; a measure every district carries that the call
+  does not turn on. Path: the work-order cost lines, the closeouts, the finds and odor log (each leak's segment), the
+  GIS (the segment's district), the guidelines: six files, nine columns. Primary device: D6/D9, a ledger at another
+  grain than its name: each cost line carries the work order's cost of that type to date, so the 2026 lines summed
+  count the earlier postings again; only the year-end values less the prior year-end give 2026's cost, and the
+  closeouts' totals equal the last values, not the sums. Second device: D7, the true key elsewhere: the cost center is
+  the crew's district, and about one work order in eleven was worked by a neighbouring district's crew.
+- **Ask B, each district's 2026 customer interruptions from leak repairs: 12 figures.** H18 home: guidelines 3.1, the
+  disruption the program would add or avoid. Path: the interruption tickets, the meter premises, the guidelines:
+  three files, six columns. Primary device: D6, a log read as a roster: a ticket is a service address shut off, and an
+  address can carry several meters (apartment buildings up to 24), so tickets counted as customers undercount every
+  district. Hazard: dispatch and the field crew sometimes both opened a ticket for the same address and leak.
+- **The construction layer:** the designated set, each district's leaks and verdict, the chart; the cracker has them.
+- **Main population zero-counts (asserted):** the call reads no cost line, closeout, ticket or premise.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, 2026 leak repair cost | the 2026 cost lines summed by the leak's district, every hazard repaired; the lines are costs to date, so every district's cost falls outside its bin | miss |
+| B, 2026 customer interruptions | tickets for 2026 deduplicated by address and leak, counted; the meters behind each address are left out, so every district's count falls outside its bin | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
+- Pair ceiling: 37.9 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
+  and none of the 24 ask figures; the mirror, R2, keeps every district's leaks and 8 of 12 verdicts, 30.8).
+- Measured by: generator/ceiling.py
+
 
 ## Tried and rejected
 

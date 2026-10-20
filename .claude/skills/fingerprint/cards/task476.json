@@ -47,10 +47,10 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "leak_survey_finds_2016_2026.csv",
-    "rows": 0,
-    "entity": "one leak recorded at a district survey or from a public odor report",
-    "grain": "leak",
+    "file": "leak_survey_schedule_2015_2026.csv",
+    "rows": 100932,
+    "entity": "one main segment's leak survey in one year",
+    "grain": "segment x survey year",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",

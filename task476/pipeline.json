@@ -1,21 +1,21 @@
 {
  "task": "task476",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-20: the program line in the guidelines and its domain vocabulary; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2 of architecture 2: generator prototype for the separations, then ladder, fork table, closure, asks, prompt.txt, precut.py",
+ "resume": "stage 4 of architecture 2: free gates green (checks 26 of 26, verify, byte-identical, figures_check 45, precut 51, leak REVIEW, pair ceiling 37.9). Judge r2 and two scored readers running on target.zip 543b59b9 (/tmp/determinism-check-task476-r2, /tmp/reader-task476-r2a and r2b); fix their findings in one pass, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

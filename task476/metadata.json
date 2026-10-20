@@ -1,0 +1,113 @@
+{
+ "task": "task476",
+ "title": "Hollister Gas accelerated main replacement designations 2027",
+ "setting": "A fictional city-owned gas utility in an unnamed U.S. state; every record is synthetic.",
+ "as_of": "2027-03-15",
+ "files": [
+  {
+   "file": "amr_program_guidelines_2027.pdf",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-01-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "district_customer_counts_2026.xlsx",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "gis_main_segments_2026-12-31.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2026-12-31",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 8411
+  },
+  {
+   "file": "integrity_data_extract_notes.txt",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lauf_annual_report_2026.pdf",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-02-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "leak_repair_orders_2016_2027.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 25484
+  },
+  {
+   "file": "leak_survey_finds_2016_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 7234
+  },
+  {
+   "file": "leak_survey_schedule_2015_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 100932
+  },
+  {
+   "file": "meter_premises_2027-03.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 71543
+  },
+  {
+   "file": "odor_call_log_2016_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 8607
+  },
+  {
+   "file": "service_interruption_tickets_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 832
+  },
+  {
+   "file": "work_order_closeouts_2025_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1231
+  },
+  {
+   "file": "work_order_cost_lines_2025_2026.csv",
+   "source": "Hollister Gas (fictional), synthetic records",
+   "date": "2027-03-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 13991
+  }
+ ],
+ "distractors": [
+  {
+   "file": "district_customer_counts_2026.xlsx",
+   "why": "customers by district: a per-customer normalisation the guidelines do not use"
+  },
+  {
+   "file": "lauf_annual_report_2026.pdf",
+   "why": "lost and unaccounted-for gas: a system-wide leakage proxy not allocated to districts"
+  }
+ ],
+ "deliverables": [
+  "leak_methane_inventory_2026.xlsx",
+  "main_replacement_designations_2027.pdf"
+ ]
+}
