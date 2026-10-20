@@ -220,6 +220,25 @@ wage is on the paid basis and ranks nothing the Fund uses, and no earlier slate,
   and none of the 30 ask figures; the mirror, R0, keeps 7 of 20 main figures, 20.3).
 - Measured by: generator/ceiling.py
 
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each industry's 2021 to 2025
+  growth in pay per job for the work done, a calendar (pay-date) effect estimated from the quarterly record the way
+  official series production estimates calendar regressors; checks.py executes the analyst test on the clean truth
+  (wages as paid file 51, 52, 48-49, 62; pay for the work done files 51, 52, 54, 23, next 31-33). Layers: the releases,
+  layouts, suppression and NAICS recode are the state's own and are neutral on the call (R2); the call reads no exit,
+  wage-record, ledger or provider row. Three rules: no decoy, memo or earlier slate ships; no field reading decides;
+  executing every filed rule on wages as recorded files the wrong slate.
+- **Judge:** pass 1 DETERMINISTIC and APPROVE, Gate G decomposition_attribution and analytical_non_defect, Gate H pass;
+  its one finding (the next in line 0.3 clear) widened to 1.00 points before ship.
+- **Readers:** eight scored readers in four rounds, all missing the call on wages as paid; round 4 (readers 7 and 8) at
+  5 of 45 each (11.1 per cent, the growth figures wages as paid round to alike), exit 0.
+- **Free gates (2026-10-20):** checks.py 62 of 62, verify.py clean, two builds byte-identical, target.zip cut from the
+  final build (17 files), figures_check.py 103 of 103, precut.py 51 checks clean, voice-check clean, guard.py heart
+  WARN (nearest task102 at 0.09), containers scrubbed (H1 audit clean), every PDF read by pypdf strict and pdftotext.
+- **leak.py REVIEW lines, each harmless:** two golden figures matched across CSV column boundaries in the county file,
+  and the documents carry the domain's nouns (county, quarterly, annual) without naming a schedule, weekday or phase.
+
 ## Tried and rejected
 
 - First draft of the mechanism, 2021's 53rd Friday and 27th alternate Friday inflating the base year: dead at the
