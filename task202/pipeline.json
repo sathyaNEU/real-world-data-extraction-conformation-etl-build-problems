@@ -47,12 +47,10 @@
   "voice-check.py": "PASS, exit 0, 996 characters"
  },
  "judge": {
-  "disposition": "SEND_BACK by label, read as a repair against the gate table",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gates": "A PASS with one qualification, B PASS with two gaps, C FAIL, D PASS, E FAIL on the supplementaries and the 6.0 test, F strong, G PASS, H PASS",
-  "order": "derivation written before the graded blocks; every main-path figure reproduced",
-  "report": "task202/determinism_check_report.md",
-  "taxonomy": "margin_or_boundary_fragility on the call, competing_defensible_answer on supplementaries 1 and 3",
+  "accepted": "yes, architecture 2 is spent; the recommended repair was declined because it files the method",
+  "disposition": "SEND_BACK",
+  "label": "underspecified_objective, with margin_or_boundary_fragility as an independent second failure",
+  "report": "see the judge section in DESIGN_NOTE.md and scratchpad/task202_verdict.md",
   "verdict": "NOT_DETERMINISTIC"
  },
  "leak": {
@@ -76,7 +74,7 @@
  },
  "objective": "anomaly-detection",
  "owner": "oviya13ya",
- "resume": "Stage 4 round 1 is in and one repair pass is running. The judge returned SEND_BACK by label, but Gate G, Gate H and Gate F all pass and every finding is a pin, a margin or a device, so the disposition is read against the gate table rather than its label and the architecture stands. Five repairs in flight. Both PDFs are unopenable by pdfminer and pdfplumber from a malformed Producer string, verified here as the foundation's name truncated mid-word and then closed twice, and clause 9 and Schedule B live in that file, so the commonest Python route cannot read the decisive rule. The call's margin is 0.043 points where bootstrapping puts 47 per cent of resamples on the wrong side, so the bin is being widened past 0.3 points with the answer held at PHP 7,800. The grain is unpinned and three readings give 7,800, 7,700 and 8,100, so clause 9.2 is being pinned at the estimand and 9.1 told to test the share before rounding. Supplementary 1 is forked with no antidote in the pack, the word instruction returning zero hits across all 17 files, so the re-issue convention is being filed in the dictionary, which is legal because asks may turn on rule application. Supplementary 3 is forked on its unit and is being reworded with the supersession stated. And supplementary 2 needs a new primary from the silent list, because the reader kept 6 of 6 on it and 6 of 6 on supplementary 3 while ask A's grain device held at 0 of 6.",
+ "resume": "Architecture 2 is spent on two independent failures, both measured. Determinism: the judge returned NOT_DETERMINISTIC and SEND_BACK with Gate C and Gate D failing, because clause 9.2 read literally gives PHP 6,000 and the committed method gives 8,000. The clause says the scheme's awards are the awards of all accredited partners AT the award volumes and award levels of the twelve months, and that a band has ONE award level, so under 9.3 a whole cell refers or none of it does: shares run 100.00, 90.08, 51.75, 30.85, 13.38 and 2.90 per cent at 1,000 to 6,000, and that route is immovable across every handling variant the judge tried (dropping a quarter, netting recoveries, double-counting or dropping PRELIM, excluding the withdrawn partner, unweighted and median monthly averages, and every rounding form). A second fork sits inside the committed method: nothing says which awards supply the within-cell shape, and varying only the shape sample moves the deciding share at 7,000 across 4.96 to 7.12 per cent, with the whole shipped portal export landing 0.007 points inside the 6.0 line. Rubric: the isolated reader kept 18 of 30 ask figures for a measured pair of 61.5 against a bar of 50. Both independent threads filed 6,000 from the literal reading, which is why this is a fork rather than a judge quibble. The judge's one-sentence repair, stating that the share is computed on awards taken at band level times the portal distribution for the same twelve months, is declined: it files the HOW, which turns the decisive step into rule application and spends the stump, and CLAUDE.md's first section names that as the way a determinism repair slips past the client's rules. The lesson for the next architecture is that a pin added to close one fork can open a larger one, because clause 9.2 was added in the previous pass to close the grain fork. Gate A passed, every committed figure reproduced, and the judge corrected its own annex figures against the build's rather than the reverse. One item for whoever rebuilds: DATA_DICTIONARY.md describes the two check-register currency columns as the amount passed and the amount held when both are running cumulative positions with irregular restarts, so a solver trusting the authority document files 975 hold partner-months and 498,731 pesos against the correct 278 and 262,327; the judge judged it recoverable and so not a gate failure.",
  "rubric_fix": {
   "diagnosis": "every graded figure was the call's own construction over the call's own population (ban 4, Part 1.2), so no device could sit under it (Part 2.1's corollary)",
   "finding": "precut.py exit 1 on 'pair ceiling 65.5 (ceiling 40)' and 'cracker misses every ask: cracker keeps A1, A2, A3, A4, D1, D2'",
@@ -90,10 +88,9 @@
   },
   "repair": "the 24 schedule figures scored in the recommendation block where they belong; the ask band re-sited onto three closed-period asks with one silent primary each (D6 an instruction standing on the run lines it covers, D3 a stock read as a flow, D4 a blank that means two things), 18 figures"
  },
- "stage": 4,
- "stage4_owed": "The reader has run and the ask layer failed on measurement: the call held at rung 1 but the reader took all six of ask A, all six of ask B and all six of ask C, so the keep is 18 of 30 and the pair is 61.5 against a bar of 50. cracker.py's reader-calibrated row predicted 39.5 because it carried A and B as 0 of 12 each labelled MEASURED, and that measurement was taken on the architecture 1 pack before both devices were re-sited; it was never re-measured. The judge is still running and is testing the reader's question 5, which says clauses 9.1 and 9.2 read literally give PHP 6,000 rather than the golden, because clause 9.2 fixes the award level at the partner-band average over the window, which is the default path's own construction. If that holds it is a Gate C finding on top of the rubric one. The repair that the previous pass already named and priced is to split the check register into a payment-control register carrying the amounts and a hold case log carrying the reasons, which decouples ask C from ask B; ask A needs a silent primary rather than a basis stated in the asking sentence.",
- "stage_name": "check",
- "status": "BUILD",
+ "stage": 1,
+ "stage_name": "draw",
+ "status": "PAUSED",
  "task": "task202",
  "updated": "2026-10-20"
 }
