@@ -178,37 +178,27 @@ data and no reported total ships; the allowance holdings are by facility and ton
 
 ## Ask sheet
 
-- **Ask A, each unit's 2026 ozone-season fuel cost to the hundred dollars: 9 figures.** (After the round-3 judge the
-  agreement files the meter stations' standard-time day (6.2) and that one line bills gas traded together for
-  consecutive gas days, dated on the last of them (9.1); both devices are now filed conventions a careful reader
-  executes, held only by execution.) H18 home: rule 3.1, the
-  capital budget weighs the upgrades against what each unit costs to run. Path: the DAHS heat input, the gas invoices,
-  the supply agreement, the rules: four files, eight columns. Primary device (re-sited after rounds 1 and 2): D8, two
-  clocks on one line, with every tie passing on the wrong one. The meter stations read midnight to midnight on
-  standard time, so each line's quantity reconciles exactly to the plant's DAHS burn by calendar day, while the line's
-  price is the price for the gas day the agreement defines (9:00 a.m. Central clock time): a reader who lets the
-  quantity tie fix the day prices an hour by its calendar date and misses every unit. Secondary: strip billing (gas
-  traded on a business day flows until the next business day's gas, and a weekend's or holiday's strip is one line
-  dated on its last gas day), so a gas day with no line takes the point's next line; the previous line, an
-  interpolation or leaving the day out each misses every unit. Hazards: invoices by facility (peakers share the
-  meter), gas days with no burn.
-- **Ask B, each unit's 2026 ozone-season equivalent forced outage rate, per cent to one decimal: 9 figures.** (After
-  the round-3 judge rule 3.2 files the formula, the overlap rule and the treatment of derates inside full outages.) H18
-  home: rule 3.2, IEEE Std 762's EFOR on local time, the register's nameplate as the capacity. Path: the event report,
-  the DAHS operating time, the register, the rules: four files, eight columns. Primary device: D6 grain, an event's
-  hours split across states. A forced derate found in a run often stays on the unit past the shutdown and into the
-  reserve shutdown hours that follow, where IEEE 762 counts it in the denominator's reserve-shutdown derated hours
-  and not in the numerator, and a derate's hours inside a full outage count in neither; the start and shutdown hours
-  are part hours (OP_TIME below 1), so service hours are operating time, not operating rows. Counting rows, leaving
-  out the reserve-shutdown term, or counting every derate hour at full each misses most units. Secondary: re-reports
-  with a corrected start and end, a later report replacing an earlier one it overlaps. Hazards: the DAHS on standard
-  time against the report's local time, events crossing the season's ends.
+- **Ask A, each unit's 2026 ozone-season demand equivalent forced outage rate (IEEE 762's EFORd), per cent to one
+  decimal: 9 figures.** H18 home: rule 3.1, the capital budget prices each unit's unavailability when it is needed.
+  Path: the event report, the DAHS operating time and starts, the register's nameplates, the rules: four files, eight
+  columns. The standard defines the rate (its frequency factors f from the mean forced outage duration, the mean
+  reserve shutdown per attempted start and the mean service per start, and fp = SH / AH on the derates); rule 3.2
+  files the events, the overlap rule, the capacity basis, the operating time and that every attempted start
+  succeeded. Primary device: D6, an event's hours split across states. Derates found in a run often run on into the
+  reserve shutdown that follows, so EFDH counts hours the unit stood in reserve, and the start and shutdown hours are
+  part hours, so SH and RSH split them by OP_TIME. The plain rate, the derate term unweighted by fp, operating rows
+  for SH, derates in service only, or every overlapping report kept each misses most units.
+- **Ask B, each unit's 2026 ozone-season equivalent forced outage rate (IEEE 762's EFOR), per cent to one decimal:
+  9 figures.** Same files and filings. The standard's EFDH counts forced derates in service and in reserve shutdown
+  alike, and EFDHRS, the part in reserve shutdown, joins the denominator. Operating rows for SH, EFDHRS left out,
+  derates in service only, or every overlapping report kept each misses most units. Hazards for both: the DAHS on
+  standard time against the report's local time, events crossing the season's ends.
 - **The construction layer:** each unit's verdict and the set.
 - **Main population zero-counts (asserted):** the call reads no invoice, agreement or event row.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, fuel cost by unit | each operating hour priced at its gas day on Central clock time, a gas day without its own line at the point's previous line; every unit burns on strip days, so every unit's cost falls outside its bin | miss |
+| A, demand rate by unit | IEEE 762's EFORd with the derate term not weighted by SH / AH; every unit carries forced derates, so every unit's rate falls outside its bin | miss |
 | B, outage rate by unit | IEEE 762's EFOR executed with service hours as the unit's operating rows; the part hours at every start and shutdown move every unit's rate outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
@@ -328,3 +318,10 @@ data and no reported total ships; the allowance holdings are by facility and ton
   ruled out by the record (asserted), and the asks' conventions are filed. Lowering DF-1's start-up outage share to
   cut its pooled sensitivity reshuffled every unit's draws and pulled CB-2 and AF-1 to within 0.005 of the target
   under interpolation; reverted.
+- 2026-10-20, stage 4 round 4 on architecture 3: readers 7 and 8 missed the call (eight of eight; reader 7 at four
+  units with a pooled start-up profile) and kept 18 and 12 of 18 ask figures: with the strip line, the meter clock
+  and the EFOR formula filed, both asks were procedures executed. The fuel ask is dropped (the gas invoices and the
+  agreement are now declared distractors) and both asks are IEEE 762 rates by the standard's own definitions, the
+  formulas left to the standard and only the events, overlap rule, capacity basis and operating time filed; the
+  golden EFOR now counts reserve-shutdown derates in EFDH as the standard does. Round-4 judge: DETERMINISTIC,
+  FIX_NOW on the later-report rule (now: the earlier report counts for none of its hours).

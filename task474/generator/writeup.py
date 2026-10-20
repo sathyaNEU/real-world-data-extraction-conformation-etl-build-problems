@@ -63,8 +63,8 @@ def write(fig_path, out_path):
          "without operation; EFDH, each D1 or D2 hour outside a full outage at derate_mw over the register's "
          "nameplate MW, of which EFDHRS falls in reserve shutdown (that share times one less OP_TIME)." % (
              sec["outages"], F["events"]),
-         "7. Equivalent forced outage rate: 100 (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate: 100 (f FOH + fp "
-         "EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH per forced outage, T = RSH per "
+         "7. Equivalent forced outage rate, in per cent: (FOH + EFDH) / (FOH + SH + EFDHRS). Demand rate, in per "
+         "cent: (f FOH + fp EFDH) / (SH + f FOH), with f = (1/r + 1/T) / (1/r + 1/T + 1/D), r = FOH per forced outage, T = RSH per "
          "attempted start, D = SH per actual start (every start attempted succeeded), fp = SH / (SH + RSH).",
          "",
          "## 4. Deliverable Answers", "",

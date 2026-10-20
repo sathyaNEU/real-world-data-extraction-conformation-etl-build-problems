@@ -1,16 +1,18 @@
 # leak check, task474
 
-**Verdict: REVIEW.** 10 files read, 19 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 10 files read, 18 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, measured, reader, readers, decisive, standard, window, screen, region, five-year, releases, survey, re-root, default, season, instrument, golden, start-state, air-loss, generation, recipients, inside, benchmarked, amounts, missed
+Stump terms swept: architecture, reader, measured, readers, decisive, instrument, standard, window, screen, region, five-year, releases, survey, missed, re-root, default, season, operating, uncontrolled, golden, start-state, air-loss, record, generation, recipients
 
-## 3 answer figures in the pack (REVIEW 1)
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `gas_supply_agreement_excerpt.pdf`: golden figure 9.1 appears: ...idnight Central Standard Time. Section 9. Billing 9.1 Seller invoices monthly by Delivery Point. Each l...
 - **REVIEW** `scr_upgrade_program_rules_2027.pdf`: carries 5 of 8 distinctive words of the committed call: 'Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 an'
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `scr_upgrade_program_rules_2027.pdf`: 5 of 25 stump-paragraph terms appear (measured, standard, season, generation, inside); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `dahs_export_field_notes.txt`: 3 of 25 stump-paragraph terms appear (standard, record, generation); read whether the document names the move
+- **REVIEW** `scr_upgrade_program_rules_2027.pdf`: 6 of 25 stump-paragraph terms appear (measured, standard, season, operating, record, generation); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
