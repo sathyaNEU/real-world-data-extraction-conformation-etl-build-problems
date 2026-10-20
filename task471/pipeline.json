@@ -1,18 +1,18 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "ship: judge v5r3 DETERMINISTIC and APPROVE on 5b89c291378b1d76 and both round-3 readers passed; the census workbook's release date moved to 19 August 2025 (the judge's minor date note, no figure moved), the final build.py running; on green: target.zip from it, the ledger row and wave 7 (stashed as 'task471 ship rows'), status SHIPPED, commit SHIPPED with target.zip and golden/ force-added",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
  "source_note": "re-rooted from seed ET28's airport world (architecture 1, spent at Gate F); architecture 2 is a fresh world in item-response-theory-test-equating",
  "architecture_1": {
@@ -177,7 +177,8 @@
   "earlier": [
    "determinism_check_report_v5r1.md (NOT_DETERMINISTIC, FIX_NOW: unfiled UTC, fixed)",
    "determinism_check_report_v5r2.md (DETERMINISTIC, APPROVE)"
-  ]
+  ],
+  "final_pack_note": "the shipping zip differs from the judged 5b89c291378b1d76 only in the census workbook's release date line and its stamps (19 August 2025); every figure unchanged"
  },
  "ceiling": {
   "pair": 35.2,
@@ -188,5 +189,5 @@
   "sensitivity": "2020 numbers 0 (34.4); + elector number and record test 0 (34.4); + corrections of earlier removals as additions 16 (48.1); + record-tied reversals in the window 18 (49.8); + late reversals 32 (61.9)",
   "script": "generator/ceiling.py"
  },
- "target_zip_sha256_16": "5b89c291378b1d76"
+ "target_zip_sha256_16": "2b60d1c33704dd7d"
 }

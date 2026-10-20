@@ -273,7 +273,8 @@ answer.
   records kept); rounds 1 and 2 kept 32 of 32 ask figures through documented devices, so the asks were re-sited;
   round 3 on 5b89c291378b1d76 kept 1 and 0 of 32 (3.1 and 0.0 per cent), score_reader exit 0 on both.
 - **Free gates (2026-10-20):** checks.py 198 of 198, verify.py PASS, two builds byte-identical, target.zip
-  5b89c291378b1d76 cut from the final build (20 files), figures_check.py 77 of 77, precut.py 51 checks clean,
+  2b60d1c33704dd7d cut from the final build (20 files; the census workbook's release dated 19 August 2025 after the
+  judge's date note, before the methods report that cites it, no figure moved), figures_check.py 77 of 77, precut.py 51 checks clean,
   voice-check clean, guard.py surface clean and heart WARN (answered in the draw), ceiling.py pair 35.2.
 - **leak.py REVIEW lines, each harmless:** the field operations summary names the sixteen regions (the call is a list
   of region names), and the methods report and series notes use the survey's and the registrations' own words without

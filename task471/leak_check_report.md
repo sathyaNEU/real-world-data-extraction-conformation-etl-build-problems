@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, reader, golden, anchor, county, decisive, missed, architecture, method, deaths, readers, border, population, record, correction, reading, national, selection, coverage, dual-system, default, analysis, report, silent, sample
+Stump terms swept: survey, reader, golden, anchor, decisive, readers, county, method, missed, deaths, default, architecture, population, coverage, dual-system, analysis, reading, border, estimates, selection, record, correction, report, scored, national
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `census_2025_field_operations_summary.pdf`: carries 17 of 18 distinctive words of the committed call: 'Ardenmere 27, Merriton 20, Westerby 25, Larchfield 26, Glenwhite 29, Hawksridge 5, Fairholme 11, Eastwold 12, Corran Val'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, missed, method, population, record, national); read whether the document names the move
-- **REVIEW** `vital_and_border_series_notes.pdf`: 5 of 25 stump-paragraph terms appear (deaths, border, population, record, national); read whether the document names the move
+- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, method, missed, population, estimates, selection); read whether the document names the move
+- **REVIEW** `vital_and_border_series_notes.pdf`: 5 of 25 stump-paragraph terms appear (deaths, population, border, record, national); read whether the document names the move
 
 ## 9 dates after the setting (INFO 1)
 - **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
@@ -32,7 +32,6 @@ Stump terms swept: survey, reader, golden, anchor, county, decisive, missed, arc
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
-
 
 ## Solver's-eye read
 
