@@ -1,15 +1,15 @@
 {
   "task": "task271",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-20",
-  "slot_note": "the slot's seed DA21 (a nonprofit health plan's 2027 intensive track) lends its world and decision shape only; architecture 2 keeps a health plan deciding which parts of its book get a 2027 support track and moves the deciding quantity to a member survey's share in work",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a nonprofit Medicaid plan's spring member work survey, phoned from two call centres, deciding which four of its ten Washington regions get the 2027 Community Engagement Support track, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure",
+  "slot_note": "the slot's seed DA21 (a nonprofit health plan's 2027 intensive track) lends its world and decision shape only; architecture 3 keeps a nonprofit health plan deciding which parts of its work get a 2027 programme and moves the deciding quantity to the breast cancer penetrance of recurrent pathogenic variants, estimated from the plan's referred families",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "statistical-genomics",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a health plan's inherited cancer service estimating each recurrent pathogenic variant's breast cancer risk by 70 from the families referred to it, where relatives who already have cancer are tested far more often than relatives who do not, and the 2027 family outreach programme takes on the variants whose carriers face at least a 30 per cent risk",
   "objective": "descriptive-distribution",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
+  "shape": "10",
+  "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
@@ -20,78 +20,72 @@
     "none"
   ],
   "generators": [
-    "G7",
     "G12",
     "G14",
     "G16"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "retry_or_revision_log",
+  "calibration_form": "none",
   "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two call centres' records, links the interviews and the key answers to the sample and weights each region's respondents to its sampled members' age and sex (the adjustment-cell method), or carries the share in work among the members reached late to the members never reached, names Pierce, North Sound, King and Spokane, because within every age and sex cell the share in work rises with the call that reached the member and with the share of evening and Saturday calls, so answering depends on work itself; only a model of each work class's chance of answering in each calling window, fitted to every sampled member's calls, names Thurston-Mason in North Sound's place.",
-  "domain_test": "The deciding quantity is a population share from a survey whose nonresponse depends on the answer itself, which survey methodology estimates with a callback model of the contact histories (each class's per-call chance of being reached, by calling window); with hospitals and readmissions in, no record of attempts to reach each case exists and nothing about whether a case is observed depends on the hour it was sought, so the task stops making sense.",
+  "analyst_test": "A strong analyst who reads every record correctly leaves the probands out, since their cancer brought each family to the service, takes the relatives the laboratory reports show carrying the family's variant and runs Kaplan-Meier on their ages at diagnosis or last contact; that names seven variants, three of them variants whose families were told only after a 2024 reclassification, so that their relatives were tested mostly for a cancer of their own and few unaffected carriers have been tested yet; only every first-degree relative's history, each a carrier with probability one half unless a test settles it (the kin-cohort or Mendelian likelihood), gives each variant's risk and names four.",
+  "domain_test": "The deciding quantity is each variant's penetrance, the cumulative breast cancer risk by 70 of a woman who carries it, which genetic epidemiology estimates from families with the probands set aside and every relative's history carried through Mendelian inheritance; with stores or schools in place of families nothing passes a trait to half a member's kin, so there is no prior to carry the untested members and the task stops making sense.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:callback-model-on-contact-histories",
+  "layer2_pattern": "own:penetrance-from-referred-families-with-phenotype-dependent-testing",
   "layer1": [
-    "two call logs from two systems: the survey vendor's dialer export (ISO timestamps with offset, numeric disposition codes) and the plan's member services workbook (a date column, a 12-hour time column, text dispositions), members handed from one centre to the other mid-field",
-    "member IDs carried with a vendor prefix and zero padding in the dialer export",
-    "the sample released in four waves, the later waves closed with fewer attempts",
-    "callback appointments and transfers logged as rows that are not calls",
-    "an interview file keyed to the vendor's case number, the sample keyed to the plan's member ID",
-    "monthly enrollment snapshots with retroactive terminations"
+    "the pedigree software's export, one row a person, relationships coded to the proband and ages given as birth years for some relatives and ages at intake for others",
+    "laboratory reports naming the variant in legacy protein nomenclature before 2020 and HGVS after, under the laboratory's own accession numbers",
+    "deceased relatives' histories as the proband reported them, ages at death sometimes given to the decade",
+    "two probands who are sisters entered as two families that share their mother",
+    "the reclassification log and notification letters dated by family"
   ],
-  "stakeholder_role": "Director of Community Health Programs",
-  "role_family": "programme_officer",
+  "stakeholder_role": "genetic epidemiologist of the plan's Inherited Cancer Risk Service",
+  "role_family": "research_desk",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "survey_dialer_export_2026.csv with member_services_call_log_2026.xlsx",
+    "file": "pedigree export",
     "rows": 0,
-    "entity": "one row is one call attempt to a sampled member",
-    "grain": "call attempt",
+    "entity": "one row is one person in a referred family's pedigree",
+    "grain": "person within family",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "committee_or_panel",
   "forcing_event": "launch_or_rollout",
-  "org_family": "nonprofit_or_charity",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States (Washington)",
+    "geography": "United States (Colorado)",
     "currency": "USD",
-    "org_type": "nonprofit Medicaid managed care plan",
-    "invented_names": [
-      "Trevanna Community Health Plan",
-      "Kestrelby Survey Research",
-      "Member Work and Income Survey",
-      "Community Engagement Support track"
-    ],
+    "org_type": "nonprofit integrated health plan",
+    "invented_names": [],
     "people": [
-      "Robin Fields",
-      "Dillon Evans"
+      "Katrina Newman",
+      "Luis Thomas"
     ]
   },
   "deliverables": [
-    "ce_support_regions_2027.xlsx",
-    "ce_support_regions_2027.png"
+    "family_outreach_variants_2027.xlsx",
+    "family_outreach_variants_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
-  "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
-  "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
+  "driver": "The decisive quantity is the chance that a member carrying an inherited trait develops an outcome by a fixed age, estimated from clusters that reached the record because one member had the outcome, where the other members are checked for the trait far more often once they have the outcome; leaving out the members who brought each cluster in and taking the members checked and found to carry the trait still credits the trait with the outcomes that prompted the checks, most where unaffected members have seldom been checked, and only every member's history, each carrying the trait with the probability inheritance gives unless a check settles it, recovers the risk.",
+  "driver_concrete": "Each recurrent pathogenic variant's breast cancer risk by 70 for the women who carry it, estimated from the first-degree female relatives (mothers, sisters, daughters) of the probands referred to the plan's Inherited Cancer Risk Service, where relatives with breast cancer are tested for the family's variant as part of their own care while unaffected relatives are tested only if they take up the cascade offer, which few had done for variants reclassified as pathogenic in 2024; Kaplan-Meier on the tested carriers overstates those variants, and only the kin-cohort or Mendelian likelihood over every relative's history, each relative a carrier with probability one half unless tested, recovers each variant's risk.",
+  "stump": "A competent solver sets the probands aside, runs Kaplan-Meier on the relatives the laboratory results show carrying the family's variant and names six variants for the 2027 Family Outreach Programme, among them the PALB2 missense, BARD1 and RAD51D variants reclassified in 2024, whose unaffected relatives have seldom been tested; only every first-degree relative's history with the Mendelian one-half prior (the kin-cohort or the Mendelian likelihood) puts those three under 30 per cent and names three.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task471": "task471 restores long trips that a collection cut-off kept out of the replies by weighting each reply on the handout days that could have returned it; task271 has no cut-off on the answer: members are missed because the hours they were called are hours they are at work, and their share in work comes from a callback model of each work class's answer rate by calling window",
-    "task233": "task233 carries a departure from missing at random measured on a gold-standard follow-up as one odds ratio; task271 has no follow-up of the unreached: the departure is identified from every sampled member's call history, each class's chance of answering by calling window",
-    "task231": "task231 takes the exited share of this round's silent units from earlier rounds whose exit record has caught up; task271 has no later record of any unreached member and no earlier round: the share comes from the attempt histories of reached and unreached members together",
-    "task456": "task456 estimates three feeds' error rates from their agreement on the same hospital-days; task271 has one measurement, the interview, on the members reached, and estimates who was never reached from how often each class answers a call in each window",
-    "task268": "task268 corrects survival for patients lost after their state worsened; task271 estimates a share at one moment from a survey whose contact depends on the answer, with no follow-up time and no loss",
-    "task264": "task264 counts distinct members from interviews drawn in proportion to visits; task271's sample is a simple draw from the roster, and the selection is in who answers the phone at the hours it rang",
-    "task267": "task267 weights verified members by a verification design that is filed; task271's selection into the answers is unplanned and has to be modelled from the contact histories",
-    "task253": "task253's first architecture adjusted nonresponse within classes of a frame attribute; in task271 that adjustment-cell route is the wrong rung, because answering depends on work within every cell"
+    "task180": "task180 v4 restores the small events a daily noise cycle masks at the instruments; task271 v3 records every relative's history in full, and the selection is in which relatives were tested for the family's variant",
+    "task456": "task456 v1 recovers a prevalence from three records that miss and misflag; task271 v3 has exact tests, and its bias is which relatives took one, mostly once they had cancer",
+    "task462": "task462 v1 weights each detected source by a size-dependent detection probability from blind trials; task271 v3 weights nothing by detection: an untested relative carries the family's variant with Mendel's probability one half",
+    "task196": "task196 v2 recovers an event total from two dependent capture channels; task271 v3 estimates a risk among carriers whose genotypes the records hold only for the relatives tested",
+    "task255": "task255 v1 fits a size distribution through each item's floor and ceiling; task271 v3 truncates and censors nothing by size: relatives selected themselves for testing by their own outcome",
+    "task268": "task268 v2 read a stock's fall from a fixed survey against catch rates that follow the stock; task271 v3 reads a carrier risk from families in which relatives were tested mostly because they were ill",
+    "task249": "task249 v4 counts the distinct units behind identifiers that expire after an idle gap; task271 v3 estimates a carrier risk from relatives selected for testing by their outcome",
+    "task267": "task267 corrects a screen's capture rate for a reference check given by design to flagged members and a random fifth; task271 v3 has no sampling design: relatives chose testing, mostly once ill, and Mendelian inheritance rather than a sampling fraction carries the untested",
+    "task230": "task230 v1 carries a classification bias measured on a checked part to a later channel's part; task271 v3 carries no measured bias: the untested relatives' genotypes follow Mendel's one half"
   },
   "lineage": [
     {
@@ -123,9 +117,40 @@
       "fate": "spent 2026-10-19 at stage 4: both isolated scored readers built a prior hepatobiliary or pancreatic operation from the patients' earlier admissions through the documented person key and committed the golden call (Netherfold, Ferncastle, Aldermoor); a history look-back is the field's comorbidity reflex; the judge returned SEND_BACK on the earlier-operation flag's unfiled definition",
       "driver_concrete": "Each eligible hospital's 90-day deaths after pancreatic resection in 2023 to 2025 against the deaths its patients' pre-operative condition would produce at the eight hospitals together, with an earlier operation on the pancreas or bile ducts, recorded only in the patient's earlier admissions anywhere in the state, as a risk factor; the two referral centres perform most re-operations.",
       "stump": "A competent solver risk-adjusts on the index admission's own record, finds Aldermoor's ratio at 0.95 and names Netherfold, Ferncastle and Farrowmere; only adding the earlier pancreatic or bile-duct operation, rebuilt from the patients' earlier admissions statewide since 2016, brings Aldermoor's ratio to 0.87 and names Netherfold, Ferncastle and Aldermoor."
+    },
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G12",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "role_family": "programme_officer",
+      "forum": "board_of_directors",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "nonprofit_or_charity",
+      "driver": "The decisive quantity is the share of a group's members holding a state that keeps them away at the hours most attempts to reach them are made, measured only on the members who could be reached, with every attempt on every member logged with its hour; weighting the reached members to the group's recorded attributes, or carrying the last-reached members' share to the never reached, leaves the shortfall, and only a model of each state's chance of being reached in each window of the day, fitted to the attempt histories of reached and never-reached members together, gives the share among those never reached.",
+      "driver_concrete": "Each Washington region's share of the plan's expansion members aged 19 to 64 who worked 80 hours or more in March 2026, from the spring member work survey, where members in work rarely answer weekday daytime calls and the regions' calls went out by day in different measure; a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two centres' logs, gives the share among the members never reached.",
+      "stump": "A competent solver weights each region's respondents to its sampled members' age and sex, or carries the late-reached respondents' share in work to the members never reached, and names Pierce, North Sound, King and Spokane, North Sound in place of Thurston-Mason; only the callback model on the two centres' call records, each work class's answer rate by calling window, recovers the unreached members' share in work and names Pierce, Spokane, King and Thurston-Mason.",
+      "architecture": "v2 (Trevanna Community Health Plan's 2027 Community Engagement Support track: which four of ten Washington Apple Health regions by the share of expansion members who worked 80 hours in March 2026, a latent class callback model of the member survey's call records)",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model on every sampled member's call history and landed the call (one took every graded figure); the judge returned SEND_BACK, a level-of-effort logit extrapolated to the unreached naming North Sound fourth"
     }
   ],
-  "notes": "",
-  "registered": "2026-10-20T00:26:31Z",
-  "architecture_spent": true
+  "notes": "Registered with --force on 2026-10-20 on the author's explicit instruction (option a): the two remaining BLOCKs are coincidences of the coarse key, not a repeated driver. ban.shape against task249 v4: task249 was retired on 2026-10-20 (RETIRED commit, four architectures spent) and its card was never marked architecture_spent by its author, so the guard reads a dead build as a live neighbour; shape 10 is the honest shape of a threshold scorecard, and a ranked slate under a cap would let the share of all relatives affected rank the variants without the analysis. test.same_driver against task268 v2 (lineage): the shared triple is population, G12, method_or_model_selection; task268 v2 read a stock's fall from a fixed survey against fleet catch rates, a different driver (differentiation on this card). G12 (an untested relative's blank genotype is a non-answer) and G14 (the tested carriers' rate does not apply to all carriers) are the honest decisive keys; G6 and G3 would pass the guard and describe the mechanism less well.",
+  "registered": "2026-10-20T21:08:45Z"
 }

@@ -1,36 +1,36 @@
 {
   "task": "task271",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "survey-research-official-statistics",
+  "status": "DESIGN",
+  "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-20",
-  "stump": "The default path weights each region's respondents to its sampled members' age and sex (or carries the last-reached respondents' share in work to the members never reached) and names four regions that include ones called mostly by weekday day, where members in work rarely answer; only a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two call centres' logs, recovers the unreached members' share and names the golden four.",
-  "architecture": 2,
+  "stump": "A competent analyst who sets the probands aside and runs Kaplan-Meier on the relatives tested and found to carry each family's variant names six variants for the 2027 Family Outreach Programme, among them the PALB2 missense, BARD1 and RAD51D variants reclassified in 2024, whose relatives were tested mostly for a breast cancer of their own; only every first-degree relative's history, each relative a carrier with probability one half unless a test settles it (the kin-cohort or the Mendelian likelihood), puts those three under 30 per cent and names the two PALB2 truncating variants and the ATM missense variant.",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-20",
-    "checks": 51
+    "exit": null,
+    "date": "",
+    "checks": 0
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-20: region names beside fieldwork counts in the methods report and beside experience scores in CAHPS (neither ranks on the question), generic methods vocabulary, the roster's scheduled 31 October ends (a forward record); all harmless",
-    "reader": "architecture 2, 2026-10-20: both isolated scored readers landed the call (r271d 30 of 30, r271c 21 of 30), Q6 analytical, Q1 criteria 2.2 with the methods report's calling hours"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-20 (deliverable pairs; no BLOCK)",
-    "nearest": "0.09 task143",
-    "surface": "clean 2026-10-20 (personas Dillon Evans, Robin Fields)"
+    "heart": "",
+    "nearest": "",
+    "surface": ""
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC",
-    "disposition": "SEND_BACK",
-    "report": "architecture 2: the isolated thread's verdict recorded in the design note (level-of-effort logit names North Sound fourth)"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "Architecture 3, the slot's last, is not drawn: the draw search on 2026-10-20 found no mechanism that clears the corpus (every candidate repeats a driver on file, was set aside by this lane's earlier draws, or leaves the estimator family open; the screens are the last line of Tried and rejected). Next: the author's direction, either retire the number with architecture 3 never drawn, or a direction for the draw; a draw resumes at stage 1 with fingerprint recent, coverage, mechanisms and slots, the card with architecture 2 moved to lineage, and a DRAWN commit. The lane proceeds to task272 meanwhile.",
+  "resume": "Architecture 3, the slot's last, drawn and registered 2026-10-20T21:08:45Z with the author's override (a Colorado nonprofit health plan's 2027 Family Outreach Programme: which of ten recurrent pathogenic variants give their carriers at least a 30 per cent breast cancer risk by 70, estimated from the families referred to its Inherited Cancer Risk Service; the kin-cohort or Mendelian likelihood against Kaplan-Meier on the tested carriers). Next: stage 2, three rules, readability screen, semantic fork table, ladder (the world fixed so every family member clears 30 per cent by 4 points on every variant and each easy route's set differs), closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; architecture 2's generator, pack, goldens, submission and reports are replaced at stage 3. If stage 4 spends it, the number is retired.",
   "architectures": [
     {
       "architecture": 1,
@@ -43,6 +43,12 @@
       "drawn": "2026-10-20",
       "paused": "6dfa888c",
       "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model and landed the call; judge SEND_BACK on a level-of-effort logit that names North Sound fourth"
+    },
+    {
+      "architecture": 3,
+      "drawn": "2026-10-20",
+      "paused": "",
+      "fate": ""
     }
   ],
   "approved": null,
@@ -51,5 +57,5 @@
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 track for parts of its book; its design set aside, Tried and rejected)"
+  "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)"
 }
