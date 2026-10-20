@@ -39,11 +39,28 @@ def decimals(x):
 
 
 def walk(value, key):
-    """Resolve a dotted key against figures.json."""
+    """Resolve a dotted key against figures.json, longest segment first.
+
+    A figures.json key can itself contain a dot: a build that files one block per cutoff keys them
+    "0.030", "0.015" and so on. Splitting the path on every dot made those unaddressable and the
+    scorer reported them as unknown rather than scoring them, which understates a reader's hit
+    count on exactly the builds whose candidates are decimal values. So at each level take the
+    longest remaining prefix that the dict actually holds, and only then fall back to one segment.
+    """
     cur = value
-    for part in key.split("."):
-        if isinstance(cur, dict) and part in cur:
-            cur = cur[part]
+    rest = key
+    while rest:
+        if not isinstance(cur, dict):
+            return None, False
+        if rest in cur:
+            return cur[rest], True
+        parts = rest.split(".")
+        for n in range(len(parts) - 1, 0, -1):
+            head = ".".join(parts[:n])
+            if head in cur:
+                cur = cur[head]
+                rest = ".".join(parts[n:])
+                break
         else:
             return None, False
     return cur, True
