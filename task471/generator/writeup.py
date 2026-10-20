@@ -42,7 +42,8 @@ def write(fig_path, out_path):
                  "against %.1f per cent of the tested wells on the permit list), so the pooled share leaves out %s. "
                  "Nor the "
                  "%s that "
-                 "weighting each tested well by the sampling rate of the list it was drawn from gives: a well on both "
+                 "weighting each tested well by the sampling rate of the list it was drawn from (that list's target "
+                 "over its wells in Table 2) gives: a well on both "
                  "lists had two chances of selection, and counting it at one list's rate counts it about twice, "
                  "which puts %s over the line.\n" % (
                      WORDS[len(pooled)], _list(pooled), fig["parcel_rate"], fig["permit_rate"],

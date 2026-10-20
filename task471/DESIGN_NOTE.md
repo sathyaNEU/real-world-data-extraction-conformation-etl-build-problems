@@ -247,6 +247,33 @@ and the laboratory roster carry no county figure.
 - Mirror leakage: 0.0 per cent of ask weight.
 - Measured by: generator/ceiling.py
 
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each county's wells above the
+  nitrate standard over the union of two overlapping lists, a dual-frame survey estimate; `checks.py` executes the
+  analyst test on the clean truth (the pooled share files Alderwick, Glenmoor and Netherby, the drawn list's rate ten,
+  one over each well's chance of selection from either list the six). Layers: the mess (the permit extract's other
+  wells and later permits, three assessor layouts and parcel-number formats, addresses written four ways, three
+  laboratory layouts with Kinsale in NO3 and reanalyses, the manifest's replacement draws, the border-ZIP routing of
+  portal requests) is the systems' own and neutral on the call. Three rules: no decoy, memo or published share ships;
+  no field reading decides (SF1 to SF12 same call or ruled out by a quoted sentence); executing every filed rule leaves
+  the estimator to choose.
+- **Judge:** run v3r1 DETERMINISTIC and APPROVE; Gate G method_or_model_selection, analytical_non_defect,
+  surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; every
+  graded figure reproduced (the union 42,598, the six with Brannock lowest at 304 and Ivyridge highest below at 199,
+  the 32 retest figures), Hartley at five splits and the post-stratified estimate on the same six. Its non-blocking
+  findings: its own drawn-list variant counted 11 or 12 counties against the write-up's ten (every variant the
+  generator computes, the earlier wells at either list's rate, the parcel target with or without them, the rows
+  added, gives the same ten, and the write-up now defines the rate as Table 2's target over the list's wells); the
+  retest window rests on WWA-2027-01 4.2 alone (the literal estimand of the ask); the laboratory roster is the weaker
+  distractor; the permit numbers that repeat across counties (214, each county office numbering its own permits)
+  are closed by the county on every permit and every draw.
+- **Free gates (2026-10-20):** checks.py 175 of 175, verify.py clean, two builds byte-identical, target.zip
+  ce15c2a04a1d152f cut from the final build (12 files), figures_check.py 51 of 51, precut.py 51 checks clean,
+  voice-check clean, guard.py heart WARN only, surface: the three planned personas only and five pairs promoted for
+  the author's adjudication (task473, task469 and task470 on the lane's shared pairing and gap, task265 on surface
+  similarity, task264 on the same-driver signature, differentiated on the card), containers normalised.
+
 ## Leak check
 
 - `leak.py --asof 2026-08-14` on target.zip ce15c2a04a1d152f: REVIEW, no LEAK. Each REVIEW line, harmless:
@@ -359,3 +386,10 @@ and the laboratory roster carry no county figure.
 - 2026-10-20, at the v3 build: results printed at 10.00, or Kinsale results between 44.0 and 44.27 mg/L NO3, would
   split the standard's "more than 10" from "10 or more" and the design report's factor from the fact sheet's; every
   result within 0.1 of the standard moved clear of it on its own side (SF1, SF12).
+- 2026-10-20, stage 4: architecture 3 itself, the county estimate over two overlapping lists sampled separately,
+  each tested well counted at one over its chance of selection from either list. The judge (run v3r1) found it
+  DETERMINISTIC and APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H analytical), but both
+  scored readers landed the call and all 32 ask figures: reader A by the inclusion probabilities, reader B by the
+  post-stratified estimator. The design report must describe the two lists and their separate draws for the estimate
+  to be determinate, and once described the dual-frame estimator is executed as a work order; the routing county on
+  the retest requests fell to a consistency check of the request's county against the first kit's. Spent on Gate F.

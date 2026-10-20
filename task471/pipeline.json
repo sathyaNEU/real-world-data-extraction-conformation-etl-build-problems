@@ -4,19 +4,18 @@
  "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-20",
- "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
- "architecture": 3,
+ "stump": "",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20",
-  "checks": "51 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on target.zip ce15c2a04a1d152f: the county names in the design report's tables, the domain's survey vocabulary, Kinsale's FLAG column, the laboratory roster's certification expiry dates",
+  "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
@@ -29,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 running on target.zip ce15c2a04a1d152f: two scored readers (scratchpad leak-task471-v3-r1a and r1b, brief p471v3/reader_brief.md) and the judge thread (run v3r1, /tmp/determinism-check-task471-v3r1/judge_brief.md, verdict.md back to the determinism-judge agent for the report); then one fix pass if needed, the pre-ship check and ship",
+ "resume": "re-root at stage 1 to architecture 4 (the author's no-retirement rule): a fresh draw whose decisive step is not a design-based estimator the documents must describe; the card's lineage and the note's Tried and rejected carry architecture 3's fate",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -73,15 +72,7 @@
   "target_zip_sha256_16": "c9e9c2fd35a4d875",
   "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
  },
- "build": {
-  "checks": "175 of 175",
-  "verify": "pass",
-  "byte_identical": true,
-  "target_zip_sha256_16": "ce15c2a04a1d152f",
-  "figures_check": "51 figures, 0 absent",
-  "ceiling": "pair 38.9, mirror leakage 0.0, cracker misses 32 of 32",
-  "precut": "51 checks clean"
- },
+ "build": {},
  "architecture_2": {
   "fate": "spent at stage 4: judge v2r1 DETERMINISTIC on the main call, disposition SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes; Gate H decisive step analytical, borderline planted)",
   "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
@@ -114,5 +105,38 @@
   },
   "target_zip_sha256_16": "14b337c337f9190b",
   "commit": "3e886f4b"
+ },
+ "architecture_3": {
+  "fate": "spent at stage 4 on Gate F: both scored readers (round 1, target.zip ce15c2a04a1d152f) landed the call and all 32 ask figures, reader A by one over each well's chance of selection from either list, reader B by the post-stratified estimator; the judge (run v3r1) DETERMINISTIC and APPROVE, Gate G method_or_model_selection and analytical_non_defect, Gate H analytical",
+  "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-20",
+   "checks": "51 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW (no LEAK) on target.zip ce15c2a04a1d152f",
+   "reader": "round 1: both readers landed the call and 32 of 32 ask figures (score_reader exit 1)"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md (run v3r1)"
+  },
+  "build": {
+   "checks": "175 of 175",
+   "verify": "pass",
+   "byte_identical": true,
+   "target_zip_sha256_16": "ce15c2a04a1d152f",
+   "figures_check": "51 figures, 0 absent",
+   "ceiling": "pair 38.9, mirror leakage 0.0, cracker misses 32 of 32",
+   "precut": "51 checks clean"
+  },
+  "duplicate_check": {
+   "heart": "WARN only",
+   "surface": "five pairs promoted for adjudication, none blocking"
+  },
+  "target_zip_sha256_16": "ce15c2a04a1d152f",
+  "lesson": "an estimator the design report must describe for the estimate to be determinate is executed as a work order: every design-based correction (dual frames, multiplicity, stratification) is readable once its design is filed; and a device a request-row consistency check finds is not silent"
  }
 }
