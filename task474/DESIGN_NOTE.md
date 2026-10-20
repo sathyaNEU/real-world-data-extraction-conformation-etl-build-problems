@@ -457,4 +457,12 @@ declared distractor).
   misses a split on the true poor by six or more amounts through the survey's sampling error, and a movers-aware
   estimator (backing the moves out of the conserved recipients) has no form the data close to one; dead as a decisive
   step.
+- 2026-10-20, re-root screen: a second, independent correction from students (off-campus students counted poor by the
+  survey and the estimates but absent from SNAP, away for remote teaching April 2020 to August 2021, timed by a
+  university's residence counts): with campuses of 6,200 to 9,800 students in three towns of split counties, the
+  SNAP-only benchmark still lands all nine amounts (largest gap $3,959), because the absence is two partial years of
+  a five-year average and moves people only between pieces of one county; dead without implausible enrolments.
+- 2026-10-20, re-root screens also run against the corpus: item-response test equating is spent in the lane
+  (task450's anchor equating with a drift screen, task464's concordance, task123's and task249's drift screens), and
+  census-register coverage carries nine cards and repeated screens (task123, task228, task243); neither is redrawn.
 
