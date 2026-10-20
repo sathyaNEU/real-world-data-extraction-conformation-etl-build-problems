@@ -970,6 +970,218 @@ Chile, Kenya, Georgia and South Africa all fall back to `en_US` and return the i
 a given seed. A draw wanting a non-European geography on this cell passes `--locale` or accepts
 `en_US`.
 
+### Architecture 10, the inverted draw on survey-research ground (2026-10-20)
+
+Wave 7 re-rooted this number onto `survey-research-official-statistics` / `anomaly-detection`, objective
+anomaly-detection, a cell this number has never held and the lane's most worked cell after grid
+reliability. Three drivers were spent on it and the draw was taken away from all three: task125's
+recruitment filter riding a rotating panel, task186's empirical null for cycles shared within a place,
+and task190's architecture 6, the ratio of a complete administrative numerator to a stratified-sample
+denominator, which failed Gate F by measurement when its reader took 43 of 43 figures. Nothing was
+registered, no file was cut and no git write was made.
+
+**The draw was inverted as the contract prescribes: the file first, then the quantity it forces, then the
+field's method.** The organisation's files were enumerated before any estimator was named: the frame
+extract and its build log, the selection and design file, the interviewer assignment and route sheets,
+the contact-attempt log, the doorstep observation file, the response microdata, the instrument routing
+and version log, the keystroke and timing paradata, the diary-keeping log, the edit-rule firing log, the
+query and follow-up log, the imputation log, the weighting and calibration file, the replicate weights
+and quality report, the incentive ledger, the reissue log, the record-linkage candidate-pair file, the
+published series with its vintages, and the collection calendar. Each was read for what it pins that no
+other file pins, and the proxy screen (contract screen 2) was run on the construction before any
+separation was measured.
+
+**The screen pass earns one law, and it is about this cell rather than about any candidate.** On survey
+ground the forcing files are the office's own production logs, and a statistics office's quality
+framework requires it to publish each log's own rate as an indicator: the response rate, the link rate,
+the edit rate, the imputation rate, the item-nonresponse rate. So the one-column precis contract screen 2
+looks for is not an accident of a particular file here, it is **mandated output**. Screen 2 therefore
+fires structurally on this cell and not incidentally, which is why the escape the contract names (force
+the quantity from the file's timing, its completeness conditions or the incentives that put rows in it)
+does not help: on this ground the completeness condition **is** the published rate.
+
+**Four candidates died, which is past the contract's stop rule of three, so the pass stopped.**
+
+### Candidate 12, a composite's tail count under a split-module design, killed on uniqueness (2026-10-20)
+
+(Architecture 10, screen 1, paper, with the measurement not spent because the uniqueness kill is prior.)
+Forcing file: the module assignment and rotation design. What it pins that nothing else pins: which
+components each household was asked, so it is the only record of which pairs of components were ever
+observed together. Quantity forced: the count of households above a statutory burden threshold on a
+composite none of whose households is ever observed whole, so the composite is latent for every unit and
+the contract's screen 3 has no attaining subset to fire on. It cleared screens 1 (the correcting input is
+fifteen pairwise covariances, one per pair, identified on every pair by the balanced design), 3, 6 (the
+denominator is the frame count, records-fixed), 7 (the estimand files population, outcome, window, unit
+and comparison; two methods of estimating that one quantity stand) and 8 (the graded object is a
+population count, not a level at a selected unit). **It dies on the driver.** task237's driver is the
+share of a composite's variance due to the attribute it is meant to capture, where a subset of the
+components shares a second source of variance, estimated off a split design's pairwise covariances. With
+the nouns stripped, that is this candidate: both are the covariance structure of a composite's components
+mis-estimated because the design never observes them together. `guard.py check` scores the text at 0.08,
+under the 0.12 WARN floor, which is the case the skill records as the text screen's blind spot and the
+abstraction test's job. **Rule earned:** a split or rotating module design is one forcing structure, not
+two, and the composite objects it forces (a reliability coefficient, a composite's spread, a composite's
+tail count) are one driver told three ways.
+
+### Candidate 13, a per-respondent cap on incident detail, killed on screen 2 by arithmetic (2026-10-20)
+
+(Architecture 10, screen 2, no measurement needed.) Forcing file: the incident-level detail forms. What
+it pins that nothing else pins: the characteristics of incidents, which the respondent-level file records
+only as a count. Quantity forced: the population share of incidents carrying a characteristic, where the
+office collects detail for at most a fixed number of incidents per respondent, so the incidents above
+that cap have no form at all and the share is latent for them. **It dies before a world exists.** The
+construction that corrects the share is one weight per form equal to the respondent's own incident count
+over the number of forms, and that count is a shipped column of the respondent file. So the designed
+construction **is** the one-divide route on the forcing file's plainest column, which is not a correlation
+to measure but an identity, and it is the field's own incident weight besides. **Rule earned:** where a
+collection cap is applied per unit and the uncapped count is still recorded, the cap's correction is the
+recorded count divided, so a cap can only carry a stump where the uncapped count is itself unrecorded.
+
+### Candidate 14, a tail share freed of within-unit variation, killed as a spent driver (2026-10-20)
+
+(Architecture 10, screen 3, paper.) Forcing file: the repeat-measurement subsample, which pins the
+within-unit day-to-day variance that nothing else pins. Quantity forced: the share of the population
+whose usual level sits beyond a requirement, latent because every unit is measured on a short run of days
+and the within-unit variance inflates both tails, which is the field's own usual-intake problem and the
+reason a single-day count overstates inadequacy. The artifact was to be the number of collection days
+falling for burden reasons, which fattens the tails with no change in the truth. **It dies on task202's
+driver, drawn two days earlier**: the distribution of unit averages carries the spread between units and
+none of the spread within them, so every upper cut is wrong. Mine is the same variance decomposition
+read from the other end, single observations too wide where task202's averages are too narrow, and with
+the nouns stripped the two sentences are one insight. **Rule earned:** the within-against-between variance
+decomposition of a distribution's cuts is one driver whichever end of it a design stands on, so a
+candidate that moves a tail by removing or adding a within-unit variance component is spent while
+task202 stands.
+
+### Candidate 15, the match-error correction of a register-carried status, killed on measurement (2026-10-20)
+
+(Architecture 10, screen 4, `w7_201/screen10.py`, run twice byte-identical on a designed clean truth
+before any file was cut, 20 world draws.) Forcing file: the **record-linkage candidate-pair comparison
+file**, one row per pair the matching run considered with its field-by-field agreement pattern and match
+weight. What it pins that no other file in a survey office pins: the matching process's own **evidence**
+rather than its verdict, so it is the only record from which a pair's match status can be inferred at all.
+Quantity forced: the population count of persons holding a qualifying status that only an administrative
+register carries while only the survey carries the population and the weights, so every published figure
+runs through a probabilistic link and no record states any pair's true match status. The anomaly is
+whether a quarter's movement in the published count is the population or the link. The designed decisive
+step recovers each key-quality stratum's own false-match and missed-match rates from the score mixture,
+undoes the dilution of each stratum's measured share toward the register's own average, and weights the
+corrected share to the frame count rather than to the linked count.
+
+It cleared the screens the contract names as biting on this cell. **Screen 1:** the correcting input is
+not one scalar but twelve numbers, a false-match rate and a link rate per key-quality stratum, and the
+record identifies them in **6 of 6** strata, so neither horn fires. **Screen 3:** the attaining subset,
+the pairs agreeing on every comparison field, is a filter and a divide and it is wrong by **28.760 per
+cent on average, worst 34.422**, reaching the truth in **0 of 20** draws, because exact agreement is
+concentrated in the well-keyed strata whose status prevalence is lowest. **Screen 6:** the graded
+figure's denominator is the frame count, records-fixed, so neither the exact-arithmetic horn nor the
+estimated-per-unit horn applies. **Screen 7:** the decisive step settles none of the estimand's five
+parts, which are filed as the number of persons in the population holding the status at the reference
+date, and two methods of estimating that one quantity stand. **Screen 8:** the graded object is a
+population count under a banded verdict, not a level at a selected unit.
+
+**It dies on screens 2 and 5, and they are the same number from both sides.** The easy route, weighting
+up the linked records, errs **3.289 per cent on average** and reaches the truth in 0 of 20, so there is a
+move available. But the first reflex, holding the linked pool to every recorded attribute by computing
+the status share **within** each key-quality stratum and reweighting to the frame, errs only **0.316 per
+cent on average, worst 0.413**, and lands within 1 per cent in **20 of 20** draws, with
+**corr(decisive answer, full-adjustment answer) = +1.0000**. The one-line route on the forcing file's own
+plainest column, scaling each stratum's linked count up by the inverse of its own link rate, returns the
+identical figure, **+1.0000**. The reason is arithmetic rather than tuning: the weighted missed-match
+rate is **0.2112** against a false-match rate of **0.0282**, a ratio of **7.50x**, and a statistics office
+thresholds its matching conservatively, so the correction is dominated by the missed-link side, which is
+exactly the link rate the office publishes as a quality indicator. Driving the false-match rate up to
+where it would carry the decision is the one dial, and it buys the lever by making the office's own
+matching implausible. The golden's family is fine, six false-match-rate estimator forms spreading
+**0.560 per cent** of truth against a lever of 3.028, **lever over spread 5.408**, so determinacy was
+never the problem. **Rule earned:** a correction built on an office's own process log cannot hold where
+the log's headline rate is the correction's dominant term, and a quality framework that requires the rate
+to be published makes that the normal case rather than the exception.
+
+**The axes failed independently, and the window had moved twice under the pass.** `guard.py check` on the
+candidate's honest card returned three BLOCKs: `ban.pattern` on decisive G12 and `ban.artifact` on
+`monitoring_export`, both against **task250**, which registered after the wave's window update was
+written, and `test.same_driver_older` on gap `population` plus pattern G12 plus Gate G
+`method_or_model_selection`, a signature spent in five earlier builds (task196, task255, task268,
+task456, task462). No relabelling was attempted, since an axis ban is not clearable by differentiation
+and the mechanism was already dead. **task471, registered the same day, is record linkage as its own
+task type**, which is a fourth and independent reason not to draw linkage on any cell this sitting.
+
+### The survey-office process-log direction, screened out (2026-10-20)
+
+Four candidates, four deaths, no card registered, no file cut, no git write. Three findings carry forward.
+
+**On the ground.** The five shapes the corpus records as having survived on coarse-grained ground are each
+already spent on this objective: a unit of analysis (task184, task192), an audit subsample's transported
+error rate (task192), the uncertainty of a paired difference (task195), a construction over orderings
+(task193), and a density from grouped tests with the pooling fixed by the design (task188). The sixth
+door, a decisive step that is a unit-of-analysis choice, is closed from the other side, because
+`grain_or_unit` is an axis ban this sitting (task269 and task202 carry it) and an axis ban does not clear
+by differentiation. With `uncertainty_hold` withdrawn on this objective, `maturity_censoring` blocked by
+task471, and `population_selection`, `time_semantics` and `decomposition_attribution` blocked by the live
+window, the strategies left on this cell are `causal_design`, `binding_constraint`,
+`forecast_method_backtest`, `composition_mix` and `other`, and the first of those meets contract screens
+4 and 5 head on.
+
+**On the procedure.** The inverted draw was run exactly as prescribed, the file enumerated first and the
+proxy screen before any separation, and it still died, which is information about the inversion on this
+cell. Architecture 9 earned the inversion a fourth clause from two deaths at -0.9681 and +0.9407.
+Architecture 10 adds the reason the clause bites so hard here: the forcing files on survey ground are
+production logs, and the office publishes each log's own rate because its quality framework requires it,
+so the scalar precis is not something a world can be drawn without. **A draw on this cell has to force
+its quantity from a file that is not a production log**, or accept that the proxy is shipped.
+
+**On the axes, settled for whatever follows.** Two probe cards on this cell both PASS at exit 0 with no
+BLOCK and no WARN and a nearest driver of 0.08: `gap objective` with generator `G16`, gate_g
+`confirm_surface_read`, shape 18 and strategy `causal_design`, and `gap rule` with generator `G8`, gate_g
+`binding_constraint`, shape 13 and strategy `other`. So the window on
+`survey-research-official-statistics` / `anomaly-detection` is open and what the objective is short of is
+a mechanism, not an axis, which is the same verdict architecture 9 returned on protest-event ground.
+Personas drawn and never typed, `guard.py names --geo Finland --seed 201`, locale fi_FI: Einari Kivinen,
+Aatos Karppinen, Lea Pakarinen, Tuomas Räisänen, Tauno Seppänen, Esteri Heinonen, Birgitta Lehto, Anneli
+Järvelä, Julia Hyttinen, Miika Juntunen. One tool note alongside them: the extended locale map resolves
+Finland to fi_FI, so the earlier en_US fallback finding does not apply to this geography.
+
+**The thirteen `## Three rules` lines for candidate 15, with the failures said plainly.**
+
+- **Task type:** `survey-research-official-statistics` / `anomaly-detection`, which the taxonomy lists
+  under AD and which is the only task type in this domain that serves the objective. PASSES.
+- **Domain test:** the deciding quantity is the population count of a status carried only by an
+  administrative register and reached only through a probabilistic link, which official statistics
+  estimates by decomposing the matching run's candidate-pair score distribution into its match and
+  non-match components. **DOES NOT PASS.** The measured construction collapses to one reweighting within
+  recorded strata, and a reweighting within strata reads the same with any field's nouns in it, so the
+  domain is a backdrop once the measurement is in.
+- **Swap:** "whether the quarter's movement in the count of persons holding the status is the population
+  or the link" becomes, with hospitals for persons and admissions for status, a sentence that still reads
+  correctly. **DOES NOT PASS**, for the same reason.
+- **Layer 1:** frame vintage against the reference date, identifying fields with real variant structure,
+  status spells read at a point-in-time reference date, one export in thousands. Nothing placed to be
+  caught. PASSES.
+- **Layer 2:** `estimation_fit`, the correction of an estimated share for match error recovered without a
+  validation subsample. The family is right and the instance is dead.
+- **Decisive step:** recover each key-quality stratum's own false-match and missed-match rates from the
+  pair-score mixture and rebuild the count on the frame rather than on the linked set. **DOES NOT PASS:**
+  measured, the step moves the answer 3.029 per cent while the first reflex moves it 2.713 of that, at
+  correlation +1.0000.
+- **Not semantics:** reading the register's status field, the agreement flags and the match weight
+  correctly still leaves the linked share diluted toward the register average. PASSES on its own terms.
+- **Not rule application:** no filed rule performs the mixture decomposition. PASSES on its own terms.
+- **Analyst test:** a strong analyst computes the linked status share within every recorded key-quality
+  stratum and reweights to the frame, and files a figure **0.316 per cent** from the truth. **DOES NOT
+  PASS:** the easy route's answer is the golden to three figures, so there is no wrong answer to name.
+- **Estimand:** the number of persons in the population holding the qualifying status at the reference
+  date, filed in the release specification with population, outcome, window, unit and comparison.
+  PASSES, and survives contract screen 7.
+- **No decoy:** nothing is planted; no memo, draft or stakeholder figure argues for a step, and the
+  published count is correct as published. PASSES.
+- **No certified replay:** the match-error rates are recovered from the matching run's own score
+  structure, not by reproducing certified or published figures. PASSES.
+- **Lesson:** what a model would learn is that a link's missed matches and false matches bias an
+  estimated share in opposite directions. **DOES NOT PASS as a lesson worth a build**, because the
+  measurement shows the lesson is reachable by stratifying on the recorded key-quality attribute, which
+  is the opponent's first reflex, and because task471 now holds record linkage as its own task type.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus
