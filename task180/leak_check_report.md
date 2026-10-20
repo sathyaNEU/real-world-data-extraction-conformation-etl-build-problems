@@ -39,3 +39,56 @@ Stump terms swept: asserted, catalogue, pfeilbrunn, record, completeness, scheme
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
+
+The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure names (not values)
+from `generator/figures.json`, and was scored by `.claude/skills/leak-check/score_reader.py`.
+
+### Gate F has failed on this build, on the reader's own words and on the ask layer
+
+| block | hit |
+|---|---|
+| main call | **landed, on the reader's prose** (the scored keys read as counts, see below) |
+| ask figures | **51 of 80** (63.8 per cent), already over the 35 bar on its own |
+
+It filed the committed call in its own words, that only the one plant goes over the amber line and that it
+goes over in Q1 and Q4 of the forecast year, with the other four under and the highest of them named
+correctly. It then reconstructed the whole decisive route unprompted: that the reviewed catalogue is
+nearly empty in the daytime at that plant, that the events appear only in a sharp local-time window which
+moves with daylight saving and is therefore town noise at the surface stations, that the other four plants
+show flat day and night profiles and a normal magnitude-frequency shape so their counts are already
+complete, and that the rate must be taken from the quiet window over the volume injected in that window
+and then applied to the full planned volume. It gave the ratio between the two bases and said in terms
+that taking the published quarterly counts at face value would miss the amber, which is the default path
+named from the inside.
+
+It also cleared the whole Layer 1 layer: the month labels in the 2026 injection sheet running one month
+ahead with a duplicated December row, the renamed injection well, the datalogger location-code change with
+the unlisted gap between epochs, several automatic origins per event, and four distractors identified as
+such. None of the mess was what made this hard, and none of it slowed the reader down.
+
+**A scoring caveat, recorded because it cuts against the finding and not for it.** The two keys holding
+the call are named for sets, and the reader answered their sizes, 1 plant and 2 quarters, both right. The
+scorer therefore printed the call as 0 of 2. Its prose names the plant and both quarters, so the call is
+landed; the key names were the ambiguity, and the scorer now flags this shape rather than reporting a
+clean miss. The ask layer fails independently at 63.8 per cent whatever is done with the call.
+
+```
+READ AS A COUNT, so these misses are not sound: the reader answered the size of a set where
+the golden holds its members, and the size is right. Read the reader's prose before scoring
+the call, and rename the key or ask for the members next time.
+     plants_over_amber                  golden ["Pfeilbrunn"]                 reader 1
+     quarters_over_amber                golden ["Pfeilbrunn Q1 2027", "Pfeilb reader 2
+
+call figures   0 of 2 hit
+ask figures    51 of 80 hit (63.8 per cent)
+
+FAIL  the ask layer leaks 63.8 per cent, at or over the 35 bar. Re-site the devices:
+      a reader hit means the device is absent from its path, not weak.
+```
+
+The repair re-sites the ladder, not the wording. The specific finding is that the quiet-window reasoning
+was reachable from the catalogue's own day-and-night profile, so the separation between the published
+count and the window rate has to be widened or the profile has to stop being legible at a glance.
