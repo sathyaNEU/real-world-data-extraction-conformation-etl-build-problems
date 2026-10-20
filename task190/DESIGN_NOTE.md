@@ -2104,3 +2104,334 @@ the quantity the easy route gets right rises with the detection window too, and 
 terminations recorded the step as dead in four parameterisations for a structural reason: whether a series
 is flagged at all dominates when it is flagged, by about an order of magnitude. That verdict was never
 re-run as code, so it stands as a strong indication rather than a measurement.
+
+## Architecture 7, no draw: three candidates screened as code and dead, 2026-10-20
+
+Architecture 7 was searched on `healthcare-delivery-health-economics` / `provider-quality-risk-adjustment`
+with objective `anomaly-detection`, a cell this number had never been on and on which only task194's first
+two architectures are spent. No draw is filed. Three candidate decisive steps were screened as code on the
+clean truth, each harness rerunning byte-identically, and all three died; a fourth was not forced, per the
+three-deaths rule. The card is written but unregistered, and the paragraphs below are the record so the next
+session on this cell starts from them.
+
+The two things the resume note required were both honoured and neither was the binding constraint. The
+decisive step was never a filed test level: candidate C1 files a tolerance on observed over expected, which
+is records-fixed arithmetic once the expected count exists, so what is left after filing it is a
+reconstruction and not a textbook variance, which is the distinction architecture 6 failed. And every
+verdict below is a measurement rather than a paper argument, which is the other thing architecture 6's ask
+layer got wrong.
+
+### The inverted draw: the files a provider-quality function keeps, and what each pins
+
+Started from the forcing file rather than the field's estimator, because the field's four characteristic
+patterns for this task type are each closed before a world exists. The client's library gives
+present-on-admission risk adjustment (the measure specification files the rule, so the decisive step is
+reading a flag, which rule 3 bans), indirectly standardised ratios not ranking hospitals (task194
+architecture 2, and a convention rather than a method), shrinking small hospitals toward the mean (the
+reflex and the better estimator, so the selected-unit level rule closes it), and overdispersed funnel limits
+(the dispersion screen, plus the overdispersed funnel is recorded dead in task183's and task194's slot
+notes). So the enumeration:
+
+| file | what it pins that no other file pins | the quantity it forces | verdict |
+|---|---|---|---|
+| statutory two-way activity returns | the two-way faces of the case-mix cross-classification, never the joint | each site's expected count under a published cell-rate table | candidate C1, screened and dead |
+| the monitoring series and its alarm log | when the scheme signalled, against when the shift began | the month a shift began | candidate C2, screened and dead |
+| the cross-provider patient history | that one patient's year is coded by two providers | a provider's coding intensity net of patient morbidity | candidate C3, screened and dead |
+| the case-ascertainment audit | which eligible cases a site never submitted | a site's ascertainment rate | `population_selection`, blocked in the live window, and the audit's own rate column is a one-divide route |
+| the re-abstraction sample | coding error against a verified standard | a transported error rate | a verified subsample is spent on this objective (task192) |
+| the model specification and its development cohort | the model's vintage and the population it was fitted on | calibration drift | task194 architecture 2 |
+| the clinician roster with join and leave dates | that operators move between sites carrying their panels | a panel's compositional arrival | `decomposition_attribution`, blocked, and adjacent to task68 |
+| member-month eligibility spans | how much of each patient's history was visible to the look-back | the true comorbidity burden behind a short look-back | the attaining subset is the fully enrolled patients, so filter and divide reaches it |
+| the vital-status or readmission linkage | outcomes occurring outside the site's own reach | a partly captured count | task196 |
+| the coding audit trail at code-event grain | when each diagnosis was added to a record | the share of score growth added retrospectively | two vintages, which is task194's live driver, and `maturity_censoring` is blocked by task471 |
+
+### The three measured deaths
+
+- **C1, the expected count raked from two-way returns, dead on determinacy and separation riding one
+  dial.** The published risk table gives an expected 28-day readmission rate per cell of age band by
+  clinical group by comorbidity level; the sites file three two-way tables and never the three-way, so the
+  expected count is unobserved, and the decisive step rakes the three faces to convergence while the easy
+  route multiplies the one-way margins. Screens 1 and 2 both pass, and pass well: the correcting input is a
+  table per site rather than a scalar and is identified for 16 of 16 sites in every one of 30 world draws,
+  and the correction is essentially uncorrelated with the plainest columns of its own forcing returns, at
+  mean correlations of -0.0646 against mean comorbidity level, -0.0578 against the share at the top level
+  and +0.0104 against the comorbidity spread, with the plain-column routes reaching the designed set only 1
+  to 10 times in 30. The prediction that the correction would be a monotone function of the comorbidity
+  dispersion was wrong, because the two-way interactions' signs vary from site to site, and that is worth
+  recording as the one screen this family passes. It dies on the other two numbers. The licensed
+  reconstruction family returns **1.23 distinct designated sets** (more than one in 6 of 30 draws, maximum
+  3), where the designation screen requires one, and the easy route reaches the designed set **24 of 30**,
+  so the decisive step decides only 6 worlds in 30. The dial sweep over interaction strength shows the two
+  cannot be separated: at k 0.4 the family is at 1.10 distinct sets and independence reaches the set 27 of
+  30; at k 2.5 independence falls to 19 of 30 and the family rises to 1.40. Raising the interactions makes
+  independence worse and makes the statewide pooled joint's own three-way interaction bigger in the same
+  stroke, so the dial that buys the separation spends the determinacy. `guard.py slots` had already killed
+  the insight three ways and was the cheapest screen available: task465 ships the pilot's within-band
+  association carried into cells where only two shares are known, task256 carries a reference survey's
+  joint to each unit, and task456 records the measurement outright, that raking a cross-tab to two margins
+  leaves other margin-fitting methods defensible.
+- **C2, the month a shift began, dead on the same one-dial shape.** A date is the only answer object found
+  that evades the selected-unit level rule and the share-per-bucket rule by construction, and nothing in
+  this corpus had measured whether one can be graded, so it was measured: 36 months, 320 discharges a
+  month, an expected rate of 0.095, a true month of 19, 40 seeds, five licensed change-point estimators
+  (profile maximum likelihood, the cumulative-sum last reset, binary segmentation, a weighted
+  least-squares step and a Bayesian posterior mode) against four easy routes. The likelihood does pin the
+  month at a strong shift, the two-log-likelihood set narrowing from 7.20 months at a lift of 1.25 to 1.00
+  at 2.50, and the profile estimator lands month 19 in 37 of 40 draws at a lift of 1.70. Both halves fail
+  anyway. The licensed family returns **1.57 distinct months** (more than one in 22 of 40 draws, maximum
+  3) and does not close at any lift, still 1.52 at 2.50, because the cumulative-sum last reset lands the
+  true month only 19 of 40 while the other four agree 36 to 37 of 40. And the alarm month, the easy route
+  the design exists to beat, sits **+0.7 months** from the truth at a lift of 1.70, inside the printed unit
+  of one month. The dial sweep is the structural finding: the alarm's error runs +3.9, +1.4, +0.7, +0.1,
+  -0.1, -0.1 months as the lift runs 1.25 to 3.00 while the two-log-likelihood width runs 7.20 to 1.00, so
+  a shift big enough to date is a shift the scheme catches at once, and a shift the scheme is late on is a
+  shift the likelihood cannot date. A run length to signal falls as the shift grows, which is why this is
+  arithmetic rather than a tuning accident.
+- **C3, a provider's coding intensity identified off patients coded by two providers, dead on the
+  attaining-subset screen at near identity.** The unobserved quantity is each site's coding intensity net
+  of patient morbidity, and the forcing file is the cross-provider patient history, a different grain whose
+  variety no stratification of the case file reproduces; the easy route compares sites' mean coded scores,
+  which the concentration of sicker patients confounds. Screen 1 passes, with a minimum of 52 shared
+  patients a site at a 6 per cent sharing rate and 116 at 12 per cent, so the input is identified
+  everywhere, and the easy route does lose, reaching the designed set 15 of 20. That is no protection, and
+  the screen's own wording is why: the subset already carrying the property is the shared patients, and
+  **filter-and-difference on them reaches the designed set 18 to 20 of 20 against the two-way least
+  squares' 19 to 20, at a correlation of +0.9947 to +0.9972** between the two. Making movers sicker when
+  they move, the one confound that could have separated the within-patient difference from the connected-set
+  solve, does not: at a 1.25 morbidity step the filter route still reaches 18 of 20 and the correlation
+  holds at +0.9945.
+
+### The structural finding, which is worth more than the three deaths
+
+On this cell every candidate decisive step falls into one of three closed classes, and the classes are
+exhaustive rather than merely long. **One**, it settles a part of the estimand, and the WHAT screen kills
+it: choosing intention-to-treat over as-treated, choosing deaths per admission over failure-to-rescue,
+choosing person-time over persons, and choosing the look-back that defines a visible comorbidity all settle
+the population, the outcome or the unit, so filing them is rule application and leaving them unfiled leaves
+the designation unforced. **Two**, it is an estimator choice over a quantity carrying a free weighting,
+shrinkage or variance choice, and it dies indeterminate: C1 and C2 are the measured instances, task194's
+architecture 3 died the same way on this exact ground with chain-ladder variants, and the dispersion screen
+and the withdrawn `uncertainty_hold` close the rest. **Three**, it is one of the opponent's own reflexes.
+That third class is the one this cell is unusually exposed to, and task183's slot note states it for the
+whole family: applying stratum-specific rates to a mix is the reweight reflex on the readability screen, so
+the decisive rung is readable however the bands are drawn. Risk adjustment is the thing this domain
+publishes most, so standardisation is the reflex here rather than the method, which is the same observation
+task194's architecture 6 earned from the other side when its pack's own published standardised ratio
+reproduced the golden set with no analysis at all.
+
+Two further facts sharpen it. The strategies still unspent on this objective are exactly
+`identity_resolution`, `time_semantics`, `stated_rule_hard_construction` and `withheld_rule_corpus_fit`,
+which are the four the guard flags for semantics risk and which rule 3 bars from deciding a call, so the
+unspent list on this objective is unspent because it is undrawable. And the live axis window closes the
+rest: `population_selection`, `time_semantics` and `decomposition_attribution` are blocked by task471,
+task474 and task475, `maturity_censoring` by task471, and `uncertainty_hold` is withdrawn on this objective.
+
+### The axis map, read off `guard.py check` at hand-back
+
+Recorded because it is the expensive thing to re-derive and because the window moved twice during this
+pass. The contract named task269, task270 and task271 as the last three; at hand-back `guard.py recent`
+reads task471, task474 and task475, which blocks shape `07` and `05`, strategies `population_selection`,
+`time_semantics` and `decomposition_attribution`, roles `research_desk`, `compliance_or_audit` and
+`programme_officer`, org families `government_agency`, `utility_or_infrastructure` and `local_government`,
+forums `committee_or_panel`, `board_of_directors` and `council_or_assembly`, forcing events
+`budget_or_appropriation` and `statutory_or_regulatory_filing`, and context artifacts `register`,
+`filed_standard` and `close_out_summary`. Free and honest on this ground: org family
+`hospital_or_health_provider`, forum `auditor` (2 uses in the corpus), forcing event `audit_or_inspection`
+(4 uses), context artifact `published_series`, role `statistical_office_head`, strategy `composition_mix`,
+shape `14`. Two axes were redrawn rather than argued, `committee_or_panel` to `auditor` on `ban.forum`
+against task471 and `compliance_or_audit` to `statistical_office_head` on the live window, and in both cases
+the replacement is the honester owner of the call and not merely the passing one: the designation is forced
+by the directorate's own audit cycle, and the head of clinical information owns the returns and the
+published cell-rate table.
+
+What does not clear by redrawing an axis, and is the last word on C1's identity: with gap `population`, the
+decisive generator `G16` and decision type `designation_set`, `guard.py check` returns
+`test.same_puzzle_older` against task236, task453 and task463 and `test.same_driver_older` against task104,
+task134, task177, task463, task501 and task70, six earlier builds carrying the same gap, pattern and Gate G
+triple. The guard's own fix line is the finding: a signature spent in six earlier builds is cheaper to
+redraw than to differentiate six times. `method_or_model_selection` also sits in 8 of the last 12 builds.
+
+### Kept so the next session does not re-derive it
+
+**The persona draw, made and unspent.** `guard.py names --geo Finland --seed 190` returned Emil
+Raatikainen, Pirjo Jaaskelainen, Tuomo Vaisanen, Johannes Suhonen, Maria Voutilainen, Daniel Turunen, Elias
+Puranen, Johanna Kumpulainen, Arvo Salonen and Kristina Jaatinen. No pack was cut, so none is spent and
+none is on a registered card; Finland is unused in the corpus, against 55 United States, 16 United Kingdom
+and 13 Canada. The New Zealand draw architecture 5 banked also stays unspent.
+
+**The three harnesses**, written in a session scratchpad that does not survive the session, so what they do
+and what they need is recorded. The **C1 screen** builds 16 sites' three-way case-mix tables from a
+log-linear model with site-specific main effects and site-specific two-way interactions and no three-way
+term, so that raking the three two-way faces is exact by construction; it ships the faces, applies a
+published cell-rate table, draws observed counts as Poisson around a designed site effect (1.235, 1.165 and
+1.085 on three sites, 1.000 on thirteen), and compares designated sets at a tolerance of 1.15 under
+independence, one two-way table alone, raking from uniform, raking from the pooled statewide joint, the
+pooled joint raked to one-way margins, and four plain-column routes. Its **dial sweep** repeats that over
+interaction strengths 0.4 to 2.5 and prints separation against distinct designated sets, which is the kill.
+The **C2 screen** generates a 36-month series at 320 discharges and a 0.095 expected rate with a step at
+month 19, and runs five licensed change-point estimators against four easy routes over 40 seeds, printing
+distinct months, the two-log-likelihood set width and each easy route's error in months; its dial sweep runs
+the lift from 1.25 to 3.00. The **C3 screen** draws 9,000 patients with log-normal latent morbidity,
+concentrates sicker patients into some sites through a site-specific pull on log morbidity, codes each
+patient's score as morbidity times the site's intensity times noise, makes a share of patients appear at a
+second site with an optional morbidity step on the move, and compares the designed designation under the
+site-mean route, filter-and-difference on the shared patients, and a two-way least-squares solve on the
+connected set. Any later candidate on this cell gets the same treatment before a card is registered, and
+the C1 harness in particular is the one to reuse, because its screen-2 result is the only positive
+measurement this pass produced.
+
+**What to do with the number.** This cell is not drawable for this slot on the evidence above, and the
+reason is the same shape as architecture 5's criminology finding rather than a shortage of good ideas:
+every quantity the task type estimates is either a part of the estimand, an estimator with a free weighting
+choice, or the reweight reflex. The slot's own pause note already names fresh ground,
+`accounting-audit-forensic` and `business-operations-analytics` being never-built cells on this objective,
+and nothing found this pass argues against moving there. If the number is kept on healthcare delivery, the
+one direction this pass did not close is a decisive step whose forcing input is a second file at a finer
+grain than any patient attribute, so that no cross-sectional control reaches it, which is the property
+task194's architecture 3 engineered and proved on this ground before dying on determinism rather than on
+Gate F.
+
+### Candidate C1's default path and its thirteen rule lines, with the failures stated
+
+Written out because the failures are the useful part and because a later session will otherwise reach for
+this candidate again. The default path, as a competent analyst builds it from the prompt's words and the
+files' grain:
+
+1. Read `site_activity_returns_2026.csv` and pivot each site's three statutory schedules back into the
+   three two-way tables, age band by clinical group, age band by comorbidity level, clinical group by
+   comorbidity level.
+2. Collapse any one of them to one-way margins for age band, clinical group and comorbidity level, and
+   check the three collapses agree, which they do.
+3. Join the district's published expected-rate table, one rate per cell of the three-way classification.
+4. Build each site's case-mix joint as the product of its three one-way margins times its discharges,
+   because that is the only joint the margins give on their own.
+5. Multiply cell by cell and sum to the site's expected readmission count.
+6. Divide the site's observed readmissions by it and compare against the filed tolerance of 1.15.
+7. `Ends on:` the three sites whose observed over expected clears the tolerance under the independence
+   joint, which is the designed set in 24 of 30 world draws and a different set in the other 6.
+8. `Golden:` the designated set under the joint raked from all three two-way faces to convergence, where
+   the independence product misstates the expected count by up to 7.1 per cent with a sign that varies site
+   to site.
+
+**Stump sentence.** The default path builds each site's case-mix joint as the product of its one-way
+margins, because the returns ship only two-way faces and the margins are what every schedule agrees on, and
+so files the independence designated set, which differs from the golden only in 6 of 30 worlds.
+
+**The thirteen lines.** Three fail outright, one passes weakly and one is partly spent, which is why no
+draw is filed.
+
+- `Task type:` provider-quality-risk-adjustment, which serves Anomaly Detection in the taxonomy. **Passes.**
+- `Domain test:` the deciding quantity is each site's expected readmission count under the district's
+  published cell-rate table applied to its own case mix, which is the field's indirect standardisation over
+  cells. **Passes weakly:** the quantity is the field's, but the decisive move is a contingency-table
+  reconstruction and the domain content sits in the rate table and the returns rather than in the move.
+- `Swap:` "which sites' observed readmissions exceed the expected count their own case mix implies" becomes
+  "which depots' observed failures exceed the expected count their own fleet mix implies" and nothing stops
+  making sense, because raking a cross-tab from its two-way faces to form a weighted total reads identically
+  with kilowatt-hours by tariff band and region. **Fails.**
+- `Layer 1:` provider identifiers that do not line up between the clinician roster and the returns;
+  suppression of small cells in the published tables as bounded unknowns; coding revisions across years
+  crosswalked to one classification; fiscal against calendar reporting periods. Each is produced by the
+  district's own reporting systems and none carries the decisive step. **Passes.**
+- `Layer 2:` `estimation_fit`, the weighting and post-stratification choice: which joint the cell rates are
+  applied to. **Passes.**
+- `Decisive step:` recover the three-way case-mix joint by raking the site's own two-way faces to
+  convergence rather than multiplying its one-way margins. **Passes as a statement.**
+- `Not semantics:` every field, code, unit and definition read correctly still leaves the independence
+  product as the only joint the one-way margins supply, and the two-way faces refute independence without
+  saying what to do about it. **Passes.**
+- `Not rule application:` no shipped sentence states how to form the joint, and the published table defines
+  rates per cell without saying how a site's cells are to be counted. **Passes, measured.**
+- `Analyst test:` the easy route is step 4 above and it files the independence designated set. **Fails:**
+  measured at 24 of 30 world draws equal to the designed set, so the easy route is right most of the time
+  and the decisive step decides 6 worlds in 30.
+- `Estimand:` "the expected number of 28-day unplanned readmissions among each site's 2026 discharges under
+  the district's published expected-rate table, against a tolerance of 1.15 on observed over expected",
+  filed in the monitoring policy. **Fails:** its literal execution is not computable from the pack, since no
+  file carries the joint it names, and the licensed reconstruction family returns 1.23 distinct designated
+  sets with more than one in 6 of 30 draws.
+- `No decoy:` nothing is planted to be caught; no copied block, no withheld rule, no memo and no stakeholder
+  figure carries the wrong answer, and the independence route is the honest consequence of what the returns
+  ship. **Passes.**
+- `No certified replay:` no published or certified figure in the pack is reproduced by the wrong method, and
+  the prior-cycle report covers a different window. **Passes.**
+- `Lesson:` that a weighted total over a cross-classification needs the joint and not the margins.
+  **Partly spent:** task465 and task256 already teach the association-transport half of it, and task456
+  records that raking to two margins leaves other margin-fitting methods defensible.
+
+### Addendum, same day: two further screens, the setting-noun slots run, and the ban-table correction
+
+Four more things were run on candidate C1 after the first hand-back, two of them screens measured elsewhere
+today. None of them moves the verdict, and two of them narrow its cause, which is the useful part: this
+family clears more screens than any other candidate tried on this cell, and still dies on the one dial.
+
+**Screen 10, partial coverage, passes and does not reach C1.** The screen asks what share of the record the
+correction leaves alone, because that share is a filter and a divide on the same quantity, while driving it
+to zero turns the correction into a near-uniform rescaling. C1 sits in neither trap: the raked joint moves
+**96.3 per cent of cells** by more than one discharge (only 0.0370 of cells are left inside the printed
+unit) and only **0.1729 of sites** have their expected count move by less than 0.5 per cent, so there is no
+large unaffected subset to divide on; and the correction is not a rescaling either, since its sign varies
+site to site, which the first pass measured. The unaffected-subset route was scored rather than argued: a
+site's own departure from independence is a plain statistic of the forcing returns, computable with no
+model, and taking the top sites by it reaches the designed set **0 of 30**, with the correlation between a
+site's departure from independence and the size of its correction only **+0.2489**, because the correction's
+size turns on which cells the interactions sit in and how the published rates weight them rather than on how
+non-independent the table is. C1 is the shape the screen names as out of its reach, a correction leaving no
+part of the record alone.
+
+**Screen 11, the benchmark, passes.** The screen asks whether the benchmark a statistic is read against
+collapses to a single number once the second file is read, and requires the one-group-by route to be stated
+before a world is drawn. Stated: group each site's discharges by one factor, apply that factor's marginal
+rate from the published table collapsed over the district's overall case mix, divide, and compare to the
+tolerance. The benchmark does not collapse, because the per-site expected rate has a coefficient of
+variation of **0.1982** across sites where a single benchmark would show 0.0000, and the one-group-by routes
+lose badly: **1 of 30** on age band, **1 of 30** on clinical group, **0 of 30** on comorbidity level and
+**2 of 30** taking the best of the three. The reason is structural and worth keeping: a one-factor
+standardisation discards two factors' composition, so it is a worse estimator of the expected count than the
+independence product, which at least uses all three margins. On this family the benchmark screen fires
+against the easy route rather than against the decisive one.
+
+So C1 clears screens 1, 2, 10 and 11 and dies, as the first pass measured, on the two numbers that ride one
+dial: **1.23 distinct designated sets** in the licensed reconstruction family and the easy route reaching
+the designed set **24 of 30**.
+
+**The slots run on the setting's nouns, which the first pass did not do, and which found two things the
+mechanism run missed.** The mechanism words (raking, margins, joint distribution) returned task465, task256
+and task456. The setting words (hospital, readmission, discharge, clinical group, comorbidity, district)
+returned two more, and the driver score saw neither, every nearest driver sitting at 0.05.
+
+- **task468**, a live build inside the last twelve on this same client domain, grades **each hospital's
+  observed over expected against a tolerance of 1.15**, which is C1's deciding quantity, comparison and
+  tolerance exactly, with `estimation_fit` as its Layer 2 family and a designation against that tolerance as
+  its answer. Its mechanism is different, a linked outcome count corrected for linkage error, and its
+  objective is ETL rather than anomaly detection, so this is not a driver collision. It is a same-puzzle
+  concern of the kind the lexical score cannot see: a reviewer holding the two would read one hospital
+  observed-over-expected build twice. Any later draw on this cell has to move the deciding quantity off a
+  hospital's observed-over-expected ratio, not merely the mechanism under it.
+- **task271's architecture 1** closes the look-back candidate with a measurement, where this pass had only
+  closed it on paper. Rebuilding each patient's prior conditions from earlier admissions through the person
+  key failed Gate F at both isolated readers, and its fate line gives the general reason: a look-back
+  through earlier admissions is the field's own comorbidity practice, so it was the first thing a careful
+  reader built. That is the third class of this cell's structural finding, the reflex class, confirmed on
+  the cell next door.
+
+Two further corpus facts from the same run support the `Swap:` failure recorded above rather than
+contradicting it: task233 and task243 both use hospital readmission rates as their *example* of a noun swap
+that changes nothing, and task453 uses the readmission threshold the same way. On this corpus, hospital
+readmission O/E is the canonical generic setting, which is exactly why a mechanism told in its nouns has to
+earn the domain somewhere other than the deciding quantity.
+
+**The ban-table correction, and what it changed on this card.** `task474` carries `architecture_spent: true`,
+and `guard.py` runs every `ban.*` axis rule on live cards only, so task474's axes are open. Two of this
+card's axes had been redrawn against blocks that did not exist, and both are restored to the honest label:
+`shape` back to **07**, because the criteria come from the site-by-cell grid of expected counts, and
+`role_family` back to **compliance_or_audit**, because the owner of a monitoring slate forced by the
+directorate's own audit cycle is a clinical audit and quality lead rather than the head of a data office.
+The forum redraw stands, `committee_or_panel` to `auditor`, because `committee_or_panel` is genuinely blocked
+by task471 and `auditor` is both free and the honester decider. The live window blocks shapes `10` and `05`,
+strategies `population_selection` and `decomposition_attribution`, roles `research_desk` and
+`programme_officer`, org families `government_agency` and `local_government`, forums `committee_or_panel` and
+`council_or_assembly`, artifacts `register` and `close_out_summary`, and forcing events `other` and
+`statutory_or_regulatory_filing`; none of the card's remaining values is among them. The standing lesson,
+recorded because it cost two redraws: a ban table is not authority, `guard.py check` is, and a spent card
+fences off no axis while its driver stays as dead as any.
