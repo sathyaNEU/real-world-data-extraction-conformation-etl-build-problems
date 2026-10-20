@@ -273,6 +273,25 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
 - Measured by: generator/ceiling.py
 
 
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each district's 2026 leak
+  methane per mile, a leaker-based inventory whose surveyed leaks' unobserved starts are estimated from the season the
+  odor calls measure; checks.py executes the analyst test on the clean truth (the midpoint start files Ashby, Elmwood
+  and Ivers, the true starts the golden five). Layers: the mess (UTC calls, the grade recode, the repair visits, the
+  cost lines to date, duplicate tickets, shared service lines) is the utility's own and is neutral on the call; the
+  call reads no cost line, ticket or premise. Three rules: no decoy, memo or earlier list ships; no field reading
+  decides; executing every filed rule with a convention for the start designates another set.
+- **Judge:** architecture 2 pass 1 DETERMINISTIC with FIX_NOW (a component's window label), fixed; pass 2 DETERMINISTIC
+  and APPROVE, Gate G method_or_model_selection and analytical_non_defect, Gate H pass.
+- **Free gates (2026-10-20):** checks.py 27 of 27, verify.py clean, two builds byte-identical, target.zip cut from the
+  final build (13 files), figures_check.py 45 of 45, precut.py 51 checks clean, voice-check clean, guard.py surface
+  5 pairs promoted for the author's adjudication (no shared name; card signatures differentiated) and heart WARN,
+  containers normalised.
+- **leak.py REVIEW lines, each harmless:** the program line 3.30 sits in the guidelines it is filed in, and the
+  guidelines carry the domain's nouns (survey, emitted, December in "31 December 2026") and name no season, profile
+  or weighting.
+
 ## Tried and rejected
 
 - 2026-10-20, at the draw: the seed's moves (overlapping periods, a GEOID match, point estimates) as the decisive step;
@@ -290,3 +309,5 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   (the midpoint start: Ashby, Elmwood and Ivers) and every repair-cost figure, and both took all 12 interruption
   figures by joining each ticket's address to its meters. That device kept as a hazard; Ask B's primary re-sited to
   the shared service lines. Reader 1 also read "local" as Eastern time: guidelines 2.2 now names Central time.
+- 2026-10-20, architecture 2 stage 4 reader 3 (pack 5a46ee5a, shipped): missed the call (the midpoint start) and all
+  24 ask figures.

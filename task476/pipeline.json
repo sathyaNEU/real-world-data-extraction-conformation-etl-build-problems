@@ -1,11 +1,11 @@
 {
  "task": "task476",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
  "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
  "architecture": 2,
@@ -16,22 +16,22 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20: the program line in the guidelines and its domain vocabulary; no LEAK",
-  "reader": "arch 2 readers 1 and 2 (543b59b9): both missed the call (midpoint: Ashby, Elmwood, Ivers), ask A 0 of 12, ask B 12 of 12; ask B re-sited to shared service lines"
+  "reader": "arch 2: three scored readers all missed the call (the midpoint start: Ashby, Elmwood, Ivers); readers 1 and 2 took Ask B 12 of 12 (re-sited), reader 3 on the shipped pack 0 of 24 ask figures"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 on the registered v2 card (time_semantics strategy risk, ETL and Gate G overuse, decision type and question form after task471); BLOCKs cleared at the draw: org family, forcing event and context artifact redrawn, structural matches differentiated",
-  "heart": "",
-  "nearest": "task468 v2 at 0.07"
+  "heart": "WARN 2026-10-20 at ship (strategy risk, ETL and Gate G overuse, repeats after task471); guard.py surface promoted 5 pairs for adjudication, none on a shared name: task470 and task473 on surface similarity 0.101 (same domain pairing or decision type), task501, task461 and task242 on the card signature (gap time, G13, method_or_model_selection), each differentiated on the card; adjudication is the author's /clone-check",
+  "nearest": "task129 v2 ledger row at 0.06"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (arch 2 pass 1, minor SOLUTION_WRONG on a label)",
-  "disposition": "FIX_NOW",
-  "report": "task476/determinism_check_report_pass2.md"
+  "verdict": "DETERMINISTIC (arch 2 pass 2, after FIX_NOW)",
+  "disposition": "APPROVE",
+  "report": "task476/determinism_check_report_pass3.md"
  },
  "returned": [],
- "resume": "stage 4 of architecture 2: FIX_NOW applied (pack from 2016, a customer is a meter, Central time); re-judge r3 and fresh reader r3a running on target.zip 5a46ee5a; then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

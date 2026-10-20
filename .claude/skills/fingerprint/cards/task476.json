@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Designate five of the 12 districts for the 2027 to 2029 Accelerated Main Replacement Program: Brennan Hill, Elmwood, Fenwick, Harlow and Ivers.",
+  "answer_source": "task476/submission.md",
   "gap": [
     "time"
   ],
