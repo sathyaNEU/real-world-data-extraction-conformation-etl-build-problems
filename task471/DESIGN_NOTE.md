@@ -256,6 +256,28 @@ answer.
   16 of 32 (48.1); with reversals tied by the record inside the window, 18 (49.8); with the late reversals, 32 (61.9).
   Each ask turns on three separate finds; two readers off the call who make every find but the last keep 22.0 to 52.9.
 
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each region's census-day adult
+  population corrected for coverage the way census coverage measurement corrects it, dual-system estimates within
+  post-strata with their correlation bias measured against demographic analysis's sex ratios; checks.py executes the
+  analyst test on the clean truth (the dual-system estimates file the default path's eight wrong regions, the decisive
+  step alone files the golden). Layers: the workbook layouts, the deaths split across two files, the provisional
+  period, the renumbered electorates and every roll-log item are the systems' own and neutral on the call (R2); the
+  call reads no transaction-log row, dictionary, migration note or 2023 roll (asserted). Three rules: no decoy, memo
+  or earlier allocation ships; no field reading decides; executing every filed rule files the default path.
+- **Judge:** v5r1 NOT_DETERMINISTIC and FIX_NOW (the unfiled UTC, filed), v5r2 DETERMINISTIC and APPROVE (Gate G
+  method_or_model_selection and analytical_non_defect, Gate H pass); v5r3 on the round-3 pack: see pipeline.json.
+- **Readers:** six scored readers in three rounds, all missing the call (five on the default path, one with the imputed
+  records kept); rounds 1 and 2 kept 32 of 32 ask figures through documented devices, so the asks were re-sited;
+  round 3 on 5b89c291378b1d76 kept 1 and 0 of 32 (3.1 and 0.0 per cent), score_reader exit 0 on both.
+- **Free gates (2026-10-20):** checks.py 198 of 198, verify.py PASS, two builds byte-identical, target.zip
+  5b89c291378b1d76 cut from the final build (20 files), figures_check.py 77 of 77, precut.py 51 checks clean,
+  voice-check clean, guard.py surface clean and heart WARN (answered in the draw), ceiling.py pair 35.2.
+- **leak.py REVIEW lines, each harmless:** the field operations summary names the sixteen regions (the call is a list
+  of region names), and the methods report and series notes use the survey's and the registrations' own words without
+  naming a dependence, demographic analysis or a sex ratio.
+
 ## Tried and rejected
 
 - 2026-10-18, at the draw: the seed's own moves, a round-trip itinerary fare read as a one-way fare and the New York

@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4 round 3 on target.zip 5b89c291378b1d76 (build.py green: checks 198 of 198, verify PASS, two builds byte-identical): two fresh scored readers (leak-task471-v5-r3a, r3b) running and a fresh determinism-judge agent preparing /tmp/determinism-check-task471-v5r3/judge_brief.md; then spawn the judge thread on it and have the agent write determinism_check_report_v5r3.md; score each reader with score_reader.py; ship if both miss the call and the asks hold near a fifth, else re-site again",
+ "resume": "stage 4 round 3 on target.zip 5b89c291378b1d76: both scored readers passed (call 0 of 1 each; asks 1 and 0 of 32); the judge thread on /tmp/determinism-check-task471-v5r3/judge_brief.md is running; then the determinism-judge agent writes determinism_check_report_v5r3.md; ship on APPROVE",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -161,7 +161,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-20 on the round-3 pack (region names in the field operations summary; generic survey words in two documents); no LEAK",
-  "reader": "round 1 on 7b7e6acddefeb6b8 and round 2 on 5402dd6ec2786aea: all four readers missed the call on R2 (score_reader call 0 of 1) and kept 32 of 32 ask figures (round 2 through the concordance's earlier numbers and REF_TXN); round 3 pending"
+  "reader": "round 1 on 7b7e6acddefeb6b8 and round 2 on 5402dd6ec2786aea: all four readers missed the call on R2 and kept 32 of 32 ask figures; round 3 on 5b89c291378b1d76 after the asks were re-sited: reader A missed the call on R2 and kept 1 of 32, reader B missed it (imputed records kept) and kept 0 of 32; score_reader PASS on both"
  },
  "duplicate_check": {
   "guard_check": "WARN only at the v5 draw",

@@ -64,3 +64,16 @@ Architecture 5, round 2 (target.zip 5402dd6ec2786aea), two isolated readers on f
 - **Ruling:** the decisive step held again (four readers of four); every ask device was on the readers' documented
   path (the concordance's earlier numbers, the dictionary's REF_TXN) and is re-sited for round 3.
 
+
+Architecture 5, round 3 (target.zip 5b89c291378b1d76), two fresh isolated readers on fresh unzips, the same brief.
+
+- **Reader A:** missed the call (call 0 of 1) on the default path's allocation exactly; kept 1 of 32 ask figures. It
+  found that a move reuses the elector's number and dropped those enrolments, but counted no reinstatement as an
+  addition, read the old platform's numbers as the concordance's, and netted only the reinstatements its REF_TXN named.
+  Question 6: an analytical choice for the call (coverage adjustment by cell); the asks "decided by data semantics".
+- **Reader B:** missed the call (call 0 of 1), keeping the imputed records in the base (11 regions off); kept 0 of 32.
+  It counted distinct elector numbers but kept the movers (their removal comes after the enrolment), called the 2023
+  general election's roll a "stale alternative", and tied old-platform reversals by elector number. Question 6: an
+  analytical choice (dual-system estimation by cell).
+- **Ruling:** the decisive step held on all six readers in three rounds; the ask devices held (1 and 0 of 32, under a
+  fifth), each reader stopping at a different find. No decisive-step sentence, no helping file, no main-call fork.
