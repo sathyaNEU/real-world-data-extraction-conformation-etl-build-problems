@@ -247,7 +247,8 @@ def build(rng):
     ex_pids = [p["pid"] for p in persons]
     for prog in programs:
         for v in range(3 + int(rng.integers(0, 6))):
-            amt = float(rng.choice([1850, 2400, 3200, 3975, 4500, 5200, 6000, 7400])) + float(rng.integers(0, 40)) * 25
+            amt = float(rng.choice([1850, 2400, 3200, 3975, 4500, 5200, 6000, 7400])) + float(rng.integers(0, 40)) * 25 \
+                + float(rng.choice([0, 0, 0, .35, .6, .85, 1.2, 4.15]))
             n = int(rng.choice([1, 2, 3, 4], p=[.25, .35, .3, .1]))
             if v == 0:
                 n = max(n, 2)
@@ -302,7 +303,7 @@ def build(rng):
     for i, sec in enumerate(ELIG):
         nxt = ELIG[(i + 1) % len(ELIG)]
         cands = sorted([p for p in programs if p["sec"] == sec and p["program_id"] in paid25],
-                       key=lambda p: -paid25[p["program_id"]])
+                       key=lambda p: paid25[p["program_id"]])
         old = cands[0]
         old_id = old["program_id"]
         arch += int(r3.integers(3, 30))
@@ -314,6 +315,12 @@ def build(rng):
                                  approved=old["withdrawn"] + dt.timedelta(int(r3.integers(20, 90))),
                                  status="Active", withdrawn=None))
     programs += new_programs
+    # the list carries each program's latest annual re-approval (subsequent eligibility), not its first approval
+    for p in programs:
+        if p["status"] == "Active":
+            p["approved"] = dt.date(2025, 7, 1) + dt.timedelta(int(r3.integers(0, 340)))
+        else:
+            p["approved"] = dt.date(2024, 7, 1) + dt.timedelta(int(r3.integers(0, 330)))
 
     return dict(emps=emps, byacct=byacct, peo_regs=peo_regs, exits=exits, persons=persons, wage_rows=wage_rows,
                 programs=programs, vouchers=vouchers, ledger=ledger, register=register)

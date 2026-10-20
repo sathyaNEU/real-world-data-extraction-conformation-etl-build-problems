@@ -1,6 +1,7 @@
 """The golden deliverables: the application table (CSV, one row per eligible industry) and the slate memo for the board
 (docx with a bar chart of every eligible industry's growth in pay per job), and generator/figures.json."""
 import csv
+import math
 import io
 import json
 import os
@@ -37,7 +38,7 @@ def figures(target):
         paid_growth={s: int(round(100 * paid[s])) for s in el}, paid_slate=pslate,
         thursday_a={s: round(exp[s]["TA"], 3) for s in el},
         jobs_2025=jobs, names={s: SHORT[s] for s in el},
-        asks=dict(exiters={s: int(a.get(s, 0)) for s in el}, ita={s: int(round(b.get(s, 0.0))) for s in el},
+        asks=dict(exiters={s: int(a.get(s, 0)) for s in el}, ita={s: int(math.floor(b.get(s, 0.0) + .5)) for s in el},
                   exiters_total=sum(int(a.get(s, 0)) for s in el), ita_total=int(round(sum(b.get(s, 0.0) for s in el)))),
         min_jobs=W.MIN_JOBS, base=W.BASE, latest=W.LATEST,
         constants=dict(qd="%.2f" % M.QD, step=14, days=365, county=W.COUNTY_FIPS, own="5", agglvl="74"),

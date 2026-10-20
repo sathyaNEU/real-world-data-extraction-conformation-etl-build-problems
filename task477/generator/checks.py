@@ -205,6 +205,8 @@ def main(target, gdir, x):
         bb = B.ask_b(target, r)
         mv = [s for s in el if round(bb.get(s, 0)) != round(b.get(s, 0))]
         check("ask B device: the %s route misses %d of %d industries" % (r, len(mv), len(el)), len(mv) == len(el))
+    half = min(abs((b.get(s, 0) % 1) - .5) for s in el)
+    check("ask B bins: every industry's total at least 0.01 from a half dollar (nearest %.3f)" % half, half >= .01)
     led = list(csv.DictReader(open(os.path.join(target, W.FILES["ita"]), encoding="utf-8")))
     reg = list(csv.DictReader(open(os.path.join(target, W.FILES["register"]), encoding="utf-8")))
     tie = 0

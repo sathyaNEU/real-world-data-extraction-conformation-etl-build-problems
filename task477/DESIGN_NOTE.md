@@ -233,3 +233,7 @@ wage is on the paid basis and ranks nothing the Fund uses, and no earlier slate,
   isolated readers who both kept 30 of 30 ask figures (score_reader exit 1 on asks, the call missed by both); each was
   a visible crosswalk or a column pair that invites the split, so both became hazards and the primaries moved to the
   duplicate registrations and the reissued program IDs.
+- Program-ID reissue with each program's first approval date and the largest paid program per industry reissued:
+  stage 4 reader 4 found it through approval dates after the payments (97 per cent of mismatched lines) and kept 14 of
+  15 ITA figures; the list now carries each program's latest annual re-approval and the smallest paid program is
+  reissued, and three totals that sat exactly on a half dollar were moved off it.
