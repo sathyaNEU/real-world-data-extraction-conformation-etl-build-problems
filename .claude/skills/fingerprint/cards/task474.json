@@ -1,27 +1,27 @@
 {
   "task": "task474",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-20",
-  "slot_note": "re-root of seed ET31's number in the ETL lane: architecture 1 (temporal disaggregation) and architecture 2 (start-state monitor gaps) spent at stage 4; architecture 3 keeps the cooperative's world and roots the call in a shared-utility outage that takes the monitors and the SCR down together",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "niche": "a generation cooperative's ozone-season NOx inventory for its combined-cycle units, conformed from hourly continuous-emissions-monitor records with analyzer gaps, the monitor maintenance tickets in local time and the plants' load logs, where two plants' instrument air headers tripped through the summer and took the analyzers' dilution probes and the SCRs' air-operated ammonia valves down together, for its 2027 SCR upgrade program",
+  "slot_note": "re-root of seed ET31's number in the ETL lane: architectures 1 (temporal disaggregation), 2 (start-state monitor gaps) and 3 (instrument-air gaps) spent at stage 4; architecture 4 draws a fresh world in payment claims by the coordinator's ruling",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a Medicaid managed care plan's 2026 cost per member-month for each primary care provider group, conformed from paid medical claims, the plan's monthly enrollment roster snapshots and the state's capitation remittance, where members who lapse at their annual renewal are reinstated retroactively and their lapse months never reach the roster",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Designate seven of the nine combined-cycle units for the 2027 SCR Upgrade Program: AF-1, AF-2, CB-1, CB-2, DF-1, DF-3 and SR-1.",
+  "answer": "(to be built)",
   "answer_source": "task474/submission.md",
   "gap": [
-    "objective",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G7"
+    "G5",
+    "G13"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -29,61 +29,56 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the monitor records, the tickets and the load logs, reads every field and rule correctly and fills every unmonitored operating hour from the unit's own measured hours in the same operating state (hours since start and load), or by averaging the hours either side of each gap, designates five units and leaves CB-2 and AF-1 under the target, because the gaps that came with the plants' instrument air trips are hours in which the SCR's ammonia valves had closed too, so those hours ran uncontrolled at about twenty times the controlled NOx per MMBtu that every state-based or neighbouring-hour fill puts into them.",
-  "domain_test": "The decisive quantity is each combined-cycle unit's 2026 ozone-season NOx per MWh, an emissions inventory whose missing monitor hours are estimated by the emission control state the unit was in while unmonitored; an instrument air loss is a common cause that blinds the dilution probe and shuts the SCR's air-operated ammonia flow at once, and the first measured hour after each loss shows the uncontrolled level, so the fill uses that level times the hour's metered heat input; swapping in another field's nouns breaks it because what ties the missing hours to the high ones is the plant's compressed-air system feeding both the monitor and the control device.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:monitor gaps with a common cause that also disables the control device, filled at the uncontrolled level the monitor shows on its return",
+  "analyst_test": "A strong analyst who conforms the claims, the roster and the remittance, reads every field and rule correctly and divides each group's paid claims by the member-months its monthly roster shows designates the wrong groups, because members who lapse at their annual renewal are reinstated retroactively, their lapse months never reach the roster though their claims in those months are paid, so the groups whose members churn most carry the most cost on the fewest roster months.",
+  "domain_test": "The decisive quantity is each provider group's cost per member-month, a health plan's per-member-per-month rate whose denominator is the exposure at risk; under Medicaid renewal churn with retroactive reinstatement the covered months are rebuilt from the capitation the state paid and the claims the plan paid, not from the roster snapshot; swapping in another field's nouns breaks it because the annual redetermination cycle and the state's retroactive coverage rule are what put covered months outside the roster.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:exposure at risk rebuilt from the payer's own retroactive capitation and paid claims under renewal churn",
   "layer1": [
-    "a whole-year export carrying every monitored unit, the peakers and the coal unit outside the program",
-    "status codes on hours whose NOx values are blank",
-    "the DAHS on standard time against the maintenance tickets and the event report in local time",
-    "maintenance tickets covering only some gaps and including checks while offline",
-    "start-up hours whose analyzers are out more often than the run's",
-    "gas invoices by facility meter, not by unit, with one month per meter not yet approved"
+    "claims paid after the month of service, with claim lines and member IDs as the claims system writes them",
+    "the roster as a snapshot taken early each month",
+    "a remittance file paid by the state in a later month than the coverage month it pays",
+    "provider group attribution changes during the year",
+    "pharmacy claims reversed and rebilled under one claim number"
   ],
-  "stakeholder_role": "the cooperative's senior environmental compliance engineer preparing the 2027 SCR upgrade designations",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "the plan's provider performance analyst preparing the 2027 provider group designations",
+  "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "dahs_hourly_export_2026.csv",
-    "rows": 113880,
-    "entity": "one unit's monitor record for one hour",
-    "grain": "unit x hour",
+    "file": "medical_claims_paid_2026.csv",
+    "rows": null,
+    "entity": "one paid claim line",
+    "grain": "claim line",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "utility_or_infrastructure",
+  "forum": "executive_team",
+  "forcing_event": "period_close",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States, a fictional inland region (unnamed state)",
+    "geography": "United States, a fictional state's Medicaid program",
     "currency": "USD",
-    "org_type": "a generation and transmission cooperative",
+    "org_type": "a Medicaid managed care plan",
     "invented_names": [],
     "people": [
-      "Tamara Gill",
-      "Martin Estrada"
+      "Paula Watts",
+      "Derrick Warren"
     ]
   },
   "deliverables": [
-    "cc_unit_nox_inventory_2026.xlsx",
-    "scr_upgrade_designations_2027.pdf"
+    "provider_group_pmpm_2026.xlsx",
+    "provider_group_designations_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A unit's period total is measured hourly by an instrument that shares a utility with the unit's control device, so when the utility fails the instrument goes dark while the control is off; the dark hours are filled at the uncontrolled level the instrument reads in its first hours back, times the hour's metered input, rather than from the unit's measured hours in the same operating state or from the hours either side, which the controlled hours dominate.",
-  "driver_concrete": "Each Cutler Bend and Ashfork unit's NOx in the hours its analyzers were down with the plant's instrument air is estimated at the NOx per MMBtu its analyzer measured in the first hour after each air loss, times that hour's heat input, while every other gap takes the unit's own measured hours at the same hours since start, before each unit's 2026 ozone-season NOx per MWh is compared with the cooperative's 0.170 target.",
-  "stump": "The default path fills every unmonitored hour from the unit's own measured hours in the same start state and load, and designates AF-2, CB-1, DF-1, DF-3 and SR-1; the gaps that came with the plants' instrument air trips are hours when the SCR's air-operated ammonia valves had closed as well, which the first measured hour after each trip shows at about twenty times the controlled rate, so filling those hours at that uncontrolled level adds CB-2 and AF-1.",
+  "driver": "A rate's denominator is the time each member was covered, and members who lose coverage at a fixed yearly review and are restored back to the date they lost it never appear in the monthly snapshot of who is covered, though the payer's own later payments for them and the services it paid in those months record the coverage; the denominator is rebuilt from those payments rather than read off the snapshot.",
+  "driver_concrete": "Each provider group's 2026 cost per member-month divides its attributed members' paid claims by member-months rebuilt from the plan's roster plus the months the state later paid capitation for after a renewal lapse, not by the roster's member-months alone, before groups above the plan's cost benchmark are designated.",
+  "stump": "(to be written at stage 2)",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task243": "task243 recovers a register's exit-recording share from changes between two counts; here nothing is counted twice: each unit's unmonitored hours are filled from its own monitored hours in the same start state read from an every-hour operating log.",
-    "task450": "task450 removes an instrument change through a shared anchor subset; here no instrument changes: the instrument is missing in a state-dependent pattern and the fill conditions on that state.",
-    "task476": "task476 dates each found item's unseen start from a seasonal profile in a second record; here no start is unseen: every start is in the load log, and what is missing is the measured quantity in the hours just after it.",
-    "task459": "task459 commits a unit to a stated operating level against a level-dependent ratio; here no level is chosen: the missing hours are imputed by start state, which a fit on level misses.",
-    "task474v2": "architecture 2 filled gaps by start state; here the start-state fill is the default path, and the decisive step is the control state during a shared-utility outage, which no operating-state covariate in the record carries.",
-    "task193": "Shares the structural triple (objective gap, G7, method_or_model_selection) and nothing else: task193 computes a null expectation for an ordering from where each unit's exposure falls in an observation window; here nothing is ordered or windowed, the missing hours of a measured total are filled at the control state a shared utility outage put the unit in.",
-    "task254": "Shares the structural triple and nothing else: task254 reads each stage of a passage at the period the unit reaches it; here no passage is timed, the unmeasured hours of an emissions total are estimated at the uncontrolled level the monitor shows on its return from a common-cause outage."
+    "task468": "task468 measures a linker's error on control groups to correct an outcome count; here nothing is linked: the denominator's missing months are rebuilt from the payer's own retroactive capitation and paid claims.",
+    "task127": "task127 projects cost by tenure; here nothing is projected: a closed year's exposure is rebuilt from retroactive coverage the roster snapshot never shows.",
+    "task474v3": "architecture 3 filled unmeasured emission hours; here no value is missing from a record: whole member-months are missing from the snapshot and come back from payment records."
   },
   "lineage": [
     {
@@ -138,8 +133,7 @@
       ]
     }
   ],
-  "notes": "architecture 3 spent at stage 4 on 2026-10-20 (reader 12 landed the call after the air-to-open grounding); re-root to architecture 4 next, carrying the event-revision ask device",
-  "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-20T14:25:32Z",
-  "architecture_spent": true
+  "notes": "architecture 4 drawn 2026-10-20 in a fresh world (payment claims) after architecture 3 was spent",
+  "client_domain": "healthcare-delivery-health-economics",
+  "registered": "2026-10-20T17:17:02Z"
 }
