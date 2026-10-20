@@ -1,40 +1,49 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
- "stump": "The default path counts in-stay and linked deaths with the reflex repairs and withholds the bonus from the obstetrics hospital while the dialysis hospital keeps it; corrected for the linkage's false and missed links class by class, the sets reverse.",
+ "stump": "The default path counts each hospital's recorded deaths and the Office's links, adds the deaths later bills record and drops the links later claims contradict, and files four losers with Varden at 1.33 while Mercy Valley (1.05) and Brannock (1.03) keep the bonus; corrected class by class at the rates the recorded deaths and the living members measure, Varden keeps it and Mercy Valley and Brannock lose it, five in all.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-20 on target.zip f511b179e6742bf8, no LEAK; every REVIEW line answered in the design note",
+  "reader": "architecture 4: round 1 (b1bc148c) missed the call, kept 15 of 15 ask figures on the unfiled conventions (device re-sited); round 2, two scored readers on the shipping pack, both missed the call (the reflex repair, four losers) and kept 0 of 15 ask figures, score_reader exit 0 twice, question 6 analytical"
  },
  "duplicate_check": {
-  "guard_check": "WARN only 2026-10-20 (repeat.gate_g, overuse.gate_g, people.first Nathan)",
-  "heart": ""
+  "heart": "WARN 2026-10-20 (Gate G overuse, a first name in an older build)",
+  "surface": "six card-axis pairs promoted, the same as at the draw, each answered by the card's differentiation lines; the adjudicated clone check is the author's to call"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "pass_1": "DETERMINISTIC, FIX_NOW (file the replacement convention; three figures floored per class; the encounter file's late copy; near-round payment totals), fixed in one generator pass",
+  "pass_2": "DETERMINISTIC on target.zip f511b179e6742bf8, every graded figure reproduced; two write-up wording items fixed with the pack unchanged; Gate G statistical_rigor and analytical_non_defect, Gate H pass",
+  "reports": [
+   "determinism_check_report.md",
+   "determinism_check_report_pass2.md"
+  ]
  },
  "returned": [],
- "resume": "architecture 4 drawn; next: calibrate the hospitals, the fork table and the asks, write the generator, precut",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-20",
  "portal": null,
  "source_note": "fresh architecture 4 (no seed): a Medicaid plan's hospital quality bonus on linkage-corrected 30-day mortality",
- "ceiling": null,
- "target_zip": null,
+ "ceiling": {
+  "pair": 39.0,
+  "cracker": 45.0,
+  "best_mirror": 33.0,
+  "mirror_leakage": 0.0,
+  "script": "generator/ceiling.py"
+ },
+ "target_zip": "f511b179e6742bf8",
  "history": [
   {
    "architecture": 1,

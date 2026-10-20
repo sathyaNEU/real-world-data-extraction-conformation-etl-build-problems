@@ -1,62 +1,49 @@
 ## Tags
 
-**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: two pharmacy benefit managers' specialty claim files conformed into one repriced record of fills, from which each class's program-year spend for the members now on therapy is projected).
+**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the state's death record linkage, the linked deaths corrected for the linkage's own errors).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Staff the Specialty Clinical Pharmacy Program with 54 clinical pharmacists for July 2026 to June 2027: Inflammatory conditions (biologic and targeted therapy) 14; Multiple sclerosis 7; Oral oncology 6; Hepatitis C 1; Weight management (GLP-1 receptor agonists) 7; HIV 6; Severe asthma (biologics) 4; Cystic fibrosis 4; Migraine prevention (CGRP) 5.**
-Each class's managed spend is its members on therapy on June 30, 2026 carried forward by the class's own spend and continuation at each month of an episode of therapy, starting each member at the months their current episode has run; a member back on a drug after a lapse of more than 60 days starts a new episode. Not the same projection counted from each member's first fill in the class, which gives weight management 8, severe asthma 5 and migraine prevention 6 (57 in all), because the members who came back to those drugs in 2026 after the step therapy change would be projected like the long-standing members who never stopped; not last year's on-therapy members' following-year spend applied to this June's members, which gives weight management 10; not the trailing year, which gives hepatitis C 4 (its courses end within twelve weeks).
+**Five of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital. The other nine keep it.**
+Their fiscal 2026 mortality ratios run from 1.25 to 1.55 against the 1.15 line; the highest ratio among the hospitals that keep it is Fairhaven Community Hospital's 1.09. Not the four hospitals that the deaths on the bills and the Office of Vital Records' links give, even with every link a later claim contradicts dropped and every death a later bill records added (Calloway, Northgate, Varden and Westover), because for members enrolled without a Social Security number the linkage links living members with common names to other people's deaths and misses the deaths of members with two-part surnames, and those repairs reach only the members whose later claims happen to show it: corrected at the error rates the record's recorded deaths and living members measure, Varden keeps the bonus and Brannock and Mercy Valley lose it.
 
 ## 2. Critical Components
 
-1. Members on therapy on June 30, 2026 (the caseloads): IMM 484; MS 192; ONC 104; HCV 52; GLP 1,846; HIV 370; AST 287; CF 43; CGR 941.
-2. Projected managed spend for the program year, $ million at the 2026 schedule: IMM 20; MS 10; ONC 8; HCV 0; GLP 10; HIV 8; AST 5; CF 5; CGR 7; total 73.
-3. Pharmacists at one per $1.5 million of managed spend or part: IMM 14; MS 7; ONC 6; HCV 1; GLP 7; HIV 6; AST 4; CF 4; CGR 5; total 54.
+1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills record and on the members seen alive after day 30: Social Security number on file, **829 of 836** recorded deaths linked and **12 of 21,855** living members linked; no number, single surname, **44 of 48** recorded deaths linked and **20 of 1,179** living members linked; no number, two-part surname, **78 of 162** recorded deaths linked and **8 of 1,554** living members linked.
+2. The hospitals that lose the bonus, deaths over expected deaths: Brannock Medical Center **84.9** over **67.9**, ratio **1.25**; Calloway Memorial Hospital **190.6** over **143.8**, ratio **1.33**; Mercy Valley Medical Center **502.2** over **387.1**, ratio **1.30**; Northgate Community Hospital **189.3** over **122.2**, ratio **1.55**; Westover Regional Hospital **260.3** over **179.9**, ratio **1.45**.
+3. Varden Surgical Hospital, which the uncorrected links put over the line: **26.4** deaths over **25.6** expected, ratio **1.03**.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed orrin_rx_specialty_claims_2019_2025.csv and tallis_specialty_claims_2026h1.csv into one record of fills: reversed claims removed with the claims they reverse (Orrin's REVERSAL lines, Tallis's R status), members linked to plan IDs through member_id_crosswalk_2026.csv, Orrin's 10-digit NDCs padded to 11 digits, each NDC's class from tallis_specialty_drug_list_2026.csv.
-2. Priced every fill at tallis_specialty_price_schedule_2026.xlsx: units times the unit price plus the dispensing fee (charter 2.2).
-3. Took each class's caseload: members with a fill whose days' supply reaches June 30, 2026 (charter 2.1).
-4. Split each member's fills in a class into episodes of therapy, a new episode starting at a fill more than 60 days after every earlier supply had run out, and dated each member's months on therapy from the start of the episode; a member already filling in the first quarter of 2019 has an unseen start and sits in the longest-duration cell.
-5. For each class and each month of an episode, averaged the spend over the following twelve months of the members on therapy at a month end at that month, over every month end from January 2019 whose twelve months are in the record (months from 36 on pooled).
-6. Projected each caseload member at the month of the episode they had reached on June 30, 2026, summed by class, and staffed one pharmacist per $1.5 million or part (charter 3.1).
-7. For the rebates, took orrin_rx_rebate_statement_2025.xlsx's contract quarters 2025-Q1 to 2025-Q4 (a contract year runs February to January, the only calendar on which its units tie to the claims), each product's quarterly rebate once although the statement repeats it on each channel line, plus January 2025's units at contract quarter 2024-Q4's rebate per unit.
+1. Conformed hchp_ip_claims_extract_2026-10-05.csv and CMG_HCHP_IP_ENC_20261006.txt into stays, each as last corrected with voided and deleted bills dropped, Carrisford member numbers mapped through hchp_member_enrollment_extract_2026-10-05.csv and both of Mercy Valley's NPIs through hchp_network_hospitals_2026.csv.
+2. Kept the index admissions of specification 2.1 to 2.4 (34,500 in all): adults, no delivery DRGs, no patient status 07, each member's first, a transfer joined to the first hospital's stay.
+3. Summed each hospital's HIMM 3.2 scores from HIMM_3.2_scores_FY2026_admissions.xlsx, keyed by member, admission date and NPI.
+4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending within the 30 days) and joined OVR_HCHP_FY2026_DEATH_LINKAGE_RETURN.csv on member and admission date.
+5. Classed each member by hchp_member_enrollment_extract_2026-10-05.csv (Social Security number on file; otherwise single or two-part surname) and measured each class's share of recorded deaths linked and share of members with a service line in hchp_member_service_lines_2025-01_2026-09.csv, an admission or a live discharge after day 30 linked.
+6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive after day 30 as (links less the false-link share times the admissions) over (the share linked less the false-link share), and added the recorded deaths.
+7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification 5.2).
+8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill nothing, plus each additional payment in HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx made by September 30 on those stays, except one the disputed claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS replacement's amount, or a platform replacement's amount less the original's) equals the additional payment.
 
 ## 4. Deliverable Answers
 
-### merrow_specialty_pharmacist_staffing_2026_27.xlsx
+### halbrook_2027_hospital_quality_bonus.xlsx
 
-1. Clinical pharmacists by class:
-   - Inflammatory conditions (biologic and targeted therapy): 14
-   - Multiple sclerosis: 7
-   - Oral oncology: 6
-   - Hepatitis C: 1
-   - Weight management (GLP-1 receptor agonists): 7
-   - HIV: 6
-   - Severe asthma (biologics): 4
-   - Cystic fibrosis: 4
-   - Migraine prevention (CGRP): 5
-2. Total: 54 pharmacists.
-3. Managed spend for July 2026 to June 2027, $ million:
-   - Inflammatory conditions (biologic and targeted therapy): 20
-   - Multiple sclerosis: 10
-   - Oral oncology: 8
-   - Hepatitis C: 0
-   - Weight management (GLP-1 receptor agonists): 10
-   - HIV: 8
-   - Severe asthma (biologics): 5
-   - Cystic fibrosis: 5
-   - Migraine prevention (CGRP): 7
-4. Manufacturer rebates on fills dispensed in 2025, $ thousand:
-   - Inflammatory conditions (biologic and targeted therapy): 5,328
-   - Multiple sclerosis: 1,750
-   - Oral oncology: 368
-   - Hepatitis C: 1,209
-   - Weight management (GLP-1 receptor agonists): 725
-   - HIV: 724
-   - Severe asthma (biologics): 744
-   - Cystic fibrosis: 201
-   - Migraine prevention (CGRP): 614
-5. Bar chart of the pharmacists by class, on the Staffing sheet.
+1. Hospitals that lose the 2027 bonus: **5**: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital.
+2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):
+   - Saint Brendan Medical Center: keeps, $791,900
+   - Westover Regional Hospital: loses, $816,700
+   - Calloway Memorial Hospital: loses, $477,100
+   - Varden Surgical Hospital: keeps, $833,800
+   - Mercy Valley Medical Center: loses, $579,700
+   - Northgate Community Hospital: loses, $559,500
+   - Tamsin General Hospital: keeps, $389,500
+   - Pinecrest Hospital: keeps, $412,200
+   - Brannock Medical Center: loses, $391,800
+   - Lakeshore Hospital: keeps, $366,900
+   - Corbel Falls Hospital: keeps, $314,400
+   - Quayside Hospital: keeps, $599,300
+   - Marlow Ridge Medical Center: keeps, $293,100
+   - Fairhaven Community Hospital: keeps, $247,400
+3. Total bonus at stake across the network: $7,073,300.
+4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the bonus highlighted.

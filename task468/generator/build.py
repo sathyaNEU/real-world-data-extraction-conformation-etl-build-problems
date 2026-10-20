@@ -3,6 +3,7 @@ generator/figures.json; then the checks and the independent verifier, a second f
 the task compared byte for byte, and target.zip cut from the final build.
 
     python3 task468/generator/build.py              everything
+    python3 task468/generator/build.py --out DIR    the pack only, into DIR
     python3 task468/generator/build.py --fast       one build with the checks, no second build or zip
 """
 import argparse
@@ -18,36 +19,29 @@ sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
 import pack as P         # noqa: E402
-import sim as S          # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
 CENTRAL = dt.timezone(dt.timedelta(hours=-5))
-PDF_STAMPS = {"charter": b"D:20260528141205-05'00'", "bulletin": b"D:20251208093310-06'00'",
-              "transition": b"D:20260714162544-05'00'", "trend": b"D:20260220110402-06'00'"}
 
-
-def trend_table(x):
-    f = x["fills"]
-    out = []
-    for c in W.CANDIDATES:
-        g = f[(f["cls"] == c)]
-        yrs = {}
-        for y in (2024, 2025):
-            gy = g[[d.year == y for d in g["date"]]]
-            paid = (gy["units"] * gy["price"] * W.ORRIN_PRICE_FACTOR[y] + 1.5).sum()
-            yrs[y] = (float(paid), int(gy["member"].nunique()))
-        out.append((c, yrs[2024][0], yrs[2025][0], yrs[2025][1]))
-    return out
-
-
-def infusion_table():
-    return [("Inflammatory conditions (infused biologics)", 412, 3196, 14_208_340),
-            ("Multiple sclerosis (infused therapy)", 96, 233, 6_051_772),
-            ("Oncology (infused and injected)", 1_183, 9_874, 61_405_218),
-            ("Severe asthma (clinic-administered)", 37, 302, 1_247_910),
-            ("Osteoporosis (injected)", 655, 1_271, 2_163_486),
-            ("Ophthalmology (intravitreal)", 1_048, 6_912, 13_870_455)]
+PDF_STAMPS = {
+    "spec": (b"D:20250512153204-05'00'", b"D:20250512153204-05'00'"),
+    "linknote": (b"D:20261007101512-05'00'", b"D:20261007101512-05'00'"),
+    "claimnotes": (b"D:20261005092740-05'00'", b"D:20261005092740-05'00'"),
+    "layout": (b"D:20241118143055-06'00'", b"D:20241118143055-06'00'"),
+    "profiles": (b"D:20260120111603-06'00'", b"D:20260120111603-06'00'"),
+}
+OOXML = {   # creator, last modified by, created, modified, company
+    "scores": ("Halbrook Analytics", "Halbrook Analytics", "2026-10-02T13:05:00Z", "2026-10-02T14:41:22Z", W.PLAN),
+    "readmissions": ("Quality Analytics", "Quality Analytics", "2026-08-31T15:20:00Z", "2026-08-31T19:08:47Z", W.PLAN),
+    "disputes": ("Provider Disputes", "Provider Disputes", "2025-01-06T16:02:00Z", "2026-10-01T13:26:51Z", W.PLAN),
+}
+AS_OF = {   # each file's date as its source dated it
+    "claims": "2026-10-05", "encounters": "2026-10-06", "enrollment": "2026-10-05", "activity": "2026-10-05",
+    "linkage": "2026-10-07", "scores": "2026-10-02", "roster": "2026-01-15", "spec": "2025-05-12",
+    "linknote": "2026-10-07", "claimnotes": "2026-10-05", "layout": "2024-11-18", "readmissions": "2026-08-31",
+    "profiles": "2026-01-20", "disputes": "2026-10-01",
+}
 
 
 def build(out, x=None, quiet=False):
@@ -57,33 +51,35 @@ def build(out, x=None, quiet=False):
         shutil.rmtree(out)
     os.makedirs(out)
     f = lambda k: os.path.join(out, W.FILES[k])
-    x = x or S.simulate()
-    orrin, tallis = P.claims(x)
+    x = x or P.everything()
     n = {}
-    n["orrin"] = P.write_csv(f("orrin"), P.ORRIN_COLS, orrin)
-    n["tallis"] = P.write_csv(f("tallis"), P.TALLIS_COLS, tallis)
-    n["crosswalk"] = P.write_csv(f("crosswalk"), P.XWALK_COLS, P.crosswalk_rows(x))
-    n["drugs"] = P.write_csv(f("drugs"), P.DRUG_COLS, P.drug_rows())
-    DC.write_prices(f("prices"), P.price_rows())
-    DC.write_rebates(f("rebates"), P.rebate_rows(x))
-    DC.write_infusions(f("infusions"), infusion_table())
-    DC.write_charter(f("charter"))
-    DC.write_bulletin(f("bulletin"))
-    DC.write_transition(f("transition"))
-    DC.write_trend(f("trend"), trend_table(x))
-    for k, stamp in PDF_STAMPS.items():
-        PP.normalize_pdf(f(k), stamp, stamp)
-    PP.normalize_ooxml(f("prices"), "Network Pricing", "Network Pricing", "2025-12-10T15:02:00Z", "2025-12-15T19:44:21Z",
-                       excel=True, company=W.NEW_PBM)
-    PP.normalize_ooxml(f("rebates"), "Rebate Operations", "Rebate Operations", "2026-04-15T13:41:00Z",
-                       "2026-04-17T18:22:51Z", excel=True, company=W.OLD_PBM)
-    PP.normalize_ooxml(f("infusions"), "Medical Economics", "Medical Economics", "2026-03-06T14:10:00Z",
-                       "2026-03-09T16:48:12Z", excel=True, company=W.PLAN)
-    asof = {k: d for k, src, d, desc in DC.INDEX}
+    n["claims"] = P.write_csv(f("claims"), P.CLAIM_COLS, P.claim_rows(x))
+    n["encounters"] = P.write_encounters(f("encounters"), x)
+    n["enrollment"] = P.write_csv(f("enrollment"), P.ENROLL_COLS, P.enrollment_rows(x))
+    n["activity"] = P.write_csv(f("activity"), P.ACT_COLS, P.activity_rows(x))
+    links, n_sent = P.link_rows(x)
+    n["linkage"] = P.write_csv(f("linkage"), P.LINK_COLS, links, crlf=True)
+    n["roster"] = P.write_csv(f("roster"), P.ROSTER_COLS, P.roster_rows())
+    DC.write_scores(f("scores"), P.score_rows(x))
+    if P.converge_links(x, out):            # C1: no class at a hospital short of its expected false links
+        links, n_sent = P.link_rows(x)
+        n["linkage"] = P.write_csv(f("linkage"), P.LINK_COLS, links, crlf=True)
+    DC.write_disputes(f("disputes"), P.dispute_rows(x))
+    DC.write_spec(f("spec"))
+    DC.write_linknote(f("linknote"), n_sent, len(links))
+    DC.write_claimnotes(f("claimnotes"))
+    DC.write_layout(f("layout"))
+    DC.write_readmissions(f("readmissions"), P.readmission_rows(x))
+    DC.write_profiles(f("profiles"), P.profile_rows())
+    for k, (c, m) in PDF_STAMPS.items():
+        PP.normalize_pdf(f(k), c, m)
+    for k, (cr, lb, c0, m0, co) in OOXML.items():
+        PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=True, company=co)
     for i, k in enumerate(W.FILES):
-        y, m, d = (int(v) for v in asof[k].split("-"))
+        y, m, d = (int(v) for v in AS_OF[k].split("-"))
         ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=CENTRAL).timestamp()
         os.utime(f(k), (ts, ts))
+    x["n_sent"] = n_sent
     if not quiet:
         big = max(n, key=lambda k: n[k])
         print("pack: %d files, largest %s (%d rows)" % (len(W.FILES), W.FILES[big], n[big]))
@@ -91,8 +87,7 @@ def build(out, x=None, quiet=False):
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest()
-            for f in sorted(os.listdir(folder))}
+    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
 
 
 def cut_zip(root):
@@ -114,18 +109,16 @@ def everything(root, x=None, quiet=False):
     import metadata as MD
     import writeup as WU
     n, x = build(os.path.join(root, "target"), x=x, quiet=quiet)
-    fig = os.path.join(root, "figures.json") if root != TASK else os.path.join(HERE, "figures.json")
-    if os.path.exists(os.path.join(root, "golden")):
-        shutil.rmtree(os.path.join(root, "golden"))
-    GO.main(os.path.join(root, "target"), os.path.join(root, "golden"), fig)
-    import postprocess as PP
-    PP.normalize_ooxml(os.path.join(root, "golden", W.GOLDEN["workbook"]), W.PEOPLE["analyst"], W.PEOPLE["analyst"],
-                       "2026-07-29T14:05:00Z", "2026-08-03T16:37:42Z", excel=True, company=W.PLAN)
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))
+    gdir = os.path.join(root, "golden")
+    if os.path.exists(gdir):
+        shutil.rmtree(gdir)
+    fig = os.path.join(root, "generator", "figures.json")
+    GO.main(os.path.join(root, "target"), gdir, fig)
+    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), n)
     WU.write(fig, os.path.join(root, "submission.md"))
     if not quiet:
         print("built %s: %d pack files, %d golden files" % (root, len(os.listdir(os.path.join(root, "target"))),
-                                                          len(os.listdir(os.path.join(root, "golden")))))
+                                                           len(os.listdir(gdir))))
     return x
 
 
@@ -135,36 +128,49 @@ def main(fast=False):
     import checks as CK
     import verify as V
     x = everything(TASK)
-    ok = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), x)
+    good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), x=x,
+                  meta_path=os.path.join(TASK, "metadata.json"), fig_path=os.path.join(HERE, "figures.json"))
     V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    if not ok:
-        raise SystemExit("checks failed")
     if fast:
+        if not good:
+            raise SystemExit("checks failed")
         return
-    scratch = tempfile.mkdtemp(prefix=".rebuild_", dir=TASK)
+    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
     try:
-        everything(scratch, quiet=True)
-        for sub in ("target", "golden"):
-            assert digest(os.path.join(TASK, sub)) == digest(os.path.join(scratch, sub)), sub
-        for fn in ("metadata.json", "submission.md"):
-            assert open(os.path.join(TASK, fn), "rb").read() == open(os.path.join(scratch, fn), "rb").read(), fn
-        assert open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(scratch, "figures.json"),
-                                                                          "rb").read()
+        os.makedirs(os.path.join(tmp, "generator"))
+        everything(tmp, quiet=True)
+        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
+        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
+        same = {fn: open(os.path.join(TASK, fn), "rb").read() == open(os.path.join(tmp, fn), "rb").read()
+                for fn in ("metadata.json", "submission.md", os.path.join("generator", "figures.json"))}
+        if not (same_t and same_g and all(same.values())):
+            bad = [k for k, v in digest(os.path.join(TASK, "target")).items()
+                   if digest(os.path.join(tmp, "target")).get(k) != v]
+            badg = [k for k, v in digest(os.path.join(TASK, "golden")).items()
+                    if digest(os.path.join(tmp, "golden")).get(k) != v]
+            raise SystemExit("second build differs: target %s %s, golden %s %s, %s" % (same_t, bad, same_g, badg, same))
     finally:
-        shutil.rmtree(scratch)
+        shutil.rmtree(tmp)
     print("two builds byte-identical: %d target files, %d golden files, metadata.json, submission.md, figures.json" % (
         len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden")))))
     zp = cut_zip(TASK)
     with zipfile.ZipFile(zp) as z:
-        same = all(z.read(fn) == open(os.path.join(TASK, "target", fn), "rb").read()
-                   for fn in os.listdir(os.path.join(TASK, "target")))
+        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
+    if inside != digest(os.path.join(TASK, "target")):
+        raise SystemExit("target.zip differs from target/")
     print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
-        len(os.listdir(os.path.join(TASK, "target"))), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]) if same
-          else "target.zip MISMATCH")
+        len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
+    if not good:
+        raise SystemExit("checks failed")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--out", help="build the pack only, into this folder")
     ap.add_argument("--fast", action="store_true")
-    a = ap.parse_args()
-    main(fast=a.fast)
+    args = ap.parse_args()
+    if args.out:
+        build(args.out)
+        print("pack written to", args.out)
+    else:
+        main(fast=args.fast)

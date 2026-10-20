@@ -1,138 +1,298 @@
 {
  "call": {
-  "pharmacists": {
-   "IMM": 14,
-   "MS": 7,
-   "ONC": 6,
-   "HCV": 1,
-   "GLP": 7,
-   "HIV": 6,
-   "AST": 4,
-   "CF": 4,
-   "CGR": 5
-  },
-  "total": 54
+  "lose": [
+   "Brannock Medical Center",
+   "Calloway Memorial Hospital",
+   "Mercy Valley Medical Center",
+   "Northgate Community Hospital",
+   "Westover Regional Hospital"
+  ],
+  "count_in_set": 5
  },
- "spend_m": {
-  "IMM": 20,
-  "MS": 10,
-  "ONC": 8,
-  "HCV": 0,
-  "GLP": 10,
-  "HIV": 8,
-  "AST": 5,
-  "CF": 5,
-  "CGR": 7
+ "bonus": {
+  "Saint Brendan Medical Center": 791900,
+  "Westover Regional Hospital": 816700,
+  "Calloway Memorial Hospital": 477100,
+  "Varden Surgical Hospital": 833800,
+  "Mercy Valley Medical Center": 579700,
+  "Northgate Community Hospital": 559500,
+  "Tamsin General Hospital": 389500,
+  "Pinecrest Hospital": 412200,
+  "Brannock Medical Center": 391800,
+  "Lakeshore Hospital": 366900,
+  "Corbel Falls Hospital": 314400,
+  "Quayside Hospital": 599300,
+  "Marlow Ridge Medical Center": 293100,
+  "Fairhaven Community Hospital": 247400
  },
- "spend_total_m": 73,
- "caseload": {
-  "IMM": 484,
-  "MS": 192,
-  "ONC": 104,
-  "HCV": 52,
-  "GLP": 1846,
-  "HIV": 370,
-  "AST": 287,
-  "CF": 43,
-  "CGR": 941
- },
- "rebates_k": {
-  "IMM": 5328,
-  "MS": 1750,
-  "ONC": 368,
-  "HCV": 1209,
-  "GLP": 725,
-  "HIV": 724,
-  "AST": 744,
-  "CF": 201,
-  "CGR": 614
- },
- "rivals": {
-  "first_fill": {
-   "IMM": 14,
-   "MS": 7,
-   "ONC": 6,
-   "HCV": 1,
-   "GLP": 8,
-   "HIV": 6,
-   "AST": 5,
-   "CF": 4,
-   "CGR": 6
+ "count_lose": 5,
+ "lose": [
+  "Brannock",
+  "Calloway",
+  "Mercy Valley",
+  "Northgate",
+  "Westover"
+ ],
+ "lose_full": [
+  "Brannock Medical Center",
+  "Calloway Memorial Hospital",
+  "Mercy Valley Medical Center",
+  "Northgate Community Hospital",
+  "Westover Regional Hospital"
+ ],
+ "keep": [
+  "Saint Brendan",
+  "Varden",
+  "Tamsin General",
+  "Pinecrest",
+  "Lakeshore",
+  "Corbel Falls",
+  "Quayside",
+  "Marlow Ridge",
+  "Fairhaven"
+ ],
+ "hospitals": [
+  {
+   "name": "Saint Brendan Medical Center",
+   "short": "Saint Brendan",
+   "index_admissions": 4200,
+   "expected": 207.8,
+   "known_deaths": 124,
+   "after_discharge": 73.4,
+   "deaths": 197.4,
+   "ratio": 0.95,
+   "verdict": "keeps",
+   "payments": 39596083.2,
+   "bonus": 791900,
+   "bonus_raw": 791921.66
   },
-  "trailing": {
-   "IMM": 16,
-   "MS": 8,
-   "ONC": 8,
-   "HCV": 4,
-   "GLP": 6,
-   "HIV": 6,
-   "AST": 5,
-   "CF": 4,
-   "CGR": 5
+  {
+   "name": "Westover Regional Hospital",
+   "short": "Westover",
+   "index_admissions": 3300,
+   "expected": 179.9,
+   "known_deaths": 161,
+   "after_discharge": 99.3,
+   "deaths": 260.3,
+   "ratio": 1.45,
+   "verdict": "loses",
+   "payments": 40833702.64,
+   "bonus": 816700,
+   "bonus_raw": 816674.05
   },
-  "run_rate": {
-   "IMM": 15,
-   "MS": 8,
-   "ONC": 8,
-   "HCV": 4,
-   "GLP": 14,
-   "HIV": 6,
-   "AST": 9,
-   "CF": 4,
-   "CGR": 10
+  {
+   "name": "Calloway Memorial Hospital",
+   "short": "Calloway",
+   "index_admissions": 3000,
+   "expected": 143.8,
+   "known_deaths": 123,
+   "after_discharge": 67.6,
+   "deaths": 190.6,
+   "ratio": 1.33,
+   "verdict": "loses",
+   "payments": 23856580.87,
+   "bonus": 477100,
+   "bonus_raw": 477131.62
   },
-  "analog": {
-   "IMM": 14,
-   "MS": 7,
-   "ONC": 6,
-   "HCV": 1,
-   "GLP": 10,
-   "HIV": 6,
-   "AST": 6,
-   "CF": 4,
-   "CGR": 8
+  {
+   "name": "Varden Surgical Hospital",
+   "short": "Varden",
+   "index_admissions": 3000,
+   "expected": 25.6,
+   "known_deaths": 8,
+   "after_discharge": 18.4,
+   "deaths": 26.4,
+   "ratio": 1.03,
+   "verdict": "keeps",
+   "payments": 41690860.24,
+   "bonus": 833800,
+   "bonus_raw": 833817.2
   },
-  "from_start": {
-   "IMM": 12,
-   "MS": 7,
-   "ONC": 3,
-   "HCV": 1,
-   "GLP": 5,
-   "HIV": 6,
-   "AST": 3,
-   "CF": 4,
-   "CGR": 4
+  {
+   "name": "Mercy Valley Medical Center",
+   "short": "Mercy Valley",
+   "index_admissions": 3600,
+   "expected": 387.1,
+   "known_deaths": 177,
+   "after_discharge": 325.2,
+   "deaths": 502.2,
+   "ratio": 1.3,
+   "verdict": "loses",
+   "payments": 28983943.84,
+   "bonus": 579700,
+   "bonus_raw": 579678.88
+  },
+  {
+   "name": "Northgate Community Hospital",
+   "short": "Northgate",
+   "index_admissions": 2400,
+   "expected": 122.2,
+   "known_deaths": 118,
+   "after_discharge": 71.3,
+   "deaths": 189.3,
+   "ratio": 1.55,
+   "verdict": "loses",
+   "payments": 27974055.99,
+   "bonus": 559500,
+   "bonus_raw": 559481.12
+  },
+  {
+   "name": "Tamsin General Hospital",
+   "short": "Tamsin General",
+   "index_admissions": 2200,
+   "expected": 103.4,
+   "known_deaths": 51,
+   "after_discharge": 47.4,
+   "deaths": 98.4,
+   "ratio": 0.95,
+   "verdict": "keeps",
+   "payments": 19476744.76,
+   "bonus": 389500,
+   "bonus_raw": 389534.9
+  },
+  {
+   "name": "Pinecrest Hospital",
+   "short": "Pinecrest",
+   "index_admissions": 1900,
+   "expected": 95.0,
+   "known_deaths": 40,
+   "after_discharge": 31.5,
+   "deaths": 71.5,
+   "ratio": 0.75,
+   "verdict": "keeps",
+   "payments": 20611085.86,
+   "bonus": 412200,
+   "bonus_raw": 412221.72
+  },
+  {
+   "name": "Brannock Medical Center",
+   "short": "Brannock",
+   "index_admissions": 2300,
+   "expected": 67.9,
+   "known_deaths": 23,
+   "after_discharge": 61.9,
+   "deaths": 84.9,
+   "ratio": 1.25,
+   "verdict": "loses",
+   "payments": 19588378.31,
+   "bonus": 391800,
+   "bonus_raw": 391767.57
+  },
+  {
+   "name": "Lakeshore Hospital",
+   "short": "Lakeshore",
+   "index_admissions": 1700,
+   "expected": 85.7,
+   "known_deaths": 44,
+   "after_discharge": 22.0,
+   "deaths": 66.0,
+   "ratio": 0.77,
+   "verdict": "keeps",
+   "payments": 18346003.31,
+   "bonus": 366900,
+   "bonus_raw": 366920.07
+  },
+  {
+   "name": "Corbel Falls Hospital",
+   "short": "Corbel Falls",
+   "index_admissions": 1500,
+   "expected": 82.8,
+   "known_deaths": 30,
+   "after_discharge": 25.6,
+   "deaths": 55.6,
+   "ratio": 0.67,
+   "verdict": "keeps",
+   "payments": 15718795.23,
+   "bonus": 314400,
+   "bonus_raw": 314375.9
+  },
+  {
+   "name": "Quayside Hospital",
+   "short": "Quayside",
+   "index_admissions": 3000,
+   "expected": 103.4,
+   "known_deaths": 60,
+   "after_discharge": 38.3,
+   "deaths": 98.3,
+   "ratio": 0.95,
+   "verdict": "keeps",
+   "payments": 29963777.37,
+   "bonus": 599300,
+   "bonus_raw": 599275.55
+  },
+  {
+   "name": "Marlow Ridge Medical Center",
+   "short": "Marlow Ridge",
+   "index_admissions": 1300,
+   "expected": 79.1,
+   "known_deaths": 47,
+   "after_discharge": 21.7,
+   "deaths": 68.7,
+   "ratio": 0.87,
+   "verdict": "keeps",
+   "payments": 14655792.9,
+   "bonus": 293100,
+   "bonus_raw": 293115.86
+  },
+  {
+   "name": "Fairhaven Community Hospital",
+   "short": "Fairhaven",
+   "index_admissions": 1100,
+   "expected": 52.7,
+   "known_deaths": 40,
+   "after_discharge": 17.5,
+   "deaths": 57.5,
+   "ratio": 1.09,
+   "verdict": "keeps",
+   "payments": 12369141.23,
+   "bonus": 247400,
+   "bonus_raw": 247382.82
+  }
+ ],
+ "total_bonus": 7073300,
+ "total_bonus_raw": 7073298.92,
+ "rates": {
+  "ssn": {
+   "recall": 0.992,
+   "false_link": 0.0005,
+   "pos": 836,
+   "pos_linked": 829,
+   "neg": 21855,
+   "neg_linked": 12
+  },
+  "simple": {
+   "recall": 0.917,
+   "false_link": 0.017,
+   "pos": 48,
+   "pos_linked": 44,
+   "neg": 1179,
+   "neg_linked": 20
+  },
+  "compound": {
+   "recall": 0.481,
+   "false_link": 0.0051,
+   "pos": 162,
+   "pos_linked": 78,
+   "neg": 1554,
+   "neg_linked": 8
   }
  },
- "classes": [
-  "IMM",
-  "MS",
-  "ONC",
-  "HCV",
-  "GLP",
-  "HIV",
-  "AST",
-  "CF",
-  "CGR"
+ "reflex": {
+  "lose": [
+   "Calloway",
+   "Northgate",
+   "Varden",
+   "Westover"
+  ],
+  "count": 4
+ },
+ "index_total": 34500,
+ "threshold": 1.15,
+ "spec_sections": [
+  2.1,
+  2.4,
+  5.2
  ],
- "per_pharmacist_m": 1.5,
- "duration_pooled_from_months": 36,
- "episode_gap_days": 60,
- "rival_totals": {
-  "first_fill": 57,
-  "trailing": 62,
-  "run_rate": 78,
-  "analog": 62,
-  "from_start": 45
- },
- "rebate_year": 2025,
- "program_year": {
-  "start": 2026,
-  "end": 2027
- },
- "charter_sections": {
-  "caseload": 2.1,
-  "spend": 2.2,
-  "staffing": 3.1
- }
+ "model_version": 3.2,
+ "rounding_dollars": 100
 }
