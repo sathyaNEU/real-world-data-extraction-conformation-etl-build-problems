@@ -35,11 +35,11 @@ OOXML = {   # creator, last modified by, created, modified, company, excel
              W.COMMISSION, False),
     "spec": (W.PEOPLE["estimates"], W.PEOPLE["estimates"], "2026-09-23T22:40:00Z", "2026-09-29T20:17:09Z", W.OFFICE, True),
     "dictionary": ("Data Services", "Data Services", "2025-09-08T23:05:00Z", "2026-09-30T21:31:47Z", W.COMMISSION, True),
-    "census": ("Census Outputs", "Census Outputs", "2025-11-12T21:00:00Z", "2025-11-17T19:44:12Z", W.OFFICE, True),
+    "census": ("Census Outputs", "Census Outputs", "2025-08-13T21:00:00Z", "2025-08-18T19:44:12Z", W.OFFICE, True),
     "deaths_hist": ("Vital Statistics", "Vital Statistics", "2019-05-02T22:10:00Z", "2025-04-13T21:58:30Z", W.OFFICE, True),
 }
 AS_OF = {   # each file's date as its source dated it
-    "census": "2025-11-18", "pes_people": "2025-09-26", "pes_records": "2025-09-26", "pes_meshblocks": "2025-09-26",
+    "census": "2025-08-19", "pes_people": "2025-09-26", "pes_records": "2025-09-26", "pes_meshblocks": "2025-09-26",
     "pes_report": "2025-09-26", "roll": "2026-09-17", "electorates": "2024-11-30", "births": "2025-04-14",
     "deaths_hist": "2025-04-14", "deaths": "2025-04-14", "movements": "2025-04-14", "series_notes": "2025-04-14",
     "plan": "2026-09-22", "spec": "2026-09-30", "log": "2026-10-01", "dictionary": "2026-10-01",

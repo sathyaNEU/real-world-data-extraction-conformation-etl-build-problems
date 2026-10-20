@@ -523,7 +523,8 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck("9 September 2025" in migration and "4 August 2025" in migration, "the migration notes dated after the move")
     ck("22 September 2026" in plan and "Version 1.2, 30 September 2026" in spec, "the plan and the specification dated "
                                                                                  "before the deliverable, after the log")
-    ck("Released 18 November 2025" in workbook, "the census workbook released after the survey's fieldwork")
+    ck("Released 19 August 2025" in workbook and "September 2025" in report,
+       "the census workbook released after the survey's fieldwork and before the methods report that cites it")
     ck(len(set(d["roll"].values())) == 16 and len(set(ga.values())) == 16 and len(set(gb.values())) == 16,
        "realism: no two regions share an elector count, a new-elector count or a death count")
     by_year = [d["births"][(y, s)] for (y, s) in d["births"] if y != "2025Q"]

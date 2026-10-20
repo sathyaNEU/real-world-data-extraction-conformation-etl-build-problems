@@ -344,7 +344,7 @@ def write_census_workbook(path, table):
     ws["A1"] = "2025 Census of Population and Dwellings"
     ws["A1"].font = Font(bold=True, size=13)
     ws["A2"] = "Usual residents by region, sex and single year of age. Census day: Tuesday 4 March 2025."
-    ws["A3"] = "%s. Released 18 November 2025." % W.OFFICE
+    ws["A3"] = "%s. Released 19 August 2025." % W.OFFICE
     ws["A5"] = "Sheet"
     ws["B5"] = "Region"
     ws["A5"].font = ws["B5"].font = Font(bold=True)

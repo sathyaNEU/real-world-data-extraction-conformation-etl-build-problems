@@ -267,7 +267,8 @@ answer.
   call reads no transaction-log row, dictionary, migration note or 2023 roll (asserted). Three rules: no decoy, memo
   or earlier allocation ships; no field reading decides; executing every filed rule files the default path.
 - **Judge:** v5r1 NOT_DETERMINISTIC and FIX_NOW (the unfiled UTC, filed), v5r2 DETERMINISTIC and APPROVE (Gate G
-  method_or_model_selection and analytical_non_defect, Gate H pass); v5r3 on the round-3 pack: see pipeline.json.
+  method_or_model_selection and analytical_non_defect, Gate H pass); v5r3 on the shipping pack DETERMINISTIC and
+  APPROVE, all 48 graded figures reproduced, Gate H pass.
 - **Readers:** six scored readers in three rounds, all missing the call (five on the default path, one with the imputed
   records kept); rounds 1 and 2 kept 32 of 32 ask figures through documented devices, so the asks were re-sited;
   round 3 on 5b89c291378b1d76 kept 1 and 0 of 32 (3.1 and 0.0 per cent), score_reader exit 0 on both.
