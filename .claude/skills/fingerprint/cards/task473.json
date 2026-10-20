@@ -20,8 +20,8 @@
     "none"
   ],
   "generators": [
-    "G6",
     "G14",
+    "G6",
     "G12"
   ],
   "gate_g": "method_or_model_selection",
@@ -55,7 +55,7 @@
     "source": "synthetic"
   },
   "forum": "funder_or_donor",
-  "forcing_event": "launch_or_rollout",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "university_or_school",
   "world": {
     "geography": "United States, an unnamed state (the university center, the counties, the agencies and the people are fictional)",
@@ -100,7 +100,13 @@
     "task253": "task253 v1 adjusts nonresponse within classes of a frame attribute that predicts the outcome; here the test depends on the outcome's own level, which no recorded attribute carries, so no adjustment within recorded classes completes it.",
     "task265": "task265 v0 spreads a classifier's predictions for the unrecorded part by error counts measured on the recorded part; here no classifier labels the untested drivers, and the completion weights each positive found by the catch rate at its BAC band.",
     "task455": "task455 v1 measures a register's misfiling by class with a full review of one period; here the trait is unobserved for the drivers officers did not arrest and is completed from the catch rate by BAC band where every driver is tested.",
-    "task68": "task68 rebuilds a like-for-like change on a matched panel through identity successions recovered from a corpus; here no panel, succession or corpus: a selectively tested item completed by a catch rate measured on the all-drivers agencies."
+    "task68": "task68 rebuilds a like-for-like change on a matched panel through identity successions recovered from a corpus; here no panel, succession or corpus: a selectively tested item completed by a catch rate measured on the all-drivers agencies.",
+    "task233": "task233 corrects a destination model's allocation of nonrespondents from a follow-up sample drawn in chosen districts; here no one is followed up and nothing is allocated: each positive an arrest found is counted at one over the catch rate of its own BAC band, measured at the agencies that test every survivor.",
+    "task458": "task458 completes a trait seen only through billed services by the share of fully observed members, a coverage gap of enrolment; here the observation depends on the trait's own level (an officer arrests a driver more surely the more impaired), so the completion conditions the catch rate on the BAC band.",
+    "task256": "task256 integrates a joint fit distribution over an envelope from a survey's tables; here no distribution is modelled or integrated: found positives are weighted by an empirical catch rate by band from a complete subpopulation.",
+    "task262": "task262 corrects an elasticity for a filer-only income history with a one-year census measure's transitory variance; here no regression is corrected: a count is completed by inverse catch rates by band.",
+    "task267": "task267 weights each verified participant by the inverse of a completion rate set by the design within known referral groups; here the selection rate is not set by any design and depends on the unobserved BAC itself, so it is estimated by band at other agencies that test everyone and transported to the arrest-only agencies, the band read from the found positive's own result.",
+    "task54": "task54 scales a write-off by pack-legs under a new routing plan; here nothing is routed or scaled by exposure change: untested drivers are completed by band catch rates."
   },
   "lineage": [],
   "notes": "stump_strategy composition_mix: the decisive refinement is that the arrest catch rate depends on each county's mix of impaired drivers by BAC band, so the pooled rate and a one-effect model misfit; the selection on the outcome (population_selection) sits under it. Redrawn at registration because task474 (SROS/ETL, budget_or_appropriation) blocked ban.pairing and ban.forcing_event: domain survey-research-official-statistics/census-register-administrative-data-quality became general-statistics-data-science/data-integration-record-linkage-entity-resolution (the estimate integrates two observation mechanisms of one item, data integration's own object), and the forcing event budget_or_appropriation became launch_or_rollout (the FY2028 task forces start 1 October 2027 and the list must be certified for their applications).",

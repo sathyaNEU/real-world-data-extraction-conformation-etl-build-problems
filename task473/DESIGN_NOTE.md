@@ -475,3 +475,10 @@ designation's basis.
 - 2026-10-20, stage 4 reader 5 (pack 0a92575f): missed the call and Ask A, took all 14 Ask B figures (30.0 per cent)
   by reading a K report the census does not back as a death after 30 days. The K supplements kept as a hazard; Ask
   B's primary re-sited to the State Patrol reports filed under the post's county.
+- 2026-10-20, stage 4 reader 6 (pack 00576150, shipped): missed the call (the default path) and kept 9 of 70
+  figures (12.9 per cent): Ask A none, Ask B two, the rest the default path's rates and deaths.
+- 2026-10-20, at ship: guard.py heart turned BLOCK after a pull brought task268 into the last three (decisive pattern
+  G6, forcing event launch_or_rollout). Relabelled to the honester values rather than argued: the decisive move is
+  the catch yield conditioned on the BAC band (G14; the composition shift, G6, is what it corrects), and what forces
+  the call is the FY2028 grant round (budget_or_appropriation); differentiation added against the six older builds
+  G14 then matched. Heart WARN.
