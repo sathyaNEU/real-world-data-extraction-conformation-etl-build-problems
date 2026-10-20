@@ -1,60 +1,54 @@
 ## Tags
 
-**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: the population register's over-count of residents who left the country unreported, measured by the Register Coverage Audit 2026 and applied to each municipality's register count within the characteristics that carry it, the length of the current stay since the latest settlement from abroad and an earlier departure, both rebuilt from the register's event history).  
+**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: each region's adults on census day estimated from the 2025 Census and its Post-Enumeration Survey by dual-system estimation within the survey's cells, the men aged 18 to 49 brought to the sex ratio that demographic analysis of births, deaths and long-term movements gives, and conformed with the roll at census day and the roll's transaction log into the Commission's enrolment-gap file).  
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Nine of the 24 municipalities in play qualify for the 2027 small-municipality supplement: Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Eekhorst, Haverstede, Hilderloo, Koudenbeek and Zandloo.**
-Each has an adjusted resident population on 1 January 2026 below 5,000: its register count less the registered persons the audit estimates were not living there, taken within the length of each person's current stay since the latest settlement from abroad and whether the person had left the country before it. Hilderloo is the qualifying municipality nearest the line and Dalmeer the nearest left out. Not the eight municipalities the register's own fields give (country of birth by years at the current address), which add Molenrade and Nijdorp and drop Eekhorst, Haverstede and Koudenbeek, because a move within the country resets the address date while only the event history shows who has come and gone before; not the six the current stay alone gives, which drops Eekhorst, Haverstede and Koudenbeek.
+**Ardenmere 27, Merriton 20, Westerby 25, Larchfield 26, Glenwhite 29, Hawksridge 5, Fairholme 11, Eastwold 12, Corran Valley 7, Drumlea 5, Orrinvale 4, Inchgarry 8, Strathmuir 6, Rowanlea 3, Kilraven 8 and Nethermoor 4 of the 200 organisers.**
+Each region's share is its adults usually resident on census day less its electors with a residential address, the adults estimated by dual-system estimation within the survey's cells with the men aged 18 to 49 raised to the sex ratio demographic analysis gives, because the census and its survey miss the same young men and leave the men's estimates about 4 per cent short of it while the women's agree. Not the dual-system estimates as they stand, which give Ardenmere 26, Westerby 26, Larchfield 28, Glenwhite 31, Hawksridge 4, Corran Valley 6, Drumlea 4 and Nethermoor 3; not the census counts, which leave out everyone the census missed and change 14 regions.
 
 ## 2. Critical Components
 
-1. Sampled persons the audit found not living in their registered municipality on 1 January 2026 (final results 20, 30 and 40): **206 of 12,000** (1.72 per cent).
-2. Not living there, by migration career: never settled from abroad **26 of 9,181** (0.28 per cent); settled from abroad with no earlier departure **139 of 2,598** (5.4 per cent); settled from abroad after an earlier departure **41 of 221** (18.6 per cent).
-3. Registered persons settled from abroad who had left the country before: Eekhorst **729 of 1,840**; Haverstede **666 of 1,808**; Koudenbeek **678 of 1,755**; against Molenrade **62 of 1,825**; Nijdorp **49 of 1,813**; Hilderloo **53 of 1,930**.
-4. Registered persons in the first to fourth year of their current stay: Hilderloo **1,503**, against Molenrade **94** and Nijdorp **86**.
+1. Electors on the roll at the close of census day with a residential address: **3,329,031**.
+2. Adults on census day by dual-system estimation within the survey's region, sex and age-group cells: **3,593,178**.
+3. Men per woman aged 18 to 24, 25 to 34 and 35 to 49: dual-system estimates **1.01, 0.99 and 0.97**; demographic analysis **1.04, 1.03 and 1.02**.
+4. Dual-system estimates of men aged 18 to 49 against demographic analysis: about **4 per cent** short, the women's agreeing with it.
+5. Adults on census day after the correction: about **3.63 million**.
 
 ## 3. Step-by-Step Solution
 
-1. Read population_register_extract_20260101.txt (its trailer's 126,655 persons in the 24 municipalities in play, Ravenmeer one municipality under Article 14(4)) and population_register_events_extract.csv, dropped each annulled event with its ANN, and gave each person the completed years from the latest IMM to 1 January 2026 and whether an EMI came before that IMM.
-2. Took each audited person's last record in register_coverage_audit_2026_visits.csv as the final result (91 is no contact; 50 counts as living there) and built the same two features from register_coverage_audit_2026_histories.csv: 206 of 12,000 not living there.
-3. Measured the audit's share not living there within cells of the current stay (never settled from abroad, under 1, 1 to 4, 5 to 9, 10 or more years) by whether the person had left the country before; within those cells country of birth, nationality, years at the address, age and sex add nothing.
-4. Gave each registered person the share of their cell, summed by municipality, took the sum from the register count, rounded to the whole person and compared with 5,000 (Article 14(1) to (3)): nine qualify.
-5. Departures abroad: deregistration_messages_2025.csv's EMI messages the hub accepted (hub_acknowledgements_2025.csv), with a 2025 departure date and sent in 2025 in the country's time (the night batch logged at 23:00 UTC or later on 31 December left on 1 January 2026), each person who left twice counted twice, less the departures the register annulled as entered in error (an EMI with an ANN in the person's history).
-6. Deaths: the OVL messages the hub accepted with a 2025 date of death and sent in 2025 in the country's time, less the deaths the register annulled and the former residents whose registration had ended before they died (non_resident_records_extract.csv, DEPARTURE_DATE before the date of death).
-7. Wrote adjusted_population_supplement_2027.csv in the layout of the ministry's delivery specification and the chart of the adjusted resident populations against the 5,000 line.
+1. Took the electors with a residential address (ADDRESS_TYPE R) in roll_at_close_of_census_day_2025.csv to regions through electorates_and_regions.csv (plan 2.2): 3,329,031.
+2. In each estimation cell of pes_2025_methods_report.pdf (region by sex by age group) took the count in census_2025_usual_residents_by_region.xlsx less its imputed records, kept the share of the cell's records in pes_2025_census_records.csv with STATUS C and raised that by the cell's people in pes_2025_people.csv over those with MATCH M: dual-system estimates of 3,593,178 adults.
+3. Rebuilt the population on census day by sex and single year of age, cohort by cohort, from live_births_by_sex_1925_2025.csv less deaths (deaths_by_year_of_birth_1925_1990.xlsx and deaths_by_year_of_birth_1991_2025.csv) and departures plus arrivals (long_term_movements_by_year_of_birth_1950_2025.csv), the period 2025-01-01/2025-03-03 included: men per woman of 1.04, 1.03 and 1.02 at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' 1.01, 0.99 and 0.97, the women's estimates agreeing with it.
+4. Multiplied every region's dual-system estimates of men in each of those age groups by demographic analysis's men per woman over the dual-system estimates' (about 4, 4 and 5 per cent more men), the women and the other ages as estimated: about 3.63 million adults.
+5. Subtracted each region's electors and shared the 200 organisers on the differences by largest remainders (plan 3.1; no share falls under two): the organisers above.
+6. New electors: read PROCESSED in roll_transactions_2025_2026.csv as the country's time on the old platform (R25- identifiers) and as UTC on the new one from 4 August 2025 (its daily 06:00 transfers of provisional enrolments are stamped 18:00 the day before, 17:00 in daylight saving time), kept the accepted transactions from 5 March 2025 to 30 June 2026 in the country's time, and counted each PERSON_REF whose first such transaction is a NEW at a residential address, so a move on the old platform (a DEL with reason 05 and a NEW the same day) and a re-enrolment after a removal are not new electors: 167,285.
+7. Removed because they had died: the accepted DEL rows in the same window with reason 01 on the old platform (deceased, roll_platform_migration_notes.pdf) or 11 or 12 on the new (roll_extract_data_dictionary.xlsx), less those an accepted REI reverses through REF_TXN, by the region of ELECTORATE: 33,225.
+8. Wrote enrolment_gap_allocation_2027.csv in the layout of enrolment_gap_file_specification.xlsx and enrolment_gap_allocation_2027.png, a bar chart of each region's organisers.
 
 ## 4. Deliverable Answers
 
-### adjusted_population_supplement_2027.csv
+### enrolment_gap_allocation_2027.csv
 
-1. Whether each municipality qualifies, its departures abroad in 2025 and its deaths in 2025:
-   - Aldewolde (GM0402): qualifies, 79 departures abroad, 55 deaths
-   - Borgermeer (GM0417): qualifies, 58 departures abroad, 61 deaths
-   - Bremvoort (GM0426): qualifies, 68 departures abroad, 32 deaths
-   - Dalmeer (GM0438): does not qualify, 58 departures abroad, 50 deaths
-   - Dornhaghe (GM0451): qualifies, 74 departures abroad, 53 deaths
-   - Eekhorst (GM0465): qualifies, 291 departures abroad, 36 deaths
-   - Haverstede (GM0473): qualifies, 304 departures abroad, 35 deaths
-   - Heukelveen (GM0488): does not qualify, 49 departures abroad, 51 deaths
-   - Hilderloo (GM0496): qualifies, 336 departures abroad, 32 deaths
-   - Koudenbeek (GM0509): qualifies, 292 departures abroad, 36 deaths
-   - Lemdorp (GM0514): does not qualify, 65 departures abroad, 43 deaths
-   - Linterdam (GM0527): does not qualify, 75 departures abroad, 57 deaths
-   - Molenrade (GM0533): does not qualify, 57 departures abroad, 49 deaths
-   - Nijdorp (GM0546): does not qualify, 46 departures abroad, 49 deaths
-   - Oosterzand (GM0552): does not qualify, 82 departures abroad, 57 deaths
-   - Reitsloo (GM0568): does not qualify, 75 departures abroad, 51 deaths
-   - Sloterwaard (GM0571): does not qualify, 72 departures abroad, 56 deaths
-   - Steenwoude (GM0584): does not qualify, 66 departures abroad, 52 deaths
-   - Tienhaven (GM0599): does not qualify, 57 departures abroad, 57 deaths
-   - Uffeldijk (GM0603): does not qualify, 80 departures abroad, 56 deaths
-   - Velderkamp (GM0615): does not qualify, 78 departures abroad, 51 deaths
-   - Westerwierde (GM0628): does not qualify, 60 departures abroad, 64 deaths
-   - Zandloo (GM0636): qualifies, 54 departures abroad, 56 deaths
-   - Ravenmeer (GM1987): does not qualify, 69 departures abroad, 57 deaths
+1. Each region's organisers and, between census day and 30 June 2026, the people added to the roll there who had not been on it on census day and the electors removed from it there because they had died, whole numbers:
+   - Ardenmere (01): 27 organisers, 23,597 added, 4,706 removed because they had died
+   - Merriton (02): 20 organisers, 18,823 added, 3,653 removed because they had died
+   - Westerby (03): 25 organisers, 14,943 added, 3,058 removed because they had died
+   - Larchfield (04): 26 organisers, 12,952 added, 2,591 removed because they had died
+   - Glenwhite (05): 29 organisers, 10,914 added, 2,212 removed because they had died
+   - Hawksridge (06): 5 organisers, 11,186 added, 2,246 removed because they had died
+   - Fairholme (07): 11 organisers, 9,486 added, 1,789 removed because they had died
+   - Eastwold (08): 12 organisers, 9,670 added, 1,901 removed because they had died
+   - Corran Valley (09): 7 organisers, 8,901 added, 1,763 removed because they had died
+   - Drumlea (10): 5 organisers, 8,457 added, 1,703 removed because they had died
+   - Orrinvale (11): 4 organisers, 8,433 added, 1,692 removed because they had died
+   - Inchgarry (12): 8 organisers, 6,839 added, 1,335 removed because they had died
+   - Strathmuir (13): 6 organisers, 6,014 added, 1,248 removed because they had died
+   - Rowanlea (14): 3 organisers, 6,371 added, 1,203 removed because they had died
+   - Kilraven (15): 8 organisers, 5,715 added, 1,191 removed because they had died
+   - Nethermoor (16): 4 organisers, 4,984 added, 934 removed because they had died
 
-### adjusted_population_supplement_2027.png
+### enrolment_gap_allocation_2027.png
 
-1. Bar chart of the 24 municipalities' adjusted resident populations against the 5,000 line, the nine under it highlighted: Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Eekhorst, Haverstede, Hilderloo, Koudenbeek and Zandloo.
+1. Bar chart of the 16 regions' organisers in region code order, each bar labelled with its count.

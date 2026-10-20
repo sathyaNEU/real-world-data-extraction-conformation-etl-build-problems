@@ -1,185 +1,184 @@
 {
-  "task": "task471",
-  "architecture": "v5",
-  "drawn": "2026-10-20",
-  "slot_note": "re-rooted from v4 (the register over-coverage audit, spent at Gate F when both readers post-stratified on the field's textbook covariates); a fresh world, a census and its post-enumeration survey, the decisive step a judgment the textbook dual-system estimator takes for granted (that the two counts miss people independently), settled by demographic analysis built from vital and border statistics",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a national statistics office's census-based enrolment-gap file for the Electoral Commission's 2027 enrolment campaign, which shares its field organisers among the regions in proportion to each region's adults not on the roll: each region's census-day estimated resident population aged 18 and over (the 2025 Census count corrected for the people it missed and counted in error, from the post-enumeration survey's dual-system estimates, with the adult men both counts missed restored at the sex ratio demographic analysis gives) less the electors on the roll that day",
-  "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population"
+ "task": "task471",
+ "architecture": "v5",
+ "drawn": "2026-10-20",
+ "slot_note": "re-rooted from v4 (the register over-coverage audit, spent at Gate F when both readers post-stratified on the field's textbook covariates); a fresh world, a census and its post-enumeration survey, the decisive step a judgment the textbook dual-system estimator takes for granted (that the two counts miss people independently), settled by demographic analysis built from vital and border statistics",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "census-register-administrative-data-quality",
+ "client_domain": "survey-research-official-statistics",
+ "niche": "a national statistics office's census-based enrolment-gap file for the Electoral Commission's 2027 enrolment campaign, which shares its field organisers among the regions in proportion to each region's adults not on the roll: each region's census-day estimated resident population aged 18 and over (the 2025 Census count corrected for the people it missed and counted in error, from the post-enumeration survey's dual-system estimates, with the adult men both counts missed restored at the sex ratio demographic analysis gives) less the electors on the roll that day",
+ "objective": "etl",
+ "shape": "05",
+ "decision_type": "allocation_to_total",
+ "answer_unit": "count",
+ "answer": "Ardenmere 27, Merriton 20, Westerby 25, Larchfield 26, Glenwhite 29, Hawksridge 5, Fairholme 11, Eastwold 12, Corran Valley 7, Drumlea 5, Orrinvale 4, Inchgarry 8, Strathmuir 6, Rowanlea 3, Kilraven 8 and Nethermoor 4 of the 200 organisers.",
+ "answer_source": "submission.md, 1. Final Recommendation",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G8",
+  "G16",
+  "G19"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "other",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every file and rule correctly and estimates each region's adults by dual-system estimation within the post-enumeration survey's region, sex and age-group cells (the census count less its imputed records, kept at the survey's share counted correctly, raised by the survey's people over those the census also counted: the textbook coverage estimator) files Westerby 26, Larchfield 28 and Glenwhite 31 organisers, Ardenmere 26, Hawksridge 4, Corran Valley 6, Drumlea 4 and Nethermoor 3, because the estimator assumes the census and the survey miss people independently and the men aged 18 to 49 whom both miss are left out; only demographic analysis's sex ratio, rebuilt from births, deaths and long-term movements by year of birth and matched by the women's estimates, shows the men short.",
+ "domain_test": "The deciding quantity is a census's net coverage error by region, estimated by dual-system estimation from an independent post-enumeration survey and corrected for correlation bias with demographic-analysis sex ratios, census coverage measurement's own method; put hospital beds or megawatt-hours in place of people and there is no independent recount whose capture can depend on the census's, no birth cohort and no sex ratio, so the task stops making sense.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:dual-system-correlation-bias-corrected-by-demographic-analysis-sex-ratios",
+ "layer1": [
+  "census tables in a multi-sheet workbook with a contents sheet, notes, header blocks and a 100-and-over row, one sheet per region",
+  "deaths by year of birth in two layouts: a wide historical workbook to 1990 and a long CSV from 1991",
+  "a provisional period for the first weeks of 2025 in each vital and border series",
+  "an electoral roll snapshot coded to electorates, overseas electors in the same table, joined to regions through a concordance that keeps two pre-review names",
+  "a roll transaction log across a platform migration: local-time stamps and running numbers before, UTC stamps and hex keys after, and the old platform's own removal codes"
+ ],
+ "stakeholder_role": "manager of population estimates at the national statistics office, delivering the census-based enrolment-gap file the Electoral Commission shares its 2027 campaign organisers on",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "per certified output",
+ "spine": {
+  "file": "pes_2025_people.csv",
+  "rows": 145252,
+  "entity": "one person enumerated by the 2025 post-enumeration survey in a sampled meshblock",
+  "grain": "person",
+  "source": "synthetic (constructed in the layout of a census post-enumeration survey's person file)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "an unnamed island country modelled on New Zealand (the office, the commission, the districts and the people are fictional)",
+  "currency": "NZD",
+  "org_type": "a national statistics office's census and population estimates division",
+  "invented_names": [
+   "2025 Post-Enumeration Survey",
+   "2027 enrolment campaign"
   ],
-  "pattern": [
+  "people": [
+   "Chelsea Buckley",
+   "Bryan Tapp"
+  ]
+ },
+ "deliverables": [
+  "enrolment_gap_allocation_2027.csv",
+  "enrolment_gap_allocation_2027.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "The decisive quantity is each area's true count of members, estimated from a full count and an independent sample recount by how many of the recount's members the full count also found; for one large group the two counts miss the same members, so the estimate stays short exactly there, and the shortfall is measured by that group's ratio to a companion group as fixed by records of entries and exits, a ratio the companion group's own estimate agrees with.",
+ "driver_concrete": "Each region's adults not on the roll are its census-day estimated resident population aged 18 and over less its electors on the roll; the population is the 2025 Census count corrected within post-strata by the post-enumeration survey's dual-system estimates, and the men aged 18 to 49 whom the census and the survey both miss leave it short, restored at the sex ratio demographic analysis (births by sex, deaths and border movements) gives, which the female estimates match and the male estimates fall short of.",
+ "stump": "The default path estimates each region's adults by the post-enumeration survey's dual-system estimates within its cells, the textbook coverage estimator, and gives Westerby 26, Larchfield 28 and Glenwhite 31 organisers against Ardenmere 26, Hawksridge 4, Corran Valley 6, Drumlea 4 and Nethermoor 3; the estimator takes for granted that the census and the survey miss people independently, and the men aged 18 to 49 with no settled household are missed by both, so the estimate leaves about 4 per cent of them out; raising the men to the sex ratio that births, deaths and border movements fix moves eight regions' organisers.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task448": "task448 completes a register that misses whole producers from a second list whose capture depends on the filing route, measured on the producers both lists hold; here the dual-system estimate within post-strata is the default path, and the decisive step is the dependence between the two counts that no post-stratum removes, measured against demographic analysis's sex ratio",
+  "task473": "task473 completes a count by one over the catch rate at each level of the trait, measured where everyone is tested; here no capture rate is measured at all for the people both counts miss: their number comes from a sex ratio fixed by births, deaths and border movements"
+ },
+ "lineage": [
+  {
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G8",
-    "G16",
+   ],
+   "generators": [
+    "G7",
+    "G12",
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "ranked_slate_under_cap",
+   "stump_strategy": "maturity_censoring",
+   "layer2_pattern": "own:replies-censored-by-collection-close",
+   "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
+   "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
+   "subdomain": "census-register-administrative-data-quality",
+   "domain": "survey-research-official-statistics",
+   "architecture": "v1",
+   "drawn": "2026-10-18",
+   "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
+   "fate": "spent at stage 4 on 2026-10-19: three isolated readers landed the call by weighting each returned card for when its stay could come back (Gate F), and the ask device was a mirror device (pair ceiling 55.5); a clustered-design hold measured on the v1 pack was dropped (73,909 returned cards put every lead over the fourth market at z 2.3 to 3.5); re-rooted fresh by the author's rule (no retirement)"
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-20",
+   "domain": "education-learning-sciences",
+   "subdomain": "item-response-theory-test-equating",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G17",
+    "G6",
+    "G1"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "other",
+   "layer2_pattern": "own:rater-severity-drift-on-a-constructed-response-anchor",
+   "niche": "a state educator licensing board's 2027 formal reviews of its educator preparation programs, decided on their 2025-26 completers' first-attempt pass rates on the state's elementary literacy licensure test, whose 2026 form the board's assessment office equates itself for the first time, to the 2025 form through an anchor of twenty multiple-choice items and one rater-scored written assignment",
+   "driver": "The decisive quantity is the second administration's score at the first administration's standard, estimated through a shared subset of which one part is judged by people, and the second administration's judges applied a harsher standard than the first, measured only on a random set of the first administration's responses, each carrying the score its first-administration judges agreed on, that the second judges re-judged unknowingly; the judged part has to be put back on the first standard before it carries the link, because used as judged it makes the second group look weaker and the cut too high, and dropped from the subset it leaves a link blind to the second group's real decline on what only the judged part measures, which sets the cut too low.",
+   "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+   "fate": "spent at stage 4 on 2026-10-20: the judge (v2r1) found the main call DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes): the rater shift on the anchor's written assignment is a bias in recorded values that the solver must catch, so on consistent scoring the task collapses; two scored readers missed the call on the drop-WA2 rung and all 32 ask figures; re-rooted fresh by the author's rule (no retirement)"
+  },
+  {
+   "architecture": "v3",
+   "fate": "spent at stage 4 on Gate F: both scored readers landed the call and all 32 ask figures (the textbook dual-frame estimator, executed as a work order once the design report describes the two lists' separate draws); judge v3r1 DETERMINISTIC APPROVE",
+   "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
+   "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
+   "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "population_selection",
+   "subdomain": "data-integration-record-linkage-entity-resolution",
+   "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
+  },
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-20",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "census-register-administrative-data-quality",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G6",
     "G19"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "other",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the census tables across the district boundary change, matches the post-enumeration survey to the census, removes the erroneous enumerations and takes dual-system estimates within age, sex, area and tenure post-strata carried down to each district (the textbook coverage estimator, every field and rule read correctly) files the wrong set of districts, because that estimator assumes the census and the survey miss people independently and the men aged 18 to 49 whom both miss are left out; only demographic analysis's sex ratio, built from births, deaths and border movements and matched by the female estimates, shows the adult men short.",
-  "domain_test": "The deciding quantity is a census's net coverage error by district, estimated by dual-system estimation from an independent post-enumeration survey and corrected for correlation bias with demographic-analysis sex ratios, census coverage measurement's own method; put hospital beds or megawatt-hours in place of people and there is no independent recount whose capture can depend on the census's, no birth cohort and no sex ratio, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:dual-system-correlation-bias-corrected-by-demographic-analysis-sex-ratios",
-  "layer1": [
-    "census tables in a multi-sheet workbook with header blocks and footnotes, one sheet per region",
-    "post-enumeration survey person files with census match codes, erroneous-enumeration codes and imputed-person flags",
-    "survey and census meshblock codes on different vintages joined through a concordance",
-    "vital statistics series whose layout changes across decades (five-year age groups before 1991, single years after)",
-    "border movements in years ended June against the census's calendar dating",
-    "an electoral roll extract coded to electorates rather than regions, joined through an electorate-to-region concordance"
-  ],
-  "stakeholder_role": "manager of population estimates at the national statistics office, delivering the census-based enrolment-gap file the Electoral Commission shares its 2027 campaign organisers on",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per certified output",
-  "spine": {
-    "file": "pes_2025_person_records.csv",
-    "rows": 0,
-    "entity": "one person enumerated by the 2025 post-enumeration survey in a sampled meshblock",
-    "grain": "person",
-    "source": "synthetic (constructed in the layout of a census post-enumeration survey's person file)"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "an unnamed island country modelled on New Zealand (the office, the commission, the districts and the people are fictional)",
-    "currency": "NZD",
-    "org_type": "a national statistics office's census and population estimates division",
-    "invented_names": [
-      "2025 Post-Enumeration Survey",
-      "2027 enrolment campaign"
-    ],
-    "people": [
-      "Chelsea Buckley",
-      "Bryan Tapp"
-    ]
-  },
-  "deliverables": [
-    "enrolment_gap_allocation_2027.csv",
-    "enrolment_gap_allocation_2027.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is each area's true count of members, estimated from a full count and an independent sample recount by how many of the recount's members the full count also found; for one large group the two counts miss the same members, so the estimate stays short exactly there, and the shortfall is measured by that group's ratio to a companion group as fixed by records of entries and exits, a ratio the companion group's own estimate agrees with.",
-  "driver_concrete": "Each region's adults not on the roll are its census-day estimated resident population aged 18 and over less its electors on the roll; the population is the 2025 Census count corrected within post-strata by the post-enumeration survey's dual-system estimates, and the men aged 18 to 49 whom the census and the survey both miss leave it short, restored at the sex ratio demographic analysis (births by sex, deaths and border movements) gives, which the female estimates match and the male estimates fall short of.",
-  "stump": "The default path takes each region's adults from the post-enumeration survey's dual-system estimates within post-strata, the textbook coverage correction, subtracts the roll and shares the organisers on that gap; the men aged 18 to 49 both counts missed stay out, and because they are a large part of a gap that is itself a small difference of two large counts, the organisers land in the wrong regions.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task448": "task448 completes a register that misses whole producers from a second list whose capture depends on the filing route, measured on the producers both lists hold; here the dual-system estimate within post-strata is the default path, and the decisive step is the dependence between the two counts that no post-stratum removes, measured against demographic analysis's sex ratio",
-    "task473": "task473 completes a count by one over the catch rate at each level of the trait, measured where everyone is tested; here no capture rate is measured at all for the people both counts miss: their number comes from a sex ratio fixed by births, deaths and border movements"
-  },
-  "lineage": [
-    {
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G7",
-        "G12",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "ranked_slate_under_cap",
-      "stump_strategy": "maturity_censoring",
-      "layer2_pattern": "own:replies-censored-by-collection-close",
-      "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
-      "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
-      "subdomain": "census-register-administrative-data-quality",
-      "domain": "survey-research-official-statistics",
-      "architecture": "v1",
-      "drawn": "2026-10-18",
-      "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
-      "fate": "spent at stage 4 on 2026-10-19: three isolated readers landed the call by weighting each returned card for when its stay could come back (Gate F), and the ask device was a mirror device (pair ceiling 55.5); a clustered-design hold measured on the v1 pack was dropped (73,909 returned cards put every lead over the fourth market at z 2.3 to 3.5); re-rooted fresh by the author's rule (no retirement)"
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-20",
-      "domain": "education-learning-sciences",
-      "subdomain": "item-response-theory-test-equating",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G17",
-        "G6",
-        "G1"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "other",
-      "layer2_pattern": "own:rater-severity-drift-on-a-constructed-response-anchor",
-      "niche": "a state educator licensing board's 2027 formal reviews of its educator preparation programs, decided on their 2025-26 completers' first-attempt pass rates on the state's elementary literacy licensure test, whose 2026 form the board's assessment office equates itself for the first time, to the 2025 form through an anchor of twenty multiple-choice items and one rater-scored written assignment",
-      "driver": "The decisive quantity is the second administration's score at the first administration's standard, estimated through a shared subset of which one part is judged by people, and the second administration's judges applied a harsher standard than the first, measured only on a random set of the first administration's responses, each carrying the score its first-administration judges agreed on, that the second judges re-judged unknowingly; the judged part has to be put back on the first standard before it carries the link, because used as judged it makes the second group look weaker and the cut too high, and dropped from the subset it leaves a link blind to the second group's real decline on what only the judged part measures, which sets the cut too low.",
-      "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
-      "fate": "spent at stage 4 on 2026-10-20: the judge (v2r1) found the main call DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes): the rater shift on the anchor's written assignment is a bias in recorded values that the solver must catch, so on consistent scoring the task collapses; two scored readers missed the call on the drop-WA2 rung and all 32 ask figures; re-rooted fresh by the author's rule (no retirement)"
-    },
-    {
-      "architecture": "v3",
-      "fate": "spent at stage 4 on Gate F: both scored readers landed the call and all 32 ask figures (the textbook dual-frame estimator, executed as a work order once the design report describes the two lists' separate draws); judge v3r1 DETERMINISTIC APPROVE",
-      "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
-      "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
-      "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "population_selection",
-      "subdomain": "data-integration-record-linkage-entity-resolution",
-      "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
-    },
-    {
-      "architecture": "v4",
-      "drawn": "2026-10-20",
-      "domain": "survey-research-official-statistics",
-      "subdomain": "census-register-administrative-data-quality",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G6",
-        "G19"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "composition_mix",
-      "layer2_pattern": "own:erroneous-enumerations-post-stratified-by-the-migration-career",
-      "niche": "a national statistics bureau's register-based adjusted resident population for the 2027 small-municipality supplement: each in-play municipality's 1 January 2026 register count less the registered persons estimated, from a national field audit of register records, not to have been living there (silent emigrants), in an unnamed EU country with a municipal population register",
-      "fate": "spent at stage 4 on Gate F: both scored readers (target.zip b6990395f2efabc2) landed the call, one by a logistic model with a returnee flag and years since the last IMM, one by cells of birth country by years since the last arrival by an earlier emigration; time since immigration and return migration are the field's textbook over-coverage covariates, so report 5's 'respects that bear on it' was executed as a reflex; both readers also executed the asks' annulment and UTC devices",
-      "driver": "The decisive quantity is each area's count of registered units actually present, the register's count less the units estimated absent at rates measured on a random field audit of records; a unit's chance of being absent is set by how long its current stay has lasted since its latest arrival together with whether it has left before, both rebuilt from its event history, so one audit rate, a rate by origin, a rate by time at the current record (reset by moves inside the system), and a rate by the stay or the earlier departure alone each misplace the absent units between areas whose units arrived at different times or come and go.",
-      "driver_concrete": "Each in-play municipality's adjusted resident population on 1 January 2026 is its register count less the registered persons estimated, from the 2026 Register Coverage Audit, not to have been living there, each person given the audit's absence rate for persons alike in years since their latest settlement from abroad and in having left the country before; the register's date at the current address (reset by every internal move), country of birth or nationality, the stay alone and the earlier departure alone each misplace the silent emigrants between the seasonal-work towns, the university town, the older immigrant towns and the commuter suburb.",
-      "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo: the older immigrant towns Molenrade and Nijdorp come in at 4,967 and 4,968 because their long-settled residents moved house recently, and the seasonal-work towns Eekhorst, Haverstede and Koudenbeek stay out at 5,075, 5,069 and 5,067 because nothing in the register record says that four in ten of their migrants had left the country before; taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine."
-    }
-  ],
-  "notes": "v5 drawn 2026-10-20 after architecture 4 was spent at stage 4 on Gate F; honest data by construction (the census counts who it counts, the survey recounts independently in its sample, the vital and border statistics are complete; nothing is planted and no figure is wrong). calibration_form other: the organ is demographic analysis built from vital and border statistics, a benchmark rather than a verified subsample.",
-  "registered": "2026-10-20T17:17:37Z"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "own:erroneous-enumerations-post-stratified-by-the-migration-career",
+   "niche": "a national statistics bureau's register-based adjusted resident population for the 2027 small-municipality supplement: each in-play municipality's 1 January 2026 register count less the registered persons estimated, from a national field audit of register records, not to have been living there (silent emigrants), in an unnamed EU country with a municipal population register",
+   "fate": "spent at stage 4 on Gate F: both scored readers (target.zip b6990395f2efabc2) landed the call, one by a logistic model with a returnee flag and years since the last IMM, one by cells of birth country by years since the last arrival by an earlier emigration; time since immigration and return migration are the field's textbook over-coverage covariates, so report 5's 'respects that bear on it' was executed as a reflex; both readers also executed the asks' annulment and UTC devices",
+   "driver": "The decisive quantity is each area's count of registered units actually present, the register's count less the units estimated absent at rates measured on a random field audit of records; a unit's chance of being absent is set by how long its current stay has lasted since its latest arrival together with whether it has left before, both rebuilt from its event history, so one audit rate, a rate by origin, a rate by time at the current record (reset by moves inside the system), and a rate by the stay or the earlier departure alone each misplace the absent units between areas whose units arrived at different times or come and go.",
+   "driver_concrete": "Each in-play municipality's adjusted resident population on 1 January 2026 is its register count less the registered persons estimated, from the 2026 Register Coverage Audit, not to have been living there, each person given the audit's absence rate for persons alike in years since their latest settlement from abroad and in having left the country before; the register's date at the current address (reset by every internal move), country of birth or nationality, the stay alone and the earlier departure alone each misplace the silent emigrants between the seasonal-work towns, the university town, the older immigrant towns and the commuter suburb.",
+   "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo: the older immigrant towns Molenrade and Nijdorp come in at 4,967 and 4,968 because their long-settled residents moved house recently, and the seasonal-work towns Eekhorst, Haverstede and Koudenbeek stay out at 5,075, 5,069 and 5,067 because nothing in the register record says that four in ten of their migrants had left the country before; taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine."
+  }
+ ],
+ "notes": "v5 drawn 2026-10-20 after architecture 4 was spent at stage 4 on Gate F; honest data by construction (the census counts who it counts, the survey recounts independently in its sample, the vital and border statistics are complete; nothing is planted and no figure is wrong). calibration_form other: the organ is demographic analysis built from vital and border statistics, a benchmark rather than a verified subsample.",
+ "registered": "2026-10-20T17:17:37Z"
 }

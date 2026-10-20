@@ -1,7 +1,8 @@
-"""The independent verifier: reads only the shipped pack (target/) and the golden files, rebuilds each person's current
-stay and earlier departure from the event histories, the audit's shares, each municipality's adjusted resident
-population and qualification, and the two 2025 counts, by its own code, and compares them with the golden CSV and
-submission.md. It imports nothing from the generator.
+"""The independent verifier: reads only the shipped pack (target/), the golden files and submission.md, and by its own
+code rebuilds each cell's dual-system estimate from the census workbook and the survey's two person files, the
+population on census day from the births, deaths and long-term movements by year of birth, the men's correction, the
+regions' adults less their electors, the 200 organisers by largest remainders, and the two counts from the roll's
+transaction log; then compares them with the golden CSV and submission.md. It imports nothing from the generator.
 
     python3 task471/generator/verify.py
 """
@@ -9,13 +10,19 @@ import csv
 import datetime as dt
 import os
 import re
+import subprocess
 import sys
 from zoneinfo import ZoneInfo
 
-REF = dt.date(2026, 1, 1)
-LINE = 5000
-MERGED = {"0731": "1987", "0744": "1987"}
-LOCAL = ZoneInfo("Europe/Brussels")
+import docx
+import openpyxl
+
+TOTAL, FLOOR = 200, 2
+GROUPS = [(0, 14), (15, 17), (18, 24), (25, 34), (35, 49), (50, 64), (65, 200)]
+YOUNG = [(18, 24), (25, 34), (35, 49)]
+BEFORE_CENSUS = 62.0 / 365.0          # 1 January to 3 March of a year of birth
+COUNTRY = ZoneInfo("Pacific/Auckland")
+FIRST, LAST = dt.date(2025, 3, 5), dt.date(2026, 6, 30)
 
 
 def find(target, pattern):
@@ -24,39 +31,131 @@ def find(target, pattern):
     return os.path.join(target, hits[0])
 
 
-def rows(path, delimiter=","):
+def rows(path):
     with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh, delimiter=delimiter))
+        return list(csv.DictReader(fh))
 
 
-def ymd(s):
-    s = s.replace("-", "")
-    return dt.date(int(s[:4]), int(s[4:6]) or 7, int(s[6:8]) or 1)
+def group(age):
+    return next(g for g in GROUPS if g[0] <= age <= g[1])
 
 
-def careers(events):
-    """person -> (stay in completed years since the latest IMM, or None; 1 if an EMI came before that IMM)"""
-    by = {}
-    for e in events:
-        by.setdefault(e["PERSON_KEY"], []).append(e)
-    out = {}
-    for k, evs in by.items():
-        void = {e["ANNULS_SEQ"] for e in evs if e["EVENT"] == "ANN"}
-        live = [(ymd(e["EVENT_DATE"]), int(e["SEQ"]), e["EVENT"]) for e in evs if e["EVENT"] != "ANN" and e["SEQ"] not in void]
-        imm = max((d for d, _, ev in live if ev == "IMM"), default=None)
-        if imm is None:
-            out[k] = (None, 0)
+def dse_cells(target):
+    """(region, sex, group) -> dual-system estimate"""
+    wb = openpyxl.load_workbook(find(target, r"^census_2025_usual_residents_by_region\.xlsx$"), read_only=True)
+    count = {}
+    for ws in wb.worksheets:
+        if not re.match(r"^\d\d ", ws.title):
             continue
-        years = REF.year - imm.year - ((REF.month, REF.day) < (imm.month, imm.day))
-        out[k] = (years, int(any(ev == "EMI" and d < imm for d, _, ev in live)))
+        reg = ws.title[:2]
+        for r in ws.iter_rows(values_only=True):
+            if r[0] is None or not (isinstance(r[0], int) or r[0] == "100 and over"):
+                continue
+            age = 100 if r[0] == "100 and over" else r[0]
+            for sex, cnt, imp in (("M", r[1], r[2]), ("F", r[3], r[4])):
+                k = (reg, sex, group(age))
+                c = count.setdefault(k, [0, 0])
+                c[0] += cnt
+                c[1] += imp
+    e, p = {}, {}
+    for r in rows(find(target, r"^pes_2025_census_records\.csv$")):
+        k = (r["REGION"], r["SEX"], group(int(r["AGE"])))
+        v = e.setdefault(k, [0, 0])
+        v[0] += 1
+        v[1] += r["STATUS"] == "C"
+    for r in rows(find(target, r"^pes_2025_people\.csv$")):
+        k = (r["REGION"], r["SEX"], group(int(r["AGE"])))
+        v = p.setdefault(k, [0, 0])
+        v[0] += 1
+        v[1] += r["MATCH"] == "M"
+    return {k: (cnt - imp) * e[k][1] / e[k][0] * p[k][0] / p[k][1] for k, (cnt, imp) in count.items()}, count
+
+
+def population(target):
+    """(sex, age) -> people on census day: each year of birth's births less its deaths and departures plus its arrivals,
+    aged at census day (62 of 365 born before 4 March); the 2025 period's births aged 0"""
+    def period(s):
+        return "Q" if s.startswith("2025-01-01/") else int(s)
+    coh, q_births = {}, {}
+    for r in rows(find(target, r"^live_births_by_sex_\d+_\d+\.csv$")):
+        if period(r["PERIOD"]) == "Q":
+            q_births[r["SEX"]] = int(r["LIVE_BIRTHS"])
+        else:
+            coh[(r["SEX"], int(r["PERIOD"]))] = coh.get((r["SEX"], int(r["PERIOD"])), 0) + int(r["LIVE_BIRTHS"])
+    wb = openpyxl.load_workbook(find(target, r"^deaths_by_year_of_birth_1925_1990\.xlsx$"), read_only=True)
+    for sex, title in (("M", "Males"), ("F", "Females")):
+        head = None
+        for r in wb[title].iter_rows(values_only=True):
+            if head is None:
+                if r[0] == "Year of death":
+                    head = r
+                continue
+            if not isinstance(r[0], int):
+                continue
+            for c, v in zip(head[1:], r[1:]):
+                if v:
+                    coh[(sex, int(c))] = coh.get((sex, int(c)), 0) - v
+    for r in rows(find(target, r"^deaths_by_year_of_birth_1991_2025\.csv$")):
+        k = (r["SEX"], int(r["YEAR_OF_BIRTH"]))
+        coh[k] = coh.get(k, 0) - int(r["DEATHS"])
+    for r in rows(find(target, r"^long_term_movements_by_year_of_birth_\d+_\d+\.csv$")):
+        k = (r["SEX"], int(r["YEAR_OF_BIRTH"]))
+        coh[k] = coh.get(k, 0) + int(r["ARRIVALS"]) - int(r["DEPARTURES"])
+    pop = {}
+    for (sex, c), n in coh.items():
+        for share, age in ((1 - BEFORE_CENSUS, 2024 - c), (BEFORE_CENSUS, 2025 - c)):
+            if age >= 0:
+                pop[(sex, min(age, 100))] = pop.get((sex, min(age, 100)), 0) + n * share
+    for sex, n in q_births.items():
+        pop[(sex, 0)] = pop.get((sex, 0), 0) + n
+    return pop
+
+
+def shares(gap):
+    fixed = {}
+    while True:
+        free = [c for c in gap if c not in fixed]
+        left = TOTAL - sum(fixed.values())
+        g = sum(gap[c] for c in free)
+        quota = {c: gap[c] * left / g for c in free}
+        low = [c for c in free if quota[c] < FLOOR]
+        if not low:
+            break
+        fixed.update({c: FLOOR for c in low})
+    out = dict(fixed)
+    out.update({c: int(quota[c]) for c in free})
+    for c in sorted(free, key=lambda c: (int(quota[c]) - quota[c], c))[:left - sum(int(quota[c]) for c in free)]:
+        out[c] += 1
     return out
 
 
-def cell(c):
-    stay, left = c
-    if stay is None:
-        return ("never", 0)
-    return (0 if stay == 0 else 1 if stay <= 4 else 2 if stay <= 9 else 3, left)
+def country_date(row):
+    t = dt.datetime.strptime(row["PROCESSED"], "%Y-%m-%d %H:%M:%S")
+    if not row["TXN_ID"].startswith("R25-"):
+        t = t.replace(tzinfo=dt.timezone.utc).astimezone(COUNTRY)
+    return t.date(), t.replace(tzinfo=None)
+
+
+def asks(target, region_of):
+    log = rows(find(target, r"^roll_transactions_\d+_\d+\.csv$"))
+    seen, new = set(), {}
+    for t, i, r in sorted((country_date(r)[1], i, r) for i, r in enumerate(log)):
+        if not FIRST <= t.date() <= LAST or r["STATUS"] != "A" or r["PERSON_REF"] in seen:
+            continue
+        seen.add(r["PERSON_REF"])
+        if r["TXN_TYPE"] == "NEW" and r["ADDRESS_TYPE"] == "R":
+            reg = region_of[r["ELECTORATE"]]
+            new[reg] = new.get(reg, 0) + 1
+    back = {r["REF_TXN"] for r in log if r["TXN_TYPE"] == "REI" and r["STATUS"] == "A"}
+    died = {}
+    for r in log:
+        if r["TXN_TYPE"] != "DEL" or r["STATUS"] != "A" or r["TXN_ID"] in back:
+            continue
+        codes = ("01",) if r["TXN_ID"].startswith("R25-") else ("11", "12")
+        if r["REASON"] in codes and FIRST <= country_date(r)[0] <= LAST:
+            reg = region_of[r["ELECTORATE"]]
+            died[reg] = died.get(reg, 0) + 1
+    return new, died
 
 
 def main(target, gdir, quiet=False):
@@ -68,86 +167,83 @@ def main(target, gdir, quiet=False):
             ok = False
             print("VERIFY FAIL:", msg)
 
-    reg = rows(find(target, r"^population_register_extract_\d+\.txt$"), delimiter="|")
-    trailer = [r for r in reg if r["PERSON_KEY"] == "TRAILER"]
-    reg = [r for r in reg if r["PERSON_KEY"] != "TRAILER"]
-    check(int(trailer[0]["MUN_CODE"]) == len(reg), "the trailer's count")
-    events = rows(find(target, r"^population_register_events_extract\.csv$"))
-    car = careers(events)
-    sample = rows(find(target, r"audit_2026_sample\.csv$"))
-    scar = careers(rows(find(target, r"audit_2026_histories\.csv$")))
-    final = {}
-    for v in rows(find(target, r"audit_2026_visits\.csv$")):
-        if v["AUDIT_NO"] not in final or int(v["VISIT"]) > int(final[v["AUDIT_NO"]][0]):
-            final[v["AUDIT_NO"]] = (v["VISIT"], v["RESULT"])
-    n, x = {}, {}
-    for r in sample:
-        c = cell(scar.get(r["PERSON_KEY"], (None, 0)))
-        n[c] = n.get(c, 0) + 1
-        x[c] = x.get(c, 0) + int(final[r["AUDIT_NO"]][1] in ("20", "30", "40"))
-    rate = {c: x[c] / n[c] for c in n}
-    absent = sum(x.values())
-    count, expect = {}, {}
-    for r in reg:
-        m = r["MUN_CODE"]
-        count[m] = count.get(m, 0) + 1
-        expect[m] = expect.get(m, 0.0) + rate[cell(car.get(r["PERSON_KEY"], (None, 0)))]
-    adjusted = {m: count[m] - expect[m] for m in count}
-    qual = {m: round(adjusted[m]) < LINE for m in count}
-    # the two 2025 counts
-    msgs = rows(find(target, r"^deregistration_messages_2025\.csv$"))
-    res = {a["MESSAGE_ID"]: a["RESULT"] for a in rows(find(target, r"^hub_acknowledgements_2025\.csv$"))}
-    void = set()
-    by = {}
-    for e in events:
-        by.setdefault(e["PERSON_KEY"], {})[e["SEQ"]] = e
-    for k, evs in by.items():
-        for e in evs.values():
-            if e["EVENT"] == "ANN":
-                a = evs[e["ANNULS_SEQ"]]
-                void.add((k, a["EVENT"], ymd(a["EVENT_DATE"])))
-    ended = {r["PERSON_KEY"]: r["DEPARTURE_DATE"] for r in rows(find(target, r"^non_resident_records_extract\.csv$"))}
-    dep = {m: 0 for m in count}
-    dth = {m: 0 for m in count}
-    for mm in msgs:
-        sent = dt.datetime.strptime(mm["SENT_AT"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-        if sent.astimezone(LOCAL).year != 2025 or not mm["EVENT_DATE"].startswith("2025") or res[mm["MESSAGE_ID"]] != "ACCEPTED":
-            continue
-        m = MERGED.get(mm["SENDER_MUN"], mm["SENDER_MUN"])
-        if (mm["PERSON_KEY"], mm["MESSAGE_TYPE"], ymd(mm["EVENT_DATE"])) in void:
-            continue
-        if mm["MESSAGE_TYPE"] == "EMI":
-            dep[m] += 1
-        elif mm["MESSAGE_TYPE"] == "OVL" and not (mm["PERSON_KEY"] in ended and ended[mm["PERSON_KEY"]] <= mm["EVENT_DATE"]):
-            dth[m] += 1
+    est, count = dse_cells(target)
+    pop = population(target)
+    fac = {}
+    for g in YOUNG:
+        m_da = sum(pop.get(("M", a), 0) for a in range(g[0], g[1] + 1))
+        f_da = sum(pop.get(("F", a), 0) for a in range(g[0], g[1] + 1))
+        m = sum(v for (c, s, gg), v in est.items() if s == "M" and gg == g)
+        f = sum(v for (c, s, gg), v in est.items() if s == "F" and gg == g)
+        fac[g] = (m_da / f_da) / (m / f)
+    conc = {r["ELECTORATE"]: r for r in rows(find(target, r"^electorates_and_regions\.csv$"))}
+    region_of = {k: r["REGION"] for k, r in conc.items()}
+    names = {r["REGION"]: r["REGION_NAME"] for r in conc.values()}
+    roll = {c: 0 for c in names}
+    for r in rows(find(target, r"^roll_at_close_of_census_day_2025\.csv$")):
+        if r["ADDRESS_TYPE"] == "R":
+            roll[region_of[r["ELECTORATE"]]] += int(r["ELECTORS"])
+    adults, dse_adults, counted = {c: 0.0 for c in names}, {c: 0.0 for c in names}, {c: 0 for c in names}
+    for (c, s, g), v in est.items():
+        if g[0] >= 18:
+            adults[c] += v * (fac[g] if s == "M" and g in fac else 1.0)
+            dse_adults[c] += v
+            counted[c] += count[(c, s, g)][0]
+    org = shares({c: adults[c] - roll[c] for c in names})
+    dse_org = shares({c: dse_adults[c] - roll[c] for c in names})
+    census_org = shares({c: counted[c] - roll[c] for c in names})
+    new, died = asks(target, region_of)
+    # the documents the call and the asks lean on, read back
+    plan = " ".join(" ".join(p.text for p in docx.Document(find(target, r"^enrolment_campaign_plan_2027\.docx$")).paragraphs).split())
+    check("whether or not the census counted them" in plan and "Overseas electors are not counted in any region." in plan
+          and "200 field organisers" in plan, "the plan files the population, the roll and the organisers")
+    report = " ".join(subprocess.run(["pdftotext", "-raw", find(target, r"^pes_2025_methods_report\.pdf$"), "-"],
+                                     capture_output=True, text=True, check=True).stdout.split())
+    check("region by sex by age group" in report and "except the records the census imputed" in report,
+          "the methods report files the cells and the records file's scope")
+    mig = " ".join(subprocess.run(["pdftotext", "-raw", find(target, r"^roll_platform_migration_notes\.pdf$"), "-"],
+                                  capture_output=True, text=True, check=True).stdout.split())
+    check("01 deceased" in mig, "the migration notes file the old platform's death code")
+    wb = openpyxl.load_workbook(find(target, r"^enrolment_gap_file_specification\.xlsx$"), read_only=True)
+    spec = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
+    check("Dates and times are the country's time." in spec and "each person once" in spec,
+          "the specification files the window's clock and the count of people")
     # against the golden CSV
-    gold = rows(os.path.join(gdir, "adjusted_population_supplement_2027.csv"))
-    check(len(gold) == 24 == len(count), "24 municipalities")
-    names = {}
+    gold = rows(os.path.join(gdir, "enrolment_gap_allocation_2027.csv"))
+    check([g["REGION_CODE"] for g in gold] == sorted(names) and len(gold) == 16, "16 regions in code order")
     for g in gold:
-        m = g["MUNICIPALITY_CODE"][2:]
-        names[m] = g["MUNICIPALITY"]
-        check(int(g["REGISTERED_20260101"]) == count[m], "%s registered" % m)
-        check(int(g["ADJUSTED_POPULATION"]) == round(adjusted[m]), "%s adjusted %s against %.1f" % (
-            m, g["ADJUSTED_POPULATION"], adjusted[m]))
-        check(int(g["NOT_RESIDENT_ESTIMATE"]) == count[m] - round(adjusted[m]), "%s estimate" % m)
-        check((g["QUALIFIES"] == "Y") == qual[m], "%s qualifies" % m)
-        check(int(g["DEPARTURES_ABROAD_2025"]) == dep[m], "%s departures %s against %d" % (m, g["DEPARTURES_ABROAD_2025"], dep[m]))
-        check(int(g["DEATHS_2025"]) == dth[m], "%s deaths %s against %d" % (m, g["DEATHS_2025"], dth[m]))
+        c = g["REGION_CODE"]
+        check(g["REGION"] == names[c], "%s name" % c)
+        check(int(g["ORGANISERS"]) == org[c], "%s organisers %s against %d" % (c, g["ORGANISERS"], org[c]))
+        check(int(g["NEW_ELECTORS"]) == new.get(c, 0), "%s new electors %s against %d" % (c, g["NEW_ELECTORS"], new.get(c, 0)))
+        check(int(g["REMOVED_DIED"]) == died.get(c, 0), "%s deaths %s against %d" % (c, g["REMOVED_DIED"], died.get(c, 0)))
+    check(sum(org.values()) == TOTAL, "200 organisers")
     # against submission.md
     sub = open(os.path.join(os.path.dirname(gdir), "submission.md"), encoding="utf-8").read()
     rec = sub.split("## 1. Final Recommendation")[1].split("## 2.")[0]
-    called = sorted(names[m] for m in count if qual[m])
-    check(all(nm in rec.split("**")[1] for nm in called) and "Nine of the 24" in rec, "the recommendation names the nine")
-    check("**%s of %s**" % ("{:,}".format(absent), "{:,}".format(len(sample))) in sub, "the audit's count")
-    for m in count:
-        line = re.search(r"^   - %s \(GM%s\): (qualifies|does not qualify), ([\d,]+) departures abroad, ([\d,]+) deaths$" % (
-            re.escape(names[m]), m), sub, re.M)
-        check(line is not None and (line.group(1) == "qualifies") == qual[m] and int(line.group(2).replace(",", "")) ==
-              dep[m] and int(line.group(3).replace(",", "")) == dth[m], "submission line for %s" % names[m])
+    call = rec.split("**")[1]
+    for c in sorted(names):
+        check(re.search(r"\b%s %d\b" % (re.escape(names[c]), org[c]), call) is not None, "the call names %s %d" % (
+            names[c], org[c]))
+    changed = [c for c in sorted(names) if dse_org[c] != org[c]]
+    rival = rec.split("Not the dual-system estimates as they stand, which give ")[1].split(";")[0]
+    check(all(re.search(r"\b%s %d\b" % (re.escape(names[c]), dse_org[c]), rival) for c in changed)
+          and len(re.findall(r"\d+", rival)) == len(changed), "the rival clause names the default path's %d regions" % len(
+              changed))
+    check("change %d regions" % sum(1 for c in names if census_org[c] != org[c]) in rec, "the census counts' rival")
+    elect = sum(roll.values())
+    check("**{:,}**".format(elect) in sub and "**{:,}**".format(int(round(sum(dse_adults.values())))) in sub,
+          "the electors and the dual-system adults")
+    check("about **%.2f million**" % (sum(adults.values()) / 1e6) in sub, "the corrected adults")
+    for c in sorted(names):
+        line = re.search(r"^   - %s \(%s\): (\d+) organisers, ([\d,]+) added, ([\d,]+) removed because they had died$" % (
+            re.escape(names[c]), c), sub, re.M)
+        check(line is not None and int(line.group(1)) == org[c] and int(line.group(2).replace(",", "")) == new.get(c, 0)
+              and int(line.group(3).replace(",", "")) == died.get(c, 0), "submission line for %s" % names[c])
     if not quiet:
-        print("verify: %s; %d qualify (%s); %d of %d sampled not living there" % (
-            "PASS" if ok else "FAIL", len(called), ", ".join(called), absent, len(sample)))
+        print("verify: %s; organisers %s; %d new electors, %d removed because they had died" % (
+            "PASS" if ok else "FAIL", " ".join("%s %d" % (names[c], org[c]) for c in sorted(names)),
+            sum(new.values()), sum(died.values())))
     return ok
 
 

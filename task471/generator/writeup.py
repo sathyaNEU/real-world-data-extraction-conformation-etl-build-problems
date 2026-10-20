@@ -4,8 +4,6 @@ import json
 
 import world as W
 
-NUM = {6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten"}
-
 
 def _n(v):
     return "{:,}".format(int(v))
@@ -16,97 +14,93 @@ def _names(xs):
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
+def _r2(v):
+    return "%.2f" % v
+
+
 def write(fig_path, out_path):
     fig = json.load(open(fig_path, encoding="utf-8"))
-    by = {x["name"]: x for x in fig["municipalities"]}
-    call = fig["call"]["names"]
-    default = fig["rungs"]["R2b born abroad x years at the address"]["names"]
-    added = [n for n in default if n not in call]
-    dropped = [n for n in call if n not in default]
-    stay = fig["rungs"]["R2c current stay"]["names"]
-    a = fig["audit"]
-    b = a["by_career"]
-    towns = fig["career_towns"]
-    seasonal = [t for t in towns if t["type"] == "G"]
-    older = [t for t in towns if t["type"] == "O"]
-    uni = [t for t in towns if t["type"] == "U"][0]
+    call = fig["call"]["organisers"]
+    dflt = fig["default"]["organisers"]
+    changed = fig["default"]["changed"]
+    nat = fig["national"]
+    young = [fig["groups"][W.group_label(g)] for g in W.YOUNG_GROUPS]
+    asks = fig["asks"]
+    pct = fig["factors_pct"]
     out = []
     out.append("## Tags\n")
-    out.append("**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: "
-               "the population register's over-count of residents who left the country unreported, measured by the "
-               "Register Coverage Audit 2026 and applied to each municipality's register count within the "
-               "characteristics that carry it, the length of the current stay since the latest settlement from abroad "
-               "and an earlier departure, both rebuilt from the register's event history).  ")
+    out.append("**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: each "
+               "region's adults on census day estimated from the 2025 Census and its Post-Enumeration Survey by "
+               "dual-system estimation within the survey's cells, the men aged 18 to 49 brought to the sex ratio that "
+               "demographic analysis of births, deaths and long-term movements gives, and conformed with the roll at "
+               "census day and the roll's transaction log into the Commission's enrolment-gap file).  ")
     out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
     out.append("## 1. Final Recommendation\n")
-    out.append("**%s of the 24 municipalities in play qualify for the 2027 small-municipality supplement: %s.**" % (
-        NUM[fig["call"]["count"]], _names(call)))
-    out.append("Each has an adjusted resident population on 1 January 2026 below 5,000: its register count less the "
-               "registered persons the audit estimates were not living there, taken within the length of each "
-               "person's current stay since the latest settlement from abroad and whether the person had left the "
-               "country before it. %s is the qualifying municipality nearest the line and %s the nearest left out. "
-               "Not the %s municipalities the register's own fields give (country of birth by years at the current "
-               "address), which add %s and drop %s, because a move within the country resets the address date while "
-               "only the event history shows who has come and gone before; not the %s the current stay alone gives, "
-               "which drops %s.\n" % (
-                   fig["nearest"]["below"], fig["nearest"]["above"], NUM[len(default)].lower(), _names(added),
-                   _names(dropped), NUM[len(stay)].lower(), _names([n for n in call if n not in stay])))
+    out.append("**%s of the %d organisers.**" % (_names("%s %d" % (W.NAME[c], call[W.NAME[c]]) for c in W.CODES),
+                                                 fig["call"]["total"]))
+    out.append("Each region's share is its adults usually resident on census day less its electors with a residential "
+               "address, the adults estimated by dual-system estimation within the survey's cells with the men aged 18 "
+               "to 49 raised to the sex ratio demographic analysis gives, because the census and its survey miss the "
+               "same young men and leave the men's estimates about %d per cent short of it while the women's agree. Not "
+               "the dual-system estimates as they stand, which give %s; not the census counts, which leave out everyone "
+               "the census missed and change %d regions.\n" % (
+                   fig["young_men"]["short_pct"], _names("%s %d" % (n, dflt[n]) for n in changed),
+                   fig["census_only"]["n_changed"]))
     out.append("## 2. Critical Components\n")
-    rc, bp = a["result_codes"], a["by_career_pct"]
-    out.append("1. Sampled persons the audit found not living in their registered municipality on 1 January 2026 "
-               "(final results %s): **%s of %s** (%s per cent)." % (
-                   _names([str(c) for c in rc["absent"]]), _n(a["absent"]), _n(a["sampled"]), "%.2f" % a["share_pct"]))
-    out.append("2. Not living there, by migration career: never settled from abroad **%s of %s** (%.2f per cent); "
-               "settled from abroad with no earlier departure **%s of %s** (%.1f per cent); settled from abroad after an "
-               "earlier departure **%s of %s** (%.1f per cent)." % (
-                   _n(b["never"][1]), _n(b["never"][0]), bp["never"], _n(b["stayed"][1]), _n(b["stayed"][0]),
-                   bp["stayed"], _n(b["returned"][1]), _n(b["returned"][0]), bp["returned"]))
-    out.append("3. Registered persons settled from abroad who had left the country before: %s; against %s." % (
-        "; ".join("%s **%s of %s**" % (t["name"], _n(t["left"]), _n(t["settled"])) for t in seasonal),
-        "; ".join("%s **%s of %s**" % (t["name"], _n(t["left"]), _n(t["settled"])) for t in older + [uni])))
-    out.append("4. Registered persons in the first to fourth year of their current stay: %s **%s**, against %s.\n" % (
-        uni["name"], _n(uni["stay_1_4"]), _names(["%s **%s**" % (t["name"], _n(t["stay_1_4"])) for t in older])))
+    out.append("1. Electors on the roll at the close of census day with a residential address: **%s**." % _n(
+        nat["electors"]))
+    out.append("2. Adults on census day by dual-system estimation within the survey's region, sex and age-group cells: "
+               "**%s**." % _n(nat["dse_adults"]))
+    out.append("3. Men per woman aged 18 to 24, 25 to 34 and 35 to 49: dual-system estimates **%s**; demographic analysis "
+               "**%s**." % (_names(_r2(g["ratio_dse"]) for g in young), _names(_r2(g["ratio_da"]) for g in young)))
+    out.append("4. Dual-system estimates of men aged 18 to 49 against demographic analysis: about **%d per cent** short, "
+               "the women's agreeing with it." % fig["young_men"]["short_pct"])
+    out.append("5. Adults on census day after the correction: about **%s million**.\n" % _r2(nat["golden_adults_million"]))
     out.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Read population_register_extract_20260101.txt (its trailer's %s persons in the 24 municipalities in play, "
-        "Ravenmeer one municipality under Article 14(4)) and population_register_events_extract.csv, dropped each "
-        "annulled event with its ANN, and gave each person the completed years from the latest IMM to 1 January 2026 "
-        "and whether an EMI came before that IMM." % _n(fig["totals"]["registered"]),
-        "Took each audited person's last record in register_coverage_audit_2026_visits.csv as the final result (%d is "
-        "no contact; %d counts as living there) and built the same two features from "
-        "register_coverage_audit_2026_histories.csv: %s of %s not living there." % (
-            a["result_codes"]["no_contact"], a["result_codes"]["present_left"], _n(a["absent"]), _n(a["sampled"])),
-        "Measured the audit's share not living there within cells of the current stay (never settled from abroad, "
-        "under 1, 1 to 4, 5 to 9, 10 or more years) by whether the person had left the country before; within those "
-        "cells country of birth, nationality, years at the address, age and sex add nothing.",
-        "Gave each registered person the share of their cell, summed by municipality, took the sum from the register "
-        "count, rounded to the whole person and compared with 5,000 (Article 14(1) to (3)): %s qualify." % (
-            NUM[fig["call"]["count"]].lower()),
-        "Departures abroad: deregistration_messages_2025.csv's EMI messages the hub accepted "
-        "(hub_acknowledgements_2025.csv), with a 2025 departure date and sent in 2025 in the country's time (the "
-        "night batch logged at 23:00 UTC or later on 31 December left on 1 January 2026), each person who left twice "
-        "counted twice, less the departures the register annulled as entered in error (an EMI with an ANN in the "
-        "person's history).",
-        "Deaths: the OVL messages the hub accepted with a 2025 date of death and sent in 2025 in the country's time, "
-        "less the deaths the register annulled and the former residents whose registration had ended before they died "
-        "(non_resident_records_extract.csv, DEPARTURE_DATE before the date of death).",
-        "Wrote adjusted_population_supplement_2027.csv in the layout of the ministry's delivery specification and the "
-        "chart of the adjusted resident populations against the 5,000 line.",
+        "Took the electors with a residential address (ADDRESS_TYPE R) in roll_at_close_of_census_day_2025.csv to "
+        "regions through electorates_and_regions.csv (plan 2.2): %s." % _n(nat["electors"]),
+        "In each estimation cell of pes_2025_methods_report.pdf (region by sex by age group) took the count in "
+        "census_2025_usual_residents_by_region.xlsx less its imputed records, kept the share of the cell's records in "
+        "pes_2025_census_records.csv with STATUS C and raised that by the cell's people in pes_2025_people.csv over "
+        "those with MATCH M: dual-system estimates of %s adults." % _n(nat["dse_adults"]),
+        "Rebuilt the population on census day by sex and single year of age, cohort by cohort, from "
+        "live_births_by_sex_1925_2025.csv less deaths (deaths_by_year_of_birth_1925_1990.xlsx and "
+        "deaths_by_year_of_birth_1991_2025.csv) and departures plus arrivals "
+        "(long_term_movements_by_year_of_birth_1950_2025.csv), the period 2025-01-01/2025-03-03 included: men per "
+        "woman of %s at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' %s, the women's estimates "
+        "agreeing with it." % (_names(_r2(g["ratio_da"]) for g in young), _names(_r2(g["ratio_dse"]) for g in young)),
+        "Multiplied every region's dual-system estimates of men in each of those age groups by demographic analysis's "
+        "men per woman over the dual-system estimates' (about %s per cent more men), the women and the other ages as "
+        "estimated: about %s million adults." % (_names(str(p) for p in pct), _r2(nat["golden_adults_million"])),
+        "Subtracted each region's electors and shared the %d organisers on the differences by largest remainders "
+        "(plan 3.1; no share falls under two): the organisers above." % fig["call"]["total"],
+        "New electors: read PROCESSED in roll_transactions_2025_2026.csv as the country's time on the old platform "
+        "(R25- identifiers) and as UTC on the new one from 4 August 2025 (its daily 06:00 transfers of provisional "
+        "enrolments are stamped 18:00 the day before, 17:00 in daylight saving time), kept the accepted transactions "
+        "from 5 March 2025 to 30 June 2026 in the country's time, and counted each PERSON_REF whose first such "
+        "transaction is a NEW at a residential address, so a move on the old platform (a DEL with reason 05 and a NEW "
+        "the same day) and a re-enrolment after a removal are not new electors: %s." % _n(asks["new_total"]),
+        "Removed because they had died: the accepted DEL rows in the same window with reason 01 on the old platform "
+        "(deceased, roll_platform_migration_notes.pdf) or 11 or 12 on the new (roll_extract_data_dictionary.xlsx), less "
+        "those an accepted REI reverses through REF_TXN, by the region of ELECTORATE: %s." % _n(asks["died_total"]),
+        "Wrote enrolment_gap_allocation_2027.csv in the layout of enrolment_gap_file_specification.xlsx and "
+        "enrolment_gap_allocation_2027.png, a bar chart of each region's organisers.",
     ]
     for i, s in enumerate(steps, 1):
         out.append("%d. %s" % (i, s))
     out.append("")
     out.append("## 4. Deliverable Answers\n")
-    out.append("### adjusted_population_supplement_2027.csv\n")
-    out.append("1. Whether each municipality qualifies, its departures abroad in 2025 and its deaths in 2025:")
-    for x in fig["municipalities"]:
-        out.append("   - %s (%s): %s, %s departures abroad, %s deaths" % (
-            x["name"], x["gm"], "qualifies" if x["qualifies"] else "does not qualify", _n(x["departures"]),
-            _n(x["deaths"])))
+    out.append("### enrolment_gap_allocation_2027.csv\n")
+    out.append("1. Each region's organisers and, between census day and 30 June 2026, the people added to the roll there "
+               "who had not been on it on census day and the electors removed from it there because they had died, "
+               "whole numbers:")
+    for r in fig["regions"]:
+        out.append("   - %s (%s): %d organisers, %s added, %s removed because they had died" % (
+            r["name"], r["code"], r["organisers"], _n(r["new_electors"]), _n(r["removed_died"])))
     out.append("")
-    out.append("### adjusted_population_supplement_2027.png\n")
-    out.append("1. Bar chart of the 24 municipalities' adjusted resident populations against the 5,000 line, the %s "
-               "under it highlighted: %s." % (NUM[fig["call"]["count"]].lower(), _names(call)))
+    out.append("### enrolment_gap_allocation_2027.png\n")
+    out.append("1. Bar chart of the 16 regions' organisers in region code order, each bar labelled with its count.")
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(out).rstrip() + "\n")
 

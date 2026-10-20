@@ -1,17 +1,21 @@
-"""The generator's assertions on the built pack: the input gates; the register, the keys and every person's stay and
-earlier departure as the files give them against the simulation; the call, its rungs and its convergence across the
-golden's family; the three-rules block (the analyst test on the clean truth); every row of the semantic fork table;
-the asks against the generator's truth with their stops and the separation line; figures.json against the golden
-files."""
+"""The generator's assertions on the built pack (architecture 5): the input gates; the pack read back against the
+simulation; the call, its rungs, the golden's readings and the slipped paths; the three-rules block (R1 the field's raw
+material, R2 each mess item neutral, R3a the analyst test on the clean truth, R3b the decisive step alone, R3c no plant);
+every row of the semantic fork table; the asks against the generator's truth with their stops and the separation line;
+the distractors; the documents' dates; figures.json against the golden files."""
 import collections
+import copy
 import csv
 import datetime as dt
 import itertools
 import json
-import math
 import os
+import shutil
+import subprocess
+import tempfile
 
-import numpy as np
+import docx
+import openpyxl
 
 import bundle as B
 import calibrate as C
@@ -19,335 +23,417 @@ import methods as M
 import pack as P
 import world as W
 
-T5 = ["Aldewolde", "Borgermeer", "Bremvoort", "Dornhaghe", "Zandloo"]
-GOLD = sorted(T5 + ["Eekhorst", "Haverstede", "Hilderloo", "Koudenbeek"])
-DEFAULT = sorted(T5 + ["Hilderloo", "Molenrade", "Nijdorp"])
-RUNG_SETS = {
-    "R1 one audit rate": sorted(T5 + ["Dalmeer"]),
-    "R2a born abroad": sorted(T5 + ["Molenrade", "Nijdorp"]),
-    "R2a' foreign nationality": sorted(T5 + ["Molenrade", "Nijdorp"]),
-    "R2b born abroad x years at the address": DEFAULT,
-    "R2c current stay": sorted(T5 + ["Hilderloo"]),
-    "R2d first settlement x left before": GOLD,
-    "R2e left before": sorted(T5 + ["Molenrade", "Nijdorp"]),
-    "R2f years at the address x left before": sorted(T5 + ["Eekhorst", "Haverstede", "Koudenbeek", "Molenrade",
-                                                           "Nijdorp"]),
-    "R2g age and sex": sorted(T5 + ["Dalmeer"]),
-    M.GOLDEN: GOLD,
-}
-LAST_LOCAL_2025 = dt.date(2025, 12, 30)   # a message registered on 31 December leaves in the New Year's night batch
+NAMES = [W.NAME[c] for c in W.CODES]
+GOLD = dict(zip(NAMES, [27, 20, 25, 26, 29, 5, 11, 12, 7, 5, 4, 8, 6, 3, 8, 4]))
+DEFAULT = dict(zip(NAMES, [26, 20, 26, 28, 31, 4, 11, 12, 6, 4, 4, 8, 6, 3, 8, 3]))
+R0 = dict(zip(NAMES, [17, 17, 26, 31, 38, 5, 12, 19, 2, 3, 7, 7, 5, 3, 5, 3]))
+R1 = dict(zip(NAMES, [22, 19, 24, 26, 30, 7, 11, 16, 5, 5, 7, 8, 6, 4, 6, 4]))
+CHANGED = ["Ardenmere", "Westerby", "Larchfield", "Glenwhite", "Hawksridge", "Corran Valley", "Drumlea", "Nethermoor"]
+FACTORS = (1.036, 1.040, 1.048)
 
 
 class Checker:
     def __init__(self):
         self.ok = True
         self.n = 0
+        self.failed = 0
 
     def __call__(self, cond, msg):
         self.n += 1
         if not cond:
             self.ok = False
+            self.failed += 1
             print("FAIL:", msg)
 
 
-def names(codes):
-    return sorted(W.NAME[m] for m in codes)
+def named(alloc):
+    return {W.NAME[c]: alloc[c] for c in W.CODES}
 
 
-def loglik(audit, key):
-    rates, pooled = M.fit(audit, key)
-    s = 0.0
-    for f, a in audit:
-        p = rates.get(key(f), pooled)
-        if 0 < p < 1:
-            s += math.log(p) if a else math.log(1 - p)
-    return s
+def off(a, b):
+    return sum(1 for k in a if a[k] != b[k])
 
 
-def logit_adjusted(audit, pops, fx):
-    X = np.array([[1.0] + fx(f) for f, _ in audit])
-    y = np.array([a for _, a in audit], float)
-    b = np.zeros(X.shape[1])
-    for _ in range(80):
-        p = 1 / (1 + np.exp(-X @ b))
-        H = X.T @ (X * (p * (1 - p))[:, None]) + 1e-6 * np.eye(X.shape[1])
-        step = np.linalg.solve(H, X.T @ (y - p) - 1e-6 * b)
-        b += step
-        if np.abs(step).max() < 1e-10:
-            break
-    return {m: len(pop) - float((1 / (1 + np.exp(-np.array([[1.0] + fx(f) for f in pop]) @ b))).sum())
-            for m, pop in pops.items()}
+def alloc_of(d, adults):
+    return named(C.allocation(d, adults)[0])
 
 
-def partitions(pk):
-    """every contiguous partition of the completed years 0..10+ with the earlier departure: (set, loglik, lumps 9|10)"""
-    S_ = 12
-    idx = lambda f: 0 if f["stay"] is None else 1 + min(f["stay"], 10)
-    A, N = np.zeros((S_, 2)), np.zeros((S_, 2))
-    for f, a in pk.audit:
-        N[idx(f), f["left"]] += 1
-        A[idx(f), f["left"]] += a
-    P_ = {m: np.zeros((S_, 2)) for m in pk.codes}
-    for m in pk.codes:
-        for f in pk.pops[m]:
-            P_[m][idx(f), f["left"]] += 1
-    pooled = A.sum() / N.sum()
+def hits(a, b):
+    return sum(1 for c in W.CODES if a[c] == b[c])
+
+
+# ------------------------------------------------------------------ the documents, read the way the verifier reads them
+def pdf_text(path):
+    return " ".join(subprocess.run(["pdftotext", "-raw", path, "-"], capture_output=True, text=True,
+                                   check=True).stdout.split())
+
+
+def docx_text(path):
+    return " ".join(" ".join(p.text for p in docx.Document(path).paragraphs).split())
+
+
+def xlsx_text(path):
+    wb = openpyxl.load_workbook(path, read_only=True)
     out = []
-    for cuts in itertools.product((0, 1), repeat=10):
-        band, b = [0], 1
-        for k in range(11):
-            band.append(b)
-            if k < 10 and cuts[k]:
-                b += 1
-        band = np.array(band)
-        rate, ll = {}, 0.0
-        for bb in range(band.max() + 1):
-            sel = band == bb
-            for l in (0, 1):
-                n, a = N[sel, l].sum(), A[sel, l].sum()
-                rate[bb, l] = a / n if n else pooled
-                if n and 0 < a < n:
-                    ll += a * math.log(a / n) + (n - a) * math.log(1 - a / n)
-        adj = {m: P_[m].sum() - sum(P_[m][s, l] * rate[band[s], l] for s in range(S_) for l in (0, 1)) for m in pk.codes}
-        out.append((names(M.qualifying(adj)), ll, not cuts[9]))
-    return out
+    for ws in wb.worksheets:
+        for r in ws.iter_rows(values_only=True):
+            out.extend(str(v) for v in r if v is not None)
+    return " ".join(" ".join(out).split())
 
 
 def truth_asks(x):
-    """the generator's truth for the two asks, from the simulated messages and the hub's answers"""
-    former = {}
-    for nr in x["nonres"]:
-        former[nr["key"]] = nr["dep"]
-    dep = collections.Counter()
-    dth = collections.Counter()
-    for m, res, _ in x["acks"]:
-        if res != "ACCEPTED" or m.get("void") or m["date"].year != 2025 or m["sent"] > LAST_LOCAL_2025:
+    """the generator's truth for the two asks, from the simulated transactions at their simulated local times: a new
+    elector is an accepted residential enrolment of a person the simulation never gave a census-day elector number
+    (movers and re-enrolments carry a removal of their own); a death is a removal the death loop wrote (the old
+    platform's 01, the new platform's 11 and 12), less the removals reinstated"""
+    rows = x["log"]
+    on_roll = {r[7] for r in rows if r[2] == "DEL"}
+    back = {r[12] for r in rows if r[2] == "REI" and r[5] == "A"}
+    first = W.CENSUS_DAY + dt.timedelta(days=1)
+    new, died = collections.Counter(), collections.Counter()
+    for r in rows:
+        if not first <= r[13].date() <= W.LOG_END or r[5] != "A":
             continue
-        if m["kind"] == "EMI":
-            dep[m["mun"]] += 1
-        elif m["kind"] == "OVL" and not (m["key"] in former and former[m["key"]] <= m["date"]):
-            dth[m["mun"]] += 1
-    return dep, dth
+        reg = W.ELECTORATE_REGION[r[8]]
+        if r[2] == "NEW" and r[9] == "R" and r[7] not in on_roll:
+            new[reg] += 1
+        elif r[2] == "DEL" and r[0] not in back and ((r[14] == "old" and r[3] == "01") or r[3] in ("11", "12")):
+            died[reg] += 1
+    return new, died
+
+
+def estimate_alloc(target, pk):
+    """the 2018-base estimates at 30 June 2024 (the wrong-basis distractor) read as the adults: 25 and over, plus seven
+    tenths of 15 to 24"""
+    adults = {c: 0.0 for c in W.CODES}
+    for r in B.rows(os.path.join(target, P.FILES["estimates_2024"])):
+        n = int(r["ESTIMATED_RESIDENT_POPULATION"])
+        if r["AGE_GROUP"] == "15-24":
+            adults[r["REGION"]] += 0.7 * n
+        elif r["AGE_GROUP"] not in ("0-14",):
+            adults[r["REGION"]] += n
+    return named(M.allocate(pk.gap(adults))[0])
 
 
 def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck = Checker()
     x = x or P.everything()
     pk = B.Pack(target)
+    d = pk.d
+    f = lambda k: os.path.join(target, P.FILES[k])
     # ------------------------------------------------------------------------------------------- input gates
     files = sorted(os.listdir(target))
-    ck(len(files) >= 10, "ten or more files")
-    ck(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
-    with open(os.path.join(target, P.FILES["events"]), encoding="utf-8") as fh:
-        ck(sum(1 for _ in fh) - 1 >= 25000, "a file of 25,000 or more rows")
+    ck(len(files) >= 10, "ten or more files (%d)" % len(files))
+    ck(len({fn.rsplit(".", 1)[1] for fn in files}) >= 3, "three or more formats")
+    ck(len(pk.log) >= 25000 and len(B.rows(f("pes_people"))) >= 25000, "a file of 25,000 or more rows (the log %d)" % len(
+        pk.log))
+    ck(set(files) == set(P.FILES.values()), "the pack is exactly the files the generator names")
     if meta_path:
         meta = json.load(open(meta_path, encoding="utf-8"))
-        ck(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]),
+        ck(len(meta["distractor_files"]) >= 2 and all(fn in files for fn in meta["distractor_files"]),
            "two or more distractors named in metadata.json")
-    # ---------------------------------------------------------------------------- the register and the keys
-    ck(len(pk.trailer) == 1 and int(pk.trailer[0]["MUN_CODE"]) == len(pk.register) == sum(W.COUNT.values()),
-       "SF2 the trailer's count, the rows and the world's counts agree")
-    ck(names(pk.codes) == sorted(W.NAME[m] for m in W.CODES) and W.MERGED[1] in pk.codes
-       and not set(r["MUN_CODE"] for r in pk.register) & {c for _, c in W.FORMER},
-       "SF4 the 24 municipalities as constituted on 1 January 2026, Ravenmeer one of them")
-    ck(min(len(p) for p in pk.pops.values()) >= W.IN_PLAY[0] and max(len(p) for p in pk.pops.values()) <= W.IN_PLAY[1],
-       "SF3 every register count between 4,500 and 6,000 (4,561 to 5,944), so the bounds' inclusivity is moot")
-    regk = collections.Counter(r["PERSON_KEY"] for r in pk.register)
-    ck(max(regk.values()) == 1, "no person key twice in the register extract")
-    ck(len({r["PERSON_KEY"] for r in pk.sample}) == len(pk.sample), "no person key twice in the sample")
-    ck(len({n["PERSON_KEY"] for n in pk.nonres}) == len(pk.nonres), "no person key twice in the non-resident records")
-    ck(not set(regk) & {n["PERSON_KEY"] for n in pk.nonres}, "no registered person among the non-resident records")
-    ck(set(pk.hist) == set(regk), "every registered person has a history and nobody else")
-    inplay_sampled = {r["PERSON_KEY"] for r in pk.sample if r["MUN_CODE"] in pk.codes}
-    ck(inplay_sampled <= set(regk), "the in-play sampled persons are registered persons")
-    # ------------------------------------------------------- each person's career as the files give it, vs truth
-    truth = {}
-    for code in W.CODES:
-        for p in x["reg"][code]:
-            truth[p["key"]] = p
-    feat = {}
-    for r in pk.register:
-        feat[r["PERSON_KEY"]] = B.features(r, pk.hist.get(r["PERSON_KEY"], []))
-    bad = [k for k, f in feat.items() if (f["stay"], f["left"]) != (truth[k]["stay"], truth[k]["left"])]
-    ck(not bad, "every registered person's stay and earlier departure from the files equal the truth (%d differ)" % len(bad))
-    samp_truth = {p["key"]: p for p in x["sample"]}
-    sbad = [r["PERSON_KEY"] for r, (f, a) in zip(pk.sample, pk.audit)
-            if (f["stay"], f["left"]) != (samp_truth[r["PERSON_KEY"]]["stay"], samp_truth[r["PERSON_KEY"]]["left"])
-            or a != int(samp_truth[r["PERSON_KEY"]]["absent"])]
-    ck(not sbad, "every sampled person's career and final result from the files equal the truth (%d differ)" % len(sbad))
-    ck(sum(a for _, a in pk.audit) == 206 and len(pk.audit) == W.N_AUDIT, "206 of 12,000 sampled persons not living there")
-    # ------------------------------------------------------------------------------------------------ the call
-    gold = names(pk.qualifying())
+        ck(all("distractor" not in fn.lower() for fn in files), "no file name says distractor")
+    # ------------------------------------------------------------------------------- the documents and controls
+    plan = docx_text(f("plan"))
+    report = pdf_text(f("pes_report"))
+    notes = pdf_text(f("series_notes"))
+    migration = pdf_text(f("migration"))
+    spec = xlsx_text(f("spec"))
+    dictionary = xlsx_text(f("dictionary"))
+    workbook = xlsx_text(f("census"))
+    for name, text, control in (
+            ("the plan", plan, "2027 Enrolment Campaign: field plan"),
+            ("the methods report", report, "2025 Post-Enumeration Survey"),
+            ("the series notes", notes, "Vital and border series"),
+            ("the migration notes", migration, "Roll platform migration"),
+            ("the specification", spec, "Enrolment-gap file for the Electoral Commission"),
+            ("the dictionary", dictionary, "Roll transactions extract: data dictionary"),
+            ("the census workbook", workbook, "2025 Census of Population and Dwellings")):
+        ck(len(text) > 200 and control in text, "positive control: %s reads back (%d characters)" % (name, len(text)))
+    # --------------------------------------------------------------- the pack read back against the simulation
+    d0 = C.data_from(x["nat"], x["cnt"], x["roll_counts"])
+    ck(d["census"] == d0["census"], "the census workbook reads back to the simulated counts and imputed records")
+    ck({k: list(v) for k, v in d["e"].items()} == {k: list(v) for k, v in d0["e"].items()},
+       "the survey's census records read back to the simulated sample by cell")
+    ck({k: list(v) for k, v in d["p"].items()} == {k: list(v) for k, v in d0["p"].items()},
+       "the survey's people read back to the simulated sample by cell")
+    ck(d["roll"] == d0["roll"], "the roll at the close of census day reads back by region")
+    ck(d["births"] == {k: int(v) for k, v in d0["births"].items()}, "the births read back")
+    ck(d["deaths"] == {k: int(v) for k, v in d0["deaths"].items() if v}, "the deaths read back from both layouts")
+    for key in ("departures", "arrivals"):
+        want = {k: int(v) for k, v in d0[key].items() if v and (k[0] == "2025Q" or k[0] >= 1950)}
+        ck(d[key] == want, "the %s read back from 1950" % key)
+    people = B.rows(f("pes_people"))
+    records = B.rows(f("pes_records"))
+    rec_status = {r["CENSUS_RECORD"]: r["STATUS"] for r in records}
+    ck(len(rec_status) == len(records) and len({p["PES_PERSON"] for p in people}) == len(people),
+       "no survey key twice")
+    ck(all(p["CENSUS_RECORD"] in rec_status and rec_status[p["CENSUS_RECORD"]] == "C" for p in people if p["MATCH"] == "M")
+       and all(p["CENSUS_RECORD"] == "" for p in people if p["MATCH"] == "N"),
+       "SF9 every matched person's census record is in the records file, counted correctly; no unmatched one has one")
+    ck({p["MATCH"] for p in people} == {"M", "N"} and {r["STATUS"] for r in records} == set("CDVOW"),
+       "SF8 SF9 the match and enumeration codes are those the methods report files")
+    # -------------------------------------------------------------------------------------- the call and rungs
+    rg = C.rungs(d)
+    est = M.dse_cells(d)
+    fac = M.factors(d, est)
+    gold_alloc, quota = M.allocate(pk.gap(rg["R3 golden"]))
+    gold = named(gold_alloc)
     ck(gold == GOLD, "the call: %s" % gold)
-    adj = pk.adjusted()
-    below = max((adj[m], W.NAME[m]) for m in pk.codes if adj[m] < 5000)
-    above = min((adj[m], W.NAME[m]) for m in pk.codes if adj[m] >= 5000)
-    ck(below[1] == "Hilderloo" and above[1] == "Dalmeer" and 5000 - below[0] > 40 and above[0] - 5000 > 38,
-       "SF1 nearest municipalities: Hilderloo %.1f under, Dalmeer %.1f over" % (5000 - below[0], above[0] - 5000))
-    ck(sorted(W.NAME[m] for m in pk.codes if adj[m] < 5000) == GOLD,
-       "SF1 the unrounded comparison files the same nine")
-    for name, want in RUNG_SETS.items():
-        got = names(pk.qualifying(name))
-        ck(got == want, "rung %s files %s" % (name, got))
-    llg = loglik(pk.audit, M.RUNGS[M.GOLDEN])
-    ck(abs(llg - (-774.4)) < 0.1, "the golden's cells fit at -774.4 (%.1f)" % llg)
-    for name in M.RUNGS:
-        if RUNG_SETS[name] != GOLD:
-            ck(loglik(pk.audit, M.RUNGS[name]) < llg - 10, "the audit fits %s worse than the golden by 10 or more" % name)
-    ck(abs(loglik(pk.audit, M.RUNGS["R2b born abroad x years at the address"]) - (-834.4)) < 0.1,
-       "the default path's cells fit at -834.4")
-    for name in M.VARIANTS:
-        ck(names(pk.qualifying(name)) == GOLD, "the golden's family: %s files the nine" % name)
-    band, ab = M.band, M.addr_band
-    crosses = {
-        "stay x left x abroad x address": lambda f: (band(f["stay"]), f["left"], f["abroad"], ab(f["addr"])),
-        "stay x left x address x sex": lambda f: (band(f["stay"]), f["left"], ab(f["addr"]), f["sex"]),
-        "stay x left x foreign": lambda f: (band(f["stay"]), f["left"], f["foreign"]),
-        "stay x left x age": lambda f: (band(f["stay"]), f["left"], min(f["age"] // 10, 8)),
-        "stay x left x first settlement": lambda f: (band(f["stay"]), f["left"], band(f["first"])),
-        "first settlement x left x abroad x address": lambda f: (band(f["first"]), f["left"], f["abroad"], ab(f["addr"])),
-    }
-    for name, key in crosses.items():
-        ck(names(M.qualifying(M.adjusted(pk.audit, pk.pops, key))) == GOLD, "the golden's family: %s files the nine" % name)
-    d = lambda v, ks: [int(v == k) for k in ks]
-    logits = {
-        "stay bands + left": lambda f: d(band(f["stay"]), (0, 1, 2, 3)) + [f["left"]],
-        "stay bands x left": lambda f: [int(band(f["stay"]) == k and f["left"] == l) for k in (0, 1, 2, 3) for l in (0, 1)],
-        "stay bands + left + register fields": lambda f: d(band(f["stay"]), (0, 1, 2, 3)) + [f["left"], f["abroad"],
-                                                         f["foreign"]] + d(ab(f["addr"]), (1, 2, 3)) +
-        d(min(f["age"] // 15, 5), (1, 2, 3, 4, 5)) + [int(f["sex"] == "M")],
-        "stay years + left": lambda f: [int(f["stay"] is not None), (f["stay"] or 0), f["left"]],
-        "stay bands + left + first bands": lambda f: d(band(f["stay"]), (0, 1, 2, 3)) + [f["left"]] +
-        d(band(f["first"]), (1, 2, 3)),
-    }
-    spread = {}
-    for name, fx in logits.items():
-        la = logit_adjusted(pk.audit, pk.pops, fx)
-        ck(names(M.qualifying(la)) == GOLD, "the golden's family: logit %s files the nine" % name)
-        spread[name] = max(abs(la[m] - adj[m]) for m in pk.codes)
-    reg_fields = lambda f: [f["abroad"], f["foreign"]] + d(ab(f["addr"]), (1, 2, 3)) + d(min(f["age"] // 15, 5),
-                                                                                        (1, 2, 3, 4, 5)) + [int(f["sex"] == "M")]
-    ck(names(M.qualifying(logit_adjusted(pk.audit, pk.pops, reg_fields))) == DEFAULT,
-       "a logistic fit on every register field files the default path's eight")
-    parts = partitions(pk)
-    good = [p for p in parts if p[0] == GOLD]
-    badp = [p for p in parts if p[0] != GOLD]
-    ck(len(good) == 1013 and max(p[1] for p in badp) < llg - 15 and sum(1 for p in badp if p[2]) == 10,
-       "1,013 of 1,024 stay partitions with the earlier departure file the nine; of the 11 others ten lump 5-9 with 10+, "
-       "and all fit 15 or more below the golden's cells (%d, best of them %.1f)" % (len(good), max(p[1] for p in badp)))
-    cellvar = max(abs(pk.adjusted(v)[m] - adj[m]) for v in M.VARIANTS for m in pk.codes)
-    ck(cellvar < 4.5 and max(spread.values()) < 50,
-       "SF11 the adjusted figure: cell variants within %.1f persons, logits within %.1f; the call fixed" % (
-           cellvar, max(spread.values())))
-    # ------------------------------------------------------------ three rules: the analyst test on the clean truth
-    t_audit = [(C.features(p), int(p["absent"])) for p in x["sample"]]
-    t_pops = {code: [C.features(p) for p in x["reg"][code]] for code in W.CODES}
-    ck(names(M.qualifying(M.adjusted(t_audit, t_pops, M.RUNGS["R2b born abroad x years at the address"]))) == DEFAULT,
-       "analyst test: on the clean truth the register's own fields file the default eight")
-    ck(names(M.qualifying(M.adjusted(t_audit, t_pops, M.RUNGS[M.GOLDEN]))) == GOLD,
-       "analyst test: on the clean truth the stay with the earlier departure files the nine")
-    ck(names(M.qualifying(M.adjusted(t_audit, t_pops, M.RUNGS["R2c current stay"]))) == RUNG_SETS["R2c current stay"],
-       "analyst test: the decisive step changed alone (the earlier departure dropped) files the six")
-    # --------------------------------------------------------------------------------- semantic fork table
-    ck(names(B.Pack(target, annulments=False).qualifying()) == GOLD, "SF7 annulled events kept: the same nine")
-    ck(names(B.Pack(target, final_result="first").qualifying()) == GOLD, "SF6 the first result that is not 91: the same nine")
-    alt50 = [(f, int(pk.result[r["AUDIT_NO"]] in ("20", "30", "40", "50"))) for (f, _), r in zip(pk.audit, pk.sample)]
-    ck(names(M.qualifying(M.adjusted(alt50, pk.pops, M.RUNGS[M.GOLDEN]))) == GOLD, "SF5 result 50 as absent: the same nine")
-    inplay = [(f, a) for (f, a), r in zip(pk.audit, pk.sample) if r["MUN_CODE"] in pk.codes]
-    ck(names(M.qualifying(M.adjusted(inplay, pk.pops, M.RUNGS[M.GOLDEN]))) != GOLD,
-       "SF8 the in-play sampled persons alone file another set (ruled out by report 5)")
-    cal_key = M.RUNGS[M.GOLDEN]
-    cal = calendar_years(pk)
-    ck(names(M.qualifying(M.adjusted(cal[0], cal[1], cal_key))) == GOLD, "SF9 the calendar-year difference: the same nine")
-    codes = {e for evs in pk.hist.values() for e, _, _ in evs}
-    ck(codes <= {"GEB", "IMM", "EMI", "VER", "ADR", "HUW", "NAT", "OVL"}, "SF10 every event code is on the code list")
-    partial = sum(1 for r in pk.register if r["BIRTH_DATE"].endswith("00"))
-    ck(partial > 0 and names(pk.qualifying()) == GOLD, "SF12 partial birth dates (%d) leave the golden untouched" % partial)
+    ck(sum(gold.values()) == 200 and min(quota.values()) > W.FLOOR,
+       "200 organisers; no region's share under two, so the floor never binds (smallest %.2f)" % min(quota.values()))
+    mg = M.margin(quota, gold_alloc)
+    ck(mg > 0.2, "the largest-remainder cut clears its neighbours by %.3f of an organiser" % mg)
+    for nm, want, n in (("R0 census counts", R0, 14), ("R1 one national ratio", R1, 10), ("R2 dual-system cells", DEFAULT, 8)):
+        got = alloc_of(d, rg[nm])
+        ck(got == want and off(got, GOLD) == n, "rung %s files %s, %d regions off" % (nm, got, off(got, GOLD)))
+    ck(sorted(k for k in GOLD if GOLD[k] != DEFAULT[k]) == sorted(CHANGED), "the default path's eight changed regions")
+    var = C.variants(d)
+    for nm, a in var.items():
+        ck(alloc_of(d, a) == GOLD, "the golden's reading files the golden: %s" % nm)
+    for sf in ("SF11", "SF12", "SF13", "SF14", "SF15"):
+        ks = [k for k in var if sf in k]
+        ck(ks and all(alloc_of(d, var[k]) == GOLD for k in ks), "%s every reading files the golden: %s" % (sf, ks))
+    for nm, a in C.wrong_paths(d).items():
+        k = off(alloc_of(d, a), GOLD)
+        ck(k >= 2, "a slipped path stays off the golden: %s (%d regions off)" % (nm, k))
+    near = off(alloc_of(d, C.wrong_paths(d)["cells pooled by region and sex, corrected"]), GOLD)
+    ck(near == 2 and "region by sex by age group" in report,
+       "SF10 the nearest slipped path (cells pooled by region and sex, corrected) is 2 off and the methods report files "
+       "the cells")
+    ck(tuple(round(fac[g], 3) for g in W.YOUNG_GROUPS) == FACTORS, "the factors %s" % [fac[g] for g in W.YOUNG_GROUPS])
+    for kw in ({"born_before": 0.0}, {"born_before": 0.5}, {"born_before": 1.0}, {"to_census_day": False}):
+        fk = M.factors(d, est, **kw)
+        ck(tuple(round(100 * (fk[g] - 1)) for g in W.YOUNG_GROUPS) == (4, 4, 5),
+           "the men raised by about 4, 4 and 5 per cent under %s: %s" % (kw, [round(fk[g], 4) for g in W.YOUNG_GROUPS]))
+    da = M.demographic(d)
+    for g in W.ADULT_GROUPS:
+        m_e = sum(v for (c, s, gg), v in est.items() if s == "M" and gg == g)
+        f_e = sum(v for (c, s, gg), v in est.items() if s == "F" and gg == g)
+        m_d = sum(da.get(("M", a), 0) for a in range(g[0], min(g[1], 100) + 1))
+        f_d = sum(da.get(("F", a), 0) for a in range(g[0], min(g[1], 100) + 1))
+        if g in W.YOUNG_GROUPS:
+            ck(abs(f_e / f_d - 1) < 0.007 and m_e / m_d < 0.975,
+               "%s: the women's estimates within %.2f per cent of demographic analysis, the men's %.1f per cent short" % (
+                   W.group_label(g), 100 * (f_e / f_d - 1), 100 * (1 - m_e / m_d)))
+        else:
+            ck(abs(m_e / f_e - m_d / f_d) < 0.005, "SF14 %s: the sex ratios agree (%.3f against %.3f)" % (
+                W.group_label(g), m_e / f_e, m_d / f_d))
+    ratios = {}
+    for nm, kw in (("golden", {}), ("born before 0", {"born_before": 0.0}), ("born before 0.5", {"born_before": 0.5}),
+                   ("born before 1", {"born_before": 1.0}), ("end 2024", {"to_census_day": False})):
+        pop = M.demographic(d, **kw)
+        m_e = sum(v for (c, s, g), v in est.items() if s == "M" and g in W.YOUNG_GROUPS)
+        m_d = sum(pop.get(("M", a), 0) for a in range(18, 50))
+        r = M.da_ratio(d, **kw)
+        ratios[nm] = (round(100 * (1 - m_e / m_d)), tuple(round(r[g], 2) for g in W.YOUNG_GROUPS))
+    ck(len(set(ratios.values())) == 1 and ratios["golden"] == (4, (1.04, 1.03, 1.02)),
+       "the men's shortfall (4 per cent) and the demographic sex ratios at two places agree under every convention: %s" % (
+           ratios,))
+    truth = {c: sum(int(x["reg"]["pop"][c][s][18:].sum()) for s in ("M", "F")) for c in W.CODES}
+    t_alloc = alloc_of(d, truth)
+    ck(off(t_alloc, GOLD) < off(t_alloc, DEFAULT),
+       "the golden is nearer the simulated truth's allocation than the default path (%d against %d regions off)" % (
+           off(t_alloc, GOLD), off(t_alloc, DEFAULT)))
+    # --------------------------------------------------------------------- R1: the field's raw material ships
+    ck(len(d["census"]) == 16 * 2 * 101 and len(d["births"]) >= 200 and len(d["deaths"]) > 5000,
+       "R1 the census by single year of age and sex, births and deaths by year of birth ship")
+    ck(len(people) > 100000 and len(records) > 100000, "R1 the survey's person-level files ship (%d people, %d records)" % (
+        len(people), len(records)))
+    banned = ("COVER", "DSE", "DUAL", "RATIO", "FACTOR", "UNDERCOUNT", "GAP", "ORGANIS", "ADULT")
+    heads = {}
+    for fn in files:
+        if fn.endswith(".csv"):
+            with open(os.path.join(target, fn), encoding="utf-8") as fh:
+                heads[fn] = next(csv.reader(fh))
+    bad = [(fn, h) for fn, hs in heads.items() for h in hs if any(b in h.upper() for b in banned)]
+    ck(not bad, "R1 no shipped column holds a coverage figure, sex ratio, gap or allocation (%s)" % bad)
+    # ------------------------------------------------------------------------- R2: each mess item neutral
+    d1 = copy.deepcopy(d)
+    for k in d1["census"]:
+        if k[2] == 100:
+            d1["census"][k] = (0, 0)
+    ck(alloc_of(d1, C.rungs(d1)["R3 golden"]) == GOLD, "R2 the census row for 100 and over dropped: the call unchanged")
+    d2 = copy.deepcopy(d)
+    d2["deaths"] = {k: v for k, v in d["deaths"].items() if k[0] == "2025Q" or k[0] >= 1991}
+    ck(alloc_of(d2, C.rungs(d2)["R3 golden"]) == GOLD,
+       "R2 the deaths read from the 1991 to 2025 file alone (the wide workbook missed): the call unchanged")
+    d3 = copy.deepcopy(d)
+    for key in ("births", "deaths", "departures", "arrivals"):
+        d3[key] = {k: v for k, v in d[key].items() if k[0] != "2025Q"}
+    ck(alloc_of(d3, C.rungs(d3)["R3 golden"]) == GOLD, "R2 the 2025 provisional period ignored: the call unchanged")
+    concord = {r["ELECTORATE"]: r for r in B.rows(f("electorates"))}
+    ck(all(concord[r["ELECTORATE"]]["ELECTORATE_NAME"] == r["ELECTORATE_NAME"] for r in pk.snapshot),
+       "R2 the renamed electorates: the roll and the concordance carry the same current names, so a join by name or "
+       "code gives the same regions")
+    ck(sum(1 for r in concord.values() if r["NAME_BEFORE_2024_REVIEW"]) == 2, "two electorates renamed in 2024")
+    # ------------------------------------------------------- R3: the analyst test on the clean truth, and no plant
+    r0 = C.rungs(d0)
+    ck(alloc_of(d0, r0["R2 dual-system cells"]) == DEFAULT,
+       "R3a analyst test: on the clean truth the dual-system estimates within the survey's cells file the default path")
+    ck(alloc_of(d0, r0["R3 golden"]) == GOLD,
+       "R3b the decisive step alone (the men raised to demographic analysis's sex ratio) files the golden")
+    wp0 = C.wrong_paths(d0)
+    for nm in ("census counts, corrected", "one national ratio, corrected"):
+        ck(alloc_of(d0, wp0[nm]) != GOLD, "R3b a lower rung with the correction stays wrong: %s" % nm)
+    ck(alloc_of(d0, r0["R1 one national ratio"]) == R1 and alloc_of(d0, r0["R0 census counts"]) == R0,
+       "R3b each lower rung's own answer on the clean truth")
+    sheets = {}
+    wb = openpyxl.load_workbook(f("census"), read_only=True)
+    for c in W.CODES:
+        sheets[c] = tuple(tuple(r) for r in wb["%s %s" % (c, W.NAME[c])].iter_rows(min_row=5, max_row=105,
+                                                                                  values_only=True))
+    ck(len(set(sheets.values())) == 16, "R3c no region's census sheet repeats another's")
+    win = collections.Counter()
+    keyf = ("PROCESSED", "TXN_TYPE", "REASON", "SOURCE", "STATUS", "ELECTORATE", "ADDRESS_TYPE", "SEX", "BIRTH_YEAR")
+    for i in range(len(pk.log) - 5):
+        win[hash(tuple(tuple(pk.log[i + j][k] for k in keyf) for j in range(5)))] += 1
+    ck(max(win.values()) == 1, "R3c no block of five transactions repeats in the log")
+    ck(len({r["TXN_ID"] for r in pk.log}) == len(pk.log), "R3c every transaction id once")
+    nos = collections.Counter(r["ELECTOR_NO"] for r in pk.log if r["TXN_TYPE"] == "NEW" and r["STATUS"] == "A")
+    ck(max(nos.values()) == 1, "R3c every accepted enrolment a new elector number")
+    # ----------------------------------------------------------------------------- the semantic fork table
+    ck("aged 18 or over usually resident in the region on census day, 4 March 2025, whether or not the census counted "
+       "them" in plan, "SF1 SF2 SF3 plan 2.1 files the population, the day and the people the census missed")
+    ad16 = dict(rg["R3 golden"])
+    for (c, s, g), v in est.items():
+        if g == (15, 17):
+            ad16[c] += v * (2 / 3.0) * (fac.get(g, 1.0) if s == "M" else 1.0)
+    ck(off(alloc_of(d, ad16), GOLD) >= 6, "SF1 adults at the plan's date (16 and 17 added) file another allocation")
+    ck(off(alloc_of(d, rg["R0 census counts"]), GOLD) == 14, "SF2 the census counts as they stand: 14 regions off")
+    ck("Census day: Tuesday 4 March 2025" in workbook, "SF3 the census workbook names census day")
+    roll_o = {c: 0 for c in W.CODES}
+    for r in pk.snapshot:
+        roll_o[pk.region_of[r["ELECTORATE"]]] += int(r["ELECTORS"])
+    ov = named(M.allocate({c: rg["R3 golden"][c] - roll_o[c] for c in W.CODES})[0])
+    ck(off(ov, GOLD) >= 6 and "Overseas electors are not counted in any region." in plan,
+       "SF4 the overseas electors counted move %d regions; plan 2.2 rules them out" % off(ov, GOLD))
+    rounded = {c: round(v) for c, v in rg["R3 golden"].items()}
+    ck(alloc_of(d, rounded) == GOLD and "by largest remainders" in plan and "takes two" in plan,
+       "SF5 each region's adults rounded first: the same call; plan 3.1 files the sharing")
+    ck(len(concord) == 47 and all(r["REGION"] in W.CODES for r in concord.values())
+       and {r["ELECTORATE"] for r in pk.snapshot} <= set(concord),
+       "SF6 every electorate on the roll in one of the 16 regions")
+    for nm in ("imputed kept", "imputed kept, corrected"):
+        ck(alloc_of(d, C.wrong_paths(d)[nm]) != GOLD, "SF7 %s: off the golden" % nm)
+    ck("except the records the census imputed" in report, "SF7 methods report 3.3 says the records file has no imputed "
+                                                           "record")
+    for status in ("W", "D"):
+        d4 = copy.deepcopy(d)
+        d4["e"] = {}
+        for r in records:
+            e = d4["e"].setdefault((r["REGION"], r["SEX"], min(int(r["AGE"]), 100)), [0, 0])
+            e[0] += 1
+            e[1] += int(r["STATUS"] in ("C", status))
+        ck(alloc_of(d4, C.rungs(d4)["R3 golden"]) != GOLD, "SF8 %s counted as correct: off the golden" % status)
+    ck("counted correctly: usually resident in the meshblock on census day" in report,
+       "SF8 the methods report's table files C as the only correct count")
+    for nm in ("cells pooled by region", "cells pooled by region and sex", "cells pooled by region and age"):
+        ck(alloc_of(d, C.wrong_paths(d)[nm]) != GOLD, "SF10 %s: off the golden" % nm)
+    ck("2025-01-01/2025-03-03" in notes and "the day before the 2025 census" in notes,
+       "SF12 the series notes file the provisional period to the day before census day")
+    ck("Dates and times are the country's time." in spec and "to the end of 30 June 2026" in spec,
+       "SF16 specification 2 files the window and the country's time")
+    ck("each person once" in spec and "not on the roll at the close of census day" in spec,
+       "SF17 specification 3 files new electors")
+    ck("A removal later reversed was not a removal." in spec and "11 Deceased" in dictionary.replace(":", "")
+       and "01 deceased" in migration, "SF18 the death codes: the dictionary's 11 and 12, the migration notes' legacy 01")
     # ----------------------------------------------------------------------------------------------- the asks
-    tdep, tdth = truth_asks(x)
-    gd, gt = pk.departures(), pk.deaths()
-    ck(all(gd[m] == tdep[m] for m in pk.codes), "SF13 departures abroad equal the generator's truth")
-    ck(all(gt[m] == tdth[m] for m in pk.codes), "SF14 deaths equal the generator's truth")
-    vow = collections.Counter(pk.mun(m["SENDER_MUN"]) for m in pk._messages("VOW"))
-    ck(all(vow[m] >= 1 for m in pk.codes), "SF15 removals in every municipality, none counted as departures")
-
-    def misses(a, b):
-        return all(a[m] != b[m] for m in pk.codes)
-    stops_a = {"the annulled departures counted": pk.departures(void="keep"),
-               "every departure of a registered person dropped": pk.departures(void="drop_registered"),
-               "the hub's UTC year": pk.departures(clock="utc"),
-               "the UTC year with the annulled counted": pk.departures(clock="utc", void="keep"),
-               "the UTC year with registered persons dropped": pk.departures(clock="utc", void="drop_registered"),
-               "every message": pk.departures(acks="all"),
-               "persons not departures": pk.departures(dedup=True),
-               "any departure date": pk.departures(year=False)}
+    tn, td = truth_asks(x)
+    ga, gb = pk.new_electors(), pk.removed_dead()
+    ck(all(ga[c] == tn[c] for c in W.CODES), "ask A equals the generator's truth in every region")
+    ck(all(gb[c] == td[c] for c in W.CODES), "ask B equals the generator's truth in every region")
+    ck(all(ga[c] > 0 and gb[c] > 0 for c in W.CODES), "every region has new electors and deaths")
+    stops_a = {"SF16 the stamps as written": pk.new_electors(utc=False),
+               "SF17 every enrolment row": pk.new_electors(first_row=False),
+               "the stamps as written and every enrolment row": pk.new_electors(utc=False, first_row=False),
+               "census day included": pk.new_electors(census_day=True),
+               "overseas addresses included": pk.new_electors(overseas=True),
+               "rejected applications included": pk.new_electors(rejected=True)}
     for k, v in stops_a.items():
-        ck(misses(v, gd), "ask A stop misses all 24: %s" % k)
-    nres = pk.departures_nonres()
-    ck(sum(1 for m in pk.codes if nres[m] == gd[m]) <= 1, "ask A: the non-resident records' departures miss 23 or more")
-    stops_b = {"the annulled deaths counted": pk.deaths(void="keep"),
-               "the hub's UTC year": pk.deaths(clock="utc"),
-               "the UTC year with the annulled counted": pk.deaths(clock="utc", void="keep"),
-               "former residents counted": pk.deaths(residency="none"),
-               "every message": pk.deaths(acks="all"),
-               "any date of death": pk.deaths(year=False)}
+        ck(hits(v, ga) == 0, "ask A stop misses all 16: %s (%d kept)" % (k, hits(v, ga)))
+    ck(hits(pk.new_electors(utc="all"), ga) <= 3, "ask A: every stamp read as UTC keeps 3 or fewer")
+    stops_b = {"SF16 the stamps as written": pk.removed_dead(utc=False),
+               "SF18 the current codes only": pk.removed_dead(codes="current"),
+               "SF18 01 as a death throughout": pk.removed_dead(codes="all"),
+               "removals reinstated kept": pk.removed_dead(reversals=False)}
     for k, v in stops_b.items():
-        ck(misses(v, gt), "ask B stop misses all 24: %s" % k)
-    ck(pk.deaths(residency="no_record") == gt, "ask B: every former resident out gives the golden (no death before a "
-                                                "registration ended)")
-    # the careful two-error readings
-    for clock, void in itertools.product(("local", "utc"), ("exclude", "keep", "drop_registered")):
-        for year in (True, False):
-            if (clock, void, year) != ("local", "exclude", True):
-                ck(misses(pk.departures(clock=clock, void=void, year=year), gd),
-                   "ask A reading %s/%s/%s misses all 24" % (clock, void, year))
-    for clock, void, res, year in itertools.product(("local", "utc"), ("exclude", "keep"), ("registered", "none"),
-                                                   (True, False)):
-        if (clock, void, res, year) != ("local", "exclude", "registered", True):
-            ck(misses(pk.deaths(clock=clock, void=void, residency=res, year=year), gt),
-               "ask B reading %s/%s/%s/%s misses all 24" % (clock, void, res, year))
-    # ------------------------------------------------------------------------------ separation and realism
-    for code in W.CODES:
-        for p in x["reg"][code]:
-            for e in p.get("annulled", []):
-                if e[0] in ("EMI", "OVL") and e[1].year == 2025:
-                    imms = [v[1] for v in p["events"] if v[0] == "IMM"]
-                    ck(not imms or e[1] > imms[-1], "an annulled 2025 event after the latest settlement (%s)" % p["key"])
-    sent = [m["SENT_AT"] for m in pk.messages]
-    ck(all(s[:4] == "2025" and s[11:13] in ("22", "23") for s in sent), "every message logged in 2025 UTC, the night batch")
-    ck(len({m["MESSAGE_ID"] for m in pk.messages}) == len(pk.messages) == len(pk.acks), "one acknowledgement per message")
-    year_end = sum(1 for m in pk.messages if B.local_date(m["SENT_AT"]).year == 2026)
-    ck(year_end >= 48, "the New Year's night batch in every municipality (%d messages)" % year_end)
+        ck(hits(v, gb) == 0, "ask B stop misses all 16: %s (%d kept)" % (k, hits(v, gb)))
+    ck(hits(pk.removed_dead(census_day=True), gb) <= 9, "ask B: census day included keeps 9 or fewer")
+    ck(hits(pk.removed_dead(utc="all"), gb) <= 10, "ask B: every stamp read as UTC keeps 10 or fewer")
+    best_a = max(hits(pk.new_electors(utc=u, first_row=fr, census_day=cd), ga)
+                 for u, fr, cd in itertools.product((True, False, "all"), (True, False), (False, True))
+                 if (u, fr, cd) != (True, True, False))
+    best_b = max(hits(pk.removed_dead(utc=u, codes=co, reversals=rv, census_day=cd), gb)
+                 for u, co, rv, cd in itertools.product((True, False, "all"), ("platform", "current", "all"),
+                                                        (True, False), (False, True))
+                 if (u, co, rv, cd) != (True, "platform", True, False))
+    ck(best_a <= 3 and best_b <= 10, "the strongest mishandled reading keeps %d of ask A and %d of ask B" % (best_a, best_b))
+    ck(hits(pk.new_electors(utc=False), ga) == 0 and hits(pk.removed_dead(utc=False), gb) == 0,
+       "the cracker's reading (every filed rule, the stamps as written) misses all 32")
+    stamps = [r["PROCESSED"] for r in pk.log]
+    ck(min(stamps) >= "2025-03-04 00:00:00" and max(stamps) <= "2026-06-30 23:59:59",
+       "the log's stamps lie between census day and the extract's close (%s to %s)" % (min(stamps), max(stamps)))
+    late = sum(1 for r in pk.log if not M.old_platform(r) and M.local_time(r).date() > W.LOG_END)
+    ck(late > 500, "the extract's close in UTC carries %d transactions of the country's 1 July" % late)
+    # --------------------------------------------------------------------------- separation and distractors
+    pk2 = copy.copy(pk)
+    pk2.log = []
+    ck(named(pk2.allocation()[0]) == GOLD, "separation: the call reads no transaction-log row")
+    tmp = tempfile.mkdtemp(prefix="sep", dir=os.path.dirname(os.path.abspath(target)))
+    try:
+        for k in P.FILES:
+            if k not in ("dictionary", "migration", "spec", "plan") + tuple(P.DISTRACTORS):
+                shutil.copy2(f(k), os.path.join(tmp, P.FILES[k]))
+        pk3 = B.Pack(tmp)
+        ck(named(pk3.allocation()[0]) == GOLD and pk3.new_electors() == ga and pk3.removed_dead() == gb,
+           "the golden and both asks unchanged with both distractors and the documents deleted")
+    finally:
+        shutil.rmtree(tmp)
+    ea = estimate_alloc(target, pk)
+    ck(off(ea, GOLD) >= 6 and off(ea, R0) >= 6, "the 2024 estimates (wrong-basis distractor) file neither the golden nor "
+                                                "R0 (%d and %d regions off)" % (off(ea, GOLD), off(ea, R0)))
+    # ----------------------------------------------------------------------------------- dates and realism
+    ck("Updated 14 April 2025" in notes and "by 14 April 2025" in notes, "the series notes dated after the period they hold")
+    ck("September 2025" in report and "27 June 2025" in report, "the methods report dated after its fieldwork")
+    ck("9 September 2025" in migration and "4 August 2025" in migration, "the migration notes dated after the move")
+    ck("22 September 2026" in plan and "Version 1.2, 30 September 2026" in spec, "the plan and the specification dated "
+                                                                                 "before the deliverable, after the log")
+    ck("Released 18 November 2025" in workbook, "the census workbook released after the survey's fieldwork")
+    ck(len(set(d["roll"].values())) == 16 and len(set(ga.values())) == 16 and len(set(gb.values())) == 16,
+       "realism: no two regions share an elector count, a new-elector count or a death count")
+    by_year = [d["births"][(y, s)] for (y, s) in d["births"] if y != "2025Q"]
+    ck(len(set(by_year)) > 0.95 * len(by_year), "realism: the births series is not a constant stream")
+    snap = [int(r["ELECTORS"]) for r in pk.snapshot if r["ADDRESS_TYPE"] == "R"]
+    ck(len(set(snap)) > 0.5 * len(snap), "realism: the roll snapshot's electorate counts vary (%d distinct of %d)" % (
+        len(set(snap)), len(snap)))
+    ck(W.PEOPLE["commission"] in plan and all(p in ("Chelsea Buckley", "Bryan Tapp") for p in W.PEOPLE.values()),
+       "realism: the personas are the guard's draw (%s)" % sorted(W.PEOPLE.values()))
+    nat_count = sum(v[0] for v in d["census"].values())
+    ck(nat_count % 100 and sum(d["roll"].values()) % 100 and all(d["roll"][c] % 1000 for c in W.CODES)
+       and sum(1 for c in W.CODES if d["roll"][c] % 10 == 0) <= 5, "no round totals in the census or the roll")
     # ----------------------------------------------------------------------------------------- figures.json
     if fig_path and gdir:
         fig = json.load(open(fig_path, encoding="utf-8"))
-        ck(fig["call"]["names"] == GOLD and fig["call"]["count"] == 9, "figures.json: the call")
-        with open(os.path.join(gdir, "adjusted_population_supplement_2027.csv"), encoding="utf-8") as fh:
+        ck(fig["call"]["organisers"] == GOLD and fig["call"]["total"] == 200, "figures.json: the call")
+        ck(fig["default"]["organisers"] == DEFAULT and sorted(fig["default"]["changed"]) == sorted(CHANGED),
+           "figures.json: the default path")
+        with open(os.path.join(gdir, "enrolment_gap_allocation_2027.csv"), encoding="utf-8") as fh:
             rows = list(csv.DictReader(fh))
-        by = {x_["gm"]: x_ for x_ in fig["municipalities"]}
-        ck(len(rows) == 24 and [r["MUNICIPALITY_CODE"] for r in rows] == sorted(r["MUNICIPALITY_CODE"] for r in rows),
-           "the CSV: 24 rows sorted by code")
+        ck([r["REGION_CODE"] for r in rows] == list(W.CODES) and list(rows[0]) == ["REGION_CODE", "REGION", "ORGANISERS",
+                                                                                   "NEW_ELECTORS", "REMOVED_DIED"],
+           "the CSV: 16 rows in region code order in the specification's layout")
         for r in rows:
-            f_ = by[r["MUNICIPALITY_CODE"]]
-            ck(int(r["REGISTERED_20260101"]) == f_["registered"] and int(r["ADJUSTED_POPULATION"]) == f_["adjusted"]
-               and int(r["NOT_RESIDENT_ESTIMATE"]) == f_["registered"] - f_["adjusted"]
-               and r["QUALIFIES"] == ("Y" if f_["qualifies"] else "N") and int(r["DEPARTURES_ABROAD_2025"]) ==
-               f_["departures"] and int(r["DEATHS_2025"]) == f_["deaths"], "the CSV row %s agrees with figures.json" % r[
-                "MUNICIPALITY_CODE"])
-    print("checks: %d of %d passed" % (ck.n - (0 if ck.ok else 1), ck.n) if ck.ok else "checks: FAILED")
+            c = r["REGION_CODE"]
+            ck(r["REGION"] == W.NAME[c] and int(r["ORGANISERS"]) == GOLD[W.NAME[c]] and int(r["NEW_ELECTORS"]) == ga[c]
+               and int(r["REMOVED_DIED"]) == gb[c], "the CSV row %s agrees" % c)
+    print("checks: %d of %d passed" % (ck.n - ck.failed, ck.n))
     return ck.ok
 
 
-def calendar_years(pk):
-    """the audit and the populations with the stay as the calendar-year difference to 2026"""
-    def recode(r, hist):
-        f = B.features(r, hist)
-        imms = [d for e, d, _ in hist if e == "IMM"]
-        if imms:
-            f = dict(f, stay=2026 - imms[-1].year)
-        return f
-    audit = [(recode(r, pk.shist.get(r["PERSON_KEY"], [])), a) for r, (_, a) in zip(pk.sample, pk.audit)]
-    pops = {m: [] for m in pk.codes}
-    for r in pk.register:
-        pops[r["MUN_CODE"]].append(recode(r, pk.hist.get(r["PERSON_KEY"], [])))
-    return audit, pops
+if __name__ == "__main__":
+    import sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    sys.exit(0 if run(os.path.join(task, "target"), os.path.join(task, "golden"),
+                      meta_path=os.path.join(task, "metadata.json"), fig_path=os.path.join(here, "figures.json")) else 1)

@@ -1,143 +1,123 @@
-"""The golden files: adjusted_population_supplement_2027.csv in the ministry's delivery layout and the chart of the
-adjusted resident populations against the 5,000 line; and generator/figures.json, every figure the write-up states."""
+"""The golden deliverables from the shipped pack (bundle.py): enrolment_gap_allocation_2027.csv, the organisers chart,
+and generator/figures.json with every figure submission.md states."""
 import csv
-import io
 import json
 import os
 
-import bundle as B
-import methods as M
-import world as W
+import matplotlib
 
-CSV_NAME = "adjusted_population_supplement_2027.csv"
-PNG_NAME = "adjusted_population_supplement_2027.png"
-COLS = ["MUNICIPALITY_CODE", "MUNICIPALITY", "REGISTERED_20260101", "NOT_RESIDENT_ESTIMATE", "ADJUSTED_POPULATION",
-        "QUALIFIES", "DEPARTURES_ABROAD_2025", "DEATHS_2025"]
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt   # noqa: E402
 
+import bundle as B      # noqa: E402
+import calibrate as C   # noqa: E402
+import methods as M     # noqa: E402
+import world as W       # noqa: E402
 
-def cells(pk):
-    """the audit's absence rate in each stratum of the golden: current stay band by earlier departure"""
-    out = {}
-    key = M.RUNGS[M.GOLDEN]
-    for f, a in pk.audit:
-        k = key(f)
-        n, x = out.get(k, (0, 0))
-        out[k] = (n + 1, x + a)
-    label = {None: "never settled from abroad", 0: "under 1 year", 1: "1 to 4 years", 2: "5 to 9 years",
-             3: "10 years or more"}
-    rows = []
-    for (b, left), (n, x) in sorted(out.items(), key=lambda kv: (-1 if kv[0][0] is None else kv[0][0], kv[0][1])):
-        rows.append(dict(stay=label[b], left_before=bool(left), sampled=n, absent=x, rate=round(x / n, 6)))
-    return rows
+CSV_NAME = "enrolment_gap_allocation_2027.csv"
+PNG_NAME = "enrolment_gap_allocation_2027.png"
+COLS = ["REGION_CODE", "REGION", "ORGANISERS", "NEW_ELECTORS", "REMOVED_DIED"]
 
 
-def compute(target):
-    pk = B.Pack(target)
-    g = pk.golden()
-    dep, dth = pk.departures(), pk.deaths()
-    munis = []
-    for m in sorted(pk.codes):
-        munis.append(dict(code=m, gm="GM" + m, name=W.NAME[m], registered=g[m]["registered"],
-                          not_resident=g[m]["not_resident"], adjusted=g[m]["rounded"],
-                          adjusted_exact=round(g[m]["adjusted"], 3), qualifies=g[m]["qualifies"],
-                          departures=dep[m], deaths=dth[m]))
-    q = sorted(x["name"] for x in munis if x["qualifies"])
-    absent = sum(a for _, a in pk.audit)
-    rungs = {}
-    for name in list(M.RUNGS):
-        s = pk.qualifying(name)
-        rungs[name] = dict(count=len(s), names=sorted(W.NAME[m] for m in s))
-    reg_only = sorted(W.NAME[m] for m in pk.codes if len(pk.pops[m]) < M.LINE)
-    rungs["R0 register count"] = dict(count=len(reg_only), names=reg_only)
-    career = {"never": [0, 0], "stayed": [0, 0], "returned": [0, 0]}
-    for f, x in pk.audit:
-        k = "never" if f["stay"] is None else "returned" if f["left"] else "stayed"
-        career[k][0] += 1
-        career[k][1] += x
-    towns = []
-    for m in sorted(pk.codes, key=lambda m: W.NAME[m]):
-        if W.TYPE[m] == "T":
-            continue
-        mig = [f for f in pk.pops[m] if f["stay"] is not None]
-        towns.append(dict(name=W.NAME[m], type=W.TYPE[m], registered=len(pk.pops[m]), settled=len(mig),
-                          left=sum(f["left"] for f in mig), stay_1_4=sum(1 for f in mig if 1 <= f["stay"] <= 4)))
-    fig = dict(
-        call=dict(names=q, count=len(q)),
-        municipalities=munis,
-        audit=dict(sampled=len(pk.audit), absent=absent, share_pct=round(100.0 * absent / len(pk.audit), 2),
-                   cells=cells(pk), by_career=career,
-                   by_career_pct={k: round(100.0 * v[1] / v[0], 2 if k == "never" else 1) for k, v in career.items()},
-                   result_codes=dict(absent=[20, 30, 40], present_left=50, no_contact=91)),
-        career_towns=towns,
-        asks=dict(departures={x["name"]: x["departures"] for x in munis}, deaths={x["name"]: x["deaths"] for x in munis}),
-        totals=dict(registered=sum(x["registered"] for x in munis), not_resident=sum(x["not_resident"] for x in munis),
-                    departures=sum(x["departures"] for x in munis), deaths=sum(x["deaths"] for x in munis)),
-        rungs=rungs,
-        line=M.LINE,
-        nearest=dict(below=max((x for x in munis if x["qualifies"]), key=lambda x: x["adjusted"])["name"],
-                     above=min((x for x in munis if not x["qualifies"]), key=lambda x: x["adjusted"])["name"]),
-    )
+def r1(v, k=1):
+    return round(float(v), k)
+
+
+def figures(pk):
+    d = pk.d
+    est = M.dse_cells(d)
+    fac = M.factors(d, est)
+    rg = C.rungs(d)
+    gold_adults, dse_adults = rg["R3 golden"], rg["R2 dual-system cells"]
+    alloc, quota = M.allocate(pk.gap(gold_adults))
+    dse_alloc, _ = M.allocate(pk.gap(dse_adults))
+    census_alloc, _ = M.allocate(pk.gap(rg["R0 census counts"]))
+    national_alloc, _ = M.allocate(pk.gap(rg["R1 one national ratio"]))
+    da = M.demographic(d)
+    groups = {}
+    for g in W.ADULT_GROUPS:
+        lo, hi = g
+        m_dse = sum(v for (c, s, gg), v in est.items() if s == "M" and gg == g)
+        f_dse = sum(v for (c, s, gg), v in est.items() if s == "F" and gg == g)
+        m_da = sum(da.get(("M", a), 0) for a in range(lo, min(hi, 100) + 1))
+        f_da = sum(da.get(("F", a), 0) for a in range(lo, min(hi, 100) + 1))
+        groups[W.group_label(g)] = {
+            "men_dse": int(round(m_dse)), "women_dse": int(round(f_dse)), "men_da": int(round(m_da)),
+            "women_da": int(round(f_da)), "ratio_dse": round(m_dse / f_dse, 2), "ratio_da": round(m_da / f_da, 2),
+            "factor": round(fac[g], 3) if g in fac else None}
+    m_dse = sum(v for (c, s, g), v in est.items() if s == "M" and g in W.YOUNG_GROUPS)
+    m_da = sum(da.get(("M", a), 0) for a in range(18, 50))
+    young = {"short_pct": int(round(100 * (1 - m_dse / m_da)))}
+    factors_pct = [int(round(100 * (fac[g] - 1))) for g in W.YOUNG_GROUPS]
+    ne, rd = pk.new_electors(), pk.removed_dead()
+    regions = []
+    for c in W.CODES:
+        regions.append({"code": c, "name": W.NAME[c], "organisers": alloc[c], "default_organisers": dse_alloc[c],
+                        "new_electors": ne[c], "removed_died": rd[c]})
+    changed = [c for c in W.CODES if alloc[c] != dse_alloc[c]]
+    fig = {
+        "call": {"organisers": {W.NAME[c]: alloc[c] for c in W.CODES}, "total": sum(alloc.values())},
+        "default": {"organisers": {W.NAME[c]: dse_alloc[c] for c in W.CODES},
+                    "changed": [W.NAME[c] for c in changed], "n_changed": len(changed)},
+        "census_only": {"n_changed": sum(1 for c in W.CODES if census_alloc[c] != alloc[c])},
+        "national_ratio": {"n_changed": sum(1 for c in W.CODES if national_alloc[c] != alloc[c])},
+        "national": {
+            "electors": int(sum(d["roll"].values())),
+            "dse_adults": int(round(sum(dse_adults.values()))),
+            "golden_adults_million": round(sum(gold_adults.values()) / 1e6, 2),
+        },
+        "groups": groups,
+        "young_men": young,
+        "factors_pct": factors_pct,
+        "regions": regions,
+        "asks": {"new_electors": {W.NAME[c]: ne[c] for c in W.CODES}, "removed_died": {W.NAME[c]: rd[c] for c in W.CODES},
+                 "new_total": sum(ne.values()), "died_total": sum(rd.values())},
+        "margin": round(M.margin(quota, alloc), 3),
+        "stated": {"age_groups": [18, 24, 25, 34, 35, 49], "plan_sections": ["2.2", "3.1"],
+                   "new_platform_transfer_stamps_utc": ["18:00", "17:00"], "window": "5 March 2025 to 30 June 2026"},
+    }
     return fig
 
 
-def write_csv(path, fig):
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\n")
-    w.writerow(COLS)
-    for x in fig["municipalities"]:
-        w.writerow([x["gm"], x["name"], x["registered"], x["not_resident"], x["adjusted"], "Y" if x["qualifies"] else "N",
-                    x["departures"], x["deaths"]])
+def write_csv(fig, path):
     with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(buf.getvalue())
+        w = csv.writer(fh, lineterminator="\r\n")
+        w.writerow(COLS)
+        for r in fig["regions"]:
+            w.writerow([r["code"], r["name"], r["organisers"], r["new_electors"], r["removed_died"]])
 
 
-def write_chart(path, fig):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    from matplotlib import rcParams
-    rcParams["font.family"] = "Liberation Sans"
-    rcParams["svg.hashsalt"] = "task471"
-    xs = sorted(fig["municipalities"], key=lambda x: x["adjusted"])
-    fig_, ax = plt.subplots(figsize=(9.0, 7.4), dpi=150)
-    colors = ["#b5523b" if x["qualifies"] else "#8a9aab" for x in xs]
-    y = range(len(xs))
-    ax.barh(list(y), [x["adjusted"] for x in xs], color=colors, height=0.68, zorder=2)
-    ax.set_yticks(list(y))
-    ax.set_yticklabels([x["name"] for x in xs], fontsize=8.5)
-    ax.set_xlim(4300, 6000)
-    ax.set_ylim(-0.7, len(xs) + 0.4)
-    ax.axvline(M.LINE, color="#1f3a5f", linewidth=1.3, zorder=3)
-    ax.text(M.LINE + 10, len(xs) - 0.15, "5,000: the supplement line", color="#1f3a5f", fontsize=8.5, va="center")
-    for i, x in enumerate(xs):
-        if x["qualifies"]:
-            ax.text(x["adjusted"] - 10, i, "{:,}".format(x["adjusted"]), va="center", ha="right", fontsize=7.4,
-                    color="white", zorder=4)
-        else:
-            ax.text(x["adjusted"] + 8, i, "{:,}".format(x["adjusted"]), va="center", fontsize=7.4, color="#30363d",
-                    zorder=4)
-    ax.set_xlabel("Adjusted resident population, 1 January 2026 (persons)", fontsize=9)
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "{:,}".format(int(v))))
+def write_png(fig, path):
+    regions = fig["regions"]
+    names = [r["name"] for r in regions]
+    vals = [r["organisers"] for r in regions]
+    plt.rcParams["font.family"] = "DejaVu Sans"
+    f, ax = plt.subplots(figsize=(10.5, 5.6), dpi=110)
+    bars = ax.bar(range(len(names)), vals, color="#3d6b8c", width=0.66)
+    for b, v in zip(bars, vals):
+        ax.text(b.get_x() + b.get_width() / 2, v + 0.4, str(v), ha="center", va="bottom", fontsize=9, color="#1b1d1f")
+    ax.set_xticks(range(len(names)))
+    ax.set_xticklabels(names, rotation=40, ha="right", fontsize=9)
+    ax.set_ylabel("Field organisers")
+    ax.set_ylim(0, max(vals) * 1.15)
+    ax.set_title("2027 enrolment campaign: the 200 field organisers by region", fontsize=12, loc="left")
+    ax.text(0, -0.36, "Shared on each region's adults not on the roll on census day, 4 March 2025 (field plan, section "
+            "3).", transform=ax.transAxes, fontsize=8.2, color="#5b6067")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.grid(axis="x", color="#e3e6ea", zorder=0)
-    n = fig["call"]["count"]
-    ax.set_title("%s of the 24 municipalities in play fall below 5,000 adjusted residents" % (
-        {9: "Nine", 8: "Eight", 10: "Ten", 7: "Seven"}.get(n, str(n))), fontsize=11.5, loc="left", pad=12)
-    ax.text(0, -0.085, "Bars in red qualify for the 2027 small-municipality supplement (Municipal Fund Regulation 2027, "
-            "Article 14). Register count at the start of 1 January 2026 less the registered persons estimated from "
-            "the Register Coverage Audit 2026 not to have been living there.", transform=ax.transAxes, fontsize=7.2,
-            color="#5b6067", wrap=True, va="top")
-    fig_.tight_layout()
-    fig_.savefig(path, metadata={"Software": None, "Creation Time": None})
-    plt.close(fig_)
+    ax.yaxis.grid(True, color="#e3e6ea", linewidth=0.8)
+    ax.set_axisbelow(True)
+    f.tight_layout()
+    f.savefig(path, metadata={"Software": None, "Creation Time": None})
+    plt.close(f)
 
 
 def main(target, gdir, fig_path):
+    pk = B.Pack(target)
+    fig = figures(pk)
     os.makedirs(gdir, exist_ok=True)
-    fig = compute(target)
-    write_csv(os.path.join(gdir, CSV_NAME), fig)
-    write_chart(os.path.join(gdir, PNG_NAME), fig)
+    write_csv(fig, os.path.join(gdir, CSV_NAME))
+    write_png(fig, os.path.join(gdir, PNG_NAME))
     with open(fig_path, "w", encoding="utf-8") as fh:
         json.dump(fig, fh, indent=1, sort_keys=True)
         fh.write("\n")

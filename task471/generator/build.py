@@ -1,4 +1,4 @@
-"""Build task471: the pack into <task>/target, the golden files into <task>/golden, metadata.json, submission.md and
+"""Build task471 (architecture 5): the pack into <task>/target, the golden files into <task>/golden, metadata.json, submission.md and
 generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder inside
 the task compared byte for byte, and target.zip cut from the final build.
 
@@ -22,25 +22,44 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=1))
+LOCAL = dt.timezone(dt.timedelta(hours=12))
 
 PDF_STAMPS = {
-    "regulation": (b"D:20260630102214+01'00'", b"D:20260630102214+01'00'"),
-    "report": (b"D:20260917163008+01'00'", b"D:20260918090412+01'00'"),
-    "layouts": (b"D:20260302111545+01'00'", b"D:20260302111545+01'00'"),
+    "pes_report": (b"D:20250926143012+12'00'", b"D:20250926151840+12'00'"),
+    "series_notes": (b"D:20250414101530+12'00'", b"D:20250414101530+12'00'"),
+    "migration": (b"D:20250909092245+12'00'", b"D:20250909114402+12'00'"),
+    "field_ops": (b"D:20250721160530+12'00'", b"D:20250722083911+12'00'"),
 }
 OOXML = {   # creator, last modified by, created, modified, company, excel
-    "spec": (W.PEOPLE["ministry"], W.PEOPLE["ministry"], "2026-09-24T08:41:00Z", "2026-10-01T07:12:44Z",
-             "%s, %s" % (W.MINISTRY, W.DIRECTORATE), False),
-    "codes": ("Data Services", "Data Services", "2026-01-02T09:05:00Z", "2026-01-02T09:22:31Z", W.BUREAU, True),
-    "pilot": (W.PEOPLE["method"], W.PEOPLE["method"], "2024-11-12T13:30:00Z", "2024-11-14T10:02:18Z", W.BUREAU, True),
+    "plan": (W.PEOPLE["commission"], W.PEOPLE["commission"], "2026-09-08T21:14:00Z", "2026-09-21T23:02:51Z",
+             W.COMMISSION, False),
+    "spec": (W.PEOPLE["estimates"], W.PEOPLE["estimates"], "2026-09-23T22:40:00Z", "2026-09-29T20:17:09Z", W.OFFICE, True),
+    "dictionary": ("Data Services", "Data Services", "2025-09-08T23:05:00Z", "2026-07-01T22:31:47Z", W.COMMISSION, True),
+    "census": ("Census Outputs", "Census Outputs", "2025-11-12T21:00:00Z", "2025-11-17T19:44:12Z", W.OFFICE, True),
+    "deaths_hist": ("Vital Statistics", "Vital Statistics", "2019-05-02T22:10:00Z", "2025-04-13T21:58:30Z", W.OFFICE, True),
 }
 AS_OF = {   # each file's date as its source dated it
-    "register": "2026-01-05", "events": "2026-01-05", "sample": "2026-01-14", "visits": "2026-06-05",
-    "sample_events": "2026-01-14", "messages": "2026-01-08", "acks": "2026-01-08", "nonres": "2026-01-05",
-    "regulation": "2026-06-30", "report": "2026-09-18", "layouts": "2026-03-02", "spec": "2026-10-01",
-    "codes": "2026-01-02", "countries": "2026-01-02", "pilot": "2024-11-14", "levy": "2026-02-10",
+    "census": "2025-11-18", "pes_people": "2025-09-26", "pes_records": "2025-09-26", "pes_meshblocks": "2025-09-26",
+    "pes_report": "2025-09-26", "roll": "2025-03-11", "electorates": "2024-11-30", "births": "2025-04-14",
+    "deaths_hist": "2025-04-14", "deaths": "2025-04-14", "movements": "2025-04-14", "series_notes": "2025-04-14",
+    "plan": "2026-09-22", "spec": "2026-09-30", "log": "2026-07-02", "dictionary": "2026-07-02",
+    "migration": "2025-09-09", "estimates_2024": "2024-10-30", "field_ops": "2025-07-22",
 }
+
+
+def field_rows(x):
+    import numpy as np
+    r = np.random.default_rng(x["seed"] * 1000 + 15)
+    out = []
+    for c in W.CODES:
+        people = sum(int(x["reg"]["pop"][c][s].sum()) for s in ("M", "F"))
+        dw = int(round(people / r.uniform(2.45, 2.75) / 10.0)) * 10
+        online = r.uniform(0.66, 0.79)
+        field = r.uniform(0.07, 0.13)
+        paper = 1 - online - field
+        out.append((W.NAME[c], "{:,}".format(dw), "%.1f%%" % (100 * online), "%.1f%%" % (100 * paper),
+                    "%.1f%%" % (100 * field), "%.1f%%" % (100 * x["cov"]["imputed"][c] * 0.92)))
+    return out
 
 
 def build(out, x=None, quiet=False):
@@ -52,29 +71,26 @@ def build(out, x=None, quiet=False):
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or P.everything()
     n = {}
-    n["register"] = P.write_register(f("register"), P.register_rows(x))
-    n["events"] = P.write_csv(f("events"), P.EVENT_COLS, P.event_rows([p for c in sorted(W.CODES) for p in x["reg"][c]]))
-    n["sample"] = P.write_csv(f("sample"), P.SAMPLE_COLS, P.sample_rows(x))
-    n["visits"] = P.write_csv(f("visits"), P.VISIT_COLS, P.visit_rows(x))
-    n["sample_events"] = P.write_csv(f("sample_events"), P.EVENT_COLS,
-                                     P.event_rows(sorted(x["sample"], key=lambda p: p["audit_no"])))
-    msgs, acks = P.message_rows(x)
-    n["messages"] = P.write_csv(f("messages"), P.MESSAGE_COLS, msgs)
-    n["acks"] = P.write_csv(f("acks"), P.ACK_COLS, acks)
-    n["nonres"] = P.write_csv(f("nonres"), P.NONRES_COLS, P.nonres_rows(x))
-    n["countries"] = P.write_csv(f("countries"), P.COUNTRY_COLS, P.country_rows())
-    n["levy"] = P.write_csv(f("levy"), P.LEVY_COLS, P.levy_rows(x))
-    national = {}
-    for p in x["sample"]:
-        national[p["result"]] = national.get(p["result"], 0) + 1
-    for c in ("10", "11", "50", "20", "30", "40"):
-        national.setdefault(c, 0)
-    DC.write_regulation(f("regulation"))
-    DC.write_report(f("report"), national)
-    DC.write_layouts(f("layouts"))
+    n["pes_people"] = P.write_csv(f("pes_people"), P.PEOPLE_COLS, x["ids"]["people"])
+    n["pes_records"] = P.write_csv(f("pes_records"), P.RECORD_COLS, x["ids"]["records"])
+    n["pes_meshblocks"] = P.write_csv(f("pes_meshblocks"), P.MB_COLS, P.meshblock_rows(x))
+    n["roll"] = P.write_csv(f("roll"), P.ROLL_COLS, x["snapshot"])
+    n["electorates"] = P.write_csv(f("electorates"), P.ELECTORATE_COLS, P.electorate_rows())
+    n["births"] = P.write_csv(f("births"), P.BIRTH_COLS, P.birth_rows(x), lineterminator="\n")
+    n["deaths"] = P.write_csv(f("deaths"), P.DEATH_COLS, P.death_rows(x), lineterminator="\n")
+    n["movements"] = P.write_csv(f("movements"), P.MOVE_COLS, P.movement_rows(x), lineterminator="\n")
+    n["log"] = P.write_csv(f("log"), P.LOG_COLS, P.log_rows(x))
+    n["estimates_2024"] = P.write_csv(f("estimates_2024"), P.EST_COLS, P.estimate_rows(x))
+    DC.write_census_workbook(f("census"), P.census_table(x))
+    DC.write_deaths_history(f("deaths_hist"), P.death_wide(x))
+    DC.write_pes_report(f("pes_report"), sum(len(v) for v in x["cnt"]["sampled_mb"].values()), n["pes_people"],
+                        n["pes_records"])
+    DC.write_series_notes(f("series_notes"))
+    DC.write_plan(f("plan"))
     DC.write_spec(f("spec"))
-    DC.write_codes(f("codes"))
-    DC.write_pilot(f("pilot"))
+    DC.write_dictionary(f("dictionary"))
+    DC.write_migration(f("migration"))
+    DC.write_field_ops(f("field_ops"), field_rows(x))
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
     for k, (cr, lb, c0, m0, co, xl) in OOXML.items():

@@ -1,664 +1,310 @@
 {
  "asks": {
-  "deaths": {
-   "Aldewolde": 55,
-   "Borgermeer": 61,
-   "Bremvoort": 32,
-   "Dalmeer": 50,
-   "Dornhaghe": 53,
-   "Eekhorst": 36,
-   "Haverstede": 35,
-   "Heukelveen": 51,
-   "Hilderloo": 32,
-   "Koudenbeek": 36,
-   "Lemdorp": 43,
-   "Linterdam": 57,
-   "Molenrade": 49,
-   "Nijdorp": 49,
-   "Oosterzand": 57,
-   "Ravenmeer": 57,
-   "Reitsloo": 51,
-   "Sloterwaard": 56,
-   "Steenwoude": 52,
-   "Tienhaven": 57,
-   "Uffeldijk": 56,
-   "Velderkamp": 51,
-   "Westerwierde": 64,
-   "Zandloo": 56
+  "died_total": 33225,
+  "new_electors": {
+   "Ardenmere": 23597,
+   "Corran Valley": 8901,
+   "Drumlea": 8457,
+   "Eastwold": 9670,
+   "Fairholme": 9486,
+   "Glenwhite": 10914,
+   "Hawksridge": 11186,
+   "Inchgarry": 6839,
+   "Kilraven": 5715,
+   "Larchfield": 12952,
+   "Merriton": 18823,
+   "Nethermoor": 4984,
+   "Orrinvale": 8433,
+   "Rowanlea": 6371,
+   "Strathmuir": 6014,
+   "Westerby": 14943
   },
-  "departures": {
-   "Aldewolde": 79,
-   "Borgermeer": 58,
-   "Bremvoort": 68,
-   "Dalmeer": 58,
-   "Dornhaghe": 74,
-   "Eekhorst": 291,
-   "Haverstede": 304,
-   "Heukelveen": 49,
-   "Hilderloo": 336,
-   "Koudenbeek": 292,
-   "Lemdorp": 65,
-   "Linterdam": 75,
-   "Molenrade": 57,
-   "Nijdorp": 46,
-   "Oosterzand": 82,
-   "Ravenmeer": 69,
-   "Reitsloo": 75,
-   "Sloterwaard": 72,
-   "Steenwoude": 66,
-   "Tienhaven": 57,
-   "Uffeldijk": 80,
-   "Velderkamp": 78,
-   "Westerwierde": 60,
-   "Zandloo": 54
+  "new_total": 167285,
+  "removed_died": {
+   "Ardenmere": 4706,
+   "Corran Valley": 1763,
+   "Drumlea": 1703,
+   "Eastwold": 1901,
+   "Fairholme": 1789,
+   "Glenwhite": 2212,
+   "Hawksridge": 2246,
+   "Inchgarry": 1335,
+   "Kilraven": 1191,
+   "Larchfield": 2591,
+   "Merriton": 3653,
+   "Nethermoor": 934,
+   "Orrinvale": 1692,
+   "Rowanlea": 1203,
+   "Strathmuir": 1248,
+   "Westerby": 3058
   }
- },
- "audit": {
-  "absent": 206,
-  "by_career": {
-   "never": [
-    9181,
-    26
-   ],
-   "returned": [
-    221,
-    41
-   ],
-   "stayed": [
-    2598,
-    139
-   ]
-  },
-  "by_career_pct": {
-   "never": 0.28,
-   "returned": 18.6,
-   "stayed": 5.4
-  },
-  "cells": [
-   {
-    "absent": 26,
-    "left_before": false,
-    "rate": 0.002832,
-    "sampled": 9181,
-    "stay": "never settled from abroad"
-   },
-   {
-    "absent": 11,
-    "left_before": false,
-    "rate": 0.038869,
-    "sampled": 283,
-    "stay": "under 1 year"
-   },
-   {
-    "absent": 0,
-    "left_before": true,
-    "rate": 0.0,
-    "sampled": 20,
-    "stay": "under 1 year"
-   },
-   {
-    "absent": 79,
-    "left_before": false,
-    "rate": 0.11049,
-    "sampled": 715,
-    "stay": "1 to 4 years"
-   },
-   {
-    "absent": 36,
-    "left_before": true,
-    "rate": 0.268657,
-    "sampled": 134,
-    "stay": "1 to 4 years"
-   },
-   {
-    "absent": 35,
-    "left_before": false,
-    "rate": 0.055118,
-    "sampled": 635,
-    "stay": "5 to 9 years"
-   },
-   {
-    "absent": 5,
-    "left_before": true,
-    "rate": 0.142857,
-    "sampled": 35,
-    "stay": "5 to 9 years"
-   },
-   {
-    "absent": 14,
-    "left_before": false,
-    "rate": 0.014508,
-    "sampled": 965,
-    "stay": "10 years or more"
-   },
-   {
-    "absent": 0,
-    "left_before": true,
-    "rate": 0.0,
-    "sampled": 32,
-    "stay": "10 years or more"
-   }
-  ],
-  "result_codes": {
-   "absent": [
-    20,
-    30,
-    40
-   ],
-   "no_contact": 91,
-   "present_left": 50
-  },
-  "sampled": 12000,
-  "share_pct": 1.72
  },
  "call": {
-  "count": 9,
-  "names": [
-   "Aldewolde",
-   "Borgermeer",
-   "Bremvoort",
-   "Dornhaghe",
-   "Eekhorst",
-   "Haverstede",
-   "Hilderloo",
-   "Koudenbeek",
-   "Zandloo"
-  ]
+  "organisers": {
+   "Ardenmere": 27,
+   "Corran Valley": 7,
+   "Drumlea": 5,
+   "Eastwold": 12,
+   "Fairholme": 11,
+   "Glenwhite": 29,
+   "Hawksridge": 5,
+   "Inchgarry": 8,
+   "Kilraven": 8,
+   "Larchfield": 26,
+   "Merriton": 20,
+   "Nethermoor": 4,
+   "Orrinvale": 4,
+   "Rowanlea": 3,
+   "Strathmuir": 6,
+   "Westerby": 25
+  },
+  "total": 200
  },
- "career_towns": [
+ "census_only": {
+  "n_changed": 14
+ },
+ "default": {
+  "changed": [
+   "Ardenmere",
+   "Westerby",
+   "Larchfield",
+   "Glenwhite",
+   "Hawksridge",
+   "Corran Valley",
+   "Drumlea",
+   "Nethermoor"
+  ],
+  "n_changed": 8,
+  "organisers": {
+   "Ardenmere": 26,
+   "Corran Valley": 6,
+   "Drumlea": 4,
+   "Eastwold": 12,
+   "Fairholme": 11,
+   "Glenwhite": 31,
+   "Hawksridge": 4,
+   "Inchgarry": 8,
+   "Kilraven": 8,
+   "Larchfield": 28,
+   "Merriton": 20,
+   "Nethermoor": 3,
+   "Orrinvale": 4,
+   "Rowanlea": 3,
+   "Strathmuir": 6,
+   "Westerby": 26
+  }
+ },
+ "factors_pct": [
+  4,
+  4,
+  5
+ ],
+ "groups": {
+  "18-24": {
+   "factor": 1.036,
+   "men_da": 207943,
+   "men_dse": 200394,
+   "ratio_da": 1.04,
+   "ratio_dse": 1.01,
+   "women_da": 199448,
+   "women_dse": 199171
+  },
+  "25-34": {
+   "factor": 1.04,
+   "men_da": 303096,
+   "men_dse": 290955,
+   "ratio_da": 1.03,
+   "ratio_dse": 0.99,
+   "women_da": 294090,
+   "women_dse": 293704
+  },
+  "35-49": {
+   "factor": 1.048,
+   "men_da": 457542,
+   "men_dse": 438987,
+   "ratio_da": 1.02,
+   "ratio_dse": 0.97,
+   "women_da": 448622,
+   "women_dse": 451088
+  },
+  "50-64": {
+   "factor": null,
+   "men_da": 477858,
+   "men_dse": 477586,
+   "ratio_da": 0.99,
+   "ratio_dse": 0.99,
+   "women_da": 483627,
+   "women_dse": 483231
+  },
+  "65+": {
+   "factor": null,
+   "men_da": 328233,
+   "men_dse": 333777,
+   "ratio_da": 0.78,
+   "ratio_dse": 0.79,
+   "women_da": 418371,
+   "women_dse": 424285
+  }
+ },
+ "margin": 0.217,
+ "national": {
+  "dse_adults": 3593178,
+  "electors": 3329031,
+  "golden_adults_million": 3.63
+ },
+ "national_ratio": {
+  "n_changed": 10
+ },
+ "regions": [
   {
-   "left": 17,
-   "name": "Dalmeer",
-   "registered": 5068,
-   "settled": 260,
-   "stay_1_4": 73,
-   "type": "S"
+   "code": "01",
+   "default_organisers": 26,
+   "name": "Ardenmere",
+   "new_electors": 23597,
+   "organisers": 27,
+   "removed_died": 4706
   },
   {
-   "left": 729,
-   "name": "Eekhorst",
-   "registered": 5220,
-   "settled": 1840,
-   "stay_1_4": 1198,
-   "type": "G"
+   "code": "02",
+   "default_organisers": 20,
+   "name": "Merriton",
+   "new_electors": 18823,
+   "organisers": 20,
+   "removed_died": 3653
   },
   {
-   "left": 666,
-   "name": "Haverstede",
-   "registered": 5210,
-   "settled": 1808,
-   "stay_1_4": 1196,
-   "type": "G"
+   "code": "03",
+   "default_organisers": 26,
+   "name": "Westerby",
+   "new_electors": 14943,
+   "organisers": 25,
+   "removed_died": 3058
   },
   {
-   "left": 53,
-   "name": "Hilderloo",
-   "registered": 5157,
-   "settled": 1930,
-   "stay_1_4": 1503,
-   "type": "U"
+   "code": "04",
+   "default_organisers": 28,
+   "name": "Larchfield",
+   "new_electors": 12952,
+   "organisers": 26,
+   "removed_died": 2591
   },
   {
-   "left": 678,
-   "name": "Koudenbeek",
-   "registered": 5203,
-   "settled": 1755,
-   "stay_1_4": 1131,
-   "type": "G"
+   "code": "05",
+   "default_organisers": 31,
+   "name": "Glenwhite",
+   "new_electors": 10914,
+   "organisers": 29,
+   "removed_died": 2212
   },
   {
-   "left": 62,
-   "name": "Molenrade",
-   "registered": 5098,
-   "settled": 1825,
-   "stay_1_4": 94,
-   "type": "O"
+   "code": "06",
+   "default_organisers": 4,
+   "name": "Hawksridge",
+   "new_electors": 11186,
+   "organisers": 5,
+   "removed_died": 2246
   },
   {
-   "left": 49,
-   "name": "Nijdorp",
-   "registered": 5096,
-   "settled": 1813,
-   "stay_1_4": 86,
-   "type": "O"
+   "code": "07",
+   "default_organisers": 11,
+   "name": "Fairholme",
+   "new_electors": 9486,
+   "organisers": 11,
+   "removed_died": 1789
+  },
+  {
+   "code": "08",
+   "default_organisers": 12,
+   "name": "Eastwold",
+   "new_electors": 9670,
+   "organisers": 12,
+   "removed_died": 1901
+  },
+  {
+   "code": "09",
+   "default_organisers": 6,
+   "name": "Corran Valley",
+   "new_electors": 8901,
+   "organisers": 7,
+   "removed_died": 1763
+  },
+  {
+   "code": "10",
+   "default_organisers": 4,
+   "name": "Drumlea",
+   "new_electors": 8457,
+   "organisers": 5,
+   "removed_died": 1703
+  },
+  {
+   "code": "11",
+   "default_organisers": 4,
+   "name": "Orrinvale",
+   "new_electors": 8433,
+   "organisers": 4,
+   "removed_died": 1692
+  },
+  {
+   "code": "12",
+   "default_organisers": 8,
+   "name": "Inchgarry",
+   "new_electors": 6839,
+   "organisers": 8,
+   "removed_died": 1335
+  },
+  {
+   "code": "13",
+   "default_organisers": 6,
+   "name": "Strathmuir",
+   "new_electors": 6014,
+   "organisers": 6,
+   "removed_died": 1248
+  },
+  {
+   "code": "14",
+   "default_organisers": 3,
+   "name": "Rowanlea",
+   "new_electors": 6371,
+   "organisers": 3,
+   "removed_died": 1203
+  },
+  {
+   "code": "15",
+   "default_organisers": 8,
+   "name": "Kilraven",
+   "new_electors": 5715,
+   "organisers": 8,
+   "removed_died": 1191
+  },
+  {
+   "code": "16",
+   "default_organisers": 3,
+   "name": "Nethermoor",
+   "new_electors": 4984,
+   "organisers": 4,
+   "removed_died": 934
   }
  ],
- "line": 5000,
- "municipalities": [
-  {
-   "adjusted": 4567,
-   "adjusted_exact": 4567.422,
-   "code": "0402",
-   "deaths": 55,
-   "departures": 79,
-   "gm": "GM0402",
-   "name": "Aldewolde",
-   "not_resident": 45,
-   "qualifies": true,
-   "registered": 4612
-  },
-  {
-   "adjusted": 4683,
-   "adjusted_exact": 4682.741,
-   "code": "0417",
-   "deaths": 61,
-   "departures": 58,
-   "gm": "GM0417",
-   "name": "Borgermeer",
-   "not_resident": 45,
-   "qualifies": true,
-   "registered": 4728
-  },
-  {
-   "adjusted": 4799,
-   "adjusted_exact": 4798.863,
-   "code": "0426",
-   "deaths": 32,
-   "departures": 68,
-   "gm": "GM0426",
-   "name": "Bremvoort",
-   "not_resident": 47,
-   "qualifies": true,
-   "registered": 4846
-  },
-  {
-   "adjusted": 5038,
-   "adjusted_exact": 5038.307,
-   "code": "0438",
-   "deaths": 50,
-   "departures": 58,
-   "gm": "GM0438",
-   "name": "Dalmeer",
-   "not_resident": 30,
-   "qualifies": false,
-   "registered": 5068
-  },
-  {
-   "adjusted": 4866,
-   "adjusted_exact": 4865.99,
-   "code": "0451",
-   "deaths": 53,
-   "departures": 74,
-   "gm": "GM0451",
-   "name": "Dornhaghe",
-   "not_resident": 46,
-   "qualifies": true,
-   "registered": 4912
-  },
-  {
-   "adjusted": 4947,
-   "adjusted_exact": 4946.539,
-   "code": "0465",
-   "deaths": 36,
-   "departures": 291,
-   "gm": "GM0465",
-   "name": "Eekhorst",
-   "not_resident": 273,
-   "qualifies": true,
-   "registered": 5220
-  },
-  {
-   "adjusted": 4946,
-   "adjusted_exact": 4946.469,
-   "code": "0473",
-   "deaths": 35,
-   "departures": 304,
-   "gm": "GM0473",
-   "name": "Haverstede",
-   "not_resident": 264,
-   "qualifies": true,
-   "registered": 5210
-  },
-  {
-   "adjusted": 5100,
-   "adjusted_exact": 5100.005,
-   "code": "0488",
-   "deaths": 51,
-   "departures": 49,
-   "gm": "GM0488",
-   "name": "Heukelveen",
-   "not_resident": 52,
-   "qualifies": false,
-   "registered": 5152
-  },
-  {
-   "adjusted": 4959,
-   "adjusted_exact": 4958.613,
-   "code": "0496",
-   "deaths": 32,
-   "departures": 336,
-   "gm": "GM0496",
-   "name": "Hilderloo",
-   "not_resident": 198,
-   "qualifies": true,
-   "registered": 5157
-  },
-  {
-   "adjusted": 4947,
-   "adjusted_exact": 4946.588,
-   "code": "0509",
-   "deaths": 36,
-   "departures": 292,
-   "gm": "GM0509",
-   "name": "Koudenbeek",
-   "not_resident": 256,
-   "qualifies": true,
-   "registered": 5203
-  },
-  {
-   "adjusted": 5188,
-   "adjusted_exact": 5187.501,
-   "code": "0514",
-   "deaths": 43,
-   "departures": 65,
-   "gm": "GM0514",
-   "name": "Lemdorp",
-   "not_resident": 53,
-   "qualifies": false,
-   "registered": 5241
-  },
-  {
-   "adjusted": 5285,
-   "adjusted_exact": 5284.563,
-   "code": "0527",
-   "deaths": 57,
-   "departures": 75,
-   "gm": "GM0527",
-   "name": "Linterdam",
-   "not_resident": 48,
-   "qualifies": false,
-   "registered": 5333
-  },
-  {
-   "adjusted": 5042,
-   "adjusted_exact": 5041.642,
-   "code": "0533",
-   "deaths": 49,
-   "departures": 57,
-   "gm": "GM0533",
-   "name": "Molenrade",
-   "not_resident": 56,
-   "qualifies": false,
-   "registered": 5098
-  },
-  {
-   "adjusted": 5042,
-   "adjusted_exact": 5041.957,
-   "code": "0546",
-   "deaths": 49,
-   "departures": 46,
-   "gm": "GM0546",
-   "name": "Nijdorp",
-   "not_resident": 54,
-   "qualifies": false,
-   "registered": 5096
-  },
-  {
-   "adjusted": 5359,
-   "adjusted_exact": 5358.629,
-   "code": "0552",
-   "deaths": 57,
-   "departures": 82,
-   "gm": "GM0552",
-   "name": "Oosterzand",
-   "not_resident": 53,
-   "qualifies": false,
-   "registered": 5412
-  },
-  {
-   "adjusted": 5435,
-   "adjusted_exact": 5435.367,
-   "code": "0568",
-   "deaths": 51,
-   "departures": 75,
-   "gm": "GM0568",
-   "name": "Reitsloo",
-   "not_resident": 52,
-   "qualifies": false,
-   "registered": 5487
-  },
-  {
-   "adjusted": 5581,
-   "adjusted_exact": 5581.294,
-   "code": "0571",
-   "deaths": 56,
-   "departures": 72,
-   "gm": "GM0571",
-   "name": "Sloterwaard",
-   "not_resident": 53,
-   "qualifies": false,
-   "registered": 5634
-  },
-  {
-   "adjusted": 5649,
-   "adjusted_exact": 5649.262,
-   "code": "0584",
-   "deaths": 52,
-   "departures": 66,
-   "gm": "GM0584",
-   "name": "Steenwoude",
-   "not_resident": 53,
-   "qualifies": false,
-   "registered": 5702
-  },
-  {
-   "adjusted": 5712,
-   "adjusted_exact": 5711.872,
-   "code": "0599",
-   "deaths": 57,
-   "departures": 57,
-   "gm": "GM0599",
-   "name": "Tienhaven",
-   "not_resident": 56,
-   "qualifies": false,
-   "registered": 5768
-  },
-  {
-   "adjusted": 5765,
-   "adjusted_exact": 5765.487,
-   "code": "0603",
-   "deaths": 56,
-   "departures": 80,
-   "gm": "GM0603",
-   "name": "Uffeldijk",
-   "not_resident": 56,
-   "qualifies": false,
-   "registered": 5821
-  },
-  {
-   "adjusted": 5833,
-   "adjusted_exact": 5833.267,
-   "code": "0615",
-   "deaths": 51,
-   "departures": 78,
-   "gm": "GM0615",
-   "name": "Velderkamp",
-   "not_resident": 56,
-   "qualifies": false,
-   "registered": 5889
-  },
-  {
-   "adjusted": 5890,
-   "adjusted_exact": 5890.082,
-   "code": "0628",
-   "deaths": 64,
-   "departures": 60,
-   "gm": "GM0628",
-   "name": "Westerwierde",
-   "not_resident": 54,
-   "qualifies": false,
-   "registered": 5944
-  },
-  {
-   "adjusted": 4517,
-   "adjusted_exact": 4516.598,
-   "code": "0636",
-   "deaths": 56,
-   "departures": 54,
-   "gm": "GM0636",
-   "name": "Zandloo",
-   "not_resident": 44,
-   "qualifies": true,
-   "registered": 4561
-  },
-  {
-   "adjusted": 5509,
-   "adjusted_exact": 5508.559,
-   "code": "1987",
-   "deaths": 57,
-   "departures": 69,
-   "gm": "GM1987",
-   "name": "Ravenmeer",
-   "not_resident": 52,
-   "qualifies": false,
-   "registered": 5561
-  }
- ],
- "nearest": {
-  "above": "Dalmeer",
-  "below": "Hilderloo"
+ "stated": {
+  "age_groups": [
+   18,
+   24,
+   25,
+   34,
+   35,
+   49
+  ],
+  "new_platform_transfer_stamps_utc": [
+   "18:00",
+   "17:00"
+  ],
+  "plan_sections": [
+   "2.2",
+   "3.1"
+  ],
+  "window": "5 March 2025 to 30 June 2026"
  },
- "rungs": {
-  "G current stay x left before": {
-   "count": 9,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Eekhorst",
-    "Haverstede",
-    "Hilderloo",
-    "Koudenbeek",
-    "Zandloo"
-   ]
-  },
-  "R0 register count": {
-   "count": 5,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Zandloo"
-   ]
-  },
-  "R1 one audit rate": {
-   "count": 6,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dalmeer",
-    "Dornhaghe",
-    "Zandloo"
-   ]
-  },
-  "R2a born abroad": {
-   "count": 7,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Molenrade",
-    "Nijdorp",
-    "Zandloo"
-   ]
-  },
-  "R2a' foreign nationality": {
-   "count": 7,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Molenrade",
-    "Nijdorp",
-    "Zandloo"
-   ]
-  },
-  "R2b born abroad x years at the address": {
-   "count": 8,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Hilderloo",
-    "Molenrade",
-    "Nijdorp",
-    "Zandloo"
-   ]
-  },
-  "R2c current stay": {
-   "count": 6,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Hilderloo",
-    "Zandloo"
-   ]
-  },
-  "R2d first settlement x left before": {
-   "count": 9,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Eekhorst",
-    "Haverstede",
-    "Hilderloo",
-    "Koudenbeek",
-    "Zandloo"
-   ]
-  },
-  "R2e left before": {
-   "count": 7,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Molenrade",
-    "Nijdorp",
-    "Zandloo"
-   ]
-  },
-  "R2f years at the address x left before": {
-   "count": 10,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dornhaghe",
-    "Eekhorst",
-    "Haverstede",
-    "Koudenbeek",
-    "Molenrade",
-    "Nijdorp",
-    "Zandloo"
-   ]
-  },
-  "R2g age and sex": {
-   "count": 6,
-   "names": [
-    "Aldewolde",
-    "Borgermeer",
-    "Bremvoort",
-    "Dalmeer",
-    "Dornhaghe",
-    "Zandloo"
-   ]
-  }
- },
- "totals": {
-  "deaths": 1196,
-  "departures": 2545,
-  "not_resident": 1996,
-  "registered": 126655
+ "young_men": {
+  "short_pct": 4
  }
 }

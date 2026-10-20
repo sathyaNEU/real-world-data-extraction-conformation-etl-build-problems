@@ -15,36 +15,41 @@ def write(target, out_path, deliverables, n=None):
     big = max(rows, key=lambda f: rows[f]) if rows else None
     meta = {
         "task": "task471",
-        "architecture": 4,
-        "title": "Which of the 24 municipalities whose register held 4,500 to 6,000 residents at the start of 1 January "
-                 "2026 qualify for the 2027 small-municipality supplement, an adjusted resident population below "
-                 "5,000 (the register count less the registered persons the Register Coverage Audit 2026 estimates "
-                 "were not living there); with each municipality's departures abroad and deaths in 2025 and a chart "
-                 "of the adjusted resident populations against the line",
+        "architecture": 5,
+        "title": "How many of the Electoral Commission's 200 organisers for its 2027 enrolment campaign each of the 16 "
+                 "regions gets, in proportion to its adults not on the roll on census day, 4 March 2025; with each "
+                 "region's people added to the roll who had not been on it on census day and electors removed because "
+                 "they had died, from census day to 30 June 2026, and a bar chart of the organisers",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "census-register-administrative-data-quality (a national statistics bureau applies a coverage "
-                     "audit of the population register to each municipality's register count, conformed from the "
-                     "register extract, its event history, the audit's sample, visits and histories and the "
-                     "deregistration hub's log into the ministry's delivery file)",
+        "subdomain": "census-register-administrative-data-quality (a national statistics office estimates each region's "
+                     "adults on census day from the census and its post-enumeration survey, checks the estimates "
+                     "against demographic analysis of births, deaths and long-term movements, and conforms them with "
+                     "the electoral roll and its transaction log into the Commission's enrolment-gap file)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "10: a scorecard: each of the 24 municipalities' adjusted resident population against the "
-                        "5,000 line, with each municipality's departures abroad and deaths in 2025",
+        "prompt_shape": "05: an allocation to a fixed total: the 200 organisers shared among the 16 regions, with each "
+                        "region's new electors and removals because of death since census day",
         "as_of": W.AS_OF.isoformat(),
         "deliverables": deliverables,
         "distractor_files": [F[k] for k in P.DISTRACTORS],
-        "stated_inputs": ["1 January 2026", "4,500", "6,000", "5,000", "2027", "2025"],
+        "wrong_basis_distractor": {
+            "file": F["estimates_2024"],
+            "basis": "the Office's 2018-base population estimates at 30 June 2024, eight months before census day, by "
+                     "five-year-and-wider age groups that do not separate the adults",
+            "ruled_out_by": "the plan's section 2.1: the adults usually resident in the region on census day, 4 March 2025"},
+        "stated_inputs": ["200", "16", "4 March 2025", "30 June 2026", "2027"],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": big,
                         "largest_file_rows": rows.get(big)},
         "sources": [
             {"files": "all files under target/",
              "origin": "constructed for this task by task471/generator/build.py (seeded, deterministic) in the layouts "
-                       "of a national population register's statistical extracts: the register extract with its "
-                       "trailer, the event history, a coverage audit's sample, fieldwork visits and sampled persons' "
-                       "histories, the deregistration hub's 2025 log and acknowledgements, the municipalities' "
-                       "non-resident records, a regulation article, the audit report, the record layouts, the "
-                       "ministry's delivery specification, a municipality code workbook, a country code list, a 2024 "
-                       "pilot workbook and a waste levy billing extract; the country is unnamed and the bureau, "
-                       "ministry, municipalities, persons and people named are fictional",
+                       "of a national statistics office's census outputs (a workbook of usual residents by region, sex "
+                       "and single year of age), its post-enumeration survey's person files, sampled meshblocks and "
+                       "methods report, the vital and border series by year of birth with their notes, an electoral "
+                       "commission's roll at census day by electorate, its electorate concordance, its roll transaction "
+                       "log with a data dictionary and platform migration notes, its campaign field plan, the office's "
+                       "file specification, earlier population estimates and a census field operations summary; the "
+                       "country is unnamed and the office, commission, regions, electorates and people named are "
+                       "fictional",
              "date": W.AS_OF.isoformat(),
              "license": "original work for this task; no third-party data"}],
     }

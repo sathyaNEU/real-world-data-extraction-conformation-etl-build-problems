@@ -1,538 +1,503 @@
-"""The simulation: every person registered in the in-play municipalities on 1 January 2026 with a full register
-history; the national Register Coverage Audit 2026 (a simple random sample of the national register, each sampled
-person verified in the field as living or not in the registered municipality on 1 January 2026); and the 2025
-deregistration traffic the municipalities sent to the national hub (departures abroad, deaths, removals), with the
-hub's acknowledgements and the records the municipalities keep of former residents living abroad."""
-import datetime as dt
+"""The world's people and the records the agencies hold about them, simulated from task471/generator/world.py.
 
+national(seed)  births by sex since 1925, deaths and border movements by year, sex and age at the event, and the people
+                usually resident on census day by sex and single year of age (births less deaths plus net movements,
+                cohort by cohort: the population demographic analysis rebuilds exactly)
+regional(...)   those people spread over the 16 regions by each region type's age and sex profile, the unsettled men
+counts(...)     the census's counted, erroneous and imputed records by cell, the survey's sampled meshblocks with
+                person-level census and survey capture, and the roll on census day
+"""
 import numpy as np
 
 import world as W
 
-D0 = dt.date(1900, 1, 1)
+YEARS = range(1925, 2025)
+AGES = range(0, 101)          # 100 is "100 and over"
+Q1 = 62.0 / 365.0             # share of a year before census day (1 January to 3 March)
 
 
-def rng(seed, *parts):
-    return np.random.default_rng([seed, *parts])
+def rng_for(seed, k):
+    return np.random.default_rng(seed * 1000 + k)
 
 
-def ymd(d):
-    return d.strftime("%Y%m%d")
+# ------------------------------------------------------------------ national demography
 
-
-def years_before(d, years, extra_days=0):
-    """the date `years` calendar years and `extra_days` days before d (29 February falls back to the 28th)"""
-    y = d.year - years
-    try:
-        out = d.replace(year=y)
-    except ValueError:
-        out = d.replace(year=y, day=28)
-    return out - dt.timedelta(days=int(extra_days))
-
-
-def completed_years(start, ref=W.REF):
-    y = ref.year - start.year - ((ref.month, ref.day) < (start.month, start.day))
-    return max(0, y)
-
-
-class Keys:
-    """pseudonymised person keys: nine digits passing the eleven test, unique across the whole world (each stream
-    skips every key already issued by any stream; pools() starts the world and clears the record)"""
-    issued = set()
-
-    def __init__(self, seed):
-        self.r = rng(seed, 1)
-
-    def __call__(self):
-        while True:
-            d = [int(v) for v in self.r.integers(0, 10, 8)]
-            if d[0] == 0:
-                continue
-            s = sum(x * w for x, w in zip(d, range(9, 1, -1)))
-            last = s % 11
-            if last == 10:
-                continue
-            k = "".join(map(str, d)) + str(last)
-            if k not in Keys.issued:
-                Keys.issued.add(k)
-                return k
-
-
-def pick(r, weights):
-    keys = list(weights)
-    p = np.array([weights[k] for k in keys], float)
-    return keys[int(r.choice(len(keys), p=p / p.sum()))]
-
-
-def _rand_date(r, a, b):
-    """a uniformly random date in [a, b]"""
-    span = (b - a).days
-    return a + dt.timedelta(days=int(r.integers(0, max(span, 0) + 1)))
-
-
-AGE_BANDS = [(0, 4, 5.0), (5, 14, 10.5), (15, 24, 11.5), (25, 34, 12.0), (35, 44, 12.0), (45, 54, 14.0),
-             (55, 64, 13.5), (65, 74, 11.0), (75, 84, 7.0), (85, 99, 3.5)]
-
-
-def native_age(r):
-    w = np.array([b[2] for b in AGE_BANDS])
-    a, b, _ = AGE_BANDS[int(r.choice(len(AGE_BANDS), p=w / w.sum()))]
-    return int(r.integers(a, b + 1))
-
-
-def arrival_age(r):
-    u = r.random()
-    return int(r.integers(0, 18)) if u < 0.15 else int(r.integers(18, 30)) if u < 0.60 else \
-        int(r.integers(30, 45)) if u < 0.88 else int(r.integers(45, 65))
-
-
-def other_municipality(r, code):
-    """a municipality somewhere else in the country (four-digit code outside the in-play list)"""
-    while True:
-        c = "%04d" % int(r.integers(1, 400))
-        if c != code and c not in W.CODES and c not in ("0731", "0744"):
-            return c
-
-
-def code_at(code, when):
-    """the municipality's code on a date: Ravenmeer's events before 2026 carry its former municipality's code"""
-    if code == W.MERGED[1] and when < W.REF:
-        return None
-    return code
-
-
-def person(r, keys, prof, code, origin, migrant=None):
-    """One registered person on 1 January 2026 with a register history. `prof` is a composition from world.TYPES."""
-    p = dict(key=keys(), mun=code, events=[], sex="M" if r.random() < 0.51 else "F", partial="")
-    former = W.FORMER[int(r.integers(0, 2))][1] if code == W.MERGED[1] else None   # Ravenmeer's part
-
-    def mun_on(d):
-        return (former if former and d < W.REF else code)
-
-    is_mig = (r.random() < prof["mig"]) if migrant is None else migrant
-    if not is_mig:
-        age = native_age(r)
-        birth = years_before(W.REF, age, r.integers(1, 365))
-        p.update(birth=birth, bcountry=W.HOME[0], nat=W.HOME[0], stay=None, left=0, first=None)
-        born_here = r.random() < 0.55
-        p["events"].append(("GEB", birth, mun_on(birth) if born_here else other_municipality(r, code), "", ""))
-        if age >= 1 and r.random() < prof["nat_moved"]:
-            since = _rand_date(r, max(birth + dt.timedelta(days=30), years_before(W.REF, 3)),
-                               W.REF - dt.timedelta(days=2))
-        elif age >= 5 and r.random() < 0.8:
-            since = _rand_date(r, birth + dt.timedelta(days=200), years_before(W.REF, 4))
-        else:
-            since = birth
-        if not born_here and since == birth:
-            since = _rand_date(r, birth + dt.timedelta(days=200), W.REF - dt.timedelta(days=30)) \
-                if (W.REF - birth).days > 260 else birth + dt.timedelta(days=int(r.integers(10, 40)))
-        if since != birth:
-            if born_here:
-                p["events"].append(("ADR", since, mun_on(since), "", ""))
-            else:
-                p["events"].append(("VER", since, mun_on(since), "", other_municipality(r, code)))
-        p["since"] = since
+def births_total(y):
+    """live births in a year, a smooth history with a baby boom and a 1970s fall"""
+    if y < 1946:
+        b = 30000 + 450 * (y - 1925)
+    elif y < 1962:
+        b = 44000 + 1500 * (y - 1946)
+    elif y < 1972:
+        b = 68000 - 300 * (y - 1962)
+    elif y < 1980:
+        b = 65000 - 1600 * (y - 1972)
+    elif y < 1992:
+        b = 52200 + 700 * (y - 1980)
+    elif y < 2002:
+        b = 60600 - 450 * (y - 1992)
+    elif y < 2009:
+        b = 56100 + 800 * (y - 2002)
     else:
-        band = int(r.choice(4, p=np.array(prof["stay"]) / sum(prof["stay"])))
-        stay = 0 if band == 0 else int(r.integers(1, 5)) if band == 1 else int(r.integers(5, 10)) if band == 2 else \
-            int(min(10 + r.geometric(0.09) - 1, 40))
-        latest = years_before(W.REF, stay, r.integers(1, 365))
-        left = int(r.random() < prof["left"][band])
-        returning = left and r.random() < 0.25
-        if returning:
-            age_return = int(r.integers(22, 61))
-            birth = years_before(latest, age_return, r.integers(0, 365))
-            p.update(bcountry=W.HOME[0], nat=W.HOME[0])
-            p["events"].append(("GEB", birth, other_municipality(r, code), "", ""))
-            emi = _rand_date(r, years_before(latest, max(1, min(age_return - 18, 12))), latest - dt.timedelta(days=60))
-            dest = pick(r, {c: 1 for c, _, g in W.COUNTRIES if g in ("EU", "EUR", "AME")})
-            p["events"].append(("EMI", emi, other_municipality(r, code) if r.random() < 0.6 else mun_on(emi), dest, ""))
-            p["events"].append(("IMM", latest, mun_on(latest), dest, ""))
-            first = stay
-        else:
-            bc = pick(r, origin)
-            gap = int(r.integers(prof["gap"][0], prof["gap"][1] + 1)) if left else 0
-            first_date = years_before(latest, gap, r.integers(30, 330)) if left else latest
-            birth = years_before(first_date, arrival_age(r), r.integers(0, 365))
-            p.update(bcountry=bc, nat=bc)
-            if left:
-                p["events"].append(("IMM", first_date, other_municipality(r, code) if r.random() < 0.5
-                                    else mun_on(first_date), bc, ""))
-                emi = _rand_date(r, first_date + dt.timedelta(days=200), latest - dt.timedelta(days=45))
-                p["events"].append(("EMI", emi, mun_on(emi) if r.random() < 0.5 else other_municipality(r, code),
-                                    bc, ""))
-            p["events"].append(("IMM", latest, mun_on(latest), bc, ""))
-            first = completed_years(first_date)
-            if stay >= 6 and r.random() < 0.45:
-                when = _rand_date(r, years_before(latest, -5) if stay > 5 else latest, W.REF - dt.timedelta(days=20))
-                when = min(when, W.REF - dt.timedelta(days=20))
-                p["events"].append(("NAT", when, mun_on(when), "", ""))
-                p["nat"] = W.HOME[0]
-        p.update(birth=birth, stay=stay, left=left, first=first)
-        if stay >= 1 and r.random() < prof["mig_moved"]:
-            since = _rand_date(r, max(latest + dt.timedelta(days=30), years_before(W.REF, 3)), W.REF - dt.timedelta(days=2))
-            if r.random() < 0.5:
-                p["events"].append(("ADR", since, mun_on(since), "", ""))
-            else:
-                p["events"].append(("VER", since, mun_on(since), "", other_municipality(r, code)))
-            # the arrival registered the person somewhere else first when the move was from another municipality
-            if p["events"][-1][0] == "VER":
-                ev = [e for e in p["events"] if e[0] == "IMM"][-1]
-                i = p["events"].index(ev)
-                p["events"][i] = ("IMM", ev[1], p["events"][-1][4], ev[3], "")
-        else:
-            since = latest
-        p["since"] = since
-        if p["bcountry"] != W.HOME[0] and r.random() < 0.08:
-            p["partial"] = "Y" if r.random() < 0.6 else "M"     # birth day and month unknown, or the day only
-    age = completed_years(p["birth"])
-    if age >= 22 and r.random() < 0.52:
-        when = _rand_date(r, years_before(p["birth"], -21), W.REF - dt.timedelta(days=10))
-        p["events"].append(("HUW", when, mun_on(when) if when >= p["since"] else other_municipality(r, code), "", ""))
-        p["marital"] = "H"
-    else:
-        p["marital"] = "O"
-    p["events"].sort(key=lambda e: e[1])
-    p["absent"] = bool(r.random() < W.p_absent(p["stay"], p["left"]))
-    return p
+        b = 61700 - 380 * (y - 2009)
+    return b
 
 
-def municipality(seed, code, n=None):
-    """the persons registered in an in-play municipality on 1 January 2026 (the first n of a fixed draw)"""
-    typ = W.TYPE[code]
-    r = rng(seed, 20, int(code))
-    keys = Keys(seed * 1000 + int(code))
-    n = n or W.COUNT[code]
-    return [person(r, keys, W.TYPES[typ], code, W.ORIGIN_WEIGHTS[typ]) for _ in range(n)]
+def mortality(age, sex, year):
+    """annual probability of death: Gompertz with an infant term and a young-adult accident hump, men higher, improving"""
+    imp = np.exp(-0.0115 * (year - 1950))
+    a = age + 0.5
+    g = (0.00006 if sex == "F" else 0.00010) * np.exp(0.092 * a) * imp
+    infant = (0.020 if sex == "F" else 0.025) * np.exp(-2.2 * a) * imp
+    hump = 0.0
+    if 15 <= age <= 35:
+        hump = (0.0003 if sex == "F" else 0.0011) * np.exp(-((age - 22) / 6.0) ** 2) * (0.6 + 0.4 * imp)
+    return float(min(0.6, g + infant + hump))
 
 
-def audit_national(seed, n):
-    """the audit's sampled persons registered outside the in-play municipalities"""
-    r = rng(seed, 30)
-    keys = Keys(seed * 1000 + 999)
-    out = []
-    for _ in range(n):
-        code = other_municipality(r, "")
-        out.append(person(r, keys, W.NATIONAL, code, W.ORIGIN_WEIGHTS["N"]))
-    return out
+def departure_rate(age, sex, year):
+    """share of residents leaving the country for good in a year: young adults, young men most"""
+    era = 0.55 if year < 1970 else 0.8 if year < 1990 else 1.0
+    base = 0.0018
+    young = 0.0115 * np.exp(-((age - 25) / 6.5) ** 2)
+    if sex == "M":
+        young *= 1.22
+    child = 0.0035 * np.exp(-((age - 3) / 4.0) ** 2)
+    return era * (base + young + child)
 
 
-def outcome(r, p):
-    """the audit's final result for a sampled person: 10 at the address, 11 elsewhere in the municipality, 50 there on
-    1 January and left later (present); 20 elsewhere in the country, 30 abroad, 40 died before 1 January (absent)"""
-    if p["absent"]:
-        if r.random() < W.ELSEWHERE_SHARE:
-            return "20"
-        old = completed_years(p["birth"]) >= 70
-        return "40" if r.random() < (0.55 if old else 0.03) else "30"
-    if r.random() < (0.016 if p["stay"] is not None and p["stay"] <= 4 else 0.002):
-        return "50"
-    return "11" if r.random() < 0.03 else "10"
+def arrivals_by_age(year, sex, rng):
+    """arrivals for good in a year by age at arrival: young adults and their children"""
+    era = 0.35 if year < 1970 else 0.65 if year < 1990 else 1.0
+    total = era * (24000 + 4000 * np.sin((year - 1950) / 7.0))
+    w = np.array([0.6 * np.exp(-((a - 4) / 5.0) ** 2) + np.exp(-((a - 28) / 7.5) ** 2) + 0.25 * np.exp(-((a - 45) / 12.0) ** 2)
+                  for a in AGES])
+    w = w / w.sum()
+    n = rng.poisson(total * (0.52 if sex == "M" else 0.48) * w)
+    return n
 
 
-POOL = 6600     # each in-play municipality's fixed draw; its register is the first COUNT persons of it
+def national(seed):
+    """flows by year, sex and year of birth from 1925, the first weeks of 2025 to census day, and the people living in
+    the country on census day by sex and single year of age (100 holds 100 and over); demographic analysis over these
+    flows rebuilds the census-day population exactly"""
+    rng = rng_for(seed, 1)
+    births = {}
+    deaths, deps, arrs = {}, {}, {}      # (year, sex, birth year) -> n; year "2025Q" is 1 January to 3 March 2025
+    cohort = {"M": {}, "F": {}}
+    for y in list(YEARS) + ["2025Q"]:
+        part = Q1 if y == "2025Q" else 1.0
+        yy = 2025 if y == "2025Q" else y
+        if y != "2025Q":
+            srb = 1.055 + rng.normal(0, 0.006)
+            b = rng.poisson(births_total(y))
+            bm = rng.binomial(b, srb / (1 + srb))
+            births[(y, "M")], births[(y, "F")] = bm, b - bm
+        for sex in ("M", "F"):
+            if y != "2025Q":
+                cohort[sex][y] = births[(y, sex)]
+            arr = arrivals_by_age(yy, sex, rng)
+            for c in sorted(cohort[sex]):
+                n = cohort[sex][c]
+                if n <= 0:
+                    continue
+                age = min(max(yy - c, 0), 100)
+                newborn = (c == yy)
+                q = mortality(age, sex, yy) * part * (0.5 if newborn else 1.0)
+                d = rng.binomial(n, min(q, 0.95))
+                e = rng.binomial(n - d, min(departure_rate(age, sex, yy) * part * (0.5 if newborn else 1.0), 0.5))
+                cohort[sex][c] = n - d - e
+                if d:
+                    deaths[(y, sex, c)] = deaths.get((y, sex, c), 0) + d
+                if e:
+                    deps[(y, sex, c)] = deps.get((y, sex, c), 0) + e
+            for a in AGES:
+                k = int(rng.poisson(arr[a] * part)) if y == "2025Q" else int(arr[a])
+                if not k:
+                    continue
+                lo = rng.binomial(k, 0.5)
+                for c, kk in ((yy - a - 1, lo), (yy - a, k - lo)):
+                    if kk <= 0 or c > yy or (y == "2025Q" and c > 2024):
+                        continue
+                    if c not in cohort[sex]:
+                        continue
+                    cohort[sex][c] += kk
+                    arrs[(y, sex, c)] = arrs.get((y, sex, c), 0) + kk
+    # census day: the cohort born in year c is aged 2024 - c, or 2025 - c if born 1 January to 3 March; the babies of
+    # the first weeks of 2025 are aged 0
+    pop = {"M": np.zeros(101, int), "F": np.zeros(101, int)}
+    for sex in ("M", "F"):
+        for c, n in cohort[sex].items():
+            if n <= 0:
+                continue
+            older = rng.binomial(n, Q1)
+            for k, age in ((n - older, 2024 - c), (older, 2025 - c)):
+                if age >= 0:
+                    pop[sex][min(age, 100)] += k
+        newborn = rng.poisson(births_total(2025) * Q1 * (0.513 if sex == "M" else 0.487))
+        pop[sex][0] += newborn
+        births[("2025Q", sex)] = int(newborn)
+    return {"births": births, "deaths": deaths, "departures": deps, "arrivals": arrs, "pop": pop, "cohort": cohort}
 
 
-def pools(seed):
-    """each in-play municipality's fixed draw, with each position's audit membership fixed once"""
-    f = W.N_AUDIT / W.NATIONAL_REGISTER
-    Keys.issued.clear()
+# ------------------------------------------------------------------ regions
+
+def profile(rtype, sex, age):
+    """relative weight of a region type at a sex and age"""
+    a = age
+    base = np.exp(-((a - 38) / 30.0) ** 2) + 0.35
+    if rtype == "metro":
+        base *= 1 + 0.45 * np.exp(-((a - 30) / 9.0) ** 2) - 0.15 * (a > 65)
+    elif rtype == "college":
+        base *= 1 + 0.9 * np.exp(-((a - 21) / 3.5) ** 2) + 0.1 * np.exp(-((a - 30) / 8.0) ** 2)
+    elif rtype == "coastal":
+        base *= 1 + 0.55 * np.exp(-((a - 70) / 11.0) ** 2) - 0.25 * np.exp(-((a - 26) / 7.0) ** 2)
+    elif rtype == "rural":
+        base *= 1 + 0.2 * np.exp(-((a - 8) / 6.0) ** 2) + 0.2 * np.exp(-((a - 55) / 10.0) ** 2) \
+            - 0.3 * np.exp(-((a - 24) / 5.0) ** 2)
+    elif rtype == "resource":
+        base *= 1 + (0.55 if sex == "M" else 0.15) * np.exp(-((a - 33) / 10.0) ** 2) - 0.15 * (a > 65)
+    return base
+
+
+def regional(nat, seed):
+    """people by region, sex and single age; and the unsettled men aged 18 to 49 among them"""
+    rng = rng_for(seed, 2)
+    pop = {c: {"M": np.zeros(101, int), "F": np.zeros(101, int)} for c in W.CODES}
+    jit = {c: rng.uniform(0.94, 1.06) for c in W.CODES}
+    for sex in ("M", "F"):
+        for a in AGES:
+            w = np.array([W.SIZE[c] * profile(W.TYPE[c], sex, a) * jit[c] for c in W.CODES], float)
+            draw = rng.multinomial(int(nat["pop"][sex][a]), w / w.sum())
+            for c, k in zip(W.CODES, draw):
+                pop[c][sex][a] = k
+    unsettled = {}
+    share = {c: W.UNSETTLED[W.TYPE[c]] * rng.uniform(0.93, 1.07) for c in W.CODES}
+    for c in W.CODES:
+        u = np.zeros(101, int)
+        for a in range(18, 50):
+            u[a] = rng.binomial(pop[c]["M"][a], share[c])
+        unsettled[c] = u
+    return {"pop": pop, "unsettled": unsettled, "unsettled_share": share}
+
+
+# ------------------------------------------------------------------ census, survey and roll
+
+def coverage(seed):
+    """region-level coverage and enrolment rates for everyone but the unsettled men"""
+    rng = rng_for(seed, 3)
+    pc, pp, en, imp = {}, {}, {}, {}
+    for c in W.CODES:
+        t = W.TYPE[c]
+        pc[c] = W.P_CENSUS[t] + rng.normal(0, 0.006)
+        pp[c] = W.P_PES[t] + rng.normal(0, 0.006)
+        en[c] = W.ENROL[t] + rng.normal(0, 0.016)
+        imp[c] = W.IMPUTED[t] * rng.uniform(0.8, 1.2)
+    return {"pc": pc, "pp": pp, "enrol": en, "imputed": imp}
+
+
+def p_census(cov, c, sex, age, unsettled):
+    if unsettled:
+        return W.P_CENSUS_UNSETTLED
+    g = W.age_group(age)
+    return cov["pc"][c] - W.YOUNG_ADULT_DROP.get(g, 0.0)
+
+
+def p_pes(cov, c, sex, age, unsettled):
+    if unsettled:
+        return W.P_PES_UNSETTLED
+    g = W.age_group(age)
+    return cov["pp"][c] - W.YOUNG_ADULT_DROP.get(g, 0.0)
+
+
+def counts(reg, cov, seed):
+    """census tables by cell (region, sex, age), the survey's person records and the roll on census day"""
+    rng = rng_for(seed, 4)
+    census = {}                       # (region, sex, age) -> dict(counted=correct+erroneous incl. imputed, imputed=)
+    p_sample, e_sample = [], []       # person-level records in sampled meshblocks
+    mb_count = {}
+    for c in W.CODES:
+        n_res = sum(int(reg["pop"][c][s].sum()) for s in ("M", "F"))
+        mb_count[c] = max(60, int(round(n_res / 92.0)))
+    sampled_mb = {c: [m for m in range(1, mb_count[c] + 1) if m % W.MB_SAMPLE == 7 % W.MB_SAMPLE] for c in W.CODES}
+    pid = 0
+    for c in W.CODES:
+        mbs = sampled_mb[c]
+        frac = len(mbs) / float(mb_count[c])
+        for sex in ("M", "F"):
+            for a in AGES:
+                n = int(reg["pop"][c][sex][a])
+                u = int(reg["unsettled"][c][a]) if sex == "M" else 0
+                correct = 0
+                for cls, k in ((1, u), (0, n - u)):
+                    if k <= 0:
+                        continue
+                    pc = p_census(cov, c, sex, a, cls)
+                    pp = p_pes(cov, c, sex, a, cls)
+                    ks = rng.binomial(k, frac)                     # living in a sampled meshblock
+                    correct += rng.binomial(k - ks, pc)
+                    if ks:
+                        inc = rng.random(ks) < pc
+                        inp = rng.random(ks) < pp
+                        mb = rng.choice(mbs, ks)
+                        for i in range(ks):
+                            pid += 1
+                            p_sample.append((c, int(mb[i]), sex, a, cls, bool(inc[i]), bool(inp[i]), pid))
+                        correct += int(inc.sum())
+                g = W.age_group(a)
+                ee = rng.poisson(correct * W.EE_RATE[g] * W.EE_TYPE[W.TYPE[c]].get(g, 1.0))
+                ee_s = rng.binomial(ee, frac)
+                for _ in range(ee_s):
+                    pid += 1
+                    e_sample.append((c, int(rng.choice(mbs)), sex, a, pid))
+                census[(c, sex, a)] = {"correct": correct, "erroneous": ee}
+        # records imputed for dwellings the census could not contact, spread over the region's cells
+        tot = sum(v["correct"] + v["erroneous"] for (cc, s, a), v in census.items() if cc == c)
+        n_imp = rng.poisson(tot * cov["imputed"][c])
+        cells = [(c, s, a) for s in ("M", "F") for a in AGES]
+        w = np.array([census[k]["correct"] + census[k]["erroneous"] for k in cells], float)
+        draw = rng.multinomial(n_imp, w / w.sum())
+        for k, d in zip(cells, draw):
+            census[k]["imputed"] = int(d)
+    return {"census": census, "p_sample": p_sample, "e_sample": e_sample, "mb_count": mb_count,
+            "sampled_mb": sampled_mb}
+
+
+def roll(reg, cov, seed):
+    """electors enrolled on census day at an address in each region, by sex and age"""
+    rng = rng_for(seed, 5)
     out = {}
-    for code in W.CODES:
-        people = municipality(seed, code, POOL)
-        r = rng(seed, 50, int(code))
-        for p in people:
-            p["in_audit"] = bool(r.random() < f)
-        out[code] = people
+    for c in W.CODES:
+        for sex in ("M", "F"):
+            for a in range(18, 101):
+                n = int(reg["pop"][c][sex][a])
+                u = int(reg["unsettled"][c][a]) if sex == "M" else 0
+                g = W.age_group(a)
+                pe = min(0.995, cov["enrol"][c] + W.ENROL_AGE[g])
+                k = rng.binomial(n - u, pe) + rng.binomial(u, W.ENROL_UNSETTLED)
+                k += rng.poisson(k * W.STALE_ROLL)
+                out[(c, sex, a)] = k
     return out
 
 
-def register(seed, counts=None, pool=None):
-    """the in-play register on 1 January 2026 and the national audit sample"""
-    counts = counts or W.COUNT
-    pool = pool or pools(seed)
-    Keys.issued.update(p["key"] for people in pool.values() for p in people)
-    reg = {code: pool[code][:counts[code]] for code in W.CODES}
-    inplay_sampled = [p for code in W.CODES for p in reg[code] if p["in_audit"]]
-    national = audit_national(seed, W.N_AUDIT - len(inplay_sampled))
-    sample = national + inplay_sampled
-    order = rng(seed, 60).permutation(len(sample))
-    sample = [sample[i] for i in order]
-    r = rng(seed, 61)
-    for i, p in enumerate(sample):
-        p["audit_no"] = "RCA26-%05d" % (i + 1)
-        p["result"] = outcome(r, p)
-    return reg, sample
+# ------------------------------------------------------------------ the roll's transaction log after census day
+
+import datetime as _dt
 
 
-def fieldwork(seed, sample):
-    """visits per sampled person: earlier attempts with no contact (91), then the final result"""
-    r = rng(seed, 40)
+def local_to_utc(t):
+    """the country's time to UTC: UTC+13 in daylight time (28 September 2025 to 5 April 2026), UTC+12 otherwise"""
+    lo, hi = W.DST_2025
+    off = 13 if lo <= t < hi else 12
+    return t - _dt.timedelta(hours=off)
+
+
+def _workday(d):
+    return d.weekday() < 5
+
+
+def roll_log(reg, roll_counts, seed):
+    """enrolments, removals and reinstatements processed from census day to the extract's close: one row a transaction,
+    (txn_id, stamp as stored, type, reason, source, status, elector_no, person_ref, electorate, address_type, sex,
+    birth_year, ref_txn, local_time, platform)"""
+    rng = rng_for(seed, 6)
+    start = _dt.datetime.combine(W.CENSUS_DAY, _dt.time(0, 0))
+    end_local = _dt.datetime(2026, 7, 1, 11, 59, 59)         # the extract closes at 23:59:59 UTC on 30 June 2026
+    switch = _dt.datetime.combine(W.PLATFORM_SWITCH, _dt.time(0, 0))
+    days = [(W.CENSUS_DAY + _dt.timedelta(days=i)) for i in range((end_local.date() - W.CENSUS_DAY).days + 1)]
+    elec_by_region = {c: [e for e in W.ELECTORATES if e[2] == c] for c in W.CODES}
+    # electors on the census-day roll by electorate (residents only)
+    electors = {}
+    for c in W.CODES:
+        n = sum(k for (cc, s, a), k in roll_counts.items() if cc == c)
+        es = elec_by_region[c]
+        w = rng.uniform(0.85, 1.15, len(es))
+        draw = rng.multinomial(n, w / w.sum())
+        for e, k in zip(es, draw):
+            electors[e[0]] = int(k)
     rows = []
-    for i, p in enumerate(sample):
-        res = p["result"]
-        tries = 1 if r.random() < 0.70 else 2 if r.random() < 0.75 else 3
-        days = sorted(_rand_date(r, W.FIELD_START, W.FIELD_END) for _ in range(tries))
-        for j, d in enumerate(days):
-            last = j == tries - 1
-            mode = ("R" if res in ("30", "40", "20") and r.random() < 0.55 else "V" if r.random() < 0.85 else "T") \
-                if last else "V"
-            rows.append(dict(audit=p["audit_no"], visit=j + 1, date=d, mode=mode, result=res if last else "91"))
-    return rows
+    next_ref = [70000001]
+    next_no = [40000001]
+    old_seq = [1]
 
+    used_refs = set()
 
-# The 2025 deregistration traffic of each in-play municipality. Messages are those its register sent to the national
-# hub in calendar 2025; the hub accepts or rejects each one. Departures abroad, deaths and removals concern people no
-# longer registered on 1 January 2026, except the residents who left and came back within the year.
-EXTRA = {"G": dict(remove=0.0060, former=0.055), "U": dict(remove=0.0040, former=0.070),
-         "O": dict(remove=0.0015, former=0.080), "S": dict(remove=0.0012, former=0.050),
-         "T": dict(remove=0.0015, former=0.060)}
-DEATH_RATE = {"G": 0.0071, "U": 0.0058, "O": 0.0097, "S": 0.0104, "T": 0.0093}   # by age structure
-REASONS = {"E03": "destination country missing or not on the country table",
-           "E07": "date before the person's settlement at the address",
-           "E12": "date later than the date the message was sent",
-           "E21": "person not registered in the sending municipality"}
-YEAR0, YEAR1 = dt.date(2025, 1, 1), dt.date(2025, 12, 31)
+    def new_ref():
+        while True:
+            r = "P%08d" % int(rng.integers(10000000, 99999999))
+            if r not in used_refs:
+                used_refs.add(r)
+                return r
 
+    def new_no():
+        next_no[0] += int(rng.integers(1, 6))
+        return "%08d" % next_no[0]
 
-def _departed_person(r, keys, code, typ, when):
-    """someone who lived in the municipality and left the register: birth, sex, origin and nationality"""
-    mig = r.random() < (0.85 if typ in ("G", "U") else 0.45)
-    bc = pick(r, W.ORIGIN_WEIGHTS[typ]) if mig else W.HOME[0]
-    age = (int(r.integers(19, 46)) if typ in ("G", "U") else int(r.integers(18, 70))) if mig else int(r.integers(18, 80))
-    return dict(key=keys(), birth=years_before(when, age, r.integers(1, 365)), sex="M" if r.random() < 0.55 else "F",
-                bcountry=bc, nat=bc, origin=bc)
+    used_nos = set()
 
+    def existing():
+        while True:
+            no = "%08d" % int(rng.integers(10000000, 39999999))
+            if no not in used_nos:
+                used_nos.add(no)
+                return new_ref(), no
 
-def traffic(seed, reg):
-    """messages (one per message sent), acknowledgements and the non-resident records, by in-play municipality"""
-    msgs, nonres = [], []
-    for code in W.CODES:
-        typ = W.TYPE[code]
-        r = rng(seed, 70, int(code))
-        keys = Keys(seed * 10000 + 5000 + int(code))
-        n = len(reg[code])
-        part = {}
-        ours = (code,) + ((W.FORMER[0][1], W.FORMER[1][1]) if code == W.MERGED[1] else ())
+    serial = [0]
 
-        def former_of(p):
-            if code != W.MERGED[1]:
-                return code
-            if p["key"] not in part:
-                part[p["key"]] = W.FORMER[int(r.integers(0, 2))][1]
-            return part[p["key"]]
+    def stamp(local):
+        serial[0] += 1
+        tid = "tmp%09d" % serial[0]
+        if local < switch:
+            return tid, local.strftime("%Y-%m-%d %H:%M:%S"), "old"
+        return tid, local_to_utc(local).strftime("%Y-%m-%d %H:%M:%S"), "new"
 
-        def send(kind, p, when, country, sent=None, extra=None, sender=None):
-            """a message the register sends in the night after it registers the event (`sent` is that registration
-            date); one registered after 31 December is in the hub's 2026 log, not this one"""
-            sent = sent or when + dt.timedelta(days=int(r.integers(0, 12)))
-            if sent > YEAR1:
-                return None
-            msgs.append(dict(mun=code, sender=sender or former_of(p), key=p["key"], kind=kind, date=when,
-                             country=country, sent=sent, **(extra or {})))
-            return msgs[-1]
+    def business(d):
+        return _dt.datetime.combine(d, _dt.time(8, 0)) + _dt.timedelta(seconds=int(rng.integers(0, 9 * 3600 + 1800)))
 
-        def part_of(q):
-            """the code a registered person's 2025 events carry (Ravenmeer's residents: their former municipality)"""
-            for e in reversed(q["events"]):
-                if e[2] in ours:
-                    return e[2] if code == W.MERGED[1] and e[1] < W.REF else code
-            return former_of(q)
+    def add(local, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn=""):
+        if local < start or local > end_local:
+            return None
+        tid, st, plat = stamp(local)
+        rows.append([tid, st, typ, reason, source, status, eno, ref, elec, addr, sex, by, ref_txn, local, plat])
+        return tid
 
-        # departures abroad: leavers, of whom some left twice; plus residents who left and came back within 2025
-        n_dep = int(r.poisson(W.TYPES[typ]["dep"] * n))
-        n_twice = max(3, int(round(W.TYPES[typ]["repeat"] * n_dep)))
-        n_dead = 1 if typ in ("T", "S", "O") else int(r.integers(2, 4))
-        leavers = []
-        for i in range(n_dep):
-            when = _rand_date(r, YEAR0, YEAR1 - dt.timedelta(days=8))
-            p = _departed_person(r, keys, code, typ, when)
-            twice = i < n_twice
-            if twice:
-                first = _rand_date(r, YEAR0, dt.date(2025, 5, 31))
-                when = _rand_date(r, dt.date(2025, 8, 1), YEAR1 - dt.timedelta(days=8))
-                send("EMI", p, first, p["origin"] if p["origin"] != W.HOME[0] else "5012")
-            dest = p["origin"] if p["origin"] != W.HOME[0] else pick(r, {"5012": 2, "5010": 2, "6001": 1, "5013": 1})
-            m = send("EMI", p, when, dest)
-            p["dest"] = dest
-            leavers.append((p, when, m["sent"] if m else YEAR1 + dt.timedelta(days=int(r.integers(1, 12)))))
-        if not any(e[0] == "EMI" and YEAR0 <= e[1] <= YEAR1 and e[2] in ours for q in reg[code] for e in q["events"]):
-            # a resident who left in 2025 and came back: the golden reads only whether a resident left before the
-            # latest settlement, never when or from where, so the earlier departure can be dated into 2025
-            cand = [q for q in reg[code] if q["stay"] == 0 and q["left"] and
-                    [e for e in q["events"] if e[0] == "IMM"][-1][1] >= dt.date(2025, 2, 20)]
-            if cand:
-                q = cand[0]
-                latest = [e for e in q["events"] if e[0] == "IMM"][-1]
-                i = [k for k, e in enumerate(q["events"]) if e[0] == "EMI"][-1]
-                e = q["events"][i]
-                here = latest[2] if latest[2] in ours else former_of(q)
-                q["events"][i] = ("EMI", _rand_date(r, YEAR0, latest[1] - dt.timedelta(days=45)), here, e[3], e[4])
-                q["events"].sort(key=lambda e: e[1])
+    all_elec = [e[0] for e in W.ELECTORATES]
+    size = np.array([electors[e] for e in all_elec], float)
+    for d in days:
+        wd = _workday(d)
+        for e in all_elec:
+            c = W.ELECTORATE_REGION[e]
+            n = electors[e]
+            # moves to another electorate: on the old platform a removal here and an enrolment there, same day
+            if wd and d < W.PLATFORM_SWITCH:
+                k = rng.poisson(n * 0.036 / 250.0)
+                for _ in range(k):
+                    ref, old_no = existing()
+                    same = [x[0] for x in elec_by_region[c] if x[0] != e]
+                    if same and rng.random() < 0.55:
+                        dest = same[int(rng.integers(0, len(same)))]
+                    else:
+                        dest = all_elec[int(rng.choice(len(all_elec), p=size / size.sum()))]
+                        if dest == e:
+                            continue
+                    t = business(d)
+                    sex = "M" if rng.random() < 0.49 else "F"
+                    by = int(rng.integers(1940, 2006))
+                    add(t, "DEL", "05", "", "A", old_no, ref, e, "R", sex, by)
+                    add(t + _dt.timedelta(seconds=int(rng.integers(5, 90))), "NEW", "",
+                        "ONL" if rng.random() < 0.7 else "PAP", "A", "NEW_NO", ref, dest, "R", sex, by)
+            # deaths: removals from the death register match (old platform: monthly on the first working day; new:
+            # weekly, Wednesdays at 07:30) or a family's notification during the day
+            pass
+    # deaths, by electorate, spread over the window and removed later
+    death_rate = 0.0078
+    for e in all_elec:
+        n = electors[e]
+        k = rng.poisson(n * death_rate * (len(days) / 365.0) * 1.05)
+        for _ in range(k):
+            died = start + _dt.timedelta(days=float(rng.uniform(-40, len(days))))
+            ref, eno = existing()
+            sex = "M" if rng.random() < 0.5 else "F"
+            by = int(rng.integers(1925, 1990))
+            notified = rng.random() < 0.18
+            if notified:
+                dd = (died + _dt.timedelta(days=int(rng.integers(3, 30)))).date()
+                while not _workday(dd):
+                    dd += _dt.timedelta(days=1)
+                t = business(dd)
             else:
-                # a stay that began in 2025 after an earlier one in the municipality that ended abroad in 2025
-                cand = [q for q in reg[code] if q["stay"] == 0 and not q["left"] and not q.get("in_audit")
-                        and [e for e in q["events"] if e[0] == "IMM"][-1][1] >= dt.date(2025, 4, 1)
-                        and not any(e[0] in ("VER", "ADR") for e in q["events"])]
-                q = cand[int(r.integers(0, len(cand)))]
-                latest = [e for e in q["events"] if e[0] == "IMM"][-1]
-                here = latest[2]
-                first = years_before(latest[1], int(r.integers(1, 4)), r.integers(30, 300))
-                left_on = _rand_date(r, dt.date(2025, 1, 10), latest[1] - dt.timedelta(days=45))
-                q["events"] += [("IMM", first, here, latest[3], ""), ("EMI", left_on, here, latest[3], "")]
-                q["events"].sort(key=lambda e: e[1])
-                q["left"], q["first"] = 1, completed_years(first)
-        quiet = [q for q in reg[code] if max(e[1] for e in q["events"]) <= dt.date(2025, 9, 30)
-                 and not any(e[0] in ("IMM", "EMI") and e[1] >= dt.date(2024, 7, 1) for e in q["events"])]
-        for i in r.choice(len(quiet), size=1 + int(r.random() < 0.4), replace=False):
-            q = quiet[int(i)]
-            last = max(e[1] for e in q["events"])
-            d = _rand_date(r, max(last + dt.timedelta(days=30), dt.date(2025, 1, 20)), dt.date(2025, 10, 31))
-            here = part_of(q)
-            dest = q["bcountry"] if q["bcountry"] != W.HOME[0] else pick(r, {"5012": 2, "5010": 2, "6001": 1})
-            q.setdefault("annulled", []).append(("EMI", d, here, dest, ""))
-            q.setdefault("ann_dates", {})[("EMI", d)] = d + dt.timedelta(days=int(r.integers(18, 61)))
-            send("EMI", q, d, dest, sent=d + dt.timedelta(days=int(r.integers(0, 5))), extra=dict(void=True),
-                 sender=here)
-        for p in reg[code]:
-            for e in p["events"]:
-                if e[0] == "EMI" and YEAR0 <= e[1] <= YEAR1 and e[2] in ours:
-                    send("EMI", p, e[1], e[3], sent=min(e[1] + dt.timedelta(days=int(r.integers(0, 6))),
-                                                      YEAR1), extra=dict(back=True), sender=e[2])
-        back = sum(1 for m in msgs if m["mun"] == code and m.get("back"))
-        late_dec = sum(1 for m in msgs if m["mun"] == code and m["kind"] == "EMI" and m["sent"] == YEAR1)
-        extra = int(r.choice([k for k in (1, 2, 3) if late_dec + k not in (back, n_twice)]))
-        for _ in range(extra):   # contracts that end with the year: registered on 31 December
-            when = _rand_date(r, dt.date(2025, 12, 15), dt.date(2025, 12, 30))
-            p = _departed_person(r, keys, code, typ, when)
-            dest = p["origin"] if p["origin"] != W.HOME[0] else pick(r, {"5012": 2, "5010": 2, "6001": 1})
-            send("EMI", p, when, dest, sent=YEAR1)
-            p["dest"] = dest
-            leavers.append((p, when, YEAR1))
-        # deaths of residents, and removals after an address investigation
-        dead = []
-
-        def resident_death(when, sent=None):
-            p = dict(key=keys(), birth=years_before(when, int(r.integers(55, 99)), r.integers(1, 365)),
-                     sex="M" if r.random() < 0.49 else "F", bcountry=W.HOME[0], nat=W.HOME[0])
-            m = send("OVL", p, when, W.HOME[0] if r.random() < 0.97 else "5012", sent=sent)
-            dead.append(p)
-            return m
-
-        ovl = [resident_death(_rand_date(r, YEAR0, YEAR1 - dt.timedelta(days=6)))
-               for _ in range(int(r.poisson(DEATH_RATE[typ] * n)))]
-        # deaths recorded for the wrong person (a namesake at the same address, a hospital's notice matched to the
-        # wrong record) and annulled within weeks: the message was sent and accepted, the person is still registered
-        older = [q for q in reg[code] if completed_years(q["birth"]) >= 45
-                 and max(e[1] for e in q["events"]) <= dt.date(2025, 9, 30) and not q.get("annulled")]
-        for i in r.choice(len(older), size=1 + int(r.random() < 0.3), replace=False):
-            q = older[int(i)]
-            last = max(e[1] for e in q["events"])
-            d = _rand_date(r, max(last + dt.timedelta(days=30), dt.date(2025, 1, 20)), dt.date(2025, 10, 31))
-            here = part_of(q)
-            q.setdefault("annulled", []).append(("OVL", d, here, "", ""))
-            q.setdefault("ann_dates", {})[("OVL", d)] = d + dt.timedelta(days=int(r.integers(6, 41)))
-            send("OVL", q, d, W.HOME[0], sent=d + dt.timedelta(days=int(r.integers(0, 4))), extra=dict(void=True),
-                 sender=here)
-        for _ in range(1 + int(r.random() < 0.35)):   # the holiday deaths, registered on 31 December
-            resident_death(_rand_date(r, dt.date(2025, 12, 22), dt.date(2025, 12, 30)), sent=YEAR1)
-        for _ in range(int(r.integers(1, 3))):
-            # December 2024 deaths registered in January
-            when = _rand_date(r, dt.date(2024, 12, 20), dt.date(2024, 12, 31))
-            resident_death(when, sent=_rand_date(r, dt.date(2025, 1, 2), when + dt.timedelta(days=12)))
-        removed = []
-        for _ in range(max(2, int(round(EXTRA[typ]["remove"] * n)))):
-            when = _rand_date(r, YEAR0, YEAR1 - dt.timedelta(days=20))
-            p = _departed_person(r, keys, code, typ, when)
-            send("VOW", p, when, "0000")
-            removed.append((p, when))
-        # former residents abroad: departed before 2025; some died abroad in 2025 and the municipality recorded it
-        n_former = int(round(EXTRA[typ]["former"] * n))
-        for i in range(n_former):
-            dep = _rand_date(r, dt.date(1990, 1, 1), dt.date(2024, 12, 31))
-            p = _departed_person(r, keys, code, typ, dep)
-            p["birth"] = years_before(dep, int(r.integers(19, 66)), r.integers(1, 365))
-            status, sdate = "A", dep
-            age_now = completed_years(p["birth"])
-            if i < max(2, int(round(0.012 * n_former))) or (age_now >= 70 and r.random() < 0.05):
-                status, sdate = "O", _rand_date(r, YEAR0, YEAR1 - dt.timedelta(days=10))
-                send("OVL", p, sdate, p["origin"] if p["origin"] != W.HOME[0] else "5012")
-            elif age_now >= 60 and r.random() < 0.10:
-                status, sdate = "O", _rand_date(r, max(dep, dt.date(1995, 1, 1)), dt.date(2024, 12, 20))
-            last = former_of(p)
-            nonres.append(dict(key=p["key"], last=last, dep=dep, country=p["origin"] if p["origin"] != W.HOME[0]
-                               else "5012", status=status, sdate=sdate, birth=p["birth"], sex=p["sex"], mun=code))
-        # late reports: departures and deaths dated December 2024 that the register sent in January 2025
-        for _ in range(int(r.choice([k for k in (1, 2, 3) if k != back]))):
-            when = _rand_date(r, dt.date(2024, 12, 2), dt.date(2024, 12, 31))
-            p = _departed_person(r, keys, code, typ, when)
-            dest = p["origin"] if p["origin"] != W.HOME[0] else "5012"
-            send("EMI", p, when, dest, sent=_rand_date(r, dt.date(2025, 1, 2), dt.date(2025, 1, 24)))
-            nonres.append(dict(key=p["key"], last=former_of(p), dep=when, country=dest, status="A",
-                               sdate=when, birth=p["birth"], sex=p["sex"], mun=code))
-        # the 2025 leavers and the removed become non-resident records (removals to an unknown country)
-        for p, when, registered in leavers:
-            if registered > W.EXTRACT_DATE - dt.timedelta(days=1):
-                continue
-            nonres.append(dict(key=p["key"], last=former_of(p), dep=when, country=p["dest"], status="A", sdate=when,
-                               birth=p["birth"], sex=p["sex"], mun=code))
-        for p, when in removed:
-            last = former_of(p)
-            nonres.append(dict(key=p["key"], last=last, dep=when, country="0000", status="A", sdate=when,
-                               birth=p["birth"], sex=p["sex"], mun=code))
-        # departure messages for people the register had already removed or recorded as dead: rejected, never resent
-        gone = [p for p, _ in removed] + dead
-        for k in range(n_dead):
-            prior = [m for m in msgs if m["key"] in {q["key"] for q in gone} and m["sent"] <= dt.date(2025, 11, 30)]
-            if not prior:
-                continue
-            prior = prior[int(r.integers(0, len(prior)))]
-            when = prior["date"] + dt.timedelta(days=int(r.integers(5, 30)))
-            send("EMI", dict(key=prior["key"]), when, "5017" if typ == "G" else "5012",
-                 sent=when + dt.timedelta(days=int(r.integers(0, 6))), extra=dict(dead_end=True),
-                 sender=prior["sender"])
-    return msgs, nonres
-
-
-def acknowledge(seed, msgs, nonres=()):
-    """the hub's answer to every message; a rejected message is usually corrected and sent again within two weeks"""
-    r = rng(seed, 80)
-    out, acks = [], []
-    by_mun = {}
-    for m in msgs:
-        by_mun.setdefault(m["mun"], []).append(m)
-    for code in W.CODES:
-        ms = sorted(by_mun.get(code, []), key=lambda m: (m["sent"], m["key"], m["kind"]))
-        former = {x["key"] for x in nonres if x["mun"] == code}
-        must = {}
-        for kind in ("EMI", "OVL"):
-            pool = [m for m in ms if m["kind"] == kind and not m.get("back") and not m.get("dead_end")
-                    and not m.get("void")
-                    and m["key"] not in (former if kind == "OVL" else ()) and m["date"].year == 2025
-                    and m["sent"] <= dt.date(2025, 12, 12)]
-            must[kind] = id(pool[int(r.integers(0, len(pool)))])
-        for m in ms:
-            if m.get("dead_end"):
-                out.append(m)
-                acks.append((m, "REJECTED", "E21"))
-                continue
-            p_rej = {"EMI": 0.06, "OVL": 0.03, "VOW": 0.04}[m["kind"]]
-            eligible = not (m.get("back") or m.get("void")) and m["sent"] <= dt.date(2025, 12, 12) \
-                and m["date"].year == 2025
-            rej = id(m) in must.values() or (eligible and r.random() < p_rej)
-            if rej:
-                reason = "E03" if m["kind"] == "EMI" and r.random() < 0.5 else ("E12" if r.random() < 0.5 else "E07")
-                bad = dict(m)
-                if reason == "E12":   # a date after sending, still within the year
-                    bad["date"] = m["sent"] + dt.timedelta(days=int(r.integers(1, max(2, min(30, (YEAR1 - m["sent"]).days)))))
-                elif reason == "E03":
-                    bad["country"] = ""
-                out.append(bad)
-                acks.append((bad, "REJECTED", reason))
-                again = dict(m, sent=m["sent"] + dt.timedelta(days=int(r.integers(1, 15))))
-                out.append(again)
-                acks.append((again, "ACCEPTED", ""))
+                reg_day = (died + _dt.timedelta(days=int(rng.integers(5, 25)))).date()
+                if reg_day < W.PLATFORM_SWITCH:
+                    nxt = _dt.date(reg_day.year + (reg_day.month == 12), reg_day.month % 12 + 1, 1)
+                    while not _workday(nxt):
+                        nxt += _dt.timedelta(days=1)
+                    t = _dt.datetime.combine(nxt, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
+                else:
+                    nxt = reg_day + _dt.timedelta(days=(2 - reg_day.weekday()) % 7 or 7)
+                    t = _dt.datetime.combine(nxt, _dt.time(7, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 900)))
+            reason = "01" if t < switch else ("12" if notified else "11")
+            tid = add(t, "DEL", reason, "", "A", eno, ref, e, "R", sex, by)
+            if tid and not notified and rng.random() < 0.007:
+                back = t + _dt.timedelta(days=int(rng.integers(6, 30)))
+                if _workday(back.date()):
+                    add(business(back.date()), "REI", "", "", "A", eno, ref, e, "R", sex, by, ref_txn=tid)
+    # other removals: overseas for three years (a December batch), duplicates, objections, and on the new platform
+    # removals at the elector's own request under the reused code 01
+    for e in all_elec:
+        n = electors[e]
+        for reason, rate, plat in (("03", 0.0006, None), ("04", 0.0001, None), ("01", 0.0006, "new")):
+            k = rng.poisson(n * rate * (len(days) / 365.0))
+            for _ in range(k):
+                d = days[int(rng.integers(0, len(days)))]
+                if not _workday(d) or (plat == "new" and d < W.PLATFORM_SWITCH):
+                    continue
+                ref, eno = existing()
+                add(business(d), "DEL", reason, "", "A", eno, ref, e, "R", "M" if rng.random() < 0.5 else "F",
+                    int(rng.integers(1945, 2006)))
+        k = rng.poisson(n * 0.0012)
+        batch = _dt.datetime(2025, 12, 3, 21, 15)
+        for _ in range(k):
+            ref, eno = existing()
+            add(batch + _dt.timedelta(seconds=int(rng.integers(0, 2400))), "DEL", "02", "", "A", eno, ref, e, "O",
+                "M" if rng.random() < 0.5 else "F", int(rng.integers(1950, 2003)))
+    # new enrolments: provisional enrolments transferred at 18 (old platform: the first of the month at 06:00 for the
+    # month's birthdays; new: every day at 06:00 for that day's), direct enrolments, data-match enrolments
+    for e in all_elec:
+        c = W.ELECTORATE_REGION[e]
+        n = electors[e]
+        turning = n * 0.0185                     # electors' worth of 18th birthdays a year in the electorate
+        for d in days:
+            if d < W.PLATFORM_SWITCH:
+                if d.day == 1:
+                    k = rng.poisson(turning * 0.56 / 12.0)
+                    t0 = _dt.datetime.combine(d, _dt.time(6, 0))
+                else:
+                    k = 0
             else:
-                out.append(m)
-                acks.append((m, "ACCEPTED", ""))
-    return out, acks
+                k = rng.poisson(turning * 0.56 / 365.0)
+                t0 = _dt.datetime.combine(d, _dt.time(6, 0))
+            for _ in range(k):
+                add(t0 + _dt.timedelta(seconds=int(rng.integers(0, 1500))), "NEW", "", "PRV", "A", "NEW_NO", new_ref(), e,
+                    "R", "M" if rng.random() < 0.51 else "F", 2007 + (d.year - 2025))
+            # direct enrolments: online ones are processed overnight, paper and campaign ones in office hours
+            k_on = rng.poisson(n * 0.0215 / 365.0)
+            for _ in range(k_on):
+                t = _dt.datetime.combine(d, _dt.time(0, 30)) + _dt.timedelta(seconds=int(rng.integers(0, 4 * 3600)))
+                status = "R" if rng.random() < 0.045 else "A"
+                addr = "O" if rng.random() < 0.02 else "R"
+                add(t, "NEW", "", "ONL", status, "NEW_NO" if status == "A" else "", new_ref(), e, addr,
+                    "M" if rng.random() < 0.5 else "F", int(rng.integers(1950, 2007)))
+            if _workday(d):
+                k_p = rng.poisson(n * 0.0075 / 250.0)
+                for _ in range(k_p):
+                    status = "R" if rng.random() < 0.06 else "A"
+                    add(business(d), "NEW", "", "PAP" if rng.random() < 0.8 else "CAM", status,
+                        "NEW_NO" if status == "A" else "", new_ref(), e, "R", "M" if rng.random() < 0.5 else "F",
+                        int(rng.integers(1945, 2007)))
+    # re-enrolments of electors removed in the window (overseas removals who came back, objections reversed by a new
+    # enrolment): a new elector number, the same person
+    removed = [r for r in rows if r[2] == "DEL" and r[3] in ("02", "04")]
+    for r in removed:
+        if rng.random() < 0.06:
+            back = r[13] + _dt.timedelta(days=int(rng.integers(20, 200)))
+            if back.date() <= end_local.date() and _workday(back.date()):
+                add(business(back.date()), "NEW", "", "ONL", "A", "NEW_NO", r[7], r[8], "R", r[10], r[11])
+    rows.sort(key=lambda r: (r[13], r[0]))
+    # transaction ids in processing order: the old platform's running numbers, the new platform's random hex keys;
+    # elector numbers for accepted enrolments issued in the same order
+    ids = {}
+    seq = 132001
+    for r in rows:
+        if r[14] == "old":
+            nid = "R25-%07d" % seq
+            seq += int(rng.integers(1, 4))
+        else:
+            nid = "%016x" % int(rng.integers(1 << 60, (1 << 63) - 1))
+        ids[r[0]] = nid
+        r[0] = nid
+        if r[2] == "NEW" and r[5] == "A" and r[6] == "NEW_NO":
+            r[6] = new_no()
+    for r in rows:
+        if r[12]:
+            r[12] = ids[r[12]]
+    return rows, electors

@@ -1,8 +1,6 @@
-"""The pack's documents and workbooks: Article 14 of the Municipal Fund Regulation 2027, the Bureau's report on the
-Register Coverage Audit 2026, the register's record layouts, the ministry's delivery specification, the municipality
-code workbook and the 2024 pilot's workbook."""
-import datetime as dt
-
+"""The pack's documents and workbooks: the survey's methods report, the vital and border series notes, the Commission's
+campaign plan, the Office's file specification, the roll extract's dictionary and migration notes, the census workbook,
+the historical deaths workbook, and the census field operations summary."""
 import docx
 import openpyxl
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -19,6 +17,7 @@ from reportlab.pdfbase import pdfmetrics                                        
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
+import pack as P     # noqa: E402
 import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
@@ -30,8 +29,8 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
 INK = colors.HexColor("#1b1d1f")
 GREY = colors.HexColor("#5b6067")
-NAVY = colors.HexColor("#1f3a5f")
-OCHRE = colors.HexColor("#7a5a12")
+TEAL = colors.HexColor("#14505c")
+PLUM = colors.HexColor("#4a2c5a")
 SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.4, leading=13.0, textColor=INK, spaceAfter=6)
 SERIF = ParagraphStyle("serif", fontName="LiberationSerif", fontSize=10.6, leading=14.6, textColor=INK, spaceAfter=7)
 CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.0, leading=10.0, textColor=INK)
@@ -84,303 +83,382 @@ def _n(v):
     return "{:,}".format(int(v))
 
 
-# ----------------------------------------------------------------------------------------------- the regulation
-def write_regulation(path):
-    h1, h1s, h2 = styles(NAVY, serif=True)
-    d, frame = _doc(path, "Municipal Fund Regulation 2027, Article 14", W.MINISTRY,
-                    "Municipal Fund Regulation 2027  |  Official Gazette 2026, no. 31,204  |  30 June 2026", serif=True)
-    s = [Paragraph("Municipal Fund Regulation 2027", h1),
-         Paragraph("Regulation of the Minister of the Interior of 30 June 2026 on the distribution of the Municipal "
-                   "Fund for 2027. Extract: Chapter 4, Article 14, with its explanatory note.", h1s),
-         Paragraph("Article 14. Small-municipality supplement", h2),
-         Paragraph("1. For 2027 a municipality receives the small-municipality supplement if its adjusted resident "
-                   "population on 1 January 2026 is below 5,000.", SERIF),
-         Paragraph("2. The adjusted resident population of a municipality is the number of persons registered as "
-                   "residents of the municipality in the Population Register at the start of 1 January 2026, less the "
-                   "number of those persons estimated from the %s's %s not to have been living in the municipality "
-                   "on that date." % (W.BUREAU, W.AUDIT), SERIF),
-         Paragraph("3. The Bureau delivers each municipality's adjusted resident population to the Minister rounded to "
-                   "the nearest whole person, and the rounded figure is compared with 5,000.", SERIF),
-         Paragraph("4. Municipalities are taken as constituted on 1 January 2026.", SERIF),
-         Paragraph("5. The supplement for 2027 is EUR 418,000 for each municipality that receives it. It is paid in "
-                   "twelve monthly instalments with the general allowance.", SERIF),
-         Paragraph("Explanatory note to Article 14", h2),
-         Paragraph("Until 2026 the supplement followed the register count. A person who leaves the country stays on "
-                   "the register until somebody reports the departure or the municipality ends the registration after "
-                   "an address investigation, so the register count includes people who no longer live in the "
-                   "municipality. In 2026 the Bureau audited, for the first time, a sample of the persons on the "
-                   "register to measure how many were not living in their registered municipality. From 2027 the "
-                   "supplement follows the register count less the persons the audit shows were not living there.", SERIF),
-         Paragraph("The Bureau publishes the method by which it applies the audit to municipalities in its report on "
-                   "the audit. Paragraph 4 means that the municipality of Ravenmeer, formed on 1 January 2026 from "
-                   "Ravensloot and Meerdijk, is one municipality for 2027.", SERIF)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
+# ----------------------------------------------------------------------------------------------- the survey's report
+def write_pes_report(path, n_mb, n_people, n_records):
+    h1, h1s, h2 = styles(TEAL)
+    d, frame = _doc(path, "2025 Post-Enumeration Survey: design, fieldwork and files", W.OFFICE,
+                    "%s, %s. 2025 Post-Enumeration Survey methods report." % (W.OFFICE, W.DIVISION))
+    S = []
+    S.append(Paragraph("2025 Post-Enumeration Survey", h1))
+    S.append(Paragraph("Design, fieldwork and files. %s, %s. Methods report, September 2025." % (W.OFFICE, W.DIVISION), h1s))
+    S.append(Paragraph("1. Purpose", h2))
+    S.append(Paragraph(
+        "The Post-Enumeration Survey (PES) measures how completely the 2025 Census of Population and Dwellings counted "
+        "the people usually resident in the country on census day, Tuesday 4 March 2025: the people the census missed, "
+        "and the census records that should not have been counted.", SANS))
+    S.append(Paragraph("2. Sample", h2))
+    S.append(Paragraph(
+        "The survey covered every dwelling in a sample of meshblocks: one meshblock in 30 in every region, taken "
+        "systematically from a random start down the region's meshblock list (2025 boundaries), so that every meshblock "
+        "in a region had the same chance of selection. Communal dwellings in a sampled meshblock (hostels, care homes, "
+        "camps and the like) were covered with the private dwellings. %s meshblocks were sampled; "
+        "pes_2025_sampled_meshblocks.csv lists them with the dwellings and people the survey listed in each and the "
+        "visits it took to complete them." % _n(n_mb), SANS))
+    S.append(Paragraph("3. Fieldwork and matching", h2))
+    S.append(Paragraph(
+        "3.1 Interviewers who had not worked on the census listed every dwelling in the sampled meshblocks between 7 "
+        "April and 27 June 2025 and recorded every person usually resident in each on census day, including people "
+        "who had moved out since. The survey's staff, listings and fieldwork systems were kept separate from the "
+        "census's throughout.", SANS))
+    S.append(Paragraph(
+        "3.2 Each person the survey recorded was searched for among the census records for the meshblock and the "
+        "meshblocks around it. In pes_2025_people.csv MATCH is M where the person was found, with CENSUS_RECORD giving "
+        "the census record, and N where the person had no census record. Every case was resolved, by a follow-up visit "
+        "where the interview left doubt; none is left unresolved. The file holds %s people." % _n(n_people), SANS))
+    S.append(Paragraph(
+        "3.3 The census records for the sampled meshblocks were checked against the survey's listing and follow-up. "
+        "pes_2025_census_records.csv holds every census record for the sampled meshblocks (%s) except the records the "
+        "census imputed for dwellings it could not contact, which name no one to check. STATUS is one of:"
+        % _n(n_records), SANS))
+    S.append(_table([
+        ["STATUS", "Meaning"],
+        ["C", "counted correctly: usually resident in the meshblock on census day"],
+        ["D", "counted twice: the person was also counted at another address"],
+        ["V", "not usually resident in the country (a visitor counted as a resident)"],
+        ["O", "out of scope: born after census day or died before it"],
+        ["W", "usually resident outside the meshblock and the meshblocks around it"],
+    ], [2.0 * cm, 13.6 * cm]))
+    S.append(Spacer(1, 6))
+    S.append(Paragraph("4. Estimation cells", h2))
+    S.append(Paragraph(
+        "The survey's results are produced for estimation cells: region by sex by age group, the age groups being 0 to "
+        "14, 15 to 17, 18 to 24, 25 to 34, 35 to 49, 50 to 64, and 65 and over. Ages in both files are completed years "
+        "at census day.", SANS))
+    S.append(Paragraph("5. Files", h2))
+    S.append(_table([
+        ["File", "One row is"],
+        ["pes_2025_people.csv", "a person the survey recorded as usually resident in a sampled meshblock on census day"],
+        ["pes_2025_census_records.csv", "a census record for a sampled meshblock, imputed records excepted"],
+        ["pes_2025_sampled_meshblocks.csv", "a sampled meshblock"],
+    ], [5.6 * cm, 10.0 * cm]))
+    S.append(Spacer(1, 6))
+    S.append(Paragraph(
+        "Region codes are those of the census tables. Meshblock codes begin with the region code. The census's counts "
+        "for every region, by sex and single year of age, are in census_2025_usual_residents_by_region.xlsx.", SMALL))
+    d.build(S, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- the audit report
-def write_report(path, national):
-    """national: dict result code -> sampled persons with that final result"""
-    h1, h1s, h2 = styles(OCHRE)
-    d, frame = _doc(path, "Register Coverage Audit 2026: design, fieldwork and national results", W.PEOPLE["method"],
-                    "%s  |  %s  |  Register Coverage Audit 2026  |  September 2026" % (W.BUREAU, W.DIVISION))
-    total = sum(national.values())
-    absent = sum(national[c] for c in ("20", "30", "40"))
-    est = absent / total * W.NATIONAL_REGISTER
-    labels = {"10": "living at the registered address", "11": "living elsewhere in the registered municipality",
-              "50": "living in the municipality on 1 January 2026, left afterwards",
-              "20": "living elsewhere in the country, not registered there",
-              "30": "living abroad", "40": "died before 1 January 2026, death not recorded"}
-    rows = [["Final result", "Code", "Sampled persons", "Share"]]
-    for c in ("10", "11", "50", "20", "30", "40"):
-        rows.append([labels[c], c, _n(national[c]), "%.2f%%" % (100.0 * national[c] / total)])
-    rows.append(["All sampled persons", "", _n(total), "100.00%"])
-    s = [Paragraph("Register Coverage Audit 2026", h1),
-         Paragraph("Design, fieldwork and national results. %s, %s. Prepared by %s, methodologist; approved by %s, "
-                   "head of population statistics. Published 18 September 2026." % (
-                       W.BUREAU, W.DIVISION, W.PEOPLE["method"], W.PEOPLE["head"]), h1s),
-         Paragraph("1. Purpose", h2),
-         Paragraph("The audit measures how many persons registered in the Population Register at the start of 1 "
-                   "January 2026 were not living in their registered municipality on that date. It is the audit "
-                   "Article 14 of the Municipal Fund Regulation 2027 names for the adjusted resident population.", SANS),
-         Paragraph("2. Design", h2),
-         Paragraph("A simple random sample of %s persons was drawn from the %s persons registered in the Population "
-                   "Register at the start of 1 January 2026, every registered person with the same chance of being "
-                   "drawn. For each sampled person the Bureau extracted the register record as it stood that day and "
-                   "the person's register history; field staff used both to trace the person." % (
-                       _n(W.N_AUDIT), _n(W.NATIONAL_REGISTER)), SANS),
-         Paragraph("3. Fieldwork", h2),
-         Paragraph("Between 2 February and 29 May 2026 field staff visited each sampled person's registered address. "
-                   "Where nobody could be found they called again, spoke to neighbours and the person's household and "
-                   "checked other administrative records (benefits, tax, health insurance and, through the European "
-                   "exchange, registration in another member state). Every case was resolved to a final result "
-                   "describing where the person was living on 1 January 2026; a visit without contact is recorded "
-                   "as 91 and is not a final result. Result 50 marks persons who were living in the municipality on "
-                   "1 January 2026 and left it before the visit: they count as living there.", SANS),
-         Paragraph("4. National results", h2),
-         _table(rows, [8.2 * cm, 1.4 * cm, 3.0 * cm, 2.4 * cm], right=(2, 3)),
-         Spacer(1, 5),
-         Paragraph("Results 20, 30 and 40 are persons not living in their registered municipality on 1 January 2026: "
-                   "%s of the %s sampled, %.2f per cent. Applied to the register, about %s registered persons were "
-                   "not living in their registered municipality." % (
-                       _n(absent), _n(total), 100.0 * absent / total, _n(round(est, -3))), SANS),
-         Paragraph("5. Figures for municipalities", h2),
-         Paragraph("The audit sampled about thirteen of every ten thousand registered persons, too few in any one "
-                   "municipality for that municipality's own sampled persons to give its figure. A municipality's "
-                   "figure is reached by giving each person on its register the share not living in the "
-                   "municipality that the audit found among sampled persons like that person in the respects that "
-                   "bear on it, and adding those shares.", SANS),
-         Paragraph("6. Files", h2),
-         Paragraph("The sample (one record per sampled person, as the register stood at the start of 1 January "
-                   "2026), the fieldwork visits and the sampled persons' register histories are supplied with this "
-                   "report in the layouts of the Population Register's statistical extracts.", SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
+# ----------------------------------------------------------------------------------------------- the series notes
+def write_series_notes(path):
+    h1, h1s, h2 = styles(TEAL)
+    d, frame = _doc(path, "Vital and border series: notes", W.OFFICE,
+                    "%s. Vital and border series, notes for users." % W.OFFICE)
+    S = []
+    S.append(Paragraph("Vital and border series", h1))
+    S.append(Paragraph("Notes for users. %s, population statistics. Updated 14 April 2025." % W.OFFICE, h1s))
+    for head, text in (
+        ("Live births", "Live births registered in the country, by sex and by the year in which the birth took place, "
+         "from 1925. Registration of births has been compulsory since 1912 and is complete. File: "
+         "live_births_by_sex_1925_2025.csv."),
+        ("Deaths", "Deaths registered in the country, by sex, the year of death and the year of birth on the death "
+         "registration. Deaths from 1925 to 1990 are in the historical workbook deaths_by_year_of_birth_1925_1990.xlsx "
+         "(a sheet for each sex, one row a year of death and one column a year of birth); deaths from 1991 are in "
+         "deaths_by_year_of_birth_1991_2025.csv."),
+        ("Long-term movements", "Arrivals of people coming to live in the country for 12 months or more, and departures "
+         "of residents leaving it for 12 months or more, by sex, period and year of birth, from 1950. Every traveller "
+         "is recorded at the border: the country's only ports of entry are its four international airports and two "
+         "seaports, and arrival and departure records are kept for every passenger and crew member. File: "
+         "long_term_movements_by_year_of_birth_1950_2025.csv."),
+        ("The 2025 period", "Each series carries a provisional period for 2025, written 2025-01-01/2025-03-03: 1 January "
+         "to 3 March 2025, the day before the 2025 census. Births in that period are registrations by 14 April 2025; "
+         "a few late registrations will be added."),
+        ("Year of birth", "Taken from the registered date of birth; a death or movement record without one is assigned "
+         "from the age recorded."),
+    ):
+        S.append(Paragraph(head, h2))
+        S.append(Paragraph(text, SANS))
+    d.build(S, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------------------------------------- record layouts
-LAYOUTS = [
-    ("Population Register extract, 1 January 2026 (population_register_extract_20260101.txt)",
-     "Persons registered as residents of the in-play municipalities at the start of 1 January 2026; pipe-delimited, "
-     "a header line and a trailer line (TRAILER, record count, extract date).",
-     [("PERSON_KEY", "pseudonymised person key, the same in every extract"),
-      ("MUN_CODE", "municipality of registration, four digits"),
-      ("ADDRESS_ID", "address identifier, sixteen digits; the first four are the code of the municipality that "
-                     "issued it"),
-      ("ADDRESS_SINCE", "date from which the person is registered at the current address (YYYYMMDD)"),
-      ("SEX", "M or F"), ("BIRTH_DATE", "YYYYMMDD; a day or month that is not known is written 00"),
-      ("BIRTH_COUNTRY", "country of birth, country code"), ("NATIONALITY", "nationality, country code"),
-      ("MARITAL_STATUS", "O never married or in a registered partnership, H married or in a registered partnership")]),
-    ("Register events (population_register_events_extract.csv, register_coverage_audit_2026_histories.csv)",
-     "Every event the register holds for each person, in sequence.",
-     [("PERSON_KEY", "person key"), ("SEQ", "sequence number of the event for the person"),
-      ("EVENT", "event code (list below)"), ("EVENT_DATE", "date the event took effect (YYYYMMDD)"),
-      ("MUN_CODE", "municipality where the event was registered, its code at the time"),
-      ("COUNTRY", "IMM: country the person came from; EMI: country of destination"),
-      ("FROM_MUN_CODE", "VER: municipality the person moved from"),
-      ("ANNULS_SEQ", "ANN: the SEQ of the event annulled")]),
-    ("Register Coverage Audit 2026 sample (register_coverage_audit_2026_sample.csv)",
-     "One record per sampled person, as the register stood at the start of 1 January 2026.",
-     [("AUDIT_NO", "audit case number"), ("PERSON_KEY", "person key"), ("MUN_CODE", "municipality of registration"),
-      ("SEX", "as in the extract"), ("BIRTH_DATE", "as in the extract"), ("BIRTH_COUNTRY", "as in the extract"),
-      ("NATIONALITY", "as in the extract"), ("ADDRESS_SINCE", "as in the extract")]),
-    ("Register Coverage Audit 2026 visits (register_coverage_audit_2026_visits.csv)",
-     "One record per fieldwork contact attempt or check; the last record of a case carries its final result.",
-     [("AUDIT_NO", "audit case number"), ("VISIT", "attempt number within the case"),
-      ("VISIT_DATE", "date (YYYY-MM-DD)"), ("MODE", "V visit, T telephone, R records check"),
-      ("RESULT", "result code (list below)")]),
-    ("Deregistration messages 2025 (deregistration_messages_2025.csv)",
-     "The messages the in-play municipalities' register systems sent to the national hub for departures abroad, deaths "
-     "and removals after an address investigation, as the hub logged them in 2025; the hub's log runs in UTC.",
-     [("MESSAGE_ID", "message number: sending municipality, year, serial"), ("SENT_AT", "time sent (UTC)"),
-      ("SENDER_MUN", "sending municipality, its code at sending"), ("PERSON_KEY", "person key"),
-      ("MESSAGE_TYPE", "EMI departure abroad, OVL death, VOW removal after an address investigation"),
-      ("EVENT_DATE", "date of departure, death or removal (YYYY-MM-DD)"),
-      ("COUNTRY", "EMI: country of destination; OVL: country of death; VOW: 0000")]),
-    ("Hub acknowledgements 2025 (hub_acknowledgements_2025.csv)",
-     "The national hub's answer to each message. The Population Register records what an accepted message reports; "
-     "a rejected message records nothing.",
-     [("MESSAGE_ID", "the message answered"), ("RECEIVED_AT", "time received (UTC)"),
-      ("RESULT", "ACCEPTED or REJECTED"), ("REASON", "rejection reason (list below)")]),
-    ("Non-resident records (non_resident_records_extract.csv)",
-     "Former residents of the in-play municipalities whose registration ended on departure abroad or on removal "
-     "after an address investigation, as the municipality of last residence keeps them.",
-     [("PERSON_KEY", "person key"), ("LAST_MUN_CODE", "municipality of last residence, its code at departure"),
-      ("DEPARTURE_DATE", "date the registration ended (YYYY-MM-DD)"),
-      ("COUNTRY", "country of destination; 0000 where the whereabouts are unknown"),
-      ("STATUS", "A living abroad, O deceased"), ("STATUS_DATE", "date of the status (YYYY-MM-DD)"),
-      ("SEX", "M or F"), ("BIRTH_DATE", "YYYYMMDD")]),
-]
-CODE_LISTS = [
-    ("Event codes", [("GEB", "birth registered in the country"),
-                     ("IMM", "settlement from abroad: the person is registered on arrival from abroad"),
-                     ("EMI", "departure abroad: the registration ends on departure abroad"),
-                     ("VER", "move from another municipality, registered by the new municipality"),
-                     ("ADR", "change of address within the municipality"),
-                     ("HUW", "marriage or registered partnership"), ("NAT", "acquisition of the nationality"),
-                     ("OVL", "death: the registration ends on the date of death"),
-                     ("ANN", "annulment of an earlier event: the annulled event did not take place and is no "
-                             "part of the person's record")]),
-    ("Audit result codes", [("10", "living at the registered address"),
-                            ("11", "living elsewhere in the registered municipality"),
-                            ("50", "living in the municipality on 1 January 2026, left afterwards"),
-                            ("20", "living elsewhere in the country, not registered there"),
-                            ("30", "living abroad"), ("40", "died before 1 January 2026, death not recorded"),
-                            ("91", "no contact at this attempt (not a final result)")]),
-    ("Hub rejection reasons", [(k, v) for k, v in sorted(__import__("sim").REASONS.items())]),
-]
-
-
-def write_layouts(path):
-    h1, h1s, h2 = styles(NAVY)
-    d, frame = _doc(path, "Population Register statistical extracts: record layouts", W.BUREAU,
-                    "%s  |  Statistical extracts of the Population Register  |  record layouts, edition 2026" % W.BUREAU)
-    s = [Paragraph("Statistical extracts of the Population Register", h1),
-         Paragraph("Record layouts and code lists, edition 2026. %s, data services." % W.BUREAU, h1s)]
-    for title, note, fields in LAYOUTS:
-        s += [Paragraph(title, h2), Paragraph(note, SANS),
-              _table([["Field", "Content"]] + [list(f) for f in fields], [4.2 * cm, 12.4 * cm]), Spacer(1, 4)]
-    for title, codes in CODE_LISTS:
-        s += [Paragraph(title, h2), _table([["Code", "Meaning"]] + [list(c) for c in codes], [2.2 * cm, 14.4 * cm]),
-              Spacer(1, 4)]
-    s.append(Paragraph("Country codes are those of the Bureau's country table (country_codes.csv); 0000 is unknown.",
-                       SMALL))
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-# ------------------------------------------------------------------------------------ the delivery specification
-SPEC_COLUMNS = [
-    ("MUNICIPALITY_CODE", "GM followed by the four-digit municipality code"),
-    ("MUNICIPALITY", "municipality name"),
-    ("REGISTERED_20260101", "persons registered as residents of the municipality at the start of 1 January 2026"),
-    ("NOT_RESIDENT_ESTIMATE", "of those persons, the number estimated from the Register Coverage Audit 2026 not to "
-                              "have been living in the municipality on 1 January 2026, whole persons"),
-    ("ADJUSTED_POPULATION", "REGISTERED_20260101 less NOT_RESIDENT_ESTIMATE: the adjusted resident population of "
-                            "Article 14(2), whole persons"),
-    ("QUALIFIES", "Y where ADJUSTED_POPULATION is below 5,000, otherwise N"),
-    ("DEPARTURES_ABROAD_2025", "departures abroad in 2025 recorded in the Population Register from the messages the "
-                               "municipality's register sent in 2025; a person who left twice counts twice, and a "
-                               "removal after an address investigation is not a departure"),
-    ("DEATHS_2025", "deaths in 2025 recorded in the Population Register from the messages the municipality's register "
-                    "sent in 2025, of persons registered as residents of the municipality when they died"),
-]
-
-
-def write_spec(path):
+# ----------------------------------------------------------------------------------------------- the campaign plan
+def write_plan(path):
     doc = docx.Document()
     st = doc.styles["Normal"]
     st.font.name = "Calibri"
-    st.font.size = Pt(10)
+    st.font.size = Pt(10.5)
     t = doc.add_paragraph()
-    r = t.add_run("Delivery specification: adjusted resident population and 2025 population account")
+    r = t.add_run("Electoral Commission")
     r.bold = True
-    r.font.size = Pt(14)
-    r.font.color.rgb = RGBColor(0x1F, 0x3A, 0x5F)
-    doc.add_paragraph("%s, %s. Version 1.0, 1 October 2026. Contact: %s." % (W.MINISTRY, W.DIRECTORATE,
-                                                                             W.PEOPLE["ministry"]))
-    doc.add_heading("1. Purpose", level=2)
-    doc.add_paragraph("The Minister decides in December 2026 which municipalities receive the small-municipality "
-                      "supplement for 2027 under Article 14 of the Municipal Fund Regulation 2027. The ministry asks "
-                      "the Bureau for the adjusted resident population of every municipality in play, with two "
-                      "columns of the register's 2025 population account for the ministry's review of register "
-                      "maintenance.")
-    doc.add_heading("2. Municipalities in play", level=2)
-    doc.add_paragraph("Every municipality whose register count at the start of 1 January 2026 was between 4,500 and "
-                      "6,000 persons, as constituted on 1 January 2026: 24 municipalities. Ravenmeer includes its two "
-                      "former municipalities, Ravensloot and Meerdijk.")
-    doc.add_heading("3. File", level=2)
-    doc.add_paragraph("adjusted_population_supplement_2027.csv: UTF-8, comma separated, one header row with the "
-                      "column names below, one row per municipality in play, sorted by MUNICIPALITY_CODE. Counts are "
-                      "whole numbers without separators. Dates and years in this specification are the country's "
-                      "(Central European Time).")
-    tab = doc.add_table(rows=1, cols=2)
-    tab.style = "Table Grid"
-    tab.rows[0].cells[0].text, tab.rows[0].cells[1].text = "Column", "Content"
-    for name, text in SPEC_COLUMNS:
-        row = tab.add_row().cells
-        row[0].text, row[1].text = name, text
-    doc.add_heading("4. Delivery", level=2)
-    doc.add_paragraph("Deliver the file by 13 November 2026 through the ministry's secure exchange, with a chart of "
-                      "the adjusted resident populations against the 5,000 line for the Minister's note.")
-    for p in doc.paragraphs:
-        if p.style.name.startswith("Heading"):
-            for run in p.runs:
-                run.font.color.rgb = RGBColor(0x1F, 0x3A, 0x5F)
-    doc.core_properties.title = "Delivery specification: adjusted resident population 2027"
-    doc.core_properties.author = W.PEOPLE["ministry"]
+    r.font.size = Pt(9)
+    r.font.color.rgb = RGBColor(0x4A, 0x2C, 0x5A)
+    h = doc.add_paragraph()
+    r = h.add_run("2027 Enrolment Campaign: field plan")
+    r.bold = True
+    r.font.size = Pt(16)
+    doc.add_paragraph("Enrolment and Outreach. Approved by the Commission on 22 September 2026.")
+    sections = [
+        ("1. Purpose", [
+            "The campaign enrols the people who are entitled to vote but are not on the roll, ahead of the 2027 general "
+            "election. Its field organisers work in the regions through 2027, alongside the national advertising and the "
+            "online channel."]),
+        ("2. Who is counted", [
+            "2.1 A region's adults are the people aged 18 or over usually resident in the region on census day, 4 March "
+            "2025, whether or not the census counted them.",
+            "2.2 A region's electors are the electors on the roll at the close of census day with a residential address "
+            "in the region. Overseas electors are not counted in any region.",
+            "2.3 A region's adults not on the roll are its adults less its electors."]),
+        ("3. Organisers", [
+            "3.1 The campaign's 200 field organisers are shared among the 16 regions in proportion to their adults not "
+            "on the roll, by largest remainders: each region takes the whole number in its share, and the organisers "
+            "left over go one each to the regions with the largest fractions. Every region has at least two: a region "
+            "whose share is under two takes two, and the rest are shared again among the other regions in the same "
+            "way.",
+            "3.2 The National Statistics Office supplies each region's adults and the Commission its electors, both "
+            "in the Office's enrolment-gap file."]),
+        ("4. Timetable", [
+            "Organisers are recruited in the last quarter of 2026 and start on 1 February 2027. The allocation is "
+            "reviewed only if a region's organisers cannot be recruited."]),
+        ("5. Monitoring", [
+            "The Commission's monthly reports set each region's organisers beside the roll's movement in the region "
+            "since census day, as the enrolment-gap file gives it to 30 June 2026: the people added to the roll who had "
+            "not been on it on census day, and the electors removed because they had died."]),
+    ]
+    for head, paras in sections:
+        p = doc.add_paragraph()
+        rr = p.add_run(head)
+        rr.bold = True
+        rr.font.size = Pt(11.5)
+        for tx in paras:
+            q = doc.add_paragraph(tx)
+            q.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    doc.add_paragraph("Contact: %s, Enrolment and Outreach Manager." % W.PEOPLE["commission"])
+    doc.core_properties.title = "2027 Enrolment Campaign: field plan"
     doc.save(path)
 
 
 # ----------------------------------------------------------------------------------------------- the workbooks
-def _head(ws, cols, widths):
-    ws.append(cols)
-    for i, w in enumerate(widths):
-        c = ws.cell(row=1, column=i + 1)
-        c.font = Font(bold=True)
-        c.fill = HEAD_FILL
-        c.alignment = Alignment(vertical="top", wrap_text=True)
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
-    ws.freeze_panes = "A2"
+def _head(ws, cols, widths, row=1):
+    for i, c in enumerate(cols):
+        cell = ws.cell(row=row, column=i + 1, value=c)
+        cell.font = Font(bold=True)
+        cell.fill = HEAD_FILL
+        cell.alignment = Alignment(vertical="top", wrap_text=True)
+        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = widths[i]
 
 
-PROVINCE = {"0402": "Kustland", "0417": "Kustland", "0426": "Westmark", "0438": "Westmark",
-            "0451": "Oosterland", "0465": "Westmark", "0473": "Oosterland", "0488": "Oosterland",
-            "0496": "Middengouw", "0509": "Middengouw", "0514": "Kustland", "0527": "Middengouw",
-            "0533": "Oosterland", "0546": "Middengouw", "0552": "Westmark", "1987": "Oosterland",
-            "0568": "Kustland", "0571": "Westmark", "0584": "Middengouw", "0599": "Kustland",
-            "0603": "Oosterland", "0615": "Westmark", "0628": "Middengouw", "0636": "Kustland",
-            "0731": "Oosterland", "0744": "Oosterland"}
-
-
-def write_codes(path):
+def write_spec(path):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Municipalities 2026"
-    _head(ws, ["Code", "Municipality", "Province", "In play"], [9, 18, 16, 9])
-    for code in sorted(W.CODES):
-        ws.append([code, W.NAME[code], PROVINCE[code], "yes"])
-    ws2 = wb.create_sheet("Changes 1 January 2026")
-    _head(ws2, ["Former code", "Former municipality", "New code", "New municipality", "Effective"], [12, 20, 10, 18, 12])
-    for name, code in W.FORMER:
-        ws2.append([code, name, W.MERGED[1], W.MERGED[0], dt.date(2026, 1, 1)])
-        ws2.cell(row=ws2.max_row, column=5).number_format = "yyyy-mm-dd"
+    ws.title = "File layout"
+    ws["A1"] = "Enrolment-gap file for the Electoral Commission: layout"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "%s, %s. Version 1.2, 30 September 2026." % (W.OFFICE, W.DIVISION)
+    _head(ws, ["Column", "Content", "Format"], [18, 92, 26], row=4)
+    rows = [
+        ("REGION_CODE", "Region code, as in the census tables", "two digits"),
+        ("REGION", "Region name", "text"),
+        ("ORGANISERS", "The region's campaign organisers under the Commission's field plan, section 3", "whole number"),
+        ("NEW_ELECTORS", "People added to the roll in the region in the reporting period who were not on the roll at "
+                         "the close of census day (definitions 3)", "whole number"),
+        ("REMOVED_DIED", "Electors removed from the roll in the region in the reporting period because they had died "
+                         "(definitions 4)", "whole number"),
+    ]
+    for i, r in enumerate(rows):
+        for j, v in enumerate(r):
+            ws.cell(row=5 + i, column=j + 1, value=v).alignment = Alignment(vertical="top", wrap_text=True)
+    ws2 = wb.create_sheet("Definitions")
+    ws2.column_dimensions["A"].width = 8
+    ws2.column_dimensions["B"].width = 120
+    defs = [
+        ("1", "One row a region, 16 rows, in region code order, comma-separated with a header row."),
+        ("2", "Dates and times are the country's time. The reporting period runs from the close of census day, 4 March "
+              "2025, to the end of 30 June 2026."),
+        ("3", "NEW_ELECTORS counts the people added to the roll in the reporting period who were not on the roll at the "
+              "close of census day, each person once, in the region of the residential address they enrolled at. "
+              "Enrolments with an overseas address are not counted in any region."),
+        ("4", "REMOVED_DIED counts the electors removed from the roll in the reporting period because they had died, "
+              "in the region of the address they were removed from. A removal later reversed was not a removal."),
+        ("5", "Counts are whole people. Organisers are whole organisers."),
+    ]
+    for i, (k, v) in enumerate(defs):
+        ws2.cell(row=1 + i, column=1, value=k)
+        c = ws2.cell(row=1 + i, column=2, value=v)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
 
 
-def write_pilot(path, seed=W.SEED):
-    """the 2024 coverage pilot in two municipalities that are not in play (another reference date, another design)"""
-    import numpy as np
-    r = np.random.default_rng([seed, 120])
+def write_dictionary(path):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Pilot results"
-    _head(ws, ["Code", "Municipality", "Reference date", "Addresses visited", "Persons registered there",
-               "Not living there", "Share"], [8, 16, 13, 12, 14, 12, 9])
-    for code, name, addr in (("0212", "Grevenhoek", 610), ("0377", "Valdersum", 585)):
-        persons = int(addr * float(r.uniform(2.05, 2.30)))
-        gone = int(round(persons * float(r.uniform(0.012, 0.031))))
-        ws.append([code, name, dt.date(2024, 1, 1), addr, persons, gone, gone / persons])
-        ws.cell(row=ws.max_row, column=3).number_format = "yyyy-mm-dd"
-        ws.cell(row=ws.max_row, column=7).number_format = "0.0%"
-    ws.append([])
-    ws.append(["The pilot visited a random sample of addresses in each municipality and checked every person "
-               "registered at them on 1 January 2024. It tested the fieldwork procedures for the 2026 audit."])
+    ws.title = "Columns"
+    ws["A1"] = "Roll transactions extract: data dictionary"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = ("Electoral Commission, Data Services. The extract holds the enrolments, removals and reinstatements "
+                "processed from census day (4 March 2025) to 30 June 2026. Changes of name or address are not included.")
+    _head(ws, ["Column", "Description"], [16, 100], row=4)
+    cols = [
+        ("TXN_ID", "The transaction's identifier"),
+        ("PROCESSED", "When the platform processed the transaction (date and time)"),
+        ("TXN_TYPE", "NEW an enrolment; DEL a removal from the roll; REI the reinstatement of a removed elector"),
+        ("REASON", "A removal's reason (Codes)"),
+        ("SOURCE", "An enrolment's channel (Codes)"),
+        ("STATUS", "A accepted; R rejected (an application that did not result in an enrolment)"),
+        ("ELECTOR_NO", "The elector number; blank on a rejected application"),
+        ("PERSON_REF", "The Commission's reference for the person"),
+        ("ELECTORATE", "The electorate of the address enrolled at or removed from (electorate code)"),
+        ("ADDRESS_TYPE", "R residential address; O overseas address"),
+        ("SEX", "M or F"),
+        ("BIRTH_YEAR", "Year of birth"),
+        ("REF_TXN", "On a reinstatement, the TXN_ID of the removal it reverses"),
+    ]
+    for i, (k, v) in enumerate(cols):
+        ws.cell(row=5 + i, column=1, value=k)
+        ws.cell(row=5 + i, column=2, value=v).alignment = Alignment(wrap_text=True)
+    ws2 = wb.create_sheet("Codes")
+    _head(ws2, ["Column", "Code", "Meaning"], [12, 8, 80])
+    codes = [
+        ("REASON", "01", "Removed at the elector's own request"),
+        ("REASON", "02", "Overseas for more than three years"),
+        ("REASON", "03", "Duplicate record"),
+        ("REASON", "04", "Objection upheld"),
+        ("REASON", "11", "Deceased: matched to a death registration"),
+        ("REASON", "12", "Deceased: notified by family or a funeral director"),
+        ("SOURCE", "ONL", "Online enrolment"),
+        ("SOURCE", "PAP", "Paper enrolment form"),
+        ("SOURCE", "PRV", "Provisional enrolment transferred to the roll at 18"),
+        ("SOURCE", "CAM", "Enrolment taken at a campaign event"),
+    ]
+    for i, r in enumerate(codes):
+        for j, v in enumerate(r):
+            ws2.cell(row=2 + i, column=j + 1, value=v)
     wb.save(path)
+
+
+def write_census_workbook(path, table):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Contents"
+    ws["A1"] = "2025 Census of Population and Dwellings"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws["A2"] = "Usual residents by region, sex and single year of age. Census day: Tuesday 4 March 2025."
+    ws["A3"] = "%s. Released 18 November 2025." % W.OFFICE
+    ws["A5"] = "Sheet"
+    ws["B5"] = "Region"
+    ws["A5"].font = ws["B5"].font = Font(bold=True)
+    for i, c in enumerate(W.CODES):
+        ws.cell(row=6 + i, column=1, value="%s %s" % (c, W.NAME[c]))
+        ws.cell(row=6 + i, column=2, value=W.NAME[c])
+    ws.column_dimensions["A"].width = 24
+    ws.column_dimensions["B"].width = 22
+    notes = wb.create_sheet("Notes")
+    notes.column_dimensions["A"].width = 6
+    notes.column_dimensions["B"].width = 110
+    for i, tx in enumerate((
+            "Counts are of the people usually resident in each region on census day, by the region of their usual "
+            "residence.",
+            "Counts include the people the census imputed for dwellings it found occupied but could not contact; they "
+            "are shown again in the 'of which imputed' columns.",
+            "Age is the completed years at census day. The row 100 holds the people aged 100 and over.",
+            "Region codes are used throughout the Office's census and survey files.")):
+        notes.cell(row=1 + i, column=1, value=i + 1)
+        notes.cell(row=1 + i, column=2, value=tx).alignment = Alignment(wrap_text=True)
+    for c in W.CODES:
+        sh = wb.create_sheet("%s %s" % (c, W.NAME[c]))
+        sh["A1"] = "%s (%s): usual residents on census day, 4 March 2025" % (W.NAME[c], c)
+        sh["A1"].font = Font(bold=True)
+        sh["A2"] = "2025 Census of Population and Dwellings"
+        _head(sh, ["Age", "Males", "Males, of which imputed", "Females", "Females, of which imputed", "Total"],
+              [8, 12, 14, 12, 14, 12], row=4)
+        tm = tf = 0
+        for a in range(0, 101):
+            m, mi = table[(c, "M", a)]
+            f, fi = table[(c, "F", a)]
+            tm += m
+            tf += f
+            row = 5 + a
+            sh.cell(row=row, column=1, value=("100 and over" if a == 100 else a))
+            for j, v in enumerate((m, mi, f, fi, m + f)):
+                sh.cell(row=row, column=2 + j, value=int(v))
+        sh.cell(row=107, column=1, value="Total").font = Font(bold=True)
+        sh.cell(row=107, column=2, value=int(tm))
+        sh.cell(row=107, column=4, value=int(tf))
+        sh.cell(row=107, column=6, value=int(tm + tf))
+        sh["A109"] = "See Notes for the counts and the imputed records."
+        sh.freeze_panes = "B5"
+    wb.save(path)
+
+
+def write_deaths_history(path, cells):
+    wb = openpyxl.Workbook()
+    first = True
+    for sex, title in (("M", "Males"), ("F", "Females")):
+        ws = wb.active if first else wb.create_sheet()
+        first = False
+        ws.title = title
+        ws["A1"] = "Deaths registered, 1925 to 1990, by year of death and year of birth: %s" % title.lower()
+        ws["A1"].font = Font(bold=True)
+        ws["A2"] = "%s, vital statistics (historical series)" % W.OFFICE
+        ws.cell(row=4, column=1, value="Year of death").font = Font(bold=True)
+        for j, c in enumerate(range(1925, 1991)):
+            ws.cell(row=4, column=2 + j, value=c).font = Font(bold=True)
+        for i, y in enumerate(range(1925, 1991)):
+            ws.cell(row=5 + i, column=1, value=y)
+            for j, c in enumerate(range(1925, 1991)):
+                v = cells.get((y, sex, c))
+                if v:
+                    ws.cell(row=5 + i, column=2 + j, value=int(v))
+        ws.freeze_panes = "B5"
+    wb.save(path)
+
+
+# ----------------------------------------------------------------------------------------------- migration notes
+def write_migration(path):
+    h1, h1s, h2 = styles(PLUM)
+    d, frame = _doc(path, "Roll platform migration: notes for data users", W.COMMISSION,
+                    "Electoral Commission, Data Services. Roll platform migration notes.")
+    S = []
+    S.append(Paragraph("Roll platform migration", h1))
+    S.append(Paragraph("Notes for users of roll extracts. Electoral Commission, Data Services. 9 September 2025.", h1s))
+    for head, text in (
+        ("The move", "On Monday 4 August 2025 the roll moved from the platform the Commission had run since 2004 to its "
+         "new roll platform. Enrolment by every channel continued without a break; provisional enrolments now move to "
+         "the roll on the day the person turns 18 rather than at the start of the next month, and the death "
+         "registration match runs weekly rather than monthly."),
+        ("Identifiers", "Transactions processed by the old platform carry its running numbers (R25- followed by seven "
+         "digits); those processed by the new platform carry its 16-character keys. Person references and elector "
+         "numbers were carried over unchanged, and electorate codes are those of the 2024 boundary review."),
+        ("Removal reasons before 4 August 2025", "Removals processed by the old platform carry its reason codes: 01 "
+         "deceased; 02 overseas for more than three years; 03 duplicate record; 04 objection upheld; 05 moved out of "
+         "the electorate. The new platform's codes are in the data dictionary."),
+        ("Extracts", "Extracts are produced by Data Services on request, as comma-separated files with a header row, in "
+         "the order the platforms processed the transactions."),
+    ):
+        S.append(Paragraph(head, h2))
+        S.append(Paragraph(text, SANS))
+    d.build(S, onFirstPage=frame, onLaterPages=frame)
+
+
+# ----------------------------------------------------------------------------------------------- field operations
+def write_field_ops(path, rows):
+    h1, h1s, h2 = styles(TEAL)
+    d, frame = _doc(path, "2025 Census: field operations summary", W.OFFICE,
+                    "%s. 2025 Census field operations summary." % W.OFFICE)
+    S = []
+    S.append(Paragraph("2025 Census: field operations summary", h1))
+    S.append(Paragraph("%s, census field operations. July 2025." % W.OFFICE, h1s))
+    S.append(Paragraph(
+        "Census day was Tuesday 4 March 2025. Households could respond online from 17 February; paper forms went to "
+        "the dwellings that asked for them and to every dwelling still without a response by 14 March, and field "
+        "staff then visited non-responding dwellings up to six times until 30 April. Dwellings found occupied that "
+        "could not be contacted had their residents imputed.", SANS))
+    S.append(Paragraph("Response by region", h2))
+    tab = [["Region", "Dwellings", "Online", "Paper", "Field visit", "Imputed"]]
+    for r in rows:
+        tab.append(list(r))
+    S.append(_table(tab, [3.6 * cm, 2.4 * cm, 2.2 * cm, 2.2 * cm, 2.4 * cm, 2.2 * cm], right=(1, 2, 3, 4, 5)))
+    S.append(Spacer(1, 6))
+    S.append(Paragraph(
+        "Online, paper and field visit give the share of responding dwellings by the way they responded; imputed "
+        "gives the share of occupied dwellings with residents imputed. Staff: 11,860 enumerators and 1,214 field "
+        "supervisors at the peak.", SMALL))
+    d.build(S, onFirstPage=frame, onLaterPages=frame)

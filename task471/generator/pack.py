@@ -1,256 +1,253 @@
-"""The pack's data files, in the layouts the register, the audit and the hub write them."""
+"""The pack's data files from the simulated world: the census tables, the post-enumeration survey's person files, the
+roll on census day and its electorates, the vital and border series by year of birth, the roll's transaction log, and
+the 2018-base estimates the Office published for June 2024."""
 import csv
-import datetime as dt
 import io
 
 import numpy as np
 
 import sim as S
+from methods import LOG_COLS  # noqa: F401
 import world as W
 
 FILES = {
-    "register": "population_register_extract_20260101.txt",
-    "events": "population_register_events_extract.csv",
-    "sample": "register_coverage_audit_2026_sample.csv",
-    "visits": "register_coverage_audit_2026_visits.csv",
-    "sample_events": "register_coverage_audit_2026_histories.csv",
-    "messages": "deregistration_messages_2025.csv",
-    "acks": "hub_acknowledgements_2025.csv",
-    "nonres": "non_resident_records_extract.csv",
-    "regulation": "municipal_fund_regulation_2027_article_14.pdf",
-    "report": "register_coverage_audit_2026_report.pdf",
-    "layouts": "population_register_record_layouts.pdf",
-    "spec": "adjusted_population_delivery_specification_2027.docx",
-    "codes": "municipality_codes_2026.xlsx",
-    "countries": "country_codes.csv",
-    "pilot": "register_coverage_pilot_2024.xlsx",
-    "levy": "waste_levy_households_20260101.csv",
+    "census": "census_2025_usual_residents_by_region.xlsx",
+    "pes_people": "pes_2025_people.csv",
+    "pes_records": "pes_2025_census_records.csv",
+    "pes_meshblocks": "pes_2025_sampled_meshblocks.csv",
+    "pes_report": "pes_2025_methods_report.pdf",
+    "roll": "roll_at_close_of_census_day_2025.csv",
+    "electorates": "electorates_and_regions.csv",
+    "births": "live_births_by_sex_1925_2025.csv",
+    "deaths_hist": "deaths_by_year_of_birth_1925_1990.xlsx",
+    "deaths": "deaths_by_year_of_birth_1991_2025.csv",
+    "movements": "long_term_movements_by_year_of_birth_1950_2025.csv",
+    "series_notes": "vital_and_border_series_notes.pdf",
+    "plan": "enrolment_campaign_plan_2027.docx",
+    "spec": "enrolment_gap_file_specification.xlsx",
+    "log": "roll_transactions_2025_2026.csv",
+    "dictionary": "roll_extract_data_dictionary.xlsx",
+    "migration": "roll_platform_migration_notes.pdf",
+    "estimates_2024": "subnational_population_estimates_jun2024.csv",
+    "field_ops": "census_2025_field_operations_summary.pdf",
 }
-DISTRACTORS = ("pilot", "levy")
-
-REGISTER_COLS = ["PERSON_KEY", "MUN_CODE", "ADDRESS_ID", "ADDRESS_SINCE", "SEX", "BIRTH_DATE", "BIRTH_COUNTRY",
-                 "NATIONALITY", "MARITAL_STATUS"]
-EVENT_COLS = ["PERSON_KEY", "SEQ", "EVENT", "EVENT_DATE", "MUN_CODE", "COUNTRY", "FROM_MUN_CODE", "ANNULS_SEQ"]
-SAMPLE_COLS = ["AUDIT_NO", "PERSON_KEY", "MUN_CODE", "SEX", "BIRTH_DATE", "BIRTH_COUNTRY", "NATIONALITY",
-               "ADDRESS_SINCE"]
-VISIT_COLS = ["AUDIT_NO", "VISIT", "VISIT_DATE", "MODE", "RESULT"]
-MESSAGE_COLS = ["MESSAGE_ID", "SENT_AT", "SENDER_MUN", "PERSON_KEY", "MESSAGE_TYPE", "EVENT_DATE", "COUNTRY"]
-ACK_COLS = ["MESSAGE_ID", "RECEIVED_AT", "RESULT", "REASON"]
-NONRES_COLS = ["PERSON_KEY", "LAST_MUN_CODE", "DEPARTURE_DATE", "COUNTRY", "STATUS", "STATUS_DATE", "SEX", "BIRTH_DATE"]
-COUNTRY_COLS = ["CODE", "COUNTRY"]
-LEVY_COLS = ["MUN_CODE", "MUNICIPALITY", "HOUSEHOLDS_BILLED", "EXEMPT", "BILLING_DATE"]
+DISTRACTORS = ["estimates_2024", "field_ops"]
+PERIOD_2025 = "2025-01-01/2025-03-03"
 
 
-def rng(seed, *parts):
-    return np.random.default_rng([seed, *parts])
+def rng(seed, k):
+    return np.random.default_rng(seed * 1000 + k)
 
 
-def everything(seed=W.SEED, counts=None):
-    """the whole world: register, audit, histories with their annulments, addresses, 2025 traffic"""
-    reg, sample = S.register(seed, counts or W.COUNT)
-    msgs, nonres = S.traffic(seed, reg)
-    out, acks = S.acknowledge(seed, msgs, nonres)
-    visits = S.fieldwork(seed, sample)
-    addresses(seed, reg, sample)
-    annul(seed, reg, sample)
-    moves(seed, reg, sample)
-    return dict(reg=reg, sample=sample, msgs=out, acks=acks, nonres=nonres, visits=visits)
+def everything(seed=W.SEED):
+    nat = S.national(seed)
+    reg = S.regional(nat, seed)
+    cov = S.coverage(seed)
+    cnt = S.counts(reg, cov, seed)
+    roll_counts = S.roll(reg, cov, seed)
+    log, electors = S.roll_log(reg, roll_counts, seed)
+    x = {"nat": nat, "reg": reg, "cov": cov, "cnt": cnt, "roll_counts": roll_counts, "log": log,
+         "electors": electors, "seed": seed}
+    x["ids"] = survey_ids(x)
+    x["snapshot"] = snapshot_rows(x)
+    return x
 
 
-SIZES = (1, 2, 3, 4, 5, 6)
-SIZE_P = (0.38, 0.30, 0.14, 0.11, 0.05, 0.02)
+def write_csv(path, cols, rows, lineterminator="\r\n"):
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh, lineterminator=lineterminator)
+        w.writerow(cols)
+        n = 0
+        for r in rows:
+            w.writerow(r)
+            n += 1
+    return n
 
 
-def _prefix(code, r):
-    return W.FORMER[int(r.integers(0, 2))][1] if code == W.MERGED[1] else code
+# ------------------------------------------------------------------ the post-enumeration survey
+
+def meshblock_code(c, m):
+    return "%02d%05d" % (int(c), m)
 
 
-def addresses(seed, reg, sample):
-    """households at addresses; an address keeps the code of the municipality that issued it (Ravenmeer's were issued
-    by its two former municipalities)"""
-    for code in W.CODES:
-        r = rng(seed, 90, int(code))
-        people = list(reg[code])
-        order = r.permutation(len(people))
-        i, used = 0, set()
-        while i < len(order):
-            size = int(r.choice(SIZES, p=SIZE_P))
-            while True:
-                aid = _prefix(code, r) + "20" + "%010d" % int(r.integers(10 ** 9, 10 ** 10 - 1))
-                if aid not in used:
-                    used.add(aid)
-                    break
-            for j in order[i:i + size]:
-                people[j]["address"] = aid
-            i += size
-    r = rng(seed, 91)
-    for p in sample:
-        if "address" not in p:
-            p["address"] = p["mun"] + "20" + "%010d" % int(r.integers(10 ** 9, 10 ** 10 - 1))
+def survey_ids(x):
+    """record numbers for the survey's people and the census records in its meshblocks; a matched person carries the
+    number of the census record that counted them"""
+    r = rng(x["seed"], 11)
+    people, records = [], []
+    used = set()
+
+    def rec_no():
+        while True:
+            k = "C%09d" % int(r.integers(100000000, 999999999))
+            if k not in used:
+                used.add(k)
+                return k
+    pes_no = 100000
+    for (c, mb, s, a, cls, inc, inp, pid) in x["cnt"]["p_sample"]:
+        cr = rec_no() if inc else ""
+        if inc:
+            records.append((cr, meshblock_code(c, mb), c, s, a, "C"))
+        if inp:
+            pes_no += int(r.integers(1, 4))
+            people.append(("P%07d" % pes_no, meshblock_code(c, mb), c, s, a, "M" if inc else "N", cr))
+    for (c, mb, s, a, pid) in x["cnt"]["e_sample"]:
+        status = r.choice(["D", "V", "O", "W"], p=[0.52, 0.17, 0.09, 0.22])
+        if status == "O" and a > 1 and r.random() < 0.6:
+            status = "D"
+        records.append((rec_no(), meshblock_code(c, mb), c, s, a, str(status)))
+    people.sort(key=lambda p: (p[1], p[0]))
+    records.sort(key=lambda p: (p[1], p[0]))
+    return {"people": people, "records": records}
 
 
-def annul(seed, reg, sample):
-    """register corrections: a settlement entered twice and a departure entered in error, each annulled"""
-    r = rng(seed, 95)
-    for p in [q for code in W.CODES for q in reg[code]] + [q for q in sample if q["mun"] not in W.CODES]:
-        p.setdefault("annulled", [])
-        if p["stay"] is None:
-            continue
-        u = r.random()
-        imm = [e for e in p["events"] if e[0] == "IMM"][-1]
-        if u < 0.005:
-            p["annulled"].append(("IMM", imm[1], imm[2], imm[3], ""))
-        elif u < 0.008 and imm[1] < dt.date(2024, 10, 1):   # the 2025 departures entered in error are sim.traffic's
-            when = S._rand_date(r, imm[1] + dt.timedelta(days=60), min(W.REF, dt.date(2025, 1, 1)) - dt.timedelta(days=30))
-            p["annulled"].append(("EMI", when, imm[2], "5012", ""))
+PEOPLE_COLS = ["PES_PERSON", "MESHBLOCK", "REGION", "SEX", "AGE", "MATCH", "CENSUS_RECORD"]
+RECORD_COLS = ["CENSUS_RECORD", "MESHBLOCK", "REGION", "SEX", "AGE", "STATUS"]
+MB_COLS = ["MESHBLOCK", "REGION", "DWELLINGS_LISTED", "PEOPLE_LISTED", "VISITS_TO_COMPLETE"]
 
 
-def moves(seed, reg, sample):
-    """a departure abroad leaves from the municipality the person lived in: where the history has the person living
-    elsewhere until then, the move into the municipality is recorded between the two (no stay or departure moves)"""
-    r = rng(seed, 96)
-    for p in [q for code in W.CODES for q in reg[code]] + list(sample):
-        here, prev, add = None, None, []
-        for e in sorted(p["events"], key=lambda e: e[1]):
-            if e[0] in ("GEB", "IMM", "VER"):
-                here, prev = e[2], e[1]
-            elif e[0] == "EMI":
-                if here and e[2] != here and (e[1] - prev).days > 60:
-                    when = S._rand_date(r, prev + dt.timedelta(days=30), e[1] - dt.timedelta(days=30))
-                    add.append(("VER", when, e[2], "", here))
-                here = None
-        if add:
-            p["events"] = sorted(p["events"] + add, key=lambda e: e[1])
+def meshblock_rows(x):
+    r = rng(x["seed"], 12)
+    listed = {}
+    for p in x["ids"]["people"]:
+        listed[p[1]] = listed.get(p[1], 0) + 1
+    rows = []
+    for c in W.CODES:
+        for m in x["cnt"]["sampled_mb"][c]:
+            code = meshblock_code(c, m)
+            n = listed.get(code, 0)
+            rows.append((code, c, max(1, int(round(n / r.uniform(2.3, 2.9)))), n, int(r.integers(1, 5))))
+    return rows
 
 
-def event_rows(people):
-    out = []
-    for p in people:
-        evs = sorted([(e, False) for e in p["events"]] + [(e, True) for e in p.get("annulled", [])],
-                     key=lambda x: (x[0][1], x[1]))
-        seq = 0
-        later = []
-        for e, bad in evs:
-            seq += 1
-            code, when, mun, country, frm = e
-            out.append(dict(PERSON_KEY=p["key"], SEQ=seq, EVENT=code, EVENT_DATE=S.ymd(when), MUN_CODE=mun or "",
-                            COUNTRY=country, FROM_MUN_CODE=frm, ANNULS_SEQ=""))
-            if bad:
-                later.append((seq, code, when))
-        for s_, code, when in later:
-            seq += 1
-            on = p.get("ann_dates", {}).get((code, when), when + dt.timedelta(days=9))
-            out.append(dict(PERSON_KEY=p["key"], SEQ=seq, EVENT="ANN", EVENT_DATE=S.ymd(on),
-                            MUN_CODE=out[-1]["MUN_CODE"], COUNTRY="", FROM_MUN_CODE="", ANNULS_SEQ=s_))
+# ------------------------------------------------------------------ the census tables
+
+def census_table(x):
+    """(region, sex, age) -> (counted including imputed, imputed)"""
+    out = {}
+    for (c, s, a), v in x["cnt"]["census"].items():
+        out[(c, s, a)] = (v["correct"] + v["erroneous"] + v["imputed"], v["imputed"])
     return out
 
 
-def birth_text(p):
-    b = S.ymd(p["birth"])
-    return b[:4] + "0000" if p.get("partial") == "Y" else b[:6] + "00" if p.get("partial") == "M" else b
+# ------------------------------------------------------------------ the roll on census day
+
+AGE_BANDS = [(18, 24), (25, 29), (30, 34), (35, 39), (40, 44), (45, 49), (50, 54), (55, 59), (60, 64), (65, 69),
+             (70, 74), (75, 120)]
 
 
-def register_rows(x):
+def band_label(b):
+    return "%d-%d" % b if b[1] < 120 else "%d+" % b[0]
+
+
+def snapshot_rows(x):
+    """electors at the close of census day by electorate, address type, sex and age band; overseas electors kept under
+    the electorate of their last residential address"""
+    r = rng(x["seed"], 13)
     rows = []
-    for code in sorted(W.CODES):
-        for p in x["reg"][code]:
-            rows.append(dict(PERSON_KEY=p["key"], MUN_CODE=code, ADDRESS_ID=p["address"], ADDRESS_SINCE=S.ymd(p["since"]),
-                             SEX=p["sex"], BIRTH_DATE=birth_text(p), BIRTH_COUNTRY=p["bcountry"],
-                             NATIONALITY=p["nat"], MARITAL_STATUS=p["marital"]))
-    rows.sort(key=lambda d: (d["MUN_CODE"], d["ADDRESS_ID"], d["PERSON_KEY"]))
+    by_region = {c: [e for e in W.ELECTORATES if e[2] == c] for c in W.CODES}
+    for c in W.CODES:
+        es = by_region[c]
+        w = np.array([x["electors"][e[0]] for e in es], float)
+        w = w / w.sum()
+        for s in ("M", "F"):
+            for b in AGE_BANDS:
+                n = sum(x["roll_counts"][(c, s, a)] for a in range(b[0], min(b[1], 100) + 1))
+                draw = r.multinomial(n, w)
+                for e, k in zip(es, draw):
+                    rows.append([e[0], e[1], "R", s, band_label(b), int(k)])
+        for e in es:
+            for s in ("M", "F"):
+                for b in AGE_BANDS:
+                    share = 0.0045 if b[0] < 30 else 0.0035 if b[0] < 50 else 0.0015
+                    k = int(r.poisson(x["electors"][e[0]] * share / len(AGE_BANDS) * 6))
+                    if k:
+                        rows.append([e[0], e[1], "O", s, band_label(b), k])
+    rows.sort(key=lambda q: (int(q[0]), q[2], q[3], AGE_BANDS.index(next(b for b in AGE_BANDS if band_label(b) == q[4]))))
     return rows
 
 
-def sample_rows(x):
-    rows = [dict(AUDIT_NO=p["audit_no"], PERSON_KEY=p["key"], MUN_CODE=p["mun"], SEX=p["sex"], BIRTH_DATE=birth_text(p),
-                 BIRTH_COUNTRY=p["bcountry"], NATIONALITY=p["nat"], ADDRESS_SINCE=S.ymd(p["since"]))
-            for p in x["sample"]]
-    rows.sort(key=lambda d: d["AUDIT_NO"])
-    return rows
+ROLL_COLS = ["ELECTORATE", "ELECTORATE_NAME", "ADDRESS_TYPE", "SEX", "AGE_GROUP", "ELECTORS"]
+ELECTORATE_COLS = ["ELECTORATE", "ELECTORATE_NAME", "NAME_BEFORE_2024_REVIEW", "REGION", "REGION_NAME"]
 
 
-def visit_rows(x):
-    return [dict(AUDIT_NO=v["audit"], VISIT=v["visit"], VISIT_DATE=v["date"].isoformat(), MODE=v["mode"],
-                 RESULT=v["result"]) for v in sorted(x["visits"], key=lambda v: (v["audit"], v["visit"]))]
+def electorate_rows():
+    return [(e[0], e[1], W.RENAMED.get(e[0], ""), e[2], W.NAME[e[2]]) for e in W.ELECTORATES]
 
 
-def summer_time(day):
-    """the country's summer time (UTC+2) for a batch sent shortly after midnight on `day`: the last Sunday of March to
-    the last Sunday of October; otherwise UTC+1"""
-    def last_sunday(month):
-        d = dt.date(day.year, month, 31)
-        return d - dt.timedelta(days=(d.weekday() + 1) % 7)
-    return last_sunday(3) < day <= last_sunday(10)
+# ------------------------------------------------------------------ vital and border series
+
+BIRTH_COLS = ["PERIOD", "SEX", "LIVE_BIRTHS"]
+DEATH_COLS = ["PERIOD", "SEX", "YEAR_OF_BIRTH", "DEATHS"]
+MOVE_COLS = ["PERIOD", "SEX", "YEAR_OF_BIRTH", "ARRIVALS", "DEPARTURES"]
 
 
-def _stamp(r, registered):
-    """the night batch after the registration day: 00:05 to 00:59 the next day in the country's time, written in UTC"""
-    batch = registered + dt.timedelta(days=1)
-    local = dt.datetime(batch.year, batch.month, batch.day, 0, int(r.integers(5, 60)), int(r.integers(0, 60)))
-    utc = local - dt.timedelta(hours=2 if summer_time(batch) else 1)
-    return utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+def period(y):
+    return PERIOD_2025 if y == "2025Q" else str(y)
 
 
-def message_rows(x, seed=W.SEED):
-    r = rng(seed, 100)
-    msgs = sorted(x["msgs"], key=lambda m: (m["sent"], m["sender"], m["key"], m["kind"], m["date"]))
-    rows, acks = [], []
-    by_id = {}
-    for i, m in enumerate(msgs):
-        mid = "%s-25-%06d" % (m["sender"], 100000 + i * 7 + int(r.integers(0, 7)))
-        sent = _stamp(r, m["sent"])
-        by_id[id(m)] = (mid, sent)
-        sender = m["sender"]
-        rows.append(dict(MESSAGE_ID=mid, SENT_AT=sent, SENDER_MUN=sender, PERSON_KEY=m["key"], MESSAGE_TYPE=m["kind"],
-                         EVENT_DATE=m["date"].isoformat(), COUNTRY=m["country"]))
-    for m, res, reason in x["acks"]:
-        mid, sent = by_id[id(m)]
-        t = dt.datetime.strptime(sent, "%Y-%m-%dT%H:%M:%SZ") + dt.timedelta(seconds=int(r.integers(4, 900)))
-        acks.append(dict(MESSAGE_ID=mid, RECEIVED_AT=t.strftime("%Y-%m-%dT%H:%M:%SZ"), RESULT=res, REASON=reason))
-    acks.sort(key=lambda a: (a["RECEIVED_AT"], a["MESSAGE_ID"]))
-    return rows, acks
-
-
-def nonres_rows(x):
-    rows = [dict(PERSON_KEY=n["key"], LAST_MUN_CODE=n["last"], DEPARTURE_DATE=n["dep"].isoformat(), COUNTRY=n["country"],
-                 STATUS=n["status"], STATUS_DATE=n["sdate"].isoformat(), SEX=n["sex"], BIRTH_DATE=S.ymd(n["birth"]))
-            for n in x["nonres"]]
-    rows.sort(key=lambda d: (d["LAST_MUN_CODE"], d["DEPARTURE_DATE"], d["PERSON_KEY"]))
-    return rows
-
-
-def country_rows():
-    rows = [dict(CODE="0000", COUNTRY="Unknown"), dict(CODE=W.HOME[0], COUNTRY="(this country)")]
-    rows += [dict(CODE=c, COUNTRY=n) for c, n, _ in W.COUNTRIES]
-    return sorted(rows, key=lambda d: d["CODE"])
-
-
-def levy_rows(x, seed=W.SEED):
-    """households billed for the 2026 waste levy: the municipalities' own billing, not the register"""
-    r = rng(seed, 110)
+def birth_rows(x):
     rows = []
-    for code in sorted(W.CODES):
-        n_addr = len({p["address"] for p in x["reg"][code]})
-        billed = int(round(n_addr * float(r.uniform(0.95, 1.03))))
-        rows.append(dict(MUN_CODE=code, MUNICIPALITY=W.NAME[code], HOUSEHOLDS_BILLED=billed,
-                         EXEMPT=int(round(billed * float(r.uniform(0.01, 0.04)))), BILLING_DATE="2026-01-01"))
+    for (y, s), n in sorted(x["nat"]["births"].items(), key=lambda kv: (kv[0][0] if kv[0][0] != "2025Q" else 2025.5, kv[0][1])):
+        rows.append((period(y), s, int(n)))
     return rows
 
 
-def write_csv(path, cols, rows, crlf=False, delimiter=","):
-    buf = io.StringIO()
-    w = csv.DictWriter(buf, fieldnames=cols, lineterminator="\r\n" if crlf else "\n", delimiter=delimiter)
-    w.writeheader()
-    for row in rows:
-        w.writerow(row)
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(buf.getvalue())
-    return len(rows)
+def _yk(y):
+    return 2025.5 if y == "2025Q" else y
 
 
-def write_register(path, rows):
-    """the register's extract format: pipe-delimited, a header line and a trailer with the record count"""
-    n = write_csv(path, REGISTER_COLS, rows, crlf=True, delimiter="|")
-    with open(path, "a", encoding="utf-8", newline="") as fh:
-        fh.write("TRAILER|%d|%s\r\n" % (n, S.ymd(W.EXTRACT_DATE)))
-    return n
+def death_rows(x, lo=1991):
+    rows = []
+    for (y, s, c), n in sorted(x["nat"]["deaths"].items(), key=lambda kv: (_yk(kv[0][0]), kv[0][1], kv[0][2])):
+        if _yk(y) >= lo:
+            rows.append((period(y), s, c, int(n)))
+    return rows
+
+
+def death_wide(x, hi=1990):
+    """1925 to 1990: one row a year of death and sex, one column a year of birth"""
+    cells = {}
+    for (y, s, c), n in x["nat"]["deaths"].items():
+        if y != "2025Q" and y <= hi:
+            cells[(y, s, c)] = n
+    return cells
+
+
+def movement_rows(x, lo=1950):
+    keys = set(k for k in x["nat"]["arrivals"]) | set(k for k in x["nat"]["departures"])
+    rows = []
+    for (y, s, c) in sorted(keys, key=lambda k: (_yk(k[0]), k[1], k[2])):
+        if _yk(y) < lo:
+            continue
+        rows.append((period(y), s, c, int(x["nat"]["arrivals"].get((y, s, c), 0)),
+                     int(x["nat"]["departures"].get((y, s, c), 0))))
+    return rows
+
+
+# ------------------------------------------------------------------ the roll's transaction log
+
+def log_rows(x):
+    return [r[:13] for r in x["log"]]
+
+
+# ------------------------------------------------------------------ the 2018-base estimates at June 2024 (distractor)
+
+EST_COLS = ["REGION", "REGION_NAME", "SEX", "AGE_GROUP", "ESTIMATED_RESIDENT_POPULATION"]
+EST_GROUPS = [(0, 14), (15, 24), (25, 44), (45, 64), (65, 120)]
+
+
+def estimate_rows(x):
+    """the Office's 2018-base estimates for 30 June 2024: the census-day people rolled back eight months, the 2018
+    census's coverage adjustment carried forward without any measure of the men both counts missed"""
+    r = rng(x["seed"], 14)
+    rows = []
+    for c in W.CODES:
+        for s in ("M", "F"):
+            for g in EST_GROUPS:
+                n = sum(int(x["reg"]["pop"][c][s][a]) for a in range(g[0], min(g[1], 100) + 1))
+                if s == "M" and g[0] in (15, 25):
+                    n -= int(sum(x["reg"]["unsettled"][c][a] for a in range(max(g[0], 18), min(g[1], 49) + 1)) * 0.27)
+                n = int(round(n * r.uniform(0.982, 0.996) / 10.0)) * 10
+                rows.append((c, W.NAME[c], s, "%d-%d" % g if g[1] < 120 else "%d+" % g[0], n))
+    return rows
