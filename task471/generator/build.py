@@ -22,23 +22,24 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-CENTRAL = dt.timezone(dt.timedelta(hours=-5))
-COMPANY = "%s, %s" % (W.DEPT, W.OFFICE)
+LOCAL = dt.timezone(dt.timedelta(hours=1))
 
 PDF_STAMPS = {
-    "design": (b"D:20260522103514-05'00'", b"D:20260522103514-05'00'"),
-    "standard": (b"D:20260310140207-05'00'", b"D:20260310140207-05'00'"),
-    "factsheet": (b"D:20250114091840-06'00'", b"D:20250114091840-06'00'"),
+    "regulation": (b"D:20260630102214+01'00'", b"D:20260630102214+01'00'"),
+    "report": (b"D:20260917163008+01'00'", b"D:20260918090412+01'00'"),
+    "layouts": (b"D:20260302111545+01'00'", b"D:20260302111545+01'00'"),
 }
-OOXML = {   # creator, last modified by, created, modified, company
-    "parcels": (W.PROGRAM, W.PROGRAM, "2026-01-27T15:02:00Z", "2026-02-03T21:44:19Z", COMPANY),
-    "ced": ("Cedarline LIMS", "Cedarline LIMS", "2026-08-06T13:10:00Z", "2026-08-06T13:10:41Z",
-            W.LABS["CED"]),
+OOXML = {   # creator, last modified by, created, modified, company, excel
+    "spec": (W.PEOPLE["ministry"], W.PEOPLE["ministry"], "2026-09-24T08:41:00Z", "2026-10-01T07:12:44Z",
+             "%s, %s" % (W.MINISTRY, W.DIRECTORATE), False),
+    "codes": ("Data Services", "Data Services", "2026-01-02T09:05:00Z", "2026-01-02T09:22:31Z", W.BUREAU, True),
+    "pilot": (W.PEOPLE["method"], W.PEOPLE["method"], "2024-11-12T13:30:00Z", "2024-11-14T10:02:18Z", W.BUREAU, True),
 }
 AS_OF = {   # each file's date as its source dated it
-    "permits": "2026-08-03", "parcels": "2026-02-03", "manifest": "2026-05-01", "hal": "2026-08-10",
-    "ced": "2026-08-06", "kin": "2026-08-05", "retests": "2026-08-04", "counties": "2025-07-15",
-    "design": "2026-05-22", "standard": "2026-03-10", "factsheet": "2025-01-14", "labs": "2025-12-01",
+    "register": "2026-01-05", "events": "2026-01-05", "sample": "2026-01-14", "visits": "2026-06-05",
+    "sample_events": "2026-01-14", "messages": "2026-01-08", "acks": "2026-01-08", "nonres": "2026-01-05",
+    "regulation": "2026-06-30", "report": "2026-09-18", "layouts": "2026-03-02", "spec": "2026-10-01",
+    "codes": "2026-01-02", "countries": "2026-01-02", "pilot": "2024-11-14", "levy": "2026-02-10",
 }
 
 
@@ -51,30 +52,36 @@ def build(out, x=None, quiet=False):
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or P.everything()
     n = {}
-    n["permits"] = P.write_csv(f("permits"), P.PERMIT_COLS, P.permit_rows(x), crlf=True)
-    n["manifest"] = P.write_csv(f("manifest"), P.MANIFEST_COLS, P.manifest_rows(x))
-    recs = P.lab_records(x)
-    n["hal"] = P.write_csv(f("hal"), P.HAL_COLS, P.hal_rows(recs["HAL"]))
-    n["kin"] = P.write_csv(f("kin"), P.KIN_COLS, P.kin_rows(recs["KIN"]), crlf=True)
-    n["retests"] = P.write_csv(f("retests"), P.REQUEST_COLS, P.request_rows(x))
-    n["counties"] = P.write_csv(f("counties"), P.COUNTY_COLS, P.county_rows(x))
-    n["labs"] = P.write_csv(f("labs"), P.LAB_ROSTER_COLS, P.lab_roster_rows())
-    sheets = P.parcel_sheets(x)
-    n["parcels"] = sum(len(v[1]) for v in sheets.values())
-    DC.write_parcels(f("parcels"), x, sheets)
-    ced = P.ced_rows(recs["CED"])
-    n["ced"] = len(ced)
-    DC.write_ced(f("ced"), ced)
-    DC.write_design(f("design"), x)
-    DC.write_standard(f("standard"))
-    DC.write_factsheet(f("factsheet"))
+    n["register"] = P.write_register(f("register"), P.register_rows(x))
+    n["events"] = P.write_csv(f("events"), P.EVENT_COLS, P.event_rows([p for c in sorted(W.CODES) for p in x["reg"][c]]))
+    n["sample"] = P.write_csv(f("sample"), P.SAMPLE_COLS, P.sample_rows(x))
+    n["visits"] = P.write_csv(f("visits"), P.VISIT_COLS, P.visit_rows(x))
+    n["sample_events"] = P.write_csv(f("sample_events"), P.EVENT_COLS,
+                                     P.event_rows(sorted(x["sample"], key=lambda p: p["audit_no"])))
+    msgs, acks = P.message_rows(x)
+    n["messages"] = P.write_csv(f("messages"), P.MESSAGE_COLS, msgs)
+    n["acks"] = P.write_csv(f("acks"), P.ACK_COLS, acks)
+    n["nonres"] = P.write_csv(f("nonres"), P.NONRES_COLS, P.nonres_rows(x))
+    n["countries"] = P.write_csv(f("countries"), P.COUNTRY_COLS, P.country_rows())
+    n["levy"] = P.write_csv(f("levy"), P.LEVY_COLS, P.levy_rows(x))
+    national = {}
+    for p in x["sample"]:
+        national[p["result"]] = national.get(p["result"], 0) + 1
+    for c in ("10", "11", "50", "20", "30", "40"):
+        national.setdefault(c, 0)
+    DC.write_regulation(f("regulation"))
+    DC.write_report(f("report"), national)
+    DC.write_layouts(f("layouts"))
+    DC.write_spec(f("spec"))
+    DC.write_codes(f("codes"))
+    DC.write_pilot(f("pilot"))
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
-    for k, (cr, lb, c0, m0, co) in OOXML.items():
-        PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=True, company=co)
+    for k, (cr, lb, c0, m0, co, xl) in OOXML.items():
+        PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=xl, company=co)
     for i, k in enumerate(P.FILES):
         y, m, d = (int(v) for v in AS_OF[k].split("-"))
-        ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=CENTRAL).timestamp()
+        ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=LOCAL).timestamp()
         os.utime(f(k), (ts, ts))
     if not quiet:
         big = max(n, key=lambda k: n[k])
@@ -92,7 +99,7 @@ def cut_zip(root):
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):
-            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), CENTRAL)
+            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), LOCAL)
             zi = zipfile.ZipInfo(name, date_time=(t.year, t.month, t.day, t.hour, t.minute, t.second))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16

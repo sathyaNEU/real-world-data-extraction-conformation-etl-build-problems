@@ -1,23 +1,16 @@
 # leak check, task471
 
-**Verdict: REVIEW.** 12 files read, 21 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 5 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: report, design, estimate, sample, parcel, anchor, population, written, alderwick, selection, linkage, nothing, glenmoor, netherby, permit, manifest, earlier, estimator, asserted, counts, overlapping, method, decisive, weight, results
+Stump terms swept: departure, earlier, persons, sample, person, address, report, history, county, anchor, country, registered, method, silent, decisive, molenrade, nijdorp, hilderloo, architecture, selection, extract, settlement, readable, golden, written
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `PWNS_2025-26_survey_design_report.pdf`: carries 12 of 13 distinctive words of the committed call: 'Six of the sixteen counties qualify for the 2027 Well Water Assistance allocation: Alderwick, Brannock, Farrowdale, Glen'
-
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `PWNS_2025-26_survey_design_report.pdf`: 15 of 25 stump-paragraph terms appear (report, design, estimate, sample, parcel, population); read whether the document names the move
-- **REVIEW** `WWA_2027_county_allocation_standard.pdf`: 9 of 25 stump-paragraph terms appear (report, design, estimate, sample, parcel, population); read whether the document names the move
-
-## 8 column names (REVIEW 1)
-- **REVIEW** `Kinsale_PWNS_results_2025-26.csv`: columns a generator names and an organisation does not: FLAG
-
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `certified_drinking_water_labs_2025.csv`: 5 ISO dates after 2026-08-14, e.g. 2026-09-30, 2026-11-30, 2026-12-31, 2027-01-31, 2027-06-30
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `adjusted_population_delivery_specification_2027.docx`: 6 of 25 stump-paragraph terms appear (departure, persons, person, address, country, registered); read whether the document names the move
+- **REVIEW** `municipal_fund_regulation_2027_article_14.pdf`: 10 of 25 stump-paragraph terms appear (departure, persons, sample, person, address, report); read whether the document names the move
+- **REVIEW** `population_register_record_layouts.pdf`: 12 of 25 stump-paragraph terms appear (departure, earlier, persons, sample, person, address); read whether the document names the move
+- **REVIEW** `register_coverage_audit_2026_report.pdf`: 10 of 25 stump-paragraph terms appear (persons, sample, person, address, report, history); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -26,13 +19,20 @@ Stump terms swept: report, design, estimate, sample, parcel, anchor, population,
 
 ## 2 author vocabulary (clean)
 
+## 3 answer figures in the pack (clean)
+
 ## 5 announcements (clean)
 
 ## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
+## 8 column names (clean)
+
+## 9 dates after the setting (clean)
+
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

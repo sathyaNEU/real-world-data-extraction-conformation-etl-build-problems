@@ -1,42 +1,45 @@
 {
  "task": "task471",
- "architecture": 3,
- "title": "Which of the state's sixteen counties qualify for the 2027 Well Water Assistance allocation, an estimated 250 or more private domestic wells in the county's survey population above the nitrate standard on the 2025-26 Private Well Nitrate Survey; with each county's wells on the survey's two lists, its wells first tested above the standard and retested by June 30, 2026 and how many of those retests were still above it, and a chart of the estimates against the line",
- "domain": "General Statistics & Data Science",
- "subdomain": "data-integration-record-linkage-entity-resolution (a health department links two overlapping lists of private wells, a permit database and sixteen assessors' rolls, conforms three laboratories' results and estimates county totals from a survey sampled from both lists)",
+ "architecture": 4,
+ "title": "Which of the 24 municipalities whose register held 4,500 to 6,000 residents at the start of 1 January 2026 qualify for the 2027 small-municipality supplement, an adjusted resident population below 5,000 (the register count less the registered persons the Register Coverage Audit 2026 estimates were not living there); with each municipality's departures abroad and deaths in 2025 and a chart of the adjusted resident populations against the line",
+ "domain": "Survey Research & Official Statistics",
+ "subdomain": "census-register-administrative-data-quality (a national statistics bureau applies a coverage audit of the population register to each municipality's register count, conformed from the register extract, its event history, the audit's sample, visits and histories and the deregistration hub's log into the ministry's delivery file)",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "10: a scorecard: each of 16 counties' estimated wells above the standard against the 250-well line, with each county's wells on the survey's lists and its retests",
- "as_of": "2026-08-14",
+ "prompt_shape": "10: a scorecard: each of the 24 municipalities' adjusted resident population against the 5,000 line, with each municipality's departures abroad and deaths in 2025",
+ "as_of": "2026-10-19",
  "deliverables": [
-  "nitrate_assistance_counties_2027.png",
-  "nitrate_assistance_counties_2027.xlsx"
+  "adjusted_population_supplement_2027.csv",
+  "adjusted_population_supplement_2027.png"
  ],
  "distractor_files": [
-  "PWP_nitrate_and_your_well_fact_sheet.pdf",
-  "certified_drinking_water_labs_2025.csv"
+  "register_coverage_pilot_2024.xlsx",
+  "waste_levy_households_20260101.csv"
  ],
  "stated_inputs": [
-  "2025-26",
+  "1 January 2026",
+  "4,500",
+  "6,000",
+  "5,000",
   "2027",
-  "250",
-  "June 30, 2026",
-  "10 mg/L"
+  "2025"
  ],
  "input_gates": {
-  "files": 12,
+  "files": 16,
   "formats": [
    "csv",
+   "docx",
    "pdf",
+   "txt",
    "xlsx"
   ],
-  "largest_file": "county_assessor_residential_parcels_2025_roll.xlsx",
-  "largest_file_rows": 74518
+  "largest_file": "population_register_events_extract.csv",
+  "largest_file_rows": 292602
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task471/generator/build.py (seeded, deterministic) in the layouts of a state private well program's records: a well construction permit database extract, sixteen county assessors' residential parcel rolls compiled in their own layouts, a survey draw manifest, three laboratories' result exports, a retest kit request log, a county code table, a survey design and fieldwork report, an allocation standard, a household fact sheet and a certified laboratory roster; the state is unnamed and the department, counties, towns, laboratories, households and people are fictional",
-   "date": "2026-08-14",
+   "origin": "constructed for this task by task471/generator/build.py (seeded, deterministic) in the layouts of a national population register's statistical extracts: the register extract with its trailer, the event history, a coverage audit's sample, fieldwork visits and sampled persons' histories, the deregistration hub's 2025 log and acknowledgements, the municipalities' non-resident records, a regulation article, the audit report, the record layouts, the ministry's delivery specification, a municipality code workbook, a country code list, a 2024 pilot workbook and a waste levy billing extract; the country is unnamed and the bureau, ministry, municipalities, persons and people named are fictional",
+   "date": "2026-10-19",
    "license": "original work for this task; no third-party data"
   }
  ]

@@ -1,103 +1,119 @@
-"""submission.md, drafted from generator/figures.json so every figure it states is one the generator computed."""
+"""submission.md from generator/figures.json: tags, the final recommendation, the critical components, the steps and the
+deliverable answers. Every number written comes from figures.json."""
 import json
 
-import pack as P
+import world as W
 
-F = P.FILES
-WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
-         11: "eleven", 12: "twelve"}
-
-
-def _list(names):
-    return ", ".join(names[:-1]) + " and " + names[-1] if len(names) > 1 else names[0]
+NUM = {6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten"}
 
 
 def _n(v):
     return "{:,}".format(int(v))
 
 
+def _names(xs):
+    xs = list(xs)
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
 def write(fig_path, out_path):
     fig = json.load(open(fig_path, encoding="utf-8"))
-    rows = fig["counties"]
-    q = sorted(fig["call"])
-    rungs = fig["rungs"]
-    pooled = sorted(rungs["pooled"])
-    drawn = sorted(rungs["drawn list"])
-    dropped = sorted(set(q) - set(pooled))
-    added = sorted(set(drawn) - set(q))
-    lines = []
-    lines.append("## Tags\n")
-    lines.append("**Domain:** General Statistics & Data Science (data integration and record linkage: a health "
-                 "department links two overlapping lists of private wells, conforms three laboratories' results and "
-                 "estimates each county's wells above the nitrate standard from a survey sampled from both lists).  ")
-    lines.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
-    lines.append("## 1. Final Recommendation\n")
-    lines.append("**%s of the sixteen counties qualify for the 2027 Well Water Assistance allocation: %s.**  " % (
-        WORDS[len(q)].capitalize(), _list(q)))
-    lines.append("Each has an estimated 250 or more wells in its survey population above 10 mg/L nitrate as nitrogen "
-                 "once every tested well counts for the wells it stands for, one over its chance of selection from "
-                 "either list. Not the %s that scaling each county's share of tested wells above the standard to its "
-                 "wells gives (%s): the parcel list was sampled at %.1f per cent against the permit list's %.1f, and "
-                 "its parcel-only wells run higher in nitrate (%.1f per cent of the tested ones above the standard "
-                 "against %.1f per cent of the tested wells on the permit list), so the pooled share leaves out %s. "
-                 "Nor the "
-                 "%s that "
-                 "weighting each tested well by the sampling rate of the list it was drawn from (that list's target "
-                 "over its wells in Table 2) gives: a well on both "
-                 "lists had two chances of selection, and counting it at one list's rate counts it about twice, "
-                 "which puts %s over the line.\n" % (
-                     WORDS[len(pooled)], _list(pooled), fig["parcel_rate"], fig["permit_rate"],
-                     fig["parcel_only_share"], fig["others_share"], _list(dropped), WORDS[len(drawn)], _list(added)))
-    lines.append("## 2. Critical Components\n")
-    lines.append("1. Counties at or above 250: **%d** of 16." % fig["qualifying_count"])
-    lines.append("2. Sampling rates across the sixteen counties: permit list **%.1f%%** (%s of %s wells), parcel list "
-                 "**%.1f%%** (%s of %s)." % (fig["permit_rate"], _n(fig["nP_total"]), _n(fig["NP_total"]),
-                                             fig["parcel_rate"], _n(fig["nQ_total"]), _n(fig["NQ_total"])))
-    lines.append("3. Tested wells on both lists: **%s** of the **%s** tested; wells on the survey's lists: **%s**.\n" % (
-        _n(fig["tested_both_total"]), _n(fig["tested_total"]), _n(fig["union_total"])))
-    lines.append("## 3. Step-by-Step Solution\n")
+    by = {x["name"]: x for x in fig["municipalities"]}
+    call = fig["call"]["names"]
+    default = fig["rungs"]["R2b born abroad x years at the address"]["names"]
+    added = [n for n in default if n not in call]
+    dropped = [n for n in call if n not in default]
+    stay = fig["rungs"]["R2c current stay"]["names"]
+    a = fig["audit"]
+    b = a["by_career"]
+    towns = fig["career_towns"]
+    seasonal = [t for t in towns if t["type"] == "G"]
+    older = [t for t in towns if t["type"] == "O"]
+    uni = [t for t in towns if t["type"] == "U"][0]
+    out = []
+    out.append("## Tags\n")
+    out.append("**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: "
+               "the population register's over-count of residents who left the country unreported, measured by the "
+               "Register Coverage Audit 2026 and applied to each municipality's register count within the "
+               "characteristics that carry it, the length of the current stay since the latest settlement from abroad "
+               "and an earlier departure, both rebuilt from the register's event history).  ")
+    out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
+    out.append("## 1. Final Recommendation\n")
+    out.append("**%s of the 24 municipalities in play qualify for the 2027 small-municipality supplement: %s.**" % (
+        NUM[fig["call"]["count"]], _names(call)))
+    out.append("Each has an adjusted resident population on 1 January 2026 below 5,000: its register count less the "
+               "registered persons the audit estimates were not living there, taken within the length of each "
+               "person's current stay since the latest settlement from abroad and whether the person had left the "
+               "country before it. %s is the qualifying municipality nearest the line and %s the nearest left out. "
+               "Not the %s municipalities the register's own fields give (country of birth by years at the current "
+               "address), which add %s and drop %s, because a move within the country resets the address date while "
+               "only the event history shows who has come and gone before; not the %s the current stay alone gives, "
+               "which drops %s.\n" % (
+                   fig["nearest"]["below"], fig["nearest"]["above"], NUM[len(default)].lower(), _names(added),
+                   _names(dropped), NUM[len(stay)].lower(), _names([n for n in call if n not in stay])))
+    out.append("## 2. Critical Components\n")
+    rc, bp = a["result_codes"], a["by_career_pct"]
+    out.append("1. Sampled persons the audit found not living in their registered municipality on 1 January 2026 "
+               "(final results %s): **%s of %s** (%s per cent)." % (
+                   _names([str(c) for c in rc["absent"]]), _n(a["absent"]), _n(a["sampled"]), "%.2f" % a["share_pct"]))
+    out.append("2. Not living there, by migration career: never settled from abroad **%s of %s** (%.2f per cent); "
+               "settled from abroad with no earlier departure **%s of %s** (%.1f per cent); settled from abroad after an "
+               "earlier departure **%s of %s** (%.1f per cent)." % (
+                   _n(b["never"][1]), _n(b["never"][0]), bp["never"], _n(b["stayed"][1]), _n(b["stayed"][0]),
+                   bp["stayed"], _n(b["returned"][1]), _n(b["returned"][0]), bp["returned"]))
+    out.append("3. Registered persons settled from abroad who had left the country before: %s; against %s." % (
+        "; ".join("%s **%s of %s**" % (t["name"], _n(t["left"]), _n(t["settled"])) for t in seasonal),
+        "; ".join("%s **%s of %s**" % (t["name"], _n(t["left"]), _n(t["settled"])) for t in older + [uni])))
+    out.append("4. Registered persons in the first to fourth year of their current stay: %s **%s**, against %s.\n" % (
+        uni["name"], _n(uni["stay_1_4"]), _names(["%s **%s**" % (t["name"], _n(t["stay_1_4"])) for t in older])))
+    out.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Built the permit list from %s (WELL_USE DOMESTIC, WELL_STATUS ACTIVE, DATE_DRILLED from 1986-01-01 to "
-        "2025-08-31) and the parcel list from %s (the water code each layout gives for a private well, Codes sheet); "
-        "both match Table 2 of %s, %s and %s wells." % (F["permits"], F["parcels"], F["design"], _n(fig["NP_total"]),
-                                                      _n(fig["NQ_total"])),
-        "Linked each permit to its parcel by parcel number (digits only) or, on a permit with none, by house number "
-        "and street name (directions, suffixes and punctuation set aside): a well is on both lists when its permit's "
-        "parcel carries the private-well code, %s wells in the survey population." % _n(fig["union_total"]),
-        "Read %s: TESTED and TESTED_EARLIER rows count toward each list's target, so the permit list is sampled at "
-        "f = target over its wells and the parcel list likewise; each tested well's place on the other list comes "
-        "from the linkage (%s of %s tested wells are on both)." % (F["manifest"], _n(fig["tested_both_total"]),
-                                                                    _n(fig["tested_total"])),
-        "Took each first-test kit's final nitrate as nitrogen from %s (RESULT_STATUS FINAL), %s (latest Report "
-        "Date) and %s (highest VERSION, NO3 divided by 4.427): %s tested wells above 10 mg/L." % (
-            F["hal"], F["ced"], F["kin"], _n(fig["tested_above_total"])),
-        "Summed, over each county's tested wells above the standard, one over the well's chance of selection: f "
-        "permit, f parcel, or 1 - (1 - f permit)(1 - f parcel) for a well on both lists; %s counties at or above 250 "
-        "(%s lowest at %d, %s highest below at %d), and Hartley's estimator at every split of the wells on both "
-        "lists and the estimate post-stratified by list membership give the same %s." % (
-            WORDS[fig["qualifying_count"]], fig["lowest_qualifier"]["name"], fig["lowest_qualifier"]["estimate"],
-            fig["highest_short"]["name"], fig["highest_short"]["estimate"], WORDS[fig["qualifying_count"]]),
-        "Matched each request in %s to its well by ORIGINAL_KIT (portal) or by ship-to house number and street in the "
-        "request's county (phone), and counted each well in the county the survey tested it in, not the county a "
-        "border ZIP code routed the request to." % F["retests"],
-        "Kept retests of wells first tested above 10 mg/L whose retest sample (the laboratories' collection date) "
-        "was collected on or before June 30, 2026 (WWA-2027-01 4.2); households outside the survey and later retests "
-        "left out; still above when the retest is above 10 mg/L: %d retested, %d still above." % (
-            fig["retested_total"], fig["still_above_total"]),
-        "Charted the sixteen estimates against the 250-well line, the qualifying counties highlighted.",
+        "Read population_register_extract_20260101.txt (its trailer's %s persons in the 24 municipalities in play, "
+        "Ravenmeer one municipality under Article 14(4)) and population_register_events_extract.csv, dropped each "
+        "annulled event with its ANN, and gave each person the completed years from the latest IMM to 1 January 2026 "
+        "and whether an EMI came before that IMM." % _n(fig["totals"]["registered"]),
+        "Took each audited person's last record in register_coverage_audit_2026_visits.csv as the final result (%d is "
+        "no contact; %d counts as living there) and built the same two features from "
+        "register_coverage_audit_2026_histories.csv: %s of %s not living there." % (
+            a["result_codes"]["no_contact"], a["result_codes"]["present_left"], _n(a["absent"]), _n(a["sampled"])),
+        "Measured the audit's share not living there within cells of the current stay (never settled from abroad, "
+        "under 1, 1 to 4, 5 to 9, 10 or more years) by whether the person had left the country before; within those "
+        "cells country of birth, nationality, years at the address, age and sex add nothing.",
+        "Gave each registered person the share of their cell, summed by municipality, took the sum from the register "
+        "count, rounded to the whole person and compared with 5,000 (Article 14(1) to (3)): %s qualify." % (
+            NUM[fig["call"]["count"]].lower()),
+        "Departures abroad: deregistration_messages_2025.csv's EMI messages the hub accepted "
+        "(hub_acknowledgements_2025.csv), with a 2025 departure date and sent in 2025 in the country's time (the "
+        "night batch logged at 23:00 UTC or later on 31 December left on 1 January 2026), each person who left twice "
+        "counted twice, less the departures the register annulled as entered in error (an EMI with an ANN in the "
+        "person's history).",
+        "Deaths: the OVL messages the hub accepted with a 2025 date of death and sent in 2025 in the country's time, "
+        "less the deaths the register annulled and the former residents whose registration had ended before they died "
+        "(non_resident_records_extract.csv, DEPARTURE_DATE before the date of death).",
+        "Wrote adjusted_population_supplement_2027.csv in the layout of the ministry's delivery specification and the "
+        "chart of the adjusted resident populations against the 5,000 line.",
     ]
     for i, s in enumerate(steps, 1):
-        lines.append("%d. %s" % (i, s))
-    lines.append("\n## 4. Deliverable Answers\n")
-    lines.append("### nitrate_assistance_counties_2027.xlsx\n")
-    lines.append("1. Counties that qualify: **%d**: %s." % (len(q), _list(q)))
-    lines.append("2. Each county: private domestic wells on the survey's lists; qualifies; wells first tested above "
-                 "the standard and retested by June 30, 2026; of those, still above:")
-    for r in sorted(rows, key=lambda r: r["name"]):
-        lines.append("   - %s: %s; %s; %d; %d" % (r["name"], _n(r["union"]), "yes" if r["qualifies"] else "no",
-                                                 r["retested"], r["still_above"]))
-    lines.append("\n### nitrate_assistance_counties_2027.png\n")
-    lines.append("3. Bar chart of the sixteen counties' estimated wells above the standard against the 250-well line, "
-                 "the %s qualifying counties highlighted." % WORDS[len(q)])
+        out.append("%d. %s" % (i, s))
+    out.append("")
+    out.append("## 4. Deliverable Answers\n")
+    out.append("### adjusted_population_supplement_2027.csv\n")
+    out.append("1. Whether each municipality qualifies, its departures abroad in 2025 and its deaths in 2025:")
+    for x in fig["municipalities"]:
+        out.append("   - %s (%s): %s, %s departures abroad, %s deaths" % (
+            x["name"], x["gm"], "qualifies" if x["qualifies"] else "does not qualify", _n(x["departures"]),
+            _n(x["deaths"])))
+    out.append("")
+    out.append("### adjusted_population_supplement_2027.png\n")
+    out.append("1. Bar chart of the 24 municipalities' adjusted resident populations against the 5,000 line, the %s "
+               "under it highlighted: %s." % (NUM[fig["call"]["count"]].lower(), _names(call)))
     with open(out_path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines) + "\n")
+        fh.write("\n".join(out).rstrip() + "\n")
+
+
+if __name__ == "__main__":
+    import os
+    import sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    write(os.path.join(here, "figures.json"), os.path.join(os.path.dirname(here), "submission.md"))
+    sys.exit(0)

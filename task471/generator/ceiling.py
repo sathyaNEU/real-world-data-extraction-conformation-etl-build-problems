@@ -1,39 +1,59 @@
-"""The pair ceiling on the cut pack: the cracker lands the call and runs the battery; the mirror stops at the default
-path (the pooled share scaled to each county's wells). Weights 38 / 7 / 55; the ask is 32 figures.
+"""The pair ceiling on the cut pack. The cracker lands the call and reads the asks the careful way (accepted messages,
+the 2025 departure or death date, the country's time, persons who left twice counted twice, former residents out) and
+meets no rule or sweep that sends it to the persons' histories; the mirror stops at the rung that keeps the most
+qualifications and reads the asks the same way. Weights 38 / 7 / 55: the call 8, each of the 24 qualifications 1.25,
+each of the 48 ask figures 55/48.
 
     python3 task471/generator/ceiling.py     exit 0 at 40 or under
 """
+import itertools
 import os
 import sys
 
 import bundle as B
+import methods as M
 
-W_CALL, W_INSTR, W_ASK = 38.0, 7.0, 55.0
+W_CALL, W_QUAL, W_INSTR, W_ASK = 8.0, 1.25, 7.0, 55.0
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def main(target=None):
+def hits(a, b, codes):
+    return sum(1 for m in codes if a[m] == b[m])
+
+
+def main(target=None, quiet=False):
     target = target or os.path.join(os.path.dirname(HERE), "target")
     pk = B.Pack(target)
     gold = set(pk.qualifying())
-    mirror = set(pk.qualifying("pooled"))
-    # the graded grid: each county's wells on the lists (16) and its verdict (16); the call's set lives in the verdicts
-    keep = len(pk.codes) + sum(1 for k in pk.codes if (k in gold) == (k in mirror))
-    mirror_call = W_CALL * 0.75 * keep / 32.0
-    g = pk.retests()
-    # the cracker's ask path: every request matched to its well (first kit, or the phone request's address), the
-    # window and the first test applied, each well counted in the county on its request
-    c = pk.retests(by="request")
-    hit = sum(c[k][j] == g[k][j] for k in pk.codes for j in (0, 1))
-    m = pk.retests(by="request", channel="portal")
-    mhit = sum(m[k][j] == g[k][j] for k in pk.codes for j in (0, 1))
-    ask, mask = W_ASK * hit / 32.0, W_ASK * mhit / 32.0
-    cracker, mirror_score = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + mask
-    print("golden %s; mirror %s" % (sorted(gold), sorted(mirror)))
-    print("mirror keeps %d of 32 grid figures; the cracker's ask path keeps %d of 32, the mirror's %d" % (keep, hit, mhit))
-    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
-        cracker, mirror_score, (cracker + mirror_score) / 2, 100.0 * mhit / 32))
-    return (cracker + mirror_score) / 2
+    gd, gt = pk.departures(), pk.deaths()
+    n = len(pk.codes)
+    ask_cracker = hits(pk.departures(void="keep"), gd, pk.codes) + hits(pk.deaths(void="keep"), gt, pk.codes)
+    best, best_keep = None, -1
+    for name in M.RUNGS:
+        s = set(pk.qualifying(name))
+        if s == gold:
+            continue
+        keep = sum(1 for m in pk.codes if (m in s) == (m in gold))
+        if keep > best_keep:
+            best, best_keep = name, keep
+    cracker = W_CALL + W_QUAL * n + W_INSTR + W_ASK * ask_cracker / (2.0 * n)
+    mirror = W_QUAL * best_keep + W_INSTR + W_ASK * ask_cracker / (2.0 * n)
+    # the strongest single reading of either ask a careful response could take, device by device
+    strongest = 0
+    for clock, void in itertools.product(("local", "utc"), ("exclude", "keep", "drop_registered")):
+        if (clock, void) != ("local", "exclude"):
+            strongest = max(strongest, hits(pk.departures(clock=clock, void=void), gd, pk.codes))
+    for clock, res, void in itertools.product(("local", "utc"), ("registered", "none"), ("exclude", "keep")):
+        if (clock, res, void) != ("local", "registered", "exclude"):
+            strongest = max(strongest, hits(pk.deaths(clock=clock, residency=res, void=void), gt, pk.codes))
+    pair = (cracker + mirror) / 2
+    if not quiet:
+        print("golden: %d municipalities; best mirror %s keeps %d of %d qualifications" % (len(gold), best, best_keep, n))
+        print("the cracker's ask reading keeps %d of %d ask figures; the strongest single mishandled reading keeps %d "
+              "of %d" % (ask_cracker, 2 * n, strongest, n))
+        print("cracker %.2f, mirror %.2f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
+            cracker, mirror, pair, 100.0 * ask_cracker / (2 * n)))
+    return pair
 
 
 if __name__ == "__main__":

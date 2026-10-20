@@ -1,326 +1,184 @@
-"""Reading the shipped pack: the two lists, their linkage, the draws, the laboratories' results conformed to nitrate as
-nitrogen, and every route the ladder and the ask name, computed from target/ alone (golden.py, ceiling.py and
-checks.py use it; verify.py does not)."""
+"""Everything computed from the shipped files only (target/): each person's features as the register extract and the
+event histories give them, the audit's final results, every method's adjusted resident populations, and the two
+population-account asks. golden.py, checks.py and ceiling.py read the pack through this module."""
 import csv
 import datetime as dt
 import os
 import re
 
-import openpyxl
+import methods as M
 
-import pack as P
-import world as W
-
-DIRS = {"N", "S", "E", "W", "NORTH", "SOUTH", "EAST", "WEST"}
-SUFFIXES = {"RD", "ROAD", "LN", "LANE", "DR", "DRIVE", "TRL", "TRAIL", "HWY", "HIGHWAY", "CT", "COURT", "AVE",
-            "AVENUE", "ST", "STREET"}
-FRAME_DATE = "2025-08-31"
-CLOSE = "2026-06-30"
-PRIVATE = {"W", "WELL", "2"}
+REF = dt.date(2026, 1, 1)
+HOME = "6030"
+MERGED, FORMER = "1987", ("0731", "0744")
 
 
-def _csv(target, key):
-    with open(os.path.join(target, P.FILES[key]), encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+def _find(target, pattern):
+    hits = [f for f in os.listdir(target) if re.search(pattern, f)]
+    assert len(hits) == 1, (pattern, hits)
+    return os.path.join(target, hits[0])
 
 
-def addr_key(text, num=None):
-    """(house number, street name) with directions, suffixes, case and punctuation set aside"""
-    t = re.sub(r"[.,#]", " ", str(text).upper()).split()
-    if num is None:
-        num, t = t[0], t[1:]
-    rest = [w for w in t if w not in DIRS and w not in SUFFIXES]
-    return int(num), " ".join(rest)
+def _rows(path, delimiter=","):
+    with open(path, encoding="utf-8", newline="") as fh:
+        return [r for r in csv.DictReader(fh, delimiter=delimiter)]
 
 
-def parcel_key(text):
-    d = re.sub(r"\D", "", str(text))
-    return d if len(d) == 9 else None
+def _date(s):
+    s = s.replace("-", "")
+    return dt.date(int(s[:4]), int(s[4:6]) or 7, int(s[6:8]) or 1)
 
 
-def _iso(v):
-    if isinstance(v, (dt.date, dt.datetime)):
-        return v.strftime("%Y-%m-%d")
-    s = str(v)
-    return "%s-%s-%s" % (s[:4], s[4:6], s[6:8]) if re.fullmatch(r"\d{8}", s) else s[:10]
+def completed_years(start, ref=REF):
+    return max(0, ref.year - start.year - ((ref.month, ref.day) < (start.month, start.day)))
+
+
+def histories(rows, annulments=True):
+    """person -> list of (event, date) with annulled events removed (when asked)"""
+    by = {}
+    for r in rows:
+        by.setdefault(r["PERSON_KEY"], []).append(r)
+    out = {}
+    for k, evs in by.items():
+        dead = {e["ANNULS_SEQ"] for e in evs if e["EVENT"] == "ANN"} if annulments else set()
+        out[k] = sorted(((e["EVENT"], _date(e["EVENT_DATE"]), int(e["SEQ"])) for e in evs
+                         if e["EVENT"] != "ANN" and e["SEQ"] not in dead), key=lambda x: (x[1], x[2]))
+    return out
+
+
+def features(rec, hist):
+    imms = [d for e, d, _ in hist if e == "IMM"]
+    latest = imms[-1] if imms else None
+    return dict(stay=completed_years(latest) if latest else None,
+                left=int(any(e == "EMI" and d < latest for e, d, _ in hist)) if latest else 0,
+                first=completed_years(imms[0]) if imms else None,
+                addr=completed_years(_date(rec["ADDRESS_SINCE"])),
+                abroad=int(rec["BIRTH_COUNTRY"] != HOME), foreign=int(rec["NATIONALITY"] != HOME),
+                age=completed_years(_date(rec["BIRTH_DATE"])), sex=rec["SEX"])
 
 
 class Pack:
-    """opts (the fork table's alternative readings): frame_date, link ("parcel or address", "parcel only",
-    "address only"), results ("latest", "earliest"), earlier ("both lists", "permit list only")"""
-
-    def __init__(self, target, frame_date=FRAME_DATE, link="parcel or address", results="latest", earlier="both lists"):
+    def __init__(self, target, annulments=True, final_result="last"):
         self.target = target
-        self.frame_date, self.link_mode, self.result_mode, self.earlier = frame_date, link, results, earlier
-        self._read()
-        self._link()
-        self._sample()
+        reg = _rows(_find(target, r"^population_register_extract_\d+\.txt$"), delimiter="|")
+        self.trailer = [r for r in reg if r["PERSON_KEY"] == "TRAILER"]
+        self.register = [r for r in reg if r["PERSON_KEY"] != "TRAILER"]
+        self.codes = sorted({r["MUN_CODE"] for r in self.register})
+        events = _rows(_find(target, r"^population_register_events_extract\.csv$"))
+        self.hist = histories(events, annulments)
+        dead = {(e["PERSON_KEY"], e["ANNULS_SEQ"]) for e in events if e["EVENT"] == "ANN"}
+        self.void = {(e["PERSON_KEY"], e["EVENT"], _date(e["EVENT_DATE"])) for e in events
+                     if e["EVENT"] in ("EMI", "OVL") and (e["PERSON_KEY"], e["SEQ"]) in dead}
+        self.registered_keys = {e["PERSON_KEY"] for e in events}
+        self.sample = _rows(_find(target, r"audit_2026_sample\.csv$"))
+        self.shist = histories(_rows(_find(target, r"audit_2026_histories\.csv$")), annulments)
+        visits = _rows(_find(target, r"audit_2026_visits\.csv$"))
+        last = {}
+        for v in visits:
+            if final_result == "last":
+                if v["AUDIT_NO"] not in last or int(v["VISIT"]) > int(last[v["AUDIT_NO"]]["VISIT"]):
+                    last[v["AUDIT_NO"]] = v
+            elif v["RESULT"] != "91" and v["AUDIT_NO"] not in last:
+                last[v["AUDIT_NO"]] = v
+        self.result = {k: v["RESULT"] for k, v in last.items()}
+        self.audit = [(features(r, self.shist.get(r["PERSON_KEY"], [])),
+                       int(self.result[r["AUDIT_NO"]] in ("20", "30", "40"))) for r in self.sample]
+        self.pops = {m: [] for m in self.codes}
+        for r in self.register:
+            self.pops[r["MUN_CODE"]].append(features(r, self.hist.get(r["PERSON_KEY"], [])))
+        self.messages = _rows(_find(target, r"^deregistration_messages_2025\.csv$"))
+        self.acks = {a["MESSAGE_ID"]: a for a in _rows(_find(target, r"^hub_acknowledgements_2025\.csv$"))}
+        self.nonres = _rows(_find(target, r"^non_resident_records_extract\.csv$"))
 
-    # ------------------------------------------------------------------------------------------------- reading
-    def _read(self):
-        t = self.target
-        self.counties = _csv(t, "counties")
-        self.codes = [r["COUNTY_CODE"] for r in self.counties]
-        self.name = {r["COUNTY_CODE"]: r["COUNTY"] for r in self.counties}
-        by_permit_name = {r["PERMIT_DB_COUNTY"]: r["COUNTY_CODE"] for r in self.counties}
-        sheet_of = {r["ASSESSOR_SHEET"]: r["COUNTY_CODE"] for r in self.counties}
-        # the permit list: active domestic wells drilled under permit from 1986 to the frame date
-        self.permits = {k: [] for k in self.codes}
-        self.permit_all = {k: [] for k in self.codes}
-        for r in _csv(t, "permits"):
-            k = by_permit_name[r["COUNTY"]]
-            rec = dict(no=r["PERMIT_NO"], addr=addr_key(r["SITE_ADDRESS"]), city=r["SITE_CITY"].upper(),
-                       parcel=parcel_key(r["PARCEL_NO"]) if r["PARCEL_NO"] else None, drilled=r["DATE_DRILLED"],
-                       use=r["WELL_USE"], status=r["WELL_STATUS"])
-            self.permit_all[k].append(rec)
-            if (rec["use"] == "DOMESTIC" and rec["status"] == "ACTIVE"
-                    and "1986-01-01" <= rec["drilled"] <= self.frame_date):
-                self.permits[k].append(rec)
-        # the parcel list: residential parcels the assessor records as served by a private well
-        wb = openpyxl.load_workbook(os.path.join(t, P.FILES["parcels"]), read_only=True)
-        self.parcels = {k: [] for k in self.codes}
-        self.parcel_all = {k: [] for k in self.codes}
-        for ws in wb.worksheets:
-            if ws.title not in sheet_of:
+    # --------------------------------------------------------------------------------------------- the main call
+    def adjusted(self, method=M.GOLDEN, audit=None):
+        key = M.RUNGS.get(method) or M.VARIANTS[method]
+        return M.adjusted(audit or self.audit, self.pops, key)
+
+    def golden(self):
+        adj = self.adjusted()
+        return {m: dict(registered=len(self.pops[m]), adjusted=adj[m], rounded=int(round(adj[m])),
+                        not_resident=len(self.pops[m]) - int(round(adj[m])),
+                        qualifies=int(round(adj[m])) < M.LINE) for m in self.codes}
+
+    def qualifying(self, method=M.GOLDEN):
+        return M.qualifying(self.adjusted(method))
+
+    # ----------------------------------------------------------------------------------------------------- asks
+    def mun(self, sender):
+        return MERGED if sender in FORMER else sender
+
+    def _messages(self, kind, clock="local", acks="accepted", year=True):
+        """the messages of one type the municipality's register sent in 2025 (the country's time, or the hub's UTC
+        year), accepted by the hub (or every message), with an event date in 2025 (or any)"""
+        out = []
+        for x in self.messages:
+            if x["MESSAGE_TYPE"] != kind:
                 continue
-            k = sheet_of[ws.title]
-            rows = ws.iter_rows(values_only=True)
-            head = [str(h) for h in next(rows)]
-            for row in rows:
-                if row[0] is None:
-                    continue
-                v = dict(zip(head, row))
-                if "PIN" in v:
-                    pid, a = v["PIN"], addr_key(v["STREET"], num=v["HOUSE_NO"])
-                    code, city = v["WATER_SOURCE"], v["CITY"]
-                elif "PARCEL_ID" in v:
-                    pid, a, code, city = v["PARCEL_ID"], addr_key(v["SITUS_ADDRESS"]), v["WATER"], v["SITUS_CITY"]
-                else:
-                    pid, a = v["Parcel Number"], addr_key(v["Property Address"])
-                    code, city = v["Water Service"], v["Municipality"]
-                rec = dict(parcel=parcel_key(pid), addr=a, city=str(city).upper(),
-                           code="" if code is None else str(code).strip())
-                self.parcel_all[k].append(rec)
-                if rec["code"] in PRIVATE:
-                    self.parcels[k].append(rec)
-        wb.close()
-        # the draws
-        self.draws = {k: [] for k in self.codes}
-        for r in _csv(t, "manifest"):
-            self.draws[r["COUNTY_CODE"]].append(r)
-        # the laboratories' results, conformed: one nitrate-as-nitrogen result per kit, the latest report standing
-        self.results = {}
-        late = self.result_mode == "latest"
-        for r in _csv(t, "hal"):
-            kit = r["KIT_ID"]
-            if late and r["RESULT_STATUS"] != "FINAL":
+            if year and not x["EVENT_DATE"].startswith("2025"):
                 continue
-            if not late and kit in self.results:       # a reanalysed sample's earlier report comes first
+            sent = local_date(x["SENT_AT"]) if clock == "local" else dt.date(*map(int, x["SENT_AT"][:10].split("-")))
+            if sent.year != 2025:
                 continue
-            self.results[kit] = dict(county=r["COUNTY_CODE"], collected=r["COLLECTED"], n=_num(r["NO3N_MG_L"]),
-                                     lab="HAL")
-        wb = openpyxl.load_workbook(os.path.join(t, P.FILES["ced"]), read_only=True)
-        ws = wb.worksheets[0]
-        rows = ws.iter_rows(values_only=True)
-        head = list(next(rows))
-        ced = {}
-        for row in rows:
-            v = dict(zip(head, row))
-            if v["Analyte"] != "Nitrate as N":
+            if acks == "accepted" and self.acks[x["MESSAGE_ID"]]["RESULT"] != "ACCEPTED":
                 continue
-            key = v["Client Kit"]
-            rep = _iso(v["Report Date"])
-            if key not in ced or (rep > ced[key][0]) == late:
-                ced[key] = (rep, dict(county=v["County"], collected=_iso(v["Date Sampled"]),
-                                      n=0.0 if v["Qualifier"] == "U" else _num(v["Result"]), lab="CED"))
-        wb.close()
-        for key, (_rep, rec) in ced.items():
-            self.results[key] = rec
-        kin = {}
-        for r in _csv(t, "kin"):
-            if r["PARAMETER"] != "NITRATE":
-                continue
-            ver = int(r["VERSION"])
-            if r["CLIENTID"] not in kin or (ver > kin[r["CLIENTID"]][0]) == late:
-                n = 0.0 if r["FLAG"] == "<" else float(r["VALUE"]) / W.NO3_PER_N
-                kin[r["CLIENTID"]] = (ver, dict(county=r["CNTY"], collected=_iso(r["SAMPLED"]), n=n, lab="KIN"))
-        for key, (_v, rec) in kin.items():
-            self.results[key] = rec
-        self.requests = _csv(t, "retests")
+            if self.mun(x["SENDER_MUN"]) in self.pops:
+                out.append(x)
+        return out
 
-    # ---------------------------------------------------------------------------------------------- the linkage
-    def _link(self):
-        """a permit and a parcel are the same well when the permit's parcel number is the parcel's, or, on a permit
-        without one, when the permit's site address is the parcel's situs address"""
-        self.link = {}
-        for k in self.codes:
-            by_pid = {p["parcel"]: p for p in self.parcel_all[k]}
-            by_addr = {p["addr"]: p for p in self.parcel_all[k]}
-            both = 0
-            permit_parcel = {}
-            for rec in self.permits[k]:
-                if self.link_mode == "parcel only":
-                    par = by_pid.get(rec["parcel"]) if rec["parcel"] else None
-                elif self.link_mode == "address only":
-                    par = by_addr.get(rec["addr"])
-                else:
-                    par = by_pid.get(rec["parcel"]) if rec["parcel"] else by_addr.get(rec["addr"])
-                permit_parcel[rec["no"]] = par
-                if par is not None and par["code"] in PRIVATE:
-                    both += 1
-            private_pids = {p["parcel"] for p in self.parcels[k]}
-            parcel_permit = {}
-            for rec in self.permits[k]:
-                par = permit_parcel[rec["no"]]
-                if par is not None and par["parcel"] in private_pids:
-                    parcel_permit[par["parcel"]] = rec
-            NP, NQ = len(self.permits[k]), len(self.parcels[k])
-            self.link[k] = dict(NP=NP, NQ=NQ, NB=both, union=NP + NQ - both, Po=NP - both, Qo=NQ - both,
-                                permit_parcel=permit_parcel, parcel_permit=parcel_permit)
-
-    # ---------------------------------------------------------------------------------------------- the sample
-    def _sample(self):
-        """each county's tested wells: which lists drew it, which lists it is on, its first test"""
-        self.sample = {}
-        for k in self.codes:
-            L = self.link[k]
-            permits = {p["no"]: p for p in self.permits[k]}
-            wells = {}
-            nP = nQ = 0
-            for r in self.draws[k]:
-                if r["OUTCOME"] not in ("TESTED", "TESTED_EARLIER"):
-                    continue
-                if r["OUTCOME"] == "TESTED_EARLIER" and self.earlier != "both lists":
-                    continue
-                kit = r["KIT_ID"]
-                w = wells.setdefault(kit, dict(kit=kit, drawnP=False, drawnQ=False, onP=False, onQ=False, addr=None))
-                if r["FRAME"] == "PERMIT":
-                    nP += 1
-                    w["drawnP"] = w["onP"] = True
-                    rec = permits[r["FRAME_RECORD"]]
-                    w["addr"] = rec["addr"]
-                    par = L["permit_parcel"][rec["no"]]
-                    if par is not None and par["code"] in PRIVATE:
-                        w["onQ"] = True
-                else:
-                    nQ += 1
-                    w["drawnQ"] = w["onQ"] = True
-                    pid = parcel_key(r["FRAME_RECORD"])
-                    if w["addr"] is None:
-                        w["addr"] = next(p["addr"] for p in self.parcels[k] if p["parcel"] == pid)
-                    if pid in L["parcel_permit"]:
-                        w["onP"] = True
-            for w in wells.values():
-                w["n"] = self.results[w["kit"]]["n"]
-                w["y"] = w["n"] > W.STANDARD_N
-            self.sample[k] = dict(wells=wells, nP=nP, nQ=nQ, fP=nP / L["NP"], fQ=nQ / L["NQ"])
-
-    # -------------------------------------------------------------------------------------------- the estimators
-    def estimate(self, k, route="KA", theta=0.5):
-        s, L = self.sample[k], self.link[k]
-        fP, fQ = s["fP"], s["fQ"]
-        ws = list(s["wells"].values())
-        y = lambda w: 1.0 if w["y"] else 0.0
-        if route == "KA":           # each tested well over its chance of selection from either list
-            tot = 0.0
-            for w in ws:
-                pi = 1 - (1 - (fP if w["onP"] else 0)) * (1 - (fQ if w["onQ"] else 0))
-                tot += y(w) / pi
-            return tot
-        if route == "sum of rates":     # the same with the two lists' chances added for a well on both
-            return sum(y(w) / ((fP if w["onP"] else 0) + (fQ if w["onQ"] else 0)) for w in ws)
-        if route == "hartley":      # each list's estimate of its own wells, the wells on both split theta to 1 - theta
-            tot = 0.0
-            for w in ws:
-                both = w["onP"] and w["onQ"]
-                if w["drawnP"]:
-                    tot += y(w) / fP * (theta if both else 1.0)
-                if w["drawnQ"]:
-                    tot += y(w) / fQ * ((1 - theta) if both else 1.0)
-            return tot
-        if route == "domain means":     # each list-membership group's tested share times its wells
-            tot = 0.0
-            for dom, size in (((True, False), L["Po"]), ((False, True), L["Qo"]), ((True, True), L["NB"])):
-                g = [y(w) for w in ws if (w["onP"], w["onQ"]) == dom]
-                tot += size * (sum(g) / len(g) if g else 0.0)
-            return tot
-        if route == "pooled":           # the tested wells' share above, times the wells on the lists
-            return sum(y(w) for w in ws) / len(ws) * L["union"]
-        if route == "drawn list":       # each tested well over the sampling rate of the list it was drawn from
-            return sum(y(w) / (fP if w["drawnP"] else fQ) for w in ws)
-        if route == "lists added":      # each list's own estimate, added
-            return (sum(y(w) / fP for w in ws if w["drawnP"]) + sum(y(w) / fQ for w in ws if w["drawnQ"]))
-        if route == "permit list":      # the permit list's own estimate
-            return sum(y(w) / fP for w in ws if w["drawnP"])
-        if route == "parcel list":
-            return sum(y(w) / fQ for w in ws if w["drawnQ"])
-        raise ValueError(route)
-
-    def qualifying(self, route="KA", **kw):
-        return [k for k in self.codes if self.estimate(k, route, **kw) >= W.QUALIFY]
-
-    def counts(self, k):
-        s = self.sample[k]
-        ws = s["wells"].values()
-        return dict(tested=len(s["wells"]), above=sum(1 for w in ws if w["y"]), nP=s["nP"], nQ=s["nQ"])
-
-    # ------------------------------------------------------------------------------------------------- the ask
-    def retests(self, by="well", channel="all", window=True, first_above=True, survey_only=True):
-        """per county: the wells first tested above the standard with a retest sample collected by June 30, 2026,
-        and how many of those retests were still above it. by="well" counts each well in the county the survey
-        tested it in; by="request" counts it in the county on its request"""
-        kit_of = {}         # (county, address) of every tested well -> its first-test kit
-        county_of = {}
-        first = {}
-        for k in self.codes:
-            for w in self.sample[k]["wells"].values():
-                kit_of[(k, w["addr"])] = w["kit"]
-                county_of[w["kit"]] = k
-                first[w["kit"]] = w["n"]
-        out = {k: [0, 0] for k in self.codes}
+    def departures(self, clock="local", acks="accepted", void="exclude", dedup=False, year=True):
+        """DEPARTURES_ABROAD_2025: departures abroad in 2025 recorded from the messages sent in 2025; a departure the
+        register annulled did not take place (void "keep" counts it, "drop_registered" drops every departure of a
+        person on the 1 January 2026 register, the returners with them)"""
+        out = {m: 0 for m in self.codes}
         seen = set()
-        for r in self.requests:
-            if channel == "portal" and r["CHANNEL"] != "PORTAL":
+        for x in self._messages("EMI", clock, acks, year):
+            k = x["PERSON_KEY"]
+            if void == "exclude" and (k, "EMI", _date(x["EVENT_DATE"])) in self.void:
                 continue
-            if r["CHANNEL"] == "PORTAL":
-                kit = r["ORIGINAL_KIT"] or None
-            else:
-                kit = kit_of.get((r["COUNTY_CODE"], addr_key(r["SHIP_TO_ADDRESS"])))
-            res = self.results.get(r["RETEST_KIT"])
-            if res is None:
+            if void == "drop_registered" and k in self.registered_keys:
                 continue
-            if survey_only and kit not in county_of:
+            if dedup and k in seen:
                 continue
-            if window and res["collected"] > CLOSE:
-                continue
-            if first_above and kit is not None and first.get(kit, 0) <= W.STANDARD_N:
-                continue
-            k = county_of.get(kit, r["COUNTY_CODE"]) if by == "well" else r["COUNTY_CODE"]
-            key = kit or r["RETEST_KIT"]
-            if key in seen:
-                continue
-            seen.add(key)
-            out[k][0] += 1
-            out[k][1] += 1 if res["n"] > W.STANDARD_N else 0
+            seen.add(k)
+            out[self.mun(x["SENDER_MUN"])] += 1
         return out
 
-    def confirmation_samples(self):
-        """the cruder count: every retest sample collected by June 30 in each laboratory's county, still above or not"""
-        out = {k: [0, 0] for k in self.codes}
-        kits = {r["RETEST_KIT"] for r in self.requests}
-        for kit, res in self.results.items():
-            if kit in kits and res["collected"] <= CLOSE:
-                out[res["county"]][0] += 1
-                out[res["county"]][1] += 1 if res["n"] > W.STANDARD_N else 0
+    def departures_nonres(self):
+        out = {m: 0 for m in self.codes}
+        for n in self.nonres:
+            if n["DEPARTURE_DATE"].startswith("2025") and n["COUNTRY"] != "0000":
+                out[self.mun(n["LAST_MUN_CODE"])] += 1
+        return out
+
+    def deaths(self, clock="local", acks="accepted", residency="registered", year=True, void="exclude"):
+        """DEATHS_2025: deaths in 2025 recorded from the messages sent in 2025, of persons registered as residents of the
+        municipality when they died: not in the non-resident records, or there with a registration that ended after
+        the death (residency "none" counts every death, "no_record" drops everyone with a non-resident record,
+        "died_home" drops every death abroad); a death the register annulled did not take place (void "keep")"""
+        ended = {n["PERSON_KEY"]: n["DEPARTURE_DATE"] for n in self.nonres}
+        out = {m: 0 for m in self.codes}
+        for x in self._messages("OVL", clock, acks, year):
+            k = x["PERSON_KEY"]
+            if void == "exclude" and (k, "OVL", _date(x["EVENT_DATE"])) in self.void:
+                continue
+            if residency == "registered" and k in ended and ended[k] <= x["EVENT_DATE"]:
+                continue
+            if residency == "no_record" and k in ended:
+                continue
+            if residency == "died_home" and x["COUNTRY"] != HOME:
+                continue
+            out[self.mun(x["SENDER_MUN"])] += 1
         return out
 
 
-def _num(s):
-    s = str(s).strip()
-    return 0.0 if s.startswith("<") else float(s)
+def local_date(stamp):
+    """the country's calendar date of a UTC time: UTC+2 from 01:00 UTC on the last Sunday of March to 01:00 UTC on the
+    last Sunday of October, UTC+1 otherwise"""
+    t = dt.datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ")
 
-
-GOLD_ROUTES = (("KA", {}), ("sum of rates", {}), ("domain means", {}), ("hartley", dict(theta=0.0)),
-               ("hartley", dict(theta=0.25)), ("hartley", dict(theta=0.5)), ("hartley", dict(theta=0.75)),
-               ("hartley", dict(theta=1.0)))
-WRONG_ROUTES = ("pooled", "drawn list", "lists added", "permit list", "parcel list")
+    def switch(month):
+        d = dt.date(t.year, month, 31)
+        d -= dt.timedelta(days=(d.weekday() + 1) % 7)
+        return dt.datetime(d.year, d.month, d.day, 1, 0, 0)
+    return (t + dt.timedelta(hours=2 if switch(3) <= t < switch(10) else 1)).date()

@@ -1,61 +1,120 @@
-"""task471 world: an unnamed state's Department of Health, its Private Well Program and the 2025-26 Private Well
-Nitrate Survey, sampled separately from two overlapping lists of private domestic wells in each of sixteen counties;
-the 2027 Well Water Assistance allocation goes to the counties with an estimated 250 or more such wells above the
-nitrate standard."""
+"""task471 world: an unnamed EU country's population register and the National Bureau of Statistics' Register Coverage
+Audit 2026. The Municipal Fund Regulation 2027 pays the small-municipality supplement to municipalities whose adjusted
+resident population on 1 January 2026 is below 5,000: the persons registered there that day, less those estimated from
+the audit not to have been living there. The register records an internal move when the new municipality registers
+the person, and a departure abroad only when somebody reports it, so the records left behind belong to people who left
+the country unreported."""
 import datetime as dt
 
 SEED = 471
-DEPT = "Department of Health"
-OFFICE = "Office of Environmental Public Health"
-PROGRAM = "Private Well Program"
-SURVEY = "2025-26 Private Well Nitrate Survey"
-ALLOCATION = "Well Water Assistance"
-PEOPLE = {"manager": "Tina Hurley",            # Private Well Program manager
-          "epi": "Steven Nguyen",              # environmental epidemiologist who designed the survey
-          "assist": "Carlos Phillips"}         # Well Water Assistance coordinator
+BUREAU = "National Bureau of Statistics"
+DIVISION = "Population Statistics Division"
+MINISTRY = "Ministry of the Interior"
+DIRECTORATE = "Directorate of Municipal Finance"
+REGISTER = "Population Register"
+AUDIT = "Register Coverage Audit 2026"
+REGULATION = "Municipal Fund Regulation 2027"
+SUPPLEMENT = "small-municipality supplement"
+PEOPLE = {"head": "Ilse Spreeuw",          # head of population statistics, the Bureau
+          "method": "Luka Bosman",         # the audit's methodologist
+          "ministry": "Kay Wolfswinkel"}   # analyst, the ministry's municipal finance directorate
 
-STANDARD_N = 10.0          # mg/L nitrate as nitrogen
-NO3_PER_N = 4.427          # mg/L nitrate (as NO3) per mg/L nitrate as nitrogen
-QUALIFY = 250              # estimated wells above the standard for a county to qualify
-PERMITS_SINCE = 1986       # domestic wells drilled under permit since
-SURVEY_START = dt.date(2025, 9, 8)
-TESTS_CLOSE = dt.date(2026, 4, 30)
-RETESTS_CLOSE = dt.date(2026, 6, 30)
-AS_OF = dt.date(2026, 8, 14)
+REF = dt.date(2026, 1, 1)            # the reference date of the register count and the audit
+LINE = 5000                          # adjusted resident population below which a municipality qualifies
+IN_PLAY = (4500, 6000)               # register counts the ministry asked the Bureau to adjust
+NATIONAL_REGISTER = 9412736          # persons on the national register on 1 January 2026
+N_AUDIT = 12000
+FIELD_START, FIELD_END = dt.date(2026, 2, 2), dt.date(2026, 5, 29)
+EXTRACT_DATE = dt.date(2026, 1, 5)   # the register extract as the register stood at the start of 1 January 2026
+MSG_CUTOFF = dt.date(2026, 1, 31)    # the Bureau's population account counts a year's events sent by 31 January
+AS_OF = dt.date(2026, 10, 19)
 
-LABS = {"HAL": "Halvorsen Analytical", "CED": "Cedarline Environmental Laboratories", "KIN": "Kinsale Water Testing"}
+# The register's absence process. Silent departures follow the person's current stay in the country (completed years
+# since the latest settlement from abroad) and whether the person has left the country before; people born in the
+# country who never left have a small flat rate. Nothing else bears on absence.
+NEVER = 0.0036
+STAY = {0: 0.030, 1: 0.112, 2: 0.112, 3: 0.112, 4: 0.112, 5: 0.046, 6: 0.046, 7: 0.046, 8: 0.046, 9: 0.046}
+STAY_10 = 0.014
+LEFT_BEFORE = 2.4
+CAP = 0.65
+# of the absent, the share recorded in the audit as died abroad (older people) or living elsewhere in the country
+DIED_SHARE_OLD, ELSEWHERE_SHARE = 0.18, 0.06
 
-# county: name, code, wells on either list, share permit-only, share parcel-only, share both, nitrate median (mg/L N)
-# for permit-only, parcel-only and both, log-spread, tested from the permit list, tested from the parcel list, lab.
-# The numbers are placed by calibrate.py (see the design note's Ladder); geology and land use set the medians.
-COUNTIES = [
-    ("Alderwick", "C01"), ("Brannock", "C02"), ("Corwell", "C03"), ("Dunmere", "C04"),
-    ("Eskvale", "C05"), ("Farrowdale", "C06"), ("Glenmoor", "C07"), ("Hallowcroft", "C08"),
-    ("Ivyridge", "C09"), ("Kestrel Plains", "C10"), ("Lindmark", "C11"), ("Morrowfield", "C12"),
-    ("Netherby", "C13"), ("Oakmere", "C14"), ("Quarrington", "C15"), ("Rushbrook", "C16"),
+
+def p_absent(stay, left_before):
+    """chance a registered person was not living in the municipality on the reference date"""
+    if stay is None:
+        return NEVER
+    return min(CAP, STAY.get(stay, STAY_10) * (LEFT_BEFORE if left_before else 1.0))
+
+
+def stay_band(stay):
+    return None if stay is None else 0 if stay == 0 else 1 if stay <= 4 else 2 if stay <= 9 else 3
+
+
+# Municipalities in play: (name, 2026 code, type). The two former municipalities merged into Ravenmeer on 1 January
+# 2026; the register's history carries their codes for every event before that day.
+MERGED = ("Ravenmeer", "1987")
+FORMER = (("Ravensloot", "0731"), ("Meerdijk", "0744"))
+MUNICIPALITIES = [
+    ("Aldewolde", "0402", "T"), ("Borgermeer", "0417", "T"), ("Bremvoort", "0426", "T"), ("Dalmeer", "0438", "S"),
+    ("Dornhaghe", "0451", "T"), ("Eekhorst", "0465", "G"), ("Haverstede", "0473", "G"), ("Heukelveen", "0488", "T"),
+    ("Hilderloo", "0496", "U"), ("Koudenbeek", "0509", "G"), ("Lemdorp", "0514", "T"), ("Linterdam", "0527", "T"),
+    ("Molenrade", "0533", "O"), ("Nijdorp", "0546", "O"), ("Oosterzand", "0552", "T"), ("Ravenmeer", "1987", "T"),
+    ("Reitsloo", "0568", "T"), ("Sloterwaard", "0571", "T"), ("Steenwoude", "0584", "T"), ("Tienhaven", "0599", "T"),
+    ("Uffeldijk", "0603", "T"), ("Velderkamp", "0615", "T"), ("Westerwierde", "0628", "T"), ("Zandloo", "0636", "T"),
 ]
-LAB_OF = {"C01": "HAL", "C02": "HAL", "C03": "CED", "C04": "KIN", "C05": "HAL", "C06": "CED", "C07": "CED",
-          "C08": "KIN", "C09": "HAL", "C10": "KIN", "C11": "CED", "C12": "HAL", "C13": "KIN", "C14": "CED",
-          "C15": "HAL", "C16": "KIN"}
+CODES = [m[1] for m in MUNICIPALITIES]
+NAME = {m[1]: m[0] for m in MUNICIPALITIES}
+NAME.update({c: n for n, c in FORMER})
+TYPE = {m[1]: m[2] for m in MUNICIPALITIES}
 
-# placed by calibrate.py (pattern GBECEBAECCBEAEEC: A qualifies on every route; G qualifies on every route but the
-# parcel list's, its permit-only wells running high; B qualifies but pooling drops it; C falls short but adding the two
-# lists' estimates lifts it over; E falls short on every route)
-PLACED = [
-    {'N': 2977, 'po': 0.432, 'qo': 0.161, 'mPo': 4.97, 'mQo': 2.03, 'mB': 1.38, 'sigma': 0.99, 'nP': 211, 'nQ': 66, 'accept': 0.69, 'retest': 0.71, 'phone': 0.31, 'tries': 0},
-    {'N': 1438, 'po': 0.082, 'qo': 0.495, 'mPo': 1.61, 'mQo': 6.53, 'mB': 2.41, 'sigma': 1.01, 'nP': 60, 'nQ': 58, 'accept': 0.56, 'retest': 0.77, 'phone': 0.3, 'tries': 14},
-    {'N': 1073, 'po': 0.181, 'qo': 0.255, 'mPo': 1.93, 'mQo': 5.56, 'mB': 2.9, 'sigma': 0.92, 'nP': 77, 'nQ': 34, 'accept': 0.6, 'retest': 0.74, 'phone': 0.3, 'tries': 2},
-    {'N': 2703, 'po': 0.068, 'qo': 0.134, 'mPo': 1.62, 'mQo': 3.04, 'mB': 2.43, 'sigma': 0.94, 'nP': 188, 'nQ': 79, 'accept': 0.6, 'retest': 0.65, 'phone': 0.18, 'tries': 0},
-    {'N': 1683, 'po': 0.187, 'qo': 0.194, 'mPo': 1.45, 'mQo': 4.17, 'mB': 2.18, 'sigma': 1.0, 'nP': 112, 'nQ': 43, 'accept': 0.66, 'retest': 0.79, 'phone': 0.3, 'tries': 17},
-    {'N': 2306, 'po': 0.121, 'qo': 0.418, 'mPo': 1.28, 'mQo': 5.18, 'mB': 1.91, 'sigma': 1.01, 'nP': 121, 'nQ': 83, 'accept': 0.65, 'retest': 0.63, 'phone': 0.21, 'tries': 5},
-    {'N': 10833, 'po': 0.204, 'qo': 0.233, 'mPo': 1.26, 'mQo': 3.61, 'mB': 1.88, 'sigma': 0.94, 'nP': 689, 'nQ': 378, 'accept': 0.6, 'retest': 0.77, 'phone': 0.25, 'tries': 0},
-    {'N': 1380, 'po': 0.173, 'qo': 0.27, 'mPo': 1.77, 'mQo': 5.1, 'mB': 2.66, 'sigma': 0.86, 'nP': 78, 'nQ': 44, 'accept': 0.62, 'retest': 0.77, 'phone': 0.2, 'tries': 16},
-    {'N': 3469, 'po': 0.063, 'qo': 0.155, 'mPo': 1.41, 'mQo': 2.64, 'mB': 2.11, 'sigma': 0.93, 'nP': 227, 'nQ': 111, 'accept': 0.62, 'retest': 0.8, 'phone': 0.28, 'tries': 9},
-    {'N': 3435, 'po': 0.09, 'qo': 0.094, 'mPo': 1.26, 'mQo': 2.36, 'mB': 1.89, 'sigma': 1.02, 'nP': 309, 'nQ': 140, 'accept': 0.68, 'retest': 0.72, 'phone': 0.19, 'tries': 4},
-    {'N': 2631, 'po': 0.146, 'qo': 0.405, 'mPo': 1.21, 'mQo': 4.92, 'mB': 1.81, 'sigma': 0.96, 'nP': 111, 'nQ': 82, 'accept': 0.59, 'retest': 0.73, 'phone': 0.21, 'tries': 1},
-    {'N': 839, 'po': 0.102, 'qo': 0.224, 'mPo': 1.51, 'mQo': 4.35, 'mB': 2.27, 'sigma': 0.92, 'nP': 60, 'nQ': 31, 'accept': 0.61, 'retest': 0.76, 'phone': 0.19, 'tries': 14},
-    {'N': 4573, 'po': 0.208, 'qo': 0.221, 'mPo': 2.13, 'mQo': 6.11, 'mB': 3.19, 'sigma': 0.87, 'nP': 250, 'nQ': 154, 'accept': 0.71, 'retest': 0.62, 'phone': 0.26, 'tries': 0},
-    {'N': 866, 'po': 0.192, 'qo': 0.185, 'mPo': 1.68, 'mQo': 4.83, 'mB': 2.52, 'sigma': 0.96, 'nP': 70, 'nQ': 26, 'accept': 0.6, 'retest': 0.79, 'phone': 0.27, 'tries': 2},
-    {'N': 981, 'po': 0.169, 'qo': 0.28, 'mPo': 1.71, 'mQo': 4.92, 'mB': 2.57, 'sigma': 1.01, 'nP': 58, 'nQ': 30, 'accept': 0.67, 'retest': 0.8, 'phone': 0.18, 'tries': 1},
-    {'N': 1411, 'po': 0.095, 'qo': 0.086, 'mPo': 2.14, 'mQo': 4.01, 'mB': 3.21, 'sigma': 0.98, 'nP': 119, 'nQ': 48, 'accept': 0.7, 'retest': 0.68, 'phone': 0.23, 'tries': 0},
+# Composition by type. mig: share of registered persons with a migration history (settled from abroad at least once);
+# stay: their current stay in bands 0, 1-4, 5-9, 10+ years; left: share who had left the country before, by band;
+# gap: years between the first settlement and the latest one for those who left before; mig_moved: share of migrants
+# whose address date was reset by a move after they settled; nat_moved: the same for people born in the country;
+# dep: 2025 reported departures abroad per registered person; repeat: departers who left twice in 2025.
+TYPES = {
+    "G": dict(mig=0.34, stay=(0.07, 0.66, 0.17, 0.10), left=(0.10, 0.50, 0.25, 0.05), gap=(8, 16), mig_moved=0.08,
+              nat_moved=0.15, dep=0.052, repeat=0.06),
+    "U": dict(mig=0.38, stay=(0.17, 0.78, 0.03, 0.02), left=(0.02, 0.02, 0.02, 0.02), gap=(1, 6), mig_moved=0.30,
+              nat_moved=0.40, dep=0.060, repeat=0.012),
+    "O": dict(mig=0.36, stay=(0.02, 0.06, 0.12, 0.80), left=(0.03, 0.04, 0.03, 0.03), gap=(1, 6), mig_moved=0.72,
+              nat_moved=0.20, dep=0.010, repeat=0.012),
+    "S": dict(mig=0.05, stay=(0.10, 0.30, 0.25, 0.35), left=(0.05, 0.10, 0.05, 0.03), gap=(1, 6), mig_moved=0.40,
+              nat_moved=0.58, dep=0.009, repeat=0.012),
+    "T": dict(mig=0.12, stay=(0.10, 0.28, 0.22, 0.40), left=(0.05, 0.12, 0.05, 0.03), gap=(1, 6), mig_moved=0.35,
+              nat_moved=0.22, dep=0.012, repeat=0.012),
+}
+NATIONAL = dict(mig=0.24, stay=(0.12, 0.30, 0.22, 0.36), left=(0.06, 0.16, 0.06, 0.03), gap=(1, 14), mig_moved=0.35,
+                nat_moved=0.24)
+
+# Register counts on 1 January 2026, placed by calibrate.py (see the design note's Ladder).
+COUNT = {'0402': 4612, '0417': 4728, '0426': 4846, '0438': 5068, '0451': 4912, '0465': 5220, '0473': 5210, '0488': 5152, '0496': 5157, '0509': 5203, '0514': 5241, '0527': 5333, '0533': 5098, '0546': 5096, '0552': 5412, '1987': 5561, '0568': 5487, '0571': 5634, '0584': 5702, '0599': 5768, '0603': 5821, '0615': 5889, '0628': 5944, '0636': 4561}
+
+# Countries (national four-digit codes) by region, with the weights migrants come from in each municipality type.
+HOME = ("6030", "Home country")
+COUNTRIES = [
+    ("5010", "Belgium", "EU"), ("5011", "Bulgaria", "EU"), ("5012", "Germany", "EU"), ("5013", "Spain", "EU"),
+    ("5014", "France", "EU"), ("5015", "Italy", "EU"), ("5016", "Lithuania", "EU"), ("5017", "Poland", "EU"),
+    ("5018", "Portugal", "EU"), ("5019", "Romania", "EU"), ("5020", "Hungary", "EU"), ("5021", "Greece", "EU"),
+    ("5022", "Latvia", "EU"), ("5023", "Croatia", "EU"), ("5024", "Slovakia", "EU"),
+    ("6001", "United Kingdom", "EUR"), ("6002", "Ukraine", "EUR"), ("6003", "Turkey", "EUR"),
+    ("6004", "Serbia", "EUR"), ("6005", "Bosnia and Herzegovina", "EUR"),
+    ("7001", "Morocco", "AFR"), ("7002", "Egypt", "AFR"), ("7003", "Nigeria", "AFR"), ("7004", "Eritrea", "AFR"),
+    ("7005", "Somalia", "AFR"),
+    ("8001", "India", "ASI"), ("8002", "China", "ASI"), ("8003", "Indonesia", "ASI"), ("8004", "Syria", "ASI"),
+    ("8005", "Iran", "ASI"), ("8006", "Afghanistan", "ASI"), ("8007", "Philippines", "ASI"),
+    ("9001", "United States", "AME"), ("9002", "Brazil", "AME"), ("9003", "Suriname", "AME"),
+    ("9004", "Colombia", "AME"),
 ]
+ORIGIN_WEIGHTS = {   # by the migrant's current stay band: recent stays draw more on labour and student flows
+    "G": {"5017": 6, "5019": 5, "5011": 4, "5016": 3, "5022": 2, "5024": 1, "6002": 2, "5018": 1},
+    "U": {"8001": 4, "8002": 4, "5012": 3, "5015": 2, "5013": 2, "6003": 1, "9001": 1, "8005": 1, "5021": 1},
+    "O": {"6003": 6, "7001": 6, "9003": 3, "6004": 1, "6005": 1, "8004": 1, "5012": 1},
+    "S": {"5012": 3, "5010": 2, "6001": 2, "9001": 1, "8001": 1, "5017": 1},
+    "T": {"5017": 2, "5012": 2, "6003": 2, "7001": 2, "8004": 1, "5019": 1, "6002": 1, "5010": 1, "8007": 1},
+    "N": {"5017": 3, "5012": 2, "6003": 2, "7001": 2, "8001": 2, "8004": 1, "5019": 2, "6002": 2, "9003": 1,
+          "8002": 1, "5013": 1, "6001": 1, "5011": 1, "7004": 1, "9002": 1},
+}
+NATIONALITY_CODE = {"6030": "0001"}   # the register's nationality codes are the country codes with a 0 prefix

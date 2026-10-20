@@ -1,5 +1,6 @@
-"""The independent verifier: reads only the shipped pack (target/) and the golden files, recomputes the survey
-population, the six counties and the retest figures by its own code, and compares them with the golden workbook and
+"""The independent verifier: reads only the shipped pack (target/) and the golden files, rebuilds each person's current
+stay and earlier departure from the event histories, the audit's shares, each municipality's adjusted resident
+population and qualification, and the two 2025 counts, by its own code, and compares them with the golden CSV and
 submission.md. It imports nothing from the generator.
 
     python3 task471/generator/verify.py
@@ -9,12 +10,12 @@ import datetime as dt
 import os
 import re
 import sys
+from zoneinfo import ZoneInfo
 
-import openpyxl
-
-LINE, STD, NO3 = 250, 10.0, 4.427
-TOKENS = set("N S E W NORTH SOUTH EAST WEST RD ROAD LN LANE DR DRIVE TRL TRAIL HWY HIGHWAY CT COURT AVE AVENUE ST "
-             "STREET".split())
+REF = dt.date(2026, 1, 1)
+LINE = 5000
+MERGED = {"0731": "1987", "0744": "1987"}
+LOCAL = ZoneInfo("Europe/Brussels")
 
 
 def find(target, pattern):
@@ -23,168 +24,134 @@ def find(target, pattern):
     return os.path.join(target, hits[0])
 
 
-def rows(path):
+def rows(path, delimiter=","):
     with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+        return list(csv.DictReader(fh, delimiter=delimiter))
 
 
-def akey(num, text):
-    words = [w for w in re.split(r"[\s.,]+", str(text).upper()) if w and w not in TOKENS]
-    return "%d|%s" % (int(num), " ".join(words))
+def ymd(s):
+    s = s.replace("-", "")
+    return dt.date(int(s[:4]), int(s[4:6]) or 7, int(s[6:8]) or 1)
 
 
-def akey_line(text):
-    head, _, rest = str(text).strip().partition(" ")
-    return akey(head, rest)
-
-
-def digits(v):
-    d = "".join(ch for ch in str(v) if ch.isdigit())
-    return d if len(d) == 9 else None
-
-
-def day(v):
-    if isinstance(v, (dt.date, dt.datetime)):
-        return v.strftime("%Y-%m-%d")
-    v = str(v)
-    return v[:4] + "-" + v[4:6] + "-" + v[6:8] if v.isdigit() else v[:10]
-
-
-def compute(target):
-    codes = rows(find(target, r"county_codes"))
-    by_name = {r["PERMIT_DB_COUNTY"]: r["COUNTY_CODE"] for r in codes}
-    by_sheet = {r["ASSESSOR_SHEET"]: r["COUNTY_CODE"] for r in codes}
-    names = {r["COUNTY_CODE"]: r["COUNTY"] for r in codes}
-    P = {k: {} for k in names}
-    for r in rows(find(target, r"permits_extract")):
-        if r["WELL_USE"] == "DOMESTIC" and r["WELL_STATUS"] == "ACTIVE" and "1986-01-01" <= r["DATE_DRILLED"] <= "2025-08-31":
-            P[by_name[r["COUNTY"]]][r["PERMIT_NO"]] = (digits(r["PARCEL_NO"]) if r["PARCEL_NO"] else None,
-                                                       akey_line(r["SITE_ADDRESS"]))
-    wb = openpyxl.load_workbook(find(target, r"parcels"), read_only=True)
-    Q = {k: {} for k in names}          # parcel digits -> (address key, private?)
-    for ws in wb.worksheets:
-        if ws.title not in by_sheet:
-            continue
-        k = by_sheet[ws.title]
-        it = ws.iter_rows(values_only=True)
-        h = list(next(it))
-        for v in it:
-            if v[0] is None:
-                continue
-            d = dict(zip(h, v))
-            if "PIN" in d:
-                pid, ak, code = d["PIN"], akey(d["HOUSE_NO"], d["STREET"]), d["WATER_SOURCE"]
-            elif "PARCEL_ID" in d:
-                pid, ak, code = d["PARCEL_ID"], akey_line(d["SITUS_ADDRESS"]), d["WATER"]
-            else:
-                pid, ak, code = d["Parcel Number"], akey_line(d["Property Address"]), d["Water Service"]
-            Q[k][digits(pid)] = (ak, str(code).strip() in ("W", "WELL", "2") if code is not None else False)
+def careers(events):
+    """person -> (stay in completed years since the latest IMM, or None; 1 if an EMI came before that IMM)"""
+    by = {}
+    for e in events:
+        by.setdefault(e["PERSON_KEY"], []).append(e)
     out = {}
-    for k in names:
-        addr_to_pid = {ak: pid for pid, (ak, _p) in Q[k].items()}
-        on_q = {}
-        for no, (pid, ak) in P[k].items():
-            pid = pid if pid else addr_to_pid.get(ak)
-            on_q[no] = bool(pid and Q[k].get(pid, (None, False))[1])
-        priv = {pid for pid, (_a, p) in Q[k].items() if p}
-        q_on_p = set()
-        for no, (pid, ak) in P[k].items():
-            pid = pid if pid else addr_to_pid.get(ak)
-            if pid in priv:
-                q_on_p.add(pid)
-        both = sum(on_q.values())
-        out[k] = dict(name=names[k], NP=len(P[k]), NQ=len(priv), union=len(P[k]) + len(priv) - both, on_q=on_q,
-                      q_on_p=q_on_p, wells={}, nP=0, nQ=0)
-    for r in rows(find(target, r"draw_manifest")):
-        if r["OUTCOME"] not in ("TESTED", "TESTED_EARLIER"):
+    for k, evs in by.items():
+        void = {e["ANNULS_SEQ"] for e in evs if e["EVENT"] == "ANN"}
+        live = [(ymd(e["EVENT_DATE"]), int(e["SEQ"]), e["EVENT"]) for e in evs if e["EVENT"] != "ANN" and e["SEQ"] not in void]
+        imm = max((d for d, _, ev in live if ev == "IMM"), default=None)
+        if imm is None:
+            out[k] = (None, 0)
             continue
-        o = out[r["COUNTY_CODE"]]
-        w = o["wells"].setdefault(r["KIT_ID"], dict(p=False, q=False, addr=None))
-        if r["FRAME"] == "PERMIT":
-            o["nP"] += 1
-            w["p"] = True
-            w["q"] = w["q"] or o["on_q"][r["FRAME_RECORD"]]
-            w["addr"] = P[r["COUNTY_CODE"]][r["FRAME_RECORD"]][1]
-        else:
-            o["nQ"] += 1
-            pid = digits(r["FRAME_RECORD"])
-            w["q"] = True
-            w["p"] = w["p"] or pid in o["q_on_p"]
-            w["addr"] = w["addr"] or Q[r["COUNTY_CODE"]][pid][0]
-    res = {}
-    for r in rows(find(target, r"Halvorsen")):
-        if r["RESULT_STATUS"] == "FINAL":
-            v = r["NO3N_MG_L"]
-            res[r["KIT_ID"]] = (r["COLLECTED"], 0.0 if v.startswith("<") else float(v))
-    wb = openpyxl.load_workbook(find(target, r"Cedarline"), read_only=True)
-    it = wb["Results"].iter_rows(values_only=True)
-    h = list(next(it))
-    best = {}
-    for v in it:
-        d = dict(zip(h, v))
-        if d["Analyte"] == "Nitrate as N" and (d["Client Kit"] not in best or day(d["Report Date"]) > best[d["Client Kit"]][0]):
-            best[d["Client Kit"]] = (day(d["Report Date"]), day(d["Date Sampled"]),
-                                     0.0 if d["Qualifier"] == "U" else float(d["Result"]))
-    for kit, (_r, c, n) in best.items():
-        res[kit] = (c, n)
-    ver = {}
-    for r in rows(find(target, r"Kinsale")):
-        if r["PARAMETER"] == "NITRATE" and int(r["VERSION"]) >= ver.get(r["CLIENTID"], 0):
-            ver[r["CLIENTID"]] = int(r["VERSION"])
-            res[r["CLIENTID"]] = (day(r["SAMPLED"]), 0.0 if r["FLAG"] == "<" else float(r["VALUE"]) / NO3)
-    for k, o in out.items():
-        fP, fQ = o["nP"] / o["NP"], o["nQ"] / o["NQ"]
-        est = 0.0
-        for kit, w in o["wells"].items():
-            if res[kit][1] > STD:
-                est += 1.0 / (1 - (1 - (fP if w["p"] else 0)) * (1 - (fQ if w["q"] else 0)))
-        o["estimate"], o["qualifies"] = est, est >= LINE
-    # retests: each request to its well (first kit, or ship-to address in the request's county), counted where tested
-    kit_county = {kit: k for k, o in out.items() for kit in o["wells"]}
-    addr_kit = {(k, w["addr"]): kit for k, o in out.items() for kit, w in o["wells"].items()}
-    first = {kit: res[kit][1] for kit in kit_county}
-    for o in out.values():
-        o["retested"], o["still"] = 0, 0
-    done = set()
-    for r in rows(find(target, r"retest_kit_requests")):
-        kit = r["ORIGINAL_KIT"] or addr_kit.get((r["COUNTY_CODE"], akey_line(r["SHIP_TO_ADDRESS"])))
-        if not kit or kit not in kit_county or kit in done or r["RETEST_KIT"] not in res:
-            continue
-        coll, n = res[r["RETEST_KIT"]]
-        if coll > "2026-06-30" or first[kit] <= STD:
-            continue
-        done.add(kit)
-        o = out[kit_county[kit]]
-        o["retested"] += 1
-        o["still"] += 1 if n > STD else 0
+        years = REF.year - imm.year - ((REF.month, REF.day) < (imm.month, imm.day))
+        out[k] = (years, int(any(ev == "EMI" and d < imm for d, _, ev in live)))
     return out
 
 
-def main(target, gdir, sub=None):
-    out = compute(target)
+def cell(c):
+    stay, left = c
+    if stay is None:
+        return ("never", 0)
+    return (0 if stay == 0 else 1 if stay <= 4 else 2 if stay <= 9 else 3, left)
+
+
+def main(target, gdir, quiet=False):
     ok = True
-    wb = openpyxl.load_workbook(os.path.join(gdir, "nitrate_assistance_counties_2027.xlsx"), read_only=True)
-    golden = {r[0]: r for r in wb["Counties 2027"].iter_rows(min_row=5, values_only=True) if r[0]}
-    for k, o in sorted(out.items()):
-        g = golden[k]
-        want = (o["union"], "Yes" if o["qualifies"] else "No", o["retested"], o["still"])
-        if tuple(g[2:6]) != want:
+
+    def check(cond, msg):
+        nonlocal ok
+        if not cond:
             ok = False
-            print("VERIFY MISMATCH %s: golden %s, recomputed %s" % (k, g[2:6], want))
-    sub = sub or os.path.join(os.path.dirname(gdir), "submission.md")
-    text = open(sub, encoding="utf-8").read()
-    for k, o in out.items():
-        line = "   - %s: %s; %s; %d; %d" % (o["name"], "{:,}".format(o["union"]), "yes" if o["qualifies"] else "no",
-                                           o["retested"], o["still"])
-        if line not in text:
-            ok = False
-            print("VERIFY MISMATCH submission.md: %s" % line)
-    q = sorted(o["name"] for o in out.values() if o["qualifies"])
-    print("verify: %d counties qualify (%s); %s" % (len(q), ", ".join(q), "golden and submission agree" if ok
-                                                      else "MISMATCHES"))
+            print("VERIFY FAIL:", msg)
+
+    reg = rows(find(target, r"^population_register_extract_\d+\.txt$"), delimiter="|")
+    trailer = [r for r in reg if r["PERSON_KEY"] == "TRAILER"]
+    reg = [r for r in reg if r["PERSON_KEY"] != "TRAILER"]
+    check(int(trailer[0]["MUN_CODE"]) == len(reg), "the trailer's count")
+    events = rows(find(target, r"^population_register_events_extract\.csv$"))
+    car = careers(events)
+    sample = rows(find(target, r"audit_2026_sample\.csv$"))
+    scar = careers(rows(find(target, r"audit_2026_histories\.csv$")))
+    final = {}
+    for v in rows(find(target, r"audit_2026_visits\.csv$")):
+        if v["AUDIT_NO"] not in final or int(v["VISIT"]) > int(final[v["AUDIT_NO"]][0]):
+            final[v["AUDIT_NO"]] = (v["VISIT"], v["RESULT"])
+    n, x = {}, {}
+    for r in sample:
+        c = cell(scar.get(r["PERSON_KEY"], (None, 0)))
+        n[c] = n.get(c, 0) + 1
+        x[c] = x.get(c, 0) + int(final[r["AUDIT_NO"]][1] in ("20", "30", "40"))
+    rate = {c: x[c] / n[c] for c in n}
+    absent = sum(x.values())
+    count, expect = {}, {}
+    for r in reg:
+        m = r["MUN_CODE"]
+        count[m] = count.get(m, 0) + 1
+        expect[m] = expect.get(m, 0.0) + rate[cell(car.get(r["PERSON_KEY"], (None, 0)))]
+    adjusted = {m: count[m] - expect[m] for m in count}
+    qual = {m: round(adjusted[m]) < LINE for m in count}
+    # the two 2025 counts
+    msgs = rows(find(target, r"^deregistration_messages_2025\.csv$"))
+    res = {a["MESSAGE_ID"]: a["RESULT"] for a in rows(find(target, r"^hub_acknowledgements_2025\.csv$"))}
+    void = set()
+    by = {}
+    for e in events:
+        by.setdefault(e["PERSON_KEY"], {})[e["SEQ"]] = e
+    for k, evs in by.items():
+        for e in evs.values():
+            if e["EVENT"] == "ANN":
+                a = evs[e["ANNULS_SEQ"]]
+                void.add((k, a["EVENT"], ymd(a["EVENT_DATE"])))
+    ended = {r["PERSON_KEY"]: r["DEPARTURE_DATE"] for r in rows(find(target, r"^non_resident_records_extract\.csv$"))}
+    dep = {m: 0 for m in count}
+    dth = {m: 0 for m in count}
+    for mm in msgs:
+        sent = dt.datetime.strptime(mm["SENT_AT"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
+        if sent.astimezone(LOCAL).year != 2025 or not mm["EVENT_DATE"].startswith("2025") or res[mm["MESSAGE_ID"]] != "ACCEPTED":
+            continue
+        m = MERGED.get(mm["SENDER_MUN"], mm["SENDER_MUN"])
+        if (mm["PERSON_KEY"], mm["MESSAGE_TYPE"], ymd(mm["EVENT_DATE"])) in void:
+            continue
+        if mm["MESSAGE_TYPE"] == "EMI":
+            dep[m] += 1
+        elif mm["MESSAGE_TYPE"] == "OVL" and not (mm["PERSON_KEY"] in ended and ended[mm["PERSON_KEY"]] <= mm["EVENT_DATE"]):
+            dth[m] += 1
+    # against the golden CSV
+    gold = rows(os.path.join(gdir, "adjusted_population_supplement_2027.csv"))
+    check(len(gold) == 24 == len(count), "24 municipalities")
+    names = {}
+    for g in gold:
+        m = g["MUNICIPALITY_CODE"][2:]
+        names[m] = g["MUNICIPALITY"]
+        check(int(g["REGISTERED_20260101"]) == count[m], "%s registered" % m)
+        check(int(g["ADJUSTED_POPULATION"]) == round(adjusted[m]), "%s adjusted %s against %.1f" % (
+            m, g["ADJUSTED_POPULATION"], adjusted[m]))
+        check(int(g["NOT_RESIDENT_ESTIMATE"]) == count[m] - round(adjusted[m]), "%s estimate" % m)
+        check((g["QUALIFIES"] == "Y") == qual[m], "%s qualifies" % m)
+        check(int(g["DEPARTURES_ABROAD_2025"]) == dep[m], "%s departures %s against %d" % (m, g["DEPARTURES_ABROAD_2025"], dep[m]))
+        check(int(g["DEATHS_2025"]) == dth[m], "%s deaths %s against %d" % (m, g["DEATHS_2025"], dth[m]))
+    # against submission.md
+    sub = open(os.path.join(os.path.dirname(gdir), "submission.md"), encoding="utf-8").read()
+    rec = sub.split("## 1. Final Recommendation")[1].split("## 2.")[0]
+    called = sorted(names[m] for m in count if qual[m])
+    check(all(nm in rec.split("**")[1] for nm in called) and "Nine of the 24" in rec, "the recommendation names the nine")
+    check("**%s of %s**" % ("{:,}".format(absent), "{:,}".format(len(sample))) in sub, "the audit's count")
+    for m in count:
+        line = re.search(r"^   - %s \(GM%s\): (qualifies|does not qualify), ([\d,]+) departures abroad, ([\d,]+) deaths$" % (
+            re.escape(names[m]), m), sub, re.M)
+        check(line is not None and (line.group(1) == "qualifies") == qual[m] and int(line.group(2).replace(",", "")) ==
+              dep[m] and int(line.group(3).replace(",", "")) == dth[m], "submission line for %s" % names[m])
+    if not quiet:
+        print("verify: %s; %d qualify (%s); %d of %d sampled not living there" % (
+            "PASS" if ok else "FAIL", len(called), ", ".join(called), absent, len(sample)))
     return ok
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.exit(0 if main(os.path.join(here, "target"), os.path.join(here, "golden")) else 1)
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    sys.exit(0 if main(os.path.join(task, "target"), os.path.join(task, "golden")) else 1)

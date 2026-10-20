@@ -1,34 +1,37 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
- "stump": "Applying the audit's absence rates by the register's own fields (country of birth and years at the current address) qualifies the older immigrant town and misses the seasonal-work town and the university town; the golden takes each person's absence rate from the length of the current stay since the latest arrival and earlier departures, rebuilt from the event history (names and figures at calibration).",
+ "stump": "The default path gives each registered person the audit's absence share by the respects the register extract and the sample both record, country of birth by years at the current address, and qualifies eight municipalities, Aldewolde, Borgermeer, Bremvoort, Dornhaghe, Hilderloo, Molenrade, Nijdorp and Zandloo (Molenrade and Nijdorp in at 4,967 and 4,968; Eekhorst, Haverstede and Koudenbeek out at 5,075, 5,069 and 5,067); taken by the current stay since the latest settlement from abroad and whether the person left the country before it, both rebuilt from the event history, the shares qualify nine.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20",
+  "checks": "51 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on target.zip b6990395f2efabc2: design-note vocabulary in four documents",
+  "reader": "round 1 running: two scored readers"
  },
  "duplicate_check": {
-  "guard_check": "WARN only at the v3 draw (differentiated against task264 v2 and task131 v1)",
-  "heart": ""
+  "guard_check": "WARN only at the v4 draw",
+  "heart": "WARN only (objective and Gate G overuse, Gate G and decision repeat against task474 v3; nearest driver 0.08, the slot's own v3)",
+  "surface": "7 pairs promoted for adjudication on card-axis collisions (surface 0.092), none blocking"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "",
+  "run": "v4r1 running"
  },
  "returned": [],
- "resume": "stage 2 design: calibrate the world (generator prototype), then the design note's sections to precut exit 0",
+ "resume": "stage 4: score the two readers (score_reader.py on readerA/readerB reader.json in the scratchpad), spawn the judge thread on /tmp/determinism-check-task471-v4r1/judge_brief.md and have the judge agent write the report; fix every finding in the generator in one pass; then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -72,7 +75,14 @@
   "target_zip_sha256_16": "c9e9c2fd35a4d875",
   "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
  },
- "build": {},
+ "build": {
+  "checks": "201 of 201",
+  "verify": "pass",
+  "byte_identical": true,
+  "target_zip_sha256_16": "b6990395f2efabc2",
+  "figures_check": "86 figures, 0 absent",
+  "ceiling": "pair 39.1, mirror leakage 0.0, cracker misses 48 of 48"
+ },
  "architecture_2": {
   "fate": "spent at stage 4: judge v2r1 DETERMINISTIC on the main call, disposition SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes; Gate H decisive step analytical, borderline planted)",
   "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
