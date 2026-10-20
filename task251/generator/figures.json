@@ -1,157 +1,141 @@
 {
  "call": {
-  "bench": [
-   "BP01",
-   "BP02",
-   "BP03",
-   "BP04",
-   "BP05",
-   "BP08",
-   "BP13"
+  "listed": [
+   "GX2-A564E",
+   "GX2-J921X",
+   "GX2-K532W",
+   "GX2-P722J",
+   "GX2-R842P",
+   "GX2-S959P",
+   "GX2-W228Y",
+   "GX2-W234L"
   ],
-  "count": 7,
-  "stays": 9,
-  "verdict": {
-   "BP01": "book",
-   "BP02": "book",
-   "BP03": "book",
-   "BP04": "book",
-   "BP05": "book",
-   "BP06": "stays",
-   "BP07": "stays",
-   "BP08": "book",
-   "BP09": "stays",
-   "BP10": "stays",
-   "BP11": "stays",
-   "BP12": "stays",
-   "BP13": "book",
-   "BP14": "stays",
-   "BP15": "stays",
-   "BP16": "stays"
+  "count": 8,
+  "meters": 52,
+  "stay": 44,
+  "error_listed_pct": {
+   "GX2-A564E": -8.2,
+   "GX2-J921X": -7.9,
+   "GX2-K532W": 8.4,
+   "GX2-P722J": 8.4,
+   "GX2-R842P": -7.4,
+   "GX2-S959P": 8.3,
+   "GX2-W228Y": -8.2,
+   "GX2-W234L": 11.0
   },
-  "serial": {
-   "BP01": "NX4210-1187",
-   "BP02": "NX4210-1203",
-   "BP03": "NX4210-1166",
-   "BP04": "NX4210-1219",
-   "BP05": "NX4210-1174",
-   "BP06": "NX4210-1191",
-   "BP07": "CL62-0418",
-   "BP08": "CL62-0433",
-   "BP09": "NX4210-1228",
-   "BP10": "CL62-0402",
-   "BP11": "CL62-0441",
-   "BP12": "CL62-0427",
-   "BP13": "NX4210-1235",
-   "BP14": "CL62-0450",
-   "BP15": "CL62-0395",
-   "BP16": "CL62-0459"
-  }
+  "ward": {
+   "GX2-A564E": "TI",
+   "GX2-J921X": "MED",
+   "GX2-K532W": "NIDO",
+   "GX2-P722J": "DIAB",
+   "GX2-R842P": "TIN",
+   "GX2-S959P": "MEDV",
+   "GX2-W228Y": "TIN",
+   "GX2-W234L": "CHIR"
+  },
+  "hospital": {
+   "GX2-A564E": "Presidio di Castelmarne",
+   "GX2-J921X": "Presidio di Castelmarne",
+   "GX2-K532W": "Presidio di Castelmarne",
+   "GX2-P722J": "Presidio di Castelmarne",
+   "GX2-R842P": "Presidio di Castelmarne",
+   "GX2-S959P": "Presidio di Valdarena",
+   "GX2-W228Y": "Presidio di Castelmarne",
+   "GX2-W234L": "Presidio di Castelmarne"
+  },
+  "range_listed_pct": [
+   -8.2,
+   11.0
+  ]
  },
  "components": {
-  "latest_check_lowest_pct": 95.2,
-  "latest_check_lowest_station": "BP01",
-  "latest_check_lowest_date": "2027-10-11",
-  "latest_checks_below_95": 0,
-  "checks_below_97": 35,
-  "separation_ppm_h": 140.0,
-  "checks_below_97_age_months": [
-   5,
-   12
+  "scheduled_pairings": 5590,
+  "pairings_per_meter": [
+   98,
+   149
   ],
-  "bp08_service": "2028-02-15",
-  "bp08_converter_since": "2026-10-13",
-  "thresholds_pct": [
-   96.5,
-   97.5
-  ],
-  "date_days": {
-   "latest_check": 11,
-   "bp08_service": 15,
-   "bp08_since": 13
+  "a_over_b": 1.035,
+  "nearest_unlisted": {
+   "meter": "GX2-J313P",
+   "error_pct": 3.4
+  },
+  "nearest_listed": {
+   "meter": "GX2-R842P",
+   "error_pct": -7.4
   }
  },
  "steps": {
-  "titrations": 303,
-  "titrations_tecnoaria": 151,
-  "titrations_delta": 152,
-  "analyzers_titrated": 17,
-  "age_route_books": [
-   "BP08"
+  "pairings": 13938,
+  "pooled_list": [
+   "GX2-A564E",
+   "GX2-J921X",
+   "GX2-M707F",
+   "GX2-P722J",
+   "GX2-R842P",
+   "GX2-S959P",
+   "GX2-W228Y",
+   "GX2-W234L"
   ],
-  "own_trend_books": [
-   "BP02",
-   "BP04"
+  "pooled_drops": [
+   "GX2-K532W"
   ],
-  "threshold_pct": 95,
-  "bench_ceiling": 10,
-  "minutes_rule": 45,
-  "logger_factor": [
-   1.91,
-   2.05
+  "pooled_adds": [
+   "GX2-M707F"
   ],
-  "standard": "UNI EN 14211",
-  "standard_number": 14211,
-  "minutes_taken": 15,
-  "spare_stint": [
-   "2027-02-08",
-   "2027-03-01"
-  ]
+  "pooled_error_pct": {
+   "GX2-K532W": 4.8,
+   "GX2-M707F": -5.8
+  },
+  "scheduled_error_pct": {
+   "GX2-K532W": 8.4,
+   "GX2-M707F": -1.6
+  },
+  "window": [
+   "6:00",
+   "7:30"
+  ],
+  "critical": [
+   50,
+   400
+  ],
+  "switch": "2027-09-13",
+  "late_minutes": 120
  },
  "asks": {
-  "valid_hours_2027": {
-   "BP01": 8654,
-   "BP02": 8704,
-   "BP03": 8674,
-   "BP04": 8678,
-   "BP05": 8667,
-   "BP06": 8693,
-   "BP07": 8681,
-   "BP08": 8702,
-   "BP09": 8673,
-   "BP10": 8694,
-   "BP11": 8696,
-   "BP12": 8712,
-   "BP13": 8632,
-   "BP14": 8665,
-   "BP15": 8650,
-   "BP16": 8698
+  "late_share_pct": {
+   "CM": {
+    "1": 27.3,
+    "2": 27.7,
+    "3": 27.9,
+    "4": 27.3
+   },
+   "RB": {
+    "1": 39.7,
+    "2": 43.3,
+    "3": 42.7,
+    "4": 44.0
+   },
+   "VD": {
+    "1": 66.3,
+    "2": 66.8,
+    "3": 68.3,
+    "4": 65.1
+   }
   },
-  "mean_2027_ugm3": {
-   "BP01": 55.4,
-   "BP02": 42.2,
-   "BP03": 38.7,
-   "BP04": 39.7,
-   "BP05": 39.1,
-   "BP06": 29.2,
-   "BP07": 27.7,
-   "BP08": 26.3,
-   "BP09": 26.3,
-   "BP10": 23.9,
-   "BP11": 21.9,
-   "BP12": 19.7,
-   "BP13": 37.9,
-   "BP14": 28.1,
-   "BP15": 15.7,
-   "BP16": 12.6
-  },
-  "p19_2027_ugm3": {
-   "BP01": 316,
-   "BP02": 208,
-   "BP03": 199,
-   "BP04": 221,
-   "BP05": 174,
-   "BP06": 164,
-   "BP07": 137,
-   "BP08": 143,
-   "BP09": 138,
-   "BP10": 106,
-   "BP11": 90,
-   "BP12": 79,
-   "BP13": 159,
-   "BP14": 129,
-   "BP15": 69,
-   "BP16": 49
+  "tests_2027": {
+   "TIN": 10146,
+   "NIDO": 5930,
+   "TI": 10952,
+   "DIAB": 5839,
+   "PS": 6712,
+   "MED": 9896,
+   "CHIR": 6704,
+   "PED": 3115,
+   "OST": 2046,
+   "MEDR": 8015,
+   "PSR": 2417,
+   "MEDV": 7322,
+   "LUN": 2957
   }
  }
 }

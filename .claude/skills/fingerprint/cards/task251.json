@@ -1,84 +1,82 @@
 {
   "task": "task251",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-20",
   "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "sensor-calibration-measurement",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "the January 2028 converter bench of a lower Po valley air quality agency's chemiluminescence NOx analyzers: which station analyzers' molybdenum converters are changed at the regional laboratory's bench ahead of their scheduled 2028 service, the converters losing efficiency with the NO2 they reduce along a curve that steepens near exhaustion",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Po valley hospital trust's bedside glucose meters on thirteen wards of three hospitals, checked against the central laboratory: which meters its point-of-care office sends to the manufacturer's January 2028 recalibration visit, each meter's systematic error read from meter and laboratory pairings, most of them drawn because the meter's own reading was critical",
   "objective": "data-quality-monitoring",
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Book 7 of the 16 station analyzers on the 17 to 21 January 2028 converter bench: BP01, BP02, BP03, BP04, BP05, BP08, BP13; the other 9 stay to their scheduled service.",
-  "answer_source": "submission.md block 1",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G13",
-    "G6"
+    "G9",
+    "G5",
+    "G11"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "physical_verification",
-  "stump_strategy": "forecast_method_backtest",
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every titration, the service log, the plan and section 7's 95 per cent rule pools every converter's checks against its age since the change and carries each converter to its 2028 service on that curve, booking BP08 alone (or extrapolates each converter's own checks in time and books BP02 and BP04); the converters wear with the NO2 they reduce along a curve that steepens near exhaustion, and the months still to run carry each station's own load, so seven go: BP01, BP02, BP03, BP04, BP05, BP08, BP13.",
-  "domain_test": "A chemiluminescence analyzer sees NO2 only through its molybdenum converter, whose efficiency the field checks by gas-phase titration and whose life is spent in the NO2 it reduces, so the deciding quantity is each converter's efficiency at its service date read on the NO2 it will have converted by then; with a hospital's or a call centre's nouns there is no converter, no titration and no pollutant load for the wear to run on.",
+  "analyst_test": "A strong analyst who reads the procedure, the pairing report, the laboratory's note and the 2027 service report puts every pairing since each meter's January 2027 calibration on the C900 scale and takes each meter's mean percentage difference over all of them, withdrawing the meters beyond 5 per cent; on the neonatal wards most pairings exist because the meter's own reading was under 50 mg/dL, so they see the meter when its random error ran low, the list misses a nursery meter reading 8 per cent high and adds one reading 2 per cent low.",
+  "domain_test": "The deciding quantity is each meter's systematic error against the laboratory, the measurement-error model's bias term estimated from paired measurements; the task type's own object is that estimate's validity under the way the pairs were drawn (pairs selected on the meter's reading regress toward the laboratory), and replacing it with the generic mean difference over every pair changes the list.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:converter-life-in-no2-converted",
+  "layer2_pattern": "own:confirmation-pairs-selected-on-the-meter-reading",
   "layer1": [
-    "the analyzers' own hourly archive in UTC, downloaded at each quarterly round and at the year's close, the days before each download repeated",
-    "two calibration contractors' titration sheets in two formats (a workbook with station names and percentages, a CSV with codes, raw NO and NOx readings and a fraction), both in Italian civil time",
-    "the service log mixing converter changes, repairs, analyzer swaps with the store spare and logger work",
-    "the 2028 maintenance plan with one station's 2027 service put back to February",
-    "the network's validated NO2 database in solar time, semicolon separated with decimal commas, validation codes and re-sent days",
-    "the store spare's hours filed in the database under the store's code",
-    "six new data loggers left at their factory reference conditions until a December visit"
+    "the meters' own clocks on solar time all year against the laboratory's civil time and the server's UTC",
+    "re-sent memory copies in the data manager's export after a docking the meter never saw acknowledged",
+    "the export's ward and hospital fields carrying each meter's current assignment, not where it was",
+    "LO and HI readings outside the meter's range as text in the result column",
+    "a laboratory analyzer change mid-year whose earlier results were never recalculated",
+    "a pairing plan by weekday with holidays moved to the next working day, and meters moved between wards"
   ],
-  "stakeholder_role": "the head of the network's instrumentation, who books the analyzers whose converters go to the regional laboratory's January bench",
-  "role_family": "field_unit_lead",
+  "stakeholder_role": "the point-of-care testing coordinator of the trust's laboratory, who answers for the bedside meters' analytical quality under the procedure and sends the manufacturer the list of meters to withdraw",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "archivio_analizzatori_NOx_2024-2027.csv",
-    "rows": 442295,
-    "entity": "one analyzer-hour of NO, NO2 and NOx from the analyzer's own memory with its status, as downloaded at each round",
-    "grain": "analyzer x hour",
+    "file": "GlyLink_risultati_2026-2027.csv",
+    "rows": 185844,
+    "entity": "one result the data manager received from a meter (patient test or control run)",
+    "grain": "meter x memory record x reception",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "other",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Italy, the lower Po valley (a fictional agency's area)",
+    "geography": "Italy, Lombardy (a fictional hospital trust)",
     "currency": "EUR",
-    "org_type": "a lower Po valley air quality agency running the area's monitoring network",
+    "org_type": "a public hospital trust with three hospitals",
     "invented_names": [],
     "people": [
-      "Livia Saracino",
-      "Patrizio Gilardoni",
-      "Jolanda Stefanelli"
+      "Lorenzo Carfagna",
+      "Adelmo Gori",
+      "Silvestro Fittipaldi"
     ]
   },
   "deliverables": [
-    "turno_banco_convertitori_2028.xlsx",
-    "rendimento_convertitori_2028.png"
+    "ritiro_glucometri_gennaio_2028.xlsx",
+    "errore_sistematico_glucometri_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
-  "driver_concrete": "Each analyzer's molybdenum converter efficiency on its scheduled 2028 service date, read on the network-wide curve of titration efficiency against the NO2 the converter has reduced since installation (the hourly record summed from the service log's installation hour), which steepens near exhaustion, at the NO2 reduced so far plus the station's 2025 to 2027 mean over the days to that date; the converters below 95 per cent on that date go to the January round.",
-  "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service.",
+  "driver": "The decisive quantity is each unit's systematic error against a reference, read from paired checks most of which were drawn because the unit's own reading crossed a critical value, so those pairs see the unit when its random error ran outward and show a bias it does not have; read on the pairs a fixed schedule drew independently of the unit's reading, the units over the limit differ.",
+  "driver_concrete": "Each point-of-care glucose meter's percentage bias against the laboratory's current analyzer, read on the weekly scheduled split samples (drawn by the calendar, not by the meter's result) with the earlier analyzer's results carried onto the new one by the parallel run; the critical-value confirmations, drawn because the meter read below 50 or above 400 mg/dL, regress toward the laboratory and are left out of the bias; meters beyond 5 per cent are withdrawn.",
+  "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
   "lineage": [
     {
       "architecture": "v1",
@@ -97,16 +95,42 @@
         "none"
       ],
       "fate": "spent 2026-10-20 at stage 4: both scored readers landed the four analyzers (an exponential loss from the certificate date fitted on the 31 cylinder changes, split on the certificates' passivation once the per-supplier fit left a 4.5 per cent residual); reader B kept 32 of 33 ask figures; judge pass 1 DETERMINISTIC FIX_NOW (a visit edge). The estimand's words sent both readers to the reference's truth and the change readings measured it in one division."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-20 at stage 4: both scored readers landed the call through the converter's accumulated NO2; judge DETERMINISTIC APPROVE",
+      "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "sensor-calibration-measurement",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "forecast_method_backtest",
+      "decision_type": "designation_set",
+      "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service."
     }
   ],
-  "architecture_spent": true,
+  "architecture_spent": null,
   "differentiation": {
     "task148": "queue units leave when the wait outlasts their patience, censored waits estimated over every unit; here nothing is censored by leaving: a converter's titration efficiency wears with the NO2 it reduces and is read at a service date the record has not reached",
     "task241": "a sensor's error read against a reference the medium's displacement moves; here there is no outside reference: the converter's own titrated efficiency, clocked in the NO2 it reduces, decides",
     "task254": "lineage v2 cut a time-to-event distribution under lock-date truncation; here a wear curve in a constructed load is projected over the load still to come",
-    "task501": "lineage v2 struck the pace from a filed walk-forward test; here no test is filed: the converters' own checks collapse on NO2 reduced and not on time, which forces the clock"
+    "task501": "lineage v2 struck the pace from a filed walk-forward test; here no test is filed: the converters' own checks collapse on NO2 reduced and not on time, which forces the clock",
+    "task229": "229's checks see a unit's state just before resetting it; here the checks are drawn on the unit's own reading crossing a critical value, a selection on the measurement error rather than on the state's timing",
+    "task236": "236 reads a capture rate against an independent fixed-protocol sample because the source's own attempts move with a change; here no change is involved: the unit's own extreme readings draw the reference check, so the selection is on its random error",
+    "task231": "231's follow-up reaches active units more often than exited ones (verification by state); here the reference check is drawn by the unit's own reading, so the pairs regress toward the reference",
+    "task251 (v2, lineage)": "architecture 2 read each converter's efficiency on a wear curve in NO2 converted; architecture 3 has no wear and no forecast clock: the bias is constant and the decisive step is which pairs estimate it",
+    "task251 (v1, lineage)": "architecture 1 read a reference gas's loss through cylinder changes; architecture 3's reference (the laboratory) is sound, its one change measured by a parallel run, and the decisive step is the selection of the pairs",
+    "task245": "245 counts periods above a level from records whose gaps fall in the heaviest periods, rebuilt from a driver; here nothing is missing: every pairing is recorded, and the confirmation pairings exist because the meter's own reading crossed a critical value, so they carry its outward random error into the bias",
+    "task265 (v1)": "265 estimates survival from a record that admits early starters only if still event-free (entry truncation); here the selection is on the measurement itself: a pairing exists because the meter read critical, so the pair regresses toward the laboratory",
+    "task265": "265 estimates survival from a record that admits early starters only if still event-free (entry truncation); here the selection is on the measurement itself: a pairing exists because the meter read critical, so the pair regresses toward the laboratory"
   },
-  "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, see lineage). stump_strategy forecast_method_backtest: the rate is stationary only in a constructed exposure (NO2 reduced) and the natural fit in time fails forward (strategies F6). gate_g method_or_model_selection: the decisive mechanism is the choice of the clock and curve the converters' wear runs on (forecasting with gap time and G16 is a signature spent in five builds). Architecture 2 spent 10-20 at stage 4: both scored readers landed the call through the converter's accumulated NO2 (the field's own wear model).",
+  "notes": "Re-rooted 2026-10-20 from architecture 2 (spent at stage 4, see lineage). stump_strategy population_selection (strategies F7: checks that see a unit because it was wrong): the confirmation pairings are drawn on the meter's own reading. gate_g signal_vs_noise_or_hold: the confirmation pairings' apparent bias is the meter's selected random error. calibration_form none: the laboratory's analyzer change is carried by the note's filed factor, no corpus calibrates the decisive step. Redrawn at filing against task478: forum customer_or_counterparty (the manufacturer receives the list, its service engineer's mail asks for it by 10 January; the honester label than operations_desk, since the office does not act on the list itself, the visit does); forcing_event other (the manufacturer's scheduled recalibration visit of 17 to 21 January 2028, a service visit under the maintenance arrangement with no order, renewal or tender at stake, which purchase_order_or_contract overstated); context_artifact register (the meter register, anagrafica_glucometri.xlsx with its location history, answers where each meter stood and when it was last calibrated, correctly; the data manager's export is the spine, not a context file). Role redrawn when task478 re-filed as field_unit_lead: compliance_or_audit, since the coordinator's remit is the meters' analytical quality under POCT-GLU-02 (quality control, tolerance, withdrawal), not a site unit.",
   "mechanism_source": "design_note",
-  "registered": "2026-10-20T19:23:07Z"
+  "registered": "2026-10-20T22:28:32Z"
 }

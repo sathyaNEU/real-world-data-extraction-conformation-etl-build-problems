@@ -1,5 +1,8 @@
-"""task251 documents: the agency's quality manual for the NOx network (pdf), the laboratory's mail confirming the
-January bench (eml), the data dictionary (md). Italian throughout, as the agency writes."""
+"""task251 documents: the trust's procedure for the bedside glucose meters (pdf), the laboratory's note on the
+analyzer change (pdf), the manufacturer's 2027 service report (pdf), the manufacturer's mail fixing the January 2028
+visit (eml), the data dictionary (md). Italian throughout, as the trust writes."""
+import datetime as dt
+
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -7,6 +10,14 @@ from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import params as P
+import sim
+
+MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre",
+        "novembre", "dicembre"]
+
+
+def it_date(d):
+    return "%d %s %d" % (d.day, MESI[d.month - 1], d.year)
 
 
 def _styles():
@@ -31,196 +42,232 @@ def _footer(text):
     return foot
 
 
-def manual(path, F):
+def _table(rows, widths, size=8.2):
+    t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1)
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size),
+                           ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
+                           ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#999999")),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    return t
+
+
+def procedure(path, F):
     body, h1, h2, small = _styles()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title="Manuale della qualità, rete NOx", author=P.ORG,
-                            creator=P.ORG, subject="AQBP-QA-07 rev. 4", invariant=1)
-    s = [Paragraph(P.ORG + ", servizio strumentazione", small), Spacer(1, 2 * mm),
-         Paragraph("Manuale della qualità della rete NOx: verifica e sostituzione dei convertitori, dati orari e "
-                   "statistiche annuali", h1),
-         Paragraph("AQBP-QA-07, revisione 4 del 24 giugno 2026, in vigore dal 1° luglio 2026. Sostituisce la "
-                   "revisione 3 del 12 novembre 2024.", small),
+                            bottomMargin=18 * mm, title="POCT-GLU-02 Gestione dei glucometri", author=P.ORG,
+                            creator=P.ORG, subject="POCT-GLU-02 rev. 3", invariant=1)
+    s = [Paragraph(P.ORG + ", " + P.POCT_OFFICE, small), Spacer(1, 2 * mm),
+         Paragraph("Gestione dei glucometri per uso professionale nei reparti", h1),
+         Paragraph("Procedura POCT-GLU-02, revisione 3 del 14 aprile 2026, in vigore dal 1° maggio 2026. Redatta "
+                   "dall'Ufficio POCT, verificata dal direttore della SC Medicina di Laboratorio, approvata dalla "
+                   "Direzione sanitaria.", small),
          Spacer(1, 3 * mm)]
     sec = [
-        ("1. Scopo", [
-            "Il manuale stabilisce come l'Agenzia verifica e mantiene gli analizzatori di ossidi di azoto della "
-            "propria rete, come si forma il dato orario di ogni stazione e come se ne calcolano le statistiche "
-            "annuali. Si applica alle sedici stazioni della rete e all'analizzatore di scorta tenuto in magazzino."]),
-        ("2. Gli analizzatori", [
-            "Ogni stazione ospita un analizzatore a chemiluminescenza (modelli NX4210 e CL62). L'analizzatore misura "
-            "l'NO direttamente e gli NOx dopo il passaggio del campione in un convertitore al molibdeno riscaldato a "
-            "circa 320 °C, che riduce l'NO2 a NO; l'NO2 è la differenza fra NOx e NO. Un convertitore che non "
-            "riduce più tutto l'NO2 che riceve fa leggere alla stazione meno NO2 di quanto ce ne sia nell'aria.",
-            "Quando l'analizzatore di una stazione va in officina per una riparazione, al suo posto è installato "
-            "l'analizzatore di scorta fino al rientro; l'installazione e il rientro sono annotati nel registro degli "
-            "interventi."]),
-        ("3. La verifica del convertitore", [
-            "Il rendimento del convertitore è verificato ogni trimestre dalla ditta di taratura con la titolazione in "
-            "fase gassosa della UNI EN 14211: a una miscela di NO a concentrazione nota si aggiunge ozono, e l'NO2 "
-            "che la reazione genera (la diminuzione di NO) è confrontato con l'aumento di NO2 letto "
-            "dall'analizzatore. Il rendimento è il rapporto fra l'NO2 letto e l'NO2 generato. Un convertitore con "
-            "rendimento inferiore al 95 per cento è esaurito. La titolazione è ripetuta prima e dopo ogni "
-            "sostituzione del convertitore.",
-            "Fino al 30 giugno 2026 le verifiche sono state eseguite da " + P.CONTRACTOR_A + ", dal 1° luglio "
-            "2026 da " + P.CONTRACTOR_B + "; ciascuna ditta consegna le proprie schede nel proprio formato."]),
-        ("4. La sostituzione del convertitore", [
-            "Il convertitore di ogni analizzatore è sostituito alla manutenzione programmata annuale, alla data "
-            "fissata nel piano di manutenzione. Quando una titolazione trova un rendimento inferiore al 95 per cento, "
-            "il convertitore è sostituito entro dieci giorni, senza attendere la manutenzione programmata. Le ore "
-            "misurate prima della sostituzione restano nel dato della stazione come sono state validate."]),
-        ("5. Il dato orario", [
-            "L'analizzatore conserva nella propria memoria le medie orarie di NO, NO2 e NOx in ppb, con l'orologio "
-            "dello strumento in UTC; la ditta di taratura le scarica a ogni visita trimestrale e a fine anno e le "
-            "accoda all'archivio degli analizzatori.",
-            "La banca dati della rete riceve dal registratore di stazione il dato orario di NO2 in microgrammi per "
-            "metro cubo a 20 °C e 101,3 kPa (1 ppb di NO2 corrisponde a 1,91 µg/m³), in ora solare, "
-            "con il codice di validazione. Un'ora è valida quando l'analizzatore ha misurato l'aria della stazione "
-            "per almeno 45 minuti dell'ora."]),
-        ("6. Le statistiche annuali", [
-            "Per ogni stazione e anno civile l'Agenzia calcola le ore valide, la media annua di NO2 sulle ore valide "
-            "e il 19° valore orario valido più alto, che si confronta con il valore limite orario di 200 "
-            "µg/m³ da non superare più di 18 volte nell'anno civile."]),
-        ("7. Il banco convertitori di gennaio", [
-            "Ogni gennaio il " + P.LAB + " apre un banco per i convertitori delle reti della regione: i suoi tecnici "
-            "sostituiscono in stazione, nella settimana del banco, i convertitori che ciascuna rete ha prenotato. "
-            "L'Agenzia vi prenota gli analizzatori di stazione il cui convertitore, se restasse in servizio, "
-            "sarebbe sotto il 95 per cento prima della manutenzione programmata dell'analizzatore nell'anno, "
-            "così che nessuna ora dell'inverno e della primavera sia misurata attraverso un convertitore esaurito. "
-            "La manutenzione programmata resta alla sua data."]),
-        ("8. I registri", [
-            "Archivio degli analizzatori (" + F["archive"] + "); schede di titolazione (" + F["titr_a"] + ", " +
-            F["titr_b"] + "); registro degli interventi (" + F["service"] + "); piano di manutenzione (" +
-            F["plan"] + "); anagrafica delle stazioni (" + F["stations"] + "); banca dati validata (" +
-            F["database"] + ")."]),
+        ("1. Scopo e campo di applicazione", [
+            "La procedura regola l'uso dei glucometri " + P.METER + " nei tredici reparti dei presidi di "
+            "Castelmarne, Rivobello e Valdarena: il controllo di qualità quotidiano, gli abbinamenti con il "
+            "laboratorio, i valori critici, la trasmissione dei risultati alla cartella clinica e il ritiro dei "
+            "glucometri da ritarare."]),
+        ("2. Responsabilità", [
+            "L'Ufficio POCT tiene l'anagrafica dei glucometri, il piano degli abbinamenti e il gestionale " + P.DMS +
+            ". I coordinatori infermieristici garantiscono che il personale esegua i controlli e riponga i "
+            "glucometri sulla stazione di collegamento. Il laboratorio del presidio di Castelmarne esegue la "
+            "glicemia sui campioni venosi di tutti e tre i presidi (provette con fluoruro)."]),
+        ("3. Il glucometro e il gestionale", [
+            "Il glucometro misura la glicemia su sangue capillare e la riporta come glicemia plasmatica in mg/dL, "
+            "fra 20 e 600 mg/dL; sotto e sopra questo intervallo mostra LO e HI. Conserva ogni risultato con un "
+            "numero progressivo di memoria, la data e l'ora del proprio orologio, l'operatore e il paziente.",
+            "Riposto sulla stazione di collegamento, il glucometro trasmette al gestionale " + P.DMS + " i risultati "
+            "registrati dal collegamento precedente; il gestionale inoltra subito i risultati dei pazienti alla "
+            "cartella clinica elettronica. Un risultato è disponibile in cartella dal momento in cui il gestionale "
+            "lo riceve."]),
+        ("4. Controllo di qualità", [
+            "All'inizio del turno del mattino ogni glucometro esegue il controllo con le soluzioni di livello 1 e "
+            "2. Le soluzioni di controllo verificano il funzionamento del glucometro e delle strisce, non "
+            "l'esattezza sul sangue, che si stabilisce soltanto per confronto con il laboratorio."]),
+        ("5. Abbinamenti con il laboratorio", [
+            "Quando l'infermiere legge sul glucometro il codice a barre di una provetta inviata al laboratorio, il "
+            "gestionale abbina il risultato del glucometro al risultato del laboratorio su quella provetta. Ogni "
+            "glucometro è abbinato almeno nei giorni del piano dell'Ufficio POCT: al giro dei prelievi del mattino "
+            "(dalle 6:00 alle 7:30), al momento del prelievo venoso di un paziente, l'infermiere esegue la "
+            "glicemia capillare con il glucometro e legge sul glucometro il codice a barre della provetta. Se il "
+            "giorno del "
+            "piano è festivo, l'abbinamento si fa il primo giorno feriale successivo."]),
+        ("6. Valori critici", [
+            "Un risultato del glucometro inferiore a 50 mg/dL o superiore a 400 mg/dL, LO e HI compresi, è "
+            "comunicato subito al medico e confermato con un prelievo venoso inviato al laboratorio entro 30 "
+            "minuti; l'infermiere legge sul glucometro il codice a barre della provetta di conferma."]),
+        ("7. Errore sistematico e ritiro", [
+            "Il glucometro legge il valore del laboratorio moltiplicato per (1 + e), dove e, l'errore sistematico "
+            "del glucometro, è lo stesso a ogni concentrazione e si esprime in percentuale; si stima come media dei "
+            "rapporti fra il valore del glucometro e quello del laboratorio, meno uno; le letture LO e HI, che non "
+            "hanno un valore, non entrano nella stima. L'errore sistematico si "
+            "riferisce alla taratura in corso del glucometro, cioè ai risultati successivi all'ultima taratura "
+            "eseguita dal fornitore, e al metodo del laboratorio in uso alla data della valutazione.",
+            "Un glucometro con errore sistematico oltre il 5 per cento, in più o in meno, è ritirato e ritarato "
+            "alla visita annuale del fornitore prevista dal contratto di assistenza; gli altri restano in reparto."]),
+        ("8. Indicatori annuali", [
+            "In gennaio l'Ufficio POCT trasmette al fornitore l'elenco dei glucometri da ritarare e alla Direzione "
+            "sanitaria gli indicatori dell'anno precedente: per presidio e trimestre, la quota dei risultati dei "
+            "pazienti pervenuti alla cartella clinica più di due ore dopo il test; per reparto, il numero dei test "
+            "eseguiti sui pazienti nel reparto."]),
+        ("9. Registri", [
+            "Risultati ricevuti dal gestionale (" + F["export"] + "); abbinamenti con il laboratorio (" +
+            F["pairs"] + "); piano degli abbinamenti (" + F["plan"] + "); anagrafica dei glucometri (" +
+            F["register"] + ")."]),
     ]
     for head, paras in sec:
         s.append(Paragraph(head, h2))
         for p in paras:
             s.append(Paragraph(p, body))
     s.append(Spacer(1, 4 * mm))
-    t = Table([["Revisione", "Data", "Modifica"],
-               ["3", "12/11/2024", "Revisione generale della rete, nuovi convertitori (dicembre 2024)"],
-               ["4", "24/06/2026", "Nuova ditta di taratura dal 1° luglio 2026"]],
-              colWidths=[22 * mm, 24 * mm, 124 * mm])
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.2),
-                           ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.2),
-                           ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#999999")),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP")]))
-    s.append(t)
-    foot = _footer("AQBP-QA-07 rev. 4")
+    s.append(_table([["Revisione", "Data", "Modifica"],
+                     ["1", "03/06/2019", "Prima emissione"],
+                     ["2", "20/02/2023", "Valori critici a 50 e 400 mg/dL; provette con fluoruro"],
+                     ["3", "14/04/2026", "Gestionale " + P.DMS + "; piano degli abbinamenti per glucometro"]],
+                    [22, 24, 124]))
+    foot = _footer("POCT-GLU-02 rev. 3")
     doc.build(s, onFirstPage=foot, onLaterPages=foot)
 
 
-def lab_mail(path, F):
-    txt = """From: {lab_who} <p.gilardoni@labtaratura-ambiente.it>
-To: {head} <l.saracino@{dom}>
-Cc: Ufficio rete <rete@{dom}>
-Subject: Banco convertitori NOx, gennaio 2028
-Date: Tue, 04 Jan 2028 09:12:31 +0100
-Message-ID: <20280104091231.4417@labtaratura-ambiente.it>
+def lab_note(path, F):
+    body, h1, h2, small = _styles()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title="Cambio analizzatore glicemia", author=P.ORG, creator=P.ORG,
+                            subject="Nota ai reparti e all'Ufficio POCT", invariant=1)
+    s = [Paragraph(P.ORG + ", " + P.LAB, small), Spacer(1, 2 * mm),
+         Paragraph("Glicemia: dal 13 settembre 2027 il " + P.ANALYZER_B + " sostituisce il " + P.ANALYZER_A, h1),
+         Paragraph("Nota del 7 settembre 2027 ai direttori e ai coordinatori dei reparti e all'Ufficio POCT. Firma: " +
+                   P.PEOPLE["director"] + ", direttore della SC.", small), Spacer(1, 3 * mm),
+         Paragraph("Dal 13 settembre 2027 la glicemia su plasma è eseguita sull'analizzatore " + P.ANALYZER_B +
+                   ", che sostituisce il " + P.ANALYZER_A + " in servizio fino al 12 settembre. Dal 30 agosto al "
+                   "10 settembre 312 campioni di routine sono stati analizzati su entrambi gli analizzatori.", body),
+         Paragraph("Sul confronto il " + P.ANALYZER_A + " dà risultati più alti del " + P.ANALYZER_B + " del 3,5 "
+                   "per cento, in proporzione al valore, a ogni concentrazione. I risultati refertati prima del 13 "
+                   "settembre non sono stati ricalcolati. Chi confronta risultati anteriori al 13 settembre con "
+                   "risultati successivi, o con il metodo in uso, divida i valori del " + P.ANALYZER_A + " per "
+                   "1,035.", body),
+         Paragraph("Gli intervalli di riferimento e i valori critici non cambiano.", body)]
+    foot = _footer("SC Medicina di Laboratorio, nota 2027/41")
+    doc.build(s, onFirstPage=foot, onLaterPages=foot)
+
+
+def service_report(path, F, svc):
+    body, h1, h2, small = _styles()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title="Rapporto di intervento", author=P.VENDOR,
+                            creator=P.VENDOR, subject="Visita annuale di taratura 2027", invariant=1)
+    s = [Paragraph(P.VENDOR + ", assistenza tecnica", small), Spacer(1, 2 * mm),
+         Paragraph("Rapporto di intervento: visita annuale di taratura dei glucometri " + P.METER, h1),
+         Paragraph("Cliente: " + P.ORG + ". Visita dal 18 al 22 gennaio 2027, contratto di assistenza 2025-2028. "
+                   "Tecnico: " + P.PEOPLE["vendor"] + ".", small), Spacer(1, 3 * mm),
+         Paragraph("Su ciascun glucometro: aggiornamento del firmware alla versione 3.6.1, taratura del canale di "
+                   "misura sul sangue con il kit di taratura del fornitore, verifica con le soluzioni di controllo "
+                   "di livello 1 e 2. Tutti i glucometri elencati sono stati tarati e riconsegnati al reparto lo "
+                   "stesso giorno.", body), Spacer(1, 2 * mm)]
+    rows = [["Matricola", "Inventario", "Presidio", "Reparto", "Data", "Esito"]]
+    for r in svc.itertuples(index=False):
+        rows.append([r.matricola, r.inventario, r.presidio.replace("Presidio di ", ""), r.reparto,
+                     r.data.strftime("%d/%m/%Y"), "tarato"])
+    s.append(_table(rows, [26, 24, 30, 22, 24, 20], size=8.0))
+    s.append(Spacer(1, 4 * mm))
+    s.append(Paragraph("Firmato: " + P.PEOPLE["vendor"] + " (" + P.VENDOR + "); per il cliente: " +
+                       P.PEOPLE["poct"] + ", Ufficio POCT.", small))
+    foot = _footer(P.VENDOR + ", rapporto 2027-0118")
+    doc.build(s, onFirstPage=foot, onLaterPages=foot)
+
+
+def vendor_mail(path, F):
+    txt = """From: {v} <a.gori@corvenzamedical.it>
+To: {p} <lorenzo.carfagna@asst-pianuraorientale.it>
+Cc: Ufficio POCT <poct@asst-pianuraorientale.it>
+Subject: Visita annuale di taratura glucometri, gennaio 2028
+Date: Tue, 04 Jan 2028 10:41:09 +0100
+Message-ID: <20280104104109.2291@corvenzamedical.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Gentile dott.ssa Saracino,
+Gentile dott. Carfagna,
 
-le confermo il banco convertitori NOx per la vostra rete dal 17 al 21 gennaio:
-i nostri tecnici passeranno nelle stazioni che ci indicherete e sostituiranno il
-convertitore sul posto, con la titolazione prima e dopo la sostituzione.
+le confermo la visita annuale di taratura prevista dal contratto di assistenza
+dal 17 al 21 gennaio 2028, nei tre presidi.
 
-Ci serve la lista degli analizzatori da prenotare, con stazione e matricola,
-entro lunedì 10 gennaio, per organizzare i giri. Quest'anno possiamo prendere
-fino a dieci convertitori della vostra rete.
+Come lo scorso anno ritariamo in laboratorio i glucometri che ci indicherete e li
+riconsegniamo in reparto entro la giornata. Per organizzare i turni ci serve
+l'elenco dei glucometri da ritarare, con matricola e reparto, entro lunedì 10
+gennaio. Se l'elenco fosse vuoto ce lo scriva comunque, così liberiamo i giorni.
 
 Cordiali saluti
 
-Patrizio Gilardoni
-{lab_role}
-{lab}
-""".format(lab_who=P.LAB_CONTACT[0], lab_role=P.LAB_CONTACT[1][0].upper() + P.LAB_CONTACT[1][1:], lab=P.LAB,
-           head=P.HEAD[0], dom=P.DOMAIN)
+Adelmo Gori
+Responsabile assistenza tecnica
+{vendor}
+""".format(v=P.PEOPLE["vendor"], p=P.PEOPLE["poct"], vendor=P.VENDOR)
     with open(path, "w", encoding="utf-8", newline="\r\n") as f:
         f.write(txt)
 
 
 def dictionary(path, F):
-    md = f"""# Dizionario dei dati della rete NOx
+    md = f"""# Dizionario dei dati POCT glicemia
 
-{P.ORG}, servizio strumentazione. Aggiornato al 3 gennaio 2028.
+{P.ORG}, {P.POCT_OFFICE}. Aggiornato al 3 gennaio 2028.
 
-## {F['archive']}
+## {F['export']}
 
-Archivio degli analizzatori: le medie orarie che ogni analizzatore conserva nella propria memoria, scaricate dalla
-ditta di taratura a ogni visita trimestrale e a fine anno, e accodate all'archivio. Una riga per analizzatore e ora.
-
-| campo | contenuto |
-|---|---|
-| matricola | matricola dell'analizzatore |
-| data_ora_utc | inizio dell'ora, orologio dello strumento (UTC) |
-| no_ppb, no2_ppb, nox_ppb | medie orarie in ppb; vuote quando lo strumento era in guasto |
-| stato | 0 misura, 2 strumento in modo taratura o manutenzione, 8 guasto |
-
-## {F['titr_a']}
-
-Schede di titolazione di {P.CONTRACTOR_A}, gennaio 2025 - giugno 2026, foglio Titolazioni.
+Risultati ricevuti dal gestionale {P.DMS} dal 1° luglio 2026 al 31 dicembre 2027, nell'ordine in cui il server li ha
+ricevuti. Una riga per risultato ricevuto. Separatore punto e virgola.
 
 | campo | contenuto |
 |---|---|
-| Data, Ora inizio, Ora fine | giorno, inizio e fine della verifica, ora italiana |
-| Stazione | nome della stazione |
-| Matricola | matricola dell'analizzatore |
-| Tipo verifica | trimestrale, pre-sostituzione, post-sostituzione |
-| NO2 generato (ppb), NO2 misurato (ppb) | NO2 generato dalla titolazione e aumento di NO2 letto dall'analizzatore |
-| Rendimento convertitore (%) | NO2 misurato su NO2 generato |
-| Esito | conforme, NON CONFORME (sotto il 95 %) |
+| id_risultato | identificativo assegnato dal server alla ricezione |
+| matricola | matricola del glucometro |
+| n_memoria | numero progressivo del risultato nella memoria del glucometro |
+| data_ora_test | data e ora del test, orologio del glucometro |
+| tipo | PAZIENTE oppure CONTROLLO (soluzione di controllo) |
+| livello | livello della soluzione di controllo, 1 o 2 |
+| lotto_controllo, lotto_strisce | lotti della soluzione di controllo e delle strisce |
+| id_paziente | codice del ricovero o dell'accesso in pronto soccorso |
+| operatore | matricola dell'operatore |
+| risultato | glicemia in mg/dL; LO sotto 20, HI sopra 600 |
+| presidio, reparto | presidio e reparto a cui il glucometro è assegnato nell'anagrafica del gestionale |
+| data_ora_ricezione | istante in cui il server ha ricevuto il risultato, UTC |
 
-## {F['titr_b']}
+## {F['pairs']}
 
-Schede di titolazione di {P.CONTRACTOR_B}, da luglio 2026.
+Abbinamenti fra glucometro e laboratorio dal 1° luglio 2026 al 31 dicembre 2027, foglio Abbinamenti. Una riga per
+provetta abbinata.
 
 | campo | contenuto |
 |---|---|
-| data, ora_inizio, ora_fine | giorno, inizio e fine della verifica, ora italiana |
-| codice_stazione, matricola | stazione e analizzatore |
-| tipo_verifica | trimestrale, pre-sostituzione, post-sostituzione |
-| no_iniziale_ppb, nox_iniziale_ppb | letture dell'analizzatore sulla miscela di NO, prima dell'ozono |
-| no_finale_ppb, nox_finale_ppb | letture dopo l'aggiunta dell'ozono |
-| efficienza | rendimento del convertitore, come frazione |
-
-## {F['service']}
-
-Registro degli interventi, foglio Interventi: data, stazione (MAG per il magazzino), matricola dell'analizzatore,
-intervento, tecnico.
+| id_risultato | identificativo del risultato del glucometro (vedi sopra) |
+| matricola | matricola del glucometro |
+| data_ora_test | data e ora del test, orologio del glucometro |
+| glucometro_mg_dl | risultato del glucometro; LO sotto 20, HI sopra 600 |
+| n_accettazione | numero di accettazione della provetta in laboratorio |
+| data_ora_prelievo | data e ora del prelievo registrate dal laboratorio, ora italiana |
+| laboratorio_mg_dl | glicemia su plasma del laboratorio |
+| presidio, reparto | come sopra |
 
 ## {F['plan']}
 
-Piano di manutenzione 2028, foglio Piano: per ogni analizzatore la data della manutenzione programmata del 2028.
+Piano degli abbinamenti, foglio Piano: per ogni glucometro i giorni della settimana del piano e il periodo in cui
+valgono. Foglio Festività: le festività del periodo.
 
-## {F['stations']}
+## {F['register']}
 
-Anagrafica delle stazioni, foglio Stazioni: codice, nome, tipo, coordinate, analizzatore di NOx in stazione al 31
-dicembre 2027, modello, registratore dati e data della sua installazione.
+Anagrafica dei glucometri: foglio Glucometri (matricola, inventario, modello, presidio e reparto di assegnazione,
+data di entrata in uso, stato) e foglio Storico ubicazioni (per ogni glucometro i reparti in cui è stato e da
+quando).
 
-## {F['database']}
+## {F['strips']}
 
-Banca dati validata della rete, NO2 orario del 2027. Separatore punto e virgola, virgola decimale.
+Confezioni di strisce consegnate dalla farmacia ai reparti nel 2027, per mese.
 
-| campo | contenuto |
-|---|---|
-| stazione | codice della stazione |
-| data_ora_solare | inizio dell'ora, ora solare (UTC+1) |
-| no2_ugm3 | NO2 in µg/m³ a 20 °C e 101,3 kPa |
-| codice | V valido; R valido, rivalidato dall'operatore dopo il controllo automatico; N misura per meno di 45 minuti; M strumento in taratura o manutenzione; A anomalia strumentale; F dato non pervenuto |
+## {F['veq']}
 
-## {F['met']}
-
-Dati meteorologici orari 2027 di tre stazioni della rete: temperatura, umidità relativa, velocità e direzione del
-vento, altezza dello strato di rimescolamento stimata dal preprocessore meteorologico. Ora solare.
-
-## {F['pm10']}
-
-PM10 giornaliero gravimetrico 2027 delle sei stazioni con campionatore sequenziale, in µg/m³.
+Valutazione esterna di qualità della glicemia del laboratorio nel 2027: valore assegnato, risultato e z-score di
+ogni giro.
 """
     with open(path, "w", encoding="utf-8") as f:
         f.write(md)

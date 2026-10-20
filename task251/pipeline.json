@@ -1,31 +1,32 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences",
+ "status": "BUILD",
+ "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-20",
- "stump": "A competent solver pools every converter's titrations against its age since the service log's change and books BP08 alone (every other converter reaches its 2028 service about a year old and above 95 per cent); the converters wear with the NO2 they reduce along a curve that steepens near exhaustion, and carried on each station's own load seven go: BP01, BP02, BP03, BP04, BP05, BP08 and BP13.",
- "architecture": 2,
+ "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-20"
+  "date": "2026-10-20",
+  "checks": 51
  },
  "leak": {
   "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.decision, repeat.question_form against task471 v4)",
-  "surface": "the card's three people only",
-  "nearest": "task249 v2 (lineage) 0.11"
+  "heart": "",
+  "surface": "",
+  "nearest": "task251 (v1, lineage) 0.08"
  },
  "judge": null,
  "returned": [],
- "resume": "Architecture 2 spent at stage 4 (both scored readers landed the call through the converter's accumulated NO2; asks held at 4 of 48 each). Next: re-root to architecture 3 at stage 1 (the third and last architecture this slot may take without the author): move v2 into the card's lineage with its fate, draw a decisive step from the held family (compound, or outside the hypothesis space a strong reader brings), not a known instrument-wear model and not task250's policy-censoring driver; the database ask device (titration hours coded valid) held and is a candidate to keep.",
+ "resume": "Architecture 3 drawn and registered (WARN only). Next: stage 3 in the repo (make.py two byte-identical builds with checks and verify, figures_check, realism sweep, golden-realism, reduce-house-fixes, leak.py, guard surface and heart), then stage 4: two isolated scored readers on fresh copies (score_reader.py, both must miss the call) and the determinism judge, then ship.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -60,16 +61,15 @@
   {
    "date": "2026-10-20",
    "event": "architecture 2 spent at stage 4: readers A and B both landed the seven (score_reader exit 1, asks 4 of 48 each); judge thread refused Bash by the auto-mode classifier"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "architecture 3 drawn: GSDS missing data, censoring and measurement error; 52 bedside glucose meters, each meter's systematic error read on the pairings the plan drew, the confirmations of critical readings selected on the meter's own reading left out (card registered WARN only; forum, event, artifact and role redrawn at filing when task478 took operations_desk, purchase_order_or_contract, monitoring_export and field_unit_lead)"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "stage 2 closed: precut exit 0 (51 checks), fork table SF1 to SF16 asserted, pair ceiling 28.5 by generator/pair.py, mirror 0 per cent; scratch build green (checks 55, verify 0, byte-identical, figures_check 62 of 62)"
   }
  ],
- "readers": {
-  "A": {
-   "call": "landed",
-   "asks": "4 of 48"
-  },
-  "B": {
-   "call": "landed",
-   "asks": "4 of 48"
-  }
- }
+ "readers": null
 }

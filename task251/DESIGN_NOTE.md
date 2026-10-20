@@ -2,296 +2,227 @@
 
 ## Draw
 
-Card `cards/task251.json` (architecture 2, re-rooted 2026-10-20 from architecture 1, spent at stage 4; see Tried and
-rejected and the card's lineage). Guard verdict WARN, no BLOCK. The WARNs, answered: overuse.org_family
-(government_agency: a provincial environment agency runs the province's air quality network, and no other kind of body
-would); repeat.gate_g and overuse.gate_g (method_or_model_selection: the decisive step is the choice of the clock and the
-curve the converters' wear runs on; forecasting with gap time and G16 is a signature five builds have spent, so the
-honest second label was taken rather than the blocked one). The structural notes are differentiated on the card against
-task148, task241, task254 and task501. Nearest driver 0.06 (task133 v1, lineage). `guard.py slots` on the candidate
-driver: no slot note holds the mechanism. Architecture 1 spent the seed's world as a reference chain read through
-paired readings; this draw keeps the decision (which instruments go for recalibration ahead of time) and moves the
-decisive step off the reference altogether.
+Card `cards/task251.json` (architecture 3, re-rooted 2026-10-20 from architecture 2, spent at stage 4; see Tried and
+rejected and the card's lineage). Guard verdict WARN, no BLOCK. The WARNs, answered: repeat.decision (designation_set
+after task478: the decision is the set of meters the visit takes, and a set is what the manufacturer's engineer needs; a
+count or a gate would hide which meters, and the scoring unit is the meter, not task478's road segment);
+repeat.deliverables (png and xlsx after task481: the list goes to the manufacturer as a workbook and the quality office
+reads the chart; no other format family fits the decision); repeat.question_form (which, after task480 and task478: a
+pick asks which, and the question is a pick of meters). The structural notes are differentiated on the card against
+task229, task231, task236, task245, task265 and the slot's two earlier architectures. `guard.py slots` on the candidate
+driver: the four slot notes it returns (task202, task253, task190, task260) share words, not the move. The draw waited
+for the window: task471 and then task271 held population_selection and task271 the hospital family until later
+registrations pushed them out, and the analyzer parallel run was folded into the laboratory's note when task481 took
+parallel_run_overlap (Tried and rejected). At filing task478 held operations_desk, purchase_order_or_contract and
+monitoring_export, and the three were redrawn to the honester labels below; its re-filing took field_unit_lead, and the
+role was redrawn with it.
 
-- **Pairing.** Physical & Environmental Sciences / sensor-calibration-measurement, drawn for Data Quality Monitoring &
-  Alerting. The object is the health of the network's NO2 measurements, which a chemiluminescence analyzer makes only
-  through its molybdenum converter, and the call is a monitoring decision: which analyzers' converters are changed at
-  the January bench rather than at their scheduled service.
-- **The seed, re-found.** DQ24 gave the world (instruments checked against references, both noisy), the decision (which
-  instruments go for recalibration) and the quantity (each instrument's calibration factor against a tolerance). Its
-  pitfall, the attenuated slope between two noisy instruments, is spent (task249 v1), and architecture 1's span-gas loss
-  was landed by both readers. The decisive step is re-found in the data's own structure: the converter's efficiency,
-  checked by gas-phase titration (two noisy measurements of one delivered NO2 step), wears with the NO2 the converter
-  reduces, so its clock is the station's load and not the calendar, and the curve steepens as the molybdenum nears
-  exhaustion.
-- **Niche.** The Agenzia per la Qualità dell'Aria della Bassa Padana (fictional, the lower Po valley) runs the area's
-  air quality network: sixteen stations, each with one chemiluminescence NOx analyzer (traffic, urban background,
-  suburban, industrial and rural sites), and a spare in store. A calibration contractor titrates every analyzer's converter each
-  quarter; every converter is changed at the analyzer's scheduled annual service and, under the agency's QA manual,
-  earlier when a titration reads below the EN 14211 minimum of 95 per cent. In January the regional laboratory opens a
-  bench for the province's converters; the agency books on it the analyzers whose converters would fall below 95 per
-  cent before their scheduled 2028 service, so that no NO2 hour of the coming winter is measured through a spent
-  converter.
-- **The call.** Which analyzers' converters go to the January 2028 bench: those whose converter efficiency would fall
-  below 95 per cent before the analyzer's scheduled 2028 service date.
-- **Shape.** other: each of the 16 station analyzers' verdict (16), the bench list and its count (2), the chart of each
-  converter's efficiency at its 2028 service against the 95 per cent line with the bench list marked (4), each station's
-  2027 NO2 record (valid hours, annual mean, 19th highest hourly value: 48), the two files (2): 72 criteria.
-- **Strategy.** `forecast_method_backtest` (strategies F6: the rate is stationary only in a constructed exposure, the NO2
-  the converter has reduced, rebuilt from the hourly record and the service log, and the natural fit in time fails
-  forward). Gate G method_or_model_selection; generators G16 (the clock and curve the data entitle), G13 (the months to
-  the service date carry a load the converter's own months did not), G6 (stations' loads differ, so a pooled curve in
-  time is a mixture); gap time, population; calibration physical_verification (the titration checks); context artifact
-  monitoring_export; Layer 2 field_method (exposure windows: converter life counted in NO2 reduced), pattern
-  own:converter-life-in-no2-converted.
-- **Forum, event, organisation.** operations_desk (the network's instrumentation desk books the bench),
-  purchase_order_or_contract (the laboratory's bench is booked by list), government_agency. Role field_unit_lead (the
-  head of the network's instrumentation).
-- **People** (`guard.py names --geo Italy --seed 251`, locale it_IT): Livia Saracino, head of instrumentation, who asks;
-  Patrizio Gilardoni, the regional laboratory's bench coordinator; Jolanda Stefanelli, the calibration contractor's
-  field lead. None appears in the prompt.
-- **Data-native sentence.** A molybdenum converter is spent by the NO2 it reduces, so its efficiency follows the NO2 a
-  station's air has carried through it since installation, along a curve that steepens as the molybdenum nears
-  exhaustion; the titration checks of every converter the network has run collapse onto that curve in NO2 reduced and
-  not in months, and a converter installed in spring has seen a light summer and faces the valley's heavy winter before
-  its service, while one installed in autumn faces the light months.
-- **As-of.** Tuesday 4 January 2028 (the laboratory's mail); the list is due Monday 10 January, the bench runs 17 to 21
-  January. The call faces forward: each converter's efficiency at a service date the record has not reached.
-- **Sources.** The client's two-layer standard; EN 14211 (chemiluminescence NO2 and NO: the converter efficiency check by
-  gas-phase titration and its 95 per cent minimum); the molybdenum converter's consumption in reducing NO2 (manufacturers'
-  service guidance, converter life in years depending on the sampled air); the Po valley's winter NO2 maximum under
-  stagnant inversions.
+- **Pairing.** General Statistics & Data Science / missing-data-censoring-measurement-error, drawn for Data Quality
+  Monitoring & Alerting. The object is the health of the trust's bedside glucose results, which reach the clinical record
+  from 52 meters, and the call is a monitoring decision: which meters the point-of-care office withdraws for the
+  manufacturer's recalibration.
+- **The seed, re-found.** DQ24 gave the world (instruments checked against a reference, both noisy), the decision (which
+  instruments go for recalibration) and the quantity (each instrument's factor against a tolerance). Its pitfall, the
+  attenuated slope between two noisy instruments, is spent (task249 v1); this number's first two architectures spent a
+  reference chain and a wear clock. The decisive step is re-found in the data's own structure: most of a neonatal
+  meter's pairings with the laboratory exist because the meter's own reading was critical.
+- **Niche.** The ASST Pianura Orientale (fictional, the Po valley) runs 52 Glyvera GX2 meters on thirteen wards of the
+  Castelmarne, Rivobello and Valdarena hospitals. The meters' data manager, GlyLink, pairs a meter result with the central
+  laboratory's result whenever the nurse reads a tube's barcode on the meter: on the morning round on the days the
+  point-of-care office's plan gives each meter, and whenever a reading under 50 or over 400 mg/dL is confirmed in the
+  laboratory. The manufacturer recalibrated every meter in January 2027 and returns from 17 to 21 January 2028 under the
+  service contract; the procedure withdraws a meter whose systematic error against the laboratory is beyond 5 per cent.
+- **The call.** Which meters go on the list for the January 2028 visit, or none.
+- **Shape.** other: the list (each of the eight meters and no other: 9), each listed meter's ward, hospital and error
+  (8), the chart of every meter's error against the band with the list marked (4), the share of 2027 results reaching the
+  record late per hospital and quarter (12), the 2027 patient tests per ward (13), the two files (2): 48 criteria.
+- **Strategy.** `population_selection` (strategies F7: checks that see a unit because it was wrong). Gate G
+  signal_vs_noise_or_hold (a confirmation pairing's apparent bias is the meter's selected random error); generators G9,
+  G5, G11; gap population; calibration none (the analyzer change rides on the note's filed factor); context artifact
+  register (the meter register with its location history); Layer 2 field_method, pattern own:confirmation-pairs-selected-on-the-meter-reading.
+- **Forum, event, organisation.** customer_or_counterparty (the manufacturer receives the list: its service manager's
+  mail asks for it by Monday 10 January, and the visit, not the office, acts on it), other for the event (the
+  manufacturer's scheduled recalibration visit of 17 to 21 January 2028, a service visit with no order, renewal or tender
+  at stake, which purchase_order_or_contract overstated), hospital_or_health_provider. Role compliance_or_audit (the
+  coordinator answers for the meters' analytical quality under POCT-GLU-02; field_unit_lead, drawn first, went to task478
+  at its re-filing and named a site unit the office is not). Context artifact register: anagrafica_glucometri.xlsx answers where each meter stands, where it stood
+  and when it was last calibrated, correctly, and ranks nothing; the data manager's export is the spine.
+- **People** (`guard.py names --geo Italy --seed 251`, locale it_IT): Lorenzo Carfagna, the point-of-care office's
+  coordinator, who asks; Silvestro Fittipaldi, the laboratory's director, who signs the analyzer note; Adelmo Gori, the
+  manufacturer's service manager. None appears in the prompt.
+- **Data-native sentence.** A pairing sits in GlyLink's report either because the plan drew the meter on the morning
+  round, whatever it read, or because the meter's own reading was under 50 or over 400 mg/dL and the nurse sent a
+  confirmation; the second kind sees the meter when its random error ran outward, and on the nursery and the neonatal
+  intensive care it is about two pairings in three (62 and 67 in a hundred).
+- **As-of.** Tuesday 4 January 2028 (the manufacturer's mail); the list is due Monday 10 January, the visit runs 17 to 21
+  January. The call faces forward: which meters' error the 2028 recalibration has to correct.
+- **Sources.** The client's two-layer standard; meter-laboratory comparison practice for bedside glucose (CLSI POCT12,
+  ISO 15197); laboratory confirmation of critical bedside readings and neonatal hypoglycaemia screening; regression to
+  the mean of a sample selected on a noisy measurement.
 
 ## Default path
 
-The path a competent analyst takes after reading every file and filed rule correctly, the pack cleaned (both
-contractors' sheets on one scale, the service log read for each analyzer's converter changes, the plan read for each
-2028 service date, the store spare left out as section 7 says).
+1. Read POCT-GLU-02: a meter beyond 5 per cent is withdrawn; its systematic error is the factor e of section 7, on the
+   current calibration, against the laboratory's method in use.
+2. Read GlyLink's pairing report (14,133 pairings from July 2026), keep those after each meter's ultima_taratura in the
+   register, numeric meter values only.
+3. Divide the C600's values drawn before 13 September 2027 by 1.035 (the laboratory's note).
+4. Take each meter's mean of meter over laboratory ratios less one and withdraw the meters beyond 5 per cent.
 
-1. Read AQBP-QA-07 (sections 3, 4 and 7), the laboratory's mail (bench 17 to 21 January, list by 10 January, up to ten
-   converters) and the 2028 maintenance plan (each station analyzer's service date, BP08's 2027 service put back to 15
-   February 2028).
-2. Put both contractors' titrations on one scale: Tecnoaria's NO2 misurato over NO2 generato, Delta's increase in NOx
-   less NO over the NO consumed, which its efficienza column repeats (303 checks on 17 analyzers).
-3. Take each analyzer's converter in service from the service log's last converter change, and each titration's age
-   since the change it followed; pool every converter's checks against age and fit the network's decline.
-4. Carry each converter in service to its 2028 service date on that curve and book those below 95 per cent: every
-   converter reaches its service about a year old at about 96 per cent, and only BP08, put back to February, runs past
-   95 per cent.
-
-Ends on: BP08 alone, one converter on the bench
-Golden: seven converters, BP01, BP02, BP03, BP04, BP05, BP08 and BP13
+Ends on: GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out)
+Golden: GX2-A564E, GX2-J921X, GX2-K532W, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L
 
 ## Stump sentence
 
-A competent solver puts both contractors' titrations on one scale, pools every converter's checks against its age since
-the service log's change and carries each converter in service to its 2028 service along that curve: every converter
-reaches its service about a year old at about 96 per cent, and only BP08, whose 2027 service was put back to February
-2028, runs past 95 per cent, so the solver books BP08 alone. A molybdenum converter is spent by the NO2 it reduces, not
-by the months it has been in: summed from each analyzer's own hourly record since the change, the checks fall on one
-curve in NO2 converted that steepens past about 90 ppm-hours, and carried forward on each station's own seasonal load to
-its service date seven converters are below 95 per cent by then, BP01, BP02, BP03, BP04, BP05, BP08 and BP13.
+A competent solver puts every pairing since each meter's January 2027 calibration on the C900 scale and withdraws
+GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out):
+on the nursery and the neonatal intensive care two pairings in three are confirmations, drawn because the meter's own
+reading was under 50 mg/dL, so they catch the meter when its random error ran low, pull GX2-M707F from -1.6 to -5.8 per
+cent and GX2-K532W from +8.4 to +4.8; on the pairings the plan drew, GX2-K532W goes and GX2-M707F stays.
 
 ## Three rules
 
-Task type: sensor-calibration-measurement (Physical & Environmental Sciences), a task type the taxonomy tags for Data
-Quality Monitoring & Alerting; the call is which analyzers' converters are changed at the January bench, a monitoring
-decision on the health of the network's NO2 measurements.
-
-Domain test: the deciding quantity is each converter's efficiency at its service date, an instrument quantity the field
-measures by EN 14211 gas-phase titration: a chemiluminescence analyzer sees NO2 only through a molybdenum converter that
-is consumed by the NO2 it reduces, so its efficiency runs on the NO2 converted (ppm-hours) along a loss that steepens
-near exhaustion, and the forecast carries that curve on the station's own seasonal NO2 to the service date.
-
-Swap: with a warehouse's nouns (forklift batteries, charge cycles) the wear clock would be a meter the fleet logs; here
-the clock is the pollutant the instrument measures, reduced by the very part that wears, at a station whose load swings
-with the valley's winter inversions, so the titrations, the converter and the station's seasonal NO2 have no
-counterpart and the task does not survive the swap.
-
-Layer 1: the analyzers' archive in UTC, downloaded at each quarterly round and at the year's close, with the days
-before each download repeated; Tecnoaria's workbook (station names, percentages, Italian civil time) beside Delta's CSV
-(codes, raw NO and NOx readings, a fraction); the service log mixing converter changes, repairs, analyzer swaps and
-logger work; the 2028 plan with BP08's service put back; the validated database in solar time with a decimal comma,
-re-sent days and validation codes; the store spare's hours filed under the store's code; six new loggers set at the
-factory to 0 degrees C until December.
-
-Layer 2: field method, exposure windows: the converter's life counted in the NO2 it has reduced rather than in months
-(the clock the data entitle), a nonlinear wear curve pooled across the network's converters, and the forecast carried
-on each station's own seasonal load to its service date.
-
-Decisive step: putting the titrations on the converter's real clock, the NO2 it had reduced when it was checked (the
-analyzer's own hourly NO2 summed from the service log's change), fitting the pooled wear curve on that clock with its
-steepening, and carrying each converter forward on its station's seasonal load to its 2028 service date.
-
-Not semantics: every field reads plainly (efficiencies, dates, ppb, service dates, codes); a reader who reads them all
-correctly still books BP08 alone or nothing, because nothing in the pack says a converter's efficiency runs on the NO2
-it reduces: the manual says only that the converter reduces NO2 to NO and that a spent one makes the station read low.
-
-Not rule application: section 7 files the WHAT, the station analyzers whose converter would be below 95 per cent before
-the analyzer's scheduled 2028 service; no filed rule says how a converter's efficiency at a future date is estimated,
-and executing sections 3 to 7 on the titrations in time or in age books BP08 alone or nothing.
-
-Analyst test: a strong analyst who cleans the pack and reads every rule pools the titrations against converter age and
-books BP08 alone (or carries each converter's own checks forward in time and books BP02 and BP04); only the clock in NO2
-converted, with the curve's steepening and each station's seasonal load, books the seven.
-
-Estimand: the 16 station analyzers (the store spare out) whose converter's efficiency, left in service, would be below
-95 per cent before the analyzer's scheduled 2028 service date: filed in AQBP-QA-07 section 7 and the 2028 plan.
-
-No decoy: no document argues for the age curve or any list, nothing ranks the converters, and every titration, change
-and service date is the network's ordinary record; the latest checks, all at 95 per cent or more, are what the
-network's quarterly rounds found.
-
-No certified replay: no certified figure is reproduced to recover the method; the titrations are measurements of the
-converters at different loads and ages, and the curve is fitted on them, never replayed (validated_decoy false).
-
-Lesson: architecture 1 and task249's five architectures were landed through a stated reference or a single reflex;
-here the decisive move is the field's own clock for a consumable that wears by what it processes, which the calendar
-and age routes miss, and which collapses the network's checks only when it is summed from the raw hourly record.
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), tagged in the taxonomy for Data Quality Monitoring: a measurement-error model's bias term estimated from paired measurements, judged by how the pairs were drawn.
+Domain test: The deciding quantity is each meter's systematic error against the laboratory, the bias of a measurement-error model estimated from meter and laboratory pairings as bedside glucose practice does it; whether a pairing measures it depends on why it was drawn, which only the field's workflow (scheduled verification against critical-value confirmation) tells.
+Swap: "the meters whose error is beyond 5 per cent, read on the pairings the plan drew, because the confirmations were drawn by the meter's own critical reading" put into a warehouse's scales and its audit weighings loses its mechanism, since no weighing sends a second sample to a reference because the scale's own reading crossed a clinical limit; replacing the selection-aware estimate with the mean over every pairing changes the list.
+Layer 1: the data manager's export in reception order with the copies an unacknowledged docking re-sends; the meters' clocks on solar time against the laboratory's civil time and the server's UTC; the export's ward and hospital as each meter's current assignment; LO and HI as text; the laboratory's analyzer change of 13 September 2027 never recalculated; the per-meter pairing plan with holidays moved; seven meters moved between wards.
+Layer 2: field_method under population_selection: a sample selected on the measured value regresses toward the reference, so a bias is read on the pairs drawn independently of the meter's reading.
+Decisive step: estimating each meter's systematic error on the pairings the plan drew on the morning round and leaving out the confirmations of critical readings, which exist because the meter's own result was extreme and so carry its random error outward.
+Not semantics: every field of the pairing report reads as what it is (a meter result and the laboratory's result on the tube its barcode linked), the procedure describes the plan's pairings and the confirmations side by side without ranking them, and nothing in any field, code, unit or definition says a confirmation misstates a meter's bias.
+Not rule application: no filed sentence says which pairings estimate the systematic error; section 7 defines the factor and its estimate as a mean of ratios without naming the pairings, so executing every filed rule over every pairing files the default list.
+Analyst test: A strong analyst who reads the procedure, the note and the register, keeps every pairing since each meter's calibration on the C900 scale and takes each meter's mean ratio withdraws GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out), dropping the nursery meter reading 8 per cent high and adding one reading 2 per cent low.
+Estimand: each of the 52 meters' factor e by which it reads the laboratory's method in use (the C900) times 1 + e, the same at every concentration, on its current calibration (results after the manufacturer's last calibration), estimated as the mean of meter over laboratory ratios less one, a meter withdrawn when e is beyond 5 per cent either way (POCT-GLU-02 section 7 and the prompt).
+No decoy: nothing is planted: the confirmations are the procedure's own critical-value practice, every pairing holds a true meter result and a true laboratory result, no memo, draft or figure argues for the pooled list, and no file ranks the meters.
+No certified replay: no certified or published figure reproduces only under one method; the pairing report carries no per-meter summary, the procedure no worked example and the service report no measured error.
+Lesson: a paired comparison is only as sound as the reason each pair was drawn, and pairs a meter's own extreme reading triggered show its error at its most outward, so a bias is read on pairs a schedule drew; no build on file estimates a measurement's bias from pairs selected on that same measurement.
 
 ## Readability screen
 
 | Rung | Where a reader meets it | Verdict |
 |---|---|---|
-| 1. The latest titration (none below 95 per cent, book none) | the two contractors' sheets | readable |
-| 2. Each converter's own checks carried forward in time (BP02, BP04) | the sheets and the service log's changes | readable |
-| 3. The pooled curve against age (BP08 alone) | the sheets, the service log, the plan | readable |
-| 4. A straight line in NO2 converted (BP01, BP02) | the archive summed between change and check, once the clock is found | readable |
-| 5. (decisive) The pooled curve in NO2 converted with its steepening, carried on each station's seasonal load (seven) | nothing names it: the manual says the converter reduces NO2 to NO and that a spent one reads low; only the field's knowledge that the molybdenum is consumed by what it reduces sends a reader to sum the archive between each change and each check | silent |
+| 1. Every pairing, the laboratory as reported (eleven meters) | the pairing report | readable |
+| 2. Each meter's current calibration: pairings after ultima_taratura | the register, section 7 | readable |
+| 3. The C600's values divided by 1.035 | the laboratory's note, section 7 | readable |
+| 4. (decisive) The pairings the plan drew, the confirmations left out (the eight) | nothing names it: section 5 describes the plan's pairings and section 6 the confirmations, the report carries both without a type, and only the reasoning that a pair drawn because the meter read critical carries that reading's own error sends a reader to the plan | silent |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | converter efficiency | the titration's NO2 read over NO2 generated | each contractor's printed figure | same call | section 3; Delta's efficienza repeats the ratio, Tecnoaria's percentage rounds it (asserted) |
-| SF2 | below 95 per cent | strictly below 0.95 | at or below | same call | no converter within 0.01 of 0.95 at its service on any golden form (asserted) |
-| SF3 | before the scheduled service | by the plan's 2028 date | the day before | same call | asserted |
-| SF4 | scheduled 2028 service | the plan's manutenzione_2028 (BP08 on 15 February 2028) | a year after the 2027 service | same call | the plan; BP08 goes either way (asserted) |
-| SF5 | station analyzers | the 16 in the register, the store spare out | the 17 in the plan | same call | section 7 (analizzatori di stazione); the spare's converter is far from 95 per cent (asserted) |
-| SF6 | the converter in service | the last converter change in the service log | the last post-sostituzione titration | same call | every change carries a post-sostituzione titration that day (asserted) |
-| SF7 | the NO2 a converter reduced | the analyzer's hourly NO2 summed from the change | measuring hours only (stato 0) | same call | asserted over the golden family |
-| SF8 | the archive's repeated days | each hour once | the raw rows summed | same call | the dictionary: downloads appended; asserted |
-| SF9 | the load still to come | the station's mean over the same days of 2025 to 2027 | 2027 alone; 2026 and 2027; the year's mean rate | same call | asserted |
-| SF10 | the wear curve's form | linear to a knee, quadratic past it | cubic, quadratic, exponential, power | same call | asserted (closest margin 0.0115) |
-| SF11 | a change's hour | noon UTC on the change day | the day's start or end | same call | asserted |
-| SF12 | the sheets' clock | Italian civil time | UTC | same call | the dictionary |
-| SF13 | the record's end | the archive's last hour, 31 December 2027 | the as-of date, 4 January 2028 | same call | the archive ends on 31 December (asserted) |
-| SF14 | a fresh converter's check | the post-sostituzione titration at no NO2 converted | left out of the fit | same call | asserted |
-| SF15 | ten converters | the laboratory's ceiling | a quota to fill | same call | the mail: up to ten; seven go |
-| SF16 | already below 95 per cent | below before the service, so booked (BP01) | not booked because it fell already | BP01 out | section 7: sarebbe sotto il 95 per cento prima della manutenzione |
-| SF17 | the service in the bench week | BP01's 20 January service stays and BP01 is booked | BP01 left to its service | BP01 out | section 7: la manutenzione programmata resta alla sua data |
-| SF18 | the as-of | Tuesday 4 January 2028 | the year's turn | same call | the laboratory's mail |
-| SF19 | a valid hour (asks) | the analyzer measured the station's air 45 minutes or more | the database's V and R codes as delivered | the asks only | section 5; every hour a visit touches holds 16 minutes of it or more (asserted) |
-| SF20 | R (asks) | valid | not valid | the asks only | the dictionary: R valido |
-| SF21 | MAG rows (asks) | the spare's hours at BP07, BP07's | the store's, out | the asks only | the service log's swap; section 5's station air (asserted) |
-| SF22 | the new loggers' hours (asks) | at 0 degrees C until the December visit, put on 20 | as delivered | the asks only | the database's 20 degrees C; scale and archive routes agree at the asked rounding (asserted) |
-| SF23 | the 19th highest (asks) | the 19th of the station's valid hours by value | the 19th day | the asks only | section 6 |
+| SF1 | the meters | the 52 in the register | only those with pairings | same call | every meter carries 98 or more plan pairings (asserted) |
+| SF2 | systematic error | section 7's mean of ratios less one | ratio of totals, slope through the origin, geometric mean, median ratio | same call | section 7; the list asserted over five estimators, closest margin 1.3 points |
+| SF3 | against the laboratory | the C900, the C600 divided by 1.035 | each pairing's own analyzer | another list | section 7 (metodo in uso alla data della valutazione) and the note |
+| SF4 | the current calibration | pairings after ultima_taratura | every pairing since July 2026 | another list | section 7 (risultati successivi all'ultima taratura) |
+| SF5 | the calibration day | after it | on or after it | same call | no plan pairing falls on its meter's calibration day (asserted) |
+| SF6 | beyond 5 per cent | strictly | at or beyond | same call | the closest meter is 1.3 points from the line (asserted) |
+| SF7 | LO and HI | out of the estimate | at 20 and 600 | same list | section 7 files them out (asserted) |
+| SF8 | the plan's holidays | moved to the next working day | not moved | same call | the plan's rule; asserted |
+| SF9 | the morning round | the laboratory's draw from 6:00 to 7:30 | other edges | same call | no other pairing within ten minutes of either edge on a planned day (asserted) |
+| SF10 | the note's factor | divide by 1.035 | multiply by 0.965 | same call | the note; asserted |
+| SF11 | a pairing's date | the laboratory's draw | the meter's clock | same call | asserted |
+| SF12 | a patient result (asks) | once per meter and memory number, first reception | every row | the asks only | section 3: a result is in the record from the moment the data manager receives it |
+| SF13 | a test's instant (asks) | the meter's clock less one hour | the clock as civil time or as UTC | the asks only | the plan pairings show the meter an hour before the draw in summer and on time in winter (asserted) |
+| SF14 | the ward and hospital (asks) | where the meter stood on the day | the export's presidio and reparto | the asks only | section 8 (eseguiti nel reparto), the dictionary (assegnato), the register's history |
+| SF15 | a test's date (asks) | Italian civil date | UTC or the meter's date | same figures | asserted |
+| SF16 | more than two hours (asks) | over 7,200 seconds | 7,200 or more | same figures | asserted |
 
 ## Ladder
 
-| Route | Books | Count | Golden |
+| Route | Withdraws | Count | Golden |
 |---|---|---|---|
-| The latest titration below 95 per cent | none | 0 | no |
-| The pooled curve in age, quadratic (the default path) | BP08 | 1 | no |
-| The pooled curve in age, cubic | none | 0 | no |
-| Each converter's own checks, a line in time | BP02, BP04 | 2 | no |
-| Each converter's own checks, a quadratic in time | BP01, BP03, BP04, BP05, BP06, BP10, BP13, BP14 | 8 | no |
-| Each converter's own checks, a line in NO2 converted | BP01, BP03, BP05, BP13 | 4 | no |
-| The pooled straight line in NO2 converted | BP01, BP02 | 2 | no |
-| The pooled curve in NO2 converted, efficiency today | BP01 | 1 | no |
-| The pooled curve in NO2 converted, the last 90 days' rate carried forward | the seven and BP14 | 8 | no |
-| The seven stations with the highest mean NO2 | BP06 for BP08 | 7 | no |
-| The seven converters with the most NO2 converted now | BP07 and BP09 for BP04 and BP13 | 7 | no |
-| Golden: the pooled curve in NO2 converted, the station's seasonal load to the service | BP01, BP02, BP03, BP04, BP05, BP08, BP13 | 7 | yes |
+| Every pairing, the laboratory as reported | the golden eight without GX2-K532W, with GX2-M707F, GX2-U982T, GX2-Y416X and GX2-Y986N | 11 | no |
+| Every pairing since the calibration on the C900 (the default path) | the eight with GX2-M707F for GX2-K532W | 8 | no |
+| The same, ratio of totals | the same eight | 8 | no |
+| The same, median ratio | the golden eight with GX2-M707F and GX2-Y416X | 10 | no |
+| Every pairing within 15 per cent of the laboratory | the golden eight without GX2-K532W | 7 | no |
+| Every pairing whose meter value is not critical | the golden eight with GX2-J313P | 9 | no |
+| The plan's pairings, the laboratory as reported | the golden eight with GX2-U982T | 9 | no |
+| The plan's pairings since July 2026 | the golden eight without GX2-J921X and GX2-R842P | 6 | no |
+| Golden: the plan's pairings since the calibration on the C900 | GX2-A564E, GX2-J921X, GX2-K532W, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y, GX2-W234L | 8 | yes |
 
-The golden family agrees on the seven under every form of the curve (knee, cubic, quadratic, exponential, power), every
-forecast of the load (the mean of 2025 to 2027, of 2026 and 2027, 2027 alone, the year's mean daily rate), measuring
-hours only or all, the fresh converters' checks in or out, either contractor's printed efficiency, and the dose
-corrected for the converter's own loss (asserted, closest margin 0.0115).
+The golden family agrees on the eight under every estimator of a single factor (mean of ratios, ratio of totals, slope
+through the origin, geometric mean, median ratio), the note's factor as a division or as 0.965, the plan with or without
+its holidays and LO and HI out or at the range's ends (asserted, closest margin 1.3 points). On the clean truth, every
+pairing files the wrong list and the plan's pairings alone the truth (checks.py, dataset-generation 7.1).
 
 ## Closure table
 
 | # | Axis | Reading | Move |
 |---|---|---|---|
-| 1 | Population | the 16 station analyzers, the store spare out | filed (section 7, the register) |
-| 2 | Unit of account | a converter in service, booked or not | filed (section 7) |
-| 3 | Attribution window | each converter from its change to its 2028 service | filed (service log, plan) |
-| 4 | As-of dating | 4 January 2028, the record to 31 December 2027 | filed (mail, archive) |
-| 5 | Version basis | AQBP-QA-07 revision 4 | filed |
-| 6 | Denominator | the titration's NO2 generated | filed (section 3) |
-| 7 | Weighting | every titration once | C1 (asserted over the golden family) |
-| 8 | Window length | to each analyzer's own service date | filed (plan) |
-| 9 | Boundary inclusivity | strictly below 0.95 | C1 (no converter within 0.01, asserted) |
-| 10 | Rounding path | none on the call | not applicable |
+| 1 | Population | the 52 meters in the register | filed (register) |
+| 2 | Unit of account | a meter, withdrawn or not | filed (section 7) |
+| 3 | Attribution window | each meter's results after its last calibration | filed (section 7, register) |
+| 4 | As-of dating | 4 January 2028, the record to 31 December 2027 | filed (mail, export) |
+| 5 | Version basis | POCT-GLU-02 revision 3 | filed |
+| 6 | Denominator | the laboratory's value in each ratio | filed (section 7) |
+| 7 | Weighting | each pairing once | filed (section 7's mean) |
+| 8 | Window length | to 31 December 2027 | filed (export) |
+| 9 | Boundary inclusivity | beyond 5 per cent | C1 (1.3 points clear, asserted) |
+| 10 | Rounding path | the error to one decimal from the unrounded mean | filed (the prompt) |
 | 11 | Tie-break | none open | asserted |
-| 12 | Maturity and censoring | converters changed early are the curve's tail, every check kept | C1 (asserted) |
-| 13 | Order of operations | dedupe, then the dose, then the fit | C1 |
+| 12 | Maturity and censoring | every pairing resulted | C1 |
+| 13 | Order of operations | the factor, then the ratios, then the mean | C1 |
 | 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | the archive's repeated days are exact | C1 (SF8) |
-| 16 | Identity normalisation | Tecnoaria's station names to codes through the register | filed (register) |
+| 15 | Duplicate resolution | one row per tube in the pairing report | asserted |
+| 16 | Identity normalisation | the matricola across every file | filed |
 | 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | ppb and ppm-hours on the call; micrograms per cubic metre at 20 degrees C on the asks | filed (sections 5, dictionary) |
-| 19 | Code and status semantics | stato, codice, tipo verifica | dictionary; never the stump |
-| 20 | Integerisation | whole hours on the asks | filed (the prompt) |
-| 21 | Clause scope | section 7's rule for every station analyzer, BP01's January service included | filed (SF16, SF17) |
-| 22 | Forward window contents | 1 January to each service date in 2028, the station's load from 2025 to 2027 | C1 over the forecasts (SF9) |
+| 18 | Dimensional units | mg/dL and per cent | filed (section 3, the prompt) |
+| 19 | Code and status semantics | LO, HI, PAZIENTE, CONTROLLO | filed (dictionary, section 7); never the stump |
+| 20 | Integerisation | whole counts on the asks | filed (the prompt) |
+| 21 | Clause scope | section 7 for every meter | filed |
+| 22 | Forward window contents | the January 2028 visit corrects the current calibration's error | filed (section 7, the mail) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (sections 3 to 7, the plan, both sheets, the service log)
-leaves one open move, how a converter's efficiency at its 2028 service is estimated; the design forces it (the checks
-of converters that carried different loads collapse in NO2 converted and spread in months), and every form of the
-pooled curve in NO2 converted with every forecast of the station's load books the same seven (asserted over 57
-variants, closest margin 0.0115 to 95 per cent).
+Executing the prompt and every filed sentence word for word (sections 3 to 8, the note, the register, the plan) leaves
+one open move, which pairings estimate each meter's factor; the data's structure forces it (the confirmations exist
+because the meter's reading was critical, and on the neonatal wards they are two pairings in three and run outward),
+and every estimator of a single factor on the plan's pairings files the same eight (asserted, closest margin 1.5
+points).
 
 ## Oracles
 
-- The sheets' printed efficiencies replay from their own readings; every route passes them.
-- The latest check on every converter in service is at 95 per cent or more (from 95.2 to 99.8); every route sees it.
-- No document carries a projected efficiency, ranks the converters or names a list.
+- No file ranks the meters or carries a per-meter error, a list or a projected figure.
+- The 2027 service report lists every meter as calibrated; every route passes it.
+- The laboratory's note states its 3.5 per cent; every route that reads it applies it.
+- The external quality scheme shows the laboratory's own accuracy; every route sees it and none needs it.
 
 ## Ask sheet
 
-Ask A: each station's valid hours of 2027 (16 figures). Ask B: each station's 2027 annual mean NO2, micrograms per cubic
-metre to one decimal (16). Ask C: each station's 19th highest valid hourly value, whole micrograms per cubic metre
-(16). The asks read the validated database (no2_orari_validati_2027.csv), which the call never reads; the call reads
-the analyzers' archive, the sheets, the service log and the plan (separation and deletion asserted).
+Ask 1: per hospital and quarter of 2027, the share of patient results reaching the clinical record more than two hours
+after the test (12 figures, per cent to one decimal). Ask 2: per ward, the patient tests of 2027 (13 counts). Both read
+the data manager's export (GlyLink_risultati_2026-2027.csv), which the call never reads; the call reads the pairing
+report, the plan, the register and the note (separation asserted).
 
-Devices, silent (no filed sentence points at any of them; section 5 files only that an hour is valid when the analyzer
-measured the station's air for 45 minutes or more):
-- Delta titrates without putting the analyzer in calibration mode, so its 2027 rounds reach the database coded V (or R)
-  with the titration gases averaged in: every hour a verification occupies holds 16 minutes of it or more, so each is
-  an hour of under 45 minutes of the station's air. Moves every station's valid hours, 14 of 16 means and 14 of 16 19th
-  values. Found only by crossing Delta's times (Italian civil time) with the database's solar hours.
-- The data system files an analyzer's hours under its registered place: the store spare's three weeks at BP07 (8
-  February to 1 March) are in the database under MAG, BP07's own rows not received (F). Moves BP07's three figures.
-- Six loggers installed in January and February 2027 were set at the factory to 0 degrees C (2.05 micrograms per cubic
-  metre to the ppb) until a December visit set them to 20; the service log records the install and the setting, the
-  register the logger. Moves six means and five 19th values. Fair: the ratio of the database to the archive's ppb
-  gives 2.05 exactly, and rescaling and the archive route agree at the asked rounding (asserted).
-Hazards: re-sent days (three stations, exact), R valid, N not valid, M blocks, the sheets' civil time.
+Devices, silent (no filed sentence points at any of them):
+- The meters' clocks keep solar time all year: read as Italian civil time, every summer result looks an hour later than
+  it reached the record, read as UTC every result an hour earlier. Moves every figure of ask 1. Found only in the plan
+  pairings, which show the meter an hour before the laboratory's draw from April to October and on time in winter.
+- The export's presidio and reparto are each meter's current assignment; seven meters moved in 2027, three of them
+  between hospitals (the register's Storico ubicazioni). Moves every figure of ask 2 and nine of ask 1.
+Hazards: the copies a docking the meter never saw acknowledged re-sends whole at the next docking under new
+id_risultato (moves every figure of both asks unless removed by matricola and n_memoria keeping the first reception);
+control runs among the results; LO and HI as text.
 
-| Path | A valid hours | B mean | C 19th | Keeps |
-| --- | --- | --- | --- | --- |
-| the database as delivered, V and R, each row once | 0 of 16 | 2 of 16 | 2 of 16 | 4 of 48 |
-| the same, V only | 0 | 1 | 0 | 1 |
-| the same, the re-sent days kept | 0 | 4 | 2 | 6 |
-| the titration hours found (either clock) | 15 | 9 | 10 | 34 |
-| MAG found, or the loggers found, alone | 0 | 2 | 2 | 4 |
-| the titration hours and MAG found | 16 | 10 | 11 | 37 |
-| the titration hours and the loggers found | 15 | 15 | 15 | 45 |
+| Path | Ask 1 late share | Ask 2 tests per ward | Keeps |
+| --- | --- | --- | --- |
+| the export as delivered, every row a result | 0 of 12 | 0 of 13 | 0 of 25 |
+| the copies removed by memory number, the export's ward, the clock as civil time | 0 | 0 | 0 |
+| the same, the clock read as UTC | 0 | 0 | 0 |
+| the copies removed keeping the last reception | 0 | 0 | 0 |
+| the solar clock found | 3 | 0 | 3 |
+| the location history found | 0 | 13 | 13 |
+| both found, the copies kept | 0 | 0 | 0 |
 
-| Ask | Cracker (the call landed, the database as delivered) | Verdict |
+| Ask | Cracker (the call landed, the export's ward, the clock as civil time) | Verdict |
 | --- | --- | --- |
-| A valid hours | 0 of 16 | miss |
-| B annual mean | 4 of 16 | miss |
-| C 19th highest | 2 of 16 | miss |
+| 1 late share per hospital and quarter | 0 of 12 | miss |
+| 2 tests per ward | 0 of 13 | miss |
 
-Pair ceiling: 35.4 ((51.9 + 18.9) / 2), the cracker keeping 6 of 48 ask figures on the call and the mirror the same.
-Mirror leakage: 12 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip 7a32469d). A reader who crosses Delta's times with the
-database keeps 34 of 48 (84.0 with the call); the titration hours carry the layer, and the stage 4 readers are the
-measurement.
+Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 25 ask figures on the call and the mirror the same.
+Mirror leakage: 0 per cent of ask weight.
+Measured by: generator/pair.py on the cut pack. A reader who finds the location history keeps 13 of 25 (73.6 with the
+call); the stage 4 readers are the measurement.
 
 ## Tried and rejected
 
@@ -331,3 +262,17 @@ measurement.
   stump needs, make it visible in the first plot. The ask layer held for both (4 of 48 each): the new contractor's
   titration hours coded valid were missed by both, MAG and the 0 degrees C loggers found by both. Judge pass 1: the
   isolated thread's Bash calls were refused by the auto-mode classifier and no verdict was issued.
+- Architecture 2's judge pass 1b (the same pack, the isolated thread re-run once from the scratchpad): DETERMINISTIC
+  APPROVE; the architecture stays spent on Gate F.
+- Architecture 3's first world (each meter's random error proportional only, pairings twice a week): the confirmations
+  moved a neonatal meter's pooled mean by about 1.5 points against a 0.8-point standard error, so no seed held a clear
+  golden and a pooled list two meters off; the meters' constant error at low glucose (5 mg/dL beside the proportional
+  5 per cent) and three plan days a week on the neonatal wards give the confirmations about 4 points there.
+- The route that keeps every pairing whose meter value is not critical landed the golden list while the nursery's median
+  sat at 70 mg/dL; at 60 the plan's own low pairings leave with the confirmations and the route files a ninth meter.
+- Regression with an intercept (Passing-Bablok, least squares) in the golden family: the slope spread several points on
+  the narrow-range wards and broke the margin; section 7 defines a single factor, which the intercept forms do not
+  estimate, and files the mean of ratios because the printed error still spread half a point among the single-factor
+  estimators.
+- The analyzer parallel run as a pack file (calibration parallel_run_overlap): BLOCKed by ban.calibration against task481
+  at registration; the run's relation is a lower rung, so the laboratory's note files the factor and no corpus ships.
