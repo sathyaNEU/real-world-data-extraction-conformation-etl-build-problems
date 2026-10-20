@@ -7,8 +7,8 @@
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "A competent solver replays the filed drift-alert rule over the 2025 to 2027 quality-control export as recorded, counts the continuing stations' alerts at each setting and files 3.5; the continuing stations' 2028 residuals come from farther neighbours once the 34 programme stations close, while their limits stay at the spread measured with the old neighbours, so re-running the estimate without the closing stations files 4.0.",
- "architecture": 1,
+ "stump": "A competent solver re-runs the filed quality control on the 2025 to 2027 export (with or without the 2028 network) and files 3.5, inside the field plan's visits; every drift in the record was repaired within days of the 3.0 alert that found it, so at 3.5 those drifts would have kept growing until they crossed the wider limit, one alert each, which with the network re-run puts 3.5 over the visits and files 4.0.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": null,
@@ -20,7 +20,7 @@
  },
  "duplicate_check": {
   "heart": "",
-  "nearest": ""
+  "nearest": "task250 v1 (this slot, lineage) 0.13; task189 0.07"
  },
  "judge": {
   "verdict": "",
@@ -28,12 +28,17 @@
   "report": ""
  },
  "returned": [],
- "resume": "Drawn 2026-10-20 (card registered, WARN only). Next: stage 2, the simulator tuned to the ladder, the asks and their devices, the fork and closure tables, the prompt, precut.",
+ "resume": "Architecture 2 drawn and registered (two keys: the 2028 network re-run, then one alert for every drift the record's 3.0 alerts cut short that the re-run never alerted before its repair). Generator record, field records, register history, documents, solve and routes rewritten and test-built on seed 1; a seed scan (scratch scan.py, seeds 1 to 400) picks the seed with all four golden three-year counts divisible by three and the widest margin. Next: choose the seed and the budget, then checks, verify, pair, writeup, golden, the design note's stage 2 sections, prompt and precut.",
  "approved": null,
  "delivered": "",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "history": []
+ "history": [
+  {
+   "date": "2026-10-20",
+   "event": "architecture 1 spent at stage 4 (reader 1 landed the network re-run, 4.0 at 9 a year; judge DETERMINISTIC APPROVE); re-rooted to architecture 2 (two keys) and redrawn"
+  }
+ ]
 }
