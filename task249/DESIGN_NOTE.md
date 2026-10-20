@@ -336,6 +336,26 @@ artifacts, hidden content and the prompt gate clean. Each REVIEW line, answered:
 - Sixty-three suspension end dates after 15 January 2029: holiday pauses booked ahead to run into January, as a circulation
   system records them; none reaches the quarter's figures beyond 31 December; harmless.
 
+## Retired
+
+Retired on 2026-10-20 at the author's choice. Architecture 4 was spent at stage 4 round 3 under the two-reader rule:
+reader 5 landed the call through an activity-stratified calibration on the signed-in WebKit browsers. Four
+architectures are now spent on the number:
+
+| Architecture | World | Spent |
+|---|---|---|
+| 1 and 2 | PES, a low-cost sensor network's drift pull list | each landed by the stage 4 reader |
+| 3 | psychology, a verification check's genuine referral rate | landed by the reader with every ask figure |
+| 4 | Product Analytics, WebKit's seven-day cookie cap and the media kit's measurement note | landed by one of five clean readers |
+
+Architecture 4 passed every free gate. The judge returned DETERMINISTIC, APPROVE on all three packs, and both round 3
+readers kept 0 of 24 ask figures. It was never shipped: `target.zip` 31ad0d1e and the goldens stay untracked, and the
+generator rebuilds them. Every card is kept, and the architecture 4 card carries `architecture_spent`.
+
+The lesson the number paid for: the cap selects through visit spacing, and an identifier's own session count records
+most of that spacing. So any calibration stratified on activity recovers the conditioning set the easy route misses.
+A transport stump is spent when the unit's own trace can reconstruct the selection that decides it.
+
 ## Tried and rejected
 
 - Drift forecast from the cumulative particle load through an optical PM sensor (drift accrues with dose, not calendar
@@ -473,3 +493,7 @@ artifacts, hidden content and the prompt gate clean. Each REVIEW line, answered:
   3 missed the call (one landing, one more within one marginal edition); round 1's other landing came through the
   repaired fingerprint. Under the two-reader rule a call any reader lands is spent. Hardening the ladder against one
   estimator is not a repair, so shipping as measured, a fifth architecture or retirement is the author's call.
+- Architecture 4 as a whole (WebKit's seven-day cookie cap, the meter's selection of who signs in, the transport within
+  edition, month and device class): spent at stage 4 round 3 when reader 5 landed the call. The cap selects through
+  visit spacing, which an identifier's own session count records, so a calibration stratified on activity recovers the
+  selection. The number was retired on 2026-10-20 at the author's choice.
