@@ -466,3 +466,5 @@ declared distractor).
   (task450's anchor equating with a drift screen, task464's concordance, task123's and task249's drift screens), and
   census-register coverage carries nine cards and repeated screens (task123, task228, task243); neither is redrawn.
 
+- Re-root screen, gas-network methane with undetected leaks scaled from quality-assurance re-surveys: dead on paper, the re-survey file displays its own miss rate so readers scale by it, it repeats task470's sensor-completion insight, and emissions-inventory is now held by task476 v2 inside the last-three window.
+- Re-root screen, survey employment benchmarked to an annual census count with post-benchmark bias estimated from past benchmark revisions: dead on paper, the bias is displayed by the past revisions themselves and the bias forms (mean, recent, growth-scaled) fork the graded level with no design closing the family; task477 drawn first while task474 waits for a fresh world.
