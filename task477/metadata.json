@@ -1,0 +1,141 @@
+{
+ "task": "task477",
+ "title": "Tallis Valley 2027-2029 sector-partnership slate",
+ "setting": "A fictional one-county workforce board in an unnamed U.S. state (state code 52); every record is synthetic.",
+ "as_of": "2026-10-14",
+ "files": [
+  {
+   "file": "etpl_programs_2025.xlsx",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "fiscal_agent_check_register_2025_2026.csv",
+   "source": "Tallis Valley Workforce Development Board (fictional), synthetic records",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 150
+  },
+  {
+   "file": "ita_voucher_ledger_2025.csv",
+   "source": "Tallis Valley Workforce Development Board (fictional), synthetic records",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 534
+  },
+  {
+   "file": "oews_tallis_county_may2025.xlsx",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "peo_client_registrations_2025.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-07-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 82
+  },
+  {
+   "file": "qcew_area_titles.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 25
+  },
+  {
+   "file": "qcew_county_file_layout_and_notes.pdf",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "qcew_industry_titles.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 74
+  },
+  {
+   "file": "qcew_state52_county_2013_2019.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 49672
+  },
+  {
+   "file": "qcew_state52_county_2020_2025q3.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-03-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 41522
+  },
+  {
+   "file": "qcew_state52_county_2025_annual_release.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 7288
+  },
+  {
+   "file": "sector_partnership_fund_guidelines_2027.pdf",
+   "source": "State Workforce Development Council (fictional), synthetic records",
+   "date": "2026-08-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "tallis_industry_projections_2024_2034.xlsx",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-05-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "tvwdb_performance_reporting_manual.pdf",
+   "source": "Tallis Valley Workforce Development Board (fictional), synthetic records",
+   "date": "2025-02-19",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "ui_employer_accounts_extract_2026-08.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-08-31",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 500
+  },
+  {
+   "file": "ui_wage_match_return_2025q3_2026q2.csv",
+   "source": "State Department of Labor, Labor Market Information Division (fictional), synthetic records",
+   "date": "2026-09-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2853
+  },
+  {
+   "file": "wioa_exits_2025.csv",
+   "source": "Tallis Valley Workforce Development Board (fictional), synthetic records",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1192
+  }
+ ],
+ "distractors": [
+  {
+   "file": "tallis_industry_projections_2024_2034.xlsx",
+   "why": "projected employment growth by industry: a measure the Fund's ranking does not use"
+  },
+  {
+   "file": "oews_tallis_county_may2025.xlsx",
+   "why": "occupational hourly wages from an establishment survey: not pay per job by industry, and not comparable across years"
+  }
+ ],
+ "deliverables": [
+  "sector_partnership_application_2027.csv",
+  "sector_partnership_slate_2027.docx"
+ ]
+}
