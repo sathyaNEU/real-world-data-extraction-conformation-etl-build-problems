@@ -1,28 +1,28 @@
 {
   "task": "task271",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "healthcare-delivery-health-economics",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-10-19",
-  "stump": "The default path risk-adjusts each eligible hospital's 90-day deaths after pancreatic resection on the operation's own admission record (age, sex, conditions present on admission, the procedure, the urgency, the diagnosis) and names the three lowest ratios without either referral centre; only adding the earlier operation on the pancreas or bile ducts, rebuilt from each patient's earlier admissions anywhere in the state, brings the first referral centre's ratio down into the three.",
-  "architecture": 1,
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-20",
+  "stump": "The default path weights each region's respondents to its sampled members' age and sex (or carries the last-reached respondents' share in work to the members never reached) and names four regions that include ones called mostly by weekday day, where members in work rarely answer; only a callback model of each work class's chance of answering in each calling window, fitted to every sampled member's call history across the two call centres' logs, recovers the unreached members' share and names the golden four.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-19",
+    "exit": null,
+    "date": "",
     "checks": 0
   },
   "leak": {
-    "leak_py": "REVIEW (each line harmless, design note Build record)",
+    "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "0.08 task190 v1 lineage",
-    "surface": "promoted pairs answered by card differentiation lines"
+    "heart": "",
+    "nearest": "0.09 task143",
+    "surface": ""
   },
   "judge": {
     "verdict": "",
@@ -30,13 +30,20 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4 running on target.zip ccbce5c1: two isolated scored readers (scratch r271a, r271b; score each reader.json with score_reader.py and check ratios.json against figures.json) and the determinism judge's thread (brief /tmp/determinism-check-task271-452201/judge_brief.md, verdict.md there; re-invoke the determinism-judge agent with it for the report). A call either reader lands spends architecture 1 (re-root); otherwise fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship.",
-  "architectures": [],
+  "resume": "Architecture 2 drawn and registered 2026-10-20T00:26:31Z (Pellmont Community Health Plan's 2027 Community Engagement Support track: four of ten Washington regions by the share of expansion members working 80 hours a month, a callback model on the two call centres' logs against adjustment-cell weighting). Next: stage 2, default path, stump sentence, three rules, readability screen, semantic fork table, ladder (the designed world: two day-called regions straddling the line of four beside an evening-called one; every easy route's four asserted different, the model family's four identical), closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; architecture 1's generator, pack, goldens, submission and reports are replaced at stage 3.",
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-19",
+      "paused": "dc454b68",
+      "fate": "spent 2026-10-19 at stage 4: both isolated scored readers landed the call (the earlier-operation flag rebuilt from earlier admissions); judge SEND_BACK on the flag's unfiled definition"
+    }
+  ],
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "DA21 (world only: a nonprofit health plan's 2027 programme; its design set aside, Tried and rejected)"
+  "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 track for parts of its book; its design set aside, Tried and rejected)"
 }
