@@ -1993,3 +1993,257 @@ be spent only on C3 with the abstraction test answered first, or the number shou
   tally is a proxy for it at corr +0.9960 and the one-line route reaches the truth 18 of 20 draws. With it,
   on the same screen: failed-on-demand split by breach order (C2, +0.9817, 17 of 20) and hazards
   simultaneously at reduced depth per barrier (C6, +0.9905, 19 of 20).
+
+### Architecture 10: re-rooted onto environmental monitoring, the draw inverted, three constructions measured (2026-10-20)
+
+The ground moved to `physical-environmental-sciences` / `environmental-monitoring-exceedance`, objective
+unchanged, a cell this number has never carried. Two spent anomaly-detection drivers sit there and the pass
+drew away from both (task180: an event enters the record only above the instruments' noise, and where that
+noise follows a daily cycle the smallest events are recorded only in the quiet hours; task189: a per-unit
+average over measurements known only to lie below a limit that differs by the instrument). A third card sits
+on the cell on data quality (task247, censored or lagged release), so detection limits and release lag are
+both worked here. The draw was run inverted, file first, under `stumping` Part 3, and step two, the one-column
+proxy screen, was run on every construction before any separation was measured. Screens are
+`screen_arch10.py`, `screen_m2_family.py` and `confirm_dial.py` in the builder's scratch directory, all on a
+clean truth, each rerun to byte-identical output, no file cut.
+
+**What the slot search bought before any code ran, and it closed the cell's whole air half.** `guard.py
+slots` on the candidate nouns returned **task245**, which is already an air-quality exceedance-day build in
+this physical setting: PM10 against 50 micrograms per cubic metre, the 35-day allowance, data capture per
+station, informative outage, and the 90.4th percentile of reported daily means and the expected-exceedance
+scaling named as the reflexes its ladder is built against. It also returned **task229** (a convex conversion
+of a daily mean, hydrometric station-month grading), **task248** (24-hour composite samples with each
+sample's load restored at a paired decay rate) and **task249** (recovery against the nominal failing good
+batches). Four devices this cell's natural family would have used are therefore spent before the draw: the
+exceedance-day count scaled for lost capture, the convexity of a conversion applied to a daily mean, the
+holding-time decay restoration, and the laboratory recovery correction. No card records any of them on this
+cell, and `recent`, `mechanisms`, `nearest` and `heart` cannot see them.
+
+**The file, and what it pins that nothing else pins.** The hydrometric gauge archive: a continuous
+15-minute record of flow and the runoff index at the catchment's gauges, running the whole statutory season.
+It is the only file on this ground that observes **the driver of the exceedance on every day of the window,
+including every day nobody attended**. The laboratory register observes concentration only on attended
+occasions, the sampling rota pins who attended and when but carries no value, the site register is static,
+the ratification log pins only the difference between two releases of the same attended days, and the
+classification return publishes the season's verdict after the fact. The continuous record of the
+unattended days exists nowhere else, and that is what all three constructions below were built on.
+
+**M1, the at-source concentration recovered through holding time.** Graded object: each point's seasonal
+95th percentile after each bottle is restored for the analyte lost between field collection and analysis,
+with the decay rate estimated from the spread of holding times inside the record (the van rounds differ, so
+points on a long round carry systematically longer holds). Dead on screen 2 and on screen 1 together. The
+correcting input is **one scalar** (a single decay rate), so the construction is a monotone rescaling
+sample by sample, and its per-point effect is carried entirely by the point's own mean holding time, which
+the register prints: corr(correction factor, mean holding time) = **+0.9274**, and the one-line route, take
+that column and divide, reaches the truth **12 of 20** against the construction's own **12 of 20**, an exact
+tie. corr(construction output, naive statistic) = **+0.9613**. The attaining subset (the bottles analysed
+same-day) reached **5 of 20**, so screen 3 does not fire, and it does not need to.
+
+**M2, the season's percentile rebuilt against the flow-duration curve.** Graded object: each point's true
+95th percentile of daily concentration over the 150-day season, where the crew's 20 bottles were all drawn
+on scheduled settled-weather rounds while the exceedances arise on the runoff days, recovered by reading the
+sampled concentrations against the gauged runoff and integrating over the season's own flow-duration curve.
+**It passed screens 1, 2 and 3, the only construction on this ground that has.** Screen 1: the correcting
+input is neither a scalar nor a looked-up per-unit figure, it is the point's own runoff response plus the
+season's whole runoff distribution. Screen 2: corr(construction output, the forcing file's plainest column,
+the mean runoff on the point's own sampling days) = **-0.0194**, corr(correction factor, that column) =
+**-0.4566**, and the one-line route reached the truth **8 of 20** against the naive route's 8 of 20. Screen
+3: the attaining subset, the bottles already drawn at above-median runoff, reached **7 of 20**. The
+construction moved the graded figure by a median **4.64x** (p10 2.69x, p90 10.40x). **It died on the three
+screens that kill survivors, all at once.** The estimator family: five forms a competent analyst would use
+on the same records (log-log fit over the flow-duration curve, flow-band stratification on the season's
+quintiles, inverse-probability reweighting onto the season, a quadratic in log runoff, a shared network
+slope) returned **2.85 distinct worst points per draw, maximum 4, against a floor of 1.00**, and the graded
+figure spread **3.744x at the median, 6.891x at p90 and 214.2x at the worst** on the true worst point. The
+estimator's own standard error: a 200-draw bootstrap of the construction against the top-two margin came
+back at **1.211 of the margin at the median and 19.0 at p90**, so the construction's own noise exceeds the
+gap it has to rank on, which is architecture 2's death in new nouns. And the one repair the family screen
+allows, pooling the response across the network so the fit is forced, **inverts the ladder**: the pooled
+construction reaches the truth **4 of 20 against the one-line plain-column route's 7 and the naive route's
+7**, worse than the route it corrects. Single dial, both ends: estimating the response per point forks the
+figure, pooling it makes the construction worse than doing nothing. Measured hit rates on the family harness
+put the per-point construction at 9 of 20 against the naive 7 of 20, so the lever was thin once priced
+against the right comparison rather than against the raw percentile.
+
+**M3, the exceedance count prorated over the sonde's service intervals.** Graded object: the number of days
+in the season above the standard at each continuously monitored point, after each reading is corrected for
+the fouling drift that accumulates between service visits and resets at each one, with the drift measured by
+the pre-clean and post-clean readings the service log records at every visit. Dead on the naive route. The
+construction reaches the truth **20 of 20** on the worst point and the naive count reaches it **19 of 20**;
+the median correction factor is **1.0000** (p10 0.786, p90 1.193) and corr(construction output, naive
+count) = **+0.9818**, because the drift direction is a coin flip per sensor and cancels across the network.
+The exceeding-set separation that remains (construction 20 of 20, naive 12 of 20, plain-column route 12 of
+20) rests entirely on points sitting inside the correction's own width of the boundary, which is the
+seed-hostage failure `stumping` Part 3 prices at under one standard error to the boundary. Screen 3 also
+fires: the days just after a service, a filter and a divide, reached 12 of 20.
+
+**The one-column proxy screen, run on all three before any separation was measured.** 280 unit-draws each.
+
+| construction | plainest column of its own forcing file | corr | one-line route |
+|---|---|---|---|
+| M1 holding-time restoration | the register's own mean holding time | **+0.9274** | **12/20 (ties the construction)** |
+| M2 season percentile off the flow-duration curve | mean runoff on the point's own sampling days | **-0.0194** | 8/20 (naive 8/20) |
+| M3 fouling prorated over service intervals | the service log's own pre-clean minus post-clean offset | -0.0028 | 13/20 (naive 19/20) |
+
+**The abstraction test closed M2 a second time, independently of every measurement, and the guard could not
+see it.** `guard.py check` returned **task461 at 0.06** ("the decisive quantity is a low quantile of a
+distribution seen directly only over one short and unrepresentative period; the long record of a correlated
+auxiliary series, carried to the target through the proportional relationship their overlap shows, gives the
+distribution over the full range of conditions") and **task466 at 0.06** ("a low quantile of a yearly extreme
+fitted to two records of the same process"). Stripped of nouns, task461 is M2: the same latent structure (a
+quantile of a distribution observed only over an unrepresentative subset of the conditions), the same default
+path (compute the quantile from the observed subset), and the same correction (carry it through a correlated
+auxiliary series that was recorded over the full range). Both sit far under the 0.12 WARN floor, so the
+lexical screen passes them, and both are shipped. M2 was therefore dead on lineage as well as on its three
+measurements, and the measurements are what make the kill checkable.
+
+**Twelve directions killed on paper before the three were coded, each on a closure already on file.** The
+per-sample species conversion from total to un-ionised ammonia and the bioavailability correction (the
+conversion is a filed formula, so the step is rule application, and the convex-over-a-spread version is
+task229 and task187); the averaging-period mismatch, 15-minute peaks read off an hourly record (task202, a
+within-aggregate upper cut taken from unit averages); the 1-in-3 or 1-in-6 sampling schedule read against a
+day-of-week exceedance pattern, and the multiplexed analyser cycling across sample points (both are task180,
+a cyclical pattern interacting with a unit-specific observation schedule); top-of-range saturation at
+instrument-specific spans (task189 with the censoring direction flipped, same latent structure, same default
+substitution, same censored-data correction); data capture and informative outage (task245 outright);
+annualisation of a part-season record from long-running neighbours, and the diffusion-tube bias factor (the
+periods-complete filter and divide, and a single scalar); the natural-source and regional-background
+subtraction (the nuisance estimated where the signal vanishes, closed by task201 across negative controls,
+calibration nulls and blank baselines); load estimation and the flow-weighted mean (a ratio of totals against
+a mean of ratios, task200's estimand death and the denominator dichotomy); detection-corrected occupancy from
+repeat visits (the attaining subset is the most-visited points, a filter and a divide, and the family is
+task196's); the deconvolved count of truly non-compliant points (shrinkage is both the reflex and the better
+estimator); the zone maximum over a varying number of sites (task191, an extremum against a null extremum);
+and the shared-cylinder or shared-laboratory common-mode artifact, which fails rule 3's litmus outright, since
+the number the task overturns is actually wrong and catching it is what defeats the model, so it is a plant.
+
+**The axes, probed three times, and the window moved twice under the pass.** The brief's window named
+task269, task270 and task271 as the last three registered builds; by the time the probes ran, `ban.shape` was
+firing against **task471** and `ban.org_family` against **task471** (government_agency) and then **task475**
+(local_government), neither of which existed when the cell was allocated. Probe A (shape 10, gap population,
+G3 decisive, `method_or_model_selection`, `structural_verdict`, `other` as strategy, `field_unit_lead`,
+`regulator_or_inspector`, `season_or_peak`, `published_series`, a Republic of Ireland world) returned four
+BLOCKs: `ban.shape`, `ban.org_family` and the two structural signature tests. Probe B swapped the decisive
+generator to G7 and the signature test moved rather than cleared (task271 and task471 instead of task468).
+Probe C, shape **14** and org_family **utility_or_infrastructure**, clears **every axis ban**:
+`ban.pairing`, `ban.subdomain`, `ban.pattern`, `ban.calibration`, `ban.role`, `ban.artifact`, `ban.spine`,
+`ban.strategy`, `ban.shape`, `ban.forum`, `ban.forcing_event` and `ban.org_family` are all silent, and the
+only BLOCKs left are `test.same_driver` (gap population, G3, `method_or_model_selection`, against task468)
+and `test.same_driver_older` (the same signature in task126, task450 and task469). Those two are functions of
+the mechanism, not of the world, exactly as in architectures 7, 8 and 9: **the axis set is open for the
+fourth consecutive pass and the mechanism is missing again.** Three WARNs stand and are answerable in a line
+each: `overuse.domain` (4 of the last 12), `repeat.gate_g` and `overuse.gate_g` (8 of the last 12). Cards are
+`task198_arch10_probe.json`, `task198_arch10_probeB.json` and `task198_arch10_probeC.json` in the builder's
+scratch directory; none registered.
+
+**One axis label the pass refused rather than banked.** The honest `stump_strategy` for M2 is
+`population_selection`, which `ban.strategy` blocks against task271, and an axis ban is not clearable by
+differentiation. The probe carries `other` with the reason written into `notes` rather than a label picked
+because it passes, and the block is reported rather than argued: on this ground the strategy that names the
+mechanism is unavailable, and that is a fact about the window, not about the design.
+
+**Where the pass stopped, and what it adds to the dichotomy.** Architectures 6, 7, 8 and 9 each reported an
+open axis and a missing mechanism on four separate grounds. This pass says it on a fifth, with the inversion
+run properly and the forcing file named in advance, and it sharpens the finding rather than repeating it:
+**an environmental compliance record offers exactly two ways to reach the window the standard is written
+over, and both are closed.** Either the record already covers the window, and then the exceedance statistic
+is exact arithmetic on the shipped rows, which is rule application; or it covers only the occasions a crew or
+an instrument produced, and then reaching the window needs a quantile or a count transported through an
+auxiliary series, which is task461's and task466's shipped driver and which forks across the transport
+family at 3.744x with a standard error of 1.211 of its own margin. The cell's measurement half (thresholds,
+censoring, capture, lag, decay, recovery, drift) is spent across task180, task189, task245, task247, task248
+and task249, and its window half is spent across task461 and task466 in other nouns. **The number should
+move rather than take an eleventh pass here**, and if it stays, the only direction not yet priced is the one
+architecture 9 handed back, C3, which still owes the abstraction test first.
+
+**The thirteen `## Three rules` lines for M2, the candidate drawn furthest, with the three that do not pass
+said plainly.** They are recorded because the client's check is what a rework has to answer, and those three
+lines, `Decisive step:`, `Estimand:` and `Lesson:`, are the reason this draw is not filed.
+
+- `Task type:` environmental-monitoring-exceedance, which the taxonomy serves with AD and DQ, so the pairing
+  with anomaly-detection is legal. **Passes.**
+- `Domain test:` the deciding quantity is the 95th percentile of a bathing water's seasonal daily
+  concentration distribution, which the field estimates by reading sampled concentrations against the
+  continuously gauged runoff that drives them and integrating over the season's flow-duration curve.
+  **Passes.**
+- `Swap:` put retail stores and footfall in for bathing waters and runoff and the call stops making sense,
+  because there is no continuously recorded physical driver whose distribution over the unattended days is
+  known, so the construction has nothing to integrate over. **Passes.**
+- `Layer 1:` two source systems for one determinand with imperfect point keys, a provisional and a ratified
+  release of the same season overlapping, a statutory bathing season against the laboratory's reporting
+  year, cfu per 100 ml against the log10 units the classification table is written in, tablet local time
+  against UTC gauge telemetry, results carried as text with qualifiers. Each is produced by the
+  organisation's own systems and none carries the stump. **Passes.**
+- `Layer 2:` `estimand_identification`, the methodological choice being whether the season's percentile is
+  read off the attended occasions or rebuilt over the window the standard is written for. **Passes.**
+- `Decisive step:` rebuild each point's seasonal percentile against the gauged flow-duration curve rather
+  than from the settled-weather bottles. **Passes as a sentence and fails as a step**, because five standard
+  forms of that rebuild return 2.85 distinct answers per draw.
+- `Not semantics:` holds. Every clock, unit, qualifier and classification band can be read correctly and the
+  empirical percentile of the attended occasions is still the wrong number. **Passes.**
+- `Not rule application:` holds for the transport step, since no filed rule says to reweight the season onto
+  the gauged distribution, and the classification table only converts a percentile into a class.
+  **Passes.**
+- `Analyst test:` a strong analyst computes the empirical 95th percentile of the season's twenty bottle
+  results against the classification table and files the named water as sufficient. **Passes**, and it is
+  executable on the clean truth.
+- `Estimand:` the 95th percentile of the daily concentration distribution at the named point over the
+  statutory season, every day of the window in the population. **Fails.** Filed literally, the window's
+  every day is in the population and the method of reaching the unattended days is left open, and the data
+  does not separate the candidates: the spread across the licensed forms is 3.744x at the median against a
+  figure printed to one decimal.
+- `No decoy:` holds. Nothing is planted, no memo argues the wrong answer, and the settled-weather bias is a
+  property of how a crew works rather than a defect laid to be caught. **Passes.**
+- `No certified replay:` holds. No certified or published figure is reproduced to bless the method, and the
+  classification return is published after the window rather than used to recover the construction.
+  **Passes.**
+- `Lesson:` a model would learn to rebuild a window's quantile from the driver recorded over the whole window
+  rather than from the occasions a crew attended. **Fails on uniqueness**, because task461 and task466 both
+  ship that lesson, in a correlated auxiliary record and in a censored earlier record, at driver scores of
+  0.06 that the lexical guard does not reach.
+
+**The default path M2 would have shipped, its named wrong answer, the golden and the stump sentence**, kept
+because the next pass on this cell should not rediscover them.
+
+1. Read the laboratory register, conform the three point-identifier spellings across the agency and council
+   returns, drop superseded rows and keep the ratified release where both exist.
+2. Convert every result to cfu per 100 ml, resolve the text qualifiers, and restrict to the statutory season
+   on the sampling date rather than the analysis date.
+3. Per bathing water, take the season's twenty results and compute the 95th percentile, log-normally as the
+   classification table's own definition does.
+4. Read each percentile against the classification bands and file the class.
+5. `Ends on:` Carrowbeg Strand sufficient, at a seasonal 95th percentile of about 780 cfu per 100 ml.
+6. `Golden:` Carrowbeg Strand poor, at a rebuilt seasonal 95th percentile above the 1,000 cfu per 100 ml
+   band edge, because the season's twenty bottles were all drawn on settled-weather rounds and the runoff
+   days that carry the exceedances are not among them.
+
+`Stump sentence:` A competent solver conforms both returns, reads every qualifier and clock correctly and
+computes each bathing water's log-normal 95th percentile from its season of bottle results, and files
+Carrowbeg Strand **sufficient** at about 780 cfu per 100 ml, because the percentile is taken over the
+occasions the crew attended rather than over the season the standard is written for.
+
+`Data-native sentence:` the crew's rounds are scheduled and settled-weather, the gauges run every day of the
+season, and the determinand is produced by runoff, so the record's occasions and the window's exceedances
+are generated by opposite halves of the same driver.
+
+- The at-source concentration recovered through holding time (architecture 10, M1, measured 2026-10-20,
+  nothing cut). The correcting input is one scalar, so the construction is a monotone rescaling whose
+  per-point effect is the register's own mean holding time at corr +0.9274, and the one-line route ties the
+  construction exactly at 12 of 20. Spent besides as a device in task248.
+- The season's 95th percentile rebuilt against the gauged flow-duration curve (architecture 10, M2, measured
+  2026-10-20, nothing cut). The only construction on this ground to pass screens 1, 2 and 3 (corr -0.0194,
+  the attaining subset 7 of 20, the plain-column route 8 of 20), and dead four ways: five licensed forms give
+  2.85 distinct answers per draw and spread the graded figure 3.744x at the median, the bootstrap standard
+  error is 1.211 of the top-two margin at the median and 19.0 at p90, pooling the response to force the fit
+  inverts the ladder to 4 of 20 against the naive 7, and stripped of nouns it is task461's and task466's
+  shipped driver at 0.06.
+- The exceedance count prorated over the sonde's service intervals (architecture 10, M3, measured
+  2026-10-20, nothing cut). The naive count reaches the worst point 19 of 20 against the construction's 20,
+  the median correction factor is 1.0000 because the drift direction is a coin flip per sensor, and the
+  remaining set separation sits inside the correction's own width of the boundary. The days just after a
+  service, a filter and a divide, reach 12 of 20.
+- The air half of the cell, retired free at the slot search (architecture 10, 2026-10-20). task245 already
+  ships PM10 exceedance days with data capture, informative outage and the 90.4th-percentile and
+  expected-exceedance reflexes; task229 ships the convex conversion of a daily mean; task248 the decay
+  restoration of a composite; task249 the laboratory recovery correction. No card on this cell records any of
+  the four.

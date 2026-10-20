@@ -1,106 +1,106 @@
 {
- "approved": null,
- "architecture": 10,
- "architecture_1_spent": {
-  "build_gates": {
-   "asks_measure": {
-    "ask_figures": 25,
-    "cracker": 60.4,
-    "exit": 0,
-    "measured_on": "the cut pack",
-    "mirror": 18.6,
-    "mirror_leakage_pct": 12.0,
-    "pair_ceiling": 39.5
-   },
-   "checks_py": {
-    "assertions": 60,
-    "exit": 0,
-    "failed": 0
-   },
-   "container_scrub": "target/ and golden/ both clean (reduce-house-fixes H1)",
-   "figures_check": {
-    "absent": 0,
-    "exit": 0,
-    "figures": 74
-   },
-   "guard_heart": "WARN, no BLOCK: repeat.gate_g, overuse.gate_g, repeat.question_form, all answered in the design note",
-   "guard_surface": "clean, no promoted pair; personas Janine Masterson, Naoise Daniels, Peadar MacVeagh",
-   "input_gates": {
-    "distractors": 2,
-    "files": 19,
-    "formats": 4,
-    "largest_csv_rows": 42481
-   },
-   "rebuild_md5": {
-    "byte_identical": true,
-    "golden": "8ff51b6b43ad6eab52648c10b1e9055b",
-    "target": "e78452741d899fcd28e856813809e28a"
-   },
-   "verify_py": {
-    "assertions": 57,
-    "exit": 0,
-    "failed": 0,
-    "reads": "target/ only"
-   },
-   "voice_check": {
-    "characters": 955,
-    "exit": 0
-   }
+  "approved": null,
+  "architecture": 10,
+  "architecture_1_spent": {
+    "build_gates": {
+      "asks_measure": {
+        "ask_figures": 25,
+        "cracker": 60.4,
+        "exit": 0,
+        "measured_on": "the cut pack",
+        "mirror": 18.6,
+        "mirror_leakage_pct": 12.0,
+        "pair_ceiling": 39.5
+      },
+      "checks_py": {
+        "assertions": 60,
+        "exit": 0,
+        "failed": 0
+      },
+      "container_scrub": "target/ and golden/ both clean (reduce-house-fixes H1)",
+      "figures_check": {
+        "absent": 0,
+        "exit": 0,
+        "figures": 74
+      },
+      "guard_heart": "WARN, no BLOCK: repeat.gate_g, overuse.gate_g, repeat.question_form, all answered in the design note",
+      "guard_surface": "clean, no promoted pair; personas Janine Masterson, Naoise Daniels, Peadar MacVeagh",
+      "input_gates": {
+        "distractors": 2,
+        "files": 19,
+        "formats": 4,
+        "largest_csv_rows": 42481
+      },
+      "rebuild_md5": {
+        "byte_identical": true,
+        "golden": "8ff51b6b43ad6eab52648c10b1e9055b",
+        "target": "e78452741d899fcd28e856813809e28a"
+      },
+      "verify_py": {
+        "assertions": 57,
+        "exit": 0,
+        "failed": 0,
+        "reads": "target/ only"
+      },
+      "voice_check": {
+        "characters": 955,
+        "exit": 0
+      }
+    },
+    "call": "Contribution queries takes the one process re-engineering review in H1 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026.",
+    "duplicate_check": {
+      "heart": "WARN 2026-10-18, no BLOCK: nearest driver 0.06 task462",
+      "nearest": "surface clean"
+    },
+    "fate": "stage 4, 2026-10-18: determinism judge NOT_DETERMINISTIC / SEND_BACK and the isolated reader independently. Clause 4.2 filed the comparison; the residue was the matching tolerance, a knob, and three queues win across licensed readings. Gates C and E fail on the flip, Gate H reads the decisive step as rule application. The pack, its 19 files, four formats, 42,481-row spine and every reproducing figure are kept for architecture 2.",
+    "leak": {
+      "leak_py": "REVIEW, no LEAK",
+      "reader": null
+    },
+    "precut": {
+      "checks": 50,
+      "date": "2026-10-18",
+      "exit": 0,
+      "fail": 0,
+      "warn": 0
+    },
+    "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the financial year with the clock rules and the unanswered cases applied, compares each queue with its own FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at 25.8 per cent, because that queue carried fourteen positions through the two years its own history is read from and five in FY2026."
   },
-  "call": "Contribution queries takes the one process re-engineering review in H1 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026.",
-  "duplicate_check": {
-   "heart": "WARN 2026-10-18, no BLOCK: nearest driver 0.06 task462",
-   "nearest": "surface clean"
+  "call": "",
+  "delivered": null,
+  "domain": "accounting-audit-forensic/fraud-aml-detection (reassigned by the author 2026-10-18; previously healthcare-delivery-health-economics/payment-claims-health-plan-analytics)",
+  "draw": {
+    "arch5_enumeration": "one pass run through stumping 1.2a. Sixteen candidates screened, ten on branch A (unobserved filed quantity) and six on branch B (recorded quantity with a selection or nonlinearity lever), each killed at the draw by a named rule and recorded in the note. No candidate reached measurement, so no six-screen numbers exist. The finding is structural: a claims file is a payment ledger, and the only latent quantities it admits are payments not yet made, payments made elsewhere, conditions never billed and what the rules would have done, which are completion (task194, task451), capture (task196), ascertainment (task458) and rule replay (banned by rule 3).",
+    "arch6_axis_block": "guard.py check on a probe card carrying the drawn axes returns BLOCK ban.pairing, domain plus objective pairing repeats a recent build against task194 (v3), fix redraw the domain or the objective. An axis ban is not clearable by differentiation and register refuses a BLOCK, so no driver makes this cell registrable while task194 v3 sits in the window. Every other drawn axis came back clear on the same probe: shape 03, grain_or_unit, settled_transaction_ledger, finance_controller, binding_constraint legal, gap population, committee_or_panel, period_close, financial_institution.",
+    "arch6_pin_pincer": "A rigor pattern whose pin fixes one of the estimand's five parts cannot carry the decisive step: filed it is rule application, unfiled it is a semantic fork on the main recommendation. Already filed at stumping/SKILL.md 211 to 224, earned by task200, and this pass owed that read before designing. Applied: M1 member months and M3 episode grain both fix the UNIT, so both are dead on the pincer and the pincer predicted both measurements (M1's 1.000000 ratio, M3's window fork). M2 and M4 escape it because their quantities are functionals of a distribution rather than clauses of an estimand, and they die on the data instead. Ratio of totals is spent three times over: the pincer, task200's filed rule, and this note's axis-7 closure death. All four client patterns for payment-claims-health-plan-analytics are shut: 1 spent on task194's vintage family, 2 pin fixes the comparison, 3 rule application on its face, 4 pin fixes the unit.",
+    "arch6_screens": "The denominator searched mechanism by mechanism, four structurally distinct Layer 2 mechanisms each killed by a measured number on a clean truth generator, no file cut. M1 exposure base: reflex over golden 1.000000 for all twelve accounts, the filed unit determines the computation. M2 repeat-event share at a common length of cover: five of nine routes reach the golden, the raw per-life share at margin 1.382x and the full-cover subset at 1.147x against the decisive route's own 1.075x. M3 episode grain: the call moves with the grouper window, one account at 7 to 30 days and another at 45 to 90, margin 1.006x at the pivot and an exact tie above it, so the window is a knob. M4 left truncation at an account-specific deducible: the mean spend among claimants, one groupby, reaches the golden, because a deducible suppresses only the bottom so every tail functional is exact and only the mean is latent, which is branch B1's basis fork; also spent by task189. Two reusable screens earned: the common-exposure subset is always a filter and a divide, and a threshold that suppresses the bottom of a distribution leaves no latent quantity a tail functional needs.",
+    "arch7_axis_open": "Unlike architecture 6 this pass stopped on the mechanism and NOT on the axis. guard.py check on a probe card returns BLOCK exit 1 on test.same_puzzle_older, test.same_driver_older and ban.forcing_event (audit_or_inspection against task194 v3); a second probe clears the forcing event (period_close) and the two-layer fields, leaving only the two structural signature tests, which are functions of the mechanism. NO ban.pairing, ban.subdomain, ban.shape, ban.strategy, ban.calibration, ban.role, ban.artifact, ban.spine, ban.org_family or ban.forum fired on either probe. accounting-audit-forensic x anomaly-detection at shape 01 is open on every axis ban, with uncertainty_hold, closed_decision_corpus, compliance_or_audit, filed_standard, professional_services, auditor, period_close and a Portugal/EUR world all clear. Probe cards task198_probe_card.json and task198_probe2.json in the builder's scratch directory; neither registered.",
+    "arch7_filter": "The condition a fourth candidate must meet, one clause per kill: the latent quantity must be NOT collinear with the easy statistic (M1), LARGE against the nuisance's own sampling noise (M2), and recoverable by a construction FORCED without a distributional family choice (M3). The shapes satisfying the third are linear algebra, a design weight or an exact identity; design weights are spent twice here (task190 probability proportional to size, stratified projection), an exact identity is revelation, and an unobserved component of an observed total recovered by a fit is task182's spent family. The task type's estimated quantities were enumerated and all are spent, open-family or pincer-dead: counterfactual loss without the control, undetected loss (task196, task194), recovery (task201, task189), performance on the rejected population (reject inference, open family), reachable exposure (task28), number of distinct networks (task192 arch 1), time to detection (task190 arch 4).",
+    "arch7_screens": "The ground reassigned to accounting-audit-forensic (house) x banking-credit-financial-risk/fraud-aml-detection, objective unchanged. Three structurally distinct Layer 2 mechanisms screened, each killed by a measured number on a clean truth generator, no file cut (screen.py in the builder's scratch directory). M1 endogenous sample size under a sequential stop-or-go attribute plan: dead on the reflex sweep, the naive route already names the golden at margin 1.301x against the designed route's own 1.083x, five of eight reflexes reach it, the crudest at 1.344x, and the correction is one multiplication by a filed column at Spearman +0.9860, so the rung is readable. Structural: the stopping rule is informative about the quantity, so bias and signal are one statistic. M2 expected-by-chance coincidence baseline on vendor-employee shared-attribute links: dead on magnitude, the designed route names a unit with 2 genuine links against the golden's 9, observed 42,595 against 9 genuine, chance noise 206 against a signal of 9 (ratio 0.044), and no reflex ranks either. M3 right-censoring at the TOP (the shape the truncation-direction screen leaves open): dead on the forced-construction test, the graded figure spreads 3.926x across lognormal, gamma, Weibull and Pareto-tail MLE on the same records and the ranking forks. A fourth family, lead-driven adaptive examination, retired free on lineage against task124 architecture 2 (driver 0.09 and 0.13).",
+    "enumerated_sweep": "eight measures of a contract price level, every one naming a wrong group; nearest misses the 99th percentile at 1.007x and the allowed-to-charge ratio at 1.002x, both to be widened in the data at stage 2",
+    "five_screens": "1 residue is a method and the pooling knob closed structurally (one contract multiple, every plateau code agrees exactly); 2 move available 134.09 against 43.21 needed, ratio 3.10; 3 standard error of the recovered contract multiple 0.0000 per cent for all eight groups; 4 lever 134.15 against ranked-quantity noise 0.642, ratio 209, different quantities; 5 bias 134.15 against the unit own history change SD 0.903, ratio 149 against a threshold of two",
+    "guard": "WARN, no BLOCK, re-run against the REGISTERED card as the last act of stage 1; org_family redrawn to cooperative_or_member_body after the re-check fired ban.org_family against task199",
+    "rung2_finding": "killed by the completed enumeration on 2026-10-18. The first eight measures all measured the observed price level and all landed wrong; four of the author five measures of the contract rate itself reach the golden. Measure 4, allowed over schedule on censored lines only, returns 433.283 against the decisive route 433.283: the answer exactly, from a two-step filter and divide. Structural: on a censored line allowed equals the rate by the mechanic that creates the bias, so every line either publishes the rate or creates the bias and the golden publishes it on 38 per cent of its lines. Censoring is revelation. Candidate structural change named in the note (a rate per procedure family rather than one multiple) but not implemented, awaiting the ruling.",
+    "screened_out": "completion and development (task194 live) and two capture channels with dependence (task196 live) both screened at the draw and absent from the design"
   },
-  "fate": "stage 4, 2026-10-18: determinism judge NOT_DETERMINISTIC / SEND_BACK and the isolated reader independently. Clause 4.2 filed the comparison; the residue was the matching tolerance, a knob, and three queues win across licensed readings. Gates C and E fail on the flip, Gate H reads the decisive step as rule application. The pack, its 19 files, four formats, 42,481-row spine and every reproducing figure are kept for architecture 2.",
-  "leak": {
-   "leak_py": "REVIEW, no LEAK",
-   "reader": null
-  },
-  "precut": {
-   "checks": 50,
-   "date": "2026-10-18",
-   "exit": 0,
-   "fail": 0,
-   "warn": 0
-  },
-  "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the financial year with the clock rules and the unanswered cases applied, compares each queue with its own FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at 25.8 per cent, because that queue carried fourteen positions through the two years its own history is read from and five in FY2026."
- },
- "call": "",
- "delivered": null,
- "domain": "accounting-audit-forensic/fraud-aml-detection (reassigned by the author 2026-10-18; previously healthcare-delivery-health-economics/payment-claims-health-plan-analytics)",
- "draw": {
-  "arch5_enumeration": "one pass run through stumping 1.2a. Sixteen candidates screened, ten on branch A (unobserved filed quantity) and six on branch B (recorded quantity with a selection or nonlinearity lever), each killed at the draw by a named rule and recorded in the note. No candidate reached measurement, so no six-screen numbers exist. The finding is structural: a claims file is a payment ledger, and the only latent quantities it admits are payments not yet made, payments made elsewhere, conditions never billed and what the rules would have done, which are completion (task194, task451), capture (task196), ascertainment (task458) and rule replay (banned by rule 3).",
-  "arch6_axis_block": "guard.py check on a probe card carrying the drawn axes returns BLOCK ban.pairing, domain plus objective pairing repeats a recent build against task194 (v3), fix redraw the domain or the objective. An axis ban is not clearable by differentiation and register refuses a BLOCK, so no driver makes this cell registrable while task194 v3 sits in the window. Every other drawn axis came back clear on the same probe: shape 03, grain_or_unit, settled_transaction_ledger, finance_controller, binding_constraint legal, gap population, committee_or_panel, period_close, financial_institution.",
-  "arch6_pin_pincer": "A rigor pattern whose pin fixes one of the estimand's five parts cannot carry the decisive step: filed it is rule application, unfiled it is a semantic fork on the main recommendation. Already filed at stumping/SKILL.md 211 to 224, earned by task200, and this pass owed that read before designing. Applied: M1 member months and M3 episode grain both fix the UNIT, so both are dead on the pincer and the pincer predicted both measurements (M1's 1.000000 ratio, M3's window fork). M2 and M4 escape it because their quantities are functionals of a distribution rather than clauses of an estimand, and they die on the data instead. Ratio of totals is spent three times over: the pincer, task200's filed rule, and this note's axis-7 closure death. All four client patterns for payment-claims-health-plan-analytics are shut: 1 spent on task194's vintage family, 2 pin fixes the comparison, 3 rule application on its face, 4 pin fixes the unit.",
-  "arch6_screens": "The denominator searched mechanism by mechanism, four structurally distinct Layer 2 mechanisms each killed by a measured number on a clean truth generator, no file cut. M1 exposure base: reflex over golden 1.000000 for all twelve accounts, the filed unit determines the computation. M2 repeat-event share at a common length of cover: five of nine routes reach the golden, the raw per-life share at margin 1.382x and the full-cover subset at 1.147x against the decisive route's own 1.075x. M3 episode grain: the call moves with the grouper window, one account at 7 to 30 days and another at 45 to 90, margin 1.006x at the pivot and an exact tie above it, so the window is a knob. M4 left truncation at an account-specific deducible: the mean spend among claimants, one groupby, reaches the golden, because a deducible suppresses only the bottom so every tail functional is exact and only the mean is latent, which is branch B1's basis fork; also spent by task189. Two reusable screens earned: the common-exposure subset is always a filter and a divide, and a threshold that suppresses the bottom of a distribution leaves no latent quantity a tail functional needs.",
-  "arch7_axis_open": "Unlike architecture 6 this pass stopped on the mechanism and NOT on the axis. guard.py check on a probe card returns BLOCK exit 1 on test.same_puzzle_older, test.same_driver_older and ban.forcing_event (audit_or_inspection against task194 v3); a second probe clears the forcing event (period_close) and the two-layer fields, leaving only the two structural signature tests, which are functions of the mechanism. NO ban.pairing, ban.subdomain, ban.shape, ban.strategy, ban.calibration, ban.role, ban.artifact, ban.spine, ban.org_family or ban.forum fired on either probe. accounting-audit-forensic x anomaly-detection at shape 01 is open on every axis ban, with uncertainty_hold, closed_decision_corpus, compliance_or_audit, filed_standard, professional_services, auditor, period_close and a Portugal/EUR world all clear. Probe cards task198_probe_card.json and task198_probe2.json in the builder's scratch directory; neither registered.",
-  "arch7_filter": "The condition a fourth candidate must meet, one clause per kill: the latent quantity must be NOT collinear with the easy statistic (M1), LARGE against the nuisance's own sampling noise (M2), and recoverable by a construction FORCED without a distributional family choice (M3). The shapes satisfying the third are linear algebra, a design weight or an exact identity; design weights are spent twice here (task190 probability proportional to size, stratified projection), an exact identity is revelation, and an unobserved component of an observed total recovered by a fit is task182's spent family. The task type's estimated quantities were enumerated and all are spent, open-family or pincer-dead: counterfactual loss without the control, undetected loss (task196, task194), recovery (task201, task189), performance on the rejected population (reject inference, open family), reachable exposure (task28), number of distinct networks (task192 arch 1), time to detection (task190 arch 4).",
-  "arch7_screens": "The ground reassigned to accounting-audit-forensic (house) x banking-credit-financial-risk/fraud-aml-detection, objective unchanged. Three structurally distinct Layer 2 mechanisms screened, each killed by a measured number on a clean truth generator, no file cut (screen.py in the builder's scratch directory). M1 endogenous sample size under a sequential stop-or-go attribute plan: dead on the reflex sweep, the naive route already names the golden at margin 1.301x against the designed route's own 1.083x, five of eight reflexes reach it, the crudest at 1.344x, and the correction is one multiplication by a filed column at Spearman +0.9860, so the rung is readable. Structural: the stopping rule is informative about the quantity, so bias and signal are one statistic. M2 expected-by-chance coincidence baseline on vendor-employee shared-attribute links: dead on magnitude, the designed route names a unit with 2 genuine links against the golden's 9, observed 42,595 against 9 genuine, chance noise 206 against a signal of 9 (ratio 0.044), and no reflex ranks either. M3 right-censoring at the TOP (the shape the truncation-direction screen leaves open): dead on the forced-construction test, the graded figure spreads 3.926x across lognormal, gamma, Weibull and Pareto-tail MLE on the same records and the ranking forks. A fourth family, lead-driven adaptive examination, retired free on lineage against task124 architecture 2 (driver 0.09 and 0.13).",
-  "enumerated_sweep": "eight measures of a contract price level, every one naming a wrong group; nearest misses the 99th percentile at 1.007x and the allowed-to-charge ratio at 1.002x, both to be widened in the data at stage 2",
-  "five_screens": "1 residue is a method and the pooling knob closed structurally (one contract multiple, every plateau code agrees exactly); 2 move available 134.09 against 43.21 needed, ratio 3.10; 3 standard error of the recovered contract multiple 0.0000 per cent for all eight groups; 4 lever 134.15 against ranked-quantity noise 0.642, ratio 209, different quantities; 5 bias 134.15 against the unit own history change SD 0.903, ratio 149 against a threshold of two",
-  "guard": "WARN, no BLOCK, re-run against the REGISTERED card as the last act of stage 1; org_family redrawn to cooperative_or_member_body after the re-check fired ban.org_family against task199",
-  "rung2_finding": "killed by the completed enumeration on 2026-10-18. The first eight measures all measured the observed price level and all landed wrong; four of the author five measures of the contract rate itself reach the golden. Measure 4, allowed over schedule on censored lines only, returns 433.283 against the decisive route 433.283: the answer exactly, from a two-step filter and divide. Structural: on a censored line allowed equals the rate by the mechanic that creates the bias, so every line either publishes the rate or creates the bias and the golden publishes it on 38 per cent of its lines. Censoring is revelation. Candidate structural change named in the note (a rate per procedure family rather than one multiple) but not implemented, awaiting the ruling.",
-  "screened_out": "completion and development (task194 live) and two capture channels with dependence (task196 live) both screened at the draw and absent from the design"
- },
- "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
- "loops": 0,
- "objective": "anomaly-detection",
- "owner": "oviya13ya",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "resume": "Architecture 9 closed the cell on the mechanism, with the inverted procedure run correctly and returning a negative. Three code-measured deaths. The coincident-unavailability alignment count died as a count, where the golden was the only two-layer hazard on 5 of 5 seeds and one sorted column named it every seed, and as a share, where the golden moved across seeds at margins of 1.080 to 1.436 mostly under the 1.15 floor. Effective protection depth gave the best reflex screen measured on this ground, 0 to 1 of 12 routes reaching the golden, and died anyway: four hazards tie at overstatement 2 on every seed in the integer form, and redrawing the per-layer availability column alone with topology held completely fixed gives 3 distinct goldens at every realistic range and 6 at the widest, so the topology cannot carry the verdict. And the direction the orchestrator named, occurrences with a barrier verifiably available, is the worst entry in its own family: corr +0.9960 against a barriers-in-place tally the record already prints, with the one-line route reaching the truth 18 of 20. That was the orchestrator's error, and the proxy screen it had sent mid-pass is what caught it. The one live direction handed back, informative missingness in barrier evidence, has since been closed by the orchestrator's own abstraction test: it maps onto task31 R8's lineage driver on all three of latent structure, default path and correction, and task199 shipped in this lane this week on the same insight in other nouns, at driver scores of 0.05 and 0.06 that the guard cannot see. The record of that test is in scratchpad/abstraction_C3.md. Two axis corrections the draw earned: org_family is manufacturer, the native home of layer-of-protection analysis, which no longer repeats task181 and is free now that task194 moved to software_or_platform; and causal_design has no honest carrier on this cell, because nothing screened is a comparison design. The axis set has now been clear for three consecutive passes, WARN with no BLOCK and nearest driver 0.05.",
- "returned": [],
- "stage": 1,
- "stage_name": "draw",
- "status": "DRAWING",
- "stump": "",
- "task": "task198",
- "updated": "2026-10-20",
- "wave6_cell": "human-factors-ergonomics/safety-incident-error-analysis",
- "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
- "wave7_cell": "physical-environmental-sciences/environmental-monitoring-exceedance",
- "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
+  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
+  "loops": 0,
+  "objective": "anomaly-detection",
+  "owner": "oviya13ya",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "resume": "architecture 10 screened dead. The ban window moved twice during the pass (the contract's task269/270/271 against the live task471/474/475), which cost four BLOCKs, three of them from cards that did not exist at allocation. Recommendation on the record: move the number off this cell rather than take an eleventh pass.",
+  "returned": [],
+  "stage": 1,
+  "stage_name": "draw",
+  "status": "PAUSED",
+  "stump": "",
+  "task": "task198",
+  "updated": "2026-10-20",
+  "wave6_cell": "human-factors-ergonomics/safety-incident-error-analysis",
+  "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+  "wave7_cell": "physical-environmental-sciences/environmental-monitoring-exceedance",
+  "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }
