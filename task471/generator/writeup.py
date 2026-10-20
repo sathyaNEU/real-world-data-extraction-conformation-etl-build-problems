@@ -2,6 +2,7 @@
 deliverable answers. Every number written comes from figures.json."""
 import json
 
+import pack as P
 import world as W
 
 
@@ -64,12 +65,11 @@ def write(fig_path, out_path):
         "census_2025_usual_residents_by_region.xlsx less its imputed records, kept the share of the cell's records in "
         "pes_2025_census_records.csv with STATUS C and raised that by the cell's people in pes_2025_people.csv over "
         "those with MATCH M: dual-system estimates of %s adults." % _n(nat["dse_adults"]),
-        "Rebuilt the population on census day by sex and single year of age, cohort by cohort, from "
-        "live_births_by_sex_1925_2025.csv less deaths (deaths_by_year_of_birth_1925_1990.xlsx and "
-        "deaths_by_year_of_birth_1991_2025.csv) and departures plus arrivals "
-        "(long_term_movements_by_year_of_birth_1950_2025.csv), the period 2025-01-01/2025-03-03 included: men per "
-        "woman of %s at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' %s, the women's estimates "
-        "agreeing with it." % (_names(_r2(g["ratio_da"]) for g in young), _names(_r2(g["ratio_dse"]) for g in young)),
+        "Rebuilt the population on census day by sex and single year of age, cohort by cohort, from %s less deaths "
+        "(%s and %s) and departures plus arrivals (%s), the period 2025-01-01/2025-03-03 included: men per woman of %s "
+        "at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' %s, the women's estimates agreeing with "
+        "it." % (P.FILES["births"], P.FILES["deaths_hist"], P.FILES["deaths"], P.FILES["movements"],
+                 _names(_r2(g["ratio_da"]) for g in young), _names(_r2(g["ratio_dse"]) for g in young)),
         "Multiplied every region's dual-system estimates of men in each of those age groups by demographic analysis's "
         "men per woman over the dual-system estimates' (about %s per cent more men), the women and the other ages as "
         "estimated: about %s million adults." % (_names(str(p) for p in pct), _r2(nat["golden_adults_million"])),

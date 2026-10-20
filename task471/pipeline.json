@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4 round 2 on target.zip 5402dd6ec2786aea: two scored readers (leak-task471-v5-r2a, r2b) and the one re-judge (determinism_check_report_v5r2.md); ship if both readers miss the call and the asks hold",
+ "resume": "stage 4 round 2 on target.zip 5402dd6ec2786aea: two scored readers (leak-task471-v5-r2a, r2b) running and the one re-judge thread on /tmp/determinism-check-task471-v5r2/judge_brief.md (write-up's file names fixed in writeup.py; checks.py now asserts every cited file ships); then the determinism-judge agent writes determinism_check_report_v5r2.md; ship if both readers miss the call and the asks hold",
  "approved": null,
  "delivered": null,
  "portal": null,

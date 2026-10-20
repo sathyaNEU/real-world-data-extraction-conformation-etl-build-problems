@@ -467,6 +467,12 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(nat_count % 100 and sum(d["roll"].values()) % 100 and all(d["roll"][c] % 1000 for c in W.CODES)
        and sum(1 for c in W.CODES if d["roll"][c] % 10 == 0) <= 5, "no round totals in the census or the roll")
     # ----------------------------------------------------------------------------------------- figures.json
+    sub_path = os.path.join(os.path.dirname(os.path.abspath(target)), "submission.md")
+    if os.path.exists(sub_path):
+        import re
+        cited = set(re.findall(r"[a-z0-9_]+\.(?:csv|xlsx|pdf|docx)", open(sub_path, encoding="utf-8").read()))
+        cited -= {"enrolment_gap_allocation_2027.csv"}
+        ck(cited and cited <= set(files), "every file submission.md cites ships in the pack (%s)" % sorted(cited - set(files)))
     if fig_path and gdir:
         fig = json.load(open(fig_path, encoding="utf-8"))
         ck(fig["call"]["organisers"] == GOLD and fig["call"]["total"] == 200, "figures.json: the call")
