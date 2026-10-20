@@ -1,0 +1,85 @@
+{
+  "task": "task484",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET41's number (broadband allocation), re-worlded at the draw: every lever in the broadband world was a filed BEAD definition or a fabric clean-up",
+  "domain": "demographic-social-science",
+  "subdomain": "housing",
+  "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "(to be built)",
+  "answer_source": "task474/submission.md",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the census base, the cities' certificate-of-occupancy exports, the demolitions and the group quarters survey, reads every field and rule correctly and runs the housing unit method with each city's ACS occupancy rate on every housing unit puts the wrong cities over 50,000, because the apartment buildings finished in the last two years are still leasing up and hold far fewer households than the stock's occupancy rate gives them; the utility's account history, which covers only some cities, measures how buildings fill after they open.",
+  "domain_test": "The decisive quantity is each city's household population on 1 April 2026 by the housing unit method (occupied units times persons per household plus group quarters); the field's step is recognising that newly completed multifamily units are not occupied at the stock's rate and estimating their occupancy by months since completion from the lease-up the utility's account history records.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:occupancy of newly completed units estimated by months since completion from a partial account history, the stock occupancy rate invalid for that group",
+  "layer1": [
+    "four cities' permit-system certificate-of-occupancy exports in different layouts",
+    "demolition records with partial unit counts",
+    "ACS five-year occupancy against the 2020 census base",
+    "a utility record covering only the cities in its service territory"
+  ],
+  "stakeholder_role": "the state population unit's demographer preparing the 2027 revenue-sharing tier list",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "utility_residential_accounts_monthly.csv",
+    "rows": null,
+    "entity": "one building-month",
+    "grain": "building, month",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States, a fictional state",
+    "currency": "USD",
+    "org_type": "a state population estimates unit",
+    "invented_names": [],
+    "people": [
+      "Kimberly Rogers",
+      "Martin Booth"
+    ]
+  },
+  "deliverables": [
+    "city_population_estimates_2026.xlsx",
+    "revenue_sharing_tiers_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
+  "driver_concrete": "Each city's 1 April 2026 household population is housing units times occupancy times persons per household; the occupancy of units completed since 2024 comes from a lease-up curve by months since the certificate of occupancy, fitted on the buildings the utility's account history covers, not from the city's ACS occupancy rate.",
+  "stump": "(to be written at stage 2)",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task474v6": "task474 expands short counts on single-generator roads by the generator's own record; here the stock's occupancy share is replaced for new units by a fill curve fitted on a partial history and carried by months since opening",
+    "task471": "task471 corrects a dual-system count for dependence in one group; here nothing is counted twice: new units are in the stock but not yet occupied",
+    "task172": "task172 forecasts waits cut short by a deadline that moved; here no wait is forecast: the occupancy of units already completed is estimated from how earlier buildings filled"
+  },
+  "lineage": [],
+  "notes": "task484 drawn 2026-10-20 in a fresh world (housing unit method population estimates) after ET41's broadband world was rejected at the draw",
+  "client_domain": "survey-research-official-statistics",
+  "registered": "2026-10-20T23:40:06Z"
+}

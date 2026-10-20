@@ -1,0 +1,20 @@
+{
+ "task": "task484",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "demographic-social-science",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-20",
+ "architecture": 1,
+ "loops": 0,
+ "stump": "The default path applies each city's ACS occupancy to every housing unit; units completed in the last two years are still leasing up, and only their occupancy by months since completion, from the utility's account history, puts the right cities over 50,000.",
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {"guard_check": "WARN 2026-10-20", "nearest": "task43 at 0.06"},
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: prototype the lease-up effect and the ladder, then the generator, design note to precut",
+ "source_note": "seed ET41's number, re-worlded at the draw (housing unit method population estimates)"
+}
