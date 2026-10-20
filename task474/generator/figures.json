@@ -1,0 +1,362 @@
+{
+ "call": {
+  "allocation": [
+   1650000,
+   2250000,
+   330000,
+   720000,
+   2140000,
+   1860000,
+   330000,
+   1380000,
+   1340000
+  ],
+  "allocation_rows": {
+   "Greater Ormsby": 1650000,
+   "Mill River Valley": 2250000,
+   "Tarrow Uplands": 330000,
+   "Southern Shore": 720000,
+   "Wexport Harbor": 2140000,
+   "Two Rivers": 1860000,
+   "Northern Hills": 330000,
+   "Quinnet Valley": 1380000,
+   "Eastern Bays": 1340000
+  },
+  "population_by_year": {
+   "Greater Ormsby": {
+    "2020": 35900,
+    "2021": 34300,
+    "2022": 31600
+   },
+   "Mill River Valley": {
+    "2020": 41600,
+    "2021": 44000,
+    "2022": 46800
+   },
+   "Tarrow Uplands": {
+    "2020": 6700,
+    "2021": 6700,
+    "2022": 6700
+   },
+   "Southern Shore": {
+    "2020": 12600,
+    "2021": 13300,
+    "2022": 14600
+   },
+   "Wexport Harbor": {
+    "2020": 44000,
+    "2021": 44000,
+    "2022": 42800
+   },
+   "Two Rivers": {
+    "2020": 35800,
+    "2021": 36700,
+    "2022": 37900
+   },
+   "Northern Hills": {
+    "2020": 6800,
+    "2021": 6700,
+    "2022": 6700
+   },
+   "Quinnet Valley": {
+    "2020": 27600,
+    "2021": 27600,
+    "2022": 27400
+   },
+   "Eastern Bays": {
+    "2020": 26600,
+    "2021": 26900,
+    "2022": 27000
+   }
+  },
+  "population_average": {
+   "Greater Ormsby": 33100,
+   "Mill River Valley": 45100,
+   "Tarrow Uplands": 6600,
+   "Southern Shore": 14500,
+   "Wexport Harbor": 42900,
+   "Two Rivers": 37400,
+   "Northern Hills": 6700,
+   "Quinnet Valley": 27600,
+   "Eastern Bays": 26900
+  }
+ },
+ "regions": [
+  {
+   "region": "Greater Ormsby",
+   "code": "52110",
+   "council": "Greater Ormsby Council of Governments"
+  },
+  {
+   "region": "Mill River Valley",
+   "code": "52120",
+   "council": "Mill River Valley Council of Governments"
+  },
+  {
+   "region": "Tarrow Uplands",
+   "code": "52130",
+   "council": "Tarrow Uplands Council of Governments"
+  },
+  {
+   "region": "Southern Shore",
+   "code": "52140",
+   "council": "Southern Shore Council of Governments"
+  },
+  {
+   "region": "Wexport Harbor",
+   "code": "52150",
+   "council": "Wexport Harbor Council of Governments"
+  },
+  {
+   "region": "Two Rivers",
+   "code": "52160",
+   "council": "Two Rivers Council of Governments"
+  },
+  {
+   "region": "Northern Hills",
+   "code": "52170",
+   "council": "Northern Hills Council of Governments"
+  },
+  {
+   "region": "Quinnet Valley",
+   "code": "52180",
+   "council": "Quinnet Valley Council of Governments"
+  },
+  {
+   "region": "Eastern Bays",
+   "code": "52190",
+   "council": "Eastern Bays Council of Governments"
+  }
+ ],
+ "amounts": {
+  "Greater Ormsby": 1650000,
+  "Mill River Valley": 2250000,
+  "Tarrow Uplands": 330000,
+  "Southern Shore": 720000,
+  "Wexport Harbor": 2140000,
+  "Two Rivers": 1860000,
+  "Northern Hills": 330000,
+  "Quinnet Valley": 1380000,
+  "Eastern Bays": 1340000
+ },
+ "amounts_total_rounded": 12000000,
+ "fund": 12000000,
+ "average": {
+  "Greater Ormsby": 33100,
+  "Mill River Valley": 45100,
+  "Tarrow Uplands": 6600,
+  "Southern Shore": 14500,
+  "Wexport Harbor": 42900,
+  "Two Rivers": 37400,
+  "Northern Hills": 6700,
+  "Quinnet Valley": 27600,
+  "Eastern Bays": 26900
+ },
+ "average_sum": 240800,
+ "cells": {
+  "Greater Ormsby": {
+   "2020": 35900,
+   "2021": 34300,
+   "2022": 31600
+  },
+  "Mill River Valley": {
+   "2020": 41600,
+   "2021": 44000,
+   "2022": 46800
+  },
+  "Tarrow Uplands": {
+   "2020": 6700,
+   "2021": 6700,
+   "2022": 6700
+  },
+  "Southern Shore": {
+   "2020": 12600,
+   "2021": 13300,
+   "2022": 14600
+  },
+  "Wexport Harbor": {
+   "2020": 44000,
+   "2021": 44000,
+   "2022": 42800
+  },
+  "Two Rivers": {
+   "2020": 35800,
+   "2021": 36700,
+   "2022": 37900
+  },
+  "Northern Hills": {
+   "2020": 6800,
+   "2021": 6700,
+   "2022": 6700
+  },
+  "Quinnet Valley": {
+   "2020": 27600,
+   "2021": 27600,
+   "2022": 27400
+  },
+  "Eastern Bays": {
+   "2020": 26600,
+   "2021": 26900,
+   "2022": 27000
+  }
+ },
+ "published": {
+  "Greater Ormsby": {
+   "2023": 32000,
+   "2024": 31700
+  },
+  "Mill River Valley": {
+   "2023": 46700,
+   "2024": 46400
+  },
+  "Tarrow Uplands": {
+   "2023": 6400,
+   "2024": 6500
+  },
+  "Southern Shore": {
+   "2023": 15900,
+   "2024": 16000
+  },
+  "Wexport Harbor": {
+   "2023": 41800,
+   "2024": 41800
+  },
+  "Two Rivers": {
+   "2023": 38200,
+   "2024": 38500
+  },
+  "Northern Hills": {
+   "2023": 6600,
+   "2024": 6600
+  },
+  "Quinnet Valley": {
+   "2023": 28000,
+   "2024": 27600
+  },
+  "Eastern Bays": {
+   "2023": 26900,
+   "2024": 27100
+  }
+ },
+ "share_pct": {
+  "Greater Ormsby": 13.7,
+  "Mill River Valley": 18.7,
+  "Tarrow Uplands": 2.7,
+  "Southern Shore": 6.0,
+  "Wexport Harbor": 17.8,
+  "Two Rivers": 15.5,
+  "Northern Hills": 2.8,
+  "Quinnet Valley": 11.5,
+  "Eastern Bays": 11.2
+ },
+ "rivals": {
+  "release_shares": {
+   "Greater Ormsby": 1620000,
+   "Mill River Valley": 2280000,
+   "Tarrow Uplands": 330000,
+   "Southern Shore": 740000,
+   "Wexport Harbor": 2120000,
+   "Two Rivers": 1870000,
+   "Northern Hills": 330000,
+   "Quinnet Valley": 1370000,
+   "Eastern Bays": 1340000
+  },
+  "snap_shares": {
+   "Greater Ormsby": 1750000,
+   "Mill River Valley": 2200000,
+   "Tarrow Uplands": 300000,
+   "Southern Shore": 660000,
+   "Wexport Harbor": 2160000,
+   "Two Rivers": 1850000,
+   "Northern Hills": 300000,
+   "Quinnet Valley": 1400000,
+   "Eastern Bays": 1370000
+  },
+  "middle_year": {
+   "Greater Ormsby": 1680000,
+   "Mill River Valley": 2210000,
+   "Tarrow Uplands": 330000,
+   "Southern Shore": 710000,
+   "Wexport Harbor": 2150000,
+   "Two Rivers": 1860000,
+   "Northern Hills": 330000,
+   "Quinnet Valley": 1380000,
+   "Eastern Bays": 1340000
+  }
+ },
+ "rivals_off": {
+  "release_shares": 6,
+  "snap_shares": 9,
+  "middle_year": 4
+ },
+ "ratio_range": [
+  0.87,
+  3.13
+ ],
+ "county_totals": {
+  "2020": 237551,
+  "2021": 240214,
+  "2022": 241527
+ },
+ "release_months": 60,
+ "rounding": {
+  "amounts": 10000,
+  "residents": 100,
+  "dollars": 100
+ },
+ "rule_sections": {
+  "fund": "1.1",
+  "latest": "2.1",
+  "division": "2.2",
+  "average": "2.3",
+  "allocation": "2.4",
+  "balances": "3.1",
+  "energy": "3.2"
+ },
+ "asks": {
+  "carry": {
+   "Greater Ormsby": 68600,
+   "Mill River Valley": 98700,
+   "Tarrow Uplands": 16300,
+   "Southern Shore": 39600,
+   "Wexport Harbor": 93200,
+   "Two Rivers": 90000,
+   "Northern Hills": 18400,
+   "Quinnet Valley": 52700,
+   "Eastern Bays": 72500
+  },
+  "people": {
+   "Greater Ormsby": 4080,
+   "Mill River Valley": 5677,
+   "Tarrow Uplands": 802,
+   "Southern Shore": 2126,
+   "Wexport Harbor": 5210,
+   "Two Rivers": 5017,
+   "Northern Hills": 920,
+   "Quinnet Valley": 3934,
+   "Eastern Bays": 3237
+  },
+  "energy": {
+   "Greater Ormsby": 505600,
+   "Mill River Valley": 679700,
+   "Tarrow Uplands": 92200,
+   "Southern Shore": 262600,
+   "Wexport Harbor": 644800,
+   "Two Rivers": 685700,
+   "Northern Hills": 105900,
+   "Quinnet Valley": 487100,
+   "Eastern Bays": 439100
+  },
+  "unexpended": {
+   "Halden": 111876,
+   "Corbin": 73650,
+   "Wexmoor": 125682,
+   "Ashgrove": 78221,
+   "Ludbury": 23490,
+   "Merrick": 54056,
+   "Stanbridge": 64549,
+   "Pennock": 18457
+  },
+  "unexpended_total": 549981
+ }
+}

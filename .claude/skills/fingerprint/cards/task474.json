@@ -5,13 +5,13 @@
   "slot_note": "seed ET31 (Connecticut's planning regions replacing its counties; a fixed anti-poverty grant split on a five-vintage poverty average; history rebuilt from towns): world, decision and quantity kept, the pitfall re-found in how the town data describe time",
   "domain": "survey-research-official-statistics",
   "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "rebuilding a state's annual model-based poverty series on new county-equivalents for a formula grant, the former counties' years apportioned to the planning regions with the survey's five-year town windows",
+  "niche": "rebuilding a state's annual model-based poverty series on new county-equivalents for a formula grant, the former counties' 2020-2022 years split by town with SNAP counts benchmarked to the survey's five-year town level",
   "objective": "etl",
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Greater Ormsby $1,650,000; Mill River Valley $2,250,000; Tarrow Uplands $330,000; Southern Shore $720,000; Wexport Harbor $2,140,000; Two Rivers $1,860,000; Northern Hills $330,000; Quinnet Valley $1,380,000; Eastern Bays $1,340,000",
+  "answer_source": "submission.md block 1 (generator/figures.json amounts)",
   "gap": [
     "time",
     "population"
@@ -22,37 +22,38 @@
   "generators": [
     "G2",
     "G13",
-    "G6"
+    "G14"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "time_semantics",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly splits each former county's 2020, 2021 and 2022 poverty estimate among its towns by their shares in the 2020-2024 five-year release that covers those years and files an allocation that over-funds the suburban regions the poor were moving into and short-funds the city regions they were leaving; only the towns' poor interpolated between the 2015-2019 and 2020-2024 releases at 2017 and 2022, the middle years each release averages over, files the golden.",
-  "domain_test": "The deciding quantity is each planning region's residents in poverty in 2020 to 2022, years the State Data Center estimated only for the former counties, built the way official statisticians rebuild a series on new county-equivalents (single-year model estimates apportioned by the survey's five-year town windows, each window a period average placed at the middle of its span and interpolated to the year); with another field's nouns the task loses the period-average survey windows, the annual model totals and the change of county-equivalents that make the anchoring decide.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:period-average-windows-interpolated-at-midpoints",
+  "analyst_test": "A strong analyst who reads every file and rule correctly splits each former county's 2020, 2021 and 2022 poverty estimate among its towns by their shares in the Bureau's 2020-2024 five-year release and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 (six of nine amounts off); splitting by the year's SNAP recipients instead files Greater Ormsby $1,750,000 and Southern Shore $660,000 (all nine off); reading the release as 2022 and moving it by SNAP files Greater Ormsby $1,680,000; only each town's SNAP recipients that year scaled to its own five-year survey level files the golden.",
+  "domain_test": "The deciding quantity is each planning region's residents in poverty in 2020 to 2022, years the State Data Center estimated only for the former counties, built the way official statisticians produce annual small-area figures across a break: temporal disaggregation with an indicator benchmarked to the low-frequency level (monthly SNAP recipients by town carry the year's timing, the survey's five-year town count carries the level); with another field's nouns the task loses the model totals, the period-average survey windows and the administrative indicator whose take-up differs by town.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:benchmarked-indicator-temporal-disaggregation",
   "layer1": [
     "county-equivalent change mid-series (former counties to planning regions)",
-    "town codes re-keyed under the new county-equivalent codes",
     "estimates as PDF tables for the county years and a workbook for the region years",
-    "two five-year releases in different layouts with margins of error",
-    "preliminary and revised estimates for one year",
+    "preliminary and revised estimates for every year in consecutive releases",
+    "town codes re-keyed under the new county-equivalent codes",
     "names against codes across the town, county and region files",
+    "margins of error and age-sex cells beside the survey's totals",
+    "fiscal against calendar years",
     "thousands against units"
   ],
   "stakeholder_role": "Director, State Data Center",
   "role_family": "statistical_office_head",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "acs5_town_poverty_2020_2024.csv",
-    "rows": 26000,
-    "entity": "one estimate line of one five-year detailed table for one town",
-    "grain": "town x table line",
+    "file": "rof_client_services_extract_20260930.csv",
+    "rows": 89023,
+    "entity": "one service delivered to one person by a former county agency",
+    "grain": "person x service x date",
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
@@ -67,22 +68,22 @@
     ],
     "people": [
       "Wendy Taylor",
-      "Mitchell Clark",
+      "Martin Estrada",
       "Paige Hodges"
     ]
   },
   "deliverables": [
-    "rof_fy2027_region_poverty_2020_2024.csv",
+    "rof_fy2027_region_poverty.csv",
     "rof_fy2027_allocation_memo.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "Totals published for one partition in some periods have to be split across a crossing partition by a share that drifts every period, and the only fine-grained evidence is two period averages, so each period's share is interpolated between the averages at the middle of the spans they average over rather than read off the span that holds the period.",
-  "driver_concrete": "The former counties' 2020 to 2022 poverty estimates are split into the planning regions by each county's towns' poor population interpolated between the 2015-2019 and 2020-2024 five-year town releases at 2017 and 2022, the years each release centres on, rather than by the 2020-2024 release that holds those years.",
-  "stump": "The default path apportions the former counties' 2020 to 2022 estimates by the towns' shares in the 2020-2024 five-year release, which leads each year's distribution by up to two years of the city-to-suburb drift of the poor, and files an allocation that pays the suburban regions too much and the city regions too little.",
+  "driver": "A total published only for coarse units in some periods is split across a crossing partition by each fine unit's value that period, estimated by scaling an every-period indicator, whose ratio to the target differs by unit, to the unit's own multi-period average of the target; the multi-period average alone carries moves from later periods into earlier ones and the indicator alone carries its own ratio.",
+  "driver_concrete": "Each former county's 2020-2022 poverty estimate is split into the planning regions by its towns' SNAP recipients that year scaled to each town's own 2020-2024 five-year survey count over its mean recipients, rather than by the five-year release's town shares (which hold the 2021 Bellmont Courts and Marlridge Commons relocations for most of their span) or by SNAP shares (recipients per resident in poverty run from 0.32 to 1.15 across the towns).",
+  "stump": "The default path splits the former counties' 2020-2022 estimates by the towns' shares in the 2020-2024 five-year release, which holds the 2021 Bellmont Courts and Marlridge Commons relocations for most of its span, and files Greater Ormsby $1,620,000 and Mill River Valley $2,280,000 against the golden's $1,650,000 and $2,250,000, six of the nine amounts off.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "Strategy time_semantics answered: the windows are read correctly (each a five-year period); the step is estimating a single year's town distribution from two period averages (temporal disaggregation), and the easy route reads every field right.",
+  "notes": "Strategy grain_or_unit answered: the survey release's five-year grain and SNAP's unit (recipients, whose take-up differs by town) are both read correctly; the step is temporal disaggregation with a benchmarked indicator, which no field or rule performs. Redrawn at stage 2 from the first decisive step (midpoint anchoring of two five-year releases), whose forcing evidence the survey's sampling noise swamped; the relocations moved to 2021 at stage 3 so no published estimate displays them (Tried and rejected).",
   "registered": "2026-10-20T06:30:26Z"
 }

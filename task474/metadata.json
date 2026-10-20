@@ -1,0 +1,49 @@
+{
+ "task": "task474",
+ "architecture": 1,
+ "title": "How the Regional Opportunity Fund's $12,000,000 for FY2027 is split among the nine planning regions' councils of governments when the State Data Center's 2020 to 2022 poverty estimates exist only for the former counties; with each region's 2020, 2021 and 2022 residents in poverty and 2020-2024 average, a chart of the nine amounts, and each council's share of the former county agencies' unexpended FY2026 balances, the people it is counted on and the FY2026 energy assistance paid in its towns",
+ "domain": "Survey Research & Official Statistics",
+ "subdomain": "seasonal-adjustment-official-time-series-production (an annual model-based poverty series rebuilt on new county-equivalents, the years the new geography lacks produced by temporal disaggregation with a benchmarked administrative indicator)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "05: an allocation to a fixed total: each of the nine councils' FY2027 amounts from $12,000,000, on the conformed region series (27 region-years and nine averages), beside 27 transition figures",
+ "as_of": "2026-10-16",
+ "deliverables": [
+  "rof_fy2027_region_poverty.csv",
+  "rof_fy2027_allocation_memo.docx"
+ ],
+ "distractor_files": [
+  "rof_fy2026_allocation_table.xlsx",
+  "county_to_planning_region_factors_2020.csv"
+ ],
+ "wrong_basis_distractor": {
+  "file": "county_to_planning_region_factors_2020.csv",
+  "basis": "each former county's 2020 census population and housing units split among the planning regions, not its residents in poverty in each year",
+  "ruled_out_by": "the allocation rule (1.1 and 2.2), which divides each former county's estimate by its towns' residents in poverty in that year"
+ },
+ "stated_inputs": [
+  "2020",
+  "2022",
+  "2024",
+  "FY2026",
+  "FY2027"
+ ],
+ "input_gates": {
+  "files": 18,
+  "formats": [
+   "csv",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "rof_client_services_extract_20260930.csv",
+  "largest_file_rows": 89023
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task474/generator/build.py (seeded, deterministic) in the layouts of a state data center's annual model-based poverty estimate releases and methods note, an American Community Survey B17001 five-year extract with the Census Bureau's standard table notes, a state social services department's monthly SNAP participation file by town, a town to county to planning region code file, county-to-region allocation factors, a budget office's fund allocation rule, allocation table and grant closeout, and a grants data system's client services extract, profile audit trail, client number conversion and export layout; the state is unnamed and its counties, regions, towns, agencies and people are fictional",
+   "date": "2026-10-16",
+   "license": "original work for this task; no third-party data"
+  }
+ ]
+}
