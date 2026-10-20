@@ -2159,3 +2159,190 @@ construction estimates), the silent-row readability screen and the full enumerat
   previous pass had to drop, and because Estonian surnames are not gender-inflected, so a drawn pair cannot
   produce the mismatch a Lithuanian draw does. Probe card at
   `<scratch>/w6_194b/task194_card.json`, marked PROBE ONLY and not registered.
+
+- **Cell 5 opened and closed in one pass: epidemiology-public-health /
+  `disease-surveillance-outbreak-anomaly-detection` (architecture 14), three candidates screened to death
+  with measurements, nothing drawn, no card registered, no file in `target/` or `golden/` touched.** The
+  cell was chosen because the taxonomy gives this task type anomaly-detection and data-quality-monitoring
+  only, so a forward-facing count here cannot be retagged as forecasting, and because the brief named one
+  spent anomaly-detection driver on it (task188's pooled-test density). **`guard.py slots` found three more
+  builds on the cell that `recent`, `mechanisms` and `nearest` cannot see as neighbours, and they matter
+  more than the card screen did:** task232 (a transmission rate per unit of exposure from closed episodes
+  whose outcomes surface on a delay, attributed inside the delay's range), task242 (a share read through a
+  detector whose chance of registering fades with time since the event) and task501 on the adjacent
+  `infectious-disease-transmission-modeling` (a who-passes-to-whom matrix measured by pooling two regimes).
+  With task188 those four close the cell's rate-and-share family from four sides, which is why this pass
+  drew only non-rate quantities. **Screen 6 was run first, as the brief requires, and all three candidates
+  were drawn to escape it rather than to argue with it:** C2's deciding quantity is a span in days, C1's is a
+  date, and C3's is a dimensionless reproduction number, so none of the three has a denominator to choose and
+  the pharmacology-and-AML law was not re-found. Harness in the builder's scratch directory
+  `<scratch>/w7_194/`: `screen_c2.py`, `screen_c2b_c1_c3.py`, both rerunning byte-identically
+  (`e3228f8a7e0c6555ae3a48fc18fe1cd7`, `fc2c9a99f4d95bff9c0b52ea22fc444e`), probe card
+  `task194_card_probe.json`.
+- **The axis window is open and what is missing is a mechanism, and this is the sixth cell in this lane to
+  report it.** `guard.py check` on the probe card returns **PASS, exit 0, with no WARN at all**, nearest
+  driver 0.06 (task201 v2), on `epidemiology-public-health` / `disease-surveillance-outbreak-anomaly-detection`
+  x anomaly-detection with shape `17`, gap `time`, pattern `none` so `G7` reads as decisive, gate
+  `signal_vs_noise_or_hold`, decision `structural_verdict`, strategy `other`, role `field_unit_lead`, forum
+  `operations_desk`, forcing event `incident_or_complaint`, context artifact `operations_log`, question form
+  `whether`, New Zealand. **One axis BLOCKed and was redrawn rather than argued:** `org_family`
+  `government_agency` is `ban.org_family` against task471 (and `overuse.org_family` at 37 builds besides), so
+  it moved to `hospital_or_health_provider`, which is the honester label anyway because a New Zealand public
+  health unit sits inside the district health service rather than in a central agency. **Two corrections to
+  the brief's own axis list, which had gone stale inside a day:** the last three builds are now task471,
+  task474 and task475, not task269 to task271, so `composition_mix` and shape `01` are free again while
+  `population_selection`, `time_semantics` and `decomposition_attribution` are blocked and the blocked shapes
+  are `05` and `07`; and the drawn personas `Warwick Dalziel`, `Joanna Ham` and `Gabriel Monk`, from
+  `guard.py names --geo "New Zealand" --seed 194`, raise no `people.first`, `people.last` or `people.full`
+  flag.
+- **Candidate C2, the strongest of the three and the one the pass was built around: a point-source against a
+  persistent-source verdict benchmarked on the implicated run's own dispensing profile. Dead twice, and the
+  second death is the one worth carrying.** The world is a genomically defined listeriosis cluster among the
+  clients of a chilled ready-meals supplier; the call is the structural verdict, one contaminated production
+  run (recall it and reopen the line) against a persistently contaminated plant environment (withdraw the
+  range and close the line). The deciding quantity is the span of the exposure process behind the cluster,
+  unobserved because no record holds an exposure date. The forcing file is the warehouse's own stock movement
+  record, which pins what no other file pins: that one run's cartons are dispensed over five weeks when they
+  sit in a slow retail-chilled channel and over four days when they sit in an aged-care channel. The textbook
+  route compares the onset span against the pathogen's own incubation range. **The separation is real and
+  large: with one contaminated run the onsets carry a standard deviation of 20.27 to 23.12 days against an
+  incubation standard deviation of 12.45 days, so the naive verdict files persistent contamination in 19 or
+  20 of 20 worlds across a slow-channel share of 0.45 to 0.95, and the moment-subtraction route
+  (`Var(onset) - Var(incubation)`, the only additive dispersion measure and so a genuinely forced
+  construction) reports a phantom exposure window of 15.67 to 19.35 days.** **Death one, screen 2, fired on
+  the first measurement and was repairable:** with the contaminated run placed at the extreme of the forcing
+  file's plainest per-run column, "the run with the largest slow-channel share" names it **20 of 20** and
+  "the longest dispensing tail" **13 of 20**; moving it to the second, third, fifth or seventh place in that
+  column drops both to **0 of 20** while the naive verdict still fails 17 to 19 of 20. So the forcing column
+  is not the wall here, which is worth recording because it is the wall on most grounds. **Death two is the
+  wall and it is in the other column: there is a one-group-by route to the verdict itself, and it beats the
+  designed construction.** Take the longest-dispensing run in the warehouse file, convolve its profile with
+  the incubation density once, and ask whether the cluster's onset spread fits inside it: that route files
+  the golden verdict **20 of 20** in the single-run world with no likelihood, no per-run fit and no
+  deconvolution. **And the same measurement convicts the designed route from the other side: in the
+  persistent world the one-line route is right 1 of 20, the naive route 19 of 20 and the designed likelihood
+  0 of 20.** The likelihood files "single" in both worlds; its 20 of 20 in the single-run arm was a constant
+  and not discrimination, exactly as the naive route's 20 of 20 in the persistent arm is a constant. A
+  construction that cannot tell the two worlds apart cannot carry a verdict about which of them obtains, so
+  the 20 of 20 the first screen reported was an artifact of comparing two constants. **Dead a third way on
+  the graded object even if the verdict had held:** the run's name is not determinate, the likelihood naming
+  the true run **13 to 15 of 20** with a mean absolute offset of 0.25 to 0.40 runs and a maximum of 2, so the
+  call could only have graded the bare verdict; and the attaining subset is live besides, short-stay clients
+  with one delivery in the window pinning the exposure dates directly and reaching "single" **14 of 20** at a
+  realistic 6 per cent short-stay share.
+- **Candidate C1, the recall's earliest contaminated production run, dead on the lever-against-identification
+  pincer, which the measurement states more sharply than the prediction did.** The decision is how far back a
+  recall must reach; the deciding quantity is the earliest production run whose output carried the organism,
+  unobserved and forward facing because long-shelf-life stock of the early runs is still in the market. The
+  predicted pincer was that the naive route (the earliest onset minus the incubation maximum) is wrong only
+  where the early runs produced no observed case, and that is exactly where nothing in the case data
+  identifies the start. **Both halves measured, and the second half is worse than predicted: the start run
+  produced an expected case count under one in 20 of 20 worlds at an early-volume fraction of 0.02, 0.05 and
+  0.12 and in 0 of 20 at 0.30 and 0.60, while the one-parameter maximum likelihood over the start run names
+  it 1, 1, 0, 2 and 4 of 20 across those same five settings.** So the quantity is not identified at any
+  setting, including the settings where the early runs certainly produced cases: an onset curve smeared by a
+  12.45-day incubation standard deviation carries almost nothing about a release date three days from its
+  neighbour's. **And the naive route's error is a constant rather than a lever**, missing the true start by
+  exactly -6.00 runs at every one of the five settings and missing it on the conservative side, so it
+  over-recalls; a route that is wrong in the safe direction and a decisive route that cannot beat it is an
+  inverted ladder, not a stump.
+- **Candidate C3, a facility's transmission verdict from the final-size inversion, dead on the parametric
+  horn and on the easy route at once.** The decision is whether a named aged-care facility's outbreak is
+  still transmitting above the response threshold; the deciding quantity is the facility's reproduction
+  number, unobserved, recovered by inverting the final-size relation on the attack rate and the resident
+  count, which is the field's own method and the one place a nonlinearity makes the attack rate itself
+  misleading (the relation is convex, so a facility that has nearly exhausted its susceptibles shows a
+  compressed attack rate). **Measured over 20 worlds at 42 to 120 residents and a true reproduction number of
+  1.05 to 1.75, the four defensible inversions (the SIR final-size equation, a Reed-Frost chain binomial, a
+  Greenwood chain binomial and the linearised form) spread the graded figure by a mean of 0.4733 and a
+  maximum of 0.6055 against a printed precision of 0.01, about 47 to 60 times over, and they straddle a 1.30
+  verdict boundary in 10 of 20 worlds, so the verdict itself forks in half the worlds.** That is architecture
+  9's parametric horn in surveillance nouns. **And the inversion changes almost nothing anyway: the
+  attack-rate-only sort, which is a filter and a divide with no model, agrees with the true ordering in 19 of
+  20 adjacent pairs.** The other horn is the familiar one: with the susceptible pool taken as the resident
+  count the inversion is exact arithmetic on two shipped columns, so filing the estimand makes the step rule
+  application.
+- **What the three measurements leave for a later pass on this cell, stated so it is not paid for twice.**
+  The cell's rate family is closed four ways (task188 pooled tests, task232 exposure-delayed attribution,
+  task242 a fading detector, task501 a regime-pooled contact matrix), and this pass shows that escaping
+  screen 6 by drawing a span, a date or a dimensionless number does not buy anything on its own: each of the
+  three died on a different one of the lane's standing laws, and the new one is C2's. **The law this pass
+  earns, and it is not the forcing file's column: where the decisive construction is a benchmark for a
+  statistic, the one-group-by route competes on the benchmark rather than on the statistic, and it wins
+  because a benchmark is a single number however elaborately it was built.** C2's likelihood over 24 runs and
+  a one-line maximum over the same file reach the same verdict 20 of 20, because both end in one comparison
+  of one spread against one spread. So on surveillance ground the question to ask of a verdict candidate
+  before anything else is not which file forces the benchmark but **whether the benchmark is a single number
+  once the second file is read**, and if it is, the construction's elaboration is decoration. The direction
+  left unscreened, where a later pass starts: a candidate whose second file supplies **one benchmark per
+  case** rather than one benchmark for the cluster, so that no single comparison can stand in for it, the
+  candidate forcing files being the client-level delivery register and the per-case enhanced-surveillance
+  questionnaire, which pin each case's own exposure opportunity and which no group-by on the line list
+  reaches. Any candidate there states, before any world is drawn, what the one-group-by route to its call
+  would be and why it does not reach it, because this pass shows that the route exists and is found by the
+  second measurement rather than the tenth.
+- **`## Three rules` for C2, the only candidate that reached the point of being worth writing them for, with
+  the lines that do not pass said plainly rather than written to pass.** `Task type:`
+  `disease-surveillance-outbreak-anomaly-detection`, which the taxonomy serves with anomaly-detection and
+  data-quality-monitoring, so the pairing is legal and the call cannot be retagged as forecasting. PASSES.
+  `Domain test:` the deciding quantity is the span of the exposure process behind an epidemic curve, and the
+  field's own instrument for it is the comparison of the curve against the incubation distribution, which
+  only an infectious exposure makes meaningful because only there does a weeks-long random lag sit between
+  the exposure and the record. PASSES. `Swap:` "whether one production run or the plant carried it, read off
+  the seven-week span of the cluster's onsets" does not survive putting megawatt-hours or school enrolments
+  in, because nothing there interposes a lognormal lag between cause and record. PASSES. `Layer 1:` onset
+  dates missing on a share of notification forms, two laboratories' sequence-type nomenclature for one
+  cluster, warehouse movements in cartons against deliveries in meals, mid-window client address and
+  programme changes; each produced by a system the organisation runs and none placed to be caught. PASSES.
+  `Layer 2:` `field_method`, the benchmark span for a single contamination event being that event's own
+  dispensing profile convolved with the incubation density rather than the incubation density alone. PASSES
+  as a description and is the line the build dies on, because the benchmark collapses to one number.
+  `Decisive step:` benchmark the cluster's onset spread on the implicated run's dispensing profile rather
+  than on the incubation range. **DOES NOT PASS: measured, a one-group-by maximum over the same file reaches
+  the same verdict 20 of 20, so the step is not decisive, and the designed likelihood files "single" in both
+  worlds (0 of 20 in the persistent arm), so it does not decide anything either.** `Not semantics:` holds,
+  every field, code and unit read correctly still leaves the textbook comparison on "persistent" in 19 of 20
+  worlds. PASSES. `Not rule application:` holds for the span itself, since no filed rule names the dispensing
+  profile as the benchmark. PASSES. `Analyst test:` the analyst reads the onset span against the incubation
+  range and files persistent contamination and a whole-range withdrawal, wrong in 19 of 20 worlds. PASSES as
+  written and is worthless given the `Decisive step:` failure, because the wrong easy route is no protection
+  when a one-line route is right. `Estimand:` "the number of production runs of the implicated product that
+  carried the outbreak sequence type, as at the trace-back report" sits in the investigation's terms of
+  reference. PASSES on paper. `No decoy:` nothing is planted; the warehouse record is the organisation's own
+  and reads the same on every path. PASSES. `No certified replay:` no certified or published figure is
+  reproduced to recover the method. PASSES. `Lesson:` **DOES NOT PASS, and this is the honest verdict on the
+  pass: the lesson a model would learn is one a one-line route already teaches, so there is nothing here no
+  build on file teaches.** Eleven of the thirteen lines pass and the two that fail are `Decisive step:` and
+  `Lesson:`, which are the two that have to pass, so the candidate is re-rooted rather than resumed.
+- **C2 dies a fourth time, on the abstraction test, and this kill was the cheapest available and was found
+  last rather than first: it is the lane's sixth measured instance of the lexical blind spot.** Running
+  `guard.py slots` on the **physical setting's** nouns rather than on the mechanism's (the pathogen, the
+  notification route, the laboratory, the epidemic curve) returns **task242, on this very cell**, whose
+  driver is "each unit's detection rate is the detector's curve averaged over that unit's own spread of
+  event times up to its reading date", and its note at line 114 states it as "the curve by days since onset
+  (the laboratory's panel) averaged over the zone's own epidemic curve". Stripped of nouns that is C2
+  exactly: a filed kernel averaged over the unit's own spread of event times, in place of the kernel alone,
+  with the default path using the kernel alone. The same run returns **task232, also on this cell**, whose
+  literal reader counts a case when "onset within the condition's incubation range after a day the index
+  attended while infectious", which is C2's incubation-range-against-a-dispensing-schedule comparison with
+  the schedule being an attendance register instead of a warehouse record. `guard.py check` scored C2's
+  driver at **0.06 nearest, against task201 and with task242 nowhere in the five returns**, so the text
+  screen saw none of this. **The procedural lesson, which is the one to carry rather than the incident:
+  `slots` on the setting's own vocabulary is a different screen from `slots` on the mechanism's, it is free,
+  and on a cell this lane has already drawn four builds on it should be run before the first harness is
+  written, not after the third.** Had it been run first this pass would have cost one measurement rather
+  than three.
+- **Axes re-checked immediately before hand-back, as the mid-wave window update requires, and the window had
+  not moved again:** `guard.py check` on the probe card still returns PASS, exit 0, no WARN, nearest driver
+  0.06. Every axis is clear of the live window's blocked values: shape `17` against the blocked `05` and
+  `07`, strategy `other` against `population_selection`, `time_semantics` and `decomposition_attribution`,
+  role `field_unit_lead` against `research_desk`, `compliance_or_audit` and `programme_officer`, org family
+  `hospital_or_health_provider` against `government_agency`, `utility_or_infrastructure` and
+  `local_government`, forum `operations_desk` against `committee_or_panel`, `board_of_directors` and
+  `council_or_assembly`, forcing event `incident_or_complaint` against `other`,
+  `budget_or_appropriation` and `statutory_or_regulatory_filing`, and context artifact `operations_log`
+  against `register`, `filed_standard` and `close_out_summary`. Gate `signal_vs_noise_or_hold` rather than
+  `method_or_model_selection` also keeps the draw clear of the `repeat.gate_g` and `overuse.gate_g` WARNs the
+  update predicts, 8 of the last 12 carrying that gate. **`org_family` is the one axis that was redrawn and
+  the honest label is the one that passes, not the other way round:** `government_agency` BLOCKed against
+  task471 and a New Zealand public health unit genuinely sits inside the district health service.
