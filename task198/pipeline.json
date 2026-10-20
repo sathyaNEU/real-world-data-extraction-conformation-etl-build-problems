@@ -1,6 +1,6 @@
 {
   "approved": null,
-  "architecture": 10,
+  "architecture": 11,
   "architecture_1_spent": {
     "build_gates": {
       "asks_measure": {
@@ -91,11 +91,11 @@
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "resume": "architecture 10 screened dead. The ban window moved twice during the pass (the contract's task269/270/271 against the live task471/474/475), which cost four BLOCKs, three of them from cards that did not exist at allocation. Recommendation on the record: move the number off this cell rather than take an eleventh pass.",
+  "resume": "architecture 11 drawing on business-operations-analytics x anomaly-detection, which guard.py coverage lists as a never-built pairing a task type serves, one of only two such AD pairings in the whole corpus. The reserved strategy decomposition_attribution was already blocked by task475 when the brief was written, so the strategy is being redrawn from guard.py check at the moment of drawing. Architecture 10 before it screened dead and recommended moving off the human-factors cell, which this does.",
   "returned": [],
   "stage": 1,
   "stage_name": "draw",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "stump": "",
   "task": "task198",
   "updated": "2026-10-20",
