@@ -1,8 +1,7 @@
-"""The golden deliverables: the provider group workbook (designations and the pharmacy summary) and the designation
-memo for the contracting committee (PDF with a bar chart of every group's cost per member-month against the
-benchmark), and generator/figures.json."""
+"""The golden deliverables: the air-corridor workbook (each link's designation and the terminal operations figures)
+and the designation memo for the Board (PDF with a bar chart of every link's NOx per mile against the program's
+line), and generator/figures.json."""
 import json
-import math
 import os
 
 from reportlab import rl_config
@@ -18,91 +17,85 @@ from openpyxl.styles import Font                                                
 
 import bundle as B   # noqa: E402
 import docs as DC    # noqa: E402
+import methods as M  # noqa: E402
 import world as W    # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ORANGE, BLUE, INK = colors.HexColor("#c8553d"), colors.HexColor("#4f7ca8"), colors.HexColor("#222222")
 WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
-         10: "ten", 11: "eleven", 12: "twelve"}
-
-
-def dollars(v):
-    return int(math.floor(v + .5))
+         10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen"}
+QNAME = {1: "Oct-Dec 2025", 2: "Jan-Mar 2026", 3: "Apr-Jun 2026", 4: "Jul-Sep 2026"}
 
 
 def figures(target):
-    gs = B.groups(target)
-    rate = B.pmpm(target, "golden")
-    des = sorted(g for g in gs if rate[g] >= W.BENCHMARK)
-    names = {g: W.GROUPS[g][0] for g in gs}
-    ph = B.pharmacy(target)
-    on, _grp = B.roster(target)
-    net = B.member_lines(target)
-    ex_g, ex_r = B.exposure(target, "golden"), B.exposure(target, "roster")
-    return dict(call=des, n_call=len(des), n_groups=len(gs), groups=gs, names=names, year=W.YEAR,
-                rate={g: round(rate[g], 2) for g in gs}, benchmark="%.2f" % W.BENCHMARK,
-                roster_route=sorted(g for g in gs if B.pmpm(target, "roster")[g] >= W.BENCHMARK),
-                member_months=dict(golden=sum(ex_g.values()), roster=sum(ex_r.values()),
-                                   added=sum(1 for k, v in net.items() if v > 0 and k not in on),
-                                   removed=sum(1 for k, v in net.items() if v < 0 and k in on)),
-                sections=DC.SECTIONS,
-                asks=dict(paid={c: dollars(v[0]) for c, v in ph.items()}, fills={c: v[1] for c, v in ph.items()},
-                          paid_total=dollars(sum(v[0] for v in ph.values())), fills_total=sum(v[1] for v in ph.values())))
+    rate = B.nox(target)
+    links = sorted(rate)
+    des = M.designated(rate)
+    ga = B.gate_asks(target)
+    key = lambda k: "%s Q%d" % k
+    return dict(call=des, n_call=len(des), n_links=len(links), links=links, names={k: W.LINKS[k][0] for k in links},
+                rate={k: round(rate[k], 2) for k in links}, line="%.2f" % W.LINE, days=len(W.DAYS),
+                textbook_route=M.designated(B.nox(target, "textbook")), sections=DC.SECTIONS,
+                terminals={t: W.TERMINALS[t][0] for t in W.TERMINALS}, quarters=QNAME,
+                asks=dict(visits={key(k): v[0] for k, v in ga.items()},
+                          turn={key(k): round(v[1], 1) for k, v in ga.items()}))
 
 
 def write_workbook(path, f):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Groups"
-    ws.append(["Cost Performance Program 2027: provider group designations (services January to June 2026)"])
+    ws.title = "Links"
+    ws.append(["Air Corridor Program 2027: roadway link designations (program year October 2025 to September 2026)"])
     ws.append([])
-    ws.append(["Group ID", "Group name", "Designated"])
+    ws.append(["Link ID", "Link", "Designated"])
     for c in ws[3]:
         c.font = Font(bold=True)
-    for g in f["groups"]:
-        ws.append([g, f["names"][g], "Yes" if g in f["call"] else "No"])
+    for k in f["links"]:
+        ws.append([k, f["names"][k], "Yes" if k in f["call"] else "No"])
     ws.append([])
-    ws.append(["Designated: %d of %d groups." % (f["n_call"], f["n_groups"])])
-    ws.column_dimensions["A"].width = 10
-    ws.column_dimensions["B"].width = 34
+    ws.append(["Designated: %d of %d links." % (f["n_call"], f["n_links"])])
+    ws.column_dimensions["A"].width = 9
+    ws.column_dimensions["B"].width = 44
     ws.column_dimensions["C"].width = 12
-    ph = wb.create_sheet("Pharmacy")
-    ph.append(["Pharmacy fills dated January to June 2026, by drug class"])
-    ph.append([])
-    ph.append(["Drug class", "Paid ($)", "Fills"])
-    for c in ph[3]:
+    tg = wb.create_sheet("Terminal gates")
+    tg.append(["Truck visits by terminal and quarter, program year October 2025 to September 2026"])
+    tg.append([])
+    tg.append(["Terminal", "Quarter", "Truck visits", "Average turn time (min)"])
+    for c in tg[3]:
         c.font = Font(bold=True)
-    for c in sorted(f["asks"]["paid"]):
-        ph.append([c, f["asks"]["paid"][c], f["asks"]["fills"][c]])
-    ph.column_dimensions["A"].width = 26
-    ph.column_dimensions["B"].width = 14
-    ph.append([])
-    ph.append(["Prepared by %s, %s." % (W.PEOPLE["analyst"][0], W.MEMO_DATE)])
+    for t in sorted(f["terminals"]):
+        for q in range(1, 5):
+            k = "%s Q%d" % (t, q)
+            tg.append([f["terminals"][t], f["quarters"][q], f["asks"]["visits"][k], f["asks"]["turn"][k]])
+    for col, w in zip("ABCD", (40, 14, 13, 22)):
+        tg.column_dimensions[col].width = w
+    tg.append([])
+    tg.append(["Prepared by %s, %s." % (W.PEOPLE["analyst"][0], W.MEMO_DATE)])
     wb.save(path)
 
 
 def chart(f):
-    gs = sorted(f["groups"], key=lambda g: -f["rate"][g])
+    ks = sorted(f["links"], key=lambda k: -f["rate"][k])
     w, h = 6.6 * inch, 3.2 * inch
     d = Drawing(w, h)
     left, bottom, top = .6 * inch, .5 * inch, .3 * inch
-    lo, hi = 250.0, 500.0
+    lo, hi = 0.0, 7.0
     sy = lambda v: bottom + (v - lo) / (hi - lo) * (h - bottom - top)
-    bw = (w - left - 10) / len(gs)
-    for v in range(250, 501, 50):
+    bw = (w - left - 10) / len(ks)
+    for v in range(0, 8):
         d.add(Line(left, sy(v), w - 6, sy(v), strokeColor=colors.HexColor("#e2e5e8"), strokeWidth=.5))
-        d.add(String(left - 6, sy(v) - 3, "$%d" % v, fontName="Helvetica", fontSize=7, textAnchor="end", fillColor=INK))
-    for i, g in enumerate(gs):
-        x0 = left + i * bw + 4
-        d.add(Rect(x0, bottom, bw - 8, sy(f["rate"][g]) - bottom, fillColor=ORANGE if g in f["call"] else BLUE,
+        d.add(String(left - 6, sy(v) - 3, "%d" % v, fontName="Helvetica", fontSize=7, textAnchor="end", fillColor=INK))
+    for i, k in enumerate(ks):
+        x0 = left + i * bw + 3
+        d.add(Rect(x0, bottom, bw - 6, sy(f["rate"][k]) - bottom, fillColor=ORANGE if k in f["call"] else BLUE,
                    strokeColor=None))
-        d.add(String(x0 + (bw - 8) / 2, bottom - 11, g, fontName="Helvetica", fontSize=7, textAnchor="middle",
+        d.add(String(x0 + (bw - 6) / 2, bottom - 11, k, fontName="Helvetica", fontSize=7, textAnchor="middle",
                      fillColor=INK))
-    d.add(Line(left, sy(W.BENCHMARK), w - 6, sy(W.BENCHMARK), strokeColor=INK, strokeWidth=1, strokeDashArray=[3, 2]))
-    d.add(String(w - 8, sy(W.BENCHMARK) + 3, "Benchmark, $%.2f" % W.BENCHMARK, fontName="Helvetica-Bold", fontSize=7,
-                 textAnchor="end", fillColor=INK))
-    d.add(String(left, h - 12, "Paid medical cost per member-month, January to June 2026; designated groups in orange",
-                 fontName="Helvetica", fontSize=7.5, fillColor=INK))
+    d.add(Line(left, sy(W.LINE), w - 6, sy(W.LINE), strokeColor=INK, strokeWidth=1, strokeDashArray=[3, 2]))
+    d.add(String(w - 8, sy(W.LINE) + 3, "Program line, %.2f t per mile" % W.LINE, fontName="Helvetica-Bold",
+                 fontSize=7, textAnchor="end", fillColor=INK))
+    d.add(String(left, h - 12, "On-road NOx, tonnes per mile, October 2025 to September 2026; designated links in "
+                 "orange", fontName="Helvetica", fontSize=7.5, fillColor=INK))
     return d
 
 
@@ -111,35 +104,35 @@ def write_memo(path, f):
     hd = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=13, leading=16, textColor=BLUE)
     small = ParagraphStyle("s", fontName="Helvetica", fontSize=8, leading=10)
     doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=.9 * inch, rightMargin=.9 * inch, topMargin=.8 * inch,
-                            bottomMargin=.8 * inch, title="Cost Performance Program 2027 designations", author=W.PLAN,
-                            creator=W.PLAN, producer=W.PLAN, subject="Cost Performance Program")
+                            bottomMargin=.8 * inch, title="Air Corridor Program 2027 designations", author=W.PORT,
+                            creator=W.PORT, producer=W.PORT, subject="Air Corridor Program")
     des = f["call"]
     names = ", ".join(des[:-1]) + " and " + des[-1]
-    s = [Paragraph("Cost Performance Program: 2027 designations", hd),
-         Paragraph("To: Network Contracting Committee &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
+    s = [Paragraph("Air Corridor Program: 2027 link designations", hd),
+         Paragraph("To: Board of Commissioners &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
              W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][1], W.MEMO_DATE), small), Spacer(1, 8),
-         Paragraph("I recommend designating %s of our %s primary care groups for the 2027 Cost Performance Program: %s. "
-                   "Each group's members cost $%s or more per member-month in paid medical claims for January to June "
-                   "2026." % (WORDS[len(des)], WORDS[f["n_groups"]], names, f["benchmark"]), body),
-         Paragraph("The member-months come from the months our members were covered, not only the months the roster "
-                   "lists. Members who lost coverage at their annual renewal and were reinstated back to that date were "
-                   "covered through months the roster never caught up with; the state paid us capitation for those "
-                   "months later, and we paid their claims. The roster also kept some members for a month or more "
-                   "after they died, months the state took its capitation back for. Counted on the roster alone, the "
-                   "groups with the most renewal churn look costlier than they are and the groups caring for the most "
-                   "frail members look cheaper.", body),
+         Paragraph("I recommend designating %s of the %s port roadway links for the 2027 Air Corridor Program: %s. "
+                   "Each carried %s tonnes of NOx per mile or more from on-road vehicles between October 2025 and "
+                   "September 2026." % (WORDS[len(des)], WORDS[f["n_links"]], names, f["line"]), body),
+         Paragraph("Each link was counted for two weekdays, and the year's traffic is built from those counts with the "
+                   "state's continuous count stations. Trucks, which carry most of the NOx, run well above their "
+                   "annual average on weekdays and fall away at weekends, while cars do much less of either, so the "
+                   "trucks are expanded with the patterns the classifying stations measure for trucks and the cars "
+                   "with the patterns for cars. Expanded with one pattern for all vehicles, every weekday count "
+                   "carries too many trucks into the year, and the links where trucks are most of the traffic cross "
+                   "the line without carrying the NOx to do so.", body),
          chart(f), Spacer(1, 6)]
-    t = [["Group", "Name", "Designated"]]
-    for g in f["groups"]:
-        t.append([g, f["names"][g], "Yes" if g in des else "No"])
-    tb = Table(t, colWidths=[.7 * inch, 2.6 * inch, 1.0 * inch])
+    t = [["Link", "Name", "Designated"]]
+    for k in f["links"]:
+        t.append([k, f["names"][k], "Yes" if k in des else "No"])
+    tb = Table(t, colWidths=[.6 * inch, 3.4 * inch, .9 * inch])
     tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
                             ("LINEBELOW", (0, 0), (-1, 0), .6, INK)]))
     s.append(tb)
     doc.build(s)
 
 
-def build(gdir, x, target=None, figs=None):
+def build(gdir, e, target=None, figs=None):
     import postprocess as PP
     target = target or os.path.join(os.path.dirname(gdir), "target")
     figs = figs or os.path.join(HERE, "figures.json")
@@ -152,6 +145,6 @@ def build(gdir, x, target=None, figs=None):
     write_workbook(os.path.join(gdir, W.GOLDEN["workbook"]), f)
     write_memo(os.path.join(gdir, W.GOLDEN["memo"]), f)
     PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][0],
-                       "2026-11-16T15:12:00Z", "2026-11-18T14:02:00Z", excel=True, company=W.PLAN)
-    PP.normalize_pdf(os.path.join(gdir, W.GOLDEN["memo"]), b"D:20261118091415-06'00'", b"D:20261118091415-06'00'")
+                       "2026-11-02T15:12:00Z", "2026-11-04T14:02:00Z", excel=True, company=W.PORT)
+    PP.normalize_pdf(os.path.join(gdir, W.GOLDEN["memo"]), b"D:20261104091415-05'00'", b"D:20261104091415-05'00'")
     return f

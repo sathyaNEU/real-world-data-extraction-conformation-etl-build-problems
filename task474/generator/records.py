@@ -1,5 +1,5 @@
-"""The records cut from the truth: the plan's monthly roster, the state's capitation remittance, the paid medical
-claims, and the pharmacy claims behind the asks (which the call never reads)."""
+"""The records cut from the truth: hourly station volumes, each link's 48-hour classification count in its count
+programme's own layout, and the terminals' gate transactions (the asks)."""
 import datetime as dt
 
 import numpy as np
@@ -7,121 +7,112 @@ import numpy as np
 import sources as S
 import world as W
 
-RATE = {"TANF-ADULT": 412.18, "TANF-CHILD": 188.42, "ABD": 1294.66, "EXPANSION": 537.90}
-CLASSES = ["ACE inhibitors", "Statins", "SSRIs", "Insulins", "Metformin", "Inhaled corticosteroids", "Anticonvulsants",
-           "Atypical antipsychotics", "Proton pump inhibitors", "Beta blockers", "Thyroid hormones", "Opioid analgesics"]
-# each class's share of fills and its mean paid per fill ($)
-MIX = {"ACE inhibitors": (.09, 9.8), "Statins": (.13, 11.6), "SSRIs": (.12, 14.2), "Insulins": (.05, 412.0),
-       "Metformin": (.10, 7.4), "Inhaled corticosteroids": (.08, 188.0), "Anticonvulsants": (.08, 61.0),
-       "Atypical antipsychotics": (.05, 236.0), "Proton pump inhibitors": (.09, 12.9), "Beta blockers": (.08, 8.6),
-       "Thyroid hormones": (.06, 13.3), "Opioid analgesics": (.07, 21.5)}
+# share of a class's daily traffic in each hour (hour 0 = midnight to 1 a.m.)
+PROFILE = {
+    "P": np.array([.8, .5, .4, .4, .7, 1.8, 4.1, 6.6, 6.9, 5.4, 4.9, 5.2, 5.5, 5.6, 6.0, 6.8, 7.6, 7.9, 6.4, 4.9, 3.9,
+                   3.2, 2.4, 1.5]),
+    "SU": np.array([.6, .4, .4, .6, 1.4, 3.3, 5.8, 7.4, 8.0, 8.3, 8.4, 8.2, 7.8, 7.6, 7.2, 6.4, 5.3, 3.9, 2.6, 1.8,
+                    1.3, 1.1, .9, .7]),
+    "CU": np.array([1.4, 1.1, 1.0, 1.3, 2.2, 3.6, 5.1, 6.2, 6.9, 7.3, 7.5, 7.4, 7.2, 7.0, 6.7, 6.1, 5.2, 4.2, 3.2, 2.5,
+                    2.1, 1.9, 1.7, 1.5])}
+for _k in PROFILE:
+    PROFILE[_k] = PROFILE[_k] / PROFILE[_k].sum()
 
 
-def month_add(d, k):
-    y, m = d.year + (d.month - 1 + k) // 12, (d.month - 1 + k) % 12 + 1
-    return dt.date(y, m, 1)
+def us_eastern_dst(d):
+    """True on dates daylight time is in force (second Sunday of March to first Sunday of November)."""
+    y = d.year
+    mar = dt.date(y, 3, 8) + dt.timedelta((6 - dt.date(y, 3, 8).weekday()) % 7)
+    nov = dt.date(y, 11, 1) + dt.timedelta((6 - dt.date(y, 11, 1).weekday()) % 7)
+    return mar <= d < nov
 
 
-def build(rng, ms):
-    cell = {}
-    for x in ms:
-        if W.GROUPS[x["group"]][0].startswith(("Riverside", "Prairie Gate", "Bluestem")) and rng.random() < .7:
-            cell[x["mid"]] = "ABD"
-        else:
-            cell[x["mid"]] = str(rng.choice(["TANF-ADULT", "TANF-CHILD", "EXPANSION"], p=[.32, .4, .28]))
-        if W.GROUPS[x["group"]][0].endswith("Pediatrics"):
-            cell[x["mid"]] = "TANF-CHILD"
-    roster, remit, claims = [], [], []
-    # roster: one row per member per month on the roster
-    for x in ms:
-        for m in range(S.NM):
-            if x["roster"][m]:
-                roster.append(dict(month=W.MONTHS[m], mid=x["mid"], group=x["group"], cell=cell[x["mid"]]))
-    # capitation: the month's capitation by rate cell for the members on that month's roster, paid in the month;
-    # member-level lines for the months the state reinstated after a renewal lapse (paid when the reinstatement was
-    # processed), for the months recouped after a member's death, and pairs moving a member between rate cells
-    for m in range(S.NM):
-        counts = {}
-        for r in roster:
-            if r["month"] == W.MONTHS[m]:
-                counts[r["cell"]] = counts.get(r["cell"], 0) + 1
-        pay = W.MONTHS[m] + dt.timedelta(days=int(rng.integers(8, 13)))
-        for c in sorted(counts):
-            remit.append(dict(pay=pay, mid="", cell=c, cov=W.MONTHS[m], n=counts[c], amt=round(counts[c] * RATE[c], 2)))
-    for x in ms:
-        c = cell[x["mid"]]
-        if x["event"] and x["event"][0] == "lapse":
-            a, b = x["event"][1], x["event"][2]
-            proc = month_add(W.MONTHS[min(b, S.NM - 1)], int(rng.integers(0, 2)))
-            pay = proc + dt.timedelta(days=int(rng.integers(8, 13)))
-            for m in range(a, b):
-                remit.append(dict(pay=pay, mid=x["mid"], cell=c, cov=W.MONTHS[m], n=1, amt=RATE[c]))
-        if x["dead"] is not None:
-            for m in range(x["dead"] + 1, S.NM):
-                if x["roster"][m]:
-                    pay = month_add(W.MONTHS[m], int(rng.integers(1, 4))) + dt.timedelta(days=int(rng.integers(8, 13)))
-                    remit.append(dict(pay=pay, mid=x["mid"], cell=c, cov=W.MONTHS[m], n=-1, amt=-RATE[c]))
-        if c != "TANF-CHILD" and rng.random() < .025:
-            m = int(rng.integers(0, S.NM))
-            if x["roster"][m] and x["cov"][m]:
-                new = "ABD" if c != "ABD" else "TANF-ADULT"
-                pay = month_add(W.MONTHS[m], int(rng.integers(1, 3))) + dt.timedelta(days=int(rng.integers(8, 13)))
-                remit.append(dict(pay=pay, mid=x["mid"], cell=new, cov=W.MONTHS[m], n=1, amt=RATE[new]))
-                remit.append(dict(pay=pay, mid=x["mid"], cell=c, cov=W.MONTHS[m], n=-1, amt=-RATE[c]))
-    # paid medical claims: the month's cost split over claims, each paid some weeks after service (after the
-    # reinstatement for a lapse month)
-    cid = 26000000
-    for x in ms:
-        for m in range(S.NM):
-            cost = x["cost"][m]
-            if cost <= 0:
-                continue
-            k = max(1, min(int(rng.poisson(.25 + cost / 900)), int(cost // 25)))
-            shares = rng.dirichlet(np.ones(k) * 1.4)
-            for s in shares:
-                cid += int(rng.integers(1, 30))
-                day = int(rng.integers(0, 28))
-                svc = W.MONTHS[m] + dt.timedelta(days=day)
-                lag = int(rng.gamma(2.2, 9)) + 4
-                if x["lapse"][m]:
-                    proc = month_add(W.MONTHS[min(x["event"][2], S.NM - 1)], 1)
-                    paid = max(svc + dt.timedelta(days=lag), proc + dt.timedelta(days=int(rng.integers(3, 25))))
-                else:
-                    paid = svc + dt.timedelta(days=lag)
-                if paid > W.PAID_BY:
-                    continue
-                inst = rng.random() < (.22 + min(.5, cost / 4000))
-                claims.append(dict(cid="C%d" % cid, mid=x["mid"], svc=svc,
-                                   end=svc + dt.timedelta(days=int(rng.integers(0, 5)) if inst else 0),
-                                   ctype="Institutional" if inst else "Professional", paid=paid,
-                                   amt=round(float(cost * s), 2), npi=1000000000 + int(rng.integers(1, 9e8))))
-    return dict(roster=roster, remit=remit, claims=claims, cell=cell)
+def hourly(rng, day_volume, c, split):
+    """24 x 2 integer hourly volumes (direction 1 and 2) for one day's class volume."""
+    p = PROFILE[c] * rng.lognormal(0, .06, 24)
+    p = p / p.sum()
+    v = day_volume * p
+    a = rng.binomial(np.maximum(np.round(v).astype(int), 0), split)
+    return a, np.maximum(np.round(v).astype(int), 0) - a
 
 
-def pharmacy(rng, ms):
-    """Pharmacy claims: fills, each under its claim number, and later lines under the same number where the pharmacy
-    rebilled a fill (a corrected quantity, product or fill date) or reversed it (paid now zero)."""
+def stations(rng, x):
+    """[(station, date, hour_ending, direction, class, volume)] in local standard time, with each station's detector
+    outages (whole days absent)."""
     rows = []
-    num = 88100000
-    for x in ms:
-        n = int(rng.poisson(.3 * S.NM * min(3.0, .5 + x["risk"])))
-        for _ in range(n):
-            num += int(rng.integers(1, 12))
-            cls = str(rng.choice(CLASSES, p=[MIX[c][0] for c in CLASSES]))
-            fill = dt.date(2026, 1, 1) + dt.timedelta(days=int(rng.integers(0, 190)))
-            amt = round(float(rng.gamma(2.2, MIX[cls][1] / 2.2)), 2)
-            proc = dt.datetime.combine(fill, dt.time(int(rng.integers(8, 21)), int(rng.integers(0, 60))))
-            rows.append(dict(claim="RX%d" % num, mid=x["mid"], fill=fill, cls=cls, amt=amt, proc=proc,
-                             qty=int(rng.choice([30, 30, 30, 60, 90]))))
-            u = rng.random()
-            later = proc + dt.timedelta(days=int(rng.integers(1, 20)), hours=int(rng.integers(1, 9)))
-            if u < .04:
-                rows.append(dict(rows[-1], amt=0.0, proc=later))
-            elif u < .07:
-                f2 = fill + dt.timedelta(days=int(rng.choice([-3, -2, 2, 3, 4])))
-                later = max(later, dt.datetime.combine(f2, dt.time(9)) + dt.timedelta(hours=int(rng.integers(1, 30))))
-                rows.append(dict(rows[-1], fill=f2, amt=round(amt * float(rng.uniform(.6, 1.2)), 2), proc=later))
-            elif u < .09:
-                c2 = str(rng.choice([c for c in CLASSES if c != cls]))
-                rows.append(dict(rows[-1], cls=c2, amt=round(float(rng.gamma(2.2, MIX[c2][1] / 2.2)), 2), proc=later))
+    for s, (route, rt, aadt, su, cu, cls) in W.STATIONS.items():
+        out = set()
+        for _ in range(int(rng.integers(0, 4))):
+            a = int(rng.integers(0, 350))
+            out |= set(range(a, a + int(rng.integers(1, 9))))
+        split = float(rng.uniform(.47, .53))
+        for i, d in enumerate(W.DAYS):
+            if i in out:
+                continue
+            per = {c: hourly(rng, x["stations"][s][c][i], c, split) for c in W.CLASSES}
+            for h in range(24):
+                for di, dname in ((0, "1"), (1, "5")):
+                    if cls:
+                        for c, code in zip(W.CLASSES, ("1-3", "4-7", "8-13")):
+                            rows.append((s, d, h + 1, dname, code, int(per[c][di][h])))
+                    else:
+                        rows.append((s, d, h + 1, dname, "ALL", int(sum(per[c][di][h] for c in W.CLASSES))))
+    return rows
+
+
+def counts(rng, x):
+    """{link: {class: [48 hourly volumes per direction pair]}} for the two count days, local time."""
+    out = {}
+    for k in W.LINKS:
+        i = W.DAYS.index(W.COUNT_DAY[k])
+        split = float(rng.uniform(.44, .56))
+        out[k] = {}
+        for c in W.CLASSES:
+            a1, b1 = hourly(rng, x["links"][k][c][i], c, split)
+            a2, b2 = hourly(rng, x["links"][k][c][i + 1], c, split)
+            out[k][c] = (np.concatenate([a1, a2]), np.concatenate([b1, b2]))
+    return out
+
+
+MOVES = ("DROP EXPORT", "PICK IMPORT", "DROP EMPTY", "PICK EMPTY")
+LANES = {"B20": (6, 4), "B30": (8, 5), "B40": (5, 3)}
+
+
+def gates(rng, g):
+    """Gate transaction rows, one per container transaction, as each terminal's gate system writes them: Berth 20's
+    in-gate kiosks on standard time all year; Pacific Gateway keeping a transaction keyed to the wrong truck and voided
+    beside the re-keyed one; Berth 40 writing a truck's run to the on-dock rail ramp as two legs through the ramp
+    gate."""
+    tags = sorted({v["tag"] for v in g["visits"]})
+    rows = []
+    tid = 4400000
+    for v in sorted(g["visits"], key=lambda v: (v["tin"], v["tag"])):
+        ni, no = LANES[v["term"]]
+        il, ol = "IG%02d" % int(rng.integers(1, ni + 1)), "OG%02d" % int(rng.integers(1, no + 1))
+        tin, out = v["tin"], v["tout"]
+        if v["term"] == "B20" and us_eastern_dst(tin.date()):
+            tin = tin - dt.timedelta(hours=1)
+        cont = lambda: "%s%07d" % (("MSKU", "TGHU", "CMAU", "OOLU", "HLXU", "MEDU", "TCNU", "BEAU")[int(rng.integers(0, 8))],
+                                   int(rng.integers(0, 9999999)))
+        if v["ramp"]:
+            a, b = v["ramp"]
+            tid += int(rng.integers(1, 9))
+            rows.append((tid, v["term"], v["tag"], il, tin, "RG1", a, "PICK IMPORT", cont()))
+            tid += int(rng.integers(1, 9))
+            rows.append((tid, v["term"], v["tag"], "RG1", b, ol, out, "DROP EMPTY", cont()))
+            continue
+        n = 2 if v["dual"] else 1
+        for j in range(n):
+            mv = MOVES[int(rng.choice(4, p=[.33, .37, .14, .16]))] if n == 1 else \
+                (("DROP EXPORT", "PICK IMPORT")[j] if rng.random() < .7 else MOVES[int(rng.integers(0, 4))])
+            c = cont()
+            if v["term"] == "B30" and j == 0 and rng.random() < .032:
+                # keyed first to another truck's tag and voided a few minutes later
+                tid += int(rng.integers(1, 5))
+                wrong = tags[int(rng.integers(0, len(tags)))]
+                rows.append((tid, v["term"], wrong, il, tin, ol, tin + dt.timedelta(seconds=int(rng.integers(90, 560))),
+                             mv, c))
+            tid += int(rng.integers(1, 9))
+            rows.append((tid, v["term"], v["tag"], il, tin, ol, out, mv, c))
+            tin = tin + dt.timedelta(seconds=int(rng.integers(20, 95)))
     return rows

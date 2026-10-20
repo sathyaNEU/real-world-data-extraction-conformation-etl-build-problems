@@ -1,5 +1,5 @@
-"""The pack's documents: the program rules (PDF), the data extract notes (txt), the provider group register (xlsx), the
-drug class crosswalk (xlsx) and the 2025 quality scores (xlsx, a distractor)."""
+"""The pack's documents and workbooks: the program rules (PDF), the data notes (txt), the station register, the link
+register and the county's count workbook (xlsx)."""
 from reportlab import rl_config
 rl_config.invariant = 1
 from reportlab.lib import colors                                    # noqa: E402
@@ -10,9 +10,10 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate        # noqa: E402
 from openpyxl import Workbook                                       # noqa: E402
 from openpyxl.styles import Font                                    # noqa: E402
 
+import pack as P    # noqa: E402
 import world as W   # noqa: E402
 
-SECTIONS = {"groups": "2.1", "rate": "2.2", "designation": "2.3", "pharmacy": "3.1"}
+SECTIONS = {"links": "2.1", "nox": "2.2", "line": "2.3", "gates": "3.1"}
 BODY = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.5, spaceAfter=6)
 HEAD = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, leading=14, spaceBefore=8, spaceAfter=4)
 TITLE = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4)
@@ -36,104 +37,138 @@ def _doc(path, title, org):
 
 
 def write_rules(path):
-    title = "Cost Performance Program 2027: Program Rules"
-    d, frame = _doc(path, title, W.PLAN)
-    s = [Paragraph("Cost Performance Program, 2027 Contract Year: Program Rules", TITLE),
-         Paragraph("%s, %s. Approved by the Network Contracting Committee %s." % (W.PLAN, W.DEPT, W.RULES_DATE), SUB),
+    title = "Air Corridor Program 2027: Program Rules"
+    d, frame = _doc(path, title, W.PORT)
+    s = [Paragraph("Air Corridor Program, 2027: Program Rules", TITLE),
+         Paragraph("%s, %s. Adopted by the Board of Commissioners %s." % (W.PORT, W.DEPT, W.RULES_DATE), SUB),
          Paragraph("1. Purpose", HEAD),
-         Paragraph("The Cost Performance Program places primary care provider groups whose members' medical cost runs "
-                   "at or above the plan's benchmark under a joint care-management plan for the 2027 contract year, "
-                   "with the plan's case managers embedded in the group's clinics.", BODY),
+         Paragraph("The Air Corridor Program funds, from the 2027 capital budget, zero-emission truck charging, idle "
+                   "enforcement and roadside vegetation barriers along the roadway links around the port's terminals "
+                   "that carry the most nitrogen oxides from on-road vehicles.", BODY),
          Paragraph("2. Designation", HEAD),
-         Paragraph("2.1 <b>Groups and members.</b> Every group in the provider group register. A group's members are the "
-                   "members the plan's enrollment roster assigns to it; a member stays with one group through the "
-                   "period.", BODY),
-         Paragraph("2.2 <b>Cost per member-month.</b> A group's 2026 cost per member-month is the paid medical cost of "
-                   "the services its members received from 1 January to 30 June 2026, as paid by 31 October 2026, "
-                   "divided by the member-months in which its members were covered by the plan in the same six "
-                   "months.", BODY),
-         Paragraph("2.3 <b>Benchmark.</b> A group whose 2026 cost per member-month is $%.2f or more is designated for "
-                   "the program." % W.BENCHMARK, BODY),
-         Paragraph("3. The pharmacy summary", HEAD),
-         Paragraph("3.1 For the committee's formulary review, for every drug class in the drug class crosswalk: the "
-                   "plan's paid pharmacy cost of the fills dated from 1 January to 30 June 2026, and the number of those "
-                   "fills, as the pharmacy claims stand on 31 October 2026.", BODY),
+         Paragraph("2.1 <b>Links.</b> Every link in the port roadway link register.", BODY),
+         Paragraph("2.2 <b>NOx per mile.</b> A link's program-year NOx is the NOx emitted by on-road vehicles "
+                   "traveling the link from 1 October 2025 to 30 September 2026: the vehicle-miles each vehicle class "
+                   "traveled on the link in those twelve months times the class's NOx emission rate in the 2026 "
+                   "emission rate table, in metric tonnes. A link's NOx per mile is its program-year NOx divided by "
+                   "its length in miles. The vehicle classes are passenger vehicles (FHWA classes 1 to 3), "
+                   "single-unit trucks (4 to 7) and combination trucks (8 to 13).", BODY),
+         Paragraph("2.3 <b>Designation.</b> A link whose NOx per mile is %.2f tonnes or more is designated for the "
+                   "program." % W.LINE, BODY),
+         Paragraph("3. The terminal operations review", HEAD),
+         Paragraph("3.1 For the Board's review of terminal gate operations beside the designations: for each container "
+                   "terminal and each quarter of the program year (October to December 2025, January to March, April "
+                   "to June and July to September 2026), the number of truck visits and their average turn time in "
+                   "minutes. A truck visit is a truck's stay at the terminal from passing its in-gate to passing its "
+                   "out-gate, and belongs to the quarter in which it passed the in-gate; its turn time is the length "
+                   "of that stay.", BODY),
          Paragraph("4. Timetable", HEAD),
-         Paragraph("Provider Performance presents the designations to the Network Contracting Committee at the "
-                   "year-end close, with the 2027 contract amendments.", BODY)]
+         Paragraph("Environmental Planning presents the designations with the 2027 capital budget.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
 def write_notes(path, n):
-    lines = ["Prairie Hills Health Plan: data extract notes",
-             "Extracts pulled 2026-11-02 by Provider Performance from the enterprise data warehouse.",
+    F = W.FILES
+    lines = ["Bayline Port Authority, Environmental Planning: data notes for the 2027 Air Corridor Program",
+             "Compiled 2026-10-26.",
              "",
-             "%s (%d rows)" % (W.FILES["claims"], n["claims"]),
-             "  One row per paid medical claim with a first date of service from 2026-01-01 to 2026-06-30, paid",
-             "  through 2026-10-31. paid_amount is the plan's paid amount in dollars. claim_type is the claim form.",
+             "%s (%d rows)" % (F["stations"], n["stations"]),
+             "  Hourly volumes at the state's continuous count stations in the metro area, October 2025 to",
+             "  September 2026, as the state DOT publishes them: hour_ending 1 to 24, local standard time,",
+             "  direction 1 (northbound or eastbound) and 5 (southbound or westbound). Classifying stations",
+             "  report FHWA class groups 1-3, 4-7 and 8-13; the others report total volume (ALL). A day absent",
+             "  for a station is a detector outage. See %s." % F["register"],
              "",
-             "%s (%d rows)" % (W.FILES["roster"], n["roster"]),
-             "  The plan's monthly enrollment roster, January to June 2026: one row per member per roster month,",
-             "  built from the state's enrollment file as processed by the as_of date (the 5th of the month).",
-             "  pcp_group_id is the primary care group the plan assigns the member to; medicaid_id is the state's",
-             "  recipient id.",
+             "%s (%d rows)" % (F["dot"], n["dot"]),
+             "  State DOT short-duration classification counts at port sites: one row per site, hour and",
+             "  direction, hour starting, local time.",
              "",
-             "%s (%d rows)" % (W.FILES["remit"], n["remit"]),
-             "  The state's capitation remittance advices paid to the plan in 2026 for coverage months January to",
-             "  June 2026: one row per remittance line, keyed on the state's medicaid_id. A line with no medicaid_id",
-             "  pays a rate cell's month for the members counted in it. member_count and amount are signed.",
+             "%s" % F["county"],
+             "  Harbor County Public Works classification counts, one sheet per site, 15-minute intervals.",
              "",
-             "%s (%d rows)" % (W.FILES["rx"], n["rx"]),
-             "  Pharmacy claim lines from the pharmacy benefit manager, processed through 2026-10-31. ndc is the",
-             "  dispensed product; see %s for its class." % W.FILES["classes"],
+             "%s (%d rows)" % (F["consultant"], n["consultant"]),
+             "  Classification counts at terminal access sites taken for the port by %s:" % W.CONSULTANT,
+             "  one row per site, hour, lane and class (P passenger, SU single-unit, CU combination).",
              "",
-             "%s (%d rows)" % (W.FILES["survey"], n["survey"]),
-             "  Member experience survey responses, fall 2025 wave, by assigned group.",
+             "%s" % F["links"],
+             "  The port roadway link register: each link's length and the count programme and site that",
+             "  counted it in the program year.",
              "",
-             "Contact: Provider Performance, data warehouse team."]
+             "%s" % F["rates"],
+             "  NOx emission rates by vehicle class group for calendar year 2026 (Harbor County fleet, annual",
+             "  average over all road types and speeds).",
+             "",
+             "%s (%d rows)" % (F["gates"], n["gates"]),
+             "  The three container terminals' gate transaction exports: one row per container transaction,",
+             "  with the truck's tag, the lanes and its gate_in and gate_out times as each terminal's gate system",
+             "  records them.",
+             "",
+             "%s (%d rows)" % (F["fleet"], n["fleet"]),
+             "  The port's drayage truck registry: each truck's tag assignments and engine model year.",
+             "",
+             "%s (%d rows)" % (F["complaints"], n["complaints"]),
+             "  City 311 service requests about trucks on port-area streets.",
+             "",
+             "%s (%d rows)" % (F["no2"], n["no2"]),
+             "  Hourly NO2 at the two near-port monitors, local standard time; qualifier AN = no data.",
+             "",
+             "Contact: Environmental Planning."]
     open(path, "w", encoding="utf-8", newline="\r\n").write("\n".join(lines) + "\n")
 
 
-def write_groups(path):
+def write_register(path):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Groups"
-    ws.append(["Primary care provider group register, 2026"])
-    ws.append(["%s, Network Contracting. As of 1 July 2026." % W.PLAN])
+    ws.title = "Stations"
+    ws.append(["Continuous count stations, Bayline metro area"])
+    ws.append(["%s. Station list as of 1 July 2026." % W.DOT])
     ws.append([])
-    ws.append(["Group ID", "Group name", "County", "Contracted PCPs", "Panel open", "Contract effective"])
-    ws["A4"].font = Font(bold=True)
-    rng = __import__("numpy").random.default_rng(W.SEED + 21)
-    for g, (name, county, n0, *_r) in W.GROUPS.items():
-        ws.append([g, name, county, int(n0 / 260 + rng.integers(1, 4)), "Yes" if rng.random() < .8 else "No",
-                   "20%02d-01-01" % int(rng.integers(14, 24))])
-    for col, w in zip("ABCDEF", (9, 34, 10, 16, 11, 18)):
+    ws.append(["Station ID", "Location", "Road type", "Classifies", "Lanes", "Factor group"])
+    for c in ws[4]:
+        c.font = Font(bold=True)
+    for s, (route, rt, aadt, su, cu, cls) in W.STATIONS.items():
+        ws.append([s, route, rt.capitalize(), "Yes" if cls else "No", 6 if rt == "freeway" else 4, "Urban"])
+    for col, w in zip("ABCDEF", (11, 28, 11, 11, 7, 13)):
         ws.column_dimensions[col].width = w
     wb.save(path)
 
 
-def write_classes(path, ndc):
+def write_links(path):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Crosswalk"
-    ws.append(["NDC", "Drug class"])
-    ws["A1"].font = Font(bold=True)
-    for code, c in sorted(ndc.items()):
-        ws.append([code, c])
-    ws.column_dimensions["A"].width = 16
-    ws.column_dimensions["B"].width = 26
-    wb.save(path)
-
-
-def write_quality(path):
-    rng = __import__("numpy").random.default_rng(W.SEED + 23)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "HEDIS 2025"
-    ws.append(["HEDIS measurement year 2025: selected measures by primary care group (rates, per cent)"])
+    ws.title = "Links"
+    ws.append(["Port roadway link register, program year October 2025 to September 2026"])
     ws.append([])
-    ws.append(["Group ID", "Well-child visits (W30)", "Childhood immunization (CIS-10)", "Diabetes HbA1c control (<8)",
-               "Controlling blood pressure", "Follow-up after ED visit for mental illness (7-day)"])
-    for g in W.GROUPS:
-        ws.append([g] + [round(float(rng.uniform(38, 82)), 1) for _ in range(5)])
+    ws.append(["Link ID", "Link", "Road type", "Length (mi)", "Count programme", "Count site"])
+    for c in ws[3]:
+        c.font = Font(bold=True)
+    rng = __import__("numpy").random.default_rng(W.SEED + 21)
+    prog = {"dot": "State DOT", "county": "Harbor County", "consultant": W.CONSULTANT}
+    for k, (name, rt, *_r) in W.LINKS.items():
+        ws.append([k, name, rt.capitalize(), round(float(rng.uniform(.35, 2.4)), 2), prog[W.PROGRAM[k]], P.SITE[k]])
+    for col, w in zip("ABCDEF", (8, 40, 10, 11, 22, 13)):
+        ws.column_dimensions[col].width = w
     wb.save(path)
+
+
+def write_county(path, tables):
+    wb = Workbook()
+    wb.remove(wb.active)
+    for k, (site, rows) in sorted(tables.items(), key=lambda t: t[1][0]):
+        ws = wb.create_sheet(site)
+        d1, d2 = P.DIRS[W.LINKS[k][1]]
+        ws.append([COUNTY_TITLE])
+        ws.append(["Vehicle classification count, site %s: %s" % (site, W.LINKS[k][0])])
+        ws.append(["Count began %s 00:00, 48 hours" % rows[0][0].isoformat()])
+        ws.append([])
+        ws.append(["Date", "Time", "%s Passenger" % d1, "%s Single Unit" % d1, "%s Combination" % d1,
+                   "%s Passenger" % d2, "%s Single Unit" % d2, "%s Combination" % d2])
+        for c in ws[5]:
+            c.font = Font(bold=True)
+        for d, t, v in rows:
+            ws.append([d.strftime("%m/%d/%Y"), t] + v)
+        ws.column_dimensions["A"].width = 11
+    wb.save(path)
+
+
+COUNTY_TITLE = "Harbor County Public Works, Traffic Engineering"

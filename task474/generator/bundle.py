@@ -1,11 +1,12 @@
-"""Reads the cut pack back: each group's paid medical cost and member-months under each route, and the pharmacy
-summary by drug class."""
+"""Reads the cut pack back: the estimators' inputs (stations' daily totals, the register, each link's two count days
+by class from its programme's file) and the terminals' visits under each route."""
 import csv
 import datetime as dt
 import os
 
 from openpyxl import load_workbook
 
+import methods as M
 import world as W
 
 
@@ -21,116 +22,158 @@ def _rows(path):
         return list(csv.DictReader(fh))
 
 
-def groups(target):
-    ws = load_workbook(find(target, "provider_group_register"), read_only=True).active
-    return sorted(r[0] for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0])
+def _date(s):
+    return dt.date.fromisoformat(s)
 
 
-MONTHS = {m.strftime("%Y-%m") for m in W.MONTHS}
+def register(target):
+    ws = load_workbook(find(target, "count_station_register"), read_only=True).active
+    return {r[0]: {"classifies": r[3] == "Yes", "road": r[2]} for r in ws.iter_rows(min_row=5, values_only=True)
+            if r and r[0]}
 
 
-def roster(target):
-    """{(member, month)}: the roster's member-months, and {member: group}."""
-    on, grp = set(), {}
-    for r in _rows(find(target, "enrollment_roster")):
-        if r["roster_month"] in MONTHS:
-            on.add((r["member_id"], r["roster_month"]))
-            grp[r["member_id"]] = r["pcp_group_id"]
-    return on, grp
+CODE = {"1-3": "P", "4-7": "SU", "8-13": "CU"}
 
 
-def crosswalk(target):
-    """{state Medicaid id: plan member id}, from the roster."""
-    return {r["medicaid_id"]: r["member_id"] for r in _rows(find(target, "enrollment_roster"))}
+def stations(target):
+    """{station: {class or 'ALL': {date: daily volume}}}."""
+    out = {}
+    for r in _rows(find(target, "ccs_hourly")):
+        s = out.setdefault(r["station_id"], {})
+        d = _date(r["date"])
+        v = int(r["volume"])
+        keys = ["ALL"] if r["vehicle_class"] == "ALL" else [CODE[r["vehicle_class"]], "ALL"]
+        for k in keys:
+            s.setdefault(k, {})
+            s[k][d] = s[k].get(d, 0) + v
+    return out
 
 
-def member_lines(target):
-    """{(member, coverage month): signed member count} over the remittance's member-level lines."""
-    net, cw = {}, crosswalk(target)
-    for r in _rows(find(target, "capitation_remittance")):
-        if r["medicaid_id"] and r["coverage_month"] in MONTHS:
-            k = (cw[r["medicaid_id"]], r["coverage_month"])
-            net[k] = net.get(k, 0) + int(r["member_count"])
-    return net
+def links(target):
+    ws = load_workbook(find(target, "port_roadway_links"), read_only=True).active
+    return {r[0]: {"site": r[5], "programme": r[4], "length": r[3]} for r in ws.iter_rows(min_row=4, values_only=True)
+            if r and r[0]}
 
 
-def claims(target):
-    """[(member, service month, paid)] over the paid medical claims in the period, paid by the cut-off."""
+def counts(target):
+    """{link: {class: {date: volume}}}, both directions, from whichever programme counted the link."""
+    site = {v["site"]: k for k, v in links(target).items()}
+    out = {}
+
+    def add(k, c, d, v):
+        out.setdefault(k, {cc: {} for cc in W.CLASSES})
+        out[k][c][d] = out[k][c].get(d, 0) + v
+    for r in _rows(find(target, "dot_short_counts")):
+        for c, col in zip(W.CLASSES, ("class_1_3", "class_4_7", "class_8_13")):
+            add(site[r["site_id"]], c, _date(r["count_date"]), int(r[col]))
+    for r in _rows(find(target, "terminal_access_counts")):
+        add(site[r["site_code"]], r["class_code"], _date(r["interval_start"][:10]), int(r["volume"]))
+    wb = load_workbook(find(target, "county_traffic_counts"), read_only=True)
+    for ws in wb.worksheets:
+        for r in ws.iter_rows(min_row=6, values_only=True):
+            if not r or not r[0]:
+                continue
+            m, dd, y = r[0].split("/")
+            d = dt.date(int(y), int(m), int(dd))
+            for j, c in enumerate(W.CLASSES):
+                add(site[ws.title], c, d, int(r[2 + j]) + int(r[5 + j]))
+    return out
+
+
+def rates(target):
+    return {r["class_group"]: float(r["nox_g_per_mile"]) for r in _rows(find(target, "onroad_nox_emission_rates"))}
+
+
+def nox(target, route="golden", **kw):
+    est = M.estimate(stations(target), register(target), counts(target), route, **kw)
+    ef = rates(target)
+    return {k: sum(v[c] * len(W.DAYS) * ef[c] for c in W.CLASSES) / 1e6 for k, v in est.items()}
+
+
+# the asks: terminal visits
+def _dst(d):
+    import records as R
+    return R.us_eastern_dst(d)
+
+
+def gate_rows(target, full=False):
+    f = "%Y-%m-%d %H:%M:%S"
     out = []
-    for r in _rows(find(target, "medical_claims_paid")):
-        if r["service_from"][:7] in MONTHS and r["paid_date"] <= W.PAID_BY.isoformat():
-            out.append((r["member_id"], r["service_from"][:7], float(r["paid_amount"])))
+    for r in _rows(find(target, "terminal_gate_transactions")):
+        row = (r["terminal"], r["truck_tag"], dt.datetime.strptime(r["gate_in"], f), dt.datetime.strptime(r["gate_out"], f))
+        out.append(row + ((int(r["transaction_id"]), r["in_lane"], r["out_lane"], r["container_no"]) if full else ()))
     return out
 
 
-def exposure(target, route="golden"):
-    """{group: member-months}. golden: the months each member was covered, the roster's months less those the state
-    recouped and plus those it paid capitation for off the roster; roster: the roster's months; retro: plus the
-    months paid off the roster only; recoup: less the recouped months only; orphan: the roster's months plus
-    off-roster months with a paid claim."""
-    on, grp = roster(target)
-    net = member_lines(target)
-    months = set(on)
-    if route in ("golden", "retro"):
-        months |= {k for k, v in net.items() if v > 0 and k not in on}
-    if route in ("golden", "recoup"):
-        months -= {k for k, v in net.items() if v < 0 and k in on}
-    if route == "orphan":
-        months |= {(m, s) for m, s, _ in claims(target)}
-    out = {}
-    for m, s in months:
-        if m in grp:
-            out[grp[m]] = out.get(grp[m], 0) + 1
+def _merge(rows):
+    out = []
+    by = {}
+    for t, tag, a, b in rows:
+        by.setdefault((t, tag), []).append((a, b))
+    for (t, tag), iv in sorted(by.items()):
+        iv.sort()
+        ca, cb = iv[0]
+        for a, b in iv[1:]:
+            if a <= cb:
+                cb = max(cb, b)
+            else:
+                out.append((t, ca, cb))
+                ca, cb = a, b
+        out.append((t, ca, cb))
     return out
 
 
-def cost(target):
-    _, grp = roster(target)
-    out = {}
-    for m, s, p in claims(target):
-        if m in grp:
-            out[grp[m]] = out.get(grp[m], 0.0) + p
-    return out
+def visits(target, route="golden"):
+    """[(terminal, gate-in, gate-out)]. golden: Berth 20's in-gate brought from standard to local time in the daylight
+    months, Pacific Gateway's voided transactions (a container and gate-in shared with a later transaction under
+    another tag) dropped, Berth 40's legs through the rail ramp gate joined into one stay, then each truck's
+    overlapping transactions at a terminal merged into one stay; merged: the stays merged as recorded; rows: every
+    transaction a visit; intime: transactions sharing a truck and gate-in time merged."""
+    full = gate_rows(target, True)
+    if route == "rows":
+        return [(t, a, b) for t, tag, a, b, *_ in full]
+    if route == "intime":
+        seen = {}
+        for t, tag, a, b, *_ in full:
+            seen.setdefault((t, tag, a), (t, a, b))
+        return list(seen.values())
+    if route == "merged":
+        return _merge([(t, tag, a, b) for t, tag, a, b, *_ in full])
+    later = {}
+    for t, tag, a, b, tid, il, ol, cn in full:
+        later.setdefault((t, cn, a), []).append(tid)
+    rows = []
+    legs = {}
+    for t, tag, a, b, tid, il, ol, cn in full:
+        if t == "B30" and tid < max(later[(t, cn, a)]) and route != "keep-voids":
+            continue
+        if t == "B20" and _dst(a.date()) and route != "b20-as-recorded":
+            a = a + dt.timedelta(hours=1)
+        if route == "ramp-legs":
+            rows.append((t, tag, a, b))
+            continue
+        if ol == "RG1":
+            legs[(t, tag)] = a
+            continue
+        if il == "RG1":
+            a = legs.pop((t, tag))
+        rows.append((t, tag, a, b))
+    return _merge(rows)
 
 
-def pmpm(target, route="golden"):
-    c, e = cost(target), exposure(target, route)
-    return {g: c.get(g, 0.0) / e[g] for g in groups(target)}
+PARTIAL = ("b20-as-recorded", "keep-voids", "ramp-legs")
 
 
-def classes(target):
-    ws = load_workbook(find(target, "drug_class_crosswalk"), read_only=True).active
-    return {r[0]: r[1] for r in ws.iter_rows(min_row=2, values_only=True) if r and r[0]}
+def quarter(d):
+    return (d.month - 10) % 12 // 3 + 1
 
 
-def pharmacy(target, route="golden"):
-    """{class: (paid dollars, fills)}. golden: each claim number at its latest line, fills dated in the period, a
-    fill being a claim whose latest line paid something; all: every line counted; filterfirst: lines filtered to the
-    period and class first, then each claim number at its latest line among them; first: each claim number at its
-    first line."""
-    ndc = classes(target)
-    lines = _rows(find(target, "pharmacy_claims"))
-    a, b = W.MONTHS[0].isoformat(), "2026-06-30"
-    out = {c: [0.0, 0] for c in sorted(set(ndc.values()))}
-    if route == "all":
-        for r in lines:
-            if a <= r["fill_date"] <= b:
-                out[ndc[r["ndc"]]][0] += float(r["paid_amount"])
-                out[ndc[r["ndc"]]][1] += 1
-        return {c: (round(v[0], 2), v[1]) for c, v in out.items()}
-    if route == "filterfirst":
-        lines = [r for r in lines if a <= r["fill_date"] <= b]
-        key = lambda r: (r["claim_number"], ndc[r["ndc"]])
-    else:
-        key = lambda r: r["claim_number"]
-    pick = {}
-    for r in lines:
-        k = key(r)
-        if k not in pick or (r["processed_at"] > pick[k]["processed_at"]) == (route != "first"):
-            pick[k] = r
-    for r in pick.values():
-        if a <= r["fill_date"] <= b:
-            p = float(r["paid_amount"])
-            out[ndc[r["ndc"]]][0] += p
-            out[ndc[r["ndc"]]][1] += 1 if p > 0 else 0
-    return {c: (round(v[0], 2), v[1]) for c, v in out.items()}
+def gate_asks(target, route="golden"):
+    """{(terminal, quarter): (visits, mean turn minutes)}."""
+    acc = {}
+    for t, a, b in visits(target, route):
+        k = (t, quarter(a.date()))
+        o = acc.setdefault(k, [0, 0.0])
+        o[0] += 1
+        o[1] += (b - a).total_seconds() / 60
+    return {k: (o[0], o[1] / o[0]) for k, o in sorted(acc.items())}

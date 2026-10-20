@@ -1,5 +1,4 @@
-"""The pack's data files, cut from the truth: the paid medical claims, the plan's monthly roster, the state's
-capitation remittance, the pharmacy claims (the asks), and the member experience survey (a distractor)."""
+"""The pack's data files, cut from the truth."""
 import csv
 import datetime as dt
 import functools
@@ -10,106 +9,123 @@ import records as R
 import sources as S
 import world as W
 
-ROSTER_COLS = ["roster_month", "as_of", "member_id", "medicaid_id", "rate_cell", "pcp_group_id", "county"]
-REMIT_COLS = ["remittance_id", "payment_date", "medicaid_id", "rate_cell", "coverage_month", "member_count", "amount"]
-CLAIM_COLS = ["claim_id", "member_id", "claim_type", "service_from", "service_to", "billing_npi", "paid_date",
-              "paid_amount"]
-RX_COLS = ["claim_number", "member_id", "fill_date", "ndc", "quantity", "paid_amount", "processed_at"]
-SURVEY_COLS = ["response_id", "pcp_group_id", "survey_wave", "q_getting_care_quickly", "q_rating_personal_doctor",
-               "q_rating_health_plan"]
+STATION_COLS = ["station_id", "date", "hour_ending", "direction", "vehicle_class", "volume"]
+DOT_COLS = ["site_id", "count_date", "hour", "direction", "class_1_3", "class_4_7", "class_8_13"]
+CONS_COLS = ["site_code", "interval_start", "lane", "class_code", "volume"]
+GATE_COLS = ["transaction_id", "terminal", "truck_tag", "in_lane", "gate_in", "out_lane", "gate_out", "move_type",
+             "container_no"]
+FLEET_COLS = ["truck_id", "tag_number", "tag_effective", "tag_expires", "engine_model_year", "motor_carrier"]
+COMPLAINT_COLS = ["request_id", "received", "street", "cross_street", "category", "status"]
+NO2_COLS = ["aqs_site_id", "date_local", "hour_local", "no2_ppb", "qualifier"]
+
+# each link's site id in its count programme's numbering
+SITE = {"L01": "CTY-117", "L02": "HC-0412", "L03": "HC-0407", "L04": "MTD-B20-03", "L05": "HC-0398",
+        "L06": "MTD-B30-01", "L07": "CTY-142", "L08": "HC-0408", "L09": "CTY-158", "L10": "MTD-RY-02",
+        "L11": "CTY-163", "L12": "HC-0421", "L13": "MTD-RY-05", "L14": "CTY-171"}
+DIRS = {"freeway": ("NB", "SB"), "arterial": ("EB", "WB")}
 
 
 @functools.lru_cache(None)
 def everything():
-    ms = S.members(np.random.default_rng(W.SEED))
-    rec = R.build(np.random.default_rng(W.SEED + 1), ms)
-    rx = R.pharmacy(np.random.default_rng(W.RX_SEED), ms)
-    return dict(members=ms, rec=rec, rx=rx, ndc=ndc_map(np.random.default_rng(W.SEED + 3)),
-                sid=state_ids(np.random.default_rng(W.SEED + 5), ms))
+    x = S.world(np.random.default_rng(W.SEED))
+    g = S.gate_world(np.random.default_rng(W.GATE_SEED))
+    return dict(x=x, g=g, st=R.stations(np.random.default_rng(W.SEED + 1), x),
+                cnt=R.counts(np.random.default_rng(W.SEED + 2), x),
+                gates=R.gates(np.random.default_rng(W.SEED + 3), g))
 
 
-def state_ids(rng, ms):
-    """The state's Medicaid recipient id for each plan member id."""
-    out, seen = {}, set()
-    for x in ms:
-        while True:
-            v = "%08d%s" % (int(rng.integers(10000000, 99999999)), "ABCDEFGHJK"[int(rng.integers(0, 10))])
-            if v not in seen:
-                break
-        seen.add(v)
-        out[x["mid"]] = v
-    return out
+def station_rows(e):
+    return [[s, d.isoformat(), h, di, c, v] for s, d, h, di, c, v in e["st"]]
 
 
-def ndc_map(rng):
-    out = {}
-    for c in R.CLASSES:
-        for _ in range(int(rng.integers(3, 7))):
-            code = "%05d-%04d-%02d" % (int(rng.integers(100, 99999)), int(rng.integers(1, 9999)), int(rng.integers(1, 99)))
-            out[code] = c
-    return out
-
-
-def county_of(g):
-    return W.GROUPS[g][1]
-
-
-def roster_rows(x):
+def dot_rows(e):
     rows = []
-    for r in x["rec"]["roster"]:
-        rows.append([r["month"].strftime("%Y-%m"), (r["month"] + dt.timedelta(days=4)).isoformat(), r["mid"],
-                     x["sid"][r["mid"]], r["cell"],
-                     r["group"], county_of(r["group"])])
+    for k in sorted(W.LINKS):
+        if W.PROGRAM[k] != "dot":
+            continue
+        d0 = W.COUNT_DAY[k]
+        dirs = DIRS[W.LINKS[k][1]]
+        for h in range(48):
+            d = d0 + dt.timedelta(h // 24)
+            for j, dn in enumerate(dirs):
+                rows.append([SITE[k], d.isoformat(), "%02d:00" % (h % 24), dn] +
+                            [int(e["cnt"][k][c][j][h]) for c in W.CLASSES])
+    return rows
+
+
+def consultant_rows(e):
+    rng = np.random.default_rng(W.SEED + 5)
+    rows = []
+    for k in sorted(W.LINKS):
+        if W.PROGRAM[k] != "consultant":
+            continue
+        d0 = W.COUNT_DAY[k]
+        for h in range(48):
+            d = d0 + dt.timedelta(h // 24)
+            off = "-04:00" if R.us_eastern_dst(d) else "-05:00"
+            ts = "%sT%02d:00:00%s" % (d.isoformat(), h % 24, off)
+            for j in range(2):
+                for c in W.CLASSES:
+                    v = int(e["cnt"][k][c][j][h])
+                    a = int(rng.binomial(v, .58)) if v else 0
+                    for lane, val in ((2 * j + 1, a), (2 * j + 2, v - a)):
+                        rows.append([SITE[k], ts, lane, c, val])
+    return rows
+
+
+def county_tables(e):
+    """{link: (site, [(date, 'HH:MM', [6 values])])}: 15-minute rows, the two directions side by side."""
+    rng = np.random.default_rng(W.SEED + 6)
+    out = {}
+    for k in sorted(W.LINKS):
+        if W.PROGRAM[k] != "county":
+            continue
+        d0 = W.COUNT_DAY[k]
+        rows = []
+        for h in range(48):
+            d = d0 + dt.timedelta(h // 24)
+            q = np.zeros((4, 6), int)
+            for j in range(2):
+                for ci, c in enumerate(W.CLASSES):
+                    q[:, 3 * j + ci] = rng.multinomial(int(e["cnt"][k][c][j][h]), [.25] * 4)
+            for m in range(4):
+                rows.append((d, "%02d:%02d" % (h % 24, 15 * m), [int(v) for v in q[m]]))
+        out[k] = (SITE[k], rows)
+    return out
+
+
+def gate_rows(e):
+    f = "%Y-%m-%d %H:%M:%S"
+    return [[t, term, tag, il, a.strftime(f), ol, b.strftime(f), mv, cn] for t, term, tag, il, a, ol, b, mv, cn in e["gates"]]
+
+
+def fleet_rows(e):
+    rng = np.random.default_rng(W.SEED + 8)
+    carriers = ["Harborline Drayage", "Tri-County Cartage", "Seaboard Intermodal", "Coastal Haul LLC", "Bay Freight Co",
+                "Northpoint Logistics", "Rivera Trucking", "Atlantic Port Services"]
+    my = {t["truck"]: t["model_year"] for t in e["g"]["trucks"]}
+    car = {t: carriers[int(rng.integers(0, len(carriers)))] for t in sorted(my)}
+    rows = []
+    for tag, truck, a, b in e["g"]["tags"]:
+        rows.append([truck, tag, a.isoformat(), "" if b == W.DAYS[-1] else b.isoformat(), my[truck], car[truck]])
     rows.sort(key=lambda r: (r[0], r[2]))
     return rows
 
 
-def remit_rows(x):
-    rng = np.random.default_rng(W.SEED + 7)
-    rows = []
-    rid = {}
-    for r in sorted(x["rec"]["remit"], key=lambda r: (r["pay"], r["mid"] == "", str(r["mid"]), r["cov"])):
-        k = r["pay"]
-        if k not in rid:
-            rid[k] = "820-%s-%03d" % (k.strftime("%y%m%d"), int(rng.integers(100, 999)))
-        rows.append([rid[k], k.isoformat(), x["sid"][r["mid"]] if r["mid"] else "", r["cell"], r["cov"].strftime("%Y-%m"), r["n"], "%.2f" % r["amt"]])
-    return rows
-
-
-def claim_rows(x):
-    rows = [[c["cid"], c["mid"], c["ctype"], c["svc"].isoformat(), c["end"].isoformat(), c["npi"], c["paid"].isoformat(),
-             "%.2f" % c["amt"]] for c in x["rec"]["claims"]]
-    rows.sort(key=lambda r: (r[6], r[0]))
-    return rows
-
-
-def rx_rows(x):
-    by_class = {}
-    for code, c in sorted(x["ndc"].items()):
-        by_class.setdefault(c, []).append(code)
+def no2_rows(e):
     rng = np.random.default_rng(W.SEED + 9)
     rows = []
-    pick = {}
-    for r in x["rx"]:
-        key = (r["claim"], r["cls"])
-        if key not in pick:
-            opts = by_class[r["cls"]]
-            pick[key] = opts[int(rng.integers(0, len(opts)))]
-        rows.append([r["claim"], r["mid"], r["fill"].isoformat(), pick[key], r["qty"], "%.2f" % r["amt"],
-                     r["proc"].strftime("%Y-%m-%d %H:%M:%S")])
-    rows.sort(key=lambda r: (r[6], r[0]))
-    return [r for r in rows if r[6][:10] <= "2026-10-31"]
-
-
-def survey_rows(x):
-    rng = np.random.default_rng(W.SEED + 11)
-    out = []
-    n = 610000
-    for g in W.GROUPS:
-        for _ in range(int(rng.integers(90, 240))):
-            n += int(rng.integers(1, 7))
-            out.append(["S%d" % n, g, "2025-fall", int(rng.integers(1, 5)), int(rng.integers(4, 11)), int(rng.integers(3, 11))])
-    return out
+    for site, base in (("34-017-0011", 21.0), ("34-017-0024", 15.5)):
+        for d in W.DAYS:
+            for h in range(24):
+                v = base * (1.25 if d.month in (11, 12, 1, 2) else .9) * (1.4 if h in (6, 7, 8, 17, 18) else 1.0) * \
+                    float(rng.lognormal(0, .45))
+                q = ""
+                if rng.random() < .012:
+                    rows.append([site, d.isoformat(), h, "", "AN"])
+                    continue
+                rows.append([site, d.isoformat(), h, "%.1f" % v, q])
+    return rows
 
 
 def write_csv(path, cols, rows, crlf=False):
@@ -118,3 +134,21 @@ def write_csv(path, cols, rows, crlf=False):
         w.writerow(cols)
         w.writerows(rows)
     return len(rows)
+
+
+def complaint_rows(e):
+    rng = np.random.default_rng(W.SEED + 12)
+    streets = ["Terminal Way", "Harbor Boulevard", "Port Avenue", "Cargo Drive", "7th Street", "Delmar Road",
+               "Ridley Avenue", "Quarry Road", "Selby Street", "Pell Road", "Mill Street", "12th Street"]
+    cats = ["Truck idling", "Truck parking", "Truck noise", "Dust or debris", "Truck route violation"]
+    rows = []
+    n = 2610000
+    for d in W.DAYS:
+        for _ in range(int(rng.poisson(3.1))):
+            n += int(rng.integers(1, 40))
+            s = streets[int(rng.integers(0, len(streets)))]
+            c = streets[int(rng.integers(0, len(streets)))]
+            rows.append(["SR-%d" % n, "%s %02d:%02d" % (d.isoformat(), int(rng.integers(6, 23)), int(rng.integers(0, 60))),
+                         s, c if c != s else "", cats[int(rng.choice(5, p=[.34, .27, .18, .12, .09]))],
+                         "Closed" if rng.random() < .86 else "Open"])
+    return rows

@@ -1,87 +1,126 @@
-"""The clean truth: every member's first half of 2026, month by month: covered or not, on the plan's roster or not,
-the group the roster assigns, the paid medical cost of the month's services; and the events behind them (renewal
-lapses reinstated back to the lapse, departures, deaths). Nothing here knows about files or mess."""
+"""The clean truth: every station's and every link's daily traffic by vehicle class over the program year. Nothing
+here knows about files, layouts or mess."""
 import numpy as np
 
 import world as W
 
-NM = len(W.MONTHS)
+ND = len(W.DAYS)
+DOWS = np.array([d.weekday() for d in W.DAYS])
+MONTHS = np.array([d.month for d in W.DAYS])
 
 
-def members(rng):
-    out = []
-    mid = 700100000
-    for g, (name, county, n0, base, p_lapse, p_death, p_leave) in W.GROUPS.items():
-        n_join = int(n0 * .012 * NM)
-        for k in range(n0 + n_join):
-            mid += int(rng.integers(1, 40))
-            start = 0 if k < n0 else int(rng.integers(1, NM))
-            ann = start if k >= n0 else int(rng.integers(0, 12))     # renewal falls on the enrollment anniversary
-            risk = float(np.exp(rng.normal(-.32, .8)))
-            cov = np.zeros(NM, bool)
-            cov[start:] = True
-            roster = cov.copy()
-            lapse = np.zeros(NM, bool)
-            event = None
-            if k < n0 and ann < NM:
-                u = rng.random()
-                if u < p_lapse:
-                    L = int(rng.choice([1, 2, 3], p=[.4, .38, .22]))
-                    lapse[ann:ann + L] = True
-                    roster[ann:ann + L] = False
-                    event = ("lapse", ann, min(NM, ann + L))
-                elif u < p_lapse + p_leave:
-                    cov[ann:] = False
-                    roster[ann:] = False
-                    event = ("leave", ann)
-            dead = None
-            if event is None and rng.random() < p_death * (3.0 if g in W.LAG else 1.0):
-                d = int(rng.integers(start, NM))
-                cov[d + 1:] = False
-                lags = W.LAG.get(g, (1, 2, 2))
-                lag = int(rng.choice(lags))
-                roster[d + 1:d + 1 + lag] = True
-                roster[d + 1 + lag:] = False
-                dead = d
-            # the month's paid cost: deferred care while the member believes the coverage gone, end-of-life care in
-            # the month of death
-            cost = np.zeros(NM)
-            for m in range(NM):
-                if cov[m]:
-                    # most member-months carry no claim at all; the rest carry the month's care
-                    c = 0.0 if rng.random() < .55 else float(rng.gamma(.55, base * risk / (.45 * .55)))
-                    if lapse[m]:
-                        c *= .18 if rng.random() < .7 else 0.0
-                    if dead == m:
-                        c *= 3.5
-                    if c > 0:
-                        c = max(c, float(rng.uniform(14, 45)))     # the smallest claim a month carries
-                    cost[m] = c
-            out.append(dict(mid=mid, group=g, start=start, ann=ann, cov=cov, roster=roster, lapse=lapse,
-                            event=event, dead=dead, cost=cost, risk=risk))
-    return out
-
-
-def exposure(ms, route):
-    """{group: member-months}: "golden" the covered months; "roster" the roster's months; "retro" the roster's months
-    plus the reinstated lapse months; "orphan" the roster's months plus off-roster months with any paid cost."""
+def daily(rng, aadt, su, cu, noise=(.045, .07, .075)):
+    """{class: daily volumes over the program year}, each class's mean equal to its share of aadt."""
+    shares = {"P": 1 - su - cu, "SU": su, "CU": cu}
     out = {}
-    for x in ms:
-        if route == "golden":
-            v = x["cov"].sum()
-        elif route == "roster":
-            v = x["roster"].sum()
-        elif route == "retro":
-            v = (x["roster"] | x["lapse"]).sum()
-        elif route == "orphan":
-            v = (x["roster"] | (x["cost"] > 0)).sum()
-        out[x["group"]] = out.get(x["group"], 0) + int(v)
+    for i, c in enumerate(W.CLASSES):
+        dow = np.array(W.DOW[c]) * (1 + rng.normal(0, .025, 7))
+        mon = {m: v * (1 + rng.normal(0, .015)) for m, v in W.MON[c].items()}
+        v = dow[DOWS] * np.array([mon[m] for m in MONTHS]) * rng.lognormal(0, noise[i], ND)
+        for k, d in enumerate(W.DAYS):
+            if d in W.HOLIDAYS:
+                v[k] *= W.HOLIDAYS[d][0 if c == "P" else 1]
+        out[c] = v / v.mean() * aadt * shares[c]
     return out
 
 
-def pmpm(ms, route):
-    cost = {}
-    for x in ms:
-        cost[x["group"]] = cost.get(x["group"], 0.0) + float(x["cost"].sum())
-    ex = exposure(ms, route)
-    return {g: cost[g] / ex[g] for g in cost}
+def world(rng):
+    st = {s: daily(rng, a, su, cu) for s, (_, _, a, su, cu, _) in W.STATIONS.items()}
+    ln = {k: daily(rng, a, su, cu) for k, (_, _, a, su, cu) in W.LINKS.items()}
+    return dict(stations=st, links=ln)
+
+
+def nox_per_mile(byclass):
+    """tonnes of NOx per mile over the program year from {class: AADT}."""
+    return sum(byclass[c] * ND * W.EF[c] for c in W.CLASSES) / 1e6
+
+
+def truth(x):
+    return {k: nox_per_mile({c: v[c].mean() for c in W.CLASSES}) for k, v in x["links"].items()}
+
+
+def gate_world(rng):
+    """The drayage trucks, their tags over the year, and every truck visit to a terminal: truck, terminal, local time
+    in and out, and the container transactions it carried out (one, or two for a dual transaction)."""
+    import datetime as dt
+    trucks = []
+    tag_pool = rng.choice(np.arange(3000000, 3999999), size=3 * W.N_TRUCKS, replace=False)
+    nxt = 0
+    for i in range(W.N_TRUCKS):
+        my = int(rng.choice(np.arange(2008, 2025), p=np.linspace(.4, 1.6, 17) / np.linspace(.4, 1.6, 17).sum()))
+        trucks.append(dict(truck="DT%05d" % (10000 + i * 7 + int(rng.integers(0, 7))), model_year=my,
+                           rate=float(rng.gamma(2.0, .25)), pref=rng.dirichlet([.9, .75, .5]),
+                           active=(W.DAYS[0], W.DAYS[-1])))
+    # some trucks retire during the year and their tags go to a new truck; some get a replacement tag
+    tags = []                       # (tag, truck, start, end)
+    for t in trucks:
+        tags.append([int(tag_pool[nxt]), t["truck"], W.DAYS[0], W.DAYS[-1]])
+        t["tag_rows"] = [len(tags) - 1]
+        nxt += 1
+    extra = []
+    for t in trucks:
+        u = rng.random()
+        if u < .05:                 # retires; its tag is reissued to a newly registered truck
+            d = W.DAYS[int(rng.integers(60, 300))]
+            t["active"] = (W.DAYS[0], d)
+            row = tags[t["tag_rows"][0]]
+            row[3] = d
+            nt = dict(truck="DT%05d" % (16000 + len(extra) * 11), model_year=int(rng.integers(2019, 2026)),
+                      rate=float(rng.gamma(2.0, .25)), pref=rng.dirichlet([.9, .75, .5]),
+                      active=(d + dt.timedelta(int(rng.integers(3, 20))), W.DAYS[-1]))
+            tags.append([row[0], nt["truck"], nt["active"][0], W.DAYS[-1]])
+            nt["tag_rows"] = [len(tags) - 1]
+            extra.append(nt)
+        elif u < .11:               # damaged tag replaced
+            d = W.DAYS[int(rng.integers(30, 330))]
+            tags[t["tag_rows"][0]][3] = d - dt.timedelta(1)
+            tags.append([int(tag_pool[nxt]), t["truck"], d, W.DAYS[-1]])
+            t["tag_rows"].append(len(tags) - 1)
+            nxt += 1
+    trucks += extra
+    terms = list(W.TERMINALS)
+    visits = []
+    for t in trucks:
+        for d in W.DAYS:
+            if not (t["active"][0] <= d <= t["active"][1]) or d.weekday() == 6:
+                continue
+            lam = t["rate"] * (.35 if d.weekday() == 5 else 1.0)
+            n = int(rng.poisson(lam))
+            clock = dt.datetime.combine(d, dt.time(5, 30)) + dt.timedelta(minutes=int(rng.integers(0, 240)))
+            for _ in range(n):
+                term = terms[int(rng.choice(3, p=t["pref"]))]
+                q = (d.month - 10) % 12 // 3
+                med = W.TERMINALS[term][2] * (1.0 + .08 * q if term == "B30" else 1.0 - .03 * q)
+                turn = float(rng.lognormal(np.log(med), .42))
+                dual = rng.random() < .27
+                if dual:
+                    turn *= 1.35
+                tin = clock + dt.timedelta(seconds=int(rng.integers(0, 3600)))
+                tout = tin + dt.timedelta(seconds=int(turn * 60))
+                ramp = None
+                if term == "B40" and not dual and rng.random() < .26:
+                    # the truck runs to the on-dock rail ramp and back inside its stay
+                    a = tin + dt.timedelta(seconds=int((tout - tin).total_seconds() * float(rng.uniform(.25, .55))))
+                    b = a + dt.timedelta(minutes=int(rng.integers(8, 26)))
+                    tout = tout + (b - a)
+                    ramp = (a, b)
+                tag = next(tags[r][0] for r in t["tag_rows"] if tags[r][2] <= d <= tags[r][3])
+                visits.append(dict(truck=t["truck"], tag=tag, term=term, tin=tin, tout=tout, dual=dual, ramp=ramp))
+                clock = tout + dt.timedelta(minutes=int(rng.integers(35, 160)))
+                if clock.hour >= 20 or clock.date() != d:
+                    break
+    return dict(trucks=trucks, tags=tags, visits=visits)
+
+
+def gate_truth(g):
+    """{(terminal, quarter): (visits, distinct trucks, mean turn minutes)}, a visit in the quarter of its local gate-in
+    date."""
+    out = {}
+    for v in g["visits"]:
+        q = (v["tin"].month - 10) % 12 // 3 + 1
+        k = (v["term"], q)
+        o = out.setdefault(k, [0, set(), 0.0])
+        o[0] += 1
+        o[1].add(v["truck"])
+        o[2] += (v["tout"] - v["tin"]).total_seconds() / 60
+    return {k: (o[0], len(o[1]), o[2] / o[0]) for k, o in out.items()}

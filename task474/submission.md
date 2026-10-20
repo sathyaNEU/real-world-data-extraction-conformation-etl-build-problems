@@ -1,59 +1,60 @@
 ## Tags
 
-**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid managed care plan's paid medical cost per member-month by primary care group).
+**Domain:** Physical & Environmental Sciences (emissions inventory: an on-road NOx inventory by roadway link, each link's vehicle-miles by class expanded from short classification counts with continuous count station factors).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Designate four of the twelve primary care groups for the 2027 Cost Performance Program: PG04, PG07, PG08 and PG10.**
-Each group's paid medical cost per member-month for January to June 2026 is $412.00 or more once the member-months are the months its members were covered rather than the months the roster lists. The roster is the state's enrollment as processed by the 5th of each month: members who lost coverage at renewal and were reinstated back to the lapse are missing from the months they were later covered for, and members who died stay on it for months the state later took its capitation back for. The member-level lines of the state's capitation remittance record both. Counted on the roster alone, the groups with the most renewal churn look costlier and the groups with the most deaths look cheaper, and the designation would be PG02, PG04, PG08 and PG11.
+**Designate four of the fourteen port roadway links for the 2027 Air Corridor Program: L01, L03, L05 and L14.**
+Each carried 5.00 tonnes or more of on-road NOx per mile from October 2025 to September 2026 once each link's two-weekday count is expanded to the year class by class: trucks with the monthly and day-of-week factors the classifying stations measure for trucks, cars with those for cars. Trucks run well above their annual average on weekdays and are nearly flat by season, so expanding a weekday count with all-vehicle factors and splitting it by the counted truck share carries too many trucks into the year and designates L01, L03, L04, L05, L06, L09, L10, L11, L13 and L14.
 
 ## 2. Critical Components
 
-1. Groups at or above $412.00 per member-month: **4** of 12.
-2. Member-months: **135,979** covered, against **133,893** on the roster; **3,009** member-months added from the remittance's reinstatement lines and **923** roster member-months removed for recoupments.
+1. Links at or above 5.00 tonnes of NOx per mile: **4** of 14.
 
 ## 3. Step-by-Step Solution
 
-1. Took every group in provider_group_register_2026.xlsx (rule 2.1) and each member's group from pcp_group_id in enrollment_roster_2026h1.csv, roster_month 2026-01 to 2026-06.
-2. Took the lines of capitation_remittance_2026.csv with a medicaid_id and a coverage_month from 2026-01 to 2026-06, mapped each medicaid_id to its member_id through the roster, and summed member_count per member and coverage month (a rate cell correction's two lines net to zero).
-3. Covered member-months: the roster's member-months, plus each member and month netting above zero that the roster does not list, less each roster member-month netting below zero (rule 2.2).
-4. Summed paid_amount in medical_claims_paid_2026h1.csv over claims with service_from from 2026-01-01 to 2026-06-30 and paid_date by 2026-10-31, by the member's group.
-5. Divided each group's paid cost by its covered member-months and designated every group at $412.00 or more (rule 2.3): PG04, PG07, PG08 and PG10.
-6. For the pharmacy summary (rule 3.1), took each claim_number in pharmacy_claims_2026h1.csv at its line with the latest processed_at, kept those whose fill_date falls from 2026-01-01 to 2026-06-30, classed each by its ndc in drug_class_crosswalk.xlsx, summed paid_amount by class and counted the claims whose latest line paid more than zero as fills.
+1. Took every link in port_roadway_links_2026.xlsx (rule 2.1) and its two count days, both directions, from the programme and site the register names: dot_short_counts_fy2026.csv (hourly), county_traffic_counts_2025_2026.xlsx (15-minute sheets, one per site) and terminal_access_counts_2026.csv (hourly by lane), as passenger (1-3), single-unit (4-7) and combination (8-13) daily totals.
+2. From ccs_hourly_volumes_oct2025_sep2026.csv, each classifying station in count_station_register_2026.xlsx, both directions summed by date and class group, days with no record left out.
+3. For each class group, each classifying station's factor for each month and day of week: its average daily volume over the year divided by its average volume on that month's days of that weekday; the group's factor the average over the four classifying stations.
+4. Each link's annual average daily volume for each class group: the mean over its two count days of the day's count times the class group's factor for that day's month and weekday.
+5. NOx per mile: each class group's annual average daily volume times 365 days times its rate in onroad_nox_emission_rates_2026.csv, summed over the groups, in tonnes (rule 2.2); designated every link at 5.00 or more (rule 2.3): L01, L03, L05 and L14.
+6. For the terminal operations review (rule 3.1), from terminal_gate_transactions_oct2025_sep2026.csv: Berth 20's gate_in moved an hour later in the daylight-time months (its in-gate keeps standard time, its out-gate local time); at Pacific Gateway a transaction sharing its container_no and gate_in with a later transaction_id under another tag is the voided first keying and is dropped; at Berth 40 a leg out through the rail ramp gate (out_lane RG1) and the tag's next leg in through it (in_lane RG1) are one stay; then each tag's overlapping transactions at a terminal merged into one visit from its first gate_in to its last gate_out, and visits counted and turn minutes averaged by terminal and the quarter of the gate_in date.
 
 ## 4. Deliverable Answers
 
-### provider_group_pmpm_2026h1.xlsx
+### air_corridor_links_2027.xlsx
 
-1. Every primary care group, designated or not:
-   - PG01: not designated
-   - PG02: not designated
-   - PG03: not designated
-   - PG04: designated
-   - PG05: not designated
-   - PG06: not designated
-   - PG07: designated
-   - PG08: designated
-   - PG09: not designated
-   - PG10: designated
-   - PG11: not designated
-   - PG12: not designated
-2. Every drug class, paid pharmacy cost (dollars, nearest dollar) and fills, January to June 2026:
-   - ACE inhibitors: $48,665; 4,966 fills
-   - Anticonvulsants: $275,874; 4,508 fills
-   - Atypical antipsychotics: $659,407; 2,868 fills
-   - Beta blockers: $38,676; 4,504 fills
-   - Inhaled corticosteroids: $854,903; 4,576 fills
-   - Insulins: $1,121,414; 2,742 fills
-   - Metformin: $41,339; 5,580 fills
-   - Opioid analgesics: $87,004; 4,104 fills
-   - Proton pump inhibitors: $65,412; 5,012 fills
-   - SSRIs: $96,219; 6,787 fills
-   - Statins: $85,249; 7,276 fills
-   - Thyroid hormones: $44,548; 3,415 fills
+1. Every link, designated or not:
+   - L01: designated
+   - L02: not designated
+   - L03: designated
+   - L04: not designated
+   - L05: designated
+   - L06: not designated
+   - L07: not designated
+   - L08: not designated
+   - L09: not designated
+   - L10: not designated
+   - L11: not designated
+   - L12: not designated
+   - L13: not designated
+   - L14: designated
+2. Every terminal and quarter: truck visits and average turn time (minutes, one decimal):
+   - Berth 20 Container Terminal, Oct-Dec 2025: 9,790 visits; 69.1 minutes
+   - Berth 20 Container Terminal, Jan-Mar 2026: 9,687 visits; 67.4 minutes
+   - Berth 20 Container Terminal, Apr-Jun 2026: 9,601 visits; 65.4 minutes
+   - Berth 20 Container Terminal, Jul-Sep 2026: 9,998 visits; 62.8 minutes
+   - Pacific Gateway Terminal (Berths 30 to 34), Oct-Dec 2025: 7,799 visits; 84.8 minutes
+   - Pacific Gateway Terminal (Berths 30 to 34), Jan-Mar 2026: 7,382 visits; 91.9 minutes
+   - Pacific Gateway Terminal (Berths 30 to 34), Apr-Jun 2026: 7,509 visits; 99.1 minutes
+   - Pacific Gateway Terminal (Berths 30 to 34), Jul-Sep 2026: 7,553 visits; 104.5 minutes
+   - Berth 40 Intermodal Terminal, Oct-Dec 2025: 5,186 visits; 61.5 minutes
+   - Berth 40 Intermodal Terminal, Jan-Mar 2026: 4,906 visits; 59.8 minutes
+   - Berth 40 Intermodal Terminal, Apr-Jun 2026: 5,012 visits; 58.2 minutes
+   - Berth 40 Intermodal Terminal, Jul-Sep 2026: 5,117 visits; 56.1 minutes
 
-### provider_group_designations_2027.pdf
+### air_corridor_designations_2027.pdf
 
-1. The designated groups: PG04, PG07, PG08 and PG10.
-2. Bar chart of every group's paid medical cost per member-month, January to June 2026, against the $412.00 benchmark line, the designated groups' bars in orange.
+1. The designated links: L01, L03, L05 and L14.
+2. Bar chart of every link's on-road NOx per mile, October 2025 to September 2026, against the 5.00 tonne line, the designated links' bars in orange.

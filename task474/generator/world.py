@@ -1,56 +1,104 @@
-"""The fixed world: Prairie Hills Health Plan, a Medicaid managed care plan in an unnamed state, its primary care
-provider groups, the first half of 2026, the members each group is assigned, the annual renewal that some members
-lose and regain retroactively, and the state's capitation. Every other module reads its parameters from here."""
+"""The fixed world: the Bayline Port Authority, the roadway links around its terminals, the state's continuous count
+stations, the program year October 2025 to September 2026, and the traffic each class of vehicle makes by day of
+week and month. Every other module reads its parameters from here."""
 import datetime as dt
 
-PLAN = "Prairie Hills Health Plan"
-STATE_AGENCY = "State Department of Health Services, Medicaid Managed Care Unit"
-DEPT = "Provider Performance"
-PEOPLE = {"analyst": ("Paula Watts", "Senior Provider Performance Analyst"),
-          "director": ("Derrick Warren", "Director, Network Contracting")}
-SEED = 4740
-RX_SEED = SEED + 21                                       # the pharmacy draw
-YEAR = 2026
-MONTHS = [dt.date(2026, m, 1) for m in range(1, 7)]        # the period: January to June 2026
-PAID_BY = dt.date(2026, 10, 31)                            # claims paid by this date count
-BENCHMARK = 412.00                                         # paid medical cost per member-month; at or above designates
-RULES_DATE = "2 March 2026"
-MEMO_DATE = "18 November 2026"
+PORT = "Bayline Port Authority"
+DOT = "State Department of Transportation, Traffic Monitoring Section"
+COUNTY = "Harbor County Public Works, Traffic Engineering"
+CONSULTANT = "Meridian Traffic Data LLC"
+DEPT = "Environmental Planning"
+PEOPLE = {"analyst": ("Paige Hodges", "Senior Environmental Planner"),
+          "director": ("Martin Estrada", "Director of Environmental Planning")}
+SEED = 4750
+GATE_SEED = SEED + 47                                     # the terminals' gate draw
+START = dt.date(2025, 10, 1)
+DAYS = [START + dt.timedelta(d) for d in range(365)]       # the program year: 1 October 2025 to 30 September 2026
+LINE = 5.00                                              # tonnes of NOx per mile per program year; at or above designates
+RULES_DATE = "14 January 2026"
+MEMO_DATE = "4 November 2026"
+CLASSES = ("P", "SU", "CU")                              # passenger vehicles (FHWA 1-3), single-unit trucks (4-7),
+                                                         # combination trucks (8-13)
+EF = {"P": 0.084, "SU": 1.62, "CU": 3.41}                # grams of NOx per vehicle-mile, 2026 calendar year fleet
 
-# provider groups: id, name, county, members assigned at January, base cost per member-month, share of a renewal
-# cohort that lapses and is reinstated back to the lapse, share of members who die in the half year (aged, blind and
-# disabled panels), share of renewers who leave for good
-GROUPS = {
-    "PG01": ("Cedar Valley Family Medicine", "Harlan", 2100, 391.07, .05, .004, .02),
-    "PG02": ("Millbrook Community Clinics", "Ross", 2550, 413.23, .32, .003, .03),
-    "PG03": ("North Fork Pediatrics", "Harlan", 1900, 309.79, .08, .000, .02),
-    "PG04": ("Bluestem Internal Medicine", "Dade", 1300, 423.34, .06, .032, .02),
-    "PG05": ("Sandhill Health Partners", "Ross", 2300, 405.51, .30, .004, .03),
-    "PG06": ("Two Rivers Medical Group", "Lyon", 1750, 415.26, .10, .006, .02),
-    "PG07": ("Prairie Gate Primary Care", "Dade", 1450, 404.41, .07, .040, .02),
-    "PG08": ("Oak Hollow Physicians", "Lyon", 2050, 485.13, .28, .005, .03),
-    "PG09": ("Westfield Family Health", "Morton", 1650, 409.81, .06, .004, .02),
-    "PG10": ("Riverside Geriatric Associates", "Morton", 1200, 418.81, .05, .045, .01),
-    "PG11": ("Summit Community Health Center", "Ross", 2400, 409.75, .27, .004, .03),
-    "PG12": ("Lakeshore Medical Associates", "Harlan", 1600, 406.86, .06, .005, .02),
+# weekly pattern (Monday first) and monthly pattern of each class, relative; trucks fall away at weekends and are flat
+# by season, passenger traffic peaks on Fridays and in summer
+DOW = {"P": (0.97, 1.00, 1.01, 1.03, 1.09, 0.99, 0.88),
+       "SU": (1.17, 1.21, 1.22, 1.20, 1.12, 0.63, 0.45),
+       "CU": (1.19, 1.25, 1.27, 1.25, 1.15, 0.53, 0.36)}
+MON = {"P": {1: .89, 2: .92, 3: .98, 4: 1.00, 5: 1.04, 6: 1.08, 7: 1.10, 8: 1.09, 9: 1.02, 10: 1.01, 11: .97, 12: .93},
+       "SU": {1: .95, 2: .97, 3: 1.00, 4: 1.01, 5: 1.03, 6: 1.03, 7: 1.00, 8: 1.02, 9: 1.01, 10: 1.02, 11: .99, 12: .97},
+       "CU": {1: .97, 2: .98, 3: 1.00, 4: 1.00, 5: 1.02, 6: 1.02, 7: .99, 8: 1.01, 9: 1.01, 10: 1.02, 11: 1.00, 12: .98}}
+HOLIDAYS = {dt.date(2025, 11, 27): (.72, .40), dt.date(2025, 12, 25): (.62, .22), dt.date(2026, 1, 1): (.80, .45),
+            dt.date(2026, 5, 25): (.85, .50), dt.date(2026, 7, 3): (.90, .60), dt.date(2026, 9, 7): (.86, .48)}
+
+# the state's continuous count stations in and around the metro area: id, route, road type, AADT, single-unit and
+# combination truck shares, whether it classifies
+STATIONS = {
+    "ATR-0112": ("I-880 at Ridley Avenue", "freeway", 118400, .045, .071, True),
+    "ATR-0127": ("I-880 at Cole Creek", "freeway", 96300, .041, .062, False),
+    "ATR-0135": ("SR-61 at Mill Street", "arterial", 31200, .036, .028, True),
+    "ATR-0141": ("SR-61 at Harbor Boulevard", "arterial", 27800, .044, .039, False),
+    "ATR-0156": ("I-580 at Delmar", "freeway", 142900, .038, .054, False),
+    "ATR-0163": ("US-9 at Lanford", "arterial", 22600, .031, .021, False),
+    "ATR-0178": ("SR-17 at Oakmont", "arterial", 18900, .029, .015, False),
+    "ATR-0182": ("I-580 at Pell Road", "freeway", 104700, .040, .066, True),
+    "ATR-0194": ("US-9 at Quarry Road", "arterial", 26400, .052, .047, True),
+    "ATR-0205": ("SR-17 at Brennan", "arterial", 15200, .027, .012, False),
+    "ATR-0211": ("I-880 at Selby", "freeway", 88100, .043, .058, False),
+    "ATR-0226": ("SR-4 at Tidewater", "arterial", 21300, .035, .033, False),
 }
-# the golden's cost per member-month each group is tuned to (tune.py scales each group's base cost)
-DESIRED = {"PG01": 371.37, "PG02": 403.62, "PG03": 290.81, "PG04": 467.94, "PG05": 381.26, "PG06": 394.71,
-           "PG07": 417.83, "PG08": 431.18, "PG09": 385.42, "PG10": 418.29, "PG11": 405.13, "PG12": 392.07}
-# months a death stays on the roster after the month of death, by group (death reports reach the state late for
-# members in long-term care)
-LAG = {"PG07": (2, 3, 4), "PG10": (2, 3, 4), "PG04": (1, 2, 3)}
+# the roadway links: id, name, road type, AADT, single-unit and combination truck shares, count program, count start
+# (the first of two count days)
+LINKS = {
+    "L01": ("Terminal Way, Gate 1 to SR-61", "arterial", 15120, .061, .243),
+    "L02": ("Harbor Boulevard, 7th to 12th Street", "arterial", 21490, .046, .121),
+    "L03": ("I-880 northbound ramps at Port Avenue", "freeway", 19790, .052, .178),
+    "L04": ("Port Avenue, I-880 to Terminal Way", "arterial", 13510, .058, .214),
+    "L05": ("SR-61, Mill Street to Harbor Boulevard", "arterial", 34420, .041, .083),
+    "L06": ("Cargo Drive, Berths 20 to 30", "arterial", 9250, .071, .332),
+    "L07": ("7th Street, Harbor Boulevard to Cole Creek", "arterial", 21010, .039, .061),
+    "L08": ("I-880 southbound ramps at Port Avenue", "freeway", 15160, .050, .169),
+    "L09": ("Delmar Road, I-580 to Cargo Drive", "arterial", 21320, .048, .129),
+    "L10": ("Ridley Avenue, I-880 to rail yard", "arterial", 13320, .066, .224),
+    "L11": ("Quarry Road truck route", "arterial", 12570, .063, .254),
+    "L12": ("Harbor Boulevard, 12th to 20th Street", "arterial", 27910, .035, .052),
+    "L13": ("Selby Street, rail yard to Terminal Way", "arterial", 11410, .068, .287),
+    "L14": ("Pell Road, I-580 to Berth 40", "arterial", 18210, .055, .196),
+}
+# the golden's NOx per mile each link is tuned to (tune.py scales each link's AADT)
+DESIRED = {"L01": 5.71, "L02": 3.92, "L03": 6.18, "L04": 4.38, "L05": 5.46, "L06": 4.12, "L07": 2.61, "L08": 4.12,
+           "L09": 4.57, "L10": 4.21, "L11": 4.26, "L12": 3.27, "L13": 4.44, "L14": 5.48}
+PROGRAM = {"L01": "county", "L02": "dot", "L03": "dot", "L04": "consultant", "L05": "dot", "L06": "consultant",
+           "L07": "county", "L08": "dot", "L09": "county", "L10": "consultant", "L11": "county", "L12": "dot",
+           "L13": "consultant", "L14": "county"}
+COUNT_DAY = {"L01": dt.date(2025, 10, 14), "L02": dt.date(2026, 7, 21), "L03": dt.date(2026, 4, 14),
+             "L04": dt.date(2026, 3, 10), "L05": dt.date(2026, 6, 16), "L06": dt.date(2026, 1, 13),
+             "L07": dt.date(2025, 11, 18), "L08": dt.date(2026, 8, 18), "L09": dt.date(2026, 5, 12),
+             "L10": dt.date(2025, 12, 9), "L11": dt.date(2026, 2, 10), "L12": dt.date(2025, 10, 21),
+             "L13": dt.date(2026, 9, 15), "L14": dt.date(2026, 6, 23)}
 
 FILES = {
-    "claims": "medical_claims_paid_2026h1.csv",
-    "roster": "enrollment_roster_2026h1.csv",
-    "remit": "capitation_remittance_2026.csv",
-    "notes": "data_extract_notes.txt",
-    "groups": "provider_group_register_2026.xlsx",
-    "rules": "cost_performance_program_rules_2027.pdf",
-    "rx": "pharmacy_claims_2026h1.csv",
-    "classes": "drug_class_crosswalk.xlsx",
-    "quality": "hedis_quality_scores_2025.xlsx",
-    "survey": "member_experience_survey_2025.csv",
+    "stations": "ccs_hourly_volumes_oct2025_sep2026.csv",
+    "register": "count_station_register_2026.xlsx",
+    "dot": "dot_short_counts_fy2026.csv",
+    "county": "county_traffic_counts_2025_2026.xlsx",
+    "consultant": "terminal_access_counts_2026.csv",
+    "links": "port_roadway_links_2026.xlsx",
+    "rates": "onroad_nox_emission_rates_2026.csv",
+    "rules": "air_corridor_program_rules_2027.pdf",
+    "notes": "data_notes.txt",
+    "gates": "terminal_gate_transactions_oct2025_sep2026.csv",
+    "fleet": "drayage_truck_registry_2026.csv",
+    "no2": "no2_monitor_hourly_2026.csv",
+    "complaints": "truck_complaints_311_2025_2026.csv",
 }
-GOLDEN = {"workbook": "provider_group_pmpm_2026h1.xlsx", "memo": "provider_group_designations_2027.pdf"}
+GOLDEN = {"workbook": "air_corridor_links_2027.xlsx", "memo": "air_corridor_designations_2027.pdf"}
+
+# the asks: the three container terminals' truck gates. Terminal, name, trucks' share of visits, median turn minutes
+TERMINALS = {"B20": ("Berth 20 Container Terminal", .42, 58.0),
+             "B30": ("Pacific Gateway Terminal (Berths 30 to 34)", .35, 71.0),
+             "B40": ("Berth 40 Intermodal Terminal", .23, 49.0)}
+N_TRUCKS = 640
+QUARTERS = {1: ("2025-10-01", "2025-12-31"), 2: ("2026-01-01", "2026-03-31"), 3: ("2026-04-01", "2026-06-30"),
+            4: ("2026-07-01", "2026-09-30")}

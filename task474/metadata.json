@@ -1,95 +1,120 @@
 {
  "task": "task474",
- "title": "Prairie Hills Health Plan Cost Performance Program 2027 designations",
- "setting": "A fictional Medicaid managed care plan in an unnamed U.S. state; every record is synthetic.",
- "as_of": "2026-11-09",
+ "title": "Bayline Port Authority Air Corridor Program 2027 designations",
+ "setting": "A fictional port authority in an unnamed U.S. coastal state; every record is synthetic.",
+ "as_of": "2026-10-26",
  "files": [
   {
-   "file": "capitation_remittance_2026.csv",
-   "source": "State Department of Health Services, Medicaid Managed Care Unit (fictional), synthetic records",
-   "date": "2026-11-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 4540
-  },
-  {
-   "file": "cost_performance_program_rules_2027.pdf",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-03-02",
+   "file": "air_corridor_program_rules_2027.pdf",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-01-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "data_extract_notes.txt",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-11-02",
+   "file": "ccs_hourly_volumes_oct2025_sep2026.csv",
+   "source": "State Department of Transportation, Traffic Monitoring Section (fictional), synthetic records",
+   "date": "2026-10-19",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 347376
   },
   {
-   "file": "drug_class_crosswalk.xlsx",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-09-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "enrollment_roster_2026h1.csv",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-11-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 133893
-  },
-  {
-   "file": "hedis_quality_scores_2025.xlsx",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-06-19",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "medical_claims_paid_2026h1.csv",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-11-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 103557
-  },
-  {
-   "file": "member_experience_survey_2025.csv",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
-   "date": "2026-01-22",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1895
-  },
-  {
-   "file": "pharmacy_claims_2026h1.csv",
-   "source": "Prairie Hills Health Plan, pharmacy benefit manager feed (fictional), synthetic records",
-   "date": "2026-11-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 67299
-  },
-  {
-   "file": "provider_group_register_2026.xlsx",
-   "source": "Prairie Hills Health Plan (fictional), synthetic records",
+   "file": "count_station_register_2026.xlsx",
+   "source": "State Department of Transportation, Traffic Monitoring Section (fictional), synthetic records",
    "date": "2026-07-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
+  },
+  {
+   "file": "county_traffic_counts_2025_2026.xlsx",
+   "source": "Harbor County Public Works, Traffic Engineering (fictional), synthetic records",
+   "date": "2026-09-29",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "data_notes.txt",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-10-26",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "dot_short_counts_fy2026.csv",
+   "source": "State Department of Transportation, Traffic Monitoring Section (fictional), synthetic records",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 480
+  },
+  {
+   "file": "drayage_truck_registry_2026.csv",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-10-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 713
+  },
+  {
+   "file": "no2_monitor_hourly_2026.csv",
+   "source": "State Department of Environmental Protection, Air Monitoring (fictional), synthetic records",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 17520
+  },
+  {
+   "file": "onroad_nox_emission_rates_2026.csv",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-02-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3
+  },
+  {
+   "file": "port_roadway_links_2026.xlsx",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-10-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "terminal_access_counts_2026.csv",
+   "source": "Meridian Traffic Data LLC (fictional), synthetic records",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2304
+  },
+  {
+   "file": "terminal_gate_transactions_oct2025_sep2026.csv",
+   "source": "Bayline Port Authority (fictional), synthetic records",
+   "date": "2026-10-23",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 118501
+  },
+  {
+   "file": "truck_complaints_311_2025_2026.csv",
+   "source": "City of Bayline 311 service requests (fictional), synthetic records",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1134
   }
  ],
  "distractors": [
   {
-   "file": "hedis_quality_scores_2025.xlsx",
-   "why": "2025 HEDIS quality rates by group: quality, not cost, and a different year"
+   "file": "no2_monitor_hourly_2026.csv",
+   "why": "ambient NO2 at two monitors: air quality, not the NOx any link's traffic emits"
   },
   {
-   "file": "member_experience_survey_2025.csv",
-   "why": "2025 member experience survey by group: satisfaction, not cost or enrollment"
+   "file": "truck_complaints_311_2025_2026.csv",
+   "why": "311 truck complaints by street: where residents notice trucks, not the NOx a link's traffic emits"
+  },
+  {
+   "file": "drayage_truck_registry_2026.csv",
+   "why": "the drayage registry's engine model years: the rules price NOx at the emission rate table's class rates, and visits are counted by tag"
   }
  ],
  "deliverables": [
-  "provider_group_pmpm_2026h1.xlsx",
-  "provider_group_designations_2027.pdf"
+  "air_corridor_links_2027.xlsx",
+  "air_corridor_designations_2027.pdf"
  ],
  "stated_inputs": [
-  "412.00"
+  "5.00"
  ]
 }

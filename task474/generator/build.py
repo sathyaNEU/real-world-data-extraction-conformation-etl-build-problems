@@ -20,9 +20,10 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
+RATE_COLS = ["class_group", "fhwa_classes", "description", "calendar_year", "nox_g_per_mile", "basis"]
 
 
-def build_pack(out, x):
+def build_pack(out, e):
     import docs as DC
     import postprocess as PP
     if os.path.exists(out):
@@ -30,21 +31,27 @@ def build_pack(out, x):
     os.makedirs(out)
     f = lambda k: os.path.join(out, W.FILES[k])
     n = {}
-    n["claims"] = P.write_csv(f("claims"), P.CLAIM_COLS, P.claim_rows(x))
-    n["roster"] = P.write_csv(f("roster"), P.ROSTER_COLS, P.roster_rows(x))
-    n["remit"] = P.write_csv(f("remit"), P.REMIT_COLS, P.remit_rows(x), crlf=True)
-    n["rx"] = P.write_csv(f("rx"), P.RX_COLS, P.rx_rows(x))
-    n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows(x))
+    n["stations"] = P.write_csv(f("stations"), P.STATION_COLS, P.station_rows(e))
+    n["dot"] = P.write_csv(f("dot"), P.DOT_COLS, P.dot_rows(e), crlf=True)
+    n["consultant"] = P.write_csv(f("consultant"), P.CONS_COLS, P.consultant_rows(e))
+    n["gates"] = P.write_csv(f("gates"), P.GATE_COLS, P.gate_rows(e))
+    n["fleet"] = P.write_csv(f("fleet"), P.FLEET_COLS, P.fleet_rows(e))
+    n["no2"] = P.write_csv(f("no2"), P.NO2_COLS, P.no2_rows(e))
+    n["complaints"] = P.write_csv(f("complaints"), P.COMPLAINT_COLS, P.complaint_rows(e), crlf=True)
+    desc = {"P": ("1-3", "Passenger vehicles"), "SU": ("4-7", "Single-unit trucks"), "CU": ("8-13", "Combination trucks")}
+    n["rates"] = P.write_csv(f("rates"), RATE_COLS, [[c, desc[c][0], desc[c][1], 2026, "%.3f" % W.EF[c],
+                                                       "MOVES county-scale run, Harbor County, annual average"]
+                                                      for c in W.CLASSES])
     DC.write_rules(f("rules"))
     DC.write_notes(f("notes"), n)
-    DC.write_groups(f("groups"))
-    DC.write_classes(f("classes"), x["ndc"])
-    DC.write_quality(f("quality"))
-    PP.normalize_pdf(f("rules"), b"D:20260302101533-06'00'", b"D:20260302101533-06'00'")
-    for k, who, a, b in (("groups", "Network Contracting", "2026-07-01T14:02:00Z", "2026-07-01T14:31:12Z"),
-                         ("classes", "Pharmacy Services", "2026-09-14T15:20:00Z", "2026-09-14T15:41:50Z"),
-                         ("quality", "Quality Improvement", "2026-06-19T13:05:00Z", "2026-06-19T13:48:27Z")):
-        PP.normalize_ooxml(f(k), who, who, a, b, excel=True, company=W.PLAN)
+    DC.write_register(f("register"))
+    DC.write_links(f("links"))
+    DC.write_county(f("county"), P.county_tables(e))
+    PP.normalize_pdf(f("rules"), b"D:20260114101533-05'00'", b"D:20260114101533-05'00'")
+    for k, who, a, b in (("register", "Traffic Monitoring Section", "2026-07-01T14:02:00Z", "2026-07-01T14:31:12Z"),
+                         ("links", "Environmental Planning", "2026-10-22T15:20:00Z", "2026-10-22T15:41:50Z"),
+                         ("county", "Traffic Engineering", "2026-09-29T13:05:00Z", "2026-09-29T13:48:27Z")):
+        PP.normalize_ooxml(f(k), who, who, a, b, excel=True, company=W.PORT)
     return n
 
 
@@ -62,8 +69,8 @@ def main():
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--pack-only", action="store_true")
     a = ap.parse_args()
-    x = P.everything()
-    n = build_pack(os.path.join(TASK, "target"), x)
+    e = P.everything()
+    n = build_pack(os.path.join(TASK, "target"), e)
     big = max(n.items(), key=lambda t: t[1])
     print("pack: %d files, largest %s (%d rows)" % (len(os.listdir(os.path.join(TASK, "target"))), W.FILES[big[0]],
                                                      big[1]))
@@ -73,21 +80,22 @@ def main():
     import writeup as WU
     import metadata as MD
     gdir = os.path.join(TASK, "golden")
-    GD.build(gdir, x)
+    GD.build(gdir, e)
     WU.write(os.path.join(TASK, "generator", "figures.json"), os.path.join(TASK, "submission.md"))
-    MD.write(os.path.join(TASK, "metadata.json"), x, n)
+    MD.write(os.path.join(TASK, "metadata.json"), e, n)
     import checks as C
-    ok = C.main(os.path.join(TASK, "target"), gdir, x)
+    ok = C.main(os.path.join(TASK, "target"), gdir, e)
     import verify as V
     ok = V.main(os.path.join(TASK, "target"), gdir) and ok
     if a.fast:
         return 0 if ok else 1
     scratch = os.path.join(TASK, ".rebuild")
-    x2 = P.everything.__wrapped__()
-    build_pack(os.path.join(scratch, "target"), x2)
-    GD.build(os.path.join(scratch, "golden"), x2, target=os.path.join(scratch, "target"), figs=os.path.join(scratch, "figures.json"))
+    e2 = P.everything.__wrapped__()
+    build_pack(os.path.join(scratch, "target"), e2)
+    GD.build(os.path.join(scratch, "golden"), e2, target=os.path.join(scratch, "target"),
+             figs=os.path.join(scratch, "figures.json"))
     WU.write(os.path.join(scratch, "figures.json"), os.path.join(scratch, "submission.md"))
-    MD.write(os.path.join(scratch, "metadata.json"), x2, n)
+    MD.write(os.path.join(scratch, "metadata.json"), e2, n)
     same = digest(os.path.join(TASK, "target")) == digest(os.path.join(scratch, "target")) and \
         digest(gdir) == digest(os.path.join(scratch, "golden")) and \
         open(os.path.join(TASK, "submission.md"), "rb").read() == open(os.path.join(scratch, "submission.md"), "rb").read() and \
@@ -99,7 +107,7 @@ def main():
     tgt = os.path.join(TASK, "target")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for fn in sorted(os.listdir(tgt)):
-            zi = zipfile.ZipInfo(fn, date_time=(2026, 11, 9, 9, 0, 0))
+            zi = zipfile.ZipInfo(fn, date_time=(2026, 10, 26, 9, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(tgt, fn), "rb").read())

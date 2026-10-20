@@ -1,104 +1,119 @@
 {
  "asks": {
-  "fills": {
-   "ACE inhibitors": 4966,
-   "Anticonvulsants": 4508,
-   "Atypical antipsychotics": 2868,
-   "Beta blockers": 4504,
-   "Inhaled corticosteroids": 4576,
-   "Insulins": 2742,
-   "Metformin": 5580,
-   "Opioid analgesics": 4104,
-   "Proton pump inhibitors": 5012,
-   "SSRIs": 6787,
-   "Statins": 7276,
-   "Thyroid hormones": 3415
+  "turn": {
+   "B20 Q1": 69.1,
+   "B20 Q2": 67.4,
+   "B20 Q3": 65.4,
+   "B20 Q4": 62.8,
+   "B30 Q1": 84.8,
+   "B30 Q2": 91.9,
+   "B30 Q3": 99.1,
+   "B30 Q4": 104.5,
+   "B40 Q1": 61.5,
+   "B40 Q2": 59.8,
+   "B40 Q3": 58.2,
+   "B40 Q4": 56.1
   },
-  "fills_total": 56338,
-  "paid": {
-   "ACE inhibitors": 48665,
-   "Anticonvulsants": 275874,
-   "Atypical antipsychotics": 659407,
-   "Beta blockers": 38676,
-   "Inhaled corticosteroids": 854903,
-   "Insulins": 1121414,
-   "Metformin": 41339,
-   "Opioid analgesics": 87004,
-   "Proton pump inhibitors": 65412,
-   "SSRIs": 96219,
-   "Statins": 85249,
-   "Thyroid hormones": 44548
-  },
-  "paid_total": 3418710
+  "visits": {
+   "B20 Q1": 9790,
+   "B20 Q2": 9687,
+   "B20 Q3": 9601,
+   "B20 Q4": 9998,
+   "B30 Q1": 7799,
+   "B30 Q2": 7382,
+   "B30 Q3": 7509,
+   "B30 Q4": 7553,
+   "B40 Q1": 5186,
+   "B40 Q2": 4906,
+   "B40 Q3": 5012,
+   "B40 Q4": 5117
+  }
  },
- "benchmark": "412.00",
  "call": [
-  "PG04",
-  "PG07",
-  "PG08",
-  "PG10"
+  "L01",
+  "L03",
+  "L05",
+  "L14"
  ],
- "groups": [
-  "PG01",
-  "PG02",
-  "PG03",
-  "PG04",
-  "PG05",
-  "PG06",
-  "PG07",
-  "PG08",
-  "PG09",
-  "PG10",
-  "PG11",
-  "PG12"
+ "days": 365,
+ "line": "5.00",
+ "links": [
+  "L01",
+  "L02",
+  "L03",
+  "L04",
+  "L05",
+  "L06",
+  "L07",
+  "L08",
+  "L09",
+  "L10",
+  "L11",
+  "L12",
+  "L13",
+  "L14"
  ],
- "member_months": {
-  "added": 3009,
-  "golden": 135979,
-  "removed": 923,
-  "roster": 133893
- },
  "n_call": 4,
- "n_groups": 12,
+ "n_links": 14,
  "names": {
-  "PG01": "Cedar Valley Family Medicine",
-  "PG02": "Millbrook Community Clinics",
-  "PG03": "North Fork Pediatrics",
-  "PG04": "Bluestem Internal Medicine",
-  "PG05": "Sandhill Health Partners",
-  "PG06": "Two Rivers Medical Group",
-  "PG07": "Prairie Gate Primary Care",
-  "PG08": "Oak Hollow Physicians",
-  "PG09": "Westfield Family Health",
-  "PG10": "Riverside Geriatric Associates",
-  "PG11": "Summit Community Health Center",
-  "PG12": "Lakeshore Medical Associates"
+  "L01": "Terminal Way, Gate 1 to SR-61",
+  "L02": "Harbor Boulevard, 7th to 12th Street",
+  "L03": "I-880 northbound ramps at Port Avenue",
+  "L04": "Port Avenue, I-880 to Terminal Way",
+  "L05": "SR-61, Mill Street to Harbor Boulevard",
+  "L06": "Cargo Drive, Berths 20 to 30",
+  "L07": "7th Street, Harbor Boulevard to Cole Creek",
+  "L08": "I-880 southbound ramps at Port Avenue",
+  "L09": "Delmar Road, I-580 to Cargo Drive",
+  "L10": "Ridley Avenue, I-880 to rail yard",
+  "L11": "Quarry Road truck route",
+  "L12": "Harbor Boulevard, 12th to 20th Street",
+  "L13": "Selby Street, rail yard to Terminal Way",
+  "L14": "Pell Road, I-580 to Berth 40"
+ },
+ "quarters": {
+  "1": "Oct-Dec 2025",
+  "2": "Jan-Mar 2026",
+  "3": "Apr-Jun 2026",
+  "4": "Jul-Sep 2026"
  },
  "rate": {
-  "PG01": 371.37,
-  "PG02": 403.62,
-  "PG03": 290.81,
-  "PG04": 467.94,
-  "PG05": 381.26,
-  "PG06": 394.71,
-  "PG07": 417.83,
-  "PG08": 431.18,
-  "PG09": 385.42,
-  "PG10": 418.29,
-  "PG11": 405.13,
-  "PG12": 392.07
+  "L01": 5.71,
+  "L02": 3.92,
+  "L03": 6.18,
+  "L04": 4.38,
+  "L05": 5.46,
+  "L06": 4.12,
+  "L07": 2.61,
+  "L08": 4.12,
+  "L09": 4.56,
+  "L10": 4.21,
+  "L11": 4.26,
+  "L12": 3.27,
+  "L13": 4.44,
+  "L14": 5.48
  },
- "roster_route": [
-  "PG02",
-  "PG04",
-  "PG08",
-  "PG11"
- ],
  "sections": {
-  "designation": "2.3",
-  "groups": "2.1",
-  "pharmacy": "3.1",
-  "rate": "2.2"
+  "gates": "3.1",
+  "line": "2.3",
+  "links": "2.1",
+  "nox": "2.2"
  },
- "year": 2026
+ "terminals": {
+  "B20": "Berth 20 Container Terminal",
+  "B30": "Pacific Gateway Terminal (Berths 30 to 34)",
+  "B40": "Berth 40 Intermodal Terminal"
+ },
+ "textbook_route": [
+  "L01",
+  "L03",
+  "L04",
+  "L05",
+  "L06",
+  "L09",
+  "L10",
+  "L11",
+  "L13",
+  "L14"
+ ]
 }
