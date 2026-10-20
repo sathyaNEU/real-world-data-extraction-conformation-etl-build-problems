@@ -1,162 +1,170 @@
 {
- "task": "task471",
- "architecture": "v3",
- "drawn": "2026-10-20",
- "slot_note": "re-rooted from v1 (seed ET28's airport world spent at Gate F); a fresh world in the least-drawn ETL task type, the decisive step one the record does not display",
- "domain": "general-statistics-data-science",
- "subdomain": "data-integration-record-linkage-entity-resolution",
- "client_domain": "general-statistics-data-science",
- "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)",
- "objective": "etl",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G10",
-  "G17",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "population_selection",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stakeholder_role": "environmental epidemiologist preparing the county estimates for the Private Well Program manager",
- "role_family": "research_desk",
- "scoring_unit": "per certified output",
- "spine": {
-  "file": "DOH_well_construction_permits_extract_2026-08-03.csv",
-  "rows": 41116,
-  "entity": "one well construction permit",
-  "grain": "permit",
-  "source": "synthetic (constructed in the layout of a state well construction permit database extract)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "other",
- "org_family": "government_agency",
- "world": {
-  "geography": "United States, an unnamed state (the department, counties, towns, laboratories, households and people are fictional)",
-  "currency": "USD",
-  "org_type": "a state health department's private well program",
-  "invented_names": [
-   "Private Well Nitrate Survey",
-   "Well Water Assistance",
-   "Halvorsen Analytical",
-   "Cedarline Environmental Laboratories",
-   "Kinsale Water Testing"
+  "task": "task471",
+  "architecture": "v4",
+  "drawn": "2026-10-20",
+  "slot_note": "re-rooted from v3 (the dual-frame well survey spent at Gate F); a fresh world in the least-drawn ETL task type (census-register), the decisive step a clock and a history that no shipped document describes",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a national statistics bureau's register-based adjusted resident population for the 2027 small-municipality supplement: each in-play municipality's 1 January 2026 register count less the registered persons estimated, from a national field audit of register records, not to have been living there (silent emigrants), in an unnamed EU country with a municipal population register",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
   ],
-  "people": [
-   "Tina Hurley",
-   "Steven Nguyen",
-   "Carlos Phillips"
-  ]
- },
- "deliverables": [
-  "nitrate_assistance_counties_2027.xlsx",
-  "nitrate_assistance_counties_2027.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
- "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
- "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who links the permit list to the parcels by parcel number and address, conforms the three laboratories' results to nitrate as nitrogen and estimates each county's wells above the standard by scaling the tested wells' share above to the wells on the two lists files three counties (Alderwick, Glenmoor, Netherby); weighting each tested well by its drawn list's rate files ten; only each well's chance of selection from either list gives the six.",
- "domain_test": "The deciding quantity is each county's total of wells above the standard over the union of two overlapping frames, estimated by dual-frame weighting of samples drawn separately from each frame after the frames are linked, which is the integration of two incomplete lists into one estimate; replaced by a generic summary (the tested wells' share, or one list's estimate) the call changes, so the integration's own overlap carries the decision.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:dual-frame-weights-for-wells-on-both-lists",
- "layer1": [
-  "a permit database extract with irrigation, livestock, monitoring and industrial wells, replaced and abandoned permits, and domestic wells drilled after the frame date",
-  "sixteen assessors' parcel rolls in three layouts, parcel numbers formatted four ways and water-source codes per layout, situs and site addresses written differently",
-  "three laboratories' exports (wide and long, CSV and workbook), one reporting nitrate as NO3, with reanalysed samples reported twice under status, report date or version",
-  "a draw manifest recording replacement draws and wells already tested from the other list",
-  "retest kit requests by portal (first kit number) and phone (ship-to address only), routed by ZIP code"
- ],
- "mechanism_source": "card",
- "differentiation": {
-  "task264": "task264 v2 weights each member drawn through one sample of events by its own event count; here two separate samples are drawn from two overlapping lists, a well on both lists could enter either sample, and the estimate weights each tested well by its chance of entering either one, so the wrong routes are pooling two differently sampled lists and adding two lists' estimates, not reading members as events.",
-  "task131": "task131 v1 reads an at-scale treatment effect on parent units whose sub-units all drew one arm, because budget moves between siblings; here nothing is randomised and no outcome moves between units: two overlapping lists are each sampled for a test, and the total over their union counts each tested unit once, by its chance of selection across both."
- },
- "lineage": [
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G7",
-    "G12",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "maturity_censoring",
-   "layer2_pattern": "own:replies-censored-by-collection-close",
-   "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
-   "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
-   "subdomain": "census-register-administrative-data-quality",
-   "domain": "survey-research-official-statistics",
-   "architecture": "v1",
-   "drawn": "2026-10-18",
-   "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
-   "fate": "spent at stage 4 on 2026-10-19: three isolated readers landed the call by weighting each returned card for when its stay could come back (Gate F), and the ask device was a mirror device (pair ceiling 55.5); a clustered-design hold measured on the v1 pack was dropped (73,909 returned cards put every lead over the fourth market at z 2.3 to 3.5); re-rooted fresh by the author's rule (no retirement)"
-  },
-  {
-   "architecture": "v2",
-   "drawn": "2026-10-20",
-   "domain": "education-learning-sciences",
-   "subdomain": "item-response-theory-test-equating",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G17",
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
     "G6",
-    "G1"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "other",
-   "layer2_pattern": "own:rater-severity-drift-on-a-constructed-response-anchor",
-   "niche": "a state educator licensing board's 2027 formal reviews of its educator preparation programs, decided on their 2025-26 completers' first-attempt pass rates on the state's elementary literacy licensure test, whose 2026 form the board's assessment office equates itself for the first time, to the 2025 form through an anchor of twenty multiple-choice items and one rater-scored written assignment",
-   "driver": "The decisive quantity is the second administration's score at the first administration's standard, estimated through a shared subset of which one part is judged by people, and the second administration's judges applied a harsher standard than the first, measured only on a random set of the first administration's responses, each carrying the score its first-administration judges agreed on, that the second judges re-judged unknowingly; the judged part has to be put back on the first standard before it carries the link, because used as judged it makes the second group look weaker and the cut too high, and dropped from the subset it leaves a link blind to the second group's real decline on what only the judged part measures, which sets the cut too low.",
-   "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
-   "fate": "spent at stage 4 on 2026-10-20: the judge (v2r1) found the main call DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes): the rater shift on the anchor's written assignment is a bias in recorded values that the solver must catch, so on consistent scoring the task collapses; two scored readers missed the call on the drop-WA2 rung and all 32 ask figures; re-rooted fresh by the author's rule (no retirement)"
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "head of population statistics at the national statistics bureau, delivering the adjusted populations to the interior ministry's municipal finance directorate",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "population_register_extract_20260101.txt",
+    "rows": 125000,
+    "entity": "one person registered in an in-play municipality on 1 January 2026",
+    "grain": "person",
+    "source": "synthetic (constructed in the layout of a municipal population register extract)"
   },
-  {
-   "architecture": "v3",
-   "fate": "spent at stage 4 on Gate F: both scored readers landed the call and all 32 ask figures (the textbook dual-frame estimator, executed as a work order once the design report describes the two lists' separate draws); judge v3r1 DETERMINISTIC APPROVE",
-   "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
-   "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
-   "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "subdomain": "data-integration-record-linkage-entity-resolution",
-   "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
-  }
- ],
- "notes": "v3 drawn 2026-10-20 after architecture 2 was spent at stage 4 on Gate G; honest data by construction (both frames accurate, samples random, tests accurate); a first v3 draw on a joint registry's back-loaded survivors was dropped before registering because task265 already spends delayed entry; card brought to the built world on 2026-10-20 (nitrate, the Well Water Assistance allocation, the permit and parcel lists, three laboratories)",
- "registered": "2026-10-20T11:59:37Z"
+  "forum": "minister_or_cabinet",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "an unnamed EU country modelled on the Netherlands (the bureau, the ministry, the municipalities and the people are fictional)",
+    "currency": "EUR",
+    "org_type": "a national statistics bureau's population statistics division",
+    "invented_names": [
+      "Register Coverage Audit 2026",
+      "Municipal Fund Regulation 2027",
+      "small-municipality supplement"
+    ],
+    "people": [
+      "Ilse Spreeuw",
+      "Luka Bosman",
+      "Kay Wolfswinkel"
+    ]
+  },
+  "deliverables": [
+    "adjusted_population_supplement_2027.csv",
+    "adjusted_population_supplement_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is each area's count of registered units actually present, the register's count less the units estimated absent at rates measured on a random field audit of records; a unit's chance of being absent is set by how long its current stay has lasted since its latest arrival and by whether it has left before, both rebuilt from its event history, so one audit rate, a rate by origin, a rate by time at the current record (reset by moves inside the system) and a rate by time since first arrival each misplace the absent units between areas whose units arrived at different times or come and go.",
+  "driver_concrete": "Each in-play municipality's adjusted resident population on 1 January 2026 is its register count less the registered persons estimated, from the 2026 Register Coverage Audit, not to have been living there, each person given the audit's absence rate for persons alike in years since their latest arrival from abroad and in having emigrated before; the register's date at the current address (reset by every internal move), country of birth or citizenship, and the first arrival each misplace the silent emigrants between the seasonal-work towns, the university town, the older immigrant towns and the commuter suburbs.",
+  "stump": "Applying the audit's absence rates by country of birth and years at the current address (the register's own fields) qualifies the older immigrant town and misses the seasonal-work town and the university town, because silent emigration follows the current stay since the latest arrival and earlier departures, which only the event history carries (to be filled with names and figures at calibration).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the register extract, conforms the merged municipality's old codes, decodes the audit outcomes and applies the audit's absence rates to each municipality's register by the register's own fields (country of birth, citizenship, age and the date at the current address) files the older immigrant town as qualifying and misses the seasonal-work town and the university town: silent emigration follows the length of the current stay since the latest arrival and earlier departures, which only the event history carries, while the address date is reset by every internal move and the first arrival misdates the migrants who come and go.",
+  "domain_test": "The deciding quantity is a population register's over-coverage (erroneous enumerations) by municipality, estimated by applying a field audit's absence rates within post-strata that carry the absence process (the migration career: the length of the current stay and earlier departures), which is register-based population statistics' own coverage correction; with another field's nouns (hospital beds for residents) the silent-emigration clock and its reset by internal moves stop meaning anything.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:erroneous-enumerations-post-stratified-by-the-migration-career",
+  "layer1": [
+    "a register extract in the register's delivery layout (pipe-delimited, coded fields, partial birth dates written with zero day or month)",
+    "an event history in register event codes with annulled events and pre-merger municipality codes",
+    "a municipal merger on 1 January 2026 (two former municipalities, old codes in the history)",
+    "national country codes for birth country and citizenship",
+    "field audit outcome codes with revisits superseding earlier visits",
+    "a regulation, an audit methodology report and a delivery specification in PDF and DOCX"
+  ],
+  "mechanism_source": "card",
+  "differentiation": {
+    "task470": "task470 adds the activity of units a sensor never records, rebuilt from each site's never-recorded units at the counted fields' rate per unit; here no unit is missing: the register over-counts, and the records to remove are estimated from a field audit's absence rate by each person's current stay since the latest arrival and earlier departures, rebuilt from an event history.",
+    "task167": "task167 splits a book's draws between two unnamed draw schedules; here a register's over-count is removed at audit rates set by a clock (the current stay since the latest arrival) and a migration history, not by a draw schedule.",
+    "task268": "task268 v1 carries a sample's on-site rate by distance onto complete member lists; here a field audit's absence rate is carried onto a register by the length of each person's current stay and earlier departures, two properties rebuilt from an event history rather than read off a distance field.",
+    "task30": "task30 recovers a change over the events a procedure leaves unadjusted through a catalogue join; here nothing is adjusted by a procedure: the register is honest and its over-count is estimated by post-stratifying a random audit on the migration career.",
+    "task31": "task31 splits a lag by whether a provider holds a prior approval, recovered through a multi-file join and scored on one closed case; here an absence rate is split by the current stay's length and earlier departures, measured on a random field audit, with no closed case and no lag.",
+    "task448": "task448 completes a register that misses producers from a second list whose capture is stratified by filing route; here the register holds too many, not too few: persons who left without deregistering are removed at an audit's absence rates within strata of the current stay and earlier departures, and no second list is captured.",
+    "task500": "task500 v2 credits a spillover through a link held in another entity's register; here no effect is estimated: a register's over-count is removed within post-strata rebuilt from each person's own event history.",
+    "task53": "task53 pools eligible volume against a scale break drawn from a closed log; here the absence rate is a function of a clock and a migration history measured on a random audit, and nothing is recovered from a closed log.",
+    "task57": "task57 v19 separates candidate measures on a held-out year; here no measure is selected by a back-test: the audit's absence rates are applied within the post-strata that carry the absence process.",
+    "task69": "task69 v2 re-pools a designed test's arms within periods of varying assignment; here there is no test or arm: a register's over-count is estimated from a random audit within post-strata of the migration career.",
+    "task76": "task76 removes a class defined by a look-back over failed contacts with zero conversion; here no class is removed outright: every registered person carries an audit-measured absence rate set by the current stay since the latest arrival and earlier departures."
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G12",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "maturity_censoring",
+      "layer2_pattern": "own:replies-censored-by-collection-close",
+      "driver": "The decisive quantity is a per-category total of trips taken from replies to a sample handed out on each day of a fixed window, where a reply comes back only when its trip ends and collection stopped soon after the window closed, so a long trip is among the replies only if it began early enough to end before collection stopped; the categories made of long trips are restored by weighting each reply by the inverse of the share of handout days from which a trip of its length could have come back, not by the return rate of its own handout day nor by the inverse of its length.",
+      "niche": "a state aviation bureau's 2027 route pitch for its regional airport, ranked on the 2026 trips from the regional service area that drove to the state's hub airport and parked there, estimated from the hub's parking entry register and a card survey whose cards come back only when the car leaves",
+      "subdomain": "census-register-administrative-data-quality",
+      "domain": "survey-research-official-statistics",
+      "architecture": "v1",
+      "drawn": "2026-10-18",
+      "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
+      "fate": "spent at stage 4 on 2026-10-19: three isolated readers landed the call by weighting each returned card for when its stay could come back (Gate F), and the ask device was a mirror device (pair ceiling 55.5); a clustered-design hold measured on the v1 pack was dropped (73,909 returned cards put every lead over the fourth market at z 2.3 to 3.5); re-rooted fresh by the author's rule (no retirement)"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-20",
+      "domain": "education-learning-sciences",
+      "subdomain": "item-response-theory-test-equating",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G6",
+        "G1"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:rater-severity-drift-on-a-constructed-response-anchor",
+      "niche": "a state educator licensing board's 2027 formal reviews of its educator preparation programs, decided on their 2025-26 completers' first-attempt pass rates on the state's elementary literacy licensure test, whose 2026 form the board's assessment office equates itself for the first time, to the 2025 form through an anchor of twenty multiple-choice items and one rater-scored written assignment",
+      "driver": "The decisive quantity is the second administration's score at the first administration's standard, estimated through a shared subset of which one part is judged by people, and the second administration's judges applied a harsher standard than the first, measured only on a random set of the first administration's responses, each carrying the score its first-administration judges agreed on, that the second judges re-judged unknowingly; the judged part has to be put back on the first standard before it carries the link, because used as judged it makes the second group look weaker and the cut too high, and dropped from the subset it leaves a link blind to the second group's real decline on what only the judged part measures, which sets the cut too low.",
+      "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+      "fate": "spent at stage 4 on 2026-10-20: the judge (v2r1) found the main call DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect yes): the rater shift on the anchor's written assignment is a bias in recorded values that the solver must catch, so on consistent scoring the task collapses; two scored readers missed the call on the drop-WA2 rung and all 32 ask figures; re-rooted fresh by the author's rule (no retirement)"
+    },
+    {
+      "architecture": "v3",
+      "fate": "spent at stage 4 on Gate F: both scored readers landed the call and all 32 ask figures (the textbook dual-frame estimator, executed as a work order once the design report describes the two lists' separate draws); judge v3r1 DETERMINISTIC APPROVE",
+      "driver": "The decisive quantity is each area's total of units with a trait, measured on random samples drawn separately from two incomplete lists whose coverage overlaps; a unit on both lists could have been drawn from either, so each tested unit counts by its chance of entering either sample: adding the two lists' estimates counts the shared units twice, one list alone misses the units only the other holds, and pooling every tested unit into one share gives the lists' different sampling rates and different rates of the trait the wrong weight.",
+      "driver_concrete": "Each county's estimated private wells above the nitrate standard is the dual-frame estimate over the union of the permit list and the parcel list: each tested well weighted by one over its chance of being drawn from either list given the lists it is on (Kalton-Anderson; Hartley at any split and post-stratifying by list membership agree), not the tested wells' pooled share scaled to the union, nor each tested well at the rate of the list it was drawn from, nor the sum of the two lists' separate estimates, nor either list alone.",
+      "stump": "Scaling each county's share of tested wells above the standard to its wells on the two lists files three counties (Alderwick, Glenmoor and Netherby), because the parcel list was sampled at about half the permit list's rate and its parcel-only wells run higher in nitrate, so the pooled share leaves out Brannock, Farrowdale and Lindmark; weighting each tested well by the rate of the list it was drawn from files ten, counting the wells on both lists about twice; one over each well's chance of selection from either list gives the six.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "niche": "a state private well program's 2027 county nitrate assistance: each county's estimated private domestic wells above the nitrate standard, from a survey sampled separately from two incomplete, overlapping lists of wells (the well construction permit database and the assessors' parcels recorded as on a private well)"
+    }
+  ],
+  "notes": "v4 drawn 2026-10-20 after architecture 3 was spent at stage 4 on Gate F (the dual-frame estimator executed as a work order once the design report described the two lists); honest data by construction (the register records registrations, the audit measures presence in the field, no figure is wrong); the decisive clock and the earlier departures live only in the event history, and no shipped document names either.",
+  "registered": "2026-10-20T14:00:47Z"
 }

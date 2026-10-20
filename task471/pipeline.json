@@ -1,13 +1,13 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "general-statistics-data-science",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "",
+ "stump": "Applying the audit's absence rates by the register's own fields (country of birth and years at the current address) qualifies the older immigrant town and misses the seasonal-work town and the university town; the golden takes each person's absence rate from the length of the current stay since the latest arrival and earlier departures, rebuilt from the event history (names and figures at calibration).",
  "architecture": 4,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "re-root at stage 1 to architecture 4 (the author's no-retirement rule): a fresh draw whose decisive step is not a design-based estimator the documents must describe; the card's lineage and the note's Tried and rejected carry architecture 3's fate",
+ "resume": "stage 2 design: calibrate the world (generator prototype), then the design note's sections to precut exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
