@@ -1,0 +1,105 @@
+{
+  "task": "task478",
+  "architecture": "v1",
+  "drawn": "2026-10-20",
+  "slot_note": "seed ET35 (repeat-disaster counties across a FEMA region): the world screened at the draw and set aside (every unobserved quantity it offers is a spent lane mechanism and the declaration count itself is records-fixed, its levers 'Statewide' rows, amendments and spellings data semantics); the decision kept in form (which administrative areas a programme serves, on a count per area) in a fresh world: a state DOT district's spring patching crews placed by the potholes its camera-equipped maintenance fleet found and did not find in a March detection campaign",
+  "domain": "business-operations-analytics",
+  "client_domain": "general-statistics-data-science",
+  "subdomain": "field-service-maintenance",
+  "niche": "a state DOT district's estimate of the potholes on the state roadway its camera-equipped maintenance fleet drove in a March detection campaign, found or not, placing its spring patching crews; built from a detection vendor's defect inventory, the fleet's telematics segment traversals, the camera register and device log, the road inventory and the maintenance management system",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G12",
+    "G2",
+    "G10"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the vendor's defect inventory, the fleet's traversals and the road inventory and reads every rule correctly completes the potholes no camera recorded by treating every pass over a segment as an independent chance at the find rate repeat passes show (about 95 per cent), which leaves a segment driven daily as fully searched and designates only the urban sections, when a camera finds the same potholes on every pass and only the distinct cameras that drove a segment are independent chances, so the rural and suburban sections one or two cameras drove hide close to half their potholes.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a population total estimated by integrating a defect inventory whose detections are linked across passes and cameras with the effort record of every camera's traversals, each found defect counted as one over its segment's chance of being found by at least one of the distinct cameras that drove it, at the rate a second camera finds a defect a first camera found; replacing that with a generic summary (finds per lane-mile, finds per pass, every pass an independent chance) designates other sections.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:capture occasions are the distinct instruments, not the repeat looks",
+  "layer1": [
+    "the vendor's detections in local time and the telematics traversals in UTC across the 14 March 2027 daylight saving change",
+    "defect IDs re-keyed at the vendor's mid-month platform migration",
+    "road segment IDs from the 2025 road inventory in the vendor feed against the 2026 renumbering, with split and merged segments",
+    "segments transferred to local jurisdiction during the campaign (state-maintained flag by effective date)",
+    "the district reviewer's QA rejections in a separate review log keyed differently",
+    "camera units moved between vehicles mid-month (camera register with install and removal dates)",
+    "camera offline periods in the device health log",
+    "emergency cold patches in the maintenance management system, located by route and milepost",
+    "lane-miles built from segment length and lane count in the road inventory"
+  ],
+  "stakeholder_role": "the district maintenance engineer of a state DOT district, who issues the spring patching crews' task orders",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "fleet_camera_traversals_2027-03.csv",
+    "rows": 50000,
+    "entity": "one traversal of one road segment by one camera-equipped vehicle",
+    "grain": "vehicle x segment x pass",
+    "source": "synthetic (constructed in the layout of a fleet telematics segment-coverage export)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (an unnamed state's DOT, its fictional Tamsett District)",
+    "currency": "USD",
+    "org_type": "state department of transportation district office maintaining state highways",
+    "invented_names": [
+      "Tamsett District",
+      "Kerbline Vision"
+    ],
+    "people": [
+      "Tamara Copeland",
+      "Darin Smith"
+    ]
+  },
+  "deliverables": [
+    "tamsett_spring_patching_sections_2027.csv",
+    "tamsett_spring_patching_task_orders_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A count of members seen only through repeated looks by several instruments, each of which either always or never sees a given member, is completed by the chance that at least one of the distinct instruments that looked at a unit found a member, read from how often a second instrument finds a member a first one found; treating every look as an independent chance credits a unit looked at many times by one instrument as fully searched, though it had one chance.",
+  "driver_concrete": "Each section's potholes per ten lane-miles on 31 March 2027 counts the potholes no camera recorded, completed segment by segment as one over the chance that at least one of the distinct cameras that drove the segment found a pothole, the per-camera chance read from how often a second camera found a pothole another camera found; a camera finds the same potholes on every pass, so a rural segment its section's patrol truck drove twenty times has had one chance.",
+  "stump": "The default path counts the potholes the cameras found per ten lane-miles, or completes them at the 95 per cent find rate of repeat passes over each segment's passes, which changes nothing on segments driven daily, and designates only the urban sections, missing the rural and suburban sections whose segments one or two cameras drove, where close to half the potholes went unseen.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task104": "task104 replays a self-adapting scorer at a setting it never ran; here a count of road defects is completed from repeat detections, and the independent chances are the distinct cameras that drove a segment, not its passes.",
+    "task134": "task134's first architecture is a cumulative incidence with competing exits and censoring; here nothing exits and nothing is followed: unseen members are completed from cross-instrument recaptures, each instrument missing the same members on every look.",
+    "task177": "task177 weighs chosen against imposed experiences in later choices; here nothing is chosen: a count is completed from detections whose repeats by one camera carry no new chance of a find.",
+    "task463": "task463 is a spending-weighted price change with stock-up dynamics; here the quantity is a count of potholes completed by the number of distinct cameras that drove each segment.",
+    "task501": "task501 is the dominant eigenvalue of a who-passes-to-whom matrix; here a count is completed by the chance of at least one find across the distinct cameras that drove a segment.",
+    "task70": "task70 constructs per-record dates from an event log under a class cut; here the decisive construction is how many independent looks each segment had, the distinct cameras, read against the passes the telematics log lists.",
+    "task236": "task236 reads a capture rate against an independent fixed-protocol source after a capture change; here no protocol changes and no outside source exists: a second camera is the independent look and a repeat pass by the same camera is not.",
+    "task453": "task453's first architecture adjusts a seasonal pattern across a documented placement change; here the decisive step completes undetected defects by distinct-instrument occasions.",
+    "task471": "task471's census and survey miss the same members of one hard-to-count group, a dependence across units fixed by a demographic benchmark; here each camera misses its own independent set of potholes on every pass, a dependence within one instrument, fixed inside the record by counting distinct cameras as the occasions and reading their find rate from cross-camera recaptures.",
+    "task470": "task470's transponder network never records some aircraft at all, so the missing activity is rebuilt from a register of units; here every pothole is visible to some cameras and not to others, independently, and the unseen are completed from the cameras' own cross-recaptures.",
+    "task462": "task462 weights each plume by one over a size-dependent detection probability fitted on blind releases; here detection does not depend on the defect and no trials exist: the per-camera find rate is read from cross-camera recaptures, and the decisive move is that repeat passes by one camera add no chance.",
+    "task473": "task473 completes untested drivers by the arrest catch rate at each positive's own BAC band, measured where everyone is tested; here there is no complete-observation subset and no band: the unseen are completed by the number of distinct cameras each segment had.",
+    "task264": "task264 weights sampled persons by the inverse of their visit multiplicity across sites; here the repeated looks are one camera's passes over one segment, and the estimand is the members no look found, not the distinct members among those seen."
+  },
+  "lineage": [],
+  "notes": "Pairing honest label: the decision-maker is a state DOT district's maintenance operation (business-operations-analytics, field-service-maintenance), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the only ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Drawn after task479 registered the client pairing general-statistics-data-science x etl and its subdomain, so the client label could not be used on the card.",
+  "registered": "2026-10-20T22:19:46Z"
+}
