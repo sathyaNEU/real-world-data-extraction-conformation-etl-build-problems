@@ -1,36 +1,37 @@
 {
  "task": "task250",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-20",
  "stump": "A competent solver re-runs the filed quality control on the 2025 to 2027 export (with or without the 2028 network) and files 3.5, inside the field plan's visits; every drift in the record was repaired within days of the 3.0 alert that found it, so at 3.5 those drifts would have kept growing until they crossed the wider limit, one alert each, which with the network re-run puts 3.5 over the visits and files 4.0.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on target.zip 19727806: the filed menu of settings, the setting in force in the 2027 summary, ordinary field vocabulary; numeric false positives in the ET0 bulletin and the register",
+  "reader": "ten scored readers over five rounds, all missed the call; round 5 on the shipped pack: I 3.5 at 17 (asks 4 of 24), J 3.5 at 12 (asks 2 of 24), both exit 0"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (repeat.question_form against task476 v2 and task477)",
+  "surface": "3 promoted pairs for the author's optional adjudication (task249 v5 spent, task157, task231)",
   "nearest": "task250 v1 (this slot, lineage) 0.13; task189 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 6 on target.zip 19727806: 4.0 at 18 forced; a plain re-run files 3.5 at 23)",
+  "disposition": "APPROVE (optional notes: the peak year against the three-year mean, the reach window ending at the alert day; neither moves the call)",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Architecture 2 drawn and registered (two keys: the 2028 network re-run, then one alert for every drift the record's 3.0 alerts cut short that the re-run never alerted before its repair). Generator record, field records, register history, documents, solve and routes rewritten and test-built on seed 1; a seed scan (scratch scan.py, seeds 1 to 400) picks the seed with all four golden three-year counts divisible by three and the widest margin. Next: choose the seed and the budget, then checks, verify, pair, writeup, golden, the design note's stage 2 sections, prompt and precut.",
+ "resume": "Shipped on target.zip 19727806. Next: the portal result.",
  "approved": null,
- "delivered": "",
+ "delivered": "2026-10-20",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -39,6 +40,18 @@
   {
    "date": "2026-10-20",
    "event": "architecture 1 spent at stage 4 (reader 1 landed the network re-run, 4.0 at 9 a year; judge DETERMINISTIC APPROVE); re-rooted to architecture 2 (two keys) and redrawn"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "ask layer v3 after judge pass 3 SEND_BACK and reader D's 24 of 24: late cancellations and lost orders removed; workshop checks of a spare sensor as the silent device"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "stage 4 rounds 3 to 5 on the v3 ask layer: judge pass 4 SEND_BACK (growth after a check unfiled) answered with QC-02 section 9; pass 5 FIX_NOW (the plan's in-place check, a step against the spring round) answered; pass 6 APPROVE; readers E to J all missed the call, asks 2 to 4 of 24"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "SHIPPED: run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits"
   }
  ]
 }

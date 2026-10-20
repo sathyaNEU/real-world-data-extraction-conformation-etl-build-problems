@@ -1,104 +1,106 @@
 {
-  "task": "task250",
-  "architecture": "v2 (the same consortium's stations: the 2028 drift-alert setting read on the record re-run with the 2028 network, plus one alert for every drift the record's own 3.0 alerts cut short, which at a less sensitive setting would have kept growing until it crossed that setting's limit)",
-  "drawn": "2026-10-20",
-  "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "sensor-calibration-measurement",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "the drift-alert setting of a Spanish irrigation consortium's 148 automatic weather stations in the middle Ebro valley, whose daily quality control reads each station's air-temperature anomaly against the inverse-distance estimate of its three nearest reporting stations, set for 2028 when 17 stations funded by the rural development programme close and the field plan funds fewer drift-alert visits",
-  "objective": "data-quality-monitoring",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "(pending the seed: 4.0 on the prototype)",
-  "answer_source": "task250/submission.md, block 1",
-  "gap": [
-    "time",
-    "population"
+ "task": "task250",
+ "architecture": "v2 (the same consortium's stations: the 2028 drift-alert setting read on the record re-run with the 2028 network, plus one alert for every drift the record's own 3.0 alerts cut short, which at a less sensitive setting would have kept growing until it crossed that setting's limit)",
+ "drawn": "2026-10-20",
+ "slot_note": "",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "sensor-calibration-measurement",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "the drift-alert setting of a Spanish irrigation consortium's 148 automatic weather stations in the middle Ebro valley, whose daily quality control reads each station's air-temperature anomaly against the inverse-distance estimate of its three nearest reporting stations, set for 2028 when 17 stations funded by the rural development programme close and the field plan funds fewer drift-alert visits",
+ "objective": "data-quality-monitoring",
+ "shape": "04",
+ "decision_type": "dial_setting",
+ "answer_unit": "named_option",
+ "answer": "Run the 4.0 setting from the January 2028 configuration: it raises 18 drift alerts a year, within the 28 visits the field plan leaves for them.",
+ "answer_source": "task250/submission.md, block 1",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G12",
+  "G3",
+  "G17"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "maturity_censoring",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who has read every rule re-runs the filed quality control on the 2025 to 2027 export with the stations the network keeps, sets each station's limit from the recorded statistic and counts each setting's alerts: 3.5 fits inside the field plan's visits and is filed. Every drift in the record was repaired within days of the 3.0 alert that sent its visit, so the record holds those drifts cut short below the wider limits; at 3.5 they would have kept growing until they crossed it, one alert each, which puts 3.5 over the visits and files 4.0.",
+ "domain_test": "The deciding quantities are measurement-network ones: a temperature sensor's drift is a persistent offset that accumulates until a technician recalibrates it against the transfer standard (calibration-interval analysis reads an instrument's record as renewals the adjustments impose), while the weather's spatial residual reverts by itself; and the spatial-consistency residual widens where the inverse-distance estimate's nearest neighbours close. With a hospital's or a call centre's nouns there is no transfer standard, no recalibration that resets a monotone drift and no interpolated neighbour estimate, so neither count carries over.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:alert-policy-censoring-of-a-drift-record",
+ "layer1": [
+  "the stations' daily export in Spanish headers with decimal commas and re-sent rows repeated",
+  "clock-change days short or long, and five-minute loggers after a firmware upgrade",
+  "the maintenance contractor changed in July 2027 and the work orders' sheet, language and statuses with it",
+  "the old contractor's handover export lost some 2027 orders whose readings the database kept",
+  "the contractors' tablets carried a station's previous order forward onto some visits' readings",
+  "drift orders closed from the office with the system's closing date in the visit column",
+  "route orders carrying two stations, and breakdowns reset remotely closed with a visit date",
+  "the register's sensor history mixing adjustments, replacements and shield cleanings"
+ ],
+ "stakeholder_role": "the consortium's network quality coordinator, who sets the drift-alert setting against the field team's visit capacity",
+ "role_family": "capacity_planner",
+ "spine": {
+  "file": "estaciones_diario_2025-2027.csv",
+  "rows": 160279,
+  "entity": "one station-day of air temperature (daily mean, maximum, minimum) and the logger's count of valid records",
+  "grain": "station x day",
+  "source": "synthetic"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "cutover_or_migration",
+ "org_family": "cooperative_or_member_body",
+ "world": {
+  "geography": "Spain, Aragón (the middle Ebro valley)",
+  "currency": "EUR",
+  "org_type": "a consortium of irrigation communities running an agro-climatic station network for irrigation advice",
+  "invented_names": [
+   "Consorcio Agroclimático del Ebro Medio",
+   "Red Agroclimática del Ebro Medio",
+   "Talleres Electrónicos Monegrillo SL",
+   "Servicios Técnicos Alcanadre SA"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G12",
-    "G3",
-    "G17"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has read every rule re-runs the filed quality control on the 2025 to 2027 export with the stations the network keeps, sets each station's limit from the recorded statistic and counts each setting's alerts: 3.5 fits inside the field plan's visits and is filed. Every drift in the record was repaired within days of the 3.0 alert that sent its visit, so the record holds those drifts cut short below the wider limits; at 3.5 they would have kept growing until they crossed it, one alert each, which puts 3.5 over the visits and files 4.0.",
-  "domain_test": "The deciding quantities are measurement-network ones: a temperature sensor's drift is a persistent offset that accumulates until a technician recalibrates it against the transfer standard (calibration-interval analysis reads an instrument's record as renewals the adjustments impose), while the weather's spatial residual reverts by itself; and the spatial-consistency residual widens where the inverse-distance estimate's nearest neighbours close. With a hospital's or a call centre's nouns there is no transfer standard, no recalibration that resets a monotone drift and no interpolated neighbour estimate, so neither count carries over.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:alert-policy-censoring-of-a-drift-record",
-  "layer1": [
-    "the stations' daily export in Spanish headers with decimal commas",
-    "the quality-control export reprocessed in March 2027 and re-sent, with the reprocessed days repeated",
-    "the maintenance contractor changed in July 2027 and the work orders' outcome vocabulary with it",
-    "station codes re-issued when two stations were moved in 2026",
-    "missing days written as a sentinel by the older loggers and left blank by the newer ones",
-    "a work order covering two stations' alerts on one trip"
-  ],
-  "stakeholder_role": "the consortium's network quality coordinator, who sets the drift-alert setting against the field team's visit capacity",
-  "role_family": "capacity_planner",
-  "spine": {
-    "file": "estaciones_diario_2025-2027.csv",
-    "rows": 157452,
-    "entity": "one station-day of air temperature (daily mean, maximum, minimum) and the logger's count of valid ten-minute records",
-    "grain": "station x day",
-    "source": "synthetic"
-  },
-  "forum": "line_manager_or_team",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "Spain, Aragón (the middle Ebro valley)",
-    "currency": "EUR",
-    "org_type": "a consortium of irrigation communities running an agro-climatic station network for irrigation advice",
-    "invented_names": [
-      "Consorcio Agroclimático del Ebro Medio",
-      "Red Agroclimática del Ebro Medio",
-      "Talleres Electrónicos Monegrillo SL",
-      "Servicios Técnicos Alcanadre SA"
-    ],
-    "people": [
-      "Celia Hernando",
-      "Teodoro Falcó",
-      "Inés Dávila"
-    ]
-  },
-  "deliverables": [
-    "drift_alert_setting_2028.xlsx",
-    "alerts_by_setting_2028.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a count of alerts a less sensitive limit will raise, read from a record the current limit produced: every fault the current limit caught was repaired within days, so the record holds those faults cut short below the higher limit they would otherwise have reached, and the count is the record re-run on the units and estimate sources the next period will have plus one alert for every caught fault the re-run never alerted before its repair.",
-  "driver_concrete": "Each setting's 2028 drift alerts are the 2025 to 2027 export re-run with the 2028 network (the 17 closing programme stations out of the neighbour pool) against the limits configured from the recorded statistic, plus one alert for every drift the register shows adjusted after a 3.0 alert at a kept station whose re-run statistic never passed that setting's limit before the adjustment, because a drift keeps growing until it is recalibrated.",
-  "stump": "A competent solver re-runs the quality control on the record (with or without the 2028 network) and files 3.5, inside the field plan's visits; the drifts the record's 3.0 alerts cut short would have grown past the 3.5 limit in 2028, which puts 3.5 over the visits and files 4.0.",
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "The decisive quantity is a count of alerts each unit raises when its departure from an estimate built from its nearest other units passes a limit set from that departure's past spread; when some units leave, the remaining units' estimates come from farther units and their departures spread wider while their limits stay at the spread measured with the old neighbours, so the alerts rise even as the units fall.",
-      "fate": "spent 2026-10-20 at stage 4: reader 1 re-ran the quality control with the 34 closing stations out of the neighbour pool and landed the call (4.0 at 9 a year, every setting within one of the golden 61/25/9/3); reader 2 replayed the record and filed 3.5 at 9; judge DETERMINISTIC APPROVE. The network re-run is now the first rung of architecture 2."
-    }
-  ],
-  "differentiation": {
-    "task469": "there the share of future tasks overrunning a shorter allowance, read only where past allowances were already short (a duration censored by its own allowance); here an alert count under a wider limit, where every fault the narrower limit caught was repaired and the count adds one alert for each, on a record also re-run on next year's network",
-    "task190": "v4 there valued each setting by the volume an episode still had ahead of it at that setting's firing; here the count of alerts a setting raises, with the faults the record's own alerts ended counted once each",
-    "task229": "v2 there read the share of units in a correct state through checks that set them right; here the alerts a wider limit raises when the record's checks set every caught fault right early",
-    "task250": "v1 here (spent) made the network re-run the decisive step; it is now the first rung and the decisive step is the drifts the 3.0 alerts cut short",
-    "task101": "there a threshold cut from a distribution the decision's own earlier payments entered; here a count the current limit's repairs truncated",
-    "task157": "there members still away whose return follows a calendar earlier waves kept; here faults the record shows ended early by the current limit's own repairs, each of which a wider limit would meet once",
-    "task231": "there exits that reach the record of exits a year late, read from older rounds; here drifts the record does hold, repaired early by the policy being replaced, re-counted under the policy that replaces it"
-  },
-  "mechanism_source": "design_note",
-  "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, a reader landed the network re-run). The two-key ladder follows the lesson of task249 v1 to v5 and task250 v1: the reflex readers land (the stated network change) is a rung, and the decisive step is a second, data-native move (the record's own repairs truncated the drifts). Each key alone keeps 3.5 inside the visits; only both put it over. validated_decoy false: no certified figure is reproduced by the re-run, and the register's adjustments refute the replay inside the record.",
-  "registered": "2026-10-20T11:59:10Z"
+  "people": [
+   "Celia Hernando",
+   "Teodoro Falcó",
+   "Inés Dávila"
+  ]
+ },
+ "deliverables": [
+  "drift_alert_setting_2028.xlsx",
+  "alerts_by_setting_2028.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is a count of alerts a less sensitive limit will raise, read from a record the current limit produced: every fault the current limit caught was repaired within days, so the record holds those faults cut short below the higher limit they would otherwise have reached, and the count is the record re-run on the units and estimate sources the next period will have plus one alert for every caught fault the re-run never alerted before its repair.",
+ "driver_concrete": "Each setting's 2028 drift alerts are the 2025 to 2027 export re-run with the 2028 network (the 17 closing programme stations out of the neighbour pool) against the limits configured from the recorded statistic, plus one alert for every drift the register shows adjusted after a 3.0 alert at a kept station whose re-run statistic never passed that setting's limit before the adjustment, because a drift keeps growing until it is recalibrated.",
+ "stump": "A competent solver re-runs the quality control on the 2025 to 2027 export with the 131 stations the network keeps and files 3.5 at 23 drift alerts a year, inside the field plan's 28 visits (22 with the cut-short drifts added to the record as it ran, 12 on the record replayed); 30 of the 35 drifts the sensor history shows repaired at kept stations never reached the 3.5 limit before their repair and would have kept growing until they did, which puts 3.5 at 33 and files 4.0 at 18.",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "The decisive quantity is a count of alerts each unit raises when its departure from an estimate built from its nearest other units passes a limit set from that departure's past spread; when some units leave, the remaining units' estimates come from farther units and their departures spread wider while their limits stay at the spread measured with the old neighbours, so the alerts rise even as the units fall.",
+   "fate": "spent 2026-10-20 at stage 4: reader 1 re-ran the quality control with the 34 closing stations out of the neighbour pool and landed the call (4.0 at 9 a year, every setting within one of the golden 61/25/9/3); reader 2 replayed the record and filed 3.5 at 9; judge DETERMINISTIC APPROVE. The network re-run is now the first rung of architecture 2."
+  }
+ ],
+ "differentiation": {
+  "task469": "there the share of future tasks overrunning a shorter allowance, read only where past allowances were already short (a duration censored by its own allowance); here an alert count under a wider limit, where every fault the narrower limit caught was repaired and the count adds one alert for each, on a record also re-run on next year's network",
+  "task190": "v4 there valued each setting by the volume an episode still had ahead of it at that setting's firing; here the count of alerts a setting raises, with the faults the record's own alerts ended counted once each",
+  "task229": "v2 there read the share of units in a correct state through checks that set them right; here the alerts a wider limit raises when the record's checks set every caught fault right early",
+  "task250": "v1 here (spent) made the network re-run the decisive step; it is now the first rung and the decisive step is the drifts the 3.0 alerts cut short",
+  "task101": "there a threshold cut from a distribution the decision's own earlier payments entered; here a count the current limit's repairs truncated",
+  "task157": "there members still away whose return follows a calendar earlier waves kept; here faults the record shows ended early by the current limit's own repairs, each of which a wider limit would meet once",
+  "task231": "there exits that reach the record of exits a year late, read from older rounds; here drifts the record does hold, repaired early by the policy being replaced, re-counted under the policy that replaces it"
+ },
+ "mechanism_source": "design_note",
+ "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, a reader landed the network re-run). The two-key ladder follows the lesson of task249 v1 to v5 and task250 v1: the reflex readers land (the stated network change) is a rung, and the decisive step is a second, data-native move (the record's own repairs truncated the drifts). Each key alone keeps 3.5 inside the visits; only both put it over. validated_decoy false: no certified figure is reproduced by the re-run, and the register's adjustments refute the replay inside the record.",
+ "registered": "2026-10-20T11:59:10Z"
 }

@@ -1,0 +1,83 @@
+{
+ "call": {
+  "setting": 4.0,
+  "alerts_a_year": 18,
+  "runner_up": 3.5,
+  "runner_up_alerts_a_year": 33,
+  "per_setting_alerts_a_year": {
+   "3.0": 69,
+   "3.5": 33,
+   "4.0": 18,
+   "4.5": 14
+  }
+ },
+ "components": {
+  "stations_kept": 131,
+  "stations_closing": 17,
+  "rerun_at_runner_up": 23,
+  "rerun_alerts_a_year": {
+   "3.0": 66,
+   "3.5": 23,
+   "4.0": 7,
+   "4.5": 3
+  },
+  "drift_alert_adjustments_kept": 35,
+  "drifts_cut_short": {
+   "3.0": 10,
+   "3.5": 30,
+   "4.0": 33,
+   "4.5": 34
+  }
+ },
+ "steps": {
+  "drift_alert_visits_in_plan": 28,
+  "settings": [
+   3.0,
+   3.5,
+   4.0,
+   4.5
+  ],
+  "radius_km": 75,
+  "neighbours": 3,
+  "window_days": 14,
+  "min_in_window": 10,
+  "hold_days": 14,
+  "stations_registered": 148,
+  "lookback_days": 14,
+  "alert_window_days": 10,
+  "opening_window_days": 3,
+  "years": 3
+ },
+ "asks": {
+  "drift_alert_visits_2027": {
+   "Cinco Villas": 3,
+   "Ribera Alta del Ebro": 6,
+   "Valdejalón": 7,
+   "Hoya de Huesca": 5,
+   "Monegros": 9,
+   "Somontano de Barbastro": 2,
+   "Cinca Medio": 3,
+   "Bajo Cinca": 5
+  },
+  "days_alerts_waited_2027": {
+   "Cinco Villas": 9,
+   "Ribera Alta del Ebro": 25,
+   "Valdejalón": 26,
+   "Hoya de Huesca": 25,
+   "Monegros": 34,
+   "Somontano de Barbastro": 4,
+   "Cinca Medio": 8,
+   "Bajo Cinca": 16
+  },
+  "breakdown_visits_2027_stations_kept": {
+   "Cinco Villas": 14,
+   "Ribera Alta del Ebro": 15,
+   "Valdejalón": 20,
+   "Hoya de Huesca": 14,
+   "Monegros": 23,
+   "Somontano de Barbastro": 12,
+   "Cinca Medio": 12,
+   "Bajo Cinca": 5
+  }
+ }
+}
