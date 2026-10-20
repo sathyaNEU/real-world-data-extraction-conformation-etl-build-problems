@@ -3,7 +3,38 @@
 Architecture 2, a re-root drawn on 2026-10-20 in the same objective (Data Extraction & Conformation) and the same
 number. Architecture 1 (the berth hours crane breakdowns cost a call, read through the slowest of its parallel crane
 runs) was spent at stage 4 the same day, both scored readers landing the call; its record is the last line of
-`## Tried and rejected` and the card's lineage.
+`## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each large-vessel call's berth
+  time saved, the change in when the ship could sail under the port's access windows, which every one of the 784
+  recorded sailings obeys to the minute (the judge's thread rebuilt that from the pack alone). Layers: the mess (two
+  TOS clocks, the repeated November hour, former names and call signs, metres against feet, the relocations, the
+  parallel run, the second breakdown orders, the keyed visits) is the systems' own and neutral on the call (S1).
+  Three rules: no decoy, memo or ranking ships; no field reading decides; executing every filed rule with the cut as
+  the saving files Saltworks, which all six architecture 2 readers did.
+- **Readers (six, all medium, each on a fresh copy, scored before reading):** every one missed the call on the
+  default path (Saltworks 991, Pine Neck 804). Round 1: reader 1 kept all twelve ask figures (exit 1), reader 2 one
+  of 21; the asks were re-sited. Round 2 and round 3 (the shipped pack, target.zip sha256 1c91700c41064994): each kept
+  one of 21 (the call count), exit 0 four times. Round 2 reader 1 and round 3 reader 1 both found the second
+  breakdown orders and the report-total keying and missed every ask figure on the relocations alone (their figures
+  equal the register-terminal route exactly), so the asks hold on the measured readers with the relocation hazard
+  carrying the last margin.
+- **Judge:** pass 1 DETERMINISTIC, FIX_NOW (damage under the BRKDWN code; contractor lines sharing a timesheet day),
+  fixed in the dictionary and the data; pass 2, the one re-judge, DETERMINISTIC, FIX_NOW (repeated person, order and
+  day ledger rows; whether SRT's job hours hold the makers' engineers; whether damage repairs are maintenance labor),
+  fixed in the data and two dictionary clauses, read by round 3. Gate G binding_constraint and other,
+  analytical_non_defect, no surface read, no sole defect; Gate H pass, flagged borderline (once the gating is seen
+  the replay is execution), which is the design: no reader saw the gating.
+- **Free gates (2026-10-20):** checks.py 72 of 72, verify.py matches, two builds byte-identical, target.zip cut from
+  the final build (19 files), figures_check.py 63 of 63, precut.py 51 checks clean, voice-check PASS, guard.py heart
+  PASS (nearest 0.04), surface no personas, containers clean, generator/ceiling.py pair ceiling 28.5 with the cracker
+  and mirror on the round 1 readers' measured paths.
+- **leak.py REVIEW lines, each harmless:** 257 is a tide height in centimetres in the predictions; the rules and the
+  dictionary carry the call's words and the place names because they define the program and name the terminals;
+  the timesheets and the rules' document control name terminals beside hours and revision numbers, never ranked on
+  berth hours saved; the 2027 dates are the berth windows' effective dates, a declared distractor.
+
+## Tried and rejected` and the card's lineage.
 
 ## Draw
 

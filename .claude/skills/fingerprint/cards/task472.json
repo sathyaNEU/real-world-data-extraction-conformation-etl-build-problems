@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place the six 2027 replacement cranes at Millrace: 887 berth hours saved on fiscal year 2026 large-vessel calls, 331 ahead of Halyard.",
+  "answer_source": "task472/submission.md",
   "gap": [
     "objective",
     "time"
