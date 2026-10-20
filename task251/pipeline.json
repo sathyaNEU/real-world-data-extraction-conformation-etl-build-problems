@@ -1,21 +1,31 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "DESIGN",
- "domain": "physical-environmental-sciences",
+ "status": "BUILD",
+ "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
- "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends the few whose spans read low to the round; the span gas loses SO2 as it ages, at a rate that differs by supplier, so the analyzers adjusted to older cylinders read high and the analyzers on old cylinders of the faster-losing supplier go to the round instead.",
+ "stump": "A competent solver who reads the cylinder changes' jumps as the old gas's loss fits the loss rate per supplier and sends six analyzers (none on the December spans alone); the loss is set by the cylinder's interior, which only the certificates record, so four go: UVF-2207, UVF-1964, UVF-1987 and UVF-2075.",
  "architecture": 1,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on target.zip 9c884ce8: the manual's own subject words, the network's ordinary nouns, the certificates' interior lines",
+  "reader": "stage 4 pending"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.decision, repeat.question_form against task471 v4)",
+  "surface": "the card's three people only",
+  "nearest": "task249 v2 (lineage) 0.11"
+ },
  "judge": null,
  "returned": [],
- "resume": "Stage 2: prototype the world (twelve stations, fifteen analyzers, two suppliers' cylinders, nightly spans, monthly visits with the 2 per cent adjustment, cylinder changes read on both cylinders) and tune it to the ladder: the span route, the as-left route, the pooled loss rate and the oldest-cylinder proxy each file another set, the golden stable under exponential and linear loss and either regression, margins from the 5 per cent line; then the asks, the fork table, the closure, the prompt and precut.",
+ "resume": "Stage 4 on target.zip 9c884ce8: two isolated scored readers and the determinism judge. Free gates green: 182 checks, verify 0 failures, two builds byte-identical, figures_check 66 of 66, precut 51 of 51, voice-check PASS, leak.py REVIEW, heart WARN, pair 31.8 (one device found 8 of 33, two 13 of 33). Next: score the readers, read the judge, fix findings, ship.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -26,6 +36,10 @@
   {
    "date": "2026-10-20",
    "event": "drawn (architecture 1), card registered"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "redrawn on four axes after task250 shipped (General Statistics measurement error, operations_log, shape other, docx and xlsx); two keys: the span gas's loss and its rate set by the cylinder's interior (prototype 5, seed 2100); ask layer v2 (valid hours, mean, hours above 350) on the old firmware's unmarked check hours, ppb and standard-time stamps"
   }
  ]
 }

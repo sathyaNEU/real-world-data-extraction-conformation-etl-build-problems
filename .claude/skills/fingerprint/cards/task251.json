@@ -3,16 +3,16 @@
   "architecture": "v1",
   "drawn": "2026-10-20",
   "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "sensor-calibration-measurement",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "the January recalibration round of a copper smelter's SO2 monitoring network on the Atacama coast, whose analyzers are spanned every night and adjusted at each visit against span-gas cylinders from two suppliers that lose SO2 as they age, each cylinder change read on the outgoing and the incoming cylinder minutes apart",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "the January recalibration round of a copper smelter's SO2 monitoring network on the Atacama coast: thirteen UV-fluorescence analyzers spanned every night and adjusted at each visit against their own cylinders of SO2 in nitrogen from two suppliers, cylinders that lose SO2 as they age at a rate their interior sets (one supplier sold untreated cylinders and, from 2026, passivated ones too), the interior written only on the suppliers' certificates",
   "objective": "data-quality-monitoring",
-  "shape": "10",
+  "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Send four analyzers to the January 2028 round: UVF-2207 (BL01), UVF-1964 (BL02), UVF-1987 (BL04) and UVF-2075 (BL09); the other nine stay.",
+  "answer_source": "task251/submission.md, block 1",
   "gap": [
     "objective",
     "population"
@@ -22,6 +22,7 @@
   ],
   "generators": [
     "G13",
+    "G6",
     "G3"
   ],
   "gate_g": "decomposition_attribution",
@@ -30,27 +31,27 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has read every rule takes each analyzer's December span checks against its cylinder's certified concentration as its gain, finds the visits' adjustments have kept nearly every analyzer inside the 5 per cent tolerance and sends the few whose spans read low to the round; the span gas loses SO2 as its cylinder ages, so every adjustment tuned the analyzer to gas weaker than its label, the cylinder changes (the incoming cylinder reading higher than the outgoing one by the outgoing one's loss) fix each supplier's loss rate, and the analyzers' true gains (span ratio over the gas's remaining fraction) send the analyzers on old cylinders of the faster-losing supplier instead.",
-  "domain_test": "The deciding quantity is a gas analyzer's gain against true SO2, which a monitoring network reads through span checks against certified reference gas; that a low-concentration reactive gas standard loses SO2 in its cylinder and that adjusting an analyzer to it writes the loss into every later reading are metrology facts of gas analysis, and the duplicate analyzers' disagreement is the field's own parallel-run evidence. With a hospital's or a call centre's nouns there is no span gas, no cylinder ageing and no adjustment that copies a reference's error, so the task does not survive the swap.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:span-gas-loss-written-into-the-analyzer-by-adjustment",
+  "analyst_test": "A strong analyst who has read every rule takes each analyzer's span on the year's last night against its cylinder's certified concentration as its gain and sends none to the round (every span within 3.5 per cent, the visits' adjustments keeping them there). One who reads the cylinder changes, where the incoming cylinder reads the analyzer up to 24 per cent higher than the outgoing one, as the gas the old cylinder lost and fits the loss rate per supplier sends six, the two analyzers on passivated cylinders of the faster supplier read as 8 and 14 per cent high. The loss rate is set by the cylinder's interior (untreated about 10 per cent a year, passivated about 1), which the suppliers' certificates record and the register does not, and four analyzers go.",
+  "domain_test": "General Statistics & Data Science, so the swap is of the method: the deciding quantity is each instrument's systematic measurement error, estimated from a measurement-error model in which the reference itself carries an error that grows with its age at a rate its construction sets, identified only by paired readings of two references minutes apart. Replace the model with the routine checks' own agreement with the reference (a generic summary) and none goes to the round; fit the reference's error by vendor instead of by construction and six go; the call turns on the measurement-error model itself, in a setting (gas metrology at a smelter's SO2 network) that is another field's.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:span-gas-loss-by-cylinder-interior-written-into-the-analyzer",
   "layer1": [
-    "the hourly export in local time across Chile's April and September clock changes, with a re-sent block",
-    "span-check hours left unflagged at the analyzers on the old logger firmware",
-    "the duplicate analyzers reporting in ppb where the rest report micrograms per cubic metre",
-    "the cylinder register carrying the supplier's certification date beside the install date",
-    "the field visits' log in Spanish, as-found and as-left span readings, adjustments not made at every visit"
+    "the loggers' 2027 hourly export, semicolon separated with decimal commas, the old firmware on standard time and the new on official time across Chile's April and September clock changes, a re-sent block",
+    "the old firmware's calibration and visit hours left unmarked until each station's upgrade",
+    "cylinder numbers keyed into the calibrators in three forms",
+    "the cylinder register and the suppliers' certificates in two suppliers' formats, Spanish, decimal commas",
+    "the visit log in Spanish with as-found, incoming-cylinder and as-left readings, adjustments only past 3 per cent"
   ],
   "stakeholder_role": "the head of the smelter's SO2 monitoring network, who sends the list of analyzers to the accredited laboratory's January recalibration round",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "so2_horario_2025-2027.csv",
-    "rows": 0,
-    "entity": "one analyzer-hour of SO2 with its status flag",
-    "grain": "analyzer x hour",
+    "file": "so2_horario_2027.csv",
+    "rows": 96407,
+    "entity": "one station-hour of SO2 from the principal analyzer with its status flag",
+    "grain": "station x hour",
     "source": "synthetic"
   },
   "forum": "operations_desk",
@@ -71,19 +72,19 @@
     ]
   },
   "deliverables": [
-    "so2_recalibration_round_2028.xlsx",
-    "analyzer_gains_2027.png"
+    "nota_ronda_recalibracion_2028.docx",
+    "ronda_recalibracion_enero_2028.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose own strength falls with its age since it was certified, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks afterwards cannot see it; the loss rate, which differs between the references' two sources, is fixed where a unit is read against an outgoing and an incoming reference minutes apart, and each unit's gain is its check ratio over its reference's remaining strength.",
-  "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its December span ratio against its cylinder's certified concentration divided by the fraction of SO2 the cylinder still holds at its age since certification, at its supplier's loss rate, which the cylinder changes fix: the span read on the outgoing and the incoming cylinder minutes apart differ by the gas the older one has lost.",
-  "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends the few whose spans read low to the round; the span gas loses SO2 as it ages, at a rate that differs by supplier, so the analyzers adjusted to older cylinders read high and the analyzers on old cylinders of the faster-losing supplier go to the round instead; a solver who finds the loss but pools the suppliers flags another set.",
+  "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose strength falls with its age since certification at a rate its construction sets, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks cannot see it; the loss is measured where a unit is read on an outgoing and an incoming reference minutes apart and must be fitted by the references' construction, which one source changed partway, not by their source, before each unit's check ratio is divided by its reference's remaining strength.",
+  "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its span reading that night over 400 ppb divided by the fraction of SO2 its cylinder still holds at its age since certification, at the loss rate the cylinder's interior sets (untreated or passivated, from the suppliers' certificates), both rates fitted on the 31 cylinder changes, where the analyzer is read on the outgoing and the incoming cylinder minutes apart.",
+  "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends none (every span within 3.5 per cent); one who reads the cylinder changes' jumps as the old gas's loss and fits the loss rate per supplier sends six, two of them on passivated cylinders of the faster supplier that have lost almost nothing; the rate is set by the cylinder's interior, which only the certificates record, and four go.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task249": "v2's units stood apart from references that shared the truth only in mixed hours (a representativeness problem); here the reference stands with the unit and loses strength with its own age, so every check agrees and the error is the reference's"
   },
   "lineage": [],
-  "notes": "stump_strategy other: reference ageing, a check whose reference loses strength with its age since certification, so the routine check cannot see the error it writes into the unit; none of the listed strategies names it (decomposition_attribution is the nearest and is banned against task475; the honest Gate G is decomposition_attribution, the analyzer's apparent agreement split into its own gain and its gas's loss). Gap objective: the span ratio is reported correctly and the decision is scored on the gain against true SO2. G13: the certified concentration holds at its certification date, not at the night of use.",
+  "notes": "stump_strategy other: reference ageing, a check whose reference loses strength with its age since certification at a rate set by its construction, so the routine check cannot see the error it writes into the unit; none of the listed strategies names it (decomposition_attribution is the nearest and is banned against task475; the honest Gate G is decomposition_attribution, the analyzer's apparent agreement split into its own gain and its gas's loss). Gap objective: the span ratio is reported correctly and the decision is scored on the gain against true SO2; population: the loss rate pooled over the wrong cylinders. G13: the certified concentration holds at its certification date, not on the night of use; G6: supplier A's cylinders changed interior in 2026, so a rate per supplier is a mixture. Redrawn 2026-10-20 after task250 shipped: ban.pairing, ban.subdomain and ban.artifact (task250, physical-environmental-sciences sensor calibration, monitoring_export) and ban.shape (shape 10, task471) BLOCKed the registered card; the task is a measurement-error model's estimate (general statistics, missing data, censoring and measurement error), the stakeholder's working file is the field operations log, and the criteria come from each analyzer's verdict and each station's two 2027 record figures, a structure outside the eighteen shapes (shape 10 also wants one file).",
   "registered": "2026-10-20T16:13:30Z"
 }
