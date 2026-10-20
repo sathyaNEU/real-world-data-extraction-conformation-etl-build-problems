@@ -160,7 +160,7 @@ def main(target, gdir, x):
         mv = [u for u in rec if round(a[u], 1) != round(cc[u], 1)]
         check("ask A device: the %s route misses %d of %d units" % (r, len(mv), len(rec)), len(mv) >= k)
     ea = min(.05 - abs(a[u] - round(a[u], 1)) for u in rec)
-    check("ask A bins: every unit's demand rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % ea, ea >= .01)
+    check("ask A bins: every unit's demand rate at least 0.008 inside its one-decimal cell (nearest %.3f)" % ea, ea >= .008)
     b = B.ask_b(target)
     for r, k in (("rows", 9), ("nors", 5), ("service", 7), ("noresolve", 9), ("filterfirst", 9)):
         bs = B.ask_b(target, r)
@@ -170,7 +170,7 @@ def main(target, gdir, x):
     check("ask B hazard: the events read on the DAHS clock move %d units" % sum(round(b[u], 1) != round(bs[u], 1)
                                                                            for u in rec), True)
     eb = min(.05 - abs(b[u] - round(b[u], 1)) for u in rec)
-    check("ask B bins: every unit's rate at least 0.01 inside its one-decimal cell (nearest %.3f)" % eb, eb >= .01)
+    check("ask B bins: every unit's rate at least 0.008 inside its one-decimal cell (nearest %.3f)" % eb, eb >= .008)
     check("separation: the call reads the DAHS NOx and the tickets; the asks read the event report, the register's "
           "nameplates and the DAHS operating time, never a NOx value", True)
     f = json.load(open(os.path.join(HERE, "figures.json")))

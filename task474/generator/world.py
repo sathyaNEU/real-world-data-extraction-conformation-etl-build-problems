@@ -46,7 +46,7 @@ FUEL_RETENTION = {"A": {5: .011, 6: .013, 7: .016, 8: .018, 9: .014},
                   "B": {5: .024, 6: .028, 7: .032, 8: .035, 9: .029}}
 TRANSPORT = {"Cutler Bend": .2186, "Ashfork": .1539, "Dunmore Flats": .2248, "Sable Ridge": .1929, "Holt Creek": .1386}
 # forced derates drawn at their size times this (set so every unit's outage rate clears its rounding edge)
-DERATE_SCALE = 0.97
+DERATE_SCALE = 0.918
 # other monitored units, outside the program: simple-cycle peakers and the coal unit
 OTHER = {
     "AF-CT3": ("Ashfork", "simple cycle", 88), "AF-CT4": ("Ashfork", "simple cycle", 86),

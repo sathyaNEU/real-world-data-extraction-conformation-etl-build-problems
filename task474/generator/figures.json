@@ -11,24 +11,24 @@
  "asks": {
   "efor": {
    "AF-1": 27.0,
-   "AF-2": 24.3,
+   "AF-2": 24.2,
    "CB-1": 14.7,
-   "CB-2": 12.8,
-   "DF-1": 24.3,
-   "DF-2": 32.8,
-   "DF-3": 19.0,
-   "SR-1": 14.7,
-   "SR-2": 16.6
+   "CB-2": 12.7,
+   "DF-1": 24.1,
+   "DF-2": 32.7,
+   "DF-3": 18.7,
+   "SR-1": 14.6,
+   "SR-2": 16.5
   },
   "eford": {
    "AF-1": 14.4,
-   "AF-2": 11.7,
+   "AF-2": 11.6,
    "CB-1": 7.4,
    "CB-2": 9.2,
-   "DF-1": 14.1,
+   "DF-1": 14.0,
    "DF-2": 19.3,
-   "DF-3": 8.6,
-   "SR-1": 8.1,
+   "DF-3": 8.5,
+   "SR-1": 8.0,
    "SR-2": 9.2
   }
  },
@@ -74,8 +74,8 @@
   },
   "AF-2": {
    "designated": true,
-   "efor": 24.3,
-   "eford": 11.7,
+   "efor": 24.2,
+   "eford": 11.6,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"
@@ -90,7 +90,7 @@
   },
   "CB-2": {
    "designated": true,
-   "efor": 12.8,
+   "efor": 12.7,
    "eford": 9.2,
    "hours": 1164,
    "mwh": 199641,
@@ -98,15 +98,15 @@
   },
   "DF-1": {
    "designated": true,
-   "efor": 24.3,
-   "eford": 14.1,
+   "efor": 24.1,
+   "eford": 14.0,
    "hours": 1076,
    "mwh": 198573,
    "plant": "Dunmore Flats"
   },
   "DF-2": {
    "designated": false,
-   "efor": 32.8,
+   "efor": 32.7,
    "eford": 19.3,
    "hours": 935,
    "mwh": 175633,
@@ -114,23 +114,23 @@
   },
   "DF-3": {
    "designated": true,
-   "efor": 19.0,
-   "eford": 8.6,
+   "efor": 18.7,
+   "eford": 8.5,
    "hours": 908,
    "mwh": 157196,
    "plant": "Dunmore Flats"
   },
   "SR-1": {
    "designated": true,
-   "efor": 14.7,
-   "eford": 8.1,
+   "efor": 14.6,
+   "eford": 8.0,
    "hours": 1007,
    "mwh": 175420,
    "plant": "Sable Ridge"
   },
   "SR-2": {
    "designated": false,
-   "efor": 16.6,
+   "efor": 16.5,
    "eford": 9.2,
    "hours": 1015,
    "mwh": 178218,
