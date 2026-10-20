@@ -7,17 +7,30 @@
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-20",
- "stump": "The default path charges every hour a crane spent broken down while working a large vessel to that vessel's stay and recommends Ordway; each crane works its own run of bays and the ship sails when its slowest run is done, so Ordway's breakdowns on short-run old cranes rarely delayed a ship, while Pinecastle's even splits made nearly every stop cost the ship its full length.",
- "architecture": 1,
+ "stump": "The default path credits every large-vessel call with a fifth of its cargo work and places the cranes at Saltworks, because it never asks whether a ship leaving a river berth could have sailed any earlier than its tide allowed; the saving is the change in the window the ship makes, nothing at Saltworks and a whole tide at Millrace.",
+ "architecture": 2,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "task269 at 0.07 (guard check, registered card)"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task472 v1 at 0.16 (own lineage, differentiated); task160 at 0.04"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: design note sections after Draw (three rules, readability, forks, ladder, closure, asks), prompt.txt, then precut",
+ "resume": "stage 2 design of architecture 2 (tide-window departure in a cargo-time counterfactual): default path, three rules, readability screen, fork table, ladder, closure, ask sheet, prompt; then precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET29 (AIS port-call dwell and vessel identity): world, decision and quantity kept; the seed's midnight cuts and shared MMSI carried as Layer 1; the pitfall re-found in how a ship's stay depends on its slowest crane run"
+ "source_note": "seed ET29 (AIS port-call dwell and vessel identity): world and decision kept; architecture 1 spent at stage 4 on 2026-10-20 (both scored readers landed the slowest-crane counterfactual); architecture 2 gates the berth time a faster cargo finish saves by the tidal window at the river bar"
 }
