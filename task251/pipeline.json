@@ -1,22 +1,22 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "BUILD",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-20",
  "stump": "A competent solver who reads the cylinder changes' jumps as the old gas's loss fits the loss rate per supplier and sends six analyzers (none on the December spans alone); the loss is set by the cylinder's interior, which only the certificates record, so four go: UVF-2207, UVF-1964, UVF-1987 and UVF-2075.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on target.zip 9c884ce8: the manual's own subject words, the network's ordinary nouns, the certificates' interior lines",
-  "reader": "stage 4 pending"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN (repeat.decision, repeat.question_form against task471 v4)",
@@ -25,7 +25,7 @@
  },
  "judge": null,
  "returned": [],
- "resume": "Stage 4 on target.zip 9c884ce8: two isolated scored readers and the determinism judge. Free gates green: 182 checks, verify 0 failures, two builds byte-identical, figures_check 66 of 66, precut 51 of 51, voice-check PASS, leak.py REVIEW, heart WARN, pair 31.8 (one device found 8 of 33, two 13 of 33). Next: score the readers, read the judge, fix findings, ship.",
+ "resume": "Architecture 2 drawn (card registered, WARN only): the NO2 channel of a lower Po valley network's chemiluminescence analyzers, whose molybdenum converters lose efficiency with the NO2 they reduce along a curve that steepens near exhaustion; which analyzers' converters go to the regional laboratory's January 2028 bench ahead of their scheduled service (EN 14211's 95 per cent). Next: stage 2, the simulator tuned to the ladder, the asks and devices, the note's sections, prompt, precut.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -40,6 +40,14 @@
   {
    "date": "2026-10-20",
    "event": "redrawn on four axes after task250 shipped (General Statistics measurement error, operations_log, shape other, docx and xlsx); two keys: the span gas's loss and its rate set by the cylinder's interior (prototype 5, seed 2100); ask layer v2 (valid hours, mean, hours above 350) on the old firmware's unmarked check hours, ppb and standard-time stamps"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "architecture 1 spent at stage 4 on target.zip 9c884ce8: both scored readers landed the call (A: the four analyzers by an exponential loss from certification split on the certificates' passivation, asks 13 of 33; B: the same four and asks 32 of 33, every silent device found: the firmware update's 2.62 level jump, the standard-time stamps under the visit log, the unmarked 02:00 check hour); judge pass 1 DETERMINISTIC, FIX_NOW (the visit edge, pinned in section 5 before the readers came back); re-rooted to architecture 2 at stage 1"
+  },
+  {
+   "date": "2026-10-20",
+   "event": "architecture 2 drawn: PES sensor calibration, converter efficiency clocked in NO2 reduced (card registered WARN only)"
   }
  ]
 }

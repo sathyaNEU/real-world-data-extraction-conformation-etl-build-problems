@@ -1,90 +1,110 @@
 {
   "task": "task251",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-20",
   "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "the January recalibration round of a copper smelter's SO2 monitoring network on the Atacama coast: thirteen UV-fluorescence analyzers spanned every night and adjusted at each visit against their own cylinders of SO2 in nitrogen from two suppliers, cylinders that lose SO2 as they age at a rate their interior sets (one supplier sold untreated cylinders and, from 2026, passivated ones too), the interior written only on the suppliers' certificates",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "the January 2028 converter round of a Po valley provincial air quality network's chemiluminescence NOx analyzers: which analyzers' molybdenum converters are changed at the regional laboratory's bench ahead of their scheduled 2028 service, the converters losing efficiency with the NO2 they reduce along a curve that steepens near exhaustion, with the valley's winter load still to come",
   "objective": "data-quality-monitoring",
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Send four analyzers to the January 2028 round: UVF-2207 (BL01), UVF-1964 (BL02), UVF-1987 (BL04) and UVF-2075 (BL09); the other nine stay.",
-  "answer_source": "task251/submission.md, block 1",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
+    "G16",
     "G13",
-    "G6",
-    "G3"
+    "G6"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "other",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has read every rule takes each analyzer's span on the year's last night against its cylinder's certified concentration as its gain and sends none to the round (every span within 3.5 per cent, the visits' adjustments keeping them there). One who reads the cylinder changes, where the incoming cylinder reads the analyzer up to 24 per cent higher than the outgoing one, as the gas the old cylinder lost and fits the loss rate per supplier sends six, the two analyzers on passivated cylinders of the faster supplier read as 8 and 14 per cent high. The loss rate is set by the cylinder's interior (untreated about 10 per cent a year, passivated about 1), which the suppliers' certificates record and the register does not, and four analyzers go.",
-  "domain_test": "General Statistics & Data Science, so the swap is of the method: the deciding quantity is each instrument's systematic measurement error, estimated from a measurement-error model in which the reference itself carries an error that grows with its age at a rate its construction sets, identified only by paired readings of two references minutes apart. Replace the model with the routine checks' own agreement with the reference (a generic summary) and none goes to the round; fit the reference's error by vendor instead of by construction and six go; the call turns on the measurement-error model itself, in a setting (gas metrology at a smelter's SO2 network) that is another field's.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:span-gas-loss-by-cylinder-interior-written-into-the-analyzer",
+  "analyst_test": "A strong analyst who reads every titration check, the service log and the plan's 95 per cent rule fits each converter's efficiency against its time since installation, on its own checks or pooled across the network, carries it to the analyzer's scheduled 2028 service and books the analyzers that cross 95 per cent before then; the converters wear with the NO2 they reduce and steepen near exhaustion, and the months still to run carry the valley's winter load, so the list it books is the wrong one.",
+  "domain_test": "A chemiluminescence analyzer sees NO2 only through its molybdenum converter, whose efficiency the field checks by gas-phase titration and whose life is spent in the NO2 it reduces, so the deciding quantity is each converter's efficiency at its service date read on the NO2 it will have converted by then; with a hospital's or a call centre's nouns there is no converter, no titration and no pollutant load for the wear to run on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:converter-life-in-no2-converted",
   "layer1": [
-    "the loggers' 2027 hourly export, semicolon separated with decimal commas, the old firmware on standard time and the new on official time across Chile's April and September clock changes, a re-sent block",
-    "the old firmware's calibration and visit hours left unmarked until each station's upgrade",
-    "cylinder numbers keyed into the calibrators in three forms",
-    "the cylinder register and the suppliers' certificates in two suppliers' formats, Spanish, decimal commas",
-    "the visit log in Spanish with as-found, incoming-cylinder and as-left readings, adjustments only past 3 per cent"
+    "the network's hourly NO, NO2 and NOx export 2025 to 2027, semicolon separated with decimal commas and Italian headers, stamped in solar time all year by the data system, with re-sent days repeated",
+    "NO2 in the export in micrograms per cubic metre at 20 degrees, the titration checks in ppb",
+    "the titration checks kept by two calibration contractors in two layouts, the efficiency as a percentage in one and a fraction in the other",
+    "the service log mixing converter changes with ozone generator, pump, filter and lamp work, and analyzers swapped for store spares during repairs",
+    "data-system status codes on invalid hours"
   ],
-  "stakeholder_role": "the head of the smelter's SO2 monitoring network, who sends the list of analyzers to the accredited laboratory's January recalibration round",
+  "stakeholder_role": "the head of the network's instrumentation, who books the analyzers whose converters go to the regional laboratory's January bench",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "so2_horario_2027.csv",
-    "rows": 96407,
-    "entity": "one station-hour of SO2 from the principal analyzer with its status flag",
+    "file": "nox_orari_2025-2027.csv",
+    "rows": 0,
+    "entity": "one station-hour of NO, NO2 and NOx from the network's analyzer with its status code",
     "grain": "station x hour",
     "source": "synthetic"
   },
   "forum": "operations_desk",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "manufacturer",
+  "org_family": "government_agency",
   "world": {
-    "geography": "Chile, Atacama Region (a coastal smelter town)",
-    "currency": "CLP",
-    "org_type": "a copper smelter's environmental department running the SO2 network its decontamination plan requires",
-    "invented_names": [
-      "Fundición Caleta Lobos",
-      "Red de Monitoreo Bahía Lobos"
-    ],
+    "geography": "Italy, the lower Po valley (a fictional province)",
+    "currency": "EUR",
+    "org_type": "a provincial environment agency running the province's air quality network",
+    "invented_names": [],
     "people": [
-      "Daniela Ferrada",
-      "Vicente Toloza",
-      "Néstor Fuentes"
+      "Livia Saracino",
+      "Patrizio Gilardoni",
+      "Jolanda Stefanelli"
     ]
   },
   "deliverables": [
-    "nota_ronda_recalibracion_2028.docx",
-    "ronda_recalibracion_enero_2028.xlsx"
+    "turno_convertitori_gennaio_2028.xlsx",
+    "efficienza_convertitori_2028.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose strength falls with its age since certification at a rate its construction sets, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks cannot see it; the loss is measured where a unit is read on an outgoing and an incoming reference minutes apart and must be fitted by the references' construction, which one source changed partway, not by their source, before each unit's check ratio is divided by its reference's remaining strength.",
-  "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its span reading that night over 400 ppb divided by the fraction of SO2 its cylinder still holds at its age since certification, at the loss rate the cylinder's interior sets (untreated or passivated, from the suppliers' certificates), both rates fitted on the 31 cylinder changes, where the analyzer is read on the outgoing and the incoming cylinder minutes apart.",
-  "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends none (every span within 3.5 per cent); one who reads the cylinder changes' jumps as the old gas's loss and fits the loss rate per supplier sends six, two of them on passivated cylinders of the faster supplier that have lost almost nothing; the rate is set by the cylinder's interior, which only the certificates record, and four go.",
-  "mechanism_source": "design_note",
+  "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
+  "driver_concrete": "Each analyzer's molybdenum converter efficiency on its scheduled 2028 service date, read on the network-wide curve of titration efficiency against the NO2 the converter has reduced since installation (the hourly record summed from the service log's installation hour), which steepens near exhaustion, at the NO2 reduced so far plus the station's 2025 to 2027 mean over the days to that date; the converters below 95 per cent on that date go to the January round.",
+  "stump": "A competent solver fits each converter's titration efficiency against its time since installation, on its own checks or pooled across the network, and books the analyzers that cross 95 per cent before their scheduled 2028 service; the converters wear with the NO2 they reduce, steepening near exhaustion, and the months still to run carry the valley's winter load, so it books converters the summer will spare and misses those the winter will finish.",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose strength falls with its age since certification at a rate its construction sets, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks cannot see it; the loss is measured where a unit is read on an outgoing and an incoming reference minutes apart and must be fitted by the references' construction, which one source changed partway, not by their source, before each unit's check ratio is divided by its reference's remaining strength.",
+      "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its span reading that night over 400 ppb divided by the fraction of SO2 its cylinder still holds at its age since certification, at the loss rate the cylinder's interior sets (untreated or passivated, from the suppliers' certificates), both rates fitted on the 31 cylinder changes, where the analyzer is read on the outgoing and the incoming cylinder minutes apart.",
+      "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends none (every span within 3.5 per cent); one who reads the cylinder changes' jumps as the old gas's loss and fits the loss rate per supplier sends six, two of them on passivated cylinders of the faster supplier that have lost almost nothing; the rate is set by the cylinder's interior, which only the certificates record, and four go.",
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "other",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "fate": "spent 2026-10-20 at stage 4: both scored readers landed the four analyzers (an exponential loss from the certificate date fitted on the 31 cylinder changes, split on the certificates' passivation once the per-supplier fit left a 4.5 per cent residual); reader B kept 32 of 33 ask figures; judge pass 1 DETERMINISTIC FIX_NOW (a visit edge). The estimand's words sent both readers to the reference's truth and the change readings measured it in one division."
+    }
+  ],
+  "architecture_spent": null,
   "differentiation": {
-    "task249": "v2's units stood apart from references that shared the truth only in mixed hours (a representativeness problem); here the reference stands with the unit and loses strength with its own age, so every check agrees and the error is the reference's"
+    "task148": "queue units leave when the wait outlasts their patience, censored waits estimated over every unit; here nothing is censored by leaving: a converter's titration efficiency wears with the NO2 it reduces and is read at a service date the record has not reached",
+    "task241": "a sensor's error read against a reference the medium's displacement moves; here there is no outside reference: the converter's own titrated efficiency, clocked in the NO2 it reduces, decides",
+    "task254": "lineage v2 cut a time-to-event distribution under lock-date truncation; here a wear curve in a constructed load is projected over the load still to come",
+    "task501": "lineage v2 struck the pace from a filed walk-forward test; here no test is filed: the converters' own checks collapse on NO2 reduced and not on time, which forces the clock"
   },
-  "lineage": [],
-  "notes": "stump_strategy other: reference ageing, a check whose reference loses strength with its age since certification at a rate set by its construction, so the routine check cannot see the error it writes into the unit; none of the listed strategies names it (decomposition_attribution is the nearest and is banned against task475; the honest Gate G is decomposition_attribution, the analyzer's apparent agreement split into its own gain and its gas's loss). Gap objective: the span ratio is reported correctly and the decision is scored on the gain against true SO2; population: the loss rate pooled over the wrong cylinders. G13: the certified concentration holds at its certification date, not on the night of use; G6: supplier A's cylinders changed interior in 2026, so a rate per supplier is a mixture. Redrawn 2026-10-20 after task250 shipped: ban.pairing, ban.subdomain and ban.artifact (task250, physical-environmental-sciences sensor calibration, monitoring_export) and ban.shape (shape 10, task471) BLOCKed the registered card; the task is a measurement-error model's estimate (general statistics, missing data, censoring and measurement error), the stakeholder's working file is the field operations log, and the criteria come from each analyzer's verdict and each station's two 2027 record figures, a structure outside the eighteen shapes (shape 10 also wants one file).",
-  "registered": "2026-10-20T16:13:30Z"
+  "notes": "Re-rooted 2026-10-20 from architecture 1 (spent at stage 4, see lineage). stump_strategy forecast_method_backtest: the rate is stationary only in a constructed exposure (NO2 reduced) and the natural fit in time fails forward (strategies F6). gate_g method_or_model_selection: the decisive mechanism is the choice of the clock and curve the converters' wear runs on (forecasting with gap time and G16 is a signature spent in five builds).",
+  "mechanism_source": "design_note",
+  "registered": "2026-10-20T19:23:07Z"
 }
