@@ -449,4 +449,7 @@ declared distractor).
   numbers and counted one energy payment per household, keeping 27 of 27 ask figures. Rule 2.2's "in that year" beside
   a single five-year release and a monthly town series displays the decisive step, and the ask devices are work orders
   a careful reader executes; the architecture is spent and the draw is re-rooted at stage 1.
+- 2026-10-20, stage 4 judge on architecture 1: DETERMINISTIC, APPROVE, Gate H analytical; it named two pins worth
+  carrying into the re-root (an effective date is the first day the new value applies; a household payment repeats on
+  each member's row), and that the release-shares route is defensible enough that a miss there can read interpretive.
 
