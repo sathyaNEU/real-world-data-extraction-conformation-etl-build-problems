@@ -10,25 +10,25 @@
  },
  "asks": {
   "efor": {
-   "AF-1": 27.4,
-   "AF-2": 24.8,
-   "CB-1": 15.0,
-   "CB-2": 12.9,
-   "DF-1": 24.8,
-   "DF-2": 33.2,
-   "DF-3": 19.6,
-   "SR-1": 15.1,
-   "SR-2": 16.8
+   "AF-1": 27.3,
+   "AF-2": 24.6,
+   "CB-1": 14.9,
+   "CB-2": 12.8,
+   "DF-1": 24.5,
+   "DF-2": 33.0,
+   "DF-3": 19.2,
+   "SR-1": 14.9,
+   "SR-2": 16.7
   },
   "eford": {
    "AF-1": 14.5,
-   "AF-2": 11.8,
+   "AF-2": 11.7,
    "CB-1": 7.5,
-   "CB-2": 9.3,
-   "DF-1": 14.2,
+   "CB-2": 9.2,
+   "DF-1": 14.1,
    "DF-2": 19.4,
-   "DF-3": 8.7,
-   "SR-1": 8.2,
+   "DF-3": 8.6,
+   "SR-1": 8.1,
    "SR-2": 9.3
   }
  },
@@ -66,7 +66,7 @@
  "rows": {
   "AF-1": {
    "designated": true,
-   "efor": 27.4,
+   "efor": 27.3,
    "eford": 14.5,
    "hours": 1027,
    "mwh": 162545,
@@ -74,15 +74,15 @@
   },
   "AF-2": {
    "designated": true,
-   "efor": 24.8,
-   "eford": 11.8,
+   "efor": 24.6,
+   "eford": 11.7,
    "hours": 866,
    "mwh": 134720,
    "plant": "Ashfork"
   },
   "CB-1": {
    "designated": true,
-   "efor": 15.0,
+   "efor": 14.9,
    "eford": 7.5,
    "hours": 732,
    "mwh": 116711,
@@ -90,23 +90,23 @@
   },
   "CB-2": {
    "designated": true,
-   "efor": 12.9,
-   "eford": 9.3,
+   "efor": 12.8,
+   "eford": 9.2,
    "hours": 1164,
    "mwh": 199641,
    "plant": "Cutler Bend"
   },
   "DF-1": {
    "designated": true,
-   "efor": 24.8,
-   "eford": 14.2,
+   "efor": 24.5,
+   "eford": 14.1,
    "hours": 1076,
    "mwh": 198573,
    "plant": "Dunmore Flats"
   },
   "DF-2": {
    "designated": false,
-   "efor": 33.2,
+   "efor": 33.0,
    "eford": 19.4,
    "hours": 935,
    "mwh": 175633,
@@ -114,23 +114,23 @@
   },
   "DF-3": {
    "designated": true,
-   "efor": 19.6,
-   "eford": 8.7,
+   "efor": 19.2,
+   "eford": 8.6,
    "hours": 908,
    "mwh": 157196,
    "plant": "Dunmore Flats"
   },
   "SR-1": {
    "designated": true,
-   "efor": 15.1,
-   "eford": 8.2,
+   "efor": 14.9,
+   "eford": 8.1,
    "hours": 1007,
    "mwh": 175420,
    "plant": "Sable Ridge"
   },
   "SR-2": {
    "designated": false,
-   "efor": 16.8,
+   "efor": 16.7,
    "eford": 9.3,
    "hours": 1015,
    "mwh": 178218,
