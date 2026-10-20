@@ -162,6 +162,9 @@ def reports(crashes, numbers):
         fat = [x for x in cands if x.census is not None and x.dup is None]
         if fat and rng.random() < 0.5:
             fat[int(rng.integers(0, len(fat)))].dup = AG.sheriff(f)
+    # an injured person in a drinking-driver crash died more than 30 days after it: the agency's supplement records
+    # the death (severity K) and the census, which counts deaths within 30 days, leaves the crash out
+    late_k = {f: 1 + int(T.rng_for("latek", f).integers(0, 2)) for f in by_county}
     rep_rows, unit_rows = [], []
     rid = 0
     for x in crashes:
@@ -220,6 +223,15 @@ def reports(crashes, numbers):
                     if u["type"] == "MOTOR VEHICLE" and u["cond"] != HBD and rng.random() < 0.5:
                         u["cond"] = HBD
                 versions.append((1, "REJECTED", sub + dt.timedelta(days=int(rng.integers(3, 30))), sev, u2))
+            acc = [v for v in versions if v[1] == "ACCEPTED"][-1]
+            if (k == 0 and x.census is None and x.dup is None and x.public and late_k[x.fips] > 0 and
+                    any(u["type"] == "MOTOR VEHICLE" and u["cond"] == HBD for u in acc[4]) and
+                    any(u["sev"] == "A" for u in acc[4])):
+                late_k[x.fips] -= 1
+                u2 = [dict(u) for u in acc[4]]
+                next(u for u in u2 if u["sev"] == "A")["sev"] = "K"
+                versions.append((len(versions), "ACCEPTED", x.date + dt.timedelta(days=int(rng.integers(34, 80))),
+                                 "K", u2))
             for ver, status, when, sv, us in versions:
                 nveh = sum(1 for u in us if u["type"] == "MOTOR VEHICLE")
                 rep_rows.append([report_id, ver, status, when.isoformat(), a.aid, number, x.date.isoformat(),
@@ -243,7 +255,7 @@ def ask_b(crashes):
         hit = False
         for rv in x.versions:
             ver = [v for v in rv["versions"] if v[1] == "ACCEPTED"][-1]
-            if ver[3] in ("A", "B", "C") and any(u["type"] == "MOTOR VEHICLE" and u["cond"] == HBD for u in ver[4]):
+            if ver[3] in ("A", "B", "C", "K") and any(u["type"] == "MOTOR VEHICLE" and u["cond"] == HBD for u in ver[4]):
                 hit = True
         out[x.fips] += 1 if hit else 0
     return out

@@ -366,7 +366,12 @@ designation's basis.
   them), and D9, a control true only in its scope. Re-sited after stage 4 reader 1, which merged the two agencies'
   reports and linked the census by report number: the census cites a county or city agency's death investigation
   number where a person died after the crash report, so a report-number link keeps those crashes as injury crashes;
-  only date, road and time link them. Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
+  only date, road and time link them. Re-sited again after the second pair of readers, which both linked the census
+  by date and coordinates and took all 14 figures: the primary is now D2, a supplement that records a death more
+  than 30 days after the crash (severity K, submitted 34 to 80 days on), on one or two drinking-driver injury
+  crashes per county that the census, counting deaths within 30 days, leaves out; the crash had no death within 30
+  days and stays an injury crash, and a reader who drops K reports as fatal misses every county (asserted). The
+  death investigation numbers stay as a hazard. Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
   whose injured person died within 30 days stays an injury crash there and is a fatal crash only in the census).
   Hazards: supplements under the same report number (the latest accepted stands, a rejected one never), a
   non-driver unit coded as drinking, crashes on private property, a supplement that lowers the severity to no
@@ -378,7 +383,7 @@ designation's basis.
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
 | A, each county's 2025 arrests with a blood specimen and the per cent at .15 or more | one arrest per agency case number, the State Patrol's placed by the post in its case number, every documented hazard repaired (UTC, the amended report, drug-only requests, two tubes, second specimens, serum); the jail's second submissions counted as arrests, so every county's arrests and share fall outside their bins | miss |
-| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked by agency and report number; the crashes the census holds under a death investigation number stay in, so every county's count falls outside its bin | miss |
+| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked in full, severity A to C; the crashes whose supplement records a death after 30 days are dropped as fatal, so every county's count falls outside its bin | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
   them as the cracker does).
@@ -397,8 +402,8 @@ designation's basis.
   laboratory or crash records row. Three rules: no decoy or withheld rule ships (R3c), no field reading decides
   (every SF row converges or is ruled out by a filed sentence), and executing every filed rule with one share of
   unarrested drivers impaired certifies Corwin, Hatchell, Ossian and Pruett (R3a).
-- **Free gates (2026-10-20):** checks.py 102 of 102, verify.py clean, two builds byte-identical, target.zip cut from
-  the final build (18 files), figures_check.py 105 of 105, precut.py 51 checks clean, voice-check clean, guard.py
+- **Free gates (2026-10-20):** checks.py 104 of 104, verify.py clean, two builds byte-identical, target.zip cut from
+  the final build (18 files), figures_check.py 106 of 106, precut.py 51 checks clean, voice-check clean, guard.py
   surface clean and heart WARN after a pull (shape and Gate G overuse, answered at the draw), containers clean.
 - **leak.py REVIEW lines, each harmless:** the guidelines carry the program's own name (high-range, FY2028, County
   Impaired Driving Task Force grants), which the call repeats; the manual, the guidelines and the laboratory's and
@@ -457,3 +462,7 @@ designation's basis.
   the knobs were recut instead (per-county mix of bands, more impaired survivors at the posts, per-post protocol
   rows) until the held-out back-test rejects the share (3.4 against 1.1), asserted in checks.py and verify.py. The
   three ask forks it named (Central time, the per cent's base, possible injuries) are pinned in guidelines 3.1.
+- 2026-10-20, stage 4 readers 3 and 4 (pack 7a2922cf): both missed the call (the default path) and Ask A, and both
+  took all 14 Ask B figures by linking the census on date and coordinates, which bypassed the death investigation
+  numbers (30.0 per cent of ask figures each). That device kept as a hazard; Ask B's primary re-sited to the
+  supplements recording a death after 30 days.

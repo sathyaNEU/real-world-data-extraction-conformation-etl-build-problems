@@ -294,7 +294,7 @@ def crs(target):
     return reps, u
 
 
-def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True):
+def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True, late_k=True):
     reps, units = crs(target)
     by = {}
     for r in reps:
@@ -353,7 +353,9 @@ def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, li
     for g in groups:
         if link_census and any(in_census(v) for v in g):
             continue
-        ok = any(v["public_road"] == "Y" and v["severity"] in ("A", "B", "C") and
+        # a crash left outside the census whose report records a death (K) is one where the death came after 30 days
+        sevs = ("A", "B", "C", "K") if late_k else ("A", "B", "C")
+        ok = any(v["public_road"] == "Y" and v["severity"] in sevs and
                  any(x["unit_type"] == "MOTOR VEHICLE" and x["driver_condition"] == "HAD BEEN DRINKING"
                      for x in v["units"]) for v in g)
         if ok:

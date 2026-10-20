@@ -24,12 +24,12 @@
   "nearest": "task458 at 0.06"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (pass 1)",
-  "disposition": "SEND_BACK",
-  "report": "task473/determinism_check_report.md"
+  "verdict": "DETERMINISTIC (pass 2)",
+  "disposition": "APPROVE",
+  "report": "task473/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4: judge pass 1 SEND_BACK (completion not forced; three ask forks). Fixed in one generator pass: knobs recut so the held-out State Patrol back-test rejects one unarrested share (3.4 against 1.1, checks.py and verify.py), the ask forks pinned in guidelines 3.1, R2 now Corwin, Hatchell and Ossian; checks 102 of 102. Re-judge (r2) and two fresh scored readers running on target.zip 7a2922cf; then ship",
+ "resume": "stage 4: judge pass 2 APPROVE. Readers 3 and 4 missed the call and Ask A but took all of Ask B (30 per cent each); Ask B primary re-sited to supplements recording a death after 30 days (checks 104 of 104). Reader 5 scoring on target.zip 0a92575f; ship if it keeps under a fifth of ask figures, else re-site again",
  "approved": null,
  "delivered": null,
  "portal": null,

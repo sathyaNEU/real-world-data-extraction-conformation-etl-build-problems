@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: drivers, tested, agencies, arrest, guidelines, untested, corwin, ossian, asserted, surviving, hatchell, decisive, records, agency, center, complete, patrol, killed, unarrested, sheriffs, certifies, manual, result, pruett, readable
+Stump terms swept: drivers, tested, agencies, arrest, guidelines, untested, corwin, ossian, asserted, surviving, hatchell, decisive, records, agency, center, complete, patrol, killed, certifies, unarrested, sheriffs, manual, result, pruett, readable
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `ghso_fy2028_county_task_force_guidelines.pdf`: carries 8 of 12 distinctive words of the committed call: 'Corwin, Hatchell, Ossian and Tanager are high-range for the FY2028 County Impaired Driving Task Force grants.'

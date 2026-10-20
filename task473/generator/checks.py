@@ -335,10 +335,22 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     nodup, _ = B.ask_b(target, cr, dedupe=False, link_census=False)
     miss_n = [W.NAMES[f] for f in miles if nodup.get(f, 0) == reps_b.get(f, 0)]
     check("ask B stop: every report counted on its own severity misses every county", not miss_n, miss_n)
-    bynum, _ = B.ask_b(target, cr, link_near=False)
+    bynum, _ = B.ask_b(target, cr, link_near=False, late_k=False)
     miss_b = [W.NAMES[f] for f in miles if bynum.get(f, 0) == reps_b.get(f, 0)]
     check("ask B cracker (latest accepted version, two agencies' reports merged, the census linked by agency and "
-          "report number) misses every county", not miss_b, miss_b)
+          "report number, severity A to C) misses every county", not miss_b, miss_b)
+    linked, _ = B.ask_b(target, cr, late_k=False)
+    miss_k = [W.NAMES[f] for f in miles if linked.get(f, 0) == reps_b.get(f, 0)]
+    check("ask B device: the census linked in full, a report whose supplement records a death after 30 days dropped "
+          "as fatal, misses every county (the measured readers' path)", not miss_k, miss_k)
+    cen25 = {(c_["agency"], c_["report"]) for c_ in cr if c_["year"] == 2025}
+    late_rows = [v for g_ in groups for v in g_ if v["severity"] == "K" and
+                 (v["agency_id"], v["report_number"]) not in cen25]
+    check("ask B fair: each K report outside the census is a supplement submitted more than 30 days after its crash "
+          "(%d reports)" % len(late_rows), late_rows and all(
+              (dt.date.fromisoformat(v["submitted"]) - dt.date.fromisoformat(v["crash_date"])).days > 30
+              for v in late_rows if not any((w["agency_id"], w["report_number"]) in cen25
+                                            for g_ in groups if v in g_ for w in g_)))
     dups = {}
     for gr_ in groups:
         if len(gr_) > 1:
