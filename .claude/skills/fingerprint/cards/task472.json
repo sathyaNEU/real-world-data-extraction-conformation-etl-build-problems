@@ -38,19 +38,20 @@
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:tide-window departure in a cargo-time counterfactual",
   "layer1": [
-    "AIS berth stretches cut at midnight UTC and at reception gaps, station outages unmarked",
-    "the Authority's terminal operating system and the pilot dispatch in Eastern time with daylight saving, the Rivergate export in UTC, the bar's tide predictions in local standard time all year",
-    "pilot dispatch keyed by vessel name and call sign, the terminal systems by visit and IMO number, joined through the vessel register",
-    "departure draughts in feet and inches in the pilot dispatch against a limit the Harbour Master files in metres",
-    "the crane register's dated placements, one crane moved between terminals and renamed",
-    "two maintenance systems overlapping in the February 2026 parallel run (shipped as a distractor)"
+    "the Authority's terminal operating system and the pilot station's sailings in Eastern time with daylight saving, the SRT export in UTC, the Salt Point tide predictions in local standard time all year",
+    "the pilot station's sailings keyed by the ship's name at the time and its call sign, the terminal systems by visit and IMO number, joined through the vessel register's former names",
+    "ship lengths in metres in the vessel register against the Harbor Master's limits in feet; drafts in feet and inches",
+    "three cranes moved along the common rail during the year while the crane register shows only each crane's current terminal",
+    "two maintenance systems overlapping in the February 2026 parallel run, reopened orders and orders re-typed after the fact",
+    "the crane makers' service timesheets partly keyed into the labor ledger as contract hours",
+    "AIS berth stretches cut at midnight UTC (shipped as a distractor)"
   ],
   "stakeholder_role": "director of terminal equipment at a state port authority that owns and operates its container terminals, who recommends where the 2027 crane replacement goes",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
     "file": "tos_crane_activity_2026.csv",
-    "rows": 75610,
+    "rows": 80059,
     "entity": "one quay crane's container moves on one vessel visit in one clock hour",
     "grain": "crane x vessel visit x hour",
     "source": "synthetic"
@@ -73,13 +74,25 @@
     ],
     "people": [
       "Jon Hernandez",
-      "Dennis Johns",
-      "Tanya Abbott"
+      "Tanya Abbott",
+      "Allison Mcbride",
+      "Todd Nguyen",
+      "Michael Ramos",
+      "Susan Maxwell",
+      "Stephanie Brown",
+      "Samuel Whitaker",
+      "Cameron Salas",
+      "Kevin Cooper",
+      "Zachary Patton",
+      "Sandra Harrison",
+      "Jacob Cantu",
+      "Matthew Jenkins",
+      "William Thomas"
     ]
   },
   "deliverables": [
-    "ternmouth_2027_crane_replacement.xlsx",
-    "ternmouth_2026_large_vessel_calls.csv"
+    "ternmouth_2027_crane_placement.xlsx",
+    "ternmouth_fy2026_large_vessel_calls.csv"
   ],
   "opening_move": "question-first",
   "question_form": "where",

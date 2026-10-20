@@ -1,25 +1,25 @@
 {
  "task": "task472",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "supply-chain-logistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
  "stump": "The default path credits every large-vessel call with a fifth of its cargo work and places the cranes at Saltworks, because it never asks whether a ship leaving a river berth could have sailed any earlier than its tide allowed; the saving is the change in the window the ship makes, nothing at Saltworks and a whole tide at Millrace.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (9 lines, none a leak; answered in the design note)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "PASS",
   "nearest": "task472 v1 at 0.16 (own lineage, differentiated); task160 at 0.04"
  },
  "judge": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2 design of architecture 2 (tide-window departure in a cargo-time counterfactual): default path, three rules, readability screen, fork table, ladder, closure, ask sheet, prompt; then precut.py",
+ "resume": "stage 4 check of architecture 2, in flight in this session: two isolated readers (general-purpose, sonnet, medium) on fresh copies of prompt.txt and target.zip, and the determinism judge thread, spawned together; on their return score each reader with score_reader.py, finish the judge report from its verdict.md, fix every finding in the generator in one pass, rebuild and re-run the free gates, then ship; if the session was lost, re-spawn both readers and the judge on fresh copies of the pack as built (target.zip sha256 da45cba44806479b)",
  "approved": null,
  "delivered": null,
  "portal": null,
