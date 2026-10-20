@@ -1,34 +1,36 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-20",
- "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters scored the carried-over written assignment's 2025 validity papers about a quarter point per read below their consensus scores, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
+ "stump": "The default path equates the 2026 form to the 2025 form through the 21-item anchor as the 2026 raters scored it and sets the 2026 raw passing score two to three points too high, sending more programs to formal review than the golden; the 2026 raters read the carried-over written assignment's validity papers, June 2025 responses, about a quarter point per read below the scores their two 2025 reads agreed on, so the anchor reads the 2026 cohort as weaker than it is, and screening that item out of the anchor instead overshoots, because the cohort really did write worse; with the written assignment put back on the 2025 rating standard the anchor sets the cut the golden takes.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-20",
+  "checks": "51 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on target.zip 14b337c337f9190b; REVIEW lines: conversion and agreement table figures, shared vocabulary, the completer lists naming programs",
+  "reader": "round 1: two isolated sonnet readers on fresh unzips, running"
  },
  "duplicate_check": {
-  "guard_check": "WARN only 2026-10-20 after G17 named the decisive generator (G1 first repeated task472's pattern) and five older signatures were differentiated; WARNs answered in the design note",
-  "heart": ""
+  "guard_check": "WARN only after the stage-3 redraw (calibration organ parallel_run_overlap, context artifact filed_model); WARNs answered in the design note",
+  "heart": "WARN (BLOCK on ban.calibration and ban.artifact against task473 cleared by redrawing the organ, not relabelling)",
+  "nearest": "task450 v2 at 0.10"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "pass 1 running (run id v2r1)"
  },
  "returned": [],
- "resume": "design architecture 2 to precut exit 0: generator world calibrated from proto2 (every NEAT method on one cut with margin, the rungs apart), the asks on rows the call never reads (scoring invoice, test-centre seats, score verifications), then the design note's remaining sections and prompt.txt",
+ "resume": "stage 4: collect the two scored readers (score_reader.py on each) and the judge's verdict (spawn the thread from /tmp/determinism-check-task471-v2r1/judge_brief.md if the judge agent returns a brief), fix every finding in the generator in one pass, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -71,5 +73,13 @@
   },
   "target_zip_sha256_16": "c9e9c2fd35a4d875",
   "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
+ },
+ "build": {
+  "checks": "47 of 47",
+  "verify": "pass",
+  "byte_identical": true,
+  "target_zip_sha256_16": "14b337c337f9190b",
+  "figures_check": "142 figures, 0 absent",
+  "ceiling": "pair 28.8, mirror leakage 0.0, cracker misses 32 of 32"
  }
 }
