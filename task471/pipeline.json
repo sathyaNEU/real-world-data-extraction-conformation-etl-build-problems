@@ -10,7 +10,7 @@
  "architecture": 5,
  "loops": 0,
  "returned": [],
- "resume": "stage 4 round 3: the asks re-sited after round 2 (both readers kept 32 of 32; judge v5r2 APPROVE): the 2020 numbering only on the 2023 general election's roll, lifetime elector numbers with a new record per old-platform enrolment removed overnight as a duplicate, corrections of pre-census-day removals as additions, reinstatement keys outside the extract, the extract run to 30 September 2026. Next: confirm build.py green (checks, verify, byte-identical, zip), spawn two fresh scored readers (leak-task471-v5-r3a, r3b) and one re-judge (v5r3, a fresh determinism-judge agent prepares the brief), then ship if both readers miss the call and keep the asks near a fifth",
+ "resume": "stage 4 round 3 on target.zip 5b89c291378b1d76 (build.py green: checks 198 of 198, verify PASS, two builds byte-identical): two fresh scored readers (leak-task471-v5-r3a, r3b) running and a fresh determinism-judge agent preparing /tmp/determinism-check-task471-v5r3/judge_brief.md; then spawn the judge thread on it and have the agent write determinism_check_report_v5r3.md; score each reader with score_reader.py; ship if both miss the call and the asks hold near a fifth, else re-site again",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -183,5 +183,5 @@
   "sensitivity": "2020 numbers 0 (34.4); + elector number and record test 0 (34.4); + corrections of earlier removals as additions 16 (48.1); + record-tied reversals in the window 18 (49.8); + late reversals 32 (61.9)",
   "script": "generator/ceiling.py"
  },
- "target_zip_sha256_16": "5402dd6ec2786aea"
+ "target_zip_sha256_16": "5b89c291378b1d76"
 }
