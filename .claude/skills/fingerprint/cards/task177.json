@@ -1,99 +1,137 @@
 {
   "task": "task177",
-  "architecture": "v1",
-  "drawn": "2026-10-19",
-  "slot_note": "Redraw in a new world: the seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card; its screens are in task177/DESIGN_NOTE.md Tried and rejected.",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "decision-making-computational-behavioral-modeling",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "a provincial employment service's forecast of the share of jobseekers' own contacts its upgraded digital assistant takes in the eight weeks after an assistant-first period, from each claimant's contact-by-contact channel choices and the outcomes they met",
+  "architecture": "v2",
+  "drawn": "2026-10-21",
+  "slot_note": "Second redraw cell of the round (product-analytics / churn-propensity-uplift-modeling, Forecasting) after architecture v1 (psychology-behavioral-science, a provincial employment service) was spent at Gate F; the seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card.",
+  "domain": "product-analytics",
+  "subdomain": "churn-propensity-uplift-modeling",
+  "client_domain": "product-analytics",
+  "niche": "a UK news publisher's forecast of the share of its January at-risk list of monthly digital subscribers that a half-price retention offer keeps through March, carried from last January's half-and-half test after billing moved to the 1st of the month",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "26 per cent",
+  "answer": "20 per cent",
   "answer_source": "submission.md block 1",
   "gap": [
     "population",
     "time"
   ],
   "pattern": [
-    "none"
+    "E"
   ],
   "generators": [
-    "G16",
+    "G14",
     "G7",
-    "G17"
+    "G6"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "other",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches each claimant's call legs and assistant conversations into contacts, maps the legacy codes, links each overflow transfer to its voice session, fits a reinforcement-learning model of channel choice with one learning rate to every contact, checks it on held-out contacts and simulates the eight assistant-first weeks files an assistant share of about 40 per cent of claimants' own contacts for March and April, where the share is about 26 per cent.",
-  "domain_test": "The deciding quantity is how far a contact the jobseeker did not choose moves their later channel choices against one they chose, estimated the way computational behavioural modelling estimates learning (a reinforcement-learning model of each claimant's contact-by-contact choices fitted by likelihood, compared out of sample and simulated forward); with machines' routing tables or another field's tallies in place of jobseekers the agency term has nothing to act on and the task stops making sense.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "psychology-behavioral-science/decision-making-computational-behavioral-modeling/3",
+  "analyst_test": "A strong analyst who joins last January's test arms to the cancellations, reads a subscriber as subscribed on 31 March until the end of the last paid period, fits a two-model or transformed-outcome uplift on the subscriber features and scores this year's list files about 10 per cent, where the share is about 20 per cent.",
+  "domain_test": "The deciding quantity is the retention offer's effect conditional on how many days before a subscriber's next monthly bill it lands, estimated from last January's randomised half-and-half test the way uplift modelling estimates a conditional treatment effect and carried to a list whose bills all fall six days after the send; with patients, reminder letters or tariff notices in place of subscribers the call loses the recurring bill at which a subscriber decides whether to keep paying, the clock the effect runs on, and the two discounted bills it buys.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "product-analytics/churn-propensity-uplift-modeling/1",
   "layer1": [
-    "the contact-centre platform's interaction-leg export: one row per leg (IVR, queue, adviser), several legs to one call, the caller's entries on the first leg only, timestamps in UTC",
-    "the telephony platform replaced on 6 July 2026: the legacy history loaded with its own codes and identifiers and one merged IVR-and-queue leg, a code crosswalk issued",
-    "the assistant vendor's session export with no zone marker, a conversation that times out and is reopened split into sessions, the entry channel (app, web, voice) on each",
-    "claimants keyed by case number in the IVR and the register and by account in the assistant, joined through the case system's contact details, with changed and shared phone numbers",
-    "outcomes recorded three ways: the adviser's wrap-up code in two vocabularies, abandonment in the queue, the voice session's end state for an overflow transfer",
-    "queue overflow episodes logged by the workforce team separately from the transfers on the legs",
-    "staff and test accounts in the assistant export, some typed claimant before the vendor re-typed them",
-    "claims opening and closing through the year, the planning population defined on the register date"
+    "the billing platform replaced from the October 2026 bill run: legacy invoices on each subscription's anniversary day in their own layout and identifiers, the new platform's invoices on the 1st with a pro-rated first invoice per migrated subscription, an identifier crosswalk issued",
+    "cancellations exported as requests with the end of the paid period, so a subscriber stays live until the last paid day",
+    "the email platform's send, open and click log in UTC against the subscription records in UK local time",
+    "the offers engine's acceptances keyed by its own customer reference, joined through the crosswalk",
+    "partner-paid and staff access set up as ordinary monthly subscriptions, told apart only on the invoices",
+    "test accounts and duplicate sends in the campaign tool's exports",
+    "plan and price changes over the year, zero-rated VAT on digital news, refunds and credit notes as separate rows",
+    "the at-risk lists cut by the retention model on their own dates, with its score and band"
   ],
-  "stakeholder_role": "behavioural insights adviser in the service's digital channels team",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
+  "stakeholder_role": "head of subscriber retention in the audience revenue team",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "contact_legs_2026.csv",
-    "rows": 887515,
-    "entity": "one leg of a call to the claimant or employer line through the contact-centre platform (IVR, queue, adviser; the legacy platform's merged IVR-and-queue leg)",
-    "grain": "call leg",
-    "source": "synthetic (constructed in the layout of a contact-centre platform's interaction-leg export)"
+    "file": "billing_invoices_2025-2027.csv",
+    "rows": 0,
+    "entity": "one invoice line raised for a subscription's billing period (legacy anniversary invoices, the new platform's monthly invoices on the 1st, pro-rated first invoices, credit notes)",
+    "grain": "subscription x billing period",
+    "source": "synthetic (constructed in the layout of two subscription billing platforms' invoice exports)"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "media_or_publishing",
   "world": {
-    "geography": "Manitoba, Canada",
-    "currency": "CAD",
-    "org_type": "provincial employment and income assistance service (fictional)",
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "national news publisher's digital subscriptions (fictional)",
     "invented_names": [
-      "Prairie Works Manitoba",
-      "Ask Prairie Works"
+      "The Daily Lantern",
+      "Daily Lantern Media"
     ],
     "people": [
-      "Loretta Rodgers",
-      "Sabrina Ward"
+      "Bernard Peacock",
+      "Natalie Taylor"
     ]
   },
   "deliverables": [
-    "assistant_share_forecast_mar_apr_2027.xlsx",
-    "assistant_first_aftermath_note.docx"
+    "retention_offer_forecast_2027.xlsx",
+    "january_offer_note.docx"
   ],
   "opening_move": "question-first",
   "question_form": "what",
-  "driver": "Experiences a unit did not choose move its later choices far less than experiences it chose, so a period that sends every unit to one option converts few of them; the record holds those imposed experiences only as scattered single episodes, so a learner fitted to the whole record with one rate over-predicts the conversion, and only a separate rate for the imposed experiences, read from those episodes, carries to the period.",
-  "driver_concrete": "Jobseekers sent to the digital assistant when the phone queue overflows learn about a fifth as much from it as those who open it themselves, so the eight assistant-first weeks, which send every call to the assistant, lift claimants' own use of it in March and April far less than a reinforcement-learning model with one learning rate predicts.",
-  "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files about 40 per cent of claimants' own contacts in the assistant for March and April; the overflow-redirected contacts in the record teach about a fifth as much as chosen ones, so the share is about 26 per cent.",
+  "driver": "An intervention moves a unit mainly when it lands in the days before the unit's own recurring decision, so the effect a randomised test measured while those decisions fell at every point of the units' cycles is an average over the cycle, and it does not carry to a delivery that now lands a few days before every unit's decision; only the effect the test read on its units whose decision fell as close to their delivery does.",
+  "driver_concrete": "A half-price retention offer keeps a subscriber mainly when it lands in the fortnight before their next monthly bill, so last January's half-and-half test, sent while bills fell on every day of the month, kept about 9 in 100 across the cycle, while this January's list, every bill on 1 February six days after the send since billing moved to the 1st, is kept at the rate the test measured on subscribers billed within two weeks of it, about 20 in 100.",
+  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task70": "task70 rebuilds a per-record date with a class-conditional cut from an event log under a filed clause; here no record date or filed clause decides: a learning rate for contacts the claimant did not choose is estimated inside a reinforcement-learning model and simulated through a window of such contacts.",
-    "task104": "task104 replays a self-adapting scorer at a setting it never ran, masked by its own reference window; here the units are people learning from outcomes, and the decisive quantity is how far an experience they did not choose updates them, read from scattered overflow redirects.",
-    "task134": "task134's yield is a rebuild chance gated by an option's value against a cost step; here nothing is gated or stepped: the forecast is a learning process whose update from imposed contacts is about a fifth of the update from chosen ones.",
-    "task168": "task168 completes capped units' demand from a same-month build; here no unit is capped or censored: imposed experiences move choice values less than chosen ones, and a window made of them converts few units.",
-    "task463": "task463 weights price comparisons around cut periods in a chained index; here the decisive step is a learning model's update rate for experiences the unit did not choose, simulated forward through eight weeks of them.",
-    "task501": "task501 rebuilds a static who-passes-to-whom matrix from the days of the season's own regime; here the regime-only static rebuild (next-contact transitions after redirected contacts alone) misses by about a fifth, because imposed experiences accumulate through learning, so the forecast needs the imposed-contact learning rate inside a jointly fitted reinforcement-learning model.",
-    "task480": "task480 v1 read each exchanged meter's under-registration as its step against unchanged premises of the same kind, a comparison group netting a year's rise in use out of a before-and-after change; here nothing is netted against a comparison group: a learning rate for the contacts a jobseeker did not choose is estimated inside a reinforcement-learning model of each jobseeker's own choice sequence and simulated through a window made of such contacts."
+    "task167": "task167 infers which of two unnamed drawdown schedules each unit follows from its own first-year draws; here no per-unit schedule is inferred: a randomised offer's effect is read by how many days before each subscriber's next bill it landed and carried to a list the billing calendar has put six days before every bill.",
+    "task31": "task31 splits a lag absolutely on a prior approval with the same counterparty, a standing property recovered through a multi-file join; here the split is the days between the offer's delivery and each subscriber's own next bill, which no record of the subscriber holds and which the move to billing on the 1st set for the whole target at once.",
+    "task44": "task44 decomposes a pilot's pooled gain over a behavioural moderator, a trait of each unit measured over a prior window; here the moderator is not a trait at all but where the unit's own recurring bill falls relative to the delivery, so one subscriber is persuadable one fortnight and not the next, and the target's position comes from the billing calendar.",
+    "task56": "task56 restores a population billed on a different basis that is known only by its absence from the event streams; here nobody is missing or restored: every list member is present, and the effect each is credited with turns on the days from the send to their next bill.",
+    "task57": "task57 v19 separates candidate measures that reproduce their own year by identity, on a held-out year; here no measure is chosen by a back-test: a randomised effect is conditioned on where the delivery fell in each subscriber's billing cycle.",
+    "task76": "task76 cuts a forward count by a class with zero observed conversion rebuilt from a log of failed contacts; here no class has zero conversion: the offer converts well when it lands within two weeks of the bill and hardly at all before that, and the forecast list sits wholly in the first band.",
+    "task124": "task124 prices newcomers from analogs whose measured value the organisation's own dispatch held down; here no evidence is suppressed by an intervention: the evidence is a randomised test whose effect varies with the delivery's place in each subscriber's billing cycle."
   },
-  "lineage": [],
-  "notes": "architecture_spent set: architecture v1 spent at Gate F on target.zip 3be16ba3 (the re-judge DETERMINISTIC, APPROVE), a scored reader's outcome-weighted habit model landed the 25 bin; the slot moves to a second cell assigned by the main session, and this identity goes into lineage when that draw is registered.",
-  "registered": "2026-10-19T07:01:02Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-19",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "decision-making-computational-behavioral-modeling",
+      "niche": "a provincial employment service's forecast of the share of jobseekers' own contacts its upgraded digital assistant takes in the eight weeks after an assistant-first period, from each claimant's contact-by-contact channel choices and the outcomes they met",
+      "objective": "forecasting",
+      "shape": "02",
+      "decision_type": "quantity_figure",
+      "answer_unit": "rate_or_share",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G7",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "forecast_method_backtest",
+      "context_artifact": "other",
+      "role_family": "policy_adviser",
+      "forum": "line_manager_or_team",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "government_agency",
+      "layer2_family": "forecast_uncertainty",
+      "layer2_pattern": "psychology-behavioral-science/decision-making-computational-behavioral-modeling/3",
+      "driver": "Experiences a unit did not choose move its later choices far less than experiences it chose, so a period that sends every unit to one option converts few of them; the record holds those imposed experiences only as scattered single episodes, so a learner fitted to the whole record with one rate over-predicts the conversion, and only a separate rate for the imposed experiences, read from those episodes, carries to the period.",
+      "driver_concrete": "Jobseekers sent to the digital assistant when the phone queue overflows learn about a fifth as much from it as those who open it themselves, so the eight assistant-first weeks, which send every call to the assistant, lift claimants' own use of it in March and April far less than a reinforcement-learning model with one learning rate predicts.",
+      "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files about 40 per cent of claimants' own contacts in the assistant for March and April; the overflow-redirected contacts in the record teach about a fifth as much as chosen ones, so the share is about 26 per cent.",
+      "answer": "25 per cent (to the nearest 5 per cent; 25.21 unrounded)",
+      "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21): the re-judge was DETERMINISTIC and APPROVE, but scored reader I landed the 25 bin with a fitted outcome-weighted habit model (decay 0.63 per contact, weights by the previous contact outcome) that never separated the imposed contacts; whole per cent had failed determinism and nearest 5 admitted the neighbour, so the lever was no wider than the golden family spread"
+    }
+  ],
+  "notes": "Re-rooted 2026-10-21 to architecture v2 in the second cell the main session assigned this round; v1's identity is in lineage with its fate.",
+  "registered": "2026-10-21T05:48:20Z"
 }

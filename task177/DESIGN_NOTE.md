@@ -1,5 +1,78 @@
 # task177 design note
 
+**Status: architecture 2 drawn 2026-10-21 in the second cell the main session assigned this round (product-analytics /
+churn-propensity-uplift-modeling, Forecasting); stage 2 next.** Architecture 1 (psychology-behavioral-science, a
+provincial employment service's assistant-share forecast) was spent at Gate F on target.zip 3be16ba3; its record is
+kept below under `## Architecture 1 record`, and every death of both architectures, with the seed world's, is in `##
+Tried and rejected`.
+
+## Draw
+
+| Item | Value |
+|---|---|
+| Cell | product-analytics / churn-propensity-uplift-modeling (the taxonomy tags it F and OS), objective Forecasting, the round's second and last cell for this number |
+| World | Daily Lantern Media (fictional), publisher of the national title The Daily Lantern, United Kingdom, GBP; about 1.3 million monthly digital subscribers |
+| Call | the share of the 26 January 2027 at-risk list of monthly digital subscribers still subscribed on 31 March 2027 because they were sent the half-price retention offer and would not have been without it, to the nearest 5 per cent |
+| Forcing event | launch_or_rollout: the offer goes out on Tuesday 26 January 2027, and the executive team weighs its cost against the subscriptions it keeps before the send |
+| Stakeholder | head of subscriber retention in the audience revenue team (role family product_manager); personas Bernard Peacock and Natalie Taylor, drawn with `guard.py names --geo "United Kingdom" --seed 177` |
+| Card axes | shape single-figure; decision quantity_figure, answer rate_or_share, question what; gap population then time; pattern E; generators G14, G7, G6; Gate G forecasting; calibration pilot_log; strategy composition_mix; context artifact planning_thread; forum executive_team; org family media_or_publishing; Layer 2 estimand_identification, pattern product-analytics/churn-propensity-uplift-modeling/1 |
+| Guard | `guard.py check` PASS on the draft, with NOTE lines for seven older builds that share the gap, pattern and decision type or Gate G (task167, task31, task44, task56, task57, task76, task124), each differentiated on the card; the forcing event was first drafted as budget_or_appropriation, which task486 holds in the window, and the honest forcing fact is the send date; the gap reads population first, as the corpus codes a composition step (task165, task163, task83), and time second |
+
+**The mechanism.** Last January the retention team sent the offer (half price on the next two monthly bills, taken by
+a click within 30 days) to a random half of its 31 January 2026 at-risk list of monthly subscribers and held back the
+other half. Subscriptions then billed on each subscription's own day of the month, so the test's deliveries fell at
+every point of the subscribers' billing cycles. A subscriber weighs whether to keep paying as the next bill comes up:
+an offer that lands in the fortnight before the bill catches them deciding and keeps about three in four of those who
+would have gone at that bill, while one that lands earlier is mostly forgotten by then. The test therefore averages a
+strong effect on the subscribers whose bill fell within two weeks of the send and almost none on the rest, about 9
+kept per 100. From the October 2026 bill run the new subscriptions platform bills every monthly plan on the 1st, so
+this January's list, sent on 26 January, has every bill on 1 February, six days after the send, and is kept at the
+rate the test measured on its subscribers billed within two weeks of the send, about 20 per 100.
+
+**Data-native sentence.** Last year's bills fell on each subscription's own day and this year's all fall on the 1st,
+so the test spread its deliveries evenly over the billing cycle while this year's offer lands six days before every
+bill; the offer works through the bill decision, and only the days from delivery to bill, rebuilt from the invoice
+ledger, tell the test's persuadable half from the rest.
+
+**Sources.** The library card product-analytics/churn-propensity-uplift-modeling/1 (target persuadables on randomised
+treatment and control) is the default path done right; the stump is the judgment it takes for granted, that the effect
+belongs to the subscriber rather than to where the offer lands in the subscriber's billing cycle. Cards 3 and 4 of the
+same task type (Qini, rank by effect) are the same route. Strategy F5 (composition): the conditioning property here is
+new, a delivery's place in each unit's own decision cycle, rebuilt from the invoice ledger and the send date and never
+a column.
+
+## Screen
+
+- Measured before the card, on prototypes in the session scratchpad (r177/c2/proto; rebuild from code): c2a to c2f are
+  in-memory worlds; c2pack.py writes a file-only mini-pack; c2out.py is an outsider re-implementation that reads only
+  those files and builds every quantity with its own conventions.
+- Lever against the family, on the outsider over three mini-pack seeds (7, 8, 9; truth 20.1 to 20.3 per cent): every
+  route without the bill-timing step lands 9.4 to 9.9 (pooled difference of the arms, the outcome read by request
+  date, two-model logistic and gradient boosting, transformed outcome, strata by plan and device, openers against the
+  holdout), the 10 bin; every route with it lands 18.0 to 21.0 (bins of the days to the next bill inside the
+  fortnight, a single day at 6, local linear at day 6 with bandwidths 3, 5 and 8, logistic with treatment by day
+  splines, two-model with the days as a feature), the 20 bin. The lever is about 10.5 points against an outsider
+  spread of 3.0 points (1.5 without single-day bins).
+- Scalings that could land by accident: the arms' difference over the open rate 31 to 33, over the acceptance rate 74
+  to 80, accepters against the holdout 44; none in the 20 bin. In prototype e an open rate of 45 per cent, the
+  fortnight's own share of the cycle, put the first of these at 18.3, so the email world keeps the open rate near 30
+  per cent.
+- Constructions that build the days wrongly: the next invoice actually seen (leavers have none and drop out) 5.7 to
+  7.1; the start date's day read as the bill day (wrong where a recovered failed payment moved it, and at month ends)
+  14.6 to 17.2; a window running past the fortnight (days 1 to 16, 1 to 21) 13.4 to 18.3. Each is closed by the
+  record: the invoice ledger carries every billing period, and the arms' difference by day falls to zero after day 14.
+- Screens as code: the subset screen, filters on plan, device, tenure and engagement, gives 9.4 and none reaches the
+  golden; the subset billed on the 1st reaches it, because day 1 sits in the fortnight, which is the decisive step
+  taken under its calendar name. Dispersion does not apply (a level). Variance-only passes (the point moves from 10 to
+  20). Truncation direction does not apply. The one-number screen passes (the correcting input is per subscriber, each
+  one's days to the next bill). The forcing-file screen passes (no file holds the days to the bill, an effect by bill
+  timing or a test readout). The dial (stumping 1.1): the family that skips the step is unanimous at 10 and the family
+  that takes it unanimous at 20, with nothing left to choose inside either.
+- Pack sizes from the screen: last year's test 200,000 subscribers half and half (single-day bins spread 3 to 5 points
+  at 150,000), this year's list about 40,000 to 60,000.
+
+## Architecture 1 record (psychology-behavioral-science, spent at Gate F on 2026-10-21)
+
 **Status: architecture 1 spent at Gate F on target.zip 3be16ba3 (2026-10-21), paused at stage 1; the second cell this
 round is assigned by the main session.** The round 5 re-judge was DETERMINISTIC and APPROVE, and a scored reader's
 outcome-weighted habit model landed the 25 bin (`## Tried and rejected`). The history of architecture 1 follows.
@@ -19,7 +92,8 @@ psychology-behavioral-science / decision-making-computational-behavioral-modelin
 the library test, a dozen more on paper, and the imposed-contact learning discount (F) held. Prototypes are in the
 session scratchpad (r177/proto).
 
-## Draw
+
+### Draw
 
 | Item | The draw |
 |---|---|
@@ -91,7 +165,7 @@ here that static rebuild is a wrong rung, and the imposed rate sits inside a joi
 censors a latent patience; nothing is censored here. task137 is a contact-centre world on a repricing share; the
 decision, organisation, country and driver differ.
 
-## Default path
+### Default path
 
 1. Rebuild each jobseeker's contacts: calls to the claimant line from `contact_legs_2026.csv` keyed by the case number
    on the call's first leg (legacy codes through `telephony_migration_codes.xlsx`), conversations in the app or on the
@@ -109,14 +183,14 @@ decision, organisation, country and driver differ.
 Ends on: 40 per cent
 Golden: 25 per cent
 
-## Stump sentence
+### Stump sentence
 
 One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the
 overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth
 as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them
 and the share is 25 per cent.
 
-## Three rules
+### Three rules
 
 Task type: decision-making-computational-behavioral-modeling in psychology-behavioral-science, which serves Forecasting & Predictive Modeling: a reinforcement-learning model of each jobseeker's contact-by-contact choices, fitted by likelihood, compared out of sample and simulated forward.
 Domain test: the deciding quantity is how far a contact the jobseeker did not choose moves their later channel choice against one they chose, a learning rate for imposed experiences inside a fitted reinforcement-learning model, which is the free-against-forced choice distinction of the field's own learning studies.
@@ -132,7 +206,7 @@ No decoy: nothing is planted to be caught; no memo, draft, briefing, vendor esti
 No certified replay: no published or certified figure reproduces the method; the learning rates are recovered from the jobseekers' own records by likelihood, and no shipped figure is a function of them.
 Lesson: an experience a person did not choose teaches them less than one they chose, so a period that imposes an option converts fewer people than a learner fitted to a record of mostly chosen experiences predicts; no build on file turns on a learning rate for imposed experiences.
 
-## Readability screen
+### Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -141,7 +215,7 @@ Lesson: an experience a person did not choose teaches them less than one they ch
 | The plan's weeks simulated with release 4.0's acceptance share | plan 1.3, 2.1 to 4.1; acceptance summary | none | yes | none | no | no | readable |
 | (decisive) A separate learning rate for the contacts the jobseeker did not choose | none: the plan routes calls and never says what a transfer teaches | the transfer is a routing fact on the queue leg; nothing marks how much it teaches | one rate for every contact is the reflex | none: no file scores a model | no sweep reaches it | no: a jointly fitted rate, not a ratio of counts | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -170,7 +244,7 @@ Lesson: an experience a person did not choose teaches them less than one they ch
 | SF23 | the 351 on the register with no 2026 contact (c, open) | the fitted model's starting values | the others' mean state | same call (24.13, 1.63 inside) | converges; leaving them out narrows the prompt's population |
 | SF24 | the phone's outcome rate after 1 March (a, filed) | the 2026 rate over the calls the queue keeps (0.883) | over every call, the transfers' voice outcomes in (0.870) | same call (25.68; 26.28 with SF22's alternative) | plan 3.3 |
 
-## Ladder
+### Ladder
 
 | Rung | Route | Figure (nearest 5 per cent; unrounded) | Dies to |
 |---|---|---|---|
@@ -189,7 +263,7 @@ pull to the last choice (1,137 units), a transfer moving the phone's value at th
 reflexes split both ways (no learning and teaching nothing below; one rate and the reduced forms above), so no single
 correction walks the default path to the answer.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -216,7 +290,7 @@ correction walks the default path to the answer.
 | 21 Clause scope | the plan's routing applies to the Claimant Services queue only | plan 2.1, 2.2 |
 | 22 Forward window contents | the plan's weeks: release 4.0 on every call to 28 February, advisers from 1 March with the overflow, each check-in on its due date | plan 1.3, 2 to 4; the acceptance summary; SF18 |
 
-## Literal reader
+### Literal reader
 
 The method is open and forced by the record: the reinforcement-learning family beats every reduced form on held-out
 choices by 1,419 log-likelihood units or more, and inside it the separate transfer rate beats one rate by 382 held
@@ -232,7 +306,7 @@ assistant's rate kept for the conversations jobseekers open) each violate a quot
 model forms that leave the cell (a transfer moving the phone's value at the chosen rate, an assistant-first call pulling
 toward the assistant) are rejected by the record by 685.5 and 132.8 log-likelihood units.
 
-## Outsider diagnosis
+### Outsider diagnosis
 
 Round 4's re-judge reproduced every input and fit and forecast 26.9 to 27.2 against the generator's 26.05. An
 independent re-implementation of the same model class (scratch, outside the build; the generator's checks.py now
@@ -252,7 +326,7 @@ the acceptance count was re-centred from 2,041 to 2,003 of 2,400 so the open rea
 cell: the golden 25.21 (2.29 inside), SF22's alternative 25.80, SF23's 24.13, both together 24.72, and the judge's own
 pair 26.28.
 
-## Oracles
+### Oracles
 
 - `overflow_episodes_2026.csv`: marks exactly the calls the legs mark as transferred (asserted); it confirms which
   contacts were imposed, never how much they teach, and ties under every reading.
@@ -263,7 +337,7 @@ pair 26.28.
 - `export_manifest.csv`: each file's coverage; it ranks nothing.
 - None ranks the forecast or confirms a learning model.
 
-## Ask sheet
+### Ask sheet
 
 **Main call's declared row population:** the claimant line's calls keyed with a case number (their legs in
 `contact_legs_2026.csv`), the voice sessions their transfers met, the app and web conversations under accounts linked
@@ -354,7 +428,7 @@ the asks do not read.
 | Ask A, employers' conversations, twelve months | employer channel less the business number's accounts, by conversation id, Manitoba month | 0 of 12 | miss |
 | Ask B, our own staff and test conversations, twelve months | console, accounts ever typed staff and the business number's employer accounts | 0 of 12 | miss |
 
-## Leak sweep
+### Leak sweep
 
 `leak.py --asof 2027-01-04` on the round 5 pack: REVIEW, five lines, no LEAK (the rounds before returned the same kinds
 of line, each term list taken from that day's draft of this note). Each, harmless:
@@ -371,7 +445,7 @@ of line, each term list taken from that day's draft of this note). Each, harmles
 - Sweep 4, the prompt's question carries two terms of the note: they name what is counted and the routing the question
   conditions on, which the prompt has to state; neither names the learning model or the transfers.
 
-## Seed world (FC48), set aside on 2026-10-18
+### Seed world (FC48), set aside on 2026-10-18
 
 **The seed world, as it stood.** Wave 8, new, Forecasting, seed FC48:
 thirty unstaffed recycling drop-off points opened in December and January with 15 bins of 1,100 litres each
@@ -644,3 +718,44 @@ its group's surviving records), the same family by its label.
   outcome-weighted habit model, so the lever between the golden and its neighbours was no wider than the golden
   family's own spread, and a quantity's lever has to clear that spread by a wide margin, measured on an outsider's
   re-implementation at the screen, before any rounding is chosen.
+- **Second cell, product-analytics / churn-propensity-uplift-modeling (2026-10-21), candidates that died on paper
+  before any prototype.** Each line was written when the candidate was dropped.
+- A retention offer that defers rather than saves, graded at a horizon past the test's readout: the decisive step
+  settles the outcome's window, a part of the estimand, so filing it is a literal read and leaving it open is a fork;
+  extrapolating past the test's follow-up forks the family on the decay's form.
+- An offer moved to a channel with higher reach, the test's effect scaled by its exposure (the effect per opened
+  offer): the scenario sentence that files the channel change sends every reader to the open rate, and the transport
+  of the per-reached effect is an assumption the data do not settle.
+- Acceptances of a save offer read as saves against the randomised holdout: the holdout comparison is the uplift
+  reflex itself.
+- Training labels shaped by an always-on save programme, forecast with the programme switched off: the scenario files
+  the switch-off and points at the holdout, a reflex once read.
+- Stated intent to cancel after a price rise, calibrated by the last rise's stated-to-actual ratio: a known reflex for
+  any forecaster holding both files.
+- Discount depth extrapolated past the tested range against a saturating response: the plot shows the plateau, a
+  reflex.
+- A staggered market rollout read with not-yet-treated comparisons against two-way fixed effects: the textbook
+  estimator now, landed by any strong reader.
+- Paid account sharing with borrowers converting: the famous real case primes the golden reading.
+- Free trials withdrawn so that the no-trial group's meaning changes: the post-change cohort is a mixture whose
+  weights and third type (would-be trial leavers) fork the family.
+- A promotional cohort's price step-up inside the window: the step-up date is visible and the earlier cohort is the
+  analog route blind readers took on task167.
+- A second offer to subscribers treated before, read on a re-randomised group: task83's driver (an effect conditioned
+  on each unit's own prior treatment history) in other nouns.
+- The effect carried on a relative rather than an absolute scale to a list with a higher base risk: task165's gain on
+  each unit's own baseline in other nouns, and the scale choice is a coin flip between reflexes.
+- Contact harming dormant subscribers (sleeping dogs) concentrated in a new list: email engagement is a standard
+  feature, so any two-model uplift with it lands.
+- An offer rationed by a monthly redemption cap read as a natural experiment by day of month: the effect is identified
+  only with a day-of-month adjustment and a horizon for deferral, two forks.
+- A threshold-assigned offer read by regression discontinuity: the bandwidth and order family forks the local effect,
+  and a regression with the score as a covariate lands near it.
+- Predicted uplift of a model's own top segment shrunk by honest evaluation: the graded figure would depend on each
+  reader's model.
+- **Second cell, candidate C2 (held at the screen).** The offer's effect by the days from delivery to each
+  subscriber's next bill, carried from an anniversary-billed test to a list billed on the 1st: measured on six
+  in-memory worlds and a file-only mini-pack with an outsider re-implementation (`## Screen`). One accidental lander
+  was found and moved before the card: with the email open rate at 45 per cent, the fortnight's share of the cycle,
+  the arms' difference divided by the open rate reproduced the golden (18.3 against 18.0); at 30 per cent it gives 31
+  to 33.
