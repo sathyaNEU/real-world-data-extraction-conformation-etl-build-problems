@@ -275,45 +275,38 @@ ships.
 
 ## Ask sheet
 
-The program files each ask's home: section 3 puts each section's March cold patches on its task order for replacement
-and has the district close out the pilot's March charges before the orders issue; section 4 takes each section's March
-coverage to the April pilot review. No ask reads a row the call reads: the work orders, the camera miles' traversal
-duplicates and the sessions sit outside the call's population (zero device rows in it, asserted).
+The program's section 3 puts each section's March cold patches on its task order for replacement, with the miles the
+pilot's camera units were driven on the section's roadway in March. No ask reads a row the call reads: the work orders
+and the camera miles' traversal duplicates sit outside the call's population (zero device rows in it, asserted).
 
 - **Ask A, cold patches by section: 28 figures** (the potholes cold patched in March, a pothole patched more than once
   counting once, and the pounds of cold mix those patches used, for each of the fourteen sections). Path: the work
-  orders, the review export (defect numbers and their route mileposts), the program. Devices: A1 (D6, primary for the
-  pounds), the crews' mobile app writes the order's total pounds on every line of a multi-line order while office orders
-  carry each line's own pounds, so summing the lines counts a mobile order's pounds once per line; only the lines'
-  identical figures and pounds per pothole three to four times the office lines' show it. A2 (D7, primary for the
-  counts), Kerbline renumbered every defect at its 17 March platform migration and an order raised before it carries the
-  old number, so a pothole whose cold patch failed before the 17th and was patched again after it appears under two
-  numbers; only the old numbers' absence from Kerbline's exports and the two orders' identical route milepost show it.
-  Hazards: open orders (no finish), the March finish window. Stops: refs as written and lines summed (the natural read,
-  every count one pothole over and every pounds figure 55 to 3,955 over); refs mapped but lines summed; lines once per order but refs
-  as written; the golden.
+  orders, the review export (defect numbers, decisions, reasons and route mileposts), the detections, the program.
+  Devices: A1 (D6, primary for the pounds), the crews' mobile app writes the order's total pounds on every line of a
+  multi-line order while office orders carry each line's own pounds, so summing the lines counts a mobile order's pounds
+  once per line; only the lines' identical figures and pounds per pothole three to four times the office lines' show
+  it. A3 (D7, primary for the counts), when Kerbline split one pothole into two defect numbers, a crew sometimes raised
+  the order on the second number before the reviewer rejected it as a duplicate of the first; in every section one
+  pothole's only order carries the rejected twin's number, and one pothole's first order carries the twin's number and
+  its re-patch the surviving number, a few thousandths of a mile apart. Only the review's "Duplicate of" reason joined to
+  the orders shows it: counting by location keeps the twin as a second pothole, dropping orders on rejected numbers
+  loses a patched pothole. Hazard A2 (D7), the 17 March renumbering: an order raised before it carries the old number,
+  which only the order's route milepost resolves. Other hazards: open orders (no finish), the March finish window.
+  Stops: refs as written and lines summed (the natural read); refs resolved by location and lines summed (the
+  cracker); lines once per order but no duplicate fold; rejected numbers dropped; the golden.
 - **Ask B, camera miles by section: 14 figures** (the miles the pilot's units were driven on the program's roadway in
   March, each pass at its segment's inventory length). Path: the traversals, the register, the inventory, the turnback,
   the program. Device B1 (D1, primary): the telematics provider re-ran its map matching over 12 March 00:00 to 13 March
-  06:00 UTC and appended the re-run's traversals beside the originals, a second or two apart, under that day's traversal
-  numbers; no row repeats another and every key is unique, and only a vehicle's overlapping traversals of one segment show
-  it. Hazards: the crew trucks' trips before their units were installed, the UTC export window, the turnback segments.
-  Stops: every row (the natural read), the installed and local-window filters without the overlap (every figure 23 to
-  595 miles over), the golden.
-- **Ask C, Kerbline's March service days by fleet and the March charge: 5 figures.** Path: the sessions, the register,
-  the detections, the scope of work 6. Device C-primary (D4): a phone that lost power mid-shift leaves its session open,
-  and the device API's session export lists only the sessions the platform closed, so thirteen unit-days on which a unit
-  ran (and captured detections) show no session; only the unit's detections on a day with no session show it, and the
-  scope of work's own sentence that a unit records while it runs a session makes the day billable. Hazards: sessions in
-  UTC, night shifts running past local midnight (scope of work 6.1 "any part of which"), bench tests before installation
-  (6.2). Stops: session start dates in UTC with the bench tests (the natural read), local days touched by the listed
-  sessions (every figure 2 to 5 days short), the golden.
+  06:00 UTC and appended the re-run's traversals beside the originals, offset by a fraction of each traversal's own
+  duration, under that day's traversal numbers; no row repeats another and every key is unique, and only a vehicle's
+  overlapping traversals of one segment show it. Hazards: the crew trucks' trips before their units were installed, the
+  UTC export window, the turnback segments. Stops: every row (the natural read), the installed and local-window filters
+  without the overlap, the golden.
 
-| Ask | Cracker (lands the call; refs as written, lines summed, every traversal row kept, the listed sessions only) | Mirror (no completion; every ask read the natural way) |
+| Ask | Cracker (lands the call; refs resolved by location, no duplicate fold, lines summed, every traversal row kept) | Mirror (no completion; every ask read the natural way) |
 |---|---|---|
 | A, cold patches and pounds by section (28) | miss | miss |
 | B, camera miles by section (14) | miss | miss |
-| C, service days by fleet and the charge (5) | miss | miss |
 
 Pair ceiling: 28.5 (cracker 45.0 with the call, the fourteen whole numbers and no ask figure; mirror 12.0, off the call
 with one whole number and no ask figure)
@@ -379,5 +372,13 @@ Measured by: generator/ceiling.py
   unlisted refs, the natural mishandling, took Fenwick Gap and Thistlebank under the line; cut to 1.6 and 0.9 per cent.
 - 2026-10-20, stage 3: the per-unit find rate as a critical component: pairs and maximum likelihood differ in its first
   decimal (54.2 against 54.8 per cent), so it stays in the solution's step with its definition and leaves block 2.
+- 2026-10-21, stage 4: ask C, Kerbline's service days and the March charge, on sessions the platform never closed:
+  the judge's pass 1 found the charge reading open (FIX_NOW) and both readers found the unclosed days from detections
+  with no session; the ask was dropped and the program's charges clause with it.
+- 2026-10-21, stage 4: the 17 March renumbering as ask A's count primary: both readers resolved the old numbers by
+  route milepost, a reflex once the refs fail to join; kept as a hazard, the primary moved to rejected twin numbers
+  that a location join keeps as two potholes.
+- 2026-10-21, stage 4: the telematics re-run appended one or two seconds after the originals: an exact-looking near
+  duplicate a reader dedups on sight; the offsets now scale with each traversal's duration.
 - 2026-10-20, stage 3: the sweepers' night shifts of 28 February and 31 March: under a UTC window they moved camera
   miles across the month boundary; the spring sweeping schedule now runs 1 to 30 March nights.

@@ -44,10 +44,10 @@
     "four crew-truck units installed on 9 March, their trucks' earlier trips in the traversals (the unit register's install and removal dates)",
     "defects Kerbline split in two, folded by the reviewer as duplicates, and rejected non-pothole and off-system reports (the review export)",
     "the telematics provider's re-run of 12 to 13 March appended beside the originals (ask device)",
-    "Kerbline's 17 March defect renumbering carried only by work orders raised before it (ask device)",
+    "Kerbline's 17 March defect renumbering carried only by work orders raised before it (ask hazard)",
     "mobile-app work orders writing the order's total pounds on every line (ask device)",
-    "sessions the platform never closed, missing from the session export but evidenced by the unit's detections (ask device)",
-    "bench-test sessions before installation and night sessions running past local midnight, in UTC"
+    "orders raised on a split pothole's second defect number before the reviewer rejected it as a duplicate (ask device)",
+    "the telematics provider's 12 to 13 March map-matching re-run appended beside the original traversals (ask device)"
   ],
   "stakeholder_role": "the district maintenance engineer of a state DOT district, who issues the spring patching crews' task orders",
   "role_family": "field_unit_lead",

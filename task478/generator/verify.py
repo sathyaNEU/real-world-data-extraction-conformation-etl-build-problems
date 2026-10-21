@@ -155,13 +155,13 @@ def main(target=None):
     ok("every section's whole number matches", all(int(rate[s] + 0.5) == by_no[s][1]["rate"] for s in rate))
     # ask A
     known = {r["Defect ID"] for r in qa}
-    loc = {(r["Route"], "%.3f" % float(r["Milepost"])): r["Defect ID"] for r in qa if r["Decision"] == "Confirmed"}
+    loc = {(r["Route"], "%.3f" % float(r["Milepost"])): r["Defect ID"] for r in qa if r["Milepost"]}
     wo = rows(j("mms_cold_patch_orders_2027-03.csv"))
     done = [r for r in wo if r["status"] == "COMPLETE" and r["finished"][:2] == "03"]
     pots, lbs, lines = defaultdict(set), defaultdict(int), defaultdict(list)
     for r in done:
         ref = r["ext_ref"] if r["ext_ref"] in known else loc[(r["route"], r["milepost"])]
-        pots[r["section"]].add(ref)
+        pots[r["section"]].add(dup.get(ref, ref))
         lines[r["wo_number"]].append(r)
     for w, ls in lines.items():
         v = [int(x["cold_mix_lb"]) for x in ls]
@@ -185,32 +185,6 @@ def main(target=None):
             continue
         miles[road[t["segment_id"]]["section"]] += float(road[t["segment_id"]]["length_mi"])
     ok("ask B miles match", all(int(miles[s] + 0.5) == by_no[s][1]["camera_miles"] for s in by_no))
-    # ask C
-    sess = json.load(open(j("kerbline_unit_sessions_2027-03.json")))
-    ok("json read back: the sessions' account (control)", sess["account"] == "Tamsett District pilot")
-    days = defaultdict(set)
-    for x in sess["units"]:
-        grp, a, b = fleet[x["unit_serial"]]
-        for s in x["sessions"]:
-            st = dt.datetime.strptime(s["start_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=Z).astimezone(ET).date()
-            en = dt.datetime.strptime(s["end_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=Z).astimezone(ET).date()
-            d = st
-            while d <= en:
-                if (d.year, d.month) == (2027, 3) and a <= d and (b is None or d < b):
-                    days[x["unit_serial"]].add(d)
-                d += dt.timedelta(1)
-    for d in det:
-        grp, a, b = fleet[d["unit_serial"]]
-        day = dt.date.fromisoformat(d["captured_local"][:10])
-        if (day.year, day.month) == (2027, 3) and a <= day and (b is None or day < b):
-            days[d["unit_serial"]].add(day)
-    per = defaultdict(int)
-    for u, ds in days.items():
-        per[fleet[u][0]] += len(ds)
-    sow = pdf_lines(j("kerbline_pilot_scope_of_work.pdf")).replace("\n", " ")
-    ok("pdf read back: the day rate in the scope of work (control)", "$10.85 per service day" in sow)
-    ok("ask C days match", per == figs["kerbline"]["days"])
-    ok("ask C charge matches", int(round(sum(per.values()) * 10.85)) == figs["kerbline"]["charge"])
     # the golden CSV carries the same figures
     gc = rows(os.path.join(TASK, "golden", "tamsett_spring_patching_sections_2027.csv"))
     ok("golden CSV agrees with every graded figure", all(
@@ -220,8 +194,7 @@ def main(target=None):
         int(r["camera_miles_mar"]) == by_no[r["section"]][1]["camera_miles"] and
         r["dedicated_crew"] == by_no[r["section"]][1]["crew"] for r in gc))
     gp = pdf_lines(os.path.join(TASK, "golden", "tamsett_spring_patching_task_orders_2027.pdf")).replace("\n", " ")
-    ok("golden PDF carries the charge and every designated section",
-       "${:,}".format(figs["kerbline"]["charge"]) in gp and all(n in gp for n in figs["call"]["designated"]))
+    ok("golden PDF carries every designated section", all(n in gp for n in figs["call"]["designated"]))
     fails = [n for n, c in OK if not c]
     print("%d verifications, %d failed" % (len(OK), len(fails)))
     return 0 if not fails else 1

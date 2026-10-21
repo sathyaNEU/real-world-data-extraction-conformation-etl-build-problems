@@ -15,7 +15,6 @@ def main():
     secs = sorted(f["sections"].items(), key=lambda kv: kv[1]["section"])
     des = f["call"]["designated"]
     c = f["components"]
-    k = f["kerbline"]
     rates = ", ".join("%d" % f["sections"][n]["rate"] for n in des[:-1]) + " and %d" % f["sections"][des[-1]]["rate"]
     out = []
     out.append("## Tags\n")
@@ -55,13 +54,12 @@ def main():
         "segment, and divided each section's total by its lane-miles over ten." % c["miss_rate"],
         "Cold patches from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: an ext_ref missing from "
         "Kerbline's exports, a number from before Kerbline's 17 March renumbering, taken to the confirmed defect at the "
-        "same route and milepost in the review export so each pothole counts once, and a multi-line order carrying the "
-        "same pounds on every line counted once.",
+        "same route and milepost in the review export, each defect the reviewer rejected as a duplicate taken to the "
+        "defect it names, so each pothole counts once; a multi-line order carrying the same pounds on every line counted "
+        "once.",
         "Camera miles: dropped each traversal overlapping the same vehicle's earlier-numbered traversal of the same "
         "segment (the provider's re-run of 12 to 13 March), kept installed units' March passes on the program's roadway "
-        "and summed inventory lengths; service days from kerbline_unit_sessions_2027-03.json: local days during any part "
-        "of which an installed unit had a session, plus the days it captured detections with no session listed, bench "
-        "tests out, at $%.2f a day (kerbline_pilot_scope_of_work.pdf, section 6)." % k["rate"],
+        "and summed inventory lengths.",
         "Designated the sections at %.1f or more: %s." % (f["line"], join(des)),
     ]
     for i, s in enumerate(steps, 1):
@@ -89,10 +87,6 @@ def main():
     out.append("### tamsett_spring_patching_task_orders_2027.pdf\n")
     out.append("1. Bar chart on page 1 of every section's potholes per ten lane-miles against the program's %.1f line, the "
                "seven designated sections in dark blue." % f["line"])
-    out.append("2. Kerbline service days, March 2027:")
-    for n in ("Section patrol", "Freeway service patrol", "Street sweeper", "District crew"):
-        out.append("   - %s: %d" % (n, k["days"][n]))
-    out.append("3. March charge: ${:,}".format(k["charge"]))
     text = "\n".join(out) + "\n"
     open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write(text)
     return text

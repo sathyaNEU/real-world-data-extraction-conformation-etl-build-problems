@@ -293,8 +293,10 @@ def per_pass(p, g=None):
                 passes[seg].append((unit, day))
     first = {}
     det_days = defaultdict(set)
+    dup = {int(r["Defect ID"]): int(str(r["Reason"]).split()[-1]) for r in p["qa"]
+           if (r["Reason"] or "").startswith("Duplicate of ")}
     for d in p["det"]:
-        did = int(d["defect_id"])
+        did = dup.get(int(d["defect_id"]), int(d["defect_id"]))
         if did in pots:
             day = d["captured_local"][:10]
             det_days[did].add((d["unit_serial"], day))
@@ -372,24 +374,35 @@ def _mms_time(s):
     return dt.datetime.strptime(s, "%m/%d/%Y %H:%M").replace(tzinfo=TZ) if s else None
 
 
-def ask_patches(p, legacy="location", pounds="per_order"):
+def ask_patches(p, legacy="location", pounds="per_order", fold=True, confirmed_only=False):
     """Ask A: per section, the potholes cold patched in March (a pothole patched twice counts once) and the pounds of
-    cold mix their orders used. legacy: 'location' maps an ext_ref Kerbline no longer carries to the defect at the
-    same route and milepost; 'as_is' counts refs as written. pounds: 'per_order' takes a figure repeated on every
-    line of an order once; 'lines' sums the lines."""
-    qa_loc = {}
-    known = set()
+    cold mix their orders used. legacy: 'location' takes an ext_ref Kerbline no longer carries to the defect at the
+    same route and milepost, 'as_is' counts refs as written, 'all_location' identifies every line by its route and
+    milepost. fold follows the reviewer's "Duplicate of" to the defect it names; confirmed_only drops lines whose defect
+    the reviewer rejected. pounds: 'per_order' takes a figure repeated on every line of an order once; 'lines' sums."""
+    loc, known, dup, conf = {}, set(), {}, set()
     for r in p["qa"]:
-        known.add(int(r["Defect ID"]))
-        if r["Decision"] == "Confirmed" and r["Milepost"] is not None:
-            qa_loc[(r["Route"], round(float(r["Milepost"]), 3))] = int(r["Defect ID"])
+        did = int(r["Defect ID"])
+        known.add(did)
+        if r["Milepost"] is not None:
+            loc[(r["Route"], round(float(r["Milepost"]), 3))] = did
+        if r["Decision"] == "Confirmed":
+            conf.add(did)
+        elif (r["Reason"] or "").startswith("Duplicate of "):
+            dup[did] = int(str(r["Reason"]).split()[-1])
     done = [r for r in p["wo"] if r["status"] == "COMPLETE" and r["finished"]
             and _mms_time(r["finished"]).month == 3]
     pots = defaultdict(set)
     for r in done:
         ref = int(r["ext_ref"])
-        if legacy == "location" and ref not in known:
-            ref = qa_loc[(r["route"], round(float(r["milepost"]), 3))]
+        if legacy == "all_location":
+            ref = ("loc", r["route"], round(float(r["milepost"]), 3))
+        elif legacy == "location" and ref not in known:
+            ref = loc[(r["route"], round(float(r["milepost"]), 3))]
+        if fold and ref in dup:
+            ref = dup[ref]
+        if confirmed_only and isinstance(ref, int) and ref in known and ref not in conf:
+            continue
         pots[int(r["section"])].add(ref)
     orders = defaultdict(list)
     for r in done:

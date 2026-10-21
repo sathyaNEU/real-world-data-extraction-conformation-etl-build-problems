@@ -181,15 +181,22 @@ def main():
     cA = M.ask_patches(p, legacy="as_is", pounds="lines")
     check("A every section's cold patch count moves under refs as written (A2)",
           all(cA[0].get(s, 0) != gA[0].get(s, 0) for s in ORDER))
+    loc_only = M.ask_patches(p, legacy="all_location", fold=False)[0]
+    conf_only = M.ask_patches(p, confirmed_only=True, fold=False)[0]
+    moved = [s for s in ORDER if loc_only.get(s, 0) != gA[0].get(s, 0) and conf_only.get(s, 0) != gA[0].get(s, 0)]
+    check("A3 the twin numbers: lines identified by location move %d sections, dropping rejected defects moves %d; "
+          "every section moves under both" % (sum(1 for s in ORDER if loc_only.get(s, 0) != gA[0].get(s, 0)),
+                                                     sum(1 for s in ORDER if conf_only.get(s, 0) != gA[0].get(s, 0))),
+          len(moved) == len(ORDER))
     check("A every section's pounds move under lines summed (A1)",
           all(cA[1].get(s, 0) != gA[1].get(s, 0) for s in ORDER))
     check("A refs mapped alone still misses every pounds figure; lines once alone still misses every count",
           all(M.ask_patches(p, pounds="lines")[1].get(s) != gA[1].get(s) for s in ORDER)
           and all(M.ask_patches(p, legacy="as_is")[0].get(s) != gA[0].get(s) for s in ORDER))
     qa_ids = {int(r["Defect ID"]) for r in p["qa"]}
-    qa_loc = Counter((r["Route"], round(float(r["Milepost"]), 3)) for r in p["qa"] if r["Decision"] == "Confirmed")
+    qa_loc = Counter((r["Route"], round(float(r["Milepost"]), 3)) for r in p["qa"] if r["Milepost"] is not None)
     legacy = [r for r in p["wo"] if int(r["ext_ref"]) not in qa_ids]
-    check("A2 fair: every ref Kerbline no longer carries (%d lines) sits at exactly one confirmed defect's route milepost"
+    check("A2 fair: every ref Kerbline no longer carries (%d lines) sits at exactly one reviewed defect's route milepost"
           % len(legacy), legacy and all(qa_loc[(r["route"], round(float(r["milepost"]), 3))] == 1 for r in legacy))
     by_wo = defaultdict(list)
     for r in p["wo"]:
@@ -216,16 +223,6 @@ def main():
           all(abs(gB[s] - truth_miles[s]) < 1e-6 for s in ORDER))
     check("B1 fair: every re-run traversal overlaps exactly one original of its vehicle and segment",
           len(e["replays"]) > 0 and len(p["trav"]) == len(e["trav"]) + len(e["replays"]))
-    gC = M.ask_service_days(p)
-    cC = M.ask_service_days(p, detections=False)
-    truthC = R.service_days(e)
-    check("C golden equals the generator's truth (%s)" % truthC,
-          gC[0] == {k: truthC[g_] for k, g_ in zip(M.FLEETS, ("PATROL", "FSP", "SWEEPER", "CREW"))})
-    check("C every fleet and the charge move with only the listed sessions (C primary)",
-          all(cC[0][f] != gC[0][f] for f in M.FLEETS) and cC[1] != gC[1])
-    check("C natural read (start dates, UTC, bench tests) misses every figure",
-          all(M.ask_service_days(p, detections=False, any_part=False, local_days=False, bench=True)[0][f] != gC[0][f]
-              for f in M.FLEETS))
     import ceiling as CE
     pair, leak, kept_c, kept_m = CE.main(TARGET)
     check("ceiling: the cracker keeps no ask figure, the mirror none, pair %.1f under 40" % pair,

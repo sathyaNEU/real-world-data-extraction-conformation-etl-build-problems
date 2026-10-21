@@ -33,7 +33,6 @@ def compute(target):
     pp, pass_rate = M.per_pass(p, g)
     a_n, a_lb = M.ask_patches(p)
     miles = M.ask_miles(p)
-    days, charge = M.ask_service_days(p)
     est = g["est"]
     des = sorted([s for s in ORDER if est[s] >= M.LINE], key=lambda s: (-est[s], s))
     below = max((s for s in ORDER if s not in des), key=lambda s: est[s])
@@ -53,8 +52,6 @@ def compute(target):
                        "highest_below": {"name": NAMES[below], "rate": whole(est[below])},
                        "lowest_in": {"name": NAMES[lowest_in], "rate": whole(est[lowest_in])}},
         "default": {"designated": [NAMES[s] for s in ORDER if pp[s] >= M.LINE], "pass_rate_pct": round(100 * pass_rate)},
-        "kerbline": {"days": {k: days.get(k, 0) for k in M.FLEETS}, "total_days": sum(days.values()),
-                     "rate": M.DAY_RATE, "charge": charge},
         "_unrounded": {NAMES[s]: round(est[s], 4) for s in ORDER},
         "_family": {k: {NAMES[s]: round(v[s], 4) for s in ORDER} for k, v in fam.items() if not k.startswith("_")},
         "_rates": {"pairs": round(fam["_rates"]["pairs"], 5), "mle": round(fam["_rates"]["mle"], 5)},
@@ -79,9 +76,11 @@ def repeat_rate(p, g):
         for unit, inst, rem in by_veh.get(t["vehicle_id"], []):
             if day >= inst and (rem is None or day < rem):
                 passdays[(seg, unit)].add(day.isoformat())
+    dup = {int(r["Defect ID"]): int(str(r["Reason"]).split()[-1]) for r in p["qa"]
+           if (r["Reason"] or "").startswith("Duplicate of ")}
     dd = defaultdict(set)
     for d in p["det"]:
-        did = int(d["defect_id"])
+        did = dup.get(int(d["defect_id"]), int(d["defect_id"]))
         if did in g["pots"]:
             dd[(did, d["unit_serial"])].add(d["captured_local"][:10])
     a = b = 0
@@ -137,7 +136,6 @@ def write_pdf(path, f):
     secs = sorted(f["sections"].items(), key=lambda kv: (-f["_unrounded"][kv[0]], kv[1]["section"]))
     des = f["call"]["designated"]
     c = f["components"]
-    k = f["kerbline"]
     # the chart: one bar per section, the program's line, the designated sections in blue
     W, H = 6.9 * inch, 3.05 * inch
     d = Drawing(W, H)
@@ -189,12 +187,6 @@ def write_pdf(path, f):
         if x["crew"] == "Yes":
             st.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#e9f0f9")))
     t.setStyle(TableStyle(st))
-    kt = Table([["Fleet", "Service days"]] + [[n, str(k["days"][n])] for n in M.FLEETS] +
-               [["All units", str(k["total_days"])]], colWidths=[1.9 * inch, 0.9 * inch], hAlign="LEFT")
-    kt.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.6), ("FONT", (0, 1), (-1, -1), "Helvetica", 7.6),
-                            ("FONT", (0, -1), (-1, -1), "Helvetica-Bold", 7.6), ("ALIGN", (1, 0), (1, -1), "RIGHT"),
-                            ("LINEBELOW", (0, 0), (-1, 0), 0.6, ink), ("LINEABOVE", (0, -1), (-1, -1), 0.4, ink),
-                            ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8), ("TOPPADDING", (0, 0), (-1, -1), 1.8)]))
     memo = Table([["To:", "Nancy Hansen, P.E., District Maintenance Engineer"],
                   ["From:", "Andrew Greene, Maintenance Management Systems"],
                   ["Date:", "12 April 2027"],
@@ -243,13 +235,6 @@ def write_pdf(path, f):
                   "renumbering; cold mix counts a mobile-app order's pounds once rather than on every line; camera miles "
                   "count each March pass by an installed unit at the segment's inventory length, without the telematics "
                   "provider's re-run of 12 to 13 March.", note),
-        Paragraph("Kerbline Vision: March service days", head),
-        kt,
-        Spacer(1, 3),
-        Paragraph("A service day is a local calendar day during any part of which an installed unit had a session open "
-                  "(scope of work 6.1). The device API's session export leaves out sessions the platform never closed, so a "
-                  "day on which a unit captured detections counts even with no session listed. At ${:.2f} a day the March "
-                  "charge is <b>${:,}</b>; Kerbline's invoice should match it.".format(k["rate"], k["charge"]), body),
         Spacer(1, 6),
         Paragraph("<super>1</super> Program 2.4. The five SR 11 segments in Elmscourt that passed to the City on 15 March "
                   "(route turnback notice of 1 March) are not state roadway at 31 March and are left out, potholes and "

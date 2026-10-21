@@ -36,27 +36,21 @@ def figures(p, route):
     if route == "golden":
         a = M.ask_patches(p)
         b = M.ask_miles(p)
-        c = M.ask_service_days(p)
     elif route == "cracker":
-        a = M.ask_patches(p, legacy="as_is", pounds="lines")
+        a = M.ask_patches(p, legacy="all_location", pounds="lines", fold=False)
         b = M.ask_miles(p, dedupe=False)
-        c = M.ask_service_days(p, detections=False)
     else:
         a = M.ask_patches(p, legacy="as_is", pounds="lines")
         b = M.ask_miles(p, dedupe=False, installed=False, local_window=False, program_road=False)
-        c = M.ask_service_days(p, detections=False, any_part=False, local_days=False, bench=True)
     for s in ORDER:
         out["A_patched_%d" % s] = a[0].get(s, 0)
         out["A_lb_%d" % s] = a[1].get(s, 0)
         out["B_miles_%d" % s] = int(round(b.get(s, 0.0)))
-    for f in M.FLEETS:
-        out["C_days_%s" % f] = c[0].get(f, 0)
-    out["C_charge"] = c[1]
     return out
 
 
 def score(gold, resp):
-    asks = [k for k in gold if k[:2] in ("A_", "B_", "C_")]
+    asks = [k for k in gold if k[:2] in ("A_", "B_")]
     kept = [k for k in asks if resp[k] == gold[k]]
     call = resp["call"] == gold["call"]
     ests = sum(1 for s in ORDER if resp["est_%d" % s] == gold["est_%d" % s])
@@ -72,10 +66,10 @@ def main(target=None):
     mi = figures(p, "mirror")
     sc, kept_c, asks, call_c, est_c = score(gold, cr)
     sm, kept_m, _, call_m, est_m = score(gold, mi)
-    print("ask figures: %d (A %d, B %d, C %d)" % (len(asks), sum(1 for k in asks if k[:2] == "A_"),
-                                                  sum(1 for k in asks if k[:2] == "B_"), sum(1 for k in asks if k[:2] == "C_")))
+    print("ask figures: %d (A %d, B %d)" % (len(asks), sum(1 for k in asks if k[:2] == "A_"),
+                                          sum(1 for k in asks if k[:2] == "B_")))
     for name, kept in (("cracker", kept_c), ("mirror", kept_m)):
-        for ask in ("A", "B", "C"):
+        for ask in ("A", "B"):
             ks = [k for k in asks if k.startswith(ask + "_")]
             hit = [k for k in ks if k in kept]
             print("%-8s ask %s: %d of %d kept %s" % (name, ask, len(hit), len(ks), " ".join(hit)))

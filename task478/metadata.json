@@ -37,7 +37,7 @@
    "source": "Kerbline Vision platform, review module (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1203
+   "rows": 1231
   },
   {
    "file": "kerbline_unit_register.xlsx",
@@ -65,7 +65,7 @@
    "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 398
+   "rows": 406
   },
   {
    "file": "pavement_condition_2026.csv",
@@ -119,7 +119,8 @@
  ],
  "distractor_files": [
   "pavement_condition_2026.csv",
-  "winter_operations_2027-03.csv"
+  "winter_operations_2027-03.csv",
+  "kerbline_unit_sessions_2027-03.json"
  ],
  "distractors": [
   {
@@ -129,6 +130,10 @@
   {
    "file": "winter_operations_2027-03.csv",
    "why": "the March storms' plow hours, salt and freeze-thaw cycles by section: what made potholes, not a count of them"
+  },
+  {
+   "file": "kerbline_unit_sessions_2027-03.json",
+   "why": "the units' platform sessions: when a unit was running, which the traversals and the register already settle for every pass"
   }
  ],
  "deliverables": [
@@ -136,7 +141,6 @@
   "tamsett_spring_patching_task_orders_2027.pdf"
  ],
  "stated_inputs": [
-  "6.0",
-  "10.85"
+  "6.0"
  ]
 }

@@ -67,8 +67,7 @@ def write_program(path):
          Paragraph("The task orders issue on 19 April 2027 and the crews start on 3 May 2027. A designated section's "
                    "task order names its yard as the crew's base and lists the section's state routes. Each task order "
                    "also lists the section's March cold patches, for replacement, and the miles the pilot's camera units "
-                   "were driven on the section's roadway in March; the district closes out the pilot's March charges "
-                   "before the orders issue.", BODY),
+                   "were driven on the section's roadway in March.", BODY),
          Paragraph("4. The March 2027 detection campaign", HEAD),
          Paragraph("From 1 to 31 March 2027 the district ran Kerbline Vision camera units on its section patrol pickups, "
                    "freeway service patrol trucks, street sweepers and district crew trucks under the pilot scope of "
@@ -171,8 +170,8 @@ def write_dictionary(path, n):
          "The 2025 segments that the 2026 release split or merged, with the 2026 segments they became."),
         (F["orders"], n["orders"],
          "One row per task line of a cold patch work order (activity PCOLD) raised in March. ext_ref is the Kerbline defect "
-         "number the order was raised from. raised and finished are district local time. cold_mix_lb is the pounds of "
-         "cold mix recorded on the line. status is COMPLETE or OPEN at the extract."),
+         "number the order was raised from. raised and finished are district local time. cold_mix_lb is the cold mix "
+         "pounds as entered. status is COMPLETE or OPEN at the extract."),
         (F["pci"], n["pci"],
          "The 2026 pavement condition survey: one row per segment, with the survey date, roughness (IRI), rut depth, "
          "cracking and the pavement condition index."),

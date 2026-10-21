@@ -22,11 +22,13 @@ def write(path, n):
                 setting="A fictional district of an unnamed U.S. state's department of transportation; every record is "
                         "synthetic.",
                 as_of="2027-04-09", files=files,
-                distractor_files=list(P.DISTRACTORS),
+                distractor_files=list(P.DISTRACTORS) + [P.FILES["sessions"]],
                 distractors=[dict(file=P.FILES["pci"], why="the 2026 summer condition survey: roughness and cracking "
                                   "before the winter, not the March potholes the program counts"),
                              dict(file=P.FILES["winter"], why="the March storms' plow hours, salt and freeze-thaw "
-                                  "cycles by section: what made potholes, not a count of them")],
+                                  "cycles by section: what made potholes, not a count of them"),
+                             dict(file=P.FILES["sessions"], why="the units' platform sessions: when a unit was "
+                                  "running, which the traversals and the register already settle for every pass")],
                 deliverables=["tamsett_spring_patching_sections_2027.csv", "tamsett_spring_patching_task_orders_2027.pdf"],
-                stated_inputs=["6.0", "10.85"])
+                stated_inputs=["6.0"])
     json.dump(meta, open(path, "w", encoding="utf-8"), indent=1)

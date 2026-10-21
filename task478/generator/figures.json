@@ -111,7 +111,7 @@
    "rate": 7
   },
   "miss_rate": 0.458,
-  "repeat_pct": 99.5,
+  "repeat_pct": 99.7,
   "turned_back": 5
  },
  "default": {
@@ -120,17 +120,6 @@
    "Elmscourt"
   ],
   "pass_rate_pct": 64
- },
- "kerbline": {
-  "charge": 8832,
-  "days": {
-   "District crew": 164,
-   "Freeway service patrol": 150,
-   "Section patrol": 350,
-   "Street sweeper": 150
-  },
-  "rate": 10.85,
-  "total_days": 814
  },
  "line": 6.0,
  "sections": {
@@ -172,8 +161,8 @@
   },
   "Halverton": {
    "camera_miles": 1820,
-   "cold_mix_lb": 85,
-   "cold_patched": 2,
+   "cold_mix_lb": 300,
+   "cold_patched": 4,
    "crew": "No",
    "lane_miles": 128.6,
    "rate": 3,
@@ -217,8 +206,8 @@
   },
   "Oxbrae": {
    "camera_miles": 2049,
-   "cold_mix_lb": 130,
-   "cold_patched": 3,
+   "cold_mix_lb": 170,
+   "cold_patched": 4,
    "crew": "No",
    "lane_miles": 138.3,
    "rate": 4,
@@ -235,8 +224,8 @@
   },
   "Rushmead": {
    "camera_miles": 13257,
-   "cold_mix_lb": 2735,
-   "cold_patched": 47,
+   "cold_mix_lb": 2930,
+   "cold_patched": 48,
    "crew": "No",
    "lane_miles": 264.5,
    "rate": 5,
@@ -244,8 +233,8 @@
   },
   "Stonebeck": {
    "camera_miles": 2254,
-   "cold_mix_lb": 700,
-   "cold_patched": 12,
+   "cold_mix_lb": 810,
+   "cold_patched": 13,
    "crew": "No",
    "lane_miles": 181.7,
    "rate": 3,

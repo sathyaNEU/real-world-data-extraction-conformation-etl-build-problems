@@ -6,7 +6,7 @@
   "objective": "etl",
   "stage": 4,
   "stage_name": "check",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "stump": "The default path treats every pass over a segment as an independent chance and designates only Carrow Point and Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct units that drove a segment are independent chances, each finding 54 per cent of what another found; Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle clear the line at 7.08 to 8.29.",
   "architecture": 1,
   "loops": 0,
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4 in flight: two isolated readers (fresh unzips in the scratchpad) and the judge thread (brief /tmp/determinism-check-task478-r1/judge_brief.md) running on target.zip c4afbea3a5c2273ad7ff0158716c68d5; on their reports score each reader with score_reader.py before reading its verdict, send the thread's verdict.md to the determinism-judge agent for determinism_check_report.md, fix every finding in the generator in one pass (python3 task478/generator/build.py), re-run leak.py --asof 2027-04-09, then ship (target.zip and golden/ force-added)",
+  "resume": "stage 4 round 2 in flight: ask C dropped, ask A's count primary re-sited to rejected twin numbers, B1 offsets scaled; readers C and D (fresh unzips in the scratchpad) and the judge thread (brief /tmp/determinism-check-task478-r2/judge_brief.md) on target.zip c4af1f7f7f64f67ddc1f6c3e29a74346; score each reader with score_reader.py before its verdict, send verdict.md to the determinism-judge agent for determinism_check_report_pass2.md, fix findings in the generator, re-run gates, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
