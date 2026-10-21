@@ -32,7 +32,6 @@ def compute(target):
     fam = M.family(p, g)
     lm = M.lane_miles(p, g["road"])
     lb = M.ask_pounds(p)
-    miles = M.ask_miles(p)
     est = g["est"]
     des = sorted([s for s in ORDER if est[s] >= M.LINE], key=lambda s: (-est[s], s))
     below = max((s for s in ORDER if s not in des), key=lambda s: est[s])
@@ -45,8 +44,7 @@ def compute(target):
         "call": {"designated": [NAMES[s] for s in des], "count": len(des), "of": len(ORDER)},
         "line": M.LINE,
         "sections": {NAMES[s]: {"section": s, "lane_miles": round(lm[s], 1), "rate": whole(est[s]),
-                                "crew": "Yes" if s in des else "No", "cold_mix_lb": lb.get(s, 0),
-                                "camera_miles": whole(miles.get(s, 0.0))}
+                                "crew": "Yes" if s in des else "No", "cold_mix_lb": lb.get(s, 0)}
                      for s in ORDER},
         "components": {"lane_miles": round(sum(lm.values()), 1), "potholes": sum(g["counts"].get(s, 0) for s in ORDER),
                        "turned_back": len(p["turnback"]),
@@ -66,13 +64,12 @@ DEFAULT_T = 0.01
 
 def write_csv(path, f):
     cols = ["section", "section_name", "state_lane_miles", "potholes_per_10_lane_miles", "dedicated_crew",
-            "cold_mix_lb_mar", "camera_miles_mar"]
+            "cold_mix_lb_mar"]
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\r\n")
     w.writerow(cols)
     for name, x in sorted(f["sections"].items(), key=lambda kv: kv[1]["section"]):
-        w.writerow([x["section"], name, "%.1f" % x["lane_miles"], x["rate"], x["crew"], x["cold_mix_lb"],
-                    x["camera_miles"]])
+        w.writerow([x["section"], name, "%.1f" % x["lane_miles"], x["rate"], x["crew"], x["cold_mix_lb"]])
     open(path, "w", encoding="utf-8", newline="").write(buf.getvalue())
 
 
@@ -142,13 +139,12 @@ def write_pdf(path, f):
     d.add(String(lx + 12, bottom + 0.12 * inch + 1, "section crews and shared crew", fontName="Helvetica", fontSize=7,
                  fillColor=ink))
 
-    rows = [["Section", "Lane-miles", "Potholes per\nten lane-miles", "Dedicated\ncrew", "Cold mix,\nMarch (lb)",
-             "Camera miles,\nMarch"]]
+    rows = [["Section", "Lane-miles", "Potholes per\nten lane-miles", "Dedicated\ncrew", "Cold mix,\nMarch (lb)"]]
     ordered = sorted(f["sections"].items(), key=lambda kv: kv[1]["section"])
     for name, x in ordered:
         rows.append(["%d %s" % (x["section"], name), "{:,.1f}".format(x["lane_miles"]), str(x["rate"]), x["crew"],
-                     "{:,}".format(x["cold_mix_lb"]), "{:,}".format(x["camera_miles"])])
-    t = Table(rows, colWidths=[1.6 * inch, 0.85 * inch, 1.05 * inch, 0.8 * inch, 0.95 * inch, 1.05 * inch],
+                     "{:,}".format(x["cold_mix_lb"])])
+    t = Table(rows, colWidths=[1.8 * inch, 1.0 * inch, 1.25 * inch, 0.95 * inch, 1.15 * inch],
               repeatRows=1)
     st = [("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.4), ("FONT", (0, 1), (-1, -1), "Helvetica", 7.6),
           ("TEXTCOLOR", (0, 0), (-1, -1), ink), ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("ALIGN", (3, 1), (3, -1), "CENTER"),
@@ -202,10 +198,8 @@ def write_pdf(path, f):
                   "pilot's units recorded on it in March.".format(c["lane_miles"], c["potholes"]), body),
         Paragraph("Sections", head),
         t,
-        Paragraph("Source: Kerbline detections (2 April), utility cover inventory (2026 survey), fleet telematics "
-                  "traversals, 2026 road inventory, MMS work orders (PCOLD). Cold mix counts a mobile-app order's pounds "
-                  "once rather than on every line; camera miles count each March pass by an installed unit at the "
-                  "segment's inventory length, without the telematics provider's re-run of 12 to 13 March.", note),
+        Paragraph("Source: Kerbline detections (2 April), utility cover inventory (2026 survey), 2026 road inventory, MMS "
+                  "work orders (PCOLD). Cold mix counts a mobile-app order's pounds once rather than on every line.", note),
         Spacer(1, 6),
         Paragraph("<super>1</super> Program 2.4. The five SR 11 segments in Elmscourt that passed to the City on 15 March "
                   "(route turnback notice of 1 March) are not state roadway at 31 March and are left out, potholes and "

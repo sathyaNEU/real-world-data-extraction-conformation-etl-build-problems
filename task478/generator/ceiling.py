@@ -34,16 +34,12 @@ def figures(p, route):
         out["est_%d" % s] = round(est[s])
     if route == "golden":
         a = M.ask_pounds(p)
-        b = M.ask_miles(p)
     elif route == "cracker":
         a = M.ask_pounds(p, pounds="lines")
-        b = M.ask_miles(p, dedupe=False, overlap=True)
     else:
         a = M.ask_pounds(p, pounds="lines")
-        b = M.ask_miles(p, dedupe=False, installed=False, local_window=False, program_road=False)
     for s in ORDER:
         out["A_lb_%d" % s] = a.get(s, 0)
-        out["B_miles_%d" % s] = int(round(b.get(s, 0.0)))
     return out
 
 
@@ -64,10 +60,9 @@ def main(target=None):
     mi = figures(p, "mirror")
     sc, kept_c, asks, call_c, est_c = score(gold, cr)
     sm, kept_m, _, call_m, est_m = score(gold, mi)
-    print("ask figures: %d (A %d, B %d)" % (len(asks), sum(1 for k in asks if k[:2] == "A_"),
-                                          sum(1 for k in asks if k[:2] == "B_")))
+    print("ask figures: %d (A %d)" % (len(asks), sum(1 for k in asks if k[:2] == "A_")))
     for name, kept in (("cracker", kept_c), ("mirror", kept_m)):
-        for ask in ("A", "B"):
+        for ask in ("A",):
             ks = [k for k in asks if k.startswith(ask + "_")]
             hit = [k for k in ks if k in kept]
             print("%-8s ask %s: %d of %d kept %s" % (name, ask, len(hit), len(ks), " ".join(hit)))

@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (field nouns and a row count; answered in the design note)",
-    "reader": ""
+    "reader": "architecture 2 round 1: readers A and B missed the call (eight sections each, Rushmead added) and held the pounds; both kept the camera miles, so ask B was dropped; round 2 readers running"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK)",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "architecture 2 stage 4 in flight: two scored readers (fresh unzips) and the judge on target.zip 03fac97f33932e837acd292ad867a5e6; score each reader with score_reader.py --call-key call.designated (compare as a set) before its verdict; send the judge thread's verdict to the determinism-judge agent; fix findings in the generator; ship",
+  "resume": "architecture 2 stage 4 round 2: readers on target.zip 603205203dcc4993d831580e8e3b3ff6 (ask B dropped, prompt changed); the judge thread on the round 1 pack (call unchanged); then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

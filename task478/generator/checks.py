@@ -173,30 +173,6 @@ def main():
     check("A golden equals the generator's truth (pounds used)",
           all(gA.get(s, 0) == sum(l["true_lb"] for l in e["wo_rows"] if l["sec"] == s and l["status"] == "COMPLETE"
                                   and l["finish"] is not None and W.local(l["finish"]).month == 3) for s in ORDER))
-    gB = M.ask_miles(p)
-    cB = M.ask_miles(p, dedupe=False)
-    check("B every section's miles move with the re-run kept (B1)", all(int(cB[s] + .5) != int(gB[s] + .5) for s in ORDER))
-    truth_miles = defaultdict(float)
-    for t in e["trav"]:
-        v = e["veh_by"][t["veh"]]
-        s = S[t["seg"]]
-        if W.installed_at(v, t["enter"]) and W.local(t["enter"]).month == 3 and not s["turnback"]:
-            truth_miles[s["sec"]] += s["length"]
-    check("B golden equals the generator's truth (every pass once)",
-          all(abs(gB[s] - truth_miles[s]) < 1e-6 for s in ORDER))
-    cw = M.ask_miles(p, window_s=300)
-    check("B every section's miles move when a vehicle's repeat of a segment within five minutes is dropped (the loops)",
-          all(int(cw[s] + .5) != int(gB[s] + .5) for s in ORDER))
-    sig = Counter((t["veh"], t["seg"], t["dir"], t["enter"], t["exit"]) for t in e["trav"])
-    five = __import__("datetime").timedelta(hours=5)
-    gen_pairs = sum(1 for t in e["trav"] if sig[(t["veh"], t["seg"], t["dir"], t["enter"] + five, t["exit"] + five)])
-    check("B1 fair: every re-run traversal repeats exactly one pass five hours later, and no two genuine passes do "
-          "(%d re-run, %d genuine)" % (len(e["replays"]), gen_pairs),
-          len(e["replays"]) > 0 and gen_pairs == 0 and len(p["trav"]) == len(e["trav"]) + len(e["replays"])
-          and all(sig[(t["veh"], t["seg"], t["dir"], t["enter"] + five, t["exit"] + five)] == 1 for t in e["replays"]))
-    ov = M.ask_miles(p, dedupe=False, overlap=True)
-    check("B every section's miles move when only overlapping repeats are dropped (no re-run overlaps its pass)",
-          all(int(ov[s] + .5) != int(gB[s] + .5) for s in ORDER))
     import ceiling as CE
     pair, leak, kept_c, kept_m = CE.main(TARGET)
     check("ceiling: the cracker keeps no ask figure, the mirror none, pair %.1f under 40" % pair,

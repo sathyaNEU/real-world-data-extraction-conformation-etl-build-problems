@@ -66,8 +66,7 @@ def write_program(path):
          Paragraph("3. Task orders", HEAD),
          Paragraph("The task orders issue on 19 April 2027 and the crews start on 3 May 2027. A designated section's "
                    "task order names its yard as the crew's base and lists the section's state routes. Each task order "
-                   "also lists the section's March cold patches, for replacement, and the miles the pilot's camera units "
-                   "were driven on the section's roadway in March.", BODY),
+                   "also lists the section's March cold patches, for replacement, with the cold mix they used.", BODY),
          Paragraph("4. The March 2027 detection campaign", HEAD),
          Paragraph("From 1 to 31 March 2027 the district ran Kerbline Vision camera units on its section patrol pickups, "
                    "freeway service patrol trucks, street sweepers and district crew trucks under the pilot scope of "

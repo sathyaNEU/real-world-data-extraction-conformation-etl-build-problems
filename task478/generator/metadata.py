@@ -22,11 +22,13 @@ def write(path, n):
                 setting="A fictional district of an unnamed U.S. state's department of transportation; every record is "
                         "synthetic.",
                 as_of="2027-04-09", files=files,
-                distractor_files=list(P.DISTRACTORS) + [P.FILES["sessions"]],
+                distractor_files=list(P.DISTRACTORS) + [P.FILES["sessions"], P.FILES["traversals"]],
                 distractors=[dict(file=P.FILES["pci"], why="the 2026 summer condition survey: roughness and cracking "
                                   "before the winter, not the March potholes the program counts"),
                              dict(file=P.FILES["winter"], why="the March storms' plow hours, salt and freeze-thaw "
                                   "cycles by section: what made potholes, not a count of them"),
+                             dict(file=P.FILES["traversals"], why="the fleet's segment passes in March: where the "
+                                  "camera vehicles drove, which says nothing about where a detected pothole is"),
                              dict(file=P.FILES["sessions"], why="the units' platform sessions: when a unit was "
                                   "running, which neither the detections nor the register's install dates need")],
                 deliverables=["tamsett_spring_patching_sections_2027.csv", "tamsett_spring_patching_task_orders_2027.pdf"],

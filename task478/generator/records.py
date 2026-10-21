@@ -43,7 +43,7 @@ def everything():
     sessions(e)
     work_orders(e)
     loops(e)
-    replay(e)
+    e["replays"] = []
     distractors(e)
     return e
 

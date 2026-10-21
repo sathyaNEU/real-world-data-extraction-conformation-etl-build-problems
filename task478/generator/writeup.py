@@ -59,9 +59,6 @@ def main():
         "carrying one figure on every line counted it once where the figure is more than any single-line order used on a "
         "pothole of its lines' severities (the severity of the ext_ref detection; the mobile app's order total), and "
         "summed its lines otherwise.",
-        "Camera miles: dropped each traversal that repeats the same vehicle's traversal of the segment, the same way, "
-        "exactly five hours later (the provider's re-run of 12 to 13 March, written in district clock time), kept "
-        "installed units' March passes on the program's roadway and summed inventory lengths.",
         "Designated the sections at %.1f or more: %s." % (f["line"], join(des)),
     ]
     for i, s in enumerate(steps, 1):
@@ -78,10 +75,6 @@ def main():
     out.append("3. Pounds of cold mix the section's March cold patches used:")
     for n, x in secs:
         out.append("   - %d %s: {:,}".format(x["cold_mix_lb"]) % (x["section"], n))
-    out.append("4. Miles the pilot's camera units were driven on the program's roadway in March, each pass at its "
-               "segment's inventory length:")
-    for n, x in secs:
-        out.append("   - %d %s: {:,}".format(x["camera_miles"]) % (x["section"], n))
     out.append("")
     out.append("### tamsett_spring_patching_task_orders_2027.pdf\n")
     out.append("1. Bar chart on page 1 of every section's potholes per ten lane-miles against the program's %.1f line, the "

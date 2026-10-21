@@ -168,31 +168,11 @@ def main(target=None):
         total = len(ls) > 1 and len(set(vals)) == 1 and vals[0] > max(big[sev[x["ext_ref"]]] for x in ls)
         lbs[ls[0]["section"]] += vals[0] if total else sum(vals)
     ok("ask A pounds match", all(lbs[s] == by_no[s][1]["cold_mix_lb"] for s in by_no))
-    # ask B
-    trav = rows(j("fleet_camera_traversals_2027-03.csv"))
-    miles = defaultdict(float)
-    last = {}
-    ts = lambda x: dt.datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ")
-    later = {(t["vehicle_id"], t["segment_id"], t["direction"], ts(t["enter_utc"]), ts(t["exit_utc"])) for t in trav}
-    for t in sorted(trav, key=lambda t: (t["vehicle_id"], t["segment_id"], t["enter_utc"], int(t["traversal_id"]))):
-        h5 = dt.timedelta(hours=5)
-        if (t["vehicle_id"], t["segment_id"], t["direction"], ts(t["enter_utc"]) + h5, ts(t["exit_utc"]) + h5) in later:
-            continue
-        if t["segment_id"] not in road:
-            continue
-        day = dt.datetime.strptime(t["enter_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=Z).astimezone(ET).date()
-        if (day.year, day.month) != (2027, 3):
-            continue
-        if not any(a <= day and (b is None or day < b) for u, a, b in units.get(t["vehicle_id"], [])):
-            continue
-        miles[road[t["segment_id"]]["section"]] += float(road[t["segment_id"]]["length_mi"])
-    ok("ask B miles match", all(int(miles[s] + 0.5) == by_no[s][1]["camera_miles"] for s in by_no))
     # the golden CSV carries the same figures
     gc = rows(os.path.join(TASK, "golden", "tamsett_spring_patching_sections_2027.csv"))
     ok("golden CSV agrees with every graded figure", all(
         int(r["potholes_per_10_lane_miles"]) == by_no[r["section"]][1]["rate"] and
         int(r["cold_mix_lb_mar"]) == by_no[r["section"]][1]["cold_mix_lb"] and
-        int(r["camera_miles_mar"]) == by_no[r["section"]][1]["camera_miles"] and
         r["dedicated_crew"] == by_no[r["section"]][1]["crew"] for r in gc))
     gp = pdf_lines(os.path.join(TASK, "golden", "tamsett_spring_patching_task_orders_2027.pdf")).replace("\n", " ")
     ok("golden PDF carries every designated section", all(n in gp for n in figs["call"]["designated"]))

@@ -39,8 +39,8 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   on the campaign the district ran).
 - **Shape:** `other`, a designation over every candidate against one line: fourteen sections' potholes per ten
   lane-miles to the whole number (14) and their verdicts (14), the designated set (1), a bar chart's named parts (the
-  fourteen bars, the 6.0 line, the designated sections marked: 3), the files (2), and the 28 ask figures (cold mix
-  pounds by section, 14; camera miles by section, 14): 62 criteria.
+  fourteen bars, the 6.0 line, the designated sections marked: 3), the files (2), and the 14 ask figures (cold mix
+  pounds by section): 48 criteria.
 - **Strategy:** `identity_resolution`: which detections are one pothole, the record's entities built from repeated
   noisy positional reports by instruments of unequal accuracy. Gate G `etl_conformance`: the conformed pothole table is
   the object, and no shipped artifact ranks the sections. Gap population (what counts as one member), pattern none,
@@ -159,7 +159,7 @@ Lesson: when the same entities are reported many times by instruments of unequal
 | SF8 | every pothole recorded | each pothole once however many times and units recorded it | every detection | not the program's | program 2.2 |
 | SF9 | a pothole's segment | the 2026 segment holding its median milepost on its route | road_ref through the crosswalk; a split segment's first piece; unlisted refs dropped | same call (asserted, each) | the inventory's route mileposts; the crosswalk |
 | SF10 | the whole number | half up on the unrounded figure | half to even | same figures (asserted) | the prompt's rounding |
-| SF11 | the files the call reads | detections, covers, inventory, crosswalk, turnback, program | the traversals, the sessions, the register's dates | same call: none of them changes a detection's position | program 2 |
+| SF11 | the files the call reads | detections, covers, inventory, crosswalk, turnback, program | the traversals, the sessions, the register's dates (all three distractors to the call) | same call: none of them changes a detection's position | program 2 |
 
 ## Ladder
 
@@ -235,9 +235,9 @@ rate, pothole count or earlier designation ships.
 
 ## Ask sheet
 
-The program's section 3 puts each section's March cold mix and the miles the pilot's camera units were driven on the
-section's roadway in March on its task order. No ask reads a row the call reads: the work orders and the traversals sit
-outside the call's population (the call reads the detections, the covers and the inventory only, asserted).
+The program's section 3 puts each section's March cold patches, with the cold mix they used, on its task order. The ask
+reads no row the call reads: the work orders sit outside the call's population (the call reads the detections, the
+covers and the inventory only, asserted).
 
 - **Ask A, cold mix pounds by section: 14 figures** (the pounds of cold mix each section's March cold patches used).
   Path: the work orders, the detections (each order's ext_ref detection and its severity), the program. Device A1 (D6,
@@ -247,23 +247,11 @@ outside the call's population (the call reads the detections, the covers and the
   once loses the office orders' like lines; only the ext_ref detections' severity shows which is which (a repeated
   figure above anything a single-line order used on a pothole of its lines' severities is a total). Hazards: open
   orders (no finish), the March finish window. Stops: lines summed (the natural read and the cracker); every repeated
-  figure once; the golden.
-- **Ask B, camera miles by section: 14 figures** (the miles the pilot's units were driven on the program's roadway in
-  March, each pass at its segment's inventory length). Path: the traversals, the register, the inventory, the
-  turnback, the program. Device B1 (D8 and D1, primary): the telematics provider re-ran its map matching over 12 March
-  00:00 to 13 March 06:00 UTC and appended the re-run's traversals beside the originals, written in the district's
-  clock time where the export carries UTC, so each re-run traversal sits five hours before the pass it repeats; no row
-  repeats another, every key is unique and no re-run overlaps its pass, and patrol trucks working an interchange come
-  round its loop and drive a short segment again the same way a minute or three after leaving it (every section has
-  some), so a dedup inside a few minutes loses real passes; only a vehicle's pass repeated exactly five hours later, the
-  same way, shows the re-run. Hazards: the crew trucks' trips before their units were installed, the UTC export window,
-  the turnback segments. Stops: every row (the natural read), overlapping repeats dropped (the cracker), repeats
-  within five minutes dropped, the golden.
+  figure once (both architecture 2 readers' route); the golden.
 
-| Ask | Cracker (lands the call; lines summed, overlapping repeats dropped) | Mirror (one joining distance; every ask read the natural way) |
+| Ask | Cracker (lands the call; lines summed) | Mirror (one joining distance; the ask read the natural way) |
 |---|---|---|
 | A, cold mix pounds by section (14) | miss | miss |
-| B, camera miles by section (14) | miss | miss |
 
 Pair ceiling: 28.5 (cracker 45.0 with the call, the fourteen whole numbers and no ask figure; mirror 12.0, off the call
 with five whole numbers and no ask figure)
@@ -303,6 +291,10 @@ missed or confirmed it; the ninth reader landed the call by fitting each unit as
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 2 stage 4: ask B, camera miles by section, its re-run device in a fourth form (copies five
+  hours early, written in district clock time): both readers found the exact five-hour copies (a vehicle in two places
+  at once) and kept all fourteen figures; every appended-duplicate device leaves a cross-row impossibility a careful
+  reader repairs, so the ask was dropped and the traversals ship as a distractor without the re-run block.
 - 2026-10-21, architecture 2 draw: a verification sample drawn on corroboration (the district reviews nearly every
   defect one camera reported and an eighth of the corroborated ones, the confirmed share carried within each
   corroboration level): the guard's same-puzzle and same-driver tests matched task473 in the batch (untested drivers

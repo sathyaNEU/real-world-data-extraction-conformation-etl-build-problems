@@ -16,7 +16,7 @@
    "source": "fleet telematics provider for the district (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 65910
+   "rows": 63343
   },
   {
    "file": "kerbline_detections_2027-03.csv",
@@ -120,7 +120,8 @@
  "distractor_files": [
   "pavement_condition_2026.csv",
   "winter_operations_2027-03.csv",
-  "kerbline_unit_sessions_2027-03.json"
+  "kerbline_unit_sessions_2027-03.json",
+  "fleet_camera_traversals_2027-03.csv"
  ],
  "distractors": [
   {
@@ -130,6 +131,10 @@
   {
    "file": "winter_operations_2027-03.csv",
    "why": "the March storms' plow hours, salt and freeze-thaw cycles by section: what made potholes, not a count of them"
+  },
+  {
+   "file": "fleet_camera_traversals_2027-03.csv",
+   "why": "the fleet's segment passes in March: where the camera vehicles drove, which says nothing about where a detected pothole is"
   },
   {
    "file": "kerbline_unit_sessions_2027-03.json",

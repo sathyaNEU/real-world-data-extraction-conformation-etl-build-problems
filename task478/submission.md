@@ -20,8 +20,7 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
 3. Sorted the March pothole detections (district local time) on each route by road_mp and joined each to the one before it when the gap was within three times the root sum of squares of the two units' errors; each run of joined detections is one pothole.
 4. Placed each pothole on the 2026 segment holding its median milepost and kept those on the roadway: 1,413 potholes; divided each section's count by its lane-miles over ten.
 5. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: a multi-line order carrying one figure on every line counted it once where the figure is more than any single-line order used on a pothole of its lines' severities (the severity of the ext_ref detection; the mobile app's order total), and summed its lines otherwise.
-6. Camera miles: dropped each traversal that repeats the same vehicle's traversal of the segment, the same way, exactly five hours later (the provider's re-run of 12 to 13 March, written in district clock time), kept installed units' March passes on the program's roadway and summed inventory lengths.
-7. Designated the sections at 6.0 or more: Elmscourt, Norvelle, Thistlebank, Carrow Point, Holloway Run, Kestrelton and Fenwick Gap.
+6. Designated the sections at 6.0 or more: Elmscourt, Norvelle, Thistlebank, Carrow Point, Holloway Run, Kestrelton and Fenwick Gap.
 
 ## 4. Deliverable Answers
 
@@ -72,21 +71,6 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
    - 412 Stonebeck: 815
    - 413 Norvelle: 1,325
    - 414 Pyke Hill: 325
-4. Miles the pilot's camera units were driven on the program's roadway in March, each pass at its segment's inventory length:
-   - 401 Holloway Run: 2,087
-   - 402 Fenwick Gap: 1,789
-   - 403 Carrow Point: 7,734
-   - 404 Grisholt: 1,774
-   - 405 Marlpit: 2,512
-   - 406 Kestrelton: 1,659
-   - 407 Elmscourt: 6,743
-   - 408 Halverton: 1,823
-   - 409 Thistlebank: 1,870
-   - 410 Oxbrae: 2,052
-   - 411 Rushmead: 13,259
-   - 412 Stonebeck: 2,257
-   - 413 Norvelle: 1,791
-   - 414 Pyke Hill: 1,776
 
 ### tamsett_spring_patching_task_orders_2027.pdf
 
