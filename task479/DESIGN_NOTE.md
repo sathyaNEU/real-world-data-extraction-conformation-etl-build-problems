@@ -267,4 +267,4 @@ JUDGE_LINE
   collapses on clean data, and the vendor's score report is a shipped figure that ranks the campuses wrongly. The asks
   leaked 85.7 per cent because a temporary id register and two named rosters documented both devices. A decisive
   step that removes bad responses is Layer 1, and any shipped report of the easy route's figure is a Gate G artifact.
-
+- Architecture 5, a schools health cooperative's 2026 plan year completed under each district's 2026 deductible (2026-10-21, spent at stage 4): both scored readers completed each district's January to June 2026 by the 2025 factor of its 2026 plan, naming deductible leveraging unprompted, and landed the call and every expected PMPM (exit 1, 32 of 64 each); reader 7 also resolved ask A's reissued ids on person attributes, while ask B's reopened claimant files held for both. A field-standard correction whose inputs (a design history and per-unit experience by design) sit side by side in the pack is found by a strong reader; the judge thread was stopped as moot.

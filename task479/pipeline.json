@@ -4,8 +4,8 @@
  "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
  "architecture": 5,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": ""
+  "reader": "both readers landed the call (exit 1); architecture 5 spent"
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py, fix findings in one pass",
+ "resume": "stage 1: re-root to architecture 6 in a fresh world and a fresh decisive step (architectures 1 to 5 spent, see Tried and rejected)",
  "approved": null,
  "delivered": null,
  "portal": null,
