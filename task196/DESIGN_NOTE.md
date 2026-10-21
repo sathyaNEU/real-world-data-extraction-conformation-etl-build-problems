@@ -547,6 +547,11 @@ output (the 400 recorded cases) is not repaired by any rung: every rung reads th
 - **`reference/aml_alert_summary.csv`** (declared distractor): alert volumes per member per quarter, a
   plausible coverage proxy that the solution never reads; it is uncorrelated with detection coverage in the
   shipped data by construction, asserted, so it cannot be used to back into the answer.
+- **The 2027/28 Q1 return's case-count field** was an oracle for ask B and is not one now. It stated the
+  whole quarter's count, which is ask B's own answer, so a response that reconciled to it read twelve of the
+  twenty-four graded figures straight off a control. It is now the member's own declaration taken off its own
+  case system at the date it signed, so it equals none of the three candidate counts (the quarter's, the
+  quarter extract's and the register's), asserted member by member in `checks.py` and again in `verify.py`.
 - No corpus, no back-test, no closed-year outturn, no prior index, no worked example. Nothing in the pack
   states or implies 18, 23, 26, 31 or 40, or any of the values behind them.
 
@@ -603,6 +608,64 @@ thing to fix if this build's call is ever reworked. The reader also flagged 213 
 register rows, which it read as generator noise, and Castlegate's unrecorded count rising 52, 71, 92, 113
 over four years as too regular to be an organisation's record.
 
+
+**The repair, 2026-10-21, and the shape it had to take.** Every new device sits where the asking sentence
+is silent, and the only dimension the three sentences leave silent is **how many rows carry the quantity**.
+The sentences pin the basis, the grain, the source and the hygiene step, so a device on any of those is read
+off the wording; a device on row multiplicity or on completeness is not, because counting a thing twice or
+missing it is a factual error about the data rather than a reading of the question. That is also what keeps
+the asks determinate: a case is one case, a credit is one credit, and an advice that settled nothing settled
+nothing, whichever way the sentence is parsed. Each device's reconciliation **passes** on the wrong handling,
+which is what the old layer could not do.
+
+| ask | old device, and why it fell | new device, and the dimension the sentence does not name |
+|---|---|---|
+| A | the advice is a rollup above its own parts, found by the pin "the 2026/27 quarter each case closed in" | an advice file rejected on transmission and re-sent under fresh numbers, so some case lines stand in the workbook twice. The pin names the quarter and the case; it says nothing about how many advices carry a case |
+| B | a silently partial extract, found by a file named `_supplementary` and by a return that stated the answer | the feed loads the portal daily and each member's bulk file monthly, so the quarter extract holds the portal's late notifications and not the bulk channel's. The pin "distinct" names multiplicity by reference, not which rows reached the file |
+| C | a control true only in its own scope, found by the pin "from every case-level credit" | the scheme took each route's remittance over on its own date and five of the twelve members post the remittance back into their own ledger, so the claims ledger holds part of a route and the remittance run holds all of it. The pin names the grain, case level, and not which files hold case-level credits |
+
+**What each reconciliation does on the wrong handling.** Ask A: every advice ties to the sum of its own
+lines and its own `case_lines` count, the re-sent advices included, and 72 member-month-covers are settled
+over more than one advice with no re-send among them, so a second advice is the run's own batching rather
+than a tell. Ask B: the quarter extract's own dates reach 30 June for every one of the twelve members, so
+nothing in the file says it is short, and the member's return is its own declaration off its own case system
+and equals none of the three candidate counts. Ask C: each route's credits sum to the same grand total
+either way, every quarter's shares still sum as they should, and the two sources overlap on exactly the five
+members that post the remittance back.
+
+**The three stops, measured on the cut pack** (`ceiling.py --forcing`, `ask_stops_build.py`, and the
+assertions in `checks.py` and `verify.py`):
+
+| ask | natural read | golden | widest gap | rounding | figures moved |
+|---|---|---|---|---|---|
+| A | 1,070,849.42 on the Q1 total, summing the workbook's lines as they stand | 984,521.08 | 86,328.34 | 1 | 16 of 16 |
+| A | the blunt repair, one line per case reference, which takes the prior-period top-ups out with the re-sends | | 320,142.56 | 1 | 12 of 16 |
+| B | 423,481 on Brindlemere's reported value, from the quarter extract alone | 460,362 | 36,881 | 1 | 24 of 24 |
+| C | 7.8 per cent on Q2 beneficiary recall, from the claims ledger alone | 15.1 | 7.3 | 0.1 | 15 of 15 |
+| C | 22.9 per cent on the same figure, both sources with the overlap counted twice | 15.1 | 7.8 | 0.1 | 15 of 15 |
+
+**No graded figure moved.** All 55 ask figures and all the call-side figures are byte-identical to the
+shipped build: the repair changed where the evidence sits and what the natural pipeline finds, not a single
+answer. Both goldens and `figures.json` are byte-identical, two consecutive rebuilds are byte-identical, and
+`target.zip` is recut from the final one over 20 members.
+
+`freeze.py check --mode rubric` passes and raises one WARN, "nothing on the ask side moved: a rubric repair
+that changes no ask figure changed nothing graded". The WARN is answered rather than waived: what moved is
+the pack, not the answers. `notifications_2027_28_q1.csv` and `notifications_feed_latest.csv` are re-cut on
+the channel split, `settlement_advices_2026_27.xlsx` carries 396 advices where it carried 288, the credits
+left `case_payments.csv` for the new `scheme_remittance_credits.csv`, and the returns workbook's Q1 sheet
+carries the member's own declaration instead of the answer. The forcing is measured in the table above at 16
+of 16, 24 of 24 and 15 of 15, and `ceiling.py --forcing` prints 55 of 55. A repair that re-sites a device
+without moving a golden is the cleanest scope a rubric repair can have, and the gate cannot see it because it
+reads the figures rather than the files and the forcing (filed as house fix H30).
+
+**The two guard WARNs, answered.** `repeat.gate_g` and `overuse.gate_g`: the Gate G mechanism is
+`method_or_model_selection` on 8 of the last 12 builds, which is a label rather than a mechanism, and the
+card now carries differentiation against task268 and task271, the two builds whose gap, pattern and Gate G
+all match. Neither shares this build's structure: task268's loss is in time and its correction is a
+state-transition carry for units that left follow-up, and task271's selection is ascertainment into a family
+cluster corrected over unobserved genotypes, while this build's two capture channels are both closed and
+complete and the correction is an exclusion on a logged action, the member's own fund-return request.
 
 **Pair ceiling:** 37.4
 **Mirror leakage:** 13.2 per cent of ask weight
@@ -668,9 +731,9 @@ monetary quantity in the pack is outside its path.
 
 | id | Ask | Figures | Primary device (silent) | Hazards shared | File and columns | Forcing figure (designed; measured at stage 3) |
 |---|---|---|---|---|---|---|
-| A | the indemnity the advices settled on unauthorised fraud, for each of the four quarters of 2026/27 by the quarter each case closed in and each of the three member tiers, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D6 grain, a rollup above its own parts: the mutual settles monthly by advice and a third of the unauthorised advices pay a prior-period top-up on a case that closed in an earlier quarter, so the advice's own month is not its cases' closure month and only a reconciliation of the advice total against its own lines, case by case, finds it. The asking sentence pins the basis (the quarter the case closed in) and the grain (the case), so the closure quarter is not a column of the workbook the natural read works in | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_register_2024_27.csv` for the closure dates and `case_payments.csv`, 11 columns on the path | measured on the cut pack by `ceiling.py --forcing` and `ask_stops_build.py`: the advice grain reads 664,378.52 against the golden 984,521.08 on the Q1 total, a gap of 320,142.56 against a rounding of 1, and 16 of 16 figures print differently, the narrowest of them by 5,278.73 |
-| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 400,707 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 59,655 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
-| C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, from the case-level credits, to one decimal, plus each route's total over the same four quarters | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured on the cut pack: the statement reads 2.3 against the golden 15.1 per cent on the Q2 beneficiary recall figure, a gap of 12.8 against a rounding of 0.1, and 15 of 15 figures move, the narrowest of them by 0.5 of a point |
+| A | the indemnity the advices settled on unauthorised fraud, for each of the four quarters of 2026/27 by the quarter each case closed in and each of the three member tiers, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D1 duplication, a replay under fresh ids with the key kept: the settlement run writes at most thirty case lines to an advice, and in four months of the year a member's advice file was rejected on transmission and re-sent under fresh advice numbers, so twenty-nine advices carry case lines that stand in the workbook a second time and settled nothing. Each re-sent advice ties to its own total and its own case_lines count like every other, and 72 member-month-covers are legitimately settled over several advices, so neither the arithmetic nor a second advice finds it; only noticing that two advices of one member, month and cover carry the same line set does. The asking sentence pins the quarter and the case and says nothing about how many advices carry a case | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_register_2024_27.csv` for the closure dates and `case_payments.csv`, 11 columns on the path | measured on the cut pack by `ceiling.py --forcing` and `ask_stops_build.py`: the workbook's lines as they stand read 1,070,849.42 against the golden 984,521.08 on the Q1 total, a gap of 86,328.34 against a rounding of 1, and 16 of 16 figures print differently. The blunt repair, one line per case reference, takes the 35 prior-period top-ups out with the re-sends and lands 12 of 16 off, worst 320,142.56 |
+| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract whose own dates do not say so: the feed loads the member portal every working day and each member's bulk file once a month on the 20th, so the quarter extract holds every notification to 20 June and, of those made after it, only the portal's. The bulk channel's late notifications arrived in the July load and sit in the feed's current file beside the first notifications of the new quarter. The quarter extract reaches 30 June for all twelve members, so nothing in it reads as short; the member's own return is its own declaration off its own case system and equals neither count, so it arbitrates nothing. Only a per-member profile of the quarter's last ten days, or opening a file whose name says it is the current load, finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_feed_latest.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the quarter extract alone reads 423,481 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 36,881 against a rounding of 1, and 24 of 24 figures move. The current load also carries notifications after 30 June, so a blind union of the two files over-counts instead |
+| C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, from the case-level credits, to one decimal, plus each route's total over the same four quarters | 15 | D4 absence, a channel drained down in stages: the scheme took each recovery route's remittance over from the members on its own date, one route at a time through 2025/26, so the claims ledger holds a route's recoveries up to that date and nothing on it afterwards, while the scheme's own remittance run holds them case by case from it. Five of the twelve members reconcile the remittance and post it back against the case in their own ledger, so the ledger is never empty of a route and the absence never prints as a zero; and because every credit still sits in exactly one route, each route's grand total and every quarter's shares reconcile on the ledger alone. The asking sentence pins the grain, case level, and the remittance rows are case level too, so the pin names no file | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `case_payments.csv` and `scheme_remittance_credits.csv`, with `case_register_2024_27.csv` for the closure quarters, 12 columns | measured on the cut pack: the claims ledger alone reads 7.8 against the golden 15.1 per cent on the Q2 beneficiary recall figure, a gap of 7.3 against a rounding of 0.1, and 15 of 15 figures move with the narrowest 0.3. Taking both sources without resolving the overlap reads 22.9 on the same figure, 15 of 15 off with the narrowest 0.9 |
 
 **Separation line.** Zero device rows and zero hazard rows inside the main call's declared population,
 asserted by count in `generator/checks.py`: no device touches an APP-scam case-register row inside the scheme
@@ -681,16 +744,23 @@ recovery routes.
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
+| the re-sent advice files (ask A's primary) | A | A: 16 of 16 figures |
+| the bulk channel's late notifications in the July load (ask B's primary) | B | B: 24 of 24 |
+| the scheme's staged takeover of each route's remittance (ask C's primary) | C | C: 15 of 15 |
 | amounts in pence on the legacy export | A, C | A: 9 of 16 figures; C: 4 of 15 |
 | recoveries posted as later credit rows | A, C | A: 12 of 16; C: 15 of 15 |
 | the 2024/25 template change | A, B | A: 4 of 16; B: 6 of 24 |
 | case references reissued across members | B, C | B: 8 of 24; C: 3 of 15 |
 
-**Referee.** One byte-clean arbiter per designed disagreement, each handing over no level: the settlement
-advice's own detail tab with the register's closure dates on its unauthorised-fraud rows (ask A), the
-member's quarterly return case count (ask B) and the case-level credit rows (ask C). None of them states an
-ask's answer, and none sits inside the call's declared population: the call reads the register's APP-scam
-rows inside the scheme year and ask A reads its unauthorised-fraud rows, asserted by count.
+**Referee.** One byte-clean arbiter per designed disagreement, each handing over no level. Ask A: the
+advice's own line set, which settles whether two advices of a member-month are a re-send or the run's own
+batches, and which states no amount the ask grades. Ask B: none is needed, because the two files do not
+disagree, they partition; what the old layer used as a referee, the member's quarterly return, was an oracle
+that stated the answer and is now the member's own declaration, tying to none of the three candidate counts
+and arbitrating nothing. Ask C: the remittance run's own rows against the ledger's, which settle which
+credits a member posted back, and which state no share. None of the three states an ask's answer, and none
+sits inside the call's declared population: the call reads the register's APP-scam rows inside the scheme
+year and ask A reads its unauthorised-fraud rows, asserted by count.
 
 ### Cracker sheet
 
@@ -708,12 +778,12 @@ pair arithmetic rather than defended with devices, which is what the sweep above
 
 | Ask figure | What the cracker computes | Why it misses | Cracker |
 |---|---|---|---|
-| A, each quarter x tier indemnity | sums the advices by their own settlement month, on the reading that the advice for a month settles the cases that closed in it; nets the credit rows it finds, converts the pence export | that reading is true of 3,627 of the 3,662 lines and false of 35: the advice is a rollup above its own parts, and only a reconciliation of each advice total against its own case lines finds it. Nothing names it, no column description asks for it and the hygiene battery does not reconcile amounts across grains. Measured: 664,378.52 against 984,521.08 on the Q1 total | miss |
-| A, each quarter's total | the same sum one level up | carries the same attribution, in every quarter of the year | miss |
-| B, cases notified per member | the main Q1 extract, deduplicated, references resolved | the 21 to 30 June notifications are in a second file no sweep asks for, and the main extract is internally consistent | miss |
+| A, each quarter x tier indemnity | sums the workbook's unauthorised detail lines on the pinned basis, the register's closure quarter at the case grain, nets the credit rows it finds and converts the pence export | twenty-nine of the 396 advices are a rejected file re-sent under fresh numbers, so those case lines are in the workbook twice. Every advice ties to its own total and its own case_lines count, the re-sends included; 72 member-month-covers are legitimately settled over several advices, so a second advice is the run's batching; and the only thing that finds it is noticing that two advices of one member, month and cover carry the same line set, which the hygiene battery's key, duplicate, join and count-tie checks all pass. Measured: 1,070,849.42 against 984,521.08 on the Q1 total | miss |
+| A, each quarter's total | the same sum one level up | carries the same duplication, and a re-send falls in each of the four quarters, on a member of each tier | miss |
+| B, cases notified per member | the quarter extract, deduplicated on the reference, filtered to the quarter's own dates | the bulk channel's 21 to 30 June notifications reached the mutual in the July load and sit in the feed's current file. The quarter extract's own dates run to 30 June for every member, so nothing in it reads as short, and the member's return is its own declaration and ties to neither count | miss |
 | B, value reported per member | the same extract's payment amounts | the same missing rows carry the value, so every member's figure is short | miss |
-| C, recovery share per route per quarter | the recovery statement's own route and quarter columns | the statement's quarter is the quarter the money arrived and the repatriation route is stated net of its agent charge, and it reconciles to its own stated total either way | miss |
-| C, each route's year total | the statement's own year column | the same scope difference | miss |
+| C, recovery share per route per quarter | sums the claims ledger's own recovery-credit rows for the cases closed in the quarter, which is the pinned grain and the pinned population | the scheme took each route's remittance over on its own date, so the ledger holds part of a route and the remittance run holds all of it. Five members post the remittance back, so no route ever reads as zero in the ledger; each route's grand total and every quarter's shares reconcile on the ledger alone; and the statement, which is on the cash quarter, agrees with neither. Measured: 7.8 against 15.1 on Q2 beneficiary recall | miss |
+| C, each route's year total | the same sum over the four quarters | the same channel change, and taking both sources without resolving the five members' overlap reads 22.9 instead | miss |
 
 **Blind-response test.** The widest graded component is ask B's twenty-four figures. A response applying one
 flat rate per million payments to every member's volume reproduces none of the twelve counts within half a
@@ -967,6 +1037,26 @@ asserts that the members carried off their band are exactly the members whose ba
 review, and that each of them sits outside this cycle.
 
 ## Tried and rejected
+
+- 2026-10-21, ask layer: re-siting ask A's device onto the member's contribution tier read at the wrong
+  vintage. Dead on determinacy, not on silence. Whichever way it is cut, one source prints the tier for the
+  coming indemnity year and another the tier the year was settled at, and "by member tier" then has two
+  licensed readings, which is the Gates C and E failure that returned this build twice. Putting the tier on
+  the advice row kills it from the other side: the solver is already summing that row, so it never reaches
+  for the stale source and the device never bites.
+- 2026-10-21, ask layer: a per-row quote convention on ask C (one route's credits net of the scheme's
+  recovery levy, the levy its own ledger line). Dead for the same reason: "recovered" then reads gross or net
+  and nothing in the pack settles it. The general finding, which is why the repair took the shape it did:
+  every dimension where ask C can be made wrong is a dimension where its sentence is silent, and its silence
+  is a fork, except multiplicity and completeness.
+- 2026-10-21, ask layer: keeping ask B's device as a quarter-end supplementary file and only renaming it.
+  Measured dead on the control rather than the name: the member's own Q1 return stated the full count, so the
+  cracker read the answer off the return whatever the file was called. The return had to stop being an oracle
+  before the device could hold, which is the finding the old sheet missed entirely.
+- 2026-10-21, ask layer: staging the route remittance from July, October and January 2025 so the absence is
+  large. Measured dead on loudness: the naive read then prints 0.0 on two routes in Q4, and a whole quarter of
+  zeros is a loud failure, which is texture rather than a device. Moving the dates to May, June and July 2025
+  and letting five members post the remittance back keeps every naive cell plausible and still moves 15 of 15.
 
 - **Architecture 1, an insurance experience rating** (frequency repeats for a member, severity does not, so
   the aggregate rate hides a frequency step): redrawn at stage 1 on 2026-10-17 before any file was cut. The

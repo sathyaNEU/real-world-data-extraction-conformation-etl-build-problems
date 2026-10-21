@@ -39,10 +39,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # The ask layer. owner "construction" is the decisive construction's output on a segment the trustees
 # want anyway (supplemental 2.2): the cracker has it by design, so it is sized, not defended.
 # owner "device" figures each sit on rows outside the main call's declared population and carry the
-# primary device named in the design note's ask sheet. Ask A's row stays a miss after its basis and
-# grain were pinned because the pin names the case and its closure, which the advices sheet cannot
-# answer: the advice is a rollup above its own parts and the natural read is the rollup, measured at
-# 16 of 16 figures and 320,142.56 on the Q1 total by --forcing and by ask_stops_build.py.
+# primary device named in the design note's ask sheet. Every row is a miss because its device sits in
+# a dimension the asking sentence does not name: the sentence pins the basis, the grain, the source and
+# the hygiene step, and each device turns on how many rows carry the quantity rather than on which rows
+# the sentence selects. Measured by --forcing and by ask_stops_build.py at 16 of 16, 24 of 24 and 15 of
+# 15 figures, the widest gaps 86,328.34 on ask A's Q1 total, 36,881 on ask B's Brindlemere value and
+# 7.3 points on ask C's Q2 beneficiary recall.
 # ---------------------------------------------------------------------------
 ASKS = [
     # id, ask, figures, owner, cracker hit, mirror hit
@@ -187,42 +189,67 @@ def forcing():
     QM = {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}
     members = V.rows("member_register.csv")
     tier = {m["member_code"]: m["contribution_tier"] for m in members}
-    adv = V.sheet("settlement_advices_2026_27.xlsx", "advices")
+    import datetime as _dt
+    det = V.sheet("settlement_advices_2026_27.xlsx", "advice detail")
     q1 = V.rows("notifications_2027_28_q1.csv")
-    stmt = V.rows("recovery_statement_2025_26.csv")
+    legs = V.rows("case_payments.csv")
+    reg = V.rows("case_register_2024_27.csv")
     moved = []
 
+    # ask A's natural read: the workbook's own unauthorised lines summed as they stand, on the basis the
+    # asking sentence pins. The re-sent advices put some of those lines in twice.
+    closed = {r["case_reference"]: r["closed_date"] for r in reg}
     nat = {}
-    for r in adv:
+    for r in det:
         if r["cover_class"] != "unauthorised fraud":
             continue
-        k = "Q%d %s" % (QM[int(str(r["settlement_month"])[5:7])], tier[r["member_code"]])
-        nat[k] = round(nat.get(k, 0.0) + float(r["advice_total_gbp"]), 2)
+        k = "Q%d %s" % (QM[int(closed[r["case_reference"]][5:7])], tier[r["member_code"]])
+        nat[k] = round(nat.get(k, 0.0) + float(r["indemnity_paid_gbp"]), 2)
     for q in (1, 2, 3, 4):
         nat["Q%d total" % q] = round(sum(nat.get("Q%d %s" % (q, t), 0.0) for t in "ABC"), 2)
     for k, v in sorted(fig["ask_a_indemnity_unauthorised"].items()):
         moved.append(("A %s" % k, "%.2f" % nat[k], "%.2f" % v, _prints_apart(nat[k], v, 1.0)))
 
+    # ask B's natural read: the quarter's extract, on the quarter's own dates and one row per case
+    QA, QB = _dt.date(2027, 4, 1), _dt.date(2027, 6, 30)
     for m in members:
-        mine = [r for r in q1 if r["member_code"] == m["member_code"]]
+        mine = {r["case_reference"]: r for r in q1 if r["member_code"] == m["member_code"]
+                and QA <= V.d(r["notified_date"]) <= QB}
         for label, natv, gold in (
-                ("notified", len(mine), fig["ask_b_q1_notifications"]["%s notified" % m["member_code"]]),
-                ("value", round(sum(float(r["payment_amount_gbp"]) for r in mine)),
+                ("notified", len(mine),
+                 fig["ask_b_q1_notifications"]["%s notified" % m["member_code"]]),
+                ("value", round(sum(float(r["payment_amount_gbp"]) for r in mine.values())),
                  fig["ask_b_q1_notifications"]["%s value" % m["member_code"]])):
             moved.append(("B %s %s" % (m["member_code"], label), natv, gold,
                           _prints_apart(natv, gold, 1.0)))
 
-    for r in stmt:
-        k = "Q%s %s" % (r["quarter_closed"][1], r["recovery_route"])
-        natv = round(float(r["recovered_stated_gbp"]) / float(r["reimbursed_in_quarter_gbp"]) * 100.0, 1)
-        gold = fig["ask_c_recovery_share"][k]
-        moved.append(("C %s" % k, natv, gold, _prints_apart(natv, gold, 0.1)))
+    # ask C's natural read: the claims ledger's own credit rows, which hold a route's recoveries only
+    # up to the date the scheme took that route's remittance over
+    def _cshare(q):
+        sel = [r for r in reg if r["cover_class"] == "scam reimbursement"
+               and r["scheme_year"] == "2025/26" and r["closed_date"]
+               and (V._q(V.d(r["closed_date"]), "2025/26") == q if q else
+                    V._q(V.d(r["closed_date"]), "2025/26") is not None)]
+        den = sum(float(r["reimbursed_amount_gbp"]) for r in sel)
+        refs = {r["case_reference"] for r in sel}
+        out = {}
+        for route in V.ROUTES:
+            got = sum(float(l["credit_amount_gbp"]) for l in legs
+                      if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
+                      and l["case_reference"] in refs)
+            out[route] = round(got / den * 100.0, 1) if den else 0.0
+        return out
+    for q in (1, 2, 3, 4):
+        _sh = _cshare(q)
+        for route in V.ROUTES:
+            k = "Q%d %s" % (q, route)
+            moved.append(("C %s" % k, _sh[route], fig["ask_c_recovery_share"][k],
+                          _prints_apart(_sh[route], fig["ask_c_recovery_share"][k], 0.1)))
+    _shy = _cshare(None)
     for route in V.ROUTES:
-        natv = round(sum(float(r["recovered_stated_gbp"]) for r in stmt if r["recovery_route"] == route)
-                     / sum(float(r["reimbursed_in_quarter_gbp"]) for r in stmt
-                           if r["recovery_route"] == route) * 100.0, 1)
-        gold = fig["ask_c_recovery_share"]["year %s" % route]
-        moved.append(("C year %s" % route, natv, gold, _prints_apart(natv, gold, 0.1)))
+        k = "year %s" % route
+        moved.append(("C %s" % k, _shy[route], fig["ask_c_recovery_share"][k],
+                      _prints_apart(_shy[route], fig["ask_c_recovery_share"][k], 0.1)))
 
     print("task196 ask forcing, measured on the cut bundle")
     print("=" * 78)

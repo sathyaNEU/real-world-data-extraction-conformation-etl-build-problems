@@ -412,7 +412,36 @@ def main():
        % (len(_off), ", ".join(_off), ", ".join(str(y) for y in sorted(_years))))
 
     print("\n-- the asks")
-    det = sheet("settlement_advices_2026_27.xlsx", "advice detail")
+    adv_sheet = sheet("settlement_advices_2026_27.xlsx", "advices")
+    det_all = sheet("settlement_advices_2026_27.xlsx", "advice detail")
+    # An advice file rejected on transmission was re-sent under fresh advice numbers, so the workbook
+    # carries some case lines twice and the second advice settled nothing. Recovered here from the rows
+    # alone, and independently of the generator: group the advices by member, month and cover, take
+    # each advice's own sorted line set, and keep the first advice to show a given set. A busy
+    # member-month's batches carry different cases, so every batch of a real run survives.
+    _lines_of = {}
+    for _d in det_all:
+        _lines_of.setdefault(str(_d["advice_no"]), []).append(
+            (str(_d["case_reference"]), str(_d["settlement_month"]),
+             round(float(_d["indemnity_paid_gbp"]), 2)))
+    _kept_no, _sets = set(), set()
+    for _a in sorted(adv_sheet, key=lambda r: str(r["advice_no"])):
+        _key = (str(_a["member_code"]), str(_a["settlement_month"]), str(_a["cover_class"]),
+                tuple(sorted(_lines_of.get(str(_a["advice_no"]), []))))
+        if _key in _sets:
+            continue
+        _sets.add(_key)
+        _kept_no.add(str(_a["advice_no"]))
+    resent_no = {str(a["advice_no"]) for a in adv_sheet} - _kept_no
+    ok("the workbook's re-sent advices are recoverable from its own rows",
+       len(resent_no) > 0 and all(
+           abs(round(sum(float(d["indemnity_paid_gbp"]) for d in det_all
+                         if str(d["advice_no"]) == n), 2)
+               - float(next(a["advice_total_gbp"] for a in adv_sheet
+                            if str(a["advice_no"]) == n))) < 0.011 for n in resent_no),
+       "%d advices, %d a re-send, each tying to its own total like the rest"
+       % (len(adv_sheet), len(resent_no)))
+    det = [d for d in det_all if str(d["advice_no"]) in _kept_no]
     tier = {m["member_code"]: m["contribution_tier"] for m in members}
     a_fig = {}
     for r in det:
@@ -515,20 +544,31 @@ def main():
        "%.2f against the register's %.2f on the same cases"
        % (drop_t, round(sum(reimb[k] for k in percase), 2)))
     q1 = rows("notifications_2027_28_q1.csv")
-    supp = rows("notifications_2027_28_q1_supplementary.csv")
+    supp = rows("notifications_feed_latest.csv")
+    QA, QB = dt.date(2027, 4, 1), dt.date(2027, 6, 30)
+    # the ask is the quarter's own notifications, so the current load's new-quarter rows are not in it
+    feed_q = [r for r in q1 + supp if QA <= d(r["notified_date"]) <= QB]
     b_fig = {}
     for m in members:
-        mine = [r for r in q1 + supp if r["member_code"] == m["member_code"]]
+        mine = {r["case_reference"]: r for r in feed_q
+                if r["member_code"] == m["member_code"]}
         b_fig["%s notified" % m["member_code"]] = len(mine)
-        b_fig["%s value" % m["member_code"]] = round(sum(float(r["payment_amount_gbp"]) for r in mine))
-    eq("ask B reproduces from both extracts", b_fig, figures["ask_b_q1_notifications"],
-       "%d figures" % len(b_fig))
+        b_fig["%s value" % m["member_code"]] = round(sum(float(r["payment_amount_gbp"])
+                                                        for r in mine.values()))
+    eq("ask B reproduces from both extracts on the quarter's own dates", b_fig,
+       figures["ask_b_q1_notifications"], "%d figures" % len(b_fig))
+    ok("the current load carries notifications outside the quarter, so a blind union over-counts",
+       any(d(r["notified_date"]) > QB for r in supp)
+       and sum(1 for r in q1 + supp) > len(feed_q),
+       "%d rows over the two files, %d of them notified in the quarter"
+       % (len(q1 + supp), len(feed_q)))
     main_only = {}
     for m in members:
-        mine = [r for r in q1 if r["member_code"] == m["member_code"]]
+        mine = {r["case_reference"]: r for r in q1
+                if r["member_code"] == m["member_code"] and QA <= d(r["notified_date"]) <= QB}
         main_only["%s notified" % m["member_code"]] = len(mine)
         main_only["%s value" % m["member_code"]] = round(sum(float(r["payment_amount_gbp"])
-                                                             for r in mine))
+                                                            for r in mine.values()))
     short = [k for k in main_only if main_only[k] != b_fig[k]]
     ok("ask B's device moves every figure in the ask", len(short) == len(b_fig),
        "%d of %d figures understated by the main extract alone" % (len(short), len(b_fig)))
@@ -540,13 +580,13 @@ def main():
     # SF19: the asking sentence pins the count basis ("the distinct cases each member notified in
     # 2027/28 Q1") and the feed makes the two readings one, because a reference is one case and no
     # reference repeats
-    feed_refs = [r["case_reference"] for r in q1 + supp]
+    feed_refs = [r["case_reference"] for r in feed_q]
     ok("SF19 no notification reference repeats, so a row is one case",
        len(set(feed_refs)) == len(feed_refs),
        "%d rows, %d distinct references" % (len(feed_refs), len(set(feed_refs))))
     cases_by, rows_by = {}, {}
     for m in members:
-        mine = [r for r in q1 + supp if r["member_code"] == m["member_code"]]
+        mine = [r for r in feed_q if r["member_code"] == m["member_code"]]
         rows_by[m["member_code"]] = len(mine)
         cases_by[m["member_code"]] = len({r["case_reference"] for r in mine})
     ok("SF19 the pinned reading returns the committed count for every member",
@@ -573,15 +613,45 @@ def main():
        and all(r["scheme_year"] != "2027/28" for r in reg_q1),
        "%d of %d notified cases sit on a 2027/28 payment, outside the register's stated scope"
        % (len(late), len(q1 + supp)))
-    ok("every member's own return states the feed's count and never the register's",
-       all(int(r["scam_cases_notified"]) == cases_by[r["member_code"]] for r in q1_ret)
-       and not [r for r in q1_ret
-                if int(r["scam_cases_notified"]) == reg_scam.get(r["member_code"], 0)],
-       "12 of 12 returns equal the feed, 0 of 12 the register's %d rows notified in the quarter"
-       % len(reg_q1))
+    _hits = [r["member_code"] for r in q1_ret if int(r["scam_cases_notified"])
+             in (cases_by[r["member_code"]],
+                 main_only["%s notified" % r["member_code"]],
+                 reg_scam.get(r["member_code"], 0))]
+    ok("no member's return states the quarter's count, the quarter extract's, or the register's",
+       not _hits,
+       "%d of %d returns equal one of the three (%s), against the register's %d rows notified in the "
+       "quarter" % (len(_hits), len(q1_ret), ", ".join(_hits) or "none", len(reg_q1)))
     closed_by = {}
     for r in reg:
         closed_by[r["case_reference"]] = r
+    # "every case-level credit", which the ask pins: a route's recoveries sit in the member's claims
+    # ledger until the scheme took that route's remittance over and in the scheme's remittance run from
+    # then, and the members that reconcile the remittance post it back to the case in their own ledger
+    # too, so the two sources overlap on those rows. One credit per case and route either way.
+    remit = rows("scheme_remittance_credits.csv")
+    all_credits, _cr_seen = [], set()
+    for l in legs:
+        if l["entry_type"] == "recovery credit":
+            all_credits.append(l)
+            _cr_seen.add((l["case_reference"], l["recovery_route"]))
+    for l in remit:
+        if (l["case_reference"], l["recovery_route"]) in _cr_seen:
+            continue
+        _cr_seen.add((l["case_reference"], l["recovery_route"]))
+        all_credits.append({"case_reference": l["case_reference"], "member_code": l["member_code"],
+                            "cover_class": l["cover_class"], "entry_type": "recovery credit",
+                            "leg_no": "1", "value_date": l["remitted_date"], "paid_amount_gbp": "",
+                            "credit_amount_gbp": l["credit_amount_gbp"],
+                            "recovery_route": l["recovery_route"]})
+    ok("the remittance run and the ledger overlap only where the member posts the remittance back",
+       len(remit) > 0 and len(all_credits) == len([l for l in legs
+                                                   if l["entry_type"] == "recovery credit"])
+       + len([l for l in remit if (l["case_reference"], l["recovery_route"]) not in
+              {(x["case_reference"], x["recovery_route"]) for x in legs
+               if x["entry_type"] == "recovery credit"}]),
+       "%d ledger credits and %d remittance rows resolve to %d credits"
+       % (len([l for l in legs if l["entry_type"] == "recovery credit"]), len(remit),
+          len(all_credits)))
     c_fig = {}
     for q in (1, 2, 3, 4):
         sel = [r for r in reg if r["cover_class"] == "scam reimbursement" and r["scheme_year"] == "2025/26"
@@ -589,9 +659,8 @@ def main():
         reimb = sum(float(r["reimbursed_amount_gbp"]) for r in sel)
         refs = {r["case_reference"] for r in sel}
         for route in ROUTES:
-            got = sum(float(l["credit_amount_gbp"]) for l in legs
-                      if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
-                      and l["case_reference"] in refs)
+            got = sum(float(l["credit_amount_gbp"]) for l in all_credits
+                      if l["recovery_route"] == route and l["case_reference"] in refs)
             c_fig["Q%d %s" % (q, route)] = round(got / reimb * 100.0, 1) if reimb else 0.0
     # the route total covers the same four quarters the rows cover, which is what the ask pins
     sel = [r for r in reg if r["cover_class"] == "scam reimbursement" and r["scheme_year"] == "2025/26"
@@ -599,21 +668,20 @@ def main():
     reimb = sum(float(r["reimbursed_amount_gbp"]) for r in sel)
     refs = {r["case_reference"] for r in sel}
     for route in ROUTES:
-        got = sum(float(l["credit_amount_gbp"]) for l in legs
-                  if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
-                  and l["case_reference"] in refs)
+        got = sum(float(l["credit_amount_gbp"]) for l in all_credits
+                  if l["recovery_route"] == route and l["case_reference"] in refs)
         c_fig["year %s" % route] = round(got / reimb * 100.0, 1)
     badc = [k for k, v in figures["ask_c_recovery_share"].items() if abs(c_fig.get(k, -1) - v) > 0.051]
-    ok("ask C reproduces from the case-level credits", not badc, "%d figures" % len(c_fig))
+    ok("ask C reproduces from every case-level credit, both sources resolved", not badc,
+       "%d figures" % len(c_fig))
     # SF18: ask 6's population is pinned in the asking sentence ("the share of scam reimbursement
     # recovered by route on cases from 2025/26 payments closed in each 2025/26 quarter, from every
     # case-level credit"). Each reading the pack makes plausible is recomputed from the shipped rows
     # and has to give another grid, and the register's own scheme-year column is the payment's year,
     # so the pinned population has one value however it is reached.
     credit = {}
-    for l in legs:
-        if l["entry_type"] == "recovery credit":
-            credit.setdefault(l["case_reference"], []).append(l)
+    for l in all_credits:
+        credit.setdefault(l["case_reference"], []).append(l)
     CALQ = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
 
     def c_grid(cover="scam reimbursement", year="2025/26", cal=False,
@@ -701,9 +769,8 @@ def main():
         den += sum(float(r["reimbursed_amount_gbp"]) for r in sel)
         refs = {r["case_reference"] for r in sel}
         for route in ROUTES:
-            num[route] += sum(float(l["credit_amount_gbp"]) for l in legs
-                              if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
-                              and l["case_reference"] in refs)
+            num[route] += sum(float(l["credit_amount_gbp"]) for l in all_credits
+                              if l["recovery_route"] == route and l["case_reference"] in refs)
     bad = [r for r in ROUTES if abs(round(num[r] / den * 100.0, 1) - c_fig["year %s" % r]) > 0.051]
     ok("ask 6's route totals reconcile with its own four quarters", not bad,
        "; ".join("%s %.1f" % (r, num[r] / den * 100.0) for r in ROUTES))
@@ -816,13 +883,24 @@ def main():
        and not [a for a in wbk if str(a["advice_date"])[:7] != str(a["settlement_month"])[:7]],
        "%d advices over %d dates, every one inside its own settlement month"
        % (len(wbk), len({str(a["advice_date"])[:10] for a in wbk})))
-    ok("the main notification extract carries nothing its own cut date could not know",
-       not [r for r in q1 if r["closed_date"] and d(r["closed_date"]) > dt.date(2027, 6, 20)]
-       and max(d(r["notified_date"]) for r in q1) <= dt.date(2027, 6, 20)
-       and not [r for r in supp if r["closed_date"] and d(r["closed_date"]) > dt.date(2027, 6, 30)],
-       "latest closure %s on a 20 June cut, latest notification %s"
+    ok("each notification file carries nothing its own cut date could not know",
+       not [r for r in q1 if r["closed_date"] and d(r["closed_date"]) > dt.date(2027, 6, 30)]
+       and max(d(r["notified_date"]) for r in q1) <= dt.date(2027, 6, 30)
+       and not [r for r in supp if r["closed_date"] and d(r["closed_date"]) > PULL],
+       "the quarter extract's latest closure %s and latest notification %s, the current load's "
+       "latest closure %s"
        % (max((r["closed_date"] for r in q1 if r["closed_date"]), default=""),
-          max(r["notified_date"] for r in q1)))
+          max(r["notified_date"] for r in q1),
+          max((r["closed_date"] for r in supp if r["closed_date"]), default="")))
+    # the quarter extract's own dates reach the quarter end, so nothing in it says it is short, and no
+    # member's rows in it stop at the monthly bulk load
+    ok("the quarter extract reaches the quarter end for every member",
+       max(d(r["notified_date"]) for r in q1) == dt.date(2027, 6, 30)
+       and not [m for m in members
+                if max([d(r["notified_date"]) for r in q1
+                        if r["member_code"] == m["member_code"]] or [dt.date(2000, 1, 1)])
+                <= dt.date(2027, 6, 20)],
+       "0 of %d members end on the bulk load date in the quarter extract" % len(members))
 
     print("\n-- the gates")
     files = sorted(os.listdir(TARGET))

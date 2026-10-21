@@ -1,0 +1,15 @@
+Kelverstone Mutual: scheme register feed
+Operations note, reissued 02 July 2027 by Lydia Page, underwriting and pricing
+
+The scheme sends the mutual the whole beneficiary account register each week, not only the
+accounts our members paid. The register is industry wide: an account appears on it because
+the firm that holds it reported it, whichever firm's customer was scammed.
+
+Account references are not written the same way on both sides. The register holds the sort
+code without separators and the account number zero padded to eight digits. Our own
+matching run writes the sort code hyphenated and drops leading zeros from the account
+number. Pad the account number back to eight digits before matching anything against the
+register, or the match loses every account whose number starts with a zero.
+
+The weekly run writes one row per member payment that matched a registered account, with
+the register's date for that account.

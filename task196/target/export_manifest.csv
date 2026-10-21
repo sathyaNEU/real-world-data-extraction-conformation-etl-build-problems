@@ -1,0 +1,20 @@
+file,what_it_is,what_it_covers,what_it_omits,produced_by
+case_register_2023_24.csv,"Claims register extract, scheme year 2023/24, pre-2024/25 layout",scam reimbursement and unauthorised fraud cases recorded by members,later scheme years,claims system extract
+case_register_2024_27.csv,"Claims register extract, scheme years 2024/25 to 2026/27","cases recorded by members, both covers",,claims system
+case_payments.csv,Money movements on recorded cases,payment legs and recovery credits,cases with no movement posted,claims ledger
+mule_account_register.csv,"Scheme beneficiary account register, whole industry",accounts reported by the firms that hold them,,scheme weekly feed
+member_payment_matches.csv,Weekly matching run output,member payments whose beneficiary account is on the register,payments to accounts nobody reported,mutual matching run
+fund_return_requests.csv,Outbound fund-return requests,requests the claims team sent to receiving firms,cases where no request was sent,claims workflow
+member_quarterly_returns.xlsx,Member quarterly returns,payments sent and cases notified per member per quarter,anything the member did not return,member portal
+member_register.csv,Membership register,"members, tiers, joining dates, notified volumes",former members,mutual secretariat
+settlement_advices_2026_27.xlsx,"Settlement advices and their case detail, 2026/27",what the mutual settled with each member each month,settlements outside 2026/27,settlement run
+recovery_statement_2025_26.csv,"Recovery statement, scheme year 2025/26",recoveries on cases closed in the year by route,recoveries on cases closed in other years,recoveries team
+notifications_2027_28_q1.csv,"Notification feed, quarter to 30 June 2027",scam cases the feed had loaded at the quarter end,,notification feed
+notifications_feed_latest.csv,"Notification feed, current load",scam cases loaded in the latest run,,notification feed
+scheme_remittance_credits.csv,"Scheme recovery remittance, case level","recoveries the scheme remitted to members, one row per case and route",,scheme remittance run
+national_scam_statistics_calendar_year.csv,Published national scam statistics,national reported losses by calendar quarter per million pounds of payment value,any member level detail; any count basis,industry body publication
+aml_alert_summary.csv,Member AML alert summary,alerts raised and escalated per member per quarter,what the alerts were about,member returns
+data_dictionary.csv,Field definitions,fields across the pack,derived quantities,mutual data office
+register_feed_notes.txt,Operations note on the register feed,how the feed and the matching run are written,anything about a member's experience,mutual operations
+indemnity_standard_v6.pdf,"The mutual's indemnity standard, version 6","cover, the incidence index and the evidence base",parts 1 to 3 and the schedules,mutual secretariat
+trustee_pack_2027_07.pdf,"Trustees' meeting pack, 14 July 2027",agenda and membership position,any index or recommendation,mutual secretariat

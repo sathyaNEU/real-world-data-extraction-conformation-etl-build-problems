@@ -74,6 +74,29 @@ def xlsx_rows(name, sheet):
     return [dict(zip(head, r)) for r in rows[1:] if any(v is not None for v in r)]
 
 
+
+def settled_advices(adv, det):
+    """The advices the mutual actually settled, read from the shipped rows alone. An advice file rejected
+    on transmission was re-sent under fresh advice numbers, so one member's month and cover can hold two
+    advices carrying the same case lines, and the second settled nothing. Identity is the line set, so a
+    busy member-month's several batches, which carry different cases, are every one of them kept."""
+    lines = {}
+    for d in det:
+        lines.setdefault(d["advice_no"], []).append(
+            (str(d["case_reference"]), str(d["settlement_month"]),
+             "%.2f" % float(d["indemnity_paid_gbp"])))
+    seen, keep = set(), []
+    for a in sorted(adv, key=lambda r: str(r["advice_no"])):
+        key = (str(a["member_code"]), str(a["settlement_month"]), str(a["cover_class"]),
+               tuple(sorted(lines.get(a["advice_no"], []))))
+        if key in seen:
+            continue
+        seen.add(key)
+        keep.append(a)
+    nos = {a["advice_no"] for a in keep}
+    return keep, [d for d in det if d["advice_no"] in nos]
+
+
 def main():
     w = W.world()
     code = "KM-104"
@@ -551,8 +574,9 @@ def main():
        not [f for f in files if re.search(r"independ|attribut|unseen|coverage|answer|golden|known",
                                           f, re.I)], "none")
     # the separation line: the ask devices sit outside the call's own rows
-    adv = xlsx_rows("settlement_advices_2026_27.xlsx", "advices")
-    det = xlsx_rows("settlement_advices_2026_27.xlsx", "advice detail")
+    adv_all = xlsx_rows("settlement_advices_2026_27.xlsx", "advices")
+    det_all = xlsx_rows("settlement_advices_2026_27.xlsx", "advice detail")
+    adv, det = settled_advices(adv_all, det_all)
     adv_month = {a["advice_no"]: a["settlement_month"] for a in adv}
     resid = [d for d in det if d["settlement_month"] != adv_month.get(d["advice_no"])]
     # ask 4's basis and grain, pinned in the asking sentence: "the indemnity the advices settled, by
@@ -563,6 +587,7 @@ def main():
     _qof = lambda ms: G._settlement_quarter(dt.date(int(ms.split("-")[0]), int(ms.split("-")[1]), 15))
     _closed = {r["case_reference"]: r["closed_date"] for r in reg}
     _reimb = {r["case_reference"]: float(r["reimbursed_amount_gbp"]) for r in reg}
+    _adv, _det = adv, det
     _atier = {a["advice_no"]: a["contribution_tier"] for a in _adv}
     _gold_a = G.ask_a(w)
     _U = [r for r in _det if r["cover_class"] == "unauthorised fraud"]
@@ -598,6 +623,49 @@ def main():
        not _against_golden(_by_closure), "16 figures, 0 off the golden")
     ok("SF14 the line's own settlement month gives the same table",
        _by_line_month == _by_closure, "both routes to the closure quarter agree on all 16 figures")
+    # ask A's device, measured: the workbook's own rows summed as they stand, and the blunt repair that
+    # drops every repeated case reference, are each a complete pipeline at another table
+    _Uall = [r for r in det_all if r["cover_class"] == "unauthorised fraud"]
+    _by_raw = _table([(_qof(_closed[d["case_reference"]][:7]), _tierof[d["member_code"]],
+                       float(d["indemnity_paid_gbp"])) for d in _Uall])
+    _once, _by_dedup_rows = set(), []
+    for d in sorted(_Uall, key=lambda r: (str(r["case_reference"]), str(r["advice_no"]))):
+        if d["case_reference"] in _once:
+            continue
+        _once.add(d["case_reference"])
+        _by_dedup_rows.append(d)
+    _by_dedup = _table([(_qof(_closed[d["case_reference"]][:7]), _tierof[d["member_code"]],
+                         float(d["indemnity_paid_gbp"])) for d in _by_dedup_rows])
+    for _lab3, _alt3, _floor3 in (
+            # the natural read, which has to miss every one of the sixteen
+            ("the workbook's lines as they stand", _by_raw, 16),
+            # the blunt repair, which takes the re-sends out and the prior-period top-ups with them
+            ("one line per case reference", _by_dedup, 9)):
+        _off3 = _against_golden(_alt3)
+        _wk3 = max(_gold_a, key=lambda k: abs(_alt3.get(k, 0.0) - _gold_a[k]))
+        ok("ask A's stop is a table of its own: %s" % _lab3, len(_off3) >= _floor3,
+           "%d of 16 off (floor %d), worst %.2f on %s"
+           % (len(_off3), _floor3, abs(_alt3[_wk3] - _gold_a[_wk3]), _wk3))
+    _resent = [a["advice_no"] for a in adv_all if a["advice_no"] not in {x["advice_no"] for x in adv}]
+    ok("the re-sent advices tie to their own totals and case counts like every other advice",
+       not [a for a in adv_all if a["advice_no"] in _resent
+            and (abs(round(sum(float(d["indemnity_paid_gbp"]) for d in det_all
+                               if d["advice_no"] == a["advice_no"]), 2)
+                     - float(a["advice_total_gbp"])) > 0.011
+                 or int(a["case_lines"]) != len([d for d in det_all
+                                                 if d["advice_no"] == a["advice_no"]]))],
+       "%d advices in the workbook, %d of them a re-send that settled nothing"
+       % (len(adv_all), len(_resent)))
+    ok("a member-month's several advices are the run's own batches, so a second advice is not a tell",
+       len({(a["member_code"], a["settlement_month"], a["cover_class"]) for a in adv
+            if len([b for b in adv
+                    if (b["member_code"], b["settlement_month"], b["cover_class"])
+                    == (a["member_code"], a["settlement_month"], a["cover_class"])]) > 1}) >= 60,
+       "%d member-month-covers settled over more than one advice with no re-send among them"
+       % len({(a["member_code"], a["settlement_month"], a["cover_class"]) for a in adv
+              if len([b for b in adv
+                      if (b["member_code"], b["settlement_month"], b["cover_class"])
+                      == (a["member_code"], a["settlement_month"], a["cover_class"])]) > 1}))
     # the other dates the register carries against a case, each a basis the wording has to exclude
     _paydate = {r["case_reference"]: r["payment_date"] for r in reg}
     _notdate = {r["case_reference"]: r["notified_date"] for r in reg}
@@ -684,14 +752,32 @@ def main():
        "%.2f against the register's %.2f on the same cases"
        % (_drop_t, round(sum(_reimb[r] for r in _percase), 2)))
     q1 = read_csv("notifications_2027_28_q1.csv")
-    supp = read_csv("notifications_2027_28_q1_supplementary.csv")
+    supp = read_csv("notifications_feed_latest.csv")
+    _nd = lambda r: dt.date.fromisoformat(r["notified_date"])
     ok("ask B's device sits after the evidence base closes",
-       all(dt.date.fromisoformat(r["notified_date"]) > W.AS_OF for r in q1 + supp),
+       all(_nd(r) > W.AS_OF for r in q1 + supp),
        "%d + %d rows, all after 31 March 2027" % (len(q1), len(supp)))
-    ok("ask B's supplementary rows are the quarter's tail",
-       all(dt.date.fromisoformat(r["notified_date"]) > dt.date(2027, 6, 20) for r in supp)
-       and all(dt.date.fromisoformat(r["notified_date"]) <= dt.date(2027, 6, 20) for r in q1),
-       "the main extract was cut on 20 June")
+    # the quarter extract reaches the quarter end on its own dates, so nothing in it says it is short
+    ok("the quarter extract's own dates reach the quarter end",
+       max(_nd(r) for r in q1) == dt.date(2027, 6, 30)
+       and all(_nd(r) <= dt.date(2027, 6, 30) for r in q1),
+       "latest notified date in the quarter extract is %s" % max(_nd(r) for r in q1))
+    ok("no member's own rows in the quarter extract stop at the bulk load",
+       sum(1 for m in w["members"]
+           if max([_nd(r) for r in q1 if r["member_code"] == m["code"]] or [W.AS_OF])
+           <= dt.date(2027, 6, 20)) == 0,
+       "0 of 12 members end on 20 June in the quarter extract")
+    _late = [r for r in supp if dt.date(2027, 6, 21) <= _nd(r) <= dt.date(2027, 6, 30)]
+    ok("every member has quarter notifications in the July load",
+       {r["member_code"] for r in _late} == {m["code"] for m in w["members"]},
+       "%d rows of the quarter in the current load, over %d members"
+       % (len(_late), len({r["member_code"] for r in _late})))
+    ok("the current load also carries the new quarter, so its name is not the quarter's tail",
+       any(_nd(r) > dt.date(2027, 6, 30) for r in supp),
+       "%d of %d rows in the current load are notified after the quarter"
+       % (sum(1 for r in supp if _nd(r) > dt.date(2027, 6, 30)), len(supp)))
+    ok("ask B's device moves every one of the twenty-four figures",
+       True, "measured in the forcing block below")
     rs = read_csv("recovery_statement_2025_26.csv")
     ok("ask C's device sits on the 2025/26 recovery statement",
        {r["statement_basis"] for r in rs} == {"as credited", "net of recovery agent charges"},
@@ -701,7 +787,9 @@ def main():
     # "the distinct cases each member notified in 2027/28 Q1". A reference is one case and no
     # reference repeats, so counting rows and counting cases select the same rows (C1) and the pin
     # agrees with the dictionary's "a case is one case however many legs it covers".
-    _feed = q1 + supp
+    _QA, _QB = dt.date(2027, 4, 1), dt.date(2027, 6, 30)
+    # the ask is the quarter's notifications, so the current load's new-quarter rows are not in it
+    _feed = [r for r in q1 + supp if _QA <= dt.date.fromisoformat(r["notified_date"]) <= _QB]
     _refs = [r["case_reference"] for r in _feed]
     _bfig = G.ask_b(TARGET, w)
     ok("SF19 no notification reference repeats, so a row is one case",
@@ -736,12 +824,27 @@ def main():
        and all(r["scheme_year"] in ("2024/25", "2025/26", "2026/27") for r in _regq1),
        "%d of %d notified cases sit on a 2027/28 payment, outside the register's stated scope"
        % (len(_late), len(_feed)))
-    ok("every member's own return states the feed's count and never the register's",
-       all(int(r["scam_cases_notified"]) == _cases_by[r["member_code"]] for r in _ret)
-       and not [r for r in _ret
-                if int(r["scam_cases_notified"]) == _regscam.get(r["member_code"], 0)],
-       "12 of 12 returns equal the feed, 0 of 12 the register's %d rows notified in the quarter"
+    # The return is the member's own declaration off its own case system, so it ties to no extract and
+    # arbitrates nothing: a response that reconciles to it lands on neither the quarter extract's count
+    # nor the whole quarter's.
+    _q1_by = {}
+    for _m in w["members"]:
+        _q1_by[_m["code"]] = len({r["case_reference"] for r in q1
+                                  if r["member_code"] == _m["code"]
+                                  and _QA <= dt.date.fromisoformat(r["notified_date"]) <= _QB})
+    ok("no member's return states the committed count, the quarter extract's, or the register's",
+       not [r for r in _ret if int(r["scam_cases_notified"])
+            in (_cases_by[r["member_code"]], _q1_by[r["member_code"]],
+                _regscam.get(r["member_code"], 0))],
+       "0 of 12 returns equal any of the three, against the register's %d rows notified in the quarter"
        % len(_regq1))
+    ok("ask B's device moves every member's count and every member's value",
+       all(_q1_by[c] != _cases_by[c] for c in _cases_by)
+       and all(abs(round(sum(float(r["payment_amount_gbp"]) for r in q1
+                             if r["member_code"] == c
+                             and _QA <= dt.date.fromisoformat(r["notified_date"]) <= _QB))
+                   - _bfig["%s value" % c]) >= 1.0 for c in _cases_by),
+       "12 of 12 counts and 12 of 12 values differ on the quarter extract alone")
 
     # -- SF18: ask 6's population, pinned in the asking sentence -----------------------------------
     # "the share of scam reimbursement recovered by route on cases from 2025/26 payments closed in
@@ -749,10 +852,35 @@ def main():
     # computed on the shipped rows: the pinned one returns the committed fifteen figures and each
     # rival returns another grid.
     _gold_c = G.ask_c(w)
-    _credit = {}
+    # Every case-level credit, which the pin names: the claims ledger holds a route's recoveries until
+    # the scheme took that route's remittance over, the scheme's remittance run holds them from that
+    # date, and the five members that reconcile the remittance post it back into their own ledger too,
+    # so the two sources overlap on exactly those rows and a credit is one credit per case and route.
+    _remit = read_csv("scheme_remittance_credits.csv")
+    _credit, _seen_cr = {}, set()
     for _l in legs:
         if _l["entry_type"] == "recovery credit":
             _credit.setdefault(_l["case_reference"], []).append(_l)
+            _seen_cr.add((_l["case_reference"], _l["recovery_route"]))
+    for _l in _remit:
+        if (_l["case_reference"], _l["recovery_route"]) in _seen_cr:
+            continue
+        _seen_cr.add((_l["case_reference"], _l["recovery_route"]))
+        _credit.setdefault(_l["case_reference"], []).append(
+            {"case_reference": _l["case_reference"], "member_code": _l["member_code"],
+             "cover_class": _l["cover_class"], "entry_type": "recovery credit", "leg_no": "1",
+             "value_date": _l["remitted_date"], "paid_amount_gbp": "",
+             "credit_amount_gbp": _l["credit_amount_gbp"], "recovery_route": _l["recovery_route"]})
+    # the two stops the device puts between the ledger and the answer
+    _ledger_only, _double = {}, {}
+    for _l in legs:
+        if _l["entry_type"] == "recovery credit":
+            _ledger_only.setdefault(_l["case_reference"], []).append(_l)
+            _double.setdefault(_l["case_reference"], []).append(_l)
+    for _l in _remit:
+        _double.setdefault(_l["case_reference"], []).append(
+            {"value_date": _l["remitted_date"], "credit_amount_gbp": _l["credit_amount_gbp"],
+             "recovery_route": _l["recovery_route"]})
     _CALQ = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
 
     def _sy(iso):
@@ -800,8 +928,35 @@ def main():
             out["year %s" % route] = round(_num(keys, route) / den * 100.0, 1) if den else 0.0
         return out
 
-    ok("SF18 the pinned population returns the committed fifteen figures", _cgrid() == _gold_c,
-       "15 figures, 0 off the golden")
+    _cfull = _cgrid()
+    ok("SF18 the pinned population returns the committed fifteen figures", _cfull == _gold_c,
+       "15 figures, %d off the golden" % len([k for k in _gold_c if _cfull[k] != _gold_c[k]]))
+    # ask C's device, measured: the claims ledger alone and the two sources unreconciled are each a
+    # complete pipeline at another grid, and neither disagrees with any control the pack ships
+    _save = _credit
+    _credit = _ledger_only
+    _conly = _cgrid()
+    _credit = _double
+    _cdbl = _cgrid()
+    _credit = _save
+    for _lab, _alt2 in (("the claims ledger alone", _conly),
+                        ("both sources with the overlap counted twice", _cdbl)):
+        _offc2 = [k for k in _gold_c if abs(_alt2[k] - _gold_c[k]) > 0.051]
+        _wk2 = max(_gold_c, key=lambda k: abs(_alt2[k] - _gold_c[k]))
+        ok("ask C's device moves every figure: %s" % _lab, len(_offc2) == 15,
+           "%d of 15 off, worst %.1f points on %s, narrowest %.1f"
+           % (len(_offc2), abs(_alt2[_wk2] - _gold_c[_wk2]), _wk2,
+              min(abs(_alt2[k] - _gold_c[k]) for k in _gold_c)))
+    ok("ask C's two sources overlap on the members that post the remittance back and on no others",
+       {r["member_code"] for r in _remit
+        if (r["case_reference"], r["recovery_route"])
+        in {(l["case_reference"], l["recovery_route"]) for l in legs
+            if l["entry_type"] == "recovery credit"}} == set(W.REMITTANCE_POSTED_BACK),
+       "%d remittance rows, %d of them also in the ledger"
+       % (len(_remit), len([r for r in _remit
+                            if (r["case_reference"], r["recovery_route"])
+                            in {(l["case_reference"], l["recovery_route"]) for l in legs
+                                if l["entry_type"] == "recovery credit"}])))
     for _label, _alt in (
             ("both covers", _cgrid(cover=None)),
             ("any scheme year", _cgrid(year=None)),
@@ -920,7 +1075,7 @@ def main():
                 if str(a["advice_date"])[:7] != str(a["settlement_month"])[:7]]
     ok("every advice is dated inside the month it settles", not _outside,
        "%d advices, %d dated outside their own settlement month" % (len(_adv), len(_outside)))
-    _cut = dt.date(2027, 6, 20)
+    _cut = dt.date(2027, 6, 30)
     ok("the main notification extract carries no closure after its own cut date",
        not [r for r in q1 if r["closed_date"]
             and dt.date.fromisoformat(r["closed_date"]) > _cut]
@@ -1000,9 +1155,9 @@ def main():
             <= dt.date.fromisoformat(_cl[r["case_reference"]])]
     ok("no recovery credit values on or before the closure it belongs to", not _pre,
        "%d credit rows, %d valued on or before their case's closure" % (len(_cr), len(_pre)))
-    ok("the quarter-end supplement carries no closure after the quarter end",
+    ok("the feed's current load carries no closure after the feed's own pull date",
        not [r for r in supp if r["closed_date"]
-            and dt.date.fromisoformat(r["closed_date"]) > dt.date(2027, 6, 30)],
+            and dt.date.fromisoformat(r["closed_date"]) > W.PULL],
        "%d rows, latest closure %s"
        % (len(supp), max((r["closed_date"] for r in supp if r["closed_date"]), default="")))
 

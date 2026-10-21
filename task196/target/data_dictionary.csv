@@ -1,0 +1,30 @@
+extract,column,definition
+case_register_2023_24.csv,cover,"APP for a scam reimbursement case, UNAUTH for an unauthorised fraud case. The 2023/24 extract predates the 2024/25 layout change."
+case_register_2023_24.csv,payment_pence,"The amount the customer sent, in pence."
+case_register_2023_24.csv,notified_dt,"Date the member recorded the case, dd/mm/yyyy."
+case_register_2024_27.csv,cover_class,The cover the case falls under: scam reimbursement or unauthorised fraud.
+case_register_2024_27.csv,payment_date,Date the customer's payment left the member.
+case_register_2024_27.csv,notified_date,Date the member recorded the case. A case appears in the register only when the member's own controls or its customer brought it to it.
+case_register_2024_27.csv,side,sending where the member sent the payment. The register holds sending-side cases only.
+case_payments.csv,entry_type,"payment for a leg the customer sent, recovery credit for money that came back later. A case is one case however many legs it covers."
+case_payments.csv,value_date,"Date the entry was valued, so a recovery credit carries the date the money arrived rather than the date of the case."
+mule_account_register.csv,beneficiary_account,Sort code without separators and account number zero padded to eight digits.
+mule_account_register.csv,registered_date,Date the scheme register accepted the report from the firm that holds the account.
+mule_account_register.csv,registering_firm_type,The kind of firm that received the money and reported the account.
+member_payment_matches.csv,beneficiary_account_ref,"As the mutual's own matching run writes it: sort code hyphenated, account number without leading zeros."
+member_payment_matches.csv,registered_date,The register's date for the matched account.
+fund_return_requests.csv,request_sent_date,Date the member asked the firm holding the beneficiary account to return the funds.
+fund_return_requests.csv,funds_returned_gbp,"Amount the receiving firm sent back, blank where nothing came back."
+member_quarterly_returns.xlsx,payments_sent_thousands,"Payments sent in the quarter, in thousands, on the sheet covering scheme years to 2023/24."
+member_quarterly_returns.xlsx,payments_sent,"Payments sent in the quarter, in whole payments, on the sheets covering 2024/25 onward."
+member_quarterly_returns.xlsx,vintage,"revised supersedes preliminary for the same member, scheme year and quarter."
+settlement_advices_2026_27.xlsx,advice_total_gbp,The amount the advice settled with the member.
+settlement_advices_2026_27.xlsx,indemnity_paid_gbp,The amount the advice settled for that case.
+recovery_statement_2025_26.csv,recovered_stated_gbp,"Recoveries on cases closed in the quarter, on the basis named in statement_basis."
+notifications_2027_28_q1.csv,notified_date,Date the member recorded the case.
+notifications_feed_latest.csv,notified_date,Date the member recorded the case.
+scheme_remittance_credits.csv,remitted_date,Date the scheme remitted the recovery to the member.
+scheme_remittance_credits.csv,credit_amount_gbp,Amount recovered on that case through that route.
+member_quarterly_returns.xlsx,scam_cases_notified,"Scam cases the member's own return declares for the quarter, off its case system at the date it signed."
+member_register.csv,notified_payments_next_indemnity_year,"Payments the member expects to send in the indemnity year beginning 1 October 2027, as notified to the mutual."
+member_register.csv,triennial_review_this_cycle,yes where the member's triennial experience review falls at this meeting of the trustees.

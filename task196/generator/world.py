@@ -153,6 +153,32 @@ QUARTERS = {"2026/27": [(dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
                         (dt.date(2027, 1, 1), dt.date(2027, 3, 31))]}
 
 ROUTES = ["beneficiary recall", "repatriation", "insurer contribution"]
+
+# The scheme took each recovery route's remittance over from the members one route at a time, so from
+# the date below a route's recoveries reach the member through the scheme's own remittance run and are
+# posted case by case there rather than in the member's claims ledger. The claims ledger is complete
+# for a route up to its date and holds nothing on it afterwards.
+ROUTE_REMITTANCE_FROM = {"beneficiary recall": dt.date(2025, 5, 1),
+                         "repatriation": dt.date(2025, 6, 1),
+                         "insurer contribution": dt.date(2025, 7, 1)}
+
+# Members whose own ledger posts the scheme's remittance back against the case when they reconcile it.
+# The others take the money to a suspense account and never post it case by case, so their claims
+# ledger holds a recovery only from before the scheme took that route over.
+REMITTANCE_POSTED_BACK = ("KM-104", "KM-101", "KM-106", "KM-110", "KM-103")
+
+# Four months of the settlement year in which a member's advice file was rejected on transmission and
+# re-sent under a fresh advice number. One member per contribution tier each time, so a quarter's
+# re-send is not a tier's re-send.
+ADVICE_RESENDS = [((2026, 5), ("KM-102", "KM-106", "KM-118")),
+                  ((2026, 8), ("KM-124", "KM-110", "KM-115")),
+                  ((2026, 11), ("KM-103", "KM-104", "KM-121")),
+                  ((2027, 2), ("KM-101", "KM-108", "KM-112"))]
+
+# The notification feed loads the portal every working day and each member's bulk file once a month on
+# the 20th, so a notification made after the 20th of the quarter's last month reaches the quarter
+# extract only where it came through the portal.
+FEED_PORTAL_SHARE = 0.55
 SCAM_TYPES = ["purchase", "investment", "impersonation", "advance fee", "romance", "invoice"]
 CHANNELS = ["faster payment", "same day value", "international transfer", "card to account"]
 DEST_FIRM = ["clearing bank", "e-money institution", "building society", "overseas correspondent"]

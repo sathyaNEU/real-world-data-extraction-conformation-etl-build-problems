@@ -60,9 +60,16 @@ def _months(y):
     return out
 
 
+BATCH = 30
+RESEND = {k: v for k, v in W.ADVICE_RESENDS}
+
+
 def settlement_advices(target, w):
     """What the mutual actually paid each member each month, by cover class, with the case detail the
-    advice covers. Written as the mutual's own settlement workbook."""
+    advice covers. Written as the mutual's own settlement workbook. The run writes at most BATCH case
+    lines to an advice, and in the four months a member's advice file was rejected on transmission the
+    whole file was re-sent under fresh advice numbers, so those case lines stand in the workbook twice
+    while each advice still ties to the sum of its own lines."""
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
     head, fill = Font(bold=True), PatternFill("solid", fgColor="E6ECE6")
@@ -95,24 +102,36 @@ def settlement_advices(target, w):
                     lines = [(c.case_ref, c.reimbursed) for c in sel]
                 if not lines:
                     continue
-                advice_no = "ADV-%d%02d-%s-%s" % (yy, mm, m["code"].split("-")[1],
-                                                  "U" if cover == "unauthorised fraud" else "S")
+                cov = "U" if cover == "unauthorised fraud" else "S"
                 rows_out = [("%d-%02d" % (yy, mm), ref, amt) for ref, amt in lines]
                 # the recoveries team's prior-period adjustment is one of the advice's own lines and
                 # carries the month it settles in, which is not the month of the advice that pays it
                 for a in adj.get((m["code"], (yy, mm), cover), []):
                     rows_out.append(("%d-%02d" % a["own_month"], a["ref"], a["amount"]))
-                tot = round(sum(amt for _, _, amt in rows_out), 2)
+                # the settlement run writes at most BATCH case lines to one advice, so a busy
+                # member-month is advised over several, numbered in the run's own sequence
+                batches = [rows_out[i:i + BATCH] for i in range(0, len(rows_out), BATCH)]
                 _rd = _run_days(yy, mm)
                 _r = W.rng("advdate", m["code"], yy, mm, cover)
                 _i = 0 if _r.random() < 0.72 else min(len(_rd) - 1, _r.randint(1, 3))
-                advice.append([advice_no, m["code"], m["tier"], "%d-%02d" % (yy, mm), cover,
-                               len(rows_out), "%.2f" % tot,
-                               _d(_rd[_i])])
-                for mth, ref, amt in rows_out:
-                    detail.append([advice_no, m["code"], mth, cover, ref, "%.2f" % amt])
-    advice.sort(key=lambda r: (r[3], r[1], r[4]))
-    detail.sort(key=lambda r: (r[2], r[1], r[3], r[4]))
+                runs = [(batches, _rd[_i])]
+                if m["code"] in RESEND.get((yy, mm), ()):
+                    _rs = W.rng("resend", m["code"], yy, mm, cover)
+                    _j = min(len(_rd) - 1, _i + _rs.randint(1, 3))
+                    runs.append((batches, _rd[_j]))
+                seq = 0
+                for run_batches, run_date in runs:
+                    for b in run_batches:
+                        seq += 1
+                        advice_no = "ADV-%d%02d-%s-%s-%02d" % (yy, mm, m["code"].split("-")[1],
+                                                               cov, seq)
+                        tot = round(sum(amt for _, _, amt in b), 2)
+                        advice.append([advice_no, m["code"], m["tier"], "%d-%02d" % (yy, mm), cover,
+                                       len(b), "%.2f" % tot, _d(run_date)])
+                        for mth, ref, amt in b:
+                            detail.append([advice_no, m["code"], mth, cover, ref, "%.2f" % amt])
+    advice.sort(key=lambda r: (r[3], r[1], r[4], r[0]))
+    detail.sort(key=lambda r: (r[2], r[1], r[3], r[4], r[0]))
     sheet("advices", ["advice_no", "member_code", "contribution_tier", "settlement_month", "cover_class",
                       "case_lines", "advice_total_gbp", "advice_date"], advice,
           [22, 14, 11, 16, 20, 11, 17, 13])
@@ -150,10 +169,12 @@ def recovery_statements(target, w):
 
 
 def q1_notifications(target, w):
-    """Scam cases notified in the quarter to 30 June 2027, from the mutual's notification feed. The main
-    extract was cut on 20 June and the rest of the quarter sits in the supplementary file the feed sends
-    at quarter end. Each file knows only what its own cut date knew, so a case the main extract carries
-    is closed in it only where it closed on or before 20 June."""
+    """Scam cases notified in the quarter to 30 June 2027, from the mutual's notification feed. The feed
+    loads the member portal every working day and each member's bulk file once a month on the 20th, so
+    the quarter extract holds everything notified to 20 June and, of the notifications made after it,
+    only those that came through the portal. The rest reached the mutual in the July load and sit in the
+    feed's current file beside the first notifications of the new quarter. Each file knows only what its
+    own cut date knew, so a case closes in it only where it closed by that date."""
     QSTART, CUT, QEND = dt.date(2027, 4, 1), dt.date(2027, 6, 20), dt.date(2027, 6, 30)
     main, supp = [], []
     for m in w["members"]:
@@ -189,12 +210,38 @@ def q1_notifications(target, w):
         # the fraud desk takes the notification on a working day
         for d in drawn:
             d[0] = W.on_a_working_day(d[0], rc, lo=QSTART, hi=QEND, keep_month=False)
-        if not any(d[0] > CUT for d in drawn):
-            d = max(drawn, key=lambda x: x[0])
+        # every member notifies in the last ten days of the quarter, and over two channels, so no
+        # member's rows in either file stop at a date the other file's rows pass
+        while sum(1 for d in drawn if d[0] > CUT) < 2:
+            d = max((x for x in drawn if x[0] <= CUT), key=lambda x: x[0])
             d[0] = W.on_a_working_day(CUT + dt.timedelta(days=5), rc,
                                       lo=CUT + dt.timedelta(days=1), hi=QEND, keep_month=False)
-        for nd, lag, amt, clag, k in drawn:
-            asof = CUT if nd <= CUT else QEND
+        # the channel is drawn on its own stream, so it moves no date, amount or reference
+        rch = W.rng("q1chan", m["code"])
+        for d in drawn:
+            d.append(rch.random() < W.FEED_PORTAL_SHARE)
+        # a member filing everything late through one channel would have nothing in the other file,
+        # and both channels are how the membership files
+        late = sorted((d for d in drawn if d[0] > CUT), key=lambda x: x[0])
+        if all(d[5] for d in late):
+            late[-1][5] = False
+        if not any(d[5] for d in late):
+            late[0][5] = True
+        # the first notifications of the new quarter, which the same load carries
+        for _ in range(rch.randrange(1, 4)):
+            nd = dt.date(2027, 7, 1) + dt.timedelta(days=rch.randrange(2))
+            lag = rch.randint(1, 40)
+            amt = round(min(rch.lognormvariate(7.1, 1.2), 210000.0), 2)
+            k = rch.randrange(1000, 9999)
+            while k in used:
+                k = k + 1 if k < 9999 else 1000
+            used.add(k)
+            drawn.append([nd, lag, amt, rch.randint(1, 6), k, rch.random() < W.FEED_PORTAL_SHARE])
+        for nd, lag, amt, clag, k, portal in drawn:
+            # the quarter extract holds the portal's late notifications and the bulk file's only up to
+            # the monthly load; everything else arrived in the July load
+            in_quarter_file = nd <= CUT or (nd <= QEND and portal)
+            asof = QEND if in_quarter_file else W.PULL
             pay = nd - dt.timedelta(days=lag)
             closed = nd + dt.timedelta(days=clag)
             if closed <= asof:
@@ -204,19 +251,21 @@ def q1_notifications(target, w):
             row = [ref, m["code"], m["name"], _d(pay), _d(nd), "%.2f" % amt,
                    _d(closed) if closed <= asof else "",
                    "closed" if closed <= asof else "open"]
-            (main if nd <= CUT else supp).append(row)
+            (main if in_quarter_file else supp).append(row)
     hdr = ["case_reference", "member_code", "member_name", "payment_date", "notified_date",
            "payment_amount_gbp", "closed_date", "case_status"]
     main.sort(key=lambda r: (r[4], r[1]))
     supp.sort(key=lambda r: (r[4], r[1]))
     _w(os.path.join(target, "notifications_2027_28_q1.csv"), hdr, main)
-    _w(os.path.join(target, "notifications_2027_28_q1_supplementary.csv"), hdr, supp)
+    _w(os.path.join(target, "notifications_feed_latest.csv"), hdr, supp)
     return len(main), len(supp), main, supp
 
 
 def q1_return_sheet(target, w, main, supp):
-    """The members' own Q1 2027/28 return, appended to the returns workbook: the stated case count covers
-    the whole quarter, which the main extract alone does not."""
+    """The members' own Q1 2027/28 return, appended to the returns workbook. The case count is the
+    member's own declaration, taken off its case system at the date it signed the return: it counts what
+    its own fraud desk opened in the quarter, so it includes cases it had not yet filed to the mutual and
+    leaves out ones it later withdrew, and it therefore ties to no extract."""
     path = os.path.join(target, "member_quarterly_returns.xlsx")
     wb = openpyxl.load_workbook(path)
     ws = wb.create_sheet("return 2027-28 Q1")
@@ -226,13 +275,24 @@ def q1_return_sheet(target, w, main, supp):
         c.font = Font(bold=True)
         c.fill = PatternFill("solid", fgColor="E8E8E2")
         c.alignment = Alignment(wrap_text=True, vertical="top")
+    QEND = dt.date(2027, 6, 30)
     for m in w["members"]:
-        n = sum(1 for r in main + supp if r[1] == m["code"])
+        n = sum(1 for r in main + supp
+                if r[1] == m["code"] and dt.date.fromisoformat(r[4]) <= QEND)
         r2 = W.rng("q1u", m["code"])
+        # the member's own desk count: what it opened in the quarter, net of its own withdrawals and
+        # including what it had not yet filed, so it sits a few cases either side of what the feed holds
+        rd = W.rng("q1decl", m["code"])
+        # the declaration arbitrates nothing: it is drawn away from the whole quarter's count and from
+        # the count the quarter extract alone holds, so reconciling to it lands on neither
+        q1_only = sum(1 for r in main
+                      if r[1] == m["code"] and dt.date.fromisoformat(r[4]) <= QEND)
+        delta = next(x for x in rd.sample([-4, -3, -2, 2, 3, 4, 5, 6], 8)
+                     if n + x != q1_only)
         ws.append([m["code"], m["name"], "2027/28", "Q1",
                    int(round(w["volumes"][(m["code"], W.MEASURED)]
                              * W.member_shape(m["code"])[0] * 1.064)),
-                   n, int(round(m["volume"] / 1e6 * 4.6)), "revised"])
+                   n + delta, int(round(m["volume"] / 1e6 * 4.6)), "revised"])
     for i, wd in enumerate([14, 24, 12, 9, 14, 18, 22, 11], start=1):
         ws.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A2"
@@ -307,6 +367,13 @@ def reference_files(target, w):
         ("recovery_statement_2025_26.csv", "recovered_stated_gbp", "Recoveries on cases closed in the "
          "quarter, on the basis named in statement_basis."),
         ("notifications_2027_28_q1.csv", "notified_date", "Date the member recorded the case."),
+        ("notifications_feed_latest.csv", "notified_date", "Date the member recorded the case."),
+        ("scheme_remittance_credits.csv", "remitted_date", "Date the scheme remitted the recovery to "
+         "the member."),
+        ("scheme_remittance_credits.csv", "credit_amount_gbp", "Amount recovered on that case through "
+         "that route."),
+        ("member_quarterly_returns.xlsx", "scam_cases_notified", "Scam cases the member's own return "
+         "declares for the quarter, off its case system at the date it signed."),
         ("member_register.csv", "notified_payments_next_indemnity_year", "Payments the member expects to "
          "send in the indemnity year beginning 1 October 2027, as notified to the mutual."),
         ("member_register.csv", "triennial_review_this_cycle", "yes where the member's triennial "
@@ -361,10 +428,13 @@ def manifest(target, w, counts):
         ["recovery_statement_2025_26.csv", "Recovery statement, scheme year 2025/26",
          "recoveries on cases closed in the year by route",
          "recoveries on cases closed in other years", "recoveries team"],
-        ["notifications_2027_28_q1.csv", "Notification feed, quarter to 30 June 2027, cut 20 June 2027",
-         "cases notified to 20 June 2027", "notifications after the cut", "notification feed"],
-        ["notifications_2027_28_q1_supplementary.csv", "Notification feed supplement, quarter end",
-         "cases notified 21 to 30 June 2027", "cases already in the main extract", "notification feed"],
+        ["notifications_2027_28_q1.csv", "Notification feed, quarter to 30 June 2027",
+         "scam cases the feed had loaded at the quarter end", "", "notification feed"],
+        ["notifications_feed_latest.csv", "Notification feed, current load",
+         "scam cases loaded in the latest run", "", "notification feed"],
+        ["scheme_remittance_credits.csv", "Scheme recovery remittance, case level",
+         "recoveries the scheme remitted to members, one row per case and route", "",
+         "scheme remittance run"],
         ["national_scam_statistics_calendar_year.csv", "Published national scam statistics",
          "national reported losses by calendar quarter per million pounds of payment value",
          "any member level detail; any count basis", "industry body publication"],

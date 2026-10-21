@@ -1,0 +1,13 @@
+member_code,member_name,contribution_tier,tier_basis,joined_date,triennial_review_this_cycle,notified_payments_next_indemnity_year,covers_held
+KM-104,Castlegate Payments,B,"Tier B, 10 to 25 million payments a year",2016-04-01,yes,23123000,"scam reimbursement, unauthorised fraud"
+KM-101,Brindlemere Remit,A,"Tier A, over 25 million payments a year",2014-10-01,yes,44432000,"scam reimbursement, unauthorised fraud"
+KM-112,Saltmarch Pay,C,"Tier C, under 10 million payments a year",2019-04-01,yes,6620000,"scam reimbursement, unauthorised fraud"
+KM-108,Trentmoor Money,B,"Tier B, 10 to 25 million payments a year",2017-07-01,yes,20802000,"scam reimbursement, unauthorised fraud"
+KM-115,Pelbury Exchange,C,"Tier C, under 10 million payments a year",2020-01-01,no,4516000,"scam reimbursement, unauthorised fraud"
+KM-102,Oakhanger Transfer,A,"Tier A, over 25 million payments a year",2014-10-01,no,28238000,"scam reimbursement, unauthorised fraud"
+KM-118,Netherby Pay,C,"Tier C, under 10 million payments a year, held from the 2026 review",2021-04-01,no,10443000,"scam reimbursement, unauthorised fraud"
+KM-106,Quayfield Remit,B,"Tier B, 10 to 25 million payments a year",2016-10-01,no,12344000,"scam reimbursement, unauthorised fraud"
+KM-121,Thrimby Money,C,"Tier C, under 10 million payments a year",2022-01-01,no,5050000,"scam reimbursement, unauthorised fraud"
+KM-110,Vellowe Pay,B,"Tier B, 10 to 25 million payments a year",2018-04-01,no,22683000,"scam reimbursement, unauthorised fraud"
+KM-124,Garnock Exchange,A,"Tier A, over 25 million payments a year",2023-10-17,no,29020000,"scam reimbursement, unauthorised fraud"
+KM-103,Wrenhall Pay,A,"Tier A, over 25 million payments a year, held from the 2025 review",2015-04-01,no,12040000,"scam reimbursement, unauthorised fraud"

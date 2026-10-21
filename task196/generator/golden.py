@@ -188,17 +188,23 @@ def _settlement_quarter(d):
 
 
 def ask_b(target, w):
-    """Cases notified in the quarter to 30 June 2027 and those closed by it, per member, from the main
-    extract and the quarter-end supplementary file together."""
+    """The distinct cases each member notified in the quarter to 30 June 2027 and the value they
+    reported. The quarter extract holds what the feed had loaded at the quarter end, which is everything
+    notified to the monthly bulk load of 20 June and, after it, only the portal's own notifications; the
+    rest arrived in the July load and sit in the feed's current file beside the new quarter's first
+    notifications, which the quarter's own dates leave out."""
+    QSTART, QEND = dt.date(2027, 4, 1), dt.date(2027, 6, 30)
     rows = []
-    for name in ("notifications_2027_28_q1.csv", "notifications_2027_28_q1_supplementary.csv"):
+    for name in ("notifications_2027_28_q1.csv", "notifications_feed_latest.csv"):
         with open(os.path.join(target, name), encoding="utf-8") as f:
             rows.extend(list(csv.DictReader(f)))
+    rows = [r for r in rows if QSTART <= dt.date.fromisoformat(r["notified_date"]) <= QEND]
     figs = {}
     for m in w["members"]:
-        mine = [r for r in rows if r["member_code"] == m["code"]]
+        mine = {r["case_reference"]: r for r in rows if r["member_code"] == m["code"]}
         figs["%s notified" % m["code"]] = len(mine)
-        figs["%s value" % m["code"]] = round(sum(float(r["payment_amount_gbp"]) for r in mine))
+        figs["%s value" % m["code"]] = round(sum(float(r["payment_amount_gbp"])
+                                                 for r in mine.values()))
     return figs
 
 

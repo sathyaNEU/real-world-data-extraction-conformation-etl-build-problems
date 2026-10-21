@@ -1,0 +1,17 @@
+calendar_year,calendar_quarter,fraud_type,reported_losses_gbp_million,losses_per_gbp_million_of_payments,reimbursed_share_per_cent
+2023,Q1,authorised push payment,51.1,2.92,64.7
+2023,Q2,authorised push payment,54.8,3.25,70.7
+2023,Q3,authorised push payment,43.8,2.83,61.4
+2023,Q4,authorised push payment,51.5,3.17,61.8
+2024,Q1,authorised push payment,55.5,3.45,63.8
+2024,Q2,authorised push payment,48.0,3.54,69.8
+2024,Q3,authorised push payment,43.2,3.62,62.8
+2024,Q4,authorised push payment,55.6,3.92,70.1
+2025,Q1,authorised push payment,58.0,3.58,65.5
+2025,Q2,authorised push payment,43.6,3.13,58.0
+2025,Q3,authorised push payment,41.9,3.82,64.2
+2025,Q4,authorised push payment,47.3,3.80,65.3
+2026,Q1,authorised push payment,42.1,3.06,65.0
+2026,Q2,authorised push payment,55.9,2.89,58.8
+2026,Q3,authorised push payment,54.6,4.07,62.7
+2026,Q4,authorised push payment,53.9,2.92,66.8

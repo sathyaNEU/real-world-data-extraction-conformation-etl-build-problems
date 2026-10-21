@@ -1,0 +1,13 @@
+scheme_year,quarter_closed,recovery_route,reimbursed_in_quarter_gbp,recovered_stated_gbp,statement_basis
+2025/26,Q1,beneficiary recall,252329.33,6096.59,as credited
+2025/26,Q1,repatriation,252329.33,303.85,net of recovery agent charges
+2025/26,Q1,insurer contribution,252329.33,82.36,as credited
+2025/26,Q2,beneficiary recall,1427886.02,32507.56,as credited
+2025/26,Q2,repatriation,1427886.02,27702.97,net of recovery agent charges
+2025/26,Q2,insurer contribution,1427886.02,9143.85,as credited
+2025/26,Q3,beneficiary recall,2229339.01,223976.38,as credited
+2025/26,Q3,repatriation,2229339.01,42492.63,net of recovery agent charges
+2025/26,Q3,insurer contribution,2229339.01,69212.39,as credited
+2025/26,Q4,beneficiary recall,2859471.69,214193.57,as credited
+2025/26,Q4,repatriation,2859471.69,37425.50,net of recovery agent charges
+2025/26,Q4,insurer contribution,2859471.69,295832.46,as credited

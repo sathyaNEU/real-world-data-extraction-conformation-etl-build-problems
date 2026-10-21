@@ -166,7 +166,19 @@ def case_registers(target, w, unauth):
 def case_payments(target, w, unauth):
     """One row per money movement on a case: the payment legs the customer sent and the credits that came
     back later. Recoveries are credit rows against the original case, posted when they arrive."""
-    rows = []
+    rows, remit = [], []
+
+    def credit(ref, member, cover, date, amount, route):
+        """A recovery reaches the member through its own claims ledger until the scheme took that
+        route's remittance over, and through the scheme's remittance run from that date."""
+        row = [ref, member, cover, "recovery credit", 1, _d(date), "", "%.2f" % amount, route]
+        if date < W.ROUTE_REMITTANCE_FROM[route]:
+            rows.append(row)
+        else:
+            remit.append([_d(date), member, ref, cover, route, "%.2f" % amount])
+            if member in W.REMITTANCE_POSTED_BACK:
+                rows.append(row)
+
     for c in w["cases"]:
         if not c.recorded:
             continue
@@ -176,21 +188,24 @@ def case_payments(target, w, unauth):
             rows.append([c.case_ref, c.member, "scam reimbursement", "payment", j + 1,
                          _d(c.payment_date + dt.timedelta(days=j)), "%.2f" % a, "", ""])
         if c.recovery_route:
-            rows.append([c.case_ref, c.member, "scam reimbursement", "recovery credit", 1,
-                         _d(c.recovery_date), "", "%.2f" % c.recovery_amount, c.recovery_route])
+            credit(c.case_ref, c.member, "scam reimbursement", c.recovery_date, c.recovery_amount,
+                   c.recovery_route)
     for u in unauth:
         rows.append([u["ref"], u["member"], "unauthorised fraud", "payment", 1, _d(u["payment_date"]),
                      "%.2f" % u["amount"], "", ""])
         if u["recovery_route"] and (u["closed_date"] + dt.timedelta(days=u["recovery_offset"])) <= W.PULL:
-            rows.append([u["ref"], u["member"], "unauthorised fraud", "recovery credit", 1,
-                         _d(u["closed_date"] + dt.timedelta(days=u["recovery_offset"])), "",
-                         "%.2f" % round(u["reimbursed"] * u["recovery_frac"], 2),
-                         u["recovery_route"]])
+            credit(u["ref"], u["member"], "unauthorised fraud",
+                   u["closed_date"] + dt.timedelta(days=u["recovery_offset"]),
+                   round(u["reimbursed"] * u["recovery_frac"], 2), u["recovery_route"])
     rows.sort(key=lambda x: (x[1], x[0], x[3], x[4], x[5]))
     _w(os.path.join(target, "case_payments.csv"),
        ["case_reference", "member_code", "cover_class", "entry_type", "leg_no", "value_date",
         "paid_amount_gbp", "credit_amount_gbp", "recovery_route"], rows)
-    return len(rows)
+    remit.sort(key=lambda x: (x[0], x[1], x[2], x[4]))
+    _w(os.path.join(target, "scheme_remittance_credits.csv"),
+       ["remitted_date", "member_code", "case_reference", "cover_class", "recovery_route",
+        "credit_amount_gbp"], remit)
+    return len(rows), len(remit)
 
 
 def mule_register(target, w):
@@ -374,7 +389,7 @@ def write_all(target, w):
     os.makedirs(target, exist_ok=True)
     counts = {}
     counts["case_register"] = case_registers(target, w, w["unauth"])
-    counts["case_payments"] = case_payments(target, w, w["unauth"])
+    counts["case_payments"], counts["remittance"] = case_payments(target, w, w["unauth"])
     counts["mule_register"] = mule_register(target, w)
     counts["matches"] = payment_matches(target, w)
     counts["requests"] = fund_return_requests(target, w)
