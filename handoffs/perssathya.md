@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-20 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task249's architecture 5 and task251's architecture 3 spent at stage 4, both PAUSED for the author's call; task252 waits, since two paused builds fill the author's two slots). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251's architecture 4 spent at stage 4 and task249's architecture 5 spent 10-20, both PAUSED and both to be drawn fresh at the author's instruction; task252 waits, since two paused builds fill the author's two slots). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,30 +18,34 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task251: PAUSED 2026-10-20; architecture 3 spent at stage 4; a fourth architecture or retirement is the author's call.**
-- General Statistics, missing data, censoring and measurement error x DQ: which of an Italian hospital trust's 52 bedside
-  glucose meters go to the manufacturer's January 2028 recalibration, each meter's systematic error read on the pairings
-  the plan drew, the critical-value confirmations (drawn because the meter's own reading was under 50 or over 400) left
-  out. Built green (checks 56, verify 0, byte-identical, figures 62 of 62); judge DETERMINISTIC APPROVE, Gate H analytical.
-- Stage 4: reader A landed the call (planned pairings only); reader B filed the default path; both took all 25 ask
-  figures (dedup, clock and location-history devices are battery work). Architectures 1 and 2 were spent the same day.
-- Next, if the author chooses a fourth: re-root at stage 1 with two keys (task250's shape) and an ask layer on silent
-  grain or self-validation devices; else retire the number.
+**task251: PAUSED 2026-10-21; architecture 4 spent at stage 4; architecture 5 is drawn fresh next.**
+- Architecture 4 (General Statistics, missing data, censoring and measurement error x DQ): the Regional Municipality
+  of Halbrook's 30 loop count stations, each station's 2027 error with the loss its loops take in queued traffic fitted
+  on the river bridges' paired approaches, the summer validation days holding no queue. Built green (checks 64, verify
+  0, byte-identical, target.zip 555ce293, precut 51 of 51).
+- Stage 4: scored reader A landed the five by the bridge pairs (no filmed hour above 9 per cent occupancy against
+  term-time peaks to 49); reader B filed the validation list; both kept 0 of 24 ask figures (the contractor's office
+  resets and the TCX-2 breaks held). Judge NOT_DETERMINISTIC FIX_NOW on the visits ask (TCX-2 reset days unfiled),
+  Gate H analytical. Architectures 1 to 3 were spent 10-20.
+- Next: architecture 5 from the design note's `## Candidates for architecture 5`, at the author's standing instruction
+  (spent builds rebuilt fresh, never retired unasked), with probe readers on the call before the full build; the ask
+  layer's shape carries over with an on-site signal filed for every reset kind.
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; a sixth architecture is the author's call.**
+**task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; architecture 6 is drawn fresh at the author's
+instruction of 2026-10-21 ("whatever was retired do a fresh rebuild from scratch").**
 - Architecture 5 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Vasslia Miljørådgiving's
   sediment programme for a Western Norwegian hydropower company; golden SKB, JVB, FND and ESK over by the relation
   conditioned on rising water. Every free gate green (470 checks, verifier, byte-identical, target.zip 9dd86516).
 - Both scored readers landed the call and all 28 ask figures (score_reader.py exit 1 twice): each tested sediment
-  hysteresis by reflex, and the simulated relation's scatter (0.025 in log10) made the residuals two-valued. Judge
-  DETERMINISTIC, FIX_NOW on the ask pins (old flag letters, the export's nominal), Gate H analytical.
-- Lesson carried to task250 to task252: a decisive step that is the domain's named reflex is no stump against a
-  reader who knows the domain; put the reflex on a rung and the decisive move on a second, data-native step.
-- Waiting on the author: re-root on one of four candidates (design note, `## Candidates for architecture 6`:
-  interviewer effects from the interpenetrated pairs, register over-coverage netted by care-home inactivity, anchor
-  drift from an exposed block, experiment assignment health on the counterfactual trigger) or retire the number.
+  hysteresis by reflex. Judge DETERMINISTIC, FIX_NOW on the ask pins, Gate H analytical.
+- Lesson carried to task251 and task252: a decisive step that is the domain's named reflex, or one a visible contrast
+  invites (task251 v4's filmed days against the year's occupancy), is no stump against a strong reader; put the
+  reachable correction on a rung and the decisive move on a second, data-native step nothing in the files invites.
+- The design note's four architecture 6 candidates were screened 10-21: interviewer effects from interpenetrated
+  pairs is task198's spent architecture 2, and anchor drift was rejected in task123's slot; the draw takes a fresh
+  candidate.
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

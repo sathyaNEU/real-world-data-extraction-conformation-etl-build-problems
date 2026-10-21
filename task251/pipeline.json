@@ -1,30 +1,37 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond 5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the queued stations past 5 per cent and keeps one the loss brings back inside.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null
+  "exit": 0,
+  "checks": 51
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (three harmless lines: TDP-03 carries the call's words, the standard and dictionary carry the field's terms)",
+  "reader": "reader A exit 1 (landed the call by the bridge pairs, asks 0 of 24); reader B exit 0 (validation list, asks 0 of 24)"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": "",
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
+  "surface": "task243 promoted on surface 0.101, no shared mechanism (differentiation on the card)",
   "nearest": "task251 (v3, lineage) 0.11"
  },
- "judge": null,
+ "judge": {
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "finding": "ask 2: TCX-2 reset days unfiled",
+  "gate_h": "analytical",
+  "gate_g": "method_or_model_selection, analytical_non_defect"
+ },
  "returned": [],
- "resume": "Architecture 4 drawn and registered (WARN only): Halbrook Region's 30 loop count stations, each station's 2027 error with the loss its loops take in queued traffic, fitted on the five river bridges' paired approaches and carried through each station's hourly occupancy; the validation days are summer weekdays without queues. Next: stage 2 (prototype in scratch t251v4: proto5/6 world; pick the seed with a three-rung ladder; design the asks on silent devices in the maintenance work orders and the controllers' event log, task250's shape; fork table, closure, prompt, precut), optionally a two-reader probe on the call before the full build.",
+ "resume": "Architecture 4 spent at stage 4 (reader A landed the five by the bridge pairs). Next: architecture 5 drawn fresh at stage 1 from the design note's '## Candidates for architecture 5' (the author's standing instruction: spent builds are rebuilt fresh, never retired unasked), with probe readers on the call before the full build; the ask layer's devices held 0 of 24 for both readers and carry over in shape (file an on-site signal for every reset kind).",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -79,7 +86,30 @@
   {
    "date": "2026-10-21",
    "event": "architecture 4 drawn at the author's standing instruction (fresh rebuild): General Statistics measurement error, a regional municipality's loop count stations, the congestion loss read from the river bridges' paired approaches (card registered WARN only; role, artifact and forum redrawn at filing, generators led by G5 to clear test.same_driver)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 2 closed: precut exit 0 (51 checks); seed 91; asks on the contractor's office resets (door log) and the TCX-2 breaks with feeder re-trips; per-station errors taken out of grading after the licensed family spread them 0.6 points"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 3 closed in the repo: checks 64, verify 0, two byte-identical builds (target.zip 555ce293), figures_check 16 of 16, precut 51 of 51, leak.py REVIEW, heart WARN, surface one proximity (task243); stage 4 started"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "architecture 4 spent at stage 4 on target.zip 555ce293: scored reader A landed the call (bridge pairs, loss fitted on occupancy), reader B filed the validation list; asks 0 of 24 for both; judge NOT_DETERMINISTIC FIX_NOW on ask 2 (TCX-2 reset days unfiled), Gate H analytical; PAUSED, architecture 5 to be drawn fresh"
   }
  ],
- "readers": null
+ "readers": {
+  "A": {
+   "call": "hit",
+   "asks": "0 of 24",
+   "exit": 1
+  },
+  "B": {
+   "call": "miss",
+   "asks": "0 of 24",
+   "exit": 0
+  }
+ }
 }

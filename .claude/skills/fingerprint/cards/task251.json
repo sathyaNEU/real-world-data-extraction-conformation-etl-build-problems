@@ -1,152 +1,153 @@
 {
-  "task": "task251",
-  "architecture": "v4",
-  "drawn": "2026-10-21",
-  "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a regional municipality's permanent traffic count stations on its own roads (inductive loops at 30 stations, its five river bridges counted on both approaches): which stations' 2027 counts misstate the vehicles that passed by more than 5 per cent either way, to be flagged in the annual traffic count report and recalibrated in the spring 2028 round, each station's error over a year of term-time queues read when its only validation count was filmed on a summer weekday",
-  "objective": "data-quality-monitoring",
-  "shape": "other",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task251",
+ "architecture": "v4",
+ "drawn": "2026-10-21",
+ "slot_note": "",
+ "domain": "general-statistics-data-science",
+ "subdomain": "missing-data-censoring-measurement-error",
+ "client_domain": "general-statistics-data-science",
+ "niche": "a regional municipality's permanent traffic count stations on its own roads (inductive loops at 30 stations, its five river bridges counted on both approaches): which stations' 2027 counts misstate the vehicles that passed by more than 5 per cent either way, to be flagged in the annual traffic count report and recalibrated in the spring 2028 round, each station's error over a year of term-time queues read when its only validation count was filmed on a summer weekday",
+ "objective": "data-quality-monitoring",
+ "shape": "other",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G5",
+  "G7",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "other",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads the counting standard, the station register, the contractor's validation counts and the hourly counts takes each station's 2027 error from its validation day (the loops' count against the video count over 24 hours, both directions) and flags the stations beyond 5 per cent; every validation day was a July or August weekday, when no approach queues, so the validation sees each station's sensitivity but none of the vehicles its loops lose in the term-time queues, and the list misses the queued stations the loss pushes past 5 per cent and keeps one it brings back inside.",
+ "domain_test": "The deciding quantity is each count station's error over the traffic it carried in 2027: the loops' sensitivity together with a loss that grows with occupancy in queued traffic, a measurement-error model with a load-dependent term, estimated where the same vehicles are counted twice with nothing joining or leaving (the two approaches of each river bridge, one queued and one free) and applied through each station's own hourly occupancy; replacing it with each station's validation-day error, the generic calibration summary, changes the list.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:conservation-pairs-load-dependent-detector-loss",
+ "layer1": [
+  "the count system's hourly export in local time, the autumn hour twice and the spring hour missing",
+  "the validation contractor's own site codes against the region's station numbers",
+  "two stations renumbered when their controllers were replaced during the year",
+  "the contractor's 15-minute sheets per station and direction, filmed on different days",
+  "occupancy reported to one decimal by the older controllers and in tenths of a per cent as integers by the newer ones",
+  "the structures register and the road network's junction list keyed by road and kilometre point"
+ ],
+ "stakeholder_role": "the region's traffic data coordinator, who flags stations in the annual traffic count report and lists them for the maintenance contractor's spring recalibration",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "trafficvault_hourly_counts_2027.csv",
+  "rows": 525386,
+  "entity": "one hour of one direction at one station: vehicles counted and occupancy",
+  "grain": "station x direction x hour",
+  "source": "synthetic"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "local_government",
+ "world": {
+  "geography": "Canada, Ontario (a fictional regional municipality)",
+  "currency": "CAD",
+  "org_type": "a regional municipality's transportation services department",
+  "invented_names": [],
+  "people": [
+   "Miranda Harris",
+   "Andrew Wong",
+   "Yvonne Larson"
+  ]
+ },
+ "deliverables": [
+  "count_stations_flagged_2027.xlsx",
+  "count_station_errors_2027.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is each unit's error over every condition it operated in, while its only check was taken on a day the error-raising condition never occurred; the error's growth with load is read from pairs of units counting the same stream with nothing entering or leaving between them, one held in a queue and one past it, and carried through each unit's own record of load.",
+ "driver_concrete": "Each count station's 2027 error is its loops' sensitivity, read from its summer video count, combined with the vehicles its loops lose in queued traffic, a loss that grows with occupancy; the loss is fitted on the five river bridges' two approaches, the queued side's count against the free side's (nothing joins or leaves on a bridge), and carried through each station's own hourly occupancy; the stations beyond 5 per cent either way are flagged.",
+ "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R03-02, R14-01 and R18-01; the validation days were July and August weekdays with no hour above 8.8 per cent occupancy, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses R04-03, R05-01, R08-05 and R10-03 and keeps R14-01 and R18-01.",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose strength falls with its age since certification at a rate its construction sets, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks cannot see it; the loss is measured where a unit is read on an outgoing and an incoming reference minutes apart and must be fitted by the references' construction, which one source changed partway, not by their source, before each unit's check ratio is divided by its reference's remaining strength.",
+   "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its span reading that night over 400 ppb divided by the fraction of SO2 its cylinder still holds at its age since certification, at the loss rate the cylinder's interior sets (untreated or passivated, from the suppliers' certificates), both rates fitted on the 31 cylinder changes, where the analyzer is read on the outgoing and the incoming cylinder minutes apart.",
+   "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends none (every span within 3.5 per cent); one who reads the cylinder changes' jumps as the old gas's loss and fits the loss rate per supplier sends six, two of them on passivated cylinders of the faster supplier that have lost almost nothing; the rate is set by the cylinder's interior, which only the certificates record, and four go.",
+   "domain": "general-statistics-data-science",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "gate_g": "decomposition_attribution",
+   "stump_strategy": "other",
+   "gap": [
+    "objective",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G5",
-    "G7",
-    "G17"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "other",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the counting standard, the station register, the contractor's validation counts and the hourly counts takes each station's 2027 error from its validation day (the loops' count against the video count over 24 hours, both directions) and flags the stations beyond 5 per cent; every validation day was a July or August weekday, when no approach queues, so the validation sees each station's sensitivity but none of the vehicles its loops lose in the term-time queues, and the list misses the queued stations the loss pushes past 5 per cent and keeps one it brings back inside.",
-  "domain_test": "The deciding quantity is each count station's error over the traffic it carried in 2027: the loops' sensitivity together with a loss that grows with occupancy in queued traffic, a measurement-error model with a load-dependent term, estimated where the same vehicles are counted twice with nothing joining or leaving (the two approaches of each river bridge, one queued and one free) and applied through each station's own hourly occupancy; replacing it with each station's validation-day error, the generic calibration summary, changes the list.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:conservation-pairs-load-dependent-detector-loss",
-  "layer1": [
-    "the count system's hourly export in local time, the autumn hour twice and the spring hour missing",
-    "the validation contractor's own site codes against the region's station numbers",
-    "two stations renumbered when their controllers were replaced during the year",
-    "the contractor's 15-minute sheets per station and direction, filmed on different days",
-    "occupancy reported to one decimal by the older controllers and in tenths of a per cent as integers by the newer ones",
-    "the structures register and the road network's junction list keyed by road and kilometre point"
-  ],
-  "stakeholder_role": "the region's traffic data coordinator, who flags stations in the annual traffic count report and lists them for the maintenance contractor's spring recalibration",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "hourly_counts_2027.csv",
-    "rows": 0,
-    "entity": "one hour of one direction at one station: vehicles counted and occupancy",
-    "grain": "station x direction x hour",
-    "source": "synthetic"
+   ],
+   "fate": "spent 2026-10-20 at stage 4: both scored readers landed the four analyzers (an exponential loss from the certificate date fitted on the 31 cylinder changes, split on the certificates' passivation once the per-supplier fit left a 4.5 per cent residual); reader B kept 32 of 33 ask figures; judge pass 1 DETERMINISTIC FIX_NOW (a visit edge). The estimand's words sent both readers to the reference's truth and the change readings measured it in one division."
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "local_government",
-  "world": {
-    "geography": "Canada, Ontario (a fictional regional municipality)",
-    "currency": "CAD",
-    "org_type": "a regional municipality's transportation services department",
-    "invented_names": [],
-    "people": [
-      "Miranda Harris",
-      "Andrew Wong",
-      "Yvonne Larson"
-    ]
+  {
+   "architecture": "v2",
+   "fate": "spent 2026-10-20 at stage 4: both scored readers landed the call through the converter's accumulated NO2; judge DETERMINISTIC APPROVE",
+   "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
+   "domain": "physical-environmental-sciences",
+   "subdomain": "sensor-calibration-measurement",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "forecast_method_backtest",
+   "decision_type": "designation_set",
+   "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service."
   },
-  "deliverables": [
-    "count_stations_flagged_2027.xlsx",
-    "count_station_errors_2027.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is each unit's error over every condition it operated in, while its only check was taken on a day the error-raising condition never occurred; the error's growth with load is read from pairs of units counting the same stream with nothing entering or leaving between them, one held in a queue and one past it, and carried through each unit's own record of load.",
-  "driver_concrete": "Each count station's 2027 error is its loops' sensitivity, read from its summer video count, combined with the vehicles its loops lose in queued traffic, a loss that grows with occupancy; the loss is fitted on the five river bridges' two approaches, the queued side's count against the free side's (nothing joins or leaves on a bridge), and carried through each station's own hourly occupancy; the stations beyond 5 per cent either way are flagged.",
-  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond 5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the queued stations past 5 per cent and keeps one the loss brings back inside.",
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "The decisive quantity is each unit's gain against the truth, read through routine checks against a reference whose strength falls with its age since certification at a rate its construction sets, so every adjustment of a unit to the reference writes the reference's loss into the unit and the routine checks cannot see it; the loss is measured where a unit is read on an outgoing and an incoming reference minutes apart and must be fitted by the references' construction, which one source changed partway, not by their source, before each unit's check ratio is divided by its reference's remaining strength.",
-      "driver_concrete": "Each SO2 analyzer's gain on 31 December 2027 is its span reading that night over 400 ppb divided by the fraction of SO2 its cylinder still holds at its age since certification, at the loss rate the cylinder's interior sets (untreated or passivated, from the suppliers' certificates), both rates fitted on the 31 cylinder changes, where the analyzer is read on the outgoing and the incoming cylinder minutes apart.",
-      "stump": "A competent solver takes the December span checks against the certified span gas as the analyzers' gains and sends none (every span within 3.5 per cent); one who reads the cylinder changes' jumps as the old gas's loss and fits the loss rate per supplier sends six, two of them on passivated cylinders of the faster supplier that have lost almost nothing; the rate is set by the cylinder's interior, which only the certificates record, and four go.",
-      "domain": "general-statistics-data-science",
-      "subdomain": "missing-data-censoring-measurement-error",
-      "gate_g": "decomposition_attribution",
-      "stump_strategy": "other",
-      "gap": [
-        "objective",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "fate": "spent 2026-10-20 at stage 4: both scored readers landed the four analyzers (an exponential loss from the certificate date fitted on the 31 cylinder changes, split on the certificates' passivation once the per-supplier fit left a 4.5 per cent residual); reader B kept 32 of 33 ask figures; judge pass 1 DETERMINISTIC FIX_NOW (a visit edge). The estimand's words sent both readers to the reference's truth and the change readings measured it in one division."
-    },
-    {
-      "architecture": "v2",
-      "fate": "spent 2026-10-20 at stage 4: both scored readers landed the call through the converter's accumulated NO2; judge DETERMINISTIC APPROVE",
-      "driver": "The decisive quantity is each unit's efficiency at its next scheduled service, which falls with the cumulative load the unit has processed rather than with time, along a curve that steepens near exhaustion, while the load still to come differs by season and site; a curve in time since installation, or each unit's own trend carried forward, misses the units whose remaining months carry the season's heavy load and books units whose remaining months are light.",
-      "domain": "physical-environmental-sciences",
-      "subdomain": "sensor-calibration-measurement",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "forecast_method_backtest",
-      "decision_type": "designation_set",
-      "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service."
-    },
-    {
-      "architecture": "v3",
-      "fate": "spent 2026-10-20 at stage 4: scored reader A landed the call (the planned morning-round pairings only, the confirmations read as selected on the meter's own reading), reader B filed the default path; both kept 25 of 25 ask figures (dedup, solar clocks, location history); judge DETERMINISTIC APPROVE",
-      "driver": "The decisive quantity is each unit's systematic error against a reference, read from paired checks most of which were drawn because the unit's own reading crossed a critical value, so those pairs see the unit when its random error ran outward and show a bias it does not have; read on the pairs a fixed schedule drew independently of the unit's reading, the units over the limit differ.",
-      "driver_concrete": "Each point-of-care glucose meter's percentage bias against the laboratory's current analyzer, read on the weekly scheduled split samples (drawn by the calendar, not by the meter's result) with the earlier analyzer's results carried onto the new one by the parallel run; the critical-value confirmations, drawn because the meter read below 50 or above 400 mg/dL, regress toward the laboratory and are left out of the bias; meters beyond 5 per cent are withdrawn.",
-      "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
-      "domain": "general-statistics-data-science",
-      "subdomain": "missing-data-censoring-measurement-error",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "signal_vs_noise_or_hold",
-      "stump_strategy": "population_selection",
-      "decision_type": "designation_set"
-    }
-  ],
-  "architecture_spent": null,
-  "differentiation": {
-    "task474": "474 expands short counts with factors and carries a facility's road by its own activity record; here every station is permanent and counted every hour, and the decisive step is a counting error that grows with occupancy, read from the bridges' paired approaches",
-    "task248": "248 restores a sample's loss in transit at a rate set by temperature from a paired study, where a constant correction cancels against the baseline; here nothing cancels: the validation day sees no queue at all, and the loss is measured inside the network by paired stations on one stream",
-    "task241": "241 reads a sensor against a reference that the medium's displacement moves; here no external reference exists for the queued hours: the far approach of the same bridge is the reference, through conservation of vehicles",
-    "task246": "246 separates measurers' offsets from their random error with repeat and reference readings; here the error is systematic in load, and the validation design never sampled the load at which it arises",
-    "task245": "245 rebuilds periods above a level from gappy records; here every hour is recorded and the counts themselves lose vehicles in queues",
-    "task229 (v3, lineage)": "that draft read a counting point's capture under platooned arrivals from a maker's curve; here no maker's curve is filed: the loss is fitted from the network's own paired stations",
-    "task251 (v3, lineage)": "architecture 3 chose the pairings that estimate a meter's bias (selection on the meter's reading); architecture 4 has no selection: the validation sample covers the wrong conditions, and the missing condition's error comes from conservation pairs",
-    "task251 (v2, lineage)": "architecture 2 projected a converter's wear in NO2 converted; architecture 4 has no wear and no forecast clock",
-    "task251 (v1, lineage)": "architecture 1 read a reference gas's loss through cylinder changes; architecture 4's reference is the free approach of the same bridge",
-    "task265": "265 estimates survival under entry truncation; here nothing is truncated: every station counts every hour, and the validation sample's conditions differ from the year's"
-  },
-  "notes": "Re-rooted 2026-10-21 from architecture 3 (spent at stage 4, see lineage) at the author's standing instruction to rebuild spent builds fresh. stump_strategy composition_mix: the station's error depends on the traffic state, the validation day's mix of states (all free flow) differs from the year's, and the queued state's error must come from elsewhere. calibration_form other: the two approaches of each river bridge count the same vehicles with nothing joining or leaving between them, a conservation pair rather than a parallel run of two instruments on one point. Labels drawn at filing: role compliance_or_audit (the coordinator answers for the counts' accuracy against the counting standard), context artifact operations_log (the maintenance contractor's 2027 work orders at the count stations, which answer their own question correctly and rank nothing; register went to task484 and published_series to task479 at filing), forum customer_or_counterparty (the maintenance contractor receives the recalibration list), generators led by G5 (the loss the decision needs is provided elsewhere, by the bridges' paired approaches).",
-  "mechanism_source": "design_note",
-  "registered": "2026-10-21T00:38:46Z"
+  {
+   "architecture": "v3",
+   "fate": "spent 2026-10-20 at stage 4: scored reader A landed the call (the planned morning-round pairings only, the confirmations read as selected on the meter's own reading), reader B filed the default path; both kept 25 of 25 ask figures (dedup, solar clocks, location history); judge DETERMINISTIC APPROVE",
+   "driver": "The decisive quantity is each unit's systematic error against a reference, read from paired checks most of which were drawn because the unit's own reading crossed a critical value, so those pairs see the unit when its random error ran outward and show a bias it does not have; read on the pairs a fixed schedule drew independently of the unit's reading, the units over the limit differ.",
+   "driver_concrete": "Each point-of-care glucose meter's percentage bias against the laboratory's current analyzer, read on the weekly scheduled split samples (drawn by the calendar, not by the meter's result) with the earlier analyzer's results carried onto the new one by the parallel run; the critical-value confirmations, drawn because the meter read below 50 or above 400 mg/dL, regress toward the laboratory and are left out of the bias; meters beyond 5 per cent are withdrawn.",
+   "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
+   "domain": "general-statistics-data-science",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "signal_vs_noise_or_hold",
+   "stump_strategy": "population_selection",
+   "decision_type": "designation_set"
+  }
+ ],
+ "architecture_spent": true,
+ "differentiation": {
+  "task474": "474 expands short counts with factors and carries a facility's road by its own activity record; here every station is permanent and counted every hour, and the decisive step is a counting error that grows with occupancy, read from the bridges' paired approaches",
+  "task248": "248 restores a sample's loss in transit at a rate set by temperature from a paired study, where a constant correction cancels against the baseline; here nothing cancels: the validation day sees no queue at all, and the loss is measured inside the network by paired stations on one stream",
+  "task241": "241 reads a sensor against a reference that the medium's displacement moves; here no external reference exists for the queued hours: the far approach of the same bridge is the reference, through conservation of vehicles",
+  "task246": "246 separates measurers' offsets from their random error with repeat and reference readings; here the error is systematic in load, and the validation design never sampled the load at which it arises",
+  "task245": "245 rebuilds periods above a level from gappy records; here every hour is recorded and the counts themselves lose vehicles in queues",
+  "task229 (v3, lineage)": "that draft read a counting point's capture under platooned arrivals from a maker's curve; here no maker's curve is filed: the loss is fitted from the network's own paired stations",
+  "task251 (v3, lineage)": "architecture 3 chose the pairings that estimate a meter's bias (selection on the meter's reading); architecture 4 has no selection: the validation sample covers the wrong conditions, and the missing condition's error comes from conservation pairs",
+  "task251 (v2, lineage)": "architecture 2 projected a converter's wear in NO2 converted; architecture 4 has no wear and no forecast clock",
+  "task251 (v1, lineage)": "architecture 1 read a reference gas's loss through cylinder changes; architecture 4's reference is the free approach of the same bridge",
+  "task265": "265 estimates survival under entry truncation; here nothing is truncated: every station counts every hour, and the validation sample's conditions differ from the year's",
+  "task243": "243 recovers a civil register's coverage of deaths from two censuses' age balance with migration; here a counter's loss in queued traffic is read from paired counters on one stream with nothing joining or leaving; the two share only a population gap and a designation set"
+ },
+ "notes": "Re-rooted 2026-10-21 from architecture 3 (spent at stage 4, see lineage) at the author's standing instruction to rebuild spent builds fresh. stump_strategy composition_mix: the station's error depends on the traffic state, the validation day's mix of states (all free flow) differs from the year's, and the queued state's error must come from elsewhere. calibration_form other: the two approaches of each river bridge count the same vehicles with nothing joining or leaving between them, a conservation pair rather than a parallel run of two instruments on one point. Labels drawn at filing: role compliance_or_audit (the coordinator answers for the counts' accuracy against the counting standard), context artifact operations_log (the maintenance contractor's 2027 work orders at the count stations, which answer their own question correctly and rank nothing; register went to task484 and published_series to task479 at filing), forum customer_or_counterparty (the maintenance contractor receives the recalibration list), generators led by G5 (the loss the decision needs is provided elsewhere, by the bridges' paired approaches).",
+ "mechanism_source": "design_note",
+ "registered": "2026-10-21T00:38:46Z"
 }
