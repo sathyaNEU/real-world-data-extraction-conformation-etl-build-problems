@@ -1,12 +1,12 @@
 {
   "task": "task481",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-10-20",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-21",
   "stump": "Restating January to September 2024 at the dual-coded months' rate per Return A line carries October to December's domestic share of other assaults into the rest of the year and files a fall of 3 per cent in aggravated assaults from 2024 to 2025 on the NIBRS basis where the series rose 1 per cent.",
   "architecture": 1,
   "loops": 0,
@@ -16,21 +16,22 @@
   },
   "leak": {
     "leak_py": "REVIEW (design-note vocabulary in five documents, domain words; no golden figure in a document)",
-    "reader": "round 1 on a17767bf7704a407: both readers missed the call on the default path (-3, about 5,400); both kept 11 of 25 ask figures (score_reader exit 1) by joining the Medical Examiner's list, so the post-move quarters' device is absent from the careful path; the township device held"
+    "reader": "round 1 on a17767bf7704a407: both readers missed the call on the default path (-3, about 5,400) and kept 11 of 25 ask figures through the Medical Examiner join; round 2 on ee83d775b423fed3: both missed the call on the default path, kept 2 and 3 of 25 (8.0 and 12.0 per cent), score_reader exit 0 on both, no decisive-step sentence named"
   },
   "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "task265 lineage 0.07"
+    "heart": "WARN (overuse.objective, repeat.gate_g)",
+    "nearest": "task265 lineage 0.07",
+    "surface": "exit 0, 5 pairs promoted on card labels alone for the author's adjudication"
   },
   "judge": {
-    "verdict": "round 1 on a17767bf7704a407: DETERMINISTIC, SOLUTION_WRONG minor (step 6 township wording)",
-    "disposition": "FIX_NOW",
-    "report": "task481/determinism_check_report.md"
+    "verdict": "round 1 on a17767bf7704a407 DETERMINISTIC, SOLUTION_WRONG minor (step 6 township wording); round 2 on ee83d775b423fed3 DETERMINISTIC, every graded figure reproduced",
+    "disposition": "APPROVE",
+    "report": "task481/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2 on ee83d775b423fed3: score reader3 and reader4 (scratch t481/stage4, score_reader.py --call-key call.change_pct --call-key restated_2024) before reading them; the re-judge verdict lands at /tmp/determinism-check-task481-1792540294r2/verdict.md and goes to the determinism-judge agent for determinism_check_report_pass2.md; ship if both readers miss the call, neither exits 1 and the judge approves",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-21",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

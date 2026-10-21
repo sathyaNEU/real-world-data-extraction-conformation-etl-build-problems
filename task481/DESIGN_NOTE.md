@@ -310,6 +310,41 @@ records system's UTC times put in local time, give the golden's 24 cells (assert
   mirror does too); one that finds the township blocks keeps 12 (pair 43.8); both keeps 24 (pair 57.5). Round 1 measured
   the readers' path on the earlier device (both kept 11 of 25); round 2 measures this one.
 
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is 2024's aggravated assault count
+  back-cast onto the NIBRS basis the way a statistical producer restates a series across a coding change, conversion
+  rates from the dual-coded months applied where they are stable and each month at its own composition; checks.py
+  executes the analyst test on the clean truth (the per-line conversion files a fall of 2.1 per cent, the decisive
+  step alone a rise of 2.1). Layers: the Return A layout change, the summary class filled only in the dual-coded months,
+  the renumbering, UTC against local time, the state repository's freeze and the shooting log's carry-over across the
+  records move are the department's, the unit's and the state program's own systems and are neutral on the call; the
+  call opens neither the shooting log nor the Medical Examiner's list, and the extract's dictionary names neither
+  (asserted). Three rules: no decoy, memo or earlier
+  restatement ships; no field reading decides; executing every filed rule files the per-line fall.
+- **Judge:** round 1 on a17767bf7704a407 DETERMINISTIC, SOLUTION_WRONG minor and FIX_NOW (step 6's township wording,
+  filed as the city's limits in the methods); round 2 on ee83d775b423fed3 DETERMINISTIC and APPROVE, every graded
+  figure reproduced (5,193 restated, 5,200 and +1 per cent; 5,254; all 24 shooting figures), Gate G
+  method_or_model_selection and analytical_non_defect, Gate H pass with the decisive step analytical; the estimator
+  variants it tried (line 4D split by domestic status 5,196, hierarchy-hidden victims scaled to all Return A lines
+  5,229) all give 5,200 and +1. Its one note: the records system's UTC on the shooting log's new rows is unstated and
+  derivable from the hour profile and the 21 re-entered rows five hours apart; ask 2 only, the silent device as built.
+- **Readers:** four scored readers in two rounds, all four on the default path (about 5,400 and a fall of 3 per cent),
+  none naming a sentence that gives the method; round 1 kept 11 of 25 ask figures each through the Medical Examiner
+  join, so the post-move device was re-sited onto the records system's clock; round 2 on ee83d775b423fed3 kept 2 and 3
+  of 25 (8.0 and 12.0 per cent, 5,254 plus one or two quarters by coincidence), score_reader exit 0 on both.
+- **Free gates (2026-10-20):** checks.py 117 of 117, verify.py PASS on the call and the shootings, two builds
+  byte-identical, target.zip ee83d775b423fed3 cut from the final build (16 files), figures_check.py 56 of 56,
+  precut.py 51 checks clean, voice-check clean, ceiling.py pair 30.0 with mirror leakage 0.0; guard.py heart WARN
+  (overuse.objective, the lane's, and repeat.gate_g against task479, answered in the draw; nearest driver task265's
+  lineage at 0.07) and surface exit 0 with 5 pairs promoted for the author's adjudication on card labels alone (gap
+  time, pattern E and a quantity figure, shared with task117, task137, task37, task97 and task44; no shared name,
+  surface 0.077 to 0.093), the people screen's one name the Gun Violence Reduction unit's.
+- **leak.py REVIEW lines, each harmless:** 100 and 120 appear as a table heading's population band and as NIBRS offense
+  codes, not as shooting counts; the methods docx carries the chapter's own wording of the comparison and none of its
+  figures; five documents use the program's words (months, October, offense, return) without naming a domestic share,
+  a mix or a weighting.
+
 ## Tried and rejected
 
 - A go-live of 1 November with November and December the only dual-coded months (the draw's first sketch): replaced by
