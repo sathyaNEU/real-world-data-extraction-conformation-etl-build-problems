@@ -1,22 +1,28 @@
 # leak check, task446
 
-**Verdict: REVIEW.** 17 files read, 33 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: cohort, cohorts, screen, decisive, window, asserted, closed, standard, forecast, measured, arrival, forecasting, history, estimand, reading, sample, facility, carries, reaching, validated, sentence, clause, property, measures, stated
+Stump terms swept: member, cohorts, cohort, decisive, asserted, closed, architecture, window, customer, pooled, parent, estimand, credit, raised, nothing, facility, ultimate, driver, history, forecasting, customers, booked, standard, segmentation, sentence
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: \bthe model\b x1: ...have not changed since. A change would be a new release, approved by the Model Risk Committee before use. 1.3 Dates and times in this standard are U...
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `early_warning_and_watch_list_standard.pdf`: carries 13 of 13 distinctive words of the committed call: 'Put a 2027 caseload of 133 groups to the committee: 133 of the 913 obligor groups in the monitored book at 30 September '
+## 3 answer figures in the pack (REVIEW 4)
+- **REVIEW** `early_warning_and_watch_list_standard.pdf`: golden figure 5.1 appears: ...s not reaching it. 5 Watch-list caseload forecast 5.1 In the close of each monitoring year, which ends...
+- **REVIEW** `credit_data_field_reference.md`: carries 9 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
+- **REVIEW** `crm_year_end_close_timetable_2026.docx`: carries 10 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
+- **REVIEW** `early_warning_and_watch_list_standard.pdf`: carries 14 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 11 of 25 stump-paragraph terms appear (cohort, cohorts, closed, standard, forecast, measured); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `credit_data_field_reference.md`: 8 of 25 stump-paragraph terms appear (closed, customer, parent, credit, facility, ultimate); read whether the document names the move
+- **REVIEW** `crm_year_end_close_timetable_2026.docx`: 5 of 25 stump-paragraph terms appear (cohort, closed, credit, history, standard); read whether the document names the move
+- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 12 of 25 stump-paragraph terms appear (member, cohorts, cohort, closed, customer, parent); read whether the document names the move
+- **REVIEW** `reference_data_extract_log_20261008.txt`: 3 of 25 stump-paragraph terms appear (credit, facility, history); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `facility_obligor_extract_20260930.csv`: 3021 ISO dates after 2026-10-11, e.g. 2026-10-19, 2026-10-22, 2026-10-23, 2026-10-29, 2026-10-30
+- **REVIEW** `facility_obligor_extract_20260930.csv`: 3047 ISO dates after 2026-10-08, e.g. 2026-10-10, 2026-10-17, 2026-10-26, 2026-10-29, 2026-10-30
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,6 +38,7 @@ Stump terms swept: cohort, cohorts, screen, decisive, window, asserted, closed, 
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

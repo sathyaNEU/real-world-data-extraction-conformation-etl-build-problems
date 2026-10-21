@@ -16,7 +16,7 @@ the estimand and the reporting precision only.
 
 | Axis | Draw |
 |---|---|
-| Card | `cards/task446.json`, architecture v3, registered 2026-10-21: `guard.py check` WARN (decision type and question form repeat task272), test.same_puzzle_older and test.same_driver_older differentiated (task134 v2, task149, task131 v2, task183, task230 v3); lineage keeps v1, v2 loop 1 and v2 as repaired with their fates |
+| Card | `cards/task446.json`, architecture v3, registered 2026-10-21 (forum and forcing event redrawn and re-registered at stage 3, below): `guard.py check` WARN (question form repeats task272), test.same_puzzle_older and test.same_driver_older differentiated (task134 v2, task149, task131 v2, task183, task230 v3); lineage keeps v1, v2 loop 1 and v2 as repaired with their fates |
 | Domain / task type | banking-credit-financial-risk / credit-scoring-pd-modeling, which serves Forecasting: the call is the twelve-month watch-list migration of the flagged and unflagged book, worked as a PD is, by segmenting the population where the risk driver differs |
 | Objective | Forecasting & Predictive Modeling: a count for a window that opens on 1 October 2026 |
 | Shape | 05 allocation to a fixed total: the caseload over five exposure bands (groups, committed exposure, groups flagged, expected arrivals, expected exposure arriving) with a total row |
@@ -26,7 +26,7 @@ the estimand and the reporting precision only.
 | Stump strategy | composition_mix; decisive rule filed: no; official decoy: no; validated decoy: no |
 | Calibration | existing_book_actuals: the bank's own four closed cohorts |
 | Context artifact | filed_model (CRM-07, the monitoring standard) |
-| Role, forum, forcing event | credit risk monitoring; the executive risk committee on 4 November 2026; the 2027 resourcing budget |
+| Role, forum, forcing event | credit risk monitoring; the chief risk officer's leadership team, which sets the 2027 Restructuring and Business Support headcount from the caseload (executive_team); the close of the monitoring year to 30 September 2026 (period_close) |
 | World | United Kingdom, GBP, Halstow Bank plc; personas from `guard.py names --geo 'United Kingdom' --seed 446` |
 | Layer 2 | estimand_identification, own:group-flag-conversion-by-raising-member |
 
@@ -46,8 +46,19 @@ force (the member that raised the flag, rebuilt from the obligor master and GLEI
 (spent drivers): the error-rate transport and the hazard by time since entry are both refused as this build's
 decisive step (Tried and rejected).
 
-**Guard WARNs answered.** The decision is a count because the committee resources a caseload, and the prompt asks
-"how many" because a count asks how many; the prompt's call sentence is the shipped one.
+**Guard WARNs answered.** The decision is a count because the leadership team sets headcount from a caseload, and
+the prompt asks "how many" because a count asks how many; the prompt's call sentence is the shipped one.
+
+**Forum and forcing event, redrawn at stage 3.** `guard.py heart` found committee_or_panel and
+budget_or_appropriation banned against task486 v2, filed at 03:15Z, before this card, and brought into the corpus
+by the pull that followed the DRAWN check. The pack was changed rather than the labels: CRM-07 5.1 now makes the
+forecast part of the close of the monitoring year that ends on the cohort date, 5.2 has the chief risk officer's
+leadership team set the Restructuring and Business Support headcount from it, and Credit Risk Monitoring's
+year-end close timetable replaces the executive risk committee agenda. executive_team and period_close are the
+honest labels for that fiction: the people who act on the caseload are the chief risk officer and the officer's
+direct reports, not a constituted committee, and what puts the forecast on the table now is the close of the year
+at the cohort date. No figure, rung or device moved: every data file rebuilt byte-identical, and only the standard
+and the replaced document changed.
 
 ## Default path
 
@@ -243,8 +254,8 @@ the same literal estimand; no sentence in the pack, read literally, gives it.
 
 ## Oracles
 
-None. No performance report, published forecast or prior caseload ships; the agenda names the meeting, its item
-and the caseload standard of twelve groups per analyst, not a figure. The closed cohorts are the forecaster's
+None. No performance report, published forecast or prior caseload ships; the close timetable names the steps, their
+owners and the caseload standard of twelve groups per analyst, not a figure. The closed cohorts are the forecaster's
 evidence, not a control that ties only under the golden: they score every basis, and a solver has to segment them
 to score the answer.
 
@@ -264,7 +275,7 @@ September-publication row the call reads (asserted by building the main-path fil
 | Column | Figures | Construction | Devices on the path | Use |
 |---|---|---|---|---|
 | Groups the band holds | 5 counts, total 913 | each group's committed exposure at 30 Sep 2026 (6.1), banded (6.2) | DV-C, DV-A, DV-B, HZ | how the book splits between Restructuring (GBP 40m and over) and Business Support |
-| Their committed exposure | 5 in GBP m, total | the band's sum of group exposures | DV-C, DV-A, DV-B, HZ | the agenda's "committed exposure by caseload band" |
+| Their committed exposure | 5 in GBP m, total | the band's sum of group exposures | DV-C, DV-A, DV-B, HZ | the close timetable's "committed exposure by caseload band" |
 | Groups flagged in September | 5 counts, total 165 | the call's flags (3.2) by band | DV-C, DV-A, DV-B through band membership | where the early-warning load sits |
 | Expected arrivals | 5, total 78.0 | each group's probability by the kind of its flag, summed by band | the same | caseload by team |
 | Expected exposure arriving | 5 in GBP m, total | probability x committed exposure | all | what the arriving caseload carries |
@@ -308,10 +319,10 @@ their bin under C1, A1 and B2 alone.
 1. Zero device and hazard rows inside the declared population.
 2. C1, A1 and B2 alone each move all 25 band figures and the arriving total; every other single reading moves 12
    or more and the committed total by GBP 5m or more.
-3. The device grid (A at four stops, B at five, HZ at two, C at three): every one of the 119 cells but the
-   all-correct one misses the golden on 12 or more of the 25 band figures and moves the committed total by GBP 3m or
-   more (the nearest, A3 with B1 or B2 and HZ dropped, by GBP 3.85m); no subset of mishandlings cancels back onto
-   the golden band figures.
+3. The device grid (A at four stops, B at five, HZ at two, C at three): every one of the 119 cells but the all-correct
+   one misses the golden on 12 or more of the 25 band figures and moves the committed total by GBP 3m or more (the
+   nearest, B1 or B2 with either one-group reading of the joint ventures, by GBP 6.65m); no subset of mishandlings
+   cancels back onto the golden band figures.
 4. Fairness: the right handling reproduces the world's own group exposures exactly.
 5. The hygiene battery on every wrong path runs clean.
 6. The over-cleaners (A2, A3, B0, C2) each land on their own values below the golden.
@@ -369,6 +380,22 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
 - **Lens swap:** no. The naive figure and the answer are the same book under two forecasting models.
 - **No artifact ranks or forecasts.** No performance report, no prior forecast, no prior caseload figure ships.
 
+## Leak sweep
+
+`leak.py --asof 2026-10-08`: REVIEW, no LEAK. Each REVIEW line:
+
+- "the model" in the standard: 1.2's governance line (a new engine release needs the Model Risk Committee); it names
+  no forecasting model. Harmless.
+- "golden figure 5.1" in the standard: the section number 5.1, not the GBP 100m band's 5.1 expected arrivals.
+  Harmless.
+- The call's words in the field reference, the close timetable and the standard: the field's own nouns (watch list,
+  caseload, obligor group, monitored book, 30 September 2027) and no figure. Harmless.
+- Stump-paragraph terms in the field reference, the close timetable, the standard and the extract log: definitions
+  of the obligor master's customers, the GLEIF parents and the cohorts; none says that a flag's conversion depends on
+  where in the group it was raised. Harmless.
+- Dates after 2026-10-08 in the facility extract: final maturity dates of facilities in force, forward by nature.
+  Harmless.
+
 ## Pre-ship check
 
 1. Domain: group credit monitoring's own reading of an early-warning flag (where in the obligor group it sits); with
@@ -394,15 +421,15 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
 
 ## Realism repairs for the loop 1 rebuild (the reader's tells and golden-realism)
 
-1. **Containers.** The agenda is built from a Word-authored skeleton (styles, theme, settings and font table as
+1. **Containers.** The close timetable is built from a Word-authored skeleton (styles, theme, settings and font table as
    Word 16 writes them, app.xml with Template Normal.dotm, TotalTime, Pages, Words, Characters, Company Halstow
    Bank plc, AppVersion 16.0000), never python-docx's default template. Every input workbook carries a full Excel
    app.xml (DocSecurity, ScaleCrop, HeadingPairs and TitlesOfParts naming its real sheets, Company, LinksUpToDate,
    SharedDoc, HyperlinksChanged, AppVersion 16.0300). Core stamps follow each file's own story: the register,
    written by the Reference Data job at 05:05Z on 1 October (created equal to modified, as a job writes it); the
    rating master scale, Credit Risk Models, created 2025-12-12, modified 2026-10-02; the outlook, Group Economics,
-   created 2026-10-05, modified 2026-10-06; the agenda, created 2026-10-07 by the Company Secretariat and last
-   modified 2026-10-08 by a named secretariat officer, revision 4. Asserted: no two input containers share a
+   created 2026-10-05, modified 2026-10-06; the close timetable, created 2026-10-02 by the head of Credit Risk
+   Monitoring and last modified 2026-10-07 by the analyst it names, revision 4. Asserted: no two input containers share a
    created stamp, and the producer-metadata audit is clean.
 2. **Standard 2.3** is the general sentence above, not a list of the pack's edge cases (the GLEIF texture is
    inert on the main path, so no fork opens).

@@ -238,7 +238,7 @@ def main():
     Bd = dict(right={}, B0=dict(clock="B0"), B1=dict(clock="B1"), B2=dict(clock="B2"), B3=dict(clock="B3"))
     H = dict(right={}, drop=dict(hz=False))
     C = dict(right={}, C1=dict(member="booked"), C2=dict(member="gleif"))
-    cells = 0
+    cells, nearest = 0, (float("inf"), "")
     for (ak, av), (bk, bv), (hk, hv), (ck, cv) in itertools.product(A.items(), Bd.items(), H.items(), C.items()):
         if ak == bk == hk == ck == "right":
             continue
@@ -247,10 +247,12 @@ def main():
         f2 = band_figures(bt2)
         ok(n_moved(golden_figs, f2) >= 12, "grid cell %s/%s/%s/%s misses at least 12 band figures (%d)"
            % (ak, bk, hk, ck, n_moved(golden_figs, f2)))
-        ok(abs(sum(r["committed"] for r in bt2) / 1e6 - tot_com) >= 3, "grid cell %s/%s/%s/%s moves the committed "
-           "total by GBP 3m or more" % (ak, bk, hk, ck))
+        move = abs(sum(r["committed"] for r in bt2) / 1e6 - tot_com)
+        ok(move >= 3, "grid cell %s/%s/%s/%s moves the committed total by GBP 3m or more" % (ak, bk, hk, ck))
+        nearest = min(nearest, (move, "%s/%s/%s/%s" % (ak, bk, hk, ck)))
         cells += 1
     ok(cells == 119, "119 grid cells")
+    print("nearest grid cell: %s moves the committed total by GBP %.2fm" % (nearest[1], nearest[0]))
     # the measured pair ceiling on the cut pack (supplemental-stumping Part 0's weights)
     import cracker
     pair, leak = cracker.main(target)
@@ -352,9 +354,14 @@ def main():
         frows = list(csv.DictReader(fh))
     ok(frows == sorted(frows, key=lambda r: (r["booking_entity"], r["facility_id"], r["customer_id"])),
        "extract sorted by booking entity, facility number and customer")
+    # the customers not yet grouped are September customers by the field reference (group_id blank until the
+    # monthly grouping review), so their facilities are the newest HB-DAC numbers wherever the run falls
+    hz_fac = [f for f in w.facilities if "HZ" in f.dev]
+    ok(all(f.booking == "HB-DAC" and f.booked >= dt.date(2026, 9, 1) for f in hz_fac),
+       "every facility of a customer not yet grouped is a September HB-DAC booking")
     dev_fac = set()
     for f in w.facilities:
-        if f.dev - {"A1"} or (f.dev & {"A1"} and any(w.ents[e].gid in w.used_groups for e in f.obligors)):
+        if f.dev - {"A1", "HZ"} or (f.dev & {"A1"} and any(w.ents[e].gid in w.used_groups for e in f.obligors)):
             dev_fac.add((f.booking, f.fid))
     seq = []
     for r in frows:
@@ -387,7 +394,7 @@ def main():
                     ok(b"Normal.dotm" in meta and b"16.0000" in meta and b"<cp:revision>4" in meta, "Word app.xml " + f)
                     ok("word/document.xml" in z.namelist() and "docProps/custom.xml" not in z.namelist(), "docx parts")
                     doc = z.read("word/document.xml")
-                    ok(b"w:rsidR" in doc, "Word rsids in the agenda")
+                    ok(b"w:rsidR" in doc, "Word rsids in " + f)
                 c_ = re.search(rb"<dcterms:created[^>]*>([^<]+)<", meta).group(1)
                 created[f] = c_
     ok(len(set(created.values())) == len(created), "no two input containers share a created stamp")
@@ -428,7 +435,7 @@ def main():
         ok("distractor" not in f.lower(), "no file named for its role")
         if f.endswith((".csv", ".md", ".txt")):
             txt = open(os.path.join(target, f), encoding="utf-8").read()
-            ok("—" not in txt and "distractor" not in txt.lower(), "no em dash or role word in " + f)
+            ok("\u2014" not in txt and "distractor" not in txt.lower(), "no em dash or role word in " + f)
             ok("golden copy" not in txt.lower(), "no 'golden copy' in " + f)
     shutil.rmtree(tmp, ignore_errors=True)
     shutil.rmtree(tmp2, ignore_errors=True)
@@ -471,9 +478,8 @@ def goldens_and_writeup():
     m = F["measures"]
     owed = {str(F["call"]), str(F["N1"]), str(F["F1"]), str(F["D1"]), "%.1f" % F["expected"],
             "%.1f%%" % (F["p_d"] * 100), "%.2f%%" % (F["p_i"] * 100), "%.2f%%" % (F["p_unflag"] * 100),
-            "%.1f%%" % (F["split"][1] * 100), "%.1f%%" % (F["single"][1] * 100), str(round(F["single"][2])),
-            str(round(F["test"]["capture_false_alarm"][2])), str(m["D"]), str(m["D_R"]), str(m["I"]), str(m["I_R"]),
-            "{:,}".format(m["U"]), str(m["U_R"])}
+            "%.1f%%" % (F["split"][1] * 100), "%.1f%%" % (F["single"][1] * 100), str(m["D"]), str(m["D_R"]),
+            str(m["I"]), str(m["I_R"]), "{:,}".format(m["U"]), str(m["U_R"])}
     for row in F["rows"] + [F["total"]]:
         owed |= {"%.1f" % row["arrivals"], "£{:,.1f}m".format(row["exposure"]), "£{:,.1f}m".format(row["committed"]),
                  "{:,}".format(row["groups"]), str(row["flagged"])}
@@ -489,8 +495,6 @@ def goldens_and_writeup():
         ok(t in body, "owed figure stated in submission.md: " + t)
     for x, step in ((F["p_unflag"], 0.01), (F["split"][1], 0.1), (F["single"][1], 0.1)):
         ok(margin(x * 100, step) >= 0.15, "percentage %.4f clear of its rounding edge" % (x * 100))
-    ok(margin(F["single"][2], 1) >= 0.04 and margin(F["test"]["capture_false_alarm"][2], 1) >= 0.25,
-       "the named wrong figures clear their rounding edges")
 
 
 if __name__ == "__main__":

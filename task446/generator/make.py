@@ -30,7 +30,7 @@ FILES = dict(
     fx="treasury_closing_rates_20260930.csv",
     triggers="ews_trigger_codes.csv",
     standard="early_warning_and_watch_list_standard.pdf",
-    agenda="exec_risk_committee_agenda_2026-11-04.docx",
+    close="crm_year_end_close_timetable_2026.docx",
     fieldref="credit_data_field_reference.md",
     log="reference_data_extract_log_20261008.txt",
     ratings="internal_rating_master_scale_2026.xlsx",
@@ -257,7 +257,7 @@ def build(target=TARGET, devices=True):
     # ---------------------------------------------------------------- documents and workbooks
     docs.register_workbook(w, os.path.join(target, FILES["register"]))
     docs.standard_pdf(os.path.join(target, FILES["standard"]))
-    docs.agenda_docx(os.path.join(target, FILES["agenda"]))
+    docs.close_docx(os.path.join(target, FILES["close"]))
     docs.field_reference(os.path.join(target, FILES["fieldref"]), FILES)
     docs.extract_log(os.path.join(target, FILES["log"]), FILES, target)
     docs.ratings_workbook(w, os.path.join(target, FILES["ratings"]))

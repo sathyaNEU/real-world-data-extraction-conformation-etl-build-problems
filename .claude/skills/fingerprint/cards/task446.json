@@ -10,7 +10,7 @@
   "shape": "05",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Put a 2027 caseload of 78 groups to the committee: 78 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
+  "answer": "Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
   "answer_source": "task446/submission.md, Final Recommendation (architecture 3)",
   "gap": [
     "time",
@@ -31,18 +31,18 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_model",
-  "stakeholder_role": "head of credit risk monitoring at a UK commercial bank, who sizes the watch-list and workout caseload for the executive risk committee's 2027 resourcing budget",
+  "stakeholder_role": "head of credit risk monitoring at a UK commercial bank, who forecasts the watch-list and workout caseload in the close of the monitoring year to 30 September, from which the chief risk officer's leadership team sets the 2027 Restructuring and Business Support headcount",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
     "file": "ews_entity_signals_2022-09_to_2026-09.csv",
-    "rows": 125988,
+    "rows": 125975,
     "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
     "grain": "LEI x month-end",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
+  "forum": "executive_team",
+  "forcing_event": "period_close",
   "org_family": "financial_institution",
   "world": {
     "geography": "United Kingdom",
@@ -163,7 +163,7 @@
       "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and sets the probabilities from the share of flagged and of unflagged groups that reached the list over those cohorts taken together, the hit and miss rates the committee is shown each November, and files 73; the step that lands it there is carrying the hit rate onto a book whose flagged share has jumped to 18.1 per cent, when the hit rate moves with each year's share of the book reaching the list and only the screen's capture and false-alarm rates hold across the cohorts; backing this year's arrival share out of the flagged share through those two rates predicts every closed cohort within 1.6 per cent out of sample (the hit rate misses one by 40.6) and gives 133, while trending the hit rate on the flagged share misses by 8.0 and extrapolates to 147."
     }
   ],
-  "notes": "Re-rooted as v3 on 2026-10-21. stump_strategy composition_mix, pattern E: the flagged pool's conversion is a blend of two kinds of flag CRM-07 3.2 treats alike, and the forward pool's mix on that property (rebuilt by tracing each group flag to the member that raised it, through the obligor master and the GLEIF records, never a column) differs from every closed cohort's. decisive_rule_filed false: CRM-07 files the group-flag rule, the cohort and outcome definitions and the estimand, and nothing about how a flag's source bears on conversion. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false, and the cohorts refute the single flagged rate out of sample (14.4 per cent against 3.9). The label-shift basis of v2 is now a rung (136, missing a closed cohort by 84.7 per cent).",
+  "notes": "Re-rooted as v3 on 2026-10-21. stump_strategy composition_mix, pattern E: the flagged pool's conversion is a blend of two kinds of flag CRM-07 3.2 treats alike, and the forward pool's mix on that property (rebuilt by tracing each group flag to the member that raised it, through the obligor master and the GLEIF records, never a column) differs from every closed cohort's. decisive_rule_filed false: CRM-07 files the group-flag rule, the cohort and outcome definitions and the estimand, and nothing about how a flag's source bears on conversion. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false, and the cohorts refute the single flagged rate out of sample (14.4 per cent against 3.9). The label-shift basis of v2 is now a rung (136, missing a closed cohort by 84.7 per cent). Forum and forcing event redrawn at stage 3 on 2026-10-21: committee_or_panel and budget_or_appropriation were banned against task486 v2, filed before this card and brought into the corpus by the pull after the DRAWN check. The pack was changed, not the labels: CRM-07 5.1 makes the forecast part of the close of the monitoring year, 5.2 has the chief risk officer's leadership team set the Restructuring and Business Support headcount from it, and Credit Risk Monitoring's year-end close timetable replaces the executive risk committee agenda.",
   "question_form": "how-many",
-  "registered": "2026-10-21T05:17:38Z"
+  "registered": "2026-10-21T05:35:41Z"
 }

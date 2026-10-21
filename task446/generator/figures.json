@@ -1,81 +1,116 @@
 {
- "source": "writeup.py from deliver.figures() and solve.golden()",
- "figures": [
-  "1",
-  "2027",
-  "78",
-  "913",
-  "30",
-  "2026",
-  "2022",
-  "2025",
-  "50.0%",
-  "6.25%",
-  "127",
-  "165",
-  "3.9%",
-  "64",
-  "14.4%",
-  "136",
-  "2",
-  "1.62%",
-  "3",
-  "20260930",
-  "2020",
-  "01",
-  "09",
-  "07",
-  "4.1",
-  "2.2",
-  "3.2",
-  "4.2",
-  "240",
-  "120",
-  "176",
-  "11,",
-  "3,092",
-  "50",
-  "4",
-  "5",
-  "4.3",
-  "78.0",
-  "5.3",
-  "6",
-  "1.3",
-  "6.1",
-  "20261008",
-  "6.2",
-  "7",
-  "8",
-  "\u00a35m",
-  "201",
-  "\u00a3499.9m",
-  "34",
-  "16.2",
-  "\u00a338.5m",
-  "\u00a315m",
-  "304",
-  "\u00a33,112.0m",
-  "54",
-  "25.8",
-  "\u00a3257.1m",
-  "\u00a340m",
-  "248",
-  "\u00a36,936.6m",
-  "46",
-  "21.9",
-  "\u00a3596.8m",
-  "\u00a3100m",
-  "\u00a38,402.7m",
-  "20",
-  "9.0",
-  "\u00a3576.3m",
-  "40",
-  "\u00a36,712.2m",
-  "11",
-  "5.1",
-  "\u00a3826.8m",
-  "\u00a325,663.4m",
-  "\u00a32,295.5m"
- ]
+ "source": "writeup.py from deliver.figures(), which reads target/ only through solve.golden()",
+ "call": {
+  "caseload": 78,
+  "expected_arrivals": 78.0
+ },
+ "components": {
+  "book_groups": 913,
+  "flagged_groups": 165,
+  "flagged_on_customer": 127,
+  "rate_flagged_on_customer_pct": 50.0,
+  "rate_flagged_only_elsewhere_pct": 6.25,
+  "rate_not_flagged_pct": 1.62
+ },
+ "steps": {
+  "cohort_flagged_on_customer": 240,
+  "cohort_flagged_on_customer_reached": 120,
+  "cohort_flagged_only_elsewhere": 176,
+  "cohort_flagged_only_elsewhere_reached": 11,
+  "cohort_not_flagged": 3092,
+  "cohort_not_flagged_reached": 50,
+  "backtest_largest_miss_split_pct": 3.9,
+  "backtest_largest_miss_one_rate_pct": 14.4
+ },
+ "band_edges_gbp_m": [
+  5,
+  15,
+  40,
+  100
+ ],
+ "parameters": {
+  "money_as_stated": [
+   "£499.9m",
+   "£38.5m",
+   "£3,112.0m",
+   "£257.1m",
+   "£6,936.6m",
+   "£596.8m",
+   "£8,402.7m",
+   "£576.3m",
+   "£6,712.2m",
+   "£826.8m",
+   "£25,663.4m",
+   "£2,295.5m"
+  ],
+  "standard_sections_cited": [
+   "1.3",
+   "2.2",
+   "3.2",
+   "4.1",
+   "4.2",
+   "4.3",
+   "5.3",
+   "6.1",
+   "6.2"
+  ]
+ },
+ "workbook": {
+  "heading": 78,
+  "bands": {
+   "under_5m": {
+    "groups": 201,
+    "committed_gbp_m": 499.9,
+    "flagged": 34,
+    "expected_arrivals": 16.2,
+    "arriving_gbp_m": 38.5
+   },
+   "5m_to_15m": {
+    "groups": 304,
+    "committed_gbp_m": 3112.0,
+    "flagged": 54,
+    "expected_arrivals": 25.8,
+    "arriving_gbp_m": 257.1
+   },
+   "15m_to_40m": {
+    "groups": 248,
+    "committed_gbp_m": 6936.6,
+    "flagged": 46,
+    "expected_arrivals": 21.9,
+    "arriving_gbp_m": 596.8
+   },
+   "40m_to_100m": {
+    "groups": 120,
+    "committed_gbp_m": 8402.7,
+    "flagged": 20,
+    "expected_arrivals": 9.0,
+    "arriving_gbp_m": 576.3
+   },
+   "100m_and_over": {
+    "groups": 40,
+    "committed_gbp_m": 6712.2,
+    "flagged": 11,
+    "expected_arrivals": 5.1,
+    "arriving_gbp_m": 826.8
+   }
+  },
+  "total": {
+   "groups": 913,
+   "committed_gbp_m": 25663.4,
+   "flagged": 165,
+   "expected_arrivals": 78.0,
+   "arriving_gbp_m": 2295.5
+  }
+ },
+ "chart": {
+  "bars": [
+   16.2,
+   25.8,
+   21.9,
+   9.0,
+   5.1
+  ],
+  "caseload": 78,
+  "title": "78 of the 913 groups we monitor are expected on the watch list by 30 September 2027"
+ }
 }

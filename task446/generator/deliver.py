@@ -1,4 +1,4 @@
-"""Golden deliverables for task446: the caseload workbook and the committee chart.
+"""Golden deliverables for task446: the caseload workbook and the caseload chart.
 
     python3 task446/generator/deliver.py
 
@@ -77,7 +77,7 @@ def workbook(F, path):
     ws["A1"].font = Font(size=9, color=GREY)
     ws["A2"] = "Watch-list caseload for the year to 30 September 2027"
     ws["A2"].font = Font(bold=True, size=14)
-    ws["A3"] = "Executive Risk Committee, 4 November 2026, item 3.1"
+    ws["A3"] = "Year-end close pack for the Chief Risk Officer's leadership team, 4 November 2026"
     ws["A3"].font = Font(size=10, color=GREY)
     ws["A5"] = "Groups expected to reach the watch list by 30 September 2027"
     ws["A5"].font = Font(bold=True, size=11)
@@ -187,7 +187,7 @@ def cohort_sheet(wb, F):
     for j, v in enumerate(rates, start=1):
         cell = ws.cell(row=r, column=j, value=v)
         if j > 1 and v is not None:
-            cell.number_format = "0.0%"
+            cell.number_format = "0.00%" if j in (6, 8) else "0.0%"
     for rr in range(4, r):
         for j in range(2, 10):
             ws.cell(row=rr, column=j).number_format = "#,##0"
@@ -244,10 +244,12 @@ def notes_sheet(wb):
         ("Notes", ""),
         ("As at", "Monitored book, flags and committed exposure at 30 September 2026. Forecast window 1 October 2026 "
                   "to 30 September 2027."),
-        ("Obligor groups", "Group register customers plus GLEIF accounting-consolidation members in force at each date "
-                           "(CRM-07 s2.2). Engine signals keyed by LEI or Companies House number."),
+        ("Obligor groups", "The ultimate parent, the customers the credit system books to the group and the GLEIF "
+                           "accounting-consolidation members in force at each date (CRM-07 s2.2). Engine signals "
+                           "keyed by LEI or Companies House number."),
         ("Flag", "Any member AMBER or RED in the engine's month-end publication for the date (s3.2). A flag is raised "
-                 "on a customer where the AMBER or RED entity is a customer on the credit system at the date."),
+                 "on a customer where any AMBER or RED member is a customer on the credit system, opened by the "
+                 "date."),
         ("Cohorts", "30 September 2022 to 2025. Reached: placed on the watch list, any watch level, within twelve "
                     "months of the cohort date; groups leaving the book unplaced have not reached it (s4.1, s4.2)."),
         ("Forecast", "Monitored book at 30 September 2026 only, no new groups (s5.1, s5.2). Each group's chance of "
@@ -320,13 +322,15 @@ def chart(F, path):
     fig.text(0.012, 0.968, TITLE % (F["call"], F["N1"]), ha="left", va="top", fontsize=15, fontweight="bold", color=ink)
     fig.text(0.012, 0.922, "Expected arrivals by committed-exposure band at 30 September 2026", ha="left", va="top",
              fontsize=11, color=ink2)
-    fig.text(0.012, 0.018, "A group flagged on a customer we lend to reaches the list with probability %.0f%%, one "
-             "flagged only on a parent or sister company %.2f%%, one not flagged %.2f%% (2022 to 2025 cohorts). "
-             "Bands per CRM-07 s6.2." % (F["p_d"] * 100, F["p_i"] * 100, F["p_unflag"] * 100), ha="left",
-             va="bottom", fontsize=8.5, color=ink2)
-    fig.text(0.988, 0.018, "Credit Risk Monitoring, 27 October 2026", ha="right", va="bottom", fontsize=8.5,
+    fig.text(0.012, 0.052, "A group flagged on a customer we lend to reaches the list with probability %.1f%%, one "
+             "flagged only on a parent or sister company %.2f%%, one not flagged %.2f%% (2022 to 2025 cohorts)."
+             % (F["p_d"] * 100, F["p_i"] * 100, F["p_unflag"] * 100), ha="left", va="bottom", fontsize=8.5,
              color=ink2)
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.82, bottom=0.2)
+    fig.text(0.012, 0.016, "Bands per CRM-07 s6.2. Source: September early-warning publications, watch-list history, "
+             "credit group register.", ha="left", va="bottom", fontsize=8.5, color=ink2)
+    fig.text(0.988, 0.016, "Credit Risk Monitoring, 27 October 2026", ha="right", va="bottom", fontsize=8.5,
+             color=ink2)
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.82, bottom=0.24)
     buf = io.StringIO()
     fig.savefig(buf, format="svg", facecolor="white",
                 metadata={"Date": None, "Creator": None, "Format": None, "Type": None})

@@ -4,7 +4,7 @@
   "domain": "Banking, Credit & Financial Risk",
   "subdomain": "credit-scoring-pd-modeling (early-warning and watch-list monitoring of corporate obligor groups)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
+  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, the groups the September early-warning run flagged, the expected arrivals and the committed exposure they are expected to bring, with a total row",
   "as_of": "2026-10-08",
   "deliverables": [
     "watchlist_inflow_2027.xlsx",
@@ -66,9 +66,18 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
+      "path": "crm_year_end_close_timetable_2026.docx",
+      "format": "docx",
+      "bytes": 7780,
+      "rows": null,
+      "source": "Constructed: Credit Risk Monitoring year-end close timetable for the year to 30 Sep 2026",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "early_warning_and_watch_list_standard.pdf",
       "format": "pdf",
-      "bytes": 5419,
+      "bytes": 5460,
       "rows": null,
       "source": "Constructed: Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
       "date": "2026-10-08",
@@ -89,15 +98,6 @@
       "bytes": 1132,
       "rows": 13,
       "source": "Constructed: Early-warning trigger code list with feed and default signal",
-      "date": "2026-10-08",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "exec_risk_committee_agenda_2026-11-04.docx",
-      "format": "docx",
-      "bytes": 7812,
-      "rows": null,
-      "source": "Constructed: Executive Risk Committee agenda, 4 Nov 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
