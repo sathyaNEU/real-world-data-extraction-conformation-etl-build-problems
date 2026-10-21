@@ -2,13 +2,13 @@
  "task": "task480",
  "owner": "oviya1301",
  "status": "DESIGN",
- "domain": "business-operations-analytics",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
  "stage": 2,
  "stage_name": "design",
- "updated": "2026-10-20",
- "stump": "The default path measures each replaced meter's under-registration as its own step from the same quarters a year earlier, which carries 2025's rise in demand into the meters' error, over-corrects every zone still read on old meters and files too few zones eligible; taking billed consumption as delivered files too many.",
- "architecture": 1,
+ "updated": "2026-10-21",
+ "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files about seven counties at the 10-ton line; a car's yearly miles fall with age, so each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files the golden four; the fleet's curve without each vehicle's own level files three.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": null,
@@ -19,8 +19,8 @@
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 (overuse.objective, overuse.gate_g; same_puzzle_older and same_driver_older differentiated against task236, task453 v1, task463, task104, task134 v1, task177, task501 v4 r1, task70 v2)",
-  "nearest": "task73 world nine at 0.07",
+  "guard_check": "WARN 2026-10-21 (driver.near task133 v1 at 0.12, overuse.org_family, overuse.objective, repeat.gate_g and repeat.question_form against task251 v4, overuse.gate_g; same_driver_older differentiated against task196 v1)",
+  "nearest": "task133 v1 at 0.12",
   "heart": ""
  },
  "judge": {
@@ -29,9 +29,9 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: build the design prototype (zones, rollout waves, meter ages, the 2025 demand rise by customer class), measure the rungs, fill the default path's Ends on and Golden, the ladder, the fork table, the closure table and the ask sheet, then precut.py",
+ "resume": "stage 2: prototype the fleet and the cross-section estimator family (spread at the county totals against the printed unit), fix the county configuration and the 10-ton set, then the default path, stump sentence, ladder, fork and closure tables, the asks on rows outside the eligible fleet, prompt.txt, precut.py to exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET37 (EU cohesion region category by GDP per head in PPS): the world (an EU member state's cohesion-funded eligibility, decided a territorial unit at a time) and the decision (which units are eligible) kept; the seed's quantity, a ratio of published aggregates with nothing left to estimate, replaced by each metering zone's infrastructure leakage index, the quantity a cohesion-funded water loss call turns on; the pitfall found in how the utility's own meter rollout measures its old meters"
+ "source_note": "seed ET37 (EU cohesion region category): the decision form kept (which territorial units a funded program designates, one unit at a time against a filed threshold); architecture 1's water utility spent at stage 4 on 2026-10-20; architecture 2 is a state environmental department's CMAQ-funded vehicle retirement program in a twelve-county ozone nonattainment area, each county's 2027 NOx from its eligible vehicles with each vehicle's 2027 miles estimated from one cumulative odometer reading"
 }
