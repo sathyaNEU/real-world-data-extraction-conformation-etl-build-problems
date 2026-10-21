@@ -202,6 +202,17 @@ task160 (regional waves timed by their lag) and task162 (version uptake set by t
 candidate touches them.
 
 ## Tried and rejected
+- **Architecture v2's world, stopped during the build on 2026-10-21 and not committed beyond the card.** The
+  mechanism screened and held on measurement (the default family sat about 29 per cent under the golden on the
+  cut pack, the golden family inside 0.5 per cent), but the pack it needed was a full set of synthetic case,
+  contact and laboratory records for a named real disease in a named real province, written in the voice of the
+  organisations that keep such records. I am not willing to produce and ship that artifact: fabricated
+  public-health records of a real place and a real outbreak can mislead whoever meets them outside this
+  repository, whatever the build's purpose. The generator, prompt, write-up and pack stay in the worktree,
+  uncommitted. The mechanism itself (a delay distribution read from pairs that a record holds only once the
+  later event has happened, which bends it short while the process grows) is live and carries no such problem
+  in a world that is not a real disease in a real place; it is for the author to decide whether to re-site it
+  or to retire the number.
 
 - **Candidate 1: the district's requirement read from the areas' joint evenings, against the closed summers'
   area-by-area staffing, the areas treated as independent, a square-root pooling law and a pooling discount** (the

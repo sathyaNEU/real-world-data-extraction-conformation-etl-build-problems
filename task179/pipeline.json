@@ -1,7 +1,7 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "epidemiology-public-health",
  "objective": "forecasting",
  "stage": 2,
@@ -48,7 +48,7 @@
    "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
   }
  },
- "resume": "stage 2: build the generator's world and pack, measure the default and golden on the cut pack, design the asks, write the stage 2 sections, precut.py",
+ "resume": "PAUSED at stage 2. The card for architecture v2 is registered (commit 0d1ef98f) and nothing else is committed. The mechanism held on measurement, and the build was stopped because its pack would be a fabricated set of public-health records for a named real disease in a named real province; see the design note's first ## Tried and rejected entry. The author decides whether the mechanism is re-sited in a world that is not a real outbreak, or the number is retired.",
  "approved": null,
  "delivered": null,
  "portal": null,
