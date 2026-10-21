@@ -1,0 +1,420 @@
+{
+ "active": {
+  "East Kelvane": 22,
+  "Fallowmere Town": 114,
+  "North Kelvane": 25,
+  "South Kelvane": 27,
+  "West Kelvane": 31,
+  "Wickmoor City": 397
+ },
+ "active_total": 616,
+ "age_cuts": [
+  60,
+  75
+ ],
+ "areas": [
+  "Wickmoor City",
+  "Fallowmere Town",
+  "North Kelvane",
+  "East Kelvane",
+  "South Kelvane",
+  "West Kelvane"
+ ],
+ "counts": {
+  "60": {
+   "East Kelvane": 560,
+   "Fallowmere Town": 4960,
+   "North Kelvane": 700,
+   "South Kelvane": 760,
+   "West Kelvane": 1060,
+   "Wickmoor City": 15580
+  },
+  "75": {
+   "East Kelvane": 190,
+   "Fallowmere Town": 1660,
+   "North Kelvane": 200,
+   "South Kelvane": 240,
+   "West Kelvane": 310,
+   "Wickmoor City": 5150
+  }
+ },
+ "county": {
+  "60": 23621,
+  "75": 7751
+ },
+ "county_rounded": {
+  "60": 23620,
+  "75": 7750
+ },
+ "cut": [
+  {
+   "bg": "570410009012",
+   "blk60_rural": 75,
+   "blk75_rural": 33,
+   "c60": 570,
+   "c75": 192,
+   "hu_rural": 43,
+   "hu_town": 619,
+   "p60_rural": 37.02416918429003,
+   "p60_town": 532.97583081571,
+   "p75_rural": 12.471299093655588,
+   "p75_town": 179.5287009063444,
+   "rural": "North Kelvane",
+   "town": "Wickmoor City",
+   "tract": "000901"
+  },
+  {
+   "bg": "570410009013",
+   "blk60_rural": 83,
+   "blk75_rural": 23,
+   "c60": 462,
+   "c75": 135,
+   "hu_rural": 65,
+   "hu_town": 624,
+   "p60_rural": 43.58490566037736,
+   "p60_town": 418.41509433962267,
+   "p75_rural": 12.735849056603774,
+   "p75_town": 122.26415094339623,
+   "rural": "North Kelvane",
+   "town": "Wickmoor City",
+   "tract": "000901"
+  },
+  {
+   "bg": "570410009021",
+   "blk60_rural": 59,
+   "blk75_rural": 18,
+   "c60": 410,
+   "c75": 118,
+   "hu_rural": 60,
+   "hu_town": 706,
+   "p60_rural": 32.114882506527415,
+   "p60_town": 377.8851174934726,
+   "p75_rural": 9.242819843342037,
+   "p75_town": 108.75718015665797,
+   "rural": "North Kelvane",
+   "town": "Wickmoor City",
+   "tract": "000902"
+  },
+  {
+   "bg": "570410009022",
+   "blk60_rural": 77,
+   "blk75_rural": 17,
+   "c60": 366,
+   "c75": 102,
+   "hu_rural": 50,
+   "hu_town": 505,
+   "p60_rural": 32.972972972972975,
+   "p60_town": 333.02702702702703,
+   "p75_rural": 9.18918918918919,
+   "p75_town": 92.8108108108108,
+   "rural": "North Kelvane",
+   "town": "Wickmoor City",
+   "tract": "000902"
+  },
+  {
+   "bg": "570410010002",
+   "blk60_rural": 36,
+   "blk75_rural": 16,
+   "c60": 340,
+   "c75": 109,
+   "hu_rural": 42,
+   "hu_town": 653,
+   "p60_rural": 20.546762589928058,
+   "p60_town": 319.45323741007195,
+   "p75_rural": 6.58705035971223,
+   "p75_town": 102.41294964028776,
+   "rural": "East Kelvane",
+   "town": "Wickmoor City",
+   "tract": "001000"
+  },
+  {
+   "bg": "570410010003",
+   "blk60_rural": 39,
+   "blk75_rural": 17,
+   "c60": 263,
+   "c75": 70,
+   "hu_rural": 47,
+   "hu_town": 497,
+   "p60_rural": 22.722426470588236,
+   "p60_town": 240.27757352941177,
+   "p75_rural": 6.047794117647059,
+   "p75_town": 63.95220588235294,
+   "rural": "East Kelvane",
+   "town": "Wickmoor City",
+   "tract": "001000"
+  },
+  {
+   "bg": "570410011002",
+   "blk60_rural": 27,
+   "blk75_rural": 13,
+   "c60": 388,
+   "c75": 124,
+   "hu_rural": 41,
+   "hu_town": 614,
+   "p60_rural": 24.287022900763358,
+   "p60_town": 363.71297709923664,
+   "p75_rural": 7.761832061068702,
+   "p75_town": 116.2381679389313,
+   "rural": "South Kelvane",
+   "town": "Wickmoor City",
+   "tract": "001100"
+  },
+  {
+   "bg": "570410011003",
+   "blk60_rural": 43,
+   "blk75_rural": 15,
+   "c60": 253,
+   "c75": 81,
+   "hu_rural": 40,
+   "hu_town": 430,
+   "p60_rural": 21.53191489361702,
+   "p60_town": 231.46808510638297,
+   "p75_rural": 6.8936170212765955,
+   "p75_town": 74.1063829787234,
+   "rural": "South Kelvane",
+   "town": "Wickmoor City",
+   "tract": "001100"
+  },
+  {
+   "bg": "570419603002",
+   "blk60_rural": 40,
+   "blk75_rural": 17,
+   "c60": 207,
+   "c75": 66,
+   "hu_rural": 34,
+   "hu_town": 366,
+   "p60_rural": 17.595,
+   "p60_town": 189.405,
+   "p75_rural": 5.61,
+   "p75_town": 60.39,
+   "rural": "West Kelvane",
+   "town": "Fallowmere Town",
+   "tract": "960300"
+  },
+  {
+   "bg": "570419603003",
+   "blk60_rural": 59,
+   "blk75_rural": 27,
+   "c60": 293,
+   "c75": 102,
+   "hu_rural": 73,
+   "hu_town": 499,
+   "p60_rural": 37.39335664335665,
+   "p60_town": 255.60664335664336,
+   "p75_rural": 13.017482517482517,
+   "p75_town": 88.98251748251748,
+   "rural": "West Kelvane",
+   "town": "Fallowmere Town",
+   "tract": "960300"
+  },
+  {
+   "bg": "570419604001",
+   "blk60_rural": 71,
+   "blk75_rural": 25,
+   "c60": 618,
+   "c75": 204,
+   "hu_rural": 46,
+   "hu_town": 716,
+   "p60_rural": 37.30708661417323,
+   "p60_town": 580.6929133858267,
+   "p75_rural": 12.31496062992126,
+   "p75_town": 191.68503937007873,
+   "rural": "South Kelvane",
+   "town": "Fallowmere Town",
+   "tract": "960400"
+  },
+  {
+   "bg": "570419604002",
+   "blk60_rural": 86,
+   "blk75_rural": 41,
+   "c60": 720,
+   "c75": 223,
+   "hu_rural": 48,
+   "hu_town": 698,
+   "p60_rural": 46.32707774798928,
+   "p60_town": 673.6729222520107,
+   "p75_rural": 14.348525469168901,
+   "p75_town": 208.6514745308311,
+   "rural": "South Kelvane",
+   "town": "Fallowmere Town",
+   "tract": "960400"
+  }
+ ],
+ "cut_60": 4890,
+ "cut_75": 1526,
+ "cut_rural_60": 370,
+ "cut_rural_75": 120,
+ "cut_rural_blocks_60": 695,
+ "cut_rural_blocks_75": 262,
+ "default_north_60": 850,
+ "edge": {
+  "60": {
+   "East Kelvane": 4.269,
+   "Fallowmere Town": 4.377,
+   "North Kelvane": 2.303,
+   "South Kelvane": 4.453,
+   "West Kelvane": 2.988,
+   "Wickmoor City": 2.785
+  },
+  "75": {
+   "East Kelvane": 2.365,
+   "Fallowmere Town": 2.709,
+   "North Kelvane": 4.361,
+   "South Kelvane": 4.681,
+   "West Kelvane": 3.627,
+   "Wickmoor City": 3.929
+  }
+ },
+ "exact": {
+  "60": {
+   "East Kelvane": 559.269,
+   "Fallowmere Town": 4959.377,
+   "North Kelvane": 702.697,
+   "South Kelvane": 759.453,
+   "West Kelvane": 1057.988,
+   "Wickmoor City": 15582.215
+  },
+  "75": {
+   "East Kelvane": 192.635,
+   "Fallowmere Town": 1657.709,
+   "North Kelvane": 200.639,
+   "South Kelvane": 240.319,
+   "West Kelvane": 308.627,
+   "Wickmoor City": 5151.071
+  }
+ },
+ "exact_parts": {
+  "cut_rural_60": 373.4075781845836,
+  "cut_rural_75": 116.22041935906785
+ },
+ "meals": {
+  "East Kelvane": 8883,
+  "Fallowmere Town": 40951,
+  "North Kelvane": 9793,
+  "South Kelvane": 9855,
+  "West Kelvane": 12558,
+  "Wickmoor City": 139058
+ },
+ "meals_total": 221098,
+ "n_bg": 62,
+ "n_cut": 12,
+ "n_whole": 50,
+ "providers": {
+  "East Kelvane": [
+   "EKS",
+   "East Kelvane Senior Center"
+  ],
+  "Fallowmere Town": [
+   "FCC",
+   "Fallowmere Community Center"
+  ],
+  "North Kelvane": [
+   "NKS",
+   "North Kelvane Senior Center"
+  ],
+  "South Kelvane": [
+   "SKS",
+   "South Kelvane Senior Center"
+  ],
+  "West Kelvane": [
+   "WKS",
+   "West Kelvane Senior Center"
+  ],
+  "Wickmoor City": [
+   "WMS",
+   "Wickmoor Senior Services"
+  ]
+ },
+ "routes": {
+  "bg_hu": {
+   "60": {
+    "East Kelvane": 560,
+    "Fallowmere Town": 4960,
+    "North Kelvane": 700,
+    "South Kelvane": 760,
+    "West Kelvane": 1060,
+    "Wickmoor City": 15580
+   },
+   "75": {
+    "East Kelvane": 190,
+    "Fallowmere Town": 1660,
+    "North Kelvane": 200,
+    "South Kelvane": 240,
+    "West Kelvane": 310,
+    "Wickmoor City": 5150
+   }
+  },
+  "bg_points": {
+   "60": {
+    "East Kelvane": 580,
+    "Fallowmere Town": 4860,
+    "North Kelvane": 830,
+    "South Kelvane": 840,
+    "West Kelvane": 1090,
+    "Wickmoor City": 15410
+   },
+   "75": {
+    "East Kelvane": 200,
+    "Fallowmere Town": 1630,
+    "North Kelvane": 240,
+    "South Kelvane": 270,
+    "West Kelvane": 320,
+    "Wickmoor City": 5100
+   }
+  },
+  "bg_pop": {
+   "60": {
+    "East Kelvane": 600,
+    "Fallowmere Town": 4850,
+    "North Kelvane": 810,
+    "South Kelvane": 860,
+    "West Kelvane": 1090,
+    "Wickmoor City": 15410
+   },
+   "75": {
+    "East Kelvane": 200,
+    "Fallowmere Town": 1620,
+    "North Kelvane": 230,
+    "South Kelvane": 270,
+    "West Kelvane": 320,
+    "Wickmoor City": 5100
+   }
+  },
+  "block_sum": {
+   "60": {
+    "East Kelvane": 590,
+    "Fallowmere Town": 4840,
+    "North Kelvane": 850,
+    "South Kelvane": 860,
+    "West Kelvane": 1100,
+    "Wickmoor City": 15380
+   },
+   "75": {
+    "East Kelvane": 210,
+    "Fallowmere Town": 1590,
+    "North Kelvane": 250,
+    "South Kelvane": 290,
+    "West Kelvane": 330,
+    "Wickmoor City": 5070
+   }
+  },
+  "tract_hu": {
+   "60": {
+    "East Kelvane": 560,
+    "Fallowmere Town": 4940,
+    "North Kelvane": 710,
+    "South Kelvane": 770,
+    "West Kelvane": 1080,
+    "Wickmoor City": 15570
+   },
+   "75": {
+    "East Kelvane": 190,
+    "Fallowmere Town": 1650,
+    "North Kelvane": 200,
+    "South Kelvane": 240,
+    "West Kelvane": 310,
+    "Wickmoor City": 5150
+   }
+  }
+ }
+}

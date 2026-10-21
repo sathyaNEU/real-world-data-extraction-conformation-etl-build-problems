@@ -59,6 +59,9 @@ published source gives the right count.
   after task251 v4's card entered the window a quarter of an hour before this one was filed: the agency is a nonprofit, as
   many area agencies are, and the forcing event is the FY2027 allocation round the counts feed. `slots` on the driver's
   words and on the setting's words returns no earlier screen of a formally private release or of custom-area census counts.
+  `guard.py heart` on the cut pack: WARN (overuse.objective; repeat.deliverables, a workbook after task481's, answered
+  here: the area plan's census table is a workbook in the agency's own format, and the two builds share no driver,
+  domain or world); nearest driver task471 v5 at 0.07. `surface`: no pair promoted.
 - **Same-puzzle and same-driver tests:** (population, none, conformed_dataset) and (population, G2, etl_conformance)
   match no build in the last twelve; the allocation decision type was dropped because (population, none,
   allocation_to_total) is task471's.
@@ -194,9 +197,11 @@ South, West.
   gives back the block sum.
 - **Worth:** the decisive step flips all twelve graded counts; every reflex (add the blocks, clean, rake, weight by people,
   weight by the current register, take the larger level) lands on R0 to R3.
-- **Clean truth:** averaged over 40 draws of the release's noise, the block sum still puts every rural area above the
-  block-group route (60 and over: North +119, South +101, West +54, East +43; 75 and over +15 to +40) and both towns below
-  it (Wickmoor City -202, Fallowmere Town -116) (checks.py, R1 to R3 of the three rules).
+- **Clean truth:** averaged over 40 fresh draws of the release's noise on the same census-day residents, the block sum
+  still puts every rural area above the block-group route (60 and over: North +110, South +96, West +53, East +42; 75 and
+  over +16 to +36) and both towns below it (60 and over: Wickmoor City -190, Fallowmere Town -111), while the block-group
+  route sits within 25 persons of the truth on every count, three or more times closer than the block sum (checks.py, R3a
+  and R3b of the three rules).
 
 ## Closure table
 
@@ -270,7 +275,8 @@ ignores published block-group counts that disagree with it.
   the July 2026 quarterly review not held, deaths since the April review that no family reported are open in the roster;
   joining the match on the roster's number misses the ones under an earlier number, at least one in every provider.
   Hazards: the roster's provider is the enrolling one, so clients enrolled before the 2023 redraw on a moved block are
-  another provider's now; deaths matched in the October run after 30 September stay active.
+  another provider's now; deaths matched in the October run after 30 September stay active (two clients, who died on 1
+  and 2 October).
 - The cracker lands the call, runs the battery, executes every filed definition (meals per code, the client's provider by
   block, deaths on or before the day) and collapses the repeated client-day items; it misses all twelve figures.
 
@@ -319,3 +325,8 @@ ignores published block-group counts that disagree with it.
 - 2026-10-21, ask B's prior-number deaths left to chance: a death hazard spread over a decade put no unreported death under
   an earlier number in the four rural providers; the July 2026 review not held, and at least one such death per provider,
   give the device mass everywhere.
+- 2026-10-21, each block's total held to its own precise count (as the production release holds block totals) with the
+  age cells forced to it: on paper the drift between blocks turns into flattening inside each block toward the 46
+  cells' even share, which moves a rural block's 60-and-over count only by the gap between its true share (about 31 per
+  cent) and the cells' 35, a few residents per area against the 40 to 190 the per-cell processing moves; kept the
+  per-cell processing, under which small blocks publish more residents than their housing would hold.

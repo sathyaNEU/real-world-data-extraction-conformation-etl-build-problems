@@ -1,0 +1,158 @@
+{
+ "task": "task486",
+ "architecture": 1,
+ "title": "How many residents aged 60 and over, and aged 75 and over, lived in each of Kelvane County's six senior-services provider areas on census day in 2020, with each provider's home-delivered meals in FY2026 and its active home-delivered meal clients on 30 September 2026",
+ "domain": "General Statistics & Data Science",
+ "subdomain": "data-integration-record-linkage-entity-resolution (an area agency on aging fuses a formally private census release's block group and block tables with census-day housing counts into counts of older residents for provider areas whose boundaries cut block groups, and conforms its route tablets' delivery log, its case records and the state's death match into each provider's service figures)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "14: cuts of a distribution per segment, two age cuts for each of six provider areas, beside two service figures for each provider",
+ "as_of": "2026-10-09",
+ "deliverables": [
+  "kelvane_provider_area_counts.xlsx"
+ ],
+ "distractor_files": [
+  "kelvane_address_points_2026-10-02.csv",
+  "acs2022_5yr_kelvane_block_groups_b01001.csv",
+  "licensed_residential_care_kelvane.xlsx"
+ ],
+ "input_gates": {
+  "files": 21,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "hdm_route_delivery_log_fy2026.csv",
+  "largest_file_rows": 186886
+ },
+ "files": [
+  {
+   "file": "dhc2020_kelvane_blocks_sex_by_age.csv",
+   "source": "2020 Census Demographic and Housing Characteristics File, table P12, blocks of Kelvane County, long form kept by the agency's planning staff",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dhc2020_kelvane_block_groups_p12.csv",
+   "source": "2020 Census Demographic and Housing Characteristics File, table P12, block groups",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dhc2020_kelvane_county_tracts_p12.csv",
+   "source": "2020 Census Demographic and Housing Characteristics File, table P12, the county and its tracts",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dhc2020_kelvane_blocks_h1.csv",
+   "source": "2020 Census Demographic and Housing Characteristics File, table H1, blocks",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dhc2020_p12_h1_column_metadata.csv",
+   "source": "2020 Census DHC download: column metadata for P12 and H1",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "dhc2020_notes_for_local_users.pdf",
+   "source": "State Data Center: technical bulletin 2023-04, notes for local users of the 2020 DHC",
+   "date": "2024-02-14",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "provider_area_blocks.csv",
+   "source": "Kelvane County Department of Planning and Development: provider area of each census block",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "kelvane_address_points_2026-10-02.csv",
+   "source": "Kelvane County Department of Planning and Development: address points register",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "acs2022_5yr_kelvane_block_groups_b01001.csv",
+   "source": "American Community Survey 2018-2022 five-year estimates, table B01001, block groups",
+   "date": "2026-10-02",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "fy2027_area_plan_update_instructions.pdf",
+   "source": "State Department on Aging: program instruction AP-27-02, FY2027 area plan update",
+   "date": "2026-08-14",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "kaaa_provider_allocation_policy_2023.docx",
+   "source": "Kelvane Area Agency on Aging: Board policy N-3, provider allocation of nutrition funds",
+   "date": "2023-09-21",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "licensed_residential_care_kelvane.xlsx",
+   "source": "State licensing list of residential care facilities in Kelvane County, census blocks added by the agency",
+   "date": "2026-09-08",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "kaaa_provider_directory.xlsx",
+   "source": "Kelvane Area Agency on Aging: provider directory",
+   "date": "2026-10-09",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "hdm_client_roster_2026-10-09.csv",
+   "source": "Kelvane Area Agency on Aging case management system: home-delivered meal client roster",
+   "date": "2026-10-09",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "hdm_service_episodes_2026-10-09.csv",
+   "source": "Kelvane Area Agency on Aging case management system: home-delivered meal episodes",
+   "date": "2026-10-09",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "hdm_route_delivery_log_fy2026.csv",
+   "source": "Route tablet system: home-delivered meal delivery log, FY2026",
+   "date": "2026-10-06",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "hdm_item_codes.csv",
+   "source": "Kelvane Area Agency on Aging: route item codes",
+   "date": "2026-10-06",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "state_death_match_runs_2025-07_to_2026-10.csv",
+   "source": "State Department on Aging: monthly death match runs, statewide",
+   "date": "2026-10-06",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "state_registry_number_links.csv",
+   "source": "State Department on Aging: participant registry number links, statewide",
+   "date": "2026-10-06",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "kaaa_data_inventory.csv",
+   "source": "Kelvane Area Agency on Aging: data inventory of the planning files",
+   "date": "2026-10-09",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  },
+  {
+   "file": "kaaa_field_guide.txt",
+   "source": "Kelvane Area Agency on Aging: field guide to the planning files",
+   "date": "2026-10-09",
+   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
+  }
+ ]
+}

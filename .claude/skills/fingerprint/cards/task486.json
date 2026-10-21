@@ -11,8 +11,8 @@
   "shape": "14",
   "decision_type": "conformed_dataset",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "On census day 2020 Kelvane County's provider areas held, aged 60 and over and aged 75 and over: Wickmoor City 15,580 and 5,150, Fallowmere Town 4,960 and 1,660, North Kelvane 700 and 200, East Kelvane 560 and 190, South Kelvane 760 and 240, West Kelvane 1,060 and 310.",
+  "answer_source": "submission.md block 1; golden kelvane_provider_area_counts.xlsx, sheet Area plan table",
   "gap": [
     "population"
   ],
@@ -47,8 +47,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "dhc_block_sex_by_age_long.csv",
-    "rows": 0,
+    "file": "dhc2020_kelvane_blocks_sex_by_age.csv",
+    "rows": 130594,
     "entity": "one count of residents of one sex and age group in one census block",
     "grain": "block x sex x age group",
     "source": "synthetic (constructed in the layout of a census block-level sex-by-age table extract)"
