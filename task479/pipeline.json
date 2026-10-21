@@ -4,31 +4,31 @@
  "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path drops every claim a building filed before it was elevated and puts Dunholme and Kettlemoor in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-10-20"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; 2.1 section number, the county schedule, common words, forward-dated terms)",
-  "reader": ""
+  "leak_py": "REVIEW",
+  "reader": "architecture 1: reader 1 landed the call (exit 1, 30 of 72); reader 2 missed (exit 0, 19 of 72)"
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "task130 v4 at 0.11"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "determinism_check_report.md (architecture 1)"
  },
  "returned": [],
- "resume": "stage 4 in flight: two scored leak readers and the determinism judge thread (brief at /tmp/determinism-check-task479-1792540801/judge_brief.md) on target.zip sha256 233e7da88d23d2c3; on their return score each reader with score_reader.py, hand the verdict to the determinism-judge agent for the report, fix every finding in the generator in one pass, rebuild (python3 task479/generator/build.py), then ship",
+ "resume": "stage 1: re-root to architecture 2 in a fresh world and decisive step; guard mechanisms --objective etl, draw, register, commit DRAWN",
  "approved": null,
  "delivered": null,
  "portal": null,

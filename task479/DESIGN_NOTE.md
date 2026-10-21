@@ -364,3 +364,9 @@ a quoted sentence (fork table). Re-run on the finished pack at stage 3.
   Walter from `guard.py names --geo us --seed 479`.
 - Contents-only and unit owners' records joined to the building rate (2026-10-20, stage 2): neither moves the call,
   so they stay Layer 1 under 2.1 and 2.3 rather than a device.
+- Architecture 1, NFIP claims replayed on the elevated buildings as they stand (2026-10-21, spent at stage 4): reader 1
+  quoted guidelines 3.1 ("would bring ... as they stand") as the decisive text, replayed each claim's water on the
+  present floor and landed the call, every rate and 30 of 72 figures; reader 2 missed on the claims since elevation
+  but took ask B's counts from the final inspections; the judge NOT_DETERMINISTIC FIX_NOW on ask B's share, completion
+  and county keys and called the estimand's wording an announcement. The estimand that files a counterfactual names
+  it; re-rooted to architecture 2 in a fresh world.

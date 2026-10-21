@@ -105,7 +105,25 @@
     "task464": "task464 v1 fits each unit's response to a driver as the unit now operates and has to find changes no file dates; here every change is a dated project in the authority's register and nothing is fitted: each recorded flood's own water level is compared with the floor the building now has, so a flood counts again only where it stood above the raised floor.",
     "task450": "task450 links two administrations of an instrument through a shared subset screened for members that drifted; here no instrument, scale or link is estimated: a claims history is carried flood by flood to buildings whose floors were raised on recorded dates."
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-10-21 at stage 4: a reader landed the call by reading guidelines 3.1's 'would bring ... as they stand' literally and replaying each claim's water on the present floor; judge FIX_NOW on ask B",
+      "driver": "A record of past events on units is carried to the units as they now stand, and some units were raised after their events, so a past event counts again on a raised unit only where the event's recorded level stood above the unit's new threshold; dropping a raised unit's earlier events, keeping them all, or giving it the later rate of units in its present class each misstates the expected rate.",
+      "stump": "The default path drops every claim a building filed before it was elevated and puts the two riverine counties elevated after 2016 in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "niche": "a regional flood authority's 2027 private flood placement pilot, set on each member county's expected paid building claims per 1,000 insured buildings for the buildings insured today as they now stand, built from the NFIP claims history, the policy terms and the authority's own elevation and acquisition projects, where the 2016 flood rose above the floors the post-flood elevations were built to"
+    }
+  ],
   "notes": "stump_strategy other: a counterfactual replay of each past loss on the building as it now stands (the as-if of flood loss avoidance), none of the listed families; population_selection would be the nearest label and is banned in the current window, and it misdescribes the move, which changes no unit's membership. The ETL task type is general-statistics-data-science/data-integration-record-linkage-entity-resolution: the claims history, the policy terms and the authority's mitigation projects integrated at the building grain into one conformed table of insured buildings with their claims as they now stand.",
-  "registered": "2026-10-20T21:50:32Z"
+  "registered": "2026-10-20T21:50:32Z",
+  "architecture_spent": true
 }
