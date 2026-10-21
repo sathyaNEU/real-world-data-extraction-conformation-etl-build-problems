@@ -1,7 +1,7 @@
 {
   "task": "task272",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "RETIRED",
   "domain": "demographic-social-science",
   "objective": "descriptive-distribution",
   "stage": 1,
@@ -30,7 +30,7 @@
     "report": "determinism_check_report.md (architecture 2)"
   },
   "returned": [],
-  "resume": "Re-root: draw architecture 3, the last (guard.py recent, coverage, mechanisms and slots first; the lane's held steps are silent data-structure problems, its spent ones named corrections for a gap the documents state); if it is spent, retire the number.",
+  "resume": "RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -47,6 +47,11 @@
       "architecture": 2,
       "drawn": "2026-10-21",
       "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
+    },
+    {
+      "architecture": 3,
+      "drawn": null,
+      "fate": "not drawn 2026-10-21: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
     }
   ],
   "gates": {
