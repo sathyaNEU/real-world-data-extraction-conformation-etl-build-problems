@@ -115,7 +115,24 @@
     "task75": "task75 adds reopened files found by a household-and-subject match; here no match recovers members: the members no camera saw are completed statistically from the cameras' own recaptures.",
     "task81": "task81 groups units into firms by an identical site set across a cessation; here no units are regrouped into owners: passes are grouped by camera only to count a segment's independent chances of a find."
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "Each section's potholes per ten lane-miles in March 2027 counts the potholes no camera unit recorded, completed segment by segment as one over the chance that at least one of the distinct installed units that drove the segment found a pothole, the per-unit chance (0.542) read from how often a second unit found a pothole another unit found; a unit records the same potholes on every pass (99.5 per cent of its later days), so a segment its section's patrol pickup drove on seven or more days has had one chance.",
+      "stump": "The default path completes the potholes no unit recorded by treating every pass over a segment as an independent chance at the rate a pass re-finds a found pothole (64 per cent of unit-days), which changes nothing on segments driven seven or more times, and designates Carrow Point and Elmscourt only; the rural and outer suburban sections one unit drove hide close to half their potholes, and Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle clear the line at 7.08 to 8.29.",
+      "subdomain": "transportation-network",
+      "gap": [
+        "population"
+      ],
+      "generators": [
+        "G2",
+        "G16",
+        "G12",
+        "G10"
+      ],
+      "fate": "spent at stage 4 on 2026-10-21: reader G (the ninth isolated reader) landed the call by distinct-unit capture-recapture; readers C to H kept ask A's counts and two kept the camera miles"
+    }
+  ],
   "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second.",
   "registered": "2026-10-20T22:25:31Z"
 }

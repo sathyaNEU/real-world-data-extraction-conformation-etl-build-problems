@@ -622,17 +622,13 @@ def loops(e):
 
 def replay(e):
     """The telematics provider re-ran its map matching over 12 March 00:00 to 13 March 06:00 UTC after a fix and
-    appended the re-run's traversals beside the originals; the re-run places each segment entry and exit afresh."""
-    r = W.rng(34)
+    appended the re-run's traversals beside the originals; the re-run wrote the district's clock time where the export
+    carries UTC, so each re-run traversal sits five hours before the pass it repeats."""
     out = []
     for t in e["trav"]:
         if W.REPLAY_FROM <= t["enter"] < W.REPLAY_TO:
-            dur = (t["exit"] - t["enter"]).total_seconds()
-            sh = round(max(6.0, float(r.uniform(0.2, 0.6)) * dur), 1)
-            sh2 = round(sh + float(r.uniform(-0.1, 0.25)) * dur, 1)
-            out.append(dict(veh=t["veh"], seg=t["seg"], enter=t["enter"] + dt.timedelta(seconds=sh),
-                            exit=max(t["exit"] + dt.timedelta(seconds=sh2), t["enter"] + dt.timedelta(seconds=sh + 4)),
-                            dir=t["dir"], replay=True))
+            out.append(dict(veh=t["veh"], seg=t["seg"], enter=t["enter"] - dt.timedelta(hours=5),
+                            exit=t["exit"] - dt.timedelta(hours=5), dir=t["dir"], replay=True))
     e["replays"] = out
 
 

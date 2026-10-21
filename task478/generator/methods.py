@@ -463,16 +463,22 @@ def severities(p):
     return out
 
 
-def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True, window_s=None):
+def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True, window_s=None, overlap=False):
     """Ask B: per section, the miles the pilot's camera units were driven on the program's roadway in March, each
-    pass at the segment's inventory length. dedupe drops a vehicle's traversal of a segment that overlaps an
-    earlier-numbered traversal of the same segment."""
+    pass at the segment's inventory length. dedupe drops a traversal that repeats the same vehicle's traversal of the
+    segment, the same way, exactly five hours later (the re-run's clock); window_s instead drops a vehicle's repeat of
+    a segment within that many seconds."""
     road = roadway(p) if program_road else p["inv"]
     u = units(p)
     inst = {}
     for unit, (veh, grp, a, b) in u.items():
         inst.setdefault(veh, []).append((a, b))
     rows = sorted(p["trav"], key=lambda t: (t["vehicle_id"], t["segment_id"], t["enter_utc"], int(t["traversal_id"])))
+    if dedupe and window_s is None:
+        sig = {(t["vehicle_id"], t["segment_id"], t["direction"], _utc(t["enter_utc"]), _utc(t["exit_utc"])) for t in rows}
+        five = dt.timedelta(hours=5)
+        rows = [t for t in rows if (t["vehicle_id"], t["segment_id"], t["direction"], _utc(t["enter_utc"]) + five,
+                                    _utc(t["exit_utc"]) + five) not in sig]
     keep = []
     last = {}
     for t in rows:
@@ -481,7 +487,7 @@ def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=Tr
         if window_s is not None and key in last and (a - last[key][0]).total_seconds() <= window_s \
                 and t["direction"] == last[key][2]:
             continue
-        if window_s is None and dedupe and key in last and a <= last[key][1]:
+        if overlap and key in last and a <= last[key][1]:
             continue
         last[key] = (a, b, t["direction"])
         keep.append(t)

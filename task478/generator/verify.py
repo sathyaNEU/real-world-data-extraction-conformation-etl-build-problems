@@ -183,11 +183,12 @@ def main(target=None):
     # ask B
     miles = defaultdict(float)
     last = {}
+    ts = lambda x: dt.datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ")
+    later = {(t["vehicle_id"], t["segment_id"], t["direction"], ts(t["enter_utc"]), ts(t["exit_utc"])) for t in trav}
     for t in sorted(trav, key=lambda t: (t["vehicle_id"], t["segment_id"], t["enter_utc"], int(t["traversal_id"]))):
-        key = (t["vehicle_id"], t["segment_id"])
-        if key in last and t["enter_utc"] <= last[key]:
+        h5 = dt.timedelta(hours=5)
+        if (t["vehicle_id"], t["segment_id"], t["direction"], ts(t["enter_utc"]) + h5, ts(t["exit_utc"]) + h5) in later:
             continue
-        last[key] = t["exit_utc"]
         if t["segment_id"] not in road:
             continue
         day = dt.datetime.strptime(t["enter_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=Z).astimezone(ET).date()

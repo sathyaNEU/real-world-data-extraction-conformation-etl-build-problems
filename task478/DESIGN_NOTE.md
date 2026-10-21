@@ -402,5 +402,9 @@ Measured by: generator/ceiling.py
   that two records count twice inside the call's own confirmed population (a failed patch re-opening under a new
   confirmed number), which the separation line forbids; the count stays the construction layer the pounds and miles
   devices surround.
+- 2026-10-21, stage 4 round 4: architecture 1 spent. Reader G landed the call (the seven sections) by treating each
+  unit as an independent list in a capture-recapture design, reading 0.55 from units' overlap and 0.95 from a unit's
+  own repeats, the decisive step itself, unprompted by any sentence; eight readers and the judge had missed it before.
+  The asks fell with it (counts to every reader, miles to the overlap and five-minute dedupes). Re-root to architecture 2.
 - 2026-10-20, stage 3: the sweepers' night shifts of 28 February and 31 March: under a UTC window they moved camera
   miles across the month boundary; the spring sweeping schedule now runs 1 to 30 March nights.

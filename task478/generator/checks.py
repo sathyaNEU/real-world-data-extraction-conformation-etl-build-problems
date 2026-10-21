@@ -249,8 +249,16 @@ def main():
     cw = M.ask_miles(p, window_s=300)
     check("B every section's miles move when a vehicle's repeat of a segment within five minutes is dropped (the loops)",
           all(int(cw[s] + .5) != int(gB[s] + .5) for s in ORDER))
-    check("B1 fair: every re-run traversal overlaps exactly one original of its vehicle and segment",
-          len(e["replays"]) > 0 and len(p["trav"]) == len(e["trav"]) + len(e["replays"]))
+    sig = Counter((t["veh"], t["seg"], t["dir"], t["enter"], t["exit"]) for t in e["trav"])
+    five = __import__("datetime").timedelta(hours=5)
+    gen_pairs = sum(1 for t in e["trav"] if sig[(t["veh"], t["seg"], t["dir"], t["enter"] + five, t["exit"] + five)])
+    check("B1 fair: every re-run traversal repeats exactly one pass five hours later, and no two genuine passes do "
+          "(%d re-run, %d genuine)" % (len(e["replays"]), gen_pairs),
+          len(e["replays"]) > 0 and gen_pairs == 0 and len(p["trav"]) == len(e["trav"]) + len(e["replays"])
+          and all(sig[(t["veh"], t["seg"], t["dir"], t["enter"] + five, t["exit"] + five)] == 1 for t in e["replays"]))
+    ov = M.ask_miles(p, dedupe=False, overlap=True)
+    check("B every section's miles move when only overlapping repeats are dropped (no re-run overlaps its pass)",
+          all(int(ov[s] + .5) != int(gB[s] + .5) for s in ORDER))
     import ceiling as CE
     pair, leak, kept_c, kept_m = CE.main(TARGET)
     check("ceiling: the cracker keeps no ask figure, the mirror none, pair %.1f under 40" % pair,

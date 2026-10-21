@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "The default path treats every pass over a segment as an independent chance and designates only Carrow Point and Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct units that drove a segment are independent chances, each finding 54 per cent of what another found; Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle clear the line at 7.08 to 8.29.",
   "architecture": 1,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (design-note vocabulary in the scope of work, the program and the data notes; no LEAK)",
-    "reader": "round 3: readers E and F missed the call; E kept the counts (exit 2), F the counts and miles (exit 1); ask B re-sited with loop passes, readers G and H running"
+    "reader": "round 4: reader G landed the call (architecture 1 spent); reader H missed it and kept counts and miles (exit 1)"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK) after pattern D and differentiation",
@@ -28,7 +28,7 @@
     "report": "task478/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4 round 4: readers G and H on target.zip 9a9449cf2ea71763a9510de46102b731; score each with score_reader.py; if both miss the call and neither exits 1, ship",
+  "resume": "architecture 1 spent at stage 4 (reader G landed the call with distinct-unit capture-recapture); re-root at stage 1 as architecture 2 in the ETL objective: new draw, card lineage records architecture 1 spent, DRAWN commit",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -58,8 +58,8 @@ def main():
         "confirmed defect nearest it on its route, so each pothole counts once; a multi-line order carrying one figure on "
         "every line counted it once where the figure is more than any single-line order used on a pothole of its lines' "
         "severities in the detections (the mobile app's order total), and summed its lines otherwise.",
-        "Camera miles: dropped each traversal overlapping the same vehicle's earlier-numbered traversal of the same "
-        "segment (the provider's re-run of 12 to 13 March), kept installed units' March passes on the program's roadway "
+        "Camera miles: dropped each traversal that repeats the same vehicle's traversal of the segment, the same way, "
+        "exactly five hours later (the provider's re-run of 12 to 13 March, written in district clock time), kept installed units' March passes on the program's roadway "
         "and summed inventory lengths.",
         "Designated the sections at %.1f or more: %s." % (f["line"], join(des)),
     ]
