@@ -302,7 +302,10 @@ and the camera miles' traversal duplicates sit outside the call's population (ze
   the program. Device B1 (D1, primary): the telematics provider re-ran its map matching over 12 March 00:00 to 13 March
   06:00 UTC and appended the re-run's traversals beside the originals, offset by a fraction of each traversal's own
   duration, under that day's traversal numbers; no row repeats another and every key is unique, and only a vehicle's
-  overlapping traversals of one segment show it. Hazards: the crew trucks' trips before their units were installed, the
+  overlapping traversals of one segment show it, because patrol trucks working an interchange come round its loop and
+  drive a short segment again the same way a minute or three after leaving it (every section has some), so dropping a
+  vehicle's repeats inside a few minutes loses real passes; only a traversal that begins before the vehicle's previous
+  one of the segment has ended is a re-run. Hazards: the crew trucks' trips before their units were installed, the
   UTC export window, the turnback segments. Stops: every row (the natural read), the installed and local-window filters
   without the overlap, the golden.
 
