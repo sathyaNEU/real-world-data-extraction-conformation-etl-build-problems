@@ -1,18 +1,18 @@
 {
   "task": "task486",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-21",
-  "slot_note": "wave 8, oviya1301 ETL lane; numbered from seed ET43 (mirror trade statistics), re-worlded because every lever in the mirror-trade world is a filed concept (valuation basis, partner attribution, recording time, classification) or a composition rate task481 just spent",
+  "slot_note": "wave 8, oviya1301 ETL lane; architecture 1 (a privacy-protected census release's small-area counts) spent at stage 4 on the judge's SEND_BACK and re-rooted fresh in the same task type on a new world",
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "fusing a formally private census release's nested block, block group and tract tables with the county's housing register into census-day counts of older residents for senior-services provider areas whose boundaries cut block groups at the town edges, for the state aging formula's filing",
+  "niche": "resolving a privacy-preserving linkage service's pairwise findings across four Continuums of Care's HMIS exports, a domestic violence coalition's comparable database and a health care for the homeless clinic into the people a regional homelessness authority served once each in FY2026, the count its 2027 regional fund is split on",
   "objective": "etl",
-  "shape": "14",
-  "decision_type": "conformed_dataset",
-  "answer_unit": "count",
-  "answer": "On census day 2020 Kelvane County's provider areas held, aged 60 and over and aged 75 and over: Wickmoor City 15,580 and 5,150, Fallowmere Town 4,960 and 1,660, North Kelvane 700 and 200, East Kelvane 560 and 190, South Kelvane 760 and 240, West Kelvane 1,060 and 310.",
-  "answer_source": "submission.md block 1; golden kelvane_provider_area_counts.xlsx, sheet Area plan table",
+  "shape": "03",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
@@ -20,69 +20,95 @@
     "none"
   ],
   "generators": [
-    "G2",
-    "G16",
-    "G12"
+    "G17",
+    "G2"
   ],
   "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "identity_resolution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "With the data cleaned and every rule read correctly, the analyst adds the release's block counts of residents aged 60 and over and 75 and over across each provider area's blocks and files North Kelvane at 850 residents aged 60 and over, every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, where building each area from its block groups' counts, split by census-day housing units wherever a boundary cuts a block group, gives about 700.",
-  "domain_test": "The deciding quantity is an area count fused from nested tables of a formally private release and an exact housing register, estimated the way data integration across sources with different error structures is done: each quantity taken from the source and level whose error does not accumulate when cells are added, here the block groups' counts of older residents split by census-day housing units, because counts forced to non-negative whole numbers consistent with their block group drift from dense blocks into sparse ones; replacing that fusion with the generic integration (summing the finest cells across the area) changes every rural and town count, and with another field's nouns the task still turns on the same estimator, so the swap is of the method, as the task type's own object requires.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:post-processing-truncation-bias-by-grain",
+  "analyst_test": "With the data cleaned and every rule read correctly, the analyst merges every record the linkage service linked, directly or through other records, counts the merged groups active in FY2026 and files the region and the downtown Continuum of Care short by about one person in fifty, the downtown share of the 2027 fund with them; resolving the service's pairwise findings into people so that no person holds two client records of one CoC's HMIS, each chain cut at its weakest link, gives the count, because a record carrying only a birth year links to every client of that name and year.",
+  "domain_test": "The deciding quantity is the number of distinct people across sources, the object of entity resolution: a linkage service's pairwise findings resolved into persons consistently with each source's own deduplication, because pairwise matches are not transitive; the field resolves them by constrained clustering over the match graph, and replacing that with the generic merge (connected components) changes every Continuum's count. Put another setting's nouns in and the task still turns on resolving pairwise matches into entities, which is this task type's own analysis rather than a backdrop for it.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/3",
   "layer1": [
-    "the release's block counts in a long extract (one row per block, sex and age group) against the block group and tract tables in the wide layout",
-    "block identifiers stored as numbers in the county's provider-area assignment export, leading zeros dropped, against the release's text identifiers",
-    "census-day housing unit counts in the release against the county's 2026 address points, which carry the subdivisions built since",
-    "group quarters residents (nursing and assisted living facilities) counted in blocks with no housing units",
-    "provider areas redrawn in 2023, the assignment file carrying an effective date per block"
+    "each CoC's HMIS export in the HUD HMIS CSV layout, one CoC still exporting the earlier destination code list and its own date format",
+    "the DV coalition's comparable database in its own workbook, birth year only and its own gender and race codes",
+    "the clinic's encounter extract with homeless status flagged per encounter, not per patient",
+    "the linkage service's pair file keyed by source-prefixed record keys, scores and per-field agreement codes, run across both years",
+    "approximate dates of birth flagged by data quality codes, enrollments left open in night-by-night shelters, projects moved between CoCs at a redraw"
   ],
-  "stakeholder_role": "the Kelvane Area Agency on Aging's planning and grants officer, who files the provider areas' census-day counts and service figures in the agency's FY2027 area plan update to the state",
-  "role_family": "programme_officer",
-  "scoring_unit": "other",
+  "stakeholder_role": "the data integration manager of the Calvera Valley Homeless Data Partnership, the nonprofit HMIS lead for the region's four Continuums of Care, who compiles the region's FY2026 count of people served and the 2027 allocation table the Regional Fund Committee adopts",
+  "role_family": "research_desk",
+  "scoring_unit": "units served",
   "spine": {
-    "file": "dhc2020_kelvane_blocks_sex_by_age.csv",
-    "rows": 130594,
-    "entity": "one count of residents of one sex and age group in one census block",
-    "grain": "block x sex x age group",
-    "source": "synthetic (constructed in the layout of a census block-level sex-by-age table extract)"
+    "file": "linkage_unit_pairs_fy2025_fy2026.csv",
+    "rows": 45000,
+    "entity": "one comparison of two client records from different sources by the linkage service",
+    "grain": "record pair",
+    "source": "synthetic (constructed in the layout of a privacy-preserving record linkage service's pairwise output)"
   },
-  "forum": "funder_or_donor",
+  "forum": "committee_or_panel",
   "forcing_event": "budget_or_appropriation",
   "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "United States, an unnamed state (Kelvane County, its towns, offices and people are fictional)",
+    "geography": "United States, an unnamed state (the Calvera Valley region, its counties, agencies and people are fictional)",
     "currency": "USD",
-    "org_type": "a nonprofit area agency on aging, designated by the state for one county, filing its FY2027 area plan update",
+    "org_type": "a nonprofit HMIS lead for four Continuums of Care, which runs the region's data integration and prepares the allocation of the four counties' pooled regional fund",
     "invented_names": [
-      "Kelvane County",
-      "Wickmoor",
-      "Fallowmere",
-      "Kelvane Area Agency on Aging"
+      "Calvera Valley",
+      "Calvera Valley Homeless Data Partnership",
+      "Mardell County",
+      "Ostry County",
+      "Pellam County"
     ],
     "people": [
-      "Priscilla Kemp",
-      "Donald Castillo"
+      "Kathleen Carlson",
+      "Andrew Camacho",
+      "Gina Bryant"
     ]
   },
   "deliverables": [
-    "kelvane_provider_area_counts.xlsx"
+    "calvera_2027_fund_allocation.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Small-area counts published with added noise and then forced to non-negative whole numbers that add up to the next level's count are pushed up where the true count is near zero and down where it is large, so an area assembled from the sparse cells of groups it shares with dense cells collects the drift; it has to be built from the groups' own counts and split inside a cut group by a measure the release leaves exact.",
-  "driver_concrete": "Kelvane County's six senior-services provider areas cut block groups at the edges of Wickmoor and Fallowmere; the release's block counts of residents aged 60 and over were noise-infused and then made non-negative and consistent with each block group's counts, so summing an area's blocks moves residents from the town blocks into the rural ones; building each area from its block groups' counts, split by the census housing unit counts where a boundary cuts a block group, restores them.",
-  "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, and every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is a count of distinct units across several lists that each hold a unit once, joined only by pairwise findings; a record carrying fewer identifiers matches several units at once, so merging every chain of findings joins units one list keeps apart, and the count follows only when the findings are resolved so that no group holds two rows of one list, each chain cut at its weakest finding.",
+  "driver_concrete": "Four Continuums of Care's HMIS exports, a domestic violence coalition's database and a homeless clinic's patients are linked by a privacy-preserving linkage service that reports scored pairwise links; outreach records with an approximate date of birth and the coalition's birth-year-only records link to every client of that name and birth year, so merging every chain of links joins two clients one CoC's HMIS keeps apart; resolving the links so no person holds two records of one source, cutting each such chain at its weakest link, restores them.",
+  "stump": "Merging every record the linkage service linked, directly or through other records, files the region and the downtown Continuum of Care short of the people they served in FY2026 and moves the 2027 fund away from downtown, because records carrying only a birth year link to every client of that name and year, so chains of links join people one CoC's own HMIS keeps apart.",
   "mechanism_source": "design_note",
   "differentiation": {},
-  "lineage": [],
-  "notes": "stump_strategy other: the decisive structure is a truncation bias from post-processing a noise-infused release to non-negative, consistent counts, read by geographic level; no listed strategy names it (grain_or_unit is the nearest and is about the decision's unit, not the release's bias). gate_g etl_conformance: the call is the provider areas' census-day counts conformed to the state formula's definition, and the choice of source and level inside the fusion is the stump; a judge may read it as method_or_model_selection. Domain: the world sits in survey research's census-register task type by nature, and the pairing with ETL was taken by task479's re-root an hour before this draw, so the build is filed in General Statistics' data-integration task type, which serves ETL and whose own object here is fusing sources with different error structures. Axes redrawn after registration when task251 v4's card, filed a quarter of an hour earlier, entered the window: forcing event statutory_or_regulatory_filing to budget_or_appropriation (the FY2027 allocation round the counts feed) and organisation local_government to nonprofit_or_charity (the area agency is a nonprofit the state designates, as many are), with the forum the state department that funds and approves the plan.",
-  "registered": "2026-10-21T00:39:03Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G16",
+        "G12"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "conformed_dataset",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:post-processing-truncation-bias-by-grain",
+      "driver": "Small-area counts published with added noise and then forced to non-negative whole numbers that add up to the next level's count are pushed up where the true count is near zero and down where it is large, so an area assembled from the sparse cells of groups it shares with dense cells collects the drift; it has to be built from the groups' own counts and split inside a cut group by a measure the release leaves exact.",
+      "niche": "fusing a formally private census release's nested block, block group and tract tables with the county's housing register into census-day counts of older residents for senior-services provider areas whose boundaries cut block groups at the town edges, for the state aging formula's filing",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "domain": "general-statistics-data-science",
+      "architecture": "v1",
+      "drawn": "2026-10-21",
+      "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, and every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
+      "fate": "spent at stage 4 on 2026-10-21: the determinism judge returned NOT_DETERMINISTIC (competing_defensible_answer, SEND_BACK): the release's block counts summed over each area were a defensible reading because nothing shipped separated them from the housing-unit split of the block groups' counts; both isolated readers missed the call but kept every ask figure (the replay cap and the prior-number death chain sat on the careful path); re-rooted fresh by the author's rule (no retirement)"
+    }
+  ],
+  "notes": "stump_strategy identity_resolution, carrying the strategy-risk warning: the decisive step is not a key reading but the resolution of pairwise findings into persons (the client's own Layer 2 pattern 3 for this task type), and reading every key and grain right still leaves connected components on the wrong count. gate_g etl_conformance: the call is the region's count of people served conformed across six sources and the resolution of the linkage service's findings inside that conformance is the stump; a judge may read it as method_or_model_selection (how pairwise matches become entities), which the first draft carried until the guard's same-driver test placed population, G2 or G12 and method selection on four older builds; G17 leads because the step is the rigor of resolving matches, with G2 (the pair grain against the person grain) beside it. Axes redrawn at the draw after task251 v5 entered the window: organisation local_government to nonprofit_or_charity (the region's HMIS lead is a nonprofit, as many are, and it prepares the allocation for the counties' committee), context artifact operations_log to published_series (the January point-in-time count by Continuum, published, answering how many people one night held), forum committee_or_panel (the counties' Regional Fund Committee).",
+  "registered": "2026-10-21T03:15:25Z"
 }

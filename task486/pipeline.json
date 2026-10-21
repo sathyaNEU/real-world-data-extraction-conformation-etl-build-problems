@@ -1,38 +1,39 @@
 {
   "task": "task486",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-21",
-  "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
-  "architecture": 1,
+  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region and Calvera short of the people they served in FY2026 and moves the 2027 fund away from Calvera, because records carrying only a birth year link to every client of that name and year, so chains of links join people one Continuum's own HMIS keeps apart.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-21"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): vocabulary overlap in the notes, instructions and policy; the assignment names areas beside block codes",
-    "reader": "two scored readers: call 0 of 12 each (block sum); asks 12 of 12 each (exit 1)"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective, repeat.deliverables)",
-    "nearest": "task471 v5 driver 0.07; surface 0 promoted"
+    "heart": "",
+    "nearest": "task471 v3 lineage 0.07"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (competing_defensible_answer)",
-    "disposition": "SEND_BACK",
-    "report": "determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "architecture 1 spent at stage 4 (judge SEND_BACK: the block sum a defensible reading; both readers kept every ask figure); re-root at stage 1 to architecture 2: a fresh draw whose decisive step the data force, with ask devices off the careful path",
+  "resume": "stage 2: design architecture 2 (the Calvera Valley region's six sources and the state linkage unit's pairwise findings): prototype the region with no undetectable wrong merge and every partial record's own person among its links, fix the ladder (sum of records, chained merge, resolved count), fork and closure tables, the asks on rows the count never reads, prompt.txt, then precut",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "architectures": []
 }
