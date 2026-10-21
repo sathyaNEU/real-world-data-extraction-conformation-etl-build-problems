@@ -1,10 +1,107 @@
-# task249 design note (architecture 5)
+# task249 design note (architecture 6)
 
 ## Draw
 
-Card `cards/task249.json`, architecture 5, a fresh draw on the retired number at the author's request ("whatever was
-retired do a fresh rebuild from scratch"), registered 2026-10-20. Architectures 1 to 4 are in the card's lineage with
-their fates and in `## Tried and rejected`. Guard verdict WARN, no BLOCK; test.same_puzzle_older and
+Card `cards/task249.json`, architecture 6, a fresh draw on 2026-10-21 at the author's standing instruction ("whatever
+was retired do a fresh rebuild from scratch") after architecture 5 was spent at stage 4 on 2026-10-20. Architectures 1
+to 5 are in the card's lineage with their fates and in `## Tried and rejected`; architecture 5's generator, pack and
+goldens leave the folder with this draw (history holds them). Guard verdict WARN, no BLOCK. test.same_puzzle_older and
+test.same_driver_older are NOTEs, differentiated on the card against task193 (v2) and task254 (v3). Each WARN, answered:
+driver.near task83 at 0.12 (a randomized holdout's effect conditioned on each unit's prior trend under a cap): the cap
+there limits an allocation; here it is a sitting's four hours, which couple a candidate's items, and nothing is
+allocated. overuse.gate_g (method_or_model_selection): the mechanism carrying the stump is the counterfactual the gain
+is estimated against, the direct excess on recognised items or the total with the time those items freed, and no other
+key is true of it. repeat.decision and repeat.question_form (designation_set, which, after task252): the decision is a
+designation of forms to flag and reassemble, so it is asked as which. The chart ships as a PDF page, so the deliverable
+set is not task252's.
+
+- **Pairing.** Psychology & Behavioral Science / psychometric-measurement-scale-validation, a task type serving
+  Descriptive and Data Quality Monitoring. Not banned against the last three live builds (task482 SROS ETL, task177,
+  task252 PES DQ). The object is the integrity of an examination's resit results, read form by form, and the call is
+  the monitoring decision the regulations attach to it: which forms' 2027 resit results carry the exposure flag in the
+  integrity report and are reassembled before the forms are used again.
+- **Niche.** The Institute of Healthcare Coding Professionals (Chennai), a professional body of medical coders, runs the
+  Certified Clinical Coder examination: four windows a year since February 2026 at six test centres, 170 items in a
+  four-hour open-book sitting (code books on the desk), 150 scored and 20 trial, forms drawn at random among those a
+  candidate has not sat, a results review that shows a failing candidate the scored items they got wrong with the
+  keys, resits in any later window. Each bank item is written from an item model; 2027's ten forms reuse 2026 items and
+  siblings written from the same models in different measure, and three of them (CC27-B, D and I) carry many case items
+  (an operative or discharge note to code), so four in ten candidates run out of time on them.
+- **The call.** Which of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting
+  from what an earlier sitting or results review had shown them (regulations 7.2 and 7.3), if any. Golden (prototype,
+  seed 2496): CC27-A, B, C, D, G and H; E, F, I and J under the line.
+- **Shape.** 10, a scorecard of ten forms against one line (10 verdicts), with a chart of every form's gain against the
+  line, the flagged forms marked (5 to 7 parts), and the asks: about 10 + 6 + 18 + 2 = 36 criteria before
+  instruction-following. Decision designation_set, answer set_of_items, question form which.
+- **Strategy.** causal_design: forms are drawn at random among those a candidate has not sat, so which items a resit
+  candidate had been shown before is an accident of the draw, and the comparison the design implies sits inside each
+  resit candidate; the decisive step is that the candidate's other items share the four hours with the recognised
+  ones. G7 decisive (the sitting's operating window: which items the four hours let a candidate answer), G16, G10 (one
+  item model is one memorable unit across item numbers); gap objective; Gate G method_or_model_selection; calibration
+  none; context artifact register (the Institute's register of sittings and results); Layer 2 family
+  estimand_identification, pattern own:exposure-spillover-through-the-time-limit.
+- **Forum, event, organisation.** committee_or_panel (the Examination Committee flags and orders reassembly),
+  statutory_or_regulatory_filing (the annual integrity report the Institute files with its accreditation body),
+  cooperative_or_member_body (a professional institute of its members). Role research_desk (the examinations
+  psychometrician).
+- **People** (`guard.py names --geo India --seed 249`): Abhiram Sarin, the Institute's examinations psychometrician, who
+  asks; Yahvi Reddy, the examinations manager. Neither appears in the prompt.
+- **Data-native sentence.** In an open-book coding examination the code lookups take the time, and a resit candidate
+  who recognises an item from an earlier sitting answers it without the lookup; on the forms whose case items run four
+  in ten candidates out of time, the minutes those recognised items free buy the resit candidate the end of the form,
+  and the items answered there are most of the gain on the two such forms that reuse a moderate number of items.
+- **As-of.** Monday 17 January 2028 (the request); the integrity report goes to the accreditation body on 31 January.
+  The call is retrospective by design: the monitored product is the 2027 resit results, and the decision it drives
+  (flag them, reassemble the forms before their next use) faces forward.
+- **Probes before the draw.** Architecture 6's first form (the gain on recognised items and their item-model siblings,
+  untimed) was landed by both call-only probes (sonnet and opus), each with a within-candidate Rasch or logistic
+  baseline; with the four-hour limit and latencies in the pack, both probes (sonnet and opus) filed CC27-A, C, G and H on
+  the same direct excess and neither read the time channel (`## Tried and rejected`).
+- **Sources.** The client's two-layer standard (estimand_identification: the control units touched by the treatment);
+  published psychometric practice: repeat-examinee and item-exposure effects read on repeated against new items within
+  candidates, item models and isomorphs as one memorable unit in automatic item generation, preknowledge read from fast
+  correct responses, speededness read from not-reached items and response latencies. task230 (vigilance decay reset by
+  task switches) and task144 (a spillover through followers) are the nearest shipped mechanisms; neither carries a
+  treatment's effect through a shared time limit.
+
+## Default path
+
+A strong analyst links every 2027 resit sitting to the candidate's earlier sittings and booked reviews, marks each
+scored item a candidate had met before (the same item at an earlier sitting, scored or trial, its key at a review, or
+an item written from the same item model), fits item difficulties on the window's first-time candidates, estimates each
+resit candidate's ability on the items they had not met (blanks treated as not reached) and sums the excess on the
+items they had met. The forms whose average excess exceeds one item are flagged.
+
+Ends on: CC27-A, C, G and H (the excess on recognised items alone). The lower rungs: the gain between sittings flags
+all ten (learning and regression after a failed sitting carry it), resit against first-time candidates on shared items
+none (ability carries it), the same item alone A and G, the raw within-candidate excess A, C, D and G (CC27-D reuses
+easy items).
+
+## Stump sentence
+
+A competent analyst reads each resit candidate's gain as the excess on the items an earlier sitting or review had shown
+them (or their siblings) over their own difficulty-adjusted performance on the other items, and flags CC27-A, C, G and
+H; the other items share the four hours with the recognised ones, and on CC27-B and D, where four in ten candidates run
+out of time, most of the gain is the items resit candidates reached at the end of the form only because the items they
+recognised took them less time.
+
+## Three rules
+
+Task type: psychometric-measurement-scale-validation (Psychology & Behavioral Science), tagged in the taxonomy for Data Quality Monitoring: the integrity of a certification examination's resit results, read form by form as the score each form's resit candidates gained from earlier exposure, monitored against the regulations' one-item line.
+Domain test: The deciding quantity is each form's repeat-examinee exposure gain, estimated the way psychometrics estimates it (item-level responses against first-time candidates' item difficulties within each resit candidate, an item model as one memorable unit, randomly drawn forms) and carried through the sitting's time limit the way speededness analysis reads latencies and not-reached items: an item recognised from an earlier sitting skips the code lookup, and on a speeded form the time it frees is spent on items at the end of the form that the candidate would otherwise not have reached.
+Swap: "the forms whose resit candidates gained more than one scored item from what an earlier sitting or review showed them, counting the items reached in the time the recognised items freed" put into a hospital's readmissions has nothing to stand on: no form draws items at random, no item model makes two questions one memory, no four-hour limit couples one patient's items, and no latency or blank at the end of a sitting records what time bought; with megawatt-hours the sentence loses every noun.
+Layer 1: the delivery vendor's results export (a response string and a latency string per sitting, blanks where no answer was recorded, the end reason), two export layouts across the year, the 2027 bank migration's new item numbers with a crosswalk, candidate numbers merged after re-registration, trial items interleaved at fixed slots, review bookings with cancellations. Nothing is placed to be caught.
+Layer 2: estimand_identification: the within-candidate comparison of recognised with unrecognised items is the design's own, and the step is that the unrecognised items are not untouched controls, because the sitting's four hours are shared and the time recognised items free is spent on them; the gain is the direct excess on recognised items plus the correct answers on the items reached only in the freed time.
+Decisive step: counting, in each resit sitting, the items the candidate reached only because the recognised items took less time than the candidate's own pace on unrecognised items says they would have (the time freed read from the latencies against first-time candidates' times on the same items, carried to where the four hours would have ended), and adding the correct answers among them to the excess on the recognised items.
+Not semantics: every field reads as what it is (the response, the seconds on each delivered item, a blank as no answer recorded, the end reason, the item model, the review booking), and no field, code, unit or definition says that a recognised item frees time, that freed time reaches further items, or that an unrecognised item's answer can come from an earlier sitting.
+Not rule application: regulation 7.2 files the gain as a counterfactual (the sitting's scored items answered correctly that would not have been had no earlier sitting or review shown the candidate any item) and says nothing on how it is estimated; no rule names latencies, speed, reach or time saved, so executing every filed rule leaves the estimate to the analyst, and the analyst's natural estimate counts only the items shown.
+Analyst test: A strong analyst who reads every file correctly, links resits through the register, counts the same item, the trial item, the review and the item-model sibling as exposure and estimates each resit candidate's excess on them against first-time candidates' difficulties at the candidate's own ability flags CC27-A, C, G and H; the same analyst who also carries the time the recognised items freed to the end of the four hours files the golden (checks.py runs both on the clean world and on the pack).
+Estimand: for each of the ten 2027 forms, the average over its 2027 resit sittings (sittings by a candidate who had sat before) of the number of the sitting's scored items the candidate answered correctly that they would not have answered correctly had no earlier sitting or results review shown them any item; flagged above 1.0 (CCC regulations 7.2 and 7.3).
+No decoy: nothing is planted: the responses, latencies and blanks are what the delivery system recorded, the forms what the Institute assembled, the reviews what candidates booked; the speeded forms are speeded because their case items take time, as case items do; no memo, draft or figure argues for any list, and no file ranks the forms by gain or names time saved.
+No certified replay: no certified or published figure sits in the pack; the regulations state the estimand and the line, the vendor's export records sittings, and no file states a form's gain or flag.
+Lesson: a within-unit comparison of treated with untreated parts measures the treatment's total effect only when the parts do not share a budget; under a binding limit the treatment's savings are spent on the untreated parts, so the comparison misses the effect exactly where the limit binds; no shipped build carries a treatment's effect through a shared time limit.
+
+## Tried and rejected`. Guard verdict WARN, no BLOCK; test.same_puzzle_older and
 test.same_driver_older are NOTEs, differentiated on the card against task230, task134, task149 and task452. Each WARN,
 answered: repeat.gate_g and overuse.gate_g (method_or_model_selection after task473): the mechanism that carries the
 stump is the choice of the calibration model, a relation conditioned on the hydraulic regime against one on turbidity
@@ -589,3 +686,20 @@ does not reach.
   two-valued at a glance; the ask devices (old flag letters decodable from the maintenance log, the lot's concentration
   in the quality statement) were found by both. A decisive step that is the domain's named reflex is no stump against
   a reader who knows the domain.
+- Architecture 6 draw, candidates set aside before the card was filed (2026-10-21): a cancer registry's completeness at
+  the publication cut-off (the never-registered share is model-bound: flow method, Ajiki and chain ladder all licensed,
+  and task194 died on a chain-ladder family); web page views under prerender and the back-forward cache (the
+  classification overlaps, and release notes announce both mechanisms); a business survey's dead units imputed as live
+  (identification needs a follow-up subsample or a continuity extrapolation); remote cognitive testing's device latency
+  (person fixed effects are the reflex, and the staggered switch is task230 v1's driver); maternal mortality's
+  pregnancy checkbox (the error's age gradient is a fitted extrapolation and the coding rules make the call semantic);
+  a test form's speededness on its own (the share running out of time is nearly observed in the time used at the
+  limit, and the cost needs an absolute reference only forms far apart in time demand supply).
+- Architecture 6's first form, untimed (the resit gain on items an earlier sitting or review had shown the candidate
+  and on their item-model siblings, the sibling the decisive rung): both call-only probes landed the golden. The sonnet
+  probe fitted a logistic model with a shift per exposure category, siblings their own categories; the opus probe
+  fitted Rasch difficulties on first sittings, took each resit's ability from its unexposed items, summed the residuals
+  on the exposed ones (same item, review, trial slot, sibling) and checked item misfit against unexposed resitters. With
+  forms drawn at random the within-candidate comparison is the design's own, and a strong reader marks every exposure
+  channel a column shows, so a retrospective gain on the items shown leaves the analysis nothing to get wrong. The
+  sibling stays as a lower rung; the decisive step moved to the four-hour limit the items share.

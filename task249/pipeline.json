@@ -1,34 +1,24 @@
 {
  "task": "task249",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "psychology-behavioral-science",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-20",
- "stump": "A competent analyst refits each station's turbidity regression (discharge or season added where significant), reproduces the published loads and re-issues no station, treating the calibration samples as a fair draw of the year when sand moves only on rising water and at four stations most samples were taken on rising water; conditioning the relation on rising water, read from the 15-minute discharge, puts SKB, JVB, FND and ESK over.",
- "architecture": 5,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-21",
+ "stump": "A competent analyst reads each resit candidate's gain as the excess on the items an earlier sitting or review had shown them (or their item-model siblings) over their own difficulty-adjusted performance on the other items and flags CC27-A, C, G and H; the other items share the four hours, and on CC27-B and D, where four in ten candidates run out of time, most of the gain is the items resit candidates reached only because the items they recognised took them less time.",
+ "architecture": 6,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
- },
- "leak": {
-  "leak_py": "REVIEW (as-of 2028-03-13), no LEAK",
-  "reader": "two scored readers, both exit 1: call 2 of 2, asks 28 of 28"
- },
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
-  "nearest": "task452 v1 at 0.07"
+  "heart": "",
+  "nearest": "task83 at 0.12 (guard check at the draw)"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW (ask pins: old flag letters, the export's nominal)",
-  "report": "determinism_check_report.md"
- },
+ "judge": null,
  "returned": [],
- "resume": "Architecture 5 spent at stage 4 on 2026-10-20: both scored readers landed the call (rising-limb conditioning, the field's hysteresis reflex) and all 28 ask figures. A sixth architecture is past the author file's cap, so it is the author's call: re-root on one of the four candidates in the design note's '## Candidates for architecture 6', or retire the number.",
+ "resume": "Architecture 6 drawn 2026-10-21 (card registered, WARN only). Stage 2: port the timed prototype (scratchpad t249a6/gen2: sim_t.py, routes_t.py, variants_t.py) into task249/generator, design the asks on files the call never reads (asks plan in the scratchpad), fork table, ladder, closure, prompt, precut. Prototype golden at seed 2496: CC27-A, B, C, D, G, H; the direct excess files A, C, G, H.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -53,7 +43,12 @@
   },
   {
    "architecture": 5,
-   "status": "spent 2026-10-20 at stage 4: both scored readers landed the call and every ask"
+   "status": "spent 2026-10-20 at stage 4: both scored readers landed the call and every ask",
+   "commit": "b312af4b"
+  },
+  {
+   "architecture": 6,
+   "status": "drawn 2026-10-21 (its first, untimed form landed by both call-only probes before the card was filed; the timed form missed by both)"
   }
  ]
 }

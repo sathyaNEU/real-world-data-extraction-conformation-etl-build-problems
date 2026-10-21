@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, PAUSED, drawn fresh next; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, architecture 6 drawn 10-21; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -46,19 +46,19 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: PAUSED 2026-10-20; architecture 5 spent at stage 4; architecture 6 is drawn fresh at the author's
-instruction of 2026-10-21 ("whatever was retired do a fresh rebuild from scratch").**
-- Architecture 5 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Vasslia Miljørådgiving's
-  sediment programme for a Western Norwegian hydropower company; golden SKB, JVB, FND and ESK over by the relation
-  conditioned on rising water. Every free gate green (470 checks, verifier, byte-identical, target.zip 9dd86516).
-- Both scored readers landed the call and all 28 ask figures (score_reader.py exit 1 twice): each tested sediment
-  hysteresis by reflex. Judge DETERMINISTIC, FIX_NOW on the ask pins, Gate H analytical.
-- Lesson carried to task251 and task252: a decisive step that is the domain's named reflex, or one a visible contrast
-  invites (task251 v4's filmed days against the year's occupancy), is no stump against a strong reader; put the
-  reachable correction on a rung and the decisive move on a second, data-native step nothing in the files invites.
-- The design note's four architecture 6 candidates were screened 10-21: interviewer effects from interpenetrated
-  pairs is task198's spent architecture 2, and anchor drift was rejected in task123's slot; the draw takes a fresh
-  candidate.
+**task249: DRAWN 2026-10-21, architecture 6 (a fresh rebuild at the author's standing instruction); stage 2 next.**
+- Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
+  Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: which
+  of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting from what an earlier
+  sitting or review had shown them (regulations 7.2, 7.3). Prototype golden CC27-A, B, C, D, G and H.
+- Decisive step: a recognised item skips the code lookup, and on the speeded forms (B, D, I) the time it frees buys
+  answers at the end of the form; the within-candidate excess on recognised items (siblings included), the probes'
+  route, files A, C, G and H. Its first, untimed form (siblings decisive) was landed by both call-only probes; the
+  timed form was missed by both (sonnet and opus each filed A, C, G, H). Card registered, WARN only.
+- Resume: port the scratchpad prototype (t249a6/gen2) into task249/generator, design the asks on files the call never
+  reads, then fork table, ladder, closure, prompt and precut.
+- Architecture 5 (sediment loads conditioned on rising water) was spent 10-20 at stage 4: both scored readers took the
+  field's hysteresis reflex. Its generator and pack left the folder with this draw (history holds them).
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

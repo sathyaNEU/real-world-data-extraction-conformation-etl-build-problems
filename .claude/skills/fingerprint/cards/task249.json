@@ -1,89 +1,83 @@
 {
   "task": "task249",
-  "architecture": "v5 (fresh rebuild at the author's request after retirement: a hydropower company's suspended-sediment inflow loads read through turbidity surrogates calibrated on samples the melt cycle and the flood callouts put on rising water)",
-  "drawn": "2026-10-20",
-  "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "sensor-calibration-measurement",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "the 14 suspended-sediment stations an environmental consultancy runs under contract on the glacier-fed, rain-fed and lake-outlet rivers feeding a Western Norwegian hydropower company's three reservoirs, each station's published 2027 load computed from a turbidity sensor calibrated to the field team's depth-integrated samples, and which loads misstate the sediment that passed by more than 15 per cent before the company's 2028 flushing plan uses them",
+  "architecture": "v6 (fresh rebuild at the author's request after architecture 5 was spent: a coding certification examination's 2027 resit results, the gain from earlier exposure carried through the sitting's four-hour limit)",
+  "drawn": "2026-10-21",
+  "slot_note": "architecture 6, a fresh draw at the author's standing instruction after architecture 5 was spent at stage 4 (2026-10-20); its first, untimed form was landed by both call-only probes before the card was filed (design note, Tried and rejected)",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "psychometric-measurement-scale-validation",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "a professional institute's clinical coding certification examination (four-hour open-book sittings, forms drawn at random, resits in any later window): how many scored items each 2027 form's resit candidates gained from what an earlier sitting or results review had shown them, counting the items at the end of the form they reached only because the items they recognised took them less time",
   "objective": "data-quality-monitoring",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Re-issue the published 2027 loads of four stations, SKB, JVB, FND and ESK, all over by more than 15 per cent; the other ten stand.",
-  "answer_source": "task249/submission.md, block 1",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
     "G7",
-    "G6"
+    "G16",
+    "G10"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "Refitting each station's turbidity-to-concentration regression on all its 2025 to 2027 samples (log-log, Duan's smearing), with discharge or season added where they test significant, reproduces the published loads and ends on no station re-issued, all 14 within 15 per cent (JVB alone with season), because the regression carries the rising-water samples' sand into every steady and falling hour; on the clean truth the same route files none and the rising-water term alone files SKB, JVB, FND and ESK (R3a, R3b in checks.py).",
-  "domain_test": "The deciding quantity is each station's true 2027 suspended-sediment load, estimated the way sediment monitoring estimates it, a turbidity surrogate calibrated on depth-integrated samples, but with the relation conditioned on whether the river was rising at each sample and at each 15-minute step, because sand is entrained only on rising water; with hospitals or megawatt-hours in place of rivers there is no hydrograph limb, no glacier melt cycle and no material that moves only while the water rises, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:surrogate-calibration-conditioned-on-hydrograph-limb",
+  "analyst_test": "A strong analyst who links every resit to the candidate's earlier sittings and reviews, reads item models, trial slots and blanks correctly and estimates each resit candidate's excess on the items an earlier sitting or review had shown them (or their item-model siblings) over their own difficulty-adjusted performance on the items none had, flags CC27-A, C, G and H and misses CC27-B and D, where most of the gain is the items resit candidates reached at the end of the four hours only because the items they recognised took them less time.",
+  "domain_test": "The deciding quantity is a credentialing examination's repeat-examinee exposure effect, estimated the way psychometrics estimates it (item-level responses against first-time candidates' difficulties, item models as one memorable unit, randomly drawn forms) and carried through the sitting's time limit the way speededness analysis reads response latencies and unanswered items; with hospital or energy nouns there are no forms, item models, code lookups, latencies or a four-hour limit and the task does not read.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:exposure-spillover-through-the-time-limit",
   "layer1": [
-    "the laboratory's former system's 2025 sheet in Norwegian headers beside the current system's sheet",
-    "corrected results kept beside the replaced ones",
-    "bottle numbers restarting every year",
-    "sample times in local time with their UTC offset against loggers in UTC",
-    "rows re-sent after logger outages",
-    "the load table inside the report's PDF",
-    "discharge published to three significant figures"
+    "two delivery vendors' sitting exports in different layouts",
+    "an item renumbering at the 2027 bank migration with a crosswalk",
+    "candidate records merged after re-registration",
+    "pretest items interleaved in the response strings",
+    "an item withdrawn from scoring after review"
   ],
-  "stakeholder_role": "the monitoring programme's data manager who reviews the published loads against the procedure's tolerance",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "the Institute's examinations psychometrician",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "sediment_stations_15min_2025-2027.parquet",
-    "rows": 1462321,
-    "entity": "one 15-minute logger row of one sediment station (discharge, turbidity, water temperature, flag)",
-    "grain": "station x 15 minutes",
+    "file": "sittings",
+    "rows": 0,
+    "entity": "one sitting by one candidate",
+    "grain": "candidate x window",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "season_or_peak",
-  "org_family": "professional_services",
+  "forum": "committee_or_panel",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "Norway, Vestland (inner Sogn)",
-    "currency": "NOK",
-    "org_type": "environmental consultancy running a hydropower company's sediment monitoring programme under contract",
+    "geography": "India",
+    "currency": "INR",
+    "org_type": "professional certification institute",
     "invented_names": [
-      "Vasslia Miljørådgiving AS",
-      "Fjellbrekke Kraft AS",
-      "Sogn Miljøanalyse AS",
-      "Ternvik (sonde maker)"
+      "Institute of Healthcare Coding Professionals",
+      "Certified Clinical Coder"
     ],
     "people": [
-      "Marianne Lunde",
-      "Laila Pedersen",
-      "Lise Pettersen"
+      "Abhiram Sarin",
+      "Yahvi Reddy"
     ]
   },
   "deliverables": [
-    "sediment_load_review_2027.xlsx",
-    "station_loads_2027.png"
+    "resit_exposure_review_2027.xlsx",
+    "resit_exposure_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is a total built by applying a relation calibrated on samples whose phase within a recurring rise-and-fall cycle is set by when the samplers can reach the site, while the relation itself differs between the rising and the falling phase, so it must be conditioned on the phase, read from a continuous record at another grain, before it is applied to every step of the record.",
-  "driver_concrete": "Each station's 2027 suspended-sediment load is rebuilt from a turbidity-to-concentration regression conditioned on whether the river was rising at each sample, read from the 15-minute discharge record, because sand is entrained only on rising water and the field team's working-hours samples on the glacier rivers (the melt cycle's daily rise) and the flood callouts on the rain rivers put most calibration samples on rising limbs.",
-  "stump": "A competent solver refits each station's turbidity regression (discharge or season added where significant), reproduces the published loads and re-issues no station, because it treats the calibration samples as a fair draw of the year when sand moves only on rising water and at four stations most samples were taken on rising water; conditioning the relation on rising water, read from the 15-minute discharge, files SKB, JVB, FND and ESK over.",
+  "driver": "The decisive quantity is a treatment's total effect on a unit made of many parts that share a capped budget: the treatment acts on some parts directly and also saves budget on them, and the saving buys outcomes on the untreated parts where the cap binds, so a comparison of treated with untreated parts inside each unit counts only the direct effect and misses the units where the cap binds.",
+  "driver_concrete": "Each 2027 form's resit gain is the resit candidates' excess on the items an earlier sitting or review showed them (or their siblings) plus the correct answers on the items they reached only because recognised items took less of the four hours than their own pace on unrecognised items would have taken, read from the item latencies; the direct excess alone misses the speeded forms.",
+  "stump": "A competent analyst estimates each resit candidate's excess on the items an earlier sitting or review had shown them (siblings included) against their own difficulty-adjusted performance on the other items and flags CC27-A, C, G and H; the other items share the four hours, and on the two speeded forms with moderate reuse (CC27-B and D) most of the gain is the items resit candidates reached only because the items they recognised took less time, so those forms are missed.",
   "lineage": [
     {
       "architecture": "v1",
@@ -104,16 +98,21 @@
       "architecture": "v4",
       "driver": "The decisive quantity is how many distinct units a count of identifiers represents when one class of unit loses its identifier after a fixed idle gap, recovered by replaying the expiry on the histories of units whose identifiers persist, matched only on attributes the expiry cannot alter, because a status that a quota held in the same expiring storage hands out differently on the two sides sorts the frequent returners unevenly between its groups.",
       "fate": "stage 4 round 3 (2026-10-19): one of five clean readers landed the call by a calibration on the signed-in WebKit browsers stratified by edition, cookie age and sessions per identifier; judge DETERMINISTIC APPROVE on three packs, both round 3 readers 0 of 24 ask figures; the number retired 2026-10-20 and re-rooted the same day to architecture 5 at the author's request (a fresh rebuild from scratch)"
+    },
+    {
+      "architecture": "v5",
+      "driver": "The decisive quantity is a total built by applying a relation calibrated on samples whose phase within a recurring rise-and-fall cycle is set by when the samplers can reach the site, while the relation itself differs between the rising and the falling phase, so it must be conditioned on the phase, read from a continuous record at another grain, before it is applied to every step of the record.",
+      "fate": "spent 2026-10-20 at stage 4: both scored readers landed the call (rising-limb conditioning, the field's hysteresis reflex) and all 28 ask figures"
     }
   ],
   "differentiation": {
-    "task230": "there a category count's net classification bias carried from a checked part to a late channel processed under a looser rule; here a sediment load rebuilt from a turbidity relation conditioned on whether the river was rising at each sample and each 15-minute step",
-    "task134": "there a conversion hazard by time since entry sizes a pool's inflow; here no duration clock enters, and the decisive quantity is the sediment carried per unit of turbidity, which is higher on rising water than on steady or falling water",
-    "task149": "there a hazard per hour that rises with the pace of work, read within each unit; here the sediment per unit of turbidity rises only while the river rises, read from the discharge record at each sample, and the calibration's share of rising samples is set by when the field team can reach the river",
-    "task452": "there the load comes from relating a sparsely sampled factor to a recorded one instead of averaging the samples; here that relation is already the network's method (the turbidity surrogate), and the decisive step is that the relation differs between rising and falling water, so the calibration samples' share of rising water must be conditioned out before the relation is applied to every step"
+    "task144": "task144's spillover runs through a network of followers to other units; here the effect stays inside one sitting and travels through a shared time limit to the items a candidate reaches, read from latencies and unanswered items.",
+    "task230": "task230 v2 read a vigilance clock resetting at task switches; here no fatigue or reset is involved: recognised items free time inside a capped sitting and the freed time buys answers at the end of the form.",
+    "task193": "task193 v2 reads an ordering's chance under no effect from where each unit's first exposure falls in its observation window; here the window is a sitting's four hours and the quantity is the extra answers that the time recognised items free buys at the end of the form, read from item latencies.",
+    "task254": "task254 v3 times a passage through stages whose delay builds while the unit travels; here nothing builds: recognised items take less of a capped sitting and the saving buys answers on the end-of-form items a within-candidate comparison treats as untouched."
   },
   "mechanism_source": "design_note",
-  "notes": "Architecture 5, a fresh rebuild on the retired number at the author's request (2026-10-20). Physical & Environmental Sciences / sensor-calibration-measurement for Data Quality Monitoring & Alerting. stump_strategy population_selection: the calibration samples are selected by when the field team can reach the river (working-hours rounds on the melt's daily rise, early flood callouts), a selection correlated with the regime that sets concentration per unit of turbidity, corrected by conditioning on that regime; the lane files non-random observation timing this way (task245). The draw first carried composition_mix (the samples' regime mix against the year's), which task473 held in the window; population_selection names the cause rather than its arithmetic. org_family professional_services: the programme is run under contract by an environmental consultancy for the hydropower company, the decision-maker being the consultancy's data manager; the first draft placed it in the company's own hydrology section (utility_or_infrastructure), which task472 held. Stage 3 (2026-10-20): calibration_form set to none (the depth-integrated samples are the regression's own raw material, not a separate organ confirming a filed criterion) and context_artifact to close_out_summary (the annual sediment report, the year's period-end loads), both read honestly after the surface screen paired the earlier labels with task248's. Spent 2026-10-20 at stage 4: both scored readers landed the call (rising-limb conditioning, the field's hysteresis reflex) and all 28 ask figures; paused for the author's call on a sixth architecture.",
-  "registered": "2026-10-20T08:10:22Z",
-  "architecture_spent": true
+  "notes": "Generators G7, G16, G10: the four-hour operating window decides which items a sitting lets a candidate answer, G16 the counterfactual chosen, G10 the item model as one memorable unit (a lower rung).",
+  "architecture_spent": false,
+  "registered": "2026-10-21T14:33:30Z"
 }
