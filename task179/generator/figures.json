@@ -1,0 +1,73 @@
+{
+ "call": {
+  "cases_w49_52": 5000
+ },
+ "components": {
+  "serial_interval_days": 13,
+  "R": 1.6,
+  "growth_per_day": 0.038,
+  "pairs": 2449
+ },
+ "rivals": {
+  "register_interval_days": 11,
+  "register_R": 1.5,
+  "register_cases_w49_52": 4000
+ },
+ "phase3_cut_pct": 50,
+ "context": {
+  "weeks_base": [
+   36,
+   41
+  ],
+  "weeks_window": [
+   49,
+   52
+  ],
+  "week_contacts": [
+   37,
+   39
+  ],
+  "weeks_lab": [
+   38,
+   39,
+   40,
+   41
+  ],
+  "week_phase3": 45,
+  "week_chart_first": 30,
+  "cartridge_run_minutes": 92,
+  "hours_window": 24
+ },
+ "a1_Tamberlow": {
+  "people": 3416,
+  "pct_completed": 73.4
+ },
+ "a1_Quillmarsh": {
+  "people": 2154,
+  "pct_completed": 72.7
+ },
+ "a1_Kettlebank North": {
+  "people": 1025,
+  "pct_completed": 65.1
+ },
+ "a1_Brindlecourt": {
+  "people": 491,
+  "pct_completed": 73.3
+ },
+ "a2_w38": {
+  "mean_hours": 12.7,
+  "pct_within_24h": 87.2
+ },
+ "a2_w39": {
+  "mean_hours": 12.9,
+  "pct_within_24h": 85.7
+ },
+ "a2_w40": {
+  "mean_hours": 14.1,
+  "pct_within_24h": 81.1
+ },
+ "a2_w41": {
+  "mean_hours": 14.8,
+  "pct_within_24h": 80.2
+ }
+}

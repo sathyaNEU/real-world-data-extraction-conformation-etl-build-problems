@@ -17,7 +17,7 @@ records sit under `## First-cell record` and in `## Tried and rejected`. Re-scre
    Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation matrix
    built from contact diaries of the season's regime); nothing here touches a contact matrix or an eigenvalue.
 3. Niche: Larrowmede Medical Relief, a medical humanitarian organisation running two treatment centres in the
-   fictional Marrisford Province of the fictional Republic of Saldane, projecting the cases its centres must plan
+   fictional Dunmarrow Province of the fictional Republic of Orvanthe, projecting the cases its centres must plan
    for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) of an outbreak of Tamberlow virus disease
    (a fictional haemorrhagic fever first described in this outbreak) under the provincial response plan's central
    scenario, from the province's line list and the response's transmission links.
@@ -45,17 +45,17 @@ records sit under `## First-cell record` and in `## Tried and rejected`. Re-scre
    probable or confirmed case); the 25,000-row file is the contact registry (one row per listing of a person).
 9. Deliverables: `tvd_projection_w49-w52.xlsx` (the projection, its components and the ask tables) and
    `tvd_projection_curve.svg` (observed and projected weekly cases with phase 3's start marked).
-10. World, fictional throughout: the Republic of Saldane and its Marrisford Province (provincial capital
-    Kettlebank), seven districts with cases (Tamberlow, Quillmarsh, Vossmarren, Orrin Delta, Brindlecourt, Kettlebank
-    North, Kettlebank South), the Marrisford Provincial Health Directorate, the Kettlebank public health laboratory
+10. World, fictional throughout: the Republic of Orvanthe and its Dunmarrow Province (provincial capital
+    Kettlebank), seven districts with cases (Tamberlow, Quillmarsh, Threlmarren, Wendlecombe, Brindlecourt, Kettlebank
+    North, Kettlebank South), the Dunmarrow Provincial Health Directorate, the Kettlebank public health laboratory
     and the Tamberlow field laboratory, Larrowmede Medical Relief and its two centres, and Tamberlow virus disease
     with its own provincial case definition. No real administrative geography, agency, product or report voice is
     used; `metadata.json` states that the setting is fictional and the data synthetic. The epidemiology is kept
     real: a growing outbreak (doubling about every 18 days), onset to notification to laboratory to outcome links,
-    contact tracing. Personas from `guard.py names --geo "Republic of Saldane" --seed 179`: Melanie Tate
-    (response epidemiologist, owner of the planning note), Gordon Campos (emergency coordinator), Kristin Sampson
+    contact tracing. Personas from `guard.py names --geo "Republic of Orvanthe" --seed 179`: Jacqueline Arnold
+    (response epidemiologist, owner of the planning note), Tanner Molina (emergency coordinator), Kristin Sampson
     (treatment-centre medical lead).
-11. As-of: the line list and the transmission links extracted Sunday 18 October 2026 at 23:59 (Saldane Standard
+11. As-of: the line list and the transmission links extracted Sunday 18 October 2026 at 23:59 (Orvanthe Standard
     Time, UTC+1); notification closes within four days of onset, so onsets to Sunday 11 October are complete; the
     laboratories' exports were pulled at 08:00 on Monday 19 October.
 12. Sources read for the domain (stumping 1.3): the cell's two library cards (renewal-equation Rt with onset timing
@@ -342,7 +342,7 @@ task160 (regional waves timed by their lag) and task162 (version uptake set by t
 candidate touches them.
 
 ## Tried and rejected
-- **Architecture v2's first world (a named real disease in a named real province):** declined on the real-places records concern, since its pack would be fabricated public-health records of a real outbreak; the mechanism was re-sited unchanged into the fictional Republic of Saldane.
+- **Architecture v2's first world (a named real disease in a named real province):** declined on the real-places records concern, since its pack would be fabricated public-health records of a real outbreak; the mechanism was re-sited unchanged into the fictional Republic of Orvanthe.
 
 - **Candidate 1: the district's requirement read from the areas' joint evenings, against the closed summers'
   area-by-area staffing, the areas treated as independent, a square-root pooling law and a pooling discount** (the
@@ -529,5 +529,7 @@ candidate touches them.
 
 ## Resume
 
-Architecture v2 re-sited 2026-10-21 into the fictional setting. Stage 3: generator, pack, goldens, submission.md and
-the free gates; stage 4 next (two scored readers and the judge).
+Stage 3 green on 2026-10-21 (architecture v2 in the fictional setting): build.py with 44 checks, the independent
+verifier, two byte-identical builds and target.zip; precut.py exit 0; figures_check.py, leak.py (REVIEW only),
+guard.py surface and heart, the producer audits and the golden-realism pass. Next: stage 4, two scored readers and
+the judge, run by the main session.

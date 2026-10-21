@@ -5,7 +5,7 @@
   "slot_note": "redraw, second new cell this round: the ambulance surge pool (v1, never carded) and the macro-econometrics cell are spent without a card; see the design note's Tried and rejected",
   "domain": "epidemiology-public-health",
   "subdomain": "infectious-disease-transmission-modeling",
-  "niche": "a medical humanitarian organisation running two treatment centres in the fictional Marrisford Province projecting December's Tamberlow virus disease cases under the provincial response plan's central scenario, from the outbreak's own line list and transmission links",
+  "niche": "a medical humanitarian organisation running two treatment centres in the fictional Dunmarrow Province projecting December's Tamberlow virus disease cases under the provincial response plan's central scenario, from the outbreak's own line list and transmission links",
   "objective": "forecasting",
   "shape": "single-figure",
   "decision_type": "quantity_figure",
@@ -45,11 +45,11 @@
     "transmission links entered with a certainty grade and links whose case was later discarded",
     "a weekly situation report counting by notification week, not onset week"
   ],
-  "stakeholder_role": "the organisation's medical planning lead for the Marrisford response",
+  "stakeholder_role": "the organisation's medical planning lead for the Dunmarrow response",
   "role_family": "capacity_planner",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "tvd_line_list_marrisford_2026-10-18.csv",
+    "file": "tvd_line_list_dunmarrow_2026-10-18.csv",
     "rows": 0,
     "entity": "one notified suspected, probable or confirmed case",
     "grain": "case",
@@ -59,24 +59,24 @@
   "forcing_event": "incident_or_complaint",
   "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Republic of Saldane, Marrisford Province (fictional)",
+    "geography": "Republic of Orvanthe, Dunmarrow Province (fictional)",
     "currency": "USD",
     "org_type": "international medical humanitarian organisation running treatment centres",
     "invented_names": [
-      "Republic of Saldane",
-      "Marrisford Province",
+      "Republic of Orvanthe",
+      "Dunmarrow Province",
       "Tamberlow virus disease",
       "Larrowmede Medical Relief",
       "Kettlebank",
       "Tamberlow",
       "Quillmarsh",
-      "Vossmarren",
-      "Orrin Delta",
+      "Threlmarren",
+      "Wendlecombe",
       "Brindlecourt"
     ],
     "people": [
-      "Melanie Tate",
-      "Gordon Campos",
+      "Jacqueline Arnold",
+      "Tanner Molina",
       "Kristin Sampson"
     ]
   },
@@ -101,6 +101,6 @@
     "task180": "task180 completes small events masked by a daily noise cycle at the instruments; here the missing records are the long intervals whose later event has not yet happened at the extract, corrected by conditioning each pair on its source's time to the cut-off"
   },
   "lineage": [],
-  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG. Re-sited on 2026-10-21 into a fictional setting (the Republic of Saldane, Marrisford Province, Tamberlow virus disease, Larrowmede Medical Relief): the first world named a real disease in a real province and was declined on that concern before anything but the card was committed. Mechanism, keys and measurements unchanged. At the re-site the decisive generator moved from G3 (task484 now holds it in the window) to G12 (absence of a record against a record of absence: the long intervals are missing from the links because their later event has not happened, not because they do not exist), which reads the step as honestly; G3 and G13 kept behind it.",
+  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG. Re-sited on 2026-10-21 into a fictional setting (the Republic of Orvanthe, Dunmarrow Province, Tamberlow virus disease, Larrowmede Medical Relief): the first world named a real disease in a real province and was declined on that concern before anything but the card was committed. Mechanism, keys and measurements unchanged. At the re-site the decisive generator moved from G3 (task484 now holds it in the window) to G12 (absence of a record against a record of absence: the long intervals are missing from the links because their later event has not happened, not because they do not exist), which reads the step as honestly; G3 and G13 kept behind it.",
   "registered": "2026-10-21T02:59:20Z"
 }

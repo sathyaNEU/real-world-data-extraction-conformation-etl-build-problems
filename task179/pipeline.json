@@ -4,24 +4,24 @@
  "status": "BUILD",
  "domain": "epidemiology-public-health",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
  "stump": "A competent analyst fits the serial interval to every source-to-case pair in the transmission links, takes the reproduction number implied by the growth of onsets over weeks 36 to 41, halves it from 2 November and projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only once its case has fallen ill.",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (2026-10-21): answer-word and vocabulary overlaps in the planning note, situation report and prompt for the reader; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS (2026-10-21)",
+  "nearest": "task251 v5 0.07"
  },
  "judge": {
   "verdict": "",
@@ -48,7 +48,7 @@
    "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
   }
  },
- "resume": "stage 3: architecture v2 re-sited into the fictional setting; generator, pack, goldens and the free gates, then stage 4.",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,
