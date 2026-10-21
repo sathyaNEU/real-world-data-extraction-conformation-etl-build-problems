@@ -85,6 +85,30 @@ So the line states the family the rule leaves open and the spread that family re
 spread of zero means the step is a reflex, whatever the documents say**, and the build is drawn elsewhere. That
 measurement costs a minute on the clean truth and would have failed all three at stage 2 rather than at an audit.
 
+**The convergence Gate C rests on is the reach Gate F pays, so they are one dial.** A build whose decisive
+step is an estimator choice has to make the licensed family agree, or the main call forks and the judge returns
+`underspecified_objective`. Agreement is exactly what makes the step a reflex. Measured on one build as a dial
+with both ends read: over 20 redraws of its world, 17 had a real separation and a unanimous family (nothing
+methodological decided the call, and the blind reader took it), 3 had a split family and the separation had
+collapsed to a lever-over-ceiling of 0.11 and 0.13. **No setting existed where the choice both mattered and was
+determinate**, and the build's own `## Tried and rejected` recorded adding sites to the winner so every variant
+sat in one bin, which is the trade written down as it was made. Six stage-2 repairs on six unrelated grounds
+refused on this, every one measuring a family spread of zero on the graded figure. So an estimator choice is not
+a decisive step on its own: what carries a stump is a step the data makes **necessary and unique** (the
+population the decision funds, the structure a pooled quantity hides, the quantity no file holds), where the
+family that skips it lands somewhere else and the family that takes it has nothing left to choose. Screen the
+dial before the draw: if closing Gate C would make the family unanimous, the ground is spent.
+
+**Count the family wide enough that its members are not one method wearing three hats.** The spread is measured
+over constructions that differ in what they *do*, not in how they are penalised. One build asserted maximum
+likelihood, Firth and Jeffreys agreeing within 0.0633 and called the method forced; those are three score
+modifications of a single likelihood and agree by construction. The members that actually forked its printed
+figure by 3.5 of its own units were the posterior summaries, the closed form, the Poisson route and the
+size-stratified recombination, and none was ever tested, so an open Gate C rode through three judge passes
+inside a passing assertion. The same defect for conditioning sits in 1.2; it holds for penalisation,
+parameterisation and prior alike. A family of score variants, or of one estimator at several tuning constants,
+measures nothing.
+
 **Price the cheapest construction, not the one the design intends.** The algebra clause in 1.6a is run on the
 *cheapest* licensed member of the decisive family, because that is the one a solver reaches. Measured three ways
 on three unrelated grounds: a blend-unmixing step was **affine** in its forcing column, so one regression on that

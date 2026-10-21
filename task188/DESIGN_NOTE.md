@@ -86,61 +86,94 @@ females the CO2 traps catch.
 
 ## Three rules
 
-- **Task type:** epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (serves Anomaly Detection):
-  weekly mosquito surveillance flags every zone with positive pools, and the call separates the real hot spot from
-  signals made by the pooling and by the trap that caught the females.
-- **Domain test:** the deciding quantity is the vector index, infected host-seeking Culex females per CO2 trap-night,
-  estimated the way arbovirus surveillance estimates it: CO2-trap abundance by species times the infection of those
-  same females by maximum likelihood from pools of varying size.
-- **Swap:** "which treatment zone gets the aerial application, by the estimated infected Culex females per CO2
-  trap-night" with schools put in reads "which school gets the grant, by the estimated infected pupils per CO2
-  test-night": a school has no pools of fifty, no trap-nights and no blood meals behind its counts, so the sentence and
-  the analysis both stop making sense.
-- **Layer 1:** the county laboratory's results arrive as tables in its PDF report (its reporting system); site codes
-  were migrated on 15 June 2026 (the district's database migration, crosswalk shipped); species codes differ between
-  the field database and the laboratories; field crews record the night a trap was set and laboratories the morning it
-  was collected; inconclusive pools are retested with the final result in a later row (laboratory QA); trap-nights are
-  lost to fan, CO2 and battery failures (field status codes). Nothing is placed to be caught; each resolves one way
-  from the shipped protocol, crosswalk and dictionary.
-- **Layer 2:** estimation_fit: the likelihood estimate of infection from pools of varying size, taken on the
-  population the index counts (the females the CO2 traps caught), not the minimum infection rate across every pool.
-- **Decisive step:** estimate each zone's infection by maximum likelihood from pools of varying size, on the pools of
-  its CO2-trap females, then multiply by their abundance per functioning CO2 trap-night. The prompt's own words
-  ("collected per CO2 trap-night") point a literal reader at the CO2-caught females, so the step that decides the call
-  is the estimator: positive pools over females tested names South Prairie, likelihood names Westbrook. A reader who
-  carries the gravid-trap pools into the index instead files Old Town, and one who does both files Riverside South.
-- **Not semantics:** every field (pool size, result, species, trap type, status) read correctly still leaves the
-  minimum infection rate, the common reading of an infection rate in this field, on South Prairie, and on Riverside
-  South for a reader who takes every pool the zone sent; no code, unit or definition flips the call.
-- **Not rule application:** no filed rule says how infection is estimated from pools or which pools stand for the
-  CO2-caught females; the protocol says how pools are made and tested, and executing every filed step still files
-  Riverside South.
-- **Analyst test:** a strong analyst who reads every field and the protocol correctly takes the infection rate the
-  way arbovirus surveillance states it, positive pools over mosquitoes tested, on the CO2 pools the prompt's wording
-  points at, and files South Prairie at 1.71 against Westbrook's 1.47; the same rate across every pool the zone sent
-  files Riverside South at 2.28, and the likelihood estimate across every pool files Old Town at 2.98.
-- **Estimand:** `prompt.txt` asks for the estimated number of West Nile virus-infected Culex females collected per
-  CO2 trap-night in each zone in the week ending 15 August 2026: population, the Culex tarsalis and Culex pipiens
-  females caught in the zone's CO2 traps on its functioning trap-nights that week; outcome, infected with the virus;
-  unit, females per trap-night; comparison, across the eight zones.
-- **No decoy:** nothing is planted to be caught: no bulletin, memo, briefing or prior ranking computes an index; the
-  county report gives pool results only; the human-case line list and the gravid-trap pools are real surveillance
-  streams with their own uses.
-- **No certified replay:** no published or certified index has to be reproduced and no back-test selects the method;
-  the method is forced by the pools themselves.
-- **Lesson:** a pooled-test infection rate is estimated by likelihood, on the population the index counts: reading a
-  positive pool as one infected mosquito saturates in hot, large pools, and gravid-trap females carry their feeding
-  history; no build on file estimates a rate from grouped tests or separates two sampling devices' populations.
+Re-answered on 2026-10-21 against the measured Gate F failure, with the verdict on each line rather than
+the claim the build shipped with. `generator/family_screen.py` is the measurement; six of the thirteen
+lines fail.
+
+- **Task type:** PASSES. epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection
+  (serves Anomaly Detection): weekly mosquito surveillance flags every zone with positive pools and the
+  call separates the real hot spot from signals made by the pooling and by the trap that caught the
+  females.
+- **Domain test:** PASSES on the quantity, FAILS on the estimator. The vector index, infected host-seeking
+  Culex females per CO2 trap-night, is the field's own measure of human risk and no other field's nouns
+  carry it. But the clause that made it the field's own analysis, "estimated by maximum likelihood from
+  pools of varying size", carries nothing: on the shipped draw all 12 licensed pooled-prevalence
+  constructions, the closed form at the mean pool size and the Poisson approximation among them, name the
+  same zone.
+- **Swap:** PASSES. "Which treatment zone gets the aerial application, by the estimated infected Culex
+  females per CO2 trap-night" with schools put in reads "which school gets the grant, by the estimated
+  infected pupils per CO2 test-night": a school has no pools of fifty, no trap-nights and no blood meals
+  behind its counts, so the sentence and the analysis both stop making sense.
+- **Layer 1:** PASSES, and is confirmed by the Gate F reader rather than contradicted by it. The county
+  laboratory's results as tables in its PDF, the 15 June site-ID migration and its 22 June second load,
+  species codes differing between the field database and the laboratories, set dates against pickup
+  mornings, retested inconclusive pools, trap-nights lost to fan, CO2 and battery failures: the reader
+  cleared the whole layer, keying the week-32 PDF of 1,155 pools with no mismatches, and the call did not
+  move. That is what Layer 1 is for and it is all it did.
+- **Layer 2:** FAILS. The family that was supposed to carry it has no spread. Enumerated once the filed
+  WHAT is read, the licensed constructions for the infected share of a pooled-tested population (maximum
+  likelihood for unequal pool sizes, Firth, Jeffreys, three posterior summaries, the equal-size closed form
+  at the mean size, the complementary log-log approximation, Chiang and Reeves, a binomial GLM with a
+  cloglog link and a log pool-size offset, and maximum likelihood on the full pools alone) return **1
+  distinct designated zone of 12** on the shipped draw and a mean of **1.15 over 20 redraws**. Where the
+  family does split, 3 of 20 redraws, the separation collapses with it (lever over ceiling 0.11 and 0.13).
+  So there is no methodological choice here that flips the call.
+- **Decisive step:** FAILS, in both halves. Half one, use the CO2-trap pools and not the gravid-trap pools,
+  is the population, which `determinism-check` section 1 requires filed, and the pack files it three times
+  over: protocol 3.1 says CO2 traps "draw females looking for a blood meal", 3.2 says gravid-trap females
+  are "looking for water to lay their eggs in, each of which has already taken a blood meal", and the
+  prompt itself says "per CO2 trap-night". Half two, estimate the infected share rather than count one
+  infected mosquito per positive pool, is pointed at by protocol 4.1's "pools hold up to 50 females", and
+  once taken it has the zero spread Layer 2 records above. The reader named 3.1, 3.2, 3.6, 4.1 and the
+  prompt's own wording, which is readability test 1 five times.
+- **Not semantics:** PASSES. Every field (pool size, result, species, trap type, status) read correctly
+  still leaves the minimum infection rate on South Prairie and, taken over every pool the zone sent, on
+  Riverside South; no code, unit or definition flips the call. This was never the build's problem.
+- **Not rule application:** FAILS, and the number is the reason. The question is not whether a filed rule
+  names the method, which none does, but whether anything is left to decide once every filed rule is read,
+  and nothing is: **the measured spread of the estimator family the filed rules leave open is 0 distinct
+  designated zones over 12 licensed constructions** (1.15 mean over 20 redraws), while the same family
+  spreads the printed call figure over **4 values, 2.1 to 2.4, an exact spread of 0.3503 against a printed
+  unit of 0.1, which is 3.5 printed units**. The residue the filed WHAT leaves moves the graded figure and
+  never the call, which is the worst of both gates at once: Gate F reads the step as a reflex and Gate C
+  reads the figure as forked.
+- **Analyst test:** PASSES as a sentence, FAILS as a prediction. It is true that the minimum infection rate
+  over every pool files Riverside South at 2.28 with Westbrook fourth at 1.47, and `checks.py` executes it
+  on the clean truth. It is also measured that a strong analyst does not go there: the easy route is wrong
+  in 18 of 20 redraws and the reader read 4.1 and 3.2 and stepped over it on the first pass.
+- **Estimand:** PASSES. `prompt.txt` asks for the estimated number of West Nile virus-infected Culex
+  females collected per CO2 trap-night in each zone in the week ending 15 August 2026: population, the
+  Culex tarsalis and Culex pipiens females caught in the zone's CO2 traps on its functioning trap-nights
+  that week; outcome, infected with the virus; unit, females per trap-night; comparison, across the eight
+  zones. Filed literally, and that is the trouble: filing it fully is mandatory and it leaves the method
+  with nothing to choose between.
+- **No decoy:** PASSES. Nothing is planted to be caught: no bulletin, memo, briefing or prior ranking
+  computes an index, the county report gives pool results only, and the human-case line list and the
+  gravid-trap pools are real surveillance streams with their own uses.
+- **No certified replay:** PASSES. No published or certified index has to be reproduced and no back-test
+  selects the method.
+- **Lesson:** FAILS. "A pooled-test infection rate is estimated by likelihood, on the population the index
+  counts" is a reflex rather than a lesson: 12 of 12 licensed constructions file the committed zone, and a
+  binomial GLM with a cloglog link and a log pool-size offset, which is the house reflex for a pooled
+  prevalence, files all four committed graded figures exactly. A model learns nothing from getting this
+  right that it did not already do by habit.
 
 ## Readability screen
+
+Re-run on 2026-10-21 against the measurement. The decisive rung's verdict moves from `silent` to
+`readable`: test 1 fires five times (protocol 3.1, 3.2, 3.6, 4.1 and the prompt's own "per CO2
+trap-night"), test 3 fires once (a binomial GLM with a cloglog link and a log pool-size offset is the
+house reflex for a pooled prevalence and files all four committed figures), and test 6 fires once (the
+construction is an identity in a two-group-by route, correlation +0.9972). `precut.py` therefore refuses
+the note on the `decisive rung silent` row, which is the correct signal: the rung is dead.
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
 | R-1 human cases this season by zone (Coulee Hills) | the case log is the risk signal everyone reads first | a zone column on every case | count cases by zone | none | none | a count | readable |
 | R0 CO2 catch times the minimum infection rate of every pool (Riverside South, the default) | none needed | pool results beside pool sizes | the common reading of an infection rate | none | none | one ratio per zone | readable |
-| R1 CO2-trap pools only, minimum rate (South Prairie) | the protocol says what each trap type collects | trap type on each collection, one join from a pool | stratify on a visible attribute | none | none | a filter | readable |
-| R2 maximum likelihood on every pool (Old Town) | none | pool sizes beside results; gravid pools near nine in ten positive | the pooled-testing estimator arbovirus workers know | none | none | a likelihood estimate | readable |
-| R3 (decisive) maximum likelihood on the CO2-trap pools only (Westbrook) | no sentence names an estimator, a pool population or what a gravid female has done | no column says which pools stand for the CO2-caught females; trap type sits on the collection, not the pool | each reflex lands elsewhere: likelihood alone on Old Town, trap-type strata with the minimum rate on South Prairie, catch alone on North Bottoms, infection alone on Maple Ridge | nothing shipped to back-test an index against | duplicates, keys and failures do not touch it | a likelihood estimate on a chosen subset of pools | silent |
+| R1 CO2-trap pools only, minimum rate (South Prairie) | protocol 3.1 and 3.2 say what each trap type draws and that a gravid female has already fed; the prompt says "per CO2 trap-night" | trap type on each collection, one join from a pool | stratify on a visible attribute | none | none | an identity in positive pools per trap-night, correlation +0.999976, maximum absolute difference 9.7e-03 | readable |
+| R2 maximum likelihood on every pool (Old Town) | protocol 4.1: pools hold up to 50 females, so a positive pool cannot hold exactly one | pool sizes beside results; gravid pools near nine in ten positive | the pooled-testing estimator arbovirus workers know | none | none | a likelihood estimate | readable |
+| R3 (decisive) maximum likelihood on the CO2-trap pools only (Westbrook) | five sentences compose into it: 3.1 and 3.2 give the population, 3.6 the denominator, 4.1 the pool sizes, and the prompt the trap type | trap type sits on the collection, one join from the pool | a cloglog GLM with a log pool-size offset files all four committed figures; 12 of 12 licensed constructions name the zone | nothing shipped to back-test an index against | duplicates, keys and failures do not touch it | an identity in (pools per trap-night) times minus the log of the negative share, correlation +0.9972, 18 of 20 redraws | readable |
 
 ## Semantic fork table
 
@@ -380,6 +413,90 @@ Pair ceiling: about 33 (the cracker at about 49 with the call and the chart's pr
   Notes), human_cases_by_zone.png (eight panels, Westbrook's bar set apart); target.zip, 12 files.
 - **Card current:** answer, answer source, spine rows 57,074.
 
+## Gate F re-screen
+
+The measurement that spends architecture 1, run on the generator's clean truth before any design work, by
+`generator/family_screen.py` (two runs byte-identical; 20 redraws salt the night-level draw for all eight
+zones). It answers the Gate F failure the wave 8 blind reader measured: a Sonnet reader at medium effort,
+holding only a fresh unzip of `target.zip`, `prompt.txt` and the figure names, took 18 of 18 call figures
+and 60 of 82 ask figures, filed the zone, the flight date, the rate to four decimals and the flip point,
+rebuilt infected females per CO2 trap-night species by species with the maximum-likelihood rate for pools
+of unequal size, scored both upper rungs in its own words, and named protocol 3.1, 3.2, 3.6, 4.1 and the
+prompt's own wording as what sent it there.
+
+**Screen 1, the estimator family.** Once the filed WHAT is read, the only thing left open is how the
+infected share of a pooled-tested population is estimated. Twelve constructions a competent analyst would
+use: maximum likelihood for unequal pool sizes (the golden), Firth, Jeffreys, posterior mean under a
+uniform and under a Jeffreys prior, posterior median, the equal-size closed form at the mean pool size,
+the complementary log-log approximation, Chiang and Reeves size-stratified, a binomial GLM with a cloglog
+link and a log pool-size offset, maximum likelihood on the full pools alone, and maximum likelihood by
+size stratum recombined.
+
+| Graded figure | Printed unit | Distinct values over the 12 | Exact spread | In printed units |
+|---|---|---|---|---|
+| designated zone | n/a | **1** (Westbrook) | 0 | 0 |
+| runner-up | n/a | **1** (South Prairie) | 0 | 0 |
+| the call's figure | 0.1 | 4 (2.1, 2.2, 2.3, 2.4) | 0.3503 | **3.5** |
+| the runner-up's figure | 0.1 | 3 (1.7, 1.8, 1.9) | 0.1140 | 1.1 |
+| the flip rate | 1 | 2 (18, 19) | 1.151 | 1.2 |
+
+Four of the twelve file all four committed figures, and one of those four is the cloglog GLM, which is the
+house reflex for a pooled prevalence and returns the golden to four decimals (2.3275). The shipped
+`checks.py` enumerated three members, maximum likelihood, Firth and Jeffreys, which are three score
+variants of one likelihood and therefore agree by construction; the posterior summaries (2.4) and the
+closed-form, Poisson and stratified routes (2.1 and 2.2) were never in the enumeration, so the APPROVE
+never tested them. That is `stumping` 1.2's warning executed: count the family wide enough to include the
+forms that skip the conditioning the decisive step adds.
+
+**Screen 2, the algebra on the cheapest licensed construction.** The one-group-by route to the call, in
+one line, with no pool size in it:
+
+    index(z) = sum over the two species of (CO2 pools / CO2 trap-nights) times (minus ln(share of pools negative))
+
+The designed construction is an identity in it: correlation **+0.997243** over the eight zones, the same
+designated zone and the same runner-up, three of the four committed graded figures (Westbrook 2.2 against
+2.3, South Prairie 1.8, flip 18), and over 20 redraws it names the golden zone in **18 of 20** and the
+golden runner-up as well in **17 of 20**. Why it is an identity, which is the clause the design never
+wrote down: with tested females T equal to the sum of the pool sizes, T times the maximum likelihood
+estimate tends to (pools) times (minus ln(1 minus the positive share)) as the pool size grows, so the pool
+size cancels out of the leading term. The laboratory split into pools of 50 and pools of 10, the
+per-species abundance table and the whole unequal-pool-size likelihood are decoration on the graded
+figure. Worse one rung down: the minimum infection rate index is **exactly** positive CO2 pools per
+functioning trap-night (correlation +0.999976, maximum absolute difference 9.7e-03, the residue being
+pools made from failed trap-nights), so rung 1 is one group-by and one divide. What separates rung 1 from
+rung 3 is only the saturation multiplier minus ln(1 minus q) over q, a monotone function of the share of a
+zone's pools that came back positive, and q is itself one group-by.
+
+**Screen 3, the lever against the ceiling, over 20 redraws.** The lever is the separation the decisive
+step buys on the graded quantity; the ceiling is the spread the licensed family puts on the same figure.
+
+| Measurement | Value |
+|---|---|
+| lever (graded units) | mean 0.513, range 0.020 to 1.298 |
+| ceiling (graded units) | mean 0.330, range 0.075 to 0.730 |
+| ceiling in printed units of the call figure | mean **3.3**, 3.5 on the shipped draw |
+| lever over ceiling | mean 1.77, range 0.11 to 4.73 |
+| redraws where the family splits on the designation | **3 of 20** (mean 1.15 distinct zones) |
+| redraws where the one-group-by route names the golden zone | 18 of 20 |
+| redraws where the easy route is wrong | 18 of 20 |
+
+One dial, both ends, and the two ends are the same end. In the 17 redraws where the separation is real the
+family is unanimous, so nothing methodological decides the call; in the 3 where the family splits the
+separation has collapsed to 0.11 and 0.13 of the family's own spread, so the call is seed-hostage. There is
+no setting of this world at which the estimator choice both matters and is determinate. The design bought
+the agreement deliberately (`## Tried and rejected`: four CO2 sites added to Westbrook so every variant
+sits inside one bin), which is exactly the trade that killed it: the convergence Gate C rests on is the
+reach Gate F pays.
+
+**Verdict: measured refusal.** The decisive step has no estimator content, so architecture 1 is spent and
+is not resumed. Nor can the ladder be re-sited on this pack: the only other candidate decisive steps here
+are which pools stand for the CO2-caught females (the population), which trap-nights count (the
+denominator and the unit) and which window (the window), and every one of them is a part of the estimand
+that `determinism-check` section 1 requires filed, so filing it is rule application and leaving it unfiled
+forks the main call. Re-rooting the ladder inside this world is therefore not available; the number needs a
+stage 1 re-root onto a quantity whose construction the data forces, with the forcing input in a second
+file at a finer grain than anything the pool table carries.
+
 ## Tried and rejected
 
 - Seed AD11's own world (route-origin paging at a cloud platform, RPKI invalid against not-found): no client domain's
@@ -405,3 +522,6 @@ Pair ceiling: about 33 (the cracker at about 49 with the call and the chart's pr
   readings (keep the first entry, keep the second, keep both) and the leak reader found the fork. The load now brings
   back the June Tuesday nights only (206 records), every one on a Wednesday the protocol schedules for no zone but
   Maple Ridge's enhanced fortnight.
+- Resuming architecture 1 after the wave 8 Gate F failure by moving the protocol's filed definitions (the plan in `pipeline.json`'s resume line): refused on measurement before any design work. The decisive step's estimator family returns 1 distinct designated zone of 12 licensed constructions on the shipped draw and 1.15 over 20 redraws, so the step is a reflex whatever the protocol says and rewording 3.1, 3.2, 3.6 and 4.1 cannot put content into it; the same family spreads the printed call figure 3.5 printed units, so the clauses were load-bearing for Gate C and not for Gate F (`generator/family_screen.py`, `## Gate F re-screen`).
+- Re-siting the decisive step onto which pools stand for the CO2-caught females, or onto which trap-nights count: each settles a part of the estimand (the population, the denominator and unit), which `determinism-check` section 1 requires filed, so filing it is rule application and leaving it unfiled forks the main call; dead on the WHAT screen with no hardening available.
+- Keeping the unequal-pool-size likelihood as the decisive construction on any redraw of this world: the lever and the ceiling are one quantity. Over 20 redraws the family splits on the designation in 3, and in those 3 the separation is 0.11 and 0.13 of the family's own spread; in the other 17 the family is unanimous. No setting makes the estimator choice both matter and be determinate, so the architecture is spent rather than mistuned.
