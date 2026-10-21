@@ -85,19 +85,25 @@ def workbook(path, fig):
         "numbers (register of number changes).",
         "Items shown before: the same item reached at an earlier sitting (scored or trial position), or an item written "
         "from the same item model; held reviews show again items the candidate had reached and answered wrongly.",
+        "Each gain above is the estimate on a logit baseline with the log-normal mean time. With an additive baseline, the "
+        "median time, or a finished sitting's items all counted as reached, the six flagged forms stay at %s or more and "
+        "the other four at %s or less." % (fig["family"]["lo_flagged"], fig["family"]["hi_other"]),
         "On items shown before: the candidate's correct answers on those items less what their ability on the other "
         "scored items gives, against the window's first-time candidates' share correct on each item.",
         "In the time those items freed: an item recognised from an earlier sitting takes less time than the candidate's "
         "own pace on the other items gives (the first-time candidates' mean log time on the item, shifted by the "
         "candidate's); the correct answers on the items reached only within that time count as gain.",
-        "Interrupted sittings (7.4): every sitting the event log shows a WS_FAIL on, every failure of a workstation's "
-        "computer, screen, keyboard or mouse the invigilators reported (the server logs none when the centre's link is "
-        "already down or the computer keeps running), and the sittings running at Kochi when the power cut of %s began; "
-        "pauses and changes of seat a candidate asked for are not failures." % fig["asks"]["power_day"],
-        "Sittings that ran in part without the link (7.4): the examination clock running while the workstation's client "
-        "had no link, from each NET_LOST to its next NET_BACK (or the sitting's end where none came), and from a "
-        "client's login to its NET_BACK where it logged in with the link already down; the Kochi sittings ran on the "
-        "UPS for about four minutes after the router went down.",
+        "Interrupted sittings (7.4): a WS_FAIL counts where the sitting stopped there (its next event is its resume or "
+        "its end); not where its own client carried on logging, nor after the sitting had ended (a finished candidate's "
+        "workstation switched off). A sitting that resumed on its own workstation after that workstation restarted counts, "
+        "reported or not, as do the failures of a computer, keyboard, mouse or screen the invigilators reported with the "
+        "spare it resumed on, and the sittings running at Kochi when the power cut of %s began. Pauses, changes of seat "
+        "a candidate asked for and the two hall stops are not failures." % fig["asks"]["power_day"],
+        "Sittings that ran in part without the link (7.4): the examination clock running while the centre's link was "
+        "down, from each client's NET_LOST (or its login, where it logged in with the link down) to its NET_BACK or the "
+        "sitting's end. A loss one workstation's client logged alone was that workstation's own connection, not the "
+        "centre's link. In %s every clock was stopped before the router went off and restarted after the link was back. "
+        "The Kochi sittings ran on the UPS for about four minutes after the router went down." % fig["asks"]["hall_stops"],
         "Sources: Pariksha results exports releases 3 and 4, form layouts, item bank snapshot of 31 December 2027 and the "
         "January renumbering, candidate number changes, review bookings, seat plan and workstation event log, "
         "invigilator incident reports.",

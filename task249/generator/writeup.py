@@ -30,6 +30,7 @@ def write(path, fig):
     offs = "\n".join("   - %s: %d" % (f, a["offline"][f]) for f in P.F27)
     db, dd = one(c["direct"]["CC27-B"]), one(c["direct"]["CC27-D"])
     bd = "about %s on each" % db if db == dd else "about %s and %s" % (db, dd)
+    fam = fig["family"]
     text = f"""## Tags
 
 **Domain:** Psychology & Behavioral Science (psychometric measurement and scale validation: repeat-examinee exposure on a certification examination's forms).
@@ -37,15 +38,15 @@ def write(path, fig):
 
 ## 1. Final Recommendation
 
-**Flag {words(flagged)}: each gave its 2027 resit candidates more than one scored item per resit sitting from what an earlier sitting or results review had shown them ({one(lo)} to {one(hi_flag)}), so their 2027 resit results carry the exposure flag and the six forms are reassembled before they are used again.**
-The other four forms are at {one(hi)} or less. Not the excess on the items shown alone, which flags only CC27-A, C, G and H: on CC27-B and CC27-D, where about {k["speeded_share_pct"]} per cent of candidates run out of the four hours, it is {bd}, and most of their gain is the items resit candidates reached only because the items they recognised took them less time. Not the gain over the previous sitting, which learning and the rebound after a failed sitting lift on nine forms.
+**Flag {words(flagged)}: each gave its 2027 resit candidates more than one scored item per resit sitting from what an earlier sitting or results review had shown them ({one(fam["lo_flagged"])} or more on every licensed estimate), so their 2027 resit results carry the exposure flag and the six forms are reassembled before they are used again.**
+The other four forms are at {one(fam["hi_other"])} or less. Not the excess on the items shown alone, which flags only CC27-A, C, G and H: on CC27-B and CC27-D, where about {k["speeded_share_pct"]} per cent of candidates run out of the four hours, it is about {one(fam["direct_bd"])}, and most of their gain is the items resit candidates reached only because the items they recognised took them less time. Not the gain over the previous sitting, which learning and the rebound after a failed sitting lift on nine forms.
 
 ## 2. Critical Components
 
-1. An item a resit candidate recognises (the same item reached at an earlier sitting, a trial item since placed on a form, or an item written from the same item model) takes them about **{k["recognised_time_pct"]} per cent** of the time their own pace on the other items gives.
-2. The excess on recognised items per resit sitting is {direct}; on CC27-B and CC27-D it is **{one(c["direct"]["CC27-B"])}** and **{one(c["direct"]["CC27-D"])}**.
-3. On CC27-B, CC27-D and CC27-I about {k["speeded_share_pct"]} per cent of first-time candidates run out of time; the time recognised items free lets CC27-B's and CC27-D's resit candidates answer **{one(c["reach"]["CC27-B"])}** and **{one(c["reach"]["CC27-D"])}** more items correctly at the end of the form, against **{one(c["reach"]["CC27-I"])}** on CC27-I, where little had been shown to them.
-4. The exposure gain per resit sitting: {gains}.
+1. An item a resit candidate recognises takes them less time than their own pace on the other items gives: about **{one(fam["time_same"])}** of it on the same item reached at an earlier sitting (a trial item since placed on a form included) and **{one(fam["time_sib"])}** on an item written from the same item model.
+2. The excess on recognised items per resit sitting is more than **{one(fam["direct_acgh_min"])}** scored item on CC27-A, C, G and H, and about **{one(fam["direct_bd"])}** on CC27-B and CC27-D.
+3. On CC27-B, CC27-D and CC27-I about **{k["speeded_share_pct"]} per cent** of first-time candidates run out of time; the time recognised items free lets CC27-B's and CC27-D's resit candidates answer about one more item correctly at the end of the form (**{one(fam["reach_bd_min"])}** or more), against about **{one(fam["reach_i"])}** on CC27-I, where little had been shown to them.
+4. The exposure gain per resit sitting is **{one(fam["lo_flagged"])}** or more on the six flagged forms and **{one(fam["hi_other"])}** or less on the other four, on a logit or additive baseline and with the mean or median time.
 
 ## 3. Step-by-Step Solution
 
@@ -55,8 +56,8 @@ The other four forms are at {one(hi)} or less. Not the excess on the items shown
 4. Summed each resit sitting's correct answers less the ability's expectation on the recognised scored items answered within the four hours as they would have run, and averaged per form (component 2).
 5. Gave each recognised item the time the first-time candidates' mean log seconds and the candidate's pace give (the log-normal mean), reran the sitting's clock with those times and counted the correct scored answers beyond where four hours would have ended (component 3).
 6. Added the two per resit sitting and averaged over each form's 2027 resit sittings; flagged above 1.0: {words(flagged)}.
-7. For each form, counted the 2027 sittings a failure of the workstation or its power interrupted: every sitting the event log shows a WS_FAIL on, every failure of a computer, screen, keyboard or mouse the invigilators' reports record (mapped to its sitting through the seat plan; the server logs no WS_FAIL when the centre's link is already down or the computer keeps running, and some failures it logged go unreported), and the sittings running at Kochi when the power cut of {a["power_day"]} began at 11:05, which the log does not show until they resumed; the pauses and the changes of seat a candidate asked for, though they also resume on a spare, are not failures.
-8. For each form, counted the 2027 sittings whose examination clock ran while their workstation's client had no link: from each NET_LOST to that client's next NET_BACK, or to the sitting's end where none came, and from the client's login (its tutorial, or its resume on a spare) to its NET_BACK where it logged in with the link already down and so logged no NET_LOST, overlapped with the sitting's SESSION_START to SESSION_END; a client still on its end screen logs the loss too, and the Kochi sittings ran about four minutes on the UPS after the router went down at 11:05.
+7. For each form, counted the 2027 sittings a failure of the workstation or its power interrupted, from each sitting's own events in the event log: a WS_FAIL where the sitting's next event is its SESSION_RESUME or its SESSION_END (not where its own client went on logging, a NET_LOST and NET_BACK no other client logged, nor after its SESSION_END, a finished candidate's workstation switched off); a SESSION_RESUME on the sitting's own workstation after that workstation's WS_REBOOT, a restart after a freeze whether or not it was reported; each failure of a computer, keyboard, mouse or screen the invigilators reported, through the spare and minute it names for the resume; and the sittings running at Kochi when the power cut of {a["power_day"]} began at 11:05; pauses, changes of seat a candidate asked for and the two hall stops are not failures.
+8. For each form, counted the 2027 sittings whose examination clock ran while the centre's link was down: each client's loss from its NET_LOST (or its login, where it logged in with the link already down and logged only NET_BACK) to its NET_BACK or the sitting's end, kept where other clients at the centre logged the same loss (a loss one client logged alone was that workstation's own connection), overlapped with the sitting's SESSION_START to SESSION_END less its stops (in {a["hall_stops"]} every clock stopped before the router went off and restarted after the link was back); the Kochi sittings ran about four minutes on the UPS after the router went down at 11:05.
 
 ## 4. Deliverable Answers
 

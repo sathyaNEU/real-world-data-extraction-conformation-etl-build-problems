@@ -3,8 +3,8 @@
 The analyst test (dataset-generation 7.1) runs on the clean truth first: the excess on recognised items alone, with
 every rule applied, files CC27-A, C, G and H; the same estimate with the items reached in the freed time added files
 the golden. Then the pack: the golden from target/ against the truth, the golden family, the ladder's rungs, the
-semantic forks (SF1 to SF15), the separation of the asks' rows from the call's, the asks' goldens against the
-world, the input gates."""
+semantic forks (SF1 to SF20), the separation of the asks' rows from the call's, the asks' goldens against the
+world and every route short of them, the input gates."""
 import datetime as dt
 import os
 import sys
@@ -78,7 +78,7 @@ def pack_checks(target, W, T):
     # the ladder
     ok(S.flagged(R, "direct") == DEFAULT, "default path %s" % S.flagged(R, "direct"))
     ok(S.flagged(R, "direct_blanks_wrong") == DEFAULT, "default path, blanks scored wrong")
-    ok(S.flagged(R, "same_item") == ["CC27-A", "CC27-G"], "R3b: the same item only stays on a wrong set")
+    ok(S.flagged(R, "same_item") == ["CC27-A"], "R3b: the same item only stays on a wrong set")
     ok(S.flagged(R, "raw_within") == ["CC27-A", "CC27-C", "CC27-D", "CC27-G"], "R3b: the raw within-candidate excess stays on a wrong set")
     ok(S.flagged(R, "between") == [f for f in P.F27 if f != "CC27-I"], "gain between sittings flags all but the speeded CC27-I")
     for f in ("CC27-B", "CC27-D"):
@@ -291,56 +291,135 @@ def rules(target, W, C, X):
        "%d distinct values)" % (len(set(A.values())), len(set(Bk.values()))))
 
 
+def centre_view(target, ev, use_first_back):
+    """the link item read centre by centre: each loss two or more clients at a centre logged, from its first NET_LOST
+    (or before anyone logged in) to its first or its last NET_BACK (or to the close), against every sitting there whose
+    clock ran inside it, the hall stops taken out"""
+    st = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
+    en = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
+    where = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["centre_code"].first()
+    halls = S.hall_stops(target, ev)
+    seat = pd.read_csv(os.path.join(target, S.FILES["seat"]), dtype=str)
+    sess = dict(zip(seat["booking_ref"], zip(seat["session_date"], seat["session"])))
+    net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t")
+    out = set()
+    for cc, g in net.groupby("centre_code"):
+        g = g.reset_index(drop=True)
+        part = (g["t"].diff() > pd.Timedelta(minutes=20)).cumsum()
+        for _, h in g.groupby(part):
+            if h[["booking_ref", "workstation"]].drop_duplicates().shape[0] < 2:
+                continue
+            lost = h[h["event"] == "NET_LOST"]["t"]
+            back = h[h["event"] == "NET_BACK"]["t"]
+            a = lost.min() if len(lost) else pd.Timestamp.min
+            if len(lost) and len(back) and back.max() < lost.max():
+                z = pd.Timestamp.max                              # down until the session closed
+            elif len(back):
+                z = back[back > a].min() if use_first_back else back.max()
+            else:
+                z = pd.Timestamp.max
+            here = {sess[b] for b in h["booking_ref"]}
+            for b in where[where == cc].index:
+                if sess[b] not in here:
+                    continue
+                run = [(st[b], en[b])]
+                for p, q in halls.get(b, []):
+                    run = [y for u, v in run for y in ([(u, v)] if q <= u or p >= v else [(u, p), (q, v)]) if y[0] < y[1]]
+                if any(max(u, a) < min(v, z) for u, v in run):
+                    out.add(b)
+    return out | S.power_cut(target, ev)
+
+
 def ask_checks(target, W, X, C):
-    A, booked = S.ask_a(target, D=C["D"])
-    truth = X["A"]["a"]["truth"]
+    a = X["A"]["a"]
+    sa = S.ask_a_sets(target)
+    A, booked = S.ask_a(target, D=C["D"], sets=sa)
+    truth = a["truth"]
     form_of = dict(zip(C["D"]["s"]["booking_ref"], C["D"]["s"]["form"]))
     want = {f: 0 for f in S.F27}
     for b in truth:
         want[form_of[b]] += 1
     ok(A == want, "ask A %s against %s" % (A, want))
     ok(set(booked) == set(truth), "ask A bookings")
-    Bk = S.ask_b(target, D=C["D"])
-    off = X["A"]["a"]["offline"]
+    sb = S.offline_sets(target, C["D"])
+    Bk = S.ask_b(target, D=C["D"], sets=sb)
+    ok(sb["golden"] == a["offline"], "ask B bookings")
     wantb = {f: 0 for f in S.F27}
-    for b in off:
+    for b in a["offline"]:
         wantb[form_of[b]] += 1
     ok(Bk == wantb, "ask B %s against %s" % (Bk, wantb))
-    moved = lambda v, g: sum(v[f] != g[f] for f in S.F27)
-    # SF13 a failure the server did not log (a client hung as the link dropped, a keyboard, mouse or screen) is in the
-    # invigilators' reports and on a spare: the log alone, and the reports alone, each miss
-    for pth in ("log_only", "reports_only"):
-        v, _ = S.ask_a(target, D=C["D"], path=pth)
-        ok(moved(v, A) >= 6, "SF13 ask A device: %s moves %d forms" % (pth, moved(v, A)))
-    # SF12 a change of seat a candidate asked for, and a pause, are not failures: every resume on a spare read as one
-    v, _ = S.ask_a(target, D=C["D"], path="spares_all")
-    ok(moved(v, A) >= 6, "SF12 ask A device: spares_all moves %d forms" % moved(v, A))
-    v, _ = S.ask_a(target, D=C["D"], path="no_power")
-    ok(moved(v, A) >= 4, "ask A device: the power cut left out moves %d forms" % moved(v, A))
-    # SF14 the roster read (every loss row) and a loss timed inside the clock only; SF15 a client that started without
-    # the link (a NET_BACK with none lost before it) dropped; SF17 the power cut's minutes on the UPS left out
-    for sf, pth, n in (("SF14", "lost_refs", 6), ("SF14", "lost_within", 6), ("SF15", "pairs_only", 6), ("SF17", "no_power", 4)):
-        v = S.ask_b(target, D=C["D"], path=pth)
-        ok(moved(v, Bk) >= n, "%s ask B device: %s moves %d forms" % (sf, pth, moved(v, Bk)))
-    # SF18 every loss with no NET_BACK began after its sitting's clock started, so the count does not depend on when
-    # the link came back
-    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str, keep_default_na=False)
-    ev["t"] = pd.to_datetime(ev["event_utc"])
-    st0 = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
-    early = 0
-    for _, g in ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t").groupby(["booking_ref", "workstation"]):
-        rows = list(g.itertuples(index=False))
-        for k, r in enumerate(rows):
-            if r.event == "NET_LOST" and not any(q.event == "NET_BACK" for q in rows[k + 1:]):
-                early += int(r.t < st0[r.booking_ref])
-    ok(early == 0, "SF18 no unanswered loss before its sitting's clock started (%d)" % early)
-    # every failure without a WS_FAIL is reported, and the spare and resume time each report names recover its sitting
-    gold_set = S.ask_a(target, D=C["D"])[1]
-    logged = S.ask_a(target, D=C["D"], path="ws_fail_only")[1]
-    ok({b for b, k in truth.items() if k in ("hang", "periph")} <= gold_set - logged, "the failures the server did not log are all reported")
-    # SF19 a report's workstation as typed (about one in ten typed wrong) against the spare and resume time it names
-    v, _ = S.ask_a(target, D=C["D"], path="union_by_ws")
-    ok(moved(v, A) >= 4, "SF19 ask A device: union_by_ws moves %d forms" % moved(v, A))
+    # every route short of the golden misses every form: SF12 (a WS_FAIL the sitting did not stop after: a finished
+    # candidate's workstation switched off, a workstation's own connection), SF13 (a restart in place with no WS_FAIL and
+    # no report), SF14 (an unexplained resume read as a failure takes the unreported pauses with it)
+    for pth in [k for k in S.A_ROUTES if k not in ("golden", "no_power")]:
+        v, _ = S.ask_a(target, D=C["D"], path=pth, sets=sa)
+        kept = [f for f in S.F27 if v[f] == A[f]]
+        ok(len(kept) <= (2 if pth == "ws_fail_only" else 0), "ask A route %s keeps %s" % (pth, kept))
+    # SF15 (a loss one client logged alone is not the centre's link), SF17 (a loss inside a hall stop ran no clock), SF19
+    # (a client that started without the link), the roster read
+    for pth in ("per_booking", "per_booking_stops", "centre_only", "pairs_only", "lost_refs"):
+        v = S.ask_b(target, D=C["D"], path=pth, sets=sb)
+        kept = [f for f in S.F27 if v[f] == Bk[f]]
+        ok(len(kept) <= (2 if pth == "lost_refs" else 0), "ask B route %s keeps %s" % (pth, kept))
+    v = S.ask_b(target, D=C["D"], path="no_power", sets=sb)
+    ok(sum(v[f] != Bk[f] for f in S.F27) >= 4, "SF20 the power cut's minutes on the UPS left out move the August forms")
+    # each device reaches every form
+    dev = a["device"]
+    for k in ("quiet_restart", "unreported_pause", "switch_off", "fault", "hall_stop"):
+        per = {f: 0 for f in S.F27}
+        for b in dev[k]:
+            per[form_of[b]] += 1
+        ok(min(per.values()) >= 1, "device %s reaches every form: %s" % (k, per))
+    # SF18 the edges: each client's own reading and the centre's (to its first or its last NET_BACK) file the same sittings
+    ev = S.events(target)
+    for first in (True, False):
+        cv = centre_view(target, ev, first)
+        ok(cv == sb["golden"], "SF18 the centre's reading (%s NET_BACK) against the clients': %d and %d differ"
+           % ("first" if first else "last", len(cv - sb["golden"]), len(sb["golden"] - cv)))
+    # every loss of a centre's link is logged by three or more clients; every loss one client logged alone is a
+    # workstation's own connection, eight minutes or more, with no other client logging anything there within 45 minutes
+    ivs, _, _ = S.net_intervals(ev)
+    net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])]
+    lone = [iv for iv in ivs if not iv["shared"]]
+    for iv in lone:
+        ok(iv["z"] - iv["a"] >= pd.Timedelta(minutes=8), "a lone loss lasts eight minutes or more")
+        near = net[(net["centre_code"] == iv["cc"]) & (net["t"] > iv["a"] - pd.Timedelta(minutes=45))
+                   & (net["t"] < iv["z"] + pd.Timedelta(minutes=45))]
+        ok(set(near["booking_ref"]) == {iv["b"]}, "a lone loss has no other client's row within 45 minutes")
+        ok(iv["b"] in dev["fault"], "a lone loss is a workstation's own connection")
+    ok({iv["b"] for iv in lone} == dev["fault"], "every fault logged alone")
+    for cc, g in net.groupby("centre_code"):
+        g = g.sort_values("t")
+        part = (g["t"].diff() > pd.Timedelta(minutes=20)).cumsum()
+        for _, h in g.groupby(part):
+            n = h[["booking_ref", "workstation"]].drop_duplicates().shape[0]
+            ok(n == 1 or n >= 3, "a loss of a centre's link logged by %d clients" % n)
+    # the hall stops: every sitting running then stopped before the router went and resumed after the link was back
+    halls = S.hall_stops(target, ev)
+    ok(set(halls) == dev["hall_stop"], "the hall stops' sittings")
+    # the switch-offs: a WS_FAIL after a submitted sitting's end, before the session closed
+    end = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
+    late = {r.booking_ref for r in ev[ev["event"] == "WS_FAIL"].itertuples() if r.t > end[r.booking_ref]}
+    ok(late == dev["switch_off"], "every WS_FAIL after its sitting's end is a switched-off finished workstation")
+    # realism: no spare or workstation serves two sittings at once; a reboot inside a sitting is that sitting's restart
+    spans = {}
+    for r in ev[ev["booking_ref"] != ""].itertuples(index=False):
+        lohi = spans.setdefault((r.centre_code, r.workstation, r.t.date()), {}).setdefault(r.booking_ref, [r.t, r.t])
+        lohi[0], lohi[1] = min(lohi[0], r.t), max(lohi[1], r.t)
+    clash = 0
+    for d in spans.values():
+        v = sorted(d.values())
+        clash += sum(int(a1 < z0) for (a0, z0), (a1, z1) in zip(v, v[1:]))
+    ok(clash == 0, "realism: no workstation or spare serves two sittings at once (%d clashes)" % clash)
+    resumes = {}
+    for r in ev[ev["event"] == "SESSION_RESUME"].itertuples(index=False):
+        resumes.setdefault((r.centre_code, r.workstation, r.booking_ref), []).append(r.t)
+    stray = 0
+    for r in ev[ev["event"] == "WS_REBOOT"].itertuples(index=False):
+        for b, (lo, hi) in spans.get((r.centre_code, r.workstation, r.t.date()), {}).items():
+            if lo < r.t < hi:
+                stray += int(not any(r.t < t <= r.t + pd.Timedelta(minutes=10) for t in resumes.get((r.centre_code, r.workstation, b), [])))
+    ok(stray == 0, "realism: a reboot inside a sitting is that sitting's restart (%d others)" % stray)
     # separation: the asks' devices sit in files the call never reads
     ok(set(BLD.PACK) - {"events", "seat", "incidents"} >= {"export3", "export4", "layouts", "bank", "crosswalk", "register",
                                                             "reviews"}, "separation")
@@ -350,7 +429,7 @@ def gates(target):
     files = [os.path.join(target, BLD.FILES[k]) for k in BLD.PACK]
     ok(all(os.path.exists(f) for f in files) and len(files) >= 10, "ten or more files")
     ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
-    n = sum(1 for _ in open(os.path.join(target, BLD.FILES["export3"]), encoding="utf-8")) - 1
+    n = max(sum(1 for _ in open(f, encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
     ok(n >= 25000, "the 25,000-row file: %d" % n)
     for f in files:
         if f.endswith((".csv", ".md", ".eml")):

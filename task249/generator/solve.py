@@ -238,7 +238,14 @@ def flagged(table, route):
 
 # ------------------------------------------------------------------ ask A: sittings interrupted
 FAILURE_WORDS = ("stopped responding", "froze", "hung", "not responding", "crashed", "frozen", "stopped working",
-                 "went blank")
+                 "went blank", "stuck")
+IST = pd.Timedelta(hours=5, minutes=30)
+
+
+def events(target):
+    ev = pd.read_csv(os.path.join(target, FILES["events"]), dtype=str, keep_default_na=False)
+    ev["t"] = pd.to_datetime(ev["event_utc"])
+    return ev
 
 
 def reports(target):
@@ -253,14 +260,19 @@ def reports(target):
     return out
 
 
+def local(d, hm):
+    """a report's local date and hh:mm as a UTC timestamp"""
+    hh, mm = map(int, hm.split(":"))
+    return pd.Timestamp(d) + pd.Timedelta(hours=hh, minutes=mm) - IST
+
+
 def power_cut(target, ev):
     """the sittings running at the centre when the reported power cut began"""
     hit = set()
     for cc, d, sess, tm, wsx, text in reports(target):
         if "power cut" not in text.lower():
             continue
-        hh, mm = map(int, tm.split(":"))
-        cut = pd.Timestamp(d) + pd.Timedelta(hours=hh, minutes=mm) - pd.Timedelta(hours=5, minutes=30)
+        cut = local(d, tm)
         sub = ev[(ev["centre_code"] == cc) & (ev["t"].dt.date == cut.date())]
         starts = sub[sub["event"] == "SESSION_START"].set_index("booking_ref")["t"]
         ends = sub[sub["event"] == "SESSION_END"].set_index("booking_ref")["t"]
@@ -268,6 +280,25 @@ def power_cut(target, ev):
             if t0 <= cut and ends.get(b, cut) > cut:
                 hit.add(b)
     return hit
+
+
+def hall_stops(target, ev):
+    """the reports of a whole hall's clocks stopped (a fire alarm, a switch of the building's power): each sitting
+    running then is stopped from that time to its own next SESSION_RESUME"""
+    stops = {}
+    for cc, d, sess, tm, wsx, text in reports(target):
+        m = re.search(r"All clocks stopped at (\d\d:\d\d)", text)
+        if not m:
+            continue
+        t = local(d, m.group(1))
+        sub = ev[(ev["centre_code"] == cc) & (ev["t"].dt.date == t.date())]
+        starts = sub[sub["event"] == "SESSION_START"].set_index("booking_ref")["t"]
+        ends = sub[sub["event"] == "SESSION_END"].set_index("booking_ref")["t"]
+        res = sub[(sub["event"] == "SESSION_RESUME") & (sub["t"] > t)].groupby("booking_ref")["t"].min()
+        for b, t0 in starts.items():
+            if t0 < t < ends.get(b, t) and b in res.index:
+                stops.setdefault(b, []).append((t, res[b]))
+    return stops
 
 
 def per_form(D, bookings):
@@ -280,94 +311,193 @@ def per_form(D, bookings):
     return counts
 
 
-def ask_a(target, T=None, D=None, path="golden"):
-    """each 2027 sitting a failure of the candidate's workstation or its power interrupted: every WS_FAIL (the server's),
-    every failure of a workstation's computer, keyboard, mouse or screen the invigilators reported (a change of seat at a
-    candidate's request and a pause are not failures), and the sittings running at Kochi when the power cut began"""
-    j = lambda k: os.path.join(target, FILES[k])
-    ev = pd.read_csv(j("events"), dtype=str, keep_default_na=False)
-    ev["t"] = pd.to_datetime(ev["event_utc"])
-    seat = pd.read_csv(j("seat"), dtype=str)
-    D = D or load(target)
-    seat_key = {(r.centre_code, r.session_date, r.session, r.workstation): r.booking_ref for r in seat.itertuples()}
-    logged = set(ev[ev["event"] == "WS_FAIL"]["booking_ref"])
-    on_spare = ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.startswith("SP")]
-    resumed = {}
-    for r in on_spare.itertuples(index=False):
-        loc = r.t + pd.Timedelta(hours=5, minutes=30)
-        resumed[(r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M"))] = r.booking_ref
-    by_spare, by_ws, moved = set(), set(), set()
+def ask_a_sets(target, ev=None):
+    """the sets a response could build for ask A: each WS_FAIL as logged, inside its sitting, or followed by the
+    sitting's stop; the restarts in place (a WS_REBOOT of the sitting's workstation before its resume there); the
+    failures, pauses and changes of seat the invigilators reported; the power cut"""
+    ev = events(target) if ev is None else ev
+    sit = ev[ev["booking_ref"] != ""].sort_values(["t", "event"])
+    by_b = {b: g for b, g in sit.groupby("booking_ref")}
+    end = sit[sit["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
+    out = {k: set() for k in ("fail_any", "fail_in", "fail_stop", "restarted", "spare_rep", "inplace_rep", "late_rep",
+                              "unexplained")}
+    for r in sit[sit["event"] == "WS_FAIL"].itertuples(index=False):
+        out["fail_any"].add(r.booking_ref)
+        if r.t < end.get(r.booking_ref, r.t):
+            out["fail_in"].add(r.booking_ref)
+        g = by_b[r.booking_ref]
+        nxt = g[(g["t"] > r.t) & (g["event"] != "WS_FAIL")]
+        if len(nxt) and nxt.iloc[0]["event"] in ("SESSION_RESUME", "SESSION_END"):
+            out["fail_stop"].add(r.booking_ref)
+    boots = {}
+    for r in ev[ev["event"] == "WS_REBOOT"].itertuples(index=False):
+        boots.setdefault((r.centre_code, r.workstation), []).append(r.t)
+    resumes = sit[sit["event"] == "SESSION_RESUME"]
+    for r in resumes.itertuples(index=False):
+        if r.workstation.startswith("SP"):
+            continue
+        g = by_b[r.booking_ref]
+        prev = g[g["t"] < r.t]["t"].max()
+        if any(prev < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
+            out["restarted"].add(r.booking_ref)
+    at_min = {}
+    for r in resumes.itertuples(index=False):
+        loc = r.t + IST
+        at_min.setdefault((r.centre_code, loc.date().isoformat(), loc.strftime("%H:%M")), []).append(r)
+    explained = set()
     for cc, d, sess, tm, wsx, text in reports(target):
         low = text.lower()
-        if "power cut" in low:
-            continue
+        times = re.findall(r"\b(\d\d:\d\d)\b", text)
         sp = re.search(r"\b(SP\d\d)\b", text)
-        when = re.findall(r"\b(\d\d:\d\d)\b", text)
-        b_sp = resumed.get((cc, d, sp.group(1), when[-1])) if sp and when else None
-        if "asked to move" in low:
-            moved.add(b_sp)
-        elif any(w in low for w in FAILURE_WORDS):
-            if b_sp:
-                by_spare.add(b_sp)       # the spare and the time it resumed name the sitting
-            b = seat_key.get((cc, d, sess, wsx))
-            if b:
-                by_ws.add(b)             # the workstation as the invigilator typed it
-    power = power_cut(target, ev)
-    spare = set(on_spare["booking_ref"])
-    out = {"golden": logged | by_spare | power, "log_only": logged | power, "reports_only": by_ws | power,
-           "union_by_ws": logged | by_ws | power, "spares_all": logged | spare | power, "no_power": logged | by_spare,
-           "ws_fail_only": logged}[path]
+        if "all clocks stopped" in low or "power cut" in low:
+            continue
+        failure = any(w in low for w in FAILURE_WORDS)
+        hits = []
+        if times:
+            cands = at_min.get((cc, d, times[-1]), [])
+            if sp:
+                hits = [q for q in cands if q.workstation == sp.group(1)]
+            else:
+                hits = [q for q in cands if not q.workstation.startswith("SP")]
+                if len(hits) > 1 and any(q.workstation == wsx for q in hits):
+                    hits = [q for q in hits if q.workstation == wsx]
+        for q in hits:
+            explained.add(q.booking_ref)
+        if not failure:
+            continue
+        if sp and hits:
+            out["spare_rep"] |= {q.booking_ref for q in hits}
+        elif hits:
+            out["inplace_rep"] |= {q.booking_ref for q in hits}
+        elif not sp:
+            t = local(d, tm)
+            near = sit[(sit["event"] == "WS_FAIL") & (sit["centre_code"] == cc) & (sit["t"] >= t - pd.Timedelta(minutes=1))
+                       & (sit["t"] <= t + pd.Timedelta(minutes=5))]
+            out["late_rep"] |= set(near["booking_ref"])
+    halls = hall_stops(target, ev)
+    for r in resumes.itertuples(index=False):
+        if r.booking_ref not in explained and r.booking_ref not in halls and not r.workstation.startswith("SP"):
+            out["unexplained"].add(r.booking_ref)
+    out["power"] = power_cut(target, ev)
+    return out
+
+
+A_ROUTES = {
+    "golden": ("fail_stop", "restarted", "spare_rep", "power"),
+    "v2_route": ("fail_any", "spare_rep", "inplace_rep", "late_rep", "power"),
+    "in_sitting": ("fail_in", "spare_rep", "inplace_rep", "late_rep", "power"),
+    "stopped_fail": ("fail_stop", "spare_rep", "inplace_rep", "late_rep", "power"),
+    "reboots": ("fail_any", "restarted", "spare_rep", "power"),
+    "in_sitting_reboots": ("fail_in", "restarted", "spare_rep", "power"),
+    "unexplained": ("fail_stop", "spare_rep", "inplace_rep", "unexplained", "power"),
+    "ws_fail_only": ("fail_any",),
+    "no_power": ("fail_stop", "restarted", "spare_rep"),
+}
+
+
+def ask_a(target, T=None, D=None, path="golden", sets=None):
+    """each 2027 sitting a failure of the candidate's workstation or its power interrupted: a WS_FAIL the sitting stopped
+    after (its next event a resume or its end), a restart of its workstation before it resumed there, a failure of a
+    computer, keyboard, mouse or screen the invigilators reported with the spare it resumed on, and the sittings running
+    at Kochi when the power cut began; pauses, changes of seat and the two hall stops are not failures"""
+    D = D or load(target)
+    sets = sets or ask_a_sets(target)
+    out = set().union(*[sets[k] for k in A_ROUTES[path]])
     return per_form(D, out), out
 
 
-def offline_sets(target, D=None):
-    """each 2027 sitting's link state as its clients logged it: a NET_LOST to the client's next NET_BACK, or to the
-    sitting's end when none came; a NET_BACK with no NET_LOST before it since the client logged in (at the tutorial, or
-    at the resume on a spare) means the client started without the link; overlapped with the sitting's clock"""
-    j = lambda k: os.path.join(target, FILES[k])
-    ev = pd.read_csv(j("events"), dtype=str, keep_default_na=False)
-    ev["t"] = pd.to_datetime(ev["event_utc"])
+def net_intervals(ev):
+    """each client's logged link state: (booking, workstation) -> intervals from a NET_LOST to its next NET_BACK (or to
+    the sitting's end), or from the client's login to a NET_BACK with no NET_LOST before it; and whether another client
+    at the centre logged the same loss"""
     st = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
     en = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
     login = {}
-    for r in ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME"])].itertuples(index=False):
+    for r in ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME"])].sort_values("t").itertuples(index=False):
         login.setdefault((r.booking_ref, r.workstation), r.t)
     net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t")
-    sets = {k: set() for k in ("golden", "pairs_only", "lost_refs", "lost_within")}
+    out = []
     for (b, wsx), g in net.groupby(["booking_ref", "workstation"]):
         if b not in st.index:
             continue
-        s0, e0 = st[b], en.get(b, st[b])
-        ivs, lone, opened = [], [], None
+        e0 = en.get(b, st[b])
+        opened, lone = None, False
         for r in g.itertuples(index=False):
             if r.event == "NET_LOST":
-                sets["lost_refs"].add(b)
-                if s0 <= r.t <= e0:
-                    sets["lost_within"].add(b)
                 if opened is None:
                     opened = r.t
             elif opened is not None:
-                ivs.append((opened, r.t))
+                out.append(dict(b=b, ws=wsx, cc=r.centre_code, a=opened, z=r.t, lone=False))
                 opened = None
             else:
-                lone.append((login.get((b, wsx), s0), r.t))
-        if opened is not None:
-            ivs.append((opened, e0))
-        if any(max(s0, a) < min(e0, z) for a, z in ivs):
-            sets["pairs_only"].add(b)
-        if any(max(s0, a) < min(e0, z) for a, z in ivs + lone):
+                out.append(dict(b=b, ws=wsx, cc=r.centre_code, a=login.get((b, wsx), st[b]), z=r.t, lone=True))
+        if opened is not None:            # down until the client logged off (a finished candidate's too)
+            out.append(dict(b=b, ws=wsx, cc=g.iloc[-1]["centre_code"], a=opened, z=max(e0, opened), lone=False))
+    # a loss is the centre's when another client there logged a NET row while it lasted
+    rows = net[["centre_code", "booking_ref", "workstation", "t"]].values.tolist()
+    by_cc = {}
+    for cc, b, wsx, t in rows:
+        by_cc.setdefault(cc, []).append((t, b, wsx))
+    for v in by_cc.values():
+        v.sort()
+    for iv in out:
+        lo, hi = iv["a"] - pd.Timedelta(minutes=2), iv["z"] + pd.Timedelta(minutes=2)
+        iv["shared"] = any(lo <= t <= hi and (b, wsx) != (iv["b"], iv["ws"]) for t, b, wsx in by_cc[iv["cc"]])
+    return out, st, en
+
+
+def offline_sets(target, D=None):
+    """the sets a response could build for the link item"""
+    ev = events(target)
+    ivs, st, en = net_intervals(ev)
+    halls = hall_stops(target, ev)
+
+    def running(b):
+        run = [(st[b], en[b])]
+        for a, z in halls.get(b, []):
+            nxt = []
+            for p, q in run:
+                if z <= p or a >= q:
+                    nxt.append((p, q))
+                    continue
+                if p < a:
+                    nxt.append((p, a))
+                if z < q:
+                    nxt.append((z, q))
+            run = nxt
+        return run
+
+    sets = {k: set() for k in ("golden", "per_booking", "per_booking_stops", "centre_only", "pairs_only", "lost_refs")}
+    for iv in ivs:
+        b = iv["b"]
+        hit_clock = max(st[b], iv["a"]) < min(en[b], iv["z"])
+        hit_run = any(max(p, iv["a"]) < min(q, iv["z"]) for p, q in running(b))
+        if hit_clock:
+            sets["per_booking"].add(b)
+        if hit_run:
+            sets["per_booking_stops"].add(b)
+        if iv["shared"] and hit_clock:
+            sets["centre_only"].add(b)
+        if iv["shared"] and hit_run:
             sets["golden"].add(b)
+            if not iv["lone"]:
+                sets["pairs_only"].add(b)
+    sets["lost_refs"] = set(ev[ev["event"] == "NET_LOST"]["booking_ref"])
     power = power_cut(target, ev)
     sets["no_power"] = set(sets["golden"])
-    sets["golden"] = sets["golden"] | power
+    for k in ("golden", "per_booking", "per_booking_stops", "centre_only", "pairs_only"):
+        sets[k] |= power
     return sets
 
 
-def ask_b(target, D=None, path="golden"):
-    """each 2027 sitting whose examination clock ran while its workstation had no link to the provider, the Kochi
-    power cut's minutes on the UPS with the router down included"""
+def ask_b(target, D=None, path="golden", sets=None):
+    """each 2027 sitting whose examination clock ran while the centre's link was down, as its client logged the loss:
+    a loss one client logged alone is that workstation's own connection, not the centre's link, and a loss inside a hall
+    stop (every clock stopped before the link went) ran no clock; the Kochi power cut's minutes on the UPS with the
+    router down count"""
     D = D or load(target)
-    return per_form(D, offline_sets(target, D)[path])
+    sets = sets or offline_sets(target, D)
+    return per_form(D, sets[path])
 
 
 def solve(target):

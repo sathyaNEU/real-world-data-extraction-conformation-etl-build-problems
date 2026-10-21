@@ -31,7 +31,7 @@
    "xlsx"
   ],
   "largest_file": "workstation_event_log_2027.csv",
-  "largest_file_rows": 60664
+  "largest_file_rows": 58651
  },
  "sources": [
   {
@@ -65,7 +65,7 @@
   {
    "path": "data_notes.md",
    "format": "md",
-   "bytes": 3823,
+   "bytes": 3832,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -74,8 +74,8 @@
   {
    "path": "results_export_r3_2026-02_to_2027-05.csv",
    "format": "csv",
-   "bytes": 19849793,
-   "rows": 25336,
+   "bytes": 18850791,
+   "rows": 24061,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -83,8 +83,8 @@
   {
    "path": "results_export_r4_2027-08_to_2027-11.csv",
    "format": "csv",
-   "bytes": 12687060,
-   "rows": 9939,
+   "bytes": 12128884,
+   "rows": 9501,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -101,7 +101,7 @@
   {
    "path": "item_bank_snapshot_2027-12-31.xlsx",
    "format": "xlsx",
-   "bytes": 177550,
+   "bytes": 177549,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -119,8 +119,8 @@
   {
    "path": "candidate_number_changes.csv",
    "format": "csv",
-   "bytes": 33333,
-   "rows": 428,
+   "bytes": 32555,
+   "rows": 418,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -128,8 +128,8 @@
   {
    "path": "results_review_bookings.csv",
    "format": "csv",
-   "bytes": 272080,
-   "rows": 5050,
+   "bytes": 258649,
+   "rows": 4803,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -137,8 +137,8 @@
   {
    "path": "seat_plan_2027.csv",
    "format": "csv",
-   "bytes": 663635,
-   "rows": 19517,
+   "bytes": 632219,
+   "rows": 18593,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -146,8 +146,8 @@
   {
    "path": "workstation_event_log_2027.csv",
    "format": "csv",
-   "bytes": 3246592,
-   "rows": 60664,
+   "bytes": 3134915,
+   "rows": 58651,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -155,7 +155,7 @@
   {
    "path": "invigilator_incident_reports_2027.xlsx",
    "format": "xlsx",
-   "bytes": 18787,
+   "bytes": 23842,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -164,8 +164,8 @@
   {
    "path": "item_panel_decision_log.csv",
    "format": "csv",
-   "bytes": 24908,
-   "rows": 667,
+   "bytes": 25174,
+   "rows": 674,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -182,8 +182,8 @@
   {
    "path": "practice_exam_orders_2026_2027.csv",
    "format": "csv",
-   "bytes": 578065,
-   "rows": 7811,
+   "bytes": 551351,
+   "rows": 7450,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"

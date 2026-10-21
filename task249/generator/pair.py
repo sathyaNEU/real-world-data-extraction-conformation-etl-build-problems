@@ -1,8 +1,8 @@
 """The ask layer measured on the cut pack: each path a response could take through the two asks, the figures it keeps
-against the golden, the cracker (on the call, every filed rule executed, the hygiene battery run: the event log's
-failures with the power cut read off the resumes and the report, the link losses paired per client and overlapped with
-the clock, the measured readers' route) and the mirror (off the call, the first reading of each log: the WS_FAIL rows,
-every loss row), and the pair ceiling.
+against the golden, the cracker (on the call, every filed rule executed, the hygiene battery run, the best of the careful
+routes: every WS_FAIL with the reported failures and the power cut, the round 2 readers' route, or that route with one
+of its repairs; each client's losses overlapped with the clock, with the lone losses dropped or the stops taken out) and
+the mirror (off the call, the first reading of each log: the WS_FAIL rows, every loss row), and the pair ceiling.
 python3 pair.py [target]"""
 import json
 import os
@@ -17,16 +17,21 @@ import solve as S
 TASK = os.path.dirname(HERE)
 
 
-A_PATHS = ["golden", "ws_fail_only", "log_only", "reports_only", "union_by_ws", "spares_all", "no_power"]
-B_PATHS = ["golden", "lost_refs", "lost_within", "pairs_only", "no_power"]
+A_PATHS = ["golden", "v2_route", "in_sitting", "stopped_fail", "reboots", "in_sitting_reboots", "unexplained",
+           "ws_fail_only", "no_power"]
+B_PATHS = ["golden", "per_booking", "per_booking_stops", "centre_only", "pairs_only", "lost_refs", "no_power"]
+A_CAREFUL = ["v2_route", "in_sitting", "stopped_fail", "reboots", "in_sitting_reboots", "unexplained"]
+B_CAREFUL = ["per_booking", "per_booking_stops", "centre_only", "pairs_only"]
 
 
 def ask_a_paths(target, D):
-    return {k: S.ask_a(target, D=D, path=k)[0] for k in A_PATHS}
+    sets = S.ask_a_sets(target)
+    return {k: S.ask_a(target, D=D, path=k, sets=sets)[0] for k in A_PATHS}
 
 
 def ask_b_paths(target, D):
-    return {k: S.ask_b(target, D=D, path=k) for k in B_PATHS}
+    sets = S.offline_sets(target, D)
+    return {k: S.ask_b(target, D=D, path=k, sets=sets) for k in B_PATHS}
 
 
 def keep(path, golden):
@@ -46,7 +51,7 @@ def main(target):
     for k, v in B.items():
         print("  %-26s %2d" % (k, keep(v, B["golden"])))
     n = 20
-    kc = keep(A["log_only"], A["golden"]) + keep(B["pairs_only"], B["golden"])
+    kc = max(keep(A[k], A["golden"]) for k in A_CAREFUL) + max(keep(B[k], B["golden"]) for k in B_CAREFUL)
     km = keep(A["ws_fail_only"], A["golden"]) + keep(B["lost_refs"], B["golden"])
     c = 38 + 7 + 55 * kc / n
     s = 5 + 7 + 55 * km / n

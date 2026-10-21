@@ -293,7 +293,8 @@ of the review, and whether it was held, cancelled or not attended, or is still t
 ## Seat plan and workstation event log ({F['seat']}, {F['events']})
 
 The provider's 2027 seat plan: each booking's centre code, date, session and the workstation it was seated at. The
-event log: one row per event on a centre's workstations, time in UTC; the booking reference comes from the seat plan.
+event log: one row per event on a centre's workstations, time in UTC, with the booking reference of the sitting it
+belongs to.
 
 | Event | Meaning |
 |---|---|

@@ -46,25 +46,18 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: PAUSED 2026-10-21, architecture 6, asks re-sited after stage 4 round 1 (target.zip 2f190bcc); round 2 running.**
+**task249: PAUSED 2026-10-21, architecture 6, ask layer v3 built after stage 4 round 2; round 3 next.**
 - Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
   Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: which
   of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting from what an earlier
-  sitting or review had shown them (regulations 7.2, 7.3). Prototype golden CC27-A, B, C, D, G and H.
-- Decisive step: a recognised item skips the code lookup, and on the speeded forms (B, D, I) the time it frees buys
-  answers at the end of the form; the within-candidate excess on recognised items (siblings included), the probes'
-  route, files A, C, G and H. Its first, untimed form (siblings decisive) was landed by both call-only probes; the
-  timed form was missed by both (sonnet and opus each filed A, C, G, H). Card registered, WARN only.
-- Built: generator in task249/generator (27,905 checks, verifier agrees, two builds byte-identical), precut PASS,
-  figures_check 38 of 38, leak.py REVIEW only, heart WARN. Asks: each form's 2027 sittings a workstation or power
-  failure interrupted (the log's booking from the export-time seat plan, the Kochi power cut only in the invigilators'
-  report) and those that ran in part without the centre's link (every seated workstation logs the loss). Pair ceiling
-  35.4, mirror leakage 10 per cent (generator/pair.py).
-- Resume: stage 4 round 2 on target.zip 2f190bcc (round 1 on ff5b5f5b: the call held against both readers and the
-  judge approved, but the readers kept 20 of 20 and 17 of 20 ask figures; the ask devices were re-sited). Score readers 3
-  and 4 with score_reader.py, ship if both miss the call and neither exits 1; re-judge once on FIX_NOW.
-- Architecture 5 (sediment loads conditioned on rising water) was spent 10-20 at stage 4: both scored readers took the
-  field's hysteresis reflex. Its generator and pack left the folder with this draw (history holds them).
+  sitting or review had shown them (regulations 7.2, 7.3). Golden CC27-A, B, C, D, G and H; default path A, C, G, H.
+- Rounds 1 and 2: all four readers missed the call (round 2: opus A, C, G, H with the siblings; sonnet A, B, D, G with
+  the time freed and no siblings), judge DETERMINISTIC APPROVE; but the v2 asks fell 20 of 20 to both round 2 readers.
+- Ask layer v3: ask A counts a WS_FAIL only where the sitting stopped there (switched-off finished workstations and a
+  workstation's own connection also log one) and finds restarts in place by the WS_REBOOT rows with no booking; ask B
+  drops a loss one client logged alone and the two hall stops where every clock stopped before the router went off.
+  checks 28,520 passed, verifier agrees, pair ceiling 29.9, precut PASS.
+- Resume: run the round 3 readers (sonnet and opus) and the judge on the new target.zip, score them, ship.
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

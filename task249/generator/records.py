@@ -142,6 +142,8 @@ def schedule(W, rs):
 def response_strings(W, ids, rs):
     """the response letter (or '-') and the milliseconds on every delivered position"""
     key = ids["key"]
+    # each item's wrong options draw candidates unequally: one distractor usually pulls most
+    pull = np.random.default_rng(P.SEED + 505).dirichlet([1.1, 1.1, 1.1], size=W["B"]["n"])
     resp, ms = [], []
     for r in W["rows"]:
         letters = []
@@ -151,7 +153,7 @@ def response_strings(W, ids, rs):
             elif xv:
                 letters.append(key[j])
             else:
-                letters.append(rs.choice([c for c in "ABCD" if c != key[j]]))
+                letters.append(str(rs.choice([c for c in "ABCD" if c != key[j]], p=pull[j])))
         resp.append("".join(letters))
         ms.append(np.where(r["reach"], r["ms"].astype(int), -1))
     return resp, ms

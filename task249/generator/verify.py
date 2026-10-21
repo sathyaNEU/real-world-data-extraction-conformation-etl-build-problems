@@ -1,7 +1,8 @@
 """An independent recomputation of every owed figure from target/ alone, by other routes than solve.py: the flags
 with an additive baseline and each recognised item's time from the first-time candidates' mean seconds scaled by
-the candidate's own ratio; ask A from the sitting whose clock was running on each failed workstation and the invigilators' power-cut report;
-ask B from each workstation's link state walked through the event log in time order.
+the candidate's own ratio; ask A from each sitting's own events in order (a failure it stopped after, a restart before it
+resumed in place), the reported failures by spare and minute and the power-cut report; ask B from each workstation's link
+state walked through the event log in time order, kept where another client logged the loss and the clock was running.
 python3 verify.py [target]   exit 1 on any difference from generator/figures.json"""
 import datetime as dt
 import json
@@ -96,82 +97,127 @@ def main(target):
             gains.setdefault(s["form"], []).append(direct + reach)
     gain = {f: float(np.mean(v)) for f, v in gains.items() if f.startswith("CC27")}
     flags = sorted(f for f, g in gain.items() if g > 1.0)
-    # ask A: a sitting a failure interrupted either carries a WS_FAIL or was resumed on a spare workstation, except the
-    # changes of seat a candidate asked for; the power cut's sittings from the invigilators' report
+    # the event log walked centre by centre in time order, each sitting's own events kept in order
     ev = pd.read_csv(p("events"), dtype=str, keep_default_na=False)
     ev["t"] = pd.to_datetime(ev["event_utc"])
-    seat = pd.read_csv(p("seat"), dtype=str)
-    where = {(r.centre_code, r.session_date, r.session, r.workstation): r.booking_ref for r in seat.itertuples()}
+    ev = ev.sort_values(["t", "event"], kind="stable")
     rep = pd.read_excel(p("incidents"), sheet_name=None, dtype=str, keep_default_na=False)
     codes = {"Kochi": "COK", "Chennai": "MAA", "Bengaluru": "BLR", "Hyderabad": "HYD", "Pune": "PNQ", "Noida": "NOI"}
-    asked, cut_sittings = set(), set()
+    shift = pd.Timedelta(minutes=330)
+    own = {}
+    for r in ev[ev["booking_ref"] != ""].itertuples(index=False):
+        own.setdefault(r.booking_ref, []).append(r)
+    clock_of = {}
+    for k_, lst in own.items():
+        s0 = min((r.t for r in lst if r.event == "SESSION_START"), default=None)
+        e0 = max((r.t for r in lst if r.event == "SESSION_END"), default=None)
+        clock_of[k_] = (s0, e0)
+    # ask A: a WS_FAIL the sitting stopped after; a restart of the sitting's workstation before it resumed there; a
+    # reported failure of a computer or its keyboard, mouse or screen, by the spare and minute it resumed on; the sittings
+    # running when the power cut began
+    hit = set()
+    for k_, lst in own.items():
+        for n, r in enumerate(lst):
+            if r.event == "WS_FAIL":
+                later = [q for q in lst[n + 1:] if q.event != "WS_FAIL" and q.t > r.t]
+                if later and later[0].event in ("SESSION_RESUME", "SESSION_END"):
+                    hit.add(k_)
+    boot = ev[ev["event"] == "WS_REBOOT"]
+    boots = {}
+    for r in boot.itertuples(index=False):
+        boots.setdefault((r.centre_code, r.workstation), []).append(r.t)
+    for k_, lst in own.items():
+        for n, r in enumerate(lst):
+            if r.event == "SESSION_RESUME" and not r.workstation.startswith("SP") and n:
+                if any(lst[n - 1].t < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
+                    hit.add(k_)
+    on_spare = {}
+    for r in ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.match(r"SP\d")].itertuples(index=False):
+        loc = r.t + shift
+        on_spare[(r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M"))] = r.booking_ref
+    words = ("stopped responding", "froze", "hung", "not responding", "crashed", "frozen", "stopped working", "went blank",
+             "stuck")
+    cut_sittings, stopped_at = set(), []
     for centre, df in rep.items():
         for r in df.itertuples(index=False):
             d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date()
-            if "asked to move" in str(r.Report):
-                # the spare and the resume time the report names; the typed workstation number can be wrong
-                sp = [w for w in str(r.Report).replace(",", " ").replace("(", " ").replace(")", " ").split() if w.startswith("SP")]
-                hm = [w.strip(".") for w in str(r.Report).split() if len(w.strip(".")) == 5 and w.strip(".")[2] == ":"]
-                asked.add((codes[centre], d.isoformat(), sp[0].strip(".,"), hm[-1]))
-            if "Power cut" in str(r.Report):
+            text = str(r.Report)
+            clean = text.replace(",", " ").replace("(", " ").replace(")", " ").replace(";", " ")
+            hm = [w.strip(".") for w in clean.split() if len(w.strip(".")) == 5 and w.strip(".")[2] == ":"]
+            sp = [w.strip(".") for w in clean.split() if w.strip(".").startswith("SP")]
+            if "All clocks stopped at" in text:
+                h_, m_ = map(int, text.split("All clocks stopped at ")[1][:5].split(":"))
+                stopped_at.append((codes[centre], pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - shift))
+                continue
+            if "Power cut" in text:
                 h_, m_ = map(int, r.Time.split(":"))
-                cut = pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - pd.Timedelta(minutes=330)
-                day = ev[(ev["centre_code"] == codes[centre]) & (ev["t"].dt.date == cut.date())]
-                st = day[day["event"] == "SESSION_START"].set_index("booking_ref")["t"]
-                en = day[day["event"] == "SESSION_END"].set_index("booking_ref")["t"]
-                cut_sittings |= {k for k, t0 in st.items() if t0 <= cut < en.get(k, cut)}
-    sp_rows = ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.match(r"SP\d")]
-    on_spare = set()
-    for r in sp_rows.itertuples(index=False):
-        loc = r.t + pd.Timedelta(minutes=330)
-        if (r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M")) not in asked:
-            on_spare.add(r.booking_ref)
-    hit = set(ev[ev["event"] == "WS_FAIL"]["booking_ref"]) | on_spare | cut_sittings
+                cut = pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - shift
+                for k_, (s0, e0) in clock_of.items():
+                    if own[k_][0].centre_code == codes[centre] and s0 is not None and s0 <= cut < (e0 or cut):
+                        cut_sittings.add(k_)
+                continue
+            if sp and hm and any(w in text.lower() for w in words):
+                k_ = on_spare.get((codes[centre], d.isoformat(), sp[0], hm[-1]))
+                if k_:
+                    hit.add(k_)
+    hit |= cut_sittings
     form_of = {s["bk"]: s["form"] for s in sit if s["w"] >= 4}
     ask_a = {f: 0 for f in sorted(gain)}
-    for k in hit:
-        if k in form_of:
-            ask_a[form_of[k]] += 1
-    # ask B: walk each workstation's events in time order; a client logs in at its tutorial or at a resume on that
-    # workstation, and its link is down from a NET_LOST, or from the login when a NET_BACK comes with no NET_LOST before
-    # it, to the NET_BACK, or to the sitting's end; a sitting counts when that overlaps its clock
-    clock_of = {}
-    for r in ev[ev["event"].isin(["SESSION_START", "SESSION_END"])].itertuples(index=False):
-        lo, hi = clock_of.get(r.booking_ref, (None, None))
-        if r.event == "SESSION_START":
-            lo = r.t if lo is None else min(lo, r.t)
-        else:
-            hi = r.t if hi is None else max(hi, r.t)
-        clock_of[r.booking_ref] = (lo, hi)
-    off = set(cut_sittings)
-    walk = ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME", "NET_LOST", "NET_BACK"])].sort_values("t")
-    for (cc, ws), g in walk.groupby(["centre_code", "workstation"]):
+    for k_ in hit:
+        if k_ in form_of:
+            ask_a[form_of[k_]] += 1
+    # ask B: each client's link state walked through its workstation's events; a loss counts when another client at the
+    # centre logged the loss too (a loss one client logged alone is its own connection), and while the sitting's clock
+    # ran (a hall's clocks stopped before its link went down, to each sitting's next resume)
+    halt = {}
+    for cc, t in stopped_at:
+        for k_, lst in own.items():
+            s0, e0 = clock_of[k_]
+            if lst[0].centre_code == cc and s0 is not None and s0 < t < e0:
+                back = [q.t for q in lst if q.event == "SESSION_RESUME" and q.t > t]
+                if back:
+                    halt.setdefault(k_, []).append((t, min(back)))
+    netrows = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])]
+    stamps = {}
+    for r in netrows.itertuples(index=False):
+        stamps.setdefault(r.centre_code, []).append((r.t, r.booking_ref, r.workstation))
+    downs = []
+    walk = ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME", "NET_LOST", "NET_BACK"])]
+    for (cc, ws), g in walk.groupby(["centre_code", "workstation"], sort=True):
         state = {}
         for r in g.itertuples(index=False):
-            b = r.booking_ref
-            lo, hi = clock_of.get(b, (None, None))
-            if lo is None:
+            k_ = r.booking_ref
+            if clock_of.get(k_, (None, None))[0] is None:
                 continue
             if r.event in ("TUTORIAL_START", "SESSION_RESUME"):
-                state.setdefault(b, {"login": r.t, "down": None})
+                state.setdefault(k_, {"login": r.t, "down": None})
                 continue
-            stt = state.setdefault(b, {"login": lo, "down": None})
+            stt = state.setdefault(k_, {"login": clock_of[k_][0], "down": None})
             if r.event == "NET_LOST":
                 if stt["down"] is None:
                     stt["down"] = r.t
             else:
-                a = stt["down"] if stt["down"] is not None else stt["login"]
-                if max(lo, a) < min(hi, r.t):
-                    off.add(b)
+                downs.append((cc, ws, k_, stt["down"] if stt["down"] is not None else stt["login"], r.t))
                 stt["down"] = None
-        for b, stt in state.items():
-            lo, hi = clock_of[b]
-            if stt["down"] is not None and max(lo, stt["down"]) < hi:
-                off.add(b)
+        for k_, stt in state.items():
+            if stt["down"] is not None:
+                downs.append((cc, ws, k_, stt["down"], clock_of[k_][1]))
+    off = set(cut_sittings)
+    two = pd.Timedelta(minutes=2)
+    for cc, ws, k_, lo, hi in downs:
+        if not any(lo - two <= t <= hi + two and (b_, w_) != (k_, ws) for t, b_, w_ in stamps[cc]):
+            continue
+        s0, e0 = clock_of[k_]
+        spans = [(s0, e0)]
+        for a_, z_ in halt.get(k_, []):
+            spans = [x for p_, q_ in spans for x in ([(p_, q_)] if z_ <= p_ or a_ >= q_ else
+                                                     [y for y in ((p_, a_), (z_, q_)) if y[0] < y[1]])]
+        if any(max(p_, lo) < min(q_, hi) for p_, q_ in spans):
+            off.add(k_)
     ask_b = {f: 0 for f in sorted(gain)}
-    for k in off:
-        if k in form_of:
-            ask_b[form_of[k]] += 1
+    for k_ in off:
+        if k_ in form_of:
+            ask_b[form_of[k_]] += 1
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     bad = []
     if flags != fig["call"]["flagged"]:

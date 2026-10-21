@@ -228,6 +228,16 @@ def world(seed=P.SEED):
     forms, trial = assemble(B, r2)
     pretest_quality(B, forms, trial, r4)
     cands, rows = sittings(B, forms, trial, r3)
+    # the first-time candidates a window really had: some of those drawn never booked (with their later resits)
+    rd = np.random.default_rng(seed + 991)
+    first = {}
+    for r in rows:
+        first.setdefault(r["cand"], r["w"])
+    drop = set()
+    for w in range(8):
+        ks = sorted(k for k, ww in first.items() if ww == w)
+        drop |= {ks[q] for q in rd.choice(len(ks), int(rd.integers(40, 300)), replace=False)}
+    rows = [r for r in rows if r["cand"] not in drop]
     return dict(B=B, forms=forms, trial=trial, cands=cands, rows=rows)
 
 

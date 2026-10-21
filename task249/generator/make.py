@@ -56,6 +56,49 @@ def components(C):
     return dict(recognised_time_pct=int(5 * round(20 * num / den)), speeded_share_pct=int(10 * round(10 * share)))
 
 
+LICENSED = ["golden", "golden_add", "golden_median", "golden_hit", "golden_median_hit"]
+
+
+def family(C):
+    """every licensed estimate's per-form gain and its two parts (a logit or additive baseline, the mean or median
+    time, a submitted sitting's reach kept or rerun), the bounds the write-up states, and a recognised item's time
+    against the candidate's own pace on the same item and on an item-model sibling"""
+    D, T = C["D"], C["T"]
+    Pn, Mu = S.norms(T)
+    res = {v: {f: [] for f in S.F27} for v in LICENSED}
+    lt = {"same": [], "sib": []}
+    for t in T:
+        if t["w"] < 4 or not t["prev"] or t["form"] not in S.F27:
+            continue
+        same, sib, rev = S.exposure(T, t, D)
+        for v in LICENSED:
+            res[v][t["form"]].append(S.sitting_gain(t, same, sib, Pn, Mu, v))
+        mj = np.array([Mu.get((t["w"], it), np.nan) for it in t["items"]])
+        rc = t["reach"] & ~np.isnan(mj)
+        u = rc & ~same & ~sib
+        if u.sum() < 20:
+            continue
+        lr = np.log(t["secs"]) - mj
+        pace = float(np.nanmean(lr[u]))
+        lt["same"].extend(lr[rc & same] - pace)
+        lt["sib"].extend(lr[rc & sib & ~same] - pace)
+    m = {v: {f: np.array(res[v][f]).mean(0) for f in S.F27} for v in LICENSED}
+    flagged = C["flagged"]
+    others = [f for f in S.F27 if f not in flagged]
+    lo = min(m[v][f].sum() for v in LICENSED for f in flagged)
+    hi = max(m[v][f].sum() for v in LICENSED for f in others)
+    bd = [m[v][f][0] for v in LICENSED for f in ("CC27-B", "CC27-D")]
+    reach_bd = min(m[v][f][1] for v in LICENSED for f in ("CC27-B", "CC27-D"))
+    reach_i = [m[v]["CC27-I"][1] for v in LICENSED]
+    direct_acgh = min(m[v][f][0] for v in LICENSED for f in ("CC27-A", "CC27-C", "CC27-G", "CC27-H"))
+    return {"lo_flagged": float(np.floor(lo * 10) / 10), "hi_other": float(np.ceil(hi * 10) / 10),
+            "direct_bd": round(float(np.mean(bd)), 1), "direct_acgh_min": float(np.floor(direct_acgh * 10) / 10),
+            "reach_bd_min": float(np.floor(reach_bd * 10) / 10), "reach_i": round(float(np.mean(reach_i)), 1),
+            "time_same": round(float(np.exp(np.mean(lt["same"]))), 1), "time_sib": round(float(np.exp(np.mean(lt["sib"]))), 1),
+            "spread": {f: [round(float(min(m[v][f].sum() for v in LICENSED)), 2), round(float(max(m[v][f].sum() for v in LICENSED)), 2)]
+                       for f in S.F27}}
+
+
 def figures(target, X):
     C = S.call(target)
     A, _ = S.ask_a(target, D=C["D"])
@@ -68,7 +111,10 @@ def figures(target, X):
                  "direct": {f: C["comp"][f]["direct"] for f in S.F27}, "reach": {f: C["comp"][f]["reach"] for f in S.F27},
                  "resit_sittings": {f: C["comp"][f]["n"] for f in S.F27}, "n_resit": n_resit, "routes": routes},
         "components": components(C),
-        "asks": {"interrupted": A, "offline": Bk, "power_day": "19 August 2027"},
+        "family": family(C),
+        "asks": {"interrupted": A, "offline": Bk, "power_day": "19 August 2027",
+                 "hall_stops": "the Chennai fire alarm of 14 May 2027 and the Hyderabad switch to the generator of 16 "
+                               "November 2027"},
     }
     return fig, C
 

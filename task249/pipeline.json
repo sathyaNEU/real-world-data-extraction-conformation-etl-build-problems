@@ -13,7 +13,7 @@
  "precut": "PASS (51 checks, 0 FAIL, 0 WARN)",
  "leak": {
   "leak_py": "REVIEW (no LEAK): the regulations' 1.0 line and estimand, field names in the data notes, reviews still booked after 17 January 2028",
-  "reader": "round 1 (ff5b5f5b): call missed by both; asks 20/20 and 17/20 (FAIL), devices re-sited"
+  "reader": "round 1 (ff5b5f5b): call missed by both, asks 20/20 and 17/20 (FAIL); round 2 (2f190bcc): call missed by both (opus A, C, G, H; sonnet A, B, D, G), asks 20/20 each (FAIL); ask layer v3 re-sited, round 3 next"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
@@ -28,7 +28,7 @@
   "pack": "ff5b5f5b"
  },
  "returned": [],
- "resume": "Stage 4 round 2 on target.zip 2f190bcc. Round 1 (ff5b5f5b): both readers missed the call (sonnet A and G; opus A, C, G and H) and the judge returned DETERMINISTIC APPROVE, but the readers kept 20 of 20 and 17 of 20 ask figures, so the ask devices were re-sited (split evidence between the event log and the invigilators' reports, changes of seat, mistyped workstation numbers, clients that log in with the link down, the power cut's minutes on the UPS; cracker 0 of 20, pair 28.5 on paper). Running: two fresh isolated scored readers (sonnet and opus, scratchpad leak-task249-r3 and r4) and the judge. Next: score both with score_reader.py (call key call.flagged); ship if both miss the call and neither exits 1; re-judge once on FIX_NOW.",
+ "resume": "Stage 4 round 3 on the v3 pack. Round 2 (2f190bcc): both readers missed the call (opus A, C, G and H with the siblings; sonnet A, B, D and G with the time freed but no siblings) and kept all 20 ask figures each by joining the reports to the resumes by spare and minute and overlapping each client's losses with the clock. Ask layer v3 (generator/asks.py): ask A's WS_FAIL counts only where the sitting stopped there (switched-off finished workstations and a workstation's own connection log WS_FAIL too), restarts in place show only as WS_REBOOT rows with no booking before the resume (half unreported, unreported pauses beside them); ask B drops a loss one client logged alone (its own connection) and the two hall stops (Chennai fire alarm 14 May, Hyderabad generator switch 16 November) where every clock stopped before the router went off. Realism: spares occupied properly, the first-time pool varies by window, distractors weighted per item, report wording varied. checks 28,520 passed, verifier agrees, pair ceiling 29.9 (cracker 0/20, mirror 1/20), precut PASS 51. Next: two isolated readers (sonnet, opus) and the determinism judge on the new zip; score with score_reader.py; ship if both miss the call and the asks stay under 35 per cent.",
  "approved": null,
  "delivered": null,
  "portal": null,
