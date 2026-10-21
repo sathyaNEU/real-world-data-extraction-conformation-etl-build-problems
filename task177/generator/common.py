@@ -1,4 +1,4 @@
-"""task177 shared constants and helpers: the file names, the in-fiction calendar, Manitoba's clock, the random
+"""task177 shared constants and helpers: the file names, the in-fiction calendar, the UK clock, the prices, the random
 streams and the writers that make the files reproduce byte for byte."""
 from __future__ import annotations
 
@@ -10,91 +10,102 @@ import math
 
 import numpy as np
 
-ORG = "Prairie Works Manitoba"
-ASSISTANT = "Ask Prairie Works"
-BN = "812447093"                       # Prairie Works Manitoba's own business number (the vendor's customer record)
-VENDOR = "Riverlot Dialogue Inc."
-VENDOR_CITY = "Kitchener, Ontario"
-VENDOR_BN = "724906318"                # Riverlot's business number (its GST/HST registration on every invoice)
+ORG = "Daily Lantern Media"
+TITLE = "The Daily Lantern"
 
 # ------------------------------------------------------------------------------------------------ the pack's files
-F_LEGS = "contact_legs_2026.csv"
-F_CONV = "assistant_sessions_2026.jsonl"
-F_CLAIMS = "claims_register_2026.csv"
-F_XWALK = "contact_details_crosswalk.csv"
-F_CODES = "telephony_migration_codes.xlsx"
-F_OVERFLOW = "overflow_episodes_2026.csv"
-F_PLAN = "assistant_first_rollout_plan.pdf"
-F_ACCEPT = "release4_acceptance_summary.pdf"
-F_ORDER = "usage_tier_order_form_2027.pdf"
-F_INVOICES = "vendor_invoices_2026.xlsx"
+F_ASSIGN = "retention_campaign_2026-01_assignment.csv"
+F_PROFILE = "subscriber_profile_2026-01-31.csv"
+F_LIST = "at_risk_list_2027-01-26.csv"
+F_LBS = "legacy_billing_invoices.csv"
+F_SPINV = "subscriptions_platform_invoices.csv"
+F_XWALK = "subscription_id_crosswalk.csv"
+F_EVENTS = "subscription_events.csv"
+F_OFFERS = "offers_engine_acceptances_2026.csv"
+F_EMAIL = "email_campaign_log_2026-01.csv"
+F_NOTE = "billing_move_note_2026.pdf"
+F_PLAN = "retention_offer_plan_2027.docx"
 F_DICT = "data_dictionary.xlsx"
-F_SURVEY = "post_contact_survey_2026.csv"
-F_MANIFEST = "export_manifest.csv"
-ALL_FILES = (F_LEGS, F_CONV, F_CLAIMS, F_XWALK, F_CODES, F_OVERFLOW, F_PLAN, F_ACCEPT, F_ORDER, F_INVOICES,
-             F_DICT, F_SURVEY, F_MANIFEST)
-DISTRACTORS = (F_OVERFLOW, F_SURVEY)
+F_SURVEY = "reader_survey_2026_q4.csv"
+F_VALID = "retention_model_validation_2026-12.pdf"
+ALL_FILES = (F_ASSIGN, F_PROFILE, F_LIST, F_LBS, F_SPINV, F_XWALK, F_EVENTS, F_OFFERS, F_EMAIL, F_NOTE,
+             F_PLAN, F_DICT, F_SURVEY, F_VALID)
+DISTRACTORS = (F_SURVEY, F_VALID)
 
 # ------------------------------------------------------------------------------------------- the in-fiction calendar
-LAUNCH = dt.date(2026, 1, 5)            # Ask Prairie Works went live in the app and on the web (a Monday)
-REC_START = LAUNCH                      # both exports start on the launch day
-MIGRATION = dt.date(2026, 7, 6)         # the new telephony platform took the lines at 06:00 on this Monday
-RETYPE = dt.date(2026, 9, 14)           # the vendor's release 3.4 (account types), live at 07:00
-REC_END = dt.date(2027, 1, 3)           # the last day in both exports (a Sunday)
-EXPORT_DAY = dt.date(2027, 1, 4)        # the exports were pulled early on this Monday
-ORDER_DUE = dt.date(2027, 1, 8)         # the vendor needs the March and April tier by this Friday
-POP_DATE = REC_END                      # the planning population: jobseekers with a claim open on this date
-AF_START, AF_END = dt.date(2027, 1, 4), dt.date(2027, 2, 28)       # the assistant-first weeks
-WIN_START, WIN_END = dt.date(2027, 3, 1), dt.date(2027, 4, 25)     # the forecast window (eight weeks)
-QUARTERS = (("2026 Q1", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
-            ("2026 Q2", dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
-            ("2026 Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30)),
-            ("2026 Q4", dt.date(2026, 10, 1), dt.date(2026, 12, 31)))
+LY_LIST = dt.date(2026, 1, 31)          # last year's list, cut and sent on this Saturday
+LY_SEND = dt.datetime(2026, 1, 31, 9, 30)
+LY_HORIZON = dt.date(2026, 3, 31)
+LBS_FROM = dt.date(2025, 12, 1)         # the legacy invoices in the pull start with December 2025's bills
+MOVE = dt.date(2026, 10, 1)             # the subscriptions platform's first bill run (00:05 UK time)
+LBS_LAST = dt.date(2026, 10, 1)         # the legacy system's last run (02:00, day-1 subscriptions it still held)
+CREDIT_DAY = dt.date(2026, 10, 14)      # the platform's credit notes for the bills both systems raised for October
+PULL = dt.datetime(2027, 1, 25, 18, 40) # the extract, UK time
+TY_LIST = dt.date(2027, 1, 26)
+TY_SEND = dt.datetime(2027, 1, 26, 9, 30)
+TY_HORIZON = dt.date(2027, 3, 31)
+ASK_A_MONTHS = ((2026, 2), (2026, 3), (2026, 4))
+ASK_B_MONTHS = ((2026, 10), (2026, 11), (2026, 12), (2027, 1))
+MONTH_NAME = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
+              9: "September", 10: "October", 11: "November", 12: "December"}
 
-# Manitoba's general holidays the contact centre closes on (2026 and the forecast's months of 2027)
-HOLIDAYS = {dt.date(2026, 1, 1), dt.date(2026, 2, 16), dt.date(2026, 4, 3), dt.date(2026, 5, 18), dt.date(2026, 7, 1),
-            dt.date(2026, 8, 3), dt.date(2026, 9, 7), dt.date(2026, 9, 30), dt.date(2026, 10, 12),
-            dt.date(2026, 11, 11), dt.date(2026, 12, 25), dt.date(2026, 12, 28), dt.date(2027, 1, 1),
-            dt.date(2027, 2, 15), dt.date(2027, 3, 26), dt.date(2027, 5, 24)}
-
-# daylight saving time in Manitoba (America/Winnipeg): CDT (UTC-5) from 02:00 on the second Sunday of March to
-# 02:00 on the first Sunday of November, CST (UTC-6) otherwise
-DST = {2025: (dt.datetime(2025, 3, 9, 2), dt.datetime(2025, 11, 2, 2)),
-       2026: (dt.datetime(2026, 3, 8, 2), dt.datetime(2026, 11, 1, 2)),
-       2027: (dt.datetime(2027, 3, 14, 2), dt.datetime(2027, 11, 7, 2))}
-
-
-def utc_offset_hours(local):
-    """hours to add to Manitoba local time to get UTC (6 in winter, 5 in summer); a local time inside the
-    autumn's repeated hour is read as the first (CDT) pass"""
-    a, b = DST[local.year]
-    return 5 if a <= local < b else 6
+# British Summer Time: UTC+1 from 01:00 UTC on the last Sunday of March to 01:00 UTC on the last Sunday of October
+BST = {2025: (dt.datetime(2025, 3, 30, 1), dt.datetime(2025, 10, 26, 1)),
+       2026: (dt.datetime(2026, 3, 29, 1), dt.datetime(2026, 10, 25, 1)),
+       2027: (dt.datetime(2027, 3, 28, 1), dt.datetime(2027, 10, 31, 1))}
 
 
 def to_utc(local):
-    return local + dt.timedelta(hours=utc_offset_hours(local))
+    """UK local wall time to UTC (the autumn's repeated hour read as its first, BST, pass)"""
+    a, b = BST[local.year]
+    a_loc, b_loc = a, b + dt.timedelta(hours=1)
+    return local - dt.timedelta(hours=1) if a_loc + dt.timedelta(hours=1) <= local < b_loc else local
 
 
 def to_local(utc):
-    a, b = DST[utc.year]
-    a_utc, b_utc = a + dt.timedelta(hours=6), b + dt.timedelta(hours=5)
-    return utc - dt.timedelta(hours=5 if a_utc <= utc < b_utc else 6)
+    a, b = BST[utc.year]
+    return utc + dt.timedelta(hours=1) if a <= utc < b else utc
+
+
+# --------------------------------------------------------------------------------------------------------- the plans
+PLANS = ("Digital", "Digital Plus", "Family")
+PLAN_CODE = {"Digital": "DIG-M", "Digital Plus": "DGP-M", "Family": "FAM-M"}
+PRICE = {"Digital": 9.99, "Digital Plus": 13.99, "Family": 17.99}       # monthly, zero-rated for VAT
+ADDON = "Puzzles"
+ADDON_CODE = "PUZ-M"
+ADDON_PRICE = 3.49
+OFFER_SHARE = 0.5                        # half price on the next two monthly bills
+OFFER_CODE_WEB = "STAY50"                # the code the offers engine applied to web and email acceptances
+OFFER_CODE_APP = "LNT-APP-JAN26"         # the code the app team set up for in-app acceptances of the same offer
+DESK_CODE = "STAY50"                     # the save desk's discretionary half price uses the same billing code
+LOYAL_CODE = "LOYAL-CR"                  # goodwill credits on a bill (service apologies)
 
 
 def stream(name):
     """an independent, reproducible random stream for one part of the world"""
-    h = int.from_bytes(hashlib.sha256(("task177/" + name).encode()).digest()[:8], "little")
+    h = int.from_bytes(hashlib.sha256(("task177v2/" + name).encode()).digest()[:8], "little")
     return np.random.default_rng(h)
 
 
-def days(a, b):
-    """every date from a to b inclusive"""
-    n = (b - a).days + 1
-    return [a + dt.timedelta(days=i) for i in range(n)]
+def add_months(d, n):
+    y, m = d.year + (d.month - 1 + n) // 12, (d.month - 1 + n) % 12 + 1
+    return y, m
 
 
-def quarter_of(d):
-    return "%d Q%d" % (d.year, (d.month - 1) // 3 + 1)
+def month_day(y, m, dom):
+    """the bill day of a subscription anniversary-billed on day dom, in month (y, m): days 29 to 31 fall back to the
+    month's last day"""
+    import calendar
+    return dt.date(y, m, min(dom, calendar.monthrange(y, m)[1]))
+
+
+def next_bill_after(dom, day):
+    """the first anniversary bill strictly after `day` for a subscription billed on day dom"""
+    b = month_day(day.year, day.month, dom)
+    if b > day:
+        return b
+    y, m = add_months(day, 1)
+    return month_day(y, m, dom)
 
 
 def write_csv(path, head, rows, crlf=True):
@@ -119,14 +130,18 @@ def edge(v, unit):
     return unit / 2 - abs(v - c)
 
 
-def pct(v):
-    """a share printed as a whole per cent, halves away from zero"""
-    return int(math.floor(v * 100 + 0.5))
-
-
-FORECAST_UNIT = 5                      # the prompt asks for the forecast share to the nearest 5 per cent
+FORECAST_UNIT = 5                        # the prompt asks for the share to the nearest 5 per cent
 
 
 def pct5(v):
-    """a forecast share printed to the nearest 5 per cent, halves away from zero"""
+    """a share printed to the nearest 5 per cent, halves away from zero"""
     return int(FORECAST_UNIT * math.floor(v * 100 / FORECAST_UNIT + 0.5))
+
+
+def hundred(v):
+    """an amount in pounds printed to the nearest hundred, halves away from zero"""
+    return int(100 * math.floor(v / 100 + 0.5))
+
+
+def money(v):
+    return "%.2f" % (math.floor(v * 100 + 0.5) / 100)

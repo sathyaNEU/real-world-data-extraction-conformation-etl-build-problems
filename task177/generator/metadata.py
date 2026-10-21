@@ -12,35 +12,38 @@ import common as C
 
 ORIGIN = "Constructed for this task (seeded, deterministic): "
 SOURCES = {
-    C.F_LEGS: ("Prairie Works Manitoba (fictional), contact-centre platform interaction-leg export, both lines, in the "
-               "layout of a cloud contact-centre platform's leg export with a legacy platform's history loaded at "
-               "cutover", "2027-01-04"),
-    C.F_CONV: ("Riverlot Dialogue Inc. (fictional assistant vendor), session export for the Prairie Works tenant",
-               "2027-01-04"),
-    C.F_CLAIMS: ("Prairie Works Manitoba case system, claims register", "2027-01-04"),
-    C.F_XWALK: ("Prairie Works Manitoba case system, contact details with history", "2027-01-04"),
-    C.F_CODES: ("Prairie Works Manitoba Contact Centre Systems, cutover code list", "2026-07-08"),
-    C.F_OVERFLOW: ("Prairie Works Manitoba workforce team, overflow log", "2027-01-04"),
-    C.F_PLAN: ("Prairie Works Manitoba Digital Channels, Ask Prairie Works 4.0 rollout plan version 1.4", "2026-12-16"),
-    C.F_ACCEPT: ("Riverlot Dialogue Inc., acceptance test summary for release 4.0", "2026-12-01"),
-    C.F_ORDER: ("Riverlot Dialogue Inc., usage tier order form for January to April 2027", "2026-12-14"),
-    C.F_INVOICES: ("Prairie Works Manitoba accounts payable, the vendor's 2026 invoices", "2027-01-04"),
-    C.F_DICT: ("Prairie Works Manitoba Digital Channels, field descriptions for the pull", "2027-01-04"),
-    C.F_SURVEY: ("Prairie Works Manitoba survey platform, post-contact survey export", "2027-01-04"),
-    C.F_MANIFEST: ("Prairie Works Manitoba Digital Channels, export manifest", "2027-01-04"),
+    C.F_ASSIGN: ("Daily Lantern Media (fictional) campaign tool, the 31 January 2026 at-risk list and each "
+                 "subscription's arm in the retention test", "2026-01-31"),
+    C.F_PROFILE: ("Daily Lantern Media CRM, snapshot of the subscriptions on the 31 January 2026 list", "2026-01-31"),
+    C.F_LIST: ("Daily Lantern Media campaign tool, the at-risk list cut on 25 January 2027 for the 26 January send",
+               "2027-01-25"),
+    C.F_LBS: ("Daily Lantern Media legacy billing system, invoice line export for the subscriptions on either list and "
+              "their add-ons", "2027-01-25"),
+    C.F_SPINV: ("Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list "
+                "(one row per document, its lines as JSON)", "2027-01-25"),
+    C.F_XWALK: ("Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the "
+                "billing move note", "2027-01-25"),
+    C.F_EVENTS: ("Daily Lantern Media subscription events for last January's list, from both billing systems",
+                 "2027-01-25"),
+    C.F_OFFERS: ("Daily Lantern Media offers engine, acceptances of the January 2026 retention offer", "2027-01-25"),
+    C.F_EMAIL: ("Daily Lantern Media email platform, event log of the January 2026 offer email", "2027-01-25"),
+    C.F_NOTE: ("Daily Lantern Media Billing Operations, note on monthly digital billing on the subscriptions platform, "
+               "version 1.3", "2026-10-15"),
+    C.F_PLAN: ("Daily Lantern Media Subscriber Retention, January 2027 retention offer plan", "2027-01-18"),
+    C.F_DICT: ("Daily Lantern Media Audience Data, field descriptions for the pull", "2027-01-25"),
+    C.F_SURVEY: ("Daily Lantern Media reader survey, fourth-quarter 2026 export", "2027-01-25"),
+    C.F_VALID: ("Daily Lantern Media Audience Data Science, retention model 3.2 validation summary", "2026-12-09"),
 }
-TITLE = ("The share of their own contacts a provincial employment service's jobseekers will start in its digital "
-         "assistant in March and April 2027, after eight weeks in which the upgraded assistant answers every call")
+TITLE = ("The share of a national news publisher's 26 January 2027 at-risk list of monthly digital subscribers still "
+         "subscribed on 31 March 2027 because they are sent a half-price retention offer, forecast from last "
+         "January's randomised test")
 
 
 def _rows(path):
     ext = path.rsplit(".", 1)[-1]
     if ext == "csv":
-        with open(path, encoding="utf-8") as fh:
+        with open(path, encoding="utf-8", newline="") as fh:
             return sum(1 for _ in csv.reader(fh)) - 1
-    if ext == "jsonl":
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh)
     if ext == "xlsx":
         wb = load_workbook(path, read_only=True)
         return sum(max(0, ws.max_row - 1) for ws in wb.worksheets)
@@ -60,44 +63,47 @@ def write(task_dir):
         files.append(dict(path=f, format=f.rsplit(".", 1)[-1], bytes=os.path.getsize(p), rows=rows,
                           source=ORIGIN + src, date=date, license="CC0-1.0 (original work, constructed for this task)"))
     distractors = [
-        dict(file=C.F_OVERFLOW, wrong_basis=False,
-             why_relevant="the workforce team's record of when the claimant queue was in overflow, the episodes the "
-                          "transfers came from",
-             why_unused="the legs export marks every transfer on the call itself and the voice session gives its "
-                        "outcome; the log adds nothing a figure reads",
-             ruled_out_by="the legs export's leg_result and transfer_to"),
         dict(file=C.F_SURVEY, wrong_basis=False,
-             why_relevant="jobseekers' satisfaction with each channel, which looks like a driver of channel choice",
-             why_unused="a 6 per cent sample with about three in ten answering; the choices and outcomes themselves are "
-                        "in the exports; no figure reads it",
-             ruled_out_by="its own coverage (a sample of contacts)"),
+             why_relevant="readers' satisfaction and their own stated chance of cancelling in the next three months, "
+                          "which looks like a way to size who on the list would go without the offer",
+             why_unused="a voluntary sample of both lists' members with stated intentions, no arm and no billing; no "
+                        "figure reads it",
+             ruled_out_by="its own coverage (a voluntary sample) and the randomised test, which measures what the offer "
+                          "keeps directly"),
+        dict(file=C.F_VALID, wrong_basis=False,
+             why_relevant="the retention model's calibration by risk band, which looks like the chance each list "
+                          "member cancels without the offer",
+             why_unused="it describes the chance of cancelling within 30 days, not what the offer changes; the test's "
+                        "arms give that directly; no figure reads it",
+             ruled_out_by="the test's holdout arm (the outcome without the offer, measured)"),
     ]
     meta = dict(
         task="task177", title=TITLE,
-        domain="Psychology & Behavioral Science", client_domain="psychology-behavioral-science",
-        subdomain="decision-making and computational behavioural modelling (a reinforcement-learning model of "
-                  "jobseekers' contact-by-contact channel choices, with the learning from contacts they did not choose "
-                  "estimated from overflow transfers and carried through eight weeks of such contacts)",
+        domain="Product Analytics", client_domain="product-analytics",
+        subdomain="churn propensity and uplift modelling (the effect of a retention offer on a monthly subscription, "
+                  "carried from a randomised test whose deliveries fell at every point of the billing cycle to a list "
+                  "whose bills all fall six days after the send)",
         objective="Forecasting & Predictive Modeling",
-        prompt_shape="one forecast share to the whole per cent for an eight-week window; employers' conversations and "
-                     "the service's own staff and test conversations in each month of 2026",
-        as_of="2027-01-04",
-        deliverables=["assistant_share_forecast_mar_apr_2027.xlsx", "assistant_first_aftermath_note.docx"],
+        prompt_shape="one forecast share to the nearest 5 per cent; last January's offer discounts on February and "
+                     "March 2026 bills and its takers on each plan; this year's list billed for its plans after "
+                     "credits in each month from October 2026 to January 2027 on each plan",
+        as_of="2027-01-25",
+        deliverables=["retention_offer_forecast_2027.xlsx", "january_offer_note.docx"],
         distractor_files=[d["file"] for d in distractors],
         distractors=distractors,
-        stated_inputs=["2,003 of 2,400", "14 days", "3 January 2027", "4 January to 28 February 2027",
-                       "1 March to 25 April 2027"],
+        stated_inputs=["48,000", "26 January 2027", "31 March 2027", "half price on the next two monthly bills",
+                       "31 January 2026"],
         field_terms=[],
         input_gates=dict(files=len(files), formats=sorted(set(x["format"] for x in files)), largest_file=big,
                          largest_file_rows=big_rows),
         sources=[dict(files="all files under target/",
                       origin="constructed for this task by task177/generator/build.py (seeded, deterministic) around a "
-                             "fictional provincial employment and income assistance service in Manitoba (Prairie Works "
-                             "Manitoba), its fictional digital assistant (Ask Prairie Works) and assistant vendor "
-                             "(Riverlot Dialogue Inc.). Jobseekers and employers are identified by number only. No real "
-                             "organisation's records or person is depicted.",
-                      date="2027-01-04", license="CC0-1.0 (original work)")],
-        created="2026-10-19", generator="task177/generator/build.py", files=files)
+                             "fictional national news publisher in the United Kingdom (Daily Lantern Media, publisher "
+                             "of The Daily Lantern), its legacy billing system and its subscriptions platform. "
+                             "Subscribers are identified by number only. No real organisation's records or person is "
+                             "depicted.",
+                      date="2027-01-25", license="CC0-1.0 (original work)")],
+        created="2026-10-21", generator="task177/generator/build.py", files=files)
     with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
         json.dump(meta, fh, indent=1)
         fh.write("\n")

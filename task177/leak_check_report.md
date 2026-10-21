@@ -1,19 +1,19 @@
 # leak check, task177
 
-**Verdict: REVIEW.** 13 files read, 24 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 21 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: points, learning, golden, contact, district, family, transfers, inside, villages, record, fitted, window, weekly, pooled, winter, holiday, decisive, nothing, acceptance, transfer, half-term, mature, claimant, overflow, check-in
+Stump terms swept: effect, window, uplift, subscriber, billing, difference, fortnight, subscription, ledger, inside, prompt, decision, dictionary, randomised, family, outcome, decisive, access, screen, nothing, features, treatment, delivery, invoice, outsider
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `assistant_first_rollout_plan.pdf`: golden figure 945 appears: ...Claimant Services queue on the claimant line (204-945-0100). A call it cannot resolve ends with an advi...
-- **REVIEW** `assistant_first_rollout_plan.pdf`: carries 7 of 10 distinctive words of the committed call: 'Jobseekers on the register on 3 January 2027 will start 25 per cent of their own contacts between 1 March and 25 April 2'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `retention_offer_plan_2027.docx`: carries 7 of 8 distinctive words of the committed call: '20 per cent of the 48,000 subscriptions on the 26 January 2027 list will still be subscribed on 31 March 2027 because th'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `assistant_first_rollout_plan.pdf`: 6 of 25 stump-paragraph terms appear (contact, acceptance, transfer, claimant, overflow, check-in); read whether the document names the move
-- **REVIEW** `release4_acceptance_summary.pdf`: 4 of 25 stump-paragraph terms appear (window, acceptance, claimant, check-in); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'What share of the contacts that jobseekers on our register on 3 January 2027 start themselves between 1 March and 25 April 2027 will they start in Ask Prairie Works, once release 4.0 has answered every claimant-line call'
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `billing_move_note_2026.pdf`: 3 of 25 stump-paragraph terms appear (billing, subscription, invoice); read whether the document names the move
+
+## 9 dates after the setting (REVIEW 1)
+- **REVIEW** `subscriptions_platform_invoices.csv`: 106912 ISO dates after 2027-01-25, e.g. 2027-01-31
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -29,7 +29,5 @@ Stump terms swept: points, learning, golden, contact, district, family, transfer
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)

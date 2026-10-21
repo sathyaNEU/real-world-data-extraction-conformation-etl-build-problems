@@ -2,395 +2,429 @@
 
     python3 task177/generator/checks.py <target>
 
-The three-rules block (R1 to R3c), the ladder on the pack, the golden's family and bin, the one-sigma move, every
-semantic-fork row (SF), the Layer 1 items mishandled one at a time, the ask devices and the separation line, the
-distractors, the input gates and the realism sweep. Exit 1 on any FAIL."""
+The three-rules block (R1 to R3), the golden and its family, the one-sigma move, every semantic-fork row (SF), the
+Layer 1 items mishandled one at a time (R2), the ladder, the ask devices against the world's truth, the separation
+line, every graded figure's distance to its cell's edge, the distractors, the input gates and the realism sweep.
+Exit 1 on any FAIL."""
 from __future__ import annotations
 
-import csv
 import datetime as dt
-import hashlib
 import json
+import math
 import os
 import re
 import sys
+import warnings
+import zipfile
 
 import numpy as np
+import pandas as pd
 
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import calc as K       # noqa: E402
-import common as C     # noqa: E402
-import docs as DOC     # noqa: E402
-import model as M      # noqa: E402
+import calc as K        # noqa: E402
+import common as C      # noqa: E402
+import cracker as CR    # noqa: E402
+import docs as DOC      # noqa: E402
+import ladder as L      # noqa: E402
+import pack as PK       # noqa: E402
+import world as W       # noqa: E402
 
 ROWS = []
+G = 20          # the golden's cell, nearest 5 per cent
+DEFAULT = 10    # the default path's cell
 
 
 def check(label, ok, detail=""):
     ROWS.append((label, bool(ok), detail))
-    print("%-4s %-58s %s" % ("PASS" if ok else "FAIL", label, detail), flush=True)
+    print("%-4s %-70s %s" % ("PASS" if ok else "FAIL", label, detail), flush=True)
 
 
-def in_bin(v, target_pct):
-    """the forecast prints in the golden's cell: the nearest 5 per cent, as the prompt asks"""
-    return C.pct5(v) == target_pct
+def cell(v):
+    return C.pct5(v / 100)
 
 
-# the pack the stage 4 readers and judge saw (target.zip 2c536aaa): the files the call reads that no ask touches; the
-# acceptance summary left the list in round 4, when its resolved count re-centred the forecast in its cell
-JUDGED = {
-    "claims_register_2026.csv": "be407db35fc60906d6c75ea4265a610dcde1b03caa85e48726d707335972d9c2",
-    "contact_details_crosswalk.csv": "540a58def6081741c0c7409e6b686e310ffc66eca0dbf24d43559a2fb9faf208",
-    "contact_legs_2026.csv": "ec5472f533e9a09afb79a17b6634eb69200ddeede60e70f85a7e7df69b11b118",
-    "overflow_episodes_2026.csv": "64364c04a67d34d7131bdf1eb48e005bdce6cbe2146e673e058b6581ef69f07d",
-    "post_contact_survey_2026.csv": "7efb9911d46ea03cfe6fc8bfe493bb2650cf5858643f2ae413f7b2998ad74266",
-    "telephony_migration_codes.xlsx": "c5500172f1e136515f510eb515c068b4726d54d65c49d1420dfd9b8ee1e22b94",
-    "usage_tier_order_form_2027.pdf": "f641b76233e2726fb3a66e2e03517b1215e619a71abb1b9941bdb9091a782358",
-}
-JUDGED_SESSIONS = "abce448196c2b03e7c268d0405abf37ff48440ee19c5e51fdc1f18f299a289cf"
+# ------------------------------------------------------------------------------------- readings of the call
+def ly_reading(P, ended_inclusive=False, ignore_restart=False, day_from="jan", late="feb28", arms="assign",
+               outcome="access"):
+    """last year's test under one reading of each convention the call needs; returns the frame with Y and d"""
+    a = P.assign.merge(P.profile.drop(columns=["customer_no"]), on="subscription_ref", how="left")
+    if arms == "assign":
+        a["T"] = (a.arm == "offer").astype(int)
+    else:                                   # the arm read off the email log: delivered (bounces count as not sent)
+        got = set(P.email[P.email.event == "delivered"].customer_no)
+        a["T"] = a.customer_no.isin(got).astype(int)
+    ev = P.events[P.events.system == "legacy"]
+    hz = pd.Timestamp(C.LY_HORIZON)
+    if outcome == "access":
+        ended = a.subscription_ref.map(ev[ev.event == "access_ended"].groupby("subscription_key").date.min())
+        gone = ended.notna() & ((ended <= hz) if ended_inclusive else (ended < hz))
+    else:                                   # read by the cancellation request
+        req = a.subscription_ref.map(ev[ev.event == "cancel_requested"].groupby("subscription_key").date.min())
+        gone = req.notna() & (req <= hz)
+    back = a.subscription_ref.map(ev[ev.event == "restarted"].groupby("subscription_key").date.min())
+    back = back.notna() & (back <= hz) & (not ignore_restart)
+    a["Y"] = (~gone | back).astype(int)
+    sub = P.lbs[P.lbs.line_type == "SUB"]
+    if day_from == "jan":
+        day = sub[(sub.date >= "2026-01-01") & (sub.date <= "2026-01-31")].groupby("subscription_ref").date.max().dt.day
+        dd = a.subscription_ref.map(day)
+    elif day_from == "dec":
+        day = sub[(sub.date >= "2025-12-01") & (sub.date <= "2025-12-31")].groupby("subscription_ref").date.max().dt.day
+        dd = a.subscription_ref.map(day)
+    else:
+        dd = pd.to_datetime(a.started_on).dt.day
+    nb = []
+    for k in dd.astype(int):
+        if late == "mar1" and k > 28:
+            nb.append(dt.date(2026, 3, 1))
+        else:
+            nb.append(C.month_day(2026, 2, int(k)))
+    a["d"] = [(x - C.LY_LIST).days for x in nb]
+    return a
 
 
-def sha(path):
-    return hashlib.sha256(open(path, "rb").read()).hexdigest()
+def fortnight(a):
+    return K.diff(a, (a.d >= 1) & (a.d <= 14))
 
 
-def golden_of(D, fi, rows, spec="split", reps=200, seed=17, P=None, fit_rows=None, aux_over=None, pop=None):
-    S, aux = K.inputs(D, rows)
-    aux["p_new"], aux["cycle"] = fi["p_new"], fi["cycle"]
-    if aux_over:
-        aux.update(aux_over)
-    fit_on = None
-    if fit_rows is not None:
-        fit_on, _ = K.inputs(D, fit_rows)
-    o = K.forecast(D, spec=spec, reps=reps, seed=seed, S=S, aux=aux, P=P, fit_on=fit_on, pop=pop)
-    return o
+# ------------------------------------------------------------------------------------- the world's truth
+def ask_a_truth(R):
+    ly = R.ly
+    pays_mar = (ly.end_bill.values < 0) | (ly.end_bill.values >= 4)
+    acc = ly.accepted.values
+    out = {}
+    for pl in C.PLANS:
+        dpl = int(round(int(round(C.PRICE[pl] * 100)) * C.OFFER_SHARE)) / 100.0
+        sel = ly.plan.values == pl
+        out[("disc", 2, pl)] = round(dpl * (acc & sel).sum(), 2)
+        out[("disc", 3, pl)] = round(dpl * (acc & sel & pays_mar).sum(), 2)
+        out[("takers", pl)] = int((acc & sel).sum())
+    return out
+
+
+def ask_b_truth(R):
+    T = R.ty
+    out = {("billed", y, m, pl): 0.0 for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS}
+    for mi, (run, pend) in enumerate(PK.RUNS):
+        for i in range(len(T)):
+            s = dict(sub=T.sp_sub.iat[i], plan=T.plan.iat[i], start=T.start.iat[i], dom=int(T.dom.iat[i]), kind="list")
+            r = PK.bill_line(s, mi, run, pend)
+            if r is None:
+                continue
+            v = r[0][5] + (-2.0 if T.loyal_month.iat[i] == mi else 0.0)
+            out[("billed", run.year, run.month, T.plan.iat[i])] += v
+    return {k: round(v, 2) for k, v in out.items()}
 
 
 def main(target):
-    D = K.load(target)
-    fi = K.filed_inputs(target)
-    rows = K.contacts(D)
-    figs = json.load(open(os.path.join(HERE, "figures.json"))) if os.path.exists(os.path.join(HERE, "figures.json")) \
-        else None
-    gold = golden_of(D, fi, rows, reps=400)
-    g = gold["share"]
-    G = C.pct5(g)
-    P = gold["P"]
-    check("golden: the share of own contacts started in the assistant", True,
-          "%.4f, printed %d per cent (nearest 5)" % (g, G))
-    check("golden: inside its cell by a point or more (the nearest 5 per cent)", C.edge(100 * g, C.FORECAST_UNIT) >= 1.0,
-          "edge distance %.3f" % C.edge(100 * g, C.FORECAST_UNIT))
-    if figs:
-        check("figures.json carries the golden", figs["call_share"] == G, "%s" % figs["call_share"])
+    P = K.Pack(target)
+    c, ly, ty = K.call(P)
+    ga, gb = K.ask_a(P), K.ask_b(P)
+    R = PK.records()
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
 
-    # ------------------------------------------------------------------------------------- R1: the raw material
-    check("R1 the golden reads row-level contacts from the two exports", len(rows) > 300000,
-          "%d contacts rebuilt from %s and %s" % (len(rows), C.F_LEGS, C.F_CONV))
-    heads = []
-    for f in os.listdir(target):
-        if f.endswith(".csv"):
-            with open(os.path.join(target, f), encoding="utf-8") as fh:
-                heads += next(csv.reader(fh))
-    with open(os.path.join(target, C.F_CONV), encoding="utf-8") as fh:
-        heads += list(json.loads(fh.readline()).keys())
-    bad = [h for h in heads if re.search(r"forced|imposed|learn|propens|prefer|q_val|_rate|ratio|weight", h, re.I)]
-    check("R1 no shipped column holds the deciding quantity", not bad, ", ".join(bad) or "none")
-    n_red = sum(r[3] for r in rows)
-    check("R1 the transfers the decisive step reads are a minority of the contacts", n_red / len(rows) < 0.05,
-          "%d of %d" % (n_red, len(rows)))
+    # ------------------------------------------------------------------------------ R: the three rules
+    w = R.ly
+    wly = pd.DataFrame(dict(T=w["T"].values, Y=w.subscribed_h.astype(int).values, d=w.d.values))
+    w_pooled = K.diff(wly)
+    w_fort = K.diff(wly, wly.d <= 14)
+    w_rest = K.diff(wly, wly.d > 14)
+    tyw = R.ty.copy()
+    tyw["d"] = 6.0
+    w_truth = 100 * W.true_uplift(tyw).mean()
+    check("R1 the effect lives in the fortnight before the bill (clean truth)", w_fort >= 15 and abs(w_rest) <= 3,
+          "days 1-14 %.2f, days 15-28 %.2f" % (w_fort, w_rest))
+    check("R1 every subscription on this year's list bills six days after the send (world and pack)",
+          set(R.ty.d) == {6.0} and c["ty_days"] == [6] and c["ty_inside"] == c["n_ty"] == 48000,
+          "pack days %s on %d of %d" % (c["ty_days"], c["ty_inside"], c["n_ty"]))
+    check("R3 analyst test on the clean truth: the pooled arms file the default", cell(w_pooled) == DEFAULT,
+          "%.2f -> %d" % (w_pooled, cell(w_pooled)))
+    check("R3 analyst test on the clean truth: the fortnight's arms file the golden", cell(w_fort) == G,
+          "%.2f -> %d" % (w_fort, cell(w_fort)))
+    check("R3 the forecast's truth (expected share kept on this year's list) sits in the golden's cell",
+          cell(w_truth) == G, "%.2f" % w_truth)
+    check("R3 on the pack: the pooled arms file the default, the fortnight the golden",
+          cell(c["pooled"]) == DEFAULT and cell(c["share"]) == G, "%.2f, %.2f" % (c["pooled"], c["share"]))
 
-    # ----------------------------------------------------------------------------- R3: the analyst test (clean truth)
-    import pack as PK
-    import world as W
-    world, rec = PK.records()
-    R = world.R
-    ct = world.ct
-    cl = world.claims
-    S_t = M.Seq(ct.who, R["choice"], R["red"], R["res"].astype(float))
-    pop = world.pop
-    op = [cl.opened[i].astype(dt.date) for i in pop]
-    sch = np.array([K.schedule(o, fi["cycle"]) for o in op])
-    lo = np.maximum(cl.opened, np.datetime64(C.REC_START))
-    hi = np.minimum(cl.closed, np.datetime64(C.REC_END) + np.timedelta64(1, "D"))
-    days_open = np.maximum((hi - lo).astype(int), 0)
-    adhoc = float((~ct.kind).sum() / days_open.sum())
-    p_phone = float(R["res"][~R["choice"] & ~R["red"]].mean())
-    p_over = float(R["red"].sum() / (~R["choice"]).sum())
-    has = np.array([i in S_t.index for i in pop])
-    rws = np.array([S_t.index.get(i, 0) for i in pop])
-
-    def clean_forecast(spec, Pt=None, reps=200):
-        if Pt is None:
-            Pt, _, _ = M.fit(S_t, M.SPECS[spec])
-        _, st = M.run(Pt, S_t, M.SPECS[spec], want_ll=False)
-        qb = np.where(has, st["qb"][rws], Pt["q0b"])
-        qp = np.where(has, st["qp"][rws], Pt["q0p"])
-        la = np.where(has, st["last"][rws], 0.0)
-        return M.simulate(Pt, M.SPECS[spec], qb, qp, la, np.full(pop.size, adhoc), K.AF_DAYS, K.WIN_DAYS,
-                          fi["p_new"], p_phone, p_over, reps=reps, seed=23, sched_af=sch[:, 0],
-                          sched_free=sch[:, 1])["share"], Pt
-    easy, P_easy = clean_forecast("one_rate")
-    check("R3a analyst test: one learning rate on the clean truth files the wrong answer",
-          C.pct5(easy) >= G + 10, "%.4f (%d per cent) against the golden's %d" % (easy, C.pct5(easy), G))
-    right, P_right = clean_forecast("split")
-    check("R3b the decisive step alone (a separate rate for transfers) files the golden on the clean truth",
-          in_bin(right, G), "%.4f" % right)
-    tn, _ = clean_forecast("teach_nothing")
-    P_as = dict(P_right)
-    P_as["a_forced"] = P_right["a_free"]
-    asc, _ = clean_forecast("split", Pt=P_as)
-    check("R3b transfers taught nothing (a lower rung's correction) stays wrong", C.pct5(tn) <= G - 5,
-          "%.4f" % tn)
-    check("R3b transfers learned at the chosen rate stays wrong", C.pct5(asc) >= G + 10, "%.4f" % asc)
-    truth = W.forecast_truth(cl, R, world.P, reps=12)
-    check("R3 the clean truth's own window lands in the golden's bin", in_bin(truth["share"], G),
-          "%.4f" % truth["share"])
-    # R3c: no plant, no repeated block, no copied stream
-    daily = {}
-    for r in rows:
-        k = C.to_local(r[1]).date()
-        daily[k] = daily.get(k, 0) + 1
-    vals = [daily[k] for k in sorted(daily)]
-    blocks = set()
-    rep = 0
-    for i in range(0, len(vals) - 7):
-        b = tuple(vals[i:i + 7])
-        rep += b in blocks
-        blocks.add(b)
-    check("R3c no repeated block of daily contacts", rep == 0, "%d repeats of a 7-day block" % rep)
-    names = " ".join(os.listdir(target)).lower()
-    check("R3c no memo, draft or briefing file", not re.search(r"memo|draft|brief|notes?\b|known", names), names[:80])
-
-    # ------------------------------------------------------------------------------------------- the ladder (pack)
-    S, aux = K.inputs(D, rows)
-    aux["p_new"], aux["cycle"] = fi["p_new"], fi["cycle"]
-    fits = {}
-    for name in ("one_rate", "teach_nothing", "split_no_persev", "split_persev_exp", "split_q0", "one_rate_q0"):
-        Pn, ll, _ = M.fit(S, M.SPECS[name])
-        fits[name] = (Pn, ll)
-    ll_g = M.run(P, S, M.SPECS["split"])[0]
-    o1 = K.forecast(D, spec="one_rate", reps=200, S=S, aux=aux, P=fits["one_rate"][0])["share"]
-    check("L0 rung 0, one learning rate (the default path), files its own wrong answer", C.pct5(o1) >= G + 10,
-          "%.4f (%d)" % (o1, C.pct5(o1)))
-    check("L0 the split model beats one rate on the record by a visible margin", ll_g - fits["one_rate"][1] > 300,
-          "%.1f log-likelihood units" % (ll_g - fits["one_rate"][1]))
-    g_fix, g_est = ll_g - fits["one_rate"][1], fits["split_q0"][1] - fits["one_rate_q0"][1]
-    check("L0 the gain over one rate clears the write-up's floor, starting values fixed or estimated",
-          figs is None or min(g_fix, g_est) > figs["ll_gain_floor"],
-          "%.1f and %.1f against %s" % (g_fix, g_est, figs and figs["ll_gain_floor"]))
-    otn = K.forecast(D, spec="teach_nothing", reps=200, S=S, aux=aux, P=fits["teach_nothing"][0])["share"]
-    check("L1 transfers teach nothing: outside the bin", C.pct5(otn) <= G - 5, "%.4f" % otn)
-    check("L1 the record rejects transfers teaching nothing", ll_g - fits["teach_nothing"][1] > 30,
-          "%.1f units" % (ll_g - fits["teach_nothing"][1]))
-    ope = K.forecast(D, spec="split_persev_exp", reps=200, S=S, aux=aux, P=fits["split_persev_exp"][0])["share"]
-    check("L2 pull to the last channel met (a form of the split): rejected by the record%s" % (
-          ", and at the nearest 5 per cent it prints the golden's cell" if in_bin(ope, G) else " and outside the bin"),
-          ll_g - fits["split_persev_exp"][1] > 30, "%.1f units, %.4f" % (ll_g - fits["split_persev_exp"][1], ope))
-    check("L every route without the decisive step stays out of the golden's cell",
-          not any(in_bin(v, G) for v in (o1,)) and not in_bin(otn, G), "one rate %.4f, transfers teach nothing %.4f"
-          % (o1, otn))
-    check("L2 no pull to the last choice: rejected by the record", ll_g - fits["split_no_persev"][1] > 300,
-          "%.1f units" % (ll_g - fits["split_no_persev"][1]))
-    import ladder as LD
-    lg = LD.logit_pooled(D, rows, S, aux, fi)
-    check("L3 a pooled last-four logistic of the choice: outside the bin", C.pct5(lg) >= G + 5, "%.4f" % lg)
-    mk = LD.markov_pooled(D, rows, S, aux, fi)
-    check("L3 a pooled first-order Markov chain: outside the bin", C.pct5(mk) >= G + 5, "%.4f" % mk)
-    nl = LD.no_learning(D, rows)
-    check("L4 no learning (the last eight weeks of 2026 carried): outside the bin", C.pct5(nl) <= G - 10, "%.4f" % nl)
-    rh = LD.rate_hat(D, rows, S, aux, P)
-    check("L5 contacts from each jobseeker's 2026 rate, check-ins ignored (against plan 4.1): the same call",
-          in_bin(rh, G), "%.4f" % rh)
-
-    # ------------------------------------------------------------------------- the golden's family on the pack
-    fam, fam_af, fam_ratio, fam_rates = {}, {}, {}, {}
-
-    def fam_add(k, o):
-        fam[k], fam_af[k] = o["share"], o["share_af"]
-        fam_ratio[k] = o["P"]["a_forced"] / o["P"]["a_free"]
-        fam_rates[k] = (o["P"]["a_free"], o["P"]["a_forced"])
-    fam_add("second Monte Carlo seed", golden_of(D, fi, rows, reps=400, seed=5, P=P))
-    fam_add("starting values estimated", golden_of(D, fi, rows, spec="split_q0", P=fits["split_q0"][0]))
-    popd = K.population(D)
-    fam_add("fitted on the planning population only", golden_of(D, fi, rows, fit_rows=[r for r in rows if r[0] in popd]))
-    cut = dt.datetime(2026, 11, 1, 6)
-    fam_add("fitted on contacts to 31 October", golden_of(D, fi, rows, fit_rows=[r for r in rows if r[1] < cut]))
-    fam_add("no overflow transfers after 1 March", golden_of(D, fi, rows, P=P, aux_over=dict(p_over=0.0)))
-    fam["questions at each jobseeker's own 2026 rate"] = LD.adhoc_own(D, rows, S, aux, P)
-    fam["claims closing at the register's 2026 rate"] = LD.with_closures(D, rows, S, aux, P)
-    for k, v in fam.items():
-        check("F family: %s" % k, in_bin(v, G), "%.4f" % v)
-    GA = C.pct(gold["share_af"])
-    check("F family: the assistant-first weeks' share prints the golden's whole per cent in every member",
-          all(C.pct(v) == GA for v in fam_af.values()) and (figs is None or figs["share_af"] == GA),
-          "%d: %s" % (GA, ", ".join("%.4f" % v for v in fam_af.values())))
-    check("F family: the transfers' rate is about a fifth of the chosen rate in every fit",
-          all(int(round(1 / r)) == 5 for r in fam_ratio.values()),
-          "%s; chosen %.4f to %.4f, transfers %.4f to %.4f" % (
-              ", ".join("%.3f" % r for r in fam_ratio.values()), min(a for a, _ in fam_rates.values()),
-              max(a for a, _ in fam_rates.values()), min(b for _, b in fam_rates.values()),
-              max(b for _, b in fam_rates.values())))
-    # the one-sigma move of the transfer rate
-    lo_s, hi_s = LD.one_sigma(D, rows, S, aux, P)
-    check("F one standard error of the transfer rate leaves the printed share", in_bin(lo_s, G) and in_bin(hi_s, G),
-          "%.4f to %.4f" % (lo_s, hi_s))
-
-    # ------------------------------------------------------------------------------- R2: Layer 1 mishandled
-    r2 = {}
-    for label, alt, alt_pop in LD.mishandlings(D, rows):
-        v = golden_of(D, fi, alt, pop=alt_pop)["share"]
-        r2[label] = v
-        check("R2 %s: the call holds" % label, in_bin(v, G), "%.4f" % v)
-    check("R2 the overflow log and the transfer legs mark the same calls", LD.log_matches_transfers(D, target),
-          "every transfer inside a logged episode and every claimant-queue call in one transferred")
-    unl = LD.unlinked_internal(D)
-    check("R2 the internal accounts typed claimant never join a case", unl == 0, "%d conversations join" % unl)
-
-    # ---------------------------------------------------------------------------------- SF: semantic fork rows
-    ev = LD.semantic_forks(D, fi, rows, G, golden_of, P)
-    check("SF1 contacts jobseekers start themselves: plan 5.1 defines them", ev["plan51a"])
-    check("SF2 a transfer is a call, not an assistant start: plan 5.1", ev["plan51b"])
-    check("SF3 a conversation counts once: plan 5.2, and every-session reading holds the call",
-          ev["plan52"] and in_bin(r2["every session counted as a contact"], G))
-    check("SF4 the population is the register on 3 January 2027: the prompt", ev["prompt_pop"])
-    check("SF5 nobody joining after 3 January: the prompt's date, and no member opened later", ev["prompt_pop"] and
-          ev["no_later"])
-    check("SF6 the window's edges on UTC dates: same call", in_bin(ev["sf6"], G), "%.4f" % ev["sf6"])
-    check("SF7 the assistant-first routing covers calls only: plan 2.1 and 2.3", ev["plan21_23"])
-    check("SF8 release 4.0's resolution is the acceptance test's, its intents reweighted the same call",
-          ev["accept"] and in_bin(ev["sf8b"], G), "%.4f" % ev["sf8b"])
-    check("SF9 the phone's resolution from July to December only: same call", in_bin(ev["sf9"], G), "%.4f" % ev["sf9"])
-    check("SF10 the overflow off from 1 March: same call; plan 3.2 keeps it on", ev["plan32"] and in_bin(ev["sf10"], G),
-          "%.4f" % ev["sf10"])
-    check("SF11 check-ins every 14 days on their due dates: plan 4.1; own 2026 rates, check-ins ignored, the same call",
-          ev["plan41"] and in_bin(rh, G))
-    check("SF12 rounding once at the end: the prompt's closing sentence", ev["prompt_round"])
-    check("SF13 the contacts' order on one clock or read unconverted: same call",
-          in_bin(r2["sessions' times read as UTC"], G))
-    check("SF14 calls keyed by the case number or the caller's number: same call",
-          in_bin(r2["calls keyed by the caller's number"], G))
-    check("SF15 release 4.0 resolves the conversations jobseekers open at its acceptance rate: plan 1.3; the 2026 rate "
-          "kept for them files another call", ev["plan13"] and not in_bin(ev["sf15"], G),
-          "%.4f with the 2026 rate %.3f" % (ev["sf15"], ev["p_chat26"]))
-    check("SF16 a transfer after 1 March meets release 4.0 on the voice service: plan 1.3", ev["plan13"],
-          "%.4f with the 2026 voice rate %.3f" % (ev["sf16"], ev["p_voice26"]))
-    # round 3's judge: the readings an outside reproduction took, under the conventions plan 4.1 and 5.1 now file
-    jr = LD.judge_readings(D, fi, rows, golden_of, P, S)
-    for label, (v, closed) in jr.items():
-        if in_bin(v, G):
-            check("J3 %s: the same call at the nearest 5 per cent" % label, True, "%.4f" % v +
-                  (" (the record rejects the form by %.1f units)" % closed if not isinstance(closed, bool) else ""))
-        elif closed is True:
-            check("J3 %s: another call, and the plan's filed sentence rules it out" % label,
-                  ev["plan41"] if "check-in" in label else ev["plan51a"] and ev["plan51b"], "%.4f" % v)
+    # ------------------------------------------------------------------------------ the golden and its family
+    gs = c["share"]
+    check("golden: 20 per cent of the list kept to 31 March 2027", cell(gs) == G and figs["call_share"] == G,
+          "%.2f" % gs)
+    check("golden: distance to the cell's edge", C.edge(gs, 5) >= 2.0, "%.2f" % C.edge(gs, 5))
+    t = ly["T"] == 1
+    f = (ly.d >= 1) & (ly.d <= 14)
+    p1, p0 = ly.Y[t & f].mean(), ly.Y[~t & f].mean()
+    se = 100 * math.sqrt(p1 * (1 - p1) / (t & f).sum() + p0 * (1 - p0) / (~t & f).sum())
+    check("one sigma either way stays in the cell", cell(gs - se) == G and cell(gs + se) == G,
+          "se %.2f: %.2f to %.2f" % (se, gs - se, gs + se))
+    routes = L.routes(P, c, ly, ty)
+    for name, v in routes.items():
+        grp = L.group(name)
+        if grp == "with the step":
+            check("family: %s" % name, cell(v) == G, "%.2f" % v)
+        elif grp == "without the step":
+            want = {"difference over the open rate": 35, "difference over the acceptance rate": 70,
+                    "accepters against the holdout": 45}.get(name, DEFAULT)
+            check("rival: %s" % name, cell(v) == want and cell(v) != G, "%.2f -> %d" % (v, cell(v)))
         else:
-            check("J3 %s: another call, from a model form the record rejects" % label,
-                  not isinstance(closed, bool) and closed > 30, "%.4f, rejected by %.1f units" % (v, closed))
-    late_mix = [v for k, v in jr.items() if k.startswith("check-ins late as in 2026")][0][0]
-    check("SF17 the denominator is every contact started: plan 5.1; transferred calls left out, the same call",
-          ev["plan51a"] and in_bin(jr["transfers left out of the denominator"][0], G),
-          "%.4f" % jr["transfers left out of the denominator"][0])
-    check("SF18 a check-in on its due date: plan 4.1; as late as 2026's, the same call", ev["plan41"] and
-          in_bin(late_mix, G), "%.4f" % late_mix)
-    check("SF19 the other contacts at the 2026 rate or the last eight weeks': the same call",
-          in_bin(jr["other contacts at the last eight weeks' rate"][0], G),
-          "%.4f" % jr["other contacts at the last eight weeks' rate"][0])
-    # round 4's diagnosis: an outsider's re-implementation of the same model class, choice by choice
-    orr = LD.outsider_readings(D, fi, rows, golden_of, P, S)
-    sf = {"the values started at 0 rather than halfway": "SF20", "the values started at 1 rather than halfway": "SF20",
-          "the assistant-first calls setting the pull to the assistant they met": "SF21",
-          "the transferred calls' choice left out of the likelihood": "SF22",
-          "the jobseekers with no 2026 contact at the others' mean state": "SF23",
-          "both of the open readings together": "SF22, SF23"}
-    for label, (v, kind, gap) in orr.items():
-        tag = sf.get(label, "SF24")
-        if kind == "c":
-            check("%s (c, open) %s: inside the golden's cell by a point or more" % (tag, label),
-                  in_bin(v, G) and C.edge(100 * v, C.FORECAST_UNIT) >= 1.0,
-                  "%.4f, edge %.2f" % (v, C.edge(100 * v, C.FORECAST_UNIT)))
-        elif kind == "a":
-            check("%s (a, filed) %s: plan 3.3 files the phone's outcome%s" % (
-                tag, label, ", and the reading prints the same call" if in_bin(v, G) else ""), ev["plan33"], "%.4f" % v)
-        else:
-            check("%s (b, settled) %s: the record rejects it by %.1f units%s" % (
-                tag, label, gap, ", and it prints the same call" if in_bin(v, G) else ""), gap > 30, "%.4f" % v)
-    check("J3 the round 3 judge's own figures (25.8, 26.4 to 27.2, reported on 8ab100af, not recomputed) sit in the cell",
-          all(C.pct5(x / 100) == G for x in (25.8, 26.4, 27.2)), "cell %.1f to %.1f" % (G - 2.5, G + 2.5))
+            ok = cell(v) != DEFAULT
+            check("days built wrongly: %s" % name, ok, "%.2f -> %d" % (v, cell(v)))
+    fam = [v for k, v in routes.items() if L.group(k) == "with the step"]
+    nos = [v for k, v in routes.items() if L.group(k) == "without the step" and cell(v) == DEFAULT]
+    check("lever: the step moves the call by far more than the family's spread",
+          min(fam) - max(nos) > 3 * (max(fam) - min(fam)),
+          "with %.2f to %.2f, without %.2f to %.2f" % (min(fam), max(fam), min(nos), max(nos)))
 
-    # --------------------------------------------------------------------------------------------- the asks
-    emp, own = K.ask_counts(D, bn=fi["bn"], vendor_bn=fi["vendor_bn"])
-    truth_emp, truth_own = __import__("ask").golden_counts(rec)
-    check("A the employers' counts equal the generator's truth", emp == truth_emp, "%s" % emp)
-    check("A our own use equals the generator's truth", own == truth_own, "%s" % own)
-    dev = LD.ask_devices(D, fi, emp, own)
-    for label, ok, detail in dev:
-        check(label, ok, detail)
-    # separation: no ask device row in the call's population
-    sep = LD.separation(D, rows)
-    for label, ok, detail in sep:
-        check(label, ok, detail)
-    # the stage 4 repair moved ask rows and the plan only: every file the call reads and no ask touches is the judged
-    # pack's byte for byte, and so are the call's own session rows
-    for f, h in JUDGED.items():
-        check("J unchanged since the judged pack: %s" % f, sha(os.path.join(target, f)) == h, "")
-    xw = {r["detail_value"] for r in D["xwalk"] if r["detail_type"] == "assistant_account"}
-    hh = hashlib.sha256()
-    with open(os.path.join(target, C.F_CONV), "rb") as fh:
-        for line in fh:
-            ss = json.loads(line)
-            if ss["channel"] == "voice" or ss["account_ref"] in xw:
-                hh.update(line)
-    check("J the call's own session rows are the judged pack's", hh.hexdigest() == JUDGED_SESSIONS, "")
+    # ------------------------------------------------------------------------------ SF: semantic fork rows
+    note = " ".join(DOC.note_text())
+    plan = " ".join(DOC.plan_text())
+    fields = {(f_, k): v for f_, k, _, v in DOC.FIELDS}
+    prompt = open(os.path.join(os.path.dirname(HERE), "prompt.txt"), encoding="utf-8").read()
+    check("SF1 the share is of the 48,000 subscriptions on the list: the prompt",
+          "48,000 subscriptions" in prompt and "share" in prompt.lower())
+    check("SF2 subscribed on a day: its paid period covers it, access_ended is the last day: dictionary",
+          "last day of access" in fields[(C.F_EVENTS, "event_date")])
+    v = fortnight(ly_reading(P, ended_inclusive=True))
+    check("SF2 access_ended read as the first day without access: same call", cell(v) == G, "%.2f" % v)
+    v = fortnight(ly_reading(P, ignore_restart=True))
+    check("SF3 a subscription restarted by 31 March counts; restarts ignored: same call", cell(v) == G, "%.2f" % v)
+    check("SF4 kept because they are sent the offer: the prompt (sent, not taken)",
+          "because they are sent" in prompt and cell(routes["accepters against the holdout"]) != G)
+    check("SF5 every subscription on this year's list is sent the offer: the plan",
+          "Every subscription on the list is sent the offer; nobody is held back this year." in plan)
+    check("SF6 last January's arms as randomised: the plan and the assignment file",
+          "random half of the 31 January 2026 at-risk list" in plan and set(P.assign.arm) == {"offer", "holdout"})
+    v = fortnight(ly_reading(P, arms="email"))
+    check("SF6 the arms read off the email log (bounces as not sent): same call", cell(v) == G, "%.2f" % v)
+    v = fortnight(ly_reading(P, day_from="dec"))
+    check("SF7 the billing day from the December 2025 bill: same call", cell(v) == G, "%.2f" % v)
+    v = fortnight(ly_reading(P, day_from="start"))
+    check("SF7 the billing day read off started_on: same call", cell(v) == G, "%.2f" % v)
+    v = fortnight(ly_reading(P, late="mar1"))
+    check("SF8 bills on the 29th to 31st falling on 1 March: same call", cell(v) == G, "%.2f" % v)
+    check("SF9 the days to the bill counted from the send date (31 January, 26 January): same call (every TY day 1-14)",
+          all(1 <= d_ <= 14 for d_ in (6, 7)), "6 from the send, 7 from the list cut")
+    check("SF10 this year's next bill is the 1st: note 1.2 and every list subscription's last line ends 31 January",
+          "From 1 November 2026 every monthly digital subscription is billed on the 1st of the month." in note
+          and [str(x) for x in c["ty_next"]] == ["2027-02-01"])
+    check("SF11 two bills inside each horizon: 1 February and 1 March 2027; February and March 2026",
+          all(dt.date(2026, 2, 1) <= C.month_day(2026, 2, k) <= C.LY_HORIZON and
+              C.month_day(2026, 3, k) <= C.LY_HORIZON for k in range(1, 32)))
+    check("SF12 rounding once at the end, to the nearest 5 per cent: the prompt", "nearest 5 per cent" in prompt)
+    check("SF13 the same offer both years: the plan", "The same offer went to a random half" in plan)
+    v = fortnight(ly_reading(P, outcome="request"))
+    check("SF14 the outcome read by the cancellation request, not by access: same call", cell(v) == G, "%.2f" % v)
+    check("SF15 the unit is the subscription in both lists, one per customer number: the prompt and the files",
+          P.assign.subscription_ref.is_unique and P.lst.subscription_id.is_unique and P.assign.customer_no.is_unique
+          and P.lst.customer_no.is_unique)
 
-    # --------------------------------------------------------------- the default path's own back-test (card 1)
-    bt = K.backtest(D, rows)
-    check("B fitted to October, one rate predicts November and December's share within a point",
-          abs(bt["one_rate"]["pred"] - bt["one_rate"]["obs"]) < 0.01,
-          "%.4f against %.4f" % (bt["one_rate"]["pred"], bt["one_rate"]["obs"]))
-    check("B the split predicts the held-out choices better", bt["split"]["ll"] - bt["one_rate"]["ll"] > 50,
-          "%.1f units" % (bt["split"]["ll"] - bt["one_rate"]["ll"]))
-    red = LD.heldout_reduced(D, rows, S)
-    for k, v in red.items():
-        check("B the record selects the learning model: the split beats a %s on held-out choices" % k,
-              bt["split"]["ll"] - v > 300, "%.1f units" % (bt["split"]["ll"] - v))
-    if figs:
-        check("B figures.json carries the back-test", figs["bt_one_rate_pred"] == C.pct(bt["one_rate"]["pred"]) and
-              figs["bt_ll_gain"] == int(round(bt["split"]["ll"] - bt["one_rate"]["ll"])), "")
+    # ------------------------------------------------------------------------------ R2: Layer 1 one at a time
+    for label, kw in (("access_ended inclusive", dict(ended_inclusive=True)), ("restarts ignored", dict(ignore_restart=True)),
+                      ("arms from the email log", dict(arms="email")), ("bill day from December", dict(day_from="dec")),
+                      ("bill day from started_on", dict(day_from="start")), ("29th to 31st on 1 March", dict(late="mar1"))):
+        a_ = ly_reading(P, **kw)
+        check("R2 %s: default still the default, step still the golden" % label,
+              cell(K.diff(a_)) == DEFAULT and cell(fortnight(a_)) == G,
+              "%.2f / %.2f" % (K.diff(a_), fortnight(a_)))
 
-    # ------------------------------------------------------------------------------------ registers and dates
-    with open(os.path.join(target, C.F_MANIFEST), encoding="utf-8") as fh:
-        listed = {r["file"] for r in csv.DictReader(fh)}
-    check("H9 the manifest lists every shipped file but itself", listed == set(os.listdir(target)) - {C.F_MANIFEST},
-          "%d listed" % len(listed))
-    pull_utc = "2027-01-04T06:00:00Z"
-    last_leg = max(lg["start_utc"] for lg in D["legs"])
-    last_sess = max(s["started"] for s in D["sessions"])
-    with open(os.path.join(target, C.F_SURVEY), encoding="utf-8") as fh:
-        last_sv = max(r["sent_utc"] for r in csv.DictReader(fh))
-    last_claim = max(max(r["opened"], r["closed"] or "") for r in D["claims"])
-    check("H16 no leg, session, survey or claim dated after the record's last day",
-          last_leg < pull_utc and last_sess < "2027-01-04T00:00:00" and last_sv < pull_utc and last_claim <= "2027-01-03",
-          "%s, %s, %s, %s" % (last_leg, last_sess, last_sv, last_claim))
+    # ------------------------------------------------------------------------------ ask A
+    ta = ask_a_truth(R)
+    check("ask A golden equals the world's truth (offer discounts and takers by plan)",
+          all(abs(ga[k] - ta[k]) < 0.005 for k in ta), "; ".join("%s %s" % (k, ga[k]) for k in ta))
+    cra, mia = CR.cracker_a(P), CR.mirror_a(P)
+    check("ask A: the cracker (CRM and app keys through the profile) misses every figure",
+          not any(CR.hit(ga[k], cra[k], k) for k in ga))
+    check("ask A: the mirror (the offer's web code off the discount lines) misses every figure",
+          not any(CR.hit(ga[k], mia[k], k) for k in ga))
+    refs = set(P.offers.acceptance_ref)
+    disc = P.lbs[P.lbs.line_type == "DISC"]
+    desk = disc[disc.applied_ref.str.startswith("CS-") & disc.date.dt.month.isin([2, 3]) & (disc.date.dt.year == 2026)]
+    plan_ly = P.profile.set_index("subscription_ref").plan
+    hold = set(P.assign[P.assign.arm == "holdout"].subscription_ref)
+    check("ask A device D5: the save desk's STAY50 on February and March bills, in both arms",
+          len(desk) > 500 and desk.subscription_ref.isin(hold).sum() > 200 and (desk.item_code == C.DESK_CODE).all(),
+          "%d lines, %d on held-back subscriptions" % (len(desk), desk.subscription_ref.isin(hold).sum()))
+    moved = all(abs(-desk[(desk.date.dt.month == m) & (desk.subscription_ref.map(plan_ly) == pl)].amt.sum()) > 50
+                for m in (2, 3) for pl in C.PLANS)
+    check("ask A device D5 moves every discount cell by more than 50 pounds", moved)
+    prof = P.profile
+    app_keys = set(prof.app_user_id[prof.app_user_id != ""])
+    app_acc = P.offers[P.offers.channel == "app"]
+    unmatched = (~app_acc.customer_key.isin(app_keys)).sum()
+    check("ask A device D7: app acceptances keyed by an app user id the profile no longer holds",
+          unmatched > 300 and len(R.rekeyed) == unmatched, "%d of %d app acceptances" % (unmatched, len(app_acc)))
+    applied = set(disc.applied_ref)
+    check("ask A fair: every offer discount line's applied_ref is an acceptance, every first acceptance applied",
+          set(disc[disc.applied_ref.str.startswith("OE26-")].applied_ref) <= refs
+          and len(refs - applied) == int(R.ly.also_email.sum()),
+          "%d acceptances never applied (second acceptances)" % len(refs - applied))
+    by_acc = {}
+    crm_plan, app_plan = dict(zip(prof.customer_no, prof.plan)), dict(zip(prof.app_user_id, prof.plan))
+    for k in P.offers.customer_key:
+        pl = crm_plan.get(k) or app_plan.get(k)
+        by_acc[pl] = by_acc.get(pl, 0) + 1
+    check("ask A device D1: acceptances counted as takers (both channels, rekeyed dropped) miss every plan",
+          all(by_acc.get(pl, 0) != ga[("takers", pl)] for pl in C.PLANS), str(by_acc))
+    app_code = disc[(disc.item_code == C.OFFER_CODE_APP)]
+    check("ask A hazard: the app's own discount code on February and March bills",
+          len(app_code) > 1000 and app_code.applied_ref.str.startswith("OE26-").all(), "%d lines" % len(app_code))
 
-    # ------------------------------------------------------------------------------------ distractors and gates
-    reads = set(K.READS)
-    for f in C.DISTRACTORS:
-        check("D distractor never read by the golden: %s" % f, f not in reads and os.path.exists(os.path.join(target, f)),
-              "")
+    # ------------------------------------------------------------------------------ ask B
+    tb = ask_b_truth(R)
+    check("ask B golden equals the world's truth (list subscriptions' own plan lines and goodwill credits)",
+          all(abs(gb[k] - tb[k]) < 0.01 for k in tb), "max gap %.4f" % max(abs(gb[k] - tb[k]) for k in tb))
+    crb, mib = CR.cracker_b(P), CR.mirror_b(P)
+    check("ask B: the cracker (invoices filed under the list, plan lines, UK time, legacy bills and credit notes) "
+          "misses every figure", not any(CR.hit(gb[k], crb[k], k) for k in gb),
+          "nearest %.0f" % min(abs(gb[k] - crb[k]) for k in gb))
+    check("ask B: the mirror (invoice totals by issued_at) misses every figure", not any(CR.hit(gb[k], mib[k], k) for k in gb))
+    lst = P.lst.set_index("subscription_id")
+    ids = set(lst.index)
+    inv = P.spinv[P.spinv.doc_type == "invoice"]
+    sl = P.spline.merge(inv[["invoice_id", "subscription_id", "account_id"]].rename(
+        columns={"subscription_id": "head_sub"}), on="invoice_id")
+    foreign = sl[sl.subscription_id.isin(ids) & ~sl.head_sub.isin(ids)]
+    others = sl[sl.head_sub.isin(ids) & ~sl.subscription_id.isin(ids) & sl.item_code.isin(C.PLAN_CODE.values())]
+    check("ask B device D7/D6: list subscriptions billed on another account's invoice",
+          foreign.subscription_id.nunique() > 1000, "%d subscriptions" % foreign.subscription_id.nunique())
+    check("ask B device D7/D6: other plans on the list's accounts' invoices, filed under a list subscription",
+          others.subscription_id.nunique() > 1500, "%d subscriptions" % others.subscription_id.nunique())
+    check("ask B fair: every line names its own subscription; header subscription_id is the first line's",
+          all(json.loads(lj)[0]["subscription_id"] == s for s, lj in zip(inv.subscription_id.values[:5000],
+                                                                          inv.lines.values[:5000])))
+    # the UK date against UTC: the 1 October run sits on 30 September in UTC
+    oct_run = inv[inv.period_start == "2026-10-01"]
+    check("ask B hazard D8: the 1 October run issued at 23:05 to 23:59 UTC on 30 September (BST)",
+          (oct_run.utc.dt.month == 9).mean() > 0.98 and (oct_run.uk.dt.month == 10).all())
+    cn = P.spinv[P.spinv.doc_type == "credit_note"]
+    covers = [x for s in cn.covers for x in s.split(";")]
+    in_pull = set(P.lbs.invoice_no)
+    check("ask B hazard D1/D2: credit notes cover each account's 1 October legacy bills, add-ons and other plans in",
+          len(cn) > 300 and sum(1 for x in covers if x in in_pull) < len(covers),
+          "%d notes, %d bills covered, %d in the pull" % (len(cn), len(covers), sum(1 for x in covers if x in in_pull)))
+    # the duplicate bills and their credits cancel exactly on the list's plans: ignoring both is the same figure
+    alt = {}
+    lines = P.spline.merge(inv[["invoice_id", "uk"]], on="invoice_id")
+    lines = lines[lines.subscription_id.isin(ids)]
+    lines = lines.assign(ym=[(t_.year, t_.month) for t_ in lines.uk])
+    for (y, m) in C.ASK_B_MONTHS:
+        for pl in C.PLANS:
+            alt[("billed", y, m, pl)] = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(lst.plan) == pl)].amt.sum()
+    check("ask B convergent reading: the platform's lines alone (no legacy bill, no credit note) give the golden",
+          all(abs(alt[k] - gb[k]) < 0.01 for k in gb))
+    hdr = {}
+    for (y, m) in C.ASK_B_MONTHS:
+        for pl in C.PLANS:
+            s_ = inv[inv.subscription_id.isin(ids) & (inv.subscription_id.map(lst.plan) == pl)]
+            hdr[("billed", y, m, pl)] = s_[[(t_.year, t_.month) == (y, m) for t_ in s_.uk]].amt.sum()
+    check("ask B: invoice totals filed under the list (UK time) miss every figure",
+          not any(CR.hit(gb[k], hdr[k], k) for k in gb))
+    no_gw = {k: alt[k] - lines[(lines.item_code == C.LOYAL_CODE) & (lines.ym == (k[1], k[2])) &
+                                (lines.subscription_id.map(lst.plan) == k[3])].amt.sum() for k in gb}
+    check("ask B hazard: the goodwill credits left out miss every figure", not any(CR.hit(gb[k], no_gw[k], k) for k in gb))
+
+    # ------------------------------------------------------------------------------ the separation line
+    jan = P.lbs[(P.lbs.date >= "2026-01-01") & (P.lbs.date <= "2026-01-31")]
+    ly_refs = set(P.assign.subscription_ref)
+    js = jan[jan.subscription_ref.isin(ly_refs)]
+    check("SEPARATION: every test subscription has exactly one January 2026 bill and no discount on it",
+          (js[js.line_type == "SUB"].groupby("subscription_ref").size() == 1).all()
+          and js.subscription_ref.nunique() == len(ly_refs) and set(js.line_type) <= {"SUB", "CRED"},
+          "%d goodwill credits on January bills" % (js.line_type == "CRED").sum())
+    ev = P.events
+    check("SEPARATION: the events carry last January's list only", set(ev[ev.system == "legacy"].subscription_key) <= ly_refs)
+    jan_head = set(inv[inv.subscription_id.isin(ids) & (inv.period_end == "2027-01-31")].subscription_id)
+    jan_lines = sl[(sl.service_to == "2027-01-31") & sl.subscription_id.isin(ids)]
+    elsewhere = set(jan_lines[~jan_lines.head_sub.isin(ids) | (jan_lines.head_sub != jan_lines.subscription_id)]
+                    .subscription_id) - jan_head
+    check("SEPARATION: this year's next bill is 1 February under every reading (note 1.2; every list subscription's "
+          "own January line; the January invoices filed under it, the rest billed on another account's)",
+          set(jan_lines.subscription_id) == ids and len(jan_head) + len(elsewhere) == len(ids),
+          "%d filed under the subscription, %d on another account's invoice" % (len(jan_head), len(elsewhere)))
+
+    # ------------------------------------------------------------------------------ edges and figures.json
+    for k, v in ga.items():
+        if k[0] == "disc":
+            check("edge: ask A %s" % (k,), C.edge(v, 100) >= 25, "%.2f, edge %.2f" % (v, C.edge(v, 100)))
+    for k, v in gb.items():
+        check("edge: ask B %s" % (k,), C.edge(v, 100) >= 25, "%.2f, edge %.2f" % (v, C.edge(v, 100)))
+    check("figures.json carries the call and every ask figure as computed",
+          figs["call_share"] == cell(gs) and figs["call_whole_list"] == cell(c["pooled"])
+          and figs["call_fortnight_kept"] == cell(c["fortnight"]) and figs["call_ty_days"] == 6
+          and all(figs["ask_a_discount"]["%s %s" % (C.MONTH_NAME[m], pl)] == C.hundred(ga[("disc", m, pl)])
+                  for m in (2, 3) for pl in C.PLANS)
+          and all(figs["ask_a_takers"][pl] == ga[("takers", pl)] for pl in C.PLANS)
+          and all(figs["ask_b_billed"]["%s %d %s" % (C.MONTH_NAME[m], y, pl)] == C.hundred(gb[("billed", y, m, pl)])
+                  for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS))
+
+    # ------------------------------------------------------------------------------ distractors and gates
+    meta = json.load(open(os.path.join(os.path.dirname(HERE), "metadata.json")))
+    src = open(os.path.join(HERE, "calc.py")).read()
+    check("distractors named in metadata.json, unread by every figure",
+          set(meta["distractor_files"]) == set(C.DISTRACTORS) and not any(d.split(".")[0] in src for d in C.DISTRACTORS)
+          and "F_SURVEY" not in src and "F_VALID" not in src)
     files = sorted(os.listdir(target))
-    fmts = sorted({f.rsplit(".", 1)[-1] for f in files})
-    check("G input gate: 10 or more files", len(files) >= 10, "%d" % len(files))
-    check("G input gate: 3 or more formats", len(fmts) >= 3, ", ".join(fmts))
-    n_legs = sum(1 for _ in open(os.path.join(target, C.F_LEGS), encoding="utf-8")) - 1
-    check("G input gate: a file of 25,000 rows or more", n_legs >= 25000, "%s %d rows" % (C.F_LEGS, n_legs))
-    for label, ok, detail in LD.realism(D, target, rows):
-        check(label, ok, detail)
-    if figs:
-        for label, ok, detail in LD.realism_figures(figs):
-            check(label, ok, detail)
-    for label, ok, detail in LD.documents(target, fi):
-        check(label, ok, detail)
+    fmts = {f.rsplit(".", 1)[-1] for f in files}
+    check("input gates: 10 or more files, 3 or more formats, one of 25,000 rows or more",
+          len(files) >= 10 and len(fmts) >= 3 and meta["input_gates"]["largest_file_rows"] >= 25000,
+          "%d files, %s, %d rows" % (len(files), sorted(fmts), meta["input_gates"]["largest_file_rows"]))
+    check("no file name names a distractor, a trap or the answer",
+          not any(re.search(r"distract|decoy|trap|golden|answer|stump|uplift", f, re.I) for f in files))
+
+    # ------------------------------------------------------------------------------ realism sweep
+    texts = {}
+    for f in files:
+        p = os.path.join(target, f)
+        if f.endswith(".csv"):
+            texts[f] = open(p, encoding="utf-8").read()
+        elif f.endswith((".docx", ".xlsx")):
+            with zipfile.ZipFile(p) as z:
+                texts[f] = " ".join(z.read(n).decode("utf-8", "replace") for n in z.namelist() if n.endswith(".xml"))
+        else:
+            texts[f] = open(p, "rb").read().decode("latin-1")
+    dash = [f for f, t_ in texts.items() if "\u2014" in t_ or "\u2013" in t_]
+    check("realism: no em or en dash in any file", not dash, ", ".join(dash))
+    tells = [f for f, t_ in texts.items() if re.search(r"task177|generator|golden|stump|distractor|claude|openai|"
+                                                      r"python-docx|openpyxl|ReportLab", t_, re.I)]
+    check("realism: no build or toolchain tell in any file", not tells, ", ".join(tells))
+    late = []
+    for f in files:
+        if f.endswith(".csv"):
+            for y, mo, dd_ in re.findall(r"\b(20\d\d)-(\d\d)-(\d\d)", texts[f][:5_000_000]):
+                if (int(y), int(mo), int(dd_)) > (2027, 1, 31):
+                    late.append(f)
+                    break
+    check("realism: no date after the pull's month in any export", not late, ", ".join(late))
+    names = set(re.findall(r"\b(?:Bernard|Natalie) [A-Z][a-z]+", " ".join(texts.values())))
+    check("realism: the only people named are the card's personas", names <= {"Bernard Peacock", "Natalie Taylor"},
+          ", ".join(sorted(names)))
+
+    # ------------------------------------------------------------------------------ house fixes wired in
+    dict_files = {f_ for f_, _, _, _ in DOC.FIELDS}
+    check("H9 the data dictionary names every CSV in the pack, and nothing else",
+          dict_files == {f for f in files if f.endswith(".csv")})
+    pull = C.PULL
+    last = {
+        C.F_EVENTS: P.events.date.max(), C.F_LBS: P.lbs.date.max(),
+        C.F_SPINV: P.spinv.utc.max(), C.F_OFFERS: pd.to_datetime(P.offers.accepted_at.str.replace("Z", "")).max(),
+        C.F_EMAIL: pd.to_datetime(P.email.event_at.str.replace("Z", "")).max(),
+    }
+    late = {k: str(v) for k, v in last.items() if v > pd.Timestamp(pull)}
+    check("H16 no export holds a record after the pull (25 January 2027, 18:40)", not late, str(late))
+    import subprocess
+    from pypdf import PdfReader
+    from pdfminer.high_level import extract_text
+    for f, must in ((C.F_NOTE, ("billed on the 1st of the month", "Billing Operations reports each bill")),
+                    (C.F_VALID, ("validation summary", "Calibration by band"))):
+        p_ = os.path.join(target, f)
+        a1 = " ".join((pg.extract_text() or "") for pg in PdfReader(p_, strict=True).pages)
+        a2 = extract_text(p_)
+        a3 = subprocess.run(["pdftotext", "-q", p_, "-"], capture_output=True, text=True).stdout
+        norm = lambda s: re.sub(r"\s+", " ", s)
+        ok = all(m in norm(t_) for m in must for t_ in (a1, a2, a3))
+        check("H25 %s reads in pypdf (strict), pdfminer and pdftotext with its key sentences" % f, ok)
 
     fails = [r for r in ROWS if not r[1]]
     print("%s: %d checks, %d FAIL" % ("PASS" if not fails else "FAIL", len(ROWS), len(fails)))
@@ -398,4 +432,4 @@ def main(target):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+    sys.exit(main(sys.argv[1]))

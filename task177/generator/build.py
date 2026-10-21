@@ -21,8 +21,8 @@ sys.path.insert(0, HERE)
 import pack as PK  # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PULL_DONE = (2027, 1, 4, 10, 15, 0)                            # the pull assembled, Manitoba time
-MTIME = calendar.timegm((2027, 1, 4, 16, 15, 0, 0, 0, 0))      # the same moment, UTC
+PULL_DONE = (2027, 1, 25, 19, 10, 0)                           # the pull assembled, UK time (GMT in January)
+MTIME = calendar.timegm((2027, 1, 25, 19, 10, 0, 0, 0, 0))     # the same moment, UTC
 
 
 def build(out, quiet=False):
@@ -31,7 +31,7 @@ def build(out, quiet=False):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     if not quiet:
         for f in sorted(os.listdir(out)):
-            print("  %-52s %10d bytes %s" % (f, os.path.getsize(os.path.join(out, f)), ("%d rows" % n[f]) if f in n else ""))
+            print("  %-48s %11d bytes %s" % (f, os.path.getsize(os.path.join(out, f)), ("%d rows" % n[f]) if f in n else ""))
     return n
 
 
@@ -77,6 +77,7 @@ def main():
     ap.add_argument("--pack-only", action="store_true")
     ap.add_argument("--no-rebuild", action="store_true")
     ap.add_argument("--no-checks", action="store_true")
+    ap.add_argument("--skip-build", action="store_true", help="check, rebuild and zip the build already on disk")
     a = ap.parse_args()
     if a.out:
         build(a.out)
@@ -84,7 +85,8 @@ def main():
     if a.into:
         full(a.into)
         return
-    full(TASK)
+    if not a.skip_build:
+        full(TASK)
     target = os.path.join(TASK, "target")
     if a.pack_only:
         return

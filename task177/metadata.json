@@ -1,181 +1,190 @@
 {
  "task": "task177",
- "title": "The share of their own contacts a provincial employment service's jobseekers will start in its digital assistant in March and April 2027, after eight weeks in which the upgraded assistant answers every call",
- "domain": "Psychology & Behavioral Science",
- "client_domain": "psychology-behavioral-science",
- "subdomain": "decision-making and computational behavioural modelling (a reinforcement-learning model of jobseekers' contact-by-contact channel choices, with the learning from contacts they did not choose estimated from overflow transfers and carried through eight weeks of such contacts)",
+ "title": "The share of a national news publisher's 26 January 2027 at-risk list of monthly digital subscribers still subscribed on 31 March 2027 because they are sent a half-price retention offer, forecast from last January's randomised test",
+ "domain": "Product Analytics",
+ "client_domain": "product-analytics",
+ "subdomain": "churn propensity and uplift modelling (the effect of a retention offer on a monthly subscription, carried from a randomised test whose deliveries fell at every point of the billing cycle to a list whose bills all fall six days after the send)",
  "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one forecast share to the whole per cent for an eight-week window; employers' conversations and the service's own staff and test conversations in each month of 2026",
- "as_of": "2027-01-04",
+ "prompt_shape": "one forecast share to the nearest 5 per cent; last January's offer discounts on February and March 2026 bills and its takers on each plan; this year's list billed for its plans after credits in each month from October 2026 to January 2027 on each plan",
+ "as_of": "2027-01-25",
  "deliverables": [
-  "assistant_share_forecast_mar_apr_2027.xlsx",
-  "assistant_first_aftermath_note.docx"
+  "retention_offer_forecast_2027.xlsx",
+  "january_offer_note.docx"
  ],
  "distractor_files": [
-  "overflow_episodes_2026.csv",
-  "post_contact_survey_2026.csv"
+  "reader_survey_2026_q4.csv",
+  "retention_model_validation_2026-12.pdf"
  ],
  "distractors": [
   {
-   "file": "overflow_episodes_2026.csv",
+   "file": "reader_survey_2026_q4.csv",
    "wrong_basis": false,
-   "why_relevant": "the workforce team's record of when the claimant queue was in overflow, the episodes the transfers came from",
-   "why_unused": "the legs export marks every transfer on the call itself and the voice session gives its outcome; the log adds nothing a figure reads",
-   "ruled_out_by": "the legs export's leg_result and transfer_to"
+   "why_relevant": "readers' satisfaction and their own stated chance of cancelling in the next three months, which looks like a way to size who on the list would go without the offer",
+   "why_unused": "a voluntary sample of both lists' members with stated intentions, no arm and no billing; no figure reads it",
+   "ruled_out_by": "its own coverage (a voluntary sample) and the randomised test, which measures what the offer keeps directly"
   },
   {
-   "file": "post_contact_survey_2026.csv",
+   "file": "retention_model_validation_2026-12.pdf",
    "wrong_basis": false,
-   "why_relevant": "jobseekers' satisfaction with each channel, which looks like a driver of channel choice",
-   "why_unused": "a 6 per cent sample with about three in ten answering; the choices and outcomes themselves are in the exports; no figure reads it",
-   "ruled_out_by": "its own coverage (a sample of contacts)"
+   "why_relevant": "the retention model's calibration by risk band, which looks like the chance each list member cancels without the offer",
+   "why_unused": "it describes the chance of cancelling within 30 days, not what the offer changes; the test's arms give that directly; no figure reads it",
+   "ruled_out_by": "the test's holdout arm (the outcome without the offer, measured)"
   }
  ],
  "stated_inputs": [
-  "2,003 of 2,400",
-  "14 days",
-  "3 January 2027",
-  "4 January to 28 February 2027",
-  "1 March to 25 April 2027"
+  "48,000",
+  "26 January 2027",
+  "31 March 2027",
+  "half price on the next two monthly bills",
+  "31 January 2026"
  ],
  "field_terms": [],
  "input_gates": {
-  "files": 13,
+  "files": 14,
   "formats": [
    "csv",
-   "jsonl",
+   "docx",
    "pdf",
    "xlsx"
   ],
-  "largest_file": "contact_legs_2026.csv",
-  "largest_file_rows": 887515
+  "largest_file": "legacy_billing_invoices.csv",
+  "largest_file_rows": 736590
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task177/generator/build.py (seeded, deterministic) around a fictional provincial employment and income assistance service in Manitoba (Prairie Works Manitoba), its fictional digital assistant (Ask Prairie Works) and assistant vendor (Riverlot Dialogue Inc.). Jobseekers and employers are identified by number only. No real organisation's records or person is depicted.",
-   "date": "2027-01-04",
+   "origin": "constructed for this task by task177/generator/build.py (seeded, deterministic) around a fictional national news publisher in the United Kingdom (Daily Lantern Media, publisher of The Daily Lantern), its legacy billing system and its subscriptions platform. Subscribers are identified by number only. No real organisation's records or person is depicted.",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work)"
   }
  ],
- "created": "2026-10-19",
+ "created": "2026-10-21",
  "generator": "task177/generator/build.py",
  "files": [
   {
-   "path": "assistant_first_rollout_plan.pdf",
+   "path": "at_risk_list_2027-01-26.csv",
+   "format": "csv",
+   "bytes": 4950859,
+   "rows": 48000,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media campaign tool, the at-risk list cut on 25 January 2027 for the 26 January send",
+   "date": "2027-01-25",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "billing_move_note_2026.pdf",
    "format": "pdf",
-   "bytes": 54795,
+   "bytes": 54314,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, Ask Prairie Works 4.0 rollout plan version 1.4",
-   "date": "2026-12-16",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "assistant_sessions_2026.jsonl",
-   "format": "jsonl",
-   "bytes": 39406488,
-   "rows": 119380,
-   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc. (fictional assistant vendor), session export for the Prairie Works tenant",
-   "date": "2027-01-04",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "claims_register_2026.csv",
-   "format": "csv",
-   "bytes": 2482323,
-   "rows": 29473,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba case system, claims register",
-   "date": "2027-01-04",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "contact_details_crosswalk.csv",
-   "format": "csv",
-   "bytes": 2451656,
-   "rows": 53316,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba case system, contact details with history",
-   "date": "2027-01-04",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "contact_legs_2026.csv",
-   "format": "csv",
-   "bytes": 106169160,
-   "rows": 887515,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba (fictional), contact-centre platform interaction-leg export, both lines, in the layout of a cloud contact-centre platform's leg export with a legacy platform's history loaded at cutover",
-   "date": "2027-01-04",
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Billing Operations, note on monthly digital billing on the subscriptions platform, version 1.3",
+   "date": "2026-10-15",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "data_dictionary.xlsx",
    "format": "xlsx",
-   "bytes": 9163,
-   "rows": 57,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, field descriptions for the pull",
-   "date": "2027-01-04",
+   "bytes": 9213,
+   "rows": 79,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Audience Data, field descriptions for the pull",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "export_manifest.csv",
+   "path": "email_campaign_log_2026-01.csv",
    "format": "csv",
-   "bytes": 1762,
-   "rows": 12,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, export manifest",
-   "date": "2027-01-04",
+   "bytes": 6802869,
+   "rows": 109374,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media email platform, event log of the January 2026 offer email",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "overflow_episodes_2026.csv",
+   "path": "legacy_billing_invoices.csv",
    "format": "csv",
-   "bytes": 3890,
-   "rows": 60,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba workforce team, overflow log",
-   "date": "2027-01-04",
+   "bytes": 40607799,
+   "rows": 736590,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media legacy billing system, invoice line export for the subscriptions on either list and their add-ons",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "post_contact_survey_2026.csv",
+   "path": "offers_engine_acceptances_2026.csv",
    "format": "csv",
-   "bytes": 1363829,
-   "rows": 25120,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba survey platform, post-contact survey export",
-   "date": "2027-01-04",
+   "bytes": 750211,
+   "rows": 10985,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media offers engine, acceptances of the January 2026 retention offer",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "release4_acceptance_summary.pdf",
+   "path": "reader_survey_2026_q4.csv",
+   "format": "csv",
+   "bytes": 463493,
+   "rows": 9200,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media reader survey, fourth-quarter 2026 export",
+   "date": "2027-01-25",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retention_campaign_2026-01_assignment.csv",
+   "format": "csv",
+   "bytes": 8798229,
+   "rows": 160000,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media (fictional) campaign tool, the 31 January 2026 at-risk list and each subscription's arm in the retention test",
+   "date": "2026-01-31",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retention_model_validation_2026-12.pdf",
    "format": "pdf",
-   "bytes": 54368,
+   "bytes": 53967,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc., acceptance test summary for release 4.0",
-   "date": "2026-12-01",
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Audience Data Science, retention model 3.2 validation summary",
+   "date": "2026-12-09",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "telephony_migration_codes.xlsx",
-   "format": "xlsx",
-   "bytes": 10251,
-   "rows": 16,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Contact Centre Systems, cutover code list",
-   "date": "2026-07-08",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "usage_tier_order_form_2027.pdf",
-   "format": "pdf",
-   "bytes": 54521,
+   "path": "retention_offer_plan_2027.docx",
+   "format": "docx",
+   "bytes": 9412,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc., usage tier order form for January to April 2027",
-   "date": "2026-12-14",
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Subscriber Retention, January 2027 retention offer plan",
+   "date": "2027-01-18",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "vendor_invoices_2026.xlsx",
-   "format": "xlsx",
-   "bytes": 7265,
-   "rows": 12,
-   "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba accounts payable, the vendor's 2026 invoices",
-   "date": "2027-01-04",
+   "path": "subscriber_profile_2026-01-31.csv",
+   "format": "csv",
+   "bytes": 12287577,
+   "rows": 160000,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media CRM, snapshot of the subscriptions on the 31 January 2026 list",
+   "date": "2026-01-31",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "subscription_events.csv",
+   "format": "csv",
+   "bytes": 14239991,
+   "rows": 284984,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media subscription events for last January's list, from both billing systems",
+   "date": "2027-01-25",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "subscription_id_crosswalk.csv",
+   "format": "csv",
+   "bytes": 3969088,
+   "rows": 81000,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the billing move note",
+   "date": "2027-01-25",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "subscriptions_platform_invoices.csv",
+   "format": "csv",
+   "bytes": 58868533,
+   "rows": 192864,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list (one row per document, its lines as JSON)",
+   "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   }
  ]

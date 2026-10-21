@@ -1,58 +1,60 @@
 ## Tags
 
-**Domain:** Psychology and behavioural science (decision-making and computational behavioural modelling).
+**Domain:** Product Analytics, churn propensity and uplift modelling.
 **Analytical objective:** Forecasting and predictive modelling.
 
 ## 1. Final Recommendation
 
-**Jobseekers on the register on 3 January 2027 will start 25 per cent of their own contacts between 1 March and 25 April 2027 in Ask Prairie Works.**
-Not the 40 per cent one learning rate for every contact gives: overflow transfers, the record's only contacts a jobseeker did not choose, teach about a fifth as much as a chosen conversation, and the assistant-first weeks are made of such contacts. Not the 14 per cent of the last eight weeks of 2026, which ignores what the assistant-first weeks teach.
+**20 per cent of the 48,000 subscriptions on the 26 January 2027 list will still be subscribed on 31 March 2027 because they are sent the offer.**
+Last January the offer kept 20 per cent of the test's subscriptions whose next bill fell within 14 days of the send, and every bill on this year's list falls 6 days after it. Not the test's whole-list 10 per cent, which averages in subscriptions billed later in the month, where the offer kept almost none.
 
 ## 2. Critical Components
 
-1. An overflow transfer moves a jobseeker's later choices **about a fifth** as far as a conversation they opened
-2. The 2026 record holds **11,154** overflow transfers, the only contacts a jobseeker did not choose, among 413,866 contacts
+1. Every subscription on this year's list bills next on **1 February 2027**, **6 days** after the 26 January send (**48,000** of 48,000).
+2. Last January the offer kept **20 per cent** of the test's subscriptions whose next bill fell within 14 days of the send, and almost none of those billed later.
 
 ## 3. Step-by-Step Solution
 
-1. Built each jobseeker's contacts from contact_legs_2026.csv (claimant-line calls by the case number on the first leg, overflow transfers as the calls they came from with the voice session's end state) and assistant_sessions_2026.jsonl (app and web conversations through the accounts in contact_details_crosswalk.csv, a conversation's outcome its last session's end state): 413,866 contacts, 11,154 of them transfers.
-2. Fitted by maximum likelihood a reinforcement-learning model of each jobseeker's choices (each channel's value starting at 0.5 and moved toward the outcome, 1 resolved or 0 not, of each contact that met it; the choice a logistic of the value gap with a lean and a pull to the last channel chosen) with a separate learning rate for transfers: the transfers' rate is about a fifth of the chosen rate, and the model fits the whole record more than 1,300 log-likelihood units better than one rate.
-3. Took the jobseekers with a claim open on 3 January 2027 in claims_register_2026.csv, each from the end state of their own record.
-4. Simulated 4 January to 25 April 2027 per assistant_first_rollout_plan.pdf: every call met by release 4.0 resolving 2,003 of 2,400 as in release4_acceptance_summary.pdf to 28 February, then the line back to advisers with the calls the queue keeps resolving as in 2026 and the 2026 transfer share, check-ins every 14 days from each claim's opening and other contacts at the 2026 rate: 25 per cent of their own contacts in the window started in the assistant.
-5. Counted the conversations in assistant_sessions_2026.jsonl once each, in the month their first session started: employer-widget times (written in UTC, as their hours and the employer line's calls a few minutes later show) moved to Manitoba time, and each widget session closed at 00:00:00 UTC joined, as one conversation, to the session its account opened at that second under a new conversation id (183 such pairs); the employer accounts registered to Prairie Works Manitoba's own business number (812447093, on usage_tier_order_form_2027.pdf) and the accounts the vendor re-typed as staff on 14 September counted as our own use for the whole year; and the staff-console accounts registered to Riverlot's business number (724906318, its GST/HST number on vendor_invoices_2026.xlsx) left out as the vendor's own support desk: the monthly counts below.
+1. Joined retention_campaign_2026-01_assignment.csv to subscription_events.csv: a test subscription is subscribed on 31 March 2026 unless its access ended before then and it did not restart by then (data dictionary, access_ended); offer against holdout as randomised.
+2. Took each test subscription's billing day from its January 2026 SUB line in legacy_billing_invoices.csv and its next bill in February (on the month's last day where the billing day is past it): 1 to 28 days after the send.
+3. Compared the arms by those days: within 14 days of the send the offer kept 20 per cent, later 0 per cent, the whole list 10 per cent (nearest 5).
+4. Took this year's next bill from the lines of subscriptions_platform_invoices.csv: every list subscription's last bill covers January 2027, so all 48,000 bill next on 1 February 2027, 6 days after the send, as the 1st-of-month calendar in billing_move_note_2026.pdf has it.
+5. Carried the rate within 14 days of the bill to the whole list: 20 per cent.
+6. Took last January's offer discounts as the DISC lines in legacy_billing_invoices.csv whose applied_ref is an acceptance in offers_engine_acceptances_2026.csv (app acceptances carry their own code and the app's user key; the save desk's STAY50 cases are not the offer), by the month the bill was raised and the plan in subscriber_profile_2026-01-31.csv; the subscriptions on those lines took it.
+7. Took each list subscription's own lines from the lines column of subscriptions_platform_invoices.csv by their subscription_id (an account's invoice also carries its add-ons and any other plan it pays for, and some list subscriptions are billed on another account's invoice) by the UK date each bill was raised (times are UTC), added its legacy 1 October bill through subscription_id_crosswalk.csv and took off each bill a credit note covers at that bill's own amount.
+8. Recommendation: 20 per cent of the list kept to 31 March 2027 by the offer.
 
 ## 4. Deliverable Answers
 
-### assistant_share_forecast_mar_apr_2027.xlsx
+### retention_offer_forecast_2027.xlsx
 
-1. Share of their own contacts jobseekers on the register on 3 January 2027 start in Ask Prairie Works, 1 March to 25 April 2027: 25 per cent
-2. Employers' conversations with Ask Prairie Works, by month of 2026:
-   - January: 945
-   - February: 1,040
-   - March: 1,555
-   - April: 1,686
-   - May: 1,850
-   - June: 1,852
-   - July: 1,660
-   - August: 1,399
-   - September: 1,838
-   - October: 1,794
-   - November: 1,799
-   - December: 1,203
-3. Our own staff and test accounts' conversations, by month of 2026:
-   - January: 1,256
-   - February: 1,148
-   - March: 1,326
-   - April: 1,171
-   - May: 1,163
-   - June: 1,217
-   - July: 1,332
-   - August: 1,161
-   - September: 1,224
-   - October: 1,208
-   - November: 1,252
-   - December: 1,244
+1. Share of the 26 January 2027 list still subscribed on 31 March 2027 because of the offer: 20 per cent.
+2. Discount last January's offer gave, pounds to the nearest hundred:
+   - February 2026 bills, Digital: GBP 31,100
+   - February 2026 bills, Digital Plus: GBP 22,200
+   - February 2026 bills, Family: GBP 12,600
+   - March 2026 bills, Digital: GBP 28,200
+   - March 2026 bills, Digital Plus: GBP 20,200
+   - March 2026 bills, Family: GBP 11,800
+3. Subscriptions that took last January's offer:
+   - Digital: 6,224
+   - Digital Plus: 3,174
+   - Family: 1,402
+4. Billed to this year's list for its plans after credits, pounds to the nearest hundred:
+   - October 2026, Digital: GBP 135,700
+   - October 2026, Digital Plus: GBP 105,500
+   - October 2026, Family: GBP 72,700
+   - November 2026, Digital: GBP 257,900
+   - November 2026, Digital Plus: GBP 199,400
+   - November 2026, Family: GBP 136,100
+   - December 2026, Digital: GBP 259,100
+   - December 2026, Digital Plus: GBP 200,200
+   - December 2026, Family: GBP 136,500
+   - January 2027, Digital: GBP 259,100
+   - January 2027, Digital Plus: GBP 200,300
+   - January 2027, Family: GBP 136,600
 
-### assistant_first_aftermath_note.docx
+### january_offer_note.docx
 
-1. The forecast of 25 per cent with the reason it is below the one-rate figure of 40 per cent, the chart of the 2026 monthly share against both forecasts, and the inputs it rests on.
+1. The case: 20 per cent of the list kept to 31 March 2027, from last January's rate within 14 days of the bill, with every bill this year 6 days after the send.
+2. Bar chart of the share last January's offer kept by days from the send to the next bill, the days within 14 of the bill highlighted and this year's 6 marked.

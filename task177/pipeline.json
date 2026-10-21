@@ -1,23 +1,32 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "product-analytics/churn-propensity-uplift-modeling",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
- "precut": {},
- "leak": {},
- "duplicate_check": {},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-21",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-21 on target.zip 4827dc5d (three lines, each answered in the design note's ## Leak sweep; no LEAK)"
+ },
+ "duplicate_check": {
+  "surface": "exit 0 2026-10-21: six pairs promoted at card level (task167, task76, task31, task56 differentiated on the card; task179 retired; task229 surface tokens only); personas the card's two",
+  "heart": "PASS 2026-10-21 after the pull to 865c2872"
+ },
  "judge": {},
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 2: design architecture 2 (default path, stump sentence, three rules, ladder, fork table, closure, asks, prompt; precut.py exit 0)",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -133,5 +142,28 @@
   "architecture": 1,
   "domain": "psychology-behavioral-science",
   "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21); see the card lineage and the design note"
+ },
+ "stage3": {
+  "build": "generator/build.py 2026-10-21: checks.py PASS, verify.py PASS, a second full build byte-identical, target.zip cut from the final rebuild",
+  "zip_sha256": "4827dc5dd7967b7dff748bc390dc8c7bb9d07f1764f6ff4203a797d23e8ff296",
+  "figures_check": "exit 0",
+  "voice_check": "PASS (706 characters)",
+  "precut": "exit 0 (51 checks)",
+  "cracker": "pair ceiling 28.5, mirror leakage 0.0 (cracker 0 of 21, mirror 0 of 21)",
+  "call": "20 per cent (19.88, 2.38 inside the cell); default 10 (9.65); family with the lead 18.94 to 20.81, without it 9.09 to 9.89",
+  "figures_json_call_keys": [
+   "call_fortnight_kept",
+   "call_later_kept",
+   "call_lead_days",
+   "call_n_fort",
+   "call_n_ly",
+   "call_n_ty",
+   "call_share",
+   "call_share_unrounded",
+   "call_ty_days",
+   "call_ty_next",
+   "call_whole_list",
+   "call_window_days"
+  ]
  }
 }

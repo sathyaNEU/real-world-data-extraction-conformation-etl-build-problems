@@ -1,10 +1,10 @@
 # task177 design note
 
-**Status: architecture 2 drawn 2026-10-21 in the second cell the main session assigned this round (product-analytics /
-churn-propensity-uplift-modeling, Forecasting); stage 2 next.** Architecture 1 (psychology-behavioral-science, a
-provincial employment service's assistant-share forecast) was spent at Gate F on target.zip 3be16ba3; its record is
-kept below under `## Architecture 1 record`, and every death of both architectures, with the seed world's, is in `##
-Tried and rejected`.
+**Status: architecture 2 at stage 3, green on every free gate (2026-10-21), waiting on the stage 4 readers and
+judge.** Second cell the main session assigned this round (product-analytics / churn-propensity-uplift-modeling,
+Forecasting). Architecture 1 (psychology-behavioral-science, a provincial employment service's assistant-share
+forecast) was spent at Gate F on target.zip 3be16ba3; its record is kept below under `## Architecture 1 record`, and
+every death of both architectures, with the seed world's, is in `## Tried and rejected`.
 
 ## Draw
 
@@ -70,6 +70,248 @@ a column.
   that takes it unanimous at 20, with nothing left to choose inside either.
 - Pack sizes from the screen: last year's test 200,000 subscribers half and half (single-day bins spread 3 to 5 points
   at 150,000), this year's list about 40,000 to 60,000.
+
+## Default path
+
+1. Build last January's test: the arms from `retention_campaign_2026-01_assignment.csv` (offer against holdout, as
+   randomised), each subscription still subscribed on 31 March 2026 from `subscription_events.csv` (access_ended is the
+   last day of access; a restart by 31 March counts), the subscriber features from `subscriber_profile_2026-01-31.csv`.
+2. Fit the field's uplift model on the test: two models (offer arm, holdout) on the subscriber features with gradient
+   boosting, the transformed outcome as the check, Qini on held-out halves; or read the arms' difference, 9.65 per 100.
+3. Score this year's list (`at_risk_list_2027-01-26.csv`, the same features) and average the predicted uplift: 9.1 to
+   9.5 per 100 across the textbook learners, 9.5 to 9.7 stratified by plan, region, device or risk band.
+4. Report the share of the list kept by the offer to the nearest 5 per cent.
+
+Ends on: 10 per cent
+Golden: 20 per cent
+
+## Stump sentence
+
+An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features)
+scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the
+send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls
+six days after the send, so the share is about 20 per cent.
+
+## Three rules
+
+Task type: churn-propensity-uplift-modeling in product-analytics, which serves Forecasting & Predictive Modeling: an uplift model estimated on a randomised retention test and scored on the next list to forecast the share of it the offer keeps.
+Domain test: the deciding quantity is the heterogeneity of a retention offer's uplift by where the delivery lands in each subscriber's billing cycle (the days from the send to the next bill), estimated from the randomised test and carried to a list whose deliveries all land at one point of that cycle, which is the product analyst's own transport of an uplift from the test population to the target list.
+Swap: with a utility's energy-saving nudge for the offer (homes for subscribers, the meter read for the bill) nothing is decided at a cycle edge and a nudge's effect does not lapse two weeks before the read, so the transport collapses to the test's average; the task stands on the subscription bill as the moment a monthly subscriber decides whether to keep paying.
+Layer 1: the legacy billing export in pence with day/month/year dates and each subscription on its own billing day, moved for one in ten by a recovered payment; the platform's export in UTC with lines as JSON and invoices at account grain; the crosswalk between them; bills on the 29th to the 31st falling on 28 February; restarts inside the window; the app's acceptances under the app's own key and code; the save desk's half price under the offer's billing code; each mishandled alone leaves the call at 20 (R2 and SF rows in checks.py).
+Layer 2: estimand_identification, card 1 of the task type (target persuadables on randomised treatment and control): the test identifies the offer's effect, but the effect belongs to the delivery's place in the billing cycle, and this year's list sits at one place in it, so the uplift is the test's own at that place, which only the bill days rebuilt from the invoice ledger reveal.
+Decisive step: rebuilding each test subscription's days from the send to its next bill from its January 2026 bill in the legacy ledger, finding the offer's effect confined to the fortnight before the bill (about 20 per 100 there, under 1 after), and carrying that rate to a list whose every bill falls six days after the send.
+Not semantics: every field, code and date read right (the arms, access_ended, the restarts, the January bills, the 1st-of-month calendar) still leaves the test's pooled difference or a feature-based uplift model scored on the list, which files 10 per cent; no field, code or definition says the effect depends on the bill.
+Not rule application: no filed rule says how the test is carried to this year; the billing note's calendar is a fact both routes read, and executing every filed sentence with the textbook uplift model or the arms' difference files 10 per cent.
+Analyst test: a strong analyst who reads every file right, takes the randomised arms and the outcome on 31 March, fits a two-model uplift on the subscriber features (or reads the arms' difference) and scores this year's list files 10 per cent, where the share is 20 per cent.
+Estimand: the prompt files the population (the 48,000 subscriptions on the 26 January 2027 list, every one of them sent the offer), the outcome (still subscribed on 31 March 2027), the comparison (sent the offer against not sent it), the window (to 31 March 2027) and the unit (the share of the list, to the nearest 5 per cent); the dictionary files what subscribed on a day means (access_ended is the last day of access) and the plan that last January's arms were a random half.
+No decoy: nothing is planted to be caught; no memo, briefing or figure states a share kept, an uplift or an effect by timing; the validation summary (a distractor) reports the risk model's calibration, a different quantity, and ranks nothing; the reader survey (a distractor) carries stated intentions only.
+No certified replay: no published or certified figure reproduces the method; the effect by the days to the bill is recovered from the test's own records and no shipped figure is a function of it.
+Lesson: an offer's uplift belongs to where it lands in the customer's decision cycle as much as to who the customer is, so a test whose deliveries fell across the cycle under-forecasts a send that lands at the decision point for everyone; no build on file turns on a delivery's place in each unit's billing cycle.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| Arms and outcome built from the assignment and the events | plan ("a random half"); dictionary (access_ended) | arm, access_ended, restarted | yes | none | the joins | no | readable |
+| Uplift model on the subscriber features, scored on the list (the card route) | none | the same features in both lists | the field's textbook | none | no | no | readable |
+| This year's next bill on 1 February | note 1.2 | the platform lines' service periods | yes | none | no | no | readable |
+| (decisive) The offer's effect by the days from the send to each test subscription's next bill, carried to six days | none: no document says the effect depends on the bill | the bill day lives only in the legacy ledger's January lines; no column holds a lead to the bill | the subscriber's features are the reflex | none: no file holds an effect by bill timing or a readout of the test | no sweep reaches it | no: a constructed covariate, then a conditional effect | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the share | of the 48,000 subscriptions on the list | of those who would have gone (a save rate) | another quantity | the prompt ("share of the 48,000 subscriptions") |
+| SF2 | still subscribed on 31 March | the paid period covers that day; access_ended is the last day of access | access_ended read as the first day without access | same call (19.69) | the dictionary; converges |
+| SF3 | a restart by 31 March | subscribed | restarts ignored | same call (20.39) | the dictionary's restarted event; converges |
+| SF4 | because they are sent the offer | the effect of sending it, every list member sent | the effect of taking it (accepters against the holdout) | 45 (42.79) | the prompt ("because they are sent") |
+| SF5 | who is sent this year | every subscription on the list, nobody held back | a holdout kept | same population | the plan ("nobody is held back this year") |
+| SF6 | last January's comparison | the offer arm against the holdout, as randomised | the arms read off the email log (bounces as not sent) | same call (19.38) | the plan; the assignment file; converges |
+| SF7 | a test subscription's billing day | its January 2026 bill | its December 2025 bill; started_on's day | same call (19.88; 18.98) | the dictionary (billed monthly on its billing day); converges |
+| SF8 | bills on the 29th to the 31st in February | 28 February, 28 days after the send | 1 March | same call (19.88) | converges (outside the fortnight either way) |
+| SF9 | the lead counted from | the send day (31 January 2026, 26 January 2027) | the list's cut (25 January 2027, seven days) | same call | converges (every lead inside the fortnight) |
+| SF10 | this year's next bill | 1 February 2027 for every subscription | none | same call | note 1.2; every list subscription's own January line ends 31 January |
+| SF11 | the bills inside each horizon | two: February and March in both years | none | same call | the calendars (asserted for every billing day) |
+| SF12 | rounding | the unrounded share, once, to the nearest 5 per cent, halves away | rounding the per-day rates first | same call | the prompt's closing sentence |
+| SF13 | the offer | the same offer as last January | none | same call | the plan ("The same offer went to a random half") |
+| SF14 | the outcome read | by access (live on 31 March) | by the cancellation request | same call (18.72) | the dictionary; converges |
+| SF15 | the unit | the subscription, in both lists | the customer | same call (one subscription per customer number on each list) | the prompt; the assignment's subscription_ref |
+
+## Ladder
+
+| Rung | Route | Figure (nearest 5 per cent; unrounded) | Dies to |
+|---|---|---|---|
+| 0 | the arms' difference, or an uplift model on the subscriber features scored on the list (the default path) | 10 (9.09 to 9.89) | the test by days to the bill: about 20 inside the fortnight, under 1 after |
+| 1 | the difference scaled by the open rate, by the acceptance rate, or accepters against the holdout | 35, 70, 45 (33.35, 71.33, 42.79) | the prompt's "sent" (SF4) |
+| 1 | the lead built from the next bill seen in the ledger (leavers have none) | 5 (5.89) | the ledger, which carries every test subscription's January bill |
+| 2 | a window running past the fortnight (days 1 to 21) | 15 (13.76) | the by-day table: the difference falls from 18 to 14 to 6 across days 13 to 15 and is 3.5 or less on every later day |
+| 3 | (decisive) the lead rebuilt from the January bills, the fortnight's rate carried to a list billed six days after the send | 20 (19.88) | the answer |
+
+Worth: rung 0 is unanimous, every learner and stratification without the lead between 9.09 and 9.89, and every route
+with it between 18.94 and 20.81 (bins of the lead inside the fortnight from days 1 to 14 down to day 6 alone, local
+linear at day 6 with bandwidths 3, 5 and 8, two-model logistic and gradient boosting with the lead, the transformed
+outcome and the X-learner with it, a logistic of treatment by the lead with and without knots), so the lever is about
+10 points against a family spread of 1.9 (the outsider at the screen: 9.4 to 9.9 against 18.0 to 21.0). One standard
+error either way (0.35) stays in the cell, 2.38 inside its lower edge. The bill day read off started_on lands 18.98 and
+a window to day 16 lands 17.78, both in the golden's cell. The forecast's truth in the world (each list member's
+expected share kept at a six-day lead) is 20.93.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the 48,000 subscriptions on the 26 January 2027 list, every one sent the offer | the prompt; the plan; SF1, SF5 |
+| 2 Unit of account | a subscription | the prompt; SF15 |
+| 3 Attribution window | subscribed on 31 March 2027 (31 March 2026 in the test) | the prompt; the dictionary; SF2, SF3 |
+| 4 As-of dating | the extracts pulled 25 January 2027; the list cut that day | the plan; the list's file name and dictionary |
+| 5 Version basis | the same offer as last January | the plan; SF13 |
+| 6 Denominator | the list's 48,000 subscriptions | the prompt; SF1 |
+| 7 Weighting | subscriptions, not customers or revenue | the prompt's "share of the 48,000 subscriptions" |
+| 8 Window length | the test's whole list, its arms as randomised | the assignment file; SF6 |
+| 9 Boundary inclusivity | 31 March inclusive (live on the last day of access) | the dictionary; SF2 converges |
+| 10 Rounding path | once, at the end, to the nearest 5 per cent | the prompt; SF12 |
+| 11 Tie-break | none arises | not applicable to a single share |
+| 12 Maturity and censoring | every test subscription observed to 31 March 2026 | the events run to 25 January 2027 |
+| 13 Order of operations | the lead built before the arms are compared | C1: the bins and the models give the same cell |
+| 14 Row order | file order irrelevant | C1 |
+| 15 Duplicate resolution | one January bill per test subscription | asserted (SEPARATION) |
+| 16 Identity normalisation | the legacy reference across the assignment, the CRM snapshot, the ledger and the events | the dictionary; one key throughout |
+| 17 Netting against gross | none on the call | not applicable |
+| 18 Dimensional units | days and shares | not applicable |
+| 19 Code and status semantics | the arm codes, the event codes | the dictionary; never the stump |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | the 1st-of-month calendar covers every monthly digital subscription from 1 November 2026 | note 1.2 |
+| 22 Forward window contents | two bills inside the window, 1 February and 1 March 2027, the offer on both | the plan (the next two monthly bills); note 1.2; SF11 |
+
+## Literal reader
+
+The method is open and forced by the record: the arms' difference by the days from the send to each test
+subscription's next bill is 18 to 22 per 100 on every day from 1 to 13, 14.3 on day 14, 6.4 on day 15 and 3.5 or
+less on every day after it, so the record itself says where the test's effect lives, and every route that conditions on
+the lead lands 18.94 to 20.81. Executed word for word, the prompt fixes the population, the outcome, the comparison,
+the window and the rounding; the plan fixes that every list member is sent the offer and that last January's arms were
+a random half; the dictionary fixes subscribed on a day (access_ended the last day of access); note 1.2 fixes this
+year's calendar. Every reading the text leaves open (access_ended inclusive or not, restarts counted or not, the arms
+from the assignment or the email log, the billing day from the January or the December bill or started_on, the 29th to
+31st on 28 February or 1 March, the lead counted from the send or the cut, the outcome by access or by request) gives
+20 per cent (SF2 to SF15 in checks.py), and the reading that does not (the effect of taking the offer) violates the
+prompt's "because they are sent". The default path reads the same literal estimand with the easy method.
+
+## Oracles
+
+- `billing_move_note_2026.pdf`: the platform's calendar (1.2), an input every route uses alike; it says nothing about
+  the offer.
+- `retention_model_validation_2026-12.pdf` (distractor): the risk model's calibration by band; it ranks nothing and
+  reports no effect of any offer.
+- `reader_survey_2026_q4.csv` (distractor): stated intentions; no arm, no bill.
+- None ranks the forecast, states an uplift or confirms a timing effect.
+
+## Ask sheet
+
+**Main call's declared row population:** last January's assignment, its CRM snapshot, its events to 31 March 2026 and
+each test subscription's January 2026 SUB line in `legacy_billing_invoices.csv`; this year's list and note 1.2's
+calendar (each list subscription's own January line confirms it). Device and hazard rows in it: 0 (SEPARATION in
+checks.py: one January bill per test subscription and no discount on it, the events carry the test's list only, and
+this year's next bill is 1 February under every reading). The note the call reads carries ask B's two filed hazards
+(3.2 the platform's UTC, 4.1 and 4.2 the duplicate October bills and their credits) and none of either ask's primaries,
+and the call reads one sentence of it.
+
+**Ask A. The discount last January's offer gave on bills raised in February and in March 2026, on each plan, and how
+many subscriptions on each plan took it** (9 figures, pounds to the nearest hundred, whole subscriptions). Golden:
+February 31,100, 22,200, 12,600; March 28,200, 20,200, 11,800; takers 6,224, 3,174, 1,402.
+- H18 home: what the offer gives away, set against what it keeps (the plan's own words).
+- Basis: the asking sentence (each bill by the month it was raised, the plan in the CRM snapshot); the plan's terms
+  (half price on the next two monthly bills).
+- Primary A1 (D7 the true key elsewhere; silent): the offers engine keys an app acceptance by the app user id, and a
+  re-login replaced the id for 692 of 3,187 app acceptances; the CRM snapshot holds only the current id. Joined
+  through the CRM's keys, every taker count is low (by 392, 175, 90) and every discount cell low (by 756 to 1,960
+  pounds). Fair: each offer discount line in the ledger names the acceptance that applied it (applied_ref is the
+  acceptance_ref), so the ledger resolves every taker, the re-keyed included. Silent: the dictionary says customer_key
+  is the CRM number or the app user id, and nothing marks a replaced id.
+- A2 (D5 a category crossed by label; a hazard): the save desk's own half price uses the offer's billing code STAY50,
+  on 3,208 February and March lines, 1,834 of them on held-back subscriptions; each names a customer services case.
+  Counted as the offer, every discount cell is high by more than 50.
+- A3 (D1 the same records under two keys; a hazard): 185 app accepters also accepted from the email under their CRM
+  number, an acceptance the bill never applied; takers counted by acceptance are high.
+- A4 (a hazard): the app's acceptances carry the app team's code LNT-APP-JAN26 on 6,095 lines; read off STAY50 alone,
+  every cell is low.
+- Stops (each a complete pipeline, `cracker.py`): the offer's web code and distinct engine customers (the mirror) 0 of
+  9; the engine's acceptances joined through the CRM's keys, the desk left out (the cracker) 0 of 9; the acceptance
+  references on the bills 9 of 9.
+- Span: the offers engine, the CRM snapshot, the ledger, the assignment, the dictionary (5 files).
+- Realism: an app team ships its own code for the same offer; an app's user id changes on a re-login; a save desk
+  reuses a billing code for its discretionary half price.
+
+**Ask B. What this year's list was billed for its plans in each month from October 2026 to January 2027 after
+credits, on each plan** (12 figures, pounds to the nearest hundred). Golden: October 135,700, 105,500, 72,700; November
+257,900, 199,400, 136,100; December 259,100, 200,200, 136,500; January 259,100, 200,300, 136,600.
+- H18 home: what the list brings in, the revenue the offer protects beside what it gives away.
+- Basis: the asking sentence (billed in each month, for the list's plans, after credits); note 3.2 (Billing
+  Operations reports each bill in the month of the UK date it was raised); note 4.1 and 4.2 (the duplicate October
+  bills and their credits).
+- Primary B1 (D6 a ledger at another grain than its name, D7 the true key elsewhere; silent): the platform raises one
+  invoice per account, its subscription_id the first line's. 1,647 list subscriptions are paid from another
+  subscriber's account, filed under that subscriber's own subscription, and 2,286 other plan subscriptions (a partner's,
+  a student's) sit on list accounts' invoices filed under a list subscription. Read through the invoices filed under
+  the list, with every filed rule executed, every cell misses, by 222 to 5,978 pounds. Fair: every line names its own
+  subscription in the lines column, and the header's subscription is always the first line's. Silent: the dictionary
+  calls the column the platform subscription id, which it is, and every total ties to its lines.
+- B2 (D8 a clock against a filed cutoff; a hazard): the 1 October run was raised at 00:05 UK time, 23:05 to 23:59 UTC
+  on 30 September; by UTC month October is nearly empty.
+- B3 (D6; a hazard): an invoice's total holds the Puzzles add-on and any other plan on the account.
+- B4 (D1 and D2; a hazard): the legacy system's 1 October bills for seven batches and the platform's credit notes of
+  14 October, one per account, covering the account's every such bill (add-ons and other plans in); netted at the
+  credit note's total, October moves. The duplicate bills and their credits cancel exactly on the list's plans, so the
+  platform's own lines alone give the golden (asserted, a convergent reading).
+- B5 (a hazard): goodwill credits of two pounds as negative lines; left out, every cell misses.
+- Stops (`cracker.py`): the invoice totals filed under the list by issued_at month (the mirror) 0 of 12; the totals
+  in UK time 0 of 12; the invoices filed under the list read through their plan lines, goodwill kept, UK time, the
+  legacy bills and credit notes netted (the cracker) 0 of 12; each list subscription's own lines 12 of 12.
+- Span: the platform export, the list, the ledger, the crosswalk, the note, the dictionary (6 files).
+- Realism: subscription platforms invoice per account and one subscriber pays for another's plan; a migration's first
+  run lands on the old system's last night; a run not switched off is credited per account.
+
+**Hazard table:** the save desk's code (ask A, every discount cell); the app's code (ask A, every discount cell); the
+double acceptances (ask A, takers); the platform's UTC (ask B, October); the account totals (ask B, every cell); the
+duplicate October bills and their credits (ask B, October); the goodwill credits (ask B, every cell).
+
+**Referee:** the ledger's applied_ref (whose acceptance applied a discount) and the platform lines' subscription_id
+(whose plan a line bills), the only records of either.
+
+Pair ceiling: 28.5 (the cracker lands the call with every filed rule and the hygiene battery and keeps 0 of 21 ask
+figures; the mirror stops at the test's whole-list difference and keeps 0 of 21; a cracker that also resolved ask A's
+primary keeps 9 of 21, a ceiling of 40.3, ask B's 12 of 21, 44.2, and both 21 of 21, 56.0)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/cracker.py
+
+| Ask | Cracker sheet (every filed rule, the hygiene battery, the obvious keys) | Hits | Verdict |
+|---|---|---|---|
+| Ask A, last January's offer discounts and takers, nine figures | the engine's acceptances through the CRM's keys, the desk left out, their February and March discounts | 0 of 9 | miss |
+| Ask B, this year's list billed for its plans, twelve figures | the invoices filed under the list, plan lines with goodwill, UK time, legacy bills and credit notes netted | 0 of 12 | miss |
+
+## Leak sweep
+
+`leak.py --asof 2027-01-25` on the final pack: REVIEW, no LEAK. Each line answered:
+- Answer figures, `retention_offer_plan_2027.docx`: the plan states the question the executive team needs answered
+  (the share of the list still subscribed on 31 March 2027 because of the offer) in the call's own words, and no
+  figure; no file states a share, an uplift or an effect by timing.
+- Design-note vocabulary, `billing_move_note_2026.pdf`: three generic billing words (billing, subscription, invoice);
+  the note is Billing Operations' own record of the move, which ask B needs, and it says nothing about the offer.
+- Dates after the setting, `subscriptions_platform_invoices.csv`: January 2027's billing periods end on 31 January
+  (period_end and each line's "to"); every document was raised on or before 25 January (H16 in checks.py).
+- The first cut's LEAK (the assignment file named with `test_`) and its REVIEW (a column named `main_device`) were
+  fixed in the generator: `retention_campaign_2026-01_assignment.csv`, `most_used_on`.
+
+House fixes run at stage 3: H6 (note 1.2 now says a new subscription's first bill is raised on its start day, as the
+platform does), H16 (restarts after the pull are not in the events), H5 (note 3.2 pins a bill to the month of its UK
+date), H9, H16 and H25 wired into checks.py (the dictionary names every CSV; no export holds a record after the pull;
+both PDFs read in pypdf strict, pdfminer and pdftotext with their key sentences), H1 audit clean on the pack and the
+goldens, H4 the zip's 14 members equal the tree byte for byte. The PDF footers carry no company number. H21: no real
+title is called the Daily Lantern; the nearest is The Lantern, Ohio State University's student daily, another country
+and kind of paper. `guard.py surface`: exit 0, six pairs promoted at card level only (task167, task76, task31 and task56
+share the gap, pattern and decision type and are differentiated on the card; task179, two numbers away, retired on
+2026-10-21; task229, a hydrometry flagging build, on surface tokens alone); no shared table schema; personas Bernard
+Peacock and Natalie Taylor only. `guard.py heart`: PASS.
 
 ## Architecture 1 record (psychology-behavioral-science, spent at Gate F on 2026-10-21)
 
@@ -759,3 +1001,15 @@ its group's surviving records), the same family by its label.
   was found and moved before the card: with the email open rate at 45 per cent, the fortnight's share of the cycle,
   the arms' difference divided by the open rate reproduced the golden (18.3 against 18.0); at 30 per cent it gives 31
   to 33.
+- **Architecture 2, ask B on the add-on alone (stage 3, 2026-10-21).** With the invoices one per subscription and the
+  Puzzles add-on in the total the only device on November to January, a reader parsing the lines column keeps those
+  nine cells (the add-on lines carry their own subscription id), and with the call landed the pair would sit near 52;
+  the platform now invoices per account, so a list subscription can be billed on another subscriber's invoice and a
+  list account's invoice can carry another plan, which the route through the invoices filed under the list misses in
+  every cell.
+- **Architecture 2, cells near their edges (stage 3).** The first cut put October Digital 1.40 from its hundred's
+  edge and four ask A cells within 15; acceptances by offer-arm subscribers deciding at neither bill (they pay both
+  bills either way) and the goodwill credits now re-centre every money cell 30 or more inside, and no row the call
+  reads moves (the call 19.88 and the default 9.65 before and after).
+- **Architecture 2, the count of subscriptions billed twice for October (stage 2).** Dropped as a figure: it is read
+  straight off note 4.1's batches and the credit notes, a seen hazard rather than a device.
