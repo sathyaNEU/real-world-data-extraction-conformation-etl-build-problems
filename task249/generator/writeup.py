@@ -39,13 +39,13 @@ def write(path, fig):
 ## 1. Final Recommendation
 
 **Flag {words(flagged)}: each gave its 2027 resit candidates more than one scored item per resit sitting from what an earlier sitting or results review had shown them ({one(fam["lo_flagged"])} or more on every licensed estimate), so their 2027 resit results carry the exposure flag and the six forms are reassembled before they are used again.**
-The other four forms are at {one(fam["hi_other"])} or less. Not the excess on the items shown alone, which flags only CC27-A, C, G and H: on CC27-B and CC27-D, where about {k["speeded_share_pct"]} per cent of candidates run out of the four hours, it is about {one(fam["direct_bd"])}, and most of their gain is the items resit candidates reached only because the items they recognised took them less time. Not the gain over the previous sitting, which learning and the rebound after a failed sitting lift on nine forms.
+The other four forms are at {one(fam["hi_other"])} or less. Not the excess on the items shown alone, which flags only CC27-A, C, G and H: on CC27-B and CC27-D, where more than a third of first-time candidates run out of the four hours, it is about {one(fam["direct_bd"])}, and most of their gain is the items resit candidates reached only because the items they recognised took them less time. Not the gain over the previous sitting, which learning and the rebound after a failed sitting lift on nine forms.
 
 ## 2. Critical Components
 
-1. An item a resit candidate recognises takes them less time than their own pace on the other items gives: about **{one(fam["time_same"])}** of it on the same item reached at an earlier sitting (a trial item since placed on a form included) and **{one(fam["time_sib"])}** on an item written from the same item model.
+1. An item a resit candidate recognises takes them less time than their own pace on the other items gives: about **{one(fam["time_same"])}** of it on an item reached at a scored position at an earlier sitting, **{one(fam["time_trial"])}** on one reached there only as a trial item (since placed on a form), and **{one(fam["time_sib"])}** on an item written from the same item model.
 2. The excess on recognised items per resit sitting is more than **{one(fam["direct_acgh_min"])}** scored item on CC27-A, C, G and H, and about **{one(fam["direct_bd"])}** on CC27-B and CC27-D.
-3. On CC27-B, CC27-D and CC27-I about **{k["speeded_share_pct"]} per cent** of first-time candidates run out of time; the time recognised items free lets CC27-B's and CC27-D's resit candidates answer about one more item correctly at the end of the form (**{one(fam["reach_bd_min"])}** or more), against about **{one(fam["reach_i"])}** on CC27-I, where little had been shown to them.
+3. On CC27-B, CC27-D and CC27-I between **{k["speeded_lo"]}** and **{k["speeded_hi"]} per cent** of first-time candidates run out of time; the time recognised items free lets CC27-B's and CC27-D's resit candidates answer about one more item correctly at the end of the form (**{one(fam["reach_bd_min"])}** or more), against about **{one(fam["reach_i"])}** on CC27-I, where little had been shown to them.
 4. The exposure gain per resit sitting is **{one(fam["lo_flagged"])}** or more on the six flagged forms and **{one(fam["hi_other"])}** or less on the other four, on a logit or additive baseline and with the mean or median time.
 
 ## 3. Step-by-Step Solution
@@ -71,7 +71,7 @@ The other four forms are at {one(fam["hi_other"])} or less. Not the excess on th
 
 ### resit_exposure_2027.pdf
 
-1. Bar chart of every form's exposure gain per 2027 resit sitting, the part on the items shown before and the part in the time those items freed, against the 1.0 line, the six flagged forms marked.
+1. Bar chart of every form's exposure gain per 2027 resit sitting against the 1.0 line, the six flagged forms marked.
 """
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)

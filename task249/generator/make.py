@@ -51,9 +51,10 @@ def components(C):
             continue
         num += float(t["secs"][e].sum())
         den += float((np.exp(mj[e] + lr.mean()) * np.exp(lr.var() / 2)).sum())
-    ft = [t for t in T if t["form"] in ("CC27-B", "CC27-D", "CC27-I") and not t["prev"]]
-    share = np.mean([not t["reach"][-1] for t in ft])
-    return dict(recognised_time_pct=int(5 * round(20 * num / den)), speeded_share_pct=int(10 * round(10 * share)))
+    share = {f: np.mean([not t["reach"][-1] for t in T if t["form"] == f and not t["prev"]])
+             for f in ("CC27-B", "CC27-D", "CC27-I")}
+    return dict(recognised_time_pct=int(5 * round(20 * num / den)),
+                speeded_lo=int(round(100 * min(share.values()))), speeded_hi=int(round(100 * max(share.values()))))
 
 
 LICENSED = ["golden", "golden_add", "golden_median", "golden_hit", "golden_median_hit"]
@@ -66,7 +67,7 @@ def family(C):
     D, T = C["D"], C["T"]
     Pn, Mu = S.norms(T)
     res = {v: {f: [] for f in S.F27} for v in LICENSED}
-    lt = {"same": [], "sib": []}
+    lt = {"same": [], "trial": [], "sib": []}
     for t in T:
         if t["w"] < 4 or not t["prev"] or t["form"] not in S.F27:
             continue
@@ -80,7 +81,10 @@ def family(C):
             continue
         lr = np.log(t["secs"]) - mj
         pace = float(np.nanmean(lr[u]))
-        lt["same"].extend(lr[rc & same] - pace)
+        at_scored = {it for i in t["prev"] for it, r_, s_ in zip(T[i]["items"], T[i]["reach"], T[i]["scored"]) if r_ and s_}
+        sc_seen = np.array([it in at_scored for it in t["items"]])
+        lt["same"].extend(lr[rc & same & sc_seen] - pace)
+        lt["trial"].extend(lr[rc & same & ~sc_seen] - pace)
         lt["sib"].extend(lr[rc & sib & ~same] - pace)
     m = {v: {f: np.array(res[v][f]).mean(0) for f in S.F27} for v in LICENSED}
     flagged = C["flagged"]
@@ -94,7 +98,8 @@ def family(C):
     return {"lo_flagged": float(np.floor(lo * 10) / 10), "hi_other": float(np.ceil(hi * 10) / 10),
             "direct_bd": round(float(np.mean(bd)), 1), "direct_acgh_min": float(np.floor(direct_acgh * 10) / 10),
             "reach_bd_min": float(np.floor(reach_bd * 10) / 10), "reach_i": round(float(np.mean(reach_i)), 1),
-            "time_same": round(float(np.exp(np.mean(lt["same"]))), 1), "time_sib": round(float(np.exp(np.mean(lt["sib"]))), 1),
+            "time_same": round(float(np.exp(np.mean(lt["same"]))), 1), "time_trial": round(float(np.exp(np.mean(lt["trial"]))), 1),
+            "time_sib": round(float(np.exp(np.mean(lt["sib"]))), 1),
             "spread": {f: [round(float(min(m[v][f].sum() for v in LICENSED)), 2), round(float(max(m[v][f].sum() for v in LICENSED)), 2)]
                        for f in S.F27}}
 

@@ -17,7 +17,7 @@ import postprocess
 
 XLSX = "resit_exposure_review_2027.xlsx"
 PDF = "resit_exposure_2027.pdf"
-BLUE, ORANGE, INK, INK2, GRID = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e", "#d9d8d4"
+BLUE, PALE, INK, INK2, GRID = "#2a78d6", "#b9c4d0", "#0b0b0b", "#52514e", "#d9d8d4"
 WINDOWS_OF = {f: ("February and May 2027" if f < "CC27-F" else "August and November 2027") for f in P.F27}
 
 
@@ -118,15 +118,13 @@ def workbook(path, fig):
 def chart(path, fig):
     c = fig["call"]
     forms = P.F27[::-1]
-    d = [c["direct"][f] for f in forms]
-    r = [c["reach"][f] for f in forms]
+    gains = [c["gain"][f] for f in forms]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
     figr, ax = plt.subplots(figsize=(8.3, 5.4))
     figr.patch.set_facecolor("#fcfcfb")
     ax.set_facecolor("#fcfcfb")
     y = range(len(forms))
-    ax.barh(y, d, height=0.56, color=BLUE, label="on items shown before", edgecolor="#fcfcfb", linewidth=1.5)
-    ax.barh(y, r, left=d, height=0.56, color=ORANGE, label="in the time those items freed", edgecolor="#fcfcfb",
+    ax.barh(y, gains, height=0.56, color=[BLUE if f in c["flagged"] else PALE for f in forms], edgecolor="#fcfcfb",
             linewidth=1.5)
     ax.axvline(P.THRESH, color=INK, linewidth=1.0, linestyle=(0, (4, 3)))
     ax.set_ylim(-0.95, len(forms) - 0.45)
@@ -147,11 +145,10 @@ def chart(path, fig):
     ax.set_axisbelow(True)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.legend(loc="lower right", frameon=False, fontsize=8)
     figr.suptitle("Six of the ten 2027 forms gave their resit candidates more than one scored item", x=0.06, ha="left",
                   fontsize=11.5, fontweight="bold", color=INK, y=0.97)
-    ax.set_title("Each form's gain per resit sitting: on the items an earlier sitting or review had shown, and in the "
-                 "time those items freed", loc="left", fontsize=8.5, color=INK2)
+    ax.set_title("Each form's exposure gain per 2027 resit sitting against the one-item line of regulation 7.3; the "
+                 "flagged forms in blue", loc="left", fontsize=8.5, color=INK2)
     figr.text(0.06, 0.015, "IHCP examinations department, integrity report 2027. Sources: Pariksha results exports, form "
               "layouts, item bank snapshot of 31 December 2027.", fontsize=7, color=INK2)
     figr.tight_layout(rect=(0, 0.03, 1, 0.94))
