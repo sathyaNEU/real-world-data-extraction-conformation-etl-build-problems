@@ -1,5 +1,5 @@
 """The generator's assertions on the cut pack and on the world behind it: the golden equals the truth, every licensed
-method files it, the ladder's rungs file their named wrong lists, the semantic forks are closed (SF1 to SF22), the asks
+method files it, the ladder's rungs file their named wrong lists, the semantic forks are closed (SF1 to SF26), the asks
 equal their truth and every device sits where the design puts it, the separation line holds, and the input gates."""
 import os
 import sys
@@ -9,6 +9,7 @@ import pandas as pd
 
 import build as B
 import ladder as L
+import ladder5 as L5
 import ops
 import params as P
 import sim
@@ -34,7 +35,7 @@ def main(target):
     D = S.load(target, B.FILES)
     D = S.load_ops(target, B.FILES, D)
     Sr = S.series(D)
-    e, listed, par = S.call(D, "pl", Sr)
+    e, listed, par = S.call(D, S=Sr)
     cur = lambda c: P.RENUMBERED[c][0] if c in P.RENUMBERED else c
 
     # the truth over the hours each station counted, and over every hour
@@ -51,31 +52,26 @@ def main(target):
     margin = min(abs(abs(v) - P.TOLERANCE) for v in e.values())
     ok(margin >= 0.010, "SF5 no station within 1.0 point of the line", "%.4f" % margin)
     fam = S.wide_family(D, Sr)
-    ok(all(S.listed(f) == listed for f in fam.values()), "SF3 every licensed estimate files the golden list",
-       sorted(fam))
+    ok(len(fam) >= 40 and all(S.listed(f) == listed for f in fam.values()),
+       "SF3 SF23 SF24 every licensed estimate (five loss forms under nine readings of the cold miss, edges out, two-hour "
+       "blocks, weights, the pairs' own free-flow ratio, pooled sensitivity) files the golden list", len(fam))
     low = min(min(abs(f[s]) for s in listed) for f in fam.values())
     high = max(max(abs(v) for s, v in f.items() if s not in listed) for f in fam.values())
-    ok(low > 0.06 and high < 0.045, "the margin holds over the whole family: listed beyond 6, others within 4.5",
+    ok(low > 0.065 and high < 0.045, "the margin holds over the whole family: listed beyond 6.5, others within 4.5",
        "%.4f %.4f" % (low, high))
     ok(min(abs(T_cnt[s]) for s in listed) > 0.06 and max(abs(v) for s, v in T_cnt.items() if s not in listed) < 0.045,
        "the truth sits inside the same margin")
-
-    # the licensed family: every curve form, sensitivity per direction or pooled, the error inverted
-    bh = S.bhat(D)
-    x, y = S.pair_points(D, bh, Sr)
-    for f in S.FAMILY:
-        ef = S.errors(D, bh, S.fit(x, y, f)[0], Sr)
-        ok(S.listed(ef) == listed, "SF3 curve form %s files the golden list" % f)
-    bp = S.bhat(D, per_direction=False)
-    xp, yp = S.pair_points(D, bp, Sr)
-    ep = S.errors(D, bp, S.fit(xp, yp, "pl")[0], Sr)
-    ok(S.listed(ep) == listed, "SF7 one sensitivity per station (directions pooled) files the golden list")
+    ok(S.listed(fam[("pl_pooled_sensitivity", "mean_knee")]) == listed,
+       "SF7 one sensitivity per station (directions pooled) files the golden list")
     inv = {s: 1 / (1 + v) - 1 for s, v in e.items()}
     ok(S.listed(inv) == listed, "SF4 the error read as passed over counted files the same list")
+    bh = S.bhat(D)
+    cday = S.by_day(D, S.cold_fit(*S.cold_points(D, bh, Sr), "knee")[0])
+    x, y = S.pair_points(D, bh, Sr, cday)
     cut = {}
     for c in (22.0, 25.0, 28.0):
         lq = float(np.mean(y[x > c]))
-        ec = S.errors(D, bh, lambda o, c=c, lq=lq: np.where(np.asarray(o) > c, lq, 0.0), Sr)
+        ec = S.errors(D, bh, lambda o, c=c, lq=lq: np.where(np.asarray(o) > c, lq, 0.0), cday, Sr)
         cut[c] = S.listed(ec)
     ok(all(v == listed for v in cut.values()), "SF3 a constant loss above 22, 25 or 28 per cent files the golden list",
        cut)
@@ -86,38 +82,121 @@ def main(target):
             ys.append(len(j))
     ok(len(S.bridges(D)) == 5 and min(ys) > 8000, "SF11 five bridges, each approach pair with no junction between",
        ys)
+    # the loss read on a subset of the pairs: each direction alone, the bridges of one generation, the mixed bridges
+    import datetime as _dt
+    jan = [_dt.date(P.YEAR, 1, 5)]
+    same = [b["name"] for b in S.bridges(D) if S.is_tcx2(D, b["south"], jan)[0] == S.is_tcx2(D, b["north"], jan)[0]]
+    sub = {}
+    for name, dirs, names in (("NB", ("NB",), None), ("SB", ("SB",), None), ("one generation", ("NB", "SB"), same),
+                              ("mixed", ("NB", "SB"), [b["name"] for b in S.bridges(D) if b["name"] not in same])):
+        xs, yv = [], []
+        for b in S.bridges(D):
+            if names and b["name"] not in names:
+                continue
+            for d, up, dn in (("NB", b["south"], b["north"]), ("SB", b["north"], b["south"])):
+                if d not in dirs:
+                    continue
+                j = Sr[(up, d)].join(Sr[(dn, d)], lsuffix="_u", rsuffix="_d", how="inner")
+                j = j[(j["vehicles_u"] > 50) & (j["vehicles_d"] > 50)]
+                days = j["day_u"].tolist()
+                cu, cd = S.chour(D, up, days, cday), S.chour(D, dn, days, cday)
+                xs.append(j["occ_u"].to_numpy())
+                yv.append((1 - (j["vehicles_u"] / ((1 + bh[(up, d)]) * (1 - cu))) /
+                           (j["vehicles_d"] / ((1 + bh[(dn, d)]) * (1 - cd)))).to_numpy())
+        sub[name] = S.listed(S.errors(D, bh, S.fit(np.concatenate(xs), np.concatenate(yv), "pl")[0], cday, Sr))
+    ok(len(same) == 2 and all(v == listed for v in sub.values()),
+       "SF3 the loss from each direction alone, from the two one-generation bridges or from the three mixed ones files "
+       "the golden list", sub)
 
-    # the ladder on the pack: the default path, the bridge-only route
-    v = S.validation_errors(D)
-    default = S.listed(v)
-    ok(default != listed, "default path (validation day) files another list", default)
-    ok(len(set(listed) - set(default)) >= 2 and len(set(default) - set(listed)) >= 1,
-       "the default path misses two or more and keeps one or more", (sorted(set(listed) - set(default)),
-                                                                   sorted(set(default) - set(listed))))
-    # analyst test on the clean world: the validation day files the wrong list, the loss construction the truth
-    bw = L.bhat(W)
-    xw, yw = L.pair_points(W, bw)
-    Gw = L.errors(W, bw, L.fit(xw, yw, "pl"))
-    ok(L.listed(L.validation_errors(W)) != L.listed(sim.truth(W)), "analyst test: the easy route on the clean world "
-       "files a wrong list", L.listed(L.validation_errors(W)))
-    ok(L.listed(Gw) == L.listed(sim.truth(W)), "analyst test: the loss construction on the clean world files the truth")
+    # SF23: the generation that misses vehicles in the cold. The TCX-2s' occupancy per counted vehicle climbs in the
+    # winter while the TCX-4s' holds flat, so the pairs' ratio falls because the TCX-2 counts fewer, not because the
+    # TCX-4 counts more
+    h = D["hourly"].copy()
+    h["day"] = pd.to_datetime(h["local_start"].str[:10]).dt.date
+    h["m"] = pd.to_datetime(h["local_start"].str[:10]).dt.month
+    t2 = np.zeros(len(h), bool)
+    for s, g in h.groupby("station"):
+        t2[g.index.to_numpy()] = S.is_tcx2(D, s, g["day"].tolist())
+    h["t2"] = t2
+    ff = h[(h["occ"] < 12) & (h["vehicles"] > 100)]
+    opv = ff.groupby(["t2", "m"]).apply(lambda g: (g["occ"] / g["vehicles"]).mean())
+    r2 = opv[(True, 1)] / opv[(True, 7)]
+    r4 = opv[(False, 1)] / opv[(False, 7)]
+    ok(r2 > 1.05 and abs(r4 - 1) < 0.015, "SF23 occupancy per counted vehicle: TCX-2 January over July %.3f, TCX-4 %.3f"
+       % (r2, r4))
+    # SF24: the day's temperature. Mean, maximum or minimum, a curve or bins, the occupancy channel: in the family
+    names = {k[1] for k in fam}
+    ok({"mean_knee", "mean_knee2", "mean_bins", "max_knee", "max_bins", "min_knee", "min_bins", "occupancy_daily",
+        "occupancy_curve"} <= names, "SF24 every reading of the cold miss sits in the licensed family")
+    # SF25: the day the airport's temperature record is missing
+    w = D["weather"]
+    miss = w[w["Mean Temp Flag"].astype(str) == "M"]
+    ok(len(miss) == 1 and miss["Mean Temp (°C)"].isna().all(), "layer 1: one day's temperatures missing, flagged M",
+       list(miss["Date/Time"]))
+    md = pd.Timestamp(miss["Date/Time"].iloc[0]).date()
+    alt = {}
+    zero_day = lambda days: np.where(np.array([d == md for d in days]), 0.0, cday(days))
+    xz, yz = S.pair_points(D, bh, Sr, zero_day)
+    alt["no miss that day"] = S.listed(S.errors(D, bh, S.fit(xz, yz, "pl")[0], zero_day, Sr))
+    Sd = {k: g[[d != md for d in g["day"]]] for k, g in Sr.items()}
+    alt["day's hours dropped"] = S.listed(S.errors(D, bh, S.fit(*S.pair_points(D, bh, Sd, cday), "pl")[0], cday, Sd))
+    ok(all(v == listed for v in alt.values()), "SF25 R2 the missing day taken as no miss, or its hours dropped, files "
+       "the same list", alt)
+    # SF26: the controller in force each day. The register's current controller all year moves no station across
+    D2 = dict(D)
+    D2["hist"] = D["hist"].iloc[0:0]
+    l2 = S.call(D2, S=Sr)[1]
+    ok(l2 == listed, "SF26 R2 the register's current controller read for the whole year files the same list", l2)
+
+    # SF3: the cold pairs' free-flow threshold, and the loss fitted before the cold miss is taken out
+    thr = {}
+    for fo in (12.0, 25.0):
+        cd2 = S.by_day(D, S.cold_fit(*S.cold_points(D, bh, Sr, free_occ=fo), "knee")[0])
+        thr[fo] = S.listed(S.errors(D, bh, S.fit(*S.pair_points(D, bh, Sr, cd2), "pl")[0], cd2, Sr))
+    thr["loss first"] = S.listed(S.errors(D, bh, S.fit(*S.pair_points(D, bh, Sr, S.ZDAY), "pl")[0], cday, Sr))
+    ok(all(v == listed for v in thr.values()), "SF3 the cold pairs' free flow below 12 or 25 per cent, or the loss "
+       "fitted before the cold miss is taken out, files the golden list", thr)
+    oc = {k: S.listed(v) for k, v in S.overcount_routes(D, Sr).items()}
+    ok(all(v != listed for v in oc.values()), "SF23 the cold effect read as a TCX-4 overcount files another list "
+       "(ruled out by the occupancy channel above)", oc)
+
+    # the ladder on the pack: the validation day, the queue loss alone, the cold miss alone
+    R = S.routes(D, Sr)
+    default, qonly, conly = S.listed(R["D"]), S.listed(R["A"]), S.listed(R["B"])
+    ok(R["G"] == e, "routes: the golden route is the call")
+    ok(len({tuple(default), tuple(qonly), tuple(conly), tuple(listed)}) == 4,
+       "the four rungs file four different lists", (default, qonly, conly))
+    ok(len(set(listed) - set(default)) >= 4 and len(set(listed) - set(qonly)) >= 2 and
+       len(set(listed) - set(conly)) >= 2, "each wrong rung misses two or more of the golden",
+       (sorted(set(listed) - set(default)), sorted(set(listed) - set(qonly)), sorted(set(listed) - set(conly))))
+    both = sorted(set(listed) - set(qonly) - set(conly))
+    ok(len(both) >= 1, "a station only the two corrections together bring in", both)
+    # analyst test on the clean world: the validation day, either correction alone files a wrong list; both the truth
+    Rw = L5.routes(W)
+    Tw = L.listed(sim.truth(W))
+    ok(L.listed(Rw["D"]) != Tw and L.listed(Rw["A"]) != Tw and L.listed(Rw["B"]) != Tw,
+       "analyst test: on the clean world the easy route and either correction alone file wrong lists",
+       (L.listed(Rw["D"]), L.listed(Rw["A"]), L.listed(Rw["B"])))
+    ok(L.listed(Rw["G"]) == Tw, "analyst test: both corrections on the clean world file the truth", Tw)
     vq = sum(int(W["true"][(s["code"], d)]["queued"][L.vhours(W, s)].sum()) for s in W["st"] for d in s["dirs"])
     ok(vq == 0, "no validation day holds a queued hour", vq)
+    vc = sum(float(W["cmiss"][s["code"]][L.vhours(W, s)].sum()) for s in W["st"])
+    ok(vc == 0, "no validation day holds a cold miss", vc)
     vd = set(zip(D["validation"]["station"], D["validation"]["date"].astype(str).str[:10]))
-    h = D["hourly"]
-    on = np.array([(s, d) in vd for s, d in zip(h["station"], h["local_start"].str[:10])])
-    ok(h.loc[on, "occ"].max() < 20, "validation days' occupancy below 20 per cent", h.loc[on, "occ"].max())
+    hh = D["hourly"]
+    on = np.array([(s, d) in vd for s, d in zip(hh["station"], hh["local_start"].str[:10])])
+    ok(hh.loc[on, "occ"].max() < 20, "validation days' occupancy below 20 per cent", hh.loc[on, "occ"].max())
     ok(len(D["validation"]) == 30 * 2 * 96, "SF12 every station filmed 96 quarter hours each direction, midnight to "
        "midnight", len(D["validation"]))
 
     # the separation line: the asks' devices never touch the call
     full = sim.world(P.SEED)
-    eW = L.errors(full, L.bhat(full), L.fit(*L.pair_points(full, L.bhat(full)), "pl"))
-    eW = {cur(k): val for k, val in eW.items()}
-    ok(S.listed(eW) == listed and max(abs(eW[s] - e[s]) for s in e) < 0.002,
-       "separation: the call on the record with no hour lost files the same list, every error within 0.2 points")
+    eW = {cur(k): val for k, val in L5.routes(full)["G"].items()}
+    ok(S.listed(eW) == listed and max(abs(eW[s] - e[s]) for s in e) < 0.003,
+       "separation: the call on the record with no hour lost files the same list, every error within 0.3 points",
+       "%.4f" % max(abs(eW[s] - e[s]) for s in e))
     ok(all(not os.path.basename(f).startswith(("trafficvault_station_events", "Carrick_work_orders"))
-           for f in [B.FILES[k] for k in ("hourly", "validation", "register", "network")]),
+           for f in [B.FILES[k] for k in ("hourly", "validation", "register", "network", "weather")]),
        "separation: the call reads no file an ask device sits in")
 
     # SF2, SF9, SF10, layer 1: the year, the renumbering, the site codes, the clock
@@ -142,7 +221,7 @@ def main(target):
     D1 = dict(D)
     h1["occ"] = h1["occ"].round(1)
     D1["hourly"] = h1
-    ok(S.call(D1, "pl")[1] == listed, "SF8 R2 every occupancy read at one decimal files the same list")
+    ok(S.call(D1)[1] == listed, "SF8 R2 every occupancy read at one decimal files the same list")
 
     # R1, R2, R3: the client's three rules executed (dataset-generation 7.1)
     cols = set()
@@ -152,27 +231,28 @@ def main(target):
         elif f.endswith(".xlsx"):
             for sh in pd.read_excel(os.path.join(target, f), sheet_name=None, nrows=2).values():
                 cols |= set(sh.columns)
-    ok({"vehicles", "occupancy", "video", "loops"} <= cols and not any("error" in str(x).lower() or "flag" in
-                                                                      str(x).lower() for x in cols),
-       "R1 the field's raw material ships (hourly vehicles and occupancy, the filmed counts) and no column holds an "
-       "error or a flag")
+    ok({"vehicles", "occupancy", "video", "loops", "Mean Temp (°C)"} <= cols and
+       not any("error" in str(x).lower() or "flag" == str(x).lower() for x in cols),
+       "R1 the field's raw material ships (hourly vehicles and occupancy, the filmed counts, the day's temperatures) "
+       "and no column holds an error or a station flag")
     hn = D["hourly"].copy()
     hn["t"] = pd.to_datetime(hn["local_start"]).dt.tz_localize("UTC")
     Dn = dict(D)
     Dn["hourly"] = hn
-    ok(S.call(Dn, "pl")[1] == listed, "R2 the local clock read without its offset files the same list")
+    ok(S.call(Dn)[1] == listed, "R2 the local clock read without its offset files the same list")
     hr = D["hourly"].copy()
     raw_codes = pd.read_csv(os.path.join(target, B.FILES["hourly"]), usecols=["station"])["station"]
     keep = ~raw_codes.isin(D["hist"]["old_station"]).to_numpy()
     Dr = dict(D)
     Dr["hourly"] = hr[keep]
-    ok(S.call(Dr, "pl")[1] == listed, "R2 the old numbers' hours dropped files the same list")
+    ok(S.call(Dr)[1] == listed, "R2 the old numbers' hours dropped files the same list")
     ok(set(eW) == set(e), "R2 the hours lost from the record leave the call (the separation assertion above)")
-    ok(L.listed(L.validation_errors(W)) == tuple(default) and default != listed,
+    ok(L.listed(Rw["D"]) == tuple(default) and default != listed,
        "R3a the easy route on the clean world and on the pack files the validation list")
-    br = L.listed(L.bridge_only(W, bw))
-    ok(br != L.listed(sim.truth(W)) and L.listed(Gw) == L.listed(sim.truth(W)),
-       "R3b the decisive step alone reaches the truth; the bridge-only correction leaves a wrong list", br)
+    cl = lambda r: sorted(cur(k) for k in L.listed(r))
+    ok(cl(Rw["A"]) == qonly and cl(Rw["B"]) == conly and cl(Rw["G"]) == listed,
+       "R3b on the clean world and the pack, the queue loss alone and the cold miss alone each leave a wrong list; "
+       "the decisive step, both, reaches the truth")
     # R3c and the realism sweep: no copied block, no constant stream, no repeated day
     days = {}
     dup = 0
@@ -192,7 +272,7 @@ def main(target):
     desc = D["orders"]["description"].value_counts()
     ok(desc.iloc[0] <= 0.4 * len(D["orders"]), "realism: no work order text recurring beyond a real rate",
        desc.iloc[0])
-    ok(listed != default and "R08-05" in listed, "SF9 a renumbered station is on the golden list")
+    ok("R08-05" in listed, "SF9 a renumbered station is on the golden list")
     ok(all(len(set(g["station"])) == 1 for _, g in D["validation"].groupby("site")), "SF10 one station per site code")
 
     # the asks
@@ -210,6 +290,15 @@ def main(target):
                 rem[k] = rem.get(k, 0) + 1
     ok(all(rem.get(c, 0) >= 2 for c in cells), "ask A device: two or more office resets in every cell",
        [rem.get(c, 0) for c in cells])
+    od = D["orders"].assign(station=D["orders"]["stations"].str.split("; ")).explode("station")
+    od["station"] = od["station"].map(lambda c: S.current(c, D))
+    od["day"] = pd.to_datetime(od["opened"]).dt.date
+    t2rows = od[[not S.tcx4_on(D, s_, d_) for s_, d_ in zip(od["station"], od["day"])]]
+    t2comms = t2rows[t2rows["description"].str.startswith("No data from controller")]
+    ok(not t2rows["resolution"].str.startswith("Controller reset").any() and len(t2comms) > 0 and
+       t2comms["resolution"].str.contains("Modem|Antenna").all(),
+       "SF14 a TCX-2 has no remote reset: every TCX-2 communications fault is cleared at the cabinet and says so",
+       len(t2comms))
     t2 = {}
     for o in O["outs"]:
         for c in o["stations"]:
@@ -219,7 +308,22 @@ def main(target):
     ok(all(t2.get(c, 0) >= 1 for c in cells), "ask B device: a TCX-2 failure in every cell", [t2.get(c, 0) for c in cells])
     retrip = [(o["district"], ops.quarter(o["start"].date())) for o in O["outs"] if len(o["parts"]) == 2 and
               any(ops.controller(sx[c], o["start"].date()) == "TCX-2" for c in o["stations"])]
-    ok(len(set(retrip)) >= 4, "ask B device: re-trips at TCX-2 stations in four or more cells", sorted(set(retrip)))
+    ok(len(set(retrip)) >= 7, "ask B device: re-trips at TCX-2 stations in seven or more cells", sorted(set(retrip)))
+    silent = set()
+    for r in O["power"]:
+        o = r["outage"]
+        if o.get("momentary") and r["controller"] == "TCX-2" and not any(ev == "COMMS_LOST" for t, by, ev in r["events"]):
+            silent.add((o["district"], ops.quarter(o["start"].date())))
+    ok(len(silent) >= 10, "ask B device: a momentary interruption at a TCX-2 that no poll caught (a break with no "
+       "COMMS_LOST) in ten or more cells", len(silent))
+    mom = [o for o in O["outs"] if o.get("momentary")]
+    ok(all(any(ops.controller(sx[c], o["start"].date()) == "TCX-4" for c in o["stations"]) for o in mom),
+       "SF15 every momentary interruption also reaches a TCX-4, whose MAINS_FAIL and MAINS_OK in the same hour "
+       "corroborate the TCX-2's break")
+    ok(all((o["end"] - o["start"]).total_seconds() < 300 for o in mom) and
+       any(any(ev == "COMMS_LOST" for t, by, ev in r["events"]) for r in O["power"] if r["outage"].get("momentary")),
+       "ask B device: every momentary interruption under five minutes, some of them caught by a poll (no marker)",
+       len(mom))
     # every re-trip at a TCX-2 left two COMMS_LOST inside one break, every single loss at most one
     ev = S._events(D)
     lost = ev[ev["event"] == "COMMS_LOST"]

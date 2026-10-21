@@ -1,5 +1,6 @@
 """An independent recomputation of every graded figure from the shipped files alone (no generator module but the file
-names), against figures.json: the list, the margin, the validation facts, the visits and the power failures."""
+names), against figures.json: the list (the cold miss read in temperature bins, the queue loss in occupancy classes),
+the margin, the components, the validation facts, the visits and the power failures."""
 import json
 import os
 import sys
@@ -28,37 +29,69 @@ def main(target):
     v = pd.read_excel(p("validation"), sheet_name="Counts")
     v["station"] = v["site"].map(dict(zip(reg["validation_site"], reg["station"])))
     sens = (v.groupby(["station", "direction"])["loops"].sum() / v.groupby(["station", "direction"])["video"].sum())
-    # the bridges' two stations: nearest stations on the bridge's road either side
-    sn = pd.read_excel(p("network"), sheet_name="Structures")
+    # the controller each day, and each day's mean temperature at the airport (a missing day from its neighbours)
+    swap0 = {r["new_station"]: pd.Timestamp(r["from_date"]).date() for _, r in hist.iterrows()}
+    gen = dict(zip(reg["station"], reg["controller"]))
+    w = pd.read_csv(os.path.join(target, "weather_daily_2027.csv"))
+    tm = pd.Series(pd.to_numeric(w["Mean Temp (°C)"], errors="coerce").to_numpy(),
+                   index=pd.to_datetime(w["Date/Time"]).dt.date).interpolate()
+    h["day"] = h["t"].dt.tz_convert(TZ).dt.date
     vol = h.pivot_table(index="t", columns=["station", "direction"], values="vehicles")
     occ = h.pivot_table(index="t", columns=["station", "direction"], values="occ")
-    xs, ys = [], []
+    dayof = pd.Series(vol.index.tz_convert(TZ).date, index=vol.index)
+    t2 = {s: np.array([gen[s] == "TCX-2" or (s in swap0 and d < swap0[s]) for d in dayof]) for s in reg["station"]}
+    sn = pd.read_excel(p("network"), sheet_name="Structures")
+    pairs = []
     for _, b in sn[sn["type"] == "bridge"].iterrows():
         on = reg[reg["road"] == b["road"]].sort_values("km")
         s1 = on[on["km"] < b["km_from"]].iloc[-1]["station"]
         s2 = on[on["km"] > b["km_to"]].iloc[0]["station"]
-        for d, up, dn in (("NB", s1, s2), ("SB", s2, s1)):
-            a, c, o = vol[(up, d)], vol[(dn, d)], occ[(up, d)]
-            k = a.notna() & c.notna() & (a > 50) & (c > 50)
-            xs.append(o[k].to_numpy())
-            ys.append((1 - (a[k] / sens[(up, d)]) / (c[k] / sens[(dn, d)])).to_numpy())
+        pairs += [("NB", s1, s2), ("SB", s2, s1)]
+    # the TCX-2's cold miss: free-flowing days on the pairs with one controller of each generation, in 3-degree bins
+    cd, ct = [], []
+    for d, up, dn in pairs:
+        a, c = vol[(up, d)] / sens[(up, d)], vol[(dn, d)] / sens[(dn, d)]
+        k = a.notna() & c.notna() & (occ[(up, d)] < 15) & (occ[(dn, d)] < 15) & (t2[up] != t2[dn])
+        g = pd.DataFrame({"a": a[k], "c": c[k], "day": dayof[k], "t2up": t2[up][k.to_numpy()]}).groupby("day")
+        for day, x in g:
+            if len(x) < 6:
+                continue
+            r = x["a"].sum() / x["c"].sum()
+            cd.append(1 - r if x["t2up"].iloc[0] else 1 - 1 / r)
+            ct.append(tm[day])
+    cd, ct = np.array(cd), np.array(ct)
+    edges = np.arange(-21, 30, 3.0)
+    mid, val = [], []
+    for lo in edges:
+        m = (ct >= lo) & (ct < lo + 3)
+        if m.sum() >= 3:
+            mid.append(lo + 1.5)
+            val.append(max(0.0, cd[m].mean()) if lo + 1.5 < 3 else 0.0)
+    cold = lambda t: np.interp(t, mid, val)
+    cmiss = {s: np.where(t2[s], cold(tm.reindex(dayof.to_numpy()).to_numpy()), 0.0) for s in reg["station"]}
+    # the queue loss: the queued approach against the far one, the cold miss out of both, by one-point occupancy class
+    xs, ys = [], []
+    for d, up, dn in pairs:
+        a = vol[(up, d)] / sens[(up, d)] / (1 - cmiss[up])
+        c = vol[(dn, d)] / sens[(dn, d)] / (1 - cmiss[dn])
+        k = vol[(up, d)].notna() & vol[(dn, d)].notna() & (vol[(up, d)] > 50) & (vol[(dn, d)] > 50)
+        xs.append(occ[(up, d)][k].to_numpy())
+        ys.append((1 - a[k] / c[k]).to_numpy())
     x, y = np.concatenate(xs), np.concatenate(ys)
-    # a loss curve by occupancy class (one point classes, none below the free-flow range), interpolated
     cls = np.floor(x)
     tab = pd.Series(y).groupby(cls).mean()
     tab = tab[pd.Series(y).groupby(cls).size() >= 20]
     grid = tab.index.to_numpy() + 0.5
-    val = np.where(grid < 21, 0.0, np.maximum(tab.to_numpy(), 0.0))
-    loss = lambda o: np.interp(o, grid, val)
+    lval = np.where(grid < 21, 0.0, np.maximum(tab.to_numpy(), 0.0))
+    loss = lambda o: np.interp(o, grid, lval)
     err = {}
     for s in reg["station"]:
-        cols = [c for c in vol.columns if c[0] == s]
         num = den = 0.0
-        for c in cols:
-            r = vol[c].dropna()
-            oo = occ[c].dropna()
+        for c in [c for c in vol.columns if c[0] == s]:
+            k = vol[c].notna().to_numpy()
+            r = vol[c].to_numpy()[k]
             num += r.sum()
-            den += (r / sens[c] / (1 - loss(oo.to_numpy()))).sum()
+            den += (r / sens[c] / (1 - loss(occ[c].to_numpy()[k])) / (1 - cmiss[s][k])).sum()
         err[s] = num / den - 1
     listed = sorted(s for s, e in err.items() if abs(e) > 0.05)
     if listed != fig["call"]["listed"]:
@@ -66,16 +99,20 @@ def main(target):
     if not (min(abs(err[s]) for s in listed) > fig["call"]["listed_below_pct"] / 100 and
             max(abs(e) for s, e in err.items() if s not in listed) < fig["call"]["unlisted_within_pct"] / 100):
         fails.append(("margin", min(abs(err[s]) for s in listed), max(abs(e) for s, e in err.items() if s not in listed)))
+    if not 0.17 <= float(loss(np.array([40.0]))[0]) <= 0.20:
+        fails.append(("loss at 40", float(loss(np.array([40.0]))[0])))
+    if not 0.085 <= float(cold(-10.0)) <= 0.12:
+        fails.append(("cold miss at -10", float(cold(-10.0))))
     vdays = set(zip(v["station"], v["date"].astype(str).str[:10]))
     mx = h.loc[[(s, d) in vdays for s, d in zip(h["station"], h["local_start"].str[:10])], "occ"].max()
     if round(float(mx), 1) != fig["components"]["validation_max_occupancy_pct"]:
         fails.append(("validation max occupancy", mx))
     vs = (v.groupby("station")["loops"].sum() / v.groupby("station")["video"].sum() - 1)
-    for s, want in fig["components"]["default_only_validation_pct"].items():
-        if int(round(100 * vs[s])) != want:
-            fails.append(("validation error", s, vs[s]))
     if sorted(vs[vs.abs() > 0.05].index) != fig["components"]["default_list"]:
         fails.append(("default list", sorted(vs[vs.abs() > 0.05].index)))
+    vmin = min(tm[pd.Timestamp(d).date()] for d in v["date"].unique())
+    if int(np.floor(vmin)) != fig["components"]["validation_min_mean_temp_c"]:
+        fails.append(("validation days' lowest mean temperature", vmin))
 
     # the asks
     dist = dict(zip(reg["station"], reg["district"]))

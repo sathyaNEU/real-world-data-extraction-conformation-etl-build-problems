@@ -1,23 +1,46 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-21",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
  "architecture": 5,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
- "judge": null,
+ "precut": {
+  "exit": 0,
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW (three lines: TDP-03 carries the call's words and the standard's vocabulary, the dictionary the field's terms)",
+  "reader": "four scored readers missed the call (two rounds); round 2 kept 0 of 24 asks each"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form) after the in-place relabel to population_selection and G6",
+  "surface": "task243 (surface 0.101) and task68 (gap, pattern and Gate G) promoted, both differentiated on the card",
+  "nearest": "task248 0.05"
+ },
+ "judge": {
+  "pass1": {
+   "pack": "41198eaa",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "notes": "three minor ask forks (the door-log visit rule inferred; a state-machine MAINS_FAIL dedupe; the replaced controllers' sensitivity), none touching the call"
+  },
+  "pass2": {
+   "pack": "20f316fe",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "notes": "every figure reproduced (listed -7.0 to -9.3 per cent, largest unflagged -3.5); residual forks on asks 2 and 3 only (the office resets inferred from door-log silence, two trips inside one TCX-2 break, local quarters); Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; one hygiene note (TDP-03's revision table cell clipped), fixed by wrapping the cells, text unchanged"
+  }
+ },
  "returned": [],
- "resume": "Architecture 5 drawn 2026-10-21 (card registered, guard WARN only) after three call-only probe readers on the seed-303 pack all missed. Next: stage 2 in the scratch generator (asks: TCX-2 comms faults closed as modem replacements; a permits distractor since the weather file is now an input; TDP-03 section 2 on loops kept at a controller swap), the design note's v5 sections and precut, then stage 3 gates.",
+ "resume": "Shipped 2026-10-21; waiting on the portal. The prompt's precision for the chart's per-cent errors was left open on purpose (no station's error is a graded figure).",
  "approved": null,
- "delivered": "",
+ "delivered": "2026-10-21",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -86,13 +109,60 @@
   {
    "date": "2026-10-21",
    "event": "architecture 5 drawn (a conjunction in the same world: the queue loss read from the bridges' paired approaches and the TCX-2 cards' cold miss read from the mixed-generation pairs against the airport's temperatures, attributed by occupancy per counted vehicle); three call-only probes missed (A and B put the cold effect on the TCX-4 cards, C found the cold miss without the queue loss); card registered"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 4 closed: round 2 readers missed the call (the cold miss alone; the validation list) and kept 0 of 24 asks; judge pass 2 DETERMINISTIC APPROVE on target.zip 20f316fe; the clipped revision table cell in TDP-03 wrapped (text unchanged), final pack target.zip 6283c112 with checks 78, verify 0, byte-identical, figures_check 14 of 14, precut 51 of 51"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "SHIPPED (architecture 5): flag R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03"
   }
  ],
- "readers": null,
+ "readers": {
+  "round1": {
+   "pack": "41198eaa",
+   "A": {
+    "call": "miss (validation list)",
+    "asks": "12 of 24 (all of ask B)",
+    "exit": 1
+   },
+   "B": {
+    "call": "miss (validation list)",
+    "asks": "12 of 24 (all of ask B)",
+    "exit": 1
+   },
+   "fix": "ask B device re-sited: momentary interruptions no poll caught, corroborated by a TCX-4's MAINS_FAIL in the same hour"
+  },
+  "round2": {
+   "pack": "20f316fe",
+   "A": {
+    "call": "miss (the cold miss alone: R04-03, R06-01, R14-01, R25-01)",
+    "asks": "0 of 24",
+    "exit": 0
+   },
+   "B": {
+    "call": "miss (validation list)",
+    "asks": "0 of 24",
+    "exit": 0
+   }
+  }
+ },
  "probes": {
   "pack": "scratch b1 (seed 303), prompt asking the call only, three isolated readers (sonnet, medium)",
   "A": "R10-03, R23-01, R25-01 (cold effect put on the TCX-4 cards as an overcount; no queue loss): miss",
   "B": "R04-03, R14-01, R25-01 (queue loss from the same-road pairs, cold effect put on the TCX-4 cards): miss",
   "C": "R04-03, R06-01, R14-01, R25-01 (cold miss on the TCX-2 cards from occupancy per counted vehicle; congestion seen and not used): miss"
+ },
+ "gates": {
+  "checks": 78,
+  "verify": 0,
+  "byte_identical": true,
+  "target_zip": "6283c112",
+  "figures_check": 0,
+  "precut": "51 of 51",
+  "leak_py": "REVIEW (carried lines, harmless)",
+  "heart": "WARN",
+  "surface": "task243 and task68 promoted, differentiated"
  }
 }

@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251's architecture 5 DRAWN 10-21 after architecture 4 was spent at stage 4, and task249's architecture 5 spent 10-20 and PAUSED, to be drawn fresh at the author's instruction; task252 waits, since two paused builds fill the author's two slots). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20 and PAUSED, to be drawn fresh at the author's instruction; task252 is next, beside task249). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,19 +18,15 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task251: architecture 5 DRAWN 2026-10-21 (stage 2 next); architecture 4 spent at stage 4.**
-- Architecture 5 keeps architecture 4's world (the Regional Municipality of Halbrook's 30 loop count stations) and
-  makes the call a conjunction: the loss the loops take in term-time queues, read from the river bridges' paired
-  approaches, and the vehicles the older TCX-2 cards miss on cold days, read from the bridges whose approaches run
-  different controllers against the airport's temperatures and placed on the TCX-2 by occupancy per counted vehicle.
-  Golden R02-01, R04-03, R06-01, R08-05, R14-01, R25-01, R29-03; the validation list R14-01, R25-01; the queue loss
-  alone five, the cold miss alone four.
-- Three call-only probe readers on the seed-303 pack all missed (two read the cold effect as a TCX-4 overcount, one
-  found the TCX-2 miss without the queues). The card is registered (WARN only).
-- Next: stage 2 and 3 in the scratch generator (the TCX-2 communications faults closed as modem replacements so the
-  visits ask has an on-site signal for every reset kind; a permits distractor since the weather file is now an input;
-  the weather file in the weather service's own layout; TDP-03 section 2 on loops kept at a controller swap), the
-  design note's remaining sections, precut, gates, then stage 4.
+**task251: SHIPPED 2026-10-21 (architecture 5), waiting on the portal.**
+- The Regional Municipality of Halbrook's 30 loop count stations: flag R02-01, R04-03, R06-01, R08-05, R14-01, R25-01
+  and R29-03, the queue loss read from the river bridges' paired approaches and the older TCX-2 cards' cold miss read
+  from the mixed-generation pairs against the airport's temperatures, both carried through every hour by the
+  controller in force. The validation list files R14-01 and R25-01; either correction alone files another list.
+- Stage 4: three probes and four scored readers missed the call (the validation list three times, the cold miss alone
+  twice, the cold effect misplaced on the TCX-4 twice); round 1 readers took all of ask B, so its device was re-sited
+  (momentary interruptions no poll caught) and round 2 kept 0 of 24 each. Judge DETERMINISTIC APPROVE on both packs.
+  target.zip 6283c112 (the judged 20f316fe with the standard's revision table wrapped, text unchanged).
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 

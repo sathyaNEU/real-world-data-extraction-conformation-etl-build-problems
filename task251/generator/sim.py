@@ -115,10 +115,35 @@ def _queue(rng, dem, cap, lanes):
     return q, np.clip(occ, 0.2, None), queued
 
 
+def temperatures(C, seed):
+    """the airport's daily maximum and minimum: a seasonal cycle with persistent spells"""
+    rng = np.random.default_rng(seed + 33)
+    out = {}
+    anom = 0.0
+    for day in C["days"]:
+        doy = day.timetuple().tm_yday
+        anom = 0.72 * anom + rng.normal(0, 2.6)
+        tmean = 7.8 - 13.2 * np.cos(2 * np.pi * (doy - 22) / 365) + anom
+        spread = float(rng.uniform(6.0, 11.5))
+        out[day] = (round(tmean + spread / 2, 1), round(tmean - spread / 2, 1))
+    return out
+
+
+def tcx4_on(code, day):
+    if code in P.RENUMBERED:
+        return day >= P.RENUMBERED[code][1]
+    return code in P.NEW_CONTROLLERS
+
+
+def cold(tmean):
+    return float(np.clip(P.COLD_SLOPE * (P.COLD_KNEE - tmean), 0, P.COLD_CAP))
+
+
 def world(seed=P.SEED):
     rng = np.random.default_rng(seed)
     C = calendar()
     st = stations()
+    temp = temperatures(C, seed)
     noise = {}
     for x in st:
         for d in x["dirs"]:
@@ -157,28 +182,35 @@ def world(seed=P.SEED):
             dem = _demand(rng, C, daily, d == inbound_dir, noise[(x["code"], d)])
             q, occ, qd = _queue(rng, dem, cap, lanes)
             true[(x["code"], d)] = dict(q=np.round(q), occ=occ, queued=qd)
-    # each station's loss over the year at sensitivity 1
+    # each station's share lost over the year at sensitivity 1: in queues, and on cold days at a TCX-2
+    tmean = {day: (a + b) / 2 for day, (a, b) in temp.items()}
+    cmiss = {}
     for x in st:
-        num = den = 0.0
+        cmiss[x["code"]] = np.array([0.0 if tcx4_on(x["code"], day) else cold(tmean[day]) for day in C["date"]])
+    for x in st:
+        num = den = numq = 0.0
         for d in x["dirs"]:
             t = true[(x["code"], d)]
-            num += (t["q"] * (1 - loss(t["occ"]))).sum()
+            num += (t["q"] * (1 - loss(t["occ"])) * (1 - cmiss[x["code"]])).sum()
+            numq += (t["q"] * (1 - loss(t["occ"]))).sum()
             den += t["q"].sum()
-        x["L"] = 1 - num / den
+        x["L"] = 1 - numq / den
+        x["LK"] = 1 - num / den
     # sensitivities: every station's true error at least 1.1 points from the line
     for x in st:
         for _ in range(5000):
             b = float(rng.normal(0, P.B_SD))
-            e = (1 + b) * (1 - x["L"]) - 1
+            e = (1 + b) * (1 - x["LK"]) - 1
             if abs(abs(e) - P.TOLERANCE) >= 0.011 and abs(abs(b) - P.TOLERANCE) >= 0.006:
                 break
         x["b"] = b
         x["b_dir"] = {d: b + float(rng.normal(0, 0.004)) for d in x["dirs"]}
     rec = {}
     for x in st:
+        c = cmiss[x["code"]]
         for d in x["dirs"]:
             t = true[(x["code"], d)]
-            r = t["q"] * (1 + x["b_dir"][d]) * (1 - loss(t["occ"])) * (1 + rng.normal(0, 0.014, NH))
+            r = t["q"] * (1 + x["b_dir"][d]) * (1 - loss(t["occ"])) * (1 - c) * (1 + rng.normal(0, 0.014, NH))
             rec[(x["code"], d)] = np.round(np.clip(r, 0, None))
     # validation: one summer weekday per station, every station on its own day
     summer = [day for day in C["days"] if day.month in (7, 8) and C["kind"][day] == "summer"]
@@ -186,7 +218,7 @@ def world(seed=P.SEED):
     order = rng.permutation(len(st))
     for k, x in zip(vdays, [st[i] for i in order]):
         x["vday"] = summer[k]
-    return dict(C=C, st=st, true=true, rec=rec, seed=seed)
+    return dict(C=C, st=st, true=true, rec=rec, seed=seed, temp=temp, tmean=tmean, cmiss=cmiss)
 
 
 def truth(W):

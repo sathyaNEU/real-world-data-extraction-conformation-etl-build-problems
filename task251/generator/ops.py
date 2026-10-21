@@ -10,7 +10,8 @@ runs on mains, so TrafficVault's 15-minute poll raises COMMS_LOST during any out
 first poll after it.
 
 The maintenance contractor inspects every station each spring and autumn on district route days, attends faults, and at
-TCX-4 stations clears some communications faults by resetting the controller from its office. Every piece of work is
+TCX-4 stations clears some communications faults by resetting the controller from its office (a TCX-2 has no
+remote reset, so its communications faults are cleared at the cabinet). Every piece of work is
 booked as labour against a work order. A TCX-4 cabinet door logs DOOR_OPEN and DOOR_CLOSE; the validation crew opens
 every cabinet the night before its filmed day to connect its pulse recorder and the night after to remove it. Two
 stations had their TCX-2 replaced by a TCX-4 during the year and took new numbers."""
@@ -65,7 +66,7 @@ def poll_after(off, t):
     return sim.START_UTC + dt.timedelta(seconds=round(off + k * POLL_S))
 
 
-def outages(W, rng):
+def outages(W, rng, polls=None):
     """grid outages: a December ice storm long enough to run TCX-4 batteries out, a late evening outage on 30
     September, then one or two in every district and quarter, each cell's set stopping at least one TCX-2"""
     st = W["st"]
@@ -142,7 +143,7 @@ def outages(W, rng):
                     continue
                 start = dt.datetime.combine(day, dt.time(int(rng.integers(0, 24)), int(rng.integers(0, 60)),
                                                          int(rng.integers(0, 60))))
-                parts = retrip(start) if rng.random() < 0.4 else None
+                parts = retrip(start) if rng.random() < 0.55 else None
                 hours = (parts[-1][1] - start).total_seconds() / 3600 if parts else \
                     float(np.clip(rng.lognormal(np.log(1.6), 0.9), 0.3, 5.5))
                 if not clear(dist, start, start + dt.timedelta(hours=hours), hit):
@@ -150,6 +151,48 @@ def outages(W, rng):
                 make(dist, start, hours, hit, parts)
                 made += 1
                 have_t2 = have_t2 or any(controller(x, day) == "TCX-2" for x in hit)
+    # momentary interruptions: a recloser opens for under five minutes; a TCX-4 rides through on its battery and logs
+    # MAINS_FAIL and MAINS_OK, a TCX-2 drops the hour it is in, and TrafficVault notices only if a poll falls inside
+    silent_cells = set()
+    for dist in P.DISTRICTS:
+        for qtr in (1, 2, 3, 4):
+            qdays = [d for d in days if quarter(d) == qtr]
+            n = int(rng.integers(1, 3))
+            made = tries = 0
+            while (made < n or (dist, qtr) not in silent_cells) and tries < 3000:
+                tries += 1
+                day = qdays[int(rng.integers(len(qdays)))]
+                t2 = members(dist, day, "TCX-2")
+                if not t2:
+                    continue
+                t4 = members(dist, day, "TCX-4")
+                if not t4:
+                    continue
+                pick = [t2[int(rng.integers(len(t2)))], t4[int(rng.integers(len(t4)))]]
+                others = [x for x in st if x["district"] == dist and x not in pick]
+                pick += [others[i] for i in rng.choice(len(others), size=int(rng.integers(0, 2)), replace=False)]
+                start = dt.datetime.combine(day, dt.time(int(rng.integers(0, 24)), int(rng.integers(0, 60)),
+                                                         int(rng.integers(0, 60))))
+                hours = float(rng.uniform(40, 270)) / 3600
+                if not clear(dist, start, start + dt.timedelta(hours=hours), pick):
+                    continue
+                lag = {x["code"]: float(rng.uniform(0, 40)) for x in pick}
+                silent = False
+                for x in pick:
+                    if controller(x, day) != "TCX-2":
+                        continue
+                    t0 = utc(start) + dt.timedelta(seconds=lag[x["code"]])
+                    t1 = utc(start + dt.timedelta(hours=hours)) + dt.timedelta(seconds=lag[x["code"]])
+                    if polls is not None and poll_after(polls[x["code"]], t0) >= t1 + dt.timedelta(seconds=BOOT_S):
+                        silent = True
+                if made >= n and not silent:
+                    continue
+                out.append(dict(district=dist, start=start, end=start + dt.timedelta(hours=hours),
+                                parts=[(start, start + dt.timedelta(hours=hours))], stations=[x["code"] for x in pick],
+                                lag=lag, momentary=True))
+                made += 1
+                if silent:
+                    silent_cells.add((dist, qtr))
     return sorted(out, key=lambda o: o["start"])
 
 
@@ -296,6 +339,20 @@ def maintenance(W, outs, sw, polls, rng):
                         free(x["code"], day, 2):
                     work.append(_fault(x, day, "comms", True, "TCX-4", rng, next_id, tech, wdays, free))
                     have += 1
+    # and at least one cleared at the cabinet's keypad at a TCX-4, the technician on site
+    for dist in P.DISTRICTS:
+        for qtr in (1, 2, 3, 4):
+            have = sum(1 for w in work if w["resets"] and w["resets"][0][2] == "KEYPAD" and
+                       sx[w["stations"][0]]["district"] == dist and quarter(w["labour"][0][0]) == qtr)
+            for _ in range(2000 if have < 1 else 0):
+                if have >= 1:
+                    break
+                x = st[int(rng.integers(len(st)))]
+                day = wdays[int(rng.integers(len(wdays)))]
+                if x["district"] == dist and quarter(day) == qtr and controller(x, day) == "TCX-4" and \
+                        free(x["code"], day, 2):
+                    work.append(_fault(x, day, "comms", False, "TCX-4", rng, next_id, tech, wdays, free))
+                    have += 1
     # the two old TCX-2 controllers that were replaced kept losing their communications before the replacement
     for code, (new, swap) in sorted(P.RENUMBERED.items()):
         x = sx[code]
@@ -378,8 +435,11 @@ def _fault(x, day, kind, remote, ctl, rng, next_id, tech, wdays, free):
         labour = [(day, tk, _quarter_hours(rng, 0.5, 3.5))]
         if rng.random() < 0.25:
             labour.append((day, tech(), _quarter_hours(rng, 0.5, 3.5)))
+        res = "Controller reset, data recovered" if ctl == "TCX-4" else str(rng.choice(
+            ["Modem replaced, data recovered", "Modem power-cycled in the cabinet, data recovered",
+             "Antenna cable reseated, data recovered"], p=[0.4, 0.4, 0.2]))
         return dict(order=next_id(), category="Fault", stations=[code], opened=fault.date(), closed=day,
-                    description=desc, resolution="Controller reset, data recovered", labour=_uniq(labour),
+                    description=desc, resolution=res, labour=_uniq(labour),
                     onsite=[(code, arrive, leave)], resets=[(code, reset, "KEYPAD")] if ctl == "TCX-4" else [],
                     comms=(code, fault, reset))
     desc, res = dict(cabinet=("Cabinet door or lock damaged", "Lock replaced, door realigned"),
@@ -476,7 +536,7 @@ def ops(W):
     """the operations of the year, from the world's seed"""
     rng = np.random.default_rng(W["seed"] + 500)
     polls = poll_offsets(W)
-    outs = outages(W, rng)
+    outs = outages(W, rng, polls)
     pw = power(W, outs, polls)
     sw = swaps(W, polls, rng)
     work = maintenance(W, outs, sw, polls, rng)

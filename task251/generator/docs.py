@@ -34,6 +34,9 @@ def _footer(text):
 
 
 def _table(rows, widths, size=8.4):
+    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=size, leading=size + 2.2)
+    head = ParagraphStyle("head", parent=cell, fontName="Helvetica-Bold")
+    rows = [[Paragraph(str(v), head if r == 0 else cell) for v in row] for r, row in enumerate(rows)]
     t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1)
     t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size),
                            ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
@@ -60,7 +63,8 @@ def standard(path, F):
                    "roadside controller. The controller counts each vehicle that crosses a loop and measures the share "
                    "of time the loops are occupied. Stations are numbered by Regional Road; the station register gives "
                    "each station's road, kilometre point, location, district, lanes and controller. When a controller "
-                   "is replaced the station may be given a new number; the register records the change and the date.",
+                   "is replaced the station keeps its loops and may be given a new number; the register records the "
+                   "change and the date.",
                    body),
          Paragraph("3. The hourly record", h2),
          Paragraph("Each controller reports to %s, the Region's count management system, which keeps for each station "

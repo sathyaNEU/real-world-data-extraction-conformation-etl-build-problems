@@ -44,8 +44,9 @@ def metadata(target):
                  "district and quarter",
         "domain": "General Statistics & Data Science",
         "subdomain": "missing-data-censoring-measurement-error (inductive loop count stations' counting error: a "
-                     "sensitivity read on summer validation days and a loss in queued traffic read from bridges' paired "
-                     "approaches)",
+                     "sensitivity read on summer validation days, a loss in queued traffic read from bridges' paired "
+                     "approaches, and the older controllers' miss on cold days read from the bridges whose approaches "
+                     "run one controller of each generation)",
         "objective": "Data Quality Monitoring & Alerting",
         "prompt_shape": "other: the stations to flag, the chart of every station's 2027 error against the 5 per cent "
                         "band with the flagged stations marked, the maintenance visits and the power failures by "
@@ -64,9 +65,11 @@ def metadata(target):
                                "Ontario regional municipality: 30 permanent count stations on its regional roads, ten "
                                "of them on the two approaches of five one-lane river bridges, each direction's hourly "
                                "demand through a year of school terms, holidays and months, queues where a bottleneck "
-                               "lies downstream, loops that count each vehicle with the station's sensitivity and lose "
-                               "a share that grows with occupancy in queued traffic, a summer validation day per "
-                               "station, two controller replacements, grid outages and feeder re-trips, the "
+                               "lies downstream, a year of daily temperatures at the region's airport, loops that "
+                               "count each vehicle with the station's sensitivity and lose a share that grows with "
+                               "occupancy in queued traffic, older controllers that miss a share on cold days, a "
+                               "summer validation day per station, two controller replacements, grid outages and "
+                               "feeder re-trips, the "
                                "maintenance contractor's routes, faults and office resets, the validation crew's and "
                                "the Region's own cabinet openings; the Region, its contractors and every person are "
                                "invented, the practice follows published traffic monitoring practice, and no real "

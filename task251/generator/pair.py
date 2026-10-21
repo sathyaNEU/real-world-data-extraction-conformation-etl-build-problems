@@ -39,6 +39,10 @@ def routes(D):
     out["A door rule on DOOR_OPEN only"] = S._cells(
         [(s, d) for s, d in zip(lab["station"], lab["day"]) if not S.tcx4_on(D, s, d) or (s, d) in ddo], D)
     out["A door rule on UTC dates"] = S.visits(D, door_days="utc")
+    ro = set(o.loc[o["resolution"].astype(str).str.startswith("Controller reset"), "order"])
+    lr = S._labour_days(D, dedup=False)
+    keep = {(s, d) for s, d, k in zip(lr["station"], lr["day"], lr["order"]) if k not in ro}
+    out["A labour days less every controller reset order's labour"] = S._cells(sorted(keep), D)
     mf = eall[eall["event"] == "MAINS_FAIL"]
     mfd = e[e["event"] == "MAINS_FAIL"]
     out["B MAINS_FAIL rows"] = S._cells(list(zip(mf["station"], mf["day"])), D)
@@ -68,6 +72,14 @@ def routes(D):
     out["B breaks on the local clock at TCX-2, plus MAINS_FAIL"] = S._cells(
         [(s, d) for s, d in lr if not S.tcx4_on(D, s, d) and (s, d) not in swap] + mfp, D)
     out["B golden, quarters on UTC dates"] = S.failures(D, quarter_clock="utc")
+    ep = []
+    for s_, t0, n in runs:
+        d0 = t0.tz_convert(TZ).date()
+        if S.tcx4_on(D, s_, d0) or (s_, d0) in swap:
+            continue
+        k = int(((cl["station"] == s_) & (cl["t"] >= t0) & (cl["t"] < t0 + pd.Timedelta(hours=n))).sum())
+        ep.extend([(s_, d0)] * k)
+    out["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (stage 4 readers)"] = S._cells(ep + mfp, D)
     return out
 
 
@@ -85,8 +97,9 @@ def main(target, quiet=False):
         g = gv if k.startswith("A") else gf
         rows.append((k, score(r, g)))
         if not quiet:
-            print("%-56s %2d of 12" % (k, score(r, g)))
-    crack = score(R["A labour days, one per station and day"], gv) + score(R["B MAINS_FAIL, repeats removed"], gf)
+            print("%-72s %2d of 12" % (k, score(r, g)))
+    crack = score(R["A labour days, one per station and day"], gv) + \
+        score(R["B COMMS_LOST episodes in TCX-2 breaks plus MAINS_FAIL (stage 4 readers)"], gf)
     Lc = crack / 24.0
     Ls = Lc
     C = 38 + 7 + 55 * Lc

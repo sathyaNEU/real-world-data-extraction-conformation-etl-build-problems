@@ -1,8 +1,8 @@
-"""task251 architecture 4: the world's fixed facts. Halbrook Region (fictional, southern Ontario) counts traffic at 30
+"""task251 architecture 5: the world's fixed facts. Halbrook Region (fictional, southern Ontario) counts traffic at 30
 permanent stations on its regional roads; five pairs stand on the two approaches of its Kessel River bridges."""
 import datetime as dt
 
-SEED = 91
+SEED = 303
 ORG = "Regional Municipality of Halbrook"
 DEPT = "Transportation Services, Traffic Data Program"
 STANDARD = "TDP-03"
@@ -51,10 +51,15 @@ BRIDGE_DISTRICT = dict(south="Ashby", north="Kessel")
 
 # controllers replaced during 2027: the station takes a new number from the replacement date
 RENUMBERED = {"R08-01": ("R08-05", dt.date(2027, 5, 12)), "R19-01": ("R19-03", dt.date(2027, 9, 21))}
-# controller generation: the newer TCX-4 reports occupancy in integer tenths of a per cent
-NEW_CONTROLLERS = {"R02-01", "R05-01", "R10-03", "R11-01", "R11-02", "R14-01", "R18-01", "R22-01", "R22-02",
-                   "R23-01", "R08-01", "R19-01"}
+# controller generation: the newer TCX-4 (occupancy to two decimals, a battery, an event log); the rest TCX-2
+NEW_CONTROLLERS = {"R02-01", "R04-02", "R05-01", "R10-03", "R11-01", "R11-02", "R14-01", "R17-04", "R18-01",
+                   "R22-01", "R22-02", "R23-01", "R29-02", "R08-01", "R19-01"}
 
 LOSS_KNEE = 20.0     # occupancy (per cent) above which the loops start to lose vehicles in queued traffic
 LOSS_SLOPE = 0.0100  # share of vehicles lost per point of occupancy above the knee
 B_SD = 0.034         # spread of the stations' sensitivities
+# the older TCX-2 detector cards count a vehicle only when its detection lasts a minimum time; in cold weather the
+# loop's weaker signal shortens detections and small fast vehicles drop below it (presence, and so occupancy, is kept)
+COLD_KNEE = 2.0      # daily mean temperature (degrees C) below which the TCX-2 cards start to miss vehicles
+COLD_SLOPE = 0.0090  # share of vehicles missed per degree below the knee
+COLD_CAP = 0.14

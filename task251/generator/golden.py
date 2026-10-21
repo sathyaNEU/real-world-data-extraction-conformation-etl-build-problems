@@ -4,6 +4,7 @@ station's 2027 count error against the 5 per cent band."""
 import os
 
 import matplotlib
+import pandas as pd
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -64,10 +65,14 @@ def workbook(path, fig):
            "2027 count error beyond 5 per cent either way (TDP-03 section 5), for the annual count report and the "
            "spring round. Traffic Data Program, 1 March 2028.")
     _head(ws, 4, ["Station", "Road", "Location", "District", "Controller", "Validation site"])
+    hist = G["D"]["hist"].set_index("new_station")
     for s in c["listed"]:
-        ws.append([s, reg.loc[s, "road"], reg.loc[s, "location"], reg.loc[s, "district"], reg.loc[s, "controller"],
+        ctl = reg.loc[s, "controller"]
+        if s in hist.index:
+            ctl = "%s since %s" % (ctl, pd.Timestamp(hist.loc[s, "from_date"]).strftime("%-d %B"))
+        ws.append([s, reg.loc[s, "road"], reg.loc[s, "location"], reg.loc[s, "district"], ctl,
                    reg.loc[s, "validation_site"]])
-    _widths(ws, [10, 8, 30, 10, 11, 12])
+    _widths(ws, [10, 8, 30, 10, 18, 12])
     ws.freeze_panes = "A5"
 
     ws2 = wb.create_sheet("Maintenance 2027")
@@ -99,18 +104,22 @@ def workbook(path, fig):
         "lane, divided by the vehicles that passed it in those hours, less one (TDP-03 section 5). Flagged when beyond "
         "5 per cent either way.",
         "Vehicles that passed: each hour's count divided by the station and direction's loops-to-video ratio on its "
-        "summer validation day (Northline, July and August 2027) and by one less the share of vehicles the loops lose "
-        "at the hour's occupancy. The loss is measured on the five Kessel River bridges, where both approaches count "
-        "the same vehicles: in queued hours the upstream approach counts fewer than the approach past the deck. The "
-        "validation days were summer weekdays with no queued hour.",
+        "summer validation day (Northline, July and August 2027), by one less the share of vehicles the loops lose "
+        "at the hour's occupancy and, while the station ran a TCX-2 controller, by one less the share the TCX-2 misses "
+        "at the day's mean temperature at Halbrook airport. Both are measured on the five Kessel River bridges, where "
+        "both approaches count the same vehicles: in queued hours the upstream approach counts fewer than the approach "
+        "past the deck, and on the three bridges with a TCX-2 on one side and a TCX-4 on the other the TCX-2 side "
+        "falls behind as the days get colder. The validation days were summer weekdays with no queued hour and no "
+        "cold.",
         "Maintenance visits: days one of %s's technicians was at a station, from the contractor's work orders; "
         "controller resets done from the contractor's office are not visits. Power failures: losses of mains power at "
         "a station's controller, from the TCX-4 controllers' events and from the breaks in the TCX-2 stations' hourly "
         "record; the two controller replacements are not power failures." % P.CONTRACTOR_MAINT,
         "Stations under their current numbers: R08-01 became R08-05 on 12 May 2027 and R19-01 became R19-03 on "
         "21 September 2027.",
-        "Data as of 7 January 2028: %s, %s, %s, %s, %s." % (B.FILES["hourly"], B.FILES["validation"],
-                                                          B.FILES["network"], B.FILES["events"], B.FILES["orders"]),
+        "Data as of 7 January 2028: %s, %s, %s, %s, %s, %s, %s." % (
+            B.FILES["hourly"], B.FILES["validation"], B.FILES["register"], B.FILES["network"], B.FILES["weather"],
+            B.FILES["events"], B.FILES["orders"]),
     ]
     for k, t in enumerate(notes, 1):
         cell = ws3.cell(row=k, column=1, value=t)
@@ -147,7 +156,7 @@ def chart(path, fig):
         col = FLAG if s in listed else MEET
         ax.plot([0, v], [y, y], color=col, lw=1.4, alpha=0.55, zorder=2, solid_capstyle="round")
         ax.plot([v], [y], "o", ms=6.5, color=col, mec="white", mew=1.0, zorder=3)
-        labels.append("%s  %s" % (s, reg.loc[s, "road"]))
+        labels.append("%s  %s  %s" % (s, reg.loc[s, "road"], reg.loc[s, "controller"]))
     ax.set_yticks(range(n - 1, -1, -1))
     ax.set_yticklabels(labels, fontsize=7.0, color=INK2)
     for lab, s in zip(ax.get_yticklabels(), order):
@@ -172,16 +181,18 @@ def chart(path, fig):
     word = {3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}.get(len(listed), str(len(listed)))
     f.suptitle("%s of the %d count stations undercounted 2027 traffic by more than 5 per cent" % (word, n), x=0.04,
                ha="left", fontsize=11.2, fontweight="bold", color=INK, y=0.985)
-    f.text(0.04, 0.955, "Each station's loops' sensitivity from its summer validation day, and the vehicles the loops "
-           "lose in queued traffic\nas the river bridges' paired approaches measure it, carried through every hour "
-           "the station counted in 2027", fontsize=7.6, color=INK2, ha="left", va="top")
+    f.text(0.04, 0.955, "Each station's sensitivity from its summer validation day, the vehicles the loops lose in queued "
+           "traffic and, on a TCX-2,\nthe vehicles it misses on cold days, as the river bridges' paired approaches "
+           "measure them, carried through every hour it counted", fontsize=7.6, color=INK2, ha="left", va="top")
     leg = [Line2D([0], [0], marker="o", color=FLAG, ls="-", lw=1.4, label="flagged, to the spring round (%d)"
                   % len(listed), markersize=6.5, mec="white"),
            Line2D([0], [0], marker="o", color=MEET, ls="-", lw=1.4, label="meets the standard (%d)" % (n - len(listed)),
                   markersize=6.5, mec="white")]
     ax.legend(handles=leg, loc="upper left", fontsize=7.2, frameon=False, bbox_to_anchor=(-0.02, -0.05), ncol=2)
-    f.text(0.04, 0.008, "Source: TrafficVault hourly counts 2027; Northline validation counts, July and August 2027; "
-           "Traffic Data Program, %s, 1 March 2028." % P.ORG, fontsize=5.9, color=INK2, va="bottom")
+    f.text(0.04, 0.008, "Controllers as in the register: R08-05 and R19-03 ran a TCX-2 until 12 May and 21 September "
+           "2027.\nSource: TrafficVault hourly counts 2027; Northline validation counts, July and August 2027; Halbrook A "
+           "daily data 2027; Traffic Data Program, %s, 1 March 2028." % P.ORG, fontsize=5.9, color=INK2,
+           va="bottom")
     f.subplots_adjust(left=0.17, right=0.97, top=0.915, bottom=0.095)
     f.savefig(path, dpi=150, metadata={"Software": None})
     plt.close(f)

@@ -1,4 +1,4 @@
-"""Cut the pack for task251 architecture 4 from the world."""
+"""Cut the pack for task251 architecture 5 from the world."""
 import datetime as dt
 import os
 from xml.sax.saxutils import escape
@@ -28,9 +28,10 @@ FILES = dict(
     orders="Carrick_work_orders_2027.xlsx",
     weather="weather_daily_2027.csv",
     collisions="collisions_regional_roads_2027.xlsx",
+    pavement="regional_roads_pavement_condition_2026.xlsx",
 )
 PACK = list(FILES)
-DISTRACTORS = ("weather", "collisions")
+DISTRACTORS = ("collisions", "pavement")
 CONTEXT = ("mail",)
 
 
@@ -61,23 +62,74 @@ def _sheet(wb, title, df, widths=None, first=False, fmts=None):
 
 
 def weather(W, rng, O):
-    """Environment Canada style daily summary at the region's airport: the storm days behind the outages"""
-    storm = {o["start"].date(): (o["end"] - o["start"]).total_seconds() / 3600 for o in O["outs"]}
+    """the airport's daily data as the weather service's bulk export gives it: the day's temperatures with their mean,
+    degree days, rain, snow and precipitation, snow on the ground and the strongest gust, each value with its flag; the
+    storm days behind the outages; one day the station's temperature record is missing"""
+    storm = {o["start"].date() for o in O["outs"]}
+    days = W["C"]["days"]
+    lost = days[int(rng.integers(20, len(days) - 20))]
+    snow_ground = 0.0
     rows = []
-    for day in W["C"]["days"]:
-        doy = day.timetuple().tm_yday
-        tmax = 12.5 - 15.5 * np.cos(2 * np.pi * (doy - 20) / 365) + rng.normal(0, 3.2)
-        tmin = tmax - rng.uniform(5, 11)
+    for day in days:
+        tmax, tmin = W["temp"][day]
+        mean = round((tmax + tmin) / 2 + 1e-9, 1)
         wet = rng.random() < 0.34 or day in storm
         precip = float(rng.gamma(1.4, 5.0)) + (rng.uniform(8, 30) if day in storm else 0.0)
         rain = round(precip, 1) if wet and tmax > 1 else 0.0
         snow = round(float(rng.gamma(1.3, 4.0)) + (rng.uniform(5, 15) if day in storm else 0.0), 1) \
             if wet and tmax <= 1 else 0.0
+        trace_r = (not wet) and tmax > 1 and rng.random() < 0.06
+        trace_s = (not wet) and tmax <= 1 and rng.random() < 0.10
+        snow_ground = max(0.0, snow_ground + snow * 0.8 - max(0.0, tmax) * 1.6 - 0.3)
         gust = rng.normal(38, 9) + (rng.uniform(25, 45) if day in storm else 0.0)
-        rows.append({"Station Name": "HALBROOK A", "Climate ID": "6153195", "Date/Time": day.isoformat(),
-                     "Max Temp (\u00b0C)": round(float(tmax), 1), "Min Temp (\u00b0C)": round(float(tmin), 1),
-                     "Total Rain (mm)": rain, "Total Snow (cm)": snow,
-                     "Spd of Max Gust (km/h)": int(gust) if gust >= 31 else "<31"})
+        r = {"Longitude (x)": -80.71, "Latitude (y)": 43.27, "Station Name": "HALBROOK A", "Climate ID": "6152988",
+             "Date/Time": day.isoformat(), "Year": day.year, "Month": day.month, "Day": day.day, "Data Quality": "",
+             "Max Temp (\u00b0C)": tmax, "Max Temp Flag": "", "Min Temp (\u00b0C)": tmin, "Min Temp Flag": "",
+             "Mean Temp (\u00b0C)": mean, "Mean Temp Flag": "",
+             "Heat Deg Days (\u00b0C)": round(max(0.0, 18 - mean), 1), "Heat Deg Days Flag": "",
+             "Cool Deg Days (\u00b0C)": round(max(0.0, mean - 18), 1), "Cool Deg Days Flag": "",
+             "Total Rain (mm)": rain, "Total Rain Flag": "T" if trace_r else "",
+             "Total Snow (cm)": snow, "Total Snow Flag": "T" if trace_s else "",
+             "Total Precip (mm)": round(rain + snow * 0.9, 1), "Total Precip Flag": "T" if (trace_r or trace_s) else "",
+             "Snow on Grnd (cm)": int(round(snow_ground)) if snow_ground >= 0.5 else (0 if day.month in (11, 12, 1, 2, 3) else ""),
+             "Snow on Grnd Flag": "",
+             "Dir of Max Gust (10s deg)": int(rng.integers(1, 37)) if gust >= 31 else "", "Dir of Max Gust Flag": "",
+             "Spd of Max Gust (km/h)": int(gust) if gust >= 31 else "<31", "Spd of Max Gust Flag": ""}
+        if day == lost:
+            for k in ("Max Temp", "Min Temp", "Mean Temp", "Heat Deg Days", "Cool Deg Days"):
+                col = [c for c in r if c.startswith(k + " (")][0]
+                r[col] = ""
+                r[k + " Flag"] = "M"
+        rows.append(r)
+    return pd.DataFrame(rows)
+
+
+def pavement(W, rng):
+    """the Region's pavement management system: each section of the Regional Roads with its surface, last
+    rehabilitation, and the condition measured in the autumn 2026 survey"""
+    rows = []
+    roads = sorted({x["road"] for x in W["st"]})
+    for road in roads:
+        km, n = 0.0, 1
+        end = float(rng.uniform(14.5, 19.5))
+        while km < end - 0.2:
+            length = min(end - km, float(rng.uniform(0.4, 2.6)))
+            built = int(rng.integers(1994, 2025))
+            age = 2026 - built
+            pci = float(np.clip(rng.normal(96 - 2.1 * age, 6.5), 18, 100))
+            iri = round(float(np.clip(0.9 + (100 - pci) * 0.045 + rng.normal(0, 0.18), 0.7, 6.5)), 2)
+            rut = round(float(np.clip((100 - pci) * 0.12 + rng.normal(0, 1.1), 0.5, 18.0)), 1)
+            cond = "Excellent" if pci >= 85 else "Good" if pci >= 70 else "Fair" if pci >= 55 else \
+                "Poor" if pci >= 40 else "Very poor"
+            surf = str(rng.choice(["HMA", "HMA", "HMA", "HMA over concrete", "surface treatment"],
+                                  p=[0.55, 0.15, 0.1, 0.12, 0.08]))
+            survey = dt.date(2026, 9, 14) + dt.timedelta(days=int(rng.integers(0, 45)))
+            rows.append(dict(section="RR%02d-%02d" % (road, n), road="RR %d" % road, from_km=round(km, 2),
+                             to_km=round(km + length, 2), length_km=round(length, 2), surface=surf,
+                             last_rehabilitated=built, pci=int(round(pci)), iri_m_per_km=iri, rut_mm=rut,
+                             condition=cond, surveyed=survey))
+            km += length
+            n += 1
     return pd.DataFrame(rows)
 
 
@@ -128,12 +180,16 @@ def run(target, seed=P.SEED, W=None):
     wb = Workbook()
     _sheet(wb, "Collisions", collisions(W, rng), first=True)
     wb.save(F["collisions"])
+    wb = Workbook()
+    _sheet(wb, "Sections", pavement(W, rng), first=True, fmts=dict(from_km="0.00", to_km="0.00", length_km="0.00"))
+    wb.save(F["pavement"])
     postprocess.scrub(F["standard"], "Microsoft Word 2019", "2026-01-15T10:22:00")
     for k, who, made, saved in (("orders", P.CONTRACTOR_MAINT, "2028-01-06T14:02:00Z", "2028-01-07T09:31:00Z"),
                                 ("validation", P.CONTRACTOR_VAL, "2027-09-13T15:40:00Z", "2027-09-17T11:08:00Z"),
                                 ("register", P.ORG, "2021-03-02T13:15:00Z", "2028-01-05T10:44:00Z"),
                                 ("network", P.ORG, "2024-05-21T09:12:00Z", "2028-01-05T10:52:00Z"),
-                                ("collisions", P.ORG, "2028-01-04T08:20:00Z", "2028-01-04T08:26:00Z")):
+                                ("collisions", P.ORG, "2028-01-04T08:20:00Z", "2028-01-04T08:26:00Z"),
+                                ("pavement", P.ORG, "2026-11-30T15:05:00Z", "2026-12-02T10:18:00Z")):
         who = escape(who)
         postprocess.scrub(F[k], who, saved[:10])
         postprocess.finish_office(F[k], made, saved, who)
