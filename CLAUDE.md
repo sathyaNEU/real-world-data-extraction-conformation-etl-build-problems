@@ -177,6 +177,10 @@ note's `## Tried and rejected`.
 ## Standing rules
 
 - No em dashes anywhere in the repo. Use a comma, or parentheses for an aside.
+- **No dollar sign before a digit in a skill body.** The skill loader reads `$0` to `$9` as its own
+  argument placeholders, so an agent invoking the skill with arguments is served the argument string
+  where the figure belongs: a rule standing on a measured number loses the number silently, and on disk
+  the file still looks right. Write the unit in words (`USD 38M`, `34 cents a day`, `exactly zero`).
 - Every figure in `submission.md` recomputes from `target/`, and a figure shared by two deliverables
   agrees in both to the same rounding.
 - Skills state the current spec only: rules rewritten in place, no changelogs, no dated blocks, no

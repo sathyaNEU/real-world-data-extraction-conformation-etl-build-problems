@@ -75,7 +75,7 @@ answered against the wrong question. "Does a filed rule name the method?" is not
 to decide once every filed rule is read?" is.** Three builds answered the first truthfully and shipped, and all
 three were landed by a blind reader at medium effort:
 - one filed the basis of a conversion and left ten admissible per-reading estimators that agree to **a spread of
-  exactly $0** on the graded figure;
+  exactly zero** on the graded figure;
 - one filed a confidence level over a quantity whose records fix every input, so only the variance was open, and
   **6 of 12 textbook routes file the golden**, two of them needing no insight into the design;
 - one filed a counterfactual's definition, and its whole licensed family (4 of 4 constructions, 20 of 20 redraws)
@@ -89,7 +89,7 @@ measurement costs a minute on the clean truth and would have failed all three at
 *cheapest* licensed member of the decisive family, because that is the one a solver reaches. Measured three ways
 on three unrelated grounds: a blend-unmixing step was **affine** in its forcing column, so one regression on that
 column beat the designed estimator (0.0026 against 0.0028 mean absolute error); a premium was **linear** in the
-day count its step moved, at $0.34 and $0.73 a day, capping every lever at 2 to 3 per cent; and an ordering
+day count its step moved, at 34 and 73 cents a day, capping every lever at 2 to 3 per cent; and an ordering
 expectation equalled `n` times (the window's end less the other side's mean date) over the window's length to
 **8.5e-14**, so the decisive construction was one group-by, one subtraction and one divide. In all three the
 design's own readability screen had scored the decisive rung as not linear, and in all three the screen was

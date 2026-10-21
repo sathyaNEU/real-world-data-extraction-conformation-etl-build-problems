@@ -68,13 +68,13 @@ then one clause per rival: what it leads on and why it loses. No figure blocks 2
 main call, one line each, figure in bold at its rounding everywhere else. Test: if a defensible method
 could skip it and still land the call, cut it.
 
-> 1. Recurring revenue is **$38M**
+> 1. Recurring revenue is **USD 38M**
 > 2. Normalized EBITDA margin is **13%**
 
 **3. Step-by-Step Solution.** At most eight one-sentence steps, the last being the recommendation. Each
 is the method, the shipped file or rule, and the one result it produced.
 
-> 2. Removed one-time and related-party sales per the revenue policy: recurring revenue is $38M.
+> 2. Removed one-time and related-party sales per the revenue policy: recurring revenue is USD 38M.
 > 5. Divided the asking price in the term sheet by normalized EBITDA: 20x, above the mandate's 12x ceiling.
 
 - No sub-bullets; never pad to eight or cram two steps into one line.

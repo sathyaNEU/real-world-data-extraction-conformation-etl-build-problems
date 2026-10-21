@@ -375,6 +375,33 @@ excluded so the exclusion can be argued with. `score_reader.py` now drops a prin
 prefixes and offers `--all-keys` to turn it off. More generally: when a measurement decides work, read one
 case's rows by hand before trusting the fraction.
 
+## H29. A bound rounded to nearest, so the write-up claims a margin the pack does not hold
+
+**The defect.** A figure the write-up states as a bound ("at least N per cent clear", "no more than N days",
+"a margin of at least N") is computed by rounding to nearest. Rounding to nearest moves a bound outward half
+the time, so the sentence asserts a margin no row in the pack meets, and the judge recomputes the worst case
+and finds the claim false.
+
+**The measured instance.** A build claimed every unit sat "at least 12 per cent clear of the standard" under
+all four licensed estimates. The worst case was **11.54 per cent**, and two of thirteen units sat under 12.
+`int(round(11.54))` printed 12, the write-up quoted it, and `figures_check.py` passed because the write-up and
+the figures file carried the same wrong integer. Nothing in the chain compares the printed bound with the
+quantity it bounds.
+
+**What it costs.** A Gate A finding on a graded Critical Components claim, found by whoever recomputes rather
+than by the build. The figure is correct to the rounding its own line states and false as a sentence, which is
+why every gate reads it clean.
+
+**The line.** A quantity reported *as* a level rounds to nearest. A quantity reported as a bound rounds
+**toward the bound**: floor a lower bound, ceiling an upper one. The write-up's own verb decides which it is,
+so read the sentence, not the key name.
+
+**The check.** Two assertions per bound, not one. The usual floor assertion (the bound clears its gate) misses
+this entirely, because 12 passes a `>= 11` test. Add the comparison the sentence makes: the printed bound is
+at or inside the worst case the pack holds, asserted against the recomputed extremum in `checks.py` and again
+in the verifier. Where a write-up sentence states a bound over a family of methods, the extremum runs over
+every member of the family the records license, not over the shortlist the generator happens to assert.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design
