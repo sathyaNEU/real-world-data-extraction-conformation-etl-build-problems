@@ -1,7 +1,6 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the quality board's 2027 re-validation
-workbook (each region's register error rate estimated from the summer audit, each audited record weighted by the
-register records of its stratum, the regions chosen, and the third-quarter registrations and dissolutions), and
-generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: the management board's third-quarter 2026
+timeliness workbook (each office's median working days for its July to September applications, the open ones censored
+at their age, the offices placed on a plan, and the quarter's card payments), and generator/figures.json."""
 import json
 import os
 import sys
@@ -11,51 +10,42 @@ sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "sar_register_revalidation_2027_regions.xlsx"
+FILE = "cro_timeliness_plans_q3_2026.xlsx"
 INK = "1B2430"
 GREEN = "2C5A3F"
 PALE = "E7EFE9"
 MUTED = "A3ACB8"
 ACCENT = "B4452F"
-NAMES = "sar_region_code_crosswalk_2025.csv"
+NAMES = {"CRO-AD": "Ardmuir", "CRO-BN": "Bannock", "CRO-CV": "Carrick", "CRO-DL": "Dunlay", "CRO-ES": "Eskmoor",
+         "CRO-FM": "Fallowmere", "CRO-GQ": "Glenquhar", "CRO-HL": "Harlaw", "CRO-IB": "Inverbeck",
+         "CRO-KM": "Kelso Moss", "CRO-LW": "Lenwick", "CRO-MG": "Mossgiel", "CRO-NM": "Northmuir",
+         "CRO-SL": "Strathlorn"}
 
 
 def compute(target):
     b = B.load(target)
-    r = B.rates(b, "golden")
-    return {"b": b, "r": r, "naive": B.rates(b, "audited_share"), "ch": B.chosen(b, r), "a": B.ask_a(b),
-            "bb": B.ask_b(b)}
+    m = B.medians(b, "golden")
+    return {"b": b, "m": m, "reg": B.medians(b, "registered_only"), "pl": B.planned(b, m), "a": B.ask(b)}
 
 
-def strata(b):
-    import datetime as dt
-    cut = dt.datetime(2026, 5, 1)
-    N = {}
-    for k, t in b["created"].items():
-        if t < cut:
-            key = (b["region"][k], k in b["flagged"])
-            N[key] = N.get(key, 0) + 1
-    n = {}
-    for k, u, e in b["audit"]:
-        key = (u, k in b["flagged"])
-        a = n.setdefault(key, [0, 0])
-        a[0] += 1
-        a[1] += e
-    return N, n
+def counts(b):
+    out = {}
+    for u in b["ids"]:
+        r = sum(1 for o, rec, c, g in b["reg"] if o == u and B.Q3[0] <= rec <= B.Q3[1])
+        o_ = sum(k for o, rec, c, k in b["open"] if o == u and B.Q3[0] <= rec <= B.Q3[1])
+        out[u] = (r, o_)
+    return out
 
 
-def write_xlsx(path, G, target):
-    import csv
+def write_xlsx(path, G):
     import openpyxl
     from openpyxl.chart import BarChart, Reference
     from openpyxl.chart.series import DataPoint
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
-    b, r = G["b"], G["r"]
-    names = {row["region"]: row["region_name"] for row in csv.DictReader(open(os.path.join(target, NAMES),
-                                                                             encoding="utf-8"))}
-    N, n = strata(b)
+    b, m = G["b"], G["m"]
+    cnt = counts(b)
     wb = openpyxl.Workbook()
     hdr = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
     hfill = PatternFill("solid", fgColor=GREEN)
@@ -79,63 +69,63 @@ def write_xlsx(path, G, target):
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
     ws = wb.active
-    ws.title = "Regions"
-    ch = G["ch"]
-    title(ws, "%d of 14 regional registers go to the 2027 re-validation: %s" % (len(ch), ", ".join(
-        "%s (%s)" % (names[u], u) for u in ch)),
-          "Share of each region's 30 April 2026 records in error, estimated from the summer audit with each audited "
-          "record standing for the register records of its stratum (referred by the May risk screen or not).")
-    cols = ["Region", "Region name", "Records 30 April", "Referred by the screen", "Audited, referred",
-            "In error, referred", "Audited, not referred", "In error, not referred", "Audited share in error (%)",
-            "Register error rate (%)", "Re-validation"]
-    head(ws, 4, cols, [8, 16, 11, 11, 10, 10, 10, 10, 11, 11, 11])
+    ws.title = "Offices"
+    pl = G["pl"]
+    title(ws, "%d of 14 offices go on a timeliness improvement plan: %s" % (len(pl), ", ".join(
+        "%s (%s)" % (NAMES[u], u) for u in pl)),
+          "Median working days from a complete application to registration for applications received 1 July to 30 "
+          "September 2026; applications still open on 9 October counted as lasting at least their age "
+          "(product-limit estimate).")
+    cols = ["Office", "Office name", "Received in the quarter", "Registered by 9 October", "Open on 9 October",
+            "Median of the registered (working days)", "Median, open applications at risk (working days)",
+            "Improvement plan"]
+    head(ws, 4, cols, [9, 14, 12, 12, 11, 14, 15, 12])
     for i, u in enumerate(b["ids"]):
-        vals = [u, names[u], N[(u, True)] + N[(u, False)], N[(u, True)], n[(u, True)][0], n[(u, True)][1],
-                n[(u, False)][0], n[(u, False)][1], round(100 * G["naive"][u], 1), round(100 * r[u], 1),
-                "yes" if u in ch else "no"]
+        r, o = cnt[u]
+        vals = [u, NAMES[u], r + o, r, o, G["reg"][u], m[u], "yes" if u in pl else "no"]
         for j, v in enumerate(vals, 1):
             c = ws.cell(row=5 + i, column=j, value=v)
-            c.font = bold if (u in ch and j in (1, 2, 11)) else body
+            c.font = bold if (u in pl and j in (1, 2, 8)) else body
             c.border = thin
-            if u in ch:
+            if u in pl:
                 c.fill = nfill
-            if 3 <= j <= 8:
+            if 3 <= j <= 5:
                 c.number_format = "#,##0"
-            elif j in (9, 10):
-                c.number_format = "0.0"
+            elif j in (6, 7):
+                c.number_format = "0"
             if j >= 3:
                 c.alignment = Alignment(horizontal="right")
     ws.freeze_panes = "C5"
     r0 = 5 + len(b["ids"]) + 1
     for k, t in enumerate([
-        "The audit drew close to a quarter of the records the May screen referred and one in twenty-five of the rest, "
-        "and referred records are in error far more often, so the audited share overstates each register's rate. "
-        "Each stratum's audited error rate is carried to that stratum's records on the 30 April register.",
-        "Records registered after 30 April are outside the audit's frame (board paper, section 2). Outcomes FAIL "
-        "(to 30 June) and 1 to 4 (from 1 July) are errors.",
+        "An application still open on 9 October has lasted at least its working days since its clock started, and the "
+        "open ones are the slow ones: the offices with a backlog have their slowest applications among them. Each open "
+        "application stays at risk until its age and the median is read where the product-limit survival estimate "
+        "first falls to one half.",
+        "Working days exclude weekends and the bank holidays of 1 June, 3 August and 26 October. The clock starts on "
+        "the complete day (board paper, section 2). Registrations of June and October receipts are outside the quarter.",
     ]):
         c = ws.cell(row=r0 + k, column=1, value=t)
         c.font = Font(name="Calibri", size=9, color="5B6470")
         c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=11)
+        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=8)
         ws.row_dimensions[r0 + k].height = 40
 
     cs = wb.create_sheet("Chart data")
-    cs.append(["Region", "Register error rate (%)"])
+    cs.append(["Office", "Median working days"])
     for u in b["ids"]:
-        cs.append([u, round(100 * r[u], 2)])
+        cs.append([u, m[u]])
     bc = BarChart()
     bc.type = "col"
-    bc.title = "Register error rate by region against the 4 per cent line"
-    bc.y_axis.title = "Records in error, per cent"
-    bc.y_axis.numFmt = "0.0"
+    bc.title = "Median working days to registration, third-quarter applications, against the 20-day line"
+    bc.y_axis.title = "Working days"
     bc.y_axis.delete = False
     bc.x_axis.delete = False
     bc.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(b["ids"]) + 1), titles_from_data=True)
     bc.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["ids"]) + 1))
     bc.series[0].graphicalProperties = GraphicalProperties(solidFill=MUTED)
     for i, u in enumerate(b["ids"]):
-        if u in ch:
+        if u in pl:
             pt = DataPoint(idx=i)
             pt.graphicalProperties = GraphicalProperties(solidFill=ACCENT)
             bc.series[0].dPt.append(pt)
@@ -143,13 +133,13 @@ def write_xlsx(path, G, target):
     bc.height, bc.width = 10, 22
     ws.add_chart(bc, "A%d" % (r0 + 3))
 
-    q = wb.create_sheet("Q3 2026")
-    title(q, "The third quarter of 2026 by region", "New registrations in the register's quarter (Ardmuir local time); "
-                                                    "companies struck off and dissolved in the quarter and still "
-                                                    "dissolved at its end.")
-    head(q, 4, ["Region", "Region name", "New registrations", "Struck off and still dissolved"], [8, 16, 14, 16])
+    q = wb.create_sheet("Q3 2026 card payments")
+    title(q, "Card payments made in the third quarter of 2026", "By the day the payment was taken (the settlement "
+                                                                  "batch's terminal day), not the day it settled.")
+    head(q, 4, ["Office", "Office name", "Payments", "Amount (EUR)"], [9, 14, 12, 14])
     for i, u in enumerate(b["ids"]):
-        for j, (v, fm) in enumerate(((u, None), (names[u], None), (G["a"][u], "#,##0"), (G["bb"][u], "#,##0")), 1):
+        for j, (v, fm) in enumerate(((u, None), (NAMES[u], None), (G["a"][u][0], "#,##0"),
+                                     (G["a"][u][1], "#,##0")), 1):
             c = q.cell(row=5 + i, column=j, value=v)
             c.font, c.border = body, thin
             if fm:
@@ -166,21 +156,20 @@ def write_xlsx(path, G, target):
 def figures(G):
     b = G["b"]
     return {
-        "call": {"chosen": G["ch"]},
-        "ask_a": {u: G["a"][u] for u in b["ids"]},
-        "ask_b": {u: G["bb"][u] for u in b["ids"]},
-        "default_path": {"chosen": B.chosen(b, G["naive"])},
-        "conventions": {"line_pct": 4, "years": [2025, 2026, 2027], "counts": [14], "dates": [30, 18, 1]},
+        "call": {"planned": G["pl"]},
+        "ask": {u: {"payments": G["a"][u][0], "amount": int(round(G["a"][u][1]))} for u in b["ids"]},
+        "default_path": {"planned": B.planned(b, G["reg"])},
+        "conventions": {"line": 20, "years": [2026, 2027], "counts": [14], "dates": [1, 9, 30, 31]},
     }
 
 
 def main(target, gdir, fig_path):
     os.makedirs(gdir, exist_ok=True)
     G = compute(target)
-    write_xlsx(os.path.join(gdir, FILE), G, target)
+    write_xlsx(os.path.join(gdir, FILE), G)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Sophie Williams", "Sophie Williams", "2026-10-09T09:10:00Z",
-                       "2026-10-12T15:35:00Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Jennifer Dyer", "Jennifer Dyer", "2026-10-12T09:10:00Z",
+                       "2026-10-14T15:35:00Z", excel=True, company=PP.COMPANY)
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

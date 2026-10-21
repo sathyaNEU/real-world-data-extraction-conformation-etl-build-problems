@@ -1,26 +1,26 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "The default path takes each office's median working days over its registered third-quarter applications and misses the offices whose medians run over 20, because it never asks how long the applications still open at the extract will take: they are the slow ones, so only the product-limit median over registered and open applications, the open ones censored at their age, gives the quarter's median.",
+ "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW",
   "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
-  "nearest": "task471 0.10"
+  "nearest": "see guard heart"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design architecture 3 (third-quarter registration times with open applications censored): generator, ladder, asks, prompt, precut",
+ "resume": "stage 4: two Sonnet leak readers on fresh unzips and the judge thread on a hand-built brief, each reader scored with score_reader.py",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -1,43 +1,70 @@
 {
- "ask_a": {
-  "AR01": 241,
-  "AR02": 108,
-  "AR03": 77,
-  "AR04": 118,
-  "AR05": 64,
-  "AR06": 85,
-  "AR07": 55,
-  "AR08": 152,
-  "AR09": 51,
-  "AR10": 104,
-  "AR11": 67,
-  "AR12": 88,
-  "AR13": 121,
-  "AR14": 76
- },
- "ask_b": {
-  "AR01": 195,
-  "AR02": 90,
-  "AR03": 69,
-  "AR04": 93,
-  "AR05": 42,
-  "AR06": 74,
-  "AR07": 49,
-  "AR08": 107,
-  "AR09": 36,
-  "AR10": 70,
-  "AR11": 68,
-  "AR12": 100,
-  "AR13": 66,
-  "AR14": 36
+ "ask": {
+  "CRO-AD": {
+   "amount": 426480,
+   "payments": 10113
+  },
+  "CRO-BN": {
+   "amount": 187185,
+   "payments": 4497
+  },
+  "CRO-CV": {
+   "amount": 142795,
+   "payments": 3420
+  },
+  "CRO-DL": {
+   "amount": 226105,
+   "payments": 5398
+  },
+  "CRO-ES": {
+   "amount": 99735,
+   "payments": 2389
+  },
+  "CRO-FM": {
+   "amount": 174420,
+   "payments": 4167
+  },
+  "CRO-GQ": {
+   "amount": 118900,
+   "payments": 2842
+  },
+  "CRO-HL": {
+   "amount": 283990,
+   "payments": 6798
+  },
+  "CRO-IB": {
+   "amount": 87305,
+   "payments": 2111
+  },
+  "CRO-KM": {
+   "amount": 203815,
+   "payments": 4920
+  },
+  "CRO-LW": {
+   "amount": 129470,
+   "payments": 3112
+  },
+  "CRO-MG": {
+   "amount": 159580,
+   "payments": 3826
+  },
+  "CRO-NM": {
+   "amount": 251435,
+   "payments": 5965
+  },
+  "CRO-SL": {
+   "amount": 105525,
+   "payments": 2494
+  }
  },
  "call": {
-  "chosen": [
-   "AR01",
-   "AR05",
-   "AR08",
-   "AR11",
-   "AR12"
+  "planned": [
+   "CRO-AD",
+   "CRO-CV",
+   "CRO-FM",
+   "CRO-GQ",
+   "CRO-LW",
+   "CRO-MG"
   ]
  },
  "conventions": {
@@ -45,30 +72,21 @@
    14
   ],
   "dates": [
+   1,
+   9,
    30,
-   18,
-   1
+   31
   ],
-  "line_pct": 4,
+  "line": 20,
   "years": [
-   2025,
    2026,
    2027
   ]
  },
  "default_path": {
-  "chosen": [
-   "AR01",
-   "AR02",
-   "AR04",
-   "AR05",
-   "AR06",
-   "AR07",
-   "AR08",
-   "AR10",
-   "AR11",
-   "AR12",
-   "AR13"
+  "planned": [
+   "CRO-FM",
+   "CRO-MG"
   ]
  }
 }

@@ -1,5 +1,5 @@
-"""The pack's documents: the quality board paper on the 2027 register re-validation, the re-validation cost estimates
-workbook, the data dictionary and the extract manifest."""
+"""The pack's documents: the management board paper on third-quarter 2026 timeliness, the office staffing workbook,
+the data dictionary and the extract manifest."""
 import datetime as dt
 
 from reportlab import rl_config
@@ -37,24 +37,24 @@ H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading
 
 MEMO = [
     ("1. Purpose", [
-        "At its meeting on 18 November 2026 the quality board decides which regional business registers go to the 2027 "
-        "re-validation exercise, in which every record of a region is checked against its source documents and "
-        "corrected. The exercise is costed region by region in the estimates workbook; this paper fixes the basis on "
-        "which regions are chosen."]),
+        "At its meeting on 4 November 2026 the management board decides which regional offices go on a timeliness "
+        "improvement plan for 2027, with a staffing review and monthly reporting to the board. This paper fixes the "
+        "basis of the choice."]),
     ("2. The test", [
-        "A regional register goes to re-validation when the share of its records in error exceeds 4 per cent.",
-        "A record is in error when one of the fields the register certifies (legal name, legal form, registered "
-        "address, status and activity code) is wrong against the business's source documents. The share is over the "
-        "region's records on the register on 30 April 2026, when the summer audit was drawn, active and since "
-        "dissolved alike; records registered after 30 April are not part of it."]),
+        "An office goes on a plan when the median number of working days from a complete application to registration, "
+        "for the applications it received from 1 July to 30 September 2026, exceeds 20.",
+        "The clock starts on the day the application is complete, its day of receipt or, where the office raised a "
+        "query, the day the last reply arrived, and stops on the day of registration; the start day is not counted. "
+        "Working days exclude Saturdays, Sundays and the public holidays in the office's calendar. Every application "
+        "the office received in the quarter counts, those registered by the 9 October extract and those still open "
+        "on it."]),
     ("3. The evidence", [
-        "The summer 2026 quality audit checked a sample of the 30 April register against source documents between "
-        "May and August, and each audited record's outcome is in the audit file. The audit's outcome codes changed on "
-        "1 July with the new audit form. No other check of the register's accuracy is used."]),
+        "The registrations made in July are in the legacy system, which the offices used until 31 July, and every "
+        "later registration is in the case system, to which the applications still in hand were moved on 1 August; "
+        "the applications still open on 9 October are in the case system's open caseload snapshot."]),
     ("4. Alongside the decision", [
-        "For each region the board will also see its new registrations in the third quarter of 2026, by the register's "
-        "own quarter, which keeps Ardmuir local time, and the companies struck off and dissolved in the quarter that "
-        "were still dissolved at its end, from the gazette's company notices."]),
+        "The board will also see each office's card payments made in the quarter, their number and amount, as the "
+        "fee income the plans will be costed against."]),
 ]
 
 
@@ -78,47 +78,42 @@ def _masthead(title):
 
 def write_memo(path):
     d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title="Register re-validation 2027: basis of the choice",
-                          author="Sally Phillips", subject="", creator="", producer="")
-    head = [["To", "Quality board"], ["From", "Sally Phillips, Head of Register Quality"],
-            ["Date", "7 October 2026"], ["Subject", "Business register re-validation 2027: which regions"]]
+                          bottomMargin=0.9 * inch, title="Registration timeliness, third quarter 2026",
+                          author="Eunan Reid", subject="", creator="", producer="")
+    head = [["To", "Management board"], ["From", "Eunan Reid, Head of Registration Services"],
+            ["Date", "9 October 2026"], ["Subject", "Registration timeliness, third quarter 2026: improvement plans"]]
     t = Table([[Paragraph(a, CELLB), Paragraph(b, CELL)] for a, b in head], colWidths=[0.9 * inch, 5.6 * inch],
               hAlign="LEFT")
     t.setStyle(TableStyle([("LINEBELOW", (0, -1), (-1, -1), 0.6, INK), ("LEFTPADDING", (0, 0), (-1, -1), 0),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
-    story = _masthead("Quality board paper") + [t, Spacer(1, 8)]
+    story = _masthead("Board paper") + [t, Spacer(1, 8)]
     for h, paras in MEMO:
         story.append(Paragraph(h, H2))
         for p in paras:
             story.append(Paragraph(p, BODY))
-    foot = "%s. Quality board paper QB/26/41, 7 October 2026." % P.COMPANY
+    foot = "%s. Board paper MB/26/58, 9 October 2026." % P.COMPANY
     d.build(story, onFirstPage=_frame(foot), onLaterPages=_frame(foot))
 
 
-def write_costs(path, x):
+def write_staff(path, x):
     import openpyxl
     from openpyxl.styles import Font, PatternFill
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Re-validation costs"
-    ws["A1"] = "%s: 2027 register re-validation, cost estimates by region" % P.COMPANY
+    ws.title = "Staffing September 2026"
+    ws["A1"] = "%s: registration staff by office, September 2026" % P.COMPANY
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Prepared for the quality board, September 2026. Unit costs from the 2023 Northmuir pilot."
+    ws["A2"] = "Full-time equivalents in post on 30 September 2026."
     ws.append([])
-    ws.append(["Region", "Region name", "Records to check", "Cost per record (GBP)", "Estimated cost (GBP)",
-               "Weeks of fieldwork"])
+    ws.append(["Office", "Office name", "Registration officers (FTE)", "Vacancies (FTE)", "Agency staff (FTE)"])
     for c in ws[4]:
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = PatternFill("solid", fgColor="2C5A3F")
     rng = np.random.default_rng(W.SEED + 9)
-    for code, name, *_ in W.REGIONS:
-        n = sum(1 for r in x["recs"] if r["region"] == code and r["frame"])
-        unit = round(float(rng.uniform(3.1, 4.4)), 2)
-        ws.append([code, name, n, unit, round(n * unit, -2), int(n / 900) + 2])
-    for row in ws.iter_rows(min_row=5):
-        row[2].number_format = "#,##0"
-        row[4].number_format = "#,##0"
-    for col, w in zip("ABCDEF", (8, 18, 15, 18, 18, 16)):
+    for code, name, n, *_ in W.OFFICES:
+        ws.append([code, name, round(n / 160 * float(rng.uniform(0.8, 1.2)), 1), round(float(rng.uniform(0, 3)), 1),
+                   round(float(rng.uniform(0, 2)), 1)])
+    for col, w in zip("ABCDE", (10, 16, 24, 16, 18)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A5"
     wb.save(path)
@@ -130,22 +125,20 @@ DICT_COLS = ["file_name", "field", "description"]
 def dictionary_rows():
     f = P.FILES
     return [
-        (f["register"], "record_id", "the register's record number"),
-        (f["register"], "region", "the regional register holding the record (codes from April 2025)"),
-        (f["register"], "status", "active or dissolved at the extract"),
-        (f["register"], "created_at_utc", "when the record was created, UTC"),
-        (f["register"], "last_updated", "the date of the record's last change"),
-        (f["screen"], "risk_score", "the screen's score, 0 to 1"),
-        (f["screen"], "referred", "Y: referred to the regional team (score 0.70 or more)"),
-        (f["audit"], "region_old", "the region under the codes before April 2025, which the audit system still uses"),
-        (f["audit"], "outcome", "PASS or FAIL until 30 June 2026; from 1 July 0 no error, 1 legal name, 2 legal form, "
-                                "3 registered address, 4 status or activity code"),
-        (f["codes"], "region_old", "the code before 1 April 2025"),
-        (f["gazette"], "notice_type", "first notice (proposal to strike off), struck off and dissolved, or restored to "
-                                      "the register"),
-        (f["gazette"], "gazette_date", "the date of publication, which is the date the notice takes effect"),
-        (f["survey"], "mean_satisfaction", "mean rating, 1 to 5"),
-        (f["returns"], "late_pct", "share of annual returns filed late, per cent"),
+        (f["log_old"], "Office", "the office's two-letter code"),
+        (f["log_old"], "Received", "the day the application was received, DD/MM/YYYY"),
+        (f["log_old"], "QueryRaised", "Y if the office raised a query on the application"),
+        (f["log_old"], "Complete", "the day the application was complete (receipt, or the last reply to a query)"),
+        (f["log_old"], "Registered", "the day the company was registered"),
+        (f["log_new"], "clock_start", "the day the application was complete"),
+        (f["log_new"], "service", "standard or two-day (the higher fee)"),
+        (f["open"], "open_applications", "applications received on the day, complete on clock_start and not "
+                                         "registered at the snapshot"),
+        (f["pays"], "settled_on", "the day the acquirer settled the payment to the office's account"),
+        (f["pays"], "batch_id", "the acquirer's settlement batch"),
+        (f["batches"], "terminal_date", "the day the batch's payments were taken at the office's terminals and website"),
+        (f["batches"], "settled_on", "the day the batch was settled"),
+        (f["survey"], "satisfied_pct", "share of respondents satisfied or very satisfied, per cent"),
     ]
 
 
@@ -155,16 +148,17 @@ MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage
 def manifest_rows(n):
     f = P.FILES
     return [
-        (f["register"], "business register extract", "register operations", "2026-09-30", "all records", n["register"]),
-        (f["screen"], "risk screen referral list", "register operations", "2026-05-04", "screen run of 4 May 2026",
-         n["screen"]),
-        (f["audit"], "summer quality audit outcomes", "register quality", "2026-09-05", "May to August 2026",
-         n["audit"]),
-        (f["codes"], "regional code crosswalk", "register operations", "2025-04-01", "", n["codes"]),
-        (f["gazette"], "company notices", "Ardmuir Gazette", "2026-10-02", "July to September 2026", n["gazette"]),
-        (f["paper"], "quality board paper", P.COMPANY, "2026-10-07", "", ""),
-        (f["costs"], "re-validation cost estimates", "register quality", "2026-09-22", "2027", 14),
-        (f["survey"], "register user survey", P.COMPANY, "2025-12-12", "2025", n["survey"]),
-        (f["returns"], "annual return compliance", "register operations", "2026-03-31", "2025", n["returns"]),
-        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-08", "", n["dictionary"]),
+        (f["log_old"], "registrations, legacy system", "registration services", "2026-08-03",
+         "registrations made in July 2026", n["log_old"]),
+        (f["log_new"], "registrations, case system", "registration services", "2026-10-09",
+         "registrations made from 1 August 2026", n["log_new"]),
+        (f["open"], "open caseload snapshot", "registration services", "2026-10-09", "third-quarter receipts", n["open"]),
+        (f["holidays"], "public holidays", P.COMPANY, "2025-12-01", "2026", n["holidays"]),
+        (f["pays"], "card payments as settled", "finance", "2026-10-09", "settled 1 July to 9 October 2026", n["pays"]),
+        (f["batches"], "card settlement batches", "finance", "2026-10-09", "settled 1 July to 9 October 2026",
+         n["batches"]),
+        (f["paper"], "board paper", P.COMPANY, "2026-10-09", "", ""),
+        (f["staff"], "office staffing", "human resources", "2026-09-30", "", 14),
+        (f["survey"], "customer survey", P.COMPANY, "2026-07-20", "January to June 2026", n["survey"]),
+        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-09", "", n["dictionary"]),
     ]

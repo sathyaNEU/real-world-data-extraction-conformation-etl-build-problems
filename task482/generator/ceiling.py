@@ -1,11 +1,11 @@
-"""The ask layer measured on the cut pack: the cracker (lands the call, runs the hygiene battery, reads the creation
-time as written and counts every struck-off notice once per company) and the mirror (the default path on the call, the
-asks handled the cracker's way), priced against generator/figures.json on the weights 38 / 7 / 55.
+"""The ask layer measured on the cut pack: the cracker (lands the call, runs the hygiene battery, dates each payment by
+the file's settlement date) and the mirror (the default path on the call, the ask handled the cracker's way), priced
+against generator/figures.json on the weights 38 / 7 / 55.
 
     python3 task482/generator/ceiling.py [target]
 
-The call is 38: the chosen set 10 and the fourteen regions' decisions 28 / 14 each. Instructions 7. The 28 ask figures
-(each region's third-quarter registrations and dissolutions) are 55 / 28 each."""
+The call is 38: the planned set 10 and the fourteen offices' decisions 28 / 14 each. Instructions 7. The 28 ask
+figures (each office's payments and amount) are 55 / 28 each."""
 import json
 import os
 import sys
@@ -23,15 +23,14 @@ def main(target=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     b = B.load(target)
-    A = B.ask_a(b, as_local=False)
-    Bx = B.ask_b(b, restored=False)
-    k1 = sum(A[u] == fig["ask_a"][u] for u in A)
-    k2 = sum(Bx[u] == fig["ask_b"][u] for u in Bx)
+    A = B.ask(b, by_terminal=False)
+    k1 = sum(A[u][0] == fig["ask"][u]["payments"] for u in A)
+    k2 = sum(int(round(A[u][1])) == fig["ask"][u]["amount"] for u in A)
     kept = k1 + k2
-    print("Ask A kept %d of 14 (UTC read as the quarter); Ask B kept %d of 14 (every struck-off company)" % (k1, k2))
+    print("Ask kept %d of 14 payment counts and %d of 14 amounts (settlement date read as the payment day)" % (k1, k2))
     C = 38 + 7 + ASK_W * kept
-    d = B.chosen(b, B.rates(b, "audited_share"))
-    g = fig["call"]["chosen"]
+    d = B.planned(b, B.medians(b, "registered_only"))
+    g = fig["call"]["planned"]
     same = sum((u in d) == (u in g) for u in b["ids"])
     m = 10 * (d == g) + 28.0 / 14 * same
     S = m + 7 + ASK_W * kept

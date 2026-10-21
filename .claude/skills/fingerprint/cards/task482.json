@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "AR01, AR05, AR08, AR11 and AR12 chosen",
+  "answer": "CRO-AD, CRO-CV, CRO-FM, CRO-GQ, CRO-LW and CRO-MG planned",
   "answer_source": "generator/figures.json",
   "gap": [
     "time"
@@ -20,16 +20,16 @@
     "none"
   ],
   "generators": [
-    "G12",
-    "G9"
+    "G9",
+    "G12"
   ],
   "gate_g": "etl_conformance",
   "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "maturity_censoring",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
   "analyst_test": "With every file conformed and every rule read, the easy route takes each office's median over its registered applications, or counts the open ones at their age at the extract; but an application still open has only lasted at least its age, and the open ones are the slow ones, so the median of the registered understates it and an open application counted at its age understates it too, while only the product-limit estimate over registered and open applications, each open one censored at its age, recovers the median of the quarter's applications.",
   "domain_test": "The timeliness of a register's intake measured from a cohort still being processed, worked the way official statistics measures a duration from records some of which have not ended: the open applications are right-censored at their age, and the median comes from the product-limit (Kaplan-Meier) estimate over the whole cohort; with another field's nouns the step survives only where durations are still running at the cut.",
@@ -45,10 +45,10 @@
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one registration application",
-    "grain": "application",
+    "file": "cro_card_payments_settled_2026-07_to_2026-10.csv",
+    "rows": 66132,
+    "entity": "one card payment",
+    "grain": "payment",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -58,28 +58,33 @@
     "geography": "Ireland (a fictional nation)",
     "currency": "EUR",
     "org_type": "national business registry",
-    "invented_names": [],
+    "invented_names": [
+      "Companies Registration Office of Ardmuir"
+    ],
     "people": [
       "Eunan Reid",
       "Jennifer Dyer"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "cro_timeliness_plans_q3_2026.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
   "driver_concrete": "Each office's July to September applications are partly still open on 9 October, the open ones listed only as counts by receipt day in the caseload snapshot; an office with a backlog has its slow applications among them, so its median over registered applications looks under 20 working days while the quarter's median is over.",
-  "stump": "The default path takes each office's median working days over its registered third-quarter applications and misses the offices whose medians run over 20, because it never asks how long the applications still open at the extract will take: they are the slow ones, so only the product-limit median over registered and open applications, the open ones censored at their age, gives the quarter's median.",
+  "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task479": "task479 weighs noisy unit levels against the pool; here durations still running at the cut are censored.",
     "task469": "task469 reads a share of future tasks needing longer than a new allowance from tasks seen only when they overran their own; here every application's clock runs from receipt, the registered ones observed in full and the open ones right-censored at their age on one extract date, and the quantity is a cohort's median.",
     "task231": "task231 reads a rate over active units when exits are recorded a year late; here nothing is recorded late: open applications are known to be open, and their durations are censored.",
     "task234": "task234 reads each source's current output from a share a transit loss cannot move; no output and no transit loss here.",
-    "task445": "task445 completes holders who keep fixed fractions of units; no holding here."
+    "task445": "task445 completes holders who keep fixed fractions of units; no holding here.",
+    "task100": "task100 scores each unit on the members it will hold forward when members exit on completing a two-stage course and the snapshot records only periods enrolled; here no member is held forward: a closed cohort's median duration is read with its open members censored at their age."
   },
   "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T03:10:51Z",
+  "registered": "2026-10-21T03:22:00Z",
   "lineage": [
     {
       "architecture": "v1",

@@ -5,50 +5,48 @@
  "task_type": "census-register-administrative-data-quality",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "sar_revalidation_cost_estimates_2027.xlsx",
-  "sar_register_user_survey_2025.csv",
-  "sar_annual_return_compliance_2025.csv"
+  "cro_office_staffing_2026-09.xlsx",
+  "cro_customer_survey_2026h1.csv"
  ],
  "distractor_reasons": {
-  "sar_revalidation_cost_estimates_2027.xlsx": "the re-validation's cost by region; the board chooses on the error rate alone",
-  "sar_register_user_survey_2025.csv": "users' satisfaction with the register by user group; no region and no error rate",
-  "sar_annual_return_compliance_2025.csv": "late annual returns by region in 2025; timeliness of filing, not accuracy of records"
+  "cro_office_staffing_2026-09.xlsx": "registration staff by office in September; the plans are chosen on timeliness, and staffing is what a plan reviews afterwards",
+  "cro_customer_survey_2026h1.csv": "customer satisfaction in the first half of 2026; perceptions of an earlier period, not the third quarter's working days"
  },
  "stated_inputs": [
-  "4"
+  "20"
  ],
  "deliverables": [
-  "sar_register_revalidation_2027_regions.xlsx"
+  "cro_timeliness_plans_q3_2026.xlsx"
  ],
- "as_of": "2026-10-08",
+ "as_of": "2026-10-09",
  "files": [
-  "ardmuir_gazette_company_notices_2026q3.csv",
-  "sar_annual_return_compliance_2025.csv",
-  "sar_business_register_extract_2026-09-30.csv",
-  "sar_data_dictionary.csv",
-  "sar_extract_manifest_2026-10-08.csv",
-  "sar_quality_board_paper_register_revalidation_2027.pdf",
-  "sar_region_code_crosswalk_2025.csv",
-  "sar_register_quality_audit_summer_2026.csv",
-  "sar_register_risk_screen_referrals_2026-05.csv",
-  "sar_register_user_survey_2025.csv",
-  "sar_revalidation_cost_estimates_2027.xlsx"
+  "cro_board_paper_timeliness_q3_2026.pdf",
+  "cro_card_payments_settled_2026-07_to_2026-10.csv",
+  "cro_card_settlement_batches_2026q3.csv",
+  "cro_customer_survey_2026h1.csv",
+  "cro_data_dictionary.csv",
+  "cro_extract_manifest_2026-10-09.csv",
+  "cro_office_staffing_2026-09.xlsx",
+  "cro_open_caseload_snapshot_2026-10-09.csv",
+  "cro_public_holidays_2026.csv",
+  "cro_registrations_case_system_2026-08_to_2026-10.csv",
+  "cro_registrations_legacy_system_2026-07.csv"
  ],
  "rows": {
-  "sar_register_quality_audit_summer_2026.csv": 7465,
-  "sar_region_code_crosswalk_2025.csv": 14,
-  "sar_data_dictionary.csv": 14,
-  "ardmuir_gazette_company_notices_2026q3.csv": 2514,
-  "sar_extract_manifest_2026-10-08.csv": 10,
-  "sar_business_register_extract_2026-09-30.csv": 135900,
-  "sar_annual_return_compliance_2025.csv": 14,
-  "sar_register_risk_screen_referrals_2026-05.csv": 10879,
-  "sar_register_user_survey_2025.csv": 4
+  "cro_card_settlement_batches_2026q3.csv": 1008,
+  "cro_data_dictionary.csv": 13,
+  "cro_public_holidays_2026.csv": 6,
+  "cro_registrations_case_system_2026-08_to_2026-10.csv": 15355,
+  "cro_registrations_legacy_system_2026-07.csv": 2941,
+  "cro_extract_manifest_2026-10-09.csv": 10,
+  "cro_open_caseload_snapshot_2026-10-09.csv": 1905,
+  "cro_card_payments_settled_2026-07_to_2026-10.csv": 66132,
+  "cro_customer_survey_2026h1.csv": 14
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, the office, the registers, the businesses and the people are fictional",
-  "public_specifications": "the layouts follow common business register extracts, register quality audit records and company notices, described in no shipped file beyond the pack's own dictionary",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, the registry, its offices, the companies and the people are fictional",
+  "public_specifications": "the layouts follow common case management extracts, open caseload snapshots and card acquirer settlement files, described in no shipped file beyond the pack's own dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-08"
+  "date": "2026-10-09"
  }
 }

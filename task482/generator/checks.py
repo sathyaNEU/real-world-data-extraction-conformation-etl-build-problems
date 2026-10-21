@@ -1,5 +1,5 @@
 """The generator's assertions on the cut pack and the truth: the three rules (the analyst test on the clean truth),
-the ladder and its margins, the fork table's rows (SF1 to SF8), the asks' devices and their separation from the call,
+the ladder and its margins, the fork table's rows (SF1 to SF8), the ask's device and its separation from the call,
 and the input gates.
 
     python3 task482/generator/checks.py [target]"""
@@ -7,6 +7,8 @@ import json
 import os
 import re
 import sys
+
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -16,8 +18,8 @@ import pack as P      # noqa: E402
 import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-GOLDEN = ["AR01", "AR05", "AR08", "AR11", "AR12"]
-DEFAULT = ["AR01", "AR02", "AR04", "AR05", "AR06", "AR07", "AR08", "AR10", "AR11", "AR12", "AR13"]
+GOLDEN = ["CRO-AD", "CRO-CV", "CRO-FM", "CRO-GQ", "CRO-LW", "CRO-MG"]
+DEFAULT = ["CRO-FM", "CRO-MG"]
 
 
 class Run:
@@ -41,49 +43,48 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     if x is None:
         x = W.build()
         P.ids(x)
-        P.gazette_rows(x)
     b = B.load(target)
     # -------------------------------------------------------------- the three rules, executed on the clean truth
-    t = W.truth_rates(x)
-    naive = {}
-    for u in W.IDS:
-        d = [r for r in x["recs"] if r["region"] == u and r["drawn"]]
-        naive[u] = sum(r["err"] for r in d) / len(d)
-    R.ok(sorted(u for u in naive if naive[u] > W.LINE) == DEFAULT, "R3a the easy route (the audited share) on the "
-         "clean truth files the default eleven")
-    R.ok(sorted(u for u in t if t[u] > W.LINE) == GOLDEN, "R3b the register's own rate (the decisive step's target) "
-         "files the golden five")
+    summ = {u: W.summary([a for a in x["apps"] if a["office"] == u]) for u in W.IDS}
+    R.ok(sorted(u for u in summ if summ[u]["closed"] > W.LINE) == DEFAULT, "R3a the easy route (the registered "
+         "median) on the clean truth files the default two")
+    R.ok(sorted(u for u in summ if summ[u]["true"] > W.LINE) == GOLDEN, "R3b the quarter's own median (every "
+         "application's duration, the decisive step's target) files the golden six")
+    R.ok(sorted(u for u in summ if summ[u]["km"] > W.LINE) == GOLDEN, "R3c the censored median on the truth files the "
+         "golden six")
     # -------------------------------------------------------------- the ladder on the cut pack
-    sets = {r: B.chosen(b, B.rates(b, r)) for r in B.ROUTES}
-    for r in B.GOLDEN_FORMS + ("whole_extract",):
-        R.ok(sets[r] == GOLDEN, "L1 %s files the golden five (%s)" % (r, sets[r]))
-    R.ok(sets["audited_share"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["audited_share"])
-    R.ok(sets["unflagged_only"] != GOLDEN, "L3 the unflagged stratum alone files a wrong set")
-    for r in B.GOLDEN_FORMS + ("whole_extract",):
-        v = B.rates(b, r)
-        R.ok(min(abs(v[u] - B.LINE) for u in v) >= 0.005, "C2 %s: every region half a point or more from the line" % r)
-    g = B.rates(b, "golden")
-    R.ok(all(abs(g[u] - t[u]) < 0.02 for u in W.IDS), "C3 every golden estimate within two points of the truth")
+    sets = {r: B.planned(b, B.medians(b, r)) for r in B.ROUTES}
+    for r in B.GOLDEN_FORMS:
+        R.ok(sets[r] == GOLDEN, "L1 %s files the golden six (%s)" % (r, sets[r]))
+    R.ok(sets["registered_only"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["registered_only"])
+    for r in ("open_at_age", "open_as_late", "calendar_days"):
+        R.ok(sets[r] != GOLDEN, "L3 %s files a wrong set (%s)" % (r, sets[r]))
+    for r in B.GOLDEN_FORMS:
+        m = B.medians(b, r)
+        R.ok(min(abs(m[u] - B.LINE) for u in m) >= 1.5, "C2 %s: every office 1.5 working days or more from 20" % r)
+    m = B.medians(b, "golden")
+    R.ok(all(abs(m[u] - summ[u]["true"]) <= 2 for u in W.IDS), "C3 every censored median within two days of the "
+         "quarter's own median")
     # -------------------------------------------------------------- the fork table
     paper = _pdf(os.path.join(target, P.FILES["paper"]))
-    R.ok("records on the register on 30 April 2026" in paper, "SF1 the population is the 30 April register")
-    R.ok("records registered after 30 April are not part of it" in paper, "SF2 later records are out")
-    R.ok("exceeds 4 per cent" in paper, "SF3 the line is strictly over 4 per cent")
-    R.ok("outcome codes changed on 1 July" in paper, "SF4 the two outcome schemes are filed")
-    codes = {r[0] for r in P.codes_rows()}
-    R.ok(len(codes) == 14, "SF5 one old code per region")
-    R.ok(all(u == b["region"][k] for k, u, e in b["audit"]), "SF6 the audit's old codes and the register agree")
-    R.ok(len({k for k, u, e in b["audit"]}) == len(b["audit"]), "SF7 one audit outcome per record")
-    R.ok("No other check of the register's accuracy is used" in paper, "SF8 the audit is the only evidence")
-    # -------------------------------------------------------------- asks
-    A, A0 = B.ask_a(b, True), B.ask_a(b, False)
-    R.ok(all(A[u] != A0[u] for u in A), "A1 reading the UTC times as the quarter moves every region")
-    R.ok(A == x["q3"], "A2 the golden registrations equal the truth")
-    Bb, B0 = B.ask_b(b, True), B.ask_b(b, False)
-    R.ok(all(Bb[u] != B0[u] for u in Bb), "B1 leaving out the restorations moves every region")
-    R.ok(Bb == x["diss_truth"], "B2 the golden dissolutions equal the truth")
-    R.ok(True, "X1 the call reads the register's region and creation date, the referral list and the audit; the asks "
-               "read the creation time across the quarter and the gazette")
+    R.ok("received from 1 July to 30 September 2026, exceeds 20" in paper, "SF1 the cohort and the line are filed")
+    R.ok("the start day is not counted" in paper, "SF2 the start day is not counted")
+    R.ok("Working days exclude Saturdays, Sundays and the public holidays" in paper, "SF3 working days are filed")
+    R.ok("those registered by the 9 October extract and those still open on it" in paper, "SF4 open applications "
+         "are in the population")
+    R.ok("the last reply arrived" in paper, "SF5 the clock starts on the complete day")
+    R.ok(not ({r[0] for r in P.log_rows(x, "old")} & {r[0] for r in P.log_rows(x, "new")}),
+         "SF6 no registration in both logs")
+    R.ok(all(c >= r for o, r, c, g in b["reg"]) and all(c >= r for o, r, c, k in b["open"]),
+         "SF7 every clock starts on or after receipt")
+    R.ok(True, "SF8 exceeds is strictly over (no office within 1.5 days, C2)")
+    # -------------------------------------------------------------- the ask
+    A, A0 = B.ask(b, True), B.ask(b, False)
+    R.ok(all(A[u] != A0[u] for u in A), "A1 dating payments by settlement moves every office")
+    R.ok(all(A[u][0] == x["fees"][u][0] and abs(A[u][1] - x["fees"][u][1]) < 0.01 for u in A), "A2 the golden equals "
+         "the truth")
+    R.ok(True, "X1 the call reads the two logs, the open caseload and the holidays; the ask reads the payments and "
+               "batches only")
     # -------------------------------------------------------------- gates
     files = sorted(os.listdir(target))
     R.ok(len(files) >= 10, "G1 ten or more files (%d)" % len(files))
@@ -101,7 +102,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
             R.ok("—" not in txt and "–" not in txt, "G6 no dashes in %s" % f)
     if fig_path and gdir:
         fig = json.load(open(fig_path))
-        R.ok(fig["call"]["chosen"] == GOLDEN, "F1 figures.json carries the golden five")
+        R.ok(fig["call"]["planned"] == GOLDEN, "F1 figures.json carries the golden six")
     print("checks: %d run, %d failed" % (R.n, len(R.bad)))
     return not R.bad
 

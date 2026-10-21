@@ -1,119 +1,176 @@
-"""The world of task482 (architecture 2): Statistics Ardmuir's business register, fourteen regional registers, the
-register's automated risk screen and the summer 2026 quality audit, which drew records the screen flagged at fifteen in
-a hundred and the rest at two and a half in a hundred.
+"""The world of task482 (architecture 3): the Companies Registration Office of Ardmuir, fourteen regional offices
+registering new companies, and the management board's third-quarter 2026 timeliness review.
 
-A flagged record is in error far more often than an unflagged one, so a region's audited share in error is weighted
-toward its flagged records; the register's own rate weighs each audited record by the records of its stratum it
-stands for.
+An application's clock runs in working days from the day it is complete (its receipt, or the reply to a query) to its
+registration. On the 9 October extract part of each office's July to September applications is still open, and the
+open ones are the slow ones: the offices with a backlog hold their slow applications there.
 
-    x = build()    the truth: regions, records, flags, errors, the audit draw, the dissolutions"""
+    x = build()    the truth: offices, applications with their complete and registration days, fees"""
 import datetime as dt
 
 import numpy as np
 
-SEED = 4822
-RATE = {"F": 0.24, "U": 0.04}        # the audit's sampling fractions by the screen's flag
-LINE = 0.04
+SEED = 4823
+EXTRACT = dt.date(2026, 10, 9)
+LINE = 20
+HOLIDAYS = [dt.date(2026, 8, 3), dt.date(2026, 10, 26), dt.date(2026, 6, 1), dt.date(2026, 12, 25),
+            dt.date(2026, 12, 28), dt.date(2026, 5, 4)]
 
-# region code, name, records, share flagged, error rate of flagged, error rate of unflagged (set from
-# the side), the side of the line the
-# register's rate is drawn to (o over, u under, c clean: under, and under on the audited share too)
-REGIONS = [
-    ("AR01", "Ardmuir City", 21800, 0.071, 0.214, 0.0335, "o"),
-    ("AR02", "Bannock Coast", 9400, 0.118, 0.236, 0.0141, "u"),
-    ("AR03", "Carrick Vale", 7600, 0.052, 0.110, 0.0120, "c"),
-    ("AR04", "Dunlay", 12300, 0.094, 0.251, 0.0157, "u"),
-    ("AR05", "Eskmoor", 5200, 0.137, 0.188, 0.0313, "o"),
-    ("AR06", "Fallowmere", 8800, 0.083, 0.229, 0.0182, "u"),
-    ("AR07", "Glenquhar", 6100, 0.104, 0.243, 0.0154, "u"),
-    ("AR08", "Harlaw", 14700, 0.066, 0.207, 0.0372, "o"),
-    ("AR09", "Inverbeck", 4600, 0.048, 0.104, 0.0110, "c"),
-    ("AR10", "Kelso Moss", 10200, 0.089, 0.236, 0.0168, "u"),
-    ("AR11", "Lenwick", 7100, 0.112, 0.214, 0.0329, "o"),
-    ("AR12", "Mossgiel", 9900, 0.059, 0.217, 0.0381, "o"),
-    ("AR13", "Northmuir", 11500, 0.097, 0.205, 0.0149, "u"),
-    ("AR14", "Strathlorn", 6700, 0.045, 0.098, 0.0125, "c"),
+# office code, name, applications in the quarter, median working days of the quick, share in the backlog,
+# backlog median working days, place ("b" over on the golden, under on the registered median; "o" over on the golden
+# and on the registered median; "u" under on the golden; "y" under on the golden, over when every open application is
+# counted as late), and the share of applications received in the second half of September (a filing rush)
+OFFICES = [
+    ("CRO-AD", "Ardmuir", 3900, 11.0, 0.55, 42, "b", 0.00),
+    ("CRO-BN", "Bannock", 1700, 9.0, 0.10, 34, "u", 0.00),
+    ("CRO-CV", "Carrick", 1300, 11.5, 0.56, 43, "b", 0.00),
+    ("CRO-DL", "Dunlay", 2100, 15.0, 0.10, 32, "y", 0.50),
+    ("CRO-ES", "Eskmoor", 900, 9.5, 0.08, 30, "u", 0.00),
+    ("CRO-FM", "Fallowmere", 1600, 24.0, 0.20, 45, "o", 0.00),
+    ("CRO-GQ", "Glenquhar", 1100, 10.5, 0.57, 41, "b", 0.00),
+    ("CRO-HL", "Harlaw", 2600, 8.5, 0.07, 28, "u", 0.00),
+    ("CRO-IB", "Inverbeck", 800, 15.0, 0.10, 32, "y", 0.50),
+    ("CRO-KM", "Kelso Moss", 1900, 10.0, 0.11, 33, "u", 0.00),
+    ("CRO-LW", "Lenwick", 1200, 11.0, 0.54, 44, "b", 0.00),
+    ("CRO-MG", "Mossgiel", 1500, 24.5, 0.18, 46, "o", 0.00),
+    ("CRO-NM", "Northmuir", 2300, 9.5, 0.09, 31, "u", 0.00),
+    ("CRO-SL", "Strathlorn", 1000, 15.0, 0.10, 32, "y", 0.50),
 ]
-IDS = [r[0] for r in REGIONS]
-FORMS = ["private limited company", "sole trader", "partnership", "limited liability partnership",
-         "public limited company", "community interest company"]
+IDS = [o[0] for o in OFFICES]
+
+
+def working_days(a, b):
+    """Working days from day a to day b (b after a): weekdays not on the holiday list, a not counted."""
+    n = 0
+    d = a
+    while d < b:
+        d += dt.timedelta(days=1)
+        if d.weekday() < 5 and d not in HOLIDAYS:
+            n += 1
+    return n
+
+
+def add_working(a, k):
+    d = a
+    while k > 0:
+        d += dt.timedelta(days=1)
+        if d.weekday() < 5 and d not in HOLIDAYS:
+            k -= 1
+    return d
+
+
+def km_median(times, events):
+    """The product-limit median: the smallest time at which the survival estimate falls to one half or below."""
+    order = sorted(zip(times, events))
+    n = len(order)
+    s = 1.0
+    i = 0
+    while i < n:
+        t = order[i][0]
+        d = sum(1 for tt, e in order[i:] if tt == t and e)
+        c = sum(1 for tt, e in order[i:] if tt == t)
+        s *= 1 - d / (n - i)
+        if s <= 0.5:
+            return t
+        i += c
+    return None
 
 
 def build():
     rng = np.random.default_rng(SEED)
-    recs = []
+    days = [dt.date(2026, 7, 1) + dt.timedelta(days=k) for k in range(92)]
+    wdays = [d for d in days if d.weekday() < 5 and d not in HOLIDAYS]
+    apps = []
     k = 0
-    for code, name, n, f, ef, eu, side in REGIONS:
-        target = {"o": 0.052, "u": 0.030, "c": 0.015}[side] + float(rng.uniform(-0.003, 0.003))
-        eu = (target - f * ef) / (1 - f)
-        age = rng.integers(0, 9000, n)
-        created = np.array([dt.date(2026, 9, 30) - dt.timedelta(days=int(a)) for a in age])
-        frame = created <= dt.date(2026, 4, 30)
-        fl = (rng.random(n) < f) & frame
-        for _ in range(60):
-            err = np.where(fl, rng.random(n) < ef, rng.random(n) < eu)
-            drawn = np.where(fl, rng.random(n) < RATE["F"], rng.random(n) < RATE["U"]) & frame
-            ht, naive, true = _estimates(fl[frame], err[frame], drawn[frame])
-            far = min(abs(ht - LINE), abs(true - LINE)) >= 0.005 and abs(naive - LINE) >= 0.005
-            ok = (ht > LINE and true > LINE) if side == "o" else (ht < LINE and true < LINE)
-            ok = ok and (naive < LINE if side == "c" else naive > LINE)
-            if far and ok:
+    late = [d for d in wdays if d >= dt.date(2026, 9, 14)]
+    for code, name, n, qm, share, bm, place, surge in OFFICES:
+        for tries in range(80):
+            sub = []
+            for i in range(n):
+                rec = late[int(rng.integers(0, len(late)))] if rng.random() < surge else \
+                    wdays[int(rng.integers(0, len(wdays)))]
+                query = rng.random() < 0.22
+                comp = add_working(rec, int(rng.integers(2, 12))) if query else rec
+                if comp >= EXTRACT:
+                    comp, query = rec, False
+                slow = rng.random() < share
+                dur = max(1, int(round(float(rng.lognormal(np.log(bm if slow else qm), 0.35 if slow else 0.45)))))
+                reg = add_working(comp, dur)
+                sub.append({"office": code, "received": rec, "complete": comp, "dur": dur, "registered": reg,
+                            "query": query})
+            m = summary(sub)
+            ok = {"b": m["km"] > LINE + 1.5 and m["closed"] < LINE - 1.5,
+                  "o": m["km"] > LINE + 1.5 and m["closed"] > LINE + 1.5,
+                  "u": m["km"] < LINE - 1.5,
+                  "y": m["km"] < LINE - 1.5 and m["open_late"] > LINE + 1.5}[place]
+            if ok and abs(m["km"] - LINE) >= 1.5 and abs(m["open_age"] - LINE) >= 0.5:
                 break
         else:
-            raise SystemExit("region %s not placed" % code)
-        for i in range(n):
+            raise SystemExit("office %s not placed" % code)
+        for a in sub:
             k += 1
-            recs.append({"k": k, "region": code, "flag": bool(fl[i]), "err": bool(err[i]), "drawn": bool(drawn[i]),
-                         "created": created[i], "frame": bool(frame[i]), "form": FORMS[int(rng.choice(6, p=[0.52, 0.27, 0.09, 0.05, 0.02,
-                                                                                    0.05]))],
-                         "employees": int(rng.choice([0, 1, 2, 5, 10, 25, 50, 100], p=[0.3, 0.25, 0.15, 0.12, 0.08,
-                                                                                         0.05, 0.03, 0.02]))})
-    x = {"recs": recs}
-    _q3(x, rng)
-    _dissolutions(x, rng)
+            a["k"] = k
+        apps += sub
+    x = {"apps": apps}
+    # receipts outside the quarter that the logs also carry: late June's registered in July, early October's
+    extra = []
+    for code, name, n, qm, *_ in OFFICES:
+        for _ in range(int(n * 0.05)):
+            rec = dt.date(2026, 6, 15) + dt.timedelta(days=int(rng.integers(0, 16)))
+            if rec.weekday() >= 5 or rec in HOLIDAYS:
+                continue
+            dur = max(1, int(round(float(rng.lognormal(np.log(qm), 0.45)))))
+            extra.append({"office": code, "received": rec, "complete": rec, "dur": dur,
+                          "registered": add_working(rec, dur), "query": False})
+        for _ in range(int(n * 0.02)):
+            rec = dt.date(2026, 10, 1) + dt.timedelta(days=int(rng.integers(0, 6)))
+            if rec.weekday() >= 5:
+                continue
+            dur = int(rng.integers(1, 4))
+            extra.append({"office": code, "received": rec, "complete": rec, "dur": dur,
+                          "registered": add_working(rec, dur), "query": False})
+    x["extra"] = [a for a in extra if dt.date(2026, 7, 1) <= a["registered"] <= EXTRACT]
+    _fees(x, rng)
     return x
 
 
-def _estimates(fl, err, drawn):
-    N = {g: int((fl == g).sum()) for g in (True, False)}
-    est = 0.0
-    for g in (True, False):
-        m = drawn & (fl == g)
-        est += N[g] * err[m].sum() / m.sum()
-    return est / len(fl), err[drawn].sum() / drawn.sum(), err.mean()
+def summary(sub):
+    """An office's medians on the truth: the product-limit median with open applications censored at their age, the
+    median of the registered alone, the median counting each open one at its age, and counting each open one as
+    over the line."""
+    t, e, closed, at_age, late = [], [], [], [], []
+    for a in sub:
+        age = working_days(a["complete"], EXTRACT)
+        if a["registered"] <= EXTRACT:
+            t.append(a["dur"])
+            e.append(True)
+            closed.append(a["dur"])
+            at_age.append(a["dur"])
+            late.append(a["dur"])
+        else:
+            t.append(age)
+            e.append(False)
+            at_age.append(age)
+            late.append(10 ** 6)
+    return {"km": km_median(t, e), "closed": float(np.median(closed)), "open_age": float(np.median(at_age)),
+            "open_late": float(np.median(late)), "true": float(np.median([a["dur"] for a in sub]))}
 
 
-def truth_rates(x):
-    out = {}
-    for code in IDS:
-        rs = [r for r in x["recs"] if r["region"] == code and r["frame"]]
-        out[code] = sum(r["err"] for r in rs) / len(rs)
-    return out
-
-
-def _q3(x, rng):
-    """Each record's creation time in Ardmuir local time; registrations filed online in the hour after local midnight
-    at the quarter's edges, which British Summer Time puts on the previous day in UTC."""
-    edge = (dt.date(2026, 7, 1), dt.date(2026, 10, 1))
-    for r in x["recs"]:
-        c = r["created"]
-        r["created_local"] = dt.datetime(c.year, c.month, c.day) + dt.timedelta(seconds=int(rng.integers(7 * 3600,
-                                                                                                         19 * 3600)))
-    for code in IDS:
-        rs = [r for r in x["recs"] if r["region"] == code and edge[0] <= r["created"] < edge[1]]
-        for j in rng.permutation(len(rs))[:int(rng.integers(2, 5))]:
-            rs[j]["created"] = edge[0]
-            rs[j]["created_local"] = dt.datetime(2026, 7, 1) + dt.timedelta(minutes=int(rng.integers(2, 58)))
-    x["q3"] = {code: sum(1 for r in x["recs"] if r["region"] == code and
-                         dt.datetime(2026, 7, 1) <= r["created_local"] < dt.datetime(2026, 10, 1)) for code in IDS}
-
-
-def _dissolutions(x, rng):
-    """Businesses dissolved in the third quarter of 2026, two to four per cent a region."""
-    x["diss"] = {}
-    for code in IDS:
-        rs = [r for r in x["recs"] if r["region"] == code and r["created"] < dt.date(2026, 1, 1)]
-        pick = rng.permutation(len(rs))[:int(len(rs) * float(rng.uniform(0.006, 0.012)))]
-        for j in pick:
-            rs[j]["dissolved"] = dt.date(2026, 7, 1) + dt.timedelta(days=int(rng.integers(0, 92)))
-        x["diss"][code] = len(pick)
+def _fees(x, rng):
+    """Every card payment an office took in the quarter: the registration fee with each application on its receipt
+    day (EUR 50, or EUR 100 for the two-day service) and the office's other fees (name reservations, annual return
+    filings, certified copies); truth by the day paid."""
+    pays = []
+    days = [dt.date(2026, 6, 24) + dt.timedelta(days=k) for k in range(110)]
+    for a in x["apps"]:
+        pays.append({"office": a["office"], "day": a["received"], "amount": 100 if rng.random() < 0.12 else 50})
+    for code, name, n, *_ in OFFICES:
+        for d in days:
+            if d.weekday() >= 5 or d in HOLIDAYS:
+                continue
+            for _ in range(int(rng.poisson(n / 65.0 * 1.6))):
+                pays.append({"office": code, "day": d, "amount": int(rng.choice([20, 20, 25, 40, 60]))})
+    x["pays"] = pays
+    q3 = [p for p in pays if dt.date(2026, 7, 1) <= p["day"] <= dt.date(2026, 9, 30)]
+    x["fees"] = {code: (sum(1 for p in q3 if p["office"] == code), sum(p["amount"] for p in q3 if p["office"] == code))
+                 for code in IDS}

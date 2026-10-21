@@ -22,10 +22,10 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-AS_OF = {"register": "2026-10-01 05:40", "screen": "2026-05-04 18:15", "audit": "2026-09-05 16:05",
-         "codes": "2025-04-01 09:00", "gazette": "2026-10-02 10:30", "paper": "2026-10-07 16:30",
-         "costs": "2026-09-22 15:10", "survey": "2025-12-12 12:00", "returns": "2026-03-31 11:00",
-         "dictionary": "2026-10-08 08:50", "manifest": "2026-10-08 08:55"}
+AS_OF = {"log_old": "2026-08-03 07:40", "log_new": "2026-10-09 06:15", "open": "2026-10-09 06:20",
+         "holidays": "2025-12-01 09:00", "pays": "2026-10-09 05:30", "batches": "2026-10-09 05:35",
+         "paper": "2026-10-09 15:30", "staff": "2026-09-30 16:10", "survey": "2026-07-20 12:00",
+         "dictionary": "2026-10-09 08:50", "manifest": "2026-10-09 08:55"}
 LOCAL = dt.timezone(dt.timedelta(hours=1))
 
 
@@ -39,18 +39,18 @@ def build(out, x=None, quiet=False):
     x = x or W.build()
     P.ids(x)
     n = {}
-    n["gazette"] = P.write_csv(f("gazette"), P.GAZ_COLS, P.gazette_rows(x))
-    n["register"] = P.write_csv(f("register"), P.REG_COLS, P.register_rows(x))
-    n["screen"] = P.write_csv(f("screen"), P.SCREEN_COLS, P.screen_rows(x))
-    n["audit"] = P.write_csv(f("audit"), P.AUDIT_COLS, P.audit_rows(x))
-    n["codes"] = P.write_csv(f("codes"), P.CODES_COLS, P.codes_rows())
+    n["log_old"] = P.write_csv(f("log_old"), P.OLD_COLS, P.log_rows(x, "old"))
+    n["log_new"] = P.write_csv(f("log_new"), P.NEW_COLS, P.log_rows(x, "new"))
+    n["open"] = P.write_csv(f("open"), P.OPEN_COLS, P.open_rows(x))
+    n["holidays"] = P.write_csv(f("holidays"), P.HOL_COLS, P.holiday_rows())
+    n["pays"] = P.write_csv(f("pays"), P.PAY_COLS, P.pay_rows(x))
+    n["batches"] = P.write_csv(f("batches"), P.BATCH_COLS, P.batch_rows(x))
     n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows())
-    n["returns"] = P.write_csv(f("returns"), P.RETURNS_COLS, P.returns_rows(x))
-    DC.write_costs(f("costs"), x)
-    PP.normalize_ooxml(f("costs"), "Sophie Williams", "Sophie Williams", "2026-09-15T13:20:00Z", "2026-09-22T14:10:00Z",
+    DC.write_staff(f("staff"), x)
+    PP.normalize_ooxml(f("staff"), "Jennifer Dyer", "Jennifer Dyer", "2026-09-28T13:20:00Z", "2026-09-30T15:10:00Z",
                        excel=True, company=P.COMPANY)
     DC.write_memo(f("paper"))
-    PP.normalize_pdf(f("paper"), b"D:20261007152214+01'00'", b"D:20261007163002+01'00'")
+    PP.normalize_pdf(f("paper"), b"D:20261009142214+01'00'", b"D:20261009153002+01'00'")
     n["dictionary"] = P.write_csv(f("dictionary"), DC.DICT_COLS, DC.dictionary_rows())
     n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
     for k in P.FILES:
