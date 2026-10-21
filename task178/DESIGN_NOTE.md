@@ -1,6 +1,6 @@
 # task178 design note
 
-**Status: PAUSED, architecture 1 spent at stage 4 Gate F on 2026-10-21 (below). Before that: BUILD, stage 3 green (generator checks 84 of 84, verifier 19 of 19, two byte-identical builds, precut and figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN), waiting on stage 4's two scored readers and the judge. Architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
+**Status: RETIRED 2026-10-21 (see ## Retired). Architecture 1 spent at stage 4 Gate F on 2026-10-21. Before that: BUILD, stage 3 green (generator checks 84 of 84, verifier 19 of 19, two byte-identical builds, precut and figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN), waiting on stage 4's two scored readers and the judge. Architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
 number in a new cell after seed FC49's product-security world died at stage 1 (its record is kept below, in the FC49 screen
 record and in the Tried and rejected list). Cell, allocated by the main session:
 physical-environmental-sciences / climate-weather-extremes, Forecasting. Organisation, decision, quantity and
@@ -218,6 +218,22 @@ Measured by: generator/cracker.py
 | Ask B, closures, six years | one closure per work order | 0 of 6 | miss |
 | Ask B, at 11.80 ft, six years | legacy times read as local | 0 of 6 | miss |
 
+
+## Retired
+
+Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
+retired). The seed's own world (FC49, product-security triage) died at stage 1. The first redraw cell
+(physical-environmental-sciences / climate-weather-extremes) carried architecture 1, the April-May 2027 trestle deck
+set against the window's own predicted tides; it was built to stage 3 green and spent at Gate F when a scored
+reader conditioned on the 2027 tide table and landed every call figure. The second cell
+(marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis, Forecasting) yielded nothing that holds
+on measurement or on the screens (`## Tried and rejected`, the conjoint lines): the judgments the textbook
+simulators (a logit share simulator, an aggregate MNL, an HB simulator, the first-choice rule) take for granted
+either move the forecast less than their own estimator family spreads it (price non-attendance under a normal-prior
+HB; a brand-by-tier interaction), or rest on a linked file whose filter or calibration is the reader's first move
+(a pilot's revealed uptake, the in-market population by contract timing or footprint), or are banned as hidden
+rules (a competitor's matching reaction). No card was registered in the second cell. The card for architecture 1
+stays filed with `architecture_spent` set.
 
 ## Leak sweep
 
@@ -447,4 +463,29 @@ none is touched by either candidate.
   UTC clock held for both readers (both filed 18, 22, 22, 18, 17, 10 against 24, 36, 33, 30, 20, 18). Why it held: its
   only evidence is an alignment between two files that no document invites anyone to make, while the two that fell
   each had a document naming the event (a log line, a levelling row) or a gap a reflexive dedup closes.
+- **Second cell, conjoint choice and willingness to pay (Forecasting), screened 2026-10-21; nothing held, no card.**
+  - Price non-attendance hidden by a normal-prior HB (`cj/ana.py`, 700 respondents, 12 tasks, three alternatives
+    and none, 30 per cent ignoring price): the vendor-style HB pulls the ignorers' price coefficient to -0.33
+    against a true -0.04, but the simulated shares move only 0.151 against 0.176 at the top price, every route
+    (truth, HB means, aggregate MNL, latent class with one to three classes) picks the same revenue price, and the
+    latent-class forms recover the truth no better than HB. Dead on lever.
+  - A stated-to-revealed calibration from a two-arm price pilot of the same respondents (`cj/sprp.py`, three
+    seeds): the raw simulator (0.28) already sits within the full calibration's own spread (0.26 to 0.29, around
+    a truth of 0.24), because the scale and the constant offset each other at the launch price. The calibration
+    regressed on noisy HB utilities also attenuates (lambda 0.45 to 0.52 against 0.55), which leaves a
+    measurement-error correction as an open knob, and the pilot arms' linear extrapolation lands in one seed. Dead
+    on lever and determinacy.
+  - A brand-by-tier interaction the main-effects simulator cannot carry (`cj/inter.py`, two seeds): it moves the
+    premium configuration's revenue 20 to 45 per cent, but the interaction family itself spreads 40 per cent
+    (aggregate against HB with the interaction). Forcing it needs a holdout or model-selection criterion, which is
+    the window's G16 and backtest ground, and the pick flips only when tuned near the boundary. Dead on paper.
+  - The in-market population (contract end or fibre footprint correlated with preference): a join and a filter
+    give the golden. That is the common-exposure subset screen, and arch 1's measured reflex on any linked forward
+    input. Dead on paper.
+  - Within-respondent IIA for a near-clone: the correcting rule (randomized first choice) carries an error-scale
+    knob and the first-choice rule (a textbook route) lands. Dead on paper.
+  - Competitor price matching read off the price history: a reaction rule recovered from records, the banned
+    hidden-rule family. Dead on paper.
+  - The client's four conjoint cards (IIA clone, WTP as a ratio, preference against market share with the none
+    option, no out-of-range prices) are themselves the textbook routes the readers take.
 

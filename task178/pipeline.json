@@ -1,7 +1,7 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "RETIRED",
  "domain": "physical-environmental-sciences/climate-weather-extremes",
  "objective": "forecasting",
  "stage": 1,
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "redraw in a new cell (physical-environmental-sciences / climate-weather-extremes, Forecasting); FC49's world spent at stage 1",
- "resume": "architecture 1 spent at Gate F; redraw architecture 2 in marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis (Forecasting), the round's second and last cell; if nothing holds, retire",
+ "resume": "RETIRED 2026-10-21 under the author's rule: architecture 1 (climate-weather-extremes) spent at Gate F; the second cell (marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis) yielded no candidate that holds (see ## Retired)",
  "approved": null,
  "delivered": null,
  "portal": null,
