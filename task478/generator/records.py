@@ -379,7 +379,8 @@ def work_orders(e):
                 k = int(r.integers(1, 5))
                 mates = [g for g in group if g["route"] == head["route"]][:k - 1]
             else:
-                mates = group[:1] if group and r.random() < 0.3 else []
+                same = [g for g in group if g["route"] == head["route"]]
+                mates = same[:1] if same and r.random() < 0.3 else []
             for g in mates:
                 group.remove(g)
             orders.append(dict(lines=[head] + mates, mobile=mobile_day, sec=key[0]))
@@ -494,11 +495,11 @@ def work_orders(e):
     for no in W.ORDER:
         def like(o):
             return (not o["mobile"] and len(o["lines"]) >= 2 and len({l["lb"] for l in o["lines"]}) == 1
-                    and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12))
+                    and len({l["route"] for l in o["lines"]}) == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12))
         if any(o["sec"] == no and like(o) for o in orders):
             continue
         multi = [o for o in orders if o["sec"] == no and not o["mobile"] and len(o["lines"]) >= 2
-                 and len({sev_of(l) for l in o["lines"]}) == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12)]
+                 and len({sev_of(l) for l in o["lines"]}) == 1 and len({l["route"] for l in o["lines"]}) == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12)]
         if multi:
             v = min(l["lb"] for l in multi[0]["lines"])
             for l in multi[0]["lines"]:
@@ -511,9 +512,9 @@ def work_orders(e):
         pair = None
         for i, a in enumerate(singles):
             for b in singles[i + 1:]:
-                if (sev_of(a["lines"][0]) == sev_of(b["lines"][0])
+                if (sev_of(a["lines"][0]) == sev_of(b["lines"][0]) and a["lines"][0]["route"] == b["lines"][0]["route"]
                         and (a["raised"] < W.MIGRATION_UTC) == (b["raised"] < W.MIGRATION_UTC)
-                        and (b["raised"] - a["raised"]) < dt.timedelta(days=6)):
+                        and (b["raised"] - a["raised"]) < dt.timedelta(days=8)):
                     pair = (a, b)
                     break
             if pair:
@@ -525,7 +526,7 @@ def work_orders(e):
                            and not any(l["d"] is d for o_ in orders for l in o_["lines"])],
                           key=lambda d: (d["reviewed"], d["id"]))
             for i, d1 in enumerate(pool):
-                d2 = next((d for d in pool[i + 1:] if d["src"]["severity"] == d1["src"]["severity"]
+                d2 = next((d for d in pool[i + 1:] if d["src"]["severity"] == d1["src"]["severity"] and d["route"] == d1["route"]
                            and (d["reviewed"] < W.MIGRATION_UTC) == (d1["reviewed"] < W.MIGRATION_UTC)), None)
                 if d2 is None:
                     continue

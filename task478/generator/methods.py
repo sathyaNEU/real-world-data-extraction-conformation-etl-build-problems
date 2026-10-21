@@ -460,6 +460,12 @@ def ask_patches(p, legacy="location", pounds="severity", fold=True, confirmed_on
         sec = int(lines[0]["section"])
         vals = [int(l["cold_mix_lb"]) for l in lines]
         repeated = len(lines) > 1 and len(set(vals)) == 1
+        if pounds == "per_route":
+            by_rt = defaultdict(list)
+            for l in lines:
+                by_rt[l["route"]].append(int(l["cold_mix_lb"]))
+            lb[sec] += sum(v[0] if len(set(v)) == 1 else sum(v) for v in by_rt.values())
+            continue
         if pounds == "severity" and repeated and vals[0] > max(top[res[(wo, l["task_line"])]] for l in lines):
             TOTALS.add(wo)
             lb[sec] += vals[0]

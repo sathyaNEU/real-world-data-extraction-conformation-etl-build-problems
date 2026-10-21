@@ -214,6 +214,9 @@ def main():
     check("A1 fair: the repeated figures above every single-line order on their severities are exactly the mobile "
           "app's totals (%d of %d repeated-figure orders)" % (len(truth_mobile & rep), len(rep)),
           M.total_orders(p) == {w for w in truth_mobile if w in rep})
+    pr = M.ask_patches(p, pounds="per_route")[1]
+    check("A1 every section's pounds move when a figure repeated within one route of an order is taken once",
+          all(pr.get(s, 0) != gA[1].get(s, 0) for s in ORDER))
     po = M.ask_patches(p, pounds="per_order")[1]
     check("A1 every section's pounds move when every repeated figure is taken once (the like potholes' orders)",
           all(po.get(s, 0) != gA[1].get(s, 0) for s in ORDER))

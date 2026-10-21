@@ -59,20 +59,20 @@ Their state roadway held 9, 9, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
    - 413 Norvelle: Yes
    - 414 Pyke Hill: No
 3. Pounds of cold mix the section's March cold patches used:
-   - 401 Holloway Run: 1,350
-   - 402 Fenwick Gap: 1,360
-   - 403 Carrow Point: 4,455
-   - 404 Grisholt: 585
-   - 405 Marlpit: 1,135
-   - 406 Kestrelton: 935
-   - 407 Elmscourt: 3,400
-   - 408 Halverton: 500
-   - 409 Thistlebank: 1,110
-   - 410 Oxbrae: 180
-   - 411 Rushmead: 1,835
-   - 412 Stonebeck: 540
-   - 413 Norvelle: 940
-   - 414 Pyke Hill: 295
+   - 401 Holloway Run: 1,355
+   - 402 Fenwick Gap: 1,165
+   - 403 Carrow Point: 3,700
+   - 404 Grisholt: 505
+   - 405 Marlpit: 900
+   - 406 Kestrelton: 985
+   - 407 Elmscourt: 3,465
+   - 408 Halverton: 540
+   - 409 Thistlebank: 1,165
+   - 410 Oxbrae: 330
+   - 411 Rushmead: 1,595
+   - 412 Stonebeck: 600
+   - 413 Norvelle: 845
+   - 414 Pyke Hill: 345
 
 ### tamsett_spring_patching_task_orders_2027.pdf
 
