@@ -1,0 +1,621 @@
+{
+ "call": {
+  "counties": [
+   "Elkhollow",
+   "Halvering",
+   "Linnmere",
+   "Marlbank",
+   "Wexmoor"
+  ],
+  "n": 5
+ },
+ "counties": {
+  "Copperleaf": {
+   "eligible": 3135,
+   "miles_m": 42.4,
+   "no": "14",
+   "qualifies": false,
+   "read": 2982,
+   "tons": 8,
+   "tons_unrounded": 7.975
+  },
+  "Dunmarsh": {
+   "eligible": 6149,
+   "miles_m": 47.9,
+   "no": "17",
+   "qualifies": false,
+   "read": 5812,
+   "tons": 9,
+   "tons_unrounded": 8.942
+  },
+  "Elkhollow": {
+   "eligible": 5182,
+   "miles_m": 64.0,
+   "no": "21",
+   "qualifies": true,
+   "read": 4911,
+   "tons": 12,
+   "tons_unrounded": 11.971
+  },
+  "Halvering": {
+   "eligible": 8688,
+   "miles_m": 76.7,
+   "no": "29",
+   "qualifies": true,
+   "read": 8230,
+   "tons": 14,
+   "tons_unrounded": 13.907
+  },
+  "Kinnard": {
+   "eligible": 2814,
+   "miles_m": 25.7,
+   "no": "35",
+   "qualifies": false,
+   "read": 2681,
+   "tons": 5,
+   "tons_unrounded": 4.993
+  },
+  "Larkhaven": {
+   "eligible": 5047,
+   "miles_m": 42.1,
+   "no": "38",
+   "qualifies": false,
+   "read": 4791,
+   "tons": 8,
+   "tons_unrounded": 7.935
+  },
+  "Linnmere": {
+   "eligible": 7060,
+   "miles_m": 71.0,
+   "no": "40",
+   "qualifies": true,
+   "read": 6667,
+   "tons": 13,
+   "tons_unrounded": 12.952
+  },
+  "Marlbank": {
+   "eligible": 5255,
+   "miles_m": 57.9,
+   "no": "44",
+   "qualifies": true,
+   "read": 4973,
+   "tons": 11,
+   "tons_unrounded": 10.942
+  },
+  "Quarrybrook": {
+   "eligible": 4221,
+   "miles_m": 44.1,
+   "no": "58",
+   "qualifies": false,
+   "read": 4016,
+   "tons": 8,
+   "tons_unrounded": 7.974
+  },
+  "Sallowford": {
+   "eligible": 2567,
+   "miles_m": 27.1,
+   "no": "63",
+   "qualifies": false,
+   "read": 2434,
+   "tons": 5,
+   "tons_unrounded": 4.961
+  },
+  "Thorncastle": {
+   "eligible": 4119,
+   "miles_m": 31.1,
+   "no": "71",
+   "qualifies": false,
+   "read": 3889,
+   "tons": 6,
+   "tons_unrounded": 5.944
+  },
+  "Wexmoor": {
+   "eligible": 11068,
+   "miles_m": 83.9,
+   "no": "79",
+   "qualifies": true,
+   "read": 10479,
+   "tons": 15,
+   "tons_unrounded": 14.906
+  }
+ },
+ "dates": {
+  "guidelines": "2026-09-08",
+  "memo": "2026-10-26",
+  "snapshot": "2026-07-01"
+ },
+ "family_range": {
+  "Copperleaf": [
+   7.975,
+   8.128
+  ],
+  "Dunmarsh": [
+   8.941,
+   9.12
+  ],
+  "Elkhollow": [
+   11.971,
+   12.293
+  ],
+  "Halvering": [
+   13.907,
+   14.17
+  ],
+  "Kinnard": [
+   4.993,
+   5.095
+  ],
+  "Larkhaven": [
+   7.935,
+   8.128
+  ],
+  "Linnmere": [
+   12.952,
+   13.277
+  ],
+  "Marlbank": [
+   10.942,
+   11.135
+  ],
+  "Quarrybrook": [
+   7.974,
+   8.164
+  ],
+  "Sallowford": [
+   4.961,
+   5.015
+  ],
+  "Thorncastle": [
+   5.944,
+   6.088
+  ],
+  "Wexmoor": [
+   14.906,
+   15.192
+  ]
+ },
+ "filed": {
+  "age_from": "1 January",
+  "clauses": [
+   "2.1",
+   "3.1",
+   "3.2",
+   "3.3",
+   "3.4"
+  ],
+  "grams_per_short_ton": "907,184.74",
+  "unusable_odometers": [
+   0,
+   999999
+  ]
+ },
+ "names": {
+  "Copperleaf": "Copperleaf",
+  "Dunmarsh": "Dunmarsh",
+  "Elkhollow": "Elkhollow",
+  "Halvering": "Halvering",
+  "Kinnard": "Kinnard",
+  "Larkhaven": "Larkhaven",
+  "Linnmere": "Linnmere",
+  "Marlbank": "Marlbank",
+  "Quarrybrook": "Quarrybrook",
+  "Sallowford": "Sallowford",
+  "Thorncastle": "Thorncastle",
+  "Wexmoor": "Wexmoor"
+ },
+ "people": {
+  "chief": "Bridget Palmer",
+  "director": "Jacqueline Aguilar"
+ },
+ "pilot": {
+  "Dunmarsh": {
+   "charges": 53985,
+   "naive_charges": 57640,
+   "naive_retired": 214,
+   "retired": 201,
+   "vouchers": 214
+  },
+  "Elkhollow": {
+   "charges": 59050,
+   "naive_charges": 97770,
+   "naive_retired": 238,
+   "retired": 222,
+   "vouchers": 238
+  },
+  "Kinnard": {
+   "charges": 26625,
+   "naive_charges": 30720,
+   "naive_retired": 118,
+   "retired": 102,
+   "vouchers": 118
+  },
+  "Larkhaven": {
+   "charges": 42590,
+   "naive_charges": 47280,
+   "naive_retired": 171,
+   "retired": 154,
+   "vouchers": 171
+  }
+ },
+ "r1_over_pct": 43,
+ "rungs": {
+  "R0": {
+   "set": [
+    "Dunmarsh",
+    "Elkhollow",
+    "Halvering",
+    "Larkhaven",
+    "Linnmere",
+    "Marlbank",
+    "Quarrybrook",
+    "Thorncastle",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 8.5,
+    "Dunmarsh": 16.5,
+    "Elkhollow": 13.97,
+    "Halvering": 22.75,
+    "Kinnard": 7.85,
+    "Larkhaven": 13.7,
+    "Linnmere": 18.48,
+    "Marlbank": 14.32,
+    "Quarrybrook": 11.06,
+    "Sallowford": 6.76,
+    "Thorncastle": 11.38,
+    "Wexmoor": 28.17
+   }
+  },
+  "R1": {
+   "set": [
+    "Copperleaf",
+    "Dunmarsh",
+    "Elkhollow",
+    "Halvering",
+    "Larkhaven",
+    "Linnmere",
+    "Marlbank",
+    "Quarrybrook",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 11.45,
+    "Dunmarsh": 12.81,
+    "Elkhollow": 17.16,
+    "Halvering": 19.85,
+    "Kinnard": 7.2,
+    "Larkhaven": 11.4,
+    "Linnmere": 18.5,
+    "Marlbank": 15.72,
+    "Quarrybrook": 11.37,
+    "Sallowford": 7.08,
+    "Thorncastle": 8.55,
+    "Wexmoor": 21.21
+   }
+  },
+  "R1c": {
+   "set": [
+    "Copperleaf",
+    "Dunmarsh",
+    "Elkhollow",
+    "Halvering",
+    "Larkhaven",
+    "Linnmere",
+    "Marlbank",
+    "Quarrybrook",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 11.04,
+    "Dunmarsh": 12.36,
+    "Elkhollow": 16.54,
+    "Halvering": 19.14,
+    "Kinnard": 6.94,
+    "Larkhaven": 10.99,
+    "Linnmere": 17.83,
+    "Marlbank": 15.16,
+    "Quarrybrook": 10.97,
+    "Sallowford": 6.83,
+    "Thorncastle": 8.24,
+    "Wexmoor": 20.45
+   }
+  },
+  "R1d": {
+   "set": [
+    "Copperleaf",
+    "Dunmarsh",
+    "Elkhollow",
+    "Halvering",
+    "Larkhaven",
+    "Linnmere",
+    "Marlbank",
+    "Quarrybrook",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 11.27,
+    "Dunmarsh": 12.7,
+    "Elkhollow": 16.98,
+    "Halvering": 19.88,
+    "Kinnard": 7.04,
+    "Larkhaven": 11.19,
+    "Linnmere": 18.51,
+    "Marlbank": 15.47,
+    "Quarrybrook": 11.4,
+    "Sallowford": 7.06,
+    "Thorncastle": 8.44,
+    "Wexmoor": 21.34
+   }
+  },
+  "R2": {
+   "set": [
+    "Dunmarsh",
+    "Halvering",
+    "Linnmere",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 5.52,
+    "Dunmarsh": 10.75,
+    "Elkhollow": 9.1,
+    "Halvering": 14.9,
+    "Kinnard": 5.07,
+    "Larkhaven": 8.89,
+    "Linnmere": 12.12,
+    "Marlbank": 9.29,
+    "Quarrybrook": 7.24,
+    "Sallowford": 4.42,
+    "Thorncastle": 7.37,
+    "Wexmoor": 18.57
+   }
+  },
+  "R3t": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 8.82,
+    "Dunmarsh": 9.88,
+    "Elkhollow": 13.23,
+    "Halvering": 15.36,
+    "Kinnard": 5.53,
+    "Larkhaven": 8.77,
+    "Linnmere": 14.32,
+    "Marlbank": 12.1,
+    "Quarrybrook": 8.81,
+    "Sallowford": 5.48,
+    "Thorncastle": 6.57,
+    "Wexmoor": 16.47
+   }
+  },
+  "bin1": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 8.13,
+    "Dunmarsh": 9.12,
+    "Elkhollow": 12.29,
+    "Halvering": 14.17,
+    "Kinnard": 5.1,
+    "Larkhaven": 8.13,
+    "Linnmere": 13.28,
+    "Marlbank": 11.14,
+    "Quarrybrook": 8.16,
+    "Sallowford": 5.02,
+    "Thorncastle": 6.09,
+    "Wexmoor": 15.19
+   }
+  },
+  "golden": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 7.97,
+    "Dunmarsh": 8.94,
+    "Elkhollow": 11.97,
+    "Halvering": 13.91,
+    "Kinnard": 4.99,
+    "Larkhaven": 7.93,
+    "Linnmere": 12.95,
+    "Marlbank": 10.94,
+    "Quarrybrook": 7.97,
+    "Sallowford": 4.96,
+    "Thorncastle": 5.94,
+    "Wexmoor": 14.91
+   }
+  },
+  "ll4": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 7.99,
+    "Dunmarsh": 8.95,
+    "Elkhollow": 11.98,
+    "Halvering": 13.93,
+    "Kinnard": 5.0,
+    "Larkhaven": 7.94,
+    "Linnmere": 12.96,
+    "Marlbank": 10.96,
+    "Quarrybrook": 7.98,
+    "Sallowford": 4.97,
+    "Thorncastle": 5.95,
+    "Wexmoor": 14.94
+   }
+  },
+  "ll6": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 8.03,
+    "Dunmarsh": 9.01,
+    "Elkhollow": 12.06,
+    "Halvering": 14.01,
+    "Kinnard": 5.03,
+    "Larkhaven": 7.99,
+    "Linnmere": 13.05,
+    "Marlbank": 11.02,
+    "Quarrybrook": 8.04,
+    "Sallowford": 5.0,
+    "Thorncastle": 5.99,
+    "Wexmoor": 15.03
+   }
+  },
+  "ols2": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 7.97,
+    "Dunmarsh": 8.94,
+    "Elkhollow": 11.97,
+    "Halvering": 13.91,
+    "Kinnard": 4.99,
+    "Larkhaven": 7.93,
+    "Linnmere": 12.95,
+    "Marlbank": 10.94,
+    "Quarrybrook": 7.97,
+    "Sallowford": 4.96,
+    "Thorncastle": 5.94,
+    "Wexmoor": 14.91
+   }
+  },
+  "ols3": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 7.97,
+    "Dunmarsh": 8.94,
+    "Elkhollow": 11.97,
+    "Halvering": 13.91,
+    "Kinnard": 4.99,
+    "Larkhaven": 7.93,
+    "Linnmere": 12.95,
+    "Marlbank": 10.94,
+    "Quarrybrook": 7.97,
+    "Sallowford": 4.96,
+    "Thorncastle": 5.94,
+    "Wexmoor": 14.91
+   }
+  },
+  "ols4": {
+   "set": [
+    "Elkhollow",
+    "Halvering",
+    "Linnmere",
+    "Marlbank",
+    "Wexmoor"
+   ],
+   "tons": {
+    "Copperleaf": 8.02,
+    "Dunmarsh": 8.99,
+    "Elkhollow": 12.04,
+    "Halvering": 13.98,
+    "Kinnard": 5.02,
+    "Larkhaven": 7.98,
+    "Linnmere": 13.02,
+    "Marlbank": 11.0,
+    "Quarrybrook": 8.02,
+    "Sallowford": 4.99,
+    "Thorncastle": 5.98,
+    "Wexmoor": 14.99
+   }
+  }
+ },
+ "stations": {
+  "Copperleaf": {
+   "in_county": 6591,
+   "naive": 6238
+  },
+  "Dunmarsh": {
+   "in_county": 12605,
+   "naive": 11849
+  },
+  "Elkhollow": {
+   "in_county": 11277,
+   "naive": 11330
+  },
+  "Halvering": {
+   "in_county": 20788,
+   "naive": 19174
+  },
+  "Kinnard": {
+   "in_county": 4693,
+   "naive": 3649
+  },
+  "Larkhaven": {
+   "in_county": 9340,
+   "naive": 9377
+  },
+  "Linnmere": {
+   "in_county": 17587,
+   "naive": 15960
+  },
+  "Marlbank": {
+   "in_county": 10471,
+   "naive": 10542
+  },
+  "Quarrybrook": {
+   "in_county": 9848,
+   "naive": 8600
+  },
+  "Sallowford": {
+   "in_county": 5849,
+   "naive": 5880
+  },
+  "Thorncastle": {
+   "in_county": 7398,
+   "naive": 7536
+  },
+  "Wexmoor": {
+   "in_county": 30798,
+   "naive": 30993
+  }
+ },
+ "threshold": 10.0,
+ "totals": {
+  "eligible": 65305,
+  "miles_m": 614.0,
+  "read": 61865,
+  "tons": 113
+ },
+ "year": 2027,
+ "zone_charges": {
+  "0": 185,
+  "1": 280,
+  "2": 330,
+  "3": 395
+ }
+}

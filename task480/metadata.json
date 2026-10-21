@@ -1,0 +1,131 @@
+{
+ "task": "task480",
+ "title": "Halvering Basin: the 2027 Vehicle Retirement Program intake counties",
+ "setting": "A fictional state environmental quality department's mobile sources section, a fictional twelve-county ozone nonattainment area and its first biennial inspection cycle; every record is synthetic.",
+ "as_of": "2026-10-26",
+ "files": [
+  {
+   "file": "county_codes.csv",
+   "source": "Division of Motor Vehicles (fictional), synthetic records",
+   "date": "2026-07-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12
+  },
+  {
+   "file": "county_population_estimates_2025.csv",
+   "source": "State Demographer (fictional), synthetic records",
+   "date": "2025-12-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12
+  },
+  {
+   "file": "dot_county_vmt_2025.csv",
+   "source": "State Department of Transportation (fictional), synthetic records",
+   "date": "2026-06-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 72
+  },
+  {
+   "file": "eip_annual_report_2024.pdf",
+   "source": "Mobile Sources Section (fictional), synthetic records",
+   "date": "2025-03-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "eip_inspections_2024_2025.csv",
+   "source": "Halvering Basin Enhanced Inspection Program (fictional), synthetic records",
+   "date": "2026-01-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 197738
+  },
+  {
+   "file": "eip_station_register_2026-06-30.xlsx",
+   "source": "Halvering Basin Enhanced Inspection Program (fictional), synthetic records",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 58
+  },
+  {
+   "file": "extract_notes_and_dictionary.pdf",
+   "source": "Mobile Sources Section (fictional), synthetic records",
+   "date": "2026-09-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "gasoline_sales_by_county_2025.csv",
+   "source": "State Department of Revenue (fictional), synthetic records",
+   "date": "2026-04-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 144
+  },
+  {
+   "file": "nox_running_rates_cy2027.xlsx",
+   "source": "Mobile Sources Section (fictional), synthetic records",
+   "date": "2026-04-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "registration_body_codes.csv",
+   "source": "Division of Motor Vehicles (fictional), synthetic records",
+   "date": "2026-07-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 9
+  },
+  {
+   "file": "vehicle_registrations_2026-07-01.csv",
+   "source": "Division of Motor Vehicles (fictional), synthetic records",
+   "date": "2026-07-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 253717
+  },
+  {
+   "file": "vehicle_retirement_program_guidelines_2027.pdf",
+   "source": "Mobile Sources Section (fictional), synthetic records",
+   "date": "2026-09-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "vrp_pilot_close_out_2025.pdf",
+   "source": "Mobile Sources Section (fictional), synthetic records",
+   "date": "2026-02-10",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "vrp_pilot_dismantler_invoices_2025.csv",
+   "source": "the 2025 pilot's three licensed dismantlers (fictional), synthetic records",
+   "date": "2026-01-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 741
+  },
+  {
+   "file": "vrp_pilot_vouchers_2025.xlsx",
+   "source": "Vehicle Retirement Program program office (fictional), synthetic records",
+   "date": "2026-01-20",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 741
+  }
+ ],
+ "distractors": [
+  {
+   "file": "dot_county_vmt_2025.csv",
+   "why": "road miles counted on each county's roads by every vehicle including through traffic; guidelines 3.3 judges each vehicle's 2027 miles on its own odometer reading"
+  },
+  {
+   "file": "gasoline_sales_by_county_2025.csv",
+   "why": "gallons sold by county of sale, every vehicle that fuels there; not a vehicle's miles, which 3.3 takes from its own reading"
+  },
+  {
+   "file": "county_population_estimates_2025.csv",
+   "why": "residents and households; the eligible fleet is the registration snapshot's ACTIVE records (2.1)"
+  }
+ ],
+ "deliverables": [
+  "retirement_program_county_nox_2027.xlsx",
+  "intake_counties_2027_memo.docx"
+ ]
+}

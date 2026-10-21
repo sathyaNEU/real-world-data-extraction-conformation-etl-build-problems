@@ -39,17 +39,18 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   age is that year's miles. Decisive generator G17, with G13 (the lifetime average put on one future year) and G16.
 - **World:** United States, an unnamed state: the Department of Environmental Quality's Mobile Sources Section runs
   the enhanced inspection program of a fictional twelve-county ozone nonattainment area (biennial OBD tests from
-  1 January 2024, gasoline vehicles of model year 1996 and newer, the four newest model years exempt, even model years
-  tested in even years) and its 2027 Vehicle Retirement Program (CMAQ-funded), which pays owners to retire registered
-  gasoline cars and light trucks of model years 2001 to 2010 and holds intake events in each county whose eligible
+  1 January 2024, gasoline vehicles of model year 1996 and newer, the four newest model years exempt, the first
+  cycle's inspection year set by the last digit of the VIN) and its 2027 Vehicle Retirement Program (CMAQ-funded),
+  which pays owners to retire registered gasoline cars and light trucks of model years 2005 to 2014 (the 2025 pilot
+  took 2001 to 2010) and holds intake events in each county whose eligible
   vehicles will emit at least 10 short tons of NOx in 2027. Counties (invented, screened against the US county and city
   register at edit distance two): Wexmoor, Linnmere, Halvering, Elkhollow, Dunmarsh, Quarrybrook, Marlbank, Larkhaven,
   Copperleaf, Thorncastle, Sallowford and Kinnard. Personas from `guard.py names --geo us --seed 480`: Bridget Palmer
   (Mobile Sources Section chief), Jacqueline Aguilar (Air Quality Division director).
 - **Data-native sentence:** the area's inspections began in January 2024, so the first biennial cycle holds one
-  odometer reading per vehicle; a car's yearly miles fall as it ages, from about 15,000 new to about 7,500 at twenty,
-  so a reading divided by the car's age is the average of its longer early years, and the program's cars are the
-  oldest the area has.
+  odometer reading per vehicle; a car's yearly miles fall as it ages, from about 15,000 new to about 8,000 at twenty,
+  so a reading divided by the car's age is the average of its longer early years, and the program's cars are among
+  the oldest the area has.
 - **Forcing fact:** the funding request for the 2027 program year (forward); the quantity is calendar 2027's NOx from
   vehicles registered at 1 July 2026, a year not yet begun.
 - **Forum and forcing event:** funder_or_donor (the state DOT's CMAQ office approves the request and its intake
@@ -63,31 +64,188 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
 
 ## Three rules
 
-Task type: emissions-inventory (Physical & Environmental Sciences), which the taxonomy tags for ETL: the eligible fleet's 2027 NOx inventory is conformed from the registration snapshot, the inspection records, the station register and the model-year rate table, and its activity term is estimated from one cumulative odometer reading per vehicle.
+Task type: emissions-inventory (Physical & Environmental Sciences), which the taxonomy tags for ETL: the eligible fleet's 2027 NOx inventory is conformed from the registration snapshot, the inspection records, the body codes and the model-year rate table, and its activity term is estimated from one cumulative odometer reading per vehicle.
 
 Domain test: the quantity that decides the call is each county's 2027 on-road NOx from its eligible vehicles, the activity-times-rate sum a mobile source inventory builds, and the step that decides it is the inventory's mileage accumulation by age, estimated as the rise of the cumulative miles the inspected fleet has travelled by each age, with each vehicle's own reading setting its level.
 
 Swap: "which of our twelve clinics' patients born in the 1960s will make at least 10,000 visits in 2027, each from a lifetime visit count" keeps the sentence and loses the analysis: a clinic records each visit when it happens, so nobody estimates this year's visits from a lifetime total, and nothing like a model-year emission rate, an inspection cycle that sees each vehicle once or an exemption for the newest model years shapes what the record holds.
 
-Layer 1: biennial inspections by model-year parity with the four newest model years exempt; retests and aborted tests beside each initial test; VINs keyed by hand when the OBD read fails, joined back through the plate; odometer placeholders for unreadable odometers and kilometre readings on imported vehicles; registrations superseded by a transfer to another county left on file with a transferred status; tests at stations in another county than the registration; vehicles registered after the cycle with no reading yet; each asserted neutral on the call in checks.py.
+Layer 1: the first cycle's inspection year set by the last digit of the VIN, with the four newest model years exempt; aborted attempts and retests beside each initial test; VINs typed by hand where the OBD read fails, joined back through the plate and model year the lane found; odometers entered as 0 or 999999 when unreadable, and kilometre readings; transferred records left on file when a vehicle moved county; tests at stations in another county; vehicles registered after their cycle year with no reading yet (the 3.4 fill); each mishandled in checks.py R2 with the call and every county's whole tons unchanged.
 
-Layer 2: estimation_fit. The methodological choice is how each eligible vehicle's 2027 miles are estimated from its one cumulative reading: the reading over the vehicle's age, that per-year average carried along its own trend by age, the fleet's yearly miles by age without the vehicle's own level, or the vehicle's own level against the fleet's cumulative curve by age times the curve's rise over the age the vehicle reaches in 2027.
+Layer 2: estimation_fit. The methodological choice is how each eligible vehicle's 2027 miles are estimated from its one cumulative reading: the reading over the vehicle's age, that per-year average carried along the trend of lifetime averages by age, the fleet's cumulative curve without the vehicle's own level, or the vehicle's own level against the fleet's cumulative curve by age times the curve's rise over the ages the vehicle passes through in 2027.
 
 Decisive step: estimating each eligible vehicle's 2027 miles as its own reading over the cumulative miles the inspected fleet has travelled by the vehicle's age at its test, times that cumulative curve's rise between the vehicle's ages at the start and the end of 2027, rather than as the reading over the vehicle's age.
 
 Not semantics: reading every field correctly, the odometer as cumulative miles since new and the age from the model year as the guidelines set it, still leaves the easy route on the wrong counties: the reading over the age is a true average of every year the car has lived, and what it misses, that each year's miles fall with age, shows only in the cross-section of every inspected vehicle's reading read as a cumulative curve and differenced, which no file labels.
 
-Not rule application: the guidelines file the population, the outcome (the miles a vehicle travels in calendar 2027 at the age it then is, times the Table 2 rate for its model year and class), the window, the unit, the 10-ton line, that a vehicle's 2027 miles are judged on its own reading, and the fill for vehicles without one; no filed rule says how a cumulative reading becomes one year's miles, and executing every stated rule with the reading over the age files the wrong set.
+Not rule application: the guidelines file the population, the outcome (the miles a vehicle will travel in calendar 2027 times the Table 2 rate for its model year and class), the window, the unit, the 10-ton line, that a vehicle's 2027 miles are judged on its own reading, and the fill for vehicles without one; no filed rule says how a cumulative reading becomes one year's miles, and executing every stated rule with the reading over the age files the wrong set (checks.py R3a).
 
-Analyst test: a strong analyst who conforms the registrations, the inspection records, the station register and the rate table and reads the guidelines correctly takes each eligible vehicle's reading over its age as its 2027 miles and files about seven counties; carrying that per-year average along its own trend by age still files six or seven; the fleet's yearly miles by age without each vehicle's own level files three; only each vehicle's level against the fleet's cumulative curve times the curve's rise over 2027 files the golden four (figures fixed at stage 2).
+Analyst test: a strong analyst who conforms the registrations, the inspection records and the rate table and reads the guidelines correctly takes each eligible vehicle's reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; carrying that per-year average along the trend of the lifetime averages by age still files the nine; the fleet's cumulative curve without each vehicle's own level files four, Dunmarsh in and Elkhollow and Marlbank out; only each vehicle's level against the fleet's cumulative curve times the curve's rise over 2027 files the golden five (checks.py R3a and R3b, on the generator's clean truth as on the pack).
 
-Estimand: the program guidelines file the population (gasoline cars and light trucks of model years 2001 to 2010 registered in a member county at 1 July 2026, including those with no 2024 to 2025 reading), the outcome (each vehicle's NOx in calendar 2027: its 2027 miles at the age it then is times the Table 2 rate), the window (calendar 2027), the unit (short tons per county) and the comparison (10 tons or more designates the county).
+Estimand: the program guidelines file the population (gasoline and flex-fuel cars and light trucks of model years 2005 to 2014, GVWR class 1 or 2a, with an ACTIVE record in a member county on the 1 July 2026 snapshot, including those with no 2024 to 2025 reading), the outcome (each vehicle's NOx in calendar 2027: the miles it will travel in 2027 times the Table 2 running exhaust rate), the window (calendar 2027), the unit (short tons of 907,184.74 grams per county) and the comparison (10.0 tons or more, before rounding, designates the county).
 
-No decoy: nothing is planted to be caught: the state DOT's county road-mileage series and the fuel sales are genuine series on other bases, shipped as distractors; no memo, draft, earlier estimate or stakeholder figure ships; the 2025 pilot's close-out reports retirements and vouchers and no NOx; the decline of yearly miles with age is how cars are used, recorded nowhere as a rule.
+No decoy: nothing is planted to be caught: the state DOT's county road mileage, the fuel sales and the population estimates are genuine series on other bases, shipped as distractors; no memo, draft, earlier estimate or stakeholder figure ships; the 2025 pilot's close-out reports letters, applications and approvals and no NOx or per-county figure; the decline of yearly miles with age is how cars are used, recorded nowhere as a rule.
 
-No certified replay: no certified or published figure is reproduced to recover the method; no shipped table reports any county's 2027 miles or NOx, or any yearly mileage by age.
+No certified replay: no certified or published figure is reproduced to recover the method; no shipped table reports any county's 2027 miles or NOx, any yearly mileage by age or any inventory.
 
 Lesson: one cumulative reading per unit holds the unit's level, not its current rate; the rate at an age is the rise of the cumulative curve the cross-section traces, and a unit's total over its age is the average of every age it has passed through, which overstates its rate wherever the rate falls with age.
+
+## Default path
+
+1. Conform the snapshot: the ACTIVE records in the twelve member counties of model years 2005 to 2014, fuel G or F,
+   GVWR 1 or 2a (65,305 vehicles), each with its first completed initial test by VIN, else by plate and model year
+   for a typed VIN, 0 and 999999 dropped and kilometres converted (61,865 with a reading).
+2. Take each vehicle's 2027 miles as its odometer over its age at the test, the age from 1 January of its model year:
+   the miles a year it has travelled.
+3. Fill the vehicles without a reading with their county and model year's average (3.4), multiply by the Table 2
+   rate for the model year and class, sum each county in short tons.
+4. Designate the counties at 10.0 tons or more.
+
+Ends on: nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf
+Golden: five counties, Wexmoor, Halvering, Linnmere, Elkhollow and Marlbank
+
+## Stump sentence
+
+The default path takes each eligible vehicle's odometer over its age as its 2027 miles and files nine counties, the
+golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf, because the reading over the age is the average of
+every year the car has been driven and a car is driven fewer miles each year as it ages; the readings of every
+inspected vehicle by age trace the cumulative curve whose rise over 2027 is a car's 2027 miles at the ages it then
+passes through, each vehicle's reading against that curve sets its own level, and that files the golden five.
+
+## Readability screen
+
+| Rung | What the solver must see | Where it is | Verdict |
+|---|---|---|---|
+| R0, the area's average reading over age on every vehicle | one number from the readings | the first thing a reading invites | readable |
+| R1, each vehicle's reading over its age (the default path) | the guidelines' own reading, an age, a divide | 3.3 names the reading and the age convention | readable |
+| R1c, that average carried along the trend of lifetime averages by age | lifetime averages fall with age across the fleet | a plot of reading over age against age | readable |
+| R2, the fleet's cumulative curve's rise without the vehicle's level | yearly miles fall with age; the curve's rise is a year's miles | the cross-section read as a cumulative curve | readable |
+| R3 (decisive), the vehicle's level against the cumulative curve times the curve's rise over 2027 | the reading is the vehicle's level on the curve, not its rate; its 2027 miles are its level times the curve's rise at its 2027 ages | no file states a yearly mileage, a curve or a level; only the readings of every age read together as one cumulative curve and differenced | silent |
+| R3t, the vehicle's level times the curve's slope at its test age | the window: the rate at the 2024 or 2025 test, not 2027 | 3.2's "in calendar year 2027" | readable |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | eligible car or light truck | 2.1: fuel G or F, model year 2005 to 2014, GVWR 1 or 2a | any fuel, any weight | another population | 2.1 filed |
+| SF2 | registered on 1 July 2026 | an ACTIVE record in the county on the snapshot | any record dated before the snapshot | another population | 2.1 filed |
+| SF3 | in 2027 | calendar year 2027 | the program year or the fiscal year | same window | 3.1 and 1 (program year 1 January to 31 December) |
+| SF4 | 10 short tons or more | the unrounded county total against 10.0 | rounded first | same call | 3.1 filed; no county within 7 per cent of the line across the family |
+| SF5 | short ton | 2,000 pounds, 907,184.74 grams | metric tonne | another figure | 3.2 filed |
+| SF6 | the rate's class | the body code's program class | GVWR class | another rate | 3.2 filed; every eligible body code maps |
+| SF7 | the reading | the first completed initial test | an aborted attempt, a retest | same call | 3.3; aborts carry no odometer; R2 asserts the retest reading |
+| SF8 | the vehicle's age | years from 1 January of the model year | from the title date | another age | 3.3 filed |
+| SF9 | no usable reading | the county and model year average of the 2027 miles | dropped, the county average | another figure | 3.4 filed; every county and model year has read vehicles |
+| SF10 | kilometre odometers | converted to miles | read as miles | same call | the notes name KM; R2 asserts |
+| SF11 | a typed VIN that matches no registration | the plate and model year the lane found | left unread | same call | the notes; R2 asserts |
+| SF12 | the miles over 2027 | the curve's rise from the age on 1 January 2027 to 1 January 2028 | the slope at the mid-2027 age | same call and figures | checks.py asserts |
+| SF13 | the cumulative curve | any smooth fit of every completed initial reading | cubic, quartic, local linear, one-year means, model-year means, through the origin, lifetime-average fits, eligible model years only, ages 10 and over, county curves, exponential decay | same call and figures | the fifteen-member family in checks.py; the power and log-quadratic forms rejected by the one-year means |
+| SF14 | a vehicle | one ACTIVE record per VIN | each record | same call | checks.py asserts one ACTIVE record per VIN |
+| SF15 | member counties | county_codes.csv's twelve | the counties on the snapshot | same set | 3.5 filed |
+| SF16 | to the nearest short ton | from the unrounded county total | rounded per vehicle | same figures | the prompt; no family member within 0.16 of an edge |
+| SF17 | NOx | running exhaust (Table 2) | with starts | another figure | 3.2 filed |
+| SF18 | program class codes | PC and LT | any other | same rate | the body code list carries two |
+
+## Ladder
+
+| Rung | Route | Files | Separation |
+|---|---|---|---|
+| R0 | the area's average reading over age on every read vehicle | nine: the five plus Dunmarsh, Larkhaven, Quarrybrook, Thorncastle | every county figure missed |
+| R1 | each vehicle's reading over its age (default path) | nine: the five plus Copperleaf, Dunmarsh, Larkhaven, Quarrybrook | the four added at 11.37 to 12.81 tons, Thorncastle out at 8.55; every county figure missed |
+| R1c | R1 carried along the trend of lifetime averages by age | the same nine | every county figure missed |
+| R1d | each county's linear slope of readings on age | the same nine | every county figure missed |
+| R2 | the fleet curve's rise over 2027 without the vehicle's level | four: Wexmoor, Halvering, Linnmere, Dunmarsh (10.75) | Elkhollow 9.10 and Marlbank 9.29 out; 11 of 12 figures missed |
+| R3t | the vehicle's level times the curve's slope at its test age | the golden five | 11 of 12 county figures missed (the window) |
+| Golden | the vehicle's level against the curve times its rise over 2027 | five: Wexmoor 15, Halvering 14, Linnmere 13, Elkhollow 12, Marlbank 11 | Marlbank 10.94 lowest in, Dunmarsh 8.94 highest out; across the family 10.72 and 9.15 |
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | ACTIVE records on the 1 July 2026 snapshot in a member county, 2.1's model years, fuels and weights, unread vehicles included | filed at 2.1 and 3.4; transferred records C1 (R2) |
+| 2 Unit of account | the vehicle, summed to the county | the question; one ACTIVE record per VIN (SF14) |
+| 3 Attribution window | calendar 2027 at the ages a vehicle passes through in it | filed at 3.1 and 3.2; SF12 converges |
+| 4 As-of dating | the snapshot of 1 July 2026; the 2024 to 2025 cycle's readings | filed at 2.1 and 3.3 |
+| 5 Version basis | one snapshot, one test extract, one rate table | nothing to choose |
+| 6 Denominator | none in the call; the fill averages the read vehicles of the county and model year | filed at 3.4 |
+| 7 Weighting | every reading counted once in the curve | C3: one-year and model-year means, subsets and county curves agree (SF13) |
+| 8 Window length | the whole first cycle | C1: every vehicle has one cycle |
+| 9 Boundary inclusivity | 10.0 or more, unrounded | filed at 3.1; nothing within 7 per cent of the line |
+| 10 Rounding path | county totals unrounded, whole tons at the end | the prompt; edges 0.16 or more (SF16) |
+| 11 Tie-break | none | no two counties within a ton of each other at the line |
+| 12 Maturity and censoring | vehicles not yet inspected carry no reading | filed fill at 3.4; the exempt newest model years lie outside 2005 to 2014 |
+| 13 Order of operations | 2027 miles, the fill, then each vehicle's own rate | filed: 3.4 fills the 2027 miles and 3.2 applies the vehicle's rate to them |
+| 14 Row order | the earliest completed initial test | C1: one completed initial per vehicle |
+| 15 Duplicate resolution | no repeated test record; aborts and retests beside the initial | R2 asserts both readings |
+| 16 Identity normalisation | VIN, else plate and model year for a typed VIN | R2: same call unmatched |
+| 17 Netting against gross | none | nothing nets |
+| 18 Dimensional units | odometer units; grams to short tons | the notes name KM; 3.2 files the ton |
+| 19 Code and status semantics | record_status, fuel_code, gvwr_class, body codes to class | the notes and 2.1, 3.2 |
+| 20 Integerisation | none in the call | miles and grams continuous |
+| 21 Clause scope | 3.4's fill covers both no test and an unreadable odometer | filed in 3.4's parenthesis |
+| 22 Forward window contents | 2027's miles from the 2024 to 2025 readings | the decisive step; the method open, forced by the data (SF13, the family and the rejected forms) |
+
+## Literal reader
+
+Executing the prompt and guidelines 2.1 to 3.5 word for word: the eligible vehicles are 2.1's; each vehicle's 2027
+miles are "judged on its own odometer reading at its initial inspection" (3.3), which names the evidence and leaves
+the estimator to the analyst, and 3.2 makes the quantity "the miles it will travel in calendar year 2027"; the
+reading over the age is a different quantity, the mean of the years already travelled; the cumulative curve's rise
+over 2027 at the vehicle's level is the year's miles, and every smooth fit of the curve on every reasonable subset of
+the readings (fifteen members, checks.py) gives the golden five and the same whole tons in every county; every other
+term (SF1 to SF18) has one filed reading or converges.
+
+## Oracles
+
+None ship. No file states any county's 2027 miles or NOx, any yearly mileage by age or the designated set; the pilot
+close-out gives letters, applications, approvals and declines, no per-county retirements or payments; the 2024 annual
+report lists the stations and no per-county test counts; the DOT road mileage, fuel sales and population series are
+on other bases (distractors in metadata.json, each ruled out by 2.1 or 3.3) and no shipped artifact ranks the counties.
+
+## Ask sheet
+
+- **Ask A, the 2025 pilot** (8 figures): the vehicles the pilot retired in each of its four counties and what the
+  Department paid dismantlers for them. Its tie to the call: the funding request the call goes into prices the 2027
+  program on what the pilot actually retired and paid. Devices: D5, a PAID voucher whose vehicle has an ACTIVE record
+  again on the snapshot was not retired (62 vouchers; benign twins, 53 voucher vehicles carry a transferred record
+  from a move before the pilot and were retired); D6, Oakhaven Salvage & Parts' billing export writes each invoice's
+  total on every line (1.56 times Elkhollow's true charges), while the other two dismantlers bill one amount per tow
+  zone and 4.2 says the charges are the same at every dismantler.
+- **Ask B, stations** (12 figures): for every county, the vehicles registered there at 1 July 2026 whose completed
+  initial inspection was at a station in that county. Its tie to the call: intake desks sit at the designated
+  counties' inspection stations (guidelines 5). Device: D7, six station licence numbers given again to new stations
+  in other counties during the cycle; the register lists only the current licensee with licensed_since, the 2024
+  annual report lists 2024's stations, so a test is read with the licence that held its number that day (the current
+  licence misses all twelve counties, by 31 to 1,618).
+- **Construction layer** (the call's own rows): each county's NOx and verdict and the chart of the twelve against the
+  line; no device rows in the call's population (the 62 reinstated vehicles dropped leave every figure, asserted).
+
+Pair ceiling: 32.1 (cracker 45.0 on the call with no ask figure kept, mirror 19.2 at R1 keeping 8 of the 25 main criteria)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/ceiling.py on the cut pack
+
+| Ask | Figure | Golden | The cracker's path | Cracker |
+|---|---|---|---|---|
+| A | Elkhollow vehicles retired | 222 | 238 (every PAID voucher) | miss |
+| A | Elkhollow dismantler charges | $59,050 | $97,770 (line amounts) | miss |
+| A | Dunmarsh vehicles retired | 201 | 214 | miss |
+| A | Dunmarsh dismantler charges | $53,985 | $57,640 | miss |
+| A | Larkhaven vehicles retired | 154 | 171 | miss |
+| A | Larkhaven dismantler charges | $42,590 | $47,280 | miss |
+| A | Kinnard vehicles retired | 102 | 118 | miss |
+| A | Kinnard dismantler charges | $26,625 | $30,720 | miss |
+| B | Copperleaf in-county inspections | 6,591 | 6,238 (current licence) | miss |
+| B | Dunmarsh | 12,605 | 11,849 | miss |
+| B | Elkhollow | 11,277 | 11,330 | miss |
+| B | Halvering | 20,788 | 19,174 | miss |
+| B | Kinnard | 4,693 | 3,649 | miss |
+| B | Larkhaven | 9,340 | 9,377 | miss |
+| B | Linnmere | 17,587 | 15,960 | miss |
+| B | Marlbank | 10,471 | 10,542 | miss |
+| B | Quarrybrook | 9,848 | 8,600 | miss |
+| B | Sallowford | 5,849 | 5,880 | miss |
+| B | Thorncastle | 7,398 | 7,536 | miss |
+| B | Wexmoor | 30,798 | 30,993 | miss |
 
 ## Tried and rejected
 
@@ -134,3 +292,18 @@ Lesson: one cumulative reading per unit holds the unit's level, not its current 
   printed unit of 0.1. Re-rooted fresh by the author's rule: no staggered rollout or treated-against-untreated
   comparison in the new world, every graded figure printed at the precision its estimator family supports, and no ask
   device a clock profile or a value spike can find.
+- 2026-10-21, stage 2: the 2027 program's model years 2001 to 2010: their 2027 ages, 17 to 27, sit at the thin old end
+  of the readings, where an exponential decay of yearly miles fits the one-year means as well as the quadratic
+  (chi-square 33 against 33 on 27) and puts every county 4 to 5 per cent higher, so the whole tons forked across
+  forms the record cannot separate; the program now takes model years 2005 to 2014, whose 2027 ages lie inside the
+  bulk of the readings, and the fifteen-member family agrees in every county.
+- 2026-10-21, stage 2: first sales centred three months before the model year began: the cumulative curve then has an
+  intercept, and fits through the origin or of the lifetime average moved every county by 4 to 7 per cent; first
+  sales now centre on 1 January of the model year.
+- 2026-10-21, stage 2: county-by-county curves on the counties' first random draws spread up to 9 per cent around the
+  pooled curve; each county's draw is now the one whose own curve agrees with the pooled one, and its intensity sets
+  its level mid-bin.
+- 2026-10-21, stage 2, asks: station numbers given again only between counties whose drivers do not cross left three
+  counties' counts unchanged under the current licence; each reissued pair now shares a commuting corridor.
+- 2026-10-21, stage 2: a lane computer's re-sent March 2025 rows (exact repeats at one station): a copied block is a
+  plant kind even when the call ignores it; removed.

@@ -6,7 +6,7 @@
  "domain": "physical-environmental-sciences",
  "subdomain": "emissions-inventory",
  "client_domain": "physical-environmental-sciences",
- "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2001 to 2010 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
+ "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2005 to 2014 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
  "objective": "etl",
  "shape": "other",
  "decision_type": "designation_set",
@@ -32,25 +32,25 @@
  "validated_decoy": false,
  "context_artifact": "close_out_summary",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms the registrations, the inspection records, the station register and the rate table and reads the guidelines correctly takes each eligible vehicle's odometer reading over its age as its yearly miles and files seven counties; no filed rule is broken, but a car travels fewer miles each year as it ages, so a reading's per-year average is the average of its younger, longer years and runs about 1.6 times what a 20-year-old car now travels; only each vehicle's level against the inspected fleet's cumulative miles by age, times that curve's rise over 2027, files the golden four.",
+ "analyst_test": "A strong analyst who conforms the registrations, the inspection records and the rate table and reads the guidelines correctly takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; no filed rule is broken, but a car travels fewer miles each year as it ages, so a reading's per-year average is the average of its younger, longer years and overstates the eligible fleet's 2027 NOx by about 43 per cent; only each vehicle's level against the inspected fleet's cumulative miles by age, times that curve's rise over 2027, files the golden five.",
  "domain_test": "The deciding quantity is each county's 2027 on-road NOx from its eligible vehicles, the activity-times-rate sum a mobile source emissions inventory builds, and the step that decides it is the inventory's mileage accumulation by age, estimated from inspection odometer readings; with another field's nouns (a clinic's cumulative visit counts, a pump's run hours) the model-year emission rates and the inspection program have no counterpart and the task does not read the same.",
  "layer2_family": "estimation_fit",
  "layer2_pattern": "own:this-year's-miles-at-a-future-age-from-one-cumulative-odometer-reading-per-vehicle",
  "layer1": [
-  "biennial inspections by model-year parity, the four newest model years exempt",
-  "retests and aborted tests beside each initial test",
-  "VINs keyed by hand when the OBD read fails, joined back through the plate",
-  "odometer placeholders (0, 999999) for unreadable odometers and readings in kilometres on imported vehicles",
+  "the first cycle's inspection year set by the last digit of the VIN, the four newest model years exempt",
+  "retests and aborted attempts beside each initial test",
+  "VINs keyed by hand when the OBD read fails, joined back through the plate and model year",
+  "odometer placeholders (0, 999999) for unreadable odometers and readings in kilometres",
   "registrations superseded by a transfer to another county left on file with a transferred status",
   "tests run at stations in another county than the vehicle's registration",
-  "vehicles registered after the inspection cycle with no reading yet"
+  "vehicles registered after their cycle year with no reading yet"
  ],
  "stakeholder_role": "the state environmental quality department's Mobile Sources Section chief, who runs the area's inspection program and its Vehicle Retirement Program and files the 2027 intake county list with the program's CMAQ funding request",
  "role_family": "operations_director",
  "scoring_unit": "other",
  "spine": {
-  "file": "im_inspections_2024_2025.csv",
-  "rows": 0,
+  "file": "eip_inspections_2024_2025.csv",
+  "rows": 197738,
   "entity": "one inspection of one vehicle",
   "grain": "vehicle x inspection",
   "source": "synthetic"
@@ -88,8 +88,8 @@
  "opening_move": "question-first",
  "question_form": "which",
  "driver": "Each unit's amount in a future period is read from one cumulative total per unit observed once at a past date, and the yearly increment of that total falls as the unit ages; a unit's total over its age is the average of every year it has lived, which overstates its increment at the older age the period finds it at, so each unit's level is taken from its own total against the cumulative curve the cross-section of all units traces by age, and its amount from that curve's rise over the period.",
- "driver_concrete": "Each eligible vehicle's 2027 miles are its own odometer reading at its 2024 or 2025 inspection set against the cumulative miles the inspected fleet has travelled by each age, times that curve's rise over the age the vehicle reaches in 2027; the reading over the vehicle's age is the miles it averaged over its life, which for a 20-year-old car is about 1.6 times what it travels now.",
- "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files seven counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates its 2027 miles about 1.6 times, and its 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files four; the fleet's curve without each vehicle's own level files three, dropping the county whose long-commute drivers run about a fifth above it.",
+ "driver_concrete": "Each eligible vehicle's 2027 miles are its own odometer reading at its 2024 or 2025 inspection set against the cumulative miles the inspected fleet has travelled by each age, times that curve's rise over the ages the vehicle passes through in 2027; the reading over the vehicle's age is the miles it averaged over its life, which for the program's 13 to 22 year old cars runs about 1.4 times what they travel now.",
+ "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates the fleet's 2027 NOx by about 43 per cent, and each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files five; the fleet's curve without each vehicle's own level files four, dropping the two counties whose drivers run long and adding the one whose drivers run short.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task196": "task196 v1 carries a per-exposure rate forward from a panel in which one of its two factors repeats from period to period and the other does not; here each unit is seen once, as a cumulative total, and its yearly amount at a future age is recovered from the cross-section's cumulative curve by age set against the unit's own level, with no panel and no second factor"
