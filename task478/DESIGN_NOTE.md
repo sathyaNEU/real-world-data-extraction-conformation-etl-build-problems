@@ -283,7 +283,13 @@ Measured by: generator/ceiling.py
   to tie under either route; the distractors are read by nothing the call or the asks need.
 - **Determinism.** Every licensed member prints the same seven sections and fourteen whole numbers, every figure at
   least 0.2 from a half and 0.75 from the line.
-- **leak.py REVIEW lines:** answered after the build (see the report).
+- **leak.py REVIEW lines, answered.** "the model's confidence" in the scope of work is Kerbline's detection model, the
+  field's own noun, and names no move. "407" in the data notes is the cover inventory's row count, which shares its
+  digits with Elmscourt's section number and is no figure the answer states. The scope of work's, the program's and the
+  data notes' stump-paragraph terms (pothole, Kerbline, detections, covers, sweepers, milepost) are each file's own
+  business: the scope of work says the pilot lacks defect linking and that a detection carries the phone's GPS fix, the
+  program names the fleets in the campaign, the data notes describe the columns; none states a unit's accuracy, a
+  tolerance or how to join detections (asserted in checks.py).
 - **House fixes.** Container metadata scrubbed; the manifest registers every file but itself; the section names ship in
   maintenance_sections.csv; the zip holds the sixteen files with no enclosing folder.
 

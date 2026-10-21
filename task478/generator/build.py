@@ -41,7 +41,7 @@ def build_pack(out, e):
     n["sections"] = P.write_csv(f("sections"), ["section", "section_name", "yard", "district"], P.section_rows(e))
     open(f("sessions"), "w", encoding="utf-8", newline="\n").write(P.sessions_json(e))
     n["sessions"] = sum(1 for s in e["sessions"] if not s.get("unclosed"))
-    n["review"] = DC.write_review(f("review"), e)
+    n["covers"] = P.write_csv(f("covers"), P.COVER_COLS, P.cover_rows(e))
     n["register"] = DC.write_register(f("register"), e)
     n["manifest"] = P.write_csv(f("manifest"), ["file", "source_system", "extracted", "covers", "rows", "notes"],
                                 P.manifest_rows(n))
@@ -53,8 +53,6 @@ def build_pack(out, e):
     PP.normalize_pdf(f("sow"), b"D:20270119141033-05'00'", b"D:20270119141033-05'00'")
     PP.normalize_pdf(f("turnback"), b"D:20270301103207-05'00'", b"D:20270301103207-05'00'")
     PP.normalize_pdf(f("dictionary"), b"D:20270403113845-04'00'", b"D:20270403113845-04'00'")
-    PP.normalize_ooxml(f("review"), "Kerbline Vision", "Kerbline Vision", "2027-04-02T13:04:00Z", "2027-04-02T13:04:52Z",
-                       excel=True, company="Kerbline Vision, Inc.")
     PP.normalize_ooxml(f("register"), "Kerbline Vision", "Kerbline Vision", "2027-02-19T16:40:00Z", "2027-04-01T14:12:09Z",
                        excel=True, company="Kerbline Vision, Inc.")
     return n

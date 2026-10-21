@@ -11,7 +11,7 @@ import world as W
 FILES = {
     "detections": "kerbline_detections_2027-03.csv",
     "traversals": "fleet_camera_traversals_2027-03.csv",
-    "review": "kerbline_qa_review_2027-03.xlsx",
+    "covers": "utility_cover_inventory_2026.csv",
     "register": "kerbline_unit_register.xlsx",
     "sessions": "kerbline_unit_sessions_2027-03.json",
     "inventory": "road_inventory_2026.csv",
@@ -59,15 +59,15 @@ def us_local(t):
 
 
 # ------------------------------------------------------------------------------------------------- tables
-DET_COLS = ["detection_id", "defect_id", "unit_serial", "captured_local", "latitude", "longitude", "road_ref",
+DET_COLS = ["detection_id", "unit_serial", "captured_local", "latitude", "longitude", "road_ref",
             "route", "road_mp", "defect_class", "severity", "confidence", "image_ref"]
 
 
 def detection_rows(e):
     for x in e["detections"]:
         loc = W.local(x["t"])
-        yield [x["det"], x["defect"], x["unit"], loc.strftime("%Y-%m-%d %H:%M:%S"), "%.6f" % x["lat"], "%.6f" % x["lon"],
-               x["road_ref"], x["route"], None if x["road_mp"] is None else "%.3f" % x["road_mp"], x["cls"], x["sev"],
+        yield [x["det"], x["unit"], loc.strftime("%Y-%m-%d %H:%M:%S"), "%.6f" % x["lat"], "%.6f" % x["lon"],
+               x["road_ref"], x["route"], None if x["road_mp"] is None else "%.4f" % x["road_mp"], x["cls"], x["sev"],
                "%.2f" % x["conf"],
                "kv/%s/%s/%s_%d.jpg" % (loc.strftime("%Y%m%d"), x["unit"][3:], loc.strftime("%H%M%S"), x["det"])]
 
@@ -180,11 +180,13 @@ def sessions_json(e):
     return json.dumps(doc, indent=1, ensure_ascii=True) + "\n"
 
 
-def review_rows(e):
-    for x in e["review"]:
-        yield [x["defect"], "pothole", x["route"], None if x["mp"] is None else round(x["mp"], 3),
-               x["first"].astimezone(W.UTC).replace(tzinfo=None, microsecond=0), x["decision"], x["reason"] or None,
-               x["reviewed"].astimezone(W.UTC).replace(tzinfo=None, microsecond=0), x["reviewer"]]
+COVER_COLS = ["asset_id", "route", "milepost", "latitude", "longitude", "segment_id", "owner", "cover_type", "surveyed"]
+
+
+def cover_rows(e):
+    for x in sorted(e["covers"], key=lambda x: (x["route"], x["mp"])):
+        yield [x["asset"], x["route"], "%.4f" % x["mp"], "%.6f" % x["lat"], "%.6f" % x["lon"], x["seg"], x["owner"],
+               x["type"], x["surveyed"].isoformat()]
 
 
 def register_rows(e):
@@ -205,7 +207,8 @@ def manifest_rows(n):
          n["detections"], "captured_local is district local time"],
         [FILES["traversals"], "Fleet telematics provider, segment traversal export", "2027-04-02",
          "pilot vehicles, 28 February to 1 April 2027 (UTC)", n["traversals"], "state highway segments only"],
-        [FILES["review"], "Kerbline platform, review module export", "2027-04-02", "pothole-class defects", n["review"], ""],
+        [FILES["covers"], "District asset management", "2026-12-15", "utility covers in the state roadway, GPS rover survey",
+         n["covers"], ""],
         [FILES["register"], "Kerbline install log", "2027-04-01", "pilot units", n["register"], ""],
         [FILES["sessions"], "Kerbline device API", "2027-04-02", "15 February to 1 April 2027 (UTC)", n["sessions"],
          "sessions"],

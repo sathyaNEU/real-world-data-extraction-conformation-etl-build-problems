@@ -1,11 +1,11 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-21",
   "stump": "The default path links the pothole detections at one distance for every unit and, at any distance from 53 to 264 feet, designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because a distance wide enough to hold a street sweeper's scattered reports of one pothole together runs Fenwick Gap's and Kestrelton's bridge-deck potholes into one another; measured on the surveyed utility covers, the sweepers' units are 52 to 59 feet off and the rest 2 to 3 feet, so each pair of detections is joined within its own units' error, and Fenwick Gap (6.78) and Kestrelton (6.78) clear the line; at a few feet for every unit the sweepers' scatter puts Rushmead over it instead.",
   "architecture": 2,
@@ -15,11 +15,11 @@
     "date": "2026-10-21"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (field nouns and a row count; answered in the design note)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (no BLOCK) after pattern D and differentiation",
+    "heart": "WARN (no BLOCK)",
     "nearest": "task49"
   },
   "judge": {
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "architecture 2 drawn and designed (precut exit 0); generator rebuilt; next: rebuild, stage 3 gates (figures_check, leak.py --asof 2027-04-09, guard surface and heart, scrub), then stage 4 two scored readers and the judge",
+  "resume": "architecture 2 stage 4 in flight: two scored readers (fresh unzips) and the judge on target.zip 03fac97f33932e837acd292ad867a5e6; score each reader with score_reader.py --call-key call.designated (compare as a set) before its verdict; send the judge thread's verdict to the determinism-judge agent; fix findings in the generator; ship",
   "approved": null,
   "delivered": null,
   "portal": null,

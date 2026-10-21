@@ -3,11 +3,11 @@ import json
 
 import pack as P
 
-DATES = {"detections": "2027-04-02", "traversals": "2027-04-02", "review": "2027-04-02", "register": "2027-04-01",
+DATES = {"detections": "2027-04-02", "traversals": "2027-04-02", "covers": "2026-12-15", "register": "2027-04-01",
          "sessions": "2027-04-02", "inventory": "2027-01-04", "crosswalk": "2027-01-04", "turnback": "2027-03-01",
          "orders": "2027-04-02", "program": "2027-04-06", "sow": "2027-01-19", "dictionary": "2027-04-03",
          "manifest": "2027-04-03", "pci": "2026-11-30", "winter": "2027-04-01", "sections": "2027-01-04"}
-SOURCE = {"detections": "Kerbline Vision platform", "review": "Kerbline Vision platform, review module",
+SOURCE = {"detections": "Kerbline Vision platform",
           "register": "Kerbline Vision install log", "sessions": "Kerbline Vision device API",
           "sow": "Kerbline Vision, Inc.", "traversals": "fleet telematics provider for the district",
           "turnback": "City of Tamsett, Department of Public Works"}
@@ -28,7 +28,7 @@ def write(path, n):
                              dict(file=P.FILES["winter"], why="the March storms' plow hours, salt and freeze-thaw "
                                   "cycles by section: what made potholes, not a count of them"),
                              dict(file=P.FILES["sessions"], why="the units' platform sessions: when a unit was "
-                                  "running, which the traversals and the register already settle for every pass")],
+                                  "running, which neither the detections nor the register's install dates need")],
                 deliverables=["tamsett_spring_patching_sections_2027.csv", "tamsett_spring_patching_task_orders_2027.pdf"],
                 stated_inputs=["6.0"])
     json.dump(meta, open(path, "w", encoding="utf-8"), indent=1)

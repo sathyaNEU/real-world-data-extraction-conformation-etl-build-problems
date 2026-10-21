@@ -14,10 +14,15 @@ TZ = ZoneInfo("America/New_York")
 UTC = dt.timezone.utc
 SEED = 4782027
 
-# The capture process: a unit either can or cannot see a given defect from where its phone sits on its vehicle
-# (fixed for the installation); a unit that can see it records it on a pass with probability R_PASS.
-Q_SEE = 0.56
-R_PASS = 0.95
+# The capture process: a unit records a defect it passes with probability R_PASS (the sweepers' night passes, brushes
+# down, far less often). Where a unit places what it records: the milepost its GPS fix gives, off the true position by
+# a normal error of SIGMA miles, the sweepers' older units far looser than the rest.
+Q_SEE = 0.97
+R_PASS = 0.92
+R_PASS_SWEEPER = 0.22
+SIGMA = {"SWEEPER": 0.0105, "OTHER": 0.0005}
+ART_GAP = 0.15             # potholes on a sweeper-driven arterial lie at least this far apart
+DECK_GAP = (0.0055, 0.0090)  # neighbouring potholes on a bridge deck
 LINE = 6.0
 
 MARCH = [dt.date(2027, 3, d) for d in range(1, 32)]
@@ -54,7 +59,11 @@ SECTIONS = [
     (408, "Halverton", "R", 3.0, 0.27, 3),
     (410, "Oxbrae", "R", 4.0, 0.25, 4),
 ]
-SEC = {s[0]: dict(no=s[0], name=s[1], kind=s[2], target=s[3], reach=s[4], whole=s[5]) for s in SECTIONS}
+# the share of a section's longer segments that carry a bridge deck with a run of potholes
+DECK = {403: 0.30, 407: 0.30, 411: 0.10, 402: 0.40, 409: 0.35, 405: 0.15, 412: 0.12, 414: 0.12, 401: 0.35, 406: 0.40,
+        413: 0.40, 404: 0.15, 408: 0.12, 410: 0.15}
+SEC = {s[0]: dict(no=s[0], name=s[1], kind=s[2], target=s[3], reach=s[4], whole=s[5], deck=DECK[s[0]])
+       for s in SECTIONS}
 ORDER = [s[0] for s in SECTIONS]
 
 ROUTES = {
@@ -439,8 +448,9 @@ def looks_of(vehicles, trav):
     return looks
 
 
-def section_potholes(no, segs, looks, offset):
-    """The potholes on one section's segments and what each unit recorded of them; offset picks the stream."""
+def section_potholes(no, segs, looks, offset, veh_group=None):
+    """The potholes on one section's segments and what each unit recorded of them; offset picks the stream. On a
+    bridge deck the potholes come in runs a few yards apart; on an arterial the sweepers drive, far apart."""
     out = []
     for s in segs:
         if s["sec"] != no:
@@ -449,13 +459,29 @@ def section_potholes(no, segs, looks, offset):
         lam = SEC[no]["target"] / 10.0 * s["length"] * s["lanes"] * float(r.gamma(9.0, 1 / 9.0))
         n = int(r.poisson(lam))
         units = looks.get(s["seg"], {})
-        for i in range(n):
-            mp = round(float(r.uniform(s["bmp"] + 0.012, s["emp"] - 0.012)), 3)
+        swept = any(veh_group and veh_group.get(u) == "SWEEPER" for u in units)
+        deck = (not swept) and r.random() < SEC[no].get("deck", 0.0) and s["length"] >= 0.3
+        mps = []
+        if deck and n >= 3:
+            k = min(n, int(r.integers(3, 6)))
+            x = float(r.uniform(s["bmp"] + 0.03, s["emp"] - 0.03 - 0.03))
+            for j in range(k):
+                mps.append(round(x, 3))
+                x += float(r.uniform(*DECK_GAP))
+        gap = ART_GAP if swept else 0.03
+        tries = 0
+        while len(mps) < n and tries < 400:
+            tries += 1
+            m = round(float(r.uniform(s["bmp"] + 0.03, s["emp"] - 0.03)), 3)
+            if all(abs(m - q) >= gap for q in mps):
+                mps.append(m)
+        for mp in mps:
             seen = {}
             for u in sorted(units):
                 vis = r.random() < Q_SEE
-                seen[u] = [p for p in units[u] if vis and r.random() < R_PASS]
-            out.append(dict(seg=s["seg"], sec=no, mp=mp, cls="pothole", real=True, seen=seen,
+                rp = R_PASS_SWEEPER if veh_group and veh_group.get(u) == "SWEEPER" else R_PASS
+                seen[u] = [p for p in units[u] if vis and r.random() < rp]
+            out.append(dict(seg=s["seg"], sec=no, mp=mp, cls="pothole", real=True, seen=seen, deck=deck,
                             severity=int(r.choice([1, 2, 3], p=[0.38, 0.44, 0.18]))))
     return out
 
@@ -465,7 +491,7 @@ def other_defects(segs, looks):
     out = []
     for s in segs:
         other = {"alligator_cracking": 0.9, "longitudinal_crack": 1.1,
-                 "utility_cover": 0.9 if s["cls"] in ("ART", "SUB") else 0.15, "patch": 0.8,
+                 "utility_cover": 3.2 if s["cls"] == "ART" else (1.6 if s["cls"] == "SUB" else 1.0), "patch": 0.8,
                  "edge_break": 0.6 if s["cls"] == "RUR" else 0.1, "debris": 0.25}
         r2 = rng(21, s["k"])
         units = looks.get(s["seg"], {})
@@ -475,7 +501,7 @@ def other_defects(segs, looks):
                 mp = round(float(r2.uniform(s["bmp"] + 0.012, s["emp"] - 0.012)), 3)
                 seen = {}
                 for u in sorted(units):
-                    vis = r2.random() < (0.62 if c != "debris" else 0.5)
+                    vis = r2.random() < (0.62 if c not in ("debris", "utility_cover") else (0.5 if c == "debris" else 0.9))
                     hits = [p for p in units[u] if vis and r2.random() < 0.93]
                     seen[u] = hits[:1] if c == "debris" else hits
                 out.append(dict(seg=s["seg"], sec=s["sec"], mp=mp, cls=c, real=False, seen=seen, severity=1))

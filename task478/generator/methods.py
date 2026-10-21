@@ -1,5 +1,5 @@
 """Everything the call and the asks compute, read from the cut pack: the golden, the default path and the other rungs,
-the licensed variants of the completion, and the asks with their natural wrong handlings. checks.py, golden.py and
+the licensed variants of the linkage, and the asks with their natural wrong handlings. checks.py, golden.py and
 ceiling.py read the pack through this module; verify.py has its own code."""
 import csv
 import datetime as dt
@@ -54,9 +54,7 @@ def load(target):
     p["det"] = _csv(target, "kerbline_detections_2027-03.csv")
     p["trav"] = _csv(target, "fleet_camera_traversals_2027-03.csv")
     p["wo"] = _csv(target, "mms_cold_patch_orders_2027-03.csv")
-    wb = load_workbook(os.path.join(target, "kerbline_qa_review_2027-03.xlsx"), read_only=True)
-    rows = list(wb["Review decisions"].iter_rows(values_only=True))
-    p["qa"] = [dict(zip(rows[0], r)) for r in rows[1:]]
+    p["covers"] = _csv(target, "utility_cover_inventory_2026.csv")
     wb = load_workbook(os.path.join(target, "kerbline_unit_register.xlsx"), read_only=True)
     rows = list(wb["Units"].iter_rows(values_only=True))
     p["reg"] = [dict(zip(rows[0], r)) for r in rows[1:]]
@@ -111,270 +109,157 @@ def units(p):
     return out
 
 
-def looks(p, road, use_utc_day=False, ignore_install=False, sessions_only=False):
-    """segment -> set of units that drove it in March while installed on the vehicle."""
+def route_segment(p, keep_turnback=False):
+    """(route, milepost) -> the 2026 segment holding it."""
+    by_route = defaultdict(list)
+    for seg, v in p["inv"].items():
+        by_route[v["route"]].append((v["bmp"], v["emp"], seg))
+    for k in by_route:
+        by_route[k].sort()
+
+    def f(route, mp):
+        for lo, hi, seg in by_route.get(route, ()):
+            if lo - 1e-9 <= mp <= hi + 1e-9:
+                return seg
+        return None
+    return f
+
+
+def sigma(p, by="unit", robust=False):
+    """Each unit's milepost error: its utility cover detections against the inventory's surveyed covers on the same
+    route (the nearest within a tenth of a mile). by='fleet' pools a fleet group's units."""
     u = units(p)
-    by_veh = defaultdict(list)
-    for unit, (veh, grp, inst, rem) in u.items():
-        by_veh[veh].append((unit, inst, rem))
-    open_iv = None
-    if sessions_only:
-        open_iv = defaultdict(list)
-        for x in p["sess"]["units"]:
-            for s in x["sessions"]:
-                open_iv[x["unit_serial"]].append((_utc(s["start_utc"]), _utc(s["end_utc"])))
-    out = defaultdict(set)
-    for t in p["trav"]:
-        seg = int(t["segment_id"])
-        if seg not in road:
-            continue
-        a = _utc(t["enter_utc"])
-        day = a.date() if use_utc_day else a.astimezone(TZ).date()
-        if not (day.year == 2027 and day.month == 3):
-            continue
-        for unit, inst, rem in by_veh.get(t["vehicle_id"], []):
-            if not ignore_install and (day < inst or (rem is not None and day >= rem)):
-                continue
-            if sessions_only and not any(lo <= a <= hi for lo, hi in open_iv[unit]):
-                continue
-            out[seg].add(unit)
-    return out
-
-
-def dup_map(p):
-    """A defect the reviewer rejected as a duplicate, to the confirmed defect nearest it on its route."""
-    conf = defaultdict(list)
-    for r in p["qa"]:
-        if r["Decision"] == "Confirmed" and r["Milepost"] is not None:
-            conf[r["Route"]].append((float(r["Milepost"]), int(r["Defect ID"])))
-    out = {}
-    for r in p["qa"]:
-        if r["Decision"] == "Rejected" and (r["Reason"] or "") == "Duplicate":
-            mp = float(r["Milepost"])
-            out[int(r["Defect ID"])] = min(conf[r["Route"]], key=lambda c: (abs(c[0] - mp), c[1]))[1]
-    return out
-
-
-def potholes(p, road, mapper=None, merge_dups=True):
-    """Confirmed potholes on the roadway: defect -> (segment, set of units that detected it)."""
-    mapper = mapper or ref_to_2026(p)
-    confirmed = {int(r["Defect ID"]) for r in p["qa"] if r["Decision"] == "Confirmed"}
-    dup_of = dup_map(p)
-    segs = defaultdict(list)
-    det_units = defaultdict(set)
+    cov = defaultdict(list)
+    for c in p["covers"]:
+        cov[c["route"]].append(float(c["milepost"]))
+    res = defaultdict(list)
     for d in p["det"]:
-        did = int(d["defect_id"])
-        if merge_dups and did in dup_of:
-            did = dup_of[did]
-        if did not in confirmed:
+        if d["defect_class"] != "utility_cover" or not d["road_mp"]:
             continue
-        seg = mapper(d["road_ref"], float(d["road_mp"]) if d["road_mp"] else None)
-        if seg is None:
+        mp = float(d["road_mp"])
+        near = min(cov.get(d["route"], [1e9]), key=lambda c: abs(c - mp))
+        if abs(near - mp) > 0.1:
             continue
-        segs[did].append(seg)
-        det_units[did].add(d["unit_serial"])
+        key = d["unit_serial"] if by == "unit" else u[d["unit_serial"]][1]
+        res[key].append(mp - near)
     out = {}
-    for did, ss in segs.items():
-        seg = max(set(ss), key=lambda s: (ss.count(s), -s))
-        if seg in road:
-            out[did] = (seg, det_units[did])
+    for k, v in res.items():
+        v = np.array(v)
+        out[k] = float(1.4826 * np.median(np.abs(v - np.median(v)))) if robust else float(np.sqrt(np.mean(v ** 2)))
+    if by == "fleet":
+        return {unit: out[g] for unit, (veh, g, a, b) in u.items()}
     return out
 
 
-# ---------------------------------------------------------------------------------------------- the completion
-def q_pairs(pots, lk):
-    a = b = 0
-    for did, (seg, us) in pots.items():
-        C = len(lk.get(seg, ()))
-        k = len(us & lk.get(seg, set()))
-        if C >= 2 and k >= 1:
-            a += k * (k - 1)
-            b += k * (C - 1)
-    return a / b
+def pothole_detections(p, utc=False):
+    """Kerbline's pothole-class detections on the state routes in March (district local time)."""
+    out = []
+    for d in p["det"]:
+        if d["defect_class"] != "pothole" or not d["road_mp"]:
+            continue
+        t = _local(d["captured_local"])
+        if utc:
+            t = t.replace(tzinfo=UTC)
+        if (t.year, t.month) != (2027, 3):
+            continue
+        out.append(d)
+    return out
 
 
-def q_mle(pots, lk):
-    data = [(len(us & lk[seg]), len(lk[seg])) for did, (seg, us) in pots.items()
-            if len(lk.get(seg, ())) >= 2 and len(us & lk[seg]) >= 1]
-    k = np.array([x[0] for x in data], float)
-    c = np.array([x[1] for x in data], float)
-    lo, hi = 0.2, 0.9
-    for _ in range(80):     # the score is decreasing in q: bisect it
-        q = (lo + hi) / 2
-        score = np.sum(k / q - (c - k) / (1 - q) - c * (1 - q) ** (c - 1) / (1 - (1 - q) ** c))
-        lo, hi = (q, hi) if score > 0 else (lo, q)
-    return (lo + hi) / 2
+def link(p, tol, road, dets=None, place="route", mapper=None):
+    """Potholes per section: the detections on each route sorted by milepost, a detection joining the run before it
+    when the gap is within tol(a, b); a run is one pothole, placed on the 2026 segment holding its median milepost."""
+    dets = pothole_detections(p) if dets is None else dets
+    seg_of = route_segment(p)
+    mapper = mapper or ref_to_2026(p)
+    by_route = defaultdict(list)
+    for d in dets:
+        by_route[d["route"]].append(d)
+    out = defaultdict(int)
+    for rt, xs in by_route.items():
+        xs = sorted(xs, key=lambda d: (float(d["road_mp"]), d["detection_id"]))
+        runs = [[xs[0]]]
+        for a, b in zip(xs, xs[1:]):
+            if float(b["road_mp"]) - float(a["road_mp"]) > tol(a, b):
+                runs.append([b])
+            else:
+                runs[-1].append(b)
+        for run in runs:
+            mps = sorted(float(d["road_mp"]) for d in run)
+            mid = mps[(len(mps) - 1) // 2]
+            if place == "route":
+                seg = seg_of(rt, mid)
+            else:
+                d0 = min(run, key=lambda d: abs(float(d["road_mp"]) - mid))
+                seg = mapper(d0["road_ref"], float(d0["road_mp"]))
+            if seg in road:
+                out[road[seg]["sec"]] += 1
+    return dict(out)
 
 
-def completed(pots, lk, road, rate, by="segment"):
-    """Each section's potholes per ten lane-miles: every confirmed pothole counted as one over the chance that at
-    least one of the distinct units that drove its segment found it. rate: a number, or a function of (pothole
-    segment, unit) for the per-kind and per-fleet members."""
-    lm = lane_miles(None, road)
-    tot = defaultdict(float)
-    for did, (seg, us) in pots.items():
-        drove = lk.get(seg, set())
-        if callable(rate):
-            miss = float(np.prod([1 - rate(seg, u) for u in drove]))
-        else:
-            miss = (1 - rate) ** len(drove)
-        tot[road[seg]["sec"]] += 1.0 / (1.0 - miss)
-    return {sec: tot.get(sec, 0.0) / (lm[sec] / 10.0) for sec in lm}
+def rates(p, counts, road):
+    lm = lane_miles(p, road)
+    return {sec: counts.get(sec, 0) / (lm[sec] / 10.0) for sec in lm}
 
 
-def found(pots, road):
-    lm = lane_miles(None, road)
-    n = defaultdict(int)
-    for did, (seg, us) in pots.items():
-        n[road[seg]["sec"]] += 1
-    return {sec: n.get(sec, 0) / (lm[sec] / 10.0) for sec in lm}
+def designated(r):
+    return sorted(s for s, v in r.items() if v >= LINE)
 
 
-def designated(rates):
-    return sorted(s for s, v in rates.items() if v >= LINE)
+def unit_tol(sig, k=3.0):
+    return lambda a, b: k * float(np.hypot(sig[a["unit_serial"]], sig[b["unit_serial"]]))
 
 
 def golden(p):
     road = roadway(p)
-    lk = looks(p, road)
-    pots = potholes(p, road)
-    q = q_pairs(pots, lk)
-    est = completed(pots, lk, road, q)
-    return dict(road=road, looks=lk, pots=pots, q=q, est=est, set=designated(est), found=found(pots, road),
-                lm=lane_miles(p, road))
+    sig = sigma(p)
+    cnt = link(p, unit_tol(sig), road)
+    est = rates(p, cnt, road)
+    return dict(road=road, sig=sig, counts=cnt, est=est, set=designated(est))
 
 
 def family(p, g=None):
-    """The completion under each licensed member: one rate by pairs or by maximum likelihood, the pass-level
-    refinement, one rate per kind of section, one per fleet."""
+    """Every licensed member: the tolerance at 2.5 to 4 times the pair's combined error, each unit's error or its fleet's,
+    by root mean square or by median absolute deviation."""
     g = g or golden(p)
-    road, lk, pots = g["road"], g["looks"], g["pots"]
-    out = {"pairs": g["est"], "mle": completed(pots, lk, road, q_mle(pots, lk))}
-    kind = {sec: ("U" if any(road[s]["fc"] == "Other Freeway/Expressway" for s in road if road[s]["sec"] == sec)
-                  else None) for sec in g["lm"]}
-    # the kind of section from the inventory: metro sections carry freeway, rural ones only collectors
-    fcs = defaultdict(set)
-    for s, v in road.items():
-        fcs[v["sec"]].add(v["fc"])
-    for sec in kind:
-        kind[sec] = "U" if "Other Freeway/Expressway" in fcs[sec] else ("R" if fcs[sec] == {"Major Collector"} else "S")
-    rates = {}
-    for k in ("U", "S", "R"):
-        sub = {d: v for d, v in pots.items() if kind[road[v[0]]["sec"]] == k}
-        rates[k] = q_pairs(sub, lk)
-    out["kind"] = completed(pots, lk, road, lambda seg, u: rates[kind[road[seg]["sec"]]])
-    grp = {u: v[1] for u, v in units(p).items()}
-    fr = {}
-    for f in FLEETS:
-        a = b = 0
-        for did, (seg, us) in pots.items():
-            drove = lk.get(seg, set())
-            for u in drove:
-                if grp[u] != f:
-                    continue
-                if (us & drove) - {u}:
-                    b += 1
-                    a += 1 if u in us else 0
-        fr[f] = a / b
-    out["fleet"] = completed(pots, lk, road, lambda seg, u: fr[grp[u]])
-    out["_rates"] = dict(pairs=g["q"], mle=q_mle(pots, lk), kind=rates, fleet=fr)
-    return out
-
-
-# ---------------------------------------------------------------------------------------------- the rungs
-def per_pass(p, g=None):
-    """The default path: every pass an independent chance at the rate a pass finds a pothole already found."""
-    g = g or golden(p)
-    road, pots = g["road"], g["pots"]
-    u = units(p)
-    by_veh = defaultdict(list)
-    for unit, (veh, grp, inst, rem) in u.items():
-        by_veh[veh].append((unit, inst, rem))
-    passes = defaultdict(list)     # seg -> [(unit, local date)]
-    for t in p["trav"]:
-        seg = int(t["segment_id"])
-        if seg not in road:
-            continue
-        day = _utc(t["enter_utc"]).astimezone(TZ).date()
-        if day.month != 3:
-            continue
-        for unit, inst, rem in by_veh.get(t["vehicle_id"], []):
-            if day >= inst and (rem is None or day < rem):
-                passes[seg].append((unit, day))
-    first = {}
-    det_days = defaultdict(set)
-    dup = dup_map(p)
-    for d in p["det"]:
-        did = dup.get(int(d["defect_id"]), int(d["defect_id"]))
-        if did in pots:
-            day = d["captured_local"][:10]
-            det_days[did].add((d["unit_serial"], day))
-            first[did] = min(first.get(did, "9999"), day)
-    a = b = 0
-    for did, (seg, us) in pots.items():
-        days = {(un, dd.isoformat()) for un, dd in passes[seg] if dd.isoformat() > first[did]}
-        b += len(days)
-        a += len(days & det_days[did])
-    rate = a / b
-    lm = lane_miles(p, road)
-    tot = defaultdict(float)
-    for did, (seg, us) in pots.items():
-        n = len({(un, dd) for un, dd in passes[seg]})
-        tot[road[seg]["sec"]] += 1.0 / (1.0 - (1.0 - rate) ** n)
-    return {sec: tot.get(sec, 0.0) / (lm[sec] / 10.0) for sec in lm}, rate
-
-
-def halves(p, g=None):
-    """Two-sample recapture, the first half of March against the second, per section."""
-    g = g or golden(p)
-    road, pots = g["road"], g["pots"]
-    when = defaultdict(set)
-    for d in p["det"]:
-        did = int(d["defect_id"])
-        if did in pots:
-            when[did].add(1 if d["captured_local"][:10] <= "2027-03-15" else 2)
-    lm = lane_miles(p, road)
     out = {}
-    for sec in lm:
-        ds = [did for did, (seg, us) in pots.items() if road[seg]["sec"] == sec]
-        n1 = sum(1 for d in ds if 1 in when[d])
-        n2 = sum(1 for d in ds if 2 in when[d])
-        m = sum(1 for d in ds if when[d] == {1, 2})
-        out[sec] = (n1 * n2 / m if m else len(ds)) / (lm[sec] / 10.0)
+    for by in ("unit", "fleet"):
+        for robust in (False, True):
+            sig = sigma(p, by=by, robust=robust)
+            for k in (2.5, 3.0, 3.5, 4.0):
+                out["%s_%s_k%.1f" % (by, "mad" if robust else "rms", k)] = rates(p, link(p, unit_tol(sig, k), g["road"]),
+                                                                              g["road"])
     return out
 
 
-def overlap_only(p, g=None):
-    """Two units' recapture where two or more drove a segment; the segments one unit drove taken as found."""
-    g = g or golden(p)
-    road, lk, pots = g["road"], g["looks"], g["pots"]
-    lm = lane_miles(p, road)
-    tot = defaultdict(float)
-    for did, (seg, us) in pots.items():
-        C = len(lk.get(seg, ()))
-        tot[road[seg]["sec"]] += 1.0 if C < 2 else 1.0 / (1.0 - (1.0 - g["q"]) ** C)
-    return {sec: tot.get(sec, 0.0) / (lm[sec] / 10.0) for sec in lm}
+SINGLE = [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.008, 0.010, 0.013, 0.016, 0.020, 0.025, 0.030, 0.040, 0.050,
+          0.060, 0.080, 0.100]
 
 
-# ---------------------------------------------------------------------------------------------- Layer 1, mishandled
+def single(p, t, road=None):
+    """One tolerance for every unit (the default path at any t)."""
+    road = road or roadway(p)
+    return rates(p, link(p, lambda a, b: t, road), road)
+
+
+def per_detection(p, road=None):
+    """Every pothole detection a pothole (the rung below)."""
+    road = road or roadway(p)
+    return rates(p, link(p, lambda a, b: -1.0, road), road)
+
+
 def mishandled(p):
     """The golden method with each Layer 1 item read the natural wrong way."""
     out = {}
     road = roadway(p)
-    lk = looks(p, road)
-    pots = potholes(p, road)
-
-    def run(road_=road, lk_=lk, pots_=pots):
-        return completed(pots_, lk_, road_, q_pairs(pots_, lk_))
-    out["utc_window"] = run(lk_=looks(p, road, use_utc_day=True))
-    out["install_dates_ignored"] = run(lk_=looks(p, road, ignore_install=True))
-    out["crosswalk_unused"] = run(pots_=potholes(p, road, mapper=ref_to_2026(p, drop_unlisted=True)))
-    out["crosswalk_no_milepost"] = run(pots_=potholes(p, road, mapper=ref_to_2026(p, first_child=True)))
+    sig = sigma(p)
+    tol = unit_tol(sig)
+    out["utc_window"] = rates(p, link(p, tol, road, dets=pothole_detections(p, utc=True)), road)
+    out["placed_by_road_ref"] = rates(p, link(p, tol, road, place="ref"), road)
+    out["crosswalk_unused"] = rates(p, link(p, tol, road, place="ref", mapper=ref_to_2026(p, drop_unlisted=True)), road)
+    out["crosswalk_first_child"] = rates(p, link(p, tol, road, place="ref", mapper=ref_to_2026(p, first_child=True)), road)
     road_tb = roadway(p, keep_turnback=True)
-    out["turnback_kept"] = completed(potholes(p, road_tb), looks(p, road_tb), road_tb,
-                                     q_pairs(potholes(p, road_tb), looks(p, road_tb)))
-    out["duplicates_unmerged"] = run(pots_=potholes(p, road, merge_dups=False))
-    out["sessions_gate_passes"] = run(lk_=looks(p, road, sessions_only=True))
+    out["turnback_kept"] = rates(p, link(p, tol, road_tb), road_tb)
     return out
 
 
@@ -383,65 +268,34 @@ def _mms_time(s):
     return dt.datetime.strptime(s, "%m/%d/%Y %H:%M").replace(tzinfo=TZ) if s else None
 
 
-def ask_patches(p, legacy="location", pounds="severity", fold=True, confirmed_only=False):
-    """Ask A: per section, the potholes cold patched in March (a pothole patched twice counts once) and the pounds of
-    cold mix their orders used. pounds: 'severity' takes a figure repeated on every line of an order once where it is
-    more than any single-line order used on a pothole of any of its lines' severities, 'per_order' wherever it repeats;
-    'lines' sums. legacy: 'location' takes an ext_ref Kerbline no longer carries to the defect at the
-    same route and milepost, 'as_is' counts refs as written, 'all_location' identifies every line by its route and
-    milepost. fold takes a defect the reviewer rejected as a duplicate to the confirmed defect nearest it on its route; confirmed_only drops lines whose defect
-    the reviewer rejected. pounds: 'per_order' takes a figure repeated on every line of an order once; 'lines' sums."""
-    loc, known, conf = {}, set(), set()
-    dup = dup_map(p)
-    for r in p["qa"]:
-        did = int(r["Defect ID"])
-        known.add(did)
-        if r["Milepost"] is not None:
-            loc[(r["Route"], round(float(r["Milepost"]), 3))] = did
-        if r["Decision"] == "Confirmed":
-            conf.add(did)
-    done = [r for r in p["wo"] if r["status"] == "COMPLETE" and r["finished"]
-            and _mms_time(r["finished"]).month == 3]
-    pots = defaultdict(set)
-    for r in done:
-        ref = int(r["ext_ref"])
-        if legacy == "all_location":
-            ref = ("loc", r["route"], round(float(r["milepost"]), 3))
-        elif legacy == "location" and ref not in known:
-            ref = loc[(r["route"], round(float(r["milepost"]), 3))]
-        if fold and ref in dup:
-            ref = dup[ref]
-        if confirmed_only and isinstance(ref, int) and ref in known and ref not in conf:
-            continue
-        pots[int(r["section"])].add(ref)
+def ask_pounds(p, pounds="severity"):
+    """Ask A: per section, the pounds of cold mix its March cold patches used (COMPLETE orders finished in March).
+    pounds: 'severity' takes a figure repeated on every line of an order once where it is more than any single-line
+    order used on a pothole of any of its lines' severities, 'per_order' wherever it repeats; 'lines' sums."""
+    done = [r for r in p["wo"] if r["status"] == "COMPLETE" and r["finished"] and _mms_time(r["finished"]).month == 3]
+    sev = {d["detection_id"]: int(d["severity"]) for d in p["det"] if d["severity"]}
     orders = defaultdict(list)
     for r in done:
         orders[r["wo_number"]].append(r)
-    sev = severities(p)
-    res = {}
-    for r in done:
-        ref = int(r["ext_ref"])
-        if ref not in known:
-            ref = loc[(r["route"], round(float(r["milepost"]), 3))]
-        res[(r["wo_number"], r["task_line"])] = sev.get(ref)
     top = defaultdict(int)
     for wo, lines in orders.items():
         if len(lines) == 1:
-            s_ = res[(wo, lines[0]["task_line"])]
+            s_ = sev[lines[0]["ext_ref"]]
             top[s_] = max(top[s_], int(lines[0]["cold_mix_lb"]))
+    TOTALS.clear()
     lb = defaultdict(int)
     for wo, lines in orders.items():
         sec = int(lines[0]["section"])
         vals = [int(l["cold_mix_lb"]) for l in lines]
         repeated = len(lines) > 1 and len(set(vals)) == 1
-        if pounds == "severity" and repeated and vals[0] > max(top[res[(wo, l["task_line"])]] for l in lines):
+        if pounds == "severity" and repeated and vals[0] > max(top[sev[l["ext_ref"]]] for l in lines):
             TOTALS.add(wo)
             lb[sec] += vals[0]
         elif pounds == "per_order" and repeated:
             lb[sec] += vals[0]
         else:
             lb[sec] += sum(vals)
-    return {sec: len(v) for sec, v in pots.items()}, dict(lb)
+    return dict(lb)
 
 
 TOTALS = set()
@@ -449,18 +303,8 @@ TOTALS = set()
 
 def total_orders(p):
     """The orders whose repeated figure ask A's golden takes once."""
-    TOTALS.clear()
-    ask_patches(p)
+    ask_pounds(p)
     return set(TOTALS)
-
-
-def severities(p):
-    """Each defect's severity as Kerbline's detections give it."""
-    out = {}
-    for d in p["det"]:
-        if d["severity"]:
-            out[int(d["defect_id"])] = int(d["severity"])
-    return out
 
 
 def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True, window_s=None, overlap=False):
@@ -506,35 +350,3 @@ def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=Tr
             continue
         out[road[seg]["sec"]] += road[seg]["length"]
     return dict(out)
-
-
-def ask_service_days(p, detections=True, any_part=True, local_days=True, bench=False):
-    """Ask C: per fleet, the March service days Kerbline may bill: local calendar days during any part of which an
-    installed unit had a session open. detections adds the days a unit captured detections, which only an open
-    session can carry."""
-    u = units(p)
-    days = defaultdict(set)
-    for x in p["sess"]["units"]:
-        unit = x["unit_serial"]
-        veh, grp, inst, rem = u[unit]
-        for s in x["sessions"]:
-            a, b = _utc(s["start_utc"]), _utc(s["end_utc"])
-            if local_days:
-                a, b = a.astimezone(TZ), b.astimezone(TZ)
-            d, last = a.date(), (b.date() if any_part else a.date())
-            while d <= last:
-                if d.year == 2027 and d.month == 3 and (bench or (d >= inst and (rem is None or d < rem))):
-                    days[unit].add(d)
-                d += dt.timedelta(1)
-    if detections:
-        for d in p["det"]:
-            unit = d["unit_serial"]
-            day = dt.date.fromisoformat(d["captured_local"][:10])
-            veh, grp, inst, rem = u[unit]
-            if day.month == 3 and day >= inst and (rem is None or day < rem):
-                days[unit].add(day)
-    out = defaultdict(int)
-    for unit, ds in days.items():
-        out[u[unit][1]] += len(ds)
-    total = sum(out.values())
-    return dict(out), int(round(total * DAY_RATE + 1e-9))

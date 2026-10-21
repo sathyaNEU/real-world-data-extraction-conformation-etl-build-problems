@@ -1,12 +1,9 @@
 """The pair ceiling on the cut pack (supplemental-stumping Part 0, on its 38, 7 and 55 weights).
 
-The cracker lands the call, runs the hygiene battery and executes every filed rule it is pointed at: it counts a
-work order's ext_ref as written (every ref is a well-formed defect number, so nothing fails a key check), sums each
-line's pounds (no rule says a line can carry its order's total), drops nothing from the traversals (no row repeats
-another, and every key is unique), and counts service days from the session export in local time, any part of a
-day, installed units only, bench tests excluded (the scope of work's own rule). The mirror stops at the default path
-(no completion: the per-pass rate finds every pothole on a segment driven four or more times) and reads every ask
-the natural way. A hit is a figure inside half a unit of its stated rounding.
+The cracker lands the call, runs the hygiene battery and executes every filed rule it is pointed at: it sums each
+line's pounds (no rule says a line can carry its order's total) and drops nothing from the traversals (no row repeats
+another, every key is unique, no pass overlaps another of its vehicle and segment). The mirror stops at the default
+path (one linkage tolerance for every unit) and reads every ask the natural way. A hit is a figure inside half a unit of its stated rounding.
 
     python3 task478/generator/ceiling.py [target]
 """
@@ -19,32 +16,33 @@ sys.path.insert(0, HERE)
 import methods as M   # noqa: E402
 
 ORDER = [403, 407, 411, 402, 409, 405, 412, 414, 401, 406, 413, 404, 408, 410]
+DEFAULT_T = 0.01
 W_REC, W_IF, W_ASK, R_WRONG = 38.0, 7.0, 55.0, 5.0
 
 
 def figures(p, route):
-    """Every graded figure under one route: the call, the fourteen whole-number estimates and the 47 ask figures."""
+    """Every graded figure under one route: the call, the fourteen whole-number figures and the 28 ask figures."""
     g = M.golden(p)
     out = {}
     if route == "golden" or route == "cracker":
         est, call = g["est"], g["set"]
     else:
-        est, call = g["found"], M.designated(g["found"])
+        est = M.single(p, DEFAULT_T, g["road"])
+        call = M.designated(est)
     out["call"] = tuple(call)
     for s in ORDER:
         out["est_%d" % s] = round(est[s])
     if route == "golden":
-        a = M.ask_patches(p)
+        a = M.ask_pounds(p)
         b = M.ask_miles(p)
     elif route == "cracker":
-        a = M.ask_patches(p, legacy="all_location", pounds="lines", fold=False)
-        b = M.ask_miles(p, dedupe=False)
+        a = M.ask_pounds(p, pounds="lines")
+        b = M.ask_miles(p, dedupe=False, overlap=True)
     else:
-        a = M.ask_patches(p, legacy="as_is", pounds="lines")
+        a = M.ask_pounds(p, pounds="lines")
         b = M.ask_miles(p, dedupe=False, installed=False, local_window=False, program_road=False)
     for s in ORDER:
-        out["A_patched_%d" % s] = a[0].get(s, 0)
-        out["A_lb_%d" % s] = a[1].get(s, 0)
+        out["A_lb_%d" % s] = a.get(s, 0)
         out["B_miles_%d" % s] = int(round(b.get(s, 0.0)))
     return out
 
