@@ -1,53 +1,50 @@
 {
   "task": "task478",
-  "architecture": "v1",
-  "drawn": "2026-10-20",
+  "architecture": "v2",
+  "drawn": "2026-10-21",
   "slot_note": "seed ET35 (repeat-disaster counties across a FEMA region): the world screened at the draw and set aside (every unobserved quantity it offers is a spent lane mechanism and the declaration count itself is records-fixed, its levers 'Statewide' rows, amendments and spellings data semantics); the decision kept in form (which administrative areas a programme serves, on a count per area) in a fresh world: a state DOT district's spring patching crews placed by the potholes its camera-equipped maintenance fleet found and did not find in a March detection campaign",
   "domain": "supply-chain-logistics",
   "client_domain": "general-statistics-data-science",
   "subdomain": "transportation-network",
-  "niche": "a state DOT district's count of the potholes on each maintenance section's state roadway in a March camera detection campaign, found or not, placing its spring patching crews; built from a detection vendor's linked detections, the fleet's telematics segment traversals, the unit register and platform sessions, the review export, the road inventory and its crosswalk, and the maintenance management system's work orders",
+  "niche": "a state DOT district's count of the distinct potholes its camera-equipped maintenance fleet recorded on each maintenance section's state roadway in March, linked from raw detections whose positional error differs by camera fleet, placing its spring patching crews",
   "objective": "etl",
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Elmscourt, Norvelle, Thistlebank, Holloway Run, Carrow Point, Kestrelton and Fenwick Gap get a dedicated crew (9, 8, 8, 8, 8, 7, 7 potholes per ten lane-miles against 6.0)",
+  "answer": "(filled at the build)",
   "answer_source": "submission.md block 1; generator/figures.json call.designated and sections.*.rate",
   "gap": [
     "population"
   ],
   "pattern": [
-    "D"
+    "none"
   ],
   "generators": [
+    "G10",
     "G2",
-    "G16",
-    "G12",
-    "G10"
+    "G16"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "identity_resolution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms Kerbline's detections, the review export, the traversals, the unit register and the road inventory and reads every rule correctly completes the potholes no unit recorded by treating every pass over a segment as an independent chance at the rate passes re-find a found pothole, which leaves a segment driven seven or more times as fully searched and designates Carrow Point and Elmscourt only; a unit records the same potholes on every pass and only the distinct units that drove a segment are independent chances, so the seven are Carrow Point, Elmscourt, Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a population total estimated by integrating a defect inventory whose detections are linked across passes and units with the effort record of every unit's traversals, each found defect counted as one over its segment's chance of being found by at least one of the distinct units that drove it, at the rate a second unit finds a defect a first unit found; replacing that with a generic summary (finds per lane-mile, finds per pass, every pass an independent chance) designates other sections.",
+  "analyst_test": "A strong analyst who conforms Kerbline's detections, the road inventory and its crosswalk and reads every rule correctly links the pothole detections into potholes with one distance tolerance for every unit, which either splits the older sweeper units' scattered reports of one pothole into several or merges the patrol units' tight clusters of distinct potholes on bridge decks, and designates another set at any single tolerance; each unit's positional error, measured from its reports of the surveyed utility covers in the district's asset inventory, sets the tolerance its reports are linked within, and the designated set is the golden's.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a count of distinct entities resolved from repeated noisy positional reports by instruments of unequal accuracy, each instrument's error calibrated on objects whose true positions are surveyed; a generic dedup (one tolerance, exact keys, a vendor id) designates other sections, and without surveyed control points the error cannot be measured.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:capture occasions are the distinct instruments, not the repeat looks",
+  "layer2_pattern": "own:a linkage tolerance that follows each instrument's measured positional error",
   "layer1": [
     "Kerbline's detections in district local time against the telematics traversals in UTC across the 14 March 2027 daylight saving change",
     "Kerbline's road_ref on the 2025 inventory release against the 2026 release's split and merged segments (the inventory crosswalk)",
     "five state segments turned back to the City on 15 March, still listed in the 2026 inventory (the turnback notice)",
     "four crew-truck units installed on 9 March, their trucks' earlier trips in the traversals (the unit register's install and removal dates)",
-    "defects Kerbline split in two, folded by the reviewer as duplicates, and rejected non-pothole and off-system reports (the review export)",
     "the telematics provider's re-run of 12 to 13 March appended beside the originals (ask device)",
-    "Kerbline's 17 March defect renumbering carried only by work orders raised before it (ask hazard)",
     "mobile-app work orders writing the order's total pounds on every line (ask device)",
-    "orders raised on a split pothole's second defect number before the reviewer rejected it as a duplicate (ask device)",
-    "the telematics provider's 12 to 13 March map-matching re-run appended beside the original traversals (ask device)"
+    "the telematics provider's 12 to 13 March map-matching re-run appended beside the original traversals (ask device)",
+    "utility covers Kerbline reports alongside the potholes, surveyed in the district's asset inventory"
   ],
   "stakeholder_role": "the district maintenance engineer of a state DOT district, who issues the spring patching crews' task orders",
   "role_family": "field_unit_lead",
@@ -60,8 +57,8 @@
     "source": "synthetic (constructed in the layout of a fleet telematics segment-coverage export)"
   },
   "forum": "operations_desk",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
   "world": {
     "geography": "United States (an unnamed state's DOT, its fictional Tamsett District)",
     "currency": "USD",
@@ -81,9 +78,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A count of members seen only through repeated looks by several instruments, each of which either always or never sees a given member, is completed by the chance that at least one of the distinct instruments that looked at a unit found a member, read from how often a second instrument finds a member a first one found; treating every look as an independent chance credits a unit looked at many times by one instrument as fully searched, though it had one chance.",
-  "driver_concrete": "Each section's potholes per ten lane-miles in March 2027 counts the potholes no camera unit recorded, completed segment by segment as one over the chance that at least one of the distinct installed units that drove the segment found a pothole, the per-unit chance (0.542) read from how often a second unit found a pothole another unit found; a unit records the same potholes on every pass (99.5 per cent of its later days), so a segment its section's patrol pickup drove on seven or more days has had one chance.",
-  "stump": "The default path completes the potholes no unit recorded by treating every pass over a segment as an independent chance at the rate a pass re-finds a found pothole (64 per cent of unit-days), which changes nothing on segments driven seven or more times, and designates Carrow Point and Elmscourt only; the rural and outer suburban sections one unit drove hide close to half their potholes, and Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle clear the line at 7.08 to 8.29.",
+  "driver": "Distinct entities are counted from repeated positional reports by instruments of unequal accuracy, each instrument's error measured on surveyed control objects, so reports are linked within a tolerance that follows the instrument; any single tolerance either splits a noisy instrument's reports of one entity or merges an accurate instrument's reports of distinct neighbours.",
+  "driver_concrete": "Each section's potholes per ten lane-miles counts the distinct potholes its Kerbline pothole detections resolve to, each unit's detections linked within a tolerance set by that unit's milepost error measured on the asset inventory's surveyed utility covers, because the street sweepers' older units scatter their reports of one pothole across forty feet while the patrol units place neighbouring bridge-deck potholes a few yards apart.",
+  "stump": "The default path links the pothole detections into potholes with one milepost tolerance for every unit and designates another set at any tolerance it picks; the street sweepers' older Kerbline units place their reports of one pothole tens of feet apart while the patrol units' reports of neighbouring bridge-deck potholes sit a few yards apart, so only a tolerance set by each unit's error on the surveyed utility covers resolves both.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task104": "task104 replays a self-adapting scorer at a setting it never ran; here a count of road defects is completed from repeat detections, and the independent chances are the distinct cameras that drove a segment, not its passes.",
@@ -94,7 +91,6 @@
     "task70": "task70 constructs per-record dates from an event log under a class cut; here the decisive construction is how many independent looks each segment had, the distinct cameras, read against the passes the telematics log lists.",
     "task236": "task236 reads a capture rate against an independent fixed-protocol source after a capture change; here no protocol changes and no outside source exists: a second camera is the independent look and a repeat pass by the same camera is not.",
     "task453": "task453's first architecture adjusts a seasonal pattern across a documented placement change; here the decisive step completes undetected defects by distinct-instrument occasions.",
-    "task471": "task471's census and survey miss the same members of one hard-to-count group, a dependence across units fixed by a demographic benchmark; here each camera misses its own independent set of potholes on every pass, a dependence within one instrument, fixed inside the record by counting distinct cameras as the occasions and reading their find rate from cross-camera recaptures.",
     "task470": "task470's transponder network never records some aircraft at all, so the missing activity is rebuilt from a register of units; here every pothole is visible to some cameras and not to others, independently, and the unseen are completed from the cameras' own cross-recaptures.",
     "task462": "task462 weights each plume by one over a size-dependent detection probability fitted on blind releases; here detection does not depend on the defect and no trials exist: the per-camera find rate is read from cross-camera recaptures, and the decisive move is that repeat passes by one camera add no chance.",
     "task473": "task473 completes untested drivers by the arrest catch rate at each positive's own BAC band, measured where everyone is tested; here there is no complete-observation subset and no band: the unseen are completed by the number of distinct cameras each segment had.",
@@ -113,7 +109,8 @@
     "task57": "task57 joins two extract archives with different field names to find never-funded organisations; here no archive is merged to find a population: the unrecorded potholes are estimated, not found, by distinct-camera completion.",
     "task74": "task74 recovers a size scale from a style re-code chain; here no chain is walked: the grain decision is passes against cameras as the independent looks in completing a count.",
     "task75": "task75 adds reopened files found by a household-and-subject match; here no match recovers members: the members no camera saw are completed statistically from the cameras' own recaptures.",
-    "task81": "task81 groups units into firms by an identical site set across a cessation; here no units are regrouped into owners: passes are grouped by camera only to count a segment's independent chances of a find."
+    "task81": "task81 groups units into firms by an identical site set across a cessation; here no units are regrouped into owners: passes are grouped by camera only to count a segment's independent chances of a find.",
+    "task478": "architecture 1 completed potholes no unit recorded by distinct-unit recapture; architecture 2 resolves the recorded detections into distinct potholes with a tolerance that follows each unit's measured positional error."
   },
   "lineage": [
     {
@@ -133,7 +130,6 @@
       "fate": "spent at stage 4 on 2026-10-21: reader G (the ninth isolated reader) landed the call by distinct-unit capture-recapture; readers C to H kept ask A's counts and two kept the camera miles"
     }
   ],
-  "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second.",
-  "registered": "2026-10-20T22:25:31Z",
-  "architecture_spent": true
+  "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second. Architecture 2 (2026-10-21): the world, the decision and the asks are kept; the decisive step moves from completing unseen potholes to the district's verification sample of the recorded defects.",
+  "registered": "2026-10-21T01:08:55Z"
 }

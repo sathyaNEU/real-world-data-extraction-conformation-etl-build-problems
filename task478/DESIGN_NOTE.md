@@ -1,182 +1,149 @@
-# task478 design note: Tamsett District's spring patching crews, by the potholes the camera fleet did and did not find
+# task478 design note: Tamsett District's spring patching crews, by the potholes its camera fleet recorded
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first. Architecture 2
+(re-rooted 2026-10-21); architecture 1's record is at the end.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v1), registered 2026-10-20 22:25 after a pull;
-  `check` re-run on the registered card: WARN only, answered here. `three_rules.strategy_risk` (grain_or_unit): the
-  analyst test below shows the easy route that still fails with every field and rule read correctly; the unit at issue
-  is the capture occasion (a camera, not a pass), which the record's own recaptures force, never a field's reading.
-  `overuse.org_family` (government_agency in 37 builds): a state DOT district is a government agency and no honester
-  family exists. `overuse.objective` (ETL in 9 of 12): the lane is ETL by assignment. `overuse.gate_g` and
-  `repeat.gate_g` (method_or_model_selection in 7 of 12, and task480's): the decisive step is the choice among
-  defensible completions, pinned by the recaptures; no other Gate G mechanism carries it. `repeat.decision` and
-  `repeat.question_form` (designation_set and which, task480's): the program designates sections against one line, so
-  the pick asks which; task480's designation turns on a causal design over field-service work, this one on a count's
-  completion. `test.same_puzzle_older` and `test.same_driver_older` (population, G2) against task239, task264 v1,
-  task48 v2, task120 v1 and task269 v3: unrelated drivers, differentiated on the card. Nearest driver on file task49 at
-  0.07.
-- **Redrawn twice at the draw, and why the replacements are the honester labels.** The pairing was first drawn on the
-  client label, General Statistics & Data Science / data-integration-record-linkage-entity-resolution, and task479's
-  registration (21:50, the same client pairing and subdomain) put both inside the window. The second card took the house
-  domain business-operations-analytics (field-service-maintenance), and task480 registered that pairing, subdomain,
-  decisive pattern G16 and role family a minute and a half earlier (22:18 against 22:19), so it BLOCKed after the
-  commit. The card now carries supply-chain-logistics with subdomain transportation-network, which names what the
-  decision-maker runs (a state highway network, its pavement kept passable) and maps to the same client task type; the
-  role family is field_unit_lead, since the district maintenance engineer runs the district's field crews and issues
-  their task orders rather than directing an operation's strategy; the decisive pattern is G2 (the pass against the
-  camera as the unit of an independent chance), which is the move itself, with G16 second. The city public works
-  department first sketched (local_government, task479's family) became a state DOT district (government_agency), the
-  honest owner of state highways and their patching contract. Shape `other` (01 is task479's, 03 task481's, 07
-  task480's): the criteria are each section's estimate and verdict against one line, 01's arithmetic without a cap.
-- **Seed:** ET35 (a FEMA regional office's repeat-impact mitigation initiative for the counties with the most PA major
-  disaster declarations over 2004 to 2023). Screened at the draw and set aside (Tried and rejected): the declaration count
-  is records-fixed, its levers are data semantics, and every unobserved quantity the world offers is a spent lane
-  mechanism. Kept in form: a programme serving every area whose count per area clears a line, built by conforming an
-  agency's own records.
+- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v2), registered 2026-10-21 after a pull, the
+  architecture 1 identity in its lineage. `check` on the registered card: WARN only, answered here.
+  `three_rules.strategy_risk` (identity_resolution): the analyst test below runs with every field and rule read
+  correctly; the decisive step is an estimate (each unit's positional error) and the linkage it sets, never a field's
+  reading. `overuse.objective` (ETL in 9 of 12): the lane is ETL by assignment. `repeat.decision` and
+  `repeat.question_form` (designation_set and which, task479 and task480): the program designates sections against
+  one line, so the pick asks which; neither of those builds resolves entities. Nearest drivers on file: task49 at 0.09,
+  this slot's architecture 1 at 0.07, task480 v1 at 0.07.
+- **Redrawn at registration, and why the replacements are the honester labels.** The registered card BLOCKed on
+  `ban.forcing_event` (purchase_order_or_contract, task479 v3) and `ban.org_family` (government_agency, task480 v2).
+  The forcing event is now season_or_peak: the crews are placed for the spring patching season, which is what forces
+  the call now; the contract's task orders are the vehicle, not the reason. The organisation family is now
+  utility_or_infrastructure: a state DOT district is the operator of a highway network, the infrastructure owner whose
+  pavement the crews keep passable. A first candidate for architecture 2 (a verification sample drawn on
+  corroboration, the confirmed share carried within each corroboration level) BLOCKed on `test.same_puzzle` and
+  `test.same_driver` against task473 inside the batch and was dropped as the same insight, not relabelled (Tried and
+  rejected).
+- **Seed:** ET35, screened at architecture 1's draw (Tried and rejected); the form of the decision only.
 - **Pairing:** Supply Chain & Logistics (house domain; transportation network) sitting in General Statistics & Data
   Science, task type `data-integration-record-linkage-entity-resolution`, the ETL task type the house domain maps to.
-  The ETL work is linkage: Kerbline's detections (each linked by the vendor into a defect across passes and units, in
-  district local time, placed on the 2025 inventory's segments), the telematics provider's segment traversals (UTC, the
-  2026 inventory's segments), the unit register (install and removal dates by vehicle) and the units' platform
-  sessions, the road inventory with its 2025 to 2026 crosswalk and the City's route turnback, the review module's
-  decisions, and the maintenance management system's work orders (whose Kerbline numbers changed at the vendor's 17
-  March platform migration), conformed into one section table. In a methods field the setting is another field's, so
-  the swap is of the method. Objective: Data Extraction & Conformation (ETL).
+  The ETL work is entity resolution: Kerbline's raw detections (one row per unit capture, no defect number, each placed
+  by the unit's GPS fix on the 2025 inventory's base map), resolved into distinct potholes and conformed to the 2026
+  road inventory as at 31 March with its crosswalk and the City's route turnback, the unit register naming each unit's
+  vehicle and fleet, and the district's utility cover inventory, whose surveyed covers the units also report. Objective:
+  Data Extraction & Conformation (ETL).
 - **The decision and the quantity:** the Tamsett District of the State Department of Transportation (fictional) issues
-  its 2027 spring patching task orders under the district's on-call pavement repair contract. The Spring Patching
-  Program 2027 gives a dedicated crew to every maintenance section whose state-maintained roadway (as at 31 March 2027)
-  held 6.0 or more potholes per ten lane-miles in March 2027, every pothole counted whether or not a Kerbline unit
-  recorded it and a pothole cold patched in March counted. Fourteen sections. Forward facing: the task orders issue 19
-  April 2027 and the crews start 3 May; the quantity is the closed March campaign (a retrospective quantity with its
-  reason: the program sizes the spring crews on the campaign the district ran).
+  its 2027 spring patching task orders on 19 April. The Spring Patching Program 2027 gives a dedicated crew to every
+  maintenance section whose state-maintained roadway (as at 31 March 2027) held 6.0 or more potholes per ten
+  lane-miles in March 2027, every pothole the pilot's camera units recorded counted once however many times and by
+  however many units it was recorded, a pothole cold patched in March counted. Fourteen sections. The crews work May
+  and June on the closed March campaign (a retrospective quantity with its reason: the program sizes the spring crews
+  on the campaign the district ran).
 - **Shape:** `other`, a designation over every candidate against one line: fourteen sections' potholes per ten
   lane-miles to the whole number (14) and their verdicts (14), the designated set (1), a bar chart's named parts (the
-  fourteen bars, the 6.0 line, the designated sections marked: 3), the files (2), and the 47 ask figures (cold patches
-  and pounds by section, 28; camera miles by section, 14; Kerbline service days by fleet and the March charge, 5): 81
-  criteria.
-- **Strategy:** `grain_or_unit`: the unit of an independent chance to find a pothole is a camera unit that drove the
-  segment, built by grouping the traversal log's passes by unit; the passes are the file's rows and are not the chances.
-  Gate G `method_or_model_selection`: several defensible completions (none; every pass an independent chance; every day
-  one; the first half of March recaptured by the second; the distinct cameras), the right one pinned by the record's own
-  recaptures. Gap population (potholes no camera recorded are in the population), pattern none, generators G2 (the pass
-  against the camera as the unit of chance, decisive), G16 (which completion the recaptures entitle), G12 (a segment
-  driven twenty times by one camera with no find is a non-answer for the potholes that camera cannot see), G10 (one
-  pothole recorded many times). Layer 2 family `estimation_fit` (dependent capture occasions), pattern `own:capture occasions are the
-  distinct instruments, not the repeat looks`.
-- **World:** United States, an unnamed state's Department of Transportation and its fictional Tamsett District (metro
-  Tamsett and its hinterland), 2,429 lane-miles of state highway in fourteen maintenance sections (three metro, five
-  suburban, six rural), each run from its own yard with one patrol pickup. In January 2027 the district contracted
-  Kerbline Vision for a pilot: smartphone camera units on 34 district vehicles (the fourteen section patrol pickups, six
-  freeway service patrol trucks and six street sweepers in the three metro sections, and eight district crew trucks
-  sent to job sites across the district, four of whose units arrived in a second delivery on 9 March), each unit
-  uploading its detections to Kerbline's platform, which links repeat detections of one defect into one defect number.
-  Personas from `guard.py names --geo "United States" --seed 478`, the first pair that clears the people rules after the
-  redraw: Nancy Hansen (district maintenance engineer), Andrew Greene (maintenance management systems analyst).
-- **Forcing fact:** the task orders issue 19 April 2027 under the on-call pavement repair contract; crews start 3 May;
-  the pack is as of 9 April 2027 (exports pulled 1 to 3 April).
+  fourteen bars, the 6.0 line, the designated sections marked: 3), the files (2), and the 28 ask figures (cold mix
+  pounds by section, 14; camera miles by section, 14): 62 criteria.
+- **Strategy:** `identity_resolution`: which detections are one pothole, the record's entities built from repeated
+  noisy positional reports by instruments of unequal accuracy. Gate G `etl_conformance`: the conformed pothole table is
+  the object, and no shipped artifact ranks the sections. Gap population (what counts as one member), pattern none,
+  generators G10 (one pothole reported many times by many units, decisive), G2 (the detection against the pothole as
+  the unit), G16 (which linkage the covers entitle). Layer 2 family `estimation_fit`, pattern `own:a linkage tolerance
+  that follows each instrument's measured positional error`.
+- **World:** as architecture 1: United States, an unnamed state's DOT and its fictional Tamsett District, 2,428.9
+  lane-miles of state highway in fourteen maintenance sections; Kerbline Vision's camera pilot on 34 district vehicles
+  (fourteen section patrol pickups, six freeway service patrol trucks, six street sweepers in the three metro sections,
+  eight district crew trucks). The sweepers' six units are the older phones from Kerbline's 2025 stock. Personas from
+  `guard.py names --geo "United States" --seed 478`, kept: Nancy Hansen (district maintenance engineer), Andrew Greene
+  (maintenance management systems analyst).
+- **Forcing fact:** the task orders issue 19 April 2027; crews start 3 May; the pack is as of 9 April 2027 (exports
+  pulled 1 to 3 April).
 - **Forum and forcing event:** operations_desk (the district maintenance engineer issues the task orders),
-  purchase_order_or_contract (the on-call contract's task orders). Organisation government_agency; role
-  field_unit_lead.
-- **Data-native sentence:** each Kerbline unit sees a pothole or does not by how its phone sits on its vehicle, so a unit
-  that missed a pothole on one pass misses it on every pass while a second unit finds it at the same rate as the first; a
-  rural or outer suburban section's state roads are driven every week by its own patrol pickup and little else, so 64 to
-  90 per cent of its lane-miles had one unit's chance however many passes the traversal log lists (seven pass-days at the
-  least), and close to half of their potholes are on no detection list.
-- **The WHAT screen.** Population: every pothole on the section's state-maintained roadway as at 31 March 2027, in
-  March 2027, recorded or not, cold patched or not (program 2.2 to 2.4). Outcome: those potholes. Window: March 2027.
-  Unit: potholes per ten lane-miles of that roadway, lane-miles being segment length times through lanes (2.4).
-  Comparison: 6.0 or more (2.1). The decisive step settles none of them: it is how the potholes no unit recorded are
-  completed, which nothing files. Every segment of the roadway was driven by at least one installed unit in March (its
-  own patrol pickup at the least), so the roadway and the driven roadway are one.
+  season_or_peak (the spring patching season). Organisation utility_or_infrastructure; role field_unit_lead.
+- **Data-native sentence:** the street sweepers' Kerbline units, older phones riding in a sweeper's cab at five miles
+  an hour behind the brushes, place their detections 52 to 59 feet either way of where the surveyed covers are, while
+  every other unit is within 2 to 3 feet; the sweepers drive only the metro arterials, where potholes lie a few hundred
+  feet apart, and the bridge decks the patrol trucks drive carry potholes 30 to 50 feet apart, so one matching distance
+  cannot keep a sweeper's reports of one pothole together and a deck's potholes apart.
+- **The WHAT screen.** Population: every pothole the pilot's units recorded on the section's state-maintained roadway
+  as at 31 March 2027, in March 2027, cold patched or not, each once however many times or by however many units it was
+  recorded (program 2.2 to 2.4). Outcome: those potholes. Window: March 2027. Unit: potholes per ten lane-miles of that
+  roadway, lane-miles being segment length times through lanes (2.4). Comparison: 6.0 or more (2.1). The decisive step
+  settles none of them: it is how the detections are resolved into potholes, which nothing files.
 - **Sources, one line each:**
   - seed ET35: the form of the decision only.
   - The client's data-integration rigor patterns (propagate linkage error; weight agreement by informativeness; resolve
-    pairwise matches into entities): the vendor's linkage of detections into defects is the Layer 1 record here, its
-    error asserted neutral, never the stump.
-  - census-register pattern 1 (dual-system estimates within post-strata): two systems independent by design; here
-    independence holds between cameras and fails within one, which only the recaptures show.
-  - The lane's capture builds (task473, task470, task462, task448, task471) and task264's multiplicity, differentiated on
-    the card: none completes a count by taking the distinct instruments as the occasions while an instrument's own
-    repeats carry no chance.
-  - task165 (a city roads division's salt by telematics segment passes) is the nearest setting on file and shares no
-    mechanism.
-- **Same-puzzle and same-driver tests:** (population, G2, designation_set) and (population, G2,
-  method_or_model_selection) against the last twelve builds, lineage included: no match; older matches (task239,
-  task264 v1, task48 v2, task120 v1, task269 v3) differentiated on the card.
-- **Abstraction test:** the nearest drivers stripped of nouns (task49, an unpaid amount floored per instrument; task192
-  v3, units labelled by an instrument validated on an early batch; task143, the weakest of a few members of a new group)
-  carry no repeated looks whose dependence decides the completion. task471 (a census and its survey missing the same
-  members of one group) is the nearest insight and differs in where the dependence sits (across two systems, carried by
-  the member) and in what fixes it (an outside benchmark, against counting the distinct instruments inside the record).
+    pairwise matches into entities): here the agreement on position is weighted by each source's measured error.
+  - task486 (data-integration-record-linkage, in the window) links records across systems by keys; nothing there sets a
+    tolerance from an instrument's error on control points.
+  - task198 (positions published, no tolerance) and task228 (a shared reference error) are the nearest slot hits and
+    share no mechanism.
+- **Same-puzzle and same-driver tests:** (population, G10, designation_set) and (population, G10, etl_conformance)
+  against the last twelve builds, lineage included: no match.
+- **Abstraction test:** the nearest drivers stripped of nouns (task49, an amount floored per instrument; this slot's
+  architecture 1, distinct instruments as capture occasions; task480 v1, an instrument under-recording by a share)
+  carry no positional reports to be linked; no build on file sets an entity-resolution tolerance from each source's
+  error measured on surveyed control objects.
 
 ## Default path
 
 1. Read the program (2.1 to 2.4): a section gets a crew at 6.0 or more potholes per ten lane-miles of its state
-   roadway as at 31 March in March 2027, every pothole counted whether or not a unit recorded it. Took the roadway as
-   the 2026 inventory's segments less the five turned back to the City on 15 March, and its lane-miles as length times
+   roadway as at 31 March in March 2027, every pothole the pilot's units recorded counted once. Took the roadway as the
+   2026 inventory's segments less the five turned back to the City on 15 March, and its lane-miles as length times
    through lanes (2,428.9 lane-miles).
-2. Kept the review export's confirmed potholes (1,080 after folding the reviewer's duplicates), placed each on its 2026
-   segment from its detections' 2025 road_ref and milepost through the crosswalk, and took Kerbline's detection
-   inventory as the defects the units detected, not every pothole (scope of work 3).
-3. Completed the potholes no unit recorded from the record of passes: of the unit-days that passed over a pothole
-   already found, 64 per cent recorded it again (99.5 per cent of the finding unit's own later days), and every segment
-   had seven or more pass-days by installed units, so a segment's chance of a find is one minus 0.36 to the power of its
-   pass-days, 0.999 or more everywhere; the completion adds under a tenth of a pothole in every section.
-4. Divided each section's potholes by its lane-miles over ten and compared with 6.0: Carrow Point 7.19 and Elmscourt 8.50
-   over the line, Norvelle 5.03 and Thistlebank 5.08 the nearest under it.
+2. Kept Kerbline's pothole-class detections captured in March (district local time) on state routes.
+3. Linked them into potholes: on each route, detections within 53 feet (0.01 mile) of each other are one pothole, the
+   distance a pothole's own repeat reports typically sit within; each pothole placed on the 2026 segment holding its
+   median milepost. Every distance from 53 to 264 feet gives the same five sections.
+4. Divided each section's potholes by its lane-miles over ten and compared with 6.0: Holloway Run, Carrow Point,
+   Elmscourt, Thistlebank and Norvelle over the line; Fenwick Gap 5.69 and Rushmead 5.71 the nearest under.
 
-Ends on: Carrow Point and Elmscourt.
+Ends on: Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle.
 
-Golden: Carrow Point, Elmscourt, Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle.
+Golden: Holloway Run, Fenwick Gap, Carrow Point, Kestrelton, Elmscourt, Thistlebank and Norvelle.
 
 ## Stump sentence
 
-The default path treats every pass over a segment as an independent chance at the rate a pass records a pothole
-already found, which credits a segment driven seven or more times as fully searched and designates only Carrow Point and
-Elmscourt, because a Kerbline unit finds the same potholes on every pass and only the distinct units that drove a
-segment are independent chances, each finding 54 per cent of what another found; Fenwick Gap, Thistlebank, Holloway
-Run, Kestrelton and Norvelle, driven by their own patrol pickup and little else, hide close to half their potholes and
-clear the line at 7.08 to 8.29.
+The default path links the pothole detections at one distance for every unit and, at any distance from 53 to 264
+feet, designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because a distance wide enough to
+hold a street sweeper's scattered reports of one pothole together runs Fenwick Gap's and Kestrelton's bridge-deck
+potholes into one another; measured on the surveyed utility covers, the sweepers' units are 52 to 59 feet off and the
+rest 2 to 3 feet, so each pair of detections is joined within its own units' error, and Fenwick Gap (6.78) and
+Kestrelton (6.78) clear the line; at a few feet for every unit the sweepers' scatter puts Rushmead over it instead.
 
 ## Three rules
 
-Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science), integrating a defect inventory whose detections are linked across passes and units with the effort record of every unit's traversals to complete a population no record lists in full, a task type serving Data Extraction & Conformation (ETL); the house domain supply-chain-logistics (transportation network) maps to it.
+Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science), resolving repeated noisy positional reports from instruments of unequal accuracy into distinct entities and conforming them to the road inventory, a task type serving Data Extraction & Conformation (ETL); the house domain supply-chain-logistics (transportation network) maps to it.
 
-Domain test: general statistics, so the swap is of the method: the deciding quantity is each section's potholes per ten lane-miles in March 2027 with the unrecorded potholes completed, each confirmed pothole counted as one over its segment's chance of being found by at least one of the distinct units that drove it, at the rate a second unit finds a pothole another unit found (0.542); replacing that estimator with a generic summary (finds per lane-mile, every pass or every day an independent chance, the first half of March recaptured by the second) designates Carrow Point and Elmscourt alone.
+Domain test: general statistics, so the swap is of the method: the deciding quantity is each section's count of distinct potholes resolved from Kerbline's detections, two detections joined when their milepost gap is within three times the root sum of squares of their units' errors, each unit's error measured against the asset inventory's surveyed utility covers; replacing that with a generic dedup (one distance for every unit, exact keys, a nearest neighbour) designates another set at every distance, and with no surveyed control points the error could not be measured.
 
-Swap: put a generic completion in place of the integration estimator ("scale up by the rate repeat passes find a pothole", "count what the units found") and the call falls to Carrow Point and Elmscourt; put another field's nouns in ("which forest compartments get a pest crew, from galleries found by drone flights") and the method still reads, which is general statistics' own case: the deciding object is the completion's occasion structure, and changing it, not the nouns, changes the call.
+Swap: put a generic linkage in place of the error-aware one ("join detections within 50 feet", "one pothole per segment per day") and the call moves to five sections; put another field's nouns in ("which reefs get a survey crew, from coral-bleaching reports by drones of unequal GPS accuracy, calibrated on surveyed buoys") and the method still reads, which is general statistics' own case: the deciding object is the instruments' measured error and the tolerance it sets.
 
-Layer 1: Kerbline's detections in district local time against the telematics provider's traversals in UTC across the 14 March 2027 daylight saving change; Kerbline's road_ref on its 2025 base map against the 2026 inventory's splits and merges (the inventory crosswalk); five SR 11 segments in Elmscourt turned back to the City on 15 March (the turnback notice); four crew-truck units installed on 9 March, so their trucks' earlier trips carry no unit (the unit register); the reviewer's folding of the eleven defects Kerbline split in two (the review export); pothole-class reports off the state system and rejected classes (the review export). Each is produced by the system named, none is placed to be caught, and each read the natural wrong way leaves the call where it is (checks.py R2).
+Layer 1: Kerbline's detections in district local time across the 14 March daylight saving change; its road_ref on the 2025 base map against the 2026 inventory's splits and merges (the crosswalk); five SR 11 segments in Elmscourt turned back to the City on 15 March (the turnback notice); pothole-class detections off the state system (blank road_ref); utility covers Kerbline reports alongside the potholes. Each is produced by the system named, none is placed to be caught, and each read the natural wrong way leaves the call where it is (checks.py R2).
 
-Layer 2: estimation_fit, dependent capture occasions: one unit's repeat passes over a pothole are not independent chances (a unit that misses a pothole misses it on every pass) while separate units are, so the completion takes the distinct units as the occasions, with the per-unit find rate read from how often a second unit finds a pothole a first unit found.
+Layer 2: estimation_fit, measurement error that differs by instrument: the units' positional error is estimated from their own reports of objects whose true positions are surveyed, and the entity resolution joins two reports only within the error their two units carry, so neither a noisy unit's scatter nor an accurate unit's close neighbours are misread.
 
-Decisive step: completing each segment's unrecorded potholes as one over one minus 0.458 to the power of the number of distinct installed units that drove it in March (0.542 being the share of second-unit looks at an already-found pothole that found it), not over its passes or its days, which designates Fenwick Gap, Thistlebank, Holloway Run, Kestrelton and Norvelle beside Carrow Point and Elmscourt.
+Decisive step: measuring each unit's milepost error on the surveyed utility covers (the sweepers' 52 to 59 feet against the rest's 2 to 3) and joining detections within three times the two units' combined error, which designates Fenwick Gap and Kestrelton beside the five every single distance from 53 to 264 feet gives.
 
-Not semantics: every field, code, unit and date read correctly (the review decisions and duplicates, the 2025 to 2026 crosswalk, the turnback date, the two clocks, the register's install dates) still leaves the easy route completing the unrecorded potholes from the passes; no field marks a unit's blind spots or says a unit's repeat passes are dependent, and the step is the choice of the capture occasion, a property of the recaptures, not of any field.
+No decoy: nothing is planted to be caught: the detections, the cover inventory, the register and the inventory are what each system writes; no memo, vendor claim or earlier list ranks the sections or states a unit's accuracy, and the scope of work says only that the pilot does not include Kerbline's defect linking.
 
-Not rule application: the program files the population (every pothole on the roadway, recorded or not, cold patched or not), the unit, the lane-mile rule and the 6.0 line; no filed rule or procedure completes the unrecorded potholes, and executing every filed rule with each pass taken as an independent chance designates Carrow Point and Elmscourt.
+Not semantics: every field, code, unit and date read correctly (the class, road_ref through the crosswalk, road_mp, the turnback date, the local clock, the register) still leaves the easy route linking at one distance; no field holds a unit's error or a tolerance, and the step is an estimate from the covers, not a reading of any field.
 
-Analyst test: a strong analyst who conforms the detections, the review, the traversals and the inventory and reads every rule correctly completes the unrecorded potholes at the rate passes re-find a found pothole over each segment's passes and designates Carrow Point and Elmscourt (the default path's Ends on); taking each day as the chance, recapturing the first half of March against the second, or recapturing between units only where two drove land on the same two; only the distinct units, at a second unit's find rate, designate the seven.
+Not rule application: the program files the population (every recorded pothole once, cold patched or not), the unit, the lane-mile rule and the 6.0 line; no filed rule or procedure says how detections are joined, and executing every filed rule with one joining distance designates five sections at every distance from 53 to 264 feet.
 
-Estimand: the Spring Patching Program 2027 (spring_patching_program_2027.pdf, 2.1 to 2.4): a section gets a crew when its state-maintained roadway, as at 31 March 2027, held 6.0 or more potholes per ten lane-miles in March 2027, every pothole on that roadway counted whether or not a Kerbline unit recorded it, a pothole cold patched in March counted, lane-miles being segment length times through lanes.
+Analyst test: a strong analyst who conforms the detections, the inventory, the crosswalk and the turnback and reads every rule correctly links the detections at one distance, chosen from how close a pothole's repeat reports sit, and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle (the default path's Ends on) at any distance from 53 to 264 feet, or adds Rushmead at a few feet; only a distance that follows each unit's measured error designates the seven.
 
-No decoy: nothing is planted to be caught: the detections, the traversals, the register, the review and the work orders are what each system writes; no memo, draft, vendor claim or earlier list ranks the sections or states a find rate, and Kerbline's scope of work describes the units, the review, the data and the charges, not how often a unit finds a pothole.
+Estimand: the Spring Patching Program 2027 (spring_patching_program_2027.pdf, 2.1 to 2.4): a section gets a crew when its state-maintained roadway, as at 31 March 2027, held 6.0 or more potholes per ten lane-miles in March 2027, every pothole the pilot's camera units recorded counted once however many times and by however many units it was recorded, a pothole cold patched in March counted, Kerbline's pothole class taken as a pothole, lane-miles being segment length times through lanes.
 
-No certified replay: no published section figure, audited count or earlier designation ships to back a method out of; the recaptures are the record's own evidence of how the units find potholes, and they score a completion only by the comparison a solver chooses to run.
+No certified replay: no published section figure, audited count or earlier designation ships to back a method out of; the covers are control points the district surveyed for its own asset records, and they score a linkage only by the comparison a solver chooses to run.
 
-Lesson: when several instruments look repeatedly at the same units and each instrument either always or never sees a given member, the independent chances are the distinct instruments that looked, not the looks, and the per-instrument rate comes from how often a second instrument finds what a first one found; no build on file completes a count by taking the distinct instruments as the capture occasions while each instrument's own repeats carry no chance.
+Lesson: when the same entities are reported many times by instruments of unequal positional accuracy, the linkage tolerance must follow each pair of instruments' measured error; one tolerance either splits the noisy instrument's reports of one entity or merges the accurate instrument's reports of close neighbours, and the control points that measure the error are the organ.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0, the confirmed potholes as found (Carrow Point, Elmscourt) | program 2.2 "whether or not a Kerbline unit recorded it": fires | defect_id: fires | count the confirmed: fires | none | none | one divide | readable |
-| R1, every pass an independent chance, the default path (Carrow Point, Elmscourt) | scope of work 3 "not an inventory of every defect": fires | detections against traversals: fires | per-pass detection rate: fires | none | none | a ratio | readable |
-| R1b, the first half of March recaptured by the second (Carrow Point, Elmscourt) | none | captured_local: fires | two-sample recapture: fires | none | none | a product over a count | readable |
-| R2, two units' recapture only where two or more drove (Carrow Point, Elmscourt) | none | unit_serial: fires | dual-system estimate: fires | none | none | a product over a count | readable |
-| G (decisive), each segment's potholes completed over the distinct installed units that drove it, at the rate a second unit finds what a first found (seven sections) | no sentence says a unit's passes repeat its own misses | no column holds a unit's find rate or a segment's units | no reflex takes the instrument rather than the look as the occasion | none | none | none | silent |
+| R0, every pothole detection a pothole (every section) | program 2.2 "counted once": fires | detection_id: fires | dedupe: fires | none | duplicate check: fires | none | readable |
+| R1, one joining distance, the default path (five sections at 53 to 264 feet) | none | road_mp: fires | distance clustering: fires | none | none | a threshold | readable |
+| R1b, a few feet for every unit (eight sections, Rushmead added) | none | road_mp: fires | exact-position dedup: fires | none | none | a threshold | readable |
+| G (decisive), each pair joined within its units' error measured on the surveyed covers (seven sections) | no sentence states a unit's accuracy or a tolerance | no column holds an error | no reflex calibrates the linkage on the covers | none | none | none | silent |
 
 ## Semantic fork table
 
@@ -185,137 +152,121 @@ Lesson: when several instruments look repeatedly at the same units and each inst
 | SF1 | maintenance section | the inventory's section number | the yard's patrol area | same call: the inventory carries one section per segment (asserted) | road_inventory_2026.csv |
 | SF2 | state-maintained roadway as at 31 March 2027 | the 2026 inventory less the five segments turned back on 15 March | every segment the inventory lists | same call (asserted, turnback kept) | program 2.4 and the turnback notice |
 | SF3 | in March 2027 | 1 to 31 March, district local time | UTC calendar days | same call (asserted, UTC window) | program 2.2; the data notes' time line |
-| SF4 | pothole | a defect the reviewer confirmed, and every pothole no unit recorded | every pothole-class defect Kerbline reported | not the program's: 2.3 drops what the reviewer rejects | program 2.3 |
+| SF4 | pothole | Kerbline's pothole class | a class of one's own | not the program's: 2.3 takes the class | program 2.3 |
 | SF5 | a pothole cold patched in March | counted | left out | not the program's | program 2.2 "counts" |
 | SF6 | per ten lane-miles | potholes over lane-miles, lane-miles being length times through lanes, times ten | per centerline mile | not the program's | program 2.4 |
-| SF7 | 6.0 or more | at or above, on the unrounded estimate | the whole-number figure against 6 | same call: no estimate in any member lies within 0.75 of the line (asserted) | program 2.1 |
-| SF8 | a defect the reviewer marks a duplicate | folded into the defect it names, its units with it | a defect of its own, unconfirmed | same call (asserted, duplicates unmerged) | the review export's reason |
-| SF9 | a detection's segment | road_ref through the crosswalk, a split segment's detections by milepost | a split segment's first piece; or unlisted refs dropped | same call (asserted, both) | the crosswalk and the data notes |
-| SF10 | a unit drove a segment | a March traversal by its vehicle on a day the register shows it installed | every March traversal by a pilot vehicle | same call (asserted, install dates ignored) | the unit register |
-| SF11 | the whole number | half up on the unrounded estimate | half to even | same figures: no member's estimate within 0.1 of a half (asserted) | the prompt's rounding |
-| SF12 | the files the call reads | detections, review, traversals, register, inventory, crosswalk, turnback, program | the sessions gating the passes; the pavement survey; the winter log | same call (asserted, sessions gating; the two distractors deleted) | program 2 |
+| SF7 | 6.0 or more | at or above, on the unrounded figure | the whole number against 6 | same call: no member within 0.75 of the line (asserted) | program 2.1 |
+| SF8 | every pothole recorded | each pothole once however many times and units recorded it | every detection | not the program's | program 2.2 |
+| SF9 | a pothole's segment | the 2026 segment holding its median milepost on its route | road_ref through the crosswalk; a split segment's first piece; unlisted refs dropped | same call (asserted, each) | the inventory's route mileposts; the crosswalk |
+| SF10 | the whole number | half up on the unrounded figure | half to even | same figures (asserted) | the prompt's rounding |
+| SF11 | the files the call reads | detections, covers, inventory, crosswalk, turnback, program | the traversals, the sessions, the register's dates | same call: none of them changes a detection's position | program 2 |
 
 ## Ladder
 
 Built figures, read from the cut pack by `generator/methods.py` (potholes per ten lane-miles, March 2027, against 6.0).
 
-- **R0, the confirmed potholes as found (Carrow Point 7.19, Elmscourt 8.50).** No completion. Dies to program 2.2: a
-  pothole counts whether or not a unit recorded it. Nearest under: Norvelle 5.03, Thistlebank 5.08.
-- **R1, every pass an independent chance, the default path (Carrow Point, Elmscourt).** 64 per cent of unit-days over a
-  found pothole recorded it again; every segment had seven or more pass-days, so the completion adds under 0.01 per ten
-  lane-miles anywhere. Dies to the recaptures: the unit that found a pothole records it again on 99.5 per cent of its
-  later days, a second unit on 54 per cent, so a pass by the same unit is no second chance.
-- **R1b, the first half of March against the second (Carrow Point 7.19, Elmscourt 8.51).** The same units drive both
-  halves, so the halves recapture each other almost completely. Dies to the same recaptures.
-- **R2, two units' recapture only where two or more drove (Carrow Point 7.95, Elmscourt 9.24; Thistlebank 5.48,
-  Fenwick Gap 5.40, Norvelle 5.40 under).** Completes the metro sections and leaves every one-unit segment as found.
-  Dies to the patrol pickups' own rate where they drive with others (0.569 against 0.542 pooled): the unit that drives a
-  segment alone finds at the rate it finds where it does not.
-- **G (Fenwick Gap 7.08, Thistlebank 8.12, Holloway Run 8.08, Kestrelton 7.17, Norvelle 8.29 over the line beside
-  Carrow Point 7.95 and Elmscourt 9.24; Rushmead 5.02 the nearest under).** The generator's true counts designate the
-  same seven.
-- **Margins:** under every licensed member (one rate by pairs 0.542 or by maximum likelihood 0.548, a rate per kind of
-  section, a rate per fleet) the nearest designated section is Kestrelton at 6.80 (1.13x the line) and the nearest
-  undesignated Rushmead at 5.04 (1.19x under); every member prints the same fourteen whole numbers. The default path's
-  nearest are Thistlebank 5.08 (1.18x under) and Carrow Point 7.19 (1.20x over).
-- **Position, separation and dominance:** a designation, not a ranking: every wrong rung names Carrow Point and
-  Elmscourt alone, and only the completion over distinct units adds the five; there is no decoy to dominate.
-- **Worth:** the call and the fourteen whole numbers; the default path keeps one of the fourteen (Rushmead's 5), so the
+- **R0, every detection a pothole (all fourteen sections over the line).** Dies to program 2.2: each pothole once.
+- **R1, one distance for every unit, the default path (Holloway Run, Carrow Point, Elmscourt, Thistlebank, Norvelle
+  at every distance from 53 to 264 feet; Fenwick Gap 5.69, Kestrelton 4.89, Rushmead 5.71 at 53 feet).** Dies to the
+  covers: the sweepers' units are 52 to 59 feet off, the rest 2 to 3, so a distance that holds a sweeper's reports
+  together merges the deck potholes 30 to 50 feet apart.
+- **R1b, a few feet for every unit (adds Rushmead, 6.84 at 16 feet).** Dies to the same covers: the sweepers' scatter
+  splits one pothole into several.
+- **G (Holloway Run 7.83, Fenwick Gap 6.78, Carrow Point 7.85, Kestrelton 6.78, Elmscourt 9.09, Thistlebank 7.97,
+  Norvelle 8.16; Rushmead 4.84 the nearest under).** The generator's true counts give the same fourteen whole numbers
+  (within one pothole in Elmscourt).
+- **Margins:** under every licensed member (each unit's error or its fleet's, by root mean square or median absolute
+  deviation, 2.5 to 4 times the combined error) the nearest designated sections are Fenwick Gap and Kestrelton at 6.78
+  (0.78 over) and the nearest undesignated Rushmead at 4.84; every member prints the same fourteen whole numbers, each
+  at least 0.2 from a half.
+- **Position, separation and dominance:** a designation, not a ranking: every wrong rung names a different set, and
+  only the error-aware linkage names the seven; there is no decoy to dominate.
+- **Worth:** the call and the fourteen whole numbers; the default path keeps nine of the fourteen whole numbers, so the
   asks carry the pair (Ask sheet).
 
 ## Closure table
 
 | # | Axis | Reading and closure |
 |---|---|---|
-| 1 | Population | every pothole on the section's state-maintained roadway as at 31 March 2027 in March, recorded or not, cold patched or not (program 2.2 to 2.4; SF2, SF4, SF5) |
+| 1 | Population | every pothole the pilot's units recorded on the section's state-maintained roadway as at 31 March 2027 in March, each once (program 2.2 to 2.4; SF2, SF4, SF5, SF8) |
 | 2 | Unit of account | the section; potholes per ten lane-miles |
 | 3 | Attribution window | 1 to 31 March 2027, district local time (SF3) |
 | 4 | As-of dating | the roadway as at 31 March; the exports pulled 1 to 3 April |
-| 5 | Version basis | the 2026 inventory release and the turnback; Kerbline's current defect numbers in the detections and review exports |
+| 5 | Version basis | the 2026 inventory release and the turnback; Kerbline's 2025 base map in road_ref |
 | 6 | Denominator | lane-miles, length times through lanes (SF6) |
 | 7 | Weighting | none: each section's own potholes and lane-miles |
 | 8 | Window length | the month |
 | 9 | Boundary inclusivity | 6.0 or more, unrounded (SF7) |
-| 10 | Rounding path | the estimate unrounded against the line; the reported figure half up to the whole number (SF11) |
+| 10 | Rounding path | the figure unrounded against the line; the reported figure half up to the whole number (SF10) |
 | 11 | Tie-break | none: each section against the line |
-| 12 | Maturity and censoring | the campaign closed on 31 March; reviews of March reports complete by the 2 April export |
-| 13 | Order of operations | conform, fold duplicates, place on segments, units per segment, the rate, the completion, the comparison |
-| 14 | Row order | none (asserted over a reshuffled traversal file) |
-| 15 | Duplicate resolution | the reviewer's duplicates folded (SF8); a unit's repeat detections are one capture |
-| 16 | Identity normalisation | road_ref to the 2026 segment through the crosswalk (SF9); unit to vehicle through the register (SF10) |
+| 12 | Maturity and censoring | the campaign closed on 31 March |
+| 13 | Order of operations | conform, measure each unit's error on the covers, link, place on segments, divide, compare |
+| 14 | Row order | none (the linkage sorts by milepost) |
+| 15 | Duplicate resolution | the linkage itself: a unit's and several units' reports of one pothole are one pothole (SF8) |
+| 16 | Identity normalisation | route and milepost to the 2026 segment (SF9); unit to fleet through the register |
 | 17 | Netting | none |
-| 18 | Dimensional units | miles, lanes, potholes |
-| 19 | Code and status semantics | review decisions and reasons; Kerbline's classes; never the stump |
+| 18 | Dimensional units | miles (mileposts to the ten-thousandth), lanes, potholes |
+| 19 | Code and status semantics | Kerbline's classes; never the stump |
 | 20 | Integerisation | none before the comparison |
-| 21 | Clause scope | program 2 the designation; 3 the task orders, which carry the cold patches; scope of work 6 the charges |
+| 21 | Clause scope | program 2 the designation; 3 the task orders, which carry the cold mix and the camera miles |
 | 22 | Forward window contents | the task orders crew May and June on the closed March campaign (Draw) |
 
 ## Literal reader
 
-Executed word for word, the program fixes the population (every pothole on the roadway in March, recorded or not,
-cold patched or not), the roadway (the inventory as at 31 March, so less the turnback), the unit and the line, and the
-scope of work says the detection inventory is not every defect. So the unrecorded potholes have to be estimated, and the
-candidates are no completion, every pass or day an independent chance, a recapture between halves of the month, a
-recapture between units only where two drove, and the completion over the distinct units that drove each segment. The
-data separate them: a unit that recorded a pothole records it again on 99.5 per cent of its later days while another
-unit that drove the same segment records it on 54 per cent, so a unit's passes are one chance and the distinct units are
-the chances; every completion over distinct units (by pairs, by maximum likelihood, per kind of section, per fleet) files
-the same seven sections and the same fourteen whole numbers, and every pass-, day- or half-month completion files Carrow
-Point and Elmscourt (checks.py). Every write-up step names the file and rule it executes.
+Executed word for word, the program fixes the population (every recorded pothole once, cold patched or not), the
+roadway (the inventory as at 31 March, so less the turnback), the class, the unit and the line, and the scope of work
+says the pilot does not include Kerbline's defect linking. So the detections have to be resolved into potholes, and the
+candidates are every detection, one joining distance for every unit (at any distance), and a distance that follows each
+unit's error. The data separate them: against the surveyed covers the sweepers' units are 52 to 59 feet off and every
+other unit 2 to 3 feet, so one distance either splits the sweepers' potholes or merges the decks'; every error-aware
+linkage (each unit's or each fleet's error, by RMS or MAD, 2.5 to 4 times the combined error) files the same seven
+sections and the same fourteen whole numbers, and every single distance from 16 to 422 feet files another set
+(checks.py). Every write-up step names the file and rule it executes.
 
 WHAT screen (stumping 1.2): population, program 2.2 to 2.4; outcome, 2.2; window, 2.2; unit, 2.4; comparison, 2.1. The
-decisive step settles none of them: it is how the filed count is completed from a record that misses some of it.
+decisive step settles none of them: it is how the filed count is resolved from a record that reports each pothole many
+times at unequal accuracy.
 
 ## Oracles
 
-None. No control, published figure or reconciliation ties only under the golden: the review export's confirmed count is
-the same under every route (records-fixed), the sessions cover every installed unit's traversals under every route, the
-work orders and the camera miles touch nothing the call reads, and no section rate, find rate or earlier designation
-ships.
+None. No control, published figure or reconciliation ties only under the golden: the covers measure the units, not
+the potholes, under every route; the work orders and the camera miles touch nothing the call reads; and no section
+rate, pothole count or earlier designation ships.
 
 ## Ask sheet
 
-The program's section 3 puts each section's March cold patches on its task order for replacement, with the miles the
-pilot's camera units were driven on the section's roadway in March. No ask reads a row the call reads: the work orders
-and the camera miles' traversal duplicates sit outside the call's population (zero device rows in it, asserted).
+The program's section 3 puts each section's March cold mix and the miles the pilot's camera units were driven on the
+section's roadway in March on its task order. No ask reads a row the call reads: the work orders and the traversals sit
+outside the call's population (the call reads the detections, the covers and the inventory only, asserted).
 
-- **Ask A, cold patches by section: 28 figures** (the potholes cold patched in March, a pothole patched more than once
-  counting once, and the pounds of cold mix those patches used, for each of the fourteen sections). Path: the work
-  orders, the review export (defect numbers, decisions, reasons and route mileposts), the detections, the program.
-  Devices: A1 (D6, primary for the pounds), the crews' mobile app writes the order's total pounds on every line of a
-  multi-line order, while office orders carry each line's own pounds and crews often enter one figure for like potholes
-  on an office order (every section has one), so summing the lines counts a mobile order's pounds once per line and
-  taking every repeated figure once loses the office orders' like lines; only the detections' severity shows which is
-  which (a repeated figure above anything a single-line order used on a pothole of its lines' severities is a total).
-  A3 (D7, primary for the counts), when Kerbline split one pothole into two defect numbers, a crew sometimes raised the
-  order on the second number before the reviewer rejected it as a duplicate (the review's reason is the bare word
-  "Duplicate", naming no defect); in every section one pothole's only order carries the rejected number, and one
-  pothole's first order carries it while its re-patch carries the surviving number, a few thousandths of a mile apart.
-  Only the review's milepost joined across rows shows which confirmed defect the duplicate is (the nearest on its
-  route, within 0.01 mile and no other within 0.02, asserted): counting by location keeps the twin as a second pothole,
-  dropping orders on rejected numbers loses a patched pothole. Hazard A2 (D7), the 17 March renumbering: an order raised
-  before it carries the old number, which only the order's route milepost resolves. Other hazards: open orders (no
-  finish), the March finish window. Stops: refs as written and lines summed (the natural read); refs resolved by
-  location and lines summed (the cracker); every repeated figure once; rejected numbers dropped; the golden.
+- **Ask A, cold mix pounds by section: 14 figures** (the pounds of cold mix each section's March cold patches used).
+  Path: the work orders, the detections (each order's ext_ref detection and its severity), the program. Device A1 (D6,
+  primary): the crews' mobile app writes the order's total pounds on every line of a multi-line order, while office
+  orders carry each line's own pounds and crews often enter one figure for like potholes on an office order (every
+  section has one), so summing the lines counts a mobile order's pounds once per line and taking every repeated figure
+  once loses the office orders' like lines; only the ext_ref detections' severity shows which is which (a repeated
+  figure above anything a single-line order used on a pothole of its lines' severities is a total). Hazards: open
+  orders (no finish), the March finish window. Stops: lines summed (the natural read and the cracker); every repeated
+  figure once; the golden.
 - **Ask B, camera miles by section: 14 figures** (the miles the pilot's units were driven on the program's roadway in
-  March, each pass at its segment's inventory length). Path: the traversals, the register, the inventory, the turnback,
-  the program. Device B1 (D1, primary): the telematics provider re-ran its map matching over 12 March 00:00 to 13 March
-  06:00 UTC and appended the re-run's traversals beside the originals, offset by a fraction of each traversal's own
-  duration, under that day's traversal numbers; no row repeats another and every key is unique, and only a vehicle's
-  overlapping traversals of one segment show it, because patrol trucks working an interchange come round its loop and
-  drive a short segment again the same way a minute or three after leaving it (every section has some), so dropping a
-  vehicle's repeats inside a few minutes loses real passes; only a traversal that begins before the vehicle's previous
-  one of the segment has ended is a re-run. Hazards: the crew trucks' trips before their units were installed, the
-  UTC export window, the turnback segments. Stops: every row (the natural read), the installed and local-window filters
-  without the overlap, the golden.
+  March, each pass at its segment's inventory length). Path: the traversals, the register, the inventory, the
+  turnback, the program. Device B1 (D8 and D1, primary): the telematics provider re-ran its map matching over 12 March
+  00:00 to 13 March 06:00 UTC and appended the re-run's traversals beside the originals, written in the district's
+  clock time where the export carries UTC, so each re-run traversal sits five hours before the pass it repeats; no row
+  repeats another, every key is unique and no re-run overlaps its pass, and patrol trucks working an interchange come
+  round its loop and drive a short segment again the same way a minute or three after leaving it (every section has
+  some), so a dedup inside a few minutes loses real passes; only a vehicle's pass repeated exactly five hours later, the
+  same way, shows the re-run. Hazards: the crew trucks' trips before their units were installed, the UTC export window,
+  the turnback segments. Stops: every row (the natural read), overlapping repeats dropped (the cracker), repeats
+  within five minutes dropped, the golden.
 
-| Ask | Cracker (lands the call; refs resolved by location, no duplicate fold, lines summed, every traversal row kept) | Mirror (no completion; every ask read the natural way) |
+| Ask | Cracker (lands the call; lines summed, overlapping repeats dropped) | Mirror (one joining distance; every ask read the natural way) |
 |---|---|---|
-| A, cold patches and pounds by section (28) | miss | miss |
+| A, cold mix pounds by section (14) | miss | miss |
 | B, camera miles by section (14) | miss | miss |
 
 Pair ceiling: 28.5 (cracker 45.0 with the call, the fourteen whole numbers and no ask figure; mirror 12.0, off the call
-with one whole number and no ask figure)
+with five whole numbers and no ask figure)
 
 Mirror leakage: 0.0 per cent of ask weight
 
@@ -324,28 +275,39 @@ Measured by: generator/ceiling.py
 
 ## Pre-ship check
 
-- **The 10/10 rules against the built pack.** The decisive step is still the choice of capture occasion (distinct
-  installed units, not passes), which no field, code or filed rule performs: R3a (the easy route on the clean truth
-  files Carrow Point and Elmscourt) and R3b (the decisive step alone files the seven) pass in checks.py. The mess is
-  still only Layer 1: each item read the natural wrong way leaves the call, and all but dropping unlisted 2025 refs
-  leave the fourteen whole numbers too (R2 in checks.py).
-- **Deletion tests.** No wrong number ships, so deleting every wrong number changes nothing and the task stays hard;
-  the clean-data test is R3a; no control, published section figure or rate ships to tie under either route; the two
-  distractors are read by nothing the call or the asks need.
-- **Determinism.** Every licensed member of the completion (pairs 0.542, maximum likelihood 0.548, per kind of section,
-  per fleet) prints the same seven sections and fourteen whole numbers, every estimate at least 0.17 from a half; the
-  per-unit rate itself is not a critical component, because pairs and maximum likelihood differ in its first decimal.
-- **leak.py REVIEW lines, answered.** The scope of work's "repeated detections of one defect" and "records the roadway
-  ahead", the program's "whether or not a Kerbline unit recorded it" and the data notes' "a unit's capture of a defect"
-  are each file's own business (the vendor's linkage, the estimand, the detections file's grain); none says that a unit's
-  passes repeat its misses or that units differ in what they see. Column names and dates are clean after renaming
-  actual_finish and generated_utc and passing the as-of date.
-- **House fixes.** Container metadata clean in target and golden (scrub audit); the manifest registers every file but
-  itself; four section names that are real towns renamed (Rushmead, Kestrelton, Halverton, Grisholt, Oxbrae); the zip
-  holds the sixteen files with no enclosing folder; the section names the answer uses ship in maintenance_sections.csv.
+- **The 10/10 rules against the built pack.** The decisive step is the error-aware linkage, which no field, code or
+  filed rule performs: R3a (one distance at every tolerance from 0.001 to 0.1 mile misses the golden) and R3b (each
+  unit's true error alone files the golden) pass in checks.py. The mess is still only Layer 1: each item read the
+  natural wrong way leaves the call (R2).
+- **Deletion tests.** No wrong number ships; the clean-data test is R3a; no control or published section figure ships
+  to tie under either route; the distractors are read by nothing the call or the asks need.
+- **Determinism.** Every licensed member prints the same seven sections and fourteen whole numbers, every figure at
+  least 0.2 from a half and 0.75 from the line.
+- **leak.py REVIEW lines:** answered after the build (see the report).
+- **House fixes.** Container metadata scrubbed; the manifest registers every file but itself; the section names ship in
+  maintenance_sections.csv; the zip holds the sixteen files with no enclosing folder.
+
+## Architecture 1 record (spent 2026-10-21)
+
+Architecture 1 completed the potholes no unit recorded (every pothole counted, recorded or not) by a capture-recapture
+over the distinct units that drove each segment, each unit either always or never seeing a given pothole; the default
+path took every pass as an independent chance. Eight isolated readers and the determinism judge (APPROVE, pass 2)
+missed or confirmed it; the ninth reader landed the call by fitting each unit as an independent list. Its asks
+(cold patched counts, pounds, camera miles) and devices are recorded in Tried and rejected.
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 2 draw: a verification sample drawn on corroboration (the district reviews nearly every
+  defect one camera reported and an eighth of the corroborated ones, the confirmed share carried within each
+  corroboration level): the guard's same-puzzle and same-driver tests matched task473 in the batch (untested drivers
+  completed by the catch rate within each band, measured where everyone is tested), the same insight; dropped, not
+  relabelled.
+- 2026-10-21, architecture 2 draw: dropping Kerbline's review export and its misclassified pothole reports: without a
+  review a misread cover or patch could not be told from a pothole, so the truth would be unrecoverable; the class is
+  taken as reliable (program 2.3) and the review goes.
+- 2026-10-21, architecture 2 build: covers set after the survey and missing from the inventory: each matched a far
+  inventoried cover and inflated a unit's root-mean-square error enough to merge the deck potholes, a fork between RMS
+  and robust estimates that carries no analysis; every detected cover is now in the inventory.
 - 2026-10-20, at the draw: the seed's FEMA world (repeat PA major disaster declarations by county). The declaration
   count is records-fixed; its levers (Statewide designations, amendments, county spellings, the per-capita indicators'
   population scaling) are data semantics or rule application; and the unobserved quantities the world offers are spent
