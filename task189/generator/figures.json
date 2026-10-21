@@ -89,7 +89,7 @@
  "censored_readings_agreeing": 4,
  "compliance_samples_total": 427,
  "legacy_limit_over_standard": 2.0,
- "nearest_compliant_pct_below": 12,
+ "nearest_compliant_pct_below": 11,
  "nearest_non_compliant_pct_above": 12,
  "nitrate_trigger_mgl_no3": 37.5,
  "non_compliant": [

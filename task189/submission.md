@@ -15,7 +15,7 @@ Each water body's annual average was estimated from its own compliance samples, 
 
 1. The reporting year holds **427** MCPA compliance samples at the programme's 37 points in 13 water bodies, of which **276** were reported below a reporting limit.
 2. The two accredited methods report to **0.005 ug/l** (Tirneevin, LC-MS/MS, in ng/l) and **0.10 ug/l** (Kilgarron, GC-ECD), the second **twice** the 0.05 ug/l standard.
-3. Cloonfad, Glasheen, Kilcrohane and Owenbeg exceed 0.05 ug/l under each of the **4** estimates that keep a bounded result bounded (a censored-sample fit filling each bounded sample at its own limit, Kaplan-Meier on the flipped sample, a fill from the sensitive method's quantified results of the same month, and the fitted lognormal's own mean), and every water body sits at least **12 per cent** clear of the standard under all four.
+3. Cloonfad, Glasheen, Kilcrohane and Owenbeg exceed 0.05 ug/l under each of the **4** estimates that keep a bounded result bounded (a censored-sample fit filling each bounded sample at its own limit, Kaplan-Meier on the flipped sample, a fill from the sensitive method's quantified results of the same month, and the fitted lognormal's own mean), and every water body sits at least **11 per cent** clear of the standard under all four.
 4. Ballynure, Derryvore and Tirneevin Stream are compliant, and each would be stated as non-compliant if half the reporting limit were written into its 35, 25 and 20 bounded results.
 5. The return states **4** non-compliant water bodies of 13 assessed.
 

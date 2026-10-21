@@ -324,6 +324,16 @@ def run(target):
     A(fj["nearest_compliant_pct_below"] >= 11 and fj["nearest_non_compliant_pct_above"] >= 11,
       "figures.json margins are too narrow: %s" % [fj["nearest_compliant_pct_below"],
                                                    fj["nearest_non_compliant_pct_above"]])
+    # the write-up states both as lower bounds, so neither printed figure may exceed the clearance
+    # the pack actually holds (11.54 printed as 12 was a claim no water body met)
+    nc_true = min(min(o[k] for k in reads) for o in g["assess"].values() if o["mle"] > S)
+    co_true = max(max(o[k] for k in reads) for o in g["assess"].values() if o["mle"] <= S)
+    A(fj["nearest_compliant_pct_below"] <= 100 * (S - co_true) / S,
+      "figures.json claims %d per cent clear below, the pack holds %.2f"
+      % (fj["nearest_compliant_pct_below"], 100 * (S - co_true) / S))
+    A(fj["nearest_non_compliant_pct_above"] <= 100 * (nc_true - S) / S,
+      "figures.json claims %d per cent clear above, the pack holds %.2f"
+      % (fj["nearest_non_compliant_pct_above"], 100 * (nc_true - S) / S))
     A(fj["programme_points"] == len(set(m["point"])), "figures.json programme points")
     A(fj["legacy_limit_over_standard"] == 2.0, "figures.json the legacy limit against the standard")
     A(fj["a3_quarter"] == g["a3"], "figures.json a3")

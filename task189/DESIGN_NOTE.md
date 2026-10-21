@@ -333,3 +333,41 @@ are listed under `stated_inputs` in `metadata.json`.
   with the standard. The note now gives the accredited limit, the units and the method's age, and
   leaves the comparison to the analyst.
 
+- Clause 7.2's third sentence cut in full, the data left to force the valuation of a sample the
+  laboratory reported no value for: on the generator's clean truth the record then leaves 8 of the 13
+  verdicts open, because the interval between valuing every censored row at zero and valuing it at its
+  own limit straddles the 0.05 standard (Owenbeg, the ladder's own discriminator, runs 0.0488 to
+  0.1067), and the count spans 3 at zero, 4 at every bound-respecting estimator, 7 at half the limit, 8
+  with the non-detects dropped and 11 at the limit. The sentence was carrying the determinism of 8
+  verdicts, so deleting it fails Gate C rather than moving the elimination into the data.
+- An inter-laboratory split-sample set (the same bottle analysed by both laboratories) as the
+  data-native eliminator: it measures the sub-limit concentrations directly, so it refutes half the
+  limit by arithmetic, and a set that refutes the naive read is a control bench (readability test 4,
+  `stumping` Part 7). It makes the decisive rung readable, which is a worse break than the clause.
+- Censoring demoted to Layer 1 (every achieved limit well below the standard, so every valuation
+  converges) with the ladder re-rooted on a new Layer 2 in the same world: at a coarse limit of 0.02 the
+  record settles all 13 verdicts and every analytical reflex lands the golden (per point 4, per month 4,
+  Kaplan-Meier 4, the conditional fill 4), while the only routes still missing are ones a filed sentence
+  forbids (the non-detects dropped 8, the authority's own points 3, a fitted distribution's own mean 5,
+  the median 0, the pulse months trimmed 0). Once the valuation is harmless this world has no analytical
+  residue left, because the regulation files the population, the unit, the weighting and the comparison.
+- The judgment beyond the method (the censored fit conditioned on the point or the month, so the
+  textbook pooled estimator becomes the named wrong answer): 0 of 30 cells over the coarse limit from
+  0.10 to 0.01 and the within-water-body contrast from 0.5x to 3x have the conventions harmless and the
+  pooled fit wrong. The pooled lognormal, Kaplan-Meier and the conditional fill all land the golden set
+  in all 30 cells, so conditioning the fit has no lever at any contrast.
+- Grading only the verdicts the record settles: 5 of the 13 are settled at the shipped limit and 3 of
+  those are non-compliant, and both the zero route and the authority's-own-points route file 3, so the
+  easy route lands the call.
+- A C2 criterion in general terms in place of the third sentence: zero, half the limit, the limit itself
+  and dropping the sample are exactly the members of the family whose output is a function of the sample
+  count, the detected values' sum and the limits alone, so any criterion that excludes them says in
+  general terms "value each unmeasured sample from the results the record holds", which is the decisive
+  step stated at authority. There is no weaker wording that reaches them.
+- Architecture 1 abandoned at stage 1 rather than stage 2, on an identity rather than a margin: a water
+  body's verdict is wrong under some valuation convention if and only if the record does not settle that
+  verdict (195 of 195 cells over 13 water bodies and 15 settings of the coarse limit, 0 cells either way
+  off the diagonal), and the dial crosses between a coarse limit of 0.080 (7 verdicts open, the easy
+  route filing 6) and 0.075 (6 open, the easy route filing the golden 4), with no cell in between. The
+  bound that makes the valuation matter is the bound that makes every valuation defensible, so the
+  stump's lever and the determinism hole are the same cells and no clause-free wording separates them.

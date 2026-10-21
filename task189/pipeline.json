@@ -4,9 +4,9 @@
   "status": "FAILED_TO_STUMP",
   "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-21",
   "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
   "architecture": 1,
   "loops": 1,
@@ -31,11 +31,15 @@
     "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the reader filed the four non-compliant water bodies in its prose and quoted clause 7.2 as what ruled out the limit, half the limit, zero and a fitted distribution, leaving the data to pick the survivor. A clause that eliminates every alternative is a signpost. Re-root at stage 2 so the elimination comes from the data's structure.",
+  "resume": "Stage-2 re-root attempted and REFUSED on measurement; architecture 1 is spent at stage 1, not stage 2. The licensed imputation family's spread on the graded figure is exactly zero (7 members, 1 named set, 1 count, on the clean truth and the cut pack), so the decisive step carries one bit, value the bounded samples from the record rather than from their limit, and that bit is what clause 7.2's third sentence supplied. Cut the sentence and the record leaves 8 of 13 verdicts open (Owenbeg 0.0488 to 0.1067 against 0.05), the count spanning 3 to 11. A verdict is wrong under a valuation convention if and only if the record does not settle it: 195 of 195 cells, 0 off-diagonal. Next step is a stage-1 re-root (new card, architecture 2) or retirement, the author's call. Two findings on the shipped pack stand either way: submission.md Critical Component 3 claims 12 per cent clearance and recomputes to 11.54, and a Helsel-Cohn ROS, which clause 7.2 does not exclude, puts the discriminating water body 0.73 per cent from the line. See DESIGN_NOTE.md, Tried and rejected.",
   "approved": null,
   "delivered": "2026-10-16",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "architecture_spent": true,
+  "gates": {
+    "bound_repair": "Critical Component 3 claimed every water body sat at least 12 per cent clear of the standard under all four licensed estimates; the pack holds 11.54 (Derryvore under the fitted lognormal's own mean, 0.044228, and Tirneevin Stream at 11.72). int(round()) printed the bound outward. figures.py now floors both bounds, checks.py asserts each printed bound is at or inside the recomputed extremum of the family (318 assertions, was 316), submission.md states 11, figures_check 42 of 42, two rebuilds byte-identical and target/ byte-identical to the shipped pack, so the repair moved one write-up integer and nothing else. Filed as house fix H29."
+  }
 }

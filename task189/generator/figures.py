@@ -18,8 +18,10 @@ def write(gen_dir, g):
            "legacy_limit_over_standard": round(W.METHODS["KGL-GC-PHX-07"]["rl"] / S, 1),
            "programme_points": 37,
            "nitrate_trigger_mgl_no3": W.NITRATE_TRIGGER,
-           "nearest_compliant_pct_below": int(round(100 * (S - max(co)) / S)),
-           "nearest_non_compliant_pct_above": int(round(100 * (min(nc) - S) / S)),
+           # both are stated in the write-up as lower bounds ("at least N per cent clear"), so
+           # they floor toward the bound: rounding to nearest prints a bound the pack does not hold
+           "nearest_compliant_pct_below": int(100 * (S - max(co)) / S),
+           "nearest_non_compliant_pct_above": int(100 * (min(nc) - S) / S),
            "regulation_clauses": ["1.4", "4.2", "4.4", "7.2", "7.3", "7.5", "7.6"],
            "call": g["count"],
            "non_compliant": g["non_compliant"],
