@@ -2,43 +2,52 @@
 
 ## Draw
 
-Card `cards/task251.json` (architecture 4, re-rooted 2026-10-21 from architecture 3, spent at stage 4; a fresh rebuild
-at the author's standing instruction, see Tried and rejected and the card's lineage). Guard verdict WARN, no BLOCK. The
-WARNs, answered: repeat.gate_g and overuse.gate_g (method_or_model_selection after task484 and task271: the two methods
-are the validation day's error and a load-dependent error model, and the data's own conservation pairs pin the second,
-which is the vocabulary's definition; no other mechanism is honest here); repeat.decision (designation_set after task271:
-the decision is the set of stations the report flags and the contractor recalibrates); repeat.deliverables (xlsx and png:
-the list goes to the contractor as a workbook and the report prints the chart); repeat.question_form (which: a pick of
-stations). At filing task484 held statistical_office_head and register, task478 monitoring_export, task479 published_series and
-task271 line_manager_or_team, and test.same_driver matched population, G7 and method_or_model_selection against task271 v2 and
-task471 v1 lineage: role, artifact and forum were redrawn to the honest neighbours below (the artifact twice, as task479 filed) and G5 leads the generators.
+Card `cards/task251.json` (architecture 5, re-rooted 2026-10-21 from architecture 4, spent at stage 4; drawn fresh at
+the author's standing instruction, see Tried and rejected and the card's lineage). Guard verdict WARN, no BLOCK. The
+WARNs, answered: overuse.gate_g (method_or_model_selection in 5 of the last 12: the two methods are the validation day's
+error and an error model with a load term and a cold term, each pinned by the data's own pairs, which is the
+vocabulary's definition; no other mechanism is honest here); repeat.decision (designation_set after task479: the decision
+is the set of stations the report flags and the contractor recalibrates); repeat.deliverables (xlsx and png after
+task272: the list goes to the contractor as a workbook and the report prints the chart); repeat.question_form (which
+after task479: a pick of stations). driver.near 0.46 against architecture 4 is differentiated on the card: architecture
+4 read one condition, which a stage 4 reader found from the bridge pairs; architecture 5 needs a second, independent one.
 
 - **Pairing.** General Statistics & Data Science / missing-data-censoring-measurement-error, drawn for Data Quality
   Monitoring & Alerting. The object is the health of a regional municipality's permanent traffic counts, and the call
   is a monitoring decision: which count stations the 2027 report flags as not meeting the counting standard, the same
   stations the maintenance contractor recalibrates in the spring 2028 round.
 - **The seed, re-found.** DQ24 gave the world (instruments checked against a reference), the decision (which instruments
-  go for recalibration) and the quantity (each instrument's error against a tolerance). Architectures 1 to 3 spent a
-  reference chain, a wear clock and a selection on the measured value. The decisive step is re-found in the data's own
-  structure: the only validation each station gets is filmed on a summer weekday, when nothing queues, while its loops
-  lose vehicles in the term-time queues that only the river bridges' two approaches, counting the same stream, reveal.
+  go for recalibration) and the quantity (each instrument's error against a tolerance). Architectures 1 to 4 spent a
+  reference chain, a wear clock, a selection on the measured value and a single load-dependent loss read from
+  conservation pairs. Architecture 5 keeps architecture 4's world and makes the decisive step a conjunction found in the
+  data's own structure: the summer filming sees neither the vehicles the loops lose in term-time queues nor the vehicles
+  the older TCX-2 cards miss on cold days; the river bridges' paired approaches measure the first, the bridges whose two
+  approaches run different controllers measure the second against the airport's temperatures, and occupancy per counted
+  vehicle, which holds flat on the TCX-4s and climbs on the TCX-2s in the cold, says which generation errs. Either
+  correction alone files a different list.
+- **Probes before the build.** Three isolated readers (Sonnet, medium) on the seed-303 pack, asked the call only: A filed
+  R10-03, R23-01 and R25-01 (the cold effect read as a TCX-4 overcount, no queue loss), B R04-03, R14-01 and R25-01
+  (the queue loss from the same-road pairs, the cold effect read as a TCX-4 overcount), C R04-03, R06-01, R14-01 and
+  R25-01 (the TCX-2 cold miss from occupancy per counted vehicle, the queues seen and left out). None landed.
 - **Niche.** The Regional Municipality of Halbrook (fictional, southern Ontario) counts traffic at 30 permanent stations
   on its regional roads, inductive loops in every lane reporting each hour's vehicles and occupancy to the count
-  management system. Five of the stations stand in pairs on the two approaches of its Kessel River bridges, counted since
-  a 2019 crossings study. Every July and August a contractor films each station for one weekday and counts every vehicle.
-  TDP-03, the region's counting standard, flags a station whose year's count misstates the vehicles that passed by more
-  than 5 per cent, and the flagged stations go to the maintenance contractor's spring recalibration.
+  management system through one of two controller generations, 15 older TCX-2 and 15 newer TCX-4 (two stations moved
+  from the first to the second during 2027 and were renumbered). Five of the stations' pairs stand on the two approaches
+  of its Kessel River bridges, counted since a 2019 crossings study; three of the five pairs run one controller of each
+  generation. Every July and August a contractor films each station for one weekday and counts every vehicle. TDP-03,
+  the region's counting standard, flags a station whose year's count misstates the vehicles that passed by more than 5
+  per cent, and the flagged stations go to the maintenance contractor's spring recalibration.
 - **The call.** Which stations' 2027 counts are beyond 5 per cent either way, if any.
-- **Shape.** other: the list (each of the 30 stations in or out, the two the validation days keep out of it), the
-  chart of every station's error against the band with the list marked, and the asks' 24 figures (maintenance visits
-  and power failures by district and quarter): about 35 criteria. No station's error is a graded figure: the
-  licensed estimates spread a station's error by up to 0.6 points, so the list and the margin are graded, never a
-  printed error.
-- **Strategy.** `composition_mix`: a station's error depends on the traffic state, the validation day's states (free
-  flow only) differ from the year's (term-time queues), and the queued state's loss has to be measured elsewhere and
-  carried through each station's own mix of states. Gate G method_or_model_selection; generators G5, G7, G17; gap
-  population; calibration other (a conservation pair, see the card); context artifact operations_log (the maintenance
-  contractor's 2027 work orders at the stations, which answer their own question and rank nothing); Layer 2 field_method, pattern
+- **Shape.** other: the list (each of the 30 stations in or out; the validation days keep five of the seven out and
+  neither correction alone brings in all seven), the chart of every station's error against the band with the list
+  marked, and the asks' 24 figures (maintenance visits and power failures by district and quarter): about 35 criteria.
+  No station's error is a graded figure; the list and the margin every licensed estimate keeps are.
+- **Strategy.** `composition_mix`: a station's error depends on the traffic state and the weather its controller works
+  in, the validation day's states (summer free flow only) differ from the year's (term-time queues, frost), and the
+  queued state's loss and the cold days' miss have to be measured elsewhere and carried through each station's own mix
+  of hours by the controller in force. Gate G method_or_model_selection; generators G5, G7, G17; gap population;
+  calibration other (conservation pairs, see the card); context artifact operations_log (the maintenance contractor's
+  2027 work orders, which answer their own question and rank nothing); Layer 2 field_method, pattern
   own:conservation-pairs-load-dependent-detector-loss.
 - **Forum, event, organisation.** customer_or_counterparty (the maintenance contractor receives the recalibration list),
   statutory_or_regulatory_filing (the annual count report the region files with the province by 31 March 2028, flags
@@ -46,10 +55,11 @@ task471 v1 lineage: role, artifact and forum were redrawn to the honest neighbou
 - **People** (`guard.py names --geo Canada --seed 251`, locale en_CA): Miranda Harris, the traffic data coordinator, who
   asks; Andrew Wong, the validation contractor's project manager; Yvonne Larson, the maintenance contractor's service
   manager. None appears in the prompt.
-- **Data-native sentence.** A loop counts a vehicle when its occupancy pulse starts and ends; in a crawling queue the
-  gaps between vehicles close and two vehicles hold one pulse, so the loops lose vehicles as occupancy rises, the summer
-  validation day never sees that state, and on a bridge, where nothing joins or leaves, the queued approach's count
-  falls short of the free approach's by exactly the vehicles lost.
+- **Data-native sentence.** A loop counts a vehicle when its occupancy pulse starts and ends; in a crawling queue two
+  vehicles hold one pulse, and on the older cards, whose tuning drifts as the pavement freezes, the gap between close
+  vehicles stops registering on cold days, while the time the loop is covered, its occupancy, is unchanged; the summer
+  filming sees neither, a bridge's two approaches count one stream with nothing joining or leaving, and where they run
+  different generations the pair's ratio moves with the temperature.
 
 ## Default path
 
@@ -60,125 +70,34 @@ task471 v1 lineage: role, artifact and forum were redrawn to the honest neighbou
 3. Take each station's error as its loops' count against the video count over the validation day, both directions.
 4. Flag the stations beyond 5 per cent.
 
-Ends on: R03-02, R14-01 and R18-01
-Golden: R03-02, R04-03, R05-01, R08-05 and R10-03
+Ends on: R14-01 and R25-01
+Golden: R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03
 
 ## Stump sentence
 
-A competent solver takes each station's 2027 error from its summer validation count and flags R03-02, R14-01 and
-R18-01; the validation days were July and August weekdays with no hour above 8.8 per cent occupancy, so they miss the
-vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list
-misses R04-03, R05-01, R08-05 and R10-03 and keeps R14-01 and R18-01, which the loss brings back inside.
+A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; the
+filmed days were July and August weekdays with no hour above 8.2 per cent occupancy and no day below 13 degrees, so they
+miss the vehicles the loops lose in term-time queues, which the bridges' paired approaches show growing with occupancy,
+and the vehicles the older TCX-2 cards miss on cold days, which the bridges whose approaches run different controllers
+show against the airport's temperatures; the queue loss alone files R02-01, R04-03, R08-05, R14-01 and R25-01, the cold
+miss alone R04-03, R06-01, R14-01 and R25-01, and only both file R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and
+R29-03.
 
 ## Three rules
 
-Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), tagged in the taxonomy for Data Quality Monitoring: a measurement-error model with a load-dependent term, estimated from a natural pairing of instruments on one conserved stream because the validation design never sampled the load at which the error arises.
-Domain test: The deciding quantity is each count station's error over the traffic it carried in 2027, the loops' sensitivity together with a loss that grows with occupancy in queued traffic: a measurement-error model with a load-dependent term, which the traffic data field estimates where the same vehicles are counted twice with nothing joining or leaving and carries through each detector's own hours; replacing it with each station's validation-day error, the generic calibration summary, changes the list.
-Swap: "the stations whose count is beyond 5 per cent once the loss the bridges' paired approaches show in queued traffic is carried through each station's own occupancy" put into a hospital's glucose meters loses its mechanism, since no two meters read the same blood with nothing added or taken between them while one of them sits in a queue; replacing the load-dependent model with each station's validation-day error changes the list.
-Layer 1: the count management system's hourly export in local time with each hour's UTC offset (the autumn hour twice, the spring hour missing); the contractor's own site codes against the region's station numbers; two stations renumbered when their controllers were replaced; occupancy to one decimal from the older controllers and to two from the newer ones; the hours a controller lost to a power failure absent from the export; the contractor's sheets per station, direction and 15 minutes on different days; the network file keyed by road and kilometre point; for the asks, TrafficVault's event log in UTC with the repeats a controller sends after a lost poll and a cold start's unset clock, and the maintenance contractor's work orders with route orders, two-technician lines and multi-day jobs.
-Layer 2: field_method under composition_mix: the error depends on the traffic state, the validation day sampled only free flow, and the queued state's loss is measured on the conservation pairs and carried through each station's own state mix.
-Decisive step: estimating each station's 2027 error with a loss term that grows with occupancy, fitted on the bridges' paired approaches (the queued side's count against the free side's, each on its validated sensitivity) and carried through each station's own hourly occupancy, rather than taking the summer validation day's error as the year's.
-Not semantics: every field reads as what it is (vehicles counted in the hour, occupancy, the video count of the vehicles that passed), and nothing in any field, code, unit or definition says that loops lose vehicles in queues or that the validation days held no queue; the bridges are in the network file only as structures with a road and kilometre points.
-Not rule application: no filed sentence says how a station's year error is estimated; TDP-03 defines the error over the hours counted and states the validation programme's facts, so executing every filed rule on the validation counts files the validation list.
-Analyst test: A strong analyst who reads the standard, the register, the validation counts and the hourly counts takes each station's 2027 error from its validation day and flags R03-02, R14-01 and R18-01; the validation days held no queue, so the list misses R04-03, R05-01, R08-05 and R10-03, which the loss pushes past 5 per cent, and keeps R14-01 and R18-01, which it brings back inside (checks.py runs both on the clean world and on the pack).
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), tagged in the taxonomy for Data Quality Monitoring: a measurement-error model with a load-dependent term and a temperature-dependent term confined to one instrument generation, each estimated from a natural pairing of instruments on one conserved stream because the validation design never sampled the load or the temperatures at which the errors arise.
+Domain test: The deciding quantity is each count station's error over the traffic it carried in 2027, the loops' sensitivity together with a loss that grows with occupancy in queued traffic and the older detector cards' miss on cold days: a measurement-error model the traffic data field estimates where the same vehicles are counted twice with nothing joining or leaving and carries through each detector's own hours by the controller in force; replacing it with each station's validation-day error, the generic calibration summary, changes the list.
+Swap: "the stations whose count is beyond 5 per cent once the loss the bridges' paired approaches show in queued traffic and the older cards' cold miss the mixed pairs show against the temperature are carried through each station's hours" put into a hospital's glucose meters loses its mechanism, since no two meters read the same blood with nothing added or taken between them while one of them sits in a queue, and no meter generation loses readings when the pavement freezes; replacing the model with each station's validation-day error changes the list.
+Layer 1: the count management system's hourly export in local time with each hour's UTC offset (the autumn hour twice, the spring hour missing); the contractor's own site codes against the region's station numbers; two stations renumbered when their controllers were replaced; occupancy to one decimal from the older controllers and to two from the newer ones; the hours a controller lost to a power failure absent from the export; the contractor's sheets per station, direction and 15 minutes on different days; the network file keyed by road and kilometre point; the airport's daily summary in the weather service's own export layout with its flags and a missing day; for the asks, TrafficVault's event log in UTC with the repeats a controller sends after a lost poll and a cold start's unset clock, and the maintenance contractor's work orders with route orders, two-technician lines and multi-day jobs.
+Layer 2: field_method under composition_mix: the error depends on the traffic state and the weather, the validation day sampled only summer free flow, and the queued state's loss is measured on the conservation pairs and the cold miss on the pairs whose two approaches run different controller generations, both carried through each station's own hours by the controller in force.
+Decisive step: estimating each station's 2027 error with both a loss term that grows with occupancy, fitted on the bridges' paired approaches, and a cold-day miss on the TCX-2 cards, fitted on the mixed-generation pairs' free-flowing days against the airport's daily mean temperature and placed on the TCX-2 because their occupancy per counted vehicle climbs in the cold while the TCX-4s' holds flat, carried through every hour by the controller in force, rather than the summer validation day's error or either correction alone.
+Not semantics: every field reads as what it is (vehicles counted in the hour, occupancy, the video count of the vehicles that passed, the day's temperatures), and nothing in any field, code, unit or definition says that loops lose vehicles in queues, that either controller generation misses vehicles in the cold, or that the validation days held neither; the bridges are structures in the network file, the controllers a column of the register and the temperatures the airport's daily summary.
+Not rule application: no filed sentence says how a station's year error is estimated; TDP-03 defines the error over the hours counted and states the validation programme's facts, so executing every filed rule on the validation counts files the validation list, and no rule names the temperature, the controller generation or the bridges.
+Analyst test: A strong analyst who reads the standard, the register, the validation counts and the hourly counts takes each station's 2027 error from its validation day and flags R14-01 and R25-01; one who reads the queue loss from the bridges' pairs flags R02-01, R04-03, R08-05, R14-01 and R25-01, and one who reads only the cold miss R04-03, R06-01, R14-01 and R25-01; only both file the seven (checks.py runs every route on the clean world and on the pack).
 Estimand: each of the 30 stations' 2027 count error, the vehicles it counted in the hours of 2027 it counted (both directions, every lane) against the vehicles that passed it in those hours, less one; a station is flagged when its error is beyond 5 per cent either way (TDP-03 section 5 and the prompt).
-No decoy: nothing is planted: the validation counts are true counts of the vehicles on their days, the loops' counts are what the loops counted, no memo, draft or figure argues for the validation list, and no file ranks the stations by error.
+No decoy: nothing is planted: the validation counts are true counts of the vehicles on their days, the loops' counts are what the loops counted, the temperatures are the airport's own daily summary, no memo, draft or figure argues for any list, and no file ranks the stations by error.
 No certified replay: no certified or published figure sits in the pack; the validation workbook states counts and no accuracy verdict, and no file states a station's error, flag or annual traffic.
-Lesson: a validation that never samples the condition in which an instrument errs cannot give its error over a year that holds that condition, and a stream counted twice with nothing joining or leaving measures the loss where the condition occurs; no build on file reads a counting error from conservation between paired counters.
-
-## Readability screen
-
-| Rung | Where a reader meets it | Verdict |
-|---|---|---|
-| 1. Each station's validation-day error (R03-02, R14-01, R18-01) | the validation workbook, TDP-03 sections 4 and 5 | readable |
-| 2. Each bridge station read against its far approach, the others at their validation error (R03-02, R04-03, R14-01, R18-01) | nothing names it: the bridges are structures in the network file | silent |
-| 3. (decisive) A loss that grows with occupancy, fitted on the bridges' paired approaches in each direction and carried through every station's own hours (the five) | nothing names it: no file says loops lose vehicles in queues or that the filmed days held none; the bridges are structures, the occupancy a column of the hourly export, and only the reasoning that a queued approach and a free approach count the same vehicles sends a reader to the pairs | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the stations | the 30 in the register, a renumbered station once under its current number | each number in the export a station | another list (R08-01 and R08-05 both) | the register's Code history; TDP-03 section 3 (the record continues under the new number) |
-| SF2 | 2027 | the local calendar year of the export | the UTC year | same call | asserted |
-| SF3 | the vehicles that passed | each hour's count over its sensitivity and one less the loss at its occupancy | five curve forms, the queued spells' edges out, two-hour blocks, vehicle weights, a constant loss above 22, 25 or 28 per cent | same list | asserted over every licensed estimate; listed beyond 6, others within 4.5 per cent |
-| SF4 | the error | counted over passed, less one | passed over counted, less one | same list | TDP-03 section 5; asserted |
-| SF5 | beyond 5 per cent | strictly | at or beyond | same call | no station within 1.1 points of the line (asserted) |
-| SF6 | the hours | the hours each station counted | every hour, the lost ones estimated | same call | TDP-03 section 5; asserted on the world's full record |
-| SF7 | the sensitivity | per station and direction | per station | same list | asserted |
-| SF8 | occupancy | per cent at the precision each controller reports | every hour at one decimal | same list | the dictionary; asserted |
-| SF9 | a renumbered station's hours | joined under the current number | the old number's hours dropped | same list | the register's Code history; asserted |
-| SF10 | the validation sites | the register's validation_site | none | same call | asserted, one station per site |
-| SF11 | the bridge pairs | each bridge's nearest stations either side, no junction between | none | same call | the network file; asserted |
-| SF12 | the validation day | the filmed day, midnight to midnight, both directions | none | same call | TDP-03 section 4; asserted (96 quarter hours each direction) |
-| SF13 | an error's rounding | no station's error is graded | a printed error | not graded | the prompt asks for the list; asserted |
-| SF14 | a maintenance visit (asks) | a day a maintenance contractor's technician is at a station | each labour line, each order, each door day | the asks only | TDP-03 section 7 (two technicians are one visit); the office resets read as a RESET with the cabinet shut give the same counts (asserted) |
-| SF15 | a power failure (asks) | each loss of mains power at a controller, a feeder's re-trip a second loss | each outage once, each break once | the asks only | section 7 (a loss counted once however long it lasts); the TCX-4s log two MAINS_FAIL for a re-trip and TrafficVault's polls two losses at a TCX-2 (asserted) |
-| SF16 | a quarter (asks) | calendar quarter by local date | by UTC date | the asks only | TDP-03 sections 3 and 7 |
-| SF17 | a district (asks) | the register's district | none | same figures | one district per station (asserted) |
-| SF18 | the validation crew (asks) | not a maintenance visit | a visit | the asks only | TDP-03 sections 4 and 7 (the maintenance contractor's technicians) |
-| SF19 | a controller replacement (asks) | a visit, not a power failure | a power failure | the asks only | section 7 (a loss of mains power); the work order and the Code history |
-| SF20 | the year-2000 stamps (asks) | a cold start's unset clock | events of 2000 | same figures | no MAINS_FAIL carries one (asserted) |
-| SF21 | the log's repeats (asks) | one event | two | the asks only | exact repeats after a lost poll (asserted) |
-| SF22 | a visit's or failure's day (asks) | local date | UTC date | the asks only | TDP-03 section 3; asserted (aimed) |
-
-## Ladder
-
-| Route | Withdraws | Count | Golden |
-|---|---|---|---|
-| Each station's validation-day error (the default path) | R03-02, R14-01, R18-01 | 3 | no |
-| Each direction's validated sensitivity carried through the year, no loss | the same three | 3 | no |
-| The validation day's own quarter hours as the loss's evidence | the same three (no quarter hour above 9 per cent occupancy) | 3 | no |
-| Each bridge station against its far approach, the others at their validation error | R03-02, R04-03, R14-01, R18-01 | 4 | no |
-| A constant loss above 22, 25 or 28 per cent occupancy from the pairs | the golden five | 5 | yes (licensed) |
-| Golden: a loss growing with occupancy from the pairs, carried through every station's hours | R03-02, R04-03, R05-01, R08-05, R10-03 | 5 | yes |
-
-The golden family agrees on the five under every curve form (piecewise linear, power, quadratic, linear above 22 per
-cent, two-point bins), with the queued spells' first and last hours left out, over two-hour blocks, with each pair
-weighted by its vehicles and with one sensitivity per station; every one keeps the listed stations beyond 6 per cent
-and the others within 4.5 (asserted). On the clean world the validation day files the wrong list and the loss
-construction the truth (checks.py, dataset-generation 7.1).
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | the 30 stations in the register | filed (register) |
-| 2 | Unit of account | a station, both directions and every lane together | filed (TDP-03 section 5) |
-| 3 | Attribution window | the hours of 2027 the station counted | filed (section 5) |
-| 4 | As-of dating | the record to 31 December 2027, the list due 3 March 2028 | filed (export, mail) |
-| 5 | Version basis | TDP-03 revision 4 | filed |
-| 6 | Denominator | the vehicles that passed in the hours counted | filed (section 5) |
-| 7 | Weighting | each vehicle once (a ratio of totals) | filed (section 5) |
-| 8 | Window length | the calendar year | filed |
-| 9 | Boundary inclusivity | beyond 5 per cent | C1 (1.1 points clear, asserted) |
-| 10 | Rounding path | no error graded; visits and failures whole counts | C1 |
-| 11 | Tie-break | none open | asserted |
-| 12 | Maturity and censoring | every hour of 2027 delivered by 7 January 2028 | filed (dictionary, export) |
-| 13 | Order of operations | sensitivity, then the loss, then the year's ratio | C1 (every order agrees, asserted) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | the autumn hour twice by offset; the event log's exact repeats once | filed (offsets); asserted |
-| 16 | Identity normalisation | current station numbers, site codes through the register | filed (register) |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | vehicles, per cent occupancy | filed (dictionary) |
-| 19 | Code and status semantics | event codes, work order categories | filed (dictionary); never the stump |
-| 20 | Integerisation | whole counts on the asks | filed (the asks count) |
-| 21 | Clause scope | section 5 for every station; section 7 for every district and quarter | filed |
-| 22 | Forward window contents | the spring 2028 round recalibrates the flagged stations | filed (section 5, the mail) |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word (TDP-03 sections 2 to 7, the dictionary, the register, the
-network file) leaves one open move, how the vehicles that passed each station are estimated; the data's structure
-forces it (the filmed days hold no hour above 8.8 per cent occupancy while the year's queued hours run to 50, and only
-the bridges' paired approaches count one stream twice), and every licensed estimate of that one quantity files the same
-five (asserted, listed beyond 6 per cent, others within 4.5).
-
-## Oracles
-
-- No file ranks the stations or carries a station's error, flag, list or annual traffic.
-- The validation workbook carries counts only; every route reads it and none is told its days are unrepresentative.
-- The contractor's mail asks for the list and a note if there are none; it carries no station.
-- The weather and collision files (the distractors) carry no figure any route needs.
+Lesson: a validation that never samples the conditions in which an instrument errs cannot give its error over a year that holds them, and when two conditions act on different instruments each needs its own natural experiment: a stream counted twice with nothing joining or leaving measures the queue loss, the same stream counted by two instrument generations measures one generation's weather miss, and a second channel the miss does not touch says which generation it is; no shipped build reads a counting error from conservation between counters of two generations.
 
 ## Ask sheet
 
@@ -223,40 +142,6 @@ Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 24 ask f
 Mirror leakage: 0 per cent of ask weight.
 Measured by: generator/pair.py on the cut pack. A reader who finds the office resets keeps 12 of 24 and one who also
 finds the TCX-2 breaks without the re-trips 19; the stage 4 readers are the measurement.
-
-## Candidates for architecture 5
-
-Architecture 4 is spent at stage 4, and a re-root past the third architecture is the author's call; at the author's
-standing instruction (spent and retired builds are rebuilt fresh, never retired unasked) the next draw takes one of
-these. Each carries a default path and a screen, and each puts the reachable correction on the first rung and the
-decisive step on a second that no visible contrast invites.
-
-1. **Laboratory analyzers' imprecision under a repeat-until-accepted practice** (General Statistics, measurement error
-   x DQ). Which of a laboratory network's chemistry analyzers' between-run imprecision breaches the allowable
-   coefficient of variation and goes to the vendor's service visit. Default: the CV of the accepted quality-control
-   results in the laboratory system flags few. Reflex rung: within-lot standard deviations (material lot changes move
-   the means) flag fewer. Decisive: the accepted results are what survived the repeat rule, the analyzers' own run logs
-   count the discarded runs day by day, and the standard deviation is estimated on the truncated sample. Screen: the
-   thinning beyond the control limits must not show as a hard edge, and the repeat practice must sit in routine text.
-2. **Polled analyzers aliasing a process cycle** (Physical & Environmental Sciences, environmental monitoring x DQ). A
-   utility's online analyzers are polled every 15 minutes in step with the aeration blowers' timer, so the stored
-   values sample the cycle at a fixed phase. Default: the mean of the polled values. Reflex rung: the verification
-   day's offset carried as a constant. Decisive: each plant's phase from the blower event log, which moved when the
-   poll schedule or the timer was reset, against the cycle profile from the commissioning logs. Screen: no beat
-   pattern in daily means; the aeration control, not generic sampling, must decide.
-3. **A service desk's resolution-time indicator** (Business & Operations, service operations x DQ, General Statistics
-   task type). Which service centres' reported mean time to resolve understates the truth by more than 10 per cent.
-   Default: the dashboard's mean over closed tickets. Reflex rung: the closed tickets with the open backlog dropped or
-   imputed. Decisive: the mean time in the system from the daily backlog counts and arrivals (Little's law over the
-   year with the opening and closing backlogs). Screen: Little's law is a named identity a strong operations reader may
-   apply; the backlog file must read as the desk's own staffing report.
-4. **A network intercompared against its own median** (Physical & Environmental Sciences, sensor calibration x DQ).
-   Instruments are checked daily against the network median, so a drift most instruments of one model share moves the
-   median and reads as no error; external audits with a transfer standard see the shared part only at their sites.
-   Default: the error against the median. Reflex rung: each audited instrument's own offset. Decisive: the shared drift
-   by model as a function of temperature, from the audits, carried to every instrument through its model and its
-   site's temperature. Screen: the audit file invites a cross-check, so the decisive dependence must not be readable
-   off one column.
 
 ## Tried and rejected
 
@@ -337,4 +222,4 @@ decisive step on a second that no visible contrast invites.
   reset days carry the office resets' text and nothing filed says a TCX-2 is reset on site; Gate H analytical. A
   validation that visibly misses a condition invites a reader to look for an independent reference, and the network's
   own pairs were one.
-
+- 2026-10-21, architecture 5 draw: the four candidates written for it (analyzers' imprecision under a repeat-until-accepted practice, polled analyzers aliasing a blower cycle, a service desk's resolution time by Little's law, a network intercompared against its own median) were set aside: each carried one decisive move on a second rung, the shape one reader of architecture 4 and both of task249's architecture 5 landed, while a conjunction in architecture 4's own world (the queue loss and a cold miss confined to one controller generation, either alone filing another list) could be probed with readers before any build.

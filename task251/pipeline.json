@@ -1,37 +1,21 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond 5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the queued stations past 5 per cent and keeps one the loss brings back inside.",
- "architecture": 4,
+ "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
+ "architecture": 5,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW (three harmless lines: TDP-03 carries the call's words, the standard and dictionary carry the field's terms)",
-  "reader": "reader A exit 1 (landed the call by the bridge pairs, asks 0 of 24); reader B exit 0 (validation list, asks 0 of 24)"
- },
- "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
-  "surface": "task243 promoted on surface 0.101, no shared mechanism (differentiation on the card)",
-  "nearest": "task251 (v3, lineage) 0.11"
- },
- "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "finding": "ask 2: TCX-2 reset days unfiled",
-  "gate_h": "analytical",
-  "gate_g": "method_or_model_selection, analytical_non_defect"
- },
+ "precut": null,
+ "leak": null,
+ "duplicate_check": null,
+ "judge": null,
  "returned": [],
- "resume": "Architecture 4 spent at stage 4 (reader A landed the five by the bridge pairs). Next: architecture 5 drawn fresh at stage 1 from the design note's '## Candidates for architecture 5' (the author's standing instruction: spent builds are rebuilt fresh, never retired unasked), with probe readers on the call before the full build; the ask layer's devices held 0 of 24 for both readers and carry over in shape (file an on-site signal for every reset kind).",
+ "resume": "Architecture 5 drawn 2026-10-21 (card registered, guard WARN only) after three call-only probe readers on the seed-303 pack all missed. Next: stage 2 in the scratch generator (asks: TCX-2 comms faults closed as modem replacements; a permits distractor since the weather file is now an input; TDP-03 section 2 on loops kept at a controller swap), the design note's v5 sections and precut, then stage 3 gates.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -98,18 +82,17 @@
   {
    "date": "2026-10-21",
    "event": "architecture 4 spent at stage 4 on target.zip 555ce293: scored reader A landed the call (bridge pairs, loss fitted on occupancy), reader B filed the validation list; asks 0 of 24 for both; judge NOT_DETERMINISTIC FIX_NOW on ask 2 (TCX-2 reset days unfiled), Gate H analytical; PAUSED, architecture 5 to be drawn fresh"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "architecture 5 drawn (a conjunction in the same world: the queue loss read from the bridges' paired approaches and the TCX-2 cards' cold miss read from the mixed-generation pairs against the airport's temperatures, attributed by occupancy per counted vehicle); three call-only probes missed (A and B put the cold effect on the TCX-4 cards, C found the cold miss without the queue loss); card registered"
   }
  ],
- "readers": {
-  "A": {
-   "call": "hit",
-   "asks": "0 of 24",
-   "exit": 1
-  },
-  "B": {
-   "call": "miss",
-   "asks": "0 of 24",
-   "exit": 0
-  }
+ "readers": null,
+ "probes": {
+  "pack": "scratch b1 (seed 303), prompt asking the call only, three isolated readers (sonnet, medium)",
+  "A": "R10-03, R23-01, R25-01 (cold effect put on the TCX-4 cards as an overcount; no queue loss): miss",
+  "B": "R04-03, R14-01, R25-01 (queue loss from the same-road pairs, cold effect put on the TCX-4 cards): miss",
+  "C": "R04-03, R06-01, R14-01, R25-01 (cold miss on the TCX-2 cards from occupancy per counted vehicle; congestion seen and not used): miss"
  }
 }
