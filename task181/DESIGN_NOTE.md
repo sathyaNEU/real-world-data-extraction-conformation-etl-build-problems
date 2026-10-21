@@ -85,31 +85,83 @@ under 26.4.
 
 ## Three rules
 
+Rewritten 2026-10-21 to the measurement rather than to pass. Architecture 4 is spent: the easy route lands the
+call, and the family the pack leaves open straddles the decision at every magnitude. Three screens, each run on
+the generator's clean truth and each run twice and byte-identical, are quoted in the lines below and itemised in
+`## Tried and rejected`.
+
 - **Litmus:** no reported number is wrong and nothing overturns one. The flight data, the occurrence export, the
-  close-out and the traffic sample are all correct; the difficulty is building a summer 2027 count no file states.
-- Domain test: what decides the call is the field's own traffic-complexity measure, the count of aircraft pairs whose
-  levels change order inside a sector. A loss of separation happens in a vertical interaction, an aircraft cleared
-  through the level of another, so a sector's expected losses follow its vertical crossings rather than its flight
-  hours, and air traffic safety analysis keeps that complexity count beside the hours for exactly this reason. Nothing
-  here measures controller workload; the quantity is the traffic's own geometry. With another field's nouns there are
-  no flight levels to cross and no climb through a cruising flow, so the task does not survive the swap.
-- Analyst test: a strong analyst who keeps the ATM-related losses of separation, attributes each to its elementary
-  sector, reads the season in local time and computes summer flight hours exactly still forecasts
-  summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its
-  climbing and descending flight hours, and files that no sector exceeds 40.0, because only counting the vertical
-  crossings in each sector shows the new Brekka departures taking Tarvik over the tolerance.
+  close-out and the traffic sample are all correct; the difficulty was to be a summer 2027 count no file states.
+- Task type: `safety-incident-error-analysis`, the `human-factors-ergonomics` task type that serves Anomaly
+  Detection & Diagnostics; the anomaly is a sector whose forecast ATM-related losses of separation break the unit
+  safety plan's tolerance, and the diagnosis is what generates a sector's losses. Holds.
+- Domain test: the deciding quantity is the field's own traffic-complexity count, the aircraft pairs in one sector at
+  once whose levels change order, which air traffic safety analysis keeps beside flight hours because separation is
+  lost in a vertical interaction. Holds, and the record carries it: 96 of 96 ATM-related losses are such a pair,
+  losses per pair run 2.31 to 2.59 per 10,000 across the eight sectors (max over min 1.121) while losses per 100,000
+  flight hours run 13.8 to 24.2 (max over min 1.761).
+- Swap: the call sentence with wards for sectors and bed-days for flight hours has no flight levels to cross and no
+  climb through a cruising flow, so nothing is left for a pair to change order in and the forecast collapses to a
+  rate times a volume. Holds.
 - Layer 1: realistic mess from the centre's own systems: the flight data extract at flight x elementary sector grain
   with levels in hundreds of feet and times in UTC against a season defined in local time; sectors named in full in the
   occurrence export and by code in the flight data; the summer 2027 planning traffic built by the forecast team in its
   own layout and flight key; and, on the ask paths, a delay export that keeps a re-filed flight's cancelled plan, a
   configuration table revised mid-season, and both crews' reports of one ACAS encounter filed as two occurrences.
-- Layer 2: a sector's forward losses are not its flight hours times its past rate, nor a function of its traffic count
-  or of the time its traffic spends climbing: separation is lost between two aircraft where one changes level through
-  the other's, so the forecast has to carry the vertical crossings each sector's traffic creates, and the record proves
-  it (losses per crossing hold steady across sectors and months while losses per flight hour vary several-fold).
-- **Stump class:** analytical. Rule 3 is cleared: no planted defect or decoy decides it, no field reading flips it (every
-  field is read the same on both paths) and no stated rule produces it (the tolerance is filed; nothing in the pack
-  says how to forecast the losses).
+  Holds, and nothing is placed to be caught.
+- Layer 2: a sector's forward losses follow the pairs its traffic builds rather than the hours it flies, and the
+  record shows it. The family is real and it is not closed: the pack licenses the pair's definition along an axis
+  whose far end (any pair with an aircraft changing level) is a traversal attribute rather than the interaction, and
+  the record has no power to narrow it, so Layer 2 reaches the decision from both sides of it.
+- Decisive step: forecast each sector's summer 2027 losses from the pairs its planning traffic builds whose levels
+  change order, not from the flight hours it flies. NOT UNIQUE, measured: of the 35 constructions this note's own SF6
+  (what the pair is) crossed with SF7 (how the rate is pooled) licenses, 32 put Tarvik over 40.0 and 3 do not, namely
+  any pair with an aircraft changing level fitted per sector, which gives Tarvik 31.6 on the whole record, 34.0 on the
+  two summers and 26.5 on summer 2026 and names no sector at all. The main recommendation therefore forks on a
+  reading the note itself licenses, and the build asserted only the pooled form of that pair definition (59.4).
+- Not semantics: holds. Every field is read the same on both paths: the ATM contribution codes, the season in local
+  time, the levels in hundreds of feet, the sector names against codes and the planning traffic's own flight key all
+  resolve identically whichever exposure the forecast is built on, and the nine fork rows each close on a quoted
+  sentence or the same call. The failure below is not a reading.
+- Not rule application: the pack files no method, so the family left open is every construction of a sector's
+  forecast rate, and its spread is not zero. 25 constructions a competent analyst in this field would use spread
+  Tarvik from 8.7 to 79.9 ATM-related losses per 100,000 flight hours, a spread of 71.3 against a printed unit of 1,
+  and file 3 distinct calls (no sector, Grendal with Hallin, Tarvik). That open family is the failure rather than the
+  pass, because the spread straddles the decision: the tolerance has to sit at or above 48.6 to clear every easy
+  route by 1.15x and at or below 23.0 to keep every licensed construction over the line by 1.15x, a window empty by
+  a factor of 2.11. No magnitude closes it. Sweeping the one parameter that widens the separation, the new Brekka
+  base from 14 to 50 flights a day each way, holds the ratio of the weakest licensed construction's Tarvik figure to
+  the highest easy route's figure at 0.654, 0.709, 0.749, 0.726, 0.744 and 0.738, against the 1.3225 a non-empty
+  window needs, because the weakest licensed member and the strongest easy route both measure the sector's
+  level-changing traffic and rise together with the dial.
+- Analyst test: FAILS, measured. The easy route lands the call. Each sector's losses pooled over its level-changing
+  traversals, which is one group-by on the parquet where entry_fl is not exit_fl, one group-by on the occurrence
+  export and one divide with no pair construction anywhere, puts Tarvik alone over 40.0 on every seasonal estimation
+  window: 42.3 on the two summers, 41.4 on summer 2026 and 43.3 on summer 2025, with only the whole-record window
+  missing at 36.2. The wrong answer this note credits the easy route with, no sector over and Mosby highest at 32.0,
+  is one easy route's answer and not the family's, and the seasonal window is the natural one for a summer forecast
+  because the close-out reports by summer.
+- Estimand: each elementary sector's forecast rate of ATM-related losses of separation in summer 2027 (1 June to 31
+  August, local time, cl. 3.2) per 100,000 flight hours of the summer 2027 planning traffic (cl. 3.5), estimated from
+  the occurrence record since 1 January 2025 (cl. 4.2), against the plan's 40.0 (cl. 4.1), filed in
+  HACC_unit_safety_plan_2026-2028.pdf. Filed literally and unchanged; the failure is not here, and filing more of it
+  would file the method.
+- No decoy: holds. The summer 2026 close-out is a correct, labelled history of summer 2026 rates, no memo, draft,
+  briefing or voice argues for a sector or for a method, and nothing is planted to be caught.
+- No certified replay: holds. No certified or published figure pins the method; the rate per pair is estimated on the
+  record, and the close-out publishes rates per flight hour only.
+- Lesson: none this architecture can teach, because the step it was built to teach is not forced. What the
+  measurement teaches the next draw is that an exposure axis whose far end is a row attribute rather than the
+  interaction cannot carry a stump: the attribute end is a one-group-by route, and the record cannot tell the two
+  ends apart. Within each sector the monthly profile of pairs that change order and the monthly profile of pairs with
+  a mover correlate 0.9951 to 0.9988 (0.9994 pooled); the Poisson log-likelihood difference between the two bases on
+  each sector's monthly loss counts is 0.22 on one degree of freedom against the 3.84 needed, and reaching it would
+  take about 40,782 losses against the record's 96, some 425 times the record and about 743 years of this centre's
+  traffic. The across-sector test the design relies on (losses per moving pair varying 3.37-fold) is exactly the
+  heterogeneity a per-sector fit absorbs, so it cannot refute the per-sector form.
+- **Stump class:** analytical in kind and spent in fact. No planted defect or decoy decides it and no field reading
+  flips it, but the decisive step is not unique and the easy route reaches the call, so the architecture is re-rooted
+  rather than resumed.
 
 ## Readability screen
 
@@ -422,3 +474,37 @@ remarks); pass 2's minor tells harmless.
   flights that operated).
 - A configuration log remark of a sector bandboxed briefly and reopened minutes later with no logged change: deducting
   it moved Tarvik's hours open alone to 1,531.7, so the remark left the log's vocabulary.
+- Architecture 4's stage-2 magnitude repair (widen the separation at the decision with the call, the decisive step,
+  the prompt's asking sentences and every ask figure's unit and rounding frozen): refused on measurement 2026-10-21.
+  Screen 1 passed, 25 constructions spreading Tarvik 8.7 to 79.9 per 100,000 flight hours (spread 71.3), so the step
+  is not a reflex. Screen 2 passed, the decisive construction is nothing like an identity in the one-group-by route
+  (corr -0.5110 and max absolute difference 59.00 against each sector's 2026 rate per flight hour, affine R2 0.2611;
+  the best cheaper route is the level-changing-traversal rate at corr 0.7593 and max absolute difference 36.22). Screen
+  3 refused: the tolerance window that clears every easy route by 1.15x and keeps every licensed construction over by
+  1.15x is empty by a factor of 2.11 at the shipped magnitudes and empty at every setting of the dial.
+- Raising the safety plan's tolerance (40.0 to 45.0 or 47.0) so the line sits clear of the reflexes: dead. It fixes
+  the near misses (hourly entries squared pooled 37.7, vertical hours pooled on 2026 36.6, level-changing traversals
+  pooled on the record 36.2, all inside 1.15x of 40.0) and it cuts the licensed family in two, because the weakest
+  licensed construction puts Tarvik at 26.5 and any line clearing the easy routes sits at 48.6 or above.
+- Raising the new Brekka base (14, 20, 26, 33, 40, 50 flights a day each way, the record held and the whole generator
+  re-simulated at each setting): dead. It widens the golden strongly (Tarvik 44.8, 55.9, 72.5, 78.5, 93.6, 107.1) and
+  it widens the easy routes with it (37.0, 37.8, 42.0, 45.8, 50.4, 56.8), leaving the ratio that decides the window at
+  0.654 to 0.749 throughout and never at the 1.3225 a window needs. The dial is one-ended: every setting with a real
+  separation has a split licensed family and every setting with a unanimous family has no separation.
+- Lowering the loss rate per pair that changes order to slide every figure away from the line: dead by arithmetic, not
+  measured as a sweep. Every construction in the family is the record's losses over the record's exposure times the
+  2027 exposure over the 2027 hours, so each one is linear in that rate and the whole family slides together; the
+  ratio that decides the window is unchanged, which is the same refusal as raising the tolerance.
+- Narrowing SF6 so only the pair definitions the record's across-sector test leaves standing are licensed (pairs that
+  change order, pairs meeting at a level, moving pairs within 1,000 ft): would work on the dial from base 26 up
+  (window [48, 51] at 26, [58, 67] at 40), and is not available. Narrowing the pair's definition means filing what a
+  pair is, which files the HOW and makes the decisive step rule application (CLAUDE.md rule 3, determinism-check
+  section 1); leaving it open forks the main recommendation. No third position, so the architecture is spent.
+- Refuting the per-sector moving-pair fit from the record instead of from a filed sentence: dead, measured. The
+  per-sector fit reproduces each sector's own count exactly, so no across-sector test touches it, and the only test
+  left is the within-sector monthly profile, where the two bases are collinear: correlation 0.9951 to 0.9988 by
+  sector, 0.9994 pooled, Poisson log-likelihood difference 0.22 on one degree of freedom against 3.84, and about
+  40,782 losses needed against the record's 96.
+- The two easy routes that already name Tarvik on the shipped pack, never asserted by the build: level-changing
+  traversals pooled over the two summers (42.3) and over summer 2026 (41.4). The checks assert the vertical-flight-hour
+  forms of that reflex (32.0 and 36.6) and never its count form, so Gate F was measured on a subset of the reflex.

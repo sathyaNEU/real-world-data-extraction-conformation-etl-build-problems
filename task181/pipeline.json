@@ -4,9 +4,9 @@
   "status": "FAILED_TO_STUMP",
   "domain": "human-factors-ergonomics",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-21",
   "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
   "architecture": 4,
   "loops": 0,
@@ -39,14 +39,21 @@
       "portal": "author audit: 10/10 alignment",
       "repair": "alignment",
       "commit": ""
+    },
+    {
+      "date": "2026-10-21",
+      "portal": "stage-2 magnitude repair refused on measurement: the easy route lands the call (losses pooled over level-changing traversals names Tarvik alone at 42.3 on the two summers, 41.4 on summer 2026, 43.3 on summer 2025) and the licensed family forks (any pair with an aircraft changing level fitted per sector names no sector: Tarvik 31.6, 34.0, 26.5). Tolerance window empty by a factor of 2.11 and empty at every setting of the dial (Brekka base 14 to 50, ratio 0.654 to 0.749 against 1.3225 needed).",
+      "repair": "design",
+      "commit": ""
     }
   ],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. Unlike the other four audited builds the reader said nothing in the pack states the method and it inferred the crossings exposure from the data, so the readability screen holds here and the failure is magnitude: the easy route sat close enough that a careful reader crossed the gap. Widen the separation between the flight-hour route and the crossings route at stage 2 rather than re-siting the signposts.",
+  "resume": "RE-ROOT OWED at stage 1, architecture 5, same number and objective (the author's file forbids retirement). Architecture 4 is spent by measurement 2026-10-21, not by a portal result: screens 1 and 2 passed (family spread 71.3 on Tarvik's rate, so the step is no reflex; the decisive construction is not affine in the one-group-by route, corr -0.5110 and max absolute difference 59.00) and screen 3 refused. Two failures, both on the pack's own clean truth and both re-run byte-identical: the reflex in its count form (each sector's losses pooled over its level-changing traversals, one group-by and one divide) names Tarvik alone on every seasonal window, 42.3 / 41.4 / 43.3 against 40.0, so Gate F is lost to a route with no pair construction in it; and SF6 crossed with SF7 licenses three constructions that name no sector (any pair with an aircraft changing level, fitted per sector: 31.6 / 34.0 / 26.5), so the main call forks on a reading this note licenses. The dial is one-ended: the Brekka base swept 14 to 50 holds min licensed Tarvik over highest easy route at 0.654 to 0.749 against the 1.3225 a non-empty tolerance window needs, because the weakest licensed member and the strongest easy route both measure the sector's level-changing traffic. Narrowing SF6 would open the window from base 26 up but means filing what a pair is, which files the HOW; the record cannot narrow it instead (within-sector monthly profiles collinear at 0.9994, 2 dlogL 0.22 against 3.84, about 425 times the record needed). Do not resume: do not reuse the pair-count exposure on an hours denominator, and draw the next architecture so the decisive exposure is not one end of an axis whose other end is a row attribute. The three rules and ## Tried and rejected carry every number; no generator, pack, golden, prompt or card file was touched. ORCHESTRATOR, 2026-10-21: architecture 4 spent on measurement, re-root to architecture 5 at stage 1, never retired (the author file overrides build-pipeline's retirement rule for this lane). The refusal is not the magnitude it was sent to fix, though that defect is real: three reflex rungs sit inside 1.15x of the shipped tolerance (clearances 1.061, 1.092, 1.106) because checks.py asserts each rung's set and only the golden's margin, now a law in stumping. The binding failure is that the dial is one-ended: across six settings of the Brekka base the golden moves 2.4-fold, 44.8 to 107.1, and the easy routes move with it, 37.0 to 56.8, holding the separation flat at about 0.74 against the 1.3225 two floors need, never within a factor of 1.8. Two failures sit behind it, each confirmed independently. Gate F: pooling each sector's losses over its level-changing TRAVERSALS, one group-by and one divide with no pairing and no level-order logic, names Tarvik alone over the tolerance on every seasonal window (42.3, 41.4, 43.3), and the build asserted only the hours form of that reflex and never its count form, which is strictly cheaper. Gate C: the fork table's own SF6 by SF7 product forks the call 32 cells to 3, any pair with an aircraft changing level fitted per sector naming no sector (31.6, 34.0, 26.5), and the two rows were asserted separately with the other held at its golden value. The one escape is closed by measurement: narrowing the pair definition would open a tolerance window, but the record cannot narrow it, because a per-sector fit reproduces each sector's own count exactly and the two bases' monthly profiles correlate 0.9994 pooled, giving 2 dlogL of 0.22 on 1 d.f. against 3.84, needing about 425 times the record's losses. The only other narrowing is a filed sentence defining the pair, which files the HOW and makes the step rule application. No third position.",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "alignment_pass": "design note and card: the domain test names the traffic-complexity count, not controller workload"
+  "alignment_pass": "design note and card: the domain test names the traffic-complexity count, not controller workload",
+  "architecture_spent": true
 }
