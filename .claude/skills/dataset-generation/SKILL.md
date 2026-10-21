@@ -411,3 +411,12 @@ February listing files that cover March to May; an extract stated as pulled on o
 release dates after it; a protocol approved in February naming a June pull date and a May window; and four
 tracker entries opening before the products they track were marketed. Assert it: no document's stated date
 precedes an event it describes, and no extract carries a date after its own pull.
+
+## Generator cost, where it decides what gets measured
+
+A generator that takes minutes per run makes the sweeps that settle a draw unaffordable, and the draw then
+rests on one world rather than on a measured range. The cheapest win is to collapse the record to its
+distinct shapes before any iterative fit: a likelihood over interval-censored rows depends only on the
+distinct intervals and their counts, so aggregating first reaches the same fixed point to the last decimal.
+Measured on one build at 88 times faster, 100 seconds to 1.14, which is what made its nudge and floor sweeps
+possible at all. The same holds wherever an iteration reads a row only through a key a thousand rows share.

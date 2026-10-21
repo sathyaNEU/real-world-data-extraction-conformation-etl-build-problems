@@ -1019,6 +1019,31 @@ so the point that cleared the margin left the flip at a third of a standard erro
 answer, because the budget grows with the count while its noise grows with the square root, so closing a
 shortfall of that size means an entity several times the size of the one the decision is about.
 
+**Price the decisive step's own standard error before measuring any separation.** Where the step recovers a
+latent quantity from records that observe each event only as an interval it fell in, the estimator has
+sampling error of its own, and a ladder whose gap at the decision is smaller than that error is seed-hostage
+rather than designed. It costs one solve of the censoring likelihood's information matrix, no draw and no
+sweep, and it is run before the magnitudes are tuned. One build measured a first world at a gap over standard
+error of 1.04 and a second at 1.71 on the same mechanism, the difference being where the interval length's
+variation sat.
+
+**One dial or two, and the test that tells them apart.** On interval-censored ground the flat reading's error
+and the estimator's variance are both driven by interval length over the width of the feature being
+recovered, so tuning that ratio moves along a curve and buys nothing: widen the feature to make the estimator
+precise and the flat reading stops being wrong. They separate only when **the flat reading's error comes from
+the variation of interval length across the decision's own candidates** rather than from length itself.
+Measured both ways on one world: a feature 1.05 hours wide against windows of median 16 gave a gap over
+standard error of 1.04 and a slate that moved with the seed; moving the length variation onto the candidates
+(weekend closures of 39 to 64 hours against midweek ones of 14 to 16) gave a gap of 76.8 against a standard
+error of 38.3, the same slate in 20 of 20 redraws, and the flat reading still 1.35x off. So draw the variation
+across the candidates, never the feature against the interval.
+
+**A marginal standard error overstates an ordering's uncertainty, so count redraws instead.** The error on one
+graded cell and the error on its neighbour are correlated through the record's own fixed total, so a ratio of
+the decision's gap to a single cell's standard error is conservative and can read as thin when the ordering is
+in fact stable. The honest check is the redraw count: the build above read 1.71 on the ratio and 20 of 20 on
+the redraws, and the redraws are what the ladder stands on.
+
 **The arithmetic, on paper before any row.** Position, margin, separation and dominance as
 `dataset-generation` §6 asserts them (4th or 5th on rung 0, no margin under 1.15x). Then: one live degree
 of freedom in the graded quantity holds no ladder (49); the decisive move is never the smallest (37);
@@ -1068,6 +1093,12 @@ Nothing is cut until `DESIGN_NOTE.md` carries these H2 headings, spelt exactly, 
 
 It also runs `voice-check.py` on `prompt.txt`. Any FAIL exits 1 and blocks the build; a repair moving the
 default path, screen or closure re-runs it.
+
+**Two of its checks read outside the note, so a re-root cannot clear them from the note alone.** `semantic
+forks asserted` reads `taskNN/generator/checks.py` and `ceiling measured by a script` resolves the
+`Measured by:` path, so a stage-2 re-root that adds an `SF` row or a ceiling script sits at exit 1 until the
+generator is rewritten. That is correct behaviour and not a defect, but it reads as one: the gate is
+reporting an ordering, not a design fault.
 
 ## Part 6. The draw: a unique stump
 
