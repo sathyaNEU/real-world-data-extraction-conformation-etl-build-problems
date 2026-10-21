@@ -331,3 +331,63 @@ Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the
 - The terms D6, $48, $85, cap $760: the premium came to 88 per cent of the cap, a cover no co-operative buys; the quote's
   terms are now D14, $40, $60, cap $1,500 (35 per cent of the cap), and the bound seasons' day rates carry cents so no
   season's paid total sits on a half dollar.
+- Stage-2 re-root attempt, 2026-10-21: the decisive step kept on the conversion with clause 3.1's basis phrase
+  deleted. The figures do not move (R0 and R1 both file $567 with or without the phrase), so the only thing the
+  deletion changes is why a solver converts, and the station history's 1 Nov 1995 entry plus
+  `ncs_parallel_observations_maxtemp.csv` (10,409 paired glass and probe readings at seven sites) announce it by
+  schema as loudly as the clause did. The parallel file is also the only file that identifies the conversion at
+  all, so it cannot be cut: the break is identifiable here only because the file that measures it exists, and that
+  file is the signpost. Readability test 2 on the decisive rung, with no repair available.
+- Stage-2 re-root attempt: the conversion's estimator family as the decisive content. Measured on the cut pack's
+  own pairs, ten admissible per-reading estimators (half-degree bins pooled and Merrin Flat only, 1 C bins, 2 C
+  bins, degree-2 and degree-3 polynomials, lines fitted from 25 C, 28 C and 30 C, and a Merrin Flat quantile map)
+  all file premium $525, 16.658 heat days and 4.134 severe days: spread exactly $0 and 0.000 days. So once the
+  solver converts there is nothing left to choose, and the whole decisive step is the binary decision the clause
+  states. Sweeping the probe-minus-glass hot-range slope from 0.00 to 0.40 C a degree never separates the two:
+  where the family spreads (0.00, 0.05, 0.20, 0.25, 0.40) the graded premium forks by $16 to $32 against a printed
+  unit of $1, and where it is degenerate (0.10, 0.15, 0.30) the step has no content. Same dial, both ends, and the
+  lever is capped at 1.11x across the whole sweep.
+- Stage-2 re-root attempt: detrending in temperature space rather than count space (clause 3.4's unit), on the
+  argument that a fixed-threshold exceedance count is a convex functional of the maxima. Dead on both ends in one
+  measurement: shifting each season's days by the fitted warming and recounting files $524.59 against the
+  count-shift route's $524.58, a lever of one cent, and the warming estimators a competent analyst would use
+  (daily DJF, seasonal mean, seasonal 75th, 90th and 95th percentiles, seasonal maximum, all-year daily) span
+  0.0054 to 0.0143 C a year and file $484, $525, $535 and $544, a $60 fork on a $1 unit.
+- Stage-2 re-root attempt: the burn as a genuine expectation (the mean of the seasons' payouts against the payout
+  at the mean counts), clause 3.6 unfiled. Lever is real at 12.1 per cent ($467.77 against $524.58) and the
+  candidate still dies twice: averaging the per-season payouts is the burn-cost reflex, so the decisive rung fails
+  readability test 3, and the methods a competent analyst would use to form the expectation (empirical over the 62
+  detrended seasons, Poisson moment match, negative-binomial moment match) file $525, $498 and $502, a $27 fork.
+- Stage-2 re-root attempt, the strongest one reached: a count of a counterfactual reading is a sum of exceedance
+  probabilities, not a count of converted readings. The glass-era day's maximum "as the present instrument would
+  have recorded it" is unobserved, the parallel archive gives the whole conditional distribution of probe given
+  glass rather than only its mean, so the season's heat days are the sum over days of P(probe >= 35.0 | glass),
+  and clause 3.1 is satisfied on its face by the plug-in, which makes the clause point at a wrong answer instead
+  of at the method. Measured dead on the lever. With the shield's excess widened by a per-day wind and sun factor
+  (coefficient of variation 0.35 and 0.55, which is what makes the conditional distribution wide enough to matter)
+  and the deductible swept from 14 to 24 days, the exceedance-probability route sits at 0.969x to 1.021x of the
+  plug-in: at a coefficient of variation of 0.35 the plug-in is nearer the simulated truth than the corrected
+  route at every one of the six deductibles, so the ladder is inverted across the whole sweep, and the route's own
+  estimator family (pooled half-degree shares, Merrin Flat only, 1 C bins, a logit in the glass reading, a normal
+  model on the conditional mean and spread) spreads 0.7 to 1.8 per cent of the premium, the same order as the
+  lever it is meant to carry. At the shipped excess the family spans $507 to $527.
+- Stage-2 re-root attempt: observation completeness in the glass era (the research station's observer missing days)
+  as the artifact, the seasonal count put on a common exposure. Dead by arithmetic before the screen is needed: the
+  premium is linear in the glass era's trigger-crossing days at $0.34 a heat day and $0.73 a severe day over the
+  whole range, so a gap share of 0.05 hides 20 heat days and buys 1.015x, and even an absurd 0.30 share hides 121
+  days and buys 1.09x, under the conversion's own 1.08x, with the correction a single divide by the observed-day
+  count at every share.
+- Stage-2 re-root attempt: the projection method left unfiled and selected by the data. Nothing to select: the
+  count-space line and the temperature-space shift file the same premium to the cent (above), so no back-test can
+  separate them, and the candidates that do differ differ only through the warming estimator, which forks $60.
+- Architecture 1 is spent, measured 2026-10-21. The premium is linear in the glass era's trigger-crossing day
+  counts ($0.34 a heat day, $0.73 a severe day), so a construction's lever is just the number of days it moves
+  across a trigger. The conversion moves 54 heat days and 29 severe days, worth $42 (1.08x), and it is the only
+  construction in this world that shifts a whole block of readings over the triggers at once; every candidate that
+  is not the conversion moves ten days or fewer and buys 2 to 3 per cent, inside its own estimator family's
+  spread. The conversion itself is a documented transformation of the recorded values, so it is caught either way:
+  stated, it is rule application (the measured Gate F failure), and unstated, its measuring file is the signpost.
+  The ask layer is independently spent: the wave 8 reader took 44 of 45 ask figures, which banks about 56 of the
+  57.5 points of ask weight on its own, so the build sits over the 50 bar even with the call missed entirely, and
+  `precut.py` now refuses the note's `Pair ceiling: about 37` for having no `Measured by:` line (exit 1, one FAIL).
+  The number needs a new draw at stage 1, architecture v2, not a ladder re-root.

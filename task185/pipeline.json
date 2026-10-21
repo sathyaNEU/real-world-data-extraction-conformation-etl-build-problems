@@ -6,7 +6,7 @@
   "objective": "anomaly-detection",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (+0.13 C), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it ends on $567 a hectare, the raw record's premium; one hot-day offset ends on $542 or $506; the conversion at each reading files $525.",
   "architecture": 1,
   "loops": 0,
@@ -28,7 +28,7 @@
     "report": "task185/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result, and the most complete solve on the lane: 3 of 3 call figures and 44 of 45 ask figures. The reader quoted the pricing manual's own clause, that each day's maximum is taken as the station's present instrument would have recorded it, as what sent it to the conversion, and reported five estimator forms giving identical counts. So the decisive step is the pack's filed procedure, which rule 3 counts as rule application rather than analysis. Re-root at stage 1: the clause goes, and the reason to convert has to come from the data's structure.",
+  "resume": "Architecture 1 is spent, measured 2026-10-21 on the generator's clean truth; a stage-2 ladder re-root is not available and the search is written up in the note's Tried and rejected. The premium is linear in the glass era's trigger-crossing days ($0.34 a heat day, $0.73 a severe day), so a construction's lever is the number of days it moves across a trigger: the conversion moves 54 heat days and 29 severe days for $42 (1.08x) and is the only construction that shifts a block of readings over the triggers at once, while every non-conversion candidate moves ten days or fewer and buys 2 to 3 per cent, inside its own estimator family's spread. The conversion is a documented transformation of the recorded values, so it is caught both ways: stated in clause 3.1 it is rule application (the wave 8 Gate F failure), and with the phrase deleted the figures do not move and the parallel archive that identifies it is the signpost instead. Ten per-reading estimators file $525 / 16.658 / 4.134 with spread exactly $0, so the step has no estimator content at all. Candidates measured dead: temperature-space detrending (lever one cent, warming family $484 to $544), the burn as an expectation (lever 12.1 per cent but the golden route is the burn reflex and the family forks $27), the exceedance-probability count of the counterfactual reading (0.969x to 1.021x over a deductible sweep of 14 to 24, ladder inverted at excess CV 0.35, family spread 0.7 to 1.8 per cent), glass-era observation completeness (1.015x at a 0.05 gap share, a single divide at every share). The ask layer is independently spent: 44 of 45 ask figures banks about 56 of 57.5 ask points, over the 50 bar with the call missed entirely, and precut.py exits 1 on the ask sheet's unmeasured Pair ceiling. Re-root at stage 1 as architecture v2: a new draw in anomaly-detection on this number, keeping the lineage, and not a threshold count of a measured value whose artifact is an instrument or exposure change, because that shape has only transformations of the values and opportunity counts available and both are closed.",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,
