@@ -1,18 +1,18 @@
 {
   "task": "task486",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-21",
-  "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 420 residents aged 60 and over where it held about 350, and every rural area a fifth to two fifths high and both towns low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
+  "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-21"
   },
   "leak": {
     "leak_py": "",
