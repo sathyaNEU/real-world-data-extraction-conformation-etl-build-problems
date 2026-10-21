@@ -31,3 +31,7 @@ Stump terms swept: tested, relatives, relative, carriers, carrier, families, rec
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Isolated readers (stage 4)
+
+- Architecture 3 (target.zip from the PAUSED build 44e0b471): two scored readers, each on fresh copies of `prompt.txt` and `target/`. Reader 2 (r271f) took criteria 2.3's measuring population, every mother, sister and daughter of the probands living or dead, ran the kin-cohort (twice the relatives' Kaplan-Meier risk by 70 less the registry's 7.5 percent) and named PALB2-PTV and PALB2-MIS; reader 1 (r271e) ran the same estimator on a year-by-year life table with a bootstrap interval on CHEK2-PTV (24.1, about 20 to 28). Each took every ask figure, 20 of 20. `score_reader.py --call-key call.qualify` FAIL on both (the call): Gate F failed, the architecture is spent and the number retires.
