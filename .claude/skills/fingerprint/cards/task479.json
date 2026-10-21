@@ -134,8 +134,24 @@
       ],
       "gate_g": "forecasting",
       "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: reader 2 of 2 (target.zip d879fa0e89b65b9e) landed the call (score_reader exit 1, 22 of 80) by re-applying the fixed $250,000 deductible to each large claimant's trended claims; reader 1 missed on the default path (exit 0, 9 of 80); both missed both ask devices",
+      "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",
+      "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September"
     }
   ],
   "notes": "stump_strategy other: the leveraging of a fixed per-unit ceiling under a growth rate (trend before the attachment, not after); binding_constraint would misdescribe it, since no capacity binds a choice. Gate G forecasting: the 2027 retained claims are projected from 2025 experience. G1: the trend is a rate on the uncapped value applied to the capped value.",
-  "registered": "2026-10-21T01:01:34Z"
+  "registered": "2026-10-21T01:01:34Z",
+  "architecture_spent": true
 }

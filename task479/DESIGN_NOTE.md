@@ -277,3 +277,9 @@ JUDGE_LINE
   figures (exit 1, 50 and 54 of 80); both also used the register's county for the transferred properties and linked
   the crosswalk gaps. A drift that the first diagnostic of a benchmarked series prints is no stump; re-rooted to
   architecture 3 in a fresh world.
+- Architecture 3, self-funded groups' 2027 retained claims under a fixed specific deductible (2026-10-21, spent at
+  stage 4): reader 2 re-applied the $250,000 deductible to each large claimant's trended claims and landed the call
+  (exit 1, 22 of 80); reader 1 trended the retained total and missed (exit 0, 9 of 80). Leveraging under a fixed
+  deductible is textbook to a strong reader once a fixed deductible and a claimant list sit side by side; both readers
+  missed both ask devices (reissued member ids, a reopened claimant file), which are worth re-skinning.
+

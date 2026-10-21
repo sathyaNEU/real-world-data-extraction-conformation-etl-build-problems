@@ -4,11 +4,11 @@
  "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
- "architecture": 3,
+ "architecture": 4,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": "architecture 3 round 1 running on target.zip d879fa0e89b65b9e"
+  "reader": "architecture 3: reader 1 missed (exit 0, 9 of 80), reader 2 landed (exit 1, 22 of 80)"
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -25,10 +25,10 @@
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "architecture 3 judge stopped once a reader landed the call"
  },
  "returned": [],
- "resume": "stage 4: collect two scored readers and the judge on target.zip d879fa0e89b65b9e (rebuild with generator/build.py and re-run them if lost); fix every finding in one generator pass, then ship",
+ "resume": "stage 1: re-root to architecture 4 in a fresh world and decisive step; the ask devices of architecture 3 (reissued ids across two key schemes, a reopened claimant file) held against both readers and are reusable re-skinned",
  "approved": null,
  "delivered": null,
  "portal": null,
