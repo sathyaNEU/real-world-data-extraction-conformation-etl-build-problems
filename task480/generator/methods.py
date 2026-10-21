@@ -173,6 +173,8 @@ def forms_fit(target):
     out = {}
     p = np.polyfit(A, O, 2)
     out["quadratic"] = chi(lambda a: np.polyval(p, a))
+    p1 = np.polyfit(A, O, 1)
+    out["linear"] = chi(lambda a: np.polyval(p1, a))
     ok = (A > 0.5) & (O > 0)
     b1, b0 = np.polyfit(np.log(A[ok]), np.log(O[ok]), 1)
     out["power"] = chi(lambda a: np.exp(b0) * a ** b1)

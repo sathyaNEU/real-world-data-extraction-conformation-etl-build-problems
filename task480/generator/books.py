@@ -30,20 +30,19 @@ def _sheet(ws, header, rows, widths, numfmt=None):
     ws.freeze_panes = "A2"
 
 
-STATION_COLS = ["station_no", "station_name", "street", "town", "county", "county_no", "licensed_since", "lanes",
-                "licence_status"]
+STATION_COLS = ["station_no", "station_name", "street", "town", "county", "county_no", "lanes", "licence_status"]
 
 
 def write_stations(path):
     reg = S.register()
     rows = []
     for x in sorted((x for x in reg.s if x["end"] is None), key=lambda x: x["no"]):
-        rows.append([x["no"], x["name"], x["street"], x["town"], x["county"], "%02d" % W.CNO[x["county"]], x["start"],
+        rows.append([x["no"], x["name"], x["street"], x["town"], x["county"], "%02d" % W.CNO[x["county"]],
                      x["lanes"], "ACTIVE"])
     wb = Workbook()
     ws = wb.active
     ws.title = "Licensed stations"
-    _sheet(ws, STATION_COLS, rows, [11, 30, 22, 14, 13, 10, 14, 7, 13], {"G": "yyyy-mm-dd"})
+    _sheet(ws, STATION_COLS, rows, [11, 30, 22, 14, 13, 10, 7, 13], {})
     wb.save(path)
     return len(rows)
 

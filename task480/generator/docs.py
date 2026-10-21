@@ -191,8 +191,7 @@ DICT = [
      "(vin_source OBD) or typed by the inspector (KEYED); plate and model_year as the lane software found them on the "
      "registration file. odometer as the inspector entered it, in odometer_unit (KM where the odometer reads in "
      "kilometres); the inspector enters 0 or 999999 when the odometer cannot be read. test_start is local time."),
-    ("eip_station_register_2026-06-30.xlsx", "Stations licensed at 30 June 2026. licensed_since is the date the "
-     "current licence was issued; county is the station's location."),
+    ("eip_station_register_2026-06-30.xlsx", "Stations licensed at 30 June 2026. county is the station's location."),
     ("nox_running_rates_cy2027.xlsx", "Table 2 of the program guidelines: running exhaust NOx in grams per mile for "
      "calendar year 2027 by model year and program class."),
     ("registration_body_codes.csv", "The Division's body codes and the program class each maps to."),

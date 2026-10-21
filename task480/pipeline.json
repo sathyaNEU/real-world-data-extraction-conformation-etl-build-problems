@@ -9,14 +9,14 @@
  "updated": "2026-10-21",
  "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; a car's yearly miles fall with age, so each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files the golden five (Wexmoor, Halvering, Linnmere, Elkhollow, Marlbank); the fleet's curve without each vehicle's own level files four.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-21"
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-21 (no LEAK; author vocabulary, the guidelines' rule words, design-note terms in three documents, forward reg_expires dates)",
-  "reader": ""
+  "reader": "round 1 (2026-10-21): readers A and B both missed the call on the default path (nine counties); both kept all 12 station figures through licensed_since (score_reader 20 of 44, exit 1 on the ask bar); ask A held. Station register re-sited (no licence date); round 2 readers C and D on target.zip sha256 d7873d01d71b8475"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-21 (driver.near task133 v1 at 0.12, overuse.org_family, overuse.objective, repeat.gate_g and repeat.question_form against task251 v4, overuse.gate_g; same_driver_older differentiated against task196 v1)",
@@ -24,12 +24,12 @@
   "heart": "WARN 2026-10-21 (as drawn: driver.near task133 v1 0.12, objective, gate_g, question form)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task480/determinism_check_report.md (Gate G method_or_model_selection, analytical_non_defect; Gate H analytical)"
  },
  "returned": [],
- "resume": "stage 4: scored leak readers A and B (scratchpad leak-task480-v2A and v2B) and the isolated judge thread (/tmp/determinism-check-task480-025558, brief judge_brief.md) were spawned on target.zip sha256 fc1dbbbf598b3c4e; on their return score each reader.json with score_reader.py before reading its verdict, hand verdict.md to the determinism-judge agent for task480/determinism_check_report.md, fix every finding in one generator pass, rerun the free gates (build.py, figures_check.py, leak.py, guard heart), re-judge once on FIX_NOW; then ship (pre-ship check, ledger row, SHIPPED commit with target.zip and golden/ force-added)",
+ "resume": "stage 4 round 2: scored readers C and D (scratchpad leak-task480-v2C and v2D) on target.zip sha256 d7873d01d71b8475; score each reader.json with score_reader.py; if both miss the call and neither exits 1, write the pre-ship check and ship; else re-site the leaking device",
  "approved": null,
  "delivered": null,
  "portal": null,

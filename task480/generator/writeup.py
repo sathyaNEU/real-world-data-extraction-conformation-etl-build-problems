@@ -62,9 +62,10 @@ def write(figs, out):
               ", ".join("$%d" % f["zone_charges"][z] for z in sorted(f["zone_charges"])), "; ".join(
                   "%s %d vehicles, $%s" % (x, p[x]["retired"], "{:,}".format(p[x]["charges"])) for x in W.PILOT_COUNTIES)),
           "7. Stations: each vehicle ACTIVE at 1 July 2026 counted once at its completed initial inspection, its "
-          "station_no read with the licence holding that number on the test date (eip_station_register_2026-06-30.xlsx "
-          "from licensed_since, the station list of eip_annual_report_2024.pdf before it), kept where that station is in "
-          "the vehicle's county.",
+          "station_no read with the station holding that number on the test date: the six numbers eip_annual_report_2024.pdf "
+          "lists in another county than eip_station_register_2026-06-30.xlsx belonged to the earlier station until the "
+          "two to three month pause in that number's tests and to the register's station after it; kept where that "
+          "station is in the vehicle's county.",
           "8. Recommended intake events in %s." % andlist(qs), ""]
     L += ["## 4. Deliverable Answers", "", "### %s" % W.GOLDEN["workbook"], "",
           "1. Each county's eligible vehicles' 2027 NOx in short tons to the nearest ton, and whether it qualifies:"]

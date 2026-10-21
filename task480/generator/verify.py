@@ -109,14 +109,19 @@ def stations(t):
     reg, tst, cty, body, rates = load(t)
     names = dict(zip(cty["county_no"], cty["county"]))
     sr = pd.read_excel(os.path.join(t, "eip_station_register_2026-06-30.xlsx"), dtype=str)
-    sr["since"] = pd.to_datetime(sr["licensed_since"]).dt.date
     cur = sr.set_index("station_no")
     old = annual_list(t)
-    prior = {}
+    tests = completed(tst)
+    prior, cut = {}, {}
     for no, g in old.groupby("no"):
-        g = g[g["name"] != cur.at[no, "station_name"]] if no in cur.index else g
+        g = g[g["county"] != cur.at[no, "county"]] if no in cur.index else g
         if len(g):
+            # a number the 2024 report places in another county than the register: the earlier station held it
+            # until the longest pause in the number's tests, the register's station after it
             prior[no] = g["county"].iloc[0]
+            days = tests.loc[tests["station_no"] == no, "when"].dt.normalize().drop_duplicates().sort_values()
+            gaps = days.diff()
+            cut[no] = days.iloc[int(np.argmax(gaps.fillna(pd.Timedelta(0)).to_numpy()))].date()
     act = reg[reg["record_status"] == "ACTIVE"].copy()
     act["my"] = act["model_year"].astype(int)
     act["county"] = act["county_no"].map(names)
@@ -127,10 +132,10 @@ def stations(t):
             where.append(None)
             continue
         no, d = r["station_no"], r["when"].date()
-        if no in cur.index and d >= cur.at[no, "since"]:
-            where.append(cur.at[no, "county"])
+        if no in prior and d < cut[no]:
+            where.append(prior[no])
         else:
-            where.append(prior.get(no))
+            where.append(cur.at[no, "county"] if no in cur.index else prior.get(no))
     act["st"] = where
     return (act["st"] == act["county"]).groupby(act["county"]).sum()
 

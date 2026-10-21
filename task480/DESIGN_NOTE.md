@@ -214,9 +214,11 @@ on other bases (distractors in metadata.json, each ruled out by 2.1 or 3.3) and 
 - **Ask B, stations** (12 figures): for every county, the vehicles registered there at 1 July 2026 whose completed
   initial inspection was at a station in that county. Its tie to the call: intake desks sit at the designated
   counties' inspection stations (guidelines 5). Device: D7, six station licence numbers given again to new stations
-  in other counties during the cycle; the register lists only the current licensee with licensed_since, the 2024
-  annual report lists 2024's stations, so a test is read with the licence that held its number that day (the current
-  licence misses all twelve counties, by 31 to 1,618).
+  in other counties during the cycle; the register lists only the current licensee, with no licence date, and the
+  2024 annual report lists 2024's stations, so the reissue shows only as a number the two files place in different
+  counties, and the hand-over only as the two to three month pause in that number's tests (no other station pauses
+  more than three weeks); a test is read with the station that held its number that day (the current licence misses
+  all twelve counties, by 31 to 1,618).
 - **Construction layer** (the call's own rows): each county's NOx and verdict and the chart of the twelve against the
   line; no device rows in the call's population (the 62 reinstated vehicles dropped leave every figure, asserted).
 
@@ -307,3 +309,7 @@ Measured by: generator/ceiling.py on the cut pack
   counties' counts unchanged under the current licence; each reissued pair now shares a commuting corridor.
 - 2026-10-21, stage 2: a lane computer's re-sent March 2025 rows (exact repeats at one station): a copied block is a
   plant kind even when the call ignores it; removed.
+- 2026-10-21, stage 4 round 1, ask B: the station register's licensed_since column: both scored readers compared each
+  test date with it, took the 2024 report's county before it, and kept all twelve station figures (score_reader 20 of
+  44 each, call missed by both on the default path); the register now carries no licence date, so the reissue is a
+  cross-file conflict and the hand-over is the pause in the number's own tests.
