@@ -123,6 +123,13 @@ population the decision funds, the structure a pooled quantity hides, the quanti
 family that skips it lands somewhere else and the family that takes it has nothing left to choose. Screen the
 dial before the draw: if closing Gate C would make the family unanimous, the ground is spent.
 
+**Assert the fork table's rows as a cross product, never one row at a time.** Two rows that are each a
+licensed reading of the main computation can agree separately and fork together, because asserting one with
+the other held at its golden value tests neither. One build asserted its pair definition and its pooling rule
+one at a time, each green, and their 35-cell product forks the call **32 cells to 3**: any pair with an
+aircraft changing level, fitted per sector rather than pooled, names no sector at all. Where two rows are
+both live readings of the deciding quantity, the assertion runs on the product.
+
 **Count the family wide enough that its members are not one method wearing three hats, and count groupings
 as members.** A family measured over rival *placements* of one estimator is not the family: the member that
 forks a build is as often a different **grouping** of the same estimator as a different penalisation of it.
@@ -1073,6 +1080,15 @@ sweep, and it is run before the magnitudes are tuned. One build measured a first
 error of 1.04 and a second at 1.71 on the same mechanism, the difference being where the interval length's
 variation sat.
 
+**State the dial's test as the pass condition, because its failing form is easy to write backwards.** The
+build needs **some** setting at which the separation at the decision is real (the nearest wrong rung clears
+the boundary by the floor, in another printed cell) **and** the licensed family is unanimous on one printed
+call. The dial is one-ended when no setting has both, which reads as: every setting with a real separation
+has a **split** family, and every setting with a unanimous family has **no** separation. A unanimous family
+is what Gate C wants, so "real separation and unanimous family" names the cell the build is looking for, not
+the cell that kills it. One brief got that sentence inverted and described a passing build as the refusal
+condition; the agent reading it noticed and applied 1.1 instead, which is luck rather than process.
+
 **Count the dial jointly, never as two marginal patterns.** "Every setting with a real separation has a
 unanimous family, and every setting with a split family has no separation" is checkable only marginally, and
 marginally a dead build can look mixed: one measured 245 of 300 settings with a real reach and 66 leaving the
@@ -1080,6 +1096,21 @@ record quiet, which reads as plenty of room. Counted jointly it was unambiguous:
 those 22 had a unanimous family, and 0 of 320 draws cleared reach, unanimity, the rung floor and a mid-bin
 call together**. Count the cells that pass every requirement at once, and list the requirements before
 sweeping. The marginal form let one measurement pass that the joint form killed.
+
+**Assert a clearance for every rung, not an empty set.** A rung's assertion that its answer set is empty,
+or that it names another candidate, says nothing about whether it is satisfying to stop at. One build shipped
+with three reflex rungs sitting **inside 1.15x of its own decision boundary** (clearances 1.061, 1.092 and
+1.106) while every generator assertion was green, because the checks asserted each rung's set and only the
+golden's margin. A rung nine per cent under the line is not a stopping point, it is an alarm that sends the
+solver on, and that is the magnitude failure mode itself rather than a near miss of it. So every rung's
+highest figure clears the decision boundary by the same floor the golden must clear it by, asserted in
+`checks.py` alongside the set.
+
+**Enumerate each reflex in both its rate form and its count form.** The two are different constructions and
+the count form is usually the cheaper, so it is the one a solver reaches. One build swept losses per
+climbing or descending flight **hour**, at 32.0 and 36.6 against a boundary of 40.0, and never losses per
+climbing or descending **traversal**, which files 42.3 and lands the call: one comparison per row instead of
+a duration sum. The sweep lists both forms of every reflex before any of them is priced.
 
 **The dial spends the rung floor too, so price it with the rest.** The separation at the decision and the
 licensed family's unanimity are the two the screen usually names, and on many grounds the binding constraint

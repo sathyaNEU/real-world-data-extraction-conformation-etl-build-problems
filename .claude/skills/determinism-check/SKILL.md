@@ -36,6 +36,16 @@ position where both gates hold. Before drawing a decisive step, name which of th
 it is one of them, it is WHAT, it must be filed, and the stump has to live somewhere else. The HOW is
 how a fully filed estimand is computed, and the data must force that.
 
+**Two candidate denominators can be unseparable in principle, and the test is cheap.** Where the open HOW is
+which exposure base a rate is built on, the record separates the candidates only if their period profiles
+differ inside the unit the decision is made at. Profile both bases' period counts against the realised events
+and read `2 dlogL` against the events the record actually carries. One build's two bases correlated 0.9951 to
+0.9988 by unit and 0.9994 pooled, giving `2 dlogL` of 0.22 on one degree of freedom against a 3.84 threshold,
+so separating them needed about 40,782 events against the record's 96, some 425 times the pack or 743 years
+of that centre's traffic. A per-unit fit also absorbs exactly the cross-unit variation such a design leans
+on, which is why no across-unit test touches it. Run the profile before building a pack whose forcing is
+meant to come from the data.
+
 **HOW** may stay open only when something forces it (`references/forcing-the-answer.md` Part 5): the
 design (the data's structure rules out every other method; preferred), a governing standard's general
 method, or a filed selection criterion in general terms that never names the method (a recognisable
