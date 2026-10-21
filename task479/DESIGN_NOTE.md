@@ -271,4 +271,10 @@ JUDGE_LINE
   (exit 1, 22 of 80); reader 1 trended the retained total and missed (exit 0, 9 of 80). Leveraging under a fixed
   deductible is textbook to a strong reader once a fixed deductible and a claimant list sit side by side; both readers
   missed both ask devices (reissued member ids, a reopened claimant file), which are worth re-skinning.
+- Architecture 4, a charter network's spring benchmark rescored for rapid guessing (2026-10-21, spent at stage 4):
+  both scored readers took the vendor's scores and missed the call, but the judge returned DETERMINISTIC and SEND_BACK
+  on Gate G (planted_defect_flip): leaving out rapid-guessed responses is cleaning contaminated rows, the stump
+  collapses on clean data, and the vendor's score report is a shipped figure that ranks the campuses wrongly. The asks
+  leaked 85.7 per cent because a temporary id register and two named rosters documented both devices. A decisive
+  step that removes bad responses is Layer 1, and any shipped report of the easy route's figure is a Gate G artifact.
 

@@ -139,8 +139,24 @@
       ],
       "gate_g": "forecasting",
       "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September"
+    },
+    {
+      "architecture": "v4",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: judge DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect: removing rapid-guessed responses is cleaning contaminated data, and the vendor's score report ranks the campuses wrongly); both scored readers missed the call on the vendor's scores (exit 1 on the asks at 85.7 per cent: the temporary id register and the rosters' names documented both devices)",
+      "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",
+      "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying"
     }
   ],
   "notes": "stump_strategy other: effort moderation of rapid guesses in item response scoring. Gate G method_or_model_selection: the scoring model is the vendor's (filed), the choice is which responses it is fed.",
-  "registered": "2026-10-21T01:21:59Z"
+  "registered": "2026-10-21T01:21:59Z",
+  "architecture_spent": true
 }

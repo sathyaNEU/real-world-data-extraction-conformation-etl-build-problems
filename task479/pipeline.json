@@ -4,11 +4,11 @@
  "status": "PAUSED",
  "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
- "architecture": 4,
+ "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -16,19 +16,19 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": "architecture 4 round 1 running on target.zip 5607da6c8baad2f9"
+  "reader": "architecture 4: both readers missed the call (default path); asks leaked 85.7 per cent"
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "see guard heart"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "architecture 4: Gate G planted_defect_flip (verdict kept in the design note's Tried and rejected)"
  },
  "returned": [],
- "resume": "stage 4: collect two scored readers and the judge thread (brief /tmp/determinism-check-task479-r2/judge_brief.md) on target.zip 5607da6c8baad2f9; if lost, rebuild and re-run; fix every finding in one pass, then ship",
+ "resume": "stage 1: re-root to architecture 5: a FINE-numbers shape (method selection or forecast), no shipped figure that ranks the candidates, a decisive structure that is a property of the world rather than contaminated rows; ask devices with no documented resolver",
  "approved": null,
  "delivered": null,
  "portal": null,
