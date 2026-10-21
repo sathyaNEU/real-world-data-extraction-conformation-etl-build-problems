@@ -1,18 +1,18 @@
 {
   "task": "task479",
-  "architecture": "v5",
+  "architecture": "v6",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET36 after architectures 1 to 4 were spent at stage 4; a school employees' health cooperative's member districts' 2026 plan-paid claims, completed from January to June to the full plan year, where four districts moved to a high-deductible plan for 2026",
+  "slot_note": "re-root of seed ET36 after architectures 1 to 5 were spent at stage 4; a small-employer health trust's 2027 renewal, where each member employer's expected 2027 retained claims are read from three years of experience whose noise, for the small employers, is larger than the differences between employers",
   "domain": "healthcare-delivery-health-economics",
   "client_domain": "healthcare-delivery-health-economics",
   "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a school employees' health cooperative's October 2026 mid-year contribution review: which member districts' expected full 2026 plan-year plan-paid claims per member per month exceed the claims component of their 2026 contribution rate, from January to June 2026 claims, when members pay their deductibles first in the plan year and four districts moved to a $3,000 deductible on 1 January 2026",
+  "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "MV03, MV07, MV21, MV25, MV36 and MV47 raised",
-  "answer_source": "generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time"
   ],
@@ -20,33 +20,33 @@
     "none"
   ],
   "generators": [
-    "G4",
-    "G13"
+    "G16",
+    "G17"
   ],
-  "gate_g": "forecasting",
+  "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "existing_book_actuals",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "uncertainty_hold",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route completes each district's January to June 2026 plan-paid claims with the share of the 2025 plan year that its own January to June carried, which is right for the districts whose plan did not change; but plan-paid claims fall later in the plan year the higher the deductible, and the four districts that moved to the $3,000 deductible have no 2025 at that design, so their own 2025 share overstates what January to June carries and understates their full year.",
-  "domain_test": "Plan-year seasonality of a self-funded plan's paid claims, worked the way health plan actuaries complete a partial plan year: members meet their deductibles first, so the plan's share of claims rises through the year, and the completion share is a function of the benefit design, read from the districts already on that design; with another field's nouns there is no deductible accumulator that resets each January.",
+  "analyst_test": "With every file conformed and every rule read, the easy route trends each employer's own 2023 to 2025 retained claims per member per month to 2027 and compares it with the employer's claims component; but a small employer's three years carry mostly the luck of a few members' claims, so its expected 2027 claims sit much nearer the trust's level than its own experience, and the easy route raises small employers that were unlucky and spares small employers that were lucky.",
+  "domain_test": "Experience rating with credibility, worked the way a health plan actuary rates a small group: the expected claims of a group are its own experience weighted by its credibility and the pool's experience for the rest, the credibility set by how much of the group's year-to-year spread is noise against how much the groups truly differ; with another field's nouns there is no member claim distribution capped by a specific deductible and no pool that underwrites the groups.",
   "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:a partial plan year completed by the share its months carry under the year's own benefit design",
+  "layer2_pattern": "own:each unit's expected level read as its own short noisy history weighted against the pool by the share of its spread that is signal",
   "layer1": [
-    "the claims lag report in two layouts across the May 2026 platform move, May sent by both",
-    "the benefit design table inside a PDF",
-    "member ids reissued at the summer 2026 payroll move, old ids lingering",
-    "stop-loss policy numbers rewritten at the 2026 renewal"
+    "the claims lag report in two layouts across the June 2026 platform move",
+    "the carrier's specific stop-loss reimbursements per contract year netted from plan-paid claims",
+    "member ids reissued at the July 2026 eligibility migration",
+    "policy numbers rewritten at the 2026 renewal"
   ],
-  "stakeholder_role": "benefits finance manager of a school employees' health cooperative",
+  "stakeholder_role": "underwriting manager of a small-employer health trust",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "tollard_eligibility_member_months_2025-01_to_2026-09.csv",
-    "rows": 270941,
+    "file": "",
+    "rows": 0,
     "entity": "one member's enrollment in one month",
     "grain": "member x month",
     "source": "synthetic"
@@ -57,29 +57,25 @@
   "world": {
     "geography": "United States (a fictional county region)",
     "currency": "USD",
-    "org_type": "school employees' health cooperative",
-    "invented_names": [
-      "Merrin Valley Schools Health Cooperative",
-      "Tollard Benefit Services",
-      "Granfield Specialty Insurance Company"
-    ],
+    "org_type": "chamber of commerce small-employer health trust",
+    "invented_names": [],
     "people": [
-      "Brady Cooper",
-      "James Hernandez"
+      "Steven Coleman",
+      "Michelle Patrick"
     ]
   },
-  "deliverables": [
-    "mvshc_january_2027_contribution_review.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A period's total is completed from its first months by the share those months carry, and the share is set by a design that resets each period and can change between periods: for units whose design changed, their own earlier period's share belongs to the old design, so the share has to come from units already on the new one.",
-  "driver_concrete": "A district's plan pays little in the first months of a plan year while its members meet their deductibles, and less still at a $3,000 deductible: completing January to June 2026 with the district's own 2025 share works where the plan did not change, but the four districts that moved to the $3,000 deductible had their 2025 on a $500 plan, and the share their January to June carries now is the one the districts already on $3,000 show.",
-  "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
+  "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
+  "driver_concrete": "A twelve-person shop whose 2024 included one member's $140,000 claim has a three-year average far over the trust's, but its expected 2027 claims are only a little over the trust's level; a sixty-member employer with three quiet years is expected to cost nearly the trust's level too; the easy route raises the first and spares the second.",
+  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task474": "task474 carries short counts to a year by a calendar pattern measured at always-on reference sites, the facility-serving sites following their facility's schedule; here no calendar or schedule outside the plan sets the pattern: the plan's own deductible accumulators make paid claims back-load within the plan year, and the share is read by design, from the districts already on the new deductible.",
-    "task451": "task451 completes a period's incurred cost from the arrival history of payments after a handler's delay changed; here the incurred months are complete and the year is unfinished: the part of the plan year not yet incurred is what is projected."
+    "task130": "task130's later architecture forecasts a group chosen for an extreme value in one period by carrying its value forward; here no group is chosen by its value and no period is extreme by selection: every employer's expected level is weighed against the pool by the signal share of its own three-year spread, which depends on its size.",
+    "task479v3": "architecture 3 trended a group's large claimants under a fixed specific deductible; here the deductible only caps the experience and the step is weighting each employer's experience by its credibility.",
+    "task148": "task148 models a queue drained by units that give up, the patience seen fully only for leavers; here nothing waits or leaves: each employer's expected claims are its noisy experience weighed against the pool's.",
+    "task241": "task241 reads a sensor's error against a reference displaced by movement of the medium; here no reference is displaced: the pool's own experience is the complement each small employer's chance-heavy record is weighed against."
   },
   "lineage": [
     {
@@ -160,5 +156,5 @@
     }
   ],
   "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T01:37:07Z"
+  "registered": "2026-10-21T02:09:25Z"
 }

@@ -1,22 +1,22 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
- "architecture": 5,
+ "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "both readers landed the call (exit 1); architecture 5 spent"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1: re-root to architecture 6 in a fresh world and a fresh decisive step (architectures 1 to 5 spent, see Tried and rejected)",
+ "resume": "stage 2: design architecture 6 (employers' expected 2027 retained claims by credibility): generator, ladder, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,
