@@ -1,7 +1,7 @@
-"""The pack's data files, written from the truth in world.py: Marlowe's enrollment file, its claims lag reports in two
-layouts across the June 2026 platform upgrade, Arbor Ridge's 2025 large claimant report and 2026 specific advisories,
-the stop-loss policy schedule, the group roster, the rebate statement and the industry benchmark."""
-import calendar
+"""The pack's data files, written from the truth in world.py: Quantilis's spring 2026 item responses in two layouts
+across its March 2026 platform release, its spring score report and item bank, the fall and winter score reports, the
+temporary id register, the student information system's rosters and its January 2026 id crosswalk, and two
+distractors."""
 import csv
 import datetime as dt
 
@@ -10,37 +10,39 @@ import numpy as np
 import world as W
 
 FILES = {
-    "enroll": "mba_enrollment_member_months_2025-01_to_2026-08.csv",
-    "lag_old": "mba_claims_lag_report_paid_2025-01_to_2026-05.csv",
-    "lag_new": "mba_claims_lag_report_paid_2026-06_to_2026-09.csv",
-    "lcr": "arbor_ridge_large_claimant_report_cy2025.csv",
-    "adv": "arbor_ridge_specific_advisories_2026.csv",
-    "policy": "arbor_ridge_specific_policy_schedule_2025-2027.csv",
-    "roster": "mba_group_roster_2026-10.csv",
-    "rates": "mba_2027_funding_elections.xlsx",
-    "memo": "mba_2027_renewal_assumptions.pdf",
-    "rebates": "mba_pharmacy_rebate_statement_2025.csv",
-    "bench": "midwest_employer_health_cost_survey_2025.csv",
-    "dictionary": "mba_data_dictionary.csv",
-    "manifest": "mba_extract_manifest_2026-10-05.csv",
+    "resp1": "quantilis_spring2026_item_responses_through_2026-03-27.csv",
+    "resp2": "quantilis_spring2026_item_responses_from_2026-03-30.csv",
+    "spring": "quantilis_spring2026_score_report.csv",
+    "bank": "quantilis_item_bank_2025-26.csv",
+    "manual": "quantilis_benchmark_technical_summary_2025-26.pdf",
+    "memo": "bellweather_tutoring_designation_2026-27.docx",
+    "fall": "quantilis_fall2025_score_report.csv",
+    "temp": "quantilis_temporary_id_register_fall2025.csv",
+    "winter": "quantilis_winter2026_score_report.csv",
+    "roster_f": "bellweather_sis_roster_2025-10-01.csv",
+    "roster_s": "bellweather_sis_roster_2026-03-01.csv",
+    "xwalk": "bellweather_sis_id_crosswalk_2026-01-05.csv",
+    "state": "state_accountability_math_2025_bellweather.csv",
+    "attend": "bellweather_chronic_absence_2025-26.csv",
+    "dictionary": "bellweather_assessment_data_dictionary.csv",
+    "manifest": "bellweather_assessment_extract_manifest_2026-10-02.csv",
 }
-COMPANY = "Marlowe Benefit Administrators"
-CARRIER = "Arbor Ridge Specialty Insurance Company"
-EXTRACT = dt.datetime(2026, 10, 5, 6, 30)
+NETWORK = "Bellweather Academies"
+VENDOR = "Quantilis Assessment"
+RELEASE = dt.date(2026, 3, 30)
 
-ENROLL_COLS = ["member_id", "subscriber_id", "relationship", "birth_date", "sex", "group_no", "coverage_month",
-               "coverage_tier"]
-LAG_OLD_COLS = ["GroupNo", "IncurredMonth", "PaidMonth", "Category", "PaidAmount", "ClaimLines"]
-LAG_NEW_COLS = ["group_id", "incurred_period", "paid_period", "benefit_type", "paid_cents", "line_count"]
-LCR_COLS = ["claimant_no", "policy_no", "member_ref", "relationship", "birth_year", "incurred_medical",
-            "incurred_pharmacy", "total_incurred", "specific_deductible", "eligible_excess", "reimbursed_to_date",
-            "open_balance"]
-ADV_COLS = ["advisory_date", "claimant_no", "policy_no", "member_ref", "incurred_to_date", "advisory_type"]
-POLICY_COLS = ["policy_no", "group_no", "contract_year", "effective", "expires", "contract_basis",
-               "specific_deductible", "aggregate_corridor_pct"]
-ROSTER_COLS = ["group_no", "employer", "industry", "renewal_month", "funding_arrangement", "account_manager"]
-REBATE_COLS = ["group_no", "quarter", "rebate_amount", "credited_on"]
-BENCH_COLS = ["industry", "plan_type", "employers", "median_pmpm_2025", "p75_pmpm_2025"]
+FIRST = ["Aaliyah", "Aiden", "Amara", "Andre", "Ariana", "Ava", "Benjamin", "Brianna", "Caleb", "Camila", "Carlos",
+         "Chloe", "Daniel", "Destiny", "Diego", "Elena", "Elijah", "Emily", "Ethan", "Gabriel", "Grace", "Hailey",
+         "Isaac", "Isabella", "Jada", "Jayden", "Jordan", "Josiah", "Kayla", "Kevin", "Layla", "Liam", "Lucas",
+         "Madison", "Malik", "Maria", "Mateo", "Maya", "Mia", "Nathan", "Nevaeh", "Noah", "Olivia", "Omar", "Priya",
+         "Samuel", "Sofia", "Taylor", "Trinity", "Xavier", "Zoe", "Yusuf", "Imani", "Leah", "Ryan", "Jasmine"]
+LAST = ["Adams", "Allen", "Bailey", "Baker", "Bell", "Brooks", "Brown", "Campbell", "Carter", "Clark", "Collins",
+        "Cruz", "Davis", "Diaz", "Edwards", "Evans", "Flores", "Foster", "Garcia", "Gomez", "Gray", "Green", "Hall",
+        "Harris", "Hill", "Hughes", "Jackson", "James", "Johnson", "Jones", "Kelly", "King", "Lee", "Lewis", "Lopez",
+        "Martin", "Martinez", "Mitchell", "Moore", "Morgan", "Murphy", "Nelson", "Nguyen", "Ortiz", "Parker", "Patel",
+        "Perez", "Phillips", "Price", "Ramirez", "Reed", "Reyes", "Rivera", "Roberts", "Robinson", "Rogers", "Ross",
+        "Sanchez", "Scott", "Smith", "Stewart", "Taylor", "Thomas", "Torres", "Turner", "Walker", "Ward", "Washington",
+        "Watson", "White", "Williams", "Wilson", "Wright", "Young"]
 
 
 def write_csv(path, cols, rows):
@@ -52,247 +54,174 @@ def write_csv(path, cols, rows):
     return len(rows)
 
 
-def ids(x):
-    """TPA member and subscriber ids; the employers that changed payroll vendor in 2026 had their members reissued
-    under new ids from the change month, the old ids left on file for one to three months after (the Ask A device)."""
+def people(x):
+    """Names, birth dates, old and new student ids, test dates, the December transfers, the fall restarts."""
     rng = np.random.default_rng(W.SEED + 1)
-    order = rng.permutation(len(x["members"]))
-    for i, j in enumerate(order):
-        m = x["members"][j]
-        m["mid"] = "M%07d" % (2210457 + 13 * i)
-    subs = {}
-    for m in x["members"]:
-        key = (m["group"], m["sub"])
-        if key not in subs:
-            subs[key] = "S%06d" % (310000 + int(rng.integers(0, 600000)))
-        m["sid"] = subs[key]
-    x["vendor_change"] = {}
-    for gno in ("G1041", "G1052", "G1063", "G1074", "G1085", "G1096", "G1107", "G1118", "G1130", "G1141", "G1152", "G1163", "G1174",
-                "G1196"):
-        x["vendor_change"][gno] = (2026, int(rng.integers(5, 8)), int(rng.integers(1, 3)))
-    for m in x["members"]:
-        if m["group"] in x["vendor_change"]:
-            m["mid2"] = "M%07d" % (5400003 + 11 * m["k"])
-            m["sid2"] = "S%06d" % (900000 + int(m["sid"][1:]) % 99991)
+    seen = set()
+    sess = {}
+    for cid in W.NAMES:
+        for g in W.GRADES:
+            sess[(cid, g)] = dt.date(2026, 3, 23) + dt.timedelta(days=int(rng.integers(0, 14)))
+            while sess[(cid, g)].weekday() >= 5:
+                sess[(cid, g)] += dt.timedelta(days=1)
+    for s in x["students"]:
+        while True:
+            fn, ln = FIRST[int(rng.integers(0, len(FIRST)))], LAST[int(rng.integers(0, len(LAST)))]
+            by = 2026 - 6 - s["grade"] - (1 if rng.random() < 0.7 else 0)
+            bd = dt.date(by, int(rng.integers(1, 13)), int(rng.integers(1, 29)))
+            if (fn, ln, bd) not in seen:
+                seen.add((fn, ln, bd))
+                break
+        s["first"], s["last"], s["dob"] = fn, ln, bd
+        s["old_id"] = "BW%07d" % (1100000 + 17 * s["k"] + int(rng.integers(0, 9)))
+        s["new_id"] = "S26%06d" % (400000 + 13 * s["k"])
+        s["spring_date"] = sess[(s["campus"], s["grade"])]
+        s["fall_campus"] = s["campus"]
+        s["transfer"] = rng.random() < 0.045               # moved campus in December: missing from the crosswalk
+        if s["transfer"]:
+            s["fall_campus"] = W.NAMES[(W.NAMES.index(s["campus"]) + int(rng.integers(1, 14))) % 14]
+        s["restart"] = rng.random() < 0.07                 # fall session restarted, the makeup under a temporary id
+        s["fall_first"] = max(W.LOT, s["fall"] - int(rng.integers(25, 80)))
+        s["temp_id"] = "TMP-%05d" % (20000 + 7 * s["k"]) if s["restart"] else None
+    x["sess"] = sess
 
 
-def tier(fam):
-    rels = {m["rel"] for m in fam}
-    if rels == {"EE"}:
-        return "EE"
-    if "SP" in rels and "CH" in rels:
-        return "FAM"
-    return "ES" if "SP" in rels else "EC"
+RESP1_COLS = ["StudentID", "FormID", "ItemSeq", "ItemID", "Response", "Scored", "ResponseTimeMs", "SessionDate"]
+RESP2_COLS = ["student_id", "form_id", "item_seq", "item_id", "selected_option", "score", "response_time_s",
+              "session_date"]
 
 
-def enroll_rows(x):
-    fams = {}
-    for m in x["members"]:
-        fams.setdefault((m["group"], m["sub"]), []).append(m)
+def resp_rows(x, part):
+    rng = np.random.default_rng(W.SEED + 2 + part)
+    items = {g: [it for it in x["items"] if it["grade"] == g] for g in W.GRADES}
+    keys = {it["id"]: "ABCD"[int(rng.integers(0, 4))] for it in x["items"]}
     rows = []
-    for m in x["members"]:
-        t = tier(fams[(m["group"], m["sub"])])
-        vc = x["vendor_change"].get(m["group"])
-        for ym in W.MONTHS25 + W.MONTHS26:
-            if not (m["start"] <= ym <= m["end"]):
-                continue
-            ymS = "%d-%02d" % ym
-            if vc and ym >= (vc[0], vc[1]):
-                rows.append((m["mid2"], m["sid2"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
-                overlap_end = (vc[0], vc[1] + vc[2] - 1)
-                if ym <= overlap_end:
-                    rows.append((m["mid"], m["sid"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
-            else:
-                rows.append((m["mid"], m["sid"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
-    rows.sort(key=lambda r: (r[6], r[5], r[0]))
-    return rows
-
-
-LAGS = [0.46, 0.33, 0.11, 0.05, 0.025, 0.012, 0.007, 0.004, 0.002]   # share of a month's claims paid k months later
-
-
-def _months_after(y, m, k):
-    t = y * 12 + m - 1 + k
-    return t // 12, t % 12 + 1
-
-
-def lag_cells(x):
-    """Each group's claims by incurred month, paid month and category. 2025 incurred claims paid through March 2026
-    are the experience (they equal the members' 2025 claims); a small tail paid from April 2026 on; 2024 incurred
-    claims paid in early 2025; 2026 incurred claims through September 2026."""
-    rng = np.random.default_rng(W.SEED + 2)
-    cells = {}
-
-    def add(g, inc, paid, cat, amt, lines):
-        k = (g, inc, paid, cat)
-        a = cells.setdefault(k, [0.0, 0])
-        a[0] += amt
-        a[1] += lines
-
-    for gno, *_ in W.GROUPS:
-        gm = [m for m in x["members"] if m["group"] == gno]
-        for cat, key in (("Medical", "med25"), ("Pharmacy", "rx25")):
-            tot = sum(m[key] for m in gm)
-            # monthly incurred pattern, then the lag through March 2026 renormalised to the experience total
-            w = rng.dirichlet(np.ones(12) * 40)
-            for i, (y, mo) in enumerate(W.MONTHS25):
-                inc_amt = tot * w[i]
-                lags = []
-                for k, s in enumerate(LAGS):
-                    py, pm = _months_after(y, mo, k)
-                    if (py, pm) <= (2026, 3):
-                        lags.append((k, s))
-                norm = sum(s for _, s in lags)
-                for k, s in lags:
-                    py, pm = _months_after(y, mo, k)
-                    a = round(inc_amt * s / norm, 2)
-                    add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / (180 if cat == "Medical" else 75))))
-                # the run-out paid after March 2026
-                for k, s in enumerate(LAGS):
-                    py, pm = _months_after(y, mo, k)
-                    if (2026, 4) <= (py, pm) <= (2026, 9):
-                        a = round(inc_amt * s * 0.6, 2)
-                        add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / 200)))
-            # 2024 incurred, paid in 2025
-            for mo in (10, 11, 12):
-                inc_amt = tot / 12 * 0.95
-                for k, s in enumerate(LAGS):
-                    py, pm = _months_after(2024, mo, k)
-                    if py == 2025:
-                        add(gno, (2024, mo), (py, pm), cat, round(inc_amt * s, 2), max(1, int(inc_amt * s / 190)))
-        # 2026 incurred, January to August, paid through September 2026
-        for cat, share in (("Medical", 0.79), ("Pharmacy", 0.21)):
-            tot26 = sum(m["c26"] for m in gm) * share
-            w = rng.dirichlet(np.ones(8) * 40)
-            for i, (y, mo) in enumerate(W.MONTHS26):
-                inc_amt = tot26 * w[i]
-                for k, s in enumerate(LAGS):
-                    py, pm = _months_after(y, mo, k)
-                    if (py, pm) <= (2026, 9):
-                        a = round(inc_amt * s, 2)
-                        add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / 180)))
-    # make the 2025 experience equal the members' claims to the cent, group and category
-    for gno, *_ in W.GROUPS:
-        gm = [m for m in x["members"] if m["group"] == gno]
-        for cat, key in (("Medical", "med25"), ("Pharmacy", "rx25")):
-            want = round(sum(m[key] for m in gm), 2)
-            ks = sorted(k for k in cells if k[0] == gno and k[3] == cat and k[1][0] == 2025 and k[2] <= (2026, 3))
-            have = round(sum(cells[k][0] for k in ks), 2)
-            cells[ks[0]][0] = round(cells[ks[0]][0] + want - have, 2)
-    x["lag"] = cells
-    return cells
-
-
-def lag_rows(x, layout):
-    cells = x["lag"]
-    rows = []
-    for (g, inc, paid, cat), (amt, lines) in sorted(cells.items()):
-        if layout == "old" and paid <= (2026, 5):
-            rows.append((g, "%02d/%d" % (inc[1], inc[0]), "%02d/%d" % (paid[1], paid[0]), cat, "%.2f" % amt, lines))
-        if layout == "new" and paid >= (2026, 5):
-            # the new platform's first export carried May 2026 again, as the old platform had sent it
-            rows.append((g, "%d-%02d" % inc, "%d-%02d" % paid, "MED" if cat == "Medical" else "RX",
-                         int(round(amt * 100)), lines))
-    return rows
-
-
-def policies():
-    """Each group's specific policy number by contract year; five groups were rewritten at the 2026 renewal."""
-    out = {}
-    rew = {"G1052", "G1085", "G1129", "G1163", "G1196"}
-    for i, (gno, *_) in enumerate(W.GROUPS):
-        a = "ARS-SL-%05d" % (40211 + 17 * i)
-        b = "ARS-SL-%05d" % (51907 + 23 * i) if gno in rew else a
-        out[gno] = {2025: a, 2026: b, 2027: b}
-    return out
-
-
-def policy_rows():
-    pol = policies()
-    rows = []
-    for gno, *_ in W.GROUPS:
-        for y in (2025, 2026, 2027):
-            rows.append((pol[gno][y], gno, y, "%d-01-01" % y, "%d-12-31" % y, "12/15", W.ATTACH, 125))
-    return rows
-
-
-def lcr_rows(x):
-    """The carrier's 2025 large claimant report: every member with $100,000 or more of 2025 incurred claims paid
-    through March 2026 (the 12/15 contract)."""
-    rng = np.random.default_rng(W.SEED + 3)
-    pol = policies()
-    rows = []
-    big = sorted((m for m in x["members"] if m["c25"] >= 100_000), key=lambda m: m["k"])
-    for i, m in enumerate(big):
-        exc = max(0.0, m["c25"] - W.ATTACH)
-        paid = round(exc * float(rng.choice([1.0, 1.0, 0.82, 0.64, 0.0])), 2) if exc else 0.0
-        rows.append(("ARS-25-%05d" % (10441 + 7 * i), pol[m["group"]][2025], m["mid"], m["rel"], m["birth"].year,
-                     "%.2f" % m["med25"], "%.2f" % m["rx25"], "%.2f" % m["c25"], W.ATTACH, "%.2f" % exc, "%.2f" % paid,
-                     "%.2f" % (exc - paid)))
-    return rows
-
-
-def adv_rows(x):
-    """The carrier's 2026 specific advisories: a row each month for every claimant at or over the 50 per cent
-    threshold, restating the claimant's 2026 incurred claims to date (claims reprocessed later can lower it)."""
-    rng = np.random.default_rng(W.SEED + 4)
-    pol = policies()
-    rows = []
-    x["adv_truth"] = {}
-    cand = sorted((m for m in x["members"] if m["c26"] >= W.ADVISORY), key=lambda m: m["k"])
-    for i, m in enumerate(cand):
-        cno = "ARS-26-%05d" % (20117 + 9 * i)
-        start = int(rng.integers(2, 5))
-        path = np.sort(rng.uniform(0.55, 1.0, 9 - start))
-        path[-1] = 1.0
-        vals = [m["c26"] * p for p in path]
-        if rng.random() < 0.45 and len(vals) > 1:        # a reprocessing lowers the latest figure
-            vals[-1] = vals[-2] * float(rng.uniform(0.86, 0.97))
-        first = next((j for j, v in enumerate(vals) if v >= W.ADVISORY), None)
-        if first is None:
+    for s in sorted(x["students"], key=lambda s: (s["spring_date"], s["new_id"])):
+        late = s["spring_date"] >= RELEASE
+        if (part == 1 and late) or (part == 2 and not late):
             continue
-        shown = [(start + j, v) for j, v in enumerate(vals) if j >= first]
-        vc = x["vendor_change"].get(m["group"])
-        cno2 = "ARS-26-%05d" % (60119 + 9 * i)
-        for mo, v in shown:
-            d = dt.date(2026, mo + 1, int(rng.integers(3, 12))) if mo < 9 else dt.date(2026, 9, 28)
-            after = vc is not None and (2026, mo) >= (vc[0], vc[1])
-            # the carrier opened a new claimant file when the member's id changed, and carried the claims to date
-            ref, no = (m["mid2"], cno2) if after else (m["mid"], cno)
-            first_of_no = not any(r[1] == no for r in rows)
-            rows.append((d.isoformat(), no, pol[m["group"]][2026], ref, "%.2f" % v,
-                         "initial" if first_of_no else "update"))
-        x["adv_truth"].setdefault(m["group"], []).append(round(shown[-1][1], 2))
-    rows.sort(key=lambda r: (r[0], r[1]))
+        form = "MATH-G%d-SPR26" % s["grade"]
+        for k, it in enumerate(items[s["grade"]]):
+            sc = int(s["resp"][k])
+            key = keys[it["id"]]
+            sel = key if sc else "ABCD"[("ABCD".index(key) + 1 + int(rng.integers(0, 3))) % 4]
+            t = float(s["rt"][k])
+            if part == 1:
+                rows.append((s["new_id"], form, k + 1, it["id"], sel, sc, int(round(t * 1000)), s["spring_date"].isoformat()))
+            else:
+                rows.append((s["new_id"], form, k + 1, it["id"], sel, sc, "%.1f" % t, s["spring_date"].isoformat()))
     return rows
 
 
-MANAGERS = ["Andrea Snow", "Brady Cooper", "Chelsea Petersen", "James Hernandez"]
+SPRING_COLS = ["student_id", "campus_id", "grade", "test_date", "scale_score", "performance_level", "items_answered"]
 
 
-def roster_rows():
-    rows = []
-    for i, (gno, emp, ind, *_) in enumerate(W.GROUPS):
-        rows.append((gno, emp, ind, "January", "self-funded with specific stop-loss", MANAGERS[i % 4]))
-    return rows
+def level(v):
+    return "Below Basic" if v < W.BASIC else ("Basic" if v < W.PROFICIENT else ("Proficient" if v < 570 else "Advanced"))
 
 
-def rebate_rows(x):
+def spring_rows(x):
+    return [(s["new_id"], s["campus"], s["grade"], s["spring_date"].isoformat(), s["ss_vendor"], level(s["ss_vendor"]),
+             W.N_ITEMS) for s in sorted(x["students"], key=lambda s: s["new_id"])]
+
+
+BANK_COLS = ["item_id", "form_id", "position", "a", "b", "c", "reporting_category"]
+
+
+def bank_rows(x):
+    cats = ["Number", "Ratio and proportion", "Expressions and equations", "Geometry", "Statistics"]
+    return [(it["id"], "MATH-G%d-SPR26" % it["grade"], it["pos"], "%.3f" % it["a"], "%.3f" % it["b"], "%.3f" % it["c"],
+             cats[it["pos"] % 5]) for it in x["items"]]
+
+
+FALL_COLS = ["student_id", "campus_id", "grade", "test_date", "scale_score"]
+
+
+def fall_rows(x):
     rng = np.random.default_rng(W.SEED + 5)
     rows = []
-    for gno, *_ in W.GROUPS:
-        rx = sum(m["rx25"] for m in x["members"] if m["group"] == gno)
-        for q, cred in (("2025Q1", "2025-08-14"), ("2025Q2", "2025-11-13"), ("2025Q3", "2026-02-12"),
-                        ("2025Q4", "2026-05-14")):
-            rows.append((gno, q, "%.2f" % (rx / 4 * float(rng.uniform(0.16, 0.22))), cred))
+    for s in x["students"]:
+        d = dt.date(2025, 9, 22) + dt.timedelta(days=int(rng.integers(0, 10)))
+        while d.weekday() >= 5:
+            d += dt.timedelta(days=1)
+        if s["restart"]:
+            rows.append((s["old_id"], s["fall_campus"], s["grade"], d.isoformat(), s["fall_first"]))
+            m = d + dt.timedelta(days=int(rng.integers(3, 12)))
+            while m.weekday() >= 5:
+                m += dt.timedelta(days=1)
+            rows.append((s["temp_id"], s["fall_campus"], s["grade"], m.isoformat(), s["fall"]))
+        else:
+            rows.append((s["old_id"], s["fall_campus"], s["grade"], d.isoformat(), s["fall"]))
+    rows.sort(key=lambda r: (r[3], r[0]))
     return rows
 
 
-def bench_rows():
+TEMP_COLS = ["temporary_student_id", "last_name", "first_name", "birth_date", "campus_id", "issued_on"]
+
+
+def temp_rows(x):
+    return [(s["temp_id"], s["last"], s["first"], s["dob"].isoformat(), s["fall_campus"], "2025-10-0%d" % (1 + s["k"] % 8))
+            for s in x["students"] if s["restart"]]
+
+
+WINTER_COLS = ["student_id", "campus_id", "grade", "test_date", "scale_score"]
+
+
+def winter_rows(x):
+    rng = np.random.default_rng(W.SEED + 6)
     rows = []
-    for ind, emp, med in (("manufacturing", 212, 571.40), ("finance", 98, 498.10), ("health care", 143, 612.75),
-                          ("transportation", 77, 603.20), ("food processing", 51, 556.90),
-                          ("professional services", 166, 512.35), ("education", 120, 547.80), ("retail", 134, 529.60),
-                          ("construction", 109, 588.15), ("hospitality", 88, 541.25), ("insurance", 61, 505.70)):
-        rows.append((ind, "self-funded PPO", emp, "%.2f" % med, "%.2f" % (med * 1.24)))
+    for s in x["students"]:
+        d = dt.date(2026, 1, 20) + dt.timedelta(days=int(rng.integers(0, 10)))
+        while d.weekday() >= 5:
+            d += dt.timedelta(days=1)
+        rows.append((s["new_id"], s["campus"], s["grade"], d.isoformat(), s["winter"]))
+    rows.sort(key=lambda r: (r[3], r[0]))
+    return rows
+
+
+ROSTER_COLS = ["student_id", "last_name", "first_name", "birth_date", "campus_id", "grade"]
+
+
+def roster_rows(x, which):
+    if which == "fall":
+        return sorted((s["old_id"], s["last"], s["first"], s["dob"].isoformat(), s["fall_campus"], s["grade"])
+                      for s in x["students"])
+    return sorted((s["new_id"], s["last"], s["first"], s["dob"].isoformat(), s["campus"], s["grade"])
+                  for s in x["students"])
+
+
+XWALK_COLS = ["legacy_student_id", "student_id", "campus_id_at_migration"]
+
+
+def xwalk_rows(x):
+    return sorted((s["old_id"], s["new_id"], s["campus"]) for s in x["students"] if not s["transfer"])
+
+
+STATE_COLS = ["campus_id", "campus_name", "grade_span", "students_tested", "pct_meets_or_exceeds", "pct_approaching",
+              "pct_does_not_meet"]
+
+
+def state_rows(x):
+    rng = np.random.default_rng(W.SEED + 7)
+    rows = []
+    for cid, name, n, mu, *_ in W.CAMPUSES:
+        m = 100 / (1 + np.exp(-(mu + 0.1) * 2.2)) * float(rng.uniform(0.85, 1.05))
+        a = float(rng.uniform(22, 32))
+        rows.append((cid, name, "6-8", int(n * 3 * float(rng.uniform(0.92, 1.0))), "%.1f" % m, "%.1f" % a,
+                     "%.1f" % (100 - m - a)))
+    return rows
+
+
+ATTEND_COLS = ["campus_id", "month", "enrolled", "chronically_absent", "chronic_absence_pct"]
+
+
+def attend_rows(x):
+    rng = np.random.default_rng(W.SEED + 8)
+    rows = []
+    for cid, name, n, *_ in W.CAMPUSES:
+        base = float(rng.uniform(0.12, 0.28))
+        for mo in ("2025-10", "2025-12", "2026-02", "2026-04"):
+            e = int(n * 3 * float(rng.uniform(0.97, 1.02)))
+            ca = int(e * base * float(rng.uniform(0.9, 1.15)))
+            rows.append((cid, mo, e, ca, "%.1f" % (100 * ca / e)))
     return rows

@@ -3,38 +3,35 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["rebates"], P.FILES["bench"], P.FILES["roster"]]
+DISTRACTORS = [P.FILES["state"], P.FILES["attend"]]
 
 
 def write(target, path, n):
     meta = {
         "task": "task479",
-        "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
-        "client_domain": "Healthcare Delivery & Health Economics",
-        "task_type": "payment-claims-health-plan-analytics",
+        "domain": "Education & Learning Sciences (item response theory and test equating)",
+        "client_domain": "Education & Learning Sciences",
+        "task_type": "item-response-theory-test-equating",
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["rebates"]: "the 2025 pharmacy rebates credited to each employer's funding account; the "
-                                "assumptions memo keeps rebates out of claims, so retained claims are gross of them",
-            P.FILES["bench"]: "a regional survey's 2025 claims cost per member per month by industry; the notice rests "
-                              "on each group's own experience, and no benchmark enters it",
-            P.FILES["roster"]: "the groups' employers, industries and account managers; the notices are by group "
-                               "number and nothing on the roster changes a group's claims",
+            P.FILES["state"]: "the state test's 2025 results by campus, a different test, year and scale; the "
+                              "designation is on the spring 2026 benchmark",
+            P.FILES["attend"]: "chronic absence by campus; the designation counts students tested on the benchmark, "
+                               "whatever their attendance",
         },
-        "stated_inputs": ["250,000", "125,000", "100,000", "7.5"],
-        "deliverables": ["mba_2027_funding_true_up.xlsx"],
-        "as_of": "2026-10-05",
+        "stated_inputs": ["470", "520", "35"],
+        "deliverables": ["bellweather_2026-27_tutoring_designation.xlsx"],
+        "as_of": "2026-10-02",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task479/generator); the "
-                           "administrator, the carrier, the employers, their members and the people are fictional",
-            "public_specifications": "the layouts follow common third-party administrator claims lag reports, "
-                                     "eligibility files and specific stop-loss large claimant reports (12/15 contract "
-                                     "basis), described in no shipped file beyond the pack's own dictionary",
+            "constructed": "every file is constructed for this task by its generator (task479/generator); the network, "
+                           "its campuses and students, the vendor and the people are fictional",
+            "public_specifications": "the item bank follows the three-parameter logistic model and maximum likelihood "
+                                     "scoring as published in the measurement literature",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2026-10-05",
+            "date": "2026-10-02",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

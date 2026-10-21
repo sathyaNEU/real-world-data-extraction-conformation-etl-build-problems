@@ -1,12 +1,12 @@
-"""An independent recomputation of every graded figure from the cut pack, written apart from bundle.py (pandas),
-compared with generator/figures.json.
+"""An independent recomputation of every graded figure from the cut pack, written apart from bundle.py (pandas and
+its own Newton scoring), compared with generator/figures.json.
 
     python3 task479/generator/verify.py [target]"""
 import json
 import os
 import sys
 
-import openpyxl
+import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -16,50 +16,52 @@ TASK = os.path.dirname(HERE)
 def main(target=None, gdir=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    en = pd.read_csv(os.path.join(target, "mba_enrollment_member_months_2025-01_to_2026-08.csv"))
-    old = pd.read_csv(os.path.join(target, "mba_claims_lag_report_paid_2025-01_to_2026-05.csv"))
-    new = pd.read_csv(os.path.join(target, "mba_claims_lag_report_paid_2026-06_to_2026-09.csv"))
-    old = pd.DataFrame({"g": old.GroupNo, "inc": old.IncurredMonth.str[-4:] + "-" + old.IncurredMonth.str[:2],
-                        "paid": old.PaidMonth.str[-4:] + "-" + old.PaidMonth.str[:2], "cat": old.Category.str[:3].str.upper(),
-                        "amt": old.PaidAmount})
-    new = pd.DataFrame({"g": new.group_id, "inc": new.incurred_period, "paid": new.paid_period,
-                        "cat": new.benefit_type.map({"MED": "MED", "RX": "PHA"}), "amt": new.paid_cents / 100})
-    lag = pd.concat([old, new]).drop_duplicates(["g", "inc", "paid", "cat"], keep="last")
-    exp = lag[lag.inc.str.startswith("2025") & (lag.paid <= "2026-03")].groupby("g").amt.sum()
-    mm = en[en.coverage_month.str.startswith("2025")].groupby("group_no").size()
-    lcr = pd.read_csv(os.path.join(target, "arbor_ridge_large_claimant_report_cy2025.csv"))
-    pol = pd.read_csv(os.path.join(target, "arbor_ridge_specific_policy_schedule_2025-2027.csv"))
-    p25 = pol[pol.contract_year == 2025].set_index("policy_no").group_no
-    lcr["g"] = lcr.policy_no.map(p25)
-    F = 1.075 ** 2
-    lcr["x27"] = (lcr.total_incurred * F - 250000).clip(lower=0)
-    ws = openpyxl.load_workbook(os.path.join(target, "mba_2027_funding_elections.xlsx"), data_only=True)["2027 elections"]
-    rate = {r[0]: r[3] for r in ws.iter_rows(min_row=2, values_only=True) if r[0]}
+    r1 = pd.read_csv(os.path.join(target, "quantilis_spring2026_item_responses_through_2026-03-27.csv"))
+    r2 = pd.read_csv(os.path.join(target, "quantilis_spring2026_item_responses_from_2026-03-30.csv"))
+    r = pd.concat([pd.DataFrame({"s": r1.StudentID, "seq": r1.ItemSeq, "item": r1.ItemID, "u": r1.Scored,
+                                 "t": r1.ResponseTimeMs / 1000}),
+                   pd.DataFrame({"s": r2.student_id, "seq": r2.item_seq, "item": r2.item_id, "u": r2.score,
+                                 "t": r2.response_time_s})])
+    bank = pd.read_csv(os.path.join(target, "quantilis_item_bank_2025-26.csv")).set_index("item_id")
+    r = r.join(bank[["a", "b", "c"]], on="item").sort_values(["s", "seq"])
+    ids = r.s.unique()
+    shape = (len(ids), 40)
+    U, T, A, Bm, C = (r[k].to_numpy().reshape(shape) for k in ("u", "t", "a", "b", "c"))
+    M = T >= 4.0
+    th = np.zeros(len(ids))
+    for _ in range(80):
+        p = C + (1 - C) / (1 + np.exp(-1.7 * A * (th[:, None] - Bm)))
+        g = (1.7 * A * (p - C) / (p * (1 - C)) * (U - p) * M).sum(1)
+        h = ((1.7 * A) ** 2 * ((p - C) / (1 - C)) ** 2 * (1 - p) / p * M).sum(1)
+        th = np.clip(th + np.clip(g / np.maximum(h, 1e-9), -1, 1), -3.75, 3.75)
+    sc = pd.Series(np.clip(np.round(500 + 40 * th), 350, 650), index=ids)
+    sp = pd.read_csv(os.path.join(target, "quantilis_spring2026_score_report.csv")).set_index("student_id")
+    share = (sc < 470).groupby(sp.loc[ids, "campus_id"].values).mean()
     bad = 0
-    notes = []
-    for g in sorted(rate):
-        v = (F * exp[g] - lcr[lcr.g == g].x27.sum()) / mm[g]
-        bad += "%d" % round(v) != fig["retained_pmpm"][g]
-        if v > rate[g]:
-            notes.append(g)
-    bad += notes != fig["call"]["notices"]
-    e26 = en[en.coverage_month.str.startswith("2026")]
-    e26 = e26.drop_duplicates(["group_no", "birth_date", "sex", "relationship", "coverage_month"])
-    m26 = e26.groupby("group_no").size()
-    p26 = lag[lag.inc.between("2026-01", "2026-08")].groupby("g").amt.sum()
-    for g in rate:
-        bad += int(m26[g]) != fig["ask_a"][g]["member_months"]
-        bad += "%.2f" % (p26[g] / m26[g]) != fig["ask_a"][g]["paid_pmpm"]
-    adv = pd.read_csv(os.path.join(target, "arbor_ridge_specific_advisories_2026.csv"))
-    p26p = pol[pol.contract_year == 2026].set_index("policy_no").group_no
-    who = en.drop_duplicates("member_id").set_index("member_id")
-    adv["g"] = adv.policy_no.map(p26p)
-    adv["person"] = adv.member_ref.map(lambda m: tuple(who.loc[m, ["birth_date", "sex", "relationship"]]))
-    last = adv.sort_values(["advisory_date", "claimant_no"]).groupby(["g", "person"]).incurred_to_date.last()
-    for g in rate:
-        s = last[last.index.get_level_values(0) == g]
-        bad += len(s) != fig["ask_b"][g]["members"]
-        bad += int(round(s.sum())) != fig["ask_b"][g]["claims_to_date"]
+    for c, v in share.items():
+        bad += "%.1f" % (100 * v) != fig["below_basic_pct"][c]
+    bad += sorted(c for c, v in share.items() if v >= 0.35) != fig["call"]["designated"]
+    fall = pd.read_csv(os.path.join(target, "quantilis_fall2025_score_report.csv"))
+    tmp = pd.read_csv(os.path.join(target, "quantilis_temporary_id_register_fall2025.csv"))
+    rf = pd.read_csv(os.path.join(target, "bellweather_sis_roster_2025-10-01.csv"))
+    rs = pd.read_csv(os.path.join(target, "bellweather_sis_roster_2026-03-01.csv"))
+    key = ["last_name", "first_name", "birth_date"]
+    t2o = tmp.merge(rf, on=key).set_index("temporary_student_id").student_id
+    fall["sid"] = fall.student_id.map(lambda s: t2o.get(s, s))
+    fall = fall.sort_values(["test_date", "student_id"]).groupby("sid").last()
+    agg = fall.groupby("campus_id").agg(n=("scale_score", "size"), p=("scale_score", lambda v: (v >= 520).mean()))
+    for c, row in agg.iterrows():
+        bad += int(row.n) != fig["ask_a"][c]["tested"]
+        bad += "%.1f" % (100 * row.p) != fig["ask_a"][c]["proficient_pct"]
+    xw = pd.read_csv(os.path.join(target, "bellweather_sis_id_crosswalk_2026-01-05.csv")).set_index("legacy_student_id").student_id
+    o2n = rf.merge(rs, on=key, suffixes=("_o", "_n")).set_index("student_id_o").student_id_n
+    fall["new"] = [xw.get(s, o2n.get(s)) for s in fall.index]
+    win = pd.read_csv(os.path.join(target, "quantilis_winter2026_score_report.csv")).set_index("student_id")
+    j = fall.dropna(subset=["new"]).join(win, on="new", rsuffix="_w", how="inner")
+    j["g"] = j.scale_score_w - j.scale_score
+    for c, grp in j.groupby("campus_id_w"):
+        bad += len(grp) != fig["ask_b"][c]["students"]
+        bad += "%.1f" % grp.g.mean() != fig["ask_b"][c]["growth"]
     print("verify: %d figures differ from figures.json" % bad)
     return bad == 0
 

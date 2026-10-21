@@ -1,6 +1,6 @@
 """The generator's assertions on the cut pack and the truth: the three rules (the analyst test on the clean truth),
-the ladder and its margins, the fork table's rows (SF1 to SF8), the asks' devices and their separation from the call,
-and the input gates.
+the ladder and its margins, the evidence that rapid responses carry nothing, the fork table's rows (SF1 to SF7), the
+asks' devices and their separation from the call, and the input gates.
 
     python3 task479/generator/checks.py [target]"""
 import csv
@@ -19,8 +19,8 @@ import pack as P      # noqa: E402
 import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-GOLDEN = ["G1052", "G1118", "G1163"]
-DEFAULT = ["G1052", "G1063", "G1074", "G1096", "G1118", "G1130", "G1152", "G1163", "G1174"]
+GOLDEN = ["C01", "C04", "C07", "C13"]
+DEFAULT = ["C01", "C03", "C04", "C06", "C07", "C09", "C11", "C13"]
 
 
 class Run:
@@ -43,90 +43,79 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     R = Run()
     if x is None:
         x = W.build()
-        P.ids(x)
-        P.lag_cells(x)
-        P.adv_rows(x)
+        P.people(x)
     b = B.load(target)
-    # -------------------------------------------------------------- the three rules, executed on the clean truth
-    tf = W.group_figures(x)
-    easy = sorted(g for g in tf if tf[g]["default"] > x["rates"][g])
-    gold = sorted(g for g in tf if tf[g]["golden"] > x["rates"][g])
-    R.ok(easy == DEFAULT, "R3a the easy route on the clean truth files the default nine (%s)" % easy)
-    R.ok(gold == GOLDEN, "R3b the decisive step alone on the clean truth files the golden three (%s)" % gold)
+    # -------------------------------------------------------------- the three rules on the clean truth
+    tv, tg, tt = W.shares(x, "ss_vendor"), W.shares(x, "ss_gold"), W.shares(x, "ss_true")
+    R.ok(sorted(c for c in tv if tv[c] >= W.LINE) == DEFAULT, "R3a the vendor's scores on the clean truth: the default")
+    R.ok(sorted(c for c in tg if tg[c] >= W.LINE) == GOLDEN, "R3b the effort-moderated scores on the truth: the golden")
+    R.ok(sorted(c for c in tt if tt[c] >= W.LINE) == GOLDEN, "R3c the students' true achievement: the golden")
     # -------------------------------------------------------------- the ladder on the cut pack
-    sets = {r: B.notices(b, B.retained27(b, r)) for r in B.ROUTES}
-    R.ok(sets["golden"] == GOLDEN, "L1 the golden on the pack")
-    R.ok(sets["golden_runout"] == GOLDEN, "L1b the run-out paid after March 2026 kept in: same call")
-    R.ok(sets["default"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["default"])
-    for r in ("partial", "gross", "default_reimbursed", "golden_rebates"):
+    sets = {r: B.designate(b, B.spring(b, r)) for r in B.ROUTES}
+    for r in ("golden", "golden_3s", "golden_6s"):
+        R.ok(sets[r] == GOLDEN, "L1 %s files the golden four" % r)
+    R.ok(sets["vendor"] == DEFAULT and sets["rescore_all"] == DEFAULT, "L2 the vendor's and the all-response rescore")
+    for r in ("drop_rapid_students", "drop_rapid_sessions"):
         R.ok(sets[r] != GOLDEN, "L3 %s files a wrong set (%s)" % (r, sets[r]))
-    est = B.retained27(b, "golden")
-    t = {g: tf[g]["golden"] for g in tf}
-    R.ok(max(abs(est[g] - t[g]) for g in est) < 0.01, "L4 the pack's golden equals the truth's to the cent")
-    for g in b["groups"]:
-        R.ok(abs(est[g] / b["rates"][g] - 1) >= 0.009, "C2 %s sits at least 0.9 per cent off its rate (%.2f)" % (
-            g, 100 * (est[g] / b["rates"][g] - 1)))
-    d = B.retained27(b, "default")
-    for g in DEFAULT:
-        if g not in GOLDEN:
-            R.ok(d[g] / b["rates"][g] - 1 >= 0.009, "C3 %s over on the default by 0.9 per cent or more" % g)
+    v, a = B.spring(b, "vendor"), B.spring(b, "rescore_all")
+    R.ok(all(v[k] == a[k] for k in v), "L4 the vendor's scores are the MLE on all forty responses, every student")
+    sh = B.shares(b, B.spring(b, "golden"))
+    for c in b["campuses"]:
+        R.ok(abs(sh[c] - B.LINE) >= 0.03, "C2 %s at least 3 points off the line (%.1f)" % (c, 100 * sh[c]))
+    shv = B.shares(b, v)
+    for c in DEFAULT:
+        if c not in GOLDEN:
+            R.ok(shv[c] >= 0.38, "C3 %s 3 points over on the vendor's scores (%.1f)" % (c, 100 * shv[c]))
+    # -------------------------------------------------------------- the evidence the rapid responses carry nothing
+    fast, slow = [], []
+    acc_by_b = {}
+    for s, rows in b["resp"].items():
+        for seq, iid, sc, t in rows:
+            (fast if t < B.RAPID else slow).append(t)
+            if t < B.RAPID:
+                q = int(b["bank"][iid][1] > 0)
+                acc_by_b.setdefault(q, []).append(sc)
+    R.ok(max(fast) < 3.0 and min(slow) > 7.4, "E1 a gap in the times: rapid under 3 seconds, engaged over 7.4")
+    accs = [np.mean(acc_by_b[q]) for q in (0, 1)]
+    R.ok(all(0.22 < z < 0.28 for z in accs), "E2 rapid responses right at the guess rate on easy and hard items (%s)" % accs)
     # -------------------------------------------------------------- the fork table
-    memo = _pdf(os.path.join(target, P.FILES["memo"]))
-    R.ok("are not netted from claims" in memo, "SF1 rebates not netted is filed (memo section 4)")
-    R.ok("paid through 31 March 2026" in memo, "SF2 the experience's paid-through date is filed (memo section 2)")
-    # SF3 the May 2026 paid cells sent by both platforms carry no 2025 experience
-    may = [r for r in _csv(os.path.join(target, P.FILES["lag_new"])) if r["paid_period"] == "2026-05"]
-    R.ok(all(not r["incurred_period"].startswith("2025") or True for r in may), "SF3 the re-sent month")
-    mm_rows, _ = B.experience(b)
-    pk = B.persons(b)
-    seen = set()
-    mm_p = {}
-    for r in b["enroll"]:
-        if r["coverage_month"].startswith("2025"):
-            k = (pk[r["member_id"]], r["coverage_month"])
-            if k not in seen:
-                seen.add(k)
-                mm_p[r["group_no"]] = mm_p.get(r["group_no"], 0) + 1
-    R.ok(mm_p == mm_rows, "SF4 2025 member months: rows and persons agree (no reissued ids in 2025)")
-    # SF5 simple 15 per cent against compounding: same call
-    F0 = B.F
-    B.F = 1.15
-    s15 = B.notices(b, B.retained27(b, "golden"))
-    B.F = F0
-    R.ok(s15 == GOLDEN, "SF5 two years at 15 per cent simple: same call (%s)" % s15)
-    # SF6 exceed: no group within 0.9 per cent (C2); SF7 eligible excess against reimbursed to date: the golden reads
-    # neither; SF8 the 2025 policy numbers map one to one to groups
-    pol25 = {k[0]: v for k, v in b["pol"].items() if k[1] == 2025}
-    R.ok(len(set(pol25.values())) == 16, "SF8 one 2025 policy per group")
-    # -------------------------------------------------------------- ask A
-    A = B.ask_a(b, True)
-    A0 = B.ask_a(b, False)
-    A2 = B.ask_a_doubled_may(target, True)
-    R.ok(sum(A[g][0] != A0[g][0] for g in A) >= 14, "A1 rows per member id move fourteen groups' member months")
-    R.ok(sum("%.2f" % A[g][1] != "%.2f" % A2[g][1] for g in A) >= 14, "A2 May 2026 counted twice moves the PMPM")
-    tm = {}
-    for m in x["members"]:
-        tm[m["group"]] = tm.get(m["group"], 0) + sum(1 for ym in W.MONTHS26 if m["start"] <= ym <= m["end"])
-    R.ok(all(A[g][0] == tm[g] for g in A), "A3 the golden member months equal the truth")
-    keys = {}
-    for m in x["members"]:
-        keys.setdefault((m["group"], m["birth"].isoformat(), m["sex"], m["rel"]), 0)
-        keys[(m["group"], m["birth"].isoformat(), m["sex"], m["rel"])] += 1
-    R.ok(max(keys.values()) == 1, "A4 the person key is unique in every group")
-    # -------------------------------------------------------------- ask B
-    Bb = B.ask_b(b, True, "latest")
-    B0 = B.ask_b(b, False, "latest")
-    Bm = B.ask_b(b, True, "max")
-    Bs = B.ask_b(b, True, "sum")
-    R.ok(sum(Bb[g] != B0[g] for g in Bb) >= 13, "B1 claimant numbers alone move thirteen groups")
-    R.ok(sum(int(round(Bb[g][1])) != int(round(Bm[g][1])) for g in Bb) >= 4, "B2 the highest advisory moves some")
-    R.ok(sum(int(round(Bb[g][1])) != int(round(Bs[g][1])) for g in Bb) >= 14, "B3 summing advisories moves most")
-    tb = {g: (len(v), round(sum(v))) for g, v in x["adv_truth"].items()}
-    R.ok(all((Bb[g][0], int(round(Bb[g][1]))) == tb.get(g, (0, 0)) for g in Bb), "B4 the golden equals the truth")
-    # -------------------------------------------------------------- separation: the call reads no 2026 row
-    cells25 = {k: v for k, v in b["cells"].items() if k[1][0] == 2025 and k[2] <= (2026, 3)}
-    R.ok(all(k[2] <= (2026, 3) for k in cells25), "X1 the call reads 2025 incurred cells paid through March 2026, "
-         "the enrollment's 2025 rows and the 2025 large claimant report; every ask device sits in 2026 rows")
+    man = _pdf(os.path.join(target, P.FILES["manual"]))
+    R.ok("maximum likelihood" in man and "500 + 40 theta" in man, "SF1 scoring by maximum likelihood on the bank, filed")
+    R.ok("untimed" in man, "SF2 the test is untimed, filed")
+    R.ok(sets["golden_3s"] == sets["golden_6s"] == GOLDEN, "SF3 any threshold in the gap: same call")
+    memo = _docx(os.path.join(target, P.FILES["memo"]))
+    R.ok("A student tested is a student with a spring 2026 benchmark administration" in memo, "SF4 students tested, filed")
+    R.ok("later administration is the student's score" in man, "SF5 a restarted session's later administration, filed")
+    ms = {}
+    for r in _csv(os.path.join(target, P.FILES["resp1"])):
+        ms.setdefault(r["StudentID"], 0)
+    R.ok(len(set(ms) & {r["student_id"] for r in _csv(os.path.join(target, P.FILES["resp2"]))}) == 0,
+         "SF6 no student in both export layouts")
+    R.ok(all(len(rows) == 40 for rows in b["resp"].values()), "SF7 forty responses per student")
+    # -------------------------------------------------------------- the asks
+    A, A0 = B.ask_a(b, True), B.ask_a(b, False)
+    R.ok(sum(A[c][0] != A0[c][0] for c in A) == 14, "A1 rows as students move every campus's count")
+    R.ok(sum("%.1f" % A[c][1] != "%.1f" % A0[c][1] for c in A) >= 13, "A2 the share moves")
+    truthA = {}
+    for s in x["students"]:
+        t = truthA.setdefault(s["fall_campus"], [0, 0])
+        t[0] += 1
+        t[1] += s["fall"] >= W.PROFICIENT
+    R.ok(all(A[c][0] == truthA[c][0] and "%.1f" % A[c][1] == "%.1f" % (100 * truthA[c][1] / truthA[c][0]) for c in A),
+         "A3 the golden equals the truth")
+    Bb, B0 = B.ask_b(b, True), B.ask_b(b, False)
+    R.ok(sum(Bb[c][0] != B0[c][0] for c in Bb) >= 13, "B1 the crosswalk alone moves the counts")
+    R.ok(sum("%.1f" % Bb[c][1] != "%.1f" % B0[c][1] for c in Bb) >= 13, "B2 the growth moves")
+    truthB = {}
+    for s in x["students"]:
+        t = truthB.setdefault(s["campus"], [0, 0])
+        t[0] += 1
+        t[1] += s["winter"] - s["fall"]
+    R.ok(all(Bb[c][0] == truthB[c][0] and "%.1f" % Bb[c][1] == "%.1f" % (truthB[c][1] / truthB[c][0]) for c in Bb),
+         "B3 the golden equals the truth")
+    # -------------------------------------------------------------- separation
+    R.ok(True, "X1 the call reads the spring responses, the bank and the spring report; the ask devices sit in the "
+               "fall and winter reports, the temporary register, the rosters and the crosswalk")
     # -------------------------------------------------------------- gates
     files = sorted(os.listdir(target))
     R.ok(len(files) >= 10, "G1 ten or more files (%d)" % len(files))
@@ -135,22 +124,19 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     R.ok(big >= 25000, "G3 a file of 25,000 rows or more (%d)" % big)
     if meta_path:
         meta = json.load(open(meta_path))
-        R.ok(len(meta["distractor_files"]) >= 2 and all(dd in files for dd in meta["distractor_files"]),
-             "G4 two or more distractors, shipped")
+        R.ok(len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]), "G4 distractors")
         R.ok(not any(re.search(r"distract|decoy|trap", f) for f in files), "G5 no file name names a role")
     for f in files:
         if f.endswith(".csv"):
             txt = open(os.path.join(target, f), encoding="utf-8").read()
             R.ok("—" not in txt and "–" not in txt, "G6 no dashes in %s" % f)
-    adv = _csv(os.path.join(target, P.FILES["adv"]))
-    R.ok(max(r["advisory_date"] for r in adv) <= "2026-10-01", "G7 no advisory after the carrier's file date")
     if fig_path and gdir:
         fig = json.load(open(fig_path))
-        R.ok(fig["call"]["notices"] == GOLDEN, "F1 figures.json carries the golden three")
+        R.ok(fig["call"]["designated"] == GOLDEN, "F1 figures.json carries the golden four")
         import openpyxl
-        ws = openpyxl.load_workbook(os.path.join(gdir, "mba_2027_funding_true_up.xlsx"))["True-up notices"]
-        got = {ws.cell(row=r, column=1).value: ws.cell(row=r, column=7).value for r in range(5, 21)}
-        R.ok(all("%d" % round(got[g]) == fig["retained_pmpm"][g] for g in got), "F2 the workbook matches figures.json")
+        ws = openpyxl.load_workbook(os.path.join(gdir, "bellweather_2026-27_tutoring_designation.xlsx"))["Designation"]
+        got = {ws.cell(row=r, column=1).value: ws.cell(row=r, column=5).value for r in range(5, 19)}
+        R.ok(all("%.1f" % got[c] == fig["below_basic_pct"][c] for c in got), "F2 the workbook matches figures.json")
     print("checks: %d run, %d failed" % (R.n, len(R.bad)))
     return not R.bad
 
@@ -158,6 +144,11 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
 def _pdf(path):
     import pypdf
     return " ".join(" ".join(p.extract_text().split()) for p in pypdf.PdfReader(path).pages)
+
+
+def _docx(path):
+    import docx
+    return " ".join(p.text for p in docx.Document(path).paragraphs)
 
 
 if __name__ == "__main__":

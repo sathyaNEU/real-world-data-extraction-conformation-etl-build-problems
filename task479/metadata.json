@@ -1,61 +1,64 @@
 {
  "task": "task479",
- "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
- "client_domain": "Healthcare Delivery & Health Economics",
- "task_type": "payment-claims-health-plan-analytics",
+ "domain": "Education & Learning Sciences (item response theory and test equating)",
+ "client_domain": "Education & Learning Sciences",
+ "task_type": "item-response-theory-test-equating",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "mba_pharmacy_rebate_statement_2025.csv",
-  "midwest_employer_health_cost_survey_2025.csv",
-  "mba_group_roster_2026-10.csv"
+  "state_accountability_math_2025_bellweather.csv",
+  "bellweather_chronic_absence_2025-26.csv"
  ],
  "distractor_reasons": {
-  "mba_pharmacy_rebate_statement_2025.csv": "the 2025 pharmacy rebates credited to each employer's funding account; the assumptions memo keeps rebates out of claims, so retained claims are gross of them",
-  "midwest_employer_health_cost_survey_2025.csv": "a regional survey's 2025 claims cost per member per month by industry; the notice rests on each group's own experience, and no benchmark enters it",
-  "mba_group_roster_2026-10.csv": "the groups' employers, industries and account managers; the notices are by group number and nothing on the roster changes a group's claims"
+  "state_accountability_math_2025_bellweather.csv": "the state test's 2025 results by campus, a different test, year and scale; the designation is on the spring 2026 benchmark",
+  "bellweather_chronic_absence_2025-26.csv": "chronic absence by campus; the designation counts students tested on the benchmark, whatever their attendance"
  },
  "stated_inputs": [
-  "250,000",
-  "125,000",
-  "100,000",
-  "7.5"
+  "470",
+  "520",
+  "35"
  ],
  "deliverables": [
-  "mba_2027_funding_true_up.xlsx"
+  "bellweather_2026-27_tutoring_designation.xlsx"
  ],
- "as_of": "2026-10-05",
+ "as_of": "2026-10-02",
  "files": [
-  "arbor_ridge_large_claimant_report_cy2025.csv",
-  "arbor_ridge_specific_advisories_2026.csv",
-  "arbor_ridge_specific_policy_schedule_2025-2027.csv",
-  "mba_2027_funding_elections.xlsx",
-  "mba_2027_renewal_assumptions.pdf",
-  "mba_claims_lag_report_paid_2025-01_to_2026-05.csv",
-  "mba_claims_lag_report_paid_2026-06_to_2026-09.csv",
-  "mba_data_dictionary.csv",
-  "mba_enrollment_member_months_2025-01_to_2026-08.csv",
-  "mba_extract_manifest_2026-10-05.csv",
-  "mba_group_roster_2026-10.csv",
-  "mba_pharmacy_rebate_statement_2025.csv",
-  "midwest_employer_health_cost_survey_2025.csv"
+  "bellweather_assessment_data_dictionary.csv",
+  "bellweather_assessment_extract_manifest_2026-10-02.csv",
+  "bellweather_chronic_absence_2025-26.csv",
+  "bellweather_sis_id_crosswalk_2026-01-05.csv",
+  "bellweather_sis_roster_2025-10-01.csv",
+  "bellweather_sis_roster_2026-03-01.csv",
+  "bellweather_tutoring_designation_2026-27.docx",
+  "quantilis_benchmark_technical_summary_2025-26.pdf",
+  "quantilis_fall2025_score_report.csv",
+  "quantilis_item_bank_2025-26.csv",
+  "quantilis_spring2026_item_responses_from_2026-03-30.csv",
+  "quantilis_spring2026_item_responses_through_2026-03-27.csv",
+  "quantilis_spring2026_score_report.csv",
+  "quantilis_temporary_id_register_fall2025.csv",
+  "quantilis_winter2026_score_report.csv",
+  "state_accountability_math_2025_bellweather.csv"
  ],
  "rows": {
-  "arbor_ridge_specific_advisories_2026.csv": 268,
-  "midwest_employer_health_cost_survey_2025.csv": 11,
-  "mba_data_dictionary.csv": 26,
-  "mba_enrollment_member_months_2025-01_to_2026-08.csv": 190147,
-  "mba_claims_lag_report_paid_2026-06_to_2026-09.csv": 1408,
-  "mba_claims_lag_report_paid_2025-01_to_2026-05.csv": 4416,
-  "arbor_ridge_large_claimant_report_cy2025.csv": 84,
-  "mba_extract_manifest_2026-10-05.csv": 12,
-  "arbor_ridge_specific_policy_schedule_2025-2027.csv": 48,
-  "mba_pharmacy_rebate_statement_2025.csv": 64,
-  "mba_group_roster_2026-10.csv": 16
+  "bellweather_chronic_absence_2025-26.csv": 56,
+  "quantilis_item_bank_2025-26.csv": 120,
+  "bellweather_assessment_data_dictionary.csv": 24,
+  "quantilis_fall2025_score_report.csv": 6951,
+  "bellweather_assessment_extract_manifest_2026-10-02.csv": 15,
+  "quantilis_spring2026_item_responses_through_2026-03-27.csv": 72400,
+  "quantilis_spring2026_item_responses_from_2026-03-30.csv": 186120,
+  "bellweather_sis_roster_2025-10-01.csv": 6463,
+  "bellweather_sis_roster_2026-03-01.csv": 6463,
+  "quantilis_spring2026_score_report.csv": 6463,
+  "state_accountability_math_2025_bellweather.csv": 14,
+  "quantilis_temporary_id_register_fall2025.csv": 488,
+  "quantilis_winter2026_score_report.csv": 6463,
+  "bellweather_sis_id_crosswalk_2026-01-05.csv": 6157
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task479/generator); the administrator, the carrier, the employers, their members and the people are fictional",
-  "public_specifications": "the layouts follow common third-party administrator claims lag reports, eligibility files and specific stop-loss large claimant reports (12/15 contract basis), described in no shipped file beyond the pack's own dictionary",
+  "constructed": "every file is constructed for this task by its generator (task479/generator); the network, its campuses and students, the vendor and the people are fictional",
+  "public_specifications": "the item bank follows the three-parameter logistic model and maximum likelihood scoring as published in the measurement literature",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-05"
+  "date": "2026-10-02"
  }
 }

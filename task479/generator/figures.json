@@ -1,152 +1,165 @@
 {
  "ask_a": {
-  "G1041": {
-   "member_months": 4730,
-   "paid_pmpm": "582.07"
+  "C01": {
+   "proficient_pct": "12.1",
+   "tested": 470
   },
-  "G1052": {
-   "member_months": 3006,
-   "paid_pmpm": "706.53"
+  "C02": {
+   "proficient_pct": "30.7",
+   "tested": 531
   },
-  "G1063": {
-   "member_months": 4588,
-   "paid_pmpm": "744.16"
+  "C03": {
+   "proficient_pct": "22.6",
+   "tested": 433
   },
-  "G1074": {
-   "member_months": 3552,
-   "paid_pmpm": "825.60"
+  "C04": {
+   "proficient_pct": "11.4",
+   "tested": 599
   },
-  "G1085": {
-   "member_months": 11080,
-   "paid_pmpm": "701.28"
+  "C05": {
+   "proficient_pct": "35.6",
+   "tested": 343
   },
-  "G1096": {
-   "member_months": 2408,
-   "paid_pmpm": "1014.28"
+  "C06": {
+   "proficient_pct": "22.1",
+   "tested": 525
   },
-  "G1107": {
-   "member_months": 3802,
-   "paid_pmpm": "841.82"
+  "C07": {
+   "proficient_pct": "7.9",
+   "tested": 379
   },
-  "G1118": {
-   "member_months": 6886,
-   "paid_pmpm": "658.18"
+  "C08": {
+   "proficient_pct": "29.5",
+   "tested": 600
   },
-  "G1129": {
-   "member_months": 1992,
-   "paid_pmpm": "980.85"
+  "C09": {
+   "proficient_pct": "18.1",
+   "tested": 452
   },
-  "G1130": {
-   "member_months": 5528,
-   "paid_pmpm": "841.12"
+  "C10": {
+   "proficient_pct": "29.4",
+   "tested": 340
   },
-  "G1141": {
-   "member_months": 2843,
-   "paid_pmpm": "599.33"
+  "C11": {
+   "proficient_pct": "20.5",
+   "tested": 474
   },
-  "G1152": {
-   "member_months": 3311,
-   "paid_pmpm": "904.47"
+  "C12": {
+   "proficient_pct": "35.8",
+   "tested": 397
   },
-  "G1163": {
-   "member_months": 7219,
-   "paid_pmpm": "736.47"
+  "C13": {
+   "proficient_pct": "6.6",
+   "tested": 529
   },
-  "G1174": {
-   "member_months": 3105,
-   "paid_pmpm": "646.69"
-  },
-  "G1185": {
-   "member_months": 2226,
-   "paid_pmpm": "986.58"
-  },
-  "G1196": {
-   "member_months": 4242,
-   "paid_pmpm": "863.86"
+  "C14": {
+   "proficient_pct": "28.9",
+   "tested": 391
   }
  },
  "ask_b": {
-  "G1041": {
-   "claims_to_date": 481706,
-   "members": 2
+  "C01": {
+   "growth": "6.3",
+   "students": 476
   },
-  "G1052": {
-   "claims_to_date": 598069,
-   "members": 2
+  "C02": {
+   "growth": "6.5",
+   "students": 530
   },
-  "G1063": {
-   "claims_to_date": 709492,
-   "members": 3
+  "C03": {
+   "growth": "7.2",
+   "students": 423
   },
-  "G1074": {
-   "claims_to_date": 985127,
-   "members": 3
+  "C04": {
+   "growth": "6.9",
+   "students": 608
   },
-  "G1085": {
-   "claims_to_date": 968587,
-   "members": 3
+  "C05": {
+   "growth": "5.7",
+   "students": 337
   },
-  "G1096": {
-   "claims_to_date": 970989,
-   "members": 3
+  "C06": {
+   "growth": "7.5",
+   "students": 525
   },
-  "G1107": {
-   "claims_to_date": 1510452,
-   "members": 4
+  "C07": {
+   "growth": "7.2",
+   "students": 387
   },
-  "G1118": {
-   "claims_to_date": 591882,
-   "members": 2
+  "C08": {
+   "growth": "6.1",
+   "students": 600
   },
-  "G1129": {
-   "claims_to_date": 581057,
-   "members": 3
+  "C09": {
+   "growth": "6.9",
+   "students": 456
   },
-  "G1130": {
-   "claims_to_date": 870521,
-   "members": 3
+  "C10": {
+   "growth": "5.9",
+   "students": 330
   },
-  "G1141": {
-   "claims_to_date": 412571,
-   "members": 2
+  "C11": {
+   "growth": "6.5",
+   "students": 475
   },
-  "G1152": {
-   "claims_to_date": 903963,
-   "members": 4
+  "C12": {
+   "growth": "7.8",
+   "students": 392
   },
-  "G1163": {
-   "claims_to_date": 993848,
-   "members": 4
+  "C13": {
+   "growth": "6.0",
+   "students": 534
   },
-  "G1174": {
-   "claims_to_date": 443935,
-   "members": 2
-  },
-  "G1185": {
-   "claims_to_date": 970569,
-   "members": 4
-  },
-  "G1196": {
-   "claims_to_date": 1034735,
-   "members": 3
+  "C14": {
+   "growth": "6.7",
+   "students": 390
   }
  },
+ "below_basic_pct": {
+  "C01": "42.4",
+  "C02": "11.9",
+  "C03": "21.0",
+  "C04": "39.6",
+  "C05": "10.1",
+  "C06": "19.6",
+  "C07": "41.3",
+  "C08": "15.5",
+  "C09": "23.9",
+  "C10": "17.6",
+  "C11": "22.3",
+  "C12": "7.9",
+  "C13": "39.1",
+  "C14": "19.0"
+ },
  "call": {
-  "notices": [
-   "G1052",
-   "G1118",
-   "G1163"
+  "designated": [
+   "C01",
+   "C04",
+   "C07",
+   "C13"
   ]
  },
  "conventions": {
-  "advisory": 125000,
+  "basic": 470,
   "counts": [
    2,
-   16
+   4,
+   14
   ],
-  "deductible": 250000,
-  "lcr_floor": 100000,
-  "trend_pct": 7.5,
+  "items": 40,
+  "line_pct": 35,
+  "proficient": 520,
+  "scale": [
+   500,
+   40,
+   350,
+   650
+  ],
+  "seconds": [
+   3,
+   5,
+   7.5
+  ],
   "years": [
    2025,
    2026,
@@ -154,70 +167,31 @@
   ]
  },
  "default_path": {
-  "notices": [
-   "G1052",
-   "G1063",
-   "G1074",
-   "G1096",
-   "G1118",
-   "G1130",
-   "G1152",
-   "G1163",
-   "G1174"
-  ],
-  "retained_pmpm": {
-   "G1041": "614",
-   "G1052": "515",
-   "G1063": "904",
-   "G1074": "867",
-   "G1085": "532",
-   "G1096": "847",
-   "G1107": "670",
-   "G1118": "604",
-   "G1129": "484",
-   "G1130": "893",
-   "G1141": "535",
-   "G1152": "844",
-   "G1163": "715",
-   "G1174": "837",
-   "G1185": "736",
-   "G1196": "692"
-  }
- },
- "rates": {
-  "G1041": "637",
-  "G1052": "495",
-  "G1063": "885",
-  "G1074": "848",
-  "G1085": "556",
-  "G1096": "826",
-  "G1107": "704",
-  "G1118": "581",
-  "G1129": "512",
-  "G1130": "871",
-  "G1141": "561",
-  "G1152": "831",
-  "G1163": "683",
-  "G1174": "817",
-  "G1185": "766",
-  "G1196": "733"
- },
- "retained_pmpm": {
-  "G1041": "601",
-  "G1052": "515",
-  "G1063": "863",
-  "G1074": "833",
-  "G1085": "528",
-  "G1096": "808",
-  "G1107": "665",
-  "G1118": "600",
-  "G1129": "484",
-  "G1130": "852",
-  "G1141": "526",
-  "G1152": "818",
-  "G1163": "707",
-  "G1174": "802",
-  "G1185": "736",
-  "G1196": "678"
+  "below_basic_pct": {
+   "C01": "42.4",
+   "C02": "12.1",
+   "C03": "42.8",
+   "C04": "52.5",
+   "C05": "17.5",
+   "C06": "42.7",
+   "C07": "41.3",
+   "C08": "15.5",
+   "C09": "46.5",
+   "C10": "17.6",
+   "C11": "40.4",
+   "C12": "19.6",
+   "C13": "39.3",
+   "C14": "27.4"
+  },
+  "designated": [
+   "C01",
+   "C03",
+   "C04",
+   "C06",
+   "C07",
+   "C09",
+   "C11",
+   "C13"
+  ]
  }
 }

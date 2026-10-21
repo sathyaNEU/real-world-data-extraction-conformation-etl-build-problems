@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "golden workbook and submission.md block 1",
+  "answer": "C01 (Bellweather Eastgate), C04 (Carver Park), C07 (Ashby) and C13 (Fairview) designated for 2026-27 tutoring",
+  "answer_source": "golden/bellweather_2026-27_tutoring_designation.xlsx (Designation sheet) and submission.md block 1",
   "gap": [
     "population"
   ],
@@ -47,8 +47,8 @@
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "quantilis_spring2026_item_responses_from_2026-03-30.csv",
+    "rows": 186120,
     "entity": "one student's response to one item",
     "grain": "student x item",
     "source": "synthetic"
@@ -60,13 +60,32 @@
     "geography": "United States (a fictional metro region)",
     "currency": "USD",
     "org_type": "charter management organization",
-    "invented_names": [],
+    "invented_names": [
+      "Bellweather Academies",
+      "Quantilis Assessment",
+      "Bellweather Eastgate",
+      "Bellweather Riverside",
+      "Bellweather Highpoint",
+      "Bellweather Carver Park",
+      "Bellweather Northfield",
+      "Bellweather Lakemont",
+      "Bellweather Ashby",
+      "Bellweather Southridge",
+      "Bellweather Delmar",
+      "Bellweather Westbrook",
+      "Bellweather Granger",
+      "Bellweather Oak Hollow",
+      "Bellweather Fairview",
+      "Bellweather Mercer"
+    ],
     "people": [
       "Sabrina Santos",
       "Gregory Valdez"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "bellweather_2026-27_tutoring_designation.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",

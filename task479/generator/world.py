@@ -1,166 +1,135 @@
-"""The world of task479 (architecture 3): Marlowe Benefit Administrators, a third-party administrator of sixteen
-self-funded employer health plans, each with specific stop-loss from Arbor Ridge Specialty Insurance Company at a
-$250,000 attachment that the 2027 policies keep.
+"""The world of task479 (architecture 4): Bellweather Academies, a charter network of fourteen middle-school campuses,
+whose spring 2026 math benchmark is delivered and scored by Quantilis Assessment on a three-parameter logistic item
+bank. In a few campuses' sessions some students answered many items in a second or two, at the blind-guess rate:
+those responses carry nothing about what the student knows, and the vendor's maximum likelihood scores read them as
+wrong answers.
 
-A group's retained claims are its members' claims, each member's year kept below the attachment. Medical trend acts on
-claims, so a member already over the attachment costs the plan the attachment in 2027 whatever the trend: the groups
-whose 2025 experience carries several members at or near the attachment retain less in 2027 than their 2025 retained
-claims trended.
-
-    x = build()    the truth: groups, members, enrollment, 2025 and 2026 claims, the carrier's records, the rates"""
-import calendar
+    x = build()    the truth: campuses, students, abilities, spring responses and times, fall and winter scores"""
 import datetime as dt
 
 import numpy as np
 
-SEED = 4793
-ATTACH = 250_000
-TREND = 0.075
-F = (1 + TREND) ** 2              # 2025 to 2027
-ADVISORY = 125_000                # the carrier's 50 per cent advisory threshold
+SEED = 4794
+D = 1.7
+LOT, HOT = 350, 650
+BASIC, PROFICIENT = 470, 520
+LINE = 0.35
+N_ITEMS = 40
 
-# group no, employer, industry, members, ordinary claims scale, members over the attachment (2025 claims), members
-# just under it, the 2027 claims funding rate's place: "both" over on the golden and the default, "default" over on
-# the default only, "partial" over only when the crossers are left uncapped, "neither"
-GROUPS = [
-    ("G1041", "Halsted Tool & Die", "manufacturing", 640, 1.00, [312, 488], [231], "neither"),
-    ("G1052", "Ferris Valley Credit Union", "finance", 410, 0.92, [], [], "both"),
-    ("G1063", "Oakmont Senior Living", "health care", 620, 1.10, [276, 351, 402, 655, 298, 510], [228, 244], "default"),
-    ("G1074", "Grafton Freight Lines", "transportation", 480, 1.06, [298, 541, 1220, 330], [236], "default"),
-    ("G1085", "Kittredge Foods", "food processing", 1520, 0.98, [263, 330], [219], "neither"),
-    ("G1096", "Ashbury Engineering Group", "professional services", 330, 0.88, [702, 265, 410], [240], "default"),
-    ("G1107", "Linden Park Schools Foundation", "education", 520, 0.95, [], [241], "neither"),
-    ("G1118", "Pemberton Hardware Cooperative", "retail", 940, 1.02, [287], [], "both"),
-    ("G1129", "Sorrel Creek Dental Partners", "health care", 270, 0.90, [], [], "neither"),
-    ("G1130", "Northfield Paperboard", "manufacturing", 760, 1.08, [305, 377, 468, 590, 812, 290, 355], [227, 239, 246], "default"),
-    ("G1141", "Calloway & Reese LLP", "professional services", 380, 0.86, [356], [], "neither"),
-    ("G1152", "Brightwell Plumbing & Heating", "construction", 450, 1.04, [], [233, 247, 238, 229, 244], "partial"),
-    ("G1163", "Tamarack Hotel Group", "hospitality", 990, 1.00, [258, 449], [], "both"),
-    ("G1174", "Wexford County Mutual", "insurance", 420, 0.94, [520, 610, 280, 330], [222], "default"),
-    ("G1185", "Delacorte Printing", "manufacturing", 300, 1.05, [], [], "neither"),
-    ("G1196", "Quarry Hill Builders", "construction", 580, 1.07, [383], [230, 243], "neither"),
+
+def ss(theta):
+    return np.clip(np.round(500 + 40 * np.asarray(theta)), LOT, HOT)
+
+
+TH_LO, TH_HI = (LOT - 500) / 40, (HOT - 500) / 40
+
+# campus id, name, students per grade, mean ability, share of students rapid-guessing in its disengaged sessions,
+# which grades sat a disengaged session, its place ("both" over the line either way, "vendor" over on the vendor's
+# scores only, "neither")
+CAMPUSES = [
+    ("C01", "Bellweather Eastgate", 150, -0.56, 0.00, (), "both"),
+    ("C02", "Bellweather Riverside", 175, 0.36, 0.00, (), "neither"),
+    ("C03", "Bellweather Highpoint", 140, 0.05, 0.62, (7, 8), "vendor"),
+    ("C04", "Bellweather Carver Park", 190, -0.60, 0.55, (7, 8), "both"),
+    ("C05", "Bellweather Northfield", 120, 0.42, 0.55, (6,), "neither"),
+    ("C06", "Bellweather Lakemont", 165, 0.12, 0.58, (6, 7), "vendor"),
+    ("C07", "Bellweather Ashby", 130, -0.56, 0.00, (), "both"),
+    ("C08", "Bellweather Southridge", 200, 0.30, 0.00, (), "neither"),
+    ("C09", "Bellweather Delmar", 145, -0.02, 0.66, (7, 8), "vendor"),
+    ("C10", "Bellweather Westbrook", 110, 0.25, 0.00, (), "neither"),
+    ("C11", "Bellweather Granger", 160, -0.05, 0.52, (6, 8), "vendor"),
+    ("C12", "Bellweather Oak Hollow", 135, 0.48, 0.40, (7,), "neither"),
+    ("C13", "Bellweather Fairview", 180, -0.60, 0.00, (), "both"),
+    ("C14", "Bellweather Mercer", 125, 0.20, 0.45, (8,), "neither"),
 ]
-NAMES = [g[0] for g in GROUPS]
-MONTHS25 = [(2025, m) for m in range(1, 13)]
-MONTHS26 = [(2026, m) for m in range(1, 9)]
+NAMES = [c[0] for c in CAMPUSES]
+GRADE_SHIFT = {"C04": {6: 0.55, 7: -0.28, 8: -0.28}}     # Carver Park's grade 6 strong, its grades 7 and 8 weak
+GRADES = (6, 7, 8)
+
+
+def bank(rng):
+    items = []
+    for g in GRADES:
+        for k in range(N_ITEMS):
+            items.append({"id": "Q%d-%03d" % (g, 101 + 7 * k + g), "grade": g, "pos": k + 1,
+                          "a": round(float(rng.uniform(0.75, 1.85)), 3), "b": round(float(rng.normal(0.0, 0.95)), 3),
+                          "c": round(float(rng.uniform(0.15, 0.24)), 3)})
+    return items
+
+
+def p3(theta, a, b, c):
+    return c + (1 - c) / (1 + np.exp(-D * a * (np.asarray(theta)[..., None] - b)))
+
+
+def mle(resp, mask, a, b, c, iters=60):
+    """Maximum likelihood ability for each row of resp (0/1) over the items where mask is True, bounded to the
+    reporting scale's range; a row with every answered item right or wrong goes to the bound."""
+    n = resp.shape[0]
+    th = np.zeros(n)
+    for _ in range(iters):
+        p = p3(th, a, b, c)
+        q = 1 - p
+        w = (p - c) / (p * (1 - c))
+        g = (D * a * w * (resp - p) * mask).sum(1)
+        info = ((D * a) ** 2 * ((p - c) / (1 - c)) ** 2 * q / p * mask).sum(1)
+        step = g / np.maximum(info, 1e-9)
+        th = np.clip(th + np.clip(step, -1.0, 1.0), TH_LO, TH_HI)
+    return th
 
 
 def build():
     rng = np.random.default_rng(SEED)
-    members, mm = [], {}
-    nid = 0
-    for gno, emp, ind, n, scale, over, near, place in GROUPS:
-        g_members = []
-        seen = set()
-        # subscribers and dependants: about 1.9 members per subscriber
-        sub = 0
-        while len(g_members) < n:
-            sub += 1
-            fam = 1 + int(rng.choice([0, 0, 1, 1, 2, 3], p=[0.32, 0.12, 0.2, 0.12, 0.14, 0.10]))
-            byear = int(rng.integers(1961, 2003))
-            for k in range(fam):
-                nid += 1
-                rel = "EE" if k == 0 else ("SP" if k == 1 else "CH")
-                by = byear if k == 0 else (byear + int(rng.integers(-4, 5)) if rel == "SP" else int(rng.integers(2005, 2025)))
-                while True:
-                    bd = dt.date(by, int(rng.integers(1, 13)), int(rng.integers(1, 29)))
-                    sx = "F" if rng.random() < 0.5 else "M"
-                    if (bd, sx, rel) not in seen:
-                        seen.add((bd, sx, rel))
-                        break
-                g_members.append({"k": nid, "group": gno, "sub": sub, "rel": rel, "birth": bd, "sex": sx})
-        # enrollment: most members all year; some add or term in 2025 and 2026
-        for m in g_members:
-            start = (2025, 1) if rng.random() < 0.9 else (2025, int(rng.integers(2, 13)))
-            end = (2026, 8) if rng.random() < 0.88 else ((2025, int(rng.integers(3, 13))) if rng.random() < 0.5
-                                                          else (2026, int(rng.integers(1, 9))))
-            if end < start:
-                end = (2026, 8)
-            m["start"], m["end"] = start, end
-        members += g_members
-    # 2025 claims per member: ordinary members from a heavy-tailed draw, the designed large claimants placed on
-    # members enrolled all of 2025
-    for gno, emp, ind, n, scale, over, near, place in GROUPS:
-        gm = [m for m in members if m["group"] == gno]
-        for m in gm:
-            months = sum(1 for ym in MONTHS25 if m["start"] <= ym <= m["end"])
-            base = float(rng.lognormal(7.75, 1.42)) * scale * months / 12
-            if rng.random() < 0.13:
-                base = 0.0
-            m["c25"] = min(base, 92_000.0)
-            m["c26"] = min(float(rng.lognormal(7.75, 1.42)) * scale * 8 / 12 * 1.075, 92_000.0)
-        full = [m for m in gm if m["start"] == (2025, 1) and m["end"] == (2026, 8)]
-        pick = rng.permutation(len(full))
-        j = 0
-        for amt in over + near:
-            mbr = full[pick[j]]
-            j += 1
-            mbr["c25"] = amt * 1000 + float(rng.integers(0, 999))
-        # a few members between $100,000 and the near band, who stay under the attachment after trend
-        for _ in range(int(rng.integers(1, 4))):
-            mbr = full[pick[j]]
-            j += 1
-            mbr["c25"] = float(rng.integers(101_000, 190_000))
-        # 2026 large claims to date (the carrier's advisories)
-        for _ in range(int(rng.integers(2, 5))):
-            mbr = full[pick[j]]
-            j += 1
-            mbr["c26"] = float(rng.integers(126_000, 420_000))
-    for m in members:
-        m["rx25"] = round(m["c25"] * float(rng.uniform(0.08, 0.35)), 2) if m["c25"] else 0.0
-        m["med25"] = round(m["c25"] - m["rx25"], 2)
-        m["c25"] = round(m["med25"] + m["rx25"], 2)
-    x = {"members": members}
-    _rates(x, rng)
-    return x
+    items = bank(rng)
+    students = []
+    sid = 0
+    for cid, cname, n, mu, share, dgrades, place in CAMPUSES:
+        for g in GRADES:
+            for i in range(int(round(n * float(rng.uniform(0.9, 1.1))))):
+                sid += 1
+                theta = float(rng.normal(mu + 0.04 * (g - 7) + GRADE_SHIFT.get(cid, {}).get(g, 0.0), 0.95))
+                students.append({"k": sid, "campus": cid, "grade": g, "theta": theta,
+                                 "dis": g in dgrades and rng.random() < share * (1.35 if theta < mu else 0.65)})
+    # spring responses: engaged answers from the model, rapid guesses at chance with times of a second or two
+    for g in GRADES:
+        its = [it for it in items if it["grade"] == g]
+        a = np.array([it["a"] for it in its])
+        b = np.array([it["b"] for it in its])
+        c = np.array([it["c"] for it in its])
+        st = [s for s in students if s["grade"] == g]
+        th = np.array([s["theta"] for s in st])
+        pr = p3(th, a, b, c)
+        u = rng.random(pr.shape)
+        resp = (u < pr).astype(int)
+        rt = np.exp(rng.normal(np.log(38) + 0.25 * (b - b.mean()), 0.45, pr.shape))
+        rt = np.maximum(rt, 7.5 + rng.random(pr.shape) * 2)
+        rapid = np.zeros(pr.shape, dtype=bool)
+        for i, s in enumerate(st):
+            if s["dis"]:
+                start = int(rng.integers(6, 22))
+                rapid[i, start:] = rng.random(N_ITEMS - start) < 0.82
+            elif rng.random() < 0.01:
+                rapid[i, int(rng.integers(30, 38)):] = True
+        guess = (rng.random(pr.shape) < 0.25).astype(int)
+        resp = np.where(rapid, guess, resp)
+        rt = np.where(rapid, 0.6 + rng.random(pr.shape) * 2.2, rt)
+        for i, s in enumerate(st):
+            s["resp"], s["rt"], s["rapid"] = resp[i], np.round(rt[i], 1), rapid[i]
+        vend = mle(resp, np.ones_like(resp, dtype=bool), a, b, c)
+        gold = mle(resp, ~rapid, a, b, c)
+        for i, s in enumerate(st):
+            s["ss_vendor"] = int(ss(vend[i]))
+            s["ss_gold"] = int(ss(gold[i]))
+            s["ss_true"] = int(ss(s["theta"]))
+    # fall and winter scores (the asks): the true ability a little lower earlier in the year, scored with noise
+    for s in students:
+        s["fall"] = int(ss(s["theta"] - 0.32 + rng.normal(0, 0.28)))
+        s["winter"] = int(ss(s["theta"] - 0.15 + rng.normal(0, 0.28)))
+    return {"items": items, "students": students}
 
 
-def member_months(members, gno, months):
-    return sum(1 for m in members if m["group"] == gno for ym in months if m["start"] <= ym <= m["end"])
-
-
-def group_figures(x):
-    """Per group: 2025 member months, gross, reimbursed (excess over the attachment), retained; and the 2027 PMPM
-    under the golden (each member trended, then capped), the default (retained trended), the partial fix (members
-    already over the attachment held at it, the rest trended uncapped) and gross trended."""
+def shares(x, key):
     out = {}
-    for gno, *_ in GROUPS:
-        gm = [m for m in x["members"] if m["group"] == gno]
-        mm = member_months(x["members"], gno, MONTHS25)
-        c = np.array([m["c25"] for m in gm])
-        gross = c.sum()
-        reimb = np.maximum(c - ATTACH, 0).sum()
-        ret = gross - reimb
-        golden = np.minimum(c * F, ATTACH).sum()
-        partial = np.where(c >= ATTACH, ATTACH, c * F).sum()
-        out[gno] = {"mm": mm, "gross": gross, "reimb": reimb, "ret": ret, "pm_ret25": ret / mm,
-                    "golden": golden / mm, "default": F * ret / mm, "partial": partial / mm, "gross27": F * gross / mm}
+    for cid in NAMES:
+        st = [s for s in x["students"] if s["campus"] == cid]
+        out[cid] = sum(s[key] < BASIC for s in st) / len(st)
     return out
-
-
-def _rates(x, rng):
-    """The 2027 claims funding rates the employers elected in September, placed against the estimates so each group
-    sits where GROUPS puts it, at least 1.2 per cent from every route it must clear and short of."""
-    fig = group_figures(x)
-    rates = {}
-    for gno, emp, ind, n, scale, over, near, place in GROUPS:
-        f = fig[gno]
-        g, d, p = f["golden"], f["default"], f["partial"]
-        if place == "both":
-            r = g / float(rng.uniform(1.025, 1.04))
-        elif place == "default":
-            lo, hi = g * 1.012, d / 1.012
-            assert lo < hi, (gno, g, d)
-            r = lo + (hi - lo) * float(rng.uniform(0.35, 0.65))
-        elif place == "partial":
-            lo, hi = g * 1.006, p / 1.006
-            assert lo < hi, (gno, g, p)
-            r = (lo + hi) / 2
-        else:
-            r = d * float(rng.uniform(1.03, 1.06))
-        rates[gno] = round(r, 2)
-    x["rates"] = rates
-
-
-def month_end(y, m):
-    return dt.date(y, m, calendar.monthrange(y, m)[1])
