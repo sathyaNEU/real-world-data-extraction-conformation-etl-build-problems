@@ -96,14 +96,23 @@ stations will locate from January.
 
 ## Three rules
 
+Rewritten 2026-10-21 against the measured screens of the stage-2 repair pass. Points that pass say so; the point
+the build dies on says so too, with its number, rather than being worded to clear the gate. Screens 1 and 3 pass
+on their corrected criteria; the build dies on screen 2, whose failure the dial measurement then shows no magnitude
+can buy out.
+
+- **Task type:** `environmental-monitoring-exceedance`, the Physical & Environmental Sciences task type the taxonomy
+  gives to Anomaly Detection & Diagnostics: a monitored quantity carried to a regulator's threshold, with the
+  diagnosis of why the monitoring record understates it. Passes.
 - **Domain test:** the decisive analysis is the seismologist's own: the completeness of an earthquake catalogue by
   place and hour, and the Gutenberg-Richter rate it supports above the counting magnitude; with another field's nouns
   there is no magnitude-frequency law, no detection threshold set by ambient ground noise and nothing to recover from
-  the quiet hours.
-- **Analyst test:** a strong analyst who reads the counting rule and the reviewed catalogue correctly counts each
-  plant's events of ML 1.0 or more per quarter, confirms completeness with the maximum-curvature test (ML 0.4 at every
-  plant), scales by the planned injection and files that no plant goes over amber; wrong, because Pfeilbrunn's
-  completeness changes with the hour of the day.
+  the quiet hours. Passes.
+- **Swap:** "will the new borehole networks put any of our five geothermal plants over the traffic-light amber in
+  2027" reads, with hospitals for plants and admissions for earthquakes, as a count against a threshold and nothing
+  else: no magnitude-frequency law fixes the rate below the counting level, no ambient noise sets a detection
+  threshold that follows the working day, and there are no quiet hours a rate can be recovered from, so the
+  deciding quantity disappears. Passes.
 - **Layer 1:** origin times in UTC against a rule counted in local calendar quarters across the daylight-saving
   changes; the event database's origin table holding the real-time locator's several solutions per event and the
   analysts' review origins under one id scheme; the federal agency's catalogue duplicating the larger events under its
@@ -115,6 +124,57 @@ stations will locate from January.
 - **Layer 2:** the shortcut is to take the located events as the earthquakes; the expert tests the catalogue's
   completeness by hour as well as by magnitude before using it as a rate, and recovers the true rate where the network
   is blind part of the day.
+- **Decisive step:** take Pfeilbrunn's rate of earthquakes above the counting magnitude from the 5.5 hours its town
+  stations hear everything above ML 0.6, rather than from its whole-day record, because its network's sensitivity
+  follows the working day while the rural networks' does not.
+- **Not semantics:** reading every field, code, unit and definition correctly (UTC origin times against local
+  quarters, the open-hole section against the wellhead, the reviewed catalogue's ML against the origin table's and the
+  federal agency's, the reported volumes of scheme 6.2 against the hourly telemetry) still leaves the whole-day
+  located count as the rate, which files no plant over amber. Nothing in the pack defines a complete catalogue, names
+  an hour or mentions ground noise, and every one of the ten semantic forks is asserted to give the same call.
+  Passes.
+- **Not rule application:** no filed rule or procedure performs the step, and the family the filed rules leave open is
+  not degenerate: over six constructions a seismologist would use once the incompleteness is recognised (the window's
+  count over its share of the clock, over the volume injected inside it, over the flat-profile plants' observed
+  window share, a non-parametric transfer from the magnitudes recorded at every hour, hour-by-hour completeness with
+  the blind hours imputed, and a detection function fitted separately on the window, the shoulder and the working
+  day) Pfeilbrunn's first 2027 quarter runs 143 to 238, a spread of **95.1 printed units** on a figure printed to
+  whole earthquakes, with every one of the six filing the same call. So this point passes. **The build dies on
+  screen 2 instead, and the reason is arithmetic rather than rule application:** once the catalogue is
+  grouped by local hour, the designed construction is an exact identity in that one group-by (correlation
+  +1.00000000, maximum absolute difference 0.000e+00 printed units over eight world redraws and twenty cells), the
+  count form of it needs no volume file at all, and the entry price of that group-by is pinned to the ladder's own
+  separation by the identity recorded in Tried and rejected (the dominance the decisive step buys equals the
+  window's observed share of located earthquakes over its share of the clock, to 4.441e-16).
+- **Analyst test:** a strong analyst who reads the counting rule and the reviewed catalogue correctly counts each
+  plant's events of ML 1.0 or more per quarter, confirms completeness with the maximum-curvature test (ML 0.4 at
+  every plant, and the goodness-of-fit and b-value-stability tests read 0.3 and 0.4, so every magnitude-domain test
+  agrees), scales by the planned injection and files that no plant goes over amber in any quarter of 2027,
+  Moorstetten highest at 92, Pfeilbrunn at 62 and 77; wrong, because Pfeilbrunn's completeness changes with the hour
+  of the day. Executed on the clean truth, the whole magnitude-domain workflow returns 9.56 per 100,000 cubic metres
+  against the truth's 27.52 and files that answer, and a pooled Ogata-Katsura fit returns the same 9.56 (its fitted
+  detection magnitude 0.368 with a spread of 0.122, against a working-day truth of 1.95). Passes.
+- **Estimand:** each plant's count of earthquakes of ML 1.0 or more with an epicentre within 5 km of an injection
+  well's open-hole section in a calendar quarter of 2027 in local time, counted on networks the ordinance designs to
+  locate every earthquake of ML 0.6 or more within 5 km, at the injected volumes the filed operating plans carry:
+  the counting rule, the zone, the magnitude and the local quarter in `tls_scheme_2024.pdf` sections 2 and 3, the
+  2027 network's design completeness in `monitoring_ordinance_2026.pdf` section 3, the volumes in
+  `operating_plans_2027.pdf`. Earthquakes the 2026 networks did not record are in the population; the ordinance's
+  design sentence is what puts them there.
+- **No decoy:** nothing is planted to be caught. The bulletin is a correct, labelled record of the counts the 2026
+  networks located and is the default path's own input; the federal catalogue starts at magnitude 2.0 and is blind to
+  the earthquakes the call turns on; the two distractors are a groundwater series and a field-visit sheet; no memo,
+  draft, briefing or stakeholder figure argues for a plant or for a method, and the hourly telemetry is asserted to
+  show Pfeilbrunn injecting more by day than in its quiet hours, so no file carries the wrong explanation either.
+  Passes.
+- **No certified replay:** no certified or published figure pins the method. The only published counts are the
+  bulletin's located counts, which the default path reproduces; the night rate is estimated from the record and
+  appears in no document. Passes.
+- **Lesson:** a recording process whose sensitivity follows the working day leaves a unit's catalogue reading
+  complete on every magnitude-domain test while it misses most of the day, and a forward change to the instruments
+  turns that gap into the count. The measured objection to the build is not that the lesson is wrong but that the
+  gap which teaches it is the same number as the signal that gives it away, so the lesson cannot be taught at a
+  price a solver will not pay.
 
 ## Readability screen
 
@@ -640,3 +700,154 @@ sends the sentence out of the pack and the build back to design.
   (by origin time Lanzenried reads 102, 39, 28). The thread classed sole_data_defect yes as borderline (the detection
   regime as the flip) without raising a banned-type finding; the author's live test decides it.
 
+
+- **Stage-2 magnitude repair pass (2026-10-21): refused on measurement, architecture 4 spent.** The brief was to
+  widen the separation rather than re-root, on the strength of the second blind reader's statement that no sentence
+  in the files named the step, so the readability screen holds and the failure is magnitude. Three screens were run
+  on the generator's clean truth, each twice and byte-identical. **Screens 1 and 3 pass on their corrected
+  criteria; screen 2 fails at machine precision, and the dial measurement then shows that no magnitude buys its
+  failure out.** The screens and the dead moves are the lines below; the scripts are in the author's scratch
+  directory and the runs are byte-identical pairs.
+- **Screen 1, the licensed family's spread: PASSES.** Six constructions a seismologist would use once Pfeilbrunn's
+  daytime incompleteness is recognised (the window count over its share of the clock, over the volume injected
+  inside the window, over the flat-profile plants' own observed window share, a non-parametric transfer from the
+  magnitudes recorded at every hour, hour-by-hour completeness with the blind hours imputed, and a detection
+  function fitted separately on the window, the shoulder and the working day) give Pfeilbrunn's first 2027 quarter
+  as 223, 238, 234, 143, 210 and 205, a spread of **95.1 printed units** on a figure printed to whole earthquakes,
+  with all six filing the same call and every non-Pfeilbrunn cell at a spread of exactly **0.0**. The step is not
+  a reflex: something is left to decide once every filed rule is read. (Rates per 100,000 cubic metres: 28.04,
+  29.95, 29.50, 17.99, 26.46, 25.83 against the simulation's true 27.52.)
+- **Screen 2, the cheapest construction: FAILS, by identity.** The one-group-by route to the call is "group the
+  catalogue's earthquakes of ML 1.0 or more inside the zone by plant and by whether the local hour falls in 23:30
+  to 05:00, multiply the window count by 24/5.5, divide by the plant's injected volume, multiply by the plan
+  volume". The designed construction is that route, not an approximation of it: over eight world redraws and
+  twenty cells the correlation is **+1.00000000** and the maximum absolute difference **0.000e+00** printed units.
+  Nothing is estimated and nothing is fitted between the group-by and the golden. The whole entry price of the
+  decisive step is the decision to group by the local hour, and two independent blind readers at medium effort
+  took that decision unprompted.
+- **Screen 3, the dial, on the corrected criterion: PASSES; the one-ended reading below is a separate finding and
+  not a screen-3 failure.** The criterion the pass was first given was inverted (it described the good cell as the
+  failing one). Corrected, screen 3 asks whether any setting carries a real separation at the decision (every wrong
+  rung's cell outside the 1.15x band around the line, the golden's named cells clearing it, and at least one wrong
+  rung filing a different printed call) **and** a unanimous licensed family at the same time. The shipped setting
+  carries both: on the shipped pack no rung cell sits in the alarm band of 104.35 to 138.00, the worst clearance
+  being rung 1's Moorstetten first quarter at 98.4 (1.219), then rung 1's Wendelsried fourth at 93.0 (1.290) and
+  rung 0's Moorstetten first at 92.0 (1.304); the golden's two named cells clear at 1.857 and 1.717; rungs 0 and 2
+  file no plant and rung 1 files Lanzenried; and the licensed family files one call. So screen 3 does not refuse.
+  Noted as a gap rather than a defect: `checks.py` asserts each rung's **set** and only the golden's margin, never
+  a per-cell clearance, so the pack satisfies the 1.15x floor without any assertion holding it there.
+- **The dial, measured anyway, and it is the finding that stands: the separation a magnitude repair would widen is
+  the signal that lost Gate F, by algebra rather than by correlation.** The
+  separation `pipeline.json` ordered widened ("the separation between the published count and the window rate") is
+  the ladder's dominance, and the dominance is identically the legibility of the hour profile:
+  `golden / rung2 = (n_window / S) / n_total = (n_window / n_total) / S`, so the factor the decisive step multiplies
+  the answer by **equals** the factor by which the located hour profile departs from flat. Measured over nine
+  settings of Pfeilbrunn's daytime detection magnitude, the worst absolute difference between the two is
+  **4.441e-16**. Widening the ordered separation from 2.931 to 3.278 raises the window's share of Pfeilbrunn's
+  graded earthquakes from 67.2 to 75.1 per cent and the whole catalogue's from 94.0 to 95.8 in the same stroke.
+  The readers' own numbers were 67 per cent against the rural plants' 22, which is this ratio read off the pack.
+- **Lowering the daytime detection magnitude to dim the profile (2026-10-21): rejected, measured.** At a daytime
+  magnitude of 1.40 the pre-insight magnitude-domain workflow already files Pfeilbrunn's first quarter at 126,
+  over amber, so rung 2 becomes the golden and there is no stump; at 1.30 the located count itself reaches 118 and
+  rung 0 names Pfeilbrunn's fourth quarter; at and below 1.40 Pfeilbrunn stands alone at the top of rung 0 in both
+  winter quarters. Every setting quiet enough to matter has already lost the ladder.
+- **Raising the reservoir's true response, the one magnitude that moves the lever without touching the profile
+  (2026-10-21): rejected, measured.** It is a real second axis: raising Pfeilbrunn's first-quarter target from 150
+  to 440 lifts the lever from 1.407 to 3.999 while the legibility stays flat at 2.90 to 3.15. It repairs nothing,
+  because neither reader failed on a thin lever (both filed the plant and both quarters outright), and it then
+  breaks the ladder: Pfeilbrunn's rung-0 first quarter runs 60, 51, 62, 95, 105, 122, 168 across that range, over
+  the 0.70-of-amber ceiling of 84 from a target of 250, with rung 0 naming Pfeilbrunn's first quarter at 360 and
+  both golden cells at 440, where rung 0 is the golden call.
+- **Raising the window's own detection magnitude to empty it of sub-counting-magnitude events (2026-10-21):
+  rejected, measured.** This is the first reader's route ("the catalogue is nearly empty in the daytime"). The whole
+  catalogue's legibility falls from 4.103 to 2.409 only at a window detection magnitude of 1.15, where the window
+  is 61.7 per cent complete at ML 1.0 and the construction recovers 0.602 of the true rate; at 1.00 the bias is
+  already 0.869 with the legibility still 2.943. The construction is the right answer only while the window is
+  complete at the counting magnitude, and that completeness is exactly what fills the window with events below it.
+  The graded figures are frozen, so the move is unavailable in principle as well as in fact.
+- **Giving the rural plants their own hour pattern to dim the contrast (2026-10-21): rejected.** The design's own
+  record already kills the detection-deficit version (rural night-hour estimates near 95 a winter quarter put
+  Moorstetten and Lanzenried at 127 and 131, so a response applying the construction uniformly files a second
+  plant and the call moves). The genuine-diurnal-rate version leaves every golden cell in place and fails Gate C
+  instead: a solver applying the window construction to every plant then files a second plant, and the only thing
+  ruling that out is the magnitude dependence of the hour share, which no shipped sentence files. A competing
+  defensible answer is a worse outcome than the one being repaired.
+- **The Gutenberg-Richter route's anchor is not determinate, and the judge's pass-2 figure is one point on it
+  (2026-10-21).** Swept over anchor magnitudes 1.0 to 2.2 with the b-value fitted above the anchor on the whole
+  record, Pfeilbrunn's rate runs **9.39 to 440.15** per 100,000 cubic metres and the call flips at an anchor of
+  1.7 (first-quarter cells 76, 75, 75, 82, 89, 100, 103, then 141, 171, 363, 814, 968, 3498). Pass 2's single
+  figure of 23.1 sits near an anchor of 1.82. At the anchor every standard completeness test actually returns
+  (maximum curvature 0.4, goodness-of-fit 0.3, b-value stability 0.4) the route gives 9.56 and files no plant.
+  So the write-up's "no convention moves a cell across 120" survives only on the scoped reading the judge took,
+  and the route itself is not a convention with one answer. Recorded for the author; no figure moved.
+- **`guard.py heart` now BLOCKs the card (2026-10-21).** Four BLOCKs against builds registered after task180
+  shipped: `ban.role` (stakeholder role `research_desk` against task448), `ban.shape` (prompt shape 07 against
+  task501 v4), `test.same_puzzle_older` (gap, pattern and decision type against task271 v3, task456, task462) and
+  `test.same_driver_older` (gap, pattern and Gate G mechanism against task133 v2, task179 v2). `guard.py surface`
+  is clean and `guard.py validate` passes 277 cards. So the card cannot be resumed as it stands either, whatever
+  the screens had said.
+- **Thinning Pfeilbrunn's located count so the hour histogram reads as noise (2026-10-21): rejected on its
+  arithmetic.** The pattern a reader reads is one binomial departure, `z = n (p - S) / sqrt(n S (1 - S))`, so it
+  grows as the square root of the located count. At the shipped setting the departure is **27.0 standard errors**
+  on the graded subset (442 of 658 in 22.9 per cent of the clock, the rural plants at 0.2139) and **103.6** on the
+  whole catalogue. It would fall to three standard errors at **8.1** located graded earthquakes, and to three on
+  the whole catalogue at **3.1**, against the **532** the call forces (the golden quarter has to reach 1.5 times
+  amber and the located count is that quarter divided by the dominance). A factor of sixty-six. The same
+  arithmetic at three other settings gives 8.1 to 26.7 needed against 532 to 873 forced. No choice of magnitudes
+  makes the profile faint, because the call's own floor forces the count that makes it loud.
+- **The sweep that settles it (2026-10-21).** Over 28 settings of the only two parameters that move the hour
+  profile, Pfeilbrunn's daytime detection magnitude (1.40 to 2.30) crossed with the width of the window its
+  stations hear everything in (5.5 to 10.0 hours), **3 settings keep every floor `checks.py` asserts** (rung 0
+  naming no plant and no rung-0 cell over 0.85 of amber, rung 2 naming no plant, Pfeilbrunn's rung-0 winter cells
+  at or under 0.70 of amber and never alone at the top of rung 0, the golden winter cells at 1.5 times amber or
+  more with a dominance of 2.2 or more, every other golden cell at or under 0.75 of amber and no golden cell
+  within 3 of the line, and the window holding half or more of Pfeilbrunn's located earthquakes). All three sit at
+  the 5.5-hour window, their legibility runs **2.931 to 3.157**, and the shipped setting is the quietest of the
+  three. Widening the window to 7.0 hours drops the legibility to 2.493 and puts Pfeilbrunn's rung-0 fourth
+  quarter over the 0.70-of-amber ceiling; 8.5 hours drops it to 2.199 and breaks the same floor; 10.0 hours drops
+  it to 1.982 and breaks rung 0 outright. So the one move that lowers the signal is the one that loses the ladder,
+  and the magnitude repair has no direction left to go.
+- **The corner refined, and it closes (2026-10-21).** Because the coarse grid left two opposite floors breaking on
+  either side of the wider windows, the 7.0, 8.5 and 10.0-hour windows were swept again at every daytime detection
+  magnitude from 1.90 to 2.65 in steps of 0.05, 48 further settings: **not one is floor-compliant.** The 7.0-hour
+  window breaks on Pfeilbrunn's rung-0 fourth quarter, alternately over the 0.70-of-amber ceiling and alone at the
+  top of rung 0, at all sixteen settings; the 8.5-hour window breaks on that ceiling at all sixteen; the 10.0-hour
+  window breaks on it or on the 0.85-of-amber rung-0 cell at all sixteen. So over **76 settings measured in all,
+  three stand, all at the 5.5-hour window, and the shipped one is the quietest.** The 5.5-hour window is the only
+  width at which this ladder stands, and its legibility floor is the shipped 2.931.
+- **Verdict of the pass, stated against the corrected criteria.** Screen 1 passes (the family's spread is 95.1
+  printed units, not zero) and screen 3 passes (the shipped setting carries a real separation, a unanimous licensed
+  family and every ladder floor at once). **The refusal rests on screen 2 and on the dial's floor, and on nothing
+  else.** Screen 2 fails at machine precision: the decisive construction is one group-by on the local hour plus one
+  multiply and one divide, identical to the cheapest route at correlation +1.00000000 and maximum absolute
+  difference 0.000e+00, and its count form drops the volume file as well, so there is no estimation step anywhere in
+  which a solver who has looked at the hour can still go wrong. What is left to charge for is the looking, and the
+  dial measurement prices that: the entry price **is** the ladder's dominance, to 4.441e-16, and over 76 settings of
+  the two parameters that move it only three keep every ladder floor, with the shipped pack already the quietest of
+  the three. So the magnitude repair has no direction to go, which is why this is a refusal rather than a tuning.
+  The pack itself is sound and untouched, which is the point: `checks.py` 534 assertions pass, the independent
+  verifier recomputes the call and all 65 graded figures, `figures_check.py` passes 104 figures, `voice-check.py`
+  passes and `leak.py` is REVIEW with no LEAK. Nothing is wrong with the build except that its decisive step cannot
+  be sold at a price a solver will not pay. A re-root to architecture 5 needs a decisive step with an estimation
+  step inside it, so that paying the entry price is not the whole of the work: run screen 2's identity check on the
+  cheapest licensed construction, in its count form as well as its rate form, and screen 3's dial algebra, at the
+  draw and on the clean truth, before a world is built.
+- **The corrected criterion checked on the shipped pack itself (2026-10-21), and the count form of every reflex.**
+  Read off `target/` rather than the simulation, twice and byte-identical. The joint cell exists at the shipped
+  setting, so **screen 3 does not refuse**: no wrong-rung cell sits in the alarm band of 104.35 to 138.00 (worst
+  clearance rung 1's Moorstetten first quarter at 98.4, 1.219; then rung 1's Wendelsried fourth at 93.0, 1.290, and
+  rung 0's Moorstetten first at 92.0, 1.304), the golden's two named cells clear at 1.857 and 1.717, the wrong rungs
+  file two printed calls between them and neither is the golden's, the licensed family files one call, and every
+  floor `checks.py` asserts holds. Counted jointly rather than marginally, the shipped setting is R1 and R2 and R3
+  at once.
+- **The count form of the decisive step reaches the call from two files (2026-10-21), which is what screen 2's
+  identity costs.** Each reflex priced in both forms on the shipped pack: the default in its rate form (located per
+  volume times plan volume) gives Pfeilbrunn 76.0, 23.9, 14.9, 70.3 and in its count form (located count carried
+  forward) 62, 18, 15, 77, both filing no plant; the decisive step in its rate form gives the golden 222.8, 70.0,
+  43.5, 206.1 and **in its count form 170.2, 43.6, 43.6, 235.6, which files the same call**. The count form reads
+  `seismic_catalogue_reviewed_2023-01_2026-09.csv` and `well_register.csv` and nothing else: one filter, one count
+  by local hour and quarter, one multiply by 24/5.5, with no volume file, no plans file and no record-length
+  normalisation. So the whole injected-volume layer, and with it the portal's filing-month shift, the renamed well
+  and the duplicated December row, sits off the cheapest path to the committed call. The count form misses the
+  printed cell figures (170 against 223, 236 against 206), so it banks the recommendation and not the chart, which
+  is the shape Gate F is graded on.

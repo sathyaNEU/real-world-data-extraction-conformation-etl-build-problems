@@ -109,7 +109,21 @@ compute the per-unit statistic, sort it, and ask whether the golden's answer set
 If it is, the step is arithmetic, and the build's own hardening assertion will say so, because "the found
 units clear every other unit by X" is the statement that one sort is the answer.
 
-**The convergence Gate C rests on is the reach Gate F pays, so they are one dial.** A build whose decisive
+**The dial is one-ended only where the easy route is itself a member of the licensed family, and that
+condition decides which cell you are hunting.** This is the hinge the next two paragraphs turn on and it is
+easy to lose. Where the decisive step **is** a choice among estimators, the easy route is one of the family's
+own members, so making the family agree makes the easy route agree too: separation plus unanimity is then the
+cell that **kills** the build, and the dial is one-ended. Where the easy route sits **outside** the family
+because the data refutes it, which is the case whenever the decisive step is recognising that the record is
+incomplete rather than picking an estimator, separation plus unanimity is the cell the build **wants**, and a
+joint cell can exist. One build measured exactly that: six constructions filing one printed call, no wrong-rung
+cell inside the alarm band, worst rung clearance 1.219 and the golden's cells at 1.857 and 1.717, with every
+ladder floor asserted. Its dial passed, and it refused on a different screen. So ask first whether the easy
+route is in the family; the answer flips which cell you are looking for, and a screen written without it
+reports a passing build as a refusal or the reverse.
+
+**The convergence Gate C rests on is the reach Gate F pays, so they are one dial.** (This paragraph and the two
+after it hold where the condition above does: the easy route is a member of the licensed family.) A build whose decisive
 step is an estimator choice has to make the licensed family agree, or the main call forks and the judge returns
 `underspecified_objective`. Agreement is exactly what makes the step a reflex. Measured on one build as a dial
 with both ends read: over 20 redraws of its world, 17 had a real separation and a unanimous family (nothing

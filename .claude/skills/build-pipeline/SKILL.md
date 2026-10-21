@@ -68,7 +68,8 @@ Nothing is committed between those points; a session that stops mid-stage writes
 
 A portal result comes back in one of three shapes, and each has its own repair. Every repair keeps every free
 gate (generator checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py validate` and `heart`,
-`voice-check.py`, `figures_check.py`, `precut.py`) and proves its scope with `freeze.py`.
+`voice-check.py` at `.claude/skills/guide-to-prompt/references/voice-check.py`, `figures_check.py`,
+`precut.py`) and proves its scope with `freeze.py`.
 
 - **Determinism block failed** (the judges found a fork, a competing defensible answer or a figure that does
   not recompute): `/fix-determinism`. The fork is closed in the record so the literal execution is the golden;

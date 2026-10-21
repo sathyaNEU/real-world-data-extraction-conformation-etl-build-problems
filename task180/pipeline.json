@@ -4,12 +4,12 @@
   "status": "FAILED_TO_STUMP",
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-21",
   "stump": "A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes over amber (Moorstetten highest at 92, Pfeilbrunn at 62 and 77); the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when Pfeilbrunn's town stations lose most daytime earthquakes, so Pfeilbrunn's true rate, recovered from its quiet night hours (442 of its 658 located earthquakes fall in 5.5 hours), is 28.0 per 100,000 m3 injected against 9.6 on its whole-day record, about 223 and 206 in the winter quarters of 2027, which the borehole stations will locate from January.",
   "architecture": 4,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-12"
@@ -56,9 +56,16 @@
       "portal": "author audit: 10/10 alignment",
       "repair": "alignment",
       "commit": ""
+    },
+    {
+      "date": "2026-10-21",
+      "portal": "stage-2 magnitude repair pass on the wave-8 audit (two blind readers landed the call; ask layer 51 and 54 of 80)",
+      "repair": "design",
+      "outcome": "MEASURED REFUSAL: architecture 4 spent at stage 2. Screen 1 PASSES: the licensed family of six constructions spreads 95.1 printed units on Pfeilbrunn Q1 (143 to 238), files one call, and leaves every non-Pfeilbrunn cell at a spread of 0.0, so the step is not a reflex. Screen 3 PASSES on its corrected criterion: the shipped setting carries a real separation (no rung cell inside the 1.15x alarm band of 104.35 to 138.00, the worst clearance rung 1's Moorstetten Q1 at 98.4 / 1.219; the golden's named cells clearing at 1.858 and 1.717; rungs 0 and 2 filing no plant and rung 1 filing Lanzenried) and a unanimous licensed family at the same time. Screen 2 FAILS at machine precision and is the refusal: the decisive construction is an exact identity in one group-by on the local hour plus one multiply and one divide, correlation +1.00000000 and maximum absolute difference 0.000e+00 printed units over 8 world redraws and 20 cells, and its count form needs no volume file at all. The dial measurement closes the repair: the entry price of that group-by equals the ladder's dominance by algebra (worst absolute difference 4.441e-16 over nine settings), and over 76 settings of the two parameters that move it only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, with the shipped pack the quietest of the three. Checked again on the shipped pack rather than the simulation, twice and byte-identical: the joint cell is R1 and R2 and R3 at once at the shipped setting, and the COUNT FORM of the decisive step files the same call as the golden (Pfeilbrunn 170.2, 43.6, 43.6, 235.6) reading only the reviewed catalogue and the well register, with no volume file, no plans file and no record-length normalisation, so the entire injected-volume layer sits off the cheapest path to the call.",
+      "commit": ""
     }
   ],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. The blind reader named the plant and both quarters and rebuilt the quiet-window route from the catalogue's own day-and-night profile, and the ask layer leaked 51 of 80 regardless. Re-site the ladder at stage 2: the profile that reveals the incomplete detection is legible at a glance, so the separation between the published count and the window rate must be widened.",
+  "resume": "MEASURED REFUSAL at stage 2, 2026-10-21; no data re-cut, target.zip untouched and no graded figure moved. Screens 1 and 3 pass on their corrected criteria (see the returned entry); the refusal is screen 2. The decisive construction is one group-by on the local hour plus one multiply and one divide, identical to the cheapest route at correlation +1.00000000 and maximum absolute difference 0.000e+00 over 8 world redraws and 20 cells, and its count form drops the volume file too, so there is no estimation step in which a solver who has looked at the hour can still go wrong. The only thing left to charge for is the looking, and the magnitude repair cannot raise that price: the entry price IS the ladder's dominance by algebra, golden/rung2 = (n_window/S)/n_total = (n_window/n_total)/S, worst absolute difference 4.441e-16 over nine settings of Pfeilbrunn's daytime detection magnitude, and over 76 settings of the two parameters that move the hour profile (daytime detection magnitude x window width: a 28-cell coarse grid plus 48 refined cells at the 7.0, 8.5 and 10.0-hour windows, none of which is floor-compliant at any daytime magnitude from 1.90 to 2.65) only 3 keep every floor checks.py asserts, all at the 5.5-hour window, legibility 2.931 to 3.157, and the shipped setting is the quietest of them. Every other axis is measured dead in the design note's Tried and rejected (lowering the daytime magnitude loses rung 2 at 1.40 and rung 0 at 1.30; raising the true response widens the lever 1.407 to 3.999 with legibility flat but breaks rung 0's 0.70-of-amber ceiling from a target of 250; raising the window's own detection magnitude biases the frozen golden to 0.602 of truth; giving the rural plants an hour pattern either moves the call or opens Gate C; thinning the located count to make the profile faint needs about 8 earthquakes against the 532 the call forces, the departure being 27.0 standard errors on the graded subset and 103.6 on the whole catalogue). Next action is the author's: re-root to architecture 5 at stage 1 (a fresh draw, which needs guard.py register, outside this pass's scope) or retire the number. The existing card cannot be resumed either: guard.py heart now returns BLOCK on four axes (ban.role vs task448, ban.shape vs task501 v4, test.same_puzzle_older vs task271 v3/task456/task462, test.same_driver_older vs task133 v2/task179 v2). A re-root needs a decisive step with an estimation step inside it, so that paying the entry price is not the whole of the work; run screen 2's identity check on the cheapest licensed construction, in its count form as well as its rate form, and screen 3's dial algebra, at the draw. ORCHESTRATOR, 2026-10-21: architecture 4 spent at stage 2, re-root to architecture 5, never retired (the author file overrides build-pipeline's retirement rule for this lane). The refusal rests on screen 2 and the dial's floor, NOT on screen 3: the first screen-3 reading was computed against an inverted criterion in my own brief and does not survive its correction, and the agent corrected both artifacts. Screen 3 in fact PASSES here, and that is itself the finding now filed in stumping: the dial is one-ended only where the easy route is a member of the licensed family, which is the case when the decisive step is a choice among estimators. On this build the easy route sits outside the family because the data refutes it, so separation plus unanimity is the cell the build wants, and it has one (six constructions filing one call, no wrong-rung cell inside the alarm band, worst rung clearance 1.219, golden cells 1.857 and 1.717). What kills it is screen 2, by exact identity: the designed construction equals the one-group-by route at correlation 1.00000000 and a maximum absolute difference of 0.000e+00 over 8 redraws by 20 cells, so nothing is estimated between the group-by and the golden. In its count form, one filter, one count by local hour and quarter, one multiply by 24/5.5, it files the same call reading only the catalogue and the well register, so the whole injected-volume layer and its Layer 1 mess sit off the cheapest path to the committed call. The ladder's dominance IS the factor by which the located hour profile departs from flat, worst absolute difference 4.441e-16 over nine settings. And the lever is not on this dial: golden over amber stays 1.802 to 1.886 while legibility runs 1.213 to 3.278, so the dial moves only the thing that lost Gate F. Of 76 swept settings just 3 are floor-compliant and the shipped pack is the quietest of them. Every other axis measured dead. guard.py heart also BLOCKs on four axes against builds registered since this shipped (ban.role, ban.shape, test.same_puzzle_older, test.same_driver_older), so the card cannot be resumed as it stands either. The re-root needs a decisive step with an estimation step INSIDE it, so that paying the entry price is not the whole of the work, and screen 2's identity check must be run in the count form as well as the rate form at the draw, before a world is built.",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,
@@ -204,5 +211,19 @@
     "figures_check": 0,
     "precut": "38/38"
   },
-  "alignment_pass": "prompt: \"none\" made a grammatical answer (presupposition removed)"
+  "alignment_pass": "prompt: \"none\" made a grammatical answer (presupposition removed)",
+  "gates_2026_10_21": {
+    "checks": "534 assertions passed (shipped pack, no rebuild)",
+    "verify": "OK (call PFB Q1, PFB Q4; 20 forecast cells and 45 annex figures recomputed independently)",
+    "figures_check": "exit 0 (104 figures in blocks 1 to 4, 0 absent)",
+    "voice_check": "PASS, exit 0",
+    "precut": "exit 1, 51 checks, 1 FAIL: no `Measured by:` line in the Ask sheet naming the script that ran the cracker (was 11 FAIL; the thirteen three-rules lines now pass and the analyst test names the default answer)",
+    "leak_py": "REVIEW, 0 LEAK (leak_check_report.md rewritten as a side effect; the wave-8 audit section survived)",
+    "guard_validate": "277 cards, 0 invalid, exit 0",
+    "guard_surface": "exit 0, clean",
+    "guard_heart": "BLOCK: ban.role (task448), ban.shape (task501 v4), test.same_puzzle_older (task271 v3, task456, task462), test.same_driver_older (task133 v2, task179 v2)",
+    "rebuild": "not run: the pass refused, so no data was re-cut, target.zip is untouched and no graded figure moved",
+    "rung_clearance": "no wrong-rung cell inside the 1.15x band of 104.35 to 138.00; worst clearance rung 1 Moorstetten Q1 98.4 (1.219), rung 1 Wendelsried Q4 93.0 (1.290), rung 0 Moorstetten Q1 92.0 (1.304); golden named cells clear at 1.857 and 1.717. Not asserted anywhere in checks.py, which asserts each rung's set and only the golden's margin."
+  },
+  "architecture_spent": true
 }
