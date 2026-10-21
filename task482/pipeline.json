@@ -16,19 +16,19 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": ""
+  "reader": "round 1: both readers missed the call, kept ask B (re-sited); round 2 running"
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "task130 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (round 1); round 2 running",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py, fix findings in one pass",
+ "resume": "stage 4 round 2: score readers 3 and 4 (score_reader.py), read the round 2 judge verdict, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

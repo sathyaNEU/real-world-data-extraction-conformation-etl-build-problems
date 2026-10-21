@@ -176,7 +176,9 @@ which the standalone campuses' costs by level contradict; every other reading co
 - **Ask B, each branch campus's unduplicated fall 2026 headcount (six figures, whole numbers).** H18 home: as ask A.
   Path: the same file. Primary device: D7, codes reissued: each branch moved to its parent's student system in August
   2026; a student's courses registered in the spring stayed under the old id and the courses added after the move sit
-  under the new one, so only birth date, sex and home ZIP code within the campus tie the two ids.
+  under the new one, with the same six-digit form and no arithmetic tie; the new systems also carry four majors under
+  their 2020 programme codes. Only birth date, sex, home ZIP code and first term within the campus tie the two ids:
+  birth date, sex and ZIP alone are shared by different students, and the major differs on the movers' new rows.
 - **The construction layer:** the call, the twenty-six decisions and the chart; the cracker has them.
 - **Main population zero-counts (asserted):** the call reads the finance, the 12-month return, the codes and the credit
   hour file; the fall census file is read by the asks only (X1).
@@ -200,4 +202,4 @@ READERS_LINE
 JUDGE_LINE
 
 ## Tried and rejected
-
+- Ask B's reissued student ids as a 7-digit id equal to the old one plus a campus constant, linked by birth date, sex and ZIP (2026-10-21, stage 4 round 1): both readers resolved it on the person columns and kept all six headcounts (score_reader 50 per cent); re-sited so the new ids share the old form with no arithmetic tie, birth date, sex and ZIP are shared by different students, and the movers' majors are recoded, so only the four-field key resolves it.

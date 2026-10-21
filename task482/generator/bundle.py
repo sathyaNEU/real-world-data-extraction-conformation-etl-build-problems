@@ -149,10 +149,18 @@ def ask_a(b, dedup=True):
 
 def ask_b(b, persons=True):
     """Each branch campus's unduplicated fall 2026 headcount; persons links a student's rows under the old and the new
-    id by birth date, sex and home ZIP code within the campus."""
+    id by birth date, sex, home ZIP code and first term within the campus ("partial" by the first three only, which
+    merges different students who share them; "full" with the major too, which the new systems recoded)."""
     out = {}
     for r in b["census"]:
         u = b["code"][r["campus_code"]]
-        key = (r["birth_date"], r["sex"], r["home_zip"]) if persons else r["student_id"]
+        if persons == "partial":
+            key = (r["birth_date"], r["sex"], r["home_zip"])
+        elif persons == "full":
+            key = (r["birth_date"], r["sex"], r["home_zip"], r["first_term"], r["major_cip"])
+        elif persons:
+            key = (r["birth_date"], r["sex"], r["home_zip"], r["first_term"])
+        else:
+            key = r["student_id"]
         out.setdefault(u, set()).add(key)
     return {u: len(v) for u, v in out.items()}

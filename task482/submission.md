@@ -22,7 +22,7 @@ They have the lowest fiscal 2026 instruction expense per FTE student. 216190, 21
 4. Split each parent's reported instruction among the parent and its branches in proportion to the fitted cost of the credit hours each taught, keeping the parent's total.
 5. Divided by each campus's FTE and took the five lowest: 214682, 214946, 216190, 216278, 216454.
 6. Ask A: the branches' fall 2026 census rows, a student's course counted once (a cross-listed course carries the student under both course numbers at one meeting), undergraduate hours over 15 plus graduate over 12.
-7. Ask B: each student counted once per branch, the rows under the old and the new student id joined by birth date, sex and home ZIP code.
+7. Ask B: each student counted once per branch, the rows under the old and the new student id joined by birth date, sex, home ZIP code and first term (birth date, sex and ZIP alone are shared by different students, and the new systems recoded some majors).
 
 ## 4. Deliverable Answers
 
@@ -31,16 +31,16 @@ They have the lowest fiscal 2026 instruction expense per FTE student. 216190, 21
 1. The five awards: 214682, 214946, 216190, 216278, 216454.
 2. Chart of every reporting unit's instruction expense per FTE, lowest first, the awards marked.
 3. Fall 2026 FTE students at each branch campus (one decimal):
-   - 216190: 3053.7
-   - 216278: 2451.8
-   - 216454: 2046.0
-   - 216630: 1883.7
-   - 216718: 1610.7
-   - 216894: 2193.7
+   - 216190: 3052.4
+   - 216278: 2473.6
+   - 216454: 2053.4
+   - 216630: 1882.2
+   - 216718: 1631.2
+   - 216894: 2223.8
 4. Unduplicated fall 2026 headcount at each branch campus:
-   - 216190: 4,715
-   - 216278: 3,805
-   - 216454: 3,183
-   - 216630: 2,909
-   - 216718: 2,489
-   - 216894: 3,400
+   - 216190: 4,717
+   - 216278: 3,862
+   - 216454: 3,180
+   - 216630: 2,910
+   - 216718: 2,511
+   - 216894: 3,445

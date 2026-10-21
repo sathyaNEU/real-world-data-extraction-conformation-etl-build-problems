@@ -51,7 +51,8 @@ def write(fig_path, out):
     w("6. Ask A: the branches' fall 2026 census rows, a student's course counted once (a cross-listed course carries "
       "the student under both course numbers at one meeting), undergraduate hours over 15 plus graduate over 12.")
     w("7. Ask B: each student counted once per branch, the rows under the old and the new student id joined by birth "
-      "date, sex and home ZIP code.")
+      "date, sex, home ZIP code and first term (birth date, sex and ZIP alone are shared by different students, "
+      "and the new systems recoded some majors).")
     w("")
     w("## 4. Deliverable Answers")
     w("")

@@ -29,8 +29,14 @@ F1A_COLS = ["UNITID", "PRCH_F", "IDX_F", "F1C011", "F1C021", "F1C031", "F1C051",
 E12_COLS = ["UNITID", "EFYTOTLT", "CDACTUA", "CDACTGA", "FTEUG", "FTEGD"]
 CODES_COLS = ["campus_code", "campus_name", "unitid", "system", "code_effective", "note"]
 CH_COLS = ["campus_code", "term", "course_level", "discipline_family", "student_credit_hours"]
-CENSUS_COLS = ["term", "campus_code", "student_id", "birth_date", "sex", "home_zip", "subject", "course_number",
-               "crn", "course_level", "credit_hours", "meeting_days", "start_time", "instructor_id"]
+CENSUS_COLS = ["term", "campus_code", "student_id", "birth_date", "sex", "home_zip", "first_term", "major_cip",
+               "subject", "course_number", "crn", "course_level", "credit_hours", "meeting_days", "start_time",
+               "instructor_id"]
+FIRST = ["2021FA", "2022FA", "2023FA", "2024FA", "2025SP", "2025FA", "2026SP", "2026FA"]
+MAJORS = ["24.0101", "52.0201", "51.3801", "42.0101", "26.0101", "13.1202", "45.1101", "11.0701", "43.0104", "23.0101",
+          "54.0101", "45.1001", "52.0301", "09.0101", "27.0101", "40.0501", "50.0701", "31.0505", "44.0701", "51.0000"]
+RECODE = {"51.3801": "51.3818", "13.1202": "13.1210", "43.0104": "43.0107", "52.0201": "52.0213"}   # the new systems
+# carry the 2020 programme codes
 TUITION_COLS = ["unitid", "resident_tuition_fees", "nonresident_tuition_fees", "per_credit_resident"]
 GRAD_COLS = ["UNITID", "GRTYPE", "COHORT", "GRAD150", "GRRT150"]
 CITY = {"214330": "Ardmore Falls", "214418": "Bexley", "214506": "Carrow", "214594": "Eastmarch", "214682": "Felling",
@@ -132,7 +138,7 @@ def codes_rows(x):
         note = ""
         eff = "2015-07-01"
         if u == "215122":
-            note = "formerly Kelderton State College (LM161 until 30 June 2024)"
+            note = "formerly Kelderton State College (LM097 until 30 June 2024)"
             eff = "2024-07-01"
         rows.append((x["code"][u], W.NAME[u], u, SYSTEM.get(u, ""), eff, note))
     return rows
@@ -156,20 +162,26 @@ def census(x):
     truth = {}
     sid = 700000
     staff = {}
+    crns = {}
     for u in CHILDREN:
         code = x["code"][u]
         fall = {lv: x["ch"][u][lv] * W.TERM_SHARE["2025FA"] * float(rng.uniform(1.01, 1.05)) for lv in W.LEVELS}
         ch_tot = {lv: 0 for lv in W.LEVELS}
         students = []
         seen = set()
+        start = sid + 1
+        zips = ["%05d" % (67000 + 17 * k) for k in range(int(rng.integers(30, 45)))]
         while sum(ch_tot.values()) < sum(fall.values()):
             sid += int(rng.integers(1, 9))
             while True:
-                bd = dt.date(int(rng.integers(1972, 2009)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
+                by = int(rng.integers(2003, 2009)) if rng.random() < 0.8 else int(rng.integers(1972, 2003))
+                bd = dt.date(by, int(rng.integers(1, 13)), int(rng.integers(1, 29)))
                 sx = "F" if rng.random() < 0.56 else "M"
-                z = "%05d" % (67000 + int(rng.integers(0, 900)))
-                if (bd, sx, z) not in seen:
-                    seen.add((bd, sx, z))
+                z = zips[int(rng.integers(0, len(zips)))]
+                ft = FIRST[int(rng.integers(0, len(FIRST)))]
+                mj = MAJORS[int(rng.integers(0, len(MAJORS)))]
+                if (bd, sx, z, ft) not in seen:
+                    seen.add((bd, sx, z, ft))
                     break
             grad = rng.random() < fall["GR"] / sum(fall.values()) * 1.6
             n = int(rng.choice([1, 2, 3, 4, 5], p=[0.12, 0.14, 0.2, 0.32, 0.22]))
@@ -187,26 +199,31 @@ def census(x):
                     cr = 4
                 courses.append((subj, num, lv, cr))
                 ch_tot[lv] += cr
-            students.append((sid, bd, sx, z, courses))
+            students.append((sid, bd, sx, z, ft, mj, courses))
         moved = u in MOVED
         fte = 0.0
-        for s, bd, sx, z, courses in students:
-            new_id = 1000000 + 100000 * CHILDREN.index(u) + s % 99991
+        used = {st[0] for st in students}
+        free = np.array([k for k in range(start, sid + 1) if k not in used])
+        pool = rng.permutation(free)[:len(students)]
+        assert len(pool) == len(students)
+        for (s, bd, sx, z, ft, mj, courses), new_id in zip(students, pool):
+            new_id = int(new_id)
             spring = rng.random() < 0.55
             for j, (subj, num, lv, cr) in enumerate(courses):
                 sect = int(rng.integers(1, 4))
                 days = ["MWF", "TR", "MW", "TR", "W"][(num + sect) % 5]
                 start = ["08:00", "09:30", "11:00", "12:30", "14:00", "17:30"][(num * 7 + sect) % 6]
                 inst = staff.setdefault((u, subj, num, sect), "I%05d" % (10417 + 37 * len(staff)))
-                crn = "%s%d" % (str(num)[-3:], 10 + sect + 10 * W.IDS.index(u))
+                crn = crns.setdefault((u, subj, num, sect), "%05d" % (21003 + 7 * len(crns)))
                 who = s
                 if moved and not (spring and j < len(courses) - 1):
                     who = new_id
-                base = ("2026FA", code, who, bd.isoformat(), sx, z)
+                base = ("2026FA", code, who, bd.isoformat(), sx, z, ft, RECODE.get(mj, mj) if who == new_id else mj)
                 rows.append(base + (subj, num, crn, lv, cr, days, start, inst))
                 if (subj, num) in CROSS:
                     cs, cn = CROSS[(subj, num)]
-                    rows.append(base + (cs, cn, "%06d" % (int(crn) + 4300), lv, cr, days, start, inst))
+                    rows.append(base + (cs, cn, crns.setdefault((u, cs, cn, sect), "%05d" % (21003 + 7 * len(crns))), lv, cr,
+                                        days, start, inst))
                 fte += cr / (12.0 if lv == "GR" else 15.0)
         truth[u] = {"fte": round(fte, 1), "head": len(students)}
     rows.sort(key=lambda r: (r[1], r[2], r[6], r[7]))

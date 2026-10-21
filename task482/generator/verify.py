@@ -43,7 +43,7 @@ def main(target=None, gdir=None):
     one = cen.drop_duplicates(["campus_code", "student_id", "meeting_days", "start_time", "instructor_id"])
     one = one.assign(f=one.credit_hours.astype(int) / np.where(one.course_level == "GR", 12.0, 15.0))
     fa = one.groupby("unitid").f.sum()
-    hc = cen.drop_duplicates(["unitid", "birth_date", "sex", "home_zip"]).groupby("unitid").size()
+    hc = cen.drop_duplicates(["unitid", "birth_date", "sex", "home_zip", "first_term"]).groupby("unitid").size()
     for u in fig["ask_a"]:
         bad += "%.1f" % fa[u] != fig["ask_a"][u]
         bad += int(hc[u]) != fig["ask_b"][u]

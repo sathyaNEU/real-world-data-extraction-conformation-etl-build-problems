@@ -103,6 +103,10 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     Bb, B0 = B.ask_b(b, True), B.ask_b(b, False)
     R.ok(all(Bb[u] == x["census_truth"][u]["head"] for u in Bb), "B1 the golden headcount equals the truth")
     R.ok(sum(Bb[u] != B0[u] for u in Bb) == 6, "B2 student ids alone move all six branches")
+    Bp = B.ask_b(b, "partial")
+    R.ok(sum(Bb[u] != Bp[u] for u in Bb) == 6, "B3 birth date, sex and ZIP alone merge different students at all six")
+    Bf = B.ask_b(b, "full")
+    R.ok(sum(Bb[u] != Bf[u] for u in Bb) == 6, "B4 matching the recoded major too splits movers at all six")
     R.ok(True, "X1 the call reads the finance, the 12-month return, the codes and the credit hour file; the fall "
                "census file is read by the asks only")
     # -------------------------------------------------------------- gates
