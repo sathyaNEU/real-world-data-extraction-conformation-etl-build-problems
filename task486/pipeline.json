@@ -1,7 +1,7 @@
 {
   "task": "task486",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
   "stage": 2,
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: design architecture 2 (the Calvera Valley region's six sources and the state linkage unit's pairwise findings): prototype the region with no undetectable wrong merge and every partial record's own person among its links, fix the ladder (sum of records, chained merge, resolved count), fork and closure tables, the asks on rows the count never reads, prompt.txt, then precut",
+  "resume": "stage 2, architecture 2 generator rewrite in progress (world.py, names.py, sim.py, methods.py, pack.py, docs.py written; golden, checks, verify, writeup, metadata, ceiling, build still to write; postprocess COMPANY still the old build's). Last run, 30,000 households: truth = golden 27,320 people served, closure 27,237 (83 short, CAL 64 short), quarantine 27,400, 126 conflict components. Open before anything else: the chained-merge rung moves the allocation by only about 0.2 to 0.5 per cent per recipient, so decide whether the stump is material enough or raise the conflict count realistically. Known bug: pack.py hot_lines reads a nonexistent world.records_by_key. Then the asks (shelter nights, RRH entry to move-in), the design note sections, prompt.txt and precut",
   "approved": null,
   "delivered": null,
   "portal": null,

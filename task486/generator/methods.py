@@ -1,93 +1,286 @@
-"""The routes from the release to each provider area's counts, each a complete pipeline.
+"""The ways an analyst turns the linkage unit's findings and the sources' activity into the people served in FY2026,
+each attributed to one recipient, and the 2027 fund split on them.
 
-    block_sum        add the area's block counts (the default path)
-    drop_empty       the same, leaving out blocks with no housing units and no group quarters facility
-    drop_rake        drop those blocks, then spread each block group's count over its remaining blocks by their counts
-    bg_hu            the golden: whole block groups take their own count; a block group the boundary cuts is split by
-                     census-day housing units
-    tract_hu         the same at tract level: whole tracts take their count, a cut tract is split by housing units
-    bg_pop           cut block groups split by the blocks' published total population
-    bg_points        cut block groups split by the county's 2026 address points
-"""
+The golden resolves the unit's LINK findings into people by taking them strongest first and refusing any that would
+put two records of one source in one person (each source holds a person once), so a chain that would join two clients
+one source keeps apart is cut at its weakest finding. The default path merges every chain (connected components)."""
 import collections
+import datetime as dt
 
 import numpy as np
 
 import world as W
 
-ROUTES = ["block_sum", "drop_empty", "drop_rake", "bg_hu", "tract_hu", "bg_pop", "bg_points"]
+
+def components(n, links):
+    par = list(range(n))
+
+    def f(x):
+        while par[x] != x:
+            par[x] = par[par[x]]
+            x = par[x]
+        return x
+    for i, j, s in links:
+        a, b = f(i), f(j)
+        if a != b:
+            par[a] = b
+    groups = collections.defaultdict(list)
+    for i in range(n):
+        groups[f(i)].append(i)
+    return [g for g in groups.values() if len(g) > 1]
 
 
-def ages(cells, which):
-    idx = W.A60 if which == "60" else W.A75
-    return sum(cells[s * 23 + a] for s in (0, 1) for a in idx)
+def resolve(records, links, constrained=True, order=None, min_score=None):
+    """Root of each record. Links taken strongest first (ties by key order unless an order is given); with
+    constrained, a link that would put two records of one source in one person is refused."""
+    n = len(records)
+    par = list(range(n))
+    srcs = [{records[i]["src"]} for i in range(n)]
 
-
-def area_counts(blocks, rel, route, which, points=None):
-    """{area: count} for one route; which is '60' or '75'."""
-    pub = rel["block"]
-    out = collections.Counter()
-    by_bg = collections.defaultdict(list)
-    by_tr = collections.defaultdict(list)
-    for i, b in enumerate(blocks):
-        by_bg[b["bg"]].append(i)
-        by_tr[b["tract"]].append(i)
-    if route in ("block_sum", "drop_empty"):
-        for i, b in enumerate(blocks):
-            if route == "drop_empty" and b["hu"] == 0 and b["gq"] is None:
-                continue
-            out[b["area"]] += ages(pub[i], which)
-        return out
-    if route == "drop_rake":
-        for g, idx in by_bg.items():
-            keep = [i for i in idx if not (blocks[i]["hu"] == 0 and blocks[i]["gq"] is None)]
-            total = ages(rel["block_group"][g], which)
-            w = np.array([ages(pub[i], which) for i in keep], float)
-            if w.sum() == 0:
-                w = np.ones(len(keep))
-            for i, x in zip(keep, w / w.sum() * total):
-                out[blocks[i]["area"]] += x
-        return out
-    if route == "tract_hu":
-        for t, idx in by_tr.items():
-            total = ages(rel["tract"][t], which)
-            areas = {blocks[i]["area"] for i in idx}
-            if len(areas) == 1:
-                out[areas.pop()] += total
-                continue
-            hu = np.array([blocks[i]["hu"] for i in idx], float)
-            for i, x in zip(idx, hu / hu.sum() * total):
-                out[blocks[i]["area"]] += x
-        return out
-    for g, idx in by_bg.items():       # bg_hu, bg_pop, bg_points
-        total = ages(rel["block_group"][g], which)
-        areas = {blocks[i]["area"] for i in idx}
-        if len(areas) == 1:
-            out[areas.pop()] += total
+    def f(x):
+        while par[x] != x:
+            par[x] = par[par[x]]
+            x = par[x]
+        return x
+    seq = order if order is not None else sorted(links, key=lambda t: (-t[2], t[0], t[1]))
+    for i, j, s in seq:
+        if min_score is not None and s < min_score:
             continue
-        if route == "bg_hu":
-            w = np.array([blocks[i]["hu"] for i in idx], float)
-        elif route == "bg_pop":
-            w = np.array([pub[i].sum() for i in idx], float)
+        a, b = f(i), f(j)
+        if a == b:
+            continue
+        if constrained and (srcs[a] & srcs[b]):
+            continue
+        par[a] = b
+        srcs[b] |= srcs[a]
+    return [f(i) for i in range(n)]
+
+
+def quarantine(records, links):
+    """Over-cleaning: every record in a chain that would join two records of one source loses all its links."""
+    comps = components(len(records), links)
+    bad = set()
+    for comp in comps:
+        by_src = collections.Counter(records[i]["src"] for i in comp)
+        if any(v > 1 for v in by_src.values()):
+            deg = collections.Counter()
+            for i, j, s in links:
+                if i in comp and j in comp:
+                    deg[i] += 1
+                    deg[j] += 1
+            # records linked to two records of one source
+            nb = collections.defaultdict(set)
+            for i, j, s in links:
+                nb[i].add(j)
+                nb[j].add(i)
+            for i in comp:
+                srcs = collections.Counter(records[k]["src"] for k in nb[i])
+                if any(v > 1 for v in srcs.values()):
+                    bad.add(i)
+    kept = [l for l in links if l[0] not in bad and l[1] not in bad]
+    return resolve(records, kept, constrained=False)
+
+
+# ---------------------------------------------------------------------------------------------- activity
+def record_activity(world):
+    """Per record: whether it shows service in FY2026, and what attribution reads from it."""
+    lo, hi = W.FY26
+    key = {(r["src"], r["pid"]): i for i, r in enumerate(world.records)}
+    act = [dict(active=False, hmis_entry=None, hmis_coc=None, dv=False, last_other=None, other_coc=None)
+           for _ in world.records]
+    for e in world.enrollments:
+        i = key[("HMIS-" + e["coc"], e["pid"])]
+        if e["entry"] <= hi and (e["exit"] is None or e["exit"] >= lo):
+            a = act[i]
+            a["active"] = True
+            if a["hmis_entry"] is None or e["entry"] > a["hmis_entry"]:
+                a["hmis_entry"], a["hmis_coc"] = e["entry"], e["coc"]
+    for s in world.dv_stays:
+        i = key[("DVC", s["pid"])]
+        if s["start"] <= hi and s["end"] >= lo:
+            act[i]["active"] = True
+            act[i]["dv"] = True
+    site_coc = {"VSM-01": "CAL", "VSM-02": "CAL", "VSM-05": "CAL", "VSM-03": "MAR", "VSM-04": "OST", "VSM-MP": "PEL"}
+    for e in world.encounters:
+        if lo <= e["date"] <= hi and e.get("homeless", True):
+            i = key[("VSM", e["pid"])]
+            a = act[i]
+            a["active"] = True
+            if a["last_other"] is None or e["date"] > a["last_other"]:
+                a["last_other"], a["other_coc"] = e["date"], site_coc[e["site"]]
+    for c in world.contacts:
+        if lo <= c["date"] <= hi:
+            i = key[("HOT", c["pid"])]
+            a = act[i]
+            a["active"] = True
+            if a["last_other"] is None or c["date"] > a["last_other"]:
+                a["last_other"], a["other_coc"] = c["date"], "CAL"
+    return act
+
+
+def people_served(world, roots, act):
+    """The people active in FY2026 (by root) and the recipient each is attributed to."""
+    groups = collections.defaultdict(list)
+    for i, r in enumerate(roots):
+        groups[r].append(i)
+    out = {}
+    for root, idx in groups.items():
+        if not any(act[i]["active"] for i in idx):
+            continue
+        hm = [(act[i]["hmis_entry"], act[i]["hmis_coc"]) for i in idx if act[i]["hmis_entry"] is not None]
+        if hm:
+            out[root] = max(hm)[1]
+        elif any(act[i]["dv"] for i in idx):
+            out[root] = "DVC"
         else:
-            w = np.array([points[i] for i in idx], float)
-        for i, x in zip(idx, w / w.sum() * total):
-            out[blocks[i]["area"]] += x
+            ot = [(act[i]["last_other"], act[i]["other_coc"]) for i in idx if act[i]["last_other"] is not None]
+            out[root] = max(ot)[1]
     return out
 
 
-def truth(blocks, which):
-    out = collections.Counter()
-    for b in blocks:
-        out[b["area"]] += ages(b["cells"], which)
+def counts(served):
+    c = collections.Counter(served.values())
+    return {k: c.get(k, 0) for k in W.RECIPIENTS}
+
+
+def allocation(cnt):
+    pool = W.FUND_2027 * (1 - W.ADMIN_SHARE)
+    total = sum(cnt.values())
+    return {k: int(round(pool * cnt[k] / total)) for k in W.RECIPIENTS}
+
+
+def _local_resolve(records, comp, sub, order):
+    pos = {g: k for k, g in enumerate(comp)}
+    par = list(range(len(comp)))
+    srcs = [{records[g]["src"]} for g in comp]
+
+    def f(x):
+        while par[x] != x:
+            par[x] = par[par[x]]
+            x = par[x]
+        return x
+    for i, j, s in order:
+        a, b = f(pos[i]), f(pos[j])
+        if a == b or (srcs[a] & srcs[b]):
+            continue
+        par[a] = b
+        srcs[b] |= srcs[a]
+    return {g: comp[f(pos[g])] for g in comp}
+
+
+def tie_sensitive(world, links, trials=12):
+    """People whose identity should be redrawn because the golden's people or recipients in their component depend
+    on how equal links are ordered, or differ from the people actually served."""
+    act = record_activity(world)
+    rng = np.random.default_rng(7)
+    comps = components(len(world.records), links)
+    by_rec = collections.defaultdict(list)
+    for l in links:
+        by_rec[l[0]].append(l)
+    bad = []
+    for comp in comps:
+        by_src = collections.Counter(world.records[i]["src"] for i in comp)
+        if all(v == 1 for v in by_src.values()):
+            continue
+        cset = set(comp)
+        sub = [l for i in comp for l in by_rec[i] if l[1] in cset]
+        truth = {i: world.records[i]["pid"] for i in comp}
+        ref = tuple(sorted(people_served_sub(world, truth, act, comp).values()))
+        seen = set()
+        base = sorted(sub, key=lambda t: (-t[2], t[0], t[1]))
+        seen.add(tuple(sorted(people_served_sub(world, _local_resolve(world.records, comp, sub, base), act,
+                                                comp).values())))
+        for t in range(trials):
+            order = sorted(sub, key=lambda l: (-l[2], rng.random()))
+            seen.add(tuple(sorted(people_served_sub(world, _local_resolve(world.records, comp, sub, order), act,
+                                                    comp).values())))
+        if len(seen) > 1 or next(iter(seen)) != ref:
+            cnt = collections.Counter(world.records[i]["pid"] for i in comp)
+            top = cnt.most_common(1)[0][0]
+            bad.extend(q for q in cnt if q != top)
+    return bad
+
+
+def people_served_sub(world, roots, act, comp):
+    groups = collections.defaultdict(list)
+    for i in comp:
+        groups[roots[i]].append(i)
+    out = {}
+    for root, idx in groups.items():
+        if not any(act[i]["active"] for i in idx):
+            continue
+        hm = [(act[i]["hmis_entry"], act[i]["hmis_coc"]) for i in idx if act[i]["hmis_entry"] is not None]
+        if hm:
+            out[root] = max(hm)[1]
+        elif any(act[i]["dv"] for i in idx):
+            out[root] = "DVC"
+        else:
+            ot = [(act[i]["last_other"], act[i]["other_coc"]) for i in idx if act[i]["last_other"] is not None]
+            out[root] = max(ot)[1]
     return out
 
 
-def r10(x):
-    """Nearest ten, halves up (never reached: every graded figure sits clear of a half)."""
-    return int(np.floor(x / 10.0 + 0.5) * 10)
+# ---------------------------------------------------------------------------------------------- the asks
+def shelter_nights(world, dedup=True, nbn_by_beds=True, inclusive_exit=False):
+    """Nights people spent in each Continuum's emergency shelters and safe havens in FY2026. A stay's nights run from
+    its entry date to the night before its exit (an open stay to the night of 30 September 2026); at the
+    night-by-night shelter a night is a bed-night record."""
+    lo, hi = W.FY26
+    nights = collections.defaultdict(set) if dedup else collections.Counter()
+    for e in world.enrollments:
+        if e["kind"] not in ("ES", "SH", "NBN"):
+            continue
+        if e["kind"] == "NBN" and nbn_by_beds:
+            continue
+        end = (e["exit"] + dt.timedelta(days=1 if inclusive_exit else 0)) if e["exit"] else hi + dt.timedelta(days=1)
+        a, b = max(e["entry"], lo), min(end, hi + dt.timedelta(days=1))
+        if b <= a:
+            continue
+        if dedup:
+            for k in range((b - a).days):
+                nights[e["coc"]].add((e["pid"], a + dt.timedelta(days=k)))
+        else:
+            nights[e["coc"]] += (b - a).days
+    if nbn_by_beds:
+        for n in world.bed_nights:
+            if lo <= n["date"] <= hi:
+                if dedup:
+                    nights[n["coc"]].add((n["pid"], n["date"]))
+                else:
+                    nights[n["coc"]] += 1
+    out = {c: (len(nights[c]) if dedup else nights[c]) for c in W.COCS}
+    out["ALL"] = sum(out[c] for c in W.COCS)
+    return out
 
 
-def edge10(x):
-    """Distance from x to the nearest edge of its nearest-ten cell."""
-    return 5.0 - abs(x - r10(x))
+def rrh_move_ins(world, follow_transfers=True, rows="hoh"):
+    """For each Continuum, the households that moved into housing from rapid re-housing in FY2026 and the average days
+    from each household's entry into rapid re-housing to its move-in (a same-day move from one rapid re-housing
+    project to another continues the stay)."""
+    lo, hi = W.FY26
+    rrh = [e for e in world.enrollments if e["kind"] == "RRH"]
+    by_hoh = collections.defaultdict(list)
+    for e in rrh:
+        if e["rel"] == 1:
+            by_hoh[(e["coc"], e["pid"])].append(e)
+    days = collections.defaultdict(list)
+    for e in rrh:
+        mi = e["move_in"] if e["rel"] == 1 else world.member_move_in.get(e["eid"])
+        if mi is None or not (lo <= mi <= hi):
+            continue
+        if rows == "hoh" and e["rel"] != 1:
+            continue
+        start = e["entry"]
+        if follow_transfers:
+            hoh = e["pid"] if e["rel"] == 1 else None
+            if hoh is not None:
+                prev = {x["exit"]: x for x in by_hoh[(e["coc"], hoh)] if x["exit"] is not None}
+                while start in prev:
+                    start = prev[start]["entry"]
+        days[e["coc"]].append((mi - start).days)
+    out = {}
+    for c in W.COCS:
+        out[c] = (len(days[c]), round(sum(days[c]) / len(days[c]), 1) if days[c] else None)
+    allv = [d for c in W.COCS for d in days[c]]
+    out["ALL"] = (len(allv), round(sum(allv) / len(allv), 1))
+    return out

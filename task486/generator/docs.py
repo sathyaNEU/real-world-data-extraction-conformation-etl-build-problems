@@ -1,6 +1,9 @@
-"""task486 documents and workbooks: the State Data Center's notes on the 2020 census release, the State Department on
-Aging's FY2027 area plan instructions, the agency's provider allocation policy, the state's licensed residential care
-list for the county, the agency's provider directory, its field guide and its data inventory."""
+"""task486 documents and workbooks: the Regional Fund Committee's allocation policy RF-2027, the State Data Linkage
+Unit's method note with the run summary, the Partnership's guide to the integration extract, its project register, the
+coalition's comparable-database export, the 2026 point-in-time count and housing inventory, and the data inventory."""
+import csv
+import datetime as dt
+
 import docx
 import openpyxl
 from docx.shared import Pt, RGBColor
@@ -16,7 +19,6 @@ from reportlab.pdfbase import pdfmetrics                                        
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import asks as A     # noqa: E402
 import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
@@ -28,28 +30,26 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
 INK = colors.HexColor("#1c1f22")
 GREY = colors.HexColor("#5d636a")
-TEAL = colors.HexColor("#1d4e57")
-PLUM = colors.HexColor("#4a2f4f")
+NAVY = colors.HexColor("#1f3a5f")
 SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.4, leading=13.0, textColor=INK, spaceAfter=6)
-SERIF = ParagraphStyle("serif", fontName="LiberationSerif", fontSize=10.8, leading=14.6, textColor=INK, spaceAfter=8)
 CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.0, leading=10.0, textColor=INK)
 SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=7.6, leading=9.8, textColor=GREY)
 
 
-def _styles(accent, serif=False):
-    face = "LiberationSerif" if serif else "LiberationSans"
-    h1 = ParagraphStyle("h1", fontName=face + "-Bold", fontSize=13.5, leading=17, textColor=accent, spaceAfter=2)
-    h1s = ParagraphStyle("h1s", fontName=face, fontSize=9, leading=12, textColor=GREY, spaceAfter=10)
-    h2 = ParagraphStyle("h2", fontName=face + "-Bold", fontSize=10.2, leading=13.5, textColor=INK, spaceBefore=7,
-                        spaceAfter=3, keepWithNext=1)
+def _styles(accent):
+    h1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=13.5, leading=17, textColor=accent,
+                        spaceAfter=2)
+    h1s = ParagraphStyle("h1s", fontName="LiberationSans", fontSize=9, leading=12, textColor=GREY, spaceAfter=10)
+    h2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.2, leading=13.5, textColor=INK,
+                        spaceBefore=7, spaceAfter=3, keepWithNext=1)
     return h1, h1s, h2
 
 
-def _doc(path, title, author, footer, serif=False):
+def _doc(path, title, author, footer):
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont("LiberationSerif" if serif else "LiberationSans", 7.4)
+        canvas.setFont("LiberationSans", 7.4)
         canvas.drawString(0.9 * inch, 0.55 * inch, footer)
         canvas.drawRightString(LETTER[0] - 0.9 * inch, 0.55 * inch, "Page %d" % doc.page)
         canvas.restoreState()
@@ -58,7 +58,7 @@ def _doc(path, title, author, footer, serif=False):
     return d, frame
 
 
-def _table(rows, widths, head="#e3e8ea"):
+def _table(rows, widths, head="#e2e7ee"):
     t = Table([[Paragraph(str(c), CELL) for c in r] for r in rows], colWidths=widths, repeatRows=1)
     t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(head)),
                            ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#b9c0c4")),
@@ -67,123 +67,41 @@ def _table(rows, widths, head="#e3e8ea"):
     return t
 
 
-# ---------------------------------------------------------------- the State Data Center's notes
-NOTES = [
-    ("What the file is",
-     ["The Demographic and Housing Characteristics File (DHC), released in May 2023, carries the 2020 Census counts of "
-      "the population by age, sex, race, Hispanic or Latino origin, household relationship and group quarters type, and "
-      "of housing units by occupancy and tenure, for every level of census geography down to the census block. Its "
-      "reference date is Census Day, 1 April 2020.",
-      "Two tables answer most local requests. P12 (Sex by Age for Selected Age Categories) counts residents in 23 age "
-      "groups for each sex; its total is the area's population, household and group quarters together. H1 (Housing "
-      "Units) counts the housing units in the area, occupied or vacant."]),
-    ("Geography",
-     ["Every census block lies in one block group and every block group in one census tract; tracts nest in the county. "
-      "A block's 15-digit code is the state (2 digits), county (3), tract (6) and block (4), and the block's first "
-      "digit is its block group. Downloads from data.census.gov add a summary-level prefix to the code in GEO_ID "
-      "(1400000US for tracts, 1500000US for block groups, 1000000US for blocks) and carry two header rows, the variable "
-      "code and its label."]),
-    ("How the counts are protected",
-     ["The Census Bureau protects respondents' confidentiality in the 2020 Census with a disclosure avoidance system "
-      "built on differential privacy. The system adds statistical noise to each count at each geographic level, from "
-      "the nation down to the block, and then processes the noisy counts so that every published count is a "
-      "non-negative whole number and the counts at each level add up exactly to the level above: the blocks of a block "
-      "group add up to the block group, the block groups of a tract to the tract, and the tracts to the county. Each "
-      "cell of a table is processed this way, so the 23 age groups of a block add up to its total as well.",
-      "Some counts are held exactly as enumerated. These invariants are the total population of each state, the number "
-      "of housing units in every block and every larger area, and the number and type of group quarters facilities "
-      "(nursing facilities, college residence halls, correctional facilities and the like) in every block. A block "
-      "with no housing units and no group quarters facility has no residents in the published tables.",
-      "Because the noise is added at every level and does not grow with an area's size, counts for areas and groups with "
-      "few people carry more noise, relative to their size, than counts for large areas and groups. The Census Bureau "
-      "publishes accuracy measures for the release on its website."]),
-    ("Earlier census products",
-     ["Counts from the 2010 Census were protected by swapping households between blocks, not by added noise, so 2010 "
-      "and 2020 block counts are not alike in their errors. The American Community Survey's five-year estimates are "
-      "survey estimates for a five-year period, with margins of error, and are not census counts."]),
-]
-
-
-def write_notes(path):
-    h1, h1s, h2 = _styles(TEAL)
-    d, frame = _doc(path, "2020 Census DHC: notes for local users", "State Data Center",
-                    "State Data Center  |  Technical bulletin 2023-04 (revised February 2024)")
-    story = [Paragraph("2020 Census Demographic and Housing Characteristics File: notes for local users", h1),
-             Paragraph("State Data Center, technical bulletin 2023-04. Issued June 2023, revised February 2024.", h1s)]
-    for head, paras in NOTES:
-        story.append(Paragraph(head, h2))
-        for p in paras:
-            story.append(Paragraph(p, SANS))
-    story.append(Spacer(1, 6))
-    story.append(_table([["Table", "Universe", "Cells", "Lowest level"],
-                         ["P12 Sex by Age for Selected Age Categories", "Total population", "49 (total, 2 sexes, "
-                          "23 age groups each)", "Block"],
-                         ["H1 Housing Units", "Housing units", "1", "Block"]],
-                        [2.3 * inch, 1.4 * inch, 1.6 * inch, 1.0 * inch]))
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------- the state's instructions
-INSTRUCTIONS = [
-    ("1. Purpose and due date",
-     ["Each area agency on aging files an area plan update for FY2027 (1 October 2026 to 30 September 2027) through the "
-      "Department's planning portal by 13 November 2026. The update carries the agency's provider structure, its "
-      "census counts and its service figures for the year just ended, and the Department uses it to monitor the "
-      "agency's plan and to check the agency's own allocation to its providers."]),
-    ("2. Provider structure",
-     ["List each provider the agency funds for nutrition and supportive services and the provider area it serves, as "
-      "the areas are drawn on the day of filing. An agency that redrew its provider areas since its last full plan "
-      "attaches the area definitions."]),
-    ("3. Census counts",
-     ["For each provider area, report the number of residents aged 60 and over and the number aged 75 and over on "
-      "Census Day, 1 April 2020, counting household and group quarters population. Use the provider areas as drawn "
-      "since 1 July 2023 for agencies that redrew them that year. Provider areas are not census tabulation areas, so "
-      "their counts are estimated from the 2020 Census Demographic and Housing Characteristics release; round each "
-      "area's count to the nearest ten.",
-      "The areas of an agency together cover its whole planning and service area, so their counts together are the "
-      "planning and service area's."]),
-    ("4. Service figures for FY2026 (1 October 2025 to 30 September 2026)",
-     ["4.1 Home-delivered meals served. Count every meal handed to an eligible participant, by delivery date; a frozen "
-      "or shelf-stable pack counts as the meals it holds. Report each meal under the provider responsible for the "
-      "participant, which is the provider of the area the participant lives in.",
-      "4.2 Active home-delivered meal clients. Count the participants with a home-delivered meal episode open on "
-      "30 September 2026 who were alive that day, each once, under the provider of the area the participant lives in.",
-      "Report service figures as whole numbers. Keep the working files the figures were built from for monitoring."]),
-    ("5. Questions",
-     ["Planning staff of the Department's Office of Area Agency Operations answer questions on these instructions "
-      "through the planning portal."]),
-]
-
-
-def write_instructions(path):
-    h1, h1s, h2 = _styles(PLUM, serif=True)
-    d, frame = _doc(path, "FY2027 Area Plan Update: instructions", W.STATE_UNIT,
-                    "State Department on Aging  |  Office of Area Agency Operations  |  AP-27-02", serif=True)
-    story = [Paragraph("FY2027 Area Plan Update: instructions for area agencies on aging", h1),
-             Paragraph("State Department on Aging, Office of Area Agency Operations. Program instruction AP-27-02, "
-                       "issued 14 August 2026.", h1s)]
-    for head, paras in INSTRUCTIONS:
-        story.append(Paragraph(head, h2))
-        for p in paras:
-            story.append(Paragraph(p, SERIF))
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------- the agency's policy
+# ------------------------------------------------------------------------------------------------ policy RF-2027
 POLICY = [
-    ("Purpose", "This policy sets how the Kelvane Area Agency on Aging divides its Title III-C nutrition funds among the "
-                "senior-services providers it funds, one in each provider area."),
-    ("Provider areas", "The Board adopted six provider areas on 15 June 2023, effective 1 July 2023: Wickmoor City and "
-                       "Fallowmere Town, and North, East, South and West Kelvane, whose boundaries now run to the ring "
-                       "roads around both towns and to the river, so that each rural center serves the edge "
-                       "neighborhoods its routes already reach. The county's Department of Planning and Development "
-                       "keeps the block assignment of each area."),
-    ("Allocation", "From FY2024, each provider receives a base amount of $85,000 a year. The remainder of the Title III-C "
-                   "funds is divided among the providers, 70 percent in proportion to the provider area's residents "
-                   "aged 60 and over and 30 percent in proportion to its residents aged 75 and over, as filed in the "
-                   "agency's area plan for the year."),
-    ("Review", "The Board reviews this policy when the State Department on Aging changes its intrastate formula or the "
-               "agency redraws its provider areas."),
+    ("1. Purpose",
+     ["The counties of Calvera, Mardell, Ostry and Pellam pool the Calvera Valley Regional Homelessness Fund under "
+      "their joint agreement of 2021. This policy sets how the Fund's 2027 amount is split among the region's four "
+      "Continuums of Care and the Calvera Valley Coalition for Survivors."]),
+    ("2. The amount and the split",
+     ["The 2027 Fund is $18,750,000. The Calvera Valley Homeless Data Partnership keeps 4 per cent of it for "
+      "administration and the regional data integration. The rest is split among the five recipients in proportion "
+      "to the people each served in federal fiscal year 2026 (1 October 2025 to 30 September 2026). Each recipient's "
+      "amount is rounded to the nearest dollar."]),
+    ("3. People served",
+     ["A person is counted once for the region if any record of theirs shows service in FY2026:",
+      "(a) an enrollment in a Continuum's HMIS emergency shelter, safe haven, transitional housing, street outreach, "
+      "rapid re-housing or permanent supportive housing project that was open on any day of the year, that is, "
+      "entered on or before 30 September 2026 and not exited before 1 October 2025;",
+      "(b) a stay in a coalition shelter on any night of the year;",
+      "(c) a Valley Street Medicine encounter in the year at which the patient's housing status was recorded as "
+      "street, shelter or transitional housing; or",
+      "(d) a contact by the City of Calvera Homeless Outreach Team in the year.",
+      "Dates are the local dates the sources record."]),
+    ("4. Recipient",
+     ["Each person served is placed with one recipient: the Continuum of their latest HMIS enrollment open in the "
+      "year, latest by entry date; for a person with no such enrollment, the coalition if they stayed in a coalition "
+      "shelter in the year; otherwise the Continuum where their latest outreach contact or clinic encounter of the "
+      "year took place. The outreach team works in Calvera, and the Partnership's register gives each clinic site's "
+      "Continuum."]),
+    ("5. One person across the sources",
+     ["Each source holds people under its own identifiers. Records in different sources are matched by the State Data "
+      "Linkage Unit, which compares the sources' hashed identifiers so that no source sees another's. The "
+      "Partnership counts people from the unit's findings for its run of 8 October 2026 on the FY2025 and FY2026 "
+      "records."]),
+    ("6. Timetable",
+     ["The Partnership prepares the table of people served and amounts for the Committee's meeting of 9 December "
+      "2026. Payments for 2027 follow the counties' contracts with each recipient."]),
 ]
 
 
@@ -193,173 +111,161 @@ def write_policy(path):
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
     t = d.add_paragraph()
-    r = t.add_run("Kelvane Area Agency on Aging")
+    r = t.add_run("Calvera Valley Regional Homelessness Fund")
     r.bold = True
-    r.font.size = Pt(13)
-    r.font.color.rgb = RGBColor(0x1d, 0x4e, 0x57)
-    d.add_paragraph("Board policy N-3: provider allocation of nutrition funds. Adopted 21 September 2023.")
-    for head, body in POLICY:
-        p = d.add_paragraph()
-        rr = p.add_run(head)
-        rr.bold = True
-        d.add_paragraph(body)
+    r.font.size = Pt(15)
+    r.font.color.rgb = RGBColor(0x1F, 0x3A, 0x5F)
+    t2 = d.add_paragraph()
+    r2 = t2.add_run("Allocation policy RF-2027. Adopted by the Regional Fund Committee, 16 September 2026.")
+    r2.italic = True
+    r2.font.size = Pt(9.5)
+    for head, paras in POLICY:
+        h = d.add_paragraph()
+        rh = h.add_run(head)
+        rh.bold = True
+        rh.font.size = Pt(11)
+        for p in paras:
+            q = d.add_paragraph(p)
+            if p.startswith("("):
+                q.paragraph_format.left_indent = Pt(18)
+    d.core_properties.title = "Allocation policy RF-2027"
     d.save(path)
 
 
-# ---------------------------------------------------------------- workbooks
-def write_facilities(path, b, geoid):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Kelvane County"
-    ws.append(["Licensed residential care facilities, Kelvane County. State licensing list as of 1 September 2026; "
-               "census block added by the Kelvane Area Agency on Aging."])
-    ws.append([])
-    ws.append(["License", "Facility", "Type", "Address", "Licensed beds", "Census block (2020)"])
-    lic = iter(range(41207, 49999, 389))
-    for i, bl in enumerate(b.blocks):
-        if bl["gq"]:
-            name, typ, n = bl["gq"]
-            town = W.SEAT if bl["tract"] < "9" else W.TOWN2
-            beds = n + (12 if typ.startswith("Nursing") else 6)
-            lic_type = "Skilled nursing facility" if typ.startswith("Nursing") else "Assisted living residence"
-            ws.append(["NF-%05d" % next(lic) if typ.startswith("Nursing") else "AL-%05d" % next(lic), name, lic_type,
-                       "%d %s, %s" % (100 + 40 * (i % 23), ["Linden Ave", "Hospital Dr", "College St", "Elm St",
-                                                          "Mill Rd", "Orchard Rd"][i % 6], town), beds, geoid(bl)])
-    ws["A1"].font = Font(bold=True)
-    for c in ws[3]:
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="E3E8EA")
-    for col, w in zip("ABCDEF", (11, 38, 30, 30, 13, 18)):
-        ws.column_dimensions[col].width = w
-    wb.save(path)
+# ------------------------------------------------------------------------------------------------ the unit's note
+def write_method_note(path, summary):
+    h1, h1s, h2 = _styles(NAVY)
+    d, frame = _doc(path, "Record linkage service: method note", W.LINKAGE_UNIT,
+                    "%s, %s  |  Record linkage service, method note v3" % (W.LINKAGE_UNIT, W.LINKAGE_DEPT))
+    story = [Paragraph("Record linkage service: method note", h1),
+             Paragraph("%s, %s. Version 3, issued 3 June 2026. Run summary for the %s, run of 8 October 2026." %
+                       (W.LINKAGE_UNIT, W.LINKAGE_DEPT, W.PARTNERSHIP), h1s)]
+    paras = [
+        ("The service",
+         ["The unit links records that agencies hold about the same people without the agencies sharing identities. "
+          "Each agency sends, for each of its records, its own record key and keyed hashes of the person's "
+          "identifiers. The unit compares records from different sources and returns its findings on pairs of "
+          "records, with the agreement of each identifier and the pair's score."]),
+        ("Identifiers",
+         ["First name; surname or surnames; year of birth; month and day of birth where the source holds them; sex; "
+          "and the last four digits of the Social Security number where held. Names are normalised before hashing "
+          "(case, accents, punctuation and spacing). A first name and a recognised nickname for it (Robert and Bob, "
+          "Guadalupe and Lupe) agree partly, and a compound surname agrees partly with its first part. A source that "
+          "holds only a year of birth sends no month or day, and those fields are then missing for every pair the "
+          "record is in."]),
+        ("Which records are compared",
+         ["Two records are compared only when they come from different sources, share the year of birth and share "
+          "the Soundex code of the first surname. Records without a year of birth are not compared. The unit does not "
+          "compare two records of one source: each source keeps its own records free of duplicates."]),
+        ("Scores and findings",
+         ["Each identifier is coded A (agree), P (agree in part), D (disagree) or M (missing on either record), and "
+          "the score is the sum of the weights below, year of birth included. A pair scoring 9.0 or more is returned "
+          "as a LINK, one scoring from 4.0 to 8.9 as a NONLINK, and pairs under 4.0 are not returned.",
+          "A LINK is the unit's finding that the two records very probably belong to the same person, and a NONLINK "
+          "that they very probably do not. Findings are made pair by pair: the unit does not group records into "
+          "people, and an agency counting people from the findings does that itself."]),
+    ]
+    for head, ps in paras:
+        story.append(Paragraph(head, h2))
+        for p in ps:
+            story.append(Paragraph(p, SANS))
+    wt = [["Identifier", "A", "P", "D", "M"],
+          ["First name", "4.5", "2.0", "-2.5", "not used"],
+          ["Surname", "5.0", "2.5", "-3.0", "not used"],
+          ["Year of birth", "2.0", "", "", ""],
+          ["Month of birth", "2.0", "", "-3.0", "0.0"],
+          ["Day of birth", "2.5", "", "-3.5", "0.0"],
+          ["Sex", "0.5", "", "-2.0", ""],
+          ["SSN, last four", "6.0", "", "-4.0", "0.0"]]
+    story.append(_table(wt, [1.6 * inch, 0.7 * inch, 0.7 * inch, 0.7 * inch, 0.8 * inch]))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("Run summary: %s, run of 8 October 2026" % W.PARTNERSHIP, h2))
+    story.append(Paragraph("Records received from the Partnership's FY2025 and FY2026 extract, by source, and the "
+                           "pairs the run returned. Record keys are each source's own keys as sent.", SANS))
+    rows = [["Source", "Records received", "Without a year of birth (not compared)"]]
+    for s in W.SOURCES:
+        rows.append([s, "{:,}".format(summary["received"][s]), "{:,}".format(summary["no_year"][s])])
+    rows.append(["All sources", "{:,}".format(sum(summary["received"].values())),
+                 "{:,}".format(sum(summary["no_year"].values()))])
+    story.append(_table(rows, [1.6 * inch, 1.5 * inch, 2.6 * inch]))
+    story.append(Spacer(1, 6))
+    story.append(Paragraph("Pairs returned: {:,}, of which {:,} LINK and {:,} NONLINK.".format(
+        summary["returned"], summary["links"], summary["returned"] - summary["links"]), SANS))
+    story.append(Paragraph("Contact: %s, State Data Linkage Unit." % W.PEOPLE["linkage"], SMALL))
+    d.build(story, onFirstPage=frame, onLaterPages=frame)
 
 
-def write_providers(path):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Providers"
-    ws.append(["Provider code", "Provider", "Provider area", "Address", "Home-delivered meal routes"])
-    addr = {"WMS": "212 Church St, Wickmoor", "FCC": "40 Depot St, Fallowmere", "NKS": "18 County Rd 12, Ashby Corner",
-            "EKS": "960 Creamery Rd, Wickmoor", "SKS": "5 Quarry Rd, Halden Mills", "WKS": "77 River Rd, Fallowmere"}
-    for code, name, area, nr in A.PROVIDERS:
-        ws.append([code, name, area, addr[code], ", ".join("%s-%02d" % (code, k + 1) for k in range(nr))])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="E3E8EA")
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for col, w in zip("ABCDE", (13, 30, 17, 32, 60)):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A2"
-    wb.save(path)
+# ------------------------------------------------------------------------------------------------ the guide
+GUIDE = """CALVERA VALLEY HOMELESS DATA PARTNERSHIP
+Guide to the FY2026 integration extract
+Kathleen Carlson, data integration manager. 14 October 2026.
 
+The extract holds every record the region's sources hold for people served from 1 April 2024 to 30 September 2026, as
+sent to the State Data Linkage Unit for its run of 8 October 2026, and the unit's findings from that run. Dates are local
+dates (Pacific time) unless a field says otherwise.
 
-# ---------------------------------------------------------------- the field guide and the inventory
-GUIDE = """KELVANE AREA AGENCY ON AGING: FIELD GUIDE TO THE PLANNING FILES
-Kept by planning; last revised 9 October 2026.
+FILES AND WHAT A ROW IS
 
-hdm_client_roster_2026-10-09.csv
-  One row per client the agency has served with home-delivered meals since 1 October 2024.
-  client_id             the agency's client number
-  state_participant_id  the client's number in the state participant registry
-  birth_year            year of birth
-  home_block            the 2020 census block of the client's home address, geocoded by the agency
-  meals_per_day         meals the client's care plan provides on a delivery day (1 or 2)
-  schedule              Weekday hot, Weekday hot + weekend pack, or Weekly frozen
+hmis_client_fy2025_fy2026.csv
+  One row per client record in a Continuum's HMIS. The four Continuums run separate HMIS implementations
+  (SourceCoC: CAL Calvera, MAR Mardell, OST Ostry, PEL Pellam). PersonalID identifies a person within a Continuum's
+  HMIS: the HMIS lead's monthly duplicate review merges any two client records found to be the same person, so within
+  one Continuum a person has one PersonalID. A person served in two Continuums has a record in each. Identifying fields
+  are not in the extract; YearOfBirth and the data quality codes are.
+hmis_enrollment_fy2025_fy2026.csv
+  One row per project enrollment of a client (EnrollmentID), with the project, entry date, household, the
+  client's relationship to the head of household and, in rapid re-housing and permanent supportive housing, the
+  household's move-in date.
+hmis_exit_fy2025_fy2026.csv
+  One row per exit (one per enrollment that has ended), with the exit date and destination.
+hmis_services_fy2025_fy2026.csv
+  Bed nights at the night-by-night shelter (RecordType 200): one row per night a client slept there.
+dvc_comparable_db_export.xlsx
+  The Calvera Valley Coalition for Survivors' comparable database (domestic violence programs do not enter clients
+  in HMIS). Sheet Clients: one client record per survivor; ClientKey identifies the survivor. Birth year only, by the
+  coalition's confidentiality policy. Sheet Stays: one row per shelter stay (StayStart, the first night; StayEnd, the
+  day the stay ended).
+vsm_hch_encounters_fy2025_fy2026.csv
+  Valley Street Medicine's health care for the homeless encounters: one row per encounter. PatientKey identifies a
+  patient. HousingStatus is the housing status recorded at the encounter, in the HRSA categories.
+hot_field_app_contacts.jsonl
+  The City of Calvera Homeless Outreach Team's field app: one line per contact, client_key identifying the client
+  in the app, contact_time in local time with its UTC offset.
+sdlu_linkage_pairs_run_20261008.csv
+  The State Data Linkage Unit's findings: one row per pair of records the unit compared and returned. source_a and
+  source_b are the sources (HMIS-CAL, HMIS-MAR, HMIS-OST, HMIS-PEL, DVC, VSM, HOT); record_a and record_b are the
+  record keys as the source sent them. The unit's method note gives the agreement codes and weights.
+partnership_project_register.xlsx
+  The HMIS projects of the four Continuums, Valley Street Medicine's sites and the outreach team's area.
+pit_2026_counts_by_coc.csv, hic_2026_inventory.xlsx
+  The region's 2026 point-in-time count (night of 28 January 2026) and housing inventory, as submitted to HUD.
 
-hdm_service_episodes_2026-10-09.csv
-  One row per home-delivered meal episode.
-  episode_id, client_id, service (HDM)
-  provider_code         the provider that enrolled the client
-  enrolled, closed      dates; closed is blank while the episode is open
-  close_reason          as entered by the case manager
+RECORD KEYS
+  HMIS PersonalIDs are each vendor's own: Calvera and Pellam numeric, Mardell with an M- prefix, Ostry eight
+  hexadecimal characters. The coalition's ClientKey (DV-), the clinic's PatientKey (numeric) and the outreach app's
+  client_key (C-) are sent as held.
 
-hdm_route_delivery_log_fy2026.csv
-  One row per item handed over on a route, as entered on the route tablet, 1 October 2025 to 30 September 2026.
-  delivery_id, tablet_id, route_id
-  provider_code         the provider operating the route
-  client_id, delivery_date, item_code
-  uploaded_at           when the tablet uploaded the row, local time
+HMIS CONVENTIONS
+  Project types follow the HMIS Data Standards: 0 emergency shelter (entry/exit), 1 emergency shelter (night by
+  night), 2 transitional housing, 3 permanent supportive housing, 4 street outreach, 8 safe haven, 13 rapid
+  re-housing.
+  A client is in a project on each night from the entry date to the night before the exit date. An enrollment with
+  no exit was still open when the extract was taken.
+  At the night-by-night shelter (Calvera Winter Respite) each night a client sleeps there is a bed-night service.
+  Under the Partnership's HMIS policy its enrollments are exited on the day after the last bed night once 30 days
+  pass without one.
+  HouseholdID groups the clients of one household's enrollment. RelationshipToHoH: 1 head of household, 2 child,
+  3 spouse or partner, 4 other relative, 5 other.
+  MoveInDate is the date the household moved into housing in a rapid re-housing or permanent supportive housing
+  project; the HMIS Data Standards record it for the head of household.
+  DOBDataQuality: 1 full date of birth reported, 2 approximate or partial, 8 client does not know, 9 client
+  prefers not to answer, 99 not collected.
 
-hdm_item_codes.csv      the items a route hands over and the meals each holds
-
-state_death_match_runs_2025-07_to_2026-10.csv
-  The State Department on Aging's monthly match of registry numbers against the state's death records, statewide,
-  as sent to every area agency. One row per match: run_date, state_participant_id (the registry number matched),
-  date_of_death, match_basis.
-
-state_registry_number_links.csv
-  The state participant registry's links between numbers, statewide: prior_participant_id, current_participant_id,
-  linked_on, reason.
-
-provider_area_blocks.csv (county Department of Planning and Development)
-  One row per census block and assignment. TRACT_BLOCK is the 2020 tract and block codes written as one number;
-  EFFECTIVE_TO is blank while the assignment is in force.
-
-kelvane_address_points_2026-10-02.csv (county Department of Planning and Development)
-  The county's address points register as of 2 October 2026: one row per address point, with the 2020 census block it
-  falls in, its status and the date it was added.
-
-dhc2020_*.csv           2020 Census DHC tables for Kelvane County, downloaded by planning; see the State Data
-                        Center's notes. The block table is the long form planning keeps, one row per block, sex and
-                        age group.
-acs2022_5yr_*.csv       American Community Survey 2018-2022 five-year estimates, table B01001, block groups.
-licensed_residential_care_kelvane.xlsx   the state's licensing list, census block added by planning.
-kaaa_provider_directory.xlsx             providers, provider areas and routes.
+WHO TO ASK
+  Extract and keys: Kathleen Carlson. The unit's findings: Andrew Camacho, State Data Linkage Unit.
 """
 
 
 def write_guide(path):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(GUIDE.replace("\n", "\r\n"))
-
-
-INVENTORY = [
-    ("dhc2020_kelvane_blocks_sex_by_age.csv", "2020 Census DHC table P12 for every block in Kelvane County, long form",
-     "Census Day 2020", "data.census.gov, downloaded by planning", "2026-10-02"),
-    ("dhc2020_kelvane_block_groups_p12.csv", "2020 Census DHC table P12, block groups", "Census Day 2020",
-     "data.census.gov, downloaded by planning", "2026-10-02"),
-    ("dhc2020_kelvane_county_tracts_p12.csv", "2020 Census DHC table P12, the county and its tracts", "Census Day 2020",
-     "data.census.gov, downloaded by planning", "2026-10-02"),
-    ("dhc2020_kelvane_blocks_h1.csv", "2020 Census DHC table H1, housing units by block", "Census Day 2020",
-     "data.census.gov, downloaded by planning", "2026-10-02"),
-    ("dhc2020_p12_h1_column_metadata.csv", "variable codes and labels for the DHC downloads", "", "data.census.gov",
-     "2026-10-02"),
-    ("dhc2020_notes_for_local_users.pdf", "State Data Center technical bulletin 2023-04", "", "State Data Center",
-     "2026-10-02"),
-    ("acs2022_5yr_kelvane_block_groups_b01001.csv", "ACS 2018-2022 five-year table B01001, block groups",
-     "2018 to 2022", "data.census.gov, downloaded by planning", "2026-10-02"),
-    ("provider_area_blocks.csv", "provider area of each census block, with the 2023 redraw",
-     "July 2016 to date", "county Department of Planning and Development", "2026-10-02"),
-    ("kelvane_address_points_2026-10-02.csv", "county address points register", "as of 2 October 2026",
-     "county Department of Planning and Development", "2026-10-02"),
-    ("licensed_residential_care_kelvane.xlsx", "state licensing list for the county, with census blocks",
-     "as of 1 September 2026", "state licensing; blocks added by planning", "2026-09-08"),
-    ("kaaa_provider_directory.xlsx", "providers, provider areas and routes", "FY2026", "agency", "2026-10-09"),
-    ("kaaa_provider_allocation_policy_2023.docx", "Board policy N-3", "from FY2024", "agency", "2023-09-21"),
-    ("fy2027_area_plan_update_instructions.pdf", "program instruction AP-27-02", "FY2027 update",
-     "State Department on Aging", "2026-08-14"),
-    ("hdm_client_roster_2026-10-09.csv", "home-delivered meal clients served since 1 October 2024",
-     "to 9 October 2026", "agency case management system", "2026-10-09"),
-    ("hdm_service_episodes_2026-10-09.csv", "home-delivered meal episodes", "to 9 October 2026",
-     "agency case management system", "2026-10-09"),
-    ("hdm_route_delivery_log_fy2026.csv", "route tablet delivery log", "1 October 2025 to 30 September 2026",
-     "route tablet system", "2026-10-06"),
-    ("hdm_item_codes.csv", "route item codes", "", "agency", "2026-10-06"),
-    ("state_death_match_runs_2025-07_to_2026-10.csv", "the state's monthly death match, statewide",
-     "runs of 5 July 2025 to 5 October 2026", "State Department on Aging", "2026-10-06"),
-    ("state_registry_number_links.csv", "state participant registry number links, statewide", "to 5 October 2026",
-     "State Department on Aging", "2026-10-06"),
-    ("kaaa_field_guide.txt", "field guide to these files", "", "agency planning", "2026-10-09"),
-]
-
-
-def write_inventory(path):
-    import csv
-    import io
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\r\n")
-    w.writerow(["file", "contents", "period", "source", "received"])
-    for r in INVENTORY:
-        w.writerow(r)
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(buf.getvalue())
+    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
+        fh.write(GUIDE)
