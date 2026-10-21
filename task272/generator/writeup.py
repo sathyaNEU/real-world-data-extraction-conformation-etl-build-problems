@@ -89,7 +89,7 @@ def write():
     L.append("1. Horizontal bar chart of the 31 hospitals' shares against the six-percent line, the %d qualifying "
              "hospitals highlighted." % n)
     text = "\n".join(L) + "\n"
-    assert "—" not in text
+    assert "\u2014" not in text
     open(os.path.join(TASK, "submission.md"), "w").write(text)
     return text
 

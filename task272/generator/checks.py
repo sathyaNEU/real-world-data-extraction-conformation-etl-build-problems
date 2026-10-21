@@ -320,7 +320,7 @@ def run(task, b, fig, res):
         check("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower()
               and b"matplotlib" not in bb.lower())
         if f.endswith((".csv", ".txt")):
-            check("REALISM no em dash in %s" % f, "—".encode() not in bb)
+            check("REALISM no em dash in %s" % f, "\u2014".encode() not in bb)
     for f in (K.FILES["criteria"], K.FILES["guide"]):
         txt = subprocess.run(["pdftotext", os.path.join(target, f), "-"], capture_output=True, text=True).stdout.lower()
         hit = [w for w in banned if w in txt]
