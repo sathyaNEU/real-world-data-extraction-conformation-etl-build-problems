@@ -6,13 +6,13 @@
   "domain": "biomedical-clinical-research",
   "subdomain": "statistical-genomics",
   "client_domain": "biomedical-clinical-research",
-  "niche": "a health plan's inherited cancer service estimating each recurrent pathogenic variant's breast cancer risk by 70 from the families referred to it, where relatives who already have cancer are tested far more often than relatives who do not, and the 2027 family outreach programme takes on the variants whose carriers face at least a 30 per cent risk",
+  "niche": "a health system's inherited cancer service estimating each variant group's breast cancer risk by 70 from the families referred to it, where relatives who already have cancer are tested in their own care far more often than relatives who do not, and the 2027 Family Outreach Program takes on the groups whose carriers face at least a 30 percent risk",
   "objective": "descriptive-distribution",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "The program takes on the PALB2 protein-truncating and PALB2 missense groups and none of the other eight.",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "population"
   ],
@@ -32,49 +32,53 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every record correctly leaves the probands out, since their cancer brought each family to the service, takes the relatives the laboratory reports show carrying the family's variant and runs Kaplan-Meier on their ages at diagnosis or last contact; that names seven variants, three of them variants whose families were told only after a 2024 reclassification, so that their relatives were tested mostly for a cancer of their own and few unaffected carriers have been tested yet; only every first-degree relative's history, each a carrier with probability one half unless a test settles it (the kin-cohort or Mendelian likelihood), gives each variant's risk and names four.",
-  "domain_test": "The deciding quantity is each variant's penetrance, the cumulative breast cancer risk by 70 of a woman who carries it, which genetic epidemiology estimates from families with the probands set aside and every relative's history carried through Mendelian inheritance; with stores or schools in place of families nothing passes a trait to half a member's kin, so there is no prior to carry the untested members and the task stops making sense.",
+  "analyst_test": "A strong analyst who reads every relationship, age and final report correctly, leaves the probands and half-sisters out and runs Kaplan-Meier on the relatives whose final report shows the family's variant files PALB2-PTV, PALB2-MIS, ATM-MIS, BARD1-PTV and RAD51D-PTV (43.9, 84.4, 46.2, 41.1, 33.6 percent): the late groups' tested relatives are mostly women tested for a breast cancer of their own; only every relative with the one-half prior names the two PALB2 groups.",
+  "domain_test": "The deciding quantity is each variant group's penetrance, the cumulative breast cancer risk by 70 of a woman who carries a variant in it, which genetic epidemiology estimates from families with the probands set aside and every first-degree relative carried through Mendelian inheritance (the kin-cohort or a segregation likelihood); with stores or schools in place of families nothing passes a trait to half a member's kin, so there is no prior to carry the untested and the call stops making sense.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:penetrance-from-referred-families-with-phenotype-dependent-testing",
   "layer1": [
-    "the pedigree software's export, one row a person, relationships coded to the proband and ages given as birth years for some relatives and ages at intake for others",
-    "laboratory reports naming the variant in legacy protein nomenclature before 2020 and HGVS after, under the laboratory's own accession numbers",
-    "deceased relatives' histories as the proband reported them, ages at death sometimes given to the decade",
-    "two probands who are sisters entered as two families that share their mother",
-    "the reclassification log and notification letters dated by family"
+    "the register's pedigree export, one row a person, relationships coded to the proband, ages as of each family's history date, birth year only for relatives who are not patients",
+    "the reference laboratory's legacy variant names to February 2021 against the system laboratory's HGVS after",
+    "amended reports (May 2024) and re-analysis reports (from August 2023) replacing the reports they supersede",
+    "half-siblings coded apart from full siblings",
+    "enterprise IDs on MRI orders kept from before a duplicate registration's merge",
+    "first-course breast surgery in the tumor registry only before the 2019 EHR cutover"
   ],
-  "stakeholder_role": "genetic epidemiologist of the plan's Inherited Cancer Risk Service",
+  "stakeholder_role": "genetic epidemiologist of the health system's Inherited Cancer Risk Service",
   "role_family": "research_desk",
-  "scoring_unit": "per covered member",
+  "scoring_unit": "units served",
   "spine": {
-    "file": "pedigree export",
-    "rows": 0,
+    "file": "icrs_pedigree_export_20260930.csv",
+    "rows": 55456,
     "entity": "one row is one person in a referred family's pedigree",
     "grain": "person within family",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "line_manager_or_team",
   "forcing_event": "launch_or_rollout",
   "org_family": "hospital_or_health_provider",
   "world": {
     "geography": "United States (Colorado)",
     "currency": "USD",
-    "org_type": "nonprofit integrated health plan",
-    "invented_names": [],
+    "org_type": "nonprofit health system (38 hospitals in six western states, based in Denver)",
+    "invented_names": [
+      "Ellisford Health",
+      "Tessaran Diagnostics"
+    ],
     "people": [
       "Katrina Newman",
       "Luis Thomas"
     ]
   },
   "deliverables": [
-    "family_outreach_variants_2027.xlsx",
-    "family_outreach_variants_2027.png"
+    "family_outreach_groups_2027.xlsx",
+    "family_outreach_groups_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the chance that a member carrying an inherited trait develops an outcome by a fixed age, estimated from clusters that reached the record because one member had the outcome, where the other members are checked for the trait far more often once they have the outcome; leaving out the members who brought each cluster in and taking the members checked and found to carry the trait still credits the trait with the outcomes that prompted the checks, most where unaffected members have seldom been checked, and only every member's history, each carrying the trait with the probability inheritance gives unless a check settles it, recovers the risk.",
-  "driver_concrete": "Each recurrent pathogenic variant's breast cancer risk by 70 for the women who carry it, estimated from the first-degree female relatives (mothers, sisters, daughters) of the probands referred to the plan's Inherited Cancer Risk Service, where relatives with breast cancer are tested for the family's variant as part of their own care while unaffected relatives are tested only if they take up the cascade offer, which few had done for variants reclassified as pathogenic in 2024; Kaplan-Meier on the tested carriers overstates those variants, and only the kin-cohort or Mendelian likelihood over every relative's history, each relative a carrier with probability one half unless tested, recovers each variant's risk.",
-  "stump": "A competent solver sets the probands aside, runs Kaplan-Meier on the relatives the laboratory results show carrying the family's variant and names six variants for the 2027 Family Outreach Programme, among them the PALB2 missense, BARD1 and RAD51D variants reclassified in 2024, whose unaffected relatives have seldom been tested; only every first-degree relative's history with the Mendelian one-half prior (the kin-cohort or the Mendelian likelihood) puts those three under 30 per cent and names three.",
+  "driver_concrete": "Each variant group's breast cancer risk by 70 for a woman who carries a variant in it, estimated from the mothers, sisters and daughters of the probands referred to the health system's Inherited Cancer Risk Service, where relatives with breast cancer are tested in their own care or invited first while unaffected relatives are tested only if they answer a letter, and for the four groups identified late (BARD1 and RAD51D added to the panel in 2023, the PALB2 and ATM missense variants reclassified in 2024) few unaffected relatives have answered; every relative counts, a carrier with probability one half unless a final report settles it (kin-cohort or Mendelian likelihood), not the relatives whose report shows the variant.",
+  "stump": "A competent solver sets the probands aside, runs Kaplan-Meier on the relatives whose final report shows the family's variant and names five groups for the 2027 Family Outreach Program, PALB2 protein-truncating, PALB2 missense, ATM missense, BARD1 and RAD51D, because the late groups' tested relatives are mostly women tested for a cancer of their own; only every mother, sister and daughter with the one-half prior (the kin-cohort or the Mendelian likelihood) puts ATM missense, BARD1 and RAD51D at 18, 16 and 12 percent and names the two PALB2 groups.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task180": "task180 v4 restores the small events a daily noise cycle masks at the instruments; task271 v3 records every relative's history in full, and the selection is in which relatives were tested for the family's variant",
@@ -151,6 +155,6 @@
       "fate": "spent 2026-10-20 at stage 4: both isolated scored readers fitted the latent class callback model on every sampled member's call history and landed the call (one took every graded figure); the judge returned SEND_BACK, a level-of-effort logit extrapolated to the unreached naming North Sound fourth"
     }
   ],
-  "notes": "Registered with --force on 2026-10-20 on the author's explicit instruction (option a): the two remaining BLOCKs are coincidences of the coarse key, not a repeated driver. ban.shape against task249 v4: task249 was retired on 2026-10-20 (RETIRED commit, four architectures spent) and its card was never marked architecture_spent by its author, so the guard reads a dead build as a live neighbour; shape 10 is the honest shape of a threshold scorecard, and a ranked slate under a cap would let the share of all relatives affected rank the variants without the analysis. test.same_driver against task268 v2 (lineage): the shared triple is population, G12, method_or_model_selection; task268 v2 read a stock's fall from a fixed survey against fleet catch rates, a different driver (differentiation on this card). G12 (an untested relative's blank genotype is a non-answer) and G14 (the tested carriers' rate does not apply to all carriers) are the honest decisive keys; G6 and G3 would pass the guard and describe the mechanism less well.",
-  "registered": "2026-10-20T21:08:45Z"
+  "notes": "Registered with --force on 2026-10-20 on the author's explicit instruction (option a): the two remaining BLOCKs are coincidences of the coarse key, not a repeated driver. ban.shape against task249 v4: task249 was retired on 2026-10-20 (RETIRED commit, four architectures spent) and its card was never marked architecture_spent by its author, so the guard reads a dead build as a live neighbour; shape 10 is the honest shape of a threshold scorecard, and a ranked slate under a cap would let the share of all relatives affected rank the variants without the analysis. test.same_driver against task268 v2 (lineage): the shared triple is population, G12, method_or_model_selection; task268 v2 read a stock's fall from a fixed survey against fleet catch rates, a different driver (differentiation on this card). G12 (an untested relative's blank genotype is a non-answer) and G14 (the tested carriers' rate does not apply to all carriers) are the honest decisive keys; G6 and G3 would pass the guard and describe the mechanism less well. Stage 3 (2026-10-21): the deciding forum redrawn from committee_or_panel to line_manager_or_team: the service's medical director, the requester's own manager, adopts the groups in February 2027 under the Clinical Programs Committee's criteria (criteria 1.3), so the committee files the standard and does not decide; the redraw answers ban.forum against task471 v5, which entered this card's window when task251's card was marked architecture_spent after this card was filed. Re-registered with --force on the author's instruction (option a, 2026-10-21) over ban.strategy against task471 v5: population_selection is the honest label of this mechanism (the relatives whose genotypes the records hold are selected on their own diagnosis) and no other strategy key describes it; task471 v5 selects a different population on a different ground (differentiation unchanged).",
+  "registered": "2026-10-21T00:03:39Z"
 }

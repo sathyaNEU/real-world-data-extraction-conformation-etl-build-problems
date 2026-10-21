@@ -1,151 +1,183 @@
-"""The callback model and its family. Each sampled member is in one of two classes (worked for pay 80 hours or more in
-March 2026, or not); each call reaches the member with a chance that depends on the class and on when the call is
-made; a member reached completes the interview or declines, the same chance in either class. The class is known for
-members interviewed and for members who declined but answered the key question, and inferred for the rest from their
-call histories. Estimated by EM."""
+"""Estimators of a group's breast cancer risk by 70 for a woman who carries it, from the probands' mothers, sisters and
+daughters, and the easy routes beside them. Every function takes ages in completed years as the pedigree carries
+them: t is the age at a first breast cancer (ev 1) or the age at the family's history date or at death (ev 0)."""
 import numpy as np
+from scipy.optimize import minimize
 
-COMBOS = ["msc_day", "vendor_day", "vendor_evening", "vendor_saturday"]
+T0 = 70
 
 
-def summarise(hist):
-    """hist: per case (region index, age band, sex, class or -1 when unknown, outcome, [(combo, attempt), ...] calls up
-    to and including the reaching call). Returns arrays for the EM: failed calls by combo, the reaching combo (or -1),
-    outcome codes (1 complete, 2 declined, 0 never reached), class, region, age band, sex and the per-call rows."""
-    N = len(hist)
-    F = np.zeros((N, 4))
-    hit = np.full(N, -1)
-    out = np.zeros(N, int)
-    y = np.full(N, -1)
-    reg = np.zeros(N, int)
-    age = np.zeros(N, int)
-    sex = np.zeros(N, int)
-    rows = []
-    for i, (r, a, s, cls, o, calls) in enumerate(hist):
-        reg[i], age[i], sex[i], out[i] = r, a, s, o
-        y[i] = cls
-        for j, (c, k) in enumerate(calls):
-            last = j == len(calls) - 1
-            if last and o in (1, 2):
-                hit[i] = c
+def km(t, ev, w=None, t0=T0):
+    """1 - S just before age t0: events at completed ages below t0, events before censorings at a tied age."""
+    t = np.asarray(t, float)
+    ev = np.asarray(ev, int)
+    w = np.ones_like(t) if w is None else np.asarray(w, float)
+    S = 1.0
+    for a in range(0, t0):
+        at = w[t >= a].sum()
+        d = w[(t == a) & (ev == 1)].sum()
+        if at > 0 and d > 0:
+            S *= 1 - d / at
+    return 1 - S
+
+
+def pop_risk(rates_per_100k, t0=T0):
+    """The population's risk by t0 from 5-year band rates per 100,000 (bands from 0-4)."""
+    r = np.asarray(rates_per_100k, float)[: t0 // 5]
+    return float(1 - np.exp(-(r * 5).sum() / 1e5))
+
+
+def kin_cohort(t, ev, f_n):
+    """Every first-degree relative carries the variant with probability one half: F_rel = (F_c + F_n) / 2."""
+    return 2 * km(t, ev) - f_n
+
+
+BANDS = np.array([0, 40, 50, 60, 70.0])
+
+
+def _exposure(tc):
+    return np.stack([np.clip(tc - BANDS[k], 0, BANDS[k + 1] - BANDS[k]) for k in range(4)], 1)
+
+
+def _pop_terms(tc, ev, rates):
+    """the population's cumulative hazard to each woman's time and its log hazard at her event (5-year bands)"""
+    h = np.asarray(rates, float) / 1e5
+    edges = np.arange(0, 5 * len(h) + 1, 5)
+    full = np.minimum(np.maximum(tc[:, None] - edges[:-1], 0), 5)
+    H = (full * h).sum(1)
+    lh = np.log(np.maximum(h[np.minimum((tc // 5).astype(int), len(h) - 1)], 1e-12))
+    return H, lh
+
+
+def mendel(t, ev, car, tested, rates=None, form="piecewise"):
+    """The likelihood of every woman's history, her genotype where a test gives it and the one-half prior where it
+    does not; the noncarrier hazard is the population's (rates given) or estimated with the carrier's."""
+    t = np.asarray(t, float)
+    ev = np.asarray(ev, int)
+    ev = np.where(t < T0, ev, 0)
+    tc = np.minimum(t + 0.5, float(T0))
+    car = np.asarray(car, int)
+    tested = np.asarray(tested, int)
+    X = _exposure(tc)
+    band = np.clip(np.searchsorted(BANDS, tc, side="right") - 1, 0, 3)
+    fixed = rates is not None
+    if fixed:
+        Hn, lhn = _pop_terms(tc, ev, rates)
+
+    def combine(lc, ln):
+        return np.where(tested == 1, np.where(car == 1, lc, ln), np.logaddexp(lc, ln) + np.log(0.5))
+
+    if form == "piecewise":
+        k = 4 if fixed else 8
+
+        def nll(th):
+            hc = np.exp(th[:4])
+            lc = -(X @ hc) + ev * th[:4][band]
+            if fixed:
+                ln = -Hn + ev * lhn
             else:
-                F[i, c] += 1
-            rows.append((i, c, k, int(last and o in (1, 2))))
-    return dict(F=F, hit=hit, out=out, y=y, reg=reg, age=age, sex=sex, rows=np.array(rows), N=N)
+                hn = np.exp(th[4:])
+                ln = -(X @ hn) + ev * th[4:][band]
+            return -combine(lc, ln).sum()
+        best = None
+        for start in (-5.0, -4.0, -6.0):
+            r = minimize(nll, np.full(k, start), method="L-BFGS-B", bounds=[(-14, 0)] * k)
+            if best is None or r.fun < best.fun:
+                best = r
+        hc = np.exp(best.x[:4])
+        return float(1 - np.exp(-(hc * np.diff(BANDS)).sum()))
+    tt = np.maximum(tc, 0.5)
+
+    def parts(a, b):
+        lam, kk = np.exp(a), np.exp(b)
+        return (tt * lam) ** kk, np.log(kk) + kk * np.log(lam) + (kk - 1) * np.log(tt)
+
+    def nll(th):
+        Hc, lhc = parts(th[0], th[1])
+        lc = -Hc + ev * lhc
+        if fixed:
+            ln = -Hn + ev * lhn
+        else:
+            H2, lh2 = parts(th[2], th[3])
+            ln = -H2 + ev * lh2
+        return -combine(lc, ln).sum()
+    bnds = [(-9, -2), (-0.5, 2.5)] * (1 if fixed else 2)
+    best = None
+    for s in ([np.log(1 / 90), np.log(3.0)], [np.log(1 / 70), np.log(2.0)], [np.log(1 / 120), np.log(4.0)]):
+        x0 = s + ([] if fixed else [np.log(1 / 150), np.log(3.5)])
+        r = minimize(nll, x0, method="L-BFGS-B", bounds=bnds)
+        if best is None or r.fun < best.fun:
+            best = r
+    lam, kk = np.exp(best.x[0]), np.exp(best.x[1])
+    return float(1 - np.exp(-(T0 * lam) ** kk))
 
 
-def em(S, contact="window", rate_by="pooled", share_by="region", refusal="informative", n_regions=10,
-       iters=20000, tol=1e-12):
-    """contact: window (day, evening, Saturday), centre (member services day, vendor day, evening, Saturday) or none;
-    rate_by: pooled or region; share_by: region or cell (region by age band by sex); refusal: informative (a declining
-    member's call history counts) or flat (a declining member carries the region's share). Returns each region's
-    estimated share, the answer rates and the iterations used."""
-    F, hit, out, y, reg = S["F"], S["hit"], S["out"], S["y"], S["reg"]
-    N = S["N"]
-    cmap = {"window": np.array([0, 0, 1, 2]), "centre": np.array([0, 1, 2, 3]), "none": np.array([0, 0, 0, 0])}[contact]
-    J = cmap.max() + 1
-    Fj = np.zeros((N, J))
-    for c in range(4):
-        Fj[:, cmap[c]] += F[:, c]
-    hj = np.where(hit >= 0, cmap[np.maximum(hit, 0)], -1)
-    G = n_regions if rate_by == "region" else 1
-    g = reg if rate_by == "region" else np.zeros(N, int)
-    cell = reg if share_by == "region" else reg * 6 + S["age"] * 2 + S["sex"]
-    C = int(cell.max()) + 1
-    comp, ref = out == 1, out == 2
-    known = y >= 0
-    pi = np.full(C, 0.5)
-    p = np.zeros((G, 2, J))
-    p[:, 0, :], p[:, 1, :] = 0.35, 0.15
-    hh = hj >= 0
-    w = np.where(known, y, 0.5).astype(float)
-    rho = np.array([0.1, 0.1])
-    contacted = comp | ref
-    for it in range(iters):
-        ll = np.zeros((N, 2))
-        for k in (0, 1):
-            pk = p[g, k, :]
-            ll[:, k] = (Fj * np.log(1 - pk)).sum(1)
-            ll[hh, k] += np.log(pk[hh, hj[hh]])
-        pc = pi[cell]
-        a1 = np.log(pc) + ll[:, 1]
-        a0 = np.log(1 - pc) + ll[:, 0]
-        if refusal == "by_class":
-            a1 = a1 + np.where(ref, np.log(rho[1]), 0.0)
-            a0 = a0 + np.where(ref, np.log(rho[0]), 0.0)
-        post = 1 / (1 + np.exp(a0 - a1))
-        if refusal == "flat":
-            post = np.where(ref, pc, post)
-        w = np.where(known, y, post)
-        pi_new = np.bincount(cell, weights=w, minlength=C) / np.bincount(cell, minlength=C)
-        p_new = np.zeros_like(p)
-        for gg in range(G):
-            m = g == gg
-            if refusal == "flat":
-                m = m & ~(ref & ~known)   # a declining member's calls carry no class information under this variant
-            for k, wk in ((1, w), (0, 1 - w)):
-                for j in range(J):
-                    s = (wk[m] * (hj[m] == j)).sum()
-                    t = s + (wk[m] * Fj[m, j]).sum()
-                    p_new[gg, k, j] = s / t if t > 0 else 0.5
-        if refusal == "by_class":
-            rho = np.array([((1 - w) * ref).sum() / ((1 - w) * contacted).sum(), (w * ref).sum() / (w * contacted).sum()])
-        d = max(np.abs(pi_new - pi).max(), np.abs(p_new - p).max())
-        pi, p = pi_new, p_new
-        if d < tol:
-            break
-    share = np.bincount(reg, weights=w, minlength=n_regions) / np.bincount(reg, minlength=n_regions)
-    return share, p, it
+def retrospective(t, ev, car, tested, rates):
+    """The genotype-restricted likelihood: each tested woman's genotype given her history, the one-half prior and the
+    population's hazard for a noncarrier, so testing that follows the history leaves it unbiased."""
+    t = np.asarray(t, float)
+    ev = np.asarray(ev, int)
+    ev = np.where(t < T0, ev, 0)
+    tc = np.minimum(t + 0.5, float(T0))
+    sel = np.asarray(tested, int) == 1
+    car = np.asarray(car, int)[sel]
+    tc, ev = tc[sel], ev[sel]
+    X = _exposure(tc)
+    band = np.clip(np.searchsorted(BANDS, tc, side="right") - 1, 0, 3)
+    Hn, lhn = _pop_terms(tc, ev, rates)
+    ln = -Hn + ev * lhn
+
+    def nll(th):
+        lc = -(X @ np.exp(th)) + ev * th[band]
+        post = np.where(car == 1, lc, ln) - np.logaddexp(lc, ln)
+        return -post.sum()
+    best = None
+    for start in (-5.0, -4.0, -6.0):
+        r = minimize(nll, np.full(4, start), method="L-BFGS-B", bounds=[(-14, 0)] * 4)
+        if best is None or r.fun < best.fun:
+            best = r
+    return float(1 - np.exp(-(np.exp(best.x) * np.diff(BANDS)).sum()))
 
 
-def em_attempt(S, n_regions=10, iters=400, tol=1e-10):
-    """The window model with an attempt-number effect shared by the classes (logit of the chance a call reaches the
-    member = class-by-window level + attempt term, attempts 1 to 9). EM with a weighted logistic M-step."""
-    import statsmodels.api as sm
-    rows = S["rows"]                      # case, combo, attempt, reached
-    out, y, reg = S["out"], S["y"], S["reg"]
-    known = y >= 0
-    win = np.array([0, 0, 1, 2])[rows[:, 1].astype(int)]
-    att = np.clip(rows[:, 2].astype(int), 1, 9)
-    hitr = rows[:, 3].astype(float)
-    case = rows[:, 0].astype(int)
-    n = len(rows)
-    # design: class-by-window dummies (6) and attempt dummies 2..9 (8)
-    Xw = np.zeros((n, 3))
-    Xw[np.arange(n), win] = 1
-    Xa = np.zeros((n, 8))
-    for k in range(2, 10):
-        Xa[att == k, k - 2] = 1
-    X = np.vstack([np.hstack([Xw, np.zeros((n, 3)), Xa]), np.hstack([np.zeros((n, 3)), Xw, Xa])])
-    Y = np.concatenate([hitr, hitr])
-    pi = np.full(n_regions, 0.5)
-    beta = np.zeros(14)
-    beta[:6] = np.log(np.array([0.35, 0.35, 0.35, 0.15, 0.15, 0.15]) / (1 - np.array([0.35, 0.35, 0.35, 0.15, 0.15, 0.15])))
-    w = np.where(known, y, 0.5).astype(float)
-    for it in range(iters):
-        eta = X @ beta
-        pr = 1 / (1 + np.exp(-eta))
-        lc = Y * np.log(pr) + (1 - Y) * np.log(1 - pr)
-        l0 = np.bincount(case, weights=lc[:n], minlength=S["N"])
-        l1 = np.bincount(case, weights=lc[n:], minlength=S["N"])
-        pc = pi[reg]
-        post = 1 / (1 + np.exp((np.log(1 - pc) + l0) - (np.log(pc) + l1)))
-        w = np.where(known, y, post)
-        pi_new = np.bincount(reg, weights=w, minlength=n_regions) / np.bincount(reg, minlength=n_regions)
-        wt = np.concatenate([1 - w[case], w[case]])
-        fit = sm.GLM(Y, X, family=sm.families.Binomial(), freq_weights=wt).fit(start_params=beta)
-        d = max(np.abs(pi_new - pi).max(), np.abs(fit.params - beta).max())
-        pi, beta = pi_new, fit.params
-        if d < tol:
-            break
-    share = np.bincount(reg, weights=w, minlength=n_regions) / np.bincount(reg, minlength=n_regions)
-    return share, beta, it
+def ipw_living(t, ev, car, tested, alive):
+    """The tested carriers among the living, each weighted by one over the share of the living with her diagnosis
+    status (ever affected or not) who were tested."""
+    t, ev, car, tested, alive = (np.asarray(x) for x in (t, ev, car, tested, alive))
+    w = np.zeros(len(t))
+    for a in (0, 1):
+        m = (alive == 1) & (ev == a)
+        r = tested[m].mean() if m.sum() else 0.0
+        w[m & (tested == 1)] = 1.0 / r if r > 0 else 0.0
+    sel = (tested == 1) & (car == 1) & (alive == 1)
+    return km(t[sel], ev[sel], w[sel])
 
 
-FAMILY = {
-    "window, pooled (the golden)": dict(),
-    "window, by region": dict(rate_by="region"),
-    "centre and window, pooled": dict(contact="centre"),
-    "window, pooled, shares by age band and sex": dict(share_by="cell"),
-    "window, pooled, declining by class": dict(refusal="by_class"),
-}
+FAMILY = ("kin", "mendel_pw_fix", "mendel_pw_free", "mendel_wb_fix")
+RECORDED = ("retrospective",)
+ROUTES = ("default", "naive", "relshare", "sloppy", "kin_testedneg", "ipw_living")
+
+
+def estimates(t, ev, car, tested, alive, rates, proband_t=None, proband_ev=None):
+    """Every estimator and route for one group. car and tested are the laboratory's view: car is read only where
+    tested is 1."""
+    t, ev, car, tested, alive = (np.asarray(x) for x in (t, ev, car, tested, alive))
+    f_n = pop_risk(rates)
+    tc = (tested == 1) & (car == 1)
+    tn = (tested == 1) & (car == 0)
+    out = {}
+    out["kin"] = kin_cohort(t, ev, f_n)
+    out["mendel_pw_fix"] = mendel(t, ev, car, tested, rates)
+    out["mendel_pw_free"] = mendel(t, ev, car, tested)
+    out["mendel_wb_fix"] = mendel(t, ev, car, tested, rates, form="weibull")
+    out["retrospective"] = retrospective(t, ev, car, tested, rates)
+    out["default"] = km(t[tc], ev[tc])
+    if proband_t is not None:
+        out["naive"] = km(np.concatenate([t[tc], proband_t]), np.concatenate([ev[tc], proband_ev]))
+    f_rel = km(t, ev)
+    out["relshare"] = f_rel
+    out["sloppy"] = 2 * f_rel
+    out["kin_testedneg"] = 2 * f_rel - km(t[tn], ev[tn])
+    out["ipw_living"] = ipw_living(t, ev, car, tested, alive)
+    out["f_rel"] = f_rel
+    out["f_n"] = f_n
+    return out

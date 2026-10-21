@@ -1,6 +1,6 @@
-"""The independent verifier: every graded figure recomputed from the shipped files with pandas and its own EM, sharing
-no code with the generator, the pack reader or the analysis. Exit 0 when every figure in figures.json reproduces."""
-import datetime as dt
+"""Independent verifier: recomputes the call and both planning figures from target/ alone with code that shares
+nothing with analysis.py or models.py (pandas joins, a hand-rolled life table, an EM fit of the Mendelian mixture),
+and compares them with generator/figures.json."""
 import json
 import os
 import sys
@@ -9,156 +9,125 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FILES = dict(sample="mwis_2026_sample.csv", dialer="kestrelby_mwis_dialer_export.csv",
-             crm="trevanna_msc_mwis_activity.xlsx", interviews="mwis_2026_interviews.csv",
-             regions="apple_health_regions.xlsx", roster="trevanna_expansion_roster_20261019.csv",
-             changes="trevanna_enrollment_changes_20261001_20261019.txt", cases="hca_household_composition_20261015.csv")
-DAY = pd.Timestamp("2026-10-01")
 
 
-def histories(t):
-    s = pd.read_csv(os.path.join(t, FILES["sample"]), dtype=str)
-    d = pd.read_csv(os.path.join(t, FILES["dialer"]), dtype=str)
-    d = d[d.case_id.isin(s.case_id)].copy()
-    ts = pd.to_datetime(d.call_start, utc=True).dt.tz_convert("America/Los_Angeles").dt.tz_localize(None)
-    d["when"] = ts
-    d["kind"] = np.where(ts.dt.dayofweek == 5, 3, np.where(ts.dt.hour * 60 + ts.dt.minute >= 17 * 60 + 30, 2, 1))
-    d["res"] = d.disposition.map({"1100": 1, "2110": 2}).fillna(0).astype(int)
-    c = pd.read_excel(os.path.join(t, FILES["crm"]), sheet_name="Activity", dtype={"Member ID": str})
-    c = c[c["Activity Type"] == "MWIS outbound call"].copy()
-    c["when"] = pd.to_datetime(c["Activity Date"].astype(str).str[:10] + " " + c["Activity Time"], format="%Y-%m-%d %I:%M %p")
-    c["case_id"] = c["Member ID"].map(dict(zip(s.member_id, s.case_id)))
-    c["kind"] = 0
-    c["res"] = c.Result.map({"Spoke to member - survey completed": 1, "Spoke to member - declined survey": 2}).fillna(0)
-    calls = pd.concat([d[["case_id", "when", "kind", "res"]], c[["case_id", "when", "kind", "res"]]])
-    calls["res"] = calls.res.astype(int)
-    calls = calls.sort_values(["case_id", "when", "kind"])
-    calls["first_hit"] = calls.groupby("case_id").res.transform(lambda r: (r > 0).cumsum().shift(fill_value=0))
-    calls = calls[calls.first_hit == 0]
-    i = pd.read_csv(os.path.join(t, FILES["interviews"]), dtype=str)
-    i = i[i.case_id.isin(s.case_id)]
-    y = pd.Series(np.where(i.status == "Complete", pd.to_numeric(i.total_hours_march, errors="coerce") >= 80,
-                           i.key_80_hours_march == "Yes").astype(int), index=i.case_id)
-    return s, calls, y
+def life_table_risk(age, event, upto=70):
+    """1 - prod(1 - d/n) over completed ages below upto; events counted before censorings at a tied age."""
+    df = pd.DataFrame({"age": np.asarray(age, int), "ev": np.asarray(event, int)})
+    s = 1.0
+    for a in range(upto):
+        n = (df["age"] >= a).sum()
+        d = ((df["age"] == a) & (df["ev"] == 1)).sum()
+        if n:
+            s *= 1 - d / n
+    return 1 - s
 
 
-def em(s, calls, y, tol=1e-12):
-    cases = s.case_id.tolist()
-    ix = {c: k for k, c in enumerate(cases)}
-    n = len(cases)
-    win = {0: 0, 1: 0, 2: 1, 3: 2}
-    fails = np.zeros((n, 3))
-    hitw = np.full(n, -1)
-    out = np.zeros(n, int)
-    for row in calls.itertuples(index=False):
-        k = ix[row.case_id]
-        if row.res:
-            hitw[k] = win[row.kind]
-            out[k] = row.res
-        else:
-            fails[k, win[row.kind]] += 1
-    reg = pd.Categorical(s.region).codes
-    regs = list(pd.Categorical(s.region).categories)
-    cls = np.array([y.get(c, -1) for c in cases])
-    known = cls >= 0
-    pi = np.full(len(regs), 0.5)
-    pr = np.array([[0.3, 0.3, 0.3], [0.2, 0.2, 0.2]])
-    for _ in range(50000):
-        lik = []
-        for k in (0, 1):
-            l = (fails * np.log(1 - pr[k])).sum(1)
-            l = l + np.where(hitw >= 0, np.log(pr[k][np.maximum(hitw, 0)]), 0)
-            lik.append(l)
-        a1 = np.log(pi[reg]) + lik[1]
-        a0 = np.log(1 - pi[reg]) + lik[0]
-        w = np.where(known, cls, 1 / (1 + np.exp(a0 - a1)))
-        pi2 = np.array([w[reg == r].mean() for r in range(len(regs))])
-        pr2 = np.zeros_like(pr)
-        for k, wk in ((1, w), (0, 1 - w)):
-            for j in range(3):
-                h = (wk * (hitw == j)).sum()
-                pr2[k, j] = h / (h + (wk * fails[:, j]).sum())
-        done = max(abs(pi2 - pi).max(), abs(pr2 - pr).max()) < tol
-        pi, pr = pi2, pr2
-        if done:
+def em_mendel(age, event, genotype, rates, iters=400):
+    """EM for the two-component mixture: E-step, each untested woman's posterior chance of carrying (prior one half);
+    M-step, carrier hazards by band as weighted events over weighted exposure. Noncarrier hazard = population."""
+    age = np.asarray(age, float)
+    ev = np.asarray(event, int)
+    ev = np.where(age < 70, ev, 0)
+    t = np.minimum(age + 0.5, 70.0)
+    edges = [0, 40, 50, 60, 70]
+    expo = np.stack([np.clip(t - edges[k], 0, edges[k + 1] - edges[k]) for k in range(4)], 1)
+    band = np.clip(np.searchsorted(edges, t, side="right") - 1, 0, 3)
+    h_pop = np.asarray(rates, float) / 1e5
+    full = np.minimum(np.maximum(t[:, None] - np.arange(0, 5 * len(h_pop), 5), 0), 5)
+    Hn = (full * h_pop).sum(1)
+    hn_ev = h_pop[np.minimum((t // 5).astype(int), len(h_pop) - 1)]
+    g = np.asarray(genotype, float)          # 1 carrier, 0 noncarrier, nan untested
+    hc = np.full(4, 0.005)
+    for _ in range(iters):
+        lc = -(expo @ hc) + np.where(ev == 1, np.log(hc[band]), 0.0)
+        ln = -Hn + np.where(ev == 1, np.log(np.maximum(hn_ev, 1e-12)), 0.0)
+        post = 1 / (1 + np.exp(ln - lc))
+        w = np.where(np.isnan(g), post, g)
+        new = np.array([(w * ev * (band == k)).sum() / max((w * expo[:, k]).sum(), 1e-12) for k in range(4)])
+        new = np.maximum(new, 1e-9)
+        if np.max(np.abs(new - hc)) < 1e-10:
+            hc = new
             break
-    return {r: float(w[reg == k].mean()) for k, r in enumerate(regs)}
-
-
-def age(born, on=DAY):
-    return on.year - born.dt.year - ((born.dt.month > on.month) | ((born.dt.month == on.month) & (born.dt.day > on.day)))
-
-
-def planning(t):
-    reg = pd.read_excel(os.path.join(t, FILES["regions"]), sheet_name="Counties")
-    region_of = dict(zip(reg.County, reg["Region code"]))
-    ro = pd.read_csv(os.path.join(t, FILES["roster"]), dtype=str)
-    lg = pd.read_csv(os.path.join(t, FILES["changes"]), sep="|", dtype=str, keep_default_na=False)
-    hh = pd.read_csv(os.path.join(t, FILES["cases"]), dtype=str, keep_default_na=False)
-    ro["born"] = pd.to_datetime(ro.birth_date, format="%m/%d/%Y")
-    ro["begin"] = pd.to_datetime(ro.enrollment_begin)
-    ro["end"] = pd.to_datetime(ro.scheduled_end)
-    lg["eff"] = pd.to_datetime(lg.effective_date, format="%Y%m%d")
-    lg["at"] = pd.to_datetime(lg.logged_at)
-    lg["born"] = pd.to_datetime(lg.birth_date, format="%Y%m%d")
-    # spans: a member covered on the day is on the roster with an enrollment begun by it and not ended before it (a
-    # termination before it reinstated), or was terminated with a last day on or after it before any October add
-    first_add = lg[lg.change == "ADD"].groupby("member_id").at.min()
-    late_term = lg[(lg.change == "TERM") & (lg.eff >= DAY)]
-    first_term = late_term.groupby("member_id").at.min()
-    reinst = set(lg[lg.change == "REINSTATE"].member_id)
-    early = set(lg[(lg.change == "TERM") & (lg.eff < DAY)].member_id)
-    ro_ok = (ro.begin <= DAY) & (ro.end.isna() | (ro.end >= DAY)) & (~ro.member_id.isin(early) | ro.member_id.isin(reinst))
-    churn = ro.member_id.map(first_term).notna() & ro.member_id.map(first_add).notna() & \
-        (ro.member_id.map(first_term) < ro.member_id.map(first_add))
-    a = ro[ro_ok | churn][["member_id", "p1_client_id", "born", "county"]].copy()
-    mv = lg[(lg.change == "ADDRESS") & (lg.eff > DAY)].sort_values("eff").groupby("member_id").county_before.first()
-    a["county"] = a.member_id.map(mv).fillna(a.county)
-    gone = late_term[~late_term.member_id.isin(ro.member_id) & ~late_term.member_id.isin(first_add.index)]
-    gone = gone.sort_values("at").groupby("member_id").first().reset_index()
-    a = pd.concat([a, gone.rename(columns={"county_before": "county"})[["member_id", "p1_client_id", "born", "county"]]])
-    a = a[(age(a.born) >= 19) & (age(a.born) <= 64)].copy()
-    a["region"] = a.county.map(region_of)
-    hh["born"] = pd.to_datetime(hh.birth_date, format="%m/%d/%Y")
-    hh["b"] = pd.to_datetime(hh.member_begin)
-    hh["e"] = pd.to_datetime(hh.member_end.replace("", None))
-    on = (hh.b <= DAY) & (hh.e.isna() | (hh.e >= DAY))
-    kids = hh[on & (hh.case_role == "CHILD") & (hh.born <= DAY) & (age(hh.born) < 14)]
-    with_kid = set(kids.case_id)
-    par = hh[on & hh.case_role.isin(["HOH", "SPOUSE", "CARETAKER_RELATIVE"]) & hh.case_id.isin(with_kid)]
-    a["parent"] = a.p1_client_id.isin(set(par.p1_client_id))
-    return a.groupby("region").size().to_dict(), a[a.parent].groupby("region").size().to_dict()
+        hc = new
+    return 1 - np.exp(-(hc * np.diff(edges)).sum())
 
 
 def run(task):
-    t = os.path.join(task, "target")
+    target = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    names = dict(pd.read_excel(os.path.join(t, FILES["regions"]), sheet_name="Regions")[["Code", "Apple Health region"]]
-                 .itertuples(index=False))
-    s, calls, y = histories(t)
-    sh = em(s, calls, y)
-    bad = []
-    for code, v in sh.items():
-        n = names[code]
-        if abs(v - fig["share_unrounded"][n]) > 5e-6:
-            bad.append(("share", n, v, fig["share_unrounded"][n]))
-        if int(np.floor(v * 100 + 0.5)) != fig["share"][n]:
-            bad.append(("share pct", n, v))
-    four = sorted(sorted(sh, key=sh.get)[:4], key=sh.get)
-    if [names[c] for c in four] != fig["call"]["regions"]:
-        bad.append(("four", four))
-    if names[sorted(sh, key=sh.get)[4]] != fig["call"]["first_below"]:
-        bad.append(("first below",))
-    a, b = planning(t)
-    for code in a:
-        if a[code] != fig["ask_a"][names[code]]:
-            bad.append(("ask a", code, a[code], fig["ask_a"][names[code]]))
-        if b.get(code, 0) != fig["ask_b"][names[code]]:
-            bad.append(("ask b", code, b.get(code, 0), fig["ask_b"][names[code]]))
-    print("VERIFY %s: shares, the four, the first below, %d planning figures" % ("PASS" if not bad else "FAIL", 2 * len(a)))
-    for x in bad:
-        print("  ", x)
-    return 0 if not bad else 1
+    files = {f: os.path.join(target, f) for f in os.listdir(target)}
+    find = lambda stem: next(v for k, v in files.items() if k.startswith(stem))
+    ped = pd.read_csv(find("icrs_pedigree_export"), dtype=str, keep_default_na=False)
+    lab = pd.read_csv(find("icrs_laboratory_reports"), dtype=str, keep_default_na=False)
+    inc = pd.read_csv(find("ellisford_tumor_registry_breast_incidence"), dtype=str)
+    rates = inc["rate_per_100000"].astype(float).values
+    f_n = 1 - np.exp(-(rates[:14] * 5).sum() / 1e5)
+
+    live = lab[~lab["report_id"].isin(set(lab["supersedes"]) - {""})]
+    pos = set(live.loc[live["result"].isin(["Variant identified", "Detected", "Positive"]), "person_id"])
+    tested = set(live["person_id"])
+
+    def first_breast(r):
+        a = [int(r["cancer_%d_age" % k]) for k in (1, 2, 3) if r["cancer_%d" % k] == "Breast" and r["cancer_%d_age" % k]]
+        return min(a) if a else None
+    fdr = ped[ped["relationship"].isin(["MOTHER", "SISTER", "DAUGHTER"])].copy()
+    fb = fdr.apply(first_breast, axis=1)
+    fdr["ev"] = fb.notna().astype(int)
+    fdr["t"] = np.where(fb.notna(), fb.fillna(0).astype(int), fdr["age"].astype(int))
+    fdr["g"] = [np.nan if p not in tested else (1.0 if p in pos else 0.0) for p in fdr["person_id"]]
+    bad = 0
+    out = {}
+    for code, d in fdr.groupby("family_variant_group"):
+        kin = 2 * life_table_risk(d["t"], d["ev"]) - f_n
+        em = em_mendel(d["t"].values, d["ev"].values, d["g"].values, rates)
+        out[code] = (kin, em)
+        verdict = "Yes" if kin >= 0.30 else "No"
+        ok = verdict == fig["verdict"][code] and (em >= 0.30) == (kin >= 0.30) and \
+            abs(kin - fig["risk_kin"][code]) < 5e-4
+        bad += not ok
+        print("%-11s kin %.4f  EM %.4f  verdict %s  %s" % (code, kin, em, verdict, "ok" if ok else "MISMATCH"))
+
+    # planning figures
+    deaths = set(pd.read_csv(find("ellisford_death_linkage"), dtype=str)["enterprise_id"])
+    ab = pd.read_csv(find("ellisford_tumor_registry_breast_abstracts"), dtype=str)
+    sx = pd.read_csv(find("ellisford_surgical_procedures"), dtype=str, keep_default_na=False)
+    mri = pd.read_csv(find("ellisford_breast_mri_exams"), dtype=str)
+    empi = pd.read_csv(find("ellisford_empi_identifiers"), dtype=str)
+    pos_pp = set(live.loc[live["result"].isin(["Variant identified", "Detected", "Positive"]) &
+                          live["classification"].isin(["Pathogenic", "Likely pathogenic"]), "person_id"])
+    w = ped[ped["person_id"].isin(pos_pp) & (ped["sex"] == "F") & (ped["enterprise_id"] != "") &
+            (ped["vital_status"] == "Living") & ~ped["enterprise_id"].isin(deaths)].copy()
+    dob = pd.to_datetime(w["birth_date"])
+    age = 2027 - dob.dt.year - ((dob.dt.month > 4) | ((dob.dt.month == 4) & (dob.dt.day > 1))).astype(int)
+    w = w[(age >= 30) & (age <= 74)]
+    sides = {}
+    for _, r in ab.iterrows():
+        c = int(r["surgery_primary_site_code"])
+        s = sides.setdefault(r["enterprise_id"], set())
+        if c in (41, 42, 51, 56):
+            s.add("L" if r["laterality"] == "Left" else "R")
+        if c in (42, 56):
+            s |= {"L", "R"}
+    for _, r in sx.iterrows():
+        if r["cpt_code"] in ("19303", "19305", "19306", "19307"):
+            s = sides.setdefault(r["enterprise_id"], set())
+            s |= {"L", "R"} if r["modifier"] == "50" else {r["modifier"][0]}
+    w = w[[len(sides.get(e, set())) < 2 for e in w["enterprise_id"]]]
+    m = mri[(mri["status"] == "COMPLETED") & (mri["indication"] == "SCREENING - HIGH RISK") &
+            (mri["exam_date"] >= "2025-10-01") & (mri["exam_date"] <= "2026-09-30")]
+    m = m.merge(empi, on=["hospital", "mrn"], suffixes=("_order", ""))
+    seen = set(m["enterprise_id"])
+    a = w.groupby("family_variant_group").size().to_dict()
+    b = w[~w["enterprise_id"].isin(seen)].groupby("family_variant_group").size().to_dict()
+    for code in fig["ask_a"]:
+        ok = a.get(code, 0) == fig["ask_a"][code] and b.get(code, 0) == fig["ask_b"][code]
+        bad += not ok
+        print("%-11s A %4d (figures %4d)  B %4d (figures %4d)  %s" % (code, a.get(code, 0), fig["ask_a"][code],
+                                                                     b.get(code, 0), fig["ask_b"][code],
+                                                                     "ok" if ok else "MISMATCH"))
+    print("verify:", "PASS" if bad == 0 else "FAIL %d" % bad)
+    return 0 if bad == 0 else 1
 
 
 if __name__ == "__main__":

@@ -1,76 +1,76 @@
-"""Constants shared by the task271 generator: the plan, its survey vendor, the ten Apple Health regions, the survey's
-calendar and calling hours, the disposition codes and the shipped file names."""
+"""Constants shared by the task271 generator: the health system and its Inherited Cancer Risk Service, the ten variant
+groups on the service's register, the calendar the records follow, the hospitals, and the shipped file names."""
 import datetime as dt
 
-PLAN = "Trevanna Community Health Plan"
-PLAN_SHORT = "Trevanna"
-VENDOR = "Kestrelby Survey Research"
-VENDOR_SHORT = "Kestrelby"
-SURVEY = "Member Work and Income Survey"
-SURVEY_SHORT = "MWIS"
-TRACK = "Community Engagement Support track"
-MSC = "Member Services Center"
-PEOPLE = {"requester": "Robin Fields", "requester_title": "Director of Community Health Programs",
-          "vendor": "Dillon Evans", "vendor_title": "Project Director"}
+SYSTEM = "Ellisford Health"
+SERVICE = "Inherited Cancer Risk Service"
+SERVICE_SHORT = "ICRS"
+COMMITTEE = "Clinical Programs Committee"
+PROGRAM = "Family Outreach Program"
+CLINIC = "High-Risk Breast Clinic"
+LAB = "Ellisford Molecular Diagnostics Laboratory"
+REFLAB = "Tessaran Diagnostics"
+PEOPLE = {"requester": "Katrina Newman", "requester_title": "Genetic Epidemiologist, Inherited Cancer Risk Service",
+          "director": "Luis Thomas", "director_title": "Medical Director, Inherited Cancer Risk Service"}
 
-# Washington's ten Apple Health regions, the plan's three-letter codes and the counties in each.
-REGIONS = [
-    ("GRV", "Great Rivers", ["Cowlitz", "Grays Harbor", "Lewis", "Pacific", "Wahkiakum"]),
-    ("GCO", "Greater Columbia", ["Asotin", "Benton", "Columbia", "Franklin", "Garfield", "Kittitas", "Walla Walla",
-                                 "Whitman", "Yakima"]),
-    ("KNG", "King", ["King"]),
-    ("NCE", "North Central", ["Chelan", "Douglas", "Grant", "Okanogan"]),
-    ("NSD", "North Sound", ["Island", "San Juan", "Skagit", "Snohomish", "Whatcom"]),
-    ("PRC", "Pierce", ["Pierce"]),
-    ("SAL", "Salish", ["Clallam", "Jefferson", "Kitsap"]),
-    ("SWR", "Southwest", ["Clark", "Klickitat", "Skamania"]),
-    ("SPK", "Spokane", ["Adams", "Ferry", "Lincoln", "Pend Oreille", "Spokane", "Stevens"]),
-    ("TMA", "Thurston-Mason", ["Mason", "Thurston"]),
+# The service's register: code, gene, the consequence the group holds, how the group's families came to the service.
+# "panel 2023": the gene joined the hereditary breast panel in July 2023 and stored panel data were re-analysed;
+# "reclassified 2024": the laboratory reclassified the group's variants from uncertain significance in May 2024.
+GROUPS = [
+    ("PALB2-PTV", "PALB2", "protein-truncating", ""),
+    ("PALB2-MIS", "PALB2", "missense", "reclassified 2024"),
+    ("ATM-PTV", "ATM", "protein-truncating", ""),
+    ("ATM-MIS", "ATM", "missense", "reclassified 2024"),
+    ("CHEK2-PTV", "CHEK2", "protein-truncating", ""),
+    ("CHEK2-MIS", "CHEK2", "missense", ""),
+    ("BARD1-PTV", "BARD1", "protein-truncating", "panel 2023"),
+    ("RAD51C-PTV", "RAD51C", "protein-truncating", ""),
+    ("RAD51D-PTV", "RAD51D", "protein-truncating", "panel 2023"),
+    ("BRIP1-PTV", "BRIP1", "protein-truncating", ""),
 ]
-CODES = [r[0] for r in REGIONS]
-NAME = {r[0]: r[1] for r in REGIONS}
-COUNTIES = {r[0]: r[2] for r in REGIONS}
-N_PER_REGION = 1500
+CODES = [g[0] for g in GROUPS]
+GENE = {g[0]: g[1] for g in GROUPS}
+KIND = {g[0]: g[2] for g in GROUPS}
+LATE = {g[0]: g[3] for g in GROUPS}
+LABEL = {g[0]: "%s %s" % (g[1], g[2]) for g in GROUPS}
 
-# The survey's calendar (all times Pacific): four releases, calls to 29 May, Memorial Day off.
-FRAME_DATE = dt.date(2026, 3, 1)             # members enrolled on this day form the sampling frame
-REFERENCE_MONTH = (dt.date(2026, 3, 1), dt.date(2026, 3, 31))
-WAVES = [dt.date(2026, 4, 13), dt.date(2026, 4, 20), dt.date(2026, 4, 27), dt.date(2026, 5, 4)]
-FIELD_CLOSE = dt.date(2026, 5, 29)
-HOLIDAYS = {dt.date(2026, 5, 25)}
-# calling hours: weekday day shift (both centres), weekday evening and Saturday (the vendor only)
-SHIFTS = {"day": ((9, 0), (16, 30)), "evening": ((17, 30), (20, 30)), "saturday": ((10, 0), (14, 0))}
-WINDOWS = ["day", "evening", "saturday"]
+# Calendar (decimal years are used inside the generator; the files carry dates)
+UNIVERSAL_START = dt.date(2016, 1, 4)        # a panel offered to every patient diagnosed with breast cancer
+EHR_CUTOVER = dt.date(2019, 3, 4)            # the surgical extract starts with the current EHR
+LAB_SWITCH = dt.date(2021, 3, 1)             # testing moved from the reference laboratory to the system's own
+PANEL_2023 = dt.date(2023, 7, 10)            # BARD1 and RAD51D join the panel; stored data re-analysed
+RECLASS_2024 = dt.date(2024, 5, 14)          # PALB2 and ATM missense variants reclassified, amended reports issued
+EXPORT = dt.date(2026, 9, 30)                # the registry export and every extract's cut
+CRITERIA_DATE = dt.date(2026, 9, 24)         # the committee approves the program's criteria
+ASSEMBLED = dt.datetime(2026, 10, 22, 15, 40)
+PROGRAM_START = dt.date(2027, 4, 1)
+MRI_WINDOW = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
 
-# The vendor's dialer disposition codes and the member services CRM's results.
-DISPO = {1100: "Completed interview", 2110: "Refused - member", 3130: "No answer", 3140: "Voicemail - message left",
-         3150: "Busy", 2320: "Household member answered - member not available"}
-CRM_RESULT = {1100: "Spoke to member - survey completed", 2110: "Spoke to member - declined survey",
-              3130: "No answer", 3140: "Left voicemail", 3150: "Line busy",
-              2320: "Spoke to household member - member unavailable"}
-CRM_TRANSFER = "Case transferred to Kestrelby"
-
-METHODS_DATE = dt.date(2026, 6, 30)          # the vendor's methods report
-CRITERIA_DATE = dt.date(2026, 9, 16)         # the track's criteria, approved by the Programs and Quality Committee
-ROSTER_DATE = dt.date(2026, 10, 1)           # the asks' coverage date
-CHANGES_TO = dt.date(2026, 10, 19)           # the last daily enrollment change file in the pack
-ASSEMBLED = dt.datetime(2026, 10, 20, 15, 10)   # the pack put together for the board paper
-BOARD_DATE = dt.date(2026, 12, 10)
+# Hospitals with breast imaging (code, city, state); the system runs 38 hospitals in six states.
+HOSPITALS = [
+    ("DEN", "Denver", "CO"), ("AUR", "Aurora", "CO"), ("LKW", "Lakewood", "CO"), ("COS", "Colorado Springs", "CO"),
+    ("FTC", "Fort Collins", "CO"), ("PUB", "Pueblo", "CO"), ("GJT", "Grand Junction", "CO"),
+    ("SLC", "Salt Lake City", "UT"), ("OGD", "Ogden", "UT"), ("PRV", "Provo", "UT"),
+    ("ABQ", "Albuquerque", "NM"), ("SAF", "Santa Fe", "NM"), ("CHY", "Cheyenne", "WY"), ("CPR", "Casper", "WY"),
+    ("BOI", "Boise", "ID"), ("BIL", "Billings", "MT"),
+]
+HOSP_CODES = [h[0] for h in HOSPITALS]
 
 FILES = {
-    "criteria": "trevanna_ce_support_track_criteria_2027.pdf",
-    "guide": "trevanna_ce_support_data_guide.pdf",
-    "methods": "mwis_2026_methods_report.pdf",
-    "sample": "mwis_2026_sample.csv",
-    "dialer": "kestrelby_mwis_dialer_export.csv",
-    "crm": "trevanna_msc_mwis_activity.xlsx",
-    "interviews": "mwis_2026_interviews.csv",
-    "regions": "apple_health_regions.xlsx",
-    "roster": "trevanna_expansion_roster_20261019.csv",
-    "changes": "trevanna_enrollment_changes_20261001_20261019.txt",
-    "cases": "hca_household_composition_20261015.csv",
-    "pilot": "mwis_pilot_memo_2026.pdf",
-    "cahps": "trevanna_cahps_2025_regions.xlsx",
+    "criteria": "family_outreach_program_criteria_2027.pdf",
+    "guide": "icrs_registry_data_guide.pdf",
+    "pedigree": "icrs_pedigree_export_20260930.csv",
+    "labs": "icrs_laboratory_reports_2016_2026.csv",
+    "groups": "icrs_variant_register.xlsx",
+    "incidence": "ellisford_tumor_registry_breast_incidence_2016_2025.csv",
+    "abstracts": "ellisford_tumor_registry_breast_abstracts.csv",
+    "surgery": "ellisford_surgical_procedures_2019_2026.csv",
+    "imaging": "ellisford_breast_mri_exams_2024_2026.csv",
+    "empi": "ellisford_empi_identifiers.csv",
+    "merges": "ellisford_empi_merge_log.csv",
+    "deaths": "ellisford_death_linkage_20260930.csv",
+    "capacity": "high_risk_breast_clinic_mri_capacity_2027.xlsx",
+    "prs": "icrs_polygenic_score_pilot_2025.csv",
     "contents": "contents.txt",
 }
-DELIVERABLES = ("ce_support_regions_2027.xlsx", "ce_support_regions_2027.png")
+DELIVERABLES = ("family_outreach_groups_2027.xlsx", "family_outreach_groups_2027.png")

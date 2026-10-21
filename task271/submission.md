@@ -1,62 +1,69 @@
 ## Tags
 
-**Domain:** Survey Research & Official Statistics (nonresponse, calibration and measurement error adjustment).
+**Domain:** Biomedical & Clinical Research (statistical genomics).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Trevanna should put the 2027 Community Engagement Support navigator teams in Pierce, Spokane, King and Thurston-Mason.**
+**The Family Outreach Program should take on the PALB2 protein-truncating and PALB2 missense groups, and none of the other eight.**
 
-Estimated over every member the survey sampled, reached or not, these four have the smallest shares of expansion members who worked 80 hours or more in March 2026 (42, 44, 46 and 47 per cent). Not North Sound, which the interviewed members' own answers put among the four: members in work rarely answer a weekday daytime call, so the members never reached are mostly members in work, and North Sound's calls went out mostly by day from the Member Services Center. Not those answers reweighted to each region's age and sex, or the members reached late carried to the members never reached, which leave that gap in place and name North Sound again.
+Measured on every mother, sister and daughter of the probands, each a carrier with probability one half unless a final report settles it, the two PALB2 groups' risks of breast cancer by 70 are 38 to 43 and 46 to 53 percent across the kin-cohort and the Mendelian likelihood, and no other group's is above 25 percent. Not ATM missense, BARD1 or RAD51D, which Kaplan-Meier on the relatives whose report shows the variant puts at 46, 41 and 34 percent: those groups were identified late (the ATM missense variants reclassified in May 2024, BARD1 and RAD51D added to the panel in July 2023), their tested relatives are mostly women tested for a breast cancer of their own, and counting every relative they stand at 18 to 20, 16 to 18 and 12 to 16 percent. Not CHEK2 protein-truncating, which twice the relatives' share puts at 31 percent before the half who do not carry the variant are given the population's 7.5 percent; it stands at 24 to 25 percent.
 
 ## 2. Critical Components
 
-1. **3,204** of the 15,000 sampled members were never reached, and the survey's answer is known for **11,544** (10,635 completed interviews and 909 members who declined but answered the key question).
-2. Across all 15,000 sampled members the estimated share who worked 80 hours or more is **51 per cent**, against **41 per cent** of the members interviewed.
+1. Every group is measured on all **9,179** mothers, sisters and daughters of its probands (**2,970** families), **3,170** of them with a test result.
+2. Among the living relatives of the four groups identified late, **43 to 80 percent** of those with breast cancer were tested against **13 to 17 percent** of those without.
+3. Counting every relative, ATM missense, BARD1 and RAD51D stand at **18 to 20**, **16 to 18** and **12 to 16 percent** and the two PALB2 groups at **38 to 43** and **46 to 53 percent**.
 
 ## 3. Step-by-Step Solution
 
-1. Took the 15,000 sampled cases in mwis_2026_sample.csv and their survey calls: Kestrelby's from kestrelby_mwis_dialer_export.csv (the February pilot's MW26P cases and the TEST calls left out) and the Member Services Center's MWIS outbound calls from trevanna_msc_mwis_activity.xlsx, joined on member ID, each call placed in its window by Pacific time (weekday day, weekday evening, Saturday).
-2. Read each case's calls in time order to the first that reached the member (dialer 1100 or 2110, CRM Spoke to member): 10,635 completed, 1,161 declined, 3,204 never reached.
-3. Took the class from mwis_2026_interviews.csv, total March hours of 80 or more for a completed interview and the key question's answer for a member who declined (TEST rows left out), known for 11,544 members.
-4. Fitted a latent class callback model by EM to every sampled member's calls: each class's chance that a call in each window reaches the member, the same in every region; a reached member's chance of declining the same in either class; each region's share of the class; members of unknown class weighted by their posterior.
-5. Averaged each region's 1,500 members (known class or posterior) and ranked the regions unrounded (criteria 2.1 to 2.4): Pierce 42, Spokane 44, King 46, Thurston-Mason 47.
-6. Members covered on 1 October 2026 (criteria 3.1 and 3.2): the roster's members whose enrollment began by 1 October and had not ended, with members the change log terminated on or after 1 October restored (including those enrolled again later in October) and each member at the county before any move logged after 1 October, aged 19 to 64 on that day, by the county's region in apple_health_regions.xlsx.
-7. Parents and caretakers (criteria 3.3): of those members, case heads, spouses and caretaker relatives in hca_household_composition_20261015.csv whose case had a child under 14 on 1 October 2026, from the children's birth dates and days in the case, each person counted once.
-8. Named Pierce, Spokane, King and Thurston-Mason for the track.
+1. Took each family's group and its probands' mothers, sisters and daughters from icrs_pedigree_export_20260930.csv (the probands and half-sisters left out, criteria 2.3): 9,179 women, each with her age at a first breast cancer or her age at the history date or at death.
+2. Took each woman's final report from icrs_laboratory_reports_2016_2026.csv (an Amended or Reanalysis report replacing the one it supersedes): 3,170 tested, 1,641 showing the family's variant.
+3. Took the population's risk of a first breast cancer by 70 from the rates under 70 in ellisford_tumor_registry_breast_incidence_2016_2025.csv: 7.5 percent.
+4. For each group ran Kaplan-Meier on all its mothers, sisters and daughters to the 70th birthday (death and the history date censor) and took the carriers' risk as twice that share less 7.5 percent, each relative a carrier with probability one half: PALB2-PTV 42, PALB2-MIS 49, every other group 24 or less.
+5. Checked with a Mendelian likelihood over the same women (the tested women's genotypes, the one-half prior for the rest, the population's hazard for noncarriers or both hazards estimated): the same two groups clear 30 percent and no other group comes within 5 points of it.
+6. Known carriers for the clinic (criteria 3.1): women whose final report shows the variant as pathogenic or likely pathogenic, with an enterprise ID, living and not in ellisford_death_linkage_20260930.csv, aged 30 to 74 on 1 April 2027, less those with both breasts removed on the first-course surgery in ellisford_tumor_registry_breast_abstracts.csv (codes 42 and 56, or 41 and 51 by side) and ellisford_surgical_procedures_2019_2026.csv (19303 and 19307 by modifier) together.
+7. No screening MRI (criteria 3.2): of those women, the ones with no COMPLETED SCREENING - HIGH RISK study dated 1 October 2025 to 30 September 2026 in ellisford_breast_mri_exams_2024_2026.csv, each study matched to its woman by hospital and record number through ellisford_empi_identifiers.csv.
+8. Named PALB2-PTV and PALB2-MIS for the program.
 
 ## 4. Deliverable Answers
 
-### ce_support_regions_2027.xlsx
+### family_outreach_groups_2027.xlsx
 
-1. Track regions, with each one's estimated share of expansion members aged 19 to 64 who worked 80 hours or more in March 2026, to the whole percent:
-   - Pierce: 42 per cent
-   - Spokane: 44 per cent
-   - King: 46 per cent
-   - Thurston-Mason: 47 per cent
-2. Members covered on 1 October 2026, aged 19 to 64, by region:
-   - Great Rivers: 4,286
-   - Greater Columbia: 8,730
-   - King: 21,346
-   - North Central: 3,316
-   - North Sound: 11,560
-   - Pierce: 12,836
-   - Salish: 4,120
-   - Southwest: 7,866
-   - Spokane: 9,922
-   - Thurston-Mason: 4,615
-3. Parents and caretaker relatives of a child under 14 on 1 October 2026, by region:
-   - Great Rivers: 994
-   - Greater Columbia: 1,989
-   - King: 5,036
-   - North Central: 773
-   - North Sound: 2,632
-   - Pierce: 2,835
-   - Salish: 981
-   - Southwest: 1,839
-   - Spokane: 2,306
-   - Thurston-Mason: 1,044
+1. Whether the program takes each group on:
+   - PALB2-PTV (PALB2 protein-truncating): taken on
+   - PALB2-MIS (PALB2 missense): taken on
+   - ATM-PTV (ATM protein-truncating): not taken on
+   - ATM-MIS (ATM missense): not taken on
+   - CHEK2-PTV (CHEK2 protein-truncating): not taken on
+   - CHEK2-MIS (CHEK2 missense): not taken on
+   - BARD1-PTV (BARD1 protein-truncating): not taken on
+   - RAD51C-PTV (RAD51C protein-truncating): not taken on
+   - RAD51D-PTV (RAD51D protein-truncating): not taken on
+   - BRIP1-PTV (BRIP1 protein-truncating): not taken on
+2. Women already known to carry a variant in the group whom the program would offer the clinic on 1 April 2027:
+   - PALB2-PTV: 380
+   - PALB2-MIS: 62
+   - ATM-PTV: 335
+   - ATM-MIS: 60
+   - CHEK2-PTV: 516
+   - CHEK2-MIS: 384
+   - BARD1-PTV: 72
+   - RAD51C-PTV: 129
+   - RAD51D-PTV: 64
+   - BRIP1-PTV: 151
+3. Of those women, how many had no screening breast MRI at Ellisford from 1 October 2025 to 30 September 2026:
+   - PALB2-PTV: 192
+   - PALB2-MIS: 28
+   - ATM-PTV: 211
+   - ATM-MIS: 35
+   - CHEK2-PTV: 336
+   - CHEK2-MIS: 242
+   - BARD1-PTV: 49
+   - RAD51C-PTV: 95
+   - RAD51D-PTV: 39
+   - BRIP1-PTV: 118
 
-### ce_support_regions_2027.png
+### family_outreach_groups_2027.png
 
-1. Bar chart of the ten regions' estimated shares, smallest at the top, Pierce, Spokane, King and Thurston-Mason highlighted above a line marking the four navigator teams, each region's whole percent beside its bar.
+1. Bar chart of the ten groups' estimated risk of breast cancer by age 70 for a woman who carries the variant, with a dashed line at 30 percent and the two PALB2 groups, the only bars past it, highlighted.

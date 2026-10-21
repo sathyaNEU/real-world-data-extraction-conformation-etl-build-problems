@@ -1,128 +1,80 @@
-"""Read the pack as a solver would: the survey's sample, the two centres' call records and the interview file conformed
-into one call history per sampled member; the roster, the change log and the household extract for the planning
-figures. Everything here reads the shipped files only."""
+"""Readers of the cut pack, shared by the analysis and the cracker: every figure the build reports is computed from the
+files in target/, never from the world."""
 import csv
 import datetime as dt
 import os
 
-from openpyxl import load_workbook
+import numpy as np
 
 import common as K
 
-DAY_END = dt.time(16, 30)
-EVE_START = dt.time(17, 30)
-REACHED_CRM = {"Spoke to member - survey completed": 1, "Spoke to member - declined survey": 2}
-REACHED_DIALER = {"1100": 1, "2110": 2}
+FDR_FEMALE = ("MOTHER", "SISTER", "DAUGHTER")
 
 
-def _csv(path, delimiter=","):
-    with open(path, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f, delimiter=delimiter))
+def rows(target, key):
+    with open(os.path.join(target, K.FILES[key]), encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
 
 
-def regions(target):
-    wb = load_workbook(os.path.join(target, K.FILES["regions"]), read_only=True)
-    county = {}
-    for row in list(wb["Counties"].iter_rows(values_only=True))[1:]:
-        county[row[0]] = row[1]
-    return county
+def day(s):
+    return dt.date.fromisoformat(s) if s else None
 
 
-def window(when):
-    """0 weekday day, 1 weekday evening, 2 Saturday, from the local (Pacific) time of the call."""
-    if when.weekday() == 5:
-        return 2
-    return 1 if when.time() >= EVE_START else 0
+def pedigree(target):
+    return rows(target, "pedigree")
 
 
-def _local(stamp):
-    """An ISO time with its offset from UTC, as Pacific local time (daylight time through the field period)."""
-    t = dt.datetime.fromisoformat(stamp)
-    return (t.astimezone(dt.timezone(dt.timedelta(hours=-7)))).replace(tzinfo=None)
+def first_breast(r):
+    """Age at the first breast cancer on a pedigree row, or None."""
+    ages = [int(r["cancer_%d_age" % k]) for k in (1, 2, 3) if r["cancer_%d" % k] == "Breast" and r["cancer_%d_age" % k]]
+    return min(ages) if ages else None
 
 
-def _ampm(d, s):
-    t = dt.datetime.strptime(s, "%I:%M %p").time()
-    return dt.datetime.combine(d, t)
-
-
-def survey(target):
-    """Per sampled case: region, age, sex, release, the calls in order (time, centre, window, outcome code 0, 1 or 2)
-    and the class where the interview file gives it (1 worked 80 hours or more in March, 0 not)."""
-    sample = {r["case_id"]: r for r in _csv(os.path.join(target, K.FILES["sample"]))}
-    by_member = {r["member_id"]: cid for cid, r in sample.items()}
-    calls = {cid: [] for cid in sample}
-    for r in _csv(os.path.join(target, K.FILES["dialer"])):
-        if r["case_id"] not in sample:
-            continue                                   # the February pilot and the test calls of 10 April
-        when = _local(r["call_start"])
-        calls[r["case_id"]].append((when, 1, window(when), REACHED_DIALER.get(r["disposition"], 0)))
-    wb = load_workbook(os.path.join(target, K.FILES["crm"]), read_only=True)
-    rows = list(wb["Activity"].iter_rows(values_only=True))
-    head = rows[0]
-    for row in rows[1:]:
-        rec = dict(zip(head, row))
-        if rec["Activity Type"] != "MWIS outbound call":
-            continue
-        d = rec["Activity Date"]
-        d = d.date() if isinstance(d, dt.datetime) else d
-        when = _ampm(d, rec["Activity Time"])
-        calls[by_member[rec["Member ID"]]].append((when, 0, 0, REACHED_CRM.get(rec["Result"], 0)))
-    cls = {}
-    for r in _csv(os.path.join(target, K.FILES["interviews"])):
-        if r["case_id"] not in sample:
-            continue                                   # the test interviews
-        if r["status"] == "Complete":
-            cls[r["case_id"]] = int(int(r["total_hours_march"]) >= 80)
-        else:
-            cls[r["case_id"]] = int(r["key_80_hours_march"] == "Yes")
+def lab_final(target):
+    """Each person's final reports (a report superseded by an amendment or a re-analysis is set aside): whether any
+    shows a variant, whether any was a test, and the genes reported."""
+    L = rows(target, "labs")
+    superseded = {r["supersedes"] for r in L if r["supersedes"]}
     out = {}
-    for cid, s in sample.items():
-        cl = sorted(calls[cid], key=lambda c: (c[0], c[1]))
-        out[cid] = dict(region=s["region"], age=int(s["age"]), sex=s["sex"], release=s["release"],
-                        first=s["first_contact_by"], calls=cl, cls=cls.get(cid, -1))
+    for r in L:
+        if r["report_id"] in superseded:
+            continue
+        d = out.setdefault(r["person_id"], dict(tested=True, positive=False, classes=set()))
+        if r["result"] in ("Variant identified", "Detected", "Positive"):
+            d["positive"] = True
+            d["classes"].add(r["classification"])
     return out
 
 
-def band(age):
-    return 0 if age <= 29 else (1 if age <= 44 else 2)
+def histories(target, roles=FDR_FEMALE, ped=None, labs=None):
+    """By group: (t, ev, carrier, tested, living) for the pedigree rows with the given relationships; t is the age at
+    a first breast cancer before 70, else the age the row gives (at the history date or at death)."""
+    ped = pedigree(target) if ped is None else ped
+    labs = lab_final(target) if labs is None else labs
+    out = {c: [] for c in K.CODES}
+    for r in ped:
+        if r["relationship"] not in roles:
+            continue
+        b = first_breast(r)
+        age = int(r["age"])
+        ev = b is not None
+        t = b if ev else age
+        lf = labs.get(r["person_id"])
+        out[r["family_variant_group"]].append((t, int(ev), int(bool(lf and lf["positive"])), int(bool(lf)),
+                                                int(r["vital_status"] == "Living")))
+    return {c: np.array(v, float) for c, v in out.items()}
 
 
-def histories(S):
-    """The model's input: per case (region index, age band, sex, class or -1, outcome, [(combo, attempt), ...]) with
-    combo 0 a member services call, 1 to 3 a vendor call by day, evening or Saturday, up to the reaching call."""
-    hist = []
-    for cid in sorted(S):
-        s = S[cid]
-        seq, out = [], 0
-        for k, (when, ctr, win, res) in enumerate(s["calls"], 1):
-            seq.append((0 if ctr == 0 else 1 + win, k))
-            if res:
-                out = res
-                break
-        hist.append((K.CODES.index(s["region"]), band(s["age"]), 0 if s["sex"] == "F" else 1, s["cls"], out, seq))
-    return hist
+def probands(target, ped=None):
+    ped = pedigree(target) if ped is None else ped
+    out = {c: [] for c in K.CODES}
+    for r in ped:
+        if r["relationship"] == "PROBAND":
+            out[r["family_variant_group"]].append((first_breast(r), 1))
+    return {c: np.array(v, float) for c, v in out.items()}
 
 
-def _date(s, fmt):
-    return dt.datetime.strptime(s, fmt).date()
-
-
-def enrollment(target):
-    """The roster (19 October), the change log (1 to 19 October) and the household extract (15 October)."""
-    roster = _csv(os.path.join(target, K.FILES["roster"]))
-    log = _csv(os.path.join(target, K.FILES["changes"]), delimiter="|")
-    cases = _csv(os.path.join(target, K.FILES["cases"]))
-    for r in roster:
-        r["born"] = _date(r["birth_date"], "%m/%d/%Y")
-        r["begin"] = _date(r["enrollment_begin"], "%Y-%m-%d")
-        r["end"] = _date(r["scheduled_end"], "%Y-%m-%d") if r["scheduled_end"] else None
-    for r in log:
-        r["born"] = _date(r["birth_date"], "%Y%m%d")
-        r["eff"] = _date(r["effective_date"], "%Y%m%d")
-        r["at"] = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M:%S")
-    for r in cases:
-        r["born"] = _date(r["birth_date"], "%m/%d/%Y")
-        r["begin"] = _date(r["member_begin"], "%Y-%m-%d")
-        r["end"] = _date(r["member_end"], "%Y-%m-%d") if r["member_end"] else None
-    return roster, log, cases
+def incidence(target):
+    """The registry's rates per 100,000 by 5-year band from 00-04, recomputed from cases and person-years."""
+    R = rows(target, "incidence")
+    return np.array([int(r["first_primary_breast_cancers"]) / int(r["female_patient_years"]) * 1e5 for r in R])

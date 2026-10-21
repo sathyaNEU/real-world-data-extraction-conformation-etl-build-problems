@@ -1,28 +1,28 @@
 {
   "task": "task271",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-20",
-  "stump": "A competent analyst who sets the probands aside and runs Kaplan-Meier on the relatives tested and found to carry each family's variant names six variants for the 2027 Family Outreach Programme, among them the PALB2 missense, BARD1 and RAD51D variants reclassified in 2024, whose relatives were tested mostly for a breast cancer of their own; only every first-degree relative's history, each relative a carrier with probability one half unless a test settles it (the kin-cohort or the Mendelian likelihood), puts those three under 30 per cent and names the two PALB2 truncating variants and the ATM missense variant.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-21",
+  "stump": "A competent analyst who sets the probands aside and runs Kaplan-Meier on the relatives whose final report shows each family's variant names five groups for the 2027 Family Outreach Program, PALB2-PTV, PALB2-MIS, ATM-MIS, BARD1-PTV and RAD51D-PTV, because the relatives of the groups identified late were tested mostly for a cancer of their own; only every mother, sister and daughter, each a carrier with probability one half unless a final report settles it (the kin-cohort or the Mendelian likelihood), names PALB2-PTV and PALB2-MIS.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
-    "checks": 0
+    "exit": 0,
+    "date": "2026-10-21",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-21: the criteria, the data guide and contents use the register's ordinary words (relatives, carrier, families); the test results file renamed icrs_laboratory_reports after the file-name sweep; no answer figure, ranking or announcement",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "surface": ""
+    "heart": "BLOCK 2026-10-21 ban.strategy against task471 v5, the author's override (option a), reasons on the card; ban.forum cleared by the forum redraw",
+    "nearest": "0.08 task267",
+    "surface": "clean 2026-10-21 (persona Katrina Newman)"
   },
   "judge": {
     "verdict": "",
@@ -30,7 +30,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Architecture 3, the slot's last, drawn and registered 2026-10-20T21:08:45Z with the author's override (a Colorado nonprofit health plan's 2027 Family Outreach Programme: which of ten recurrent pathogenic variants give their carriers at least a 30 per cent breast cancer risk by 70, estimated from the families referred to its Inherited Cancer Risk Service; the kin-cohort or Mendelian likelihood against Kaplan-Meier on the tested carriers). Next: stage 2, three rules, readability screen, semantic fork table, ladder (the world fixed so every family member clears 30 per cent by 4 points on every variant and each easy route's set differs), closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; architecture 2's generator, pack, goldens, submission and reports are replaced at stage 3. If stage 4 spends it, the number is retired.",
+  "resume": "Architecture 3 (the slot's last) built and gated on world 5187 and clinical seed 271301: 101 checks, the independent verifier clean, two byte-identical builds, precut exit 0 (51), figures_check 72 of 72, leak.py REVIEW, the cracker 0 of 20 ask figures (pair ceiling 28.5). Card re-registered 2026-10-21T00:03:39Z with the author's override (ban.strategy) after the forum redraw. Stage 4 running: two isolated scored readers (r271e, r271f, fresh copies of prompt.txt and target/, scored with score_reader.py --call-key call.qualify) and the determinism judge. If a reader lands the call or the judge sends it back unrepairably, the number is retired.",
   "architectures": [
     {
       "architecture": 1,
