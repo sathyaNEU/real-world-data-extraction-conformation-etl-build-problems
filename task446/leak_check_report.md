@@ -39,18 +39,40 @@ Stump terms swept: cohorts, member, asserted, cohort, customer, decisive, facili
 
 ## 11 prompt gate (clean)
 
-
 ## Solver's-eye read
 
-Isolated reader (prompt.txt and a fresh unzip of target.zip only), 2026-10-15, after the 10/10 repair.
+Two isolated scored readers per round (general-purpose, medium effort), each on its own fresh copy of `prompt.txt`
+and the unzipped pack, never the design note, generator, submission or this report. Each committed its figures
+before seeing the REVIEW lines, which reached it with the expected call and figure withheld.
 
-1. Decisive step: none. CRM-07 5.2 defines the quantity and says nothing of how to forecast it; 4.3 gives the committee's performance vocabulary, not an instruction for the forecast.
-2. File ranking or forecasting the caseload: none. The rating sheet gives a grade per group, an input to weigh, not a ranking of the answer.
-3. Files only to help: none; the field reference, trigger codes and rates are ordinary companions.
-4. Figure or name reading as the answer: none.
-5. 4.1, 4.2, 5.1 and 5.3 fix the population, outcome, window, exclusions, rounding and the band split; no sentence fixes the forecasting method, its fitting window or a rule for choosing between methods.
-6. What decides: an analytical choice, how to estimate expected arrivals for the open cohort from what the closed cohorts show.
+**Round 1** (target.zip sha256 72419f5f, before the ask primary was re-sited): readers A and B both filed 64 (one
+rate for every flagged group) and called the deciding step an analytical choice; both kept 18 of 34 ask figures
+(52.9 per cent, score_reader exit 1). The joint-venture device was resolved by CRM-07 2.2 for anyone building member
+sets. Repair: the ask primary re-sited onto facilities the ledger booked twice beside genuine same-day tranches.
 
-REVIEW lines: "the model" (the Model Risk Committee in 1.2), harmless; the call's nouns in the standard, harmless (it defines the quantity); stump-paragraph terms, harmless (the document never names the move); dates after the setting, harmless (final maturity dates of live facilities).
+**Round 2** (target.zip sha256 06a4c8d5, the shipped cut):
 
-Realism tells (minor, all present in the shipped version, no figure touched): the 01:15 extract run after start of day reads as deliberate (it is the ask layer's limit clock); a tidy reconciliation line in the log; the grade 7 PD midpoint at exactly 0.03. Kept: the extract timing is the ask device's real cause, and the others are cosmetic.
+| Reader | Call | Ask figures kept | score_reader |
+|---|---|---|---|
+| C | 64 (missed) | 5 of 34 (14.7 per cent) | exit 0 |
+| D | 64 (missed) | 2 of 34 (5.9 per cent) | exit 0 |
+
+1. Decisive-step sentence: both quoted 5.2's "It rests on the closed cohorts scored by the current release, taken
+   together", the sentence behind their own pooled two-class rate; it names the cohorts, not a segmentation.
+2. A file ranking the candidates: none (both).
+3. A file only to help: the field reference and the extract log (both); the close timetable frames the task.
+4. A figure reading as the answer: none; "twelve watch-list groups per analyst" read as headcount context (both).
+5. A sentence fixing the computation: both quoted 5.2 and gave their own forecast (64) as its result; the judge,
+   executing 5.2 literally, files 78 and finds no licensed competing answer (the back-test rejects 64, 47 and 136).
+6. What decides the answer: an analytical choice (both).
+
+**REVIEW lines** (reader C, reader D; main-thread ruling):
+
+1. "the model" in the standard: harmless, harmless (1.2's engine-release governance). Harmless.
+2. The section number 5.1 equal to a golden figure: harmless, harmless. Harmless.
+3. The call's words in the field reference, the timetable and the standard: harmless, harmless (domain nouns). Harmless.
+4. Stump-paragraph terms in four documents: harmless; "partly a leak" for reader D, who read 5.2's window and 4.3's
+   rate definitions as pointing at calibration on pooled closed cohorts. Harmless: pooling the closed cohorts is
+   shared by the easy route and the golden, the deciding segmentation (the member that raised the flag) is named
+   nowhere, and both readers filed 64.
+5. Dates after 8 October 2026 in the facility extract: harmless, harmless (maturity dates). Harmless.

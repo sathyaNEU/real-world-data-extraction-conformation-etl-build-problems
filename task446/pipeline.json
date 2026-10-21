@@ -2,16 +2,16 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-21",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and gives each flagged group the share of flagged groups that reached the list over those cohorts taken together and each other group the unflagged share, and files 64 (Ends on); the step that lands it there is treating every group flag as one kind of signal, when a flag raised on a customer the bank lends to reaches the list half the time (120 of 240) and one raised only on a member it does not lend to one time in sixteen (11 of 176), and this September's flags are 77 per cent customer-raised against 48 to 69 per cent in the cohorts; pricing each kind of flag at its own rate predicts every closed cohort within 3.9 per cent out of sample (the single flagged rate misses one by 14.4) and gives 78.",
  "architecture": 3,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08, cut 06a4c8d5); every REVIEW line answered in the design note's Leak sweep",
-  "reader": "round 1 (cut 72419f5f): readers A and B both filed 64 (call missed, question 6 analytical) and kept 18 of 34 ask figures (52.9 per cent, exit 1): DV-C was resolved by 2.2 for anyone building member sets; the ask primary re-sited to DV-D. Round 2 (cut 06a4c8d5): readers C and D both filed 64 (question 6 analytical) and kept 5 and 2 of 34 ask figures (14.7 and 5.9 per cent, exit 0); neither noticed the facilities booked twice"
+  "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08, shipped cut 06a4c8d5); every REVIEW line answered",
+  "reader": "round 1 (cut 72419f5f): A and B filed 64, asks 18 of 34 (52.9 per cent, exit 1), the ask primary re-sited to DV-D; round 2 (shipped cut 06a4c8d5): C and D filed 64 (question 6 analytical), asks 5 and 2 of 34 (14.7 and 5.9 per cent, exit 0); REVIEW lines harmless (reader D's 'partly a leak' on 5.2's window ruled harmless: pooling the cohorts is shared by the easy route and the golden)"
  },
  "duplicate_check": {
   "heart": "WARN (question form repeats task272, answered in the note); test.same_puzzle_older and test.same_driver_older differentiated. An earlier BLOCK on forum and forcing event against task486 v2 was cleared by redrawing both in the pack (executive_team, period_close) and re-registering at 05:35Z",
@@ -71,12 +71,12 @@
   }
  ],
  "judge": {
-  "verdict": "round 1: DETERMINISTIC, FIX_NOW optional (pin the cohort window behind the band figures), Gate G analytical_non_defect, Gate H analytical",
-  "disposition": "FIX_NOW applied: CRM-07 5.2 'It rests on the closed cohorts scored by the current release, taken together'; re-judge in flight",
-  "report": "determinism_check_report.md"
+  "verdict": "DETERMINISTIC (round 2, shipped cut)",
+  "disposition": "APPROVE; round 1's optional FIX_NOW (pin the cohort window) applied in CRM-07 5.2",
+  "report": "determinism_check_report.md: Gate G analytical_non_defect (method_or_model_selection), Gate H domain pass, layers pass, decisive_step analytical"
  },
  "approved": null,
- "delivered": "2026-10-15",
+ "delivered": "2026-10-21",
  "portal": [
   {
    "round": 1,
@@ -92,13 +92,13 @@
  ],
  "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed",
  "ship": {
-  "target_zip": "3035037 bytes, 17 members, matches target/ (H7); rebuild byte-identical (builder)"
+  "target_zip": "3040145 bytes, 17 members, sha256 06a4c8d5, matches target/ (H7); rebuild byte-identical (checks)"
  },
  "returns": 1,
- "status": "PAUSED",
+ "status": "SHIPPED",
  "owner": "oviya1301",
  "author_decision": "2026-10-12: kept as SHIPPED at the author's request; the FAILED_TO_STUMP rework (redesign) is not done and the portal record below is unchanged",
- "resume": "stage 4 round 2: both readers scored (call missed, asks 14.7 and 5.9 per cent); the determinism re-judge thread is in flight on /tmp/determinism-check-task446-r3 (brief and unzip there). On its verdict: complete the judge agent's pass with verdict.md so it writes determinism_check_report.md; if it rules that 5.2's window sentence licenses the pooled flagged rate, re-word or withdraw the sentence and re-judge; else RESHIPPED with target.zip as cut (sha256 06a4c8d5), heart re-read after the final pull, the ledger's v2 row moved to Earlier architectures and a v3 row added.",
+ "resume": "",
  "precut": {
   "exit": 0,
   "date": "2026-10-21"
@@ -114,17 +114,20 @@
    "date": "2026-10-21",
    "portal": "the author sent the client's 2026-10-12 review again (version 363: Stumped passed, Stumped type match failed, rule application: CRM-07 5.2 filed the model, the fitting window and the selection rule). The 2026-10-15 repair had unfiled the selection rule only: 5.3 still filed one probability per flag status shared across the book, and the decisive insight repeated task192's driver",
    "repair": "re-root to architecture 3: each group flag priced by the member that raised it (a customer the bank lends to, or only a parent or sister company reached through GLEIF); CRM-07 files the estimand and the precision only; asks re-sited onto joint ventures booked to the other partner (2.2's two memberships); call 78, easy route 64",
-   "commit": "DRAWN (task446), 2026-10-21"
+   "commit": "RESHIPPED (task446), 2026-10-21"
   }
  ],
  "build": {
-  "checks": "round 1 cut: 9329 assertions; DV-D cut: full run in flight (479-cell grid)",
+  "checks": 10222,
   "byte_identical": true,
+  "grid_cells": 479,
+  "target_zip": "3040145 bytes, 17 members, matches target/ (H7)",
   "target_zip_sha256": "06a4c8d533d9e1dffc39022444e22e7bf5b21c6b0a08aad219f28bba30b01bc6",
   "figures_check": "PASS, 71 figures",
   "voice_check": "PASS",
   "precut": "PASS, 51 checks",
-  "producer_metadata": "clean (pack and goldens)"
+  "producer_metadata": "clean (pack and goldens)",
+  "pair_ceiling": "35.0 (cracker on the readers' measured path)"
  },
- "status_note": "architecture 3; stage 4 round 1 measured the ask layer leaking (DV-C resolved by 2.2), DV-D re-sited the primary onto the facility records with every graded figure unchanged; round 2 in flight"
+ "status_note": "architecture 3 reshipped 2026-10-21: each group flag priced by the member that raised it (78 against the easy 64); stage 4 round 2 clean (readers off the call, asks under a fifth; judge APPROVE)"
 }

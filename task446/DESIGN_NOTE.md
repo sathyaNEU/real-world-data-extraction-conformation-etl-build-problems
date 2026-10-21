@@ -428,7 +428,10 @@ filed 64 again and named the decisive step an analytical choice (question 6). Re
 2 of 34 (5.9 per cent: 913 and 165), score_reader exit 0 for both; neither noticed the facilities booked twice
 (reader D's total committed exposure is the copies-kept reading, GBP 25,943.2m). Both quoted 5.2's window sentence
 for question 1 and gave their own pooled two-class forecast (64) as 5.2's literal result for question 5; the sentence
-names the cohorts, not a segmentation, and the judge settles what it licenses. Realism notes: the extract dated 30
+names the cohorts, not a segmentation, and the judge settles what it licenses: its round 2 pass (DETERMINISTIC, APPROVE) finds no licensed
+competing answer. On the REVIEW lines both readers called four harmless; reader D called the stump-paragraph terms
+"partly a leak" for 5.2's window with 4.3's rate definitions, which point at pooling the closed cohorts, a step the
+easy route and the golden share; ruled harmless, since the deciding segmentation is named nowhere and both filed 64. Realism notes: the extract dated 30
 September but run on 1 October (the log says so), lower-case LEI keys in the signal file (Layer 1 texture), the 21
 joint ventures noticed by reader D as customers booked away from their GLEIF parent (the DV-C hazard), uniform LEI
 prefixes; none moves a figure.
@@ -443,10 +446,13 @@ prefixes; none moves a figure.
 3. The step that flips the call is analytical: the segmentation of the flagged pool; no clause makes the choice.
 4. Analyst test: every field and rule read correctly, the easy forecast files 64 (asserted on the clean truth and on
    the pack, with and without devices).
-5. CRM-07 files the estimand and the precision only (asserted: no model, segment, window or selection wording);
-   every member of the decisive family files 78.
+5. CRM-07 files the estimand, the cohorts it rests on (taken together, 5.2) and the precision, and no model,
+   segment or selection rule (asserted); every member of the decisive family files 78.
 6. No decoy, no withheld rule against a stated one, no certified replay.
 7. The lesson is on no other card: nearest drivers 0.06; task192 and task134 v2 differentiated.
+8. Re-read against the built pack at stage 4: four isolated scored readers filed 64 and called the deciding step an
+   analytical choice; the judge's re-pass on the shipped cut is DETERMINISTIC and APPROVE, Gate H analytical, with no
+   licensed competing answer; the mess carrying the asks is Layer 1 only, and none of it reaches the call.
 
 ## Realism debts
 
