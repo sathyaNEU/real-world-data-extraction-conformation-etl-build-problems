@@ -1,27 +1,29 @@
 """Read the cut pack the way an analyst would, and run every route the design names on it. Nothing here reads
 world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
 
-    load(target)            the conformed eligibility, claims lag cells, designs, the carrier's records and the rates
-    expected(b, route)      each district's expected plan year 2026 plan-paid PMPM under a route
-    raised(b, est)          the districts over the claims component of their 2026 contribution rate
-    ask_a(b, persons)       July to September 2026 member months by district
-    ask_b(b, persons)       2026 advisory members and their claims to date by district"""
+    load(target)               the conformed eligibility, claims lag cells, reimbursements and the elections
+    experience(b)              each employer's retained claims PMPM by plan year, trended to 2027
+    expected(b, route)         each employer's expected 2027 retained PMPM under a route
+    surcharged(b, est)         the employers over the claims component of their 2027 contribution
+    ask_a(b, persons)          July to September 2026 member months by employer
+    ask_b(b, persons)          members on the 2026 high-cost claimant report and their claims to date by employer"""
 import csv
 import os
-import re
 
 FILES = {
-    "enroll": "tollard_eligibility_member_months_2025-01_to_2026-09.csv",
-    "lag_old": "tollard_claims_lag_report_paid_2025-01_to_2026-05.csv",
-    "lag_new": "tollard_claims_lag_report_paid_2026-05_to_2026-09.csv",
-    "adv": "granfield_specific_advisories_2026.csv",
-    "policy": "granfield_specific_policy_schedule_2025-2027.csv",
-    "rates": "mvshc_2026_contribution_rates.xlsx",
-    "benefits": "mvshc_benefit_designs_2025_2026.pdf",
+    "enroll": "hallam_eligibility_member_months_2023-01_to_2026-09.csv",
+    "lag_old": "hallam_claims_lag_report_paid_2023-01_to_2026-05.csv",
+    "lag_new": "hallam_claims_lag_report_paid_2026-05_to_2026-09.csv",
+    "reimb": "westerby_specific_reimbursements_2023-2025.csv",
+    "hcc": "hallam_high_cost_claimant_report_2026.csv",
+    "policy": "westerby_specific_policy_schedule_2023-2027.csv",
+    "rates": "crbht_2027_contribution_elections.xlsx",
 }
-ROUTES = ("golden", "default", "pooled", "annualised", "mean_of_ratios", "paid_share")
-H1 = [(2026, m) for m in range(1, 7)]
-Y25 = [(2025, m) for m in range(1, 13)]
+YEARS = (2023, 2024, 2025)
+TREND = 0.07
+SHRINK = ("buhlmann_straub", "complement_simple_mean", "limited_fluctuation_1000", "limited_fluctuation_2000",
+          "limited_fluctuation_3000", "buhlmann_straub_leveraged")
+ROUTES = ("golden",) + SHRINK[1:] + ("own_experience", "own_2025", "trust_level")
 
 
 def _csv(path):
@@ -37,137 +39,139 @@ def _ym(s):
     return int(y), int(m)
 
 
-def designs(target):
-    """The calendar-year deductible of each district's plan in 2025 and 2026, from the benefit designs PDF's table
-    (district id, plan year, plan code, deductible)."""
-    import pypdf
-    txt = " ".join(p.extract_text() for p in pypdf.PdfReader(os.path.join(target, FILES["benefits"])).pages)
-    out = {}
-    for did, yr, code, ded in re.findall(r"(MV\d\d)\s+(2025|2026)\s+(MV[ABC])\s+\$([\d,]+)", txt):
-        out[(did, int(yr))] = int(ded.replace(",", ""))
-    return out
-
-
 def load(target):
     import openpyxl
     enroll = _csv(os.path.join(target, FILES["enroll"]))
     cells = {}
     for r in _csv(os.path.join(target, FILES["lag_old"])):
-        k = (r["DistrictID"], _ym(r["IncurredMonth"]), _ym(r["PaidMonth"]), r["Category"])
-        cells[k] = float(r["PaidAmount"])
+        cells[(r["EmployerNo"], _ym(r["IncurredMonth"]), _ym(r["PaidMonth"]), r["Category"])] = float(r["PaidAmount"])
     for r in _csv(os.path.join(target, FILES["lag_new"])):
-        k = (r["district_code"], _ym(r["incurred_period"]), _ym(r["paid_period"]),
+        k = (r["employer_code"], _ym(r["incurred_period"]), _ym(r["paid_period"]),
              "Medical" if r["benefit_type"] == "MED" else "Pharmacy")
         cells[k] = int(r["plan_paid_cents"]) / 100.0     # May 2026 sent by both platforms: one cell, as a key
-    adv = _csv(os.path.join(target, FILES["adv"]))
-    pol = {(r["policy_no"], int(r["contract_year"])): r["district_id"]
+    pol = {(r["policy_no"], int(r["contract_year"])): r["employer_id"]
            for r in _csv(os.path.join(target, FILES["policy"]))}
-    ws = openpyxl.load_workbook(os.path.join(target, FILES["rates"]), data_only=True)["2026 rates"]
-    rates = {r[0]: float(r[3]) for r in ws.iter_rows(min_row=5, values_only=True) if r[0] and str(r[0]).startswith("MV")}
+    reimb = _csv(os.path.join(target, FILES["reimb"]))
+    hcc = _csv(os.path.join(target, FILES["hcc"]))
+    ws = openpyxl.load_workbook(os.path.join(target, FILES["rates"]), data_only=True)["2027 elections"]
+    rates = {r[0]: float(r[3]) for r in ws.iter_rows(min_row=5, values_only=True) if r[0] and str(r[0]).startswith("CR")}
     ids = sorted(rates)
     mm = {}
     for r in enroll:
-        ym = _ym(r["coverage_month"])
-        if ym[0] == 2025 or ym in H1:
-            mm[(r["district_id"], ym)] = mm.get((r["district_id"], ym), 0) + 1
+        y = int(r["coverage_month"][:4])
+        if y in YEARS:
+            mm[(r["employer_id"], y)] = mm.get((r["employer_id"], y), 0) + 1
     paid = {}
-    for (d, inc, pd, cat), amt in cells.items():
-        paid[(d, inc)] = paid.get((d, inc), 0.0) + amt
-    return {"enroll": enroll, "cells": cells, "adv": adv, "pol": pol, "rates": rates, "ids": ids, "mm": mm,
-            "paid": paid, "design": designs(target)}
+    for (e, inc, pd, cat), amt in cells.items():
+        if inc[0] in YEARS and pd <= (inc[0] + 1, 3):
+            paid[(e, inc[0])] = paid.get((e, inc[0]), 0.0) + amt
+    return {"enroll": enroll, "cells": cells, "pol": pol, "reimb": reimb, "hcc": hcc, "rates": rates, "ids": ids,
+            "mm": mm, "paid": paid}
 
 
-def _s(b, d, months, what):
-    src = b["mm"] if what == "mm" else b["paid"]
-    return sum(src.get((d, ym), 0) for ym in months)
-
-
-def factor(b, ids):
-    """The ratio of the plan year 2025 PMPM to the January to June 2025 PMPM, pooled over the districts given."""
-    fy = sum(_s(b, i, Y25, "paid") for i in ids) / sum(_s(b, i, Y25, "mm") for i in ids)
-    h = sum(_s(b, i, Y25[:6], "paid") for i in ids) / sum(_s(b, i, Y25[:6], "mm") for i in ids)
-    return fy / h
-
-
-def h1(b, d):
-    return _s(b, d, H1, "paid") / _s(b, d, H1, "mm")
-
-
-def expected(b, route="golden"):
-    """Each district's expected plan year 2026 plan-paid PMPM. golden: its January to June 2026 PMPM completed by the
-    plan-year factor of the districts that ran its 2026 design through 2025; default: by its own 2025 factor;
-    pooled: by every district's; annualised: the January to June PMPM as it stands; mean_of_ratios and paid_share:
-    other forms of the golden."""
+def experience(b, leveraged=False):
+    """Per employer and plan year: member months, plan-paid claims (incurred in the year, paid through March of the
+    next), Westerby's reimbursements, retained claims, and the retained PMPM trended to 2027. leveraged trends each
+    claimant's claims before the $150,000 deductible instead of trending the retained total."""
     out = {}
-    for d in b["ids"]:
-        dz = b["design"][(d, 2026)]
-        same = [i for i in b["ids"] if b["design"][(i, 2025)] == dz]
-        if route == "golden":
-            v = h1(b, d) * factor(b, same)
-        elif route == "default":
-            v = h1(b, d) * factor(b, [d])
-        elif route == "pooled":
-            v = h1(b, d) * factor(b, b["ids"])
-        elif route == "annualised":
-            v = h1(b, d)
-        elif route == "mean_of_ratios":
-            v = h1(b, d) * sum(factor(b, [i]) for i in same) / len(same)
-        elif route == "paid_share":
-            sh = sum(_s(b, i, Y25, "paid") for i in same) / sum(_s(b, i, Y25[:6], "paid") for i in same)
-            v = _s(b, d, H1, "paid") * sh / (2 * _s(b, d, H1, "mm"))
-        out[d] = v
+    re = {}
+    for r in b["reimb"]:
+        y = int(r["contract_year"])
+        e = b["pol"][(r["policy_no"], y)]
+        re.setdefault((e, y), []).append((float(r["paid_in_contract_year"]), float(r["reimbursed"]),
+                                           float(r["specific_deductible"])))
+    for e in b["ids"]:
+        for y in YEARS:
+            f = (1 + TREND) ** (2027 - y)
+            mm = b["mm"][(e, y)]
+            paid = b["paid"].get((e, y), 0.0)
+            rb = sum(v for p, v, d in re.get((e, y), []))
+            ret = paid - rb
+            if leveraged:
+                x = (f * paid - sum(max(0.0, f * p - d) for p, v, d in re.get((e, y), []))) / mm
+            else:
+                x = ret * f / mm
+            out[(e, y)] = {"mm": mm, "paid": paid, "reimb": rb, "ret": ret, "x": x}
     return out
 
 
-def raised(b, est):
-    return sorted(d for d in est if est[d] > b["rates"][d])
+def credibility(b, ex, form="buhlmann_straub", n_full=2000):
+    ids = b["ids"]
+    X = [[ex[(e, y)]["x"] for y in YEARS] for e in ids]
+    W = [[ex[(e, y)]["mm"] for y in YEARS] for e in ids]
+    wi = [sum(w) for w in W]
+    xi = [sum(a * c for a, c in zip(xr, wr)) / s for xr, wr, s in zip(X, W, wi)]
+    tot = sum(wi)
+    xbar = sum(a * c for a, c in zip(xi, wi)) / tot
+    r, t = len(ids), len(YEARS)
+    epv = sum(w * (v - m) ** 2 for xr, wr, m in zip(X, W, xi) for v, w in zip(xr, wr)) / (r * (t - 1))
+    vhm = (sum(w * (m - xbar) ** 2 for m, w in zip(xi, wi)) - (r - 1) * epv) / (tot - sum(w * w for w in wi) / tot)
+    k = epv / vhm
+    if form == "limited_fluctuation":
+        z = [min(1.0, (w / t / 12 / n_full) ** 0.5) for w in wi]
+    else:
+        z = [w / (w + k) for w in wi]
+    if form == "complement_simple_mean":
+        xbar = sum(xi) / r
+    est = {e: xbar + zz * (m - xbar) for e, zz, m in zip(ids, z, xi)}
+    return {"est": est, "z": dict(zip(ids, z)), "xbar": xbar, "k": k, "own": dict(zip(ids, xi)), "epv": epv,
+            "vhm": vhm}
 
 
-def factors_by_design(b):
-    return {dz: factor(b, [i for i in b["ids"] if b["design"][(i, 2025)] == dz]) for dz in (500, 1500, 3000)}
+def expected(b, route="golden"):
+    ex = experience(b, leveraged=(route == "buhlmann_straub_leveraged"))
+    if route in ("golden", "buhlmann_straub", "buhlmann_straub_leveraged"):
+        return credibility(b, ex)["est"]
+    if route == "complement_simple_mean":
+        return credibility(b, ex, "complement_simple_mean")["est"]
+    if route.startswith("limited_fluctuation"):
+        return credibility(b, ex, "limited_fluctuation", int(route.rsplit("_", 1)[1]))["est"]
+    c = credibility(b, ex)
+    if route == "own_experience":
+        return c["own"]
+    if route == "own_2025":
+        return {e: ex[(e, 2025)]["x"] for e in b["ids"]}
+    if route == "trust_level":
+        return {e: c["xbar"] for e in b["ids"]}
+
+
+def surcharged(b, est):
+    return sorted(e for e in est if est[e] > b["rates"][e])
 
 
 # ------------------------------------------------------------------------------------------------ ask A
 def persons(b):
-    """Member id to one person key: the district, birth date, sex and relationship (unique within a district)."""
-    return {r["member_id"]: (r["district_id"], r["birth_date"], r["sex"], r["relationship"]) for r in b["enroll"]}
+    """Member id to one person key: the employer, birth date, sex and relationship (unique within an employer)."""
+    return {r["member_id"]: (r["employer_id"], r["birth_date"], r["sex"], r["relationship"]) for r in b["enroll"]}
 
 
 def ask_a(b, by_person=True):
-    """July to September 2026 member months: a person enrolled in the district's plan in the month, counted once."""
+    """July to September 2026 member months: a person enrolled in the month, counted once."""
     pk = persons(b)
     seen = set()
-    mm = {d: 0 for d in b["ids"]}
+    mm = {e: 0 for e in b["ids"]}
     for r in b["enroll"]:
-        ym = _ym(r["coverage_month"])
-        if not ((2026, 7) <= ym <= (2026, 9)):
+        if not ("2026-07" <= r["coverage_month"] <= "2026-09"):
             continue
-        key = (pk[r["member_id"]], ym) if by_person else (r["member_id"], ym)
+        key = (pk[r["member_id"]], r["coverage_month"]) if by_person else (r["member_id"], r["coverage_month"])
         if key in seen:
             continue
         seen.add(key)
-        mm[r["district_id"]] += 1
+        mm[r["employer_id"]] += 1
     return mm
 
 
 # ------------------------------------------------------------------------------------------------ ask B
-def ask_b(b, by_person=True, take="latest"):
-    """2026 specific advisories by district: the members the carrier has flagged and their claims to date as it last
-    reported them. by_person links a claimant file opened under a member's new id to the person's earlier file."""
+def ask_b(b, by_person=True):
+    """Members on the 2026 high-cost claimant report by employer and their claims to date as last reported; by_person
+    links a member's rows under the new id to the rows under the old one."""
     pk = persons(b)
     last = {}
-    for r in sorted(b["adv"], key=lambda r: (r["advisory_date"], r["claimant_no"])):
-        d = b["pol"][(r["policy_no"], 2026)]
-        who = pk[r["member_ref"]] if by_person else r["claimant_no"]
-        v = float(r["incurred_to_date"])
-        if take == "latest":
-            last[(d, who)] = v
-        elif take == "max":
-            last[(d, who)] = max(v, last.get((d, who), 0.0))
-        elif take == "sum":
-            last[(d, who)] = last.get((d, who), 0.0) + v
-    out = {d: [0, 0.0] for d in b["ids"]}
-    for (d, who), v in last.items():
-        out[d][0] += 1
-        out[d][1] += v
-    return {d: tuple(v) for d, v in out.items()}
+    for r in sorted(b["hcc"], key=lambda r: r["report_month"]):
+        who = pk[r["member_id"]] if by_person else r["member_id"]
+        last[(r["employer_id"], who)] = float(r["paid_ytd"])
+    out = {e: [0, 0.0] for e in b["ids"]}
+    for (e, who), v in last.items():
+        out[e][0] += 1
+        out[e][1] += v
+    return {e: tuple(v) for e, v in out.items()}

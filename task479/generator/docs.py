@@ -1,6 +1,5 @@
-"""The pack's documents: the Executive Director's contribution review memo to the Board of Trustees, the benefit
-designs by district for plan years 2025 and 2026, the 2026 contribution rates workbook, the data dictionary and the
-extract manifest."""
+"""The pack's documents: the Plan Administrator's 2027 renewal review memo to the Board of Trustees, the plan
+summary, the 2027 contribution elections workbook, the data dictionary and the extract manifest."""
 import datetime as dt
 
 from reportlab import rl_config
@@ -38,29 +37,29 @@ H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading
 
 MEMO = [
     ("1. Purpose", [
-        "At its meeting on 4 November 2026 the Board decides which member districts' contributions rise from "
-        "1 January 2027. Under the funding policy a district whose contribution does not cover the claims its plan is "
-        "running pays an increase from the next 1 January; the size of each increase is set at the December meeting "
-        "with the 2027 rates. This memo fixes the basis of the November review."]),
+        "At their meeting on 12 November 2026 the trustees decide which member employers pay a claims surcharge on "
+        "their 2027 contributions. Each employer elected its 2027 contribution in September; the trust's funding "
+        "policy adds a surcharge from 1 January 2027 for an employer whose contribution does not cover the claims its "
+        "members are expected to cost, the surcharge itself set at the December meeting. This memo fixes the basis of "
+        "the November review."]),
     ("2. The test", [
-        "A district's contribution rises from 1 January 2027 when its expected plan-paid claims per member per month "
-        "for plan year 2026, January to December 2026, exceed the claims component of its 2026 contribution rate.",
-        "Plan-paid claims are the medical and pharmacy claims the plan pays after the member's deductible, "
-        "coinsurance and copays, gross of specific stop-loss reimbursements and before pharmacy rebates, which are "
-        "credited to the cooperative's reserve and not to a district. Per member per month is over the district's "
-        "member months, a member month being a member enrolled in the district's plan in the month."]),
+        "An employer is surcharged when its expected 2027 retained claims per member per month exceed the claims "
+        "component of the 2027 contribution it elected.",
+        "Retained claims are the medical and pharmacy claims the plan pays for the employer's members, less Westerby "
+        "Specialty Insurance Company's specific stop-loss reimbursements, and before pharmacy rebates, which are "
+        "credited to the trust's reserve. Per member per month is over member months, a member month being a member "
+        "enrolled through the employer in the month. The 2027 plan, the specific deductible of $150,000 and the "
+        "administrative and stop-loss charges are unchanged from 2026, and no employer is leaving the trust."]),
     ("3. The evidence", [
-        "The review rests on the claims each district has incurred from January to June 2026 and Tollard has paid "
-        "through 30 September 2026, with the district's January to June 2026 member months, and on the cooperative's "
-        "experience in plan year 2025, incurred in 2025 and paid through 31 March 2026, all from Tollard's claims lag "
-        "reports and eligibility file. Tollard pays nearly all of a month's claims within three months of it, so both "
-        "periods are complete. The claims components are in the 2026 contribution rates workbook; the Board set them "
-        "in October 2025 on each district's 2026 benefit design."]),
+        "The review rests on the trust's experience in plan years 2023, 2024 and 2025: for every member employer, the "
+        "claims incurred in the year and paid through 31 March of the next, from Hallam's claims lag reports, the "
+        "member months from Hallam's eligibility file, and Westerby's reimbursements for the contract year. Each year's "
+        "retained claims are trended at 7 per cent a year to 2027, the trust's trend for every employer. Claims for "
+        "2026 are not yet complete and are not part of the review."]),
     ("4. Alongside the review", [
-        "The Board will also see each district's July to September 2026 member months, on which Tollard bills the "
-        "third-quarter contributions, and the members Granfield Specialty Insurance Company has on specific advisory "
-        "for 2026, with their incurred claims to date as Granfield last reported them, so that trustees can see where "
-        "a district's year rests on a few large claims."]),
+        "The trustees will also see each employer's July to September 2026 member months, on which Hallam bills the "
+        "third-quarter contributions, and the members on Hallam's 2026 high-cost claimant report with their claims "
+        "paid to date as last reported, so that trustees can see which employers carry large claims into 2027."]),
 ]
 
 
@@ -84,10 +83,10 @@ def _masthead(title):
 
 def write_memo(path):
     d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title="Contribution review for 1 January 2027",
-                          author="James Hernandez", subject="", creator="", producer="")
-    head = [["To", "Board of Trustees"], ["From", "James Hernandez, Executive Director"],
-            ["Date", "2 October 2026"], ["Subject", "Contribution review for 1 January 2027"]]
+                          bottomMargin=0.9 * inch, title="2027 renewal review",
+                          author="Michelle Patrick", subject="", creator="", producer="")
+    head = [["To", "Board of Trustees"], ["From", "Michelle Patrick, Plan Administrator"],
+            ["Date", "6 October 2026"], ["Subject", "2027 renewal review of member employers' contributions"]]
     t = Table([[Paragraph(a, CELLB), Paragraph(b, CELL)] for a, b in head], colWidths=[0.9 * inch, 5.6 * inch],
               hAlign="LEFT")
     t.setStyle(TableStyle([("LINEBELOW", (0, -1), (-1, -1), 0.6, INK), ("LEFTPADDING", (0, 0), (-1, -1), 0),
@@ -97,46 +96,33 @@ def write_memo(path):
         story.append(Paragraph(h, H2))
         for p in paras:
             story.append(Paragraph(p, BODY))
-    foot = "%s. Contribution review for 1 January 2027, 2 October 2026." % P.COMPANY
+    foot = "%s. 2027 renewal review, 6 October 2026." % P.COMPANY
     d.build(story, onFirstPage=_frame(foot), onLaterPages=_frame(foot))
 
 
-PLANS = [("MVA", "$500 / $1,000", "20%", "$2,500 / $5,000", "$25", "$10 / $35 / $70"),
-         ("MVB", "$1,500 / $3,000", "20%", "$4,000 / $8,000", "$30", "$10 / $35 / $70"),
-         ("MVC", "$3,000 / $6,000", "20%", "$6,000 / $12,000", "20% after deductible", "$10 / $35 / $70")]
-
-
-def write_benefits(path):
+def write_plan(path):
     d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.75 * inch, rightMargin=0.75 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title="Benefit designs by member district, plan years 2025 and 2026",
-                          author="Brady Cooper", subject="", creator="", producer="")
-    story = _masthead("Benefit designs by member district, plan years 2025 and 2026")
+                          bottomMargin=0.9 * inch, title="Plan summary, plan years 2023 to 2027",
+                          author="Michelle Patrick", subject="", creator="", producer="")
+    story = _masthead("Plan summary, plan years 2023 to 2027")
     story.append(Paragraph(
-        "Each member district chooses one of the cooperative's three plans for each plan year, which runs from "
-        "1 January to 31 December. The plans share Tollard's network, the Granfield specific stop-loss policy and the "
-        "pharmacy formulary, and differ only in the member's cost sharing. Pharmacy is at copays for every plan.", BODY))
-    hdr = ["Plan", "Calendar-year deductible (individual / family)", "Coinsurance", "Out-of-pocket maximum "
-           "(individual / family)", "Office visit", "Pharmacy copays (generic / brand / specialty)"]
-    rows = [[Paragraph(h, CELLB) for h in hdr]] + [[Paragraph(c, CELL) for c in r] for r in PLANS]
-    t = Table(rows, colWidths=[0.55 * inch, 1.45 * inch, 0.9 * inch, 1.45 * inch, 1.0 * inch, 1.6 * inch])
+        "Every member employer offers its employees the trust's one medical and pharmacy plan, administered by Hallam "
+        "Benefit Administrators on the plan year 1 January to 31 December. The plan design has not changed since 2023 "
+        "and is renewed unchanged for 2027.", BODY))
+    rows = [["Feature", "In network"], ["Calendar-year deductible (individual / family)", "$1,000 / $2,000"],
+            ["Coinsurance", "20%"], ["Out-of-pocket maximum (individual / family)", "$4,500 / $9,000"],
+            ["Office visit", "$30 copay"], ["Pharmacy (generic / brand / specialty)", "$10 / $40 / 25% to $250"],
+            ["Specific stop-loss (Westerby Specialty Insurance Company)", "$150,000 a member a contract year, 12/15"]]
+    t = Table([[Paragraph(c, CELLB if i == 0 else CELL) for c in r] for i, r in enumerate(rows)],
+              colWidths=[3.6 * inch, 3.0 * inch])
     t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, INK), ("LINEBELOW", (0, 1), (-1, -1), 0.25, GREY),
                            ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story += [Spacer(1, 4), t, Spacer(1, 10)]
-    story.append(Paragraph("Plan by district", H2))
-    hdr = ["District", "Plan year", "Plan", "Individual deductible", "District name"]
-    rows = [[Paragraph(h, CELLB) for h in hdr]]
-    for did, name, d25, d26, *_ in W.DISTRICTS:
-        for y, dz in ((2025, d25), (2026, d26)):
-            rows.append([Paragraph(c, CELL) for c in (did, str(y), P.PLAN[dz], "${:,}".format(dz), name)])
-    t = Table(rows, colWidths=[0.7 * inch, 0.75 * inch, 0.6 * inch, 1.2 * inch, 3.0 * inch], repeatRows=1)
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, INK), ("LINEBELOW", (0, 2), (-1, -1), 0.25, GREY),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP")]))
-    story += [t, Spacer(1, 8)]
     story.append(Paragraph(
-        "Brantmoor Public Schools, Farrowdale Consolidated Schools, Isenbrook Unified Schools and Northam Vale "
-        "School District moved from plan MVA to plan MVC on 1 January 2026, with the cooperative's health savings "
-        "account option opened to their employees from the same date. No other district changed plan.", SMALL))
-    foot = "%s. Benefit designs, plan years 2025 and 2026; issued 14 November 2025." % P.COMPANY
+        "Contributions are elected by each member employer each September for the next plan year, as a rate per "
+        "member per month made up of a claims component, Hallam's administration fee, the specific stop-loss premium "
+        "and the trust's reserve load. Employers join the trust on 1 January and may leave at a renewal.", SMALL))
+    foot = "%s. Plan summary, plan years 2023 to 2027; issued 30 September 2026." % P.COMPANY
     d.build(story, onFirstPage=_frame(foot), onLaterPages=_frame(foot))
 
 
@@ -145,27 +131,29 @@ def write_rates(path, x):
     from openpyxl.styles import Font, PatternFill
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "2026 rates"
-    ws["A1"] = "%s: 2026 contribution rates per member per month" % P.COMPANY
+    ws.title = "2027 elections"
+    ws["A1"] = "%s: 2027 contribution elections per member per month" % P.COMPANY
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Adopted by the Board of Trustees on 21 October 2025 for plan year 2026."
+    ws["A2"] = "Elected by each member employer in September 2026 for plan year 2027."
     ws.append([])
-    ws.append(["District", "District name", "2026 plan", "Claims component", "Administration", "Specific stop-loss",
-               "Reserve", "2026 contribution"])
+    ws.append(["Employer", "Employer name", "Elected on", "Claims component", "Administration", "Specific stop-loss",
+               "Reserve load", "2027 contribution"])
     for c in ws[4]:
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = PatternFill("solid", fgColor="2C5A3F")
     rng = np.random.default_rng(W.SEED + 9)
-    for did, name, d25, d26, *_ in W.DISTRICTS:
-        claims = x["rates"][did]
-        admin = round(float(rng.uniform(34, 41)), 2)
-        sl = round(float(rng.uniform(42, 58)), 2)
-        res = round(claims * 0.03, 2)
-        ws.append([did, name, P.PLAN[d26], claims, admin, sl, res, round(claims + admin + sl + res, 2)])
+    for eid, name, ind, n in W.EMPLOYERS:
+        claims = x["rates"][eid]
+        admin = 38.50
+        sl = 61.20
+        res = round(claims * 0.025, 2)
+        day = dt.date(2026, 9, int(rng.integers(4, 29)))
+        ws.append([eid, name, day, claims, admin, sl, res, round(claims + admin + sl + res, 2)])
     for row in ws.iter_rows(min_row=5):
+        row[2].number_format = "yyyy-mm-dd"
         for c in row[3:8]:
             c.number_format = "#,##0.00"
-    for col, w in zip("ABCDEFGH", (9, 32, 9, 15, 14, 16, 10, 17)):
+    for col, w in zip("ABCDEFGH", (9, 34, 12, 15, 14, 16, 12, 17)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A5"
     wb.save(path)
@@ -177,12 +165,11 @@ DICT_COLS = ["file_name", "field", "description"]
 def dictionary_rows():
     f = P.FILES
     return [
-        (f["enroll"], "member_id", "Tollard's id for the member"),
-        (f["enroll"], "subscriber_id", "Tollard's id for the employee whose coverage the member is on"),
+        (f["enroll"], "member_id", "Hallam's id for the member"),
+        (f["enroll"], "subscriber_id", "Hallam's id for the employee whose coverage the member is on"),
         (f["enroll"], "relationship", "EE employee, SP spouse, CH child"),
         (f["enroll"], "birth_date", "the member's date of birth"),
-        (f["enroll"], "district_id", "the member district"),
-        (f["enroll"], "plan_code", "the district's plan in the month (benefit designs PDF)"),
+        (f["enroll"], "employer_id", "the member employer"),
         (f["enroll"], "coverage_month", "a month the member is enrolled, YYYY-MM"),
         (f["enroll"], "coverage_tier", "the subscriber's tier: EE, ES, EC or FAM"),
         (f["lag_old"], "IncurredMonth", "the month of service, MM/YYYY"),
@@ -193,18 +180,15 @@ def dictionary_rows():
         (f["lag_new"], "paid_period", "the month the claims were paid, YYYY-MM"),
         (f["lag_new"], "benefit_type", "MED medical, RX pharmacy"),
         (f["lag_new"], "plan_paid_cents", "claims paid by the plan, cents, net of reversals in the month"),
-        (f["adv"], "advisory_date", "the date Granfield issued the advisory"),
-        (f["adv"], "member_ref", "Tollard's member_id as Granfield holds it"),
-        (f["adv"], "incurred_to_date", "the claimant's claims incurred in the 2026 contract year to date, dollars"),
-        (f["adv"], "advisory_type", "initial (first advisory on the claimant file) or update"),
+        (f["reimb"], "member_ref", "Hallam's member_id as Westerby holds it"),
+        (f["reimb"], "paid_in_contract_year", "the member's claims incurred in the contract year and paid within 15 "
+                                              "months, dollars"),
+        (f["reimb"], "reimbursed", "what Westerby reimbursed, dollars"),
+        (f["hcc"], "report_month", "the month of the report, YYYY-MM"),
+        (f["hcc"], "paid_ytd", "the member's 2026 claims paid to the end of the report month, dollars"),
         (f["policy"], "contract_basis", "12/15: claims incurred in the contract year and paid within 15 months"),
-        (f["policy"], "specific_deductible", "the claims of one member in a contract year above which Granfield "
-                                             "reimburses, dollars"),
-        (f["policy"], "aggregate_corridor_pct", "the aggregate attachment as a share of expected claims"),
-        (f["rebates"], "rebate_amount", "pharmacy rebates credited to the cooperative's reserve, dollars"),
-        (f["receipts"], "fiscal_year", "the districts' fiscal year, July to June"),
-        (f["receipts"], "contribution_billed", "the district's contribution billed for the month, dollars"),
-        (f["survey"], "median_total_pmpm_2025", "the survey's median 2025 total claims cost per member per month"),
+        (f["rebates"], "rebate_amount", "pharmacy rebates credited to the trust's reserve, dollars"),
+        (f["survey"], "median_claims_pmpm_2025", "the survey's median 2025 claims cost per member per month"),
     ]
 
 
@@ -214,22 +198,22 @@ MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage
 def manifest_rows(n):
     f = P.FILES
     return [
-        (f["enroll"], "member months by district", "Tollard eligibility", "2026-10-06", "2025-01 to 2026-09",
+        (f["enroll"], "member months by employer", "Hallam eligibility", "2026-10-07", "2023-01 to 2026-09",
          n["enroll"]),
-        (f["lag_old"], "claims lag report, legacy platform", "Tollard claims", "2026-06-02", "paid 2025-01 to 2026-05",
+        (f["lag_old"], "claims lag report, legacy platform", "Hallam claims", "2026-06-03", "paid 2023-01 to 2026-05",
          n["lag_old"]),
-        (f["lag_new"], "claims lag report, current platform", "Tollard claims", "2026-10-06",
+        (f["lag_new"], "claims lag report, current platform", "Hallam claims", "2026-10-07",
          "paid 2026-05 to 2026-09", n["lag_new"]),
-        (f["adv"], "2026 specific advisories", P.CARRIER, "2026-10-01", "2026 contract year to date", n["adv"]),
-        (f["policy"], "specific stop-loss policy schedule", P.CARRIER, "2026-09-30", "2025 to 2027", n["policy"]),
-        (f["rates"], "2026 contribution rates", P.COMPANY, "2025-10-21", "plan year 2026", 16),
-        (f["memo"], "contribution review memo", P.COMPANY, "2026-10-02", "", ""),
-        (f["benefits"], "benefit designs by district", P.COMPANY, "2025-11-14", "plan years 2025 and 2026", ""),
-        (f["rebates"], "2025 pharmacy rebate statement", "Tollard pharmacy benefits", "2026-05-12", "2025",
+        (f["reimb"], "specific reimbursements", P.CARRIER, "2026-07-31", "contract years 2023 to 2025", n["reimb"]),
+        (f["hcc"], "high-cost claimant report", "Hallam claims", "2026-10-07", "2026-01 to 2026-09", n["hcc"]),
+        (f["policy"], "specific stop-loss policy schedule", P.CARRIER, "2026-09-30", "2023 to 2027", n["policy"]),
+        (f["rates"], "2027 contribution elections", P.COMPANY, "2026-09-30", "plan year 2027", 18),
+        (f["memo"], "2027 renewal review memo", P.COMPANY, "2026-10-06", "", ""),
+        (f["plan"], "plan summary", P.COMPANY, "2026-09-30", "plan years 2023 to 2027", ""),
+        (f["rebates"], "2025 pharmacy rebate statement", "Hallam pharmacy benefits", "2026-05-12", "2025",
          n["rebates"]),
-        (f["receipts"], "district contribution receipts", P.COMPANY + " finance", "2026-07-15", "FY2026",
-         n["receipts"]),
-        (f["survey"], "state survey of school employee health plans", "State School Boards Benefits Council",
-         "2026-04-30", "2025", n["survey"]),
-        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-06", "", n["dictionary"]),
+        (f["roster"], "member employer roster", P.COMPANY, "2026-10-01", "", n["roster"]),
+        (f["survey"], "small-group plan survey", "Ridgeline Benefits Brokers Association", "2026-04-15", "2025",
+         n["survey"]),
+        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-07", "", n["dictionary"]),
     ]

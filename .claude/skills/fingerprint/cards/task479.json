@@ -8,11 +8,11 @@
   "subdomain": "payment-claims-health-plan-analytics",
   "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members",
   "objective": "etl",
-  "shape": "10",
+  "shape": "15",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "CR113, CR118, CR131, CR149, CR167 and CR176 surcharged",
+  "answer_source": "generator/figures.json",
   "gap": [
     "time"
   ],
@@ -45,8 +45,8 @@
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "hallam_eligibility_member_months_2023-01_to_2026-09.csv",
+    "rows": 179535,
     "entity": "one member's enrollment in one month",
     "grain": "member x month",
     "source": "synthetic"
@@ -58,18 +58,24 @@
     "geography": "United States (a fictional county region)",
     "currency": "USD",
     "org_type": "chamber of commerce small-employer health trust",
-    "invented_names": [],
+    "invented_names": [
+      "Corbel Ridge Business Health Trust",
+      "Hallam Benefit Administrators",
+      "Westerby Specialty Insurance Company"
+    ],
     "people": [
       "Steven Coleman",
       "Michelle Patrick"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "crbht_2027_renewal_surcharges.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
   "driver_concrete": "A twelve-person shop whose 2024 included one member's $140,000 claim has a three-year average far over the trust's, but its expected 2027 claims are only a little over the trust's level; a sixty-member employer with three quiet years is expected to cost nearly the trust's level too; the easy route raises the first and spares the second.",
-  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
+  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task130": "task130's later architecture forecasts a group chosen for an extreme value in one period by carrying its value forward; here no group is chosen by its value and no period is extreme by selection: every employer's expected level is weighed against the pool by the signal share of its own three-year spread, which depends on its size.",

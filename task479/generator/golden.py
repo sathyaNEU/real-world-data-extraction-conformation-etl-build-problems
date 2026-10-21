@@ -1,6 +1,7 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the cooperative's January 2027 contribution
-review workbook (each district's expected plan year 2026 plan-paid PMPM against its 2026 claims component, the plan-year
-factors it rests on, July to September 2026 member months and the 2026 advisories), and generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: the trust's 2027 renewal surcharge workbook
+(each employer's 2023 to 2025 retained claims trended to 2027, its credibility and expected 2027 retained claims against
+its elected claims component, July to September 2026 member months and the 2026 high-cost claimants), and
+generator/figures.json."""
 import json
 import os
 import sys
@@ -10,25 +11,21 @@ sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "mvshc_january_2027_contribution_review.xlsx"
+FILE = "crbht_2027_renewal_surcharges.xlsx"
 INK = "1B2430"
 GREEN = "2C5A3F"
 PALE = "E7EFE9"
 MUTED = "A3ACB8"
 ACCENT = "B4452F"
-NAMES = "mvshc_2026_contribution_rates.xlsx"
-
-
-def r10(v):
-    return int(10 * round(v / 10))
+RATES = "crbht_2027_contribution_elections.xlsx"
 
 
 def compute(target):
     b = B.load(target)
-    est = B.expected(b, "golden")
-    k = B.factors_by_design(b)
-    return {"b": b, "est": est, "k": k, "raised": B.raised(b, est), "a": B.ask_a(b), "bb": B.ask_b(b),
-            "h1": {d: B.h1(b, d) for d in b["ids"]}}
+    ex = B.experience(b)
+    c = B.credibility(b, ex)
+    est = c["est"]
+    return {"b": b, "ex": ex, "c": c, "est": est, "sur": B.surcharged(b, est), "a": B.ask_a(b), "bb": B.ask_b(b)}
 
 
 def write_xlsx(path, G, target):
@@ -38,10 +35,10 @@ def write_xlsx(path, G, target):
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
-    b = G["b"]
+    b, c, ex = G["b"], G["c"], G["ex"]
     names = {}
-    ws0 = openpyxl.load_workbook(os.path.join(target, NAMES), data_only=True)["2026 rates"]
-    for r in ws0.iter_rows(min_row=5, values_only=True):
+    for r in openpyxl.load_workbook(os.path.join(target, RATES), data_only=True)["2027 elections"].iter_rows(
+            min_row=5, values_only=True):
         if r[0]:
             names[r[0]] = r[1]
     wb = openpyxl.Workbook()
@@ -54,9 +51,9 @@ def write_xlsx(path, G, target):
 
     def head(ws, row, cols, widths):
         for i, (h, w) in enumerate(zip(cols, widths), 1):
-            c = ws.cell(row=row, column=i, value=h)
-            c.font, c.fill = hdr, hfill
-            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
+            cl = ws.cell(row=row, column=i, value=h)
+            cl.font, cl.fill = hdr, hfill
+            cl.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
             ws.column_dimensions[get_column_letter(i)].width = w
         ws.row_dimensions[row].height = 42
 
@@ -67,129 +64,116 @@ def write_xlsx(path, G, target):
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
     ws = wb.active
-    ws.title = "Contribution review"
-    n = G["raised"]
-    title(ws, "%d of 16 districts rise from 1 January 2027: %s" % (len(n), ", ".join(n)),
-          "Expected plan year 2026 plan-paid claims per member per month: January to June 2026 incurred claims paid "
-          "through 30 September 2026, completed by the plan-year factor of the districts that ran the same plan "
-          "through 2025, against the claims component of the 2026 contribution rate.")
-    cols = ["District", "District name", "2026 plan (deductible)", "Jan to Jun 2026 member months",
-            "Jan to Jun 2026 plan paid ($)", "Jan to Jun 2026 PMPM ($)", "Plan-year factor",
-            "Expected plan year 2026 PMPM ($)", "2026 claims component ($)", "Over (under) ($)", "Contribution rises"]
-    head(ws, 4, cols, [8, 30, 12, 11, 14, 11, 9, 13, 12, 11, 10])
-    for i, d in enumerate(b["ids"]):
-        dz = b["design"][(d, 2026)]
-        mm = sum(b["mm"].get((d, ym), 0) for ym in B.H1)
-        pd = sum(b["paid"].get((d, ym), 0.0) for ym in B.H1)
-        est, rate = G["est"][d], b["rates"][d]
-        vals = [d, names[d], "%s ($%s)" % ({500: "MVA", 1500: "MVB", 3000: "MVC"}[dz], "{:,}".format(dz)), mm,
-                round(pd), round(G["h1"][d], 2), round(G["k"][dz], 4), r10(est), rate, round(est - rate, 2),
-                "yes" if d in n else "no"]
+    ws.title = "Renewal review"
+    n = G["sur"]
+    title(ws, "%d of 18 employers are surcharged from 1 January 2027: %s" % (len(n), ", ".join(n)),
+          "Expected 2027 retained claims per member per month: each employer's 2023 to 2025 retained claims trended "
+          "at 7 per cent a year, weighed against the trust's by its credibility (Buhlmann-Straub), against the claims "
+          "component of its elected 2027 contribution.")
+    cols = ["Employer", "Employer name", "2023 to 2025 member months", "2023 to 2025 retained claims ($)",
+            "Experience PMPM trended to 2027 ($)", "Credibility", "Expected 2027 PMPM ($)", "2027 claims component ($)",
+            "Over (under) ($)", "Surcharged"]
+    head(ws, 4, cols, [9, 32, 12, 15, 13, 10, 12, 12, 11, 10])
+    for i, e in enumerate(b["ids"]):
+        mm = sum(ex[(e, y)]["mm"] for y in B.YEARS)
+        ret = sum(ex[(e, y)]["ret"] for y in B.YEARS)
+        est, rate = G["est"][e], b["rates"][e]
+        vals = [e, names[e], mm, round(ret), round(c["own"][e]), round(c["z"][e], 2), round(est), rate,
+                round(est - rate, 2), "yes" if e in n else "no"]
         for j, v in enumerate(vals, 1):
-            c = ws.cell(row=5 + i, column=j, value=v)
-            c.font = bold if (d in n and j in (1, 2, 11)) else body
-            c.border = thin
-            if d in n:
-                c.fill = nfill
-            if j in (4, 5, 8):
-                c.number_format = "#,##0"
-            elif j in (6, 9):
-                c.number_format = "#,##0.00"
-            elif j == 7:
-                c.number_format = "0.0000"
-            elif j == 10:
-                c.number_format = "#,##0.00;(#,##0.00)"
+            cl = ws.cell(row=5 + i, column=j, value=v)
+            cl.font = bold if (e in n and j in (1, 2, 10)) else body
+            cl.border = thin
+            if e in n:
+                cl.fill = nfill
+            cl.number_format = {3: "#,##0", 4: "#,##0", 5: "#,##0", 6: "0.00", 7: "#,##0", 8: "#,##0.00",
+                                9: "#,##0.00;(#,##0.00)"}.get(j, "General")
             if j >= 3:
-                c.alignment = Alignment(horizontal="right")
+                cl.alignment = Alignment(horizontal="right")
     ws.freeze_panes = "C5"
     r0 = 5 + len(b["ids"]) + 1
     for k, t in enumerate([
-        "The plan pays little in the first months of a plan year while members meet their deductibles, and less the "
-        "higher the deductible, so January to June carries less of a plan MVC year than of a plan MVA year. "
-        "Brantmoor, Farrowdale, Isenbrook and Northam Vale moved from plan MVA to plan MVC on 1 January 2026: "
-        "their January to June 2026 claims are completed by the factor of Eversley Plains, Kestrel Point and Pellow "
-        "Ridge, which ran plan MVC through 2025, not by their own 2025 on plan MVA.",
-        "Over (under) is the expected PMPM unrounded less the claims component. Plan-paid claims are gross of "
-        "specific stop-loss reimbursements and before pharmacy rebates (contribution review memo, section 2).",
+        "Most member employers cover fewer than three hundred members, and one member's large claim moves a small "
+        "employer's year by more than the employers truly differ: the three years' spread within an employer "
+        "(expected process variance %.0f) against the spread between employers' true levels (%.0f) gives each employer "
+        "a credibility of its member months over its member months plus %.0f. An employer's expected 2027 claims are "
+        "its credibility times its own trended experience plus the rest times the trust's, $%.2f." % (
+            c["epv"], c["vhm"], c["k"], c["xbar"]),
+        "Over (under) is the expected PMPM unrounded less the claims component. Retained claims are net of Westerby's "
+        "specific reimbursements and before pharmacy rebates (renewal review memo, section 2).",
     ]):
-        c = ws.cell(row=r0 + k, column=1, value=t)
-        c.font = Font(name="Calibri", size=9, color="5B6470")
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=11)
-        ws.row_dimensions[r0 + k].height = 40
+        cl = ws.cell(row=r0 + k, column=1, value=t)
+        cl.font = Font(name="Calibri", size=9, color="5B6470")
+        cl.alignment = Alignment(wrap_text=True, vertical="top")
+        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=10)
+        ws.row_dimensions[r0 + k].height = 52
 
     cs = wb.create_sheet("Chart data")
-    cs.append(["District", "Expected plan year 2026 PMPM ($)", "2026 claims component ($)"])
-    for d in b["ids"]:
-        cs.append([d, round(G["est"][d], 2), b["rates"][d]])
+    cs.append(["Employer", "Expected 2027 PMPM ($)", "2027 claims component ($)"])
+    for e in b["ids"]:
+        cs.append([e, round(G["est"][e], 2), b["rates"][e]])
     ch = BarChart()
     ch.type = "col"
     word = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight"}.get(len(n), str(len(n)))
-    ch.title = "%s districts' expected 2026 claims run over their claims component" % word
+    ch.title = "%s employers' expected 2027 claims run over their claims component" % word
     ch.y_axis.title = "Dollars per member per month"
     ch.y_axis.numFmt = "#,##0"
     ch.y_axis.scaling.min = 300
     ch.y_axis.delete = False
     ch.x_axis.delete = False
     ch.x_axis.tickLblSkip = 1
-    data = Reference(cs, min_col=2, min_row=1, max_col=3, max_row=len(b["ids"]) + 1)
-    ch.add_data(data, titles_from_data=True)
+    ch.add_data(Reference(cs, min_col=2, min_row=1, max_col=3, max_row=len(b["ids"]) + 1), titles_from_data=True)
     ch.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["ids"]) + 1))
     ch.series[0].graphicalProperties = GraphicalProperties(solidFill=GREEN)
-    for i, d in enumerate(b["ids"]):
-        if d in n:
+    for i, e in enumerate(b["ids"]):
+        if e in n:
             pt = DataPoint(idx=i)
             pt.graphicalProperties = GraphicalProperties(solidFill=ACCENT)
             ch.series[0].dPt.append(pt)
     ch.series[1].graphicalProperties = GraphicalProperties(solidFill=MUTED)
     ch.gapWidth = 60
     ch.legend.position = "b"
-    ch.height, ch.width = 10, 26
+    ch.height, ch.width = 10, 28
     ws.add_chart(ch, "A%d" % (r0 + 3))
 
-    fs = wb.create_sheet("Plan-year factors")
-    title(fs, "Plan year 2025: the plan-year PMPM over the January to June PMPM, by plan",
-          "Claims incurred in 2025 and paid through 31 March 2026; each plan's factor pools the districts that ran it "
-          "through 2025.")
-    head(fs, 4, ["Plan", "Districts", "2025 member months", "2025 plan paid ($)", "Plan year PMPM ($)",
-                 "Jan to Jun PMPM ($)", "Factor"], [8, 30, 12, 15, 12, 12, 10])
-    row = 5
-    for dz, code in ((500, "MVA"), (1500, "MVB"), (3000, "MVC")):
-        ids = [i for i in b["ids"] if b["design"][(i, 2025)] == dz]
-        mm = sum(b["mm"].get((i, ym), 0) for i in ids for ym in B.Y25)
-        pd = sum(b["paid"].get((i, ym), 0.0) for i in ids for ym in B.Y25)
-        mh = sum(b["mm"].get((i, ym), 0) for i in ids for ym in B.Y25[:6])
-        ph = sum(b["paid"].get((i, ym), 0.0) for i in ids for ym in B.Y25[:6])
-        vals = [code, ", ".join(ids), mm, round(pd), round(pd / mm, 2), round(ph / mh, 2), round(G["k"][dz], 4)]
+    ys = wb.create_sheet("Experience by year")
+    title(ys, "Retained claims per member per month by plan year, trended to 2027",
+          "Claims incurred in the year and paid through 31 March of the next, less Westerby's reimbursements, at 7 per "
+          "cent a year to 2027.")
+    head(ys, 4, ["Employer", "2023 member months", "2023 PMPM ($)", "2024 member months", "2024 PMPM ($)",
+                 "2025 member months", "2025 PMPM ($)"], [9, 11, 11, 11, 11, 11, 11])
+    for i, e in enumerate(b["ids"]):
+        vals = [e]
+        for y in B.YEARS:
+            vals += [ex[(e, y)]["mm"], round(ex[(e, y)]["x"])]
         for j, v in enumerate(vals, 1):
-            c = fs.cell(row=row, column=j, value=v)
-            c.font, c.border = body, thin
-            c.number_format = {3: "#,##0", 4: "#,##0", 5: "#,##0.00", 6: "#,##0.00", 7: "0.0000"}.get(j, "General")
-        row += 1
+            cl = ys.cell(row=5 + i, column=j, value=v)
+            cl.font, cl.border = body, thin
+            if j > 1:
+                cl.number_format = "#,##0"
 
     a = wb.create_sheet("Q3 2026 member months")
-    title(a, "July to September 2026 member months", "Each person counted once a month: members reissued new ids when "
-                                                     "their district moved payroll to the county system are one person "
-                                                     "under both ids.")
-    head(a, 4, ["District", "District name", "Member months"], [8, 30, 14])
-    for i, d in enumerate(b["ids"]):
-        for j, (v, fm) in enumerate(((d, None), (names[d], None), (G["a"][d], "#,##0")), 1):
-            c = a.cell(row=5 + i, column=j, value=v)
-            c.font, c.border = body, thin
+    title(a, "July to September 2026 member months", "Each person counted once a month: members Hallam reissued new ids "
+                                                     "at the summer 2026 eligibility move are one person under both.")
+    head(a, 4, ["Employer", "Employer name", "Member months"], [9, 32, 14])
+    for i, e in enumerate(b["ids"]):
+        for j, (v, fm) in enumerate(((e, None), (names[e], None), (G["a"][e], "#,##0")), 1):
+            cl = a.cell(row=5 + i, column=j, value=v)
+            cl.font, cl.border = body, thin
             if fm:
-                c.number_format = fm
-    ad = wb.create_sheet("2026 advisories")
-    title(ad, "Granfield's 2026 specific advisories", "Members flagged at $125,000, each counted once (a claimant file "
-                                                      "reopened under a member's new id is the same member), at the "
-                                                      "claims to date Granfield last reported.")
-    head(ad, 4, ["District", "District name", "Members on advisory", "Claims to date ($)"], [8, 30, 12, 16])
-    for i, d in enumerate(b["ids"]):
-        for j, (v, fm) in enumerate(((d, None), (names[d], None), (G["bb"][d][0], "0"),
-                                     (round(G["bb"][d][1]), "#,##0")), 1):
-            c = ad.cell(row=5 + i, column=j, value=v)
-            c.font, c.border = body, thin
+                cl.number_format = fm
+    hc = wb.create_sheet("2026 high-cost claimants")
+    title(hc, "Hallam's 2026 high-cost claimant report", "Members with $25,000 or more of 2026 claims, each counted "
+                                                         "once (a member reported under a new id is the same member), "
+                                                         "at the claims to date last reported.")
+    head(hc, 4, ["Employer", "Employer name", "Members", "Claims to date ($)"], [9, 32, 10, 16])
+    for i, e in enumerate(b["ids"]):
+        for j, (v, fm) in enumerate(((e, None), (names[e], None), (G["bb"][e][0], "0"),
+                                     (round(G["bb"][e][1]), "#,##0")), 1):
+            cl = hc.cell(row=5 + i, column=j, value=v)
+            cl.font, cl.border = body, thin
             if fm:
-                c.number_format = fm
+                cl.number_format = fm
     for w in wb.worksheets:
         w.sheet_view.showGridLines = False
         w.page_setup.orientation = "landscape"
@@ -201,16 +185,16 @@ def write_xlsx(path, G, target):
 
 def figures(G):
     b = G["b"]
-    dflt = B.expected(b, "default")
+    dflt = B.expected(b, "own_experience")
     return {
-        "call": {"raised": G["raised"]},
-        "expected_pmpm": {d: r10(G["est"][d]) for d in b["ids"]},
-        "ask_a": {d: G["a"][d] for d in b["ids"]},
-        "ask_b": {d: {"members": G["bb"][d][0], "claims_to_date": int(round(G["bb"][d][1]))} for d in b["ids"]},
-        "default_path": {"raised": B.raised(b, dflt), "expected_pmpm": {d: r10(dflt[d]) for d in b["ids"]}},
-        "claims_component": {d: "%.2f" % b["rates"][d] for d in b["ids"]},
-        "conventions": {"deductibles": [500, 1500, 3000], "advisory": 125000, "specific": 250000,
-                        "years": [2025, 2026, 2027], "counts": [4, 6, 16], "months": [3, 6, 30, 31], "rounding": [10]},
+        "call": {"surcharged": G["sur"]},
+        "experience_pmpm": {e: int(round(G["c"]["own"][e])) for e in b["ids"]},
+        "ask_a": {e: G["a"][e] for e in b["ids"]},
+        "ask_b": {e: {"members": G["bb"][e][0], "claims_to_date": int(round(G["bb"][e][1]))} for e in b["ids"]},
+        "default_path": {"surcharged": B.surcharged(b, dflt)},
+        "claims_component": {e: "%.2f" % b["rates"][e] for e in b["ids"]},
+        "conventions": {"trend_pct": 7, "specific": 150000, "hcc": 25000, "years": [2023, 2024, 2025, 2026, 2027],
+                        "counts": [18], "months": [3, 31], "lives": [1000, 3000]},
     }
 
 
@@ -219,8 +203,8 @@ def main(target, gdir, fig_path):
     G = compute(target)
     write_xlsx(os.path.join(gdir, FILE), G, target)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Brady Cooper", "Brady Cooper", "2026-10-08T14:10:00Z",
-                       "2026-10-12T20:35:00Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Steven Coleman", "Steven Coleman", "2026-10-08T14:10:00Z",
+                       "2026-10-13T20:35:00Z", excel=True, company=PP.COMPANY)
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

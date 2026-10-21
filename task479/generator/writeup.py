@@ -9,11 +9,11 @@ def _and(xs):
 
 def write(fig_path, out):
     f = json.load(open(fig_path))
-    n = f["call"]["raised"]
-    e = f["expected_pmpm"]
+    n = f["call"]["surcharged"]
     rate = f["claims_component"]
-    dp = f["default_path"]
-    missed = [d for d in n if d not in dp["raised"]]
+    dp = f["default_path"]["surcharged"]
+    added = [e for e in n if e not in dp]
+    spared = [e for e in dp if e not in n]
     lines = []
     w = lines.append
     w("## Tags")
@@ -23,53 +23,56 @@ def write(fig_path, out):
     w("")
     w("## 1. Final Recommendation")
     w("")
-    w("**Raise the contributions of %s from 1 January 2027.**" % _and(n))
-    w("Their expected plan year 2026 plan-paid claims are $%s per member per month against claims components of $%s; "
-      "every other district is under its claims component. %s moved from plan MVA ($500 deductible) to plan MVC "
-      "($3,000) in 2026, and a plan MVC year carries less of its claims in January to June, so their first half "
-      "is completed by the factor of the districts that ran plan MVC through 2025; completed by their own 2025 on plan "
-      "MVA they read $%s and look covered." % (
-          _and(str(e[d]) for d in n), _and(rate[d] for d in n), _and(missed),
-          _and(str(dp["expected_pmpm"][d]) for d in missed)))
+    w("**Surcharge %s from 1 January 2027.**" % _and(n))
+    w("Their expected 2027 retained claims exceed the claims components they elected; no other employer's do. Most "
+      "member employers are small, and a small employer's three years carry the luck of a few members' claims, so "
+      "each employer's trended experience is weighed against the trust's by its credibility. Read at face value, the "
+      "experience would surcharge %s, whose experience was raised by a few large claims, and spare %s, whose "
+      "experience was low by luck and whose claims components sit well under the trust's level." % (
+          _and(spared), _and(added)))
     w("")
     w("## 2. Critical Components")
     w("")
-    w("1. Districts raised from 1 January 2027: %s" % ", ".join("**%s**" % d for d in n))
-    w("2. Expected plan year 2026 plan-paid claims PMPM, to the nearest $10: %s" % ", ".join(
-        "%s **%d**" % (d, e[d]) for d in sorted(e)))
-    w("3. Claims components of the 2026 contribution rates: %s" % ", ".join("%s %s" % (d, rate[d]) for d in sorted(rate)))
+    w("1. Employers surcharged from 1 January 2027: %s" % ", ".join("**%s**" % e for e in n))
+    w("2. Employers not surcharged: %s" % ", ".join(e for e in sorted(rate) if e not in n))
+    w("3. Claims components of the 2027 elections: %s" % ", ".join("%s %s" % (e, rate[e]) for e in sorted(rate)))
     w("")
     w("## 3. Step-by-Step Solution")
     w("")
-    w("1. Joined the two claims lag reports by district, month of service, paid month and category, the May 2026 "
+    w("1. Joined the two claims lag reports by employer, month of service, paid month and category, the May 2026 "
       "cells both platforms sent counted once, cents in dollars.")
-    w("2. Counted each district's member months from the eligibility file, 2025 and January to June 2026.")
-    w("3. Took each district's plan in 2025 and 2026 from the benefit designs PDF.")
-    w("4. For each plan, pooled the districts that ran it through 2025: plan year 2025 PMPM over January to June 2025 "
-      "PMPM.")
-    w("5. Multiplied each district's January to June 2026 PMPM by the factor of its 2026 plan, so the four districts "
-      "that moved to plan MVC are completed on plan MVC's year, not their own 2025.")
-    w("6. Compared with the 2026 claims component: %s over." % ", ".join(n))
-    w("7. Ask A: July to September 2026 eligibility counted once per person a month (members reissued new ids when "
-      "their district moved payroll matched on district, birth date, sex and relationship).")
-    w("8. Ask B: each member's latest 2026 advisory, the district through the 2026 policy schedule, a claimant file "
-      "reopened under a member's new id joined to the member's earlier one.")
+    w("2. For each employer and plan year 2023 to 2025 took claims incurred in the year and paid through March of the "
+      "next, less Westerby's reimbursements (the employer through the policy schedule), over the year's member "
+      "months, trended at 7 per cent a year to 2027.")
+    w("3. Estimated the within-employer and between-employer variance of those trended PMPMs (Buhlmann-Straub, "
+      "member-month weights) and gave each employer a credibility of its member months over its member months plus "
+      "their ratio.")
+    w("4. Took each employer's expected 2027 PMPM as its credibility times its own three-year trended PMPM plus the "
+      "rest times the trust's member-month weighted level; limited-fluctuation credibility at 1,000 to 3,000 lives "
+      "gives the same employers.")
+    w("5. Compared with the claims component of the elected 2027 contribution: %s over." % ", ".join(n))
+    w("6. Ask A: July to September 2026 eligibility counted once per person a month (members reissued new ids at the "
+      "summer 2026 move matched on employer, birth date, sex and relationship).")
+    w("7. Ask B: each member's latest row on the 2026 high-cost claimant report, a member's rows under the old and the "
+      "new id joined as one member.")
+    w("8. Recommended surcharges for %s." % ", ".join(n))
     w("")
     w("## 4. Deliverable Answers")
     w("")
-    w("### mvshc_january_2027_contribution_review.xlsx")
+    w("### crbht_2027_renewal_surcharges.xlsx")
     w("")
-    w("1. Expected plan year 2026 plan-paid claims PMPM (nearest $10) against the 2026 claims component, and the call:")
-    for d in sorted(e):
-        w("   - %s: %d against %s, %s" % (d, e[d], rate[d], "raised" if d in n else "not raised"))
-    w("2. Chart of each district's expected PMPM beside its claims component, the raised districts marked.")
+    w("1. Each employer's decision against its 2027 claims component:")
+    for e in sorted(rate):
+        w("   - %s (claims component %s): %s" % (e, rate[e], "surcharged" if e in n else "not surcharged"))
+    w("2. Chart of each employer's expected 2027 retained PMPM beside its claims component, the surcharged employers "
+      "marked.")
     w("3. July to September 2026 member months:")
-    for d in sorted(f["ask_a"]):
-        w("   - %s: %s" % (d, "{:,}".format(f["ask_a"][d])))
-    w("4. 2026 specific advisories: members on advisory and their incurred claims to date as last reported (whole "
+    for e in sorted(f["ask_a"]):
+        w("   - %s: %s" % (e, "{:,}".format(f["ask_a"][e])))
+    w("4. Members on the 2026 high-cost claimant report and their claims paid to date as last reported (whole "
       "dollars):")
-    for d in sorted(f["ask_b"]):
-        b = f["ask_b"][d]
-        w("   - %s: %d, $%s" % (d, b["members"], "{:,}".format(b["claims_to_date"])))
+    for e in sorted(f["ask_b"]):
+        b = f["ask_b"][e]
+        w("   - %s: %d, $%s" % (e, b["members"], "{:,}".format(b["claims_to_date"])))
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")

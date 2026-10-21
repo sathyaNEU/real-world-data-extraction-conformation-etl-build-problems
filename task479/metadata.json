@@ -5,56 +5,56 @@
  "task_type": "payment-claims-health-plan-analytics",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "tollard_pharmacy_rebate_statement_2025.csv",
-  "mvshc_district_contribution_receipts_fy2026.csv",
-  "state_school_employee_plan_survey_2025.csv"
+  "hallam_pharmacy_rebate_statement_2025.csv",
+  "crbht_member_employer_roster_2026-10.csv",
+  "ridgeline_brokers_small_group_survey_2025.csv"
  ],
  "distractor_reasons": {
-  "tollard_pharmacy_rebate_statement_2025.csv": "the 2025 pharmacy rebates credited to the cooperative's reserve; the review memo takes plan-paid claims before rebates, so no district's figure nets them",
-  "mvshc_district_contribution_receipts_fy2026.csv": "the districts' fiscal 2026 contributions billed and received; the review compares claims with the claims component of the 2026 rate, and no receipt enters it",
-  "state_school_employee_plan_survey_2025.csv": "a state survey's 2025 claims cost per member per month by plan type; the review rests on each district's own claims and no benchmark enters it"
+  "hallam_pharmacy_rebate_statement_2025.csv": "the 2025 pharmacy rebates credited to the trust's reserve; the review memo takes retained claims before rebates, so no employer's figure nets them",
+  "crbht_member_employer_roster_2026-10.csv": "the member employers' names, industries, joining years and account managers; nothing on it enters an employer's expected claims",
+  "ridgeline_brokers_small_group_survey_2025.csv": "a broker survey's 2025 small-group claims cost and renewal changes by group size; the review rests on the trust's own experience and no external benchmark enters it"
  },
  "stated_inputs": [
-  "125,000",
-  "250,000",
-  "3,000",
-  "1,500"
+  "150,000",
+  "25,000"
  ],
  "deliverables": [
-  "mvshc_january_2027_contribution_review.xlsx"
+  "crbht_2027_renewal_surcharges.xlsx"
  ],
- "as_of": "2026-10-06",
+ "as_of": "2026-10-07",
  "files": [
-  "granfield_specific_advisories_2026.csv",
-  "granfield_specific_policy_schedule_2025-2027.csv",
-  "mvshc_2026_contribution_rates.xlsx",
-  "mvshc_benefit_designs_2025_2026.pdf",
-  "mvshc_contribution_review_january_2027.pdf",
-  "mvshc_data_dictionary.csv",
-  "mvshc_district_contribution_receipts_fy2026.csv",
-  "mvshc_extract_manifest_2026-10-06.csv",
-  "state_school_employee_plan_survey_2025.csv",
-  "tollard_claims_lag_report_paid_2025-01_to_2026-05.csv",
-  "tollard_claims_lag_report_paid_2026-05_to_2026-09.csv",
-  "tollard_eligibility_member_months_2025-01_to_2026-09.csv",
-  "tollard_pharmacy_rebate_statement_2025.csv"
+  "crbht_2027_contribution_elections.xlsx",
+  "crbht_2027_renewal_review.pdf",
+  "crbht_data_dictionary.csv",
+  "crbht_extract_manifest_2026-10-07.csv",
+  "crbht_member_employer_roster_2026-10.csv",
+  "crbht_plan_summary_2023-2027.pdf",
+  "hallam_claims_lag_report_paid_2023-01_to_2026-05.csv",
+  "hallam_claims_lag_report_paid_2026-05_to_2026-09.csv",
+  "hallam_eligibility_member_months_2023-01_to_2026-09.csv",
+  "hallam_high_cost_claimant_report_2026.csv",
+  "hallam_pharmacy_rebate_statement_2025.csv",
+  "ridgeline_brokers_small_group_survey_2025.csv",
+  "westerby_specific_policy_schedule_2023-2027.csv",
+  "westerby_specific_reimbursements_2023-2025.csv"
  ],
  "rows": {
-  "granfield_specific_advisories_2026.csv": 205,
-  "mvshc_data_dictionary.csv": 27,
-  "tollard_eligibility_member_months_2025-01_to_2026-09.csv": 271893,
-  "tollard_claims_lag_report_paid_2026-05_to_2026-09.csv": 640,
-  "tollard_claims_lag_report_paid_2025-01_to_2026-05.csv": 2176,
-  "mvshc_extract_manifest_2026-10-06.csv": 12,
-  "granfield_specific_policy_schedule_2025-2027.csv": 48,
-  "tollard_pharmacy_rebate_statement_2025.csv": 64,
-  "mvshc_district_contribution_receipts_fy2026.csv": 192,
-  "state_school_employee_plan_survey_2025.csv": 5
+  "crbht_data_dictionary.csv": 23,
+  "hallam_eligibility_member_months_2023-01_to_2026-09.csv": 179535,
+  "hallam_high_cost_claimant_report_2026.csv": 463,
+  "hallam_claims_lag_report_paid_2026-05_to_2026-09.csv": 720,
+  "hallam_claims_lag_report_paid_2023-01_to_2026-05.csv": 5688,
+  "crbht_extract_manifest_2026-10-07.csv": 13,
+  "westerby_specific_policy_schedule_2023-2027.csv": 90,
+  "hallam_pharmacy_rebate_statement_2025.csv": 72,
+  "westerby_specific_reimbursements_2023-2025.csv": 14,
+  "crbht_member_employer_roster_2026-10.csv": 18,
+  "ridgeline_brokers_small_group_survey_2025.csv": 4
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task479/generator); the cooperative, the districts, the administrator, the carrier, their members and the people are fictional",
-  "public_specifications": "the layouts follow common third-party administrator claims lag reports, eligibility files and specific stop-loss advisories (12/15 contract basis), described in no shipped file beyond the pack's own dictionary",
+  "constructed": "every file is constructed for this task by its generator (task479/generator); the trust, the employers, the administrator, the carrier, their members and the people are fictional",
+  "public_specifications": "the layouts follow common third-party administrator claims lag reports, eligibility files, high-cost claimant reports and specific stop-loss reimbursement statements (12/15 contract basis), described in no shipped file beyond the pack's own dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-06"
+  "date": "2026-10-07"
  }
 }
