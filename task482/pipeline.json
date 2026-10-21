@@ -1,34 +1,34 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
- "architecture": 1,
+ "stump": "The default path reads each region's error rate as the share of its audited records found in error and sends most regions to re-validation, because it never asks how the audit drew its records: the screen's flagged records were drawn thirty times as often and are in error far more often, so only weighting each audited record by the inverse of its chance of being drawn gives the register's rate.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "round 2 readers landed the call (exit 1); architecture 1 spent"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "task130 0.07"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (round 1); round 2 running",
+  "verdict": "",
+  "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "stage 1: re-root to architecture 2 in a fresh world and decisive step (architecture 1 spent, see Tried and rejected)",
+ "resume": "stage 2: design architecture 2 (register error rates from an unequal-probability audit): generator, ladder, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,
