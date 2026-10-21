@@ -1,21 +1,34 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-20",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-21",
  "stump": "The default path drops every claim a building filed before it was elevated and puts Dunholme and Kettlemoor in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-20"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; 2.1 section number, the county schedule, common words, forward-dated terms)",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "task130 v4 at 0.11"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: design the ladder, fork table, closure and the asks on the drawn mechanism, then precut.py",
+ "resume": "stage 4 in flight: two scored leak readers and the determinism judge thread (brief at /tmp/determinism-check-task479-1792540801/judge_brief.md) on target.zip sha256 233e7da88d23d2c3; on their return score each reader with score_reader.py, hand the verdict to the determinism-judge agent for the report, fix every finding in the generator in one pass, rebuild (python3 task479/generator/build.py), then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

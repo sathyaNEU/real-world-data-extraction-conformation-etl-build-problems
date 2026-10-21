@@ -1,0 +1,241 @@
+{
+ "a_losses": {
+  "Amberjack Bay": {
+   "claims": 772,
+   "payments": 31099515
+  },
+  "Dunholme": {
+   "claims": 446,
+   "payments": 17948675
+  },
+  "Eastmarsh": {
+   "claims": 665,
+   "payments": 25344431
+  },
+  "Gorran": {
+   "claims": 258,
+   "payments": 10188863
+  },
+  "Hensby": {
+   "claims": 668,
+   "payments": 27850818
+  },
+  "Ivesby": {
+   "claims": 285,
+   "payments": 12820441
+  },
+  "Kettlemoor": {
+   "claims": 425,
+   "payments": 14933957
+  },
+  "Lisgrove": {
+   "claims": 237,
+   "payments": 8661639
+  },
+  "Menhaden Point": {
+   "claims": 744,
+   "payments": 30873950
+  },
+  "Ravensholt": {
+   "claims": 234,
+   "payments": 9030331
+  },
+  "Saltreach": {
+   "claims": 932,
+   "payments": 39215507
+  },
+  "Tesmond": {
+   "claims": 167,
+   "payments": 7362347
+  },
+  "Thornock": {
+   "claims": 201,
+   "payments": 9551979
+  },
+  "Wickmere": {
+   "claims": 164,
+   "payments": 8233257
+  }
+ },
+ "b_pipeline": {
+  "Amberjack Bay": {
+   "buildings": 35,
+   "federal_share": 6681525
+  },
+  "Dunholme": {
+   "buildings": 29,
+   "federal_share": 5233000
+  },
+  "Eastmarsh": {
+   "buildings": 56,
+   "federal_share": 10195485
+  },
+  "Gorran": {
+   "buildings": 47,
+   "federal_share": 7247655
+  },
+  "Hensby": {
+   "buildings": 37,
+   "federal_share": 6244320
+  },
+  "Ivesby": {
+   "buildings": 26,
+   "federal_share": 4542675
+  },
+  "Kettlemoor": {
+   "buildings": 28,
+   "federal_share": 4802040
+  },
+  "Lisgrove": {
+   "buildings": 36,
+   "federal_share": 6424755
+  },
+  "Menhaden Point": {
+   "buildings": 91,
+   "federal_share": 15273270
+  },
+  "Ravensholt": {
+   "buildings": 22,
+   "federal_share": 4162125
+  },
+  "Saltreach": {
+   "buildings": 34,
+   "federal_share": 6451135
+  },
+  "Tesmond": {
+   "buildings": 40,
+   "federal_share": 6763290
+  },
+  "Thornock": {
+   "buildings": 27,
+   "federal_share": 4530945
+  },
+  "Wickmere": {
+   "buildings": 35,
+   "federal_share": 6036255
+  }
+ },
+ "call": {
+  "excluded_by_the_replay": [
+   "Dunholme",
+   "Kettlemoor"
+  ],
+  "five": [
+   "Amberjack Bay",
+   "Lisgrove",
+   "Saltreach",
+   "Thornock",
+   "Wickmere"
+  ],
+  "next": "Eastmarsh"
+ },
+ "components": {
+  "building_years": {
+   "Amberjack Bay": "19993.6",
+   "Dunholme": "17254.1",
+   "Eastmarsh": "9974.8",
+   "Gorran": "10306.8",
+   "Hensby": "9586.9",
+   "Ivesby": "8339.8",
+   "Kettlemoor": "13963.4",
+   "Lisgrove": "5995.2",
+   "Menhaden Point": "14221.6",
+   "Ravensholt": "6654.4",
+   "Saltreach": "26601.0",
+   "Tesmond": "7353.7",
+   "Thornock": "6454.8",
+   "Wickmere": "5771.3"
+  },
+  "claims_as_they_stand": {
+   "Amberjack Bay": 52,
+   "Dunholme": 397,
+   "Eastmarsh": 37,
+   "Gorran": 176,
+   "Hensby": 44,
+   "Ivesby": 71,
+   "Kettlemoor": 303,
+   "Lisgrove": 18,
+   "Menhaden Point": 101,
+   "Ravensholt": 36,
+   "Saltreach": 80,
+   "Tesmond": 47,
+   "Thornock": 18,
+   "Wickmere": 15
+  },
+  "elevated_insured_buildings": {
+   "Amberjack Bay": 1316,
+   "Dunholme": 1107,
+   "Eastmarsh": 712,
+   "Gorran": 674,
+   "Hensby": 702,
+   "Ivesby": 570,
+   "Kettlemoor": 895,
+   "Lisgrove": 454,
+   "Menhaden Point": 995,
+   "Ravensholt": 487,
+   "Saltreach": 1754,
+   "Tesmond": 502,
+   "Thornock": 469,
+   "Wickmere": 423
+  },
+  "rates": {
+   "Amberjack Bay": "2.6",
+   "Dunholme": "23.0",
+   "Eastmarsh": "3.7",
+   "Gorran": "17.1",
+   "Hensby": "4.6",
+   "Ivesby": "8.5",
+   "Kettlemoor": "21.7",
+   "Lisgrove": "3.0",
+   "Menhaden Point": "7.1",
+   "Ravensholt": "5.4",
+   "Saltreach": "3.0",
+   "Tesmond": "6.4",
+   "Thornock": "2.8",
+   "Wickmere": "2.6"
+  }
+ },
+ "conventions": {
+  "days_per_building_year": "365.25",
+  "rate_per_building_years": "1,000"
+ },
+ "csv": {
+  "buildings_with_a_claim": 1330,
+  "claims": 1395,
+  "rows": 11060
+ },
+ "default_path": {
+  "five": [
+   "Amberjack Bay",
+   "Dunholme",
+   "Kettlemoor",
+   "Thornock",
+   "Wickmere"
+  ],
+  "next": "Lisgrove",
+  "rates": {
+   "Dunholme": "2.1",
+   "Kettlemoor": "1.7"
+  }
+ },
+ "rate_order": [
+  "Wickmere",
+  "Amberjack Bay",
+  "Thornock",
+  "Lisgrove",
+  "Saltreach",
+  "Eastmarsh",
+  "Hensby",
+  "Ravensholt",
+  "Tesmond",
+  "Menhaden Point",
+  "Ivesby",
+  "Gorran",
+  "Kettlemoor",
+  "Dunholme"
+ ],
+ "replayed_2016": {
+  "Dunholme": 352,
+  "Kettlemoor": 276
+ }
+}

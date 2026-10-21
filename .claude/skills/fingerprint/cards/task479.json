@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Wickmere, Amberjack Bay, Thornock, Lisgrove and Saltreach take the 2027 private flood placement pilot, Eastmarsh next in line",
+  "answer_source": "golden/tsrfa_2027_private_flood_pilot.xlsx (Pilot counties sheet) and submission.md block 1",
   "gap": [
     "population",
     "time"
@@ -38,22 +38,23 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a past flood recurs on an elevated building only where its water stood above the new lowest floor",
   "layer1": [
-    "the NFIP claims extract in two layouts (field names changed with FEMA's 2023 data release) with UTC timestamps",
-    "water depths in inches above the lowest floor against floor and flood elevations in feet",
-    "older elevation certificates on NGVD 1929 and newer on NAVD 1988, with the county conversion offsets",
-    "policy terms with renewals, mid-term cancellations, reinstatements and condominium master policies carrying unit counts",
-    "contents-only and building policies in one extract",
-    "the authority's grants system export of mitigation projects keyed to its own property numbers, joined to FEMA property identifiers through a crosswalk, multi-property projects and withdrawn projects",
-    "claims closed without payment beside paid claims"
+    "the NFIP claims extract in two layouts (FEMA renamed the fields with its 2023 release and writes dates as UTC timestamps)",
+    "legacy and current occupancy codes across the 2021 rating change",
+    "water depths in inches against floor and flood elevations in feet",
+    "elevation certificates before 2012 on NGVD 1929 beside NAVD 1988, with the county offsets",
+    "a building's several policies: rewrites under new numbers with a prior policy number, mid-term cancellations, lapses, and the Gulfline Mutual book moving to NFIP Direct mid-term",
+    "unit owners' and contents policies beside building policies; condominium associations insuring a building with its unit count",
+    "claims closed without payment beside paid claims",
+    "the authority's grants export keyed to its own property numbers, with joint projects across counties, withdrawn properties and projects loaded from an earlier tracker"
   ],
   "stakeholder_role": "flood insurance program manager at a regional flood authority that runs its member counties' floodplain management and flood insurance outreach",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "nfip_policy_terms_extract.csv",
-    "rows": 0,
-    "entity": "one NFIP policy term on one insured building",
-    "grain": "building x policy term",
+    "file": "nfip_dsa_policy_history_2026-10-02.csv",
+    "rows": 117772,
+    "entity": "one NFIP policy on one building, with the rating of its latest term",
+    "grain": "building x policy",
     "source": "synthetic (constructed in the layout of FEMA's NFIP policy data shared with floodplain managers)"
   },
   "forum": "council_or_assembly",
@@ -65,27 +66,34 @@
     "org_type": "regional flood authority, a special district of fourteen member counties",
     "invented_names": [
       "Tarrow Sound Regional Flood Authority",
-      "Calverly County",
+      "Hensby County",
       "Dunholme County",
       "Eastmarsh County",
       "Gorran County",
-      "Hollins Point County",
+      "Menhaden Point County",
       "Ivesby County",
       "Kettlemoor County",
-      "Larkspur Bay County",
-      "Pellham County",
-      "Quillan County",
+      "Amberjack Bay County",
+      "Tesmond County",
+      "Thornock County",
       "Ravensholt County",
       "Saltreach County",
-      "Varlow County",
-      "Wickmere County"
+      "Lisgrove County",
+      "Wickmere County",
+      "Gulfline Mutual Insurance Company",
+      "Tarrow Southern Insurance Company",
+      "Bayward Casualty Company",
+      "Shorebrook Indemnity Company"
     ],
     "people": [
-      "Christina Drake",
+      "Samantha Walter",
       "Debbie Brady"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "tsrfa_2027_private_flood_pilot.xlsx",
+    "tsrfa_pilot_elevated_buildings_2026-09-30.csv"
+  ],
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "A record of past events on units is carried to the units as they now stand, and some units were raised after their events, so a past event counts again on a raised unit only where the event's recorded level stood above the unit's new threshold; dropping a raised unit's earlier events, keeping them all, or giving it the later rate of units in its present class each misstates the expected rate.",

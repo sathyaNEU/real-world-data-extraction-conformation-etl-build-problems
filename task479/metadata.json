@@ -1,0 +1,55 @@
+{
+ "task": "task479",
+ "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
+ "client_domain": "General Statistics & Data Science",
+ "task_type": "data-integration-record-linkage-entity-resolution",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "nfip_crs_community_classes_2026-10.csv",
+  "tsrfa_firm_revision_log_2001-2026.csv",
+  "tsrfa_property_building_crosswalk.csv"
+ ],
+ "distractor_reasons": {
+  "nfip_crs_community_classes_2026-10.csv": "the members' Community Rating System classes and premium discounts; the expected claim rate counts claims and building-years, which no class or discount changes",
+  "tsrfa_firm_revision_log_2001-2026.csv": "the flood map revisions in the members' communities; every policy and claim carries the base flood elevation it was rated on, so no map is read",
+  "tsrfa_property_building_crosswalk.csv": "the authority's property numbers matched to FEMA's buildings; the rate replays each building's own claims against its own floor and the pipeline counts the register's properties by community, so no property is joined to a building"
+ },
+ "deliverables": [
+  "tsrfa_2027_private_flood_pilot.xlsx",
+  "tsrfa_pilot_elevated_buildings_2026-09-30.csv"
+ ],
+ "as_of": "2026-10-02",
+ "files": [
+  "export_manifest.csv",
+  "nfip_crs_community_classes_2026-10.csv",
+  "nfip_dsa_claims_2001-2019.csv",
+  "nfip_dsa_claims_2020-2026.csv",
+  "nfip_dsa_policy_history_2026-10-02.csv",
+  "tsrfa_2025_flood_insurance_outreach_closeout.pdf",
+  "tsrfa_data_dictionary.txt",
+  "tsrfa_firm_revision_log_2001-2026.csv",
+  "tsrfa_hma_grants_export_2026-09-30.xlsx",
+  "tsrfa_member_counties.csv",
+  "tsrfa_private_flood_placement_guidelines_2027.pdf",
+  "tsrfa_property_building_crosswalk.csv",
+  "tsrfa_vertical_datum_offsets.csv"
+ ],
+ "rows": {
+  "nfip_dsa_claims_2001-2019.csv": 37859,
+  "nfip_dsa_claims_2020-2026.csv": 22301,
+  "tsrfa_property_building_crosswalk.csv": 4750,
+  "nfip_crs_community_classes_2026-10.csv": 26,
+  "tsrfa_firm_revision_log_2001-2026.csv": 101,
+  "export_manifest.csv": 12,
+  "tsrfa_member_counties.csv": 14,
+  "tsrfa_vertical_datum_offsets.csv": 14,
+  "nfip_dsa_policy_history_2026-10-02.csv": 117772,
+  "tsrfa_hma_grants_export_2026-09-30.xlsx": 13565
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task479/generator); the authority, its counties, communities, companies, people, buildings, policies, claims and projects are fictional",
+  "public_specifications": "the layouts and field names follow FEMA's NFIP policy and claims data (OpenFEMA FIMA NFIP Redacted Policies and Claims, the 2023 release's field names) and the NFIP's occupancy, condominium and cause-of-loss codes, U.S. government works in the public domain",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-10-02"
+ }
+}
