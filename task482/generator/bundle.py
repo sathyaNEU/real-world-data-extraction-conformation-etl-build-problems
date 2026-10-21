@@ -1,26 +1,25 @@
 """Read the cut pack the way an analyst would, and run every route the design names on it. Nothing here reads
 world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
 
-    load(target)            the conformed finance, enrollment, campus codes, credit hours and the fall census
-    per_fte(b, route)       each campus's fiscal 2026 instruction expense per FTE under a route
-    awarded(b, v)           the five lowest
-    ask_a(b, dedup)         each branch campus's fall 2026 FTE
-    ask_b(b, persons)       each branch campus's unduplicated fall 2026 headcount"""
+    load(target)            the conformed register, referral list, audit outcomes and gazette notices
+    rates(b, route)         each region's share of its 30 April 2026 records in error under a route
+    chosen(b, r)            the regions over 4 per cent
+    ask_a(b, local)         each region's third-quarter 2026 registrations
+    ask_b(b, restored)      each region's companies struck off in the quarter and still dissolved at its end"""
 import csv
+import datetime as dt
 import os
 
-import numpy as np
-
 FILES = {
-    "f1a": "ipeds_f1a_fy2026_finance_lakemoor_public.csv",
-    "e12": "ipeds_e12_2025-26_enrollment_lakemoor_public.csv",
-    "codes": "lhecb_campus_codes_2026.csv",
-    "ch": "lhecb_credit_hours_by_level_2025-26.csv",
-    "census": "lhecb_fall2026_census_enrollment_branch_campuses.csv",
+    "register": "sar_business_register_extract_2026-09-30.csv",
+    "screen": "sar_register_risk_screen_referrals_2026-05.csv",
+    "audit": "sar_register_quality_audit_summer_2026.csv",
+    "codes": "sar_region_code_crosswalk_2025.csv",
+    "gazette": "ardmuir_gazette_company_notices_2026q3.csv",
 }
-LEVELS = ("Lower division", "Upper division", "Graduate")
-GOLDEN_FORMS = ("golden", "wls_fte", "with_intercept", "direct", "by_term")
-ROUTES = GOLDEN_FORMS + ("fte_split", "credit_hour_split", "two_level", "exclude_children", "zero")
+LINE = 0.04
+GOLDEN_FORMS = ("golden", "design_weights", "hajek")
+ROUTES = GOLDEN_FORMS + ("audited_share", "unflagged_only", "whole_extract")
 
 
 def _csv(path):
@@ -28,139 +27,85 @@ def _csv(path):
         return list(csv.DictReader(fh))
 
 
+def local(s):
+    """A UTC timestamp to Ardmuir local time (British Summer Time from the last Sunday of March to the last Sunday of
+    October, at 01:00 UTC)."""
+    t = dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+    y = t.year
+    start = max(dt.datetime(y, 3, d) for d in range(25, 32) if dt.date(y, 3, d).weekday() == 6) + dt.timedelta(hours=1)
+    end = max(dt.datetime(y, 10, d) for d in range(25, 32) if dt.date(y, 10, d).weekday() == 6) + dt.timedelta(hours=1)
+    return t + dt.timedelta(hours=1) if start <= t < end else t
+
+
 def load(target):
-    f1a = {r["UNITID"]: r for r in _csv(os.path.join(target, FILES["f1a"]))}
-    e12 = {r["UNITID"]: r for r in _csv(os.path.join(target, FILES["e12"]))}
-    code = {r["campus_code"]: r["unitid"] for r in _csv(os.path.join(target, FILES["codes"]))}
-    ch = {}
-    chterm = {}
-    for r in _csv(os.path.join(target, FILES["ch"])):
-        u = code[r["campus_code"]]
-        ch.setdefault(u, {lv: 0 for lv in LEVELS})[r["course_level"]] += int(r["student_credit_hours"])
-        chterm.setdefault((u, r["term"]), {lv: 0 for lv in LEVELS})[r["course_level"]] += int(r["student_credit_hours"])
-    ids = sorted(f1a)
-    fte = {u: float(e12[u]["FTEUG"]) + float(e12[u]["FTEGD"]) for u in ids}
-    inst = {u: float(f1a[u]["F1C011"]) for u in ids}
-    kind = {u: ("P" if f1a[u]["PRCH_F"] == "1" else "C" if f1a[u]["PRCH_F"] == "2" else "S") for u in ids}
-    parent = {u: f1a[u]["IDX_F"] for u in ids}
-    census = _csv(os.path.join(target, FILES["census"]))
-    return {"ids": ids, "fte": fte, "inst": inst, "kind": kind, "parent": parent, "ch": ch, "chterm": chterm,
-            "code": code, "census": census, "e12": e12}
+    reg = _csv(os.path.join(target, FILES["register"]))
+    region = {r["record_id"]: r["region"] for r in reg}
+    created = {r["record_id"]: local(r["created_at_utc"]) for r in reg}
+    flagged = {r["record_id"] for r in _csv(os.path.join(target, FILES["screen"])) if r["referred"] == "Y"}
+    code = {r["region_old"]: r["region"] for r in _csv(os.path.join(target, FILES["codes"]))}
+    audit = []
+    for r in _csv(os.path.join(target, FILES["audit"])):
+        err = r["outcome"] in ("FAIL", "1", "2", "3", "4")
+        audit.append((r["record_id"], code[r["region_old"]], err))
+    ids = sorted(set(region.values()))
+    gaz = _csv(os.path.join(target, FILES["gazette"]))
+    return {"reg": reg, "region": region, "created": created, "flagged": flagged, "audit": audit, "ids": ids,
+            "gaz": gaz}
 
 
-def systems(b):
+def rates(b, route="golden"):
+    cut = dt.datetime(2026, 5, 1)
+    frame = {k for k, t in b["created"].items() if t < cut} if route != "whole_extract" else set(b["created"])
+    N = {(u, f): 0 for u in b["ids"] for f in (True, False)}
+    for k in frame:
+        N[(b["region"][k], k in b["flagged"])] += 1
+    n = {key: [0, 0] for key in N}
+    for k, u, e in b["audit"]:
+        n[(u, k in b["flagged"])][0] += 1
+        n[(u, k in b["flagged"])][1] += e
     out = {}
     for u in b["ids"]:
-        if b["kind"][u] == "P":
-            out[u] = [u] + [c for c in b["ids"] if b["parent"][c] == u]
+        tot = N[(u, True)] + N[(u, False)]
+        if route == "audited_share":
+            out[u] = (n[(u, True)][1] + n[(u, False)][1]) / (n[(u, True)][0] + n[(u, False)][0])
+        elif route == "unflagged_only":
+            out[u] = n[(u, False)][1] / n[(u, False)][0]
+        elif route == "design_weights":
+            p = {True: 0.24, False: 0.04}
+            out[u] = sum(n[(u, f)][1] / p[f] for f in (True, False)) / tot
+        elif route == "hajek":
+            p = {True: 0.24, False: 0.04}
+            out[u] = sum(n[(u, f)][1] / p[f] for f in (True, False)) / sum(n[(u, f)][0] / p[f] for f in (True, False))
+        else:
+            out[u] = sum(N[(u, f)] * n[(u, f)][1] / n[(u, f)][0] for f in (True, False)) / tot
     return out
 
 
-def fit(b, form="golden"):
-    """Instruction expense per credit hour by level, fitted on the campuses that report alone."""
-    S = [u for u in b["ids"] if b["kind"][u] == "S"]
-    if form == "two_level":
-        X = np.array([[b["ch"][u]["Lower division"] + b["ch"][u]["Upper division"], b["ch"][u]["Graduate"]]
-                      for u in S], float)
-    elif form == "by_term":
-        rows, y = [], []
-        for u in S:
-            tot = sum(sum(b["chterm"][(u, t)].values()) for t in ("2025FA", "2026SP", "2026SU"))
-            for t in ("2025FA", "2026SP", "2026SU"):
-                c = b["chterm"][(u, t)]
-                rows.append([c[lv] for lv in LEVELS])
-                y.append(b["inst"][u] * sum(c.values()) / tot)
-        coef, *_ = np.linalg.lstsq(np.array(rows, float), np.array(y), rcond=None)
-        return coef
-    else:
-        X = np.array([[b["ch"][u][lv] for lv in LEVELS] for u in S], float)
-    y = np.array([b["inst"][u] for u in S])
-    if form == "with_intercept":
-        X = np.column_stack([X, np.ones(len(S))])
-    if form == "wls_fte":
-        w = np.sqrt(1.0 / np.array([b["fte"][u] for u in S]))
-        coef, *_ = np.linalg.lstsq(X * w[:, None], y * w, rcond=None)
-    else:
-        coef, *_ = np.linalg.lstsq(X, y, rcond=None)
-    return coef
+def chosen(b, r):
+    return sorted(u for u in r if r[u] > LINE)
 
 
-def predicted(b, u, coef, form="golden"):
-    c = b["ch"][u]
-    if form == "two_level":
-        return coef[0] * (c["Lower division"] + c["Upper division"]) + coef[1] * c["Graduate"]
-    v = sum(coef[i] * c[lv] for i, lv in enumerate(LEVELS))
-    if form == "with_intercept":
-        v += coef[3]
-    return v
-
-
-def per_fte(b, route="golden"):
-    """Each campus's fiscal 2026 instruction expense per FTE. Standalone campuses report their own; a parent's return
-    is split among the parent and its branches by the route."""
-    out = {u: b["inst"][u] / b["fte"][u] for u in b["ids"] if b["kind"][u] == "S"}
-    form = route if route in ("wls_fte", "with_intercept", "two_level", "by_term") else "golden"
-    coef = fit(b, form) if route in GOLDEN_FORMS + ("two_level",) else None
-    for p, mem in systems(b).items():
-        tot = b["inst"][p]
-        if route == "fte_split":
-            w = {u: b["fte"][u] for u in mem}
-        elif route == "credit_hour_split":
-            w = {u: sum(b["ch"][u].values()) for u in mem}
-        elif route == "exclude_children":
-            out[p] = tot / sum(b["fte"][u] for u in mem)
-            continue
-        elif route == "zero":
-            for u in mem:
-                out[u] = (tot if u == p else 0.0) / b["fte"][u]
-            continue
-        else:
-            w = {u: predicted(b, u, coef, form) for u in mem}
-        if route == "direct":
-            for u in mem:
-                out[u] = w[u] / b["fte"][u]
-            continue
-        s = sum(w.values())
-        for u in mem:
-            out[u] = tot * w[u] / s / b["fte"][u]
+def ask_a(b, as_local=True):
+    """Registrations created in the third quarter of 2026, by the register's own quarter in Ardmuir local time."""
+    out = {u: 0 for u in b["ids"]}
+    for r in b["reg"]:
+        t = local(r["created_at_utc"]) if as_local else dt.datetime.strptime(r["created_at_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        if dt.datetime(2026, 7, 1) <= t < dt.datetime(2026, 10, 1):
+            out[r["region"]] += 1
     return out
 
 
-def awarded(b, v):
-    return sorted(sorted(v, key=lambda u: v[u])[:5])
-
-
-# ------------------------------------------------------------------------------------------------ asks
-def ask_a(b, dedup=True):
-    """Each branch campus's fall 2026 FTE: undergraduate credit hours over 15 plus graduate over 12, a student's
-    course counted once (a cross-listed course carries the student under both course numbers, at one meeting)."""
-    seen = set()
-    out = {}
-    for r in b["census"]:
-        u = b["code"][r["campus_code"]]
-        key = (r["campus_code"], r["student_id"], r["meeting_days"], r["start_time"], r["instructor_id"]) if dedup \
-            else (r["campus_code"], r["student_id"], r["subject"], r["course_number"], r["crn"])
-        if key in seen:
-            continue
-        seen.add(key)
-        out[u] = out.get(u, 0.0) + int(r["credit_hours"]) / (12.0 if r["course_level"] == "GR" else 15.0)
-    return {u: round(v, 1) for u, v in out.items()}
-
-
-def ask_b(b, persons=True):
-    """Each branch campus's unduplicated fall 2026 headcount; persons links a student's rows under the old and the new
-    id by birth date, sex, home ZIP code and first term within the campus ("partial" by the first three only, which
-    merges different students who share them; "full" with the major too, which the new systems recoded)."""
-    out = {}
-    for r in b["census"]:
-        u = b["code"][r["campus_code"]]
-        if persons == "partial":
-            key = (r["birth_date"], r["sex"], r["home_zip"])
-        elif persons == "full":
-            key = (r["birth_date"], r["sex"], r["home_zip"], r["first_term"], r["major_cip"])
-        elif persons:
-            key = (r["birth_date"], r["sex"], r["home_zip"], r["first_term"])
-        else:
-            key = r["student_id"]
-        out.setdefault(u, set()).add(key)
-    return {u: len(v) for u, v in out.items()}
+def ask_b(b, restored=True):
+    """Companies struck off and dissolved in the quarter and still dissolved at its end (a restoration later in the
+    quarter takes the company back onto the register)."""
+    last = {}
+    for r in sorted(b["gaz"], key=lambda r: (r["gazette_date"], r["notice_id"])):
+        if r["notice_type"] == "struck off and dissolved":
+            last[r["record_id"]] = "dissolved"
+        elif r["notice_type"] == "restored to the register" and restored:
+            last[r["record_id"]] = "restored"
+    out = {u: 0 for u in b["ids"]}
+    for k, s in last.items():
+        if s == "dissolved":
+            out[b["region"][k]] += 1
+    return out

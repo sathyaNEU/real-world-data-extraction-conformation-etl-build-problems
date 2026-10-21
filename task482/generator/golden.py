@@ -1,7 +1,7 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the board's 2027-28 instructional investment
-grant workbook (every reporting unit's fiscal 2026 instruction expense per FTE, the parents' returns apportioned to
-their branches by the cost of the credit hours each campus teaches, the five awards, and the branches' fall 2026 FTE
-and headcount), and generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: the quality board's 2027 re-validation
+workbook (each region's register error rate estimated from the summer audit, each audited record weighted by the
+register records of its stratum, the regions chosen, and the third-quarter registrations and dissolutions), and
+generator/figures.json."""
 import json
 import os
 import sys
@@ -11,19 +11,37 @@ sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "lhecb_2027-28_instructional_investment_awards.xlsx"
+FILE = "sar_register_revalidation_2027_regions.xlsx"
 INK = "1B2430"
 GREEN = "2C5A3F"
 PALE = "E7EFE9"
 MUTED = "A3ACB8"
 ACCENT = "B4452F"
-NAMES = "ipeds_hd2025_directory_lakemoor_public.csv"
+NAMES = "sar_region_code_crosswalk_2025.csv"
 
 
 def compute(target):
     b = B.load(target)
-    v = B.per_fte(b, "golden")
-    return {"b": b, "v": v, "coef": B.fit(b), "aw": B.awarded(b, v), "a": B.ask_a(b), "bb": B.ask_b(b)}
+    r = B.rates(b, "golden")
+    return {"b": b, "r": r, "naive": B.rates(b, "audited_share"), "ch": B.chosen(b, r), "a": B.ask_a(b),
+            "bb": B.ask_b(b)}
+
+
+def strata(b):
+    import datetime as dt
+    cut = dt.datetime(2026, 5, 1)
+    N = {}
+    for k, t in b["created"].items():
+        if t < cut:
+            key = (b["region"][k], k in b["flagged"])
+            N[key] = N.get(key, 0) + 1
+    n = {}
+    for k, u, e in b["audit"]:
+        key = (u, k in b["flagged"])
+        a = n.setdefault(key, [0, 0])
+        a[0] += 1
+        a[1] += e
+    return N, n
 
 
 def write_xlsx(path, G, target):
@@ -34,8 +52,10 @@ def write_xlsx(path, G, target):
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
-    b, v = G["b"], G["v"]
-    names = {r["UNITID"]: r["INSTNM"] for r in csv.DictReader(open(os.path.join(target, NAMES), encoding="utf-8"))}
+    b, r = G["b"], G["r"]
+    names = {row["region"]: row["region_name"] for row in csv.DictReader(open(os.path.join(target, NAMES),
+                                                                             encoding="utf-8"))}
+    N, n = strata(b)
     wb = openpyxl.Workbook()
     hdr = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
     hfill = PatternFill("solid", fgColor=GREEN)
@@ -50,7 +70,7 @@ def write_xlsx(path, G, target):
             c.font, c.fill = hdr, hfill
             c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
             ws.column_dimensions[get_column_letter(i)].width = w
-        ws.row_dimensions[row].height = 42
+        ws.row_dimensions[row].height = 44
 
     def title(ws, t, sub):
         ws["A1"] = t
@@ -58,88 +78,82 @@ def write_xlsx(path, G, target):
         ws["A2"] = sub
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
-    coef = G["coef"]
     ws = wb.active
-    ws.title = "Awards"
-    aw = G["aw"]
-    title(ws, "Five awards: %s" % ", ".join("%s (%s)" % (names[u], u) for u in sorted(aw, key=lambda u: v[u])),
-          "Fiscal 2026 instruction expense per 2025-26 12-month FTE student. A parent's return is split among the "
-          "parent and its branches by the cost of the credit hours each teaches, at the cost per credit hour by level "
-          "fitted on the sixteen campuses that report alone.")
-    cols = ["UNITID", "Campus", "Reports", "Lower-division credit hours", "Upper-division credit hours",
-            "Graduate credit hours", "Instruction expense ($)", "12-month FTE", "Instruction per FTE ($)", "Rank",
-            "Award"]
-    head(ws, 4, cols, [9, 40, 14, 13, 13, 12, 15, 10, 12, 7, 8])
-    order = sorted(b["ids"], key=lambda u: v[u])
-    rep = {"S": "own return", "P": "parent", "C": "within parent"}
-    for i, u in enumerate(order):
-        c = b["ch"][u]
-        vals = [u, names[u], rep[b["kind"][u]], c["Lower division"], c["Upper division"], c["Graduate"],
-                round(v[u] * b["fte"][u]), b["fte"][u], round(v[u]), i + 1, "yes" if u in aw else "no"]
-        for j, val in enumerate(vals, 1):
-            cl = ws.cell(row=5 + i, column=j, value=val)
-            cl.font = bold if (u in aw and j in (1, 2, 11)) else body
-            cl.border = thin
-            if u in aw:
-                cl.fill = nfill
-            cl.number_format = {4: "#,##0", 5: "#,##0", 6: "#,##0", 7: "#,##0", 8: "#,##0", 9: "#,##0"}.get(j,
-                                                                                                           "General")
-            if j >= 4:
-                cl.alignment = Alignment(horizontal="right")
+    ws.title = "Regions"
+    ch = G["ch"]
+    title(ws, "%d of 14 regional registers go to the 2027 re-validation: %s" % (len(ch), ", ".join(
+        "%s (%s)" % (names[u], u) for u in ch)),
+          "Share of each region's 30 April 2026 records in error, estimated from the summer audit with each audited "
+          "record standing for the register records of its stratum (referred by the May risk screen or not).")
+    cols = ["Region", "Region name", "Records 30 April", "Referred by the screen", "Audited, referred",
+            "In error, referred", "Audited, not referred", "In error, not referred", "Audited share in error (%)",
+            "Register error rate (%)", "Re-validation"]
+    head(ws, 4, cols, [8, 16, 11, 11, 10, 10, 10, 10, 11, 11, 11])
+    for i, u in enumerate(b["ids"]):
+        vals = [u, names[u], N[(u, True)] + N[(u, False)], N[(u, True)], n[(u, True)][0], n[(u, True)][1],
+                n[(u, False)][0], n[(u, False)][1], round(100 * G["naive"][u], 1), round(100 * r[u], 1),
+                "yes" if u in ch else "no"]
+        for j, v in enumerate(vals, 1):
+            c = ws.cell(row=5 + i, column=j, value=v)
+            c.font = bold if (u in ch and j in (1, 2, 11)) else body
+            c.border = thin
+            if u in ch:
+                c.fill = nfill
+            if 3 <= j <= 8:
+                c.number_format = "#,##0"
+            elif j in (9, 10):
+                c.number_format = "0.0"
+            if j >= 3:
+                c.alignment = Alignment(horizontal="right")
     ws.freeze_panes = "C5"
-    r0 = 5 + len(order) + 1
+    r0 = 5 + len(b["ids"]) + 1
     for k, t in enumerate([
-        "Six branch campuses' instruction expense is reported inside their parents' returns (PRCH_F 2). Fitted on the "
-        "sixteen campuses that report alone, instruction costs $%.0f a lower-division, $%.0f an upper-division and "
-        "$%.0f a graduate credit hour; each parent's reported instruction is split among the parent and its branches "
-        "in proportion to the cost of the credit hours each taught in 2025-26, so the parent's total is kept." % tuple(
-            coef),
-        "Split by FTE students instead, every branch would carry its system's average and none would be in the lowest "
-        "five; the branches teach mostly lower-division hours.",
+        "The audit drew close to a quarter of the records the May screen referred and one in twenty-five of the rest, "
+        "and referred records are in error far more often, so the audited share overstates each register's rate. "
+        "Each stratum's audited error rate is carried to that stratum's records on the 30 April register.",
+        "Records registered after 30 April are outside the audit's frame (board paper, section 2). Outcomes FAIL "
+        "(to 30 June) and 1 to 4 (from 1 July) are errors.",
     ]):
-        cl = ws.cell(row=r0 + k, column=1, value=t)
-        cl.font = Font(name="Calibri", size=9, color="5B6470")
-        cl.alignment = Alignment(wrap_text=True, vertical="top")
+        c = ws.cell(row=r0 + k, column=1, value=t)
+        c.font = Font(name="Calibri", size=9, color="5B6470")
+        c.alignment = Alignment(wrap_text=True, vertical="top")
         ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=11)
         ws.row_dimensions[r0 + k].height = 40
 
     cs = wb.create_sheet("Chart data")
-    cs.append(["Campus", "Instruction per FTE ($)"])
-    for u in order:
-        cs.append([u, round(v[u])])
-    ch = BarChart()
-    ch.type = "bar"
-    ch.title = "Fiscal 2026 instruction expense per FTE, lowest first: the five awards marked"
-    ch.x_axis.title = "Dollars per FTE student"
-    ch.x_axis.numFmt = "#,##0"
-    ch.x_axis.delete = False
-    ch.y_axis.delete = False
-    ch.y_axis.scaling.orientation = "maxMin"
-    ch.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(order) + 1), titles_from_data=True)
-    ch.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(order) + 1))
-    ch.series[0].graphicalProperties = GraphicalProperties(solidFill=MUTED)
-    for i, u in enumerate(order):
-        if u in aw:
+    cs.append(["Region", "Register error rate (%)"])
+    for u in b["ids"]:
+        cs.append([u, round(100 * r[u], 2)])
+    bc = BarChart()
+    bc.type = "col"
+    bc.title = "Register error rate by region against the 4 per cent line"
+    bc.y_axis.title = "Records in error, per cent"
+    bc.y_axis.numFmt = "0.0"
+    bc.y_axis.delete = False
+    bc.x_axis.delete = False
+    bc.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(b["ids"]) + 1), titles_from_data=True)
+    bc.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["ids"]) + 1))
+    bc.series[0].graphicalProperties = GraphicalProperties(solidFill=MUTED)
+    for i, u in enumerate(b["ids"]):
+        if u in ch:
             pt = DataPoint(idx=i)
             pt.graphicalProperties = GraphicalProperties(solidFill=ACCENT)
-            ch.series[0].dPt.append(pt)
-    ch.legend = None
-    ch.gapWidth = 40
-    ch.height, ch.width = 14, 18
-    ws.add_chart(ch, "A%d" % (r0 + 3))
+            bc.series[0].dPt.append(pt)
+    bc.legend = None
+    bc.height, bc.width = 10, 22
+    ws.add_chart(bc, "A%d" % (r0 + 3))
 
-    br = wb.create_sheet("Branches fall 2026")
-    title(br, "The six branch campuses at the fall 2026 census", "FTE: undergraduate credit hours over 15 plus graduate "
-                                                                 "over 12, a cross-listed course counted once; headcount: "
-                                                                 "each student once, under either id.")
-    head(br, 4, ["UNITID", "Campus", "Fall 2026 FTE", "Fall 2026 headcount"], [9, 40, 12, 12])
-    kids = [u for u in b["ids"] if b["kind"][u] == "C"]
-    for i, u in enumerate(kids):
-        for j, (val, fm) in enumerate(((u, None), (names[u], None), (G["a"][u], "#,##0.0"), (G["bb"][u], "#,##0")), 1):
-            cl = br.cell(row=5 + i, column=j, value=val)
-            cl.font, cl.border = body, thin
+    q = wb.create_sheet("Q3 2026")
+    title(q, "The third quarter of 2026 by region", "New registrations in the register's quarter (Ardmuir local time); "
+                                                    "companies struck off and dissolved in the quarter and still "
+                                                    "dissolved at its end.")
+    head(q, 4, ["Region", "Region name", "New registrations", "Struck off and still dissolved"], [8, 16, 14, 16])
+    for i, u in enumerate(b["ids"]):
+        for j, (v, fm) in enumerate(((u, None), (names[u], None), (G["a"][u], "#,##0"), (G["bb"][u], "#,##0")), 1):
+            c = q.cell(row=5 + i, column=j, value=v)
+            c.font, c.border = body, thin
             if fm:
-                cl.number_format = fm
+                c.number_format = fm
     for w in wb.worksheets:
         w.sheet_view.showGridLines = False
         w.page_setup.orientation = "landscape"
@@ -151,16 +165,12 @@ def write_xlsx(path, G, target):
 
 def figures(G):
     b = G["b"]
-    d = B.per_fte(b, "fte_split")
-    kids = [u for u in b["ids"] if b["kind"][u] == "C"]
     return {
-        "call": {"awarded": G["aw"]},
-        "ask_a": {u: "%.1f" % G["a"][u] for u in kids},
-        "ask_b": {u: G["bb"][u] for u in kids},
-        "default_path": {"awarded": B.awarded(b, d)},
-        "per_fte_standalone": {u: int(round(G["v"][u])) for u in b["ids"] if b["kind"][u] == "S"},
-        "conventions": {"years": [2025, 2026, 2027, 2028], "counts": [5, 6, 16, 21, 26], "unitids": [int(u) for u in b["ids"]], "divisors": [12, 15, 24, 30],
-                        "grant_million": 4.5},
+        "call": {"chosen": G["ch"]},
+        "ask_a": {u: G["a"][u] for u in b["ids"]},
+        "ask_b": {u: G["bb"][u] for u in b["ids"]},
+        "default_path": {"chosen": B.chosen(b, G["naive"])},
+        "conventions": {"line_pct": 4, "years": [2025, 2026, 2027], "counts": [14], "dates": [30, 18, 1]},
     }
 
 
@@ -169,8 +179,8 @@ def main(target, gdir, fig_path):
     G = compute(target)
     write_xlsx(os.path.join(gdir, FILE), G, target)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Jeremy Cortez", "Jeremy Cortez", "2026-10-12T14:10:00Z",
-                       "2026-10-14T20:35:00Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Sophie Williams", "Sophie Williams", "2026-10-09T09:10:00Z",
+                       "2026-10-12T15:35:00Z", excel=True, company=PP.COMPANY)
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

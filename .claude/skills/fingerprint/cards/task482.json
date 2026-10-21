@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "AR01, AR05, AR08, AR11 and AR12 chosen",
+  "answer_source": "generator/figures.json",
   "gap": [
     "population"
   ],
@@ -45,8 +45,8 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "sar_business_register_extract_2026-09-30.csv",
+    "rows": 135900,
     "entity": "one business record on the register",
     "grain": "record",
     "source": "synthetic"
@@ -58,18 +58,23 @@
     "geography": "United Kingdom (a fictional nation)",
     "currency": "GBP",
     "org_type": "national statistics office",
-    "invented_names": [],
+    "invented_names": [
+      "Statistics Ardmuir",
+      "Ardmuir Gazette"
+    ],
     "people": [
       "Sally Phillips",
       "Sophie Williams"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "sar_register_revalidation_2027_regions.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
   "driver_concrete": "The summer audit drew 60 per cent of the records the automated risk screen had flagged and 2 per cent of the rest, and a flagged record is in error about one time in four against one in fifty for the rest; each region's audited error share, 10 to 14 per cent, overstates its register's rate, 2 to 6 per cent, by how small a part of its register the screen flagged.",
-  "stump": "The default path reads each region's error rate as the share of its audited records found in error and sends most regions to re-validation, because it never asks how the audit drew its records: the screen's flagged records were drawn thirty times as often and are in error far more often, so only weighting each audited record by the inverse of its chance of being drawn gives the register's rate.",
+  "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task479": "task479 weighs each employer's noisy experience against the pool's by credibility; here no unit's record is noisy: each region's audit is large, and its share is biased by how the sample was drawn, corrected by inverse-probability weights from the screen's output.",

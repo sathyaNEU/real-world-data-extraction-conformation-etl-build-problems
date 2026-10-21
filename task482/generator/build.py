@@ -22,11 +22,11 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=-5))
-AS_OF = {"hd": "2026-09-15 10:20", "f1a": "2026-10-01 16:05", "e12": "2026-10-01 16:10", "codes": "2026-07-01 09:00",
-         "ch": "2026-08-20 11:45", "census": "2026-10-09 06:30", "guide": "2026-10-01 14:30",
-         "approp": "2025-07-15 13:00", "tuition": "2026-06-30 12:00", "grad": "2026-02-10 09:40",
-         "dictionary": "2026-10-09 08:50", "manifest": "2026-10-09 08:55"}
+AS_OF = {"register": "2026-10-01 05:40", "screen": "2026-05-04 18:15", "audit": "2026-09-05 16:05",
+         "codes": "2025-04-01 09:00", "gazette": "2026-10-02 10:30", "paper": "2026-10-07 16:30",
+         "costs": "2026-09-22 15:10", "survey": "2025-12-12 12:00", "returns": "2026-03-31 11:00",
+         "dictionary": "2026-10-08 08:50", "manifest": "2026-10-08 08:55"}
+LOCAL = dt.timezone(dt.timedelta(hours=1))
 
 
 def build(out, x=None, quiet=False):
@@ -37,21 +37,20 @@ def build(out, x=None, quiet=False):
     os.makedirs(out)
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or W.build()
-    P.codes(x)
+    P.ids(x)
     n = {}
-    n["hd"] = P.write_csv(f("hd"), P.HD_COLS, P.hd_rows(x))
-    n["f1a"] = P.write_csv(f("f1a"), P.F1A_COLS, P.f1a_rows(x))
-    n["e12"] = P.write_csv(f("e12"), P.E12_COLS, P.e12_rows(x))
-    n["codes"] = P.write_csv(f("codes"), P.CODES_COLS, P.codes_rows(x))
-    n["ch"] = P.write_csv(f("ch"), P.CH_COLS, P.ch_rows(x))
-    n["census"] = P.write_csv(f("census"), P.CENSUS_COLS, P.census(x))
-    n["tuition"] = P.write_csv(f("tuition"), P.TUITION_COLS, P.tuition_rows(x))
-    n["grad"] = P.write_csv(f("grad"), P.GRAD_COLS, P.grad_rows(x))
-    DC.write_approp(f("approp"), x)
-    PP.normalize_ooxml(f("approp"), "Jeremy Cortez", "Jeremy Cortez", "2025-07-10T15:20:00Z", "2025-07-15T18:00:00Z",
+    n["gazette"] = P.write_csv(f("gazette"), P.GAZ_COLS, P.gazette_rows(x))
+    n["register"] = P.write_csv(f("register"), P.REG_COLS, P.register_rows(x))
+    n["screen"] = P.write_csv(f("screen"), P.SCREEN_COLS, P.screen_rows(x))
+    n["audit"] = P.write_csv(f("audit"), P.AUDIT_COLS, P.audit_rows(x))
+    n["codes"] = P.write_csv(f("codes"), P.CODES_COLS, P.codes_rows())
+    n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows())
+    n["returns"] = P.write_csv(f("returns"), P.RETURNS_COLS, P.returns_rows(x))
+    DC.write_costs(f("costs"), x)
+    PP.normalize_ooxml(f("costs"), "Sophie Williams", "Sophie Williams", "2026-09-15T13:20:00Z", "2026-09-22T14:10:00Z",
                        excel=True, company=P.COMPANY)
-    DC.write_memo(f("guide"))
-    PP.normalize_pdf(f("guide"), b"D:20261001132214-05'00'", b"D:20261001143002-05'00'")
+    DC.write_memo(f("paper"))
+    PP.normalize_pdf(f("paper"), b"D:20261007152214+01'00'", b"D:20261007163002+01'00'")
     n["dictionary"] = P.write_csv(f("dictionary"), DC.DICT_COLS, DC.dictionary_rows())
     n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
     for k in P.FILES:

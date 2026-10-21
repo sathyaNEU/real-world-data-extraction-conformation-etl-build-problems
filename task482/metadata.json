@@ -5,52 +5,50 @@
  "task_type": "census-register-administrative-data-quality",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "lhecb_fy2026_state_appropriations.xlsx",
-  "lhecb_2026-27_tuition_and_fees.csv",
-  "ipeds_gr2025_graduation_rates_lakemoor_public.csv"
+  "sar_revalidation_cost_estimates_2027.xlsx",
+  "sar_register_user_survey_2025.csv",
+  "sar_annual_return_compliance_2025.csv"
  ],
  "distractor_reasons": {
-  "lhecb_fy2026_state_appropriations.xlsx": "the state's fiscal 2026 appropriations by campus, made to branches directly; the grant ranks instruction expense, which the appropriation does not measure",
-  "lhecb_2026-27_tuition_and_fees.csv": "2026-27 tuition and fees; a price, not an expense, and of the wrong year",
-  "ipeds_gr2025_graduation_rates_lakemoor_public.csv": "graduation rates of the 2019 cohort; an outcome the grant does not rank on"
+  "sar_revalidation_cost_estimates_2027.xlsx": "the re-validation's cost by region; the board chooses on the error rate alone",
+  "sar_register_user_survey_2025.csv": "users' satisfaction with the register by user group; no region and no error rate",
+  "sar_annual_return_compliance_2025.csv": "late annual returns by region in 2025; timeliness of filing, not accuracy of records"
  },
  "stated_inputs": [
-  "4.5"
+  "4"
  ],
  "deliverables": [
-  "lhecb_2027-28_instructional_investment_awards.xlsx"
+  "sar_register_revalidation_2027_regions.xlsx"
  ],
- "as_of": "2026-10-09",
+ "as_of": "2026-10-08",
  "files": [
-  "ipeds_e12_2025-26_enrollment_lakemoor_public.csv",
-  "ipeds_f1a_fy2026_finance_lakemoor_public.csv",
-  "ipeds_gr2025_graduation_rates_lakemoor_public.csv",
-  "ipeds_hd2025_directory_lakemoor_public.csv",
-  "lhecb_2026-27_tuition_and_fees.csv",
-  "lhecb_campus_codes_2026.csv",
-  "lhecb_credit_hours_by_level_2025-26.csv",
-  "lhecb_data_dictionary.csv",
-  "lhecb_extract_manifest_2026-10-09.csv",
-  "lhecb_fall2026_census_enrollment_branch_campuses.csv",
-  "lhecb_fy2026_state_appropriations.xlsx",
-  "lhecb_instructional_investment_grant_guidelines_2027-28.pdf"
+  "ardmuir_gazette_company_notices_2026q3.csv",
+  "sar_annual_return_compliance_2025.csv",
+  "sar_business_register_extract_2026-09-30.csv",
+  "sar_data_dictionary.csv",
+  "sar_extract_manifest_2026-10-08.csv",
+  "sar_quality_board_paper_register_revalidation_2027.pdf",
+  "sar_region_code_crosswalk_2025.csv",
+  "sar_register_quality_audit_summer_2026.csv",
+  "sar_register_risk_screen_referrals_2026-05.csv",
+  "sar_register_user_survey_2025.csv",
+  "sar_revalidation_cost_estimates_2027.xlsx"
  ],
  "rows": {
-  "lhecb_fall2026_census_enrollment_branch_campuses.csv": 71000,
-  "lhecb_credit_hours_by_level_2025-26.csv": 1638,
-  "lhecb_campus_codes_2026.csv": 26,
-  "lhecb_data_dictionary.csv": 26,
-  "ipeds_e12_2025-26_enrollment_lakemoor_public.csv": 26,
-  "ipeds_f1a_fy2026_finance_lakemoor_public.csv": 26,
-  "ipeds_gr2025_graduation_rates_lakemoor_public.csv": 26,
-  "ipeds_hd2025_directory_lakemoor_public.csv": 26,
-  "lhecb_extract_manifest_2026-10-09.csv": 11,
-  "lhecb_2026-27_tuition_and_fees.csv": 26
+  "sar_register_quality_audit_summer_2026.csv": 7465,
+  "sar_region_code_crosswalk_2025.csv": 14,
+  "sar_data_dictionary.csv": 14,
+  "ardmuir_gazette_company_notices_2026q3.csv": 2514,
+  "sar_extract_manifest_2026-10-08.csv": 10,
+  "sar_business_register_extract_2026-09-30.csv": 135900,
+  "sar_annual_return_compliance_2025.csv": 14,
+  "sar_register_risk_screen_referrals_2026-05.csv": 10879,
+  "sar_register_user_survey_2025.csv": 4
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the state, the board, the campuses, their students and the people are fictional",
-  "public_specifications": "the federal files follow the IPEDS directory (HD), finance (F1A, GASB) and 12-month enrollment (E12) layouts and variable names, including the finance parent/child indicator PRCH_F and parent UNITID IDX_F; the state files are a coordinating board's own layouts, described in the pack's dictionary",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, the office, the registers, the businesses and the people are fictional",
+  "public_specifications": "the layouts follow common business register extracts, register quality audit records and company notices, described in no shipped file beyond the pack's own dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-09"
+  "date": "2026-10-08"
  }
 }

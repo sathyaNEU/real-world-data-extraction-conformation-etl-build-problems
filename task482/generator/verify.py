@@ -6,7 +6,6 @@ import json
 import os
 import sys
 
-import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -16,37 +15,29 @@ TASK = os.path.dirname(HERE)
 def main(target=None, gdir=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    f1a = pd.read_csv(os.path.join(target, "ipeds_f1a_fy2026_finance_lakemoor_public.csv"), dtype={"UNITID": str,
-                                                                                                  "IDX_F": str})
-    e12 = pd.read_csv(os.path.join(target, "ipeds_e12_2025-26_enrollment_lakemoor_public.csv"), dtype={"UNITID": str})
-    codes = pd.read_csv(os.path.join(target, "lhecb_campus_codes_2026.csv"), dtype={"unitid": str})
-    ch = pd.read_csv(os.path.join(target, "lhecb_credit_hours_by_level_2025-26.csv"))
-    ch = ch.merge(codes[["campus_code", "unitid"]], on="campus_code")
-    piv = ch.pivot_table(index="unitid", columns="course_level", values="student_credit_hours", aggfunc="sum")
-    piv = piv[["Lower division", "Upper division", "Graduate"]]
-    f1a = f1a.set_index("UNITID")
-    fte = e12.set_index("UNITID").eval("FTEUG + FTEGD")
-    alone = f1a.index[f1a.PRCH_F.isna()]
-    coef = np.linalg.lstsq(piv.loc[alone].values.astype(float), f1a.loc[alone, "F1C011"].values.astype(float),
-                           rcond=None)[0]
-    cost = pd.Series(piv.values @ coef, index=piv.index)
-    v = {u: f1a.loc[u, "F1C011"] / fte[u] for u in alone}
-    for p in f1a.index[f1a.PRCH_F == 1]:
-        mem = [p] + list(f1a.index[f1a.IDX_F == p])
-        for u in mem:
-            v[u] = f1a.loc[p, "F1C011"] * cost[u] / cost[mem].sum() / fte[u]
-    bad = int(sorted(sorted(v, key=v.get)[:5]) != fig["call"]["awarded"])
-    for u, x in fig["per_fte_standalone"].items():
-        bad += int(round(v[u])) != x
-    cen = pd.read_csv(os.path.join(target, "lhecb_fall2026_census_enrollment_branch_campuses.csv"), dtype=str)
-    cen = cen.merge(codes[["campus_code", "unitid"]], on="campus_code")
-    one = cen.drop_duplicates(["campus_code", "student_id", "meeting_days", "start_time", "instructor_id"])
-    one = one.assign(f=one.credit_hours.astype(int) / np.where(one.course_level == "GR", 12.0, 15.0))
-    fa = one.groupby("unitid").f.sum()
-    hc = cen.drop_duplicates(["unitid", "birth_date", "sex", "home_zip", "first_term"]).groupby("unitid").size()
+    reg = pd.read_csv(os.path.join(target, "sar_business_register_extract_2026-09-30.csv"))
+    t = pd.to_datetime(reg.created_at_utc.str.replace("Z", ""))
+    bst = (t >= "2026-03-29 01:00") & (t < "2026-10-25 01:00") | (t >= "2025-03-30 01:00") & (t < "2025-10-26 01:00")
+    reg["local"] = t + pd.to_timedelta(bst.astype(int), unit="h")
+    scr = pd.read_csv(os.path.join(target, "sar_register_risk_screen_referrals_2026-05.csv"))
+    reg["flag"] = reg.record_id.isin(scr[scr.referred == "Y"].record_id)
+    frame = reg[reg.local < "2026-05-01"]
+    N = frame.groupby(["region", "flag"]).size()
+    au = pd.read_csv(os.path.join(target, "sar_register_quality_audit_summer_2026.csv"), dtype={"outcome": str})
+    au = au.merge(reg[["record_id", "region", "flag"]], on="record_id")
+    au["err"] = au.outcome.isin(["FAIL", "1", "2", "3", "4"])
+    e = au.groupby(["region", "flag"]).err.mean()
+    rate = (N * e).groupby(level=0).sum() / N.groupby(level=0).sum()
+    bad = int(sorted(rate[rate > 0.04].index) != fig["call"]["chosen"])
+    q3 = reg[(reg.local >= "2026-07-01") & (reg.local < "2026-10-01")].groupby("region").size()
+    gz = pd.read_csv(os.path.join(target, "ardmuir_gazette_company_notices_2026q3.csv"))
+    gz = gz[gz.notice_type != "first notice"].sort_values(["gazette_date", "notice_id"])
+    last = gz.groupby("record_id").notice_type.last()
+    d = last[last == "struck off and dissolved"].index
+    dis = reg[reg.record_id.isin(d)].groupby("region").size()
     for u in fig["ask_a"]:
-        bad += "%.1f" % fa[u] != fig["ask_a"][u]
-        bad += int(hc[u]) != fig["ask_b"][u]
+        bad += int(q3.get(u, 0)) != fig["ask_a"][u]
+        bad += int(dis.get(u, 0)) != fig["ask_b"][u]
     print("verify: %d figures differ from figures.json" % bad)
     return bad == 0
 

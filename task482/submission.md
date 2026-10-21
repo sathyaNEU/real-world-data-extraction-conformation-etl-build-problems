@@ -5,42 +5,57 @@
 
 ## 1. Final Recommendation
 
-**Award the 2027-28 instructional investment grant to 214682, 214946, 216190, 216278 and 216454.**
-They have the lowest fiscal 2026 instruction expense per FTE student. 216190, 216278 and 216454 are branch campuses whose instruction sits inside their parents' returns: each parent's instruction is split among the parent and its branches by the cost of the credit hours each taught, at the cost per credit hour by level the sixteen campuses that report alone show, and the branches teach mostly lower-division hours. Split by FTE students instead, the branches carry their systems' averages and the five would be 214506, 214682, 214858, 214946 and 215298.
+**Send AR01, AR05, AR08, AR11 and AR12 to the 2027 re-validation.**
+Their registers' share of records in error exceeds 4 per cent; no other region's does. The summer audit drew the records the May risk screen had referred far more often than the rest, and referred records are in error far more often, so each audited record is carried to its stratum's records on the 30 April register. Read as the audited share, 11 regions would go (AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13), at audited error shares the registers themselves do not have.
 
 ## 2. Critical Components
 
-1. Awarded: **214682**, **214946**, **216190**, **216278**, **216454**
-2. Not awarded: every other reporting unit, 21 campuses
-3. Instruction expense per FTE of the campuses reporting alone, whole dollars: 214330 12,777, 214418 12,953, 214506 8,838, 214594 11,034, 214682 8,471, 214770 11,639, 214858 9,575, 214946 8,020, 215034 11,780, 215122 9,605, 215210 10,907, 215298 9,042, 215386 12,667, 215474 10,114, 215562 10,639, 215650 9,725
+1. Regions going to re-validation: **AR01**, **AR05**, **AR08**, **AR11**, **AR12**
+2. Regions not going: AR02, AR03, AR04, AR06, AR07, AR09, AR10, AR13, AR14
 
 ## 3. Step-by-Step Solution
 
-1. Took fiscal 2026 instruction (F1C011) from the finance return and 2025-26 FTE (FTEUG plus FTEGD) from the 12-month return; the branches carry PRCH_F 2 and zero, their parents PRCH_F 1.
-2. Summed the board's credit hour file by campus and level, campus codes to UNITID through the code list; it ties to the 12-month return's credit hours.
-3. Fitted instruction expense on lower-division, upper-division and graduate credit hours across the sixteen campuses that report alone (least squares, no intercept).
-4. Split each parent's reported instruction among the parent and its branches in proportion to the fitted cost of the credit hours each taught, keeping the parent's total.
-5. Divided by each campus's FTE and took the five lowest: 214682, 214946, 216190, 216278, 216454.
-6. Ask A: the branches' fall 2026 census rows, a student's course counted once (a cross-listed course carries the student under both course numbers at one meeting), undergraduate hours over 15 plus graduate over 12.
-7. Ask B: each student counted once per branch, the rows under the old and the new student id joined by birth date, sex, home ZIP code and first term (birth date, sex and ZIP alone are shared by different students, and the new systems recoded some majors).
+1. Took the 30 April 2026 register: records created before 1 May in Ardmuir local time (the extract's times are UTC, an hour behind in summer), active and since dissolved.
+2. Marked each record referred or not from the May risk screen's referral list.
+3. Joined the audit outcomes by record, old region codes through the crosswalk; FAIL and codes 1 to 4 are errors.
+4. In each region and stratum (referred, not referred) took the audited error rate and carried it to the stratum's records on the 30 April register; summed and divided by the region's records.
+5. Chose the regions over 4 per cent: AR01, AR05, AR08, AR11, AR12.
+6. Ask A: registrations created from 1 July to 30 September 2026 in Ardmuir local time.
+7. Ask B: companies whose last notice in the quarter is struck off and dissolved (a later restoration takes a company back onto the register).
 
 ## 4. Deliverable Answers
 
-### lhecb_2027-28_instructional_investment_awards.xlsx
+### sar_register_revalidation_2027_regions.xlsx
 
-1. The five awards: 214682, 214946, 216190, 216278, 216454.
-2. Chart of every reporting unit's instruction expense per FTE, lowest first, the awards marked.
-3. Fall 2026 FTE students at each branch campus (one decimal):
-   - 216190: 3052.4
-   - 216278: 2473.6
-   - 216454: 2053.4
-   - 216630: 1882.2
-   - 216718: 1631.2
-   - 216894: 2223.8
-4. Unduplicated fall 2026 headcount at each branch campus:
-   - 216190: 4,717
-   - 216278: 3,862
-   - 216454: 3,180
-   - 216630: 2,910
-   - 216718: 2,511
-   - 216894: 3,445
+1. Regions going to re-validation: AR01, AR05, AR08, AR11, AR12.
+2. Chart of each region's register error rate against the 4 per cent line, the chosen regions marked.
+3. New registrations in the third quarter of 2026:
+   - AR01: 241
+   - AR02: 108
+   - AR03: 77
+   - AR04: 118
+   - AR05: 64
+   - AR06: 85
+   - AR07: 55
+   - AR08: 152
+   - AR09: 51
+   - AR10: 104
+   - AR11: 67
+   - AR12: 88
+   - AR13: 121
+   - AR14: 76
+4. Companies struck off and dissolved in the quarter and still dissolved at its end:
+   - AR01: 195
+   - AR02: 90
+   - AR03: 69
+   - AR04: 93
+   - AR05: 42
+   - AR06: 74
+   - AR07: 49
+   - AR08: 107
+   - AR09: 36
+   - AR10: 70
+   - AR11: 68
+   - AR12: 100
+   - AR13: 66
+   - AR14: 36

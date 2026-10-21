@@ -1,5 +1,5 @@
-"""The pack's documents: the board's 2027-28 instructional investment grant guidelines, the fiscal 2026 state
-appropriations workbook, the data dictionary and the extract manifest."""
+"""The pack's documents: the quality board paper on the 2027 register re-validation, the re-validation cost estimates
+workbook, the data dictionary and the extract manifest."""
 import datetime as dt
 
 from reportlab import rl_config
@@ -36,24 +36,25 @@ H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading
                     spaceAfter=4)
 
 MEMO = [
-    ("1. The grant", [
-        "The board awards the 2027-28 instructional investment grant, $4.5 million in equal parts, to the five public "
-        "four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026. A reporting unit "
-        "is a campus with its own federal unit identifier that files its own 12-month enrollment return; the "
-        "twenty-six such campuses are in the board's campus code list. The board votes the awards on 19 November 2026 "
-        "with the 2027-28 budget request."]),
-    ("2. The measure", [
-        "Instruction expense per FTE student is a campus's fiscal 2026 instruction expense (July 2025 to June 2026, "
-        "the functional expense for instruction on the federal finance return) over its 2025-26 12-month FTE students "
-        "from the federal 12-month enrollment return, undergraduate FTE plus graduate FTE.",
-        "Instruction expense is the campus's own. A branch campus whose finances are reported within its parent's "
-        "return is ranked on the instruction expense of the branch itself, which its parent's return includes, and the "
-        "parent is ranked on its own, without its branches'. No campus's fiscal 2026 return is restated for the grant."]),
-    ("3. Alongside the awards", [
-        "From fiscal 2027 each branch campus files its own finance return. For each of the six branch campuses the "
-        "board will also see its fall 2026 FTE students, undergraduate credit hours over 15 plus graduate credit hours "
-        "over 12 at the fall census, and its unduplicated fall 2026 headcount, from the board's fall census file, as "
-        "the base of the branches' first returns."]),
+    ("1. Purpose", [
+        "At its meeting on 18 November 2026 the quality board decides which regional business registers go to the 2027 "
+        "re-validation exercise, in which every record of a region is checked against its source documents and "
+        "corrected. The exercise is costed region by region in the estimates workbook; this paper fixes the basis on "
+        "which regions are chosen."]),
+    ("2. The test", [
+        "A regional register goes to re-validation when the share of its records in error exceeds 4 per cent.",
+        "A record is in error when one of the fields the register certifies (legal name, legal form, registered "
+        "address, status and activity code) is wrong against the business's source documents. The share is over the "
+        "region's records on the register on 30 April 2026, when the summer audit was drawn, active and since "
+        "dissolved alike; records registered after 30 April are not part of it."]),
+    ("3. The evidence", [
+        "The summer 2026 quality audit checked a sample of the 30 April register against source documents between "
+        "May and August, and each audited record's outcome is in the audit file. The audit's outcome codes changed on "
+        "1 July with the new audit form. No other check of the register's accuracy is used."]),
+    ("4. Alongside the decision", [
+        "For each region the board will also see its new registrations in the third quarter of 2026, by the register's "
+        "own quarter, which keeps Ardmuir local time, and the companies struck off and dissolved in the quarter that "
+        "were still dissolved at its end, from the gazette's company notices."]),
 ]
 
 
@@ -77,47 +78,47 @@ def _masthead(title):
 
 def write_memo(path):
     d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title="Instructional investment grant guidelines, 2027-28",
-                          author="John Huang", subject="", creator="", producer="")
-    head = [["To", "Board members and campus finance officers"], ["From", "John Huang, Director of Finance Policy"],
-            ["Date", "1 October 2026"], ["Subject", "Instructional investment grant, 2027-28: basis of the awards"]]
+                          bottomMargin=0.9 * inch, title="Register re-validation 2027: basis of the choice",
+                          author="Sally Phillips", subject="", creator="", producer="")
+    head = [["To", "Quality board"], ["From", "Sally Phillips, Head of Register Quality"],
+            ["Date", "7 October 2026"], ["Subject", "Business register re-validation 2027: which regions"]]
     t = Table([[Paragraph(a, CELLB), Paragraph(b, CELL)] for a, b in head], colWidths=[0.9 * inch, 5.6 * inch],
               hAlign="LEFT")
     t.setStyle(TableStyle([("LINEBELOW", (0, -1), (-1, -1), 0.6, INK), ("LEFTPADDING", (0, 0), (-1, -1), 0),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
-    story = _masthead("Guidelines") + [t, Spacer(1, 8)]
+    story = _masthead("Quality board paper") + [t, Spacer(1, 8)]
     for h, paras in MEMO:
         story.append(Paragraph(h, H2))
         for p in paras:
             story.append(Paragraph(p, BODY))
-    foot = "%s. Instructional investment grant guidelines, 2027-28; 1 October 2026." % P.COMPANY
+    foot = "%s. Quality board paper QB/26/41, 7 October 2026." % P.COMPANY
     d.build(story, onFirstPage=_frame(foot), onLaterPages=_frame(foot))
 
 
-def write_approp(path, x):
+def write_costs(path, x):
     import openpyxl
     from openpyxl.styles import Font, PatternFill
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "FY2026 appropriations"
-    ws["A1"] = "%s: fiscal 2026 state general fund appropriations to public four-year campuses" % P.COMPANY
+    ws.title = "Re-validation costs"
+    ws["A1"] = "%s: 2027 register re-validation, cost estimates by region" % P.COMPANY
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "As enacted, July 2025. Branch campus appropriations are made to the campus, not to its parent."
+    ws["A2"] = "Prepared for the quality board, September 2026. Unit costs from the 2023 Northmuir pilot."
     ws.append([])
-    ws.append(["Campus code", "Campus", "Operating appropriation ($)", "Of which: performance funding ($)",
-               "Capital renewal ($)"])
+    ws.append(["Region", "Region name", "Records to check", "Cost per record (GBP)", "Estimated cost (GBP)",
+               "Weeks of fieldwork"])
     for c in ws[4]:
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = PatternFill("solid", fgColor="2C5A3F")
     rng = np.random.default_rng(W.SEED + 9)
-    for u in W.IDS:
-        op = round(x["inst"][u] * float(rng.uniform(0.42, 0.58)), -3)
-        ws.append([x["code"][u], W.NAME[u], op, round(op * float(rng.uniform(0.04, 0.08)), -3),
-                   round(op * float(rng.uniform(0.02, 0.05)), -3)])
+    for code, name, *_ in W.REGIONS:
+        n = sum(1 for r in x["recs"] if r["region"] == code and r["frame"])
+        unit = round(float(rng.uniform(3.1, 4.4)), 2)
+        ws.append([code, name, n, unit, round(n * unit, -2), int(n / 900) + 2])
     for row in ws.iter_rows(min_row=5):
-        for c in row[2:5]:
-            c.number_format = "#,##0"
-    for col, w in zip("ABCDE", (12, 40, 18, 20, 16)):
+        row[2].number_format = "#,##0"
+        row[4].number_format = "#,##0"
+    for col, w in zip("ABCDEF", (8, 18, 15, 18, 18, 16)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A5"
     wb.save(path)
@@ -129,33 +130,22 @@ DICT_COLS = ["file_name", "field", "description"]
 def dictionary_rows():
     f = P.FILES
     return [
-        (f["hd"], "UNITID", "the federal unit identifier"),
-        (f["hd"], "SECTOR", "1 public four-year or above"),
-        (f["hd"], "C21BASIC", "Carnegie basic classification (2021)"),
-        (f["f1a"], "PRCH_F", "parent/child indicator for finance: 1 parent reporting for itself and others, 2 child "
-                             "whose finance is reported by its parent, blank reports for itself only"),
-        (f["f1a"], "IDX_F", "the UNITID of the parent reporting the child's finance"),
-        (f["f1a"], "F1C011", "instruction, total expense, dollars"),
-        (f["f1a"], "F1C021", "research, total expense, dollars"),
-        (f["f1a"], "F1C031", "public service, total expense, dollars"),
-        (f["f1a"], "F1C051", "academic support, total expense, dollars"),
-        (f["f1a"], "F1C061", "student services, total expense, dollars"),
-        (f["f1a"], "F1C071", "institutional support, total expense, dollars"),
-        (f["f1a"], "F1C191", "total expenses and deductions, dollars"),
-        (f["e12"], "EFYTOTLT", "12-month unduplicated headcount, 2025-26"),
-        (f["e12"], "CDACTUA", "undergraduate credit hour activity, 2025-26"),
-        (f["e12"], "CDACTGA", "graduate credit hour activity, 2025-26"),
-        (f["e12"], "FTEUG", "12-month undergraduate FTE (credit hours over 30)"),
-        (f["e12"], "FTEGD", "12-month graduate FTE (credit hours over 24)"),
-        (f["codes"], "campus_code", "the board's campus code"),
-        (f["ch"], "term", "2025FA fall 2025, 2026SP spring 2026, 2026SU summer 2026"),
-        (f["ch"], "course_level", "Lower division (1000 and 2000 level), Upper division (3000 and 4000), Graduate"),
-        (f["ch"], "student_credit_hours", "credit hours of the students enrolled at the census date"),
-        (f["census"], "student_id", "the campus student information system's id"),
-        (f["census"], "crn", "the course reference number"),
-        (f["census"], "credit_hours", "the course's credit hours"),
-        (f["tuition"], "resident_tuition_fees", "2026-27 annual resident tuition and required fees, dollars"),
-        (f["grad"], "GRRT150", "graduation rate within 150 per cent of normal time, per cent"),
+        (f["register"], "record_id", "the register's record number"),
+        (f["register"], "region", "the regional register holding the record (codes from April 2025)"),
+        (f["register"], "status", "active or dissolved at the extract"),
+        (f["register"], "created_at_utc", "when the record was created, UTC"),
+        (f["register"], "last_updated", "the date of the record's last change"),
+        (f["screen"], "risk_score", "the screen's score, 0 to 1"),
+        (f["screen"], "referred", "Y: referred to the regional team (score 0.70 or more)"),
+        (f["audit"], "region_old", "the region under the codes before April 2025, which the audit system still uses"),
+        (f["audit"], "outcome", "PASS or FAIL until 30 June 2026; from 1 July 0 no error, 1 legal name, 2 legal form, "
+                                "3 registered address, 4 status or activity code"),
+        (f["codes"], "region_old", "the code before 1 April 2025"),
+        (f["gazette"], "notice_type", "first notice (proposal to strike off), struck off and dissolved, or restored to "
+                                      "the register"),
+        (f["gazette"], "gazette_date", "the date of publication, which is the date the notice takes effect"),
+        (f["survey"], "mean_satisfaction", "mean rating, 1 to 5"),
+        (f["returns"], "late_pct", "share of annual returns filed late, per cent"),
     ]
 
 
@@ -165,16 +155,16 @@ MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage
 def manifest_rows(n):
     f = P.FILES
     return [
-        (f["hd"], "institutional directory", "IPEDS, board extract", "2026-09-15", "2025-26", n["hd"]),
-        (f["f1a"], "finance return, public institutions", "IPEDS, board collection", "2026-10-01", "fiscal 2026",
-         n["f1a"]),
-        (f["e12"], "12-month enrollment return", "IPEDS, board collection", "2026-10-01", "2025-26", n["e12"]),
-        (f["codes"], "campus code list", P.COMPANY, "2026-07-01", "", n["codes"]),
-        (f["ch"], "student credit hours by level", P.COMPANY, "2026-08-20", "2025-26 terms", n["ch"]),
-        (f["census"], "fall census enrollment, branch campuses", P.COMPANY, "2026-10-09", "fall 2026", n["census"]),
-        (f["guide"], "grant guidelines", P.COMPANY, "2026-10-01", "2027-28", ""),
-        (f["approp"], "state appropriations", P.COMPANY, "2025-07-15", "fiscal 2026", 26),
-        (f["tuition"], "tuition and required fees", P.COMPANY, "2026-06-30", "2026-27", n["tuition"]),
-        (f["grad"], "graduation rates", "IPEDS", "2026-02-10", "2019 cohort", n["grad"]),
-        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-09", "", n["dictionary"]),
+        (f["register"], "business register extract", "register operations", "2026-09-30", "all records", n["register"]),
+        (f["screen"], "risk screen referral list", "register operations", "2026-05-04", "screen run of 4 May 2026",
+         n["screen"]),
+        (f["audit"], "summer quality audit outcomes", "register quality", "2026-09-05", "May to August 2026",
+         n["audit"]),
+        (f["codes"], "regional code crosswalk", "register operations", "2025-04-01", "", n["codes"]),
+        (f["gazette"], "company notices", "Ardmuir Gazette", "2026-10-02", "July to September 2026", n["gazette"]),
+        (f["paper"], "quality board paper", P.COMPANY, "2026-10-07", "", ""),
+        (f["costs"], "re-validation cost estimates", "register quality", "2026-09-22", "2027", 14),
+        (f["survey"], "register user survey", P.COMPANY, "2025-12-12", "2025", n["survey"]),
+        (f["returns"], "annual return compliance", "register operations", "2026-03-31", "2025", n["returns"]),
+        (f["dictionary"], "field descriptions", P.COMPANY, "2026-10-08", "", n["dictionary"]),
     ]

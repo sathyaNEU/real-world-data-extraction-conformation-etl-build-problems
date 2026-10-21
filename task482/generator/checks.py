@@ -3,7 +3,6 @@ the ladder and its margins, the fork table's rows (SF1 to SF8), the asks' device
 and the input gates.
 
     python3 task482/generator/checks.py [target]"""
-import csv
 import json
 import os
 import re
@@ -17,8 +16,8 @@ import pack as P      # noqa: E402
 import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-GOLDEN = ["214682", "214946", "216190", "216278", "216454"]
-DEFAULT = ["214506", "214682", "214858", "214946", "215298"]
+GOLDEN = ["AR01", "AR05", "AR08", "AR11", "AR12"]
+DEFAULT = ["AR01", "AR02", "AR04", "AR05", "AR06", "AR07", "AR08", "AR10", "AR11", "AR12", "AR13"]
 
 
 class Run:
@@ -37,78 +36,54 @@ def _pdf(path):
     return " ".join(" ".join(p.extract_text().split()) for p in pypdf.PdfReader(path).pages)
 
 
-def five(v):
-    return sorted(sorted(v, key=lambda u: v[u])[:5])
-
-
 def run(target, gdir, x=None, meta_path=None, fig_path=None):
     R = Run()
     if x is None:
         x = W.build()
-        P.codes(x)
-        P.census(x)
+        P.ids(x)
+        P.gazette_rows(x)
     b = B.load(target)
     # -------------------------------------------------------------- the three rules, executed on the clean truth
-    t = W.truth_per_fte(x)
-    easy = {}
+    t = W.truth_rates(x)
+    naive = {}
     for u in W.IDS:
-        if W.KIND[u] == "S":
-            easy[u] = t[u]
-    for p in [u for u in W.IDS if W.KIND[u] == "P"]:
-        mem = [p] + [c for c in W.IDS if W.PARENT[c] == p]
-        for u in mem:
-            easy[u] = x["reported"][p] / sum(x["fte"][m] for m in mem)
-    R.ok(five(easy) == DEFAULT, "R3a the easy route (each parent's return split by FTE) on the clean truth files the "
-                                "default five (%s)" % five(easy))
-    R.ok(five(t) == GOLDEN, "R3b each campus's own instruction expense (the decisive step) files the golden five (%s)" %
-         five(t))
+        d = [r for r in x["recs"] if r["region"] == u and r["drawn"]]
+        naive[u] = sum(r["err"] for r in d) / len(d)
+    R.ok(sorted(u for u in naive if naive[u] > W.LINE) == DEFAULT, "R3a the easy route (the audited share) on the "
+         "clean truth files the default eleven")
+    R.ok(sorted(u for u in t if t[u] > W.LINE) == GOLDEN, "R3b the register's own rate (the decisive step's target) "
+         "files the golden five")
     # -------------------------------------------------------------- the ladder on the cut pack
-    sets = {r: B.awarded(b, B.per_fte(b, r)) for r in B.ROUTES}
-    for r in ("golden", "wls_fte", "with_intercept", "by_term"):
-        R.ok(sets[r] == GOLDEN, "L1 %s on the pack files the golden five (%s)" % (r, sets[r]))
-    R.ok(sets["fte_split"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["fte_split"])
-    for r in ("credit_hour_split", "two_level", "exclude_children", "zero", "direct"):
-        R.ok(sets[r] != GOLDEN, "L3 %s files a wrong five (%s)" % (r, sets[r]))
-    for r in ("golden", "wls_fte", "by_term"):
-        v = B.per_fte(b, r)
-        o = sorted(v, key=lambda u: v[u])
-        R.ok(v[o[5]] / v[o[4]] >= 1.03, "C2 %s: the sixth stands 3 per cent or more over the fifth (%.3f)" % (
-            r, v[o[5]] / v[o[4]]))
-    v = B.per_fte(b, "with_intercept")
-    o = sorted(v, key=lambda u: v[u])
-    R.ok(v[o[5]] / v[o[4]] >= 1.02, "C2b with an intercept the sixth stands 2 per cent or more over the fifth")
-    coef = B.fit(b)
-    R.ok(all(abs(c / W.COST[lv] - 1) < 0.04 for c, lv in zip(coef, W.LEVELS)), "C3 the fitted costs per credit hour "
-         "sit within 4 per cent of the truth (%s)" % [round(c) for c in coef])
-    g = B.per_fte(b, "golden")
-    R.ok(all(abs(g[u] / t[u] - 1) < 0.04 for u in W.IDS), "C4 every campus's golden estimate within 4 per cent of "
-         "its own instruction expense per FTE")
+    sets = {r: B.chosen(b, B.rates(b, r)) for r in B.ROUTES}
+    for r in B.GOLDEN_FORMS + ("whole_extract",):
+        R.ok(sets[r] == GOLDEN, "L1 %s files the golden five (%s)" % (r, sets[r]))
+    R.ok(sets["audited_share"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["audited_share"])
+    R.ok(sets["unflagged_only"] != GOLDEN, "L3 the unflagged stratum alone files a wrong set")
+    for r in B.GOLDEN_FORMS + ("whole_extract",):
+        v = B.rates(b, r)
+        R.ok(min(abs(v[u] - B.LINE) for u in v) >= 0.005, "C2 %s: every region half a point or more from the line" % r)
+    g = B.rates(b, "golden")
+    R.ok(all(abs(g[u] - t[u]) < 0.02 for u in W.IDS), "C3 every golden estimate within two points of the truth")
     # -------------------------------------------------------------- the fork table
-    guide = _pdf(os.path.join(target, P.FILES["guide"]))
-    R.ok("ranked on the instruction expense of the branch itself, which its parent's return includes" in guide,
-         "SF1 a branch is ranked on its own instruction expense, inside its parent's (the zero reading ruled out)")
-    R.ok("the parent is ranked on its own, without its branches'" in guide, "SF2 the parent ranked on its own")
-    R.ok("undergraduate FTE plus graduate FTE" in guide, "SF3 the FTE is the 12-month return's")
-    R.ok("July 2025 to June 2026" in guide, "SF4 the fiscal year is filed")
-    ch_tot = {u: sum(b["ch"][u].values()) for u in b["ids"]}
-    R.ok(all(ch_tot[u] == int(b["e12"][u]["CDACTUA"]) + int(b["e12"][u]["CDACTGA"]) for u in b["ids"]),
-         "SF5 the credit hour file ties to the 12-month return's credit hours for every campus")
-    R.ok(all(b["inst"][u] == 0 for u in b["ids"] if b["kind"][u] == "C"), "SF6 every branch's own return is zero")
-    R.ok(len({b["code"][c] for c in b["code"]}) == 26, "SF7 one campus code per campus")
-    R.ok("No campus's fiscal 2026 return is restated for the grant" in guide, "SF8 the parents' totals are kept")
+    paper = _pdf(os.path.join(target, P.FILES["paper"]))
+    R.ok("records on the register on 30 April 2026" in paper, "SF1 the population is the 30 April register")
+    R.ok("records registered after 30 April are not part of it" in paper, "SF2 later records are out")
+    R.ok("exceeds 4 per cent" in paper, "SF3 the line is strictly over 4 per cent")
+    R.ok("outcome codes changed on 1 July" in paper, "SF4 the two outcome schemes are filed")
+    codes = {r[0] for r in P.codes_rows()}
+    R.ok(len(codes) == 14, "SF5 one old code per region")
+    R.ok(all(u == b["region"][k] for k, u, e in b["audit"]), "SF6 the audit's old codes and the register agree")
+    R.ok(len({k for k, u, e in b["audit"]}) == len(b["audit"]), "SF7 one audit outcome per record")
+    R.ok("No other check of the register's accuracy is used" in paper, "SF8 the audit is the only evidence")
     # -------------------------------------------------------------- asks
     A, A0 = B.ask_a(b, True), B.ask_a(b, False)
-    R.ok(all(A[u] != A0[u] for u in A), "A1 rows per course move every branch's FTE")
-    R.ok(all(abs(A[u] - x["census_truth"][u]["fte"]) < 0.05 for u in A), "A2 the golden FTE equals the truth")
+    R.ok(all(A[u] != A0[u] for u in A), "A1 reading the UTC times as the quarter moves every region")
+    R.ok(A == x["q3"], "A2 the golden registrations equal the truth")
     Bb, B0 = B.ask_b(b, True), B.ask_b(b, False)
-    R.ok(all(Bb[u] == x["census_truth"][u]["head"] for u in Bb), "B1 the golden headcount equals the truth")
-    R.ok(sum(Bb[u] != B0[u] for u in Bb) == 6, "B2 student ids alone move all six branches")
-    Bp = B.ask_b(b, "partial")
-    R.ok(sum(Bb[u] != Bp[u] for u in Bb) == 6, "B3 birth date, sex and ZIP alone merge different students at all six")
-    Bf = B.ask_b(b, "full")
-    R.ok(sum(Bb[u] != Bf[u] for u in Bb) == 6, "B4 matching the recoded major too splits movers at all six")
-    R.ok(True, "X1 the call reads the finance, the 12-month return, the codes and the credit hour file; the fall "
-               "census file is read by the asks only")
+    R.ok(all(Bb[u] != B0[u] for u in Bb), "B1 leaving out the restorations moves every region")
+    R.ok(Bb == x["diss_truth"], "B2 the golden dissolutions equal the truth")
+    R.ok(True, "X1 the call reads the register's region and creation date, the referral list and the audit; the asks "
+               "read the creation time across the quarter and the gazette")
     # -------------------------------------------------------------- gates
     files = sorted(os.listdir(target))
     R.ok(len(files) >= 10, "G1 ten or more files (%d)" % len(files))
@@ -126,7 +101,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
             R.ok("—" not in txt and "–" not in txt, "G6 no dashes in %s" % f)
     if fig_path and gdir:
         fig = json.load(open(fig_path))
-        R.ok(fig["call"]["awarded"] == GOLDEN, "F1 figures.json carries the golden five")
+        R.ok(fig["call"]["chosen"] == GOLDEN, "F1 figures.json carries the golden five")
     print("checks: %d run, %d failed" % (R.n, len(R.bad)))
     return not R.bad
 

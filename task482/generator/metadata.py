@@ -3,7 +3,7 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["approp"], P.FILES["tuition"], P.FILES["grad"]]
+DISTRACTORS = [P.FILES["costs"], P.FILES["survey"], P.FILES["returns"]]
 
 
 def write(target, path, n):
@@ -15,25 +15,23 @@ def write(target, path, n):
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["approp"]: "the state's fiscal 2026 appropriations by campus, made to branches directly; the grant "
-                               "ranks instruction expense, which the appropriation does not measure",
-            P.FILES["tuition"]: "2026-27 tuition and fees; a price, not an expense, and of the wrong year",
-            P.FILES["grad"]: "graduation rates of the 2019 cohort; an outcome the grant does not rank on",
+            P.FILES["costs"]: "the re-validation's cost by region; the board chooses on the error rate alone",
+            P.FILES["survey"]: "users' satisfaction with the register by user group; no region and no error rate",
+            P.FILES["returns"]: "late annual returns by region in 2025; timeliness of filing, not accuracy of records",
         },
-        "stated_inputs": ["4.5"],
-        "deliverables": ["lhecb_2027-28_instructional_investment_awards.xlsx"],
-        "as_of": "2026-10-09",
+        "stated_inputs": ["4"],
+        "deliverables": ["sar_register_revalidation_2027_regions.xlsx"],
+        "as_of": "2026-10-08",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task482/generator); the state, "
-                           "the board, the campuses, their students and the people are fictional",
-            "public_specifications": "the federal files follow the IPEDS directory (HD), finance (F1A, GASB) and "
-                                     "12-month enrollment (E12) layouts and variable names, including the finance "
-                                     "parent/child indicator PRCH_F and parent UNITID IDX_F; the state files are a "
-                                     "coordinating board's own layouts, described in the pack's dictionary",
+            "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, "
+                           "the office, the registers, the businesses and the people are fictional",
+            "public_specifications": "the layouts follow common business register extracts, register quality audit "
+                                     "records and company notices, described in no shipped file beyond the pack's own "
+                                     "dictionary",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2026-10-09",
+            "date": "2026-10-08",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:
