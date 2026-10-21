@@ -33,7 +33,8 @@ def check(label, ok, detail=""):
 
 
 def in_bin(v, target_pct):
-    return C.pct(v) == target_pct
+    """the forecast prints in the golden's cell: the nearest 5 per cent, as the prompt asks"""
+    return C.pct5(v) == target_pct
 
 
 # the pack the stage 4 readers and judge saw (target.zip 2c536aaa): the files the call reads that no ask touches
@@ -74,11 +75,12 @@ def main(target):
         else None
     gold = golden_of(D, fi, rows, reps=400)
     g = gold["share"]
-    G = C.pct(g)
+    G = C.pct5(g)
     P = gold["P"]
-    check("golden: the share of own contacts started in the assistant", True, "%.4f, printed %d per cent" % (g, G))
-    check("golden: mid-bin (edge distance at least 0.25 of a point)", C.edge(100 * g, 1) >= 0.25,
-          "edge distance %.3f" % C.edge(100 * g, 1))
+    check("golden: the share of own contacts started in the assistant", True,
+          "%.4f, printed %d per cent (nearest 5)" % (g, G))
+    check("golden: inside its cell by a point or more (the nearest 5 per cent)", C.edge(100 * g, C.FORECAST_UNIT) >= 1.0,
+          "edge distance %.3f" % C.edge(100 * g, C.FORECAST_UNIT))
     if figs:
         check("figures.json carries the golden", figs["call_share"] == G, "%s" % figs["call_share"])
 
@@ -130,7 +132,7 @@ def main(target):
                           sched_free=sch[:, 1])["share"], Pt
     easy, P_easy = clean_forecast("one_rate")
     check("R3a analyst test: one learning rate on the clean truth files the wrong answer",
-          C.pct(easy) >= G + 10, "%.4f (%d per cent) against the golden's %d" % (easy, C.pct(easy), G))
+          C.pct5(easy) >= G + 10, "%.4f (%d per cent) against the golden's %d" % (easy, C.pct5(easy), G))
     right, P_right = clean_forecast("split")
     check("R3b the decisive step alone (a separate rate for transfers) files the golden on the clean truth",
           in_bin(right, G), "%.4f" % right)
@@ -138,9 +140,9 @@ def main(target):
     P_as = dict(P_right)
     P_as["a_forced"] = P_right["a_free"]
     asc, _ = clean_forecast("split", Pt=P_as)
-    check("R3b transfers taught nothing (a lower rung's correction) stays wrong", C.pct(tn) <= G - 4,
+    check("R3b transfers taught nothing (a lower rung's correction) stays wrong", C.pct5(tn) <= G - 5,
           "%.4f" % tn)
-    check("R3b transfers learned at the chosen rate stays wrong", C.pct(asc) >= G + 10, "%.4f" % asc)
+    check("R3b transfers learned at the chosen rate stays wrong", C.pct5(asc) >= G + 10, "%.4f" % asc)
     truth = W.forecast_truth(cl, R, world.P, reps=12)
     check("R3 the clean truth's own window lands in the golden's bin", in_bin(truth["share"], G),
           "%.4f" % truth["share"])
@@ -169,8 +171,8 @@ def main(target):
         fits[name] = (Pn, ll)
     ll_g = M.run(P, S, M.SPECS["split"])[0]
     o1 = K.forecast(D, spec="one_rate", reps=200, S=S, aux=aux, P=fits["one_rate"][0])["share"]
-    check("L0 rung 0, one learning rate (the default path), files its own wrong answer", C.pct(o1) >= G + 10,
-          "%.4f (%d)" % (o1, C.pct(o1)))
+    check("L0 rung 0, one learning rate (the default path), files its own wrong answer", C.pct5(o1) >= G + 10,
+          "%.4f (%d)" % (o1, C.pct5(o1)))
     check("L0 the split model beats one rate on the record by a visible margin", ll_g - fits["one_rate"][1] > 300,
           "%.1f log-likelihood units" % (ll_g - fits["one_rate"][1]))
     g_fix, g_est = ll_g - fits["one_rate"][1], fits["split_q0"][1] - fits["one_rate_q0"][1]
@@ -178,7 +180,7 @@ def main(target):
           figs is None or min(g_fix, g_est) > figs["ll_gain_floor"],
           "%.1f and %.1f against %s" % (g_fix, g_est, figs and figs["ll_gain_floor"]))
     otn = K.forecast(D, spec="teach_nothing", reps=200, S=S, aux=aux, P=fits["teach_nothing"][0])["share"]
-    check("L1 transfers teach nothing: outside the bin", C.pct(otn) <= G - 3, "%.4f" % otn)
+    check("L1 transfers teach nothing: outside the bin", C.pct5(otn) <= G - 5, "%.4f" % otn)
     check("L1 the record rejects transfers teaching nothing", ll_g - fits["teach_nothing"][1] > 30,
           "%.1f units" % (ll_g - fits["teach_nothing"][1]))
     ope = K.forecast(D, spec="split_persev_exp", reps=200, S=S, aux=aux, P=fits["split_persev_exp"][0])["share"]
@@ -189,14 +191,14 @@ def main(target):
           "%.1f units" % (ll_g - fits["split_no_persev"][1]))
     import ladder as LD
     lg = LD.logit_pooled(D, rows, S, aux, fi)
-    check("L3 a pooled last-four logistic of the choice: outside the bin", C.pct(lg) >= G + 2, "%.4f" % lg)
+    check("L3 a pooled last-four logistic of the choice: outside the bin", C.pct5(lg) >= G + 5, "%.4f" % lg)
     mk = LD.markov_pooled(D, rows, S, aux, fi)
-    check("L3 a pooled first-order Markov chain: outside the bin", C.pct(mk) >= G + 2, "%.4f" % mk)
+    check("L3 a pooled first-order Markov chain: outside the bin", C.pct5(mk) >= G + 5, "%.4f" % mk)
     nl = LD.no_learning(D, rows)
-    check("L4 no learning (the last eight weeks of 2026 carried): outside the bin", C.pct(nl) <= G - 5, "%.4f" % nl)
+    check("L4 no learning (the last eight weeks of 2026 carried): outside the bin", C.pct5(nl) <= G - 10, "%.4f" % nl)
     rh = LD.rate_hat(D, rows, S, aux, P)
-    check("L5 contacts from each jobseeker's 2026 rate, check-ins ignored: outside the bin", not in_bin(rh, G),
-          "%.4f (violates the rollout plan 4.1)" % rh)
+    check("L5 contacts from each jobseeker's 2026 rate, check-ins ignored (against plan 4.1): the same call",
+          in_bin(rh, G), "%.4f" % rh)
 
     # ------------------------------------------------------------------------- the golden's family on the pack
     fam, fam_af, fam_ratio, fam_rates = {}, {}, {}, {}
@@ -258,7 +260,8 @@ def main(target):
     check("SF9 the phone's resolution from July to December only: same call", in_bin(ev["sf9"], G), "%.4f" % ev["sf9"])
     check("SF10 the overflow off from 1 March: same call; plan 3.2 keeps it on", ev["plan32"] and in_bin(ev["sf10"], G),
           "%.4f" % ev["sf10"])
-    check("SF11 check-ins every 14 days: plan 4.1; own 2026 rates outside the bin", ev["plan41"] and not in_bin(rh, G))
+    check("SF11 check-ins every 14 days on their due dates: plan 4.1; own 2026 rates, check-ins ignored, the same call",
+          ev["plan41"] and in_bin(rh, G))
     check("SF12 rounding once at the end: the prompt's closing sentence", ev["prompt_round"])
     check("SF13 the contacts' order on one clock or read unconverted: same call",
           in_bin(r2["sessions' times read as UTC"], G))
@@ -269,6 +272,29 @@ def main(target):
           "%.4f with the 2026 rate %.3f" % (ev["sf15"], ev["p_chat26"]))
     check("SF16 a transfer after 1 March meets release 4.0 on the voice service: plan 1.3", ev["plan13"],
           "%.4f with the 2026 voice rate %.3f" % (ev["sf16"], ev["p_voice26"]))
+    # round 3's judge: the readings an outside reproduction took, under the conventions plan 4.1 and 5.1 now file
+    jr = LD.judge_readings(D, fi, rows, golden_of, P, S)
+    for label, (v, closed) in jr.items():
+        if in_bin(v, G):
+            check("J3 %s: the same call at the nearest 5 per cent" % label, True, "%.4f" % v +
+                  (" (the record rejects the form by %.1f units)" % closed if not isinstance(closed, bool) else ""))
+        elif closed is True:
+            check("J3 %s: another call, and the plan's filed sentence rules it out" % label,
+                  ev["plan41"] if "check-in" in label else ev["plan51a"] and ev["plan51b"], "%.4f" % v)
+        else:
+            check("J3 %s: another call, from a model form the record rejects" % label,
+                  not isinstance(closed, bool) and closed > 30, "%.4f, rejected by %.1f units" % (v, closed))
+    late_mix = [v for k, v in jr.items() if k.startswith("check-ins late as in 2026")][0][0]
+    check("SF17 the denominator is every contact started: plan 5.1; transferred calls left out, the same call",
+          ev["plan51a"] and in_bin(jr["transfers left out of the denominator"][0], G),
+          "%.4f" % jr["transfers left out of the denominator"][0])
+    check("SF18 a check-in on its due date: plan 4.1; as late as 2026's, the same call", ev["plan41"] and
+          in_bin(late_mix, G), "%.4f" % late_mix)
+    check("SF19 the other contacts at the 2026 rate or the last eight weeks': the same call",
+          in_bin(jr["other contacts at the last eight weeks' rate"][0], G),
+          "%.4f" % jr["other contacts at the last eight weeks' rate"][0])
+    check("J3 the round 3 judge's own figures (25.8, 26.4 to 27.2; reported, not recomputed) sit in the golden's cell",
+          all(C.pct5(x / 100) == G for x in (25.8, 26.4, 27.2)), "cell %.1f to %.1f" % (G - 2.5, G + 2.5))
 
     # --------------------------------------------------------------------------------------------- the asks
     emp, own = K.ask_counts(D, bn=fi["bn"], vendor_bn=fi["vendor_bn"])

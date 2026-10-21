@@ -56,12 +56,13 @@ PLAN = [
     ]),
     ("4. Check-ins", [
         "4.1 A jobseeker on a claim checks in every 14 days, counted from the day the claim opened, by phone or through "
-        "Ask Prairie Works, until the claim closes. The rollout does not change the check-in.",
+        "Ask Prairie Works, until the claim closes. The rollout does not change the check-in. Rollout planning takes "
+        "each check-in on its due date.",
     ]),
     ("5. Reporting", [
-        "5.1 Rollout reporting counts the contacts jobseekers start themselves. A jobseeker starts a contact in Ask "
+        "5.1 Rollout reporting counts every contact jobseekers start themselves. A jobseeker starts a contact in Ask "
         "Prairie Works by opening a conversation in the app or on the web, and on the phone by calling the claimant "
-        "line.",
+        "line, whether an adviser or the assistant's voice service answers the call.",
         "5.2 A conversation counts once however many sessions it runs to.",
     ]),
     ("6. Vendor tiers", [

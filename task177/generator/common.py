@@ -122,3 +122,11 @@ def edge(v, unit):
 def pct(v):
     """a share printed as a whole per cent, halves away from zero"""
     return int(math.floor(v * 100 + 0.5))
+
+
+FORECAST_UNIT = 5                      # the prompt asks for the forecast share to the nearest 5 per cent
+
+
+def pct5(v):
+    """a forecast share printed to the nearest 5 per cent, halves away from zero"""
+    return int(FORECAST_UNIT * math.floor(v * 100 / FORECAST_UNIT + 0.5))

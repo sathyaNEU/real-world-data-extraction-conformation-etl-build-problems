@@ -336,17 +336,18 @@ def semantic_forks(D, fi, rows, G, golden_of, P):
     def has(text, s):
         return " ".join(s.split()) in text
     ev = {}
-    ev["plan51a"] = has(plan, "Rollout reporting counts the contacts jobseekers start themselves.")
+    ev["plan51a"] = has(plan, "Rollout reporting counts every contact jobseekers start themselves.")
     ev["plan51b"] = has(plan, "by opening a conversation in the app or on the web, and on the phone by calling the "
-                              "claimant line.")
+                              "claimant line, whether an adviser or the assistant's voice service answers the call.")
     ev["plan52"] = has(plan, "A conversation counts once however many sessions it runs to.")
     ev["prompt_pop"] = "jobseekers on our register on 3 January 2027" in prompt
-    ev["prompt_round"] = prompt.rstrip().endswith("Give the share as a whole per cent and the conversations as whole "
-                                                  "numbers.")
+    ev["prompt_round"] = prompt.rstrip().endswith("Give the share to the nearest 5 per cent and the conversations as "
+                                                  "whole numbers.")
     ev["plan21_23"] = has(plan, "Ask Prairie Works answers every call that reaches the Claimant Services queue") and \
         has(plan, "Jobseekers can still open a conversation in the app or on the web at any time.")
     ev["plan32"] = has(plan, "The overflow transfer to the assistant's voice service stays on")
-    ev["plan41"] = fi["cycle"] == 14 and has(plan, "checks in every 14 days, counted from the day the claim opened")
+    ev["plan41"] = fi["cycle"] == 14 and has(plan, "checks in every 14 days, counted from the day the claim opened") \
+        and has(plan, "Rollout planning takes each check-in on its due date.")
     ev["accept"] = fi["accept_resolved"] == 2041 and fi["accept_n"] == 2400 and "All intents" in acc
     rows_acc = DOC.acceptance_rows()
     n_ci = sum(1 for r in rows if r[5])
@@ -371,6 +372,57 @@ def semantic_forks(D, fi, rows, G, golden_of, P):
     ev["no_later"] = all(v <= C.POP_DATE for v in pop.values())
     return ev
 
+
+
+def judge_readings(D, fi, rows, golden_of, P, S):
+    """the readings an outside reproduction takes where the text once left them open (round 3's judge): Monte Carlo
+    seeds, check-ins late as in 2026 (plan 4.1 now files the due date), the other contacts' rate from the record's
+    last eight weeks, a transfer moving the phone's value too (the model class, left open), the denominator without
+    transfers and transfers counted as assistant starts (plan 5.1 now files both). Returns label -> (share, how it
+    is closed): True where a filed sentence rules the reading out, a number where the record rejects the model form by
+    that many log-likelihood units, False where nothing does and the reading must print the golden's cell."""
+    out = {}
+    for sd in (5, 99, 123, 991, 2027):
+        out["Monte Carlo seed %d" % sd] = (golden_of(D, fi, rows, reps=400, seed=sd, P=P)["share"], False)
+    # check-ins as late as 2026's: the day each 2026 check-in fell after its due date, from the record
+    pop = K.population(D)
+    lag = [0, 0, 0, 0]
+    for r in rows:
+        if r[5] and r[0] in pop:
+            d = C.to_local(r[1]).date()
+            if d >= pop[r[0]]:
+                x = (d - pop[r[0]]).days % 14
+                if x < 4:
+                    lag[x] += 1
+    dist = np.array(lag, float) / sum(lag)
+    keys = sorted(pop)
+    mix = dict(zip(keys, np.random.default_rng(14).choice(4, size=len(keys), p=dist).tolist()))
+    for label, late in (("check-ins a day late", 1), ("check-ins three days late", 3),
+                        ("check-ins late as in 2026 (%s)" % "/".join("%.2f" % v for v in dist), mix)):
+        out[label] = (golden_of(D, fi, rows, P=P, aux_over=dict(checkin_late=late))["share"], True)
+    # the other contacts' rate from the last eight weeks of the record
+    cut = C.to_utc(dt.datetime.combine(C.REC_END - dt.timedelta(days=55), dt.time()))
+    n8 = sum(1 for r in rows if not r[5] and r[1] >= cut)
+    lo8 = C.REC_END - dt.timedelta(days=55)
+    days8 = 0
+    for r in D["claims"]:
+        a = max(dt.date.fromisoformat(r["opened"]), lo8)
+        b = min(dt.date.fromisoformat(r["closed"]) if r["closed"] else C.REC_END, C.REC_END)
+        days8 += max((b - a).days + 1, 0)
+    out["other contacts at the last eight weeks' rate"] = (
+        golden_of(D, fi, rows, P=P, aux_over=dict(adhoc_day=n8 / days8))["share"], False)
+    # a transfer moving the phone's value as well as the assistant's (fitted, the model class left open)
+    ll_split = M.run(P, S, M.SPECS["split"])[0]
+    for name, label in (("split_tp_free", "a transfer also moves the phone's value at the chosen rate"),
+                        ("split_tp_forced", "a transfer also moves the phone's value at the transfer rate")):
+        Pt, llt, _ = M.fit(S, M.SPECS[name])
+        out[label] = (golden_of(D, fi, rows, spec=name, P=Pt)["share"], ll_split - llt)
+    # the denominator and the numerator, both filed in plan 5.1 now
+    out["transfers left out of the denominator"] = (golden_of(D, fi, rows, P=P, aux_over=dict(denom="no_transfers"))[
+        "share"], True)
+    out["transfers counted as assistant starts"] = (golden_of(D, fi, rows, P=P, aux_over=dict(num="with_transfers"))[
+        "share"], True)
+    return out
 
 def fi_adhoc(rows, D):
     return K.adhoc_rate(D, rows)

@@ -7,30 +7,30 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 26 per cent.",
+ "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 25 per cent.",
  "architecture": 1,
- "loops": 2,
+ "loops": 3,
  "card_registered": true,
  "precut": {
   "exit": 0,
   "date": "2026-10-19"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-21 on the round 3 pack (four lines, each answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": "round 2 on target.zip 2c11b94b: readers C and D call 11 and 11 (missed), asks 12 of 24 each (exit 1: every employer month through the UTC conversion, no own-use month); ask A's primary re-sited"
+  "leak_py": "REVIEW 2026-10-21 on the round 4 pack (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
+  "reader": "round 3 on target.zip 8ab100af: readers E and F call 13 and 11 (missed), asks 0 of 24 each, score_reader exit 0 on both"
  },
  "duplicate_check": {
-  "heart": "BLOCK 2026-10-21 on ban.forum, ban.forcing_event and ban.org_family against task248 and task165, which entered task177's last three live predecessors after task269 and task468 were re-rooted past it (the bans passed at registration against task268, task269 and task468); test.same_driver_older cleared with a task480 differentiation line; needs the author's ruling",
+  "heart": "BLOCK 2026-10-21 on ban.forum, ban.forcing_event and ban.org_family against task248 and task165, ruled by the author: the bans passed at registration (19 October 07:01Z) and fire only because task269 and task468 re-rooted after it; the window stays fixed at the draw",
   "nearest": "task107 ledger row 0.07; drivers task242 0.06, task238 0.05"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "round 2 on target.zip 2c11b94b: every ask figure reproduced; the call at 25.7 over four seeds (26); critical component 2 at 18.8 (pass 1 18.2), so the assistant-first share was taken out of the write-up"
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "round 3 on target.zip 8ab100af: margin_or_boundary_fragility on the whole per cent (reproductions 25.8 to 27.9 under open conventions); fixed by the nearest 5 per cent and plan 4.1 and 5.1 filings, re-judge pending"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 4 round 3: two scored readers and the re-judge (and the author's ruling on the heart BLOCK)",
+ "resume": "stage 4: the re-judge of the round 3 fix",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -92,5 +92,13 @@
   "build": "checks.py PASS 113 of 113 (J: the call's files and rows are the judged pack's), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
   "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (4 answered); scrub clean; surface exit 0; heart BLOCK (window shift, see duplicate_check)",
   "cracker": "pair ceiling 28.5 on the round 2 readers' path (ask B's row measured on 2c11b94b, ask A's a model), mirror leakage 0.0"
+ },
+ "round4": {
+  "zip_sha256": "a2c932a3a4f6960c4f8aba8572c8bfa018c106e12752b52100e7306ab7a0c10a",
+  "repair": "the share asked to the nearest 5 per cent (golden 26.05 prints 25, 1.45 points inside its cell); plan 5.1 files the denominator (every contact started) and the start channel (a claimant-line call is a phone start whoever answers it); plan 4.1 takes each check-in on its due date; the learner, rates and transfer weighting unfiled",
+  "moved_figures": "call_share 26 -> 25; in the workbook's model comparison only, share_no_persev 26 -> 25 and share_persev_exp 28 -> 30 (the forecasts now at the nearest 5 per cent)",
+  "build": "checks.py PASS 130 of 130 (J3: every reading round 3's judge took, under the filed conventions, prints 25 or is ruled out), verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
+  "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS (741 characters); leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled)",
+  "cracker": "pair ceiling 28.5, mirror leakage 0.0 (both asks measured at 0 of 24 by the round 3 readers on 8ab100af)"
  }
 }

@@ -110,12 +110,13 @@ def population(D, closed_is_first_closed_day=False):
     return pop
 
 
-def schedule(opened, cycle=14):
-    """check-ins due in the assistant-first weeks and in the window, every cycle days from the claim's opening"""
+def schedule(opened, cycle=14, late=0):
+    """check-ins due in the assistant-first weeks and in the window, every cycle days from the claim's opening, each
+    taken on its due date (plan 4.1), or late days after it (a semantic-fork reading only)"""
     af = win = 0
     k = 1
     while True:
-        due = opened + dt.timedelta(days=cycle * k)
+        due = opened + dt.timedelta(days=cycle * k + late)
         if due > C.WIN_END:
             break
         if C.AF_START <= due <= C.AF_END:
@@ -163,11 +164,14 @@ def forecast(D, spec="split", reps=200, seed=17, S=None, aux=None, P=None, fit_o
     qb = np.array([st["qb"][S.index[k]] if k in S.index else P["q0b"] for k in keys])
     qp = np.array([st["qp"][S.index[k]] if k in S.index else P["q0p"] for k in keys])
     la = np.array([st["last"][S.index[k]] if k in S.index else 0.0 for k in keys])
-    sch = np.array([schedule(pop[k], aux.get("cycle", 14)) for k in keys])
+    late = aux.get("checkin_late", 0)
+    sch = np.array([schedule(pop[k], aux.get("cycle", 14), late if isinstance(late, int) else late.get(k, 0))
+                    for k in keys])
     rate = aux.get("adhoc_day", 0.0)
     out = M.simulate(P, sp, qb, qp, la, np.full(len(keys), rate), AF_DAYS, WIN_DAYS, aux["p_new"], aux["p_phone"],
                      aux["p_over"], reps=reps, seed=seed, sched_af=sch[:, 0], sched_free=sch[:, 1],
-                     p_chat=aux.get("p_chat"), p_sent_free=aux.get("p_sent_free"))
+                     p_chat=aux.get("p_chat"), p_sent_free=aux.get("p_sent_free"), denom=aux.get("denom", "all"),
+                     num=aux.get("num", "chosen"))
     out["P"] = P
     out["n_pop"] = len(keys)
     return out

@@ -250,10 +250,10 @@ def main(target):
        fig["bt_one_rate_pred"], "%.4f" % (p_1 / n_h))
     ok("back-test: the split's held-out gain", abs((h_1 - h_s) - fig["bt_ll_gain"]) < 5, "%.1f" % (h_1 - h_s))
     share = forward(th, False, 300, 991)
-    ok("the forecast share reproduces at its printed whole per cent", int(np.floor(share * 100 + 0.5)) == fig["call_share"],
-       "%.4f against %d" % (share, fig["call_share"]))
+    ok("the forecast share reproduces at its printed nearest 5 per cent",
+       int(5 * np.floor(share * 100 / 5 + 0.5)) == fig["call_share"], "%.4f against %d" % (share, fig["call_share"]))
     one = forward(fit1.x, True, 150, 992)
-    ok("one learning rate reproduces its own figure", int(np.floor(one * 100 + 0.5)) == fig["share_one_rate"],
+    ok("one learning rate reproduces its own figure", int(5 * np.floor(one * 100 / 5 + 0.5)) == fig["share_one_rate"],
        "%.4f against %d" % (one, fig["share_one_rate"]))
 
     # ------------------------------------------------------------------------------------------------- the asks
@@ -316,7 +316,7 @@ def main(target):
        and "%s as far as a conversation" % fig["ratio_words"] in note and "about %s" % FRACTION in sub
        and abs(ao / af - fig["ratio"]) < 0.005, "%s and %s" % rates)
     ok("the one-rate figure agrees in every file",
-       lab["One learning rate for every contact would give (whole per cent)"] == fig["share_one_rate"] and
+       lab["One learning rate for every contact would give (nearest 5 per cent)"] == fig["share_one_rate"] and
        wsm["I3"].value == fig["share_one_rate"] and ("%d per cent" % fig["share_one_rate"]) in note and
        ("Not the %d per cent" % fig["share_one_rate"]) in sub)
     ok("the split's gain over one rate agrees in every file", wsm["C3"].value == fig["ll_gain_one_rate"] and

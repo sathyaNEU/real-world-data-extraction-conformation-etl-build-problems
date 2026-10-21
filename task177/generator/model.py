@@ -54,6 +54,9 @@ SPECS = {
     "teach_nothing": dict(split="zero", persev="choice", q0="fixed"),
     "one_rate_no_persev": dict(split="same", persev="none", q0="fixed"),
     "one_rate_q0": dict(split="same", persev="choice", q0="est"),
+    # readings of how a transfer moves the phone's value too (the model class left open; the record rejects both)
+    "split_tp_free": dict(split="free", persev="choice", q0="fixed", transfer_phone="free"),
+    "split_tp_forced": dict(split="free", persev="choice", q0="fixed", transfer_phone="forced"),
 }
 
 
@@ -106,6 +109,7 @@ def run(P, S, spec, want_ll=True, mask=None):
     pred = obs = cnt = 0.0
     af, ao, be, bi, ka = P["a_free"], P["a_forced"], P["beta"], P["bias"], P["kappa"]
     exp_persev = spec["persev"] == "experienced"
+    tp = {"free": af, "forced": ao}.get(spec.get("transfer_phone", "none"))
     for t in range(S.L):
         m = S.m_t[t]
         if m == 0:
@@ -130,6 +134,8 @@ def run(P, S, spec, want_ll=True, mask=None):
         a = np.where(rd, ao, af)
         QB += np.where(gb, a * (r - QB), 0.0)
         QP += np.where(~gb, af * (r - QP), 0.0)
+        if tp is not None:
+            QP += np.where(rd, tp * (r - QP), 0.0)
         last[:m] = np.where(gb if exp_persev else c, 1.0, -1.0)
     out = dict(qb=qb, qp=qp, last=last)
     if mask is not None:
@@ -149,15 +155,18 @@ def fit(S, spec, starts=(0, 1)):
 
 
 def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone, p_over, reps=60, seed=1,
-             life=None, sched_af=None, sched_free=None, p_chat=None, p_sent_free=None):
+             life=None, sched_af=None, sched_free=None, p_chat=None, p_sent_free=None, denom="all",
+             num="chosen"):
     """the expected share of the population's own contacts started in the assistant over the free days, after the
     assistant-first days (every phone choice met by the upgraded assistant). Each claimant makes sched_af and
     sched_free scheduled contacts in the two phases (none when not given) and further contacts at rate_day a day;
     p_over is the share of free-day calls the overflow transfers; life (optional) each claimant's days left. p_chat
     and p_sent_free (optional, the semantic-fork rows only) resolve the conversations a claimant opens, and the
-    free days' transfers, at another rate than p_new"""
+    free days' transfers, at another rate than p_new. denom "no_transfers" leaves the free days' transferred calls out
+    of the denominator, num "with_transfers" counts them as assistant starts (both semantic-fork rows only)"""
     rng = np.random.default_rng(seed)
     exp_persev = spec["persev"] == "experienced"
+    tp_rate = {"free": P["a_free"], "forced": P["a_forced"]}.get(spec.get("transfer_phone", "none"))
     tb = tt = 0.0
     tb_af = tt_af = 0.0
     n = qb.size
@@ -196,9 +205,12 @@ def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone
                 a = np.where(rd, P["a_forced"], P["a_free"])
                 b[ii] = np.where(gb, b[ii] + a * (r - b[ii]), b[ii])
                 p[ii] = np.where(~gb, p[ii] + P["a_free"] * (r - p[ii]), p[ii])
+                if tp_rate is not None:
+                    p[ii] = np.where(rd, p[ii] + tp_rate * (r - p[ii]), p[ii])
                 la[ii] = np.where(gb if exp_persev else cb, 1.0, -1.0)
                 if phase == "free":
-                    tb += cb.sum(); tt += ii.size
+                    tb += cb.sum() + (rd.sum() if num == "with_transfers" else 0)
+                    tt += ii.size - (rd.sum() if denom == "no_transfers" else 0)
                 else:
                     tb_af += cb.sum(); tt_af += ii.size
     return dict(share=tb / tt, share_af=tb_af / tt_af)

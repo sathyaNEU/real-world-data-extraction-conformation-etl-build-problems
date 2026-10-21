@@ -27,14 +27,14 @@ def figures(target):
     sp = fits["split"]["P"]
     ratio = sp["a_forced"] / sp["a_free"]
     F = dict(
-        call_share=C.pct(Q["share"]),
+        call_share=C.pct5(Q["share"]),
         share_unrounded=round(Q["share"], 4),
         share_af=C.pct(Q["share_af"]),
-        share_one_rate=C.pct(Q["share_one_rate"]),
-        share_teach_nothing=C.pct(Q["share_teach_nothing"]),
+        share_one_rate=C.pct5(Q["share_one_rate"]),
+        share_teach_nothing=C.pct5(Q["share_teach_nothing"]),
         share_last8=C.pct(Q["share_last8"]),
-        share_no_persev=C.pct(Q["share_split_no_persev"]),
-        share_persev_exp=C.pct(Q["share_split_persev_exp"]),
+        share_no_persev=C.pct5(Q["share_split_no_persev"]),
+        share_persev_exp=C.pct5(Q["share_split_persev_exp"]),
         release=Q["filed"]["release"],
         n_pop=Q["n_pop"],
         n_contacts=Q["n_contacts"],
@@ -88,7 +88,7 @@ def write_workbook(path, F):
         ("Ask Prairie Works: share of jobseekers' own contacts, 1 March to 25 April 2027", None),
         ("Digital Channels, prepared 5 January 2027 for the March and April usage tier", None),
         (None, None),
-        ("Forecast share started in Ask Prairie Works (whole per cent)", F["call_share"]),
+        ("Forecast share started in Ask Prairie Works (nearest 5 per cent)", F["call_share"]),
         ("Jobseekers on the register on 3 January 2027", F["n_pop"]),
         ("Their share in the last eight weeks of 2026 (whole per cent)", F["share_last8"]),
         (None, None),
@@ -103,7 +103,7 @@ def write_workbook(path, F):
         ("An overflow transfer moves the assistant's value", F["ratio_words"] + " as far as a chosen conversation"),
         ("Learning rate, contacts the jobseeker chose", F["a_free"]),
         ("Learning rate, overflow transfers", F["a_forced"]),
-        ("One learning rate for every contact would give (whole per cent)", F["share_one_rate"]),
+        ("One learning rate for every contact would give (nearest 5 per cent)", F["share_one_rate"]),
     ]
     for i, (a, b) in enumerate(rows, 1):
         if a is not None:
@@ -127,7 +127,7 @@ def write_workbook(path, F):
 
     ws2 = wb.create_sheet("Model comparison")
     hdr = ("Model", "Log-likelihood", "Split model ahead by", "Rate, chosen", "Rate, transfers", "Choice weight",
-           "Lean", "Pull to last choice", "Forecast share (whole per cent)")
+           "Lean", "Pull to last choice", "Forecast share (nearest 5 per cent)")
     names = (("split", "Separate rate for overflow transfers (used)", F["call_share"]),
              ("one_rate", "One rate for every contact", F["share_one_rate"]),
              ("teach_nothing", "Overflow transfers teach nothing", F["share_teach_nothing"]),
@@ -235,7 +235,8 @@ def write_workbook(path, F):
                          "session's end state."),
         ("Window", "1 March to 25 April 2027, after the assistant-first weeks of 4 January to 28 February."),
         ("Release 4.0", "Resolving 2,041 of the acceptance test's 2,400 conversations."),
-        ("Rounding", "Shares to the whole per cent, rounded once from the unrounded forecast; counts whole."),
+        ("Rounding", "The forecast shares to the nearest 5 per cent, rounded once from the unrounded forecast; the "
+                     "2026 record's shares to the whole per cent; counts whole."),
         ("Sources", "contact_legs_2026.csv, assistant_sessions_2026.jsonl, contact_details_crosswalk.csv, "
                     "claims_register_2026.csv, %s, %s, %s." % (C.F_PLAN, C.F_ACCEPT, C.F_ORDER)),
     ]
