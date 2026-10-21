@@ -1,34 +1,34 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "general-statistics-data-science",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path drops every claim a building filed before it was elevated and puts Dunholme and Kettlemoor in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
+ "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2024 to 2025 growth, qualifies the counties whose member hotels grew five per cent or more and splits the match among them, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "architecture 1: reader 1 landed the call (exit 1, 30 of 72); reader 2 missed (exit 0, 19 of 72)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task130 v4 at 0.11"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "report": "determinism_check_report.md (architecture 1)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "stage 1: re-root to architecture 2 in a fresh world and decisive step; guard mechanisms --objective etl, draw, register, commit DRAWN",
+ "resume": "stage 2: design architecture 2 (lodging panel benchmarked to the Department's annual receipts): generator truth, default path, ladder, fork table, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,
