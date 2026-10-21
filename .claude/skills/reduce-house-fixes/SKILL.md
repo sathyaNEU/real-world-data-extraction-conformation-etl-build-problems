@@ -427,6 +427,33 @@ between the natural read and the golden on the cut pack, with its own rounding b
 generator and printed by the ceiling script. Where a repair moves no graded figure, the design note says so
 in those words and names the files that did move, so the next reader is not left inferring from a WARN.
 
+## H31. A corpus gate cleared, then the corpus moved before the push
+
+**The defect.** The anti-repeat gates compare a build against every other card on file, so their verdict is
+true only against the corpus they read. A session that clears one, then pulls, then pushes has shipped against
+a clearance the pull invalidated. The same holds across a day: a build that passed months ago can go BLOCK
+without anyone touching it, because the collision arrives from a sibling or another author's draw.
+
+**The measured instances.** Two in one session. One build's duplicate check was cleared with a differentiation
+line, and a later pull brought in a card that fired a **different** similarity test on the same build, so the
+build was pushed carrying a BLOCK its own repair had already answered once. Another build's gates were
+recorded at ship as a WARN with one promoted pair; re-run four days later the verdict was BLOCK on three axes
+and the surface screen promoted three pairs, two of them new. In both cases the driver text was never the
+cause (nearest neighbour 0.06), so nothing about the build had changed.
+
+**What it costs.** A shipped build whose identity collides with a neighbour the reviewer holds, which is the
+exact failure the gates exist to stop, and an author who reads a stale PASS in the state file and believes it.
+
+**The line.** A gate that reads only the build (prompt voice, figure reproduction, byte-identical rebuilds) is
+settled when it passes. A gate that reads the build **against the corpus** is settled only as of a commit. The
+state file records the verdict with the date and the corpus it was read against, never as a bare PASS.
+
+**The check.** Re-read every corpus-comparing gate after the final pull and immediately before the push, not
+when the repair is finished, and re-read them on any build being resumed rather than trusting its state file.
+Clear a similarity finding with a differentiation line, never by relabelling an axis; an axis ban is cleared
+only by redrawing the axis, and when the ban arrives from a build registered **after** this card, that is
+still a redraw and not an exemption. Read the verdict line rather than the exit code where a tool prints both.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design

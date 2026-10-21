@@ -85,6 +85,30 @@ So the line states the family the rule leaves open and the spread that family re
 spread of zero means the step is a reflex, whatever the documents say**, and the build is drawn elsewhere. That
 measurement costs a minute on the clean truth and would have failed all three at stage 2 rather than at an audit.
 
+**The line carries three numbers, not one, because "the family" is two different families.** A build can quote
+the flattering one and look alive. The **enumerated** family is every construction a competent analyst would
+reach for; the **standing** family is the subset the data and the filed rules leave defensible. One build
+measured 9.17 printed units across its enumerated family and **0.68 of one printed unit, filing a single call,
+across the nine constructions that actually hold the filed error rate**: alive on the first number and a reflex
+on the second. Another measured 9.2 printed units enumerated and **exactly zero on six of its seven graded
+figures** once restricted to the constructions that hold the filed false-discovery rate, with 12 of 13 filing
+the golden. So the line gives the enumerated spread, the standing spread, **and the loudness of whatever does
+the ruling-out**, because that third number is what turns the step into a reflex: if a filed clause or a
+one-group-by comparison eliminates everything but one construction, the step is that elimination and not the
+construction.
+
+**Where the decisive step is the scale a one-dimensional per-unit statistic is read against, Gates C and F
+cannot both hold, and that is algebra rather than a tuning accident.** Licensed constructions of a scale (a
+null, a reference distribution, a benchmark spread, a robust location and dispersion) differ only in the
+location and spread they divide the statistic by, so they agree on the answer set exactly when no admissible
+scale reorders the units, which is exactly when one sort on the statistic is the answer. Unanimity and
+one-column separability are the same number in both directions. Measured on one build at Spearman +0.8837
+between how many crude routes land the call and how many licensed constructions agree, over 16 settings of
+three independent dials, with **0 of 16 cells passing both gates**. The screen is one line at the draw:
+compute the per-unit statistic, sort it, and ask whether the golden's answer set is an interval of that sort.
+If it is, the step is arithmetic, and the build's own hardening assertion will say so, because "the found
+units clear every other unit by X" is the statement that one sort is the answer.
+
 **The convergence Gate C rests on is the reach Gate F pays, so they are one dial.** A build whose decisive
 step is an estimator choice has to make the licensed family agree, or the main call forks and the judge returns
 `underspecified_objective`. Agreement is exactly what makes the step a reflex. Measured on one build as a dial
@@ -623,7 +647,15 @@ which ship as a column.
 ### 2.1 The readability screen
 
 Each rung runs six tests on paper; any that fires makes it readable, and a readable decisive rung is dead
-(36 of 79 rounds, 13 of 21 portal results; `strategies.md` Part 6). **1 Filed sentence:** a clause,
+(36 of 79 rounds, 13 of 21 portal results; `strategies.md` Part 6). **Enumerate the reflex row from the domain's own vocabulary for the decisive quantity, never from the rungs
+beneath it.** A readability screen whose reflex row lists the alternatives to rung 1 will declare the decisive
+rung silent and pass the gate. One build's row listed t-tests, robust standard errors, rank tests and
+stratifying by brand or area, every one of them a within-window test and so an alternative to a lower rung,
+while its own `## Draw` paragraph named scoring against the cross-section's robust spread as the field's
+standard anomaly detection; that reflex files the golden, and so does the lower rung's own test once the
+obvious control is added. Write the row from what the field does to the **deciding** quantity.
+
+**1 Filed sentence:** a clause,
 definition or formula names the decisive quantity, or only makes the solver ask the question: a clause it
 cannot avoid reading sends it looking, and a join forced by a key it already holds is one line of code; a
 template asking for each candidate's affected population is that clause for every candidate (500 v2). **A
@@ -1040,6 +1072,20 @@ rather than designed. It costs one solve of the censoring likelihood's informati
 sweep, and it is run before the magnitudes are tuned. One build measured a first world at a gap over standard
 error of 1.04 and a second at 1.71 on the same mechanism, the difference being where the interval length's
 variation sat.
+
+**Count the dial jointly, never as two marginal patterns.** "Every setting with a real separation has a
+unanimous family, and every setting with a split family has no separation" is checkable only marginally, and
+marginally a dead build can look mixed: one measured 245 of 300 settings with a real reach and 66 leaving the
+record quiet, which reads as plenty of room. Counted jointly it was unambiguous: **22 settings had both, 0 of
+those 22 had a unanimous family, and 0 of 320 draws cleared reach, unanimity, the rung floor and a mid-bin
+call together**. Count the cells that pass every requirement at once, and list the requirements before
+sweeping. The marginal form let one measurement pass that the joint form killed.
+
+**The dial spends the rung floor too, so price it with the rest.** The separation at the decision and the
+licensed family's unanimity are the two the screen usually names, and on many grounds the binding constraint
+is the third: the 1.15x margin on the nearest wrong rung. One build's shipped setting was already the widest
+its floor allowed, with the floor crossed one step further out and the nearest rung sharing the call's own
+printed cell two steps beyond that, so every direction that bought reach spent the floor one for one.
 
 **One dial or two, and the test that tells them apart.** On interval-censored ground the flat reading's error
 and the estimator's variance are both driven by interval length over the width of the feature being
